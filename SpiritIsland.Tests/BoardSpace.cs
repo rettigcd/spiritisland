@@ -6,63 +6,7 @@ namespace SpiritIsland.Tests {
 
 	public enum Terrain {None, Jungle, Mountain, Ocean, Sand, Wetland };
 
-
-
 	public class BoardSpace{
-
-		static public BoardSpace[] GetBoardA() {
-			var spaces = new BoardSpace[]{
-				new BoardSpace(Terrain.Ocean,"0")
-				,new BoardSpace(Terrain.Mountain,"1") // 
-				,new BoardSpace(Terrain.Wetland,"2")  // city, dahan
-				,new BoardSpace(Terrain.Jungle,"3")   // 2 dahan
-				,new BoardSpace(Terrain.Sand,"4")     // blight
-				,new BoardSpace(Terrain.Wetland,"5")
-				,new BoardSpace(Terrain.Mountain,"6") // 1 dahan
-				,new BoardSpace(Terrain.Sand,"7")     // 2 dahan
-				,new BoardSpace(Terrain.Jungle,"8")   // town
-			};
-
-			SetNeighbors(spaces,0, 1,2,3);
-			SetNeighbors(spaces,1, 2,4,5,6);
-			SetNeighbors(spaces,2, 3,4);
-			SetNeighbors(spaces,3, 4);
-			SetNeighbors(spaces,4, 5);
-			SetNeighbors(spaces,5, 6,7,8);
-			SetNeighbors(spaces,6, 8);
-			SetNeighbors(spaces,7, 8);
-			return spaces;
-		}
-
-		static void SetNeighbors(BoardSpace[] spaces, int srcIndex, params int[] neighborIndex){
-			spaces[srcIndex].SetAdjacentTo(neighborIndex.Select(i=>spaces[i]).ToArray());
-		}
-
-		static public BoardSpace[] GetBoardB() {
-			var spaces = new BoardSpace[]{
-				new BoardSpace(Terrain.Ocean,"0")
-				,new BoardSpace(Terrain.Wetland,"1")  // 1 dahan
-				,new BoardSpace(Terrain.Mountain,"2") // city
-				,new BoardSpace(Terrain.Sand,"3")     // 2 dahan
-				,new BoardSpace(Terrain.Jungle,"4")   // blight
-				,new BoardSpace(Terrain.Sand,"5")
-				,new BoardSpace(Terrain.Wetland,"6")  // 1 town
-				,new BoardSpace(Terrain.Mountain,"7") // 1 dahan
-				,new BoardSpace(Terrain.Jungle,"8")   // 2 dahan
-			};
-
-			SetNeighbors(spaces,0, 1,2,3);
-			SetNeighbors(spaces,1, 2,4,5,6);
-			SetNeighbors(spaces,2, 3,4);
-			SetNeighbors(spaces,3, 4);
-			SetNeighbors(spaces,4, 5,7);
-			SetNeighbors(spaces,5, 6,7);
-			SetNeighbors(spaces,6, 7,8);
-			SetNeighbors(spaces,7, 8);
-
-			return spaces;
-		}
-
 
 		public string Label {get;}
 		public Terrain Terrain {get;}
