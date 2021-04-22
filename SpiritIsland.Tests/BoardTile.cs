@@ -8,15 +8,15 @@ namespace SpiritIsland.Tests {
 
 		static public BoardTile GetBoardA() {
 			var tile = new BoardTile(
-				new BoardSpace(Terrain.Ocean,"0")
-				,new BoardSpace(Terrain.Mountain,"1") // 
-				,new BoardSpace(Terrain.Wetland,"2")  // city, dahan
-				,new BoardSpace(Terrain.Jungle,"3")   // 2 dahan
-				,new BoardSpace(Terrain.Sand,"4")     // blight
-				,new BoardSpace(Terrain.Wetland,"5")
-				,new BoardSpace(Terrain.Mountain,"6") // 1 dahan
-				,new BoardSpace(Terrain.Sand,"7")     // 2 dahan
-				,new BoardSpace(Terrain.Jungle,"8")   // town
+				new BoardSpace(Terrain.Ocean,"A0")
+				,new BoardSpace(Terrain.Mountain,"A1") // 
+				,new BoardSpace(Terrain.Wetland,"A2")  // city, dahan
+				,new BoardSpace(Terrain.Jungle,"A3")   // 2 dahan
+				,new BoardSpace(Terrain.Sand,"A4")     // blight
+				,new BoardSpace(Terrain.Wetland,"A5")
+				,new BoardSpace(Terrain.Mountain,"A6") // 1 dahan
+				,new BoardSpace(Terrain.Sand,"A7")     // 2 dahan
+				,new BoardSpace(Terrain.Jungle,"A8")   // town
 			);
 
 			tile.SetNeighbors(0, 1,2,3);
@@ -38,15 +38,15 @@ namespace SpiritIsland.Tests {
 
 		static public BoardTile GetBoardB() {
 			var tile = new BoardTile(
-				new BoardSpace(Terrain.Ocean,"0")
-				,new BoardSpace(Terrain.Wetland,"1")  // 1 dahan
-				,new BoardSpace(Terrain.Mountain,"2") // city
-				,new BoardSpace(Terrain.Sand,"3")     // 2 dahan
-				,new BoardSpace(Terrain.Jungle,"4")   // blight
-				,new BoardSpace(Terrain.Sand,"5")
-				,new BoardSpace(Terrain.Wetland,"6")  // 1 town
-				,new BoardSpace(Terrain.Mountain,"7") // 1 dahan
-				,new BoardSpace(Terrain.Jungle,"8")   // 2 dahan
+				new BoardSpace(Terrain.Ocean,"B0")
+				,new BoardSpace(Terrain.Wetland,"B1")  // 1 dahan
+				,new BoardSpace(Terrain.Mountain,"B2") // city
+				,new BoardSpace(Terrain.Sand,"B3")     // 2 dahan
+				,new BoardSpace(Terrain.Jungle,"B4")   // blight
+				,new BoardSpace(Terrain.Sand,"B5")
+				,new BoardSpace(Terrain.Wetland,"B6")  // 1 town
+				,new BoardSpace(Terrain.Mountain,"B7") // 1 dahan
+				,new BoardSpace(Terrain.Jungle,"B8")   // 2 dahan
 			);
 
 			tile.SetNeighbors(0, 1,2,3);
@@ -68,15 +68,15 @@ namespace SpiritIsland.Tests {
 
 		static public BoardTile GetBoardC() {
 			var tile = new BoardTile(
-				new BoardSpace(Terrain.Ocean,"0")
-				,new BoardSpace(Terrain.Jungle,"1")   // 1 dahan
-				,new BoardSpace(Terrain.Sand,"2")     // city
-				,new BoardSpace(Terrain.Mountain,"3") // 2 dahan
-				,new BoardSpace(Terrain.Jungle,"4")   
-				,new BoardSpace(Terrain.Wetland,"5")  // 2 dahan, blight
-				,new BoardSpace(Terrain.Sand,"6")     // 1 dahan
-				,new BoardSpace(Terrain.Mountain,"7") // 1 town
-				,new BoardSpace(Terrain.Wetland,"8")
+				new BoardSpace(Terrain.Ocean,"C0")
+				,new BoardSpace(Terrain.Jungle,"C1")   // 1 dahan
+				,new BoardSpace(Terrain.Sand,"C2")     // city
+				,new BoardSpace(Terrain.Mountain,"C3") // 2 dahan
+				,new BoardSpace(Terrain.Jungle,"C4")   
+				,new BoardSpace(Terrain.Wetland,"C5")  // 2 dahan, blight
+				,new BoardSpace(Terrain.Sand,"C6")     // 1 dahan
+				,new BoardSpace(Terrain.Mountain,"C7") // 1 town
+				,new BoardSpace(Terrain.Wetland,"C8")
 			);
 
 			tile.SetNeighbors(0, 1,2,3);
@@ -98,15 +98,15 @@ namespace SpiritIsland.Tests {
 
 		static public BoardTile GetBoardD() {
 			var tile = new BoardTile(
-				new BoardSpace(Terrain.Ocean,"0")
-				,new BoardSpace(Terrain.Wetland,"1")   // 2 dahan
-				,new BoardSpace(Terrain.Jungle,"2")    // city, 1 dahan
-				,new BoardSpace(Terrain.Wetland,"3")   
-				,new BoardSpace(Terrain.Sand,"4")   
-				,new BoardSpace(Terrain.Mountain,"5")  // 1 dahan, blight
-				,new BoardSpace(Terrain.Jungle,"6")    
-				,new BoardSpace(Terrain.Sand,"7")      // 1 town, 2 dahan
-				,new BoardSpace(Terrain.Mountain,"8")
+				new BoardSpace(Terrain.Ocean,"D0")
+				,new BoardSpace(Terrain.Wetland,"D1")   // 2 dahan
+				,new BoardSpace(Terrain.Jungle,"D2")    // city, 1 dahan
+				,new BoardSpace(Terrain.Wetland,"D3")   
+				,new BoardSpace(Terrain.Sand,"D4")   
+				,new BoardSpace(Terrain.Mountain,"D5")  // 1 dahan, blight
+				,new BoardSpace(Terrain.Jungle,"D6")    
+				,new BoardSpace(Terrain.Sand,"D7")      // 1 town, 2 dahan
+				,new BoardSpace(Terrain.Mountain,"D8")
 			);
 
 			tile.SetNeighbors(0, 1,2,3);
@@ -149,7 +149,7 @@ namespace SpiritIsland.Tests {
 			spaces[srcIndex].SetAdjacentTo(neighborIndex.Select(i=>spaces[i]).ToArray());
 		}
 
-		List<ITileSide> sides = new List<ITileSide>();
+		readonly List<ITileSide> sides = new List<ITileSide>();
 
 		#region TileSide
 
@@ -194,7 +194,7 @@ namespace SpiritIsland.Tests {
 				thisSpaces[thisIndex].SetAdjacentTo(otherSpaces[otherIndex]);
 			}
 
-			BoardSpace[] spaces;
+			readonly BoardSpace[] spaces;
 			List<int> breakPoints;
 		}
 
