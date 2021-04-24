@@ -7,18 +7,17 @@ namespace SpiritIsland {
 		public PlacePresence(int range){ this.range = range; }
 
 		public override void Apply( PlayerState ps, GameState _ ) {
-			var calc = new PresenceCalculator(ps.Presence,x=>true);
-			calc.Execute(range);
-			ps.PresenseToPlaceOptions = calc.Results;
+			var place = new PresenceCriteria{ Range = range, IsValid = (b)=>true };
+			ps.PresenceToPlace.Add( place );
 		}
 	}
 
 	public class PlacePresenceTwice : GrowthAction{
 
 		public override void Apply( PlayerState ps, GameState _ ) {
-			var calc = new PresenceCalculator(ps.Presence,x=>true);
-			calc.Execute(1,1);
-			ps.PresenseToPlaceOptions = calc.Results;
+			var single = new PresenceCriteria{ Range = 1, IsValid = (b)=>true };
+			ps.PresenceToPlace.Add( single );
+			ps.PresenceToPlace.Add( single );
 		}
 	}
 

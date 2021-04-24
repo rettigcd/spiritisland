@@ -8,10 +8,10 @@
 		public PlacePresenceOnDahan(){}
 
 		public override void Apply( PlayerState ps, GameState gs ) {
-			var calc = new PresenceCalculator( ps.Presence, gs.HasDahan );
-			calc.Execute(1,2);
-			calc.Execute(2,1);
-			ps.PresenseToPlaceOptions = calc.Results;
+			var one = new PresenceCriteria{ Range = 1, IsValid = gs.HasDahan };
+			var two = new PresenceCriteria{ Range = 2, IsValid = gs.HasDahan };
+			ps.PresenceToPlace.Add( one );
+			ps.PresenceToPlace.Add( two );
 		}
 
 	}

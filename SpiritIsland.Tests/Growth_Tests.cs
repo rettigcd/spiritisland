@@ -20,6 +20,7 @@ namespace SpiritIsland.Tests {
 			playerState = new PlayerState {
 				Energy = initEnergy
 			};
+			Given_HalfOfPowercardsPlayed();
 			gameState = new GameState();
 		}
 
@@ -33,10 +34,8 @@ namespace SpiritIsland.Tests {
 		}
 
 		[Test]
-		public void Thunderspeaker_Growth1() {
+		public void Thunderspeaker_ReclaimAnd2PowerCards() {
 			// Growth Option 1 - Reclaim All, +2 Power cards
-
-			Given_HalfOfPowercardsPlayed();
 
 			When_Growing( GetThunderSpeakerGrowthOption( 0 ) );
 
@@ -49,7 +48,7 @@ namespace SpiritIsland.Tests {
 		[TestCase( "3,4,8", "A3A3;A3A4;A4A4;A4A8" )]
 		[TestCase( "4,8", "A4A4;A4A8" )]
 		[TestCase( "1,4,8", "A1A1;A1A4;A4A4;A4A8" )]
-		public void Thunderspeaker_Growth2( string initialDahanSquares, string expectedPresenseOptions ) {
+		public void Thunderspeaker_2Presence( string initialDahanSquares, string expectedPresenseOptions ) {
 			// +1 presense within 2 - contains dahan
 			// +1 presense within 1 - contains dahan
 
@@ -98,8 +97,6 @@ namespace SpiritIsland.Tests {
 		[Test]
 		public void RiverSurges_ReclaimGrowth() {
 
-			Given_HalfOfPowercardsPlayed();
-
 			When_Growing( GetRiverSurgesGrowthOption( 0 ) );
 
 			Assert_AllCardsAvailableToPlay();
@@ -146,6 +143,43 @@ namespace SpiritIsland.Tests {
 
 		#endregion
 
+		#region Lightning's Swift Strike
+
+		static GrowthOption GetLightningGrowthOption( int index ) {
+			var character = new Ligntning();
+			var growthOptions = character.GetGrowthOptions();
+			Assert.That( growthOptions.Length, Is.EqualTo( 3 ) );
+			return growthOptions[index];
+		}
+
+		[Test]
+		public void Lightning_Reclaim(){
+			// * reclaim, +1 power card, +1 energy
+
+			var x = GetLightningGrowthOption(0);
+			When_Growing( GetLightningGrowthOption(0) );
+
+			this.Assert_AllCardsAvailableToPlay();
+			this.Assert_GainPowercard(1);
+			this.Assert_GainEnergy(1);
+
+		}
+
+		[Test]
+		public void Lightning_PresenseAndEnergy(){
+			// +1 presense range 1, +3 energy
+
+			playerState.Presence.Add( tile.spaces[3] );
+
+			When_Growing( GetLightningGrowthOption(2) );
+
+			this.Assert_GainEnergy(3);
+			Assert_NewPresenceOptions( "A2;A3;A4");
+		}
+
+
+		#endregion
+
 		void When_Growing( GrowthOption growth ) {
 			growth.Apply( playerState, gameState );
 		}
@@ -171,9 +205,13 @@ namespace SpiritIsland.Tests {
 		#region Asserts
 
 		void Assert_NewPresenceOptions( string expectedPlacementOptionString ) {
-			var optionStrings = playerState.PresenseToPlaceOptions
+
+			
+
+			var optionStrings = PresenceCalculator.PresenseToPlaceOptions(playerState)
 				.Select( o => string.Join( "", o.Select( bs => bs.Label ).OrderBy( l => l ) ) )
 				.OrderBy( s => s );
+
 			string optionStr = string.Join( ";", optionStrings );
 			Assert.That( optionStr, Is.EqualTo( expectedPlacementOptionString ) );
 		}

@@ -32,15 +32,9 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 	public class Ligntning : Spirit {
 		public override GrowthOption[] GetGrowthOptions() {
 			return new GrowthOption[]{
-				new GrowthOption{ GrowthActions = new GrowthAction[]{
-					null // * reclaim, +1 power card, +1 energy
-				}},
-				new GrowthOption{ GrowthActions = new GrowthAction[]{
-					null //* +1 presence range 2, +1 presence range 0
-				}},
-				new GrowthOption{ GrowthActions = new GrowthAction[]{
-					null //* +1 presense range 1, +3 energy
-				}}
+				new GrowthOption( new ReclaimAll(), new DrawPowerCard(1), new GainEnergy(1) ),
+				new GrowthOption( null, null, null ), // +1 presence range 2, +1 presence range 0
+				new GrowthOption( new GainEnergy(3), new PlacePresence(1) ), // +1 presense range 1, +3 energy
 			};
 		}
 	}

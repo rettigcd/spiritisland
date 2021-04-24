@@ -3,31 +3,47 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace SpiritIsland {
+
+
+	public class PresenceCriteria{
+		public int Range {get; set; }
+		public Func<BoardSpace,bool> IsValid { get; set; }
+	}
+
 	class PresenceCalculator {
-		public PresenceCalculator(List<BoardSpace> existingPresense, Func<BoardSpace,bool> filter){
-			this.existingPresence = existingPresense.ToArray();
-			this.filter = filter;
+
+		static public BoardSpace[][] PresenseToPlaceOptions(PlayerState ps){
+			var calc = new PresenceCalculator( ps.Presence );
+			calc.Execute(ps.PresenceToPlace.ToArray());
+			if(ps.PresenceToPlace.Count == 2)
+				calc.Execute(ps.PresenceToPlace[1],ps.PresenceToPlace[0]);
+			return calc.Results;
 		}
 
-		public void Execute( params int[] jumps ){
-			this.jumps = jumps;
-			this.xx = new BoardSpace[jumps.Length];
+		public PresenceCalculator(List<BoardSpace> existingPresense){
+			this.existingPresence = existingPresense.ToArray();
+		}
+
+		public void Execute( params PresenceCriteria[] criteria ){
+			this.criteria = criteria;
+			this.xx = new BoardSpace[criteria.Length];
 			FindPresence( 0 );
 		}
 
 		public BoardSpace[][] Results => results.ToArray(); 
 
 		void FindPresence( int index ) {
-			if(index == jumps.Length){
+			if(index == criteria.Length){
 				Add();
 				return;
 			}
 
+			var criterion = criteria[index];
 			var options = existingPresence.Union(xx.Take(index))
-				.SelectMany( p => p.SpacesWithin( jumps[index] ) )
+				.SelectMany( p => p.SpacesWithin( criterion.Range ) )
 				.Distinct()
 				.Where( bs => bs.Terrain != Terrain.Ocean )
-				.Where( filter )
+				.Where( criterion.IsValid )
 				.ToList();
 			
 			foreach(var option in options){
@@ -46,11 +62,9 @@ namespace SpiritIsland {
 			}
 		}
 
-
-		int[] jumps;
+		PresenceCriteria[] criteria;
 		BoardSpace[] xx;
 		readonly BoardSpace[] existingPresence;
-		readonly Func<BoardSpace,bool> filter;
 
 		readonly HashSet<BoardSpace[]> results = new HashSet<BoardSpace[]>();
 		readonly HashSet<string> keys = new HashSet<string>(); 
