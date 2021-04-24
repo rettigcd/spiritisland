@@ -5,26 +5,29 @@ using System.Linq;
 namespace SpiritIsland {
 
 
-	public class PresenceCriteria{
-		public int Range {get; set; }
-		public Func<BoardSpace,bool> IsValid { get; set; }
+	public interface IPresenceCriteria{
+		int Range {get; }
+		bool IsValid(BoardSpace bs,GameState gs);
 	}
 
 	class PresenceCalculator {
 
-		static public BoardSpace[][] PresenseToPlaceOptions(PlayerState ps){
-			var calc = new PresenceCalculator( ps.Presence );
+		static public BoardSpace[][] PresenseToPlaceOptions(PlayerState ps,GameState gs){
+			var calc = new PresenceCalculator( ps.Presence, gs );
 			calc.Execute(ps.PresenceToPlace.ToArray());
 			if(ps.PresenceToPlace.Count == 2)
 				calc.Execute(ps.PresenceToPlace[1],ps.PresenceToPlace[0]);
 			return calc.Results;
 		}
 
-		public PresenceCalculator(List<BoardSpace> existingPresense){
+		readonly GameState gameState;
+
+		public PresenceCalculator(List<BoardSpace> existingPresense,GameState gs){
 			this.existingPresence = existingPresense.ToArray();
+			this.gameState = gs;
 		}
 
-		public void Execute( params PresenceCriteria[] criteria ){
+		public void Execute( params IPresenceCriteria[] criteria ){
 			this.criteria = criteria;
 			this.xx = new BoardSpace[criteria.Length];
 			FindPresence( 0 );
@@ -43,7 +46,7 @@ namespace SpiritIsland {
 				.SelectMany( p => p.SpacesWithin( criterion.Range ) )
 				.Distinct()
 				.Where( bs => bs.Terrain != Terrain.Ocean )
-				.Where( criterion.IsValid )
+				.Where( bs=>criterion.IsValid(bs,gameState) )
 				.ToList();
 			
 			foreach(var option in options){
@@ -62,7 +65,7 @@ namespace SpiritIsland {
 			}
 		}
 
-		PresenceCriteria[] criteria;
+		IPresenceCriteria[] criteria;
 		BoardSpace[] xx;
 		readonly BoardSpace[] existingPresence;
 

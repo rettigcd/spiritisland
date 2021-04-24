@@ -41,7 +41,7 @@ namespace SpiritIsland.Tests {
 
 			Assert_AllCardsAvailableToPlay();
 			Assert.That( playerState.PowerCardsToDraw, Is.EqualTo( 2 ) );
-			Assert_NoEnergyChange();
+			Assert_GainEnergy(0);
 		}
 
 		[TestCase( "3,5,8", "A3A3;A3A5;A5A5;A5A8" )]
@@ -52,19 +52,17 @@ namespace SpiritIsland.Tests {
 			// +1 presense within 2 - contains dahan
 			// +1 presense within 1 - contains dahan
 
-			// Given: presense on 3 of board A
-			playerState.Presence.Add( tile.spaces[3] );
-
-			//	 And: dahan on initial spot
-			foreach(string s in initialDahanSquares.Split( ',' ))
-				gameState.AddDahanToSpace( tile.spaces[int.Parse( s )] );
-
 			When_Growing( GetThunderSpeakerGrowthOption( 1 ) );
 
 			// Then: 
 			// +1 presense within 2 - contains dahan
 			// +1 presense within 1 - contains dahan
+			playerState.Presence.Add( tile.spaces[3] );
+			//	 And: dahan on initial spot
+			foreach(string s in initialDahanSquares.Split( ',' ))
+				gameState.AddDahanToSpace( tile.spaces[int.Parse( s )] );
 			Assert_NewPresenceOptions( expectedPresenseOptions );
+
 			//  And: Energy didn't change
 			Assert_GainEnergy( 0 );
 
@@ -156,41 +154,41 @@ namespace SpiritIsland.Tests {
 		public void Lightning_Reclaim(){
 			// * reclaim, +1 power card, +1 energy
 
-			var x = GetLightningGrowthOption(0);
 			When_Growing( GetLightningGrowthOption(0) );
 
-			this.Assert_AllCardsAvailableToPlay();
-			this.Assert_GainPowercard(1);
-			this.Assert_GainEnergy(1);
+			Assert_AllCardsAvailableToPlay();
+			Assert_GainPowercard(1);
+			Assert_GainEnergy(1);
 
 		}
 
 		[Test]
-		public void Lightning_PresenseAndEnergy(){
+		public void Lightning_PresenseAndEnergy() {
 			// +1 presense range 1, +3 energy
 
-			playerState.Presence.Add( tile.spaces[3] );
+			When_Growing( GetLightningGrowthOption( 2 ) );
 
-			When_Growing( GetLightningGrowthOption(2) );
-
-			this.Assert_GainEnergy(3);
-			Assert_NewPresenceOptions( "A2;A3;A4");
+			Assert_GainEnergy( 3 );
+			Assert_AddPresenseRange1();
 		}
 
+		[Test]
+		public void Lightning_2Presence(){
+			// +1 presense range 2, +1 prsense range 0
+
+			When_Growing( GetLightningGrowthOption( 1 ) );
+
+			Assert_GainEnergy( 0 );
+
+			playerState.Presence.Add( tile.spaces[3] ); 
+			Assert_NewPresenceOptions( "A1A1;A1A3;A2A2;A2A3;A3A3;A3A4;A3A5;A4A4;A5A5" );
+
+		}
 
 		#endregion
 
 		void When_Growing( GrowthOption growth ) {
-			growth.Apply( playerState, gameState );
-		}
-		void Assert_GainPowercard( int expected ) {
-			Assert.That( playerState.PowerCardsToDraw, Is.EqualTo( expected ), $"Expected to gain {expected} power card" );
-		}
-
-		void Assert_AllCardsAvailableToPlay() {
-			// Then: all cards reclaimed (including unplayed)
-			Assert.That( playerState.PlayedCards.Count, Is.EqualTo( 0 ), "Should not be any cards in 'played' pile" );
-			Assert.That( string.Join( "", playerState.AvailableCards.Select( c => c.Name ).OrderBy( n => n ) ), Is.EquivalentTo( "ABCD" ) );
+			growth.Apply( playerState );
 		}
 
 		void Given_HalfOfPowercardsPlayed() {
@@ -204,11 +202,20 @@ namespace SpiritIsland.Tests {
 
 		#region Asserts
 
+		void Assert_GainPowercard( int expected ) {
+			Assert.That( playerState.PowerCardsToDraw, Is.EqualTo( expected ), $"Expected to gain {expected} power card" );
+		}
+
+		void Assert_AllCardsAvailableToPlay() {
+			// Then: all cards reclaimed (including unplayed)
+			Assert.That( playerState.PlayedCards.Count, Is.EqualTo( 0 ), "Should not be any cards in 'played' pile" );
+			Assert.That( string.Join( "", playerState.AvailableCards.Select( c => c.Name ).OrderBy( n => n ) ), Is.EquivalentTo( "ABCD" ) );
+		}
+
+
 		void Assert_NewPresenceOptions( string expectedPlacementOptionString ) {
 
-			
-
-			var optionStrings = PresenceCalculator.PresenseToPlaceOptions(playerState)
+			var optionStrings = PresenceCalculator.PresenseToPlaceOptions(playerState,gameState)
 				.Select( o => string.Join( "", o.Select( bs => bs.Label ).OrderBy( l => l ) ) )
 				.OrderBy( s => s );
 
@@ -216,7 +223,10 @@ namespace SpiritIsland.Tests {
 			Assert.That( optionStr, Is.EqualTo( expectedPlacementOptionString ) );
 		}
 
-		void Assert_NoEnergyChange() => Assert_GainEnergy( 0 );
+		void Assert_AddPresenseRange1() {
+			playerState.Presence.Add( tile.spaces[3] ); 
+			Assert_NewPresenceOptions( "A2;A3;A4" );
+		}
 
 		void Assert_GainEnergy( int expectedChange ) {
 			Assert.That( playerState.Energy - initEnergy, Is.EqualTo( expectedChange ), $"Expected {expectedChange} energy change" );

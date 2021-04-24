@@ -5,7 +5,7 @@ namespace SpiritIsland {
 
 		public GainEnergy(int amount){ this.amount = amount; }
 
-		public override void Apply( PlayerState ps, GameState bs ) {
+		public override void Apply( PlayerState ps ) {
 			ps.Energy += amount;
 		}
 	}

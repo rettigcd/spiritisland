@@ -3,16 +3,17 @@
 	/// <summary>
 	/// ThunderSpeakers add-2 (range 1, range 2) 
 	/// </summary>
-	public class PlacePresenceOnDahan : GrowthAction{
+	public class PlacePresenceOnDahan : GrowthAction, IPresenceCriteria{
 
-		public PlacePresenceOnDahan(){}
+		public int Range {get;}
 
-		public override void Apply( PlayerState ps, GameState gs ) {
-			var one = new PresenceCriteria{ Range = 1, IsValid = gs.HasDahan };
-			var two = new PresenceCriteria{ Range = 2, IsValid = gs.HasDahan };
-			ps.PresenceToPlace.Add( one );
-			ps.PresenceToPlace.Add( two );
+		public PlacePresenceOnDahan(int range){ this.Range = range; }
+
+		public override void Apply( PlayerState ps ) {
+			ps.PresenceToPlace.Add( this );
 		}
+
+		public bool IsValid( BoardSpace bs, GameState gs ) => gs.HasDahan(bs);
 
 	}
 

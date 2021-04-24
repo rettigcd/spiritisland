@@ -40,7 +40,8 @@ namespace SpiritIsland {
 					new GainEnergy(1),
 				}},
 				new GrowthOption{ GrowthActions = new GrowthAction[]{
-					new PlacePresenceTwice()
+					new PlacePresence(1),
+					new PlacePresence(1)
 				}},
 				new GrowthOption{ GrowthActions = new GrowthAction[]{
 					new DrawPowerCard(1),

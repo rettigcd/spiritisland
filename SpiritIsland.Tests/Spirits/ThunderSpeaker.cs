@@ -35,7 +35,8 @@
 					new DrawPowerCard(2),
 				} },
 				new GrowthOption{ GrowthActions = new GrowthAction[]{
-					new PlacePresenceOnDahan(),
+					new PlacePresenceOnDahan(1),
+					new PlacePresenceOnDahan(2),
 				} },
 				new GrowthOption{ GrowthActions = new GrowthAction[]{
 					new PlacePresence(1),

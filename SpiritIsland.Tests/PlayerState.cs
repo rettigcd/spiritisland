@@ -10,7 +10,7 @@ namespace SpiritIsland {
 		// intermediate states
 		public int PowerCardsToDraw;
 
-		public List<PresenceCriteria> PresenceToPlace = new List<PresenceCriteria>();
+		public List<IPresenceCriteria> PresenceToPlace = new List<IPresenceCriteria>();
 	}
 
 }
