@@ -30,18 +30,9 @@
 		
 		public override GrowthOption[] GetGrowthOptions(){
 			return new GrowthOption[]{
-				new GrowthOption{ GrowthActions = new GrowthAction[]{ 
-					new ReclaimAll(),
-					new DrawPowerCard(2),
-				} },
-				new GrowthOption{ GrowthActions = new GrowthAction[]{
-					new PlacePresenceOnDahan(1),
-					new PlacePresenceOnDahan(2),
-				} },
-				new GrowthOption{ GrowthActions = new GrowthAction[]{
-					new PlacePresence(1),
-					new GainEnergy(4),
-				} }
+				new GrowthOption( new ReclaimAll(), new DrawPowerCard(2) ),
+				new GrowthOption( new PlacePresenceOnDahan(1), new PlacePresenceOnDahan(2) ),
+				new GrowthOption( new PlacePresence(1), new GainEnergy(4) )
 			};
 		}
 

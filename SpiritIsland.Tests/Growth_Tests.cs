@@ -72,12 +72,9 @@ namespace SpiritIsland.Tests {
 		public void Thunderspeaker_Growth3() {
 			// +1 presense within 1, +4 energy
 
-			// Given: presense on 1 of board A
-			playerState.Presence.Add( tile.spaces[1] );
-
 			When_Growing( GetThunderSpeakerGrowthOption( 2 ) );
 
-			Assert_NewPresenceOptions( "A1;A2;A4;A5;A6" ); // connected land, but not ocean
+			Assert_Add1Presence_Range1();
 			Assert_GainEnergy( 4 );
 
 		}
@@ -169,7 +166,7 @@ namespace SpiritIsland.Tests {
 			When_Growing( GetLightningGrowthOption( 2 ) );
 
 			Assert_GainEnergy( 3 );
-			Assert_AddPresenseRange1();
+			Assert_Add1Presence_Range1();
 		}
 
 		[Test]
@@ -187,6 +184,73 @@ namespace SpiritIsland.Tests {
 
 		#endregion
 
+		#region Vital Strength of Earth
+
+		static GrowthOption VitalStrength_Growth( int index )
+			=> new VitalStrength().GetGrowthOptions()[index];
+
+		[Test]
+		public void VitalStrength_ReclaimAndPresence(){
+			// reclaim, +1 presense range 2
+			When_Growing( VitalStrength_Growth( 0 )  );
+
+			this.Assert_AllCardsAvailableToPlay();
+			Assert_AddPresense_Range2();
+
+		}
+
+		[Test]
+		public void VitalStrength_PowercardAndPresence() {
+			// +1 power card, +1 presense range 0
+			When_Growing( VitalStrength_Growth( 1 ) );
+
+			Assert_GainPowercard( 1 );
+			Assert_Add1PresenceRange0();
+		}
+
+		[Test]
+		public void VitalStrength_PresenseAndEnergy(){
+			// +1 presence range 1, +2 energy
+			When_Growing( VitalStrength_Growth( 2 ) );
+			Assert_Add1Presence_Range1();
+			Assert_GainEnergy(2);
+		}
+
+		#endregion
+
+		#region Shadows Flicker
+
+		static GrowthOption Shadows_Growth( int index )
+			=> new Shadows().GetGrowthOptions()[index];
+
+		[Test]
+		public void ShadowsFlickerG0_Reclaim(){
+			// reclaim, gain power Card
+			When_Growing( Shadows_Growth( 0 ) );
+			Assert_AllCardsAvailableToPlay();
+			Assert_GainPowercard(1);
+		}
+
+		[Test]
+		public void ShadowsFlickerG1_PowerAndPresence(){
+			// gain power card, add a presense range 1
+			When_Growing( Shadows_Growth( 1 ) );
+			Assert_GainPowercard(1);
+			Assert_Add1Presence_Range1();
+		}
+
+		[Test]
+		public void ShadowsFlickerG2_PresenceAndEnergy(){
+			// add a presence withing 3, +3 energy
+			When_Growing( Shadows_Growth( 2 ) );
+			Assert_GainEnergy(3);
+			Assert_AddPresense_Range3();
+		}
+
+
+		#endregion
+
+
 		void When_Growing( GrowthOption growth ) {
 			growth.Apply( playerState );
 		}
@@ -200,18 +264,28 @@ namespace SpiritIsland.Tests {
 			playerState.AvailableCards.Add( new PowerCard( "D", 0, Speed.Fast, "A" ) );
 		}
 
-		#region Asserts
+		#region Asserts Presence
 
-		void Assert_GainPowercard( int expected ) {
-			Assert.That( playerState.PowerCardsToDraw, Is.EqualTo( expected ), $"Expected to gain {expected} power card" );
+		void Assert_Add1PresenceRange0() {
+			playerState.Presence.Add( tile.spaces[4] );
+			Assert_NewPresenceOptions( "A4" );
 		}
 
-		void Assert_AllCardsAvailableToPlay() {
-			// Then: all cards reclaimed (including unplayed)
-			Assert.That( playerState.PlayedCards.Count, Is.EqualTo( 0 ), "Should not be any cards in 'played' pile" );
-			Assert.That( string.Join( "", playerState.AvailableCards.Select( c => c.Name ).OrderBy( n => n ) ), Is.EquivalentTo( "ABCD" ) );
+
+		void Assert_Add1Presence_Range1() {
+			playerState.Presence.Add( tile.spaces[1] );
+			Assert_NewPresenceOptions( "A1;A2;A4;A5;A6" ); // connected land, but not ocean
 		}
 
+		void Assert_AddPresense_Range2() {
+			playerState.Presence.Add( tile.spaces[3] ); 
+			Assert_NewPresenceOptions( "A1;A2;A3;A4;A5" );
+		}
+
+		void Assert_AddPresense_Range3() {
+			playerState.Presence.Add( tile.spaces[3] ); 
+			Assert_NewPresenceOptions( "A1;A2;A3;A4;A5;A6;A7;A8" );
+		}
 
 		void Assert_NewPresenceOptions( string expectedPlacementOptionString ) {
 
@@ -223,9 +297,18 @@ namespace SpiritIsland.Tests {
 			Assert.That( optionStr, Is.EqualTo( expectedPlacementOptionString ) );
 		}
 
-		void Assert_AddPresenseRange1() {
-			playerState.Presence.Add( tile.spaces[3] ); 
-			Assert_NewPresenceOptions( "A2;A3;A4" );
+		#endregion
+
+		#region Asserts (Other)
+
+		void Assert_GainPowercard( int expected ) {
+			Assert.That( playerState.PowerCardsToDraw, Is.EqualTo( expected ), $"Expected to gain {expected} power card" );
+		}
+
+		void Assert_AllCardsAvailableToPlay() {
+			// Then: all cards reclaimed (including unplayed)
+			Assert.That( playerState.PlayedCards.Count, Is.EqualTo( 0 ), "Should not be any cards in 'played' pile" );
+			Assert.That( string.Join( "", playerState.AvailableCards.Select( c => c.Name ).OrderBy( n => n ) ), Is.EquivalentTo( "ABCD" ) );
 		}
 
 		void Assert_GainEnergy( int expectedChange ) {
