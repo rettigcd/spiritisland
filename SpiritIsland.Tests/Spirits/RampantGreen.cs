@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace SpiritIsland {
 
 /*
@@ -42,15 +39,36 @@ Gift of Proliferation => 1 => fast, any spirit => moon, plant => target spirit a
 				// reclaim, +1 power card
 				new GrowthOption( new PlacePresenceOnJungleOrWetland(2), new ReclaimAll(), new DrawPowerCard(1) ),
 				// +1 presense range 1, play +1 extra card this turn
-				new GrowthOption( new PlacePresenceOnJungleOrWetland(2), new PlacePresence(1) ),
+				new GrowthOption( new PlacePresenceOnJungleOrWetland(2), new PlacePresence(1),new PlayExtraCardThisTurn() ),
 				// +1 power card, +3 energy
 				new GrowthOption( new PlacePresenceOnJungleOrWetland(2), new GainEnergy(3), new DrawPowerCard() ),
 			};
 		}
 
 		public override PlayerState CreateInitialPlayerState() {
-			return base.CreateInitialPlayerState();
+			return new Player(this);
 		}
+
+		class Player : PlayerState {
+			public Player(RampantGreen spirit):base(spirit){
+				NumberOfCardsPlayablePerTurn = 1;
+			}
+			public override void PlayAvailableCards( params int[] cards ) {
+				base.PlayAvailableCards( cards );
+				NumberOfCardsPlayablePerTurn -= tempCardBoost; // remove temp boost
+				tempCardBoost = 0;
+			}
+			public int tempCardBoost = 0;
+		}
+
+		class PlayExtraCardThisTurn : GrowthAction {
+			public override void Apply( PlayerState ps ) {
+				(ps as Player).tempCardBoost++;
+				ps.NumberOfCardsPlayablePerTurn ++;
+			}
+		}
+
 	}
+
 
 }
