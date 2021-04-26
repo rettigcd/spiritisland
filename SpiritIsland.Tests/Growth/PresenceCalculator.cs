@@ -7,12 +7,12 @@ namespace SpiritIsland {
 
 	public interface IPresenceCriteria{
 		int Range {get; }
-		bool IsValid(BoardSpace bs,GameState gs);
+		bool IsValid(Space bs,GameState gs);
 	}
 
 	class PresenceCalculator {
 
-		static public BoardSpace[][] PresenseToPlaceOptions(PlayerState ps,GameState gs){
+		static public Space[][] PresenseToPlaceOptions(PlayerState ps,GameState gs){
 			var calc = new PresenceCalculator( ps.Presence, gs );
 			calc.Execute(ps.PresenceToPlace.ToArray());
 			if(ps.PresenceToPlace.Count == 2)
@@ -22,18 +22,18 @@ namespace SpiritIsland {
 
 		readonly GameState gameState;
 
-		public PresenceCalculator(List<BoardSpace> existingPresense,GameState gs){
+		public PresenceCalculator(List<Space> existingPresense,GameState gs){
 			this.existingPresence = existingPresense.ToArray();
 			this.gameState = gs;
 		}
 
 		public void Execute( params IPresenceCriteria[] criteria ){
 			this.criteria = criteria;
-			this.xx = new BoardSpace[criteria.Length];
+			this.xx = new Space[criteria.Length];
 			FindPresence( 0 );
 		}
 
-		public BoardSpace[][] Results => results.ToArray(); 
+		public Space[][] Results => results.ToArray(); 
 
 		void FindPresence( int index ) {
 			if(index == criteria.Length){
@@ -57,7 +57,7 @@ namespace SpiritIsland {
 
 
 		void Add() {
-			BoardSpace[] opt = xx.OrderBy( x=> x.Label ).ToArray();
+			Space[] opt = xx.OrderBy( x=> x.Label ).ToArray();
 			string key = string.Join("",opt.Select(x=>x.Label));
 			if(!keys.Contains( key )) {
 				results.Add( opt );
@@ -66,10 +66,10 @@ namespace SpiritIsland {
 		}
 
 		IPresenceCriteria[] criteria;
-		BoardSpace[] xx;
-		readonly BoardSpace[] existingPresence;
+		Space[] xx;
+		readonly Space[] existingPresence;
 
-		readonly HashSet<BoardSpace[]> results = new HashSet<BoardSpace[]>();
+		readonly HashSet<Space[]> results = new HashSet<Space[]>();
 		readonly HashSet<string> keys = new HashSet<string>(); 
 	}
 

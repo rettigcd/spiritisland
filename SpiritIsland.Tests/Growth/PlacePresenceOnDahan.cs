@@ -6,7 +6,7 @@
 	public class PlacePresenceOnDahan : PlacePresence {
 		public PlacePresenceOnDahan(int range):base(range){}
 
-		public override bool IsValid( BoardSpace bs, GameState gs ) => gs.HasDahan(bs);
+		public override bool IsValid( Space bs, GameState gs ) => gs.HasDahan(bs);
 
 	}
 

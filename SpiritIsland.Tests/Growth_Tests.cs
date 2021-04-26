@@ -20,11 +20,11 @@ namespace SpiritIsland.Tests {
 		const int initEnergy = 3;
 		PlayerState playerState;
 		GameState gameState;
-		BoardTile tile;
+		Board tile;
 
 		[SetUp]
 		public void SetUp() {
-			tile = BoardTile.GetBoardA();
+			tile = Board.GetBoardA();
 			gameState = new GameState();
 		}
 

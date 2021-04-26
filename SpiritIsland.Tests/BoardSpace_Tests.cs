@@ -13,7 +13,7 @@ namespace SpiritIsland.Tests {
 		[TestCase( 1 )]
 		[TestCase( 2 )]
 		public void Space_Is0DistanceFromSelf( int distance ) {
-			var space = new BoardSpace();
+			var space = new Space();
 			var spaces = space.SpacesWithin( distance );
 			Assert.That( spaces, Contains.Item( space ) );
 		}
@@ -21,8 +21,8 @@ namespace SpiritIsland.Tests {
 		[Test]
 		public void Adjacentcy_IsTransitive() {
 			// Given: land-1 is adjacent to land-2
-			var land1 = new BoardSpace();
-			var land2 = new BoardSpace();
+			var land1 = new Space();
+			var land2 = new Space();
 			land1.SetAdjacentTo( land2 );
 			// Then: land2 is adjacent to land 1
 			Assert.That( land2.SpacesExactly( 1 ), Contains.Item( land1 ) );
@@ -32,9 +32,9 @@ namespace SpiritIsland.Tests {
 		[Test]
 		public void MultipleNeighbors() {
 			// Given space has 2 neighbors
-			var main = new BoardSpace();
-			var neighbor1 = new BoardSpace();
-			var neighbor2 = new BoardSpace();
+			var main = new Space();
+			var neighbor1 = new Space();
+			var neighbor2 = new Space();
 			main.SetAdjacentTo( neighbor1 );
 			main.SetAdjacentTo( neighbor2 );
 			// Then: it is adjacent to both
@@ -48,7 +48,7 @@ namespace SpiritIsland.Tests {
 
 		[Test]
 		public void BoardA_Connectivity() {
-			BoardSpace[] spaces = BoardTile.GetBoardA().spaces;
+			Space[] spaces = Board.GetBoardA().spaces;
 
 			Assert_HasSpaces( spaces[0], 0, spaces[0] );
 			Assert_HasSpaces( spaces[0], 1, spaces[1], spaces[2], spaces[3] );
@@ -63,7 +63,7 @@ namespace SpiritIsland.Tests {
 
 		[Test]
 		public void BoardB_Connectivity() {
-			BoardSpace[] spaces = BoardTile.GetBoardA().spaces;
+			Space[] spaces = Board.GetBoardA().spaces;
 
 			Assert_HasSpaces( spaces[0], 0, spaces[0] );
 			Assert_HasSpaces( spaces[0], 1, spaces[1], spaces[2], spaces[3] );
@@ -79,8 +79,8 @@ namespace SpiritIsland.Tests {
 		[Test]
 		public void PlaceTiles() {
 
-			var tileB = BoardTile.GetBoardB();
-			var tileD = BoardTile.GetBoardD();
+			var tileB = Board.GetBoardB();
+			var tileD = Board.GetBoardD();
 
 			tileB.Sides[2].AlignTo( tileD.Sides[0] );
 
@@ -92,7 +92,7 @@ namespace SpiritIsland.Tests {
 
 		#region private
 
-		void Assert_HasSpaces( BoardSpace source, int distance, params BoardSpace[] needles ) {
+		void Assert_HasSpaces( Space source, int distance, params Space[] needles ) {
 			Assert.That( source.SpacesExactly( distance ), Is.EquivalentTo( needles ) );
 		}
 

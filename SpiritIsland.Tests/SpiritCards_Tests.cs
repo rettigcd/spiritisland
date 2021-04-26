@@ -40,14 +40,14 @@ namespace SpiritIsland.Tests {
 
 		[Test]
 		public void FlashFloods_Inland() {
-			var land = new BoardSpace { IsCostal = false };
+			var land = new Space { IsCostal = false };
 			int damage = flashFloods.GetDamage( land );
 			Assert.That( damage, Is.EqualTo( 1 ) );
 		}
 
 		[Test]
 		public void FlashFloods_Costal() {
-			var land = new BoardSpace { IsCostal = true };
+			var land = new Space { IsCostal = true };
 			int damage = flashFloods.GetDamage( land );
 			Assert.That( damage, Is.EqualTo( 2 ) );
 		}

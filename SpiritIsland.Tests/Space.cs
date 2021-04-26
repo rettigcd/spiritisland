@@ -6,12 +6,12 @@ namespace SpiritIsland {
 
 	public enum Terrain {None, Jungle, Mountain, Ocean, Sand, Wetland };
 
-	public class BoardSpace{
+	public class Space{
 
 		public string Label {get;}
 		public Terrain Terrain {get;}
 
-		public BoardSpace(Terrain terrain=Terrain.None, string label=null){
+		public Space(Terrain terrain=Terrain.None, string label=null){
 			this.Terrain = terrain;
 			this.Label = label;
 			_distanceTo.Add(this,0);
@@ -23,7 +23,7 @@ namespace SpiritIsland {
 		/// If adjacent to ocean, sets is-costal
 		/// </summary>
 		/// <param name="spaces"></param>
-		public void SetAdjacentTo( params BoardSpace[] spaces ) {
+		public void SetAdjacentTo( params Space[] spaces ) {
 			foreach(var land in spaces) {
 				SetNeighbor( land );
 				land.SetNeighbor( this );
@@ -32,18 +32,18 @@ namespace SpiritIsland {
 			_highestDistanceCalculated = 1;
 		}
 
-		void SetNeighbor( BoardSpace land ) {
+		void SetNeighbor( Space land ) {
 			_distanceTo.Add( land, 1 );
 			if(land.Terrain == Terrain.Ocean)
 				this.IsCostal = true;
 		}
 
-		public IEnumerable<BoardSpace> SpacesWithin( int distance ) {
+		public IEnumerable<Space> SpacesWithin( int distance ) {
 			CalculateDistancesUpTo( distance );
 			return _distanceTo.Where( p => p.Value <= distance ).Select( p => p.Key );
 		}
 
-		public IEnumerable<BoardSpace> SpacesExactly( int distance ) {
+		public IEnumerable<Space> SpacesExactly( int distance ) {
 			CalculateDistancesUpTo( distance );
 			return _distanceTo.Where( p => p.Value == distance ).Select( p => p.Key );
 		}
@@ -68,7 +68,7 @@ namespace SpiritIsland {
 			}
 		}
 
-		readonly Dictionary<BoardSpace,int> _distanceTo = new Dictionary<BoardSpace, int>();
+		readonly Dictionary<Space,int> _distanceTo = new Dictionary<Space, int>();
 		int _highestDistanceCalculated = 0;
 	}
 

@@ -5,7 +5,7 @@
 	public class PlacePresenceOnJungleOrWetland : PlacePresence {
 		public PlacePresenceOnJungleOrWetland(int range):base(range){}
 
-		public override bool IsValid( BoardSpace bs, GameState gs ) 
+		public override bool IsValid( Space bs, GameState gs ) 
 			=> bs.Terrain == Terrain.Jungle || bs.Terrain == Terrain.Wetland;
 
 	}

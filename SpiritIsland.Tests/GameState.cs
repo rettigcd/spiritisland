@@ -4,19 +4,19 @@ using System.Collections.Generic;
 namespace SpiritIsland {
 
 	public class GameState {
-		public void AddDahanToSpace( BoardSpace space ){
+		public void AddDahanToSpace( Space space ){
 			if(dahanCount.ContainsKey(space))
 				dahanCount[space]++;
 			else
 				dahanCount.Add(space,1);
 		}
-		public int GetDahanOnSpace( BoardSpace space ){
+		public int GetDahanOnSpace( Space space ){
 			return dahanCount.ContainsKey(space) ? dahanCount[space] : 0;
 		}
 
-		public bool HasDahan( BoardSpace space ) => GetDahanOnSpace(space)>0;
+		public bool HasDahan( Space space ) => GetDahanOnSpace(space)>0;
 
-		readonly Dictionary<BoardSpace,int> dahanCount = new Dictionary<BoardSpace, int>();
+		readonly Dictionary<Space,int> dahanCount = new Dictionary<Space, int>();
 	}
 
 }
