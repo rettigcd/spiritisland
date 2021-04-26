@@ -8,10 +8,12 @@ namespace SpiritIsland {
 
 =========================================================
 A Spread of Rampant Green
+
 * +1 presense to jungle or wetland (Always do this + one of the following)
 * reclaim, +1 power card
 * +1 presense range 1, play +1 extra card this turn
 * +1 power card, +3 energy
+
 0 1 plant 2 2 plant 3
 1 1 2 2 3 4
 Innate-1:  Creepers Tear Into Mortar  => slow, 0,any
@@ -33,6 +35,22 @@ Gift of Proliferation => 1 => fast, any spirit => moon, plant => target spirit a
 */
 
 
-	class RampantGreen {
+	public class RampantGreen : Spirit {
+
+		public override GrowthOption[] GetGrowthOptions() {
+			return new GrowthOption[]{
+				// reclaim, +1 power card
+				new GrowthOption( new PlacePresenceOnJungleOrWetland(2), new ReclaimAll(), new DrawPowerCard(1) ),
+				// +1 presense range 1, play +1 extra card this turn
+				new GrowthOption( new PlacePresenceOnJungleOrWetland(2), new PlacePresence(1) ),
+				// +1 power card, +3 energy
+				new GrowthOption( new PlacePresenceOnJungleOrWetland(2), new GainEnergy(3), new DrawPowerCard() ),
+			};
+		}
+
+		public override PlayerState CreateInitialPlayerState() {
+			return base.CreateInitialPlayerState();
+		}
 	}
+
 }

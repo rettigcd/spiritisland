@@ -29,7 +29,7 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 
 */
 
-	public class Ligntning : Spirit {
+	public class Lightning : Spirit {
 		public override GrowthOption[] GetGrowthOptions() {
 			return new GrowthOption[]{
 				new GrowthOption( new ReclaimAll(), new DrawPowerCard(1), new GainEnergy(1) ),
