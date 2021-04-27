@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace SpiritIsland.Tests.Growth {
 	
 	[TestFixture]
-	public class Bringer_GrowthTests : Growth_Tests {
+	public class Bringer_GrowthTests : GrowthTests {
 
 		[SetUp]public void SetUp_Bringer() => Given_SpiritIs(new Bringer());
 

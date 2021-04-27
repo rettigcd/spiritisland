@@ -3,7 +3,7 @@
 namespace SpiritIsland.Tests.Growth {
 
 	[TestFixture]
-	public class Thunderspeaker_GrowthTests : Growth_Tests{
+	public class Thunderspeaker_GrowthTests : GrowthTests{
 
 		[SetUp]
 		public void SetUp_ThunderSpeaker(){

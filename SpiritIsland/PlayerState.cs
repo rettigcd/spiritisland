@@ -4,7 +4,7 @@ namespace SpiritIsland {
 
 	public class PlayerState {
 
-		protected Spirit Spirit {get;}
+		protected Spirit Spirit {get;set;}
 
 		public PlayerState(Spirit spirit){
 			this.Spirit = spirit;

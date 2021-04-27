@@ -2,7 +2,7 @@
 
 namespace SpiritIsland.Tests.Growth {
 	[TestFixture]
-	public class Lightning_GrowthTests : Growth_Tests{
+	public class Lightning_GrowthTests : GrowthTests{
 
 		[SetUp]
 		public void SetUp_Lightning() => Given_SpiritIs(new Lightning());

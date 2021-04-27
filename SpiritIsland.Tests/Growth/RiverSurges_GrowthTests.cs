@@ -3,7 +3,7 @@
 namespace SpiritIsland.Tests.Growth {
 
 	[TestFixture]
-	public class RiverSurges_GrowthTests : Growth_Tests{
+	public class RiverSurges_GrowthTests : GrowthTests{
 
 		[SetUp]
 		public void SetUp_RiverSurges() => Given_SpiritIs( new RiverSurges() );

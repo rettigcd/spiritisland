@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace SpiritIsland.Tests.Growth {
 
 	[TestFixture]
-	public class VitalStrength_GrowthTests : Growth_Tests {
+	public class VitalStrength_GrowthTests : GrowthTests {
 
 		[SetUp]
 		public void SetUp_VitalStrength() => Given_SpiritIs(new VitalStrength());

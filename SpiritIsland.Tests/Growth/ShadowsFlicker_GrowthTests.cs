@@ -2,7 +2,7 @@
 
 namespace SpiritIsland.Tests.Growth {
 	[TestFixture]
-	public class ShadowsFlicker_GrowthTests : Growth_Tests {
+	public class ShadowsFlicker_GrowthTests : GrowthTests {
 
 		[SetUp]
 		public void SetUp_Shadows() => Given_SpiritIs(new Shadows());
