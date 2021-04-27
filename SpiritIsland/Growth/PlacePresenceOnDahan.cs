@@ -9,5 +9,4 @@
 		public override bool IsValid( Space bs, GameState gs ) => gs.HasDahan(bs);
 
 	}
-
 }

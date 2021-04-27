@@ -4,13 +4,7 @@ using System.Linq;
 
 namespace SpiritIsland {
 
-
-	public interface IPresenceCriteria{
-		int Range {get; }
-		bool IsValid(Space bs,GameState gs);
-	}
-
-	class PresenceCalculator {
+	public class PresenceCalculator {
 
 		static public Space[][] PresenseToPlaceOptions(PlayerState ps,GameState gs){
 			var calc = new PresenceCalculator( ps.Presence, gs );

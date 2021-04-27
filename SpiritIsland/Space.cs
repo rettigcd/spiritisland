@@ -57,7 +57,7 @@ namespace SpiritIsland {
 				int nextLevel = _highestDistanceCalculated + 1;
 				var newSpaces = _distanceTo
 					.Where( p => p.Value == _highestDistanceCalculated )
-					.SelectMany( p => p.Key._distanceTo.Where(n=>n.Value==1).Select(p=>p.Key) ) // must get this directly
+					.SelectMany( p => p.Key._distanceTo.Where(n=>n.Value==1).Select(q=>q.Key) ) // must get this directly
 					.Distinct()
 					.Where( space => !_distanceTo.ContainsKey( space )  // new space
 						|| _distanceTo[space] > nextLevel ) // has a longer path than this path

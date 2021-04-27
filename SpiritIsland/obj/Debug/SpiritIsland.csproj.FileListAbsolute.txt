@@ -1,0 +1,6 @@
+C:\Users\retti\Desktop\spiritisland\SpiritIsland\obj\Debug\SpiritIsland.csprojAssemblyReference.cache
+C:\Users\retti\Desktop\spiritisland\SpiritIsland\obj\Debug\SpiritIsland.csproj.CoreCompileInputs.cache
+C:\Users\retti\Desktop\spiritisland\SpiritIsland\bin\Debug\SpiritIsland.dll
+C:\Users\retti\Desktop\spiritisland\SpiritIsland\bin\Debug\SpiritIsland.pdb
+C:\Users\retti\Desktop\spiritisland\SpiritIsland\obj\Debug\SpiritIsland.dll
+C:\Users\retti\Desktop\spiritisland\SpiritIsland\obj\Debug\SpiritIsland.pdb

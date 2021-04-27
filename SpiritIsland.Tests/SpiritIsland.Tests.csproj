@@ -12,4 +12,13 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="PowerCardProps\" />
+    <Folder Include="PowerCards\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SpiritIsland\SpiritIsland.csproj" />
+  </ItemGroup>
+
 </Project>

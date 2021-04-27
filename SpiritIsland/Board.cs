@@ -10,7 +10,7 @@ namespace SpiritIsland.Tests {
 		#region factories
 
 		static public Board GetBoardA() {
-			var tile = new Board(
+			var board = new Board(
 				new Space(Terrain.Ocean,"A0")
 				,new Space(Terrain.Mountain,"A1") // 
 				,new Space(Terrain.Wetland,"A2")  // city, dahan
@@ -22,21 +22,21 @@ namespace SpiritIsland.Tests {
 				,new Space(Terrain.Jungle,"A8")   // town
 			);
 
-			tile.SetNeighbors(0, 1,2,3);
-			tile.SetNeighbors(1, 2,4,5,6);
-			tile.SetNeighbors(2, 3,4);
-			tile.SetNeighbors(3, 4);
-			tile.SetNeighbors(4, 5);
-			tile.SetNeighbors(5, 6,7,8);
-			tile.SetNeighbors(6, 8);
-			tile.SetNeighbors(7, 8);
+			board.SetNeighbors(0, 1,2,3);
+			board.SetNeighbors(1, 2,4,5,6);
+			board.SetNeighbors(2, 3,4);
+			board.SetNeighbors(3, 4);
+			board.SetNeighbors(4, 5);
+			board.SetNeighbors(5, 6,7,8);
+			board.SetNeighbors(6, 8);
+			board.SetNeighbors(7, 8);
 
 			// sides of the board are # starting at the ocean and moving around the board clockwise
-			tile.DefineSide(1,6,8).BreakAt(3,7);	// Side 0
-			tile.DefineSide(8,7).BreakAt(5);		// Side 1
-			tile.DefineSide(7,5,4,3).BreakAt(1,3,7);// Side 2
+			board.DefineSide(1,6,8).BreakAt(3,7);	// Side 0
+			board.DefineSide(8,7).BreakAt(5);		// Side 1
+			board.DefineSide(7,5,4,3).BreakAt(1,3,7);// Side 2
 
-			return tile;
+			return board;
 		}
 
 		static public Board GetBoardB() {
@@ -148,7 +148,10 @@ namespace SpiritIsland.Tests {
 			return side;
 		}
 
-		void SetNeighbors(int srcIndex, params int[] neighborIndex){
+		/// <summary>
+		/// public so we can build a test board.
+		/// </summary>
+		public void SetNeighbors(int srcIndex, params int[] neighborIndex){
 			spaces[srcIndex].SetAdjacentTo(neighborIndex.Select(i=>spaces[i]).ToArray());
 		}
 
@@ -157,7 +160,7 @@ namespace SpiritIsland.Tests {
 		#region TileSide
 
 		public interface ITileSide {
-			public void AlignTo(ITileSide other);
+			void AlignTo(ITileSide other);
 		}
 
 		class TileSide : ITileSide {

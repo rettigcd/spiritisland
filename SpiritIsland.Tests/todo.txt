@@ -1,0 +1,49 @@
+﻿Idea! for ease of presence testing,  replace Board A with a Test board that has lots of lands in a line.
+
+
+
+Growth that needs resolved:
+
+	- where to place presence
+	- which track to take presence from
+	? With .ResolvePresence(...)
+
+	- Which Power Cards are being drawn (major/minor)
+
+	- Which 1 card is being reclaimed
+
+
+!!! Test Initial Sprit Player State
+!!! Test Presence Tracks
+!!! Test Placing Initial Presence on different boards
+
+
+Resolve - All Information - Presence
+Resolve - Hidden - next Draw Cards
+
+
+
+Grow1()
+Grow2()
+Grow3(PlacePresenseHere(...))
+
+var unresolved = Grow(1);
+PlacePresnseOn(unresolved);
+Reclaim1(unresolved,card4);
+
+
+Issue1a - resolving Grow w/ info known
+Issue1b - resolveing Grow w/ info hidden
+Issue2b - metadata querying spirit / spirit UI
+
+PendingItems items = Grow(1);
+while(items.Count>0){
+	items.PlacePresence(Space);
+	items.PlacePresence();
+	items.ReclaimCard();
+}
+
+=> place presence   (known) make part of command   ALL
+=> select reclaim1  (known) make part of command   MANY
+=> draw minor (pass selector to )   ALL
+=> draw major   ALL
