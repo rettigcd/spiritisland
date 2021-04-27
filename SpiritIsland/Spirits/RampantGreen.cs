@@ -31,8 +31,11 @@ Fields Choked with Growth => 0 => slow, range 1, any => sun, water, plant => pus
 Gift of Proliferation => 1 => fast, any spirit => moon, plant => target spirit adds 1 presense up to 1 from their presesnse
 */
 
-
 	public class RampantGreen : Spirit {
+
+		public RampantGreen(){
+			NumberOfCardsPlayablePerTurn = 1;
+		}
 
 		public override GrowthOption[] GetGrowthOptions() {
 			return new GrowthOption[]{
@@ -45,29 +48,23 @@ Gift of Proliferation => 1 => fast, any spirit => moon, plant => target spirit a
 			};
 		}
 
-		public override PlayerState CreateInitialPlayerState() {
-			return new Player(this);
+		public override void PlayAvailableCards( params int[] cards ) {
+			base.PlayAvailableCards( cards );
+			NumberOfCardsPlayablePerTurn -= tempCardBoost; // remove temp boost
+			tempCardBoost = 0;
 		}
+		public int tempCardBoost = 0;
 
-		class Player : PlayerState {
-			public Player(RampantGreen spirit):base(spirit){
-				NumberOfCardsPlayablePerTurn = 1;
-			}
-			public override void PlayAvailableCards( params int[] cards ) {
-				base.PlayAvailableCards( cards );
-				NumberOfCardsPlayablePerTurn -= tempCardBoost; // remove temp boost
-				tempCardBoost = 0;
-			}
-			public int tempCardBoost = 0;
+	}
+
+	/// <summary>
+	/// One of Rampant Green's special growth options
+	/// </summary>
+	class PlayExtraCardThisTurn : GrowthAction {
+		public override void Apply( PlayerState ps ) {
+			(ps as RampantGreen).tempCardBoost++;
+			ps.NumberOfCardsPlayablePerTurn ++;
 		}
-
-		class PlayExtraCardThisTurn : GrowthAction {
-			public override void Apply( PlayerState ps ) {
-				(ps as Player).tempCardBoost++;
-				ps.NumberOfCardsPlayablePerTurn ++;
-			}
-		}
-
 	}
 
 

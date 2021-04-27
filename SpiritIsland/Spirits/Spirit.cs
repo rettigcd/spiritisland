@@ -9,7 +9,7 @@
 		/// <summary>
 		/// Allow spirit to create custom PlayerState, to track any special spirit-stuff
 		/// </summary>
-		public virtual PlayerState CreateInitialPlayerState() => this;
+		public virtual Spirit CreateInitialPlayerState() => this;
 
 		public virtual void Grow(PlayerState ps, int optionIndex, IResolver[] resolvers ){
 			GrowthOption option = this.GetGrowthOptions()[optionIndex];
