@@ -23,10 +23,11 @@ namespace SpiritIsland.Tests.Growth {
 		public void Presense_Energy() {
 			// +1 presense range 1, +3 energy
 
-			When_Growing( 2 );
+			spirit.InitPresence( board[1] );
+			When_Growing(2,"A1;A2;A4;A5;A6");
 
 			Assert_GainEnergy( 3 );
-			Assert_Add1Presence_Range1();
+			Assert_NewPresenceOptions(); // connected land, but not ocean
 		}
 
 		[Test]

@@ -34,9 +34,10 @@ namespace SpiritIsland.Tests.Growth {
 		[Test] 
 		public void PowerCard_Presence(){
 			// +1 power card, +1 pressence range 1
-			When_Growing(2);
+			spirit.InitPresence( board[1] );
+			When_Growing(2,"A1;A2;A4;A5;A6");
 			Assert_GainPowercard(1);
-			Assert_Add1Presence_Range1();
+			Assert_NewPresenceOptions(); // connected land, but not ocean
 		}
 
 		[Test] 

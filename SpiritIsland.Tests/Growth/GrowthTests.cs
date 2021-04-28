@@ -42,36 +42,16 @@ namespace SpiritIsland.Tests.Growth {
 
 		protected void When_Growing( int option, string presenceOptions, params IResolver[] resolvers ) {
 			this.expectedPlacementOptionString  = presenceOptions;
-			spirit.Grow(option, resolvers);
+
+			var list = resolvers.ToList();
+			list.Add(PlacePresence.Place(presenceOptions));
+
+			spirit.Grow(option, list.ToArray());
 		}
 		protected string expectedPlacementOptionString ;
 
 
 		#region Asserts Presence
-
-		protected void Assert_Add1Presence_Range1() {
-			spirit.InitPresence( board[1] );
-			expectedPlacementOptionString  = "A1;A2;A4;A5;A6";
-			Assert_NewPresenceOptions(); // connected land, but not ocean
-		}
-
-		protected void Assert_AddPresense_Range2() {
-			spirit.InitPresence( board[3] );
-			expectedPlacementOptionString  = "A1;A2;A3;A4;A5";
-			Assert_NewPresenceOptions();
-		}
-
-		protected void Assert_AddPresense_Range3() {
-			spirit.InitPresence( board[3] );
-			expectedPlacementOptionString = "A1;A2;A3;A4;A5;A6;A7;A8";
-			Assert_NewPresenceOptions();
-		}
-
-		protected void Assert_AddPresenseInJungleOrWetland_Range2() {
-			spirit.InitPresence( board[2] );
-			expectedPlacementOptionString  = "A2;A3;A5";
-			Assert_NewPresenceOptions();
-		}
 
 		protected void Assert_NewPresenceOptions() {
 

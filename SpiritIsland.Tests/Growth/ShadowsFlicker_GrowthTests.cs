@@ -18,17 +18,20 @@ namespace SpiritIsland.Tests.Growth {
 		[Test]
 		public void PowerAndPresence(){
 			// gain power card, add a presense range 1
-			When_Growing( 1 );
+			spirit.InitPresence( board[1] );
+			When_Growing(1,"A1;A2;A4;A5;A6");
 			Assert_GainPowercard(1);
-			Assert_Add1Presence_Range1();
+			Assert_NewPresenceOptions(); // connected land, but not ocean
 		}
 
 		[Test]
 		public void PresenceAndEnergy(){
 			// add a presence withing 3, +3 energy
-			When_Growing( 2 );
+			spirit.InitPresence( board[3] );
+			When_Growing( 2,"A1;A2;A3;A4;A5;A6;A7;A8" );
+
 			Assert_GainEnergy(3);
-			Assert_AddPresense_Range3();
+			Assert_NewPresenceOptions();
 		}
 
 	}

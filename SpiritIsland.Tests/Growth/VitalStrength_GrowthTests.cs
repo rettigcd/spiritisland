@@ -14,10 +14,12 @@ namespace SpiritIsland.Tests.Growth {
 		[Test]
 		public void ReclaimAndPresence(){
 			// reclaim, +1 presense range 2
-			When_Growing( 0 );
+			spirit.InitPresence( board[3] );
+
+			When_Growing( 0, "A1;A2;A3;A4;A5" );
 
 			this.Assert_AllCardsAvailableToPlay();
-			Assert_AddPresense_Range2();
+			Assert_NewPresenceOptions();
 
 		}
 
@@ -33,10 +35,20 @@ namespace SpiritIsland.Tests.Growth {
 		}
 
 		[Test]
+		public void CantPlacePowerRange1() {
+			// +1 power card, +1 presense range 0
+			spirit.InitPresence( board[4] );
+
+			Assert.Throws<InvalidPresenceLocation>(()=>When_Growing( 1, "A5" ));
+		}
+
+
+		[Test]
 		public void PresenseAndEnergy(){
 			// +1 presence range 1, +2 energy
-			When_Growing( 2 );
-			Assert_Add1Presence_Range1();
+			spirit.InitPresence( board[1] );
+			When_Growing(2,"A1;A2;A4;A5;A6");
+			Assert_NewPresenceOptions(); // connected land, but not ocean
 			Assert_GainEnergy(2);
 		}
 

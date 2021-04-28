@@ -15,10 +15,11 @@ namespace SpiritIsland.Tests.Growth {
 		public void Reclaim_PowerCard_JWPresence() {
 			// +1 presense to jungle or wetland - range 2(Always do this + one of the following)
 			// reclaim, +1 power card
+			spirit.InitPresence( board[2] );
 
-			When_Growing( 0 );
+			When_Growing( 0, "A2;A3;A5" );
 
-			Assert_AddPresenseInJungleOrWetland_Range2();
+			Assert_NewPresenceOptions();
 			Assert_AllCardsAvailableToPlay();
 			Assert_GainPowercard( 1 );
 		}
@@ -50,8 +51,11 @@ namespace SpiritIsland.Tests.Growth {
 		public void GainEnergy_PowerCard_JWPresence(){
 			// +1 presense to jungle or wetland - range 2
 			// +1 power card, +3 energy
-			When_Growing( 2 );
-			Assert_AddPresenseInJungleOrWetland_Range2();
+			spirit.InitPresence( board[2] );
+
+			When_Growing( 2, "A2;A3;A5" );
+
+			Assert_NewPresenceOptions();
 			Assert_GainEnergy(3);
 			Assert_GainPowercard(1);
 		}
