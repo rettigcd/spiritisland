@@ -49,7 +49,7 @@ namespace SpiritIsland.Tests.Growth {
 
 			// Then: place presense, range 4, Dahan or Invadors
 			board = LineBoard.MakeBoard();
-			spirit.Presence.Add(board.spaces[5]);
+			spirit.InitPresence(board.spaces[5]);
 			gameState.AddDahan(board.spaces[6]);
 			gameState.AddExplorer(board.spaces[7]);
 			gameState.AddTown(board.spaces[8]);

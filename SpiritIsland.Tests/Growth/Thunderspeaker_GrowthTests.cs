@@ -34,7 +34,7 @@ namespace SpiritIsland.Tests.Growth {
 			// Then: 
 			// +1 presense within 2 - contains dahan
 			// +1 presense within 1 - contains dahan
-			spirit.Presence.Add( board.spaces[3] );
+			spirit.InitPresence( board.spaces[3] );
 			//	 And: dahan on initial spot
 			foreach(string s in initialDahanSquares.Split( ',' ))
 				gameState.AddDahan( board.spaces[int.Parse( s )] );

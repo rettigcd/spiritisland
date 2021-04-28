@@ -37,7 +37,7 @@ namespace SpiritIsland.Tests.Growth {
 
 			Assert_GainEnergy( 0 );
 
-			spirit.Presence.Add( board.spaces[3] ); 
+			spirit.InitPresence( board.spaces[3] ); 
 			Assert_NewPresenceOptions( "A1A1;A1A3;A2A2;A2A3;A3A3;A3A4;A3A5;A4A4;A5A5" );
 
 		}

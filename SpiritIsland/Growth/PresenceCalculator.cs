@@ -7,7 +7,7 @@ namespace SpiritIsland {
 	public class PresenceCalculator {
 
 		static public Space[][] PresenseToPlaceOptions( Spirit ps, GameState gs ){
-			var calc = new PresenceCalculator( ps.Presence, gs );
+			var calc = new PresenceCalculator( ps.CanPlacePresenceFrom, gs );
 			calc.Execute(ps.PresenceToPlace.ToArray());
 			if(ps.PresenceToPlace.Count == 2)
 				calc.Execute(ps.PresenceToPlace[1],ps.PresenceToPlace[0]);
