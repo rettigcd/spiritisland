@@ -32,7 +32,7 @@ namespace SpiritIsland.Tests.Growth {
 			When_Growing( 1 );
 
 			// Presense Options
-			spirit.InitPresence( board.spaces[2] );
+			spirit.InitPresence( board[2] );
 			Assert_NewPresenceOptions( "A1A2;A1A3;A1A5;A1A8;A2A2;A2A3;A2A4;A2A5;A3A3;A3A4;A3A5;"
 				+"A4A5;A4A8;A5A5;A5A6;A5A7;A5A8" );
 

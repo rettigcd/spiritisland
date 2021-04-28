@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace SpiritIsland.Tests {
+namespace SpiritIsland {
 
 	// The collection of 1+ boards assembled, shall be called the 'Island'
 
@@ -131,7 +131,11 @@ namespace SpiritIsland.Tests {
 
 		#endregion
 
-		public Space[] spaces;
+		readonly Space[] spaces;
+
+		public Space this[int index]{ get => spaces[index]; }
+
+		public int SpaceCount => spaces.Length;
 
 		public ITileSide[] Sides => this.sides.ToArray();
 

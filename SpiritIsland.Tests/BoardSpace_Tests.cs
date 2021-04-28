@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
@@ -46,35 +45,39 @@ namespace SpiritIsland.Tests {
 			Assert.That( neighbor2.SpacesExactly( 2 ), Contains.Item( neighbor1 ) );
 		}
 
+		#region Internal Board Connectivity
+
 		[Test]
 		public void BoardA_Connectivity() {
-			Space[] spaces = Board.GetBoardA().spaces;
+			var boardA = Board.GetBoardA();
 
-			Assert_HasSpaces( spaces[0], 0, spaces[0] );
-			Assert_HasSpaces( spaces[0], 1, spaces[1], spaces[2], spaces[3] );
-			Assert_HasSpaces( spaces[0], 2, spaces[4], spaces[5], spaces[6] );
-			Assert_HasSpaces( spaces[0], 3, spaces[7], spaces[8] );
+			Assert_CanReachSpaceWithNHops( boardA[0], 0, boardA[0] );
+			Assert_CanReachSpaceWithNHops( boardA[0], 1, boardA[1], boardA[2], boardA[3] );
+			Assert_CanReachSpaceWithNHops( boardA[0], 2, boardA[4], boardA[5], boardA[6] );
+			Assert_CanReachSpaceWithNHops( boardA[0], 3, boardA[7], boardA[8] );
 
-			Assert.True( spaces[1].IsCostal );
-			Assert.True( spaces[2].IsCostal );
-			Assert.True( spaces[3].IsCostal );
+			Assert.True( boardA[1].IsCostal );
+			Assert.True( boardA[2].IsCostal );
+			Assert.True( boardA[3].IsCostal );
 
 		}
 
 		[Test]
 		public void BoardB_Connectivity() {
-			Space[] spaces = Board.GetBoardA().spaces;
+			var boardA = Board.GetBoardA();
 
-			Assert_HasSpaces( spaces[0], 0, spaces[0] );
-			Assert_HasSpaces( spaces[0], 1, spaces[1], spaces[2], spaces[3] );
-			Assert_HasSpaces( spaces[0], 2, spaces[4], spaces[5], spaces[6] );
-			Assert_HasSpaces( spaces[0], 3, spaces[7], spaces[8] );
+			Assert_CanReachSpaceWithNHops( boardA[0], 0, boardA[0] );
+			Assert_CanReachSpaceWithNHops( boardA[0], 1, boardA[1], boardA[2], boardA[3] );
+			Assert_CanReachSpaceWithNHops( boardA[0], 2, boardA[4], boardA[5], boardA[6] );
+			Assert_CanReachSpaceWithNHops( boardA[0], 3, boardA[7], boardA[8] );
 
-			Assert.True( spaces[1].IsCostal );
-			Assert.True( spaces[2].IsCostal );
-			Assert.True( spaces[3].IsCostal );
+			Assert.True( boardA[1].IsCostal );
+			Assert.True( boardA[2].IsCostal );
+			Assert.True( boardA[3].IsCostal );
 
 		}
+
+		#endregion
 
 		[Test]
 		public void PlaceTiles() {
@@ -84,15 +87,103 @@ namespace SpiritIsland.Tests {
 
 			tileB.Sides[2].AlignTo( tileD.Sides[0] );
 
-			Assert.That( tileB.spaces[3].SpacesExactly( 1 ), Contains.Item( tileD.spaces[1] ) );
-			Assert.That( tileB.spaces[4].SpacesExactly( 1 ), Contains.Item( tileD.spaces[1] ) );
-			Assert.That( tileB.spaces[4].SpacesExactly( 1 ), Contains.Item( tileD.spaces[8] ) );
-			Assert.That( tileB.spaces[7].SpacesExactly( 1 ), Contains.Item( tileD.spaces[8] ) );
+			Assert_BoardSpacesTouch( tileB[3], tileD[1] );
+			Assert_BoardSpacesTouch( tileB[4], tileD[1] ); 
+			Assert_BoardSpacesTouch( tileB[4], tileD[8] ); 
+			Assert_BoardSpacesTouch( tileB[7], tileD[8] ); 
 		}
+
+		[Test]
+		public void Island_1Board(){
+			new Island(Board.GetBoardC());
+			// no connectivity to test
+		}
+
+		[Test]
+		public void Island_2Boards() {
+			var boardC = Board.GetBoardC();
+			var boardD = Board.GetBoardD();
+
+			new Island( boardC, boardD );
+
+			// The are properly connected as a 2-board island
+			Assert_BoardSpacesTouch( boardC[3], boardD[6] ); 
+			Assert_BoardSpacesTouch( boardC[3], boardD[4] ); 
+			Assert_BoardSpacesTouch( boardC[4], boardD[4] ); 
+			Assert_BoardSpacesTouch( boardC[4], boardD[3] ); 
+
+		}
+
+		//static void Assert_BoardSpacesTouch( Board boardC, int x, Board boardD, int y ) {
+		//	Assert_BoardSpacesTouch( boardC[x], boardD[y] );
+		//}
+
+		static void Assert_BoardSpacesTouch( Space a, Space b ) {
+			Assert.That( a.SpacesExactly( 1 ), Contains.Item( b ), $"{a.Label} should touch {b.Label}" );
+		}
+
+		[Test]
+		public void Island_3Boards(){
+			var b = Board.GetBoardB();
+			var c = Board.GetBoardC();
+			var d = Board.GetBoardD();
+
+			new Island(b,c,d);
+
+			Assert_BoardSpacesTouch( b[3], c[8] );
+			Assert_BoardSpacesTouch( b[3], c[7] );
+			Assert_BoardSpacesTouch( b[4], c[7] );
+			Assert_BoardSpacesTouch( b[4], c[4] );
+			Assert_BoardSpacesTouch( b[7], c[4] );
+
+			Assert_BoardSpacesTouch( c[3], d[8] );
+			Assert_BoardSpacesTouch( c[3], d[7] );
+			Assert_BoardSpacesTouch( c[4], d[7] );
+			Assert_BoardSpacesTouch( c[4], d[6] );
+
+			Assert_BoardSpacesTouch( d[3], b[8] );
+			Assert_BoardSpacesTouch( d[4], b[8] );
+			Assert_BoardSpacesTouch( d[4], b[7] );
+			Assert_BoardSpacesTouch( d[6], b[7] );
+
+		}
+
+		[Test]
+		public void Island_4Boards(){
+			var a = Board.GetBoardA();
+			var b = Board.GetBoardB();
+			var c = Board.GetBoardC();
+			var d = Board.GetBoardD();
+
+			new Island(a,b,c,d);
+
+			Assert_BoardSpacesTouch( a[3], b[1] );
+			Assert_BoardSpacesTouch( a[3], b[6] );
+			Assert_BoardSpacesTouch( a[4], b[6] );
+			Assert_BoardSpacesTouch( a[4], b[8] );
+			Assert_BoardSpacesTouch( a[5], b[8] );
+			Assert_BoardSpacesTouch( a[7], b[8] );
+
+			Assert_BoardSpacesTouch( b[7], c[8] );
+			Assert_BoardSpacesTouch( b[7], c[7] );
+			Assert_BoardSpacesTouch( b[8], c[7] );
+			Assert_BoardSpacesTouch( b[8], c[4] );
+
+			Assert_BoardSpacesTouch( c[3], d[1] );
+			Assert_BoardSpacesTouch( c[4], d[1] );
+			Assert_BoardSpacesTouch( c[4], d[8] );
+
+			Assert_BoardSpacesTouch( d[6], a[8] );
+			Assert_BoardSpacesTouch( d[7], a[8] );
+			Assert_BoardSpacesTouch( d[7], a[7] );
+			Assert_BoardSpacesTouch( d[8], a[7] );
+
+		}
+
 
 		#region private
 
-		void Assert_HasSpaces( Space source, int distance, params Space[] needles ) {
+		void Assert_CanReachSpaceWithNHops( Space source, int distance, params Space[] needles ) {
 			Assert.That( source.SpacesExactly( distance ), Is.EquivalentTo( needles ) );
 		}
 

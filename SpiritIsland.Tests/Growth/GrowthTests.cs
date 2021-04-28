@@ -43,27 +43,27 @@ namespace SpiritIsland.Tests.Growth {
 		#region Asserts Presence
 
 		protected void Assert_Add1Presence_Range0() {
-			spirit.InitPresence( board.spaces[4] );
+			spirit.InitPresence( board[4] );
 			Assert_NewPresenceOptions( "A4" );
 		}
 
 		protected void Assert_Add1Presence_Range1() {
-			spirit.InitPresence( board.spaces[1] );
+			spirit.InitPresence( board[1] );
 			Assert_NewPresenceOptions( "A1;A2;A4;A5;A6" ); // connected land, but not ocean
 		}
 
 		protected void Assert_AddPresense_Range2() {
-			spirit.InitPresence( board.spaces[3] ); 
+			spirit.InitPresence( board[3] ); 
 			Assert_NewPresenceOptions( "A1;A2;A3;A4;A5" );
 		}
 
 		protected void Assert_AddPresense_Range3() {
-			spirit.InitPresence( board.spaces[3] ); 
+			spirit.InitPresence( board[3] ); 
 			Assert_NewPresenceOptions( "A1;A2;A3;A4;A5;A6;A7;A8" );
 		}
 
 		protected void Assert_AddPresenseInJungleOrWetland_Range2() {
-			spirit.InitPresence( board.spaces[2] );
+			spirit.InitPresence( board[2] );
 			Assert_NewPresenceOptions( "A2;A3;A5" );
 		}
 
