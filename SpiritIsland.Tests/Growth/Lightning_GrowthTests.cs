@@ -8,7 +8,7 @@ namespace SpiritIsland.Tests.Growth {
 		public void SetUp_Lightning() => Given_SpiritIs(new Lightning());
 
 		[Test]
-		public void Lightning_Reclaim(){
+		public void Reclaim(){
 			// * reclaim, +1 power card, +1 energy
 
 			When_Growing( 0 );
@@ -20,7 +20,7 @@ namespace SpiritIsland.Tests.Growth {
 		}
 
 		[Test]
-		public void Lightning_PresenseAndEnergy() {
+		public void Presense_Energy() {
 			// +1 presense range 1, +3 energy
 
 			When_Growing( 2 );
@@ -30,15 +30,15 @@ namespace SpiritIsland.Tests.Growth {
 		}
 
 		[Test]
-		public void Lightning_2Presence(){
+		public void TwoPresence(){
 			// +1 presense range 2, +1 prsense range 0
 
-			When_Growing( 1 );
+			When_Growing( 1, "A1A1;A1A3;A2A2;A2A3;A3A3;A3A4;A3A5;A4A4;A5A5" );
 
 			Assert_GainEnergy( 0 );
 
 			spirit.InitPresence( board[3] ); 
-			Assert_NewPresenceOptions( "A1A1;A1A3;A2A2;A2A3;A3A3;A3A4;A3A5;A4A4;A5A5" );
+			Assert_NewPresenceOptions();
 
 		}
 

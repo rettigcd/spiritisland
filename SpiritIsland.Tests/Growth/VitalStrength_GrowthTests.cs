@@ -12,7 +12,7 @@ namespace SpiritIsland.Tests.Growth {
 		public void SetUp_VitalStrength() => Given_SpiritIs(new VitalStrength());
 
 		[Test]
-		public void VitalStrength_ReclaimAndPresence(){
+		public void ReclaimAndPresence(){
 			// reclaim, +1 presense range 2
 			When_Growing( 0 );
 
@@ -22,16 +22,18 @@ namespace SpiritIsland.Tests.Growth {
 		}
 
 		[Test]
-		public void VitalStrength_PowercardAndPresence() {
+		public void PowercardAndPresence() {
 			// +1 power card, +1 presense range 0
-			When_Growing( 1 );
+			spirit.InitPresence( board[4] );
+
+			When_Growing( 1, "A4" );
 
 			Assert_GainPowercard( 1 );
-			Assert_Add1Presence_Range0();
+			Assert_NewPresenceOptions();
 		}
 
 		[Test]
-		public void VitalStrength_PresenseAndEnergy(){
+		public void PresenseAndEnergy(){
 			// +1 presence range 1, +2 energy
 			When_Growing( 2 );
 			Assert_Add1Presence_Range1();

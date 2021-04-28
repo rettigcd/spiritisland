@@ -8,7 +8,7 @@ namespace SpiritIsland.Tests.Growth {
 		public void SetUp_Shadows() => Given_SpiritIs(new Shadows());
 
 		[Test]
-		public void ShadowsFlickerG0_Reclaim(){
+		public void Reclaim(){
 			// reclaim, gain power Card
 			When_Growing( 0 );
 			Assert_AllCardsAvailableToPlay();
@@ -16,7 +16,7 @@ namespace SpiritIsland.Tests.Growth {
 		}
 
 		[Test]
-		public void ShadowsFlickerG1_PowerAndPresence(){
+		public void PowerAndPresence(){
 			// gain power card, add a presense range 1
 			When_Growing( 1 );
 			Assert_GainPowercard(1);
@@ -24,7 +24,7 @@ namespace SpiritIsland.Tests.Growth {
 		}
 
 		[Test]
-		public void ShadowsFlickerG2_PresenceAndEnergy(){
+		public void PresenceAndEnergy(){
 			// add a presence withing 3, +3 energy
 			When_Growing( 2 );
 			Assert_GainEnergy(3);

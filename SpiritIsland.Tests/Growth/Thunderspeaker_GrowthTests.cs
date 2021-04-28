@@ -38,7 +38,8 @@ namespace SpiritIsland.Tests.Growth {
 			//	 And: dahan on initial spot
 			foreach(string s in initialDahanSquares.Split( ',' ))
 				gameState.AddDahan( board[int.Parse( s )] );
-			Assert_NewPresenceOptions( expectedPresenseOptions );
+			this.expectedPlacementOptionString = expectedPresenseOptions;
+			Assert_NewPresenceOptions();
 
 			//  And: Energy didn't change
 			Assert_GainEnergy( 0 );

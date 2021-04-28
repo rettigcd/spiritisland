@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SpiritIsland {
@@ -25,6 +26,15 @@ namespace SpiritIsland {
 		}
 
 		readonly Func<Space,GameState,bool> criteria;
+
+
+		class Resolve : IResolver {
+			public void Apply( GrowthOption growthActions ) {
+				var pp = growthActions.GrowthActions.OfType<PlacePresence>().ToArray();
+//				throw new NotImplementedException();
+			}
+		}
+
 	}
 
 }
