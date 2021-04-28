@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland {
+﻿using System;
+
+namespace SpiritIsland {
 
 	/*
 	=== Thunder Speaker
@@ -29,9 +31,10 @@
 	public class ThunderSpeaker : Spirit {
 		
 		public override GrowthOption[] GetGrowthOptions(){
+			bool onDahan(Space bs,GameState gs) => gs.HasDahan(bs);
 			return new GrowthOption[]{
 				new GrowthOption( new ReclaimAll(), new DrawPowerCard(2) ),
-				new GrowthOption( new PlacePresenceOnDahan(1), new PlacePresenceOnDahan(2) ),
+				new GrowthOption( new PlacePresence(1,onDahan), new PlacePresence(2,onDahan) ),
 				new GrowthOption( new PlacePresence(1), new GainEnergy(4) )
 			};
 		}

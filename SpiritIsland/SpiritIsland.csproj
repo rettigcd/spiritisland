@@ -50,12 +50,8 @@
     <Compile Include="Growth\IPresenceCriteria.cs" />
     <Compile Include="Growth\IResolver.cs" />
     <Compile Include="Growth\PlacePresence.cs" />
-    <Compile Include="Growth\PlacePresenceOnDahan.cs" />
-    <Compile Include="Growth\PlacePresenceOnDahanOrInvaders.cs" />
-    <Compile Include="Growth\PlacePresenceOnJungleOrWetland.cs" />
     <Compile Include="Growth\PresenceCalculator.cs" />
     <Compile Include="Growth\ReclaimAll.cs" />
-    <Compile Include="Spirit0.cs" />
     <Compile Include="PowerCards\BoonOfVigor.cs" />
     <Compile Include="PowerCards\FlashFloods.cs" />
     <Compile Include="PowerCards\PowerCard.cs" />
