@@ -1,4 +1,6 @@
 .vs/
 packages/
+SpiritIsland/bin/
+SpiritIsland/obj/
 SpiritIsland.Tests/bin/
 SpiritIsland.Tests/obj/
