@@ -22,9 +22,9 @@ namespace SpiritIsland.Tests.Growth {
 		public void Reclaim1AndPresence(){
 			// reclaim 1, add presense range 0
 
-			When_Growing(1, Reclaim1.Resolve(playerState.PlayedCards[0]) );
+			When_Growing(1, Reclaim1.Resolve(spirit.PlayedCards[0]) );
 
-			Assert.That( playerState.AvailableCards.Count,Is.EqualTo(3) );
+			Assert.That( spirit.AvailableCards.Count,Is.EqualTo(3) );
 
 			Assert_Add1Presence_Range0();
 
@@ -49,7 +49,7 @@ namespace SpiritIsland.Tests.Growth {
 
 			// Then: place presense, range 4, Dahan or Invadors
 			board = LineBoard.MakeBoard();
-			playerState.Presence.Add(board.spaces[5]);
+			spirit.Presence.Add(board.spaces[5]);
 			gameState.AddDahan(board.spaces[6]);
 			gameState.AddExplorer(board.spaces[7]);
 			gameState.AddTown(board.spaces[8]);

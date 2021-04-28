@@ -61,7 +61,7 @@ Gift of Proliferation => 1 => fast, any spirit => moon, plant => target spirit a
 	/// One of Rampant Green's special growth options
 	/// </summary>
 	class PlayExtraCardThisTurn : GrowthAction {
-		public override void Apply( PlayerState ps ) {
+		public override void Apply( Spirit ps ) {
 			(ps as RampantGreen).tempCardBoost++;
 			ps.NumberOfCardsPlayablePerTurn ++;
 		}

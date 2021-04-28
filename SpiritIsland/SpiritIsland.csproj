@@ -55,7 +55,7 @@
     <Compile Include="Growth\PlacePresenceOnJungleOrWetland.cs" />
     <Compile Include="Growth\PresenceCalculator.cs" />
     <Compile Include="Growth\ReclaimAll.cs" />
-    <Compile Include="PlayerState.cs" />
+    <Compile Include="Spirit0.cs" />
     <Compile Include="PowerCards\BoonOfVigor.cs" />
     <Compile Include="PowerCards\FlashFloods.cs" />
     <Compile Include="PowerCards\PowerCard.cs" />

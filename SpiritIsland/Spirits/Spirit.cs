@@ -1,24 +1,35 @@
-﻿namespace SpiritIsland {
+﻿using System.Collections.Generic;
 
-	public abstract class Spirit : PlayerState {
+namespace SpiritIsland {
 
-		public Spirit():base(null){
-			base.Spirit = this;
+	public abstract class Spirit {
+
+		public List<PowerCard> AvailableCards = new List<PowerCard>();
+		public List<PowerCard> PlayedCards = new List<PowerCard>();
+
+		public List<Space> Presence = new List<Space>();
+		public int Energy {get; set; }
+		public int NumberOfCardsPlayablePerTurn { get; set; }
+
+		#region intermediate growth states
+
+		public int PowerCardsToDraw;
+		public List<IPresenceCriteria> PresenceToPlace = new List<IPresenceCriteria>();
+
+		#endregion
+
+		public virtual void PlayAvailableCards(params int[] cards){
+
 		}
 
-		/// <summary>
-		/// Allow spirit to create custom PlayerState, to track any special spirit-stuff
-		/// </summary>
-		public virtual Spirit CreateInitialPlayerState() => this;
-
-		public virtual void Grow(PlayerState ps, int optionIndex, IResolver[] resolvers ){
+		public void Grow(int optionIndex, params IResolver[] resolvers){
 			GrowthOption option = this.GetGrowthOptions()[optionIndex];
 			
 			// modify the growth option to resolve incomplete states
 			foreach(var resolver in resolvers)
 				resolver.Apply(option);
 
-			option.Apply( ps );
+			option.Apply( this );
 		}
 
 		public abstract GrowthOption[] GetGrowthOptions();

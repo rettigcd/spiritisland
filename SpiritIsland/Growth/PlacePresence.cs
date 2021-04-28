@@ -8,7 +8,7 @@ namespace SpiritIsland {
 
 		public virtual bool IsValid(Space bs, GameState gs) => true;
 
-		public override void Apply( PlayerState ps ) {
+		public override void Apply( Spirit ps ) {
 			ps.PresenceToPlace.Add( this );
 		}
 	}

@@ -6,7 +6,7 @@ namespace SpiritIsland {
 
 		public PowerCard Card {get; set;}
 
-		public override void Apply( PlayerState ps ) {
+		public override void Apply( Spirit ps ) {
 			if( ps.PlayedCards.Contains(Card) ){
 				ps.PlayedCards.Remove(Card);
 				ps.AvailableCards.Add(Card);

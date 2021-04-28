@@ -27,7 +27,7 @@ namespace SpiritIsland.Tests.Growth {
 			Assert_GainPowercard( 0 );
 			Assert_GainEnergy( 0 );
 
-			playerState.Presence.Add( board.spaces[1] );
+			spirit.Presence.Add( board.spaces[1] );
 			Assert_NewPresenceOptions( 
 				"A1A1;A1A2;A1A4;A1A5;A1A6;"
 				+"A2A2;A2A3;A2A4;A2A5;A2A6;"
@@ -49,7 +49,7 @@ namespace SpiritIsland.Tests.Growth {
 			Assert_GainPowercard( 1 );
 			Assert_GainEnergy( 0 );
 
-			playerState.Presence.Add( board.spaces[3] );
+			spirit.Presence.Add( board.spaces[3] );
 			Assert_NewPresenceOptions( "A1;A2;A3;A4;A5");
 
 		}

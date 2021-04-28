@@ -17,7 +17,7 @@ namespace SpiritIsland.Tests.Growth {
 			When_Growing( 0 );
 
 			Assert_AllCardsAvailableToPlay();
-			Assert.That( playerState.PowerCardsToDraw, Is.EqualTo( 2 ) );
+			Assert.That( spirit.PowerCardsToDraw, Is.EqualTo( 2 ) );
 			Assert_GainEnergy(0);
 		}
 
@@ -34,7 +34,7 @@ namespace SpiritIsland.Tests.Growth {
 			// Then: 
 			// +1 presense within 2 - contains dahan
 			// +1 presense within 1 - contains dahan
-			playerState.Presence.Add( board.spaces[3] );
+			spirit.Presence.Add( board.spaces[3] );
 			//	 And: dahan on initial spot
 			foreach(string s in initialDahanSquares.Split( ',' ))
 				gameState.AddDahan( board.spaces[int.Parse( s )] );
