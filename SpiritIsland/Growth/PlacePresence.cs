@@ -8,9 +8,11 @@ namespace SpiritIsland {
 
 		#region constructors
 
-		public PlacePresence(int range):this( range, (s,gs)=>true ){}
+		public PlacePresence(Spirit spirit, int range):this( spirit, range, (s,gs)=>true ){}
 
-		public PlacePresence(int range,Func<Space,GameState,bool> criteria){ 
+		public PlacePresence(Spirit spirit, int range,Func<Space,GameState,bool> criteria)
+			:base(spirit)
+		{ 
 			this.Range = range;
 			this.criteria = criteria;
 		}
@@ -21,12 +23,12 @@ namespace SpiritIsland {
 
 		public bool IsValid(Space bs, GameState gs) => criteria(bs,gs);
 
-		public override void Apply( Spirit ps ) {
-			ps.PresenceToPlace.Add( this );
+		public override void Apply() {
+			spirit.PresenceToPlace.Add( this );
 
 // if there is only 1 to place
 			if(placeOnSpace != null && !placeOnSpace.Contains(";")){
-				var candidates = ps.CanPlacePresenceFrom
+				var candidates = spirit.CanPlacePresenceFrom
 					.SelectMany(s=>s.SpacesWithin(Range))
 					.Distinct()
 					.ToArray();
@@ -53,17 +55,16 @@ namespace SpiritIsland {
 			}
 
 			public void Apply( GrowthOption growthActions ) {
-				var pp = growthActions.GrowthActions.OfType<PlacePresence>().ToArray();
+				var pp = growthActions.GrowthActions
+					.OfType<PlacePresence>()
+//					.Cast<IPresenceCriteria>()
+					.ToArray();
 				if(pp.Length == 1){
 					pp[0].placeOnSpace = this.placeOnSpace;
 				}
 			}
 		}
 
-	}
-
-	public class InvalidPresenceLocation : Exception {
-		
 	}
 
 }

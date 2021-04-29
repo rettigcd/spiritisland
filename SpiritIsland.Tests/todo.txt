@@ -47,3 +47,26 @@ while(items.Count>0){
 => select reclaim1  (known) make part of command   MANY
 => draw minor (pass selector to )   ALL
 => draw major   ALL
+
+
+
+
+
+== PlacePresence Options ==
+Place Presence is Data (range + criteria) and passed to Spirit, but then spirit knows what PP is.
+When Getting Options, Spirit preloads Spirits starting presence
+
+? if spirit preload initial presence, then place presence need to be treated as a whole
+? if we want to mix and match, presence could be separate with intermediate states.
+
+=== Things that need resolved ===
+Resolve 1
+Draw Cards
+Place Presence
+
+
+??????????? can program query the different growth actions ???????????????
+
+Pass a Block to deal with intermediate state?   Multiple blocks?
+
+

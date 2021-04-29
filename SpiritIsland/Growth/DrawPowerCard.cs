@@ -1,9 +1,11 @@
 ﻿namespace SpiritIsland {
 	public class DrawPowerCard : GrowthAction {
 		readonly int count;
-		public DrawPowerCard(int count=1){ this.count = count; }
-		public override void Apply(Spirit ps){
-			ps.PowerCardsToDraw += count;
+		public DrawPowerCard(Spirit spirit, int count=1):base(spirit){ 
+			this.count = count;
+		}
+		public override void Apply(){
+			spirit.PowerCardsToDraw += count;
 		}
 	}
 

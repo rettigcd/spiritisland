@@ -47,6 +47,7 @@
     <Compile Include="Growth\GainEnergy.cs" />
     <Compile Include="Growth\GrowthAction.cs" />
     <Compile Include="Growth\GrowthOption.cs" />
+    <Compile Include="Growth\InvalidPresenceLocation.cs" />
     <Compile Include="Growth\IPresenceCriteria.cs" />
     <Compile Include="Growth\IResolver.cs" />
     <Compile Include="Growth\PlacePresence.cs" />

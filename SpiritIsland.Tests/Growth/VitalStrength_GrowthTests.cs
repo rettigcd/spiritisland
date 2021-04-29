@@ -35,7 +35,7 @@ namespace SpiritIsland.Tests.Growth {
 		}
 
 		[Test]
-		public void CantPlacePowerRange1() {
+		public void TargetSpace_OutOfRange() {
 			// +1 power card, +1 presense range 0
 			spirit.InitPresence( board[4] );
 

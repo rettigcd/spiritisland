@@ -43,7 +43,7 @@ namespace SpiritIsland {
 				// reclaim, +1 power, gather 1 presense into EACH ocean, +2 energy
 				new GrowthOption(),
 				// +1 presence range any ocean, +1 presense in any ociean, +1 energy
-				new GrowthOption(new GainEnergy(1)),
+				new GrowthOption(new GainEnergy(this,1)),
 				// gain power card, push 1 presense from each ocian,  add presense on costal land range 1
 				new GrowthOption(),
 			};

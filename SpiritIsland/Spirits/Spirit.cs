@@ -32,7 +32,7 @@ namespace SpiritIsland {
 			foreach(var resolver in resolvers)
 				resolver.Apply(option);
 
-			option.Apply( this );
+			option.Apply();
 		}
 
 		public abstract GrowthOption[] GetGrowthOptions();

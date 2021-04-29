@@ -7,9 +7,9 @@ namespace SpiritIsland {
 
 		public GrowthAction[] GrowthActions { get; }
 
-		internal void Apply( Spirit playerState ) {
+		internal void Apply() {
 			foreach(var action in GrowthActions)
-				action.Apply(playerState);
+				action.Apply();
 		}
 
 	}

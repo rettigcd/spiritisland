@@ -33,9 +33,9 @@ namespace SpiritIsland {
 		public override GrowthOption[] GetGrowthOptions(){
 			bool onDahan(Space bs,GameState gs) => gs.HasDahan(bs);
 			return new GrowthOption[]{
-				new GrowthOption( new ReclaimAll(), new DrawPowerCard(2) ),
-				new GrowthOption( new PlacePresence(1,onDahan), new PlacePresence(2,onDahan) ),
-				new GrowthOption( new PlacePresence(1), new GainEnergy(4) )
+				new GrowthOption( new ReclaimAll(this), new DrawPowerCard(this,2) ),
+				new GrowthOption( new PlacePresence(this,1,onDahan), new PlacePresence(this,2,onDahan) ),
+				new GrowthOption( new PlacePresence(this,1), new GainEnergy(this,4) )
 			};
 		}
 

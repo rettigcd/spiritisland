@@ -1,7 +1,9 @@
 ﻿namespace SpiritIsland {
 
 	public abstract class GrowthAction {
-		public abstract void Apply(Spirit ps);
+		protected Spirit spirit;
+		protected GrowthAction(Spirit spirit){this.spirit=spirit;}
+		public abstract void Apply();
 	}
 
 

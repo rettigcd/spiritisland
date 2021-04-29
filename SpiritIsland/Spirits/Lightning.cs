@@ -32,9 +32,9 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 	public class Lightning : Spirit {
 		public override GrowthOption[] GetGrowthOptions() {
 			return new GrowthOption[]{
-				new GrowthOption( new ReclaimAll(), new DrawPowerCard(1), new GainEnergy(1) ),
-				new GrowthOption( new PlacePresence(0), new PlacePresence(2) ), // +1 presence range 2, +1 presence range 0
-				new GrowthOption( new GainEnergy(3), new PlacePresence(1) ), // +1 presense range 1, +3 energy
+				new GrowthOption( new ReclaimAll(this), new DrawPowerCard(this,1), new GainEnergy(this,1) ),
+				new GrowthOption( new PlacePresence(this,0), new PlacePresence(this,2) ), // +1 presence range 2, +1 presence range 0
+				new GrowthOption( new GainEnergy(this,3), new PlacePresence(this,1) ), // +1 presense range 1, +3 energy
 			};
 		}
 	}

@@ -4,12 +4,14 @@ namespace SpiritIsland {
 
 	public class Reclaim1 : GrowthAction {
 
+		public Reclaim1(Spirit spirit):base(spirit){}
+
 		public PowerCard Card {get; set;}
 
-		public override void Apply( Spirit ps ) {
-			if( ps.PlayedCards.Contains(Card) ){
-				ps.PlayedCards.Remove(Card);
-				ps.AvailableCards.Add(Card);
+		public override void Apply() {
+			if( spirit.PlayedCards.Contains(Card) ){
+				spirit.PlayedCards.Remove(Card);
+				spirit.AvailableCards.Add(Card);
 			}
 			Card = null; // ensure it must be set each time.
 		}
