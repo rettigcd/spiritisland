@@ -8,13 +8,17 @@ namespace SpiritIsland {
 
 		#region constructors
 
-		public PlacePresence(Spirit spirit, int range):this( spirit, range, (s,gs)=>true ){}
-
-		public PlacePresence(Spirit spirit, int range,Func<Space,GameState,bool> criteria)
-			:base(spirit)
-		{ 
+		public PlacePresence(
+			Spirit spirit, 
+			int range,
+			Func<Space,GameState,bool> criteria = null,
+			IEnumerable<Space> referenceSpaces = null
+		):base(spirit){ 
 			this.Range = range;
-			this.criteria = criteria;
+			this.criteria = criteria ?? ((s,gs)=>true);
+
+			// this is for Ocean
+			this.referenceSpaces = referenceSpaces ?? spirit.CanPlacePresenceFrom;
 		}
 
 		#endregion
@@ -28,7 +32,7 @@ namespace SpiritIsland {
 
 // if there is only 1 to place
 			if(placeOnSpace != null && !placeOnSpace.Contains(";")){
-				var candidates = spirit.CanPlacePresenceFrom
+				var candidates = referenceSpaces
 					.SelectMany(s=>s.SpacesWithin(Range))
 					.Distinct()
 					.ToArray();
@@ -43,6 +47,7 @@ namespace SpiritIsland {
 		readonly Func<Space,GameState,bool> criteria;
 
 		string placeOnSpace;
+		readonly IEnumerable<Space> referenceSpaces;
 
 		static public IResolver Place(string placeOnSpace) => new Resolve(placeOnSpace);
 

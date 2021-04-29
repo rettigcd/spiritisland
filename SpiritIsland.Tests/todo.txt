@@ -70,3 +70,13 @@ Place Presence
 Pass a Block to deal with intermediate state?   Multiple blocks?
 
 
+Specify: (Reclaim Card)
+Specify: Presence
+Specify: Drawn PowerCard
+
+
+Bob<Type>().SpecifyCard()
+
+option.Actions.Specify
+
+
