@@ -28,18 +28,13 @@ namespace SpiritIsland.Tests.Growth {
 		public void TwoPresence( string initialDahanSquares, string expectedPresenseOptions ) {
 			// +1 presense within 2 - contains dahan
 			// +1 presense within 1 - contains dahan
-
-			When_Growing( 1 );
-
-			// Then: 
-			// +1 presense within 2 - contains dahan
-			// +1 presense within 1 - contains dahan
 			spirit.InitPresence( board[3] );
 			//	 And: dahan on initial spot
 			foreach(string s in initialDahanSquares.Split( ',' ))
 				gameState.AddDahan( board[int.Parse( s )] );
 			this.expectedPlacementOptionString = expectedPresenseOptions;
-			Assert_NewPresenceOptions();
+
+			When_Growing( 1,expectedPresenseOptions );
 
 			//  And: Energy didn't change
 			Assert_GainEnergy( 0 );
@@ -53,7 +48,6 @@ namespace SpiritIsland.Tests.Growth {
 			spirit.InitPresence( board[1] );
 			When_Growing(2,"A1;A2;A4;A5;A6");
 
-			Assert_NewPresenceOptions(); // connected land, but not ocean
 			Assert_GainEnergy( 4 );
 
 		}

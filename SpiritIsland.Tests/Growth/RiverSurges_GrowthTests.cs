@@ -22,6 +22,8 @@ namespace SpiritIsland.Tests.Growth {
 		[Test]
 		public void TwoPresence() {
 
+			spirit.InitPresence( board[1] );
+
 			When_Growing( 1, "A1A1;A1A2;A1A4;A1A5;A1A6;"
 				+"A2A2;A2A3;A2A4;A2A5;A2A6;"
 				+"A3A4;"
@@ -31,9 +33,6 @@ namespace SpiritIsland.Tests.Growth {
 
 			Assert_GainPowercard( 0 );
 			Assert_GainEnergy( 0 );
-
-			spirit.InitPresence( board[1] );
-			Assert_NewPresenceOptions(); // connected land, but not ocean
 
 		}
 
@@ -49,7 +48,6 @@ namespace SpiritIsland.Tests.Growth {
 			Assert_GainPowercard( 1 );
 			Assert_GainEnergy( 0 );
 
-			Assert_NewPresenceOptions();
 
 		}
 

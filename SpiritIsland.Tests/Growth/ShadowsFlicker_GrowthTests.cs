@@ -21,7 +21,6 @@ namespace SpiritIsland.Tests.Growth {
 			spirit.InitPresence( board[1] );
 			When_Growing(1,"A1;A2;A4;A5;A6");
 			Assert_GainPowercard(1);
-			Assert_NewPresenceOptions(); // connected land, but not ocean
 		}
 
 		[Test]
@@ -31,7 +30,6 @@ namespace SpiritIsland.Tests.Growth {
 			When_Growing( 2,"A1;A2;A3;A4;A5;A6;A7;A8" );
 
 			Assert_GainEnergy(3);
-			Assert_NewPresenceOptions();
 		}
 
 	}

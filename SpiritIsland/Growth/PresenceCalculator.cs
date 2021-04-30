@@ -8,25 +8,21 @@ namespace SpiritIsland {
 
 		static public Space[][] PresenseToPlaceOptions( 
 			IEnumerable<Space> src, 
-			IPresenceCriteria[] criteriaList, 
-			GameState gs 
+			RangeCriteria[] criteriaList
 		){
 			
-			var calc = new PresenceCalculator( src, gs );
+			var calc = new PresenceCalculator( src );
 			calc.Execute(criteriaList.ToArray());
 			if(criteriaList.Length == 2)
 				calc.Execute(criteriaList[1],criteriaList[0]);
 			return calc.Results;
 		}
 
-		readonly GameState gameState;
-
-		PresenceCalculator(IEnumerable<Space> existingPresense,GameState gs){
+		PresenceCalculator( IEnumerable<Space> existingPresense ){
 			this.existingPresence = existingPresense.ToArray();
-			this.gameState = gs;
 		}
 
-		public void Execute( params IPresenceCriteria[] criteria ){
+		public void Execute( params RangeCriteria[] criteria ){
 			this.criteria = criteria;
 			this.xx = new Space[criteria.Length];
 			FindPresence( 0 );
@@ -45,7 +41,7 @@ namespace SpiritIsland {
 				.SelectMany( p => p.SpacesWithin( criterion.Range ) )
 				.Distinct()
 				.Where( bs => bs.Terrain != Terrain.Ocean )
-				.Where( bs=>criterion.IsValid(bs,gameState) )
+				.Where( bs=>criterion.IsValid(bs) )
 				.ToList();
 			
 			foreach(var option in options){
@@ -64,25 +60,12 @@ namespace SpiritIsland {
 			}
 		}
 
-		IPresenceCriteria[] criteria;
+		RangeCriteria[] criteria;
 		Space[] xx;
 		readonly Space[] existingPresence;
 
 		readonly HashSet<Space[]> results = new HashSet<Space[]>();
 		readonly HashSet<string> keys = new HashSet<string>(); 
 	}
-
-	//class SpaceSet{
-	//	public SpaceSet(params Space[] spaces){
-	//		this.spaces = new HashSet<Space>(spaces);
-	//	}
-	//	public override int GetHashCode() {
-	//		return hashCode ?? (int)(hashCode = CalcHashCode() );
-	//	}
-	//	int CalcHashCode() => string.Join(",",spaces.Select(x=>x.Label).OrderBy(x=>x)).GetHashCode();
-	//	int? hashCode;
-	//	HashSet<Space> spaces;
-	//}
-
 
 }

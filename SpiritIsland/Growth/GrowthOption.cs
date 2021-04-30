@@ -3,7 +3,9 @@ namespace SpiritIsland {
 
 	public class GrowthOption{
 
-		public GrowthOption(params GrowthAction[] actions){ this.GrowthActions = actions; }
+		public GrowthOption(params GrowthAction[] actions){ 
+			this.GrowthActions = actions; 
+		}
 
 		public GrowthAction[] GrowthActions { get; }
 

@@ -27,8 +27,6 @@ namespace SpiritIsland.Tests.Growth {
 
 			Assert.That( spirit.AvailableCards.Count,Is.EqualTo(3) );
 
-			Assert_NewPresenceOptions();
-
 		}
 
 		[Test] 
@@ -37,7 +35,6 @@ namespace SpiritIsland.Tests.Growth {
 			spirit.InitPresence( board[1] );
 			When_Growing(2,"A1;A2;A4;A5;A6");
 			Assert_GainPowercard(1);
-			Assert_NewPresenceOptions(); // connected land, but not ocean
 		}
 
 		[Test] 
@@ -55,8 +52,6 @@ namespace SpiritIsland.Tests.Growth {
 
 			Assert_GainEnergy(2);
 
-			// Then: place presense, range 4, Dahan or Invadors
-			Assert_NewPresenceOptions();
 		}
 
 	}

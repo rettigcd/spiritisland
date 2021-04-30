@@ -52,22 +52,6 @@ namespace SpiritIsland.Tests.Growth {
 
 		#region Asserts Presence
 
-		protected void Assert_NewPresenceOptions() {
-
-			var presenceRules = spirit.PresenceToPlace.ToArray();
-
-			if(presenceRules.Length > 1){
-				var optionStrings = PresenceCalculator.PresenseToPlaceOptions(
-					spirit.CanPlacePresenceFrom,presenceRules,gameState
-				)
-					.Select( o => string.Join( "", o.Select( bs => bs.Label ).OrderBy( l => l ) ) )
-					.OrderBy( s => s );
-
-				string optionStr = string.Join( ";", optionStrings );
-				Assert.That( optionStr, Is.EqualTo( expectedPlacementOptionString  ) );
-			}
-		}
-
 		#endregion
 
 		#region Asserts (Other)

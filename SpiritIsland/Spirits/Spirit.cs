@@ -17,7 +17,6 @@ namespace SpiritIsland {
 		#region intermediate growth states
 
 		public int PowerCardsToDraw;
-		public List<IPresenceCriteria> PresenceToPlace = new List<IPresenceCriteria>();
 
 		#endregion
 
