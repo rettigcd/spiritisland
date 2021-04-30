@@ -23,8 +23,8 @@ namespace SpiritIsland.Tests.Growth {
 		public void Presense_Energy() {
 			// +1 presense range 1, +3 energy
 
-			spirit.InitPresence( board[1] );
-			When_Growing(2,"A1,A2,A4,A5,A6");
+			Given_HasPresence( board[1] );
+			When_Growing( 2, "A1;A2;A4;A5;A6" );
 
 			Assert_GainEnergy( 3 );
 		}
@@ -32,7 +32,7 @@ namespace SpiritIsland.Tests.Growth {
 		[Test]
 		public void TwoPresence(){
 			// +1 presense range 2, +1 prsense range 0
-			spirit.InitPresence( board[3] ); 
+			Given_HasPresence( board[3] ); 
 
 			When_Growing( 1, "A1A1;A1A3;A2A2;A2A3;A3A3;A3A4;A3A5;A4A4;A5A5" );
 

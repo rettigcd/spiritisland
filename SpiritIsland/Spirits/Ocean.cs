@@ -52,7 +52,8 @@ namespace SpiritIsland {
 				// reclaim, +1 power, gather 1 presense into EACH ocean, +2 energy
 				new GrowthOption(
 					new ReclaimAll(this),
-					new DrawPowerCard(this)
+					new DrawPowerCard(this),
+					new GainEnergy(this,2)
 				),
 				// +1 presence range any ocean, +1 presense in any ociean, +1 energy
 				new GrowthOption(

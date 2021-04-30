@@ -28,7 +28,7 @@ namespace SpiritIsland.Tests.Growth {
 		public void TwoPresence( string initialDahanSquares, string expectedPresenseOptions ) {
 			// +1 presense within 2 - contains dahan
 			// +1 presense within 1 - contains dahan
-			spirit.InitPresence( board[3] );
+			Given_HasPresence( board[3] );
 			//	 And: dahan on initial spot
 			foreach(string s in initialDahanSquares.Split( ',' ))
 				gameState.AddDahan( board[int.Parse( s )] );
@@ -45,7 +45,7 @@ namespace SpiritIsland.Tests.Growth {
 		public void PresenseAndEnergy() {
 			// +1 presense within 1, +4 energy
 
-			spirit.InitPresence( board[1] );
+			Given_HasPresence( board[1] );
 			When_Growing(2,"A1;A2;A4;A5;A6");
 
 			Assert_GainEnergy( 4 );

@@ -22,7 +22,7 @@ namespace SpiritIsland.Tests.Growth {
 		[Test]
 		public void TwoPresence() {
 
-			spirit.InitPresence( board[1] );
+			Given_HasPresence( board[1] );
 
 			When_Growing( 1, "A1A1;A1A2;A1A4;A1A5;A1A6;"
 				+"A2A2;A2A3;A2A4;A2A5;A2A6;"
@@ -41,7 +41,7 @@ namespace SpiritIsland.Tests.Growth {
 
 			// +1 power card, 
 			// +1 presense range 2
-			spirit.InitPresence( board[3] );
+			Given_HasPresence( board[3] );
 
 			When_Growing( 2, "A1;A2;A3;A4;A5" );
 

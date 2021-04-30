@@ -7,9 +7,7 @@ namespace SpiritIsland {
 		public List<PowerCard> AvailableCards = new List<PowerCard>();
 		public List<PowerCard> PlayedCards = new List<PowerCard>();
 
-		readonly List<Space> Presence = new List<Space>();
-		public List<Space> CanPlacePresenceFrom => Presence;
-		public void InitPresence(Space space) => Presence.Add(space);
+		public readonly List<Space> Presence = new List<Space>();
 
 		public int Energy {get; set; }
 		public int NumberOfCardsPlayablePerTurn { get; set; }

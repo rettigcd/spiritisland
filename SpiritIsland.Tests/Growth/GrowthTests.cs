@@ -23,6 +23,21 @@ namespace SpiritIsland.Tests.Growth {
 			board = gameState.Island.Boards[0];
 		}
 
+		protected void Given_HasPresence( params Space[] spaces ) {
+			spirit.Presence.AddRange( spaces );
+		}
+
+		protected void Given_HasPresence( string presenceString ) {
+			Dictionary<string,Space> spaceLookup = gameState.Island.Boards
+				.SelectMany(b=>b.Spaces)
+				.ToDictionary(s=>s.Label,s=>s);
+			var spaces = new Space[presenceString.Length/2];
+			for(int i=0;i*2<presenceString.Length;i++)
+				spaces[i] = spaceLookup[presenceString.Substring(i*2,2)];
+			Given_HasPresence(spaces);
+		}
+
+
 		protected void Given_SpiritIs(Spirit spirit) {
 
 			// PlayerState requires Spirit to be known because Spirit creates playerState.
@@ -85,24 +100,20 @@ namespace SpiritIsland.Tests.Growth {
 				this.allOptions = allOptions;
 			}
 			protected override void Update( PlacePresence pp ) {
+
 				base.Update( pp );
 				string[] x = pp.Options
 					.Select(o=> o.Select(l=>l.Label).OrderBy(l=>l).Join() )
 					.OrderBy(l=>l)
 					.ToArray();
-				string optionString = x
+				string actualOptions = x
 					.Join(";");
 
-				if(optionString != allOptions)
-					throw new Exception($"Expected [{allOptions}] but found [{optionString}]" );
+				if(actualOptions != allOptions)
+					throw new Exception($"Expected [{allOptions}] but found [{actualOptions}]" );
 			}
 		}
 
-	}
-
-	static public class IEnumerableExtensions {
-		public static string Join(this IEnumerable<string> items, string glue ) => string.Join(glue,items);
-		public static string Join(this IEnumerable<string> items) => string.Join(string.Empty,items);
 	}
 
 }

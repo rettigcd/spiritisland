@@ -16,7 +16,7 @@ namespace SpiritIsland {
 			IEnumerable<Space> referenceSpaces = null
 		):base(spirit){
 			rc = new RangeCriteria[]{ new RangeCriteria(range) };
-			this.referenceSpaces = referenceSpaces ?? spirit.CanPlacePresenceFrom;
+			this.referenceSpaces = referenceSpaces ?? spirit.Presence;
 		}
 
 		public PlacePresence(
@@ -25,7 +25,7 @@ namespace SpiritIsland {
 			params RangeCriteria[] rc
 		):base(spirit){
 			this.rc = rc;
-			this.referenceSpaces = referenceSpaces ?? spirit.CanPlacePresenceFrom;
+			this.referenceSpaces = referenceSpaces ?? spirit.Presence;
 		}
 
 		public PlacePresence(
@@ -33,7 +33,7 @@ namespace SpiritIsland {
 			params RangeCriteria[] rc
 		):base(spirit){
 			this.rc = rc;
-			this.referenceSpaces = spirit.CanPlacePresenceFrom;
+			this.referenceSpaces = spirit.Presence;
 		}
 
 

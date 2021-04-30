@@ -7,7 +7,6 @@ namespace SpiritIsland {
 
 	public class Board {
 
-
 		#region factories
 
 		static readonly Board[] boards = new Board[4];

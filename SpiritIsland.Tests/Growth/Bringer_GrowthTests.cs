@@ -21,7 +21,7 @@ namespace SpiritIsland.Tests.Growth {
 		[Test] 
 		public void Reclaim1_Presence(){
 			// reclaim 1, add presense range 0
-			spirit.InitPresence( board[4] );
+			Given_HasPresence( board[4] );
 
 			When_Growing(1, "A4", Reclaim1.Resolve(spirit.PlayedCards[0]) );
 
@@ -32,7 +32,7 @@ namespace SpiritIsland.Tests.Growth {
 		[Test] 
 		public void PowerCard_Presence(){
 			// +1 power card, +1 pressence range 1
-			spirit.InitPresence( board[1] );
+			Given_HasPresence( board[1] );
 			When_Growing(2,"A1;A2;A4;A5;A6");
 			Assert_GainPowercard(1);
 		}
@@ -41,7 +41,7 @@ namespace SpiritIsland.Tests.Growth {
 		public void PresenseOnPieces_Energy(){
 
 			board = LineBoard.MakeBoard();
-			spirit.InitPresence(board[5]);
+			Given_HasPresence(board[5]);
 			gameState.AddDahan(board[6]);
 			gameState.AddExplorer(board[7]);
 			gameState.AddTown(board[8]);

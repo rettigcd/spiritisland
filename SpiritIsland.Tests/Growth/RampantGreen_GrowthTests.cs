@@ -15,7 +15,7 @@ namespace SpiritIsland.Tests.Growth {
 		public void Reclaim_PowerCard_JWPresence() {
 			// +1 presense to jungle or wetland - range 2(Always do this + one of the following)
 			// reclaim, +1 power card
-			spirit.InitPresence( board[2] );
+			Given_HasPresence( board[2] );
 
 			When_Growing( 0, "A2;A3;A5" );
 
@@ -29,7 +29,7 @@ namespace SpiritIsland.Tests.Growth {
 			// +1 presense range 1, play +1 extra card this turn
 
 			// Presense Options
-			spirit.InitPresence( board[2] );
+			Given_HasPresence( board[2] );
 
 			Assert.That(spirit.NumberOfCardsPlayablePerTurn, Is.EqualTo(1),"Rampant Green should start with 1 card.");
 
@@ -50,7 +50,7 @@ namespace SpiritIsland.Tests.Growth {
 		public void GainEnergy_PowerCard_JWPresence(){
 			// +1 presense to jungle or wetland - range 2
 			// +1 power card, +3 energy
-			spirit.InitPresence( board[2] );
+			Given_HasPresence( board[2] );
 
 			When_Growing( 2, "A2;A3;A5" );
 
