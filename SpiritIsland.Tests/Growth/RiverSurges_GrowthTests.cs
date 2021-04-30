@@ -42,13 +42,13 @@ namespace SpiritIsland.Tests.Growth {
 
 			// +1 power card, 
 			// +1 presense range 2
+			spirit.InitPresence( board[3] );
 
 			When_Growing( 2, "A1;A2;A3;A4;A5" );
 
 			Assert_GainPowercard( 1 );
 			Assert_GainEnergy( 0 );
 
-			spirit.InitPresence( board[3] );
 			Assert_NewPresenceOptions();
 
 		}

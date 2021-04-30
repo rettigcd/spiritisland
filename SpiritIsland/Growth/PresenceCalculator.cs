@@ -8,13 +8,13 @@ namespace SpiritIsland {
 
 		static public Space[][] PresenseToPlaceOptions( 
 			IEnumerable<Space> src, 
-			List<IPresenceCriteria> criteriaList, 
+			IPresenceCriteria[] criteriaList, 
 			GameState gs 
 		){
 			
 			var calc = new PresenceCalculator( src, gs );
 			calc.Execute(criteriaList.ToArray());
-			if(criteriaList.Count == 2)
+			if(criteriaList.Length == 2)
 				calc.Execute(criteriaList[1],criteriaList[0]);
 			return calc.Results;
 		}

@@ -4,20 +4,9 @@ using System.Linq;
 
 namespace SpiritIsland {
 
-	public class RangeCriteria : IPresenceCriteria {
-		public RangeCriteria(int range,Func<Space,GameState,bool> criteria=null){
-			this.Range = range;
-			this.Criteria = criteria ?? ((s,gs)=>true);
-		}
-		public int Range {get;}
-		public Func<Space,GameState,bool> Criteria {get;}
-
-		public bool IsValid( Space bs, GameState gs ) => Criteria(bs,gs);
-	}
-
 	public class PlacePresence : GrowthAction {
 
-		public RangeCriteria rc;
+		public IPresenceCriteria[] rc;
 		readonly GameState gs;
 
 		#region constructors
@@ -25,12 +14,14 @@ namespace SpiritIsland {
 		public PlacePresence(
 			Spirit spirit,
 			GameState gs,
+
 			int range,
 			Func<Space,GameState,bool> criteria = null,
+
 			IEnumerable<Space> referenceSpaces = null
 		):base(spirit){
 			this.gs = gs;
-			rc = new RangeCriteria(range,criteria);
+			rc = new IPresenceCriteria[]{ new RangeCriteria(range,criteria) };
 			// this is for Ocean
 			this.referenceSpaces = referenceSpaces ?? spirit.CanPlacePresenceFrom;
 		}
@@ -38,25 +29,35 @@ namespace SpiritIsland {
 		#endregion
 
 		public override void Apply() {
-			spirit.PresenceToPlace.Add( this.rc );
+			spirit.PresenceToPlace.Add( this.rc[0] );
 
 // if there is only 1 to place
-			if(placeOnSpace != null && !placeOnSpace.Contains(";")){
-				var candidates = referenceSpaces
-					.SelectMany(s=>s.SpacesWithin(rc.Range))
-					.Distinct()
-					.ToArray();
-//!!! need to test critera filter also
+			if(placeOnSpace != null){
+//				if( !placeOnSpace.Contains(";")){
+//					var candidates = referenceSpaces
+//						.SelectMany(s=>s.SpacesWithin(rc[0].Range))
+//						.Distinct()
+//						.ToArray();
+	//!!! need to test critera filter also
+//					var	xx = candidates.Select(x=>x.Label).ToArray();
 
-				if(!candidates.Select(x=>x.Label).Contains(placeOnSpace))
-					throw new InvalidPresenceLocation();
+//					if(!xx.Contains(placeOnSpace))
+//						throw new InvalidPresenceLocation(placeOnSpace,xx);
+//				} else {
+					Space[][] options = this.PresenseToPlaceOptions();
+					var optionStrings = options
+						.Select( o => string.Join( "", o.Select( bs => bs.Label ).OrderBy( l => l ) ) )
+						.OrderBy( s => s )
+						.ToArray();
+					if(!optionStrings.Contains(placeOnSpace))
+						throw new InvalidPresenceLocation(placeOnSpace,optionStrings);
+//				}
+				placeOnSpace = null;
 			}
-			placeOnSpace = null;
 		}
 
 		public Space[][] PresenseToPlaceOptions(){
-			var list = new List<IPresenceCriteria> { this.rc };
-			return PresenceCalculator.PresenseToPlaceOptions(referenceSpaces, list, gs );
+			return PresenceCalculator.PresenseToPlaceOptions(referenceSpaces, this.rc, gs );
 		} 
 
 
@@ -85,5 +86,17 @@ namespace SpiritIsland {
 		}
 
 	}
+
+	public class RangeCriteria : IPresenceCriteria {
+		public RangeCriteria(int range,Func<Space,GameState,bool> criteria=null){
+			this.Range = range;
+			this.Criteria = criteria ?? ((s,gs)=>true);
+		}
+		public int Range {get;}
+		public Func<Space,GameState,bool> Criteria {get;}
+
+		public bool IsValid( Space bs, GameState gs ) => Criteria(bs,gs);
+	}
+
 
 }

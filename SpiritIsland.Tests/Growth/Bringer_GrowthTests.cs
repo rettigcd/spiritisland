@@ -43,18 +43,19 @@ namespace SpiritIsland.Tests.Growth {
 		[Test] 
 		public void PresenseOnPieces_Energy(){
 
-			// add presense range 4 Dahan or Invadors, +2 energy
-			When_Growing(3,"T6;T7;T8;T9");
-
-			Assert_GainEnergy(2);
-
-			// Then: place presense, range 4, Dahan or Invadors
 			board = LineBoard.MakeBoard();
 			spirit.InitPresence(board[5]);
 			gameState.AddDahan(board[6]);
 			gameState.AddExplorer(board[7]);
 			gameState.AddTown(board[8]);
 			gameState.AddCity(board[9]);
+
+			// add presense range 4 Dahan or Invadors, +2 energy
+			When_Growing(3,"T6;T7;T8;T9");
+
+			Assert_GainEnergy(2);
+
+			// Then: place presense, range 4, Dahan or Invadors
 			Assert_NewPresenceOptions();
 		}
 
