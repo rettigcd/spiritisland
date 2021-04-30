@@ -131,23 +131,23 @@ namespace SpiritIsland {
 
 		#endregion
 
-		readonly Space[] spaces;
+		public Space[] Spaces {get;}
 
-		public Space this[int index]{ get => spaces[index]; }
+		public Space this[int index]{ get => Spaces[index]; }
 
-		public int SpaceCount => spaces.Length;
+		public int SpaceCount => Spaces.Length;
 
 		public ITileSide[] Sides => this.sides.ToArray();
 
 		#region constructor
 		public Board(params Space[] spaces){
-			this.spaces = spaces;
+			this.Spaces = spaces;
 		}
 
 		#endregion
 
 		TileSide DefineSide(params int[] spaceIndexes){
-			var side = new TileSide(spaceIndexes.Select(i=>this.spaces[i]).ToArray());
+			var side = new TileSide(spaceIndexes.Select(i=>this.Spaces[i]).ToArray());
 			this.sides.Add(side);
 			return side;
 		}
@@ -156,7 +156,7 @@ namespace SpiritIsland {
 		/// public so we can build a test board.
 		/// </summary>
 		public void SetNeighbors(int srcIndex, params int[] neighborIndex){
-			spaces[srcIndex].SetAdjacentTo(neighborIndex.Select(i=>spaces[i]).ToArray());
+			Spaces[srcIndex].SetAdjacentTo(neighborIndex.Select(i=>Spaces[i]).ToArray());
 		}
 
 		readonly List<ITileSide> sides = new List<ITileSide>();

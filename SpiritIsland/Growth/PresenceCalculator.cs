@@ -37,10 +37,14 @@ namespace SpiritIsland {
 			}
 
 			var criterion = criteria[index];
-			var options = existingPresence.Union(xx.Take(index))
+
+			var refereceForThisRound = existingPresence.Union(xx.Take(index))
+				.ToArray(); // so we can manually inspect it during debug
+
+			var options = refereceForThisRound
 				.SelectMany( p => p.SpacesWithin( criterion.Range ) )
 				.Distinct()
-				.Where( bs => bs.Terrain != Terrain.Ocean )
+//				.Where( bs => bs.Terrain != Terrain.Ocean )
 				.Where( bs=>criterion.IsValid(bs) )
 				.ToList();
 			

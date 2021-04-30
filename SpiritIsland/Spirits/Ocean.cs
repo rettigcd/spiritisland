@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace SpiritIsland {
@@ -38,15 +39,28 @@ namespace SpiritIsland {
 	 */
 
 	public class Ocean : Spirit {
+
 		public override GrowthOption[] GetGrowthOptions(GameState gameState) {
+
+			var oceans = gameState.Island.Boards.SelectMany(bd=>bd.Spaces)
+				.Where(space=>space.Terrain == Terrain.Ocean)
+				.ToArray();
+
+			var onOcean = new RangeCriteria(0,(s)=>s.Terrain==Terrain.Ocean);
+
 			return new GrowthOption[]{
 				// reclaim, +1 power, gather 1 presense into EACH ocean, +2 energy
 				new GrowthOption(),
 				// +1 presence range any ocean, +1 presense in any ociean, +1 energy
-				new GrowthOption(new GainEnergy(this,1)),
+				new GrowthOption(
+					new GainEnergy(this,1),
+					new PlacePresence( this, oceans, onOcean, onOcean )
+				),
 				// gain power card, push 1 presense from each ocian,  add presense on costal land range 1
 				new GrowthOption(),
 			};
+
 		}
+
 	}
 }

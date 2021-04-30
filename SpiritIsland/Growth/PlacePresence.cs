@@ -75,10 +75,12 @@ namespace SpiritIsland {
 			public void Apply( GrowthOption growthActions ) {
 				var pp = growthActions.GrowthActions
 					.OfType<PlacePresence>()
-//					.Cast<IPresenceCriteria>()
 					.ToArray();
-				if(pp.Length>1) throw new InvalidOperationException("combine presence");
-				pp[0].placeOnSpace = this.placeOnSpace;
+				switch(pp.Length){
+					case 0: throw new InvalidOperationException("no place precense action available");
+					case 1: pp[0].placeOnSpace = this.placeOnSpace; break;
+					default: throw new InvalidOperationException("combine presence");
+				}
 			}
 		}
 

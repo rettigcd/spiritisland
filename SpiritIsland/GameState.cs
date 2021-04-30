@@ -6,6 +6,8 @@ namespace SpiritIsland {
 
 	public class GameState {
 
+		public Island Island { get; set; }
+
 		public void AddDahan( Space space ){ dahanCount[space]++; }
 		public void AddCity( Space space ){ cityCount[space]++; }
 		public void AddExplorer( Space space ){ explorerCount[space]++; }

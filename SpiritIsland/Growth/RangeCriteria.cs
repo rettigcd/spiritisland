@@ -6,7 +6,7 @@ namespace SpiritIsland {
 
 		public RangeCriteria(int range){
 			this.Range = range;
-			this.IsValid = ((s)=>true);
+			this.IsValid = ((s)=>s.Terrain != Terrain.Ocean);
 		}
 
 		public RangeCriteria(int range,Func<Space,bool> criteria){

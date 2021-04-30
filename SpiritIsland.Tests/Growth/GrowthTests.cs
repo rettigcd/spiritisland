@@ -15,8 +15,10 @@ namespace SpiritIsland.Tests.Growth {
 
 		[SetUp]
 		public void SetUp() {
-			board = Board.GetBoardA();
-			gameState = new GameState();
+			gameState = new GameState {
+				Island = new Island( Board.GetBoardA() )
+			};
+			board = gameState.Island.Boards[0];
 		}
 
 		protected void Given_SpiritIs(Spirit spirit) {

@@ -2,9 +2,9 @@
 
 namespace SpiritIsland {
 	public class Island {
-//		readonly Board[] boards;
+		public Board[] Boards {get; }
 		public Island(params Board[] boards){
-//			this.boards = boards;
+			this.Boards = boards;
 			switch(boards.Length){
 				case 1: break;
 				case 2: 

@@ -13,12 +13,17 @@ namespace SpiritIsland.Tests.Growth {
 			// reclaim, +1 power, gather 1 presense into EACH ocean, +2 energy
 		}
 
-		[Test]
-		public void G2(){
+		[TestCase("A0A0")]
+		[TestCase("A0B0")]
+		[TestCase("B0B0")]
+		public void TwoPresenceInOceans(string newPresenceLocation){
 			// +1 presence range any ocean, +1 presense in any ociean, +1 energy
-			When_Growing(1);
+
+			// Given: island has 2 boards, hence 2 oceans
+			gameState.Island = new Island(Board.GetBoardA(),Board.GetBoardB());
+
+			When_Growing(1,newPresenceLocation);
 			
-		//	Assert_NewPresenceOptions("A0A0");
 			Assert_GainEnergy(1);
 		}
 
