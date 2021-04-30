@@ -1,13 +1,15 @@
-﻿using NUnit.Framework;
+﻿using Xunit;
 
 namespace SpiritIsland.Tests.Growth {
-	[TestFixture]
+
 	public class ShadowsFlicker_GrowthTests : GrowthTests {
 
-		[SetUp]
-		public void SetUp_Shadows() => Given_SpiritIs(new Shadows());
+		public ShadowsFlicker_GrowthTests (){
+			Given_SpiritIs(new Shadows());
+		}
 
-		[Test]
+
+		[Fact]
 		public void Reclaim(){
 			// reclaim, gain power Card
 			When_Growing( 0 );
@@ -15,7 +17,7 @@ namespace SpiritIsland.Tests.Growth {
 			Assert_GainPowercard(1);
 		}
 
-		[Test]
+		[Fact]
 		public void PowerAndPresence(){
 			// gain power card, add a presense range 1
 			Given_HasPresence( board[1] );
@@ -23,7 +25,7 @@ namespace SpiritIsland.Tests.Growth {
 			Assert_GainPowercard(1);
 		}
 
-		[Test]
+		[Fact]
 		public void PresenceAndEnergy(){
 			// add a presence withing 3, +3 energy
 			Given_HasPresence( board[3] );

@@ -1,14 +1,14 @@
-﻿using NUnit.Framework;
+﻿using Xunit;
 
 namespace SpiritIsland.Tests.Growth {
 
-	[TestFixture]
 	public class VitalStrength_GrowthTests : GrowthTests {
 
-		[SetUp]
-		public void SetUp_VitalStrength() => Given_SpiritIs(new VitalStrength());
+		public VitalStrength_GrowthTests(){
+			Given_SpiritIs(new VitalStrength());
+		}
 
-		[Test]
+		[Fact]
 		public void ReclaimAndPresence(){
 			// reclaim, +1 presense range 2
 			Given_HasPresence( board[3] );
@@ -19,7 +19,7 @@ namespace SpiritIsland.Tests.Growth {
 
 		}
 
-		[Test]
+		[Fact]
 		public void PowercardAndPresence() {
 			// +1 power card, +1 presense range 0
 			Given_HasPresence( board[4] );
@@ -29,7 +29,7 @@ namespace SpiritIsland.Tests.Growth {
 			Assert_GainPowercard( 1 );
 		}
 
-		[Test]
+		[Fact]
 		public void PresenseAndEnergy(){
 			// +1 presence range 1, +2 energy
 			Given_HasPresence( board[1] );

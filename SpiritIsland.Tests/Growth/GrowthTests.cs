@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using NUnit.Framework;
+using Xunit;
 
 namespace SpiritIsland.Tests.Growth {
 
-	[TestFixture]
 	public class GrowthTests {
 
 		const int initEnergy = 3;
@@ -15,13 +12,17 @@ namespace SpiritIsland.Tests.Growth {
 		protected GameState gameState;
 		protected Board board;
 
-		[SetUp]
-		public void SetUp() {
+		public GrowthTests(){
 			gameState = new GameState {
-				Island = new Island( Board.A )
+				Island = new Island( BoardA )
 			};
 			board = gameState.Island.Boards[0];
 		}
+
+		protected Board BoardA => Board.BuildBoardA();
+		protected Board BoardB => Board.BuildBoardB();
+		protected Board BoardC => Board.BuildBoardC();
+		protected Board BoardD => Board.BuildBoardD();
 
 		protected void Given_HasPresence( params Space[] spaces ) {
 			spirit.Presence.AddRange( spaces );
@@ -76,17 +77,17 @@ namespace SpiritIsland.Tests.Growth {
 		#region Asserts (Other)
 
 		protected void Assert_GainPowercard( int expected ) {
-			Assert.That( spirit.PowerCardsToDraw, Is.EqualTo( expected ), $"Expected to gain {expected} power card" );
+			Assert.Equal( expected, spirit.PowerCardsToDraw ); // , $"Expected to gain {expected} power card" );
 		}
 
 		protected void Assert_AllCardsAvailableToPlay() {
 			// Then: all cards reclaimed (including unplayed)
-			Assert.That( spirit.PlayedCards.Count, Is.EqualTo( 0 ), "Should not be any cards in 'played' pile" );
-			Assert.That( string.Join( "", spirit.AvailableCards.Select( c => c.Name ).OrderBy( n => n ) ), Is.EquivalentTo( "ABCD" ) );
+			Assert.Empty( spirit.PlayedCards ); // , "Should not be any cards in 'played' pile" );
+			Assert.Equal( "ABCD", string.Join( "", spirit.AvailableCards.Select( c => c.Name ).OrderBy( n => n ) ) );
 		}
 
 		protected void Assert_GainEnergy( int expectedChange ) {
-			Assert.That( spirit.Energy - initEnergy, Is.EqualTo( expectedChange ), $"Expected {expectedChange} energy change" );
+			Assert.Equal( expectedChange, spirit.Energy - initEnergy ); // , $"Expected {expectedChange} energy change" );
 		}
 
 		#endregion

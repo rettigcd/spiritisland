@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 
 namespace SpiritIsland.Tests.Growth {
 	
-	[TestFixture]
 	public class Bringer_GrowthTests : GrowthTests {
 
-		[SetUp]public void SetUp_Bringer() => Given_SpiritIs(new Bringer());
+		public Bringer_GrowthTests(){
+			Given_SpiritIs(new Bringer());
+		}
 
-		[Test] 
+		[Fact] 
 		public void ReclaimAll_PowerCard(){
 			// reclaim, +1 power card
 			When_Growing(0);
@@ -18,18 +19,18 @@ namespace SpiritIsland.Tests.Growth {
 			Assert_GainPowercard(1);
 		}
 
-		[Test] 
+		[Fact] 
 		public void Reclaim1_Presence(){
 			// reclaim 1, add presense range 0
 			Given_HasPresence( board[4] );
 
 			When_Growing(1, "A4", Reclaim1.Resolve(spirit.PlayedCards[0]) );
 
-			Assert.That( spirit.AvailableCards.Count,Is.EqualTo(3) );
+			Assert.Equal( 3, spirit.AvailableCards.Count );
 
 		}
 
-		[Test] 
+		[Fact] 
 		public void PowerCard_Presence(){
 			// +1 power card, +1 pressence range 1
 			Given_HasPresence( board[1] );
@@ -37,7 +38,7 @@ namespace SpiritIsland.Tests.Growth {
 			Assert_GainPowercard(1);
 		}
 
-		[Test] 
+		[Fact] 
 		public void PresenseOnPieces_Energy(){
 
 			board = LineBoard.MakeBoard();

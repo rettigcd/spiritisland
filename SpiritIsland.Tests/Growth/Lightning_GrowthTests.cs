@@ -1,13 +1,14 @@
-﻿using NUnit.Framework;
+﻿using Xunit;
 
 namespace SpiritIsland.Tests.Growth {
-	[TestFixture]
+
 	public class Lightning_GrowthTests : GrowthTests{
 
-		[SetUp]
-		public void SetUp_Lightning() => Given_SpiritIs(new Lightning());
+		public Lightning_GrowthTests(){
+			Given_SpiritIs(new Lightning());
+		}
 
-		[Test]
+		[Fact]
 		public void Reclaim(){
 			// * reclaim, +1 power card, +1 energy
 
@@ -19,7 +20,7 @@ namespace SpiritIsland.Tests.Growth {
 
 		}
 
-		[Test]
+		[Fact]
 		public void Presense_Energy() {
 			// +1 presense range 1, +3 energy
 
@@ -29,7 +30,7 @@ namespace SpiritIsland.Tests.Growth {
 			Assert_GainEnergy( 3 );
 		}
 
-		[Test]
+		[Fact]
 		public void TwoPresence(){
 			// +1 presense range 2, +1 prsense range 0
 			Given_HasPresence( board[3] ); 

@@ -44,7 +44,7 @@ namespace SpiritIsland {
 		}
 
 		void SetNeighbor( Space land ) {
-			_distanceTo.Add( land, 1 );
+			_distanceTo.Add( land, 1 ); // @@@ 
 			if(land.Terrain == Terrain.Ocean)
 				this.IsCostal = true;
 		}

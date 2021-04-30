@@ -1,4 +1,4 @@
-using NUnit.Framework;
+using Xunit;
 
 namespace SpiritIsland.Tests {
 
@@ -8,28 +8,24 @@ namespace SpiritIsland.Tests {
 		readonly BoonOfVigor boonOfVigor = new BoonOfVigor();
 		readonly FlashFloods flashFloods = new FlashFloods();
 
-
-		[SetUp]
-		public void Setup() {
-		}
-
 		#region BoonOfVigor
 
-		[Test]
+		[Fact]
 		public void BoonOfVigor_TargetSelf() {
 			int energyBonus = boonOfVigor.TargetSelf();
-			Assert.That( energyBonus, Is.EqualTo( 1 ) );
+			Assert.Equal( 1, energyBonus );
 		}
 
-		[TestCase( 0 )]
-		[TestCase( 3 )]
-		[TestCase( 10 )]
-		public void BoonOfVigor_TargetOther( int powerCardsPlayed ) {
-			int energyBonus = boonOfVigor.TargetOther( powerCardsPlayed );
-			Assert.That( energyBonus, Is.EqualTo( powerCardsPlayed ) );
+		[Theory]
+		[InlineData( 0 )]
+		[InlineData( 3 )]
+		[InlineData( 10 )]
+		public void BoonOfVigor_TargetOther( int expectedEnergyBonus ) {
+			int energyBonus = boonOfVigor.TargetOther( expectedEnergyBonus );
+			Assert.Equal( expectedEnergyBonus, energyBonus );
 		}
 
-		[Test]
+		[Fact]
 		public void BoonOfVigor_Stats() {
 			AssertCardStatus( boonOfVigor, 0, Speed.Fast, "SWP" );
 		}
@@ -38,21 +34,21 @@ namespace SpiritIsland.Tests {
 
 		#region FlashFloods
 
-		[Test]
+		[Fact]
 		public void FlashFloods_Inland() {
 			var land = new Space { IsCostal = false };
 			int damage = flashFloods.GetDamage( land );
-			Assert.That( damage, Is.EqualTo( 1 ) );
+			Assert.Equal( 1, damage );
 		}
 
-		[Test]
+		[Fact]
 		public void FlashFloods_Costal() {
 			var land = new Space { IsCostal = true };
 			int damage = flashFloods.GetDamage( land );
-			Assert.That( damage, Is.EqualTo( 2 ) );
+			Assert.Equal( 2, damage );
 		}
 
-		[Test]
+		[Fact]
 		public void FlashFloods_Stats() {
 			AssertCardStatus( flashFloods, 2, Speed.Fast, "SW" );
 		}
@@ -60,7 +56,7 @@ namespace SpiritIsland.Tests {
 		#endregion FlashFloods
 
 
-		[Test]
+		[Fact]
 		public void RiversBounty_Stats() {
 			var card = new RiversBounty();
 			AssertCardStatus( card, 0, Speed.Slow, "SWB" );
@@ -68,9 +64,9 @@ namespace SpiritIsland.Tests {
 
 
 		void AssertCardStatus( PowerCard card, int expectedCost, Speed expectedSpeed, string expectedElements ) {
-			Assert.That( card.Cost, Is.EqualTo( expectedCost ) );
-			Assert.That( card.Speed, Is.EqualTo( expectedSpeed ) );
-			Assert.That( card.Elements, Is.EqualTo( expectedElements ) );
+			Assert.Equal( expectedCost, card.Cost );
+			Assert.Equal( expectedSpeed, card.Speed );
+			Assert.Equal( expectedElements, card.Elements );
 		}
 
 	}

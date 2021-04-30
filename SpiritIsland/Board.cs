@@ -9,14 +9,11 @@ namespace SpiritIsland {
 
 		#region factories
 
-		static readonly Board[] boards = new Board[4];
 
-		static public Board A => boards[0] ?? (boards[0]=BuildBoardA());
-		static public Board B => boards[1] ?? (boards[1]=BuildBoardB());
-		static public Board C => boards[2] ?? (boards[2]=BuildBoardC());
-		static public Board D => boards[3] ?? (boards[3]=BuildBoardD());
+		// These cannot be reused because when they get connected to other islands, 
+		// there neighbor state changes.
 
-		static Board BuildBoardA() {
+		static public Board BuildBoardA() {
 			var board = new Board(
 				new Space(Terrain.Ocean,"A0")
 				,new Space(Terrain.Mountain,"A1") // 
@@ -46,7 +43,7 @@ namespace SpiritIsland {
 			return board;
 		}
 
-		static Board BuildBoardB() {
+		static public Board BuildBoardB() {
 			var tile = new Board(
 				new Space(Terrain.Ocean,"B0")
 				,new Space(Terrain.Wetland,"B1")  // 1 dahan
@@ -76,7 +73,7 @@ namespace SpiritIsland {
 			return tile;
 		}
 
-		static Board BuildBoardC() {
+		static public Board BuildBoardC() {
 			var tile = new Board(
 				new Space(Terrain.Ocean,"C0")
 				,new Space(Terrain.Jungle,"C1")   // 1 dahan
@@ -106,7 +103,7 @@ namespace SpiritIsland {
 			return tile;
 		}
 
-		static Board BuildBoardD() {
+		static public Board BuildBoardD() {
 			var tile = new Board(
 				new Space(Terrain.Ocean,"D0")
 				,new Space(Terrain.Wetland,"D1")   // 2 dahan

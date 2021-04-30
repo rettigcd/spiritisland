@@ -1,14 +1,14 @@
-﻿using NUnit.Framework;
+﻿using Xunit;
 
 namespace SpiritIsland.Tests.Growth {
 
-	[TestFixture]
 	public class RiverSurges_GrowthTests : GrowthTests{
 
-		[SetUp]
-		public void SetUp_RiverSurges() => Given_SpiritIs( new RiverSurges() );
+		public RiverSurges_GrowthTests(){
+			Given_SpiritIs( new RiverSurges() );
+		}
 
-		[Test]
+		[Fact]
 		public void Reclaim_DrawCard_Energy() {
 
 			When_Growing( 0 );
@@ -19,7 +19,7 @@ namespace SpiritIsland.Tests.Growth {
 
 		}
 
-		[Test]
+		[Fact]
 		public void TwoPresence() {
 
 			Given_HasPresence( board[1] );
@@ -36,7 +36,7 @@ namespace SpiritIsland.Tests.Growth {
 
 		}
 
-		[Test]
+		[Fact]
 		public void Power_Presence() {
 
 			// +1 power card, 

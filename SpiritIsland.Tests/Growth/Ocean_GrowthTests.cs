@@ -1,24 +1,23 @@
 ﻿using System;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 
 namespace SpiritIsland.Tests.Growth {
 	
-	[TestFixture]
 	public class Ocean_GrowthTests : GrowthTests {
 
-		[SetUp]
-		public void SetUp_Ocean() => Given_SpiritIs(new Ocean());
+		public Ocean_GrowthTests(){
+			Given_SpiritIs(new Ocean());
+		}
 
-
-
-		[TestCase("A0","A0")]
-		[TestCase("A0B0","A0B0")]
-		[TestCase("A0B0C0","A0B0C0")]
+		[Theory]
+		[InlineData("A0","A0")]
+		[InlineData("A0B0","A0B0")]
+		[InlineData("A0B0C0","A0B0C0")]
 		public void ReclaimGather_GatherParts(string starting, string ending){
 
 			// Given: 3-board island
-			gameState.Island = new Island(Board.A,Board.B,Board.C);
+			gameState.Island = new Island(BoardA,BoardB,BoardC);
 			// one presence in A0 - ocean
 			Given_HasPresence( starting );
 
@@ -35,10 +34,10 @@ namespace SpiritIsland.Tests.Growth {
 
 		void Assert_BoardPresenceIs( string expected ) {
 			var actual = spirit.Presence.Select(s=>s.Label).OrderBy(l=>l).Join();
-			Assert.That(actual, Is.EqualTo(expected),"Presence in wrong place");
+			Assert.Equal(expected, actual); // , Is.EqualTo(expected),"Presence in wrong place");
 		}
 
-		[Test]
+		[Fact]
 		public void ReclaimGather_NonGatherParts(){
 			// reclaim, +1 power, gather 1 presense into EACH ocean, +2 energy
 			
@@ -48,19 +47,19 @@ namespace SpiritIsland.Tests.Growth {
 			Assert_GainEnergy(2);
 		}
 
-		[Test]
+		[Fact]
 		public void TwoPresenceInOceans(){
 			// +1 presence range any ocean, +1 presense in any ociean, +1 energy
 
 			// Given: island has 2 boards, hence 2 oceans
-			gameState.Island = new Island(Board.A,Board.B);
+			gameState.Island = new Island(BoardA,BoardB);
 
 			When_Growing(1,"A0A0;A0B0;B0B0");
 			
 			Assert_GainEnergy(1);
 		}
 
-		[Test]
+		[Fact]
 		public void PowerPlaceAndPush(){
 			// gain power card, push 1 presense from each ocian,  add presense on costal land range 1
 		}
