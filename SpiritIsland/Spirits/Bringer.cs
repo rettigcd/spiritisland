@@ -35,9 +35,9 @@ namespace SpiritIsland {
 	*/
 
 	public class Bringer : Spirit {
-		public override GrowthOption[] GetGrowthOptions() {
+		public override GrowthOption[] GetGrowthOptions(GameState gameState) {
 
-			bool onDahanOrInvadors( Space bs, GameState gs ) {
+			bool onDahanOrInvadors( Space bs, GameState gs ) { // !!! hook in here! instead of Criteria
 				return gs.HasDahan(bs) || gs.HasInvaders(bs);
 			}
 
@@ -45,11 +45,11 @@ namespace SpiritIsland {
 				// reclaim, +1 power card
 				new GrowthOption(new ReclaimAll(this),new DrawPowerCard(this,1)),
 				// reclaim 1, add presence range 0
-				new GrowthOption(new Reclaim1(this), new PlacePresence(this,0) ),
+				new GrowthOption(new Reclaim1(this), new PlacePresence(this,gameState,0) ),
 				// +1 power card, +1 pressence range 1
-				new GrowthOption(new DrawPowerCard(this,1), new PlacePresence(this,1) ),
+				new GrowthOption(new DrawPowerCard(this,1), new PlacePresence(this,gameState,1) ),
 				// add presense range Dahan or Invadors, +2 energy
-				new GrowthOption(new GainEnergy(this,2), new PlacePresence(this,4,onDahanOrInvadors))
+				new GrowthOption(new GainEnergy(this,2), new PlacePresence(this,gameState,4,onDahanOrInvadors))
 			};
 		}
 	}

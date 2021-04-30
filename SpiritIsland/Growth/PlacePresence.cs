@@ -4,36 +4,46 @@ using System.Linq;
 
 namespace SpiritIsland {
 
-	public class PlacePresence : GrowthAction, IPresenceCriteria {
+	public class RangeCriteria : IPresenceCriteria {
+		public RangeCriteria(int range,Func<Space,GameState,bool> criteria=null){
+			this.Range = range;
+			this.Criteria = criteria ?? ((s,gs)=>true);
+		}
+		public int Range {get;}
+		public Func<Space,GameState,bool> Criteria {get;}
+
+		public bool IsValid( Space bs, GameState gs ) => Criteria(bs,gs);
+	}
+
+	public class PlacePresence : GrowthAction {
+
+		public RangeCriteria rc;
+		readonly GameState gs;
 
 		#region constructors
 
 		public PlacePresence(
-			Spirit spirit, 
+			Spirit spirit,
+			GameState gs,
 			int range,
 			Func<Space,GameState,bool> criteria = null,
 			IEnumerable<Space> referenceSpaces = null
-		):base(spirit){ 
-			this.Range = range;
-			this.criteria = criteria ?? ((s,gs)=>true);
-
+		):base(spirit){
+			this.gs = gs;
+			rc = new RangeCriteria(range,criteria);
 			// this is for Ocean
 			this.referenceSpaces = referenceSpaces ?? spirit.CanPlacePresenceFrom;
 		}
 
 		#endregion
 
-		public int Range {get;}
-
-		public bool IsValid(Space bs, GameState gs) => criteria(bs,gs);
-
 		public override void Apply() {
-			spirit.PresenceToPlace.Add( this );
+			spirit.PresenceToPlace.Add( this.rc );
 
 // if there is only 1 to place
 			if(placeOnSpace != null && !placeOnSpace.Contains(";")){
 				var candidates = referenceSpaces
-					.SelectMany(s=>s.SpacesWithin(Range))
+					.SelectMany(s=>s.SpacesWithin(rc.Range))
 					.Distinct()
 					.ToArray();
 //!!! need to test critera filter also
@@ -44,7 +54,11 @@ namespace SpiritIsland {
 			placeOnSpace = null;
 		}
 
-		readonly Func<Space,GameState,bool> criteria;
+		public Space[][] PresenseToPlaceOptions(){
+			var list = new List<IPresenceCriteria> { this.rc };
+			return PresenceCalculator.PresenseToPlaceOptions(referenceSpaces, list, gs );
+		} 
+
 
 		string placeOnSpace;
 		readonly IEnumerable<Space> referenceSpaces;

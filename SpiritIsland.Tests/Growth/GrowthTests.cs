@@ -37,7 +37,7 @@ namespace SpiritIsland.Tests.Growth {
 		}
 
 		protected void When_Growing( int option, params IResolver[] resolvers ) {
-			spirit.Grow(option, resolvers);
+			spirit.Grow(gameState, option, resolvers);
 		}
 
 		protected void When_Growing( int option, string presenceOptions, params IResolver[] resolvers ) {
@@ -46,16 +46,17 @@ namespace SpiritIsland.Tests.Growth {
 			var list = resolvers.ToList();
 			list.Add(PlacePresence.Place(presenceOptions));
 
-			spirit.Grow(option, list.ToArray());
+			spirit.Grow(gameState, option, list.ToArray());
 		}
 		protected string expectedPlacementOptionString ;
-
 
 		#region Asserts Presence
 
 		protected void Assert_NewPresenceOptions() {
 
-			var optionStrings = PresenceCalculator.PresenseToPlaceOptions(spirit,gameState)
+			var optionStrings = PresenceCalculator.PresenseToPlaceOptions(
+				spirit.CanPlacePresenceFrom,spirit.PresenceToPlace,gameState
+			)
 				.Select( o => string.Join( "", o.Select( bs => bs.Label ).OrderBy( l => l ) ) )
 				.OrderBy( s => s );
 

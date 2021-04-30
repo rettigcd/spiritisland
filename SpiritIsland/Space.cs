@@ -8,21 +8,32 @@ namespace SpiritIsland {
 
 	public class Space{
 
+		#region Game-Static
 		public string Label {get;}
 		public Terrain Terrain {get;}
-
-		public Space(Terrain terrain=Terrain.None, string label=null){
-			this.Terrain = terrain;
-			this.Label = label;
-			_distanceTo.Add(this,0);
-		}
-
 		public bool IsCostal { get; set; }
+		readonly Dictionary<Space,int> _distanceTo = new Dictionary<Space, int>();
 
-		/// <summary>
-		/// If adjacent to ocean, sets is-costal
-		/// </summary>
-		/// <param name="spaces"></param>
+		#endregion
+
+		#region SetUp
+		int _highestDistanceCalculated = 0;
+		void CalculateDistancesUpTo( int distance ) {
+			while(_highestDistanceCalculated < distance) {
+				int nextLevel = _highestDistanceCalculated + 1;
+				var newSpaces = _distanceTo
+					.Where( p => p.Value == _highestDistanceCalculated )
+					.SelectMany( p => p.Key._distanceTo.Where(n=>n.Value==1).Select(q=>q.Key) ) // must get this directly
+					.Distinct()
+					.Where( space => !_distanceTo.ContainsKey( space )  // new space
+						|| _distanceTo[space] > nextLevel ) // has a longer path than this path
+					.ToList(); // force iteration so we can make changes to _distanceTo
+				foreach(var newSpace in newSpaces)
+					_distanceTo[newSpace] = nextLevel;
+				_highestDistanceCalculated = nextLevel;
+			}
+		}
+		/// <summary> If adjacent to ocean, sets is-costal </summary>
 		public void SetAdjacentTo( params Space[] spaces ) {
 			foreach(var land in spaces) {
 				SetNeighbor( land );
@@ -36,6 +47,13 @@ namespace SpiritIsland {
 			_distanceTo.Add( land, 1 );
 			if(land.Terrain == Terrain.Ocean)
 				this.IsCostal = true;
+		}
+		#endregion
+
+		public Space(Terrain terrain=Terrain.None, string label=null){
+			this.Terrain = terrain;
+			this.Label = label;
+			_distanceTo.Add(this,0);
 		}
 
 		public IEnumerable<Space> SpacesWithin( int distance ) {
@@ -52,24 +70,6 @@ namespace SpiritIsland {
 			return Label.ToString();
 		}
 
-		void CalculateDistancesUpTo( int distance ) {
-			while(_highestDistanceCalculated < distance) {
-				int nextLevel = _highestDistanceCalculated + 1;
-				var newSpaces = _distanceTo
-					.Where( p => p.Value == _highestDistanceCalculated )
-					.SelectMany( p => p.Key._distanceTo.Where(n=>n.Value==1).Select(q=>q.Key) ) // must get this directly
-					.Distinct()
-					.Where( space => !_distanceTo.ContainsKey( space )  // new space
-						|| _distanceTo[space] > nextLevel ) // has a longer path than this path
-					.ToList(); // force iteration so we can make changes to _distanceTo
-				foreach(var newSpace in newSpaces)
-					_distanceTo[newSpace] = nextLevel;
-				_highestDistanceCalculated = nextLevel;
-			}
-		}
-
-		readonly Dictionary<Space,int> _distanceTo = new Dictionary<Space, int>();
-		int _highestDistanceCalculated = 0;
 	}
 
 }

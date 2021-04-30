@@ -38,7 +38,7 @@ namespace SpiritIsland {
 	 */
 
 	public class Ocean : Spirit {
-		public override GrowthOption[] GetGrowthOptions() {
+		public override GrowthOption[] GetGrowthOptions(GameState gameState) {
 			return new GrowthOption[]{
 				// reclaim, +1 power, gather 1 presense into EACH ocean, +2 energy
 				new GrowthOption(),

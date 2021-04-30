@@ -32,11 +32,11 @@ namespace SpiritIsland {
 	/// River Surges in Sunlight
 	/// </summary>
 	public class RiverSurges : Spirit {
-		public override GrowthOption[] GetGrowthOptions() {
+		public override GrowthOption[] GetGrowthOptions(GameState gameState) {
 			return new GrowthOption[]{
 				new GrowthOption( new ReclaimAll(this), new DrawPowerCard(this,1), new GainEnergy(this,1) ),
-				new GrowthOption( new PlacePresence(this,1), new PlacePresence(this,1) ),
-				new GrowthOption( new DrawPowerCard(this,1), new PlacePresence(this,2) ),
+				new GrowthOption( new PlacePresence(this,gameState,1), new PlacePresence(this,gameState,1) ),
+				new GrowthOption( new DrawPowerCard(this,1), new PlacePresence(this,gameState,2) ),
 			};
 		}
 	}

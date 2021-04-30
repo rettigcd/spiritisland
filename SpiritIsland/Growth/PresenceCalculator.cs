@@ -6,17 +6,22 @@ namespace SpiritIsland {
 
 	public class PresenceCalculator {
 
-		static public Space[][] PresenseToPlaceOptions( Spirit ps, GameState gs ){
-			var calc = new PresenceCalculator( ps.CanPlacePresenceFrom, gs );
-			calc.Execute(ps.PresenceToPlace.ToArray());
-			if(ps.PresenceToPlace.Count == 2)
-				calc.Execute(ps.PresenceToPlace[1],ps.PresenceToPlace[0]);
+		static public Space[][] PresenseToPlaceOptions( 
+			IEnumerable<Space> src, 
+			List<IPresenceCriteria> criteriaList, 
+			GameState gs 
+		){
+			
+			var calc = new PresenceCalculator( src, gs );
+			calc.Execute(criteriaList.ToArray());
+			if(criteriaList.Count == 2)
+				calc.Execute(criteriaList[1],criteriaList[0]);
 			return calc.Results;
 		}
 
 		readonly GameState gameState;
 
-		public PresenceCalculator(List<Space> existingPresense,GameState gs){
+		PresenceCalculator(IEnumerable<Space> existingPresense,GameState gs){
 			this.existingPresence = existingPresense.ToArray();
 			this.gameState = gs;
 		}
@@ -66,6 +71,18 @@ namespace SpiritIsland {
 		readonly HashSet<Space[]> results = new HashSet<Space[]>();
 		readonly HashSet<string> keys = new HashSet<string>(); 
 	}
+
+	//class SpaceSet{
+	//	public SpaceSet(params Space[] spaces){
+	//		this.spaces = new HashSet<Space>(spaces);
+	//	}
+	//	public override int GetHashCode() {
+	//		return hashCode ?? (int)(hashCode = CalcHashCode() );
+	//	}
+	//	int CalcHashCode() => string.Join(",",spaces.Select(x=>x.Label).OrderBy(x=>x)).GetHashCode();
+	//	int? hashCode;
+	//	HashSet<Space> spaces;
+	//}
 
 
 }

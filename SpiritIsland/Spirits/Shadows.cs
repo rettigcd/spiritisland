@@ -24,11 +24,11 @@ namespace SpiritIsland {
 	*/
 
 	public class Shadows : Spirit {
-		public override GrowthOption[] GetGrowthOptions(){
+		public override GrowthOption[] GetGrowthOptions(GameState gameState){
 			return new GrowthOption[]{
 				new GrowthOption( new ReclaimAll(this), new DrawPowerCard(this,1) ),
-				new GrowthOption( new DrawPowerCard(this,1), new PlacePresence(this,1) ),
-				new GrowthOption( new PlacePresence(this,3), new GainEnergy(this,3) )
+				new GrowthOption( new DrawPowerCard(this,1), new PlacePresence(this,gameState,1) ),
+				new GrowthOption( new PlacePresence(this,gameState,3), new GainEnergy(this,3) )
 			};
 		}
 	}

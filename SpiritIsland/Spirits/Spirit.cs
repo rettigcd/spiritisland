@@ -25,8 +25,8 @@ namespace SpiritIsland {
 
 		}
 
-		public void Grow(int optionIndex, params IResolver[] resolvers){
-			GrowthOption option = this.GetGrowthOptions()[optionIndex];
+		public void Grow(GameState gameState, int optionIndex, params IResolver[] resolvers){
+			GrowthOption option = this.GetGrowthOptions(gameState)[optionIndex];
 			
 			// modify the growth option to resolve incomplete states
 			foreach(var resolver in resolvers)
@@ -35,7 +35,7 @@ namespace SpiritIsland {
 			option.Apply();
 		}
 
-		public abstract GrowthOption[] GetGrowthOptions();
+		public abstract GrowthOption[] GetGrowthOptions(GameState gameState);
 
 	}
 
