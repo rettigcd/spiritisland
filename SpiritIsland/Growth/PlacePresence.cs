@@ -12,7 +12,6 @@ namespace SpiritIsland {
 
 		public PlacePresence(
 			Spirit spirit,
-
 			int range,
 			IEnumerable<Space> referenceSpaces = null
 		):base(spirit){
@@ -42,8 +41,7 @@ namespace SpiritIsland {
 
 		public override void Apply() {
 
-			Space[][] options = this.PresenseToPlaceOptions();
-			var optionStrings = options
+			var optionStrings = this.Options
 				.Select( o => string.Join( "", o.Select( bs => bs.Label ).OrderBy( l => l ) ) )
 				.OrderBy( s => s )
 				.ToArray();
@@ -54,9 +52,9 @@ namespace SpiritIsland {
 			placeOnSpace = null;
 		}
 
-		public Space[][] PresenseToPlaceOptions(){
-			return PresenceCalculator.PresenseToPlaceOptions(referenceSpaces, this.rc );
-		} 
+		public Space[][] Options => options ?? (options=CalculateOptions());
+		Space[][] options;
+		Space[][]  CalculateOptions() => PresenceCalculator.PresenseToPlaceOptions(referenceSpaces, this.rc );
 
 
 		string placeOnSpace;
@@ -64,7 +62,7 @@ namespace SpiritIsland {
 
 		static public IResolver Place(string placeOnSpace) => new Resolve(placeOnSpace);
 
-		class Resolve : IResolver {
+		public class Resolve : IResolver {
 
 			readonly string placeOnSpace;
 
@@ -76,11 +74,15 @@ namespace SpiritIsland {
 				var pp = growthActions.GrowthActions
 					.OfType<PlacePresence>()
 					.ToArray();
-				switch(pp.Length){
-					case 0: throw new InvalidOperationException("no place precense action available");
-					case 1: pp[0].placeOnSpace = this.placeOnSpace; break;
-					default: throw new InvalidOperationException("combine presence");
+				switch(pp.Length) {
+					case 0: throw new InvalidOperationException( "no place precense action available" );
+					case 1: Update(pp[0]); break;
+					default: throw new InvalidOperationException( "combine presence" );
 				}
+			}
+
+			protected virtual void Update(PlacePresence pp) {
+				pp.placeOnSpace = this.placeOnSpace;
 			}
 		}
 

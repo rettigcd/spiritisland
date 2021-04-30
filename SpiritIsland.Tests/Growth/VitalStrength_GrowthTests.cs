@@ -33,15 +33,6 @@ namespace SpiritIsland.Tests.Growth {
 		}
 
 		[Test]
-		public void TargetSpace_OutOfRange() {
-			// +1 power card, +1 presense range 0
-			spirit.InitPresence( board[4] );
-
-			Assert.Throws<InvalidPresenceLocation>(()=>When_Growing( 1, "A5" ));
-		}
-
-
-		[Test]
 		public void PresenseAndEnergy(){
 			// +1 presence range 1, +2 energy
 			spirit.InitPresence( board[1] );

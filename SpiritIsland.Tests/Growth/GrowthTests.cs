@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
@@ -46,7 +48,7 @@ namespace SpiritIsland.Tests.Growth {
 			this.expectedPlacementOptionString  = presenceOptions;
 
 			var list = resolvers.ToList();
-			list.Add(PlacePresence.Place(presenceOptions.Split(';')[0])); // !!! only testing the first one
+			list.Add(new SpyOnPlacePresence( presenceOptions ));
 
 			spirit.Grow(gameState, option, list.ToArray());
 		}
@@ -74,5 +76,33 @@ namespace SpiritIsland.Tests.Growth {
 
 		#endregion
 
+
+		class SpyOnPlacePresence : PlacePresence.Resolve {
+			readonly string allOptions;
+			public SpyOnPlacePresence( string allOptions )
+				:base(allOptions.Split(';')[0])
+			{
+				this.allOptions = allOptions;
+			}
+			protected override void Update( PlacePresence pp ) {
+				base.Update( pp );
+				string[] x = pp.Options
+					.Select(o=> o.Select(l=>l.Label).OrderBy(l=>l).Join() )
+					.OrderBy(l=>l)
+					.ToArray();
+				string optionString = x
+					.Join(";");
+
+				if(optionString != allOptions)
+					throw new Exception($"Expected [{allOptions}] but found [{optionString}]" );
+			}
+		}
+
 	}
+
+	static public class IEnumerableExtensions {
+		public static string Join(this IEnumerable<string> items, string glue ) => string.Join(glue,items);
+		public static string Join(this IEnumerable<string> items) => string.Join(string.Empty,items);
+	}
+
 }

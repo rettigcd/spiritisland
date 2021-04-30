@@ -19,31 +19,15 @@ namespace SpiritIsland.Tests.Growth {
 
 		}
 
-		[TestCase("A1")]
-		[TestCase("A2")]
-		[TestCase("A4")]
-		[TestCase("A5")]
-		[TestCase("A6")]
-		public void Presense_Energy(string targetLand) {
+		[Test]
+		public void Presense_Energy() {
 			// +1 presense range 1, +3 energy
 
 			spirit.InitPresence( board[1] );
-			When_Growing(2,targetLand);
+			When_Growing(2,"A1,A2,A4,A5,A6");
 
 			Assert_GainEnergy( 3 );
 		}
-
-		[TestCase("A0")] // ocean
-		[TestCase("A3")]
-		[TestCase("A7")]
-		[TestCase("A8")]
-		public void Presense_Energy_InvalidLocations(string targetLand) {
-			// +1 presense range 1, +3 energy
-			spirit.InitPresence( board[1] );
-			Assert.Throws<InvalidPresenceLocation>(()=>When_Growing(2,targetLand));
-
-		}
-
 
 		[Test]
 		public void TwoPresence(){
