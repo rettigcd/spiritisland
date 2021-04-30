@@ -7,9 +7,17 @@ namespace SpiritIsland {
 
 	public class Board {
 
+
 		#region factories
 
-		static public Board GetBoardA() {
+		static readonly Board[] boards = new Board[4];
+
+		static public Board A => boards[0] ?? (boards[0]=BuildBoardA());
+		static public Board B => boards[1] ?? (boards[1]=BuildBoardB());
+		static public Board C => boards[2] ?? (boards[2]=BuildBoardC());
+		static public Board D => boards[3] ?? (boards[3]=BuildBoardD());
+
+		static Board BuildBoardA() {
 			var board = new Board(
 				new Space(Terrain.Ocean,"A0")
 				,new Space(Terrain.Mountain,"A1") // 
@@ -39,7 +47,7 @@ namespace SpiritIsland {
 			return board;
 		}
 
-		static public Board GetBoardB() {
+		static Board BuildBoardB() {
 			var tile = new Board(
 				new Space(Terrain.Ocean,"B0")
 				,new Space(Terrain.Wetland,"B1")  // 1 dahan
@@ -69,7 +77,7 @@ namespace SpiritIsland {
 			return tile;
 		}
 
-		static public Board GetBoardC() {
+		static Board BuildBoardC() {
 			var tile = new Board(
 				new Space(Terrain.Ocean,"C0")
 				,new Space(Terrain.Jungle,"C1")   // 1 dahan
@@ -99,7 +107,7 @@ namespace SpiritIsland {
 			return tile;
 		}
 
-		static public Board GetBoardD() {
+		static Board BuildBoardD() {
 			var tile = new Board(
 				new Space(Terrain.Ocean,"D0")
 				,new Space(Terrain.Wetland,"D1")   // 2 dahan

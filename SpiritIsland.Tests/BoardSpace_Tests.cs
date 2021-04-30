@@ -49,7 +49,7 @@ namespace SpiritIsland.Tests {
 
 		[Test]
 		public void BoardA_Connectivity() {
-			var boardA = Board.GetBoardA();
+			var boardA = Board.A;
 
 			Assert_CanReachSpaceWithNHops( boardA[0], 0, boardA[0] );
 			Assert_CanReachSpaceWithNHops( boardA[0], 1, boardA[1], boardA[2], boardA[3] );
@@ -64,7 +64,7 @@ namespace SpiritIsland.Tests {
 
 		[Test]
 		public void BoardB_Connectivity() {
-			var boardA = Board.GetBoardA();
+			var boardA = Board.A;
 
 			Assert_CanReachSpaceWithNHops( boardA[0], 0, boardA[0] );
 			Assert_CanReachSpaceWithNHops( boardA[0], 1, boardA[1], boardA[2], boardA[3] );
@@ -82,8 +82,8 @@ namespace SpiritIsland.Tests {
 		[Test]
 		public void PlaceTiles() {
 
-			var tileB = Board.GetBoardB();
-			var tileD = Board.GetBoardD();
+			var tileB = Board.B;
+			var tileD = Board.D;
 
 			tileB.Sides[2].AlignTo( tileD.Sides[0] );
 
@@ -95,14 +95,14 @@ namespace SpiritIsland.Tests {
 
 		[Test]
 		public void Island_1Board(){
-			new Island(Board.GetBoardC());
+			new Island(Board.C);
 			// no connectivity to test
 		}
 
 		[Test]
 		public void Island_2Boards() {
-			var boardC = Board.GetBoardC();
-			var boardD = Board.GetBoardD();
+			var boardC = Board.C;
+			var boardD = Board.D;
 
 			new Island( boardC, boardD );
 
@@ -124,9 +124,9 @@ namespace SpiritIsland.Tests {
 
 		[Test]
 		public void Island_3Boards(){
-			var b = Board.GetBoardB();
-			var c = Board.GetBoardC();
-			var d = Board.GetBoardD();
+			var b = Board.B;
+			var c = Board.C;
+			var d = Board.D;
 
 			new Island(b,c,d);
 
@@ -150,10 +150,10 @@ namespace SpiritIsland.Tests {
 
 		[Test]
 		public void Island_4Boards(){
-			var a = Board.GetBoardA();
-			var b = Board.GetBoardB();
-			var c = Board.GetBoardC();
-			var d = Board.GetBoardD();
+			var a = Board.A;
+			var b = Board.B;
+			var c = Board.C;
+			var d = Board.D;
 
 			new Island(a,b,c,d);
 
