@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 
 namespace SpiritIsland {
-
 	/*
 	====================================
 	Oceans Hungry Grasp
@@ -46,20 +42,27 @@ namespace SpiritIsland {
 				.Where(space=>space.Terrain == Terrain.Ocean)
 				.ToArray();
 
-			var onOcean = new RangeCriteria(0,(s)=>s.Terrain==Terrain.Ocean);
+			// Option 1 - reclaim, +1 power, gather 1 presense into EACH ocean, +2 energy
+			var baseOpt1Actions = new GrowthAction[]{
+				new ReclaimAll(this),
+				new DrawPowerCard(this),
+				new GainEnergy(this,2)
+			};
+			var gatherActions = oceans
+				.Where(o=>o.SpacesExactly(1).Any(Presence.Contains))
+				.Select(o=>new GatherPresence(this,o));
+			var opt1 = new GrowthOption(gatherActions.Union(baseOpt1Actions).ToArray());
+
+			// Option 2 - +1 presence range any ocean, +1 presense in any ociean, +1 energy
+			var placeOnOcean = new RangeCriteria(0,(s)=>s.Terrain==Terrain.Ocean);
+			var opt2 = new GrowthOption(
+				new GainEnergy(this,1),
+				new PlacePresence( this, oceans, placeOnOcean, placeOnOcean )
+			);
 
 			return new GrowthOption[]{
-				// reclaim, +1 power, gather 1 presense into EACH ocean, +2 energy
-				new GrowthOption(
-					new ReclaimAll(this),
-					new DrawPowerCard(this),
-					new GainEnergy(this,2)
-				),
-				// +1 presence range any ocean, +1 presense in any ociean, +1 energy
-				new GrowthOption(
-					new GainEnergy(this,1),
-					new PlacePresence( this, oceans, onOcean, onOcean )
-				),
+				opt1,
+				opt2,
 				// gain power card, push 1 presense from each ocian,  add presense on costal land range 1
 				new GrowthOption(),
 			};

@@ -11,26 +11,47 @@ namespace SpiritIsland.Tests.Growth {
 		}
 
 		[Theory]
-		[InlineData("A0","A0")]
-		[InlineData("A0B0","A0B0")]
-		[InlineData("A0B0C0","A0B0C0")]
-		public void ReclaimGather_GatherParts(string starting, string ending){
+		[InlineData("A0","","A0")]
+		[InlineData("A0B0","","A0B0")]
+		[InlineData("A0B0C0","","A0B0C0")]
+		[InlineData("A1","","A0")]
+		[InlineData("A1B1","","A0B0")]
+		[InlineData("A1B1C1","","A0B0C0")]
+		[InlineData("A1A2","A1>A0","A0A2")]    // need to define which presence to move
+		[InlineData("A1A2","A2>A0","A0A1")]    // need to define which presence to move
+		[InlineData("A1A2B1C1C2","A2>A0,C1>C0","A0A1B0C0C2")]    // need to define which presence to move
+		public void ReclaimGather_GatherParts(string starting, string select, string ending){
 
 			// Given: 3-board island
 			gameState.Island = new Island(BoardA,BoardB,BoardC);
-			// one presence in A0 - ocean
+
 			Given_HasPresence( starting );
 
-			// Nothing on board to gather - no error
-			// 1 thing on board to gather - specify it - success
-			// 1 thing on board to gather - don't specify it - fail!
-			// 2 things on board to gather - can select either - success
-
-			When_Growing(0);
+			var resolvers = select.Split(',')
+				.Where(x=>!string.IsNullOrEmpty(x))
+				.Select(x=>{
+					var p = x.Split('>');
+					return new GatherPresence.Resolve(p[0],p[1]);
+				} )
+				.ToArray();
+			When_Growing(0, resolvers );
 
 			// Then: nothing to gather
 			Assert_BoardPresenceIs(ending);
 		}
+
+		[Theory]
+		[InlineData("A1A2")]    // need to define which presence to move
+		public void ReclaimGather_GatherParts_Unresolved(string starting){
+
+			// Given: 3-board island
+			gameState.Island = new Island(BoardA,BoardB,BoardC);
+
+			Given_HasPresence( starting );
+
+			Assert.Throws<InvalidOperationException>(()=>When_Growing(0));
+		}
+
 
 		void Assert_BoardPresenceIs( string expected ) {
 			var actual = spirit.Presence.Select(s=>s.Label).OrderBy(l=>l).Join();
@@ -62,6 +83,7 @@ namespace SpiritIsland.Tests.Growth {
 		[Fact]
 		public void PowerPlaceAndPush(){
 			// gain power card, push 1 presense from each ocian,  add presense on costal land range 1
+
 		}
 
 	}
