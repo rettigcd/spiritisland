@@ -83,6 +83,9 @@ namespace SpiritIsland.Tests.Growth {
 			Assert_BoardPresenceIs(ending);
 		}
 
+
+		#region helpers
+
 		static IResolver[] Resolve_PushPresence( string select ) {
 			return select.Split( ',' )
 				.Where( x => !string.IsNullOrEmpty( x ) )
@@ -103,10 +106,7 @@ namespace SpiritIsland.Tests.Growth {
 				.ToArray();
 		}
 
-		void Assert_BoardPresenceIs( string expected ) {
-			var actual = spirit.Presence.Select(s=>s.Label).OrderBy(l=>l).Join();
-			Assert.Equal(expected, actual); // , Is.EqualTo(expected),"Presence in wrong place");
-		}
+		#endregion
 
 	}
 }

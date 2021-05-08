@@ -71,6 +71,11 @@ namespace SpiritIsland.Tests.Growth {
 
 		#region Asserts Presence
 
+		protected void Assert_BoardPresenceIs( string expected ) {
+			var actual = spirit.Presence.Select(s=>s.Label).OrderBy(l=>l).Join();
+			Assert.Equal(expected, actual); // , Is.EqualTo(expected),"Presence in wrong place");
+		}
+
 		#endregion
 
 		#region Asserts (Other)
