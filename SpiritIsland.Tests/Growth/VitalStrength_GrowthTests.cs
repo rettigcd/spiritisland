@@ -4,9 +4,7 @@ namespace SpiritIsland.Tests.Growth {
 
 	public class VitalStrength_GrowthTests : GrowthTests {
 
-		public VitalStrength_GrowthTests(){
-			Given_SpiritIs(new VitalStrength());
-		}
+		public VitalStrength_GrowthTests():base( new VitalStrength() ){}
 
 		[Fact]
 		public void ReclaimAndPresence(){

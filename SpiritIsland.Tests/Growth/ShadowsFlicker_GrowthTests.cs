@@ -4,8 +4,7 @@ namespace SpiritIsland.Tests.Growth {
 
 	public class ShadowsFlicker_GrowthTests : GrowthTests {
 
-		public ShadowsFlicker_GrowthTests (){
-			Given_SpiritIs(new Shadows());
+		public ShadowsFlicker_GrowthTests():base( new Shadows() ){
 		}
 
 

@@ -6,9 +6,7 @@ namespace SpiritIsland.Tests.Growth {
 	
 	public class Ocean_GrowthTests : GrowthTests {
 
-		public Ocean_GrowthTests(){
-			Given_SpiritIs(new Ocean());
-		}
+		public Ocean_GrowthTests():base(new Ocean()){}
 
 		[Theory]
 		[InlineData("A0","","A0")]

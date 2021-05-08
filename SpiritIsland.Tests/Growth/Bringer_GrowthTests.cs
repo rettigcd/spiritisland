@@ -4,9 +4,7 @@ namespace SpiritIsland.Tests.Growth {
 	
 	public class Bringer_GrowthTests : GrowthTests {
 
-		public Bringer_GrowthTests(){
-			Given_SpiritIs(new Bringer());
-		}
+		public Bringer_GrowthTests():base( new Bringer() ){}
 
 		[Fact] 
 		public void ReclaimAll_PowerCard(){

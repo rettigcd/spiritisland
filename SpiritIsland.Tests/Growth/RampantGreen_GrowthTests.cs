@@ -4,9 +4,7 @@ namespace SpiritIsland.Tests.Growth {
 
 	public class RampantGreen_GrowthTests : GrowthTests {
 
-		public RampantGreen_GrowthTests(){
-			Given_SpiritIs( new RampantGreen() );
-		}
+		public RampantGreen_GrowthTests():base( new RampantGreen() ){}
 
 		// +1 presense to jungle or wetland - range 2(Always do this + one of the following)
 		// reclaim, +1 power card

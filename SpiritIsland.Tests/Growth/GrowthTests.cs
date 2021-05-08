@@ -11,7 +11,8 @@ namespace SpiritIsland.Tests.Growth {
 		protected GameState gameState;
 		protected Board board;
 
-		public GrowthTests(){
+		protected GrowthTests(Spirit spirit){
+			Given_SpiritIs(spirit);
 			gameState = new GameState {
 				Island = new Island( BoardA )
 			};

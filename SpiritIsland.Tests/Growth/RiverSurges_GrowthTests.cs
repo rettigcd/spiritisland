@@ -4,9 +4,7 @@ namespace SpiritIsland.Tests.Growth {
 
 	public class RiverSurges_GrowthTests : GrowthTests{
 
-		public RiverSurges_GrowthTests(){
-			Given_SpiritIs( new RiverSurges() );
-		}
+		public RiverSurges_GrowthTests():base( new RiverSurges() ){}
 
 		[Fact]
 		public void Reclaim_DrawCard_Energy() {

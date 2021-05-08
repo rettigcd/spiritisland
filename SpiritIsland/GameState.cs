@@ -8,6 +8,7 @@ namespace SpiritIsland {
 
 		public Island Island { get; set; }
 
+		public void AddBeast( Space space ){ beastCount[space]++; }
 		public void AddBlight( Space space ){ blightCount[space]++; }
 		public void AddDahan( Space space ){ dahanCount[space]++; }
 		public void AddCity( Space space ){ cityCount[space]++; }
@@ -21,13 +22,19 @@ namespace SpiritIsland {
 		public bool HasInvaders( Space space ) => explorerCount[space]>0||townCount[space]>0||cityCount[space]>0;
 		public bool HasWilds( Space s ) => wildsCount[s] > 0;
 		public bool HasBlight( Space s ) => blightCount[s] > 0;
+		public bool HasBeasts( Space s ) => beastCount[s] > 0;
+
 
 		readonly DefaultDictionary<Space,int> blightCount = new DefaultDictionary<Space, int>();
-		readonly DefaultDictionary<Space,int> wildsCount = new DefaultDictionary<Space, int>();
+		readonly DefaultDictionary<Space,int> beastCount = new DefaultDictionary<Space, int>();
+
 		readonly DefaultDictionary<Space,int> cityCount = new DefaultDictionary<Space, int>();
 		readonly DefaultDictionary<Space,int> townCount = new DefaultDictionary<Space, int>();
 		readonly DefaultDictionary<Space,int> explorerCount = new DefaultDictionary<Space, int>();
+
 		readonly DefaultDictionary<Space,int> dahanCount = new DefaultDictionary<Space, int>();
+
+		readonly DefaultDictionary<Space,int> wildsCount = new DefaultDictionary<Space, int>();
 
 	}
 

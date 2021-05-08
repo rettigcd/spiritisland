@@ -4,9 +4,8 @@ namespace SpiritIsland.Tests.Growth {
 
 	public class Lightning_GrowthTests : GrowthTests{
 
-		public Lightning_GrowthTests(){
-			Given_SpiritIs(new Lightning());
-		}
+		public Lightning_GrowthTests()
+			:base(new Lightning()){}
 
 		[Fact]
 		public void Reclaim(){

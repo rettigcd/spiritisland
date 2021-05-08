@@ -4,8 +4,7 @@ namespace SpiritIsland.Tests.Growth {
 
 	public class Thunderspeaker_GrowthTests : GrowthTests{
 
-		public Thunderspeaker_GrowthTests(){
-			Given_SpiritIs( new ThunderSpeaker() );
+		public Thunderspeaker_GrowthTests():base( new ThunderSpeaker() ){
 		}
 
 		[Fact]
