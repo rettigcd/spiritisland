@@ -17,7 +17,7 @@ namespace SpiritIsland.Tests.Growth {
 			// reclaim, +1 power card
 			Given_HasPresence( board[2] );
 
-			When_Growing( 0, "A2;A3;A5" );
+			When_Growing( 0, Resolve_PlacePresence("A2;A3;A5") );
 
 			Assert_AllCardsAvailableToPlay();
 			Assert_GainPowercard( 1 );
@@ -33,8 +33,8 @@ namespace SpiritIsland.Tests.Growth {
 
 			Assert.Equal(1, spirit.NumberOfCardsPlayablePerTurn); // ,"Rampant Green should start with 1 card.");
 
-			When_Growing( 1,"A1A2;A1A3;A1A5;A1A8;A2A2;A2A3;A2A4;A2A5;A3A3;A3A4;A3A5;"
-				+"A4A5;A4A8;A5A5;A5A6;A5A7;A5A8"
+			When_Growing( 1, Resolve_PlacePresence("A1A2;A1A3;A1A5;A1A8;A2A2;A2A3;A2A4;A2A5;A3A3;A3A4;A3A5;"
+				+"A4A5;A4A8;A5A5;A5A6;A5A7;A5A8")
 			);
 
 			// Player Gains +1 card to play this round
@@ -52,7 +52,7 @@ namespace SpiritIsland.Tests.Growth {
 			// +1 power card, +3 energy
 			Given_HasPresence( board[2] );
 
-			When_Growing( 2, "A2;A3;A5" );
+			When_Growing( 2, Resolve_PlacePresence("A2;A3;A5") );
 
 			Assert_GainEnergy(3);
 			Assert_GainPowercard(1);

@@ -15,11 +15,11 @@ namespace SpiritIsland.Tests.Growth {
 		}
 
 		[Fact] 
-		public void Reclaim1_Presence(){
+		public void Reclaim1_Presence() {
 			// reclaim 1, add presense range 0
 			Given_HasPresence( board[4] );
 
-			When_Growing(1, "A4", Reclaim1.Resolve(spirit.PlayedCards[0]) );
+			When_Growing( 1, Resolve_PlacePresence("A4"), Resolve_Reclaim( 0 ) );
 
 			Assert.Equal( 3, spirit.AvailableCards.Count );
 
@@ -29,8 +29,9 @@ namespace SpiritIsland.Tests.Growth {
 		public void PowerCard_Presence(){
 			// +1 power card, +1 pressence range 1
 			Given_HasPresence( board[1] );
-			When_Growing(2,"A1;A2;A4;A5;A6");
+			When_Growing(2,Resolve_PlacePresence("A1;A2;A4;A5;A6"));
 			Assert_GainPowercard(1);
+			Assert_BoardPresenceIs("A1A1");
 		}
 
 		[Fact] 
@@ -44,10 +45,10 @@ namespace SpiritIsland.Tests.Growth {
 			gameState.AddCity(board[9]);
 
 			// add presense range 4 Dahan or Invadors, +2 energy
-			When_Growing(3,"T6;T7;T8;T9");
+			When_Growing(3,Resolve_PlacePresence("T6;T7;T8;T9"));
 
 			Assert_GainEnergy(2);
-
+			Assert_BoardPresenceIs("T5T6");
 		}
 
 	}

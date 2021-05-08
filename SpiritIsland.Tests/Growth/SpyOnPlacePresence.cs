@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace SpiritIsland.Tests.Growth {
 
-	class SpyOnPlacePresence : PlacePresence.Resolve {
+	public class SpyOnPlacePresence : PlacePresence.Resolve {
 		readonly string allOptions;
 		public SpyOnPlacePresence( string allOptions )
 			:base(allOptions.Split(';')[0])

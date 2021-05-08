@@ -22,12 +22,14 @@ namespace SpiritIsland.Tests.Growth {
 
 			Given_HasPresence( board[1] );
 
-			When_Growing( 1, "A1A1;A1A2;A1A4;A1A5;A1A6;"
+			When_Growing( 1, Resolve_PlacePresence(
+				"A1A1;A1A2;A1A4;A1A5;A1A6;"
 				+"A2A2;A2A3;A2A4;A2A5;A2A6;"
 				+"A3A4;"
 				+"A4A4;A4A5;A4A6;"
 				+"A5A5;A5A6;A5A7;A5A8;"
-				+"A6A6;A6A8" );
+				+"A6A6;A6A8"
+			) );
 
 			Assert_GainPowercard( 0 );
 			Assert_GainEnergy( 0 );
@@ -41,7 +43,7 @@ namespace SpiritIsland.Tests.Growth {
 			// +1 presense range 2
 			Given_HasPresence( board[3] );
 
-			When_Growing( 2, "A1;A2;A3;A4;A5" );
+			When_Growing( 2, Resolve_PlacePresence("A1;A2;A3;A4;A5") );
 
 			Assert_GainPowercard( 1 );
 			Assert_GainEnergy( 0 );

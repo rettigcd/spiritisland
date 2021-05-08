@@ -28,18 +28,14 @@ namespace SpiritIsland.Tests.Growth {
 			// a) reclaim, +1 energy
 			// c) add presense range 3 containing (wilds or presense), +1 energy
 
-			// default island is Board A
+			Given_HasPresence( board[3] );
+			base.Given_HasWilds( board[8] ); // 3 spaces away
 
-			// Given: presence
-			spirit.Presence.Add( board[3] );
-			// Gvien: 1 wilds, 3 away
-			gameState.AddWilds( board[8] );
-
-			When_Growing( 1, new SpyOnPlacePresence("A3;A8") );
+			When_Growing( 1, Resolve_PlacePresence( "A3;A8" ) );
 
 			Assert_AllCardsAvailableToPlay();   // A
 			Assert_GainEnergy( 2 );             // A & C
-			Assert_BoardPresenceIs("A3A3");     // C
+			Assert_BoardPresenceIs( "A3A3" );     // C
 		}
 
 		[Fact]
@@ -48,10 +44,10 @@ namespace SpiritIsland.Tests.Growth {
 			// d) -3 energy, +1 power card, add presense to land without blight range 3
 
 			// Given: presence on board A  (default island is Board A)
-			spirit.Presence.Add( board[3] );
+			Given_HasPresence( board[3] );
 			Given_BlightEverywhereExcept7();
 
-			When_Growing( 2, new SpyOnPlacePresence("A7") );
+			When_Growing( 2, Resolve_PlacePresence("A7") );
 
 			Assert_AllCardsAvailableToPlay();   // A
 			Assert_GainEnergy( -2 );            // A & D
@@ -66,15 +62,15 @@ namespace SpiritIsland.Tests.Growth {
 			// c) add presense range 3 containing (wilds or presense), +1 energy
 
 			// Given: presence at A3  (default island is Board A)
-			spirit.Presence.Add( board[3] );
+			Given_HasPresence( board[3] );
 			// Given: 1 wilds, 3 away
-			gameState.AddWilds( board[8] );
+			Given_HasWilds( board[8] );
 
-			When_Growing( 3, new SpyOnPlacePresence("A3;A8") );
+			When_Growing( 3, Resolve_PlacePresence( "A3;A8" ) );
 
 			Assert_GainPowercard( 1 );          // B
 			Assert_GainEnergy( 1 );             // C
-			Assert_BoardPresenceIs("A3A3");     // C
+			Assert_BoardPresenceIs( "A3A3" );     // C
 		}
 
 		[Fact]
@@ -83,10 +79,10 @@ namespace SpiritIsland.Tests.Growth {
 			// d) -3 energy, +1 power card, add presense to land without blight range 3
 
 			// Given: presence on board A  (default island is Board A)
-			spirit.Presence.Add( board[3] );
+			Given_HasPresence( board[3] );
 			Given_BlightEverywhereExcept7();
 
-			When_Growing( 4, new SpyOnPlacePresence( "A7" ) );
+			When_Growing( 4, Resolve_PlacePresence( "A7" ) );
 
 			Assert_GainPowercard( 2 );          // B & D
 			Assert_GainEnergy( -3 );            // D
@@ -100,18 +96,17 @@ namespace SpiritIsland.Tests.Growth {
 			// d) -3 energy, +1 power card, add presense to land without blight range 3
 
 			// Given: presence on board A  (default island is Board A)
-			spirit.Presence.Add( board[3] );
-			gameState.AddWilds( board[8] );
+			Given_HasPresence( board[3] );
+			Given_HasWilds( board[8] );
 			Given_BlightEverywhereExcept7();
 
-			When_Growing( 5, new SpyOnPlacePresence( "A3A7;A7A8" ) );
+			When_Growing( 5, Resolve_PlacePresence( "A3A7;A7A8" ) );
 
 			Assert_GainEnergy( -2 );            // C & D
 			Assert_GainPowercard( 1 );          // D
 			Assert_BoardPresenceIs( "A3A3A7" ); // D
 
 		}
-
 
 		void Given_BlightEverywhereExcept7() {
 			gameState.AddBlight( board[1] );

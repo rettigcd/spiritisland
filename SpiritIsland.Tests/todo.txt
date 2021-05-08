@@ -2,14 +2,8 @@
 
 Growth that needs resolved:
 
-	- where to place presence
-	- which track to take presence from
-	? With .ResolvePresence(...)
-
+	! which track to take presence from
 	- Which Power Cards are being drawn (major/minor)
-
-	- Which 1 card is being reclaimed
-
 
 !!! Test Initial Sprit Player State
 !!! Test Presence Tracks

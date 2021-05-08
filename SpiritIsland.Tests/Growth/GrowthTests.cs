@@ -19,10 +19,20 @@ namespace SpiritIsland.Tests.Growth {
 			board = gameState.Island.Boards[0];
 		}
 
-		protected Board BoardA => Board.BuildBoardA();
-		protected Board BoardB => Board.BuildBoardB();
-		protected Board BoardC => Board.BuildBoardC();
-		protected Board BoardD => Board.BuildBoardD();
+		#region Board factories
+
+		static protected Board BoardA => Board.BuildBoardA();
+		static protected Board BoardB => Board.BuildBoardB();
+		static protected Board BoardC => Board.BuildBoardC();
+		static protected Board BoardD => Board.BuildBoardD();
+
+		#endregion
+
+		#region Given
+
+		protected void Given_HasWilds( Space space ) {
+			gameState.AddWilds( space );
+		}
 
 		protected void Given_HasPresence( params Space[] spaces ) {
 			spirit.Presence.AddRange( spaces );
@@ -37,7 +47,6 @@ namespace SpiritIsland.Tests.Growth {
 				spaces[i] = spaceLookup[presenceString.Substring(i*2,2)];
 			Given_HasPresence(spaces);
 		}
-
 
 		protected void Given_SpiritIs(Spirit spirit) {
 
@@ -56,19 +65,11 @@ namespace SpiritIsland.Tests.Growth {
 			ps.AvailableCards.Add( new PowerCard( "D", 0, Speed.Fast, "A" ) );
 		}
 
+		#endregion
+
 		protected void When_Growing( int option, params IResolver[] resolvers ) {
 			spirit.Grow(gameState, option, resolvers);
 		}
-
-		protected void When_Growing( int option, string presenceOptions, params IResolver[] resolvers ) {
-			this.expectedPlacementOptionString  = presenceOptions;
-
-			var list = resolvers.ToList();
-			list.Add(new SpyOnPlacePresence( presenceOptions ));
-
-			spirit.Grow(gameState, option, list.ToArray());
-		}
-		protected string expectedPlacementOptionString ;
 
 		#region Asserts Presence
 
@@ -93,6 +94,38 @@ namespace SpiritIsland.Tests.Growth {
 
 		protected void Assert_GainEnergy( int expectedChange ) {
 			Assert.Equal( expectedChange, spirit.Energy - initEnergy ); // , $"Expected {expectedChange} energy change" );
+		}
+
+		#endregion
+
+		#region Resolve_
+
+		protected static IResolver[] Resolve_PushPresence( string select ) {
+			return select.Split( ',' )
+				.Where( x => !string.IsNullOrEmpty( x ) )
+				.Select( x => {
+					var p = x.Split( '>' );
+					return new PushPresence.Resolve( p[0], p[1] );
+				} )
+				.ToArray();
+		}
+
+		protected static IResolver[] Resolve_GatherPresence( string select ) {
+			return select.Split( ',' )
+				.Where( x => !string.IsNullOrEmpty( x ) )
+				.Select( x => {
+					var p = x.Split( '>' );
+					return new GatherPresence.Resolve( p[0], p[1] );
+				} )
+				.ToArray();
+		}
+
+		protected IResolver Resolve_Reclaim( int index ) {
+			return Reclaim1.Resolve( spirit.PlayedCards[index] );
+		}
+
+		protected SpyOnPlacePresence Resolve_PlacePresence( string placeOptions ) {
+			return new SpyOnPlacePresence( placeOptions );
 		}
 
 		#endregion

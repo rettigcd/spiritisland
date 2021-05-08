@@ -19,18 +19,15 @@ namespace SpiritIsland.Tests.Growth {
 		[InlineData("A1A2","A2>A0","A0A1")]    // need to define which presence to move
 		[InlineData("A1A2B1C1C2","A2>A0,C1>C0","A0A1B0C0C2")]    // need to define which presence to move
 		public void ReclaimGather_GatherParts(string starting, string select, string ending) {
-
-			// Given: 3-board island
-			gameState.Island = new Island( BoardA, BoardB, BoardC );
-
+			Given_IslandIsABC();
 			Given_HasPresence( starting );
 
-			IResolver[] resolvers = Resolve_GatherPresence( select );
-			When_Growing( 0, resolvers );
+			When_Growing( 0, Resolve_GatherPresence( select ) );
 
 			// Then: nothing to gather
 			Assert_BoardPresenceIs( ending );
 		}
+
 
 		[Theory]
 		[InlineData("A1A2")]    // need to define which presence to move
@@ -61,7 +58,7 @@ namespace SpiritIsland.Tests.Growth {
 			// Given: island has 2 boards, hence 2 oceans
 			gameState.Island = new Island(BoardA,BoardB);
 
-			When_Growing(1,"A0A0;A0B0;B0B0");
+			When_Growing(1,Resolve_PlacePresence("A0A0;A0B0;B0B0"));
 			
 			Assert_GainEnergy(1);
 		}
@@ -74,34 +71,18 @@ namespace SpiritIsland.Tests.Growth {
 			Given_HasPresence( starting );
 
 			var resolvers = Resolve_PushPresence( push )
-				.Include( new SpyOnPlacePresence(placeOptions) );
+				.Include( Resolve_PlacePresence(placeOptions) );
 			When_Growing(2,resolvers);
 
 			Assert_GainPowercard(1);
 			Assert_BoardPresenceIs(ending);
 		}
 
-
 		#region helpers
 
-		static IResolver[] Resolve_PushPresence( string select ) {
-			return select.Split( ',' )
-				.Where( x => !string.IsNullOrEmpty( x ) )
-				.Select( x => {
-					var p = x.Split( '>' );
-					return new PushPresence.Resolve( p[0], p[1] );
-				} )
-				.ToArray();
-		}
-
-		static IResolver[] Resolve_GatherPresence( string select ) {
-			return select.Split( ',' )
-				.Where( x => !string.IsNullOrEmpty( x ) )
-				.Select( x => {
-					var p = x.Split( '>' );
-					return new GatherPresence.Resolve( p[0], p[1] );
-				} )
-				.ToArray();
+		void Given_IslandIsABC() {
+			// Given: 3-board island
+			gameState.Island = new Island( BoardA, BoardB, BoardC );
 		}
 
 		#endregion

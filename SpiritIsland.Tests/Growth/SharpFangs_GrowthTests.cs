@@ -7,7 +7,7 @@ namespace SpiritIsland.Tests.Growth {
 		public SharpFangs_GrowthTests():base( new SharpFangs() ){
 		
 			// Setup for growth option B
-			spirit.Presence.Add(board[2]); // wetlands
+			Given_HasPresence( board[2] ); // wetlands
 			gameState.AddBeast(board[7]); // add beast to sand (not jungle)
 
 		}
@@ -23,7 +23,7 @@ namespace SpiritIsland.Tests.Growth {
 			// a) cost -1, reclaim cards, gain +1 power card
 			// b) add a presense to jungle or a land with beasts ( range 3)
 
-			When_Growing( 0,new SpyOnPlacePresence("A3;A7;A8") );
+			When_Growing( 0, Resolve_PlacePresence("A3;A7;A8") );
 
 			Assert_AllCardsAvailableToPlay();  // A
 			Assert_GainEnergy( -1 );           // A
@@ -75,7 +75,7 @@ namespace SpiritIsland.Tests.Growth {
 			// b) add a presense to jungle or a land with beasts ( range 3)
 			// d) +3 energy
 
-			When_Growing( 4, new SpyOnPlacePresence("A3;A7;A8") );
+			When_Growing( 4, Resolve_PlacePresence("A3;A7;A8") );
 
 			Assert_BoardPresenceIs("A2A3");    // B
 			Assert_GainEnergy( 3 );            // D

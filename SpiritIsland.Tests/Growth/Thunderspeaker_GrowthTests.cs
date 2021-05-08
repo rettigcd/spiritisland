@@ -14,7 +14,7 @@ namespace SpiritIsland.Tests.Growth {
 			When_Growing( 0 );
 
 			Assert_AllCardsAvailableToPlay();
-			Assert.Equal( 2, spirit.PowerCardsToDraw );
+			Assert_GainPowercard(2);
 			Assert_GainEnergy(0);
 		}
 
@@ -30,11 +30,9 @@ namespace SpiritIsland.Tests.Growth {
 			//	 And: dahan on initial spot
 			foreach(string s in initialDahanSquares.Split( ',' ))
 				gameState.AddDahan( board[int.Parse( s )] );
-			this.expectedPlacementOptionString = expectedPresenseOptions;
 
-			When_Growing( 1,expectedPresenseOptions );
+			When_Growing( 1,Resolve_PlacePresence(expectedPresenseOptions) );
 
-			//  And: Energy didn't change
 			Assert_GainEnergy( 0 );
 
 		}
@@ -44,7 +42,7 @@ namespace SpiritIsland.Tests.Growth {
 			// +1 presense within 1, +4 energy
 
 			Given_HasPresence( board[1] );
-			When_Growing(2,"A1;A2;A4;A5;A6");
+			When_Growing(2,Resolve_PlacePresence("A1;A2;A4;A5;A6"));
 
 			Assert_GainEnergy( 4 );
 
