@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace SpiritIsland.Tests {
+
+	/// <summary> Test board with simplified connectivity </summary>
 	class LineBoard {
 
 		static public Board MakeBoard(){

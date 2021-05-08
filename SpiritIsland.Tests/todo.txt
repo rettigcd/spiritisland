@@ -1,11 +1,5 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
-
-
-Idea! for ease of presence testing,  replace Board A with a Test board that has lots of lands in a line.
-
-
-
 Growth that needs resolved:
 
 	- where to place presence

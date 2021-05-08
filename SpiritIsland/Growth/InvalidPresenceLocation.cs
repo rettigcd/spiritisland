@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace SpiritIsland {
@@ -9,11 +8,6 @@ namespace SpiritIsland {
 			:base($"Invalid:{invalidSpace} allowed:"+allowed.Join(","))
 		{}
 		
-	}
-
-	static public class IEnumerableExtensions {
-		public static string Join(this IEnumerable<string> items, string glue ) => string.Join(glue,items);
-		public static string Join(this IEnumerable<string> items) => string.Join(string.Empty,items);
 	}
 
 }

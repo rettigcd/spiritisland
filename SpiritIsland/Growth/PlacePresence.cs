@@ -41,13 +41,17 @@ namespace SpiritIsland {
 
 		public override void Apply() {
 
-			var optionStrings = this.Options
-				.Select( o => string.Join( "", o.Select( bs => bs.Label ).OrderBy( l => l ) ) )
-				.OrderBy( s => s )
-				.ToArray();
+			string FormatOption(Space[] o) => o.Select( bs => bs.Label ).OrderBy( l => l ).Join("");
 
-			if(!optionStrings.Contains(placeOnSpace))
-				throw new InvalidPresenceLocation(placeOnSpace,optionStrings);
+			var option = this.Options
+				.Where(o => FormatOption(o) == placeOnSpace)
+				.FirstOrDefault();
+
+			if( option == null )
+				throw new InvalidPresenceLocation(placeOnSpace,Options.Select(FormatOption).ToArray());
+
+			foreach(var space in option)
+				this.spirit.Presence.Add(space);
 
 			placeOnSpace = null;
 		}

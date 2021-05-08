@@ -10,7 +10,7 @@ namespace SpiritIsland {
 		#region factories
 
 
-		// These cannot be reused because when they get connected to other islands, 
+		// These cannot be reused because when they get connected to other boards, 
 		// there neighbor state changes.
 
 		static public Board BuildBoardA() {

@@ -42,16 +42,18 @@ namespace SpiritIsland {
 				.Where(space=>space.Terrain == Terrain.Ocean)
 				.ToArray();
 
+			// !!! add test that oceans containing 2 presence only push 1 of them out.
+
 			// Option 1 - reclaim, +1 power, gather 1 presense into EACH ocean, +2 energy
-			var baseOpt1Actions = new GrowthAction[]{
+			var growthActions = oceans
+				.Where(o=>o.SpacesExactly(1).Any(Presence.Contains))
+				.Select(o=>new GatherPresence(this,o))
+				.Cast<GrowthAction>();
+			var opt1 = new GrowthOption(growthActions.Include(
 				new ReclaimAll(this),
 				new DrawPowerCard(this),
 				new GainEnergy(this,2)
-			};
-			var gatherActions = oceans
-				.Where(o=>o.SpacesExactly(1).Any(Presence.Contains))
-				.Select(o=>new GatherPresence(this,o));
-			var opt1 = new GrowthOption(gatherActions.Union(baseOpt1Actions).ToArray());
+			));
 
 			// Option 2 - +1 presence range any ocean, +1 presense in any ociean, +1 energy
 			var placeOnOcean = new RangeCriteria(0,(s)=>s.Terrain==Terrain.Ocean);
@@ -60,12 +62,19 @@ namespace SpiritIsland {
 				new PlacePresence( this, oceans, placeOnOcean, placeOnOcean )
 			);
 
-			return new GrowthOption[]{
-				opt1,
-				opt2,
-				// gain power card, push 1 presense from each ocian,  add presense on costal land range 1
-				new GrowthOption(),
-			};
+			// Option 3 - gain power card, push 1 presense from each ocean,  add presense on costal land range 1
+			var myOceans = this.Presence
+				.Where(p=>p.Terrain == Terrain.Ocean);
+			var pushActions = myOceans
+				.Distinct() // !!! need test for this
+				.Select(o=>new PushPresence(this,o))
+				.Cast<GrowthAction>();
+			var opt3 = new GrowthOption( pushActions.Include(
+					new DrawPowerCard(this),
+					new PlacePresence(this, 1, myOceans)
+			));
+
+			return new GrowthOption[]{ opt1, opt2, opt3 };
 
 		}
 

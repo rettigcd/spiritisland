@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
 namespace SpiritIsland.Tests.Growth {
 
-	public class GrowthTests {
+	public partial class GrowthTests {
 
 		const int initEnergy = 3;
 		protected Spirit spirit;
@@ -83,7 +82,7 @@ namespace SpiritIsland.Tests.Growth {
 		protected void Assert_AllCardsAvailableToPlay() {
 			// Then: all cards reclaimed (including unplayed)
 			Assert.Empty( spirit.PlayedCards ); // , "Should not be any cards in 'played' pile" );
-			Assert.Equal( "ABCD", string.Join( "", spirit.AvailableCards.Select( c => c.Name ).OrderBy( n => n ) ) );
+			Assert.Equal( "ABCD", spirit.AvailableCards.Select( c => c.Name ).OrderBy( n => n ).Join("") );
 		}
 
 		protected void Assert_GainEnergy( int expectedChange ) {
@@ -91,29 +90,6 @@ namespace SpiritIsland.Tests.Growth {
 		}
 
 		#endregion
-
-
-		class SpyOnPlacePresence : PlacePresence.Resolve {
-			readonly string allOptions;
-			public SpyOnPlacePresence( string allOptions )
-				:base(allOptions.Split(';')[0])
-			{
-				this.allOptions = allOptions;
-			}
-			protected override void Update( PlacePresence pp ) {
-
-				base.Update( pp );
-				string[] x = pp.Options
-					.Select(o=> o.Select(l=>l.Label).OrderBy(l=>l).Join() )
-					.OrderBy(l=>l)
-					.ToArray();
-				string actualOptions = x
-					.Join(";");
-
-				if(actualOptions != allOptions)
-					throw new Exception($"Expected [{allOptions}] but found [{actualOptions}]" );
-			}
-		}
 
 	}
 

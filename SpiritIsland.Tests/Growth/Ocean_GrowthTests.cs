@@ -20,24 +20,18 @@ namespace SpiritIsland.Tests.Growth {
 		[InlineData("A1A2","A1>A0","A0A2")]    // need to define which presence to move
 		[InlineData("A1A2","A2>A0","A0A1")]    // need to define which presence to move
 		[InlineData("A1A2B1C1C2","A2>A0,C1>C0","A0A1B0C0C2")]    // need to define which presence to move
-		public void ReclaimGather_GatherParts(string starting, string select, string ending){
+		public void ReclaimGather_GatherParts(string starting, string select, string ending) {
 
 			// Given: 3-board island
-			gameState.Island = new Island(BoardA,BoardB,BoardC);
+			gameState.Island = new Island( BoardA, BoardB, BoardC );
 
 			Given_HasPresence( starting );
 
-			var resolvers = select.Split(',')
-				.Where(x=>!string.IsNullOrEmpty(x))
-				.Select(x=>{
-					var p = x.Split('>');
-					return new GatherPresence.Resolve(p[0],p[1]);
-				} )
-				.ToArray();
-			When_Growing(0, resolvers );
+			IResolver[] resolvers = Resolve_GatherPresence( select );
+			When_Growing( 0, resolvers );
 
 			// Then: nothing to gather
-			Assert_BoardPresenceIs(ending);
+			Assert_BoardPresenceIs( ending );
 		}
 
 		[Theory]
@@ -50,12 +44,6 @@ namespace SpiritIsland.Tests.Growth {
 			Given_HasPresence( starting );
 
 			Assert.Throws<InvalidOperationException>(()=>When_Growing(0));
-		}
-
-
-		void Assert_BoardPresenceIs( string expected ) {
-			var actual = spirit.Presence.Select(s=>s.Label).OrderBy(l=>l).Join();
-			Assert.Equal(expected, actual); // , Is.EqualTo(expected),"Presence in wrong place");
 		}
 
 		[Fact]
@@ -80,10 +68,44 @@ namespace SpiritIsland.Tests.Growth {
 			Assert_GainEnergy(1);
 		}
 
-		[Fact]
-		public void PowerPlaceAndPush(){
-			// gain power card, push 1 presense from each ocian,  add presense on costal land range 1
+		[Theory]
+		[InlineData("A0","A0>A2","A1;A2;A3","A1A2")]
+		public void PowerPlaceAndPush( string starting, string push, string placeOptions, string ending ){
+			// gain power card, push 1 presense from each ocean,  add presense on costal land range 1
+			gameState.Island = new Island(BoardA,BoardB,BoardC);
+			Given_HasPresence( starting );
 
+			var resolvers = Resolve_PushPresence( push )
+				.Include( new SpyOnPlacePresence(placeOptions) );
+			When_Growing(2,resolvers);
+
+			Assert_GainPowercard(1);
+			Assert_BoardPresenceIs(ending);
+		}
+
+		static IResolver[] Resolve_PushPresence( string select ) {
+			return select.Split( ',' )
+				.Where( x => !string.IsNullOrEmpty( x ) )
+				.Select( x => {
+					var p = x.Split( '>' );
+					return new PushPresence.Resolve( p[0], p[1] );
+				} )
+				.ToArray();
+		}
+
+		static IResolver[] Resolve_GatherPresence( string select ) {
+			return select.Split( ',' )
+				.Where( x => !string.IsNullOrEmpty( x ) )
+				.Select( x => {
+					var p = x.Split( '>' );
+					return new GatherPresence.Resolve( p[0], p[1] );
+				} )
+				.ToArray();
+		}
+
+		void Assert_BoardPresenceIs( string expected ) {
+			var actual = spirit.Presence.Select(s=>s.Label).OrderBy(l=>l).Join();
+			Assert.Equal(expected, actual); // , Is.EqualTo(expected),"Presence in wrong place");
 		}
 
 	}

@@ -37,7 +37,7 @@ namespace SpiritIsland {
 			public void Apply( GrowthOption growthOption ) {
 				var action = growthOption.GrowthActions
 					.OfType<GatherPresence>()
-					.Single(a=>a.To.Label == to);
+					.VerboseSingle(a=>a.To.Label == to);
 				action.From = from;
 			}
 		}
@@ -45,4 +45,5 @@ namespace SpiritIsland {
 
 
 	}
+
 }

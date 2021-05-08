@@ -9,7 +9,7 @@ namespace SpiritIsland.Tests {
 		[InlineData( 0 )]
 		[InlineData( 1 )]
 		[InlineData( 2 )]
-		public void Space_Is0DistanceFromSelf( int distance ) {
+		public void Space_IsWithinXDistanceFromSelf( int distance ) {
 			var space = new Space();
 			var spaces = space.SpacesWithin( distance );
 			Assert.Contains( space, spaces );
