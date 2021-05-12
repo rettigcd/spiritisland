@@ -81,7 +81,6 @@ namespace SpiritIsland.Tests.Growth {
 
 			Given_HasPresence( board[3] );
 
-
 			spirit.RevealedCardSpaces = revealedSpaces;
 			Assert_PresenceTracksAre(1,expectedCardPlayCount);
 

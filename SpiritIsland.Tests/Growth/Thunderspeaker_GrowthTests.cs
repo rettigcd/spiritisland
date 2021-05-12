@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using System;
+using Xunit;
 
 namespace SpiritIsland.Tests.Growth {
 
@@ -46,6 +47,58 @@ namespace SpiritIsland.Tests.Growth {
 
 			Assert_GainEnergy( 4 );
 
+		}
+
+		[Theory]
+		[InlineDataAttribute(1,1,"")]
+		[InlineDataAttribute(2,1,"A")]
+		[InlineDataAttribute(3,2,"A")]
+		[InlineDataAttribute(4,2,"AF")]
+		[InlineDataAttribute(5,2,"AFS")]
+		[InlineDataAttribute(6,3,"AFS")]
+		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ){
+			// energy:	1 air 2 fire sun 3
+			spirit.RevealedEnergySpaces = revealedSpaces;
+			Assert_PresenceTracksAre(expectedEnergyGrowth,1);
+
+			Assert.Equal( elements.Contains('A') ? 1 : 0 ,spirit.Elements( Element.Air ));
+			Assert.Equal( elements.Contains('F') ? 1 : 0 ,spirit.Elements( Element.Fire ));
+			Assert.Equal( elements.Contains('S') ? 1 : 0 ,spirit.Elements( Element.Sun ));
+		}
+
+		static Element Convert(char k){
+			return k switch {
+				'A' => Element.Air,
+				'F' => Element.Fire,
+				'S' => Element.Sun,
+				_ => throw new Exception("bad element character")
+			};
+		}
+
+		[Theory]
+		[InlineDataAttribute(1,1,false)]
+		[InlineDataAttribute(2,2,false)]
+		[InlineDataAttribute(3,2,false)]
+		[InlineDataAttribute(4,3,false)]
+		[InlineDataAttribute(5,3,true)]
+		[InlineDataAttribute(6,3,true)]
+		[InlineDataAttribute(7,4,true)]
+		public void CardTrack(int revealedSpaces, int expectedCardPlayCount, bool canReclaim1 ){
+			// card:	1 2 2 3 reclaim-1 3 4
+
+			Given_HasPresence( board[3] );
+
+			spirit.RevealedCardSpaces = revealedSpaces;
+			Assert_PresenceTracksAre(1,expectedCardPlayCount);
+
+			void Grow(){
+				When_Growing(2,Resolve_Reclaim(0),Resolve_PlacePresence("A2;A3;A4"));
+			}
+
+			if(canReclaim1)
+				Grow();
+			else
+				Assert.Throws<Exception>( Grow );
 		}
 
 	}

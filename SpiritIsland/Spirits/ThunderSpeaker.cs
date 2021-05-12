@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SpiritIsland {
 
@@ -11,6 +12,7 @@ namespace SpiritIsland {
 
 	1 air 2 fire sun 3
 	1 2 2 3 reclaim-1 3 4
+
 	Innate-1:  Gather the Warriors => slow, range 1, any
 	4 air   this power may be fast
 	1 beast    gather 1 dahan per air, push 1 dahan per sun
@@ -31,17 +33,45 @@ namespace SpiritIsland {
 	public class ThunderSpeaker : Spirit {
 		
 		public override GrowthOption[] GetGrowthOptions(GameState gameState){
+
+			var opt1Actions = new List<GrowthAction>{
+				new PlacePresence(this 
+					,new RangeCriteria(1,onDahan)
+					,new RangeCriteria(2,onDahan)
+				)
+			};
+
+			var opt2Actions = new List<GrowthAction>{
+				new PlacePresence(this,1), new GainEnergy(this,4)
+			};
+
+			if( RevealedCardSpaces >= 5){
+				opt1Actions.Add( new Reclaim1(this) );
+				opt2Actions.Add( new Reclaim1(this) );
+			}
+
 			bool onDahan(Space bs) => gameState.HasDahan(bs);
 			return new GrowthOption[]{
 				new GrowthOption( new ReclaimAll(this), new DrawPowerCard(this,2) ),
-				new GrowthOption( 
-					new PlacePresence(this
-						,new RangeCriteria(1,onDahan)
-						,new RangeCriteria(2,onDahan)
-					) 
-				),
-				new GrowthOption( new PlacePresence(this,1), new GainEnergy(this,4) )
+				new GrowthOption( opt1Actions ),
+				new GrowthOption( opt2Actions )
 			};
+		}
+
+		public override int EnergyGrowth { get{
+			return new int[]{1, 1, 2, 2, 2, 3 }[RevealedEnergySpaces-1];
+		} }
+		public override int NumberOfCardsPlayablePerTurn { get{
+			return new int[]{1, 2, 2, 3, 3, 3, 4 }[RevealedCardSpaces-1];
+		}}
+
+		public override int Elements( Element el ) {
+			switch( el ){
+				case Element.Air:  return RevealedEnergySpaces < 2 ? 0 : 1;
+				case Element.Fire: return RevealedEnergySpaces < 4 ? 0 : 1;
+				case Element.Sun:  return RevealedEnergySpaces < 5 ? 0 : 1;
+			}
+			return base.Elements(el);
 		}
 
 	}
