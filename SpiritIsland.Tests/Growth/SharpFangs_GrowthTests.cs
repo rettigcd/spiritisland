@@ -63,7 +63,7 @@ namespace SpiritIsland.Tests.Growth {
 			// b) add a presense to jungle or a land with beasts ( range 3)
 			// c) gain power card, gain +1 energy
 
-			When_Growing( 3, new SpyOnPlacePresence("A3;A7;A8") );
+			When_Growing( 3, Resolve_PlacePresence("A3;A7;A8") );
 
 			Assert_BoardPresenceIs("A2A3");    // B
 			Assert_GainEnergy( 1 );            // C

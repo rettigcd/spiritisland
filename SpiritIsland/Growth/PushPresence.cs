@@ -20,8 +20,9 @@ namespace SpiritIsland {
 		public override void Apply() {
 			if(To==null)
 				throw new InvalidOperationException("Destination Presence land not specified");
-			spirit.Presence.Remove(From);
-			spirit.Presence.Add(To);
+
+			new RemovePresence(From).Apply(spirit);
+			new AddPresence(To).Apply(spirit);
 		}
 
 		public class Resolve : IResolver {
@@ -42,7 +43,6 @@ namespace SpiritIsland {
 		}
 
 	}
-
 
 
 

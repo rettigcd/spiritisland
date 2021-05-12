@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 namespace SpiritIsland {
 
@@ -28,8 +29,8 @@ namespace SpiritIsland {
 
 			public void Apply( GrowthOption option ) {
 				var action = option.GrowthActions.OfType<Reclaim1>().SingleOrDefault();
-				if(action != null)
-					action.Card = card;
+				if(action == null) throw new Exception("Reclaim action not found.");
+				action.Card = card;
 			}
 
 		}

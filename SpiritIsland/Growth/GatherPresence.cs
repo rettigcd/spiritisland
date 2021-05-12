@@ -5,7 +5,7 @@ namespace SpiritIsland {
 
 	public class GatherPresence : GrowthAction {
 
-		public string From { get; set; }
+		public Space From { get; set; }
 		public Space To {get;}
 
 		public GatherPresence(Spirit spirit, Space target):base(spirit){
@@ -14,7 +14,7 @@ namespace SpiritIsland {
 				.Where(spirit.Presence.Contains)
 				.ToArray();
 			if(Options.Length == 1)
-				From = Options[0].Label;
+				From = Options[0];
 		}
 
 		public Space[] Options { get; }
@@ -22,9 +22,8 @@ namespace SpiritIsland {
 		public override void Apply() {
 			if(From==null)
 				throw new InvalidOperationException("Source Prsence land not specified");
-			var fromSpace = spirit.Presence.First(x=>x.Label==From);
-			spirit.Presence.Remove(fromSpace);
-			spirit.Presence.Add(To);
+			new RemovePresence(From).Apply(spirit);
+			new AddPresence(To).Apply(spirit);
 		}
 
 		public class Resolve : IResolver {
@@ -38,7 +37,8 @@ namespace SpiritIsland {
 				var action = growthOption.GrowthActions
 					.OfType<GatherPresence>()
 					.VerboseSingle(a=>a.To.Label == to);
-				action.From = from;
+				action.From = action.Options.First(x=>x.Label==from);
+
 			}
 		}
 

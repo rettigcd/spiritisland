@@ -124,8 +124,14 @@ namespace SpiritIsland.Tests.Growth {
 			return Reclaim1.Resolve( spirit.PlayedCards[index] );
 		}
 
-		protected SpyOnPlacePresence Resolve_PlacePresence( string placeOptions ) {
-			return new SpyOnPlacePresence( placeOptions );
+		protected SpyOnPlacePresence Resolve_PlacePresence( string placeOptions, params Track[] source ) {
+			if( source == null || source.Length==0 ) source = new Track[]{ Track.Energy }; // default to energy
+			return new SpyOnPlacePresence( placeOptions, source );
+		}
+
+		protected void Assert_PresenceTracksAre(int expectedEnergy,int expectedCards) {
+			Assert.Equal( expectedEnergy, spirit.EnergyGrowth );
+			Assert.Equal( expectedCards, spirit.NumberOfCardsPlayablePerTurn );
 		}
 
 		#endregion

@@ -77,10 +77,12 @@
   <ItemGroup>
     <Compile Include="Board.cs" />
     <Compile Include="GameState.cs" />
+    <Compile Include="Growth\AddPresence.cs" />
     <Compile Include="Growth\DrawPowerCard.cs" />
     <Compile Include="Growth\GainEnergy.cs" />
     <Compile Include="Growth\GrowthAction.cs" />
     <Compile Include="Growth\GrowthOption.cs" />
+    <Compile Include="Growth\RemovePresence.cs" />
     <Compile Include="IEnumerableExtensions.cs" />
     <Compile Include="Growth\InvalidPresenceLocation.cs" />
     <Compile Include="Growth\PushPresence.cs" />

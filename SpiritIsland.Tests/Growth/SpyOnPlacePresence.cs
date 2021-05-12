@@ -5,8 +5,8 @@ namespace SpiritIsland.Tests.Growth {
 
 	public class SpyOnPlacePresence : PlacePresence.Resolve {
 		readonly string allOptions;
-		public SpyOnPlacePresence( string allOptions )
-			:base(allOptions.Split(';')[0])
+		public SpyOnPlacePresence( string allOptions, params Track[] source )
+			:base(allOptions.Split(';')[0],source)
 		{
 			this.allOptions = allOptions;
 		}

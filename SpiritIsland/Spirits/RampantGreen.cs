@@ -34,7 +34,6 @@ Gift of Proliferation => 1 => fast, any spirit => moon, plant => target spirit a
 	public class RampantGreen : Spirit {
 
 		public RampantGreen(){
-			NumberOfCardsPlayablePerTurn = 1;
 		}
 
 		public override GrowthOption[] GetGrowthOptions(GameState _) {
@@ -66,11 +65,11 @@ Gift of Proliferation => 1 => fast, any spirit => moon, plant => target spirit a
 
 		public override void PlayAvailableCards( params int[] cards ) {
 			base.PlayAvailableCards( cards );
-			NumberOfCardsPlayablePerTurn -= tempCardBoost; // remove temp boost
 			tempCardBoost = 0;
 		}
 		public int tempCardBoost = 0;
 
+		public override int NumberOfCardsPlayablePerTurn => base.NumberOfCardsPlayablePerTurn + tempCardBoost;
 	}
 
 	/// <summary>
@@ -80,7 +79,6 @@ Gift of Proliferation => 1 => fast, any spirit => moon, plant => target spirit a
 		public PlayExtraCardThisTurn(Spirit spirit):base(spirit){}
 		public override void Apply() {
 			(spirit as RampantGreen).tempCardBoost++;
-			spirit.NumberOfCardsPlayablePerTurn ++;
 		}
 	}
 

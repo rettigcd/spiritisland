@@ -32,24 +32,39 @@ namespace SpiritIsland {
 	/// River Surges in Sunlight
 	/// </summary>
 	public class RiverSurges : Spirit {
+
+		bool Reclaim1FromCardTrack => this.RevealedCardSpaces >= 5;
+
 		public override GrowthOption[] GetGrowthOptions(GameState _) {
+
 			return new GrowthOption[]{
-				new GrowthOption( 
-					new ReclaimAll(this), 
-					new DrawPowerCard(this,1), 
-					new GainEnergy(this,1) 
+				new GrowthOption(
+					new ReclaimAll(this),
+					new DrawPowerCard(this,1),
+					new GainEnergy(this,1)
 				),
-				new GrowthOption( 
-					new PlacePresence(this
-						,new RangeCriteria(1)
-						,new RangeCriteria(1)
-					)
-				),
-				new GrowthOption( 
-					new DrawPowerCard(this,1), 
-					new PlacePresence(this,2)
-				),
+				Get2PresenceGrowthOption(),
+				GetPowerAndPresenceGrowthOption(),
 			};
+		}
+
+		GrowthOption GetPowerAndPresenceGrowthOption() {
+			var actions = new List<GrowthAction>{
+				new DrawPowerCard( this, 1 ),
+				new PlacePresence( this, 2 )
+			};
+			if( Reclaim1FromCardTrack )
+				actions.Add(new Reclaim1(this));
+			return new GrowthOption( actions );
+		}
+
+		GrowthOption Get2PresenceGrowthOption() {
+			var actions = new List<GrowthAction>{
+				new PlacePresence( this, new RangeCriteria( 1 ), new RangeCriteria( 1 ) )
+			};
+			if( Reclaim1FromCardTrack )
+				actions.Add(new Reclaim1(this));
+			return new GrowthOption( actions );
 		}
 	}
 }
