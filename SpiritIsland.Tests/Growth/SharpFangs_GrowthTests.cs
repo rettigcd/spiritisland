@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using System.Collections.Generic;
+using Xunit;
 
 namespace SpiritIsland.Tests.Growth {
 
@@ -108,16 +109,26 @@ namespace SpiritIsland.Tests.Growth {
 		}
 
 		[Theory]
-		[InlineDataAttribute(1,2)]
-		[InlineDataAttribute(2,2)]
-		[InlineDataAttribute(3,3)]
-		[InlineDataAttribute(4,3)]
-		[InlineDataAttribute(5,4)]
-		[InlineDataAttribute(6,5)]
-		public void CardTrack(int revealedSpaces, int expectedCardPlayCount){
+		[InlineDataAttribute(1,2,0)]
+		[InlineDataAttribute(2,2,0)]
+		[InlineDataAttribute(3,3,0)]
+		[InlineDataAttribute(4,3,1)]
+		[InlineDataAttribute(5,4,1)]
+		[InlineDataAttribute(6,5,2)]
+		public void CardTrack(int revealedSpaces, int expectedCardPlayCount, int reclaimCount){
 			// cards:	2 2 3 reclaim-1 4 5&reclaim-1
 			spirit.RevealedCardSpaces = revealedSpaces;
 			Assert_PresenceTracksAre(1,expectedCardPlayCount);
+
+			// Test the reclaim bit
+			Given_HasPresence( board[3] );
+
+			var resolvers = new List<IResolver>{};
+
+			while(reclaimCount-->0)
+				resolvers.Add(Resolve_Reclaim(reclaimCount));
+
+			When_Growing(5,resolvers.ToArray());
 
 		}
 

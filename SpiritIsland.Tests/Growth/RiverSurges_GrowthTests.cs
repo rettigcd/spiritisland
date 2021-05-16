@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace SpiritIsland.Tests.Growth {
@@ -84,14 +85,15 @@ namespace SpiritIsland.Tests.Growth {
 			spirit.RevealedCardSpaces = revealedSpaces;
 			Assert_PresenceTracksAre(1,expectedCardPlayCount);
 
-			void Grow(){
-				When_Growing(2,Resolve_Reclaim(0),Resolve_PlacePresence("A1;A2;A3;A4;A5"));
-			}
+			var resolvers = new List<IResolver>{Resolve_PlacePresence("A1;A2;A3;A4;A5")};
 
 			if(canReclaim1)
-				Grow();
-			else
-				Assert.Throws<Exception>( Grow );
+				resolvers.Add(Resolve_Reclaim(0));
+
+			When_Growing(2,resolvers.ToArray());
+
+			// !!! for this test to work, we also need a test shows too many or too few resolvers, throw exception
+
 		}
 
 

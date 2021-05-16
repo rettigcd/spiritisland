@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace SpiritIsland {
@@ -45,41 +46,51 @@ namespace SpiritIsland {
 			var beastOrJungleRange3 = new RangeCriteria(3,beastOrJungle);
 
 			return new GrowthOption[]{
-				new GrowthOption(
+				NewGrowthOption(
 					new ReclaimAll(this)       // A
 					,new GainEnergy(this,-1)   // A
 					,new DrawPowerCard(this,1) // A
 					,new PlacePresence(this, beastOrJungleRange3) // B
 				)
-				,new GrowthOption(
+				,NewGrowthOption(
 					new ReclaimAll(this)       // A
 					,new DrawPowerCard(this,2) // A & C
 					// Engergy Change of 0     // A & C cancel each other out
 				)
-				,new GrowthOption(
+				,NewGrowthOption(
 					new ReclaimAll(this)       // A
 					,new DrawPowerCard(this,1) // A
 					,new GainEnergy(this,2)    // A + D
 				)
-				,new GrowthOption(
+				,NewGrowthOption(
 					new PlacePresence(this, beastOrJungleRange3) // B
 					,new GainEnergy(this,1)  // C
 					,new DrawPowerCard(this,1) // C
 				)
-				,new GrowthOption(
+				,NewGrowthOption(
 					new PlacePresence(this, beastOrJungleRange3) // B
 					,new GainEnergy(this,3)  // C
 				)
-				,new GrowthOption(
+				,NewGrowthOption(
 					new DrawPowerCard(this,1) // C
 					,new GainEnergy(this,1+3)  // C + D
 				)
 			};
 		}
 
+		GrowthOption NewGrowthOption(params GrowthAction[] actions) {
+			//	2 2 3 reclaim-1 4 5&reclaim-1
+			if( RevealedCardSpaces<4 ) return new GrowthOption(actions);
+			var list = actions.ToList();
+			list.Add(new Reclaim1(this));
+			if(RevealedCardSpaces==6)
+				list.Add(new Reclaim1(this));
+			return new GrowthOption(list.ToArray());
+		}
+
 		//	1 animal plant 2 animal 3 4
 		protected override int[] EnergySequence => new int[]{1,1,1,2,2,3,4};
-		//	2 2 3 relaim-1 4 5&reclaim-1
+		//	2 2 3 reclaim-1 4 5&reclaim-1
 		protected override int[] CardSequence => new int[]{2,2,3,3,4,5};
 
 		public override int Elements( Element e ) {

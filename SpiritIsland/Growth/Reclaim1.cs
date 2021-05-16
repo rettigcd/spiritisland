@@ -10,6 +10,8 @@ namespace SpiritIsland {
 		public PowerCard Card {get; set;}
 
 		public override void Apply() {
+			if( Card == null )
+				throw new InvalidOperationException("reclaim 1: no card specified");
 			if( spirit.PlayedCards.Contains(Card) ){
 				spirit.PlayedCards.Remove(Card);
 				spirit.AvailableCards.Add(Card);
@@ -28,7 +30,9 @@ namespace SpiritIsland {
 			}
 
 			public void Apply( GrowthOption option ) {
-				var action = option.GrowthActions.OfType<Reclaim1>().SingleOrDefault();
+				var action = option.GrowthActions.OfType<Reclaim1>()
+					.Where(x=>x.Card == null) // not yet specified - ensures Resolves don't out number actual actions
+					.FirstOrDefault();
 				if(action == null) throw new Exception("Reclaim action not found.");
 				action.Card = card;
 			}
