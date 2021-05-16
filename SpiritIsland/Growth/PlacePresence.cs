@@ -43,7 +43,7 @@ namespace SpiritIsland {
 
 		public override void Apply() {
 
-			string FormatOption(Space[] o) => o.Select( bs => bs.Label ).OrderBy( l => l ).Join("");
+			static string FormatOption(Space[] o) => o.Select( bs => bs.Label ).OrderBy( l => l ).Join("");
 
 			var option = Options
 				.FirstOrDefault(o => FormatOption(o) == placeOnSpace);
@@ -67,7 +67,7 @@ namespace SpiritIsland {
 			placeOnSpace = null;
 		}
 
-		public Space[][] Options => options ?? (options=CalculateOptions());
+		public Space[][] Options => options ??= CalculateOptions();
 		Space[][] options;
 		Space[][]  CalculateOptions() => PresenceCalculator.PresenseToPlaceOptions(referenceSpaces, this.rc );
 

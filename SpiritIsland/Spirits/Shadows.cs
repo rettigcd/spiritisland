@@ -7,8 +7,10 @@ namespace SpiritIsland {
 	* reclaim, gain power Card
 	* gain power card, add a presense range 1
 	* add a presence withing 3, +3 energy
+
 	0 1 3 4 5 6
 	1 2 3 3 4 5
+
 	Innate: Darness Swallows the Unwary => fast, 1 from sacred, any
 	2 moon, 1 fire	gather 1 explorr
 	3 moon, 2 fire  destroy up to 2 explorer, 1 feer per explorer destoyed
@@ -31,5 +33,9 @@ namespace SpiritIsland {
 				new GrowthOption( new PlacePresence(this,3), new GainEnergy(this,3) )
 			};
 		}
+
+		protected override int[] EnergySequence => new int[]{0, 1, 3, 4, 5, 6 };
+		protected override int[] CardSequence => new int[]{1, 2, 3, 3, 4, 5 };
+
 	}
 }

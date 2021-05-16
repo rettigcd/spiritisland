@@ -18,6 +18,7 @@ namespace SpiritIsland {
 
 	1 animal plant 2 animal 3 4
 	2 2 3 relaim-1 4 5&reclaim-1
+
 	Innate - Ranging Hunt  => fast, range 1, no blight
 	2 animal  you may gather 1 beast
 	2 plant 3 animal  1 damange per beast
@@ -37,6 +38,7 @@ namespace SpiritIsland {
 
 	 */
 	public class SharpFangs : Spirit {
+
 		public override GrowthOption[] GetGrowthOptions( GameState gameState ) {
 			bool beastOrJungle(Space s) => s.Terrain==Terrain.Jungle || gameState.HasBeasts(s);
 		
@@ -74,5 +76,20 @@ namespace SpiritIsland {
 				)
 			};
 		}
+
+		//	1 animal plant 2 animal 3 4
+		protected override int[] EnergySequence => new int[]{1,1,1,2,2,3,4};
+		//	2 2 3 relaim-1 4 5&reclaim-1
+		protected override int[] CardSequence => new int[]{2,2,3,3,4,5};
+
+		public override int Elements( Element e ) {
+			int bonus = e switch{
+				Element.Animal => RevealedEnergySpaces >=5 ? 2 : RevealedEnergySpaces >= 2 ? 1 : 0,
+				Element.Plant => RevealedEnergySpaces >=3 ? 1 : 0,
+				_ => 0
+			};
+			return base.Elements( e ) + bonus;
+		}
+
 	}
 }

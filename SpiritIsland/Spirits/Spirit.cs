@@ -22,13 +22,10 @@ namespace SpiritIsland {
 		public int RevealedCardSpaces { get; set; } = 1;
 
 		// This is River...
-		public virtual int EnergyGrowth { get{
-			return new int[]{1, 2, 2, 3, 4, 4, 5 }[RevealedEnergySpaces-1];
-		} } // set up for River
-		// This is River...
-		public virtual int NumberOfCardsPlayablePerTurn { get{
-			return new int[]{1, 2, 2, 3, 3, 4, 5 }[RevealedCardSpaces-1];
-		}}
+		protected virtual int[] EnergySequence => new int[]{0};
+		protected virtual int[] CardSequence => new int[]{0}; 
+		public int EnergyGrowth => EnergySequence[RevealedEnergySpaces-1];
+		public virtual int NumberOfCardsPlayablePerTurn => CardSequence[RevealedCardSpaces-1];
 		
 		#endregion
 
@@ -57,7 +54,5 @@ namespace SpiritIsland {
 		public virtual int Elements(Element _) => 0;
 
 	}
-
-	public enum Element{ None, Air, Fire, Sun };
 
 }

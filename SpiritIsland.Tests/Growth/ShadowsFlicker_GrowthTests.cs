@@ -7,7 +7,6 @@ namespace SpiritIsland.Tests.Growth {
 		public ShadowsFlicker_GrowthTests():base( new Shadows() ){
 		}
 
-
 		[Fact]
 		public void Reclaim_PowerCard(){
 			// reclaim, gain power Card
@@ -32,6 +31,34 @@ namespace SpiritIsland.Tests.Growth {
 
 			Assert_GainEnergy(3);
 		}
+
+		[Theory]
+		[InlineDataAttribute(1,0)]
+		[InlineDataAttribute(2,1)]
+		[InlineDataAttribute(3,3)]
+		[InlineDataAttribute(4,4)]
+		[InlineDataAttribute(5,5)]
+		[InlineDataAttribute(6,6)]
+		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth ){
+			// energy:	0 1 3 4 5 6
+			spirit.RevealedEnergySpaces = revealedSpaces;
+			Assert_PresenceTracksAre(expectedEnergyGrowth,1);
+		}
+
+		[Theory]
+		[InlineDataAttribute(1,1)]
+		[InlineDataAttribute(2,2)]
+		[InlineDataAttribute(3,3)]
+		[InlineDataAttribute(4,3)]
+		[InlineDataAttribute(5,4)]
+		[InlineDataAttribute(6,5)]
+		public void CardTrack(int revealedSpaces, int expectedCardPlayCount){
+			// cards:	1 2 3 3 4 5
+			spirit.RevealedCardSpaces = revealedSpaces;
+			Assert_PresenceTracksAre(0,expectedCardPlayCount);
+
+		}
+
 
 	}
 }

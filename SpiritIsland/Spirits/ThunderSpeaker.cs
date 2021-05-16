@@ -58,20 +58,16 @@ namespace SpiritIsland {
 			};
 		}
 
-		public override int EnergyGrowth { get{
-			return new int[]{1, 1, 2, 2, 2, 3 }[RevealedEnergySpaces-1];
-		} }
-		public override int NumberOfCardsPlayablePerTurn { get{
-			return new int[]{1, 2, 2, 3, 3, 3, 4 }[RevealedCardSpaces-1];
-		}}
+		protected override int[] EnergySequence => new int[]{1, 1, 2, 2, 2, 3 };
+		protected override int[] CardSequence => new int[]{1, 2, 2, 3, 3, 3, 4 };
 
 		public override int Elements( Element el ) {
-			switch( el ){
-				case Element.Air:  return RevealedEnergySpaces < 2 ? 0 : 1;
-				case Element.Fire: return RevealedEnergySpaces < 4 ? 0 : 1;
-				case Element.Sun:  return RevealedEnergySpaces < 5 ? 0 : 1;
-			}
-			return base.Elements(el);
+			return el switch {
+				Element.Air => RevealedEnergySpaces < 2 ? 0 : 1,
+				Element.Fire => RevealedEnergySpaces < 4 ? 0 : 1,
+				Element.Sun => RevealedEnergySpaces < 5 ? 0 : 1,
+				_ => base.Elements( el ),
+			}; // !!! this an error once cards produce elements also
 		}
 
 	}

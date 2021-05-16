@@ -38,7 +38,7 @@ Gift of Proliferation => 1 => fast, any spirit => moon, plant => target spirit a
 
 		public override GrowthOption[] GetGrowthOptions(GameState _) {
 			
-			bool IsWetlandOrJungle( Space bs ) 
+			static bool IsWetlandOrJungle( Space bs ) 
 				=> bs.Terrain == Terrain.Jungle || bs.Terrain == Terrain.Wetland;
 			var onWetlandOrJungle = new RangeCriteria(2,IsWetlandOrJungle);
 
@@ -70,6 +70,8 @@ Gift of Proliferation => 1 => fast, any spirit => moon, plant => target spirit a
 		public int tempCardBoost = 0;
 
 		public override int NumberOfCardsPlayablePerTurn => base.NumberOfCardsPlayablePerTurn + tempCardBoost;
+		protected override int[] CardSequence => new int[]{1};
+
 	}
 
 	/// <summary>

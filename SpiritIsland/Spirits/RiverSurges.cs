@@ -34,6 +34,10 @@ namespace SpiritIsland {
 	public class RiverSurges : Spirit {
 
 		bool Reclaim1FromCardTrack => this.RevealedCardSpaces >= 5;
+		protected override int[] EnergySequence => new int[]{1, 2, 2, 3, 4, 4, 5 };
+		protected override int[] CardSequence => new int[]{1, 2, 2, 3, 3, 4, 5 };
+
+
 
 		public override GrowthOption[] GetGrowthOptions(GameState _) {
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Xunit;
 
 namespace SpiritIsland.Tests.Growth {
@@ -56,23 +57,11 @@ namespace SpiritIsland.Tests.Growth {
 		[InlineDataAttribute(4,2,"AF")]
 		[InlineDataAttribute(5,2,"AFS")]
 		[InlineDataAttribute(6,3,"AFS")]
-		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ){
+		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 			// energy:	1 air 2 fire sun 3
 			spirit.RevealedEnergySpaces = revealedSpaces;
-			Assert_PresenceTracksAre(expectedEnergyGrowth,1);
-
-			Assert.Equal( elements.Contains('A') ? 1 : 0 ,spirit.Elements( Element.Air ));
-			Assert.Equal( elements.Contains('F') ? 1 : 0 ,spirit.Elements( Element.Fire ));
-			Assert.Equal( elements.Contains('S') ? 1 : 0 ,spirit.Elements( Element.Sun ));
-		}
-
-		static Element Convert(char k){
-			return k switch {
-				'A' => Element.Air,
-				'F' => Element.Fire,
-				'S' => Element.Sun,
-				_ => throw new Exception("bad element character")
-			};
+			Assert_PresenceTracksAre( expectedEnergyGrowth, 1 );
+			Assert_BonusElements( elements );
 		}
 
 		[Theory]

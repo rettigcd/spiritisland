@@ -4,7 +4,33 @@ using Xunit;
 
 namespace SpiritIsland.Tests.Growth {
 
-	public partial class GrowthTests {
+	public class GrowthTests {
+
+		protected static Dictionary<Element,char> ElementChars = new Dictionary<Element, char>{
+				[Element.Air] = 'A',	
+				[Element.Animal] = 'B',	
+				[Element.Earth] = 'E',  
+				[Element.Fire] = 'F',	
+				[Element.Moon] = 'M',	
+				[Element.Plant] = 'P',	
+				[Element.Sun] = 'S',	
+				[Element.Water] = 'W',	
+			};
+
+		//static GrowthTests(){
+		//	ElementChars = new Dictionary<Element, char>{
+		//		[Element.Air] = 'A',	
+		//		[Element.Animal] = 'B',	
+		//		[Element.Earth] = 'E',  
+		//		[Element.Fire] = 'F',	
+		//		[Element.Moon] = 'M',	
+		//		[Element.Plant] = 'P',	
+		//		[Element.Sun] = 'S',	
+		//		[Element.Water] = 'W',	
+		//	};
+			
+		//}
+
 
 		const int initEnergy = 3;
 		protected Spirit spirit;
@@ -132,6 +158,13 @@ namespace SpiritIsland.Tests.Growth {
 		protected void Assert_PresenceTracksAre(int expectedEnergy,int expectedCards) {
 			Assert.Equal( expectedEnergy, spirit.EnergyGrowth );
 			Assert.Equal( expectedCards, spirit.NumberOfCardsPlayablePerTurn );
+		}
+
+		protected void Assert_BonusElements( string elements ) {
+			foreach(var pair in GrowthTests.ElementChars) {
+				int expected = elements.Count( x => x == pair.Value );
+				Assert.Equal( expected, spirit.Elements( pair.Key ) );
+			}
 		}
 
 		#endregion

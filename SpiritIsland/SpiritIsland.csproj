@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+	  <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,6 +33,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+	  <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CodeAnalysis, Version=3.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -76,6 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Board.cs" />
+    <Compile Include="DefaultDictionary.cs" />
     <Compile Include="GameState.cs" />
     <Compile Include="Growth\AddPresence.cs" />
     <Compile Include="Growth\DrawPowerCard.cs" />
@@ -101,6 +104,7 @@
     <Compile Include="Space.cs" />
     <Compile Include="Spirits\Bringer.cs" />
     <Compile Include="Growth\GatherPresence.cs" />
+    <Compile Include="Spirits\Element.cs" />
     <Compile Include="Spirits\Keeper.cs" />
     <Compile Include="Spirits\Lightning.cs" />
     <Compile Include="Spirits\Ocean.cs" />
