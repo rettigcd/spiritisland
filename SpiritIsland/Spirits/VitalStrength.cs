@@ -28,6 +28,7 @@ namespace SpiritIsland {
 	*/
 
 	public class VitalStrength : Spirit {
+
 		public override GrowthOption[] GetGrowthOptions(GameState _) {
 			return new GrowthOption[]{
 				new GrowthOption( new ReclaimAll(this), new PlacePresence(this,2) ),
@@ -35,6 +36,10 @@ namespace SpiritIsland {
 				new GrowthOption( new GainEnergy(this,2), new PlacePresence(this,1) ),
 			};
 		}
+
+		protected override int[] EnergySequence => new int[]{2, 3, 4, 6, 7, 8};
+		protected override int[] CardSequence => new int[]{1, 1, 2, 2, 3, 4};
+
 	}
 
 }

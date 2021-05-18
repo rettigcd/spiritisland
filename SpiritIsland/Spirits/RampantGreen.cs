@@ -13,6 +13,7 @@ A Spread of Rampant Green
 
 0 1 plant 2 2 plant 3
 1 1 2 2 3 4
+
 Innate-1:  Creepers Tear Into Mortar  => slow, 0,any
 1 moon 2 plant   1 damange to 1 town or city
 2 moon 3 plant   repeat this power
@@ -70,7 +71,16 @@ Gift of Proliferation => 1 => fast, any spirit => moon, plant => target spirit a
 		public int tempCardBoost = 0;
 
 		public override int NumberOfCardsPlayablePerTurn => base.NumberOfCardsPlayablePerTurn + tempCardBoost;
-		protected override int[] CardSequence => new int[]{1};
+		protected override int[] CardSequence => new int[]{1, 1, 2, 2, 3, 4};
+
+		protected override int[] EnergySequence => new int[]{0, 1, 1, 2, 2, 2, 3};
+
+		public override int Elements( Element e ) {
+			// 0 1 plant 2 2 plant 3
+			return e != Element.Plant || RevealedEnergySpaces < 3 ? 0
+				: RevealedEnergySpaces < 6 ? 1
+				: 2;
+		}
 
 	}
 

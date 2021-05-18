@@ -57,6 +57,37 @@ namespace SpiritIsland.Tests.Growth {
 			Assert_GainEnergy(3);
 			Assert_GainPowercard(1);
 		}
+
+		[Theory]
+		[InlineDataAttribute(1,0,"")]
+		[InlineDataAttribute(2,1,"")]
+		[InlineDataAttribute(3,1,"P")]
+		[InlineDataAttribute(4,2,"P")]
+		[InlineDataAttribute(5,2,"P")]
+		[InlineDataAttribute(6,2,"PP")]
+		[InlineDataAttribute(7,3,"PP")]
+		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
+			// energy: 0 1 plant 2 2 plant 3
+			spirit.RevealedEnergySpaces = revealedSpaces;
+			Assert_PresenceTracksAre( expectedEnergyGrowth, 1 );
+			Assert_BonusElements( elements );
+		}
+
+		[Theory]
+		[InlineDataAttribute(1,1)]
+		[InlineDataAttribute(2,1)]
+		[InlineDataAttribute(3,2)]
+		[InlineDataAttribute(4,2)]
+		[InlineDataAttribute(5,3)]
+		[InlineDataAttribute(6,4)]
+		public void CardTrack(int revealedSpaces, int expectedCardPlayCount){
+			// card:   1 1 2 2 3 4
+
+			spirit.RevealedCardSpaces = revealedSpaces;
+			Assert_PresenceTracksAre(0,expectedCardPlayCount);
+
+		}
 		
 	}
+
 }

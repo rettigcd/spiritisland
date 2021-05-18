@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using System.Collections.Generic;
+using Xunit;
 
 namespace SpiritIsland.Tests.Growth {
 
@@ -34,6 +35,37 @@ namespace SpiritIsland.Tests.Growth {
 			When_Growing(2, Resolve_PlacePresence("A1;A2;A4;A5;A6"));
 			Assert_GainEnergy(2);
 		}
+
+		[Theory]
+		[InlineDataAttribute(1,2)]
+		[InlineDataAttribute(2,3)]
+		[InlineDataAttribute(3,4)]
+		[InlineDataAttribute(4,6)]
+		[InlineDataAttribute(5,7)]
+		[InlineDataAttribute(6,8)]
+		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth) {
+		// energy:	2 3 4 6 7 8
+			spirit.RevealedEnergySpaces = revealedSpaces;
+			Assert_PresenceTracksAre( expectedEnergyGrowth, 1 );
+		}
+
+		[Theory]
+		[InlineDataAttribute(1,1)]
+		[InlineDataAttribute(2,1)]
+		[InlineDataAttribute(3,2)]
+		[InlineDataAttribute(4,2)]
+		[InlineDataAttribute(5,3)]
+		[InlineDataAttribute(6,4)]
+		public void CardTrack(int revealedSpaces, int expectedCardPlayCount){
+		//	card:  1 1 2 2 3 4
+
+			spirit.RevealedCardSpaces = revealedSpaces;
+			Assert_PresenceTracksAre(2,expectedCardPlayCount);
+
+		}
+
+
+
 
 	}
 

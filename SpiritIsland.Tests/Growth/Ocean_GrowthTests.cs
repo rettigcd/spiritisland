@@ -87,5 +87,10 @@ namespace SpiritIsland.Tests.Growth {
 
 		#endregion
 
+
+		// 	0 moon water 1 earth wter 2
+		// 	1 2 2 3 4 5
+
+
 	}
 }

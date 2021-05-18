@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
@@ -80,14 +81,12 @@ namespace SpiritIsland.Tests.Growth {
 			spirit.RevealedCardSpaces = revealedSpaces;
 			Assert_PresenceTracksAre(1,expectedCardPlayCount);
 
-			void Grow(){
-				When_Growing(2,Resolve_Reclaim(0),Resolve_PlacePresence("A2;A3;A4"));
-			}
+			var list = new List<IResolver>{ Resolve_PlacePresence("A2;A3;A4") };
+			if( canReclaim1 )
+				list.Add( Resolve_Reclaim(0) );
 
-			if(canReclaim1)
-				Grow();
-			else
-				Assert.Throws<Exception>( Grow );
+			When_Growing(2,list.ToArray());
+
 		}
 
 	}
