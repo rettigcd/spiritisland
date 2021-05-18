@@ -44,9 +44,9 @@ namespace SpiritIsland.Tests.Growth {
 		[InlineDataAttribute(5,7)]
 		[InlineDataAttribute(6,8)]
 		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth) {
-		// energy:	2 3 4 6 7 8
+			// energy:	2 3 4 6 7 8
 			spirit.RevealedEnergySpaces = revealedSpaces;
-			Assert_PresenceTracksAre( expectedEnergyGrowth, 1 );
+			Assert_EnergyTrackIs( expectedEnergyGrowth );
 		}
 
 		[Theory]
@@ -57,11 +57,9 @@ namespace SpiritIsland.Tests.Growth {
 		[InlineDataAttribute(5,3)]
 		[InlineDataAttribute(6,4)]
 		public void CardTrack(int revealedSpaces, int expectedCardPlayCount){
-		//	card:  1 1 2 2 3 4
-
+			//	card:  1 1 2 2 3 4
 			spirit.RevealedCardSpaces = revealedSpaces;
-			Assert_PresenceTracksAre(2,expectedCardPlayCount);
-
+			Assert_CardTrackIs( expectedCardPlayCount );
 		}
 
 

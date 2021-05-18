@@ -40,6 +40,33 @@ namespace SpiritIsland.Tests.Growth {
 
 		}
 
+		[Theory]
+		[InlineDataAttribute(1,1)]
+		[InlineDataAttribute(2,1)]
+		[InlineDataAttribute(3,2)]
+		[InlineDataAttribute(4,2)]
+		[InlineDataAttribute(5,3)]
+		[InlineDataAttribute(6,4)]
+		[InlineDataAttribute(7,4)]
+		[InlineDataAttribute(8,5)]
+		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth) {
+			// energy: 1 1 2 2 3 4 4 5
+			spirit.RevealedEnergySpaces = revealedSpaces;
+			Assert_EnergyTrackIs( expectedEnergyGrowth );
+		}
+
+		[Theory]
+		[InlineDataAttribute(1,2)]
+		[InlineDataAttribute(2,3)]
+		[InlineDataAttribute(3,4)]
+		[InlineDataAttribute(4,5)]
+		[InlineDataAttribute(5,6)]
+		public void CardTrack(int revealedSpaces, int expectedCardPlayCount){
+			// card:   2 3 4 5 6
+			spirit.RevealedCardSpaces = revealedSpaces;
+			Assert_CardTrackIs( expectedCardPlayCount );
+		}
+
 
 	}
 

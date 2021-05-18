@@ -14,6 +14,7 @@ Lightning's Swift Strike
 
 1 1 2 2 3 4 4 5
 2 3 4 5 6
+
 Innate:  Thundering Destruction => slow, 1 from sacred, any
 3 fire 2 air    destroy 1 town
 4 fire 3 air    you may instead destroy 1 city
@@ -30,6 +31,7 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 */
 
 	public class Lightning : Spirit {
+
 		public override GrowthOption[] GetGrowthOptions(GameState _) {
 			return new GrowthOption[]{
 				new GrowthOption( new ReclaimAll(this), new DrawPowerCard(this,1), new GainEnergy(this,1) ),
@@ -44,5 +46,9 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 				new GrowthOption( new GainEnergy(this,3), new PlacePresence(this,1) ),
 			};
 		}
+
+		protected override int[] EnergySequence => new int[]{ 1, 1, 2, 2, 3, 4, 4, 5 };
+		protected override int[] CardSequence => new int[]{ 2, 3, 4, 5, 6 };
+
 	}
 }
