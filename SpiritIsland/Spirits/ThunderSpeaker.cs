@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SpiritIsland {
 
@@ -62,12 +63,15 @@ namespace SpiritIsland {
 		protected override int[] CardSequence => new int[]{1, 2, 2, 3, 3, 3, 4 };
 
 		public override int Elements( Element el ) {
-			return el switch {
-				Element.Air => RevealedEnergySpaces < 2 ? 0 : 1,
-				Element.Fire => RevealedEnergySpaces < 4 ? 0 : 1,
-				Element.Sun => RevealedEnergySpaces < 5 ? 0 : 1,
-				_ => base.Elements( el ),
-			}; // !!! this an error once cards produce elements also
+			return new Element[]{ 
+				Element.None, 
+				Element.Air, 
+				Element.None, 
+				Element.Fire,
+				Element.Sun,
+				Element.None
+			}	.Take(RevealedEnergySpaces)
+				.Count(x=>x==el);
 		}
 
 	}

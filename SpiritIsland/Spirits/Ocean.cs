@@ -78,5 +78,25 @@ namespace SpiritIsland {
 
 		}
 
+		// energy: 0 moon water 1 earth water 2
+		protected override int[] EnergySequence => new int[]{ 0,0,0,1,1,1,2 } ;
+
+		protected override int[] CardSequence => new int[]{ 1, 2, 2, 3, 4, 5, };
+
+		public override int Elements( Element el ) {
+			return new Element[]{
+				Element.None,
+				Element.Moon,
+				Element.Water,
+				Element.None,
+				Element.Earth,
+				Element.Water,
+				Element.None
+			}.Take( RevealedEnergySpaces )
+				.Count( x => x == el );
+		}
+
+
 	}
+
 }

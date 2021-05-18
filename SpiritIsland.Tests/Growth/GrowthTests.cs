@@ -156,8 +156,16 @@ namespace SpiritIsland.Tests.Growth {
 		}
 
 		protected void Assert_PresenceTracksAre(int expectedEnergy,int expectedCards) {
-			Assert.Equal( expectedEnergy, spirit.EnergyGrowth );
+			Assert_EnergyTrackIs( expectedEnergy );
+			Assert_CardTrackIs( expectedCards );
+		}
+
+		public void Assert_CardTrackIs( int expectedCards ) {
 			Assert.Equal( expectedCards, spirit.NumberOfCardsPlayablePerTurn );
+		}
+
+		public void Assert_EnergyTrackIs( int expectedEnergy ) {
+			Assert.Equal( expectedEnergy, spirit.EnergyGrowth );
 		}
 
 		protected void Assert_BonusElements( string elements ) {

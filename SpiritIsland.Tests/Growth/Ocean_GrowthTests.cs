@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
@@ -78,6 +79,35 @@ namespace SpiritIsland.Tests.Growth {
 			Assert_BoardPresenceIs(ending);
 		}
 
+		[Theory]
+		[InlineDataAttribute(1,0,"")]
+		[InlineDataAttribute(2,0,"M")]
+		[InlineDataAttribute(3,0,"MW")]
+		[InlineDataAttribute(4,1,"MW")]
+		[InlineDataAttribute(5,1,"MWE")]
+		[InlineDataAttribute(6,1,"MWEW")]
+		[InlineDataAttribute(7,2,"MWEW")]
+		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
+			// energy: 0 moon water 1 earth water 2
+			spirit.RevealedEnergySpaces = revealedSpaces;
+			Assert_EnergyTrackIs( expectedEnergyGrowth );
+			Assert_BonusElements( elements );
+		}
+
+		[Theory]
+		[InlineDataAttribute(1,1)]
+		[InlineDataAttribute(2,2)]
+		[InlineDataAttribute(3,2)]
+		[InlineDataAttribute(4,3)]
+		[InlineDataAttribute(5,4)]
+		[InlineDataAttribute(6,5)]
+		public void CardTrack(int revealedSpaces, int expectedCardPlayCount ){
+			// card:	1 2 2 3 4 5
+			spirit.RevealedCardSpaces = revealedSpaces;
+			Assert_CardTrackIs( expectedCardPlayCount );
+		}
+
+
 		#region helpers
 
 		void Given_IslandIsABC() {
@@ -87,10 +117,6 @@ namespace SpiritIsland.Tests.Growth {
 
 		#endregion
 
-
-		// 	0 moon water 1 earth wter 2
-		// 	1 2 2 3 4 5
-
-
 	}
+
 }
