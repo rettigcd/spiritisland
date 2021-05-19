@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using System.Collections.Generic;
+using Xunit;
 
 namespace SpiritIsland.Tests.Growth {
 
@@ -107,6 +108,36 @@ namespace SpiritIsland.Tests.Growth {
 			Assert_BoardPresenceIs( "A3A3A7" ); // D
 
 		}
+
+		[Theory]
+		[InlineDataAttribute(1,2,"")]
+		[InlineDataAttribute(2,2,"S")]
+		[InlineDataAttribute(3,4,"S")]
+		[InlineDataAttribute(4,5,"S")]
+		[InlineDataAttribute(5,5,"SP")]
+		[InlineDataAttribute(6,7,"SP")]
+		[InlineDataAttribute(7,8,"SP")]
+		[InlineDataAttribute(8,9,"SP")]
+		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
+			// energy:	2 sun 4 5 plant 7 8 9
+			spirit.RevealedEnergySpaces = revealedSpaces;
+			Assert_EnergyTrackIs( expectedEnergyGrowth );
+			Assert_BonusElements( elements );
+		}
+
+		[Theory]
+		[InlineDataAttribute(1,1)]
+		[InlineDataAttribute(2,2)]
+		[InlineDataAttribute(3,2)]
+		[InlineDataAttribute(4,3)]
+		[InlineDataAttribute(5,4)]
+		[InlineDataAttribute(6,5)]
+		public void CardTrack(int revealedSpaces, int expectedCardPlayCount){
+			// card:	1 2 2 3 4 5
+			spirit.RevealedCardSpaces = revealedSpaces;
+			Assert_CardTrackIs(expectedCardPlayCount);
+		}
+
 
 		void Given_BlightEverywhereExcept7() {
 			gameState.AddBlight( board[1] );

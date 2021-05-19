@@ -9,6 +9,8 @@
 		Plant,	// green
 		Sun,	// yellow
 		Water,	// blue
+
+		Any		// used by Bringer
 	};
 
 }

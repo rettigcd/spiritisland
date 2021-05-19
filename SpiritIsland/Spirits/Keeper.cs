@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace SpiritIsland {
@@ -84,6 +85,27 @@ namespace SpiritIsland {
 				)
 			};
 		}
+
+		// energy:	2 sun 4 5 plant 7 8 9
+
+		protected override int[] EnergySequence => new int[]{ 2,2,4,5,5,7,8,9};
+
+		protected override int[] CardSequence => new int[]{ 1, 2, 2, 3, 4, 5 };
+
+		public override int Elements( Element el ) {
+			return new Element[]{
+				Element.None,
+				Element.Sun,
+				Element.None,
+				Element.None,
+				Element.Plant,
+				Element.None,
+				Element.None,
+				Element.None
+			}.Take( RevealedEnergySpaces )
+				.Count( x => x == el );
+		}
+
 
 	}
 

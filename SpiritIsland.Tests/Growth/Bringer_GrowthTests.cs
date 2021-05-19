@@ -51,5 +51,35 @@ namespace SpiritIsland.Tests.Growth {
 			Assert_BoardPresenceIs("T5T6");
 		}
 
+		[Theory]
+		[InlineDataAttribute(1,2,"")]
+		[InlineDataAttribute(2,2,"A")]
+		[InlineDataAttribute(3,3,"A")]
+		[InlineDataAttribute(4,3,"AM")]
+		[InlineDataAttribute(5,4,"AM")]
+		[InlineDataAttribute(6,4,"AM*")]
+		[InlineDataAttribute(7,5,"AM*")]
+		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
+			// energy:	2 air 3 moon 4 any 5
+			spirit.RevealedEnergySpaces = revealedSpaces;
+			Assert_EnergyTrackIs( expectedEnergyGrowth );
+			Assert_BonusElements( elements );
+		}
+
+		[Theory]
+		[InlineDataAttribute(1,2,"")]
+		[InlineDataAttribute(2,2,"")]
+		[InlineDataAttribute(3,2,"")]
+		[InlineDataAttribute(4,3,"")]
+		[InlineDataAttribute(5,3,"")]
+		[InlineDataAttribute(6,3,"*")]
+		public void CardTrack(int revealedSpaces, int expectedCardPlayCount, string elements){
+			// card:	2 2 2 3 3 any
+			spirit.RevealedCardSpaces = revealedSpaces;
+			Assert_CardTrackIs(expectedCardPlayCount);
+			Assert_BonusElements( elements );
+		}
+
 	}
+
 }

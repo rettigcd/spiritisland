@@ -14,7 +14,8 @@ namespace SpiritIsland.Tests.Growth {
 				[Element.Moon] = 'M',	
 				[Element.Plant] = 'P',	
 				[Element.Sun] = 'S',	
-				[Element.Water] = 'W',	
+				[Element.Water] = 'W',
+				[Element.Any] = '*',
 			};
 
 		//static GrowthTests(){

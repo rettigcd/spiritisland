@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace SpiritIsland {
@@ -52,6 +53,35 @@ namespace SpiritIsland {
 				new GrowthOption(new GainEnergy(this,2), new PlacePresence(this,new RangeCriteria(4,onDahanOrInvadors)))
 			};
 		}
+
+		//	2 air 3 moon 4 any 5
+		protected override int[] EnergySequence => new int[]{2,2,3,3,4,4,5};
+
+		// card:	2 2 2 3 3 any
+		protected override int[] CardSequence => new int[]{ 2,2,2,3,3,3 };
+
+		public override int Elements( Element el ) {
+			return new Element[]{ 
+				Element.None, 
+				Element.Air, 
+				Element.None, 
+				Element.Moon,
+				Element.None,
+				Element.Any,
+				Element.None
+			}	.Take(RevealedEnergySpaces)
+				.Count(x=>x==el)
+			+ new Element[]{ 
+				Element.None, 
+				Element.None, 
+				Element.None, 
+				Element.None, 
+				Element.None,
+				Element.Any
+			}	.Take(RevealedCardSpaces)
+				.Count(x=>x==el);
+		}
+
 	}
 
 }
