@@ -92,6 +92,7 @@ namespace SpiritIsland {
 				var pp = growthActions.GrowthActions
 					.OfType<PlacePresence>()
 					.ToArray();
+
 				switch(pp.Length) {
 					case 0: throw new InvalidOperationException( "no place presence action available" );
 					case 1: Update(pp[0]); break;

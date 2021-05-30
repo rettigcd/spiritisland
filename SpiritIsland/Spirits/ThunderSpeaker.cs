@@ -37,8 +37,8 @@ namespace SpiritIsland {
 
 			var opt1Actions = new List<GrowthAction>{
 				new PlacePresence(this 
-					,new RangeCriteria(1,onDahan)
 					,new RangeCriteria(2,onDahan)
+					,new RangeCriteria(1,onDahan)
 				)
 			};
 

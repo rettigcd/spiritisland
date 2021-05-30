@@ -1,72 +1,39 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
-Growth that needs resolved:
+can we select presence from both tracks?
 
-	! which track to take presence from
-	- Which Power Cards are being drawn (major/minor)
+----
+(S)	Select Growth Option
+(R)		- Resolve Growth Option
+(S)	Select Cards
+(R)	Resolve Fast Actions
+(R)	(Resolve Fear)
+(-)	Do Invader Actions
+(R)	Resolve Slow
 
-!!! Test Initial Sprit Player State
-!!! Test Presence Tracks
-!!! Test Placing Initial Presence on different boards
+----
 
+! Individual spirits can only grow while in grow phase, which transitions them to select-card phase.
 
-Resolve - All Information - Presence
-Resolve - Hidden - next Draw Cards
+! Test energy is gained following grow.
 
-Grow1()
-Grow2()
-Grow3(PlacePresenseHere(...))
+! separate place-presence into distinct steps, so we can do similar to other power actions, that are distinct steps
 
-var unresolved = Grow(1);
-PlacePresnseOn(unresolved);
-Reclaim1(unresolved,card4);
+select cards
+	! can't purchase more than max # of cards
+	! can't purchase more than energy cost of cards
+	! purchase reduces energy
+	! purchased cards are in playable stack
 
+Card
+	.selectTarget(...)
+	.pullFrom("A1","A5","A5")
 
-Issue1a - resolving Grow w/ info known
-Issue1b - resolveing Grow w/ info hidden
-Issue2b - metadata querying spirit / spirit UI
+Card
+	.selectTarget(...)
+	.pushTo(...)
 
-PendingItems items = Grow(1);
-while(items.Count>0){
-	items.PlacePresence(Space);
-	items.PlacePresence();
-	items.ReclaimCard();
-}
-
-=> place presence   (known) make part of command   ALL
-=> select reclaim1  (known) make part of command   MANY
-=> draw minor (pass selector to )   ALL
-=> draw major   ALL
-
-
-
-
-
-== PlacePresence Options ==
-Place Presence is Data (range + criteria) and passed to Spirit, but then spirit knows what PP is.
-When Getting Options, Spirit preloads Spirits starting presence
-
-? if spirit preload initial presence, then place presence need to be treated as a whole
-? if we want to mix and match, presence could be separate with intermediate states.
-
-=== Things that need resolved ===
-Resolve 1
-Draw Cards
-Place Presence
-
-
-??????????? can program query the different growth actions ???????????????
-
-Pass a Block to deal with intermediate state?   Multiple blocks?
-
-
-Specify: (Reclaim Card)
-Specify: Presence
-Specify: Drawn PowerCard
-
-
-Bob<Type>().SpecifyCard()
-
-option.Actions.Specify
-
+PlacePresence
+	.selectSource("Energy")
+	.selectTarget("A1");
 

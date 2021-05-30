@@ -33,9 +33,8 @@ namespace SpiritIsland.Tests.Growth {
 
 			Assert.Equal(1, spirit.NumberOfCardsPlayablePerTurn); // ,"Rampant Green should start with 1 card.");
 
-			When_Growing( 1, Resolve_PlacePresence("A1A2;A1A3;A1A5;A1A8;A2A2;A2A3;A2A4;A2A5;A3A3;A3A4;A3A5;"
-				+"A4A5;A4A8;A5A5;A5A6;A5A7;A5A8")
-			);
+			const string option = "A1A2;A1A3;A1A5;A1A8;A2A1;A2A2;A2A3;A2A4;A2A5;A3A1;A3A2;A3A3;A3A4;A3A5;A4A2;A4A3;A4A5;A4A8;A5A1;A5A2;A5A3;A5A4;A5A5;A5A6;A5A7;A5A8";
+			When_Growing( 1, Resolve_PlacePresence( option ) );
 
 			// Player Gains +1 card to play this round
 			Assert.Equal(2, spirit.NumberOfCardsPlayablePerTurn); // , "Should gain 1 card to play this turn.");

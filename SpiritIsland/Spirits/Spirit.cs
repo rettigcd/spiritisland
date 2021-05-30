@@ -49,6 +49,8 @@ namespace SpiritIsland {
 			option.Apply();
 		}
 
+
+
 		public abstract GrowthOption[] GetGrowthOptions(GameState gameState);
 
 		public virtual int Elements(Element _) => 0;

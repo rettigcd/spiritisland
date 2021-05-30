@@ -14,7 +14,11 @@ namespace SpiritIsland.Tests.Growth {
 
 			base.Update( pp );
 			string[] x = pp.Options
-				.Select(o=> o.Select(l=>l.Label).OrderBy(l=>l).Join() )
+				.Select(o=> o.Select(l=>l.Label)
+				//	.OrderBy(l=>l)
+					.Join() 
+				)
+				.Distinct()
 				.OrderBy(l=>l)
 				.ToArray();
 			string actualOptions = x

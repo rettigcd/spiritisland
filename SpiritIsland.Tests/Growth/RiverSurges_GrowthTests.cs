@@ -19,20 +19,14 @@ namespace SpiritIsland.Tests.Growth {
 
 		}
 
-		[Fact]
-		public void TwoPresence() {
+		[Theory]
+		[InlineDataAttribute("A1A1;A1A2;A1A4;A1A5;A1A6;A2A1;A2A2;A2A3;A2A4;A2A5;A2A6;A4A1;A4A2;A4A3;A4A4;A4A5;A4A6;A5A1;A5A2;A5A4;A5A5;A5A6;A5A7;A5A8;A6A1;A6A2;A6A4;A6A5;A6A6;A6A8")]
+		public void TwoPresence(string options) {
 
 			Given_HasPresence( board[1] );
 			Assert.Equal(1,spirit.RevealedEnergySpaces);
 
-			When_Growing( 1, Resolve_PlacePresence(
-				"A1A1;A1A2;A1A4;A1A5;A1A6;"
-				+"A2A2;A2A3;A2A4;A2A5;A2A6;"
-				+"A3A4;"
-				+"A4A4;A4A5;A4A6;"
-				+"A5A5;A5A6;A5A7;A5A8;"
-				+"A6A6;A6A8", Track.Energy, Track.Energy
-			) );
+			When_Growing( 1, Resolve_PlacePresence(options, Track.Energy, Track.Energy) );
 
 			Assert_GainPowercard( 0 );
 			Assert_GainEnergy( 0 );

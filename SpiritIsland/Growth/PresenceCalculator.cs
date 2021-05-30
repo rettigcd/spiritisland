@@ -10,7 +10,6 @@ namespace SpiritIsland {
 			IEnumerable<Space> src, 
 			RangeCriteria[] criteriaList
 		){
-			
 			var calc = new PresenceCalculator( src );
 			calc.Execute(criteriaList.ToArray());
 			if(criteriaList.Length == 2)
@@ -44,7 +43,6 @@ namespace SpiritIsland {
 			var options = refereceForThisRound
 				.SelectMany( p => p.SpacesWithin( criterion.Range ) )
 				.Distinct()
-//				.Where( bs => bs.Terrain != Terrain.Ocean )
 				.Where( bs=>criterion.IsValid(bs) )
 				.ToList();
 			
@@ -56,7 +54,9 @@ namespace SpiritIsland {
 
 
 		void Add() {
-			Space[] opt = xx.OrderBy( x=> x.Label ).ToArray();
+			Space[] opt = xx
+	//			.OrderBy( x=> x.Label )
+				.ToArray();
 			string key = string.Join("",opt.Select(x=>x.Label));
 			if(!keys.Contains( key )) {
 				results.Add( opt );

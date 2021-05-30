@@ -34,7 +34,7 @@ namespace SpiritIsland.Tests.Growth {
 			// +1 presense range 2, +1 prsense range 0
 			Given_HasPresence( board[3] ); 
 
-			When_Growing( 1, Resolve_PlacePresence("A1A1;A1A3;A2A2;A2A3;A3A3;A3A4;A3A5;A4A4;A5A5") );
+			When_Growing( 1, Resolve_PlacePresence("A1A1;A1A3;A2A2;A2A3;A3A1;A3A2;A3A3;A3A4;A3A5;A4A3;A4A4;A5A3;A5A5") );
 
 			Assert_GainEnergy( 0 );
 

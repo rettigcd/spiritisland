@@ -18,21 +18,6 @@ namespace SpiritIsland.Tests.Growth {
 				[Element.Any] = '*',
 			};
 
-		//static GrowthTests(){
-		//	ElementChars = new Dictionary<Element, char>{
-		//		[Element.Air] = 'A',	
-		//		[Element.Animal] = 'B',	
-		//		[Element.Earth] = 'E',  
-		//		[Element.Fire] = 'F',	
-		//		[Element.Moon] = 'M',	
-		//		[Element.Plant] = 'P',	
-		//		[Element.Sun] = 'S',	
-		//		[Element.Water] = 'W',	
-		//	};
-			
-		//}
-
-
 		const int initEnergy = 3;
 		protected Spirit spirit;
 		protected GameState gameState;

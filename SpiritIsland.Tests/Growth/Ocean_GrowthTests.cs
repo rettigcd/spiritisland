@@ -59,7 +59,7 @@ namespace SpiritIsland.Tests.Growth {
 			// Given: island has 2 boards, hence 2 oceans
 			gameState.Island = new Island(BoardA,BoardB);
 
-			When_Growing(1,Resolve_PlacePresence("A0A0;A0B0;B0B0"));
+			When_Growing(1,Resolve_PlacePresence("A0A0;A0B0;B0A0;B0B0"));
 			
 			Assert_GainEnergy(1);
 		}
