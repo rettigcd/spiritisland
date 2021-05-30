@@ -136,10 +136,18 @@ namespace SpiritIsland.Tests.Growth {
 			return Reclaim1.Resolve( spirit.PlayedCards[index] );
 		}
 
-		protected SpyOnPlacePresence Resolve_PlacePresence( string placeOptions, params Track[] source ) {
+		protected SpyOnPlacePresence Resolve_PlacePresence( 
+			string placeOptions, 
+			params Track[] source 
+		) => Resolve_PlacePresence(placeOptions,0,source);
+
+		protected SpyOnPlacePresence Resolve_PlacePresence( 
+			string placeOptions, 
+			int focus, 
+			params Track[] source 
+		) {
 			if( source == null || source.Length==0 ) source = new Track[]{ Track.Energy }; // default to energy
-//			placeOptions = placeOptions.Split(';').Select(s=>s.Substring(0,2)).Distinct().Join(";");
-			return new SpyOnPlacePresence( placeOptions, source );
+			return new SpyOnPlacePresence( placeOptions, focus, source );
 		}
 
 		protected void Assert_PresenceTracksAre(int expectedEnergy,int expectedCards) {

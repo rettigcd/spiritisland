@@ -91,8 +91,10 @@ namespace SpiritIsland.Tests.Growth {
 
 		}
 
-		[Fact]
-		public void C_Presence_Energy_D_Presence_PowerCard_LoseEnergy() {
+		[Theory]
+		[InlineData(0,"A3;A8")]
+		[InlineData(1,"A7")]
+		public void C_Presence_Energy_D_Presence_PowerCard_LoseEnergy(int focus, string expected) {
 			// c) add presense range 3 containing (wilds or presense), +1 energy
 			// d) -3 energy, +1 power card, add presense to land without blight range 3
 
@@ -101,11 +103,10 @@ namespace SpiritIsland.Tests.Growth {
 			Given_HasWilds( board[8] );
 			Given_BlightEverywhereExcept7();
 
-			When_Growing( 5, Resolve_PlacePresence( "A3;A7;A8" ) );
+			When_Growing( 5, Resolve_PlacePresence( expected, focus ) );
 
-			Assert_GainEnergy( -2 );            // C & D
-			Assert_GainPowercard( 1 );          // D
-			Assert_BoardPresenceIs( "A3A3" ); // D
+			Assert_GainEnergy( -2 );          // C & D
+			Assert_GainPowercard( 1 );        // D
 
 		}
 

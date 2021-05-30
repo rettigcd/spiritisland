@@ -8,14 +8,11 @@ namespace SpiritIsland {
 
 		static public Space[] PresenseToPlaceOptions( 
 			IEnumerable<Space> src, 
-			RangeCriteria[] criteriaList
+			RangeCriteria criteria
 		){
 			var calc = new PresenceCalculator( src );
 
-			calc.Execute(criteriaList.ToArray());
-
-			if(criteriaList.Length == 2)
-				calc.Execute(criteriaList[1],criteriaList[0]);
+			calc.Execute(criteria);
 
 			return calc.Results
 				.Select(x=>x[0])

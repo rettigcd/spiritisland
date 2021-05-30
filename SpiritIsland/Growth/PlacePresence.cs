@@ -68,35 +68,39 @@ namespace SpiritIsland {
 
 		public Space[] Options => options ??= CalculateOptions();
 		Space[] options;
-		Space[]  CalculateOptions() => PresenceCalculator.PresenseToPlaceOptions(referenceSpaces, this.rc );
+		Space[]  CalculateOptions() => PresenceCalculator.PresenseToPlaceOptions(
+			referenceSpaces, 
+			this.rc[Focus]
+		);
+
+		public int Focus = 0;
 
 
 		string placeOnSpace;
 		readonly IEnumerable<Space> referenceSpaces;
 		Track[] source;
 
-		static public IResolver Place(string placeOnSpace,Track source) => new Resolve(placeOnSpace,source);
+		static public IResolver Place(string placeOnSpace, int focus, Track source) 
+			=> new Resolve(placeOnSpace,focus,source);
 
 		public class Resolve : IResolver {
 
 			readonly string placeOnSpace;
 			readonly Track[] source;
+			readonly int focus;
 
-			public Resolve(string placeOnSpace,params Track[] source){
+			public Resolve(string placeOnSpace,int focus, params Track[] source){
 				this.placeOnSpace = placeOnSpace;
 				this.source = source;
+				this.focus = focus;
 			}
 
 			public void Apply( GrowthOption growthActions ) {
-				var pp = growthActions.GrowthActions
+				var placePresence = growthActions.GrowthActions
 					.OfType<PlacePresence>()
-					.ToArray();
-
-				switch(pp.Length) {
-					case 0: throw new InvalidOperationException( "no place presence action available" );
-					case 1: Update(pp[0]); break;
-					default: throw new InvalidOperationException( "combine presence" );
-				}
+					.VerboseSingle();
+				placePresence.Focus = focus;
+				Update( placePresence );
 			}
 
 			protected virtual void Update(PlacePresence pp) {
