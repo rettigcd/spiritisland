@@ -6,22 +6,22 @@ namespace SpiritIsland.Tests.Growth {
 	public class SpyOnPlacePresence : PlacePresence.Resolve {
 		readonly string allOptions;
 		public SpyOnPlacePresence( string allOptions, params Track[] source )
-			:base(allOptions.Split(';')[0],source)
+			:base(allOptions.Split(';')[0].Substring(0,2),source)
 		{
-			this.allOptions = allOptions;
+			this.allOptions = allOptions
+				.Split(';')
+				.Select(s=>s.Substring(0,2))
+				.Distinct()
+				.Join(";");
 		}
 		protected override void Update( PlacePresence pp ) {
 
 			base.Update( pp );
-			string[] x = pp.Options
-				.Select(o=> o.Select(l=>l.Label)
-				//	.OrderBy(l=>l)
-					.Join() 
-				)
+
+			string actualOptions = pp.Options
+				.Select( o=> o[0].Label )//.Select(l=>l.Label.Substring(0,2)).Join() )
 				.Distinct()
 				.OrderBy(l=>l)
-				.ToArray();
-			string actualOptions = x
 				.Join(";");
 
 			if(actualOptions != allOptions)

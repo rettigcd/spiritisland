@@ -11,10 +11,15 @@ namespace SpiritIsland {
 			RangeCriteria[] criteriaList
 		){
 			var calc = new PresenceCalculator( src );
+
 			calc.Execute(criteriaList.ToArray());
+
 			if(criteriaList.Length == 2)
 				calc.Execute(criteriaList[1],criteriaList[0]);
-			return calc.Results;
+
+			return calc.Results
+				.Select(x=>new Space[]{x[0]})
+				.ToArray();
 		}
 
 		PresenceCalculator( IEnumerable<Space> existingPresense ){

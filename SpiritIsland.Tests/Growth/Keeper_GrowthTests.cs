@@ -105,7 +105,7 @@ namespace SpiritIsland.Tests.Growth {
 
 			Assert_GainEnergy( -2 );            // C & D
 			Assert_GainPowercard( 1 );          // D
-			Assert_BoardPresenceIs( "A3A3A7" ); // D
+			Assert_BoardPresenceIs( "A3A3" ); // D
 
 		}
 
