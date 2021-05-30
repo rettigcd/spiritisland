@@ -6,7 +6,7 @@ namespace SpiritIsland {
 
 	public class PresenceCalculator {
 
-		static public Space[][] PresenseToPlaceOptions( 
+		static public Space[] PresenseToPlaceOptions( 
 			IEnumerable<Space> src, 
 			RangeCriteria[] criteriaList
 		){
@@ -18,7 +18,8 @@ namespace SpiritIsland {
 				calc.Execute(criteriaList[1],criteriaList[0]);
 
 			return calc.Results
-				.Select(x=>new Space[]{x[0]})
+				.Select(x=>x[0])
+				.Distinct()
 				.ToArray();
 		}
 

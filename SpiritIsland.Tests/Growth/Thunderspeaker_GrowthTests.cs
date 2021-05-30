@@ -22,10 +22,10 @@ namespace SpiritIsland.Tests.Growth {
 		}
 
 		[Theory]
-		[InlineData( "3,5,8", "A3A3;A3A5;A5A3;A5A5;A5A8" )]
-		[InlineData( "3,4,8", "A3A3;A3A4;A4A3;A4A4;A4A8" )]
-		[InlineData( "4,8", "A4A4;A4A8" )]
-		[InlineData( "1,4,8", "A1A1;A1A4;A4A1;A4A4;A4A8" )]
+		[InlineData( "3,5,8", "A3;A5" )]
+		[InlineData( "3,4,8", "A3;A4" )]
+		[InlineData( "4,8", "A4" )]
+		[InlineData( "1,4,8", "A1;A4" )]
 		public void TwoPresence( string initialDahanSquares, string expectedPresenseOptions ) {
 			// +1 presense within 2 - contains dahan
 			// +1 presense within 1 - contains dahan

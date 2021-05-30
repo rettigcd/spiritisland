@@ -20,7 +20,7 @@ namespace SpiritIsland.Tests.Growth {
 		}
 
 		[Theory]
-		[InlineDataAttribute("A1A1;A1A2;A1A4;A1A5;A1A6;A2A1;A2A2;A2A3;A2A4;A2A5;A2A6;A4A1;A4A2;A4A3;A4A4;A4A5;A4A6;A5A1;A5A2;A5A4;A5A5;A5A6;A5A7;A5A8;A6A1;A6A2;A6A4;A6A5;A6A6;A6A8")]
+		[InlineDataAttribute("A1;A2;A4;A5;A6")]
 		public void TwoPresence(string options) {
 
 			Given_HasPresence( board[1] );

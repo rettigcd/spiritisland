@@ -101,7 +101,7 @@ namespace SpiritIsland.Tests.Growth {
 			Given_HasWilds( board[8] );
 			Given_BlightEverywhereExcept7();
 
-			When_Growing( 5, Resolve_PlacePresence( "A3A7;A7A3;A7A8;A8A7" ) );
+			When_Growing( 5, Resolve_PlacePresence( "A3;A7;A8" ) );
 
 			Assert_GainEnergy( -2 );            // C & D
 			Assert_GainPowercard( 1 );          // D

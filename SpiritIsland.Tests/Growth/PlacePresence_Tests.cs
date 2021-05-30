@@ -35,14 +35,6 @@ namespace SpiritIsland.Tests.Growth {
 			Assert.Equal(2,spirit.RevealedCardSpaces);
 		}
 
-		[Fact]
-		public void PullsFrom_EachTrack(){
-			Given_SpiritGrowsByPlacingPresence(2);
-			When_Growing( 0, Resolve_PlacePresence( "A1A1", Track.Energy, Track.Card ) );
-			Assert.Equal(2,spirit.RevealedCardSpaces);
-			Assert.Equal(2,spirit.RevealedEnergySpaces);
-		}
-
 		void Given_SpiritGrowsByPlacingPresence(int count=1) {
 			bool spaceHasPresence(Space s)=>spirit.Presence.Contains(s);
 			var criteria = new RangeCriteria( 1,spaceHasPresence );
