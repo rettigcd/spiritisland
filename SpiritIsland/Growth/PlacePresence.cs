@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace SpiritIsland {
@@ -8,7 +7,7 @@ namespace SpiritIsland {
 
 	public class PlacePresence : GrowthAction {
 
-		public RangeCriteria[] rc;
+		public RangeCriteria rc;
 
 		#region constructors
 
@@ -17,7 +16,7 @@ namespace SpiritIsland {
 			int range,
 			IEnumerable<Space> referenceSpaces = null
 		):base(spirit){
-			rc = new RangeCriteria[]{ new RangeCriteria(range) };
+			rc = new RangeCriteria(range);
 			this.referenceSpaces = referenceSpaces ?? spirit.Presence;
 		}
 
@@ -26,7 +25,7 @@ namespace SpiritIsland {
 			IEnumerable<Space> referenceSpaces,
 			RangeCriteria rc
 		):base(spirit){
-			this.rc = new RangeCriteria[]{ rc };
+			this.rc = rc;
 			this.referenceSpaces = referenceSpaces ?? spirit.Presence;
 		}
 
@@ -34,7 +33,7 @@ namespace SpiritIsland {
 			Spirit spirit,
 			RangeCriteria rc
 		):base(spirit){
-			this.rc = new RangeCriteria[]{ rc };
+			this.rc = rc;
 			this.referenceSpaces = spirit.Presence;
 		}
 
@@ -42,6 +41,8 @@ namespace SpiritIsland {
 		#endregion
 
 		public override void Apply() {
+
+			if(placeOnSpace==null) return; // not specified
 
 			static string FormatOption(Space bs) => bs.Label;
 
@@ -71,7 +72,7 @@ namespace SpiritIsland {
 		Space[] options;
 		Space[]  CalculateOptions() => PresenceCalculator.PresenseToPlaceOptions(
 			referenceSpaces, 
-			this.rc[0]
+			this.rc
 		);
 
 		string placeOnSpace;
