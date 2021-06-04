@@ -16,11 +16,6 @@ namespace SpiritIsland {
 
 		public GrowthAction[] GrowthActions { get; }
 
-		internal void Apply() {
-			foreach(var action in GrowthActions)
-				action.Apply();
-		}
-
 	}
 
 }

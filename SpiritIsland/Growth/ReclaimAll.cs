@@ -7,6 +7,9 @@
 			spirit.AvailableCards.AddRange( spirit.PlayedCards );
 			spirit.PlayedCards.Clear();
 		}
+
+		public override bool IsResolved => true;
+
 	}
 
 

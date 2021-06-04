@@ -1,8 +1,10 @@
 ﻿
+using System.Collections.Generic;
+
 namespace SpiritIsland {
 	public interface IResolver {
 
-		void Apply( GrowthOption growthActions );
+		void Apply( List<GrowthAction> growthActions );
 
 	}
 

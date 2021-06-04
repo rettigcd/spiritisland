@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace SpiritIsland {
 
@@ -39,16 +40,26 @@ namespace SpiritIsland {
 
 		}
 
-		public void Grow(GameState gameState, int optionIndex, params IResolver[] resolvers){
+		public void Grow(GameState gameState, int optionIndex){
 			GrowthOption option = this.GetGrowthOptions(gameState)[optionIndex];
-			
-			// modify the growth option to resolve incomplete states
-			foreach(var resolver in resolvers)
-				resolver.Apply(option);
 
-			option.Apply();
+			var actions = option.GrowthActions.ToList();
+
+			// process actions that are already resolved
+			var resolved = option.GrowthActions
+				.Where(x=>x.IsResolved)
+				.ToArray();
+
+			foreach(var action in resolved){
+				action.Apply();
+				actions.Remove(action);
+			}
+
+			UnresolvedActions.AddRange( actions );
+
 		}
 
+		public List<GrowthAction> UnresolvedActions = new List<GrowthAction>();
 
 
 		public abstract GrowthOption[] GetGrowthOptions(GameState gameState);

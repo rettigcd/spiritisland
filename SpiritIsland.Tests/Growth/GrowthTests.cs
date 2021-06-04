@@ -80,7 +80,17 @@ namespace SpiritIsland.Tests.Growth {
 		#endregion
 
 		protected void When_Growing( int option, params IResolver[] resolvers ) {
-			spirit.Grow(gameState, option, resolvers);
+			spirit.Grow(gameState, option);
+
+			// modify the growth option to resolve incomplete states
+			foreach (var resolver in resolvers)
+				resolver.Apply(spirit.UnresolvedActions);
+
+			// re-run resolved
+			foreach (var action in spirit.UnresolvedActions)
+				if (action.IsResolved)
+					action.Apply();
+
 		}
 
 		#region Asserts Presence

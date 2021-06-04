@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SpiritIsland {
@@ -32,8 +33,8 @@ namespace SpiritIsland {
 				this.from = from;
 				this.to = to;
 			}
-			public void Apply( GrowthOption growthOption ) {
-				var action = growthOption.GrowthActions
+			public void Apply(List<GrowthAction> growthActions ) {
+				var action = growthActions
 					.OfType<PushPresence>()
 					.VerboseSingle(a=>a.From.Label == from);
 
@@ -41,6 +42,9 @@ namespace SpiritIsland {
 
 			}
 		}
+
+		public override bool IsResolved => To != null;
+
 
 	}
 

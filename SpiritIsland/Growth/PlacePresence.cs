@@ -42,8 +42,6 @@ namespace SpiritIsland {
 
 		public override void Apply() {
 
-			if(placeOnSpace==null) return; // not specified
-
 			static string FormatOption(Space bs) => bs.Label;
 
 			var opts = Options;
@@ -94,8 +92,8 @@ namespace SpiritIsland {
 				this.focus = focus;
 			}
 
-			public void Apply( GrowthOption growthActions ) {
-				var placePresence = growthActions.GrowthActions
+			public void Apply(List<GrowthAction> growthActions){
+				var placePresence = growthActions
 					.OfType<PlacePresence>()
 					.ToArray()[focus];
 				Update( placePresence );
@@ -106,6 +104,9 @@ namespace SpiritIsland {
 				pp.source = source;
 			}
 		}
+
+		public override bool IsResolved => placeOnSpace != null;
+
 
 	}
 

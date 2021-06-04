@@ -93,7 +93,8 @@ Gift of Proliferation => 1 => fast, any spirit => moon, plant => target spirit a
 		public override void Apply() {
 			(spirit as RampantGreen).tempCardBoost++;
 		}
-	}
+		public override bool IsResolved => true;
 
+	}
 
 }
