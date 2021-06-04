@@ -165,6 +165,8 @@ namespace SpiritIsland {
 
 		readonly List<ITileSide> sides = new List<ITileSide>();
 
+		public Space Ocean => Spaces.Single(space => space.Terrain == Terrain.Ocean);
+
 		#region TileSide
 
 		public interface ITileSide {

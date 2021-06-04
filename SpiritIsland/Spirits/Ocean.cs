@@ -38,8 +38,8 @@ namespace SpiritIsland {
 
 		public override GrowthOption[] GetGrowthOptions(GameState gameState) {
 
-			var oceans = gameState.Island.Boards.SelectMany(bd=>bd.Spaces)
-				.Where(space=>space.Terrain == Terrain.Ocean)
+			var oceans = gameState.Island.Boards
+				.Select(bd=>bd.Ocean)
 				.ToArray();
 
 			// !!! add test that oceans containing 2 presence only push 1 of them out.
