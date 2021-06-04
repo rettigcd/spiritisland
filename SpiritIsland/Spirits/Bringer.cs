@@ -50,7 +50,7 @@ namespace SpiritIsland {
 				// +1 power card, +1 pressence range 1
 				new GrowthOption(new DrawPowerCard(this,1), new PlacePresence(this,1) ),
 				// add presense range Dahan or Invadors, +2 energy
-				new GrowthOption(new GainEnergy(this,2), new PlacePresence(this,new RangeCriteria(4,onDahanOrInvadors)))
+				new GrowthOption(new GainEnergy(this,2), new PlacePresence(this,4,onDahanOrInvadors))
 			};
 		}
 

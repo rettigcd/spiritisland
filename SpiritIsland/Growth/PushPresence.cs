@@ -24,6 +24,7 @@ namespace SpiritIsland {
 
 			new RemovePresence(From).Apply(spirit);
 			new AddPresence(To).Apply(spirit);
+			To = null;
 		}
 
 		public class Resolve : IResolver {
@@ -39,7 +40,7 @@ namespace SpiritIsland {
 					.VerboseSingle(a=>a.From.Label == from);
 
 				action.To = action.Options.First(x=>x.Label==to);
-
+				action.Apply();
 			}
 		}
 

@@ -69,12 +69,16 @@ namespace SpiritIsland.Tests.Growth {
 		[Theory]
 		[InlineData("A0","A0>A2","A1;A2;A3","A1A2")]
 		public void PowerPlaceAndPush( string starting, string push, string placeOptions, string ending ){
-			// gain power card, push 1 presense from each ocean,  add presense on costal land range 1
+			// gain power card
+			// push 1 presense from each ocean
+			// add presense on costal land range 1
 			gameState.Island = new Island(BoardA,BoardB,BoardC);
 			Given_HasPresence( starting );
 
-			var resolvers = Resolve_PushPresence( push )
-				.Include( Resolve_PlacePresence(placeOptions) );
+			var resolvers = Resolve_PushPresence( push ).Include( Resolve_PlacePresence(placeOptions) );
+
+			resolvers = resolvers.Reverse().ToArray(); // !!!
+
 			When_Growing(2,resolvers);
 
 			Assert_GainPowercard(1);

@@ -43,14 +43,14 @@ namespace SpiritIsland {
 		public override GrowthOption[] GetGrowthOptions( GameState gameState ) {
 			bool beastOrJungle(Space s) => s.Terrain==Terrain.Jungle || gameState.HasBeasts(s);
 		
-			var beastOrJungleRange3 = new RangeCriteria(3,beastOrJungle);
+			var beastOrJungleRange3 = new PlacePresence(this, 3, beastOrJungle);
 
 			return new GrowthOption[]{
 				NewGrowthOption(
 					new ReclaimAll(this)       // A
 					,new GainEnergy(this,-1)   // A
 					,new DrawPowerCard(this,1) // A
-					,new PlacePresence(this, beastOrJungleRange3) // B
+					,beastOrJungleRange3 // B
 				)
 				,NewGrowthOption(
 					new ReclaimAll(this)       // A
@@ -63,12 +63,12 @@ namespace SpiritIsland {
 					,new GainEnergy(this,2)    // A + D
 				)
 				,NewGrowthOption(
-					new PlacePresence(this, beastOrJungleRange3) // B
+					beastOrJungleRange3 // B
 					,new GainEnergy(this,1)  // C
 					,new DrawPowerCard(this,1) // C
 				)
 				,NewGrowthOption(
-					new PlacePresence(this, beastOrJungleRange3) // B
+					beastOrJungleRange3 // B
 					,new GainEnergy(this,3)  // C
 				)
 				,NewGrowthOption(

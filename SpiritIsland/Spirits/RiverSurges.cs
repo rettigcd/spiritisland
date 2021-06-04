@@ -64,8 +64,8 @@ namespace SpiritIsland {
 
 		GrowthOption Get2PresenceGrowthOption() {
 			var actions = new List<GrowthAction>{
-				new PlacePresence( this, new RangeCriteria( 1 ) ),
-				new PlacePresence( this, new RangeCriteria( 1 ) )
+				new PlacePresence( this, 1 ),
+				new PlacePresence( this, 1 )
 			};
 			if( Reclaim1FromCardTrack )
 				actions.Add(new Reclaim1(this));

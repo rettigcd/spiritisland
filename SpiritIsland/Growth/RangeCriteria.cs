@@ -4,9 +4,11 @@ namespace SpiritIsland {
 
 	public class RangeCriteria {
 
+		static bool IsNotOcean(Space s) => s.Terrain != Terrain.Ocean;
+
 		public RangeCriteria(int range){
 			this.Range = range;
-			this.IsValid = ((s)=>s.Terrain != Terrain.Ocean);
+			this.IsValid = IsNotOcean;
 		}
 
 		public RangeCriteria(int range,Func<Space,bool> criteria){

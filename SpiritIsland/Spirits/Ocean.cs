@@ -56,23 +56,21 @@ namespace SpiritIsland {
 			));
 
 			// Option 2 - +1 presence range any ocean, +1 presense in any ociean, +1 energy
-			var placeOnOcean = new RangeCriteria(0,(s)=>s.Terrain==Terrain.Ocean);
 			var opt2 = new GrowthOption(
 				new GainEnergy(this,1),
-				new PlacePresence( this, oceans, placeOnOcean ),
-				new PlacePresence( this, oceans, placeOnOcean )
+				new PlaceInOcean(this, gameState),
+				new PlaceInOcean(this, gameState)
 			);
 
 			// Option 3 - gain power card, push 1 presense from each ocean,  add presense on costal land range 1
-			var myOceans = this.Presence
-				.Where(p=>p.Terrain == Terrain.Ocean);
-			var pushActions = myOceans
-				.Distinct() // !!! need test for this
+			var pushPresenceFromEachOcean = this.Presence
+				.Where(p => p.Terrain == Terrain.Ocean)
+				.Distinct() // !!! need test for this line
 				.Select(o=>new PushPresence(this,o))
 				.Cast<GrowthAction>();
-			var opt3 = new GrowthOption( pushActions.Include(
+			var opt3 = new GrowthOption( pushPresenceFromEachOcean.Include(
 					new DrawPowerCard(this),
-					new PlacePresence(this, 1, myOceans)
+					new PlacePresence(this, 1,s=>s.IsCostal )
 			));
 
 			return new GrowthOption[]{ opt1, opt2, opt3 };
@@ -97,7 +95,15 @@ namespace SpiritIsland {
 				.Count( x => x == el );
 		}
 
+	}
 
+	public class PlaceInOcean : MovePresence {
+		public PlaceInOcean(Spirit spirit,GameState gameState):base(spirit){
+			Options = gameState.Island.Boards
+				.Select( b=>b.Spaces.Single(s=>s.Terrain==Terrain.Ocean) )
+				.ToArray();
+		}
+		public override Space[] Options { get; }
 	}
 
 }

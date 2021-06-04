@@ -3,14 +3,14 @@ using System.Linq;
 
 namespace SpiritIsland.Tests.Growth {
 
-	public class SpyOnPlacePresence : PlacePresence.Resolve {
+	public class SpyOnPlacePresence : ResolvePlacePresence {
 		readonly string allOptions;
-		public SpyOnPlacePresence( string allOptions, int focus, params Track[] source )
+		public SpyOnPlacePresence( string allOptions, int focus, Track source )
 			:base(allOptions.Split(';')[0],focus,source)
 		{
 			this.allOptions = allOptions;
 		}
-		protected override void Update( PlacePresence pp ) {
+		protected override void Update(MovePresence pp ) {
 
 			base.Update( pp );
 

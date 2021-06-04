@@ -36,8 +36,8 @@ namespace SpiritIsland {
 		public override GrowthOption[] GetGrowthOptions(GameState gameState){
 
 			var opt1Actions = new List<GrowthAction>{
-				new PlacePresence(this ,new RangeCriteria(2,onDahan) ),
-				new PlacePresence(this ,new RangeCriteria(1,onDahan) )
+				new PlacePresence(this ,2,onDahan ),
+				new PlacePresence(this ,1,onDahan )
 			};
 
 			var opt2Actions = new List<GrowthAction>{

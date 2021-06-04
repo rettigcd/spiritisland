@@ -26,11 +26,11 @@ namespace SpiritIsland.Tests.Growth {
 			Given_HasPresence( board[1] );
 			Assert.Equal(1,spirit.RevealedEnergySpaces);
 
-			When_Growing( 1, Resolve_PlacePresence(options, Track.Energy, Track.Energy) );
+			When_Growing( 1, Resolve_PlacePresence(options, Track.Energy) );
 
 			Assert_GainPowercard( 0 );
 			Assert_GainEnergy( 0 );
-			Assert.Equal(3,spirit.RevealedEnergySpaces);
+			Assert.Equal(2,spirit.RevealedEnergySpaces);
 		}
 
 		[Fact]

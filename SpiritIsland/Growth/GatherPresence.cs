@@ -25,6 +25,7 @@ namespace SpiritIsland {
 				throw new InvalidOperationException("Source Prsence land not specified");
 			new RemovePresence(From).Apply(spirit);
 			new AddPresence(To).Apply(spirit);
+			From = null;
 		}
 
 		public class Resolve : IResolver {
@@ -39,7 +40,7 @@ namespace SpiritIsland {
 					.OfType<GatherPresence>()
 					.VerboseSingle(a=>a.To.Label == to);
 				action.From = action.Options.First(x=>x.Label==from);
-
+				action.Apply();
 			}
 		}
 

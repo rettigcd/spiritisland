@@ -46,9 +46,6 @@ namespace SpiritIsland {
 			bool presenceOrWilds(Space s) => this.Presence.Contains(s) || gameState.HasWilds(s);
 			bool noBlight(Space s) => s.Terrain != Terrain.Ocean && !gameState.HasBlight(s);
 
-			var noBlightRange3 = new RangeCriteria(3,noBlight);
-			var presenceOrWildsRange3 = new RangeCriteria(3,presenceOrWilds);
-
 			return new GrowthOption[]{
 				new GrowthOption(
 					new ReclaimAll(this)	    // A
@@ -58,29 +55,29 @@ namespace SpiritIsland {
 				,new GrowthOption(
 					new ReclaimAll(this)        // A
 					,new GainEnergy(this,2)     // A & C
-					,new PlacePresence(this,presenceOrWildsRange3) // C
+					,new PlacePresence(this,3,presenceOrWilds) // C
 				)
 				,new GrowthOption(
 					new ReclaimAll(this)          // A
 					,new GainEnergy(this,1-3)     // A & D
 					,new DrawPowerCard(this,1)	  // D
-					,new PlacePresence(this,noBlightRange3) // D
+					,new PlacePresence(this,3,noBlight) // D
 				)
 				,new GrowthOption(
 					new DrawPowerCard(this,1)	// B
 					,new GainEnergy(this,1)     // C
-					,new PlacePresence(this,presenceOrWildsRange3) // C
+					,new PlacePresence(this,3,presenceOrWilds) // C
 				)
 				,new GrowthOption(
 					new DrawPowerCard(this,1)	// B
 					,new GainEnergy(this,-3)     // D
 					,new DrawPowerCard(this,1)	  // D
-					,new PlacePresence(this,noBlightRange3) // D
+					,new PlacePresence(this,3,noBlight) // D
 				)
 				,new GrowthOption(
 					new GainEnergy(this,1)     // C
-					,new PlacePresence(this,presenceOrWildsRange3) // C
-					,new PlacePresence(this,noBlightRange3) // D
+					,new PlacePresence(this,3,presenceOrWilds) // C
+					,new PlacePresence(this,3,noBlight) // D
 					,new GainEnergy(this,-3)     // D
 					,new DrawPowerCard(this,1)	  // D
 				)

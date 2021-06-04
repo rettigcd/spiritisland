@@ -38,6 +38,7 @@ namespace SpiritIsland {
 					.FirstOrDefault();
 				if(action == null) throw new Exception("Reclaim action not found.");
 				action.Card = card;
+				action.Apply();
 			}
 
 		}

@@ -41,24 +41,24 @@ Gift of Proliferation => 1 => fast, any spirit => moon, plant => target spirit a
 			
 			static bool IsWetlandOrJungle( Space bs ) 
 				=> bs.Terrain == Terrain.Jungle || bs.Terrain == Terrain.Wetland;
-			var onWetlandOrJungle = new RangeCriteria(2,IsWetlandOrJungle);
+			var placeOnWetlandOrJungle = new PlacePresence(this, 2, IsWetlandOrJungle);
 
 			return new GrowthOption[]{
 				// reclaim, +1 power card
-				new GrowthOption( 
-					new PlacePresence(this,onWetlandOrJungle),
+				new GrowthOption(
+					placeOnWetlandOrJungle,
 					new ReclaimAll(this), 
 					new DrawPowerCard(this,1)
 				),
 				// +1 presense range 1, play +1 extra card this turn
-				new GrowthOption( 
-					new PlacePresence(this,onWetlandOrJungle),
-					new PlacePresence(this,new RangeCriteria(1)),
+				new GrowthOption(
+					placeOnWetlandOrJungle,
+					new PlacePresence(this,1),
 					new PlayExtraCardThisTurn(this)
 				),
 				// +1 power card, +3 energy
-				new GrowthOption( 
-					new PlacePresence(this,onWetlandOrJungle),
+				new GrowthOption(
+					placeOnWetlandOrJungle,
 					new GainEnergy(this,3), 
 					new DrawPowerCard(this)
 				),

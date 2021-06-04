@@ -87,9 +87,9 @@ namespace SpiritIsland.Tests.Growth {
 				resolver.Apply(spirit.UnresolvedActions);
 
 			// re-run resolved
-			foreach (var action in spirit.UnresolvedActions)
-				if (action.IsResolved)
-					action.Apply();
+//			foreach (var action in spirit.UnresolvedActions)
+//				if (action.IsResolved)
+//					action.Apply();
 
 		}
 
@@ -146,17 +146,16 @@ namespace SpiritIsland.Tests.Growth {
 			return Reclaim1.Resolve( spirit.PlayedCards[index] );
 		}
 
-		protected SpyOnPlacePresence Resolve_PlacePresence( 
-			string placeOptions, 
-			params Track[] source 
+		protected SpyOnPlacePresence Resolve_PlacePresence(
+			string placeOptions,
+			Track source = Track.Energy
 		) => Resolve_PlacePresence(placeOptions,0,source);
 
 		protected SpyOnPlacePresence Resolve_PlacePresence( 
 			string placeOptions, 
 			int focus, 
-			params Track[] source 
+			Track source = Track.Energy
 		) {
-			if( source == null || source.Length==0 ) source = new Track[]{ Track.Energy }; // default to energy
 			return new SpyOnPlacePresence( placeOptions, focus, source );
 		}
 
