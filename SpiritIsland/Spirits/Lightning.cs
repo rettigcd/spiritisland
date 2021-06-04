@@ -37,10 +37,8 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 				new GrowthOption( new ReclaimAll(this), new DrawPowerCard(this,1), new GainEnergy(this,1) ),
 				// +1 presence range 2, +1 presence range 0( 
 				new GrowthOption(
-					new PlacePresence(this
-						,new RangeCriteria(2)
-						,new RangeCriteria(0)
-					) 
+					new PlacePresence(this,new RangeCriteria(2)),
+					new PlacePresence(this,new RangeCriteria(0)) 
 				),
 				// +1 presense range 1, +3 energy
 				new GrowthOption( new GainEnergy(this,3), new PlacePresence(this,1) ),

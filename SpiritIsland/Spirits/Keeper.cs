@@ -79,7 +79,8 @@ namespace SpiritIsland {
 				)
 				,new GrowthOption(
 					new GainEnergy(this,1)     // C
-					,new PlacePresence(this,presenceOrWildsRange3,noBlightRange3) // C & D
+					,new PlacePresence(this,presenceOrWildsRange3) // C
+					,new PlacePresence(this,noBlightRange3) // D
 					,new GainEnergy(this,-3)     // D
 					,new DrawPowerCard(this,1)	  // D
 				)

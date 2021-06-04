@@ -38,10 +38,9 @@ namespace SpiritIsland.Tests.Growth {
 		void Given_SpiritGrowsByPlacingPresence(int count=1) {
 			bool spaceHasPresence(Space s)=>spirit.Presence.Contains(s);
 			var criteria = new RangeCriteria( 1,spaceHasPresence );
-			var criteriaList = new List<RangeCriteria>();
+			var testSpirit = spirit as TestSpirit;
 			while(count-->0)
-				criteriaList.Add(criteria);
-			(spirit as TestSpirit).actions.Add( new PlacePresence( spirit, criteriaList.ToArray() ) );
+				testSpirit.actions.Add( new PlacePresence( spirit, criteria ) );
 		}
 
 	}

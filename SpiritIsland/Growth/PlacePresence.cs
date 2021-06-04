@@ -24,17 +24,17 @@ namespace SpiritIsland {
 		public PlacePresence(
 			Spirit spirit,
 			IEnumerable<Space> referenceSpaces,
-			params RangeCriteria[] rc
+			RangeCriteria rc
 		):base(spirit){
-			this.rc = rc;
+			this.rc = new RangeCriteria[]{ rc };
 			this.referenceSpaces = referenceSpaces ?? spirit.Presence;
 		}
 
 		public PlacePresence(
 			Spirit spirit,
-			params RangeCriteria[] rc
+			RangeCriteria rc
 		):base(spirit){
-			this.rc = rc;
+			this.rc = new RangeCriteria[]{ rc };
 			this.referenceSpaces = spirit.Presence;
 		}
 
@@ -45,6 +45,7 @@ namespace SpiritIsland {
 
 			static string FormatOption(Space bs) => bs.Label;
 
+			var opts = Options;
 			var option = Options
 				.FirstOrDefault(o => FormatOption(o) == placeOnSpace);
 
@@ -70,11 +71,8 @@ namespace SpiritIsland {
 		Space[] options;
 		Space[]  CalculateOptions() => PresenceCalculator.PresenseToPlaceOptions(
 			referenceSpaces, 
-			this.rc[Focus]
+			this.rc[0]
 		);
-
-		public int Focus = 0;
-
 
 		string placeOnSpace;
 		readonly IEnumerable<Space> referenceSpaces;
@@ -98,8 +96,7 @@ namespace SpiritIsland {
 			public void Apply( GrowthOption growthActions ) {
 				var placePresence = growthActions.GrowthActions
 					.OfType<PlacePresence>()
-					.VerboseSingle();
-				placePresence.Focus = focus;
+					.ToArray()[focus];
 				Update( placePresence );
 			}
 

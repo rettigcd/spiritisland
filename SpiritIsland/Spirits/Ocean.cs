@@ -59,7 +59,8 @@ namespace SpiritIsland {
 			var placeOnOcean = new RangeCriteria(0,(s)=>s.Terrain==Terrain.Ocean);
 			var opt2 = new GrowthOption(
 				new GainEnergy(this,1),
-				new PlacePresence( this, oceans, placeOnOcean, placeOnOcean )
+				new PlacePresence( this, oceans, placeOnOcean ),
+				new PlacePresence( this, oceans, placeOnOcean )
 			);
 
 			// Option 3 - gain power card, push 1 presense from each ocean,  add presense on costal land range 1

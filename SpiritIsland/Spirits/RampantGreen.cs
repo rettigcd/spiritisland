@@ -52,7 +52,8 @@ Gift of Proliferation => 1 => fast, any spirit => moon, plant => target spirit a
 				),
 				// +1 presense range 1, play +1 extra card this turn
 				new GrowthOption( 
-					new PlacePresence(this,onWetlandOrJungle,new RangeCriteria(1)),
+					new PlacePresence(this,onWetlandOrJungle),
+					new PlacePresence(this,new RangeCriteria(1)),
 					new PlayExtraCardThisTurn(this)
 				),
 				// +1 power card, +3 energy
