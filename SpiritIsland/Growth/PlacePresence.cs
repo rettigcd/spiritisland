@@ -18,7 +18,7 @@ namespace SpiritIsland {
 			static bool IsNotOcean(Space s) => s.Terrain != Terrain.Ocean;
 			Range = range;
 			IsValid = IsNotOcean;
-			this.referenceSpaces = referenceSpaces ?? spirit.Presence;
+			this.referenceSpaces = spirit.Presence;  // by referencing list, delays reading actual presence until Options is called.
 		}
 
 		public PlacePresence(
@@ -29,13 +29,12 @@ namespace SpiritIsland {
 		{
 			Range = range;
 			IsValid = isValid ?? throw new ArgumentNullException(nameof(isValid));
-			this.referenceSpaces = referenceSpaces ?? spirit.Presence;
+			this.referenceSpaces = spirit.Presence;
 		}
 
 		#endregion
 
-		public override Space[] Options => options ??= CalculateOptions();
-		Space[] options;
+		public override Space[] Options => CalculateOptions();
 		Space[]  CalculateOptions() {
 			return referenceSpaces
 				.SelectMany(s => s.SpacesWithin(this.Range))

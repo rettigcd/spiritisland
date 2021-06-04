@@ -146,14 +146,14 @@ namespace SpiritIsland.Tests.Growth {
 			return Reclaim1.Resolve( spirit.PlayedCards[index] );
 		}
 
-		protected SpyOnPlacePresence Resolve_PlacePresence(
-			string placeOptions,
-			Track source = Track.Energy
-		) => Resolve_PlacePresence(placeOptions,0,source);
+		//protected SpyOnPlacePresence Resolve_PlacePresence(
+		//	string placeOptions,
+		//	Track source = Track.Energy
+		//) => Resolve_PlacePresence(placeOptions,0,source);
 
 		protected SpyOnPlacePresence Resolve_PlacePresence( 
 			string placeOptions, 
-			int focus, 
+			int focus=0, 
 			Track source = Track.Energy
 		) {
 			return new SpyOnPlacePresence( placeOptions, focus, source );

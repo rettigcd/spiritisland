@@ -19,18 +19,24 @@ namespace SpiritIsland.Tests.Growth {
 
 		}
 
-		[Theory]
-		[InlineDataAttribute("A1;A2;A4;A5;A6")]
-		public void TwoPresence(string options) {
+		[Fact]
+		public void TwoPresence() {
+			// reclaim, +1 power card, +1 energy
+			// +1 presense withing 1, +1 presense range 1
+			// +1 power card, +1 presense range 2
 
-			Given_HasPresence( board[1] );
+
+			Given_HasPresence( board[3] );
 			Assert.Equal(1,spirit.RevealedEnergySpaces);
 
-			When_Growing( 1, Resolve_PlacePresence(options, Track.Energy) );
+			When_Growing( 1
+				, Resolve_PlacePresence("A2;A3;A4", 0, Track.Energy)
+				, Resolve_PlacePresence("A1;A2;A3;A4", 1, Track.Energy)
+			);
 
 			Assert_GainPowercard( 0 );
 			Assert_GainEnergy( 0 );
-			Assert.Equal(2,spirit.RevealedEnergySpaces);
+			Assert.Equal(3,spirit.RevealedEnergySpaces);
 		}
 
 		[Fact]
