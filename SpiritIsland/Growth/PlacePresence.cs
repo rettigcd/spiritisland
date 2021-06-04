@@ -6,7 +6,8 @@ namespace SpiritIsland {
 
 	public class PlacePresence : MovePresence {
 
-		public RangeCriteria rc;
+		public int Range { get; }
+		public Func<Space, bool> IsValid { get; }
 
 		#region constructors
 
@@ -15,7 +16,8 @@ namespace SpiritIsland {
 			int range
 		):base(spirit){
 			static bool IsNotOcean(Space s) => s.Terrain != Terrain.Ocean;
-			rc = new RangeCriteria(range,IsNotOcean);
+			Range = range;
+			IsValid = IsNotOcean;
 			this.referenceSpaces = referenceSpaces ?? spirit.Presence;
 		}
 
@@ -25,7 +27,8 @@ namespace SpiritIsland {
 			Func<Space, bool> isValid
 		) : base(spirit)
 		{
-			rc = new RangeCriteria(range, isValid ?? throw new ArgumentNullException(nameof(isValid)));
+			Range = range;
+			IsValid = isValid ?? throw new ArgumentNullException(nameof(isValid));
 			this.referenceSpaces = referenceSpaces ?? spirit.Presence;
 		}
 
@@ -33,10 +36,13 @@ namespace SpiritIsland {
 
 		public override Space[] Options => options ??= CalculateOptions();
 		Space[] options;
-		Space[]  CalculateOptions() => PresenceCalculator.PresenseToPlaceOptions(
-			referenceSpaces, 
-			this.rc
-		);
+		Space[]  CalculateOptions() {
+			return referenceSpaces
+				.SelectMany(s => s.SpacesWithin(this.Range))
+				.Distinct()
+				.Where(this.IsValid)
+				.ToArray();
+		}
 
 		readonly IEnumerable<Space> referenceSpaces;
 

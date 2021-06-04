@@ -77,8 +77,6 @@ namespace SpiritIsland.Tests.Growth {
 
 			var resolvers = Resolve_PushPresence( push ).Include( Resolve_PlacePresence(placeOptions) );
 
-			resolvers = resolvers.Reverse().ToArray(); // !!!
-
 			When_Growing(2,resolvers);
 
 			Assert_GainPowercard(1);

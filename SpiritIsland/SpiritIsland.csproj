@@ -91,10 +91,8 @@
     <Compile Include="IEnumerableExtensions.cs" />
     <Compile Include="Growth\InvalidPresenceLocation.cs" />
     <Compile Include="Growth\PushPresence.cs" />
-    <Compile Include="Growth\RangeCriteria.cs" />
     <Compile Include="Growth\IResolver.cs" />
     <Compile Include="Growth\PlacePresence.cs" />
-    <Compile Include="Growth\PresenceCalculator.cs" />
     <Compile Include="Growth\ReclaimAll.cs" />
     <Compile Include="Island.cs" />
     <Compile Include="PowerCards\BoonOfVigor.cs" />
