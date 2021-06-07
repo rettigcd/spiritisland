@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using SpiritIsland.PowerCards;
+using System.Collections.Generic;
 using System.Linq;
 
-namespace SpiritIsland {
+namespace SpiritIsland
+{
 
 	public abstract class Spirit {
 
@@ -12,10 +14,16 @@ namespace SpiritIsland {
 			AvailableCards.Add( new PowerCard( "D", 0, Speed.Fast, Element.Air ) );
 		}
 
+		public Spirit(params PowerCard[] initialCards){
+			AvailableCards.AddRange( initialCards );
+		}
+
+
 		#region Cards
 
-		public List<PowerCard> AvailableCards = new List<PowerCard>();
-		public List<PowerCard> PlayedCards = new List<PowerCard>();
+		public List<PowerCard> AvailableCards = new List<PowerCard>();	// in hand
+		public List<PowerCard> ActiveCards = new List<PowerCard>();		// paid for
+		public List<PowerCard> PlayedCards = new List<PowerCard>();		// discarded
 
 		#endregion
 
@@ -45,19 +53,19 @@ namespace SpiritIsland {
 
 		#endregion
 
-		public virtual void PlayAvailableCards(params int[] cards){
+		public virtual void Grow(GameState gameState, int optionIndex) {
+			GrowthOption option = this.GetGrowthOptions(gameState)[optionIndex];
+			foreach (var action in option.GrowthActions)
+				AddAction(action);
 
+			RemoveResolvedActions();
 		}
 
-		public virtual void Grow(GameState gameState, int optionIndex){
-			GrowthOption option = this.GetGrowthOptions(gameState)[optionIndex];
-			foreach( var action in option.GrowthActions )
-				AddAction( action );
-
+		void RemoveResolvedActions() {
 			var resolved = UnresolvedActions
-				.Where(a=>a.IsResolved)
+				.Where(a => a.IsResolved)
 				.ToArray();
-			foreach(var a in resolved)
+			foreach (var a in resolved)
 				a.Apply();
 		}
 
@@ -77,6 +85,29 @@ namespace SpiritIsland {
 		public abstract GrowthOption[] GetGrowthOptions(GameState gameState);
 
 		public virtual int Elements(Element _) => 0;
+
+		public virtual void PlayAvailableCards(params int[] cards){
+
+		}
+
+		public void SelectPowerCards(params PowerCard[] cards) {
+
+			if( cards.Length > NumberOfCardsPlayablePerTurn )
+				throw new InsufficientCardPlaysException();
+
+			int totalCost = cards.Sum(x=>x.Cost);
+			if(totalCost > Energy)
+				throw new InsufficientEnergyException();
+
+			foreach(var card in cards) {
+				if(!AvailableCards.Contains( card ))
+					throw new CardNotAvailableException();
+				AvailableCards.Remove( card );
+			}
+
+			ActiveCards.AddRange( cards );
+			Energy -= totalCost;
+		}
 
 	}
 

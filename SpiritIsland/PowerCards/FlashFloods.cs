@@ -1,4 +1,4 @@
-﻿namespace SpiritIsland.Tests {
+﻿namespace SpiritIsland.PowerCards {
 	public class FlashFloods : PowerCard{
 		public FlashFloods():base("Flash Floods", 2, Speed.Fast
 			, Element.Sun

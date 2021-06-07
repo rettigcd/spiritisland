@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpiritIsland.PowerCards;
+using System;
 using System.Collections.Generic;
 using Xunit;
 
@@ -24,6 +25,8 @@ namespace SpiritIsland.Tests.Growth {
 	public class RiverSurges_GrowthTests : GrowthTests{
 
 		public RiverSurges_GrowthTests():base( new RiverSurges() ){}
+
+		#region growth
 
 		[Fact]
 		public void Reclaim_DrawCard_Energy() {
@@ -82,6 +85,10 @@ namespace SpiritIsland.Tests.Growth {
 			Assert.Equal(2,spirit.RevealedCardSpaces);
 		}
 
+		#endregion
+
+		#region presence tracks
+
 		[Theory]
 		[InlineDataAttribute(1,1)]
 		[InlineDataAttribute(2,2)]
@@ -125,6 +132,8 @@ namespace SpiritIsland.Tests.Growth {
 
 		}
 
+		#endregion
+
 		[Theory]
 		[InlineData(1,"Uncanny Melting")]
 		[InlineData(2,"Nature's Resilience")]
@@ -140,6 +149,82 @@ namespace SpiritIsland.Tests.Growth {
 			Assert_HasCardAvailable( lastPowerCard );
 		}
 
+//	Boon of Vigor => 0 => fast,any spirit		=> sun, water, plant	=> If you target yourself, gain 1 energy.  If you target another spirit, they gain 1 energy per power card they played this turn
+//	River's Bounty => 0 => slow, range 0, any	=> sun, water, animal	=> gather up to 2 dahan.  If ther are now at least 2 dahan, add 1 dahan and gain +1 energy
+//	Wash Away => 1 => slow, range 1, any		=> water mountain		=> Push up to 3 explorers / towns
+//	Flash Floods => 2 => fast, range 1, any		=> sun, water			=> 1 Damange.  If target land is costal +1 damage.
+
+
+		[Theory]
+		[InlineData("Boon of Vigor")]
+		[InlineData("River's Bounty")]
+		[InlineData("Wash Away")]
+		[InlineData("Flash Floods")]
+		public void SufficientEnergyToBuy(string cardName){
+			var card = FindAvailableCard(cardName);
+			spirit.Energy = card.Cost;
+
+			// When:
+			spirit.SelectPowerCards( card );
+
+			// Then - card is in Active/play list
+			Assert.Contains(spirit.ActiveCards, c=>c==card);
+			//  and - card is not in Available list
+			Assert.DoesNotContain(spirit.AvailableCards, c=>c==card);
+			// Card is not in Available List
+			Assert.Equal(0, spirit.Energy);
+		}
+
+		[Theory]
+		[InlineData("Wash Away")]
+		[InlineData("Flash Floods")]
+		public void InsufficientEnergyToBuy(string cardName){
+			var card = spirit.AvailableCards.VerboseSingle(c=>c.Name == cardName);
+			spirit.Energy = card.Cost - 1;
+
+			// When:
+			void Purchase() => spirit.SelectPowerCards( card );
+
+			Assert.Throws<InsufficientEnergyException>( Purchase );
+		}
+
+		[Fact]
+		public void InsufficientCardCountToBuy(){
+			
+			// Given: has 2 cards they want to play
+			var card1 = spirit.AvailableCards[0];
+			var card2 = spirit.AvailableCards[1];
+
+			//  And: lots of energy
+			spirit.Energy = 200;
+
+			//  But: can only play 1 card
+			Assert.Equal(1,spirit.NumberOfCardsPlayablePerTurn);
+
+			// When:
+			void Purchase() => spirit.SelectPowerCards( card1, card2 );
+
+			Assert.Throws<InsufficientCardPlaysException>(Purchase);
+		}
+
+		[Fact]
+		public void CantActivateDiscardedCards() {
+			// Given: Boon of vigor already played
+			PowerCard card = FindAvailableCard("Boon of Vigor");
+			Discard(card);
+
+			// When
+			void Purchase() => spirit.SelectPowerCards( card );
+
+			Assert.Throws<CardNotAvailableException>( Purchase );
+		}
+
+		void Discard(PowerCard card) {
+			spirit.AvailableCards.Remove(card);
+			spirit.PlayedCards.Add(card);
+		}
+
+		PowerCard FindAvailableCard(string cardName) => spirit.AvailableCards.VerboseSingle(c => c.Name == cardName);
 	}
 
 }

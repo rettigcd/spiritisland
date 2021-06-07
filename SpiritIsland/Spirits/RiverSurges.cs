@@ -1,6 +1,5 @@
-﻿using System;
+﻿using SpiritIsland.PowerCards;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SpiritIsland {
 
@@ -22,9 +21,9 @@ namespace SpiritIsland {
 	setup - put 1 presense on your starting board in the highest number wetlands
 
 	Boon of Vigor => 0 => fast,any spirit		=> sun, water, plant	=> If you target yourself, gain 1 energy.  If you target another spirit, they gain 1 energy per power card they played this turn
-	Flash Floods => 2 => fast, range 1, any		=> sun, water			=> 1 Damange.  If target land is costal +1 damage.
-	Wash Away => 1 => slow, range 1, any		=> water mountain		=> Push up to 3 explorers / towns
 	River's Bounty => 0 => slow, range 0, any	=> sun, water, animal	=> gather up to 2 dahan.  If ther are now at least 2 dahan, add 1 dahan and gain +1 energy
+	Wash Away => 1 => slow, range 1, any		=> water mountain		=> Push up to 3 explorers / towns
+	Flash Floods => 2 => fast, range 1, any		=> sun, water			=> 1 Damange.  If target land is costal +1 damage.
 
 	Power Progression => 
 	1. Uncanny Melting => 1, slow, range 1 from ss, any => sun, moon, water => if invaders present then 1 fear.  If target land is S/W then remove 1 blight
@@ -42,7 +41,12 @@ namespace SpiritIsland {
 	/// </summary>
 	public class RiverSurges : Spirit {
 
-		
+		public RiverSurges():base(
+			new BoonOfVigor(),
+			new FlashFloods(),
+			new RiversBounty(),
+			new WashAway()
+		){ }
 
 		bool Reclaim1FromCardTrack => this.RevealedCardSpaces >= 5;
 		protected override int[] EnergySequence => new int[]{1, 2, 2, 3, 4, 4, 5 };

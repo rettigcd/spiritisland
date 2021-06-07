@@ -1,4 +1,4 @@
-﻿namespace SpiritIsland {
+﻿namespace SpiritIsland.PowerCards {
 
 	public class RiversBounty : PowerCard {
 		public RiversBounty():base("River's Bounty", 0, Speed.Slow

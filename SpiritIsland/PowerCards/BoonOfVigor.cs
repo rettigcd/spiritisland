@@ -1,4 +1,4 @@
-﻿namespace SpiritIsland {
+﻿namespace SpiritIsland.PowerCards {
 
 	public class BoonOfVigor : PowerCard{
 

@@ -78,6 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Board.cs" />
+    <Compile Include="CardNotAvailableException.cs" />
     <Compile Include="DefaultDictionary.cs" />
     <Compile Include="GameState.cs" />
     <Compile Include="Growth\AddPresence.cs" />
@@ -94,6 +95,7 @@
     <Compile Include="Growth\IResolver.cs" />
     <Compile Include="Growth\PlacePresence.cs" />
     <Compile Include="Growth\ReclaimAll.cs" />
+    <Compile Include="InsufficientCardPlaysException.cs" />
     <Compile Include="Island.cs" />
     <Compile Include="PowerCards\BoonOfVigor.cs" />
     <Compile Include="PowerCards\FlashFloods.cs" />
@@ -106,6 +108,7 @@
     <Compile Include="Spirits\Bringer.cs" />
     <Compile Include="Growth\GatherPresence.cs" />
     <Compile Include="Element.cs" />
+    <Compile Include="InsufficientEnergyException.cs" />
     <Compile Include="Spirits\Keeper.cs" />
     <Compile Include="Spirits\Lightning.cs" />
     <Compile Include="Spirits\Ocean.cs" />
