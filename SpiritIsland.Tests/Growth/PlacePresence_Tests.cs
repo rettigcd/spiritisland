@@ -12,6 +12,7 @@ namespace SpiritIsland.Tests.Growth {
 					new GrowthOption(this.actions.ToArray())
 				};
 			}
+			protected override int[] EnergySequence => new int[] {0,0,0};
 			public List<GrowthAction> actions = new List<GrowthAction>();
 		}
 

@@ -11,11 +11,12 @@ namespace SpiritIsland.Tests.Growth {
 		public void Reclaim_Power_Energy(){
 			// * reclaim, +1 power card, +1 energy
 
+			Given_HalfOfPowercardsPlayed();
 			When_Growing( 0 );
 
 			Assert_AllCardsAvailableToPlay();
 			Assert_GainPowercard(1);
-			Assert_GainEnergy(1);
+			Assert_HasEnergy(1+1); // 1 from energy track
 
 		}
 
@@ -26,7 +27,8 @@ namespace SpiritIsland.Tests.Growth {
 			Given_HasPresence( board[1] );
 			When_Growing( 2, Resolve_PlacePresence("A1;A2;A4;A5;A6") );
 
-			Assert_GainEnergy( 3 );
+			Assert.Equal(1,spirit.EnergyPerTurn);
+			Assert_HasEnergy( 3 + 1 ); // 1 from energy track
 		}
 
 		[Fact]
@@ -36,7 +38,7 @@ namespace SpiritIsland.Tests.Growth {
 
 			When_Growing( 1, Resolve_PlacePresence("A1;A2;A3;A4;A5",0) );
 
-			Assert_GainEnergy( 0 );
+			Assert_HasEnergy( 0 );
 
 		}
 

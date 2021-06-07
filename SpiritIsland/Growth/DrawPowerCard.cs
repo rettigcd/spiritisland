@@ -6,6 +6,7 @@
 		}
 		public override void Apply(){
 			spirit.PowerCardsToDraw += count;
+			spirit.MarkResolved( this );
 		}
 
 		public override bool IsResolved => true; // !!! should change this to force drawing card

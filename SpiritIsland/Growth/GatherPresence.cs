@@ -26,6 +26,7 @@ namespace SpiritIsland {
 			new RemovePresence(From).Apply(spirit);
 			new AddPresence(To).Apply(spirit);
 			From = null;
+			spirit.MarkResolved( this );
 		}
 
 		public class Resolve : IResolver {

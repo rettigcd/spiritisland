@@ -92,6 +92,8 @@ Gift of Proliferation => 1 => fast, any spirit => moon, plant => target spirit a
 		public PlayExtraCardThisTurn(Spirit spirit):base(spirit){}
 		public override void Apply() {
 			(spirit as RampantGreen).tempCardBoost++;
+
+			spirit.MarkResolved( this );
 		}
 		public override bool IsResolved => true;
 

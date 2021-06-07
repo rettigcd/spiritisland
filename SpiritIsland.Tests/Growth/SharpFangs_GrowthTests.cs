@@ -23,11 +23,12 @@ namespace SpiritIsland.Tests.Growth {
 		public void AB(){
 			// a) cost -1, reclaim cards, gain +1 power card
 			// b) add a presense to jungle or a land with beasts ( range 3)
+			Given_HalfOfPowercardsPlayed();
 
 			When_Growing( 0, Resolve_PlacePresence("A3;A7;A8") );
 
 			Assert_AllCardsAvailableToPlay();  // A
-			Assert_GainEnergy( -1 );           // A
+			Assert_HasEnergy( -1 + 1);           // A  -- ??? !!! can we grow if we don't have the energy
 			Assert_GainPowercard( 1 );         // A
 
 			Assert_BoardPresenceIs("A2A3");    // B
@@ -38,10 +39,11 @@ namespace SpiritIsland.Tests.Growth {
 			// a) cost -1, reclaim cards, gain +1 power card
 			// c) gain power card, gain +1 energy
 
+			Given_HalfOfPowercardsPlayed();
 			When_Growing( 1 );
 
 			Assert_AllCardsAvailableToPlay();  // A
-			Assert_GainEnergy( 0 );            // A & C
+			Assert_HasEnergy( 0+1 );            // A & C
 			Assert_GainPowercard( 2 );         // A & C
 
 		}
@@ -51,11 +53,13 @@ namespace SpiritIsland.Tests.Growth {
 			// a) cost -1, reclaim cards, gain +1 power card
 			// d) +3 energy
 
+			Given_HalfOfPowercardsPlayed();
+
 			When_Growing( 2 );
 
 			Assert_AllCardsAvailableToPlay();  // A
 			Assert_GainPowercard( 1 );         // A
-			Assert_GainEnergy( 2 );            // A & D
+			Assert_HasEnergy( 2+1 );            // A & D
 
 		}
 
@@ -67,7 +71,7 @@ namespace SpiritIsland.Tests.Growth {
 			When_Growing( 3, Resolve_PlacePresence("A3;A7;A8") );
 
 			Assert_BoardPresenceIs("A2A3");    // B
-			Assert_GainEnergy( 1 );            // C
+			Assert_HasEnergy( 1 + 1 );            // C
 			Assert_GainPowercard( 1 );         // C
 		}
 
@@ -79,7 +83,7 @@ namespace SpiritIsland.Tests.Growth {
 			When_Growing( 4, Resolve_PlacePresence("A3;A7;A8") );
 
 			Assert_BoardPresenceIs("A2A3");    // B
-			Assert_GainEnergy( 3 );            // D
+			Assert_HasEnergy( 3 + 1 );            // D
 		}
 
 		[Fact]
@@ -90,7 +94,7 @@ namespace SpiritIsland.Tests.Growth {
 			When_Growing( 5 );
 
 			Assert_GainPowercard( 1 );         // C
-			Assert_GainEnergy( 1+3 );          // C + D
+			Assert_HasEnergy( 1+3 + 1 );          // C + D
 		}
 
 		[Theory]
@@ -119,6 +123,7 @@ namespace SpiritIsland.Tests.Growth {
 			// cards:	2 2 3 reclaim-1 4 5&reclaim-1
 			spirit.RevealedCardSpaces = revealedSpaces;
 			Assert_PresenceTracksAre(1,expectedCardPlayCount);
+			Given_HalfOfPowercardsPlayed();
 
 			// Test the reclaim bit
 			Given_HasPresence( board[3] );

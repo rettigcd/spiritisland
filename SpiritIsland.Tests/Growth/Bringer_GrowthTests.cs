@@ -9,6 +9,7 @@ namespace SpiritIsland.Tests.Growth {
 		[Fact] 
 		public void ReclaimAll_PowerCard(){
 			// reclaim, +1 power card
+			Given_HalfOfPowercardsPlayed();
 			When_Growing(0);
 			Assert_AllCardsAvailableToPlay();
 			Assert_GainPowercard(1);
@@ -17,6 +18,7 @@ namespace SpiritIsland.Tests.Growth {
 		[Fact] 
 		public void Reclaim1_Presence() {
 			// reclaim 1, add presense range 0
+			Given_HalfOfPowercardsPlayed();
 			Given_HasPresence( board[4] );
 
 			When_Growing( 1, Resolve_PlacePresence("A4"), Resolve_Reclaim( 0 ) );
@@ -45,9 +47,10 @@ namespace SpiritIsland.Tests.Growth {
 			gameState.AddCity(board[9]);
 
 			// add presense range 4 Dahan or Invadors, +2 energy
-			When_Growing(3,Resolve_PlacePresence("T6;T7;T8;T9"));
+			When_Growing(3,Resolve_PlacePresence("T6;T7;T8;T9",0,Track.Energy));
 
-			Assert_GainEnergy(2);
+			Assert.Equal(2,spirit.EnergyPerTurn);
+			Assert_HasEnergy(2+2);
 			Assert_BoardPresenceIs("T5T6");
 		}
 

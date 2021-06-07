@@ -48,10 +48,11 @@ namespace SpiritIsland.Tests.Growth {
 		public void ReclaimGather_NonGatherParts(){
 			// reclaim, +1 power, gather 1 presense into EACH ocean, +2 energy
 			
+			Given_HalfOfPowercardsPlayed();
 			When_Growing(0);
 			Assert_AllCardsAvailableToPlay();
 			Assert_GainPowercard(1);
-			Assert_GainEnergy(2);
+			Assert_HasEnergy(2);
 		}
 
 		[Fact]
@@ -63,7 +64,7 @@ namespace SpiritIsland.Tests.Growth {
 
 			When_Growing(1,Resolve_PlacePresence("A0;B0"));
 			
-			Assert_GainEnergy(1);
+			Assert_HasEnergy(1);
 		}
 
 		[Theory]

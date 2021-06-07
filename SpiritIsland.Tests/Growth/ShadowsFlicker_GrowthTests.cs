@@ -10,6 +10,7 @@ namespace SpiritIsland.Tests.Growth {
 		[Fact]
 		public void Reclaim_PowerCard(){
 			// reclaim, gain power Card
+			Given_HalfOfPowercardsPlayed();
 			When_Growing( 0 );
 			Assert_AllCardsAvailableToPlay();
 			Assert_GainPowercard(1);
@@ -29,7 +30,7 @@ namespace SpiritIsland.Tests.Growth {
 			Given_HasPresence( board[3] );
 			When_Growing( 2,Resolve_PlacePresence("A1;A2;A3;A4;A5;A6;A7;A8") );
 
-			Assert_GainEnergy(3);
+			Assert_HasEnergy(3+1); // 1 from energy track
 		}
 
 		[Theory]

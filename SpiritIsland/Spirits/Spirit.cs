@@ -5,6 +5,13 @@ namespace SpiritIsland {
 
 	public abstract class Spirit {
 
+		public Spirit(){
+			AvailableCards.Add( new PowerCard( "A", 0, Speed.Fast, Element.Air ) );
+			AvailableCards.Add( new PowerCard( "B", 0, Speed.Fast, Element.Air ) );
+			AvailableCards.Add( new PowerCard( "C", 0, Speed.Fast, Element.Air ) );
+			AvailableCards.Add( new PowerCard( "D", 0, Speed.Fast, Element.Air ) );
+		}
+
 		#region Cards
 
 		public List<PowerCard> AvailableCards = new List<PowerCard>();
@@ -18,14 +25,16 @@ namespace SpiritIsland {
 		public int Energy { get; set; }
 
 		#region Presence Tracks
-
 		public int RevealedEnergySpaces { get; set; } = 1;
 		public int RevealedCardSpaces { get; set; } = 1;
 
 		// This is River...
 		protected virtual int[] EnergySequence => new int[]{0};
 		protected virtual int[] CardSequence => new int[]{0}; 
-		public int EnergyGrowth => EnergySequence[RevealedEnergySpaces-1];
+
+		/// <summary> Energy gain per turn </summary>
+		public int EnergyPerTurn => EnergySequence[RevealedEnergySpaces-1];
+
 		public virtual int NumberOfCardsPlayablePerTurn => CardSequence[RevealedCardSpaces-1];
 		
 		#endregion
@@ -40,23 +49,26 @@ namespace SpiritIsland {
 
 		}
 
-		public void Grow(GameState gameState, int optionIndex){
+		public virtual void Grow(GameState gameState, int optionIndex){
 			GrowthOption option = this.GetGrowthOptions(gameState)[optionIndex];
+			foreach( var action in option.GrowthActions )
+				AddAction( action );
 
-			var actions = option.GrowthActions.ToList();
-
-			// process actions that are already resolved
-			var resolved = option.GrowthActions
-				.Where(x=>x.IsResolved)
+			var resolved = UnresolvedActions
+				.Where(a=>a.IsResolved)
 				.ToArray();
+			foreach(var a in resolved)
+				a.Apply();
+		}
 
-			foreach(var action in resolved){
-				action.Apply();
-				actions.Remove(action);
-			}
+		public virtual void AddAction(GrowthAction action){
+			UnresolvedActions.Add( action );
+		}
 
-			UnresolvedActions.AddRange( actions );
-
+		public void MarkResolved(GrowthAction action){
+			UnresolvedActions.Remove( action );
+			if(UnresolvedActions.Count == 0)
+				Energy += EnergyPerTurn; // transition 
 		}
 
 		public List<GrowthAction> UnresolvedActions = new List<GrowthAction>();

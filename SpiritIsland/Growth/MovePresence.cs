@@ -36,6 +36,8 @@ namespace SpiritIsland
 			}
 
 			PlaceOnSpace = null;
+
+			spirit.MarkResolved( this );
 		}
 
 	}

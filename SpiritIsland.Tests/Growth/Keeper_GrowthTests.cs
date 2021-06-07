@@ -16,11 +16,12 @@ namespace SpiritIsland.Tests.Growth {
 		public void A_Reclaim_Energy_B_Powercard() {
 			// a) reclaim, +1 energy
 			// b) +1 power card
+			Given_HalfOfPowercardsPlayed();
 
 			When_Growing( 0 );
 
 			Assert_AllCardsAvailableToPlay();
-			Assert_GainEnergy( 1 );
+			Assert_HasEnergy( 1+2 );
 			Assert_GainPowercard( 1 );
 		}
 
@@ -30,12 +31,13 @@ namespace SpiritIsland.Tests.Growth {
 			// c) add presense range 3 containing (wilds or presense), +1 energy
 
 			Given_HasPresence( board[3] );
-			base.Given_HasWilds( board[8] ); // 3 spaces away
+			Given_HalfOfPowercardsPlayed();
+			Given_HasWilds( board[8] ); // 3 spaces away
 
 			When_Growing( 1, Resolve_PlacePresence( "A3;A8" ) );
 
 			Assert_AllCardsAvailableToPlay();   // A
-			Assert_GainEnergy( 2 );             // A & C
+			Assert_HasEnergy( 2+2 );             // A & C
 			Assert_BoardPresenceIs( "A3A3" );     // C
 		}
 
@@ -45,13 +47,14 @@ namespace SpiritIsland.Tests.Growth {
 			// d) -3 energy, +1 power card, add presense to land without blight range 3
 
 			// Given: presence on board A  (default island is Board A)
+			Given_HalfOfPowercardsPlayed();
 			Given_HasPresence( board[3] );
 			Given_BlightEverywhereExcept7();
 
 			When_Growing( 2, Resolve_PlacePresence("A7") );
 
 			Assert_AllCardsAvailableToPlay();   // A
-			Assert_GainEnergy( -2 );            // A & D
+			Assert_HasEnergy( 0 );            // A & D  // !!! can you spend energy you don't have??
 			Assert_GainPowercard( 1 );          // D
 			Assert_BoardPresenceIs("A3A7");     // D
 						
@@ -70,7 +73,7 @@ namespace SpiritIsland.Tests.Growth {
 			When_Growing( 3, Resolve_PlacePresence( "A3;A8" ) );
 
 			Assert_GainPowercard( 1 );          // B
-			Assert_GainEnergy( 1 );             // C
+			Assert_HasEnergy( 1+2 );             // C
 			Assert_BoardPresenceIs( "A3A3" );     // C
 		}
 
@@ -86,7 +89,7 @@ namespace SpiritIsland.Tests.Growth {
 			When_Growing( 4, Resolve_PlacePresence( "A7" ) );
 
 			Assert_GainPowercard( 2 );          // B & D
-			Assert_GainEnergy( -3 );            // D
+			Assert_HasEnergy( -3+2 );            // D		// !!! can we do growth options that cause energy we don't have?
 			Assert_BoardPresenceIs( "A3A7" );     // D
 
 		}
@@ -105,7 +108,7 @@ namespace SpiritIsland.Tests.Growth {
 
 			When_Growing( 5, Resolve_PlacePresence( expected, focus ) );
 
-			Assert_GainEnergy( -2 );          // C & D
+			Assert_HasEnergy( -2 );          // C & D
 			Assert_GainPowercard( 1 );        // D
 
 		}

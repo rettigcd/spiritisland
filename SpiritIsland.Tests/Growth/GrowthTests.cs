@@ -6,25 +6,25 @@ namespace SpiritIsland.Tests.Growth {
 
 	public class GrowthTests {
 
-		protected static Dictionary<Element,char> ElementChars = new Dictionary<Element, char>{
-				[Element.Air] = 'A',	
-				[Element.Animal] = 'B',	
-				[Element.Earth] = 'E',  
-				[Element.Fire] = 'F',	
-				[Element.Moon] = 'M',	
-				[Element.Plant] = 'P',	
-				[Element.Sun] = 'S',	
+		public static Dictionary<Element,char> ElementChars = new Dictionary<Element, char>{
+				[Element.Air] = 'A',
+				[Element.Animal] = 'B',
+				[Element.Earth] = 'E',
+				[Element.Fire] = 'F',
+				[Element.Moon] = 'M',
+				[Element.Plant] = 'P',
+				[Element.Sun] = 'S',
 				[Element.Water] = 'W',
 				[Element.Any] = '*',
 			};
 
-		const int initEnergy = 3;
 		protected Spirit spirit;
 		protected GameState gameState;
 		protected Board board;
 
 		protected GrowthTests(Spirit spirit){
-			Given_SpiritIs(spirit);
+			// PlayerState requires Spirit to be known because Spirit creates playerState.
+			this.spirit = spirit;
 			gameState = new GameState {
 				Island = new Island( BoardA )
 			};
@@ -60,21 +60,13 @@ namespace SpiritIsland.Tests.Growth {
 			Given_HasPresence(spaces);
 		}
 
-		protected void Given_SpiritIs(Spirit spirit) {
-
-			// PlayerState requires Spirit to be known because Spirit creates playerState.
-			this.spirit = spirit;
-			this.spirit.Energy = initEnergy;
-			Given_HalfOfPowercardsPlayed( this.spirit); // CANT use Property because not init yet.
+		protected void Given_HalfOfPowercardsPlayed() {
+			Discard(spirit.AvailableCards.Count-1);
+			Discard(spirit.AvailableCards.Count-1);
 		}
-
-		void Given_HalfOfPowercardsPlayed(Spirit ps) {
-			// Given: multiple cards played
-			ps.PlayedCards.Add( new PowerCard( "A", 0, Speed.Fast, "A" ) );
-			ps.PlayedCards.Add( new PowerCard( "B", 0, Speed.Fast, "A" ) );
-			//   And: some available cards
-			ps.AvailableCards.Add( new PowerCard( "C", 0, Speed.Fast, "A" ) );
-			ps.AvailableCards.Add( new PowerCard( "D", 0, Speed.Fast, "A" ) );
+		void Discard(int idx){
+			spirit.PlayedCards.Add( spirit.AvailableCards[idx] );
+			spirit.AvailableCards.RemoveAt( idx );
 		}
 
 		#endregion
@@ -85,11 +77,6 @@ namespace SpiritIsland.Tests.Growth {
 			// modify the growth option to resolve incomplete states
 			foreach (var resolver in resolvers)
 				resolver.Apply(spirit.UnresolvedActions);
-
-			// re-run resolved
-//			foreach (var action in spirit.UnresolvedActions)
-//				if (action.IsResolved)
-//					action.Apply();
 
 		}
 
@@ -108,14 +95,19 @@ namespace SpiritIsland.Tests.Growth {
 			Assert.Equal( expected, spirit.PowerCardsToDraw ); // , $"Expected to gain {expected} power card" );
 		}
 
-		protected void Assert_AllCardsAvailableToPlay() {
-			// Then: all cards reclaimed (including unplayed)
-			Assert.Empty( spirit.PlayedCards ); // , "Should not be any cards in 'played' pile" );
-			Assert.Equal( "ABCD", spirit.AvailableCards.Select( c => c.Name ).OrderBy( n => n ).Join("") );
+		protected void Assert_HasCardAvailable( string name ){
+			bool nameMatches( PowerCard card ) => string.Compare(name,card.Name,true) == 0;
+			Assert.True(spirit.AvailableCards.Any( nameMatches ),$"Hand does not contain {name}");
 		}
 
-		protected void Assert_GainEnergy( int expectedChange ) {
-			Assert.Equal( expectedChange, spirit.Energy - initEnergy ); // , $"Expected {expectedChange} energy change" );
+		protected void Assert_AllCardsAvailableToPlay(int expectedAvailableCount = 4) {
+			// Then: all cards reclaimed (including unplayed)
+			Assert.Empty( spirit.PlayedCards ); // , "Should not be any cards in 'played' pile" );
+			Assert.Equal( expectedAvailableCount, spirit.AvailableCards.Count );
+		}
+
+		protected void Assert_HasEnergy( int expectedChange ) {
+			Assert.Equal( expectedChange, spirit.Energy ); // , $"Expected {expectedChange} energy change" );
 		}
 
 		#endregion
@@ -169,7 +161,7 @@ namespace SpiritIsland.Tests.Growth {
 		}
 
 		public void Assert_EnergyTrackIs( int expectedEnergy ) {
-			Assert.Equal( expectedEnergy, spirit.EnergyGrowth );
+			Assert.Equal( expectedEnergy, spirit.EnergyPerTurn );
 		}
 
 		protected void Assert_BonusElements( string elements ) {

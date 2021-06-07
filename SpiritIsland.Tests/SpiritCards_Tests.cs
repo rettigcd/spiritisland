@@ -1,3 +1,4 @@
+using System.Linq;
 using Xunit;
 
 namespace SpiritIsland.Tests {
@@ -66,7 +67,14 @@ namespace SpiritIsland.Tests {
 		void AssertCardStatus( PowerCard card, int expectedCost, Speed expectedSpeed, string expectedElements ) {
 			Assert.Equal( expectedCost, card.Cost );
 			Assert.Equal( expectedSpeed, card.Speed );
-			Assert.Equal( expectedElements, card.Elements );
+
+//			Assert.Equal( expectedElements, card.Elements );
+
+			var cardElements = card.Elements
+				.Select(x=> Growth.GrowthTests.ElementChars[x]);
+//				.OrderBy(x=>x);
+			Assert.Equal( expectedElements, string.Join("",cardElements));
+
 		}
 
 	}

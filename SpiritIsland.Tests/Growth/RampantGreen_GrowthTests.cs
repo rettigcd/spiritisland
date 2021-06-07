@@ -15,6 +15,7 @@ namespace SpiritIsland.Tests.Growth {
 		public void Reclaim_PowerCard_JWPresence() {
 			// +1 presense to jungle or wetland - range 2(Always do this + one of the following)
 			// reclaim, +1 power card
+			Given_HalfOfPowercardsPlayed();
 			Given_HasPresence( board[2] );
 
 			When_Growing( 0, Resolve_PlacePresence("A2;A3;A5") );
@@ -54,7 +55,8 @@ namespace SpiritIsland.Tests.Growth {
 
 			When_Growing( 2, Resolve_PlacePresence("A2;A3;A5") );
 
-			Assert_GainEnergy(3);
+			Assert.Equal(1,spirit.EnergyPerTurn);
+			Assert_HasEnergy(3+1);
 			Assert_GainPowercard(1);
 		}
 

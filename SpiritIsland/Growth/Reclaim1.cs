@@ -18,6 +18,7 @@ namespace SpiritIsland {
 				spirit.AvailableCards.Add(Card);
 			}
 			Card = null; // ensure it must be set each time.
+			spirit.MarkResolved( this );
 		}
 
 		public override bool IsResolved => Card != null;

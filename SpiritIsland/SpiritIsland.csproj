@@ -99,12 +99,13 @@
     <Compile Include="PowerCards\FlashFloods.cs" />
     <Compile Include="PowerCards\PowerCard.cs" />
     <Compile Include="PowerCards\RiversBounty.cs" />
-    <Compile Include="PowerCards\Speed.cs" />
+    <Compile Include="PowerCards\WashAway.cs" />
+    <Compile Include="Speed.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Space.cs" />
     <Compile Include="Spirits\Bringer.cs" />
     <Compile Include="Growth\GatherPresence.cs" />
-    <Compile Include="Spirits\Element.cs" />
+    <Compile Include="Element.cs" />
     <Compile Include="Spirits\Keeper.cs" />
     <Compile Include="Spirits\Lightning.cs" />
     <Compile Include="Spirits\Ocean.cs" />

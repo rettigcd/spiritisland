@@ -21,10 +21,19 @@ namespace SpiritIsland {
 	Special Rules: Rivers Domain - Your presense in wetlands count as sacred
 	setup - put 1 presense on your starting board in the highest number wetlands
 
-	Boon of Vigor => 0 => fast,any spirit => sun, water, plant => If you target yourself, gain 1 energy.  If you target another spirit, they gain 1 energy per power card they played this turn
-	Flash Floods => 2 => fast, range 1, any => sun, water => 1 Damange.  If target land is costal +1 damage.
-	Wash Away => 1 => slow, range 1, any => water mountain => Push up to 3 explorers / towns
-	River's Bounty => 0 => slow, range 0, any => sun, water, animal => gather up to 2 dahan.  If ther are now at least 2 dahan, add 1 dahan and gain +1 energy
+	Boon of Vigor => 0 => fast,any spirit		=> sun, water, plant	=> If you target yourself, gain 1 energy.  If you target another spirit, they gain 1 energy per power card they played this turn
+	Flash Floods => 2 => fast, range 1, any		=> sun, water			=> 1 Damange.  If target land is costal +1 damage.
+	Wash Away => 1 => slow, range 1, any		=> water mountain		=> Push up to 3 explorers / towns
+	River's Bounty => 0 => slow, range 0, any	=> sun, water, animal	=> gather up to 2 dahan.  If ther are now at least 2 dahan, add 1 dahan and gain +1 energy
+
+	Power Progression => 
+	1. Uncanny Melting => 1, slow, range 1 from ss, any => sun, moon, water => if invaders present then 1 fear.  If target land is S/W then remove 1 blight
+	2. Nature's Resilience => 1, fast, range 1 from ss => earth, plant, animal => defend 6, if you have 2 water, may remove blight instead
+	3. Pull Beneath the Hungry Earth => 1 slow, range:1 => moon, water, earth => if target has your presence then 1 fear and 1 damage.  if target land is S/W then 1 damage
+	4. Accelerated Rot (Major) => 4 slow, range 2, target J/W => sun, water, plant => 2 fear. 4 damage. If you have 3 sun, 2 water, 3 plant, then +5 damage. Remove 1 blight
+	5. Song of Sanctity => 1 slow, range 1 (M/J), sun, water, plant => if target has explorer, push all explorer. OTHERWISE remove 1 blight
+	6. Tsunami (Major) => 6 slow, range 2 from ss (costal), water, earth => 2 fear, 8 damage, destroy 2 dahan.  if you have 3 water and 2 earth then in eath OTHER costal on same board->1 fear, 4 damage and destroy 1 dahan
+	7. Encompassing Ward => 1 fast target spirit => sun water earth => defend 2 in every land where target spirit has presense
 
 	*/
 
@@ -33,43 +42,72 @@ namespace SpiritIsland {
 	/// </summary>
 	public class RiverSurges : Spirit {
 
+		
+
 		bool Reclaim1FromCardTrack => this.RevealedCardSpaces >= 5;
 		protected override int[] EnergySequence => new int[]{1, 2, 2, 3, 4, 4, 5 };
 		protected override int[] CardSequence => new int[]{1, 2, 2, 3, 3, 4, 5 };
 
-
+		#region growth
 
 		public override GrowthOption[] GetGrowthOptions(GameState _) {
 
-			return new GrowthOption[]{
-				new GrowthOption(
-					new ReclaimAll(this),
-					new DrawPowerCard(this,1),
-					new GainEnergy(this,1)
-				),
+			return new GrowthOption[]{ 
+			GetReclaimGrowthOption(),
 				Get2PresenceGrowthOption(),
 				GetPowerAndPresenceGrowthOption(),
 			};
 		}
 
-		GrowthOption GetPowerAndPresenceGrowthOption() {
-			var actions = new List<GrowthAction>{
-				new DrawPowerCard( this, 1 ),
-				new PlacePresence( this, 2 )
-			};
+		public override void Grow(GameState gameState, int optionIndex) {
 			if( Reclaim1FromCardTrack )
-				actions.Add(new Reclaim1(this));
-			return new GrowthOption( actions );
+				AddAction(new Reclaim1(this));
+			base.Grow(gameState, optionIndex);
+		}
+
+		GrowthOption GetReclaimGrowthOption() {
+			return new GrowthOption(
+				new ReclaimAll(this),
+				new DrawPowerCard(this, 1),
+				new GainEnergy(this, 1)
+			);
+		}
+
+		GrowthOption GetPowerAndPresenceGrowthOption() {
+			return new GrowthOption( 
+				new DrawPowerCard( this, 1 ),
+				new PlacePresence( this, 2 ) 
+			);
 		}
 
 		GrowthOption Get2PresenceGrowthOption() {
-			var actions = new List<GrowthAction>{
+			return new GrowthOption(
 				new PlacePresence( this, 1 ),
 				new PlacePresence( this, 1 )
-			};
-			if( Reclaim1FromCardTrack )
-				actions.Add(new Reclaim1(this));
-			return new GrowthOption( actions );
+			);
 		}
+
+		#endregion
+
+		public override void AddAction(GrowthAction action) {
+
+			if(action is DrawPowerCard){
+				this.AvailableCards.Add( PowerProgression[0] );
+				PowerProgression.RemoveAt( 0 );
+			} else
+				base.AddAction(action);
+		}
+
+		readonly List<PowerCard> PowerProgression = new List<PowerCard>{
+			new PowerCard("Uncanny melting", 0, Speed.Fast),
+			new PowerCard("Nature's Resilience", 0, Speed.Fast),
+			new PowerCard("Pull Beneath the Hungry Earth", 0, Speed.Fast),
+			new PowerCard("Accelerated Rot", 0, Speed.Fast),
+			new PowerCard("Song of Sanctity", 0, Speed.Fast),
+			new PowerCard("Tsunami", 0, Speed.Fast),
+			new PowerCard("Encompassing Ward", 0, Speed.Fast),
+		};
+
 	}
+
 }
