@@ -86,11 +86,7 @@ namespace SpiritIsland
 
 		public virtual int Elements(Element _) => 0;
 
-		public virtual void PlayAvailableCards(params int[] cards){
-
-		}
-
-		public void SelectPowerCards(params PowerCard[] cards) {
+		public virtual void PlayAvailableCards(params PowerCard[] cards) {
 
 			if( cards.Length > NumberOfCardsPlayablePerTurn )
 				throw new InsufficientCardPlaysException();

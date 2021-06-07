@@ -1,4 +1,6 @@
 ﻿
+using SpiritIsland.PowerCards;
+
 namespace SpiritIsland {
 
 /*
@@ -65,12 +67,6 @@ Gift of Proliferation => 1 => fast, any spirit => moon, plant => target spirit a
 			};
 		}
 
-		public override void PlayAvailableCards( params int[] cards ) {
-			base.PlayAvailableCards( cards );
-			tempCardBoost = 0;
-		}
-		public int tempCardBoost = 0;
-
 		public override int NumberOfCardsPlayablePerTurn => base.NumberOfCardsPlayablePerTurn + tempCardBoost;
 		protected override int[] CardSequence => new int[]{1, 1, 2, 2, 3, 4};
 
@@ -82,6 +78,12 @@ Gift of Proliferation => 1 => fast, any spirit => moon, plant => target spirit a
 				: RevealedEnergySpaces < 6 ? 1
 				: 2;
 		}
+
+		public override void PlayAvailableCards( params PowerCard[] cards ) {
+			base.PlayAvailableCards( cards );
+			tempCardBoost = 0;
+		}
+		public int tempCardBoost = 0;
 
 	}
 

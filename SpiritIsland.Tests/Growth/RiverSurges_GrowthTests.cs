@@ -165,7 +165,7 @@ namespace SpiritIsland.Tests.Growth {
 			spirit.Energy = card.Cost;
 
 			// When:
-			spirit.SelectPowerCards( card );
+			spirit.PlayAvailableCards( card );
 
 			// Then - card is in Active/play list
 			Assert.Contains(spirit.ActiveCards, c=>c==card);
@@ -183,7 +183,7 @@ namespace SpiritIsland.Tests.Growth {
 			spirit.Energy = card.Cost - 1;
 
 			// When:
-			void Purchase() => spirit.SelectPowerCards( card );
+			void Purchase() => spirit.PlayAvailableCards( card );
 
 			Assert.Throws<InsufficientEnergyException>( Purchase );
 		}
@@ -202,7 +202,7 @@ namespace SpiritIsland.Tests.Growth {
 			Assert.Equal(1,spirit.NumberOfCardsPlayablePerTurn);
 
 			// When:
-			void Purchase() => spirit.SelectPowerCards( card1, card2 );
+			void Purchase() => spirit.PlayAvailableCards( card1, card2 );
 
 			Assert.Throws<InsufficientCardPlaysException>(Purchase);
 		}
@@ -214,7 +214,7 @@ namespace SpiritIsland.Tests.Growth {
 			Discard(card);
 
 			// When
-			void Purchase() => spirit.SelectPowerCards( card );
+			void Purchase() => spirit.PlayAvailableCards( card );
 
 			Assert.Throws<CardNotAvailableException>( Purchase );
 		}
