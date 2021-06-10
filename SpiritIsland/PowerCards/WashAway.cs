@@ -1,11 +1,15 @@
 ﻿namespace SpiritIsland.PowerCards {
 
-	public class WashAway : PowerCard {
+	[PowerCard("Wash Away", 1, Speed.Slow, Element.Water, Element.Earth)]
+	public class WashAway : IAction {
 
-		public WashAway():base("Wash Away", 1, Speed.Slow
-			,Element.Water
-			,Element.Earth
-		){}
+		public WashAway(Spirit _){}
+
+		public bool IsResolved => throw new System.NotImplementedException();
+
+		public void Apply() {
+			throw new System.NotImplementedException();
+		}
 
 		// target: range 1
 

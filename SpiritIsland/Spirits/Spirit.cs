@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SpiritIsland
-{
+namespace SpiritIsland {
 
 	public abstract class Spirit {
 
@@ -14,16 +13,18 @@ namespace SpiritIsland
 			AvailableCards.Add( new PowerCard( "D", 0, Speed.Fast, Element.Air ) );
 		}
 
-		public Spirit(params PowerCard[] initialCards){
+		public Spirit( params PowerCard[] initialCards ){
 			AvailableCards.AddRange( initialCards );
 		}
 
+		public virtual IAction[] InnatePowers {get; set;} = new IAction[0]; // !!! eventually init in constructor
 
 		#region Cards
 
 		public List<PowerCard> AvailableCards = new List<PowerCard>();	// in hand
 		public List<PowerCard> ActiveCards = new List<PowerCard>();		// paid for
 		public List<PowerCard> PlayedCards = new List<PowerCard>();		// discarded
+		public List<IAction> UnresolvedActions = new List<IAction>();
 
 		#endregion
 
@@ -49,7 +50,7 @@ namespace SpiritIsland
 
 		#region intermediate growth states
 
-		public int PowerCardsToDraw;
+		public int PowerCardsToDraw; // temporary...
 
 		#endregion
 
@@ -69,7 +70,7 @@ namespace SpiritIsland
 				a.Apply();
 		}
 
-		public virtual void AddAction(GrowthAction action){
+		public virtual void AddAction(IAction action){
 			UnresolvedActions.Add( action );
 		}
 
@@ -78,9 +79,6 @@ namespace SpiritIsland
 			if(UnresolvedActions.Count == 0)
 				Energy += EnergyPerTurn; // transition 
 		}
-
-		public List<GrowthAction> UnresolvedActions = new List<GrowthAction>();
-
 
 		public abstract GrowthOption[] GetGrowthOptions(GameState gameState);
 
@@ -99,9 +97,14 @@ namespace SpiritIsland
 				if(!AvailableCards.Contains( card ))
 					throw new CardNotAvailableException();
 				AvailableCards.Remove( card );
+				ActiveCards.Add( card );
+				AddAction( card.GetAction(this) );
 			}
 
-			ActiveCards.AddRange( cards );
+			// add innate
+			foreach(var innate in InnatePowers)
+				AddAction(innate);
+
 			Energy -= totalCost;
 		}
 

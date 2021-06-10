@@ -86,6 +86,7 @@
     <Compile Include="Growth\GainEnergy.cs" />
     <Compile Include="Growth\GrowthAction.cs" />
     <Compile Include="Growth\GrowthOption.cs" />
+    <Compile Include="Growth\IAction.cs" />
     <Compile Include="Growth\MovePresence.cs" />
     <Compile Include="Growth\RemovePresence.cs" />
     <Compile Include="Growth\Track.cs" />
@@ -98,8 +99,10 @@
     <Compile Include="InsufficientCardPlaysException.cs" />
     <Compile Include="Island.cs" />
     <Compile Include="PowerCards\BoonOfVigor.cs" />
+    <Compile Include="PowerCards\CardAction.cs" />
     <Compile Include="PowerCards\FlashFloods.cs" />
     <Compile Include="PowerCards\PowerCard.cs" />
+    <Compile Include="PowerCards\PowerCardAttribute.cs" />
     <Compile Include="PowerCards\RiversBounty.cs" />
     <Compile Include="PowerCards\WashAway.cs" />
     <Compile Include="Speed.cs" />

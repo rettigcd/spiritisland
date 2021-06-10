@@ -59,7 +59,7 @@ namespace SpiritIsland {
 			this.focus = focus;
 		}
 
-		public void Apply(List<GrowthAction> growthActions) {
+		public void Apply(List<IAction> growthActions) {
 			var placePresence = growthActions
 				.OfType<MovePresence>()
 				.ToArray()[focus];

@@ -1,9 +1,15 @@
 ﻿namespace SpiritIsland.PowerCards {
-	public class FlashFloods : PowerCard{
-		public FlashFloods():base("Flash Floods", 2, Speed.Fast
-			, Element.Sun
-			, Element.Water
-		){}
+
+	[PowerCard("Flash Floods",2,Speed.Fast,Element.Sun,Element.Water)]
+	public class FlashFloods : IAction {
+
+		public FlashFloods(Spirit _){ }
+
+		public bool IsResolved => throw new System.NotImplementedException();
+
+		public void Apply() {
+			throw new System.NotImplementedException();
+		}
 
 		// Target: range 1 (any)
 

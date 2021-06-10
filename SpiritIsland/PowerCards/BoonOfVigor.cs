@@ -1,12 +1,9 @@
 ﻿namespace SpiritIsland.PowerCards {
 
-	public class BoonOfVigor : PowerCard{
+	[PowerCard("Boon of Vigor", 0, Speed.Fast,Element.Sun,Element.Water,Element.Plant)]
+	public class BoonOfVigor : IAction{
 
-		public BoonOfVigor():base("Boon of Vigor", 0, Speed.Fast
-			, Element.Sun
-			, Element.Water
-			, Element.Plant
-		){}
+		public BoonOfVigor(Spirit _){}
 
 		// Target: any spirit
 
@@ -18,6 +15,11 @@
 			return powerCardsPlayed; // target spirit ganes 1 energy per power card played
 		}
 
+		public bool IsResolved => throw new System.NotImplementedException();
+
+		public void Apply() {
+			throw new System.NotImplementedException();
+		}
 	}
 
 }

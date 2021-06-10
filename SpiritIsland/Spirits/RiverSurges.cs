@@ -42,11 +42,15 @@ namespace SpiritIsland {
 	public class RiverSurges : Spirit {
 
 		public RiverSurges():base(
-			new BoonOfVigor(),
-			new FlashFloods(),
-			new RiversBounty(),
-			new WashAway()
-		){ }
+			new PowerCard(typeof(BoonOfVigor)),
+			new PowerCard(typeof(FlashFloods)),
+			new PowerCard(typeof(RiversBounty)),
+			new PowerCard(typeof(WashAway))
+		){
+			this.InnatePowers = new IAction[]{
+				new MassiveFlooding()
+			};
+		}
 
 		bool Reclaim1FromCardTrack => this.RevealedCardSpaces >= 5;
 		protected override int[] EnergySequence => new int[]{1, 2, 2, 3, 4, 4, 5 };
@@ -93,7 +97,7 @@ namespace SpiritIsland {
 
 		#endregion
 
-		public override void AddAction(GrowthAction action) {
+		public override void AddAction(IAction action) {
 
 			if(action is DrawPowerCard){
 				this.AvailableCards.Add( PowerProgression[0] );
@@ -111,6 +115,28 @@ namespace SpiritIsland {
 			new PowerCard("Tsunami", 0, Speed.Fast),
 			new PowerCard("Encompassing Ward", 0, Speed.Fast),
 		};
+
+	}
+
+	class MassiveFlooding : IAction {
+
+		public void Init(Spirit spirit){
+			// select level
+			// pick land
+				// town or explorer
+				// destinatin
+
+				// select town/explorer
+				// target
+				// repeat
+
+				// -
+		}
+
+		public bool IsResolved => true;
+
+		public void Apply() {
+		}
 
 	}
 

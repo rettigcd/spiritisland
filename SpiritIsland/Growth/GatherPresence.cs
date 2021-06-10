@@ -36,7 +36,7 @@ namespace SpiritIsland {
 				this.from = from;
 				this.to = to;
 			}
-			public void Apply(List<GrowthAction> growthActions ) {
+			public void Apply(List<IAction> growthActions ) {
 				var action = growthActions
 					.OfType<GatherPresence>()
 					.VerboseSingle(a=>a.To.Label == to);

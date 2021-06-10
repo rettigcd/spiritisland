@@ -7,14 +7,17 @@ namespace SpiritIsland.Tests {
 	public class SpiritCards_Tests {
 
 		// immutable
-		readonly BoonOfVigor boonOfVigor = new BoonOfVigor();
-		readonly FlashFloods flashFloods = new FlashFloods();
+		readonly PowerCard boonOfVigorCard = PowerCard.For<BoonOfVigor>();
+		readonly PowerCard flashFloodsCard = PowerCard.For<FlashFloods>();
+
+		FlashFloods FlashFloods => (FlashFloods)flashFloodsCard.GetAction(null).InnerAction;
+		BoonOfVigor BoonOfVigor => (BoonOfVigor)boonOfVigorCard.GetAction(null).InnerAction;
 
 		#region BoonOfVigor
 
 		[Fact]
 		public void BoonOfVigor_TargetSelf() {
-			int energyBonus = boonOfVigor.TargetSelf();
+			int energyBonus = BoonOfVigor.TargetSelf();
 			Assert.Equal( 1, energyBonus );
 		}
 
@@ -23,13 +26,13 @@ namespace SpiritIsland.Tests {
 		[InlineData( 3 )]
 		[InlineData( 10 )]
 		public void BoonOfVigor_TargetOther( int expectedEnergyBonus ) {
-			int energyBonus = boonOfVigor.TargetOther( expectedEnergyBonus );
+			int energyBonus = BoonOfVigor.TargetOther( expectedEnergyBonus );
 			Assert.Equal( expectedEnergyBonus, energyBonus );
 		}
 
 		[Fact]
 		public void BoonOfVigor_Stats() {
-			AssertCardStatus( boonOfVigor, 0, Speed.Fast, "SWP" );
+			AssertCardStatus( boonOfVigorCard, 0, Speed.Fast, "SWP" );
 		}
 
 		#endregion BoonOfVigor
@@ -39,20 +42,20 @@ namespace SpiritIsland.Tests {
 		[Fact]
 		public void FlashFloods_Inland() {
 			var land = new Space { IsCostal = false };
-			int damage = flashFloods.GetDamage( land );
+			int damage = FlashFloods.GetDamage( land );
 			Assert.Equal( 1, damage );
 		}
 
 		[Fact]
 		public void FlashFloods_Costal() {
 			var land = new Space { IsCostal = true };
-			int damage = flashFloods.GetDamage( land );
+			int damage = FlashFloods.GetDamage( land );
 			Assert.Equal( 2, damage );
 		}
 
 		[Fact]
 		public void FlashFloods_Stats() {
-			AssertCardStatus( flashFloods, 2, Speed.Fast, "SW" );
+			AssertCardStatus( flashFloodsCard, 2, Speed.Fast, "SW" );
 		}
 
 		#endregion FlashFloods
@@ -60,7 +63,7 @@ namespace SpiritIsland.Tests {
 
 		[Fact]
 		public void RiversBounty_Stats() {
-			var card = new RiversBounty();
+			var card = new PowerCard(typeof(RiversBounty));
 			AssertCardStatus( card, 0, Speed.Slow, "SWB" );
 		}
 

@@ -1,11 +1,15 @@
-﻿namespace SpiritIsland.PowerCards {
+﻿namespace SpiritIsland.PowerCards
+{
 
-	public class RiversBounty : PowerCard {
-		public RiversBounty():base("River's Bounty", 0, Speed.Slow
-			,Element.Sun
-			,Element.Water
-			,Element.Animal
-		){}
+	[PowerCard("River's Bounty", 0, Speed.Slow,Element.Sun,Element.Water,Element.Animal)]
+	public class RiversBounty : IAction {
+		public RiversBounty(Spirit _){}
+
+		public bool IsResolved => throw new System.NotImplementedException();
+
+		public void Apply(){
+			throw new System.NotImplementedException();
+		}
 
 		// target: range 0 (any)
 

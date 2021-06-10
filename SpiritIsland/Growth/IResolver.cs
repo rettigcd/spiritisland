@@ -5,7 +5,7 @@ namespace SpiritIsland {
 
 	public interface IResolver {
 
-		void Apply( List<GrowthAction> growthActions );
+		void Apply( List<IAction> growthActions );
 
 	}
 

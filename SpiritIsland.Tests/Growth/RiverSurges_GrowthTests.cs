@@ -1,14 +1,12 @@
 ﻿using SpiritIsland.PowerCards;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace SpiritIsland.Tests.Growth {
 
 	// !!! Purchasing Power Cards
-	// restricted by card track
-	// restricted by energy in bank
-	// purchased cards generate active power card list - 
 	// purchased card combos that do/don't trigger innate powers
 	// innate power + active card list => Available Power List
 
@@ -149,11 +147,12 @@ namespace SpiritIsland.Tests.Growth {
 			Assert_HasCardAvailable( lastPowerCard );
 		}
 
-//	Boon of Vigor => 0 => fast,any spirit		=> sun, water, plant	=> If you target yourself, gain 1 energy.  If you target another spirit, they gain 1 energy per power card they played this turn
-//	River's Bounty => 0 => slow, range 0, any	=> sun, water, animal	=> gather up to 2 dahan.  If ther are now at least 2 dahan, add 1 dahan and gain +1 energy
-//	Wash Away => 1 => slow, range 1, any		=> water mountain		=> Push up to 3 explorers / towns
-//	Flash Floods => 2 => fast, range 1, any		=> sun, water			=> 1 Damange.  If target land is costal +1 damage.
+		#region Buying Cards
 
+		//	Boon of Vigor => 0 => fast,any spirit		=> sun, water, plant	=> If you target yourself, gain 1 energy.  If you target another spirit, they gain 1 energy per power card they played this turn
+		//	River's Bounty => 0 => slow, range 0, any	=> sun, water, animal	=> gather up to 2 dahan.  If ther are now at least 2 dahan, add 1 dahan and gain +1 energy
+		//	Wash Away => 1 => slow, range 1, any		=> water mountain		=> Push up to 3 explorers / towns
+		//	Flash Floods => 2 => fast, range 1, any		=> sun, water			=> 1 Damange.  If target land is costal +1 damage.
 
 		[Theory]
 		[InlineData("Boon of Vigor")]
@@ -161,18 +160,28 @@ namespace SpiritIsland.Tests.Growth {
 		[InlineData("Wash Away")]
 		[InlineData("Flash Floods")]
 		public void SufficientEnergyToBuy(string cardName){
-			var card = FindAvailableCard(cardName);
+			var card = FindSpiritsAvailableCard(cardName);
 			spirit.Energy = card.Cost;
 
 			// When:
 			spirit.PlayAvailableCards( card );
 
-			// Then - card is in Active/play list
+			// Then: card is in Active/play list
 			Assert.Contains(spirit.ActiveCards, c=>c==card);
-			//  and - card is not in Available list
+
+			//  And: card is not in Available list
 			Assert.DoesNotContain(spirit.AvailableCards, c=>c==card);
-			// Card is not in Available List
+
+			//  And: card is in Unresolved Action list
+			var cardActions = spirit.UnresolvedActions.OfType<CardAction>().ToArray();
+			Assert.Equal(card, cardActions.Single().Card);
+
+			//  And: innate power is in unresolved action list
+			Assert.Contains(spirit.InnatePowers[0],spirit.UnresolvedActions);
+
+			// Money is spent
 			Assert.Equal(0, spirit.Energy);
+
 		}
 
 		[Theory]
@@ -210,7 +219,7 @@ namespace SpiritIsland.Tests.Growth {
 		[Fact]
 		public void CantActivateDiscardedCards() {
 			// Given: Boon of vigor already played
-			PowerCard card = FindAvailableCard("Boon of Vigor");
+			PowerCard card = FindSpiritsAvailableCard("Boon of Vigor");
 			Discard(card);
 
 			// When
@@ -219,12 +228,17 @@ namespace SpiritIsland.Tests.Growth {
 			Assert.Throws<CardNotAvailableException>( Purchase );
 		}
 
+		// Innates
+
 		void Discard(PowerCard card) {
 			spirit.AvailableCards.Remove(card);
 			spirit.PlayedCards.Add(card);
 		}
 
-		PowerCard FindAvailableCard(string cardName) => spirit.AvailableCards.VerboseSingle(c => c.Name == cardName);
+		PowerCard FindSpiritsAvailableCard(string cardName) => spirit.AvailableCards.VerboseSingle(c => c.Name == cardName);
+
+		#endregion
+
 	}
 
 }

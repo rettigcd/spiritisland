@@ -34,7 +34,7 @@ namespace SpiritIsland {
 				this.card = card;
 			}
 
-			public void Apply(List<GrowthAction> growthActions){
+			public void Apply(List<IAction> growthActions){
 				var action = growthActions.OfType<Reclaim1>()
 					.Where(x=>x.Card == null) // not yet specified - ensures Resolves don't out number actual actions
 					.FirstOrDefault();
