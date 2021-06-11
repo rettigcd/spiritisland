@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland.PowerCards {
 
 	// Wraps action, provides link to power card that generated the action.
-	public class CardAction : IAction {
+	public class CardAction : INamedAction {
 
 		public CardAction(PowerCard powerCard, IAction action){
 			Card = powerCard;
@@ -15,7 +15,19 @@
 
 		public bool IsResolved => InnerAction.IsResolved;
 
+		string INamedAction.Name => Card.Name;
+
 		public void Apply() => InnerAction.Apply();
+	}
+
+	public class InnateAction : IAction { // :INamedAction
+		public InnatePower Innate { get; }
+
+		public bool IsResolved => throw new System.NotImplementedException();
+
+		public void Apply() {
+			throw new System.NotImplementedException();
+		}
 	}
 
 }

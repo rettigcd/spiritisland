@@ -99,10 +99,10 @@
     <Compile Include="InsufficientCardPlaysException.cs" />
     <Compile Include="Island.cs" />
     <Compile Include="PowerCards\BoonOfVigor.cs" />
-    <Compile Include="PowerCards\CardAction.cs" />
+    <Compile Include="CardAction.cs" />
     <Compile Include="PowerCards\FlashFloods.cs" />
-    <Compile Include="PowerCards\PowerCard.cs" />
-    <Compile Include="PowerCards\PowerCardAttribute.cs" />
+    <Compile Include="PowerCard.cs" />
+    <Compile Include="PowerCardAttribute.cs" />
     <Compile Include="PowerCards\RiversBounty.cs" />
     <Compile Include="PowerCards\WashAway.cs" />
     <Compile Include="Speed.cs" />

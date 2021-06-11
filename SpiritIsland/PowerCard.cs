@@ -32,7 +32,6 @@ namespace SpiritIsland.PowerCards {
 			this.actionType = typeof(NullCardAction);
 		}
 
-
 		public string Name { get; }
 		public int Cost { get; }
 		public Speed Speed { get; }
@@ -51,6 +50,15 @@ namespace SpiritIsland.PowerCards {
 			public void Apply(){}
 		}
 
+	}
+
+	public class InnatePower{
+		public Speed Speed { get; }
+		public InnateAction GetAction(Spirit _){
+//			var action = (IAction)Activator.CreateInstance(actionType,spirit);
+//			return new CardAction(this,action); // wrap it
+			return null;
+		}
 
 	}
 

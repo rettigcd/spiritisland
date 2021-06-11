@@ -47,7 +47,7 @@ namespace SpiritIsland {
 			new PowerCard(typeof(RiversBounty)),
 			new PowerCard(typeof(WashAway))
 		){
-			this.InnatePowers = new IAction[]{
+			this.InnatePowers = new InnatePower[]{
 				new MassiveFlooding()
 			};
 		}
@@ -118,9 +118,9 @@ namespace SpiritIsland {
 
 	}
 
-	class MassiveFlooding : IAction {
+	class MassiveFlooding : InnatePower {
 
-		public void Init(Spirit spirit){
+		public void Init(Spirit _){
 			// select level
 			// pick land
 				// town or explorer

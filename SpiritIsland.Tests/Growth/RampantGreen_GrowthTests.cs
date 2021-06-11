@@ -42,7 +42,7 @@ namespace SpiritIsland.Tests.Growth {
 			Assert.Equal(2, spirit.NumberOfCardsPlayablePerTurn); // , "Should gain 1 card to play this turn.");
 
 			// But count drops back down after played
-			spirit.PlayAvailableCards(spirit.AvailableCards[0]);
+			spirit.BuyAvailableCards(spirit.AvailableCards[0]);
 
 			// Back to original
 			Assert.Equal(1, spirit.NumberOfCardsPlayablePerTurn); // ,"Available card count should be back to original");

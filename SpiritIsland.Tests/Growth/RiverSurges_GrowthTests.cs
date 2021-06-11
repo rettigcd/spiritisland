@@ -6,11 +6,11 @@ using Xunit;
 
 namespace SpiritIsland.Tests.Growth {
 
-	// !!! Purchasing Power Cards
-	// purchased card combos that do/don't trigger innate powers
-	// innate power + active card list => Available Power List
+	// GetOptions => takes (GameState)
+
 
 	// FAST
+		// test 2 fast powers
 
 	// !!! Invader Board
 	// Fear Card
@@ -19,7 +19,8 @@ namespace SpiritIsland.Tests.Growth {
 	// Explore
 
 	// Slow
-
+		// test 2 slow powers
+		// 1 slow innate powers show up
 	public class RiverSurges_GrowthTests : GrowthTests{
 
 		public RiverSurges_GrowthTests():base( new RiverSurges() ){}
@@ -159,29 +160,53 @@ namespace SpiritIsland.Tests.Growth {
 		[InlineData("River's Bounty")]
 		[InlineData("Wash Away")]
 		[InlineData("Flash Floods")]
-		public void SufficientEnergyToBuy(string cardName){
+		public void SufficientEnergyToBuy(string cardName) {
+
 			var card = FindSpiritsAvailableCard(cardName);
 			spirit.Energy = card.Cost;
 
 			// When:
-			spirit.PlayAvailableCards( card );
+			spirit.BuyAvailableCards(card);
 
 			// Then: card is in Active/play list
-			Assert.Contains(spirit.ActiveCards, c=>c==card);
+			Assert.Contains(spirit.ActiveCards, c => c == card);
 
 			//  And: card is not in Available list
-			Assert.DoesNotContain(spirit.AvailableCards, c=>c==card);
+			Assert.DoesNotContain(spirit.AvailableCards, c => c == card);
 
-			//  And: card is in Unresolved Action list
-			var cardActions = spirit.UnresolvedActions.OfType<CardAction>().ToArray();
-			Assert.Equal(card, cardActions.Single().Card);
+			Assert_CardInActionListIf(card, Speed.Fast);
 
-			//  And: innate power is in unresolved action list
-			Assert.Contains(spirit.InnatePowers[0],spirit.UnresolvedActions);
+			Assert_InnateInActionListIf(Speed.Fast);
 
 			// Money is spent
 			Assert.Equal(0, spirit.Energy);
 
+		}
+
+		void Assert_InnateInActionListIf(Speed currentSpeed) {
+			var unresolvedInnates = spirit.UnresolvedActions
+				.OfType<InnateAction>()
+				.Select(a => a.Innate)
+				.ToArray();
+
+			var innate = spirit.InnatePowers[0];
+
+			if (innate.Speed == currentSpeed)
+				//  And: card is in Unresolved Action list
+				Assert.Contains(innate, unresolvedInnates);
+			else
+				//  And: card is NOT in Unresolved Action list
+				Assert.DoesNotContain(innate, unresolvedInnates);
+		}
+
+		protected void Assert_CardInActionListIf(PowerCard card, Speed currentSpeed) {
+			var unresolvedCards = spirit.UnresolvedActions.OfType<CardAction>().Select(a => a.Card).ToArray();
+			if (card.Speed == currentSpeed)
+				//  And: card is in Unresolved Action list
+				Assert.Contains(card, unresolvedCards);
+			else
+				//  And: card is NOT in Unresolved Action list
+				Assert.DoesNotContain(card, unresolvedCards);
 		}
 
 		[Theory]
@@ -192,7 +217,7 @@ namespace SpiritIsland.Tests.Growth {
 			spirit.Energy = card.Cost - 1;
 
 			// When:
-			void Purchase() => spirit.PlayAvailableCards( card );
+			void Purchase() => spirit.BuyAvailableCards( card );
 
 			Assert.Throws<InsufficientEnergyException>( Purchase );
 		}
@@ -211,7 +236,7 @@ namespace SpiritIsland.Tests.Growth {
 			Assert.Equal(1,spirit.NumberOfCardsPlayablePerTurn);
 
 			// When:
-			void Purchase() => spirit.PlayAvailableCards( card1, card2 );
+			void Purchase() => spirit.BuyAvailableCards( card1, card2 );
 
 			Assert.Throws<InsufficientCardPlaysException>(Purchase);
 		}
@@ -223,12 +248,20 @@ namespace SpiritIsland.Tests.Growth {
 			Discard(card);
 
 			// When
-			void Purchase() => spirit.PlayAvailableCards( card );
+			void Purchase() => spirit.BuyAvailableCards( card );
 
 			Assert.Throws<CardNotAvailableException>( Purchase );
 		}
 
-		// Innates
+		#region Innates
+
+		[Fact]
+		public void Innate(){
+			// ! should always add to unresolved list - since elements might change and make it active or not
+			
+		}
+
+		#endregion Innates
 
 		void Discard(PowerCard card) {
 			spirit.AvailableCards.Remove(card);
@@ -238,6 +271,12 @@ namespace SpiritIsland.Tests.Growth {
 		PowerCard FindSpiritsAvailableCard(string cardName) => spirit.AvailableCards.VerboseSingle(c => c.Name == cardName);
 
 		#endregion
+
+		#region Fast
+
+
+
+		#endregion Fast
 
 	}
 

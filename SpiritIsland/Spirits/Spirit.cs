@@ -17,7 +17,7 @@ namespace SpiritIsland {
 			AvailableCards.AddRange( initialCards );
 		}
 
-		public virtual IAction[] InnatePowers {get; set;} = new IAction[0]; // !!! eventually init in constructor
+		public virtual InnatePower[] InnatePowers {get; set;} = new InnatePower[0]; // !!! eventually init in constructor
 
 		#region Cards
 
@@ -84,30 +84,35 @@ namespace SpiritIsland {
 
 		public virtual int Elements(Element _) => 0;
 
-		public virtual void PlayAvailableCards(params PowerCard[] cards) {
-
-			if( cards.Length > NumberOfCardsPlayablePerTurn )
+		public virtual void BuyAvailableCards(params PowerCard[] cards) {
+			if (cards.Length > NumberOfCardsPlayablePerTurn) 
 				throw new InsufficientCardPlaysException();
 
-			int totalCost = cards.Sum(x=>x.Cost);
-			if(totalCost > Energy)
-				throw new InsufficientEnergyException();
+			foreach (var card in cards)
+				ActivateCard(card);
 
-			foreach(var card in cards) {
-				if(!AvailableCards.Contains( card ))
-					throw new CardNotAvailableException();
-				AvailableCards.Remove( card );
-				ActiveCards.Add( card );
-				AddAction( card.GetAction(this) );
-			}
+			QueueActions(Speed.Fast);
 
 			// add innate
-			foreach(var innate in InnatePowers)
-				AddAction(innate);
+			foreach (var innate in InnatePowers)
+				AddAction(innate.GetAction(this));
 
-			Energy -= totalCost;
 		}
 
+		void ActivateCard(PowerCard card) {
+			if (!AvailableCards.Contains(card)) throw new CardNotAvailableException();
+			if (card.Cost > Energy) throw new InsufficientEnergyException();
+
+			AvailableCards.Remove(card);
+			ActiveCards.Add(card);
+			Energy -= card.Cost;
+		}
+
+		void QueueActions(Speed speed) {
+			foreach (var card in ActiveCards)
+				if (card.Speed == speed)
+					AddAction(card.GetAction(this));
+		}
 	}
 
 }

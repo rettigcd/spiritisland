@@ -3,7 +3,9 @@
 	[PowerCard("Boon of Vigor", 0, Speed.Fast,Element.Sun,Element.Water,Element.Plant)]
 	public class BoonOfVigor : IAction{
 
-		public BoonOfVigor(Spirit _){}
+		public BoonOfVigor(Spirit spirit){
+			
+		}
 
 		// Target: any spirit
 

@@ -79,8 +79,8 @@ Gift of Proliferation => 1 => fast, any spirit => moon, plant => target spirit a
 				: 2;
 		}
 
-		public override void PlayAvailableCards( params PowerCard[] cards ) {
-			base.PlayAvailableCards( cards );
+		public override void BuyAvailableCards( params PowerCard[] cards ) {
+			base.BuyAvailableCards( cards );
 			tempCardBoost = 0;
 		}
 		public int tempCardBoost = 0;
