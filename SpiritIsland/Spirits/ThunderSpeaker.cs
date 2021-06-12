@@ -37,8 +37,8 @@ namespace SpiritIsland {
 
 			static bool onDahan(Space bs,GameState gameState) => gameState.HasDahan(bs);
 			var opt1Actions = new List<GrowthAction>{
-				new PlacePresence(2,onDahan ),
-				new PlacePresence(1,onDahan )
+				new PlacePresence(2,onDahan),
+				new PlacePresence(1,onDahan)
 			};
 
 			var opt2Actions = new List<GrowthAction>{

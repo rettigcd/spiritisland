@@ -6,37 +6,46 @@ namespace SpiritIsland {
 
 		public abstract Space[] Options { get; }
 
-		public string PlaceOnSpace { get; set; }
-
 		public Track Source { get; set; }
 
-		public override bool IsResolved => PlaceOnSpace != null && Source != default;
+		public Space Target { 
+			get{ return target; }
+			set{ 
+				target = value; 
+				ValidateTarget();
+			}
+		}
+		Space target;
+
+		public override bool IsResolved => Target != null && Source != default;
 
 		public override void Apply() {
+			TakeFromSource();
+			PlaceOnTarget();
+			spirit.MarkResolved(this);
+		}
 
-			static string FormatOption(Space bs) => bs.Label;
-
-			var opts = Options;
-			var option = Options
-				.FirstOrDefault(o => FormatOption(o) == PlaceOnSpace);
-
-			if( option == null )
-				throw new InvalidPresenceLocation(PlaceOnSpace,Options.Select(FormatOption).ToArray());
-
-			this.spirit.Presence.Add(option);
-
-			switch(Source) {
+		void TakeFromSource() {
+			switch (Source) {
 				case Track.Card:
-					spirit.RevealedCardSpaces++;
-					break;
+				spirit.RevealedCardSpaces++;
+				break;
 				case Track.Energy:
-					spirit.RevealedEnergySpaces++;
-					break;
+				spirit.RevealedEnergySpaces++;
+				break;
 			}
+		}
 
-			PlaceOnSpace = null;
+		void PlaceOnTarget() {
+			this.spirit.Presence.Add(Target);
+		}
 
-			spirit.MarkResolved( this );
+		void ValidateTarget() {
+			var options = Options; // if Options is dynamic, cache...
+			bool isValidTarget = options.Contains(Target);
+
+			if (!isValidTarget)
+				throw new InvalidPresenceLocation(Target.Label, options.Select(bs => bs.Label).ToArray());
 		}
 
 	}
