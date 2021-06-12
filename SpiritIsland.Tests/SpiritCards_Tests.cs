@@ -7,18 +7,33 @@ namespace SpiritIsland.Tests {
 	public class SpiritCards_Tests {
 
 		// immutable
-		readonly PowerCard boonOfVigorCard = PowerCard.For<BoonOfVigor>();
 		readonly PowerCard flashFloodsCard = PowerCard.For<FlashFloods>();
 
 		FlashFloods FlashFloods => (FlashFloods)flashFloodsCard.Bind(null,null);
-		BoonOfVigor BoonOfVigor => (BoonOfVigor)boonOfVigorCard.Bind(null,null);
 
 		#region BoonOfVigor
 
 		[Fact]
 		public void BoonOfVigor_TargetSelf() {
-			int energyBonus = BoonOfVigor.TargetSelf();
-			Assert.Equal( 1, energyBonus );
+
+			// Given: River
+			var spirit = new RiverSurges();
+			//   And: a game
+			var gameState = new GameState();
+			//   And: Purchased Boon of Vigor
+			var card = spirit.AvailableCards.Single(c=>c.Name == BoonOfVigor.Name);
+			spirit.BuyAvailableCards(card);
+			//   And: card is fast (ready to play now)
+			Assert.Contains(card,spirit.UnresolvedActions.OfType<PowerCard>().ToList());
+
+			// When: targetting self
+			var action = (BoonOfVigor)card.Bind(spirit,gameState);
+			action.Target = spirit;
+			action.Apply();
+
+			// Then: received 1 energy
+			Assert.Equal(1,spirit.Energy);
+
 		}
 
 		[Theory]
@@ -26,13 +41,42 @@ namespace SpiritIsland.Tests {
 		[InlineData( 3 )]
 		[InlineData( 10 )]
 		public void BoonOfVigor_TargetOther( int expectedEnergyBonus ) {
-			int energyBonus = BoonOfVigor.TargetOther( expectedEnergyBonus );
-			Assert.Equal( expectedEnergyBonus, energyBonus );
+
+			// Given: River
+			var spirit = new RiverSurges();
+
+			//   And: a second spirit
+			var other = new Lightning();
+			//  That: purchase N cards
+			for(int i=0;i<expectedEnergyBonus;++i){
+				var otherCard = new PowerCard("Fake-"+i,0,Speed.Slow);
+				other.ActiveCards.Add(otherCard);
+				other.UnresolvedActions.Add(otherCard);
+			}
+
+			//   And: a game
+			var gameState = new GameState();
+
+			//   And: Purchased Boon of Vigor
+			var card = spirit.AvailableCards.Single(c=>c.Name == BoonOfVigor.Name);
+			spirit.BuyAvailableCards(card);
+
+			//   And: card is fast (ready to play now)
+			Assert.Contains(card,spirit.UnresolvedActions.OfType<PowerCard>().ToList());
+
+			// When: targetting other
+			var action = (BoonOfVigor)card.Bind(spirit,gameState);
+			action.Target = other;
+			action.Apply();
+
+			// Then: received 1 energy
+			Assert.Equal(expectedEnergyBonus,other.Energy);
+
 		}
 
 		[Fact]
 		public void BoonOfVigor_Stats() {
-			AssertCardStatus( boonOfVigorCard, 0, Speed.Fast, "SWP" );
+			AssertCardStatus( PowerCard.For<BoonOfVigor>(), 0, Speed.Fast, "SWP" );
 		}
 
 		#endregion BoonOfVigor
@@ -63,7 +107,7 @@ namespace SpiritIsland.Tests {
 
 		[Fact]
 		public void RiversBounty_Stats() {
-			var card = new PowerCard(typeof(RiversBounty));
+			var card = PowerCard.For<RiversBounty>();
 			AssertCardStatus( card, 0, Speed.Slow, "SWB" );
 		}
 
@@ -72,11 +116,8 @@ namespace SpiritIsland.Tests {
 			Assert.Equal( expectedCost, card.Cost );
 			Assert.Equal( expectedSpeed, card.Speed );
 
-//			Assert.Equal( expectedElements, card.Elements );
-
 			var cardElements = card.Elements
 				.Select(x=> Growth.GrowthTests.ElementChars[x]);
-//				.OrderBy(x=>x);
 			Assert.Equal( expectedElements, string.Join("",cardElements));
 
 		}

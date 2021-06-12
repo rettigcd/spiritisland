@@ -3,7 +3,7 @@
 	[PowerCard("Flash Floods",2,Speed.Fast,Element.Sun,Element.Water)]
 	public class FlashFloods : IAction {
 
-		public FlashFloods(Spirit _){ }
+		public FlashFloods(Spirit _,GameState __){ }
 
 		public bool IsResolved => throw new System.NotImplementedException();
 

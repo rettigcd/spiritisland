@@ -278,7 +278,10 @@ namespace SpiritIsland.Tests.Growth {
 
 		#region Fast
 
+		[Fact]
+		public void BooneOfVigor_PlayOnSelf(){
 
+		}
 
 		#endregion Fast
 

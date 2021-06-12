@@ -3,24 +3,20 @@
 	[PowerCard("Boon of Vigor", 0, Speed.Fast,Element.Sun,Element.Water,Element.Plant)]
 	public class BoonOfVigor : IAction{
 
-		public BoonOfVigor(Spirit spirit){
-			
+		public const string Name = "Boon of Vigor";
+
+		readonly Spirit self;
+
+		public BoonOfVigor(Spirit self,GameState _){
+			this.self = self;
 		}
 
-		// Target: any spirit
-
-		public int TargetSelf(){ // opt 1
-			return 1; // spirit gains 1 energy
-		}
-
-		public int TargetOther(int powerCardsPlayed){ // opt 2
-			return powerCardsPlayed; // target spirit ganes 1 energy per power card played
-		}
+		public Spirit Target { get; set; }
 
 		public bool IsResolved => throw new System.NotImplementedException();
 
 		public void Apply() {
-			throw new System.NotImplementedException();
+			this.Target.Energy += (Target==self) ? 1 : Target.ActiveCards.Count;
 		}
 	}
 

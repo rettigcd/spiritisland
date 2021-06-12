@@ -46,9 +46,7 @@ namespace SpiritIsland {
 		readonly Type actionType;
 
 		public IAction Bind(Spirit spirit,GameState gameState){
-			var action = (IAction)Activator.CreateInstance(actionType,spirit);
-			// return new CardAction(this,action); // wrap it
-			return action; // new CardAction(this,action);
+			return (IAction)Activator.CreateInstance(actionType,spirit,gameState);
 		}
 
 		class NullCardAction : IAction {
