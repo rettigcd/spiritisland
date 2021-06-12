@@ -36,22 +36,22 @@ namespace SpiritIsland {
 		public override GrowthOption[] GetGrowthOptions(GameState gameState){
 
 			var opt1Actions = new List<GrowthAction>{
-				new PlacePresence(this ,2,onDahan ),
-				new PlacePresence(this ,1,onDahan )
+				new PlacePresence(2,onDahan ),
+				new PlacePresence(1,onDahan )
 			};
 
 			var opt2Actions = new List<GrowthAction>{
-				new PlacePresence(this,1), new GainEnergy(this,4)
+				new PlacePresence(1), new GainEnergy(4)
 			};
 
 			if( RevealedCardSpaces >= 5){
-				opt1Actions.Add( new Reclaim1(this) );
-				opt2Actions.Add( new Reclaim1(this) );
+				opt1Actions.Add( new Reclaim1() );
+				opt2Actions.Add( new Reclaim1() );
 			}
 
 			bool onDahan(Space bs) => gameState.HasDahan(bs);
 			return new GrowthOption[]{
-				new GrowthOption( new ReclaimAll(this), new DrawPowerCard(this,2) ),
+				new GrowthOption( new ReclaimAll(), new DrawPowerCard(2) ),
 				new GrowthOption( opt1Actions ),
 				new GrowthOption( opt2Actions )
 			};

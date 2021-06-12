@@ -31,9 +31,9 @@ namespace SpiritIsland {
 
 		public override GrowthOption[] GetGrowthOptions(GameState _) {
 			return new GrowthOption[]{
-				new GrowthOption( new ReclaimAll(this), new PlacePresence(this,2) ),
-				new GrowthOption( new DrawPowerCard(this), new PlacePresence(this,0) ),
-				new GrowthOption( new GainEnergy(this,2), new PlacePresence(this,1) ),
+				new GrowthOption( new ReclaimAll(), new PlacePresence(2) ),
+				new GrowthOption( new DrawPowerCard(), new PlacePresence(0) ),
+				new GrowthOption( new GainEnergy(2), new PlacePresence(1) ),
 			};
 		}
 

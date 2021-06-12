@@ -69,29 +69,29 @@ namespace SpiritIsland {
 
 		public override void Grow(GameState gameState, int optionIndex) {
 			if( Reclaim1FromCardTrack )
-				AddAction(new Reclaim1(this));
+				AddAction(new Reclaim1());
 			base.Grow(gameState, optionIndex);
 		}
 
 		GrowthOption GetReclaimGrowthOption() {
 			return new GrowthOption(
-				new ReclaimAll(this),
-				new DrawPowerCard(this, 1),
-				new GainEnergy(this, 1)
+				new ReclaimAll(),
+				new DrawPowerCard(1),
+				new GainEnergy(1)
 			);
 		}
 
 		GrowthOption GetPowerAndPresenceGrowthOption() {
 			return new GrowthOption( 
-				new DrawPowerCard( this, 1 ),
-				new PlacePresence( this, 2 ) 
+				new DrawPowerCard( 1 ),
+				new PlacePresence( 2 ) 
 			);
 		}
 
 		GrowthOption Get2PresenceGrowthOption() {
 			return new GrowthOption(
-				new PlacePresence( this, 1 ),
-				new PlacePresence( this, 1 )
+				new PlacePresence( 1 ),
+				new PlacePresence( 1 )
 			);
 		}
 

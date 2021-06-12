@@ -1,10 +1,8 @@
 ﻿using System.Linq;
 
-namespace SpiritIsland
-{
-	public abstract class MovePresence : GrowthAction {
+namespace SpiritIsland {
 
-		public MovePresence(Spirit spirit):base(spirit){ }
+	public abstract class MovePresence : GrowthAction {
 
 		public abstract Space[] Options { get; }
 

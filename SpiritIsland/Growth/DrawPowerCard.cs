@@ -3,7 +3,7 @@
 	public class DrawPowerCard : GrowthAction {
 
 		readonly int count;
-		public DrawPowerCard(Spirit spirit, int count=1):base(spirit){ 
+		public DrawPowerCard(int count=1){ 
 			this.count = count;
 		}
 		public override void Apply(){

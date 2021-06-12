@@ -10,16 +10,13 @@ namespace SpiritIsland {
 		public Space From { get; set; }
 		public Space To {get;}
 
-		public GatherPresence(Spirit spirit, Space target):base(spirit){
+		public GatherPresence(Space target){
 			this.To = target; 
-			Options = target.SpacesExactly(1)
-				.Where(spirit.Presence.Contains)
-				.ToArray();
-			if(Options.Length == 1)
-				From = Options[0];
 		}
 
-		public Space[] Options { get; }
+		public Space[] Options => To.SpacesExactly(1)
+			.Where(spirit.Presence.Contains)
+			.ToArray();
 
 		public override void Apply() {
 			if(From==null)

@@ -12,25 +12,18 @@ namespace SpiritIsland {
 
 		#region constructors
 
-		public PlacePresence(
-			Spirit spirit,
-			int range
-		):base(spirit){
+		public PlacePresence( int range ){
 			static bool IsNotOcean(Space s) => s.Terrain != Terrain.Ocean;
 			Range = range;
 			IsValid = IsNotOcean;
-			this.referenceSpaces = spirit.Presence;  // by referencing list, delays reading actual presence until Options is called.
 		}
 
 		public PlacePresence(
-			Spirit spirit,
 			int range,
 			Func<Space, bool> isValid
-		) : base(spirit)
-		{
+		){
 			Range = range;
 			IsValid = isValid ?? throw new ArgumentNullException(nameof(isValid));
-			this.referenceSpaces = spirit.Presence;
 		}
 
 		#endregion
@@ -44,7 +37,7 @@ namespace SpiritIsland {
 				.ToArray();
 		}
 
-		readonly IEnumerable<Space> referenceSpaces;
+		IEnumerable<Space> referenceSpaces => spirit.Presence;
 
 	}
 

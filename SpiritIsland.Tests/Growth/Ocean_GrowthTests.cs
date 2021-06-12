@@ -13,12 +13,12 @@ namespace SpiritIsland.Tests.Growth {
 		[InlineData("A0","","A0")]
 		[InlineData("A0B0","","A0B0")]
 		[InlineData("A0B0C0","","A0B0C0")]
-		[InlineData("A1","","A0")]
-		[InlineData("A1B1","","A0B0")]
-		[InlineData("A1B1C1","","A0B0C0")]
+		[InlineData("A1","A1>A0","A0")]
+		[InlineData("A1B1","A1>A0,B1>B0","A0B0")]
+		[InlineData("A1B1C1","A1>A0,B1>B0,C1>C0","A0B0C0")]
 		[InlineData("A1A2","A1>A0","A0A2")]    // need to define which presence to move
 		[InlineData("A1A2","A2>A0","A0A1")]    // need to define which presence to move
-		[InlineData("A1A2B1C1C2","A2>A0,C1>C0","A0A1B0C0C2")]    // need to define which presence to move
+		[InlineData("A1A2B1C1C2","A2>A0,B1>B0,C1>C0","A0A1B0C0C2")]    // need to define which presence to move
 		public void ReclaimGather_GatherParts(string starting, string select, string ending) {
 			Given_IslandIsABC();
 			Given_HasPresence( starting );

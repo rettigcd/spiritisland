@@ -43,26 +43,26 @@ Gift of Proliferation => 1 => fast, any spirit => moon, plant => target spirit a
 			
 			static bool IsWetlandOrJungle( Space bs ) 
 				=> bs.Terrain == Terrain.Jungle || bs.Terrain == Terrain.Wetland;
-			var placeOnWetlandOrJungle = new PlacePresence(this, 2, IsWetlandOrJungle);
+			var placeOnWetlandOrJungle = new PlacePresence(2, IsWetlandOrJungle);
 
 			return new GrowthOption[]{
 				// reclaim, +1 power card
 				new GrowthOption(
 					placeOnWetlandOrJungle,
-					new ReclaimAll(this), 
-					new DrawPowerCard(this,1)
+					new ReclaimAll(), 
+					new DrawPowerCard(1)
 				),
 				// +1 presense range 1, play +1 extra card this turn
 				new GrowthOption(
 					placeOnWetlandOrJungle,
-					new PlacePresence(this,1),
-					new PlayExtraCardThisTurn(this)
+					new PlacePresence(1),
+					new PlayExtraCardThisTurn()
 				),
 				// +1 power card, +3 energy
 				new GrowthOption(
 					placeOnWetlandOrJungle,
-					new GainEnergy(this,3), 
-					new DrawPowerCard(this)
+					new GainEnergy(3), 
+					new DrawPowerCard()
 				),
 			};
 		}
@@ -91,7 +91,6 @@ Gift of Proliferation => 1 => fast, any spirit => moon, plant => target spirit a
 	/// One of Rampant Green's special growth options
 	/// </summary>
 	class PlayExtraCardThisTurn : GrowthAction {
-		public PlayExtraCardThisTurn(Spirit spirit):base(spirit){}
 		public override void Apply() {
 			(spirit as RampantGreen).tempCardBoost++;
 

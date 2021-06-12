@@ -7,8 +7,6 @@ namespace SpiritIsland {
 
 	public class Reclaim1 : GrowthAction {
 
-		public Reclaim1(Spirit spirit):base(spirit){}
-
 		public PowerCard Card {get; set;}
 
 		public override void Apply() {

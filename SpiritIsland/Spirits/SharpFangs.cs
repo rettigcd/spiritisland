@@ -43,37 +43,37 @@ namespace SpiritIsland {
 		public override GrowthOption[] GetGrowthOptions( GameState gameState ) {
 			bool beastOrJungle(Space s) => s.Terrain==Terrain.Jungle || gameState.HasBeasts(s);
 		
-			var beastOrJungleRange3 = new PlacePresence(this, 3, beastOrJungle);
+			var beastOrJungleRange3 = new PlacePresence(3, beastOrJungle);
 
 			return new GrowthOption[]{
 				NewGrowthOption(
-					new ReclaimAll(this)       // A
-					,new GainEnergy(this,-1)   // A
-					,new DrawPowerCard(this,1) // A
+					new ReclaimAll()       // A
+					,new GainEnergy(-1)   // A
+					,new DrawPowerCard(1) // A
 					,beastOrJungleRange3 // B
 				)
 				,NewGrowthOption(
-					new ReclaimAll(this)       // A
-					,new DrawPowerCard(this,2) // A & C
+					new ReclaimAll()       // A
+					,new DrawPowerCard(2) // A & C
 					// Engergy Change of 0     // A & C cancel each other out
 				)
 				,NewGrowthOption(
-					new ReclaimAll(this)       // A
-					,new DrawPowerCard(this,1) // A
-					,new GainEnergy(this,2)    // A + D
+					new ReclaimAll()       // A
+					,new DrawPowerCard(1) // A
+					,new GainEnergy(2)    // A + D
 				)
 				,NewGrowthOption(
 					beastOrJungleRange3 // B
-					,new GainEnergy(this,1)  // C
-					,new DrawPowerCard(this,1) // C
+					,new GainEnergy(1)  // C
+					,new DrawPowerCard(1) // C
 				)
 				,NewGrowthOption(
 					beastOrJungleRange3 // B
-					,new GainEnergy(this,3)  // C
+					,new GainEnergy(3)  // C
 				)
 				,NewGrowthOption(
-					new DrawPowerCard(this,1) // C
-					,new GainEnergy(this,1+3)  // C + D
+					new DrawPowerCard(1) // C
+					,new GainEnergy(1+3)  // C + D
 				)
 			};
 		}
@@ -82,9 +82,9 @@ namespace SpiritIsland {
 			//	2 2 3 reclaim-1 4 5&reclaim-1
 			if( RevealedCardSpaces<4 ) return new GrowthOption(actions);
 			var list = actions.ToList();
-			list.Add(new Reclaim1(this));
+			list.Add(new Reclaim1());
 			if(RevealedCardSpaces==6)
-				list.Add(new Reclaim1(this));
+				list.Add(new Reclaim1());
 			return new GrowthOption(list.ToArray());
 		}
 

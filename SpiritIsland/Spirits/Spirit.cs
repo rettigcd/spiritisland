@@ -59,12 +59,12 @@ namespace SpiritIsland {
 			foreach (var action in option.GrowthActions)
 				AddAction(action);
 
-			RemoveResolvedActions();
+			RemoveResolvedActions(gameState);
 		}
 
-		void RemoveResolvedActions() {
+		void RemoveResolvedActions(GameState gameState) {
 			var resolvedActions = UnresolvedActions
-				.Select(f=>f.Bind(null,null)) // !!!
+				.Select(f=>f.Bind(this,gameState))
 				.Where(a => a.IsResolved)
 				.ToArray();
 			foreach (var a in resolvedActions)

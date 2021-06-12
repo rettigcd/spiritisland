@@ -1,17 +1,19 @@
 ﻿using SpiritIsland.PowerCards;
 
-namespace SpiritIsland
-{
+namespace SpiritIsland {
 
 	public abstract class GrowthAction : IActionFactory, IAction {
 
 		protected Spirit spirit;
+		protected GameState gameState;
 
-		protected GrowthAction(Spirit spirit){this.spirit=spirit;}
+		protected GrowthAction(){}
 
 		public abstract void Apply();
 
 		public IAction Bind(Spirit spirit, GameState gameState) {
+			this.spirit = spirit;
+			this.gameState = gameState;
 			return this;
 		}
 

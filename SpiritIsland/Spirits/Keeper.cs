@@ -48,38 +48,38 @@ namespace SpiritIsland {
 
 			return new GrowthOption[]{
 				new GrowthOption(
-					new ReclaimAll(this)	    // A
-					,new GainEnergy(this,1)     // A
-					,new DrawPowerCard(this,1)	// B
+					new ReclaimAll()	    // A
+					,new GainEnergy(1)     // A
+					,new DrawPowerCard(1)	// B
 				)
 				,new GrowthOption(
-					new ReclaimAll(this)        // A
-					,new GainEnergy(this,2)     // A & C
-					,new PlacePresence(this,3,presenceOrWilds) // C
+					new ReclaimAll()        // A
+					,new GainEnergy(2)     // A & C
+					,new PlacePresence(3,presenceOrWilds) // C
 				)
 				,new GrowthOption(
-					new ReclaimAll(this)          // A
-					,new GainEnergy(this,1-3)     // A & D
-					,new DrawPowerCard(this,1)	  // D
-					,new PlacePresence(this,3,noBlight) // D
+					new ReclaimAll()          // A
+					,new GainEnergy(1-3)     // A & D
+					,new DrawPowerCard(1)	  // D
+					,new PlacePresence(3,noBlight) // D
 				)
 				,new GrowthOption(
-					new DrawPowerCard(this,1)	// B
-					,new GainEnergy(this,1)     // C
-					,new PlacePresence(this,3,presenceOrWilds) // C
+					new DrawPowerCard(1)	// B
+					,new GainEnergy(1)     // C
+					,new PlacePresence(3,presenceOrWilds) // C
 				)
 				,new GrowthOption(
-					new DrawPowerCard(this,1)	// B
-					,new GainEnergy(this,-3)     // D
-					,new DrawPowerCard(this,1)	  // D
-					,new PlacePresence(this,3,noBlight) // D
+					new DrawPowerCard(1)	// B
+					,new GainEnergy(-3)     // D
+					,new DrawPowerCard(1)	  // D
+					,new PlacePresence(3,noBlight) // D
 				)
 				,new GrowthOption(
-					new GainEnergy(this,1)     // C
-					,new PlacePresence(this,3,presenceOrWilds) // C
-					,new PlacePresence(this,3,noBlight) // D
-					,new GainEnergy(this,-3)     // D
-					,new DrawPowerCard(this,1)	  // D
+					new GainEnergy(1)     // C
+					,new PlacePresence(3,presenceOrWilds) // C
+					,new PlacePresence(3,noBlight) // D
+					,new GainEnergy(-3)     // D
+					,new DrawPowerCard(1)	  // D
 				)
 			};
 		}

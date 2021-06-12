@@ -44,13 +44,13 @@ namespace SpiritIsland {
 
 			return new GrowthOption[]{
 				// reclaim, +1 power card
-				new GrowthOption(new ReclaimAll(this),new DrawPowerCard(this,1)),
+				new GrowthOption(new ReclaimAll(),new DrawPowerCard(1)),
 				// reclaim 1, add presence range 0
-				new GrowthOption(new Reclaim1(this), new PlacePresence(this,0) ),
+				new GrowthOption(new Reclaim1(), new PlacePresence(0) ),
 				// +1 power card, +1 pressence range 1
-				new GrowthOption(new DrawPowerCard(this,1), new PlacePresence(this,1) ),
+				new GrowthOption(new DrawPowerCard(1), new PlacePresence(1) ),
 				// add presense range Dahan or Invadors, +2 energy
-				new GrowthOption(new GainEnergy(this,2), new PlacePresence(this,4,onDahanOrInvadors))
+				new GrowthOption(new GainEnergy(2), new PlacePresence(4,onDahanOrInvadors))
 			};
 		}
 

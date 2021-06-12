@@ -9,7 +9,7 @@ namespace SpiritIsland {
 		public Space From { get; }
 		public Space To {get; set;}
 
-		public PushPresence(Spirit spirit, Space from):base(spirit){
+		public PushPresence(Space from){
 			this.From = from; 
 			Options = from.SpacesExactly(1)
 				.ToArray();

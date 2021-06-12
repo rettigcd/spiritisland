@@ -143,7 +143,7 @@ namespace SpiritIsland.Tests.Growth {
 		[InlineData(7,"Encompassing Ward")]
 		public void PowerProgressionCards( int count, string lastPowerCard ){
 			while(count--!=0)
-				spirit.AddAction(new DrawPowerCard(spirit));
+				spirit.AddAction(new DrawPowerCard());
 
 			Assert_HasCardAvailable( lastPowerCard );
 		}

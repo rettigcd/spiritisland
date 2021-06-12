@@ -40,7 +40,7 @@ namespace SpiritIsland.Tests.Growth {
 			bool spaceHasPresence(Space s)=>spirit.Presence.Contains(s);
 			var testSpirit = spirit as TestSpirit;
 			while(count-->0)
-				testSpirit.actions.Add( new PlacePresence( spirit, 1, spaceHasPresence) );
+				testSpirit.actions.Add( new PlacePresence( 1, spaceHasPresence) );
 		}
 
 	}
