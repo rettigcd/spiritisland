@@ -26,7 +26,7 @@ namespace SpiritIsland {
 	*/
 
 	public class Shadows : Spirit {
-		public override GrowthOption[] GetGrowthOptions(GameState _){
+		public override GrowthOption[] GetGrowthOptions(){
 			return new GrowthOption[]{
 				new GrowthOption( new ReclaimAll(), new DrawPowerCard(1) ),
 				new GrowthOption( new DrawPowerCard(1), new PlacePresence(1) ),

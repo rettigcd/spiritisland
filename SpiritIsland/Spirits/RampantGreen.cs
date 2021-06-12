@@ -39,9 +39,9 @@ Gift of Proliferation => 1 => fast, any spirit => moon, plant => target spirit a
 		public RampantGreen(){
 		}
 
-		public override GrowthOption[] GetGrowthOptions(GameState _) {
+		public override GrowthOption[] GetGrowthOptions() {
 			
-			static bool IsWetlandOrJungle( Space bs ) 
+			static bool IsWetlandOrJungle( Space bs, GameState _ ) 
 				=> bs.Terrain == Terrain.Jungle || bs.Terrain == Terrain.Wetland;
 			var placeOnWetlandOrJungle = new PlacePresence(2, IsWetlandOrJungle);
 

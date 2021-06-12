@@ -29,7 +29,7 @@ namespace SpiritIsland {
 
 	public class VitalStrength : Spirit {
 
-		public override GrowthOption[] GetGrowthOptions(GameState _) {
+		public override GrowthOption[] GetGrowthOptions() {
 			return new GrowthOption[]{
 				new GrowthOption( new ReclaimAll(), new PlacePresence(2) ),
 				new GrowthOption( new DrawPowerCard(), new PlacePresence(0) ),

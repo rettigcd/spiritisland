@@ -58,7 +58,7 @@ namespace SpiritIsland {
 
 		#region growth
 
-		public override GrowthOption[] GetGrowthOptions(GameState _) {
+		public override GrowthOption[] GetGrowthOptions() {
 
 			return new GrowthOption[]{ 
 			GetReclaimGrowthOption(),

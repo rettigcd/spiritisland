@@ -36,9 +36,9 @@ namespace SpiritIsland {
 	*/
 
 	public class Bringer : Spirit {
-		public override GrowthOption[] GetGrowthOptions(GameState gameState) {
+		public override GrowthOption[] GetGrowthOptions() {
 
-			bool onDahanOrInvadors( Space bs) { // !!! hook in here! instead of Criteria
+			static bool onDahanOrInvadors(Space bs,GameState gameState) { // !!! hook in here! instead of Criteria
 				return gameState.HasDahan(bs) || gameState.HasInvaders(bs);
 			}
 

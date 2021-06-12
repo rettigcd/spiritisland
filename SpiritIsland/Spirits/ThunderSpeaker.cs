@@ -33,8 +33,9 @@ namespace SpiritIsland {
 
 	public class ThunderSpeaker : Spirit {
 		
-		public override GrowthOption[] GetGrowthOptions(GameState gameState){
+		public override GrowthOption[] GetGrowthOptions(){
 
+			static bool onDahan(Space bs,GameState gameState) => gameState.HasDahan(bs);
 			var opt1Actions = new List<GrowthAction>{
 				new PlacePresence(2,onDahan ),
 				new PlacePresence(1,onDahan )
@@ -49,7 +50,6 @@ namespace SpiritIsland {
 				opt2Actions.Add( new Reclaim1() );
 			}
 
-			bool onDahan(Space bs) => gameState.HasDahan(bs);
 			return new GrowthOption[]{
 				new GrowthOption( new ReclaimAll(), new DrawPowerCard(2) ),
 				new GrowthOption( opt1Actions ),

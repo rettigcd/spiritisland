@@ -41,10 +41,10 @@ namespace SpiritIsland {
 	 */
 
 	public class Keeper : Spirit {
-		public override GrowthOption[] GetGrowthOptions( GameState gameState ) {
+		public override GrowthOption[] GetGrowthOptions() {
 
-			bool presenceOrWilds(Space s) => this.Presence.Contains(s) || gameState.HasWilds(s);
-			bool noBlight(Space s) => s.Terrain != Terrain.Ocean && !gameState.HasBlight(s);
+			bool presenceOrWilds(Space bs,GameState gameState) => this.Presence.Contains(bs) || gameState.HasWilds(bs);
+			bool noBlight(Space bs,GameState gameState) => bs.Terrain != Terrain.Ocean && !gameState.HasBlight(bs);
 
 			return new GrowthOption[]{
 				new GrowthOption(

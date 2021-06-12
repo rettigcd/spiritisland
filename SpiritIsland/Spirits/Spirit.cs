@@ -55,7 +55,7 @@ namespace SpiritIsland {
 		#endregion
 
 		public virtual void Grow(GameState gameState, int optionIndex) {
-			GrowthOption option = this.GetGrowthOptions(gameState)[optionIndex];
+			GrowthOption option = this.GetGrowthOptions()[optionIndex];
 			foreach (var action in option.GrowthActions)
 				AddAction(action);
 
@@ -81,7 +81,7 @@ namespace SpiritIsland {
 				Energy += EnergyPerTurn; // transition 
 		}
 
-		public abstract GrowthOption[] GetGrowthOptions(GameState gameState);
+		public abstract GrowthOption[] GetGrowthOptions();
 
 		public virtual int Elements(Element _) => 0;
 

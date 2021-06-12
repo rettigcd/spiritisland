@@ -8,19 +8,19 @@ namespace SpiritIsland {
 	public class PlacePresence : MovePresence {
 
 		public int Range { get; }
-		public Func<Space, bool> IsValid { get; }
+		public Func<Space,GameState, bool> IsValid { get; }
 
 		#region constructors
 
 		public PlacePresence( int range ){
-			static bool IsNotOcean(Space s) => s.Terrain != Terrain.Ocean;
+			static bool IsNotOcean(Space s,GameState _) => s.Terrain != Terrain.Ocean;
 			Range = range;
 			IsValid = IsNotOcean;
 		}
 
 		public PlacePresence(
 			int range,
-			Func<Space, bool> isValid
+			Func<Space, GameState, bool> isValid
 		){
 			Range = range;
 			IsValid = isValid ?? throw new ArgumentNullException(nameof(isValid));
@@ -30,10 +30,11 @@ namespace SpiritIsland {
 
 		public override Space[] Options => CalculateOptions();
 		Space[]  CalculateOptions() {
+			bool SpaceIsValid(Space space) => IsValid(space,gameState);
 			return referenceSpaces
 				.SelectMany(s => s.SpacesWithin(this.Range))
 				.Distinct()
-				.Where(this.IsValid)
+				.Where(SpaceIsValid)
 				.ToArray();
 		}
 

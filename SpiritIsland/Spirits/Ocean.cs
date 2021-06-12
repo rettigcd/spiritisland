@@ -36,19 +36,24 @@ namespace SpiritIsland {
 
 	public class Ocean : Spirit {
 
-		public override GrowthOption[] GetGrowthOptions(GameState gameState) {
-
-			var oceans = gameState.Island.Boards
-				.Select(bd=>bd.Ocean)
-				.ToArray();
+		public override GrowthOption[] GetGrowthOptions() {
 
 			// !!! add test that oceans containing 2 presence only push 1 of them out.
 
 			// Option 1 - reclaim, +1 power, gather 1 presense into EACH ocean, +2 energy
-			var growthActions = oceans
-				.Where(o=>o.SpacesExactly(1).Any(Presence.Contains))
+			//var growthActions = gameState.Island.Boards
+			//	.Select(bd=>bd.Ocean)
+			//	.Where(o=>o.SpacesExactly(1).Any(Presence.Contains))
+			//	.Select(o=>new GatherPresence(o))
+			//	.Cast<GrowthAction>();
+
+			var growthActions = Presence
+				.Where(p=>p.IsCostal)
+				.Select(p=>p.SpacesExactly(1).Single(o=>o.Terrain==Terrain.Ocean))
+				.Distinct()
 				.Select(o=>new GatherPresence(o))
 				.Cast<GrowthAction>();
+
 			var opt1 = new GrowthOption(growthActions.Include(
 				new ReclaimAll(),
 				new DrawPowerCard(),
@@ -70,7 +75,7 @@ namespace SpiritIsland {
 				.Cast<GrowthAction>();
 			var opt3 = new GrowthOption( pushPresenceFromEachOcean.Include(
 					new DrawPowerCard(),
-					new PlacePresence(1,s=>s.IsCostal )
+					new PlacePresence(1,(s,_)=>s.IsCostal )
 			));
 
 			return new GrowthOption[]{ opt1, opt2, opt3 };

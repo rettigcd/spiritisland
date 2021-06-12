@@ -7,7 +7,7 @@ namespace SpiritIsland.Tests.Growth {
 	public class PlacePresence_Tests : GrowthTests {
 
 		class TestSpirit : Spirit {
-			public override GrowthOption[] GetGrowthOptions( GameState _ ) {
+			public override GrowthOption[] GetGrowthOptions() {
 				return new GrowthOption[]{
 					new GrowthOption(this.actions.ToArray())
 				};
@@ -37,7 +37,7 @@ namespace SpiritIsland.Tests.Growth {
 		}
 
 		void Given_SpiritGrowsByPlacingPresence(int count=1) {
-			bool spaceHasPresence(Space s)=>spirit.Presence.Contains(s);
+			bool spaceHasPresence(Space s,GameState _)=>spirit.Presence.Contains(s);
 			var testSpirit = spirit as TestSpirit;
 			while(count-->0)
 				testSpirit.actions.Add( new PlacePresence( 1, spaceHasPresence) );

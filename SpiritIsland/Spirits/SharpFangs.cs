@@ -40,8 +40,8 @@ namespace SpiritIsland {
 	 */
 	public class SharpFangs : Spirit {
 
-		public override GrowthOption[] GetGrowthOptions( GameState gameState ) {
-			bool beastOrJungle(Space s) => s.Terrain==Terrain.Jungle || gameState.HasBeasts(s);
+		public override GrowthOption[] GetGrowthOptions() {
+			static bool beastOrJungle(Space s, GameState gameState) => s.Terrain==Terrain.Jungle || gameState.HasBeasts(s);
 		
 			var beastOrJungleRange3 = new PlacePresence(3, beastOrJungle);
 
