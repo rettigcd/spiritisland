@@ -2,11 +2,12 @@
 
 namespace SpiritIsland {
 
-	public abstract class MovePresence : GrowthAction {
+	public abstract class PlacePresenceBase : GrowthAction {
 
 		public abstract Space[] Options { get; }
 
 		public string PlaceOnSpace { get; set; }
+
 		public Track Source { get; set; }
 
 		public override bool IsResolved => PlaceOnSpace != null && Source != default;

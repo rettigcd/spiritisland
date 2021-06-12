@@ -10,7 +10,7 @@ namespace SpiritIsland.Tests.Growth {
 		{
 			this.allOptions = allOptions;
 		}
-		protected override void Update(MovePresence pp ) {
+		protected override void Update(PlacePresenceBase pp ) {
 
 			base.Update( pp );
 

@@ -87,7 +87,7 @@
     <Compile Include="Growth\GrowthAction.cs" />
     <Compile Include="Growth\GrowthOption.cs" />
     <Compile Include="Growth\IAction.cs" />
-    <Compile Include="Growth\MovePresence.cs" />
+    <Compile Include="Growth\PlacePresenceBase.cs" />
     <Compile Include="Growth\RemovePresence.cs" />
     <Compile Include="Growth\Track.cs" />
     <Compile Include="IEnumerableExtensions.cs" />

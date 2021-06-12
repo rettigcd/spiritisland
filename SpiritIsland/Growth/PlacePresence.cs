@@ -1,11 +1,10 @@
-﻿using SpiritIsland.PowerCards;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace SpiritIsland {
 
-	public class PlacePresence : MovePresence {
+	public class PlacePresence : PlacePresenceBase {
 
 		public int Range { get; }
 		public Func<Space,GameState, bool> IsValid { get; }
@@ -31,14 +30,12 @@ namespace SpiritIsland {
 		public override Space[] Options => CalculateOptions();
 		Space[]  CalculateOptions() {
 			bool SpaceIsValid(Space space) => IsValid(space,gameState);
-			return referenceSpaces
+			return spirit.Presence
 				.SelectMany(s => s.SpacesWithin(this.Range))
 				.Distinct()
 				.Where(SpaceIsValid)
 				.ToArray();
 		}
-
-		IEnumerable<Space> referenceSpaces => spirit.Presence;
 
 	}
 
@@ -56,13 +53,13 @@ namespace SpiritIsland {
 
 		public void Apply(List<IAction> growthActions) {
 			var placePresence = growthActions
-				.OfType<MovePresence>()
+				.OfType<PlacePresenceBase>()
 				.ToArray()[focus];
 			Update(placePresence);
 			placePresence.Apply();
 		}
 
-		protected virtual void Update(MovePresence pp) {
+		protected virtual void Update(PlacePresenceBase pp) {
 			pp.PlaceOnSpace = placeOnSpace;
 			pp.Source = source;
 		}
