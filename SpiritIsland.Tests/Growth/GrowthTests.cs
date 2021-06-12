@@ -76,8 +76,13 @@ namespace SpiritIsland.Tests.Growth {
 			spirit.Grow(gameState, option);
 
 			// modify the growth option to resolve incomplete states
+
 			foreach (var resolver in resolvers)
-				resolver.Apply(spirit.UnresolvedActions);
+				resolver.Apply( 
+					spirit.UnresolvedActions
+						.Select(f=>f.Bind(this.spirit,this.gameState))
+						.ToList()
+			);
 
 		}
 

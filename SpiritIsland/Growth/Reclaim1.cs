@@ -35,7 +35,7 @@ namespace SpiritIsland {
 			}
 
 			public void Apply(List<IAction> growthActions){
-				var action = growthActions.OfType<Reclaim1>()
+				Reclaim1 action = growthActions.OfType<Reclaim1>()
 					.Where(x=>x.Card == null) // not yet specified - ensures Resolves don't out number actual actions
 					.FirstOrDefault();
 				if(action == null) throw new Exception("Reclaim action not found.");

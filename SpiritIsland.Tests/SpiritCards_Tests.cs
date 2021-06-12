@@ -10,8 +10,8 @@ namespace SpiritIsland.Tests {
 		readonly PowerCard boonOfVigorCard = PowerCard.For<BoonOfVigor>();
 		readonly PowerCard flashFloodsCard = PowerCard.For<FlashFloods>();
 
-		FlashFloods FlashFloods => (FlashFloods)flashFloodsCard.GetAction(null).InnerAction;
-		BoonOfVigor BoonOfVigor => (BoonOfVigor)boonOfVigorCard.GetAction(null).InnerAction;
+		FlashFloods FlashFloods => (FlashFloods)flashFloodsCard.Bind(null,null);
+		BoonOfVigor BoonOfVigor => (BoonOfVigor)boonOfVigorCard.Bind(null,null);
 
 		#region BoonOfVigor
 

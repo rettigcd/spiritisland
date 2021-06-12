@@ -1,9 +1,15 @@
-﻿using System;
+﻿using SpiritIsland.PowerCards;
+using System;
 using System.Linq;
 
-namespace SpiritIsland.PowerCards {
+namespace SpiritIsland {
 
-	public class PowerCard {
+	public interface IActionFactory {
+		IAction Bind(Spirit spirit,GameState gameState);
+	}
+
+
+	public class PowerCard : IActionFactory {
 
 		static public PowerCard For<T>(){ return new PowerCard(typeof(T));}
 
@@ -39,9 +45,10 @@ namespace SpiritIsland.PowerCards {
 
 		readonly Type actionType;
 
-		public CardAction GetAction(Spirit spirit){
+		public IAction Bind(Spirit spirit,GameState gameState){
 			var action = (IAction)Activator.CreateInstance(actionType,spirit);
-			return new CardAction(this,action); // wrap it
+			// return new CardAction(this,action); // wrap it
+			return action; // new CardAction(this,action);
 		}
 
 		class NullCardAction : IAction {
@@ -52,8 +59,13 @@ namespace SpiritIsland.PowerCards {
 
 	}
 
-	public class InnatePower{
+	public class InnatePower : IActionFactory {
 		public Speed Speed { get; }
+
+		public IAction Bind(Spirit spirit, GameState gameState) {
+			return null;
+		}
+
 		public InnateAction GetAction(Spirit _){
 //			var action = (IAction)Activator.CreateInstance(actionType,spirit);
 //			return new CardAction(this,action); // wrap it

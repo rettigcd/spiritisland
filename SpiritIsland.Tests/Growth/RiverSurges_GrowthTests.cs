@@ -200,7 +200,11 @@ namespace SpiritIsland.Tests.Growth {
 		}
 
 		protected void Assert_CardInActionListIf(PowerCard card, Speed currentSpeed) {
-			var unresolvedCards = spirit.UnresolvedActions.OfType<CardAction>().Select(a => a.Card).ToArray();
+
+			var unresolvedCards = spirit.UnresolvedActions
+				.OfType<PowerCard>()
+				.ToArray();
+
 			if (card.Speed == currentSpeed)
 				//  And: card is in Unresolved Action list
 				Assert.Contains(card, unresolvedCards);

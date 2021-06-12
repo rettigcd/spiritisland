@@ -1,13 +1,19 @@
-﻿namespace SpiritIsland
+﻿using SpiritIsland.PowerCards;
+
+namespace SpiritIsland
 {
 
-	public abstract class GrowthAction : IAction {
+	public abstract class GrowthAction : IActionFactory, IAction {
 
 		protected Spirit spirit;
 
 		protected GrowthAction(Spirit spirit){this.spirit=spirit;}
 
 		public abstract void Apply();
+
+		public IAction Bind(Spirit spirit, GameState gameState) {
+			return this;
+		}
 
 		public abstract bool IsResolved {get;}
 

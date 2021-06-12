@@ -24,7 +24,7 @@ namespace SpiritIsland {
 		public List<PowerCard> AvailableCards = new List<PowerCard>();	// in hand
 		public List<PowerCard> ActiveCards = new List<PowerCard>();		// paid for
 		public List<PowerCard> PlayedCards = new List<PowerCard>();		// discarded
-		public List<IAction> UnresolvedActions = new List<IAction>();
+		public List<IActionFactory> UnresolvedActions = new List<IActionFactory>();
 
 		#endregion
 
@@ -63,14 +63,15 @@ namespace SpiritIsland {
 		}
 
 		void RemoveResolvedActions() {
-			var resolved = UnresolvedActions
+			var resolvedActions = UnresolvedActions
+				.Select(f=>f.Bind(null,null)) // !!!
 				.Where(a => a.IsResolved)
 				.ToArray();
-			foreach (var a in resolved)
+			foreach (var a in resolvedActions)
 				a.Apply();
 		}
 
-		public virtual void AddAction(IAction action){
+		public virtual void AddAction(IActionFactory action){
 			UnresolvedActions.Add( action );
 		}
 
@@ -91,11 +92,11 @@ namespace SpiritIsland {
 			foreach (var card in cards)
 				ActivateCard(card);
 
-			QueueActions(Speed.Fast);
+			QueueActions(Speed.Fast); // !!!
 
 			// add innate
 			foreach (var innate in InnatePowers)
-				AddAction(innate.GetAction(this));
+				AddAction(innate);
 
 		}
 
@@ -111,7 +112,7 @@ namespace SpiritIsland {
 		void QueueActions(Speed speed) {
 			foreach (var card in ActiveCards)
 				if (card.Speed == speed)
-					AddAction(card.GetAction(this));
+					AddAction(card);
 		}
 	}
 

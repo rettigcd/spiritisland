@@ -1,4 +1,5 @@
 ﻿
+using SpiritIsland.PowerCards;
 using System.Collections.Generic;
 
 namespace SpiritIsland {
