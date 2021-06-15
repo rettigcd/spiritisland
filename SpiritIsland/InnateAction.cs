@@ -1,9 +1,7 @@
-﻿namespace SpiritIsland.PowerCards {
+﻿namespace SpiritIsland {
 
-	[PowerCard("Wash Away", 1, Speed.Slow, Element.Water, Element.Earth)]
-	public class WashAway : IAction {
-
-		public WashAway(Spirit _){}
+	public class InnateAction : IAction { // :INamedAction
+		public InnatePower Innate { get; }
 
 		public bool IsResolved => throw new System.NotImplementedException();
 
@@ -18,10 +16,9 @@
 		public void Select(IOption option) {
 			throw new System.NotImplementedException();
 		}
-
-		// target: range 1
-
-		// push up to 3 explorers / towns
-
 	}
+
 }
+
+
+

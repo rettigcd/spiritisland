@@ -11,6 +11,14 @@
 			throw new System.NotImplementedException();
 		}
 
+		public IOption[] GetOptions() {
+			throw new System.NotImplementedException();
+		}
+
+		public void Select(IOption option) {
+			throw new System.NotImplementedException();
+		}
+
 		// target: range 0 (any)
 
 		// Gather up to 2 Dahan

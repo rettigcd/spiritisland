@@ -79,6 +79,7 @@
   <ItemGroup>
     <Compile Include="Board.cs" />
     <Compile Include="CardNotAvailableException.cs" />
+    <Compile Include="DamagePlan.cs" />
     <Compile Include="DefaultDictionary.cs" />
     <Compile Include="GameState.cs" />
     <Compile Include="Growth\AddPresence.cs" />
@@ -99,7 +100,7 @@
     <Compile Include="InsufficientCardPlaysException.cs" />
     <Compile Include="Island.cs" />
     <Compile Include="PowerCards\BoonOfVigor.cs" />
-    <Compile Include="CardAction.cs" />
+    <Compile Include="InnateAction.cs" />
     <Compile Include="PowerCards\FlashFloods.cs" />
     <Compile Include="PowerCard.cs" />
     <Compile Include="PowerCardAttribute.cs" />

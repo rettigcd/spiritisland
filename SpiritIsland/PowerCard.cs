@@ -53,6 +53,10 @@ namespace SpiritIsland {
 			public NullCardAction(Spirit _){ }
 			public bool IsResolved => true;
 			public void Apply(){}
+
+			public IOption[] GetOptions() { return new IOption[0]; }
+
+			public void Select(IOption option) {}
 		}
 
 	}

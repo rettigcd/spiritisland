@@ -6,12 +6,15 @@ namespace SpiritIsland {
 
 	public enum Terrain {None, Jungle, Mountain, Ocean, Sand, Wetland };
 
-	public class Space{
+	public class Space : IOption{
 
 		#region Game-Static
 		public string Label {get;}
 		public Terrain Terrain {get;}
 		public bool IsCostal { get; set; }
+
+		string IOption.Text => Label;
+
 		readonly Dictionary<Space,int> _distanceTo = new Dictionary<Space, int>();
 
 		#endregion
