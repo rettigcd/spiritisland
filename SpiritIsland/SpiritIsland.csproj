@@ -98,6 +98,8 @@
     <Compile Include="Growth\PlacePresence.cs" />
     <Compile Include="Growth\ReclaimAll.cs" />
     <Compile Include="InsufficientCardPlaysException.cs" />
+    <Compile Include="Invader.cs" />
+    <Compile Include="InvaderGroup.cs" />
     <Compile Include="Island.cs" />
     <Compile Include="PowerCards\BoonOfVigor.cs" />
     <Compile Include="InnateAction.cs" />

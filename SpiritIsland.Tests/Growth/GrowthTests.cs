@@ -26,7 +26,7 @@ namespace SpiritIsland.Tests.Growth {
 		protected GrowthTests(Spirit spirit){
 			// PlayerState requires Spirit to be known because Spirit creates playerState.
 			this.spirit = spirit;
-			gameState = new GameState {
+			gameState = new GameState(spirit) {
 				Island = new Island( BoardA )
 			};
 			board = gameState.Island.Boards[0];

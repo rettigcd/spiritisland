@@ -7,6 +7,9 @@ namespace SpiritIsland.Tests.Growth {
 	public class PlacePresence_Tests : GrowthTests {
 
 		class TestSpirit : Spirit {
+
+			public override string Text => "Test Spirit";
+
 			public override GrowthOption[] GetGrowthOptions() {
 				return new GrowthOption[]{
 					new GrowthOption(this.actions.ToArray())

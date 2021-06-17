@@ -32,7 +32,9 @@ namespace SpiritIsland {
 	*/
 
 	public class ThunderSpeaker : Spirit {
-		
+
+		public override string Text => "Thunder Speaker";
+
 		public override GrowthOption[] GetGrowthOptions(){
 
 			static bool onDahan(Space bs,GameState gameState) => gameState.HasDahan(bs);

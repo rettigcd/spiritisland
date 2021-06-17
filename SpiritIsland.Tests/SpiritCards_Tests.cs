@@ -9,32 +9,30 @@ namespace SpiritIsland.Tests {
 		// immutable
 		readonly PowerCard flashFloodsCard = PowerCard.For<FlashFloods>();
 
-		FlashFloods FlashFloods => (FlashFloods)flashFloodsCard.Bind(null,null);
+		Spirit spirit;
+		GameState gameState;
+		IAction action;
 
 		#region BoonOfVigor
 
 		[Fact]
 		public void BoonOfVigor_TargetSelf() {
 
-			// Given: River
-			var spirit = new RiverSurges();
-			//   And: a game
-			var gameState = new GameState();
-			//   And: Purchased Boon of Vigor
-			var card = spirit.AvailableCards.Single(c=>c.Name == BoonOfVigor.Name);
-			spirit.BuyAvailableCards(card);
-			//   And: card is fast (ready to play now)
-			Assert.Contains(card,spirit.UnresolvedActions.OfType<PowerCard>().ToList());
+			Given_GameWithSpirits( new RiverSurges() );
+
+			var card = Given_PurchasedCard(BoonOfVigor.Name);
+			Assert_CardIsReady(card);
 
 			// When: targetting self
-			var action = (BoonOfVigor)card.Bind(spirit,gameState);
+			action = (BoonOfVigor)card.Bind(spirit, gameState);
 			Assert.False(action.IsResolved);
-			action.Target = spirit;
+			Assert.Equal(spirit, action.GetOptions().Single());
+			action.Select(spirit);
 			Assert.True(action.IsResolved);
 			action.Apply();
 
 			// Then: received 1 energy
-			Assert.Equal(1,spirit.Energy);
+			Assert.Equal(1, spirit.Energy);
 
 		}
 
@@ -44,38 +42,34 @@ namespace SpiritIsland.Tests {
 		[InlineData( 10 )]
 		public void BoonOfVigor_TargetOther( int expectedEnergyBonus ) {
 
-			// Given: River
-			var spirit = new RiverSurges();
+			Given_GameWithSpirits(new RiverSurges(), new Lightning());
 
-			//   And: a second spirit
-			var other = new Lightning();
 			//  That: purchase N cards
-			for(int i=0;i<expectedEnergyBonus;++i){
-				var otherCard = new PowerCard("Fake-"+i,0,Speed.Slow);
-				other.ActiveCards.Add(otherCard);
-				other.UnresolvedActions.Add(otherCard);
-			}
-
-			//   And: a game
-			var gameState = new GameState();
+			var otherSpirit = gameState.Spirits[1];
+			Given_PurchasedFakePowercards(otherSpirit, expectedEnergyBonus);
 
 			//   And: Purchased Boon of Vigor
-			var card = spirit.AvailableCards.Single(c=>c.Name == BoonOfVigor.Name);
-			spirit.BuyAvailableCards(card);
+			PowerCard card = Given_PurchasedCard(BoonOfVigor.Name);
+			Assert_CardIsReady(card);
 
-			//   And: card is fast (ready to play now)
-			Assert.Contains(card,spirit.UnresolvedActions.OfType<PowerCard>().ToList());
+			// When: targetting other spirit
+			action = card.Bind(spirit, gameState);
+			When_TargettingSpirit( otherSpirit );
 
-			// When: targetting other
-			var action = (BoonOfVigor)card.Bind(spirit,gameState);
-			Assert.False(action.IsResolved);
-			action.Target = other;
 			Assert.True(action.IsResolved);
 			action.Apply();
 
 			// Then: received 1 energy
-			Assert.Equal(expectedEnergyBonus,other.Energy);
+			Assert.Equal(expectedEnergyBonus, otherSpirit.Energy);
 
+		}
+
+		void When_TargettingSpirit(Spirit otherSpirit) {
+			Assert.False(action.IsResolved);
+			Assert.Equal(gameState.Spirits.Select(x => x.Text).OrderBy(x => x).Join(",")
+				, action.GetOptions().Select(x => x.Text).OrderBy(x => x).Join(",")
+			);
+			action.Select(otherSpirit);
 		}
 
 		[Fact]
@@ -89,11 +83,13 @@ namespace SpiritIsland.Tests {
 
 		[Fact]
 		public void FlashFloods_Inland() {
-			// Given: River
-			var spirit = new RiverSurges();
+
+			Given_GameWithSpirits( new RiverSurges() );
+
 			//   And: a game on Board-A
 			var board = Board.BuildBoardA();
-			var gameState = new GameState{ Island = new Island(board) };
+			gameState.Island = new Island(board);
+
 			//   And: Presence on A2 (city/costal)
 			var presenceSpace = board[2];
 			spirit.Presence.Add(presenceSpace);
@@ -102,7 +98,7 @@ namespace SpiritIsland.Tests {
 			gameState.AddCity(targetSpace);
 			gameState.AddTown(targetSpace);
 			gameState.AddExplorer(targetSpace);
-			Assert.Equal("1C@3,1T@2,1E@1",gameState.GetInvaderSummary(targetSpace));
+			Assert.Equal("1C@3,1T@2,1E@1",gameState.GetInvaderSummary(targetSpace).ToString());
 
 			//   And: Purchased FlashFloods
 			var card = spirit.AvailableCards.Single(c=>c.Name == FlashFloods.Name);
@@ -139,7 +135,7 @@ namespace SpiritIsland.Tests {
 
 			// And: apply doesn't throw an exception
 			action.Apply();
-			Assert.Equal("1C@3,1T@2",gameState.GetInvaderSummary(targetSpace));
+			Assert.Equal("1C@3,1T@2",gameState.GetInvaderSummary(targetSpace).ToString());
 		}
 
 		[Fact]
@@ -148,7 +144,7 @@ namespace SpiritIsland.Tests {
 			var spirit = new RiverSurges();
 			//   And: a game on Board-A
 			var board = Board.BuildBoardA();
-			var gameState = new GameState{ Island = new Island(board) };
+			var gameState = new GameState(spirit){ Island = new Island(board) };
 			//   And: Presence on A2 (city/costal)
 			var presenceSpace = board[4];
 			spirit.Presence.Add(presenceSpace);
@@ -157,7 +153,7 @@ namespace SpiritIsland.Tests {
 			gameState.AddCity(targetSpace);
 			gameState.AddTown(targetSpace);
 			gameState.AddExplorer(targetSpace);
-			Assert.Equal("1C@3,1T@2,1E@1",gameState.GetInvaderSummary(targetSpace));
+			Assert.Equal("1C@3,1T@2,1E@1",gameState.GetInvaderSummary(targetSpace).ToString());
 
 			//   And: Purchased FlashFloods
 			var card = spirit.AvailableCards.Single(c=>c.Name == FlashFloods.Name);
@@ -194,7 +190,7 @@ namespace SpiritIsland.Tests {
 
 			// And: apply doesn't throw an exception
 			action.Apply();
-			Assert.Equal("1C@1,1T@2,1E@1",gameState.GetInvaderSummary(targetSpace));
+			Assert.Equal("1C@1,1T@2,1E@1",gameState.GetInvaderSummary(targetSpace).ToString());
 		}
 
 		[Fact]
@@ -204,13 +200,87 @@ namespace SpiritIsland.Tests {
 
 		#endregion FlashFloods
 
+		#region Wash Away
+
+		[Fact]
+		public void WashAway_Nothing() {
+			PowerCard card = Given_RiverPlayingWashAway();
+
+			// no explorers
+
+			//  When: activating card
+			var action = card.Bind(spirit, gameState);
+
+			//  Then: card has 0 options
+			Assert.Empty(action.GetOptions());
+
+			Assert.True(action.IsResolved);
+
+			action.Apply();
+			// !!! test that nothing changes
+		}
+
+		[Fact]
+		public void WashAway_1Space1Explorer() {
+			PowerCard card = Given_RiverPlayingWashAway();
+
+			// 1 explorer on A4
+			var board = gameState.Island.Boards[0];
+			Space targetSpace = board[4];
+			gameState.AddExplorer(targetSpace);
+			Assert.Equal("1E@1", gameState.GetInvaderSummary(targetSpace).ToString());
+
+			//  When: activating card
+			var action = card.Bind(spirit, gameState);
+
+			//  Then: card has options of where to push 1 explorer
+			Assert.Equal(
+				targetSpace.SpacesExactly(1).Select(s=>s.Label).OrderBy(x=>x).Join(",")
+				,action.GetOptions().Select(s=>s.Text).OrderBy(x=>x).Join(",")
+			);
+			action.Select(action.GetOptions().Single(x => x.Text == "A2"));
+			Assert.True(action.IsResolved);
+
+			// And: apply doesn't throw an exception
+			action.Apply();
+
+			// !!! check that explore was moved
+			Assert.Equal("", gameState.GetInvaderSummary(targetSpace).ToString());
+			Assert.Equal("1E@1", gameState.GetInvaderSummary(board[2]).ToString());
+		}
+
+		PowerCard Given_RiverPlayingWashAway() {
+			Given_GameWithSpirits(new RiverSurges());
+
+			//   And: a game on Board-A
+			Board board = Board.BuildBoardA();
+			gameState.Island = new Island(board);
+
+			//   And: Presence on A5 (city/costal)
+			var presenceSpace = board[5]; // The 'Y' land in the middle
+			spirit.Presence.Add(presenceSpace);
+
+			//   And: Purchased WashAway
+			var card = spirit.AvailableCards.Single(c => c.Name == WashAway.Name);
+			spirit.Energy = card.Cost;
+			spirit.BuyAvailableCards(card);
+
+			// Jump to slow
+			spirit.UnresolvedActions.Clear();
+			spirit.UnresolvedActions.AddRange(spirit.ActiveCards.Where(x => x.Speed == Speed.Slow));
+			Assert_CardIsReady(card);
+
+			return card;
+		}
+
+		#endregion
+
 
 		[Fact]
 		public void RiversBounty_Stats() {
 			var card = PowerCard.For<RiversBounty>();
 			AssertCardStatus( card, 0, Speed.Slow, "SWB" );
 		}
-
 
 		void AssertCardStatus( PowerCard card, int expectedCost, Speed expectedSpeed, string expectedElements ) {
 			Assert.Equal( expectedCost, card.Cost );
@@ -220,6 +290,29 @@ namespace SpiritIsland.Tests {
 				.Select(x=> Growth.GrowthTests.ElementChars[x]);
 			Assert.Equal( expectedElements, string.Join("",cardElements));
 
+		}
+
+		void Assert_CardIsReady( PowerCard card ) {
+			Assert.Contains(card, spirit.UnresolvedActions.OfType<PowerCard>().ToList());
+		}
+
+		PowerCard Given_PurchasedCard(string cardName) {
+			var card = spirit.AvailableCards.Single(c => c.Name == cardName);
+			spirit.BuyAvailableCards(card);
+			return card;
+		}
+
+		void Given_GameWithSpirits(params Spirit[] spirits) {
+			spirit = spirits[0];
+			gameState = new GameState(spirits);
+		}
+
+		static void Given_PurchasedFakePowercards(Spirit otherSpirit, int expectedEnergyBonus) {
+			for (int i = 0; i < expectedEnergyBonus; ++i) {
+				var otherCard = new PowerCard("Fake-" + i, 0, Speed.Slow);
+				otherSpirit.ActiveCards.Add(otherCard);
+				otherSpirit.UnresolvedActions.Add(otherCard);
+			}
 		}
 
 	}

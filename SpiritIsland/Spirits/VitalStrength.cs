@@ -28,6 +28,7 @@ namespace SpiritIsland {
 	*/
 
 	public class VitalStrength : Spirit {
+		public override string Text => "Vital Strength of Earth";
 
 		public override GrowthOption[] GetGrowthOptions() {
 			return new GrowthOption[]{

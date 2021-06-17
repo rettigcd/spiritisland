@@ -15,8 +15,6 @@ namespace SpiritIsland.PowerCards {
 			this.spirit = spirit;
 			this.gameState = gameState;
 		}
-		readonly GameState gameState;
-		readonly Spirit spirit;
 
 		public bool IsResolved => targetSpace != null && damage != null;
 
@@ -31,7 +29,7 @@ namespace SpiritIsland.PowerCards {
 			if(damage == null)
 				return CalcDamageOptions();
 
-			return new IOption[0];
+			return new IOption[0]; // ???
 		}
 
 		DamagePlan[] CalcDamageOptions() {
@@ -39,18 +37,18 @@ namespace SpiritIsland.PowerCards {
 			// !!! ignores already damaged Cities / Towns
 
 			var options = new List<DamagePlan>();
-			string invaderSummary = gameState.GetInvaderSummary(targetSpace);
+			var invaderSummary = gameState.GetInvaderSummary(targetSpace);
 
 			int damage = targetSpace.IsCostal ? 2 : 1;
 			while(damage>0){
-				if( damage<=3 && invaderSummary.Contains("C") ){
-					options.Add(new DamagePlan(damage, Invader.City, 3 ));
+				if( damage<=3 && invaderSummary.HasCity ){
+					options.Add(new DamagePlan(damage, Invader.City));
 				}
-				if( damage<=2 && invaderSummary.Contains("T") ){
-					options.Add(new DamagePlan( damage, Invader.Town, 2 ));
+				if( damage<=2 && invaderSummary.HasTown ){
+					options.Add(new DamagePlan( damage, Invader.Town));
 				}
-				if( damage<=1 && invaderSummary.Contains("E") ){
-					options.Add(new DamagePlan( damage, Invader.Explorer, 1 ));
+				if( damage<=1 && invaderSummary.HasExplorer ){
+					options.Add(new DamagePlan( damage, Invader.Explorer));
 				}
 				--damage;
 			}
@@ -72,11 +70,14 @@ namespace SpiritIsland.PowerCards {
 				return;
 			}
 
-			throw new NotImplementedException();
+			throw new NotImplementedException(); // ???
 		}
 
+		readonly GameState gameState;
+		readonly Spirit spirit;
 		Space targetSpace;
 		DamagePlan damage;
+
 	}
 
 }

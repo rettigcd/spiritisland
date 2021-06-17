@@ -36,6 +36,9 @@ namespace SpiritIsland {
 	*/
 
 	public class Bringer : Spirit {
+
+		public override string Text => "Bringer of Dreams and Nightmares";
+
 		public override GrowthOption[] GetGrowthOptions() {
 
 			static bool onDahanOrInvadors(Space bs,GameState gameState) { // !!! hook in here! instead of Criteria

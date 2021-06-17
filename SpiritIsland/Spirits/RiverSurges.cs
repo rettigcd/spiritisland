@@ -41,6 +41,10 @@ namespace SpiritIsland {
 	/// </summary>
 	public class RiverSurges : Spirit {
 
+		public const string Name = "River Surges in Sunlight";
+
+		public override string Text => Name;
+
 		public RiverSurges():base(
 			new PowerCard(typeof(BoonOfVigor)),
 			new PowerCard(typeof(FlashFloods)),

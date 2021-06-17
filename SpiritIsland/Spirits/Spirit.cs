@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace SpiritIsland {
 
-	public abstract class Spirit {
+	public abstract class Spirit :IOption {
 
 		public Spirit(){
 			AvailableCards.Add( new PowerCard( "A", 0, Speed.Fast, Element.Air ) );
@@ -45,7 +45,9 @@ namespace SpiritIsland {
 		public int EnergyPerTurn => EnergySequence[RevealedEnergySpaces-1];
 
 		public virtual int NumberOfCardsPlayablePerTurn => CardSequence[RevealedCardSpaces-1];
-		
+
+		public abstract string Text { get; }
+
 		#endregion
 
 		#region intermediate growth states

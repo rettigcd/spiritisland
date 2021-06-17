@@ -36,6 +36,8 @@ namespace SpiritIsland {
 
 	public class Ocean : Spirit {
 
+		public override string Text => "Ocean's Hungry Grasp";
+
 		public override GrowthOption[] GetGrowthOptions() {
 
 			// !!! add test that oceans containing 2 presence only push 1 of them out.

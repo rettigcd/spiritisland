@@ -36,8 +36,8 @@ Gift of Proliferation => 1 => fast, any spirit => moon, plant => target spirit a
 
 	public class RampantGreen : Spirit {
 
-		public RampantGreen(){
-		}
+		public override string Text => "A Spread of Rampant Green";
+
 
 		public override GrowthOption[] GetGrowthOptions() {
 			

@@ -1,31 +1,41 @@
-﻿namespace SpiritIsland.PowerCards {
+﻿using System;
+
+namespace SpiritIsland.PowerCards {
 
 	[PowerCard(BoonOfVigor.Name, 0, Speed.Fast,Element.Sun,Element.Water,Element.Plant)]
 	public class BoonOfVigor : IAction{
 
 		public const string Name = "Boon of Vigor";
 
-		public BoonOfVigor(Spirit self,GameState _){
+		public BoonOfVigor(Spirit self,GameState gameState){
 			this.self = self;
+			this.gameState = gameState;
 		}
 
-		public Spirit Target { get; set; }
-
-		public bool IsResolved => Target != null;
+		public bool IsResolved => target != null;
 
 		public void Apply() {
-			this.Target.Energy += (Target==self) ? 1 : Target.ActiveCards.Count;
+			this.target.Energy += (target==self) ? 1 : target.ActiveCards.Count;
 		}
 
 		public IOption[] GetOptions() {
-			throw new System.NotImplementedException();
+			if( target == null )
+				return gameState.Spirits;
+			return new IOption[0]; // fully resolved, is this the best we can do ???
 		}
 
 		public void Select(IOption option) {
-			throw new System.NotImplementedException();
+			if( target == null ){
+				target = (Spirit)option;
+				return;
+			}
+
+			throw new InvalidOperationException(); // ???
 		}
 
 		readonly Spirit self;
+		readonly GameState gameState;
+		Spirit target;
 
 	}
 

@@ -31,6 +31,8 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 */
 
 	public class Lightning : Spirit {
+		public const string Name = "Lightning's Swift Strike";
+		public override string Text => Name;
 
 		public override GrowthOption[] GetGrowthOptions() {
 			return new GrowthOption[]{

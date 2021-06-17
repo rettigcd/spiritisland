@@ -41,6 +41,9 @@ namespace SpiritIsland {
 	 */
 
 	public class Keeper : Spirit {
+
+		public override string Text => "Keeper of the Forbidden Wilds";
+
 		public override GrowthOption[] GetGrowthOptions() {
 
 			bool presenceOrWilds(Space bs,GameState gameState) => this.Presence.Contains(bs) || gameState.HasWilds(bs);
