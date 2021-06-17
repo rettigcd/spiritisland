@@ -6,11 +6,11 @@ namespace SpiritIsland {
 
 		public InvaderGroup(Dictionary<Invader,int> dict){
 			this.dict = dict;
-			dd = new DefaultDictionary<Invader, int>(dict);
+			dd = new CountDictionary<Invader>(dict);
 		}
 
 		readonly Dictionary<Invader,int> dict;
-		readonly DefaultDictionary<Invader,int> dd;
+		readonly CountDictionary<Invader> dd;
 
 		public override string ToString() {
 			return dict

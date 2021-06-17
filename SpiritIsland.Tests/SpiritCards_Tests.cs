@@ -220,15 +220,22 @@ namespace SpiritIsland.Tests {
 			// !!! test that nothing changes
 		}
 
-		[Fact]
-		public void WashAway_1Space1Explorer() {
+		[Theory]
+		[InlineData(1,0,0,"","1E@1")]
+		[InlineData(2,0,0,"1E@1","1E@1")]
+		[InlineData(0,1,0,"","1T@2")]
+		[InlineData(0,2,0,"1T@2","1T@2")]
+		[InlineData(1,0,1,"1C@3","1E@1")]
+		public void WashAway_1Target1PushableType(int explorerCount, int townCount, int cityCount, string expectedTargetResult, string expectedDestinationResult) {
 			PowerCard card = Given_RiverPlayingWashAway();
 
 			// 1 explorer on A4
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[4];
-			gameState.AddExplorer(targetSpace);
-			Assert.Equal("1E@1", gameState.GetInvaderSummary(targetSpace).ToString());
+			while(0<explorerCount--) gameState.AddExplorer(targetSpace);
+			while(0<townCount--) gameState.AddTown(targetSpace);
+			while(0<cityCount--) gameState.AddCity(targetSpace);
+//			Assert.Equal("1E@1", gameState.GetInvaderSummary(targetSpace).ToString());
 
 			//  When: activating card
 			var action = card.Bind(spirit, gameState);
@@ -238,15 +245,16 @@ namespace SpiritIsland.Tests {
 				targetSpace.SpacesExactly(1).Select(s=>s.Label).OrderBy(x=>x).Join(",")
 				,action.GetOptions().Select(s=>s.Text).OrderBy(x=>x).Join(",")
 			);
-			action.Select(action.GetOptions().Single(x => x.Text == "A2"));
+			var invaderDestination = board[2];
+			action.Select(action.GetOptions().Single(x => x.Text == invaderDestination.Label));
 			Assert.True(action.IsResolved);
 
 			// And: apply doesn't throw an exception
 			action.Apply();
 
 			// !!! check that explore was moved
-			Assert.Equal("", gameState.GetInvaderSummary(targetSpace).ToString());
-			Assert.Equal("1E@1", gameState.GetInvaderSummary(board[2]).ToString());
+			Assert.Equal(expectedTargetResult, gameState.GetInvaderSummary(targetSpace).ToString());
+			Assert.Equal(expectedDestinationResult, gameState.GetInvaderSummary(invaderDestination).ToString());
 		}
 
 		PowerCard Given_RiverPlayingWashAway() {

@@ -23,6 +23,7 @@ namespace SpiritIsland {
 		public void RemoveExplorer(Space space) { explorerCount[space]--; }
 
 		public void AddTown( Space space ){ townCount[space]++; }
+		public void RemoveTown(Space space) { townCount[space]--; }
 		public void AddWilds( Space space ){ wildsCount[space]++; }
 
 		public int GetDahanOnSpace( Space space ){ return dahanCount[space]; }
