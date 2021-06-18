@@ -179,9 +179,10 @@ namespace SpiritIsland.Tests {
 			action.Apply();
 
 			// check that explore was moved
-//			Assert.Equal("", gameState.GetInvaderGroup(targetSpace).ToString());
-//			Assert.Equal("1E@1", gameState.GetInvaderGroup(dstn1).ToString());
-//			Assert.Equal("1T@2", gameState.GetInvaderGroup(townDestination).ToString());
+			Assert.Equal("", gameState.GetInvaderGroup(targetSpace).ToString());
+			Assert.Equal("1E@1", gameState.GetInvaderGroup(dstn1).ToString());
+			Assert.Equal("1E@1", gameState.GetInvaderGroup(dstn2).ToString());
+			Assert.Equal("1E@1", gameState.GetInvaderGroup(dstn3).ToString());
 		}
 
 		PowerCard Given_RiverPlayingWashAway(string startingPresence="A5") {
