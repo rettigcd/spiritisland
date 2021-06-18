@@ -8,8 +8,8 @@ namespace SpiritIsland.Tests {
 	public class WashAway_Tests : SpiritCards_Tests {
 
 		[Fact]
-		public void WashAway_Nothing() {
-			PowerCard card = Given_RiverPlayingWashAway();
+		public void Nothing() {
+			Given_RiverPlayingWashAway();
 
 			// no explorers
 
@@ -29,8 +29,8 @@ namespace SpiritIsland.Tests {
 		[InlineData(1,0,0,"","1E@1")]
 		[InlineData(0,1,0,"","1T@2")]
 		[InlineData(1,0,1,"1C@3","1E@1")]
-		public void WashAway_1Target1PushableType(int explorerCount, int townCount, int cityCount, string expectedTargetResult, string expectedDestinationResult) {
-			PowerCard card = Given_RiverPlayingWashAway();
+		public void OneTarget1PushableType(int explorerCount, int townCount, int cityCount, string expectedTargetResult, string expectedDestinationResult) {
+			Given_RiverPlayingWashAway();
 
 			// 1 explorer on A4
 			var board = gameState.Island.Boards[0];
@@ -63,8 +63,8 @@ namespace SpiritIsland.Tests {
 
 		// WashAway: into ocean?
 		[Fact]
-		public void WashAway_DoesntPushIntoOcean(){
-			PowerCard card = Given_RiverPlayingWashAway("A4");
+		public void DoesntPushIntoOcean(){
+			Given_RiverPlayingWashAway("A4");
 
 			// 1 explorer on A4
 			var board = gameState.Island.Boards[0];
@@ -80,8 +80,8 @@ namespace SpiritIsland.Tests {
 		}
 
 		[Fact]
-		public void WashAway_1Target2PushableTypes() {
-			PowerCard card = Given_RiverPlayingWashAway();
+		public void One1Target2PushableTypes() {
+			Given_RiverPlayingWashAway();
 
 			// 1 explorer + 1 Town on A4
 			var board = gameState.Island.Boards[0];
@@ -119,8 +119,8 @@ namespace SpiritIsland.Tests {
 
 
 		[Fact]
-		public void WashAway_DamagedTown(){
-			PowerCard card = Given_RiverPlayingWashAway();
+		public void DamagedTown(){
+			Given_RiverPlayingWashAway();
 
 			// 1 damaged town on A4
 			var board = gameState.Island.Boards[0];
@@ -148,43 +148,43 @@ namespace SpiritIsland.Tests {
 		// WashAway: push 3 different invaders to 3 different lands
 		// WashAway: multiple invader types
 		[Fact]
-		public void WashAway_Push3InvadersToDifferentLands() {
-			PowerCard card = Given_RiverPlayingWashAway();
+		public void Push3InvadersToDifferentLands() {
+			Given_RiverPlayingWashAway();
 
 			// 1 explorer + 1 Town on A4
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[4];
-			gameState.Adjust(Invader.Explorer,targetSpace,3);
+			gameState.Adjust( Invader.Explorer, targetSpace, 3 );
 
 			//  When: activating card
-			var action = card.Bind(spirit, gameState);
+			When_PlayingCard();
 
 			//  Then: Select destination for Explorer 1
 			var dstn1 = board[2];
 			action.Select( dstn1 );
-			Assert.False(action.IsResolved);
+			Assert.False( action.IsResolved );
 
 			//  Then: Select destination for Explorer 2
 			var dstn2 = board[3];
 			action.Select( dstn2 );
-			Assert.False(action.IsResolved);
+			Assert.False( action.IsResolved );
 
 			//  Then: Select destination for Explorer 3
 			var dstn3 = board[5];
 			action.Select( dstn3 );
-			Assert.True(action.IsResolved);
+			Assert.True( action.IsResolved );
 
 			// And: apply doesn't throw an exception
 			action.Apply();
 
 			// check that explore was moved
-			Assert.Equal("", gameState.GetInvaderGroup(targetSpace).ToString());
-			Assert.Equal("1E@1", gameState.GetInvaderGroup(dstn1).ToString());
-			Assert.Equal("1E@1", gameState.GetInvaderGroup(dstn2).ToString());
-			Assert.Equal("1E@1", gameState.GetInvaderGroup(dstn3).ToString());
+			Assert.Equal( "", gameState.GetInvaderGroup( targetSpace ).ToString() );
+			Assert.Equal( "1E@1", gameState.GetInvaderGroup( dstn1 ).ToString() );
+			Assert.Equal( "1E@1", gameState.GetInvaderGroup( dstn2 ).ToString() );
+			Assert.Equal( "1E@1", gameState.GetInvaderGroup( dstn3 ).ToString() );
 		}
 
-		PowerCard Given_RiverPlayingWashAway(string startingPresence="A5") {
+		void Given_RiverPlayingWashAway(string startingPresence="A5") {
 			// A5 is the 'Y' land in the middle
 			Given_GameWithSpirits(new RiverSurges());
 
@@ -197,7 +197,7 @@ namespace SpiritIsland.Tests {
 			spirit.Presence.Add(presenceSpace);
 
 			//   And: Purchased WashAway
-			var card = spirit.AvailableCards.Single(c => c.Name == WashAway.Name);
+			card = spirit.AvailableCards.Single(c => c.Name == WashAway.Name);
 			spirit.Energy = card.Cost;
 			spirit.BuyAvailableCards(card);
 
@@ -206,24 +206,7 @@ namespace SpiritIsland.Tests {
 			spirit.UnresolvedActions.AddRange(spirit.ActiveCards.Where(x => x.Speed == Speed.Slow));
 			Assert_CardIsReady(card);
 
-			return card;
 		}
-
-		protected void Assert_Options( IAction action, params string[] expected ) {
-			Assert.Equal(
-				expected.OrderBy(x=>x).Join(",")
-				,action.Options.Select(s=>s.Text).OrderBy(x=>x).Join(",")
-			);
-		}
-
-		protected void Assert_Options(IAction action,IEnumerable<IOption> expected){
-			Assert.Equal(
-				expected.Select(s=>s.Text).OrderBy(x=>x).Join(",")
-				,action.Options.Select(s=>s.Text).OrderBy(x=>x).Join(",")
-			);
-		}
-
-
 
 	}
 

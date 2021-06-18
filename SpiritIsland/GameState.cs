@@ -16,7 +16,7 @@ namespace SpiritIsland {
 
 		public void AddBeast( Space space ){ beastCount[space]++; }
 		public void AddBlight( Space space ){ blightCount[space]++; }
-		public void AddDahan( Space space ){ dahanCount[space]++; }
+		public void AddDahan( Space space, int delta=1 ){ dahanCount[space]+=delta; }
 
 		public void AddWilds( Space space ){ wildsCount[space]++; }
 

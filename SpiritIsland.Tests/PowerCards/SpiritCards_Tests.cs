@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
@@ -8,6 +9,7 @@ namespace SpiritIsland.Tests {
 		protected Spirit spirit;
 		protected GameState gameState;
 		protected IAction action;
+		protected PowerCard card;
 
 		protected PowerCard Given_PurchasedCard(string cardName) {
 			var card = spirit.AvailableCards.Single(c => c.Name == cardName);
@@ -40,6 +42,24 @@ namespace SpiritIsland.Tests {
 
 		protected void Assert_CardIsReady( PowerCard card ) {
 			Assert.Contains(card, spirit.UnresolvedActions.OfType<PowerCard>().ToList());
+		}
+
+		protected void When_PlayingCard() {
+			action = card.Bind( spirit, gameState );
+		}
+
+		protected void Assert_Options( IAction action, params string[] expected ) {
+			Assert.Equal(
+				expected.OrderBy(x=>x).Join(",")
+				,action.Options.Select(s=>s.Text).OrderBy(x=>x).Join(",")
+			);
+		}
+
+		protected void Assert_Options(IAction action,IEnumerable<IOption> expected){
+			Assert.Equal(
+				expected.Select(s=>s.Text).OrderBy(x=>x).Join(",")
+				,action.Options.Select(s=>s.Text).OrderBy(x=>x).Join(",")
+			);
 		}
 
 	}
