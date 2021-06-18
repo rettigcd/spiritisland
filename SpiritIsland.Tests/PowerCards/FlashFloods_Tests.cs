@@ -38,7 +38,7 @@ namespace SpiritIsland.Tests {
 
 			// Then: can target any land within 1 of presence.
 			Assert.False(action.IsResolved);
-			string actionOptions = action.GetOptions().Select(x=>x.Text).OrderBy(x=>x).Join(",");
+			string actionOptions = action.Options.Select(x=>x.Text).OrderBy(x=>x).Join(",");
 			string expectedOptions = presenceSpace.SpacesWithin(1)
 				.Where(s=>s.IsLand)
 				.Select(s=>s.Label)
@@ -51,7 +51,7 @@ namespace SpiritIsland.Tests {
 
 			// Then: can apply 1 points of damage
 			Assert.False(action.IsResolved);
-			var damageOptions = action.GetOptions();
+			var damageOptions = action.Options;
 			Assert.Equal("1>C@3,1>E@1,1>T@2",damageOptions.Select(x=>x.Text).OrderBy(x=>x).Join(","));
 
 			// When: selecting a damage optin
@@ -93,7 +93,7 @@ namespace SpiritIsland.Tests {
 
 			// Then: can target any land within 1 of presence.
 			Assert.False(action.IsResolved);
-			string actionOptions = action.GetOptions().Select(x=>x.Text).OrderBy(x=>x).Join(",");
+			string actionOptions = action.Options.Select(x=>x.Text).OrderBy(x=>x).Join(",");
 			string expectedOptions = presenceSpace.SpacesWithin(1)
 				.Where(s=>s.IsLand)
 				.Select(s=>s.Label)
@@ -106,7 +106,7 @@ namespace SpiritIsland.Tests {
 
 			// Then: can apply 2 points of damage
 			Assert.False(action.IsResolved);
-			var damageOptions = action.GetOptions();
+			var damageOptions = action.Options;
 			Assert.Equal("1>C@3,1>E@1,1>T@2,2>C@3,2>T@2",damageOptions.Select(x=>x.Text).OrderBy(x=>x).Join(","));
 
 			// When: selecting a damage optin

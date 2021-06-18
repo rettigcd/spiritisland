@@ -31,7 +31,10 @@ namespace SpiritIsland {
 			changed.Add( damagePlan.DamagedInvader );	++dd[ damagePlan.DamagedInvader ];
 		}
 
-		public int this[Invader i] => dd[i];
+		public int this[Invader i] {
+			get{ return dd[i]; }
+			set{  dd[i] = value; }
+		}
 
 		public bool HasCity => dict.ContainsKey(Invader.City);
 		public bool HasTown => dict.ContainsKey(Invader.Town) || dict.ContainsKey(Invader.Town1);

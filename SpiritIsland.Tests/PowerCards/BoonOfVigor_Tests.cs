@@ -17,7 +17,7 @@ namespace SpiritIsland.Tests {
 			// When: targetting self
 			action = (BoonOfVigor)card.Bind(spirit, gameState);
 			Assert.False(action.IsResolved);
-			Assert.Equal(spirit, action.GetOptions().Single());
+			Assert.Equal(spirit, action.Options.Single());
 			action.Select(spirit);
 			Assert.True(action.IsResolved);
 			action.Apply();
@@ -58,7 +58,7 @@ namespace SpiritIsland.Tests {
 		void When_TargettingSpirit(Spirit otherSpirit) {
 			Assert.False(action.IsResolved);
 			Assert.Equal(gameState.Spirits.Select(x => x.Text).OrderBy(x => x).Join(",")
-				, action.GetOptions().Select(x => x.Text).OrderBy(x => x).Join(",")
+				, action.Options.Select(x => x.Text).OrderBy(x => x).Join(",")
 			);
 			action.Select(otherSpirit);
 		}

@@ -54,7 +54,7 @@ namespace SpiritIsland {
 			public bool IsResolved => true;
 			public void Apply(){}
 
-			public IOption[] GetOptions() { return new IOption[0]; }
+			public IOption[] Options => new IOption[0];
 
 			public void Select(IOption option) {}
 		}

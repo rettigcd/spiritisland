@@ -18,18 +18,20 @@ namespace SpiritIsland.PowerCards {
 
 		public bool IsResolved => targetSpace != null && damagePlan != null;
 
-		public IOption[] GetOptions(){
-			if(targetSpace == null)
-				return spirit.Presence
-					.SelectMany(p=>p.SpacesWithin(1))
-					.Where(x=>x.IsLand)
-					.Distinct()
-					.ToArray();
+		public IOption[] Options{
+			get{
+				if(targetSpace == null)
+					return spirit.Presence
+						.SelectMany(p=>p.SpacesWithin(1))
+						.Where(x=>x.IsLand)
+						.Distinct()
+						.ToArray();
 
-			if(damagePlan == null)
-				return CalcDamageOptions();
+				if(damagePlan == null)
+					return CalcDamageOptions();
 
-			return new IOption[0]; // ???
+				return new IOption[0]; // ???
+			}
 		}
 
 		DamagePlan[] CalcDamageOptions() {

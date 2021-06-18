@@ -18,11 +18,11 @@ namespace SpiritIsland.PowerCards {
 			this.target.Energy += (target==self) ? 1 : target.ActiveCards.Count;
 		}
 
-		public IOption[] GetOptions() {
-			if( target == null )
-				return gameState.Spirits;
-			return new IOption[0]; // fully resolved, is this the best we can do ???
-		}
+		public IOption[] Options { get{
+				if( target == null )
+					return gameState.Spirits;
+				return new IOption[0]; // fully resolved, is this the best we can do ???
+		}}
 
 		public void Select(IOption option) {
 			if( target == null ){

@@ -19,20 +19,22 @@ namespace SpiritIsland.PowerCards {
 		}
 
 		void AutoSelectSingleOptions() {
-			var opt = GetOptions();
+			var opt = Options;
 			while (opt.Length == 1) {
 				InnerSelect(opt[0]);
-				opt = GetOptions();
+				opt = Options;
 			}
 		}
 
-		public bool IsResolved => GetOptions().Length == 0;
+		public bool IsResolved => Options.Length == 0;
 
 		public void Apply() {
 			if(target==null) return;
 
-			gameState.Adjust(invaderToPush,target,-1);
-			gameState.Adjust(invaderToPush,invaderDestination,1);
+			foreach(var move in moves){
+				gameState.Adjust(move.Invader,target,-1);
+				gameState.Adjust(move.Invader,move.Destination,1);
+			}
 		}
 
 		public void Select(IOption option) {
@@ -40,11 +42,13 @@ namespace SpiritIsland.PowerCards {
 			AutoSelectSingleOptions();
 		}
 
-		public IOption[] GetOptions() {
-			if(decisions.Count>0)
-				return decisions.Peek().options();
+		public IOption[] Options {
+			get{
+				if(decisions.Count>0)
+					return decisions.Peek().options();
 	
-			return new IOption[0];
+				return new IOption[0];
+			}
 		}
 
 		void InnerSelect(IOption option) {
@@ -56,7 +60,6 @@ namespace SpiritIsland.PowerCards {
 
 			throw new System.NotImplementedException();
 		}
-
 
 		#region Select Target Land
 		Decision TargetLandDecision() => new Decision { options = TargetLandOptions, select = SelectTargetLand };
@@ -71,26 +74,27 @@ namespace SpiritIsland.PowerCards {
 				.ToArray();
 		void SelectTargetLand(IOption opt){
 			target = (Space)opt;
-			//				int invadersInSpace = 1; // !!!gameState.GetInvaderSummary(1);
-			//				remainingInvadersToPush = Math.Min(invadersInSpace,2);
 			targetGroup = gameState.GetInvaderGroup(target);
-			decisions.Push(ExplorerToPushDecision());
+
+			int invaderCount = targetGroup[Invader.Explorer] 
+						+ targetGroup[Invader.Town]
+						+ targetGroup[Invader.Town1];
+			int numToMove = Math.Min(invaderCount,3);
+			while(0<numToMove--)
+				decisions.Push(ExplorerToPushDecision());
 		}
 		#endregion
 
 		#region Select Explorer
 		Decision ExplorerToPushDecision() 
 			=> new Decision { options = ExplorerSelectionOptions, select = SelectExplorer };
+		
 		IOption[] ExplorerSelectionOptions() {
 			return targetGroup
 				.InvaderTypesPresent
 				.Where(i=>i.Label != "City")
 				.ToArray();
 		}
-		//IOption[] ExplorerSelectionOptions() =>targetGroup
-		//	.InvaderTypesPresent
-		//	.Where(i=>i.Label != "City")
-		//	.ToArray();
 		void SelectExplorer(IOption opt) {
 			invaderToPush = (Invader)opt;
 			decisions.Push( SelectExplorerDestination() );
@@ -103,7 +107,10 @@ namespace SpiritIsland.PowerCards {
 		IOption[] ExplorerDestinationOptions() => target.SpacesExactly(1)
 			.Where(x=>x.IsLand)
 			.ToArray();
-		void SelectExplorerDestination(IOption opt) => invaderDestination = (Space)opt;
+		void SelectExplorerDestination(IOption opt){
+			moves.Add(new Move{Invader=invaderToPush, Destination=(Space)opt});
+			targetGroup[invaderToPush]--;
+		}
 		#endregion Select Explorer Destination
 
 		class Decision {
@@ -120,6 +127,11 @@ namespace SpiritIsland.PowerCards {
 		InvaderGroup targetGroup;
 
 		Invader invaderToPush;
-		Space invaderDestination;
+		readonly List<Move> moves = new List<Move>();
+
+		struct Move {
+			public Invader Invader;
+			public Space Destination;
+		}
 	}
 }

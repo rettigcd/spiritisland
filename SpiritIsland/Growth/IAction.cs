@@ -7,7 +7,7 @@
 
 		bool IsResolved {get;}
 
-		IOption[] GetOptions();
+		IOption[] Options { get; }
 
 		void Select(IOption option);
 

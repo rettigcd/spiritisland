@@ -15,7 +15,7 @@ namespace SpiritIsland.Tests {
 			var action = card.Bind(spirit, gameState);
 
 			//  Then: card has 0 options
-			Assert.Empty(action.GetOptions());
+			Assert.Empty(action.Options);
 
 			Assert.True(action.IsResolved);
 
@@ -25,9 +25,7 @@ namespace SpiritIsland.Tests {
 
 		[Theory]
 		[InlineData(1,0,0,"","1E@1")]
-		[InlineData(2,0,0,"1E@1","1E@1")]
 		[InlineData(0,1,0,"","1T@2")]
-		[InlineData(0,2,0,"1T@2","1T@2")]
 		[InlineData(1,0,1,"1C@3","1E@1")]
 		public void WashAway_1Target1PushableType(int explorerCount, int townCount, int cityCount, string expectedTargetResult, string expectedDestinationResult) {
 			PowerCard card = Given_RiverPlayingWashAway();
@@ -45,10 +43,10 @@ namespace SpiritIsland.Tests {
 			//  Then: card has options of where to push 1 explorer
 			Assert.Equal(
 				targetSpace.SpacesExactly(1).Select(s=>s.Label).OrderBy(x=>x).Join(",")
-				,action.GetOptions().Select(s=>s.Text).OrderBy(x=>x).Join(",")
+				,action.Options.Select(s=>s.Text).OrderBy(x=>x).Join(",")
 			);
 			var invaderDestination = board[2];
-			action.Select(action.GetOptions().Single(x => x.Text == invaderDestination.Label));
+			action.Select(action.Options.Single(x => x.Text == invaderDestination.Label));
 			Assert.True(action.IsResolved);
 
 			// And: apply doesn't throw an exception
@@ -77,7 +75,7 @@ namespace SpiritIsland.Tests {
 			//  Then: card has options of where to push 1 explorer
 			Assert.Equal(
 				targetSpace.SpacesExactly(1).Where(x=>x.IsLand).Select(s=>s.Label).OrderBy(x=>x).Join(",")
-				,action.GetOptions().Select(s=>s.Text).OrderBy(x=>x).Join(",")
+				,action.Options.Select(s=>s.Text).OrderBy(x=>x).Join(",")
 			);
 
 		}
@@ -87,7 +85,7 @@ namespace SpiritIsland.Tests {
 		public void WashAway_1Target2PushableTypes() {
 			PowerCard card = Given_RiverPlayingWashAway();
 
-			// 1 explorer on A4
+			// 1 explorer + 1 Town on A4
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[4];
 			gameState.Adjust(Invader.Explorer,targetSpace,1);
@@ -96,20 +94,28 @@ namespace SpiritIsland.Tests {
 			//  When: activating card
 			var action = card.Bind(spirit, gameState);
 
-			//  Then: card has options of Explorer or Town
-			Assert.Equal("E@1,T@2",action.GetOptions().Select(s=>s.Text).OrderBy(x=>x).Join(",") );
+			//  Then: Select Explorer
+			Assert.Equal("E@1,T@2",action.Options.Select(s=>s.Text).OrderBy(x=>x).Join(",") );
 			action.Select(Invader.Explorer);
+			Assert.False(action.IsResolved);
 
-			var invaderDestination = board[2];
-			action.Select(action.GetOptions().Single(x => x.Text == invaderDestination.Label));
+			//  Then: Select destination for Explorer
+			var explorerDestination = board[2];
+			action.Select( explorerDestination );
+			Assert.False(action.IsResolved);
+
+			//  Then: Select destination for Town
+			var townDestination = board[3];
+			action.Select( townDestination );
 			Assert.True(action.IsResolved);
 
 			// And: apply doesn't throw an exception
 			action.Apply();
 
 			// check that explore was moved
-			Assert.Equal("1T@2", gameState.GetInvaderGroup(targetSpace).ToString());
-			Assert.Equal("1E@1", gameState.GetInvaderGroup(invaderDestination).ToString());
+			Assert.Equal("", gameState.GetInvaderGroup(targetSpace).ToString());
+			Assert.Equal("1E@1", gameState.GetInvaderGroup(explorerDestination).ToString());
+			Assert.Equal("1T@2", gameState.GetInvaderGroup(townDestination).ToString());
 		}
 
 		// washAway: damaged towns
@@ -129,7 +135,7 @@ namespace SpiritIsland.Tests {
 
 			//  Then: card has options of Explorer or Town
 			var invaderDestination = board[2];
-			action.Select(action.GetOptions().Single(x => x.Text == invaderDestination.Label));
+			action.Select(action.Options.Single(x => x.Text == invaderDestination.Label));
 			Assert.True(action.IsResolved);
 
 			// And: apply doesn't throw an exception
@@ -140,9 +146,43 @@ namespace SpiritIsland.Tests {
 			Assert.Equal("1T@1", gameState.GetInvaderGroup(invaderDestination).ToString());
 		}
 
-		// WashAway: push 2 different invaders to 2 different lands
-
 		// WashAway: push 3 different invaders to 3 different lands
+		// WashAway: multiple invader types
+		[Fact]
+		public void WashAway_Push3InvadersToDifferentLands() {
+			PowerCard card = Given_RiverPlayingWashAway();
+
+			// 1 explorer + 1 Town on A4
+			var board = gameState.Island.Boards[0];
+			Space targetSpace = board[4];
+			gameState.Adjust(Invader.Explorer,targetSpace,3);
+
+			//  When: activating card
+			var action = card.Bind(spirit, gameState);
+
+			//  Then: Select destination for Explorer 1
+			var dstn1 = board[2];
+			action.Select( dstn1 );
+			Assert.False(action.IsResolved);
+
+			//  Then: Select destination for Explorer 2
+			var dstn2 = board[3];
+			action.Select( dstn2 );
+			Assert.False(action.IsResolved);
+
+			//  Then: Select destination for Explorer 3
+			var dstn3 = board[5];
+			action.Select( dstn3 );
+			Assert.True(action.IsResolved);
+
+			// And: apply doesn't throw an exception
+			action.Apply();
+
+			// check that explore was moved
+//			Assert.Equal("", gameState.GetInvaderGroup(targetSpace).ToString());
+//			Assert.Equal("1E@1", gameState.GetInvaderGroup(dstn1).ToString());
+//			Assert.Equal("1T@2", gameState.GetInvaderGroup(townDestination).ToString());
+		}
 
 		PowerCard Given_RiverPlayingWashAway(string startingPresence="A5") {
 			// A5 is the 'Y' land in the middle
