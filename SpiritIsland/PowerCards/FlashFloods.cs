@@ -16,17 +16,17 @@ namespace SpiritIsland.PowerCards {
 			this.gameState = gameState;
 		}
 
-		public bool IsResolved => targetSpace != null && damage != null;
+		public bool IsResolved => targetSpace != null && damagePlan != null;
 
 		public IOption[] GetOptions(){
 			if(targetSpace == null)
 				return spirit.Presence
 					.SelectMany(p=>p.SpacesWithin(1))
-					.Where(x=>x.Terrain != Terrain.Ocean)
+					.Where(x=>x.IsLand)
 					.Distinct()
 					.ToArray();
 
-			if(damage == null)
+			if(damagePlan == null)
 				return CalcDamageOptions();
 
 			return new IOption[0]; // ???
@@ -37,7 +37,7 @@ namespace SpiritIsland.PowerCards {
 			// !!! ignores already damaged Cities / Towns
 
 			var options = new List<DamagePlan>();
-			var invaderSummary = gameState.GetInvaderSummary(targetSpace);
+			var invaderSummary = gameState.GetInvaderGroup(targetSpace);
 
 			int damage = targetSpace.IsCostal ? 2 : 1;
 			while(damage>0){
@@ -56,7 +56,7 @@ namespace SpiritIsland.PowerCards {
 		}
 
 		public void Apply() {
-			gameState.ApplyDamage(targetSpace,damage);
+			gameState.ApplyDamage(targetSpace,damagePlan);
 		}
 
 		public void Select(IOption option) {
@@ -65,8 +65,8 @@ namespace SpiritIsland.PowerCards {
 				return;
 			}
 			
-			if(damage == null) {
-				damage = (DamagePlan)option;
+			if(damagePlan == null) {
+				damagePlan = (DamagePlan)option;
 				return;
 			}
 
@@ -76,7 +76,7 @@ namespace SpiritIsland.PowerCards {
 		readonly GameState gameState;
 		readonly Spirit spirit;
 		Space targetSpace;
-		DamagePlan damage;
+		DamagePlan damagePlan;
 
 	}
 

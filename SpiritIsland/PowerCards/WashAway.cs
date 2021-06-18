@@ -31,14 +31,8 @@ namespace SpiritIsland.PowerCards {
 		public void Apply() {
 			if(target==null) return;
 
-			// move 1 explorer
-			if(invaderToPush == Invader.Explorer){
-				gameState.RemoveExplorer(target);
-				gameState.AddExplorer(invaderDestination);
-			} else if( invaderToPush == Invader.Town){
-				gameState.RemoveTown(target);
-				gameState.AddTown(invaderDestination);
-			}
+			gameState.Adjust(invaderToPush,target,-1);
+			gameState.Adjust(invaderToPush,invaderDestination,1);
 		}
 
 		public void Select(IOption option) {
@@ -71,7 +65,7 @@ namespace SpiritIsland.PowerCards {
 				.SelectMany(x => x.SpacesWithin(1))
 				.Distinct()
 				.Where(space => {
-					var sum = gameState.GetInvaderSummary(space);
+					var sum = gameState.GetInvaderGroup(space);
 					return sum.HasExplorer || sum.HasTown;  // !!! what about damaged towns???
 				})
 				.ToArray();
@@ -79,7 +73,7 @@ namespace SpiritIsland.PowerCards {
 			target = (Space)opt;
 			//				int invadersInSpace = 1; // !!!gameState.GetInvaderSummary(1);
 			//				remainingInvadersToPush = Math.Min(invadersInSpace,2);
-			targetGroup = gameState.GetInvaderSummary(target);
+			targetGroup = gameState.GetInvaderGroup(target);
 			decisions.Push(ExplorerToPushDecision());
 		}
 		#endregion
@@ -87,10 +81,16 @@ namespace SpiritIsland.PowerCards {
 		#region Select Explorer
 		Decision ExplorerToPushDecision() 
 			=> new Decision { options = ExplorerSelectionOptions, select = SelectExplorer };
-		IOption[] ExplorerSelectionOptions() =>targetGroup
-			.InvaderTypesPresent
-			.Where(i=>i.Label != "City")
-			.ToArray();
+		IOption[] ExplorerSelectionOptions() {
+			return targetGroup
+				.InvaderTypesPresent
+				.Where(i=>i.Label != "City")
+				.ToArray();
+		}
+		//IOption[] ExplorerSelectionOptions() =>targetGroup
+		//	.InvaderTypesPresent
+		//	.Where(i=>i.Label != "City")
+		//	.ToArray();
 		void SelectExplorer(IOption opt) {
 			invaderToPush = (Invader)opt;
 			decisions.Push( SelectExplorerDestination() );
@@ -100,7 +100,9 @@ namespace SpiritIsland.PowerCards {
 		#region Select Explorer Destination
 		Decision SelectExplorerDestination()
 			=> new Decision { options = ExplorerDestinationOptions, select = SelectExplorerDestination };
-		IOption[] ExplorerDestinationOptions() => target.SpacesExactly(1).ToArray(); // !!! Will this return oceans also???
+		IOption[] ExplorerDestinationOptions() => target.SpacesExactly(1)
+			.Where(x=>x.IsLand)
+			.ToArray();
 		void SelectExplorerDestination(IOption opt) => invaderDestination = (Space)opt;
 		#endregion Select Explorer Destination
 

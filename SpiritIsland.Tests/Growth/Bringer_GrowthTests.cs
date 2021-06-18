@@ -42,9 +42,9 @@ namespace SpiritIsland.Tests.Growth {
 			board = LineBoard.MakeBoard();
 			Given_HasPresence(board[5]);
 			gameState.AddDahan(board[6]);
-			gameState.AddExplorer(board[7]);
-			gameState.AddTown(board[8]);
-			gameState.AddCity(board[9]);
+			gameState.Adjust(Invader.Explorer,board[7],1);
+			gameState.Adjust(Invader.Town,board[8],1);
+			gameState.Adjust(Invader.City,board[9],1);
 
 			// add presense range 4 Dahan or Invadors, +2 energy
 			When_Growing(3,Resolve_PlacePresence("T6;T7;T8;T9",0,Track.Energy));

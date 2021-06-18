@@ -79,6 +79,7 @@
   <ItemGroup>
     <Compile Include="Board.cs" />
     <Compile Include="CardNotAvailableException.cs" />
+    <Compile Include="CountDictionary.cs" />
     <Compile Include="DamagePlan.cs" />
     <Compile Include="DefaultDictionary.cs" />
     <Compile Include="GameState.cs" />
@@ -128,6 +129,9 @@
     <Compile Include="Spirits\VitalStrength.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\.editorconfig">
+      <Link>.editorconfig</Link>
+    </None>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>

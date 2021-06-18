@@ -12,7 +12,7 @@ namespace SpiritIsland {
 		#region constructors
 
 		public PlacePresence( int range ){
-			static bool IsNotOcean(Space s,GameState _) => s.Terrain != Terrain.Ocean;
+			static bool IsNotOcean(Space s,GameState _) => s.IsLand;
 			this.range = range;
 			isValid = IsNotOcean;
 		}

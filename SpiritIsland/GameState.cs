@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SpiritIsland {
 
@@ -10,64 +11,73 @@ namespace SpiritIsland {
 			if(spirits.Length==0) throw new ArgumentException("Game must include at least 1 spirit");
 			this.Spirits = spirits;
 		}
-
 		public Island Island { get; set; }
 		public Spirit[] Spirits { get; }
 
 		public void AddBeast( Space space ){ beastCount[space]++; }
 		public void AddBlight( Space space ){ blightCount[space]++; }
 		public void AddDahan( Space space ){ dahanCount[space]++; }
-		public void AddCity( Space space ){ cityCount[space]++; }
-		public void AddExplorer( Space space ){ explorerCount[space]++; }
 
-		public void RemoveExplorer(Space space) { explorerCount[space]--; }
-
-		public void AddTown( Space space ){ townCount[space]++; }
-		public void RemoveTown(Space space) { townCount[space]--; }
 		public void AddWilds( Space space ){ wildsCount[space]++; }
 
 		public int GetDahanOnSpace( Space space ){ return dahanCount[space]; }
 
 		public bool HasDahan( Space space ) => GetDahanOnSpace(space)>0;
-		public bool HasInvaders( Space space ) => explorerCount[space]>0||townCount[space]>0||cityCount[space]>0;
 		public bool HasWilds( Space s ) => wildsCount[s] > 0;
 		public bool HasBlight( Space s ) => blightCount[s] > 0;
 		public bool HasBeasts( Space s ) => beastCount[s] > 0;
 
 
-		readonly DefaultDictionary<Space,int> blightCount = new DefaultDictionary<Space, int>();
-		readonly DefaultDictionary<Space,int> beastCount = new DefaultDictionary<Space, int>();
+		readonly CountDictionary<Space> blightCount = new CountDictionary<Space>();
+		readonly CountDictionary<Space> beastCount = new CountDictionary<Space>();
+		readonly CountDictionary<Space> wildsCount = new CountDictionary<Space>();
 
-		readonly DefaultDictionary<Space,int> cityCount = new DefaultDictionary<Space, int>();
-		readonly DefaultDictionary<Space,int> townCount = new DefaultDictionary<Space, int>();
-		readonly DefaultDictionary<Space,int> explorerCount = new DefaultDictionary<Space, int>();
+		readonly CountDictionary<Space> dahanCount = new CountDictionary<Space>();
 
-		readonly DefaultDictionary<Space,int> dahanCount = new DefaultDictionary<Space, int>();
+		#region Invaders
 
-		readonly DefaultDictionary<Space,int> wildsCount = new DefaultDictionary<Space, int>();
+		readonly CountDictionary<InvaderKey> invaderCount = new CountDictionary<InvaderKey>();
 
-		public InvaderGroup GetInvaderSummary(Space targetSpace) {
-			return damaged ?? InitDamageDict(targetSpace);
+		public bool HasInvaders( Space space ) 
+			=> invaderCount.Keys.Any(k=>k.Space==space);
+
+		public void Adjust(Invader invader, Space space, int count){
+			invaderCount[Key(space,invader)] += count;
 		}
 
-		InvaderGroup InitDamageDict(Space targetSpace) {
-			var dict = new Dictionary<Invader, int> {
-				[Invader.City] = cityCount[targetSpace],
-				[Invader.Town] = townCount[targetSpace],
-				[Invader.Explorer] = explorerCount[targetSpace]
-			};
-			return new InvaderGroup( dict );
+		public InvaderGroup GetInvaderGroup(Space targetSpace) {
+			return 
+				// invaders ?? 
+				InitInvaderGroup(targetSpace);
 		}
 
-		internal void ApplyDamage(Space targetSpace, DamagePlan damagePlan) {
-			damaged = InitDamageDict(targetSpace);
-			damaged.ApplyDamage(damagePlan);
-			this.cityCount[targetSpace] -= damaged.DestroyedCities;
-			this.townCount[targetSpace] -= damaged.DestroyedTowns;
-			this.explorerCount[targetSpace] -= damaged.DestroyedExplorers;
+		public void ApplyDamage(Space targetSpace, DamagePlan damagePlan) {
+			var invaders = InitInvaderGroup(targetSpace);
+			invaders.ApplyDamage(damagePlan);
+
+			foreach(var invader in invaders.Changed)
+				this.invaderCount[Key(targetSpace,invader)] = invaders[invader];
+		}
+		static InvaderKey Key(Space space,Invader invader) => new InvaderKey{ Invader=invader, Space=space};
+
+		struct InvaderKey : IEquatable<InvaderKey> {
+			public Space Space;
+			public Invader Invader;
+			public bool Equals( InvaderKey other ) => Space==other.Space && Invader==other.Invader;
+			public override bool Equals( object obj ) => Equals((InvaderKey)obj);
+			public override int GetHashCode() => Space.GetHashCode() ^ Invader.GetHashCode();
 		}
 
-		InvaderGroup damaged;
+		InvaderGroup InitInvaderGroup(Space targetSpace) {
+			var dict1 = invaderCount.Keys
+				.Where(k=>k.Space==targetSpace)
+				.ToDictionary(k=>k.Invader,k=>invaderCount[k]);
+			return new InvaderGroup( dict1 );
+		}
+
+//		InvaderGroup invaders;
+
+		#endregion
 
 	}
 

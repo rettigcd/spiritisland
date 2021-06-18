@@ -51,7 +51,7 @@ namespace SpiritIsland {
 
 			var growthActions = Presence
 				.Where(p=>p.IsCostal)
-				.Select(p=>p.SpacesExactly(1).Single(o=>o.Terrain==Terrain.Ocean))
+				.Select(p=>p.SpacesExactly(1).Single(o=>o.IsOcean))
 				.Distinct()
 				.Select(o=>new GatherPresence(o))
 				.Cast<GrowthAction>();
@@ -71,7 +71,7 @@ namespace SpiritIsland {
 
 			// Option 3 - gain power card, push 1 presense from each ocean,  add presense on costal land range 1
 			var pushPresenceFromEachOcean = this.Presence
-				.Where(p => p.Terrain == Terrain.Ocean)
+				.Where(p => p.IsOcean)
 				.Distinct() // !!! need test for this line
 				.Select(o=>new PushPresence(o))
 				.Cast<GrowthAction>();
@@ -106,7 +106,7 @@ namespace SpiritIsland {
 
 	public class PlaceInOcean : PlacePresenceBase {
 		public override Space[] Options => gameState.Island.Boards
-			.Select( b=>b.Spaces.Single(s=>s.Terrain==Terrain.Ocean) )
+			.Select( b=>b.Spaces.Single(s=>s.IsOcean) )
 			.ToArray();
 	}
 

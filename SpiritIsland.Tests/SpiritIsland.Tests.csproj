@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <Folder Include="PowerCardProps\" />
-    <Folder Include="PowerCards\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -47,7 +47,7 @@ namespace SpiritIsland {
 		public override GrowthOption[] GetGrowthOptions() {
 
 			bool presenceOrWilds(Space bs,GameState gameState) => this.Presence.Contains(bs) || gameState.HasWilds(bs);
-			bool noBlight(Space bs,GameState gameState) => bs.Terrain != Terrain.Ocean && !gameState.HasBlight(bs);
+			bool noBlight(Space bs,GameState gameState) => bs.IsLand && !gameState.HasBlight(bs);
 
 			return new GrowthOption[]{
 				new GrowthOption(

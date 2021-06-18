@@ -11,7 +11,9 @@ namespace SpiritIsland {
 		#region Game-Static
 		public string Label {get;}
 		public Terrain Terrain {get;}
+		public bool IsOcean => Terrain == Terrain.Ocean;
 		public bool IsCostal { get; set; }
+		public bool IsLand => Terrain != Terrain.Ocean;
 
 		string IOption.Text => Label;
 
@@ -46,9 +48,9 @@ namespace SpiritIsland {
 			_highestDistanceCalculated = 1;
 		}
 
-		void SetNeighbor( Space land ) {
-			_distanceTo.Add( land, 1 ); // @@@ 
-			if(land.Terrain == Terrain.Ocean)
+		void SetNeighbor( Space neighbor ) {
+			_distanceTo.Add( neighbor, 1 ); // @@@ 
+			if(neighbor.IsOcean)
 				this.IsCostal = true;
 		}
 		#endregion

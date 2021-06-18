@@ -1,0 +1,8 @@
+﻿[*.cs]
+
+# IDE0056: Use index operator
+dotnet_diagnostic.IDE0056.severity = silent
+csharp_space_after_keywords_in_control_flow_statements=false
+csharp_space_between_parentheses=false
+csharp_space_between_method_call_parameter_list_parentheses=true
+csharp_space_between_method_declaration_parameter_list_parentheses=true

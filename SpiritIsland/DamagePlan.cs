@@ -8,10 +8,13 @@ namespace SpiritIsland {
 
 			Damage = damage;
 			Invader = invader;
+			DamagedInvader = invader.Damage(damage);
 		}
 
 		public readonly int Damage;
 		public readonly Invader Invader;
+
+		public readonly Invader DamagedInvader;
 
 		public override string ToString() {
 			return Damage + ">" + Invader.Summary;
