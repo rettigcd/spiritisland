@@ -1,4 +1,6 @@
 ﻿using SpiritIsland.PowerCards;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
@@ -33,9 +35,9 @@ namespace SpiritIsland.Tests {
 			// 1 explorer on A4
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[4];
-			while(0<explorerCount--) gameState.Adjust(Invader.Explorer,targetSpace,1);
-			while(0<townCount--) gameState.Adjust(Invader.Town,targetSpace,1);
-			while(0<cityCount--) gameState.Adjust(Invader.City,targetSpace,1);
+			gameState.Adjust(Invader.Explorer,targetSpace,explorerCount);
+			gameState.Adjust(Invader.Town,targetSpace,townCount);
+			gameState.Adjust(Invader.City,targetSpace,cityCount);
 
 			//  When: activating card
 			var action = card.Bind(spirit, gameState);
@@ -73,14 +75,10 @@ namespace SpiritIsland.Tests {
 			var action = card.Bind(spirit, gameState);
 
 			//  Then: card has options of where to push 1 explorer
-			Assert.Equal(
-				targetSpace.SpacesExactly(1).Where(x=>x.IsLand).Select(s=>s.Label).OrderBy(x=>x).Join(",")
-				,action.Options.Select(s=>s.Text).OrderBy(x=>x).Join(",")
-			);
+			Assert_Options(action,targetSpace.SpacesExactly(1).Where(x=>x.IsLand));
 
 		}
 
-		// WashAway: multiple invader types
 		[Fact]
 		public void WashAway_1Target2PushableTypes() {
 			PowerCard card = Given_RiverPlayingWashAway();
@@ -95,21 +93,22 @@ namespace SpiritIsland.Tests {
 			var action = card.Bind(spirit, gameState);
 
 			//  Then: Select Explorer
-			Assert.Equal("E@1,T@2",action.Options.Select(s=>s.Text).OrderBy(x=>x).Join(",") );
-			action.Select(Invader.Explorer);
 			Assert.False(action.IsResolved);
+			Assert_Options(action,"E@1,T@2");
+			action.Select(Invader.Explorer);
 
 			//  Then: Select destination for Explorer
 			var explorerDestination = board[2];
-			action.Select( explorerDestination );
 			Assert.False(action.IsResolved);
+			action.Select( explorerDestination );
 
 			//  Then: Select destination for Town
 			var townDestination = board[3];
+			Assert.False(action.IsResolved);
 			action.Select( townDestination );
-			Assert.True(action.IsResolved);
 
 			// And: apply doesn't throw an exception
+			Assert.True(action.IsResolved);
 			action.Apply();
 
 			// check that explore was moved
@@ -118,7 +117,7 @@ namespace SpiritIsland.Tests {
 			Assert.Equal("1T@2", gameState.GetInvaderGroup(townDestination).ToString());
 		}
 
-		// washAway: damaged towns
+
 		[Fact]
 		public void WashAway_DamagedTown(){
 			PowerCard card = Given_RiverPlayingWashAway();
@@ -209,6 +208,22 @@ namespace SpiritIsland.Tests {
 
 			return card;
 		}
+
+		protected void Assert_Options( IAction action, params string[] expected ) {
+			Assert.Equal(
+				expected.OrderBy(x=>x).Join(",")
+				,action.Options.Select(s=>s.Text).OrderBy(x=>x).Join(",")
+			);
+		}
+
+		protected void Assert_Options(IAction action,IEnumerable<IOption> expected){
+			Assert.Equal(
+				expected.Select(s=>s.Text).OrderBy(x=>x).Join(",")
+				,action.Options.Select(s=>s.Text).OrderBy(x=>x).Join(",")
+			);
+		}
+
+
 
 	}
 
