@@ -48,7 +48,7 @@ namespace SpiritIsland.Tests {
 				,action.Options.Select(s=>s.Text).OrderBy(x=>x).Join(",")
 			);
 			var invaderDestination = board[2];
-			action.Select(action.Options.Single(x => x.Text == invaderDestination.Label));
+			action.Select( invaderDestination.Label );
 			Assert.True(action.IsResolved);
 
 			// And: apply doesn't throw an exception
@@ -134,7 +134,7 @@ namespace SpiritIsland.Tests {
 
 			//  Then: card has options of Explorer or Town
 			var invaderDestination = board[2];
-			action.Select(action.Options.Single(x => x.Text == invaderDestination.Label));
+			action.Select( invaderDestination.Label );
 			Assert.True(action.IsResolved);
 
 			// And: apply doesn't throw an exception

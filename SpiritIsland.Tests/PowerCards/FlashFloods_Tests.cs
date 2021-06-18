@@ -55,7 +55,7 @@ namespace SpiritIsland.Tests {
 			Assert.Equal("1>C@3,1>E@1,1>T@2",damageOptions.Select(x=>x.Text).OrderBy(x=>x).Join(","));
 
 			// When: selecting a damage optin
-			action.Select(damageOptions.Single(x=>x.Text=="1>E@1"));
+			action.Select( "1>E@1" );
 
 			// Then: resolved
 			Assert.True(action.IsResolved);
@@ -110,7 +110,7 @@ namespace SpiritIsland.Tests {
 			Assert.Equal("1>C@3,1>E@1,1>T@2,2>C@3,2>T@2",damageOptions.Select(x=>x.Text).OrderBy(x=>x).Join(","));
 
 			// When: selecting a damage optin
-			action.Select(damageOptions.Single(x=>x.Text=="2>C@3"));
+			action.Select( "2>C@3" );
 
 			// Then: resolved
 			Assert.True(action.IsResolved);

@@ -38,32 +38,16 @@ namespace SpiritIsland.Tests {
 			Assert_CardStatus( card, 0, Speed.Slow, "SWB" );
 		}
 
-		[Theory]
-		[InlineData(0)]
-		[InlineData(1)]
-		public void NoChange(int startingDahan){
-
-			// Given: spirit has 1 presence
-			Space target = spirit.Presence.Single();
-
-			//   And: presence space has dahan
-			Given_AddDahan( startingDahan, target );
-
-			When_PlayingCard();
-
-			Assert.True(action.IsResolved);
-			action.Apply();
-			
-			Assert.Equal(startingDahan, gameState.GetDahanOnSpace(target)); // same as original
-		}
 
 		// 1 target, 0 dahan, 1 to gather       => resolved, dahan gathered, no child
 		// 1 target, 1 dahan, 1 to gather        => resolved, dahan gathered, child!
 		// 1 target, 2 dahan, nothing to gather  => resolved, child!
 		[Theory]
+		[InlineData(0,0,0)]
 		[InlineData(1,0,1)]
 		[InlineData(1,1,3)]
 		[InlineData(1,2,4)]
+		[InlineData(2,1,4)]
 		public void DahanComingSameLand(int startingCount, int dahanToGather, int endingCount) {
 			// Given: spirit has 1 presence
 			Space target = spirit.Presence.Single();
@@ -71,11 +55,17 @@ namespace SpiritIsland.Tests {
 			//   And: presence space has dahan
 			Given_AddDahan( startingCount, target );
 
-			//   And: neighbors have 
+			//   And: neighbors have some dahan
 			Space neighbor = target.SpacesExactly(1).First();
 			Given_AddDahan( dahanToGather, neighbor );
 
 			When_PlayingCard();
+
+			if(dahanToGather>1){
+				Assert_Options(action,"1","2");
+				Assert.False(action.IsResolved);
+				action.Select("2"); // do both
+			}
 
 			Assert.True( action.IsResolved );
 			action.Apply();
@@ -95,6 +85,9 @@ namespace SpiritIsland.Tests {
 			Given_AddDahan( 1, neighbors[i] );
 
 			When_PlayingCard();
+
+			Assert.False(action.IsResolved);
+			action.Select("2");
 
 			// Select 1st land
 			Assert.False( action.IsResolved );
@@ -132,8 +125,6 @@ namespace SpiritIsland.Tests {
 			Assert.Equal( 3, gameState.GetDahanOnSpace( target ) ); // same as original
 
 		}
-
-		// !!! Allow not gathering all availble - Select # to Gather
 
 		void Given_AddDahan( int startingCount, Space target ) {
 			gameState.AddDahan( target, startingCount );

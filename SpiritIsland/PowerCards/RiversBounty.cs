@@ -79,7 +79,22 @@ namespace SpiritIsland.PowerCards
 			int neighboringDahanCount = target.SpacesExactly(1)
 				.Select(gameState.GetDahanOnSpace)
 				.Sum();
-			int numToMove = Math.Min(neighboringDahanCount,2);
+			numToMove = Math.Min(neighboringDahanCount,2);
+			decisions.Push(NumberDecision());
+		}
+
+		#endregion
+
+		#region Select Number of Dahan to Play
+
+		Decision NumberDecision() => new Decision { options = NumberOptions, select = NumberSelection };
+		IOption[] NumberOptions() {
+			List<IOption> items = new List<IOption>();
+			for(int i=1;i<=numToMove;++i) items.Add(new NumberOption(i));
+			return items.ToArray();
+		}
+		void NumberSelection(IOption opt){
+			numToMove = ((NumberOption)opt).Number;
 			while(0<numToMove--)
 				decisions.Push(SourceLandDecision());
 		}
@@ -115,6 +130,8 @@ namespace SpiritIsland.PowerCards
 		readonly GameState gameState;
 
 		Space target;
+		int numToMove;
+
 		readonly List<Space> sources = new List<Space>();
 
 	}
