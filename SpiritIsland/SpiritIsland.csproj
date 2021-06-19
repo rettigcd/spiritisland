@@ -115,7 +115,7 @@
     <Compile Include="PowerCards\MoveInvader.cs" />
     <Compile Include="PowerCards\RiversBounty.cs" />
     <Compile Include="PowerCards\SelectInvaderDestination.cs" />
-    <Compile Include="PowerCards\SelectTownAndExplorersToPush.cs" />
+    <Compile Include="PowerCards\SelectInvadersToPush.cs" />
     <Compile Include="PowerCards\TargetSpaceRangeFromPresence.cs" />
     <Compile Include="PowerCards\WashAway.cs" />
     <Compile Include="Speed.cs" />

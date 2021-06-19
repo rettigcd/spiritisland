@@ -5,20 +5,18 @@ namespace SpiritIsland.PowerCards {
 
 		readonly InvaderGroup invaderGroup;
 		readonly Invader invader;
-		readonly Space from;
 
-		public SelectInvaderDestination(InvaderGroup invaderGroup, Invader invader, Space from){
+		public SelectInvaderDestination(InvaderGroup invaderGroup, Invader invader){
 			this.invaderGroup = invaderGroup;
 			this.invader = invader;
-			this.from = from;
 		}
 
-		public IOption[] Options => from.SpacesExactly(1)
+		public IOption[] Options => invaderGroup.Space.SpacesExactly(1)
 			.Where(x=>x.IsLand)
 			.ToArray();
 
 		public void Select( IOption option,ActionEngine engine) {
-			engine.moves.Add(new MoveInvader(invader, from, (Space)option));
+			engine.moves.Add(new MoveInvader(invader, invaderGroup.Space, (Space)option));
 			invaderGroup[invader]--;
 		}
 

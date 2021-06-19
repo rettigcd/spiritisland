@@ -1,5 +1,5 @@
 ﻿namespace SpiritIsland.PowerCards {
-	public class BaseAction {
+	public class BaseAction : IAction {
 		protected BaseAction(GameState gameState){
 			this.gameState = gameState;
 		}

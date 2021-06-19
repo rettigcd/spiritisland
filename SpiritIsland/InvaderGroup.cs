@@ -2,9 +2,13 @@
 using System.Linq;
 
 namespace SpiritIsland {
+
 	public class InvaderGroup{
 
-		public InvaderGroup(Dictionary<Invader,int> dict){
+		public Space Space { get; }
+
+		public InvaderGroup(Space space,Dictionary<Invader,int> dict){
+			this.Space = space;
 			this.dict = dict;
 			dd = new CountDictionary<Invader>(dict);
 		}
@@ -22,6 +26,7 @@ namespace SpiritIsland {
 		static int CitiesTownsExplorers(Invader invader)
 			=> -(invader.Healthy.Health * 10 + invader.Health);
 
+		/// <summary> Includes damaged invaders.</summary>
 		public IEnumerable<Invader> InvaderTypesPresent => dict
 			.Where(pair => pair.Value > 0 && pair.Key.Health>0)
 			.Select(pair => pair.Key);

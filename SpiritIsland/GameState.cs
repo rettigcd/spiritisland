@@ -72,7 +72,7 @@ namespace SpiritIsland {
 			var dict1 = invaderCount.Keys
 				.Where(k=>k.Space==targetSpace)
 				.ToDictionary(k=>k.Invader,k=>invaderCount[k]);
-			return new InvaderGroup( dict1 );
+			return new InvaderGroup( targetSpace, dict1 );
 		}
 
 //		InvaderGroup invaders;
