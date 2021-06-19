@@ -118,6 +118,7 @@
     <Compile Include="InsufficientEnergyException.cs" />
     <Compile Include="Spirits\Keeper.cs" />
     <Compile Include="Spirits\Lightning.cs" />
+    <Compile Include="Innates\MassiveFlooding.cs" />
     <Compile Include="Spirits\Ocean.cs" />
     <Compile Include="Spirits\RampantGreen.cs" />
     <Compile Include="Growth\Reclaim1.cs" />

@@ -6,7 +6,7 @@ namespace SpiritIsland.Tests {
 
 	public class RiversBounty_Tests : SpiritCards_Tests {
 
-		Board board;
+		readonly Board board;
 
 		public RiversBounty_Tests(){
 			// A5 is the 'Y' land in the middle

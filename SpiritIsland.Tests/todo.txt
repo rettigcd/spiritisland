@@ -1,42 +1,20 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
-can we select presence from both tracks?
+--  River - Minimum Viable Product --
 
+* River - Innate - Massive Flooding
+
+* Invaders - Ravage
+* Invaders - Build
+* Invaders - Explor
+
+* Bonus - Fear
+* Bonus - Detect win
+* Bonus - Blight
+
+* Spirit Stage
+* 
 ----
-(S)	Select Growth Option
-(R)		- Resolve Growth Option
-(S)	Select Cards
-(R)	Resolve Fast Actions
-(R)	(Resolve Fear)
-(-)	Do Invader Actions
-(R)	Resolve Slow
-
-----
-
-! Individual spirits can only grow while in grow phase, which transitions them to select-card phase.
-
-! Test energy is gained following grow.
-
-! separate place-presence into distinct steps, so we can do similar to other power actions, that are distinct steps
-
-select cards
-	! can't purchase more than max # of cards
-	! can't purchase more than energy cost of cards
-	! purchase reduces energy
-	! purchased cards are in playable stack
-
-Card
-	.selectTarget(...)
-	.pullFrom("A1","A5","A5")
-
-Card
-	.selectTarget(...)
-	.pushTo(...)
-
-PlacePresence
-	.selectSource("Energy")
-	.selectTarget("A1");
-
 
 
 

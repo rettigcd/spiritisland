@@ -93,32 +93,31 @@ namespace SpiritIsland.Tests {
 
 			// Then: can target any land within 1 of presence.
 			Assert.False(action.IsResolved);
-			string actionOptions = action.Options.Select(x=>x.Text).OrderBy(x=>x).Join(",");
-			string expectedOptions = presenceSpace.SpacesWithin(1)
-				.Where(s=>s.IsLand)
-				.Select(s=>s.Label)
-				.OrderBy(x=>x)
-				.Join(",");
-			Assert.Equal(expectedOptions,actionOptions);
-
-			// When: selecting 
+			Assert_Options(action,presenceSpace.SpacesWithin(1).Where(s=>s.IsLand));
 			action.Select( targetSpace );
 
 			// Then: can apply 2 points of damage
 			Assert.False(action.IsResolved);
-			var damageOptions = action.Options;
-			Assert.Equal("1>C@3,1>E@1,1>T@2,2>C@3,2>T@2",damageOptions.Select(x=>x.Text).OrderBy(x=>x).Join(","));
-
-			// When: selecting a damage optin
+			Assert_Options(action,"1>C@3","1>E@1","1>T@2","2>C@3","2>T@2");
 			action.Select( "2>C@3" );
 
-			// Then: resolved
-			Assert.True(action.IsResolved);
 
 			// And: apply doesn't throw an exception
+			Assert.True(action.IsResolved);
 			action.Apply();
 			Assert.Equal("1C@1,1T@2,1E@1",gameState.GetInvaderGroup(targetSpace).ToString());
 		}
+
+		[Fact(Skip = "not implemented")]
+		public void OnCoast_Damage2DifferntInvaders(){
+
+		}
+
+		[Fact(Skip = "not implemented")]
+		public void CanDamage_AlreadyDamagedCities(){
+
+		}
+
 
 		[Fact]
 		public void FlashFloods_Stats() {

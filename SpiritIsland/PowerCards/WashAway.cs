@@ -13,7 +13,7 @@ namespace SpiritIsland.PowerCards {
 			this.spirit = spirit;
 			this.gameState = gs;
 
-			decisions.Push(TargetLandDecision());
+			engine.decisions.Push(TargetLandDecision());
 
 			AutoSelectSingleOptions();
 		}
@@ -31,10 +31,8 @@ namespace SpiritIsland.PowerCards {
 		public void Apply() {
 			if(target==null) return;
 
-			foreach(var move in moves){
-				gameState.Adjust(move.Invader,target,-1);
-				gameState.Adjust(move.Invader,move.Destination,1);
-			}
+			foreach(var move in engine.moves)
+				move.Apply( gameState );
 		}
 
 		public void Select(IOption option) {
@@ -44,17 +42,17 @@ namespace SpiritIsland.PowerCards {
 
 		public IOption[] Options {
 			get{
-				if(decisions.Count>0)
-					return decisions.Peek().options();
+				if(engine.decisions.Count>0)
+					return engine.decisions.Peek().Options;
 	
 				return new IOption[0];
 			}
 		}
 
 		void InnerSelect(IOption option) {
-			if(decisions.Count>0){
-				var descision = decisions.Pop();
-				descision.select(option);
+			if(engine.decisions.Count>0){
+				var descision = engine.decisions.Pop();
+				descision.Select(option,engine);
 				return;
 			}
 
@@ -62,7 +60,7 @@ namespace SpiritIsland.PowerCards {
 		}
 
 		#region Select Target Land
-		Decision TargetLandDecision() => new Decision { options = TargetLandOptions, select = SelectTargetLand };
+		Decision TargetLandDecision() => new Decision ( TargetLandOptions, SelectTargetLand );
 		IOption[] TargetLandOptions() =>
 			spirit.Presence
 				.SelectMany(x => x.SpacesWithin(1))
@@ -72,53 +70,20 @@ namespace SpiritIsland.PowerCards {
 					return sum.HasExplorer || sum.HasTown;  // !!! what about damaged towns???
 				})
 				.ToArray();
-		void SelectTargetLand(IOption opt){
+		void SelectTargetLand(IOption opt,ActionEngine engine){
 			target = (Space)opt;
+
 			targetGroup = gameState.GetInvaderGroup(target);
 
 			int invaderCount = targetGroup[Invader.Explorer] 
-						+ targetGroup[Invader.Town]
-						+ targetGroup[Invader.Town1];
+				+ targetGroup[Invader.Town]
+				+ targetGroup[Invader.Town1];
 			int numToMove = Math.Min(invaderCount,3);
+
 			while(0<numToMove--)
-				decisions.Push(ExplorerToPushDecision());
+				engine.decisions.Push(new SelectInvaderToPush(targetGroup,target));
 		}
 		#endregion
-
-		#region Select Explorer
-		Decision ExplorerToPushDecision() 
-			=> new Decision { options = ExplorerSelectionOptions, select = SelectExplorer };
-		
-		IOption[] ExplorerSelectionOptions() {
-			return targetGroup
-				.InvaderTypesPresent
-				.Where(i=>i.Label != "City")
-				.ToArray();
-		}
-		void SelectExplorer(IOption opt) {
-			invaderToPush = (Invader)opt;
-			decisions.Push( SelectExplorerDestination() );
-		}
-		#endregion Select Explorer
-
-		#region Select Explorer Destination
-		Decision SelectExplorerDestination()
-			=> new Decision { options = ExplorerDestinationOptions, select = SelectExplorerDestination };
-		IOption[] ExplorerDestinationOptions() => target.SpacesExactly(1)
-			.Where(x=>x.IsLand)
-			.ToArray();
-		void SelectExplorerDestination(IOption opt){
-			moves.Add(new Move{Invader=invaderToPush, Destination=(Space)opt});
-			targetGroup[invaderToPush]--;
-		}
-		#endregion Select Explorer Destination
-
-		class Decision {
-			public Func<IOption[]> options;
-			public Action<IOption> select;
-		}
-
-		readonly Stack<Decision> decisions = new Stack<Decision>();
 
 		readonly Spirit spirit;
 		readonly GameState gameState;
@@ -126,12 +91,107 @@ namespace SpiritIsland.PowerCards {
 		Space target;
 		InvaderGroup targetGroup;
 
-		Invader invaderToPush;
-		readonly List<Move> moves = new List<Move>();
+		readonly ActionEngine engine = new ActionEngine();
 
-		struct Move {
-			public Invader Invader;
-			public Space Destination;
-		}
 	}
+
+	public class ActionEngine {
+		public readonly List<IAtomicAction> moves = new List<IAtomicAction>();
+		public readonly Stack<IDecision> decisions = new Stack<IDecision>();
+	}
+
+	public interface IDecision {
+		public IOption[] Options { get; }
+		public void Select(IOption option,ActionEngine engine);
+	}
+
+	public class SelectInvaderDestination : IDecision {
+
+		readonly InvaderGroup invaderGroup;
+		readonly Invader invader;
+		readonly Space from;
+
+		public SelectInvaderDestination(InvaderGroup invaderGroup, Invader invader, Space from){
+			this.invaderGroup = invaderGroup;
+			this.invader = invader;
+			this.from = from;
+		}
+
+		public IOption[] Options => from.SpacesExactly(1)
+			.Where(x=>x.IsLand)
+			.ToArray();
+
+		public void Select( IOption option,ActionEngine engine) {
+			engine.moves.Add(new MoveInvader(invader, from, (Space)option));
+			invaderGroup[invader]--;
+		}
+
+	}
+
+	public class SelectInvaderToPush : IDecision {
+
+		readonly InvaderGroup invaderGroup;
+		readonly Space from;
+
+		public SelectInvaderToPush(InvaderGroup invaderGroup,Space from){
+			this.invaderGroup = invaderGroup;
+			this.from = from;
+		}
+
+		public IOption[] Options { get {
+			return invaderGroup
+				.InvaderTypesPresent
+				.Where(i=>i.Label != "City")  //
+				.ToArray();
+		}}
+
+		public void Select( IOption option, ActionEngine engine ) {
+			var invaderToPush = (Invader)option;
+			engine.decisions.Push( new SelectInvaderDestination(
+				invaderGroup,
+				invaderToPush,
+				from
+			) );
+		}
+
+	}
+
+	public interface IAtomicAction {
+		void Apply(GameState gameState);
+	}
+
+	public class MoveInvader : IAtomicAction {
+		public MoveInvader(Invader invader, Space from, Space to){
+			this.invader = invader;
+			this.from = from;
+			this.to = to;
+		}
+		public void Apply( GameState gameState ) {
+			gameState.Adjust(invader,from,-1);
+			gameState.Adjust(invader,to,1);
+		}
+		readonly Invader invader;
+		readonly Space from;
+		readonly Space to;
+	}
+
+	class Decision : IDecision {
+		public Decision( Func<IOption[]> options, Action<IOption,ActionEngine> select ){
+			this.options = options;
+			this.select = select;
+		}
+
+		readonly Func<IOption[]> options;
+		readonly Action<IOption,ActionEngine> select;
+
+		public IOption[] Options => options();
+		public void Select(IOption option, ActionEngine engine){
+			select(option,engine);
+			Selection = option;
+			this.Selected?.Invoke( option );
+		}
+		public IOption Selection {get; private set;}
+		event Action<IOption> Selected;
+	}
+
 }

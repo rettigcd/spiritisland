@@ -36,7 +36,7 @@ namespace SpiritIsland.PowerCards {
 
 		DamagePlan[] CalcDamageOptions() {
 
-			// !!! ignores already damaged Cities / Towns
+			// !!! ignores already damaged Cities (damaged cities don't show up as damaged)
 
 			var options = new List<DamagePlan>();
 			var invaderSummary = gameState.GetInvaderGroup(targetSpace);
