@@ -62,7 +62,7 @@ namespace SpiritIsland.Tests {
 			When_PlayingCard();
 
 			if(dahanToGather>1){
-				Assert_Options(action,"1","2");
+				Assert_Options("1","2");
 				Assert.False(action.IsResolved);
 				action.Select("2"); // do both
 			}
@@ -91,7 +91,7 @@ namespace SpiritIsland.Tests {
 
 			// Select 1st land
 			Assert.False( action.IsResolved );
-			Assert_Options(action,neighbors.Take(dahanToGather));
+			Assert_Options( neighbors.Take(dahanToGather) );
 			action.Select(neighbors[0]);
 
 			Assert.True( action.IsResolved );
@@ -115,7 +115,7 @@ namespace SpiritIsland.Tests {
 
 			// Select 1st land
 			Assert.False( action.IsResolved );
-			Assert_Options(action,targetOptions);
+			Assert_Options( targetOptions );
 			var target = targetOptions[0];
 			action.Select( target );
 

@@ -51,12 +51,12 @@ namespace SpiritIsland {
 				InitInvaderGroup(targetSpace);
 		}
 
-		public void ApplyDamage(Space targetSpace, DamagePlan damagePlan) {
-			var invaders = InitInvaderGroup(targetSpace);
+		public void ApplyDamage(DamagePlan damagePlan) {
+			var invaders = InitInvaderGroup(damagePlan.Space);
 			invaders.ApplyDamage(damagePlan);
 
 			foreach(var invader in invaders.Changed)
-				this.invaderCount[Key(targetSpace,invader)] = invaders[invader];
+				this.invaderCount[Key(damagePlan.Space,invader)] = invaders[invader];
 		}
 		static InvaderKey Key(Space space,Invader invader) => new InvaderKey{ Invader=invader, Space=space};
 

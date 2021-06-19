@@ -36,31 +36,15 @@ namespace SpiritIsland.Tests {
 			//  When: activating flash flood
 			var action = (FlashFloods)card.Bind(spirit,gameState);
 
-			// Then: can target any land within 1 of presence.
-			Assert.False(action.IsResolved);
-			string actionOptions = action.Options.Select(x=>x.Text).OrderBy(x=>x).Join(",");
-			string expectedOptions = presenceSpace.SpacesWithin(1)
-				.Where(s=>s.IsLand)
-				.Select(s=>s.Label)
-				.OrderBy(x=>x)
-				.Join(",");
-			Assert.Equal(expectedOptions,actionOptions);
-
-			// When: selecting 
-			action.Select( targetSpace );
-
-			// Then: can apply 1 points of damage
-			Assert.False(action.IsResolved);
-			var damageOptions = action.Options;
-			Assert.Equal("1>C@3,1>E@1,1>T@2",damageOptions.Select(x=>x.Text).OrderBy(x=>x).Join(","));
+			// Then: Auto selecting only target space avaialbe
 
 			// When: selecting a damage optin
-			action.Select( "1>E@1" );
+			Assert.False(action.IsResolved);
+			Assert_Options( "C@3","E@1","T@2" );
+			action.Select( "E@1" );
 
-			// Then: resolved
+			// Then: resolved => Applu
 			Assert.True(action.IsResolved);
-
-			// And: apply doesn't throw an exception
 			action.Apply();
 			Assert.Equal("1C@3,1T@2",gameState.GetInvaderGroup(targetSpace).ToString());
 		}
@@ -89,17 +73,17 @@ namespace SpiritIsland.Tests {
 			Assert.Contains(card,spirit.UnresolvedActions.OfType<PowerCard>().ToList()); // is fast
 
 			//  When: activating flash flood
-			var action = (FlashFloods)card.Bind(spirit,gameState);
+			action = (FlashFloods)card.Bind(spirit,gameState);
 
-			// Then: can target any land within 1 of presence.
-			Assert.False(action.IsResolved);
-			Assert_Options(action,presenceSpace.SpacesWithin(1).Where(s=>s.IsLand));
-			action.Select( targetSpace );
+			//// Then: can target any land within 1 of presence.
+			//Assert.False(action.IsResolved);
+			//Assert_Options(presenceSpace.SpacesWithin(1).Where(s=>s.IsLand));
+			//action.Select( targetSpace );
 
 			// Then: can apply 2 points of damage
 			Assert.False(action.IsResolved);
-			Assert_Options(action,"1>C@3","1>E@1","1>T@2","2>C@3","2>T@2");
-			action.Select( "2>C@3" );
+			Assert_Options("C@3","E@1","T@2");
+			action.Select( "C@3" );
 
 
 			// And: apply doesn't throw an exception

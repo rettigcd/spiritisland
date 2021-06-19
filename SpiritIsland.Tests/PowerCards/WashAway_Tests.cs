@@ -75,7 +75,7 @@ namespace SpiritIsland.Tests {
 			var action = card.Bind(spirit, gameState);
 
 			//  Then: card has options of where to push 1 explorer
-			Assert_Options(action,targetSpace.SpacesExactly(1).Where(x=>x.IsLand));
+			Assert_Options( targetSpace.SpacesExactly(1).Where(x=>x.IsLand) );
 
 		}
 
@@ -94,7 +94,7 @@ namespace SpiritIsland.Tests {
 
 			//  Then: Select Explorer
 			Assert.False(action.IsResolved);
-			Assert_Options(action,"E@1,T@2");
+			Assert_Options("E@1,T@2");
 			action.Select(Invader.Explorer);
 
 			//  Then: Select destination for Explorer
@@ -117,7 +117,6 @@ namespace SpiritIsland.Tests {
 			Assert.Equal("1T@2", gameState.GetInvaderGroup(townDestination).ToString());
 		}
 
-
 		[Fact]
 		public void DamagedTown(){
 			Given_RiverPlayingWashAway();
@@ -126,7 +125,7 @@ namespace SpiritIsland.Tests {
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[4];
 			gameState.Adjust(Invader.Town,targetSpace,1);
-			gameState.ApplyDamage(targetSpace,new DamagePlan(1,Invader.Town));
+			gameState.ApplyDamage(new DamagePlan(targetSpace,1,Invader.Town));
 
 			//  When: activating card
 			var action = card.Bind(spirit, gameState);

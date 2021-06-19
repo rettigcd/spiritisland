@@ -48,18 +48,18 @@ namespace SpiritIsland.Tests {
 			action = card.Bind( spirit, gameState );
 		}
 
-		protected void Assert_Options( IAction action, params string[] expected ) {
+		protected void Assert_Options( params string[] expected ) {
+			if(action==null) throw new System.InvalidOperationException("action is null");
 			Assert.Equal(
 				expected.OrderBy(x=>x).Join(",")
 				,action.Options.Select(s=>s.Text).OrderBy(x=>x).Join(",")
 			);
 		}
 
-		protected void Assert_Options(IAction action,IEnumerable<IOption> expected){
-			Assert.Equal(
-				expected.Select(s=>s.Text).OrderBy(x=>x).Join(",")
-				,action.Options.Select(s=>s.Text).OrderBy(x=>x).Join(",")
-			);
+		protected void Assert_Options( IEnumerable<IOption> expected ){
+			string expectedStr = expected.Select(s=>s.Text).OrderBy(x=>x).Join(",");
+			string actualOptions = action.Options.Select(s=>s.Text).OrderBy(x=>x).Join(",");
+			Assert.Equal( expectedStr, actualOptions);
 		}
 
 	}
