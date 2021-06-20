@@ -16,9 +16,12 @@ namespace SpiritIsland.PowerCards {
 			.ToArray();
 
 		public void Select( IOption option,ActionEngine engine) {
-			engine.moves.Add(new MoveInvader(invader, invaderGroup.Space, (Space)option));
+			engine.actions.Add(new MoveInvader(invader, invaderGroup.Space, (Space)option));
 			invaderGroup[invader]--;
 		}
+
+		public string Prompt => $"Select land to push {invader.Summary} to.";
+
 
 	}
 

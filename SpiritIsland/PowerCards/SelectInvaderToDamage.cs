@@ -10,6 +10,8 @@ namespace SpiritIsland.PowerCards {
 			this.maxDamageAvailable = maxDamageAvailable;
 		}
 
+		public string Prompt => $"Select invader to damage.";
+
 		public IOption[] Options => group.InvaderTypesPresent.ToArray();
 
 		public void Select( IOption option, ActionEngine engine ) {
@@ -21,7 +23,7 @@ namespace SpiritIsland.PowerCards {
 			// apply it to working-copy 
 			group[plan.Invader]--;
 			group[plan.DamagedInvader]++;
-			engine.moves.Add(plan);
+			engine.actions.Add(plan);
 
 			// find recipient for remaining damage
 			int remainingDamage = maxDamageAvailable - maxDamageToThisInvader;

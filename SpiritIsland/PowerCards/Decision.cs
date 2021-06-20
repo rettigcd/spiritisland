@@ -17,6 +17,9 @@ namespace SpiritIsland.PowerCards {
 			this.Selected?.Invoke( option );
 		}
 		public IOption Selection {get; private set;}
+
+		public string Prompt => "";
+
 		event Action<IOption> Selected;
 	}
 

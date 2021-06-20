@@ -20,6 +20,8 @@ namespace SpiritIsland.PowerCards {
 			// before we can accurately calculate which are reamining.
 		}
 
+		public string Prompt => $"Select invader to push.";
+
 		public IOption[] Options =>
 			invaderGroup
 				.InvaderTypesPresent

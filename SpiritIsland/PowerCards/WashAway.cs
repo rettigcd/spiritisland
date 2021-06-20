@@ -10,7 +10,6 @@
 				,HasExplorersOrInvaders // Filter
 				,Push3FromSpace
 			) );
-			AutoSelectSingleOptions();
 		}
 
 		bool HasExplorersOrInvaders(Space space){

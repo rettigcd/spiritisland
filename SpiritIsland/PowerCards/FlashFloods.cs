@@ -16,7 +16,6 @@ namespace SpiritIsland.PowerCards {
 				HasInvaders,
 				SelectTarget
 			));
-			this.AutoSelectSingleOptions();
 		}
 
 		bool HasInvaders(Space space){

@@ -21,6 +21,8 @@ namespace SpiritIsland.PowerCards {
 				.ToArray();
 		}
 
+		public string Prompt => $"Select target space.";
+
 		public IOption[] Options { get; }
 
 		public void Select( IOption option, ActionEngine engine ) {

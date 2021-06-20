@@ -34,7 +34,7 @@ namespace SpiritIsland.Tests {
 			Assert.Contains(card,spirit.UnresolvedActions.OfType<PowerCard>().ToList()); // is fast
 
 			//  When: activating flash flood
-			var action = (FlashFloods)card.Bind(spirit,gameState);
+			action = (FlashFloods)card.Bind(spirit,gameState);
 
 			// Then: Auto selecting only target space avaialbe
 

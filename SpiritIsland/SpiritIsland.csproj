@@ -103,6 +103,7 @@
     <Compile Include="InvaderGroup.cs" />
     <Compile Include="Island.cs" />
     <Compile Include="PowerCards\ActionEngine.cs" />
+    <Compile Include="PowerCards\AddDahan.cs" />
     <Compile Include="PowerCards\BaseAction.cs" />
     <Compile Include="PowerCards\BoonOfVigor.cs" />
     <Compile Include="InnateAction.cs" />
@@ -110,10 +111,14 @@
     <Compile Include="PowerCards\FlashFloods.cs" />
     <Compile Include="PowerCard.cs" />
     <Compile Include="PowerCardAttribute.cs" />
+    <Compile Include="PowerCards\GatherDahanCtx.cs" />
     <Compile Include="PowerCards\IAtomicAction.cs" />
     <Compile Include="PowerCards\IDecision.cs" />
+    <Compile Include="PowerCards\MoveDahan.cs" />
     <Compile Include="PowerCards\MoveInvader.cs" />
+    <Compile Include="PowerCards\NullOption.cs" />
     <Compile Include="PowerCards\RiversBounty.cs" />
+    <Compile Include="PowerCards\Select1DahanSource.cs" />
     <Compile Include="PowerCards\SelectInvaderDestination.cs" />
     <Compile Include="PowerCards\SelectInvadersToPush.cs" />
     <Compile Include="PowerCards\SelectInvaderToDamage.cs" />

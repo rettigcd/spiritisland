@@ -16,9 +16,8 @@ namespace SpiritIsland.Tests {
 			board = Board.BuildBoardA();
 			gameState.Island = new Island(board);
 
-			//   And: Presence on A5 (city/costal)
-			var presenceSpace = board.Spaces.Single(s=>s.Label=="A4");
-			spirit.Presence.Add(presenceSpace);
+			//   And: Presence on A4
+			spirit.Presence.Add(board[4]);
 
 			//   And: Purchased WashAway
 			card = spirit.AvailableCards.Single(c => c.Name == RiversBounty.Name);
@@ -61,12 +60,6 @@ namespace SpiritIsland.Tests {
 
 			When_PlayingCard();
 
-			if(dahanToGather>1){
-				Assert_Options("1","2");
-				Assert.False(action.IsResolved);
-				action.Select("2"); // do both
-			}
-
 			Assert.True( action.IsResolved );
 			action.Apply();
 
@@ -78,16 +71,13 @@ namespace SpiritIsland.Tests {
 			// Given: spirit has 1 presence
 			Space target = spirit.Presence.Single();
 
-			//   And: neighbors have 
+			//   And: neighbors have 1 dahan each 
 			const int dahanToGather = 2;
 			var neighbors = target.SpacesExactly(1).ToArray();
 			for(int i=0;i<dahanToGather;++i)
-			Given_AddDahan( 1, neighbors[i] );
+				Given_AddDahan( 1, neighbors[i] );
 
 			When_PlayingCard();
-
-			Assert.False(action.IsResolved);
-			action.Select("2");
 
 			// Select 1st land
 			Assert.False( action.IsResolved );
@@ -102,14 +92,13 @@ namespace SpiritIsland.Tests {
 
 		[Fact]
 		public void TwoPresenceSpaces(){
-			// Given: spirit has 2 presence on non-touching spaces
+			// Given: spirit has presence on A4 && A8
 			spirit.Presence.Add(board[8]);
 			var targetOptions = spirit.Presence.Distinct().ToArray();
 			Assert.Equal(2,targetOptions.Length);
 
-			//   And: both presence have 2 dahan already in them
-			foreach(var space in targetOptions)
-				Given_AddDahan(2,space);
+			//   And: 2 dahan in A5 (touches both)
+			Given_AddDahan(2,board[5]);
 
 			When_PlayingCard();
 

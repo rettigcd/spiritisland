@@ -72,7 +72,7 @@ namespace SpiritIsland.Tests {
 			gameState.Adjust(Invader.Explorer,targetSpace,1);
 
 			//  When: activating card
-			var action = card.Bind(spirit, gameState);
+			action = card.Bind(spirit, gameState);
 
 			//  Then: card has options of where to push 1 explorer
 			Assert_Options( targetSpace.SpacesExactly(1).Where(x=>x.IsLand) );
@@ -90,7 +90,7 @@ namespace SpiritIsland.Tests {
 			gameState.Adjust(Invader.Town,targetSpace,1);
 
 			//  When: activating card
-			var action = card.Bind(spirit, gameState);
+			action = card.Bind(spirit, gameState);
 
 			//  Then: Select Explorer
 			Assert.False(action.IsResolved);
