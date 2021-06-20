@@ -25,7 +25,7 @@ namespace SpiritIsland.Tests.Growth {
 			// +1 presense range 1, +3 energy
 
 			Given_HasPresence( board[1] );
-			When_Growing( 2, Resolve_PlacePresence("A1;A2;A4;A5;A6") );
+			When_Growing( 2, Resolve_PlacePresence( "A1;A2;A4;A5;A6") );
 
 			Assert.Equal(1,spirit.EnergyPerTurn);
 			Assert_HasEnergy( 3 + 1 ); // 1 from energy track
@@ -36,7 +36,7 @@ namespace SpiritIsland.Tests.Growth {
 			// +1 presense range 2, +1 prsense range 0
 			Given_HasPresence( board[3] ); 
 
-			When_Growing( 1, Resolve_PlacePresence("A1;A2;A3;A4;A5",0) );
+			When_Growing( 1, Resolve_PlacePresence( "A1;A2;A3;A4;A5",0) );
 
 			Assert_HasEnergy( 0 );
 

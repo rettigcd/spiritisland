@@ -32,8 +32,9 @@
 		public string Summary => Initial+"@"+Health; // C@3, T@2
 
 		public Invader Damage(int level){
-			if(level>Health) throw new System.ArgumentOutOfRangeException();
-			return typeArr[Health-level];
+			return level > Health 
+				? throw new System.ArgumentOutOfRangeException() 
+				: typeArr[Health-level];
 		}
 
 		public int Health {get;}

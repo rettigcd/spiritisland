@@ -62,10 +62,10 @@ namespace SpiritIsland.Tests {
 
 		#endregion
 
-		Board BoardA => Board.BuildBoardA();
-		Board BoardB => Board.BuildBoardB();
-		Board BoardC => Board.BuildBoardC();
-		Board BoardD => Board.BuildBoardD();
+		static Board BoardA => Board.BuildBoardA();
+		static Board BoardB => Board.BuildBoardB();
+		static Board BoardC => Board.BuildBoardC();
+		static Board BoardD => Board.BuildBoardD();
 
 		[Fact]
 		public void PlaceTiles() {
@@ -83,7 +83,7 @@ namespace SpiritIsland.Tests {
 
 		[Fact]
 		public void Island_1Board(){
-			new Island(BoardC);
+			var _ = new Island(BoardC);
 			// no connectivity to test
 		}
 
@@ -92,7 +92,7 @@ namespace SpiritIsland.Tests {
 			var boardC = BoardC;
 			var boardD = BoardD;
 
-			new Island( boardC, boardD );
+			var _ = new Island( boardC, boardD );
 
 			// The are properly connected as a 2-board island
 			Assert_BoardSpacesTouch( boardC[3], boardD[6] ); 
@@ -116,7 +116,7 @@ namespace SpiritIsland.Tests {
 			var c = Board.BuildBoardC();
 			var d = Board.BuildBoardD();
 
-			new Island(b,c,d);
+			var _ = new Island(b,c,d);
 
 			Assert_BoardSpacesTouch( b[3], c[8] );
 			Assert_BoardSpacesTouch( b[3], c[7] );
@@ -143,7 +143,7 @@ namespace SpiritIsland.Tests {
 			var c = BoardC;
 			var d = BoardD;
 
-			new Island(a,b,c,d);
+			var _ = new Island(a, b, c, d);
 
 			Assert_BoardSpacesTouch( a[3], b[1] );
 			Assert_BoardSpacesTouch( a[3], b[6] );
@@ -171,7 +171,7 @@ namespace SpiritIsland.Tests {
 
 		#region private
 
-		void Assert_CanReachSpaceWithNHops( Space source, int distance, params Space[] needles ) {
+		static void Assert_CanReachSpaceWithNHops( Space source, int distance, params Space[] needles ) {
 			Assert.Equal( needles, source.SpacesExactly( distance ) );
 		}
 

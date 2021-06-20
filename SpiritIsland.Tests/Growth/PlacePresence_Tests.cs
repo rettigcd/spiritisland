@@ -16,7 +16,7 @@ namespace SpiritIsland.Tests.Growth {
 				};
 			}
 			protected override int[] EnergySequence => new int[] {0,0,0};
-			public List<GrowthAction> actions = new List<GrowthAction>();
+			public List<GrowthAction> actions = new();
 		}
 
 		public PlacePresence_Tests():base(new TestSpirit()){

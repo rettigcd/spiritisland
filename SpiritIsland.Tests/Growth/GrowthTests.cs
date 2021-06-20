@@ -7,7 +7,7 @@ namespace SpiritIsland.Tests.Growth {
 
 	public class GrowthTests {
 
-		public static Dictionary<Element,char> ElementChars = new Dictionary<Element, char>{
+		public static readonly Dictionary<Element,char> ElementChars = new() {
 				[Element.Air] = 'A',
 				[Element.Animal] = 'B',
 				[Element.Earth] = 'E',
@@ -149,7 +149,7 @@ namespace SpiritIsland.Tests.Growth {
 		//	Track source = Track.Energy
 		//) => Resolve_PlacePresence(placeOptions,0,source);
 
-		protected SpyOnPlacePresence Resolve_PlacePresence( 
+		protected static SpyOnPlacePresence Resolve_PlacePresence( 
 			string placeOptions, 
 			int focus=0, 
 			Track source = Track.Energy

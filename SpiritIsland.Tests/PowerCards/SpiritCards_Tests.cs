@@ -22,7 +22,7 @@ namespace SpiritIsland.Tests {
 			gameState = new GameState(spirits);
 		}
 
-		protected void Given_PurchasedFakePowercards(Spirit otherSpirit, int expectedEnergyBonus) {
+		protected static void Given_PurchasedFakePowercards(Spirit otherSpirit, int expectedEnergyBonus) {
 			for (int i = 0; i < expectedEnergyBonus; ++i) {
 				var otherCard = new PowerCard("Fake-" + i, 0, Speed.Slow);
 				otherSpirit.ActiveCards.Add(otherCard);
@@ -30,7 +30,7 @@ namespace SpiritIsland.Tests {
 			}
 		}
 
-		protected void Assert_CardStatus( PowerCard card, int expectedCost, Speed expectedSpeed, string expectedElements ) {
+		static protected void Assert_CardStatus( PowerCard card, int expectedCost, Speed expectedSpeed, string expectedElements ) {
 			Assert.Equal( expectedCost, card.Cost );
 			Assert.Equal( expectedSpeed, card.Speed );
 

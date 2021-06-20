@@ -51,7 +51,7 @@ namespace SpiritIsland.Tests.Growth {
 			Given_HasPresence( board[3] );
 			Given_BlightEverywhereExcept7();
 
-			When_Growing( 2, Resolve_PlacePresence("A7") );
+			When_Growing( 2, Resolve_PlacePresence( "A7") );
 
 			Assert_AllCardsAvailableToPlay();   // A
 			Assert_HasEnergy( 0 );            // A & D  // !!! can you spend energy you don't have??

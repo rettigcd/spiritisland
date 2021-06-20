@@ -13,7 +13,7 @@ namespace SpiritIsland.Tests.Growth {
 			Given_HalfOfPowercardsPlayed();
 			Given_HasPresence( board[3] );
 
-			When_Growing( 0, Resolve_PlacePresence("A1;A2;A3;A4;A5") );
+			When_Growing( 0, Resolve_PlacePresence( "A1;A2;A3;A4;A5") );
 
 			this.Assert_AllCardsAvailableToPlay();
 
@@ -24,7 +24,7 @@ namespace SpiritIsland.Tests.Growth {
 			// +1 power card, +1 presense range 0
 			Given_HasPresence( board[4] );
 
-			When_Growing( 1, Resolve_PlacePresence("A4") );
+			When_Growing( 1, Resolve_PlacePresence( "A4") );
 
 			Assert_GainPowercard( 1 );
 		}
@@ -33,7 +33,7 @@ namespace SpiritIsland.Tests.Growth {
 		public void PresenseAndEnergy(){
 			// +1 presence range 1, +2 energy
 			Given_HasPresence( board[1] );
-			When_Growing(2, Resolve_PlacePresence("A1;A2;A4;A5;A6",0,Track.Energy));
+			When_Growing(2, Resolve_PlacePresence( "A1;A2;A4;A5;A6",0,Track.Energy));
 			Assert.Equal(3,spirit.EnergyPerTurn);
 			Assert_HasEnergy(3+2);
 		}

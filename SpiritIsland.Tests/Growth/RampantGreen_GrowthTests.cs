@@ -18,7 +18,7 @@ namespace SpiritIsland.Tests.Growth {
 			Given_HalfOfPowercardsPlayed();
 			Given_HasPresence( board[2] );
 
-			When_Growing( 0, Resolve_PlacePresence("A2;A3;A5") );
+			When_Growing( 0, Resolve_PlacePresence( "A2;A3;A5") );
 
 			Assert_AllCardsAvailableToPlay();
 			Assert_GainPowercard( 1 );
@@ -55,7 +55,7 @@ namespace SpiritIsland.Tests.Growth {
 			// +1 power card, +3 energy
 			Given_HasPresence( board[2] );
 
-			When_Growing( 2, Resolve_PlacePresence("A2;A3;A5") );
+			When_Growing( 2, Resolve_PlacePresence( "A2;A3;A5") );
 
 			Assert.Equal(1,spirit.EnergyPerTurn);
 			Assert_HasEnergy(3+1);

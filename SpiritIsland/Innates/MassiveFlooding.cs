@@ -1,4 +1,7 @@
-﻿namespace SpiritIsland {
+﻿using SpiritIsland.PowerCards;
+using System.Collections.Generic;
+
+namespace SpiritIsland {
 	class MassiveFlooding : InnatePower {
 
 		public void Init(Spirit _){
@@ -29,6 +32,24 @@
 		public void Apply() {
 		}
 
+	}
+
+	class SelectInnate : IDecision {
+
+		public SelectInnate(){
+//			var innate1Elements = new Dictionary<Element,int>{ [Element.Sun] = 1, [Element.Water] = 2 };
+//			var innate2Elements = new Dictionary<Element,int>{ [Element.Sun] = 2, [Element.Water] = 3 };
+//			var innate3Elements = new Dictionary<Element,int>{ [Element.Sun] = 3, [Element.Water] = 4, [Element.Earth] = 1 };
+
+		}
+
+		public string Prompt => throw new System.NotImplementedException();
+
+		public IOption[] Options => throw new System.NotImplementedException();
+
+		public void Select( IOption option, ActionEngine engine ) {
+			throw new System.NotImplementedException();
+		}
 	}
 
 }

@@ -48,10 +48,9 @@ namespace SpiritIsland.PowerCards {
 			}
 		}
 		IOption[] GetOptionsSkippingAutoSelectCheck(){
-			if(engine.decisions.Count>0)
-				return engine.decisions.Peek().Options;
-	
-			return new IOption[0];
+			return engine.decisions.Count>0 
+				? engine.decisions.Peek().Options 
+				: new IOption[0];
 		}
 
 		protected void InnerSelect(IOption option) {

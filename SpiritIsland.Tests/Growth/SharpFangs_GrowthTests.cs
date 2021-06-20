@@ -25,7 +25,7 @@ namespace SpiritIsland.Tests.Growth {
 			// b) add a presense to jungle or a land with beasts ( range 3)
 			Given_HalfOfPowercardsPlayed();
 
-			When_Growing( 0, Resolve_PlacePresence("A3;A7;A8") );
+			When_Growing( 0, Resolve_PlacePresence( "A3;A7;A8") );
 
 			Assert_AllCardsAvailableToPlay();  // A
 			Assert_HasEnergy( -1 + 1);           // A  -- ??? !!! can we grow if we don't have the energy
@@ -68,7 +68,7 @@ namespace SpiritIsland.Tests.Growth {
 			// b) add a presense to jungle or a land with beasts ( range 3)
 			// c) gain power card, gain +1 energy
 
-			When_Growing( 3, Resolve_PlacePresence("A3;A7;A8") );
+			When_Growing( 3, Resolve_PlacePresence( "A3;A7;A8") );
 
 			Assert_BoardPresenceIs("A2A3");    // B
 			Assert_HasEnergy( 1 + 1 );            // C
@@ -80,7 +80,7 @@ namespace SpiritIsland.Tests.Growth {
 			// b) add a presense to jungle or a land with beasts ( range 3)
 			// d) +3 energy
 
-			When_Growing( 4, Resolve_PlacePresence("A3;A7;A8") );
+			When_Growing( 4, Resolve_PlacePresence( "A3;A7;A8") );
 
 			Assert_BoardPresenceIs("A2A3");    // B
 			Assert_HasEnergy( 3 + 1 );            // D
