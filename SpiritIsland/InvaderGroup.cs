@@ -41,7 +41,7 @@ namespace SpiritIsland {
 			set{  dd[i] = value; }
 		}
 
-		public bool HasCity => dict.ContainsKey(Invader.City);
+		public bool HasCity => dict.ContainsKey(Invader.City) || dict.ContainsKey(Invader.City2) || dict.ContainsKey(Invader.City1);
 		public bool HasTown => dict.ContainsKey(Invader.Town) || dict.ContainsKey(Invader.Town1);
 		public bool HasExplorer => dict.ContainsKey(Invader.Explorer);
 

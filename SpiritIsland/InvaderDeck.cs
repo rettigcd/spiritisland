@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 
-namespace SpiritIsland.Tests.Invaders {
+namespace SpiritIsland.Invaders {
 	public class InvaderDeck {
 
 		public static readonly ImmutableList<InvaderCard> Level1Cards = ImmutableList.Create(
@@ -51,7 +51,7 @@ namespace SpiritIsland.Tests.Invaders {
 			cards = all.ToArray();
 		}
 
-		static readonly Random rng = new(); 
+		static readonly Random rng = new Random(); 
 		static void Shuffle<T>(List<T> list) {
 			int n = list.Count;
 			while (n > 1) {

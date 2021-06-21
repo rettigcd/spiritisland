@@ -25,7 +25,7 @@ namespace SpiritIsland.Tests {
 			gameState.Adjust(Invader.City,targetSpace,1);
 			gameState.Adjust(Invader.Town,targetSpace,1);
 			gameState.Adjust(Invader.Explorer,targetSpace,1);
-			Assert.Equal("1C@3,1T@2,1E@1",gameState.GetInvaderGroup(targetSpace).ToString());
+			Assert.Equal("1C@3,1T@2,1E@1",gameState.InvadersOn(targetSpace).ToString());
 
 			//   And: Purchased FlashFloods
 			var card = spirit.AvailableCards.Single(c=>c.Name == FlashFloods.Name);
@@ -46,7 +46,7 @@ namespace SpiritIsland.Tests {
 			// Then: resolved => Applu
 			Assert.True(action.IsResolved);
 			action.Apply();
-			Assert.Equal("1C@3,1T@2",gameState.GetInvaderGroup(targetSpace).ToString());
+			Assert.Equal("1C@3,1T@2",gameState.InvadersOn(targetSpace).ToString());
 		}
 
 		[Fact]
@@ -64,7 +64,7 @@ namespace SpiritIsland.Tests {
 			gameState.Adjust(Invader.City,targetSpace,1);
 			gameState.Adjust(Invader.Town,targetSpace,1);
 			gameState.Adjust(Invader.Explorer,targetSpace,1);
-			Assert.Equal("1C@3,1T@2,1E@1",gameState.GetInvaderGroup(targetSpace).ToString());
+			Assert.Equal("1C@3,1T@2,1E@1",gameState.InvadersOn(targetSpace).ToString());
 
 			//   And: Purchased FlashFloods
 			var card = spirit.AvailableCards.Single(c=>c.Name == FlashFloods.Name);
@@ -89,18 +89,14 @@ namespace SpiritIsland.Tests {
 			// And: apply doesn't throw an exception
 			Assert.True(action.IsResolved);
 			action.Apply();
-			Assert.Equal("1C@1,1T@2,1E@1",gameState.GetInvaderGroup(targetSpace).ToString());
+			Assert.Equal("1C@1,1T@2,1E@1",gameState.InvadersOn(targetSpace).ToString());
 		}
 
-		[Fact(Skip = "not implemented")]
-		public void OnCoast_Damage2DifferntInvaders(){
+		//[Fact(Skip = "not implemented")]
+		//public void OnCoast_Damage2DifferntInvaders(){}
 
-		}
-
-		[Fact(Skip = "not implemented")]
-		public void CanDamage_AlreadyDamagedCities(){
-
-		}
+		//[Fact(Skip = "not implemented")]
+		//public void CanDamage_AlreadyDamagedCities(){}
 
 
 		[Fact]

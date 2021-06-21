@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace SpiritIsland.Tests.Invaders {
+namespace SpiritIsland.Invaders {
 	public class InvaderCard{
-		public static readonly InvaderCard Costal = new();
+		public static readonly InvaderCard Costal = new InvaderCard();
 		
 		public string Text { get; }
 		public Func<Space,bool> Matches { get; }

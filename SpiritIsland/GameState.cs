@@ -1,4 +1,5 @@
 ﻿
+using SpiritIsland.Invaders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,7 +46,7 @@ namespace SpiritIsland {
 			invaderCount[Key(space,invader)] += count;
 		}
 
-		public InvaderGroup GetInvaderGroup(Space targetSpace) {
+		public InvaderGroup InvadersOn(Space targetSpace) {
 			return 
 				// invaders ?? 
 				InitInvaderGroup(targetSpace);
@@ -75,7 +76,31 @@ namespace SpiritIsland {
 			return new InvaderGroup( targetSpace, dict1 );
 		}
 
-//		InvaderGroup invaders;
+		public void InitBoards() {
+			foreach(var board in Island.Boards){
+				foreach(var space in board.Spaces){
+					var counts = space.StartUpCounts;
+					this.Adjust(Invader.City,space,counts.Cities);
+					this.Adjust(Invader.Town,space,counts.Towns);
+					this.Adjust(Invader.Explorer,space,counts.Explorers);
+				}
+			}
+		}
+
+		public void Explore( InvaderCard invaderCard ) {
+			bool HasTownOrCity(Space space){
+				var invaders = InvadersOn(space);
+				return invaders.HasTown || invaders.HasCity;
+			}
+			var exploredSpaces = Island.Boards.SelectMany(board=>board.Spaces)
+				.Where(invaderCard.Matches)
+				.Where(space=> space.IsCostal
+						|| space.SpacesWithin(1).Any(HasTownOrCity)
+				);
+			foreach(var space in exploredSpaces)
+				Adjust( Invader.Explorer, space, 1 );
+		}
+
 
 		#endregion
 

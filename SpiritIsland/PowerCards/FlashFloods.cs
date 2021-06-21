@@ -20,13 +20,13 @@ namespace SpiritIsland.PowerCards {
 
 		bool HasInvaders(Space space){
 			return space.IsLand
-				&& gameState.GetInvaderGroup(space).InvaderTypesPresent.Any();
+				&& gameState.InvadersOn(space).InvaderTypesPresent.Any();
 		}
 
 		void SelectTarget(IOption option, ActionEngine engine){
 			Space target = (Space)option;
 			int damage = target.IsCostal ? 2 : 1;
-			var grp = gameState.GetInvaderGroup(target);
+			var grp = gameState.InvadersOn(target);
 			engine.decisions.Push( new SelectInvaderToDamage(grp,damage) );
 		}
 

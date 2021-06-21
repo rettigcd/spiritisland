@@ -100,6 +100,8 @@
     <Compile Include="Growth\ReclaimAll.cs" />
     <Compile Include="InsufficientCardPlaysException.cs" />
     <Compile Include="Invader.cs" />
+    <Compile Include="InvaderCard.cs" />
+    <Compile Include="InvaderDeck.cs" />
     <Compile Include="InvaderGroup.cs" />
     <Compile Include="Island.cs" />
     <Compile Include="PowerCards\ActionEngine.cs" />

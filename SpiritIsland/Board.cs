@@ -17,13 +17,13 @@ namespace SpiritIsland {
 			var board = new Board(
 				new Space(Terrain.Ocean,"A0")
 				,new Space(Terrain.Mountain,"A1") // 
-				,new Space(Terrain.Wetland,"A2")  // city, dahan
+				,new Space(Terrain.Wetland,"A2","CD")  // city, dahan
 				,new Space(Terrain.Jungle,"A3")   // 2 dahan
 				,new Space(Terrain.Sand,"A4")     // blight
 				,new Space(Terrain.Wetland,"A5")
 				,new Space(Terrain.Mountain,"A6") // 1 dahan
 				,new Space(Terrain.Sand,"A7")     // 2 dahan
-				,new Space(Terrain.Jungle,"A8")   // town
+				,new Space(Terrain.Jungle,"A8","T")   // town
 			);
 
 			board.SetNeighbors(0, 1,2,3);
@@ -47,11 +47,11 @@ namespace SpiritIsland {
 			var tile = new Board(
 				new Space(Terrain.Ocean,"B0")
 				,new Space(Terrain.Wetland,"B1")  // 1 dahan
-				,new Space(Terrain.Mountain,"B2") // city
+				,new Space(Terrain.Mountain,"B2", "C") // city
 				,new Space(Terrain.Sand,"B3")     // 2 dahan
 				,new Space(Terrain.Jungle,"B4")   // blight
 				,new Space(Terrain.Sand,"B5")
-				,new Space(Terrain.Wetland,"B6")  // 1 town
+				,new Space(Terrain.Wetland,"B6", "T")  // 1 town
 				,new Space(Terrain.Mountain,"B7") // 1 dahan
 				,new Space(Terrain.Jungle,"B8")   // 2 dahan
 			);
@@ -77,12 +77,12 @@ namespace SpiritIsland {
 			var tile = new Board(
 				new Space(Terrain.Ocean,"C0")
 				,new Space(Terrain.Jungle,"C1")   // 1 dahan
-				,new Space(Terrain.Sand,"C2")     // city
+				,new Space(Terrain.Sand,"C2","C")     // city
 				,new Space(Terrain.Mountain,"C3") // 2 dahan
 				,new Space(Terrain.Jungle,"C4")   
 				,new Space(Terrain.Wetland,"C5")  // 2 dahan, blight
 				,new Space(Terrain.Sand,"C6")     // 1 dahan
-				,new Space(Terrain.Mountain,"C7") // 1 town
+				,new Space(Terrain.Mountain,"C7","T") // 1 town
 				,new Space(Terrain.Wetland,"C8")
 			);
 
@@ -107,12 +107,12 @@ namespace SpiritIsland {
 			var tile = new Board(
 				new Space(Terrain.Ocean,"D0")
 				,new Space(Terrain.Wetland,"D1")   // 2 dahan
-				,new Space(Terrain.Jungle,"D2")    // city, 1 dahan
+				,new Space(Terrain.Jungle,"D2","C")    // city, 1 dahan
 				,new Space(Terrain.Wetland,"D3")   
 				,new Space(Terrain.Sand,"D4")   
 				,new Space(Terrain.Mountain,"D5")  // 1 dahan, blight
 				,new Space(Terrain.Jungle,"D6")    
-				,new Space(Terrain.Sand,"D7")      // 1 town, 2 dahan
+				,new Space(Terrain.Sand,"D7","T")      // 1 town, 2 dahan
 				,new Space(Terrain.Mountain,"D8")
 			);
 

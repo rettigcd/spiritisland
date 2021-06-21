@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SpiritIsland.Invaders;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
@@ -111,6 +112,64 @@ namespace SpiritIsland.Tests.Invaders {
 			}
 			Assert.Empty(indxToCheck);
 		}
+		
+		[Fact]
+		public void NoTownsOrCities_HasStartingExplorer_ExploreCoast() {
+			// Given: game on Board A
+			var board = Board.BuildBoardA();
+			var gameState = new GameState( new RiverSurges() ) { Island = new Island(board)	};
+			//   And: explorer on target space
+			gameState.Adjust(Invader.Explorer,board[5],1);
+
+			// When: exploring (wet lands
+			gameState.Explore(InvaderDeck.Level1Cards.Single(c=>c.Text=="W"));
+
+			// Then: 1 Explorer on A2 (new explored)
+			//  and A5 (original) - proves explorers aren't reference types like towns
+			foreach(var space in board.Spaces){
+				var invaders = gameState.InvadersOn(space);
+				Assert.Equal(space == board[5] || space == board[2]?1:0,invaders[Invader.Explorer]);
+			}
+		}
+
+		[Theory]
+		[InlineData("A1","T@2")]
+		[InlineData("A4","T@1")]
+		[InlineData("A5","T@2")]
+		[InlineData("A6","T@1")]
+		[InlineData("A7","T@2")]
+		[InlineData("A8","T@1")]
+		[InlineData("A1","C@3")]
+		[InlineData("A4","C@2")]
+		[InlineData("A5","C@1")]
+		[InlineData("A6","C@3")]
+		[InlineData("A7","C@2")]
+		[InlineData("A8","C@1")]
+		public void InOrNextToTown_ExploresTownSpace(string townSpaceLabel,string invaderKey) {
+			// Given: game on Board A
+			var board = Board.BuildBoardA();
+			var gameState = new GameState( new RiverSurges() ) { Island = new Island(board)	};
+			//   And: Town on or next to wet land
+			var sourceSpace = board.Spaces.Single(s=>s.Label==townSpaceLabel);
+			var sourceInvader = Invader.Lookup[invaderKey];
+			gameState.Adjust(sourceInvader,sourceSpace,1);
+
+			// When: exploring (wet lands
+			gameState.Explore(InvaderDeck.Level1Cards.Single(c=>c.Text=="W"));
+
+			// Then: Explores A2 and other space only
+			foreach(var space in board.Spaces){
+				var invaders = gameState.InvadersOn(space);
+				Assert.Equal(
+					space.Terrain == Terrain.Wetland?1:0
+					,invaders[Invader.Explorer]
+				);
+			}
+		}
+
+		// HasExplorerOnly_DoesntExplore
+
+
 		static InvaderCard[] NewDeckCards(){
 			var deck = new InvaderDeck();
 			var cards = new InvaderCard[12];

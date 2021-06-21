@@ -1,4 +1,7 @@
-﻿namespace SpiritIsland {
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace SpiritIsland {
 	public class Invader : IOption {
 
 		static readonly Invader[] Cities = new Invader[4]; // 0..3
@@ -15,6 +18,12 @@
 		static readonly public Invader Town0     = new Invader("Town",Towns,0); // DESTROYED
 		static readonly public Invader Explorer  = new Invader("Explorer",Explorers,1);
 		static readonly public Invader Explorer0 = new Invader("Explorer",Explorers,0);// DESTROYED
+
+		static readonly public Dictionary<string,Invader> Lookup;
+
+		static Invader(){
+			Lookup = Cities.Union(Towns).Union(Explorers).ToDictionary(i=>i.Summary);
+		}
 
 		#region private
 

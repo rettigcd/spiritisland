@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace SpiritIsland.Tests {
@@ -10,16 +11,18 @@ namespace SpiritIsland.Tests {
 		[InlineData( 1 )]
 		[InlineData( 2 )]
 		public void Space_IsWithinXDistanceFromSelf( int distance ) {
-			var space = new Space();
+			var space = MakeSpace();
 			var spaces = space.SpacesWithin( distance );
 			Assert.Contains( space, spaces );
 		}
 
+		static Space MakeSpace() => new(Terrain.None,"");
+
 		[Fact]
 		public void Adjacentcy_IsTransitive() {
 			// Given: land-1 is adjacent to land-2
-			var land1 = new Space();
-			var land2 = new Space();
+			var land1 = MakeSpace();
+			var land2 = MakeSpace();
 			land1.SetAdjacentTo( land2 );
 			// Then: land2 is adjacent to land 1
 			Assert.Contains( land1, land2.SpacesExactly( 1 ) );
@@ -29,9 +32,9 @@ namespace SpiritIsland.Tests {
 		[Fact]
 		public void MultipleNeighbors() {
 			// Given space has 2 neighbors
-			var main = new Space();
-			var neighbor1 = new Space();
-			var neighbor2 = new Space();
+			var main = MakeSpace();
+			var neighbor1 = MakeSpace();
+			var neighbor2 = MakeSpace();
 			main.SetAdjacentTo( neighbor1 );
 			main.SetAdjacentTo( neighbor2 );
 			// Then: it is adjacent to both
@@ -168,6 +171,63 @@ namespace SpiritIsland.Tests {
 
 		}
 
+
+		[Theory]
+		[InlineData("A1","")]
+		[InlineData("A2","CD")]
+		[InlineData("A3","DD")]
+		[InlineData("A4","B")]
+		[InlineData("A5","")]
+		[InlineData("A6","D")]
+		[InlineData("A7","DD")]
+		[InlineData("A8","T")]
+		[InlineData("B1","D")]
+		[InlineData("B2","C")]
+		[InlineData("B3","DD")]
+		[InlineData("B4","B")]
+		[InlineData("B5","")]
+		[InlineData("B6","T")]
+		[InlineData("B7","D")]
+		[InlineData("B8","DD")]
+		[InlineData("C1","D")]
+		[InlineData("C2","C")]
+		[InlineData("C3","DD")]
+		[InlineData("C4","")]
+		[InlineData("C5","DDB")]
+		[InlineData("C6","D")]
+		[InlineData("C7","T")]
+		[InlineData("C8","")]
+		[InlineData("D1","DD")]
+		[InlineData("D2","CD")]
+		[InlineData("D3","")]
+		[InlineData("D4","")]
+		[InlineData("D5","DB")]
+		[InlineData("D6","")]
+		[InlineData("D7","TDD")]
+		[InlineData("D8","")]
+
+		public void BoardStartingItems(string spaceLabel,string items){
+			var board = spaceLabel.Substring(0,1) switch{
+				"A" => Board.BuildBoardA(),
+				"B" => Board.BuildBoardB(),
+				"C" => Board.BuildBoardC(),
+				"D" => Board.BuildBoardD(),
+				_ => null
+			};
+			var gameState = new GameState( new RiverSurges() ){
+				Island = new Island( board )
+			};
+			// When:
+			gameState.InitBoards();
+			// Then:
+			var space = board.Spaces.Single(x=>x.Label==spaceLabel);
+			var grp = gameState.InvadersOn(space);
+			Assert.Equal(items.Count(c=>c=='C'), grp[Invader.City]);
+			Assert.Equal(items.Count(c=>c=='T'), grp[Invader.Town]);
+			Assert.Equal(items.Count(c=>c=='E'), grp[Invader.Explorer]);
+//			int dahan = items.Count(c=>c=='D');
+//			int blight = items.Count(c=>c=='B');
+		}
 
 		#region private
 

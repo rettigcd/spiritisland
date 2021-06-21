@@ -8,9 +8,12 @@ namespace SpiritIsland {
 
 	public class Space : IOption{
 
-		#region Game-Static
 		public string Label {get;}
 		public Terrain Terrain {get;}
+
+		public StartUpCounts StartUpCounts { get;}
+
+		#region Game-Static
 		public bool IsOcean => Terrain == Terrain.Ocean;
 		public bool IsCostal { get; set; }
 		public bool IsLand => Terrain != Terrain.Ocean;
@@ -55,11 +58,16 @@ namespace SpiritIsland {
 		}
 		#endregion
 
-		public Space(Terrain terrain=Terrain.None, string label=null){
+		#region constructor
+
+		public Space(Terrain terrain, string label,string startingItems=""){
 			this.Terrain = terrain;
 			this.Label = label;
+			this.StartUpCounts = new StartUpCounts(startingItems);
 			_distanceTo.Add(this,0);
 		}
+
+		#endregion
 
 		public IEnumerable<Space> SpacesWithin( int distance ) {
 			CalculateDistancesUpTo( distance );
@@ -75,6 +83,14 @@ namespace SpiritIsland {
 			return Label.ToString();
 		}
 
+	}
+
+	public class StartUpCounts {
+		readonly string config;
+		public StartUpCounts(string config){this.config = config;}
+		public int Cities => config.Count(c=>c=='C');
+		public int Towns => config.Count(c=>c=='T');
+		public int Explorers => config.Count(c=>c=='E');
 	}
 
 }

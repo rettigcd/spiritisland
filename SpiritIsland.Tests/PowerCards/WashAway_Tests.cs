@@ -55,8 +55,8 @@ namespace SpiritIsland.Tests {
 			action.Apply();
 
 			// check that explore was moved
-			Assert.Equal(expectedTargetResult, gameState.GetInvaderGroup(targetSpace).ToString());
-			Assert.Equal(expectedDestinationResult, gameState.GetInvaderGroup(invaderDestination).ToString());
+			Assert.Equal(expectedTargetResult, gameState.InvadersOn(targetSpace).ToString());
+			Assert.Equal(expectedDestinationResult, gameState.InvadersOn(invaderDestination).ToString());
 		}
 
 		// WashAway: Multiple target lands
@@ -112,9 +112,9 @@ namespace SpiritIsland.Tests {
 			action.Apply();
 
 			// check that explore was moved
-			Assert.Equal("", gameState.GetInvaderGroup(targetSpace).ToString());
-			Assert.Equal("1E@1", gameState.GetInvaderGroup(explorerDestination).ToString());
-			Assert.Equal("1T@2", gameState.GetInvaderGroup(townDestination).ToString());
+			Assert.Equal("", gameState.InvadersOn(targetSpace).ToString());
+			Assert.Equal("1E@1", gameState.InvadersOn(explorerDestination).ToString());
+			Assert.Equal("1T@2", gameState.InvadersOn(townDestination).ToString());
 		}
 
 		[Fact]
@@ -140,8 +140,8 @@ namespace SpiritIsland.Tests {
 			action.Apply();
 
 			// check that explore was moved
-			Assert.Equal("", gameState.GetInvaderGroup(targetSpace).ToString());
-			Assert.Equal("1T@1", gameState.GetInvaderGroup(invaderDestination).ToString());
+			Assert.Equal("", gameState.InvadersOn(targetSpace).ToString());
+			Assert.Equal("1T@1", gameState.InvadersOn(invaderDestination).ToString());
 		}
 
 		// WashAway: push 3 different invaders to 3 different lands
@@ -177,10 +177,10 @@ namespace SpiritIsland.Tests {
 			action.Apply();
 
 			// check that explore was moved
-			Assert.Equal( "", gameState.GetInvaderGroup( targetSpace ).ToString() );
-			Assert.Equal( "1E@1", gameState.GetInvaderGroup( dstn1 ).ToString() );
-			Assert.Equal( "1E@1", gameState.GetInvaderGroup( dstn2 ).ToString() );
-			Assert.Equal( "1E@1", gameState.GetInvaderGroup( dstn3 ).ToString() );
+			Assert.Equal( "", gameState.InvadersOn( targetSpace ).ToString() );
+			Assert.Equal( "1E@1", gameState.InvadersOn( dstn1 ).ToString() );
+			Assert.Equal( "1E@1", gameState.InvadersOn( dstn2 ).ToString() );
+			Assert.Equal( "1E@1", gameState.InvadersOn( dstn3 ).ToString() );
 		}
 
 		void Given_RiverPlayingWashAway(string startingPresence="A5") {

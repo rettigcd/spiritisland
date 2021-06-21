@@ -13,13 +13,13 @@
 		}
 
 		bool HasExplorersOrInvaders(Space space){
-			var sum = gameState.GetInvaderGroup(space);
+			var sum = gameState.InvadersOn(space);
 			return sum.HasExplorer || sum.HasTown;
 		}
 
 		void Push3FromSpace(Space space,ActionEngine engine){
 			engine.decisions.Push(new SelectInvadersToPush(
-				gameState.GetInvaderGroup(space),3
+				gameState.InvadersOn(space),3
 				,"Town","Explorer"
 			));
 		}
