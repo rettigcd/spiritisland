@@ -167,8 +167,37 @@ namespace SpiritIsland.Tests.Invaders {
 			}
 		}
 
-		// HasExplorerOnly_DoesntExplore
+		[Theory]
+		[InlineData("E@1","1T@2,1E@1")]
+		[InlineData("T@2","1C@3,1T@2")]
+		[InlineData("T@1","1C@3,1T@1")]
+		[InlineData("C@3","1C@3,1T@2")]
+		[InlineData("C@2","1C@2,1T@2")]
+		[InlineData("C@1","1C@1,1T@2")]
+		public void InSpaceWithAnyInvader(string preInvaders,string endingInvaderCount){
+			// Given: game on Board A
+			var board = Board.BuildBoardA();
+			var gameState = new GameState( new RiverSurges() ) { Island = new Island(board)	};
+			//   And: invader on every space
+			var startingInvader = Invader.Lookup[preInvaders];
+			foreach(var space in board.Spaces)
+				gameState.Adjust(startingInvader,space,1);
 
+			// When: build in Sand
+			gameState.Build(InvaderDeck.Level1Cards.Single(c=>c.Text=="S"));
+
+			// Then: 2 Sand spaces should have ending Invader Count
+			Assert.Equal(endingInvaderCount,gameState.InvadersOn(board[4]).ToString());
+			Assert.Equal(endingInvaderCount,gameState.InvadersOn(board[7]).ToString());
+			//  And: the other spaces have what they started with
+			string origSummary = "1"+preInvaders;
+			Assert.Equal(origSummary,gameState.InvadersOn(board[1]).ToString());
+			Assert.Equal(origSummary,gameState.InvadersOn(board[2]).ToString());
+			Assert.Equal(origSummary,gameState.InvadersOn(board[3]).ToString());
+			Assert.Equal(origSummary,gameState.InvadersOn(board[5]).ToString());
+			Assert.Equal(origSummary,gameState.InvadersOn(board[6]).ToString());
+			Assert.Equal(origSummary,gameState.InvadersOn(board[8]).ToString());
+		}
 
 		static InvaderCard[] NewDeckCards(){
 			var deck = new InvaderDeck();

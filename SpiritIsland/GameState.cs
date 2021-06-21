@@ -101,6 +101,19 @@ namespace SpiritIsland {
 				Adjust( Invader.Explorer, space, 1 );
 		}
 
+		public void Build( InvaderCard invaderCard ) {
+			var exploredSpaces = Island.Boards.SelectMany(board=>board.Spaces)
+				.Where(invaderCard.Matches)
+				.Select(InvadersOn)
+				.Where(group => group.InvaderTypesPresent.Any());
+			foreach(var group in exploredSpaces){
+				int townCount = group[Invader.Town] + group[Invader.Town1];
+				int cityCount = group[Invader.City] + group[Invader.City2] + group[Invader.City1];
+				var invaderToAdd = townCount>cityCount ? Invader.City : Invader.Town;
+				Adjust( invaderToAdd, group.Space, 1 );
+			}
+		}
+
 
 		#endregion
 
