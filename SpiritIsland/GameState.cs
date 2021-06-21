@@ -42,7 +42,7 @@ namespace SpiritIsland {
 		public bool HasInvaders( Space space ) 
 			=> invaderCount.Keys.Any(k=>k.Space==space);
 
-		public void Adjust(Invader invader, Space space, int count){
+		public void Adjust(Space space, Invader invader, int count){
 			invaderCount[Key(space,invader)] += count;
 		}
 
@@ -55,9 +55,11 @@ namespace SpiritIsland {
 		public void ApplyDamage(DamagePlan damagePlan) {
 			var invaders = InitInvaderGroup(damagePlan.Space);
 			invaders.ApplyDamage(damagePlan);
-
+			UpdateFromGroup(invaders);
+		}
+		void UpdateFromGroup(InvaderGroup invaders){
 			foreach(var invader in invaders.Changed)
-				this.invaderCount[Key(damagePlan.Space,invader)] = invaders[invader];
+				this.invaderCount[Key(invaders.Space,invader)] = invaders[invader];
 		}
 		static InvaderKey Key(Space space,Invader invader) => new InvaderKey{ Invader=invader, Space=space};
 
@@ -80,9 +82,9 @@ namespace SpiritIsland {
 			foreach(var board in Island.Boards){
 				foreach(var space in board.Spaces){
 					var counts = space.StartUpCounts;
-					this.Adjust(Invader.City,space,counts.Cities);
-					this.Adjust(Invader.Town,space,counts.Towns);
-					this.Adjust(Invader.Explorer,space,counts.Explorers);
+					this.Adjust(space,Invader.City,counts.Cities);
+					this.Adjust(space,Invader.Town,counts.Towns);
+					this.Adjust(space,Invader.Explorer,counts.Explorers);
 				}
 			}
 		}
@@ -98,7 +100,7 @@ namespace SpiritIsland {
 						|| space.SpacesWithin(1).Any(HasTownOrCity)
 				);
 			foreach(var space in exploredSpaces)
-				Adjust( Invader.Explorer, space, 1 );
+				Adjust( space, Invader.Explorer, 1 );
 		}
 
 		public void Build( InvaderCard invaderCard ) {
@@ -110,8 +112,50 @@ namespace SpiritIsland {
 				int townCount = group[Invader.Town] + group[Invader.Town1];
 				int cityCount = group[Invader.City] + group[Invader.City2] + group[Invader.City1];
 				var invaderToAdd = townCount>cityCount ? Invader.City : Invader.Town;
-				Adjust( invaderToAdd, group.Space, 1 );
+				Adjust( group.Space, invaderToAdd, 1 );
 			}
+		}
+
+		Invader[] killOrder;
+		Invader[] leftOverOrder;
+
+		public void Ravage( InvaderCard invaderCard ) {
+			// 1 point of damage,  Prefer C@1  ---  ---  T@1  ---  E@1 >>> C@2, T@2, C@3
+			// 2 points of damage, Prefer C@1  C@2  ---  T@1  T@2  E@1 >>> C@3
+			// 3 points of damage, Prefer C@1  C@2  C@3  T@1  T@2  E@1
+			if(killOrder==null){
+				killOrder = "C@1 C@2 C@3 T@1 T@2 E@1".Split(' ').Select(k=>Invader.Lookup[k]).ToArray();
+				leftOverOrder = "C@2 T@2 C@3".Split(' ').Select(k=>Invader.Lookup[k]).ToArray();
+			}
+
+			var ravageGroups = Island.Boards.SelectMany(board=>board.Spaces)
+				.Where(invaderCard.Matches)
+				.Select(InvadersOn)
+				.Where(group => group.InvaderTypesPresent.Any());
+
+			foreach(var ravageGroup in ravageGroups)
+				RavageSpace( ravageGroup );
+
+		}
+
+		void RavageSpace( InvaderGroup ravageGroup ) {
+			int damageToDahan = ravageGroup.DamageInflicted;
+			int dahan = GetDahanOnSpace( ravageGroup.Space );
+			int dahanKilled = Math.Min( damageToDahan / 2, dahan ); // rounding down
+			AddDahan( ravageGroup.Space, -dahanKilled ); dahan -= dahanKilled;
+			int damageToInvaders = dahan * 2;
+
+			while(damageToInvaders > 0 && ravageGroup.InvaderTypesPresent.Any()) {
+				var invaderToDamage = killOrder.FirstOrDefault( invader =>
+						invader.Health <= damageToInvaders // prefer things we can kill
+						&& ravageGroup[invader] > 0
+					)
+					?? leftOverOrder.First( invader => ravageGroup[invader] > 0 ); // left-over damage
+				ravageGroup[invaderToDamage]--;
+				damageToInvaders -= invaderToDamage.Health;
+			}
+
+			UpdateFromGroup( ravageGroup );
 		}
 
 

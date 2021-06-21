@@ -119,7 +119,7 @@ namespace SpiritIsland.Tests.Invaders {
 			var board = Board.BuildBoardA();
 			var gameState = new GameState( new RiverSurges() ) { Island = new Island(board)	};
 			//   And: explorer on target space
-			gameState.Adjust(Invader.Explorer,board[5],1);
+			gameState.Adjust(board[5],Invader.Explorer,1);
 
 			// When: exploring (wet lands
 			gameState.Explore(InvaderDeck.Level1Cards.Single(c=>c.Text=="W"));
@@ -152,7 +152,7 @@ namespace SpiritIsland.Tests.Invaders {
 			//   And: Town on or next to wet land
 			var sourceSpace = board.Spaces.Single(s=>s.Label==townSpaceLabel);
 			var sourceInvader = Invader.Lookup[invaderKey];
-			gameState.Adjust(sourceInvader,sourceSpace,1);
+			gameState.Adjust(sourceSpace,sourceInvader,1);
 
 			// When: exploring (wet lands
 			gameState.Explore(InvaderDeck.Level1Cards.Single(c=>c.Text=="W"));
@@ -174,14 +174,14 @@ namespace SpiritIsland.Tests.Invaders {
 		[InlineData("C@3","1C@3,1T@2")]
 		[InlineData("C@2","1C@2,1T@2")]
 		[InlineData("C@1","1C@1,1T@2")]
-		public void InSpaceWithAnyInvader(string preInvaders,string endingInvaderCount){
+		public void BuildInSpaceWithAnyInvader(string preInvaders,string endingInvaderCount){
 			// Given: game on Board A
 			var board = Board.BuildBoardA();
 			var gameState = new GameState( new RiverSurges() ) { Island = new Island(board)	};
 			//   And: invader on every space
 			var startingInvader = Invader.Lookup[preInvaders];
 			foreach(var space in board.Spaces)
-				gameState.Adjust(startingInvader,space,1);
+				gameState.Adjust(space,startingInvader,1);
 
 			// When: build in Sand
 			gameState.Build(InvaderDeck.Level1Cards.Single(c=>c.Text=="S"));
@@ -198,6 +198,37 @@ namespace SpiritIsland.Tests.Invaders {
 			Assert.Equal(origSummary,gameState.InvadersOn(board[6]).ToString());
 			Assert.Equal(origSummary,gameState.InvadersOn(board[8]).ToString());
 		}
+
+		// Ravage
+		// 1E@1 => 1E@1
+		// 1D@2, 1E@1 => 1D@1       Dahan kills explorer
+		// 1D@1, 1E@1 =>  1E@1      Explorer kills injured Dahan
+		// 1D@2, 2E@1 => 2E@1       2 explorers kill dahan
+		// 1D@2, 1T@2 => 1T@2       Town kills dahan
+		// 3D@2, 2T@1 => 1D@2       2 towns kill 2 dahan, remaining dahan kills both towns.
+
+		// given 1 point of damage,  Prefer C@1  ---  ---  T@1  ---  E@1 >>> T@2  C@2  C@3
+		// given 2 points of damage, Prefer C@1  C@2  ---  T@1  T@2  E@1 >>> C@3
+		// given 3 points of damage, Prefer C@1  C@2  C@3  T@1  T@2  E@1
+
+		// Make sure Invaders Kill Dahan efficiently
+
+		//// 3D@1, 1D@2 1C@3  => 1C@1,1T@2
+		//[InlineData("2D@1,1D@2,1T@2","")]
+		//public void Ravage_InvadersKillDahanEfficiently(){
+		//	// Given: game on Board A
+		//	var board = Board.BuildBoardA();
+		//	var gameState = new GameState( new RiverSurges() ) { Island = new Island(board)	};
+
+		//	//   And: invader on every space
+		//	//var startingInvader = Invader.Lookup[preInvaders];
+		//	//foreach(var space in board.Spaces)
+		//	//	gameState.Adjust(startingInvader,space,1);
+
+		//	// When: ravage in Sand
+		//	gameState.Ravage(InvaderDeck.Level1Cards.Single(c=>c.Text=="S"));
+			
+		//}
 
 		static InvaderCard[] NewDeckCards(){
 			var deck = new InvaderDeck();

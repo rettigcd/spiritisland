@@ -52,6 +52,9 @@ namespace SpiritIsland {
 		readonly HashSet<Invader> changed = new HashSet<Invader>();
 		public IEnumerable<Invader> Changed => changed.Where(i=>i.Health != 0);
 
+		public int DamageInflicted => dict
+			.Select(p=>p.Value * p.Key.Healthy.Health)
+			.Sum();
 	}
 
 }

@@ -6,8 +6,8 @@
 			this.to = to;
 		}
 		public void Apply( GameState gameState ) {
-			gameState.Adjust(invader,from,-1);
-			gameState.Adjust(invader,to,1);
+			gameState.Adjust(from,invader,-1);
+			gameState.Adjust(to,invader,1);
 		}
 		readonly Invader invader;
 		readonly Space from;

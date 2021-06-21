@@ -35,9 +35,9 @@ namespace SpiritIsland.Tests {
 			// 1 explorer on A4
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[4];
-			gameState.Adjust(Invader.Explorer,targetSpace,explorerCount);
-			gameState.Adjust(Invader.Town,targetSpace,townCount);
-			gameState.Adjust(Invader.City,targetSpace,cityCount);
+			gameState.Adjust(targetSpace,Invader.Explorer,explorerCount);
+			gameState.Adjust(targetSpace,Invader.Town,townCount);
+			gameState.Adjust(targetSpace,Invader.City,cityCount);
 
 			//  When: activating card
 			var action = card.Bind(spirit, gameState);
@@ -69,7 +69,7 @@ namespace SpiritIsland.Tests {
 			// 1 explorer on A4
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[2];
-			gameState.Adjust(Invader.Explorer,targetSpace,1);
+			gameState.Adjust(targetSpace,Invader.Explorer,1);
 
 			//  When: activating card
 			action = card.Bind(spirit, gameState);
@@ -86,8 +86,8 @@ namespace SpiritIsland.Tests {
 			// 1 explorer + 1 Town on A4
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[4];
-			gameState.Adjust(Invader.Explorer,targetSpace,1);
-			gameState.Adjust(Invader.Town,targetSpace,1);
+			gameState.Adjust(targetSpace,Invader.Explorer,1);
+			gameState.Adjust(targetSpace,Invader.Town,1);
 
 			//  When: activating card
 			action = card.Bind(spirit, gameState);
@@ -124,7 +124,7 @@ namespace SpiritIsland.Tests {
 			// 1 damaged town on A4
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[4];
-			gameState.Adjust(Invader.Town,targetSpace,1);
+			gameState.Adjust(targetSpace,Invader.Town,1);
 			gameState.ApplyDamage(new DamagePlan(targetSpace,1,Invader.Town));
 
 			//  When: activating card
@@ -153,7 +153,7 @@ namespace SpiritIsland.Tests {
 			// 1 explorer + 1 Town on A4
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[4];
-			gameState.Adjust( Invader.Explorer, targetSpace, 3 );
+			gameState.Adjust( targetSpace, Invader.Explorer, 3 );
 
 			//  When: activating card
 			When_PlayingCard();
