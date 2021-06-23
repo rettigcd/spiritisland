@@ -12,6 +12,8 @@
 		}
 
 		public override bool IsResolved => true; // !!! should change this to force drawing card
+
+		public override IOption[] Options => throw new System.NotImplementedException();
 	}
 
 

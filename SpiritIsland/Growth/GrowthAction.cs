@@ -17,7 +17,7 @@ namespace SpiritIsland {
 			return this;
 		}
 
-		public virtual IOption[] Options => throw new System.NotImplementedException();
+		public abstract IOption[] Options {get;}//=> throw new System.NotImplementedException();
 
 		public void Select(IOption option) {
 			throw new System.NotImplementedException();

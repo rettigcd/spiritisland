@@ -15,7 +15,7 @@ namespace SpiritIsland.Tests.Growth {
 			base.Update( pp );
 
 			string actualOptions = pp.Options
-				.Select( o=> o.Label )
+				.Select( o=> o.Text )
 				.OrderBy(l=>l)
 				.Join(";");
 

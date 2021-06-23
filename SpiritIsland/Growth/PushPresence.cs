@@ -14,10 +14,10 @@ namespace SpiritIsland {
 			Options = from.SpacesExactly(1)
 				.ToArray();
 			if(Options.Length == 1)
-				To = Options[0];
+				To = (Space)Options[0];
 		}
 
-		public Space[] Options { get; }
+		public override IOption[] Options { get; }
 
 		public override void Apply() {
 			if(To==null)
@@ -42,13 +42,12 @@ namespace SpiritIsland {
 					.OfType<PushPresence>()
 					.VerboseSingle(a=>a.From.Label == from);
 
-				action.To = action.Options.First(x=>x.Label==to);
+				action.To = (Space)action.Options.First(x=>x.Text==to);
 				action.Apply();
 			}
 		}
 
 		public override bool IsResolved => To != null;
-
 
 	}
 

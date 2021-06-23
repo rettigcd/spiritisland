@@ -22,6 +22,8 @@ namespace SpiritIsland {
 
 		public override bool IsResolved => Card != null;
 
+		public override IOption[] Options => throw new NotImplementedException();
+
 		static public IResolver Resolve(PowerCard card) => new Resolver(card);
 
 		class Resolver : IResolver {

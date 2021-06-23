@@ -98,6 +98,7 @@ Gift of Proliferation => 1 => fast, any spirit => moon, plant => target spirit a
 		}
 		public override bool IsResolved => true;
 
+		public override IOption[] Options => throw new System.NotImplementedException();
 	}
 
 }

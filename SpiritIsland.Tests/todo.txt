@@ -4,17 +4,21 @@
 
 * River - Innate - Massive Flooding
 
-* Invaders - Ravage
-* Invaders - Build
-* Invaders - Explor
 
-* Bonus - Fear
-* Bonus - Detect win
-* Bonus - Blight
+Action 
+	=> Select Growth
+	=> Select PowerCards to purchase
+	=> Select Fast Powers & Resolve
+	=> Trigger: Ragave, Build, Explore
+	=> Select Slow Powers & Resolve
 
-4 W S M J
-5 W S M J Costal
-6 W+S W+M W+J S+M S+J M+J
+Alt Cmds
+	- Display contents of Space
+	- Display Spirit statistics
+	- Display Invader Board Stats
+	- Quit
+
+
 
 
 ----

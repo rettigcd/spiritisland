@@ -15,5 +15,6 @@ namespace SpiritIsland {
 
 		public override bool IsResolved => true;
 
+		public override IOption[] Options => throw new System.NotImplementedException();
 	}
 }

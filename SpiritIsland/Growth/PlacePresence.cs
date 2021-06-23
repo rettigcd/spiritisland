@@ -27,7 +27,7 @@ namespace SpiritIsland {
 
 		#endregion
 
-		public override Space[] Options => spirit.Presence
+		public override IOption[] Options => spirit.Presence
 			.SelectMany(s => s.SpacesWithin(this.range))
 			.Distinct()
 			.Where(SpaceIsValid)
@@ -58,7 +58,7 @@ namespace SpiritIsland {
 		}
 
 		protected virtual void Update(PlacePresenceBase pp) {
-			pp.Target = pp.Options.Single(s=>s.Label==placeOnSpace);
+			pp.Target = (Space)pp.Options.Single(s=>s.Text==placeOnSpace);
 			pp.Source = source;
 		}
 	}

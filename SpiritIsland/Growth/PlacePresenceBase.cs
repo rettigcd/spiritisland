@@ -4,7 +4,7 @@ namespace SpiritIsland {
 
 	public abstract class PlacePresenceBase : GrowthAction {
 
-		public abstract Space[] Options { get; }
+//		public abstract IOption[] Options { get; }
 
 		public Track Source { get; set; }
 
@@ -45,7 +45,7 @@ namespace SpiritIsland {
 			bool isValidTarget = options.Contains(Target);
 
 			if (!isValidTarget)
-				throw new InvalidPresenceLocation(Target.Label, options.Select(bs => bs.Label).ToArray());
+				throw new InvalidPresenceLocation(Target.Label, options.Select(bs => bs.Text).ToArray());
 		}
 
 	}

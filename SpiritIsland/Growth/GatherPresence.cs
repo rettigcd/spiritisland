@@ -14,7 +14,7 @@ namespace SpiritIsland {
 			this.To = target; 
 		}
 
-		public Space[] Options => To.SpacesExactly(1)
+		public override IOption[] Options => To.SpacesExactly(1)
 			.Where(spirit.Presence.Contains)
 			.ToArray();
 
@@ -38,7 +38,7 @@ namespace SpiritIsland {
 				var action = growthActions
 					.OfType<GatherPresence>()
 					.VerboseSingle(a=>a.To.Label == to);
-				action.From = action.Options.First(x=>x.Label==from);
+				action.From = (Space)action.Options.First(x=>x.Text==from);
 				action.Apply();
 			}
 		}
