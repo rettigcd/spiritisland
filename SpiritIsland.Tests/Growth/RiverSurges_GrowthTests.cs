@@ -285,6 +285,28 @@ namespace SpiritIsland.Tests.Growth {
 
 		#endregion Fast
 
+		#region Initial Presence Placing
+
+		[Theory]
+		[InlineData("A5")]
+		[InlineData("B6")]
+		[InlineData("C8")]
+		[InlineData("D3")]
+		public void StartsOnHighestNumberedWetlands(string expectedStartingSpaces){
+			var river = new RiverSurges();
+			var board = expectedStartingSpaces.Substring(0,1) switch {
+				"A" => BoardA,
+				"B" => BoardB,
+				"C" => BoardC,
+				"D" => BoardD,
+				_ => null,
+			};
+			river.InitializePresence(board);
+			Assert.Equal(expectedStartingSpaces,river.Presence.Select(s=>s.Label).Join(","));
+		}
+
+		#endregion
+
 	}
 
 }

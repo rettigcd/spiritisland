@@ -1,5 +1,5 @@
 ﻿namespace SpiritIsland
 {
-	public enum Track { Energy, Card };
+	public enum Track { None, Energy, Card };
 
 }

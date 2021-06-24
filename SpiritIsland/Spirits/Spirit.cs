@@ -73,6 +73,12 @@ namespace SpiritIsland {
 				a.Apply();
 		}
 
+		public virtual void InitializePresence( Board board ) {
+			// !!! once all spirits have implemented this,
+			// switch this over to pure abstract
+			throw new System.NotImplementedException();
+		}
+
 		public virtual void AddAction(IActionFactory action){
 			UnresolvedActions.Add( action );
 		}

@@ -16,6 +16,10 @@ namespace SpiritIsland {
 
 		public GrowthAction[] GrowthActions { get; }
 
+		public override string ToString() {
+			return GrowthActions.Select(a=>a.ShortDescription).Join(" / ");
+		}
+
 	}
 
 }

@@ -77,7 +77,7 @@ namespace SpiritIsland {
 				.Cast<GrowthAction>();
 			var opt3 = new GrowthOption( pushPresenceFromEachOcean.Include(
 					new DrawPowerCard(),
-					new PlacePresence(1,(s,_)=>s.IsCostal )
+					new PlacePresence(1,(s,_)=>s.IsCostal, "coatal" )
 			));
 
 			return new GrowthOption[]{ opt1, opt2, opt3 };

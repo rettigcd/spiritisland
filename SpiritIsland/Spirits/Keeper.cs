@@ -58,29 +58,29 @@ namespace SpiritIsland {
 				,new GrowthOption(
 					new ReclaimAll()        // A
 					,new GainEnergy(2)     // A & C
-					,new PlacePresence(3,presenceOrWilds) // C
+					,new PlacePresence(3,presenceOrWilds,"presence or wilds") // C
 				)
 				,new GrowthOption(
 					new ReclaimAll()          // A
 					,new GainEnergy(1-3)     // A & D
 					,new DrawPowerCard(1)	  // D
-					,new PlacePresence(3,noBlight) // D
+					,new PlacePresence(3,noBlight,"no blight") // D
 				)
 				,new GrowthOption(
 					new DrawPowerCard(1)	// B
 					,new GainEnergy(1)     // C
-					,new PlacePresence(3,presenceOrWilds) // C
+					,new PlacePresence(3,presenceOrWilds,"presence or wilds") // C
 				)
 				,new GrowthOption(
 					new DrawPowerCard(1)	// B
 					,new GainEnergy(-3)     // D
 					,new DrawPowerCard(1)	  // D
-					,new PlacePresence(3,noBlight) // D
+					,new PlacePresence(3,noBlight,"no blight") // D
 				)
 				,new GrowthOption(
 					new GainEnergy(1)     // C
-					,new PlacePresence(3,presenceOrWilds) // C
-					,new PlacePresence(3,noBlight) // D
+					,new PlacePresence(3,presenceOrWilds,"presence or wilds") // C
+					,new PlacePresence(3,noBlight, "no blight") // D
 					,new GainEnergy(-3)     // D
 					,new DrawPowerCard(1)	  // D
 				)

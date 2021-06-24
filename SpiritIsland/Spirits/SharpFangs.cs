@@ -45,7 +45,7 @@ namespace SpiritIsland {
 		public override GrowthOption[] GetGrowthOptions() {
 			static bool beastOrJungle(Space s, GameState gameState) => s.Terrain==Terrain.Jungle || gameState.HasBeasts(s);
 		
-			var beastOrJungleRange3 = new PlacePresence(3, beastOrJungle);
+			var beastOrJungleRange3 = new PlacePresence(3, beastOrJungle,"beast or jungle");
 
 			return new GrowthOption[]{
 				NewGrowthOption(

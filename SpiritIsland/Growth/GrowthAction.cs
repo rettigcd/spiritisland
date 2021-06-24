@@ -11,15 +11,19 @@ namespace SpiritIsland {
 
 		public abstract void Apply();
 
+		public virtual string ShortDescription => this.ToString().Substring(13); // strip off SpiritIsland. prefix
+
 		public IAction Bind(Spirit spirit, GameState gameState) {
 			this.spirit = spirit;
 			this.gameState = gameState;
 			return this;
 		}
 
-		public abstract IOption[] Options {get;}//=> throw new System.NotImplementedException();
+		public abstract IOption[] Options {get;}
 
-		public void Select(IOption option) {
+		public virtual void Select(IOption option) {
+			// !!! once all growth actions implement this,
+			// replace this with pure abstract
 			throw new System.NotImplementedException();
 		}
 

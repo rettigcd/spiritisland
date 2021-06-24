@@ -1,5 +1,7 @@
 ﻿using SpiritIsland.PowerCards;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SpiritIsland {
 
@@ -120,6 +122,10 @@ namespace SpiritIsland {
 			new PowerCard("Encompassing Ward", 0, Speed.Fast),
 		};
 
+		public override void InitializePresence( Board board ) {
+			var space = board.Spaces.Reverse().First(s=>s.Terrain==Terrain.Wetland);
+			Presence.Add(space);
+		}
 	}
 
 }

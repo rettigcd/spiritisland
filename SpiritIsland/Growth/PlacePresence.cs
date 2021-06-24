@@ -9,20 +9,25 @@ namespace SpiritIsland {
 		readonly int range;
 		readonly Func<Space,GameState, bool> isValid;
 
+		public override string ShortDescription {get;}
+
 		#region constructors
 
 		public PlacePresence( int range ){
 			static bool IsNotOcean(Space s,GameState _) => s.IsLand;
 			this.range = range;
 			isValid = IsNotOcean;
+			ShortDescription = $"PlacePresence({range})";
 		}
 
 		public PlacePresence(
 			int range,
-			Func<Space, GameState, bool> isValid
+			Func<Space, GameState, bool> isValid,
+			string funcDescriptor
 		){
 			this.range = range;
 			this.isValid = isValid ?? throw new ArgumentNullException(nameof(isValid));
+			ShortDescription = $"PlacePresence({range},{funcDescriptor})";
 		}
 
 		#endregion
@@ -31,7 +36,13 @@ namespace SpiritIsland {
 			.SelectMany(s => s.SpacesWithin(this.range))
 			.Distinct()
 			.Where(SpaceIsValid)
+			.OrderBy(x=>x.Label)
 			.ToArray();
+
+		public override void Select( IOption option ) {
+			this.Target = (Space)option;
+			this.Source = Track.Energy; // !!!!!!!!!!!!!!!!!!!!!!!!!  need to select this also
+		}
 
 		bool SpaceIsValid(Space space) => isValid(space,gameState);
 

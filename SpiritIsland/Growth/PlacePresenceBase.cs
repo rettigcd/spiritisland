@@ -4,8 +4,6 @@ namespace SpiritIsland {
 
 	public abstract class PlacePresenceBase : GrowthAction {
 
-//		public abstract IOption[] Options { get; }
-
 		public Track Source { get; set; }
 
 		public Space Target { 
