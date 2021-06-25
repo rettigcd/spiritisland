@@ -2,7 +2,7 @@
 using System.Linq;
 using Xunit;
 
-namespace SpiritIsland.Tests {
+namespace SpiritIsland.Tests.PowerCards {
 	public class BoonOfVigor_Tests : SpiritCards_Tests {
  		#region BoonOfVigor
 

@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace SpiritIsland.Tests {
+namespace SpiritIsland.Tests.PowerCards {
+
 	public class WashAway_Tests : SpiritCards_Tests {
 
 		[Fact]
@@ -201,8 +202,8 @@ namespace SpiritIsland.Tests {
 			spirit.BuyAvailableCards(card);
 
 			// Jump to slow
-			spirit.UnresolvedActions.Clear();
-			spirit.UnresolvedActions.AddRange(spirit.ActiveCards.Where(x => x.Speed == Speed.Slow));
+			spirit.UnresolvedActionFactories.Clear();
+			spirit.UnresolvedActionFactories.AddRange(spirit.ActiveCards.Where(x => x.Speed == Speed.Slow));
 			Assert_CardIsReady(card);
 
 		}

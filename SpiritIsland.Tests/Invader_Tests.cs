@@ -49,7 +49,7 @@ namespace SpiritIsland.Tests.Invaders {
 		}
 
 		[Fact]
-		public void CardsUsedAre345() {
+		public void CardsUsedAre_3L1_4L2_5L3() {
 			var deck = new InvaderDeck();
 			Assert_NextNCardsFromDeck( deck, InvaderDeck.Level1Cards, 3 );
 			Assert_NextNCardsFromDeck( deck, InvaderDeck.Level2Cards, 4 );

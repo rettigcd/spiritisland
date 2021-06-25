@@ -2,7 +2,7 @@
 using System.Linq;
 using Xunit;
 
-namespace SpiritIsland.Tests {
+namespace SpiritIsland.Tests.Boards {
 
 	public class BoardSpace_Tests {
 

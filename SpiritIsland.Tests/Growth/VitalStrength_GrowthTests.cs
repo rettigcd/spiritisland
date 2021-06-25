@@ -33,7 +33,7 @@ namespace SpiritIsland.Tests.Growth {
 		public void PresenseAndEnergy(){
 			// +1 presence range 1, +2 energy
 			Given_HasPresence( board[1] );
-			When_Growing(2, Resolve_PlacePresence( "A1;A2;A4;A5;A6",0,Track.Energy));
+			When_Growing(2, Resolve_PlacePresence( "A1;A2;A4;A5;A6",Track.Energy));
 			Assert.Equal(3,spirit.EnergyPerTurn);
 			Assert_HasEnergy(3+2);
 		}

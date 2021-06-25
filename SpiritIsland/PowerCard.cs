@@ -6,8 +6,9 @@ namespace SpiritIsland {
 
 	public interface IActionFactory {
 		IAction Bind(Spirit spirit,GameState gameState);
+		Speed Speed { get; }
+		string Name { get; }
 	}
-
 
 	public class PowerCard : IActionFactory {
 
@@ -59,13 +60,23 @@ namespace SpiritIsland {
 			public void Select(IOption option) {}
 		}
 
+		public override string ToString() => Name;
+
 	}
 
-	public class InnatePower : IActionFactory {
-		public Speed Speed { get; }
+	public class InnatePower : IActionFactory, IAction {
+		public Speed Speed { get; protected set; }
+		public string Name { get; protected set; }
+
+		public bool IsResolved => true;
+
+		public IOption[] Options => new IOption[0];
+
+		public void Apply() {
+		}
 
 		public IAction Bind(Spirit spirit, GameState gameState) {
-			return null;
+			return this;
 		}
 
 		public InnateAction GetAction(Spirit _){
@@ -74,6 +85,9 @@ namespace SpiritIsland {
 			return null;
 		}
 
+		public void Select( IOption option ) {
+			throw new NotImplementedException();
+		}
 	}
 
 }

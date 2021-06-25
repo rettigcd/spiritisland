@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace SpiritIsland.Tests {
+namespace SpiritIsland.Tests.PowerCards {
 
 	public class SpiritCards_Tests {
 
@@ -26,7 +26,7 @@ namespace SpiritIsland.Tests {
 			for (int i = 0; i < expectedEnergyBonus; ++i) {
 				var otherCard = new PowerCard("Fake-" + i, 0, Speed.Slow);
 				otherSpirit.ActiveCards.Add(otherCard);
-				otherSpirit.UnresolvedActions.Add(otherCard);
+				otherSpirit.UnresolvedActionFactories.Add(otherCard);
 			}
 		}
 
@@ -41,7 +41,7 @@ namespace SpiritIsland.Tests {
 		}
 
 		protected void Assert_CardIsReady( PowerCard card ) {
-			Assert.Contains(card, spirit.UnresolvedActions.OfType<PowerCard>().ToList());
+			Assert.Contains(card, spirit.UnresolvedActionFactories.OfType<PowerCard>().ToList());
 		}
 
 		protected void When_PlayingCard() {

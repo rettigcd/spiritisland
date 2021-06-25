@@ -24,7 +24,7 @@ namespace SpiritIsland {
 		public List<PowerCard> AvailableCards = new List<PowerCard>();	// in hand
 		public List<PowerCard> ActiveCards = new List<PowerCard>();		// paid for
 		public List<PowerCard> PlayedCards = new List<PowerCard>();		// discarded
-		public List<IActionFactory> UnresolvedActions = new List<IActionFactory>();
+		public List<IActionFactory> UnresolvedActionFactories = new List<IActionFactory>();
 
 		#endregion
 
@@ -65,7 +65,15 @@ namespace SpiritIsland {
 		}
 
 		void RemoveResolvedActions(GameState gameState) {
-			var resolvedActions = UnresolvedActions
+
+			//var aas = UnresolvedActions
+			//	.Select(f=>f.Bind(this,gameState))
+			//	.ToArray();
+			//foreach(var aa in aas){
+			//	var b = aa.IsResolved;
+			//}
+
+			var resolvedActions = UnresolvedActionFactories
 				.Select(f=>f.Bind(this,gameState))
 				.Where(a => a.IsResolved)
 				.ToArray();
@@ -80,12 +88,12 @@ namespace SpiritIsland {
 		}
 
 		public virtual void AddAction(IActionFactory action){
-			UnresolvedActions.Add( action );
+			UnresolvedActionFactories.Add( action );
 		}
 
-		public void MarkResolved(GrowthAction action){
-			UnresolvedActions.Remove( action );
-			if(UnresolvedActions.Count == 0)
+		public void MarkResolved(IActionFactory action){
+			UnresolvedActionFactories.Remove( action );
+			if(UnresolvedActionFactories.Count == 0)
 				Energy += EnergyPerTurn; // transition 
 		}
 

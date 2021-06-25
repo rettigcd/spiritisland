@@ -2,7 +2,8 @@
 using System.Linq;
 using Xunit;
 
-namespace SpiritIsland.Tests {
+namespace SpiritIsland.Tests.PowerCards {
+
 	public class FlashFloods_Tests : SpiritCards_Tests {
 
 		// immutable
@@ -31,7 +32,7 @@ namespace SpiritIsland.Tests {
 			var card = spirit.AvailableCards.Single(c=>c.Name == FlashFloods.Name);
 			spirit.Energy = card.Cost;
 			spirit.BuyAvailableCards(card);
-			Assert.Contains(card,spirit.UnresolvedActions.OfType<PowerCard>().ToList()); // is fast
+			Assert.Contains(card,spirit.UnresolvedActionFactories.OfType<PowerCard>().ToList()); // is fast
 
 			//  When: activating flash flood
 			action = (FlashFloods)card.Bind(spirit,gameState);
@@ -70,7 +71,7 @@ namespace SpiritIsland.Tests {
 			var card = spirit.AvailableCards.Single(c=>c.Name == FlashFloods.Name);
 			spirit.Energy = card.Cost;
 			spirit.BuyAvailableCards(card);
-			Assert.Contains(card,spirit.UnresolvedActions.OfType<PowerCard>().ToList()); // is fast
+			Assert.Contains(card,spirit.UnresolvedActionFactories.OfType<PowerCard>().ToList()); // is fast
 
 			//  When: activating flash flood
 			action = (FlashFloods)card.Bind(spirit,gameState);

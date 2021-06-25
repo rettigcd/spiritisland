@@ -17,9 +17,9 @@ namespace SpiritIslandCmd {
 
 		public event Action Complete;
 
-		public bool Handle( string cmd ) {
-			if(int.TryParse(cmd,out int optionIndex)){
-				spirit.Grow(gameState,optionIndex-1); // users enter 1-3 for index 0-2
+		public bool Handle( string cmd, int index ) {
+			if(index != -1){
+				spirit.Grow(gameState,index); // users enter 1-3 for index 0-2
 				this.Complete?.Invoke();
 				return true;
 			}

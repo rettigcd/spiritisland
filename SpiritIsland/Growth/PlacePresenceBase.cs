@@ -24,14 +24,10 @@ namespace SpiritIsland {
 		}
 
 		void TakeFromSource() {
-			switch (Source) {
-				case Track.Card:
+			if(Source == Track.Card)
 				spirit.RevealedCardSpaces++;
-				break;
-				case Track.Energy:
+			else if(Source == Track.Energy)
 				spirit.RevealedEnergySpaces++;
-				break;
-			}
 		}
 
 		void PlaceOnTarget() {

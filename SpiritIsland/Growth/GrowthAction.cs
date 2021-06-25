@@ -13,6 +13,8 @@ namespace SpiritIsland {
 
 		public virtual string ShortDescription => this.ToString().Substring(13); // strip off SpiritIsland. prefix
 
+		public virtual string Name => this.ShortDescription;
+
 		public IAction Bind(Spirit spirit, GameState gameState) {
 			this.spirit = spirit;
 			this.gameState = gameState;
@@ -29,6 +31,7 @@ namespace SpiritIsland {
 
 		public abstract bool IsResolved {get;}
 
+		public Speed Speed => Speed.Growth;
 	}
 
 }

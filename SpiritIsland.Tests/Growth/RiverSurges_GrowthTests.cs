@@ -57,8 +57,8 @@ namespace SpiritIsland.Tests.Growth {
 			Assert.Equal(1,spirit.RevealedEnergySpaces);
 
 			When_Growing( 1
-				, Resolve_PlacePresence( "A2;A3;A4", 0, Track.Energy)
-				, Resolve_PlacePresence( "A1;A2;A3;A4", 0, Track.Energy) // original 0 will already be remoed
+				, Resolve_PlacePresence( "A2;A3;A4", Track.Energy)
+				, Resolve_PlacePresence( "A1;A2;A3;A4", Track.Energy) // original 0 will already be remoed
 			);
 
 			Assert_GainPowercard( 0 );
@@ -75,7 +75,7 @@ namespace SpiritIsland.Tests.Growth {
 			Assert.Equal(1,spirit.RevealedEnergySpaces);
 			Given_HasPresence( board[3] );
 
-			When_Growing( 2, Resolve_PlacePresence( "A1;A2;A3;A4;A5", 0, Track.Card) );
+			When_Growing( 2, Resolve_PlacePresence( "A1;A2;A3;A4;A5", Track.Card) );
 
 			Assert_HasCardAvailable( "Uncanny Melting" ); // gains 1st card in power progression
 			Assert_GainPowercard( 0 );
@@ -184,7 +184,7 @@ namespace SpiritIsland.Tests.Growth {
 		}
 
 		void Assert_InnateInActionListIf(Speed currentSpeed) {
-			var unresolvedInnates = spirit.UnresolvedActions
+			var unresolvedInnates = spirit.UnresolvedActionFactories
 				.OfType<InnateAction>()
 				.Select(a => a.Innate)
 				.ToArray();
@@ -201,7 +201,7 @@ namespace SpiritIsland.Tests.Growth {
 
 		protected void Assert_CardInActionListIf(PowerCard card, Speed currentSpeed) {
 
-			var unresolvedCards = spirit.UnresolvedActions
+			var unresolvedCards = spirit.UnresolvedActionFactories
 				.OfType<PowerCard>()
 				.ToArray();
 

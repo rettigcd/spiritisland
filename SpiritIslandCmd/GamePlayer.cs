@@ -1,4 +1,5 @@
 ﻿using SpiritIsland;
+using SpiritIsland.Invaders;
 using System;
 
 namespace SpiritIslandCmd {
@@ -20,13 +21,17 @@ namespace SpiritIslandCmd {
 			Board board = Board.BuildBoardA();
 			spirit.InitializePresence(board);
 			gameState = new GameState(spirit){ Island = new Island(board)};
+			gameState.InitBoards();
+			var invaderDeck = new InvaderDeck();
+			gameState.Explore(invaderDeck.Explore);
+			invaderDeck.Advance();
 
 			selectGrowth = new SelectGrowth(spirit,gameState);
 			resolveGrowth = new ResolveGrowth(spirit,gameState);
 			selectPowerCards = new SelectPowerCards(spirit);
-			fastActions = new FakePhase("Fast");
+			fastActions = new ResolveFastSlow(spirit,gameState,Speed.Fast);
 			invaders = new FakePhase("Invaders");
-			slowActions = new FakePhase("Slow");
+			slowActions = new ResolveFastSlow(spirit,gameState,Speed.Slow);
 
 			selectGrowth.Complete += () => TransitionTo(resolveGrowth);
 			resolveGrowth.Complete += () => TransitionTo(selectPowerCards);
@@ -38,8 +43,8 @@ namespace SpiritIslandCmd {
 		}
 
 		void TransitionTo(IPhase phase){
+			this.phase = phase; // ! this must go first! because .Initialize might trigger the next phase
 			phase.Initialize();
-			this.phase = phase;
 		}
 
 		public void Play(){
@@ -50,7 +55,8 @@ namespace SpiritIslandCmd {
 				Console.WriteLine(phase.Prompt);
 				Console.Write("\r\nSI > ");
 				string cmd = Console.ReadLine().ToLower();
-				bool _ = phase.Handle(cmd)
+				int index = int.TryParse(cmd,out int t) ? t : 0;
+				bool _ = phase.Handle(cmd,index-1)
 					|| Generic(cmd);
 			}
 		}
@@ -79,7 +85,7 @@ namespace SpiritIslandCmd {
 
 		public event Action Complete;
 
-		public bool Handle( string cmd ) {
+		public bool Handle( string cmd,int _ ) {
 			if(cmd != "n") return false;
 			this.Complete?.Invoke();
 			return true;

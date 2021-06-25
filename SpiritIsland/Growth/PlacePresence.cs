@@ -32,16 +32,24 @@ namespace SpiritIsland {
 
 		#endregion
 
-		public override IOption[] Options => spirit.Presence
-			.SelectMany(s => s.SpacesWithin(this.range))
-			.Distinct()
-			.Where(SpaceIsValid)
-			.OrderBy(x=>x.Label)
-			.ToArray();
+		public override IOption[] Options { get {
+			return Source == default
+				? (new Track[]{Track.Energy,Track.Card})
+				: (IOption[])spirit.Presence
+					.SelectMany(s => s.SpacesWithin(this.range))
+					.Distinct()
+					.Where(SpaceIsValid)
+					.OrderBy(x=>x.Label)
+					.ToArray();
+			}
+		}
 
 		public override void Select( IOption option ) {
+			if(Source == default){
+				this.Source = (Track)option;
+				return;
+			}
 			this.Target = (Space)option;
-			this.Source = Track.Energy; // !!!!!!!!!!!!!!!!!!!!!!!!!  need to select this also
 		}
 
 		bool SpaceIsValid(Space space) => isValid(space,gameState);

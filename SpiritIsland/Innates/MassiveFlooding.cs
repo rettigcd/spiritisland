@@ -4,7 +4,12 @@ using System.Collections.Generic;
 namespace SpiritIsland {
 	class MassiveFlooding : InnatePower {
 
-		public void Init(Spirit _){
+		public MassiveFlooding(){
+			Speed = Speed.Slow;
+			Name = "Massive Flooding";
+		}
+
+		public void Init(Spirit _){}
 			// select level
 			// pick land
 				// town or explorer
@@ -23,14 +28,6 @@ namespace SpiritIsland {
  * 2 sun, 3 water => Instead, 2 damage, Push up to 3 explorers and/or towns
  * 3 sun, 4 water, 1 earth => Instead, 2 damage to each invader
  * */
-
-
-		}
-
-		public bool IsResolved => true;
-
-		public void Apply() {
-		}
 
 	}
 

@@ -1,20 +1,31 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
 
-Resolveing Power Cards
+!! Explorer Phase!
 
-* Selecting Track for place presence
+View
+	- explorer board
+	- spirits board
+	- entire island
+	- Active cards
+	- Available cards
+	- ?Discard Cards?
+
+!! Reclaim-All is not reclaiming cards
+
+!! check if unused actions are being left in the unresolved... list.
+
 * !! instead of using Index to select, select by text or some short form of the text
-* when listing spaces, could also display stats on the spaces
-* when listing tracks, could display stats on the tracks
-* BUG ??? when selectin growth option 1, need a prompt to know what state it is in
-* when display cards for purchase, list cost / speed / elements / description
-* !!! add check so you can't buy more power cards than Card Track indicates
+
+Make the UnresolvedActionFactories a Pair<IActionFactory,IAction> so we can generate them once and check if resolved.
+
+Replace ResolveGrowth with ResolveFastSlow(Speed.Growth);
+
+Make GrowthOPtions not MarkAsComplete but let the caller do it like Slow/Fast actions do.
 
 --  River - Minimum Viable Product --
 
 * River - Innate - Massive Flooding
-
 
 Action 
 	=> Select Growth
