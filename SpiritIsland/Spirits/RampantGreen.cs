@@ -93,8 +93,6 @@ Gift of Proliferation => 1 => fast, any spirit => moon, plant => target spirit a
 	class PlayExtraCardThisTurn : GrowthAction {
 		public override void Apply() {
 			(spirit as RampantGreen).tempCardBoost++;
-
-			spirit.MarkResolved( this );
 		}
 		public override bool IsResolved => true;
 

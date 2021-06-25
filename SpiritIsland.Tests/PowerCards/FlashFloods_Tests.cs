@@ -29,7 +29,7 @@ namespace SpiritIsland.Tests.PowerCards {
 			Assert.Equal("1C@3,1T@2,1E@1",gameState.InvadersOn(targetSpace).ToString());
 
 			//   And: Purchased FlashFloods
-			var card = spirit.AvailableCards.Single(c=>c.Name == FlashFloods.Name);
+			var card = spirit.Hand.Single(c=>c.Name == FlashFloods.Name);
 			spirit.Energy = card.Cost;
 			spirit.BuyAvailableCards(card);
 			Assert.Contains(card,spirit.UnresolvedActionFactories.OfType<PowerCard>().ToList()); // is fast
@@ -68,7 +68,7 @@ namespace SpiritIsland.Tests.PowerCards {
 			Assert.Equal("1C@3,1T@2,1E@1",gameState.InvadersOn(targetSpace).ToString());
 
 			//   And: Purchased FlashFloods
-			var card = spirit.AvailableCards.Single(c=>c.Name == FlashFloods.Name);
+			var card = spirit.Hand.Single(c=>c.Name == FlashFloods.Name);
 			spirit.Energy = card.Cost;
 			spirit.BuyAvailableCards(card);
 			Assert.Contains(card,spirit.UnresolvedActionFactories.OfType<PowerCard>().ToList()); // is fast

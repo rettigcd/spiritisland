@@ -1,27 +1,17 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
-
-!! Explorer Phase!
+Missing
+	Innate Powers
+	Fear
+	Blight
+	Power Progression Card Implementation
 
 View
-	- explorer board
-	- spirits board
-	- entire island
-	- Active cards
-	- Available cards
-	- ?Discard Cards?
+	energy track
+	card track
 
-!! Reclaim-All is not reclaiming cards
-
-!! check if unused actions are being left in the unresolved... list.
-
-* !! instead of using Index to select, select by text or some short form of the text
-
-Make the UnresolvedActionFactories a Pair<IActionFactory,IAction> so we can generate them once and check if resolved.
-
-Replace ResolveGrowth with ResolveFastSlow(Speed.Growth);
-
-Make GrowthOPtions not MarkAsComplete but let the caller do it like Slow/Fast actions do.
+UI Helper
+	!! instead of using Index to select, select by text or some short form of the text
 
 --  River - Minimum Viable Product --
 

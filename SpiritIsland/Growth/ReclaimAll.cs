@@ -2,9 +2,8 @@
 	public class ReclaimAll : GrowthAction {
 
 		public override void Apply(){
-			spirit.AvailableCards.AddRange( spirit.PlayedCards );
-			spirit.PlayedCards.Clear();
-			spirit.MarkResolved( this );
+			spirit.Hand.AddRange( spirit.DiscardPile );
+			spirit.DiscardPile.Clear();
 		}
 
 		public override bool IsResolved => true;

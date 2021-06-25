@@ -20,7 +20,6 @@ namespace SpiritIsland {
 		public override void Apply() {
 			TakeFromSource();
 			PlaceOnTarget();
-			spirit.MarkResolved(this);
 		}
 
 		void TakeFromSource() {
@@ -41,6 +40,8 @@ namespace SpiritIsland {
 			if (!isValidTarget)
 				throw new InvalidPresenceLocation(Target.Label, options.Select(bs => bs.Text).ToArray());
 		}
+
+		public Spirit Spirit => spirit; // public for ResolvedPlacePresence, remove when not needed anymore
 
 	}
 

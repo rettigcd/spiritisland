@@ -15,7 +15,7 @@ namespace SpiritIsland.PowerCards {
 		public bool IsResolved => target != null;
 
 		public void Apply() {
-			this.target.Energy += (target==self) ? 1 : target.ActiveCards.Count;
+			this.target.Energy += (target==self) ? 1 : target.PurchasedCards.Count;
 		}
 
 		public IOption[] Options { get{

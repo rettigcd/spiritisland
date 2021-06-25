@@ -12,12 +12,11 @@ namespace SpiritIsland {
 		public override void Apply() {
 			if( Card == null )
 				throw new InvalidOperationException("reclaim 1: no card specified");
-			if( spirit.PlayedCards.Contains(Card) ){
-				spirit.PlayedCards.Remove(Card);
-				spirit.AvailableCards.Add(Card);
+			if( spirit.DiscardPile.Contains(Card) ){
+				spirit.DiscardPile.Remove(Card);
+				spirit.Hand.Add(Card);
 			}
 			Card = null; // ensure it must be set each time.
-			spirit.MarkResolved( this );
 		}
 
 		public override bool IsResolved => Card != null;
@@ -41,6 +40,7 @@ namespace SpiritIsland {
 				if(action == null) throw new Exception("Reclaim action not found.");
 				action.Card = card;
 				action.Apply();
+				action.Resolved(action.spirit);
 			}
 
 		}

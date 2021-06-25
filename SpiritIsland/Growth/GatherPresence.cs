@@ -24,7 +24,6 @@ namespace SpiritIsland {
 			new RemovePresence(From).Apply(spirit);
 			new AddPresence(To).Apply(spirit);
 			From = null;
-			spirit.MarkResolved( this );
 		}
 
 		public class Resolve : IResolver {
@@ -35,11 +34,12 @@ namespace SpiritIsland {
 				this.to = to;
 			}
 			public void Apply(List<IAction> growthActions ) {
-				var action = growthActions
+				GatherPresence action = growthActions
 					.OfType<GatherPresence>()
 					.VerboseSingle(a=>a.To.Label == to);
 				action.From = (Space)action.Options.First(x=>x.Text==from);
 				action.Apply();
+				action.Resolved(action.spirit);
 			}
 		}
 

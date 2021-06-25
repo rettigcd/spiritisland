@@ -106,7 +106,7 @@ namespace SpiritIsland {
 		public override void AddAction(IActionFactory action) {
 
 			if(action is DrawPowerCard){
-				this.AvailableCards.Add( PowerProgression[0] );
+				this.Hand.Add( PowerProgression[0] );
 				PowerProgression.RemoveAt( 0 );
 			} else
 				base.AddAction(action);

@@ -12,7 +12,7 @@ namespace SpiritIsland.Tests.PowerCards {
 		protected PowerCard card;
 
 		protected PowerCard Given_PurchasedCard(string cardName) {
-			var card = spirit.AvailableCards.Single(c => c.Name == cardName);
+			var card = spirit.Hand.Single(c => c.Name == cardName);
 			spirit.BuyAvailableCards(card);
 			return card;
 		}
@@ -25,7 +25,7 @@ namespace SpiritIsland.Tests.PowerCards {
 		protected static void Given_PurchasedFakePowercards(Spirit otherSpirit, int expectedEnergyBonus) {
 			for (int i = 0; i < expectedEnergyBonus; ++i) {
 				var otherCard = new PowerCard("Fake-" + i, 0, Speed.Slow);
-				otherSpirit.ActiveCards.Add(otherCard);
+				otherSpirit.PurchasedCards.Add(otherCard);
 				otherSpirit.UnresolvedActionFactories.Add(otherCard);
 			}
 		}

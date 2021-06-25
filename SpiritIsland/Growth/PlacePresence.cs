@@ -69,16 +69,17 @@ namespace SpiritIsland {
 		}
 
 		public void Apply(List<IAction> growthActions) {
-			var placePresence = growthActions
+			PlacePresenceBase action = growthActions
 				.OfType<PlacePresenceBase>()
 				.ToArray()[focus];
-			Update(placePresence);
-			placePresence.Apply();
+			Update(action);
+			action.Apply();
+			action.Resolved(action.Spirit);
 		}
 
 		protected virtual void Update(PlacePresenceBase pp) {
-			pp.Target = (Space)pp.Options.Single(s=>s.Text==placeOnSpace);
 			pp.Source = source;
+			pp.Target = (Space)pp.Options.Single(s=>s.Text==placeOnSpace);
 		}
 	}
 

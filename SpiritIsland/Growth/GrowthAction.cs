@@ -21,6 +21,13 @@ namespace SpiritIsland {
 			return this;
 		}
 
+		public void Resolved(Spirit spirit){
+			spirit.UnresolvedActionFactories.Remove(this);
+			if(spirit.UnresolvedActionFactories.Count==0)
+				spirit.CollectEnergy();
+		}
+
+
 		public abstract IOption[] Options {get;}
 
 		public virtual void Select(IOption option) {

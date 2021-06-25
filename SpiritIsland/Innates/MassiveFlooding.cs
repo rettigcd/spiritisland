@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 namespace SpiritIsland {
+
 	class MassiveFlooding : InnatePower {
 
 		public MassiveFlooding(){

@@ -92,12 +92,14 @@
     <Compile Include="Growth\PlacePresenceBase.cs" />
     <Compile Include="Growth\RemovePresence.cs" />
     <Compile Include="Growth\Track.cs" />
+    <Compile Include="IActionFactory.cs" />
     <Compile Include="IEnumerableExtensions.cs" />
     <Compile Include="Growth\InvalidPresenceLocation.cs" />
     <Compile Include="Growth\PushPresence.cs" />
     <Compile Include="Growth\IResolver.cs" />
     <Compile Include="Growth\PlacePresence.cs" />
     <Compile Include="Growth\ReclaimAll.cs" />
+    <Compile Include="InnatePower.cs" />
     <Compile Include="InsufficientCardPlaysException.cs" />
     <Compile Include="Invader.cs" />
     <Compile Include="InvaderCard.cs" />

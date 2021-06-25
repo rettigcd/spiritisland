@@ -1,6 +1,8 @@
 ﻿using SpiritIsland;
 using SpiritIsland.Invaders;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SpiritIslandCmd {
 
@@ -11,8 +13,13 @@ namespace SpiritIslandCmd {
 		readonly IPhase fastActions;
 		readonly IPhase invaders;
 		readonly IPhase slowActions;
+		readonly IPhase timePasses;
+
 		readonly Spirit spirit;
 		readonly GameState gameState;
+		readonly Formatter formatter;
+		readonly InvaderDeck invaderDeck;
+		readonly Dictionary<string,Action> commandMap;
 
 		IPhase phase;
 
@@ -22,23 +29,36 @@ namespace SpiritIslandCmd {
 			spirit.InitializePresence(board);
 			gameState = new GameState(spirit){ Island = new Island(board)};
 			gameState.InitBoards();
-			var invaderDeck = new InvaderDeck();
+			invaderDeck = new InvaderDeck();
 			gameState.Explore(invaderDeck.Explore);
 			invaderDeck.Advance();
 
+			formatter = new Formatter(spirit,gameState,invaderDeck);
+
 			selectGrowth = new SelectGrowth(spirit,gameState);
-			resolveGrowth = new ResolveGrowth(spirit,gameState);
-			selectPowerCards = new SelectPowerCards(spirit);
-			fastActions = new ResolveFastSlow(spirit,gameState,Speed.Fast);
-			invaders = new FakePhase("Invaders");
-			slowActions = new ResolveFastSlow(spirit,gameState,Speed.Slow);
+			resolveGrowth = new ResolveActions(spirit,gameState,invaderDeck,Speed.Growth);
+			selectPowerCards = new SelectPowerCards(spirit,formatter);
+			fastActions = new ResolveActions(spirit,gameState,invaderDeck,Speed.Fast,true);
+			invaders = new InvaderPhase(gameState,invaderDeck);
+			slowActions = new ResolveActions(spirit,gameState,invaderDeck,Speed.Slow, true);
+			timePasses = new TimePasses(spirit,gameState);
 
 			selectGrowth.Complete += () => TransitionTo(resolveGrowth);
 			resolveGrowth.Complete += () => TransitionTo(selectPowerCards);
 			selectPowerCards.Complete += () => TransitionTo(fastActions);
 			fastActions.Complete += () => TransitionTo(invaders);
 			invaders.Complete += () => TransitionTo(slowActions);
-			slowActions.Complete += () => TransitionTo(selectGrowth);
+			slowActions.Complete += () => TransitionTo(timePasses);
+			timePasses.Complete += () => TransitionTo(selectGrowth);
+
+			commandMap = new Dictionary<string, Action>{
+				["spirit"] = ShowSpirit,
+				["island"] = ShowIsland,
+				["invaders"] = ShowInvaders,
+				["cards"] = ShowCards,
+				["?"] = ShowCommands,
+				["q"] = Quit,
+			};
 
 		}
 
@@ -62,37 +82,73 @@ namespace SpiritIslandCmd {
 		}
 
 		bool Generic(string cmd){
-			switch(cmd){
-				case "spirit":
-					Console.WriteLine($"Spirit: {spirit.Text} ET:{spirit.EnergyPerTurn} CT:{spirit.NumberOfCardsPlayablePerTurn}" );
-					return true;
-				case "board":
-					Console.WriteLine($"Board: {gameState.Island.Boards[0][0].Label}" );
-					return true;
-			}
-			return false;
-		}
 
-	}
-
-	public class FakePhase : IPhase {
-
-		public FakePhase(string phaseName){
-			Prompt = phaseName + " Press 'n' to go to next phase";
-		}
-
-		public string Prompt {get;}
-
-		public event Action Complete;
-
-		public bool Handle( string cmd,int _ ) {
-			if(cmd != "n") return false;
-			this.Complete?.Invoke();
+			if( !commandMap.ContainsKey(cmd) ) return false;
+			commandMap[cmd]();
 			return true;
 		}
 
-		public void Initialize() {
+		#region commands
+
+		void Quit() {
+			this.phase = null;
 		}
+
+		void ShowCards() {
+			var cards = spirit.Hand
+				.Union( spirit.PurchasedCards )
+				.Union( spirit.DiscardPile )
+				.Cast<IActionFactory>()
+				.Union( spirit.UnresolvedActionFactories )
+				.Distinct()
+				.OrderBy( x => x.Speed == Speed.Growth ? 0 : x.Speed == Speed.Fast ? 1 : 2 )
+				.ThenBy( x => x.Name )
+				.ToList();
+			int maxNameWidth = cards.Select( c => c.Name.Length ).Max();
+			Console.WriteLine( "Cards:" );
+			foreach(var card in cards)
+				Console.WriteLine( "\t" + formatter.Format( card, maxNameWidth ) );
+			Console.WriteLine();
+		}
+
+		void ShowSpirit() {
+			Console.WriteLine( $"Spirit: {spirit.Text}" );
+			// Growth Options
+			// !!! Energy Track
+			Console.WriteLine( $"\tEnergy: {spirit.EnergyPerTurn}/turn   Total:{spirit.Energy}");
+			// !!! Card Track
+			Console.WriteLine( $"\tCards:  {spirit.NumberOfCardsPlayablePerTurn}/turn" );
+			// !!! Innate Powers
+			// Special Rules
+			Console.WriteLine();
+		}
+
+		void ShowIsland() {
+			Console.WriteLine( "Island:" );
+			foreach(var board in gameState.Island.Boards) {
+				foreach(var space in board.Spaces)
+					Console.WriteLine( "\t" + formatter.Format( space ) );
+			}
+			Console.WriteLine();
+		}
+
+		void ShowInvaders() {
+			Console.WriteLine( "Invaders" );
+			Console.WriteLine( "\tDiscard: " + invaderDeck.CountInDiscard );
+			Console.WriteLine( "\tRavage:  " + invaderDeck.Ravage?.Text );
+			Console.WriteLine( "\tBuild:   " + invaderDeck.Build?.Text );
+			Console.WriteLine( "\tExplore: " + "???" );
+			//					Console.WriteLine("\tRemaining:"+invaderDeck.);
+			Console.WriteLine();
+		}
+
+		void ShowCommands(){
+			Console.WriteLine("Commands:");
+			foreach(string key in commandMap.Keys)
+				Console.WriteLine("\t"+key);
+			Console.WriteLine();
+		}
+		#endregion
 	}
 
 }

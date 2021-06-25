@@ -23,7 +23,7 @@ namespace SpiritIsland.Tests.Growth {
 
 			When_Growing( 1, Resolve_PlacePresence( "A4"), Resolve_Reclaim( 0 ) );
 
-			Assert.Equal( 3, spirit.AvailableCards.Count );
+			Assert.Equal( 3, spirit.Hand.Count );
 
 		}
 

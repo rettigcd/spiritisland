@@ -8,13 +8,16 @@ namespace SpiritIslandCmd {
 	public class SelectPowerCards : IPhase {
 		
 		readonly Spirit spirit;
+		readonly Formatter formatter;
 		List<PowerCard> selectedCards;
 		List<PowerCard> options;
 		int canPurchase;
 		int energy;
 
-		public SelectPowerCards(Spirit spirit){
+
+		public SelectPowerCards(Spirit spirit,Formatter formatter){
 			this.spirit = spirit;
+			this.formatter = formatter;
 		}
 
 		public void Initialize() {
@@ -25,7 +28,7 @@ namespace SpiritIslandCmd {
 		}
 
 		void EvaluateCards(){
-			options = spirit.AvailableCards
+			options = spirit.Hand
 				.Except(selectedCards)
 				.Where(c=>c.Cost<=energy && canPurchase>0)
 				.ToList();
@@ -39,8 +42,9 @@ namespace SpiritIslandCmd {
 
 		void UpdatePrompt() {
 			int i = 0;
+			int maxWidth = this.options.Select(m=>m.Name.Length).Max();
 			List<string> options = this.options
-				.Select( c => $"\r\n{++i} : {c.Name} / {c.Cost} / {c.Speed}" )
+				.Select( c => $"\r\n\t{++i} : "+formatter.Format(c,maxWidth) )
 				.ToList();
 			options.Add( "\r\nD : done" );
 			Prompt = $"Buy power cards: (${energy} / {canPurchase})" + options.Join( "" );

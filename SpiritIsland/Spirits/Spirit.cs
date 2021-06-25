@@ -7,23 +7,26 @@ namespace SpiritIsland {
 	public abstract class Spirit :IOption {
 
 		public Spirit(){
-			AvailableCards.Add( new PowerCard( "A", 0, Speed.Fast, Element.Air ) );
-			AvailableCards.Add( new PowerCard( "B", 0, Speed.Fast, Element.Air ) );
-			AvailableCards.Add( new PowerCard( "C", 0, Speed.Fast, Element.Air ) );
-			AvailableCards.Add( new PowerCard( "D", 0, Speed.Fast, Element.Air ) );
+			Hand.Add( new PowerCard( "A", 0, Speed.Fast, Element.Air ) );
+			Hand.Add( new PowerCard( "B", 0, Speed.Fast, Element.Air ) );
+			Hand.Add( new PowerCard( "C", 0, Speed.Fast, Element.Air ) );
+			Hand.Add( new PowerCard( "D", 0, Speed.Fast, Element.Air ) );
 		}
 
 		public Spirit( params PowerCard[] initialCards ){
-			AvailableCards.AddRange( initialCards );
+			Hand.AddRange( initialCards );
 		}
 
 		public virtual InnatePower[] InnatePowers {get; set;} = new InnatePower[0]; // !!! eventually init in constructor
 
 		#region Cards
 
-		public List<PowerCard> AvailableCards = new List<PowerCard>();	// in hand
-		public List<PowerCard> ActiveCards = new List<PowerCard>();		// paid for
-		public List<PowerCard> PlayedCards = new List<PowerCard>();		// discarded
+		public List<PowerCard> Hand = new List<PowerCard>();	// in hand
+		public List<PowerCard> PurchasedCards = new List<PowerCard>();		// paid for
+		public List<PowerCard> DiscardPile = new List<PowerCard>();		// discarded
+
+		// Holds Fast and Slow actions,
+		// depends on Fast/Slow phase to only select the actions that are appropriate
 		public List<IActionFactory> UnresolvedActionFactories = new List<IActionFactory>();
 
 		#endregion
@@ -66,19 +69,14 @@ namespace SpiritIsland {
 
 		void RemoveResolvedActions(GameState gameState) {
 
-			//var aas = UnresolvedActions
-			//	.Select(f=>f.Bind(this,gameState))
-			//	.ToArray();
-			//foreach(var aa in aas){
-			//	var b = aa.IsResolved;
-			//}
-
 			var resolvedActions = UnresolvedActionFactories
-				.Select(f=>f.Bind(this,gameState))
-				.Where(a => a.IsResolved)
+				.Select(f=>new{Factory=f,Action=f.Bind(this,gameState)})
+				.Where(pair => pair.Action.IsResolved)
 				.ToArray();
-			foreach (var a in resolvedActions)
-				a.Apply();
+			foreach (var x in resolvedActions){
+				x.Action.Apply();
+				x.Factory.Resolved(this);
+			}
 		}
 
 		public virtual void InitializePresence( Board board ) {
@@ -87,15 +85,11 @@ namespace SpiritIsland {
 			throw new System.NotImplementedException();
 		}
 
-		public virtual void AddAction(IActionFactory action){
-			UnresolvedActionFactories.Add( action );
+		public virtual void AddAction(IActionFactory factory){
+			UnresolvedActionFactories.Add( factory );
 		}
 
-		public void MarkResolved(IActionFactory action){
-			UnresolvedActionFactories.Remove( action );
-			if(UnresolvedActionFactories.Count == 0)
-				Energy += EnergyPerTurn; // transition 
-		}
+		public void CollectEnergy() => Energy += EnergyPerTurn;
 
 		public abstract GrowthOption[] GetGrowthOptions();
 
@@ -108,28 +102,23 @@ namespace SpiritIsland {
 			foreach (var card in cards)
 				ActivateCard(card);
 
-			QueueActions(Speed.Fast); // !!!
+			foreach (var card in PurchasedCards)
+				AddAction(card);
 
-			// add innate
 			foreach (var innate in InnatePowers)
 				AddAction(innate);
 
 		}
 
 		void ActivateCard(PowerCard card) {
-			if (!AvailableCards.Contains(card)) throw new CardNotAvailableException();
+			if (!Hand.Contains(card)) throw new CardNotAvailableException();
 			if (card.Cost > Energy) throw new InsufficientEnergyException();
 
-			AvailableCards.Remove(card);
-			ActiveCards.Add(card);
+			Hand.Remove(card);
+			PurchasedCards.Add(card);
 			Energy -= card.Cost;
 		}
 
-		void QueueActions(Speed speed) {
-			foreach (var card in ActiveCards)
-				if (card.Speed == speed)
-					AddAction(card);
-		}
 	}
 
 }

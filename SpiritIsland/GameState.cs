@@ -120,6 +120,8 @@ namespace SpiritIsland {
 		Invader[] leftOverOrder;
 
 		public void Ravage( InvaderCard invaderCard ) {
+			if(invaderCard == null) return;
+
 			// 1 point of damage,  Prefer C@1  ---  ---  T@1  ---  E@1 >>> C@2, T@2, C@3
 			// 2 points of damage, Prefer C@1  C@2  ---  T@1  T@2  E@1 >>> C@3
 			// 3 points of damage, Prefer C@1  C@2  C@3  T@1  T@2  E@1

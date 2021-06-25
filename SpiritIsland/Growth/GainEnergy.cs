@@ -10,7 +10,6 @@ namespace SpiritIsland {
 
 		public override void Apply() {
 			spirit.Energy += amount;
-			spirit.MarkResolved( this );
 		}
 
 		public override bool IsResolved => true;

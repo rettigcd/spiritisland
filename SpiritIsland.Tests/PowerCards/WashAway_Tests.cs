@@ -197,13 +197,13 @@ namespace SpiritIsland.Tests.PowerCards {
 			spirit.Presence.Add(presenceSpace);
 
 			//   And: Purchased WashAway
-			card = spirit.AvailableCards.Single(c => c.Name == WashAway.Name);
+			card = spirit.Hand.Single(c => c.Name == WashAway.Name);
 			spirit.Energy = card.Cost;
 			spirit.BuyAvailableCards(card);
 
 			// Jump to slow
 			spirit.UnresolvedActionFactories.Clear();
-			spirit.UnresolvedActionFactories.AddRange(spirit.ActiveCards.Where(x => x.Speed == Speed.Slow));
+			spirit.UnresolvedActionFactories.AddRange(spirit.PurchasedCards.Where(x => x.Speed == Speed.Slow));
 			Assert_CardIsReady(card);
 
 		}

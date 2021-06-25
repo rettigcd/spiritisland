@@ -62,12 +62,12 @@ namespace SpiritIsland.Tests.Growth {
 		}
 
 		protected void Given_HalfOfPowercardsPlayed() {
-			Discard(spirit.AvailableCards.Count-1);
-			Discard(spirit.AvailableCards.Count-1);
+			Discard(spirit.Hand.Count-1);
+			Discard(spirit.Hand.Count-1);
 		}
 		void Discard(int idx){
-			spirit.PlayedCards.Add( spirit.AvailableCards[idx] );
-			spirit.AvailableCards.RemoveAt( idx );
+			spirit.DiscardPile.Add( spirit.Hand[idx] );
+			spirit.Hand.RemoveAt( idx );
 		}
 
 		#endregion
@@ -77,12 +77,12 @@ namespace SpiritIsland.Tests.Growth {
 
 			// modify the growth option to resolve incomplete states
 
-			foreach (var resolver in resolvers)
-				resolver.Apply( 
-					spirit.UnresolvedActionFactories
-						.Select(f=>f.Bind(this.spirit,this.gameState))
-						.ToList()
-			);
+			foreach (var resolver in resolvers){
+				var unresolvedActions = spirit.UnresolvedActionFactories
+					.Select(f=>f.Bind(this.spirit,this.gameState))
+					.ToList();
+				resolver.Apply( unresolvedActions );
+			}
 
 		}
 
@@ -103,13 +103,13 @@ namespace SpiritIsland.Tests.Growth {
 
 		protected void Assert_HasCardAvailable( string name ){
 			bool nameMatches( PowerCard card ) => string.Compare(name,card.Name,true) == 0;
-			Assert.True(spirit.AvailableCards.Any( nameMatches ),$"Hand does not contain {name}");
+			Assert.True(spirit.Hand.Any( nameMatches ),$"Hand does not contain {name}");
 		}
 
 		protected void Assert_AllCardsAvailableToPlay(int expectedAvailableCount = 4) {
 			// Then: all cards reclaimed (including unplayed)
-			Assert.Empty( spirit.PlayedCards ); // , "Should not be any cards in 'played' pile" );
-			Assert.Equal( expectedAvailableCount, spirit.AvailableCards.Count );
+			Assert.Empty( spirit.DiscardPile ); // , "Should not be any cards in 'played' pile" );
+			Assert.Equal( expectedAvailableCount, spirit.Hand.Count );
 		}
 
 		protected void Assert_HasEnergy( int expectedChange ) {
@@ -141,7 +141,7 @@ namespace SpiritIsland.Tests.Growth {
 		}
 
 		protected IResolver Resolve_Reclaim( int index ) {
-			return Reclaim1.Resolve( spirit.PlayedCards[index] );
+			return Reclaim1.Resolve( spirit.DiscardPile[index] );
 		}
 
 		protected static SpyOnPlacePresence Resolve_PlacePresence( string placeOptions, int focus=0) {

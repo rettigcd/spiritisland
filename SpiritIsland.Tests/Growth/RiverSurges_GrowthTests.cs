@@ -33,8 +33,8 @@ namespace SpiritIsland.Tests.Growth {
 			// Given: using power pregression
 
 			//   And: all cards played
-			spirit.PlayedCards.AddRange(spirit.AvailableCards);
-			spirit.AvailableCards.Clear();
+			spirit.DiscardPile.AddRange(spirit.Hand);
+			spirit.Hand.Clear();
 
 			//  And: energy track is at 1
 			Assert.Equal(1,spirit.EnergyPerTurn);
@@ -169,12 +169,12 @@ namespace SpiritIsland.Tests.Growth {
 			spirit.BuyAvailableCards(card);
 
 			// Then: card is in Active/play list
-			Assert.Contains(spirit.ActiveCards, c => c == card);
+			Assert.Contains(spirit.PurchasedCards, c => c == card);
 
 			//  And: card is not in Available list
-			Assert.DoesNotContain(spirit.AvailableCards, c => c == card);
+			Assert.DoesNotContain(spirit.Hand, c => c == card);
 
-			Assert_CardInActionListIf(card, Speed.Fast);
+			Assert_CardInActionListIf(card);
 
 			Assert_InnateInActionListIf(Speed.Fast);
 
@@ -199,25 +199,21 @@ namespace SpiritIsland.Tests.Growth {
 				Assert.DoesNotContain(innate, unresolvedInnates);
 		}
 
-		protected void Assert_CardInActionListIf(PowerCard card, Speed currentSpeed) {
+		protected void Assert_CardInActionListIf(PowerCard card) {
 
 			var unresolvedCards = spirit.UnresolvedActionFactories
 				.OfType<PowerCard>()
 				.ToArray();
 
-			if (card.Speed == currentSpeed)
-				//  And: card is in Unresolved Action list
-				Assert.Contains(card, unresolvedCards);
-			else
-				//  And: card is NOT in Unresolved Action list
-				Assert.DoesNotContain(card, unresolvedCards);
+			//  And: card is in Unresolved Action list
+			Assert.Contains(card, unresolvedCards);
 		}
 
 		[Theory]
 		[InlineData("Wash Away")]
 		[InlineData("Flash Floods")]
 		public void InsufficientEnergyToBuy(string cardName){
-			var card = spirit.AvailableCards.VerboseSingle(c=>c.Name == cardName);
+			var card = spirit.Hand.VerboseSingle(c=>c.Name == cardName);
 			spirit.Energy = card.Cost - 1;
 
 			// When:
@@ -230,8 +226,8 @@ namespace SpiritIsland.Tests.Growth {
 		public void InsufficientCardCountToBuy(){
 			
 			// Given: has 2 cards they want to play
-			var card1 = spirit.AvailableCards[0];
-			var card2 = spirit.AvailableCards[1];
+			var card1 = spirit.Hand[0];
+			var card2 = spirit.Hand[1];
 
 			//  And: lots of energy
 			spirit.Energy = 200;
@@ -268,11 +264,11 @@ namespace SpiritIsland.Tests.Growth {
 		#endregion Innates
 
 		void Discard(PowerCard card) {
-			spirit.AvailableCards.Remove(card);
-			spirit.PlayedCards.Add(card);
+			spirit.Hand.Remove(card);
+			spirit.DiscardPile.Add(card);
 		}
 
-		PowerCard FindSpiritsAvailableCard(string cardName) => spirit.AvailableCards.VerboseSingle(c => c.Name == cardName);
+		PowerCard FindSpiritsAvailableCard(string cardName) => spirit.Hand.VerboseSingle(c => c.Name == cardName);
 
 		#endregion
 
