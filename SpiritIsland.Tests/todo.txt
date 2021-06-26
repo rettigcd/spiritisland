@@ -4,14 +4,15 @@ Unit Test
 	Spirit.SacredSites
 	River.SacredSites
 	MassiveFlooding
+	Fear
 
 Fix
 	Massive Flooding level 2 and 3
 
 Missing
-	init Dahan
 	Fear
-	Blight
+	blight cards
+	blight damage to land + cascading
 
 View
 	energy track
@@ -19,24 +20,6 @@ View
 
 UI Helper
 	!! instead of using Index to select, select by text or some short form of the text
-
---  River - Minimum Viable Product --
-
-Action 
-	=> Select Growth
-	=> Select PowerCards to purchase
-	=> Select Fast Powers & Resolve
-	=> Trigger: Ragave, Build, Explore
-	=> Select Slow Powers & Resolve
-
-Alt Cmds
-	- Display contents of Space
-	- Display Spirit statistics
-	- Display Invader Board Stats
-	- Quit
-
-
-
 
 ----
 

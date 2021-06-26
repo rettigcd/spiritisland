@@ -12,6 +12,7 @@ namespace SpiritIsland {
 			if(spirits.Length==0) throw new ArgumentException("Game must include at least 1 spirit");
 			this.Spirits = spirits;
 		}
+
 		public Island Island { get; set; }
 		public Spirit[] Spirits { get; }
 
@@ -28,31 +29,35 @@ namespace SpiritIsland {
 			}
 		}
 
+		#region Beasts
 		public void AddBeast( Space space ){ beastCount[space]++; }
+		public bool HasBeasts( Space s ) => beastCount[s] > 0;
+		#endregion
 
-		public void AddBlight( Space space ){ blightCount[space]++; }
+		#region Blight
+
+		public void AddBlight( Space space, int delta=1 ){ blightCount[space]+=delta; }
 		public bool HasBlight( Space s ) => blightCount[s] > 0;
 		public int GetBlightOnSpace( Space space ){ return blightCount[space]; }
 
+		#endregion
+
+		#region Wilds
 		public void AddWilds( Space space ){ wildsCount[space]++; }
 		public bool HasWilds( Space s ) => wildsCount[s] > 0;
+		#endregion
 
+		#region Fear
+		public void AddFear(int count) => fearCount += count;
+		#endregion
+
+		#region Dahan
 		public void AddDahan( Space space, int delta=1 ){ 	dahanCount[space]+=delta;}
 		public int GetDahanOnSpace( Space space ){ return dahanCount[space]; }
 		public bool HasDahan( Space space ) => GetDahanOnSpace(space)>0;
-
-		public bool HasBeasts( Space s ) => beastCount[s] > 0;
-
-
-		readonly CountDictionary<Space> blightCount = new CountDictionary<Space>();
-		readonly CountDictionary<Space> beastCount = new CountDictionary<Space>();
-		readonly CountDictionary<Space> wildsCount = new CountDictionary<Space>();
-
-		readonly CountDictionary<Space> dahanCount = new CountDictionary<Space>();
+		#endregion
 
 		#region Invaders
-
-		readonly CountDictionary<InvaderKey> invaderCount = new CountDictionary<InvaderKey>();
 
 		public bool HasInvaders( Space space ) 
 			=> invaderCount.Keys.Any(k=>k.Space==space);
@@ -168,6 +173,13 @@ namespace SpiritIsland {
 
 		#endregion
 
+		readonly CountDictionary<Space> blightCount = new CountDictionary<Space>();
+		readonly CountDictionary<Space> beastCount = new CountDictionary<Space>();
+		readonly CountDictionary<Space> wildsCount = new CountDictionary<Space>();
+
+		readonly CountDictionary<InvaderKey> invaderCount = new CountDictionary<InvaderKey>();
+		readonly CountDictionary<Space> dahanCount = new CountDictionary<Space>();
+		int fearCount = 0;
 	}
 
 }
