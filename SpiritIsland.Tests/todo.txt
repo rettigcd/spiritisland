@@ -11,6 +11,7 @@ Unit Test
 	MassiveFlooding
 	Uncanny Melting
 	Nature's Resilience
+	Pull Beneath the Hungry Earth
 
 Not Implemented
 	Fear Cards / Fear Initialization

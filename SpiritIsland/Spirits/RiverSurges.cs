@@ -120,7 +120,7 @@ namespace SpiritIsland {
 		readonly List<PowerCard> PowerProgression = new List<PowerCard>{
 			PowerCard.For<UncannyMelting>(),
 			PowerCard.For<NaturesResilience>(),
-			new PowerCard("Pull Beneath the Hungry Earth", 0, Speed.Fast),
+			PowerCard.For<PullBeneathTheHungryEarth>(),
 			new PowerCard("Accelerated Rot", 0, Speed.Fast),
 			new PowerCard("Song of Sanctity", 0, Speed.Fast),
 			new PowerCard("Tsunami", 0, Speed.Fast),
