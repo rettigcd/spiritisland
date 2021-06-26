@@ -9,6 +9,14 @@ namespace SpiritIsland.PowerCards {
 		public TargetSpaceRangeFromSacredSite(
 			Spirit spirit, 
 			int range,
+			Action<Space,ActionEngine> onSelect
+		)
+			:this(spirit,range,(s)=>true,onSelect)
+		{}
+
+		public TargetSpaceRangeFromSacredSite(
+			Spirit spirit, 
+			int range,
 			Func<Space,bool> spaceFilter,
 			Action<Space,ActionEngine> onSelect
 		){

@@ -29,6 +29,10 @@ namespace SpiritIsland {
 			}
 		}
 
+		internal void Defend( Space _, int __ ) {
+			// !!! implement me
+		}
+
 		#region Beasts
 		public void AddBeast( Space space ){ beastCount[space]++; }
 		public bool HasBeasts( Space s ) => beastCount[s] > 0;

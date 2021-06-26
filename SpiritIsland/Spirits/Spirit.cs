@@ -17,6 +17,17 @@ namespace SpiritIsland {
 			Hand.AddRange( initialCards );
 		}
 
+		#region Elements
+
+		public CountDictionary<Element> AllElements => PurchasedCards
+			.SelectMany(c=>c.Elements)
+			.GroupBy(c=>c)
+			.ToDictionary(grp=>grp.Key,grp=>grp.Count())
+			.ToCountDict();
+		public virtual int Elements(Element _) => 0;
+
+		#endregion
+
 		public virtual InnatePower[] InnatePowers {get; set;} = new InnatePower[0]; // !!! eventually init in constructor
 
 		#region Cards
@@ -97,8 +108,6 @@ namespace SpiritIsland {
 		public void CollectEnergy() => Energy += EnergyPerTurn;
 
 		public abstract GrowthOption[] GetGrowthOptions();
-
-		public virtual int Elements(Element _) => 0;
 
 		public virtual void BuyAvailableCards(params PowerCard[] cards) {
 			if (cards.Length > NumberOfCardsPlayablePerTurn) 

@@ -12,11 +12,7 @@ namespace SpiritIsland {
 
 		public MassiveFlooding(Spirit spirit,GameState gameState):base(gameState){
 
-			var elements = spirit.PurchasedCards
-				.SelectMany(c=>c.Elements)
-				.GroupBy(c=>c)
-				.ToDictionary(grp=>grp.Key,grp=>grp.Count())
-				.ToCountDict();
+			var elements = spirit.AllElements;
 
 			count = new int[]{
 				elements[Element.Sun],
@@ -28,7 +24,7 @@ namespace SpiritIsland {
 
 			engine.decisions.Push( new TargetSpaceRangeFromSacredSite(spirit,1,
 				HasExplorersOrTowns
-				,X
+				,SelectLevel
 			));
 
 		}
@@ -40,60 +36,25 @@ namespace SpiritIsland {
 
 		readonly int count;
 
-		void X(Space space,ActionEngine engine){
+		void SelectLevel(Space space,ActionEngine engine){
 			var invaders = gameState.InvadersOn(space);
-			var d = new NamedDecision[]{
-				new NamedDecision{ 
-					Text="Push 1 E/T", 
-					Item = new SelectInvadersToPush(invaders,1,"Town","Explorer")
-				},
-				new NamedDecision{ 
-					Text="2 damage, Push up to 3 explorers and/or towns", 
-					Item = new SelectInvadersToPush(invaders,3,"Town","Explorer") // !
-				},
-				new NamedDecision{ 
-					Text="2 damage to all", 
-					Item = new SelectInvadersToPush(invaders,3,"Town","Explorer") // !!
-				}
-			}.Take(count).ToArray();
 
-			engine.decisions.Push( new SelectInnate(d) );
+			const string k1 = "Push 1 E/T";
+			const string k2 = "2 damage, Push up to 3 explorers and/or towns";
+			const string k3 = "2 damage to all";
+
+			var d = new string[]{ k1, k2, k3 }.Take(count);
+
+			var dict = new Dictionary<string,IDecision>{
+				[k1] = new SelectInvadersToPush(invaders,1,"Town","Explorer"),
+				[k2] = new SelectInvadersToPush(invaders,3,"Town","Explorer"), // !!
+				[k3] = new SelectInvadersToPush(invaders,3,"Town","Explorer") // !!
+			};
+
+			engine.decisions.Push( new SelectText(d,(string option,ActionEngine engine)=>{
+				engine.decisions.Push( dict[option] );
+			}) );
 		}
-
-		class NamedDecision : IOption, IDecision {
-			public IDecision Item;
-			public string Text { get; set; }
-			public string Prompt => Text + "-" + Item.Prompt;
-			public IOption[] Options => Item.Options;
-			public void Select( IOption option, ActionEngine engine ) => Item.Select(option,engine);
-		}
-
-
-		class SelectInnate : IDecision {
-			readonly NamedDecision[] options;
-			public SelectInnate(NamedDecision[] options){
-				this.options = options;
-			}
-
-			public string Prompt => "Select Innate option";
-
-			public IOption[] Options => options;
-
-			public void Select( IOption option, ActionEngine engine ) {
-				var decision = (NamedDecision)option;
-				engine.decisions.Push(decision.Item);
-			}
-		}
-
-		//  * 1 sun, 2 water => Push 1 Explorer or Town
-		//[InnateOption( Element.Sun, Element.Water, Element.Water )]
-		//public class Push1ExplorerOrTown : IDecision {
-		//	public string Prompt => throw new System.NotImplementedException();
-		//	public IOption[] Options => throw new System.NotImplementedException();
-		//	public void Select( IOption option, ActionEngine engine ) {
-		//		throw new System.NotImplementedException();
-		//	}
-		//}
 
 		// * 2 sun, 3 water => Instead, 2 damage, Push up to 3 explorers and/or towns
 		[InnateOption(Element.Sun,Element.Sun,Element.Water,Element.Water,Element.Water)]
@@ -107,23 +68,6 @@ namespace SpiritIsland {
 
 		}
 
-	}
-
-	class SelectInnate : IDecision {
-
-		public SelectInnate(){
-//			var innate1Elements = new Dictionary<Element,int>{ [Element.Sun] = 1, [Element.Water] = 2 };
-//			var innate2Elements = new Dictionary<Element,int>{ [Element.Sun] = 2, [Element.Water] = 3 };
-//			var innate3Elements = new Dictionary<Element,int>{ [Element.Sun] = 3, [Element.Water] = 4, [Element.Earth] = 1 };
-		}
-
-		public string Prompt => throw new System.NotImplementedException();
-
-		public IOption[] Options => throw new System.NotImplementedException();
-
-		public void Select( IOption option, ActionEngine engine ) {
-			throw new System.NotImplementedException();
-		}
 	}
 
 }

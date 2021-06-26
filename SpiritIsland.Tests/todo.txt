@@ -1,18 +1,23 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
+Fix
+	Massive Flooding level 2 and 3
+	Spirit.Elements && Spirit.AllElements
+
 Unit Test
 	Spirit.SacredSites
 	River.SacredSites
+	Fear
 	MassiveFlooding
-	Fear
+	Uncanny Melting
+	Nature's Resilience
 
-Fix
-	Massive Flooding level 2 and 3
-
-Missing
-	Fear
+Not Implemented
+	Fear Cards / Fear Initialization
 	blight cards
 	blight damage to land + cascading
+	Drawing Major Power Card - have to discard
+	GameState.Defend(Space,defentPoints)
 
 View
 	energy track

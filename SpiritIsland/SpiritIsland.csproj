@@ -102,6 +102,7 @@
     <Compile Include="Growth\ReclaimAll.cs" />
     <Compile Include="InnatePower.cs" />
     <Compile Include="InnatePowerAttribute.cs" />
+    <Compile Include="Innates\SelectText.cs" />
     <Compile Include="InsufficientCardPlaysException.cs" />
     <Compile Include="Invader.cs" />
     <Compile Include="InvaderCard.cs" />
@@ -123,7 +124,9 @@
     <Compile Include="PowerCards\IDecision.cs" />
     <Compile Include="PowerCards\MoveDahan.cs" />
     <Compile Include="PowerCards\MoveInvader.cs" />
+    <Compile Include="PowerCards\NaturesResilience.cs" />
     <Compile Include="PowerCards\NullOption.cs" />
+    <Compile Include="PowerCards\PullBeneathTheHungryEarth.cs" />
     <Compile Include="PowerCards\RiversBounty.cs" />
     <Compile Include="PowerCards\Select1DahanSource.cs" />
     <Compile Include="PowerCards\SelectInvaderDestination.cs" />
