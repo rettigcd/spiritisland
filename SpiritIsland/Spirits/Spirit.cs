@@ -33,6 +33,11 @@ namespace SpiritIsland {
 
 		public readonly List<Space> Presence = new List<Space>();
 
+		public virtual IEnumerable<Space> SacredSites => Presence
+			.GroupBy(x=>x)
+			.Where(grp=>grp.Count()>1)
+			.Select(grp=>grp.Key);
+
 		/// <summary> # of coins in the bank. </summary>
 		public int Energy { get; set; }
 

@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace SpiritIsland {
 
-	public class PowerCard : IActionFactory {
+	public class PowerCard : IActionFactory, ICardAttributes {
 
 		static public PowerCard For<T>(){ return new PowerCard(typeof(T));}
 
@@ -17,10 +17,10 @@ namespace SpiritIsland {
 			if(pca.Length!=1) throw new ArgumentException(actionType.Name+" has multiple PowerCard attributes.");
 			var attr = pca[0];
 
-			this.Name = attr.Name;
-			this.Cost = attr.Cost;
-			this.Speed = attr.Speed;
-			this.Elements = attr.Elements;
+			Speed = attr.Speed;
+			Name = attr.Name;
+			Cost = attr.Cost;
+			Elements = attr.Elements;
 
 			this.actionType = actionType;
 		}

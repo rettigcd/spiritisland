@@ -206,7 +206,7 @@ namespace SpiritIsland.Tests.Boards {
 		[InlineData("D7","TDD")]
 		[InlineData("D8","")]
 
-		public void BoardStartingItems(string spaceLabel,string items){
+		public void StartingItems(string spaceLabel,string items){
 			var board = spaceLabel.Substring(0,1) switch{
 				"A" => Board.BuildBoardA(),
 				"B" => Board.BuildBoardB(),
@@ -225,7 +225,7 @@ namespace SpiritIsland.Tests.Boards {
 			Assert.Equal(items.Count(c=>c=='C'), grp[Invader.City]);
 			Assert.Equal(items.Count(c=>c=='T'), grp[Invader.Town]);
 			Assert.Equal(items.Count(c=>c=='E'), grp[Invader.Explorer]);
-//			int dahan = items.Count(c=>c=='D');
+			Assert.Equal(items.Count(c=>c=='D'), gameState.GetDahanOnSpace(space));
 //			int blight = items.Count(c=>c=='B');
 		}
 

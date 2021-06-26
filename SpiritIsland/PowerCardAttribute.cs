@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland.PowerCards {
 
 	[System.AttributeUsage(System.AttributeTargets.Class)]
-	public class PowerCardAttribute : System.Attribute {
+	public class PowerCardAttribute : System.Attribute , ICardAttributes {
 		public PowerCardAttribute(string name, int cost, Speed speed, params Element[] elements){
 			this.Name = name;
 			this.Cost = cost;
@@ -15,5 +15,16 @@
 		public Element[] Elements { get; }
 
 	}
+
+	[System.AttributeUsage(System.AttributeTargets.Class)]
+	public class InnateOptionAttribute : System.Attribute {
+		public InnateOptionAttribute(params Element[] elements){
+			this.Elements = elements;
+		}
+
+		public Element[] Elements { get; }
+
+	}
+
 
 }

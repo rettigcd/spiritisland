@@ -7,12 +7,12 @@
 
 		public WashAway(Spirit spirit,GameState gameState):base(gameState) {
 			engine.decisions.Push( new TargetSpaceRangeFromPresence(spirit,1
-				,HasExplorersOrInvaders // Filter
+				,HasExplorersOrTowns // Filter
 				,Push3FromSpace
 			) );
 		}
 
-		bool HasExplorersOrInvaders(Space space){
+		bool HasExplorersOrTowns(Space space){
 			var sum = gameState.InvadersOn(space);
 			return sum.HasExplorer || sum.HasTown;
 		}

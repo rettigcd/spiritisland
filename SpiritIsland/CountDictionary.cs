@@ -33,4 +33,9 @@ namespace SpiritIsland {
 		readonly Dictionary<K,int> _inner; 
 	}
 
+	public static class ExtendDictionary {
+		static public CountDictionary<T> ToCountDict<T>(this Dictionary<T,int> inner)
+			=> new CountDictionary<T>(inner);
+	}
+
 }

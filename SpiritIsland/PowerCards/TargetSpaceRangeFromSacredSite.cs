@@ -2,12 +2,11 @@
 using System.Linq;
 
 namespace SpiritIsland.PowerCards {
-
-	public class TargetSpaceRangeFromPresence : IDecision {
+	public class TargetSpaceRangeFromSacredSite : IDecision {
 
 		readonly Action<Space,ActionEngine> onSelect;
 
-		public TargetSpaceRangeFromPresence(
+		public TargetSpaceRangeFromSacredSite(
 			Spirit spirit, 
 			int range,
 			Func<Space,bool> spaceFilter,
@@ -15,7 +14,7 @@ namespace SpiritIsland.PowerCards {
 		){
 			this.onSelect = onSelect;
 
-			this.Options = spirit.Presence
+			this.Options = spirit.SacredSites
 				.SelectMany(x => x.SpacesWithin(range))
 				.Distinct()
 				.Where(spaceFilter)

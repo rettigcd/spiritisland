@@ -1,10 +1,17 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
+Unit Test
+	Spirit.SacredSites
+	River.SacredSites
+	MassiveFlooding
+
+Fix
+	Massive Flooding level 2 and 3
+
 Missing
-	Innate Powers
+	init Dahan
 	Fear
 	Blight
-	Power Progression Card Implementation
 
 View
 	energy track
@@ -14,8 +21,6 @@ UI Helper
 	!! instead of using Index to select, select by text or some short form of the text
 
 --  River - Minimum Viable Product --
-
-* River - Innate - Massive Flooding
 
 Action 
 	=> Select Growth

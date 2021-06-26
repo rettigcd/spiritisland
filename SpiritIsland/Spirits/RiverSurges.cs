@@ -54,7 +54,7 @@ namespace SpiritIsland {
 			new PowerCard(typeof(WashAway))
 		){
 			this.InnatePowers = new InnatePower[]{
-				new MassiveFlooding()
+				InnatePower.For<MassiveFlooding>()
 			};
 		}
 
@@ -102,6 +102,11 @@ namespace SpiritIsland {
 		}
 
 		#endregion
+
+		public override IEnumerable<Space> SacredSites => Presence
+			.Where(s=>s.Terrain==Terrain.Wetland)
+			.Union( base.SacredSites )
+			.Distinct();
 
 		public override void AddAction(IActionFactory action) {
 
