@@ -15,17 +15,32 @@ namespace SpiritIsland {
 		public Island Island { get; set; }
 		public Spirit[] Spirits { get; }
 
+		public void InitBoards() {
+			foreach(var board in Island.Boards){
+				foreach(var space in board.Spaces){
+					var counts = space.StartUpCounts;
+					this.Adjust(space,Invader.City,counts.Cities);
+					this.Adjust(space,Invader.Town,counts.Towns);
+					this.Adjust(space,Invader.Explorer,counts.Explorers);
+					this.AddDahan(space,counts.Dahan);
+					if(counts.Blight>0) this.AddBlight(space); // add 1
+				}
+			}
+		}
+
 		public void AddBeast( Space space ){ beastCount[space]++; }
+
 		public void AddBlight( Space space ){ blightCount[space]++; }
-		public void AddDahan( Space space, int delta=1 ){ dahanCount[space]+=delta; }
+		public bool HasBlight( Space s ) => blightCount[s] > 0;
+		public int GetBlightOnSpace( Space space ){ return blightCount[space]; }
 
 		public void AddWilds( Space space ){ wildsCount[space]++; }
-
-		public int GetDahanOnSpace( Space space ){ return dahanCount[space]; }
-
-		public bool HasDahan( Space space ) => GetDahanOnSpace(space)>0;
 		public bool HasWilds( Space s ) => wildsCount[s] > 0;
-		public bool HasBlight( Space s ) => blightCount[s] > 0;
+
+		public void AddDahan( Space space, int delta=1 ){ 	dahanCount[space]+=delta;}
+		public int GetDahanOnSpace( Space space ){ return dahanCount[space]; }
+		public bool HasDahan( Space space ) => GetDahanOnSpace(space)>0;
+
 		public bool HasBeasts( Space s ) => beastCount[s] > 0;
 
 
@@ -61,32 +76,12 @@ namespace SpiritIsland {
 			foreach(var invader in invaders.Changed)
 				this.invaderCount[Key(invaders.Space,invader)] = invaders[invader];
 		}
-		static InvaderKey Key(Space space,Invader invader) => new InvaderKey{ Invader=invader, Space=space};
-
-		struct InvaderKey : IEquatable<InvaderKey> {
-			public Space Space;
-			public Invader Invader;
-			public bool Equals( InvaderKey other ) => Space==other.Space && Invader==other.Invader;
-			public override bool Equals( object obj ) => Equals((InvaderKey)obj);
-			public override int GetHashCode() => Space.GetHashCode() ^ Invader.GetHashCode();
-		}
 
 		InvaderGroup InitInvaderGroup(Space targetSpace) {
 			var dict1 = invaderCount.Keys
 				.Where(k=>k.Space==targetSpace)
 				.ToDictionary(k=>k.Invader,k=>invaderCount[k]);
 			return new InvaderGroup( targetSpace, dict1 );
-		}
-
-		public void InitBoards() {
-			foreach(var board in Island.Boards){
-				foreach(var space in board.Spaces){
-					var counts = space.StartUpCounts;
-					this.Adjust(space,Invader.City,counts.Cities);
-					this.Adjust(space,Invader.Town,counts.Towns);
-					this.Adjust(space,Invader.Explorer,counts.Explorers);
-				}
-			}
 		}
 
 		public void Explore( InvaderCard invaderCard ) {
@@ -158,6 +153,16 @@ namespace SpiritIsland {
 			}
 
 			UpdateFromGroup( ravageGroup );
+		}
+
+		static InvaderKey Key(Space space,Invader invader) => new InvaderKey{ Invader=invader, Space=space};
+
+		struct InvaderKey : IEquatable<InvaderKey> {
+			public Space Space;
+			public Invader Invader;
+			public bool Equals( InvaderKey other ) => Space==other.Space && Invader==other.Invader;
+			public override bool Equals( object obj ) => Equals((InvaderKey)obj);
+			public override int GetHashCode() => Space.GetHashCode() ^ Invader.GetHashCode();
 		}
 
 

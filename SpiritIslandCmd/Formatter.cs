@@ -51,12 +51,18 @@ namespace SpiritIslandCmd {
 
 			// dahan
 			int dahanCount = gameState.GetDahanOnSpace( space );
-			if(dahanCount > 0)
-				details += " D" + dahanCount;
+			string dahan = (dahanCount > 0) ? ("D" + dahanCount) :"  ";
+
+			int blightCount = gameState.GetBlightOnSpace( space );
+			string blight = (blightCount > 0) ? ("B" + blightCount) :"  ";
 
 			// presence
 			string pres = spirit.Presence.Where(p=>p==space).Select(x=>"P").Join("");
-			return $"{space.Label} {threat} {space.Terrain}\t{details}\t{pres}";
+			return $"{space.Label} {threat} {Pad(space.Terrain)}\t{dahan}\t{details}\t{blight}\t{pres}";
+		}
+		string Pad(Terrain terrain) {
+			string s= terrain.ToString();
+			return s + new string(' ',8-s.Length);
 		}
 
 		public string Format( Track track ) {
