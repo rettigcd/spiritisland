@@ -130,13 +130,13 @@ namespace SpiritIsland.Tests.Growth {
 			// Test the reclaim bit
 			Given_HasPresence( board[3] );
 
-			var resolvers = new List<IResolver>{};
-
-			while(reclaimCount-->0)
-				resolvers.Add(Resolve_Reclaim(reclaimCount));
+			var resolvers = new List<SpyOnPlacePresence>{};
 
 			When_Growing(5,resolvers.ToArray());
 
+			while(reclaimCount-->0)
+//				resolvers.Add(Resolve_Reclaim(reclaimCount));
+				AndWhen_ReclaimingFirstCard();
 		}
 
 	}

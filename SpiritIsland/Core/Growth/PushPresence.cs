@@ -19,6 +19,10 @@ namespace SpiritIsland.Core {
 
 		public override IOption[] Options { get; }
 
+		public override void Select( IOption option ) {
+			To = (Space)option;
+		}
+
 		public override void Apply() {
 			if(To==null)
 				throw new InvalidOperationException("Destination Presence land not specified");
@@ -26,24 +30,6 @@ namespace SpiritIsland.Core {
 			new RemovePresence(From).Apply(spirit);
 			new AddPresence(To).Apply(spirit);
 			To = null;
-		}
-
-		public class Resolve : IResolver {
-			readonly string from;
-			readonly string to;
-			public Resolve(string from, string to){ 
-				this.from = from;
-				this.to = to;
-			}
-			public void Apply(List<IAction> growthActions ) {
-				PushPresence action = growthActions
-					.OfType<PushPresence>()
-					.VerboseSingle(a=>a.From.Label == from);
-
-				action.To = (Space)action.Options.First(x=>x.Text==to);
-				action.Apply();
-				action.Resolved(action.spirit);
-			}
 		}
 
 		public override bool IsResolved => To != null;

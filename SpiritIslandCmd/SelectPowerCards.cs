@@ -15,7 +15,6 @@ namespace SpiritIslandCmd {
 		int canPurchase;
 		int energy;
 
-
 		public SelectPowerCards(Spirit spirit,Formatter formatter){
 			this.spirit = spirit;
 			this.formatter = formatter;

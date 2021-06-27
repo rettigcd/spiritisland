@@ -1,4 +1,6 @@
-﻿using SpiritIsland.Base;
+﻿using System.Linq;
+using SpiritIsland.Base;
+using SpiritIsland.Core;
 using Xunit;
 
 namespace SpiritIsland.Tests.Growth {
@@ -22,7 +24,10 @@ namespace SpiritIsland.Tests.Growth {
 			Given_HalfOfPowercardsPlayed();
 			Given_HasPresence( board[4] );
 
-			When_Growing( 1, Resolve_PlacePresence( "A4"), Resolve_Reclaim( 0 ) );
+			//			When_Growing( 1, Resolve_PlacePresence( "A4"), Resolve_Reclaim( 0 ) );
+			When_Growing( 1, Resolve_PlacePresence( "A4" ) );
+
+			AndWhen_ReclaimingFirstCard();
 
 			Assert.Equal( 3, spirit.Hand.Count );
 

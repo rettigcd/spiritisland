@@ -73,7 +73,7 @@ namespace SpiritIsland.Tests.Growth {
 
 		#endregion
 
-		protected void When_Growing( int option, params IResolver[] resolvers ) {
+		protected void When_Growing( int option, params SpyOnPlacePresence[] resolvers ) {
 			spirit.Grow(gameState, option);
 
 			// modify the growth option to resolve incomplete states
@@ -121,30 +121,6 @@ namespace SpiritIsland.Tests.Growth {
 
 		#region Resolve_
 
-		protected static IResolver[] Resolve_PushPresence( string select ) {
-			return select.Split( ',' )
-				.Where( x => !string.IsNullOrEmpty( x ) )
-				.Select( x => {
-					var p = x.Split( '>' );
-					return new PushPresence.Resolve( p[0], p[1] );
-				} )
-				.ToArray();
-		}
-
-		protected static IResolver[] Resolve_GatherPresence( string select ) {
-			return select.Split( ',' )
-				.Where( x => !string.IsNullOrEmpty( x ) )
-				.Select( x => {
-					var p = x.Split( '>' );
-					return new GatherPresence.Resolve( p[0], p[1] );
-				} )
-				.ToArray();
-		}
-
-		protected IResolver Resolve_Reclaim( int index ) {
-			return Reclaim1.Resolve( spirit.DiscardPile[index] );
-		}
-
 		protected static SpyOnPlacePresence Resolve_PlacePresence( string placeOptions, int focus=0) {
 			return Resolve_PlacePresence(placeOptions,Track.Energy,focus);
 		}
@@ -175,6 +151,12 @@ namespace SpiritIsland.Tests.Growth {
 				int expected = elements.Count( x => x == pair.Value );
 				Assert.Equal( expected, spirit.Elements( pair.Key ) );
 			}
+		}
+
+		protected void AndWhen_ReclaimingFirstCard() {
+			var reclaim = spirit.UnresolvedActionFactories.OfType<Reclaim1>().First();
+			reclaim.Select( reclaim.Options[0] );
+			reclaim.Apply();
 		}
 
 		#endregion

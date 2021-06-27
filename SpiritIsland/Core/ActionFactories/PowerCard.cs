@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace SpiritIsland.Core {
 
-	public class PowerCard : IActionFactory {
+	public class PowerCard : IActionFactory, IOption {
 
 		static public PowerCard For<T>(){ return new PowerCard(typeof(T));}
 
@@ -36,6 +36,8 @@ namespace SpiritIsland.Core {
 		public int Cost { get; }
 		public Speed Speed { get; }
 		public Element[] Elements { get; }
+
+		public string Text => Name;
 
 		readonly Type actionType;
 

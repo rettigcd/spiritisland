@@ -122,12 +122,16 @@ namespace SpiritIsland.Tests.Growth {
 			spirit.RevealedCardSpaces = revealedSpaces;
 			Assert_PresenceTracksAre(1,expectedCardPlayCount);
 
-			var resolvers = new List<IResolver>{ Resolve_PlacePresence( "A1;A2;A3;A4;A5")};
+			var resolvers = new List<SpyOnPlacePresence>{ Resolve_PlacePresence( "A1;A2;A3;A4;A5")};
 
-			if(canReclaim1)
-				resolvers.Add(Resolve_Reclaim(0));
+			//if(canReclaim1)
+			//	resolvers.Add(Resolve_Reclaim(0));
 
 			When_Growing(2,resolvers.ToArray());
+
+			if(canReclaim1)
+				AndWhen_ReclaimingFirstCard();
+
 
 			// !!! for this test to work, we also need a test shows too many or too few resolvers, throw exception
 
@@ -185,20 +189,20 @@ namespace SpiritIsland.Tests.Growth {
 
 		}
 
-		void Assert_InnateInActionListIf(Speed currentSpeed) {
-			var unresolvedInnates = spirit.UnresolvedActionFactories
-				.OfType<InnatePower>()
-				.ToArray();
+		//void Assert_InnateInActionListIf(Speed currentSpeed) {
+		//	var unresolvedInnates = spirit.UnresolvedActionFactories
+		//		.OfType<InnatePower>()
+		//		.ToArray();
 
-			var innate = spirit.InnatePowers[0];
+		//	var innate = spirit.InnatePowers[0];
 
-			if (innate.Speed == currentSpeed)
-				//  And: card is in Unresolved Action list
-				Assert.Contains(innate, unresolvedInnates);
-			else
-				//  And: card is NOT in Unresolved Action list
-				Assert.DoesNotContain(innate, unresolvedInnates);
-		}
+		//	if (innate.Speed == currentSpeed)
+		//		//  And: card is in Unresolved Action list
+		//		Assert.Contains(innate, unresolvedInnates);
+		//	else
+		//		//  And: card is NOT in Unresolved Action list
+		//		Assert.DoesNotContain(innate, unresolvedInnates);
+		//}
 
 		protected void Assert_CardInActionListIf(PowerCard card) {
 

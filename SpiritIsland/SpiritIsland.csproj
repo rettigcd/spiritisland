@@ -96,7 +96,6 @@
     <Compile Include="Core\DataStructures\IEnumerableExtensions.cs" />
     <Compile Include="Game\Exceptions\InvalidPresenceLocationException.cs" />
     <Compile Include="Core\Growth\PushPresence.cs" />
-    <Compile Include="Core\Growth\Fix\IResolver.cs" />
     <Compile Include="Core\Growth\PlacePresence.cs" />
     <Compile Include="Core\Growth\ReclaimAll.cs" />
     <Compile Include="Core\ActionFactories\InnatePower.cs" />

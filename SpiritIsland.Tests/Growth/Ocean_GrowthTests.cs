@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using SpiritIsland.Base;
+using SpiritIsland.Core;
 using Xunit;
 
 namespace SpiritIsland.Tests.Growth {
@@ -24,7 +25,16 @@ namespace SpiritIsland.Tests.Growth {
 			Given_IslandIsABC();
 			Given_HasPresence( starting );
 
-			When_Growing( 0, Resolve_GatherPresence( select ) );
+			When_Growing( 0 );
+
+			foreach(var line in select.Split( ',' )){
+				if(string.IsNullOrEmpty(line)) continue;
+				var p = line.Split( '>' );
+				var gather = spirit.UnresolvedActionFactories.OfType<GatherPresence>()
+					.Single(f=>f.To.Label == p[1]);
+				gather.Select(gather.To.SpacesWithin(1).Single(s=>s.Label==p[0]));
+				gather.Apply();
+			}
 
 			// Then: nothing to gather
 			Assert_BoardPresenceIs( ending );
@@ -77,9 +87,14 @@ namespace SpiritIsland.Tests.Growth {
 			gameState.Island = new Island(BoardA,BoardB,BoardC);
 			Given_HasPresence( starting );
 
-			var resolvers = Resolve_PushPresence( push ).Include( Resolve_PlacePresence( placeOptions) );
+			When_Growing(2,Resolve_PlacePresence( placeOptions));
 
-			When_Growing(2,resolvers);
+			string[] p = push.Split( '>' );
+			var action = spirit.UnresolvedActionFactories.OfType<PushPresence>()
+				.First(act=>act.From.Label==p[0]);
+			Assert.Equal(placeOptions,action.Options.Select(o=>o.Text).OrderBy(x=>x).Join(";"));
+			action.Select(action.From.SpacesWithin(1).Single(s=>s.Label==p[1]));
+			action.Apply();
 
 			Assert_GainPowercard(1);
 			Assert_BoardPresenceIs(ending);

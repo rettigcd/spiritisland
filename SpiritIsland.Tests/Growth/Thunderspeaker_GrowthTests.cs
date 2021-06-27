@@ -84,11 +84,14 @@ namespace SpiritIsland.Tests.Growth {
 			spirit.RevealedCardSpaces = revealedSpaces;
 			Assert_PresenceTracksAre(1,expectedCardPlayCount);
 
-			var list = new List<IResolver>{ Resolve_PlacePresence( "A2;A3;A4") };
-			if( canReclaim1 )
-				list.Add( Resolve_Reclaim(0) );
+			var list = new List<SpyOnPlacePresence>{ Resolve_PlacePresence( "A2;A3;A4") };
+			//if( canReclaim1 )
+			//	list.Add( Resolve_Reclaim(0) );
 
 			When_Growing(2,list.ToArray());
+
+			if( canReclaim1 )
+				AndWhen_ReclaimingFirstCard();
 
 		}
 
