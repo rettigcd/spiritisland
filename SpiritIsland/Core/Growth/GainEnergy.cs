@@ -8,12 +8,10 @@ namespace SpiritIsland.Core {
 			this.amount = amount; 
 		}
 
-		public override void Apply() {
-			spirit.Energy += amount;
+		public override IAction Bind( Spirit spirit, GameState gameState ) {
+			return new ResolvedAction( ()=>spirit.Energy += amount );
 		}
 
-		public override bool IsResolved => true;
-
-		public override IOption[] Options => throw new System.NotImplementedException();
 	}
+
 }

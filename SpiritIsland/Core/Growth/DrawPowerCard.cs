@@ -6,13 +6,11 @@
 		public DrawPowerCard(int count=1){ 
 			this.count = count;
 		}
-		public override void Apply(){
-			spirit.PowerCardsToDraw += count;
+
+		public override IAction Bind( Spirit spirit, GameState gameState ) {
+			return new ResolvedAction(()=>spirit.PowerCardsToDraw += count);
 		}
 
-		public override bool IsResolved => true; // !!! should change this to force drawing card
-
-		public override IOption[] Options => throw new System.NotImplementedException();
 	}
 
 }
