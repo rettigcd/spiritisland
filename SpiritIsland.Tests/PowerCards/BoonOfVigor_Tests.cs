@@ -1,4 +1,6 @@
-﻿using SpiritIsland.PowerCards;
+﻿using SpiritIsland.Base;
+using SpiritIsland.Core;
+using SpiritIsland.PowerCards;
 using System.Linq;
 using Xunit;
 
@@ -16,9 +18,6 @@ namespace SpiritIsland.Tests.PowerCards {
 
 			// When: targetting self
 			action = (BoonOfVigor)card.Bind(spirit, gameState);
-			Assert.False(action.IsResolved);
-			Assert.Equal(spirit, action.Options.Single());
-			action.Select(spirit);
 			Assert.True(action.IsResolved);
 			action.Apply();
 

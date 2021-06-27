@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SpiritIsland.Core;
 using Xunit;
 
 namespace SpiritIsland.Tests.Growth {

@@ -1,5 +1,4 @@
 ﻿using SpiritIsland;
-using SpiritIsland.Invaders;
 using System;
 
 namespace SpiritIslandCmd {

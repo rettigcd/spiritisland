@@ -1,6 +1,7 @@
-﻿using SpiritIsland;
-using System;
+﻿using System;
 using System.Linq;
+using SpiritIsland;
+using SpiritIsland.Core;
 
 namespace SpiritIslandCmd {
 	public class SelectGrowth : IPhase {

@@ -1,5 +1,5 @@
 ﻿using SpiritIsland;
-using SpiritIsland.Invaders;
+using SpiritIsland.Core;
 using System;
 using System.Linq;
 

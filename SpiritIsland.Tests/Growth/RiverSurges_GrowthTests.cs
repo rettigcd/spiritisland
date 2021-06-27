@@ -1,4 +1,6 @@
-﻿using SpiritIsland.PowerCards;
+﻿using SpiritIsland.Base;
+using SpiritIsland.Core;
+using SpiritIsland.PowerCards;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -176,7 +178,7 @@ namespace SpiritIsland.Tests.Growth {
 
 			Assert_CardInActionListIf(card);
 
-			Assert_InnateInActionListIf(Speed.Fast);
+			// Assert_InnateInActionListIf(Speed.Fast); // we now put all actions in the list at the same time
 
 			// Money is spent
 			Assert.Equal(0, spirit.Energy);
@@ -185,8 +187,7 @@ namespace SpiritIsland.Tests.Growth {
 
 		void Assert_InnateInActionListIf(Speed currentSpeed) {
 			var unresolvedInnates = spirit.UnresolvedActionFactories
-				.OfType<InnateAction>()
-				.Select(a => a.Innate)
+				.OfType<InnatePower>()
 				.ToArray();
 
 			var innate = spirit.InnatePowers[0];

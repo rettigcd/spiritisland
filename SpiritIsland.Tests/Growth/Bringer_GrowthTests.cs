@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using SpiritIsland.Base;
+using Xunit;
 
 namespace SpiritIsland.Tests.Growth {
 	

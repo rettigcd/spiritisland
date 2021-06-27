@@ -1,4 +1,5 @@
-﻿using SpiritIsland.PowerCards;
+﻿using SpiritIsland.Base;
+using SpiritIsland.Core;
 using System.Linq;
 using Xunit;
 

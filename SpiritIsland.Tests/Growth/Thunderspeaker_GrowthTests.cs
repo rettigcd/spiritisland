@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
+using SpiritIsland.Base;
+using SpiritIsland.Core;
 using Xunit;
 
 namespace SpiritIsland.Tests.Growth {

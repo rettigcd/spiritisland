@@ -1,8 +1,8 @@
-﻿using SpiritIsland;
-using SpiritIsland.Invaders;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SpiritIsland;
+using SpiritIsland.Base;
 
 namespace SpiritIslandCmd {
 

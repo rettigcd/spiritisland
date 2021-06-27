@@ -1,6 +1,5 @@
-﻿using SpiritIsland.PowerCards;
-using System;
-using System.Collections.Generic;
+﻿using SpiritIsland.Base;
+using SpiritIsland.Core;
 using System.Linq;
 using Xunit;
 

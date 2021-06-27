@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using SpiritIsland.BranchAndClaw;
+using SpiritIsland.Core;
 using Xunit;
 
 namespace SpiritIsland.Tests.Growth {

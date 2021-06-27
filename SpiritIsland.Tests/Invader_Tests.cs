@@ -1,8 +1,7 @@
-﻿using SpiritIsland.Invaders;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Text;
+using SpiritIsland.Base;
 using Xunit;
 
 namespace SpiritIsland.Tests.Invaders {

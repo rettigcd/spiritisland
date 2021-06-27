@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using SpiritIsland.BranchAndClaw;
+using Xunit;
 
 namespace SpiritIsland.Tests.Growth {
 
