@@ -1,23 +1,19 @@
 ﻿namespace SpiritIsland.PowerCards {
 
 	[PowerCard(WashAway.Name, 1, Speed.Slow, Element.Water, Element.Earth)]
-	public class WashAway : BaseAction {
+	public class WashAway : TargetSpaceAction {
 
 		public const string Name = "Wash Away";
 
-		public WashAway(Spirit spirit,GameState gameState):base(gameState) {
-			engine.decisions.Push( new TargetSpaceRangeFromPresence(spirit,1
-				,HasExplorersOrTowns
-				,Push3FromSpace
-			) );
-		}
+		public WashAway(Spirit spirit,GameState gameState)
+			:base(spirit,gameState,1,From.Presence) {}
 
-		bool HasExplorersOrTowns(Space space){
+		protected override bool FilterSpace(Space space){
 			var sum = gameState.InvadersOn(space);
 			return sum.HasExplorer || sum.HasTown;
 		}
 
-		void Push3FromSpace(Space space,ActionEngine engine){
+		protected override void SelectSpace(Space space){
 			engine.decisions.Push(new SelectInvadersToPush(
 				gameState.InvadersOn(space),3
 				,"Town","Explorer"

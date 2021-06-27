@@ -2,22 +2,22 @@
 namespace SpiritIsland.PowerCards {
 
 	[PowerCard(NaturesResilience.Name,1,Speed.Fast,Element.Earth,Element.Plant,Element.Animal)]
-	public class NaturesResilience : BaseAction {
+	public class NaturesResilience : TargetSpaceAction {
 
 		public const string Name = "Nature's Resilience";
+		const string DefendKey = "Defend 6";
+		const string RemoveBlightKey = "Remove Blight";
 
-		readonly Space space;
 		readonly bool canRemoveBlight;
+		Space space;
 
-		public NaturesResilience(Spirit spirit,GameState gameState):base(gameState){
+		public NaturesResilience(Spirit self,GameState gameState):base(self,gameState,1,From.SacredSite){
 			// if 2 water, you may INSTEAD remove 1 blight
-			canRemoveBlight = spirit.Elements(Element.Water)>=2;
-
-			// range 1 from SS
-			engine.decisions.Push(new TargetSpaceRangeFromSacredSite(spirit,1,SelectSpace));
+			canRemoveBlight = self.Elements(Element.Water)>=2;
 		}
 
-		void SelectSpace(Space space){
+		protected override void SelectSpace(Space space){
+			this.space = space;
 
 			if(canRemoveBlight)
 				engine.decisions.Push( new SelectText( 
@@ -35,9 +35,6 @@ namespace SpiritIsland.PowerCards {
 				case RemoveBlightKey: RemoveBlight(); break;
 			}
 		}
-
-		const string DefendKey = "Defend 6";
-		const string RemoveBlightKey = "Remove Blight";
 
 		void Defend6()=>gameState.Defend(space,6);
 		void RemoveBlight()=>gameState.AddBlight(space,-1);

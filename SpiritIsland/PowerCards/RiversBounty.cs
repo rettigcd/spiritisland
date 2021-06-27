@@ -5,24 +5,22 @@ using System.Linq;
 namespace SpiritIsland.PowerCards {
 
 	[PowerCard(RiversBounty.Name, 0, Speed.Slow,Element.Sun,Element.Water,Element.Animal)]
-	public class RiversBounty : BaseAction {
+	public class RiversBounty : TargetSpaceAction {
 		public const string Name = "River's Bounty";
 
 		// Gather up to 2 Dahan
 		// If there are now at least 2 dahan, then add 1 dahan and gain 1 energy
 
-		public RiversBounty(Spirit spirit,GameState gs) : base(gs) {
-			// target: range 0 (any)
-			engine.decisions.Push( new TargetSpaceRangeFromPresence(spirit,0
-				,HasDahanNeighbors,FindDahanToGather
-			) );
+		public RiversBounty(Spirit spirit,GameState gs) 
+			: base(spirit,gs,0,From.Presence) {
 		}
 
-		bool HasDahanNeighbors(Space space){
+		protected override bool FilterSpace(Space space){
+			// space has dahan neighbors
 			return space.SpacesExactly(1).Any(neighbor=>gameState.HasDahan(neighbor));
 		}
 
-		void FindDahanToGather(Space space,ActionEngine engine){
+		protected override void SelectSpace(Space space){
 			var ctx = new GatherDahanCtx(space,gameState);
 			engine.decisions.Push(new If2Add1(ctx));  // do this last
 			engine.decisions.Push(new Select1DahanSource(ctx,2));

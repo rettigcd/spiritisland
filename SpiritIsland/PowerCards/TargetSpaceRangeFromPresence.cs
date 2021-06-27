@@ -5,13 +5,13 @@ namespace SpiritIsland.PowerCards {
 
 	public class TargetSpaceRangeFromPresence : IDecision {
 
-		readonly Action<Space,ActionEngine> onSelect;
+		readonly Action<Space> onSelect;
 
 		public TargetSpaceRangeFromPresence(
 			Spirit spirit, 
 			int range,
 			Func<Space,bool> spaceFilter,
-			Action<Space,ActionEngine> onSelect
+			Action<Space> onSelect
 		){
 			this.onSelect = onSelect;
 
@@ -28,7 +28,7 @@ namespace SpiritIsland.PowerCards {
 		public IOption[] Options { get; }
 
 		public void Select( IOption option, ActionEngine engine ) {
-			this.onSelect((Space)option,engine);
+			this.onSelect((Space)option);
 		}
 
 	}

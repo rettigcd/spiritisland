@@ -4,20 +4,20 @@ namespace SpiritIsland.PowerCards {
 
 	// major
 	[PowerCard("Tsunami",6,Speed.Slow,Element.Water,Element.Earth)]
-	public class Tsunami : BaseAction {
+	public class Tsunami : TargetSpaceAction {
 
 		readonly bool damageOtherCoasts;
 
-		public Tsunami(Spirit spirit,GameState gs):base(gs){
-
+		public Tsunami(Spirit spirit,GameState gs)
+			:base(spirit,gs,2,From.SacredSite)
+		{
 			damageOtherCoasts = spirit.Elements(Element.Water) >=3
 				&& spirit.Elements(Element.Earth) >= 2;
-
-			engine.decisions.Push(new TargetSpaceRangeFromSacredSite(spirit,2,s=>s.IsCostal,SelectCoast));
 		}
 
-		void SelectCoast(IOption option){
-			Space space = option as Space;
+		protected override bool FilterSpace( Space space ) => space.IsCostal;
+
+		protected override void SelectSpace(Space space){
 			gameState.AddFear(2);
 			// add damage of 8
 			// destroy 2 dahan
