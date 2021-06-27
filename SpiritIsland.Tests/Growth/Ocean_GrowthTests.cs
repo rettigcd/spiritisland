@@ -27,13 +27,21 @@ namespace SpiritIsland.Tests.Growth {
 
 			When_Growing( 0 );
 
-			foreach(var line in select.Split( ',' )){
-				if(string.IsNullOrEmpty(line)) continue;
-				var p = line.Split( '>' );
-				var gather = spirit.UnresolvedActionFactories.OfType<GatherPresence>()
-					.Single(f=>f.To.Label == p[1]);
-				gather.Select(gather.To.SpacesWithin(1).Single(s=>s.Label==p[0]));
-				gather.Apply();
+			// since options are move source, key on that
+			var moveBySrc = select.Split(',')
+				.Where(x=>!string.IsNullOrEmpty(x))
+				.Select(s=>s.Split('>'))
+				.ToDictionary(a=>a[0],a=>a[1]);
+
+			var gather = spirit.UnresolvedActionFactories.OfType<GatherPresenceIntoOcean>().SingleOrDefault();
+
+			if(gather != null){
+				var action = gather.Bind(spirit,gameState);
+				while(!action.IsResolved){
+					var source = action.Options.Single(x=>moveBySrc.ContainsKey(x.Text));
+					action.Select(source);
+				}
+				action.Apply();
 			}
 
 			// Then: nothing to gather

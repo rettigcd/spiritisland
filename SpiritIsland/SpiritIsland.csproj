@@ -96,7 +96,7 @@
     <Compile Include="Game\IActionFactory.cs" />
     <Compile Include="Core\DataStructures\IEnumerableExtensions.cs" />
     <Compile Include="Game\Exceptions\InvalidPresenceLocationException.cs" />
-    <Compile Include="Core\Growth\PushPresence.cs" />
+    <Compile Include="Base\Spirits\Ocean\PushPresence.cs" />
     <Compile Include="Core\Growth\PlacePresence.cs" />
     <Compile Include="Core\Growth\ReclaimAll.cs" />
     <Compile Include="Core\ActionFactories\InnatePower.cs" />
@@ -144,7 +144,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Game\Island\Space.cs" />
     <Compile Include="Base\Spirits\Bringer\Bringer.cs" />
-    <Compile Include="Core\Growth\GatherPresence.cs" />
+    <Compile Include="Base\Spirits\Ocean\GatherPresenceIntoOcean.cs" />
     <Compile Include="Game\Enums\Element.cs" />
     <Compile Include="Game\Exceptions\InsufficientEnergyException.cs" />
     <Compile Include="Base\Spirits\Keeper\Keeper.cs" />

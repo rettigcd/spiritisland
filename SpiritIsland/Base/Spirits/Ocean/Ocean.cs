@@ -50,18 +50,12 @@ namespace SpiritIsland.Base {
 			//	.Select(o=>new GatherPresence(o))
 			//	.Cast<GrowthAction>();
 
-			var growthActions = Presence
-				.Where(p=>p.IsCostal)
-				.Select(p=>p.SpacesExactly(1).Single(o=>o.IsOcean))
-				.Distinct()
-				.Select(o=>new GatherPresence(o))
-				.Cast<GrowthAction>();
-
-			var opt1 = new GrowthOption(growthActions.Include(
+			var opt1 = new GrowthOption(
+				new GatherPresenceIntoOcean(),
 				new ReclaimAll(),
 				new DrawPowerCard(),
 				new GainEnergy(2)
-			));
+			);
 
 			// Option 2 - +1 presence range any ocean, +1 presense in any ociean, +1 energy
 			var opt2 = new GrowthOption(

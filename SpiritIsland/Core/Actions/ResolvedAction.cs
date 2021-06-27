@@ -8,7 +8,7 @@ namespace SpiritIsland.Core {
 			this.apply = apply;
 		}
 
-		void IAction.Apply() => apply;
+		void IAction.Apply() => apply();
 
 		void IAction.Select( IOption option ) {
 			throw new System.NotImplementedException();

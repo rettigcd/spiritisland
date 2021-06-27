@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace SpiritIsland.Core {
 
+	// !!Split
 	public class Reclaim1 : GrowthAction {
 
 		public PowerCard Card {get; set;}

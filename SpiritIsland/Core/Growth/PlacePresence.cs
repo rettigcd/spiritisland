@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace SpiritIsland.Core {
 
+	// !!Split
 	public class PlacePresence : PlacePresenceBase {
 
 		readonly int range;
