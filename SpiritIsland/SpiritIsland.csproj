@@ -110,12 +110,14 @@
     <Compile Include="InvaderGroup.cs" />
     <Compile Include="IPowerAttributes.cs" />
     <Compile Include="Island.cs" />
+    <Compile Include="PowerCards\AcceleratedRot.cs" />
     <Compile Include="PowerCards\ActionEngine.cs" />
     <Compile Include="PowerCards\AddDahan.cs" />
     <Compile Include="PowerCards\BaseAction.cs" />
     <Compile Include="PowerCards\BoonOfVigor.cs" />
     <Compile Include="InnateAction.cs" />
     <Compile Include="PowerCards\Decision.cs" />
+    <Compile Include="PowerCards\EncompassingWard.cs" />
     <Compile Include="PowerCards\FlashFloods.cs" />
     <Compile Include="PowerCard.cs" />
     <Compile Include="PowerCardAttribute.cs" />
@@ -132,8 +134,11 @@
     <Compile Include="PowerCards\SelectInvaderDestination.cs" />
     <Compile Include="PowerCards\SelectInvadersToPush.cs" />
     <Compile Include="PowerCards\SelectInvaderToDamage.cs" />
+    <Compile Include="PowerCards\SongOfSanctity.cs" />
     <Compile Include="PowerCards\TargetSpaceRangeFromPresence.cs" />
     <Compile Include="PowerCards\TargetSpaceRangeFromSacredSite.cs" />
+    <Compile Include="PowerCards\TargetSpirit.cs" />
+    <Compile Include="PowerCards\Tsunami.cs" />
     <Compile Include="PowerCards\UncannyMelting.cs" />
     <Compile Include="PowerCards\WashAway.cs" />
     <Compile Include="Speed.cs" />

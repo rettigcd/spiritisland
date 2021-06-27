@@ -23,8 +23,7 @@ namespace SpiritIsland.PowerCards {
 				&& gameState.InvadersOn(space).InvaderTypesPresent.Any();
 		}
 
-		void SelectTarget(IOption option, ActionEngine engine){
-			Space target = (Space)option;
+		void SelectTarget(Space target, ActionEngine engine){
 			int damage = target.IsCostal ? 2 : 1;
 			var grp = gameState.InvadersOn(target);
 			engine.decisions.Push( new SelectInvaderToDamage(grp,damage) );

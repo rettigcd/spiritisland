@@ -22,8 +22,8 @@ namespace SpiritIsland.PowerCards {
 			return space.SpacesExactly(1).Any(neighbor=>gameState.HasDahan(neighbor));
 		}
 
-		void FindDahanToGather(IOption option,ActionEngine engine){
-			var ctx = new GatherDahanCtx((Space)option,gameState);
+		void FindDahanToGather(Space space,ActionEngine engine){
+			var ctx = new GatherDahanCtx(space,gameState);
 			engine.decisions.Push(new If2Add1(ctx));  // do this last
 			engine.decisions.Push(new Select1DahanSource(ctx,2));
 		}

@@ -26,8 +26,7 @@ namespace SpiritIsland.PowerCards {
 		bool GeneratesDamageOnly(Space space) => space.Terrain.IsIn(Terrain.Sand,Terrain.Wetland);
 		bool GeneratesDamageAndFear(Space space) => spirit.Presence.Contains(space);
 
-		void SelectTarget(IOption option, ActionEngine engine){
-			Space space = (Space)option;
+		void SelectTarget(Space space, ActionEngine engine){
 			if(GeneratesDamageOnly(space))
 				; // +1 damage
 			if(GeneratesDamageAndFear(space)){

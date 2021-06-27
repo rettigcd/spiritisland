@@ -6,7 +6,7 @@ namespace SpiritIsland.PowerCards {
 
 		public const string Name = "Nature's Resilience";
 
-		Space space;
+		readonly Space space;
 		readonly bool canRemoveBlight;
 
 		public NaturesResilience(Spirit spirit,GameState gameState):base(gameState){
@@ -17,8 +17,7 @@ namespace SpiritIsland.PowerCards {
 			engine.decisions.Push(new TargetSpaceRangeFromSacredSite(spirit,1,SelectSpace));
 		}
 
-		void SelectSpace(IOption option,ActionEngine engine){
-			space = (Space)option;
+		void SelectSpace(Space space){
 
 			if(canRemoveBlight)
 				engine.decisions.Push( new SelectText( 

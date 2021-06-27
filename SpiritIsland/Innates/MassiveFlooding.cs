@@ -36,7 +36,7 @@ namespace SpiritIsland {
 
 		readonly int count;
 
-		void SelectLevel(Space space,ActionEngine engine){
+		void SelectLevel(Space space){
 			var invaders = gameState.InvadersOn(space);
 
 			const string k1 = "Push 1 E/T";

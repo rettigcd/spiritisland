@@ -3,39 +3,22 @@
 namespace SpiritIsland.PowerCards {
 
 	[PowerCard(BoonOfVigor.Name, 0, Speed.Fast,Element.Sun,Element.Water,Element.Plant)]
-	public class BoonOfVigor : IAction{
+	public class BoonOfVigor : BaseAction{
 
 		public const string Name = "Boon of Vigor";
 
-		public BoonOfVigor(Spirit self,GameState gameState){
+		public BoonOfVigor(Spirit self,GameState gameState):base(gameState){
 			this.self = self;
-			this.gameState = gameState;
+
+			engine.decisions.Push(new TargetSpirit(gameState.Spirits,SelectSpirit));
+
 		}
 
-		public bool IsResolved => target != null;
-
-		public void Apply() {
-			this.target.Energy += (target==self) ? 1 : target.PurchasedCards.Count;
-		}
-
-		public IOption[] Options { get{
-				if( target == null )
-					return gameState.Spirits;
-				return new IOption[0]; // fully resolved, is this the best we can do ???
-		}}
-
-		public void Select(IOption option) {
-			if( target == null ){
-				target = (Spirit)option;
-				return;
-			}
-
-			throw new InvalidOperationException(); // ???
+		void SelectSpirit(Spirit spirit){
+			spirit.Energy += (spirit==self) ? 1 : spirit.PurchasedCards.Count;
 		}
 
 		readonly Spirit self;
-		readonly GameState gameState;
-		Spirit target;
 
 	}
 

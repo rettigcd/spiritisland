@@ -4,12 +4,12 @@ using System.Linq;
 namespace SpiritIsland.PowerCards {
 	public class TargetSpaceRangeFromSacredSite : IDecision {
 
-		readonly Action<Space,ActionEngine> onSelect;
+		readonly Action<Space> onSelect;
 
 		public TargetSpaceRangeFromSacredSite(
 			Spirit spirit, 
 			int range,
-			Action<Space,ActionEngine> onSelect
+			Action<Space> onSelect
 		)
 			:this(spirit,range,(s)=>true,onSelect)
 		{}
@@ -18,7 +18,7 @@ namespace SpiritIsland.PowerCards {
 			Spirit spirit, 
 			int range,
 			Func<Space,bool> spaceFilter,
-			Action<Space,ActionEngine> onSelect
+			Action<Space> onSelect
 		){
 			this.onSelect = onSelect;
 
@@ -35,7 +35,7 @@ namespace SpiritIsland.PowerCards {
 		public IOption[] Options { get; }
 
 		public void Select( IOption option, ActionEngine engine ) {
-			this.onSelect((Space)option,engine);
+			this.onSelect((Space)option);
 		}
 
 	}

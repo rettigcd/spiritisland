@@ -11,7 +11,7 @@ namespace SpiritIsland.PowerCards {
 		public UncannyMelting(Spirit spirit,GameState gameState):base(gameState){
 			engine.decisions.Push(new TargetSpaceRangeFromSacredSite(spirit,1
 				,InvadersOrBlightOnSandOrWetland
-				,Select
+				,SelectSpace
 			));
 		}
 
@@ -24,8 +24,7 @@ namespace SpiritIsland.PowerCards {
 			=> (space.Terrain == Terrain.Sand || space.Terrain == Terrain.Wetland)
 			&& gameState.HasBlight(space);
 
-		void Select(IOption option, ActionEngine engine){
-			Space space = (Space)option;
+		void SelectSpace(Space space){
 
 			if(gameState.HasInvaders(space))
 				gameState.AddFear(1);

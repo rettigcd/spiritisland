@@ -7,7 +7,7 @@
 
 		public WashAway(Spirit spirit,GameState gameState):base(gameState) {
 			engine.decisions.Push( new TargetSpaceRangeFromPresence(spirit,1
-				,HasExplorersOrTowns // Filter
+				,HasExplorersOrTowns
 				,Push3FromSpace
 			) );
 		}

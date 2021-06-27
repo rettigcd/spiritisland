@@ -121,10 +121,10 @@ namespace SpiritIsland {
 			PowerCard.For<UncannyMelting>(),
 			PowerCard.For<NaturesResilience>(),
 			PowerCard.For<PullBeneathTheHungryEarth>(),
-			new PowerCard("Accelerated Rot", 0, Speed.Fast),
-			new PowerCard("Song of Sanctity", 0, Speed.Fast),
-			new PowerCard("Tsunami", 0, Speed.Fast),
-			new PowerCard("Encompassing Ward", 0, Speed.Fast),
+			PowerCard.For<AcceleratedRot>(),  // MAJOR?
+			PowerCard.For<SongOfSanctity>(),
+			PowerCard.For<Tsunami>(),
+			PowerCard.For<EncompassingWard>()
 		};
 
 		public override void InitializePresence( Board board ) {
