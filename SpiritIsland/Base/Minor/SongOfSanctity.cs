@@ -24,7 +24,7 @@ namespace SpiritIsland.Base {
 			else if(gameState.HasBlight(space))
 				gameState.AddBlight(space,-1);
 			else
-				throw new ArgumentOutOfRangeException();
+				throw new ArgumentOutOfRangeException(nameof(space));
 		}
 
 	}

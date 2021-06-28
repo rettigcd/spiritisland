@@ -50,7 +50,7 @@ namespace SpiritIsland.Core {
 		IOption[] GetOptionsSkippingAutoSelectCheck(){
 			return engine.decisions.Count>0 
 				? engine.decisions.Peek().Options 
-				: new IOption[0];
+				: System.Array.Empty<IOption>();
 		}
 
 		protected void InnerSelect(IOption option) {

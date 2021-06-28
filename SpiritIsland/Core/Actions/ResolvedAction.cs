@@ -16,7 +16,7 @@ namespace SpiritIsland.Core {
 
 		bool IAction.IsResolved => true;
 
-		IOption[] IAction.Options => new IOption[0];
+		IOption[] IAction.Options => System.Array.Empty<IOption>();
 	}
 
 }

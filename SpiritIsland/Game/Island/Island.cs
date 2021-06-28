@@ -25,7 +25,7 @@ namespace SpiritIsland {
 					boards[2].Sides[2].AlignTo( boards[3].Sides[0] );
 					boards[3].Sides[1].AlignTo( boards[0].Sides[1] ); 
 					break;
-				default: throw new ArgumentOutOfRangeException("wrong # of boards");
+				default: throw new ArgumentOutOfRangeException(nameof(boards.Length),"wrong # of boards");
 			}
 		}
 	}

@@ -5,7 +5,7 @@ namespace SpiritIsland.Core {
 
 		public abstract IAction Bind(Spirit spirit, GameState gameState);
 
-		public virtual string ShortDescription => this.ToString().Substring(13); // strip off SpiritIsland. prefix
+		public virtual string ShortDescription => ToString()[13..]; // strip off SpiritIsland. prefix
 
 		public virtual string Name => this.ShortDescription;
 

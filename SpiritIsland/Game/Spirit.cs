@@ -30,7 +30,7 @@ namespace SpiritIsland {
 
 		#endregion
 
-		public virtual InnatePower[] InnatePowers {get; set;} = new InnatePower[0]; // !!! eventually init in constructor
+		public virtual InnatePower[] InnatePowers {get; set;} = System.Array.Empty<InnatePower>(); // !!! eventually init in constructor
 
 		#region Cards
 

@@ -36,7 +36,7 @@ namespace SpiritIsland.Base {
 			public IOption[] Options => pushSpaces.Count>0 
 				? CurrentSource.SpacesExactly(1)
 					.ToArray()
-				: new IOption[0];
+				: Array.Empty<IOption>();
 
 			public void Select( IOption option, ActionEngine engine ) {
 				// apply...

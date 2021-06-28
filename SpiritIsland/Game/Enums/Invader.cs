@@ -42,7 +42,7 @@ namespace SpiritIsland {
 
 		public Invader Damage(int level){
 			return level > Health 
-				? throw new System.ArgumentOutOfRangeException() 
+				? throw new System.ArgumentOutOfRangeException(nameof(level)) 
 				: typeArr[Health-level];
 		}
 

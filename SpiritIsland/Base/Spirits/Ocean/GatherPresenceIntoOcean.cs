@@ -36,7 +36,7 @@ namespace SpiritIsland.Base {
 				? CurrentTarget.SpacesExactly(1)
 					.Where(spirit.Presence.Contains)
 					.ToArray()
-				: new IOption[0];
+				: Array.Empty<IOption>();
 
 			public void Select( IOption option, ActionEngine engine ) {
 				// apply...

@@ -27,7 +27,7 @@ namespace SpiritIsland.Base {
 			}
 		}
 
-		bool GeneratesDamageOnly(Space space) => space.Terrain.IsIn(Terrain.Sand,Terrain.Wetland);
+		static bool GeneratesDamageOnly(Space space) => space.Terrain.IsIn(Terrain.Sand,Terrain.Wetland);
 		bool GeneratesDamageAndFear(Space space) => self.Presence.Contains(space);
 
 

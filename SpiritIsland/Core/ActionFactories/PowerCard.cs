@@ -55,7 +55,7 @@ namespace SpiritIsland.Core {
 			public bool IsResolved => true;
 			public void Apply(){}
 
-			public IOption[] Options => new IOption[0];
+			public IOption[] Options => Array.Empty<IOption>();
 
 			public void Select(IOption option) {}
 		}

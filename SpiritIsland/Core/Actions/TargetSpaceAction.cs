@@ -21,7 +21,7 @@ namespace SpiritIsland.Core {
 					engine.decisions.Push(new TargetSpaceRangeFromPresence(self,range,FilterSpace,SelectSpace));
 					break;
 				default:
-					throw new ArgumentOutOfRangeException();
+					throw new ArgumentOutOfRangeException(nameof(from));
 			}
 
 		}
