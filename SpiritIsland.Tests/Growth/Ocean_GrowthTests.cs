@@ -88,7 +88,7 @@ namespace SpiritIsland.Tests.Growth {
 
 		[Theory]
 		[InlineData("A0","A0>A2","A1;A2;A3","A1A2")]
-		public void PowerPlaceAndPush( string starting, string push, string placeOptions, string ending ){
+		public void PowerPlaceAndPush( string starting, string pushStr, string placeOptions, string ending ){
 			// gain power card
 			// push 1 presense from each ocean
 			// add presense on costal land range 1
@@ -97,12 +97,30 @@ namespace SpiritIsland.Tests.Growth {
 
 			When_Growing(2,Resolve_PlacePresence( placeOptions));
 
-			string[] p = push.Split( '>' );
-			var action = spirit.UnresolvedActionFactories.OfType<PushPresence>()
-				.First(act=>act.From.Label==p[0]);
-			Assert.Equal(placeOptions,action.Options.Select(o=>o.Text).OrderBy(x=>x).Join(";"));
-			action.Select(action.From.SpacesWithin(1).Single(s=>s.Label==p[1]));
-			action.Apply();
+			var targets = pushStr.Split(',')
+				.Where(s=>!string.IsNullOrEmpty(s))
+				.Select(s=>s.Split('>')[1])
+				.ToArray();
+
+			var push = spirit.UnresolvedActionFactories.OfType<PushPresenceFromOcean>().SingleOrDefault();
+
+			if(push != null){
+				var action = push.Bind(spirit,gameState);
+				while(!action.IsResolved){
+					var target = action.Options.Single(t=>targets.Contains(t.Text));
+					action.Select(target);
+				}
+				action.Apply();
+			}
+
+
+			// !! fix
+			//string[] p = push.Split( '>' );
+			//var action = spirit.UnresolvedActionFactories.OfType<PushPresence>()
+			//	.First(act=>act.From.Label==p[0]);
+			//Assert.Equal(placeOptions,action.Options.Select(o=>o.Text).OrderBy(x=>x).Join(";"));
+			//action.Select(action.From.SpacesWithin(1).Single(s=>s.Label==p[1]));
+			//action.Apply();
 
 			Assert_GainPowercard(1);
 			Assert_BoardPresenceIs(ending);

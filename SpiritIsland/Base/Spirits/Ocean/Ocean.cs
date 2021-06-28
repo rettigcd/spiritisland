@@ -65,15 +65,11 @@ namespace SpiritIsland.Base {
 			);
 
 			// Option 3 - gain power card, push 1 presense from each ocean,  add presense on costal land range 1
-			var pushPresenceFromEachOcean = this.Presence
-				.Where(p => p.IsOcean)
-				.Distinct() // !!! need test for this line
-				.Select(o=>new PushPresence(o))
-				.Cast<GrowthAction>();
-			var opt3 = new GrowthOption( pushPresenceFromEachOcean.Include(
-					new DrawPowerCard(),
-					new PlacePresence(1,(s,_)=>s.IsCostal, "coatal" )
-			));
+			var opt3 = new GrowthOption( 
+				new PushPresenceFromOcean(),
+				new DrawPowerCard(),
+				new PlacePresence(1,(s,_)=>s.IsCostal, "coatal" )
+			);
 
 			return new GrowthOption[]{ opt1, opt2, opt3 };
 

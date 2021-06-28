@@ -2,7 +2,7 @@
 namespace SpiritIsland.Core {
 	class ResolvedAction : IAction {
 
-		System.Action apply;
+		readonly System.Action apply;
 
 		public ResolvedAction(System.Action apply){
 			this.apply = apply;

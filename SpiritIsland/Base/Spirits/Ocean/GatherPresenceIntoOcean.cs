@@ -23,17 +23,17 @@ namespace SpiritIsland.Base {
 		}
 
 		class GatherPresencesInto : IDecision {
-			Spirit spirit;
-			List<Space> gatherSpaces;
+			readonly Spirit spirit;
+			readonly List<Space> gatherSpaces;
 			public GatherPresencesInto(Spirit spirit, List<Space> gatherSpaces){
 				this.spirit = spirit;
 				this.gatherSpaces = gatherSpaces;
 			}
-			Space currentTarget => gatherSpaces[0];
-			public string Prompt => $"Select source of Presence to Gather into {currentTarget}";
+			Space CurrentTarget => gatherSpaces[0];
+			public string Prompt => $"Select source of Presence to Gather into {CurrentTarget}";
 
 			public IOption[] Options => gatherSpaces.Count>0 
-				? currentTarget.SpacesExactly(1)
+				? CurrentTarget.SpacesExactly(1)
 					.Where(spirit.Presence.Contains)
 					.ToArray()
 				: new IOption[0];
@@ -42,7 +42,7 @@ namespace SpiritIsland.Base {
 				// apply...
 				Space source = (Space)option;
 				spirit.Presence.Remove(source);
-				spirit.Presence.Add(currentTarget);
+				spirit.Presence.Add(CurrentTarget);
 
 				// next
 				gatherSpaces.RemoveAt(0);
