@@ -5,9 +5,11 @@ using System.Linq;
 
 namespace SpiritIslandCmd {
 	public class Formatter {
+
 		readonly Spirit spirit;
 		readonly GameState gameState;
 		readonly InvaderDeck deck;
+
 		public Formatter(Spirit spirit, GameState gameState,InvaderDeck deck){
 			this.spirit = spirit;
 			this.gameState = gameState;
@@ -16,17 +18,22 @@ namespace SpiritIslandCmd {
 
 		public string Format(IActionFactory factory, int nameWidth=1){
 			char speed = factory.Speed.ToString()[0];
-			char isActive = spirit.PurchasedCards.Contains(factory) ? 'A' : ' ';
-			char isDiscarded = spirit.DiscardPile.Contains(factory) ? 'D' : ' ';
-			char isinHand = spirit.Hand.Contains(factory) ? 'H' : ' ';
 			char unresolved = spirit.UnresolvedActionFactories.Contains(factory) ? '*' : ' ';
-
 			string cost = factory is PowerCard card ? card.Cost.ToString() : "-";
-
 			int padLength = nameWidth - factory.Name.Length;
 			string padding = padLength <= 0 ? "" : new string(' ',padLength);
+			string text = $"{factory.Name}{padding}  ({speed}/{cost}) {unresolved}";
 
-			return $"{factory.Name}{padding}  ({speed}/{cost})  {isinHand} {isActive} {unresolved} {isDiscarded}";
+			if(factory is PowerCard pc){
+				char isActive = spirit.PurchasedCards.Contains(factory) ? 'A' : ' ';
+				char isDiscarded = spirit.DiscardPile.Contains(factory) ? 'D' : ' ';
+				char isinHand = spirit.Hand.Contains(factory) ? 'H' : ' ';
+
+				text += $" {isinHand} {isActive} {isDiscarded}"
+					+ pc.Elements.Select(e=>e.ToString()).Join(" ");
+			}
+
+			return text;
 		}
 
 		public string Format(IOption option){
@@ -60,6 +67,7 @@ namespace SpiritIslandCmd {
 			string pres = spirit.Presence.Where(p=>p==space).Select(x=>"P").Join("");
 			return $"{space.Label} {threat} {Pad(space.Terrain)}\t{dahan}\t{details}\t{blight}\t{pres}";
 		}
+
 		static string Pad(Terrain terrain) {
 			string s= terrain.ToString();
 			return s + new string(' ',8-s.Length);
@@ -71,7 +79,6 @@ namespace SpiritIslandCmd {
 				: "Card/turn = " + spirit.NumberOfCardsPlayablePerTurn; // !!! display track
 			return $"{track.Text} {details}";
 		}
-
 
 	}
 

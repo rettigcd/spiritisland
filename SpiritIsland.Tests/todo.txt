@@ -1,8 +1,14 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
 Fix
-	Massive Flooding level 2 and 3
-	Spirit.Elements && Spirit.AllElements
+*	Massive Flooding level 2 and 3
+*	Spirit.Elements && Spirit.AllElements
+
+Not Implemented
+	Fear Cards / Fear Initialization
+	blight cards
+	blight damage to land + cascading
+	Drawing Major Power Card - have to discard
 
 Unit Test
 	Spirit.SacredSites
@@ -12,13 +18,6 @@ Unit Test
 	Uncanny Melting
 	Nature's Resilience
 	Pull Beneath the Hungry Earth
-
-Not Implemented
-	Fear Cards / Fear Initialization
-	blight cards
-	blight damage to land + cascading
-	Drawing Major Power Card - have to discard
-	GameState.Defend(Space,defentPoints)
 
 View
 	energy track

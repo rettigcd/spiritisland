@@ -17,14 +17,17 @@ namespace SpiritIsland.Base {
 			|| GeneratesDamageAndFear(space);
 
 		protected override void SelectSpace(Space space){
+			int damage = 0; // accumulate because +2 is better than +1 +1
 			// If target land is Sand or Water, 1 damage
 			if(GeneratesDamageOnly(space))
-				; // +1 damage
+				++damage;
 			// If target land has your presence, 1 fear and 1 damage
 			if(GeneratesDamageAndFear(space)){
-				// +1 damage
+				++damage;
 				gameState.AddFear(1);
 			}
+			if(damage>0)
+				gameState.DamageInvaders(space,damage);
 		}
 
 		static bool GeneratesDamageOnly(Space space) => space.Terrain.IsIn(Terrain.Sand,Terrain.Wetland);

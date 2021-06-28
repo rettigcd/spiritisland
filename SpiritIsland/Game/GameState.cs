@@ -27,8 +27,8 @@ namespace SpiritIsland {
 			}
 		}
 
-		internal void Defend( Space _, int __ ) {
-			// !!! implement me
+		internal void Defend( Space space, int delta ) {
+			defendCount[space] += delta;
 		}
 
 		#region Beasts
@@ -143,12 +143,24 @@ namespace SpiritIsland {
 		}
 
 		void RavageSpace( InvaderGroup ravageGroup ) {
-			int damageToDahan = ravageGroup.DamageInflicted;
+
+			int defend = defendCount[ravageGroup.Space]; defendCount[ravageGroup.Space] = 0;
+			int damageToDahan = Math.Max( ravageGroup.DamageInflicted - defend, 0);
+
 			int dahan = GetDahanOnSpace( ravageGroup.Space );
 			int dahanKilled = Math.Min( damageToDahan / 2, dahan ); // rounding down
 			AddDahan( ravageGroup.Space, -dahanKilled ); dahan -= dahanKilled;
-			int damageToInvaders = dahan * 2;
 
+			ApplyDamageToInvaders( ravageGroup, dahan * 2 );
+		}
+
+		public void DamageInvaders(Space space,int damage){
+			var group = InvadersOn(space);
+			ApplyDamageToInvaders(group,damage);
+		}
+
+		void ApplyDamageToInvaders( InvaderGroup ravageGroup, int startingDamage ) {
+			int damageToInvaders = startingDamage;
 			while(damageToInvaders > 0 && ravageGroup.InvaderTypesPresent.Any()) {
 				var invaderToDamage = killOrder.FirstOrDefault( invader =>
 						invader.Health <= damageToInvaders // prefer things we can kill
@@ -158,7 +170,6 @@ namespace SpiritIsland {
 				ravageGroup[invaderToDamage]--;
 				damageToInvaders -= invaderToDamage.Health;
 			}
-
 			UpdateFromGroup( ravageGroup );
 		}
 
@@ -181,6 +192,8 @@ namespace SpiritIsland {
 
 		readonly CountDictionary<InvaderKey> invaderCount = new CountDictionary<InvaderKey>();
 		readonly CountDictionary<Space> dahanCount = new CountDictionary<Space>();
+
+		readonly CountDictionary<Space> defendCount = new CountDictionary<Space>();
 		int fearCount = 0;
 	}
 
