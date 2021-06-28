@@ -79,7 +79,7 @@ namespace SpiritIsland {
 			invaders.ApplyDamage(damagePlan);
 			UpdateFromGroup(invaders);
 		}
-		void UpdateFromGroup(InvaderGroup invaders){
+		public void UpdateFromGroup(InvaderGroup invaders){
 			foreach(var invader in invaders.Changed)
 				this.invaderCount[Key(invaders.Space,invader)] = invaders[invader];
 		}

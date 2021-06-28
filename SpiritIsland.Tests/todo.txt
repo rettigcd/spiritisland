@@ -1,13 +1,10 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
-Fix
-*	Massive Flooding level 2 and 3
-*	Spirit.Elements && Spirit.AllElements
-
 Not Implemented
-	Fear Cards / Fear Initialization
-	blight cards
-	blight damage to land + cascading
+	Fear Cards / Fear Initialization / Terror Level
+	Blight - blighted Island cards
+	blight - damage to land + cascading
+
 	Drawing Major Power Card - have to discard
 
 Unit Test

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using SpiritIsland.Core;
 
@@ -35,38 +36,53 @@ namespace SpiritIsland {
 		}
 
 		readonly int count;
+		Space space;
 
 		void SelectLevel(Space space){
+			this.space = space;
 			var invaders = gameState.InvadersOn(space);
 
 			const string k1 = "Push 1 E/T";
 			const string k2 = "2 damage, Push up to 3 explorers and/or towns";
 			const string k3 = "2 damage to all";
 
-			var d = new string[]{ k1, k2, k3 }.Take(count);
+			IEnumerable<string> d = new string[]{ k1, k2, k3 }.Take(count);
 
-			var dict = new Dictionary<string,IDecision>{
-				[k1] = new SelectInvadersToPush(invaders,1,"Town","Explorer"),
-				[k2] = new SelectInvadersToPush(invaders,3,"Town","Explorer"), // !!
-				[k3] = new SelectInvadersToPush(invaders,3,"Town","Explorer") // !!
+			var dict = new Dictionary<string,Action>{
+				[k1] = Option1,
+				[k2] = Option2,
+				[k3] = Option3,
 			};
 
+			// Add Selection Decision
 			engine.decisions.Push( new SelectText(d,(string option,ActionEngine engine)=>{
-				engine.decisions.Push( dict[option] );
+				dict[option]();
 			}) );
 		}
 
-		// * 2 sun, 3 water => Instead, 2 damage, Push up to 3 explorers and/or towns
-		[InnateOption(Element.Sun,Element.Sun,Element.Water,Element.Water,Element.Water)]
-		public class TwoDamageAndPush3 {
-
+		void Option1(){
+			var invaders = gameState.InvadersOn(space);
+			engine.decisions.Push( new SelectInvadersToPush(invaders,1,"Town","Explorer") );
 		}
 
-		//` * 3 sun, 4 water, 1 earth => Instead, 2 damage to each invader
-		[InnateOption(Element.Sun,Element.Sun,Element.Sun,Element.Water,Element.Water,Element.Water,Element.Water,Element.Earth)]
-		public class TwoDamageEach {
-
+		void Option2(){
+			// * 2 sun, 3 water => Instead, 2 damage, Push up to 3 explorers and/or towns
+			gameState.DamageInvaders(space,2);
+			engine.decisions.Push( new SelectInvadersToPush(gameState.InvadersOn(space),3,"Town","Explorer") );
 		}
+
+		void Option3(){
+			//` * 3 sun, 4 water, 1 earth => Instead, 2 damage to each invader
+			var group = gameState.InvadersOn(space);
+			var invaderTypes = group.InvaderTypesPresent.ToArray(); // copy so we can modify
+			foreach(var invader in invaderTypes){
+				// add the damaged invaders
+				group[ invader.Damage(2) ] += group[invader];
+				// clear the healthy invaders
+			}
+			gameState.UpdateFromGroup(group);
+		}
+
 
 	}
 

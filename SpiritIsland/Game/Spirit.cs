@@ -26,7 +26,8 @@ namespace SpiritIsland {
 			.GroupBy(c=>c)
 			.ToDictionary(grp=>grp.Key,grp=>grp.Count())
 			.ToCountDict();
-		public virtual int Elements(Element _) => 0;
+
+		public virtual int Elements(Element element) => AllElements[element];
 
 		#endregion
 
