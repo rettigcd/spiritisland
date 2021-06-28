@@ -89,7 +89,7 @@
     <Compile Include="Core\Growth\Helpers\AddPresence.cs" />
     <Compile Include="Core\Growth\DrawPowerCard.cs" />
     <Compile Include="Core\Growth\GainEnergy.cs" />
-    <Compile Include="Core\Growth\Fix\GrowthActionFactory.cs" />
+    <Compile Include="Core\Growth\GrowthActionFactory.cs" />
     <Compile Include="Core\Growth\GrowthOption.cs" />
     <Compile Include="Game\IAction.cs" />
     <Compile Include="Core\Growth\PlacePresenceBaseAction.cs" />
