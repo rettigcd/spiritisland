@@ -41,52 +41,56 @@ namespace SpiritIsland.BranchAndClaw {
 
 		public override string Text => "Sharp Fangs";
 
-		public override GrowthOption[] GetGrowthOptions() {
+		public SharpFangs(){
 			static bool beastOrJungle(Space s, GameState gameState) => s.Terrain==Terrain.Jungle || gameState.HasBeasts(s);
 		
 			var beastOrJungleRange3 = new PlacePresence(3, beastOrJungle,"beast or jungle");
 
-			return new GrowthOption[]{
-				NewGrowthOption(
-					new ReclaimAll()       // A
-					,new GainEnergy(-1)   // A
-					,new DrawPowerCard(1) // A
-					,beastOrJungleRange3 // B
-				)
-				,NewGrowthOption(
-					new ReclaimAll()       // A
-					,new DrawPowerCard(2) // A & C
-					// Engergy Change of 0     // A & C cancel each other out
-				)
-				,NewGrowthOption(
-					new ReclaimAll()       // A
-					,new DrawPowerCard(1) // A
-					,new GainEnergy(2)    // A + D
-				)
-				,NewGrowthOption(
-					beastOrJungleRange3 // B
-					,new GainEnergy(1)  // C
-					,new DrawPowerCard(1) // C
-				)
-				,NewGrowthOption(
-					beastOrJungleRange3 // B
-					,new GainEnergy(3)  // C
-				)
-				,NewGrowthOption(
-					new DrawPowerCard(1) // C
-					,new GainEnergy(1+3)  // C + D
-				)
+			var a = new GrowthActionFactory[]{
+				new ReclaimAll()       // A
+				,new GainEnergy(-1)   // A
+				,new DrawPowerCard(1) // A
 			};
+
+			var b= new GrowthActionFactory[]{
+				beastOrJungleRange3
+			};
+
+			var c = new GrowthActionFactory[]{
+				new DrawPowerCard(1) // C
+				,new GainEnergy(1)   // C
+			};
+
+			var d = new GrowthActionFactory[]{
+				new GainEnergy(3)   // D
+			};
+
+			static GrowthOption Join(GrowthActionFactory[] a,GrowthActionFactory[] b) 
+				=> new GrowthOption( a.Union(b).ToArray() );
+
+			GrowthOptions = new GrowthOption[]{
+				 Join(a,b)
+				,Join(a,c)
+				,Join(a,d)
+				,Join(b,c)
+				,Join(b,d)
+				,Join(c,d)
+			};
+
 		}
 
-		GrowthOption NewGrowthOption(params GrowthActionFactory[] actions) {
-			//	2 2 3 reclaim-1 4 5&reclaim-1
-			if( RevealedCardSpaces<4 ) return new GrowthOption(actions);
-			var list = actions.ToList();
-			list.Add(new Reclaim1());
-			if(RevealedCardSpaces==6)
-				list.Add(new Reclaim1());
-			return new GrowthOption(list.ToArray());
+		public override void Grow( GameState gameState, int optionIndex ) {
+			GrowthOption option = this.GetGrowthOptions()[optionIndex];
+			foreach (var action in option.GrowthActions)
+				AddAction(action);
+
+			if( RevealedCardSpaces >= 4 )
+				AddAction(new Reclaim1());
+
+			if( RevealedCardSpaces == 6 )
+				AddAction(new Reclaim1());
+
+			RemoveResolvedActions(gameState);
 		}
 
 		//	1 animal plant 2 animal 3 4

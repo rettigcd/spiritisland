@@ -37,43 +37,34 @@ namespace SpiritIsland.Base {
 
 	public class Ocean : Spirit {
 
-		public override string Text => "Ocean's Hungry Grasp";
-
-		public override GrowthOption[] GetGrowthOptions() {
+		public Ocean(){
 
 			// !!! add test that oceans containing 2 presence only push 1 of them out.
-
 			// Option 1 - reclaim, +1 power, gather 1 presense into EACH ocean, +2 energy
-			//var growthActions = gameState.Island.Boards
-			//	.Select(bd=>bd.Ocean)
-			//	.Where(o=>o.SpacesExactly(1).Any(Presence.Contains))
-			//	.Select(o=>new GatherPresence(o))
-			//	.Cast<GrowthAction>();
-
-			var opt1 = new GrowthOption(
-				new GatherPresenceIntoOcean(),
-				new ReclaimAll(),
-				new DrawPowerCard(),
-				new GainEnergy(2)
-			);
-
 			// Option 2 - +1 presence range any ocean, +1 presense in any ociean, +1 energy
-			var opt2 = new GrowthOption(
-				new GainEnergy(1),
-				new PlaceInOcean(),
-				new PlaceInOcean()
-			);
-
 			// Option 3 - gain power card, push 1 presense from each ocean,  add presense on costal land range 1
-			var opt3 = new GrowthOption( 
-				new PushPresenceFromOcean(),
-				new DrawPowerCard(),
-				new PlacePresence(1,(s,_)=>s.IsCostal, "coatal" )
-			);
-
-			return new GrowthOption[]{ opt1, opt2, opt3 };
+			GrowthOptions = new GrowthOption[]{ 
+				new GrowthOption(
+					new GatherPresenceIntoOcean(),
+					new ReclaimAll(),
+					new DrawPowerCard(),
+					new GainEnergy(2)
+				), 
+				new GrowthOption(
+					new GainEnergy(1),
+					new PlaceInOcean(),
+					new PlaceInOcean()
+				), 
+				new GrowthOption( 
+					new PushPresenceFromOcean(),
+					new DrawPowerCard(),
+					new PlacePresence(1,(s,_)=>s.IsCostal, "coatal" )
+				)
+			};
 
 		}
+
+		public override string Text => "Ocean's Hungry Grasp";
 
 		// energy: 0 moon water 1 earth water 2
 		protected override int[] EnergySequence => new int[]{ 0,0,0,1,1,1,2 } ;

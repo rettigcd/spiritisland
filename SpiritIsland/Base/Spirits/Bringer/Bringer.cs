@@ -37,13 +37,12 @@ namespace SpiritIsland.Base {
 
 		public override string Text => "Bringer of Dreams and Nightmares";
 
-		public override GrowthOption[] GetGrowthOptions() {
-
+		public Bringer(){
 			static bool onDahanOrInvadors(Space bs,GameState gameState) { // !!! hook in here! instead of Criteria
 				return gameState.HasDahan(bs) || gameState.HasInvaders(bs);
 			}
 
-			return new GrowthOption[]{
+			GrowthOptions = new GrowthOption[]{
 				// reclaim, +1 power card
 				new GrowthOption(new ReclaimAll(),new DrawPowerCard(1)),
 				// reclaim 1, add presence range 0
@@ -53,6 +52,7 @@ namespace SpiritIsland.Base {
 				// add presense range Dahan or Invadors, +2 energy
 				new GrowthOption(new GainEnergy(2), new PlacePresence(4,onDahanOrInvadors,"dahan or invaders"))
 			};
+
 		}
 
 		//	2 air 3 moon 4 any 5

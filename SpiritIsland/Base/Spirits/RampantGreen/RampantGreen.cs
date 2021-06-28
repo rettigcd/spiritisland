@@ -38,14 +38,12 @@ namespace SpiritIsland.BranchAndClaw {
 
 		public override string Text => "A Spread of Rampant Green";
 
-
-		public override GrowthOption[] GetGrowthOptions() {
-			
+		public RampantGreen(){
 			static bool IsWetlandOrJungle( Space bs, GameState _ ) 
 				=> bs.Terrain == Terrain.Jungle || bs.Terrain == Terrain.Wetland;
 			var placeOnWetlandOrJungle = new PlacePresence(2, IsWetlandOrJungle,"W / J");
 
-			return new GrowthOption[]{
+			GrowthOptions = new GrowthOption[]{
 				// reclaim, +1 power card
 				new GrowthOption(
 					placeOnWetlandOrJungle,
@@ -65,6 +63,7 @@ namespace SpiritIsland.BranchAndClaw {
 					new DrawPowerCard()
 				),
 			};
+
 		}
 
 		public override int NumberOfCardsPlayablePerTurn => base.NumberOfCardsPlayablePerTurn + tempCardBoost;

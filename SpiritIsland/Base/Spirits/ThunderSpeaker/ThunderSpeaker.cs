@@ -36,28 +36,35 @@ namespace SpiritIsland.Base {
 
 		public override string Text => "Thunder Speaker";
 
-		public override GrowthOption[] GetGrowthOptions(){
-
+		public ThunderSpeaker(){
 			static bool onDahan(Space bs,GameState gameState) => gameState.HasDahan(bs);
-			var opt1Actions = new List<GrowthActionFactory>{
-				new PlacePresence(2,onDahan,"dahan"),
-				new PlacePresence(1,onDahan,"dahan")
+
+			GrowthOptions = new GrowthOption[]{
+				new GrowthOption( 
+					new ReclaimAll(), 
+					new DrawPowerCard(2)
+				),
+				new GrowthOption( 
+					new PlacePresence(2,onDahan,"dahan"),
+					new PlacePresence(1,onDahan,"dahan")
+				),
+				new GrowthOption( 
+					new PlacePresence(1), 
+					new GainEnergy(4)
+				)
 			};
 
-			var opt2Actions = new List<GrowthActionFactory>{
-				new PlacePresence(1), new GainEnergy(4)
-			};
+		}
 
-			if( RevealedCardSpaces >= 5){
-				opt1Actions.Add( new Reclaim1() );
-				opt2Actions.Add( new Reclaim1() );
-			}
+		public override void Grow( GameState gameState, int optionIndex ) {
+			GrowthOption option = this.GetGrowthOptions()[optionIndex];
+			foreach (var action in option.GrowthActions)
+				AddAction(action);
 
-			return new GrowthOption[]{
-				new GrowthOption( new ReclaimAll(), new DrawPowerCard(2) ),
-				new GrowthOption( opt1Actions ),
-				new GrowthOption( opt2Actions )
-			};
+			if( RevealedCardSpaces >= 5 && optionIndex>0)
+				AddAction(new Reclaim1());
+
+			RemoveResolvedActions(gameState);
 		}
 
 		protected override int[] EnergySequence => new int[]{1, 1, 2, 2, 2, 3 };

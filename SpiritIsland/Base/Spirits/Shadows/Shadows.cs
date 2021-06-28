@@ -30,9 +30,8 @@ namespace SpiritIsland.Base {
 	public class Shadows : Spirit {
 		public override string Text => "Shadows Flicker Like Flames";
 
-
-		public override GrowthOption[] GetGrowthOptions(){
-			return new GrowthOption[]{
+		public Shadows(){
+			GrowthOptions = new GrowthOption[]{
 				new GrowthOption( new ReclaimAll(), new DrawPowerCard(1) ),
 				new GrowthOption( new DrawPowerCard(1), new PlacePresence(1) ),
 				new GrowthOption( new PlacePresence(3), new GainEnergy(3) )

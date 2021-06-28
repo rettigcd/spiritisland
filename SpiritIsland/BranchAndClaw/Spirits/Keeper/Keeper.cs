@@ -42,47 +42,39 @@ namespace SpiritIsland.Base {
 
 		public override string Text => "Keeper of the Forbidden Wilds";
 
-		public override GrowthOption[] GetGrowthOptions() {
-
+		public Keeper(){
 			bool presenceOrWilds(Space bs,GameState gameState) => this.Presence.Contains(bs) || gameState.HasWilds(bs);
 			bool noBlight(Space bs,GameState gameState) => bs.IsLand && !gameState.HasBlight(bs);
 
-			return new GrowthOption[]{
-				new GrowthOption(
-					new ReclaimAll()	    // A
-					,new GainEnergy(1)     // A
-					,new DrawPowerCard(1)	// B
-				)
-				,new GrowthOption(
-					new ReclaimAll()        // A
-					,new GainEnergy(2)     // A & C
-					,new PlacePresence(3,presenceOrWilds,"presence or wilds") // C
-				)
-				,new GrowthOption(
-					new ReclaimAll()          // A
-					,new GainEnergy(1-3)     // A & D
-					,new DrawPowerCard(1)	  // D
-					,new PlacePresence(3,noBlight,"no blight") // D
-				)
-				,new GrowthOption(
-					new DrawPowerCard(1)	// B
-					,new GainEnergy(1)     // C
-					,new PlacePresence(3,presenceOrWilds,"presence or wilds") // C
-				)
-				,new GrowthOption(
-					new DrawPowerCard(1)	// B
-					,new GainEnergy(-3)     // D
-					,new DrawPowerCard(1)	  // D
-					,new PlacePresence(3,noBlight,"no blight") // D
-				)
-				,new GrowthOption(
-					new GainEnergy(1)     // C
-					,new PlacePresence(3,presenceOrWilds,"presence or wilds") // C
-					,new PlacePresence(3,noBlight, "no blight") // D
-					,new GainEnergy(-3)     // D
-					,new DrawPowerCard(1)	  // D
-				)
+			var a = new GrowthActionFactory[]{
+				new ReclaimAll()	
+				,new GainEnergy(1)
 			};
+			var b = new GrowthActionFactory[]{
+				new DrawPowerCard(1)
+			};
+			var c = new GrowthActionFactory[]{
+				new GainEnergy(1)
+				,new PlacePresence(3,presenceOrWilds,"presence or wilds")
+			};
+			var d = new GrowthActionFactory[]{
+				new GainEnergy(-3)
+				,new DrawPowerCard(1)
+				,new PlacePresence(3,noBlight,"no blight")
+			};
+
+			static GrowthOption Join(GrowthActionFactory[] a,GrowthActionFactory[] b) 
+				=> new GrowthOption( a.Union(b).ToArray() );
+
+			GrowthOptions = new GrowthOption[]{
+				Join( a, b )
+				,Join( a, c )
+				,Join( a, d )
+				,Join( b, c )
+				,Join( b, d )
+				,Join( c, d )
+			};
+
 		}
 
 		// energy:	2 sun 4 5 plant 7 8 9

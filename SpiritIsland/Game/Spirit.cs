@@ -6,6 +6,8 @@ namespace SpiritIsland {
 
 	public abstract class Spirit :IOption {
 
+		public GrowthOption[] GrowthOptions { get; protected set; }
+
 		public Spirit(){
 			Hand.Add( new PowerCard( "A", 0, Speed.Fast, Element.Air ) );
 			Hand.Add( new PowerCard( "B", 0, Speed.Fast, Element.Air ) );
@@ -83,7 +85,7 @@ namespace SpiritIsland {
 			RemoveResolvedActions(gameState);
 		}
 
-		void RemoveResolvedActions(GameState gameState) {
+		protected void RemoveResolvedActions(GameState gameState) {
 
 			var resolvedActions = UnresolvedActionFactories
 				.Select(f=>new{Factory=f,Action=f.Bind(this,gameState)})
@@ -107,7 +109,7 @@ namespace SpiritIsland {
 
 		public void CollectEnergy() => Energy += EnergyPerTurn;
 
-		public abstract GrowthOption[] GetGrowthOptions();
+		public virtual GrowthOption[] GetGrowthOptions() => GrowthOptions;
 
 		public virtual void BuyAvailableCards(params PowerCard[] cards) {
 			if (cards.Length > NumberOfCardsPlayablePerTurn) 

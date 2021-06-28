@@ -30,11 +30,14 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 
 	public class Lightning : Spirit {
 		public const string Name = "Lightning's Swift Strike";
-		public override string Text => Name;
 
-		public override GrowthOption[] GetGrowthOptions() {
-			return new GrowthOption[]{
-				new GrowthOption( new ReclaimAll(), new DrawPowerCard(1), new GainEnergy(1) ),
+		public Lightning(){
+			GrowthOptions = new GrowthOption[]{
+				new GrowthOption( 
+					new ReclaimAll(), 
+					new DrawPowerCard(1), 
+					new GainEnergy(1)
+				),
 				// +1 presence range 2, +1 presence range 0( 
 				new GrowthOption(
 					new PlacePresence(2),
@@ -44,6 +47,8 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 				new GrowthOption( new GainEnergy(3), new PlacePresence(1) ),
 			};
 		}
+
+		public override string Text => Name;
 
 		protected override int[] EnergySequence => new int[]{ 1, 1, 2, 2, 3, 4, 4, 5 };
 		protected override int[] CardSequence => new int[]{ 2, 3, 4, 5, 6 };

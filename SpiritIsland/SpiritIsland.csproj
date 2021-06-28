@@ -78,7 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Base\Spirits\Ocean\PlaceInOcean.cs" />
-    <Compile Include="BranchAndClaw\Spirits\RampantGreen\PlayExtraCardThisTurn.cs" />
+    <Compile Include="Base\Spirits\RampantGreen\PlayExtraCardThisTurn.cs" />
     <Compile Include="Core\Actions\ResolvedAction.cs" />
     <Compile Include="Game\Island\Board.cs" />
     <Compile Include="Game\Exceptions\CardNotAvailableException.cs" />
@@ -149,11 +149,11 @@
     <Compile Include="Base\Spirits\Ocean\GatherPresenceIntoOcean.cs" />
     <Compile Include="Game\Enums\Element.cs" />
     <Compile Include="Game\Exceptions\InsufficientEnergyException.cs" />
-    <Compile Include="Base\Spirits\Keeper\Keeper.cs" />
+    <Compile Include="BranchAndClaw\Spirits\Keeper\Keeper.cs" />
     <Compile Include="Base\Spirits\Lightning\Lightning.cs" />
     <Compile Include="Base\Spirits\River\MassiveFlooding.cs" />
     <Compile Include="Base\Spirits\Ocean\Ocean.cs" />
-    <Compile Include="BranchAndClaw\Spirits\RampantGreen\RampantGreen.cs" />
+    <Compile Include="Base\Spirits\RampantGreen\RampantGreen.cs" />
     <Compile Include="Core\Growth\Reclaim1.cs" />
     <Compile Include="Base\Spirits\River\RiverSurges.cs" />
     <Compile Include="Base\Spirits\Shadows\Shadows.cs" />

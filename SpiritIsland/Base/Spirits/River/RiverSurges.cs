@@ -81,10 +81,6 @@ namespace SpiritIsland.Base {
 
 		#region growth
 
-		public GrowthOption[] GrowthOptions {get;}
-
-		public override GrowthOption[] GetGrowthOptions() => GrowthOptions;
-
 		public override void Grow(GameState gameState, int optionIndex) {
 			if( Reclaim1FromCardTrack )
 				AddAction(new Reclaim1());
