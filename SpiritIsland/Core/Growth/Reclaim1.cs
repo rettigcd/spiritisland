@@ -1,30 +1,38 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace SpiritIsland.Core {
 
-	// !!Split
 	public class Reclaim1 : GrowthAction {
 
-		public PowerCard Card {get; set;}
-
-		public override IOption[] Options => spirit.DiscardPile.Cast<IOption>().ToArray();
-
-		public override void Select( IOption option ) {
-			Card = (PowerCard)option;
+		public override IAction Bind( Spirit spirit, GameState gameState ) {
+			return new Action(spirit);
 		}
 
-		public override void Apply() {
-			if( Card == null ) throw new InvalidOperationException("reclaim 1: no card specified");
-			if( spirit.DiscardPile.Contains(Card) ){
-				spirit.DiscardPile.Remove(Card);
-				spirit.Hand.Add(Card);
+		class Action : IAction {
+
+			PowerCard card;
+			readonly Spirit spirit;
+
+			public Action(Spirit spirit){
+				this.spirit = spirit;
 			}
-			Card = null; // ensure it must be set each time.
-		}
 
-		public override bool IsResolved => Card != null;
+			public bool IsResolved => card != null;
+
+			public IOption[] Options => spirit.DiscardPile.Cast<IOption>().ToArray();
+
+			public void Apply() {
+				if( spirit.DiscardPile.Contains(card) ){
+					spirit.DiscardPile.Remove(card);
+					spirit.Hand.Add(card);
+				}
+			}
+
+			public void Select( IOption option ) {
+				card = (PowerCard)option;
+			}
+		}
 
 	}
 
