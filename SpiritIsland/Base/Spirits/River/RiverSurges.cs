@@ -54,6 +54,22 @@ namespace SpiritIsland.Base {
 			new PowerCard(typeof(RiversBounty)),
 			new PowerCard(typeof(WashAway))
 		){
+			GrowthOptions =  new GrowthOption[]{ 
+				new GrowthOption(
+					new ReclaimAll(),
+					new DrawPowerCard(1),
+					new GainEnergy(1)
+				),
+				new GrowthOption(
+					new PlacePresence( 1 ),
+					new PlacePresence( 1 )
+				),
+				new GrowthOption( 
+					new DrawPowerCard( 1 ),
+					new PlacePresence( 2 ) 
+				)
+			};
+
 			this.InnatePowers = new InnatePower[]{
 				InnatePower.For<MassiveFlooding>()
 			};
@@ -65,14 +81,9 @@ namespace SpiritIsland.Base {
 
 		#region growth
 
-		public override GrowthOption[] GetGrowthOptions() {
+		public GrowthOption[] GrowthOptions {get;}
 
-			return new GrowthOption[]{ 
-			GetReclaimGrowthOption(),
-				Get2PresenceGrowthOption(),
-				GetPowerAndPresenceGrowthOption(),
-			};
-		}
+		public override GrowthOption[] GetGrowthOptions() => GrowthOptions;
 
 		public override void Grow(GameState gameState, int optionIndex) {
 			if( Reclaim1FromCardTrack )
@@ -80,27 +91,6 @@ namespace SpiritIsland.Base {
 			base.Grow(gameState, optionIndex);
 		}
 
-		GrowthOption GetReclaimGrowthOption() {
-			return new GrowthOption(
-				new ReclaimAll(),
-				new DrawPowerCard(1),
-				new GainEnergy(1)
-			);
-		}
-
-		GrowthOption GetPowerAndPresenceGrowthOption() {
-			return new GrowthOption( 
-				new DrawPowerCard( 1 ),
-				new PlacePresence( 2 ) 
-			);
-		}
-
-		GrowthOption Get2PresenceGrowthOption() {
-			return new GrowthOption(
-				new PlacePresence( 1 ),
-				new PlacePresence( 1 )
-			);
-		}
 
 		#endregion
 
