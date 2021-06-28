@@ -17,7 +17,7 @@ namespace SpiritIsland.Tests.Growth {
 				};
 			}
 			protected override int[] EnergySequence => new int[] {0,0,0};
-			public List<GrowthAction> actions = new();
+			public List<GrowthActionFactory> actions = new();
 		}
 
 		public PlacePresence_Tests():base(new TestSpirit()){
@@ -29,14 +29,16 @@ namespace SpiritIsland.Tests.Growth {
 		public void PullsFrom_EnergyTrack() {
 			// Given: spirit has one place presence action
 			Given_SpiritGrowsByPlacingPresence();
-			When_Growing( 0, Resolve_PlacePresence( "A1" ) );
+			When_Growing(0);
+			Resolve_PlacePresence( "A1" );
 			Assert.Equal( 2, spirit.RevealedEnergySpaces );
 		}
 
 		[Fact]
 		public void PullsFrom_CardTrack(){
 			Given_SpiritGrowsByPlacingPresence();
-			When_Growing( 0, Resolve_PlacePresence( "A1", Track.Card ) );
+			When_Growing( 0 );
+			Resolve_PlacePresence( "A1", Track.Card );
 			Assert.Equal(2,spirit.RevealedCardSpaces);
 		}
 

@@ -95,10 +95,4 @@ namespace SpiritIsland.Base {
 
 	}
 
-	public class PlaceInOcean : PlacePresenceBase {
-		public override IOption[] Options => gameState.Island.Boards
-			.Select( b=>b.Spaces.Single(s=>s.IsOcean) )
-			.ToArray();
-	}
-
 }

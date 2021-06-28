@@ -39,12 +39,12 @@ namespace SpiritIsland.Base {
 		public override GrowthOption[] GetGrowthOptions(){
 
 			static bool onDahan(Space bs,GameState gameState) => gameState.HasDahan(bs);
-			var opt1Actions = new List<GrowthAction>{
+			var opt1Actions = new List<GrowthActionFactory>{
 				new PlacePresence(2,onDahan,"dahan"),
 				new PlacePresence(1,onDahan,"dahan")
 			};
 
-			var opt2Actions = new List<GrowthAction>{
+			var opt2Actions = new List<GrowthActionFactory>{
 				new PlacePresence(1), new GainEnergy(4)
 			};
 

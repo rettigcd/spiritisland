@@ -7,51 +7,61 @@ namespace SpiritIsland.Tests.Growth {
 
 	public class ResolvePlacePresence {
 
+		readonly string allOptions;
 		readonly string placeOnSpace;
 		readonly Track source;
-		readonly int focus;
+		readonly string factoryDescription;
 
-		public ResolvePlacePresence(string placeOnSpace, int focus, Track source) {
-			this.placeOnSpace = placeOnSpace;
-			this.source = source;
-			this.focus = focus;
-		}
-
-		public void Apply(List<IAction> growthActions) {
-			PlacePresenceBase action = growthActions
-				.OfType<PlacePresenceBase>()
-				.ToArray()[focus];
-			Update(action);
-			action.Apply();
-			action.Resolved(action.Spirit);
-		}
-
-		protected virtual void Update(PlacePresenceBase pp) {
-			pp.Source = source;
-			pp.Target = (Space)pp.Options.Single(s=>s.Text==placeOnSpace);
-		}
-	}
-
-
-	public class SpyOnPlacePresence : ResolvePlacePresence {
-		readonly string allOptions;
-		public SpyOnPlacePresence( string allOptions, int focus, Track source )
-			:base(allOptions.Split(';')[0],focus,source)
-		{
+		public ResolvePlacePresence(string allOptions, Track source,string factoryDescription) {
 			this.allOptions = allOptions;
+			this.placeOnSpace = allOptions.Split(';')[0];
+			this.source = source;
+			this.factoryDescription = factoryDescription;
 		}
-		protected override void Update(PlacePresenceBase pp ) {
 
-			base.Update( pp );
+		public void Apply(Spirit spirit,GameState gameState) {
 
-			string actualOptions = pp.Options
-				.Select( o=> o.Text )
-				.OrderBy(l=>l)
-				.Join(";");
+			IActionFactory factory = (factoryDescription == null)
+				? FindSinglePlacePresence( spirit, gameState )
+				: FindMatchingName( spirit );
 
-			if(actualOptions != allOptions)
-				throw new Exception($"Expected [{allOptions}] but found [{actualOptions}]" );
+			var action = factory.Bind( spirit, gameState );
+			if(action is not PlacePresenceBaseAction pp) throw new Exception( "expected PlacePresence but found " + action.GetType() );
+
+			pp.Select( source );
+
+			if(allOptions.Length>2){
+				// !!! validate options here
+
+				pp.Select( pp.Options.Single( o => o.Text == placeOnSpace ) );
+			}
+
+			pp.Apply();
+			factory.Resolved( spirit );
 		}
+
+		private IActionFactory FindMatchingName( Spirit spirit ) {
+			return spirit.UnresolvedActionFactories
+				.FirstOrDefault( f => f.Name == factoryDescription )
+				?? throw new Exception( "Could not find factory [" + factoryDescription + "] in " + spirit.UnresolvedActionFactories.Select( f => f.Name ).Join( ", " ) );
+		}
+
+		static IActionFactory FindSinglePlacePresence( Spirit spirit, GameState gameState ) {
+			var ppFactories = spirit.UnresolvedActionFactories
+				.Where( f => f.Bind( spirit, gameState ) is PlacePresenceBaseAction )
+				.ToArray();
+
+			if(ppFactories.Length == 1) return ppFactories[0];
+			if(ppFactories.Length == 0) throw new Exception("no PP factories found");
+
+			if(ppFactories.Select(x=>x.Name).Distinct().Count()==1)
+				return ppFactories[0]; // same name , just use the first one
+
+			throw new Exception("multiple PP factories found. Please select from: "+ppFactories.Select(f=>f.Name).Join(", "));
+
+		}
+
 	}
+
 
 }

@@ -81,7 +81,8 @@ namespace SpiritIsland.Tests.Growth {
 			// Given: island has 2 boards, hence 2 oceans
 			gameState.Island = new Island(BoardA,BoardB);
 
-			When_Growing(1, Resolve_PlacePresence( "A0;B0"));
+			When_Growing(1);
+			Resolve_PlacePresence( "A0;B0");
 			
 			Assert_HasEnergy(1);
 		}
@@ -95,7 +96,8 @@ namespace SpiritIsland.Tests.Growth {
 			gameState.Island = new Island(BoardA,BoardB,BoardC);
 			Given_HasPresence( starting );
 
-			When_Growing(2,Resolve_PlacePresence( placeOptions));
+			When_Growing(2);
+			Resolve_PlacePresence( placeOptions);
 
 			var targets = pushStr.Split(',')
 				.Where(s=>!string.IsNullOrEmpty(s))

@@ -35,7 +35,9 @@ namespace SpiritIsland.Tests.Growth {
 			foreach(string s in initialDahanSquares.Split( ',' ))
 				gameState.AddDahan( board[int.Parse( s )] );
 
-			When_Growing( 1, Resolve_PlacePresence( expectedPresenseOptions) );
+			When_Growing( 1 );
+			Resolve_PlacePresence( expectedPresenseOptions, "PlacePresence(2,dahan)" );
+			// PlacePresence(2,dahan)
 
 			Assert_HasEnergy( 0 );
 
@@ -46,7 +48,8 @@ namespace SpiritIsland.Tests.Growth {
 			// +1 presense within 1, +4 energy
 
 			Given_HasPresence( board[1] );
-			When_Growing(2, Resolve_PlacePresence( "A1;A2;A4;A5;A6"));
+			When_Growing(2);
+			Resolve_PlacePresence( "A1;A2;A4;A5;A6");
 
 			Assert.Equal(1,spirit.EnergyPerTurn);
 			Assert_HasEnergy( 4+1 );
@@ -84,11 +87,8 @@ namespace SpiritIsland.Tests.Growth {
 			spirit.RevealedCardSpaces = revealedSpaces;
 			Assert_PresenceTracksAre(1,expectedCardPlayCount);
 
-			var list = new List<SpyOnPlacePresence>{ Resolve_PlacePresence( "A2;A3;A4") };
-			//if( canReclaim1 )
-			//	list.Add( Resolve_Reclaim(0) );
-
-			When_Growing(2,list.ToArray());
+			When_Growing(2);
+			Resolve_PlacePresence( "A2;A3;A4");
 
 			if( canReclaim1 )
 				AndWhen_ReclaimingFirstCard();

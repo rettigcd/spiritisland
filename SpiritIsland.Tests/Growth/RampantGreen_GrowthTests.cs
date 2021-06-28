@@ -19,16 +19,17 @@ namespace SpiritIsland.Tests.Growth {
 			Given_HalfOfPowercardsPlayed();
 			Given_HasPresence( board[2] );
 
-			When_Growing( 0, Resolve_PlacePresence( "A2;A3;A5") );
+			When_Growing( 0 );
+			Resolve_PlacePresence( "A2;A3;A5");
 
 			Assert_AllCardsAvailableToPlay();
 			Assert_GainPowercard( 1 );
 		}
 
 		[Theory]
-		[InlineData(0,"A2;A3;A5")]
-		[InlineData(1,"A1;A2;A3;A4")]
-		public void PlayExtraCard_2Presence(int focus, string option){
+		[InlineData("PlacePresence(2,W / J)","A2;A3;A5")]
+		[InlineData("PlacePresence(1)","A1;A2;A3;A4")]
+		public void PlayExtraCard_2Presence(string focus, string option){
 			// +1 presense to jungle or wetland - range 2
 			// +1 presense range 1, play +1 extra card this turn
 
@@ -37,7 +38,8 @@ namespace SpiritIsland.Tests.Growth {
 
 			Assert.Equal(1, spirit.NumberOfCardsPlayablePerTurn); // ,"Rampant Green should start with 1 card.");
 
-			When_Growing( 1, Resolve_PlacePresence( option, focus ) );
+			When_Growing( 1 );
+			Resolve_PlacePresence( option, focus );
 
 			// Player Gains +1 card to play this round
 			Assert.Equal(2, spirit.NumberOfCardsPlayablePerTurn); // , "Should gain 1 card to play this turn.");
@@ -56,7 +58,8 @@ namespace SpiritIsland.Tests.Growth {
 			// +1 power card, +3 energy
 			Given_HasPresence( board[2] );
 
-			When_Growing( 2, Resolve_PlacePresence( "A2;A3;A5") );
+			When_Growing( 2 );
+			Resolve_PlacePresence( "A2;A3;A5");
 
 			Assert.Equal(1,spirit.EnergyPerTurn);
 			Assert_HasEnergy(3+1);

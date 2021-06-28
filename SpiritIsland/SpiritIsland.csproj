@@ -77,6 +77,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Base\Spirits\Ocean\PlaceInOcean.cs" />
+    <Compile Include="BranchAndClaw\Spirits\RampantGreen\PlayExtraCardThisTurn.cs" />
     <Compile Include="Core\Actions\ResolvedAction.cs" />
     <Compile Include="Game\Island\Board.cs" />
     <Compile Include="Game\Exceptions\CardNotAvailableException.cs" />
@@ -87,10 +89,10 @@
     <Compile Include="Core\Growth\Helpers\AddPresence.cs" />
     <Compile Include="Core\Growth\DrawPowerCard.cs" />
     <Compile Include="Core\Growth\GainEnergy.cs" />
-    <Compile Include="Core\Growth\Fix\GrowthAction.cs" />
+    <Compile Include="Core\Growth\Fix\GrowthActionFactory.cs" />
     <Compile Include="Core\Growth\GrowthOption.cs" />
     <Compile Include="Game\IAction.cs" />
-    <Compile Include="Core\Growth\PlacePresenceBase.cs" />
+    <Compile Include="Core\Growth\PlacePresenceBaseAction.cs" />
     <Compile Include="Core\Growth\Helpers\RemovePresence.cs" />
     <Compile Include="Game\Enums\Track.cs" />
     <Compile Include="Game\IActionFactory.cs" />

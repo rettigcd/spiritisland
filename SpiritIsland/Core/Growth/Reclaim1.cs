@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace SpiritIsland.Core {
 
-	public class Reclaim1 : GrowthAction {
+	public class Reclaim1 : GrowthActionFactory {
 
 		public override IAction Bind( Spirit spirit, GameState gameState ) {
 			return new Action(spirit);

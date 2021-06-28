@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.Core {
 
-	public class DrawPowerCard : GrowthAction {
+	public class DrawPowerCard : GrowthActionFactory {
 
 		readonly int count;
 		public DrawPowerCard(int count=1){ 

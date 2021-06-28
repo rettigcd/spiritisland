@@ -79,7 +79,7 @@ namespace SpiritIsland.BranchAndClaw {
 			};
 		}
 
-		GrowthOption NewGrowthOption(params GrowthAction[] actions) {
+		GrowthOption NewGrowthOption(params GrowthActionFactory[] actions) {
 			//	2 2 3 reclaim-1 4 5&reclaim-1
 			if( RevealedCardSpaces<4 ) return new GrowthOption(actions);
 			var list = actions.ToList();

@@ -5,7 +5,7 @@ using System.Linq;
 namespace SpiritIsland.Core {
 
 	// !!Split
-	public class PlacePresence : PlacePresenceBase {
+	public class PlacePresence : GrowthActionFactory {
 
 		readonly int range;
 		readonly Func<Space,GameState, bool> isValid;
@@ -33,27 +33,39 @@ namespace SpiritIsland.Core {
 
 		#endregion
 
-		public override IOption[] Options { get {
-			return Source == default
-				? (new Track[]{Track.Energy,Track.Card})
-				: (IOption[])spirit.Presence
-					.SelectMany(s => s.SpacesWithin(this.range))
-					.Distinct()
-					.Where(SpaceIsValid)
-					.OrderBy(x=>x.Label)
-					.ToArray();
-			}
+		public override IAction Bind( Spirit spirit, GameState gameState ) {
+
+			bool SpaceIsValid(Space space) => isValid(space,gameState);
+
+			var options = spirit.Presence
+				.SelectMany(s => s.SpacesWithin(this.range))
+				.Distinct()
+				.Where(SpaceIsValid)
+				.OrderBy(x=>x.Label)
+				.ToArray();
+
+			return new PlacePresenceBaseAction(spirit,gameState,options);
 		}
 
-		public override void Select( IOption option ) {
-			if(Source == default){
-				this.Source = (Track)option;
-				return;
-			}
-			this.Target = (Space)option;
-		}
+		//public override IOption[] Options { get {
+		//	return Source == default
+		//		? (new Track[]{Track.Energy,Track.Card})
+		//		: (IOption[])spirit.Presence
+		//			.SelectMany(s => s.SpacesWithin(this.range))
+		//			.Distinct()
+		//			.Where(SpaceIsValid)
+		//			.OrderBy(x=>x.Label)
+		//			.ToArray();
+		//	}
+		//}
 
-		bool SpaceIsValid(Space space) => isValid(space,gameState);
+		//public override void Select( IOption option ) {
+		//	if(Source == default){
+		//		this.Source = (Track)option;
+		//		return;
+		//	}
+		//	this.Target = (Space)option;
+		//}
 
 	}
 

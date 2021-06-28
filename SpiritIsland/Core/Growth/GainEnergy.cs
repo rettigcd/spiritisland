@@ -1,7 +1,7 @@
 ﻿
 namespace SpiritIsland.Core {
 
-	public class GainEnergy : GrowthAction {
+	public class GainEnergy : GrowthActionFactory {
 
 		readonly int amount;
 		public GainEnergy(int amount){

@@ -27,7 +27,8 @@ namespace SpiritIsland.Tests.Growth {
 			// b) add a presense to jungle or a land with beasts ( range 3)
 			Given_HalfOfPowercardsPlayed();
 
-			When_Growing( 0, Resolve_PlacePresence( "A3;A7;A8") );
+			When_Growing( 0 );
+			Resolve_PlacePresence( "A3;A7;A8");
 
 			Assert_AllCardsAvailableToPlay();  // A
 			Assert_HasEnergy( -1 + 1);           // A  -- ??? !!! can we grow if we don't have the energy
@@ -70,7 +71,8 @@ namespace SpiritIsland.Tests.Growth {
 			// b) add a presense to jungle or a land with beasts ( range 3)
 			// c) gain power card, gain +1 energy
 
-			When_Growing( 3, Resolve_PlacePresence( "A3;A7;A8") );
+			When_Growing( 3 );
+			Resolve_PlacePresence( "A3;A7;A8");
 
 			Assert_BoardPresenceIs("A2A3");    // B
 			Assert_HasEnergy( 1 + 1 );            // C
@@ -82,7 +84,8 @@ namespace SpiritIsland.Tests.Growth {
 			// b) add a presense to jungle or a land with beasts ( range 3)
 			// d) +3 energy
 
-			When_Growing( 4, Resolve_PlacePresence( "A3;A7;A8") );
+			When_Growing( 4 );
+			Resolve_PlacePresence( "A3;A7;A8");
 
 			Assert_BoardPresenceIs("A2A3");    // B
 			Assert_HasEnergy( 3 + 1 );            // D
@@ -130,9 +133,7 @@ namespace SpiritIsland.Tests.Growth {
 			// Test the reclaim bit
 			Given_HasPresence( board[3] );
 
-			var resolvers = new List<SpyOnPlacePresence>{};
-
-			When_Growing(5,resolvers.ToArray());
+			When_Growing(5);
 
 			while(reclaimCount-->0)
 //				resolvers.Add(Resolve_Reclaim(reclaimCount));

@@ -21,7 +21,8 @@ namespace SpiritIsland.Tests.Growth {
 		public void PowerAndPresence(){
 			// gain power card, add a presense range 1
 			Given_HasPresence( board[1] );
-			When_Growing(1, Resolve_PlacePresence( "A1;A2;A4;A5;A6") );
+			When_Growing(1);
+			Resolve_PlacePresence( "A1;A2;A4;A5;A6");
 			Assert_GainPowercard(1);
 		}
 
@@ -29,7 +30,8 @@ namespace SpiritIsland.Tests.Growth {
 		public void PresenceAndEnergy(){
 			// add a presence withing 3, +3 energy
 			Given_HasPresence( board[3] );
-			When_Growing( 2, Resolve_PlacePresence( "A1;A2;A3;A4;A5;A6;A7;A8") );
+			When_Growing( 2 );
+			Resolve_PlacePresence( "A1;A2;A3;A4;A5;A6;A7;A8");
 
 			Assert_HasEnergy(3+1); // 1 from energy track
 		}

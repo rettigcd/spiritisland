@@ -35,7 +35,8 @@ namespace SpiritIsland.Tests.Growth {
 			Given_HalfOfPowercardsPlayed();
 			Given_HasWilds( board[8] ); // 3 spaces away
 
-			When_Growing( 1, Resolve_PlacePresence( "A3;A8" ) );
+			When_Growing( 1 );
+			Resolve_PlacePresence( "A3;A8" );
 
 			Assert_AllCardsAvailableToPlay();   // A
 			Assert_HasEnergy( 2+2 );             // A & C
@@ -52,7 +53,8 @@ namespace SpiritIsland.Tests.Growth {
 			Given_HasPresence( board[3] );
 			Given_BlightEverywhereExcept7();
 
-			When_Growing( 2, Resolve_PlacePresence( "A7") );
+			When_Growing( 2 );
+			Resolve_PlacePresence( "A7");
 
 			Assert_AllCardsAvailableToPlay();   // A
 			Assert_HasEnergy( 0 );            // A & D  // !!! can you spend energy you don't have??
@@ -71,7 +73,8 @@ namespace SpiritIsland.Tests.Growth {
 			// Given: 1 wilds, 3 away
 			Given_HasWilds( board[8] );
 
-			When_Growing( 3, Resolve_PlacePresence( "A3;A8" ) );
+			When_Growing( 3 );
+			Resolve_PlacePresence( "A3;A8" );
 
 			Assert_GainPowercard( 1 );          // B
 			Assert_HasEnergy( 1+2 );             // C
@@ -87,7 +90,8 @@ namespace SpiritIsland.Tests.Growth {
 			Given_HasPresence( board[3] );
 			Given_BlightEverywhereExcept7();
 
-			When_Growing( 4, Resolve_PlacePresence( "A7" ) );
+			When_Growing( 4 );
+			Resolve_PlacePresence( "A7" );
 
 			Assert_GainPowercard( 2 );          // B & D
 			Assert_HasEnergy( -3+2 );            // D		// !!! can we do growth options that cause energy we don't have?
@@ -96,9 +100,9 @@ namespace SpiritIsland.Tests.Growth {
 		}
 
 		[Theory]
-		[InlineData(0,"A3;A8")]
-		[InlineData(1,"A7")]
-		public void C_Presence_Energy_D_Presence_PowerCard_LoseEnergy(int focus, string expected) {
+		[InlineData("PlacePresence(3,presence or wilds)","A3;A8")]
+		[InlineData("PlacePresence(3,no blight)","A7")]
+		public void C_Presence_Energy_D_Presence_PowerCard_LoseEnergy(string focus, string expected) {
 			// c) add presense range 3 containing (wilds or presense), +1 energy
 			// d) -3 energy, +1 power card, add presense to land without blight range 3
 
@@ -107,7 +111,8 @@ namespace SpiritIsland.Tests.Growth {
 			Given_HasWilds( board[8] );
 			Given_BlightEverywhereExcept7();
 
-			When_Growing( 5, Resolve_PlacePresence( expected, focus ) );
+			When_Growing( 5 );
+			Resolve_PlacePresence( expected, focus );
 
 			Assert_HasEnergy( -2 );          // C & D
 			Assert_GainPowercard( 1 );        // D

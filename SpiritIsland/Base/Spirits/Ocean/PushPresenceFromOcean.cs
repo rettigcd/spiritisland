@@ -5,7 +5,7 @@ using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
 
-	public class PushPresenceFromOcean : GrowthAction {
+	public class PushPresenceFromOcean : GrowthActionFactory {
 
 		public override IAction Bind( Spirit ocean, GameState gameState ) {
 			return new PushAction(ocean,gameState);

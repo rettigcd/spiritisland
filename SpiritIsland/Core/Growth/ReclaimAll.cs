@@ -1,6 +1,6 @@
 ﻿
 namespace SpiritIsland.Core {
-	public class ReclaimAll : GrowthAction {
+	public class ReclaimAll : GrowthActionFactory {
 
 		public override IAction Bind( Spirit spirit, GameState gameState ) {
 			return new ResolvedAction(()=>{

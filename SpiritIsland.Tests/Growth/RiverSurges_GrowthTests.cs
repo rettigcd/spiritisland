@@ -58,10 +58,9 @@ namespace SpiritIsland.Tests.Growth {
 			Given_HasPresence( board[3] );
 			Assert.Equal(1,spirit.RevealedEnergySpaces);
 
-			When_Growing( 1
-				, Resolve_PlacePresence( "A2;A3;A4", Track.Energy)
-				, Resolve_PlacePresence( "A1;A2;A3;A4", Track.Energy) // original 0 will already be remoed
-			);
+			When_Growing( 1 );
+			Resolve_PlacePresence( "A2;A3;A4", Track.Energy);
+			Resolve_PlacePresence( "A1;A2;A3;A4", Track.Energy); // original 0 will already be removed
 
 			Assert_GainPowercard( 0 );
 			Assert.Equal(2,spirit.EnergyPerTurn);
@@ -77,7 +76,8 @@ namespace SpiritIsland.Tests.Growth {
 			Assert.Equal(1,spirit.RevealedEnergySpaces);
 			Given_HasPresence( board[3] );
 
-			When_Growing( 2, Resolve_PlacePresence( "A1;A2;A3;A4;A5", Track.Card) );
+			When_Growing( 2 );
+			Resolve_PlacePresence( "A1;A2;A3;A4;A5", Track.Card);
 
 			Assert_HasCardAvailable( "Uncanny Melting" ); // gains 1st card in power progression
 			Assert_GainPowercard( 0 );
@@ -122,12 +122,8 @@ namespace SpiritIsland.Tests.Growth {
 			spirit.RevealedCardSpaces = revealedSpaces;
 			Assert_PresenceTracksAre(1,expectedCardPlayCount);
 
-			var resolvers = new List<SpyOnPlacePresence>{ Resolve_PlacePresence( "A1;A2;A3;A4;A5")};
-
-			//if(canReclaim1)
-			//	resolvers.Add(Resolve_Reclaim(0));
-
-			When_Growing(2,resolvers.ToArray());
+			When_Growing(2);
+			Resolve_PlacePresence( "A1;A2;A3;A4;A5");
 
 			if(canReclaim1)
 				AndWhen_ReclaimingFirstCard();

@@ -73,18 +73,8 @@ namespace SpiritIsland.Tests.Growth {
 
 		#endregion
 
-		protected void When_Growing( int option, params SpyOnPlacePresence[] resolvers ) {
+		protected void When_Growing( int option) {
 			spirit.Grow(gameState, option);
-
-			// modify the growth option to resolve incomplete states
-
-			foreach (var resolver in resolvers){
-				var unresolvedActions = spirit.UnresolvedActionFactories
-					.Select(f=>f.Bind(this.spirit,this.gameState))
-					.ToList();
-				resolver.Apply( unresolvedActions );
-			}
-
 		}
 
 		#region Asserts Presence
@@ -121,16 +111,13 @@ namespace SpiritIsland.Tests.Growth {
 
 		#region Resolve_
 
-		protected static SpyOnPlacePresence Resolve_PlacePresence( string placeOptions, int focus=0) {
-			return Resolve_PlacePresence(placeOptions,Track.Energy,focus);
+		protected void Resolve_PlacePresence( string placeOptions, string factory=null) {
+			Resolve_PlacePresence( placeOptions, Track.Energy, factory );
 		}
 
-		protected static SpyOnPlacePresence Resolve_PlacePresence( 
-			string placeOptions, 
-			Track source,
-			int focus=0
-		) {
-			return new SpyOnPlacePresence( placeOptions, focus, source );
+		protected void Resolve_PlacePresence(string placeOptions, Track source, string factory=null ) {
+			var x = new ResolvePlacePresence( placeOptions, source, factory );
+			x.Apply(spirit,gameState);
 		}
 
 		protected void Assert_PresenceTracksAre(int expectedEnergy,int expectedCards) {

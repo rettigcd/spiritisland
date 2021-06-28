@@ -5,15 +5,15 @@ namespace SpiritIsland.Core {
 
 	public class GrowthOption{
 
-		public GrowthOption(params GrowthAction[] actions){ 
+		public GrowthOption(params GrowthActionFactory[] actions){ 
 			this.GrowthActions = actions; 
 		}
 
-		public GrowthOption(IEnumerable<GrowthAction> actions){ 
+		public GrowthOption(IEnumerable<GrowthActionFactory> actions){ 
 			this.GrowthActions = actions.ToArray(); 
 		}
 
-		public GrowthAction[] GrowthActions { get; }
+		public GrowthActionFactory[] GrowthActions { get; }
 
 		public override string ToString() {
 			return GrowthActions.Select(a=>a.ShortDescription).Join(" / ");
