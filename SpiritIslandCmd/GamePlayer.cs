@@ -35,7 +35,7 @@ namespace SpiritIslandCmd {
 
 			formatter = new Formatter(spirit,gameState,invaderDeck);
 
-			selectGrowth = new SelectGrowth(spirit,gameState);
+			selectGrowth = new SelectGrowth(spirit,gameState,formatter);
 			resolveGrowth = new ResolveActions(spirit,gameState,invaderDeck,Speed.Growth);
 			selectPowerCards = new SelectPowerCards(spirit,formatter);
 			fastActions = new ResolveActions(spirit,gameState,invaderDeck,Speed.Fast,true);
@@ -72,12 +72,15 @@ namespace SpiritIslandCmd {
 			TransitionTo( selectGrowth );
 
 			while(phase != null){
-				Console.WriteLine(phase.Prompt);
+				Console.WriteLine(phase.uiMap.ToPrompt());
 				Console.Write("\r\nSI > ");
 				string cmd = Console.ReadLine().ToLower();
-				int index = int.TryParse(cmd,out int t) ? t : 0;
-				bool _ = phase.Handle(cmd,index-1)
-					|| Generic(cmd);
+
+				var option = phase.uiMap.GetOption(cmd);
+				if(option != null)
+					phase.Select(option);
+				else
+					Generic(cmd);
 			}
 		}
 

@@ -18,6 +18,8 @@ namespace SpiritIsland.Core {
 		}
 
 		public Speed Speed => Speed.Growth;
+
+		public string Text => this.ShortDescription;
 	}
 
 }

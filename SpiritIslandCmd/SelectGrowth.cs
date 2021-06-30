@@ -1,38 +1,41 @@
 ﻿using System;
 using System.Linq;
 using SpiritIsland;
-using SpiritIsland.Core;
 
 namespace SpiritIslandCmd {
+
 	public class SelectGrowth : IPhase {
 		
+		public string Prompt => uiMap.ToPrompt();
+
 		readonly Spirit spirit;
 		readonly GameState gameState;
+		readonly Formatter formatter;
 
-		public SelectGrowth(Spirit spirit,GameState gameState){
+		public SelectGrowth(Spirit spirit,GameState gameState,Formatter formatter){
 			this.spirit = spirit;
 			this.gameState = gameState;
+			this.formatter = formatter;
 		}
-
-		public string Prompt { get; private set; }
 
 		public event Action Complete;
 
-		public bool Handle( string cmd, int index ) {
-			if(index != -1){
-				spirit.Grow(gameState,index); // users enter 1-3 for index 0-2
-				this.Complete?.Invoke();
-				return true;
+		public void Select(IOption option){
+			var options = spirit.GetGrowthOptions();
+			for(int i=0;i<options.Length;++i){
+				if(options[i].Equals(option)){
+					spirit.Grow(gameState,i);
+					this.Complete?.Invoke();
+					return;
+				}
 			}
-			return false;
+			throw new Exception("growth option not found");
 		}
 
+		public UiMap uiMap {get; set;}
+
 		public void Initialize() {
-			int i=0;
-			Prompt = "Select Growth Option" + spirit
-				.GetGrowthOptions()
-				.Select(opt=>"\r\n"+(++i).ToString() + " : "+ opt.ToString())
-				.Join("");
+			uiMap = new UiMap("Select Growth Option",spirit.GetGrowthOptions().Cast<IOption>(),formatter);
 		}
 	}
 

@@ -8,12 +8,16 @@ namespace SpiritIslandCmd {
 
 	public class SelectPowerCards : IPhase {
 		
+		public string Prompt => uiMap.ToPrompt();
+
 		readonly Spirit spirit;
 		readonly Formatter formatter;
 		List<PowerCard> selectedCards;
 		List<PowerCard> options;
 		int canPurchase;
 		int energy;
+		public UiMap uiMap {get; set;}
+		public event Action Complete;
 
 		public SelectPowerCards(Spirit spirit,Formatter formatter){
 			this.spirit = spirit;
@@ -37,40 +41,29 @@ namespace SpiritIslandCmd {
 				Complete?.Invoke();
 				return;
 			}
-			UpdatePrompt();
+			uiMap = new UiMap( $"Buy power cards: (${energy} / {canPurchase})", GetDisplayOptions(), formatter );
 		}
 
-		void UpdatePrompt() {
-			int i = 0;
-			int maxWidth = this.options.Select(m=>m.Name.Length).Max();
-			List<string> options = this.options
-				.Select( c => $"\r\n\t{++i} : "+formatter.Format(c,maxWidth) )
-				.ToList();
-			options.Add( "\r\nD : done" );
-			Prompt = $"Buy power cards: (${energy} / {canPurchase})" + options.Join( "" );
+		List<IOption> GetDisplayOptions() {
+			var options = new List<IOption>();
+			options.AddRange( this.options );
+			options.Add( new TextOption( "Done" ) );
+			return options;
 		}
 
-		public string Prompt {get; private set;}
-
-		public event Action Complete;
-
-		public bool Handle( string cmd, int index ) {
-			if(cmd=="d"){
+		public void Select(IOption option){
+			if(option is TextOption txt && txt.Text=="Done"){
 				spirit.BuyAvailableCards(selectedCards.ToArray());
 				Complete?.Invoke();
-				return true;
+				return;
 			}
-			if(index <0 || index>=options.Count) return false;
-
-			var card = options[index];
-			selectedCards.Add(card);
-
-			energy -= card.Cost;
-			--canPurchase;
-
-			EvaluateCards();
-
-			return true;
+			if(option is PowerCard card){
+				selectedCards.Add(card);
+				energy -= card.Cost;
+				--canPurchase;
+				EvaluateCards();
+				return;
+			}
 		}
 
 	}

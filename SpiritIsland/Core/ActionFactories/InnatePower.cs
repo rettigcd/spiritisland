@@ -27,6 +27,8 @@ namespace SpiritIsland.Core {
 
 		public string Name {get;}
 
+		public string Text => Name;
+
 		readonly Type actionType;
 
 		public IAction Bind( Spirit spirit, GameState gameState ) {

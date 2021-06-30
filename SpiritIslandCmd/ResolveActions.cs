@@ -8,11 +8,18 @@ namespace SpiritIslandCmd {
 
 	class ResolveActions : IPhase {
 		
+		public string Prompt => uiMap.ToPrompt();
+
 		readonly Spirit spirit;
 		readonly GameState gameState;
 		readonly Speed speed;
 		readonly bool allowEarlyDone;
 		readonly Formatter formatter;
+		public UiMap uiMap {get; set;}
+		IActionFactory selectedActionFactory;
+		IAction action;
+		string growthName;
+		List<IActionFactory> matchingActionsFactories;
 
 		public ResolveActions(Spirit spirit,GameState gameState,InvaderDeck deck, Speed speed, bool allowEarlyDone=false){
 			this.spirit = spirit;
@@ -23,60 +30,53 @@ namespace SpiritIslandCmd {
 		}
 
 		public void Initialize() {
-			matchingActions = FindMatchingActions();
+			matchingActionsFactories = FindMatchingActions();
 
-			if(matchingActions.Count == 0) {
+			if(matchingActionsFactories.Count == 0) {
 				Done();
 				return;
 			}
 
-			Prompt = SummarizeActions();
+			uiMap = new UiMap( "Select " + speed + " to resolve:", GetActionFactoryOptions(), formatter );
 			action = null;
 		}
 
-		public string Prompt { get; private set; }
+		public void Select(IOption option){
+			if(option is TextOption txt){
+				if(txt.Text == "Done") Done();
+				return;
+			}
 
-		public event Action Complete;
+			// Select action or apply option
+			if(option is IActionFactory factory){
+				selectedActionFactory = factory;
+				this.growthName = selectedActionFactory.ToString(); // or .Name ?
+				action = selectedActionFactory.Bind( spirit, gameState );
+			} else {
+				action.Select( option );
+			}
 
-		public bool Handle( string cmd,int index ) {
-			if(allowEarlyDone && cmd=="d"){ Done(); return true; }
-			return index >= 0 
-				&& (action == null
-					? SelectAction( index )
-					: SelectOption( index )
-				);
-		}
-
-		bool SelectAction( int index ) {
-			if(index>=matchingActions.Count) return false;
-			selectedAction = matchingActions[index];
-			this.growthName = selectedAction.ToString(); // or .Name ?
-			action = selectedAction.Bind( spirit, gameState );
+			// next action or summarize options
 			if(action.IsResolved){
+				// Next
 				action.Apply();
-				selectedAction.Resolved( spirit );
-				Initialize(); // Next
+				selectedActionFactory.Resolved( spirit );
+				Initialize();
 			} else
-				Prompt = SummarizeOptions();
-			return true;
-		}
-
-		bool SelectOption( int index ) {
-			if(index>=action.Options.Length) return false;
-			action.Select( action.Options[index] );
-			if(action.IsResolved) {
-				action.Apply();
-				selectedAction.Resolved( spirit );
-				Initialize(); // Next
-			} else
-				Prompt = SummarizeOptions();
-			return true;
+				uiMap = new UiMap("Select Resolution for " + growthName+":",action.Options,formatter);
 		}
 
 		List<IActionFactory> FindMatchingActions() {
 			return spirit.UnresolvedActionFactories
 				.Where( x => x.Speed == speed )
 				.ToList();
+		}
+
+		List<IOption> GetActionFactoryOptions() {
+			var list = new List<IOption>();
+			list.AddRange( matchingActionsFactories );
+			if(allowEarlyDone) list.Add( new TextOption( "Done" ) );
+			return list;
 		}
 
 		void Done() {
@@ -90,26 +90,8 @@ namespace SpiritIslandCmd {
 			this.Complete?.Invoke();
 		}
 
-		string SummarizeActions() {
-			int i = 0;
-			var optionStrings = matchingActions
-				.Select( x => "\r\n\t" + (++i).ToString() + " : " + x.Name )
-				.ToList();
-			if(allowEarlyDone)
-				optionStrings.Add( "\r\n\td : done" );
-			return "Select "+speed+" to resolve:" + optionStrings.Join( "" );
-		}
+		public event Action Complete;
 
-		string SummarizeOptions() {
-			int i = 0;
-			return "Select Resolution for " + growthName + " : " + action.Options
-				.Select( o => "\r\n\t" + (++i).ToString() + " : " + formatter.Format(o) )
-				.Join( "" );
-		}
-
-		IActionFactory selectedAction;
-		IAction action;
-		string growthName;
-		List<IActionFactory> matchingActions;
 	}
+
 }

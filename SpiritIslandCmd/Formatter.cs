@@ -36,11 +36,11 @@ namespace SpiritIslandCmd {
 			return text;
 		}
 
-		public string Format(IOption option){
+		public string Format(IOption option, int nameWidth=1){
 			return option is Track track
-					? Format( track )
+					? Format( track, nameWidth )
 				: option is Space space 
-					? Format( space )
+					? Format( space, nameWidth )
 				: option.Text;
 		}
 

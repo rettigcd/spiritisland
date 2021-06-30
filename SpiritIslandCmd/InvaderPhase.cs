@@ -4,14 +4,15 @@ using System;
 namespace SpiritIslandCmd {
 	class InvaderPhase : IPhase {
 
-//		readonly Spirit spirit;
+		public string Prompt => uiMap.ToPrompt();
+
 		readonly GameState gameState;
 		readonly InvaderDeck invaderDeck;
 
 		public InvaderPhase(GameState gameState,InvaderDeck invaderDeck){
-//			this.spirit = spirit;
 			this.gameState = gameState;
 			this.invaderDeck = invaderDeck;
+			uiMap = new UiMap("nothing to do", Array.Empty<IOption>(), null);
 		}
 
 		public void Initialize() {
@@ -26,9 +27,11 @@ namespace SpiritIslandCmd {
 			this.Complete?.Invoke();
 		}
 
-		public string Prompt => "nothing to do";
+		public UiMap uiMap { get; set; }
 
-		public bool Handle( string cmd, int index ) => false;
+		public void Select( IOption option ) {
+			throw new NotImplementedException();
+		}
 
 		public event Action Complete;
 
