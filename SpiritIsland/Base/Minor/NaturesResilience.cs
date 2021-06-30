@@ -21,7 +21,7 @@ namespace SpiritIsland.Base {
 			this.space = space;
 
 			if(canRemoveBlight)
-				engine.decisions.Push( new SelectText( 
+				engine.decisions.Push( new SelectText( engine, 
 					new string[] { DefendKey, RemoveBlightKey }, 
 					SelectEffect
 				));

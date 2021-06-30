@@ -16,7 +16,7 @@ namespace SpiritIsland.Base {
 		}
 
 		protected override void SelectSpace(Space space){
-			engine.decisions.Push(new SelectInvadersToPush(
+			engine.decisions.Push(new SelectInvadersToPush(engine,
 				gameState.InvadersOn(space),3
 				,"Town","Explorer"
 			));

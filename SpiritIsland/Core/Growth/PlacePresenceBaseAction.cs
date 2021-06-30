@@ -18,7 +18,7 @@ namespace SpiritIsland.Core {
 
 			public IOption[] Options => new IOption[]{ Track.Energy,Track.Card };
 
-			public void Select( IOption option, ActionEngine engine ) {
+			public void Select( IOption option ) {
 				ctx.source = (Track)option;
 			}
 		}
@@ -32,7 +32,7 @@ namespace SpiritIsland.Core {
 
 			public IOption[] Options => ctx.destinationOptions;
 
-			public void Select( IOption option, ActionEngine engine ) {
+			public void Select( IOption option ) {
 				ctx.target = (Space)option;
 			}
 

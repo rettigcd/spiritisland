@@ -17,7 +17,7 @@ namespace SpiritIsland.Base {
 					.Where(p=>p.IsOcean)
 					.Distinct()
 					.ToList();
-				engine.decisions.Push(new PushPresenceFrom(spirit,oceans));
+				engine.decisions.Push(new PushPresenceFrom(engine,spirit,oceans));
 			}
 		}
 
@@ -25,8 +25,10 @@ namespace SpiritIsland.Base {
 
 			readonly Spirit spirit;
 			readonly List<Space> pushSpaces;
+			readonly ActionEngine engine;
 
-			public PushPresenceFrom(Spirit spirit,List<Space> pushSpaces){
+			public PushPresenceFrom(ActionEngine engine, Spirit spirit,List<Space> pushSpaces){
+				this.engine = engine;
 				this.spirit = spirit;
 				this.pushSpaces = pushSpaces;
 			}
@@ -38,7 +40,7 @@ namespace SpiritIsland.Base {
 					.ToArray()
 				: Array.Empty<IOption>();
 
-			public void Select( IOption option, ActionEngine engine ) {
+			public void Select( IOption option ) {
 				// apply...
 				Space target = (Space)option;
 				spirit.Presence.Remove(CurrentSource);

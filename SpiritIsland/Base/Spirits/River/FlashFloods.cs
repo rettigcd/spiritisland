@@ -26,7 +26,7 @@ namespace SpiritIsland.PowerCards {
 		void SelectTarget(Space target){
 			int damage = target.IsCostal ? 2 : 1;
 			var grp = gameState.InvadersOn(target);
-			engine.decisions.Push( new SelectInvaderToDamage(grp,damage) );
+			engine.decisions.Push( new SelectInvaderToDamage(engine,grp,damage) );
 		}
 
 	}

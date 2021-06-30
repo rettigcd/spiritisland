@@ -18,14 +18,16 @@ namespace SpiritIsland.Base {
 					.Select(p=>p.SpacesExactly(1).Single(o=>o.IsOcean))
 					.Distinct()
 					.ToList();
-				engine.decisions.Push(new GatherPresencesInto(spirit,oceans));
+				engine.decisions.Push(new GatherPresencesInto(engine,spirit,oceans));
 			}
 		}
 
 		class GatherPresencesInto : IDecision {
 			readonly Spirit spirit;
 			readonly List<Space> gatherSpaces;
-			public GatherPresencesInto(Spirit spirit, List<Space> gatherSpaces){
+			readonly ActionEngine engine;
+			public GatherPresencesInto(ActionEngine engine, Spirit spirit, List<Space> gatherSpaces){
+				this.engine = engine;
 				this.spirit = spirit;
 				this.gatherSpaces = gatherSpaces;
 			}
@@ -38,7 +40,7 @@ namespace SpiritIsland.Base {
 					.ToArray()
 				: Array.Empty<IOption>();
 
-			public void Select( IOption option, ActionEngine engine ) {
+			public void Select( IOption option) {
 				// apply...
 				Space source = (Space)option;
 				spirit.Presence.Remove(source);

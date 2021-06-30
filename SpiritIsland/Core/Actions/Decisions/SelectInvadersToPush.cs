@@ -7,8 +7,10 @@ namespace SpiritIsland.Core {
 		readonly InvaderGroup invaderGroup;
 		readonly int count;
 		readonly string[] labels;
+		readonly ActionEngine engine;
 
-		public SelectInvadersToPush(InvaderGroup invaderGroup,int count,params string[] labels){
+		public SelectInvadersToPush(ActionEngine engine, InvaderGroup invaderGroup,int count,params string[] labels){
+			this.engine = engine;
 			this.invaderGroup = invaderGroup;
 			this.count = count;
 			this.labels = labels;
@@ -28,15 +30,15 @@ namespace SpiritIsland.Core {
 				.Where(i=>labels.Contains(i.Label))
 				.ToArray();
 
-		public void Select( IOption option, ActionEngine engine ) {
+		public void Select( IOption option ) {
 
 			// if we need more, push next
 			if(count>1)
-				engine.decisions.Push(new SelectInvadersToPush(invaderGroup,count-1,labels));
+				engine.decisions.Push(new SelectInvadersToPush( engine, invaderGroup,count-1,labels));
 
 
 			// select where to push this invader
-			engine.decisions.Push( new SelectInvaderDestination( invaderGroup, (Invader)option ) );
+			engine.decisions.Push( new SelectInvaderDestination( engine, invaderGroup, (Invader)option ) );
 		}
 
 	}

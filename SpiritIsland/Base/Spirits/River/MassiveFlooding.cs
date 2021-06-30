@@ -55,20 +55,20 @@ namespace SpiritIsland {
 			};
 
 			// Add Selection Decision
-			engine.decisions.Push( new SelectText(d,(string option,ActionEngine engine)=>{
+			engine.decisions.Push( new SelectText(engine,d,(string option,ActionEngine engine)=>{
 				dict[option]();
 			}) );
 		}
 
 		void Option1(){
 			var invaders = gameState.InvadersOn(space);
-			engine.decisions.Push( new SelectInvadersToPush(invaders,1,"Town","Explorer") );
+			engine.decisions.Push( new SelectInvadersToPush(engine,invaders,1,"Town","Explorer") );
 		}
 
 		void Option2(){
 			// * 2 sun, 3 water => Instead, 2 damage, Push up to 3 explorers and/or towns
 			gameState.DamageInvaders(space,2);
-			engine.decisions.Push( new SelectInvadersToPush(gameState.InvadersOn(space),3,"Town","Explorer") );
+			engine.decisions.Push( new SelectInvadersToPush(engine, gameState.InvadersOn(space),3,"Town","Explorer") );
 		}
 
 		void Option3(){

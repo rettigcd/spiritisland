@@ -22,21 +22,23 @@ namespace SpiritIsland.Base {
 
 		protected override void SelectSpace(Space space){
 			var ctx = new GatherDahanCtx(space,gameState);
-			engine.decisions.Push(new If2Add1(ctx));  // do this last
-			engine.decisions.Push(new Select1DahanSource(ctx,2));
+			engine.decisions.Push(new If2Add1(engine,ctx));  // do this last
+			engine.decisions.Push(new Select1DahanSource(engine,ctx,2));
 		}
 
 		// Hack - this isn't a decision, just something I need to run at the end.
 		class If2Add1 : IDecision {
 			readonly GatherDahanCtx ctx;
-			public If2Add1(GatherDahanCtx ctx){
+			readonly ActionEngine engine;
+			public If2Add1(ActionEngine engine, GatherDahanCtx ctx){
+				this.engine = engine;
 				this.ctx = ctx;
 			}
 			public IOption[] Options => new IOption[]{Invader.Explorer}; // not used but it can't be null
 
 			public string Prompt => "Adding 1 Dahan if 2 are present in "+ctx.Target.Label;
 
-			public void Select( IOption _, ActionEngine engine ) {
+			public void Select( IOption _ ) {
 				if(ctx.destinationCount>=2)
 					engine.actions.Add(new AddDahan(ctx.Target,1));
 			}

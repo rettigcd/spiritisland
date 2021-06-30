@@ -59,7 +59,7 @@ namespace SpiritIsland.Core {
 
 			var descision = engine.decisions.Pop();
 			selections.Add( descision.Prompt +":"+ option.Text );
-			descision.Select( option, engine );
+			descision.Select( option );
 		}
 
 		public readonly List<string> selections = new List<string>();

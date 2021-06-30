@@ -4,9 +4,11 @@ namespace SpiritIsland {
 
 	public interface IAction {
 
-		void Apply();
+		// why doesn't this have a string Prompt {get;} like IDecision
 
-		bool IsResolved {get;}
+		void Apply(); // ??? should this be auto-called when Select resolves last option
+
+		bool IsResolved {get;} // Should this be removed and just test if Options length == 0?
 
 		IOption[] Options { get; }
 
@@ -17,23 +19,6 @@ namespace SpiritIsland {
 	public static class IActionExtensions {
 		static public void Select(this IAction action, string text)
 			=> action.Select(action.Options.Single(o=>o.Text==text));
-	}
-	
-	//public interface INamedAction : IAction {
-	//	string Name { get; }
-	//}
-
-	public interface IOption{
-		string Text { get; }
-	}
-
-	public class NumberOption : IOption {
-		public NumberOption(int i){ 
-			Number = i;
-			Text = i.ToString();
-		}
-		public int Number { get; }
-		public string Text { get; }
 	}
 
 }

@@ -6,6 +6,8 @@ namespace SpiritIsland {
 
 	public class GameState {
 
+		public readonly InvaderDeck InvaderDeck = new InvaderDeck();
+
 		public GameState(params Spirit[] spirits){
 			if(spirits.Length==0) throw new ArgumentException("Game must include at least 1 spirit");
 			this.Spirits = spirits;
@@ -25,6 +27,13 @@ namespace SpiritIsland {
 					if(counts.Blight>0) this.AddBlight(space); // add 1
 				}
 			}
+			Explore(InvaderDeck.Explore);
+			InvaderDeck.Advance();
+
+			if(Spirits.Length != Island.Boards.Length)
+				throw new InvalidOperationException("# of spirits and islands must match");
+			for(int i=0;i<Spirits.Length;++i)
+				Spirits[i].InitializePresence(Island.Boards[i]);
 		}
 
 		internal void Defend( Space space, int delta ) {

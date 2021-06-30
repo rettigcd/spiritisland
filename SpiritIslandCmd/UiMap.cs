@@ -5,41 +5,136 @@ using SpiritIsland;
 using SpiritIsland.Core;
 
 namespace SpiritIslandCmd {
+
 	public class UiMap {
+
 		public string Prompt;
 		public Dictionary<string,IOption> dict;
 		public List<string> descList;
-		public UiMap(string prompt,IEnumerable<IOption> list, Formatter formatter){
-			Prompt = prompt;
+		readonly SinglePlayerGame game;
+
+		public UiMap(SinglePlayerGame game ){
+			this.game=game;
+			var decision = game.Decision;
+			Prompt = decision.Prompt;
+			
+			var cachedOptions = decision.Options; // cache in case calculated on the fly
 
 			int pad = 0;
-			foreach(var o in list){
+			foreach(var o in cachedOptions){
 				if(o is IActionFactory factory) pad = Math.Max(pad,factory.Name.Length);
 			}
 
 			dict = new Dictionary<string, IOption>();
-			descList = new List<string>();
+			var tempList = new List<string[]>();
 
-			int labelIndex=1;
-			foreach(var option in list){
+			int labelIndex=0;
+			foreach(var option in cachedOptions){
 				string key;
 				string description;
 				if(option is TextOption txt && txt.Text=="Done"){
 					key = txt.Text.Substring(0,1).ToLower();
 					description = option.Text;
+				} else if(option is Space space) {
+					key = space.Label.ToLower();
+					description = FormatSpace( space );
+				} else if(option is GrowthActionFactory gaf) {
+					key = (++labelIndex).ToString();
+					description = FormatFactory( gaf, pad );
+				} else if(option is IActionFactory factory) {
+					key = option.Text.Split(' ').Select(word=>word.Substring(0,1)).Join("").ToLower();
+					description = FormatFactory( factory, pad );
 				} else {
 					key = (++labelIndex).ToString();
-					description = formatter.Format( option, pad );
+					description = FormatOption( option, pad );
 				}
 				dict.Add(key,option);
-				descList.Add(key+" : "+description);
+				tempList.Add(new string[]{key,description});
 			}
 
+			int keyWidth = tempList.Select(x=>x[0].Length).Max();
+
+			descList = tempList
+				.Select(x=>Pad(x[0],keyWidth)+" : "+ x[1])
+				.ToList();
+
 		}
+
 		public IOption GetOption(string cmd){
 			return dict.ContainsKey(cmd) ? dict[cmd] : null;
 		}
 		public string ToPrompt() => Prompt + descList.Select( d => "\r\n\t" + d ).Join( "" );
+
+		public string FormatOption(IOption option,int pad){
+			return option is Track track
+					? FormatTrack( track )
+				: option is Space space 
+					? FormatSpace( space )
+				: option.Text;
+		}
+
+		public string FormatTrack( Track track ) {
+			string details = track == Track.Energy
+				? "$/turn = " + game.Spirit.EnergyPerTurn // !!! Display track
+				: "Card/turn = " + game.Spirit.NumberOfCardsPlayablePerTurn; // !!! display track
+			return $"{track.Text} {details}";
+		}
+
+		public string FormatSpace( Space space ) {
+			var gameState = game.GameState;
+			var deck = gameState.InvaderDeck;
+			bool ravage = deck.Ravage?.Matches(space) ?? false;
+			bool build = deck.Build?.Matches(space) ?? false;
+			string threat = (ravage&&build) ? "Rvg+Bld"
+				: ravage ?"  Rvg  "
+				: build ? "  Bld  "
+				: "       "; 
+
+			// invaders
+			var details = gameState.InvadersOn( space ).ToString();
+
+			// dahan
+			int dahanCount = gameState.GetDahanOnSpace( space );
+			string dahan = (dahanCount > 0) ? ("D" + dahanCount) :"  ";
+
+			int blightCount = gameState.GetBlightOnSpace( space );
+			string blight = (blightCount > 0) ? ("B" + blightCount) :"  ";
+
+			// presence
+			string pres = game.Spirit.Presence.Where(p=>p==space).Select(x=>"P").Join("");
+			return $"{space.Label} {threat} {Pad(space.Terrain)}\t{dahan}\t{details}\t{blight}\t{pres}";
+		}
+
+		static string Pad(Terrain terrain) => Pad(terrain.ToString(),8);
+
+		static string Pad(string s, int length){
+			int need = length - s.Length;
+			if(0<need)
+				s += new string(' ',need);
+			return s;
+		}
+
+		public string FormatFactory(IActionFactory factory, int nameWidth=1){
+			var spirit = game.Spirit;
+			char speed = factory.Speed.ToString()[0];
+			char unresolved = spirit.UnresolvedActionFactories.Contains(factory) ? '*' : ' ';
+			string cost = factory is PowerCard card ? card.Cost.ToString() : "-";
+
+			string name = Pad(factory.Name,nameWidth);
+			string text = $"{name}  ({speed}/{cost}) {unresolved}";
+
+			if(factory is PowerCard pc){
+				char isActive = spirit.PurchasedCards.Contains(factory) ? 'A' : ' ';
+				char isDiscarded = spirit.DiscardPile.Contains(factory) ? 'D' : ' ';
+				char isinHand = spirit.Hand.Contains(factory) ? 'H' : ' ';
+
+				text += $" {isinHand} {isActive} {isDiscarded}"
+					+ pc.Elements.Select(e=>e.ToString()).Join(" ");
+			}
+
+			return text;
+		}
+
 	}
 
 }

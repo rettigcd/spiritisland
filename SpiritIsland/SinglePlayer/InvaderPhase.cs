@@ -2,17 +2,18 @@
 using System;
 
 namespace SpiritIslandCmd {
+
 	class InvaderPhase : IPhase {
 
-		public string Prompt => uiMap.ToPrompt();
+		public string Prompt => "nothing to do";
+		public IOption[] Options => Array.Empty<IOption>();
 
 		readonly GameState gameState;
 		readonly InvaderDeck invaderDeck;
 
-		public InvaderPhase(GameState gameState,InvaderDeck invaderDeck){
+		public InvaderPhase(GameState gameState){
 			this.gameState = gameState;
-			this.invaderDeck = invaderDeck;
-			uiMap = new UiMap("nothing to do", Array.Empty<IOption>(), null);
+			this.invaderDeck = gameState.InvaderDeck;
 		}
 
 		public void Initialize() {
@@ -26,8 +27,6 @@ namespace SpiritIslandCmd {
 
 			this.Complete?.Invoke();
 		}
-
-		public UiMap uiMap { get; set; }
 
 		public void Select( IOption option ) {
 			throw new NotImplementedException();

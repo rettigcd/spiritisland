@@ -1,13 +1,21 @@
-﻿namespace SpiritIslandCmd {
+﻿using SpiritIsland;
+using SpiritIsland.Base;
+
+namespace SpiritIslandCmd {
 
 	class Program {
 
 		static void Main(string[] _) {
-			new GamePlayer().Play();
+
+			var gs = new GameState( new RiverSurges() ){ 
+				Island = new Island(Board.BuildBoardA())
+			};
+
+			var game = new SinglePlayerGame(gs);
+
+			new CmdLinePlayer(game).Play();
 		}
 
 	}
-
-	public enum PhaseType { Growth, Fast, Invader, Slow, TimePasses, Done }
 
 }

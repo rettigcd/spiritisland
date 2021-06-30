@@ -5,8 +5,10 @@ namespace SpiritIsland.Core {
 
 		readonly InvaderGroup invaderGroup;
 		readonly Invader invader;
+		readonly ActionEngine engine;
 
-		public SelectInvaderDestination(InvaderGroup invaderGroup, Invader invader){
+		public SelectInvaderDestination(ActionEngine engine,InvaderGroup invaderGroup, Invader invader){
+			this.engine = engine;
 			this.invaderGroup = invaderGroup;
 			this.invader = invader;
 		}
@@ -15,7 +17,7 @@ namespace SpiritIsland.Core {
 			.Where(x=>x.IsLand)
 			.ToArray();
 
-		public void Select( IOption option,ActionEngine engine) {
+		public void Select( IOption option ) {
 			engine.actions.Add(new MoveInvader(invader, invaderGroup.Space, (Space)option));
 			invaderGroup[invader]--;
 		}

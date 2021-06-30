@@ -9,8 +9,10 @@ namespace SpiritIsland.Core {
 
 		readonly TextOption[] options;
 		readonly Action<string,ActionEngine> selectAction;
+		readonly ActionEngine engine;
 
-		public SelectText(IEnumerable<string> options, Action<string,ActionEngine> selectAction){
+		public SelectText(ActionEngine engine, IEnumerable<string> options, Action<string,ActionEngine> selectAction){
+			this.engine = engine;
 			this.options = options.Select(o=>new TextOption(o)).ToArray();
 			this.selectAction = selectAction;
 		}
@@ -19,7 +21,7 @@ namespace SpiritIsland.Core {
 
 		public IOption[] Options => options;
 
-		public void Select( IOption option, ActionEngine engine ) 
+		public void Select( IOption option ) 
 			=> selectAction(((TextOption)option).Text,engine);
 
 	}

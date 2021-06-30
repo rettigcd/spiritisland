@@ -2,18 +2,18 @@
 using System;
 
 namespace SpiritIslandCmd {
-	public class TimePasses : IPhase {
-		
-		public string Prompt => uiMap.ToPrompt();
+
+	class TimePasses : IPhase {
+
+		public string Prompt => "nothing to do while time passes.";
 
 		readonly Spirit spirit;
 
 		public TimePasses(Spirit spirit,GameState _){
 			this.spirit = spirit;
-			this.uiMap = new UiMap("nothing to do while time passes.",Array.Empty<IOption>(),null);
 		}
 
-		public UiMap uiMap { get; set; }
+		public IOption[] Options => Array.Empty<IOption>();
 
 		public event Action Complete;
 

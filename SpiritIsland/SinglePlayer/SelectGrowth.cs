@@ -4,18 +4,17 @@ using SpiritIsland;
 
 namespace SpiritIslandCmd {
 
-	public class SelectGrowth : IPhase {
-		
-		public string Prompt => uiMap.ToPrompt();
+	class SelectGrowth : IPhase {
+
+		public string Prompt => "Select Growth Option";
+		public IOption[] Options => spirit.GetGrowthOptions().Cast<IOption>().ToArray();
 
 		readonly Spirit spirit;
 		readonly GameState gameState;
-		readonly Formatter formatter;
 
-		public SelectGrowth(Spirit spirit,GameState gameState,Formatter formatter){
+		public SelectGrowth(Spirit spirit,GameState gameState){
 			this.spirit = spirit;
 			this.gameState = gameState;
-			this.formatter = formatter;
 		}
 
 		public event Action Complete;
@@ -32,11 +31,7 @@ namespace SpiritIslandCmd {
 			throw new Exception("growth option not found");
 		}
 
-		public UiMap uiMap {get; set;}
-
-		public void Initialize() {
-			uiMap = new UiMap("Select Growth Option",spirit.GetGrowthOptions().Cast<IOption>(),formatter);
-		}
+		public void Initialize() {}
 	}
 
 }

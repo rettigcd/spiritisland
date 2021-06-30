@@ -34,7 +34,7 @@ namespace SpiritIsland.Core {
 
 		public IOption[] Options { get; }
 
-		public void Select( IOption option, ActionEngine engine ) {
+		public void Select( IOption option ) {
 			this.onSelect((Space)option);
 		}
 

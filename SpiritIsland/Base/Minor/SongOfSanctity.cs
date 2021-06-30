@@ -20,7 +20,7 @@ namespace SpiritIsland.Base {
 			var group = gameState.InvadersOn(space);
 			int explorerCount = group[Invader.Explorer];
 			if(explorerCount>0)
-				engine.decisions.Push(new SelectInvadersToPush(group,explorerCount,"Explorer"));
+				engine.decisions.Push(new SelectInvadersToPush(engine,group,explorerCount,"Explorer"));
 			else if(gameState.HasBlight(space))
 				gameState.AddBlight(space,-1);
 			else

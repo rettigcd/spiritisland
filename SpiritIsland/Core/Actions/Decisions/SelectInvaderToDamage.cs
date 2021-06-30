@@ -5,7 +5,9 @@ namespace SpiritIsland.Core {
 	public class SelectInvaderToDamage : IDecision {
 		readonly InvaderGroup group;
 		readonly int maxDamageAvailable;
-		public SelectInvaderToDamage(InvaderGroup invaderGroup,int maxDamageAvailable){
+		readonly ActionEngine engine;
+		public SelectInvaderToDamage(ActionEngine engine, InvaderGroup invaderGroup,int maxDamageAvailable){
+			this.engine = engine;
 			this.group = invaderGroup;
 			this.maxDamageAvailable = maxDamageAvailable;
 		}
@@ -14,7 +16,7 @@ namespace SpiritIsland.Core {
 
 		public IOption[] Options => group.InvaderTypesPresent.ToArray();
 
-		public void Select( IOption option, ActionEngine engine ) {
+		public void Select( IOption option ) {
 			Invader invader = (Invader)option;
 
 			// Calc Damage plan
@@ -28,7 +30,7 @@ namespace SpiritIsland.Core {
 			// find recipient for remaining damage
 			int remainingDamage = maxDamageAvailable - maxDamageToThisInvader;
 			if(remainingDamage>0)
-				engine.decisions.Push(new SelectInvaderToDamage(group,remainingDamage));
+				engine.decisions.Push(new SelectInvaderToDamage(engine,group,remainingDamage));
 		}
 
 	}

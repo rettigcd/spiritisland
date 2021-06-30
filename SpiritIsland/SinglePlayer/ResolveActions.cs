@@ -7,26 +7,25 @@ using SpiritIsland.Core;
 namespace SpiritIslandCmd {
 
 	class ResolveActions : IPhase {
-		
-		public string Prompt => uiMap.ToPrompt();
+
+		public string Prompt { get; private set; }
+		public IOption[] Options { get; private set; }
+
 
 		readonly Spirit spirit;
 		readonly GameState gameState;
 		readonly Speed speed;
 		readonly bool allowEarlyDone;
-		readonly Formatter formatter;
-		public UiMap uiMap {get; set;}
 		IActionFactory selectedActionFactory;
 		IAction action;
 		string growthName;
 		List<IActionFactory> matchingActionsFactories;
 
-		public ResolveActions(Spirit spirit,GameState gameState,InvaderDeck deck, Speed speed, bool allowEarlyDone=false){
+		public ResolveActions( Spirit spirit, GameState gameState, Speed speed, bool allowEarlyDone = false ) {
 			this.spirit = spirit;
 			this.gameState = gameState;
 			this.speed = speed;
 			this.allowEarlyDone = allowEarlyDone;
-			formatter = new Formatter(spirit,gameState,deck);
 		}
 
 		public void Initialize() {
@@ -37,18 +36,19 @@ namespace SpiritIslandCmd {
 				return;
 			}
 
-			uiMap = new UiMap( "Select " + speed + " to resolve:", GetActionFactoryOptions(), formatter );
+			Prompt = "Select " + speed + " to resolve:";
+			Options = GetActionFactoryOptions().ToArray();
 			action = null;
 		}
 
-		public void Select(IOption option){
-			if(option is TextOption txt){
+		public void Select( IOption option ) {
+			if(option is TextOption txt) {
 				if(txt.Text == "Done") Done();
 				return;
 			}
 
 			// Select action or apply option
-			if(option is IActionFactory factory){
+			if(option is IActionFactory factory) {
 				selectedActionFactory = factory;
 				this.growthName = selectedActionFactory.ToString(); // or .Name ?
 				action = selectedActionFactory.Bind( spirit, gameState );
@@ -57,13 +57,15 @@ namespace SpiritIslandCmd {
 			}
 
 			// next action or summarize options
-			if(action.IsResolved){
+			if(action.IsResolved) {
 				// Next
 				action.Apply();
 				selectedActionFactory.Resolved( spirit );
 				Initialize();
-			} else
-				uiMap = new UiMap("Select Resolution for " + growthName+":",action.Options,formatter);
+			} else {
+				Prompt = "Select Resolution for " + growthName;
+				Options = action.Options;
+			}
 		}
 
 		List<IActionFactory> FindMatchingActions() {
@@ -81,11 +83,11 @@ namespace SpiritIslandCmd {
 
 		void Done() {
 			var toFlush = spirit.UnresolvedActionFactories
-				.Where(f=>f.Speed==speed)
+				.Where( f => f.Speed == speed )
 				.ToArray();
 			foreach(var factory in toFlush)
-				factory.Resolved(spirit);
-			Console.WriteLine($"{speed} Done! - Flushed {toFlush.Length} actions.");
+				factory.Resolved( spirit );
+			Console.WriteLine( $"{speed} Done! - Flushed {toFlush.Length} actions." );
 
 			this.Complete?.Invoke();
 		}
