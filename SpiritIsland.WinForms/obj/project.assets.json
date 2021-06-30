@@ -1,11 +1,30 @@
 {
   "version": 3,
   "targets": {
-    "net5.0-windows7.0": {}
+    "net5.0-windows7.0": {
+      "SpiritIsland/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v5.0",
+        "compile": {
+          "bin/placeholder/SpiritIsland.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/SpiritIsland.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "SpiritIsland/1.0.0": {
+      "type": "project",
+      "path": "../SpiritIsland/SpiritIsland.csproj",
+      "msbuildProject": "../SpiritIsland/SpiritIsland.csproj"
+    }
+  },
   "projectFileDependencyGroups": {
-    "net5.0-windows7.0": []
+    "net5.0-windows7.0": [
+      "SpiritIsland >= 1.0.0"
+    ]
   },
   "packageFolders": {
     "C:\\Users\\retti\\.nuget\\packages\\": {},
@@ -43,7 +62,11 @@
       "frameworks": {
         "net5.0-windows7.0": {
           "targetAlias": "net5.0-windows",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\retti\\Desktop\\spiritisland\\SpiritIsland\\SpiritIsland.csproj": {
+              "projectPath": "C:\\Users\\retti\\Desktop\\spiritisland\\SpiritIsland\\SpiritIsland.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

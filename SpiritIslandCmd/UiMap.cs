@@ -46,7 +46,7 @@ namespace SpiritIslandCmd {
 					description = FormatFactory( factory, pad );
 				} else {
 					key = (++labelIndex).ToString();
-					description = FormatOption( option, pad );
+					description = FormatOption( option );
 				}
 				dict.Add(key,option);
 				tempList.Add(new string[]{key,description});
@@ -65,7 +65,7 @@ namespace SpiritIslandCmd {
 		}
 		public string ToPrompt() => Prompt + descList.Select( d => "\r\n\t" + d ).Join( "" );
 
-		public string FormatOption(IOption option,int pad){
+		public string FormatOption(IOption option){
 			return option is Track track
 					? FormatTrack( track )
 				: option is Space space 

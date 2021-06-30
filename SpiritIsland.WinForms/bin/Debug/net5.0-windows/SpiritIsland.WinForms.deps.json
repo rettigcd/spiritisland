@@ -7,14 +7,27 @@
   "targets": {
     ".NETCoreApp,Version=v5.0": {
       "SpiritIsland.WinForms/1.0.0": {
+        "dependencies": {
+          "SpiritIsland": "1.0.0"
+        },
         "runtime": {
           "SpiritIsland.WinForms.dll": {}
+        }
+      },
+      "SpiritIsland/1.0.0": {
+        "runtime": {
+          "SpiritIsland.dll": {}
         }
       }
     }
   },
   "libraries": {
     "SpiritIsland.WinForms/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "SpiritIsland/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

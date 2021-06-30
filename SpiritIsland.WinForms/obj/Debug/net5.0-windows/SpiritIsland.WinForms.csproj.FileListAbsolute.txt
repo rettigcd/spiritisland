@@ -5,6 +5,8 @@ C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\bin\Debug\net5.0-windo
 C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\bin\Debug\net5.0-windows\SpiritIsland.WinForms.dll
 C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\bin\Debug\net5.0-windows\ref\SpiritIsland.WinForms.dll
 C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\bin\Debug\net5.0-windows\SpiritIsland.WinForms.pdb
+C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\bin\Debug\net5.0-windows\SpiritIsland.dll
+C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\bin\Debug\net5.0-windows\SpiritIsland.pdb
 C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\obj\Debug\net5.0-windows\SpiritIsland.WinForms.csproj.AssemblyReference.cache
 C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\obj\Debug\net5.0-windows\SpiritIsland.WinForms.Form1.resources
 C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\obj\Debug\net5.0-windows\SpiritIsland.WinForms.csproj.GenerateResource.cache
@@ -12,6 +14,7 @@ C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\obj\Debug\net5.0-windo
 C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\obj\Debug\net5.0-windows\SpiritIsland.WinForms.AssemblyInfoInputs.cache
 C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\obj\Debug\net5.0-windows\SpiritIsland.WinForms.AssemblyInfo.cs
 C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\obj\Debug\net5.0-windows\SpiritIsland.WinForms.csproj.CoreCompileInputs.cache
+C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\obj\Debug\net5.0-windows\SpiritIsland.WinForms.csproj.CopyComplete
 C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\obj\Debug\net5.0-windows\SpiritIsland.WinForms.dll
 C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\obj\Debug\net5.0-windows\ref\SpiritIsland.WinForms.dll
 C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\obj\Debug\net5.0-windows\SpiritIsland.WinForms.pdb
