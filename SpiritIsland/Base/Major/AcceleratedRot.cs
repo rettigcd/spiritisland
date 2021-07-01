@@ -2,8 +2,11 @@
 
 namespace SpiritIsland.Base {
 
-	[PowerCard("Accelerated Rot",4,Speed.Slow,Element.Sun,Element.Water,Element.Plant)]
+	[PowerCard(AcceleratedRot.Name,4,Speed.Slow,Element.Sun,Element.Water,Element.Plant)]
 	public class AcceleratedRot : BaseAction {
+
+		public const string Name = "Accelerated Rot";
+
 		public AcceleratedRot(Spirit _,GameState gs):base(gs){
 			// range 2, Jungle or Wetland
 

@@ -27,3 +27,14 @@ C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\bin\Debug\net5.0-windo
 C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\bin\Debug\net5.0-windows\images\Cityicon.png
 C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\bin\Debug\net5.0-windows\images\Presenceicon.png
 C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\bin\Debug\net5.0-windows\images\Blighticon.png
+C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\bin\Debug\net5.0-windows\images\accelerated_rot.jpg
+C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\bin\Debug\net5.0-windows\images\boon_of_vigor.jpg
+C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\bin\Debug\net5.0-windows\images\encompassing_ward.jpg
+C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\bin\Debug\net5.0-windows\images\flash_floods.jpg
+C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\bin\Debug\net5.0-windows\images\natures_resilience.jpg
+C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\bin\Debug\net5.0-windows\images\pull_beneath_the_hungry_earth.jpg
+C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\bin\Debug\net5.0-windows\images\rivers_bounty.jpg
+C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\bin\Debug\net5.0-windows\images\song_of_sanctity.jpg
+C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\bin\Debug\net5.0-windows\images\tsunami.jpg
+C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\bin\Debug\net5.0-windows\images\uncanny_melting.jpg
+C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\bin\Debug\net5.0-windows\images\wash_away.jpg

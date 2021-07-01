@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using SpiritIsland.Core;
 
-namespace SpiritIsland.PowerCards {
+namespace SpiritIsland.Base {
 
 	[PowerCard(FlashFloods.Name,2,Speed.Fast,Element.Sun,Element.Water)]
 	public class FlashFloods : BaseAction {

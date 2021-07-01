@@ -1,7 +1,6 @@
-﻿using SpiritIsland.Core;
-using SpiritIsland.PowerCards;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using SpiritIsland.Core;
 using Xunit;
 
 namespace SpiritIsland.Tests.Growth {

@@ -1,9 +1,6 @@
-﻿using SpiritIsland.Base;
+﻿using System.Linq;
+using SpiritIsland.Base;
 using SpiritIsland.Core;
-using SpiritIsland.PowerCards;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 
 namespace SpiritIsland.Tests.Growth {
@@ -12,7 +9,7 @@ namespace SpiritIsland.Tests.Growth {
 
 
 	// FAST
-		// test 2 fast powers
+	// test 2 fast powers
 
 	// !!! Invader Board
 	// Fear Card
@@ -21,8 +18,8 @@ namespace SpiritIsland.Tests.Growth {
 	// Explore
 
 	// Slow
-		// test 2 slow powers
-		// 1 slow innate powers show up
+	// test 2 slow powers
+	// 1 slow innate powers show up
 	public class RiverSurges_GrowthTests : GrowthTests{
 
 		public RiverSurges_GrowthTests():base( new RiverSurges() ){}

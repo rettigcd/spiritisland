@@ -1,7 +1,6 @@
-﻿using SpiritIsland.Base;
+﻿using System.Linq;
+using SpiritIsland.Base;
 using SpiritIsland.Core;
-using SpiritIsland.PowerCards;
-using System.Linq;
 using Xunit;
 
 namespace SpiritIsland.Tests.PowerCards {

@@ -27,6 +27,7 @@ namespace SpiritIsland.WinForms {
 			this.quitButton = new System.Windows.Forms.Button();
 			this.promptLabel = new System.Windows.Forms.Label();
 			this.islandControl = new SpiritIsland.WinForms.IslandControl();
+			this.cardControl = new SpiritIsland.WinForms.CardControl();
 			this.SuspendLayout();
 			// 
 			// quitButton
@@ -55,15 +56,26 @@ namespace SpiritIsland.WinForms {
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.islandControl.Location = new System.Drawing.Point(527, 55);
 			this.islandControl.Name = "islandControl";
-			this.islandControl.Size = new System.Drawing.Size(1299, 1144);
+			this.islandControl.Size = new System.Drawing.Size(1299, 735);
 			this.islandControl.TabIndex = 2;
 			this.islandControl.Text = "islandControl1";
+			// 
+			// cardControl
+			// 
+			this.cardControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.cardControl.Location = new System.Drawing.Point(283, 592);
+			this.cardControl.Name = "cardControl";
+			this.cardControl.Size = new System.Drawing.Size(1574, 644);
+			this.cardControl.TabIndex = 3;
+			this.cardControl.Text = "cardControl1";
 			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 32F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1869, 1235);
+			this.Controls.Add(this.cardControl);
 			this.Controls.Add(this.islandControl);
 			this.Controls.Add(this.promptLabel);
 			this.Controls.Add(this.quitButton);
@@ -80,6 +92,7 @@ namespace SpiritIsland.WinForms {
 		private System.Windows.Forms.Button quitButton;
 		private System.Windows.Forms.Label promptLabel;
 		private IslandControl islandControl;
+		private CardControl cardControl;
 	}
 }
 

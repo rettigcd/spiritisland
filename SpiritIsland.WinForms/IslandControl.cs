@@ -11,6 +11,8 @@ using System.Windows.Forms;
 namespace SpiritIsland.WinForms {
 	public partial class IslandControl : Control {
 
+		const float radius = 80f;
+
 		public IslandControl() {
 			InitializeComponent();
 
@@ -21,16 +23,22 @@ namespace SpiritIsland.WinForms {
 			);
 
 			spaceLookup = new Dictionary<string,PointF>{
-				["A0"] = new PointF( 685.0f,584.0f),
-				["A1"] = new PointF(1092.0f,305.0f),
-				["A2"] = new PointF( 859.0f,556.0f),
-				["A3"] = new PointF( 729.0f,867.0f),
-				["A4"] = new PointF(1080.0f,742.0f),
-				["A5"] = new PointF(1343.0f,576.0f),
-				["A6"] = new PointF(1323.0f,299.0f),
-				["A7"] = new PointF(1565.0f,640.0f),
-				["A8"] = new PointF(1656.0f,235.0f),
+				["A0"] = new PointF( 685.0f - 533,584.0f - 109),
+				["A1"] = new PointF(1092.0f - 533,305.0f - 109),
+				["A2"] = new PointF( 859.0f - 533,556.0f - 109),
+				["A3"] = new PointF( 729.0f - 533,867.0f - 109),
+				["A4"] = new PointF(1080.0f - 533,742.0f - 109),
+				["A5"] = new PointF(1343.0f - 533,576.0f - 109),
+				["A6"] = new PointF(1323.0f - 533,299.0f - 109),
+				["A7"] = new PointF(1565.0f - 533,640.0f - 109),
+				["A8"] = new PointF(1656.0f - 533,235.0f - 109),
 			};
+		}
+
+		Space[] activeSpaces;
+
+		public void ActivateSpaces(IEnumerable<Space> spaces){
+			this.activeSpaces = spaces.ToArray();
 		}
 
 		readonly Dictionary<string,PointF> spaceLookup;
@@ -73,13 +81,25 @@ namespace SpiritIsland.WinForms {
 				foreach(var space in gameState.Island.Boards[0].Spaces)
 					DecorateSpace(pe.Graphics,space);
 
+			if(activeSpaces != null)
+				CirleActiveSpaces( pe );
+
+
 			base.OnPaint( pe );
+		}
+
+		void CirleActiveSpaces( PaintEventArgs pe ) {
+			using var pen = new Pen(Brushes.Aquamarine,5);
+			foreach(var space in activeSpaces) {
+				var center = spaceLookup[space.Label];
+				pe.Graphics.DrawEllipse( pen, center.X, center.Y, radius * 2, radius * 2 );
+			}
 		}
 
 		void DecorateSpace( Graphics graphics, Space space ) {
 			var xy = spaceLookup[space.Label];
-			float x = xy.X - 533;
-			float y = xy.Y - 109;
+			float x = xy.X;
+			float y = xy.Y;
 			float dimension = 40.0f, step = 55.0f;
 			// invaders
 			var grp = gameState.InvadersOn(space);
@@ -135,9 +155,44 @@ namespace SpiritIsland.WinForms {
 		}
 
 		protected override void OnClick( EventArgs e ) {
-			base.OnClick( e );
-			MessageBox.Show($"{MousePosition.X},{MousePosition.Y}","Mouse Position");
+
+			var mp = this.PointToClient(Control.MousePosition);
+
+			var xx = activeSpaces
+				.Select(s=>{
+					var tl = this.spaceLookup[s.Label];
+					float dx = mp.X-tl.X-radius, dy=mp.Y-tl.Y-radius;
+					return new {Space=s,d2=dx*dx+dy*dy};
+				})
+				.ToArray();
+
+			var match = xx
+				.Where(x=>x.d2<radius*radius)
+				.OrderBy(x=>x.d2)
+				.Select(x=>x.Space)
+				.FirstOrDefault();
+
+			if(match != null)
+				SpaceClicked?.Invoke(match);
+
 		}
+
+		protected override void OnMouseMove( MouseEventArgs e ) {
+			base.OnMouseMove( e );
+
+			var mp = this.PointToClient(Control.MousePosition);
+			bool inCircle = activeSpaces
+				.Select(s=>{
+					var tl = this.spaceLookup[s.Label];
+					float dx = mp.X-tl.X-radius, dy=mp.Y-tl.Y-radius;
+					return dx*dx+dy*dy;
+				})
+				.Any(x=>x<radius*radius);
+			Cursor = inCircle ? Cursors.Hand : Cursors.Default;
+
+		}
+
+		public event Action<Space> SpaceClicked;
 
 	}
 

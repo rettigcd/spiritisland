@@ -4,8 +4,10 @@ using SpiritIsland.Core;
 namespace SpiritIsland.Base {
 
 	// major
-	[PowerCard("Tsunami",6,Speed.Slow,Element.Water,Element.Earth)]
+	[PowerCard(Tsunami.Name,6,Speed.Slow,Element.Water,Element.Earth)]
 	public class Tsunami : TargetSpaceAction {
+
+		public const string Name = "Tsunami";
 
 		readonly bool damageOtherCoasts;
 

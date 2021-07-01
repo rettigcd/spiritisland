@@ -1,5 +1,4 @@
-﻿using SpiritIsland.PowerCards;
-using System;
+﻿using System;
 using System.Linq;
 
 namespace SpiritIsland.Core {

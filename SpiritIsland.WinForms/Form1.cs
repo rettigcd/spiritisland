@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using SpiritIsland.Base;
+using SpiritIsland.Core;
 using SpiritIslandCmd;
 
 namespace SpiritIsland.WinForms {
@@ -20,6 +22,8 @@ namespace SpiritIsland.WinForms {
 			);
 
 			this.islandControl.InitBoard(game.GameState);
+			this.islandControl.SpaceClicked += Select;
+			this.cardControl.CardSelected += Select;
 		}
 
 		private void Form1_Load( object sender, EventArgs e ) {
@@ -41,6 +45,11 @@ namespace SpiritIsland.WinForms {
 			for(int i=0;i<options.Length;++i)
 				AddOptionButton( options[i], i );
 
+			var spaceOptions = decision.Options.OfType<Space>().ToArray();
+			this.islandControl.ActivateSpaces(spaceOptions);
+
+			var cards = decision.Options.OfType<PowerCard>().ToArray();
+			this.cardControl.ShowCards(cards);
 		}
 
 		void AddOptionButton( IOption option, int index ) {
