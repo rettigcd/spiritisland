@@ -22,6 +22,8 @@ namespace SpiritIsland.Core {
 
 			public IOption[] Options => spirit.DiscardPile.Cast<IOption>().ToArray();
 
+			public string Prompt => "Select card to reclaim.";
+
 			public void Apply() {
 				if( spirit.DiscardPile.Contains(card) ){
 					spirit.DiscardPile.Remove(card);

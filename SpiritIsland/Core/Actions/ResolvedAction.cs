@@ -17,6 +17,8 @@ namespace SpiritIsland.Core {
 		bool IAction.IsResolved => true;
 
 		IOption[] IAction.Options => System.Array.Empty<IOption>();
+
+		public string Prompt => "-";
 	}
 
 }

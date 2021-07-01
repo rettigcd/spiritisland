@@ -57,6 +57,8 @@ namespace SpiritIsland.Core {
 
 			public IOption[] Options => Array.Empty<IOption>();
 
+			public string Prompt => throw new NotImplementedException();
+
 			public void Select(IOption option) {}
 		}
 

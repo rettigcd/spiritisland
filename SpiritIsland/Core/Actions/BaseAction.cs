@@ -53,6 +53,8 @@ namespace SpiritIsland.Core {
 				: System.Array.Empty<IOption>();
 		}
 
+		public string Prompt => engine.decisions.Count>0 ? engine.decisions.Peek().Prompt : "-";
+
 		protected void InnerSelect(IOption option) {
 			if(engine.decisions.Count == 0)
 				throw new System.NotImplementedException();

@@ -5,6 +5,7 @@ namespace SpiritIsland {
 	public interface IAction {
 
 		// why doesn't this have a string Prompt {get;} like IDecision
+		string Prompt { get; }
 
 		void Apply(); // ??? should this be auto-called when Select resolves last option
 

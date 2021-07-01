@@ -63,7 +63,7 @@ namespace SpiritIslandCmd {
 				selectedActionFactory.Resolved( spirit );
 				Initialize();
 			} else {
-				Prompt = "Select Resolution for " + growthName;
+				Prompt = growthName + " - " + action.Prompt;
 				Options = action.Options;
 			}
 		}
