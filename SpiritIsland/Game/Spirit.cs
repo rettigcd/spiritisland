@@ -46,7 +46,7 @@ namespace SpiritIsland {
 		#endregion
 
 		public readonly List<Space> Presence = new List<Space>();
-
+		public int PresenceOn(Space space) => Presence.Count(s=>s==space);
 		public virtual IEnumerable<Space> SacredSites => Presence
 			.GroupBy(x=>x)
 			.Where(grp=>grp.Count()>1)

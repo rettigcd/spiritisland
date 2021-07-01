@@ -24,9 +24,10 @@ namespace SpiritIsland {
 			throw new InvalidOperationException($"Expected 1 but found {result.Count} items of type {name}");
 		}
 
-
-		public static T[] Include<T>(this IEnumerable<T> list1, params T[] list2) 
-			=> list1.Union(list2).ToArray();
+		public static void AddCount<T>(this List<T> list, int count, T item){
+			while(count-->0)
+				list.Add(item);
+		}
 
 	}
 

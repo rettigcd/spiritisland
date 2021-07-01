@@ -1,8 +1,4 @@
-.vs/
-packages/
-SpiritIsland/bin/
-SpiritIsland/obj/
-SpiritIslandCmd/bin/
-SpiritIslandCmd/obj/
-SpiritIsland.Tests/bin/
-SpiritIsland.Tests/obj/
+.vs
+packages
+bin
+obj
