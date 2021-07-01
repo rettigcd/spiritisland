@@ -104,7 +104,7 @@ namespace SpiritIsland.WinForms {
 			// invaders
 			var grp = gameState.InvadersOn( space );
 			var invaders = grp.InvaderTypesPresent.Select( k => grp[k] + ":" + k.Summary ).Join( " " );
-			List<Image> images = new List<Image>();
+			List<Image> images = new();
 			images.AddCount( grp[Invader.City], city );
 			images.AddCount( grp[Invader.City2], city );
 			images.AddCount( grp[Invader.City1], city );

@@ -24,8 +24,8 @@ namespace SpiritIsland.WinForms {
 		}
 
 		PowerCard[] cards;
-		readonly Dictionary<PowerCard,Image> images = new Dictionary<PowerCard, Image>();
-		readonly Dictionary<PowerCard,RectangleF> locations = new Dictionary<PowerCard, RectangleF>();
+		readonly Dictionary<PowerCard,Image> images = new();
+		readonly Dictionary<PowerCard,RectangleF> locations = new();
 
 		Image GetImage(PowerCard card){
 			if(!images.ContainsKey(card)){

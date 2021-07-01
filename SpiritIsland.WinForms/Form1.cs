@@ -28,11 +28,19 @@ namespace SpiritIsland.WinForms {
 
 		private void Form1_Load( object sender, EventArgs e ) {
 			ShowOptions();
-			UpdateBoardImage();
+			UpdateDisplay();
 		}
 
-		void UpdateBoardImage() {
+		void UpdateDisplay() {
 			this.islandControl.Invalidate();
+
+			// invader deck
+			string ravage = game.GameState.InvaderDeck.Ravage?.Text ?? "-";
+			string build = game.GameState.InvaderDeck.Build?.Text ?? "-";
+			this.invaderBoardLabel.Text = $"Ravage {ravage}  Build {build}";
+
+			// card
+			this.trackLabel.Text = $"Energy {game.Spirit.EnergyPerTurn}  Cards {game.Spirit.NumberOfCardsPlayablePerTurn}";
 		}
 
 		void ShowOptions() {
@@ -79,7 +87,7 @@ namespace SpiritIsland.WinForms {
 		private void Select(IOption option){
 			this.game.Decision.Select(option);
 			this.ShowOptions();
-			UpdateBoardImage();
+			UpdateDisplay();
 		}
 
 		private void Btn_Click( object sender, EventArgs e ) {

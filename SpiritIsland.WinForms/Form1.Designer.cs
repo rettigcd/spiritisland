@@ -28,6 +28,8 @@ namespace SpiritIsland.WinForms {
 			this.promptLabel = new System.Windows.Forms.Label();
 			this.islandControl = new SpiritIsland.WinForms.IslandControl();
 			this.cardControl = new SpiritIsland.WinForms.CardControl();
+			this.invaderBoardLabel = new System.Windows.Forms.Label();
+			this.trackLabel = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// quitButton
@@ -54,9 +56,9 @@ namespace SpiritIsland.WinForms {
 			this.islandControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.islandControl.Location = new System.Drawing.Point(527, 55);
+			this.islandControl.Location = new System.Drawing.Point(530, 68);
 			this.islandControl.Name = "islandControl";
-			this.islandControl.Size = new System.Drawing.Size(1299, 735);
+			this.islandControl.Size = new System.Drawing.Size(1296, 722);
 			this.islandControl.TabIndex = 2;
 			this.islandControl.Text = "islandControl1";
 			// 
@@ -70,11 +72,33 @@ namespace SpiritIsland.WinForms {
 			this.cardControl.TabIndex = 3;
 			this.cardControl.Text = "cardControl1";
 			// 
+			// invaderBoardLabel
+			// 
+			this.invaderBoardLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.invaderBoardLabel.AutoSize = true;
+			this.invaderBoardLabel.Location = new System.Drawing.Point(1138, 18);
+			this.invaderBoardLabel.Name = "invaderBoardLabel";
+			this.invaderBoardLabel.Size = new System.Drawing.Size(78, 32);
+			this.invaderBoardLabel.TabIndex = 4;
+			this.invaderBoardLabel.Text = "label1";
+			// 
+			// trackLabel
+			// 
+			this.trackLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.trackLabel.AutoSize = true;
+			this.trackLabel.Location = new System.Drawing.Point(1514, 18);
+			this.trackLabel.Name = "trackLabel";
+			this.trackLabel.Size = new System.Drawing.Size(78, 32);
+			this.trackLabel.TabIndex = 5;
+			this.trackLabel.Text = "label1";
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 32F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1869, 1235);
+			this.Controls.Add(this.trackLabel);
+			this.Controls.Add(this.invaderBoardLabel);
 			this.Controls.Add(this.cardControl);
 			this.Controls.Add(this.islandControl);
 			this.Controls.Add(this.promptLabel);
@@ -93,6 +117,8 @@ namespace SpiritIsland.WinForms {
 		private System.Windows.Forms.Label promptLabel;
 		private IslandControl islandControl;
 		private CardControl cardControl;
+		private System.Windows.Forms.Label invaderBoardLabel;
+		private System.Windows.Forms.Label trackLabel;
 	}
 }
 
