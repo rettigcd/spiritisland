@@ -19,6 +19,7 @@ namespace SpiritIsland.WinForms {
 				}
 			);
 
+			this.islandControl.InitBoard(game.GameState);
 		}
 
 		private void Form1_Load( object sender, EventArgs e ) {
@@ -27,7 +28,7 @@ namespace SpiritIsland.WinForms {
 		}
 
 		void UpdateBoardImage() {
-
+			this.islandControl.Invalidate();
 		}
 
 		void ShowOptions() {
@@ -69,6 +70,7 @@ namespace SpiritIsland.WinForms {
 		private void Select(IOption option){
 			this.game.Decision.Select(option);
 			this.ShowOptions();
+			UpdateBoardImage();
 		}
 
 		private void Btn_Click( object sender, EventArgs e ) {

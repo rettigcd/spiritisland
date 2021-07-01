@@ -19,3 +19,11 @@ C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\obj\Debug\net5.0-windo
 C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\obj\Debug\net5.0-windows\ref\SpiritIsland.WinForms.dll
 C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\obj\Debug\net5.0-windows\SpiritIsland.WinForms.pdb
 C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\obj\Debug\net5.0-windows\SpiritIsland.WinForms.genruntimeconfig.cache
+C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\bin\Debug\net5.0-windows\images\board a.png
+C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\obj\Debug\net5.0-windows\SpiritIsland.WinForms.IslandControl.resources
+C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\bin\Debug\net5.0-windows\images\Dahanicon.png
+C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\bin\Debug\net5.0-windows\images\Explorericon.png
+C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\bin\Debug\net5.0-windows\images\Townicon.png
+C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\bin\Debug\net5.0-windows\images\Cityicon.png
+C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\bin\Debug\net5.0-windows\images\Presenceicon.png
+C:\Users\retti\Desktop\spiritisland\SpiritIsland.WinForms\bin\Debug\net5.0-windows\images\Blighticon.png

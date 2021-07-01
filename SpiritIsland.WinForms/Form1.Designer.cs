@@ -26,12 +26,13 @@ namespace SpiritIsland.WinForms {
 		private void InitializeComponent() {
 			this.quitButton = new System.Windows.Forms.Button();
 			this.promptLabel = new System.Windows.Forms.Label();
+			this.islandControl = new SpiritIsland.WinForms.IslandControl();
 			this.SuspendLayout();
 			// 
 			// quitButton
 			// 
 			this.quitButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.quitButton.Location = new System.Drawing.Point(12, 811);
+			this.quitButton.Location = new System.Drawing.Point(12, 1177);
 			this.quitButton.Name = "quitButton";
 			this.quitButton.Size = new System.Drawing.Size(150, 46);
 			this.quitButton.TabIndex = 0;
@@ -47,11 +48,23 @@ namespace SpiritIsland.WinForms {
 			this.promptLabel.TabIndex = 1;
 			this.promptLabel.Text = "label1";
 			// 
+			// islandControl
+			// 
+			this.islandControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.islandControl.Location = new System.Drawing.Point(527, 55);
+			this.islandControl.Name = "islandControl";
+			this.islandControl.Size = new System.Drawing.Size(1299, 1144);
+			this.islandControl.TabIndex = 2;
+			this.islandControl.Text = "islandControl1";
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 32F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1335, 869);
+			this.ClientSize = new System.Drawing.Size(1869, 1235);
+			this.Controls.Add(this.islandControl);
 			this.Controls.Add(this.promptLabel);
 			this.Controls.Add(this.quitButton);
 			this.Name = "Form1";
@@ -66,6 +79,7 @@ namespace SpiritIsland.WinForms {
 
 		private System.Windows.Forms.Button quitButton;
 		private System.Windows.Forms.Label promptLabel;
+		private IslandControl islandControl;
 	}
 }
 
