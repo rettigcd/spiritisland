@@ -39,7 +39,10 @@ namespace SpiritIsland {
 
 		public int this[Invader i] {
 			get{ return dd[i]; }
-			set{  dd[i] = value; }
+			set{ 
+				changed.Add(i); // so value gets persisted to gamestate
+				dd[i] = value;
+			}
 		}
 
 		public bool HasCity => dict.ContainsKey(Invader.City) || dict.ContainsKey(Invader.City2) || dict.ContainsKey(Invader.City1);

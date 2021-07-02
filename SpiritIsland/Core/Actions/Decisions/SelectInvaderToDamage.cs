@@ -21,7 +21,7 @@ namespace SpiritIsland.Core {
 
 			// Calc Damage plan
 			int maxDamageToThisInvader = Math.Min(invader.Health,maxDamageAvailable);
-			var plan = new DamagePlan(group.Space,maxDamageToThisInvader,invader);
+			var plan = new DamagePlanAction(group.Space,maxDamageToThisInvader,invader);
 			// apply it to working-copy 
 			group[plan.Invader]--;
 			group[plan.DamagedInvader]++;

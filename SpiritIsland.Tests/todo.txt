@@ -1,11 +1,29 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
-Not Implemented
-	Fear Cards / Fear Initialization / Terror Level
-	Blight - blighted Island cards
-	blight - damage to land + cascading
+Bugs
+3	Missing one of the card powers not implemented
+4	Massive Flooding does not allow choosing between power 1 & 2
+4	Energy / Card label not updating following Growth / Boon of vigor
 
-	Drawing Major Power Card - have to discard
+Not Implemented
+4	blight - damage to land + cascading
+4	Show Defend Markers in UI (defend 6)
+	Fear - Fear Cards / Fear Initialization / Terror Level
+	Fear - Destroying town=>1, city=>2
+	Fear - Display Fear stats in UI
+	Blight - blighted Island cards
+3	Drawing Major Power Card - have to discard
+4	Tests for Power Progression Cards ** INCLUDING Attributes **
+
+Improve
+5	Don't Show Innate Powers if they don't apply
+4	Improve Ravage / Build / Explore visibility
+		- step through
+		- provide details log
+3	Allow River's Bounty to Short Circuit
+	Manually select who to apply damage to
+	Display Icons (white w/#s)
+	When resolving Action, show action (card) resolving.
 
 Unit Test
 	Spirit.SacredSites

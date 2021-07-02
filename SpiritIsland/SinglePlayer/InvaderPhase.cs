@@ -17,12 +17,15 @@ namespace SpiritIslandCmd {
 		}
 
 		public void Initialize() {
-			gameState.Ravage(invaderDeck.Ravage);
 			Console.WriteLine("Ravaging:" + invaderDeck.Ravage?.Text ?? "-");
-			gameState.Build(invaderDeck.Build);
+			gameState.Ravage(invaderDeck.Ravage);
+
 			Console.WriteLine("Building:" + invaderDeck.Build?.Text ?? "-");
-			gameState.Explore(invaderDeck.Explore);
+			gameState.Build(invaderDeck.Build);
+
 			Console.WriteLine("Exploring:" + invaderDeck.Explore?.Text ?? "-");
+			gameState.Explore(invaderDeck.Explore);
+
 			invaderDeck.Advance();
 
 			this.Complete?.Invoke();

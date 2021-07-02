@@ -125,7 +125,7 @@ namespace SpiritIsland.Tests.PowerCards {
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[4];
 			gameState.Adjust(targetSpace,Invader.Town,1);
-			gameState.ApplyDamage(new DamagePlan(targetSpace,1,Invader.Town));
+			gameState.ApplyDamage(targetSpace,new DamagePlan(1,Invader.Town));
 
 			//  When: activating card
 			var action = card.Bind(spirit, gameState);

@@ -76,7 +76,7 @@ namespace SpiritIsland.WinForms {
 			// 
 			this.invaderBoardLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.invaderBoardLabel.AutoSize = true;
-			this.invaderBoardLabel.Location = new System.Drawing.Point(1138, 18);
+			this.invaderBoardLabel.Location = new System.Drawing.Point(881, 18);
 			this.invaderBoardLabel.Name = "invaderBoardLabel";
 			this.invaderBoardLabel.Size = new System.Drawing.Size(78, 32);
 			this.invaderBoardLabel.TabIndex = 4;
@@ -86,7 +86,7 @@ namespace SpiritIsland.WinForms {
 			// 
 			this.trackLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.trackLabel.AutoSize = true;
-			this.trackLabel.Location = new System.Drawing.Point(1514, 18);
+			this.trackLabel.Location = new System.Drawing.Point(1748, 18);
 			this.trackLabel.Name = "trackLabel";
 			this.trackLabel.Size = new System.Drawing.Size(78, 32);
 			this.trackLabel.TabIndex = 5;

@@ -16,24 +16,32 @@ namespace SpiritIsland {
 		public Island Island { get; set; }
 		public Spirit[] Spirits { get; }
 
-		public void InitBoards() {
-			foreach(var board in Island.Boards){
-				foreach(var space in board.Spaces){
-					var counts = space.StartUpCounts;
-					this.Adjust(space,Invader.City,counts.Cities);
-					this.Adjust(space,Invader.Town,counts.Towns);
-					this.Adjust(space,Invader.Explorer,counts.Explorers);
-					this.AddDahan(space,counts.Dahan);
-					if(counts.Blight>0) this.AddBlight(space); // add 1
-				}
-			}
-			Explore(InvaderDeck.Explore);
+		public void InitIsland() {
+
+			foreach(var board in Island.Boards)
+				InitItemsMarkedOnBoard(board);
+
+			Explore( InvaderDeck.Explore );
 			InvaderDeck.Advance();
 
 			if(Spirits.Length != Island.Boards.Length)
-				throw new InvalidOperationException("# of spirits and islands must match");
-			for(int i=0;i<Spirits.Length;++i)
-				Spirits[i].InitializePresence(Island.Boards[i]);
+				throw new InvalidOperationException( "# of spirits and islands must match" );
+			for(int i = 0; i < Spirits.Length; ++i)
+				Spirits[i].InitializePresence( Island.Boards[i] );
+		}
+
+		public void InitItemsMarkedOnBoard(Board board) {
+			foreach(var space in board.Spaces)
+				InitSpace( space );
+		}
+
+		void InitSpace( Space space ) {
+			var counts = space.StartUpCounts;
+			this.Adjust( space, Invader.City, counts.Cities );
+			this.Adjust( space, Invader.Town, counts.Towns );
+			this.Adjust( space, Invader.Explorer, counts.Explorers );
+			this.AddDahan( space, counts.Dahan );
+			if(counts.Blight > 0) this.AddBlight( space ); // add 1
 		}
 
 		internal void Defend( Space space, int delta ) {
@@ -78,19 +86,27 @@ namespace SpiritIsland {
 		}
 
 		public InvaderGroup InvadersOn(Space targetSpace) {
-			return 
-				// invaders ?? 
-				InitInvaderGroup(targetSpace);
+			return InitInvaderGroup(targetSpace);
 		}
 
-		public void ApplyDamage(DamagePlan damagePlan) {
-			var invaders = InitInvaderGroup(damagePlan.Space);
+		public void ApplyDamage(Space space,DamagePlan damagePlan) {
+			var invaders = InitInvaderGroup(space);
 			invaders.ApplyDamage(damagePlan);
 			UpdateFromGroup(invaders);
 		}
 		public void UpdateFromGroup(InvaderGroup invaders){
+
+			string x = invaders.Space + ": " + invaders.Changed
+				.Select(x=>x.Summary+"="+invaders[x])
+				.Join(", ");
+
 			foreach(var invader in invaders.Changed)
 				this.invaderCount[Key(invaders.Space,invader)] = invaders[invader];
+
+			foreach(var invader in invaders.Changed)
+				this.invaderCount[Key(invaders.Space,invader)] = invaders[invader];
+
+
 		}
 
 		InvaderGroup InitInvaderGroup(Space targetSpace) {
@@ -144,7 +160,8 @@ namespace SpiritIsland {
 			var ravageGroups = Island.Boards.SelectMany(board=>board.Spaces)
 				.Where(invaderCard.Matches)
 				.Select(InvadersOn)
-				.Where(group => group.InvaderTypesPresent.Any());
+				.Where(group => group.InvaderTypesPresent.Any())
+				.ToArray();
 
 			foreach(var ravageGroup in ravageGroups)
 				RavageSpace( ravageGroup );

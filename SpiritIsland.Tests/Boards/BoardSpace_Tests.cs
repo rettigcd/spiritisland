@@ -219,10 +219,15 @@ namespace SpiritIsland.Tests.Boards {
 				Island = new Island( board )
 			};
 			// When:
-			gameState.InitBoards();
+			gameState.InitItemsMarkedOnBoard(board);
 			// Then:
 			var space = board.Spaces.Single(x=>x.Label==spaceLabel);
 			var grp = gameState.InvadersOn(space);
+
+			int ee = items.Count(c=>c=='E');
+			int aa = grp[Invader.Explorer];
+			Assert.True(ee==aa,grp.ToString()+" ex:"+ee+" act:"+aa);
+
 			Assert.Equal(items.Count(c=>c=='C'), grp[Invader.City]);
 			Assert.Equal(items.Count(c=>c=='T'), grp[Invader.Town]);
 			Assert.Equal(items.Count(c=>c=='E'), grp[Invader.Explorer]);

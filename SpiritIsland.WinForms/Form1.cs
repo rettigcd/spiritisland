@@ -40,7 +40,7 @@ namespace SpiritIsland.WinForms {
 			this.invaderBoardLabel.Text = $"Ravage {ravage}  Build {build}";
 
 			// card
-			this.trackLabel.Text = $"Energy {game.Spirit.EnergyPerTurn}  Cards {game.Spirit.NumberOfCardsPlayablePerTurn}";
+			this.trackLabel.Text = $"Energy: ${game.Spirit.Energy} (+{game.Spirit.EnergyPerTurn}/turn)  Cards Plays: {game.Spirit.NumberOfCardsPlayablePerTurn}/turn";
 		}
 
 		void ShowOptions() {
