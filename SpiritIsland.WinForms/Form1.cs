@@ -22,6 +22,7 @@ namespace SpiritIsland.WinForms {
 			);
 
 			this.islandControl.InitBoard(game.GameState);
+			this.cardControl.Init(game.Spirit);
 			this.islandControl.SpaceClicked += Select;
 			this.cardControl.CardSelected += Select;
 		}
@@ -58,6 +59,12 @@ namespace SpiritIsland.WinForms {
 
 			var cards = decision.Options.OfType<PowerCard>().ToArray();
 			this.cardControl.ShowCards(cards);
+
+			this.elementLabel.Text = game.Spirit.PurchasedCards
+				.SelectMany(c=>c.Elements)
+				.GroupBy(x=>x)
+				.Select(grp=>grp.Count()+"-"+grp.Key)
+				.Join(", ");
 		}
 
 		void AddOptionButton( IOption option, int index ) {
@@ -84,16 +91,17 @@ namespace SpiritIsland.WinForms {
 
 		readonly List<Button> buttons = new();
 
-		private void Select(IOption option){
+		void Select(IOption option){
 			this.game.Decision.Select(option);
 			this.ShowOptions();
 			UpdateDisplay();
 		}
 
-		private void Btn_Click( object sender, EventArgs e ) {
+		void Btn_Click( object sender, EventArgs e ) {
 			var btn = (Button)sender;
 			this.Select((IOption)btn.Tag);
 		}
+
 	}
 
 }

@@ -16,14 +16,24 @@ namespace SpiritIsland.WinForms {
 
 		public CardControl() {
 			InitializeComponent();
+			SetStyle(ControlStyles.AllPaintingInWmPaint 
+				| ControlStyles.UserPaint 
+				| ControlStyles.OptimizedDoubleBuffer 
+				| ControlStyles.ResizeRedraw, true
+			);
 		}
 
+		public void Init(Spirit spirit){
+			this.spirit = spirit;
+		}
+		Spirit spirit;
+
 		public void ShowCards(PowerCard[] cards){
-			this.cards = cards;
+			this.optionCards = cards;
 			this.Invalidate();
 		}
 
-		PowerCard[] cards;
+		PowerCard[] optionCards;
 		readonly Dictionary<PowerCard,Image> images = new();
 		readonly Dictionary<PowerCard,RectangleF> locations = new();
 
@@ -51,22 +61,40 @@ namespace SpiritIsland.WinForms {
 
 		protected override void OnPaint( PaintEventArgs pe ) {
 			base.OnPaint( pe );
-			if(cards==null) return;
+			if(optionCards == null) return;
 
 			this.locations.Clear();
-			for(int i=0;i<cards.Length;++i){
-				var card = cards[i];
-				var rect = new RectangleF(i*375,0,350,500);
-				locations.Add(card,rect);
-				pe.Graphics.DrawImage(GetImage(card),rect);
+			this.x = 0;
+
+			if(spirit != null){
+				DrawCards( pe.Graphics, spirit.PurchasedCards );
+				pe.Graphics.FillRectangle(Brushes.Beige, x, 0, 10, 300);
+				x += 20;
+				DrawCards( pe.Graphics, spirit.Hand );
+			}
+
+		}
+
+		int x;
+
+		void DrawCards( Graphics graphics, List<PowerCard> cards ) {
+			foreach(var card in cards){
+				var rect = new Rectangle( x, 0, 350, 500 );
+				locations.Add( card, rect );
+				graphics.DrawImage( GetImage( card ), rect );
+				if(optionCards.Contains(card)){
+					using var highlightPen = new Pen(Color.Red,15);
+					graphics.DrawRectangle(highlightPen,rect);
+				}
+				x += 375;
 			}
 		}
 
 		protected override void OnClick( EventArgs e ) {
-			if(cards==null) return;
+			if(optionCards==null) return;
 
 			var mp = this.PointToClient(Control.MousePosition);
-			foreach(var card in this.cards){
+			foreach(var card in this.optionCards){
 				if(locations[card].Contains(mp)){
 					CardSelected?.Invoke(card);
 					break;

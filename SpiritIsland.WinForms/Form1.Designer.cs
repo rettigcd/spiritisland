@@ -30,6 +30,7 @@ namespace SpiritIsland.WinForms {
 			this.cardControl = new SpiritIsland.WinForms.CardControl();
 			this.invaderBoardLabel = new System.Windows.Forms.Label();
 			this.trackLabel = new System.Windows.Forms.Label();
+			this.elementLabel = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// quitButton
@@ -56,9 +57,9 @@ namespace SpiritIsland.WinForms {
 			this.islandControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.islandControl.Location = new System.Drawing.Point(530, 68);
+			this.islandControl.Location = new System.Drawing.Point(530, 116);
 			this.islandControl.Name = "islandControl";
-			this.islandControl.Size = new System.Drawing.Size(1296, 722);
+			this.islandControl.Size = new System.Drawing.Size(1296, 674);
 			this.islandControl.TabIndex = 2;
 			this.islandControl.Text = "islandControl1";
 			// 
@@ -92,11 +93,21 @@ namespace SpiritIsland.WinForms {
 			this.trackLabel.TabIndex = 5;
 			this.trackLabel.Text = "label1";
 			// 
+			// elementLabel
+			// 
+			this.elementLabel.AutoSize = true;
+			this.elementLabel.Location = new System.Drawing.Point(881, 60);
+			this.elementLabel.Name = "elementLabel";
+			this.elementLabel.Size = new System.Drawing.Size(78, 32);
+			this.elementLabel.TabIndex = 6;
+			this.elementLabel.Text = "label1";
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 32F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1869, 1235);
+			this.Controls.Add(this.elementLabel);
 			this.Controls.Add(this.trackLabel);
 			this.Controls.Add(this.invaderBoardLabel);
 			this.Controls.Add(this.cardControl);
@@ -119,6 +130,7 @@ namespace SpiritIsland.WinForms {
 		private CardControl cardControl;
 		private System.Windows.Forms.Label invaderBoardLabel;
 		private System.Windows.Forms.Label trackLabel;
+		private System.Windows.Forms.Label elementLabel;
 	}
 }
 
