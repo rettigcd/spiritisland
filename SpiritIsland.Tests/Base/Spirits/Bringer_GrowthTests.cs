@@ -1,9 +1,7 @@
-﻿using System.Linq;
-using SpiritIsland.Base;
-using SpiritIsland.Core;
+﻿using SpiritIsland.Base;
 using Xunit;
 
-namespace SpiritIsland.Tests.Growth {
+namespace SpiritIsland.Tests.Base.Spirits {
 	
 	public class Bringer_GrowthTests : GrowthTests {
 

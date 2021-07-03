@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using SpiritIsland.Core;
 using Xunit;
 
-namespace SpiritIsland.Tests.Growth {
+namespace SpiritIsland.Tests.Core {
 
 	public class PlacePresence_Tests : GrowthTests {
 

@@ -4,7 +4,7 @@ using System.Linq;
 using SpiritIsland.Base;
 using Xunit;
 
-namespace SpiritIsland.Tests.Invaders {
+namespace SpiritIsland.Tests.Core {
 
 	public class Invader_Tests {
 

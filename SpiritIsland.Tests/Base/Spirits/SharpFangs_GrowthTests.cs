@@ -3,7 +3,7 @@ using SpiritIsland.BranchAndClaw;
 using SpiritIsland.Core;
 using Xunit;
 
-namespace SpiritIsland.Tests.Growth {
+namespace SpiritIsland.Tests.Base.Spirits {
 
 	public class SharpFangs_GrowthTests : GrowthTests {
 

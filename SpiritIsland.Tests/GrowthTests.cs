@@ -3,7 +3,7 @@ using System.Linq;
 using SpiritIsland.Core;
 using Xunit;
 
-namespace SpiritIsland.Tests.Growth {
+namespace SpiritIsland.Tests {
 
 	public class GrowthTests {
 

@@ -3,7 +3,7 @@ using SpiritIsland.Base;
 using SpiritIsland.Core;
 using Xunit;
 
-namespace SpiritIsland.Tests.PowerCards {
+namespace SpiritIsland.Tests.Base.Spirits.River {
 
 	public class FlashFloods_Tests : SpiritCards_Tests {
 

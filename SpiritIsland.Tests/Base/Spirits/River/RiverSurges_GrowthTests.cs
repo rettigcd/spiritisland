@@ -3,7 +3,7 @@ using SpiritIsland.Base;
 using SpiritIsland.Core;
 using Xunit;
 
-namespace SpiritIsland.Tests.Growth {
+namespace SpiritIsland.Tests.Base.Spirits.River {
 
 	// GetOptions => takes (GameState)
 

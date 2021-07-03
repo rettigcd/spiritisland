@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SpiritIsland.Core;
 
-namespace SpiritIsland.Tests.Growth {
+namespace SpiritIsland.Tests {
 
 	public class ResolvePlacePresence {
 

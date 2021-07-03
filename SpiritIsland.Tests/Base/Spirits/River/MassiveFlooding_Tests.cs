@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-namespace SpiritIsland.Tests.Innates {
+namespace SpiritIsland.Tests.Base.Spirits.River {
 
 	public class MassiveFlooding_Tests {
 

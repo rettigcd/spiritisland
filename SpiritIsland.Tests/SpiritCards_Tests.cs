@@ -3,7 +3,7 @@ using System.Linq;
 using SpiritIsland.Core;
 using Xunit;
 
-namespace SpiritIsland.Tests.PowerCards {
+namespace SpiritIsland.Tests {
 
 	public class SpiritCards_Tests {
 
@@ -36,7 +36,7 @@ namespace SpiritIsland.Tests.PowerCards {
 			Assert.Equal( expectedSpeed, card.Speed );
 
 			var cardElements = card.Elements
-				.Select(x=> Growth.GrowthTests.ElementChars[x]);
+				.Select(x=> GrowthTests.ElementChars[x]);
 			Assert.Equal( expectedElements, string.Join("",cardElements));
 
 		}
