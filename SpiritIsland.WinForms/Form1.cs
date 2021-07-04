@@ -5,7 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using SpiritIsland.Base;
 using SpiritIsland.Core;
-using SpiritIslandCmd;
+using SpiritIsland.SinglePlayer;
 
 namespace SpiritIsland.WinForms {
 	public partial class Form1 : Form {

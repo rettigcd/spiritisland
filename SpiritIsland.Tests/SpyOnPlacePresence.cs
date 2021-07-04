@@ -37,7 +37,7 @@ namespace SpiritIsland.Tests {
 			}
 
 			pp.Apply();
-			factory.Resolved( spirit );
+			spirit.Resolve( factory );
 		}
 
 		private IActionFactory FindMatchingName( Spirit spirit ) {

@@ -1,7 +1,7 @@
 ﻿using SpiritIsland;
 using System;
 
-namespace SpiritIslandCmd {
+namespace SpiritIsland.SinglePlayer {
 
 	class InvaderPhase : IPhase {
 

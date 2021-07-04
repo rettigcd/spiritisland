@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SpiritIsland;
 using SpiritIsland.Core;
+using SpiritIsland.SinglePlayer;
 
 namespace SpiritIslandCmd {
 

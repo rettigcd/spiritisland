@@ -9,26 +9,25 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 
 		readonly Board board;
 
-		public RiversBounty_Tests(){
+		public RiversBounty_Tests() {
 			// A5 is the 'Y' land in the middle
-			Given_GameWithSpirits(new RiverSurges());
+			Given_GameWithSpirits( new RiverSurges() );
 
 			//   And: a game on Board-A
 			board = Board.BuildBoardA();
-			gameState.Island = new Island(board);
+			gameState.Island = new Island( board );
 
 			//   And: Presence on A4
-			spirit.Presence.Add(board[4]);
+			spirit.Presence.Add( board[4] );
 
 			//   And: Purchased WashAway
-			card = spirit.Hand.Single(c => c.Name == RiversBounty.Name);
+			card = spirit.Hand.Single( c => c.Name == RiversBounty.Name );
 			spirit.Energy = card.Cost;
-			spirit.BuyAvailableCards(card);
+			spirit.BuyAvailableCards( card );
 
 			// Jump to slow
-			spirit.UnresolvedActionFactories.Clear();
-			spirit.UnresolvedActionFactories.AddRange(spirit.PurchasedCards.Where(x => x.Speed == Speed.Slow));
-			Assert_CardIsReady(card);
+			Given_JumpToSlow();
+			Assert_CardIsReady( card );
 
 		}
 

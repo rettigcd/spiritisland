@@ -2,7 +2,7 @@
 using SpiritIsland;
 using SpiritIsland.Core;
 
-namespace SpiritIslandCmd {
+namespace SpiritIsland.SinglePlayer {
 
 	public class SinglePlayerGame {
 

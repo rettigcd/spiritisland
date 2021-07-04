@@ -34,10 +34,6 @@ namespace SpiritIsland.Core {
 			return (IAction)Activator.CreateInstance(actionType,spirit,gameState);
 		}
 
-		public void Resolved(Spirit spirit){
-			spirit.UnresolvedActionFactories.Remove(this);
-		}
-
 	}
 
 }

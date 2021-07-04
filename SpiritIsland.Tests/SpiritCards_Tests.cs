@@ -27,7 +27,7 @@ namespace SpiritIsland.Tests {
 			for (int i = 0; i < expectedEnergyBonus; ++i) {
 				var otherCard = new PowerCard("Fake-" + i, 0, Speed.Slow);
 				otherSpirit.PurchasedCards.Add(otherCard);
-				otherSpirit.UnresolvedActionFactories.Add(otherCard);
+				otherSpirit.AddAction(otherCard);
 			}
 		}
 
@@ -61,6 +61,14 @@ namespace SpiritIsland.Tests {
 			string expectedStr = expected.Select(s=>s.Text).OrderBy(x=>x).Join(",");
 			string actualOptions = action.Options.Select(s=>s.Text).OrderBy(x=>x).Join(",");
 			Assert.Equal( expectedStr, actualOptions);
+		}
+
+		protected void Given_JumpToSlow() {
+			foreach(var factory in spirit.UnresolvedActionFactories.ToArray())
+				spirit.Resolve(factory);
+
+			foreach(var slows in spirit.PurchasedCards.Where( x => x.Speed == Speed.Slow ))
+				spirit.AddAction(slows);
 		}
 
 	}

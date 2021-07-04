@@ -1,6 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Linq;
+using SpiritIsland.Base;
+using SpiritIsland.Core;
+using SpiritIsland.SinglePlayer;
 using Xunit;
 
 namespace SpiritIsland.Tests.Base.Spirits.River {
@@ -11,17 +12,21 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 		[Fact]
 		public void InsufficientElements(){
 			// Given: river -
+			var gameState = new GameState(new RiverSurges()){
+				Island = new Island(Board.BuildBoardA())
+			};
+			var game = new SinglePlayerGame(gameState);
+
+			// and: growth option 1
+			game.Decision.Select(game.Decision.Options[0]); // reclaim
+
 			//   And: no cards / no elements
-			
+			game.Decision.Select(new TextOption("Done")); // no power cards
+
 			//   And: in slow phase
 
-			//  When: Select Massive Flooding
-
-			// Then: Massive Flooding in unresolved
-
-			//  And: Resolved
-
-			//  and: No invaders changed - how do you test this???
+			//  Then: no massive flooding in Unresolved list
+			Assert.Empty( game.Spirit.UnresolvedActionFactories);
 			
 		}
 

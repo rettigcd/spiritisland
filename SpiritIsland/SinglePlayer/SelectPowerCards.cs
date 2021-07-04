@@ -4,7 +4,7 @@ using System.Linq;
 using SpiritIsland;
 using SpiritIsland.Core;
 
-namespace SpiritIslandCmd {
+namespace SpiritIsland.SinglePlayer {
 
 	class SelectPowerCards : IPhase {
 

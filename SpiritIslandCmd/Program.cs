@@ -1,5 +1,6 @@
 ﻿using SpiritIsland;
 using SpiritIsland.Base;
+using SpiritIsland.SinglePlayer;
 
 namespace SpiritIslandCmd {
 

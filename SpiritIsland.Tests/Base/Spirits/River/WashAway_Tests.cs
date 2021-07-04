@@ -201,8 +201,7 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 			spirit.BuyAvailableCards(card);
 
 			// Jump to slow
-			spirit.UnresolvedActionFactories.Clear();
-			spirit.UnresolvedActionFactories.AddRange(spirit.PurchasedCards.Where(x => x.Speed == Speed.Slow));
+			Given_JumpToSlow();
 			Assert_CardIsReady(card);
 
 		}

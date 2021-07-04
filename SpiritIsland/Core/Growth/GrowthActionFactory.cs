@@ -11,12 +11,6 @@ namespace SpiritIsland.Core {
 
 		public virtual string Name => this.ShortDescription;
 
-		public void Resolved(Spirit spirit){
-			spirit.UnresolvedActionFactories.Remove(this);
-			if(spirit.UnresolvedActionFactories.Count==0)
-				spirit.CollectEnergy();
-		}
-
 		public Speed Speed => Speed.Growth;
 
 		public string Text => this.ShortDescription;

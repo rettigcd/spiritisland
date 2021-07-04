@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using SpiritIsland.Core;
 
@@ -41,7 +42,20 @@ namespace SpiritIsland {
 
 		// Holds Fast and Slow actions,
 		// depends on Fast/Slow phase to only select the actions that are appropriate
-		public List<IActionFactory> UnresolvedActionFactories = new List<IActionFactory>();
+		public IEnumerable<IActionFactory> UnresolvedActionFactories => _unresolvedActionFactories;
+
+		readonly List<IActionFactory> _unresolvedActionFactories = new List<IActionFactory>(); // public for testing
+
+		public void Resolve( IActionFactory selectedActionFactory ) {
+			int index = _unresolvedActionFactories.IndexOf( selectedActionFactory );
+			if(index == -1) throw new InvalidOperationException("can't remove factory that isn't there.");
+	
+			_unresolvedActionFactories.RemoveAt(index);
+
+			if(_unresolvedActionFactories.Count == 0 && selectedActionFactory is GrowthActionFactory)
+				Energy += EnergyPerTurn;	
+		}
+
 
 		#endregion
 
@@ -92,9 +106,9 @@ namespace SpiritIsland {
 				.Select(f=>new{Factory=f,Action=f.Bind(this,gameState)})
 				.Where(pair => pair.Action.IsResolved)
 				.ToArray();
-			foreach (var x in resolvedActions){
+			foreach(var x in resolvedActions){
 				x.Action.Apply();
-				x.Factory.Resolved(this);
+				Resolve(x.Factory);
 			}
 		}
 
@@ -105,7 +119,7 @@ namespace SpiritIsland {
 		}
 
 		public virtual void AddAction(IActionFactory factory){
-			UnresolvedActionFactories.Add( factory );
+			_unresolvedActionFactories.Add( factory );
 		}
 
 		public void CollectEnergy() => Energy += EnergyPerTurn;
@@ -122,8 +136,8 @@ namespace SpiritIsland {
 			foreach (var card in PurchasedCards)
 				AddAction(card);
 
-			foreach (var innate in InnatePowers)
-				AddAction(innate);
+//			foreach (var innate in InnatePowers)
+//				AddAction(innate);
 
 		}
 

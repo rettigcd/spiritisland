@@ -4,7 +4,7 @@ using System.Linq;
 using SpiritIsland;
 using SpiritIsland.Core;
 
-namespace SpiritIslandCmd {
+namespace SpiritIsland.SinglePlayer {
 
 	class ResolveActions : IPhase {
 
@@ -60,7 +60,7 @@ namespace SpiritIslandCmd {
 			if(action.IsResolved) {
 				// Next
 				action.Apply();
-				selectedActionFactory.Resolved( spirit );
+				spirit.Resolve(selectedActionFactory);
 				Initialize();
 			} else {
 				Prompt = growthName + " - " + action.Prompt;
@@ -86,7 +86,7 @@ namespace SpiritIslandCmd {
 				.Where( f => f.Speed == speed )
 				.ToArray();
 			foreach(var factory in toFlush)
-				factory.Resolved( spirit );
+				spirit.Resolve(factory);
 			Console.WriteLine( $"{speed} Done! - Flushed {toFlush.Length} actions." );
 
 			this.Complete?.Invoke();

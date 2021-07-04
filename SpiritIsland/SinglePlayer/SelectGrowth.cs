@@ -2,7 +2,7 @@
 using System.Linq;
 using SpiritIsland;
 
-namespace SpiritIslandCmd {
+namespace SpiritIsland.SinglePlayer {
 
 	class SelectGrowth : IPhase {
 
