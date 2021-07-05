@@ -32,15 +32,12 @@ namespace SpiritIsland.Core {
 		#endregion
 
 		public int PowersActivated(Spirit spirit){
-			var activeElements = spirit.PurchasedCards.SelectMany(c=>c.Elements).ToArray();
 			bool[] isSubSet = powerLevels
-				.Select(pl=>!pl.Elements.Except(activeElements).Any())
+				.Select(pl=>spirit.HasElements(pl.Elements))
 				.ToArray();
 
 			return isSubSet.Count(x=>x);
 		}
-
-
 
 		public Speed Speed {get;}
 

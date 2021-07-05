@@ -1,7 +1,6 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
 Bugs
-3	Accelerated Rot - not implemented
 3	Tsunami - not fully implemented
 
 Not Implemented

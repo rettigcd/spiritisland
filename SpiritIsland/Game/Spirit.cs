@@ -175,6 +175,17 @@ namespace SpiritIsland {
 			Energy -= card.Cost;
 		}
 
+		// called by innate powers to test which item activates
+		// !!! instead, maybe spirit knows the levels that are active and passes that to the 
+		// InnatePower.Bind(...) method
+		// (prevents InnatePowers from Asking Spirit questions
+		// tell, don't ask
+		public bool HasElements( params Element[] elements ){
+			// !!! this could be calculated and cached when cards are purchased
+			Element[] spiritActiveElements = PurchasedCards.SelectMany(c=>c.Elements).ToArray();
+			return !elements.Except(spiritActiveElements).Any();
+		}
+
 	}
 
 }

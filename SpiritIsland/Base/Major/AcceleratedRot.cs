@@ -7,15 +7,40 @@ namespace SpiritIsland.Base {
 
 		public const string Name = "Accelerated Rot";
 
-		public AcceleratedRot(Spirit _,GameState gs):base(gs){
+		public Spirit spirit;
+
+		public AcceleratedRot(Spirit spirit,GameState gs):base(gs){
+			this.spirit = spirit;
+
 			// range 2, Jungle or Wetland
+			engine.decisions.Push(new TargetSpaceRangeFromPresence(spirit,2
+				,JungleOrWetland
+				,SelectSpace
+			));
 
-			// 2 fear
-			// 4 damage
 
-			// if you have 3 sun, 2 water, 3 plant
-			//	+5 damage, remove 1 blight
 		}
+
+		static bool JungleOrWetland(Space space)=>space.Terrain.IsIn(Terrain.Jungle,Terrain.Wetland);
+
+		void SelectSpace(Space space){
+			// 2 fear, 4 damage
+			int damageToInvaders = 4;
+			gameState.AddFear(2);
+
+			if(spirit.HasElements(
+				Element.Sun,Element.Sun,Element.Sun,
+				Element.Water,Element.Water,
+				Element.Plant,Element.Plant,Element.Plant
+			)){
+				// +5 damage, remove 1 blight
+				damageToInvaders += 5;
+				gameState.AddBlight(space,-1);
+			}				
+
+			gameState.DamageInvaders(space, damageToInvaders);
+		}
+
 	}
 
 }
