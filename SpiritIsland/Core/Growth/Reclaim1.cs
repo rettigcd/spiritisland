@@ -18,14 +18,14 @@ namespace SpiritIsland.Core {
 				this.spirit = spirit;
 			}
 
-			public bool IsResolved => card != null;
+			public bool IsResolved => Options.Length==0 || card != null;
 
 			public IOption[] Options => spirit.DiscardPile.Cast<IOption>().ToArray();
 
 			public string Prompt => "Select card to reclaim.";
 
 			public void Apply() {
-				if( spirit.DiscardPile.Contains(card) ){
+				if( card!=null && spirit.DiscardPile.Contains(card) ){
 					spirit.DiscardPile.Remove(card);
 					spirit.Hand.Add(card);
 				}

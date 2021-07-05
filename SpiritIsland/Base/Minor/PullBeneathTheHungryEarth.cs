@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using SpiritIsland.Core;
+﻿using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
 
@@ -34,15 +32,6 @@ namespace SpiritIsland.Base {
 		bool GeneratesDamageAndFear(Space space) => self.Presence.Contains(space);
 
 
-	}
-
-	static public class ContainerExtensions{
-		// shorter syntax:
-		// space.Terrain.IsIn(Terrain.Wetland,Terrain.Sand)
-		// vs.
-		// new Terraion[]{Terrain.Wetland,Terrain.Sand}.Contains(space.Terrain);
-		static public bool IsIn<T>(this T needle, params T[] haystack )
-			=> haystack.Contains(needle);
 	}
 
 }

@@ -5,7 +5,6 @@ using Xunit;
 
 namespace SpiritIsland.Tests.Base.Spirits.River {
 	public class BoonOfVigor_Tests : SpiritCards_Tests {
- 		#region BoonOfVigor
 
 		[Fact]
 		public void BoonOfVigor_TargetSelf() {
@@ -65,8 +64,6 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 		public void BoonOfVigor_Stats() {
 			Assert_CardStatus( PowerCard.For<BoonOfVigor>(), 0, Speed.Fast, "SWP" );
 		}
-
-		#endregion BoonOfVigor
 
 	}
 

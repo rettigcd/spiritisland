@@ -39,13 +39,14 @@ namespace SpiritIsland {
 		readonly int count;
 		Space space;
 
+		public const string k1 = "Push 1 E/T";
+		public const string k2 = "2 damage, Push up to 3 explorers and/or towns";
+		public const string k3 = "2 damage to all";
+
+
 		void SelectLevel(Space space){
 			this.space = space;
 			var invaders = gameState.InvadersOn(space);
-
-			const string k1 = "Push 1 E/T";
-			const string k2 = "2 damage, Push up to 3 explorers and/or towns";
-			const string k3 = "2 damage to all";
 
 			IEnumerable<string> d = new string[]{ k1, k2, k3 }.Take(count);
 

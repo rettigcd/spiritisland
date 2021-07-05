@@ -41,9 +41,7 @@ namespace SpiritIsland {
 		public string Summary => Initial+"@"+Health; // C@3, T@2
 
 		public Invader Damage(int level){
-			return level > Health 
-				? throw new System.ArgumentOutOfRangeException(nameof(level)) 
-				: typeArr[Health-level];
+			return typeArr[level > Health ? 0 : Health-level];
 		}
 
 		public int Health {get;}

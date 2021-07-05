@@ -75,12 +75,32 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 
 			Game_SelectOption( "Select Slow to resolve", "Massive Flooding" );
 			Game_SelectOption( "Massive Flooding - Select target space", "A8");
-			Game_SelectOption( "Massive Flooding - Select Innate option", "2 damage, Push up to 3 explorers and/or towns");
-
+			Game_SelectOption( "Massive Flooding - Select Innate option", MassiveFlooding.k2);
 			Game_SelectOption( "Massive Flooding - Select land to push E@1 to", "A5" ); // always a town on A8
-//			Game_SelectOption( "Massive Flooding - Select invader to push", "T@2" );
-//			Game_SelectOption( "Massive Flooding - Select land to push T@2 to.", "A5" );
 		}
+
+		[Fact]
+		public void Level3_2DamageToEachInvader() { // 3 sun, 4 water, 1 earth
+			// Instead, 2 damage to each invader
+
+			Given_SpiritCardPlayCount( 4 );
+			Given_SpiritGetMoney( 5 );
+
+			Game_SelectGrowthOption( 0 ); // Reclaim
+
+			Game_SelectPowerCards( FlashFloods.Name );  // fast - sun, water
+			Game_SelectPowerCards( RiversBounty.Name ); // slow - sun, water, animal
+			Game_SelectPowerCards( BoonOfVigor.Name );  // fast - sun, water, plant
+			Game_SelectPowerCards( WashAway.Name );     // slow -      water, earth
+
+			Game_DoneWith( Speed.Fast );
+
+			Game_SelectOption( "Select Slow to resolve", "Massive Flooding" );
+			Game_SelectOption( "Massive Flooding - Select target space", "A8");
+			Game_SelectOption( "Massive Flooding - Select Innate option", MassiveFlooding.k3);
+//			Game_SelectOption( "Massive Flooding - Select land to push E@1 to", "A5" );
+		}
+
 
 		void Given_SpiritCardPlayCount( int target ) {
 			while(game.Spirit.NumberOfCardsPlayablePerTurn < target)
@@ -90,11 +110,6 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 		void Given_SpiritGetMoney( int target ) {
 			while(game.Spirit.EnergyPerTurn < target)
 				game.Spirit.RevealedEnergySpaces++;
-		}
-
-		[Fact]
-		public void Level3() { // 3-Sun, 4-Water, 1-Earth
-
 		}
 
 		void Game_DoneWith( Speed speed ) {
@@ -123,10 +138,6 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 			game.Decision.Select( option );
 		}
 
-
-		// 2 sun, 3 water => Instead, 2 damage, Push up to 3 explorers and/or towns
-
-		// 3 sun, 4 water, 1 earth => Instead, 2 damage to each invader
 
 		// !!!!!!!!!   Rivers special rules -> presence in water is SS
 
