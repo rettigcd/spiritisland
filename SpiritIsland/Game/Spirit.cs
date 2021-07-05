@@ -42,11 +42,25 @@ namespace SpiritIsland {
 
 		// Holds Fast and Slow actions,
 		// depends on Fast/Slow phase to only select the actions that are appropriate
-		public IEnumerable<IActionFactory> UnresolvedActionFactories => _unresolvedActionFactories;
+		public IEnumerable<IActionFactory> UnresolvedActionFactories{ get {
+			foreach(var action in _unresolvedActionFactories) yield return action;
+			foreach(var innate in this.InnatePowers)
+				if(!usedInnates.Contains(innate) && innate.PowersActivated(this)>0)
+					yield return innate;
+			
+		} } 
 
 		readonly List<IActionFactory> _unresolvedActionFactories = new List<IActionFactory>(); // public for testing
 
+		readonly List<InnatePower> usedInnates = new List<InnatePower>();
+
 		public void Resolve( IActionFactory selectedActionFactory ) {
+
+			if(selectedActionFactory is InnatePower ip){
+				usedInnates.Add(ip);
+				return;
+			}
+
 			int index = _unresolvedActionFactories.IndexOf( selectedActionFactory );
 			if(index == -1) throw new InvalidOperationException("can't remove factory that isn't there.");
 	
@@ -93,11 +107,15 @@ namespace SpiritIsland {
 		#endregion
 
 		public virtual void Grow(GameState gameState, int optionIndex) {
+
+			usedInnates.Clear();
+
 			GrowthOption option = this.GetGrowthOptions()[optionIndex];
 			foreach (var action in option.GrowthActions)
 				AddAction(action);
 
 			RemoveResolvedActions(gameState);
+
 		}
 
 		protected void RemoveResolvedActions(GameState gameState) {
@@ -136,10 +154,17 @@ namespace SpiritIsland {
 			foreach (var card in PurchasedCards)
 				AddAction(card);
 
-//			foreach (var innate in InnatePowers)
-//				AddAction(innate);
-
 		}
+
+		public int Flush(Speed speed) {
+			var toFlush = UnresolvedActionFactories
+				.Where( f => f.Speed == speed )
+				.ToArray();
+			foreach(var factory in toFlush)
+				Resolve( factory );
+			return toFlush.Length;
+		}
+
 
 		void ActivateCard(PowerCard card) {
 			if (!Hand.Contains(card)) throw new CardNotAvailableException();

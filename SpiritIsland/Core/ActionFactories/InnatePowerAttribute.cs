@@ -12,4 +12,18 @@
 
 	}
 
+	[System.AttributeUsage(System.AttributeTargets.Class)]
+	public class PowerLevelAttribute : System.Attribute {
+
+		public PowerLevelAttribute(int level,params Element[] elements){
+			this.Level = level;
+			this.Elements = elements;
+		}
+
+		public int Level { get; }
+		public Element[] Elements { get; }
+
+	}
+
+
 }

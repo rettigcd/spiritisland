@@ -43,14 +43,13 @@ namespace SpiritIsland.SinglePlayer {
 
 		public void Select( IOption option ) {
 			if(option is TextOption txt) {
-				if(txt.Text == "Done") Done();
-				return;
+				if(txt.Text == "Done") { Done(); return; }
 			}
 
 			// Select action or apply option
 			if(option is IActionFactory factory) {
 				selectedActionFactory = factory;
-				this.growthName = selectedActionFactory.ToString(); // or .Name ?
+				this.growthName = selectedActionFactory.Name;
 				action = selectedActionFactory.Bind( spirit, gameState );
 			} else {
 				action.Select( option );
@@ -82,12 +81,8 @@ namespace SpiritIsland.SinglePlayer {
 		}
 
 		void Done() {
-			var toFlush = spirit.UnresolvedActionFactories
-				.Where( f => f.Speed == speed )
-				.ToArray();
-			foreach(var factory in toFlush)
-				spirit.Resolve(factory);
-			Console.WriteLine( $"{speed} Done! - Flushed {toFlush.Length} actions." );
+			int numberFlushed = spirit.Flush(speed);
+			Console.WriteLine( $"{speed} Done! - Flushed {numberFlushed} actions." );
 
 			this.Complete?.Invoke();
 		}

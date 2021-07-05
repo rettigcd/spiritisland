@@ -5,28 +5,50 @@ namespace SpiritIsland.Core {
 
 	public class InnatePower : IActionFactory {
 
+		#region Constructors and factories
+
 		static public InnatePower For<T>(){ return new InnatePower(typeof(T));}
 
 		public InnatePower(Type actionType){
 
-			var pca = System.Attribute.GetCustomAttributes(actionType)
+			var attributes = System.Attribute.GetCustomAttributes(actionType);
+			var pca = attributes
 				.OfType<InnatePowerAttribute>()
 				.ToArray();
-			if(pca.Length==0) throw new ArgumentException(actionType.Name+" missing PowerCard attribute.");
-			if(pca.Length!=1) throw new ArgumentException(actionType.Name+" has multiple PowerCard attributes.");
+			if(pca.Length==0) throw new ArgumentException(actionType.Name+" missing InnatePower attribute.");
+			if(pca.Length!=1) throw new ArgumentException(actionType.Name+" has multiple InnatePower attributes.");
 			var attr = pca[0];
 
 			Speed = attr.Speed;
 			Name = attr.Name;
 
+			powerLevels = attributes
+				.OfType<PowerLevelAttribute>()
+				.ToArray();
+
 			this.actionType = actionType;
 		}
+
+		#endregion
+
+		public int PowersActivated(Spirit spirit){
+			var activeElements = spirit.PurchasedCards.SelectMany(c=>c.Elements).ToArray();
+			bool[] isSubSet = powerLevels
+				.Select(pl=>!pl.Elements.Except(activeElements).Any())
+				.ToArray();
+
+			return isSubSet.Count(x=>x);
+		}
+
+
 
 		public Speed Speed {get;}
 
 		public string Name {get;}
 
 		public string Text => Name;
+
+		readonly PowerLevelAttribute[] powerLevels;
 
 		readonly Type actionType;
 

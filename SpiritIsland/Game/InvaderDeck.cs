@@ -34,15 +34,25 @@ namespace SpiritIsland {
 		readonly InvaderCard[] cards;
 		int exploreIndex;
 
-		public InvaderDeck(){
+		public static InvaderDeck Unshuffled() => new InvaderDeck(false);
+
+		public InvaderDeck():this(true){}
+
+		InvaderDeck(bool shuffle){
 
 			var level1 = Level1Cards.ToList();
 			var level2 = Level2Cards.ToList();
 			var level3 = Level3Cards.ToList();
 
-			Shuffle(level1); Discard1(level1);
-			Shuffle(level2); Discard1(level2);
-			Shuffle(level3); Discard1(level3);
+			if(shuffle){
+				Shuffle(level1);
+				Shuffle(level2); 
+				Shuffle(level3); 
+			}
+
+			Discard1(level1);
+			Discard1(level2);
+			Discard1(level3);
 
 			// Merge
 			var all = new List<InvaderCard>();

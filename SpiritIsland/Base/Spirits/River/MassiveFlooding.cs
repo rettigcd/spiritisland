@@ -6,6 +6,7 @@ using SpiritIsland.Core;
 namespace SpiritIsland {
 
 	[InnatePower(MassiveFlooding.Name,Speed.Slow)]
+	[PowerLevel(0,Element.Sun,Element.Water,Element.Water)]
 	public class MassiveFlooding : BaseAction {
 		// Slow, range 1 from SS
 

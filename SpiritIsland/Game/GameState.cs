@@ -6,11 +6,12 @@ namespace SpiritIsland {
 
 	public class GameState {
 
-		public readonly InvaderDeck InvaderDeck = new InvaderDeck();
+		public InvaderDeck InvaderDeck {get; set;}
 
 		public GameState(params Spirit[] spirits){
 			if(spirits.Length==0) throw new ArgumentException("Game must include at least 1 spirit");
 			this.Spirits = spirits;
+			InvaderDeck = new InvaderDeck();
 		}
 
 		public Island Island { get; set; }
@@ -143,7 +144,11 @@ namespace SpiritIsland {
 			}
 		}
 
+		Invader[] KillOrder => killOrder ??= "C@1 C@2 C@3 T@1 T@2 E@1".Split(' ').Select(k=>Invader.Lookup[k]).ToArray();
 		Invader[] killOrder;
+
+
+		Invader[] LeftOverOrder => leftOverOrder ??="C@2 T@2 C@3".Split(' ').Select(k=>Invader.Lookup[k]).ToArray();
 		Invader[] leftOverOrder;
 
 		public void Ravage( InvaderCard invaderCard ) {
@@ -152,11 +157,6 @@ namespace SpiritIsland {
 			// 1 point of damage,  Prefer C@1  ---  ---  T@1  ---  E@1 >>> C@2, T@2, C@3
 			// 2 points of damage, Prefer C@1  C@2  ---  T@1  T@2  E@1 >>> C@3
 			// 3 points of damage, Prefer C@1  C@2  C@3  T@1  T@2  E@1
-			if(killOrder==null){
-				killOrder = "C@1 C@2 C@3 T@1 T@2 E@1".Split(' ').Select(k=>Invader.Lookup[k]).ToArray();
-				leftOverOrder = "C@2 T@2 C@3".Split(' ').Select(k=>Invader.Lookup[k]).ToArray();
-			}
-
 			var ravageGroups = Island.Boards.SelectMany(board=>board.Spaces)
 				.Where(invaderCard.Matches)
 				.Select(InvadersOn)
@@ -188,11 +188,11 @@ namespace SpiritIsland {
 		void ApplyDamageToInvaders( InvaderGroup ravageGroup, int startingDamage ) {
 			int damageToInvaders = startingDamage;
 			while(damageToInvaders > 0 && ravageGroup.InvaderTypesPresent.Any()) {
-				var invaderToDamage = killOrder.FirstOrDefault( invader =>
+				var invaderToDamage = KillOrder.FirstOrDefault( invader =>
 						invader.Health <= damageToInvaders // prefer things we can kill
 						&& ravageGroup[invader] > 0
 					)
-					?? leftOverOrder.First( invader => ravageGroup[invader] > 0 ); // left-over damage
+					?? LeftOverOrder.First( invader => ravageGroup[invader] > 0 ); // left-over damage
 				ravageGroup[invaderToDamage]--;
 				damageToInvaders -= invaderToDamage.Health;
 			}
