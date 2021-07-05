@@ -22,13 +22,15 @@ namespace SpiritIsland {
 
 		#region Elements
 
+		// make protected.  Tell, don't ask!!!
 		public CountDictionary<Element> AllElements => PurchasedCards
 			.SelectMany(c=>c.Elements)
 			.GroupBy(c=>c)
 			.ToDictionary(grp=>grp.Key,grp=>grp.Count())
 			.ToCountDict();
 
-		public virtual int Elements(Element element) => AllElements[element];
+		public virtual int Elements(Element element) => AllElements[element];// !!! make private.  tell, don't ask
+
 
 		#endregion
 

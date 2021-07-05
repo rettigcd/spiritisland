@@ -1,23 +1,21 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
-Bugs
-3	Tsunami - not fully implemented
-
 Not Implemented
 4	blight - damage to land + cascading
 4	Show Defend Markers in UI (defend 6)
-	Fear - Fear Cards / Fear Initialization / Terror Level
-	Fear - Destroying town=>1, city=>2
-	Fear - Display Fear stats in UI
-	Blight - blighted Island cards
+4	Fear - Destroying town=>1, city=>2
+4	Fear - Display Fear stats in UI
 3	Drawing Major Power Card - have to discard
-4	Tests for Power Progression Cards ** INCLUDING Attributes **
+	Blight - blighted Island cards
+	Fear - Fear Cards / Fear Initialization / Terror Level
 
 Improve
+3	Allow Short Circuit
+		- River's Bounty
+		- Wash Away?
 3	Improve Ravage / Build / Explore visibility
 		- step through
 		- provide details log
-3	Allow River's Bounty to Short Circuit
 	Manually select who to apply damage to
 	Display Icons (white w/#s)
 	When resolving Action, show action (card) resolving.
@@ -30,6 +28,7 @@ Unit Test
 	Uncanny Melting
 	Nature's Resilience
 	Pull Beneath the Hungry Earth
+	Tests for Power Progression Cards ** INCLUDING Attributes **
 
 View
 	energy track
