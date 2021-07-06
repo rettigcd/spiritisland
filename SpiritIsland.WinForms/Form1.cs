@@ -35,13 +35,18 @@ namespace SpiritIsland.WinForms {
 		void UpdateDisplay() {
 			this.islandControl.Invalidate();
 
+			var gs = game.GameState;
 			// invader deck
-			string ravage = game.GameState.InvaderDeck.Ravage?.Text ?? "-";
-			string build = game.GameState.InvaderDeck.Build?.Text ?? "-";
+			string ravage = gs.InvaderDeck.Ravage?.Text ?? "-";
+			string build = gs.InvaderDeck.Build?.Text ?? "-";
 			this.invaderBoardLabel.Text = $"Ravage {ravage}  Build {build}";
 
 			// card
-			this.trackLabel.Text = $"Energy: ${game.Spirit.Energy} (+{game.Spirit.EnergyPerTurn}/turn)  Cards Plays: {game.Spirit.NumberOfCardsPlayablePerTurn}/turn";
+			var spirit = game.Spirit;
+			this.trackLabel.Text = $"Energy: ${spirit.Energy} (+{spirit.EnergyPerTurn}/turn)  Cards Plays: {game.Spirit.NumberOfCardsPlayablePerTurn}/turn";
+
+			this.blightLabel.Text = $"Blight: {gs.blightOnCard} " 
+				+ (gs.IsBlighted ? "BLIGHTED":"");
 		}
 
 		void ShowOptions() {

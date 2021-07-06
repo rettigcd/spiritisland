@@ -52,6 +52,7 @@ namespace SpiritIsland.WinForms {
 			explorer = Image.FromFile(".\\images\\Explorericon.png");
 			presence = Image.FromFile(".\\images\\Presenceicon.png");
 			blight = Image.FromFile(".\\images\\Blighticon.png");
+			defend = Image.FromFile(".\\images\\defend1orange.png");
 
 			this.gameState = gameState;
 			this.spirit = gameState.Spirits.Single();
@@ -65,6 +66,7 @@ namespace SpiritIsland.WinForms {
 		Image explorer;
 		Image presence;
 		Image blight;
+		Image defend;
 
 		GameState gameState;
 		Spirit spirit;
@@ -116,6 +118,7 @@ namespace SpiritIsland.WinForms {
 			// dahan
 			images.Clear();
 			images.AddCount( gameState.GetDahanOnSpace( space ), dahan );
+			images.AddCount( gameState.GetDefence( space ), defend);
 			DrawRow( graphics, x, ref y, dimension, step, images );
 
 			// presence

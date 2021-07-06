@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using SpiritIsland.Core;
 
@@ -45,9 +46,10 @@ namespace SpiritIsland {
 			if(counts.Blight > 0) this.AddBlight( space ); // add 1
 		}
 
-		internal void Defend( Space space, int delta ) {
+		public void Defend( Space space, int delta ) {
 			defendCount[space] += delta;
 		}
+		public int GetDefence(Space space) => defendCount[space];
 
 		#region Beasts
 		public void AddBeast( Space space ){ beastCount[space]++; }
@@ -56,9 +58,41 @@ namespace SpiritIsland {
 
 		#region Blight
 
+		public int blightOnCard; // 2 per player
+		public bool IsBlighted;
+		public BlightCard BlightCard;
+		public void InitBlight(BlightCard card){
+			this.BlightCard = card;
+			blightOnCard = card.StartingBlight(this);
+		}
+
+		/// <summary>Causes cascading</summary>
+		public void BlightLand( Space space ){
+			if(HasBlight(space))
+				cascadingBlight.Push(space);
+			AddBlight(space);
+
+			foreach(var spirit in Spirits)
+				if(spirit.Presence.Contains(space))
+					spirit.Presence.Remove(space);
+
+			--blightOnCard;
+			if(BlightCard != null && blightOnCard==0){
+				IsBlighted = true;
+				blightOnCard = BlightCard.AdditionalBlight(this);
+			}
+		}
+		public void RemoveBlight( Space space){
+			blightCount[space]--;
+			blightOnCard++;
+		}
+
 		public void AddBlight( Space space, int delta=1 ){ blightCount[space]+=delta; }
+
 		public bool HasBlight( Space s ) => blightCount[s] > 0;
 		public int GetBlightOnSpace( Space space ){ return blightCount[space]; }
+
+		public Stack<Space> cascadingBlight = new Stack<Space>();
 
 		#endregion
 
@@ -170,8 +204,13 @@ namespace SpiritIsland {
 
 		void RavageSpace( InvaderGroup ravageGroup ) {
 
-			int defend = defendCount[ravageGroup.Space]; defendCount[ravageGroup.Space] = 0;
-			int damageToDahan = Math.Max( ravageGroup.DamageInflicted - defend, 0);
+			int damageFromInvaders = Math.Max( ravageGroup.DamageInflicted - defendCount[ravageGroup.Space], 0);
+
+			int damageToDahan = damageFromInvaders;
+			int damageToLand = damageFromInvaders;
+
+			if(damageToLand>1)
+				BlightLand(ravageGroup.Space);
 
 			int dahan = GetDahanOnSpace( ravageGroup.Space );
 			int dahanKilled = Math.Min( damageToDahan / 2, dahan ); // rounding down
@@ -222,5 +261,6 @@ namespace SpiritIsland {
 		readonly CountDictionary<Space> defendCount = new CountDictionary<Space>();
 		int fearCount = 0;
 	}
+
 
 }

@@ -38,7 +38,7 @@ namespace SpiritIsland.Base {
 		}
 
 		void Defend6()=>gameState.Defend(space,6);
-		void RemoveBlight()=>gameState.AddBlight(space,-1);
+		void RemoveBlight()=>gameState.RemoveBlight(space);
 
 	}
 }

@@ -31,6 +31,7 @@ namespace SpiritIsland.WinForms {
 			this.invaderBoardLabel = new System.Windows.Forms.Label();
 			this.trackLabel = new System.Windows.Forms.Label();
 			this.elementLabel = new System.Windows.Forms.Label();
+			this.blightLabel = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// quitButton
@@ -48,9 +49,9 @@ namespace SpiritIsland.WinForms {
 			this.promptLabel.AutoSize = true;
 			this.promptLabel.Location = new System.Drawing.Point(12, 18);
 			this.promptLabel.Name = "promptLabel";
-			this.promptLabel.Size = new System.Drawing.Size(78, 32);
+			this.promptLabel.Size = new System.Drawing.Size(190, 32);
 			this.promptLabel.TabIndex = 1;
-			this.promptLabel.Text = "label1";
+			this.promptLabel.Text = "Decision Prompt";
 			// 
 			// islandControl
 			// 
@@ -79,34 +80,45 @@ namespace SpiritIsland.WinForms {
 			this.invaderBoardLabel.AutoSize = true;
 			this.invaderBoardLabel.Location = new System.Drawing.Point(881, 18);
 			this.invaderBoardLabel.Name = "invaderBoardLabel";
-			this.invaderBoardLabel.Size = new System.Drawing.Size(78, 32);
+			this.invaderBoardLabel.Size = new System.Drawing.Size(168, 32);
 			this.invaderBoardLabel.TabIndex = 4;
-			this.invaderBoardLabel.Text = "label1";
+			this.invaderBoardLabel.Text = "Ravage / Build";
 			// 
 			// trackLabel
 			// 
 			this.trackLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.trackLabel.AutoSize = true;
-			this.trackLabel.Location = new System.Drawing.Point(1748, 18);
+			this.trackLabel.Location = new System.Drawing.Point(1646, 18);
 			this.trackLabel.Name = "trackLabel";
-			this.trackLabel.Size = new System.Drawing.Size(78, 32);
+			this.trackLabel.Size = new System.Drawing.Size(180, 32);
 			this.trackLabel.TabIndex = 5;
-			this.trackLabel.Text = "label1";
+			this.trackLabel.Text = "Presence Tracks";
 			// 
 			// elementLabel
 			// 
 			this.elementLabel.AutoSize = true;
 			this.elementLabel.Location = new System.Drawing.Point(881, 60);
 			this.elementLabel.Name = "elementLabel";
-			this.elementLabel.Size = new System.Drawing.Size(78, 32);
+			this.elementLabel.Size = new System.Drawing.Size(111, 32);
 			this.elementLabel.TabIndex = 6;
-			this.elementLabel.Text = "label1";
+			this.elementLabel.Text = "Elements";
+			// 
+			// blightLabel
+			// 
+			this.blightLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.blightLabel.AutoSize = true;
+			this.blightLabel.Location = new System.Drawing.Point(1646, 60);
+			this.blightLabel.Name = "blightLabel";
+			this.blightLabel.Size = new System.Drawing.Size(76, 32);
+			this.blightLabel.TabIndex = 7;
+			this.blightLabel.Text = "Blight";
 			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 32F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1869, 1235);
+			this.Controls.Add(this.blightLabel);
 			this.Controls.Add(this.elementLabel);
 			this.Controls.Add(this.trackLabel);
 			this.Controls.Add(this.invaderBoardLabel);
@@ -131,6 +143,7 @@ namespace SpiritIsland.WinForms {
 		private System.Windows.Forms.Label invaderBoardLabel;
 		private System.Windows.Forms.Label trackLabel;
 		private System.Windows.Forms.Label elementLabel;
+		private System.Windows.Forms.Label blightLabel;
 	}
 }
 

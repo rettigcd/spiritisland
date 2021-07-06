@@ -1,13 +1,14 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
 Not Implemented
-4	blight - damage to land + cascading
-4	Show Defend Markers in UI (defend 6)
+
 4	Fear - Destroying town=>1, city=>2
 4	Fear - Display Fear stats in UI
+
 3	Drawing Major Power Card - have to discard
-	Blight - blighted Island cards
 	Fear - Fear Cards / Fear Initialization / Terror Level
+
+	Blighted Island effect
 
 Improve
 3	Allow Short Circuit
@@ -29,6 +30,9 @@ Unit Test
 	Nature's Resilience
 	Pull Beneath the Hungry Earth
 	Tests for Power Progression Cards ** INCLUDING Attributes **
+	Blight Cards
+	Cascading Blight
+	Blight causes spirit to lose 1 presence on space
 
 View
 	energy track
@@ -40,7 +44,7 @@ UI Helper
 
 ----
 
-
+Base Blight cards
 
 Lightning's Swift Strike:
 1. Delusions of Danger
