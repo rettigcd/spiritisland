@@ -1,15 +1,26 @@
-﻿using System;
-using System.Linq;
-using SpiritIsland.Base;
+﻿using SpiritIsland.Base;
 using SpiritIsland.Core;
 using SpiritIsland.SinglePlayer;
 using Xunit;
 
 namespace SpiritIsland.Tests.Base.Spirits.River {
 
-	public class MassiveFlooding_Tests {
+	public class RiverGame : GameBaseTests {
+		protected void Game_PlacePresence1( string sourceTrack, string destinationSpace ) {
+			Game_SelectOption( "Select Growth to resolve", "PlacePresence(1)" );
+			Game_SelectOption( "PlacePresence(1) - Select Presence to place", sourceTrack );
+			Game_SelectOption( "PlacePresence(1) - Where would you like", destinationSpace );
+		}
 
-		readonly SinglePlayerGame game;
+		protected void Game_Reclaim1( string cardToReclaim ) {
+			Game_SelectOption( "Select Growth to resolve", "Reclaim(1)" );
+			Game_SelectOption( "Reclaim(1) - Select card", cardToReclaim );
+		}
+
+
+	}
+
+	public class MassiveFlooding_Tests : RiverGame {
 
 		public MassiveFlooding_Tests(){
 			// Given: River
@@ -40,23 +51,18 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 
 			Game_SelectGrowthOption( 1 ); // PP-1 PP-1
 
-			Game_SelectOption("Select Growth to resolve","PlacePresence(1)");			
-			Game_SelectOption("PlacePresence(1) - Select Presence to place","Energy");
-			Game_SelectOption("PlacePresence(1) - Where would you like","A4");
+			Game_PlacePresence1("Energy","A4");
+			Game_PlacePresence1("Card","A2");
 
-			Game_SelectOption("Select Growth to resolve","PlacePresence(1)");			
-			Game_SelectOption("PlacePresence(1) - Select Presence to place","Card");
-			Game_SelectOption("PlacePresence(1) - Where would you like","A2");
+			Game_BuyPowerCards( FlashFloods.Name ); // fast
+			Game_BuyPowerCards( RiversBounty.Name );// slow
 
-			Game_SelectPowerCards( FlashFloods.Name ); // fast
-			Game_SelectPowerCards( RiversBounty.Name );// slow
+			Game_DoneWith( Speed.Fast );
 
-			Game_DoneWith(Speed.Fast);
-
-			Game_SelectOption("Select Slow to resolve","Massive Flooding");
-			Game_SelectOption("Massive Flooding - Select target","A8"); // always a town on A8
-			Game_SelectOption("Massive Flooding - Select invader to push","T@2");
-			Game_SelectOption("Massive Flooding - Select land to push T@2 to.","A5");
+			Game_SelectOption( "Select Slow to resolve", "Massive Flooding" );
+			Game_SelectOption( "Massive Flooding - Select target", "A8" ); // always a town on A8
+			Game_SelectOption( "Massive Flooding - Select invader to push", "T@2" );
+			Game_SelectOption( "Massive Flooding - Select land to push T@2 to.", "A5" );
 		}
 
 		[Fact]
@@ -67,9 +73,9 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 
 			Game_SelectGrowthOption( 0 ); // Reclaim
 
-			Game_SelectPowerCards( FlashFloods.Name ); // fast - sun, water
-			Game_SelectPowerCards( RiversBounty.Name ); // slow - sun, water, animal
-			Game_SelectPowerCards( BoonOfVigor.Name ); // fast - sun, water, plant
+			Game_BuyPowerCards( FlashFloods.Name ); // fast - sun, water
+			Game_BuyPowerCards( RiversBounty.Name ); // slow - sun, water, animal
+			Game_BuyPowerCards( BoonOfVigor.Name ); // fast - sun, water, plant
 
 			Game_DoneWith( Speed.Fast );
 
@@ -88,17 +94,16 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 
 			Game_SelectGrowthOption( 0 ); // Reclaim
 
-			Game_SelectPowerCards( FlashFloods.Name );  // fast - sun, water
-			Game_SelectPowerCards( RiversBounty.Name ); // slow - sun, water, animal
-			Game_SelectPowerCards( BoonOfVigor.Name );  // fast - sun, water, plant
-			Game_SelectPowerCards( WashAway.Name );     // slow -      water, earth
+			Game_BuyPowerCards( FlashFloods.Name );  // fast - sun, water
+			Game_BuyPowerCards( RiversBounty.Name ); // slow - sun, water, animal
+			Game_BuyPowerCards( BoonOfVigor.Name );  // fast - sun, water, plant
+			Game_BuyPowerCards( WashAway.Name );     // slow -      water, earth
 
 			Game_DoneWith( Speed.Fast );
 
 			Game_SelectOption( "Select Slow to resolve", "Massive Flooding" );
 			Game_SelectOption( "Massive Flooding - Select target space", "A8");
 			Game_SelectOption( "Massive Flooding - Select Innate option", MassiveFlooding.k3);
-//			Game_SelectOption( "Massive Flooding - Select land to push E@1 to", "A5" );
 		}
 
 
@@ -110,32 +115,6 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 		void Given_SpiritGetMoney( int target ) {
 			while(game.Spirit.EnergyPerTurn < target)
 				game.Spirit.RevealedEnergySpaces++;
-		}
-
-		void Game_DoneWith( Speed speed ) {
-			Game_SelectOption($"Select {speed} to resolve","Done");
-		}
-
-		void Game_SelectPowerCardsDone() => Game_SelectPowerCards("Done");
-
-		void Game_SelectPowerCards( string text ) => Game_SelectOption("Buy power cards:", text);
-
-		void Game_SelectGrowthOption( int optionIndex ) {
-			Assert.Equal( "Select Growth Option", game.Decision.Prompt );
-			game.Decision.Select( game.Decision.Options[optionIndex] );
-		}
-
-		void Game_SelectOption( string prompt, string optionText ) {
-
-			if(!game.Decision.Prompt.StartsWith(prompt))
-				Assert.Equal(prompt,game.Decision.Prompt);
-
-			var option = game.Decision.Options.FirstOrDefault(o=>o.Text == optionText);
-			if(option==null)
-				throw new Exception($"option ({optionText} not found in "
-					+game.Decision.Options.Select(x=>x.Text).Join(", ")
-				);
-			game.Decision.Select( option );
 		}
 
 

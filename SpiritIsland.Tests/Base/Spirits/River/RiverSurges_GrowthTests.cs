@@ -5,21 +5,6 @@ using Xunit;
 
 namespace SpiritIsland.Tests.Base.Spirits.River {
 
-	// GetOptions => takes (GameState)
-
-
-	// FAST
-	// test 2 fast powers
-
-	// !!! Invader Board
-	// Fear Card
-	// Ravage
-	// Build
-	// Explore
-
-	// Slow
-	// test 2 slow powers
-	// 1 slow innate powers show up
 	public class RiverSurges_GrowthTests : GrowthTests{
 
 		public RiverSurges_GrowthTests():base( new RiverSurges() ){}
@@ -300,6 +285,43 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 		}
 
 		#endregion
+
+	}
+
+	public class RSG : RiverGame {
+
+		public RSG(){
+			var spirit = new RiverSurges();
+			var gs = new GameState(spirit);
+			gs.Island = new Island(Board.BuildBoardA());
+			game = new SinglePlayer.SinglePlayerGame(gs);
+		}
+
+ 		[Fact]
+		public void Reclaim1_TriggersImmediately(){
+			// pull card track 2 * 2 = triggers reclaim 
+
+			Game_SelectGrowthOption(1);
+			Game_PlacePresence1("Card","A5");
+			Game_PlacePresence1("Card","A5");
+
+			Game_BuyPowerCards( WashAway.Name );
+			Game_BuyPowerCards( RiversBounty.Name );
+
+			Game_DoneWith(Speed.Slow);
+
+			Game_SelectGrowthOption(1);
+			Game_PlacePresence1("Card","A5");
+			Game_PlacePresence1("Card","A5");
+
+			// Can reclaim River's Bounty
+			Game_Reclaim1( RiversBounty.Name );
+			// Can buy River's Bount and 1 other cards
+			Game_BuyPowerCards( RiversBounty.Name );
+			Game_BuyPowerCards( BoonOfVigor.Name );
+			Game_DoneWith(Speed.Fast);
+
+		}
 
 	}
 

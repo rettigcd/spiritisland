@@ -3,13 +3,21 @@
 	public class GatherDahanCtx{
 		public GatherDahanCtx(Space target,GameState gameState){
 			Target = target;
-			destinationCount = gameState.GetDahanOnSpace(target);
+			DestinationCount = gameState.GetDahanOnSpace(target);
 			foreach(var x in target.SpacesExactly(1))
 				neighborCounts[x] = gameState.GetDahanOnSpace(x);
 		}
 		public readonly Space Target;
 		public readonly CountDictionary<Space> neighborCounts = new CountDictionary<Space>();
-		public int destinationCount;
+		public int DestinationCount{
+			get{  
+				return _destinationCount; 
+			}
+			set{  
+				_destinationCount = value; 
+			}
+		}
+		int _destinationCount;
 	}
 
 }

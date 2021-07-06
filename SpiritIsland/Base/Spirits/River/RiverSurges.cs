@@ -78,6 +78,17 @@ namespace SpiritIsland.Base {
 		protected override int[] EnergySequence => new int[]{1, 2, 2, 3, 4, 4, 5 };
 		protected override int[] CardSequence => new int[]{1, 2, 2, 3, 3, 4, 5 };
 
+
+		public override int RevealedCardSpaces {
+			get{ return base.RevealedCardSpaces; }
+			set{ 
+				bool hadReclaim1 = Reclaim1FromCardTrack;
+				base.RevealedCardSpaces = value;
+				if(!hadReclaim1 && Reclaim1FromCardTrack)
+					AddAction(new Reclaim1());
+			}
+		}
+
 		#region growth
 
 		public override void Grow(GameState gameState, int optionIndex) {

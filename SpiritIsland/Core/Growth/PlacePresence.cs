@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace SpiritIsland.Core {
 
-	// !!Split
 	public class PlacePresence : GrowthActionFactory {
 
 		readonly int range;
@@ -46,26 +44,6 @@ namespace SpiritIsland.Core {
 
 			return new PlacePresenceBaseAction(spirit,gameState,options);
 		}
-
-		//public override IOption[] Options { get {
-		//	return Source == default
-		//		? (new Track[]{Track.Energy,Track.Card})
-		//		: (IOption[])spirit.Presence
-		//			.SelectMany(s => s.SpacesWithin(this.range))
-		//			.Distinct()
-		//			.Where(SpaceIsValid)
-		//			.OrderBy(x=>x.Label)
-		//			.ToArray();
-		//	}
-		//}
-
-		//public override void Select( IOption option ) {
-		//	if(Source == default){
-		//		this.Source = (Track)option;
-		//		return;
-		//	}
-		//	this.Target = (Space)option;
-		//}
 
 	}
 

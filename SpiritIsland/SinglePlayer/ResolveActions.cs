@@ -47,7 +47,8 @@ namespace SpiritIsland.SinglePlayer {
 			}
 
 			// Select action or apply option
-			if(option is IActionFactory factory) {
+			if(action == null) {
+				IActionFactory factory = (IActionFactory)option;
 				selectedActionFactory = factory;
 				this.growthName = selectedActionFactory.Name;
 				action = selectedActionFactory.Bind( spirit, gameState );

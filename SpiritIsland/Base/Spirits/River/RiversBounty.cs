@@ -16,14 +16,16 @@ namespace SpiritIsland.Base {
 		}
 
 		protected override bool FilterSpace(Space space){
-			// space has dahan neighbors
-			return space.SpacesExactly(1).Any(neighbor=>gameState.HasDahan(neighbor));
+			// space has dahan neighbors or self
+			return space.SpacesWithin(1).Any( gameState.HasDahan );
 		}
 
 		protected override void SelectSpace(Space space){
 			var ctx = new GatherDahanCtx(space,gameState);
 			engine.decisions.Push(new If2Add1(self,engine,ctx));  // do this last
-			engine.decisions.Push(new Select1DahanSource(engine,ctx,2));
+
+			if(ctx.neighborCounts.Keys.Any())
+				engine.decisions.Push(new Select1DahanSource(engine,ctx,2));
 		}
 
 		// Hack - this isn't a decision, just something I need to run at the end.
@@ -41,9 +43,10 @@ namespace SpiritIsland.Base {
 			public string Prompt => "Adding 1 Dahan if 2 are present in "+ctx.Target.Label;
 
 			public void Select( IOption _ ) {
-				if(ctx.destinationCount>=2)
+				if(ctx.DestinationCount>=2){
 					engine.actions.Add(new AddDahan(ctx.Target,1));
 					++self.Energy;
+				}
 			}
 
 		}

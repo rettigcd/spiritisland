@@ -86,8 +86,8 @@ namespace SpiritIsland {
 		public int Energy { get; set; }
 
 		#region Presence Tracks
-		public int RevealedEnergySpaces { get; set; } = 1;
-		public int RevealedCardSpaces { get; set; } = 1;
+		public virtual int RevealedEnergySpaces { get; set; } = 1;
+		public virtual int RevealedCardSpaces { get; set; } = 1;
 
 		// This is River...
 		protected virtual int[] EnergySequence => new int[]{0};

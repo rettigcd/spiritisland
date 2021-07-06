@@ -118,8 +118,32 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 			action.Apply();
 
 			Assert.Equal( 3, gameState.GetDahanOnSpace( target ) ); // same as original
+		}
+
+		[Fact]
+		public void TwoDahanOnPresenceSpace(){
+			// Given: spirit has presence on A4
+			var targetOptions = spirit.Presence.Distinct().ToArray();
+			Assert.Equal(1,targetOptions.Length);
+
+			//   And: 2 dahan in A5 (touches both)
+			Given_AddDahan(2,board[4]);
+
+			When_PlayingCard();
+
+			// Select 1st land
+//			Assert.False( action.IsResolved );
+//			Assert_Options( targetOptions );
+			var target = targetOptions[0];
+//			action.Select( target );
+
+			Assert.True( action.IsResolved );
+			action.Apply();
+
+			Assert.Equal( 3, gameState.GetDahanOnSpace( target ) ); // same as original
 
 		}
+
 
 		void Given_AddDahan( int startingCount, Space target ) {
 			gameState.AddDahan( target, startingCount );

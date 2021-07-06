@@ -9,6 +9,8 @@ namespace SpiritIsland.Core {
 			return new Action(spirit);
 		}
 
+		public override string ShortDescription => "Reclaim(1)";
+
 		class Action : IAction {
 
 			PowerCard card;
