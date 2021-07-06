@@ -22,7 +22,7 @@ namespace SpiritIsland.Base {
 
 		protected override void SelectSpace(Space space){
 			var ctx = new GatherDahanCtx(space,gameState);
-			engine.decisions.Push(new If2Add1(engine,ctx));  // do this last
+			engine.decisions.Push(new If2Add1(self,engine,ctx));  // do this last
 			engine.decisions.Push(new Select1DahanSource(engine,ctx,2));
 		}
 
@@ -30,7 +30,9 @@ namespace SpiritIsland.Base {
 		class If2Add1 : IDecision {
 			readonly GatherDahanCtx ctx;
 			readonly ActionEngine engine;
-			public If2Add1(ActionEngine engine, GatherDahanCtx ctx){
+			readonly Spirit self;
+			public If2Add1(Spirit self, ActionEngine engine, GatherDahanCtx ctx){
+				this.self = self;
 				this.engine = engine;
 				this.ctx = ctx;
 			}
@@ -41,6 +43,7 @@ namespace SpiritIsland.Base {
 			public void Select( IOption _ ) {
 				if(ctx.destinationCount>=2)
 					engine.actions.Add(new AddDahan(ctx.Target,1));
+					++self.Energy;
 			}
 
 		}

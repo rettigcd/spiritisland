@@ -42,12 +42,17 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 		// 1 target, 1 dahan, 1 to gather        => resolved, dahan gathered, child!
 		// 1 target, 2 dahan, nothing to gather  => resolved, child!
 		[Theory]
-		[InlineData(0,0,0)]
-		[InlineData(1,0,1)]
-		[InlineData(1,1,3)]
-		[InlineData(1,2,4)]
-		[InlineData(2,1,4)]
-		public void DahanComingSameLand(int startingCount, int dahanToGather, int endingCount) {
+		[InlineData(0,0,0,0)]
+		[InlineData(1,0,1,0)]
+		[InlineData(1,1,3,1)]
+		[InlineData(1,2,4,1)]
+		[InlineData(2,1,4,1)]
+		public void DahanComingSameLand(
+			int startingCount, 
+			int dahanToGather, 
+			int endingCount,
+			int endingEnergy
+		) {
 			// Given: spirit has 1 presence
 			Space target = spirit.Presence.Single();
 
@@ -64,6 +69,7 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 			action.Apply();
 
 			Assert.Equal( endingCount, gameState.GetDahanOnSpace( target ) ); // same as original
+			Assert.Equal( endingEnergy, spirit.Energy );
 		}
 
 		[Fact]
