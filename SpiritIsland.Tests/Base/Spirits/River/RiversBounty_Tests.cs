@@ -65,7 +65,18 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 
 			When_PlayingCard();
 
-			Assert.True( action.IsResolved );
+			// Select source 1
+			if(dahanToGather>0){
+				Assert.False( action.IsResolved );
+				action.Select(neighbor);
+			}
+			// Select source 2
+			if(dahanToGather>1){
+				Assert.False( action.IsResolved );
+				action.Select(neighbor);
+			}
+
+
 			action.Apply();
 
 			Assert.Equal( endingCount, gameState.GetDahanOnSpace( target ) ); // same as original
@@ -87,8 +98,12 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 
 			// Select 1st land
 			Assert.False( action.IsResolved );
-			Assert_Options( neighbors.Take(dahanToGather) );
+			Assert_Options( neighbors.Take(dahanToGather), new TextOption("Done") );
 			action.Select(neighbors[0]);
+			// Select 2nd land
+			Assert.False( action.IsResolved );
+//			Assert_Options( action.Options[0], new TextOption("Done") );
+			action.Select( action.Options[0] );
 
 			Assert.True( action.IsResolved );
 			action.Apply();
@@ -108,11 +123,17 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 
 			When_PlayingCard();
 
-			// Select 1st land
+			// Select Target / Destination land
 			Assert.False( action.IsResolved );
 			Assert_Options( targetOptions );
 			var target = targetOptions[0];
 			action.Select( target );
+			// Select 1st source land
+			Assert.False( action.IsResolved );
+			action.Select( board[5] );
+			// Select 2nd source land
+			Assert.False( action.IsResolved );
+			action.Select( board[5] );
 
 			Assert.True( action.IsResolved );
 			action.Apply();
@@ -124,7 +145,7 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 		public void TwoDahanOnPresenceSpace(){
 			// Given: spirit has presence on A4
 			var targetOptions = spirit.Presence.Distinct().ToArray();
-			Assert.Equal(1,targetOptions.Length);
+			Assert.Single( targetOptions);
 
 			//   And: 2 dahan in A5 (touches both)
 			Given_AddDahan(2,board[4]);

@@ -292,8 +292,9 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 
 		public RSG(){
 			var spirit = new RiverSurges();
-			var gs = new GameState(spirit);
-			gs.Island = new Island(Board.BuildBoardA());
+			var gs = new GameState( spirit ) {
+				Island = new Island( Board.BuildBoardA() )
+			};
 			game = new SinglePlayer.SinglePlayerGame(gs);
 		}
 

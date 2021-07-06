@@ -57,7 +57,8 @@ namespace SpiritIsland.Tests {
 			);
 		}
 
-		protected void Assert_Options( IEnumerable<IOption> expected ){
+		protected void Assert_Options( IEnumerable<IOption> expected, params IOption[] plus ){
+			expected = expected.Union(plus);
 			string expectedStr = expected.Select(s=>s.Text).OrderBy(x=>x).Join(",");
 			string actualOptions = action.Options.Select(s=>s.Text).OrderBy(x=>x).Join(",");
 			Assert.Equal( expectedStr, actualOptions);
