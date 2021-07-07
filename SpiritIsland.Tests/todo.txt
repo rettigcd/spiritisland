@@ -1,8 +1,5 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
-4	Wash Away - Short Circuit
-4	Massive Flooding - Short Circut
-
 3	Drawing Major Power Card - have to discard
 
 Not Implemented

@@ -70,7 +70,7 @@ namespace SpiritIsland {
 		void Option2(){
 			// * 2 sun, 3 water => Instead, 2 damage, Push up to 3 explorers and/or towns
 			gameState.DamageInvaders(space,2);
-			engine.decisions.Push( new SelectInvadersToPush(engine, gameState.InvadersOn(space),3,false,"Town","Explorer") );
+			engine.decisions.Push( new SelectInvadersToPush(engine, gameState.InvadersOn(space),3,true,"Town","Explorer") );
 		}
 
 		void Option3(){
