@@ -2,7 +2,7 @@
 
 namespace SpiritIsland.Base {
 
-	[PowerCard(NaturesResilience.Name,1,Speed.Fast,Element.Earth,Element.Plant,Element.Animal)]
+	[MinorCard(NaturesResilience.Name,1,Speed.Fast,Element.Earth,Element.Plant,Element.Animal)]
 	public class NaturesResilience : TargetSpaceAction {
 
 		public const string Name = "Nature's Resilience";

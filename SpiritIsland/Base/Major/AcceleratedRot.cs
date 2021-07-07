@@ -2,7 +2,7 @@
 
 namespace SpiritIsland.Base {
 
-	[PowerCard(AcceleratedRot.Name,4,Speed.Slow,Element.Sun,Element.Water,Element.Plant)]
+	[MajorCard(AcceleratedRot.Name,4,Speed.Slow,Element.Sun,Element.Water,Element.Plant)]
 	public class AcceleratedRot : BaseAction {
 
 		public const string Name = "Accelerated Rot";

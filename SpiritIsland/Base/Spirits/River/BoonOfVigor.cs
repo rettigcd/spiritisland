@@ -2,7 +2,7 @@
 
 namespace SpiritIsland.Base {
 
-	[PowerCard(BoonOfVigor.Name, 0, Speed.Fast,Element.Sun,Element.Water,Element.Plant)]
+	[SpiritCard(BoonOfVigor.Name, 0, Speed.Fast,Element.Sun,Element.Water,Element.Plant)]
 	public class BoonOfVigor : TargetSpiritAction{
 
 		public const string Name = "Boon of Vigor";

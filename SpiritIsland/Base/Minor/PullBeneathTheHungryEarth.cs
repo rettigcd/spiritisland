@@ -2,7 +2,7 @@
 
 namespace SpiritIsland.Base {
 
-	[PowerCard(PullBeneathTheHungryEarth.Name,1,Speed.Slow,Element.Moon,Element.Water,Element.Earth)]
+	[MinorCard(PullBeneathTheHungryEarth.Name,1,Speed.Slow,Element.Moon,Element.Water,Element.Earth)]
 	public class PullBeneathTheHungryEarth : TargetSpaceAction {
 
 		public const string Name = "Pull Beneath the Hungry Earth";

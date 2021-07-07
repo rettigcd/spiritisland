@@ -3,7 +3,7 @@ using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
 
-	[PowerCard(FlashFloods.Name,2,Speed.Fast,Element.Sun,Element.Water)]
+	[SpiritCard(FlashFloods.Name,2,Speed.Fast,Element.Sun,Element.Water)]
 	public class FlashFloods : BaseAction {
 		// Target: range 1 (any)
 		// +1 damage, if costal +1 additional damage

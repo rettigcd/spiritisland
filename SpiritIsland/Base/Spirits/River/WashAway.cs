@@ -2,7 +2,7 @@
 
 namespace SpiritIsland.Base {
 
-	[PowerCard(WashAway.Name, 1, Speed.Slow, Element.Water, Element.Earth)]
+	[SpiritCard(WashAway.Name, 1, Speed.Slow, Element.Water, Element.Earth)]
 	public class WashAway : TargetSpaceAction {
 
 		public const string Name = "Wash Away";

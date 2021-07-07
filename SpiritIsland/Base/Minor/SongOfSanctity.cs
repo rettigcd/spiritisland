@@ -3,7 +3,7 @@ using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
 
-	[PowerCard(SongOfSanctity.Name, 1, Speed.Slow,Element.Sun,Element.Water,Element.Plant)]
+	[MinorCard(SongOfSanctity.Name, 1, Speed.Slow,Element.Sun,Element.Water,Element.Plant)]
 	public class SongOfSanctity : TargetSpaceAction {
 
 		public const string Name = "Song of Sanctity";

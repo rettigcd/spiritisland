@@ -4,7 +4,7 @@ using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
 
-	[PowerCard(RiversBounty.Name, 0, Speed.Slow,Element.Sun,Element.Water,Element.Animal)]
+	[SpiritCard(RiversBounty.Name, 0, Speed.Slow,Element.Sun,Element.Water,Element.Animal)]
 	public class RiversBounty : TargetSpaceAction {
 		public const string Name = "River's Bounty";
 
