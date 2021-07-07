@@ -64,13 +64,13 @@ namespace SpiritIsland {
 
 		void Option1(){
 			var invaders = gameState.InvadersOn(space);
-			engine.decisions.Push( new SelectInvadersToPush(engine,invaders,1,"Town","Explorer") );
+			engine.decisions.Push( new SelectInvadersToPush(engine,invaders,1,false,"Town","Explorer") );
 		}
 
 		void Option2(){
 			// * 2 sun, 3 water => Instead, 2 damage, Push up to 3 explorers and/or towns
 			gameState.DamageInvaders(space,2);
-			engine.decisions.Push( new SelectInvadersToPush(engine, gameState.InvadersOn(space),3,"Town","Explorer") );
+			engine.decisions.Push( new SelectInvadersToPush(engine, gameState.InvadersOn(space),3,false,"Town","Explorer") );
 		}
 
 		void Option3(){

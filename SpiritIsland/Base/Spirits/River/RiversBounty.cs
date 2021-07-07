@@ -25,7 +25,7 @@ namespace SpiritIsland.Base {
 			engine.decisions.Push(new If2Add1(self,engine,ctx));  // do this last
 
 			if(ctx.neighborCounts.Keys.Any())
-				engine.decisions.Push(new Select1DahanSource(engine,ctx,2,true));
+				engine.decisions.Push(new SelectGatherDahanSource(engine,ctx,2,true));
 		}
 
 		// Hack - this isn't a decision, just something I need to run at the end.

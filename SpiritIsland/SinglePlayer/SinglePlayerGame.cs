@@ -37,7 +37,7 @@ namespace SpiritIsland.SinglePlayer {
 			var fastActions = new ResolveActions( Spirit, GameState, Speed.Fast, true );
 			var invaders = new InvaderPhase( GameState, logger );
 			var slowActions = new ResolveActions( Spirit, GameState, Speed.Slow, true );
-			var timePasses = new TimePasses( Spirit, GameState );
+			var timePasses = new TimePasses( GameState );
 
 			selectGrowth.Complete += () => TransitionTo( resolveGrowth );
 			resolveGrowth.Complete += () => TransitionTo( selectPowerCards );

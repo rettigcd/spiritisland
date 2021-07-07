@@ -7,11 +7,9 @@ namespace SpiritIsland.SinglePlayer {
 
 		public string Prompt => "nothing to do while time passes.";
 
-		readonly Spirit spirit;
 		readonly GameState gameState;
 
-		public TimePasses(Spirit spirit,GameState gameState){
-			this.spirit = spirit;
+		public TimePasses(GameState gameState){
 			this.gameState = gameState;
 		}
 

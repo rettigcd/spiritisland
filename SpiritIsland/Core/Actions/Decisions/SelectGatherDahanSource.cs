@@ -1,13 +1,14 @@
 ﻿using System.Linq;
 
 namespace SpiritIsland.Core {
-	public class Select1DahanSource : IDecision {
+
+	public class SelectGatherDahanSource : IDecision {
 		readonly GatherDahanCtx ctx;
 		readonly int numberToGather;
 		readonly ActionEngine engine;
 		readonly bool allowShortCircuit;
 
-		public Select1DahanSource(ActionEngine engine, GatherDahanCtx ctx,int numberToGather,bool allowShortCircuit=false){
+		public SelectGatherDahanSource(ActionEngine engine, GatherDahanCtx ctx,int numberToGather,bool allowShortCircuit=false){
 			this.engine = engine;
 			this.ctx = ctx;
 			this.numberToGather = numberToGather;
@@ -34,7 +35,7 @@ namespace SpiritIsland.Core {
 			engine.actions.Add(new MoveDahan(source,ctx.Target));
 			int remaining=numberToGather-1;
 			if(remaining>0 && ctx.neighborCounts.Keys.Any())
-				engine.decisions.Push(new Select1DahanSource(engine,ctx,remaining,allowShortCircuit));
+				engine.decisions.Push(new SelectGatherDahanSource(engine,ctx,remaining,allowShortCircuit));
 		}
 
 	}
