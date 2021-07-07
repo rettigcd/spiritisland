@@ -29,7 +29,7 @@
 			this.Name = name;
 			this.Cost = cost;
 			this.Speed = speed;
-			this.Type = type;
+			this.PowerType = type;
 			this.Elements = elements;
 		}
 
@@ -37,7 +37,7 @@
 		public int Cost { get; }
 		public Speed Speed { get; }
 		public Element[] Elements { get; }
-		public PowerType Type { get; }
+		public PowerType PowerType { get; }
 
 	}
 

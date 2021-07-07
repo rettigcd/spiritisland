@@ -20,6 +20,12 @@ namespace SpiritIsland {
 			Hand.AddRange( initialCards );
 		}
 
+		public void Forget(PowerCard cardToRemove){
+			PurchasedCards.Remove( cardToRemove );
+			Hand.Remove( cardToRemove );
+			DiscardPile.Remove( cardToRemove );
+		}
+
 		#region Elements
 
 		// make protected.  Tell, don't ask!!!
@@ -114,7 +120,7 @@ namespace SpiritIsland {
 
 			GrowthOption option = this.GetGrowthOptions()[optionIndex];
 			foreach (var action in option.GrowthActions)
-				AddAction(action);
+				AddActionFactory(action);
 
 			RemoveResolvedActions(gameState);
 
@@ -138,7 +144,7 @@ namespace SpiritIsland {
 			throw new System.NotImplementedException();
 		}
 
-		public virtual void AddAction(IActionFactory factory){
+		public virtual void AddActionFactory(IActionFactory factory){
 			_unresolvedActionFactories.Add( factory );
 		}
 
@@ -154,7 +160,7 @@ namespace SpiritIsland {
 				ActivateCard(card);
 
 			foreach (var card in PurchasedCards)
-				AddAction(card);
+				AddActionFactory(card);
 
 		}
 

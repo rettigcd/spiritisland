@@ -59,10 +59,10 @@ namespace SpiritIsland.Base {
 		public override void Grow( GameState gameState, int optionIndex ) {
 			GrowthOption option = this.GetGrowthOptions()[optionIndex];
 			foreach (var action in option.GrowthActions)
-				AddAction(action);
+				AddActionFactory(action);
 
 			if( RevealedCardSpaces >= 5 && optionIndex>0)
-				AddAction(new Reclaim1());
+				AddActionFactory(new Reclaim1());
 
 			RemoveResolvedActions(gameState);
 		}

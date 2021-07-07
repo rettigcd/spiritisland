@@ -20,6 +20,7 @@ namespace SpiritIsland.Core {
 			Name = attr.Name;
 			Cost = attr.Cost;
 			Elements = attr.Elements;
+			PowerType = attr.PowerType;
 
 			this.actionType = actionType;
 		}
@@ -29,6 +30,7 @@ namespace SpiritIsland.Core {
 			this.Cost = cost;
 			this.Speed = speed;
 			this.Elements = elements;
+			this.PowerType = PowerType.Spirit; // HACK!
 			this.actionType = typeof(NullCardAction);
 		}
 
@@ -36,8 +38,10 @@ namespace SpiritIsland.Core {
 		public int Cost { get; }
 		public Speed Speed { get; }
 		public Element[] Elements { get; }
+		public PowerType PowerType { get; }
 
 		public string Text => Name;
+
 
 		readonly Type actionType;
 

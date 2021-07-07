@@ -81,19 +81,22 @@ namespace SpiritIsland.Base {
 
 		public override int RevealedCardSpaces {
 			get{ return base.RevealedCardSpaces; }
-			set{ 
+			set{
+				// this never happens during Reclaim-all so is always ok to add here
 				bool hadReclaim1 = Reclaim1FromCardTrack;
 				base.RevealedCardSpaces = value;
 				if(!hadReclaim1 && Reclaim1FromCardTrack)
-					AddAction(new Reclaim1());
+					AddActionFactory(new Reclaim1());
 			}
 		}
 
 		#region growth
 
 		public override void Grow(GameState gameState, int optionIndex) {
-			if( Reclaim1FromCardTrack )
-				AddAction(new Reclaim1());
+			if( optionIndex != 0 // Reclaim-All
+				&& Reclaim1FromCardTrack
+			)
+				AddActionFactory(new Reclaim1());
 			base.Grow(gameState, optionIndex);
 		}
 
@@ -105,13 +108,16 @@ namespace SpiritIsland.Base {
 			.Union( base.SacredSites )
 			.Distinct();
 
-		public override void AddAction(IActionFactory action) {
+		public override void AddActionFactory(IActionFactory actionFactory) {
 
-			if(action is DrawPowerCard){
-				this.Hand.Add( PowerProgression[0] );
+			if(actionFactory is DrawPowerCard){
+				var newCard = PowerProgression[0];
+				this.Hand.Add( newCard );
 				PowerProgression.RemoveAt( 0 );
+				if(newCard.PowerType == PowerType.Major)
+					base.AddActionFactory(new ForgetPowerCard());
 			} else
-				base.AddAction(action);
+				base.AddActionFactory(actionFactory);
 		}
 
 		readonly List<PowerCard> PowerProgression = new List<PowerCard>{

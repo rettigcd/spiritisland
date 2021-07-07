@@ -1,9 +1,6 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
-3	Drawing Major Power Card - have to discard
-
 Not Implemented
-
 
 4	Fear - Destroying town=>1, city=>2
 4	Fear - Display Fear stats in UI
@@ -13,7 +10,8 @@ Not Implemented
 Improve
 	Manually select who to apply damage to
 	Display Icons (white w/#s)
-	Display Innate
+5	Display Innate
+	Display Elements
 	Display presence tracks
 	click on explorers on board instead of buttons
 
@@ -34,12 +32,7 @@ View
 	card track
 	Innate powers
 
-UI Helper
-	!! instead of using Index to select, select by text or some short form of the text
-
 ----
-
-Base Blight cards
 
 Lightning's Swift Strike:
 1. Delusions of Danger

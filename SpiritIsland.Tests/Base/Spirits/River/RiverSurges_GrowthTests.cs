@@ -127,7 +127,7 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 		[InlineData(7,"Encompassing Ward")]
 		public void PowerProgressionCards( int count, string lastPowerCard ){
 			while(count--!=0)
-				spirit.AddAction(new DrawPowerCard());
+				spirit.AddActionFactory(new DrawPowerCard());
 
 			Assert_HasCardAvailable( lastPowerCard );
 		}

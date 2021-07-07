@@ -27,7 +27,7 @@ namespace SpiritIsland.Tests {
 			for (int i = 0; i < expectedEnergyBonus; ++i) {
 				var otherCard = new PowerCard("Fake-" + i, 0, Speed.Slow);
 				otherSpirit.PurchasedCards.Add(otherCard);
-				otherSpirit.AddAction(otherCard);
+				otherSpirit.AddActionFactory(otherCard);
 			}
 		}
 
@@ -69,7 +69,7 @@ namespace SpiritIsland.Tests {
 				spirit.Resolve(factory);
 
 			foreach(var slows in spirit.PurchasedCards.Where( x => x.Speed == Speed.Slow ))
-				spirit.AddAction(slows);
+				spirit.AddActionFactory(slows);
 		}
 
 	}
