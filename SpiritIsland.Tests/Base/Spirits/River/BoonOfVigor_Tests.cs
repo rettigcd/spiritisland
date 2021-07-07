@@ -12,7 +12,7 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 			Given_GameWithSpirits( new RiverSurges() );
 
 			var card = Given_PurchasedCard(BoonOfVigor.Name);
-			Assert_CardIsReady(card);
+			Assert_CardIsReady(card,Speed.Fast);
 
 			// When: targetting self
 			action = (BoonOfVigor)card.Bind(spirit, gameState);
@@ -38,7 +38,7 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 
 			//   And: Purchased Boon of Vigor
 			PowerCard card = Given_PurchasedCard(BoonOfVigor.Name);
-			Assert_CardIsReady(card);
+			Assert_CardIsReady(card,Speed.Fast);
 
 			// When: targetting other spirit
 			action = card.Bind(spirit, gameState);

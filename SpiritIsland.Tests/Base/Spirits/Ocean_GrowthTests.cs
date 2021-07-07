@@ -33,7 +33,7 @@ namespace SpiritIsland.Tests.Base.Spirits {
 				.Select(s=>s.Split('>'))
 				.ToDictionary(a=>a[0],a=>a[1]);
 
-			var gather = spirit.UnresolvedActionFactories.OfType<GatherPresenceIntoOcean>().SingleOrDefault();
+			var gather = spirit.GetUnresolvedActionFactories(Speed.Growth).OfType<GatherPresenceIntoOcean>().SingleOrDefault();
 
 			if(gather != null){
 				var action = gather.Bind(spirit,gameState);
@@ -104,7 +104,7 @@ namespace SpiritIsland.Tests.Base.Spirits {
 				.Select(s=>s.Split('>')[1])
 				.ToArray();
 
-			var push = spirit.UnresolvedActionFactories.OfType<PushPresenceFromOcean>().SingleOrDefault();
+			var push = spirit.GetUnresolvedActionFactories(Speed.Growth).OfType<PushPresenceFromOcean>().SingleOrDefault();
 
 			if(push != null){
 				var action = push.Bind(spirit,gameState);

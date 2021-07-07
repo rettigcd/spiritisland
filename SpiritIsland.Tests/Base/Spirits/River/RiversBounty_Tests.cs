@@ -26,8 +26,7 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 			spirit.BuyAvailableCards( card );
 
 			// Jump to slow
-			Given_JumpToSlow();
-			Assert_CardIsReady( card );
+			Assert_CardIsReady( card, Speed.Slow );
 
 		}
 

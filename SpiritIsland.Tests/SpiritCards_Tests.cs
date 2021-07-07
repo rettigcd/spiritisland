@@ -41,8 +41,8 @@ namespace SpiritIsland.Tests {
 
 		}
 
-		protected void Assert_CardIsReady( PowerCard card ) {
-			Assert.Contains(card, spirit.UnresolvedActionFactories.OfType<PowerCard>().ToList());
+		protected void Assert_CardIsReady( PowerCard card, Speed speed ) {
+			Assert.Contains(card, spirit.GetUnresolvedActionFactories(speed).OfType<PowerCard>().ToList());
 		}
 
 		protected void When_PlayingCard() {
@@ -62,14 +62,6 @@ namespace SpiritIsland.Tests {
 			string expectedStr = expected.Select(s=>s.Text).OrderBy(x=>x).Join(",");
 			string actualOptions = action.Options.Select(s=>s.Text).OrderBy(x=>x).Join(",");
 			Assert.Equal( expectedStr, actualOptions);
-		}
-
-		protected void Given_JumpToSlow() {
-			foreach(var factory in spirit.UnresolvedActionFactories.ToArray())
-				spirit.Resolve(factory);
-
-			foreach(var slows in spirit.PurchasedCards.Where( x => x.Speed == Speed.Slow ))
-				spirit.AddActionFactory(slows);
 		}
 
 	}

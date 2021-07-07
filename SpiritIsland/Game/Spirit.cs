@@ -50,13 +50,18 @@ namespace SpiritIsland {
 
 		// Holds Fast and Slow actions,
 		// depends on Fast/Slow phase to only select the actions that are appropriate
-		public IEnumerable<IActionFactory> UnresolvedActionFactories{ get {
+		protected IEnumerable<IActionFactory> GetUnresolvedActionFactories() {
 			foreach(var action in _unresolvedActionFactories) yield return action;
 			foreach(var innate in this.InnatePowers)
 				if(!usedInnates.Contains(innate) && innate.PowersActivated(this)>0)
-					yield return innate;
-			
-		} } 
+					yield return innate;		
+		} 
+
+		public IEnumerable<IActionFactory> GetUnresolvedActionFactories(Speed speed) {
+			return GetUnresolvedActionFactories()
+				.Where(f=>f.Speed == speed);
+		} 
+
 
 		readonly List<IActionFactory> _unresolvedActionFactories = new List<IActionFactory>(); // public for testing
 
@@ -122,13 +127,13 @@ namespace SpiritIsland {
 			foreach (var action in option.GrowthActions)
 				AddActionFactory(action);
 
-			RemoveResolvedActions(gameState);
+			RemoveResolvedActions(gameState,Speed.Growth);
 
 		}
 
-		protected void RemoveResolvedActions(GameState gameState) {
+		protected void RemoveResolvedActions(GameState gameState,Speed speed) {
 
-			var resolvedActions = UnresolvedActionFactories
+			var resolvedActions = GetUnresolvedActionFactories(speed)
 				.Select(f=>new{Factory=f,Action=f.Bind(this,gameState)})
 				.Where(pair => pair.Action.IsResolved)
 				.ToArray();
@@ -165,7 +170,7 @@ namespace SpiritIsland {
 		}
 
 		public int Flush(Speed speed) {
-			var toFlush = UnresolvedActionFactories
+			var toFlush = GetUnresolvedActionFactories()
 				.Where( f => f.Speed == speed )
 				.ToArray();
 			foreach(var factory in toFlush)

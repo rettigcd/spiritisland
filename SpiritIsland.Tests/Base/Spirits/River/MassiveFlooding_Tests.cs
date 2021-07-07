@@ -42,7 +42,7 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 			//   And: in slow phase
 
 			//  Then: no massive flooding in Unresolved list
-			Assert.Empty( game.Spirit.UnresolvedActionFactories );
+			Assert.Empty( game.Spirit.GetUnresolvedActionFactories(Speed.Slow) );
 
 		}
 

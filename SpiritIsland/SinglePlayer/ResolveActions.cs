@@ -69,8 +69,7 @@ namespace SpiritIsland.SinglePlayer {
 		}
 
 		List<IActionFactory> FindMatchingActions() {
-			return spirit.UnresolvedActionFactories
-				.Where( x => x.Speed == speed )
+			return spirit.GetUnresolvedActionFactories(speed)
 				.ToList();
 		}
 

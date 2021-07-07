@@ -90,7 +90,7 @@ namespace SpiritIsland.BranchAndClaw {
 			if( RevealedCardSpaces == 6 )
 				AddActionFactory(new Reclaim1());
 
-			RemoveResolvedActions(gameState);
+			RemoveResolvedActions(gameState,Speed.Growth);
 		}
 
 		//	1 animal plant 2 animal 3 4

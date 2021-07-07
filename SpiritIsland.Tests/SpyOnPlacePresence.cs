@@ -41,13 +41,14 @@ namespace SpiritIsland.Tests {
 		}
 
 		private IActionFactory FindMatchingName( Spirit spirit ) {
-			return spirit.UnresolvedActionFactories
+			var factories = spirit.GetUnresolvedActionFactories(Speed.Growth).ToArray();
+			return factories
 				.FirstOrDefault( f => f.Name == factoryDescription )
-				?? throw new Exception( "Could not find factory [" + factoryDescription + "] in " + spirit.UnresolvedActionFactories.Select( f => f.Name ).Join( ", " ) );
+				?? throw new Exception( "Could not find factory [" + factoryDescription + "] in " + factories.Select( f => f.Name ).Join( ", " ) );
 		}
 
 		static IActionFactory FindSinglePlacePresence( Spirit spirit, GameState gameState ) {
-			var ppFactories = spirit.UnresolvedActionFactories
+			var ppFactories = spirit.GetUnresolvedActionFactories( Speed.Growth )
 				.Where( f => f.Bind( spirit, gameState ) is PlacePresenceBaseAction )
 				.ToArray();
 

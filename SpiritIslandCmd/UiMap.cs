@@ -117,12 +117,13 @@ namespace SpiritIslandCmd {
 
 		public string FormatFactory(IActionFactory factory, int nameWidth=1){
 			var spirit = game.Spirit;
-			char speed = factory.Speed.ToString()[0];
-			char unresolved = spirit.UnresolvedActionFactories.Contains(factory) ? '*' : ' ';
+			var speed = factory.Speed;
+			char speedChar = speed.ToString()[0];
+			char unresolved = spirit.GetUnresolvedActionFactories(speed).Contains(factory) ? '*' : ' ';
 			string cost = factory is PowerCard card ? card.Cost.ToString() : "-";
 
 			string name = Pad(factory.Name,nameWidth);
-			string text = $"{name}  ({speed}/{cost}) {unresolved}";
+			string text = $"{name}  ({speedChar}/{cost}) {unresolved}";
 
 			if(factory is PowerCard pc){
 				char isActive = spirit.PurchasedCards.Contains(factory) ? 'A' : ' ';

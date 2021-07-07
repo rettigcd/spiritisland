@@ -64,7 +64,7 @@ namespace SpiritIsland.Base {
 			if( RevealedCardSpaces >= 5 && optionIndex>0)
 				AddActionFactory(new Reclaim1());
 
-			RemoveResolvedActions(gameState);
+			RemoveResolvedActions(gameState,Speed.Growth);
 		}
 
 		protected override int[] EnergySequence => new int[]{1, 1, 2, 2, 2, 3 };

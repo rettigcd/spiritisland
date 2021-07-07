@@ -184,7 +184,7 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 
 		protected void Assert_CardInActionListIf(PowerCard card) {
 
-			var unresolvedCards = spirit.UnresolvedActionFactories
+			var unresolvedCards = spirit.GetUnresolvedActionFactories(card.Speed)
 				.OfType<PowerCard>()
 				.ToArray();
 
