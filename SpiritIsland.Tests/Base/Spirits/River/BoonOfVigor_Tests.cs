@@ -30,7 +30,7 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 		[InlineData( 10 )]
 		public void BoonOfVigor_TargetOther( int expectedEnergyBonus ) {
 
-			Given_GameWithSpirits(new RiverSurges(), new Lightning());
+			Given_GameWithSpirits(new RiverSurges(), new LightningsSwiftStrike());
 
 			//  That: purchase N cards
 			var otherSpirit = gameState.Spirits[1];

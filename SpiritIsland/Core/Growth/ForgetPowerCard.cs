@@ -10,6 +10,8 @@ namespace SpiritIsland.Core {
 
 		public string Text => Name;
 
+		public IActionFactory Original => this;
+
 		public IAction Bind( Spirit spirit, GameState gameState ) {
 			throw new NotImplementedException();
 		}

@@ -40,7 +40,7 @@ namespace SpiritIsland {
 
 		#endregion
 
-		public virtual InnatePower[] InnatePowers {get; set;} = System.Array.Empty<InnatePower>(); // !!! eventually init in constructor
+		public virtual InnatePower[] InnatePowers {get; set;} = System.Array.Empty<InnatePower>();
 
 		#region Cards
 
@@ -67,6 +67,9 @@ namespace SpiritIsland {
 
 		readonly List<InnatePower> usedInnates = new List<InnatePower>();
 
+		/// <summary>
+		/// Removes from list.  Triggers Energy when last growth removed
+		/// </summary>
 		public void Resolve( IActionFactory selectedActionFactory ) {
 
 			if(selectedActionFactory is InnatePower ip){

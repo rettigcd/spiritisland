@@ -45,6 +45,8 @@ namespace SpiritIsland.Core {
 
 		public string Text => Name;
 
+		public IActionFactory Original => this;
+
 		readonly PowerLevelAttribute[] powerLevels;
 
 		readonly Type actionType;

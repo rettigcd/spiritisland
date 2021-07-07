@@ -1,4 +1,6 @@
-﻿using SpiritIsland.Core;
+﻿using System.Collections.Generic;
+using System.Linq;
+using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
 
@@ -13,13 +15,7 @@ Lightning's Swift Strike
 1 1 2 2 3 4 4 5
 2 3 4 5 6
 
-Innate:  Thundering Destruction => slow, 1 from sacred, any
-3 fire 2 air    destroy 1 town
-4 fire 3 air    you may instead destroy 1 city
-5 fire 4 air 1 water    also, destroy 1 town or city
-5 fire 5 air 2 water    also, destroy 1 town or city
 Special Rules: Switftnes of Lightning - for every air you have, you may use 1 slow power as if it were fast (cards or innate)
-Setup: put 2 pressence in highest numbered sands
 
 Ligning's Boon => 1 => fast, any spirt => fire, air => Taret spirit may use up to 2 powers as if they were fast powers this turn.
 Harbinger of the Lighning => 0 => slow, range 1, any => fire, air => Push up to 2 dahan.  1 fear if you pushed any dahan into a land with town or city.
@@ -28,10 +24,15 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 
 */
 
-	public class Lightning : Spirit {
+	public class LightningsSwiftStrike : Spirit {
 		public const string Name = "Lightning's Swift Strike";
 
-		public Lightning(){
+		public LightningsSwiftStrike():base(
+			new PowerCard(typeof(HarbingersOfTheLightning)),
+			new PowerCard(typeof(LightningsBoon)),
+			new PowerCard(typeof(RagingStorm)),
+			new PowerCard(typeof(ShatterHomesteads))
+		){
 			GrowthOptions = new GrowthOption[]{
 				new GrowthOption( 
 					new ReclaimAll(), 
@@ -46,12 +47,48 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 				// +1 presense range 1, +3 energy
 				new GrowthOption( new GainEnergy(3), new PlacePresence(1) ),
 			};
+
+			this.InnatePowers = new InnatePower[]{
+				InnatePower.For<ThunderingDestruction>()
+			};
+
 		}
 
 		public override string Text => Name;
 
 		protected override int[] EnergySequence => new int[]{ 1, 1, 2, 2, 3, 4, 4, 5 };
 		protected override int[] CardSequence => new int[]{ 2, 3, 4, 5, 6 };
+
+		public override void AddActionFactory(IActionFactory actionFactory) {
+			// !!! duplicated in River
+
+			if(actionFactory is DrawPowerCard){
+				var newCard = PowerProgression[0];
+				this.Hand.Add( newCard );
+				PowerProgression.RemoveAt( 0 );
+				if(newCard.PowerType == PowerType.Major)
+					base.AddActionFactory(new ForgetPowerCard());
+			} else
+				base.AddActionFactory(actionFactory);
+		}
+
+		readonly List<PowerCard> PowerProgression = new List<PowerCard>{
+			PowerCard.For<DelusionsOfDanger>(),
+			PowerCard.For<CallToBloodshed>(),
+			PowerCard.For<PowerStorm>(),
+			PowerCard.For<PurifyingFlame>(),
+			PowerCard.For<PillarOfLivingFlame>(),
+			PowerCard.For<EntrancingApparitions>(),
+			PowerCard.For<CallToIsolation>()
+		};
+
+		public override void InitializePresence( Board board ) {
+			// Setup: put 2 pressence in highest numbered sands
+			var space = board.Spaces.Reverse().First(x=>x.Terrain==Terrain.Sand);
+			Presence.Add(space);
+			Presence.Add(space);
+		}
+
 
 	}
 }

@@ -42,6 +42,8 @@ namespace SpiritIsland.Core {
 
 		public string Text => Name;
 
+		public PowerCard Original => this;
+		IActionFactory IActionFactory.Original => this;
 
 		readonly Type actionType;
 

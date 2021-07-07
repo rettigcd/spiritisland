@@ -6,7 +6,7 @@
 
 		public TargetSpiritAction(Spirit spirit, GameState gameState):base(gameState){
 			this.self = spirit;
-			engine.decisions.Push(new TargetSpirit(gameState.Spirits,SelectSpirit));
+			engine.decisions.Push(new TargetSpiritDecision(gameState.Spirits,SelectSpirit));
 		}
 
 		protected abstract void SelectSpirit(Spirit spirit);

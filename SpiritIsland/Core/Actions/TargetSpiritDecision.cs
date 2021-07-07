@@ -2,11 +2,11 @@
 
 namespace SpiritIsland.Core {
 
-	public class TargetSpirit : IDecision {
+	public class TargetSpiritDecision : IDecision {
 
 		readonly Action<Spirit> onSelect;
 
-		public TargetSpirit( Spirit[] spirits, Action<Spirit> onSelect ){
+		public TargetSpiritDecision( Spirit[] spirits, Action<Spirit> onSelect ){
 			this.onSelect = onSelect;
 
 			this.Options = spirits;

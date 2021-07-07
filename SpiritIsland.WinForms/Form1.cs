@@ -21,12 +21,20 @@ namespace SpiritIsland.WinForms {
 		public Form1() {
 			InitializeComponent();
 
+			//game = new SinglePlayerGame(
+			//	new GameState( new RiverSurges() ){ 
+			//		Island = new Island(Board.BuildBoardA())
+			//	}
+			//	,new MessageBoxLogger()
+			//);
+
 			game = new SinglePlayerGame(
-				new GameState( new RiverSurges() ){ 
+				new GameState( new LightningsSwiftStrike() ){ 
 					Island = new Island(Board.BuildBoardA())
 				}
 				,new MessageBoxLogger()
 			);
+
 
 			this.islandControl.InitBoard(game.GameState);
 			this.cardControl.Init(game.Spirit);
@@ -69,8 +77,7 @@ namespace SpiritIsland.WinForms {
 			var spaceOptions = decision.Options.OfType<Space>().ToArray();
 			this.islandControl.ActivateSpaces(spaceOptions);
 
-			var cards = decision.Options.OfType<PowerCard>().ToArray();
-			this.cardControl.ShowCards(cards);
+			this.cardControl.HighlightCards(decision.Options);
 
 			this.elementLabel.Text = game.Spirit.PurchasedCards
 				.SelectMany(c=>c.Elements)

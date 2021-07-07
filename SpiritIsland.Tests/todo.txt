@@ -34,15 +34,6 @@ View
 
 ----
 
-Lightning's Swift Strike:
-1. Delusions of Danger
-2. Call to Bloodshed
-3. Powerstorm (Major; forget a Power)
-4. Purifying Flame
-5. Pillar of Living Flame (Major; forget a Power)
-6. Entrancing Apparitions
-7. Call to Isolation
-
 Shadows Flicker like Flame:
 1. Dark and Tangled Woods
 2. Shadows of the Burning Forest

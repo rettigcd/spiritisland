@@ -1,12 +1,12 @@
 ﻿using SpiritIsland.Base;
 using Xunit;
 
-namespace SpiritIsland.Tests.Base.Spirits {
+namespace SpiritIsland.Tests.Base.Spirits.Lightning {
 
 	public class Lightning_GrowthTests : GrowthTests{
 
 		public Lightning_GrowthTests()
-			:base(new Lightning()){}
+			:base(new LightningsSwiftStrike()){}
 
 		[Fact]
 		public void Reclaim_Power_Energy(){

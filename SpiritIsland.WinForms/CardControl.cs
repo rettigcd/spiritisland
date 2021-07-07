@@ -28,8 +28,11 @@ namespace SpiritIsland.WinForms {
 		}
 		Spirit spirit;
 
-		public void ShowCards(PowerCard[] cards){
-			this.optionCards = cards;
+		public void HighlightCards(IOption[] options){
+			this.optionCards = options.OfType<IActionFactory>() // includes modified powers
+				.Select(f=>f.Original) // use original
+				.OfType<PowerCard>() // only power cards
+				.ToArray();
 			this.Invalidate();
 		}
 
@@ -38,21 +41,31 @@ namespace SpiritIsland.WinForms {
 		readonly Dictionary<PowerCard,RectangleF> locations = new();
 
 		Image GetImage(PowerCard card){
+
 			if(!images.ContainsKey(card)){
-				string filename = card.Name switch {
-					BoonOfVigor.Name => "boon_of_vigor",
-					FlashFloods.Name => "flash_floods",
-					AcceleratedRot.Name => "accelerated_rot",
-					EncompassingWard.Name => "encompassing_ward",
-					NaturesResilience.Name => "natures_resilience",
-					PullBeneathTheHungryEarth.Name => "pull_beneath_the_hungry_earth",
-					RiversBounty.Name => "rivers_bounty",
-					SongOfSanctity.Name => "song_of_sanctity",
-					Tsunami.Name => "tsunami",
-					UncannyMelting.Name => "uncanny_melting",
-					WashAway.Name => "wash_away",
-					_ => throw new Exception("unexpected name:"+card.Name)
-				};
+				string filename = card.Name.Replace(' ','_').Replace("'","").ToLower();
+				//string filename = card.Name switch {
+				//	// River
+				//	BoonOfVigor.Name => "boon_of_vigor",
+				//	FlashFloods.Name => "flash_floods",
+				//	RiversBounty.Name => "rivers_bounty",
+				//	WashAway.Name => "wash_away",
+				//	// Lightning
+				//	HarbingerOfLightning.Name => "harbinger_of_lightning",
+				//	LightningsBoon.Name => "lightnings_boon",
+				//	RagingStorm.Name => "raging_storm",
+				//	ShatteredHomesteads.Name => "shattered_homesteads",
+				//	// Major
+				//	AcceleratedRot.Name => "accelerated_rot",
+				//	Tsunami.Name => "tsunami",
+				//	// Minor
+				//	EncompassingWard.Name => "encompassing_ward",
+				//	NaturesResilience.Name => "natures_resilience",
+				//	PullBeneathTheHungryEarth.Name => "pull_beneath_the_hungry_earth",
+				//	SongOfSanctity.Name => "song_of_sanctity",
+				//	UncannyMelting.Name => "uncanny_melting",
+				//	_ => throw new Exception("unexpected name:"+card.Name)
+				//};
 				Image image = Image.FromFile($".\\images\\{filename}.jpg");
 				images.Add(card,image);
 			}
@@ -78,6 +91,7 @@ namespace SpiritIsland.WinForms {
 		int x;
 
 		void DrawCards( Graphics graphics, List<PowerCard> cards ) {
+
 			foreach(var card in cards){
 				var rect = new Rectangle( x, 0, 350, 500 );
 				locations.Add( card, rect );

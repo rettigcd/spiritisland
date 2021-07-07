@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SpiritIsland.Core;
 
-namespace SpiritIsland {
+namespace SpiritIsland.Base {
 
 	[InnatePower(MassiveFlooding.Name,Speed.Slow)]
 	[PowerLevel(0,Element.Sun,Element.Water,Element.Water)]
