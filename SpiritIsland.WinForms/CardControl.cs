@@ -44,28 +44,6 @@ namespace SpiritIsland.WinForms {
 
 			if(!images.ContainsKey(card)){
 				string filename = card.Name.Replace(' ','_').Replace("'","").ToLower();
-				//string filename = card.Name switch {
-				//	// River
-				//	BoonOfVigor.Name => "boon_of_vigor",
-				//	FlashFloods.Name => "flash_floods",
-				//	RiversBounty.Name => "rivers_bounty",
-				//	WashAway.Name => "wash_away",
-				//	// Lightning
-				//	HarbingerOfLightning.Name => "harbinger_of_lightning",
-				//	LightningsBoon.Name => "lightnings_boon",
-				//	RagingStorm.Name => "raging_storm",
-				//	ShatteredHomesteads.Name => "shattered_homesteads",
-				//	// Major
-				//	AcceleratedRot.Name => "accelerated_rot",
-				//	Tsunami.Name => "tsunami",
-				//	// Minor
-				//	EncompassingWard.Name => "encompassing_ward",
-				//	NaturesResilience.Name => "natures_resilience",
-				//	PullBeneathTheHungryEarth.Name => "pull_beneath_the_hungry_earth",
-				//	SongOfSanctity.Name => "song_of_sanctity",
-				//	UncannyMelting.Name => "uncanny_melting",
-				//	_ => throw new Exception("unexpected name:"+card.Name)
-				//};
 				Image image = Image.FromFile($".\\images\\{filename}.jpg");
 				images.Add(card,image);
 			}
