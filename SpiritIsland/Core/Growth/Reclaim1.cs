@@ -18,6 +18,7 @@ namespace SpiritIsland.Core {
 
 			public Action(Spirit spirit){
 				this.spirit = spirit;
+				Selections = "";
 			}
 
 			public bool IsResolved => Options.Length==0 || card != null;
@@ -25,6 +26,8 @@ namespace SpiritIsland.Core {
 			public IOption[] Options => spirit.DiscardPile.Cast<IOption>().ToArray();
 
 			public string Prompt => "Select card to reclaim.";
+
+			public string Selections { get; private set; }
 
 			public void Apply() {
 				if( card!=null && spirit.DiscardPile.Contains(card) ){
@@ -35,6 +38,7 @@ namespace SpiritIsland.Core {
 
 			public void Select( IOption option ) {
 				card = (PowerCard)option;
+				Selections = Prompt + ":" + option.Text;
 			}
 		}
 

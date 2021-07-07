@@ -12,6 +12,12 @@ namespace SpiritIsland.WinForms {
 
 		readonly SinglePlayerGame game;
 
+		class MessageBoxLogger : ILogger {
+			public void Log( string text ) {
+				MessageBox.Show(text);
+			}
+		}
+
 		public Form1() {
 			InitializeComponent();
 
@@ -19,6 +25,7 @@ namespace SpiritIsland.WinForms {
 				new GameState( new RiverSurges() ){ 
 					Island = new Island(Board.BuildBoardA())
 				}
+				,new MessageBoxLogger()
 			);
 
 			this.islandControl.InitBoard(game.GameState);

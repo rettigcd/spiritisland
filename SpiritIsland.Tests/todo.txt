@@ -1,26 +1,24 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
+4	Wash Away - Short Circuit
+4	Massive Flooding - Short Circut
+
+3	Drawing Major Power Card - have to discard
+
 Not Implemented
+
 
 4	Fear - Destroying town=>1, city=>2
 4	Fear - Display Fear stats in UI
-
-3	Drawing Major Power Card - have to discard
 	Fear - Fear Cards / Fear Initialization / Terror Level
-
 	Blighted Island effect
 
 Improve
-3	Allow Short Circuit
-		- River's Bounty
-		- Wash Away?
-3	Improve Ravage / Build / Explore visibility
-		- step through
-		- provide details log
 	Manually select who to apply damage to
 	Display Icons (white w/#s)
-	When resolving Action, show action (card) resolving.
-
+	Display Innate
+	Display presence tracks
+	click on explorers on board instead of buttons
 
 Unit Test
 	Spirit.SacredSites

@@ -1,5 +1,4 @@
-﻿using SpiritIsland;
-using System;
+﻿using System;
 using System.Linq;
 
 namespace SpiritIsland.SinglePlayer {
@@ -11,20 +10,24 @@ namespace SpiritIsland.SinglePlayer {
 
 		readonly GameState gameState;
 		readonly InvaderDeck invaderDeck;
+		readonly ILogger logger;
 
-		public InvaderPhase(GameState gameState){
+		public InvaderPhase(GameState gameState,ILogger logger){
 			this.gameState = gameState;
 			this.invaderDeck = gameState.InvaderDeck;
+			this.logger = logger;
 		}
 
 		public void Initialize() {
 			if(gameState.IsBlighted){
-				Console.WriteLine( "Island is blighted" );
+				logger.Log( "Island is blighted" );
 				gameState.BlightCard.BlightAction(gameState);
 			}
 
-			Console.WriteLine( "Ravaging:" + invaderDeck.Ravage?.Text ?? "-" );
-			gameState.Ravage( invaderDeck.Ravage );
+			var ravageResults = gameState.Ravage( invaderDeck.Ravage );
+			logger.Log("Ravaging:" + (invaderDeck.Ravage?.Text ?? "-") 
+				+ "\r\n" + ravageResults.Join("ravageResults")
+			);
 			ResolveCascadingBlight();
 		}
 
@@ -46,10 +49,10 @@ namespace SpiritIsland.SinglePlayer {
 		}
 
 		void PostRavage() {
-			Console.WriteLine( "Building:" + invaderDeck.Build?.Text ?? "-" );
+			logger.Log( "Building:" + invaderDeck.Build?.Text ?? "-" );
 			gameState.Build( invaderDeck.Build );
 
-			Console.WriteLine( "Exploring:" + invaderDeck.Explore?.Text ?? "-" );
+			logger.Log( "Exploring:" + invaderDeck.Explore?.Text ?? "-" );
 			gameState.Explore( invaderDeck.Explore );
 
 			invaderDeck.Advance();

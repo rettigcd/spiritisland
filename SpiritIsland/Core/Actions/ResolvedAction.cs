@@ -19,6 +19,8 @@ namespace SpiritIsland.Core {
 		IOption[] IAction.Options => System.Array.Empty<IOption>();
 
 		public string Prompt => "-";
+
+		public string Selections => "-pre-resolved-";
 	}
 
 }

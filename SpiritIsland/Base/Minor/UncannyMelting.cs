@@ -20,7 +20,7 @@ namespace SpiritIsland.Base {
 				gameState.AddFear(1);
 
 			if(gameState.HasBlight(space))
-				gameState.AddBlight(space,-1);
+				gameState.RemoveBlight(space);
 		}
 
 	}

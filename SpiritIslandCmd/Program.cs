@@ -12,7 +12,7 @@ namespace SpiritIslandCmd {
 				Island = new Island(Board.BuildBoardA())
 			};
 
-			var game = new SinglePlayerGame(gs);
+			var game = new SinglePlayerGame(gs,new ConsoleLogger());
 
 			new CmdLinePlayer(game).Play();
 		}

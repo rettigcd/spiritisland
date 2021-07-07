@@ -32,6 +32,25 @@ namespace SpiritIsland {
 				Spirits[i].InitializePresence( Island.Boards[i] );
 		}
 
+		public void TimePasses() {
+			foreach(var spirit in Spirits){
+				spirit.DiscardPile.AddRange(spirit.PurchasedCards);
+				spirit.PurchasedCards.Clear();
+			}
+			// heal
+			var damaged = invaderCount.Keys
+				.Where(p=>p.Invader != p.Invader.Healthy)
+				.ToArray();
+			foreach(var pair in damaged){
+				// heal those still alive
+				if(pair.Invader.Health > 0)
+					invaderCount[pair.ToHealthy()] += invaderCount[pair];
+				// remove damaged unit
+				invaderCount[pair] = 0;
+			}
+			defendCount.Clear();
+		}
+
 		public void InitItemsMarkedOnBoard(Board board) {
 			foreach(var space in board.Spaces)
 				InitSpace( space );
@@ -185,8 +204,8 @@ namespace SpiritIsland {
 		Invader[] LeftOverOrder => leftOverOrder ??="C@2 T@2 C@3".Split(' ').Select(k=>Invader.Lookup[k]).ToArray();
 		Invader[] leftOverOrder;
 
-		public void Ravage( InvaderCard invaderCard ) {
-			if(invaderCard == null) return;
+		public string[] Ravage( InvaderCard invaderCard ) {
+			if(invaderCard == null) return Array.Empty<string>();
 
 			// 1 point of damage,  Prefer C@1  ---  ---  T@1  ---  E@1 >>> C@2, T@2, C@3
 			// 2 points of damage, Prefer C@1  C@2  ---  T@1  T@2  E@1 >>> C@3
@@ -197,34 +216,54 @@ namespace SpiritIsland {
 				.Where(group => group.InvaderTypesPresent.Any())
 				.ToArray();
 
-			foreach(var ravageGroup in ravageGroups)
-				RavageSpace( ravageGroup );
-
+			return ravageGroups
+				.Select(RavageSpace)
+				.ToArray();
 		}
 
-		void RavageSpace( InvaderGroup ravageGroup ) {
+		string RavageSpace( InvaderGroup ravageGroup ) {
 
-			int damageFromInvaders = Math.Max( ravageGroup.DamageInflicted - defendCount[ravageGroup.Space], 0);
+			var log = new List<String>();
 
-			int damageToDahan = damageFromInvaders;
-			int damageToLand = damageFromInvaders;
-
-			if(damageToLand>1)
-				BlightLand(ravageGroup.Space);
-
+			int damageFromInvaders = ravageGroup.DamageInflicted;
 			int dahan = GetDahanOnSpace( ravageGroup.Space );
-			int dahanKilled = Math.Min( damageToDahan / 2, dahan ); // rounding down
-			AddDahan( ravageGroup.Space, -dahanKilled ); dahan -= dahanKilled;
 
-			ApplyDamageToInvaders( ravageGroup, dahan * 2 );
+			if(damageFromInvaders==0) {
+				log.Add("-no ravage-");
+			} else {
+				int defend = defendCount[ravageGroup.Space];
+				int damageInflictedFromInvaders = Math.Max( damageFromInvaders - defend, 0);
+				log.Add($"{ravageGroup} inflicts {damageFromInvaders}-{defend}={damageInflictedFromInvaders} damage.");
+
+				bool blight = damageInflictedFromInvaders>1;
+
+				if(blight){
+					BlightLand(ravageGroup.Space);
+					log.Add("blights land");
+				}
+				int dahanKilled = Math.Min( damageInflictedFromInvaders / 2, dahan ); // rounding down
+				if(dahanKilled>0){
+					AddDahan( ravageGroup.Space, -dahanKilled ); 
+					int remainingDahan = dahan - dahanKilled;
+					log.Add($"kills {dahanKilled} of {dahan} leaving {remainingDahan}");
+					dahan = remainingDahan;
+				}
+
+				if(dahan>0){
+					ApplyDamageToInvaders( ravageGroup, dahan * 2, log );
+				}
+			}
+			defendCount[ravageGroup.Space] = 0;
+			return ravageGroup.Space.Label+": "+log.Join(", ");
 		}
+
 
 		public void DamageInvaders(Space space,int damage){
 			var group = InvadersOn(space);
 			ApplyDamageToInvaders(group,damage);
 		}
 
-		void ApplyDamageToInvaders( InvaderGroup ravageGroup, int startingDamage ) {
+		void ApplyDamageToInvaders( InvaderGroup ravageGroup, int startingDamage, List<string> log = null ) {
 			int damageToInvaders = startingDamage;
 			while(damageToInvaders > 0 && ravageGroup.InvaderTypesPresent.Any()) {
 				var invaderToDamage = KillOrder.FirstOrDefault( invader =>
@@ -235,6 +274,7 @@ namespace SpiritIsland {
 				ravageGroup[invaderToDamage]--;
 				damageToInvaders -= invaderToDamage.Health;
 			}
+			if(log!=null) log.Add($"{startingDamage} damage to invaders leaving "+ravageGroup );
 			UpdateFromGroup( ravageGroup );
 		}
 
@@ -246,6 +286,7 @@ namespace SpiritIsland {
 			public bool Equals( InvaderKey other ) => Space==other.Space && Invader==other.Invader;
 			public override bool Equals( object obj ) => Equals((InvaderKey)obj);
 			public override int GetHashCode() => Space.GetHashCode() ^ Invader.GetHashCode();
+			public InvaderKey ToHealthy() => new InvaderKey{ Space=Space, Invader=Invader.Healthy};
 		}
 
 

@@ -22,6 +22,8 @@ namespace SpiritIsland {
 
 		public Dictionary<K,int>.KeyCollection Keys => _inner.Keys;
 
+		public void Clear() => _inner.Clear();
+
 		public int this[K key]{
 			get{ return _inner.ContainsKey(key) ? _inner[key] : 0; }
 			set{ 

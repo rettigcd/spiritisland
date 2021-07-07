@@ -17,24 +17,25 @@ namespace SpiritIsland.SinglePlayer {
 
 		#region constructor 
 
-		public SinglePlayerGame(GameState gameState){
+		public SinglePlayerGame(GameState gameState,ILogger logger=null){
 			this.GameState = gameState;
 			gameState.InitIsland();
 			gameState.InitBlight(BlightCard.DownwardSpiral);
 			Spirit = gameState.Spirits.Single(); // this player only handles single-player.
-			InitPhases();
+			InitPhases( logger ?? new NullLogger() );
 		}
 
 		#endregion
 
 		#region private
 
-		void InitPhases() {
+		void InitPhases(ILogger logger) {
+
 			var selectGrowth = new SelectGrowth( Spirit, GameState );
 			var resolveGrowth = new ResolveActions( Spirit, GameState, Speed.Growth );
 			var selectPowerCards = new SelectPowerCards( Spirit );
 			var fastActions = new ResolveActions( Spirit, GameState, Speed.Fast, true );
-			var invaders = new InvaderPhase( GameState );
+			var invaders = new InvaderPhase( GameState, logger );
 			var slowActions = new ResolveActions( Spirit, GameState, Speed.Slow, true );
 			var timePasses = new TimePasses( Spirit, GameState );
 
