@@ -2,6 +2,7 @@
 using System.Linq;
 
 namespace SpiritIsland.Core {
+
 	public class SelectInvaderToDamage : IDecision {
 		readonly InvaderGroup group;
 		readonly int maxDamageAvailable;
