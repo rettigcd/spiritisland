@@ -8,17 +8,13 @@ namespace SpiritIsland.Base {
 
 		public const string Name = "Boon of Vigor";
 
-		readonly Spirit self;
-		public BoonOfVigor(Spirit self,GameState gameState)
-			:base(gameState)
-		{
-			this.self = self;
-			_ = ActionAsync();
+		public BoonOfVigor(Spirit riverSpirit,GameState gameState):base(gameState){
+			_ = ActionAsync(riverSpirit);
 		}
 
-		async Task ActionAsync(){
+		async Task ActionAsync(Spirit riverSpirit){
 			var spirit = await engine.SelectSpirit(gameState.Spirits);
-			spirit.Energy += (spirit==self) ? 1 : spirit.PurchasedCards.Count;
+			spirit.Energy += (spirit==riverSpirit) ? 1 : spirit.PurchasedCards.Count;
 		}
 
 	}

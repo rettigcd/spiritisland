@@ -9,14 +9,11 @@ namespace SpiritIsland.Base {
 
 		public const string Name = "Wash Away";
 
-		public WashAway(Spirit spirit,GameState gameState)
-			:base(gameState)
-		{
+		public WashAway(Spirit spirit,GameState gameState):base(gameState){
 			_ = ActionAsync(spirit);
 		}
 
 		async Task ActionAsync(Spirit spirit){
-			// range 1
 			var target = await engine.SelectSpace("Select target space."
 				,spirit.Presence.Range(1).Where(HasTownOrExplorer)
 			);
@@ -40,13 +37,6 @@ namespace SpiritIsland.Base {
 				availableInvaders = group.Filter("T@2","T@1","E@1");
 			}
 		}
-
-		//protected void SelectSpace(Space space){
-		//	engine.decisions.Push(new SelectInvadersToPush(engine,
-		//		gameState.InvadersOn(space),3,true
-		//		,"Town","Explorer"
-		//	));
-		//}
 
 		bool HasTownOrExplorer(Space space){
 			var sum = gameState.InvadersOn(space);

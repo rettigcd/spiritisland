@@ -7,8 +7,6 @@ namespace SpiritIsland.Base {
 
 	[SpiritCard(FlashFloods.Name,2,Speed.Fast,Element.Sun,Element.Water)]
 	public class FlashFloods : BaseAction {
-		// Target: range 1 (any)
-		// +1 damage, if costal +1 additional damage
 
 		public const string Name = "Flash Floods";
 
@@ -18,13 +16,16 @@ namespace SpiritIsland.Base {
 
 		async Task ActionAsync(Spirit spirit){
 
+			bool LandHasInvaders(Space space) => space.IsLand && gameState.InvadersOn(space).InvaderTypesPresent.Any();
+
 			var target = await engine.SelectSpace(
 				"Select target space."
 				,spirit.Presence.Range(1).Where(LandHasInvaders)
-				,false
 			);
 
+			// +1 damage, if costal +1 additional damage
 			int damage = target.IsCostal ? 2 : 1;
+
 			var group = gameState.InvadersOn(target);
 			while(damage>0){
 				var invader = await engine.SelectInvader("Select invader to damage.",group.InvaderTypesPresent.ToArray());
@@ -40,9 +41,6 @@ namespace SpiritIsland.Base {
 
 			gameState.UpdateFromGroup(group);
 		}
-
-		bool LandHasInvaders(Space space)
-			=> space.IsLand && gameState.InvadersOn(space).InvaderTypesPresent.Any();
 
 	}
 

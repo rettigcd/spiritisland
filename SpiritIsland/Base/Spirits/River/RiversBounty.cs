@@ -16,7 +16,6 @@ namespace SpiritIsland.Base {
 			var target = await engine.SelectSpace(
 				"Select target space."
 				,spirit.Presence.Range(0).Where(HasCloseDahan)
-				,false
 			);
 
 			var ctx = new GatherDahanCtx(target,gameState);
@@ -40,7 +39,7 @@ namespace SpiritIsland.Base {
 
 			// If there are now at least 2 dahan, then add 1 dahan and gain 1 energy
 			if(ctx.DestinationCount>=2){
-				engine.actions.Add(new AddDahan(ctx.Target,1));
+				gameState.AddDahan(ctx.Target,1);
 				++spirit.Energy;
 			}
 		}

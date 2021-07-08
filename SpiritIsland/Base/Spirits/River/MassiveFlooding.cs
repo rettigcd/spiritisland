@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using SpiritIsland.Core;
 
@@ -9,9 +7,13 @@ namespace SpiritIsland.Base {
 	[InnatePower(MassiveFlooding.Name,Speed.Slow)]
 	[PowerLevel(0,Element.Sun,Element.Water,Element.Water)]
 	public class MassiveFlooding : BaseAction {
-		// Slow, range 1 from SS
 
 		public const string Name = "Massive Flooding";
+		public const string k1 = "Push 1 E/T";
+		public const string k2 = "2 damage, Push up to 3 explorers and/or towns";
+		public const string k3 = "2 damage to all";
+
+		Space space;
 
 		public MassiveFlooding(Spirit spirit,GameState gameState):base(gameState){
 			_ = ActionAsync(spirit);
@@ -46,13 +48,6 @@ namespace SpiritIsland.Base {
 			var sum = gameState.InvadersOn(space);
 			return sum.HasExplorer || sum.HasTown;
 		}
-
-		Space space;
-
-		public const string k1 = "Push 1 E/T";
-		public const string k2 = "2 damage, Push up to 3 explorers and/or towns";
-		public const string k3 = "2 damage to all";
-
 
 		async Task Option1(){
 			await PushTownOrExplorer(1,false);
