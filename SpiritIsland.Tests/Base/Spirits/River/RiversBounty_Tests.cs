@@ -23,7 +23,7 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 			//   And: Purchased WashAway
 			card = spirit.Hand.Single( c => c.Name == RiversBounty.Name );
 			spirit.Energy = card.Cost;
-			spirit.BuyAvailableCards( card );
+			spirit.ActivateAvailableCards( card );
 
 			// Jump to slow
 			Assert_CardIsReady( card, Speed.Slow );
@@ -97,11 +97,11 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 
 			// Select 1st land
 			Assert.False( action.IsResolved );
-			Assert_Options( neighbors.Take(dahanToGather), new TextOption("Done") );
+			Assert_Options( neighbors.Take(dahanToGather), TextOption.Done );
 			action.Select(neighbors[0]);
 			// Select 2nd land
 			Assert.False( action.IsResolved );
-//			Assert_Options( action.Options[0], new TextOption("Done") );
+//			Assert_Options( action.Options[0], TextOption.Done );
 			action.Select( action.Options[0] );
 
 			Assert.True( action.IsResolved );

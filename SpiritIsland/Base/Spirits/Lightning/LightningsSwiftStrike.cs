@@ -59,6 +59,12 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 		protected override int[] EnergySequence => new int[]{ 1, 1, 2, 2, 3, 4, 4, 5 };
 		protected override int[] CardSequence => new int[]{ 2, 3, 4, 5, 6 };
 
+		public override void ActivateAvailableCards( params PowerCard[] cards ) {
+			base.ActivateAvailableCards( cards );
+			swiftness.OnActivateCards( this );
+		}
+		static readonly SwiftnessOfLightning swiftness = new SwiftnessOfLightning();
+
 		public override void AddActionFactory(IActionFactory actionFactory) {
 			// !!! duplicated in River
 

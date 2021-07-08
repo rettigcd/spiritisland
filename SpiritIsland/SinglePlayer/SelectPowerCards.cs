@@ -13,7 +13,7 @@ namespace SpiritIsland.SinglePlayer {
 		public IOption[] Options { get {
 			var options = new List<IOption>();
 			options.AddRange( this.powerCardOptions );
-			options.Add( new TextOption( "Done" ) );
+			options.Add( TextOption.Done );
 			return options.ToArray();
 		} }
 
@@ -42,15 +42,15 @@ namespace SpiritIsland.SinglePlayer {
 				.Where(c=>c.Cost<=energy && canPurchase>0)
 				.ToList();
 			if(powerCardOptions.Count == 0){
-				spirit.BuyAvailableCards(selectedCards.ToArray());
+				spirit.ActivateAvailableCards(selectedCards.ToArray());
 				Complete?.Invoke();
 				return;
 			}
 		}
 
 		public void Select(IOption option){
-			if(option is TextOption txt && txt.Text=="Done"){
-				spirit.BuyAvailableCards(selectedCards.ToArray());
+			if(TextOption.Done.Matches(option)){
+				spirit.ActivateAvailableCards(selectedCards.ToArray());
 				Complete?.Invoke();
 				return;
 			}

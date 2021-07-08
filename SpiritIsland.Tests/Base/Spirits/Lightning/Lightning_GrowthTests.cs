@@ -15,8 +15,7 @@ namespace SpiritIsland.Tests.Base.Spirits.Lightning {
 			Given_HalfOfPowercardsPlayed();
 			When_Growing( 0 );
 
-			Assert_AllCardsAvailableToPlay();
-			Assert_GainPowercard(1);
+			Assert_AllCardsAvailableToPlay(5); // drew a power card
 			Assert_HasEnergy(1+1); // 1 from energy track
 
 		}

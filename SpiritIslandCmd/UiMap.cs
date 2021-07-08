@@ -33,8 +33,8 @@ namespace SpiritIslandCmd {
 			foreach(var option in cachedOptions){
 				string key;
 				string description;
-				if(option is TextOption txt && txt.Text=="Done"){
-					key = txt.Text.Substring(0,1).ToLower();
+				if(TextOption.Done.Matches(option)){
+					key = option.Text.Substring(0,1).ToLower();
 					description = option.Text;
 				} else if(option is Space space) {
 					key = space.Label.ToLower();

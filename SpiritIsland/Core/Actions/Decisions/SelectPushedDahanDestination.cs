@@ -22,7 +22,7 @@ namespace SpiritIsland.Core {
 				.Cast<IOption>()
 				.ToList();
 			if(options.Count>0)
-				options.Add(new TextOption("Done"));
+				options.Add(TextOption.Done);
 			Options = options.ToArray();
 		}
 
@@ -32,7 +32,7 @@ namespace SpiritIsland.Core {
 
 		public void Select( IOption option ) {
 
-			if(option is TextOption txt && txt.Text == "Done")
+			if(TextOption.Done.Matches(option))
 				return;
 
 			Space destination = (Space)option;

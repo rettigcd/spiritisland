@@ -160,7 +160,7 @@ namespace SpiritIsland {
 
 		public virtual GrowthOption[] GetGrowthOptions() => GrowthOptions;
 
-		public virtual void BuyAvailableCards(params PowerCard[] cards) {
+		public virtual void ActivateAvailableCards(params PowerCard[] cards) {
 			if (cards.Length > NumberOfCardsPlayablePerTurn) 
 				throw new InsufficientCardPlaysException();
 

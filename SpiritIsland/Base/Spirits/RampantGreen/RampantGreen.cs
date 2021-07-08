@@ -78,8 +78,8 @@ namespace SpiritIsland.BranchAndClaw {
 				: 2;
 		}
 
-		public override void BuyAvailableCards( params PowerCard[] cards ) {
-			base.BuyAvailableCards( cards );
+		public override void ActivateAvailableCards( params PowerCard[] cards ) {
+			base.ActivateAvailableCards( cards );
 			tempCardBoost = 0;
 		}
 		public int tempCardBoost = 0;

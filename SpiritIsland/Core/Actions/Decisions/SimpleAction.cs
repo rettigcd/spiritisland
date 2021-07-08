@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.Core {
 	public class SimpleAction : IAtomicAction {
-		System.Action action;
+		readonly System.Action action;
 
 		public SimpleAction(System.Action action ){
 			this.action = action;

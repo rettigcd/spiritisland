@@ -32,7 +32,7 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 			//   And: Purchased FlashFloods
 			var card = spirit.Hand.Single(c=>c.Name == FlashFloods.Name);
 			spirit.Energy = card.Cost;
-			spirit.BuyAvailableCards(card);
+			spirit.ActivateAvailableCards(card);
 			Assert.Contains(card,spirit.GetUnresolvedActionFactories(card.Speed).OfType<PowerCard>().ToList()); // is fast
 
 			//  When: activating flash flood
@@ -71,7 +71,7 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 			//   And: Purchased FlashFloods
 			var card = spirit.Hand.Single(c=>c.Name == FlashFloods.Name);
 			spirit.Energy = card.Cost;
-			spirit.BuyAvailableCards(card);
+			spirit.ActivateAvailableCards(card);
 			Assert.Contains(card,spirit.GetUnresolvedActionFactories(card.Speed).OfType<PowerCard>().ToList()); // is fast
 
 			//  When: activating flash flood

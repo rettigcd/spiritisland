@@ -16,7 +16,7 @@ namespace SpiritIsland.Core {
 
 			var options = ctx.neighborCounts.Keys.Cast<IOption>().ToList();
 			if(allowShortCircuit && options.Count>0)
-				options.Add(new TextOption("Done"));				
+				options.Add(TextOption.Done);				
 			this.Options = options.ToArray();
 		}
 		public IOption[] Options {get;}

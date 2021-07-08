@@ -35,14 +35,14 @@ namespace SpiritIsland.Core {
 				.ToList();
 
 			if(allowShortCircuit && options.Count>0 )
-				options.Add(new TextOption("Done"));
+				options.Add(TextOption.Done);
 
  			return options.ToArray();
 		}
 
 		public void Select( IOption option ) {
 
-			if(option is TextOption txt && txt.Text == "Done")
+			if(TextOption.Done.Matches(option))
 				return;
 
 			// if we need more, push next

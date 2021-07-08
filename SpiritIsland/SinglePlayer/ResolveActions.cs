@@ -42,8 +42,9 @@ namespace SpiritIsland.SinglePlayer {
 		}
 
 		public void Select( IOption option ) {
-			if(option is TextOption txt) {
-				if(txt.Text == "Done") { Done(); return; }
+			if(action == null && TextOption.Done.Matches(option)){ 
+				Done(); 
+				return;
 			}
 
 			// Select action or apply option
@@ -60,7 +61,7 @@ namespace SpiritIsland.SinglePlayer {
 			if(action.IsResolved) {
 				// Next
 				action.Apply();
-				spirit.Resolve(selectedActionFactory);
+				spirit.Resolve( selectedActionFactory );
 				Initialize();
 			} else {
 				Prompt = growthName + " - " + action.Prompt;
@@ -76,7 +77,7 @@ namespace SpiritIsland.SinglePlayer {
 		List<IOption> GetActionFactoryOptions() {
 			var list = new List<IOption>();
 			list.AddRange( matchingActionsFactories );
-			if(allowEarlyDone) list.Add( new TextOption( "Done" ) );
+			if(allowEarlyDone) list.Add( TextOption.Done );
 			return list;
 		}
 
