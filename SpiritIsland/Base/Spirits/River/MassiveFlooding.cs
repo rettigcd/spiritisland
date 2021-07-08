@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
@@ -13,22 +14,31 @@ namespace SpiritIsland.Base {
 		public const string Name = "Massive Flooding";
 
 		public MassiveFlooding(Spirit spirit,GameState gameState):base(gameState){
+			_ = ActionAsync(spirit);
+		}
 
+		async Task ActionAsync(Spirit spirit){
 			var elements = spirit.AllElements;
 
-			count = new int[]{
+			int count = new int[]{
 				elements[Element.Sun],
 				elements[Element.Water]-1,
 				elements[Element.Earth]==0?2:3
 			}.Min();
-
 			if(count == 0) return;
+			
+			string key = await engine.SelectText("Select Innate option", new string[]{ k1,k2,k3}.Take(count).ToArray() );
 
-			engine.decisions.Push( new SelectSpaceGeneric(
-				"Select target space."
+			space = await engine.SelectSpace(
+				"Select target space for: "// + key
 				,spirit.SacredSites.Range(1).Where(HasExplorersOrTowns)
-				,SelectLevel
-			));
+			); 
+
+			switch(key){
+				case k1: await Option1(); break;
+				case k2: await Option2(); break;
+				case k3: Option3(); break;
+			}
 
 		}
 
@@ -37,7 +47,6 @@ namespace SpiritIsland.Base {
 			return sum.HasExplorer || sum.HasTown;
 		}
 
-		readonly int count;
 		Space space;
 
 		public const string k1 = "Push 1 E/T";
@@ -45,35 +54,14 @@ namespace SpiritIsland.Base {
 		public const string k3 = "2 damage to all";
 
 
-		void SelectLevel(Space space){
-			this.space = space;
-			var invaders = gameState.InvadersOn(space);
-
-			IEnumerable<string> d = new string[]{ k1, k2, k3 }.Take(count);
-
-			var dict = new Dictionary<string,Action>{
-				[k1] = Option1,
-				[k2] = Option2,
-				[k3] = Option3,
-			};
-
-			// Add Selection Decision
-			engine.decisions.Push( new SelectText(
-				engine,
-				(option,_) => dict[option]()
-				,d
-			));
+		async Task Option1(){
+			await PushTownOrExplorer(1,false);
 		}
 
-		void Option1(){
-			var invaders = gameState.InvadersOn(space);
-			engine.decisions.Push( new SelectInvadersToPush(engine,invaders,1,false,"Town","Explorer") );
-		}
-
-		void Option2(){
+		async Task Option2(){
 			// * 2 sun, 3 water => Instead, 2 damage, Push up to 3 explorers and/or towns
 			gameState.DamageInvaders(space,2);
-			engine.decisions.Push( new SelectInvadersToPush(engine, gameState.InvadersOn(space),3,true,"Town","Explorer") );
+			await PushTownOrExplorer(3,true);
 		}
 
 		void Option3(){
@@ -88,7 +76,19 @@ namespace SpiritIsland.Base {
 			gameState.UpdateFromGroup(group);
 		}
 
+		async Task PushTownOrExplorer(int count, bool allowShortCircuit) {
+			var invadersToPush = InvadersForPushing();
+			while(count > 0 && invadersToPush.Length > 0) {
+				var invader = await engine.SelectInvader( "Select invader to push.", invadersToPush, allowShortCircuit );
+				if(invader == null) break;
+				var destination = await engine.SelectSpace( "Select destination for " + invader.Summary, space.Neighbors );
+				new MoveInvader( invader, space, destination ).Apply( gameState );
+				invadersToPush = InvadersForPushing();
+				--count;
+			}
+		}
 
+		Invader[] InvadersForPushing() => gameState.InvadersOn( space ).Filter( "T@2", "T@1", "E@1" );
 	}
 
 }

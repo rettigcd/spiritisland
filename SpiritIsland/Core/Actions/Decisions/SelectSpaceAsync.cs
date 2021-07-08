@@ -5,11 +5,11 @@ using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
 
-	class SelectSpaceFrom : IDecision {
+	class SelectSpaceAsync : IDecision {
 
 		readonly TaskCompletionSource<Space> promise;
 
-		public SelectSpaceFrom(string prompt, IEnumerable<Space> spaces, bool allowShortCircuit,TaskCompletionSource<Space> promise){
+		public SelectSpaceAsync(string prompt, IEnumerable<Space> spaces, bool allowShortCircuit,TaskCompletionSource<Space> promise){
 			this.promise = promise;
 			Prompt = prompt;
 			var options = spaces.Cast<IOption>().ToList();

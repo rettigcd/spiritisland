@@ -4,9 +4,12 @@ using System.Threading.Tasks;
 using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
-	public class SelectInvader : IDecision {
+
+	public class SelectInvaderAsync : IDecision {
+
 		readonly TaskCompletionSource<Invader> promise;
-		public SelectInvader(
+
+		public SelectInvaderAsync(
 			string prompt,
 			Invader[] invaders,
 			bool allowShortCircuit,

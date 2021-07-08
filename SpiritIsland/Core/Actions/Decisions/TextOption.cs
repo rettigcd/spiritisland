@@ -1,4 +1,5 @@
 ﻿namespace SpiritIsland.Core {
+
 	public class TextOption : IOption {
 
 		static public readonly TextOption Done = new TextOption("Done");

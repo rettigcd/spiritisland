@@ -62,7 +62,7 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 			Game_SelectOption( "Select Slow to resolve", "Massive Flooding" );
 			Game_SelectOption( "Massive Flooding - Select target", "A8" ); // always a town on A8
 			Game_SelectOption( "Massive Flooding - Select invader to push", "T@2" );
-			Game_SelectOption( "Massive Flooding - Select land to push T@2 to.", "A5" );
+			Game_SelectOption( "Massive Flooding - Select destination for T@2", "A5" );
 		}
 
 		[Fact]
@@ -80,10 +80,10 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 			Game_DoneWith( Speed.Fast );
 
 			Game_SelectOption( "Select Slow to resolve", "Massive Flooding" );
-			Game_SelectOption( "Massive Flooding - Select target space", "A8");
 			Game_SelectOption( "Massive Flooding - Select Innate option", MassiveFlooding.k2);
+			Game_SelectOption( "Massive Flooding - Select target space", "A8");
 			Game_SelectOption( "Massive Flooding - Select invader to push.", "E@1" ); // always a town on A8
-			Game_SelectOption( "Massive Flooding - Select land to push E@1 to", "A5" ); // always a town on A8
+			Game_SelectOption( "Massive Flooding - Select destination for E@1", "A5" ); // always a town on A8
 		}
 
 		[Fact]
@@ -103,8 +103,8 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 			Game_DoneWith( Speed.Fast );
 
 			Game_SelectOption( "Select Slow to resolve", "Massive Flooding" );
-			Game_SelectOption( "Massive Flooding - Select target space", "A8");
 			Game_SelectOption( "Massive Flooding - Select Innate option", MassiveFlooding.k3);
+			Game_SelectOption( "Massive Flooding - Select target space", "A8");
 		}
 
 

@@ -25,7 +25,7 @@ namespace SpiritIsland.Base {
 			bool allowShortCircuit = false
 		) {
 			var result = new TaskCompletionSource<Space>();
-			engine.decisions.Push( new SelectSpaceFrom( prompt, spaces, allowShortCircuit, result ) );
+			engine.decisions.Push( new SelectSpaceAsync( prompt, spaces, allowShortCircuit, result ) );
 			return result.Task;
 		}
 
@@ -35,7 +35,7 @@ namespace SpiritIsland.Base {
 			,bool allowShortCircuit=false
 		) {
 			var result = new TaskCompletionSource<Invader>();
-			engine.decisions.Push( new SelectInvader( 
+			engine.decisions.Push( new SelectInvaderAsync( 
 				prompt, 
 				invaders,
 				allowShortCircuit,
@@ -50,7 +50,7 @@ namespace SpiritIsland.Base {
 //			,bool allowShortCircuit=false
 		) {
 			var result = new TaskCompletionSource<string>();
-			engine.decisions.Push( new SelectTextAsync("select text", options,result));
+			engine.decisions.Push( new SelectTextAsync(prompt, options,result));
 			return result.Task;
 		}
 
