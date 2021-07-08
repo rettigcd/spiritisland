@@ -9,32 +9,41 @@ namespace SpiritIsland.Base {
 	// Engine?   ActionBase?   Extension Methods?
 	static class ActionEngineExtensions {
 
-		static public Task<Spirit> SelectSpirit(this ActionEngine engine, params Spirit[] spirits){
+		static public Task<Spirit> SelectSpirit( this ActionEngine engine, params Spirit[] spirits ) {
 			var result = new TaskCompletionSource<Spirit>();
 
-			engine.decisions.Push(new SelectSpirit(spirits
-				,spirit => result.TrySetResult(spirit)
-			));
+			engine.decisions.Push( new SelectSpirit( spirits
+				, spirit => result.TrySetResult( spirit )
+			) );
 
 			return result.Task;
 		}
 
-		static public Task<Space> SelectSpace(this ActionEngine engine, 
+		static public Task<Space> SelectSpace( this ActionEngine engine,
 			string prompt,
 			IEnumerable<Space> spaces,
-			bool allowShortCircuit
-		){
+			bool allowShortCircuit = false
+		) {
 			var result = new TaskCompletionSource<Space>();
-			engine.decisions.Push(new SelectSpaceFrom(prompt,spaces,allowShortCircuit,result));
+			engine.decisions.Push( new SelectSpaceFrom( prompt, spaces, allowShortCircuit, result ) );
 			return result.Task;
 		}
 
-		static public Task<Invader> SelectInvader(this ActionEngine engine, InvaderGroup grp,string prompt){
+		static public Task<Invader> SelectInvader( this ActionEngine engine
+			,string prompt
+			,Invader[] invaders
+			,bool allowShortCircuit=false
+		) {
 			var result = new TaskCompletionSource<Invader>();
-			engine.decisions.Push(new SelectInvader(grp,prompt,result));
+			engine.decisions.Push( new SelectInvader( 
+				prompt, 
+				invaders,
+				allowShortCircuit,
+				result 
+			));
 			return result.Task;
 		}
-		
+
 	}
 
 	/*

@@ -161,7 +161,7 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 			params string[] options
 		) {
 			Assert.False( action.IsResolved );
-			Assert.Equal( "Select land to push " + invaderText + " to.", action.Prompt );
+			Assert.Equal( "Select destination for "+invaderText, action.Prompt );
 			Assert_Options( options );
 			action.Select( invaderDestination );
 		}

@@ -32,6 +32,13 @@ namespace SpiritIsland {
 			.Where(pair => pair.Value > 0 && pair.Key.Health>0)
 			.Select(pair => pair.Key);
 
+		public Invader[] Filter(params string[] allowedTypes ){
+			return InvaderTypesPresent.Where(i=>allowedTypes.Contains(i.Summary)).ToArray();
+		}
+		public Invader[] Filter(params Invader[] allowedTypes ){
+			return InvaderTypesPresent.Intersect(allowedTypes).ToArray();
+		}
+
 		public void ApplyDamage(DamagePlan damagePlan) {
 			changed.Add( damagePlan.Invader );			--dd[ damagePlan.Invader ];
 			changed.Add( damagePlan.DamagedInvader );	++dd[ damagePlan.DamagedInvader ];

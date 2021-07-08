@@ -27,7 +27,7 @@ namespace SpiritIsland.Base {
 			int damage = target.IsCostal ? 2 : 1;
 			var group = gameState.InvadersOn(target);
 			while(damage>0){
-				var invader = await engine.SelectInvader(group,"Select invader to damage.");
+				var invader = await engine.SelectInvader("Select invader to damage.",group.InvaderTypesPresent.ToArray());
 				if(invader == null) break;
 
 				int damageToInvader = Math.Min(invader.Health,damage);
