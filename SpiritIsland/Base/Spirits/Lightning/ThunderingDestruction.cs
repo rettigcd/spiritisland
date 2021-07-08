@@ -37,20 +37,19 @@ namespace SpiritIsland.Base {
 			int air = lightning.Elements(Element.Air);
 			int water = lightning.Elements(Element.Water);
 
-			if(fire>=5 && air>=5 && water>=2)
-				return new SelectInvadersToDestroy(engine,grp,3,"C@3","C@2","C@1","T@2","T@1"); 
-
-			if(fire>=5 && air>=4 && water>=1)
-				return new SelectInvadersToDestroy(engine,grp,2,"C@3","C@2","C@1","T@2","T@1"); 
-
-			if(fire>=4 && air>=3)
-				return new SelectInvadersToDestroy(engine,grp,1,"C@3","C@2","C@1","T@2","T@1"); 
-
-			if(fire>=3 && air>=2)
-				return new SelectInvadersToDestroy(engine,grp,1,"T@2","T@1"); 
-
-			return null;
+			return fire >=5 && air>=5 && water>=2	? DestroyTownsOrCities(grp,3)
+				: fire >=5 && air>=4 && water>=1	? DestroyTownsOrCities(grp,2)
+                : fire >=4 && air>=3				? DestroyTownsOrCities(grp,1)
+                : fire >=3 && air>=2				? DestroyTowns(grp,1)
+                : null;
 		}
+
+		IDecision DestroyTownsOrCities(InvaderGroup grp, int count)
+			=> new SelectInvadersToDestroy(engine,grp,count,"C@3","C@2","C@1","T@2","T@1");
+
+		IDecision DestroyTowns(InvaderGroup grp, int count)
+			=> new SelectInvadersToDestroy(engine,grp,count,"T@2","T@1");
+
 	}
 
 }

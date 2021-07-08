@@ -13,7 +13,7 @@ namespace SpiritIsland.Base {
 			this.spirit = spirit;
 
 			// range 2, Jungle or Wetland
-			engine.decisions.Push(new TargetSpaceRangeFromPresence(spirit,2
+			engine.decisions.Push(new SelectSpaceRangeFromPresence(spirit,2
 				,JungleOrWetland
 				,SelectSpace
 			));

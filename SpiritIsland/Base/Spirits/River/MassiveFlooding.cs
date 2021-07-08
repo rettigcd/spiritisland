@@ -24,7 +24,7 @@ namespace SpiritIsland.Base {
 
 			if(count == 0) return;
 
-			engine.decisions.Push( new TargetSpaceRangeFromSacredSite(spirit,1,
+			engine.decisions.Push( new SelectSpaceRangeFromSacredSite(spirit,1,
 				HasExplorersOrTowns
 				,SelectLevel
 			));
@@ -57,9 +57,11 @@ namespace SpiritIsland.Base {
 			};
 
 			// Add Selection Decision
-			engine.decisions.Push( new SelectText(engine,d,(string option,ActionEngine engine)=>{
-				dict[option]();
-			}) );
+			engine.decisions.Push( new SelectText(
+				engine,
+				(option,_) => dict[option]()
+				,d
+			));
 		}
 
 		void Option1(){

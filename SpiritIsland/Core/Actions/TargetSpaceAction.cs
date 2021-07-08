@@ -15,10 +15,10 @@ namespace SpiritIsland.Core {
 			this.self = self;
 			switch(from){
 				case From.SacredSite:
-					engine.decisions.Push(new TargetSpaceRangeFromSacredSite(self,range,FilterSpace,SelectSpace));
+					engine.decisions.Push(new SelectSpaceRangeFromSacredSite(self,range,FilterSpace,SelectSpace));
 					break;
 				case From.Presence:
-					engine.decisions.Push(new TargetSpaceRangeFromPresence(self,range,FilterSpace,SelectSpace));
+					engine.decisions.Push(new SelectSpaceRangeFromPresence(self,range,FilterSpace,SelectSpace));
 					break;
 				default:
 					throw new ArgumentOutOfRangeException(nameof(from));

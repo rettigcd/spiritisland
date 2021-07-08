@@ -2,19 +2,18 @@
 using System.Linq;
 
 namespace SpiritIsland.Core {
-	public class TargetSpaceRangeFromSacredSite : IDecision {
+
+	public class SelectSpaceRangeFromPresence : IDecision {
 
 		readonly Action<Space> onSelect;
 
-		public TargetSpaceRangeFromSacredSite(
+		public SelectSpaceRangeFromPresence(
 			Spirit spirit, 
 			int range,
 			Action<Space> onSelect
-		)
-			:this(spirit,range,(s)=>true,onSelect)
-		{}
+		):this(spirit,range,(s)=>true,onSelect){}
 
-		public TargetSpaceRangeFromSacredSite(
+		public SelectSpaceRangeFromPresence(
 			Spirit spirit, 
 			int range,
 			Func<Space,bool> spaceFilter,
@@ -22,7 +21,7 @@ namespace SpiritIsland.Core {
 		){
 			this.onSelect = onSelect;
 
-			this.Options = spirit.SacredSites
+			this.Options = spirit.Presence
 				.SelectMany(x => x.SpacesWithin(range))
 				.Distinct()
 				.Where(spaceFilter)

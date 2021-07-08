@@ -7,10 +7,7 @@
 		public string Text { get; }
 
 		public bool Matches(IOption option ){
-			var match = option is TextOption txt && txt.Text == Text;
-			if( match )
-				return true;
-			return false;
+			return option is TextOption txt && txt.Text == Text;
 		}
 	}
 

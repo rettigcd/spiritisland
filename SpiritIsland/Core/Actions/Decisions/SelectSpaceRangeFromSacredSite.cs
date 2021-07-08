@@ -3,11 +3,19 @@ using System.Linq;
 
 namespace SpiritIsland.Core {
 
-	public class TargetSpaceRangeFromPresence : IDecision {
+	public class SelectSpaceRangeFromSacredSite : IDecision {
 
 		readonly Action<Space> onSelect;
 
-		public TargetSpaceRangeFromPresence(
+		public SelectSpaceRangeFromSacredSite(
+			Spirit spirit, 
+			int range,
+			Action<Space> onSelect
+		)
+			:this(spirit,range,(s)=>true,onSelect)
+		{}
+
+		public SelectSpaceRangeFromSacredSite(
 			Spirit spirit, 
 			int range,
 			Func<Space,bool> spaceFilter,
@@ -15,7 +23,7 @@ namespace SpiritIsland.Core {
 		){
 			this.onSelect = onSelect;
 
-			this.Options = spirit.Presence
+			this.Options = spirit.SacredSites
 				.SelectMany(x => x.SpacesWithin(range))
 				.Distinct()
 				.Where(spaceFilter)

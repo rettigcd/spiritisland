@@ -11,7 +11,7 @@ namespace SpiritIsland.Base {
 		public const string Name = "Flash Floods";
 
 		public FlashFloods(Spirit spirit,GameState gameState):base(gameState){
-			this.engine.decisions.Push( new TargetSpaceRangeFromPresence(
+			this.engine.decisions.Push( new SelectSpaceRangeFromPresence(
 				spirit,1,
 				HasInvaders,
 				SelectTarget
