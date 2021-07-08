@@ -4,7 +4,7 @@ using SpiritIsland.Core;
 namespace SpiritIsland.Base {
 
 
-	[MinorCard(EncompassingWard.Name,1,Speed.Fast)]
+	[MinorCard(EncompassingWard.Name,1,Speed.Fast,Element.Sun,Element.Water,Element.Earth)]
 	public class EncompassingWard : TargetSpiritAction {
 
 		public const string Name = "Encompassing Ward";
