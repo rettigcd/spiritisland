@@ -1,55 +1,52 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
 
 	[SpiritCard(RiversBounty.Name, 0, Speed.Slow,Element.Sun,Element.Water,Element.Animal)]
-	public class RiversBounty : TargetSpaceAction {
+	public class RiversBounty : BaseAction {
 		public const string Name = "River's Bounty";
 
-		// Gather up to 2 Dahan
-		// If there are now at least 2 dahan, then add 1 dahan and gain 1 energy
-
-		public RiversBounty(Spirit spirit,GameState gs) 
-			: base(spirit,gs,0,From.Presence) {
+		public RiversBounty(Spirit spirit,GameState gs) : base(gs) {
+			_ = ActionAsync(spirit);
 		}
 
-		protected override bool FilterSpace(Space space){
-			// space has dahan neighbors or self
-			return space.SpacesWithin(1).Any( gameState.HasDahan );
-		}
+		async Task ActionAsync(Spirit spirit){
+			var target = await engine.SelectSpace(
+				"Select target space."
+				,spirit.Presence.Range(0).Where(HasCloseDahan)
+				,false
+			);
 
-		protected override void SelectSpace(Space space){
-			var ctx = new GatherDahanCtx(space,gameState);
-			engine.decisions.Push(new If2Add1(self,engine,ctx));  // do this last
+			var ctx = new GatherDahanCtx(target,gameState);
 
-			if(ctx.neighborCounts.Keys.Any())
-				engine.decisions.Push(new SelectGatherDahanSource(engine,ctx,2,true));
-		}
+			// Gather up to 2 Dahan
+			int dahanToGather = 2;
+			while(dahanToGather>0 && ctx.neighborCounts.Keys.Any()){
+				Space source = await engine.SelectSpace(
+					"Select source land to gather Dahan into "+ctx.Target.Label,
+					ctx.neighborCounts.Keys,true
+				);
+				if(source == null) break;
 
-		// Hack - this isn't a decision, just something I need to run at the end.
-		class If2Add1 : IDecision {
-			readonly GatherDahanCtx ctx;
-			readonly ActionEngine engine;
-			readonly Spirit self;
-			public If2Add1(Spirit self, ActionEngine engine, GatherDahanCtx ctx){
-				this.self = self;
-				this.engine = engine;
-				this.ctx = ctx;
-			}
-			public IOption[] Options => new IOption[]{Invader.Explorer}; // not used but it can't be null
-
-			public string Prompt => "Adding 1 Dahan if 2 are present in "+ctx.Target.Label;
-
-			public void Select( IOption _ ) {
-				if(ctx.DestinationCount>=2){
-					engine.actions.Add(new AddDahan(ctx.Target,1));
-					++self.Energy;
+				if(source != ctx.Target){
+					++ctx.DestinationCount;
+					--ctx.neighborCounts[source];
 				}
+				new MoveDahan(source,ctx.Target).Apply(gameState);
+				--dahanToGather;
 			}
 
+			// If there are now at least 2 dahan, then add 1 dahan and gain 1 energy
+			if(ctx.DestinationCount>=2){
+				engine.actions.Add(new AddDahan(ctx.Target,1));
+				++spirit.Energy;
+			}
 		}
+
+		bool HasCloseDahan(Space space)=> space.SpacesWithin(1).Any( gameState.HasDahan );
 
 	}
 

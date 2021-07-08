@@ -1,4 +1,5 @@
-﻿using SpiritIsland.Core;
+﻿using System.Linq;
+using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
 
@@ -13,8 +14,9 @@ namespace SpiritIsland.Base {
 			this.spirit = spirit;
 
 			// range 2, Jungle or Wetland
-			engine.decisions.Push(new SelectSpaceRangeFromPresence(spirit,2
-				,JungleOrWetland
+			engine.decisions.Push(new SelectSpaceGeneric(
+				"Select target space."
+				,spirit.Presence.Range(2).Where(JungleOrWetland)
 				,SelectSpace
 			));
 

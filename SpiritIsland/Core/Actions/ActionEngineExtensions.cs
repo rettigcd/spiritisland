@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using SpiritIsland.Core;
 
@@ -6,7 +7,7 @@ namespace SpiritIsland.Base {
 
 	// where is the best place for these methods to live?
 	// Engine?   ActionBase?   Extension Methods?
-	static class ExtendActionEngine {
+	static class ActionEngineExtensions {
 
 		static public Task<Spirit> SelectSpirit(this ActionEngine engine, params Spirit[] spirits){
 			var result = new TaskCompletionSource<Spirit>();
@@ -18,16 +19,13 @@ namespace SpiritIsland.Base {
 			return result.Task;
 		}
 
-		static public Task<Space> SelectSpace(this ActionEngine engine, Spirit spirit, int range, From @from, System.Func<Space,bool> filter=null){
-			if(filter==null) filter = (s)=>true;
-
+		static public Task<Space> SelectSpace(this ActionEngine engine, 
+			string prompt,
+			IEnumerable<Space> spaces,
+			bool allowShortCircuit
+		){
 			var result = new TaskCompletionSource<Space>();
-
-			var decision = @from == From.Presence
-				? (IDecision)new SelectSpaceRangeFromPresence(spirit,range,filter,space=>result.TrySetResult(space))
-				: (IDecision)new SelectSpaceRangeFromSacredSite(spirit,range,filter,space=>result.TrySetResult(space));
-			engine.decisions.Push(decision);
-
+			engine.decisions.Push(new SelectSpaceFrom(prompt,spaces,allowShortCircuit,result));
 			return result.Task;
 		}
 
@@ -36,28 +34,8 @@ namespace SpiritIsland.Base {
 			engine.decisions.Push(new SelectInvader(grp,prompt,result));
 			return result.Task;
 		}
-
 		
 	}
-
-	public class SelectInvader : IDecision {
-		readonly TaskCompletionSource<Invader> promise;
-		public SelectInvader(InvaderGroup invaderGroup,string prompt,TaskCompletionSource<Invader> promise){
-			Options = invaderGroup.InvaderTypesPresent.ToArray();
-			Prompt = prompt;
-			this.promise = promise;
-			if(Options.Length == 0)
-				promise.TrySetResult(null);
-		}
-
-		public string Prompt {get;}
-
-		public IOption[] Options {get;}
-
-		public void Select( IOption option ) { promise.TrySetResult((Invader)option); }
-
-	}
-
 
 	/*
 	// var promise = new Promise<MyResult>;

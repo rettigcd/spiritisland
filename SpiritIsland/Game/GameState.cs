@@ -300,7 +300,9 @@ namespace SpiritIsland {
 		readonly CountDictionary<Space> dahanCount = new CountDictionary<Space>();
 
 		readonly CountDictionary<Space> defendCount = new CountDictionary<Space>();
+#pragma warning disable IDE0052 // Remove unread private members
 		int fearCount = 0;
+#pragma warning restore IDE0052 // Remove unread private members
 	}
 
 

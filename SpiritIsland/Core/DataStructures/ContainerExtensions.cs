@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Linq;
 
-namespace SpiritIsland.Base {
+namespace SpiritIsland {
+
 	static public class ContainerExtensions{
 		// shorter syntax:
 		// space.Terrain.IsIn(Terrain.Wetland,Terrain.Sand)

@@ -1,4 +1,5 @@
-﻿using SpiritIsland.Core;
+﻿using System.Linq;
+using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
 
@@ -26,8 +27,11 @@ namespace SpiritIsland.Base {
 
 		void DoPush(){
 			// Option 1 - push 1 explorer
-			// range 1
-			engine.decisions.Push( new SelectSpaceRangeFromPresence(spirit,1,HasExplorer,SelectPushTarget) );
+			engine.decisions.Push( new SelectSpaceGeneric(
+				"Select target space."
+				,spirit.Presence.Range(1).Where(HasExplorer)
+				,SelectPushTarget
+			) );
 		}
 		bool HasExplorer(Space space) => gameState.InvadersOn(space).HasExplorer;
 

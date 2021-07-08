@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SpiritIsland.Core {
 
@@ -13,17 +15,17 @@ namespace SpiritIsland.Core {
 			From from
 		):base(gameState){
 			this.self = self;
-			switch(from){
-				case From.SacredSite:
-					engine.decisions.Push(new SelectSpaceRangeFromSacredSite(self,range,FilterSpace,SelectSpace));
-					break;
-				case From.Presence:
-					engine.decisions.Push(new SelectSpaceRangeFromPresence(self,range,FilterSpace,SelectSpace));
-					break;
-				default:
-					throw new ArgumentOutOfRangeException(nameof(from));
-			}
 
+			IEnumerable<Space> source = from switch {
+				From.Presence => self.Presence,
+				From.SacredSite => self.SacredSites,
+				_ => throw new ArgumentOutOfRangeException(nameof(from))
+			};
+			engine.decisions.Push(new SelectSpaceGeneric(
+				"Select target space."
+				,source.Range(range).Where(FilterSpace)
+				,SelectSpace // ! overriden by drived class, might not be initialized yet
+			));
 		}
 		protected virtual bool FilterSpace(Space space)=>true;
 		protected abstract void SelectSpace(Space space);

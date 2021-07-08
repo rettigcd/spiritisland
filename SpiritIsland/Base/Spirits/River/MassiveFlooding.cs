@@ -24,8 +24,9 @@ namespace SpiritIsland.Base {
 
 			if(count == 0) return;
 
-			engine.decisions.Push( new SelectSpaceRangeFromSacredSite(spirit,1,
-				HasExplorersOrTowns
+			engine.decisions.Push( new SelectSpaceGeneric(
+				"Select target space."
+				,spirit.SacredSites.Range(1).Where(HasExplorersOrTowns)
 				,SelectLevel
 			));
 
