@@ -36,7 +36,7 @@ namespace SpiritIsland.Base {
 			public string Prompt => $"Select target of Presence to Push from {CurrentSource}";
 
 			public IOption[] Options => pushSpaces.Count>0 
-				? CurrentSource.SpacesExactly(1)
+				? CurrentSource.Neighbors
 					.ToArray()
 				: Array.Empty<IOption>();
 

@@ -1,58 +1,58 @@
-﻿using System.Linq;
+﻿//using System.Linq;
 
-namespace SpiritIsland.Core {
+//namespace SpiritIsland.Core {
 
-	public class SelectInvadersToPush : IDecision {
+//	public class SelectInvadersToPush : IDecision {
 
-		readonly InvaderGroup invaderGroup;
-		readonly int count;
-		readonly string[] labels;
-		readonly ActionEngine engine;
-		readonly bool allowShortCircuit;
+//		readonly InvaderGroup invaderGroup;
+//		readonly int count;
+//		readonly string[] labels;
+//		readonly ActionEngine engine;
+//		readonly bool allowShortCircuit;
 
-		public SelectInvadersToPush(ActionEngine engine, InvaderGroup invaderGroup,int count,bool allowShortCircuit, params string[] labels){
-			this.engine = engine;
-			this.invaderGroup = invaderGroup;
-			this.count = count;
-			this.labels = labels;
-			this.allowShortCircuit = allowShortCircuit;
+//		public SelectInvadersToPush(ActionEngine engine, InvaderGroup invaderGroup,int count,bool allowShortCircuit, params string[] labels){
+//			this.engine = engine;
+//			this.invaderGroup = invaderGroup;
+//			this.count = count;
+//			this.labels = labels;
+//			this.allowShortCircuit = allowShortCircuit;
 
-		}
+//		}
 
-		public string Prompt => $"Select invader to push.";
+//		public string Prompt => $"Select invader to push.";
 
-		public IOption[] Options => options ??= CalcOptions();
-		IOption[] options;
+//		public IOption[] Options => options ??= CalcOptions();
+//		IOption[] options;
 
-		IOption[] CalcOptions(){
-			// MUST be lazy loaded since this is pushed onto the endinge.decisions stack
-			// BEFORE the explorer is actually removed from the target land.
+//		IOption[] CalcOptions(){
+//			// MUST be lazy loaded since this is pushed onto the endinge.decisions stack
+//			// BEFORE the explorer is actually removed from the target land.
 
-			var options = invaderGroup
-				.InvaderTypesPresent
-				.Where(i=>labels.Contains(i.Label))
-				.Cast<IOption>()
-				.ToList();
+//			var options = invaderGroup
+//				.InvaderTypesPresent
+//				.Where(i=>labels.Contains(i.Label))
+//				.Cast<IOption>()
+//				.ToList();
 
-			if(allowShortCircuit && options.Count>0 )
-				options.Add(TextOption.Done);
+//			if(allowShortCircuit && options.Count>0 )
+//				options.Add(TextOption.Done);
 
- 			return options.ToArray();
-		}
+// 			return options.ToArray();
+//		}
 
-		public void Select( IOption option ) {
+//		public void Select( IOption option ) {
 
-			if(TextOption.Done.Matches(option))
-				return;
+//			if(TextOption.Done.Matches(option))
+//				return;
 
-			// if we need more, push next
-			if(count>1)
-				engine.decisions.Push(new SelectInvadersToPush( engine, invaderGroup,count-1,allowShortCircuit,labels));
+//			// if we need more, push next
+//			if(count>1)
+//				engine.decisions.Push(new SelectInvadersToPush( engine, invaderGroup,count-1,allowShortCircuit,labels));
 
-			// select where to push this invader
-			engine.decisions.Push( new SelectInvaderDestination( engine, invaderGroup, (Invader)option ) );
-		}
+//			// select where to push this invader
+//			engine.decisions.Push( new SelectInvaderDestination( engine, invaderGroup, (Invader)option ) );
+//		}
 
-	}
+//	}
 
-}
+//}

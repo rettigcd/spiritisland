@@ -4,7 +4,7 @@
 		public GatherDahanCtx(Space target,GameState gameState){
 			Target = target;
 			DestinationCount = gameState.GetDahanOnSpace(target);
-			foreach(var x in target.SpacesExactly(1))
+			foreach(var x in target.Neighbors)
 				neighborCounts[x] = gameState.GetDahanOnSpace(x);
 		}
 		public readonly Space Target;

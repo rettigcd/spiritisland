@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
@@ -12,32 +13,31 @@ namespace SpiritIsland.Base {
 			:base(gs)
 		{
 			this.spirit = spirit;
-			engine.decisions.Push(new SelectText(engine,SelectPower,"Push 1 Explorer", "2 fear" ));
+			_ = ActionAsync();
 		}
 
-		const string PushKey = "Push 1 Explorer";
-		const string FearKey = "2 fear";
+		async Task ActionAsync(){
 
-		void SelectPower(string option, ActionEngine engine){
-			switch(option){
-				case PushKey: DoPush(); break;
+			const string PushKey = "Push 1 Explorer";
+			const string FearKey = "2 fear";
+			string text = await engine.SelectText("Select power",PushKey,FearKey);
+			switch(text){
+				case PushKey: await DoPush(); break;
 				case FearKey: DoFear(); break;
 			}
+
 		}
 
-		void DoPush(){
-			// Option 1 - push 1 explorer
-			engine.decisions.Push( new SelectSpaceGeneric(
-				"Select target space."
-				,spirit.Presence.Range(1).Where(HasExplorer)
-				,SelectPushTarget
-			) );
-		}
-		bool HasExplorer(Space space) => gameState.InvadersOn(space).HasExplorer;
+		// Option 1 - push 1 explorer
+		async Task DoPush(){
+			bool HasExplorer(Space space) => gameState.InvadersOn(space).HasExplorer;
 
-		void SelectPushTarget(Space target){
-			var grp = gameState.InvadersOn(target);
-			engine.decisions.Push(new SelectInvadersToPush(engine,grp,1,false,"E@1"));
+			var target = await engine.SelectSpace("Select target",
+				spirit.Presence.Range(1).Where(HasExplorer)
+			);
+			var destination = await engine.SelectSpace("Select explorer destination",target.Neighbors);
+			new MoveInvader(Invader.Explorer, target, destination).Apply(gameState);
+
 		}
 
 		// Option 2 - 2 fear

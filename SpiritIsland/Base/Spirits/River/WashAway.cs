@@ -31,7 +31,7 @@ namespace SpiritIsland.Base {
 				);
 				if(invader == null) break;
 				var destination = await engine.SelectSpace("Select destination for "+invader.Summary
-					,target.SpacesExactly(1).Where(x=>x.IsLand),false
+					,target.Neighbors.Where(x=>x.IsLand),false
 				);
 
 				--numToPush;

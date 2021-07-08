@@ -15,7 +15,7 @@ namespace SpiritIsland.Base {
 			public GatherAction(Spirit spirit,GameState gs):base(gs){
 				List<Space> oceans = spirit.Presence
 					.Where(p=>p.IsCostal)
-					.Select(p=>p.SpacesExactly(1).Single(o=>o.IsOcean))
+					.Select(p=>p.Neighbors.Single(o=>o.IsOcean))
 					.Distinct()
 					.ToList();
 				engine.decisions.Push(new GatherPresencesInto(engine,spirit,oceans));
@@ -35,7 +35,7 @@ namespace SpiritIsland.Base {
 			public string Prompt => $"Select source of Presence to Gather into {CurrentTarget}";
 
 			public IOption[] Options => gatherSpaces.Count>0 
-				? CurrentTarget.SpacesExactly(1)
+				? CurrentTarget.Neighbors
 					.Where(spirit.Presence.Contains)
 					.ToArray()
 				: Array.Empty<IOption>();

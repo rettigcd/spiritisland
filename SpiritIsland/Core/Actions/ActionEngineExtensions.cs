@@ -44,6 +44,16 @@ namespace SpiritIsland.Base {
 			return result.Task;
 		}
 
+		static public Task<string> SelectText( this ActionEngine engine
+			,string prompt
+			,params string[] options
+//			,bool allowShortCircuit=false
+		) {
+			var result = new TaskCompletionSource<string>();
+			engine.decisions.Push( new SelectTextAsync("select text", options,result));
+			return result.Task;
+		}
+
 	}
 
 	/*

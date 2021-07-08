@@ -77,6 +77,8 @@ namespace SpiritIsland {
 			return _distanceTo.Where( p => p.Value == distance ).Select( p => p.Key );
 		}
 
+		public IEnumerable<Space> Neighbors => SpacesExactly(1);
+
 		public override string ToString() {
 			return Label.ToString();
 		}

@@ -59,7 +59,7 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 			Given_AddDahan( startingCount, target );
 
 			//   And: neighbors have some dahan
-			Space neighbor = target.SpacesExactly(1).First();
+			Space neighbor = target.Neighbors.First();
 			Given_AddDahan( dahanToGather, neighbor );
 
 			When_PlayingCard();
@@ -89,7 +89,7 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 
 			//   And: neighbors have 1 dahan each 
 			const int dahanToGather = 2;
-			var neighbors = target.SpacesExactly(1).ToArray();
+			var neighbors = target.Neighbors.ToArray();
 			for(int i=0;i<dahanToGather;++i)
 				Given_AddDahan( 1, neighbors[i] );
 
@@ -101,7 +101,6 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 			action.Select(neighbors[0]);
 			// Select 2nd land
 			Assert.False( action.IsResolved );
-//			Assert_Options( action.Options[0], TextOption.Done );
 			action.Select( action.Options[0] );
 
 			Assert.True( action.IsResolved );

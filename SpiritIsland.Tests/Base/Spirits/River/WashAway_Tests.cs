@@ -46,7 +46,7 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 			Then_SelectInvaderToPush(invader,invader.Summary,"Done");
 
 			//  Then: card has options of where to push 1 explorer
-			Assert_Options(	targetSpace.SpacesExactly(1) );
+			Assert_Options(	targetSpace.Neighbors );
 
 			var invaderDestination = board[2];
 			action.Select( invaderDestination.Label );
@@ -78,7 +78,7 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 			Then_SelectInvaderToPush( Invader.Explorer, "E@1", "Done" );
 			
 			//  Then: card has options of where to push 1 explorer
-			Assert_Options( targetSpace.SpacesExactly(1).Where(x=>x.IsLand) );
+			Assert_Options( targetSpace.Neighbors.Where(x=>x.IsLand) );
 
 		}
 
