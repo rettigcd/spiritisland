@@ -1,4 +1,5 @@
-﻿using SpiritIsland.Core;
+﻿using System.Threading.Tasks;
+using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
 	public class SwiftnessOfLightning : IActionFactory {
@@ -10,6 +11,7 @@ namespace SpiritIsland.Base {
 
 		public string Text => Name;
 
+		// Lightning Spirit calls this when it activates its cards
 		public void OnActivateCards(Spirit lightning){
 			if(lightning.Elements(Element.Air)>0)
 				lightning.AddActionFactory( this );
@@ -22,7 +24,7 @@ namespace SpiritIsland.Base {
 
 		class SwiftAction : BaseAction { // This could be refactored to just take the starting decision.
 			public SwiftAction(Spirit lightning,GameState gs,int count):base(gs){
-				engine.decisions.Push( new SelectActionsToMakeFast(engine,lightning,count) );
+				_ = engine.SelectActionsAndMakeFast( lightning, count );
 			}
 		}
 	}

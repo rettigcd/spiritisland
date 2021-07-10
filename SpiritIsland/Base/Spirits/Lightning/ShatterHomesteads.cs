@@ -1,26 +1,28 @@
-﻿using SpiritIsland.Core;
+﻿using System.Threading.Tasks;
+using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
 
 	[SpiritCard(ShatterHomesteads.Name,2,Speed.Slow,Element.Fire,Element.Air)]
-	public class ShatterHomesteads : TargetSpaceAction {
+	public class ShatterHomesteads : BaseAction {
 		public const string Name = "Shatter Homesteads";
 
 		// range 2 from sacred site
-		public ShatterHomesteads(Spirit spirit,GameState gameState)
-			:base(spirit,gameState,2,From.SacredSite){ }
+		public ShatterHomesteads(Spirit spirit,GameState gameState):base(gameState){_=Act(spirit);}
 
-		// 1 fear.  Destroy 1 town
-		protected override void SelectSpace( Space space ) {
-			gameState.AddFear(1);
+		async Task Act(Spirit spirit){
+			var space = await engine.SelectSpace("Select target land",spirit.SacredSites.Range(2));
+			// Destroy 1 town
 			var grp = gameState.InvadersOn(space);
 			if(grp.HasTown){
 				var town = grp[Invader.Town] > 0 ? Invader.Town : Invader.Town1;
 				grp[town]--;
 				gameState.UpdateFromGroup(grp);
 			}
+			// 1 fear
+			gameState.AddFear(1);
 		}
-	}
 
+	}
 
 }

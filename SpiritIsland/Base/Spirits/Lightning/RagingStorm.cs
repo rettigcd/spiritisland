@@ -1,20 +1,23 @@
 ﻿
+using System.Threading.Tasks;
 using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
 	
 	[Core.SpiritCard(RagingStorm.Name,3,Speed.Slow,Element.Fire,Element.Air,Element.Water)]
-	public class RagingStorm : TargetSpaceAction {
+	public class RagingStorm : BaseAction {
 		public const string Name = "Raging Storm";
 
-		// range 1, any
-		public RagingStorm(Spirit spirit,GameState gs):base(spirit,gs,1,From.Presence){ }
+		public RagingStorm(Spirit spirit,GameState gs):base(gs){_ = Act(spirit);}
 
-		protected override void SelectSpace( Space space ) {
-			var orig = gameState.InvadersOn(space);
+		async Task Act(Spirit spirit){
+			// range 1, any
+			var target = await engine.SelectSpace("Select target", spirit.Presence.Range(1));
+
+			var orig = gameState.InvadersOn(target);
 
 			// 1 damange to each invader.
-			var changing = gameState.InvadersOn(space);
+			var changing = gameState.InvadersOn(target);
 			foreach(var invader in orig.InvaderTypesPresent){
 				int count = orig[invader];
 				changing[invader] -= count;
@@ -23,7 +26,6 @@ namespace SpiritIsland.Base {
 			gameState.UpdateFromGroup(changing);
 
 		}
-
 
 	}
 

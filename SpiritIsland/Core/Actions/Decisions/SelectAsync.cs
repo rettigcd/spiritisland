@@ -1,36 +1,35 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
 
-	public class SelectInvaderAsync : IDecision {
+	public class SelectAsync<T> : IDecision where T:class,IOption {
 
-		readonly TaskCompletionSource<Invader> promise;
+		readonly TaskCompletionSource<T> promise;
 
-		public SelectInvaderAsync(
+		public SelectAsync(
 			string prompt,
-			Invader[] invaders,
+			T[] options,
 			bool allowShortCircuit,
-			TaskCompletionSource<Invader> promise
+			TaskCompletionSource<T> promise
 		){
 			Prompt = prompt;
 			this.promise = promise;
 
-			var options = invaders.Cast<IOption>().ToList();
-			if(options.Count == 0)
+			var optionList = options.Cast<IOption>().ToList();
+			if(optionList.Count == 0)
 				promise.TrySetResult(null);
 			else if(allowShortCircuit)
-				options.Add(TextOption.Done);
-			Options = options.ToArray();
+				optionList.Add(TextOption.Done);
+			Options = optionList.ToArray();
 		}
 
 		public string Prompt {get;}
 
 		public IOption[] Options {get;}
 
-		public void Select( IOption option ) { promise.TrySetResult((Invader)option); }
+		public void Select( IOption option ) { promise.TrySetResult((T)option); }
 
 	}
 

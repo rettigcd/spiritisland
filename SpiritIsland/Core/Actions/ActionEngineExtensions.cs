@@ -25,7 +25,7 @@ namespace SpiritIsland.Base {
 			bool allowShortCircuit = false
 		) {
 			var result = new TaskCompletionSource<Space>();
-			engine.decisions.Push( new SelectSpaceAsync( prompt, spaces, allowShortCircuit, result ) );
+			engine.decisions.Push( new SelectAsync<Space>( prompt, spaces.ToArray(), allowShortCircuit, result ) );
 			return result.Task;
 		}
 
@@ -35,7 +35,7 @@ namespace SpiritIsland.Base {
 			,bool allowShortCircuit=false
 		) {
 			var result = new TaskCompletionSource<Invader>();
-			engine.decisions.Push( new SelectInvaderAsync( 
+			engine.decisions.Push( new SelectAsync<Invader>( 
 				prompt, 
 				invaders,
 				allowShortCircuit,
@@ -44,14 +44,46 @@ namespace SpiritIsland.Base {
 			return result.Task;
 		}
 
+		static public Task<IActionFactory> SelectFactory( this ActionEngine engine
+			,string prompt
+			,IActionFactory[] options
+			,bool allowShortCircuit=false
+		) {
+			var result = new TaskCompletionSource<IActionFactory>();
+			engine.decisions.Push( new SelectAsync<IActionFactory>( 
+				prompt, 
+				options,
+				allowShortCircuit,
+				result 
+			));
+			return result.Task;
+		}
+
+
 		static public Task<string> SelectText( this ActionEngine engine
 			,string prompt
 			,params string[] options
-//			,bool allowShortCircuit=false
 		) {
 			var result = new TaskCompletionSource<string>();
 			engine.decisions.Push( new SelectTextAsync(prompt, options,result));
 			return result.Task;
+		}
+
+	}
+
+	public static class SpecificEngineExtensions{
+		static public async Task SelectActionsAndMakeFast(this ActionEngine engine, Spirit spirit, int countToMakeFast ) {
+			var actionFactories = spirit.GetUnresolvedActionFactories( Speed.Slow ).ToArray();
+			while(actionFactories.Length > 0 && countToMakeFast > 0) {
+				var factory = await engine.SelectFactory(
+					"Select action to make fast",
+					actionFactories,
+					true
+				);
+
+				spirit.Resolve( factory );
+				spirit.AddActionFactory( new ChangeSpeed( factory, Speed.Fast ) );
+			}
 		}
 
 	}
