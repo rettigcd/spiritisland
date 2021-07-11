@@ -21,7 +21,7 @@ namespace SpiritIsland.Base {
 		readonly Spirit lightning;
 
 		public ThunderingDestruction(Spirit lightning,GameState gs)
-			:base(gs)
+			:base(lightning,gs)
 		{
 			this.lightning = lightning;
 

@@ -31,10 +31,9 @@ namespace SpiritIsland.Core {
 				Spirit spirit,
 				GameState gameState,
 				MethodBase m
-			):base(gameState)
+			):base(spirit,gameState)
 			{
-				m.Invoke(null,new object[]{engine,spirit,gameState});
-//				_ = actionType(engine,spirit,gameState);
+				m.Invoke(null,new object[]{engine});
 			}
 		}
 	}

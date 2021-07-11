@@ -8,8 +8,8 @@ namespace SpiritIsland.Base {
 	public class PillarOfLivingFlame {
 
 		[MajorCard("Pillar of Living Flame",5,Speed.Slow,Element.Fire)]
-		static public async Task ActionAsync(ActionEngine engine, Spirit self,GameState gameState){
-
+		static public async Task ActionAsync(ActionEngine engine){
+			var (self,gameState) = engine;
 			var targetLand = await engine.SelectSpace("Select target",
 				self.SacredSites.Range(2).Where(s=>s.IsLand)
 			);

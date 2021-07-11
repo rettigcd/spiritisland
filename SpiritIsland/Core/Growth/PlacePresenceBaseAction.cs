@@ -4,7 +4,9 @@ namespace SpiritIsland.Core {
 
 	public class PlacePresenceBaseAction : BaseAction {
 
-		public PlacePresenceBaseAction(Spirit spirit,GameState gs,Space[] destinationOptions):base(gs){
+		public PlacePresenceBaseAction(Spirit spirit,GameState gs,Space[] destinationOptions)
+			:base(spirit,gs)
+		{
 			var ctx = new PlacePresenceCtx{ spirit=spirit, destinationOptions = destinationOptions };
 			engine.decisions.Push(new SelectPlacePresenceLocation(ctx));
 			engine.decisions.Push(new SelectPresenceToPlace(ctx));

@@ -4,7 +4,8 @@ using System.Linq;
 namespace SpiritIsland.Core {
 	public class BaseAction : IAction {
 
-		protected BaseAction(GameState gameState){
+		protected BaseAction(Spirit spirit,GameState gameState){
+			engine = new ActionEngine(spirit,gameState);
 			this.gameState = gameState;
 		}
 
@@ -68,7 +69,7 @@ namespace SpiritIsland.Core {
 		public string Selections => selections.Join(" > ");
 
 		protected readonly GameState gameState;
-		protected readonly ActionEngine engine = new ActionEngine();
+		protected readonly ActionEngine engine;
 
 	}
 

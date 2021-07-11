@@ -13,7 +13,7 @@ namespace SpiritIsland.Core {
 			GameState gameState,
 			int range,
 			From from
-		):base(gameState){
+		):base(self,gameState){
 			this.self = self;
 
 			IEnumerable<Space> source = from switch {

@@ -15,7 +15,7 @@ namespace SpiritIsland.Base {
 
 		Space space;
 
-		public MassiveFlooding(Spirit spirit,GameState gameState):base(gameState){
+		public MassiveFlooding(Spirit spirit,GameState gameState):base(spirit,gameState){
 			_ = ActionAsync(spirit);
 		}
 

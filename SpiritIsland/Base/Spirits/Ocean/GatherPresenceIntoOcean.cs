@@ -12,7 +12,7 @@ namespace SpiritIsland.Base {
 		}
 
 		class GatherAction : BaseAction {
-			public GatherAction(Spirit spirit,GameState gs):base(gs){
+			public GatherAction(Spirit spirit,GameState gs):base(spirit,gs){
 				List<Space> oceans = spirit.Presence
 					.Where(p=>p.IsCostal)
 					.Select(p=>p.Neighbors.Single(o=>o.IsOcean))

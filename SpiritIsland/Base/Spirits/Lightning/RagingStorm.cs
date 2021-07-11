@@ -8,7 +8,7 @@ namespace SpiritIsland.Base {
 	public class RagingStorm : BaseAction {
 		public const string Name = "Raging Storm";
 
-		public RagingStorm(Spirit spirit,GameState gs):base(gs){_ = Act(spirit);}
+		public RagingStorm(Spirit spirit,GameState gs):base(spirit,gs){_ = Act(spirit);}
 
 		async Task Act(Spirit spirit){
 			// range 1, any

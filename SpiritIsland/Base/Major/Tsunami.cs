@@ -10,7 +10,7 @@ namespace SpiritIsland.Base {
 
 		public const string Name = "Tsunami";
 
-		public Tsunami(Spirit spirit,GameState gs):base(gs){ _ = ActAsync(spirit); }
+		public Tsunami(Spirit spirit,GameState gs):base(spirit,gs){ _ = ActAsync(spirit); }
 
 		async Task ActAsync(Spirit self){
 

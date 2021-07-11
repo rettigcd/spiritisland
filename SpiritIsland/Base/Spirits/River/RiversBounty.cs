@@ -8,9 +8,11 @@ namespace SpiritIsland.Base {
 
 		public const string Name = "River's Bounty";
 		[SpiritCard(RiversBounty.Name, 0, Speed.Slow,Element.Sun,Element.Water,Element.Animal)]
-		static public async Task ActionAsync(ActionEngine engine, Spirit self,GameState gameState){
+		static public async Task ActionAsync(ActionEngine eng){
+			var (self,gameState) = eng;
+
 			bool HasCloseDahan(Space space)=> space.SpacesWithin(1).Any( gameState.HasDahan );
-			var target = await engine.SelectSpace(
+			var target = await eng.SelectSpace(
 				"Select target space."
 				,self.Presence.Range(0).Where(HasCloseDahan)
 			);
@@ -20,7 +22,7 @@ namespace SpiritIsland.Base {
 			// Gather up to 2 Dahan
 			int dahanToGather = 2;
 			while(dahanToGather>0 && ctx.neighborCounts.Keys.Any()){
-				Space source = await engine.SelectSpace(
+				Space source = await eng.SelectSpace(
 					"Select source land to gather Dahan into "+ctx.Target.Label,
 					ctx.neighborCounts.Keys,true
 				);

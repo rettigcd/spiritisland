@@ -12,7 +12,7 @@ namespace SpiritIsland.Base {
 		}
 
 		class PushAction : BaseAction {
-			public PushAction(Spirit spirit,GameState gs):base(gs){
+			public PushAction(Spirit spirit,GameState gs):base(spirit,gs){
 				List<Space> oceans = spirit.Presence
 					.Where(p=>p.IsOcean)
 					.Distinct()

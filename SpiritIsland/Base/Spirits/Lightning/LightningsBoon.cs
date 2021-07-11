@@ -8,10 +8,8 @@ namespace SpiritIsland.Base {
 	public class LightningsBoon : BaseAction {
 		public const string Name = "Lightning's Boon";
 
-		public LightningsBoon(Spirit _,GameState gs):base(gs){
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-			ActAsync();
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+		public LightningsBoon(Spirit spirit,GameState gs):base(spirit,gs){
+			_ = ActAsync();
 		}
 
 		async Task ActAsync() {

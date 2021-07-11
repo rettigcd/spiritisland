@@ -10,7 +10,7 @@ namespace SpiritIsland.Base {
 		readonly Spirit spirit;
 
 		public DelusionsOfDanger(Spirit spirit,GameState gs)
-			:base(gs)
+			:base(spirit,gs)
 		{
 			this.spirit = spirit;
 			_ = ActionAsync();

@@ -9,7 +9,7 @@ namespace SpiritIsland.Base {
 
 		public const string Name = "Accelerated Rot";
 
-		public AcceleratedRot(Spirit spirit,GameState gs):base(gs){
+		public AcceleratedRot(Spirit spirit,GameState gs):base(spirit,gs){
 			_=ActAsync(spirit);
 		}
 

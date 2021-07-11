@@ -23,7 +23,7 @@ namespace SpiritIsland.Base {
 		}
 
 		class SwiftAction : BaseAction { // This could be refactored to just take the starting decision.
-			public SwiftAction(Spirit lightning,GameState gs,int count):base(gs){
+			public SwiftAction(Spirit lightning,GameState gs,int count):base(lightning,gs){
 				_ = engine.SelectActionsAndMakeFast( lightning, count );
 			}
 		}

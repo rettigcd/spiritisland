@@ -10,7 +10,7 @@ namespace SpiritIsland.Base {
 		public const string Name = "Harbingers of the Lightning";
 
 		public HarbingersOfTheLightning(Spirit spirit,GameState gameState)
-			:base(gameState)
+			:base(spirit,gameState)
 		{
 			_ = ActionAsync(spirit);
 		}

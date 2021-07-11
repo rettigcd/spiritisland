@@ -8,7 +8,7 @@ namespace SpiritIsland.Base {
 		public const string Name = "Shatter Homesteads";
 
 		// range 2 from sacred site
-		public ShatterHomesteads(Spirit spirit,GameState gameState):base(gameState){_=Act(spirit);}
+		public ShatterHomesteads(Spirit spirit,GameState gameState):base(spirit,gameState){_=Act(spirit);}
 
 		async Task Act(Spirit spirit){
 			var space = await engine.SelectSpace("Select target land",spirit.SacredSites.Range(2));

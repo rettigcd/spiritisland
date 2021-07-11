@@ -10,7 +10,7 @@ namespace SpiritIsland.Base {
 		const string DefendKey = "Defend 6";
 		const string RemoveBlightKey = "Remove Blight";
 
-		public NaturesResilience(Spirit self,GameState gameState):base(gameState) {
+		public NaturesResilience(Spirit self,GameState gameState):base(self,gameState) {
 			_ = Act(self);
 		}
 

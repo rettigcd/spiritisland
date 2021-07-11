@@ -9,9 +9,10 @@ namespace SpiritIsland.Base {
 
 		public const string Name = "Flash Floods";
 		[SpiritCard(FlashFloods.Name,2,Speed.Fast,Element.Sun,Element.Water)]
-		static public async Task ActionAsync(ActionEngine engine, Spirit self,GameState gameState){
+		static public async Task ActionAsync(ActionEngine engine){
+			var (self,gameState) = engine;	
 
-			bool LandHasInvaders(Space space) => space.IsLand && gameState.InvadersOn(space).InvaderTypesPresent.Any();
+			bool LandHasInvaders(Space space) => space.IsLand && engine.GameState.InvadersOn(space).InvaderTypesPresent.Any();
 
 			var target = await engine.SelectSpace(
 				"Select target space."

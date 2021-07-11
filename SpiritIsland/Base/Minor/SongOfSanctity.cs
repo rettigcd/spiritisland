@@ -11,7 +11,7 @@ namespace SpiritIsland.Base {
 		public const string Name = "Song of Sanctity";
 
 		public SongOfSanctity(Spirit spirit,GameState gs)
-			:base(gs)
+			:base(spirit,gs)
 		{
 			_ = ActionAsync(spirit);
 		}
