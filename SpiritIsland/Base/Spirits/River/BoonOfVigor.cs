@@ -3,18 +3,14 @@ using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
 
-	[SpiritCard(BoonOfVigor.Name, 0, Speed.Fast,Element.Sun,Element.Water,Element.Plant)]
-	public class BoonOfVigor : BaseAction{
+//	[SpiritCard(BoonOfVigor.Name, 0, Speed.Fast,Element.Sun,Element.Water,Element.Plant)]
+	public class BoonOfVigor {
 
 		public const string Name = "Boon of Vigor";
-
-		public BoonOfVigor(Spirit riverSpirit,GameState gameState):base(gameState){
-			_ = ActionAsync(riverSpirit);
-		}
-
-		async Task ActionAsync(Spirit riverSpirit){
+		[SpiritCard(BoonOfVigor.Name, 0, Speed.Fast,Element.Sun,Element.Water,Element.Plant)]
+		static public async Task ActionAsync(ActionEngine engine, Spirit self,GameState gameState){
 			var spirit = await engine.SelectSpirit(gameState.Spirits);
-			spirit.Energy += (spirit==riverSpirit) ? 1 : spirit.PurchasedCards.Count;
+			spirit.Energy += (spirit==self) ? 1 : spirit.PurchasedCards.Count;
 		}
 
 	}

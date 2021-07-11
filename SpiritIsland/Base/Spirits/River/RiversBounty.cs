@@ -4,18 +4,15 @@ using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
 
-	[SpiritCard(RiversBounty.Name, 0, Speed.Slow,Element.Sun,Element.Water,Element.Animal)]
-	public class RiversBounty : BaseAction {
+	public class RiversBounty {
+
 		public const string Name = "River's Bounty";
-
-		public RiversBounty(Spirit spirit,GameState gs) : base(gs) {
-			_ = ActionAsync(spirit);
-		}
-
-		async Task ActionAsync(Spirit spirit){
+		[SpiritCard(RiversBounty.Name, 0, Speed.Slow,Element.Sun,Element.Water,Element.Animal)]
+		static public async Task ActionAsync(ActionEngine engine, Spirit self,GameState gameState){
+			bool HasCloseDahan(Space space)=> space.SpacesWithin(1).Any( gameState.HasDahan );
 			var target = await engine.SelectSpace(
 				"Select target space."
-				,spirit.Presence.Range(0).Where(HasCloseDahan)
+				,self.Presence.Range(0).Where(HasCloseDahan)
 			);
 
 			var ctx = new GatherDahanCtx(target,gameState);
@@ -40,11 +37,10 @@ namespace SpiritIsland.Base {
 			// If there are now at least 2 dahan, then add 1 dahan and gain 1 energy
 			if(ctx.DestinationCount>=2){
 				gameState.AddDahan(ctx.Target,1);
-				++spirit.Energy;
+				++self.Energy;
 			}
 		}
 
-		bool HasCloseDahan(Space space)=> space.SpacesWithin(1).Any( gameState.HasDahan );
 
 	}
 

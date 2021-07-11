@@ -10,10 +10,10 @@ namespace SpiritIsland {
 		public GrowthOption[] GrowthOptions { get; protected set; }
 
 		public Spirit(){
-			Hand.Add( new PowerCard( "A", 0, Speed.Fast, Element.Air ) );
-			Hand.Add( new PowerCard( "B", 0, Speed.Fast, Element.Air ) );
-			Hand.Add( new PowerCard( "C", 0, Speed.Fast, Element.Air ) );
-			Hand.Add( new PowerCard( "D", 0, Speed.Fast, Element.Air ) );
+			Hand.Add( new NullPowerCard( "A", 0, Speed.Fast, Element.Air ) );
+			Hand.Add( new NullPowerCard( "B", 0, Speed.Fast, Element.Air ) );
+			Hand.Add( new NullPowerCard( "C", 0, Speed.Fast, Element.Air ) );
+			Hand.Add( new NullPowerCard( "D", 0, Speed.Fast, Element.Air ) );
 		}
 
 		public Spirit( params PowerCard[] initialCards ){

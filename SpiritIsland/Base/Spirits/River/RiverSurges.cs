@@ -48,10 +48,10 @@ namespace SpiritIsland.Base {
 		public override string Text => Name;
 
 		public RiverSurges():base(
-			new PowerCard(typeof(BoonOfVigor)),
-			new PowerCard(typeof(FlashFloods)),
-			new PowerCard(typeof(RiversBounty)),
-			new PowerCard(typeof(WashAway))
+			PowerCard.For(BoonOfVigor.ActionAsync),
+			PowerCard.For(FlashFloods.ActionAsync),
+			PowerCard.For(RiversBounty.ActionAsync),
+			PowerCard.For(WashAway.ActionAsync)
 		){
 			GrowthOptions =  new GrowthOption[]{ 
 				new GrowthOption(

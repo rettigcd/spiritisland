@@ -69,6 +69,7 @@ namespace SpiritIsland.Core {
 
 		protected readonly GameState gameState;
 		protected readonly ActionEngine engine = new ActionEngine();
+
 	}
 
 }

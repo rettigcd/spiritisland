@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
@@ -8,24 +9,13 @@ namespace SpiritIsland.Base {
 
 		public const string Name = "Accelerated Rot";
 
-		public Spirit spirit;
-
 		public AcceleratedRot(Spirit spirit,GameState gs):base(gs){
-			this.spirit = spirit;
-
-			// range 2, Jungle or Wetland
-			engine.decisions.Push(new SelectSpaceGeneric(
-				"Select target space."
-				,spirit.Presence.Range(2).Where(JungleOrWetland)
-				,SelectSpace
-			));
-
-
+			_=ActAsync(spirit);
 		}
 
-		static bool JungleOrWetland(Space space)=>space.Terrain.IsIn(Terrain.Jungle,Terrain.Wetland);
-
-		void SelectSpace(Space space){
+		async Task ActAsync(Spirit spirit){
+			static bool JungleOrWetland(Space space)=>space.Terrain.IsIn(Terrain.Jungle,Terrain.Wetland);
+			var space = await engine.SelectSpace("Select target",spirit.Presence.Range(2).Where(JungleOrWetland));
 			// 2 fear, 4 damage
 			int damageToInvaders = 4;
 			gameState.AddFear(2);

@@ -15,7 +15,7 @@
 	}
 
 
-	[System.AttributeUsage(System.AttributeTargets.Class)]
+	[System.AttributeUsage(System.AttributeTargets.Class|System.AttributeTargets.Method)]
 	public class SpiritCardAttribute : PowerCardAttribute {
 		public SpiritCardAttribute(string name, int cost, Speed speed, params Element[] elements)
 			:base(name,cost,speed,PowerType.Spirit,elements)

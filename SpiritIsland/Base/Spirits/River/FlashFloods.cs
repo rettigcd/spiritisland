@@ -5,22 +5,17 @@ using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
 
-	[SpiritCard(FlashFloods.Name,2,Speed.Fast,Element.Sun,Element.Water)]
-	public class FlashFloods : BaseAction {
+	public class FlashFloods {
 
 		public const string Name = "Flash Floods";
-
-		public FlashFloods(Spirit spirit,GameState gameState):base(gameState){
-			_ = ActionAsync(spirit);
-		}
-
-		async Task ActionAsync(Spirit spirit){
+		[SpiritCard(FlashFloods.Name,2,Speed.Fast,Element.Sun,Element.Water)]
+		static public async Task ActionAsync(ActionEngine engine, Spirit self,GameState gameState){
 
 			bool LandHasInvaders(Space space) => space.IsLand && gameState.InvadersOn(space).InvaderTypesPresent.Any();
 
 			var target = await engine.SelectSpace(
 				"Select target space."
-				,spirit.Presence.Range(1).Where(LandHasInvaders)
+				,self.Presence.Range(1).Where(LandHasInvaders)
 			);
 
 			// +1 damage, if costal +1 additional damage

@@ -1,21 +1,24 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
 
 	// major
 	[MajorCard(Tsunami.Name,6,Speed.Slow,Element.Water,Element.Earth)]
-	public class Tsunami : TargetSpaceAction {
+	public class Tsunami : BaseAction {
 
 		public const string Name = "Tsunami";
 
-		public Tsunami(Spirit spirit,GameState gs)
-			:base(spirit,gs,2,From.SacredSite)
-		{}
+		public Tsunami(Spirit spirit,GameState gs):base(gs){ _ = ActAsync(spirit); }
 
-		protected override bool FilterSpace( Space space ) => space.IsCostal;
+		async Task ActAsync(Spirit self){
 
-		protected override void SelectSpace(Space space){
+			Space space = await engine.SelectSpace(
+				"Select target",
+				self.SacredSites.Range(2).Where(s=>s.IsCostal)
+			);
+
 			// 2 fear
 			gameState.AddFear(2);
 			// +8 damage
@@ -40,7 +43,8 @@ namespace SpiritIsland.Base {
 						gameState.AddDahan(otherCoast,-1);
 				}
 			}
-		}
+
+		} 
 		
 	}
 

@@ -4,18 +4,20 @@ using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
 
-	[SpiritCard(WashAway.Name, 1, Speed.Slow, Element.Water, Element.Earth)]
-	public class WashAway : BaseAction {
+	public class WashAway {
 
 		public const string Name = "Wash Away";
 
-		public WashAway(Spirit spirit,GameState gameState):base(gameState){
-			_ = ActionAsync(spirit);
-		}
+		[SpiritCard(WashAway.Name, 1, Speed.Slow, Element.Water, Element.Earth)]
+		static public async Task ActionAsync(ActionEngine engine, Spirit self,GameState gameState){
 
-		async Task ActionAsync(Spirit spirit){
+			bool HasTownOrExplorer(Space space){
+				var sum = gameState.InvadersOn(space);
+				return sum.HasExplorer || sum.HasTown;
+			}
+
 			var target = await engine.SelectSpace("Select target space."
-				,spirit.Presence.Range(1).Where(HasTownOrExplorer)
+				,self.Presence.Range(1).Where(HasTownOrExplorer)
 			);
 
 			var group = gameState.InvadersOn(target);
@@ -36,11 +38,6 @@ namespace SpiritIsland.Base {
 				new MoveInvader(invader, group.Space, destination).Apply(gameState);
 				availableInvaders = group.Filter("T@2","T@1","E@1");
 			}
-		}
-
-		bool HasTownOrExplorer(Space space){
-			var sum = gameState.InvadersOn(space);
-			return sum.HasExplorer || sum.HasTown;
 		}
 
 	}

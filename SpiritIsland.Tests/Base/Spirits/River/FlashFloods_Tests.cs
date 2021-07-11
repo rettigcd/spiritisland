@@ -8,7 +8,7 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 	public class FlashFloods_Tests : SpiritCards_Tests {
 
 		// immutable
-		readonly PowerCard flashFloodsCard = PowerCard.For<FlashFloods>();
+		readonly PowerCard flashFloodsCard = PowerCard.For(FlashFloods.ActionAsync);
 
 		[Fact]
 		public void FlashFloods_Inland() {
@@ -36,7 +36,7 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 			Assert.Contains(card,spirit.GetUnresolvedActionFactories(card.Speed).OfType<PowerCard>().ToList()); // is fast
 
 			//  When: activating flash flood
-			action = (FlashFloods)card.Bind(spirit,gameState);
+			action = card.Bind(spirit,gameState);
 
 			// Then: Auto selecting only target space avaialbe
 
@@ -75,7 +75,7 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 			Assert.Contains(card,spirit.GetUnresolvedActionFactories(card.Speed).OfType<PowerCard>().ToList()); // is fast
 
 			//  When: activating flash flood
-			action = (FlashFloods)card.Bind(spirit,gameState);
+			action = card.Bind(spirit,gameState);
 
 			//// Then: can target any land within 1 of presence.
 			//Assert.False(action.IsResolved);

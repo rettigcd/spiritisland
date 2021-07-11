@@ -28,10 +28,10 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 		public const string Name = "Lightning's Swift Strike";
 
 		public LightningsSwiftStrike():base(
-			new PowerCard(typeof(HarbingersOfTheLightning)),
-			new PowerCard(typeof(LightningsBoon)),
-			new PowerCard(typeof(RagingStorm)),
-			new PowerCard(typeof(ShatterHomesteads))
+			PowerCard.For<HarbingersOfTheLightning>(),
+			PowerCard.For<LightningsBoon>(),
+			PowerCard.For<RagingStorm>(),
+			PowerCard.For<ShatterHomesteads>()
 		){
 			GrowthOptions = new GrowthOption[]{
 				new GrowthOption( 
