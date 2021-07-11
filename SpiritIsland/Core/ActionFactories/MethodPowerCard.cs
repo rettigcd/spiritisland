@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland.Core {
 	class MethodPowerCard : PowerCard {
-		readonly Func<ActionEngine,Spirit,GameState,Task> actionType;
-		public MethodPowerCard(Func<ActionEngine,Spirit,GameState,Task> actionType){
-			MethodBase m = System.Reflection.RuntimeReflectionExtensions.GetMethodInfo( actionType );
+//		readonly Func<ActionEngine,Spirit,GameState,Task> actionType;
+		readonly MethodBase m;
+		public MethodPowerCard(MethodBase m){
 			var pca = m.GetCustomAttributes<PowerCardAttribute>().ToArray();
 			if(pca.Length == 0) throw new ArgumentException( m.Name + " missing PowerCard attribute." );
 			if(pca.Length != 1) throw new ArgumentException( m.Name + " has multiple PowerCard attributes." );
@@ -18,20 +18,23 @@ namespace SpiritIsland.Core {
 			Cost = attr.Cost;
 			Elements = attr.Elements;
 			PowerType = attr.PowerType;
-			this.actionType = actionType;
+//			this.actionType = actionType;
+			this.m = m;
 		}
 
 		public override IAction Bind( Spirit spirit, GameState gameState ) {
-			return new MethodBaseAction(spirit,gameState,actionType);
+			return new MethodBaseAction(spirit,gameState,m);
 		}
 
 		class MethodBaseAction : BaseAction {
 			public MethodBaseAction(
-				Spirit spirit, 
-				GameState gameState,Func<ActionEngine,Spirit,GameState,Task> actionType
+				Spirit spirit,
+				GameState gameState,
+				MethodBase m
 			):base(gameState)
 			{
-				_ = actionType(engine,spirit,gameState);
+				m.Invoke(null,new object[]{engine,spirit,gameState});
+//				_ = actionType(engine,spirit,gameState);
 			}
 		}
 	}

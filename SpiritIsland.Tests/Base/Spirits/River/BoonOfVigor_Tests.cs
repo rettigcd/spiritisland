@@ -62,7 +62,7 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 
 		[Fact]
 		public void BoonOfVigor_Stats() {
-			Assert_CardStatus( PowerCard.For(BoonOfVigor.ActionAsync), 0, Speed.Fast, "SWP" );
+			Assert_CardStatus( PowerCard.For<BoonOfVigor>(), 0, Speed.Fast, "SWP" );
 		}
 
 	}

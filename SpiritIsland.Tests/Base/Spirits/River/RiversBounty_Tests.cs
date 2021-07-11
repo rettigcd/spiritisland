@@ -32,7 +32,7 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 
 		[Fact]
 		public void Stats() {
-			var card = PowerCard.For(RiversBounty.ActionAsync);
+			var card = PowerCard.For<RiversBounty>();
 			Assert_CardStatus( card, 0, Speed.Slow, "SWB" );
 		}
 

@@ -3,13 +3,10 @@ using System.Linq;
 
 namespace SpiritIsland.Core {
 	class ActionClassPowerCard : PowerCard {
-		public ActionClassPowerCard(Type actionType){
-
-			var pca = System.Attribute.GetCustomAttributes(actionType)
-				.OfType<PowerCardAttribute>()
-				.ToArray();
-			if(pca.Length==0) throw new ArgumentException(actionType.Name+" missing PowerCard attribute.");
-			if(pca.Length!=1) throw new ArgumentException(actionType.Name+" has multiple PowerCard attributes.");
+		public ActionClassPowerCard(Type actionType) {
+			PowerCardAttribute[] pca = FindPowerCardAttributes( actionType );
+			if(pca.Length == 0) throw new ArgumentException( actionType.Name + " missing PowerCard attribute." );
+			if(pca.Length != 1) throw new ArgumentException( actionType.Name + " has multiple PowerCard attributes." );
 			var attr = pca[0];
 
 			Speed = attr.Speed;
@@ -20,6 +17,13 @@ namespace SpiritIsland.Core {
 
 			this.actionType = actionType;
 		}
+
+		static public PowerCardAttribute[] FindPowerCardAttributes( Type actionType ) {
+			return Attribute.GetCustomAttributes( actionType )
+				.OfType<PowerCardAttribute>()
+				.ToArray();
+		}
+
 		readonly Type actionType;
 
 		public override IAction Bind(Spirit spirit,GameState gameState){

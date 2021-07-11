@@ -1,13 +1,15 @@
-﻿namespace SpiritIsland.Core {
+﻿using System;
 
-	[System.AttributeUsage(System.AttributeTargets.Class)]
+namespace SpiritIsland.Core {
+
+	[AttributeUsage(AttributeTargets.Class)]
 	public class MinorCardAttribute : PowerCardAttribute {
 		public MinorCardAttribute(string name, int cost, Speed speed, params Element[] elements)
 			:base(name,cost,speed,PowerType.Minor,elements)
 		{ }
 	}
 
-	[System.AttributeUsage(System.AttributeTargets.Class)]
+	[AttributeUsage(AttributeTargets.Class|AttributeTargets.Method)]
 	public class MajorCardAttribute : PowerCardAttribute {
 		public MajorCardAttribute(string name, int cost, Speed speed, params Element[] elements)
 			:base(name,cost,speed,PowerType.Major,elements)
@@ -15,15 +17,15 @@
 	}
 
 
-	[System.AttributeUsage(System.AttributeTargets.Class|System.AttributeTargets.Method)]
+	[AttributeUsage(AttributeTargets.Class|AttributeTargets.Method)]
 	public class SpiritCardAttribute : PowerCardAttribute {
 		public SpiritCardAttribute(string name, int cost, Speed speed, params Element[] elements)
 			:base(name,cost,speed,PowerType.Spirit,elements)
 		{ }
 	}
 
-	[System.AttributeUsage(System.AttributeTargets.Class)]
-	public class PowerCardAttribute : System.Attribute {
+	[AttributeUsage(AttributeTargets.Class)]
+	public class PowerCardAttribute : Attribute {
 
 		protected PowerCardAttribute(string name, int cost, Speed speed, PowerType type, Element[] elements){
 			this.Name = name;
@@ -43,8 +45,8 @@
 
 	public enum PowerType{ Minor, Major, Spirit }
 
-	[System.AttributeUsage(System.AttributeTargets.Class)]
-	public class InnateOptionAttribute : System.Attribute {
+	[AttributeUsage(AttributeTargets.Class)]
+	public class InnateOptionAttribute : Attribute {
 		public InnateOptionAttribute(params Element[] elements){
 			this.Elements = elements;
 		}

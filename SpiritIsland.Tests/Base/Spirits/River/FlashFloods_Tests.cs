@@ -8,7 +8,7 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 	public class FlashFloods_Tests : SpiritCards_Tests {
 
 		// immutable
-		readonly PowerCard flashFloodsCard = PowerCard.For(FlashFloods.ActionAsync);
+		readonly PowerCard flashFloodsCard = PowerCard.For<FlashFloods>();
 
 		[Fact]
 		public void FlashFloods_Inland() {
