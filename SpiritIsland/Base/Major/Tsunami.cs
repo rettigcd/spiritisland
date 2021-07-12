@@ -14,10 +14,7 @@ namespace SpiritIsland.Base {
 
 		async Task ActAsync(Spirit self){
 
-			Space space = await engine.SelectSpace(
-				"Select target",
-				self.SacredSites.Range(2).Where(s=>s.IsCostal)
-			);
+			Space space = await engine.TargetSpace_SacredSite(2,s=>s.IsCostal);
 
 			// 2 fear
 			gameState.AddFear(2);

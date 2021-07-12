@@ -15,9 +15,8 @@ namespace SpiritIsland.Base {
 				&& (CanRemoveBlight(space) || gameState.HasInvaders(space));
 
 			// range 1 from SS
-			var target = await engine.SelectSpace("Select target"
-				,spirit.SacredSites.Range(1).Where(CanDamageOrRemoveBlight)
-			); // !!! there might be 0 spaces that qualify
+			var target = await engine.TargetSpace_SacredSite(1,CanDamageOrRemoveBlight); 
+			// !!! there might be 0 spaces that qualify
 
 			async Task<bool> UserSelectsDamage(){
 				const string damageInvaderKey = "damageInvaders";

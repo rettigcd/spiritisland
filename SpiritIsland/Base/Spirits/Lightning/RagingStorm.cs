@@ -8,11 +8,11 @@ namespace SpiritIsland.Base {
 	public class RagingStorm : BaseAction {
 		public const string Name = "Raging Storm";
 
-		public RagingStorm(Spirit spirit,GameState gs):base(spirit,gs){_ = Act(spirit);}
+		public RagingStorm(Spirit spirit,GameState gs):base(spirit,gs){_ = Act();}
 
-		async Task Act(Spirit spirit){
+		async Task Act(){
 			// range 1, any
-			var target = await engine.SelectSpace("Select target", spirit.Presence.Range(1));
+			var target = await engine.TargetSpace_Presence(1);
 
 			var orig = gameState.InvadersOn(target);
 

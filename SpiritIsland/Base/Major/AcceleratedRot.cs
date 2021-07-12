@@ -15,7 +15,7 @@ namespace SpiritIsland.Base {
 
 		async Task ActAsync(Spirit spirit){
 			static bool JungleOrWetland(Space space)=>space.Terrain.IsIn(Terrain.Jungle,Terrain.Wetland);
-			var space = await engine.SelectSpace("Select target",spirit.Presence.Range(2).Where(JungleOrWetland));
+			var space = await engine.TargetSpace_Presence(2,JungleOrWetland);
 			// 2 fear, 4 damage
 			int damageToInvaders = 4;
 			gameState.AddFear(2);

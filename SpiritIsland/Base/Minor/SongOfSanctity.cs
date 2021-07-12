@@ -13,20 +13,17 @@ namespace SpiritIsland.Base {
 		public SongOfSanctity(Spirit spirit,GameState gs)
 			:base(spirit,gs)
 		{
-			_ = ActionAsync(spirit);
+			_ = ActionAsync();
 		}
 
-		async Task ActionAsync(Spirit spirit){
+		async Task ActionAsync(){
 
 			bool JungleOrMountain_Plus_InvadersOrBlight( Space space ) {
 				return space.Terrain.IsIn(Terrain.Mountain,Terrain.Jungle)
 					&& (gameState.HasBlight(space) || gameState.InvadersOn(space).HasExplorer);
 			}
 
-			var target = await engine.SelectSpace( 
-				"Select target"
-				,spirit.Presence.Range(1).Where(JungleOrMountain_Plus_InvadersOrBlight)
-			);
+			var target = await engine.TargetSpace_Presence(1,JungleOrMountain_Plus_InvadersOrBlight);
 
 			var group = gameState.InvadersOn(target);
 

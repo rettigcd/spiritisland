@@ -10,9 +10,7 @@ namespace SpiritIsland.Base {
 		[MajorCard("Pillar of Living Flame",5,Speed.Slow,Element.Fire)]
 		static public async Task ActionAsync(ActionEngine engine){
 			var (self,gameState) = engine;
-			var targetLand = await engine.SelectSpace("Select target",
-				self.SacredSites.Range(2).Where(s=>s.IsLand)
-			);
+			var targetLand = await engine.TargetSpace_SacredSite(2,s=>s.IsLand);
 
 			// 3 fear, 5 damage
 			// if you have 4 fire, +2 fear, +5 damage

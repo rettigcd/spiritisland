@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SpiritIsland.Core;
@@ -37,13 +38,17 @@ namespace SpiritIsland.Core {
 			=> engine.SelectSpirit(engine.GameState.Spirits);
 
 		static public async Task<Space> TargetSpace_Presence(this ActionEngine engine, int range){
-			return await engine.SelectSpace("Select target."
-				,engine.Self.Presence.Range(range));
+			return await engine.SelectSpace("Select target.",engine.Self.Presence.Range(range));
+		}
+		static public async Task<Space> TargetSpace_Presence(this ActionEngine engine, int range, Func<Space,bool> filter){
+			return await engine.SelectSpace("Select target.",engine.Self.Presence.Range(range).Where(filter));
 		}
 
 		static public async Task<Space> TargetSpace_SacredSite(this ActionEngine engine, int range){
-			return await engine.SelectSpace("Select target."
-				,engine.Self.SacredSites.Range(range));
+			return await engine.SelectSpace("Select target.",engine.Self.SacredSites.Range(range));
+		}
+		static public async Task<Space> TargetSpace_SacredSite(this ActionEngine engine, int range, Func<Space,bool> filter){
+			return await engine.SelectSpace("Select target.",engine.Self.SacredSites.Range(range).Where(filter));
 		}
 		#endregion
 
@@ -105,24 +110,65 @@ namespace SpiritIsland.Core {
 		}
 
 		static public async Task GatherDahan( this ActionEngine eng, Space target, int dahanToGather ) {
-			var neighborsWithDahan = target.Neighbors.Where( eng.GameState.HasDahan ).ToArray();
-			while(dahanToGather > 0 && neighborsWithDahan.Length > 0) {
-				Space source = await eng.SelectSpace(
-					"Select source land to gather Dahan into " + target.Label,
-					neighborsWithDahan, true
-				);
+  			int gathered = 0;
+			var neighborsWithDahan = target.Neighbors.Where(eng.GameState.HasDahan).ToArray();
+			while(gathered<dahanToGather && neighborsWithDahan.Length>0){
+				var source = await eng.SelectSpace( $"Gather dahan {gathered+1} of {dahanToGather} from:", neighborsWithDahan, true);
 				if(source == null) break;
 
-				new MoveDahan( source, target ).Apply( eng.GameState );
-				--dahanToGather;
-				neighborsWithDahan = target.Neighbors.Where( eng.GameState.HasDahan ).ToArray();
+				eng.GameState.AddDahan(source,-1);
+				eng.GameState.AddDahan(target,1);
+
+				++gathered;
+				neighborsWithDahan = target.Neighbors.Where(eng.GameState.HasDahan).ToArray();
+			}
+
+		}
+
+		static public async Task PushUpToNDahan( this ActionEngine eng, Space source, int dahanToPush) {
+			dahanToPush = System.Math.Min(dahanToPush,eng.GameState.GetDahanOnSpace(source));
+			while(0<dahanToPush){
+				Space destination = await eng.SelectSpace("Select destination for dahan"
+					,source.Neighbors
+					,true
+				);
+				if(destination == null) break;
+				eng.GameState.AddDahan(source,-1);
+				eng.GameState.AddDahan(destination,1);
+				--dahanToPush;
 			}
 		}
 
+		static public async Task PushUpToNInvaders( this ActionEngine eng, Space source, int countToPush
+			,params Invader[] healthyInvaders
+		) {
+			Invader[] CalcInvaderTypes() => eng.GameState.InvadersOn(source).FilterByHealthy(healthyInvaders);
+			var invaders = CalcInvaderTypes();
+			while(0<countToPush && 0<invaders.Length){
+				var invader = await eng.SelectInvader("Select invader to push",invaders,true);
+				if(invader==null) break;
+				await eng.PushInvader(source,invader);
+
+				--countToPush;
+				invaders = CalcInvaderTypes();
+			}
+		}
+
+
 		static public async Task PushInvader( this ActionEngine eng, Space source, Invader invader){
-  			var destination = await eng.SelectSpace("Select space to push town",source.Neighbors);
+  			var destination = await eng.SelectSpace("Push "+invader.Summary+" to"
+				,source.Neighbors.Where(x=>x.IsLand)
+			);
 			eng.GameState.Adjust(source,invader,-1);
 			eng.GameState.Adjust(destination,invader,1);
+		}
+
+		static public async Task Push1Dahan( this ActionEngine eng, Space source){
+  			var destination = await eng.SelectSpace("Push dahan to"
+				,source.Neighbors.Where(x=>x.IsLand)
+			);
+			eng.GameState.AddDahan(source,-1);
+			eng.GameState.AddDahan(destination,1);
 		}
 
 	}

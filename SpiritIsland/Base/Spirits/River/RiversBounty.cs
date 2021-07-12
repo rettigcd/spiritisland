@@ -12,10 +12,7 @@ namespace SpiritIsland.Base {
 			var (self, gameState) = eng;
 
 			bool HasCloseDahan( Space space ) => space.SpacesWithin( 1 ).Any( gameState.HasDahan );
-			var target = await eng.SelectSpace(
-				"Select target space."
-				, self.Presence.Range( 0 ).Where( HasCloseDahan )
-			);
+			var target = await eng.TargetSpace_Presence(0,HasCloseDahan );
 
 			// Gather up to 2 Dahan
 			await eng.GatherDahan( target, 2 );

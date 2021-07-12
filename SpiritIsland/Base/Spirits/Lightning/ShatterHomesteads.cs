@@ -8,10 +8,10 @@ namespace SpiritIsland.Base {
 		public const string Name = "Shatter Homesteads";
 
 		// range 2 from sacred site
-		public ShatterHomesteads(Spirit spirit,GameState gameState):base(spirit,gameState){_=Act(spirit);}
+		public ShatterHomesteads(Spirit spirit,GameState gameState):base(spirit,gameState){_=Act();}
 
-		async Task Act(Spirit spirit){
-			var space = await engine.SelectSpace("Select target land",spirit.SacredSites.Range(2));
+		async Task Act(){
+			var space = await engine.TargetSpace_SacredSite(2);
 			// Destroy 1 town
 			var grp = gameState.InvadersOn(space);
 			if(grp.HasTown){

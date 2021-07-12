@@ -27,19 +27,17 @@ namespace SpiritIsland.Base.Spirits.Shadows {
 			// Select Land
 			var landsToPushInvadersFrom = spirit.Presence.Where(HasExplorerOrTown).ToArray();
 			if(landsToPushInvadersFrom.Length == 0) return;
-			var space = await engine.SelectSpace("Select land to push 1 exploer & 1 town",landsToPushInvadersFrom,true);
+			var space = await engine.SelectSpace("Select land to push 1 exploer & 1 town from",landsToPushInvadersFrom,true);
 			if(space==null) return;
 
+			// duplicated in shadows of the burning forest
 			var grp = gs.InvadersOn(space);
 			// Push Town
 			var townInvaders = grp.Filter("T@2","T@1");
 			if(townInvaders.Length>0){
 				var townInvader = await engine.SelectInvader("Select town to push",townInvaders,true);
-				if(townInvader != null){
-					var destination = await engine.SelectSpace("Select space to push town",space.Neighbors);
-					gs.Adjust(space,townInvader,-1);
-					gs.Adjust(destination,townInvader,1);
-				}
+				if(townInvader != null)
+					await engine.PushInvader(space,townInvader);
 			}
 			// Push Explorer
 			if(grp.HasExplorer){

@@ -12,13 +12,11 @@ namespace SpiritIsland.Base {
 		public HarbingersOfTheLightning(Spirit spirit,GameState gameState)
 			:base(spirit,gameState)
 		{
-			_ = ActionAsync(spirit);
+			_ = ActionAsync();
 		}
 
-		async Task ActionAsync(Spirit spirit){
-			Space source = await engine.SelectSpace("Select target."
-				,spirit.SacredSites.Range(1).Where(gameState.HasDahan)
-			);
+		async Task ActionAsync(){
+			Space source = await engine.TargetSpace_SacredSite(1,gameState.HasDahan);
 
 			// Push up to 2 dahan.
 
@@ -30,16 +28,7 @@ namespace SpiritIsland.Base {
 				})
 				.ToDictionary(n=>n,n=>gameState.GetDahanOnSpace(n));
 
-			int dahanToPush = Math.Min(2,gameState.GetDahanOnSpace(source));
-			while(dahanToPush>0){
-				Space destination = await engine.SelectSpace("Select destination for dahan"
-					,source.Neighbors
-					,true
-				);
-				gameState.AddDahan(source,-1);
-				gameState.AddDahan(destination,1);
-				--dahanToPush;
-			}
+			await engine.PushUpToNDahan(source,2);
 
 			bool pushedToBuildingSpace = landsWithBuildings
 				.Any(pair=>gameState.GetDahanOnSpace(pair.Key)>pair.Value);

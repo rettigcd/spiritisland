@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using SpiritIsland.Core;
 
 namespace SpiritIsland.Base.Minor {
@@ -10,12 +6,15 @@ namespace SpiritIsland.Base.Minor {
 	class DarkAndTangledWoods {
 
 		[MinorCard("Dark and Tangled Woods", 1, Speed.Fast, Element.Moon, Element.Earth, Element.Plant)]
-		static public async Task Act(ActionEngine _){
+		static public async Task Act(ActionEngine eng){
 			// range 1
-
+			var target = await eng.TargetSpace_Presence(1);
 			// 2 fear
-			// if target is M/J, Defend 3
+			eng.GameState.AddFear(2);
 
+			// if target is M/J, Defend 3
+			if(target.Terrain.IsIn(Terrain.Jungle,Terrain.Mountain))
+				eng.GameState.Defend(target,3);
 		}
 
 	}

@@ -22,7 +22,7 @@ namespace SpiritIsland.Core {
 				_ => throw new ArgumentOutOfRangeException(nameof(from))
 			};
 			engine.decisions.Push(new SelectSpaceGeneric(
-				"Select target space."
+				"Select target."
 				,source.Range(range).Where(FilterSpace)
 				,SelectSpace // ! overriden by drived class, might not be initialized yet
 			));

@@ -7,12 +7,9 @@ namespace SpiritIsland.Base {
 	[Core.MinorCard("Delusions of Danger",1,Speed.Fast,Element.Sun,Element.Moon,Element.Air)]
 	class DelusionsOfDanger : BaseAction {
 
-		readonly Spirit spirit;
-
 		public DelusionsOfDanger(Spirit spirit,GameState gs)
 			:base(spirit,gs)
 		{
-			this.spirit = spirit;
 			_ = ActionAsync();
 		}
 
@@ -32,12 +29,8 @@ namespace SpiritIsland.Base {
 		async Task DoPush(){
 			bool HasExplorer(Space space) => gameState.InvadersOn(space).HasExplorer;
 
-			var target = await engine.SelectSpace("Select target",
-				spirit.Presence.Range(1).Where(HasExplorer)
-			);
-			var destination = await engine.SelectSpace("Select explorer destination",target.Neighbors);
-			new MoveInvader(Invader.Explorer, target, destination).Apply(gameState);
-
+			var target = await engine.TargetSpace_Presence(1,HasExplorer);
+			await engine.PushInvader(target,Invader.Explorer);
 		}
 
 		// Option 2 - 2 fear

@@ -38,6 +38,11 @@ namespace SpiritIsland {
 		public Invader[] Filter(params Invader[] allowedTypes ){
 			return InvaderTypesPresent.Intersect(allowedTypes).ToArray();
 		}
+		public Invader[] FilterByHealthy(params Invader[] allowedTypes ){
+			return InvaderTypesPresent
+				.Where(i=>allowedTypes.Contains(i.Healthy))
+				.ToArray();
+		}
 
 		public void ApplyDamage(DamagePlan damagePlan) {
 			changed.Add( damagePlan.Invader );			--dd[ damagePlan.Invader ];

@@ -16,9 +16,7 @@ namespace SpiritIsland.Base {
 				return sum.HasExplorer || sum.HasTown;
 			}
 
-			var target = await engine.SelectSpace("Select target space."
-				,self.Presence.Range(1).Where(HasTownOrExplorer)
-			);
+			var target = await engine.TargetSpace_Presence(1,HasTownOrExplorer);
 
 			var group = gameState.InvadersOn(target);
 			int numToPush = 3;
@@ -29,13 +27,10 @@ namespace SpiritIsland.Base {
 					,true
 				);
 				if(invader == null) break;
-				var destination = await engine.SelectSpace("Select destination for "+invader.Summary
-					,target.Neighbors.Where(x=>x.IsLand),false
-				);
+				await engine.PushInvader(group.Space,invader);
 
 				--numToPush;
 				group[invader]--;
-				new MoveInvader(invader, group.Space, destination).Apply(gameState);
 				availableInvaders = group.Filter("T@2","T@1","E@1");
 			}
 		}

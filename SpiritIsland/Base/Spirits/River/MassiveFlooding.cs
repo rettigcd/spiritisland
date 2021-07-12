@@ -31,10 +31,7 @@ namespace SpiritIsland.Base {
 			
 			string key = await engine.SelectText("Select Innate option", new string[]{ k1,k2,k3}.Take(count).ToArray() );
 
-			space = await engine.SelectSpace(
-				"Select target space for: "// + key
-				,spirit.SacredSites.Range(1).Where(HasExplorersOrTowns)
-			); 
+			space = await engine.TargetSpace_SacredSite(1,HasExplorersOrTowns);
 
 			switch(key){
 				case k1: await Option1(); break;
@@ -73,11 +70,11 @@ namespace SpiritIsland.Base {
 
 		async Task PushTownOrExplorer(int count, bool allowShortCircuit) {
 			var invadersToPush = InvadersForPushing();
-			while(count > 0 && invadersToPush.Length > 0) {
+			while(0<count && 0<invadersToPush.Length) {
 				var invader = await engine.SelectInvader( "Select invader to push.", invadersToPush, allowShortCircuit );
 				if(invader == null) break;
-				var destination = await engine.SelectSpace( "Select destination for " + invader.Summary, space.Neighbors );
-				new MoveInvader( invader, space, destination ).Apply( gameState );
+				await engine.PushInvader(space,invader);
+
 				invadersToPush = InvadersForPushing();
 				--count;
 			}

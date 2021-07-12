@@ -5,19 +5,16 @@ using SpiritIsland.Core;
 namespace SpiritIsland.Base {
 
 
-	[MinorCard(EncompassingWard.Name,1,Speed.Fast,Element.Sun,Element.Water,Element.Earth)]
-	public class EncompassingWard : BaseAction {
+	public class EncompassingWard {
 
 		public const string Name = "Encompassing Ward";
 
-		public EncompassingWard(Spirit spirit,GameState gs):base(spirit,gs){
-			_ = Act();
-		}
-		async Task Act(){
+		[MinorCard(EncompassingWard.Name,1,Speed.Fast,Element.Sun,Element.Water,Element.Earth)]
+		static public async Task Act(ActionEngine engine){
 			var spirit = await engine.TargetSpirit();
 			// defend 2 in every land where spirit has presence
 			foreach(var space in spirit.Presence.Distinct())
-				gameState.Defend(space,2);
+				engine.GameState.Defend(space,2);
 		}
 	}
 }

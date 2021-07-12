@@ -18,13 +18,9 @@ namespace SpiritIsland.Base {
 
 		public const string Name = "Thundering Destruction";
 
-		readonly Spirit lightning;
-
 		public ThunderingDestruction(Spirit lightning,GameState gs)
 			:base(lightning,gs)
 		{
-			this.lightning = lightning;
-
 			int fire  = lightning.Elements(Element.Fire);
 			int air   = lightning.Elements(Element.Air);
 			int water = lightning.Elements(Element.Water);
@@ -41,9 +37,8 @@ namespace SpiritIsland.Base {
 
 		async Task DestroyTowns(int count){
 			bool HasTown(Space space)=>gameState.InvadersOn(space).HasTown;
-			var target = await engine.SelectSpace("Select target",
-				lightning.SacredSites.Range(1).Where(HasTown)
-			);
+			var target = await engine.TargetSpace_SacredSite(1,HasTown);
+
 			var grp = gameState.InvadersOn(target);
 			var invadersToDestroy = grp.Filter("T@2","T@1");
 			while(count>0 && invadersToDestroy.Length >0){
@@ -65,10 +60,7 @@ namespace SpiritIsland.Base {
 				return grp.HasTown || grp.HasCity;
 			}
 
-			var target = await engine.SelectSpace(
-				"Select target",
-				lightning.SacredSites.Range(1).Where(HasTownOrCity)
-			);
+			var target = await engine.TargetSpace_SacredSite(1,HasTownOrCity);
 			var grp = gameState.InvadersOn(target);
 			var invadersToDestroy = grp.Filter("C@3","C@2","C@1","T@2","T@1");
 			while(count>0 && invadersToDestroy.Length >0){
