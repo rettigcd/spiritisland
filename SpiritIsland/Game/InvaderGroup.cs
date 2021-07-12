@@ -63,6 +63,13 @@ namespace SpiritIsland {
 		readonly HashSet<Invader> changed = new HashSet<Invader>();
 		public IEnumerable<Invader> Changed => changed.Where(i=>i.Health != 0);
 
+		public int Total {  get {
+			int total = 0;
+			foreach(var k in InvaderTypesPresent)
+				total += this[k];
+			return total;
+		} }
+
 		public int DamageInflicted => dict
 			.Select(p=>p.Value * p.Key.Healthy.Health)
 			.Sum();

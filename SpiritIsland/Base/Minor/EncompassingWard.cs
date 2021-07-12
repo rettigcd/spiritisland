@@ -14,7 +14,7 @@ namespace SpiritIsland.Base {
 			_ = Act();
 		}
 		async Task Act(){
-			var spirit = await engine.SelectSpirit();
+			var spirit = await engine.TargetSpirit();
 			// defend 2 in every land where spirit has presence
 			foreach(var space in spirit.Presence.Distinct())
 				gameState.Defend(space,2);

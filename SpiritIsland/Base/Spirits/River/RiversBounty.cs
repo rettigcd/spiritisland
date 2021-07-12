@@ -8,41 +8,24 @@ namespace SpiritIsland.Base {
 
 		public const string Name = "River's Bounty";
 		[SpiritCard(RiversBounty.Name, 0, Speed.Slow,Element.Sun,Element.Water,Element.Animal)]
-		static public async Task ActionAsync(ActionEngine eng){
-			var (self,gameState) = eng;
+		static public async Task ActionAsync(ActionEngine eng) {
+			var (self, gameState) = eng;
 
-			bool HasCloseDahan(Space space)=> space.SpacesWithin(1).Any( gameState.HasDahan );
+			bool HasCloseDahan( Space space ) => space.SpacesWithin( 1 ).Any( gameState.HasDahan );
 			var target = await eng.SelectSpace(
 				"Select target space."
-				,self.Presence.Range(0).Where(HasCloseDahan)
+				, self.Presence.Range( 0 ).Where( HasCloseDahan )
 			);
 
-			var ctx = new GatherDahanCtx(target,gameState);
-
 			// Gather up to 2 Dahan
-			int dahanToGather = 2;
-			while(dahanToGather>0 && ctx.neighborCounts.Keys.Any()){
-				Space source = await eng.SelectSpace(
-					"Select source land to gather Dahan into "+ctx.Target.Label,
-					ctx.neighborCounts.Keys,true
-				);
-				if(source == null) break;
-
-				if(source != ctx.Target){
-					++ctx.DestinationCount;
-					--ctx.neighborCounts[source];
-				}
-				new MoveDahan(source,ctx.Target).Apply(gameState);
-				--dahanToGather;
-			}
+			await eng.GatherDahan( target, 2 );
 
 			// If there are now at least 2 dahan, then add 1 dahan and gain 1 energy
-			if(ctx.DestinationCount>=2){
-				gameState.AddDahan(ctx.Target,1);
+			if(gameState.GetDahanOnSpace( target ) >= 2) {
+				gameState.AddDahan( target, 1 );
 				++self.Energy;
 			}
 		}
-
 
 	}
 

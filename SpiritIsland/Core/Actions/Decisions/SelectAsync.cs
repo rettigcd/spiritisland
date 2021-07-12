@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using SpiritIsland.Core;
 
-namespace SpiritIsland.Base {
+namespace SpiritIsland.Core {
 
 	public class SelectAsync<T> : IDecision where T:class,IOption {
 

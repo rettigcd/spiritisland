@@ -3,13 +3,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using SpiritIsland.Core;
 
-namespace SpiritIsland.Base {
+namespace SpiritIsland.Core {
 
 	// where is the best place for these methods to live?
 	// Engine?   ActionBase?   Extension Methods?
 	static class ActionEngineExtensions {
 
-		static public Task<Spirit> SelectSpirit( this ActionEngine engine, params Spirit[] spirits ) {
+		static public Task<Spirit> SelectSpirit( this ActionEngine engine, Spirit[] spirits ) {
 			var result = new TaskCompletionSource<Spirit>();
 
 			engine.decisions.Push( new SelectSpirit( spirits
@@ -28,6 +28,24 @@ namespace SpiritIsland.Base {
 			engine.decisions.Push( new SelectAsync<Space>( prompt, spaces.ToArray(), allowShortCircuit, result ) );
 			return result.Task;
 		}
+
+
+
+		#region Target Helpers
+
+		static public Task<Spirit> TargetSpirit(this ActionEngine engine)
+			=> engine.SelectSpirit(engine.GameState.Spirits);
+
+		static public async Task<Space> TargetSpace_Presence(this ActionEngine engine, int range){
+			return await engine.SelectSpace("Select target."
+				,engine.Self.Presence.Range(range));
+		}
+
+		static public async Task<Space> TargetSpace_SacredSite(this ActionEngine engine, int range){
+			return await engine.SelectSpace("Select target."
+				,engine.Self.SacredSites.Range(range));
+		}
+		#endregion
 
 		static public Task<Invader> SelectInvader( this ActionEngine engine
 			,string prompt
@@ -84,6 +102,27 @@ namespace SpiritIsland.Base {
 				spirit.Resolve( factory );
 				spirit.AddActionFactory( new ChangeSpeed( factory, Speed.Fast ) );
 			}
+		}
+
+		static public async Task GatherDahan( this ActionEngine eng, Space target, int dahanToGather ) {
+			var neighborsWithDahan = target.Neighbors.Where( eng.GameState.HasDahan ).ToArray();
+			while(dahanToGather > 0 && neighborsWithDahan.Length > 0) {
+				Space source = await eng.SelectSpace(
+					"Select source land to gather Dahan into " + target.Label,
+					neighborsWithDahan, true
+				);
+				if(source == null) break;
+
+				new MoveDahan( source, target ).Apply( eng.GameState );
+				--dahanToGather;
+				neighborsWithDahan = target.Neighbors.Where( eng.GameState.HasDahan ).ToArray();
+			}
+		}
+
+		static public async Task PushInvader( this ActionEngine eng, Space source, Invader invader){
+  			var destination = await eng.SelectSpace("Select space to push town",source.Neighbors);
+			eng.GameState.Adjust(source,invader,-1);
+			eng.GameState.Adjust(destination,invader,1);
 		}
 
 	}

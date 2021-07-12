@@ -70,6 +70,8 @@ namespace SpiritIsland {
 		}
 		public int GetDefence(Space space) => defendCount[space];
 
+
+
 		#region Beasts
 		public void AddBeast( Space space ){ beastCount[space]++; }
 		public bool HasBeasts( Space s ) => beastCount[s] > 0;
@@ -228,31 +230,39 @@ namespace SpiritIsland {
 			int damageFromInvaders = ravageGroup.DamageInflicted;
 			int dahan = GetDahanOnSpace( ravageGroup.Space );
 
-			if(damageFromInvaders==0) {
-				log.Add("-no ravage-");
-			} else {
+			if(damageFromInvaders==0) log.Add("-no ravage-");
+
+			if(damageFromInvaders>0){
+				// calculate damage from invaders
 				int defend = defendCount[ravageGroup.Space];
 				int damageInflictedFromInvaders = Math.Max( damageFromInvaders - defend, 0);
 				log.Add($"{ravageGroup} inflicts {damageFromInvaders}-{defend}={damageInflictedFromInvaders} damage.");
 
+				// damage: Land
 				bool blight = damageInflictedFromInvaders>1;
-
 				if(blight){
 					BlightLand(ravageGroup.Space);
 					log.Add("blights land");
 				}
-				int dahanKilled = Math.Min( damageInflictedFromInvaders / 2, dahan ); // rounding down
-				if(dahanKilled>0){
-					AddDahan( ravageGroup.Space, -dahanKilled ); 
-					int remainingDahan = dahan - dahanKilled;
-					log.Add($"kills {dahanKilled} of {dahan} leaving {remainingDahan}");
-					dahan = remainingDahan;
+				// damage: Dahan
+				if(noDamageToDahan.Contains(ravageGroup.Space)){ // Conceiling Shadows
+					log.Add("-dahan protected-");
+					noDamageToDahan.Remove(ravageGroup.Space);
+				} else {
+					int dahanKilled = Math.Min( damageInflictedFromInvaders / 2, dahan ); // rounding down
+					if(dahanKilled>0){
+						AddDahan( ravageGroup.Space, -dahanKilled ); 
+						int remainingDahan = dahan - dahanKilled;
+						log.Add($"kills {dahanKilled} of {dahan} leaving {remainingDahan}");
+						dahan = remainingDahan;
+					}
 				}
 
-				if(dahan>0){
+				// damage: Invaders
+				if(dahan>0)
 					ApplyDamageToInvaders( ravageGroup, dahan * 2, log );
-				}
 			}
+
 			defendCount[ravageGroup.Space] = 0;
 			return ravageGroup.Space.Label+": "+log.Join(", ");
 		}
@@ -300,6 +310,7 @@ namespace SpiritIsland {
 		readonly CountDictionary<Space> dahanCount = new CountDictionary<Space>();
 
 		readonly CountDictionary<Space> defendCount = new CountDictionary<Space>();
+		public readonly HashSet<Space> noDamageToDahan = new(); // !!! special case for Conceiling Shadows - refactor!
 #pragma warning disable IDE0052 // Remove unread private members
 		int fearCount = 0;
 #pragma warning restore IDE0052 // Remove unread private members

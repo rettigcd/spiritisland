@@ -8,7 +8,7 @@ namespace SpiritIsland.Base {
 		[MajorCard("Power Storm",3,Speed.Fast,Element.Sun,Element.Fire,Element.Air)]
 		static public async Task ActionAsync(ActionEngine engine){
 			
-			var spirit = await engine.SelectSpirit(engine.GameState.Spirits);
+			var spirit = await engine.TargetSpirit();
 
 			// target spirit gains 3 energy
 			spirit.Energy += 3;

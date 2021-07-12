@@ -25,6 +25,16 @@ namespace SpiritIsland.Base {
 	Crops Wither and Fade => 1 => slow, range 1, any => moon, fire, plant => 2 fear.  (Replace 1 down with 1 explorer  -OR- Replace 1 city with 1 town)
 	Conceiling Shadows => 0 => fast, range 0, any => moon air => 1 fear, dahan take no damange from ravaging invaders this turn
 
+Shadows Flicker like Flame:
+1. Dark and Tangled Woods
+2. Shadows of the Burning Forest
+3. The Jungle Hungers (Major; forget a Power)
+4. Land of Haunts and Embers
+5. Terrifying Nightmares (Major; forget a Power)
+6. Call of the Dahan Ways
+7. Visions of Fiery Doom
+
+
 	*/
 
 	public class Shadows : Spirit {
