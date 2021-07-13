@@ -1,5 +1,7 @@
 ﻿namespace SpiritIsland.Core {
-	public class MoveInvader : IAtomicAction {
+
+	public class MoveInvader {
+
 		public MoveInvader(Invader invader, Space from, Space to){
 			this.invader = invader;
 			this.from = from;

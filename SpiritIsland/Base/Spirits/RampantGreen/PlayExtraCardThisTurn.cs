@@ -8,7 +8,8 @@ namespace SpiritIsland.BranchAndClaw {
 	class PlayExtraCardThisTurn : GrowthActionFactory {
 
 		public override IAction Bind( Spirit spirit, GameState gameState ) {
-			return new ResolvedAction(()=> (spirit as RampantGreen).tempCardBoost++);
+			(spirit as RampantGreen).tempCardBoost++;
+			return new ResolvedAction();
 		}
 
 	}

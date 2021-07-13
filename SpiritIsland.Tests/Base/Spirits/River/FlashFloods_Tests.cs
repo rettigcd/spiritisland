@@ -47,7 +47,6 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 
 			// Then: resolved => Applu
 			Assert.True(action.IsResolved);
-			action.Apply();
 			Assert.Equal("1C@3,1T@2",gameState.InvadersOn(targetSpace).ToString());
 		}
 
@@ -90,7 +89,6 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 
 			// And: apply doesn't throw an exception
 			Assert.True(action.IsResolved);
-			action.Apply();
 			Assert.Equal("1C@1,1T@2,1E@1",gameState.InvadersOn(targetSpace).ToString());
 		}
 

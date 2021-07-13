@@ -41,7 +41,6 @@ namespace SpiritIsland.Tests.Base.Spirits {
 					var source = action.Options.Single(x=>moveBySrc.ContainsKey(x.Text));
 					action.Select(source);
 				}
-				action.Apply();
 			}
 
 			// Then: nothing to gather
@@ -112,7 +111,6 @@ namespace SpiritIsland.Tests.Base.Spirits {
 					var target = action.Options.Single(t=>targets.Contains(t.Text));
 					action.Select(target);
 				}
-				action.Apply();
 			}
 
 

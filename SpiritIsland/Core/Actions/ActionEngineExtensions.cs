@@ -30,8 +30,6 @@ namespace SpiritIsland.Core {
 			return result.Task;
 		}
 
-
-
 		#region Target Helpers
 
 		static public Task<Spirit> TargetSpirit(this ActionEngine engine)
@@ -82,6 +80,16 @@ namespace SpiritIsland.Core {
 			return result.Task;
 		}
 
+		static public Task<Track> SelectTrack( this ActionEngine engine ) {
+			var result = new TaskCompletionSource<Track>();
+			engine.decisions.Push( new SelectAsync<Track>( 
+				"Select Presence to place.", 
+				new Track[]{Track.Energy,Track.Card},
+				false,
+				result 
+			));
+			return result.Task;
+		}
 
 		static public Task<string> SelectText( this ActionEngine engine
 			,string prompt

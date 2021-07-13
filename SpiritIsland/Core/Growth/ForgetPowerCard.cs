@@ -32,13 +32,11 @@ namespace SpiritIsland.Core {
 
 			public string Selections => "n/a";
 
-			public void Apply() {
-				self.Forget(cardToForget);
-			}
 			PowerCard cardToForget = null;
 
 			public void Select( IOption option ) {
 				cardToForget = (PowerCard)option;
+				self.Forget(cardToForget);
 			}
 		}
 

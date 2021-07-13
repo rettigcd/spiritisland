@@ -1,5 +1,5 @@
 ﻿namespace SpiritIsland.Core {
-	public class MoveDahan : IAtomicAction {
+	public class MoveDahan {
 		readonly Space from;
 		readonly Space to;
 		public MoveDahan(Space from, Space to){

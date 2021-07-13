@@ -36,7 +36,6 @@ namespace SpiritIsland.Tests {
 				pp.Select( pp.Options.Single( o => o.Text == placeOnSpace ) );
 			}
 
-			pp.Apply();
 			spirit.Resolve( factory );
 		}
 

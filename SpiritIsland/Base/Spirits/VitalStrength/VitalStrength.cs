@@ -24,6 +24,16 @@ namespace SpiritIsland.Base {
 	A Year of Perfect Stillness => 3 => fast, range 1, any => sun, mountain => invaders skip all actions in target land this turn
 	Rituals of Destruction => 3 => slow, with 1 of sacred => sun, moon, fire, plant => 2 damanage,  if target land has at least 3 dahan, then +3 damange and 2 fear
 	Draw of the Fruitful Earth => 1 => slow, range 1, any => mountain, plant, animal => gather up to 2 explorers, gather up to 2 dahan
+
+Power Progression:
+	1. Rouse the Trees and Stones
+	2. Call to Migrate
+	3. Poisoned Land (Major; forget a Power)
+	4. Devouring Ants
+	5. Vigor of the Breaking Dawn (Major; forget a Power)
+	6. Voracious Growth
+	7. Savage Mawbeasts
+
 	*/
 
 	public class VitalStrength : Spirit {

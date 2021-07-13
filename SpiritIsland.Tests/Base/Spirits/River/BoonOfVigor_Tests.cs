@@ -17,7 +17,6 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 			// When: targetting self
 			action = card.Bind(spirit, gameState);
 			Assert.True(action.IsResolved);
-			action.Apply();
 
 			// Then: received 1 energy
 			Assert.Equal(1, spirit.Energy);
@@ -45,7 +44,6 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 			When_TargettingSpirit( otherSpirit );
 
 			Assert.True(action.IsResolved);
-			action.Apply();
 
 			// Then: received 1 energy
 			Assert.Equal(expectedEnergyBonus, otherSpirit.Energy);

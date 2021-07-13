@@ -29,16 +29,15 @@ namespace SpiritIsland.Core {
 
 			public string Selections { get; private set; }
 
-			public void Apply() {
+			public void Select( IOption option ) {
+				card = (PowerCard)option;
+				Selections = Prompt + ":" + option.Text;
+
 				if( card!=null && spirit.DiscardPile.Contains(card) ){
 					spirit.DiscardPile.Remove(card);
 					spirit.Hand.Add(card);
 				}
-			}
 
-			public void Select( IOption option ) {
-				card = (PowerCard)option;
-				Selections = Prompt + ":" + option.Text;
 			}
 		}
 

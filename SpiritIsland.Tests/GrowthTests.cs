@@ -142,7 +142,6 @@ namespace SpiritIsland.Tests {
 		protected void AndWhen_ReclaimingFirstCard() {
 			var reclaim = spirit.GetUnresolvedActionFactories(Speed.Growth).OfType<Reclaim1>().First().Bind(spirit,gameState);
 			reclaim.Select( reclaim.Options[0] );
-			reclaim.Apply();
 		}
 
 		#endregion

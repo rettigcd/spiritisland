@@ -16,7 +16,6 @@ namespace SpiritIsland.Core {
 		class NullCardAction : IAction {
 			public NullCardAction(){ }
 			public bool IsResolved => true;
-			public void Apply(){}
 
 			public IOption[] Options => Array.Empty<IOption>();
 

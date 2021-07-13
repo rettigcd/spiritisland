@@ -10,8 +10,6 @@ namespace SpiritIsland {
 
 		void Select(IOption option);
 
-		void Apply(); // ??? should this be auto-called when Select resolves last option
-
 		bool IsResolved {get;} // Should this be removed and just test if Options length == 0?
 
 		public string Selections {get;}

@@ -25,15 +25,12 @@ namespace SpiritIsland.Core {
 
 	}
 
-	public class DamagePlanAction : DamagePlan, IAtomicAction {
+	public class DamagePlanAction : DamagePlan {
 
 		public DamagePlanAction(Space space,int damage,Invader invader):base(damage,invader){
 			Space = space;
 		}
 
-		void IAtomicAction.Apply( GameState gameState ) {
-			gameState.ApplyDamage(this.Space,this);
-		}
 		public readonly Space Space; // capture this so we can call .Apply
 	}
 

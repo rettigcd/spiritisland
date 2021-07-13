@@ -60,7 +60,6 @@ namespace SpiritIsland.SinglePlayer {
 			// next action or summarize options
 			if(action.IsResolved) {
 				// Next
-				action.Apply();
 				spirit.Resolve( selectedActionFactory );
 				Initialize();
 			} else {

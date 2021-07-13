@@ -21,7 +21,6 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 
 			Assert.True(action.IsResolved);
 
-			action.Apply();
 			// !!! test that nothing changes
 		}
 
@@ -53,7 +52,6 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 
 			// And: apply doesn't throw an exception
 			Assert.True(action.IsResolved);
-			action.Apply();
 
 			// check that explore was moved
 			Assert.Equal(expectedTargetResult, gameState.InvadersOn(targetSpace).ToString());
@@ -118,7 +116,6 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 
 			// And: apply doesn't throw an exception
 			Assert.True(action.IsResolved);
-			action.Apply();
 
 			// check that explore was moved
 			Assert.Equal("", gameState.InvadersOn(targetSpace).ToString());
@@ -148,7 +145,6 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 			Then_PushInvader( "T@1", invaderDestination, "A1","A2","A3","A5" );
 
 			Assert.True( action.IsResolved );
-			action.Apply();
 
 			// check that explore was moved
 			Assert.Equal( "", gameState.InvadersOn( targetSpace ).ToString() );
@@ -208,7 +204,6 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 			Assert.True( action.IsResolved );
 
 			// And: apply doesn't throw an exception
-			action.Apply();
 
 			// check that explore was moved
 			Assert.Equal( "", gameState.InvadersOn( targetSpace ).ToString() );

@@ -5,7 +5,9 @@ namespace SpiritIsland.Core {
 	public class BaseAction : IAction {
 
 		protected BaseAction(Spirit spirit,GameState gameState){
+
 			engine = new ActionEngine(spirit,gameState);
+
 			this.gameState = gameState;
 		}
 
@@ -30,11 +32,6 @@ namespace SpiritIsland.Core {
 		}
 
 		public bool IsResolved => Options.Length == 0;
-
-		public void Apply() {
-			foreach(var move in engine.actions)
-				move.Apply( gameState );
-		}
 
 		public void Select(IOption option) {
 			InitializeIfNeeded();

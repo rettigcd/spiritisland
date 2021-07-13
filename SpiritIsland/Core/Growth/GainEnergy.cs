@@ -9,7 +9,8 @@ namespace SpiritIsland.Core {
 		}
 
 		public override IAction Bind( Spirit spirit, GameState gameState ) {
-			return new ResolvedAction( ()=>spirit.Energy += amount );
+			spirit.Energy += amount;
+			return new ResolvedAction();
 		}
 
 	}

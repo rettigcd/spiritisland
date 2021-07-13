@@ -8,7 +8,8 @@
 		}
 
 		public override IAction Bind( Spirit spirit, GameState gameState ) {
-			return new ResolvedAction(()=>spirit.PowerCardsToDraw += count);
+			spirit.PowerCardsToDraw += count;
+			return new ResolvedAction();
 		}
 
 	}

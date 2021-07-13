@@ -75,9 +75,6 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 				action.Select(neighbor);
 			}
 
-
-			action.Apply();
-
 			Assert.Equal( endingCount, gameState.GetDahanOnSpace( target ) ); // same as original
 			Assert.Equal( endingEnergy, spirit.Energy );
 		}
@@ -104,7 +101,6 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 			action.Select( action.Options[0] );
 
 			Assert.True( action.IsResolved );
-			action.Apply();
 
 			Assert.Equal( 3, gameState.GetDahanOnSpace( target ) ); // same as original
 		}
@@ -134,7 +130,6 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 			action.Select( board[5] );
 
 			Assert.True( action.IsResolved );
-			action.Apply();
 
 			Assert.Equal( 3, gameState.GetDahanOnSpace( target ) ); // same as original
 		}
@@ -157,7 +152,6 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 //			action.Select( target );
 
 			Assert.True( action.IsResolved );
-			action.Apply();
 
 			Assert.Equal( 3, gameState.GetDahanOnSpace( target ) ); // same as original
 

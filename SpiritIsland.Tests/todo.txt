@@ -26,6 +26,8 @@ Unit Test
 	Blight Cards
 	Cascading Blight
 	Blight causes spirit to lose 1 presence on space
+	All of Lightning
+	All of Shadows Flicker
 
 View
 	energy track
@@ -34,11 +36,14 @@ View
 
 ----
 
-Vital Strength of the Earth:
-1. Rouse the Trees and Stones
-2. Call to Migrate
-3. Poisoned Land (Major; forget a Power)
-4. Devouring Ants
-5. Vigor of the Breaking Dawn (Major; forget a Power)
-6. Voracious Growth
-7. Savage Mawbeasts
+* remove Action List from ActionEngine
+* collapse decision stack to single decision
+
+
+Shadow Special Power Options
+
+1) Adding a card modifies it. - would need to separate target & rest
+2) Power Card Calls in to Spirit-provided interface to do action
+	- gamestate is read-only
+	- actions go through spirit provided UI
+3) Cards Target is data/structure read by spirit (similar to 2).

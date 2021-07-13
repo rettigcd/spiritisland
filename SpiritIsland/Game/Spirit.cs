@@ -140,10 +140,9 @@ namespace SpiritIsland {
 				.Select(f=>new{Factory=f,Action=f.Bind(this,gameState)})
 				.Where(pair => pair.Action.IsResolved)
 				.ToArray();
-			foreach(var x in resolvedActions){
-				x.Action.Apply();
+			foreach(var x in resolvedActions)
 				Resolve(x.Factory);
-			}
+
 		}
 
 		public virtual void InitializePresence( Board board ) {
