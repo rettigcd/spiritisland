@@ -23,11 +23,6 @@ namespace SpiritIsland.Core {
 				: throw new ArgumentException("Invalid PowerCard class "+type.Name);
 		}
 
-		//static public PowerCard For( Func<ActionEngine, Task> actionType ) {
-		//			MethodBase m = System.Reflection.RuntimeReflectionExtensions.GetMethodInfo( actionType );
-		//	return new MethodPowerCard(m);
-		//}
-
 		public string Name { get; protected set; }
 		public int Cost { get; protected set;  }
 		public Speed Speed { get; protected set;  }

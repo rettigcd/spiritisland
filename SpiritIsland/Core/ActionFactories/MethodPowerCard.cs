@@ -4,8 +4,8 @@ using System.Reflection;
 using System.Threading.Tasks;
 
 namespace SpiritIsland.Core {
+
 	class MethodPowerCard : PowerCard {
-//		readonly Func<ActionEngine,Spirit,GameState,Task> actionType;
 		readonly MethodBase m;
 		public MethodPowerCard(MethodBase m){
 			var pca = m.GetCustomAttributes<PowerCardAttribute>().ToArray();
@@ -18,7 +18,6 @@ namespace SpiritIsland.Core {
 			Cost = attr.Cost;
 			Elements = attr.Elements;
 			PowerType = attr.PowerType;
-//			this.actionType = actionType;
 			this.m = m;
 		}
 
@@ -33,6 +32,8 @@ namespace SpiritIsland.Core {
 				MethodBase m
 			):base(spirit,gameState)
 			{
+				// $$$!!! could construct engine here, instead of 
+
 				m.Invoke(null,new object[]{engine});
 			}
 		}

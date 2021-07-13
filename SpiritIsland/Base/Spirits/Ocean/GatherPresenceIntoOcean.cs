@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
@@ -18,39 +19,36 @@ namespace SpiritIsland.Base {
 					.Select(p=>p.Neighbors.Single(o=>o.IsOcean))
 					.Distinct()
 					.ToList();
-				engine.decisions.Push(new GatherPresencesInto(engine,spirit,oceans));
+
+				_ = ActAsync(engine);
+
 			}
-		}
 
-		class GatherPresencesInto : IDecision {
-			readonly Spirit spirit;
-			readonly List<Space> gatherSpaces;
-			readonly ActionEngine engine;
-			public GatherPresencesInto(ActionEngine engine, Spirit spirit, List<Space> gatherSpaces){
-				this.engine = engine;
-				this.spirit = spirit;
-				this.gatherSpaces = gatherSpaces;
-			}
-			Space CurrentTarget => gatherSpaces[0];
-			public string Prompt => $"Select source of Presence to Gather into {CurrentTarget}";
+			static async Task ActAsync(ActionEngine engine){
+				List<Space> gatherSpaces = engine.Self.Presence
+					.Where(p=>p.IsCostal)
+					.Select(p=>p.Neighbors.Single(o=>o.IsOcean))
+					.Distinct()
+					.ToList();
+				
+				while(0 < gatherSpaces.Count){
 
-			public IOption[] Options => gatherSpaces.Count>0 
-				? CurrentTarget.Neighbors
-					.Where(spirit.Presence.Contains)
-					.ToArray()
-				: Array.Empty<IOption>();
+					Space currentTarget = gatherSpaces[0];
+					Space source = await engine.SelectSpace(
+						$"Select source of Presence to Gather into {currentTarget}"
+						,currentTarget.Neighbors
+							.Where(engine.Self.Presence.Contains)
+							.ToArray()
+					);
 
-			public void Select( IOption option) {
-				// apply...
-				Space source = (Space)option;
-				spirit.Presence.Remove(source);
-				spirit.Presence.Add(CurrentTarget);
+					// apply...
+					engine.Self.Presence.Remove(source);
+					engine.Self.Presence.Add(currentTarget);
 
-				// next
-				gatherSpaces.RemoveAt(0);
+					// next
+					gatherSpaces.RemoveAt(0);
 
-				if(gatherSpaces.Count>0)
-					engine.decisions.Push(this); // reuse this one
+				} // while
 			}
 		}
 

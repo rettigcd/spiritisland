@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
@@ -12,47 +13,34 @@ namespace SpiritIsland.Base {
 		}
 
 		class PushAction : BaseAction {
-			public PushAction(Spirit spirit,GameState gs):base(spirit,gs){
-				List<Space> oceans = spirit.Presence
+
+			public PushAction(Spirit spirit,GameState gameState):base(spirit,gameState){
+				_ = ActAsync(engine);
+			}
+
+			static async Task ActAsync(ActionEngine engine){
+				List<Space> pushSpaces = engine.Self.Presence
 					.Where(p=>p.IsOcean)
 					.Distinct()
 					.ToList();
-				engine.decisions.Push(new PushPresenceFrom(engine,spirit,oceans));
+
+				while(0<pushSpaces.Count){
+					var currentSource = pushSpaces[0];
+					var destination = await engine.SelectSpace(
+						$"Select target of Presence to Push from {currentSource}",
+						currentSource.Neighbors
+					);
+
+					// apply...
+					engine.Self.Presence.Remove(currentSource);
+					engine.Self.Presence.Add(destination);
+
+					// next
+					pushSpaces.RemoveAt(0);
+				}
+
 			}
-		}
-
-		class PushPresenceFrom : IDecision {
-
-			readonly Spirit spirit;
-			readonly List<Space> pushSpaces;
-			readonly ActionEngine engine;
-
-			public PushPresenceFrom(ActionEngine engine, Spirit spirit,List<Space> pushSpaces){
-				this.engine = engine;
-				this.spirit = spirit;
-				this.pushSpaces = pushSpaces;
-			}
-			Space CurrentSource => pushSpaces[0];
-			public string Prompt => $"Select target of Presence to Push from {CurrentSource}";
-
-			public IOption[] Options => pushSpaces.Count>0 
-				? CurrentSource.Neighbors
-					.ToArray()
-				: Array.Empty<IOption>();
-
-			public void Select( IOption option ) {
-				// apply...
-				Space target = (Space)option;
-				spirit.Presence.Remove(CurrentSource);
-				spirit.Presence.Add(target);
-
-				// next
-				pushSpaces.RemoveAt(0);
-
-				if(pushSpaces.Count>0)
-					engine.decisions.Push(this); // reuse this one
-			}
-
 		}
 	}
+
 }
