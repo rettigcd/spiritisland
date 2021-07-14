@@ -12,7 +12,7 @@ namespace SpiritIsland.Base.Spirits.Shadows {
 		static public async Task Act(ActionEngine engine){
 
 			// target any spirit
-			var spirit = await engine.TargetSpirit();
+			var spirit = await engine.Api.TargetSpirit();
 
 			var (_,gs) = engine;
 

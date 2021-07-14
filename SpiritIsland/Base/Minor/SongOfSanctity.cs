@@ -23,7 +23,7 @@ namespace SpiritIsland.Base {
 					&& (gameState.HasBlight(space) || gameState.InvadersOn(space).HasExplorer);
 			}
 
-			var target = await engine.TargetSpace_Presence(1,JungleOrMountain_Plus_InvadersOrBlight);
+			var target = await engine.Api.TargetSpace_Presence(1,JungleOrMountain_Plus_InvadersOrBlight);
 
 			var group = gameState.InvadersOn(target);
 

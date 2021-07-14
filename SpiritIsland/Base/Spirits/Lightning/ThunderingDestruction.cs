@@ -37,7 +37,7 @@ namespace SpiritIsland.Base {
 
 		async Task DestroyTowns(int count){
 			bool HasTown(Space space)=>gameState.InvadersOn(space).HasTown;
-			var target = await engine.TargetSpace_SacredSite(1,HasTown);
+			var target = await engine.Api.TargetSpace_SacredSite(1,HasTown);
 
 			var grp = gameState.InvadersOn(target);
 			var invadersToDestroy = grp.Filter("T@2","T@1");
@@ -60,7 +60,7 @@ namespace SpiritIsland.Base {
 				return grp.HasTown || grp.HasCity;
 			}
 
-			var target = await engine.TargetSpace_SacredSite(1,HasTownOrCity);
+			var target = await engine.Api.TargetSpace_SacredSite(1,HasTownOrCity);
 			var grp = gameState.InvadersOn(target);
 			var invadersToDestroy = grp.Filter("C@3","C@2","C@1","T@2","T@1");
 			while(count>0 && invadersToDestroy.Length >0){

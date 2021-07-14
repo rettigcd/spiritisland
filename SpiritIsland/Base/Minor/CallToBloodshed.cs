@@ -9,7 +9,7 @@ namespace SpiritIsland.Base {
 		static public async Task Act(ActionEngine engine){
 			var (self,gameState)=engine;
 			// range 2, dahan
-			var target = await engine.TargetSpace_Presence(2,gameState.HasDahan);
+			var target = await engine.Api.TargetSpace_Presence(2,gameState.HasDahan);
 
 			const string key1 = "1 damage per dahan";
 			const string key2 = "gather up to 3 dahan";

@@ -13,8 +13,7 @@ namespace SpiritIsland.Tests.Base.Spirits {
 			// reclaim, gain power Card
 			Given_HalfOfPowercardsPlayed();
 			When_Growing( 0 );
-			Assert_AllCardsAvailableToPlay();
-			Assert_GainPowercard(1);
+			Assert.Equal(5,this.spirit.Hand.Count); // drew 1 card
 		}
 
 		[Fact]
@@ -23,7 +22,7 @@ namespace SpiritIsland.Tests.Base.Spirits {
 			Given_HasPresence( board[1] );
 			When_Growing(1);
 			Resolve_PlacePresence( "A1;A2;A4;A5;A6");
-			Assert_GainPowercard(1);
+			Assert.Equal(5,this.spirit.Hand.Count); // drew 1 card
 		}
 
 		[Fact]

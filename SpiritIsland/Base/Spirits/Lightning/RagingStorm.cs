@@ -12,7 +12,7 @@ namespace SpiritIsland.Base {
 
 		async Task Act(){
 			// range 1, any
-			var target = await engine.TargetSpace_Presence(1);
+			var target = await engine.Api.TargetSpace_Presence(1);
 
 			var orig = gameState.InvadersOn(target);
 

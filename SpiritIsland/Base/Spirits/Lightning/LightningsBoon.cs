@@ -14,7 +14,7 @@ namespace SpiritIsland.Base {
 
 		async Task ActAsync() {
 			// any spirt
-			var spirit = await engine.TargetSpirit();
+			var spirit = await engine.Api.TargetSpirit();
 
 			// Taret spirit may use up to 2 slow powers as if they were fast powers this turn.
 			await engine.SelectActionsAndMakeFast( spirit, 2 );

@@ -11,7 +11,7 @@ namespace SpiritIsland.Base {
 		public ShatterHomesteads(Spirit spirit,GameState gameState):base(spirit,gameState){_=Act();}
 
 		async Task Act(){
-			var space = await engine.TargetSpace_SacredSite(2);
+			var space = await engine.Api.TargetSpace_SacredSite(2);
 			// Destroy 1 town
 			var grp = gameState.InvadersOn(space);
 			if(grp.HasTown){

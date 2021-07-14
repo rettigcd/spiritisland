@@ -5,13 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using SpiritIsland.Core;
 
-namespace SpiritIsland.Base.Minor {
+namespace SpiritIsland.Base {
+
 	class LandOfHauntsAndEmbers {
 
 		[MinorCard("Land of Haunts and Embers",0,Speed.Fast,Element.Moon,Element.Fire,Element.Air)]
 		static public async Task Act(ActionEngine engine){
 			// range 2
-			var target = await engine.TargetSpace_Presence(2);
+			var target = await engine.Api.TargetSpace_Presence(2);
 			
 			// 2 fear
 			engine.GameState.AddFear(2);

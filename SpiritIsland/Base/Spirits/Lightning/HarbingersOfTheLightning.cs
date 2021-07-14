@@ -16,7 +16,7 @@ namespace SpiritIsland.Base {
 		}
 
 		async Task ActionAsync(){
-			Space source = await engine.TargetSpace_SacredSite(1,gameState.HasDahan);
+			Space source = await engine.Api.TargetSpace_SacredSite(1,gameState.HasDahan);
 
 			// Push up to 2 dahan.
 

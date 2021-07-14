@@ -29,7 +29,7 @@ namespace SpiritIsland.Base {
 		async Task DoPush(){
 			bool HasExplorer(Space space) => gameState.InvadersOn(space).HasExplorer;
 
-			var target = await engine.TargetSpace_Presence(1,HasExplorer);
+			var target = await engine.Api.TargetSpace_Presence(1,HasExplorer);
 			await engine.PushInvader(target,Invader.Explorer);
 		}
 

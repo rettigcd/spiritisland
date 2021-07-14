@@ -13,7 +13,7 @@ namespace SpiritIsland.Base.Spirits.Shadows {
 		static public async Task Act(ActionEngine engine){
 			var (_,gameState) = engine;
 			// range 1
-			var target = await engine.TargetSpace_Presence(1);
+			var target = await engine.Api.TargetSpace_Presence(1);
 
 			// gather up to 4 dahan
 			await engine.GatherDahan( target, 4 );

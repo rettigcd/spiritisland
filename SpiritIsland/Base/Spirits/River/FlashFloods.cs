@@ -14,7 +14,7 @@ namespace SpiritIsland.Base {
 
 			bool LandHasInvaders(Space space) => space.IsLand && engine.GameState.InvadersOn(space).InvaderTypesPresent.Any();
 
-			var target = await engine.TargetSpace_Presence(1,LandHasInvaders);
+			var target = await engine.Api.TargetSpace_Presence(1,LandHasInvaders);
 
 			// +1 damage, if costal +1 additional damage
 			int damage = target.IsCostal ? 2 : 1;

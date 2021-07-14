@@ -12,7 +12,7 @@ namespace SpiritIsland.Base {
 			var (spirit,gameState) = engine;
 
 			// range 1, dahan
-			var target = await engine.TargetSpace_Presence(1,gameState.HasDahan);
+			var target = await engine.Api.TargetSpace_Presence(1,gameState.HasDahan);
 
 			var grp = gameState.InvadersOn(target);
 			int pushCount = gameState.GetDahanOnSpace(target);

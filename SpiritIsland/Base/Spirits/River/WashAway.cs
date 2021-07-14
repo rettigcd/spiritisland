@@ -16,7 +16,7 @@ namespace SpiritIsland.Base {
 				return sum.HasExplorer || sum.HasTown;
 			}
 
-			var target = await engine.TargetSpace_Presence(1,HasTownOrExplorer);
+			var target = await engine.Api.TargetSpace_Presence(1,HasTownOrExplorer);
 
 			var group = gameState.InvadersOn(target);
 			int numToPush = 3;

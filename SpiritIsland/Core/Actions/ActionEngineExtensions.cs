@@ -7,6 +7,7 @@ using SpiritIsland.Core;
 namespace SpiritIsland.Core {
 
 	public static class SpecificEngineExtensions{
+
 		static public async Task SelectActionsAndMakeFast(this ActionEngine engine, Spirit spirit, int countToMakeFast ) {
 			var actionFactories = spirit.GetUnresolvedActionFactories( Speed.Slow ).ToArray();
 			while(actionFactories.Length > 0 && countToMakeFast > 0) {
@@ -36,6 +37,24 @@ namespace SpiritIsland.Core {
 			}
 
 		}
+
+		static public async Task GatherExplorer( this ActionEngine eng, Space target, int countToGather ) {
+  			int gathered = 0;
+			Space[] CalcSource() => target.Neighbors.Where(s=>eng.GameState.InvadersOn(s).HasExplorer).ToArray();
+			Space[] neighborsWithItems = CalcSource();
+			while(gathered<countToGather && neighborsWithItems.Length>0){
+				var source = await eng.SelectSpace( $"Gather explorer {gathered+1} of {countToGather} from:", neighborsWithItems, true);
+				if(source == null) break;
+
+				eng.GameState.Adjust(source,Invader.Explorer,-1);
+				eng.GameState.Adjust(target,Invader.Explorer,1);
+
+				++gathered;
+				neighborsWithItems = CalcSource();
+			}
+
+		}
+
 
 		static public async Task PushUpToNDahan( this ActionEngine eng, Space source, int dahanToPush) {
 			dahanToPush = System.Math.Min(dahanToPush,eng.GameState.GetDahanOnSpace(source));

@@ -42,6 +42,10 @@ namespace SpiritIsland {
 
 		public virtual InnatePower[] InnatePowers {get; set;} = System.Array.Empty<InnatePower>();
 
+		public virtual PowerCardApi GetPowerCardApi(ActionEngine engine){
+			return new PowerCardApi(engine);
+		}
+
 		#region Cards
 
 		public List<PowerCard> Hand = new List<PowerCard>();	// in hand

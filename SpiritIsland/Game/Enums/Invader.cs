@@ -46,6 +46,7 @@ namespace SpiritIsland {
 
 		public int Health {get;}
 		public Invader Healthy => typeArr[typeArr.Length-1];
+		public Invader Dead => typeArr[0];
 
 		public char Initial => Label[0];
 

@@ -31,7 +31,7 @@ namespace SpiritIsland.Base {
 			
 			string key = await engine.SelectText("Select Innate option", new string[]{ k1,k2,k3}.Take(count).ToArray() );
 
-			space = await engine.TargetSpace_SacredSite(1,HasExplorersOrTowns);
+			space = await engine.Api.TargetSpace_SacredSite(1,HasExplorersOrTowns);
 
 			switch(key){
 				case k1: await Option1(); break;

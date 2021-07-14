@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using SpiritIsland.Core;
 
@@ -24,6 +25,7 @@ namespace SpiritIsland {
 				.Select(p => p.Value + p.Key.Summary)
 				.Join(",");
 		}
+
 		static int CitiesTownsExplorers(Invader invader)
 			=> -(invader.Healthy.Health * 10 + invader.Health);
 
@@ -67,6 +69,24 @@ namespace SpiritIsland {
 
 		readonly HashSet<Invader> changed = new HashSet<Invader>();
 		public IEnumerable<Invader> Changed => changed.Where(i=>i.Health != 0);
+
+		public int Destroy( Invader healthy, int? max = null ) {
+			var invadersToDestory = this.InvaderTypesPresent
+				.Where(i=>i.Healthy==healthy)
+				.OrderByDescending(x=>x.Health) // kill healthiest first
+				.ToArray();
+			if(max.HasValue)
+				invadersToDestory = invadersToDestory.Take(max.Value).ToArray(); 
+			int total = 0;
+			foreach(var key in invadersToDestory){
+				int count = this[key];
+				total += count;
+				this[key.Dead] += count;
+				this[key] = 0;
+			}
+			return total;
+		}
+
 
 		public int Total {  get {
 			int total = 0;

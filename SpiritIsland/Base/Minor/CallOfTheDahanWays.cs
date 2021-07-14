@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SpiritIsland.Core;
 
-namespace SpiritIsland.Base.Minor {
+namespace SpiritIsland.Base {
 	class CallOfTheDahanWays {
 
 		[MinorCard("Call of the Dahan Ways",1,Speed.Slow,Element.Moon,Element.Water,Element.Animal)]

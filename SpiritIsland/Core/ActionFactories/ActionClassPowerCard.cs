@@ -2,6 +2,10 @@
 using System.Linq;
 
 namespace SpiritIsland.Core {
+
+	/// <summary>
+	/// Power Card implemented by a a class implementing IAction
+	/// </summary>
 	class ActionClassPowerCard : PowerCard {
 		public ActionClassPowerCard(Type actionType) {
 			PowerCardAttribute[] pca = FindPowerCardAttributes( actionType );
