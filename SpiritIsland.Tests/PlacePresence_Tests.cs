@@ -16,6 +16,11 @@ namespace SpiritIsland.Tests.Core {
 					new GrowthOption(this.actions.ToArray())
 				};
 			}
+
+			public override void InitializePresence( Board board ) {
+				throw new NotImplementedException();
+			}
+
 			protected override int[] EnergySequence => new int[] {0,0,0};
 			public List<GrowthActionFactory> actions = new();
 		}

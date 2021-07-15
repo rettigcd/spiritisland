@@ -84,6 +84,10 @@ namespace SpiritIsland.Base {
 				.Count( x => x == el );
 		}
 
+		public override void InitializePresence( Board _ ) {
+			throw new System.NotImplementedException();
+		}
+
 	}
 
 }

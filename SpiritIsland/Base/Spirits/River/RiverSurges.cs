@@ -90,8 +90,6 @@ namespace SpiritIsland.Base {
 			}
 		}
 
-		#region growth
-
 		public override void Grow(GameState gameState, int optionIndex) {
 			if( optionIndex != 0 // Reclaim-All
 				&& Reclaim1FromCardTrack
@@ -99,9 +97,6 @@ namespace SpiritIsland.Base {
 				AddActionFactory(new Reclaim1());
 			base.Grow(gameState, optionIndex);
 		}
-
-
-		#endregion
 
 		public override IEnumerable<Space> SacredSites => Presence
 			.Where(s=>s.Terrain==Terrain.Wetland)
@@ -134,6 +129,7 @@ namespace SpiritIsland.Base {
 			var space = board.Spaces.Reverse().First(s=>s.Terrain==Terrain.Wetland);
 			Presence.Add(space);
 		}
+
 	}
 
 }

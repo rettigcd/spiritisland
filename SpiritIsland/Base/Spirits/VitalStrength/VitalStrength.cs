@@ -1,4 +1,5 @@
-﻿
+﻿using System.Collections.Generic;
+using SpiritIsland.Base.Spirits.VitalStrength;
 using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
@@ -27,10 +28,10 @@ namespace SpiritIsland.Base {
 
 Power Progression:
 	1. Rouse the Trees and Stones
-	2. Call to Migrate
+	2. Call To Migrate
 	3. Poisoned Land (Major; forget a Power)
 	4. Devouring Ants
-	5. Vigor of the Breaking Dawn (Major; forget a Power)
+	5. Vigor Of The Breaking Dawn (Major; forget a Power)
 	6. Voracious Growth
 	7. Savage Mawbeasts
 
@@ -39,16 +40,52 @@ Power Progression:
 	public class VitalStrength : Spirit {
 		public override string Text => "Vital Strength of Earth";
 
-		public VitalStrength(){
+		public VitalStrength():base(
+			PowerCard.For<GuardTheHealingLand>(),
+			PowerCard.For<AYearOfPerfectStillness>(),
+			PowerCard.For<RitualsOfDestruction>(),
+			PowerCard.For<DrawOfTheFruitfulEarth>()
+		){
 			GrowthOptions = new GrowthOption[]{
 				new GrowthOption( new ReclaimAll(), new PlacePresence(2) ),
 				new GrowthOption( new DrawPowerCard(), new PlacePresence(0) ),
 				new GrowthOption( new GainEnergy(2), new PlacePresence(1) ),
 			};
+
+			this.InnatePowers = new InnatePower[]{
+				InnatePower.For<GiftOfStrength>()
+			};
+
 		}
 
 		protected override int[] EnergySequence => new int[]{2, 3, 4, 6, 7, 8};
 		protected override int[] CardSequence => new int[]{1, 1, 2, 2, 3, 4};
+
+		public override void AddActionFactory(IActionFactory actionFactory) {
+
+			if(actionFactory is DrawPowerCard){
+				var newCard = PowerProgression[0];
+				this.Hand.Add( newCard );
+				PowerProgression.RemoveAt( 0 );
+				if(newCard.PowerType == PowerType.Major)
+					base.AddActionFactory(new ForgetPowerCard());
+			} else
+				base.AddActionFactory(actionFactory);
+		}
+
+		readonly List<PowerCard> PowerProgression = new List<PowerCard>{
+			PowerCard.For<RouseTheTreesAndStones>(),
+			PowerCard.For<CallToMigrate>(),
+			PowerCard.For<PoisonedLand>(), // Major
+			PowerCard.For<DevouringAnts>(),  
+			PowerCard.For<VigorOfTheBreakingDawn>(),// Major
+			PowerCard.For<VoraciousGrowth>(),
+			PowerCard.For<SavageMawbeasts>()
+		};
+
+		public override void InitializePresence( Board _ ) {
+			throw new System.NotImplementedException();
+		}
 
 	}
 

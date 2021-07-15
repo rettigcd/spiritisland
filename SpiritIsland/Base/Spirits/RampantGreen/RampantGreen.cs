@@ -84,6 +84,11 @@ namespace SpiritIsland.BranchAndClaw {
 		}
 		public int tempCardBoost = 0;
 
+		public override void InitializePresence( Board _ ) {
+			throw new System.NotImplementedException();
+		}
+
+
 	}
 
 }

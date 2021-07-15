@@ -5,7 +5,7 @@ using SpiritIsland.Core;
 
 namespace SpiritIsland {
 
-	public abstract class Spirit :IOption {
+	public abstract class Spirit : IOption {
 
 		public GrowthOption[] GrowthOptions { get; protected set; }
 
@@ -149,11 +149,7 @@ namespace SpiritIsland {
 
 		}
 
-		public virtual void InitializePresence( Board board ) {
-			// !!! once all spirits have implemented this,
-			// switch this over to pure abstract
-			throw new System.NotImplementedException();
-		}
+		public abstract void InitializePresence( Board board );
 
 		public virtual void AddActionFactory(IActionFactory factory){
 			_unresolvedActionFactories.Add( factory );
