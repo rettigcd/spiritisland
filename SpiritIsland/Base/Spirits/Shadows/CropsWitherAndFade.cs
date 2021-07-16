@@ -16,7 +16,7 @@ namespace SpiritIsland.Base.Spirits.Shadows {
 			// replace 1 town with 1 explorer
 			// OR
 			// replace 1 city with 1 town
-			var invaders = gs.InvadersOn(target).Filter("C@3","C@2","C@1","T@2","T@1");
+			var invaders = gs.InvadersOn(target).FilterBy(Invader.City,Invader.Town);
 			if(invaders.Length==0) return;
 			var invader = await engine.SelectInvader("Select invader to down-grade",invaders);
 			Invader newInvader = (invader.Label == "Town") ? Invader.Explorer

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using SpiritIsland.Core;
 
 namespace SpiritIsland {
@@ -14,6 +15,12 @@ namespace SpiritIsland {
 			this.Spirits = spirits;
 			InvaderDeck = new InvaderDeck();
 		}
+
+		internal void SkipAllInvaderActions( Space target ) {
+			skipInvaderActions.Add(target);
+		}
+
+		readonly List<Space> skipInvaderActions = new List<Space>(); 
 
 		public Island Island { get; set; }
 		public Spirit[] Spirits { get; }
@@ -181,7 +188,9 @@ namespace SpiritIsland {
 				.Where(invaderCard.Matches)
 				.Where(space=> space.IsCostal
 						|| space.SpacesWithin(1).Any(HasTownOrCity)
-				);
+				)
+				.Except(skipInvaderActions);
+
 			foreach(var space in exploredSpaces)
 				Adjust( space, Invader.Explorer, 1 );
 		}
@@ -189,6 +198,7 @@ namespace SpiritIsland {
 		public void Build( InvaderCard invaderCard ) {
 			var exploredSpaces = Island.Boards.SelectMany(board=>board.Spaces)
 				.Where(invaderCard.Matches)
+				.Except(skipInvaderActions)
 				.Select(InvadersOn)
 				.Where(group => group.InvaderTypesPresent.Any());
 			foreach(var group in exploredSpaces){
@@ -214,6 +224,7 @@ namespace SpiritIsland {
 			// 3 points of damage, Prefer C@1  C@2  C@3  T@1  T@2  E@1
 			var ravageGroups = Island.Boards.SelectMany(board=>board.Spaces)
 				.Where(invaderCard.Matches)
+				.Except(skipInvaderActions)
 				.Select(InvadersOn)
 				.Where(group => group.InvaderTypesPresent.Any())
 				.ToArray();

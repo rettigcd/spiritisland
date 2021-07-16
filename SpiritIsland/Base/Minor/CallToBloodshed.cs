@@ -22,7 +22,7 @@ namespace SpiritIsland.Base {
 			}
 
 			// opt 2 - gather up to 3 dahan
-			await engine.GatherDahan(target,3);
+			await engine.GatherUpToNDahan(target,3);
 		}
 	}
 }

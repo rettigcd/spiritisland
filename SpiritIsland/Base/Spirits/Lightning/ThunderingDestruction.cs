@@ -40,14 +40,14 @@ namespace SpiritIsland.Base {
 			var target = await engine.Api.TargetSpace_SacredSite(1,HasTown);
 
 			var grp = gameState.InvadersOn(target);
-			var invadersToDestroy = grp.Filter("T@2","T@1");
+			var invadersToDestroy = grp.FilterBy(Invader.Town);
 			while(count>0 && invadersToDestroy.Length >0){
 				var invader = await engine.SelectInvader("Select town/city to destroy.",invadersToDestroy,true);
 				if(invader==null) break;
 				grp.ApplyDamage(new DamagePlan(invader.Health,invader));
 
 				// next
-				invadersToDestroy = grp.Filter("T@2","T@1");
+				invadersToDestroy = grp.FilterBy(Invader.Town);
 				--count;
 			}
 			gameState.UpdateFromGroup(grp);
@@ -62,14 +62,14 @@ namespace SpiritIsland.Base {
 
 			var target = await engine.Api.TargetSpace_SacredSite(1,HasTownOrCity);
 			var grp = gameState.InvadersOn(target);
-			var invadersToDestroy = grp.Filter("C@3","C@2","C@1","T@2","T@1");
+			var invadersToDestroy = grp.FilterBy(Invader.City,Invader.Town);
 			while(count>0 && invadersToDestroy.Length >0){
 				var invader = await engine.SelectInvader("Select town/city to destroy.",invadersToDestroy,true);
 				if(invader==null) break;
 				grp.ApplyDamage(new DamagePlan(invader.Health,invader));
 
 				// next
-				invadersToDestroy = grp.Filter("C@3","C@2","C@1","T@2","T@1");
+				invadersToDestroy = grp.FilterBy(Invader.City,Invader.Town);
 				--count;
 			}
 			gameState.UpdateFromGroup(grp);

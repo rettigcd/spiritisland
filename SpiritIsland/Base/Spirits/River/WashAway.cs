@@ -20,7 +20,8 @@ namespace SpiritIsland.Base {
 
 			var group = gameState.InvadersOn(target);
 			int numToPush = 3;
-			var availableInvaders = group.Filter("T@2","T@1","E@1");
+			Invader[] CalcInvaders() => group.FilterBy(Invader.Town,Invader.Explorer);
+			var availableInvaders = CalcInvaders();
 			while(numToPush > 0 && availableInvaders.Length>0){
 				var invader = await engine.SelectInvader("Select invader to push."
 					,availableInvaders
@@ -31,7 +32,7 @@ namespace SpiritIsland.Base {
 
 				--numToPush;
 				group[invader]--;
-				availableInvaders = group.Filter("T@2","T@1","E@1");
+				availableInvaders = CalcInvaders();
 			}
 		}
 

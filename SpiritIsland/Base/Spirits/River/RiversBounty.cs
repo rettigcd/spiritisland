@@ -15,7 +15,7 @@ namespace SpiritIsland.Base {
 			var target = await eng.Api.TargetSpace_Presence(0,HasCloseDahan );
 
 			// Gather up to 2 Dahan
-			await eng.GatherDahan( target, 2 );
+			await eng.GatherUpToNDahan( target, 2 );
 
 			// If there are now at least 2 dahan, then add 1 dahan and gain 1 energy
 			if(gameState.GetDahanOnSpace( target ) >= 2) {

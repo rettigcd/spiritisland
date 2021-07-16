@@ -22,7 +22,7 @@ namespace SpiritIsland.Core {
 			}
 		}
 
-		static public async Task GatherDahan( this ActionEngine eng, Space target, int dahanToGather ) {
+		static public async Task GatherUpToNDahan( this ActionEngine eng, Space target, int dahanToGather ) {
   			int gathered = 0;
 			var neighborsWithDahan = target.Neighbors.Where(eng.GameState.HasDahan).ToArray();
 			while(gathered<dahanToGather && neighborsWithDahan.Length>0){
@@ -38,23 +38,30 @@ namespace SpiritIsland.Core {
 
 		}
 
-		static public async Task GatherExplorer( this ActionEngine eng, Space target, int countToGather ) {
-  			int gathered = 0;
-			Space[] CalcSource() => target.Neighbors.Where(s=>eng.GameState.InvadersOn(s).HasExplorer).ToArray();
+		static public async Task GatherUpToNInvaders( this ActionEngine eng, Space target, int countToGather, params Invader[] ofType ) {
+			Invader[] spaceInvaders(Space space) => eng.GameState.InvadersOn(space).FilterBy(ofType);
+			Space[] CalcSource() => target.Neighbors
+				.Where(s=>spaceInvaders(s).Any())
+				.ToArray();
+
+			string label = ofType.Select(it=>it.Label).Join("/");
+
 			Space[] neighborsWithItems = CalcSource();
+  			int gathered = 0;
 			while(gathered<countToGather && neighborsWithItems.Length>0){
-				var source = await eng.SelectSpace( $"Gather explorer {gathered+1} of {countToGather} from:", neighborsWithItems, true);
+				var source = await eng.SelectSpace( $"Gather {label} {gathered+1} of {countToGather} from:", neighborsWithItems, true);
 				if(source == null) break;
 
-				eng.GameState.Adjust(source,Invader.Explorer,-1);
-				eng.GameState.Adjust(target,Invader.Explorer,1);
+				var invader = await eng.SelectInvader("Select invader to gather "+source.Label+" => "+target.Label,spaceInvaders(source));
+
+				eng.GameState.Adjust(source,invader,-1);
+				eng.GameState.Adjust(target,invader,1);
 
 				++gathered;
 				neighborsWithItems = CalcSource();
 			}
 
 		}
-
 
 		static public async Task PushUpToNDahan( this ActionEngine eng, Space source, int dahanToPush) {
 			dahanToPush = System.Math.Min(dahanToPush,eng.GameState.GetDahanOnSpace(source));
@@ -73,7 +80,7 @@ namespace SpiritIsland.Core {
 		static public async Task PushUpToNInvaders( this ActionEngine eng, Space source, int countToPush
 			,params Invader[] healthyInvaders
 		) {
-			Invader[] CalcInvaderTypes() => eng.GameState.InvadersOn(source).FilterByHealthy(healthyInvaders);
+			Invader[] CalcInvaderTypes() => eng.GameState.InvadersOn(source).FilterBy(healthyInvaders);
 			var invaders = CalcInvaderTypes();
 			while(0<countToPush && 0<invaders.Length){
 				var invader = await eng.SelectInvader("Select invader to push",invaders,true);

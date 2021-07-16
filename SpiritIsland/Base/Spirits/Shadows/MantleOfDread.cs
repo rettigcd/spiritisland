@@ -33,7 +33,7 @@ namespace SpiritIsland.Base.Spirits.Shadows {
 			// duplicated in shadows of the burning forest
 			var grp = gs.InvadersOn(space);
 			// Push Town
-			var townInvaders = grp.Filter("T@2","T@1");
+			var townInvaders = grp.FilterBy(Invader.Town);
 			if(townInvaders.Length>0){
 				var townInvader = await engine.SelectInvader("Select town to push",townInvaders,true);
 				if(townInvader != null)
@@ -42,7 +42,7 @@ namespace SpiritIsland.Base.Spirits.Shadows {
 			// Push Explorer
 			if(grp.HasExplorer){
 				// allow short-circuit
-				var explorerInvader = await engine.SelectInvader("Select town to push",grp.Filter("E@1"),true);
+				var explorerInvader = await engine.SelectInvader("Select town to push",grp.FilterBy(Invader.Explorer),true);
 				if(explorerInvader != null)
 					await engine.PushInvader(space,explorerInvader);
 			}

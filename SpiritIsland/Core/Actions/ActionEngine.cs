@@ -66,7 +66,6 @@ namespace SpiritIsland.Core {
 			return result.Task;
 		}
 
-
 		public Task<IActionFactory> SelectFactory( string prompt,IActionFactory[] options,bool allowShortCircuit=false) {
 			var result = new TaskCompletionSource<IActionFactory>();
 			decisions.Push( new SelectAsync<IActionFactory>( 

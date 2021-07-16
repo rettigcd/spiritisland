@@ -16,10 +16,10 @@ namespace SpiritIsland.Base.Spirits.Shadows {
 			var target = await engine.Api.TargetSpace_Presence(1);
 
 			// gather up to 4 dahan
-			await engine.GatherDahan( target, 4 );
+			await engine.GatherUpToNDahan( target, 4 );
 
 			// if invaders are present and dahan now out numberthem, 3 fear
-			var invaderCount = engine.GameState.InvadersOn(target).Total;
+			var invaderCount = engine.GameState.InvadersOn(target).TotalCount;
 			if(invaderCount > 0 && gameState.GetDahanOnSpace( target ) > invaderCount) {
 				gameState.AddFear( 3 );
 			}

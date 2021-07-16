@@ -23,7 +23,7 @@ namespace SpiritIsland.Base {
 			if(!(2<=moon && 1<=fire)) return;
 			// range 1 from SS
 			var target = await engine.Api.TargetSpace_SacredSite(1);
-			await engine.GatherExplorer(target,1);
+			await engine.GatherUpToNInvaders(target,1,Invader.Explorer);
 
 			// level 2 - 3 moon, 2 fire: destroy up to 2 explorers, 1 fear / explorer destroyed
 			if(3<=moon && 2<=fire){
@@ -36,9 +36,9 @@ namespace SpiritIsland.Base {
 
 			// level 3 - 4 moon, 3 fire, 2 air: 3 damage, 1 fear / invader destroyed by this damage
 			if(4<=moon && 3<=fire && 2<=air){
-				int startingCount = engine.GameState.InvadersOn(target).Total;
+				int startingCount = engine.GameState.InvadersOn(target).TotalCount;
 				engine.GameState.DamageInvaders(target,3);
-				int endingCount = engine.GameState.InvadersOn(target).Total;
+				int endingCount = engine.GameState.InvadersOn(target).TotalCount;
 				int killed = startingCount - endingCount;
 				engine.GameState.AddFear(killed);
 			}

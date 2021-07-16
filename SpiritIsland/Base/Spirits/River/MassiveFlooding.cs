@@ -80,7 +80,8 @@ namespace SpiritIsland.Base {
 			}
 		}
 
-		Invader[] InvadersForPushing() => gameState.InvadersOn( space ).Filter( "T@2", "T@1", "E@1" );
+		Invader[] InvadersForPushing() => gameState.InvadersOn( space )
+			.FilterBy( Invader.Town, Invader.Explorer );
 	}
 
 }

@@ -34,17 +34,12 @@ namespace SpiritIsland {
 			.Where(pair => pair.Value > 0 && pair.Key.Health>0)
 			.Select(pair => pair.Key);
 
-		public Invader[] Filter(params string[] allowedTypes ){
-			return InvaderTypesPresent.Where(i=>allowedTypes.Contains(i.Summary)).ToArray();
-		}
-		public Invader[] Filter(params Invader[] allowedTypes ){
-			return InvaderTypesPresent.Intersect(allowedTypes).ToArray();
-		}
-		public Invader[] FilterByHealthy(params Invader[] allowedTypes ){
+		public Invader[] FilterBy(params Invader[] allowedTypes ){
 			return InvaderTypesPresent
 				.Where(i=>allowedTypes.Contains(i.Healthy))
 				.ToArray();
 		}
+
 
 		public void ApplyDamage(DamagePlan damagePlan) {
 			changed.Add( damagePlan.Invader );			--dd[ damagePlan.Invader ];
@@ -88,7 +83,7 @@ namespace SpiritIsland {
 		}
 
 
-		public int Total {  get {
+		public int TotalCount { get {
 			int total = 0;
 			foreach(var k in InvaderTypesPresent)
 				total += this[k];
