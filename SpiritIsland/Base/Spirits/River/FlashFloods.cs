@@ -9,12 +9,9 @@ namespace SpiritIsland.Base {
 
 		public const string Name = "Flash Floods";
 		[SpiritCard(FlashFloods.Name,2,Speed.Fast,Element.Sun,Element.Water)]
-		static public async Task ActionAsync(ActionEngine engine){
-			var (self,gameState) = engine;	
-
-			bool LandHasInvaders(Space space) => space.IsLand && engine.GameState.InvadersOn(space).InvaderTypesPresent.Any();
-
-			var target = await engine.Api.TargetSpace_Presence(1,LandHasInvaders);
+		[FromPresence(1,Filter.Invader)]
+		static public async Task ActionAsync(ActionEngine engine,Space target){
+			var (_,gameState) = engine;	
 
 			// +1 damage, if costal +1 additional damage
 			int damage = target.IsCostal ? 2 : 1;

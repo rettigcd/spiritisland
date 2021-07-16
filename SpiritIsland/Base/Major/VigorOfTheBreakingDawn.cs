@@ -10,9 +10,9 @@ namespace SpiritIsland.Base {
 	class VigorOfTheBreakingDawn {
 
 		[MajorCard("Vigor of the Breaking Down",3,Speed.Fast,Element.Sun,Element.Animal)]
-		public static async Task ActAsync(ActionEngine engine){
+		[FromPresence(2,Filter.Dahan)]
+		public static async Task ActAsync(ActionEngine engine,Space target){
 			var (spirit,gs) = engine;
-			var target = await engine.Api.TargetSpace_Presence(2,gs.HasDahan);
 
 			// 2 damage per dahan in target land
 			gs.DamageInvaders(target,2*gs.GetDahanOnSpace(target));

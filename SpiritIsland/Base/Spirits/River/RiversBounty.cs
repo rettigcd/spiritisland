@@ -8,11 +8,9 @@ namespace SpiritIsland.Base {
 
 		public const string Name = "River's Bounty";
 		[SpiritCard(RiversBounty.Name, 0, Speed.Slow,Element.Sun,Element.Water,Element.Animal)]
-		static public async Task ActionAsync(ActionEngine eng) {
+		[FromPresence(0)]
+		static public async Task ActionAsync(ActionEngine eng,Space target) {
 			var (self, gameState) = eng;
-
-			bool HasCloseDahan( Space space ) => space.SpacesWithin( 1 ).Any( gameState.HasDahan );
-			var target = await eng.Api.TargetSpace_Presence(0,HasCloseDahan );
 
 			// Gather up to 2 Dahan
 			await eng.GatherUpToNDahan( target, 2 );

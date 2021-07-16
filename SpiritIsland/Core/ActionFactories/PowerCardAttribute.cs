@@ -45,7 +45,7 @@ namespace SpiritIsland.Core {
 
 	public enum PowerType{ Minor, Major, Spirit }
 
-	[AttributeUsage(AttributeTargets.Class)]
+	[AttributeUsage(AttributeTargets.Class|AttributeTargets.Method)]
 	public class InnateOptionAttribute : Attribute {
 		public InnateOptionAttribute(params Element[] elements){
 			this.Elements = elements;

@@ -4,18 +4,15 @@ using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
 
-	// major
-	[MajorCard(Tsunami.Name,6,Speed.Slow,Element.Water,Element.Earth)]
-	public class Tsunami : BaseAction {
+	public class Tsunami {
 
 		public const string Name = "Tsunami";
 
-		public Tsunami(Spirit spirit,GameState gs):base(spirit,gs){ _ = ActAsync(spirit); }
 
-		async Task ActAsync(Spirit self){
-
-			Space space = await engine.Api.TargetSpace_SacredSite(2,s=>s.IsCostal);
-
+		[MajorCard(Tsunami.Name,6,Speed.Slow,Element.Water,Element.Earth)]
+		[FromSacredSite(2,Filter.Costal)]
+		static public async Task ActAsync(ActionEngine engine,Space space){
+			var(self,gameState) = engine;
 			// 2 fear
 			gameState.AddFear(2);
 			// +8 damage

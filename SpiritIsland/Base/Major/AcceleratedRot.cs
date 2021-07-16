@@ -4,18 +4,15 @@ using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
 
-	[MajorCard(AcceleratedRot.Name,4,Speed.Slow,Element.Sun,Element.Water,Element.Plant)]
-	public class AcceleratedRot : BaseAction {
+	public class AcceleratedRot {
 
 		public const string Name = "Accelerated Rot";
 
-		public AcceleratedRot(Spirit spirit,GameState gs):base(spirit,gs){
-			_=ActAsync(spirit);
-		}
+		[MajorCard(AcceleratedRot.Name,4,Speed.Slow,Element.Sun,Element.Water,Element.Plant)]
+		[FromPresence(2,Filter.JungleOrWetland)]
+		static public async Task ActAsync(ActionEngine engine, Space target){
+			var (spirit,gameState) = engine;
 
-		async Task ActAsync(Spirit spirit){
-			static bool JungleOrWetland(Space space)=>space.Terrain.IsIn(Terrain.Jungle,Terrain.Wetland);
-			var space = await engine.Api.TargetSpace_Presence(2,JungleOrWetland);
 			// 2 fear, 4 damage
 			int damageToInvaders = 4;
 			gameState.AddFear(2);
@@ -27,10 +24,10 @@ namespace SpiritIsland.Base {
 			)){
 				// +5 damage, remove 1 blight
 				damageToInvaders += 5;
-				gameState.AddBlight(space,-1);
+				gameState.AddBlight(target,-1);
 			}				
 
-			gameState.DamageInvaders(space, damageToInvaders);
+			gameState.DamageInvaders(target, damageToInvaders);
 		}
 
 	}

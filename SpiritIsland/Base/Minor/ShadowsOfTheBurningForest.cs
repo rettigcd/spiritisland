@@ -6,10 +6,11 @@ namespace SpiritIsland.Base {
 	class ShadowsOfTheBurningForest {
 
 		[MinorCard("Shadows of the Burning Forest",0,Speed.Slow,Element.Moon,Element.Fire,Element.Plant)]
-		static public async Task Act(ActionEngine engine){
-			var target = await engine.Api.TargetSpace_Presence(0,engine.GameState.HasInvaders);
+		[FromPresence(0,Filter.Invader)]
+		static public async Task Act(ActionEngine engine,Space target){
 			// 2 fear
 			engine.GameState.AddFear(2);
+
 			// if target is M/J, Push 1 explorer and 1 town
 
 			// duplicated in Mantle of dread

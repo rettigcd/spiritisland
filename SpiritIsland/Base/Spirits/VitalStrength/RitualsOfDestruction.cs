@@ -6,9 +6,8 @@ namespace SpiritIsland.Base.Spirits.VitalStrength {
 	class RitualsOfDestruction {
 
 		[SpiritCard("Rituals of Destruction",3,Speed.Slow,Element.Sun,Element.Moon,Element.Fire,Element.Earth,Element.Plant)]
-		static public async Task ActAsync(ActionEngine eng){
-
-			var target = await eng.Api.TargetSpace_SacredSite(1,eng.GameState.HasDahan);
+		[FromSacredSite(1,Filter.Dahan)]
+		static public async Task ActAsync(ActionEngine eng,Space target){
 
 			bool hasBonus = 3 <= eng.GameState.GetDahanOnSpace(target);
 			

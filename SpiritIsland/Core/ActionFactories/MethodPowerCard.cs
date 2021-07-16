@@ -8,7 +8,7 @@ namespace SpiritIsland.Core {
 
 		readonly MethodBase m;
 		readonly bool targetsSpirit;
-		readonly ITargetSpace targetSpace;
+		readonly TargetSpace targetSpace;
 
 		public MethodPowerCard(MethodBase m){
 			var attr = m.GetCustomAttributes<PowerCardAttribute>().VerboseSingle();
@@ -16,8 +16,8 @@ namespace SpiritIsland.Core {
 			// check if targets spirit
 			targetsSpirit = m.GetCustomAttributes<TargetSpiritAttribute>().Any();
 
-			targetSpace = (ITargetSpace)m.GetCustomAttributes<FromPresenceAttribute>().FirstOrDefault()
-				?? (ITargetSpace)m.GetCustomAttributes<FromSacredSiteAttribute>().FirstOrDefault();
+			targetSpace = (TargetSpace)m.GetCustomAttributes<FromPresenceAttribute>().FirstOrDefault()
+				?? (TargetSpace)m.GetCustomAttributes<FromSacredSiteAttribute>().FirstOrDefault();
 
 			Speed = attr.Speed;
 			Name = attr.Name;
@@ -66,13 +66,13 @@ namespace SpiritIsland.Core {
 				Spirit self,
 				GameState gameState,
 				MethodBase m,
-				ITargetSpace targetSpace
+				TargetSpace targetSpace
 			):base(self,gameState)
 			{
 				_ = TargetSpirit(m,targetSpace);
 			}
-			async Task TargetSpirit(MethodBase m,ITargetSpace targetSpace){
-				var target = await targetSpace.Target(engine.Self,engine.Api);
+			async Task TargetSpirit(MethodBase m,TargetSpace targetSpace){
+				var target = await targetSpace.Target( engine );
 				m.Invoke(null,new object[]{engine,target});
 			}
 		}

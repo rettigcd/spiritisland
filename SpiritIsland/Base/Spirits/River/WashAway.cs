@@ -9,15 +9,10 @@ namespace SpiritIsland.Base {
 		public const string Name = "Wash Away";
 
 		[SpiritCard(WashAway.Name, 1, Speed.Slow, Element.Water, Element.Earth)]
-		static public async Task ActionAsync(ActionEngine engine){
-			var (self,gameState) = engine;
-			bool HasTownOrExplorer(Space space){
-				var sum = gameState.InvadersOn(space);
-				return sum.HasExplorer || sum.HasTown;
-			}
-
-			var target = await engine.Api.TargetSpace_Presence(1,HasTownOrExplorer);
-
+		[FromPresence(1,Filter.TownOrExplorer)]
+		static public async Task ActionAsync(ActionEngine engine,Space target){
+			var (_,gameState) = engine;
+			
 			var group = gameState.InvadersOn(target);
 			int numToPush = 3;
 			Invader[] CalcInvaders() => group.FilterBy(Invader.Town,Invader.Explorer);

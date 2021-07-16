@@ -1,16 +1,14 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
 
-
 	public class PillarOfLivingFlame {
 
 		[MajorCard("Pillar of Living Flame",5,Speed.Slow,Element.Fire)]
-		static public async Task ActionAsync(ActionEngine engine){
+		[FromSacredSite(2)]
+		static public async Task ActionAsync(ActionEngine engine,Space targetLand){
 			var (self,gameState) = engine;
-			var targetLand = await engine.Api.TargetSpace_SacredSite(2,s=>s.IsLand);
 
 			// 3 fear, 5 damage
 			// if you have 4 fire, +2 fear, +5 damage

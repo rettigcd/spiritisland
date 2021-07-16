@@ -6,10 +6,9 @@ namespace SpiritIsland.Base {
 
 	class CallToBloodshed {
 		[MinorCard("Call to Bloodshed",1,Speed.Slow,Element.Sun,Element.Fire,Element.Animal)]
-		static public async Task Act(ActionEngine engine){
-			var (self,gameState)=engine;
-			// range 2, dahan
-			var target = await engine.Api.TargetSpace_Presence(2,gameState.HasDahan);
+		[FromPresence(2,Filter.Dahan)]
+		static public async Task Act(ActionEngine engine,Space target){
+			var (_,gameState)=engine;
 
 			const string key1 = "1 damage per dahan";
 			const string key2 = "gather up to 3 dahan";
