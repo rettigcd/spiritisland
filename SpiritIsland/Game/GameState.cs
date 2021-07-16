@@ -280,6 +280,7 @@ namespace SpiritIsland {
 
 
 		public void DamageInvaders(Space space,int damage){
+			if(damage==0) return;
 			var group = InvadersOn(space);
 			ApplyDamageToInvaders(group,damage);
 		}

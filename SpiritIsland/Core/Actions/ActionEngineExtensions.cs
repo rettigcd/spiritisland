@@ -63,7 +63,8 @@ namespace SpiritIsland.Core {
 
 		}
 
-		static public async Task PushUpToNDahan( this ActionEngine eng, Space source, int dahanToPush) {
+		static public async Task<Space[]> PushUpToNDahan( this ActionEngine eng, Space source, int dahanToPush) {
+			HashSet<Space> pushedToLands = new HashSet<Space>();
 			dahanToPush = System.Math.Min(dahanToPush,eng.GameState.GetDahanOnSpace(source));
 			while(0<dahanToPush){
 				Space destination = await eng.SelectSpace("Select destination for dahan"
@@ -71,10 +72,12 @@ namespace SpiritIsland.Core {
 					,true
 				);
 				if(destination == null) break;
+				pushedToLands.Add(destination);
 				eng.GameState.AddDahan(source,-1);
 				eng.GameState.AddDahan(destination,1);
 				--dahanToPush;
 			}
+			return pushedToLands.ToArray();
 		}
 
 		static public async Task PushUpToNInvaders( this ActionEngine eng, Space source, int countToPush
