@@ -37,6 +37,10 @@ namespace SpiritIsland {
 
 		public virtual int Elements(Element element) => AllElements[element];// !!! make private.  tell, don't ask
 
+		public bool HasElements(Dictionary<Element,int> needed){
+			var all = this.AllElements;
+			return needed.All(pair=>pair.Value<=all[pair.Key]);
+		}
 
 		#endregion
 
