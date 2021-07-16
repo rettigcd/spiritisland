@@ -10,9 +10,8 @@ namespace SpiritIsland.Base {
 	class LandOfHauntsAndEmbers {
 
 		[MinorCard("Land of Haunts and Embers",0,Speed.Fast,Element.Moon,Element.Fire,Element.Air)]
-		static public async Task Act(ActionEngine engine){
-			// range 2
-			var target = await engine.Api.TargetSpace_Presence(2);
+		[FromPresence(2)]
+		static public async Task Act(ActionEngine engine,Space target){
 			
 			// 2 fear
 			engine.GameState.AddFear(2);

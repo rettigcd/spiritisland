@@ -4,16 +4,13 @@ using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
 	
-	[Core.SpiritCard(RagingStorm.Name,3,Speed.Slow,Element.Fire,Element.Air,Element.Water)]
-	public class RagingStorm : BaseAction {
+	public class RagingStorm {
 		public const string Name = "Raging Storm";
 
-		public RagingStorm(Spirit spirit,GameState gs):base(spirit,gs){_ = Act();}
-
-		async Task Act(){
-			// range 1, any
-			var target = await engine.Api.TargetSpace_Presence(1);
-
+		[SpiritCard(RagingStorm.Name,3,Speed.Slow,Element.Fire,Element.Air,Element.Water)]
+		[FromPresence(1)]
+		static public async Task Act(ActionEngine engine,Space target){
+			var (_,gameState) = engine;
 			var orig = gameState.InvadersOn(target);
 
 			// 1 damange to each invader.

@@ -184,7 +184,6 @@ namespace SpiritIsland {
 			return toFlush.Length;
 		}
 
-
 		void ActivateCard(PowerCard card) {
 			if (!Hand.Contains(card)) throw new CardNotAvailableException();
 			if (card.Cost > Energy) throw new InsufficientEnergyException();
@@ -204,6 +203,11 @@ namespace SpiritIsland {
 			Element[] spiritActiveElements = PurchasedCards.SelectMany(c=>c.Elements).ToArray();
 			return !elements.Except(spiritActiveElements).Any();
 		}
+
+		/// <summary>
+		/// Hook for VitalStrength of Earth
+		/// </summary>
+		public virtual void PreRavage(GameState _){ }
 
 	}
 

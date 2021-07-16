@@ -6,8 +6,8 @@ namespace SpiritIsland.Base.Spirits.VitalStrength {
 	class GuardTheHealingLand {
 
 		[SpiritCard("Guard the Healing Land",3,Speed.Fast,Element.Water,Element.Earth,Element.Plant)]
-		static public async Task Act(ActionEngine eng){
-			var target = await eng.Api.TargetSpace_SacredSite(1);
+		[FromSacredSite(1)]
+		static public async Task Act(ActionEngine eng,Space target){
 			
 			// remove 1 blight, defend 4
 			eng.GameState.Defend(target,4);

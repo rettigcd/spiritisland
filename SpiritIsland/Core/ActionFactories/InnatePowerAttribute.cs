@@ -1,6 +1,8 @@
-﻿namespace SpiritIsland.Core {
+﻿using System;
 
-	[System.AttributeUsage(System.AttributeTargets.Class)]
+namespace SpiritIsland.Core {
+
+	[AttributeUsage(AttributeTargets.Class|AttributeTargets.Method)]
 	public class InnatePowerAttribute : System.Attribute {
 		public InnatePowerAttribute(string name, Speed speed){
 			this.Name = name;
@@ -12,7 +14,7 @@
 
 	}
 
-	[System.AttributeUsage(System.AttributeTargets.Class)]
+	[AttributeUsage(AttributeTargets.Class|AttributeTargets.Method)]
 	public class PowerLevelAttribute : System.Attribute {
 
 		public PowerLevelAttribute(int level,params Element[] elements){

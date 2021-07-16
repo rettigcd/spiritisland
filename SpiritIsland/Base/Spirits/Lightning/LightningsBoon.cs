@@ -4,21 +4,14 @@ using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
 
-	[SpiritCard(LightningsBoon.Name,1,Speed.Fast,Element.Fire,Element.Air)]
-	public class LightningsBoon : BaseAction {
+	public class LightningsBoon {
 		public const string Name = "Lightning's Boon";
 
-		public LightningsBoon(Spirit spirit,GameState gs):base(spirit,gs){
-			_ = ActAsync();
-		}
-
-		async Task ActAsync() {
-			// any spirt
-			var spirit = await engine.Api.TargetSpirit();
-
+		[SpiritCard(LightningsBoon.Name,1,Speed.Fast,Element.Fire,Element.Air)]
+		[TargetSpirit]
+		static public async Task ActAsync(ActionEngine engine,Spirit target) {
 			// Taret spirit may use up to 2 slow powers as if they were fast powers this turn.
-			await engine.SelectActionsAndMakeFast( spirit, 2 );
-
+			await engine.SelectActionsAndMakeFast( target, 2 );
 		}
 
 	}

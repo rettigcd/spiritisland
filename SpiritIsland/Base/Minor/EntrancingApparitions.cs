@@ -7,9 +7,9 @@ namespace SpiritIsland.Base {
 	class EntrancingApparitions {
 
 		[MinorCard("Entrancing Apparitions",1,Speed.Fast,Element.Moon,Element.Air,Element.Water)]
-		static public async Task Act(ActionEngine engine){
+		[FromPresence(1)]
+		static public async Task Act(ActionEngine engine,Space target){
 			var (spirit,gs) = engine;
-			var target = await engine.Api.TargetSpace_Presence(1);
 			// defend 2
 			gs.Defend(target,2);
 

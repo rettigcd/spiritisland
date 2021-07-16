@@ -10,10 +10,9 @@ namespace SpiritIsland.Base.Spirits.Shadows {
 	class FavorsCalledDue {
 
 		[SpiritCard("Favors Called Due",1,Speed.Slow,Element.Moon,Element.Air,Element.Animal)]
-		static public async Task Act(ActionEngine engine){
+		[FromPresence(1)]
+		static public async Task Act(ActionEngine engine, Space target){
 			var (_,gameState) = engine;
-			// range 1
-			var target = await engine.Api.TargetSpace_Presence(1);
 
 			// gather up to 4 dahan
 			await engine.GatherUpToNDahan( target, 4 );

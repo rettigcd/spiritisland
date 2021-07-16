@@ -87,6 +87,11 @@ Power Progression:
 			throw new System.NotImplementedException();
 		}
 
+		public override void PreRavage( GameState gameState ) {
+			foreach(var space in SacredSites)
+				gameState.Defend(space,3);
+		}
+
 	}
 
 }

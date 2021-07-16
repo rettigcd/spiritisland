@@ -5,8 +5,8 @@ namespace SpiritIsland.Base {
 
 	class VisionsOfFieryDoom {
 		[MinorCard("Visions of Fiery Doom",1, Speed.Fast,Element.Moon,Element.Fire)]
-		static public async Task Act(ActionEngine eng){
-			var target = await eng.Api.TargetSpace_Presence(0);
+		[FromPresence(0)]
+		static public async Task Act(ActionEngine eng,Space target){
 			// 1 fear
 			bool hasBonus = eng.Self.Elements(Element.Fire)>=2;
 			eng.GameState.AddFear(hasBonus?2:1);

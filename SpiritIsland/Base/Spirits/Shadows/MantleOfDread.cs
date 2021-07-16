@@ -9,10 +9,8 @@ namespace SpiritIsland.Base.Spirits.Shadows {
 	class MantleOfDread {
 
 		[SpiritCard("Mantle of Dread",1,Speed.Slow,Element.Moon,Element.Fire,Element.Air)]
-		static public async Task Act(ActionEngine engine){
-
-			// target any spirit
-			var spirit = await engine.Api.TargetSpirit();
+		[TargetSpirit]
+		static public async Task Act(ActionEngine engine,Spirit target){
 
 			var (_,gs) = engine;
 
@@ -25,7 +23,7 @@ namespace SpiritIsland.Base.Spirits.Shadows {
 				return grp.HasExplorer || grp.HasTown;
 			}
 			// Select Land
-			var landsToPushInvadersFrom = spirit.Presence.Where(HasExplorerOrTown).ToArray();
+			var landsToPushInvadersFrom = target.Presence.Where(HasExplorerOrTown).ToArray();
 			if(landsToPushInvadersFrom.Length == 0) return;
 			var space = await engine.SelectSpace("Select land to push 1 exploer & 1 town from",landsToPushInvadersFrom,true);
 			if(space==null) return;

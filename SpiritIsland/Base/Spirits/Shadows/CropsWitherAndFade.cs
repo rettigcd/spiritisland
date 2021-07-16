@@ -6,9 +6,9 @@ namespace SpiritIsland.Base.Spirits.Shadows {
 	class CropsWitherAndFade {
 
 		[SpiritCard("Crops Wither and Fade",1,Speed.Slow,Element.Moon,Element.Fire,Element.Plant)]
-		static public async Task Act(ActionEngine engine){
+		[FromPresence(0)]
+		static public async Task Act(ActionEngine engine,Space target){
 			var (_,gs) = engine;
-			var target = await engine.Api.TargetSpace_Presence(0);
 
 			// 2 fear
 			gs.AddFear(2);

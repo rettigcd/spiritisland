@@ -1,28 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
 
-	[InnatePower(DarknessSwallowsTheUnwary.Name,Speed.Fast)]
-	[PowerLevel(0,Element.Sun,Element.Water,Element.Water)]
-	class DarknessSwallowsTheUnwary : BaseAction {
-		public DarknessSwallowsTheUnwary(Spirit spirit,GameState gs):base(spirit,gs){
-			_ = ActAsync();	       
-		}
+	class DarknessSwallowsTheUnwary {
 
-		async Task ActAsync(){
+		[InnatePower(DarknessSwallowsTheUnwary.Name,Speed.Fast)]
+		[PowerLevel(0,Element.Sun,Element.Water,Element.Water)]
+		[FromSacredSite(1)]
+		static public async Task ActAsync(ActionEngine engine,Space target){
 			int moon = engine.Self.Elements(Element.Moon);
 			int fire = engine.Self.Elements(Element.Fire);
 			int air  = engine.Self.Elements(Element.Air);
 
 			// level 1 - 2 moon, 1 fire: gather 1 explorer
 			if(!(2<=moon && 1<=fire)) return;
-			// range 1 from SS
-			var target = await engine.Api.TargetSpace_SacredSite(1);
 			await engine.GatherUpToNInvaders(target,1,Invader.Explorer);
 
 			// level 2 - 3 moon, 2 fire: destroy up to 2 explorers, 1 fear / explorer destroyed

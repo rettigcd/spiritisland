@@ -6,9 +6,9 @@ namespace SpiritIsland.Base {
 	class PoisonedLand {
 
 		[MajorCard("Poisoned Land",3,Speed.Slow,Element.Earth,Element.Plant,Element.Animal)]
-		static public async Task ActAsync(ActionEngine engine){
+		[FromPresence(1)]
+		static public async Task ActAsync(ActionEngine engine,Space target){
 			var (_,gs) = engine;
-			var target = await engine.Api.TargetSpace_Presence(1);
 
 			// Add 1 blight, destroy all dahan
 			gs.AddBlight(target,1);
