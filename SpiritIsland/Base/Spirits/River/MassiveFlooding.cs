@@ -4,6 +4,8 @@ using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
 
+	[InnatePower(MassiveFlooding.Name,Speed.Slow)]
+	[FromSacredSite(1,Filter.TownOrExplorer)]
 	public class MassiveFlooding {
 
 		public const string Name = "Massive Flooding";
@@ -11,9 +13,7 @@ namespace SpiritIsland.Base {
 		public const string k2 = "2 damage, Push up to 3 explorers and/or towns";
 		public const string k3 = "2 damage to all";
 
-		[InnatePower(MassiveFlooding.Name,Speed.Slow)]
-		[PowerLevel(0,Element.Sun,Element.Water,Element.Water)]
-		[FromSacredSite(1,Filter.TownOrExplorer)]
+		[InnateOption(Element.Sun,Element.Water,Element.Water)]
 		static public async Task ActionAsync(ActionEngine engine,Space target){
 			var (spirit,gameState) = engine;
 			var elements = spirit.AllElements;

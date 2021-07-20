@@ -4,11 +4,11 @@ using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
 
+	[InnatePower(DarknessSwallowsTheUnwary.Name,Speed.Fast)]
+	[FromSacredSite(1)]
 	public class DarknessSwallowsTheUnwary {
 
-		[InnatePower(DarknessSwallowsTheUnwary.Name,Speed.Fast)]
-		[PowerLevel(0,Element.Sun,Element.Water,Element.Water)]
-		[FromSacredSite(1)]
+		[InnateOption(Element.Sun,Element.Water,Element.Water)]
 		static public async Task ActAsync(ActionEngine engine,Space target){
 			int moon = engine.Self.Elements(Element.Moon);
 			int fire = engine.Self.Elements(Element.Fire);

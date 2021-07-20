@@ -3,12 +3,14 @@ using SpiritIsland.Core;
 
 namespace SpiritIsland.Base.Spirits.VitalStrength {
 
+	[InnatePower("Gift of Strength",Speed.Fast)]
+	[TargetSpirit]
 	class GiftOfStrength {
 
-		[InnatePower("bob",Speed.Fast)]
 		[InnateOption]
-		[TargetSpirit]
+#pragma warning disable IDE0060 // Remove unused parameter
 		static public Task ActAsync(ActionEngine engine, Spirit target){
+#pragma warning restore IDE0060 // Remove unused parameter
 			return null;
 		}
 

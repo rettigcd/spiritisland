@@ -10,34 +10,34 @@ namespace SpiritIsland.Core {
 
 		static public InnatePower For<T>(){ 
 			Type actionType = typeof(T);
+			InnatePowerAttribute innatePowerAttr = actionType.GetCustomAttribute<InnatePowerAttribute>();
+
+			TargetSpaceAttribute targetSpace = (TargetSpaceAttribute)actionType.GetCustomAttributes<FromPresenceAttribute>().FirstOrDefault()
+				?? (TargetSpaceAttribute)actionType.GetCustomAttributes<FromSacredSiteAttribute>().FirstOrDefault();
+
 			// try static method (spirit / major / minor)
 			var method = actionType.GetMethods(BindingFlags.Public|BindingFlags.Static)
-				.Where(m=>m.GetCustomAttributes<InnatePowerAttribute>().Count()==1)
+				.Where(m=>m.GetCustomAttributes<InnateOptionAttribute>().Count()==1)
 				.VerboseSingle("Expect 1 innate methods per class"); // 1 method per class - for now
 
 			bool targetSpirit = method.GetCustomAttributes<TargetSpiritAttribute>().Any();
 
-			TargetSpaceAttribute targetSpace = (TargetSpaceAttribute)method.GetCustomAttributes<FromPresenceAttribute>().FirstOrDefault()
-				?? (TargetSpaceAttribute)method.GetCustomAttributes<FromSacredSiteAttribute>().FirstOrDefault();
-
-			return new InnatePower(method,targetSpirit,targetSpace);
+			return new InnatePower(innatePowerAttr,method,targetSpirit,targetSpace);
 		}
 
 		readonly MethodBase method;
 		readonly bool targetSpirit;
 		readonly TargetSpaceAttribute targetSpace;
 
-		internal InnatePower(MethodBase method,bool targetSpirit, TargetSpaceAttribute targetSpace){
+		internal InnatePower(InnatePowerAttribute innatePowerAttr, MethodBase method,bool targetSpirit, TargetSpaceAttribute targetSpace){
 			this.method = method;
 			this.targetSpirit = targetSpirit;
 			this.targetSpace = targetSpace;
 
-
-			var innatePowerAttr = method.GetCustomAttributes<InnatePowerAttribute>().VerboseSingle("bob 123");
 			Speed = innatePowerAttr.Speed;
 			Name = innatePowerAttr.Name;
 
-			powerLevels = method.GetCustomAttributes<PowerLevelAttribute>().ToArray();
+			powerLevels = method.GetCustomAttributes<InnateOptionAttribute>().ToArray();
 		}
 
 		#endregion
@@ -58,7 +58,7 @@ namespace SpiritIsland.Core {
 
 		public IActionFactory Original => this;
 
-		readonly PowerLevelAttribute[] powerLevels;
+		readonly InnateOptionAttribute[] powerLevels;
 
 		public IAction Bind( Spirit spirit, GameState gameState ) {
 			if(targetSpirit)

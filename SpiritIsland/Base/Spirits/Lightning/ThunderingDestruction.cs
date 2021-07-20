@@ -12,13 +12,13 @@ namespace SpiritIsland.Base {
 	// 5 fire 4 air 1 water    also, destroy 1 town or city
 	// 5 fire 5 air 2 water    also, destroy 1 town or city
 
+	[InnatePower( ThunderingDestruction.Name, Speed.Fast )]
+	[FromSacredSite(1)]
 	class ThunderingDestruction {
 
 		public const string Name = "Thundering Destruction";
 
-		[InnatePower( ThunderingDestruction.Name, Speed.Fast )]
 		[InnateOption( Element.Fire, Element.Fire, Element.Fire, Element.Air, Element.Air )]
-		[FromSacredSite(1)]
 		static public async Task ActAsync(ActionEngine engine,Space target){
 			var (lightning,_) = engine;
 			int fire  = lightning.Elements(Element.Fire);
