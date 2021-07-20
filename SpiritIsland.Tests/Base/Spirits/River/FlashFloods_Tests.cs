@@ -58,7 +58,7 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 			var board = Board.BuildBoardA();
 			var gameState = new GameState(spirit){ Island = new Island(board) };
 			//   And: Presence on A2 (city/costal)
-			var presenceSpace = board[4];
+			var presenceSpace = board[2];
 			spirit.Presence.Add(presenceSpace);
 			//   And: 1 of each type of Invaders in Costal space (A2)
 			Space targetSpace = board[2];

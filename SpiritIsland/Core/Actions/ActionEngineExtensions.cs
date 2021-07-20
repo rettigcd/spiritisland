@@ -95,7 +95,6 @@ namespace SpiritIsland.Core {
 			}
 		}
 
-
 		static public async Task PushInvader( this ActionEngine eng, Space source, Invader invader){
   			var destination = await eng.SelectSpace("Push "+invader.Summary+" to"
 				,source.Neighbors.Where(x=>x.IsLand)
@@ -113,22 +112,5 @@ namespace SpiritIsland.Core {
 		}
 
 	}
-
-	/*
-	// var promise = new Promise<MyResult>;
-	var promise = new TaskCompletionSource<MyResult>();
-
-	// handlerMyEventsWithHandler(msg => promise.Complete(msg););
-	handlerMyEventsWithHandler(msg => promise.TrySetResult(msg));
-
-	// var myResult = promise.Future.Await(2000);
-	var completed = await Task.WhenAny(promise.Task, Task.Delay(2000));
-	if (completed == promise.Task)
-	  ; // Do something on timeout
-	var myResult = await completed;
-
-	Assert.Equals("my header", myResult.Header);
-	*/
-
 
 }

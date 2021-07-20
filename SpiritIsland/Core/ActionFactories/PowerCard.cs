@@ -8,19 +8,21 @@ namespace SpiritIsland.Core {
 	public abstract class PowerCard : IActionFactory, IOption {
 
 		static public PowerCard For<T>(){
-			// Try Class first
 			Type type = typeof(T);
-			var pca = ActionClassPowerCard.FindPowerCardAttributes(type);
-			if(pca.Length == 1)
-				return new ActionClassPowerCard(type);
 
-			// try static method
-			var methods = type.GetMethods(BindingFlags.Public|BindingFlags.Static)
-				.Where(m=>m.GetCustomAttributes<PowerCardAttribute>().Count()==1)
-				.ToArray();
-			return methods.Length == 1 
-				? new MethodPowerCard(methods[0]) 
-				: throw new ArgumentException("Invalid PowerCard class "+type.Name);
+			// try static method (spirit / major / minor)
+			var method = type.GetMethods(BindingFlags.Public|BindingFlags.Static)
+				.Where(m=>m.GetCustomAttributes<BaseCardAttribute>().Count()==1)
+				.VerboseSingle($"PowerCard {type.Name} missing static method with SpiritCard, MinorCard or MajorCard attribute");
+
+			// check if targets spirit
+			if( method.GetCustomAttributes<TargetSpiritAttribute>().Any() )
+				return new TargetSpirit_PowerCard(method);
+
+			TargetSpaceAttribute targetSpace = (TargetSpaceAttribute)method.GetCustomAttributes<FromPresenceAttribute>().FirstOrDefault()
+				?? (TargetSpaceAttribute)method.GetCustomAttributes<FromSacredSiteAttribute>().FirstOrDefault();
+
+			return new TargetSpace_PowerCard(method,targetSpace); 
 		}
 
 		public string Name { get; protected set; }

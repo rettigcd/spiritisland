@@ -4,7 +4,7 @@ using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
 
-	class DarknessSwallowsTheUnwary {
+	public class DarknessSwallowsTheUnwary {
 
 		[InnatePower(DarknessSwallowsTheUnwary.Name,Speed.Fast)]
 		[PowerLevel(0,Element.Sun,Element.Water,Element.Water)]

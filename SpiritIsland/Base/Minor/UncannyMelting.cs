@@ -1,26 +1,22 @@
-﻿using SpiritIsland.Core;
+﻿using System.Threading.Tasks;
+using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
 
-	[MinorCard(UncannyMelting.Name,1, Speed.Slow,Element.Sun,Element.Moon,Element.Water)]
-	public class UncannyMelting : TargetSpaceAction {
+	public class UncannyMelting {
 
 		public const string Name = "Uncanny Melting";
-		public UncannyMelting(Spirit spirit,GameState gameState)
-			:base(spirit,gameState,1,From.SacredSite){}
 
-		protected override bool FilterSpace(Space space){
-			return space.Terrain.IsIn(Terrain.Sand,Terrain.Wetland)
-				&& (gameState.HasBlight(space) || gameState.HasInvaders(space));
-		}
-
-		protected override void SelectSpace(Space space){
-
-			if(gameState.HasInvaders(space))
+		[MinorCard(UncannyMelting.Name,1, Speed.Slow,Element.Sun,Element.Moon,Element.Water)]
+		[FromSacredSite(1,Filter.SandOrWetland)]
+		static public void ActAsync(ActionEngine eng,Space target){
+			var (_,gameState) = eng;
+			if(gameState.HasInvaders(target))
 				gameState.AddFear(1);
 
-			if(gameState.HasBlight(space))
-				gameState.RemoveBlight(space);
+			if(gameState.HasBlight(target))
+				gameState.RemoveBlight(target);
+
 		}
 
 	}

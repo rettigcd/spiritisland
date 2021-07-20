@@ -29,7 +29,8 @@ namespace SpiritIsland.Tests.Base.Spirits {
 			When_Growing( 1 );
 			Resolve_PlacePresence( "A4");
 
-			Assert_GainPowercard( 1 );
+			Assert.Equal(5,spirit.Hand.Count);
+//			Assert_GainPowercard( 1 );
 		}
 
 		[Fact]

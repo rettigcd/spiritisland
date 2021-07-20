@@ -168,7 +168,7 @@ namespace SpiritIsland {
 				throw new InsufficientCardPlaysException();
 
 			foreach (var card in cards)
-				ActivateCard(card);
+				PurchaseCard(card);
 
 			foreach (var card in PurchasedCards)
 				AddActionFactory(card);
@@ -184,7 +184,7 @@ namespace SpiritIsland {
 			return toFlush.Length;
 		}
 
-		void ActivateCard(PowerCard card) {
+		void PurchaseCard(PowerCard card) {
 			if (!Hand.Contains(card)) throw new CardNotAvailableException();
 			if (card.Cost > Energy) throw new InsufficientEnergyException();
 

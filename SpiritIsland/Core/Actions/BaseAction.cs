@@ -12,6 +12,7 @@ namespace SpiritIsland.Core {
 		}
 
 		bool initialized = false;
+
 		void InitializeIfNeeded(){
 			if(initialized) return;
 			initialized = true;
@@ -41,6 +42,7 @@ namespace SpiritIsland.Core {
 
 		public IOption[] Options {
 			get{
+//				System.Threading.Thread.Sleep(100);// !!!!!!!!!!!!!!!!!!! let other thread catch up
 				InitializeIfNeeded();
 				return GetOptionsSkippingAutoSelectCheck();
 			}

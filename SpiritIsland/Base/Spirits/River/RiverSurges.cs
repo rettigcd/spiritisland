@@ -98,10 +98,13 @@ namespace SpiritIsland.Base {
 			base.Grow(gameState, optionIndex);
 		}
 
-		public override IEnumerable<Space> SacredSites => Presence
-			.Where(s=>s.Terrain==Terrain.Wetland)
-			.Union( base.SacredSites )
-			.Distinct();
+		public override IEnumerable<Space> SacredSites {get{
+			var x = Presence;
+			return x
+				.Where(s=>s.Terrain==Terrain.Wetland)
+				.Union( base.SacredSites )
+				.Distinct();
+		}}
 
 		public override void AddActionFactory(IActionFactory actionFactory) {
 

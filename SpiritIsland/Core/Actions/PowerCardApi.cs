@@ -20,10 +20,14 @@ namespace SpiritIsland.Core {
 		#region virutal Target
 
 		public virtual async Task<Space> TargetSpace(IEnumerable<Space> source,int range,Func<Space,bool> filter = null){
-			var spaces = source.Range(range);
+			var spaces = source.Range(range).ToArray();
 			if(filter != null)
-				spaces = spaces.Where(filter);
+				spaces = spaces.Where(filter).ToArray();
 			return await engine.SelectSpace("Select target.",spaces);
+			//var spaces = source.Range(range);
+			//if(filter != null)
+			//	spaces = spaces.Where(filter);
+			//return await engine.SelectSpace("Select target.",spaces);
 		}
 
 		#endregion

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 
 namespace SpiritIsland.Core {
 
@@ -7,26 +8,36 @@ namespace SpiritIsland.Core {
 
 		#region Constructors and factories
 
-		static public InnatePower For<T>(){ return new InnatePower(typeof(T));}
+		static public InnatePower For<T>(){ 
+			Type actionType = typeof(T);
+			// try static method (spirit / major / minor)
+			var method = actionType.GetMethods(BindingFlags.Public|BindingFlags.Static)
+				.Where(m=>m.GetCustomAttributes<InnatePowerAttribute>().Count()==1)
+				.VerboseSingle("Expect 1 innate methods per class"); // 1 method per class - for now
 
-		public InnatePower(Type actionType){
+			bool targetSpirit = method.GetCustomAttributes<TargetSpiritAttribute>().Any();
 
-			var attributes = System.Attribute.GetCustomAttributes(actionType);
-			var pca = attributes
-				.OfType<InnatePowerAttribute>()
-				.ToArray();
-			if(pca.Length==0) throw new ArgumentException(actionType.Name+" missing InnatePower attribute.");
-			if(pca.Length!=1) throw new ArgumentException(actionType.Name+" has multiple InnatePower attributes.");
-			var attr = pca[0];
+			TargetSpaceAttribute targetSpace = (TargetSpaceAttribute)method.GetCustomAttributes<FromPresenceAttribute>().FirstOrDefault()
+				?? (TargetSpaceAttribute)method.GetCustomAttributes<FromSacredSiteAttribute>().FirstOrDefault();
 
-			Speed = attr.Speed;
-			Name = attr.Name;
+			return new InnatePower(method,targetSpirit,targetSpace);
+		}
 
-			powerLevels = attributes
-				.OfType<PowerLevelAttribute>()
-				.ToArray();
+		readonly MethodBase method;
+		readonly bool targetSpirit;
+		readonly TargetSpaceAttribute targetSpace;
 
-			this.actionType = actionType;
+		internal InnatePower(MethodBase method,bool targetSpirit, TargetSpaceAttribute targetSpace){
+			this.method = method;
+			this.targetSpirit = targetSpirit;
+			this.targetSpace = targetSpace;
+
+
+			var innatePowerAttr = method.GetCustomAttributes<InnatePowerAttribute>().VerboseSingle("bob 123");
+			Speed = innatePowerAttr.Speed;
+			Name = innatePowerAttr.Name;
+
+			powerLevels = method.GetCustomAttributes<PowerLevelAttribute>().ToArray();
 		}
 
 		#endregion
@@ -49,10 +60,11 @@ namespace SpiritIsland.Core {
 
 		readonly PowerLevelAttribute[] powerLevels;
 
-		readonly Type actionType;
-
 		public IAction Bind( Spirit spirit, GameState gameState ) {
-			return (IAction)Activator.CreateInstance(actionType,spirit,gameState);
+			if(targetSpirit)
+				return new TargetSpirit_Action(spirit,gameState,method);
+
+			return new TargetSpace_Action(spirit,gameState,method,targetSpace);
 		}
 
 	}

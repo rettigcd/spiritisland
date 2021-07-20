@@ -1,10 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using SpiritIsland.Core;
 
 namespace SpiritIsland.Base.Spirits.VitalStrength {
+
 	class GiftOfStrength {
+
+		[InnatePower("bob",Speed.Fast)]
+		[InnateOption]
+		[TargetSpirit]
+		static public Task ActAsync(ActionEngine engine, Spirit target){
+			return null;
+		}
+
 	}
+
 }

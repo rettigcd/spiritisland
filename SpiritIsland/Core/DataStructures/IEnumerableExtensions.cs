@@ -16,12 +16,12 @@ namespace SpiritIsland {
 			throw new InvalidOperationException($"Expected 1 but found {result.Count} items of type {name}");
 		}
 
-		public static T VerboseSingle<T>(this IEnumerable<T> items){
+		public static T VerboseSingle<T>(this IEnumerable<T> items,string msg){
 			var result = items.ToList();
 			if( result.Count == 1 ) return result[0];
 
 			string name = typeof(T).Name;
-			throw new InvalidOperationException($"Expected 1 but found {result.Count} items of type {name}");
+			throw new InvalidOperationException($"{msg} Expected 1 but found {result.Count} items of type {name}");
 		}
 
 		public static void AddCount<T>(this List<T> list, int count, T item){
