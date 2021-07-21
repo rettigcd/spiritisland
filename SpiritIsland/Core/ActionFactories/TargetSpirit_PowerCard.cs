@@ -31,7 +31,11 @@ namespace SpiritIsland.Core {
 
 		public Spirit Target {get; private set; }
 
-		public TargetSpirit_Action( Spirit self, GameState gameState, MethodBase m ):base(self,gameState) {
+		public TargetSpirit_Action( 
+			Spirit self, 
+			GameState gameState, 
+			MethodBase m
+		) :base(self,gameState) {
 			this.methodBase = m;
 			_ = FindSpiritAndInvoke();
 		}
@@ -46,8 +50,9 @@ namespace SpiritIsland.Core {
 			Task.Run(Invoke);
 		}
 
-		void Invoke() => methodBase.Invoke(null,new object[]{engine,Target});
-
+		void Invoke() {
+			methodBase.Invoke(null, new object[] { engine, Target } );
+		}
 
 		readonly MethodBase methodBase;
 

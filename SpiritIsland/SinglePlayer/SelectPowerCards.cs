@@ -42,7 +42,7 @@ namespace SpiritIsland.SinglePlayer {
 				.Where(c=>c.Cost<=energy && canPurchase>0)
 				.ToList();
 			if(powerCardOptions.Count == 0){
-				spirit.ActivateAvailableCards(selectedCards.ToArray());
+				spirit.PurchaseAvailableCards(selectedCards.ToArray());
 				Complete?.Invoke();
 				return;
 			}
@@ -50,7 +50,7 @@ namespace SpiritIsland.SinglePlayer {
 
 		public void Select(IOption option){
 			if(TextOption.Done.Matches(option)){
-				spirit.ActivateAvailableCards(selectedCards.ToArray());
+				spirit.PurchaseAvailableCards(selectedCards.ToArray());
 				Complete?.Invoke();
 				return;
 			}

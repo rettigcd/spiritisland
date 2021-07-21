@@ -1,53 +1,46 @@
-﻿using System;
+﻿using SpiritIsland.Base.Spirits.VitalStrength;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
 namespace SpiritIsland.Core {
 
-	public class InnatePower : IActionFactory {
+	public abstract class InnatePower : IActionFactory {
 
 		#region Constructors and factories
 
 		static public InnatePower For<T>(){ 
 			Type actionType = typeof(T);
+
+			bool targetSpirit = actionType.GetCustomAttributes<TargetSpiritAttribute>().Any();
+            return targetSpirit		
+				? new InnatePower_TargetSpirit( actionType ) 
+				: new InnatePower_TargetSpace( actionType );
+        }
+
+        internal InnatePower(Type actionType){
 			InnatePowerAttribute innatePowerAttr = actionType.GetCustomAttribute<InnatePowerAttribute>();
-
-			TargetSpaceAttribute targetSpace = (TargetSpaceAttribute)actionType.GetCustomAttributes<FromPresenceAttribute>().FirstOrDefault()
-				?? (TargetSpaceAttribute)actionType.GetCustomAttributes<FromSacredSiteAttribute>().FirstOrDefault();
-
-			// try static method (spirit / major / minor)
-			var method = actionType.GetMethods(BindingFlags.Public|BindingFlags.Static)
-				.Where(m=>m.GetCustomAttributes<InnateOptionAttribute>().Count()==1)
-				.VerboseSingle("Expect 1 innate methods per class"); // 1 method per class - for now
-
-			bool targetSpirit = method.GetCustomAttributes<TargetSpiritAttribute>().Any();
-
-			return new InnatePower(innatePowerAttr,method,targetSpirit,targetSpace);
-		}
-
-		readonly MethodBase method;
-		readonly bool targetSpirit;
-		readonly TargetSpaceAttribute targetSpace;
-
-		internal InnatePower(InnatePowerAttribute innatePowerAttr, MethodBase method,bool targetSpirit, TargetSpaceAttribute targetSpace){
-			this.method = method;
-			this.targetSpirit = targetSpirit;
-			this.targetSpace = targetSpace;
-
 			Speed = innatePowerAttr.Speed;
 			Name = innatePowerAttr.Name;
 
-			powerLevels = method.GetCustomAttributes<InnateOptionAttribute>().ToArray();
+			// try static method (spirit / major / minor)
+			this.methods = actionType
+				.GetMethods( BindingFlags.Public | BindingFlags.Static )
+				.ToDictionary( m => m, m => m.GetCustomAttributes<InnateOptionAttribute>().ToArray() )
+				.Where( p => p.Value.Length == 1 )
+				.ToDictionary( p => p.Key, p => p.Value[0].Elements );
 		}
 
 		#endregion
 
-		public int PowersActivated(Spirit spirit){
-			bool[] isSubSet = powerLevels
-				.Select(pl=>spirit.HasElements(pl.Elements))
-				.ToArray();
+		readonly Dictionary<MethodInfo, Element[]> methods;
 
-			return isSubSet.Count(x=>x);
+		public int PowersActivated(Spirit spirit){
+			return methods
+				.OrderByDescending(pair=>pair.Value.Length)
+				.Where(pair=>spirit.HasElements(pair.Value))
+				.Count();
 		}
 
 		public Speed Speed {get;}
@@ -58,15 +51,49 @@ namespace SpiritIsland.Core {
 
 		public IActionFactory Original => this;
 
-		readonly InnateOptionAttribute[] powerLevels;
+		public abstract IAction Bind( Spirit spirit, GameState gameState );
 
-		public IAction Bind( Spirit spirit, GameState gameState ) {
-			if(targetSpirit)
-				return new TargetSpirit_Action(spirit,gameState,method);
+        protected MethodInfo HighestMethod( Spirit spirit ) {
+            return methods
+                .OrderByDescending( pair => pair.Value.Length )
+                .Where( pair => spirit.HasElements( pair.Value ) )
+                .First().Key;
+        }
 
-			return new TargetSpace_Action(spirit,gameState,method,targetSpace);
+    }
+
+	public class InnatePower_TargetSpirit : InnatePower, IActionFactory {
+
+		#region Constructors and factories
+
+		internal InnatePower_TargetSpirit( Type type ):base(type) {}
+
+		#endregion
+
+		public override IAction Bind( Spirit spirit, GameState gameState ) {
+			return new TargetSpirit_Action( spirit, gameState, HighestMethod(spirit) );
 		}
 
 	}
+
+	internal class InnatePower_TargetSpace : InnatePower, IActionFactory {
+
+		#region Constructors and factories
+
+		internal InnatePower_TargetSpace( Type type	) : base( type ) {
+			this.targetSpace = (TargetSpaceAttribute)type.GetCustomAttributes<FromPresenceAttribute>().FirstOrDefault()
+				?? (TargetSpaceAttribute)type.GetCustomAttributes<FromSacredSiteAttribute>().FirstOrDefault();
+		}
+
+		#endregion
+
+		public override IAction Bind( Spirit spirit, GameState gameState ) {
+			return new TargetSpace_Action( spirit, gameState, HighestMethod(spirit), targetSpace );
+		}
+		readonly TargetSpaceAttribute targetSpace;
+
+	}
+
+
 
 }

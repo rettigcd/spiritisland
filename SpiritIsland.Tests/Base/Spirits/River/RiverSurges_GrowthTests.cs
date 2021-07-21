@@ -150,7 +150,7 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 			spirit.Energy = card.Cost;
 
 			// When:
-			spirit.ActivateAvailableCards(card);
+			spirit.PurchaseAvailableCards(card);
 
 			// Then: card is in Active/play list
 			Assert.Contains(spirit.PurchasedCards, c => c == card);
@@ -200,7 +200,7 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 			spirit.Energy = card.Cost - 1;
 
 			// When:
-			void Purchase() => spirit.ActivateAvailableCards( card );
+			void Purchase() => spirit.PurchaseAvailableCards( card );
 
 			Assert.Throws<InsufficientEnergyException>( Purchase );
 		}
@@ -219,7 +219,7 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 			Assert.Equal(1,spirit.NumberOfCardsPlayablePerTurn);
 
 			// When:
-			void Purchase() => spirit.ActivateAvailableCards( card1, card2 );
+			void Purchase() => spirit.PurchaseAvailableCards( card1, card2 );
 
 			Assert.Throws<InsufficientCardPlaysException>(Purchase);
 		}
@@ -231,7 +231,7 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 			Discard(card);
 
 			// When
-			void Purchase() => spirit.ActivateAvailableCards( card );
+			void Purchase() => spirit.PurchaseAvailableCards( card );
 
 			Assert.Throws<CardNotAvailableException>( Purchase );
 		}
@@ -280,7 +280,7 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 				"D" => BoardD,
 				_ => null,
 			};
-			river.InitializePresence(board);
+			river.Initialize(board,null);
 			Assert.Equal(expectedStartingSpaces,river.Presence.Select(s=>s.Label).Join(","));
 		}
 

@@ -36,7 +36,7 @@ namespace SpiritIsland.Tests {
 				pp.Select( pp.Options.Single( o => o.Text == placeOnSpace ) );
 			}
 
-			spirit.Resolve( factory );
+			spirit.Resolve( factory, action );
 		}
 
 		private IActionFactory FindMatchingName( Spirit spirit ) {

@@ -1,5 +1,5 @@
 ﻿namespace SpiritIsland.Core {
-	public class ChangeSpeed : IActionFactory {
+    public class ChangeSpeed : IActionFactory {
 		public ChangeSpeed(IActionFactory original, Speed newSpeed){
 			Original = original;
 			Speed = newSpeed;

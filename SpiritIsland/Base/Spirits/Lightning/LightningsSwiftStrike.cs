@@ -59,8 +59,8 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 		protected override int[] EnergySequence => new int[]{ 1, 1, 2, 2, 3, 4, 4, 5 };
 		protected override int[] CardSequence => new int[]{ 2, 3, 4, 5, 6 };
 
-		public override void ActivateAvailableCards( params PowerCard[] cards ) {
-			base.ActivateAvailableCards( cards );
+		public override void PurchaseAvailableCards( params PowerCard[] cards ) {
+			base.PurchaseAvailableCards( cards );
 			swiftness.OnActivateCards( this );
 		}
 		static readonly SwiftnessOfLightning swiftness = new SwiftnessOfLightning();
@@ -88,7 +88,7 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 			PowerCard.For<CallToIsolation>()
 		};
 
-		public override void InitializePresence( Board board ) {
+		public override void Initialize( Board board, GameState _ ) {
 			// Setup: put 2 pressence in highest numbered sands
 			var space = board.Spaces.Reverse().First(x=>x.Terrain==Terrain.Sand);
 			Presence.Add(space);

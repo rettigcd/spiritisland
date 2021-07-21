@@ -128,7 +128,7 @@ namespace SpiritIsland.Base {
 			PowerCard.For<EncompassingWard>()
 		};
 
-		public override void InitializePresence( Board board ) {
+		public override void Initialize( Board board, GameState _ ) {
 			var space = board.Spaces.Reverse().First(s=>s.Terrain==Terrain.Wetland);
 			Presence.Add(space);
 		}

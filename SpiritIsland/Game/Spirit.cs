@@ -7,9 +7,9 @@ namespace SpiritIsland {
 
 	public abstract class Spirit : IOption {
 
-		public GrowthOption[] GrowthOptions { get; protected set; }
+        #region constructor
 
-		public Spirit(){
+        public Spirit(){
 			Hand.Add( new NullPowerCard( "A", 0, Speed.Fast, Element.Air ) );
 			Hand.Add( new NullPowerCard( "B", 0, Speed.Fast, Element.Air ) );
 			Hand.Add( new NullPowerCard( "C", 0, Speed.Fast, Element.Air ) );
@@ -20,16 +20,13 @@ namespace SpiritIsland {
 			Hand.AddRange( initialCards );
 		}
 
-		public void Forget(PowerCard cardToRemove){
-			PurchasedCards.Remove( cardToRemove );
-			Hand.Remove( cardToRemove );
-			DiscardPile.Remove( cardToRemove );
-		}
+		#endregion
 
 		#region Elements
 
-		// make protected.  Tell, don't ask!!!
-		public CountDictionary<Element> AllElements => PurchasedCards
+		// !!! Clean this element stuff up
+
+		CountDictionary<Element> AllElements => PurchasedCards
 			.SelectMany(c=>c.Elements)
 			.GroupBy(c=>c)
 			.ToDictionary(grp=>grp.Key,grp=>grp.Count())
@@ -37,24 +34,79 @@ namespace SpiritIsland {
 
 		public virtual int Elements(Element element) => AllElements[element];// !!! make private.  tell, don't ask
 
+
 		public bool HasElements(Dictionary<Element,int> needed){
 			var all = this.AllElements;
 			return needed.All(pair=>pair.Value<=all[pair.Key]);
 		}
 
+		public bool HasElements(string s) => HasElements(InnateOptionAttribute.ParseElements(s));
+
+		// called by innate powers to test which item activates
+		// !!! instead, maybe spirit knows the levels that are active and passes that to the 
+		// InnatePower.Bind(...) method
+		// (prevents InnatePowers from Asking Spirit questions
+		// tell, don't ask
+		public bool HasElements( params Element[] requiredElements ){
+			// !!! this could be calculated and cached when cards are purchased
+			List<Element> spiritActiveElements = PurchasedCards.SelectMany(c=>c.Elements).ToList();
+			foreach(var el in requiredElements){
+				int index = spiritActiveElements.IndexOf(el);
+				if(index == -1) return false;
+				spiritActiveElements.RemoveAt(index);
+			}
+			return true;
+		}
+
 		#endregion
 
-		public virtual InnatePower[] InnatePowers {get; set;} = System.Array.Empty<InnatePower>();
+		#region Growth
 
-		public virtual PowerCardApi GetPowerCardApi(ActionEngine engine){
-			return new PowerCardApi(engine);
+		public GrowthOption[] GrowthOptions { get; protected set; }
+
+		public virtual void Grow( GameState gameState, int optionIndex ) {
+
+			usedInnates.Clear();
+
+			GrowthOption option = this.GetGrowthOptions()[optionIndex];
+			foreach(var action in option.GrowthActions)
+				AddActionFactory( action );
+
+			RemoveResolvedActions( gameState, Speed.Growth );
+
 		}
+
+		public void CollectEnergy() => Energy += EnergyPerTurn;
+
+		public virtual GrowthOption[] GetGrowthOptions() => GrowthOptions;
+
+		#endregion
 
 		#region Cards
 
 		public List<PowerCard> Hand = new List<PowerCard>();	// in hand
 		public List<PowerCard> PurchasedCards = new List<PowerCard>();		// paid for
-		public List<PowerCard> DiscardPile = new List<PowerCard>();		// discarded
+		public List<PowerCard> DiscardPile = new List<PowerCard>();     // discarded
+		readonly List<IActionFactory> _unresolvedActionFactories = new List<IActionFactory>(); // public for testing
+		readonly List<InnatePower> usedInnates = new List<InnatePower>();
+
+
+		protected void RemoveResolvedActions( GameState gameState, Speed speed ) {
+
+			var resolvedActions = GetUnresolvedActionFactories( speed )
+				.Select( f => new { Factory = f, Action = f.Bind( this, gameState ) } )
+				.Where( pair => pair.Action.IsResolved )
+				.ToArray();
+			foreach(var x in resolvedActions)
+				Resolve( x.Factory, x.Action );
+
+		}
+
+		public void Forget( PowerCard cardToRemove ) {
+			PurchasedCards.Remove( cardToRemove );
+			Hand.Remove( cardToRemove );
+			DiscardPile.Remove( cardToRemove );
+		}
 
 		// Holds Fast and Slow actions,
 		// depends on Fast/Slow phase to only select the actions that are appropriate
@@ -70,32 +122,75 @@ namespace SpiritIsland {
 				.Where(f=>f.Speed == speed);
 		} 
 
-
-		readonly List<IActionFactory> _unresolvedActionFactories = new List<IActionFactory>(); // public for testing
-
-		readonly List<InnatePower> usedInnates = new List<InnatePower>();
-
 		/// <summary>
 		/// Removes from list.  Triggers Energy when last growth removed
 		/// </summary>
-		public void Resolve( IActionFactory selectedActionFactory ) {
+		public void Resolve( IActionFactory selectedActionFactory, IAction action ) {
+			resolvedActions.Add(new SpiritActionResolved{
+				Factory=selectedActionFactory,
+				Action=action 
+			} );
+			RemoveFactory(selectedActionFactory);
+		}
 
-			if(selectedActionFactory is InnatePower ip){
-				usedInnates.Add(ip);
+		public readonly List<SpiritActionResolved> resolvedActions = new List<SpiritActionResolved>();
+
+		/// <summary>
+		/// Removes it from the Unresolved-list
+		/// </summary>
+		/// <param name="selectedActionFactory"></param>
+		public void RemoveFactory(IActionFactory selectedActionFactory ) {
+			if(selectedActionFactory is InnatePower ip) {
+				usedInnates.Add( ip );
 				return;
 			}
 
 			int index = _unresolvedActionFactories.IndexOf( selectedActionFactory );
-			if(index == -1) throw new InvalidOperationException("can't remove factory that isn't there.");
-	
-			_unresolvedActionFactories.RemoveAt(index);
+			if(index == -1) throw new InvalidOperationException( "can't remove factory that isn't there." );
+
+			_unresolvedActionFactories.RemoveAt( index );
 
 			if(_unresolvedActionFactories.Count == 0 && selectedActionFactory is GrowthActionFactory)
-				Energy += EnergyPerTurn;	
+				Energy += EnergyPerTurn;
 		}
 
+		public virtual void AddActionFactory( IActionFactory factory ) {
+			_unresolvedActionFactories.Add( factory );
+		}
+
+		public virtual void PurchaseAvailableCards( params PowerCard[] cards ) {
+			if(cards.Length > NumberOfCardsPlayablePerTurn)
+				throw new InsufficientCardPlaysException();
+
+			foreach(var card in cards)
+				PurchaseCard( card );
+
+			foreach(var card in PurchasedCards)
+				AddActionFactory( card );
+
+		}
+
+		public int Flush( Speed speed ) {
+			var toFlush = GetUnresolvedActionFactories()
+				.Where( f => f.Speed == speed )
+				.ToArray();
+			foreach(var factory in toFlush)
+				RemoveFactory( factory );
+			return toFlush.Length;
+		}
+
+		void PurchaseCard( PowerCard card ) {
+			if(!Hand.Contains( card )) throw new CardNotAvailableException();
+			if(card.Cost > Energy) throw new InsufficientEnergyException();
+
+			Hand.Remove( card );
+			PurchasedCards.Add( card );
+			Energy -= card.Cost;
+		}
 
 		#endregion
+
+		#region presence
 
 		public readonly List<Space> Presence = new List<Space>();
 		public int PresenceOn(Space space) => Presence.Count(s=>s==space);
@@ -104,14 +199,15 @@ namespace SpiritIsland {
 			.Where(grp=>grp.Count()>1)
 			.Select(grp=>grp.Key);
 
-		/// <summary> # of coins in the bank. </summary>
-		public int Energy { get; set; }
+		#endregion
 
 		#region Presence Tracks
 		public virtual int RevealedEnergySpaces { get; set; } = 1;
 		public virtual int RevealedCardSpaces { get; set; } = 1;
 
-		// This is River...
+		/// <summary> # of coins in the bank. </summary>
+		public int Energy { get; set; }
+
 		protected virtual int[] EnergySequence => new int[]{0};
 		protected virtual int[] CardSequence => new int[]{0}; 
 
@@ -128,87 +224,25 @@ namespace SpiritIsland {
 
 		public int PowerCardsToDraw; // temporary...
 
+        #endregion
+
+        #region abstract
+
+        public virtual InnatePower[] InnatePowers { get; set; } = Array.Empty<InnatePower>();
+
+		public virtual PowerCardApi GetPowerCardApi( ActionEngine engine ) {
+			return new PowerCardApi( engine );
+		}
+
+		public abstract void Initialize( Board board, GameState gameState );
+
 		#endregion
 
-		public virtual void Grow(GameState gameState, int optionIndex) {
+	}
 
-			usedInnates.Clear();
-
-			GrowthOption option = this.GetGrowthOptions()[optionIndex];
-			foreach (var action in option.GrowthActions)
-				AddActionFactory(action);
-
-			RemoveResolvedActions(gameState,Speed.Growth);
-
-		}
-
-		protected void RemoveResolvedActions(GameState gameState,Speed speed) {
-
-			var resolvedActions = GetUnresolvedActionFactories(speed)
-				.Select(f=>new{Factory=f,Action=f.Bind(this,gameState)})
-				.Where(pair => pair.Action.IsResolved)
-				.ToArray();
-			foreach(var x in resolvedActions)
-				Resolve(x.Factory);
-
-		}
-
-		public abstract void InitializePresence( Board board );
-
-		public virtual void AddActionFactory(IActionFactory factory){
-			_unresolvedActionFactories.Add( factory );
-		}
-
-		public void CollectEnergy() => Energy += EnergyPerTurn;
-
-		public virtual GrowthOption[] GetGrowthOptions() => GrowthOptions;
-
-		public virtual void ActivateAvailableCards(params PowerCard[] cards) {
-			if (cards.Length > NumberOfCardsPlayablePerTurn) 
-				throw new InsufficientCardPlaysException();
-
-			foreach (var card in cards)
-				PurchaseCard(card);
-
-			foreach (var card in PurchasedCards)
-				AddActionFactory(card);
-
-		}
-
-		public int Flush(Speed speed) {
-			var toFlush = GetUnresolvedActionFactories()
-				.Where( f => f.Speed == speed )
-				.ToArray();
-			foreach(var factory in toFlush)
-				Resolve( factory );
-			return toFlush.Length;
-		}
-
-		void PurchaseCard(PowerCard card) {
-			if (!Hand.Contains(card)) throw new CardNotAvailableException();
-			if (card.Cost > Energy) throw new InsufficientEnergyException();
-
-			Hand.Remove(card);
-			PurchasedCards.Add(card);
-			Energy -= card.Cost;
-		}
-
-		// called by innate powers to test which item activates
-		// !!! instead, maybe spirit knows the levels that are active and passes that to the 
-		// InnatePower.Bind(...) method
-		// (prevents InnatePowers from Asking Spirit questions
-		// tell, don't ask
-		public bool HasElements( params Element[] elements ){
-			// !!! this could be calculated and cached when cards are purchased
-			Element[] spiritActiveElements = PurchasedCards.SelectMany(c=>c.Elements).ToArray();
-			return !elements.Except(spiritActiveElements).Any();
-		}
-
-		/// <summary>
-		/// Hook for VitalStrength of Earth
-		/// </summary>
-		public virtual void PreRavage(GameState _){ }
-
+	public class SpiritActionResolved {
+		public IActionFactory Factory { get; set; }
+		public IAction Action { get; set; }
 	}
 
 }

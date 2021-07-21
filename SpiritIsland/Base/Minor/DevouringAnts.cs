@@ -7,7 +7,7 @@ namespace SpiritIsland.Base {
 
 		[MinorCard("Devouring Ants",1,Speed.Slow,Element.Sun,Element.Earth,Element.Animal)]
 		[FromSacredSite(1)]
-		static public async Task ActAsync(ActionEngine engine,Space target){
+		static public void ActAsync(ActionEngine engine,Space target){
 			var (_,gs) = engine;
 			gs.AddFear(1);
 			if(gs.GetDahanOnSpace(target)>0)

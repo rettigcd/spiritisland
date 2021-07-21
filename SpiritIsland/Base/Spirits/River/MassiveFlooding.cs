@@ -9,43 +9,30 @@ namespace SpiritIsland.Base {
 	public class MassiveFlooding {
 
 		public const string Name = "Massive Flooding";
-		public const string k1 = "Push 1 E/T";
-		public const string k2 = "2 damage, Push up to 3 explorers and/or towns";
-		public const string k3 = "2 damage to all";
 
 		[InnateOption(Element.Sun,Element.Water,Element.Water)]
-		static public async Task ActionAsync(ActionEngine engine,Space target){
-			var (spirit,gameState) = engine;
-			var elements = spirit.AllElements;
+		static public Task Option1Async(ActionEngine engine,Space target){
+			// Push 1 Town/Explorer
+			return engine.PushUpToNInvaders(target,1,Invader.Town,Invader.Explorer); 
+		}
 
-			int count = new int[]{
-				elements[Element.Sun],
-				elements[Element.Water]-1,
-				elements[Element.Earth]==0?2:3
-			}.Min();
-			if(count == 0) return;
-			
-			string key = await engine.SelectText("Select Innate option", new string[]{ k1,k2,k3}.Take(count).ToArray() );
-			switch(key){
-				case k1: 
-					await engine.PushUpToNInvaders(target,1,Invader.Town,Invader.Explorer); 
-					break;
-				case k2: 
-					gameState.DamageInvaders(target,2);
-					await engine.PushUpToNInvaders(target,3,Invader.Town,Invader.Explorer);
-					break;
-				case k3: 
-					var group = gameState.InvadersOn(target);
-					var invaderTypes = group.InvaderTypesPresent.ToArray(); // copy so we can modify
-					foreach(var invader in invaderTypes){
-						// add the damaged invaders
-						group[ invader.Damage(2) ] += group[invader];
-						// clear the healthy invaders
-					}
-					gameState.UpdateFromGroup(group);
-					break;
+		[InnateOption(Element.Sun,Element.Sun,Element.Water,Element.Water,Element.Water)]
+		static public async Task Option2Async(ActionEngine engine,Space target){
+			engine.GameState.DamageInvaders(target,2);
+			await engine.PushUpToNInvaders(target,3,Invader.Town,Invader.Explorer);
+		}
+
+		[InnateOption(Element.Sun,Element.Sun,Element.Sun,Element.Water,Element.Water,Element.Water,Element.Water,Element.Earth)]
+		static public Task Option3Async(ActionEngine engine,Space target){
+			var group = engine.GameState.InvadersOn(target);
+			var invaderTypes = group.InvaderTypesPresent.ToArray(); // copy so we can modify
+			foreach(var invader in invaderTypes){
+				// add the damaged invaders
+				group[ invader.Damage(2) ] += group[invader];
+				// clear the healthy invaders
 			}
-
+			engine.GameState.UpdateFromGroup(group);
+			return Task.CompletedTask;
 		}
 
 	}

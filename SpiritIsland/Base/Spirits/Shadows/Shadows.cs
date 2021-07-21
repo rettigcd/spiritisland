@@ -124,7 +124,7 @@ Shadows Flicker like Flame:
 
 		}
 
-		public override void InitializePresence( Board _ ) {
+		public override void Initialize( Board _, GameState _1 ) {
 			throw new System.NotImplementedException();
 		}
 

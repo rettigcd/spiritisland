@@ -107,7 +107,7 @@ namespace SpiritIsland.BranchAndClaw {
 			return base.Elements( e ) + bonus;
 		}
 
-		public override void InitializePresence( Board _ ) {
+		public override void Initialize( Board _, GameState _1 ) {
 			throw new System.NotImplementedException();
 		}
 

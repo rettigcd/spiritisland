@@ -24,9 +24,6 @@ namespace SpiritIsland.SinglePlayer {
 				gameState.BlightCard.BlightAction(gameState);
 			}
 
-			foreach(var spirit in gameState.Spirits)
-				spirit.PreRavage(gameState);
-
 			var ravageResults = gameState.Ravage( invaderDeck.Ravage );
 			logger.Log("Ravaging:" + (invaderDeck.Ravage?.Text ?? "-") 
 				+ "\r\n" + ravageResults.Join("ravageResults")

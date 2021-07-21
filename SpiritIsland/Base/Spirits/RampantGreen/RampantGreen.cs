@@ -78,13 +78,13 @@ namespace SpiritIsland.BranchAndClaw {
 				: 2;
 		}
 
-		public override void ActivateAvailableCards( params PowerCard[] cards ) {
-			base.ActivateAvailableCards( cards );
+		public override void PurchaseAvailableCards( params PowerCard[] cards ) {
+			base.PurchaseAvailableCards( cards );
 			tempCardBoost = 0;
 		}
 		public int tempCardBoost = 0;
 
-		public override void InitializePresence( Board _ ) {
+		public override void Initialize( Board _, GameState _1 ) {
 			throw new System.NotImplementedException();
 		}
 

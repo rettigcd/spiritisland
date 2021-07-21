@@ -17,7 +17,7 @@ namespace SpiritIsland.Tests.Core {
 				};
 			}
 
-			public override void InitializePresence( Board board ) {
+		public override void Initialize( Board _, GameState _1 ){
 				throw new NotImplementedException();
 			}
 

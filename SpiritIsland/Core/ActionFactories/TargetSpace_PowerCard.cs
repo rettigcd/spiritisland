@@ -29,6 +29,11 @@ namespace SpiritIsland.Core {
 			return new TargetSpace_Action(spirit,gameState,m,targetSpace);
 		}
 
+		public IAction Bind( Spirit spirit, GameState gameState, Space preTarget ) {
+			return new TargetSpace_Action( spirit, gameState, m, preTarget );
+		}
+
+
 	}
 
 	class TargetSpace_Action : BaseAction {
@@ -56,6 +61,7 @@ namespace SpiritIsland.Core {
 
 		readonly MethodBase methodBase;
 	}
+
 
 
 }

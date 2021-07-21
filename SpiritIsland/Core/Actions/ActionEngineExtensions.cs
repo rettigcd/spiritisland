@@ -17,9 +17,25 @@ namespace SpiritIsland.Core {
 					true
 				);
 
-				spirit.Resolve( factory );
-				spirit.AddActionFactory( new ChangeSpeed( factory, Speed.Fast ) );
+				spirit.RemoveFactory( factory ); // remove it as slow
+				spirit.AddActionFactory( new ChangeSpeed( factory, Speed.Fast ) ); // add as fast
 			}
+		}
+
+		static public async Task SelectSpaceCardToReplayForCost( this ActionEngine engine, Spirit spirit, int maxCost ) {
+			maxCost = Math.Min(maxCost,spirit.Energy);
+			var actionFactories = spirit.resolvedActions
+				.Where(resolved=>resolved.Factory is TargetSpace_PowerCard pc && pc.Cost<=maxCost)
+				.ToDictionary(
+					resolved=>(PowerCard)resolved.Factory,
+					resolved=>((TargetSpace_Action)resolved.Action).Target
+				);
+			var options = actionFactories.Keys.ToArray();
+			if(options.Length == 0) return;
+			var factory = (TargetSpace_PowerCard)await engine.SelectFactory("Select card to replay",options);
+
+            spirit.Energy -= factory.Cost;
+			spirit.AddActionFactory( new ReplayOnSpace( factory, actionFactories[factory] ) );
 		}
 
 		static public async Task GatherUpToNDahan( this ActionEngine eng, Space target, int dahanToGather ) {

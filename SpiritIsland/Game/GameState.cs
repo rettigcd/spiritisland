@@ -36,7 +36,8 @@ namespace SpiritIsland {
 			if(Spirits.Length != Island.Boards.Length)
 				throw new InvalidOperationException( "# of spirits and islands must match" );
 			for(int i = 0; i < Spirits.Length; ++i)
-				Spirits[i].InitializePresence( Island.Boards[i] );
+				Spirits[i].Initialize( Island.Boards[i], this );
+
 		}
 
 		public void TimePasses() {
@@ -216,15 +217,23 @@ namespace SpiritIsland {
 		Invader[] LeftOverOrder => leftOverOrder ??="C@2 T@2 C@3".Split(' ').Select(k=>Invader.Lookup[k]).ToArray();
 		Invader[] leftOverOrder;
 
+		/// <summary> Fired before ravage occurs</summary>
+		public event Action<GameState,Space[]> Ravaging;
+
 		public string[] Ravage( InvaderCard invaderCard ) {
 			if(invaderCard == null) return Array.Empty<string>();
 
 			// 1 point of damage,  Prefer C@1  ---  ---  T@1  ---  E@1 >>> C@2, T@2, C@3
 			// 2 points of damage, Prefer C@1  C@2  ---  T@1  T@2  E@1 >>> C@3
 			// 3 points of damage, Prefer C@1  C@2  C@3  T@1  T@2  E@1
-			var ravageGroups = Island.Boards.SelectMany(board=>board.Spaces)
-				.Where(invaderCard.Matches)
-				.Except(skipInvaderActions)
+			var ravageSpaces = Island.Boards.SelectMany( board => board.Spaces )
+				.Where( invaderCard.Matches )
+				.Except( skipInvaderActions )
+				.ToArray();
+
+			Ravaging?.Invoke(this,ravageSpaces);
+
+			var ravageGroups = ravageSpaces
 				.Select(InvadersOn)
 				.Where(group => group.InvaderTypesPresent.Any())
 				.ToArray();

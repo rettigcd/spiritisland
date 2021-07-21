@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using SpiritIsland.Base.Spirits.VitalStrength;
 using SpiritIsland.Core;
 
@@ -52,11 +53,12 @@ Power Progression:
 				new GrowthOption( new GainEnergy(2), new PlacePresence(1) ),
 			};
 
-			this.InnatePowers = new InnatePower[]{
-				InnatePower.For<GiftOfStrength>()
-			};
+			this.giftOfStrength = new GiftOfStrength_InnatePower();
+			this.InnatePowers = new InnatePower[]{ giftOfStrength };
 
 		}
+
+		readonly GiftOfStrength_InnatePower giftOfStrength;
 
 		protected override int[] EnergySequence => new int[]{2, 3, 4, 6, 7, 8};
 		protected override int[] CardSequence => new int[]{1, 1, 2, 2, 3, 4};
@@ -83,14 +85,15 @@ Power Progression:
 			PowerCard.For<SavageMawbeasts>()
 		};
 
-		public override void InitializePresence( Board _ ) {
-			throw new System.NotImplementedException();
+		public override void Initialize( Board _, GameState gameState ) {
+            gameState.Ravaging += GameState_Ravaging;
 		}
 
-		public override void PreRavage( GameState gameState ) {
-			foreach(var space in SacredSites)
-				gameState.Defend(space,3);
+        void GameState_Ravaging( GameState gs, Space[] ravageSpaces ) {
+			foreach(var space in SacredSites.Where(ravageSpaces.Contains))
+				gs.Defend( space, 3 );
 		}
+
 
 	}
 

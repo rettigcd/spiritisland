@@ -9,7 +9,7 @@ namespace SpiritIsland.Base {
 
 		[MinorCard(PullBeneathTheHungryEarth.Name,1,Speed.Slow,Element.Moon,Element.Water,Element.Earth)]
 		[FromPresence(1,Filter.SandOrWetland)]
-		static public async Task ActAsync(ActionEngine eng, Space target){
+		static public void ActAsync(ActionEngine eng, Space target){
 			var (self,gameState) = eng;
 			int damage = 0; // accumulate because +2 is better than +1 +1
 			// If target land is Sand or Water, 1 damage
