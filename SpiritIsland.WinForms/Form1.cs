@@ -25,12 +25,13 @@ namespace SpiritIsland.WinForms {
 				new GameState( 
 //					new LightningsSwiftStrike() 
 //					new RiverSurges() 
-					new Shadows()
+//					new Shadows()
+					new VitalStrength()
 				){ Island = new Island(
-//					Board.BuildBoardA()
+					Board.BuildBoardA()
 //					Board.BuildBoardB()
 //					Board.BuildBoardC()
-					Board.BuildBoardD()
+//					Board.BuildBoardD()
 				)
 				}
 				,new MessageBoxLogger()

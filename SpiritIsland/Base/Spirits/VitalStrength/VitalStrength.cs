@@ -85,8 +85,15 @@ Power Progression:
 			PowerCard.For<SavageMawbeasts>()
 		};
 
-		public override void Initialize( Board _, GameState gameState ) {
-            gameState.Ravaging += GameState_Ravaging;
+		public override void Initialize( Board board, GameState gameState ) {
+
+			var higestJungle = board.Spaces.OrderByDescending( s => s.Label ).First( s => s.Terrain == Terrain.Jungle );
+			var higestMountain = board.Spaces.OrderByDescending( s => s.Label ).First( s => s.Terrain == Terrain.Mountain );
+			Presence.Add(higestMountain);
+			Presence.Add( higestMountain );
+			Presence.Add( higestJungle );
+
+			gameState.Ravaging += GameState_Ravaging;
 		}
 
         void GameState_Ravaging( GameState gs, Space[] ravageSpaces ) {
