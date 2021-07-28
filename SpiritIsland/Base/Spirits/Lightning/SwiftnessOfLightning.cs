@@ -2,6 +2,9 @@
 using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
+
+	// Lightnong - Special Rule
+
 	public class SwiftnessOfLightning : IActionFactory {
 		public Speed Speed => Speed.Fast;
 

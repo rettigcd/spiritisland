@@ -19,7 +19,6 @@ namespace SpiritIsland.SinglePlayer {
 		IActionFactory selectedActionFactory;
 		IAction action;
 		string growthName;
-		List<IActionFactory> matchingActionsFactories;
 
 		public ResolveActions( Spirit spirit, GameState gameState, Speed speed, bool allowEarlyDone = false ) {
 			this.spirit = spirit;
@@ -29,15 +28,15 @@ namespace SpiritIsland.SinglePlayer {
 		}
 
 		public void Initialize() {
-			matchingActionsFactories = FindMatchingActions();
+			var matchingActionFactories = spirit.GetUnresolvedActionFactories( speed ).ToList();
 
-			if(matchingActionsFactories.Count == 0) {
+			if(matchingActionFactories.Count == 0) {
 				Done();
 				return;
 			}
 
 			Prompt = "Select " + speed + " to resolve:";
-			Options = GetActionFactoryOptions().ToArray();
+			Options = GetActionFactoryOptions( matchingActionFactories ).ToArray();
 			action = null;
 		}
 
@@ -49,8 +48,19 @@ namespace SpiritIsland.SinglePlayer {
 
 			// Select action or apply option
 			if(action == null) {
-				IActionFactory factory = (IActionFactory)option;
-				selectedActionFactory = factory;
+				// if use clicked a slow card that was made fast
+				// slow card won't be in the options
+				if(!Options.Contains( option ))
+					// find the fast version of the slow card that was clicked
+					option = Options.Cast<IActionFactory>()
+						.First(factory=>factory.Original==option);
+
+				selectedActionFactory = (IActionFactory)option;
+
+				if(!Options.Contains(option))
+					throw new Exception("Dude! - You selected something that wasn't an option");
+
+				selectedActionFactory = (IActionFactory)option;
 				this.growthName = selectedActionFactory.Name;
 				action = selectedActionFactory.Bind( spirit, gameState );
 			} else {
@@ -68,14 +78,8 @@ namespace SpiritIsland.SinglePlayer {
 			}
 		}
 
-		List<IActionFactory> FindMatchingActions() {
-			return spirit.GetUnresolvedActionFactories(speed)
-				.ToList();
-		}
-
-		List<IOption> GetActionFactoryOptions() {
-			var list = new List<IOption>();
-			list.AddRange( matchingActionsFactories );
+		List<IOption> GetActionFactoryOptions( List<IActionFactory> actionFactories ) {
+			var list = actionFactories.Cast<IOption>().ToList();
 			if(allowEarlyDone) list.Add( TextOption.Done );
 			return list;
 		}

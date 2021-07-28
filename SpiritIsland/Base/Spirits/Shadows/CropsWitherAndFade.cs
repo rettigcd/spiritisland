@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using SpiritIsland.Core;
 
-namespace SpiritIsland.Base.Spirits.Shadows {
+namespace SpiritIsland.Base {
 
 	class CropsWitherAndFade {
 

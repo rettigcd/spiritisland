@@ -44,7 +44,12 @@ Shadows Flicker like Flame:
 	public class Shadows : Spirit {
 		public override string Text => "Shadows Flicker Like Flames";
 
-		public Shadows(){
+		public Shadows():base(
+			PowerCard.For<MantleOfDread>(),
+			PowerCard.For<FavorsCalledDue>(),
+			PowerCard.For<CropsWitherAndFade>(),
+			PowerCard.For<ConcealingShadows>()
+		) {
 			GrowthOptions = new GrowthOption[]{
 				new GrowthOption( new ReclaimAll(), new DrawPowerCard(1) ),
 				new GrowthOption( new DrawPowerCard(1), new PlacePresence(1) ),
@@ -124,8 +129,12 @@ Shadows Flicker like Flame:
 
 		}
 
-		public override void Initialize( Board _, GameState _1 ) {
-			throw new System.NotImplementedException();
+		public override void Initialize( Board board, GameState _1 ) {
+			var higestJungle = board.Spaces.OrderByDescending(s=>s.Label).First(s=>s.Terrain==Terrain.Jungle);
+			this.Presence.Add( higestJungle );
+			this.Presence.Add( higestJungle );
+			this.Presence.Add( board[5] );
+			// !!! unit tests for this
 		}
 
 	}

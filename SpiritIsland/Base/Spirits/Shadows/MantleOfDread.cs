@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using SpiritIsland.Core;
 
-namespace SpiritIsland.Base.Spirits.Shadows {
+namespace SpiritIsland.Base {
 	class MantleOfDread {
 
 		[SpiritCard("Mantle of Dread",1,Speed.Slow,Element.Moon,Element.Fire,Element.Air)]

@@ -7,6 +7,7 @@ namespace SpiritIsland.Core {
 	public class SelectAsync<T> : IDecision where T:class,IOption {
 
 		readonly TaskCompletionSource<T> promise;
+		readonly bool allowShortCircuit;
 
 		public SelectAsync(
 			string prompt,
@@ -16,6 +17,7 @@ namespace SpiritIsland.Core {
 		){
 			Prompt = prompt;
 			this.promise = promise;
+			this.allowShortCircuit = allowShortCircuit;
 
 			var optionList = options.Cast<IOption>().ToList();
 			if(optionList.Count == 0)
@@ -29,26 +31,14 @@ namespace SpiritIsland.Core {
 
 		public IOption[] Options {get;}
 
-		public void Select( IOption option ) { promise.TrySetResult((T)option); }
+		public void Select( IOption option ) {
+			// !!! need to test that we can short circuit this
+			if(allowShortCircuit && TextOption.Done.Matches(option))
+				promise.TrySetResult(null);
+			else
+				promise.TrySetResult((T)option);
+		}
 
 	}
-
-
-	/*
-	// var promise = new Promise<MyResult>;
-	var promise = new TaskCompletionSource<MyResult>();
-
-	// handlerMyEventsWithHandler(msg => promise.Complete(msg););
-	handlerMyEventsWithHandler(msg => promise.TrySetResult(msg));
-
-	// var myResult = promise.Future.Await(2000);
-	var completed = await Task.WhenAny(promise.Task, Task.Delay(2000));
-	if (completed == promise.Task)
-	  ; // Do something on timeout
-	var myResult = await completed;
-
-	Assert.Equals("my header", myResult.Header);
-	*/
-
 
 }

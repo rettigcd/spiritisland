@@ -9,13 +9,6 @@ namespace SpiritIsland {
 
         #region constructor
 
-        public Spirit(){
-			Hand.Add( new NullPowerCard( "A", 0, Speed.Fast, Element.Air ) );
-			Hand.Add( new NullPowerCard( "B", 0, Speed.Fast, Element.Air ) );
-			Hand.Add( new NullPowerCard( "C", 0, Speed.Fast, Element.Air ) );
-			Hand.Add( new NullPowerCard( "D", 0, Speed.Fast, Element.Air ) );
-		}
-
 		public Spirit( params PowerCard[] initialCards ){
 			Hand.AddRange( initialCards );
 		}
@@ -138,7 +131,6 @@ namespace SpiritIsland {
 		/// <summary>
 		/// Removes it from the Unresolved-list
 		/// </summary>
-		/// <param name="selectedActionFactory"></param>
 		public void RemoveFactory(IActionFactory selectedActionFactory ) {
 			if(selectedActionFactory is InnatePower ip) {
 				usedInnates.Add( ip );
@@ -146,7 +138,8 @@ namespace SpiritIsland {
 			}
 
 			int index = _unresolvedActionFactories.IndexOf( selectedActionFactory );
-			if(index == -1) throw new InvalidOperationException( "can't remove factory that isn't there." );
+			if(index == -1) 
+				throw new InvalidOperationException( "can't remove factory that isn't there." );
 
 			_unresolvedActionFactories.RemoveAt( index );
 

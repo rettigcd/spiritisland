@@ -3,7 +3,11 @@ using System.Linq;
 
 namespace SpiritIsland.Core {
 
+	/// <summary>
+	/// Replaces the DrawCard Growth Action when receiving a Major Power Progression Card.
+	/// </summary>
 	public class ForgetPowerCard : IActionFactory {
+
 		public Speed Speed => Speed.Growth;
 
 		public string Name => "Forget Power Card";
@@ -13,7 +17,7 @@ namespace SpiritIsland.Core {
 		public IActionFactory Original => this;
 
 		public IAction Bind( Spirit spirit, GameState gameState ) {
-			throw new NotImplementedException();
+			return new Action(spirit);
 		}
 
 		class Action : IAction {

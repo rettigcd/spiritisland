@@ -2,6 +2,8 @@
 
 Not Implemented
 
+	Board B,C,D
+
 4	Fear - Destroying town=>1, city=>2
 4	Fear - Display Fear stats in UI
 	Fear - Fear Cards / Fear Initialization / Terror Level
@@ -14,8 +16,24 @@ Improve
 	Display Elements
 	Display presence tracks
 	click on explorers on board instead of buttons
+	Display Card modifications slow/fast
+	Scale Cards to Window
+
+	Make Power Progression Pluggable / Optional
 
 Unit Test
+	Harbinger of the Lightning
+		- Elements, speed, cost
+		- target - range 1
+		- push 2 dahan
+		- pushed into town or city triggers 1 fear
+			- 2 pushed into same > 1
+			- 2 pushed into different > 1
+			- 1 pushed into town > 1
+			- 1 pushed into city > 1
+			- 1 pushed into explorer > 0
+		- no dahan to push > doesn't crash
+
 	Spirit.SacredSites
 	River.SacredSites
 	Fear

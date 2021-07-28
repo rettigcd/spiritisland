@@ -8,17 +8,26 @@ namespace SpiritIsland.Core {
 
 	public static class SpecificEngineExtensions{
 
-		static public async Task SelectActionsAndMakeFast(this ActionEngine engine, Spirit spirit, int countToMakeFast ) {
-			var actionFactories = spirit.GetUnresolvedActionFactories( Speed.Slow ).ToArray();
-			while(actionFactories.Length > 0 && countToMakeFast > 0) {
+		static public async Task SelectActionsAndMakeFast(this ActionEngine engine, Spirit spirit, int maxCountToMakeFast ) {
+
+			IActionFactory[] CalcSlowFacts() => spirit
+				.GetUnresolvedActionFactories( Speed.Slow )
+				.ToArray();
+			var slowFactories = CalcSlowFacts();
+			// clip count to available slow stuff
+			maxCountToMakeFast = Math.Min(maxCountToMakeFast, slowFactories.Length); // !! unit test that we are limited by slow cards & by countToMakeFAst
+			while( maxCountToMakeFast > 0 ) {
 				var factory = await engine.SelectFactory(
-					"Select action to make fast",
-					actionFactories,
+					$"Select action to make fast. max:{maxCountToMakeFast}",
+					slowFactories,
 					true
 				);
 
 				spirit.RemoveFactory( factory ); // remove it as slow
 				spirit.AddActionFactory( new ChangeSpeed( factory, Speed.Fast ) ); // add as fast
+
+				slowFactories = CalcSlowFacts();
+				--maxCountToMakeFast;
 			}
 		}
 
@@ -84,7 +93,7 @@ namespace SpiritIsland.Core {
 			dahanToPush = System.Math.Min(dahanToPush,eng.GameState.GetDahanOnSpace(source));
 			while(0<dahanToPush){
 				Space destination = await eng.SelectSpace("Select destination for dahan"
-					,source.Neighbors
+					,source.Neighbors.Where(n=>n.IsLand)
 					,true
 				);
 				if(destination == null) break;

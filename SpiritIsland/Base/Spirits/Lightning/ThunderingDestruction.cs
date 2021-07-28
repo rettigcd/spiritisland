@@ -8,7 +8,7 @@ namespace SpiritIsland.Base {
 
 	// Innate:  Thundering Destruction => slow, 1 from sacred, any
 
-	[InnatePower( ThunderingDestruction.Name, Speed.Fast )]
+	[InnatePower( ThunderingDestruction.Name, Speed.Slow )]
 	[FromSacredSite(1)]
 	class ThunderingDestruction {
 

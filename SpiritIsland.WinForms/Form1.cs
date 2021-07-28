@@ -21,16 +21,17 @@ namespace SpiritIsland.WinForms {
 		public Form1() {
 			InitializeComponent();
 
-			//game = new SinglePlayerGame(
-			//	new GameState( new RiverSurges() ){ 
-			//		Island = new Island(Board.BuildBoardA())
-			//	}
-			//	,new MessageBoxLogger()
-			//);
-
 			game = new SinglePlayerGame(
-				new GameState( new LightningsSwiftStrike() ){ 
-					Island = new Island(Board.BuildBoardA())
+				new GameState( 
+//					new LightningsSwiftStrike() 
+//					new RiverSurges() 
+					new Shadows()
+				){ Island = new Island(
+//					Board.BuildBoardA()
+//					Board.BuildBoardB()
+//					Board.BuildBoardC()
+					Board.BuildBoardD()
+				)
 				}
 				,new MessageBoxLogger()
 			);

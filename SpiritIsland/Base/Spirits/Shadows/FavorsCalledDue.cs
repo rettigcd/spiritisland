@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using SpiritIsland.Core;
 
-namespace SpiritIsland.Base.Spirits.Shadows {
+namespace SpiritIsland.Base {
 
 	class FavorsCalledDue {
 

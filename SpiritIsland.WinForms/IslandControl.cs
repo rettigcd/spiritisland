@@ -22,17 +22,6 @@ namespace SpiritIsland.WinForms {
 				| ControlStyles.ResizeRedraw, true
 			);
 
-			spaceLookup = new Dictionary<string,PointF>{
-				["A0"] = new PointF( 685.0f - 533,584.0f - 109),
-				["A1"] = new PointF(1092.0f - 533,305.0f - 109),
-				["A2"] = new PointF( 859.0f - 533,556.0f - 109),
-				["A3"] = new PointF( 729.0f - 533,867.0f - 109),
-				["A4"] = new PointF(1080.0f - 533,742.0f - 109),
-				["A5"] = new PointF(1343.0f - 533,576.0f - 109),
-				["A6"] = new PointF(1323.0f - 533,299.0f - 109),
-				["A7"] = new PointF(1565.0f - 533,640.0f - 109),
-				["A8"] = new PointF(1656.0f - 533,235.0f - 109),
-			};
 		}
 
 		Space[] activeSpaces;
@@ -41,10 +30,70 @@ namespace SpiritIsland.WinForms {
 			this.activeSpaces = spaces.ToArray();
 		}
 
-		readonly Dictionary<string,PointF> spaceLookup;
+		Dictionary<string,PointF> spaceLookup;
 
 		public void InitBoard(GameState gameState){
-			boardA = Image.FromFile(".\\images\\board a.png");
+
+			var board = gameState.Island.Boards.VerboseSingle("Multiple Island boards not supported.");
+            switch(board[0].Label.Substring( 0, 1 )) {
+				case "A":
+					this.board = Image.FromFile( ".\\images\\board a.png" );
+					spaceLookup = new Dictionary<string, PointF> {
+						["A0"] = new PointF( 152f, 475f ),
+						["A1"] = new PointF( 559f, 296f ),
+						["A2"] = new PointF( 326f, 447f ),
+						["A3"] = new PointF( 196f, 758f ),
+						["A4"] = new PointF( 547f, 633f ),
+						["A5"] = new PointF( 810f, 467f ),
+						["A6"] = new PointF( 790f, 190f ),
+						["A7"] = new PointF( 1032f, 531f ),
+						["A8"] = new PointF( 1123f, 126f ),
+					};
+					break;
+                case "B":
+					this.board = Image.FromFile( ".\\images\\board b.png" );
+					spaceLookup = new Dictionary<string, PointF> {
+						["B0"] = new PointF( 185f, 593f ),
+						["B1"] = new PointF( 592f, 226f ),
+						["B2"] = new PointF( 386f, 566f ),
+						["B3"] = new PointF( 265f, 867f ),
+						["B4"] = new PointF( 696f, 660f ),
+						["B5"] = new PointF( 876f, 455f ),
+						["B6"] = new PointF( 996f, 212f ),
+						["B7"] = new PointF( 1134f, 631f ),
+						["B8"] = new PointF( 1307f, 152f ),
+					};
+					break;
+                case "C":
+					this.board = Image.FromFile( ".\\images\\board c.png" );
+					spaceLookup = new Dictionary<string, PointF> {
+						["C0"] = new PointF( 121f, 519f ),
+						["C1"] = new PointF( 213f, 770f ),
+						["C2"] = new PointF( 333f, 502f ),
+						["C3"] = new PointF( 445f, 186f ),
+						["C4"] = new PointF( 644f, 751f ),
+						["C5"] = new PointF( 638f, 475f ),
+						["C6"] = new PointF( 776f, 175f ),
+						["C7"] = new PointF( 927f, 453f ),
+						["C8"] = new PointF( 1074f, 96f ),
+					};
+					break;
+                case "D":
+					this.board = Image.FromFile( ".\\images\\board d.png" );
+					spaceLookup = new Dictionary<string, PointF> {
+						["D0"] = new PointF( 188f, 408f ),
+						["D1"] = new PointF( 609f, 118f ),
+						["D2"] = new PointF( 349f, 479f ),
+						["D3"] = new PointF( 182f, 840f ),
+						["D4"] = new PointF( 536f, 829f ),
+						["D5"] = new PointF( 692f, 421f ),
+						["D6"] = new PointF( 0877, 708f ),
+						["D7"] = new PointF( 1049f, 437f ),
+						["D8"] = new PointF( 1235, 181f ),
+					};
+					break;
+			}
+			//			boardA = Image.FromFile(".\\images\\board a.png");
 
 			dahan = Image.FromFile(".\\images\\Dahanicon.png");
 			city = Image.FromFile(".\\images\\Cityicon.png");
@@ -58,7 +107,7 @@ namespace SpiritIsland.WinForms {
 			this.spirit = gameState.Spirits.Single();
 		}
 
-		Image boardA;
+		Image board;
 
 		Image dahan;
 		Image city;
@@ -76,8 +125,8 @@ namespace SpiritIsland.WinForms {
 			using var brush = new SolidBrush(Color.AliceBlue);
 			pe.Graphics.FillRectangle(brush,new Rectangle(0,0,400,400));
 
-			if(boardA != null)
-				pe.Graphics.DrawImage(boardA,0.0f,0.0f);
+			if(board != null)
+				pe.Graphics.DrawImage( board, 0.0f, 0.0f );
 
 			if(gameState != null)
 				foreach(var space in gameState.Island.Boards[0].Spaces)
@@ -99,6 +148,8 @@ namespace SpiritIsland.WinForms {
 		}
 		
 		void DecorateSpace( Graphics graphics, Space space ) {
+			if(!spaceLookup.ContainsKey(space.Label)) return; // happens during developement
+
 			var xy = spaceLookup[space.Label];
 			float x = xy.X;
 			float y = xy.Y;
@@ -165,6 +216,8 @@ namespace SpiritIsland.WinForms {
 
 			if(match != null)
 				SpaceClicked?.Invoke(match);
+			else
+				MessageBox.Show(mp.ToString());
 
 		}
 
