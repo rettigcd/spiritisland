@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 
 namespace SpiritIsland.Core {
+
 	/// <summary>
 	/// ActionFactory based on Method-implemented powers
 	/// </summary>

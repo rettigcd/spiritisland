@@ -36,7 +36,12 @@ namespace SpiritIsland.Base {
 
 		public override string Text => "Thunder Speaker";
 
-		public ThunderSpeaker(){
+		public ThunderSpeaker():base(
+			new NullPowerCard( "A", 0, Speed.Fast ),
+			new NullPowerCard( "B", 0, Speed.Fast ),
+			new NullPowerCard( "C", 0, Speed.Fast ),
+			new NullPowerCard( "D", 0, Speed.Fast )
+		){
 			static bool onDahan(Space bs,GameState gameState) => gameState.HasDahan(bs);
 
 			GrowthOptions = new GrowthOption[]{

@@ -8,7 +8,7 @@ using SpiritIsland.Core;
 using SpiritIsland.SinglePlayer;
 
 namespace SpiritIsland.WinForms {
-	public partial class Form1 : Form {
+	public partial class Form1 : Form, IHaveOptions {
 
 		readonly SinglePlayerGame game;
 
@@ -23,10 +23,10 @@ namespace SpiritIsland.WinForms {
 
 			game = new SinglePlayerGame(
 				new GameState( 
-//					new LightningsSwiftStrike() 
+					new LightningsSwiftStrike() 
 //					new RiverSurges() 
 //					new Shadows()
-					new VitalStrength()
+//					new VitalStrength()
 				){ Island = new Island(
 					Board.BuildBoardA()
 //					Board.BuildBoardB()
@@ -40,6 +40,7 @@ namespace SpiritIsland.WinForms {
 
 			this.islandControl.InitBoard(game.GameState);
 			this.cardControl.Init(game.Spirit);
+			this.spiritControl.Init(game.Spirit,this);
 			this.islandControl.SpaceClicked += Select;
 			this.cardControl.CardSelected += Select;
 		}
@@ -70,14 +71,16 @@ namespace SpiritIsland.WinForms {
 			ReleaseOldButtons();
 
 			var decision = game.Decision;
+
+			OptionsChanged?.Invoke(decision.Options);
+
 			this.promptLabel.Text = decision.Prompt;
 
-			var options = decision.Options;
+            IOption[] options = decision.Options;
 			for(int i=0;i<options.Length;++i)
 				AddOptionButton( options[i], i );
 
-			var spaceOptions = decision.Options.OfType<Space>().ToArray();
-			this.islandControl.ActivateSpaces(spaceOptions);
+			this.islandControl.ActivateSpaces( decision.Options.OfType<Space>() );
 
 			this.cardControl.HighlightCards(decision.Options);
 
@@ -112,7 +115,9 @@ namespace SpiritIsland.WinForms {
 
 		readonly List<Button> buttons = new();
 
-		void Select(IOption option){
+        public event Action<IOption[]> OptionsChanged;
+
+        void Select(IOption option){
 			this.game.Decision.Select(option);
 			this.ShowOptions();
 			UpdateDisplay();
@@ -124,5 +129,9 @@ namespace SpiritIsland.WinForms {
 		}
 
 	}
+
+	public interface IHaveOptions {
+		event Action<IOption[]> OptionsChanged;
+    }
 
 }

@@ -38,7 +38,12 @@ namespace SpiritIsland.BranchAndClaw {
 
 		public override string Text => "A Spread of Rampant Green";
 
-		public RampantGreen(){
+		public RampantGreen():base(
+			new NullPowerCard( "A", 0, Speed.Fast ),
+			new NullPowerCard( "B", 0, Speed.Fast ),
+			new NullPowerCard( "C", 0, Speed.Fast ),
+			new NullPowerCard( "D", 0, Speed.Fast )
+		) {
 			static bool IsWetlandOrJungle( Space bs, GameState _ ) 
 				=> bs.Terrain == Terrain.Jungle || bs.Terrain == Terrain.Wetland;
 			var placeOnWetlandOrJungle = new PlacePresence(2, IsWetlandOrJungle,"W / J");

@@ -37,7 +37,12 @@ namespace SpiritIsland.Base {
 
 	public class Ocean : Spirit {
 
-		public Ocean(){
+		public Ocean():base(
+			new NullPowerCard( "A", 0, Speed.Fast ),
+			new NullPowerCard( "B", 0, Speed.Fast ),
+			new NullPowerCard( "C", 0, Speed.Fast ),
+			new NullPowerCard( "D", 0, Speed.Fast )
+		) {
 
 			// !!! add test that oceans containing 2 presence only push 1 of them out.
 			// Option 1 - reclaim, +1 power, gather 1 presense into EACH ocean, +2 energy

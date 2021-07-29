@@ -2,19 +2,16 @@
 
 Not Implemented
 
-	Board B,C,D
-
 4	Fear - Destroying town=>1, city=>2
 4	Fear - Display Fear stats in UI
-	Fear - Fear Cards / Fear Initialization / Terror Level
+4	Fear - Fear Cards / Fear Initialization / Terror Level
 	Blighted Island effect
 
 Improve
+4	Display Elements
 	Manually select who to apply damage to
 	Display Icons (white w/#s)
-5	Display Innate
-	Display Elements
-	Display presence tracks
+	click on tracks & innates
 	click on explorers on board instead of buttons
 	Display Card modifications slow/fast
 	Scale Cards to Window

@@ -27,13 +27,12 @@ namespace SpiritIsland {
 
 		public virtual int Elements(Element element) => AllElements[element];// !!! make private.  tell, don't ask
 
-
 		public bool HasElements(Dictionary<Element,int> needed){
 			var all = this.AllElements;
 			return needed.All(pair=>pair.Value<=all[pair.Key]);
 		}
 
-		public bool HasElements(string s) => HasElements(InnateOptionAttribute.ParseElements(s));
+//		public bool HasElements(string s) => HasElements(InnateOptionAttribute.ParseElements(s));
 
 		// called by innate powers to test which item activates
 		// !!! instead, maybe spirit knows the levels that are active and passes that to the 
@@ -203,6 +202,9 @@ namespace SpiritIsland {
 
 		protected virtual int[] EnergySequence => new int[]{0};
 		protected virtual int[] CardSequence => new int[]{0}; 
+
+		public int[] GetEnergySequence() => EnergySequence;
+		public int[] GetCardSequence() => CardSequence;
 
 		/// <summary> Energy gain per turn </summary>
 		public int EnergyPerTurn => EnergySequence[RevealedEnergySpaces-1];

@@ -37,7 +37,12 @@ namespace SpiritIsland.Base {
 
 		public override string Text => "Bringer of Dreams and Nightmares";
 
-		public Bringer(){
+		public Bringer():base(
+			new NullPowerCard( "A", 0, Speed.Fast ),
+			new NullPowerCard( "B", 0, Speed.Fast ),
+			new NullPowerCard( "C", 0, Speed.Fast ),
+			new NullPowerCard( "D", 0, Speed.Fast )
+		) {
 			static bool onDahanOrInvadors(Space bs,GameState gameState) { // !!! hook in here! instead of Criteria
 				return gameState.HasDahan(bs) || gameState.HasInvaders(bs);
 			}

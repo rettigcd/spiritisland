@@ -42,7 +42,12 @@ namespace SpiritIsland.Base {
 
 		public override string Text => "Keeper of the Forbidden Wilds";
 
-		public Keeper(){
+		public Keeper():base(
+			new NullPowerCard( "A", 0, Speed.Fast ),
+			new NullPowerCard( "B", 0, Speed.Fast ),
+			new NullPowerCard( "C", 0, Speed.Fast ),
+			new NullPowerCard( "D", 0, Speed.Fast )
+		) {
 			bool presenceOrWilds(Space bs,GameState gameState) => this.Presence.Contains(bs) || gameState.HasWilds(bs);
 			bool noBlight(Space bs,GameState gameState) => bs.IsLand && !gameState.HasBlight(bs);
 
