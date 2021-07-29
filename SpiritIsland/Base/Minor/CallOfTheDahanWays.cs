@@ -9,7 +9,7 @@ namespace SpiritIsland.Base {
 			var grp = eng.GameState.InvadersOn(target);
 
 			// if you have 2 moon, you may instead replace 1 town with 1 dahan
-			if(grp.HasTown && 2 <= eng.Self.Elements( Element.Moon )) {
+			if(grp.HasTown && 2 <= eng.Self.Elements[ Element.Moon ]) {
 				eng.GameState.Adjust(target,Invader.Town,-1);
 				eng.GameState.AddDahan(target,1);
             } else if( grp.HasExplorer) {

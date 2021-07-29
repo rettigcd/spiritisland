@@ -16,12 +16,12 @@ namespace SpiritIsland.Base {
 
 		// Lightning Spirit calls this when it activates its cards
 		public void OnActivateCards(Spirit lightning){
-			if(lightning.Elements(Element.Air)>0)
+			if(lightning.Elements[Element.Air]>0)
 				lightning.AddActionFactory( this );
 		}
 
 		public IAction Bind( Spirit spirit, GameState gameState ) {
-			int airCount = spirit.Elements(Element.Air);
+			int airCount = spirit.Elements[Element.Air];
 			return new SwiftAction(spirit,gameState,airCount);
 		}
 

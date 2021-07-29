@@ -1,5 +1,6 @@
 ﻿
 using SpiritIsland.Core;
+using System.Collections.Generic;
 
 namespace SpiritIsland.BranchAndClaw {
 
@@ -76,11 +77,10 @@ namespace SpiritIsland.BranchAndClaw {
 
 		protected override int[] EnergySequence => new int[]{0, 1, 1, 2, 2, 2, 3};
 
-		public override int Elements( Element e ) {
+		protected override IEnumerable<Element> TrackElements() {
 			// 0 1 plant 2 2 plant 3
-			return e != Element.Plant || RevealedEnergySpaces < 3 ? 0
-				: RevealedEnergySpaces < 6 ? 1
-				: 2;
+			if(3 <= RevealedEnergySpaces) yield return Element.Plant;
+			if(6 <= RevealedEnergySpaces) yield return Element.Plant;
 		}
 
 		public override void PurchaseAvailableCards( params PowerCard[] cards ) {

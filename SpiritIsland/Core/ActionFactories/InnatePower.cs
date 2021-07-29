@@ -25,7 +25,7 @@ namespace SpiritIsland.Core {
 			Name = innatePowerAttr.Name;
 
 			// try static method (spirit / major / minor)
-			this.methods = actionType
+			this.elementListByMethod = actionType
 				.GetMethods( BindingFlags.Public | BindingFlags.Static )
 				.ToDictionary( m => m, m => m.GetCustomAttributes<InnateOptionAttribute>().ToArray() )
 				.Where( p => p.Value.Length == 1 )
@@ -34,12 +34,12 @@ namespace SpiritIsland.Core {
 
 		#endregion
 
-		readonly Dictionary<MethodInfo, Element[]> methods;
+		readonly Dictionary<MethodInfo, Element[]> elementListByMethod;
 
 		public int PowersActivated(Spirit spirit){
-			return methods
+			return elementListByMethod
 				.OrderByDescending(pair=>pair.Value.Length)
-				.Where(pair=>spirit.HasElements(pair.Value))
+				.Where(pair=>spirit.Elements.Has(pair.Value))
 				.Count();
 		}
 
@@ -53,10 +53,13 @@ namespace SpiritIsland.Core {
 
 		public abstract IAction Bind( Spirit spirit, GameState gameState );
 
+		public Element[][] GetTriggerThresholds() => elementListByMethod.Values.ToArray();
+
         protected MethodInfo HighestMethod( Spirit spirit ) {
-            return methods
+			var activatedElements = spirit.Elements;
+			return elementListByMethod
                 .OrderByDescending( pair => pair.Value.Length )
-                .Where( pair => spirit.HasElements( pair.Value ) )
+                .Where( pair => activatedElements.Has( pair.Value ) )
                 .First().Key;
         }
 

@@ -10,42 +10,24 @@ using SpiritIsland.SinglePlayer;
 namespace SpiritIsland.WinForms {
 	public partial class Form1 : Form, IHaveOptions {
 
-		readonly SinglePlayerGame game;
-
-		class MessageBoxLogger : ILogger {
-			public void Log( string text ) {
-				MessageBox.Show(text);
-			}
-		}
+		SinglePlayerGame game;
 
 		public Form1() {
 			InitializeComponent();
-
-			game = new SinglePlayerGame(
-				new GameState( 
-					new LightningsSwiftStrike() 
-//					new RiverSurges() 
-//					new Shadows()
-//					new VitalStrength()
-				){ Island = new Island(
-					Board.BuildBoardA()
-//					Board.BuildBoardB()
-//					Board.BuildBoardC()
-//					Board.BuildBoardD()
-				)
-				}
-				,new MessageBoxLogger()
-			);
-
-
-			this.islandControl.InitBoard(game.GameState);
-			this.cardControl.Init(game.Spirit);
-			this.spiritControl.Init(game.Spirit,this);
-			this.islandControl.SpaceClicked += Select;
-			this.cardControl.CardSelected += Select;
 		}
 
 		private void Form1_Load( object sender, EventArgs e ) {
+
+			var config = new ConfigureGame();
+			if(config.ShowDialog() != DialogResult.OK) { return; }
+			this.game = config.Game;
+
+			this.islandControl.InitBoard( game.GameState );
+			this.cardControl.Init( game.Spirit );
+			this.spiritControl.Init( game.Spirit, this );
+			this.islandControl.SpaceClicked += Select;
+			this.cardControl.CardSelected += Select;
+
 			ShowOptions();
 			UpdateDisplay();
 		}
@@ -133,5 +115,12 @@ namespace SpiritIsland.WinForms {
 	public interface IHaveOptions {
 		event Action<IOption[]> OptionsChanged;
     }
+
+	class MessageBoxLogger : ILogger {
+		public void Log( string text ) {
+			MessageBox.Show( text );
+		}
+	}
+
 
 }

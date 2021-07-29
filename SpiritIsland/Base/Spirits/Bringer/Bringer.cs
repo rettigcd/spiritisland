@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using SpiritIsland.Core;
 
 namespace SpiritIsland.Base {
@@ -66,8 +67,8 @@ namespace SpiritIsland.Base {
 		// card:	2 2 2 3 3 any
 		protected override int[] CardSequence => new int[]{ 2,2,2,3,3,3 };
 
-		public override int Elements( Element el ) {
-			return new Element[]{ 
+		protected override IEnumerable<Element> TrackElements() {
+			var energyElements = new Element[]{ 
 				Element.None, 
 				Element.Air, 
 				Element.None, 
@@ -75,17 +76,17 @@ namespace SpiritIsland.Base {
 				Element.None,
 				Element.Any,
 				Element.None
-			}	.Take(RevealedEnergySpaces)
-				.Count(x=>x==el)
-			+ new Element[]{ 
+			}	.Take(RevealedEnergySpaces);
+			var cardElements = new Element[]{ 
 				Element.None, 
 				Element.None, 
 				Element.None, 
 				Element.None, 
 				Element.None,
 				Element.Any
-			}	.Take(RevealedCardSpaces)
-				.Count(x=>x==el);
+			}	.Take(RevealedCardSpaces);
+			return energyElements.Union(cardElements)
+				.Where( el => el != Element.None );
 		}
 
 		public override void Initialize( Board _, GameState _1 ) {

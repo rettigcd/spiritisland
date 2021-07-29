@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using SpiritIsland.Core;
 
@@ -103,13 +104,10 @@ namespace SpiritIsland.BranchAndClaw {
 		//	2 2 3 reclaim-1 4 5&reclaim-1
 		protected override int[] CardSequence => new int[]{2,2,3,3,4,5};
 
-		public override int Elements( Element e ) {
-			int bonus = e switch{
-				Element.Animal => RevealedEnergySpaces >=5 ? 2 : RevealedEnergySpaces >= 2 ? 1 : 0,
-				Element.Plant => RevealedEnergySpaces >=3 ? 1 : 0,
-				_ => 0
-			};
-			return base.Elements( e ) + bonus;
+		protected override IEnumerable<Element> TrackElements() {
+			if( 2<=RevealedEnergySpaces ) yield return Element.Animal;
+			if( 3<=RevealedEnergySpaces ) yield return Element.Plant;
+			if( 5<=RevealedEnergySpaces ) yield return Element.Animal;
 		}
 
 		public override void Initialize( Board _, GameState _1 ) {

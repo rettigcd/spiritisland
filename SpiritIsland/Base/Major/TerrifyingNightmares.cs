@@ -16,7 +16,7 @@ namespace SpiritIsland.Base {
 			eng.GameState.AddFear(2);
 
 			// if you have 4 moon, +4 fear
-			if( 4<=eng.Self.Elements(Element.Moon) )
+			if( 4<=eng.Self.Elements[Element.Moon] )
 				eng.GameState.AddFear(4);
 
 		}

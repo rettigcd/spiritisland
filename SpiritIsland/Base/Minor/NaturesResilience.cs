@@ -14,7 +14,7 @@ namespace SpiritIsland.Base {
 		static public async Task Act(ActionEngine engine,Space target){
 			var (self,gameState) = engine;
 			// if 2 water, you may INSTEAD remove 1 blight
-			bool removeBlight = self.Elements(Element.Water)>=2
+			bool removeBlight = self.Elements[Element.Water]>=2
 				&& await engine.SelectText("Select option",DefendKey, RemoveBlightKey) == RemoveBlightKey;
 
 			if(removeBlight)

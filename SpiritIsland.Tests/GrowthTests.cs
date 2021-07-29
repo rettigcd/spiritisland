@@ -135,7 +135,7 @@ namespace SpiritIsland.Tests {
 		protected void Assert_BonusElements( string elements ) {
 			foreach(var pair in GrowthTests.ElementChars) {
 				int expected = elements.Count( x => x == pair.Value );
-				Assert.Equal( expected, spirit.Elements( pair.Key ) );
+				Assert.Equal( expected, spirit.Elements[ pair.Key ] );
 			}
 		}
 

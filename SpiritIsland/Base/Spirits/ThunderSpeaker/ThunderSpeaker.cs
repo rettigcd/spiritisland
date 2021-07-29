@@ -75,7 +75,7 @@ namespace SpiritIsland.Base {
 		protected override int[] EnergySequence => new int[]{1, 1, 2, 2, 2, 3 };
 		protected override int[] CardSequence => new int[]{1, 2, 2, 3, 3, 3, 4 };
 
-		public override int Elements( Element el ) {
+		protected override IEnumerable<Element> TrackElements() {
 			return new Element[]{ 
 				Element.None, 
 				Element.Air, 
@@ -84,7 +84,7 @@ namespace SpiritIsland.Base {
 				Element.Sun,
 				Element.None
 			}	.Take(RevealedEnergySpaces)
-				.Count(x=>x==el);
+				.Where(el=>el!=Element.None);
 		}
 
 		public override void Initialize( Board _, GameState _1 ) {

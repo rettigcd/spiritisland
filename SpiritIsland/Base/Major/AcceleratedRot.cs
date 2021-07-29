@@ -17,7 +17,7 @@ namespace SpiritIsland.Base {
 			int damageToInvaders = 4;
 			gameState.AddFear(2);
 
-			if(spirit.HasElements(
+			if(spirit.Elements.Has(
 				Element.Sun,Element.Sun,Element.Sun,
 				Element.Water,Element.Water,
 				Element.Plant,Element.Plant,Element.Plant

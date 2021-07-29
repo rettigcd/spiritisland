@@ -8,22 +8,46 @@ namespace SpiritIsland.WinForms {
 
     public partial class SpiritControl : Control {
 
+        Element[] Highest(InnatePower power ) => power.GetTriggerThresholds()
+            .OrderByDescending(list=>list.Length)
+            .First();
+
         public void Init(Spirit spirit, IHaveOptions optionProvider ) {
             this.spirit = spirit;
+
+            var counts = spirit.InnatePowers
+                .SelectMany(Highest)
+                .GroupBy(x=>x)
+                .ToDictionary(grp=>grp.Key,grp=>grp.Count());
+            highestInnate = new CountDictionary<Element>(counts);
+
             optionProvider.OptionsChanged += OptionProvider_OptionsChanged;
         }
 
-        readonly Dictionary<InnatePower,Image> images = new();
+        CountDictionary<Element> highestInnate;
+        readonly Dictionary<InnatePower,Image> innateImages = new();
 
         Image GetImage( InnatePower card ) {
 
-            if(!images.ContainsKey( card )) {
+            if(!innateImages.ContainsKey( card )) {
                 string filename = card.Name.Replace( ' ', '_' ).Replace( "'", "" ).ToLower();
                 Image image = Image.FromFile( $".\\images\\{filename}.jpg" );
-                images.Add( card, image );
+                innateImages.Add( card, image );
             }
-            return images[card];
+            return innateImages[card];
         }
+
+        readonly Dictionary<Element,Image> elementImages = new();
+        Image GetImage( Element element ) {
+
+            if(!elementImages.ContainsKey( element )) {
+                string filename = "Simple_"+element.ToString().ToLower();
+                Image image = Image.FromFile( $".\\images\\{filename}.png" );
+                elementImages.Add( element, image );
+            }
+            return elementImages[element];
+        }
+
 
 
         void OptionProvider_OptionsChanged( IOption[] obj ) {
@@ -129,8 +153,25 @@ namespace SpiritIsland.WinForms {
             }
 
             // activated elements
-//            var elements = spirit.Elements
-
+            y += 20;
+            const float elementSize = 50f;
+            var elements = spirit.Elements; // cache, don't recalculate
+            // !!! it would be nice to order elements by the max Innate Option
+            var orderedElements = elements.Keys.OrderByDescending(el=>highestInnate[el]);
+            foreach(var element in orderedElements) {
+                if(elements[element] > 1) {
+                    graphics.DrawString(
+                        elements[element].ToString(),
+                        SystemFonts.IconTitleFont,
+                        SystemBrushes.ControlDarkDark
+                        , x, y
+                    );
+                    x += 20;
+                }
+                graphics.DrawImage( GetImage( element ), x, y, elementSize, elementSize );
+                x += elementSize;
+                x += 10;
+            }
         }
 
     }

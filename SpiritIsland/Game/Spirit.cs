@@ -16,39 +16,17 @@ namespace SpiritIsland {
 		#endregion
 
 		#region Elements
+		protected virtual IEnumerable<Element> TrackElements() {
+			return Enumerable.Empty<Element>();
+		}
 
-		// !!! Clean this element stuff up
-
-		CountDictionary<Element> AllElements => PurchasedCards
+		// !!! this could be calculated and cached when cards are purchased
+		public CountDictionary<Element> Elements => PurchasedCards
 			.SelectMany(c=>c.Elements)
+			.Concat(TrackElements())
 			.GroupBy(c=>c)
 			.ToDictionary(grp=>grp.Key,grp=>grp.Count())
 			.ToCountDict();
-
-		public virtual int Elements(Element element) => AllElements[element];// !!! make private.  tell, don't ask
-
-		public bool HasElements(Dictionary<Element,int> needed){
-			var all = this.AllElements;
-			return needed.All(pair=>pair.Value<=all[pair.Key]);
-		}
-
-//		public bool HasElements(string s) => HasElements(InnateOptionAttribute.ParseElements(s));
-
-		// called by innate powers to test which item activates
-		// !!! instead, maybe spirit knows the levels that are active and passes that to the 
-		// InnatePower.Bind(...) method
-		// (prevents InnatePowers from Asking Spirit questions
-		// tell, don't ask
-		public bool HasElements( params Element[] requiredElements ){
-			// !!! this could be calculated and cached when cards are purchased
-			List<Element> spiritActiveElements = PurchasedCards.SelectMany(c=>c.Elements).ToList();
-			foreach(var el in requiredElements){
-				int index = spiritActiveElements.IndexOf(el);
-				if(index == -1) return false;
-				spiritActiveElements.RemoveAt(index);
-			}
-			return true;
-		}
 
 		#endregion
 
@@ -239,5 +217,20 @@ namespace SpiritIsland {
 		public IActionFactory Factory { get; set; }
 		public IAction Action { get; set; }
 	}
+
+	static public class ExtendElements {
+
+		static public bool Has(this CountDictionary<Element> activated, Dictionary<Element, int> needed ) {
+			return needed.All( pair => pair.Value <= activated[pair.Key] );
+		}
+
+        static public bool Has( this CountDictionary<Element> activated, params Element[] requiredElements ) {
+            var required = requiredElements
+                .GroupBy( x => x )
+                .ToDictionary( grp => grp.Key, grp => grp.Count() );
+            return activated.Has( required );
+        }
+
+    }
 
 }

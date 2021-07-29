@@ -12,7 +12,8 @@ namespace SpiritIsland.Base {
 			var target = await eng.Api.TargetSpace( eng.Self.Presence.Where(s=>s.Terrain==Terrain.Jungle),1);
 			InvaderGroup grp = eng.GameState.InvadersOn(target);
 
-			bool hasBonus = 2<=eng.Self.Elements(Element.Moon) && 3<=eng.Self.Elements(Element.Plant);
+			bool hasBonus = 2<=eng.Self.Elements[Element.Moon] 
+				&& 3<=eng.Self.Elements[Element.Plant];
 
 			// destroys all explorers and towns
 			grp.Destroy(Invader.Explorer);

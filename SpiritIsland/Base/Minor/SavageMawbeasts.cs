@@ -21,7 +21,7 @@ namespace SpiritIsland.Base {
             }
 
 			// If 3 animals +1 damage
-			if(3 <= engine.Self.Elements(Element.Animal) )
+			if(3 <= engine.Self.Elements[Element.Animal] )
 				++damage;
 
 			engine.GameState.DamageInvaders( target, damage );

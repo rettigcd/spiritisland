@@ -17,7 +17,7 @@ namespace SpiritIsland.Base {
 			// 2 damage per dahan in target land
 			gs.DamageInvaders(target,2*gs.GetDahanOnSpace(target));
 
-			bool hasBonus = spirit.HasElements(new Dictionary<Element,int>{ 
+			bool hasBonus = spirit.Elements.Has(new Dictionary<Element,int>{ 
 				[Element.Sun] = 3,
 				[Element.Animal] = 2
 			} );

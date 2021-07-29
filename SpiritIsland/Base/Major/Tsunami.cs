@@ -21,8 +21,8 @@ namespace SpiritIsland.Base {
 			int count = System.Math.Min(gameState.GetDahanOnSpace(space),2);
 			gameState.AddDahan(space,-count);
 
-			if(self.Elements(Element.Water) >=3			// !!! switch to tell, don't ask
-				&& self.Elements(Element.Earth) >= 2
+			if(self.Elements[Element.Water] >=3			// !!! switch to tell, don't ask
+				&& self.Elements[Element.Earth] >= 2
 			){
 				var others = gameState.Island
 					.Boards.Single(b=>b[1].Label[0]==space.Label[0])

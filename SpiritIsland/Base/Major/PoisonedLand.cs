@@ -14,7 +14,7 @@ namespace SpiritIsland.Base {
 			gs.AddBlight(target,1);
 			gs.AddDahan(target,-engine.GameState.GetDahanOnSpace(target));
 
-			bool hasBonus = engine.Self.HasElements(new Dictionary<Element,int>{
+			bool hasBonus = engine.Self.Elements.Has(new Dictionary<Element,int>{
 				[Element.Earth] = 3,
 				[Element.Plant] = 2,
 				[Element.Animal] = 2
