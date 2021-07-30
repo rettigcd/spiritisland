@@ -21,6 +21,7 @@ namespace SpiritIsland.WinForms {
 			var config = new ConfigureGame();
 			if(config.ShowDialog() != DialogResult.OK) { return; }
 			this.game = config.Game;
+			this.game.NewLogEntry += (msg) => this.logTextBox.AppendText(msg+"\r\n");
 
 			this.islandControl.InitBoard( game.GameState );
 			this.cardControl.Init( game.Spirit );
@@ -115,12 +116,5 @@ namespace SpiritIsland.WinForms {
 	public interface IHaveOptions {
 		event Action<IOption[]> OptionsChanged;
     }
-
-	class MessageBoxLogger : ILogger {
-		public void Log( string text ) {
-			MessageBox.Show( text );
-		}
-	}
-
 
 }

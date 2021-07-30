@@ -196,18 +196,22 @@ namespace SpiritIsland {
 				Adjust( space, Invader.Explorer, 1 );
 		}
 
-		public void Build( InvaderCard invaderCard ) {
-			var exploredSpaces = Island.Boards.SelectMany(board=>board.Spaces)
+		public string[] Build( InvaderCard invaderCard ) {
+			return Island.Boards.SelectMany(board=>board.Spaces)
 				.Where(invaderCard.Matches)
 				.Except(skipInvaderActions)
 				.Select(InvadersOn)
-				.Where(group => group.InvaderTypesPresent.Any());
-			foreach(var group in exploredSpaces){
-				int townCount = group[Invader.Town] + group[Invader.Town1];
-				int cityCount = group[Invader.City] + group[Invader.City2] + group[Invader.City1];
-				var invaderToAdd = townCount>cityCount ? Invader.City : Invader.Town;
-				Adjust( group.Space, invaderToAdd, 1 );
-			}
+				.Where(group => group.InvaderTypesPresent.Any())
+				.Select( Build )
+				.ToArray();
+		}
+
+        string Build( InvaderGroup group ) {
+            int townCount = group[Invader.Town] + group[Invader.Town1];
+            int cityCount = group[Invader.City] + group[Invader.City2] + group[Invader.City1];
+            var invaderToAdd = townCount > cityCount ? Invader.City : Invader.Town;
+            Adjust( group.Space, invaderToAdd, 1 );
+			return $"{group.Space.Label} gets {invaderToAdd.Label}";
 		}
 
 		Invader[] KillOrder => killOrder ??= "C@1 C@2 C@3 T@1 T@2 E@1".Split(' ').Select(k=>Invader.Lookup[k]).ToArray();
@@ -262,18 +266,18 @@ namespace SpiritIsland {
 				bool blight = damageInflictedFromInvaders>1;
 				if(blight){
 					BlightLand(ravageGroup.Space);
-					log.Add("blights land");
+					log.Add("Blights land.");
 				}
 				// damage: Dahan
 				if(noDamageToDahan.Contains(ravageGroup.Space)){ // Conceiling Shadows
-					log.Add("-dahan protected-");
+					log.Add("Dahan - protected from damange.");
 					noDamageToDahan.Remove(ravageGroup.Space);
 				} else {
 					int dahanKilled = Math.Min( damageInflictedFromInvaders / 2, dahan ); // rounding down
 					if(dahanKilled>0){
 						AddDahan( ravageGroup.Space, -dahanKilled ); 
 						int remainingDahan = dahan - dahanKilled;
-						log.Add($"kills {dahanKilled} of {dahan} leaving {remainingDahan}");
+						log.Add($"Kills {dahanKilled} of {dahan} Dahan leaving {remainingDahan} Dahan.");
 						dahan = remainingDahan;
 					}
 				}
@@ -284,7 +288,7 @@ namespace SpiritIsland {
 			}
 
 			defendCount[ravageGroup.Space] = 0;
-			return ravageGroup.Space.Label+": "+log.Join(", ");
+			return ravageGroup.Space.Label+": "+log.Join("  ");
 		}
 
 
@@ -305,7 +309,7 @@ namespace SpiritIsland {
 				ravageGroup[invaderToDamage]--;
 				damageToInvaders -= invaderToDamage.Health;
 			}
-			if(log!=null) log.Add($"{startingDamage} damage to invaders leaving "+ravageGroup );
+			if(log!=null) log.Add($"{startingDamage} damage to invaders leaving {ravageGroup}." );
 			UpdateFromGroup( ravageGroup );
 		}
 

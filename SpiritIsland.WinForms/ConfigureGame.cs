@@ -61,7 +61,6 @@ namespace SpiritIsland.WinForms {
                 ) {
                     Island = new Island( board )
                 }
-                , new MessageBoxLogger()
             );
         }
 

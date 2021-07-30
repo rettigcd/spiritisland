@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using SpiritIsland;
 using SpiritIsland.Core;
 
@@ -17,27 +18,36 @@ namespace SpiritIsland.SinglePlayer {
 
 		#region constructor 
 
-		public SinglePlayerGame(GameState gameState,ILogger logger=null){
+		public SinglePlayerGame(GameState gameState){
 			this.GameState = gameState;
 			gameState.InitIsland();
 			gameState.InitBlight(BlightCard.DownwardSpiral);
 			Spirit = gameState.Spirits.Single(); // this player only handles single-player.
-			InitPhases( logger ?? new NullLogger() );
+			InitPhases();
 		}
+
 
 		#endregion
 
+		public event Action<string> NewLogEntry;
+
 		#region private
 
-		void InitPhases(ILogger logger) {
+		void OnNewLogEntry( string msg ) {
+			NewLogEntry?.Invoke( msg );
+		}
 
-			var selectGrowth = new SelectGrowth( Spirit, GameState );
-			var resolveGrowth = new ResolveActions( Spirit, GameState, Speed.Growth );
-			var selectPowerCards = new SelectPowerCards( Spirit );
-			var fastActions = new ResolveActions( Spirit, GameState, Speed.Fast, true );
-			var invaders = new InvaderPhase( GameState, logger );
-			var slowActions = new ResolveActions( Spirit, GameState, Speed.Slow, true );
-			var timePasses = new TimePasses( GameState );
+		void InitPhases() {
+
+            var selectGrowth = new SelectGrowth( Spirit, GameState );
+            var resolveGrowth = new ResolveActions( Spirit, GameState, Speed.Growth );
+            var selectPowerCards = new SelectPowerCards( Spirit );
+            var fastActions = new ResolveActions( Spirit, GameState, Speed.Fast, true );
+            var invaders = new InvaderPhase( GameState );
+            var slowActions = new ResolveActions( Spirit, GameState, Speed.Slow, true );
+            var timePasses = new TimePasses( GameState );
+
+			invaders.NewLogEntry += OnNewLogEntry;
 
 			selectGrowth.Complete += () => TransitionTo( resolveGrowth );
 			resolveGrowth.Complete += () => TransitionTo( selectPowerCards );

@@ -24,7 +24,6 @@ namespace SpiritIsland.WinForms {
 		///  the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
-            this.quitButton = new System.Windows.Forms.Button();
             this.promptLabel = new System.Windows.Forms.Label();
             this.islandControl = new SpiritIsland.WinForms.IslandControl();
             this.cardControl = new SpiritIsland.WinForms.CardControl();
@@ -33,17 +32,8 @@ namespace SpiritIsland.WinForms {
             this.elementLabel = new System.Windows.Forms.Label();
             this.blightLabel = new System.Windows.Forms.Label();
             this.spiritControl = new SpiritIsland.WinForms.SpiritControl();
+            this.logTextBox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
-            // 
-            // quitButton
-            // 
-            this.quitButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.quitButton.Location = new System.Drawing.Point(12, 1177);
-            this.quitButton.Name = "quitButton";
-            this.quitButton.Size = new System.Drawing.Size(150, 46);
-            this.quitButton.TabIndex = 0;
-            this.quitButton.Text = "Quit";
-            this.quitButton.UseVisualStyleBackColor = true;
             // 
             // promptLabel
             // 
@@ -67,11 +57,10 @@ namespace SpiritIsland.WinForms {
             // 
             // cardControl
             // 
-            this.cardControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cardControl.Location = new System.Drawing.Point(283, 592);
+            this.cardControl.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.cardControl.Location = new System.Drawing.Point(0, 538);
             this.cardControl.Name = "cardControl";
-            this.cardControl.Size = new System.Drawing.Size(1574, 644);
+            this.cardControl.Size = new System.Drawing.Size(1869, 527);
             this.cardControl.TabIndex = 3;
             this.cardControl.Text = "cardControl1";
             // 
@@ -114,15 +103,26 @@ namespace SpiritIsland.WinForms {
             this.blightLabel.TabIndex = 7;
             this.blightLabel.Text = "Blight";
             // 
-            // spiritControl1
+            // spiritControl
             // 
             this.spiritControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.spiritControl.BackColor = System.Drawing.Color.LightYellow;
             this.spiritControl.Location = new System.Drawing.Point(1082, 197);
-            this.spiritControl.Name = "spiritControl1";
+            this.spiritControl.Name = "spiritControl";
             this.spiritControl.Size = new System.Drawing.Size(775, 278);
             this.spiritControl.TabIndex = 8;
             this.spiritControl.Text = "spiritControl1";
+            // 
+            // logTextBox
+            // 
+            this.logTextBox.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.logTextBox.Location = new System.Drawing.Point(0, 1065);
+            this.logTextBox.Multiline = true;
+            this.logTextBox.Name = "logTextBox";
+            this.logTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.logTextBox.Size = new System.Drawing.Size(1869, 170);
+            this.logTextBox.TabIndex = 9;
             // 
             // Form1
             // 
@@ -134,10 +134,10 @@ namespace SpiritIsland.WinForms {
             this.Controls.Add(this.elementLabel);
             this.Controls.Add(this.trackLabel);
             this.Controls.Add(this.invaderBoardLabel);
-            this.Controls.Add(this.cardControl);
-            this.Controls.Add(this.islandControl);
             this.Controls.Add(this.promptLabel);
-            this.Controls.Add(this.quitButton);
+            this.Controls.Add(this.cardControl);
+            this.Controls.Add(this.logTextBox);
+            this.Controls.Add(this.islandControl);
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -147,8 +147,6 @@ namespace SpiritIsland.WinForms {
 		}
 
 		#endregion
-
-		private System.Windows.Forms.Button quitButton;
 		private System.Windows.Forms.Label promptLabel;
 		private IslandControl islandControl;
 		private CardControl cardControl;
@@ -157,6 +155,7 @@ namespace SpiritIsland.WinForms {
 		private System.Windows.Forms.Label elementLabel;
 		private System.Windows.Forms.Label blightLabel;
         private SpiritControl spiritControl;
+        private System.Windows.Forms.TextBox logTextBox;
     }
 }
 

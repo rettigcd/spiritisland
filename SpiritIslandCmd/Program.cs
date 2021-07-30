@@ -1,6 +1,7 @@
 ﻿using SpiritIsland;
 using SpiritIsland.Basegame;
 using SpiritIsland.SinglePlayer;
+using System;
 
 namespace SpiritIslandCmd {
 
@@ -12,7 +13,8 @@ namespace SpiritIslandCmd {
 				Island = new Island(Board.BuildBoardA())
 			};
 
-			var game = new SinglePlayerGame(gs,new ConsoleLogger());
+			var game = new SinglePlayerGame(gs);
+			game.NewLogEntry += Console.WriteLine;
 
 			new CmdLinePlayer(game).Play();
 		}
