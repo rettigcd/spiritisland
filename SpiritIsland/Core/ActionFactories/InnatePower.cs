@@ -1,4 +1,4 @@
-﻿using SpiritIsland.Base.Spirits.VitalStrength;
+﻿using SpiritIsland.Basegame.Spirits.VitalStrength;
 using System;
 using System.Collections.Generic;
 using System.Linq;

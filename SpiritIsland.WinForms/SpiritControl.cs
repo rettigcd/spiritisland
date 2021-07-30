@@ -79,9 +79,13 @@ namespace SpiritIsland.WinForms {
 
         void DrawSpirit( Graphics graphics ) {
 
+            using Font simpleFont = new( "Arial", 8,FontStyle.Bold
+                ,GraphicsUnit.Point
+            );
+
             using Font font = new("Arial", 18f);
             using Brush coverBrush = new SolidBrush(Color.FromArgb(128,Color.Gray));
-            using Brush currentBrush = new SolidBrush( Color.Yellow );
+            Brush currentBrush = Brushes.Yellow;
             using Pen highlightPen = new(Color.Red,10f); 
 
             const float lineHeight = 60f;
@@ -90,7 +94,7 @@ namespace SpiritIsland.WinForms {
             // Energy
             float x = 10f;
             float y = 10f;
-            graphics.DrawString("Energy",font,SystemBrushes.ControlDarkDark, x, y);
+            graphics.DrawString("Energy",simpleFont,SystemBrushes.ControlDarkDark, x, y);
 
             y += lineHeight;
             int revealedEnergySpaces = spirit.RevealedEnergySpaces;
@@ -116,7 +120,7 @@ namespace SpiritIsland.WinForms {
             // Cards
             x = 10f;
             y += lineHeight;
-            graphics.DrawString( "Cards", font, SystemBrushes.ControlDarkDark, x, y );
+            graphics.DrawString( "Cards", simpleFont, SystemBrushes.ControlDarkDark, x, y );
 
             int revealedCardSpaces = spirit.RevealedCardSpaces;
             y += lineHeight;
@@ -156,14 +160,14 @@ namespace SpiritIsland.WinForms {
             y += 20;
             const float elementSize = 50f;
             var elements = spirit.Elements; // cache, don't recalculate
-            // !!! it would be nice to order elements by the max Innate Option
+
             var orderedElements = elements.Keys.OrderByDescending(el=>highestInnate[el]);
             foreach(var element in orderedElements) {
                 if(elements[element] > 1) {
                     graphics.DrawString(
                         elements[element].ToString(),
-                        SystemFonts.IconTitleFont,
-                        SystemBrushes.ControlDarkDark
+                        simpleFont,
+                        Brushes.Black
                         , x, y
                     );
                     x += 20;

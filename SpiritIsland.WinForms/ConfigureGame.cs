@@ -1,13 +1,6 @@
-﻿using SpiritIsland.Base;
+﻿using SpiritIsland.Basegame;
 using SpiritIsland.SinglePlayer;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SpiritIsland.WinForms {
@@ -23,30 +16,38 @@ namespace SpiritIsland.WinForms {
                 typeof(Shadows),
                 typeof(VitalStrength),
             };
+            spiritListBox.Items.Add("[Random]");
             foreach(var spirit in spirits) {
                 spiritListBox.Items.Add(spirit);
             }
+            spiritListBox.SelectedIndex = 0;
+
             // boards
+            boardListBox.Items.Add( "[Random]" );
             boardListBox.Items.Add( "A" );
             boardListBox.Items.Add( "B" );
             boardListBox.Items.Add( "C" );
             boardListBox.Items.Add( "D" );
+            boardListBox.SelectedIndex = 0;
 
             CheckOkStatus(null,null);
         }
 
-        bool BoardSelected => boardListBox.SelectedItem != null;
-        bool SpiritSelected => spiritListBox.SelectedItem != null;
-
         private void CheckOkStatus( object sender, EventArgs e ) {
-            okButton.Enabled = BoardSelected && SpiritSelected;
+            okButton.Enabled = true;
         }
 
         private void OkButton_Click( object sender, EventArgs e ) {
-            Type spiritType = spiritListBox.SelectedItem as Type;
+            Type spiritType = (spiritListBox.SelectedIndex == 0)
+                ? spiritListBox.Items[1 + (int)((DateTime.Now.Ticks/4) % 4)] as Type
+                : spiritListBox.SelectedItem as Type;
             Spirit spirit = (Spirit)Activator.CreateInstance( spiritType );
 
-            var board = boardListBox.SelectedItem as string switch {
+            string boardOption = (boardListBox.SelectedIndex == 0)
+                ? boardListBox.Items[ 1+(int)(DateTime.Now.Ticks%4) ] as string
+                : boardListBox.SelectedItem as string;
+
+            var board = boardOption switch {
                 "A" => Board.BuildBoardA(),
                 "B" => Board.BuildBoardB(),
                 "C" => Board.BuildBoardC(),

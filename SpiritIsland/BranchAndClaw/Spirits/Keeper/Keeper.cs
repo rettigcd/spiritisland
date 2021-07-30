@@ -2,7 +2,7 @@
 using System.Linq;
 using SpiritIsland.Core;
 
-namespace SpiritIsland.Base {
+namespace SpiritIsland.Basegame {
 
 	/*
 

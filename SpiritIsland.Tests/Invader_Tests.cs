@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using SpiritIsland.Base;
+using SpiritIsland.Basegame;
 using Xunit;
 
 namespace SpiritIsland.Tests.Core {

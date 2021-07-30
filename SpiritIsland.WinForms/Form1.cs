@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using SpiritIsland.Base;
+using SpiritIsland.Basegame;
 using SpiritIsland.Core;
 using SpiritIsland.SinglePlayer;
 

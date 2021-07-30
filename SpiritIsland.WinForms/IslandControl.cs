@@ -122,7 +122,7 @@ namespace SpiritIsland.WinForms {
 
 		protected override void OnPaint( PaintEventArgs pe ) {
 
-			using var brush = new SolidBrush(Color.AliceBlue);
+			var brush = Brushes.AliceBlue;
 			pe.Graphics.FillRectangle(brush,new Rectangle(0,0,400,400));
 
 			if(board != null)

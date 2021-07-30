@@ -1,5 +1,7 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
+Bug
+
 Not Implemented
 
 4	Fear - Destroying town=>1, city=>2
@@ -8,15 +10,15 @@ Not Implemented
 	Blighted Island effect
 
 Improve
-4	Display Elements
+5	Show $money after energy track.
+4	Make Power Progression Pluggable / Optional
+4	click on tracks & innates
+3	Display Damaged Cities / Towns
 	Manually select who to apply damage to
 	Display Icons (white w/#s)
-	click on tracks & innates
 	click on explorers on board instead of buttons
 	Display Card modifications slow/fast
 	Scale Cards to Window
-
-	Make Power Progression Pluggable / Optional
 
 Unit Test
 	Harbinger of the Lightning

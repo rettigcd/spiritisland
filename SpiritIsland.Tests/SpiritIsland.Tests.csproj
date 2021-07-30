@@ -17,8 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Base\Major\" />
-    <Folder Include="Base\Minor\" />
+    <Folder Include="Basegame\Fear\" />
+    <Folder Include="Basegame\Major\" />
+    <Folder Include="Basegame\Minor\" />
   </ItemGroup>
 
   <ItemGroup>

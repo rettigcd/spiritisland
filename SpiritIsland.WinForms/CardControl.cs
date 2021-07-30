@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using SpiritIsland.Base;
+using SpiritIsland.Basegame;
 using SpiritIsland.Core;
 
 namespace SpiritIsland.WinForms {
