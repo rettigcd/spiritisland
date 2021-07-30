@@ -38,6 +38,10 @@ namespace SpiritIsland {
 
 		public InvaderDeck():this(true){}
 
+		public InvaderDeck(params InvaderCard[] cards ) {
+			this.cards = cards;
+		}
+
 		InvaderDeck(bool shuffle){
 
 			var level1 = Level1Cards.ToList();

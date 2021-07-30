@@ -8,8 +8,6 @@ namespace SpiritIsland {
 
 	public class GameState {
 
-		public InvaderDeck InvaderDeck {get; set;}
-
 		public GameState(params Spirit[] spirits){
 			if(spirits.Length==0) throw new ArgumentException("Game must include at least 1 spirit");
 			this.Spirits = spirits;
@@ -17,11 +15,24 @@ namespace SpiritIsland {
 		}
 
 		internal void SkipAllInvaderActions( Space target ) {
-			skipInvaderActions.Add(target);
+			skipRavage.Add(target);
+			skipBuild.Add( target );
+			skipExplore.Add(target);
 		}
 
-		readonly List<Space> skipInvaderActions = new List<Space>(); 
+		internal void SkipBuild( params Space[] target ) {
+			skipBuild.AddRange( target );
+		}
 
+		internal void SkipExplore( params Space[] target ) {
+			skipExplore.AddRange( target );
+		}
+
+		readonly List<Space> skipRavage = new List<Space>();
+		readonly List<Space> skipBuild = new List<Space>();
+		readonly List<Space> skipExplore = new List<Space>();
+
+		public InvaderDeck InvaderDeck { get; set; }
 		public Island Island { get; set; }
 		public Spirit[] Spirits { get; }
 
@@ -59,7 +70,7 @@ namespace SpiritIsland {
 			defendCount.Clear();
 		}
 
-		public void InitItemsMarkedOnBoard(Board board) {
+		void InitItemsMarkedOnBoard(Board board) {
 			foreach(var space in board.Spaces)
 				InitSpace( space );
 		}
@@ -77,8 +88,6 @@ namespace SpiritIsland {
 			defendCount[space] += delta;
 		}
 		public int GetDefence(Space space) => defendCount[space];
-
-
 
 		#region Beasts
 		public void AddBeast( Space space ){ beastCount[space]++; }
@@ -131,6 +140,9 @@ namespace SpiritIsland {
 		#endregion
 
 		#region Fear
+
+		public IFearCard FearCard { get; set; }
+
 		public void AddFear(int count) => fearCount += count;
 		#endregion
 
@@ -141,6 +153,64 @@ namespace SpiritIsland {
 		#endregion
 
 		#region Invaders
+
+		public void ApplyFear() {
+			if(4 <= fearCount) { // !!! should be while(...) -> need Unit tests before we change it
+				fearCount -= 4;
+				FearCard.Level1(this);
+			}
+		}
+
+		public string[] Ravage( InvaderCard invaderCard ) {
+			if(invaderCard == null) return Array.Empty<string>();
+
+			// 1 point of damage,  Prefer C@1  ---  ---  T@1  ---  E@1 >>> C@2, T@2, C@3
+			// 2 points of damage, Prefer C@1  C@2  ---  T@1  T@2  E@1 >>> C@3
+			// 3 points of damage, Prefer C@1  C@2  C@3  T@1  T@2  E@1
+			var ravageSpaces = Island.Boards.SelectMany( board => board.Spaces )
+				.Where( invaderCard.Matches )
+				.Except( skipRavage )
+				.ToArray();
+
+			Ravaging?.Invoke( this, ravageSpaces );
+
+			var ravageGroups = ravageSpaces
+				.Select( InvadersOn )
+				.Where( group => group.InvaderTypesPresent.Any() )
+				.ToArray();
+
+			return ravageGroups
+				.Select( RavageSpace )
+				.ToArray();
+		}
+
+		public string[] Build( InvaderCard invaderCard ) {
+			return Island.Boards.SelectMany( board => board.Spaces )
+				.Where( invaderCard.Matches )
+				.Except( skipBuild )
+				.Select( InvadersOn )
+				.Where( group => group.InvaderTypesPresent.Any() )
+				.Select( Build )
+				.ToArray();
+		}
+
+		public Space[] Explore( InvaderCard invaderCard ) {
+			bool HasTownOrCity( Space space ) {
+				var invaders = InvadersOn( space );
+				return invaders.HasTown || invaders.HasCity;
+			}
+			var exploredSpaces = Island.Boards.SelectMany( board => board.Spaces )
+				.Where( invaderCard.Matches )
+				.Where( space => space.IsCostal
+						 || space.SpacesWithin( 1 ).Any( HasTownOrCity )
+				)
+				.Except( skipExplore )
+				.ToArray();
+
+			foreach(var space in exploredSpaces)
+				Adjust( space, Invader.Explorer, 1 );
+			return exploredSpaces;
+		}
 
 		public bool HasInvaders( Space space ) 
 			=> invaderCount.Keys.Any(k=>k.Space==space);
@@ -158,6 +228,7 @@ namespace SpiritIsland {
 			invaders.ApplyDamage(damagePlan);
 			UpdateFromGroup(invaders);
 		}
+
 		public void UpdateFromGroup(InvaderGroup invaders){
 
 			string x = invaders.Space + ": " + invaders.Changed
@@ -180,33 +251,7 @@ namespace SpiritIsland {
 			return new InvaderGroup( targetSpace, dict1 );
 		}
 
-		public void Explore( InvaderCard invaderCard ) {
-			bool HasTownOrCity(Space space){
-				var invaders = InvadersOn(space);
-				return invaders.HasTown || invaders.HasCity;
-			}
-			var exploredSpaces = Island.Boards.SelectMany(board=>board.Spaces)
-				.Where(invaderCard.Matches)
-				.Where(space=> space.IsCostal
-						|| space.SpacesWithin(1).Any(HasTownOrCity)
-				)
-				.Except(skipInvaderActions);
-
-			foreach(var space in exploredSpaces)
-				Adjust( space, Invader.Explorer, 1 );
-		}
-
-		public string[] Build( InvaderCard invaderCard ) {
-			return Island.Boards.SelectMany(board=>board.Spaces)
-				.Where(invaderCard.Matches)
-				.Except(skipInvaderActions)
-				.Select(InvadersOn)
-				.Where(group => group.InvaderTypesPresent.Any())
-				.Select( Build )
-				.ToArray();
-		}
-
-        string Build( InvaderGroup group ) {
+		string Build( InvaderGroup group ) {
             int townCount = group[Invader.Town] + group[Invader.Town1];
             int cityCount = group[Invader.City] + group[Invader.City2] + group[Invader.City1];
             var invaderToAdd = townCount > cityCount ? Invader.City : Invader.Town;
@@ -223,29 +268,6 @@ namespace SpiritIsland {
 
 		/// <summary> Fired before ravage occurs</summary>
 		public event Action<GameState,Space[]> Ravaging;
-
-		public string[] Ravage( InvaderCard invaderCard ) {
-			if(invaderCard == null) return Array.Empty<string>();
-
-			// 1 point of damage,  Prefer C@1  ---  ---  T@1  ---  E@1 >>> C@2, T@2, C@3
-			// 2 points of damage, Prefer C@1  C@2  ---  T@1  T@2  E@1 >>> C@3
-			// 3 points of damage, Prefer C@1  C@2  C@3  T@1  T@2  E@1
-			var ravageSpaces = Island.Boards.SelectMany( board => board.Spaces )
-				.Where( invaderCard.Matches )
-				.Except( skipInvaderActions )
-				.ToArray();
-
-			Ravaging?.Invoke(this,ravageSpaces);
-
-			var ravageGroups = ravageSpaces
-				.Select(InvadersOn)
-				.Where(group => group.InvaderTypesPresent.Any())
-				.ToArray();
-
-			return ravageGroups
-				.Select(RavageSpace)
-				.ToArray();
-		}
 
 		string RavageSpace( InvaderGroup ravageGroup ) {
 
@@ -336,9 +358,7 @@ namespace SpiritIsland {
 
 		readonly CountDictionary<Space> defendCount = new CountDictionary<Space>();
 		public readonly HashSet<Space> noDamageToDahan = new(); // !!! special case for Conceiling Shadows - refactor!
-#pragma warning disable IDE0052 // Remove unread private members
 		int fearCount = 0;
-#pragma warning restore IDE0052 // Remove unread private members
 	}
 
 

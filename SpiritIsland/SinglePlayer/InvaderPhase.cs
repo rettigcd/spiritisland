@@ -15,7 +15,7 @@ namespace SpiritIsland.SinglePlayer {
 
 		void Log(string msg ) {
 			NewLogEntry?.Invoke(msg);
-        }
+		}
 
 		public InvaderPhase(GameState gameState){
 			this.gameState = gameState;
@@ -28,7 +28,7 @@ namespace SpiritIsland.SinglePlayer {
 				gameState.BlightCard.BlightAction(gameState);
 			}
 
-            string[] ravageResults = gameState.Ravage( invaderDeck.Ravage );
+			string[] ravageResults = gameState.Ravage( invaderDeck.Ravage );
 			Log("Ravaging:" + (invaderDeck.Ravage?.Text ?? "-") 
 				+ "\r\n" + ravageResults.Join("\r\n")
 			);

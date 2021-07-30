@@ -172,7 +172,6 @@ namespace SpiritIsland.Tests.Boards {
 
 		}
 
-
 		[Theory]
 		[InlineData("A1","")]
 		[InlineData("A2","CD")]
@@ -206,7 +205,6 @@ namespace SpiritIsland.Tests.Boards {
 		[InlineData("D6","")]
 		[InlineData("D7","TDD")]
 		[InlineData("D8","")]
-
 		public void StartingItems(string spaceLabel,string items){
 			var board = spaceLabel.Substring(0,1) switch{
 				"A" => Board.BuildBoardA(),
@@ -218,8 +216,9 @@ namespace SpiritIsland.Tests.Boards {
 			var gameState = new GameState( new RiverSurges() ){
 				Island = new Island( board )
 			};
+			gameState.DisableInvaderDeck();
 			// When:
-			gameState.InitItemsMarkedOnBoard(board);
+			gameState.InitIsland();
 			// Then:
 			var space = board.Spaces.Single(x=>x.Label==spaceLabel);
 			var grp = gameState.InvadersOn(space);

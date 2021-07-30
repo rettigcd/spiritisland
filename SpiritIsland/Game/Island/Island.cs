@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SpiritIsland {
 	public class Island {
@@ -28,6 +30,7 @@ namespace SpiritIsland {
 				default: throw new ArgumentOutOfRangeException(nameof(boards.Length),"wrong # of boards");
 			}
 		}
+		public IEnumerable<Space> AllSpaces => Boards.SelectMany(b=>b.Spaces); // could be extension method
 	}
 
 }
