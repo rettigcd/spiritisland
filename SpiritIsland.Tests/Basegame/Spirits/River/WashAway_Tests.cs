@@ -130,8 +130,7 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 			// 1 damaged town on A4
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[4];
-			gameState.Adjust( targetSpace, Invader.Town, 1 );
-			gameState.ApplyDamage( targetSpace, new DamagePlan( 1, Invader.Town ) );
+			gameState.Adjust( targetSpace, Invader.Town1, 1 );
 
 			var invaderDestination = board[2];
 

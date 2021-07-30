@@ -45,7 +45,7 @@ namespace SpiritIsland.Basegame {
 			while(count>0 && invadersToDestroy.Length >0){
 				var invader = await engine.SelectInvader("Select town/city to destroy.",invadersToDestroy,true);
 				if(invader==null) break;
-				grp.ApplyDamage(new DamagePlan(invader.Health,invader));
+				grp.Destroy(invader); //	grp.ApplyDamage(new DamagePlan(invader.Health,invader));
 
 				// next
 				invadersToDestroy = grp.FilterBy(Invader.Town);
@@ -61,7 +61,7 @@ namespace SpiritIsland.Basegame {
 			while(count>0 && invadersToDestroy.Length >0){
 				var invader = await engine.SelectInvader("Select town/city to destroy.",invadersToDestroy,true);
 				if(invader==null) break;
-				grp.ApplyDamage(new DamagePlan(invader.Health,invader));
+				grp.Destroy( invader );
 
 				// next
 				invadersToDestroy = grp.FilterBy(Invader.City,Invader.Town);

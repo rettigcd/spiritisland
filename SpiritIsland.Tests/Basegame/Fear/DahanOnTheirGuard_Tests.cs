@@ -19,7 +19,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			};
 			gameState.DisableInvaderDeck();
 			gameState.InitIsland();
-			gameState.FearCard = new DahanOnTheirGuard();
+			gameState.FearDeck.Push( new DahanOnTheirGuard() );
 
 			invaderCard = InvaderDeck.Level1Cards[0];
 			ravageSpace = gameState.Island.Boards[0].Spaces.Where( invaderCard.Matches ).First();

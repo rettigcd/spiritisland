@@ -21,12 +21,7 @@ namespace SpiritIsland.Basegame {
 				var invader = await engine.SelectInvader("Select invader to damage.",group.InvaderTypesPresent.ToArray());
 				if(invader == null) break;
 
-				int damageToInvader = Math.Min(invader.Health,damage);
-				var plan = new DamagePlanAction(group.Space,damageToInvader,invader);
-				// apply it to working-copy 
-				group[plan.Invader]--;
-				group[plan.DamagedInvader]++;
-				damage -= damageToInvader;
+				damage -= group.ApplyDamageMax(invader,damage);
 			}
 
 			gameState.UpdateFromGroup(group);

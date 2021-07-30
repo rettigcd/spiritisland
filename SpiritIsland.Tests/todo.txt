@@ -5,8 +5,10 @@ Bug
 Not Implemented
 
 4	Fear - Destroying town=>1, city=>2
-4	Fear - Display Fear stats in UI
-4	Fear - Fear Cards / Fear Initialization / Terror Level
+	??? Do we need an explicit method called Destory(...) to call when a City/Town is Destroyed and 
+4	Fear - Display Fear effect/stats in UI
+4	Fear - Fear Cards / Fear Initialization
+3   Terror Level
 	Blighted Island effect
 
 Improve

@@ -7,65 +7,47 @@ namespace SpiritIsland {
 
 	public class InvaderGroup{
 
-		public Space Space { get; }
+		#region constructor
 
 		public InvaderGroup(Space space,Dictionary<Invader,int> dict){
 			this.Space = space;
-			this.dict = dict;
-			dd = new CountDictionary<Invader>(dict);
+			this.innerDict = dict;
+			countDict = new CountDictionary<Invader>(dict);
 		}
 
-		readonly Dictionary<Invader,int> dict;
-		readonly CountDictionary<Invader> dd;
+		#endregion
 
-		public override string ToString() {
-			return dict
-				.Where(pair => pair.Value > 0 && pair.Key.Health>0)
-				.OrderBy(pair => CitiesTownsExplorers(pair.Key))
-				.Select(p => p.Value + p.Key.Summary)
-				.Join(",");
+		public void ApplyDamage( Invader invader, int damage ) {
+			if(damage > invader.Health) damage = invader.Health;
+			var damagedInvader = invader.Damage(damage);
+			changed.Add( invader ); --countDict[invader];
+			changed.Add( damagedInvader ); ++countDict[damagedInvader];
 		}
 
-		static int CitiesTownsExplorers(Invader invader)
-			=> -(invader.Healthy.Health * 10 + invader.Health);
+		// returns as much damage as possible to invader
+		// returns actual damage done
+		public int ApplyDamageMax( Invader invader, int availableDamage ) {
+			int damageToInvader = Math.Min( invader.Health, availableDamage );
 
-		/// <summary> Includes damaged invaders.</summary>
-		public IEnumerable<Invader> InvaderTypesPresent => dict
-			.Where(pair => pair.Value > 0 && pair.Key.Health>0)
-			.Select(pair => pair.Key);
+			var damagedInvader = invader.Damage( damageToInvader );
+			changed.Add( invader );				--countDict[invader];
+			changed.Add( damagedInvader  );		++countDict[damagedInvader];
 
-		public Invader[] FilterBy(params Invader[] allowedTypes ){
-			return InvaderTypesPresent
-				.Where(i=>allowedTypes.Contains(i.Healthy))
-				.ToArray();
-		}
-
-
-		public void ApplyDamage(DamagePlan damagePlan) {
-			changed.Add( damagePlan.Invader );			--dd[ damagePlan.Invader ];
-			changed.Add( damagePlan.DamagedInvader );	++dd[ damagePlan.DamagedInvader ];
+			return damageToInvader;
 		}
 
 		public int this[Invader i] {
-			get{ return dd[i]; }
+			get{ return countDict[i]; }
 			set{ 
 				changed.Add(i); // so value gets persisted to gamestate
-				dd[i] = value;
+				countDict[i] = value;
 			}
 		}
 
-		public bool HasCity => dict.ContainsKey(Invader.City) || dict.ContainsKey(Invader.City2) || dict.ContainsKey(Invader.City1);
-		public bool HasTown => dict.ContainsKey(Invader.Town) || dict.ContainsKey(Invader.Town1);
-		public bool HasExplorer => dict.ContainsKey(Invader.Explorer);
+		public int Destroy( Invader healthy, int max=1 ) => DestroyInner( healthy, max );
+		public int DestroyAll( Invader healthy ) => DestroyInner( healthy, null );
 
-		public int DestroyedCities => dd[Invader.City0];
-		public int DestroyedTowns => dd[Invader.Town0];
-		public int DestroyedExplorers => dd[Invader.Explorer0];
-
-		readonly HashSet<Invader> changed = new HashSet<Invader>();
-		public IEnumerable<Invader> Changed => changed.Where(i=>i.Health != 0);
-
-		public int Destroy( Invader healthy, int? max = null ) {
+		int DestroyInner( Invader healthy, int? max ) {
 			var invadersToDestory = this.InvaderTypesPresent
 				.Where(i=>i.Healthy==healthy)
 				.OrderByDescending(x=>x.Health) // kill healthiest first
@@ -82,17 +64,50 @@ namespace SpiritIsland {
 			return total;
 		}
 
+		#region public Read-Only
 
-		public int TotalCount { get {
-			int total = 0;
-			foreach(var k in InvaderTypesPresent)
-				total += this[k];
-			return total;
-		} }
+		public Invader[] FilterBy( params Invader[] allowedTypes ) => allowedTypes
+			.SelectMany(x=>x.AliveVariations)
+			.Intersect( InvaderTypesPresent )
+			.ToArray();
 
-		public int DamageInflicted => dict
-			.Select(p=>p.Value * p.Key.Healthy.Health)
-			.Sum();
+		public Space Space { get; }
+
+		public bool HasCity => countDict.HasAnyKey( Invader.City, Invader.City2, Invader.City1 );
+		public bool HasTown => countDict.HasAnyKey( Invader.Town, Invader.Town1 );
+		public bool HasExplorer => countDict.HasAnyKey( Invader.Explorer );
+
+		public int DestroyedCities => countDict[Invader.City0];
+		public int DestroyedTowns => countDict[Invader.Town0];
+		public int DestroyedExplorers => countDict[Invader.Explorer0];
+
+		public IEnumerable<Invader> Changed => changed.Where( i => i.Health != 0 );
+
+		/// <summary> Includes damaged invaders.</summary>
+		public IEnumerable<Invader> InvaderTypesPresent => innerDict.Keys.Where( invader => invader.Health > 0 );
+
+		public int TotalCount => innerDict.Values.Sum();
+
+		public int DamageInflictedByInvaders => innerDict.Select(p=>p.Value * p.Key.Healthy.Health).Sum();
+
+		public override string ToString() {
+			static int Order_CitiesTownsExplorers( Invader invader )
+				=> -(invader.Healthy.Health * 10 + invader.Health);
+			return innerDict
+				.Where( pair => pair.Value > 0 && pair.Key.Health > 0 )
+				.OrderBy( pair => Order_CitiesTownsExplorers( pair.Key ) )
+				.Select( p => p.Value + p.Key.Summary )
+				.Join( "," );
+		}
+
+		#endregion
+
+		#region private
+		readonly Dictionary<Invader, int> innerDict;
+		readonly CountDictionary<Invader> countDict;
+		readonly HashSet<Invader> changed = new HashSet<Invader>();
+		#endregion
+
 	}
 
 }

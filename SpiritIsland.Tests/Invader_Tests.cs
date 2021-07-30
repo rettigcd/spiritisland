@@ -263,7 +263,7 @@ namespace SpiritIsland.Tests.Core {
 		}
 
 		void Given_InitUnits( string startingUnits, Space space ) {
-			var group = gameState.InvadersOn( space );
+//			var group = gameState.InvadersOn( space );
 			foreach(var unit in startingUnits.Split( ',' )) {
 				int count = unit[0] - '0';
 				string itemSummary = unit[1..];
@@ -271,10 +271,11 @@ namespace SpiritIsland.Tests.Core {
 					gameState.AddDahan(space,count);
 				} else {
 					var invader = Invader.Lookup[itemSummary];
-					group[invader] += count;
+//					group[invader] += count;
+					gameState.Adjust(space,invader,count);
 				}
 			}
-			gameState.UpdateFromGroup( group );
+//			gameState.UpdateFromGroup( group );
 		}
 
 	}

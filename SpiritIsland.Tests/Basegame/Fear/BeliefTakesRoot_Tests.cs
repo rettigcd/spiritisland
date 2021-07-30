@@ -15,7 +15,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 				Island = new Island( Board.BuildBoardA() )
 			};
 			gameState.DisableInvaderDeck();
-			gameState.FearCard = new BeliefTakesRoot();
+			gameState.FearDeck.Push( new BeliefTakesRoot() );
 			gameState.InitIsland();
 
 			invaderCard = InvaderDeck.Level1Cards[0];
@@ -36,7 +36,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		[Fact]
 		public void NullFearCard_NormalRavage() {
 
-			gameState.FearCard = new NullFearCard();
+			gameState.FearDeck.Push( new NullFearCard() );
 
 			Given_DahanAndTownsInSpaceWithPresence(10,1);
 

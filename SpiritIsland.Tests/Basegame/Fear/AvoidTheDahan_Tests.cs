@@ -23,10 +23,6 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			invaderCard = InvaderDeck.Level1Cards[0];
 			exploringSpace = gameState.Island.Boards[0].Spaces.Where( invaderCard.Matches ).First();
 
-			// Given: initial BoardA hase explore in all lands
-			//   And: 4 fear / player
-			gameState.AddFear( 4 );
-
 			//   And: 2 dahan on space
 			gameState.AddDahan( exploringSpace, 2 );
 
@@ -34,20 +30,21 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 
 		[Fact]
 		public void NullFearCard_NormalExplore() {
-			gameState.FearCard = new NullFearCard();
+			gameState.FearDeck.Push( new NullFearCard() );
 			Space[] explored = When_ApplyFearAndExplore();
 			Assert.Equal( 2, explored.Length );
 		}
 
 		[Fact]
 		public void Level1_NoExplore() {
-			gameState.FearCard = new AvoidTheDahan();
+			gameState.FearDeck.Push( new AvoidTheDahan() );
 			Space[] explored = When_ApplyFearAndExplore();
 			// Then: "Invaders do not Explore into lands with at least 2 Dahan."
 			Assert.Single( explored );
 		}
 
 		Space[] When_ApplyFearAndExplore() {
+			gameState.AddFear( 4 );
 			gameState.ApplyFear();
 			Space[] explored = gameState.Explore( invaderCard );
 			return explored;

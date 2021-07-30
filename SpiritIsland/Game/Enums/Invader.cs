@@ -38,6 +38,8 @@ namespace SpiritIsland {
 
 		#endregion
 
+		public IEnumerable<Invader> AliveVariations => typeArr.Skip(1); // not-dead variations
+
 		public string Summary => Initial+"@"+Health; // C@3, T@2
 
 		public Invader Damage(int level){
