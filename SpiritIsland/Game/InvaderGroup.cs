@@ -36,15 +36,8 @@ namespace SpiritIsland {
 			return damageToInvader;
 		}
 
-		public int this[Invader i] {
-			get{ return countDict[i]; }
-			set{ 
-				changed.Add(i); // so value gets persisted to gamestate
-				countDict[i] = value;
-			}
-		}
+		public int Destroy( Invader healthy, int max=1 ) => (max == 0) ? 0 : DestroyInner( healthy, max );
 
-		public int Destroy( Invader healthy, int max=1 ) => DestroyInner( healthy, max );
 		public int DestroyAll( Invader healthy ) => DestroyInner( healthy, null );
 
 		int DestroyInner( Invader healthy, int? max ) {
@@ -58,13 +51,17 @@ namespace SpiritIsland {
 			foreach(var key in invadersToDestory){
 				int count = this[key];
 				total += count;
-				this[key.Dead] += count;
-				this[key] = 0;
+				countDict[key.Dead] += count;
+				countDict[key] = 0;
+				changed.Add(key);
 			}
 			return total;
 		}
 
 		#region public Read-Only
+
+		public int this[Invader i] => countDict[i];
+
 
 		public Invader[] FilterBy( params Invader[] allowedTypes ) => allowedTypes
 			.SelectMany(x=>x.AliveVariations)

@@ -13,9 +13,9 @@ namespace SpiritIsland.Basegame {
 		static public async Task ActionAsync(ActionEngine engine,Space target){
 			var (_,gameState) = engine;
 			
-			var group = gameState.InvadersOn(target);
 			int numToPush = 3;
-			Invader[] CalcInvaders() => group.FilterBy(Invader.Town,Invader.Explorer);
+			Invader[] CalcInvaders() => gameState.InvadersOn( target )
+				.FilterBy(Invader.Town,Invader.Explorer);
 			var availableInvaders = CalcInvaders();
 			while(numToPush > 0 && availableInvaders.Length>0){
 				var invader = await engine.SelectInvader("Select invader to push."
@@ -23,10 +23,9 @@ namespace SpiritIsland.Basegame {
 					,true
 				);
 				if(invader == null) break;
-				await engine.PushInvader(group.Space,invader);
+				await engine.PushInvader(target,invader);
 
 				--numToPush;
-				group[invader]--;
 				availableInvaders = CalcInvaders();
 			}
 		}

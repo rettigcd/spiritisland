@@ -17,8 +17,8 @@ namespace SpiritIsland.Basegame {
 			var changing = gameState.InvadersOn(target);
 			foreach(var invader in orig.InvaderTypesPresent){
 				int count = orig[invader];
-				changing[invader] -= count;
-				changing[invader.Damage(1)] += count; 
+				while(count-->0)
+					changing.ApplyDamage(invader,1);
 			}
 			gameState.UpdateFromGroup(changing);
 
