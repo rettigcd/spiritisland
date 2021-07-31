@@ -7,7 +7,7 @@ namespace SpiritIsland {
 
 	public abstract class Spirit : IOption {
 
-        #region constructor
+		#region constructor
 
 		public Spirit( params PowerCard[] initialCards ){
 			Hand.AddRange( initialCards );
@@ -197,11 +197,11 @@ namespace SpiritIsland {
 
 		public int PowerCardsToDraw; // temporary...
 
-        #endregion
+		#endregion
 
-        #region abstract
+		#region abstract
 
-        public virtual InnatePower[] InnatePowers { get; set; } = Array.Empty<InnatePower>();
+		public virtual InnatePower[] InnatePowers { get; set; } = Array.Empty<InnatePower>();
 
 		public virtual PowerCardApi GetPowerCardApi( ActionEngine engine ) {
 			return new PowerCardApi( engine );
@@ -210,6 +210,8 @@ namespace SpiritIsland {
 		public abstract void Initialize( Board board, GameState gameState );
 
 		#endregion
+
+		public Stack<IDecision> decisions = new();
 
 	}
 
@@ -224,13 +226,13 @@ namespace SpiritIsland {
 			return needed.All( pair => pair.Value <= activated[pair.Key] );
 		}
 
-        static public bool Has( this CountDictionary<Element> activated, params Element[] requiredElements ) {
-            var required = requiredElements
-                .GroupBy( x => x )
-                .ToDictionary( grp => grp.Key, grp => grp.Count() );
-            return activated.Has( required );
-        }
+		static public bool Has( this CountDictionary<Element> activated, params Element[] requiredElements ) {
+			var required = requiredElements
+				.GroupBy( x => x )
+				.ToDictionary( grp => grp.Key, grp => grp.Count() );
+			return activated.Has( required );
+		}
 
-    }
+	}
 
 }
