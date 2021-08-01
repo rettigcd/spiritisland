@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 
 		[SpiritCard(RagingStorm.Name,3,Speed.Slow,Element.Fire,Element.Air,Element.Water)]
 		[FromPresence(1)]
-		static public async Task Act(ActionEngine engine,Space target){
+		static public Task Act(ActionEngine engine,Space target){
 			var (_,gameState) = engine;
 			var orig = gameState.InvadersOn(target);
 
@@ -21,7 +21,7 @@ namespace SpiritIsland.Basegame {
 					changing.ApplyDamage(invader,1);
 			}
 			gameState.UpdateFromGroup(changing);
-
+			return Task.CompletedTask;
 		}
 
 	}

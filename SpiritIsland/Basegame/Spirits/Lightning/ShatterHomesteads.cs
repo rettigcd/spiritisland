@@ -8,7 +8,7 @@ namespace SpiritIsland.Basegame {
 
 		[SpiritCard(ShatterHomesteads.Name,2,Speed.Slow,Element.Fire,Element.Air)]
 		[FromSacredSite(2)]
-		static public async Task Act(ActionEngine engine, Space target){
+		static public Task Act(ActionEngine engine, Space target){
 			var (_,gameState) = engine;
 			// Destroy 1 town
 			var grp = gameState.InvadersOn(target);
@@ -19,6 +19,7 @@ namespace SpiritIsland.Basegame {
 			}
 			// 1 fear
 			gameState.AddFear(1);
+			return Task.CompletedTask;
 		}
 
 	}

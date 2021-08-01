@@ -10,7 +10,7 @@ namespace SpiritIsland.Basegame {
 
 		[MajorCard(AcceleratedRot.Name,4,Speed.Slow,Element.Sun,Element.Water,Element.Plant)]
 		[FromPresence(2,Filter.JungleOrWetland)]
-		static public async Task ActAsync(ActionEngine engine, Space target){
+		static public Task ActAsync(ActionEngine engine, Space target){
 			var (spirit,gameState) = engine;
 
 			// 2 fear, 4 damage
@@ -28,6 +28,7 @@ namespace SpiritIsland.Basegame {
 			}				
 
 			gameState.DamageInvaders(target, damageToInvaders);
+			return Task.CompletedTask;
 		}
 
 	}

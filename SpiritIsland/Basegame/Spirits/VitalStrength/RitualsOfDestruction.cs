@@ -7,7 +7,7 @@ namespace SpiritIsland.Basegame.Spirits.VitalStrength {
 
 		[SpiritCard("Rituals of Destruction",3,Speed.Slow,Element.Sun,Element.Moon,Element.Fire,Element.Earth,Element.Plant)]
 		[FromSacredSite(1,Filter.Dahan)]
-		static public async Task ActAsync(ActionEngine eng,Space target){
+		static public Task ActAsync(ActionEngine eng,Space target){
 
 			bool hasBonus = 3 <= eng.GameState.GetDahanOnSpace(target);
 			
@@ -15,7 +15,7 @@ namespace SpiritIsland.Basegame.Spirits.VitalStrength {
 
 			if(hasBonus)
 				eng.GameState.AddFear(2);
-
+			return Task.CompletedTask;
 		}
 
 	}

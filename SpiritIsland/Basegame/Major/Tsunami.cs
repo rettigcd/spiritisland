@@ -11,7 +11,7 @@ namespace SpiritIsland.Basegame {
 
 		[MajorCard(Tsunami.Name,6,Speed.Slow,Element.Water,Element.Earth)]
 		[FromSacredSite(2,Filter.Costal)]
-		static public async Task ActAsync(ActionEngine engine,Space space){
+		static public Task ActAsync(ActionEngine engine,Space space){
 			var(self,gameState) = engine;
 			// 2 fear
 			gameState.AddFear(2);
@@ -37,9 +37,9 @@ namespace SpiritIsland.Basegame {
 						gameState.AddDahan(otherCoast,-1);
 				}
 			}
+			return Task.CompletedTask;
+		}
 
-		} 
-		
 	}
 
 }

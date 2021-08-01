@@ -7,7 +7,7 @@ namespace SpiritIsland.Basegame {
 
 		[MajorCard("Poisoned Land",3,Speed.Slow,Element.Earth,Element.Plant,Element.Animal)]
 		[FromPresence(1)]
-		static public async Task ActAsync(ActionEngine engine,Space target){
+		static public Task ActAsync(ActionEngine engine,Space target){
 			var (_,gs) = engine;
 
 			// Add 1 blight, destroy all dahan
@@ -21,6 +21,7 @@ namespace SpiritIsland.Basegame {
 			});
 			gs.AddFear(1+(hasBonus?1:0));
 			gs.DamageInvaders(target,7+(hasBonus?4:0));
+			return Task.CompletedTask;
 		}
 
 	}

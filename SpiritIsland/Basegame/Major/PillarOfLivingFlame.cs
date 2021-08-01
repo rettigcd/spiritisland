@@ -7,7 +7,7 @@ namespace SpiritIsland.Basegame {
 
 		[MajorCard("Pillar of Living Flame",5,Speed.Slow,Element.Fire)]
 		[FromSacredSite(2)]
-		static public async Task ActionAsync(ActionEngine engine,Space targetLand){
+		static public Task ActionAsync(ActionEngine engine,Space targetLand){
 			var (self,gameState) = engine;
 
 			// 3 fear, 5 damage
@@ -20,6 +20,7 @@ namespace SpiritIsland.Basegame {
 			if(targetLand.Terrain.IsIn(Terrain.Jungle,Terrain.Wetland))
 				gameState.AddBlight(targetLand);
 
+			return Task.CompletedTask;
 		}
 
 	}
