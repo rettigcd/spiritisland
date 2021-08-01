@@ -108,7 +108,8 @@ namespace SpiritIsland.Tests.Base.Spirits {
 			if(push != null){
 				var action = push.Bind(spirit,gameState);
 				while(!action.IsResolved){
-					var target = action.Options.Single(t=>targets.Contains(t.Text));
+					var options = action.Options;
+					var target = options.Single(t=>targets.Contains(t.Text));
 					action.Select(target);
 				}
 			}

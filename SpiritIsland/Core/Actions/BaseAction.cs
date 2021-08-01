@@ -6,7 +6,8 @@ namespace SpiritIsland.Core {
 
 		protected BaseAction(Spirit spirit,GameState gameState){
 
-			engine = new ActionEngine(spirit,gameState,decisions);
+			engine = new ActionEngine(spirit,gameState);
+			this.spirit = spirit;
 
 			this.gameState = gameState;
 		}
@@ -26,9 +27,9 @@ namespace SpiritIsland.Core {
 				opt = GetOptionsSkippingAutoSelectCheck();
 			}
 			if(opt.Length == 0){
-				int hiddenCount = decisions.Count - 1;
+				int hiddenCount = spirit.decisions.Count - 1;
 				if(hiddenCount>0)
-					throw new System.InvalidOperationException($"'{decisions.Peek().Prompt}' returned 0 options leaving {hiddenCount} decision unresolved. ");
+					throw new System.InvalidOperationException($"'{Decisions.Peek().Prompt}' returned 0 options leaving {hiddenCount} decision unresolved. ");
 			}
 		}
 
@@ -48,18 +49,18 @@ namespace SpiritIsland.Core {
 			}
 		}
 		IOption[] GetOptionsSkippingAutoSelectCheck(){
-			return decisions.Count>0 
-				? decisions.Peek().Options 
+			return Decisions.Count>0 
+				? Decisions.Peek().Options 
 				: System.Array.Empty<IOption>();
 		}
 
-		public string Prompt => decisions.Count>0 ? decisions.Peek().Prompt : "-";
+		public string Prompt => Decisions.Count>0 ? Decisions.Peek().Prompt : "-";
 
 		protected void InnerSelect(IOption option) {
-			if(decisions.Count == 0)
+			if(Decisions.Count == 0)
 				throw new System.NotImplementedException();
 
-			var descision = decisions.Pop();
+			var descision = Decisions.Pop();
 			selections.Add( descision.Prompt +":"+ option.Text );
 			descision.Select( option );
 		}
@@ -69,7 +70,8 @@ namespace SpiritIsland.Core {
 
 		protected readonly GameState gameState;
 		protected readonly ActionEngine engine;
-		protected readonly Stack<IDecision> decisions = new Stack<IDecision>();
+		protected readonly Spirit spirit;
+		protected Stack<IDecision> Decisions => spirit.decisions;
 
 	}
 

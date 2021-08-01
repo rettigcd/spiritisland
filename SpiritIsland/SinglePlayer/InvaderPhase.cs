@@ -10,13 +10,16 @@ namespace SpiritIsland.SinglePlayer {
 
 		public InvaderPhase(GameState gameState){
 			this.gameState = gameState;
+			this.spirit = gameState.Spirits[0];
 			this.invaderDeck = gameState.InvaderDeck;
 		}
 
-		public string Prompt => decisions.Peek().Prompt;
-		public IOption[] Options => decisions.Peek().Options;
+		readonly Spirit spirit;
+
+		public string Prompt => spirit.decisions.Peek().Prompt;
+		public IOption[] Options => spirit.decisions.Peek().Options;
 		public void Select( IOption option ) {
-			var decision = decisions.Pop();
+			var decision = spirit.decisions.Pop();
 			decision.Select( option );
 		}
 
@@ -25,7 +28,7 @@ namespace SpiritIsland.SinglePlayer {
 		public event Action Complete;
 
 		public void Initialize() {
-			engine = new ActionEngine( gameState.Spirits[0], gameState, decisions );
+			engine = new ActionEngine( gameState.Spirits[0], gameState );
 			_ = Action();
 		}
 
@@ -68,7 +71,6 @@ namespace SpiritIsland.SinglePlayer {
 			this.Complete?.Invoke();
 		}
 
-		readonly Stack<IDecision> decisions = new();
 		ActionEngine engine;
 
 		void Log( string msg ) => NewLogEntry?.Invoke( msg );

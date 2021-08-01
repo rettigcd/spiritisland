@@ -12,11 +12,11 @@ namespace SpiritIsland.Core {
 
 		public PowerCardApi Api { get; }
 
-		public ActionEngine(Spirit self,GameState gameState,Stack<IDecision> decisions){
+		public ActionEngine(Spirit self,GameState gameState){
 			Self = self;
 			GameState = gameState;
 			Api = new PowerCardApi(this); // circular dependency
-			this.decisions = decisions;
+			this.decisions = self.decisions;
 		}
 
 		public void Deconstruct(out Spirit self, out GameState gameState) {

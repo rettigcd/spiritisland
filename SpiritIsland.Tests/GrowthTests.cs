@@ -115,8 +115,19 @@ namespace SpiritIsland.Tests {
 		}
 
 		protected void Resolve_PlacePresence(string placeOptions, Track source, string factory=null ) {
-			var x = new ResolvePlacePresence( placeOptions, source, factory );
-			x.Apply(spirit,gameState);
+			var ppFactory = spirit.GetUnresolvedActionFactories(Speed.Growth).OfType<PlacePresence>().First();
+			var ppAction = ppFactory.Bind(spirit,gameState);
+
+			// take from precense track
+			ppAction.Select(source);
+
+			// place on board - first option
+			string[] options = placeOptions.Split(';');
+			ppAction.Select(ppAction.Options.Single(o=>o.Text==options[0]));
+
+			spirit.RemoveFactory(ppFactory);
+			//new ResolvePlacePresence( placeOptions, source, factory )
+			//	.Apply(spirit,gameState);
 		}
 
 		protected void Assert_PresenceTracksAre(int expectedEnergy,int expectedCards) {

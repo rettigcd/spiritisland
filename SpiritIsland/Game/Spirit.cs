@@ -63,13 +63,14 @@ namespace SpiritIsland {
 
 		protected void RemoveResolvedActions( GameState gameState, Speed speed ) {
 
-			var resolvedActions = GetUnresolvedActionFactories( speed )
-				.Select( f => new { Factory = f, Action = f.Bind( this, gameState ) } )
-				.Where( pair => pair.Action.IsResolved )
-				.ToArray();
-			foreach(var x in resolvedActions)
-				Resolve( x.Factory, x.Action );
-
+			var factories = GetUnresolvedActionFactories( speed ).ToArray();
+			foreach(var factory in factories) {
+				var action = factory.Bind(this,gameState);
+				if(action.IsResolved)
+					Resolve(factory,action);
+				else
+					decisions.Clear(); // clean unresolved action decisions out
+			}
 		}
 
 		public void Forget( PowerCard cardToRemove ) {
