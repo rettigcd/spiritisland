@@ -72,7 +72,7 @@ namespace SpiritIsland.SinglePlayer {
 			// next action or summarize options
 			if(action.IsResolved) {
 				// Next
-				spirit.Resolve( selectedActionFactory, action );
+				spirit.Resolve( selectedActionFactory );
 				Initialize();
 			} else {
 				Prompt = growthName + " - " + action.Prompt;

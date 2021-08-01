@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using SpiritIsland.Core;
 
@@ -11,49 +12,60 @@ namespace SpiritIsland.Basegame {
 
         #region options
 
+		// * Note * these have a different signature than other Innates, called directly from GiftOfStrength_InnatePower
+
         [InnateOption("1 sun,2 earth,2 plant")]
-		static public Task Option1(ActionEngine engine, Spirit target) {
-			return RepeatPowerCard(engine,target,2 );
+		static public Task Option1( Spirit target, List<SpaceTargetedArgs> targetedList ) {
+			return RepeatPowerCard(target,2, targetedList );
 		}
 
 		[InnateOption("2 sun,3 earth,2 plant")]
-		static public Task Option2(ActionEngine engine, Spirit target) {
-			return RepeatPowerCard(engine,target,4 );
+		static public Task Option2( Spirit target, List<SpaceTargetedArgs> targetedList ) {
+			return RepeatPowerCard(target,4, targetedList );
 		}
 
 		[InnateOption("2 sun,4 earth,3 plant")]
-		static public Task Option3(ActionEngine engine, Spirit target) {
-			return RepeatPowerCard(engine,target,6 );
+		static public Task Option3( Spirit target, List<SpaceTargetedArgs> targetedList ) {
+			return RepeatPowerCard(target,6, targetedList );
 		}
 
-		static Task RepeatPowerCard(
-			ActionEngine _, 
-			Spirit target, 
-			int maxCost
-		) {
-			target.AddActionFactory(new ReplaySpaceCardForCost(maxCost));
+		static Task RepeatPowerCard( Spirit target,  int maxCost, List<SpaceTargetedArgs> targetedList ) {
+			target.AddActionFactory(new ReplaySpaceCardForCost(maxCost,targetedList));
 			return Task.CompletedTask;
 		}
 
-        #endregion
+		#endregion
 
-    }
+	}
 
     public class GiftOfStrength_InnatePower : InnatePower_TargetSpirit {
 
 		public GiftOfStrength_InnatePower() : base( typeof( GiftOfStrength ) ) { }
 
-		public override void Activate( ActionEngine engine) {
-			TargetSpirit_Action.FindSpiritAndInvoke( engine, HighestMethod( engine.Self ) );
+		public void Initialize( GameState gameState ){
+			foreach(var spirit in gameState.Spirits)
+				spirit.TargetedSpace += targetedList.Add;
+			gameState.TimePassed += () => targetedList.Clear();
 		}
+
+		public override void Activate( ActionEngine engine) {
+			_ = FindSpiritAndInvoke( engine, HighestMethod( engine.Self ) );
+		}
+
+		async Task FindSpiritAndInvoke( ActionEngine engine, MethodBase methodBase ){
+			Spirit target = await engine.SelectSpirit();
+			methodBase.Invoke( null, new object[] { target, targetedList } );
+		}
+
+		public readonly List<SpaceTargetedArgs> targetedList = new List<SpaceTargetedArgs>();
 
 	}
 
 	public class ReplaySpaceCardForCost : IActionFactory {
-		readonly int maxCost;
 
-		public ReplaySpaceCardForCost(int maxCost ) {
+		public ReplaySpaceCardForCost(int maxCost, List<SpaceTargetedArgs> targetedList ) {
 			this.maxCost = maxCost;
+			this.targetedList = targetedList;
         }
 
         public Speed Speed => throw new System.NotImplementedException();
@@ -64,8 +76,11 @@ namespace SpiritIsland.Basegame {
 		public IActionFactory Original => this;
 
         public void Activate( ActionEngine engine ) {
-			_ = engine.SelectSpaceCardToReplayForCost( engine.Self, maxCost );
+			_ = engine.SelectSpaceCardToReplayForCost( engine.Self, maxCost, targetedList );
         }
+
+		readonly List<SpaceTargetedArgs> targetedList;
+		readonly int maxCost;
 	}
 
 

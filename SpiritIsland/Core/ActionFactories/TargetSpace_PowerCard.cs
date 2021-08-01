@@ -10,14 +10,14 @@ namespace SpiritIsland.Core {
 	/// </summary>
 	class TargetSpace_PowerCard : PowerCard {
 
-		readonly MethodBase m;
+		readonly MethodBase methodBase;
 		readonly TargetSpaceAttribute targetSpace;
 
-		public TargetSpace_PowerCard(MethodBase m,TargetSpaceAttribute targetSpace){
-			this.m = m;
+		public TargetSpace_PowerCard(MethodBase methodBase,TargetSpaceAttribute targetSpace){
+			this.methodBase = methodBase;
 			this.targetSpace = targetSpace;
 
-			var attr = m.GetCustomAttributes<BaseCardAttribute>().VerboseSingle("bob 555");
+			var attr = methodBase.GetCustomAttributes<BaseCardAttribute>().VerboseSingle("Couldn't find BaseCardAttribute on PowerCard targeting a space");
 			Speed = attr.Speed;
 			Name = attr.Name;
 			Cost = attr.Cost;
@@ -25,51 +25,29 @@ namespace SpiritIsland.Core {
 			PowerType = attr.PowerType;
 		}
 
+		public event SpaceTargetedEvent TargetedSpace; // Targeter, Card, Targetee
+
 		public override void Activate( ActionEngine engine ) {
-			TargetSpace_Action.DoIt(engine,m,targetSpace);
+			_ = PickSpaceAndActivate(engine);
 		}
 
-		public void Activate( ActionEngine engine, Space preTarget ) {
-			TargetSpace_Action.DoIt( engine, m, preTarget );
+		public void ActivateAgainstSpecificTarget( ActionEngine engine, Space preTarget ) {
+			Task.Run( ()=>InvokeAgainst(engine,preTarget) );
 		}
 
+		async Task PickSpaceAndActivate( ActionEngine engine ){
+			var target = await targetSpace.Target( engine );
+			TargetedSpace?.Invoke(new SpaceTargetedArgs{Initiator=engine.Self,Card=this,Target=target } );
+			InvokeAgainst( engine, target );
+		}
+
+		void InvokeAgainst(ActionEngine engine, Space target) => methodBase.Invoke( null, new object[] { engine, target } );
 
 	}
 
-	class TargetSpace_Action {
 
-		static public void DoIt( ActionEngine engine, MethodBase m, Space preSpace ) {
-			var action = new TargetSpace_Action( engine, m ){
-				Target = preSpace ?? throw new ArgumentNullException( nameof( preSpace ) )
-			};
-			Task.Run( action.Invoke );
-		}
-
-		TargetSpace_Action( ActionEngine engine, MethodBase m) {
-			this.engine = engine;
-			this.methodBase = m;
-		}
-
-
-		static public void DoIt( ActionEngine engine, MethodBase m, TargetSpaceAttribute targetSpace ){
-			var action = new TargetSpace_Action( engine, m );
-			_ = action.TargetSpaceThenInvoke( targetSpace );
-		}
-
-		async Task TargetSpaceThenInvoke(TargetSpaceAttribute targetSpace){
-			Target = await targetSpace.Target( engine ) 
-				?? throw new Exception("await targetspace returned value");
-			Invoke();
-		}
-
-		void Invoke() => methodBase.Invoke(null,new object[]{engine,Target});
-
-		public Space Target { get; private set; }
-		readonly MethodBase methodBase;
-		readonly ActionEngine engine;
-
-	}
-
+	public class SpaceTargetedArgs{ public Spirit Initiator; public PowerCard Card; public Space Target; };
+	public delegate void SpaceTargetedEvent(SpaceTargetedArgs args);
 
 
 }

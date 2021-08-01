@@ -67,7 +67,7 @@ Power Progression:
 
 			if(actionFactory is DrawPowerCard){
 				var newCard = PowerProgression[0];
-				this.Hand.Add( newCard );
+				this.RegisterNewCard( newCard );
 				PowerProgression.RemoveAt( 0 );
 				if(newCard.PowerType == PowerType.Major)
 					base.AddActionFactory(new ForgetPowerCard());
@@ -85,18 +85,22 @@ Power Progression:
 			PowerCard.For<SavageMawbeasts>()
 		};
 
-		public override void Initialize( Board board, GameState gameState ) {
-
-			var higestJungle = board.Spaces.OrderByDescending( s => s.Label ).First( s => s.Terrain == Terrain.Jungle );
-			var higestMountain = board.Spaces.OrderByDescending( s => s.Label ).First( s => s.Terrain == Terrain.Mountain );
-			Presence.Add(higestMountain);
-			Presence.Add( higestMountain );
-			Presence.Add( higestJungle );
-
+		public override void Initialize( Board board, GameState gameState ){
+			base.Initialize( board, gameState );
+			InitPresence( board );
 			gameState.Ravaging += GameState_Ravaging;
+			giftOfStrength.Initialize(gameState);
 		}
 
-        void GameState_Ravaging( GameState gs, Space[] ravageSpaces ) {
+		void InitPresence( Board board ){
+			var higestJungle = board.Spaces.OrderByDescending( s => s.Label ).First( s => s.Terrain == Terrain.Jungle );
+			var higestMountain = board.Spaces.OrderByDescending( s => s.Label ).First( s => s.Terrain == Terrain.Mountain );
+			Presence.Add( higestMountain );
+			Presence.Add( higestMountain );
+			Presence.Add( higestJungle );
+		}
+
+		void GameState_Ravaging( GameState gs, Space[] ravageSpaces ) {
 			foreach(var space in SacredSites.Where(ravageSpaces.Contains))
 				gs.Defend( space, 3 );
 		}

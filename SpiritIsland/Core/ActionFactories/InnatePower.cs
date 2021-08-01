@@ -1,8 +1,8 @@
-﻿using SpiritIsland.Basegame.Spirits.VitalStrength;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace SpiritIsland.Core {
 
@@ -74,7 +74,12 @@ namespace SpiritIsland.Core {
 		#endregion
 
 		public override void Activate( ActionEngine engine ) {
-			TargetSpirit_Action.FindSpiritAndInvoke( engine, HighestMethod(engine.Self) );
+			_ = FindSpiritAndInvoke( engine, HighestMethod(engine.Self) );
+		}
+
+		static async Task FindSpiritAndInvoke( ActionEngine engine, MethodBase methodBase ) {
+			Spirit target = await engine.SelectSpirit();
+			TargetSpirit_PowerCard.TargetSpirit(methodBase,engine,target);
 		}
 
 	}
@@ -91,8 +96,14 @@ namespace SpiritIsland.Core {
 		#endregion
 
 		public override void Activate( ActionEngine engine ) {
-			TargetSpace_Action.DoIt( engine, HighestMethod(engine.Self), targetSpace );
+			_ = DoIt(engine);
 		}
+
+		async Task DoIt(ActionEngine engine){
+			var target = await targetSpace.Target(engine);
+			HighestMethod( engine.Self ).Invoke( null, new object[] { engine, target } );
+		}
+
 		readonly TargetSpaceAttribute targetSpace;
 
 	}

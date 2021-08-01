@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace SpiritIsland.Core {
@@ -8,10 +9,10 @@ namespace SpiritIsland.Core {
 	/// </summary>
 	class TargetSpirit_PowerCard : PowerCard {
 
-		readonly MethodBase m;
+		readonly MethodBase methodBase;
 
-		public TargetSpirit_PowerCard(MethodBase m){
-			var attr = m.GetCustomAttributes<BaseCardAttribute>()
+		public TargetSpirit_PowerCard(MethodBase methodBase){
+			var attr = methodBase.GetCustomAttributes<BaseCardAttribute>()
 				.VerboseSingle("bob22");
 
 			Speed = attr.Speed;
@@ -19,49 +20,26 @@ namespace SpiritIsland.Core {
 			Cost = attr.Cost;
 			Elements = attr.Elements;
 			PowerType = attr.PowerType;
-			this.m = m;
+			this.methodBase = methodBase;
 		}
 
 		public override void Activate( ActionEngine engine ) {
-			TargetSpirit_Action.FindSpiritAndInvoke(engine,m);
+			_ = FindSpiritAndInvoke(engine);
 		}
+
+		async Task FindSpiritAndInvoke(ActionEngine engine ){
+			Spirit target = await engine.SelectSpirit();
+			SpiritTargeted?.Invoke(engine.Self,this,target);
+			TargetSpirit(methodBase,engine,target);
+		}
+
+		public event SpiritTargetedArgs SpiritTargeted; // Targeter, Card, Targetee
+
+
+		static public void TargetSpirit(MethodBase methodBase, ActionEngine engine, Spirit target) => methodBase.Invoke( null, new object[] { engine, target } );
 
 	}
 
-	class TargetSpirit_Action {
-
-		public static void FindSpiritAndInvoke(ActionEngine engine, MethodBase m ) {
-			var x = new TargetSpirit_Action( engine, m );
-			_ = x.FindSpiritAndInvoke();
-		}
-
-		// not used
-		//public static void InvokeOnSpirit(ActionEngine engine, MethodBase m, Spirit target){
-		//	var x = new TargetSpirit_Action( engine, m ) {
-		//		Target = target
-		//	};
-		//	Task.Run( x.Invoke );
-		//}
-
-		Spirit target;
-
-		TargetSpirit_Action(  ActionEngine engine, MethodBase m ) {
-			this.engine = engine;
-			this.methodBase = m;
-		}
-
-		async Task FindSpiritAndInvoke(){
-			target = await engine.SelectSpirit();
-			Invoke();
-		}
-
-		void Invoke() {
-			methodBase.Invoke(null, new object[] { engine, target } );
-		}
-
-		readonly MethodBase methodBase;
-		readonly ActionEngine engine;
-
-	}
+	public delegate void SpiritTargetedArgs( Spirit initiator, PowerCard card, Spirit target );
 
 }

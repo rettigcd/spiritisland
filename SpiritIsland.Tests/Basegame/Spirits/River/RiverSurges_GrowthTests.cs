@@ -280,7 +280,7 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 				"D" => BoardD,
 				_ => null,
 			};
-			river.Initialize(board,null);
+			river.Initialize(board,new GameState(river));
 			Assert.Equal(expectedStartingSpaces,river.Presence.Select(s=>s.Label).Join(","));
 		}
 

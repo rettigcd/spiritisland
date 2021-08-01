@@ -110,7 +110,7 @@ namespace SpiritIsland.Basegame {
 
 			if(actionFactory is DrawPowerCard){
 				var newCard = PowerProgression[0];
-				this.Hand.Add( newCard );
+				this.RegisterNewCard( newCard );
 				PowerProgression.RemoveAt( 0 );
 				if(newCard.PowerType == PowerType.Major)
 					base.AddActionFactory(new ForgetPowerCard());
@@ -128,9 +128,10 @@ namespace SpiritIsland.Basegame {
 			PowerCard.For<EncompassingWard>()
 		};
 
-		public override void Initialize( Board board, GameState _ ) {
-			var space = board.Spaces.Reverse().First(s=>s.Terrain==Terrain.Wetland);
-			Presence.Add(space);
+		public override void Initialize( Board board, GameState gs ) {
+			base.Initialize( board, gs );
+
+			Presence.Add( board.Spaces.Reverse().First( s => s.Terrain == Terrain.Wetland ) );
 		}
 
 	}

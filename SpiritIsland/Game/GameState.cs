@@ -51,11 +51,9 @@ namespace SpiritIsland {
 
 		}
 
+		public event Action TimePassed;
+
 		public void TimePasses() {
-			foreach(var spirit in Spirits){
-				spirit.DiscardPile.AddRange(spirit.PurchasedCards);
-				spirit.PurchasedCards.Clear();
-			}
 			// heal
 			var damaged = invaderCount.Keys
 				.Where(p=>p.Invader != p.Invader.Healthy)
@@ -68,6 +66,8 @@ namespace SpiritIsland {
 				invaderCount[pair] = 0;
 			}
 			defendCount.Clear();
+
+			TimePassed?.Invoke();
 		}
 
 		void InitItemsMarkedOnBoard(Board board) {

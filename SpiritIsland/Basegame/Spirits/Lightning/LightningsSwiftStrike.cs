@@ -70,7 +70,7 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 
 			if(actionFactory is DrawPowerCard){
 				var newCard = PowerProgression[0];
-				this.Hand.Add( newCard );
+				this.RegisterNewCard( newCard );
 				PowerProgression.RemoveAt( 0 );
 				if(newCard.PowerType == PowerType.Major)
 					base.AddActionFactory(new ForgetPowerCard());
@@ -88,7 +88,8 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 			PowerCard.For<CallToIsolation>()
 		};
 
-		public override void Initialize( Board board, GameState _ ) {
+		public override void Initialize( Board board, GameState gs ) {
+			base.Initialize(board,gs);
 			// Setup: put 2 pressence in highest numbered sands
 			var space = board.Spaces.Reverse().First(x=>x.Terrain==Terrain.Sand);
 			Presence.Add(space);

@@ -31,20 +31,14 @@ namespace SpiritIsland.Core {
 			}
 		}
 
-		static public async Task SelectSpaceCardToReplayForCost( this ActionEngine engine, Spirit spirit, int maxCost ) {
+		static public async Task SelectSpaceCardToReplayForCost( this ActionEngine engine, Spirit spirit, int maxCost, List<SpaceTargetedArgs> played ) {
 			maxCost = Math.Min(maxCost,spirit.Energy);
-			var actionFactories = spirit.resolvedActions
-				.Where(resolved=>resolved.Factory is TargetSpace_PowerCard pc && pc.Cost<=maxCost)
-				.ToDictionary(
-					resolved=>(PowerCard)resolved.Factory,
-					resolved=>((TargetSpace_Action)resolved.Action).Target
-				);
-			var options = actionFactories.Keys.ToArray();
+			var options = played.Select(p=>p.Card).ToArray();
 			if(options.Length == 0) return;
 			var factory = (TargetSpace_PowerCard)await engine.SelectFactory("Select card to replay",options);
 
             spirit.Energy -= factory.Cost;
-			spirit.AddActionFactory( new ReplayOnSpace( factory, actionFactories[factory] ) );
+			spirit.AddActionFactory( new ReplayOnSpace( factory, played.Single(p=>p.Card==factory ).Target ));
 		}
 
 		static public async Task GatherUpToNDahan( this ActionEngine eng, Space target, int dahanToGather ) {

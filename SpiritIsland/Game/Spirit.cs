@@ -10,7 +10,14 @@ namespace SpiritIsland {
 		#region constructor
 
 		public Spirit( params PowerCard[] initialCards ){
-			Hand.AddRange( initialCards );
+			foreach(var card in initialCards)
+				RegisterNewCard(card);
+		}
+
+		public void RegisterNewCard( PowerCard card ){
+			Hand.Add(card);
+			if(card is TargetSpace_PowerCard ts)
+				ts.TargetedSpace += (args) => TargetedSpace?.Invoke(args);
 		}
 
 		#endregion
@@ -69,7 +76,7 @@ namespace SpiritIsland {
 				factory.Activate(engine);
 				var action = new BaseAction(engine);
 				if(action.IsResolved)
-					Resolve(factory,action);
+					Resolve(factory);
 				else
 					decisions.Clear(); // clean unresolved action decisions out
 			}
@@ -98,15 +105,9 @@ namespace SpiritIsland {
 		/// <summary>
 		/// Removes from list.  Triggers Energy when last growth removed
 		/// </summary>
-		public void Resolve( IActionFactory selectedActionFactory, IAction action ) {
-			resolvedActions.Add(new SpiritActionResolved{
-				Factory=selectedActionFactory,
-				Action=action 
-			} );
-			RemoveFactory(selectedActionFactory);
+		public void Resolve( IActionFactory selectedActionFactory) {
+			RemoveFactory(selectedActionFactory); // collapse this method
 		}
-
-		public readonly List<SpiritActionResolved> resolvedActions = new List<SpiritActionResolved>();
 
 		/// <summary>
 		/// Removes it from the Unresolved-list
@@ -210,32 +211,25 @@ namespace SpiritIsland {
 			return new PowerCardApi( engine );
 		}
 
-		public abstract void Initialize( Board board, GameState gameState );
+		public virtual void Initialize( Board board, GameState gameState ){
+			gameState.TimePassed += () => {
+				DiscardPile.AddRange( PurchasedCards );
+				PurchasedCards.Clear();
+			};
+		}
+
 
 		#endregion
 
 		public Stack<IDecision> decisions = new();
+
+		public event SpaceTargetedEvent TargetedSpace;
 
 	}
 
 	public class SpiritActionResolved {
 		public IActionFactory Factory { get; set; }
 		public IAction Action { get; set; }
-	}
-
-	static public class ExtendElements {
-
-		static public bool Has(this CountDictionary<Element> activated, Dictionary<Element, int> needed ) {
-			return needed.All( pair => pair.Value <= activated[pair.Key] );
-		}
-
-		static public bool Has( this CountDictionary<Element> activated, params Element[] requiredElements ) {
-			var required = requiredElements
-				.GroupBy( x => x )
-				.ToDictionary( grp => grp.Key, grp => grp.Count() );
-			return activated.Has( required );
-		}
-
 	}
 
 }

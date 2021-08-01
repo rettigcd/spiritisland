@@ -16,7 +16,7 @@
         IActionFactory IActionFactory.Original => original;
 
         public void Activate( ActionEngine engine )
-			=> original.Activate(engine,target);
+			=> original.ActivateAgainstSpecificTarget(engine,target);
 		
 	}
 
