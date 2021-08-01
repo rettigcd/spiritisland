@@ -118,7 +118,9 @@ namespace SpiritIsland.Tests {
 			var ppFactory = spirit.GetUnresolvedActionFactories(Speed.Growth).OfType<PlacePresence>()
 				.Where(f=> factoryDescription==null || factoryDescription == f.ShortDescription)
 				.First();
-			var ppAction = ppFactory.Bind(spirit,gameState);
+			var engine = new ActionEngine( spirit, gameState );
+			ppFactory.Activate( engine );
+			var ppAction = new BaseAction(engine);
 
 			// take from precense track
 			ppAction.Select(source);
@@ -156,8 +158,11 @@ namespace SpiritIsland.Tests {
 		}
 
 		protected void AndWhen_ReclaimingFirstCard() {
-			var reclaim = spirit.GetUnresolvedActionFactories(Speed.Growth).OfType<Reclaim1>().First().Bind(spirit,gameState);
-			reclaim.Select( reclaim.Options[0] );
+			var engine = new ActionEngine( spirit, gameState );
+			spirit.GetUnresolvedActionFactories(Speed.Growth).OfType<Reclaim1>().First().Activate( engine );
+			var reclaim = new BaseAction(engine);
+			if(reclaim.Options.Length>0)
+				reclaim.Select( reclaim.Options[0] );
 		}
 
 		#endregion

@@ -20,16 +20,10 @@ namespace SpiritIsland.Basegame {
 				lightning.AddActionFactory( this );
 		}
 
-		public IAction Bind( Spirit spirit, GameState gameState ) {
-			int airCount = spirit.Elements[Element.Air];
-			return new SwiftAction(spirit,gameState,airCount);
+		public void Activate( ActionEngine engine ) {
+			_ = engine.SelectActionsAndMakeFast( engine.Self, engine.Self.Elements[Element.Air] );
 		}
 
-		class SwiftAction : BaseAction { // This could be refactored to just take the starting decision.
-			public SwiftAction(Spirit lightning,GameState gs,int count):base(lightning,gs){
-				_ = engine.SelectActionsAndMakeFast( lightning, count );
-			}
-		}
 	}
 
 }

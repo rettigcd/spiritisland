@@ -11,9 +11,8 @@ namespace SpiritIsland.Core {
         public override string ShortDescription => $"GainEnergy({delta})";
 
 
-		public override IAction Bind( Spirit spirit, GameState gameState ) {
-			spirit.Energy += delta;
-			return new ResolvedAction();
+		public override void Activate(ActionEngine engine) {
+			engine.Self.Energy += delta;
 		}
 
 	}

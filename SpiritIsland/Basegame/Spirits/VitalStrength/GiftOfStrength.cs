@@ -43,8 +43,8 @@ namespace SpiritIsland.Basegame {
 
 		public GiftOfStrength_InnatePower() : base( typeof( GiftOfStrength ) ) { }
 
-		public override IAction Bind( Spirit spirit, GameState gameState ) {
-			return new TargetSpirit_Action( spirit, gameState, HighestMethod( spirit ) );
+		public override void Activate( ActionEngine engine) {
+			TargetSpirit_Action.FindSpiritAndInvoke( engine, HighestMethod( engine.Self ) );
 		}
 
 	}
@@ -56,7 +56,6 @@ namespace SpiritIsland.Basegame {
 			this.maxCost = maxCost;
         }
 
-
         public Speed Speed => throw new System.NotImplementedException();
 
         public string Name => "Replay Card for cost";
@@ -64,15 +63,9 @@ namespace SpiritIsland.Basegame {
 
 		public IActionFactory Original => this;
 
-        public IAction Bind( Spirit spirit, GameState gameState ) {
-			return new ReplaySpaceCardAction(spirit,gameState,maxCost);
+        public void Activate( ActionEngine engine ) {
+			_ = engine.SelectSpaceCardToReplayForCost( engine.Self, maxCost );
         }
-		class ReplaySpaceCardAction : BaseAction {
-			public ReplaySpaceCardAction( Spirit spirit, GameState gameState,int maxCost ) 
-				: base( spirit, gameState ) {
-				_ = engine.SelectSpaceCardToReplayForCost( spirit, maxCost );
-			}
-		}
 	}
 
 

@@ -7,9 +7,8 @@
 			this.count = count;
 		}
 
-		public override IAction Bind( Spirit spirit, GameState gameState ) {
-			spirit.PowerCardsToDraw += count;
-			return new ResolvedAction();
+		public override void Activate( ActionEngine engine ) {
+			engine.Self.PowerCardsToDraw += count;
 		}
 
 	}

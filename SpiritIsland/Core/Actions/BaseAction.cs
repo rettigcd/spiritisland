@@ -3,35 +3,10 @@ using System.Linq;
 
 namespace SpiritIsland.Core {
 
-	public class BaseAction : IAction {
+	sealed public class BaseAction : IAction {
 
-		protected BaseAction(Spirit spirit,GameState gameState){
-
-			engine = new ActionEngine(spirit,gameState);
-			this.spirit = spirit;
-
-			this.gameState = gameState;
-		}
-
-		bool initialized = false;
-
-		void InitializeIfNeeded(){
-			if(initialized) return;
-			initialized = true;
-			AutoSelectSingleOptions();
-		}
-
-		void AutoSelectSingleOptions() {
-			var opt = GetOptionsSkippingAutoSelectCheck();
-			while (opt.Length == 1) {
-				InnerSelect(opt[0]);
-				opt = GetOptionsSkippingAutoSelectCheck();
-			}
-			if(opt.Length == 0){
-				int hiddenCount = spirit.decisions.Count - 1;
-				if(hiddenCount>0)
-					throw new System.InvalidOperationException($"'{Decisions.Peek().Prompt}' returned 0 options leaving {hiddenCount} decision unresolved. ");
-			}
+		public BaseAction(ActionEngine engine){
+			this.Decisions = engine.Self.decisions;
 		}
 
 		public bool IsResolved => Options.Length == 0;
@@ -48,15 +23,46 @@ namespace SpiritIsland.Core {
 				return GetOptionsSkippingAutoSelectCheck();
 			}
 		}
+
+		public string Prompt => Decisions.Count > 0 ? Decisions.Peek().Prompt : "-";
+
+		/// <summary> Logs decisions made </summary>
+		public string Selections => selections.Join( " > " );
+
+		public readonly List<string> selections = new List<string>();
+
+		#region private
+
+		bool initialized = false;
+
+		void InitializeIfNeeded() {
+			if(initialized) return;
+			initialized = true;
+			AutoSelectSingleOptions();
+		}
+
+		void AutoSelectSingleOptions() {
+			var opt = GetOptionsSkippingAutoSelectCheck();
+			while(opt.Length == 1)
+			{
+				InnerSelect( opt[0] );
+				opt = GetOptionsSkippingAutoSelectCheck();
+			}
+			if(opt.Length == 0)
+			{
+				int hiddenCount = Decisions.Count - 1;
+				if(hiddenCount > 0)
+					throw new System.InvalidOperationException( $"'{Decisions.Peek().Prompt}' returned 0 options leaving {hiddenCount} decision unresolved. " );
+			}
+		}
+
 		IOption[] GetOptionsSkippingAutoSelectCheck(){
 			return Decisions.Count>0 
 				? Decisions.Peek().Options 
 				: System.Array.Empty<IOption>();
 		}
 
-		public string Prompt => Decisions.Count>0 ? Decisions.Peek().Prompt : "-";
-
-		protected void InnerSelect(IOption option) {
+		void InnerSelect(IOption option) {
 			if(Decisions.Count == 0)
 				throw new System.NotImplementedException();
 
@@ -65,15 +71,9 @@ namespace SpiritIsland.Core {
 			descision.Select( option );
 		}
 
+		readonly Stack<IDecision> Decisions;
 
-		protected readonly 
-			GameState gameState;
-		protected readonly ActionEngine engine;
-		protected readonly Spirit spirit;
-
-		protected Stack<IDecision> Decisions => spirit.decisions;
-		public string Selections => selections.Join( " > " );
-		public readonly List<string> selections = new List<string>();
+		#endregion
 
 	}
 

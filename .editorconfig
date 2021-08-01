@@ -7,6 +7,7 @@ csharp_space_between_parentheses=false
 csharp_space_between_method_call_parameter_list_parentheses=true
 csharp_space_between_method_declaration_parameter_list_parentheses=true
 csharp_indent_block_contents=true
+csharp_new_line_before_open_brace=all
 
 [*.{cs,vb}]
 indent_style=tab

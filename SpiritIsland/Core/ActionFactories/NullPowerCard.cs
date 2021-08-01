@@ -9,22 +9,8 @@ namespace SpiritIsland.Core {
 			this.Elements = elements;
 			this.PowerType = PowerType.Spirit; // HACK!
 		}
-		public override IAction Bind( Spirit spirit, GameState gameState ) {
-			return new NullCardAction();
-		}
 
-		class NullCardAction : IAction {
-			public NullCardAction(){ }
-			public bool IsResolved => true;
-
-			public IOption[] Options => Array.Empty<IOption>();
-
-			public string Prompt => throw new NotImplementedException();
-
-			public string Selections => "no action";
-
-			public void Select(IOption option) {}
-		}
+		public override void Activate( ActionEngine engine ) {}
 
 	}
 

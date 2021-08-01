@@ -22,42 +22,46 @@ namespace SpiritIsland.Core {
 			this.m = m;
 		}
 
-		public override IAction Bind( Spirit spirit, GameState gameState ) {
-			return new TargetSpirit_Action(spirit,gameState,m);
+		public override void Activate( ActionEngine engine ) {
+			TargetSpirit_Action.FindSpiritAndInvoke(engine,m);
 		}
 
 	}
 
-	class TargetSpirit_Action : BaseAction {
+	class TargetSpirit_Action {
 
-		public Spirit Target {get; private set; }
-
-		public TargetSpirit_Action( 
-			Spirit self, 
-			GameState gameState, 
-			MethodBase m
-		) :base(self,gameState) {
-			this.methodBase = m;
-			_ = FindSpiritAndInvoke();
+		public static void FindSpiritAndInvoke(ActionEngine engine, MethodBase m ) {
+			var x = new TargetSpirit_Action( engine, m );
+			_ = x.FindSpiritAndInvoke();
 		}
+
+		// not used
+		//public static void InvokeOnSpirit(ActionEngine engine, MethodBase m, Spirit target){
+		//	var x = new TargetSpirit_Action( engine, m ) {
+		//		Target = target
+		//	};
+		//	Task.Run( x.Invoke );
+		//}
+
+		Spirit target;
+
+		TargetSpirit_Action(  ActionEngine engine, MethodBase m ) {
+			this.engine = engine;
+			this.methodBase = m;
+		}
+
 		async Task FindSpiritAndInvoke(){
-			Target = await engine.SelectSpirit();
+			target = await engine.SelectSpirit();
 			Invoke();
 		}
 
-		public TargetSpirit_Action( Spirit self, GameState gameState, MethodBase m, Spirit target ):base(self,gameState) {
-			this.methodBase = m;
-			Target = target;
-			Task.Run(Invoke);
-		}
-
 		void Invoke() {
-			methodBase.Invoke(null, new object[] { engine, Target } );
+			methodBase.Invoke(null, new object[] { engine, target } );
 		}
 
 		readonly MethodBase methodBase;
+		readonly ActionEngine engine;
 
 	}
-
 
 }

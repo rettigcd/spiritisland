@@ -64,8 +64,10 @@ namespace SpiritIsland {
 		protected void RemoveResolvedActions( GameState gameState, Speed speed ) {
 
 			var factories = GetUnresolvedActionFactories( speed ).ToArray();
+			var engine = new ActionEngine(this,gameState);
 			foreach(var factory in factories) {
-				var action = factory.Bind(this,gameState);
+				factory.Activate(engine);
+				var action = new BaseAction(engine);
 				if(action.IsResolved)
 					Resolve(factory,action);
 				else

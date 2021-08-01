@@ -35,7 +35,7 @@ namespace SpiritIsland.Core {
 
 		public string Text => Name;
 
-		abstract public IAction Bind(Spirit spirit,GameState gameState);
+		abstract public void Activate(ActionEngine engine);
 
 	}
 

@@ -25,28 +25,35 @@ namespace SpiritIsland.Core {
 			PowerType = attr.PowerType;
 		}
 
-		public override IAction Bind( Spirit spirit, GameState gameState ) {
-			return new TargetSpace_Action(spirit,gameState,m,targetSpace);
+		public override void Activate( ActionEngine engine ) {
+			TargetSpace_Action.DoIt(engine,m,targetSpace);
 		}
 
-		public IAction Bind( Spirit spirit, GameState gameState, Space preTarget ) {
-			return new TargetSpace_Action( spirit, gameState, m, preTarget );
+		public void Activate( ActionEngine engine, Space preTarget ) {
+			TargetSpace_Action.DoIt( engine, m, preTarget );
 		}
 
 
 	}
 
-	class TargetSpace_Action : BaseAction {
+	class TargetSpace_Action {
 
-		public TargetSpace_Action( Spirit self, GameState gameState, MethodBase m, TargetSpaceAttribute targetSpace):base(self,gameState) {
-			this.methodBase = m;
-			_ = TargetSpaceThenInvoke(targetSpace);
+		static public void DoIt( ActionEngine engine, MethodBase m, Space preSpace ) {
+			var action = new TargetSpace_Action( engine, m ){
+				Target = preSpace ?? throw new ArgumentNullException( nameof( preSpace ) )
+			};
+			Task.Run( action.Invoke );
 		}
 
-		public TargetSpace_Action( Spirit self, GameState gameState, MethodBase m, Space target):base(self,gameState) {
+		TargetSpace_Action( ActionEngine engine, MethodBase m) {
+			this.engine = engine;
 			this.methodBase = m;
-			Target = target ?? throw new ArgumentNullException(nameof(target));
-			Task.Run(Invoke);
+		}
+
+
+		static public void DoIt( ActionEngine engine, MethodBase m, TargetSpaceAttribute targetSpace ){
+			var action = new TargetSpace_Action( engine, m );
+			_ = action.TargetSpaceThenInvoke( targetSpace );
 		}
 
 		async Task TargetSpaceThenInvoke(TargetSpaceAttribute targetSpace){
@@ -58,8 +65,9 @@ namespace SpiritIsland.Core {
 		void Invoke() => methodBase.Invoke(null,new object[]{engine,Target});
 
 		public Space Target { get; private set; }
-
 		readonly MethodBase methodBase;
+		readonly ActionEngine engine;
+
 	}
 
 

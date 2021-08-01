@@ -1,45 +1,27 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SpiritIsland.Core {
 
 	public class Reclaim1 : GrowthActionFactory {
 
-		public override IAction Bind( Spirit spirit, GameState gameState ) {
-			return new Action(spirit);
+		public override void Activate( ActionEngine engine ) {
+			_ = Reclaim(engine);
+		}
+
+		static async Task Reclaim( ActionEngine engine ){
+			var options = engine.Self.DiscardPile.ToArray();
+			if(options.Length > 0) {
+				var card = (PowerCard) await engine.SelectFactory( "Select card to reclaim.", options ); // !! create a SelectPowerCard that returns PowerCard and use it for forgeting and reclaining
+				if(card != null && engine.Self.DiscardPile.Contains( card )) {
+					engine.Self.DiscardPile.Remove( card ); // 
+					engine.Self.Hand.Add( card );
+				}
+			}
 		}
 
 		public override string ShortDescription => "Reclaim(1)";
-
-		class Action : IAction {
-
-			PowerCard card;
-			readonly Spirit spirit;
-
-			public Action(Spirit spirit){
-				this.spirit = spirit;
-				Selections = "";
-			}
-
-			public bool IsResolved => Options.Length==0 || card != null;
-
-			public IOption[] Options => spirit.DiscardPile.Cast<IOption>().ToArray();
-
-			public string Prompt => "Select card to reclaim.";
-
-			public string Selections { get; private set; }
-
-			public void Select( IOption option ) {
-				card = (PowerCard)option;
-				Selections = Prompt + ":" + option.Text;
-
-				if( card!=null && spirit.DiscardPile.Contains(card) ){
-					spirit.DiscardPile.Remove(card);
-					spirit.Hand.Add(card);
-				}
-
-			}
-		}
 
 	}
 

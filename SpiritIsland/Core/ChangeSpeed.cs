@@ -1,5 +1,7 @@
 ﻿namespace SpiritIsland.Core {
+
     public class ChangeSpeed : IActionFactory {
+
 		public ChangeSpeed(IActionFactory original, Speed newSpeed){
 			Original = original;
 			Speed = newSpeed;
@@ -10,7 +12,9 @@
 
 		public string Text => Original.Text;
 
-		public IAction Bind( Spirit spirit, GameState gameState ) => Original.Bind(spirit,gameState);
+		public void Activate( ActionEngine engine ) {
+			Original.Activate(engine);
+		}
 
 		public IActionFactory Original { get; }
 

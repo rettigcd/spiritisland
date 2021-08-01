@@ -51,7 +51,7 @@ namespace SpiritIsland.Core {
 
 		public IActionFactory Original => this;
 
-		public abstract IAction Bind( Spirit spirit, GameState gameState );
+		public abstract void Activate( ActionEngine engine );
 
 		public Element[][] GetTriggerThresholds() => elementListByMethod.Values.ToArray();
 
@@ -73,8 +73,8 @@ namespace SpiritIsland.Core {
 
 		#endregion
 
-		public override IAction Bind( Spirit spirit, GameState gameState ) {
-			return new TargetSpirit_Action( spirit, gameState, HighestMethod(spirit) );
+		public override void Activate( ActionEngine engine ) {
+			TargetSpirit_Action.FindSpiritAndInvoke( engine, HighestMethod(engine.Self) );
 		}
 
 	}
@@ -90,8 +90,8 @@ namespace SpiritIsland.Core {
 
 		#endregion
 
-		public override IAction Bind( Spirit spirit, GameState gameState ) {
-			return new TargetSpace_Action( spirit, gameState, HighestMethod(spirit), targetSpace );
+		public override void Activate( ActionEngine engine ) {
+			TargetSpace_Action.DoIt( engine, HighestMethod(engine.Self), targetSpace );
 		}
 		readonly TargetSpaceAttribute targetSpace;
 

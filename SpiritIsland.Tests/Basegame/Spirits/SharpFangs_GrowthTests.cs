@@ -136,7 +136,6 @@ namespace SpiritIsland.Tests.Base.Spirits {
 			When_Growing(5);
 
 			while(reclaimCount-->0)
-//				resolvers.Add(Resolve_Reclaim(reclaimCount));
 				AndWhen_ReclaimingFirstCard();
 		}
 

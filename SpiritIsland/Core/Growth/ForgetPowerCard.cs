@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SpiritIsland.Core {
 
@@ -16,33 +17,18 @@ namespace SpiritIsland.Core {
 
 		public IActionFactory Original => this;
 
-		public IAction Bind( Spirit spirit, GameState gameState ) {
-			return new Action(spirit);
+		public void Activate( ActionEngine engine ) {
+			_ = ForgetCard(engine);
 		}
 
-		class Action : IAction {
-			readonly Spirit self;
-			public Action(Spirit self){ 
-				this.self = self;
-				this.Options = self.PurchasedCards.Union(self.Hand).Union(self.DiscardPile)
-					.Cast<IOption>()
-					.ToArray();
-			}
-			public string Prompt => "Select power card to forget";
-
-			public IOption[] Options {get;}
-
-			public bool IsResolved => cardToForget!=null;
-
-			public string Selections => "n/a";
-
-			PowerCard cardToForget = null;
-
-			public void Select( IOption option ) {
-				cardToForget = (PowerCard)option;
-				self.Forget(cardToForget);
-			}
+		static async Task ForgetCard(ActionEngine engine ) {
+			var self = engine.Self;
+			var options = self.PurchasedCards.Union( self.Hand ).Union( self.DiscardPile )
+				.ToArray();
+			var cardToForget = await engine.SelectFactory("Select power card to forget", options);
+			self.Forget( (PowerCard)cardToForget );
 		}
 
 	}
+
 }

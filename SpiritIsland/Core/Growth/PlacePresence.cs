@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SpiritIsland.Core {
 
@@ -31,19 +32,37 @@ namespace SpiritIsland.Core {
 
 		#endregion
 
-		public override IAction Bind( Spirit spirit, GameState gameState ) {
+		public override void Activate( ActionEngine engine ) {
 
-			bool SpaceIsValid(Space space) => isValid(space,gameState);
+			bool SpaceIsValid(Space space) => isValid(space,engine.GameState);
 
-			var options = spirit.Presence
+			var options = engine.Self.Presence
 				.SelectMany(s => s.SpacesWithin(this.range))
 				.Distinct()
 				.Where(SpaceIsValid)
 				.OrderBy(x=>x.Label)
 				.ToArray();
 
-			return new PlacePresenceBaseAction(spirit,gameState,options);
+			_ = ActAsync( engine, options );
 		}
+
+		static public async Task ActAsync( ActionEngine engine, Space[] destinationOptions ) {
+			// From
+			var from = await engine.SelectTrack();
+
+			// To
+			var to = await engine.SelectSpace( "Where would you like to place your presence?", destinationOptions );
+
+			// from
+			if(from == Track.Card)
+				engine.Self.RevealedCardSpaces++;
+			else if(from == Track.Energy)
+				engine.Self.RevealedEnergySpaces++;
+
+			// To
+			engine.Self.Presence.Add( to );
+		}
+
 
 	}
 

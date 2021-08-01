@@ -15,8 +15,8 @@
 
         IActionFactory IActionFactory.Original => original;
 
-        public IAction Bind( Spirit spirit, GameState gameState )
-			=> original.Bind(spirit,gameState,target);
+        public void Activate( ActionEngine engine )
+			=> original.Activate(engine,target);
 		
 	}
 

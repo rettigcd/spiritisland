@@ -1,6 +1,7 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
 Bug
+	factories no longer return tokens that contain the targetted space, therefore, cannot re-target for VitalStrength
 
 Not Implemented
 

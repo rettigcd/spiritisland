@@ -36,7 +36,9 @@ namespace SpiritIsland.Tests.Base.Spirits {
 			var gather = spirit.GetUnresolvedActionFactories(Speed.Growth).OfType<GatherPresenceIntoOcean>().SingleOrDefault();
 
 			if(gather != null){
-				var action = gather.Bind(spirit,gameState);
+				var engine = new ActionEngine( spirit, gameState );
+				gather.Activate( engine );
+				var action = new BaseAction( engine );
 				while(!action.IsResolved){
 					var source = action.Options.Single(x=>moveBySrc.ContainsKey(x.Text));
 					action.Select(source);
@@ -89,7 +91,9 @@ namespace SpiritIsland.Tests.Base.Spirits {
 		protected void Resolve_PlacePresenceInOcean( string placeOptions, Track source) {
 			var ppFactory = spirit.GetUnresolvedActionFactories( Speed.Growth ).OfType<PlaceInOcean>()
 				.First();
-			var ppAction = ppFactory.Bind( spirit, gameState );
+			var engine = new ActionEngine( spirit, gameState );
+			ppFactory.Activate( engine );
+			var ppAction = new BaseAction(engine);
 
 			// take from precense track
 			ppAction.Select( source );
@@ -123,7 +127,9 @@ namespace SpiritIsland.Tests.Base.Spirits {
 			var push = spirit.GetUnresolvedActionFactories(Speed.Growth).OfType<PushPresenceFromOcean>().SingleOrDefault();
 
 			if(push != null){
-				var action = push.Bind(spirit,gameState);
+				var engine = new ActionEngine( spirit, gameState );
+				push.Activate( engine );
+				var action = new BaseAction(engine);
 				while(!action.IsResolved){
 					var options = action.Options;
 					var target = options.Single(t=>targets.Contains(t.Text));
