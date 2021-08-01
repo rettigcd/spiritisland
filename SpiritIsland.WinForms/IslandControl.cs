@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace SpiritIsland.WinForms {
+namespace SpiritIsland.WinForms
+{
 	public partial class IslandControl : Control {
 
 		const float radius = 80f;
@@ -121,12 +119,17 @@ namespace SpiritIsland.WinForms {
 		Spirit spirit;
 
 		protected override void OnPaint( PaintEventArgs pe ) {
+			base.OnPaint( pe );
 
 			var brush = Brushes.AliceBlue;
 			pe.Graphics.FillRectangle(brush,new Rectangle(0,0,400,400));
 
-			if(board != null)
-				pe.Graphics.DrawImage( board, 0.0f, 0.0f );
+
+			if(board != null) {
+				int boardHeight = Height;
+				int boardWidth = board.Width * boardHeight / board.Height;
+				pe.Graphics.DrawImage( board, 0, 0, boardWidth, boardHeight );
+			}
 
 			if(gameState != null)
 				foreach(var space in gameState.Island.Boards[0].Spaces)
@@ -135,8 +138,6 @@ namespace SpiritIsland.WinForms {
 			if(activeSpaces != null)
 				CirleActiveSpaces( pe );
 
-
-			base.OnPaint( pe );
 		}
 
 		void CirleActiveSpaces( PaintEventArgs pe ) {

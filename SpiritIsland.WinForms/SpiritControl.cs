@@ -79,9 +79,8 @@ namespace SpiritIsland.WinForms {
 
         void DrawSpirit( Graphics graphics ) {
 
-            using Font simpleFont = new( "Arial", 8,FontStyle.Bold
-                ,GraphicsUnit.Point
-            );
+
+			using Font simpleFont = new( "Arial", 8,FontStyle.Bold ,GraphicsUnit.Point );
 
             using Font font = new("Arial", 18f);
             using Brush coverBrush = new SolidBrush(Color.FromArgb(128,Color.Gray));
@@ -143,16 +142,21 @@ namespace SpiritIsland.WinForms {
                 ++idx;
             }
 
-            // Innates
-            x = 10f;
+			// Innates
+			// Innates
+			x = 10f;
             y += (lineHeight * 1.25f);
             foreach(var innate in spirit.InnatePowers) {
-                var img = GetImage(innate);
-                graphics.DrawImageUnscaled(img,(int)x,(int)y);
-                if(innateOptions.Contains(innate))
-                    graphics.DrawRectangle(highlightPen,x,y,img.Width,img.Height);
+                var image = GetImage(innate);
 
-                y += img.Height;
+				int drawWidth = Width - (int)x*2;
+				int drawHeight = drawWidth * image.Height / image.Width;
+                graphics.DrawImage(image,x,y, drawWidth, drawHeight);
+
+				if(innateOptions.Contains( innate ))
+                    graphics.DrawRectangle(highlightPen,x,y, drawWidth, drawHeight);
+
+				y += image.Height;
                 y += 10;
             }
 
@@ -176,7 +180,9 @@ namespace SpiritIsland.WinForms {
                 x += elementSize;
                 x += 10;
             }
-        }
 
-    }
+			// !Note! - If you do not specify output width/height of image, .Net will scale image based on screen DPI and image DPI
+		}
+
+	}
 }

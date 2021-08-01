@@ -1,16 +1,13 @@
-﻿using System;
+﻿using SpiritIsland.Core;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using SpiritIsland.Basegame;
-using SpiritIsland.Core;
 
-namespace SpiritIsland.WinForms {
+namespace SpiritIsland.WinForms
+{
 
 	public partial class CardControl : Control {
 
@@ -44,7 +41,7 @@ namespace SpiritIsland.WinForms {
 
 			if(!images.ContainsKey(card)){
 				string filename = card.Name.Replace(' ','_').Replace("'","").ToLower();
-				Image image = Image.FromFile($".\\images\\{filename}.jpg");
+				Image image = Image.FromFile($".\\images\\cards\\{filename}.jpg");
 				images.Add(card,image);
 			}
 			return images[card];
@@ -70,15 +67,18 @@ namespace SpiritIsland.WinForms {
 
 		void DrawCards( Graphics graphics, List<PowerCard> cards ) {
 
+			int cardHeight = Height-10;
+			int cardWidth = cardHeight * 350 / 500;
+
 			foreach(var card in cards){
-				var rect = new Rectangle( x, 0, 350, 500 );
+				var rect = new Rectangle( x, 0, cardWidth, cardHeight );
 				locations.Add( card, rect );
 				graphics.DrawImage( GetImage( card ), rect );
 				if(optionCards.Contains(card)){
 					using var highlightPen = new Pen(Color.Red,15);
 					graphics.DrawRectangle(highlightPen,rect);
 				}
-				x += 375;
+				x += cardWidth + 20;;
 			}
 		}
 
