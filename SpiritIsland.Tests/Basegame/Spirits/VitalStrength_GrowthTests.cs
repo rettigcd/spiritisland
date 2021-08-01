@@ -30,7 +30,6 @@ namespace SpiritIsland.Tests.Base.Spirits {
 			Resolve_PlacePresence( "A4");
 
 			Assert.Equal(5,spirit.Hand.Count);
-//			Assert_GainPowercard( 1 );
 		}
 
 		[Fact]

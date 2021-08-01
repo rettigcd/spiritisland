@@ -114,8 +114,10 @@ namespace SpiritIsland.Tests {
 			Resolve_PlacePresence( placeOptions, Track.Energy, factory );
 		}
 
-		protected void Resolve_PlacePresence(string placeOptions, Track source, string factory=null ) {
-			var ppFactory = spirit.GetUnresolvedActionFactories(Speed.Growth).OfType<PlacePresence>().First();
+		protected void Resolve_PlacePresence(string placeOptions, Track source, string factoryDescription=null ) {
+			var ppFactory = spirit.GetUnresolvedActionFactories(Speed.Growth).OfType<PlacePresence>()
+				.Where(f=> factoryDescription==null || factoryDescription == f.ShortDescription)
+				.First();
 			var ppAction = ppFactory.Bind(spirit,gameState);
 
 			// take from precense track
@@ -123,12 +125,15 @@ namespace SpiritIsland.Tests {
 
 			// place on board - first option
 			string[] options = placeOptions.Split(';');
-			ppAction.Select(ppAction.Options.Single(o=>o.Text==options[0]));
+			if(options.Length>1) // not auto selecting
+				ppAction.Select(ppAction.Options.Single(o=>o.Text==options[0]));
 
 			spirit.RemoveFactory(ppFactory);
 			//new ResolvePlacePresence( placeOptions, source, factory )
 			//	.Apply(spirit,gameState);
 		}
+
+
 
 		protected void Assert_PresenceTracksAre(int expectedEnergy,int expectedCards) {
 			Assert_EnergyTrackIs( expectedEnergy );

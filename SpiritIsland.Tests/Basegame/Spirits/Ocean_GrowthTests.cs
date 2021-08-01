@@ -81,10 +81,27 @@ namespace SpiritIsland.Tests.Base.Spirits {
 			gameState.Island = new Island(BoardA,BoardB);
 
 			When_Growing(1);
-			Resolve_PlacePresence( "A0;B0");
+			Resolve_PlacePresenceInOcean( "A0;B0", Track.Energy);
 			
 			Assert_HasEnergy(1);
 		}
+
+		protected void Resolve_PlacePresenceInOcean( string placeOptions, Track source) {
+			var ppFactory = spirit.GetUnresolvedActionFactories( Speed.Growth ).OfType<PlaceInOcean>()
+				.First();
+			var ppAction = ppFactory.Bind( spirit, gameState );
+
+			// take from precense track
+			ppAction.Select( source );
+
+			// place on board - first option
+			string[] options = placeOptions.Split( ';' );
+			if(options.Length > 1) // not auto selecting
+				ppAction.Select( ppAction.Options.Single( o => o.Text == options[0] ) );
+
+			spirit.RemoveFactory( ppFactory );
+		}
+
 
 		[Theory]
 		[InlineData("A0","A0>A2","A1;A2;A3","A1A2")]

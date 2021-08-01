@@ -2,6 +2,7 @@
 using System.Linq;
 
 namespace SpiritIsland.Core {
+
 	public class BaseAction : IAction {
 
 		protected BaseAction(Spirit spirit,GameState gameState){
@@ -43,7 +44,6 @@ namespace SpiritIsland.Core {
 
 		public IOption[] Options {
 			get{
-//				System.Threading.Thread.Sleep(100);// !!!!!!!!!!!!!!!!!!! let other thread catch up
 				InitializeIfNeeded();
 				return GetOptionsSkippingAutoSelectCheck();
 			}
@@ -65,13 +65,15 @@ namespace SpiritIsland.Core {
 			descision.Select( option );
 		}
 
-		public readonly List<string> selections = new List<string>();
-		public string Selections => selections.Join(" > ");
 
-		protected readonly GameState gameState;
+		protected readonly 
+			GameState gameState;
 		protected readonly ActionEngine engine;
 		protected readonly Spirit spirit;
+
 		protected Stack<IDecision> Decisions => spirit.decisions;
+		public string Selections => selections.Join( " > " );
+		public readonly List<string> selections = new List<string>();
 
 	}
 
