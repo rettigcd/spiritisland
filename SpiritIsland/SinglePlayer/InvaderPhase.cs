@@ -41,7 +41,13 @@ namespace SpiritIsland.SinglePlayer {
 			}
 
 			// Fear
-			await gameState.ApplyFear();
+			Log($"Fear Pool:{gameState.FearPool} Activated:{gameState.ActivatedFearCards.Count}");
+			while(gameState.ActivatedFearCards.Count > 0) {
+				var card = gameState.ActivatedFearCards.Pop();
+				await card.Level1( gameState );
+				Log( $"Applying Fear Card" );
+			}
+			//			await gameState.ApplyFear();
 
 			// Ravage
 			string[] ravageResults = gameState.Ravage( invaderDeck.Ravage );

@@ -49,9 +49,9 @@ namespace SpiritIsland {
 			var level3 = Level3Cards.ToList();
 
 			if(shuffle){
-				Shuffle(level1);
-				Shuffle(level2); 
-				Shuffle(level3); 
+				level1.Shuffle();
+				level2.Shuffle();
+				level3.Shuffle(); 
 			}
 
 			Discard1(level1);
@@ -66,17 +66,6 @@ namespace SpiritIsland {
 			cards = all.ToArray();
 		}
 
-		static readonly Random rng = new Random(); 
-		static void Shuffle<T>(List<T> list) {
-			int n = list.Count;
-			while (n > 1) {
-				n--;
-				int k = rng.Next(n + 1);
-				T value = list[k];
-				list[k] = list[n];
-				list[n] = value;
-			}
-		}
 		static void Discard1(List<InvaderCard> list){
 			list.RemoveAt(list.Count-1);
 		}

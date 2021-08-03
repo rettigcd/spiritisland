@@ -39,16 +39,26 @@ namespace SpiritIsland {
 		public void InitIsland() {
 
 			foreach(var board in Island.Boards)
-				InitItemsMarkedOnBoard(board);
+				InitItemsMarkedOnBoard( board );
 
 			Explore( InvaderDeck.Explore );
 			InvaderDeck.Advance();
+			InitSpirits();
 
+			while(FearDeck.Count<9)
+				FearDeck.Push(new NullFearCard());
+		}
+		class NullFearCard : IFearCard {
+			public Task Level1( GameState gs ) {return Task.CompletedTask;}
+			public Task Level2( GameState gs ) { return Task.CompletedTask; }
+			public Task Level3( GameState gs ) { return Task.CompletedTask; }
+		}
+
+		private void InitSpirits() {
 			if(Spirits.Length != Island.Boards.Length)
 				throw new InvalidOperationException( "# of spirits and islands must match" );
 			for(int i = 0; i < Spirits.Length; ++i)
 				Spirits[i].Initialize( Island.Boards[i], this );
-
 		}
 
 		public event Action TimePassed;
@@ -142,13 +152,13 @@ namespace SpiritIsland {
 		#region Fear
 
 		public readonly Stack<IFearCard> FearDeck = new Stack<IFearCard>();
-		readonly Stack<IFearCard> activatedFearCards = new Stack<IFearCard>();
+		public readonly Stack<IFearCard> ActivatedFearCards = new Stack<IFearCard>();
 
 		public void AddFear(int count) {
-			fearCount += count;
-			if(4 <= fearCount) { // should be while() - need unit test
-				fearCount -= 4;
-				activatedFearCards.Push( FearDeck.Pop() );
+			FearPool += count;
+			if(4 <= FearPool) { // should be while() - need unit test
+				FearPool -= 4;
+				ActivatedFearCards.Push( FearDeck.Pop() );
 			}
 			// !! if fearDesk is empty - WIN!
 
@@ -164,8 +174,8 @@ namespace SpiritIsland {
 		#region Invaders
 
 		public async Task ApplyFear() {
-			while( activatedFearCards.Count > 0 )
-				await activatedFearCards.Pop().Level1(this);
+			while( ActivatedFearCards.Count > 0 )
+				await ActivatedFearCards.Pop().Level1(this);
 		}
 
 		public string[] Ravage( InvaderCard invaderCard ) {
@@ -363,7 +373,7 @@ namespace SpiritIsland {
 
 		readonly CountDictionary<Space> defendCount = new CountDictionary<Space>();
 		public readonly HashSet<Space> noDamageToDahan = new(); // !!! special case for Conceiling Shadows - refactor!
-		int fearCount = 0;
+		public int FearPool {get; private set; } = 0;
 	}
 
 

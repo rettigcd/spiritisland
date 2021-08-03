@@ -1,14 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using SpiritIsland.Core;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using SpiritIsland.Core;
 
 namespace SpiritIsland.Basegame {
 
-	class FearOfTheUnseen : IFearCard {
+	public class FearOfTheUnseen : IFearCard {
 
-		//"Each player removes 1 Explorer / Town from a land with SacredSite.", 
+		[FearLevel( 1, "Each player removes 1 Explorer / Town from a land with SacredSite." )]
 		public async Task Level1( GameState gs ) {
 			Space[] sacredSites = gs.Spirits.SelectMany(spirit=>spirit.SacredSites).Distinct().ToArray();
 			foreach(var spirit in gs.Spirits) {
@@ -24,12 +22,12 @@ namespace SpiritIsland.Basegame {
 			}
 		}
 
-		//"Each player removes 1 Explorer / Town from a land with Presence.", 
+		[FearLevel( 2, "Each player removes 1 Explorer / Town from a land with Presence." )]
 		public Task Level2( GameState gs ) {
 			throw new System.NotImplementedException();
 		}
 
-		//"Each player removes 1 Explorer / Town from a land with Presence, or 1 City from a land with SacredSite."),
+		[FearLevel( 3, "Each player removes 1 Explorer / Town from a land with Presence, or 1 City from a land with SacredSite." )]
 		public Task Level3( GameState gs ) {
 			throw new System.NotImplementedException();
 		}

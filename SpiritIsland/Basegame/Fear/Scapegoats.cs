@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using SpiritIsland.Core;
+using System;
 using System.Threading.Tasks;
-using SpiritIsland.Core;
 
 namespace SpiritIsland.Basegame {
 
 	public class Scapegoats : IFearCard {
 
-		//"Each Town destroys 1 Explorer in its land.", 
+		[FearLevel( 1, "Each Town destroys 1 Explorer in its land." )]
 		public Task Level1( GameState gs ) {
 			foreach(var space in gs.Island.AllSpaces) {
 				var grp = gs.InvadersOn(space);
@@ -20,7 +17,7 @@ namespace SpiritIsland.Basegame {
 			return Task.CompletedTask;
 		}
 
-		//"Each Town destroys 1 Explorer in its land. Each City destroys 2 Explorer in its land.", 
+		[FearLevel( 2, "Each Town destroys 1 Explorer in its land. Each City destroys 2 Explorer in its land." )]
 		public Task Level2( GameState gs ) {
 			foreach(var space in gs.Island.AllSpaces) {
 				var grp = gs.InvadersOn( space );
@@ -30,7 +27,7 @@ namespace SpiritIsland.Basegame {
 			return Task.CompletedTask;
 		}
 
-		//"Destroy all Explorer in lands with Town / City. Each City destroys 1 Town in its land."),
+		[FearLevel( 3, "Destroy all Explorer in lands with Town / City. Each City destroys 1 Town in its land." )]
 		public Task Level3( GameState gs ) {
 			foreach(var space in gs.Island.AllSpaces) {
 				var grp = gs.InvadersOn( space );
