@@ -2,9 +2,9 @@
 
 namespace SpiritIsland.Core {
 	public interface IFearCard {
-		void Level1(GameState gs);
-		void Level2( GameState gs );
-		void Level3( GameState gs );
+		Task Level1(GameState gs);
+		Task Level2( GameState gs );
+		Task Level3( GameState gs );
 	}
 
 }

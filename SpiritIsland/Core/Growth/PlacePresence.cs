@@ -32,7 +32,7 @@ namespace SpiritIsland.Core {
 
 		#endregion
 
-		public override void Activate( ActionEngine engine ) {
+		public override Task Activate( ActionEngine engine ) {
 
 			bool SpaceIsValid(Space space) => isValid(space,engine.GameState);
 
@@ -43,7 +43,7 @@ namespace SpiritIsland.Core {
 				.OrderBy(x=>x.Label)
 				.ToArray();
 
-			_ = ActAsync( engine, options );
+			return ActAsync( engine, options );
 		}
 
 		static public async Task ActAsync( ActionEngine engine, Space[] destinationOptions ) {

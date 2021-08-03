@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Xunit;
 using SpiritIsland.Basegame;
+using System.Threading.Tasks;
 
 namespace SpiritIsland.Tests.Basegame.Fear {
 	
@@ -34,13 +35,13 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		}
 
 		[Fact]
-		public void NullFearCard_NormalRavage() {
+		public async Task NullFearCard_NormalRavage() {
 
 			gameState.FearDeck.Push( new NullFearCard() );
 
 			Given_DahanAndTownsInSpaceWithPresence(10,1);
 
-			When_AddFearApplyFearAndRavage();
+			await When_AddFearApplyFearAndRavage();
 
 			// Then: all dahan killed
 			Assert.Equal( 0, gameState.GetDahanOnSpace( ravageSpace ) );
@@ -48,10 +49,10 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		}
 
 		[Fact]
-		public void Level1_NoBlightDahanLives() {
+		public async Task Level1_NoBlightDahanLives() {
 			Given_DahanAndTownsInSpaceWithPresence(1,1);
 
-			When_AddFearApplyFearAndRavage();
+			await When_AddFearApplyFearAndRavage();
 
 			// Then: 1 dahan left
 			Assert.Equal( 1, gameState.GetDahanOnSpace( ravageSpace ) );
@@ -62,10 +63,10 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		}
 
 		[Fact]
-		public void Level1_DefendNotMoreThan2() { // not more th
+		public async Task Level1_DefendNotMoreThan2() { // not more th
 			Given_DahanAndTownsInSpaceWithPresence( 2, 5 );
 
-			When_AddFearApplyFearAndRavage();
+			await When_AddFearApplyFearAndRavage();
 
 			// Then: 1 dahan left
 			Assert.Equal( 1, gameState.GetDahanOnSpace( ravageSpace ) );
@@ -75,9 +76,9 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			Assert.True( gameState.HasBlight( ravageSpace ) );
 		}
 
-		void When_AddFearApplyFearAndRavage() {
+		async Task When_AddFearApplyFearAndRavage() {
 			gameState.AddFear( 4 );
-			gameState.ApplyFear();
+			await gameState.ApplyFear();
 			gameState.Ravage( invaderCard );
 		}
 	}

@@ -30,11 +30,6 @@ namespace SpiritIsland.Basegame {
 			foreach(var (invader,origCount) in invaderTypes.Select(x=>(x.Key,x.Value))){
 				for(int i=0;i<origCount;++i)
 					group.ApplyDamage( invader, 2 );
-
-				// add the damaged invaders
-//				group[ invader.Damage(2) ] += origCount;
-				// clear the healthy invaders
-//				group[ invader ] -= origCount; // do not set = 0 because we don't want to apply damagage to a city twice: C3 => C1 then C1 => C0
 			}
 
 			engine.GameState.UpdateFromGroup(group);

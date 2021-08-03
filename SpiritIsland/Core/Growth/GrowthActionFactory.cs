@@ -1,11 +1,12 @@
 ﻿
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SpiritIsland.Core {
 
 	public abstract class GrowthActionFactory : IActionFactory {
 
-		public abstract void Activate(ActionEngine engine);
+		public abstract Task Activate(ActionEngine engine);
 
 		public virtual string ShortDescription => ToString().Split('.').Last();
 

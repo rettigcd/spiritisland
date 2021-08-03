@@ -35,7 +35,7 @@ namespace SpiritIsland.Core {
 
 		public string Text => Name;
 
-		abstract public void Activate(ActionEngine engine);
+		abstract public Task Activate(ActionEngine engine);
 
 	}
 

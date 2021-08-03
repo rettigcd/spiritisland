@@ -1,5 +1,6 @@
 ﻿using SpiritIsland.Core;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SpiritIsland.Tests {
 	static public class ExtendGameState {
@@ -10,11 +11,15 @@ namespace SpiritIsland.Tests {
 	}
 
 	class NullFearCard : IFearCard {
-		public void Level1( GameState gs ) {}
+		public Task Level1( GameState gs ) { return Task.CompletedTask;}
 
-		public void Level2( GameState gs ) {}
+		public Task Level2( GameState gs ){
+			throw new System.NotImplementedException();
+		}
 
-		public void Level3( GameState gs ) {}
+		public Task Level3( GameState gs ){
+			throw new System.NotImplementedException();
+		}
 	}
 
 }

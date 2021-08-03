@@ -1,9 +1,10 @@
 ﻿using SpiritIsland.Core;
+using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
 	public interface IActionFactory : IOption {
-		void Activate(ActionEngine engine);
+		Task Activate(ActionEngine engine);
 		Speed Speed { get; }
 		string Name { get; }
 		IActionFactory Original { get; }

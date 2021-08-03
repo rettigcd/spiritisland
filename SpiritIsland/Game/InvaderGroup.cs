@@ -73,6 +73,7 @@ namespace SpiritIsland {
 		public bool HasCity => countDict.HasAnyKey( Invader.City, Invader.City2, Invader.City1 );
 		public bool HasTown => countDict.HasAnyKey( Invader.Town, Invader.Town1 );
 		public bool HasExplorer => countDict.HasAnyKey( Invader.Explorer );
+		public bool Has(params Invader[] healthyInvaders) => countDict.Keys.Select(k=>k.Healthy).Intersect( healthyInvaders ).Any();
 
 		public int DestroyedCities => countDict[Invader.City0];
 		public int DestroyedTowns => countDict[Invader.Town0];
@@ -82,6 +83,10 @@ namespace SpiritIsland {
 
 		/// <summary> Includes damaged invaders.</summary>
 		public IEnumerable<Invader> InvaderTypesPresent => innerDict.Keys.Where( invader => invader.Health > 0 );
+
+		public int TypeCount(params Invader[] healthyInvaders) => innerDict
+			.Where(pair=>healthyInvaders.Contains(pair.Key.Healthy))
+			.Sum(p=>p.Value);
 
 		public int TotalCount => innerDict.Values.Sum();
 

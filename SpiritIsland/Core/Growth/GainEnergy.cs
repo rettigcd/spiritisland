@@ -1,4 +1,6 @@
 ﻿
+using System.Threading.Tasks;
+
 namespace SpiritIsland.Core {
 
 	public class GainEnergy : GrowthActionFactory {
@@ -8,11 +10,12 @@ namespace SpiritIsland.Core {
 			this.delta = delta; 
 		}
 
-        public override string ShortDescription => $"GainEnergy({delta})";
+		public override string ShortDescription => $"GainEnergy({delta})";
 
 
-		public override void Activate(ActionEngine engine) {
+		public override Task Activate(ActionEngine engine) {
 			engine.Self.Energy += delta;
+			return Task.CompletedTask;
 		}
 
 	}

@@ -33,12 +33,12 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		}
 
 		[Fact]
-		public void NoFearCard_NormalRavage() {
+		public async Task NoFearCard_NormalRavage() {
 
 			Given_DahanAndTowns( 2, 2 );
 
 			// When: Doing Invader phase (fear+ragage)
-			gameState.ApplyFear();
+			await gameState.ApplyFear();
 			gameState.Ravage( invaderCard );
 
 			// Then: all dahan killed
@@ -47,14 +47,14 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		}
 
 		[Fact]
-		public void Level1_DefendOnly1AndNotMorePerDahan() { // not more th
+		public async Task Level1_DefendOnly1AndNotMorePerDahan() { // not more th
 			Given_DahanAndTowns( 4, 4 );
 
 			//   And: 4 fear / player
 			gameState.AddFear( 4 );
 
 			// When: Doing Invader phase (fear+ragage)
-			gameState.ApplyFear();
+			await gameState.ApplyFear();
 			gameState.Ravage( invaderCard );
 
 			// Then: 0 dahan left

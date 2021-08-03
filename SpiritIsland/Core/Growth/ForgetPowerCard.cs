@@ -17,15 +17,11 @@ namespace SpiritIsland.Core {
 
 		public IActionFactory Original => this;
 
-		public void Activate( ActionEngine engine ) {
-			_ = ForgetCard(engine);
-		}
-
-		static async Task ForgetCard(ActionEngine engine ) {
+		public async Task Activate( ActionEngine engine ) {
 			var self = engine.Self;
 			var options = self.PurchasedCards.Union( self.Hand ).Union( self.DiscardPile )
 				.ToArray();
-			var cardToForget = await engine.SelectFactory("Select power card to forget", options);
+			var cardToForget = await engine.SelectFactory( "Select power card to forget", options );
 			self.Forget( (PowerCard)cardToForget );
 		}
 

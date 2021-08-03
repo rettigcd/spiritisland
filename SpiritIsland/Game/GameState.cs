@@ -163,9 +163,9 @@ namespace SpiritIsland {
 
 		#region Invaders
 
-		public void ApplyFear() {
+		public async Task ApplyFear() {
 			while( activatedFearCards.Count > 0 )
-				activatedFearCards.Pop().Level1(this);
+				await activatedFearCards.Pop().Level1(this);
 		}
 
 		public string[] Ravage( InvaderCard invaderCard ) {
@@ -315,7 +315,7 @@ namespace SpiritIsland {
 		}
 
 
-		public void DamageInvaders(Space space,int damage){
+		public void DamageInvaders(Space space,int damage){ // !!! let players choose the item to apply damage to
 			if(damage==0) return;
 			var group = InvadersOn(space);
 			ApplyDamageToInvaders(group,damage);

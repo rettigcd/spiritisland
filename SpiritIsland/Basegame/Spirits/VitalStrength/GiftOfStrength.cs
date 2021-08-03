@@ -10,11 +10,11 @@ namespace SpiritIsland.Basegame {
 	[TargetSpirit]
 	class GiftOfStrength {
 
-        #region options
+		#region options
 
 		// * Note * these have a different signature than other Innates, called directly from GiftOfStrength_InnatePower
 
-        [InnateOption("1 sun,2 earth,2 plant")]
+		[InnateOption("1 sun,2 earth,2 plant")]
 		static public Task Option1( Spirit target, List<SpaceTargetedArgs> targetedList ) {
 			return RepeatPowerCard(target,2, targetedList );
 		}
@@ -38,7 +38,7 @@ namespace SpiritIsland.Basegame {
 
 	}
 
-    public class GiftOfStrength_InnatePower : InnatePower_TargetSpirit {
+	public class GiftOfStrength_InnatePower : InnatePower_TargetSpirit {
 
 		public GiftOfStrength_InnatePower() : base( typeof( GiftOfStrength ) ) { }
 
@@ -48,8 +48,8 @@ namespace SpiritIsland.Basegame {
 			gameState.TimePassed += () => targetedList.Clear();
 		}
 
-		public override void Activate( ActionEngine engine) {
-			_ = FindSpiritAndInvoke( engine, HighestMethod( engine.Self ) );
+		public override Task Activate( ActionEngine engine) {
+			return FindSpiritAndInvoke( engine, HighestMethod( engine.Self ) );
 		}
 
 		async Task FindSpiritAndInvoke( ActionEngine engine, MethodBase methodBase ){
@@ -66,18 +66,18 @@ namespace SpiritIsland.Basegame {
 		public ReplaySpaceCardForCost(int maxCost, List<SpaceTargetedArgs> targetedList ) {
 			this.maxCost = maxCost;
 			this.targetedList = targetedList;
-        }
+		}
 
-        public Speed Speed => throw new System.NotImplementedException();
+		public Speed Speed => throw new System.NotImplementedException();
 
-        public string Name => "Replay Card for cost";
+		public string Name => "Replay Card for cost";
 		public string Text => Name;
 
 		public IActionFactory Original => this;
 
-        public void Activate( ActionEngine engine ) {
-			_ = engine.SelectSpaceCardToReplayForCost( engine.Self, maxCost, targetedList );
-        }
+		public Task Activate( ActionEngine engine ) {
+			return engine.SelectSpaceCardToReplayForCost( engine.Self, maxCost, targetedList );
+		}
 
 		readonly List<SpaceTargetedArgs> targetedList;
 		readonly int maxCost;

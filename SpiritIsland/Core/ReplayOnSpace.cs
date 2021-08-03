@@ -1,5 +1,7 @@
-﻿namespace SpiritIsland.Core {
-    class ReplayOnSpace : IActionFactory {
+﻿using System.Threading.Tasks;
+
+namespace SpiritIsland.Core {
+	class ReplayOnSpace : IActionFactory {
 		readonly TargetSpace_PowerCard original;
 		readonly Space target;
 		public ReplayOnSpace( TargetSpace_PowerCard original, Space target ) {
@@ -13,9 +15,9 @@
 
 		public string Text => original.Text;
 
-        IActionFactory IActionFactory.Original => original;
+		IActionFactory IActionFactory.Original => original;
 
-        public void Activate( ActionEngine engine )
+		public Task Activate( ActionEngine engine )
 			=> original.ActivateAgainstSpecificTarget(engine,target);
 		
 	}

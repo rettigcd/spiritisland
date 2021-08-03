@@ -37,7 +37,7 @@ namespace SpiritIsland.Tests.Base.Spirits {
 
 			if(gather != null){
 				var engine = new ActionEngine( spirit, gameState );
-				gather.Activate( engine );
+				_ = gather.Activate( engine );
 				var action = new BaseAction( engine );
 				while(!action.IsResolved){
 					var source = action.Options.Single(x=>moveBySrc.ContainsKey(x.Text));
@@ -128,7 +128,7 @@ namespace SpiritIsland.Tests.Base.Spirits {
 
 			if(push != null){
 				var engine = new ActionEngine( spirit, gameState );
-				push.Activate( engine );
+				_ = push.Activate( engine );
 				var action = new BaseAction(engine);
 				while(!action.IsResolved){
 					var options = action.Options;

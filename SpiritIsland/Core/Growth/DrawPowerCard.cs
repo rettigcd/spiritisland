@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.Core {
+﻿using System.Threading.Tasks;
+
+namespace SpiritIsland.Core {
 
 	public class DrawPowerCard : GrowthActionFactory {
 
@@ -7,8 +9,9 @@
 			this.count = count;
 		}
 
-		public override void Activate( ActionEngine engine ) {
+		public override Task Activate( ActionEngine engine ) {
 			engine.Self.PowerCardsToDraw += count;
+			return Task.CompletedTask;
 		}
 
 	}

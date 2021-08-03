@@ -41,7 +41,7 @@ namespace SpiritIsland.SinglePlayer {
 			}
 
 			// Fear
-			gameState.ApplyFear();
+			await gameState.ApplyFear();
 
 			// Ravage
 			string[] ravageResults = gameState.Ravage( invaderDeck.Ravage );

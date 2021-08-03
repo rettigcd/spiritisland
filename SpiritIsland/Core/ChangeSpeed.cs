@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.Core {
+﻿using System.Threading.Tasks;
+
+namespace SpiritIsland.Core {
 
     public class ChangeSpeed : IActionFactory {
 
@@ -12,8 +14,8 @@
 
 		public string Text => Original.Text;
 
-		public void Activate( ActionEngine engine ) {
-			Original.Activate(engine);
+		public Task Activate( ActionEngine engine ) {
+			return Original.Activate(engine);
 		}
 
 		public IActionFactory Original { get; }

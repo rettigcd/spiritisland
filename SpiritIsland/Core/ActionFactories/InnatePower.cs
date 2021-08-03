@@ -14,12 +14,12 @@ namespace SpiritIsland.Core {
 			Type actionType = typeof(T);
 
 			bool targetSpirit = actionType.GetCustomAttributes<TargetSpiritAttribute>().Any();
-            return targetSpirit		
+			return targetSpirit		
 				? new InnatePower_TargetSpirit( actionType ) 
 				: new InnatePower_TargetSpace( actionType );
-        }
+		}
 
-        internal InnatePower(Type actionType){
+		internal InnatePower(Type actionType){
 			InnatePowerAttribute innatePowerAttr = actionType.GetCustomAttribute<InnatePowerAttribute>();
 			Speed = innatePowerAttr.Speed;
 			Name = innatePowerAttr.Name;
@@ -51,19 +51,19 @@ namespace SpiritIsland.Core {
 
 		public IActionFactory Original => this;
 
-		public abstract void Activate( ActionEngine engine );
+		public abstract Task Activate( ActionEngine engine );
 
 		public Element[][] GetTriggerThresholds() => elementListByMethod.Values.ToArray();
 
-        protected MethodInfo HighestMethod( Spirit spirit ) {
+		protected MethodInfo HighestMethod( Spirit spirit ) {
 			var activatedElements = spirit.Elements;
 			return elementListByMethod
-                .OrderByDescending( pair => pair.Value.Length )
-                .Where( pair => activatedElements.Has( pair.Value ) )
-                .First().Key;
-        }
+				.OrderByDescending( pair => pair.Value.Length )
+				.Where( pair => activatedElements.Has( pair.Value ) )
+				.First().Key;
+		}
 
-    }
+	}
 
 	public class InnatePower_TargetSpirit : InnatePower, IActionFactory {
 
@@ -73,13 +73,9 @@ namespace SpiritIsland.Core {
 
 		#endregion
 
-		public override void Activate( ActionEngine engine ) {
-			_ = FindSpiritAndInvoke( engine, HighestMethod(engine.Self) );
-		}
-
-		static async Task FindSpiritAndInvoke( ActionEngine engine, MethodBase methodBase ) {
+		public override async Task Activate( ActionEngine engine ) {
 			Spirit target = await engine.SelectSpirit();
-			TargetSpirit_PowerCard.TargetSpirit(methodBase,engine,target);
+			TargetSpirit_PowerCard.TargetSpirit( HighestMethod( engine.Self ), engine, target );
 		}
 
 	}
@@ -95,12 +91,8 @@ namespace SpiritIsland.Core {
 
 		#endregion
 
-		public override void Activate( ActionEngine engine ) {
-			_ = DoIt(engine);
-		}
-
-		async Task DoIt(ActionEngine engine){
-			var target = await targetSpace.Target(engine);
+		public override async Task Activate( ActionEngine engine ) {
+			var target = await targetSpace.Target( engine );
 			HighestMethod( engine.Self ).Invoke( null, new object[] { engine, target } );
 		}
 

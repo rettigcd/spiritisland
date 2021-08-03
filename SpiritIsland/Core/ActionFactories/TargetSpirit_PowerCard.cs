@@ -23,14 +23,10 @@ namespace SpiritIsland.Core {
 			this.methodBase = methodBase;
 		}
 
-		public override void Activate( ActionEngine engine ) {
-			_ = FindSpiritAndInvoke(engine);
-		}
-
-		async Task FindSpiritAndInvoke(ActionEngine engine ){
+		public override async Task Activate( ActionEngine engine ) {
 			Spirit target = await engine.SelectSpirit();
-			SpiritTargeted?.Invoke(engine.Self,this,target);
-			TargetSpirit(methodBase,engine,target);
+			SpiritTargeted?.Invoke( engine.Self, this, target );
+			TargetSpirit( methodBase, engine, target );
 		}
 
 		public event SpiritTargetedArgs SpiritTargeted; // Targeter, Card, Targetee

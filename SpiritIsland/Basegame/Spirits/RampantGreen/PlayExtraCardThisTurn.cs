@@ -1,5 +1,6 @@
 ﻿
 using SpiritIsland.Core;
+using System.Threading.Tasks;
 
 namespace SpiritIsland.BranchAndClaw {
 	/// <summary>
@@ -7,8 +8,9 @@ namespace SpiritIsland.BranchAndClaw {
 	/// </summary>
 	class PlayExtraCardThisTurn : GrowthActionFactory {
 
-		public override void Activate( ActionEngine engine ) {
+		public override Task Activate( ActionEngine engine ) {
 			(engine.Self as RampantGreen).tempCardBoost++;
+			return Task.CompletedTask;
 		}
 
 	}

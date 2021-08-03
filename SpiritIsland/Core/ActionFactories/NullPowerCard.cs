@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace SpiritIsland.Core {
 	public class NullPowerCard : PowerCard {
@@ -10,7 +11,7 @@ namespace SpiritIsland.Core {
 			this.PowerType = PowerType.Spirit; // HACK!
 		}
 
-		public override void Activate( ActionEngine engine ) {}
+		public override Task Activate( ActionEngine engine ) {return Task.CompletedTask;}
 
 	}
 

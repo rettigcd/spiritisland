@@ -27,12 +27,12 @@ namespace SpiritIsland.Core {
 
 		public event SpaceTargetedEvent TargetedSpace; // Targeter, Card, Targetee
 
-		public override void Activate( ActionEngine engine ) {
-			_ = PickSpaceAndActivate(engine);
+		public override Task Activate( ActionEngine engine ) {
+			return PickSpaceAndActivate(engine);
 		}
 
-		public void ActivateAgainstSpecificTarget( ActionEngine engine, Space preTarget ) {
-			Task.Run( ()=>InvokeAgainst(engine,preTarget) );
+		public Task ActivateAgainstSpecificTarget( ActionEngine engine, Space preTarget ) {
+			return Task.Run( ()=>InvokeAgainst(engine,preTarget) );// ?????
 		}
 
 		async Task PickSpaceAndActivate( ActionEngine engine ){

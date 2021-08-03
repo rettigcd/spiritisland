@@ -159,7 +159,7 @@ namespace SpiritIsland.Tests {
 
 		protected void AndWhen_ReclaimingFirstCard() {
 			var engine = new ActionEngine( spirit, gameState );
-			spirit.GetUnresolvedActionFactories(Speed.Growth).OfType<Reclaim1>().First().Activate( engine );
+			_ = spirit.GetUnresolvedActionFactories(Speed.Growth).OfType<Reclaim1>().First().Activate( engine );
 			var reclaim = new BaseAction(engine);
 			if(reclaim.Options.Length>0)
 				reclaim.Select( reclaim.Options[0] );

@@ -10,26 +10,28 @@ namespace SpiritIsland.Basegame {
 	public class Scapegoats : IFearCard {
 
 		//"Each Town destroys 1 Explorer in its land.", 
-		public void Level1( GameState gs ) {
+		public Task Level1( GameState gs ) {
 			foreach(var space in gs.Island.AllSpaces) {
 				var grp = gs.InvadersOn(space);
 				if(EachTownDestroys1Explorer(grp))
 					gs.UpdateFromGroup(grp);
 			}
 			// !! not unit tested
+			return Task.CompletedTask;
 		}
 
 		//"Each Town destroys 1 Explorer in its land. Each City destroys 2 Explorer in its land.", 
-		public void Level2( GameState gs ) {
+		public Task Level2( GameState gs ) {
 			foreach(var space in gs.Island.AllSpaces) {
 				var grp = gs.InvadersOn( space );
 				if(EachTownDestroys1AndEachCityDestoys2( grp ))
 					gs.UpdateFromGroup( grp );
 			}
+			return Task.CompletedTask;
 		}
 
 		//"Destroy all Explorer in lands with Town / City. Each City destroys 1 Town in its land."),
-		public void Level3( GameState gs ) {
+		public Task Level3( GameState gs ) {
 			foreach(var space in gs.Island.AllSpaces) {
 				var grp = gs.InvadersOn( space );
 				bool destoringExplorers = grp[Invader.Explorer] > 0;
@@ -39,6 +41,7 @@ namespace SpiritIsland.Basegame {
 				if(destroyedTowns || destoringExplorers)
 					gs.UpdateFromGroup( grp );
 			}
+			return Task.CompletedTask;
 		}
 
 		static bool EachCityDestroys1Town( InvaderGroup grp ) {
