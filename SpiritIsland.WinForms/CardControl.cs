@@ -18,6 +18,7 @@ namespace SpiritIsland.WinForms
 				| ControlStyles.OptimizedDoubleBuffer 
 				| ControlStyles.ResizeRedraw, true
 			);
+			this.Cursor = Cursors.Default;
 		}
 
 		public void Init(Spirit spirit){
@@ -85,14 +86,26 @@ namespace SpiritIsland.WinForms
 		protected override void OnClick( EventArgs e ) {
 			if(optionCards==null) return;
 
-			var mp = this.PointToClient(Control.MousePosition);
-			foreach(var card in this.optionCards){
-				if(locations[card].Contains(mp)){
-					CardSelected?.Invoke(card);
-					break;
+			var card = GetCardAt( PointToClient( Control.MousePosition ) );
+			if(card != null)
+				CardSelected?.Invoke(card);
+
+		}
+
+		PowerCard GetCardAt(Point mp ) {
+			foreach(var card in this.optionCards) {
+				if(locations[card].Contains( mp )) {
+					return card;
 				}
 			}
+			return null;
+		}
 
+		protected override void OnMouseMove( MouseEventArgs e ) {
+			base.OnMouseMove( e );
+			this.Cursor = GetCardAt( PointToClient( Control.MousePosition ) ) == null
+				? Cursors.Default
+				: Cursors.Hand;
 		}
 
 		public event Action<PowerCard> CardSelected;

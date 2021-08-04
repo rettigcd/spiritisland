@@ -9,7 +9,7 @@ namespace SpiritIsland.WinForms
 {
 	public partial class IslandControl : Control {
 
-		const float radius = 80f;
+		const float radius = 40f;
 
 		public IslandControl() {
 			InitializeComponent();
@@ -37,57 +37,57 @@ namespace SpiritIsland.WinForms
 				case "A":
 					this.board = Image.FromFile( ".\\images\\board a.png" );
 					spaceLookup = new Dictionary<string, PointF> {
-						["A0"] = new PointF( 152f, 475f ),
-						["A1"] = new PointF( 559f, 296f ),
-						["A2"] = new PointF( 326f, 447f ),
-						["A3"] = new PointF( 196f, 758f ),
-						["A4"] = new PointF( 547f, 633f ),
-						["A5"] = new PointF( 810f, 467f ),
-						["A6"] = new PointF( 790f, 190f ),
-						["A7"] = new PointF( 1032f, 531f ),
-						["A8"] = new PointF( 1123f, 126f ),
+						["A0"] = new PointF( 0.119f, 0.526f ),
+						["A1"] = new PointF( 0.417f, 0.304f ),
+						["A2"] = new PointF( 0.252f, 0.524f ),
+						["A3"] = new PointF( 0.165f, 0.815f ),
+						["A4"] = new PointF( 0.419f, 0.711f ),
+						["A5"] = new PointF( 0.608f, 0.543f ),
+						["A6"] = new PointF( 0.585f, 0.269f ),
+						["A7"] = new PointF( 0.752f, 0.611f ),
+						["A8"] = new PointF( 0.814f, 0.189f ),
 					};
 					break;
                 case "B":
 					this.board = Image.FromFile( ".\\images\\board b.png" );
 					spaceLookup = new Dictionary<string, PointF> {
-						["B0"] = new PointF( 185f, 593f ),
-						["B1"] = new PointF( 592f, 226f ),
-						["B2"] = new PointF( 386f, 566f ),
-						["B3"] = new PointF( 265f, 867f ),
-						["B4"] = new PointF( 696f, 660f ),
-						["B5"] = new PointF( 876f, 455f ),
-						["B6"] = new PointF( 996f, 212f ),
-						["B7"] = new PointF( 1134f, 631f ),
-						["B8"] = new PointF( 1307f, 152f ),
+						["B0"] = new PointF( 0.191f, 0.392f ),
+						["B1"] = new PointF( 0.401f, 0.252f ),
+						["B2"] = new PointF( 0.280f, 0.570f ),
+						["B3"] = new PointF( 0.203f, 0.857f ),
+						["B4"] = new PointF( 0.477f, 0.683f ),
+						["B5"] = new PointF( 0.575f, 0.473f ),
+						["B6"] = new PointF( 0.642f, 0.245f ),
+						["B7"] = new PointF( 0.725f, 0.605f ),
+						["B8"] = new PointF( 0.810f, 0.183f ),
 					};
 					break;
                 case "C":
 					this.board = Image.FromFile( ".\\images\\board c.png" );
 					spaceLookup = new Dictionary<string, PointF> {
-						["C0"] = new PointF( 121f, 519f ),
-						["C1"] = new PointF( 213f, 770f ),
-						["C2"] = new PointF( 333f, 502f ),
-						["C3"] = new PointF( 445f, 186f ),
-						["C4"] = new PointF( 644f, 751f ),
-						["C5"] = new PointF( 638f, 475f ),
-						["C6"] = new PointF( 776f, 175f ),
-						["C7"] = new PointF( 927f, 453f ),
-						["C8"] = new PointF( 1074f, 96f ),
+						["C0"] = new PointF( 0.106f, 0.610f ),
+						["C1"] = new PointF( 0.352f, 0.287f ),
+						["C2"] = new PointF( 0.265f, 0.609f ),
+						["C3"] = new PointF( 0.184f, 0.875f ),
+						["C4"] = new PointF( 0.449f, 0.818f ),
+						["C5"] = new PointF( 0.504f, 0.613f ),
+						["C6"] = new PointF( 0.568f, 0.255f ),
+						["C7"] = new PointF( 0.696f, 0.557f ),
+						["C8"] = new PointF( 0.789f, 0.193f ),
 					};
 					break;
                 case "D":
 					this.board = Image.FromFile( ".\\images\\board d.png" );
 					spaceLookup = new Dictionary<string, PointF> {
-						["D0"] = new PointF( 188f, 408f ),
-						["D1"] = new PointF( 609f, 118f ),
-						["D2"] = new PointF( 349f, 479f ),
-						["D3"] = new PointF( 182f, 840f ),
-						["D4"] = new PointF( 536f, 829f ),
-						["D5"] = new PointF( 692f, 421f ),
-						["D6"] = new PointF( 0877, 708f ),
-						["D7"] = new PointF( 1049f, 437f ),
-						["D8"] = new PointF( 1235, 181f ),
+						["D0"] = new PointF( 0.099f, 0.559f ),
+						["D1"] = new PointF( 0.363f, 0.178f ),
+						["D2"] = new PointF( 0.274f, 0.507f ),
+						["D3"] = new PointF( 0.150f, 0.800f ),
+						["D4"] = new PointF( 0.382f, 0.776f ),
+						["D5"] = new PointF( 0.493f, 0.446f ),
+						["D6"] = new PointF( 0.592f, 0.713f ),
+						["D7"] = new PointF( 0.694f, 0.446f ),
+						["D8"] = new PointF( 0.797f, 0.191f ),
 					};
 					break;
 			}
@@ -95,7 +95,10 @@ namespace SpiritIsland.WinForms
 
 			dahan = Image.FromFile(".\\images\\Dahanicon.png");
 			city = Image.FromFile(".\\images\\Cityicon.png");
+			city2 = Image.FromFile( ".\\images\\City2icon.png" );
+			city1 = Image.FromFile( ".\\images\\City1icon.png" );
 			town = Image.FromFile(".\\images\\Townicon.png");
+			town1 = Image.FromFile( ".\\images\\Town1icon.png" );
 			explorer = Image.FromFile(".\\images\\Explorericon.png");
 			presence = Image.FromFile(".\\images\\Presenceicon.png");
 			blight = Image.FromFile(".\\images\\Blighticon.png");
@@ -109,7 +112,10 @@ namespace SpiritIsland.WinForms
 
 		Image dahan;
 		Image city;
+		Image city2;
+		Image city1;
 		Image town;
+		Image town1;
 		Image explorer;
 		Image presence;
 		Image blight;
@@ -118,12 +124,19 @@ namespace SpiritIsland.WinForms
 		GameState gameState;
 		Spirit spirit;
 
+		Size boardScreenSize;
+
 		protected override void OnPaint( PaintEventArgs pe ) {
 			base.OnPaint( pe );
 
 			if(board != null) {
-				int boardHeight = Height;
-				int boardWidth = board.Width * boardHeight / board.Height;
+				// Assume limit is height
+				boardScreenSize = (board.Width * Height > Width * board.Height)
+					? new Size( Width, board.Height * Height / board.Width )
+					: new Size( board.Width * Height / board.Height, Height );
+				int boardHeight = boardScreenSize.Height;
+				int boardWidth = boardScreenSize.Width;
+
 				pe.Graphics.DrawImage( board, 0, 0, boardWidth, boardHeight );
 			}
 
@@ -139,45 +152,47 @@ namespace SpiritIsland.WinForms
 		void CirleActiveSpaces( PaintEventArgs pe ) {
 			using var pen = new Pen(Brushes.Aquamarine,5);
 			foreach(var space in activeSpaces) {
-				var center = spaceLookup[space.Label];
-				pe.Graphics.DrawEllipse( pen, center.X, center.Y, radius * 2, radius * 2 );
+				var center = SpaceCenter(space);
+				pe.Graphics.DrawEllipse( pen, center.X- radius, center.Y- radius, radius * 2, radius * 2 );
 			}
 		}
 		
 		void DecorateSpace( Graphics graphics, Space space ) {
 			if(!spaceLookup.ContainsKey(space.Label)) return; // happens during developement
 
-			var xy = spaceLookup[space.Label];
-			float x = xy.X;
-			float y = xy.Y;
-			float dimension = 40.0f, step = 55.0f;
+			PointF normalized = spaceLookup[space.Label];
+			PointF xy = new PointF(normalized.X * boardScreenSize.Width, normalized.Y * boardScreenSize.Height);
+			float iconWidth = boardScreenSize.Width * .025f, xStep = iconWidth + 10f;
+
+			float x = xy.X - iconWidth*2;
+			float y = xy.Y - iconWidth*2;
 			// invaders
 			var grp = gameState.InvadersOn( space );
 			var invaders = grp.InvaderTypesPresent.Select( k => grp[k] + ":" + k.Summary ).Join( " " );
 			List<Image> images = new();
 			images.AddCount( grp[Invader.City], city );
-			images.AddCount( grp[Invader.City2], city );
-			images.AddCount( grp[Invader.City1], city );
+			images.AddCount( grp[Invader.City2], city2 );
+			images.AddCount( grp[Invader.City1], city1 );
 			images.AddCount( grp[Invader.Town], town );
-			images.AddCount( grp[Invader.Town1], town );
+			images.AddCount( grp[Invader.Town1], town1 );
 			images.AddCount( grp[Invader.Explorer], explorer );
-			DrawRow( graphics, x, ref y, dimension, step, images );
+			DrawRow( graphics, x, ref y, iconWidth, xStep, images );
 
 			// dahan
 			images.Clear();
 			images.AddCount( gameState.GetDahanOnSpace( space ), dahan );
 			images.AddCount( gameState.GetDefence( space ), defend);
-			DrawRow( graphics, x, ref y, dimension, step, images );
+			DrawRow( graphics, x, ref y, iconWidth, xStep, images );
 
 			// presence
 			images.Clear();
 			images.AddCount(spirit.PresenceOn(space), presence);
-			DrawRow( graphics, x, ref y, dimension, step, images );
+			DrawRow( graphics, x, ref y, iconWidth, xStep, images );
 
 			// blight
 			images.Clear();
 			images.AddCount(gameState.GetBlightOnSpace( space ), blight);
-			DrawRow( graphics, x, ref y, dimension, step, images );
+			DrawRow( graphics, x, ref y, iconWidth, xStep, images );
 		}
 
 		private static void DrawRow( Graphics graphics, float x, ref float y, float width, float step, List<Image> images ) {
@@ -195,14 +210,15 @@ namespace SpiritIsland.WinForms
 
 		protected override void OnClick( EventArgs e ) {
 
-			var mp = this.PointToClient(Control.MousePosition);
+			Point clientCoords = this.PointToClient(Control.MousePosition);
 
 			var xx = activeSpaces
-				.Select(s=>{
-					var tl = this.spaceLookup[s.Label];
-					float dx = mp.X-tl.X-radius, dy=mp.Y-tl.Y-radius;
-					return new {Space=s,d2=dx*dx+dy*dy};
-				})
+				.Select(s=> {
+					PointF center = SpaceCenter( s );
+					float dx = clientCoords.X - center.X;
+					float dy = clientCoords.Y - center.Y;
+					return new { Space = s, d2 = dx * dx + dy * dy };
+				} )
 				.ToArray();
 
 			var match = xx
@@ -211,24 +227,41 @@ namespace SpiritIsland.WinForms
 				.Select(x=>x.Space)
 				.FirstOrDefault();
 
-			if(match != null)
+			if(match != null) {
 				SpaceClicked?.Invoke(match);
-			else
-				MessageBox.Show(mp.ToString());
+				return;
+			}
 
+			// Calculate %
+			if(board==null) return;
+			float normalizedX = (float)clientCoords.X / (float)boardScreenSize.Width;
+			float normalizedY = (float)clientCoords.Y / (float)boardScreenSize.Height;
+
+
+			string msg = $"({normalizedX:0.###},{normalizedY:0.###})";
+			Clipboard.SetText(msg);
+			MessageBox.Show(msg);
+
+		}
+
+		private PointF SpaceCenter( Space s ) {
+			var norm = this.spaceLookup[s.Label];
+			return new PointF( norm.X * boardScreenSize.Width, norm.Y * boardScreenSize.Height );
 		}
 
 		protected override void OnMouseMove( MouseEventArgs e ) {
 			base.OnMouseMove( e );
 
-			var mp = this.PointToClient(Control.MousePosition);
+			if(activeSpaces==null) return;
+
+			var clientCoord = this.PointToClient(Control.MousePosition);
 			bool inCircle = activeSpaces
 				.Select(s=>{
-					var tl = this.spaceLookup[s.Label];
-					float dx = mp.X-tl.X-radius, dy=mp.Y-tl.Y-radius;
+					var center = SpaceCenter(s);
+					float dx = clientCoord.X-center.X, dy=clientCoord.Y-center.Y;
 					return dx*dx+dy*dy;
 				})
-				.Any(x=>x<radius*radius);
+				.Any(distSquared => distSquared<radius*radius);
 			Cursor = inCircle ? Cursors.Hand : Cursors.Default;
 
 		}

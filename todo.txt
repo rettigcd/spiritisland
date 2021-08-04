@@ -1,5 +1,11 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
+Fix
+	Spirit resized -> invalidate
+	island positioning -> normalized
+	Card and spirit cursor -> default, not horizontal split
+
+
 Not Implemented
 
 	A Ramapant Spread
