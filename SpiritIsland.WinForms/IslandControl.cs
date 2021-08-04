@@ -132,7 +132,7 @@ namespace SpiritIsland.WinForms
 			if(board != null) {
 				// Assume limit is height
 				boardScreenSize = (board.Width * Height > Width * board.Height)
-					? new Size( Width, board.Height * Height / board.Width )
+					? new Size( Width, board.Height * Width / board.Width )
 					: new Size( board.Width * Height / board.Height, Height );
 				int boardHeight = boardScreenSize.Height;
 				int boardWidth = boardScreenSize.Width;
@@ -164,46 +164,49 @@ namespace SpiritIsland.WinForms
 			PointF xy = new PointF(normalized.X * boardScreenSize.Width, normalized.Y * boardScreenSize.Height);
 			float iconWidth = boardScreenSize.Width * .025f, xStep = iconWidth + 10f;
 
-			float x = xy.X - iconWidth*2;
-			float y = xy.Y - iconWidth*2;
+			float x = xy.X - iconWidth;
+			float y = xy.Y - iconWidth;
 			// invaders
 			var grp = gameState.InvadersOn( space );
 			var invaders = grp.InvaderTypesPresent.Select( k => grp[k] + ":" + k.Summary ).Join( " " );
-			List<Image> images = new();
-			images.AddCount( grp[Invader.City], city );
-			images.AddCount( grp[Invader.City2], city2 );
-			images.AddCount( grp[Invader.City1], city1 );
-			images.AddCount( grp[Invader.Town], town );
-			images.AddCount( grp[Invader.Town1], town1 );
-			images.AddCount( grp[Invader.Explorer], explorer );
+			CountDictionary<Image> images = new();
+			images[city] = grp[Invader.City];
+			images[city2] = grp[Invader.City2];
+			images[city1] = grp[Invader.City1];
+			images[town] = grp[Invader.Town];
+			images[town1] = grp[Invader.Town1];
+			images[explorer] = grp[Invader.Explorer];;
 			DrawRow( graphics, x, ref y, iconWidth, xStep, images );
 
-			// dahan
+			// dahan & presence & blight
 			images.Clear();
-			images.AddCount( gameState.GetDahanOnSpace( space ), dahan );
-			images.AddCount( gameState.GetDefence( space ), defend);
-			DrawRow( graphics, x, ref y, iconWidth, xStep, images );
-
-			// presence
-			images.Clear();
-			images.AddCount(spirit.PresenceOn(space), presence);
-			DrawRow( graphics, x, ref y, iconWidth, xStep, images );
-
-			// blight
-			images.Clear();
-			images.AddCount(gameState.GetBlightOnSpace( space ), blight);
+			images[dahan] = gameState.GetDahanOnSpace( space );
+			images[defend] = gameState.GetDefence( space );
+			images[presence] = spirit.PresenceOn( space );
+			images[blight] = gameState.GetBlightOnSpace( space );
 			DrawRow( graphics, x, ref y, iconWidth, xStep, images );
 		}
 
-		private static void DrawRow( Graphics graphics, float x, ref float y, float width, float step, List<Image> images ) {
-			if(images.Count == 0) return;
+		private static void DrawRow( Graphics graphics, float x, ref float y, float width, float step, CountDictionary<Image> images ) {
+			if(!images.Keys.Any()) return;
 			float maxHeight = 0;
-			for(int i = 0; i < images.Count; ++i){
-				var img = images[i];
+
+			using Font simpleFont = new( "Arial", 6, FontStyle.Bold, GraphicsUnit.Point );
+			const float circleDiameter = 10f;
+
+			foreach(var img in images.Keys){
 				float height = width / img.Width * img.Height;
 				maxHeight = Math.Max(maxHeight,height); 
-				graphics.DrawImage( img, x + i * step, y, width, height);
+				graphics.DrawImage( img, x, y, width, height);
+				int count = images[img];
+				if(count > 1) {
+					var numRect = new RectangleF(x-2,y+height-2, circleDiameter, circleDiameter );
+					graphics.FillEllipse(Brushes.White,numRect);
+					graphics.DrawString(count.ToString(),simpleFont,Brushes.Black,numRect.X+2,numRect.Y);
+				}
+				x += step;
 			}
+
 			float gap = step-width;
 			y += maxHeight + gap;
 		}
