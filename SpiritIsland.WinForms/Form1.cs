@@ -46,8 +46,7 @@ namespace SpiritIsland.WinForms {
 			var spirit = game.Spirit;
 			this.trackLabel.Text = $"Energy: ${spirit.Energy} (+{spirit.EnergyPerTurn}/turn)  Cards Plays: {game.Spirit.NumberOfCardsPlayablePerTurn}/turn";
 
-			this.blightLabel.Text = $"Blight: {gs.blightOnCard} " 
-				+ (gs.BlightCard.IslandIsBlighted ? "BLIGHTED":"");
+			// this.blightLabel.Text = $"Blight: {gs.blightOnCard} " + (gs.BlightCard.IslandIsBlighted ? "BLIGHTED":""); !!!
 		}
 
 		void ShowOptions() {
@@ -67,31 +66,26 @@ namespace SpiritIsland.WinForms {
 
 			this.cardControl.HighlightCards(decision.Options);
 
-			this.elementLabel.Text = game.Spirit.PurchasedCards
-				.SelectMany(c=>c.Elements)
-				.GroupBy(x=>x)
-				.Select(grp=>grp.Count()+"-"+grp.Key)
-				.Join(", ");
 		}
 
 		void AddOptionButton( IOption option, int index ) {
 			var btn = new System.Windows.Forms.Button {
 				Dock = DockStyle.None,
-				Location = new Point( 0, index * 50 + 75 ),
+				Location = new Point( 0, index * 50 + 150 ),
 				Text = option.Text,
 				Height = 45,
-				Width = 400,
+				Width = 250,
 				Tag = option
 			};
 			btn.Click += Btn_Click;
-			this.Controls.Add( btn );
+			this.textPanel.Controls.Add( btn );
 			buttons.Add( btn );
 		}
 
 		void ReleaseOldButtons() {
 			foreach(var old in buttons) {
 				old.Click -= Btn_Click;
-				this.Controls.Remove( old );
+				this.textPanel.Controls.Remove( old );
 			}
 			buttons.Clear();
 		}

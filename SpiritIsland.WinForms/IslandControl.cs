@@ -121,10 +121,6 @@ namespace SpiritIsland.WinForms
 		protected override void OnPaint( PaintEventArgs pe ) {
 			base.OnPaint( pe );
 
-			var brush = Brushes.AliceBlue;
-			pe.Graphics.FillRectangle(brush,new Rectangle(0,0,400,400));
-
-
 			if(board != null) {
 				int boardHeight = Height;
 				int boardWidth = board.Width * boardHeight / board.Height;
