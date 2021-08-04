@@ -16,8 +16,8 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 				Island = new Island( Board.BuildBoardA() )
 			};
 			gameState.DisableInvaderDeck();
-			gameState.FearDeck.Push( new BeliefTakesRoot() );
 			gameState.InitIsland();
+			gameState.FearDeck.Push( new BeliefTakesRoot() );
 
 			invaderCard = InvaderDeck.Level1Cards[0];
 			ravageSpace = gameState.Island.Boards[0].Spaces.Where( invaderCard.Matches ).First();

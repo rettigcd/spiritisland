@@ -1,4 +1,5 @@
 ﻿using SpiritIsland.Core;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -26,16 +27,31 @@ namespace SpiritIsland.Basegame {
 			}
 		}
 
-		//"Each player chooses a different land. In chosen lands: Gather up to 2 Dahan, then 1 Damage if Dahan are present.", 
-		[FearLevel( 2, "" )]
-		public Task Level2( GameState gs ) {
-			throw new System.NotImplementedException();
+		[FearLevel( 2, "Each player chooses a different land. In chosen lands: Gather up to 2 Dahan, then 1 Damage if Dahan are present." )]
+		public async Task Level2( GameState gs ) {
+			HashSet<Space> used = new HashSet<Space>();
+			foreach(var spirit in gs.Spirits) {
+				var engine = new ActionEngine( spirit, gs );
+				var options = gs.Island.AllSpaces.Where( gs.HasDahan ).Except( used ).ToArray();
+				var target = await engine.SelectSpace( "Fear:select land with dahan for 1 damage", options );
+				await engine.GatherUpToNDahan(target,2);
+				if(gs.HasDahan(target))
+					gs.DamageInvaders( target, 1 );
+				used.Add( target );
+			}
 		}
 
-		//"Each player chooses a different land. In chosen lands: Gather up to 2 Dahan, then 1 Damage per Dahan present."),
-		[FearLevel( 3, "" )]
-		public Task Level3( GameState gs ) {
-			throw new System.NotImplementedException();
+		[FearLevel( 3, "Each player chooses a different land. In chosen lands: Gather up to 2 Dahan, then 1 Damage per Dahan present." )]
+		public async Task Level3( GameState gs ) {
+			HashSet<Space> used = new HashSet<Space>();
+			foreach(var spirit in gs.Spirits) {
+				var engine = new ActionEngine( spirit, gs );
+				var options = gs.Island.AllSpaces.Where( gs.HasDahan ).Except( used ).ToArray();
+				var target = await engine.SelectSpace( "Fear:select land with dahan for 1 damage", options );
+				await engine.GatherUpToNDahan( target, 2 );
+				gs.DamageInvaders( target, gs.GetDahanOnSpace(target) );
+				used.Add( target );
+			}
 		}
 	}
 }

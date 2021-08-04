@@ -14,12 +14,19 @@ namespace SpiritIsland.Basegame {
 
 		[FearLevel( 2, "Invaders do not Build in lands where Dahan outnumber Town / City." )]
 		public Task Level2( GameState gs ) {
-			throw new System.NotImplementedException();
+			gs.SkipBuild( gs.Island.AllSpaces
+				.Where( s => gs.InvadersOn(s).TypeCount(Invader.Town,Invader.City) < gs.GetDahanOnSpace(s)
+				).ToArray()
+			);
+			return Task.CompletedTask;
 		}
 
 		[FearLevel( 3, "Invaders do not Build in lands with Dahan." )]
 		public Task Level3( GameState gs ) {
-			throw new System.NotImplementedException();
+			gs.SkipBuild( gs.Island.AllSpaces
+				.Where( s => 0 < gs.GetDahanOnSpace( s ) ).ToArray()
+			);
+			return Task.CompletedTask;
 		}
 
 	}

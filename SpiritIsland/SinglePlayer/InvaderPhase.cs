@@ -41,17 +41,21 @@ namespace SpiritIsland.SinglePlayer {
 			}
 
 			// Fear
-			Log($"Fear Pool:{gameState.FearPool} Activated:{gameState.ActivatedFearCards.Count}");
+			Log( $"Fear Pool:{gameState.FearPool} Activated:{gameState.ActivatedFearCards.Count}" );
 			while(gameState.ActivatedFearCards.Count > 0) {
 				var card = gameState.ActivatedFearCards.Pop();
-				await card.Level1( gameState );
+				switch(gameState.TerrorLevel) {
+					case 1: await card.Level1( gameState ); break;
+					case 2: await card.Level2( gameState ); break;
+					case 3: await card.Level3( gameState ); break;
+				}
 				Log( $"Applying Fear Card" );
 			}
 			//			await gameState.ApplyFear();
 
 			// Ravage
 			string[] ravageResults = gameState.Ravage( invaderDeck.Ravage );
-			Log( "Ravaging:" + (invaderDeck.Ravage?.Text ?? "-") + "\r\n" + ravageResults.Join( "\r\n" ));
+			Log( "Ravaging:" + (invaderDeck.Ravage?.Text ?? "-") + "\r\n" + ravageResults.Join( "\r\n" ) );
 
 			// Cascade blight
 			while(gameState.cascadingBlight.Count > 0) {
@@ -60,7 +64,7 @@ namespace SpiritIsland.SinglePlayer {
 					blightedSpace.Neighbors
 						.Where( x => x.Terrain != Terrain.Ocean )
 				);
-				gameState.AddBlight(cascadeSpace);
+				gameState.AddBlight( cascadeSpace );
 			}
 
 			// Building

@@ -153,6 +153,11 @@ namespace SpiritIsland {
 
 		public readonly Stack<IFearCard> FearDeck = new Stack<IFearCard>();
 		public readonly Stack<IFearCard> ActivatedFearCards = new Stack<IFearCard>();
+		public int TerrorLevel { get{
+			int ct = FearDeck.Count;
+			int terrorLevel = ct > 6 ? 1 : ct > 3 ? 2 : 1;
+			return terrorLevel;
+		} }
 
 		public void AddFear(int count) {
 			FearPool += count;

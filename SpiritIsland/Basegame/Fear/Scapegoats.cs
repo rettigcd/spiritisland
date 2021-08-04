@@ -48,11 +48,9 @@ namespace SpiritIsland.Basegame {
 			// healthy - Move into Group
 			if(healthyToDestroy > 0)
 				grp.Destroy( Invader.Town, healthyToDestroy );
-//				grp[Invader.Town] -= healthyToDestroy;
 			// damaged
 			if(damagedToDestory > 0)
 				grp.Destroy( Invader.Town1, damagedToDestory );
-//			grp[Invader.Town1] -= damagedToDestory;
 			return damagedToDestory + healthyToDestroy > 0; // needs saved
 		}
 
