@@ -1,16 +1,15 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
-Bug
-	factories no longer return tokens that contain the targetted space, therefore, cannot re-target for VitalStrength
-
 Not Implemented
 
-4	Fear - Destroying town=>1, city=>2
-	??? Do we need an explicit method called Destory(...) to call when a City/Town is Destroyed and 
-4	Fear - Display Fear effect/stats in UI
-4	Fear - Fear Cards / Fear Initialization
-3   Terror Level
-	Blighted Island effect
+	A Ramapant Spread
+	Thunderspeaker
+	Ocean
+	Bringer
+
+	Minor Cards
+
+	Major Cards
 
 Improve
 5	Show $money after energy track.
@@ -49,21 +48,4 @@ Unit Test
 	All of Lightning
 	All of Shadows Flicker
 
-View
-	energy track
-	card track
-	Innate powers
-
 ----
-
-* remove Action List from ActionEngine
-* collapse decision stack to single decision
-
-
-Shadow Special Power Options
-
-1) Adding a card modifies it. - would need to separate target & rest
-2) Power Card Calls in to Spirit-provided interface to do action
-	- gamestate is read-only
-	- actions go through spirit provided UI
-3) Cards Target is data/structure read by spirit (similar to 2).

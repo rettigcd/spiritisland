@@ -83,6 +83,10 @@ namespace SpiritIsland.WinForms {
 			foreach(var f in baseGameFearCards.Take(9))
 				gameState.FearDeck.Push(f);
 
+			gameState.BlightCard = ((int)DateTime.Now.Ticks)%1==0 
+				? new DownwardSpiral()
+				: new MemoryFadesToDust();
+
 			this.Game = new SinglePlayerGame( gameState );
 		}
 

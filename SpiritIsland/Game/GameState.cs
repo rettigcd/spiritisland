@@ -47,6 +47,8 @@ namespace SpiritIsland {
 
 			while(FearDeck.Count<9)
 				FearDeck.Push(new NullFearCard());
+
+			BlightCard.OnGameStart(this);
 		}
 		class NullFearCard : IFearCard {
 			public Task Level1( GameState gs ) {return Task.CompletedTask;}
@@ -107,12 +109,7 @@ namespace SpiritIsland {
 		#region Blight
 
 		public int blightOnCard; // 2 per player
-		public bool IsBlighted;
-		public BlightCard BlightCard;
-		public void InitBlight(BlightCard card){
-			this.BlightCard = card;
-			blightOnCard = card.StartingBlight(this);
-		}
+		public IBlightCard BlightCard = new NullBlightCard();
 
 		/// <summary>Causes cascading</summary>
 		public void BlightLand( Space space ){
@@ -125,10 +122,9 @@ namespace SpiritIsland {
 					spirit.Presence.Remove(space);
 
 			--blightOnCard;
-			if(BlightCard != null && blightOnCard==0){
-				IsBlighted = true;
-				blightOnCard = BlightCard.AdditionalBlight(this);
-			}
+			if(BlightCard != null && blightOnCard==0)
+				BlightCard.OnBlightDepleated(this);
+
 		}
 		public void RemoveBlight( Space space){
 			blightCount[space]--;
@@ -165,7 +161,8 @@ namespace SpiritIsland {
 				FearPool -= 4;
 				ActivatedFearCards.Push( FearDeck.Pop() );
 			}
-			// !! if fearDesk is empty - WIN!
+			if(FearDeck.Count==0)
+				GameOverException.Win();
 
 		}
 		#endregion

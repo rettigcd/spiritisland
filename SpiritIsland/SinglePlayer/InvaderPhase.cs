@@ -35,9 +35,9 @@ namespace SpiritIsland.SinglePlayer {
 
 		async Task Action() {
 			// Blight
-			if(gameState.IsBlighted) {
+			if(gameState.BlightCard.IslandIsBlighted) {
 				Log( "Island is blighted" );
-				gameState.BlightCard.BlightAction( gameState );
+				await gameState.BlightCard.OnStartOfInvaders( gameState );
 			}
 
 			// Fear

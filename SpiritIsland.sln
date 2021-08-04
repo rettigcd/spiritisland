@@ -8,13 +8,14 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{30BE8395-3ABB-4DE6-BE5B-97E914AD2AB7}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		todo.txt = todo.txt
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritIslandCmd", "SpiritIslandCmd\SpiritIslandCmd.csproj", "{1728A953-E107-43E6-93AE-336E221D2747}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritIsland", "SpiritIsland\SpiritIsland.csproj", "{194D99E5-BA90-4870-9CA0-482AFC4EAB6B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpiritIsland.WinForms", "SpiritIsland.WinForms\SpiritIsland.WinForms.csproj", "{AA682A20-CD08-4362-9E8F-1CB84947B8F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritIsland.WinForms", "SpiritIsland.WinForms\SpiritIsland.WinForms.csproj", "{AA682A20-CD08-4362-9E8F-1CB84947B8F0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
