@@ -1,4 +1,5 @@
 ﻿using SpiritIsland.Core;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -45,6 +46,11 @@ namespace SpiritIsland.WinForms {
 			base.OnPaint( pe );
 			if(spirit != null)
 				DrawSpirit( pe.Graphics );
+		}
+
+		protected override void OnSizeChanged( EventArgs e ) {
+			base.OnSizeChanged( e );
+			this.Invalidate();
 		}
 
 		void DrawSpirit( Graphics graphics ) {

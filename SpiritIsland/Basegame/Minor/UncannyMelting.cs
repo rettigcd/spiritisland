@@ -8,13 +8,16 @@ namespace SpiritIsland.Basegame {
 		public const string Name = "Uncanny Melting";
 
 		[MinorCard(UncannyMelting.Name,1, Speed.Slow,Element.Sun,Element.Moon,Element.Water)]
-		[FromSacredSite(1,Filter.SandOrWetland)]
+		[FromSacredSite(1,Filter.None)] // !!! must include invaders, add unit test to make sure we don't accidentally switch 
 		static public void ActAsync(ActionEngine eng,Space target){
 			var (_,gameState) = eng;
+
+			// Invaders
 			if(gameState.HasInvaders(target))
 				gameState.AddFear(1);
 
-			if(gameState.HasBlight(target))
+			// !!! unit test - requires Sand / Water
+			if(gameState.HasBlight(target) && target.Terrain.IsIn(Terrain.Wetland,Terrain.Sand))
 				gameState.RemoveBlight(target);
 
 		}
