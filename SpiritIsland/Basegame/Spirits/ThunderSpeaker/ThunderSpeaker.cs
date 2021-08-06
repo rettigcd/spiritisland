@@ -30,6 +30,21 @@ namespace SpiritIsland.Basegame {
 	Words of Warning => 1 => fast, range 1, has dahan => defend 3.  During ravage, dahan in target land deal damange simultaneously with invaders
 	Manifestation of Power and Glory => 3 => slow, range 0, has dahan => sun, fire, air => 1 fear.  each dahan deals damange equal to the number of your presense in the target land
 	Voice of thunder => 0 => slow, range 1, any => sun, air => push up to 4 dahan -OR- If invaders are present, 2 fear
+
+Thunderspeaker
+	Wrap in Wings of Sunlight
+	Talons of Lightning
+	or maybe...
+	The Trees and Stones speak of war
+	Vigor of the breaking down
+	----
+	elemental boon
+	drought
+	reaching grasp
+	veil the nights hunt
+
+
+
 	*/
 
 	public class ThunderSpeaker : Spirit {

@@ -33,6 +33,14 @@ namespace SpiritIsland.Basegame {
 	Grasping Tide => 1 => fast, range 1, cotal => moon, water => 2 fear, defend 4
 	Swallow the Land-Dwellers => 0 => slow, range 0, costal => water, rock => drown 1 explorer, 1 town, and 1 dahan
 
+Ocean
+	Mists of oblivion
+	Cleansing floods
+	---
+	gift of consistency
+	steam vents
+	call to tend
+	sap the strength of multitudes
 
 	 */
 

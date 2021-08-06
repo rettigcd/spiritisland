@@ -29,6 +29,17 @@ namespace SpiritIsland.BranchAndClaw {
 	Special Rules - Stedy regeneration - when adding presense to the board via growth, yo may optionally use your destroyed presense.  If the island is helathy, do so freely.  If the island is blighted, doing so costs 1 energy per destroyed presense you add.
 	Setup: 1 in the highest numbered wedland and 1 in the jungle without any dahan
 
+Green
+	Infinite vitality
+	The trees and stones speak of war
+	---
+	drift down into slumber
+	gift of living energy
+	lure of the unknown
+	enticing spender
+
+
+
 	Overgrow in a Night => 2 => fast, range 1, any => moon, plant => add 1 presense -OR- If target land has your presense and invaders, 3 fear
 	Stem the Flow of Fresh Water => 0 => slow, withing 1 of sacred site, any => water, plant => 1 damage to 1 town or city.  If target land is mountain orsand, instead 1 damange to EACH town/city
 	Fields Choked with Growth => 0 => slow, range 1, any => sun, water, plant => push 1 town -OR- push 3 dahan

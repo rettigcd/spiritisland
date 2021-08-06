@@ -32,6 +32,15 @@ namespace SpiritIsland.Basegame {
 	Dreams of the Dahan => 0 => fast, range 2, any => moon, air => gather up to 2 dahan -OR- if target land has town/city, 1 fear for each dahan, to a maximum of 3 fear
 	Predatory Nightmares => 2 => slow, 1 from sacred site, invaders => moon, fire, mountain, animal => 2 damange.  Push up to 2 dahan.  When your Powers would destroy invaders, instead they ggenerate fear and/or push those invaders
 
+Bringer
+	winds of rust and atrophy
+	Paralyzing fright
+	---
+	gnawing rootbite
+	quicken the earths struggles
+	rain of blood
+	gift of power
+
 	*/
 
 	public class Bringer : Spirit {
