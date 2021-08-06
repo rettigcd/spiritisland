@@ -18,10 +18,12 @@ namespace SpiritIsland.Basegame {
 	Innate-1:  Gather the Warriors => slow, range 1, any
 	4 air   this power may be fast
 	1 beast    gather 1 dahan per air, push 1 dahan per sun
+
 	Innate-2:  Lead the Furious Assult
 	4 air   this power may be fast
 	2 sun 1 fire   Destroy 1 town for every 2 dahan in target land
 	4 sun 3 fire   Destory 1 city for every 3 dahan in target land
+
 	Special Rules - Ally of the Dahan - Your presense may move with dahan
 	Special Rules - Swort to Victory - For each dahan stroyed by invaters ravaging a land, destroy 1 of your presense withing 1
 	Setup:  put 1 presense in each of the 2 lands with the most presense
@@ -31,20 +33,6 @@ namespace SpiritIsland.Basegame {
 	Manifestation of Power and Glory => 3 => slow, range 0, has dahan => sun, fire, air => 1 fear.  each dahan deals damange equal to the number of your presense in the target land
 	Voice of thunder => 0 => slow, range 1, any => sun, air => push up to 4 dahan -OR- If invaders are present, 2 fear
 
-Thunderspeaker
-	Wrap in Wings of Sunlight
-	Talons of Lightning
-	or maybe...
-	The Trees and Stones speak of war
-	Vigor of the breaking down
-	----
-	elemental boon
-	drought
-	reaching grasp
-	veil the nights hunt
-
-
-
 	*/
 
 	public class ThunderSpeaker : Spirit {
@@ -52,12 +40,12 @@ Thunderspeaker
 		public override string Text => "Thunder Speaker";
 
 		public ThunderSpeaker():base(
-			new NullPowerCard( "A", 0, Speed.Fast ),
-			new NullPowerCard( "B", 0, Speed.Fast ),
-			new NullPowerCard( "C", 0, Speed.Fast ),
-			new NullPowerCard( "D", 0, Speed.Fast )
-		){
-			static bool onDahan(Space bs,GameState gameState) => gameState.HasDahan(bs);
+			PowerCard.For<ManifestationOfPowerAndGlory>(),
+			PowerCard.For<SuddenAmbush>(),
+			PowerCard.For<VoiceOfThunder>(),
+			PowerCard.For<WordsOfWarning>()
+		) {
+			static bool onDahan(Space bs,GameState gameState) => gameState.HasDahan(bs); // use the Filter enum ????!!!
 
 			GrowthOptions = new GrowthOption[]{
 				new GrowthOption( 
@@ -102,9 +90,47 @@ Thunderspeaker
 				.Where(el=>el!=Element.None);
 		}
 
-		public override void Initialize( Board _, GameState _1 ) {
-			throw new System.NotImplementedException();
+		public override void Initialize( Board board, GameState gs ) {
+			// Put 2 Presence on your starting board: 1 in each of the 2 lands with the most Dahanicon.png
+			Presence.AddRange(board.Spaces.OrderByDescending(gs.GetDahanOnSpace).Take(2));
+
+			// Special Rules -Ally of the Dahan - Your presense may move with dahan
+		    // Special Rules - Swort to Victory -For each dahan stroyed by invaters ravaging a land, destroy 1 of your presense withing 1
 		}
+
+		public override void AddActionFactory( IActionFactory actionFactory ) {
+
+			if(actionFactory is DrawPowerCard) {
+				var newCard = PowerProgression[0];
+				this.RegisterNewCard( newCard );
+				PowerProgression.RemoveAt( 0 );
+				if(newCard.PowerType == PowerType.Major)
+					base.AddActionFactory( new ForgetPowerCard() );
+			} else
+				base.AddActionFactory( actionFactory );
+		}
+
+		readonly List<PowerCard> PowerProgression = new List<PowerCard>{
+
+			// Borrowing Lightnings Swift Strike Power Progression until we get below implemented
+			PowerCard.For<DelusionsOfDanger>(),
+			PowerCard.For<CallToBloodshed>(),
+			PowerCard.For<PowerStorm>(),
+			PowerCard.For<PurifyingFlame>(),
+			PowerCard.For<PillarOfLivingFlame>(),
+			PowerCard.For<EntrancingApparitions>(),
+			PowerCard.For<CallToIsolation>()
+
+//			PowerCard.For<VeilTheNightsHunt>(),
+			//PowerCard.For<ReachingGrasp>(),
+			//PowerCard.For<WrapInWingsOfSunlight>(),      // Major
+			//PowerCard.For<Drought>(),
+			//PowerCard.For<ElementalBoon>(),
+			//PowerCard.For<TalonsOfLightning>(),			 // Major
+			//PowerCard.For<VigorOfTheBreakingDawn>(),	 // major
+			//PowerCard.For<TheTreesAndStonesSpeakOfWar>(),// Major
+		};
+
 
 	}
 

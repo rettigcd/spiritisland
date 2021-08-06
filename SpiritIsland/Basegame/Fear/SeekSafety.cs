@@ -24,8 +24,7 @@ namespace SpiritIsland.Basegame {
 				var destinations = GetNeighborWithMoreBuildings(target);
 				var dest = await engine.SelectSpace("Fear: select destination with more towns/cities",destinations);
 				// push
-				gs.Adjust(target,Invader.Explorer,-1);
-				gs.Adjust( dest, Invader.Explorer, 1 );
+				gs.Move(Invader.Explorer,target,dest);
 			}
 		}
 
@@ -47,8 +46,7 @@ namespace SpiritIsland.Basegame {
 				var source = await engine.SelectSpace("Select source of invaders to gather",sourceOptions);
 				var invaderOptions = gs.InvadersOn(source).InvaderTypesPresent.Intersect(x).ToArray();
 				var invaderToGather = await engine.SelectInvader("which invader to gather",invaderOptions);
-				gs.Adjust(source,invaderToGather,-1);
-				gs.Adjust( dest, invaderToGather, 1 );
+				gs.Move(invaderToGather,source,dest);
 			}
 		}
 
@@ -65,7 +63,7 @@ namespace SpiritIsland.Basegame {
 				if(grp.HasCity)
 					gs.Adjust(target,Invader.City,-1);
 				else
-					gs.Adjust(target,Invader.Explorer,Math.Min(3,grp[Invader.Explorer]));
+					gs.Adjust(target,Invader.Explorer,-3);
 			}
 		}
 

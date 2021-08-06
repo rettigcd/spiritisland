@@ -94,9 +94,9 @@ namespace SpiritIsland {
 
 		void InitSpace( Space space ) {
 			var counts = space.StartUpCounts;
-			this.Adjust( space, Invader.City, counts.Cities );
-			this.Adjust( space, Invader.Town, counts.Towns );
-			this.Adjust( space, Invader.Explorer, counts.Explorers );
+			Adjust( space, Invader.City, counts.Cities );
+			Adjust( space, Invader.Town, counts.Towns );
+			Adjust( space, Invader.Explorer, counts.Explorers );
 			this.AddDahan( space, counts.Dahan );
 			if(counts.Blight > 0) this.AddBlight( space ); // add 1
 		}
@@ -173,7 +173,15 @@ namespace SpiritIsland {
 		#endregion
 
 		#region Dahan
-		public void AddDahan( Space space, int delta=1 ){ 	dahanCount[space]+=delta;}
+		public void AddDahan( Space space, int delta=1 ){ 	
+			dahanCount[space]+=delta;
+//			if(dahanCount[space]<0) throw new Exception("");
+		}
+		public void MoveDahan( Space from, Space to, int count = 1 ) {
+			AddDahan(from,-count);
+			AddDahan(to,count);
+		}
+
 		public int GetDahanOnSpace( Space space ){ return dahanCount[space]; }
 		public bool HasDahan( Space space ) => GetDahanOnSpace(space)>0;
 		#endregion
@@ -240,7 +248,13 @@ namespace SpiritIsland {
 			=> invaderCount.Keys.Any(k=>k.Space==space);
 
 		public void Adjust(Space space, Invader invader, int count){
-			invaderCount[Key(space,invader)] += count;
+			var key = Key( space, invader );
+			var newCount = invaderCount[key] += count;
+			invaderCount[key] = newCount < 0 ? 0 : newCount;
+		}
+		public void Move(Invader invader, Space from, Space to ) {
+			Adjust( from,invader,-1);
+			Adjust( to, invader, 1 );
 		}
 
 		public InvaderGroup InvadersOn(Space targetSpace) {

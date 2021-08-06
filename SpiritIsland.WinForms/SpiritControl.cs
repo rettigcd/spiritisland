@@ -18,14 +18,17 @@ namespace SpiritIsland.WinForms {
 		public void Init( Spirit spirit, IHaveOptions optionProvider ) {
 			this.spirit = spirit;
 
-			var counts = spirit.InnatePowers
-				.SelectMany( Highest )
-				.GroupBy( x => x )
-				.ToDictionary( grp => grp.Key, grp => grp.Count() );
-			highestInnate = new CountDictionary<Element>( counts );
+			elPos = new Dictionary<Element, int>();
+			int i=0;
+			foreach(var innate in spirit.InnatePowers)
+				foreach(var el in Highest(innate))
+					if(!elPos.ContainsKey(el)) elPos[el] = i++;
+			foreach(Element el in Enum.GetValues(typeof(Element)) )
+				if(!elPos.ContainsKey( el )) elPos[el] = i++;
 
 			optionProvider.OptionsChanged += OptionProvider_OptionsChanged;
 		}
+		Dictionary<Element, int> elPos;
 
 		static Element[] Highest(InnatePower power) => power.GetTriggerThresholds()
             .OrderByDescending(list=>list.Length)
@@ -140,7 +143,7 @@ namespace SpiritIsland.WinForms {
 			const float elementSize = 50f;
 			var elements = spirit.Elements; // cache, don't recalculate
 
-			var orderedElements = elements.Keys.OrderByDescending( el => highestInnate[el] );
+			var orderedElements = elements.Keys.OrderBy( el => elPos[el] );
 			foreach(var element in orderedElements) {
 				if(elements[element] > 1) {
 					graphics.DrawString(
@@ -183,7 +186,6 @@ namespace SpiritIsland.WinForms {
 		InnatePower[] innateOptions;
 		Spirit spirit;
 
-		CountDictionary<Element> highestInnate;
 		readonly Dictionary<InnatePower, Image> innateImages = new();
 		readonly Dictionary<Element, Image> elementImages = new();
 		#endregion

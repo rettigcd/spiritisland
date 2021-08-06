@@ -43,8 +43,7 @@ namespace SpiritIsland.Basegame {
 				if(grp.HasTown)
 					gs.Adjust(target,Invader.Town,-1);
 				else
-					gs.Adjust(target,Invader.Explorer,Math.Min(2,grp[Invader.Explorer]));
-
+					gs.Adjust(target,Invader.Explorer,-2);
 			}
 		}
 	}

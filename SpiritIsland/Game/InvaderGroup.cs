@@ -38,24 +38,25 @@ namespace SpiritIsland {
 
 		public int Destroy( Invader healthy, int max=1 ) => (max == 0) ? 0 : DestroyInner( healthy, max );
 
-		public int DestroyAll( Invader healthy ) => DestroyInner( healthy, null );
+		public int DestroyAll( Invader healthy ) => DestroyInner( healthy, int.MaxValue );
 
-		int DestroyInner( Invader healthy, int? max ) {
-			var invadersToDestory = this.InvaderTypesPresent
-				.Where(i=>i.Healthy==healthy)
+		int DestroyInner( Invader healthy, int maxCount ) {
+			Invader[] invaderTypesToDestory = this.InvaderTypesPresent
+				.Where(i=>i.Healthy==healthy && i.Health!=0)
 				.OrderByDescending(x=>x.Health) // kill healthiest first
 				.ToArray();
-			if(max.HasValue)
-				invadersToDestory = invadersToDestory.Take(max.Value).ToArray(); 
-			int total = 0;
-			foreach(var key in invadersToDestory){
-				int count = this[key];
-				total += count;
-				countDict[key.Dead] += count;
-				countDict[key] = 0;
-				changed.Add(key);
+
+			int totalDestoyed = 0;
+			foreach(var invaderType in invaderTypesToDestory) {
+				int destroy = Math.Min(maxCount,countDict[invaderType]);
+				// remove as many as we can of this type and use up the destroy slots
+				countDict[invaderType] -= destroy;
+				maxCount -= destroy;
+				// mark them destroyed
+				totalDestoyed += destroy;
+				countDict[invaderType.Dead] += destroy;
 			}
-			return total;
+			return totalDestoyed;
 		}
 
 		#region public Read-Only

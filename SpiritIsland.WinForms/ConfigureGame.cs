@@ -17,6 +17,7 @@ namespace SpiritIsland.WinForms {
 				typeof(LightningsSwiftStrike),
 				typeof(Shadows),
 				typeof(VitalStrength),
+				typeof(ThunderSpeaker),
 			};
 			spiritListBox.Items.Add("[Random]");
 			foreach(var spirit in spirits) {

@@ -48,8 +48,7 @@ namespace SpiritIsland.Core {
 				var source = await eng.SelectSpace( $"Gather dahan {gathered+1} of {dahanToGather} from:", neighborsWithDahan, true);
 				if(source == null) break;
 
-				eng.GameState.AddDahan(source,-1);
-				eng.GameState.AddDahan(target,1);
+				eng.GameState.MoveDahan(source,target);
 
 				++gathered;
 				neighborsWithDahan = target.Neighbors.Where(eng.GameState.HasDahan).ToArray();
@@ -73,8 +72,7 @@ namespace SpiritIsland.Core {
 
 				var invader = await eng.SelectInvader("Select invader to gather "+source.Label+" => "+target.Label,spaceInvaders(source));
 
-				eng.GameState.Adjust(source,invader,-1);
-				eng.GameState.Adjust(target,invader,1);
+				eng.GameState.Move(invader,source,target);
 
 				++gathered;
 				neighborsWithItems = CalcSource();
@@ -92,8 +90,7 @@ namespace SpiritIsland.Core {
 				);
 				if(destination == null) break;
 				pushedToLands.Add(destination);
-				eng.GameState.AddDahan(source,-1);
-				eng.GameState.AddDahan(destination,1);
+				eng.GameState.MoveDahan(source,destination);
 				--dahanToPush;
 			}
 			return pushedToLands.ToArray();
@@ -118,16 +115,14 @@ namespace SpiritIsland.Core {
   			var destination = await eng.SelectSpace("Push "+invader.Summary+" to"
 				,source.Neighbors.Where(x=>x.IsLand)
 			);
-			eng.GameState.Adjust(source,invader,-1);
-			eng.GameState.Adjust(destination,invader,1);
+			eng.GameState.Move(invader,source,destination);
 		}
 
 		static public async Task Push1Dahan( this ActionEngine eng, Space source){
   			var destination = await eng.SelectSpace("Push dahan to"
 				,source.Neighbors.Where(x=>x.IsLand)
 			);
-			eng.GameState.AddDahan(source,-1);
-			eng.GameState.AddDahan(destination,1);
+			eng.GameState.MoveDahan(source,destination);
 		}
 
 	}

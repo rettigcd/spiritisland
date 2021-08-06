@@ -1,21 +1,20 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
+Change InvaderGroup to have refence to came state, and use Commit()
+
+Destory(...) filters max
+
 Fix
+	Words of Warning
 	Based on the size of the first card, calculate width required, if insufficient, add scroll bar.
 	While selecting cards, show total elements, allow selecting all cards before selecting 'done/commit'.  Select/Unselect.
 	At the end of each ActionTree (maybe after each invader is destroyed?), test if we have a Terror Level victory.
 	
 
 Not Implemented
-
-	A Ramapant Spread
-	Thunderspeaker
-	Ocean
-	Bringer
-
 	Minor Cards
-
 	Major Cards
+	Normal Drawing cards
 
 Improve
 5	Show $money after energy track.
