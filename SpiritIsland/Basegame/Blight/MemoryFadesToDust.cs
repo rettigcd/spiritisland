@@ -32,7 +32,7 @@ namespace SpiritIsland.Basegame {
 		}
 
 		public void OnGameStart( GameState gs ) {
-			gs.blightOnCard = 2 * gs.Spirits.Length;
+			gs.blightOnCard = 2 * gs.Spirits.Length + 1; // +1 from Jan 2021 errata
 		}
 
 		public bool IslandIsBlighted {get;private set;}

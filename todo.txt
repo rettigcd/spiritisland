@@ -1,10 +1,10 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
 Fix
-	Spirit resized -> invalidate
-	island positioning -> normalized
-	Card and spirit cursor -> default, not horizontal split
-
+	Based on the size of the first card, calculate width required, if insufficient, add scroll bar.
+	While selecting cards, show total elements, allow selecting all cards before selecting 'done/commit'.  Select/Unselect.
+	At the end of each ActionTree (maybe after each invader is destroyed?), test if we have a Terror Level victory.
+	
 
 Not Implemented
 
@@ -40,6 +40,9 @@ Unit Test
 			- 1 pushed into city > 1
 			- 1 pushed into explorer > 0
 		- no dahan to push > doesn't crash
+
+	Destroying Town or Town1 creates 1 fear
+	Destroying City, City1, City 2, creates 2 fear
 
 	Spirit.SacredSites
 	River.SacredSites

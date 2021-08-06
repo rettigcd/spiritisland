@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using SpiritIsland.Basegame;
-using SpiritIsland.Core;
 using SpiritIsland.SinglePlayer;
 
 namespace SpiritIsland.WinForms {
@@ -26,6 +24,7 @@ namespace SpiritIsland.WinForms {
 			this.islandControl.InitBoard( game.GameState );
 			this.cardControl.Init( game.Spirit );
 			this.spiritControl.Init( game.Spirit, this );
+			this.statusControl1.Init( game.GameState, this );
 			this.islandControl.SpaceClicked += Select;
 			this.cardControl.CardSelected += Select;
 

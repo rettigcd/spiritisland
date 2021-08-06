@@ -8,10 +8,14 @@ namespace SpiritIsland {
 
 	public class GameState {
 
+		// base-1,  game starts in round-1
+		public int Round { get; private set; }
+
 		public GameState(params Spirit[] spirits){
 			if(spirits.Length==0) throw new ArgumentException("Game must include at least 1 spirit");
 			this.Spirits = spirits;
 			InvaderDeck = new InvaderDeck();
+			Round = 1;
 		}
 
 		internal void SkipAllInvaderActions( Space target ) {
@@ -78,6 +82,7 @@ namespace SpiritIsland {
 				invaderCount[pair] = 0;
 			}
 			defendCount.Clear();
+			++Round;
 
 			TimePassed?.Invoke();
 		}
@@ -248,8 +253,8 @@ namespace SpiritIsland {
 				.Select(x=>x.Summary+"="+invaders[x])
 				.Join(", ");
 
-			foreach(var invader in invaders.Changed)
-				this.invaderCount[Key(invaders.Space,invader)] = invaders[invader];
+			AddFear( invaders.DestroyedCities * 2 );
+			AddFear( invaders.DestroyedTowns );
 
 			foreach(var invader in invaders.Changed)
 				this.invaderCount[Key(invaders.Space,invader)] = invaders[invader];

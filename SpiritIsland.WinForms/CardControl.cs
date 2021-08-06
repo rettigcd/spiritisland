@@ -93,12 +93,9 @@ namespace SpiritIsland.WinForms
 		}
 
 		PowerCard GetCardAt(Point mp ) {
-			foreach(var card in this.optionCards) {
-				if(locations[card].Contains( mp )) {
-					return card;
-				}
-			}
-			return null;
+			return this.optionCards
+				.Where(card => locations.ContainsKey( card ) && locations[card].Contains( mp ) )
+				.FirstOrDefault();
 		}
 
 		protected override void OnMouseMove( MouseEventArgs e ) {

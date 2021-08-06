@@ -37,6 +37,7 @@ namespace SpiritIsland.Core {
 
 		async Task PickSpaceAndActivate( ActionEngine engine ){
 			var target = await targetSpace.Target( engine );
+			if(target == null) return; // no space available that meets criteria.   !!! needs unit test showing if no-target-space simply does nothing, and doesn't crash
 			TargetedSpace?.Invoke(new SpaceTargetedArgs{Initiator=engine.Self,Card=this,Target=target } );
 			InvokeAgainst( engine, target );
 		}

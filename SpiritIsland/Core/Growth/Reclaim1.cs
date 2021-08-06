@@ -7,12 +7,16 @@ namespace SpiritIsland.Core {
 	public class Reclaim1 : GrowthActionFactory {
 
 		public override async Task Activate( ActionEngine engine ) {
-			var options = engine.Self.DiscardPile.ToArray();
-			if(options.Length > 0) {
-				var card = (PowerCard)await engine.SelectFactory( "Select card to reclaim.", options ); // !! create a SelectPowerCard that returns PowerCard and use it for forgeting and reclaining
-				if(card != null && engine.Self.DiscardPile.Contains( card )) {
-					engine.Self.DiscardPile.Remove( card );
-					engine.Self.Hand.Add( card );
+			var discardCards = engine.Self.DiscardPile.ToArray();
+			if(discardCards.Length > 0) {
+				var dict = discardCards.ToDictionary(c=>$"{c.Text} ${c.Cost} ({c.Speed})",c=>(PowerCard)c);
+				var txt = await engine.SelectText( "Select card to reclaim.", dict.Keys.ToArray() );
+				if(txt != null) {
+					PowerCard card = dict[txt];
+					if(engine.Self.DiscardPile.Contains( card )) {
+						engine.Self.DiscardPile.Remove( card );
+						engine.Self.Hand.Add( card );
+					}
 				}
 			}
 		}

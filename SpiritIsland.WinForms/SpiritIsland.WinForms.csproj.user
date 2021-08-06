@@ -19,5 +19,8 @@
     <Compile Update="SpiritControl.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Update="StatusControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
   </ItemGroup>
 </Project>
