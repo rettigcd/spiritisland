@@ -12,6 +12,9 @@ namespace SpiritIsland.Basegame {
 		static public void ActAsync(ActionEngine eng,Space target){
 			var (_,gameState) = eng;
 
+//!!!!!!!  Sometimes cards have not targetable land and target==null
+// when that happens, don't call this....
+
 			// Invaders
 			if(gameState.HasInvaders(target))
 				gameState.AddFear(1);
