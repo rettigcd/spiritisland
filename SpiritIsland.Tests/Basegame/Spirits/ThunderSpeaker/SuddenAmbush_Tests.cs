@@ -1,4 +1,5 @@
-﻿using SpiritIsland.Basegame;
+﻿using Shouldly;
+using SpiritIsland.Basegame;
 using SpiritIsland.Core;
 using System.Linq;
 using Xunit;
@@ -11,8 +12,9 @@ namespace SpiritIsland.Tests.Basegame {
 			// Given: empty board
 			spirit = new ThunderSpeaker { Energy = 20 };
 			a = Board.BuildBoardA();
-			var gs = new GameState( spirit );
-			gs.Island = new Island( a );
+			var gs = new GameState( spirit ) {
+				Island = new Island( a )
+			};
 
 			// And: Spirit in spot 1
 			spirit.Presence.Add( a[1] );
@@ -40,7 +42,7 @@ namespace SpiritIsland.Tests.Basegame {
 			Step( "Gather dahan 1 of 1 from:", "A2,Done", a[2], true);
 
 			// Then: 1 explorer left
-			Assert.Equal("1@E1",eng.GameState.InvadersOn(a[1]).ToString());
+			eng.GameState.InvadersOn( a[1] ).ToString().ShouldBe("1@E1");
 		}
 
 
@@ -48,16 +50,16 @@ namespace SpiritIsland.Tests.Basegame {
 			spirit.Hand.Single( x => x.Name == cardName ).Activate( eng );
 		}
 
-		Board a;
-		Spirit spirit;
-		ActionEngine eng;
-		BaseAction action;
+		readonly Board a;
+		readonly Spirit spirit;
+		readonly ActionEngine eng;
+		readonly BaseAction action;
 
 		void Step( string expectedPrompt, string expectedOptions, IOption optionToSelect, bool expectedResolved ) {
-			Assert.Equal( expectedPrompt, action.Prompt );
-			Assert.Equal( expectedOptions, action.Options.Select( o => o.Text ).OrderBy( x => x ).Join( "," ) );
+			action.Prompt.ShouldBe( expectedPrompt );
+			action.Options.Select( o => o.Text ).OrderBy( x => x ).Join( "," ).ShouldBe( expectedOptions );
 			action.Select( optionToSelect );
-			Assert.Equal( expectedResolved, action.IsResolved );
+			action.IsResolved.ShouldBe( expectedResolved );
 		}
 	}
 }

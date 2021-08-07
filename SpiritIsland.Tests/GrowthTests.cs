@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Shouldly;
 using SpiritIsland.Core;
 using Xunit;
 
@@ -99,7 +100,7 @@ namespace SpiritIsland.Tests {
 		protected void Assert_AllCardsAvailableToPlay(int expectedAvailableCount = 4) {
 			// Then: all cards reclaimed (including unplayed)
 			Assert.Empty( spirit.DiscardPile ); // , "Should not be any cards in 'played' pile" );
-			Assert.Equal( expectedAvailableCount, spirit.Hand.Count );
+			spirit.Hand.Count.ShouldBe( expectedAvailableCount );
 		}
 
 		protected void Assert_HasEnergy( int expectedChange ) {
