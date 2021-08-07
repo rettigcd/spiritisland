@@ -263,23 +263,8 @@ namespace SpiritIsland {
 			return InitInvaderGroup(targetSpace);
 		}
 
-		void UpdateFromGroup(InvaderGroup invaders){
-
-			string x = invaders.Space + ": " + invaders.Changed
-				.Select(x=>x.Summary+"="+invaders[x])
-				.Join(", ");
-
-			AddFear( invaders.DestroyedCities * 2 );
-			AddFear( invaders.DestroyedTowns );
-
-			foreach(var invader in invaders.Changed)
-				this.GetCounts(invaders.Space)[invader.Index] = invaders[invader];
-
-
-		}
-
 		InvaderGroup InitInvaderGroup(Space targetSpace) {
-			return new InvaderGroup( targetSpace, this.GetCounts(targetSpace), UpdateFromGroup );
+			return new InvaderGroup( targetSpace, this.GetCounts(targetSpace), AddFear );
 		}
 
 		string Build( InvaderGroup group ) {
@@ -289,13 +274,6 @@ namespace SpiritIsland {
 			Adjust( group.Space, invaderToAdd, 1 );
 			return $"{group.Space.Label} gets {invaderToAdd.Label}";
 		}
-
-		Invader[] KillOrder => killOrder ??= "C@1 C@2 C@3 T@1 T@2 E@1".Split(' ').Select(k=>Invader.Lookup[k]).ToArray();
-		Invader[] killOrder;
-
-
-		Invader[] LeftOverOrder => leftOverOrder ??="C@2 T@2 C@3".Split(' ').Select(k=>Invader.Lookup[k]).ToArray();
-		Invader[] leftOverOrder;
 
 		/// <summary> Fired before ravage occurs</summary>
 		public event Action<GameState,Space[]> Ravaging;
@@ -337,7 +315,7 @@ namespace SpiritIsland {
 
 				// damage: Invaders
 				if(dahan>0)
-					ApplyDamageToInvaders( ravageGroup, dahan * 2, log );
+					ravageGroup.ApplyDamageToInvaders( dahan * 2, log );
 			}
 
 			defendCount[ravageGroup.Space] = 0;
@@ -347,28 +325,7 @@ namespace SpiritIsland {
 
 		public void DamageInvaders(Space space,int damage){ // !!! let players choose the item to apply damage to
 			if(damage==0) return;
-			var group = InvadersOn(space);
-			ApplyDamageToInvaders(group,damage);
-		}
-
-		// !!! Move this onto InvaderGroup!!!
-		void ApplyDamageToInvaders( InvaderGroup ravageGroup, int startingDamage, List<string> log = null ) {
-			int damageToInvaders = startingDamage;
-
-			// While damage remains    &&    we have invaders
-			while(damageToInvaders > 0 && ravageGroup.InvaderTypesPresent.Any()) {
-				var invaderToDamage = KillOrder
-					.FirstOrDefault( invader =>
-						invader.Health <= damageToInvaders // prefer things we can kill
-						&& ravageGroup[invader] > 0
-					)
-					?? LeftOverOrder.First( invader => ravageGroup[invader] > 0 ); // left-over damage
-
-				damageToInvaders -= ravageGroup.ApplyDamageMax(invaderToDamage,damageToInvaders);
-
-			}
-			if(log!=null) log.Add($"{startingDamage} damage to invaders leaving {ravageGroup}." );
-			UpdateFromGroup( ravageGroup );
+			InvadersOn(space).ApplyDamageToInvaders( damage );
 		}
 
 		#endregion

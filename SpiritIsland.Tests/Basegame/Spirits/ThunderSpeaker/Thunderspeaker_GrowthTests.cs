@@ -17,8 +17,7 @@ namespace SpiritIsland.Tests.Base.Spirits {
 
 			When_Growing( 0 );
 
-			Assert_AllCardsAvailableToPlay();
-			Assert_GainPowercard(2);
+			Assert_AllCardsAvailableToPlay(6);
 			Assert_HasEnergy(1);
 		}
 

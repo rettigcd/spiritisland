@@ -100,12 +100,14 @@ namespace SpiritIsland.Basegame {
 
 		public override void AddActionFactory( IActionFactory actionFactory ) {
 
-			if(actionFactory is DrawPowerCard) {
-				var newCard = PowerProgression[0];
-				this.RegisterNewCard( newCard );
-				PowerProgression.RemoveAt( 0 );
-				if(newCard.PowerType == PowerType.Major)
-					base.AddActionFactory( new ForgetPowerCard() );
+			if(actionFactory is DrawPowerCard drawCards) {
+				for(int i = 0; i < drawCards.count;++i) {
+					var newCard = PowerProgression[0];
+					this.RegisterNewCard( newCard );
+					PowerProgression.RemoveAt( 0 );
+					if(newCard.PowerType == PowerType.Major)
+						base.AddActionFactory( new ForgetPowerCard() );
+				}
 			} else
 				base.AddActionFactory( actionFactory );
 		}

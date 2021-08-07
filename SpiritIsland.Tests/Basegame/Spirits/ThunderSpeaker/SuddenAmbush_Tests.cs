@@ -42,7 +42,7 @@ namespace SpiritIsland.Tests.Basegame {
 			Step( "Gather dahan 1 of 1 from:", "A2,Done", a[2], true);
 
 			// Then: 1 explorer left
-			eng.GameState.InvadersOn( a[1] ).ToString().ShouldBe("1@E1");
+			eng.GameState.InvadersOn( a[1] ).ToString().ShouldBe("1E@1");
 		}
 
 

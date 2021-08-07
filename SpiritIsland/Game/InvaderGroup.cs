@@ -9,21 +9,55 @@ namespace SpiritIsland {
 
 		#region constructor
 
-		public InvaderGroup(Space space, int[] counts, Action<InvaderGroup> onCommit ) {
+		public InvaderGroup(Space space, int[] counts, Action<int> addFear ) {
+
+			this.counts = counts; // for committing
 
 			this.Space = space;
 			this.innerDict = Invader.Lookup.Values
 				.ToDictionary( invader => invader, invader => counts[invader.Index] );
 
 			countDict = new CountDictionary<Invader>(innerDict);
-			this.onCommit = onCommit;
+			this.addFear = addFear;
 		}
+		readonly int[] counts;
+
 
 		#endregion
 
-		readonly Action<InvaderGroup> onCommit;
+		Invader[] KillOrder => killOrder ??= "C@1 C@2 C@3 T@1 T@2 E@1".Split( ' ' ).Select( k => Invader.Lookup[k] ).ToArray();
+		Invader[] killOrder;
+
+		Invader[] LeftOverOrder => leftOverOrder ??= "C@2 T@2 C@3".Split( ' ' ).Select( k => Invader.Lookup[k] ).ToArray();
+		Invader[] leftOverOrder;
+
+		public void ApplyDamageToInvaders( int startingDamage, List<string> log = null ) {
+			int damageToInvaders = startingDamage;
+
+			// While damage remains    &&    we have invaders
+			while(damageToInvaders > 0 && InvaderTypesPresent.Any()) {
+				var invaderToDamage = KillOrder
+					.FirstOrDefault( invader =>
+						invader.Health <= damageToInvaders // prefer things we can kill
+						&& this[invader] > 0
+					)
+					?? LeftOverOrder.First( invader => this[invader] > 0 ); // left-over damage
+
+				damageToInvaders -= this.ApplyDamageMax( invaderToDamage, damageToInvaders );
+
+			}
+			if(log != null) log.Add( $"{startingDamage} damage to invaders leaving {this}." );
+			this.Commit();
+		}
+
+		readonly Action<int> addFear;
 		public void Commit() {
-			onCommit(this); // could this be pulled inside and justmake changes to the dictnionary?
+
+			addFear( DestroyedCities * 2 );
+			addFear( DestroyedTowns );
+
+			foreach(var invader in Changed)
+				counts[invader.Index] = this[invader];
 		}
 
 		public void ApplyDamage( Invader invader, int damage ) {
@@ -61,9 +95,11 @@ namespace SpiritIsland {
 				// remove as many as we can of this type and use up the destroy slots
 				countDict[invaderType] -= destroy;
 				maxCount -= destroy;
+				changed.Add( invaderType );
 				// mark them destroyed
 				totalDestoyed += destroy;
 				countDict[invaderType.Dead] += destroy;
+				changed.Add(invaderType.Dead);
 			}
 			return totalDestoyed;
 		}
