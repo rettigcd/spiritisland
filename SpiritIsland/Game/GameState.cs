@@ -73,17 +73,16 @@ namespace SpiritIsland {
 		public event Action TimePassed;
 
 		public void TimePasses() {
+			var damagedInvaders = new[] {Invader.City1,Invader.City2,Invader.Town1};
 			// heal
-			var damaged = invaderCount.Keys
-				.Where(p=>p.Invader != p.Invader.Healthy)
-				.ToArray();
-			foreach(var pair in damaged){
-				// heal those still alive
-				if(pair.Invader.Health > 0)
-					invaderCount[pair.ToHealthy()] += invaderCount[pair];
-				// remove damaged unit
-				invaderCount[pair] = 0;
+			foreach(var pair in invaderCount) {
+				var counts = pair.Value;
+				foreach(var damaged in damagedInvaders) {
+					counts[damaged.Healthy.Index] += counts[damaged.Index];
+					counts[damaged.Index] = 0;
+				}
 			}
+
 			defendCount.Clear();
 			++Round;
 
@@ -248,12 +247,12 @@ namespace SpiritIsland {
 		}
 
 		public bool HasInvaders( Space space ) 
-			=> invaderCount.Keys.Any(k=>k.Space==space);
+			=> GetCounts(space).Any(x=>x>0);
 
 		public void Adjust(Space space, Invader invader, int count){
-			var key = Key( space, invader );
-			var newCount = invaderCount[key] += count;
-			invaderCount[key] = newCount < 0 ? 0 : newCount;
+			var counts = GetCounts(space);
+			var newCount = counts[invader.Index] += count;
+			counts[invader.Index] = newCount < 0 ? 0 : newCount;
 		}
 		public void Move(Invader invader, Space from, Space to ) {
 			Adjust( from,invader,-1);
@@ -274,20 +273,20 @@ namespace SpiritIsland {
 			AddFear( invaders.DestroyedTowns );
 
 			foreach(var invader in invaders.Changed)
-				this.invaderCount[Key(invaders.Space,invader)] = invaders[invader];
+				this.GetCounts(invaders.Space)[invader.Index] = invaders[invader];
 
 
 		}
 
 		InvaderGroup InitInvaderGroup(Space targetSpace) {
-			return new InvaderGroup( targetSpace, this.invaderCount, UpdateFromGroup );
+			return new InvaderGroup( targetSpace, this.GetCounts(targetSpace), UpdateFromGroup );
 		}
 
 		string Build( InvaderGroup group ) {
-            int townCount = group[Invader.Town] + group[Invader.Town1];
-            int cityCount = group[Invader.City] + group[Invader.City2] + group[Invader.City1];
-            var invaderToAdd = townCount > cityCount ? Invader.City : Invader.Town;
-            Adjust( group.Space, invaderToAdd, 1 );
+			int townCount = group[Invader.Town] + group[Invader.Town1];
+			int cityCount = group[Invader.City] + group[Invader.City2] + group[Invader.City1];
+			var invaderToAdd = townCount > cityCount ? Invader.City : Invader.Town;
+			Adjust( group.Space, invaderToAdd, 1 );
 			return $"{group.Space.Label} gets {invaderToAdd.Label}";
 		}
 
@@ -372,30 +371,24 @@ namespace SpiritIsland {
 			UpdateFromGroup( ravageGroup );
 		}
 
-		static InvaderKey Key(Space space,Invader invader) => new InvaderKey{ Invader=invader, Space=space};
-
 		#endregion
 
 		readonly CountDictionary<Space> blightCount = new CountDictionary<Space>();
 		readonly CountDictionary<Space> beastCount = new CountDictionary<Space>();
 		readonly CountDictionary<Space> wildsCount = new CountDictionary<Space>();
 
-		readonly CountDictionary<InvaderKey> invaderCount = new CountDictionary<InvaderKey>();
+		readonly Dictionary<Space,int[]> invaderCount = new Dictionary<Space,int[]>();
+
+		int[] GetCounts(Space space ) {
+			if(invaderCount.ContainsKey(space)) return invaderCount[space];
+			return invaderCount[space] = new int[Invader.TypesCount+1]; // 1 for the total
+		}
+
 		readonly CountDictionary<Space> dahanCount = new CountDictionary<Space>();
 
 		readonly CountDictionary<Space> defendCount = new CountDictionary<Space>();
 		public readonly HashSet<Space> noDamageToDahan = new(); // !!! special case for Conceiling Shadows - refactor!
 		public int FearPool {get; private set; } = 0;
 	}
-
-	public struct InvaderKey : IEquatable<InvaderKey> {
-		public Space Space;
-		public Invader Invader;
-		public bool Equals( InvaderKey other ) => Space == other.Space && Invader == other.Invader;
-		public override bool Equals( object obj ) => Equals( (InvaderKey)obj );
-		public override int GetHashCode() => Space.GetHashCode() ^ Invader.GetHashCode();
-		public InvaderKey ToHealthy() => new InvaderKey { Space = Space, Invader = Invader.Healthy };
-	}
-
 
 }

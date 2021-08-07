@@ -9,14 +9,11 @@ namespace SpiritIsland {
 
 		#region constructor
 
-		public InvaderGroup(Space space, CountDictionary<InvaderKey> invaderCount, Action<InvaderGroup> onCommit ) {
-
-			// !!!
+		public InvaderGroup(Space space, int[] counts, Action<InvaderGroup> onCommit ) {
 
 			this.Space = space;
-			this.innerDict = invaderCount.Keys
-				.Where( k => k.Space == space )
-				.ToDictionary( k => k.Invader, k => invaderCount[k] );
+			this.innerDict = Invader.Lookup.Values
+				.ToDictionary( invader => invader, invader => counts[invader.Index] );
 
 			countDict = new CountDictionary<Invader>(innerDict);
 			this.onCommit = onCommit;
@@ -74,7 +71,6 @@ namespace SpiritIsland {
 		#region public Read-Only
 
 		public int this[Invader i] => countDict[i];
-
 
 		public Invader[] FilterBy( params Invader[] allowedTypes ) => allowedTypes
 			.SelectMany(x=>x.AliveVariations)
