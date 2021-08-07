@@ -16,6 +16,9 @@ namespace SpiritIsland {
 			this.Spirits = spirits;
 			InvaderDeck = new InvaderDeck();
 			Round = 1;
+			// ! is there a better way to disable fear win during tests
+			while(FearDeck.Count < 9)
+				FearDeck.Push( new NullFearCard() );
 		}
 
 		internal void SkipAllInvaderActions( Space target ) {
@@ -261,7 +264,7 @@ namespace SpiritIsland {
 			return InitInvaderGroup(targetSpace);
 		}
 
-		public void UpdateFromGroup(InvaderGroup invaders){
+		void UpdateFromGroup(InvaderGroup invaders){
 
 			string x = invaders.Space + ": " + invaders.Changed
 				.Select(x=>x.Summary+"="+invaders[x])
@@ -277,10 +280,7 @@ namespace SpiritIsland {
 		}
 
 		InvaderGroup InitInvaderGroup(Space targetSpace) {
-			var dict1 = invaderCount.Keys
-				.Where(k=>k.Space==targetSpace)
-				.ToDictionary(k=>k.Invader,k=>invaderCount[k]);
-			return new InvaderGroup( targetSpace, dict1 );
+			return new InvaderGroup( targetSpace, this.invaderCount, UpdateFromGroup );
 		}
 
 		string Build( InvaderGroup group ) {
@@ -352,6 +352,7 @@ namespace SpiritIsland {
 			ApplyDamageToInvaders(group,damage);
 		}
 
+		// !!! Move this onto InvaderGroup!!!
 		void ApplyDamageToInvaders( InvaderGroup ravageGroup, int startingDamage, List<string> log = null ) {
 			int damageToInvaders = startingDamage;
 
@@ -373,16 +374,6 @@ namespace SpiritIsland {
 
 		static InvaderKey Key(Space space,Invader invader) => new InvaderKey{ Invader=invader, Space=space};
 
-		struct InvaderKey : IEquatable<InvaderKey> {
-			public Space Space;
-			public Invader Invader;
-			public bool Equals( InvaderKey other ) => Space==other.Space && Invader==other.Invader;
-			public override bool Equals( object obj ) => Equals((InvaderKey)obj);
-			public override int GetHashCode() => Space.GetHashCode() ^ Invader.GetHashCode();
-			public InvaderKey ToHealthy() => new InvaderKey{ Space=Space, Invader=Invader.Healthy};
-		}
-
-
 		#endregion
 
 		readonly CountDictionary<Space> blightCount = new CountDictionary<Space>();
@@ -395,6 +386,15 @@ namespace SpiritIsland {
 		readonly CountDictionary<Space> defendCount = new CountDictionary<Space>();
 		public readonly HashSet<Space> noDamageToDahan = new(); // !!! special case for Conceiling Shadows - refactor!
 		public int FearPool {get; private set; } = 0;
+	}
+
+	public struct InvaderKey : IEquatable<InvaderKey> {
+		public Space Space;
+		public Invader Invader;
+		public bool Equals( InvaderKey other ) => Space == other.Space && Invader == other.Invader;
+		public override bool Equals( object obj ) => Equals( (InvaderKey)obj );
+		public override int GetHashCode() => Space.GetHashCode() ^ Invader.GetHashCode();
+		public InvaderKey ToHealthy() => new InvaderKey { Space = Space, Invader = Invader.Healthy };
 	}
 
 

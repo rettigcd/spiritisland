@@ -20,7 +20,7 @@ namespace SpiritIsland.Basegame {
 				while(count-->0)
 					changing.ApplyDamage(invader,1);
 			}
-			gameState.UpdateFromGroup(changing);
+			changing.Commit();
 			return Task.CompletedTask;
 		}
 

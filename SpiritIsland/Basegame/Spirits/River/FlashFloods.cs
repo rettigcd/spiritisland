@@ -24,7 +24,7 @@ namespace SpiritIsland.Basegame {
 				damage -= group.ApplyDamageMax(invader,damage);
 			}
 
-			gameState.UpdateFromGroup(group);
+			group.Commit();
 		}
 
 	}

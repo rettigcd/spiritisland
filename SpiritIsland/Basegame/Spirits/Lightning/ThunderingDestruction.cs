@@ -51,7 +51,7 @@ namespace SpiritIsland.Basegame {
 				invadersToDestroy = grp.FilterBy(Invader.Town);
 				--count;
 			}
-			gameState.UpdateFromGroup(grp);
+			grp.Commit();
 		}
 
 		static async Task DestroyTownsOrCities(ActionEngine engine,Space target,int count){
@@ -67,7 +67,7 @@ namespace SpiritIsland.Basegame {
 				invadersToDestroy = grp.FilterBy(Invader.City,Invader.Town);
 				--count;
 			}
-			gameState.UpdateFromGroup(grp);
+			grp.Commit();
 		}
 
 	}

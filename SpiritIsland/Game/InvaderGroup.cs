@@ -9,13 +9,25 @@ namespace SpiritIsland {
 
 		#region constructor
 
-		public InvaderGroup(Space space,Dictionary<Invader,int> dict){
+		public InvaderGroup(Space space, CountDictionary<InvaderKey> invaderCount, Action<InvaderGroup> onCommit ) {
+
+			// !!!
+
 			this.Space = space;
-			this.innerDict = dict;
-			countDict = new CountDictionary<Invader>(dict);
+			this.innerDict = invaderCount.Keys
+				.Where( k => k.Space == space )
+				.ToDictionary( k => k.Invader, k => invaderCount[k] );
+
+			countDict = new CountDictionary<Invader>(innerDict);
+			this.onCommit = onCommit;
 		}
 
 		#endregion
+
+		readonly Action<InvaderGroup> onCommit;
+		public void Commit() {
+			onCommit(this); // could this be pulled inside and justmake changes to the dictnionary?
+		}
 
 		public void ApplyDamage( Invader invader, int damage ) {
 			if(damage > invader.Health) damage = invader.Health;

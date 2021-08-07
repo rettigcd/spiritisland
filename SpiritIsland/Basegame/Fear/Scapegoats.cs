@@ -11,7 +11,7 @@ namespace SpiritIsland.Basegame {
 			foreach(var space in gs.Island.AllSpaces) {
 				var grp = gs.InvadersOn(space);
 				if(EachTownDestroys1Explorer(grp))
-					gs.UpdateFromGroup(grp);
+					grp.Commit();
 			}
 			// !! not unit tested
 			return Task.CompletedTask;
@@ -22,7 +22,7 @@ namespace SpiritIsland.Basegame {
 			foreach(var space in gs.Island.AllSpaces) {
 				var grp = gs.InvadersOn( space );
 				if(EachTownDestroys1AndEachCityDestoys2( grp ))
-					gs.UpdateFromGroup( grp );
+					grp.Commit();
 			}
 			return Task.CompletedTask;
 		}
@@ -36,7 +36,7 @@ namespace SpiritIsland.Basegame {
 				bool destroyedTowns = EachCityDestroys1Town( grp );
 				
 				if(destroyedTowns || destoringExplorers)
-					gs.UpdateFromGroup( grp );
+					grp.Commit();
 			}
 			return Task.CompletedTask;
 		}

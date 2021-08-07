@@ -316,7 +316,7 @@ namespace SpiritIsland.Tests.Base.Spirits.River {
 			Game_PlacePresence1("Card","A5");
 
 			// Can reclaim River's Bounty
-			Game_Reclaim1( RiversBounty.Name );
+			Game_Reclaim1( "River's Bounty $0 (Slow)" );
 			// Can buy River's Bount and 1 other cards
 			Game_BuyPowerCards( RiversBounty.Name );
 			Game_BuyPowerCards( BoonOfVigor.Name );

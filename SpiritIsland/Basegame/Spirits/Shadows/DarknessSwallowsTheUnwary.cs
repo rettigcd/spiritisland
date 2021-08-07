@@ -23,7 +23,7 @@ namespace SpiritIsland.Basegame {
 			var grp = engine.GameState.InvadersOn( target );
 			int explorersToDestroy = Math.Min( grp[Invader.Explorer], 2 );
 			grp.Destroy(Invader.Explorer, explorersToDestroy );
-			engine.GameState.UpdateFromGroup( grp );
+			grp.Commit();
 			engine.GameState.AddFear( explorersToDestroy );
 		}
 

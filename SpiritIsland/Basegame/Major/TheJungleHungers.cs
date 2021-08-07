@@ -27,7 +27,7 @@ namespace SpiritIsland.Basegame {
 				grp.Destroy(Invader.City);
 			}
 
-			eng.GameState.UpdateFromGroup(grp);
+			grp.Commit();
 		}
 
 	}

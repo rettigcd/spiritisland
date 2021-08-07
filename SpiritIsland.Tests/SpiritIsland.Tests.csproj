@@ -7,6 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Basegame\Major\**" />
+    <Compile Remove="Basegame\Minor\**" />
+    <EmbeddedResource Remove="Basegame\Major\**" />
+    <EmbeddedResource Remove="Basegame\Minor\**" />
+    <None Remove="Basegame\Major\**" />
+    <None Remove="Basegame\Minor\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.9.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
@@ -14,11 +23,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Basegame\Major\" />
-    <Folder Include="Basegame\Minor\" />
   </ItemGroup>
 
   <ItemGroup>
