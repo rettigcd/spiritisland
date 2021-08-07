@@ -5,8 +5,8 @@ using SpiritIsland.Basegame;
 using SpiritIsland.Core;
 using Xunit;
 
-namespace SpiritIsland.Tests.Base.Spirits {
-	
+namespace SpiritIsland.Tests.Basegame.Spirits {
+
 	public class Ocean_GrowthTests : GrowthTests {
 
 		public Ocean_GrowthTests():base(new Ocean()){}

@@ -1,7 +1,7 @@
 ﻿using SpiritIsland.Basegame;
 using Xunit;
 
-namespace SpiritIsland.Tests.Base.Spirits.Lightning {
+namespace SpiritIsland.Tests.Basegame.Spirits.Lightning {
 
 	public class Lightning_GrowthTests : GrowthTests{
 

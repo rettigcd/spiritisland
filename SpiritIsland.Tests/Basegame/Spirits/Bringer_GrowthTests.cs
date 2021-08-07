@@ -1,8 +1,8 @@
 ﻿using SpiritIsland.Basegame;
 using Xunit;
 
-namespace SpiritIsland.Tests.Base.Spirits {
-	
+namespace SpiritIsland.Tests.Basegame.Spirits {
+
 	public class Bringer_GrowthTests : GrowthTests {
 
 		public Bringer_GrowthTests():base( new Bringer() ){}

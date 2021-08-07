@@ -3,7 +3,7 @@ using SpiritIsland.Basegame;
 using SpiritIsland.Core;
 using Xunit;
 
-namespace SpiritIsland.Tests.Base.Spirits {
+namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 
 	public class Thunderspeaker_GrowthTests : GrowthTests{
 

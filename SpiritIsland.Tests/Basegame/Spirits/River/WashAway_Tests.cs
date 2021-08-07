@@ -3,7 +3,7 @@ using SpiritIsland.Core;
 using System.Linq;
 using Xunit;
 
-namespace SpiritIsland.Tests.Base.Spirits.River {
+namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 	public class WashAway_Tests : SpiritCards_Tests {
 

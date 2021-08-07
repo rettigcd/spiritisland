@@ -4,7 +4,7 @@ using SpiritIsland.Core;
 using System.Linq;
 using Xunit;
 
-namespace SpiritIsland.Tests.Basegame {
+namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 
 	public class SuddenAmbush_Tests {
 
@@ -44,6 +44,23 @@ namespace SpiritIsland.Tests.Basegame {
 			// Then: 1 explorer left
 			eng.GameState.InvadersOn( a[1] ).ToString().ShouldBe("1E@1");
 		}
+
+		[Fact]
+		public void Gather1_Kill2() {
+			// Given: dahan on a2 & a1
+			eng.GameState.AddDahan( a[2] );
+			eng.GameState.AddDahan( a[1] );
+			//  and: 4 explorers on a1
+			eng.GameState.Adjust( a[1], Invader.Explorer, 4 );
+
+			When_ActivateCard( SuddenAmbush.Name );
+			Step( "Select target.", "A1,A2,A4,A5,A6", a[1], false );
+			Step( "Gather dahan 1 of 1 from:", "A2,Done", a[2], true );
+
+			// Then: 4-2 = 2 explorers left
+			eng.GameState.InvadersOn( a[1] ).ToString().ShouldBe( "2E@1" );
+		}
+
 
 
 		void When_ActivateCard( string cardName ) {

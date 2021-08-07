@@ -3,7 +3,7 @@ using SpiritIsland.SinglePlayer;
 using System.Linq;
 using Xunit;
 
-namespace SpiritIsland.Tests.Base.Spirits.River {
+namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 	public class RiverGame : GameBaseTests {
 		protected void Game_PlacePresence1( string sourceTrack, string destinationSpace ) {

@@ -2,7 +2,7 @@
 using SpiritIsland.Basegame;
 using Xunit;
 
-namespace SpiritIsland.Tests.Base.Spirits {
+namespace SpiritIsland.Tests.Basegame.Spirits {
 
 	public class Keeper_GrowthTests : GrowthTests {
 

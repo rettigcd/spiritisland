@@ -1,7 +1,7 @@
 ﻿using SpiritIsland.BranchAndClaw;
 using Xunit;
 
-namespace SpiritIsland.Tests.Base.Spirits {
+namespace SpiritIsland.Tests.Basegame.Spirits {
 
 	public class RampantGreen_GrowthTests : GrowthTests {
 
