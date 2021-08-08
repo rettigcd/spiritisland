@@ -75,8 +75,7 @@ namespace SpiritIsland {
 		public void TimePasses() {
 			// heal
 			foreach(var pair in invaderCount) 
-				InvaderGroup.Heal(pair.Value);
-
+				new InvaderGroup(pair.Key,pair.Value,null).Heal();
 
 			defendCount.Clear();
 			++Round;

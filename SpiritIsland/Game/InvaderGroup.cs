@@ -28,15 +28,9 @@ namespace SpiritIsland {
 		public InvaderGroup(Space space, int[] counts, Action<int> addFear ) {
 
 			this.counts = counts; // for committing
-
 			this.Space = space;
-			this.innerDict = Invader.Lookup.Values
-				.ToDictionary( invader => invader, invader => counts[idx[invader]] );
-
-			countDict = new CountDictionary<Invader>(innerDict);
 			this.addFear = addFear;
 		}
-		readonly int[] counts;
 
 
 		#endregion
@@ -65,16 +59,13 @@ namespace SpiritIsland {
 			if(log != null) log.Add( $"{startingDamage} damage to invaders leaving {this}." );
 		}
 
-		readonly Action<int> addFear;
 
 		public int ApplyDamage( Invader invader, int availableDamage ) {
 			int damageToInvader = Math.Min( invader.Health, availableDamage );
 
 			var damagedInvader = invader.Damage( damageToInvader );
-			--countDict[invader]; 
 			--counts[idx[invader]];
 
-			++countDict[damagedInvader]; 
 			++counts[idx[damagedInvader]];
 
 			if(damagedInvader == Invader.City0)
@@ -98,7 +89,7 @@ namespace SpiritIsland {
 
 			int totalDestoyed = 0;
 			foreach(var invaderType in invaderTypesToDestory) {
-				while(countToDestory>0 && countDict[invaderType] > 0) {
+				while(countToDestory>0 && counts[idx[invaderType]] > 0) {
 					ApplyDamage( invaderType, invaderType.Health );
 					++totalDestoyed;
 					--countToDestory;
@@ -109,7 +100,7 @@ namespace SpiritIsland {
 
 		#region public Read-Only
 
-		public int this[Invader i] => countDict[i];
+		public int this[Invader i] => counts[idx[i]];
 
 		public Invader[] FilterBy( params Invader[] allowedTypes ) => allowedTypes
 			.SelectMany(x=>x.AliveVariations)
@@ -118,35 +109,38 @@ namespace SpiritIsland {
 
 		public Space Space { get; }
 
-		public bool HasCity => countDict.HasAnyKey( Invader.City, Invader.City2, Invader.City1 );
-		public bool HasTown => countDict.HasAnyKey( Invader.Town, Invader.Town1 );
-		public bool HasExplorer => countDict.HasAnyKey( Invader.Explorer );
-		public bool Has(params Invader[] healthyInvaders) => countDict.Keys.Select(k=>k.Healthy).Intersect( healthyInvaders ).Any();
+		bool HasAnyKey(params Invader[] invader) => invader.Any(inv=>counts[idx[inv]]>0);
+
+		public bool HasCity => HasAnyKey( Invader.City, Invader.City2, Invader.City1 );
+		public bool HasTown => HasAnyKey( Invader.Town, Invader.Town1 );
+		public bool HasExplorer => HasAnyKey( Invader.Explorer );
+
+		public bool Has(params Invader[] healthyInvaders) => InvaderTypesPresent.Select(k=>k.Healthy).Intersect( healthyInvaders ).Any();
 
 		/// <summary> Includes damaged invaders.</summary>
-		public IEnumerable<Invader> InvaderTypesPresent => countDict.Keys.Where( invader => invader.Health > 0 );
+		public IEnumerable<Invader> InvaderTypesPresent => idx.Keys.Where(invader=>invader.Health>0 && counts[idx[invader]]>0);
 
-		public int TypeCount(params Invader[] healthyInvaders) => innerDict
-			.Where(pair=>healthyInvaders.Contains(pair.Key.Healthy))
-			.Sum(p=>p.Value);
+		public int TotalCount => counts.Sum();
 
-		public int TotalCount => innerDict.Values.Sum();
+		public int DamageInflictedByInvaders => InvaderTypesPresent.Select(invader=>invader.Healthy.Health * counts[idx[invader]] ).Sum();
 
-		public int DamageInflictedByInvaders => innerDict.Select(p=>p.Value * p.Key.Healthy.Health).Sum();
+		public int TypeCount( params Invader[] healthyInvaders ) => InvaderTypesPresent
+			.Where( invader => healthyInvaders.Contains( invader.Healthy ) )
+			.Sum( invader => counts[idx[invader]] );
 
 		public override string ToString() {
 			static int Order_CitiesTownsExplorers( Invader invader )
 				=> -(invader.Healthy.Health * 10 + invader.Health);
-			return innerDict
-				.Where( pair => pair.Value > 0 && pair.Key.Health > 0 )
-				.OrderBy( pair => Order_CitiesTownsExplorers( pair.Key ) )
-				.Select( p => p.Value + p.Key.Summary )
+			return InvaderTypesPresent
+				.Where( invader => counts[idx[invader]] > 0 )
+				.OrderBy( invader => Order_CitiesTownsExplorers( invader ) )
+				.Select( invader => counts[idx[invader]] + invader.Summary )
 				.Join( "," );
 		}
 
 		readonly static Invader[] damagedInvaders = new[] { Invader.City1, Invader.City2, Invader.Town1 };
 
-		static public void Heal(int[] counts ) {
+		public void Heal() {
 			foreach(var damaged in damagedInvaders) {
 				counts[idx[damaged.Healthy]] += counts[idx[damaged]];
 				counts[idx[damaged]] = 0;
@@ -161,8 +155,8 @@ namespace SpiritIsland {
 		#endregion
 
 		#region private
-		readonly Dictionary<Invader, int> innerDict;
-		readonly CountDictionary<Invader> countDict;
+		readonly Action<int> addFear;
+		readonly int[] counts;
 		#endregion
 
 	}
