@@ -109,7 +109,7 @@ namespace SpiritIsland.Basegame {
 			gs.DahanDestroyed.Handlers.Add( DestroyNearbyPresence );
 		}
 
-		async Task MovePresenceWithDahan(DahanMovedArgs args) {
+		async Task MovePresenceWithDahan(GameState _, DahanMovedArgs args) {
 			int maxThatCanMove = Math.Min(args.count,Presence.Count(p=>p==args.from));
 			// 0 -> no action
 			if(maxThatCanMove==0) return;
@@ -128,7 +128,7 @@ namespace SpiritIsland.Basegame {
 			}
 		}
 
-		async Task DestroyNearbyPresence( DahanDestroyedArgs args ) {
+		async Task DestroyNearbyPresence( GameState _, DahanDestroyedArgs args ) {
 			if(args.Source != DahanDestructionSource.Invaders) return;
 
 			string prompt = $"Sword to Victory: {args.count} dahan destroyed. Select presence to remove.";
@@ -142,7 +142,6 @@ namespace SpiritIsland.Basegame {
 				Presence.Remove( await eng.SelectSpace( prompt, options ) );
 
 		}
-
 
 		public override void AddActionFactory( IActionFactory actionFactory ) {
 

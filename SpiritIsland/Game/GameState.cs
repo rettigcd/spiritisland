@@ -64,7 +64,7 @@ namespace SpiritIsland {
 		}
 
 
-		public event Action TimePassed;
+		public event Action<GameState> TimePassed;
 		public event Action<GameState, Space[]> Ravaging;
 		public AsyncEvent<DahanMovedArgs> DahanMoved = new AsyncEvent<DahanMovedArgs>();
 		public AsyncEvent<DahanDestroyedArgs> DahanDestroyed = new AsyncEvent<DahanDestroyedArgs>();
@@ -84,7 +84,7 @@ namespace SpiritIsland {
 			defendCount.Clear();
 			++Round;
 
-			TimePassed?.Invoke();
+			TimePassed?.Invoke(this);
 		}
 
 
@@ -182,13 +182,13 @@ namespace SpiritIsland {
 		public Task DestoryDahan(Space space,int countToDestroy, DahanDestructionSource source ) {
 			countToDestroy = Math.Min(countToDestroy,GetDahanOnSpace(space));
 			AdjustDahan(space, -countToDestroy );
-			return DahanDestroyed.Invoke(new DahanDestroyedArgs { space = space, count=countToDestroy, Source = source } );
+			return DahanDestroyed.Invoke(this,new DahanDestroyedArgs { space = space, count=countToDestroy, Source = source } );
 		}
 
 		public Task MoveDahan( Space from, Space to, int count = 1 ) {
 			AdjustDahan(from,-count);
 			AdjustDahan(to,count);
-			return DahanMoved.Invoke(new DahanMovedArgs { from = from, to = to, count = count } );
+			return DahanMoved.Invoke(this, new DahanMovedArgs { from = from, to = to, count = count } );
 		}
 
 		public int GetDahanOnSpace( Space space ){ return dahanCount[space]; }
@@ -292,6 +292,9 @@ namespace SpiritIsland {
 			if(damageFromInvaders==0) log.Add("-no ravage-");
 
 			if(damageFromInvaders>0){
+
+				// $$ flush accumulated invader damage - pre invaders
+
 				// calculate damage from invaders
 				int defend = defendCount[ravageGroup.Space];
 				int damageInflictedFromInvaders = Math.Max( damageFromInvaders - defend, 0);
@@ -321,7 +324,9 @@ namespace SpiritIsland {
 
 				// damage: Invaders
 				if(dahan>0)
-					ravageGroup.ApplyDamage( dahan * 2, log );
+					ravageGroup.ApplyDamageToGroup( dahan * 2, log );
+
+				// flush invader damage - post dahan
 			}
 
 			defendCount[ravageGroup.Space] = 0;
@@ -331,7 +336,7 @@ namespace SpiritIsland {
 
 		public void DamageInvaders(Space space,int damage){ // !!! let players choose the item to apply damage to
 			if(damage==0) return;
-			InvadersOn(space).ApplyDamage( damage );
+			InvadersOn(space).ApplyDamageToGroup( damage );
 		}
 
 		#endregion
@@ -356,12 +361,12 @@ namespace SpiritIsland {
 
 
 	public class AsyncEvent<T> {
-		public async Task Invoke(T t) {
+		public async Task Invoke(GameState gameState,T t) {
 			foreach(var handler in Handlers)
-				await handler(t);
+				await handler( gameState,t );
 		}
 
-		public List<Func<T,Task>> Handlers = new List<Func<T,Task>>();
+		public List<Func<GameState,T,Task>> Handlers = new List<Func<GameState, T,Task>>();
 	}
 
 	public class DahanMovedArgs {

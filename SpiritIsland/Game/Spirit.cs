@@ -220,7 +220,7 @@ namespace SpiritIsland {
 		}
 
 		public virtual void Initialize( Board board, GameState gameState ){
-			gameState.TimePassed += () => {
+			gameState.TimePassed += (_) => {
 				DiscardPile.AddRange( PurchasedCards );
 				PurchasedCards.Clear();
 			};

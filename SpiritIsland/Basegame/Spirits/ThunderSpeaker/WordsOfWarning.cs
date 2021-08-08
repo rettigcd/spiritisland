@@ -1,4 +1,5 @@
 ﻿using SpiritIsland.Core;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
@@ -13,13 +14,48 @@ namespace SpiritIsland.Basegame {
 			engine.GameState.Defend(target,3);
 
 			// During ravage, dahan in target land deal damange simultaneously with invaders
-
-			// !!!! Give each invader an attack phase - Invaders 0, Dahan 1
-				// calculate everyone in the same phase at the same time
+			_ = new DeadDahanDealDamageOnce( target, engine.GameState );
 
 			return Task.CompletedTask;
 		}
 
+
+		class DeadDahanDealDamageOnce {
+
+			readonly Space space;
+
+			public DeadDahanDealDamageOnce(Space space,GameState gs) {
+				this.space = space;
+				gs.DahanDestroyed.Handlers.Add( Execute );
+				gs.TimePassed += Unbind; // if no dahan destroyed, unbind
+			}
+
+			public Task Execute(GameState gs,DahanDestroyedArgs args ) {
+				if(args.space == space) {
+					ApplyDeadDahanDamage( gs, args );
+					Unbind( gs );
+				}
+				return Task.CompletedTask;
+			}
+
+			private void Unbind( GameState gs ) {
+				gs.DahanDestroyed.Handlers.Remove( Execute ); // detach event
+			}
+
+			void ApplyDeadDahanDamage( GameState gs, DahanDestroyedArgs args ) {
+				int expectedLivingDahanDamage = gs.GetDahanOnSpace( space ) * 2;
+				int deadDahanDamage = args.count * 2;
+				var grp = gs.InvadersOn( args.space );
+
+				while(deadDahanDamage > 0 && grp.InvaderTypesPresent.Any()) {
+					// pick best invader knowing total damage
+					Invader invaderToDamage = grp.PickInvaderToDamage( expectedLivingDahanDamage + deadDahanDamage );
+					// apply our dead-dahan-damage to that invader
+					deadDahanDamage -= grp.ApplyDamage( invaderToDamage, deadDahanDamage );
+				}
+				// any left over damage will be finished off by the living dahan
+			}
+		}
 
 	}
 }
