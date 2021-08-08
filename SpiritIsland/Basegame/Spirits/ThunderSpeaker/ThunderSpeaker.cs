@@ -166,13 +166,13 @@ namespace SpiritIsland.Basegame {
 			PowerCard.For<PurifyingFlame>(),
 			PowerCard.For<PillarOfLivingFlame>(),
 			PowerCard.For<EntrancingApparitions>(),
-			PowerCard.For<CallToIsolation>()
+			PowerCard.For<CallToIsolation>(),
 
-//			PowerCard.For<VeilTheNightsHunt>(),
-			//PowerCard.For<ReachingGrasp>(),
+			PowerCard.For<VeilTheNightsHunt>(),
+			PowerCard.For<ReachingGrasp>(),
 			//PowerCard.For<WrapInWingsOfSunlight>(),      // Major
-			//PowerCard.For<Drought>(),
-			//PowerCard.For<ElementalBoon>(),
+			PowerCard.For<Drought>(),
+			PowerCard.For<ElementalBoon>(),
 			//PowerCard.For<TalonsOfLightning>(),			 // Major
 			//PowerCard.For<VigorOfTheBreakingDawn>(),	 // major
 			//PowerCard.For<TheTreesAndStonesSpeakOfWar>(),// Major
