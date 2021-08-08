@@ -10,8 +10,7 @@ namespace SpiritIsland.Basegame {
 		public Task Level1( GameState gs ) {
 			foreach(var space in gs.Island.AllSpaces) {
 				var grp = gs.InvadersOn(space);
-				if(EachTownDestroys1Explorer(grp))
-					grp.Commit();
+				EachTownDestroys1Explorer(grp);
 			}
 			// !! not unit tested
 			return Task.CompletedTask;
@@ -21,8 +20,7 @@ namespace SpiritIsland.Basegame {
 		public Task Level2( GameState gs ) {
 			foreach(var space in gs.Island.AllSpaces) {
 				var grp = gs.InvadersOn( space );
-				if(EachTownDestroys1AndEachCityDestoys2( grp ))
-					grp.Commit();
+				EachTownDestroys1AndEachCityDestoys2( grp );
 			}
 			return Task.CompletedTask;
 		}
@@ -31,12 +29,9 @@ namespace SpiritIsland.Basegame {
 		public Task Level3( GameState gs ) {
 			foreach(var space in gs.Island.AllSpaces) {
 				var grp = gs.InvadersOn( space );
-				bool destoringExplorers = grp[Invader.Explorer] > 0;
-				grp.DestroyAll(Invader.Explorer);
-				bool destroyedTowns = EachCityDestroys1Town( grp );
-				
-				if(destroyedTowns || destoringExplorers)
-					grp.Commit();
+				grp.DestroyTypeAll(Invader.Explorer);
+				EachCityDestroys1Town( grp );
+		
 			}
 			return Task.CompletedTask;
 		}
@@ -47,10 +42,10 @@ namespace SpiritIsland.Basegame {
 			int damagedToDestory = Math.Min( destroyCount - healthyToDestroy, grp[Invader.Town1] );
 			// healthy - Move into Group
 			if(healthyToDestroy > 0)
-				grp.Destroy( Invader.Town, healthyToDestroy );
+				grp.DestroyType( Invader.Town, healthyToDestroy );
 			// damaged
 			if(damagedToDestory > 0)
-				grp.Destroy( Invader.Town1, damagedToDestory );
+				grp.DestroyType( Invader.Town1, damagedToDestory );
 			return damagedToDestory + healthyToDestroy > 0; // needs saved
 		}
 
@@ -60,7 +55,7 @@ namespace SpiritIsland.Basegame {
 				grp[Invader.Explorer]
 			);
 			if(numToDestory == 0) return false;
-			grp.Destroy(Invader.Explorer, numToDestory );
+			grp.DestroyType(Invader.Explorer, numToDestory );
 			return true;
 		}
 
@@ -72,7 +67,7 @@ namespace SpiritIsland.Basegame {
 				grp[Invader.Explorer]
 			);
 			if(numToDestory == 0) return false;
-			grp.Destroy(Invader.Explorer, numToDestory );
+			grp.DestroyType(Invader.Explorer, numToDestory );
 			return true;
 		}
 

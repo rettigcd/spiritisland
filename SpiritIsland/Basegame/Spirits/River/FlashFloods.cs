@@ -21,10 +21,8 @@ namespace SpiritIsland.Basegame {
 				var invader = await engine.SelectInvader("Select invader to damage.",group.InvaderTypesPresent.ToArray());
 				if(invader == null) break;
 
-				damage -= group.ApplyDamageMax(invader,damage);
+				damage -= group.ApplyDamage(invader,damage);
 			}
-
-			group.Commit();
 		}
 
 	}

@@ -43,47 +43,38 @@ namespace SpiritIsland {
 					)
 					?? LeftOverOrder.First( invader => this[invader] > 0 ); // left-over damage
 
-				damageToInvaders -= this.ApplyDamageMax( invaderToDamage, damageToInvaders );
+				damageToInvaders -= this.ApplyDamage( invaderToDamage, damageToInvaders );
 
 			}
 			if(log != null) log.Add( $"{startingDamage} damage to invaders leaving {this}." );
-			this.Commit();
 		}
 
 		readonly Action<int> addFear;
-		public void Commit() {
 
-			addFear( DestroyedCities * 2 );
-			addFear( DestroyedTowns );
-
-			foreach(var invader in Changed)
-				counts[invader.Index] = this[invader];
-		}
-
-		public void ApplyDamage( Invader invader, int damage ) {
-			if(damage > invader.Health) damage = invader.Health;
-			var damagedInvader = invader.Damage(damage);
-			changed.Add( invader ); --countDict[invader];
-			changed.Add( damagedInvader ); ++countDict[damagedInvader];
-		}
-
-		// returns as much damage as possible to invader
-		// returns actual damage done
-		public int ApplyDamageMax( Invader invader, int availableDamage ) {
+		public int ApplyDamage( Invader invader, int availableDamage ) {
 			int damageToInvader = Math.Min( invader.Health, availableDamage );
 
 			var damagedInvader = invader.Damage( damageToInvader );
-			changed.Add( invader );				--countDict[invader];
-			changed.Add( damagedInvader  );		++countDict[damagedInvader];
+			--countDict[invader]; 
+			--counts[invader.Index];
+
+			++countDict[damagedInvader]; 
+			++counts[damagedInvader.Index];
+
+			if(damagedInvader == Invader.City0)
+				addFear( 2 );
+			if(damagedInvader == Invader.Town0)
+				addFear( 1 );
 
 			return damageToInvader;
 		}
 
-		public int Destroy( Invader healthy, int max=1 ) => (max == 0) ? 0 : DestroyInner( healthy, max );
 
-		public int DestroyAll( Invader healthy ) => DestroyInner( healthy, int.MaxValue );
+		public int DestroyType( Invader healthy, int max=1 ) => (max == 0) ? 0 : DestroyInner( healthy, max );
 
-		int DestroyInner( Invader healthy, int maxCount ) {
+		public int DestroyTypeAll( Invader healthy ) => DestroyInner( healthy, int.MaxValue );
+
+		int DestroyInner( Invader healthy, int countToDestory ) {
 			Invader[] invaderTypesToDestory = this.InvaderTypesPresent
 				.Where(i=>i.Healthy==healthy && i.Health!=0)
 				.OrderByDescending(x=>x.Health) // kill healthiest first
@@ -91,15 +82,11 @@ namespace SpiritIsland {
 
 			int totalDestoyed = 0;
 			foreach(var invaderType in invaderTypesToDestory) {
-				int destroy = Math.Min(maxCount,countDict[invaderType]);
-				// remove as many as we can of this type and use up the destroy slots
-				countDict[invaderType] -= destroy;
-				maxCount -= destroy;
-				changed.Add( invaderType );
-				// mark them destroyed
-				totalDestoyed += destroy;
-				countDict[invaderType.Dead] += destroy;
-				changed.Add(invaderType.Dead);
+				while(countToDestory>0 && countDict[invaderType] > 0) {
+					ApplyDamage( invaderType, invaderType.Health );
+					++totalDestoyed;
+					--countToDestory;
+				}
 			}
 			return totalDestoyed;
 		}
@@ -119,12 +106,6 @@ namespace SpiritIsland {
 		public bool HasTown => countDict.HasAnyKey( Invader.Town, Invader.Town1 );
 		public bool HasExplorer => countDict.HasAnyKey( Invader.Explorer );
 		public bool Has(params Invader[] healthyInvaders) => countDict.Keys.Select(k=>k.Healthy).Intersect( healthyInvaders ).Any();
-
-		public int DestroyedCities => countDict[Invader.City0];
-		public int DestroyedTowns => countDict[Invader.Town0];
-		public int DestroyedExplorers => countDict[Invader.Explorer0];
-
-		public IEnumerable<Invader> Changed => changed.Where( i => i.Health != 0 );
 
 		/// <summary> Includes damaged invaders.</summary>
 		public IEnumerable<Invader> InvaderTypesPresent => innerDict.Keys.Where( invader => invader.Health > 0 );
@@ -152,7 +133,6 @@ namespace SpiritIsland {
 		#region private
 		readonly Dictionary<Invader, int> innerDict;
 		readonly CountDictionary<Invader> countDict;
-		readonly HashSet<Invader> changed = new HashSet<Invader>();
 		#endregion
 
 	}

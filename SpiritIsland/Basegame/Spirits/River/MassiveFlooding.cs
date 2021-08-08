@@ -32,7 +32,6 @@ namespace SpiritIsland.Basegame {
 					group.ApplyDamage( invader, 2 );
 			}
 
-			group.Commit();
 			return Task.CompletedTask;
 		}
 

@@ -32,7 +32,6 @@ namespace SpiritIsland.Basegame {
 					invadersToPush = CalcAvailableInvaders();
 					--pushCount;
 				}
-				grp.Commit();
 			}
 
 		}
