@@ -73,15 +73,10 @@ namespace SpiritIsland {
 		public event Action TimePassed;
 
 		public void TimePasses() {
-			var damagedInvaders = new[] {Invader.City1,Invader.City2,Invader.Town1};
 			// heal
-			foreach(var pair in invaderCount) {
-				var counts = pair.Value;
-				foreach(var damaged in damagedInvaders) {
-					counts[damaged.Healthy.Index] += counts[damaged.Index];
-					counts[damaged.Index] = 0;
-				}
-			}
+			foreach(var pair in invaderCount) 
+				InvaderGroup.Heal(pair.Value);
+
 
 			defendCount.Clear();
 			++Round;
@@ -250,9 +245,7 @@ namespace SpiritIsland {
 			=> GetCounts(space).Any(x=>x>0);
 
 		public void Adjust(Space space, Invader invader, int count){
-			var counts = GetCounts(space);
-			var newCount = counts[invader.Index] += count;
-			counts[invader.Index] = newCount < 0 ? 0 : newCount;
+			InvaderGroup.Adjust( GetCounts( space ), invader, count);
 		}
 		public void Move(Invader invader, Space from, Space to ) {
 			Adjust( from,invader,-1);

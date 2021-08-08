@@ -10,15 +10,15 @@ namespace SpiritIsland {
 		static readonly Invader[] Explorers = new Invader[2];  // 0..1
 
 		// Healthy
-		static readonly public Invader Explorer0 = new Invader( 0, "Explorer",Explorers,0);// DESTROYED
-		static readonly public Invader Explorer  = new Invader( 1, "Explorer",Explorers,1);
-		static readonly public Invader Town0     = new Invader( 2, "Town",Towns,0); // DESTROYED
-		static readonly public Invader Town1     = new Invader( 3, "Town",Towns,1); // damaged
-		static readonly public Invader Town      = new Invader( 4, "Town",Towns,2); 
-		static readonly public Invader City0     = new Invader( 5, "City",Cities,0); // DESTROYED
-		static readonly public Invader City1     = new Invader( 6, "City",Cities,1); // damaged
-		static readonly public Invader City2     = new Invader( 7, "City",Cities,2); // damaged
-		static readonly public Invader City      = new Invader( 8, "City",Cities,3); 
+		static readonly public Invader Explorer0 = new Invader( "Explorer",Explorers,0);// DESTROYED
+		static readonly public Invader Explorer  = new Invader( "Explorer",Explorers,1);
+		static readonly public Invader Town0     = new Invader( "Town",Towns,0); // DESTROYED
+		static readonly public Invader Town1     = new Invader( "Town",Towns,1); // damaged
+		static readonly public Invader Town      = new Invader( "Town",Towns,2); 
+		static readonly public Invader City0     = new Invader( "City",Cities,0); // DESTROYED
+		static readonly public Invader City1     = new Invader( "City",Cities,1); // damaged
+		static readonly public Invader City2     = new Invader( "City",Cities,2); // damaged
+		static readonly public Invader City      = new Invader( "City",Cities,3); 
 		public const int TypesCount = 9;
 
 		static readonly public Dictionary<string,Invader> Lookup;
@@ -29,8 +29,7 @@ namespace SpiritIsland {
 
 		#region private
 
-		Invader(int index, string label, Invader[] typeArr, int health){
-			Index = index;
+		Invader(string label, Invader[] typeArr, int health){
 			Label = label;
 			this.typeArr = typeArr;
 			Health = health;
@@ -40,8 +39,6 @@ namespace SpiritIsland {
 		readonly Invader[] typeArr;
 
 		#endregion
-
-		public int Index { get; }
 
 		public IEnumerable<Invader> AliveVariations => typeArr.Skip(1); // not-dead variations
 
