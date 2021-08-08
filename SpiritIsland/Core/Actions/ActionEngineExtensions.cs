@@ -125,6 +125,35 @@ namespace SpiritIsland.Core {
 			eng.GameState.MoveDahan(source,destination);
 		}
 
+
+		static Invader[] KillOrder => killOrder ??= "C@1 C@2 C@3 T@1 T@2 E@1".Split( ' ' ).Select( k => Invader.Lookup[k] ).ToArray();
+		static Invader[] killOrder;
+
+		static Invader[] LeftOverOrder => leftOverOrder ??= "C@2 T@2 C@3".Split( ' ' ).Select( k => Invader.Lookup[k] ).ToArray();
+		static Invader[] leftOverOrder;
+
+		// !!! Swap this out with user choosing.  Which user chooses when dahan are doing damage????
+		static public Task ApplyDamage( this InvaderGroup grp, int startingDamage, List<string> log = null ) {
+			int damageToInvaders = startingDamage;
+
+			// While damage remains    &&    we have invaders
+			while(damageToInvaders > 0 && grp.InvaderTypesPresent.Any()) {
+				var invaderToDamage = KillOrder
+					.FirstOrDefault( invader =>
+						invader.Health <= damageToInvaders // prefer things we can kill
+						&& grp[invader] > 0
+					)
+					?? LeftOverOrder.First( invader => grp[invader] > 0 ); // left-over damage
+
+				damageToInvaders -= grp.ApplyDamage( invaderToDamage, damageToInvaders );
+
+			}
+			if(log != null) log.Add( $"{startingDamage} damage to invaders leaving {grp}." );
+
+			return Task.CompletedTask;
+		}
+
+
 	}
 
 }

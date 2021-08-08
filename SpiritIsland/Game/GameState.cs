@@ -307,7 +307,7 @@ namespace SpiritIsland {
 
 				// damage: Invaders
 				if(dahan>0)
-					ravageGroup.ApplyDamageToInvaders( dahan * 2, log );
+					ravageGroup.ApplyDamage( dahan * 2, log );
 			}
 
 			defendCount[ravageGroup.Space] = 0;
@@ -317,7 +317,7 @@ namespace SpiritIsland {
 
 		public void DamageInvaders(Space space,int damage){ // !!! let players choose the item to apply damage to
 			if(damage==0) return;
-			InvadersOn(space).ApplyDamageToInvaders( damage );
+			InvadersOn(space).ApplyDamage( damage );
 		}
 
 		#endregion

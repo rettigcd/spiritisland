@@ -35,31 +35,6 @@ namespace SpiritIsland {
 
 		#endregion
 
-		Invader[] KillOrder => killOrder ??= "C@1 C@2 C@3 T@1 T@2 E@1".Split( ' ' ).Select( k => Invader.Lookup[k] ).ToArray();
-		Invader[] killOrder;
-
-		Invader[] LeftOverOrder => leftOverOrder ??= "C@2 T@2 C@3".Split( ' ' ).Select( k => Invader.Lookup[k] ).ToArray();
-		Invader[] leftOverOrder;
-
-		public void ApplyDamageToInvaders( int startingDamage, List<string> log = null ) {
-			int damageToInvaders = startingDamage;
-
-			// While damage remains    &&    we have invaders
-			while(damageToInvaders > 0 && InvaderTypesPresent.Any()) {
-				var invaderToDamage = KillOrder
-					.FirstOrDefault( invader =>
-						invader.Health <= damageToInvaders // prefer things we can kill
-						&& this[invader] > 0
-					)
-					?? LeftOverOrder.First( invader => this[invader] > 0 ); // left-over damage
-
-				damageToInvaders -= this.ApplyDamage( invaderToDamage, damageToInvaders );
-
-			}
-			if(log != null) log.Add( $"{startingDamage} damage to invaders leaving {this}." );
-		}
-
-
 		public int ApplyDamage( Invader invader, int availableDamage ) {
 			int damageToInvader = Math.Min( invader.Health, availableDamage );
 
