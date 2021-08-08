@@ -26,7 +26,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		}
 
 		void Given_DahanAndTowns( int desiredDahan, int desiredTown ) {
-			gameState.AddDahan( ravageSpace, desiredDahan - gameState.GetDahanOnSpace( ravageSpace ) );
+			gameState.AdjustDahan( ravageSpace, desiredDahan - gameState.GetDahanOnSpace( ravageSpace ) );
 			Assert.Equal(desiredDahan,gameState.GetDahanOnSpace(ravageSpace));
 
 			gameState.Adjust( ravageSpace, Invader.Town, desiredTown );
@@ -39,7 +39,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 
 			// When: Doing Invader phase (fear+ragage)
 			await gameState.ApplyFear();
-			gameState.Ravage( invaderCard );
+			await gameState.Ravage(invaderCard );
 
 			// Then: all dahan killed
 			Assert.Equal( 0, gameState.GetDahanOnSpace( ravageSpace ) );
@@ -55,7 +55,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 
 			// When: Doing Invader phase (fear+ragage)
 			await gameState.ApplyFear();
-			gameState.Ravage( invaderCard );
+			await gameState.Ravage(invaderCard );
 
 			// Then: 0 dahan left
 			Assert.Equal( 2, gameState.GetDahanOnSpace( ravageSpace ) );

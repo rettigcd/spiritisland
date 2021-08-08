@@ -21,7 +21,7 @@ namespace SpiritIsland.Basegame {
 						canGather=false;
 				}
 				if(canPush)
-					await engine.Push1Dahan(target);
+					await engine.PushUpToNDahan(target,1);
 				else if(canGather)
 					await engine.GatherUpToNDahan(target,1);
 			}

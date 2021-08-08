@@ -1,8 +1,4 @@
 ﻿using SpiritIsland.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
@@ -10,7 +6,7 @@ namespace SpiritIsland.Basegame {
 	class WordsOfWarning {
 
 
-		[SpiritCard( "Words of Warning", 1, Speed.Fast, Element.Moon, Element.Fire, Element.Air )]
+		[SpiritCard( "Words of Warning", 1, Speed.Fast, Element.Air, Element.Sun, Element.Animal )]
 		[FromPresence(1,Filter.Dahan)]
 		static public Task Act( ActionEngine engine, Space target ) {
 			// defend 3.

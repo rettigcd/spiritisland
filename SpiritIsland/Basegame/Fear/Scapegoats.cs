@@ -29,7 +29,7 @@ namespace SpiritIsland.Basegame {
 		public Task Level3( GameState gs ) {
 			foreach(var space in gs.Island.AllSpaces) {
 				var grp = gs.InvadersOn( space );
-				grp.DestroyTypeAll(Invader.Explorer);
+				grp.DestroyType(Invader.Explorer,int.MaxValue);
 				EachCityDestroys1Town( grp );
 		
 			}

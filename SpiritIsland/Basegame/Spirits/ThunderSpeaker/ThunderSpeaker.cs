@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using SpiritIsland.Core;
 
 namespace SpiritIsland.Basegame {
@@ -62,6 +63,13 @@ namespace SpiritIsland.Basegame {
 				)
 			};
 
+			this.InnatePowers = new InnatePower[]{
+				InnatePower.For<GatherTheWarriors>(),
+				InnatePower.For<GatherTheWarriors_Fast>(),
+				InnatePower.For<LeadTheFuriousAssult>(),
+				InnatePower.For<LeadTheFuriousAssult_Fast>(),
+			};
+
 		}
 
 		public override void Grow( GameState gameState, int optionIndex ) {
@@ -95,8 +103,46 @@ namespace SpiritIsland.Basegame {
 			Presence.AddRange(board.Spaces.OrderByDescending(gs.GetDahanOnSpace).Take(2));
 
 			// Special Rules -Ally of the Dahan - Your presense may move with dahan
-		    // Special Rules - Swort to Victory -For each dahan stroyed by invaters ravaging a land, destroy 1 of your presense withing 1
+			gs.DahanMoved.Handlers.Add( MovePresenceWithDahan );
+
+		    // Special Rules - Sworn to Victory - For each dahan stroyed by invaders ravaging a land, destroy 1 of your presense withing 1
+			gs.DahanDestroyed.Handlers.Add( DestroyNearbyPresence );
 		}
+
+		async Task MovePresenceWithDahan(DahanMovedArgs args) {
+			int maxThatCanMove = Math.Min(args.count,Presence.Count(p=>p==args.from));
+			// 0 -> no action
+			if(maxThatCanMove==0) return;
+			var moveLookup = new Dictionary<string,int>();
+			for(int i = maxThatCanMove; i < 0; --i)
+				moveLookup.Add($"Move {i} presence.",i );
+			moveLookup.Add( "stay",0);
+			
+			string s = await new ActionEngine(null,null)// !!! HACK - null game state, just need stupid extension method, not game state or spirit
+				.SelectText("Move presence with dahan?", moveLookup.OrderByDescending(p=>p.Value).Select(p=>p.Key).ToArray()); 
+			int countToMove = moveLookup[s];
+
+			while(countToMove-- > 0) {
+				Presence.Remove(args.from);
+				Presence.Add(args.to);
+			}
+		}
+
+		async Task DestroyNearbyPresence( DahanDestroyedArgs args ) {
+			if(args.Source != DahanDestructionSource.Invaders) return;
+
+			string prompt = $"Sword to Victory: {args.count} dahan destroyed. Select presence to remove.";
+			var eng = new ActionEngine( null, null ); // !!!! HACK - need 
+
+			int numToDestroy = args.count;
+			Space[] options;
+			Space[] Calc() => args.space.SpacesWithin( 1 ).Intersect( Presence ).ToArray();
+
+			while(numToDestroy-->0 && (options=Calc()).Length > 0)
+				Presence.Remove( await eng.SelectSpace( prompt, options ) );
+
+		}
+
 
 		public override void AddActionFactory( IActionFactory actionFactory ) {
 

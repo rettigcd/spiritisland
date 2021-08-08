@@ -18,7 +18,7 @@ namespace SpiritIsland.Basegame {
 				|| await engine.SelectText("Select option",pushDahanKey,$"push {pushCount} explorer or towns") == pushDahanKey;
 
 			if( pushDahan )
-				await engine.Push1Dahan(target);
+				await engine.PushUpToNDahan(target,1);
 			else {
 
 				// push 1 explorer/town per dahan

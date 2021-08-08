@@ -131,7 +131,7 @@ namespace SpiritIsland.Tests {
 			if(options.Length>1) // not auto selecting
 				ppAction.Select(ppAction.Options.Single(o=>o.Text==options[0]));
 
-			spirit.RemoveFactory(ppFactory);
+			spirit.RemoveUnresolvedFactory(ppFactory);
 			//new ResolvePlacePresence( placeOptions, source, factory )
 			//	.Apply(spirit,gameState);
 		}

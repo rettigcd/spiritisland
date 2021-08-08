@@ -23,7 +23,7 @@ namespace SpiritIsland.Core {
 					true
 				);
 
-				spirit.RemoveFactory( factory ); // remove it as slow
+				spirit.RemoveUnresolvedFactory( factory ); // remove it as slow
 				spirit.AddActionFactory( new ChangeSpeed( factory, Speed.Fast ) ); // add as fast
 
 				slowFactories = CalcSlowFacts();
@@ -48,7 +48,7 @@ namespace SpiritIsland.Core {
 				var source = await eng.SelectSpace( $"Gather dahan {gathered+1} of {dahanToGather} from:", neighborsWithDahan, true);
 				if(source == null) break;
 
-				eng.GameState.MoveDahan(source,target);
+				await eng.GameState.MoveDahan(source,target);
 
 				++gathered;
 				neighborsWithDahan = target.Neighbors.Where(eng.GameState.HasDahan).ToArray();
@@ -90,7 +90,7 @@ namespace SpiritIsland.Core {
 				);
 				if(destination == null) break;
 				pushedToLands.Add(destination);
-				eng.GameState.MoveDahan(source,destination);
+				await eng.GameState.MoveDahan(source,destination);
 				--dahanToPush;
 			}
 			return pushedToLands.ToArray();
@@ -117,14 +117,6 @@ namespace SpiritIsland.Core {
 			);
 			eng.GameState.Move(invader,source,destination);
 		}
-
-		static public async Task Push1Dahan( this ActionEngine eng, Space source){
-  			var destination = await eng.SelectSpace("Push dahan to"
-				,source.Neighbors.Where(x=>x.IsLand)
-			);
-			eng.GameState.MoveDahan(source,destination);
-		}
-
 
 		static Invader[] KillOrder => killOrder ??= "C@1 C@2 C@3 T@1 T@2 E@1".Split( ' ' ).Select( k => Invader.Lookup[k] ).ToArray();
 		static Invader[] killOrder;

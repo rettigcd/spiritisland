@@ -63,14 +63,18 @@ namespace SpiritIsland {
 			public Task Level3( GameState gs ) { return Task.CompletedTask; }
 		}
 
-		private void InitSpirits() {
+
+		public event Action TimePassed;
+		public event Action<GameState, Space[]> Ravaging;
+		public AsyncEvent<DahanMovedArgs> DahanMoved = new AsyncEvent<DahanMovedArgs>();
+		public AsyncEvent<DahanDestroyedArgs> DahanDestroyed = new AsyncEvent<DahanDestroyedArgs>();
+
+		void InitSpirits() {
 			if(Spirits.Length != Island.Boards.Length)
 				throw new InvalidOperationException( "# of spirits and islands must match" );
 			for(int i = 0; i < Spirits.Length; ++i)
 				Spirits[i].Initialize( Island.Boards[i], this );
 		}
-
-		public event Action TimePassed;
 
 		public void TimePasses() {
 			// heal
@@ -83,6 +87,8 @@ namespace SpiritIsland {
 			TimePassed?.Invoke();
 		}
 
+
+
 		void InitItemsMarkedOnBoard(Board board) {
 			foreach(var space in board.Spaces)
 				InitSpace( space );
@@ -93,7 +99,7 @@ namespace SpiritIsland {
 			Adjust( space, Invader.City, counts.Cities );
 			Adjust( space, Invader.Town, counts.Towns );
 			Adjust( space, Invader.Explorer, counts.Explorers );
-			this.AddDahan( space, counts.Dahan );
+			this.AdjustDahan( space, counts.Dahan );
 			if(counts.Blight > 0) this.AddBlight( space ); // add 1
 		}
 
@@ -169,13 +175,20 @@ namespace SpiritIsland {
 		#endregion
 
 		#region Dahan
-		public void AddDahan( Space space, int delta=1 ){ 	
+		public void AdjustDahan( Space space, int delta=1 ){ 	
 			dahanCount[space]+=delta;
-//			if(dahanCount[space]<0) throw new Exception("");
 		}
-		public void MoveDahan( Space from, Space to, int count = 1 ) {
-			AddDahan(from,-count);
-			AddDahan(to,count);
+
+		public Task DestoryDahan(Space space,int countToDestroy, DahanDestructionSource source ) {
+			countToDestroy = Math.Min(countToDestroy,GetDahanOnSpace(space));
+			AdjustDahan(space, -countToDestroy );
+			return DahanDestroyed.Invoke(new DahanDestroyedArgs { space = space, count=countToDestroy, Source = source } );
+		}
+
+		public Task MoveDahan( Space from, Space to, int count = 1 ) {
+			AdjustDahan(from,-count);
+			AdjustDahan(to,count);
+			return DahanMoved.Invoke(new DahanMovedArgs { from = from, to = to, count = count } );
 		}
 
 		public int GetDahanOnSpace( Space space ){ return dahanCount[space]; }
@@ -189,7 +202,7 @@ namespace SpiritIsland {
 				await ActivatedFearCards.Pop().Level1(this);
 		}
 
-		public string[] Ravage( InvaderCard invaderCard ) {
+		public async Task<string[]> Ravage( InvaderCard invaderCard ) {
 			if(invaderCard == null) return Array.Empty<string>();
 
 			// 1 point of damage,  Prefer C@1  ---  ---  T@1  ---  E@1 >>> C@2, T@2, C@3
@@ -207,9 +220,10 @@ namespace SpiritIsland {
 				.Where( group => group.InvaderTypesPresent.Any() )
 				.ToArray();
 
-			return ravageGroups
-				.Select( RavageSpace )
-				.ToArray();
+			var msgs = new List<string>();
+			foreach(var grp in ravageGroups)
+				msgs.Add(await RavageSpace(grp));
+			return msgs.ToArray();
 		}
 
 		public string[] Build( InvaderCard invaderCard ) {
@@ -268,9 +282,7 @@ namespace SpiritIsland {
 		}
 
 		/// <summary> Fired before ravage occurs</summary>
-		public event Action<GameState,Space[]> Ravaging;
-
-		string RavageSpace( InvaderGroup ravageGroup ) {
+		async Task<string> RavageSpace( InvaderGroup ravageGroup ) {
 
 			var log = new List<String>();
 
@@ -298,7 +310,9 @@ namespace SpiritIsland {
 				} else {
 					int dahanKilled = Math.Min( damageInflictedFromInvaders / 2, dahan ); // rounding down
 					if(dahanKilled>0){
-						AddDahan( ravageGroup.Space, -dahanKilled ); 
+
+						await DestoryDahan( ravageGroup.Space, dahanKilled, DahanDestructionSource.Invaders ); 
+
 						int remainingDahan = dahan - dahanKilled;
 						log.Add($"Kills {dahanKilled} of {dahan} Dahan leaving {remainingDahan} Dahan.");
 						dahan = remainingDahan;
@@ -339,5 +353,30 @@ namespace SpiritIsland {
 		public readonly HashSet<Space> noDamageToDahan = new(); // !!! special case for Conceiling Shadows - refactor!
 		public int FearPool {get; private set; } = 0;
 	}
+
+
+	public class AsyncEvent<T> {
+		public async Task Invoke(T t) {
+			foreach(var handler in Handlers)
+				await handler(t);
+		}
+
+		public List<Func<T,Task>> Handlers = new List<Func<T,Task>>();
+	}
+
+	public class DahanMovedArgs {
+		public Space from;
+		public Space to;
+		public int count;
+	};
+
+	public enum DahanDestructionSource { Invaders }
+
+	public class DahanDestroyedArgs {
+		public Space space;
+		public int count;
+		public DahanDestructionSource Source;
+	};
+
 
 }

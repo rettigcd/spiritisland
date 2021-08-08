@@ -52,9 +52,7 @@ namespace SpiritIsland {
 		}
 
 
-		public int DestroyType( Invader healthy, int max=1 ) => (max == 0) ? 0 : DestroyInner( healthy, max );
-
-		public int DestroyTypeAll( Invader healthy ) => DestroyInner( healthy, int.MaxValue );
+		public int DestroyType( Invader healthy, int max ) => (max == 0) ? 0 : DestroyInner( healthy, max );
 
 		int DestroyInner( Invader healthy, int countToDestory ) {
 			Invader[] invaderTypesToDestory = this.InvaderTypesPresent

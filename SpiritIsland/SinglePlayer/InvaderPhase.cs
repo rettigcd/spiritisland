@@ -54,7 +54,7 @@ namespace SpiritIsland.SinglePlayer {
 			//			await gameState.ApplyFear();
 
 			// Ravage
-			string[] ravageResults = gameState.Ravage( invaderDeck.Ravage );
+			string[] ravageResults = await gameState.Ravage( invaderDeck.Ravage );
 			Log( "Ravaging:" + (invaderDeck.Ravage?.Text ?? "-") + "\r\n" + ravageResults.Join( "\r\n" ) );
 
 			// Cascade blight

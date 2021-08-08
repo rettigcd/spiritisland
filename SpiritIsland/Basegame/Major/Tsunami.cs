@@ -19,7 +19,7 @@ namespace SpiritIsland.Basegame {
 			gameState.DamageInvaders(space,8);
 			// destroy 2 dahan
 			int count = System.Math.Min(gameState.GetDahanOnSpace(space),2);
-			gameState.AddDahan(space,-count);
+			gameState.AdjustDahan(space,-count);
 
 			if(self.Elements[Element.Water] >=3			// !!! switch to tell, don't ask
 				&& self.Elements[Element.Earth] >= 2
@@ -34,7 +34,7 @@ namespace SpiritIsland.Basegame {
 					gameState.DamageInvaders(otherCoast,4);
 					// destroy 1 dahan
 					if(gameState.HasDahan(otherCoast))
-						gameState.AddDahan(otherCoast,-1);
+						gameState.AdjustDahan(otherCoast,-1);
 				}
 			}
 			return Task.CompletedTask;

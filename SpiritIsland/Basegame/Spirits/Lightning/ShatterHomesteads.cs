@@ -14,7 +14,7 @@ namespace SpiritIsland.Basegame {
 			var grp = gameState.InvadersOn(target);
 			if(grp.HasTown){
 				var town = grp[Invader.Town] > 0 ? Invader.Town : Invader.Town1;
-				grp.DestroyType(town);
+				grp.DestroyType(town, 1);
 			}
 			// 1 fear
 			gameState.AddFear(1);

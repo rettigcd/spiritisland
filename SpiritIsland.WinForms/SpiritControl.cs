@@ -124,14 +124,17 @@ namespace SpiritIsland.WinForms {
 			// Innates
 			x = 10f;
 			y += (lineHeight * 1.25f);
-			foreach(var innate in spirit.InnatePowers) {
-				var image = GetImage( innate );
+
+			// This non-sense is because Thunderspeaker has a fast & slow option with the same name.
+			string[] innateOptionNames = innateOptions.Select(x=>x.Name).ToArray();
+			foreach(var name in spirit.InnatePowers.Select(i=>i.Name).Distinct()) {
+				var image = GetInnateImage( name );
 
 				int drawWidth = Width - (int)x * 2;
 				int drawHeight = drawWidth * image.Height / image.Width;
 				graphics.DrawImage( image, x, y, drawWidth, drawHeight );
 
-				if(innateOptions.Contains( innate ))
+				if(innateOptionNames.Contains( name ))
 					graphics.DrawRectangle( highlightPen, x, y, drawWidth, drawHeight );
 
 				y += drawHeight;
@@ -162,20 +165,20 @@ namespace SpiritIsland.WinForms {
 			// !Note! - If you do not specify output width/height of image, .Net will scale image based on screen DPI and image DPI
 		}
 
-		Image GetImage( InnatePower card ) {
-			if(!innateImages.ContainsKey( card )) {
-				string filename = card.Name.Replace( ' ', '_' ).Replace( "'", "" ).ToLower();
-				Image image = Image.FromFile( $".\\images\\{filename}.jpg" );
-				innateImages.Add( card, image );
+		Image GetInnateImage( string innateCardName ) {
+			if(!innateImages.ContainsKey( innateCardName )) {
+				string filename = innateCardName.Replace( ' ', '_' ).Replace( "'", "" ).ToLower();
+				Image image = Image.FromFile( $".\\images\\innates\\{filename}.jpg" );
+				innateImages.Add( innateCardName, image );
 			}
-			return innateImages[card];
+			return innateImages[innateCardName];
 		}
 
 		Image GetImage( Element element ) {
 
 			if(!elementImages.ContainsKey( element )) {
 				string filename = "Simple_" + element.ToString().ToLower();
-				Image image = Image.FromFile( $".\\images\\{filename}.png" );
+				Image image = Image.FromFile( $".\\images\\tokens\\{filename}.png" );
 				elementImages.Add( element, image );
 			}
 			return elementImages[element];
@@ -186,7 +189,7 @@ namespace SpiritIsland.WinForms {
 		InnatePower[] innateOptions;
 		Spirit spirit;
 
-		readonly Dictionary<InnatePower, Image> innateImages = new();
+		readonly Dictionary<string, Image> innateImages = new();
 		readonly Dictionary<Element, Image> elementImages = new();
 		#endregion
 

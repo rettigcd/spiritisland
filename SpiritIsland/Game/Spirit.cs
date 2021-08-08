@@ -28,12 +28,20 @@ namespace SpiritIsland {
 		}
 
 		// !!! this could be calculated and cached when cards are purchased
-		public CountDictionary<Element> Elements => PurchasedCards
-			.SelectMany(c=>c.Elements)
-			.Concat(TrackElements())
-			.GroupBy(c=>c)
-			.ToDictionary(grp=>grp.Key,grp=>grp.Count())
-			.ToCountDict();
+		public CountDictionary<Element> Elements{ get { 
+			var fromCards = PurchasedCards.SelectMany( c => c.Elements ).ToArray();
+			var fromTrack = TrackElements().ToArray();
+			return fromCards.Concat(fromTrack)
+					.GroupBy(c=>c)
+				.ToDictionary( grp => grp.Key, grp => grp.Count() )
+				.ToCountDict();
+			//return PurchasedCards
+			//	.SelectMany(c=>c.Elements)
+			//	.Concat(TrackElements())
+			//	.GroupBy(c=>c)
+			//	.ToDictionary(grp=>grp.Key,grp=>grp.Count())
+			//	.ToCountDict();
+		} }
 
 		#endregion
 
@@ -106,13 +114,13 @@ namespace SpiritIsland {
 		/// Removes from list.  Triggers Energy when last growth removed
 		/// </summary>
 		public void Resolve( IActionFactory selectedActionFactory) {
-			RemoveFactory(selectedActionFactory); // collapse this method
+			RemoveUnresolvedFactory(selectedActionFactory); // collapse this method
 		}
 
 		/// <summary>
 		/// Removes it from the Unresolved-list
 		/// </summary>
-		public void RemoveFactory(IActionFactory selectedActionFactory ) {
+		public void RemoveUnresolvedFactory(IActionFactory selectedActionFactory ) {
 			if(selectedActionFactory is InnatePower ip) {
 				usedInnates.Add( ip );
 				return;
@@ -149,7 +157,7 @@ namespace SpiritIsland {
 				.Where( f => f.Speed == speed )
 				.ToArray();
 			foreach(var factory in toFlush)
-				RemoveFactory( factory );
+				RemoveUnresolvedFactory( factory );
 			return toFlush.Length;
 		}
 

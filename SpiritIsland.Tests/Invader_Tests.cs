@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Threading.Tasks;
+using Shouldly;
 using SpiritIsland.Basegame;
 using Xunit;
 
@@ -219,7 +221,7 @@ namespace SpiritIsland.Tests.Core {
 		//// 3D@1, 1D@2 1C@3  => 1C@1,1T@2
 		[Theory]
 		[InlineData("3D@2,1T@2,1E@1","2D@2")] // !!! WRONG it should be 1D@2,1D@1 - not implemented parital yet
-		public void Ravage(string startingUnits,string endingUnits) {
+		public async Task Ravage(string startingUnits,string endingUnits) {
 			gameState = new GameState(new RiverSurges()) { Island = new Island( board ) };
 
 			// Given: Invaders on a Mountain space
@@ -229,7 +231,7 @@ namespace SpiritIsland.Tests.Core {
 			Assert_UnitsAre( startingUnits, space );
 
 			// When: Ravaging in Mountains
-			gameState.Ravage(new InvaderCard(Terrain.Mountain));
+			await gameState.Ravage(new InvaderCard(Terrain.Mountain));
 
 			Assert_UnitsAre( endingUnits, space );
 		}
@@ -253,29 +255,29 @@ namespace SpiritIsland.Tests.Core {
 
 		void Assert_UnitsAre( string startingUnits, Space space ) {
 			List<string> items = new();
+
 			int dahanCount = gameState.GetDahanOnSpace(space);
 			if(dahanCount>0)
 				items.Add($"{dahanCount}D@2");
 			string actualInvaders = gameState.InvadersOn(space).ToString();
+
 			if(actualInvaders.Length>0)
 				items.Add(actualInvaders);
-			Assert.Equal(startingUnits,items.Join(","));
+
+			items.Join( "," ).ShouldBe( startingUnits );
 		}
 
 		void Given_InitUnits( string startingUnits, Space space ) {
-//			var group = gameState.InvadersOn( space );
 			foreach(var unit in startingUnits.Split( ',' )) {
 				int count = unit[0] - '0';
 				string itemSummary = unit[1..];
 				if(itemSummary=="D@2"){
-					gameState.AddDahan(space,count);
+					gameState.AdjustDahan(space,count);
 				} else {
 					var invader = Invader.Lookup[itemSummary];
-//					group[invader] += count;
 					gameState.Adjust(space,invader,count);
 				}
 			}
-//			gameState.UpdateFromGroup( group );
 		}
 
 	}

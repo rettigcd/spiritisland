@@ -159,7 +159,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 
 		void Given_AddDahan( int startingCount, Space target ) {
-			gameState.AddDahan( target, startingCount );
+			gameState.AdjustDahan( target, startingCount );
 			Assert.Equal( startingCount, gameState.GetDahanOnSpace( target ) );
 		}
 

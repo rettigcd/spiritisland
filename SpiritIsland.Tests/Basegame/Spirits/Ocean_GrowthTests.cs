@@ -103,7 +103,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 			if(options.Length > 1) // not auto selecting
 				ppAction.Select( ppAction.Options.Single( o => o.Text == options[0] ) );
 
-			spirit.RemoveFactory( ppFactory );
+			spirit.RemoveUnresolvedFactory( ppFactory );
 		}
 
 

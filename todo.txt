@@ -1,15 +1,16 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
-Change InvaderGroup to have refence to came state, and use Commit()
+Words of Warning
 
-Destory(...) filters max
+SpiritControl
+	#s on elements on wrong side / spacing
+	Draw Engery and Card tracks
 
 Fix
 	Words of Warning
 	Based on the size of the first card, calculate width required, if insufficient, add scroll bar.
 	While selecting cards, show total elements, allow selecting all cards before selecting 'done/commit'.  Select/Unselect.
 	At the end of each ActionTree (maybe after each invader is destroyed?), test if we have a Terror Level victory.
-	
 
 Not Implemented
 	Minor Cards
@@ -55,5 +56,3 @@ Unit Test
 	Blight causes spirit to lose 1 presence on space
 	All of Lightning
 	All of Shadows Flicker
-
-----
