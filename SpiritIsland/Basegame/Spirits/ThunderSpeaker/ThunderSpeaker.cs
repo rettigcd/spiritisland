@@ -109,16 +109,16 @@ namespace SpiritIsland.Basegame {
 			gs.DahanDestroyed.Handlers.Add( DestroyNearbyPresence );
 		}
 
-		async Task MovePresenceWithDahan(GameState _, DahanMovedArgs args) {
+		async Task MovePresenceWithDahan(GameState gs, DahanMovedArgs args) {
 			int maxThatCanMove = Math.Min(args.count,Presence.Count(p=>p==args.from));
 			// 0 -> no action
 			if(maxThatCanMove==0) return;
 			var moveLookup = new Dictionary<string,int>();
-			for(int i = maxThatCanMove; i < 0; --i)
+			for(int i = maxThatCanMove; 0 < i; --i)
 				moveLookup.Add($"Move {i} presence.",i );
 			moveLookup.Add( "stay",0);
 			
-			string s = await new ActionEngine(null,null)// !!! HACK - null game state, just need stupid extension method, not game state or spirit
+			string s = await new ActionEngine( this,gs )
 				.SelectText("Move presence with dahan?", moveLookup.OrderByDescending(p=>p.Value).Select(p=>p.Key).ToArray()); 
 			int countToMove = moveLookup[s];
 

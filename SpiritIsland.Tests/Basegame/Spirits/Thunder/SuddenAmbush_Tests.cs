@@ -1,10 +1,18 @@
 ﻿using Shouldly;
 using SpiritIsland.Basegame;
+using SpiritIsland.Core;
 using Xunit;
 
 namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 
 	public class SuddenAmbush_Tests : ThunderCards {
+
+		[Fact]
+		public void IsFastAndCost1() {
+			var suddenAmbush = PowerCard.For<SuddenAmbush>();
+			suddenAmbush.Speed.ShouldBe(Speed.Fast);
+			suddenAmbush.Cost.ShouldBe( 1 );
+		}
 
 		[Fact]
 		public void NoDahanToGather() {

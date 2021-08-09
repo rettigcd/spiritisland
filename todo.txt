@@ -29,6 +29,7 @@ Improve
 	Scale Cards to Window
 
 Unit Test
+	Thunderspeakers - move-with-the-dahan
 	Harbinger of the Lightning
 		- Elements, speed, cost
 		- target - range 1

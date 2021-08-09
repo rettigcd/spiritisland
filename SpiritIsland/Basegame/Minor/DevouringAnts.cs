@@ -11,7 +11,7 @@ namespace SpiritIsland.Basegame {
 			var (_,gs) = engine;
 			gs.AddFear(1);
 			if(gs.GetDahanOnSpace(target)>0)
-				gs.AdjustDahan(target,-1);
+				gs.DestoryDahan(target,1,DahanDestructionSource.PowerCard);
 			int bonusDamage = target.Terrain.IsIn(Terrain.Sand,Terrain.Jungle) ? 1 : 0;
 			gs.DamageInvaders(target, 1+bonusDamage);
 		}

@@ -22,7 +22,7 @@ namespace SpiritIsland.Basegame {
 			// if you have 2 moon, 3 plant, Destroy 1 city and do not destroy dahan
 			if(!hasBonus){
 				int dahanCount = eng.GameState.GetDahanOnSpace(target);
-				eng.GameState.AdjustDahan(target,-dahanCount);
+				eng.GameState.DestoryDahan(target,dahanCount,DahanDestructionSource.PowerCard);
 			} else {
 				grp.DestroyType(Invader.City, 1);
 			}

@@ -376,7 +376,9 @@ namespace SpiritIsland {
 		public int count;
 	};
 
-	public enum DahanDestructionSource { Invaders }
+	public enum DahanDestructionSource { Invaders,
+		PowerCard
+	}
 
 	public class DahanDestroyedArgs {
 		public Space space;
