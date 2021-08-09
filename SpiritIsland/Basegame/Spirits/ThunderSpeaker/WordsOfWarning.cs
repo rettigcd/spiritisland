@@ -4,10 +4,11 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 
-	class WordsOfWarning {
+	public class WordsOfWarning {
 
+		public const string Name = "Words of Warning";
 
-		[SpiritCard( "Words of Warning", 1, Speed.Fast, Element.Air, Element.Sun, Element.Animal )]
+		[SpiritCard( WordsOfWarning.Name, 1, Speed.Fast, Element.Air, Element.Sun, Element.Animal )]
 		[FromPresence(1,Filter.Dahan)]
 		static public Task Act( ActionEngine engine, Space target ) {
 			// defend 3.

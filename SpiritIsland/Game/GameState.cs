@@ -362,7 +362,8 @@ namespace SpiritIsland {
 
 	public class AsyncEvent<T> {
 		public async Task Invoke(GameState gameState,T t) {
-			foreach(var handler in Handlers)
+			var handlerCopy = Handlers.ToArray(); // so handlers can remove themselvers from the collection while looping over it (Collection was modified;)
+			foreach(var handler in handlerCopy)
 				await handler( gameState,t );
 		}
 
