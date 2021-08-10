@@ -126,11 +126,11 @@ namespace SpiritIsland.Basegame {
 			}
 		}
 
-		async Task DestroyNearbyPresence( GameState _, DahanDestroyedArgs args ) {
+		async Task DestroyNearbyPresence( GameState gameState, DahanDestroyedArgs args ) {
 			if(args.Source != DahanDestructionSource.Invaders) return;
 
 			string prompt = $"Sword to Victory: {args.count} dahan destroyed. Select presence to remove.";
-			var eng = new ActionEngine( null, null ); // !!!! HACK - need 
+			var eng = new ActionEngine( this, gameState );
 
 			int numToDestroy = args.count;
 			Space[] options;
