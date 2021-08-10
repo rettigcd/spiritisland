@@ -99,6 +99,8 @@ namespace SpiritIsland.Basegame {
 		}
 
 		public override void Initialize( Board board, GameState gs ) {
+			base.Initialize(board, gs);
+
 			// Put 2 Presence on your starting board: 1 in each of the 2 lands with the most Dahanicon.png
 			Presence.AddRange(board.Spaces.OrderByDescending(gs.GetDahanOnSpace).Take(2));
 
