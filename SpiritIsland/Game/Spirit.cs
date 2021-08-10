@@ -35,12 +35,6 @@ namespace SpiritIsland {
 					.GroupBy(c=>c)
 				.ToDictionary( grp => grp.Key, grp => grp.Count() )
 				.ToCountDict();
-			//return PurchasedCards
-			//	.SelectMany(c=>c.Elements)
-			//	.Concat(TrackElements())
-			//	.GroupBy(c=>c)
-			//	.ToDictionary(grp=>grp.Key,grp=>grp.Count())
-			//	.ToCountDict();
 		} }
 
 		#endregion
@@ -50,8 +44,6 @@ namespace SpiritIsland {
 		public GrowthOption[] GrowthOptions { get; protected set; }
 
 		public virtual void Grow( GameState gameState, int optionIndex ) {
-
-			usedInnates.Clear();
 
 			GrowthOption option = this.GetGrowthOptions()[optionIndex];
 			foreach(var action in option.GrowthActions)
@@ -220,12 +212,16 @@ namespace SpiritIsland {
 		}
 
 		public virtual void Initialize( Board board, GameState gameState ){
-			gameState.TimePassed += (_) => {
-				DiscardPile.AddRange( PurchasedCards );
-				PurchasedCards.Clear();
-			};
+			gameState.TimePassed += On_TimePassed;
 		}
 
+		void On_TimePassed(GameState _ ) {
+			// !!! Need a 2-turn unit test that makes sure these things get cleared each turn
+			// because it is easy to forget to call base.Initialize(board,gamestate)
+			DiscardPile.AddRange( PurchasedCards );
+			PurchasedCards.Clear();
+			usedInnates.Clear();
+		}
 
 		#endregion
 

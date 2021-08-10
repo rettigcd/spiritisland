@@ -73,14 +73,10 @@ namespace SpiritIsland.Basegame {
 		}
 
 		public override void Grow( GameState gameState, int optionIndex ) {
-			GrowthOption option = this.GetGrowthOptions()[optionIndex];
-			foreach (var action in option.GrowthActions)
-				AddActionFactory(action);
+			base.Grow( gameState, optionIndex );
 
 			if( RevealedCardSpaces >= 5 && optionIndex>0)
 				AddActionFactory(new Reclaim1());
-
-			RemoveResolvedActions(gameState,Speed.Growth);
 		}
 
 		protected override int[] EnergySequence => new int[]{1, 1, 2, 2, 2, 3 };
