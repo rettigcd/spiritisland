@@ -1,10 +1,17 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
-Words of Warning
-
 SpiritControl
+	Select presence from presence tracks (UI)
 	#s on elements on wrong side / spacing
-	Draw Engery and Card tracks
+	show Growth options in GUI
+	show $$ in gui
+	show spirit icon in GUI
+
+Misc
+	give presence shadows
+	replace board presence icons with color presence
+	LOG fear actions / results
+
 
 Fix
 	Words of Warning
