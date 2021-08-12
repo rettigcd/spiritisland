@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using SpiritIsland.Basegame;
+﻿using SpiritIsland.BranchAndClaw;
 using Xunit;
 
-namespace SpiritIsland.Tests.Basegame.Spirits {
+namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 
 	public class Keeper_GrowthTests : GrowthTests {
 

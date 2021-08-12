@@ -9,7 +9,9 @@ namespace SpiritIsland {
 
 		#region constructor
 
-		public Spirit( params PowerCard[] initialCards ){
+		public Spirit( Track[] energyTrack, params PowerCard[] initialCards ){
+			EnergyTrack = energyTrack;
+
 			foreach(var card in initialCards)
 				RegisterNewCard(card);
 		}
@@ -23,9 +25,11 @@ namespace SpiritIsland {
 		#endregion
 
 		#region Elements
-		protected virtual IEnumerable<Element> TrackElements() {
-			return Enumerable.Empty<Element>();
+		protected IEnumerable<Element> TrackElements() {
+			return EnergyTrack.Take(RevealedEnergySpaces).Where(t=>t.Element.HasValue).Select(t=>t.Element.Value);
 		}
+
+		public Track NextEnergy => EnergyTrack[RevealedEnergySpaces];
 
 		// !!! this could be calculated and cached when cards are purchased
 		public CountDictionary<Element> Elements{ get { 
@@ -182,14 +186,14 @@ namespace SpiritIsland {
 		/// <summary> # of coins in the bank. </summary>
 		public int Energy { get; set; }
 
-		protected virtual int[] EnergySequence => new int[]{0};
+		public Track[] EnergyTrack {get; }
+
 		protected virtual int[] CardSequence => new int[]{0}; 
 
-		public int[] GetEnergySequence() => EnergySequence;
 		public int[] GetCardSequence() => CardSequence;
 
 		/// <summary> Energy gain per turn </summary>
-		public int EnergyPerTurn => EnergySequence[RevealedEnergySpaces-1];
+		public int EnergyPerTurn => EnergyTrack.Take( RevealedEnergySpaces ).Where( x => x.Energy.HasValue ).Last().Energy.Value;
 
 		public virtual int NumberOfCardsPlayablePerTurn => CardSequence[RevealedCardSpaces-1];
 

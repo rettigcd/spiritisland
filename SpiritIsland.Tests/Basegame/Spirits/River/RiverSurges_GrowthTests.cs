@@ -41,8 +41,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Assert.Equal(1,spirit.RevealedEnergySpaces);
 
 			When_Growing( 1 );
-			Resolve_PlacePresence( "A2;A3;A4", Track.Energy1);
-			Resolve_PlacePresence( "A1;A2;A3;A4", Track.Energy1); // original 0 will already be removed
+			Resolve_PlacePresence( "A2;A3;A4", spirit.NextEnergy);
+			Resolve_PlacePresence( "A1;A2;A3;A4", spirit.NextEnergy );
 
 			Assert_GainPowercard( 0 );
 			Assert.Equal(2,spirit.EnergyPerTurn);

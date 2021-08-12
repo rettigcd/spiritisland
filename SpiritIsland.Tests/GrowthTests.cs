@@ -112,7 +112,7 @@ namespace SpiritIsland.Tests {
 		#region Resolve_
 
 		protected void Resolve_PlacePresence( string placeOptions, string factory=null) {
-			Resolve_PlacePresence( placeOptions, Track.Energy1, factory );
+			Resolve_PlacePresence( placeOptions, spirit.NextEnergy, factory );
 		}
 
 		protected void Resolve_PlacePresence(string placeOptions, Track source, string factoryDescription=null ) {
@@ -151,10 +151,11 @@ namespace SpiritIsland.Tests {
 			Assert.Equal( expectedEnergy, spirit.EnergyPerTurn );
 		}
 
-		protected void Assert_BonusElements( string elements ) {
+		protected void Assert_BonusElements( string expectedElements ) {
+			var spiritElements = spirit.Elements;
 			foreach(var pair in GrowthTests.ElementChars) {
-				int expected = elements.Count( x => x == pair.Value );
-				Assert.Equal( expected, spirit.Elements[ pair.Key ] );
+				int expected = expectedElements.Count( x => x == pair.Value );
+				spiritElements[pair.Key].ShouldBe( expected );
 			}
 		}
 

@@ -28,6 +28,7 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 		public const string Name = "Lightning's Swift Strike";
 
 		public LightningsSwiftStrike():base(
+			new Track[] { Track.Energy1, Track.Energy1, Track.Energy2, Track.Energy2, Track.Energy3, Track.Energy4, Track.Energy4, Track.Energy5, },
 			PowerCard.For<HarbingersOfTheLightning>(),
 			PowerCard.For<LightningsBoon>(),
 			PowerCard.For<RagingStorm>(),
@@ -56,7 +57,6 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 
 		public override string Text => Name;
 
-		protected override int[] EnergySequence => new int[]{ 1, 1, 2, 2, 3, 4, 4, 5 };
 		protected override int[] CardSequence => new int[]{ 2, 3, 4, 5, 6 };
 
 		public override void PurchaseAvailableCards( params PowerCard[] cards ) {

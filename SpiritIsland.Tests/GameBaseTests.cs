@@ -30,6 +30,20 @@ namespace SpiritIsland.Tests {
 			game.Decision.Select( option );
 		}
 
+		protected void Game_SelectOptionContains( string prompt, string substring ) {
+
+			if(!game.Decision.Prompt.StartsWith( prompt ))
+				Assert.Equal( prompt, game.Decision.Prompt );
+
+			var option = game.Decision.Options.FirstOrDefault( o => o.Text.ToLower().Contains(substring.ToLower()) );
+			if(option == null)
+				throw new Exception( $"option ({substring} not found in "
+					+ game.Decision.Options.Select( x => x.Text ).Join( ", " )
+				);
+			game.Decision.Select( option );
+		}
+
+
 		protected void Game_BuyPowerCards( string text ) => Game_SelectOption("Buy power cards:", text);
 
 		protected void Game_SelectPowerCardsDone() => Game_BuyPowerCards("Done");

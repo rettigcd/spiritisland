@@ -48,6 +48,7 @@ namespace SpiritIsland.Basegame {
 		public override string Text => Name;
 
 		public RiverSurges():base(
+			new Track[] { Track.Energy1, Track.Energy2, Track.Energy2, Track.Energy3, Track.Energy4, Track.Energy4, Track.Energy5, },
 			PowerCard.For<BoonOfVigor>(),
 			PowerCard.For<FlashFloods>(),
 			PowerCard.For<RiversBounty>(),
@@ -75,9 +76,7 @@ namespace SpiritIsland.Basegame {
 		}
 
 		bool Reclaim1FromCardTrack => this.RevealedCardSpaces >= 5;
-		protected override int[] EnergySequence => new int[]{1, 2, 2, 3, 4, 4, 5 };
 		protected override int[] CardSequence => new int[]{1, 2, 2, 3, 3, 4, 5 };
-
 
 		public override int RevealedCardSpaces {
 			get{ return base.RevealedCardSpaces; }

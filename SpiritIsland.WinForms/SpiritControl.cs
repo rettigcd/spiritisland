@@ -73,8 +73,8 @@ namespace SpiritIsland.WinForms {
 			using Bitmap presence = new Bitmap( presenceStream );
 
 			// calc slot width and presence height
-			int maxLength = Math.Max( spirit.GetCardSequence().Length, spirit.GetEnergySequence().Length );
-			float coinWidth = (Width - 2 * leftMargin) / maxLength;
+			int maxLength = Math.Max( spirit.GetCardSequence().Length, spirit.EnergyTrack.Length );
+			float coinWidth = (Width - 2 * margin) / maxLength;
 			float presenceHeight = coinWidth * presence.Height / presence.Width;
 
 			// Energy
@@ -83,6 +83,8 @@ namespace SpiritIsland.WinForms {
 
 			// Cards
 			DrawCards( graphics, simpleFont, presence, coinWidth, presenceHeight, ref y );
+
+			y += margin;
 
 			// Innates
 			x = DrawInnates( graphics, highlightPen, ref y );
@@ -96,7 +98,7 @@ namespace SpiritIsland.WinForms {
 
 		void DrawEnergy( Graphics graphics, Font simpleFont, Bitmap presence, float coinWidth, float presenceHeight, ref float y ) {
 
-			float x = leftMargin;
+			float x = margin;
 
 			// Title
 			graphics.DrawString( "Energy", simpleFont, SystemBrushes.ControlDarkDark, x, y );
@@ -107,10 +109,10 @@ namespace SpiritIsland.WinForms {
 
 			// bool highlightEnergy = trackOptions.Contains( Track.Energy1 );
 
-			foreach(int energyAmount in spirit.GetEnergySequence()) {
+			foreach(var energy in spirit.EnergyTrack) {
 				
 				// energy amount
-				using( var imgStream = assembly.GetManifestResourceStream( $"SpiritIsland.WinForms.images.tokens.{energyAmount} energy.png" ) ){
+				using( var imgStream = assembly.GetManifestResourceStream( $"SpiritIsland.WinForms.images.tokens.{energy.Text}.png" ) ){
 					using var bitmap = new Bitmap( imgStream ); 
 					graphics.DrawImage( bitmap, x, y, coinWidth, coinWidth );
 				};
@@ -128,7 +130,7 @@ namespace SpiritIsland.WinForms {
 
 		void DrawCards( Graphics graphics, Font simpleFont, Bitmap presence, float slotWidth, float presenceHeight, ref float y ) {
 
-			float x = leftMargin;
+			float x = margin;
 
 			// draw title
 			graphics.DrawString( "Cards", simpleFont, SystemBrushes.ControlDarkDark, x, y );
@@ -166,7 +168,7 @@ namespace SpiritIsland.WinForms {
 		}
 
 		float DrawInnates( Graphics graphics, Pen highlightPen, ref float y ) {
-			float x = leftMargin;
+			float x = margin;
 
 			// This non-sense is because Thunderspeaker has a fast & slow option with the same name.
 			string[] innateOptionNames = innateOptions.Select( x => x.Name ).ToArray();
@@ -193,7 +195,7 @@ namespace SpiritIsland.WinForms {
 			y += 20;
 			const float elementSize = 50f;
 			var elements = spirit.Elements; // cache, don't recalculate
-			float x = leftMargin;
+			float x = margin;
 
 			var orderedElements = elements.Keys.OrderBy( el => elPos[el] );
 			foreach(var element in orderedElements) {
@@ -235,7 +237,7 @@ namespace SpiritIsland.WinForms {
 		#region private fields
 
 		readonly Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
-		const float leftMargin = 10f;
+		const float margin = 10f;
 		const float lineHeight = 60f;
 
 		string presenceColor;

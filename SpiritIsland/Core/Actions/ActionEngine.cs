@@ -79,9 +79,17 @@ namespace SpiritIsland.Core {
 
 		public Task<Track> SelectTrack() {
 			var result = new TaskCompletionSource<Track>();
+
+			var tracks = new List<Track>();
+			if(Self.RevealedEnergySpaces < Self.EnergyTrack.Length)
+				tracks.Add( Self.EnergyTrack[Self.RevealedEnergySpaces] );
+
+			if(Self.RevealedEnergySpaces < Self.GetCardSequence().Length)
+				tracks.Add( Track.Card1 ); // pick the correct one
+
 			decisions.Push( new SelectAsync<Track>( 
 				"Select Presence to place.", 
-				new Track[]{Track.Energy1,Track.Card1},
+				tracks.ToArray(),
 				false,
 				result 
 			));

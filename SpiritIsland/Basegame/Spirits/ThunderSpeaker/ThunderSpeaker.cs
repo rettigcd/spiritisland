@@ -43,6 +43,7 @@ namespace SpiritIsland.Basegame {
 		public override string Text => Name;
 
 		public ThunderSpeaker():base(
+			new Track[] { Track.Energy1, Track.AirEnergy, Track.Energy2, Track.FireEnergy, Track.SunEnergy, Track.Energy3 },
 			PowerCard.For<ManifestationOfPowerAndGlory>(),
 			PowerCard.For<SuddenAmbush>(),
 			PowerCard.For<VoiceOfThunder>(),
@@ -81,20 +82,19 @@ namespace SpiritIsland.Basegame {
 				AddActionFactory(new Reclaim1());
 		}
 
-		protected override int[] EnergySequence => new int[]{1, 1, 2, 2, 2, 3 };
 		protected override int[] CardSequence => new int[]{1, 2, 2, 3, 3, 3, 4 };
 
-		protected override IEnumerable<Element> TrackElements() {
-			return new Element[]{ 
-				Element.None, 
-				Element.Air, 
-				Element.None, 
-				Element.Fire,
-				Element.Sun,
-				Element.None
-			}	.Take(RevealedEnergySpaces)
-				.Where(el=>el!=Element.None);
-		}
+		//protected override IEnumerable<Element> TrackElements() {
+		//	return new Element[]{ 
+		//		Element.None, 
+		//		Element.Air, 
+		//		Element.None, 
+		//		Element.Fire,
+		//		Element.Sun,
+		//		Element.None
+		//	}	.Take(RevealedEnergySpaces)
+		//		.Where(el=>el!=Element.None);
+		//}
 
 		public override void Initialize( Board board, GameState gs ) {
 			base.Initialize(board, gs);

@@ -1,4 +1,4 @@
-﻿using SpiritIsland.BranchAndClaw;
+﻿using SpiritIsland.Basegame;
 using Xunit;
 
 namespace SpiritIsland.Tests.Basegame.Spirits {

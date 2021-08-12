@@ -9,6 +9,12 @@ namespace SpiritIsland.Tests.Core {
 
 		class TestSpirit : Spirit {
 
+			public TestSpirit():base(
+				new Track[]{ Track.Energy0, Track.Energy0, Track.Energy0 }
+			) {
+
+			}
+
 			public override string Text => "Test Spirit";
 
 			public override GrowthOption[] GetGrowthOptions() {
@@ -17,11 +23,12 @@ namespace SpiritIsland.Tests.Core {
 				};
 			}
 
-		public override void Initialize( Board _, GameState _1 ){
+			protected override int[] CardSequence => new int[]{1,2,3,4,5 };
+
+			public override void Initialize( Board _, GameState _1 ){
 				throw new NotImplementedException();
 			}
 
-			protected override int[] EnergySequence => new int[] {0,0,0};
 			public List<GrowthActionFactory> actions = new();
 		}
 

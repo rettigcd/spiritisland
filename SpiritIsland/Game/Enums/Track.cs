@@ -1,22 +1,30 @@
-﻿namespace SpiritIsland {
+﻿using Elem = SpiritIsland.Element;
 
-	public class Track : IOption { 
-		public static readonly Track Energy1 = new Track( "1 energy" );
-		public static readonly Track Energy2 = new Track( "2 energy" );
-		public static readonly Track Energy3 = new Track( "3 energy" );
-		public static readonly Track Energy4 = new Track( "4 energy" );
-		public static readonly Track Energy5 = new Track( "5 energy" );
-		public static readonly Track Energy6 = new Track( "6 energy" );
-		public static readonly Track Energy7 = new Track( "7 energy" );
-		public static readonly Track Energy8 = new Track( "8 energy" );
+namespace SpiritIsland {
 
-		public static readonly Track FireEnergy = new Track( "fire energy" );
-		public static readonly Track PlantEnergy = new Track( "plant energy" );
-		public static readonly Track MoonEnergy = new Track( "moon energy" );
-		public static readonly Track SunEnergy = new Track( "sun energy" );
-		public static readonly Track AirEnergy = new Track( "air energy" );
-		public static readonly Track AnyEnergy = new Track( "any energy" );
-		public static readonly Track EarthSunEnergy = new Track( "earth energy" );
+	public class Track : IOption {
+		static Track MkEnergy( int energy ) { return new Track( energy + " energy" ) { Energy = energy }; }
+		static Track MkEnergy( Element el ) { return new Track( el.ToString().ToLower() + " energy" ) { Element = el }; }
+		// ! Instead of enumerating this here, we could generate them when needed in the spirit
+		public static readonly Track Energy0     = MkEnergy( 0 );
+		public static readonly Track Energy1     = MkEnergy( 1 );
+		public static readonly Track Energy2     = MkEnergy( 2 );
+		public static readonly Track Energy3     = MkEnergy( 3 );
+		public static readonly Track Energy4     = MkEnergy( 4 );
+		public static readonly Track Energy5     = MkEnergy( 5 );
+		public static readonly Track Energy6     = MkEnergy( 6 );
+		public static readonly Track Energy7     = MkEnergy( 7 );
+		public static readonly Track Energy8     = MkEnergy( 8 );
+		public static readonly Track Energy9     = MkEnergy( 9 );
+		public static readonly Track FireEnergy  = MkEnergy( Elem.Fire );
+		public static readonly Track PlantEnergy = MkEnergy( Elem.Plant );
+		public static readonly Track MoonEnergy  = MkEnergy( Elem.Moon );
+		public static readonly Track SunEnergy   = MkEnergy( Elem.Sun );
+		public static readonly Track AirEnergy   = MkEnergy( Elem.Air );
+		public static readonly Track AnyEnergy   = MkEnergy( Elem.Any );
+		public static readonly Track AnimalEnergy = MkEnergy( Elem.Animal );
+		public static readonly Track EarthEnergy = MkEnergy( Elem.Earth );
+		public static readonly Track WaterEnergy = MkEnergy( Elem.Water );
 
 		public static readonly Track Card1 = new Track( "1 cardPlay" );
 		public static readonly Track Card2 = new Track( "2 cardPlay" );
@@ -25,9 +33,11 @@
 		public static readonly Track Card5 = new Track( "5 cardPlay" );
 		public static readonly Track Card6 = new Track( "6 cardPlay" );
 
-		protected Track(string text){ this.Text = text; }
+		Track(string text){ this.Text = text; }
 
-		public string Text {get;}
+		public string Text {get; }
+		public int? Energy { get; private set; }
+		public Element? Element { get; private set; }
 	}
 
 

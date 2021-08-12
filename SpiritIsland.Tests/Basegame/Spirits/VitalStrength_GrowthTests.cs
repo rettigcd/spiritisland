@@ -37,7 +37,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 			// +1 presence range 1, +2 energy
 			Given_HasPresence( board[1] );
 			When_Growing(2);
-			Resolve_PlacePresence( "A1;A2;A4;A5;A6",Track.Energy1);
+			Resolve_PlacePresence( "A1;A2;A4;A5;A6",spirit.EnergyTrack[spirit.RevealedEnergySpaces]);
 			Assert.Equal(3,spirit.EnergyPerTurn);
 			Assert_HasEnergy(3+2);
 		}

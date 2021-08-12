@@ -54,10 +54,13 @@ namespace SpiritIsland.Core {
 			var to = await engine.SelectSpace( "Where would you like to place your presence?", destinationOptions );
 
 			// from
-			if(from == Track.Card1)
-				engine.Self.RevealedCardSpaces++;
-			else if(from == Track.Energy1)
+			var nextEnergy = engine.Self.EnergyTrack[engine.Self.RevealedEnergySpaces];
+			if(from == nextEnergy)
 				engine.Self.RevealedEnergySpaces++;
+			else if(from == Track.Card1)
+				engine.Self.RevealedCardSpaces++;
+			else
+				throw new ArgumentException(from.ToString());
 
 			// To
 			engine.Self.Presence.Add( to );

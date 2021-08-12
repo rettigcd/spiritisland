@@ -8,7 +8,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 	public class RiverGame : GameBaseTests {
 		protected void Game_PlacePresence1( string sourceTrack, string destinationSpace ) {
 			Game_SelectOption( "Select Growth to resolve", "PlacePresence(1)" );
-			Game_SelectOption( "PlacePresence(1) - Select Presence to place", sourceTrack );
+			Game_SelectOptionContains( "PlacePresence(1) - Select Presence to place", sourceTrack );
 			Game_SelectOption( "PlacePresence(1) - Where would you like", destinationSpace );
 		}
 

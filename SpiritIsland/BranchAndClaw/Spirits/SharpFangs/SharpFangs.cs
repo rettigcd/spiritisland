@@ -43,6 +43,7 @@ namespace SpiritIsland.BranchAndClaw {
 		public override string Text => "Sharp Fangs";
 
 		public SharpFangs():base(
+			new Track[] { Track.Energy1, Track.AnimalEnergy, Track.PlantEnergy, Track.Energy2, Track.AnimalEnergy, Track.Energy3, Track.Energy4 },
 			new NullPowerCard( "A", 0, Speed.Fast ),
 			new NullPowerCard( "B", 0, Speed.Fast ),
 			new NullPowerCard( "C", 0, Speed.Fast ),
@@ -99,16 +100,14 @@ namespace SpiritIsland.BranchAndClaw {
 			RemoveResolvedActions(gameState,Speed.Growth);
 		}
 
-		//	1 animal plant 2 animal 3 4
-		protected override int[] EnergySequence => new int[]{1,1,1,2,2,3,4};
 		//	2 2 3 reclaim-1 4 5&reclaim-1
 		protected override int[] CardSequence => new int[]{2,2,3,3,4,5};
 
-		protected override IEnumerable<Element> TrackElements() {
-			if( 2<=RevealedEnergySpaces ) yield return Element.Animal;
-			if( 3<=RevealedEnergySpaces ) yield return Element.Plant;
-			if( 5<=RevealedEnergySpaces ) yield return Element.Animal;
-		}
+		//protected override IEnumerable<Element> TrackElements() {
+		//	if( 2<=RevealedEnergySpaces ) yield return Element.Animal;
+		//	if( 3<=RevealedEnergySpaces ) yield return Element.Plant;
+		//	if( 5<=RevealedEnergySpaces ) yield return Element.Animal;
+		//}
 
 		public override void Initialize( Board _, GameState _1 ) {
 			throw new System.NotImplementedException();
