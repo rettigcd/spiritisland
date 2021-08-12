@@ -43,7 +43,7 @@ namespace SpiritIsland.Tests.Core {
 		public void PullsFrom_CardTrack(){
 			Given_SpiritGrowsByPlacingPresence();
 			When_Growing( 0 );
-			Resolve_PlacePresence( "A1", Track.Card );
+			Resolve_PlacePresence( "A1", Track.Card1 );
 			Assert.Equal(2,spirit.RevealedCardSpaces);
 		}
 

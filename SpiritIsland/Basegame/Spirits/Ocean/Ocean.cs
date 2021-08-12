@@ -46,6 +46,8 @@ Ocean
 
 	public class Ocean : Spirit {
 
+		public const string Name = "Ocean's Hungry Grasp";
+
 		public Ocean():base(
 			new NullPowerCard( "A", 0, Speed.Fast ),
 			new NullPowerCard( "B", 0, Speed.Fast ),
@@ -78,7 +80,7 @@ Ocean
 
 		}
 
-		public override string Text => "Ocean's Hungry Grasp";
+		public override string Text => Name;
 
 		// energy: 0 moon water 1 earth water 2
 		protected override int[] EnergySequence => new int[]{ 0,0,0,1,1,1,2 } ;

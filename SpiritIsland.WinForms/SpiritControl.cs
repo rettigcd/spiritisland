@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace SpiritIsland.WinForms {
@@ -15,8 +16,10 @@ namespace SpiritIsland.WinForms {
 			this.Cursor = Cursors.Default;
 		}
 
-		public void Init( Spirit spirit, IHaveOptions optionProvider ) {
+		public void Init( Spirit spirit, string presenceColor, IHaveOptions optionProvider ) {
 			this.spirit = spirit;
+
+			this.presenceColor = presenceColor ?? throw new ArgumentNullException(nameof(presenceColor));
 
 			elPos = new Dictionary<Element, int>();
 			int i=0;
@@ -60,74 +63,114 @@ namespace SpiritIsland.WinForms {
 
 			using Font simpleFont = new( "Arial", 8, FontStyle.Bold, GraphicsUnit.Point );
 
-			using Font font = new( "Arial", 18f );
+//			using Font font = new( "Arial", 18f );
 			using Brush coverBrush = new SolidBrush( Color.FromArgb( 128, Color.Gray ) );
 			Brush currentBrush = Brushes.Yellow;
 			using Pen highlightPen = new( Color.Red, 10f );
 
-			const float lineHeight = 60f;
-			const float deltaX = 45f;
+			// Load Presence image
+			using var presenceStream = assembly.GetManifestResourceStream( $"SpiritIsland.WinForms.images.presence.{presenceColor}.png" );
+			using Bitmap presence = new Bitmap( presenceStream );
+
+			// calc slot width and presence height
+			int maxLength = Math.Max( spirit.GetCardSequence().Length, spirit.GetEnergySequence().Length );
+			float coinWidth = (Width - 2 * leftMargin) / maxLength;
+			float presenceHeight = coinWidth * presence.Height / presence.Width;
 
 			// Energy
-			float x = 10f;
-			float y = 10f;
-			graphics.DrawString( "Energy", simpleFont, SystemBrushes.ControlDarkDark, x, y );
-
-			y += lineHeight;
-			int revealedEnergySpaces = spirit.RevealedEnergySpaces;
-			int idx = 0;
-			bool highlightEnergy = trackOptions.Contains( Track.Energy );
-			foreach(int en in spirit.GetEnergySequence()) {
-
-				if(idx == revealedEnergySpaces - 1)
-					graphics.FillEllipse( currentBrush, x, y, deltaX, lineHeight );
-
-				graphics.DrawString( en.ToString(), font, SystemBrushes.ControlDarkDark, x, y );
-
-				if(revealedEnergySpaces <= idx)
-					graphics.FillEllipse( coverBrush, x, y, deltaX, lineHeight );
-
-				if(highlightEnergy && revealedEnergySpaces == idx)
-					graphics.DrawEllipse( highlightPen, x, y, deltaX, lineHeight );
-
-				x += deltaX;
-				++idx;
-			}
+			float x, y=10f;
+			DrawEnergy( graphics, simpleFont, presence, coinWidth, presenceHeight, ref y );
 
 			// Cards
-			x = 10f;
+			DrawCards( graphics, simpleFont, presence, coinWidth, presenceHeight, ref y );
+
+			// Innates
+			x = DrawInnates( graphics, highlightPen, ref y );
+
+			// activated elements
+			ActivatedElements( graphics, simpleFont, ref y );
+
+			// !Note! - If you do not specify output width/height of image, .Net will scale image based on screen DPI and image DPI
+		}
+
+
+		void DrawEnergy( Graphics graphics, Font simpleFont, Bitmap presence, float coinWidth, float presenceHeight, ref float y ) {
+
+			float x = leftMargin;
+
+			// Title
+			graphics.DrawString( "Energy", simpleFont, SystemBrushes.ControlDarkDark, x, y );
 			y += lineHeight;
-			graphics.DrawString( "Cards", simpleFont, SystemBrushes.ControlDarkDark, x, y );
 
-			int revealedCardSpaces = spirit.RevealedCardSpaces;
-			y += lineHeight;
-			idx = 0;
-			bool highlightCard = trackOptions.Contains( Track.Card );
-			foreach(int en in spirit.GetCardSequence()) {
+			int revealedEnergySpaces = spirit.RevealedEnergySpaces;
+			int idx = 0;
 
-				if(idx == revealedCardSpaces - 1)
-					graphics.FillEllipse( currentBrush, x, y, deltaX, lineHeight );
+			// bool highlightEnergy = trackOptions.Contains( Track.Energy1 );
 
-				graphics.DrawString( en.ToString(), font, SystemBrushes.ControlDarkDark, x, y );
+			foreach(int energyAmount in spirit.GetEnergySequence()) {
+				
+				// energy amount
+				using( var imgStream = assembly.GetManifestResourceStream( $"SpiritIsland.WinForms.images.tokens.{energyAmount} energy.png" ) ){
+					using var bitmap = new Bitmap( imgStream ); 
+					graphics.DrawImage( bitmap, x, y, coinWidth, coinWidth );
+				};
 
-				if(revealedCardSpaces <= idx)
-					graphics.FillEllipse( coverBrush, x, y, deltaX, lineHeight );
+				// presence
+				if(revealedEnergySpaces <= idx )
+					graphics.DrawImage( presence, x, y-presenceHeight/2,coinWidth,presenceHeight );
 
-				if(highlightCard && revealedCardSpaces == idx)
-					graphics.DrawEllipse( highlightPen, x, y, deltaX, lineHeight );
-
-				x += deltaX;
+				x += coinWidth;
 				++idx;
 			}
 
-			// Innates
-			// Innates
-			x = 10f;
-			y += (lineHeight * 1.25f);
+			y += coinWidth;
+		}
+
+		void DrawCards( Graphics graphics, Font simpleFont, Bitmap presence, float slotWidth, float presenceHeight, ref float y ) {
+
+			float x = leftMargin;
+
+			// draw title
+			graphics.DrawString( "Cards", simpleFont, SystemBrushes.ControlDarkDark, x, y );
+			y += lineHeight;
+
+			float maxCardHeight = 0;
+			float cardWidth = slotWidth * 0.8f;
+			float cardLeft = (slotWidth - cardWidth) / 2; // center
+
+			int revealedCardSpaces = spirit.RevealedCardSpaces;
+			int idx = 0;
+
+//			bool highlightCard = trackOptions.Contains( Track.Card1 );
+
+			foreach(int en in spirit.GetCardSequence()) {
+
+				// card plays amount
+				using(var imgStream = assembly.GetManifestResourceStream( $"SpiritIsland.WinForms.images.tokens.{en} cardplay.png" )) {
+					using var bitmap = new Bitmap( imgStream );
+					var cardHeight = cardWidth * bitmap.Height / bitmap.Width;
+					maxCardHeight = Math.Max(cardHeight,maxCardHeight);
+					graphics.DrawImage( bitmap, x+ cardLeft, y, cardWidth, cardHeight );
+				};
+
+				// presence
+				if(revealedCardSpaces <= idx)
+					graphics.DrawImage( presence, x, y - presenceHeight / 2, slotWidth, presenceHeight );
+
+				x += slotWidth;
+				++idx;
+			}
+
+			y += maxCardHeight;
+
+		}
+
+		float DrawInnates( Graphics graphics, Pen highlightPen, ref float y ) {
+			float x = leftMargin;
 
 			// This non-sense is because Thunderspeaker has a fast & slow option with the same name.
-			string[] innateOptionNames = innateOptions.Select(x=>x.Name).ToArray();
-			foreach(var name in spirit.InnatePowers.Select(i=>i.Name).Distinct()) {
+			string[] innateOptionNames = innateOptions.Select( x => x.Name ).ToArray();
+			foreach(var name in spirit.InnatePowers.Select( i => i.Name ).Distinct()) {
 				var image = GetInnateImage( name );
 
 				int drawWidth = Width - (int)x * 2;
@@ -141,10 +184,16 @@ namespace SpiritIsland.WinForms {
 				y += 10;
 			}
 
-			// activated elements
+			return x;
+		}
+
+
+
+		void ActivatedElements( Graphics graphics, Font simpleFont, ref float y ) {
 			y += 20;
 			const float elementSize = 50f;
 			var elements = spirit.Elements; // cache, don't recalculate
+			float x = leftMargin;
 
 			var orderedElements = elements.Keys.OrderBy( el => elPos[el] );
 			foreach(var element in orderedElements) {
@@ -161,9 +210,8 @@ namespace SpiritIsland.WinForms {
 				x += elementSize;
 				x += 10;
 			}
-
-			// !Note! - If you do not specify output width/height of image, .Net will scale image based on screen DPI and image DPI
 		}
+
 
 		Image GetInnateImage( string innateCardName ) {
 			if(!innateImages.ContainsKey( innateCardName )) {
@@ -185,6 +233,12 @@ namespace SpiritIsland.WinForms {
 		}
 
 		#region private fields
+
+		readonly Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+		const float leftMargin = 10f;
+		const float lineHeight = 60f;
+
+		string presenceColor;
 		HashSet<Track> trackOptions;
 		InnatePower[] innateOptions;
 		Spirit spirit;

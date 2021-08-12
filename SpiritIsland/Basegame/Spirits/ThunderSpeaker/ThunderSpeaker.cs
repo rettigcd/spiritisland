@@ -38,7 +38,9 @@ namespace SpiritIsland.Basegame {
 
 	public class ThunderSpeaker : Spirit {
 
-		public override string Text => "Thunder Speaker";
+		public const string Name = "Thunder Speaker";
+
+		public override string Text => Name;
 
 		public ThunderSpeaker():base(
 			PowerCard.For<ManifestationOfPowerAndGlory>(),

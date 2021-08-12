@@ -33,7 +33,20 @@ namespace SpiritIsland.WinForms {
 			boardListBox.Items.Add( "D" );
 			boardListBox.SelectedIndex = 0;
 
-			CheckOkStatus(null,null);
+			// color
+			colorListBox.Items.Add( "[Automatic]" );
+			colorListBox.Items.Add( "red" );
+			colorListBox.Items.Add( "orange" );
+			colorListBox.Items.Add( "yellow" );
+			colorListBox.Items.Add( "green" );
+			colorListBox.Items.Add( "blue" );
+			colorListBox.Items.Add( "dkblue" );
+			colorListBox.Items.Add( "purple" );
+			colorListBox.Items.Add( "pink" );
+			colorListBox.SelectedIndex = 0;
+
+
+			CheckOkStatus( null,null);
 		}
 
 		private void CheckOkStatus( object sender, EventArgs e ) {
@@ -41,22 +54,13 @@ namespace SpiritIsland.WinForms {
 		}
 
 		private void OkButton_Click( object sender, EventArgs e ) {
-			Type spiritType = (spiritListBox.SelectedIndex == 0)
-				? spiritListBox.Items[1 + (int)((DateTime.Now.Ticks/4) % 4)] as Type
-				: spiritListBox.SelectedItem as Type;
-			Spirit spirit = (Spirit)Activator.CreateInstance( spiritType );
+			Spirit spirit = SelectedSpirit();
+			Board board = SelectedBoard();
 
-			string boardOption = (boardListBox.SelectedIndex == 0)
-				? boardListBox.Items[ 1+(int)(DateTime.Now.Ticks%4) ] as string
-				: boardListBox.SelectedItem as string;
+			Color = (colorListBox.SelectedIndex == 0)
+				? GetColorForSpirit(spirit)
+				: colorListBox.SelectedItem as string;
 
-			var board = boardOption switch {
-				"A" => Board.BuildBoardA(),
-				"B" => Board.BuildBoardB(),
-				"C" => Board.BuildBoardC(),
-				"D" => Board.BuildBoardD(),
-				_ => null,
-			};
 
 			var gameState = new GameState(
 					spirit
@@ -81,16 +85,54 @@ namespace SpiritIsland.WinForms {
 				new WaryOfTheInterior()
 			};
 			baseGameFearCards.Shuffle();
-			foreach(var f in baseGameFearCards.Take(9))
-				gameState.FearDeck.Push(f);
+			foreach(var f in baseGameFearCards.Take( 9 ))
+				gameState.FearDeck.Push( f );
 
-			gameState.BlightCard = ((int)DateTime.Now.Ticks)%1==0 
+			gameState.BlightCard = ((int)DateTime.Now.Ticks) % 1 == 0
 				? new DownwardSpiral()
 				: new MemoryFadesToDust();
 
 			this.Game = new SinglePlayerGame( gameState );
 		}
 
+		string GetColorForSpirit( Spirit spirit ) {
+			return spirit.Text switch {
+				RiverSurges.Name => "blue",
+				LightningsSwiftStrike.Name => "yellow",
+				VitalStrength.Name => "orange",
+				Shadows.Name => "purple",
+				ThunderSpeaker.Name => "red",
+				RampantGreen.Name => "green",
+				Bringer.Name => "pink",
+				Ocean.Name => "dkblue",
+				_ => "green"
+			};
+		}
+
+		Board SelectedBoard() {
+			string boardOption = (boardListBox.SelectedIndex == 0)
+				? boardListBox.Items[1 + (int)(DateTime.Now.Ticks % 4)] as string
+				: boardListBox.SelectedItem as string;
+
+			var board = boardOption switch {
+				"A" => Board.BuildBoardA(),
+				"B" => Board.BuildBoardB(),
+				"C" => Board.BuildBoardC(),
+				"D" => Board.BuildBoardD(),
+				_ => null,
+			};
+			return board;
+		}
+
+		Spirit SelectedSpirit() {
+			Type spiritType = (spiritListBox.SelectedIndex == 0)
+				? spiritListBox.Items[1 + (int)((DateTime.Now.Ticks / 4) % 4)] as Type
+				: spiritListBox.SelectedItem as Type;
+			Spirit spirit = (Spirit)Activator.CreateInstance( spiritType );
+			return spirit;
+		}
+
+		public string Color { get; private set; }
 		public SinglePlayerGame Game { get; private set; }
 
 	}

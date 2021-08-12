@@ -45,7 +45,9 @@ Bringer
 
 	public class Bringer : Spirit {
 
-		public override string Text => "Bringer of Dreams and Nightmares";
+		public const string Name = "Bringer of Dreams and Nightmares";
+
+		public override string Text => Name;
 
 		public Bringer():base(
 			new NullPowerCard( "A", 0, Speed.Fast ),

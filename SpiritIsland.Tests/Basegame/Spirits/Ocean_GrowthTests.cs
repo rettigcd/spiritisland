@@ -83,7 +83,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 			gameState.Island = new Island(BoardA,BoardB);
 
 			When_Growing(1);
-			Resolve_PlacePresenceInOcean( "A0;B0", Track.Energy);
+			Resolve_PlacePresenceInOcean( "A0;B0", Track.Energy1);
 			
 			Assert_HasEnergy(1);
 		}

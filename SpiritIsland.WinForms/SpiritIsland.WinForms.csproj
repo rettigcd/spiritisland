@@ -7,7 +7,121 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="images\presence\blue.png" />
+    <None Remove="images\presence\dkblue.png" />
+    <None Remove="images\presence\green.png" />
+    <None Remove="images\presence\orange.png" />
+    <None Remove="images\presence\pink.png" />
+    <None Remove="images\presence\purple.png" />
+    <None Remove="images\presence\red.png" />
+    <None Remove="images\presence\yellow.png" />
+    <None Remove="images\tokens\0 energy.png" />
+    <None Remove="images\tokens\1 cardplay.png" />
+    <None Remove="images\tokens\1 energy.png" />
+    <None Remove="images\tokens\2 cardplay.png" />
+    <None Remove="images\tokens\2 energy.png" />
+    <None Remove="images\tokens\3 cardplay.png" />
+    <None Remove="images\tokens\3 energy.png" />
+    <None Remove="images\tokens\4 cardplay.png" />
+    <None Remove="images\tokens\4 energy.png" />
+    <None Remove="images\tokens\5 cardplay.png" />
+    <None Remove="images\tokens\5 energy.png" />
+    <None Remove="images\tokens\6 cardplay.png" />
+    <None Remove="images\tokens\6 energy.png" />
+    <None Remove="images\tokens\7 energy.png" />
+    <None Remove="images\tokens\8 energy.png" />
+    <None Remove="images\tokens\air energy.png" />
+    <None Remove="images\tokens\any energy.png" />
+    <None Remove="images\tokens\earth energy.png" />
+    <None Remove="images\tokens\fire energy.png" />
+    <None Remove="images\tokens\moon energy.png" />
+    <None Remove="images\tokens\plant energy.png" />
+    <None Remove="images\tokens\sun energy.png" />
+    <None Remove="images\tokens\water energy.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SpiritIsland\SpiritIsland.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="images\presence\blue.png" />
+    <EmbeddedResource Include="images\presence\dkblue.png" />
+    <EmbeddedResource Include="images\presence\green.png" />
+    <EmbeddedResource Include="images\presence\orange.png" />
+    <EmbeddedResource Include="images\presence\pink.png" />
+    <EmbeddedResource Include="images\presence\purple.png" />
+    <EmbeddedResource Include="images\presence\red.png" />
+    <EmbeddedResource Include="images\presence\yellow.png" />
+    <EmbeddedResource Include="images\tokens\1 cardplay.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\2 cardplay.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\3 cardplay.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\4 cardplay.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\5 cardplay.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\6 cardplay.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\0 energy.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\1 energy.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\2 energy.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\3 energy.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\4 energy.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\5 energy.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\6 energy.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\7 energy.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\8 energy.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\air energy.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\any energy.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\earth energy.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\fire energy.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\moon energy.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\plant energy.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\sun energy.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\water energy.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
@@ -476,33 +590,6 @@
     <None Update="images\tokens\Earthenergy.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="images\tokens\Energy_0.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\tokens\Energy_1.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\tokens\Energy_2.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\tokens\Energy_3.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\tokens\Energy_4.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\tokens\Energy_5.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\tokens\Energy_6.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\tokens\Energy_7.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\tokens\Energy_8.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="images\tokens\Fireenergy.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -534,12 +621,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\tokens\Simple_water.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\tokens\Sunenergy.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\tokens\Waterenergy.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\Town1icon.png">

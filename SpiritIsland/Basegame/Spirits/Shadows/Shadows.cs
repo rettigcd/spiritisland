@@ -42,7 +42,9 @@ Shadows Flicker like Flame:
 	*/
 
 	public class Shadows : Spirit {
-		public override string Text => "Shadows Flicker Like Flames";
+
+		public const string Name = "Shadows Flicker Like Flames";
+		public override string Text => Name;
 
 		public Shadows():base(
 			PowerCard.For<MantleOfDread>(),

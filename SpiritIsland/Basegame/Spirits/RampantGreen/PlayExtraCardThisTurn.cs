@@ -2,7 +2,7 @@
 using SpiritIsland.Core;
 using System.Threading.Tasks;
 
-namespace SpiritIsland.BranchAndClaw {
+namespace SpiritIsland.Basegame {
 	/// <summary>
 	/// One of Rampant Green's special growth options
 	/// </summary>

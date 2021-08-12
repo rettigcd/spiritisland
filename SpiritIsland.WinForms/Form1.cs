@@ -23,7 +23,7 @@ namespace SpiritIsland.WinForms {
 
 			this.islandControl.InitBoard( game.GameState );
 			this.cardControl.Init( game.Spirit );
-			this.spiritControl.Init( game.Spirit, this );
+			this.spiritControl.Init( game.Spirit, config.Color, this );
 			this.statusControl1.Init( game.GameState, this );
 			this.islandControl.SpaceClicked += Select;
 			this.cardControl.CardSelected += Select;

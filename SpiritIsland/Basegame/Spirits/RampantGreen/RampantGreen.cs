@@ -2,7 +2,7 @@
 using SpiritIsland.Core;
 using System.Collections.Generic;
 
-namespace SpiritIsland.BranchAndClaw {
+namespace SpiritIsland.Basegame {
 
 	/*
 
@@ -48,7 +48,9 @@ Green
 
 	public class RampantGreen : Spirit {
 
-		public override string Text => "A Spread of Rampant Green";
+		public const string Name = "A Spread of Rampant Green";
+
+		public override string Text => Name;
 
 		public RampantGreen():base(
 			new NullPowerCard( "A", 0, Speed.Fast ),

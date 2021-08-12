@@ -39,7 +39,9 @@ Power Progression:
 	*/
 
 	public class VitalStrength : Spirit {
-		public override string Text => "Vital Strength of Earth";
+
+		public const string Name = "Vital Strength of Earth";
+		public override string Text => Name;
 
 		public VitalStrength():base(
 			PowerCard.For<GuardTheHealingLand>(),

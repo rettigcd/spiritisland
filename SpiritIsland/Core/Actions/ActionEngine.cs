@@ -81,7 +81,7 @@ namespace SpiritIsland.Core {
 			var result = new TaskCompletionSource<Track>();
 			decisions.Push( new SelectAsync<Track>( 
 				"Select Presence to place.", 
-				new Track[]{Track.Energy,Track.Card},
+				new Track[]{Track.Energy1,Track.Card1},
 				false,
 				result 
 			));

@@ -112,7 +112,7 @@ namespace SpiritIsland.Tests {
 		#region Resolve_
 
 		protected void Resolve_PlacePresence( string placeOptions, string factory=null) {
-			Resolve_PlacePresence( placeOptions, Track.Energy, factory );
+			Resolve_PlacePresence( placeOptions, Track.Energy1, factory );
 		}
 
 		protected void Resolve_PlacePresence(string placeOptions, Track source, string factoryDescription=null ) {
