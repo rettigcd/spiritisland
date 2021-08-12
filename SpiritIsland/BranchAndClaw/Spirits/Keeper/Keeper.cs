@@ -45,6 +45,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 		public Keeper():base(
 			new Track[] { Track.Energy2, Track.SunEnergy, Track.Energy4, Track.Energy5, Track.PlantEnergy, Track.Energy7, Track.Energy8, Track.Energy9 },
+			new Track[] { Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4, Track.Card5 },
 			new NullPowerCard( "A", 0, Speed.Fast ),
 			new NullPowerCard( "B", 0, Speed.Fast ),
 			new NullPowerCard( "C", 0, Speed.Fast ),
@@ -83,22 +84,6 @@ namespace SpiritIsland.BranchAndClaw {
 			};
 
 		}
-
-		protected override int[] CardSequence => new int[]{ 1, 2, 2, 3, 4, 5 };
-
-		//protected override IEnumerable<Element> TrackElements() {
-		//	return new Element[]{
-		//		Element.None,
-		//		Element.Sun,
-		//		Element.None,
-		//		Element.None,
-		//		Element.Plant,
-		//		Element.None,
-		//		Element.None,
-		//		Element.None
-		//	}.Take( RevealedEnergySpaces )
-		//	.Where(x=>x!=Element.None);
-		//}
 
 		public override void Initialize( Board _, GameState _1 ){
 			throw new System.NotImplementedException();

@@ -51,6 +51,7 @@ Bringer
 
 		public Bringer():base(
 			new Track[] {Track.Energy2, Track.AirEnergy, Track.Energy3, Track.MoonEnergy, Track.Energy4, Track.AnyEnergy,Track.Energy5, },
+			new Track[] {Track.Card2, Track.Card2, Track.Card2, Track.Card3, Track.Card3, Track.AnyEnergy },
 			new NullPowerCard( "A", 0, Speed.Fast ),
 			new NullPowerCard( "B", 0, Speed.Fast ),
 			new NullPowerCard( "C", 0, Speed.Fast ),
@@ -73,31 +74,6 @@ Bringer
 
 		}
 
-
-		// card:	2 2 2 3 3 any
-		protected override int[] CardSequence => new int[]{ 2,2,2,3,3,3 };
-
-		//protected override IEnumerable<Element> TrackElements() {
-		//	var energyElements = new Element[]{ 
-		//		Element.None, 
-		//		Element.Air, 
-		//		Element.None, 
-		//		Element.Moon,
-		//		Element.None,
-		//		Element.Any,
-		//		Element.None
-		//	}	.Take(RevealedEnergySpaces);
-		//	var cardElements = new Element[]{ 
-		//		Element.None, 
-		//		Element.None, 
-		//		Element.None, 
-		//		Element.None, 
-		//		Element.None,
-		//		Element.Any
-		//	}	.Take(RevealedCardSpaces);
-		//	return energyElements.Union(cardElements)
-		//		.Where( el => el != Element.None );
-		//}
 
 		public override void Initialize( Board _, GameState _1 ) {
 			throw new System.NotImplementedException();

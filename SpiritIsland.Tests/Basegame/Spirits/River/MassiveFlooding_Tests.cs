@@ -12,6 +12,12 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Game_SelectOption( "PlacePresence(1) - Where would you like", destinationSpace );
 		}
 
+		protected void Game_PlacePresence1( Track sourceTrack, string destinationSpace ) {
+			Game_SelectOption( "Select Growth to resolve", "PlacePresence(1)" );
+			Game_SelectOption( "PlacePresence(1) - Select Presence to place", sourceTrack );
+			Game_SelectOption( "PlacePresence(1) - Where would you like", destinationSpace );
+		}
+
 		protected void Game_Reclaim1( string cardToReclaim ) {
 			Game_SelectOption( "Select Growth to resolve", "Reclaim(1)" );
 			Game_SelectOption( "Reclaim(1) - Select card", cardToReclaim );

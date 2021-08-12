@@ -9,8 +9,13 @@ namespace SpiritIsland {
 
 		#region constructor
 
-		public Spirit( Track[] energyTrack, params PowerCard[] initialCards ){
+		public Spirit( 
+			Track[] energyTrack
+			, Track[] cardTrack
+			, params PowerCard[] initialCards 
+		){
 			EnergyTrack = energyTrack;
+			CardTrack = cardTrack;
 
 			foreach(var card in initialCards)
 				RegisterNewCard(card);
@@ -26,10 +31,14 @@ namespace SpiritIsland {
 
 		#region Elements
 		protected IEnumerable<Element> TrackElements() {
-			return EnergyTrack.Take(RevealedEnergySpaces).Where(t=>t.Element.HasValue).Select(t=>t.Element.Value);
+			var energyElements = EnergyTrack.Take(RevealedEnergySpaces)
+				.Where(t=>t.Element.HasValue)
+				.Select(t=>t.Element.Value);
+			var cardElements = CardTrack.Take( RevealedCardSpaces )
+				.Where( t => t.Element.HasValue )
+				.Select( t => t.Element.Value );
+			return energyElements.Concat(cardElements);
 		}
-
-		public Track NextEnergy => EnergyTrack[RevealedEnergySpaces];
 
 		// !!! this could be calculated and cached when cards are purchased
 		public CountDictionary<Element> Elements{ get { 
@@ -180,7 +189,9 @@ namespace SpiritIsland {
 		#endregion
 
 		#region Presence Tracks
+
 		public virtual int RevealedEnergySpaces { get; set; } = 1;
+
 		public virtual int RevealedCardSpaces { get; set; } = 1;
 
 		/// <summary> # of coins in the bank. </summary>
@@ -188,14 +199,18 @@ namespace SpiritIsland {
 
 		public Track[] EnergyTrack {get; }
 
-		protected virtual int[] CardSequence => new int[]{0}; 
+		public Track[] CardTrack { get; }
 
-		public int[] GetCardSequence() => CardSequence;
+		public bool HasMoreEnergyPresence => RevealedEnergySpaces < EnergyTrack.Length;
+		public Track NextEnergyPresence => EnergyTrack[RevealedEnergySpaces];
+
+		public bool HasMoreCardPresence => RevealedCardSpaces < CardTrack.Length;
+		public Track NextCardPresence => CardTrack[RevealedCardSpaces];
 
 		/// <summary> Energy gain per turn </summary>
 		public int EnergyPerTurn => EnergyTrack.Take( RevealedEnergySpaces ).Where( x => x.Energy.HasValue ).Last().Energy.Value;
 
-		public virtual int NumberOfCardsPlayablePerTurn => CardSequence[RevealedCardSpaces-1];
+		public virtual int NumberOfCardsPlayablePerTurn => CardTrack.Take(RevealedCardSpaces).Where(x=>x.CardPlay.HasValue).Last().CardPlay.Value;
 
 		public abstract string Text { get; }
 

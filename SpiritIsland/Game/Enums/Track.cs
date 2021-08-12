@@ -26,18 +26,23 @@ namespace SpiritIsland {
 		public static readonly Track EarthEnergy = MkEnergy( Elem.Earth );
 		public static readonly Track WaterEnergy = MkEnergy( Elem.Water );
 
-		public static readonly Track Card1 = new Track( "1 cardPlay" );
-		public static readonly Track Card2 = new Track( "2 cardPlay" );
-		public static readonly Track Card3 = new Track( "3 cardPlay" );
-		public static readonly Track Card4 = new Track( "4 cardPlay" );
-		public static readonly Track Card5 = new Track( "5 cardPlay" );
-		public static readonly Track Card6 = new Track( "6 cardPlay" );
+		public static Track MkCard(int plays) => new Track($"{plays} cardplay" ) { CardPlay = plays };
+		public static readonly Track Card1 = MkCard(1);
+		public static readonly Track Card2 = MkCard(2);
+		public static readonly Track Card3 = MkCard(3);
+		public static readonly Track Card4 = MkCard(4);
+		public static readonly Track Card5 = MkCard(5);
+		public static readonly Track Card6 = MkCard(6);
 
-		Track(string text){ this.Text = text; }
+		public static readonly Track Reclaim1 = new Track( "reclaim 1" ){ ReclaimOne=true };
+
+		Track( string text){ this.Text = text; }
 
 		public string Text {get; }
 		public int? Energy { get; private set; }
 		public Element? Element { get; private set; }
+		public int? CardPlay { get; set; }
+		public bool ReclaimOne { get; set; }
 	}
 
 

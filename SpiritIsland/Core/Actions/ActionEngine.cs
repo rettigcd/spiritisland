@@ -82,10 +82,10 @@ namespace SpiritIsland.Core {
 
 			var tracks = new List<Track>();
 			if(Self.RevealedEnergySpaces < Self.EnergyTrack.Length)
-				tracks.Add( Self.EnergyTrack[Self.RevealedEnergySpaces] );
+				tracks.Add( Self.NextEnergyPresence );
 
-			if(Self.RevealedEnergySpaces < Self.GetCardSequence().Length)
-				tracks.Add( Track.Card1 ); // pick the correct one
+			if(Self.RevealedCardSpaces < Self.CardTrack.Length)
+				tracks.Add( Self.NextCardPresence ); // pick the correct one
 
 			decisions.Push( new SelectAsync<Track>( 
 				"Select Presence to place.", 

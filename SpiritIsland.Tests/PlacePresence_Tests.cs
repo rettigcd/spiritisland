@@ -10,7 +10,8 @@ namespace SpiritIsland.Tests.Core {
 		class TestSpirit : Spirit {
 
 			public TestSpirit():base(
-				new Track[]{ Track.Energy0, Track.Energy0, Track.Energy0 }
+				new Track[]{ Track.Energy0, Track.Energy0, Track.Energy0 },
+				new Track[] { Track.Card1, Track.Card2, Track.Card3, Track.Card4, Track.Card5 }
 			) {
 
 			}
@@ -22,8 +23,6 @@ namespace SpiritIsland.Tests.Core {
 					new GrowthOption(this.actions.ToArray())
 				};
 			}
-
-			protected override int[] CardSequence => new int[]{1,2,3,4,5 };
 
 			public override void Initialize( Board _, GameState _1 ){
 				throw new NotImplementedException();
@@ -50,7 +49,7 @@ namespace SpiritIsland.Tests.Core {
 		public void PullsFrom_CardTrack(){
 			Given_SpiritGrowsByPlacingPresence();
 			When_Growing( 0 );
-			Resolve_PlacePresence( "A1", Track.Card1 );
+			Resolve_PlacePresence( "A1", spirit.NextCardPresence );
 			Assert.Equal(2,spirit.RevealedCardSpaces);
 		}
 

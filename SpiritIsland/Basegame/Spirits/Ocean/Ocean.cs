@@ -50,6 +50,7 @@ Ocean
 
 		public Ocean():base(
 			new Track[] { Track.Energy0, Track.MoonEnergy, Track.WaterEnergy, Track.Energy1, Track.EarthEnergy, Track.WaterEnergy, Track.Energy2 },
+			new Track[] { Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4, Track.Card5 },
 			new NullPowerCard( "A", 0, Speed.Fast ),
 			new NullPowerCard( "B", 0, Speed.Fast ),
 			new NullPowerCard( "C", 0, Speed.Fast ),
@@ -82,22 +83,6 @@ Ocean
 		}
 
 		public override string Text => Name;
-
-		protected override int[] CardSequence => new int[]{ 1, 2, 2, 3, 4, 5, };
-
-		//protected override IEnumerable<Element> TrackElements() {
-		//	var x = new Element[]{
-		//		Element.None,
-		//		Element.Moon,
-		//		Element.Water,
-		//		Element.None,
-		//		Element.Earth,
-		//		Element.Water,
-		//		Element.None
-		//	}.Take( RevealedEnergySpaces )
-		//		.ToArray();
-		//	return x.Where(el=>el!=Element.None);
-		//}
 
 		public override void Initialize( Board _, GameState _1 ) {
 			throw new System.NotImplementedException();

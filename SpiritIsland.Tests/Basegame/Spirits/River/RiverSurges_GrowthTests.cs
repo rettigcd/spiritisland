@@ -41,8 +41,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Assert.Equal(1,spirit.RevealedEnergySpaces);
 
 			When_Growing( 1 );
-			Resolve_PlacePresence( "A2;A3;A4", spirit.NextEnergy);
-			Resolve_PlacePresence( "A1;A2;A3;A4", spirit.NextEnergy );
+			Resolve_PlacePresence( "A2;A3;A4", spirit.NextEnergyPresence);
+			Resolve_PlacePresence( "A1;A2;A3;A4", spirit.NextEnergyPresence );
 
 			Assert_GainPowercard( 0 );
 			Assert.Equal(2,spirit.EnergyPerTurn);
@@ -59,7 +59,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Given_HasPresence( board[3] );
 
 			When_Growing( 2 );
-			Resolve_PlacePresence( "A1;A2;A3;A4;A5", Track.Card1);
+			Resolve_PlacePresence( "A1;A2;A3;A4;A5", spirit.NextCardPresence);
 
 			Assert_HasCardAvailable( "Uncanny Melting" ); // gains 1st card in power progression
 			Assert_GainPowercard( 0 );
@@ -313,7 +313,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			Game_SelectGrowthOption(1);
 			Game_PlacePresence1("Card","A5");
-			Game_PlacePresence1("Card","A5");
+			Game_PlacePresence1(game.Spirit.NextCardPresence,"A5");
 
 			// Can reclaim River's Bounty
 			Game_Reclaim1( "River's Bounty $0 (Slow)" );

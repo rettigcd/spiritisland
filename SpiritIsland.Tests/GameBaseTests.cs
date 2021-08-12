@@ -30,6 +30,19 @@ namespace SpiritIsland.Tests {
 			game.Decision.Select( option );
 		}
 
+		protected void Game_SelectOption( string prompt, IOption option ) {
+
+			if(!game.Decision.Prompt.StartsWith( prompt ))
+				Assert.Equal( prompt, game.Decision.Prompt );
+
+			//var option = game.Decision.Options.FirstOrDefault( o => o.Text == optionText );
+			//if(option == null)
+			//	throw new Exception( $"option ({optionText} not found in "
+			//		+ game.Decision.Options.Select( x => x.Text ).Join( ", " )
+			//	);
+			game.Decision.Select( option );
+		}
+
 		protected void Game_SelectOptionContains( string prompt, string substring ) {
 
 			if(!game.Decision.Prompt.StartsWith( prompt ))

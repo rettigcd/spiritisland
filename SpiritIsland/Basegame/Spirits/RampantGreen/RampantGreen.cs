@@ -54,7 +54,8 @@ Green
 		public override string Text => Name;
 
 		public RampantGreen():base(
-			new Track[] { Track.Energy0, Track.Energy1, Track.PlantEnergy, Track.Energy2, Track.Energy2, Track.PlantEnergy, Track.Energy3 }, 
+			new Track[] { Track.Energy0, Track.Energy1, Track.PlantEnergy, Track.Energy2, Track.Energy2, Track.PlantEnergy, Track.Energy3 },
+			new Track[] { Track.Card1, Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4 },
 			new NullPowerCard( "A", 0, Speed.Fast ),
 			new NullPowerCard( "B", 0, Speed.Fast ),
 			new NullPowerCard( "C", 0, Speed.Fast ),
@@ -88,13 +89,6 @@ Green
 		}
 
 		public override int NumberOfCardsPlayablePerTurn => base.NumberOfCardsPlayablePerTurn + tempCardBoost;
-		protected override int[] CardSequence => new int[]{1, 1, 2, 2, 3, 4};
-
-		//protected override IEnumerable<Element> TrackElements() {
-		//	// 0 1 plant 2 2 plant 3
-		//	if(3 <= RevealedEnergySpaces) yield return Element.Plant;
-		//	if(6 <= RevealedEnergySpaces) yield return Element.Plant;
-		//}
 
 		public override void PurchaseAvailableCards( params PowerCard[] cards ) {
 			base.PurchaseAvailableCards( cards );

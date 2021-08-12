@@ -48,6 +48,7 @@ Shadows Flicker like Flame:
 
 		public Shadows():base(
 			new Track[] { Track.Energy0, Track.Energy1, Track.Energy3, Track.Energy4, Track.Energy5, Track.Energy6 }, 
+			new Track[] { Track.Card1, Track.Card2, Track.Card3, Track.Card3, Track.Card4, Track.Card5 },
 			PowerCard.For<MantleOfDread>(),
 			PowerCard.For<FavorsCalledDue>(),
 			PowerCard.For<CropsWitherAndFade>(),
@@ -62,8 +63,6 @@ Shadows Flicker like Flame:
 				InnatePower.For<DarknessSwallowsTheUnwary>()
 			};
 		}
-
-		protected override int[] CardSequence => new int[]{1, 2, 3, 3, 4, 5 };
 
 		public override void AddActionFactory(IActionFactory actionFactory) {
 

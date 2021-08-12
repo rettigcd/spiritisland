@@ -73,7 +73,7 @@ namespace SpiritIsland.WinForms {
 			using Bitmap presence = new Bitmap( presenceStream );
 
 			// calc slot width and presence height
-			int maxLength = Math.Max( spirit.GetCardSequence().Length, spirit.EnergyTrack.Length );
+			int maxLength = Math.Max( spirit.CardTrack.Length, spirit.EnergyTrack.Length );
 			float coinWidth = (Width - 2 * margin) / maxLength;
 			float presenceHeight = coinWidth * presence.Height / presence.Width;
 
@@ -145,10 +145,10 @@ namespace SpiritIsland.WinForms {
 
 //			bool highlightCard = trackOptions.Contains( Track.Card1 );
 
-			foreach(int en in spirit.GetCardSequence()) {
+			foreach(var track in spirit.CardTrack) {
 
 				// card plays amount
-				using(var imgStream = assembly.GetManifestResourceStream( $"SpiritIsland.WinForms.images.tokens.{en} cardplay.png" )) {
+				using(var imgStream = assembly.GetManifestResourceStream( $"SpiritIsland.WinForms.images.tokens.{track.Text}.png" )) {
 					using var bitmap = new Bitmap( imgStream );
 					var cardHeight = cardWidth * bitmap.Height / bitmap.Width;
 					maxCardHeight = Math.Max(cardHeight,maxCardHeight);
