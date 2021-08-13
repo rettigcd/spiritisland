@@ -129,7 +129,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 		[InlineDataAttribute(8,9,"SP")]
 		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 			// energy:	2 sun 4 5 plant 7 8 9
-			spirit.RevealedEnergySpaces = revealedSpaces;
+			spirit.EnergyTrack.RevealedCount = revealedSpaces;
 			Assert_EnergyTrackIs( expectedEnergyGrowth );
 			Assert_BonusElements( elements );
 		}
@@ -143,7 +143,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 		[InlineDataAttribute(6,5)]
 		public void CardTrack(int revealedSpaces, int expectedCardPlayCount){
 			// card:	1 2 2 3 4 5
-			spirit.RevealedCardSpaces = revealedSpaces;
+			spirit.CardTrack.RevealedCount = revealedSpaces;
 			Assert_CardTrackIs(expectedCardPlayCount);
 		}
 

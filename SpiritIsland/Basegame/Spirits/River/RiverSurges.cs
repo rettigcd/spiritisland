@@ -76,26 +76,26 @@ namespace SpiritIsland.Basegame {
 			};
 		}
 
-		bool Reclaim1FromCardTrack => this.RevealedCardSpaces >= 5;
+//		bool Reclaim1FromCardTrack => this.RevealedCardSpaces >= 5;
 
-		public override int RevealedCardSpaces {
-			get{ return base.RevealedCardSpaces; }
-			set{
-				// this never happens during Reclaim-all so is always ok to add here
-				bool hadReclaim1 = Reclaim1FromCardTrack;
-				base.RevealedCardSpaces = value;
-				if(!hadReclaim1 && Reclaim1FromCardTrack)
-					AddActionFactory(new Reclaim1());
-			}
-		}
+		//public override int RevealedCardSpaces {
+		//	get{ return base.RevealedCardSpaces; }
+		//	set{
+		//		// this never happens during Reclaim-all so is always ok to add here
+		//		bool hadReclaim1 = Reclaim1FromCardTrack;
+		//		base.RevealedCardSpaces = value;
+		//		if(!hadReclaim1 && Reclaim1FromCardTrack)
+		//			AddActionFactory(new Reclaim1());
+		//	}
+		//}
 
-		public override void Grow(GameState gameState, int optionIndex) {
-			if( optionIndex != 0 // Reclaim-All
-				&& Reclaim1FromCardTrack
-			)
-				AddActionFactory(new Reclaim1());
-			base.Grow(gameState, optionIndex);
-		}
+		//public override void Grow(GameState gameState, int optionIndex) {
+		//	if( optionIndex != 0 // Reclaim-All
+		//		&& Reclaim1FromCardTrack
+		//	)
+		//		AddActionFactory(new Reclaim1());
+		//	base.Grow(gameState, optionIndex);
+		//}
 
 		public override IEnumerable<Space> SacredSites {get{
 			var x = Presence;

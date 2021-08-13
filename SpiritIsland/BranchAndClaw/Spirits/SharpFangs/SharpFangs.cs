@@ -93,19 +93,19 @@ namespace SpiritIsland.BranchAndClaw {
 
 		}
 
-		public override void Grow( GameState gameState, int optionIndex ) {
-			GrowthOption option = this.GetGrowthOptions()[optionIndex];
-			foreach (var action in option.GrowthActions)
-				AddActionFactory(action);
+		//public override void Grow( GameState gameState, int optionIndex ) {
+		//	GrowthOption option = this.GetGrowthOptions()[optionIndex];
+		//	foreach (var action in option.GrowthActions)
+		//		AddActionFactory(action);
 
-			if( RevealedCardSpaces >= 4 )
-				AddActionFactory(new Reclaim1());
+		//	if( RevealedCardSpaces >= 4 )
+		//		AddActionFactory(new Reclaim1());
 
-			if( RevealedCardSpaces == 6 )
-				AddActionFactory(new Reclaim1());
+		//	if( RevealedCardSpaces == 6 )
+		//		AddActionFactory(new Reclaim1());
 
-			RemoveResolvedActions(gameState,Speed.Growth);
-		}
+		//	RemoveResolvedActions(gameState,Speed.Growth);
+		//}
 
 		public override void Initialize( Board _, GameState _1 ) {
 			throw new System.NotImplementedException();

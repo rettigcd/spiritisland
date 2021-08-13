@@ -14,8 +14,8 @@ namespace SpiritIsland {
 			, Track[] cardTrack
 			, params PowerCard[] initialCards 
 		){
-			EnergyTrack = energyTrack;
-			CardTrack = cardTrack;
+			EnergyTrack = new PresenceTrack( energyTrack );
+			CardTrack = new PresenceTrack( cardTrack );
 
 			foreach(var card in initialCards)
 				RegisterNewCard(card);
@@ -31,10 +31,10 @@ namespace SpiritIsland {
 
 		#region Elements
 		protected IEnumerable<Element> TrackElements() {
-			var energyElements = EnergyTrack.Take(RevealedEnergySpaces)
+			var energyElements = EnergyTrack.Revealed
 				.Where(t=>t.Element.HasValue)
 				.Select(t=>t.Element.Value);
-			var cardElements = CardTrack.Take( RevealedCardSpaces )
+			var cardElements = CardTrack.Revealed
 				.Where( t => t.Element.HasValue )
 				.Select( t => t.Element.Value );
 			return energyElements.Concat(cardElements);
@@ -66,8 +66,6 @@ namespace SpiritIsland {
 
 		}
 
-		public void CollectEnergy() => Energy += EnergyPerTurn;
-
 		public virtual GrowthOption[] GetGrowthOptions() => GrowthOptions;
 
 		#endregion
@@ -79,7 +77,6 @@ namespace SpiritIsland {
 		public List<PowerCard> DiscardPile = new List<PowerCard>();     // discarded
 		readonly List<IActionFactory> _unresolvedActionFactories = new List<IActionFactory>(); // public for testing
 		readonly List<InnatePower> usedInnates = new List<InnatePower>();
-
 
 		protected void RemoveResolvedActions( GameState gameState, Speed speed ) {
 
@@ -137,8 +134,20 @@ namespace SpiritIsland {
 
 			_unresolvedActionFactories.RemoveAt( index );
 
-			if(_unresolvedActionFactories.Count == 0 && selectedActionFactory is GrowthActionFactory)
+			if(_unresolvedActionFactories.Count == 0 && selectedActionFactory is GrowthActionFactory growthFactory) {
+				// Energy
 				Energy += EnergyPerTurn;
+
+				// Reclaims-1
+				if(!(selectedActionFactory is Reclaim1)) { // prevent retriggering following Reclaim1
+					int reclaim1Count = Math.Min( 
+						DiscardPile.Count,	// Reclaim-all will make this 0, disabling any reclaim-1
+						CardTrack.Revealed.Count( x => x.ReclaimOne ) 
+					);
+					while(reclaim1Count-->0)
+						AddActionFactory( new Reclaim1() );
+				}
+			}
 		}
 
 		public virtual void AddActionFactory( IActionFactory factory ) {
@@ -190,27 +199,17 @@ namespace SpiritIsland {
 
 		#region Presence Tracks
 
-		public virtual int RevealedEnergySpaces { get; set; } = 1;
-
-		public virtual int RevealedCardSpaces { get; set; } = 1;
-
 		/// <summary> # of coins in the bank. </summary>
 		public int Energy { get; set; }
 
-		public Track[] EnergyTrack {get; }
+		public PresenceTrack EnergyTrack {get; }
 
-		public Track[] CardTrack { get; }
-
-		public bool HasMoreEnergyPresence => RevealedEnergySpaces < EnergyTrack.Length;
-		public Track NextEnergyPresence => EnergyTrack[RevealedEnergySpaces];
-
-		public bool HasMoreCardPresence => RevealedCardSpaces < CardTrack.Length;
-		public Track NextCardPresence => CardTrack[RevealedCardSpaces];
+		public PresenceTrack CardTrack { get; }
 
 		/// <summary> Energy gain per turn </summary>
-		public int EnergyPerTurn => EnergyTrack.Take( RevealedEnergySpaces ).Where( x => x.Energy.HasValue ).Last().Energy.Value;
+		public int EnergyPerTurn => EnergyTrack.Revealed.Where( x => x.Energy.HasValue ).Last().Energy.Value;
 
-		public virtual int NumberOfCardsPlayablePerTurn => CardTrack.Take(RevealedCardSpaces).Where(x=>x.CardPlay.HasValue).Last().CardPlay.Value;
+		public virtual int NumberOfCardsPlayablePerTurn => CardTrack.Revealed.Where(x=>x.CardPlay.HasValue).Last().CardPlay.Value;
 
 		public abstract string Text { get; }
 
@@ -250,9 +249,18 @@ namespace SpiritIsland {
 
 	}
 
-	public class SpiritActionResolved {
-		public IActionFactory Factory { get; set; }
-		public IAction Action { get; set; }
+	public class PresenceTrack {
+		public PresenceTrack( params Track[] slots ) {
+			this.slots = slots;
+		}
+
+		public Track[] slots;
+		public IEnumerable<Track> Revealed => slots.Take(RevealedCount);
+
+		public Track Next => slots[RevealedCount];
+		public bool HasMore => RevealedCount < slots.Length;
+		public int RevealedCount { get; set; } = 1;
+		public int TotalCount => slots.Length;
 	}
 
 }

@@ -37,7 +37,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 			// +1 presence range 1, +2 energy
 			Given_HasPresence( board[1] );
 			When_Growing(2);
-			Resolve_PlacePresence( "A1;A2;A4;A5;A6",spirit.EnergyTrack[spirit.RevealedEnergySpaces]);
+			Resolve_PlacePresence( "A1;A2;A4;A5;A6",spirit.EnergyTrack.Next);
 			Assert.Equal(3,spirit.EnergyPerTurn);
 			Assert_HasEnergy(3+2);
 		}
@@ -51,7 +51,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 		[InlineDataAttribute(6,8)]
 		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth) {
 			// energy:	2 3 4 6 7 8
-			spirit.RevealedEnergySpaces = revealedSpaces;
+			spirit.EnergyTrack.RevealedCount = revealedSpaces;
 			Assert_EnergyTrackIs( expectedEnergyGrowth );
 		}
 
@@ -64,7 +64,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 		[InlineDataAttribute(6,4)]
 		public void CardTrack(int revealedSpaces, int expectedCardPlayCount){
 			//	card:  1 1 2 2 3 4
-			spirit.RevealedCardSpaces = revealedSpaces;
+			spirit.CardTrack.RevealedCount = revealedSpaces;
 			Assert_CardTrackIs( expectedCardPlayCount );
 		}
 

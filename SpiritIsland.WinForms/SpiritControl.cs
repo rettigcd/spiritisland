@@ -83,7 +83,7 @@ namespace SpiritIsland.WinForms {
 			using Bitmap presence = new Bitmap( presenceStream );
 
 			// calc slot width and presence height
-			int maxLength = Math.Max( spirit.CardTrack.Length, spirit.EnergyTrack.Length );
+			int maxLength = Math.Max( spirit.CardTrack.TotalCount, spirit.EnergyTrack.TotalCount );
 			float coinWidth = (Width - 2 * margin) / maxLength;
 			float presenceWidth = coinWidth * 0.9f;
 			SizeF presenceSize = new SizeF(presenceWidth, presenceWidth * presence.Height / presence.Width );
@@ -114,12 +114,12 @@ namespace SpiritIsland.WinForms {
 			graphics.DrawString( "Energy", simpleFont, SystemBrushes.ControlDarkDark, x, y );
 			y += lineHeight;
 
-			int revealedEnergySpaces = spirit.RevealedEnergySpaces;
+			int revealedEnergySpaces = spirit.EnergyTrack.RevealedCount;
 			int idx = 0;
 
 			// bool highlightEnergy = trackOptions.Contains( Track.Energy1 );
 
-			foreach(var energy in spirit.EnergyTrack) {
+			foreach(var energy in spirit.EnergyTrack.slots) {
 				
 				// energy amount
 				using( var imgStream = assembly.GetManifestResourceStream( $"SpiritIsland.WinForms.images.tokens.{energy.Text}.png" ) ){
@@ -163,10 +163,10 @@ namespace SpiritIsland.WinForms {
 			float cardWidth = slotWidth * 0.8f;
 			float cardLeft = (slotWidth - cardWidth) / 2; // center
 
-			int revealedCardSpaces = spirit.RevealedCardSpaces;
+			int revealedCardSpaces = spirit.CardTrack.RevealedCount;
 			int idx = 0;
 
-			foreach(var track in spirit.CardTrack) {
+			foreach(var track in spirit.CardTrack.slots) {
 
 				// card plays amount
 				using(var imgStream = assembly.GetManifestResourceStream( $"SpiritIsland.WinForms.images.tokens.{track.Text}.png" )) {

@@ -81,11 +81,11 @@ namespace SpiritIsland.Core {
 			var result = new TaskCompletionSource<Track>();
 
 			var tracks = new List<Track>();
-			if(Self.RevealedEnergySpaces < Self.EnergyTrack.Length)
-				tracks.Add( Self.NextEnergyPresence );
+			if(Self.EnergyTrack.HasMore)
+				tracks.Add( Self.EnergyTrack.Next );
 
-			if(Self.RevealedCardSpaces < Self.CardTrack.Length)
-				tracks.Add( Self.NextCardPresence ); // pick the correct one
+			if(Self.CardTrack.HasMore)
+				tracks.Add( Self.CardTrack.Next );
 
 			decisions.Push( new SelectAsync<Track>( 
 				"Select Presence to place.", 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Shouldly;
 using SpiritIsland.SinglePlayer;
 using Xunit;
 
@@ -20,7 +21,7 @@ namespace SpiritIsland.Tests {
 		protected void Game_SelectOption( string prompt, string optionText ) {
 
 			if(!game.Decision.Prompt.StartsWith(prompt))
-				Assert.Equal(prompt,game.Decision.Prompt);
+				game.Decision.Prompt.ShouldBe(prompt);
 
 			var option = game.Decision.Options.FirstOrDefault(o=>o.Text == optionText);
 			if(option==null)

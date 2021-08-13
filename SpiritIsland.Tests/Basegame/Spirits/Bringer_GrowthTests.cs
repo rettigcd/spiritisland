@@ -54,7 +54,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 
 			// add presense range 4 Dahan or Invadors, +2 energy
 			When_Growing(3);
-			Resolve_PlacePresence( "T6;T7;T8;T9",spirit.NextEnergyPresence);
+			Resolve_PlacePresence( "T6;T7;T8;T9",spirit.EnergyTrack.Next);
 
 			Assert.Equal(2,spirit.EnergyPerTurn);
 			Assert_HasEnergy(2+2);
@@ -71,7 +71,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 		[InlineDataAttribute(7,5,"AM*")]
 		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 			// energy:	2 air 3 moon 4 any 5
-			spirit.RevealedEnergySpaces = revealedSpaces;
+			spirit.EnergyTrack.RevealedCount = revealedSpaces;
 			Assert_EnergyTrackIs( expectedEnergyGrowth );
 			Assert_BonusElements( elements );
 		}
@@ -85,7 +85,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 		[InlineDataAttribute(6,3,"*")] // will fail until we convert cards over also
 		public void CardTrack(int revealedSpaces, int expectedCardPlayCount, string elements){
 			// card:	2 2 2 3 3 any
-			spirit.RevealedCardSpaces = revealedSpaces;
+			spirit.CardTrack.RevealedCount = revealedSpaces;
 			Assert_CardTrackIs(expectedCardPlayCount);
 			Assert_BonusElements( elements );
 		}

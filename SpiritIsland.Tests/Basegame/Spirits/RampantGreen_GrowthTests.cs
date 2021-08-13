@@ -76,7 +76,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 		[InlineDataAttribute(7,3,"PP")]
 		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 			// energy: 0 1 plant 2 2 plant 3
-			spirit.RevealedEnergySpaces = revealedSpaces;
+			spirit.EnergyTrack.RevealedCount = revealedSpaces;
 			Assert_PresenceTracksAre( expectedEnergyGrowth, 1 );
 			Assert_BonusElements( elements );
 		}
@@ -91,7 +91,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 		public void CardTrack(int revealedSpaces, int expectedCardPlayCount){
 			// card:   1 1 2 2 3 4
 
-			spirit.RevealedCardSpaces = revealedSpaces;
+			spirit.CardTrack.RevealedCount = revealedSpaces;
 			Assert_PresenceTracksAre(0,expectedCardPlayCount);
 
 		}

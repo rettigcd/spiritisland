@@ -55,7 +55,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Lightning {
 		[InlineDataAttribute(8,5)]
 		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth) {
 			// energy: 1 1 2 2 3 4 4 5
-			spirit.RevealedEnergySpaces = revealedSpaces;
+			spirit.EnergyTrack.RevealedCount = revealedSpaces;
 			Assert_EnergyTrackIs( expectedEnergyGrowth );
 		}
 
@@ -67,7 +67,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Lightning {
 		[InlineDataAttribute(5,6)]
 		public void CardTrack(int revealedSpaces, int expectedCardPlayCount){
 			// card:   2 3 4 5 6
-			spirit.RevealedCardSpaces = revealedSpaces;
+			spirit.CardTrack.RevealedCount = revealedSpaces;
 			Assert_CardTrackIs( expectedCardPlayCount );
 		}
 

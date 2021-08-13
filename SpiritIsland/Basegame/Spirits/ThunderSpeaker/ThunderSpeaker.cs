@@ -44,7 +44,7 @@ namespace SpiritIsland.Basegame {
 
 		public ThunderSpeaker():base(
 			new Track[] { Track.Energy1, Track.AirEnergy, Track.Energy2, Track.FireEnergy, Track.SunEnergy, Track.Energy3 },
-			new Track[] { Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card3, Track.Card3, Track.Card4 },
+			new Track[] { Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Reclaim1, Track.Card3, Track.Card4 },
 			PowerCard.For<ManifestationOfPowerAndGlory>(),
 			PowerCard.For<SuddenAmbush>(),
 			PowerCard.For<VoiceOfThunder>(),
@@ -74,13 +74,6 @@ namespace SpiritIsland.Basegame {
 				InnatePower.For<LeadTheFuriousAssult_Fast>(),
 			};
 
-		}
-
-		public override void Grow( GameState gameState, int optionIndex ) {
-			base.Grow( gameState, optionIndex );
-
-			if( RevealedCardSpaces >= 5 && optionIndex>0)
-				AddActionFactory(new Reclaim1());
 		}
 
 		public override void Initialize( Board board, GameState gs ) {

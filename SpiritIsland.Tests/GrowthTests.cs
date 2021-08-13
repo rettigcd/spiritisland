@@ -112,7 +112,7 @@ namespace SpiritIsland.Tests {
 		#region Resolve_
 
 		protected void Resolve_PlacePresence( string placeOptions, string factory=null) {
-			Resolve_PlacePresence( placeOptions, spirit.NextEnergyPresence, factory );
+			Resolve_PlacePresence( placeOptions, spirit.EnergyTrack.Next, factory );
 		}
 
 		protected void Resolve_PlacePresence(string placeOptions, Track source, string factoryDescription=null ) {
@@ -123,7 +123,7 @@ namespace SpiritIsland.Tests {
 			ppFactory.Activate( engine );
 			var ppAction = new BaseAction(engine);
 
-			if(engine.Self.HasMoreCardPresence && engine.Self.HasMoreEnergyPresence) // there are 2 option available
+			if(engine.Self.CardTrack.HasMore && engine.Self.EnergyTrack.HasMore) // there are 2 option available
 				// take from precense track
 				ppAction.Select(source);
 

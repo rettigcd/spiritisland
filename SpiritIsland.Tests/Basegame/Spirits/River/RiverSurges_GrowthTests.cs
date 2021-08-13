@@ -38,16 +38,16 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// +1 power card, +1 presense range 2
 
 			Given_HasPresence( board[3] );
-			Assert.Equal(1,spirit.RevealedEnergySpaces);
+			Assert.Equal(1,spirit.EnergyTrack.RevealedCount);
 
 			When_Growing( 1 );
-			Resolve_PlacePresence( "A2;A3;A4", spirit.NextEnergyPresence);
-			Resolve_PlacePresence( "A1;A2;A3;A4", spirit.NextEnergyPresence );
+			Resolve_PlacePresence( "A2;A3;A4", spirit.EnergyTrack.Next);
+			Resolve_PlacePresence( "A1;A2;A3;A4", spirit.EnergyTrack.Next );
 
 			Assert_GainPowercard( 0 );
 			Assert.Equal(2,spirit.EnergyPerTurn);
 			Assert_HasEnergy( 2 ); // 2 from energy track
-			Assert.Equal(3,spirit.RevealedEnergySpaces); // # of spaces revealed, not energy per turn
+			Assert.Equal(3,spirit.EnergyTrack.RevealedCount); // # of spaces revealed, not energy per turn
 		}
 
 		[Fact]
@@ -55,17 +55,17 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// +1 power card, 
 			// +1 presense range 2
 
-			Assert.Equal(1,spirit.RevealedEnergySpaces);
+			Assert.Equal(1,spirit.EnergyTrack.RevealedCount);
 			Given_HasPresence( board[3] );
 
 			When_Growing( 2 );
-			Resolve_PlacePresence( "A1;A2;A3;A4;A5", spirit.NextCardPresence);
+			Resolve_PlacePresence( "A1;A2;A3;A4;A5", spirit.CardTrack.Next);
 
 			Assert_HasCardAvailable( "Uncanny Melting" ); // gains 1st card in power progression
 			Assert_GainPowercard( 0 );
 			Assert_HasEnergy( 1 ); // didn't increase energy track.
-			Assert.Equal(1,spirit.RevealedEnergySpaces);
-			Assert.Equal(2,spirit.RevealedCardSpaces);
+			Assert.Equal(1,spirit.EnergyTrack.RevealedCount);
+			Assert.Equal(2,spirit.CardTrack.RevealedCount);
 		}
 
 		#endregion
@@ -83,7 +83,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth ){
 			// energy:	1 2 2 3 4 4 5
 
-			spirit.RevealedEnergySpaces = revealedSpaces;
+			spirit.EnergyTrack.RevealedCount = revealedSpaces;
 			Assert_PresenceTracksAre(expectedEnergyGrowth,1);
 		}
 
@@ -101,7 +101,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Given_HasPresence( board[3] );
 			Given_HalfOfPowercardsPlayed();
 
-			spirit.RevealedCardSpaces = revealedSpaces;
+			spirit.CardTrack.RevealedCount = revealedSpaces;
 			Assert_PresenceTracksAre(1,expectedCardPlayCount);
 
 			When_Growing(2);
@@ -288,9 +288,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 	}
 
-	public class RSG : RiverGame {
+	public class RiverSurges_GrowthTests2 : RiverGame {
 
-		public RSG(){
+		public RiverSurges_GrowthTests2(){
 			var spirit = new RiverSurges();
 			var gs = new GameState( spirit ) {
 				Island = new Island( Board.BuildBoardA() )
@@ -313,13 +313,14 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			Game_SelectGrowthOption(1);
 			Game_PlacePresence1("Card","A5");
-			Game_PlacePresence1(game.Spirit.NextCardPresence,"A5");
+			Game_PlacePresence1(game.Spirit.CardTrack.Next,"A5");
 
 			// Can reclaim River's Bounty
 			Game_Reclaim1( "River's Bounty $0 (Slow)" );
-			// Can buy River's Bount and 1 other cards
+			// Can buy all 3 of River's cards including Bounty
 			Game_BuyPowerCards( RiversBounty.Name );
 			Game_BuyPowerCards( BoonOfVigor.Name );
+			Game_BuyPowerCards( FlashFloods.Name );
 			Game_DoneWith(Speed.Fast);
 
 		}

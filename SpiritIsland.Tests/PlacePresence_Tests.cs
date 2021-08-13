@@ -42,15 +42,15 @@ namespace SpiritIsland.Tests.Core {
 			Given_SpiritGrowsByPlacingPresence();
 			When_Growing(0);
 			Resolve_PlacePresence( "A1" );
-			Assert.Equal( 2, spirit.RevealedEnergySpaces );
+			Assert.Equal( 2, spirit.EnergyTrack.RevealedCount );
 		}
 
 		[Fact]
 		public void PullsFrom_CardTrack(){
 			Given_SpiritGrowsByPlacingPresence();
 			When_Growing( 0 );
-			Resolve_PlacePresence( "A1", spirit.NextCardPresence );
-			Assert.Equal(2,spirit.RevealedCardSpaces);
+			Resolve_PlacePresence( "A1", spirit.CardTrack.Next );
+			Assert.Equal(2,spirit.CardTrack.RevealedCount);
 		}
 
 		void Given_SpiritGrowsByPlacingPresence(int count=1) {
