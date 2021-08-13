@@ -27,6 +27,7 @@ namespace SpiritIsland.WinForms {
 			this.statusControl1.Init( game.GameState, this );
 			this.islandControl.SpaceClicked += Select;
 			this.cardControl.CardSelected += Select;
+			this.spiritControl.OptionSelected += Select;
 
 			ShowOptions();
 			UpdateDisplay();

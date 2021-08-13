@@ -1,16 +1,15 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
 SpiritControl
-	Select presence from presence tracks (UI)
+4	show $$ in gui
+4	show spirit icon in GUI
 	#s on elements on wrong side / spacing
 	show Growth options in GUI
-	show $$ in gui
-	show spirit icon in GUI
 
 Misc
 	give presence shadows
-	replace board presence icons with color presence
-	LOG fear actions / results
+5	replace board presence icons with color presence
+5	LOG fear actions / results
 
 
 Fix

@@ -36,6 +36,7 @@
     <None Remove="images\tokens\fire energy.png" />
     <None Remove="images\tokens\moon energy.png" />
     <None Remove="images\tokens\plant energy.png" />
+    <None Remove="images\tokens\reclaim 1.png" />
     <None Remove="images\tokens\sun energy.png" />
     <None Remove="images\tokens\water energy.png" />
   </ItemGroup>
@@ -116,6 +117,7 @@
     <EmbeddedResource Include="images\tokens\plant energy.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\reclaim 1.png" />
     <EmbeddedResource Include="images\tokens\sun energy.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>

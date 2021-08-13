@@ -19,39 +19,40 @@ namespace SpiritIsland.WinForms {
 		public void Init( Spirit spirit, string presenceColor, IHaveOptions optionProvider ) {
 			this.spirit = spirit;
 
-			this.presenceColor = presenceColor ?? throw new ArgumentNullException(nameof(presenceColor));
+			this.presenceColor = presenceColor ?? throw new ArgumentNullException( nameof( presenceColor ) );
 
-			elPos = new Dictionary<Element, int>();
-			int i=0;
-			foreach(var innate in spirit.InnatePowers)
-				foreach(var el in Highest(innate))
-					if(!elPos.ContainsKey(el)) elPos[el] = i++;
-			foreach(Element el in Enum.GetValues(typeof(Element)) )
-				if(!elPos.ContainsKey( el )) elPos[el] = i++;
+			InitElementDisplayOrder( spirit );
 
 			optionProvider.OptionsChanged += OptionProvider_OptionsChanged;
 		}
-		Dictionary<Element, int> elPos;
 
-		static Element[] Highest(InnatePower power) => power.GetTriggerThresholds()
-            .OrderByDescending(list=>list.Length)
-            .First();
+		void InitElementDisplayOrder( Spirit spirit ) {
+			static Element[] Highest( InnatePower power ) => power.GetTriggerThresholds()
+				.OrderByDescending( list => list.Length )
+				.First();
+
+			elementOrder = new Dictionary<Element, int>();
+			int i = 0;
+			foreach(var innate in spirit.InnatePowers)
+				foreach(var el in Highest( innate ))
+					if(!elementOrder.ContainsKey( el )) elementOrder[el] = i++;
+			foreach(Element el in Enum.GetValues( typeof( Element ) ))
+				if(!elementOrder.ContainsKey( el )) elementOrder[el] = i++;
+		}
+
+		Dictionary<Element, int> elementOrder;
 
         void OptionProvider_OptionsChanged( IOption[] obj ) {
-			var tracks = obj.OfType<Track>().ToArray();
-			trackOptions = new HashSet<Track>( tracks );
+
+			trackOptions = obj.OfType<Track>().ToArray();
+
 			innateOptions = obj
 				.OfType<IActionFactory>()
 				.Select( x => x.Original )
 				.OfType<InnatePower>()
 				.ToArray();
-			this.Invalidate();
-		}
 
-		protected override void OnPaint( PaintEventArgs pe ) {
-			base.OnPaint( pe );
-			if(spirit != null)
-				DrawSpirit( pe.Graphics );
+			this.Invalidate();
 		}
 
 		protected override void OnSizeChanged( EventArgs e ) {
@@ -59,11 +60,20 @@ namespace SpiritIsland.WinForms {
 			this.Invalidate();
 		}
 
+		#region Draw
+
+		protected override void OnPaint( PaintEventArgs pe ) {
+			base.OnPaint( pe );
+			if(spirit != null)
+				DrawSpirit( pe.Graphics );
+		}
+
 		void DrawSpirit( Graphics graphics ) {
+
+			hotSpots.Clear();
 
 			using Font simpleFont = new( "Arial", 8, FontStyle.Bold, GraphicsUnit.Point );
 
-//			using Font font = new( "Arial", 18f );
 			using Brush coverBrush = new SolidBrush( Color.FromArgb( 128, Color.Gray ) );
 			Brush currentBrush = Brushes.Yellow;
 			using Pen highlightPen = new( Color.Red, 10f );
@@ -75,14 +85,15 @@ namespace SpiritIsland.WinForms {
 			// calc slot width and presence height
 			int maxLength = Math.Max( spirit.CardTrack.Length, spirit.EnergyTrack.Length );
 			float coinWidth = (Width - 2 * margin) / maxLength;
-			float presenceHeight = coinWidth * presence.Height / presence.Width;
+			float presenceWidth = coinWidth * 0.9f;
+			SizeF presenceSize = new SizeF(presenceWidth, presenceWidth * presence.Height / presence.Width );
 
 			// Energy
 			float x, y=10f;
-			DrawEnergy( graphics, simpleFont, presence, coinWidth, presenceHeight, ref y );
+			DrawEnergyTrack( graphics, simpleFont, presence, coinWidth, presenceSize, highlightPen, ref y );
 
 			// Cards
-			DrawCards( graphics, simpleFont, presence, coinWidth, presenceHeight, ref y );
+			DrawCardPlayTrack( graphics, simpleFont, presence, coinWidth, presenceSize, highlightPen, ref y );
 
 			y += margin;
 
@@ -90,13 +101,12 @@ namespace SpiritIsland.WinForms {
 			x = DrawInnates( graphics, highlightPen, ref y );
 
 			// activated elements
-			ActivatedElements( graphics, simpleFont, ref y );
+			DrawActivatedElements( graphics, simpleFont, ref y );
 
 			// !Note! - If you do not specify output width/height of image, .Net will scale image based on screen DPI and image DPI
 		}
 
-
-		void DrawEnergy( Graphics graphics, Font simpleFont, Bitmap presence, float coinWidth, float presenceHeight, ref float y ) {
+		void DrawEnergyTrack( Graphics graphics, Font simpleFont, Bitmap presence, float slotWidth, SizeF presenceSize, Pen highlightPen, ref float y ) {
 
 			float x = margin;
 
@@ -114,21 +124,34 @@ namespace SpiritIsland.WinForms {
 				// energy amount
 				using( var imgStream = assembly.GetManifestResourceStream( $"SpiritIsland.WinForms.images.tokens.{energy.Text}.png" ) ){
 					using var bitmap = new Bitmap( imgStream ); 
-					graphics.DrawImage( bitmap, x, y, coinWidth, coinWidth );
+					graphics.DrawImage( bitmap, x, y, slotWidth, slotWidth );
 				};
+
+				RectangleF presenceRect = new RectangleF( 
+					x + (slotWidth-presenceSize.Width)/2, 
+					y - presenceSize.Height / 2, 
+					presenceSize.Width,
+					presenceSize.Height
+				);
+
+				// Highlight Option
+				if(revealedEnergySpaces == idx && trackOptions.Contains( energy )) {
+					graphics.DrawEllipse(highlightPen, presenceRect );
+					hotSpots.Add(energy,presenceRect);
+				}
 
 				// presence
 				if(revealedEnergySpaces <= idx )
-					graphics.DrawImage( presence, x, y-presenceHeight/2,coinWidth,presenceHeight );
+					graphics.DrawImage( presence, presenceRect );
 
-				x += coinWidth;
+				x += slotWidth;
 				++idx;
 			}
 
-			y += coinWidth;
+			y += slotWidth;
 		}
 
-		void DrawCards( Graphics graphics, Font simpleFont, Bitmap presence, float slotWidth, float presenceHeight, ref float y ) {
+		void DrawCardPlayTrack( Graphics graphics, Font simpleFont, Bitmap presence, float slotWidth, SizeF presenceSize, Pen highlightPen, ref float y ) {
 
 			float x = margin;
 
@@ -143,8 +166,6 @@ namespace SpiritIsland.WinForms {
 			int revealedCardSpaces = spirit.RevealedCardSpaces;
 			int idx = 0;
 
-//			bool highlightCard = trackOptions.Contains( Track.Card1 );
-
 			foreach(var track in spirit.CardTrack) {
 
 				// card plays amount
@@ -155,9 +176,23 @@ namespace SpiritIsland.WinForms {
 					graphics.DrawImage( bitmap, x+ cardLeft, y, cardWidth, cardHeight );
 				};
 
+				RectangleF presenceRect = new RectangleF(
+					x + (slotWidth - presenceSize.Width) / 2,
+					y - presenceSize.Height / 2,
+					presenceSize.Width,
+					presenceSize.Height
+				);
+
+				// Highlight Option
+				if(revealedCardSpaces == idx && trackOptions.Contains( track )) {
+					graphics.DrawEllipse( highlightPen, presenceRect );
+					hotSpots.Add( track, presenceRect );
+				}
+
+
 				// presence
 				if(revealedCardSpaces <= idx)
-					graphics.DrawImage( presence, x, y - presenceHeight / 2, slotWidth, presenceHeight );
+					graphics.DrawImage( presence, presenceRect );
 
 				x += slotWidth;
 				++idx;
@@ -179,8 +214,11 @@ namespace SpiritIsland.WinForms {
 				int drawHeight = drawWidth * image.Height / image.Width;
 				graphics.DrawImage( image, x, y, drawWidth, drawHeight );
 
-				if(innateOptionNames.Contains( name ))
-					graphics.DrawRectangle( highlightPen, x, y, drawWidth, drawHeight );
+				if(innateOptionNames.Contains( name )) {
+					var rect = new RectangleF(x,y,drawWidth,drawHeight);
+					graphics.DrawRectangle( highlightPen, rect.X, rect.Y, rect.Width, rect.Height );
+					hotSpots.Add(innateOptions.Single(x=>x.Name==name),rect);
+				}
 
 				y += drawHeight;
 				y += 10;
@@ -189,15 +227,13 @@ namespace SpiritIsland.WinForms {
 			return x;
 		}
 
-
-
-		void ActivatedElements( Graphics graphics, Font simpleFont, ref float y ) {
+		void DrawActivatedElements( Graphics graphics, Font simpleFont, ref float y ) {
 			y += 20;
 			const float elementSize = 50f;
 			var elements = spirit.Elements; // cache, don't recalculate
 			float x = margin;
 
-			var orderedElements = elements.Keys.OrderBy( el => elPos[el] );
+			var orderedElements = elements.Keys.OrderBy( el => elementOrder[el] );
 			foreach(var element in orderedElements) {
 				if(elements[element] > 1) {
 					graphics.DrawString(
@@ -214,6 +250,29 @@ namespace SpiritIsland.WinForms {
 			}
 		}
 
+		#endregion
+
+		protected override void OnMouseMove( MouseEventArgs e ) {
+			base.OnMouseMove( e );
+			Point clientCoord = this.PointToClient( Control.MousePosition );
+			Cursor = HitTest( clientCoord ) != null ? Cursors.Hand : Cursors.Arrow;
+		}
+
+		protected override void OnClick( EventArgs e ) {
+			base.OnClick( e );
+			Point clientCoord = this.PointToClient( Control.MousePosition );
+			var option = HitTest( clientCoord );
+			if(option != null)
+				OptionSelected?.Invoke(option);
+		}
+
+		public event Action<IOption> OptionSelected;
+
+		IOption HitTest( Point clientCoord ) {
+			return hotSpots.Keys.FirstOrDefault(key=>hotSpots[key].Contains(clientCoord));
+		}
+
+		readonly Dictionary<IOption,RectangleF> hotSpots = new Dictionary<IOption, RectangleF>();
 
 		Image GetInnateImage( string innateCardName ) {
 			if(!innateImages.ContainsKey( innateCardName )) {
@@ -241,7 +300,7 @@ namespace SpiritIsland.WinForms {
 		const float lineHeight = 60f;
 
 		string presenceColor;
-		HashSet<Track> trackOptions;
+		Track[] trackOptions;
 		InnatePower[] innateOptions;
 		Spirit spirit;
 
