@@ -28,6 +28,17 @@ namespace SpiritIsland {
 
 		public void AddRange(IEnumerable<K> items) { foreach(var item in items) ++this[item]; }
 
+		public bool Has( Dictionary<K, int> needed ) {
+			return needed.All( pair => pair.Value <= this[pair.Key] );
+		}
+
+		public bool Has( params K[] requiredElements ) {
+			var required = requiredElements
+				.GroupBy( x => x )
+				.ToDictionary( grp => grp.Key, grp => grp.Count() );
+			return Has( required );
+		}
+
 		public int this[K key]{
 			get{ return _inner.ContainsKey(key) ? _inner[key] : 0; }
 			set{ 

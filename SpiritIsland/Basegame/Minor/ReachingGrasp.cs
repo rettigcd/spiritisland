@@ -29,7 +29,7 @@ namespace SpiritIsland.Basegame {
 			}
 
 			public override Task<Space> TargetSpace( ActionEngine engine, IEnumerable<Space> source, int range, Func<Space, bool> filter = null )
-				=> base.TargetSpace( engine, source, range + extension, filter );
+				=> original.TargetSpace( engine, source, range + extension, filter );
 
 		}
 
