@@ -26,6 +26,8 @@ namespace SpiritIsland {
 
 		public void Clear() => _inner.Clear();
 
+		public void AddRange(IEnumerable<K> items) { foreach(var item in items) ++this[item]; }
+
 		public int this[K key]{
 			get{ return _inner.ContainsKey(key) ? _inner[key] : 0; }
 			set{ 

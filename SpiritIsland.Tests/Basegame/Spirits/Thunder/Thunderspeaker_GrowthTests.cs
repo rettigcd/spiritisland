@@ -66,6 +66,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			// energy:	1 air 2 fire sun 3
 			spirit.EnergyTrack.RevealedCount = revealedSpaces;
 			Assert_PresenceTracksAre( expectedEnergyGrowth, 1 );
+			When_Growing(0); // finish growth to trigger elements
 			Assert_BonusElements( elements );
 		}
 

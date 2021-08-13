@@ -1,8 +1,4 @@
 ﻿using SpiritIsland.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
@@ -15,6 +11,9 @@ namespace SpiritIsland.Basegame {
 			// Target Spirit games 3 _different_ Elements of their choice
 
 			// if you target another spirit, you also gain the chosen elements
+
+
+			// !!!! Create an ElementPool that we can push elements into, then flush at the end of the round
 		}
 
 

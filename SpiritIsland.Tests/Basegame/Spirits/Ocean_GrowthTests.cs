@@ -162,6 +162,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 			// energy: 0 moon water 1 earth water 2
 			spirit.EnergyTrack.RevealedCount = revealedSpaces;
 			Assert_EnergyTrackIs( expectedEnergyGrowth );
+			When_Growing( 0 ); // triggers elements
 			Assert_BonusElements( elements );
 		}
 

@@ -133,8 +133,6 @@ namespace SpiritIsland.Tests {
 				ppAction.Select(ppAction.Options.Single(o=>o.Text==options[0]));
 
 			spirit.RemoveUnresolvedFactory(ppFactory);
-			//new ResolvePlacePresence( placeOptions, source, factory )
-			//	.Apply(spirit,gameState);
 		}
 
 

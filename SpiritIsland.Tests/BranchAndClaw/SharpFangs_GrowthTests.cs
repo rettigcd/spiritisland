@@ -114,7 +114,8 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			// energy:	1 animal plant 2 animal 3 4
 			spirit.EnergyTrack.RevealedCount = revealedSpaces;
 			Assert_PresenceTracksAre(expectedEnergyGrowth,2);
-			Assert_BonusElements(elements);
+			When_Growing( 5 ); // finish growth to trigger elements
+			Assert_BonusElements( elements);
 		}
 
 		[Theory]

@@ -131,6 +131,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			// energy:	2 sun 4 5 plant 7 8 9
 			spirit.EnergyTrack.RevealedCount = revealedSpaces;
 			Assert_EnergyTrackIs( expectedEnergyGrowth );
+			When_Growing( 0 ); // finish growth to trigger elements
 			Assert_BonusElements( elements );
 		}
 

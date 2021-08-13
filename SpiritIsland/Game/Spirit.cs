@@ -40,15 +40,7 @@ namespace SpiritIsland {
 			return energyElements.Concat(cardElements);
 		}
 
-		// !!! this could be calculated and cached when cards are purchased
-		public CountDictionary<Element> Elements{ get { 
-			var fromCards = PurchasedCards.SelectMany( c => c.Elements ).ToArray();
-			var fromTrack = TrackElements().ToArray();
-			return fromCards.Concat(fromTrack)
-					.GroupBy(c=>c)
-				.ToDictionary( grp => grp.Key, grp => grp.Count() )
-				.ToCountDict();
-		} }
+		public readonly CountDictionary<Element> Elements = new CountDictionary<Element>();
 
 		#endregion
 
@@ -93,8 +85,15 @@ namespace SpiritIsland {
 		}
 
 		public void Forget( PowerCard cardToRemove ) {
-			PurchasedCards.Remove( cardToRemove );
+			// A card can be in one of 3 places
+			// (1) Purchased / Active
+			if(PurchasedCards.Contains( cardToRemove )) {
+				foreach(var el in cardToRemove.Elements) --Elements[el];// lose elements from forgotten card
+				PurchasedCards.Remove( cardToRemove );
+			}
+			// (2) Unpurchased, still in hand
 			Hand.Remove( cardToRemove );
+			// (3) used, discarded
 			DiscardPile.Remove( cardToRemove );
 		}
 
@@ -137,6 +136,9 @@ namespace SpiritIsland {
 			if(_unresolvedActionFactories.Count == 0 && selectedActionFactory is GrowthActionFactory growthFactory) {
 				// Energy
 				Energy += EnergyPerTurn;
+				// Elements
+				Elements.AddRange( EnergyTrack.Revealed.Where( t => t.Element.HasValue ).Select( t => t.Element.Value ) );
+				Elements.AddRange( CardTrack.Revealed.Where( t => t.Element.HasValue ).Select( t => t.Element.Value ) );
 
 				// Reclaims-1
 				if(!(selectedActionFactory is Reclaim1)) { // prevent retriggering following Reclaim1
@@ -182,6 +184,7 @@ namespace SpiritIsland {
 			Hand.Remove( card );
 			PurchasedCards.Add( card );
 			Energy -= card.Cost;
+			Elements.AddRange( card.Elements );
 		}
 
 		#endregion
@@ -239,6 +242,7 @@ namespace SpiritIsland {
 			DiscardPile.AddRange( PurchasedCards );
 			PurchasedCards.Clear();
 			usedInnates.Clear();
+			Elements.Clear();
 		}
 
 		#endregion

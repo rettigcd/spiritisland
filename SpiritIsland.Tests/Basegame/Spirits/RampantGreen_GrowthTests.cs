@@ -78,6 +78,12 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 			// energy: 0 1 plant 2 2 plant 3
 			spirit.EnergyTrack.RevealedCount = revealedSpaces;
 			Assert_PresenceTracksAre( expectedEnergyGrowth, 1 );
+
+			When_Growing( 0 ); // triggers elements
+
+			if(revealedSpaces<7) // when we hit 7, there will only be prsence on the card-track and PP will auto-resolve
+				Resolve_PlacePresence("A1",spirit.CardTrack.Next);
+
 			Assert_BonusElements( elements );
 		}
 

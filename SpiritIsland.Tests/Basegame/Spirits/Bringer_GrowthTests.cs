@@ -73,6 +73,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 			// energy:	2 air 3 moon 4 any 5
 			spirit.EnergyTrack.RevealedCount = revealedSpaces;
 			Assert_EnergyTrackIs( expectedEnergyGrowth );
+			When_Growing(0); // triggers elements
 			Assert_BonusElements( elements );
 		}
 
@@ -87,6 +88,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 			// card:	2 2 2 3 3 any
 			spirit.CardTrack.RevealedCount = revealedSpaces;
 			Assert_CardTrackIs(expectedCardPlayCount);
+			When_Growing(0);
 			Assert_BonusElements( elements );
 		}
 
