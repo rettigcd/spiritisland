@@ -28,9 +28,13 @@ namespace SpiritIsland.Basegame {
 	2 water 4 plant  instead, defend 4
 	3 water 1 rock 5 plant  also, remove 1 blight
 
-	Special Ruels - Choke the land with green - whenever invaders would ravage or build in a land with your sacred site, you may prevent it by destroying one of your presense in that land
+
+	Special Rules - Choke the land with green - whenever invaders would ravage or build in a land with your sacred site, you may prevent it by destroying one of your presense in that land
+		* Option > At growth time, create a pre-ravaging event for every land
+
 	Special Rules - Stedy regeneration - when adding presense to the board via growth, yo may optionally use your destroyed presense.  If the island is helathy, do so freely.  If the island is blighted, doing so costs 1 energy per destroyed presense you add.
 	Setup: 1 in the highest numbered wedland and 1 in the jungle without any dahan
+
 
 Green
 	Infinite vitality
@@ -52,10 +56,10 @@ Green
 		public RampantGreen():base(
 			new Track[] { Track.Energy0, Track.Energy1, Track.PlantEnergy, Track.Energy2, Track.Energy2, Track.PlantEnergy, Track.Energy3 },
 			new Track[] { Track.Card1, Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4 },
-			new NullPowerCard( "A", 0, Speed.Fast ),
-			new NullPowerCard( "B", 0, Speed.Fast ),
-			new NullPowerCard( "C", 0, Speed.Fast ),
-			new NullPowerCard( "D", 0, Speed.Fast )
+			PowerCard.For<FieldsChokedWithGrowth>(),
+			PowerCard.For<GiftOfProliferation>(),
+			PowerCard.For<OvergrowInANight>(),
+			PowerCard.For<StemTheFlowOfFreshWater>()
 		) {
 			var placeOnWetlandOrJungle = new PlacePresence(2, Filter.JungleOrWetland, "W / J");
 

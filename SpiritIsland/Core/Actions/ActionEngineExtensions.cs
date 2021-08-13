@@ -131,7 +131,7 @@ namespace SpiritIsland.Core {
 			// While damage remains    &&    we have invaders
 			while(damageToInvaders > 0 && grp.InvaderTypesPresent.Any()) {
 				Invader invaderToDamage = PickInvaderToDamage( grp, damageToInvaders );
-				damageToInvaders -= grp.ApplyDamage( invaderToDamage, damageToInvaders );
+				damageToInvaders -= grp.ApplyDamageTo1( invaderToDamage, damageToInvaders );
 			}
 			if(log != null) log.Add( $"{startingDamage} damage to invaders leaving {grp}." );
 
@@ -157,7 +157,7 @@ namespace SpiritIsland.Core {
 			return engine.PlacePresence(destinationOptions);
 		}
 
-		static public async Task PlacePresence( this ActionEngine engine, Space[] destinationOptions ) {
+		static public async Task PlacePresence( this ActionEngine engine, params Space[] destinationOptions ) {
 
 			// From
 			var from = await engine.SelectTrack();

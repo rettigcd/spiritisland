@@ -29,7 +29,7 @@ namespace SpiritIsland.Basegame {
 			var invaderTypes = group.InvaderTypesPresent.ToDictionary(x=>x,x=>group[x]); // copy so we can modify
 			foreach(var (invader,origCount) in invaderTypes.Select(x=>(x.Key,x.Value))){
 				for(int i=0;i<origCount;++i)
-					group.ApplyDamage( invader, 2 );
+					group.ApplyDamageTo1( invader, 2 );
 			}
 
 			return Task.CompletedTask;

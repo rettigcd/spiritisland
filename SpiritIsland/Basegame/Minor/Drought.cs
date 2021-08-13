@@ -14,8 +14,8 @@ namespace SpiritIsland.Basegame {
 			grp.DestroyType(Invader.Town,int.MaxValue);
 
 			// 1 damage to each town/city
-			while(grp[Invader.Town1] > 0) grp.ApplyDamage(Invader.Town1,1);
-			while(grp[Invader.Town] > 0) grp.ApplyDamage( Invader.Town, 1 );
+			while(grp[Invader.Town1] > 0) grp.ApplyDamageTo1(Invader.Town1,1);
+			while(grp[Invader.Town] > 0) grp.ApplyDamageTo1( Invader.Town, 1 );
 
 			// add 1 blight
 			engine.GameState.AddBlight(target,1);

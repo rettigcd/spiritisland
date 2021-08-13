@@ -18,7 +18,7 @@ namespace SpiritIsland.Basegame {
 			foreach(var invader in orig.InvaderTypesPresent){
 				int count = orig[invader];
 				while(count-->0)
-					changing.ApplyDamage(invader,1);
+					changing.ApplyDamageTo1(invader,1);
 			}
 			return Task.CompletedTask;
 		}

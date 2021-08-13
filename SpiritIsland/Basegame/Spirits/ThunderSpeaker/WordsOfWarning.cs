@@ -52,7 +52,7 @@ namespace SpiritIsland.Basegame {
 					// pick best invader knowing total damage
 					Invader invaderToDamage = grp.PickInvaderToDamage( expectedLivingDahanDamage + deadDahanDamage );
 					// apply our dead-dahan-damage to that invader
-					deadDahanDamage -= grp.ApplyDamage( invaderToDamage, deadDahanDamage );
+					deadDahanDamage -= grp.ApplyDamageTo1( invaderToDamage, deadDahanDamage );
 				}
 				// any left over damage will be finished off by the living dahan
 			}

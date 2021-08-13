@@ -35,7 +35,8 @@ namespace SpiritIsland {
 
 		#endregion
 
-		public int ApplyDamage( Invader invader, int availableDamage ) {
+		/// <returns>damage inflicted to invaders</returns>
+		public int ApplyDamageTo1( Invader invader, int availableDamage ) {
 			int damageToInvader = Math.Min( invader.Health, availableDamage );
 
 			var damagedInvader = invader.Damage( damageToInvader );
@@ -63,7 +64,7 @@ namespace SpiritIsland {
 			int totalDestoyed = 0;
 			foreach(var invaderType in invaderTypesToDestory) {
 				while(countToDestory>0 && counts[idx[invaderType]] > 0) {
-					ApplyDamage( invaderType, invaderType.Health );
+					ApplyDamageTo1( invaderType, invaderType.Health );
 					++totalDestoyed;
 					--countToDestory;
 				}
@@ -75,7 +76,7 @@ namespace SpiritIsland {
 
 		public int this[Invader i] => counts[idx[i]];
 
-		public Invader[] FilterBy( params Invader[] allowedTypes ) => allowedTypes
+		public Invader[] FilterBy( params Invader[] healthyTypes ) => healthyTypes
 			.SelectMany(x=>x.AliveVariations)
 			.Intersect( InvaderTypesPresent )
 			.ToArray();

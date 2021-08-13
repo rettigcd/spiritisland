@@ -73,7 +73,6 @@ namespace SpiritIsland.Core {
 
 			string msg = decision.Prompt + "(" + decision.Options.Select(o=>o.Text).Join(",") + "):" + selection.Text;
 			selections.Add( msg );
-			all.Add( msg );
 
 			decision.Select( selection );
 		}
@@ -81,8 +80,6 @@ namespace SpiritIsland.Core {
 		readonly Stack<IDecision> Decisions;
 
 		#endregion
-
-		public static List<string> all = new List<string>();
 
 	}
 

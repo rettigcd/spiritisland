@@ -1,12 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using SpiritIsland.Core;
 using System.Threading.Tasks;
 
-namespace SpiritIsland.Basegame.Spirits.RampantGreen {
+namespace SpiritIsland.Basegame {
+
 	class OvergrowInANight {
-		// Overgrow in a Night => 2 => fast, range 1, any => moon, plant => add 1 presense -OR- If target land has your presense and invaders, 3 fear
+
+		[SpiritCard( "Overgrow in a Night", 2, Speed.Fast, Element.Moon, Element.Plant )]
+		[FromPresence( 1 )]
+		static public async Task ActionAsync( ActionEngine eng, Space target ) {
+
+			const string addFearText = "3 fear";
+			bool addFear = eng.Self.Presence.Contains(target)
+				&& eng.GameState.HasInvaders(target)
+				&& await eng.SelectText( "Select power", "add 1 presence", addFearText ) == addFearText;
+
+			if( addFear )
+				eng.GameState.AddFear(3);
+			else
+				await eng.PlacePresence( target );
+		}
 
 	}
 }

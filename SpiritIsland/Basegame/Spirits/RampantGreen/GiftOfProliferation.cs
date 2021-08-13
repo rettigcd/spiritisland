@@ -1,7 +1,7 @@
 ﻿using SpiritIsland.Core;
 using System.Threading.Tasks;
 
-namespace SpiritIsland.Basegame.Spirits.RampantGreen {
+namespace SpiritIsland.Basegame {
 
 	class GiftOfProliferation {
 
