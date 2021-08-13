@@ -7,7 +7,7 @@ namespace SpiritIsland.Core {
 	class FromSacredSiteAttribute : TargetSpaceAttribute {
 		public FromSacredSiteAttribute(int range, Filter filter = Filter.None)
 			:base(range,filter){}
-		protected override IEnumerable<Space> Source(Spirit self) => self.SacredSites;
+		protected override IEnumerable<Space> PickSourceFrom(Spirit self) => self.SacredSites;
 	}
 
 }

@@ -8,6 +8,7 @@
 		Costal,
 		JungleOrMountain,
 		JungleOrWetland,
+		MountainOrWetland,
 		SandOrWetland,
 		NoBlight,
 	}

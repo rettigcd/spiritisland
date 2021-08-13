@@ -1,24 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using SpiritIsland.Core;
 using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 
-	class TalonsOfLightning {
-		// Fast, cost:6, range 1, Mountains & Water
-		// Elements: fire, air
+	public class TalonsOfLightning {
 
-		// 3 fear
-		// 5 damage
+		[MajorCard( "Talons of Lightning", 6, Speed.Fast, Element.Fire, Element.Air )]
+		[FromPresence(1,Filter.MountainOrWetland)]
+		static public async Task ActionAsync( ActionEngine engine, Space target ) {
 
-		// if you have: 3 fire, 3 air
-		// destory 1 town in each adjacent land
-		//  AND
-		// increase this Power's Range to 3
+			// if you have: 3 fire, 3 air
+			bool bonus = engine.Self.Elements.Has( ElementList.Parse( "3 fire, 3 air" ) );
+
+			// !!! hack/bug! - if spirit wants to reuse card on the same target, they will get to pick a different one
+			// Could create an additional [SelectsTarget] attribute that gets loaded by PowerCard.For<...?
+			if(bonus)
+				// increase this Power's Range to 3
+				target = await engine.Self.PowerCardApi.TargetSpace(engine,engine.Self.Presence,3, TargetSpaceAttribute.ToLambda(engine.GameState,Filter.MountainOrWetland));
+
+			// 3 fear
+			engine.GameState.AddFear(3);
+			// 5 damage
+			engine.GameState.DamageInvaders(target,5);
+
+			if(bonus)
+				// destory 1 town in each adjacent land
+				foreach(var neighbor in target.Neighbors)
+					engine.GameState.InvadersOn(neighbor).DestroyType(Invader.Town,1);
+
+		}
 
 	}
-
-}
 

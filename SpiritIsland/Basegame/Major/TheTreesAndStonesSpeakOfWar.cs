@@ -1,22 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using SpiritIsland.Core;
+using System;
 using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 
-	class TheTreesAndStonesSpeakOfWar {
+	public class TheTreesAndStonesSpeakOfWar {
 
-		// cost: 2, fast, elements: sun, earth, plant
+		[MajorCard( "The Trees and Stones Speak of War", 2, Speed.Fast, Element.Sun, Element.Earth, Element.Plant )]
+		[FromPresence(1,Filter.Dahan]
+		static public async Task ActionAsync( ActionEngine engine, Space target ) {
 
-		// range 1: must have dahan
+			// if you have 2 sun, 2 earth, 2 plant
+			bool bonus = engine.Self.Elements.Has(ElementList.Parse("2 sun, 2 earth, 2 plant"));
 
-		// for each dahan in target land, 1 damange and defend 2
+			// for each dahan in target land, 1 damage and defend 2
 
-		// if you have 2 sun, 2 earth, 2 plant
-			// you may push up to 2 dahan, moving each's defend with them
+			// -- damage --
+			engine.GameState.DamageInvaders( target, engine.GameState.GetDahanOnSpace(target) );
+
+			// you may push up to 2 dahan
+			Space[] dest = bonus ? await engine.PushUpToNDahan( target, 2 ) : Array.Empty<Space>();
+
+			// -- defend --
+			engine.GameState.Defend( target, engine.GameState.GetDahanOnSpace(target)*2 );
+			foreach(var d in dest)
+				engine.GameState.Defend( d, 2 );
+
+		}
 
 	}
-
-}
