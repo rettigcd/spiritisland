@@ -30,15 +30,6 @@ namespace SpiritIsland {
 		#endregion
 
 		#region Elements
-		protected IEnumerable<Element> TrackElements() {
-			var energyElements = EnergyTrack.Revealed
-				.Where(t=>t.Element.HasValue)
-				.Select(t=>t.Element.Value);
-			var cardElements = CardTrack.Revealed
-				.Where( t => t.Element.HasValue )
-				.Select( t => t.Element.Value );
-			return energyElements.Concat(cardElements);
-		}
 
 		public readonly CountDictionary<Element> Elements = new CountDictionary<Element>();
 
@@ -228,9 +219,7 @@ namespace SpiritIsland {
 
 		public virtual InnatePower[] InnatePowers { get; set; } = Array.Empty<InnatePower>();
 
-		public virtual PowerCardApi GetPowerCardApi( ActionEngine engine ) {
-			return new PowerCardApi( engine );
-		}
+		public PowerCardApi PowerCardApi {get; set;} = new PowerCardApi();
 
 		public virtual void Initialize( Board board, GameState gameState ){
 			gameState.TimePassed += On_TimePassed;

@@ -33,7 +33,7 @@ namespace SpiritIsland.Core {
 				_ => null
 			};
 			var source = Source(self);
-			return engine.Api.TargetSpace(source,range,filter);
+			return engine.Api.TargetSpace(engine,source,range,filter);
 		}
 		abstract protected IEnumerable<Space> Source(Spirit spirit);
 	}

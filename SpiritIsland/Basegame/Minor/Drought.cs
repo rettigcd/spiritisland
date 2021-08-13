@@ -18,7 +18,7 @@ namespace SpiritIsland.Basegame {
 			while(grp[Invader.Town] > 0) grp.ApplyDamage( Invader.Town, 1 );
 
 			// add 1 blight
-			engine.GameState.AddBlight(1);
+			engine.GameState.AddBlight(target,1);
 
 			// if you have 3 sun, destory 1 city
 			if(3 <= engine.Self.Elements[Element.Sun])

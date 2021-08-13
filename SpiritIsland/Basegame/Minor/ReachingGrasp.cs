@@ -1,4 +1,6 @@
 ﻿using SpiritIsland.Core;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
@@ -9,9 +11,27 @@ namespace SpiritIsland.Basegame {
 		[TargetSpirit]
 		static public async Task Act( ActionEngine engine, Spirit target ) {
 			// target spirit gets +2 range with all their Powers
+			var original = target.PowerCardApi;
+			target.PowerCardApi = new ExtendRange( 2, original );
 
-			// for this turn, replace target spirits PowerCard Api with ine that extends range by 2
+			engine.GameState.EndOfRoundCleanupAction.Push((_)=>{ 
+				target.PowerCardApi = original;
+			});
 
 		}
+
+		class ExtendRange : PowerCardApi {
+			readonly int extension;
+			readonly PowerCardApi original;
+			public ExtendRange(int extension,PowerCardApi original ) {
+				this.extension = extension;
+				this.original = original;
+			}
+
+			public override Task<Space> TargetSpace( ActionEngine engine, IEnumerable<Space> source, int range, Func<Space, bool> filter = null )
+				=> base.TargetSpace( engine, source, range + extension, filter );
+
+		}
+
 	}
 }

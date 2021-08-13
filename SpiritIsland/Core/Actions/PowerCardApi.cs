@@ -7,19 +7,16 @@ namespace SpiritIsland.Core {
 
 	public class PowerCardApi {
 
-		readonly protected ActionEngine engine;
-
 		#region constructor
 
-		public PowerCardApi(ActionEngine engine){
-			this.engine = engine;
+		public PowerCardApi(){
 		}
 
 		#endregion
 
 		#region virutal Target
 
-		public virtual async Task<Space> TargetSpace(IEnumerable<Space> source,int range,Func<Space,bool> filter = null){
+		public virtual async Task<Space> TargetSpace( ActionEngine engine, IEnumerable<Space> source,int range,Func<Space,bool> filter = null){
             IEnumerable<Space> spaces = source
 				.Range( range )
 				.Where( s=>s.IsLand );

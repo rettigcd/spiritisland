@@ -62,6 +62,7 @@ Shadows Flicker like Flame:
 			this.InnatePowers = new InnatePower[]{
 				InnatePower.For<DarknessSwallowsTheUnwary>()
 			};
+			this.PowerCardApi = new ShadowApi();
 		}
 
 		public override void AddActionFactory(IActionFactory actionFactory) {
@@ -86,17 +87,12 @@ Shadows Flicker like Flame:
 			PowerCard.For<VisionsOfFieryDoom>()
 		};
 
-		public override PowerCardApi GetPowerCardApi( ActionEngine engine ) {
-			return new ShadowApi(engine);
-		}
-
 		class ShadowApi : PowerCardApi {
-			public ShadowApi(ActionEngine engine):base(engine){ }
 
-			public override async Task<Space> TargetSpace( IEnumerable<Space> source, int range, Func<Space, bool> filter = null ) {
+			public override async Task<Space> TargetSpace( ActionEngine engine, IEnumerable<Space> source, int range, Func<Space, bool> filter = null ) {
 				// no money, do normal
 				if(engine.Self.Energy == 0)
-					return await base.TargetSpace( source, range, filter );
+					return await base.TargetSpace( engine, source, range, filter );
 
 				// find normal Targetable spaces
 				var normalSpaces = source.Range(range).ToArray();
@@ -110,7 +106,7 @@ Shadows Flicker like Flame:
 					.ToArray();
 				// no dahan-only spaces, do normal
 				if(dahanOnlySpaces.Length == 0)
-					return await base.TargetSpace( source, range, filter );
+					return await base.TargetSpace( engine, source, range, filter );
 
 				// append Target-Dahan option to end of list
 				var options = normalSpaces.Cast<IOption>().ToList();

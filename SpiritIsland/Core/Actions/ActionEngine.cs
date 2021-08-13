@@ -15,7 +15,7 @@ namespace SpiritIsland.Core {
 		public ActionEngine(Spirit self,GameState gameState){
 			Self = self;
 			GameState = gameState;
-			Api = new PowerCardApi(this); // circular dependency
+			Api = new PowerCardApi();
 			this.decisions = self.decisions;
 		}
 

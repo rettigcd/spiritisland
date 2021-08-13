@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 		[MajorCard("The Jungle Hungers",3,Speed.Slow,Element.Moon,Element.Plant)]
 		static public async Task Act(ActionEngine eng){
 			// range 1 from presence in jungle
-			var target = await eng.Api.TargetSpace( eng.Self.Presence.Where(s=>s.Terrain==Terrain.Jungle),1);
+			var target = await eng.Api.TargetSpace( eng, eng.Self.Presence.Where(s=>s.Terrain==Terrain.Jungle),1);
 			InvaderGroup grp = eng.GameState.InvadersOn(target);
 
 			bool hasBonus = 2<=eng.Self.Elements[Element.Moon] 

@@ -68,6 +68,7 @@ namespace SpiritIsland {
 		public event Action<GameState, Space[]> Ravaging;
 		public AsyncEvent<DahanMovedArgs> DahanMoved = new AsyncEvent<DahanMovedArgs>();
 		public AsyncEvent<DahanDestroyedArgs> DahanDestroyed = new AsyncEvent<DahanDestroyedArgs>();
+		public Stack<Action<GameState>> EndOfRoundCleanupAction = new Stack<Action<GameState>>();
 
 		void InitSpirits() {
 			if(Spirits.Length != Island.Boards.Length)
@@ -83,6 +84,10 @@ namespace SpiritIsland {
 
 			defendCount.Clear();
 			++Round;
+
+			// stack allows us to unwind items in reverse order from when we set them up
+			while(EndOfRoundCleanupAction.Count>0)
+				EndOfRoundCleanupAction.Pop()(this);
 
 			TimePassed?.Invoke(this);
 		}
