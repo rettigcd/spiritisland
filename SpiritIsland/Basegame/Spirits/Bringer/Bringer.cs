@@ -57,9 +57,6 @@ Bringer
 			new NullPowerCard( "C", 0, Speed.Fast ),
 			new NullPowerCard( "D", 0, Speed.Fast )
 		) {
-			static bool onDahanOrInvadors(Space bs,GameState gameState) { // !!! hook in here! instead of Criteria
-				return gameState.HasDahan(bs) || gameState.HasInvaders(bs);
-			}
 
 			GrowthOptions = new GrowthOption[]{
 				// reclaim, +1 power card
@@ -69,7 +66,7 @@ Bringer
 				// +1 power card, +1 pressence range 1
 				new GrowthOption(new DrawPowerCard(1), new PlacePresence(1) ),
 				// add presense range Dahan or Invadors, +2 energy
-				new GrowthOption(new GainEnergy(2), new PlacePresence(4,onDahanOrInvadors,"dahan or invaders"))
+				new GrowthOption(new GainEnergy(2), new PlacePresence(4,Filter.DahanOrInvaders,"dahan or invaders"))
 			};
 
 		}

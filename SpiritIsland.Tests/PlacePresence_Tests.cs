@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Shouldly;
 using SpiritIsland.Core;
 using Xunit;
 
@@ -41,23 +42,25 @@ namespace SpiritIsland.Tests.Core {
 			// Given: spirit has one place presence action
 			Given_SpiritGrowsByPlacingPresence();
 			When_Growing(0);
-			Resolve_PlacePresence( "A1" );
-			Assert.Equal( 2, spirit.EnergyTrack.RevealedCount );
+//			Resolve_PlacePresence( "A1" );
+			Resolve_PlacePresence( "A1;A2", spirit.EnergyTrack.Next, null );
+
+			spirit.EnergyTrack.RevealedCount.ShouldBe(2);
 		}
 
 		[Fact]
 		public void PullsFrom_CardTrack(){
 			Given_SpiritGrowsByPlacingPresence();
 			When_Growing( 0 );
-			Resolve_PlacePresence( "A1", spirit.CardTrack.Next );
-			Assert.Equal(2,spirit.CardTrack.RevealedCount);
+			Resolve_PlacePresence( "A1;A2", spirit.CardTrack.Next );
+			spirit.CardTrack.RevealedCount.ShouldBe(2);
 		}
 
 		void Given_SpiritGrowsByPlacingPresence(int count=1) {
-			bool spaceHasPresence(Space s,GameState _)=>spirit.Presence.Contains(s);
+			// bool spaceHasPresence(Space s,GameState _)=>spirit.Presence.Contains(s);
 			var testSpirit = spirit as TestSpirit;
 			while(count-->0)
-				testSpirit.actions.Add( new PlacePresence( 1, spaceHasPresence, "presence") );
+				testSpirit.actions.Add( new PlacePresence( 1, Filter.None, "presence") );
 		}
 
 	}

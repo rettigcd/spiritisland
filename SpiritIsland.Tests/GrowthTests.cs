@@ -116,20 +116,24 @@ namespace SpiritIsland.Tests {
 		}
 
 		protected void Resolve_PlacePresence(string placeOptions, Track source, string factoryDescription=null ) {
+
 			var ppFactory = spirit.GetUnresolvedActionFactories(Speed.Growth).OfType<PlacePresence>()
 				.Where(f=> factoryDescription==null || factoryDescription == f.ShortDescription)
 				.First();
+
 			var engine = new ActionEngine( spirit, gameState );
 			ppFactory.Activate( engine );
 			var ppAction = new BaseAction(engine);
 
-			if(engine.Self.CardTrack.HasMore && engine.Self.EnergyTrack.HasMore) // there are 2 option available
+			if(engine.Self.CardTrack.HasMore && engine.Self.EnergyTrack.HasMore){ // there are 2 option available
+				ppAction.Options.Select(x=>x.Text).Join(",").ShouldContain(source.Text);
 				// take from precense track
 				ppAction.Select(source);
+			}
 
 			// place on board - first option
 			string[] options = placeOptions.Split(';');
-			if(options.Length>1) // not auto selecting
+			if(options.Length>1) // this is wrong!  If we enter only 1 option, we aren't verifying it because we know the engine will auto-select it
 				ppAction.Select(ppAction.Options.Single(o=>o.Text==options[0]));
 
 			spirit.RemoveUnresolvedFactory(ppFactory);

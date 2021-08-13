@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SpiritIsland.Core {
@@ -62,18 +63,26 @@ namespace SpiritIsland.Core {
 				: System.Array.Empty<IOption>();
 		}
 
-		void InnerSelect(IOption option) {
+		void InnerSelect(IOption selection) {
 			if(Decisions.Count == 0)
 				throw new System.NotImplementedException();
 
-			var descision = Decisions.Pop();
-			selections.Add( descision.Prompt +":"+ option.Text );
-			descision.Select( option );
+			var decision = Decisions.Pop();
+			if(!decision.Options.Contains(selection))
+				throw new ArgumentException("You can't select an option that isn't there.");
+
+			string msg = decision.Prompt + "(" + decision.Options.Select(o=>o.Text).Join(",") + "):" + selection.Text;
+			selections.Add( msg );
+			all.Add( msg );
+
+			decision.Select( selection );
 		}
 
 		readonly Stack<IDecision> Decisions;
 
 		#endregion
+
+		public static List<string> all = new List<string>();
 
 	}
 

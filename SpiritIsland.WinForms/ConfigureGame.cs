@@ -95,7 +95,7 @@ namespace SpiritIsland.WinForms {
 			this.Game = new SinglePlayerGame( gameState );
 		}
 
-		string GetColorForSpirit( Spirit spirit ) {
+		static string GetColorForSpirit( Spirit spirit ) {
 			return spirit.Text switch {
 				RiverSurges.Name => "blue",
 				LightningsSwiftStrike.Name => "yellow",

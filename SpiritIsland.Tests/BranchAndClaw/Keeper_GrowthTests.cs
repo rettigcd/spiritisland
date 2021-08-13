@@ -1,4 +1,5 @@
-﻿using SpiritIsland.BranchAndClaw;
+﻿using Shouldly;
+using SpiritIsland.BranchAndClaw;
 using Xunit;
 
 namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
@@ -53,7 +54,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			Given_BlightEverywhereExcept7();
 
 			When_Growing( 2 );
-			Resolve_PlacePresence( "A7");
+			Resolve_PlacePresence( "A7;something else");
 
 			Assert_AllCardsAvailableToPlay();   // A
 			Assert_HasEnergy( 0 );            // A & D  // !!! can you spend energy you don't have??
@@ -90,7 +91,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			Given_BlightEverywhereExcept7();
 
 			When_Growing( 4 );
-			Resolve_PlacePresence( "A7" );
+			Resolve_PlacePresence( "A7;something else" );
 
 			Assert_GainPowercard( 2 );          // B & D
 			Assert_HasEnergy( -3+2 );            // D		// !!! can we do growth options that cause energy we don't have?
@@ -157,6 +158,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			gameState.AddBlight( board[5] );
 			gameState.AddBlight( board[6] );
 			gameState.AddBlight( board[8] );
+			gameState.GetBlightOnSpace( board[7]).ShouldBe(0);
 		}
 
 	}

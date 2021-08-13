@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 
 		[MinorCard( "Reaching Grasp", 0, Speed.Fast, Element.Sun, Element.Air, Element.Water)]
 		[TargetSpirit]
-		static public async Task Act( ActionEngine engine, Spirit target ) {
+		static public Task Act( ActionEngine engine, Spirit target ) {
 			// target spirit gets +2 range with all their Powers
 			var original = target.PowerCardApi;
 			target.PowerCardApi = new ExtendRange( 2, original );
@@ -17,7 +17,7 @@ namespace SpiritIsland.Basegame {
 			engine.GameState.EndOfRoundCleanupAction.Push((_)=>{ 
 				target.PowerCardApi = original;
 			});
-
+			return Task.CompletedTask;
 		}
 
 		class ExtendRange : PowerCardApi {

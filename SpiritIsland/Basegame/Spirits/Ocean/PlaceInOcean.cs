@@ -10,7 +10,7 @@ namespace SpiritIsland.Basegame {
 			var oceanSpaces = engine.GameState.Island.Boards
 				.Select( b=>b.Spaces.Single(s=>s.IsOcean) )
 				.ToArray();
-			return PlacePresence.ActAsync(engine,oceanSpaces);
+			return engine.PlacePresence( oceanSpaces );
 		}
 
 	}

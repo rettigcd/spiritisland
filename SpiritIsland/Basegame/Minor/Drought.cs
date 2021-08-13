@@ -7,7 +7,7 @@ namespace SpiritIsland.Basegame {
 
 		[MinorCard( "Drought", 1, Speed.Slow, Element.Sun, Element.Fire, Element.Earth )]
 		[FromPresence(1)]
-		static public async Task Act( ActionEngine engine, Space target ) {
+		static public Task Act( ActionEngine engine, Space target ) {
 			var grp = engine.GameState.InvadersOn( target );
 
 			// Destory 3 towns.
@@ -24,6 +24,7 @@ namespace SpiritIsland.Basegame {
 			if(3 <= engine.Self.Elements[Element.Sun])
 				grp.DestroyType(Invader.City,1);
 
+			return Task.CompletedTask;
 		}
 
 	}

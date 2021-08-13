@@ -146,6 +146,40 @@ namespace SpiritIsland.Core {
 				)
 				?? LeftOverOrder.First( invader => grp[invader] > 0 ); // left-over damage
 		}
+
+		static public Task PlacePresence( this ActionEngine engine, int range, Filter filterEnum ) {
+			Space[] destinationOptions = engine.Self.Presence
+				.SelectMany( s => s.SpacesWithin( range ) )
+				.Distinct()
+				.Where( TargetSpaceAttribute.ToLambda( engine, filterEnum ) )
+				.OrderBy( x => x.Label )
+				.ToArray();
+			return engine.PlacePresence(destinationOptions);
+		}
+
+		static public async Task PlacePresence( this ActionEngine engine, Space[] destinationOptions ) {
+
+			// From
+			var from = await engine.SelectTrack();
+
+			// To
+			var to = await engine.SelectSpace( "Where would you like to place your presence?", destinationOptions );
+
+			// from
+			if(from == engine.Self.EnergyTrack.Next)
+				engine.Self.EnergyTrack.RevealedCount++;
+			else if(from == engine.Self.CardTrack.Next)
+				engine.Self.CardTrack.RevealedCount++;
+			else
+				throw new ArgumentException( from.ToString() );
+
+			// !!!!   Moving To down here fixes pulls from _Card_track
+
+
+			// To
+			engine.Self.Presence.Add( to );
+		}
+
 	}
 
 }

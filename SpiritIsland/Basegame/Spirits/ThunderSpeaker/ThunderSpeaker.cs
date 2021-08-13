@@ -50,16 +50,14 @@ namespace SpiritIsland.Basegame {
 			PowerCard.For<VoiceOfThunder>(),
 			PowerCard.For<WordsOfWarning>()
 		) {
-			static bool onDahan(Space bs,GameState gameState) => gameState.HasDahan(bs); // use the Filter enum ????!!!
-
 			GrowthOptions = new GrowthOption[]{
 				new GrowthOption( 
 					new ReclaimAll(), 
 					new DrawPowerCard(2)
 				),
 				new GrowthOption( 
-					new PlacePresence(2,onDahan,"dahan"),
-					new PlacePresence(1,onDahan,"dahan")
+					new PlacePresence(2,Filter.Dahan,"dahan"),
+					new PlacePresence(1,Filter.Dahan,"dahan")
 				),
 				new GrowthOption( 
 					new PlacePresence(1), 

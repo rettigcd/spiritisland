@@ -15,17 +15,18 @@ namespace SpiritIsland.Core {
 		}
 
 		public Task<Space> Target(ActionEngine engine){
-			var (self,gameState)=engine;
-			var source = PickSourceFrom(self);
-			var filter = ToLambda( gameState, filterEnum );
+			var source = PickSourceFrom(engine.Self);
+			var filter = ToLambda( engine, filterEnum );
 			return engine.Api.TargetSpace(engine,source,range, filter );
 		}
 
-		static public Func<Space, bool> ToLambda(GameState gameState, Filter filterEnum){
+		static public Func<Space, bool> ToLambda(ActionEngine engine, Filter filterEnum){
+			var (self,gameState) = engine;
 			bool HasExplorer( Space space ) => gameState.InvadersOn( space ).HasExplorer;
 			bool TownOrExplorer( Space space ) => gameState.InvadersOn( space ).FilterBy( Invader.Explorer, Invader.Town ).Length > 0;
 
 			return filterEnum switch {
+				Filter.None => (s)=>true, // Is land?
 				Filter.Dahan => gameState.HasDahan,
 				Filter.Explorer => HasExplorer,
 				Filter.TownOrExplorer => TownOrExplorer,
@@ -36,7 +37,10 @@ namespace SpiritIsland.Core {
 				Filter.JungleOrWetland => (( space ) => space.Terrain.IsIn( Terrain.Jungle, Terrain.Wetland )),
 				Filter.MountainOrWetland => (( space ) => space.Terrain.IsIn( Terrain.Mountain, Terrain.Wetland )),
 				Filter.NoBlight => (s => !gameState.HasBlight( s )),
-				_ => null
+				Filter.BeastOrJungle => (s) => s.Terrain == Terrain.Jungle || gameState.HasBeasts( s ),
+				Filter.PresenceOrWilds => (s) => self.Presence.Contains( s ) || gameState.HasWilds( s ),
+				Filter.DahanOrInvaders => (s) => gameState.HasDahan( s ) || gameState.HasInvaders( s ),
+			_ => throw new ArgumentException("Unexpected filter",nameof(filterEnum)),
 			};
 		}
 

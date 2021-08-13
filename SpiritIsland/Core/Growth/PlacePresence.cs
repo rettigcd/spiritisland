@@ -7,64 +7,33 @@ namespace SpiritIsland.Core {
 	public class PlacePresence : GrowthActionFactory {
 
 		readonly int range;
-		readonly Func<Space,GameState, bool> isValid;
+		readonly Filter filterEnum;
 
 		public override string ShortDescription {get;}
 
 		#region constructors
 
 		public PlacePresence( int range ){
-			static bool IsNotOcean(Space s,GameState _) => s.IsLand;
 			this.range = range;
-			isValid = IsNotOcean;
+			filterEnum = Filter.None;
 			ShortDescription = $"PlacePresence({range})";
 		}
 
 		public PlacePresence(
 			int range,
-			Func<Space, GameState, bool> isValid,
+			Filter filterEnum,
 			string funcDescriptor
-		){
+		) {
 			this.range = range;
-			this.isValid = isValid ?? throw new ArgumentNullException(nameof(isValid));
+			this.filterEnum = filterEnum;
 			ShortDescription = $"PlacePresence({range},{funcDescriptor})";
 		}
 
 		#endregion
 
 		public override Task Activate( ActionEngine engine ) {
-
-			bool SpaceIsValid(Space space) => isValid(space,engine.GameState);
-
-			var options = engine.Self.Presence
-				.SelectMany(s => s.SpacesWithin(this.range))
-				.Distinct()
-				.Where(SpaceIsValid)
-				.OrderBy(x=>x.Label)
-				.ToArray();
-
-			return ActAsync( engine, options );
+			return engine.PlacePresence( range, filterEnum );
 		}
-
-		static public async Task ActAsync( ActionEngine engine, Space[] destinationOptions ) {
-			// From
-			var from = await engine.SelectTrack();
-
-			// To
-			var to = await engine.SelectSpace( "Where would you like to place your presence?", destinationOptions );
-
-			// from
-			if(from == engine.Self.EnergyTrack.Next)
-				engine.Self.EnergyTrack.RevealedCount++;
-			else if(from == engine.Self.CardTrack.Next)
-				engine.Self.CardTrack.RevealedCount++;
-			else
-				throw new ArgumentException(from.ToString());
-
-			// To
-			engine.Self.Presence.Add( to );
-		}
-
 
 	}
 

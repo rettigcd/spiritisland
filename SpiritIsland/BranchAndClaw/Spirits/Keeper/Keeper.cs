@@ -51,9 +51,6 @@ namespace SpiritIsland.BranchAndClaw {
 			new NullPowerCard( "C", 0, Speed.Fast ),
 			new NullPowerCard( "D", 0, Speed.Fast )
 		) {
-			bool presenceOrWilds(Space bs,GameState gameState) => this.Presence.Contains(bs) || gameState.HasWilds(bs);
-			bool noBlight(Space bs,GameState gameState) => bs.IsLand && !gameState.HasBlight(bs);
-
 			var a = new GrowthActionFactory[]{
 				new ReclaimAll()	
 				,new GainEnergy(1)
@@ -63,12 +60,12 @@ namespace SpiritIsland.BranchAndClaw {
 			};
 			var c = new GrowthActionFactory[]{
 				new GainEnergy(1)
-				,new PlacePresence(3,presenceOrWilds,"presence or wilds")
+				,new PlacePresence(3,Filter.PresenceOrWilds,"presence or wilds")
 			};
 			var d = new GrowthActionFactory[]{
 				new GainEnergy(-3)
 				,new DrawPowerCard(1)
-				,new PlacePresence(3,noBlight,"no blight")
+				,new PlacePresence(3,Filter.NoBlight,"no blight")
 			};
 
 			static GrowthOption Join(GrowthActionFactory[] a,GrowthActionFactory[] b) 

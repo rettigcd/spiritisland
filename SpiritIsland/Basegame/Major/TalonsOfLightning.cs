@@ -16,7 +16,12 @@ namespace SpiritIsland.Basegame {
 			// Could create an additional [SelectsTarget] attribute that gets loaded by PowerCard.For<...?
 			if(bonus)
 				// increase this Power's Range to 3
-				target = await engine.Self.PowerCardApi.TargetSpace(engine,engine.Self.Presence,3, TargetSpaceAttribute.ToLambda(engine.GameState,Filter.MountainOrWetland));
+				target = await engine.Self.PowerCardApi.TargetSpace(
+					engine,
+					engine.Self.Presence,
+					3, 
+					TargetSpaceAttribute.ToLambda(engine,Filter.MountainOrWetland)
+				);
 
 			// 3 fear
 			engine.GameState.AddFear(3);
@@ -31,4 +36,5 @@ namespace SpiritIsland.Basegame {
 		}
 
 	}
+}
 

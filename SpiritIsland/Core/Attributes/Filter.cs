@@ -1,5 +1,5 @@
 ﻿namespace SpiritIsland.Core {
-	enum Filter {
+	public enum Filter {
 		None,
 		Dahan,
 		Explorer,
@@ -11,6 +11,10 @@
 		MountainOrWetland,
 		SandOrWetland,
 		NoBlight,
+
+		BeastOrJungle,
+		PresenceOrWilds,
+		DahanOrInvaders,
 	}
 
 }

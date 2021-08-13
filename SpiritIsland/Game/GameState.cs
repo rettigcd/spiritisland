@@ -329,7 +329,7 @@ namespace SpiritIsland {
 
 				// damage: Invaders
 				if(dahan>0)
-					ravageGroup.ApplyDamageToGroup( dahan * 2, log );
+					await ravageGroup.ApplyDamageToGroup( dahan * 2, log );
 
 				// flush invader damage - post dahan
 			}
