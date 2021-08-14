@@ -64,7 +64,7 @@ namespace SpiritIsland.SinglePlayer {
 				this.growthName = selectedActionFactory.Name;
 				var engine = new ActionEngine( spirit, gameState );
 				selectedActionFactory.Activate( engine );
-				action = new BaseAction(spirit);
+				action = spirit.Action;
 			} else {
 				action.Select( option );
 			}

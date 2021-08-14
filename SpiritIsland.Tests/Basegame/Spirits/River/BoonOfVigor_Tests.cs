@@ -17,7 +17,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// When: targetting self
 			var engine = new ActionEngine( spirit, gameState );
 			card.Activate( engine );
-			action = new BaseAction( spirit );
+			action = spirit.Action;
 			Assert.True(action.IsResolved);
 
 			// Then: received 1 energy
@@ -44,7 +44,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// When: targetting other spirit
 			var engine = new ActionEngine( spirit, gameState );
 			card.Activate( engine );
-			action = new BaseAction( spirit );
+			action = spirit.Action;
 			When_TargettingSpirit( otherSpirit );
 
 			Assert.True(action.IsResolved);

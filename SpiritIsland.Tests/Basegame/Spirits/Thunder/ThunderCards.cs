@@ -19,7 +19,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			spirit.Presence.PlaceOn( a[1] );
 
 			eng = new ActionEngine( spirit, gs );
-			action = new BaseAction( spirit );
+			action = spirit.Action;
 		}
 
 		protected void When_ActivateCard( string cardName ) {

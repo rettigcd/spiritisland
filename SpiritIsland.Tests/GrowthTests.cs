@@ -123,7 +123,7 @@ namespace SpiritIsland.Tests {
 
 			var engine = new ActionEngine( spirit, gameState );
 			ppFactory.Activate( engine );
-			var ppAction = new BaseAction(spirit);
+			var ppAction = spirit.Action;
 
 			if(engine.Self.Presence.CardPlays.HasMore && engine.Self.Presence.Energy.HasMore){ // there are 2 option available
 				ppAction.Options.Select(x=>x.Text).Join(",").ShouldContain(source.Text);
@@ -165,7 +165,7 @@ namespace SpiritIsland.Tests {
 		protected void AndWhen_ReclaimingFirstCard() {
 			var engine = new ActionEngine( spirit, gameState );
 			_ = spirit.GetUnresolvedActionFactories(Speed.Growth).OfType<Reclaim1>().First().Activate( engine );
-			var reclaim = new BaseAction(spirit);
+			var reclaim = spirit.Action;
 			if(reclaim.Options.Length>0)
 				reclaim.Select( reclaim.Options[0] );
 		}

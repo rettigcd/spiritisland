@@ -21,7 +21,10 @@ namespace SpiritIsland {
 
 			foreach(var card in initialCards)
 				RegisterNewCard(card);
+
+			Action = new BaseAction(decisions);
 		}
+		public BaseAction Action { get; }
 
 		public void RegisterNewCard( PowerCard card ){
 			Hand.Add(card);
@@ -69,8 +72,7 @@ namespace SpiritIsland {
 			var engine = new ActionEngine(this,gameState);
 			foreach(var factory in factories) {
 				factory.Activate(engine);
-				var action = new BaseAction(this);
-				if(action.IsResolved)
+				if(Action.IsResolved)
 					Resolve(factory);
 				else
 					decisions.Clear(); // clean unresolved action decisions out
