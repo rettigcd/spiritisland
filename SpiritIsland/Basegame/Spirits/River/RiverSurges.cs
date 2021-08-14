@@ -98,8 +98,7 @@ namespace SpiritIsland.Basegame {
 		//}
 
 		public override IEnumerable<Space> SacredSites {get{
-			var x = Presence.Placed;
-			return x
+			return Presence.Spaces
 				.Where(s=>s.Terrain==Terrain.Wetland)
 				.Union( base.SacredSites )
 				.Distinct();

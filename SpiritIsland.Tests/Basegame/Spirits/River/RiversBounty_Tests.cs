@@ -109,7 +109,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		public void TwoPresenceSpaces(){
 			// Given: spirit has presence on A4 && A8
 			spirit.Presence.Place(board[8]);
-			var targetOptions = spirit.Presence.Placed.Distinct().ToArray();
+			var targetOptions = spirit.Presence.Spaces.ToArray();
 			Assert.Equal(2,targetOptions.Length);
 
 			//   And: 2 dahan in A5 (touches both)
@@ -137,7 +137,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		[Fact]
 		public void TwoDahanOnPresenceSpace(){
 			// Given: spirit has presence on A4
-			var targetOptions = spirit.Presence.Placed.Distinct().ToArray();
+			var targetOptions = spirit.Presence.Spaces.ToArray();
 			Assert.Single( targetOptions);
 
 			//   And: 2 dahan in A5 (touches both)

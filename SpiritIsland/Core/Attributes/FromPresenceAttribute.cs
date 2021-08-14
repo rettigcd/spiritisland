@@ -6,7 +6,7 @@ namespace SpiritIsland.Core {
 	class FromPresenceAttribute : TargetSpaceAttribute {
 		public FromPresenceAttribute(int range,Filter filter = Filter.None)
 			:base(range,filter){}
-		protected override IEnumerable<Space> PickSourceFrom(Spirit self) => self.Presence.Placed;
+		protected override IEnumerable<Space> PickSourceFrom(Spirit self) => self.Presence.Spaces;
 	}
 
 }

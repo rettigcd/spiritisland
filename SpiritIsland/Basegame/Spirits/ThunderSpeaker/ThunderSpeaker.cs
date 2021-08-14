@@ -88,7 +88,7 @@ namespace SpiritIsland.Basegame {
 		}
 
 		async Task MovePresenceWithDahan(GameState gs, DahanMovedArgs args) {
-			int maxThatCanMove = Math.Min(args.count,Presence.Placed.Count(p=>p==args.from));
+			int maxThatCanMove = Math.Min(args.count,Presence.On(args.from));
 			// 0 -> no action
 			if(maxThatCanMove==0) return;
 			var moveLookup = new Dictionary<string,int>();
@@ -113,10 +113,10 @@ namespace SpiritIsland.Basegame {
 
 			int numToDestroy = args.count;
 			Space[] options;
-			Space[] Calc() => args.space.SpacesWithin( 1 ).Intersect( Presence.Placed ).ToArray();
+			Space[] Calc() => args.space.SpacesWithin( 1 ).Intersect( Presence.Spaces ).ToArray();
 
 			while(numToDestroy-->0 && (options=Calc()).Length > 0)
-				Presence.Placed.Remove( await eng.SelectSpace( prompt, options ) );
+				Presence.Destroy( await eng.SelectSpace( prompt, options ) );
 
 		}
 

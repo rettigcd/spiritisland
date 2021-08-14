@@ -281,7 +281,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 				_ => null,
 			};
 			river.Initialize(board,new GameState(river));
-			Assert.Equal(expectedStartingSpaces,river.Presence.Placed.Select(s=>s.Label).Join(","));
+			Assert.Equal(expectedStartingSpaces,river.Presence.Spaces.Select(s=>s.Label).Join(","));
 		}
 
 		#endregion

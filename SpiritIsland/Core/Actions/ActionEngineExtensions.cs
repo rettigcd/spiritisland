@@ -148,7 +148,7 @@ namespace SpiritIsland.Core {
 		}
 
 		static public Task PlacePresence( this ActionEngine engine, int range, Filter filterEnum ) {
-			Space[] destinationOptions = engine.Self.Presence.Placed
+			Space[] destinationOptions = engine.Self.Presence.Spaces
 				.SelectMany( s => s.SpacesWithin( range ) )
 				.Distinct()
 				.Where( TargetSpaceAttribute.ToLambda( engine, filterEnum ) )

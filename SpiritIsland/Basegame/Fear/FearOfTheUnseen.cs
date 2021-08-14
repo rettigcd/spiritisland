@@ -25,7 +25,7 @@ namespace SpiritIsland.Basegame {
 		public async Task Level2( GameState gs ) {
 			foreach(var spirit in gs.Spirits) {
 				var engine = new ActionEngine( spirit, gs );
-				var options = spirit.Presence.Placed.Distinct().Where( s => gs.InvadersOn( s ).Has( Invader.Explorer, Invader.Town ) )
+				var options = spirit.Presence.Spaces.Where( s => gs.InvadersOn( s ).Has( Invader.Explorer, Invader.Town ) )
 					.Union(spirit.SacredSites.Where(s=>gs.InvadersOn(s).HasCity))
 					.ToArray();
 				if(options.Length == 0) return;
@@ -41,7 +41,7 @@ namespace SpiritIsland.Basegame {
 
 		[FearLevel( 3, "Each player removes 1 Explorer / Town from a land with Presence, or 1 City from a land with SacredSite." )]
 		public async Task Level3( GameState gs ) {
-			Space[] sacredSites = gs.Spirits.SelectMany( spirit => spirit.Presence.Placed ).Distinct().ToArray();
+			Space[] sacredSites = gs.Spirits.SelectMany( spirit => spirit.Presence.Spaces ).Distinct().ToArray(); // !!! is this SS or Presence?
 			foreach(var spirit in gs.Spirits) {
 				var engine = new ActionEngine( spirit, gs );
 				var options = sacredSites.Where( s => gs.InvadersOn( s ).Has( Invader.Explorer, Invader.Town ) ).ToArray();

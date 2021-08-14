@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 	public class GatherPresenceIntoOcean : GrowthActionFactory {
 
 		public override async Task Activate( ActionEngine engine ) {
-			List<Space> gatherSpaces = engine.Self.Presence.Placed
+			List<Space> gatherSpaces = engine.Self.Presence.Spaces
 				.Where( p => p.IsCostal )
 				.Select( p => p.Neighbors.Single( o => o.IsOcean ) )
 				.Distinct()
@@ -21,7 +21,7 @@ namespace SpiritIsland.Basegame {
 				Space source = await engine.SelectSpace(
 					$"Select source of Presence to Gather into {currentTarget}"
 					, currentTarget.Neighbors
-						.Where( engine.Self.Presence.Placed.Contains )
+						.Where( engine.Self.Presence.Spaces.Contains )
 						.ToArray()
 				);
 

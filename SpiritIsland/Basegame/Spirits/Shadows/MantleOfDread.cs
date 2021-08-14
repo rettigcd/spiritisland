@@ -20,7 +20,7 @@ namespace SpiritIsland.Basegame {
 				return grp.HasExplorer || grp.HasTown;
 			}
 			// Select Land
-			var landsToPushInvadersFrom = target.Presence.Placed.Where(HasExplorerOrTown).ToArray();
+			var landsToPushInvadersFrom = target.Presence.Spaces.Where(HasExplorerOrTown).ToArray();
 			if(landsToPushInvadersFrom.Length == 0) return;
 			var space = await engine.SelectSpace("Select land to push 1 exploer & 1 town from",landsToPushInvadersFrom,true);
 			if(space==null) return;

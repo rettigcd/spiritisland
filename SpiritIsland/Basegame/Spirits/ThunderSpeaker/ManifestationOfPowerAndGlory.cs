@@ -16,7 +16,7 @@ namespace SpiritIsland.Basegame {
 			engine.GameState.AddFear(1);
 			// each dahan deals damange equal to the number of your presense in the target land
 			int dahan = engine.GameState.GetDahanOnSpace( target );
-			int presence = engine.Self.Presence.Placed.Count(p=>p==target);
+			int presence = engine.Self.Presence.On(target);
 			engine.GameState.DamageInvaders(target, dahan*presence);
 
 			return Task.CompletedTask;

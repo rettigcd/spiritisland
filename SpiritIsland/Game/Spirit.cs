@@ -240,40 +240,4 @@ namespace SpiritIsland {
 
 	}
 
-	public class PresenceTrack {
-		public PresenceTrack( params Track[] slots ) {
-			this.slots = slots;
-		}
-
-		public Track[] slots;
-		public IEnumerable<Track> Revealed => slots.Take(RevealedCount);
-
-		public Track Next => slots[RevealedCount];
-		public bool HasMore => RevealedCount < slots.Length;
-		public int RevealedCount { get; set; } = 1;
-		public int TotalCount => slots.Length;
-	}
-
-	public class MyPresence {
-
-		public MyPresence(PresenceTrack energy, PresenceTrack cardPlays){
-			Energy = energy;
-			CardPlays = cardPlays;
-		}
-
-		public void Place(Space space) => Placed.Add(space);
-		public void Place( IEnumerable<Space> spaces ) => Placed.AddRange( spaces );
-
-		public void Move(Space from, Space to ) {
-			Placed.Remove( from );
-			Placed.Add( to );
-		}
-
-		public PresenceTrack Energy { get; }
-		public PresenceTrack CardPlays { get; }
-
-		public readonly List<Space> Placed = new List<Space>();
-
-	}
-
 }
