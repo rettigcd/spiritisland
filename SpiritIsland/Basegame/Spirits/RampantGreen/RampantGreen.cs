@@ -164,10 +164,4 @@ namespace SpiritIsland.Basegame {
 
 	}
 
-	public class InfiniteVitality { } // major
-	public class DriftDownIntoSlumber { }
-	public class GiftOfLivingEnergy { }
-	public class LureOfTheUnknown { }
-	public class EnticingSplendor { }
-
 }

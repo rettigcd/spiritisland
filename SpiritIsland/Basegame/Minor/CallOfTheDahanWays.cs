@@ -12,7 +12,7 @@ namespace SpiritIsland.Basegame {
 			if(grp.HasTown && 2 <= eng.Self.Elements[ Element.Moon ]) {
 				eng.GameState.Adjust(target,Invader.Town,-1);
 				eng.GameState.AdjustDahan(target,1);
-            } else if( grp.HasExplorer) {
+			} else if( grp.HasExplorer) {
 				// replace 1 explorer with 1 dahan
 				eng.GameState.Adjust( target, Invader.Explorer, -1 );
 				eng.GameState.AdjustDahan( target, 1 );
@@ -21,4 +21,5 @@ namespace SpiritIsland.Basegame {
 		}
 
 	}
+
 }

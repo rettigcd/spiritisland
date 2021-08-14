@@ -11,6 +11,7 @@
 		MountainOrWetland,
 		SandOrWetland,
 		NoBlight,
+		NoInvader,
 
 		BeastOrJungle,
 		PresenceOrWilds,

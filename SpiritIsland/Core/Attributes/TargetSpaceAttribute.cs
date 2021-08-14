@@ -31,6 +31,7 @@ namespace SpiritIsland.Core {
 				Filter.Explorer => HasExplorer,
 				Filter.TownOrExplorer => TownOrExplorer,
 				Filter.Invader => gameState.HasInvaders,
+				Filter.NoInvader => (s)=>!gameState.HasInvaders(s),
 				Filter.Costal => (s => s.IsCostal),
 				Filter.SandOrWetland => (s => s.Terrain.IsIn( Terrain.Sand, Terrain.Wetland )),
 				Filter.JungleOrMountain => (( space ) => space.Terrain.IsIn( Terrain.Jungle, Terrain.Mountain )),
