@@ -7,7 +7,7 @@ namespace SpiritIsland.Basegame {
 	public class TheTreesAndStonesSpeakOfWar {
 
 		[MajorCard( "The Trees and Stones Speak of War", 2, Speed.Fast, Element.Sun, Element.Earth, Element.Plant )]
-		[FromPresence(1,Filter.Dahan)]
+		[FromPresence(1,Target.Dahan)]
 		static public async Task ActionAsync( ActionEngine engine, Space target ) {
 
 			// if you have 2 sun, 2 earth, 2 plant

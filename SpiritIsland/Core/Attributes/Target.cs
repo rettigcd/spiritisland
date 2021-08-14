@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.Core {
-	public enum Filter {
-		None,
+	public enum Target {
+		Any,
 		Dahan,
 		Explorer,
 		TownOrExplorer,

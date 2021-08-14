@@ -10,7 +10,7 @@ namespace SpiritIsland.Basegame {
 	class ManifestationOfPowerAndGlory {
 
 		[SpiritCard( "Manifestation of Power and Glory", 3, Speed.Slow, Element.Sun, Element.Fire, Element.Air )]
-		[FromPresence(0,Filter.Dahan)]
+		[FromPresence(0,Target.Dahan)]
 		static public Task Act( ActionEngine engine, Space target ) {
 			// 1 fear
 			engine.GameState.AddFear(1);

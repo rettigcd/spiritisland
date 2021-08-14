@@ -76,7 +76,7 @@ Ocean
 				new GrowthOption( 
 					new PushPresenceFromOcean(),
 					new DrawPowerCard(),
-					new PlacePresence(1, Filter.Costal, "coatal" )
+					new PlacePresence(1, Target.Costal, "coatal" )
 				)
 			};
 

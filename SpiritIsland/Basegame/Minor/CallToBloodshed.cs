@@ -7,7 +7,7 @@ namespace SpiritIsland.Basegame {
 	class CallToBloodshed {
 
 		[MinorCard("Call to Bloodshed",1,Speed.Slow,Element.Sun,Element.Fire,Element.Animal)]
-		[FromPresence(2,Filter.Dahan)]
+		[FromPresence(2,Target.Dahan)]
 		static public async Task Act(ActionEngine engine,Space target){
 			var (_,gameState)=engine;
 

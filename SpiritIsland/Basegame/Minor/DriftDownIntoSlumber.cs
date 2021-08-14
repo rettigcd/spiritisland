@@ -1,4 +1,5 @@
 ﻿using SpiritIsland.Core;
+using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 	public class DriftDownIntoSlumber {

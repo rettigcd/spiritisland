@@ -8,7 +8,7 @@ namespace SpiritIsland.Basegame {
 		public const string Name = "Uncanny Melting";
 
 		[MinorCard(UncannyMelting.Name,1, Speed.Slow,Element.Sun,Element.Moon,Element.Water)]
-		[FromSacredSite(1,Filter.None)] // !!! must include invaders, add unit test to make sure we don't accidentally switch 
+		[FromSacredSite(1,Target.Any)] // !!! must include invaders, add unit test to make sure we don't accidentally switch 
 		static public void ActAsync(ActionEngine eng,Space target){
 			var (_,gameState) = eng;
 

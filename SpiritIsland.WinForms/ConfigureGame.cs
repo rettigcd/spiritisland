@@ -18,7 +18,7 @@ namespace SpiritIsland.WinForms {
 				typeof(Shadows),
 				typeof(VitalStrength),
 				typeof(ThunderSpeaker),
-				typeof(RampantGreen),
+				typeof(ASpreadOfRampantGreen),
 			};
 			spiritListBox.Items.Add("[Random]");
 			foreach(var spirit in spirits) {
@@ -103,7 +103,7 @@ namespace SpiritIsland.WinForms {
 				VitalStrength.Name => "orange",
 				Shadows.Name => "purple",
 				ThunderSpeaker.Name => "red",
-				RampantGreen.Name => "green",
+				ASpreadOfRampantGreen.Name => "green",
 				Bringer.Name => "pink",
 				Ocean.Name => "dkblue",
 				_ => "green"

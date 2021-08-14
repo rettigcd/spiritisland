@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 		public const string Name = "Words of Warning";
 
 		[SpiritCard( WordsOfWarning.Name, 1, Speed.Fast, Element.Air, Element.Sun, Element.Animal )]
-		[FromPresence(1,Filter.Dahan)]
+		[FromPresence(1,Target.Dahan)]
 		static public Task Act( ActionEngine engine, Space target ) {
 			// defend 3.
 			engine.GameState.Defend(target,3);

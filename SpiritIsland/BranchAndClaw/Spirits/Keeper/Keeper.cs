@@ -60,12 +60,12 @@ namespace SpiritIsland.BranchAndClaw {
 			};
 			var c = new GrowthActionFactory[]{
 				new GainEnergy(1)
-				,new PlacePresence(3,Filter.PresenceOrWilds,"presence or wilds")
+				,new PlacePresence(3,Target.PresenceOrWilds,"presence or wilds")
 			};
 			var d = new GrowthActionFactory[]{
 				new GainEnergy(-3)
 				,new DrawPowerCard(1)
-				,new PlacePresence(3,Filter.NoBlight,"no blight")
+				,new PlacePresence(3,Target.NoBlight,"no blight")
 			};
 
 			static GrowthOption Join(GrowthActionFactory[] a,GrowthActionFactory[] b) 

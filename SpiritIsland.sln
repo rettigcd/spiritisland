@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{30BE8395-3ABB-4DE6-BE5B-97E914AD2AB7}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		cards.txt = cards.txt
 		todo.txt = todo.txt
 	EndProjectSection
 EndProject

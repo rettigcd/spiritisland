@@ -4,7 +4,7 @@ namespace SpiritIsland.Basegame {
 	class CallOfTheDahanWays {
 
 		[MinorCard("Call of the Dahan Ways",1,Speed.Slow,Element.Moon,Element.Water,Element.Animal)]
-		[FromPresence(1,Filter.Dahan)]
+		[FromPresence(1,Target.Dahan)]
 		static public void Act(ActionEngine eng,Space target){
 			var grp = eng.GameState.InvadersOn(target);
 

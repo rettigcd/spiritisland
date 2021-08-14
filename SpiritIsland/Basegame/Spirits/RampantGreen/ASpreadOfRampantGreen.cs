@@ -46,13 +46,13 @@ namespace SpiritIsland.Basegame {
 
 */
 
-	public class RampantGreen : Spirit {
+	public class ASpreadOfRampantGreen : Spirit {
 
 		public const string Name = "A Spread of Rampant Green";
 
 		public override string Text => Name;
 
-		public RampantGreen():base(
+		public ASpreadOfRampantGreen():base(
 			new Track[] { Track.Energy0, Track.Energy1, Track.PlantEnergy, Track.Energy2, Track.Energy2, Track.PlantEnergy, Track.Energy3 },
 			new Track[] { Track.Card1, Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4 },
 			PowerCard.For<FieldsChokedWithGrowth>(),
@@ -63,7 +63,7 @@ namespace SpiritIsland.Basegame {
 			// Special rules: steady regeneration
 			this.Presence.CanPlaceDestroyedPresence = true; // !! leaky abstractions
 
-			var placeOnWetlandOrJungle = new PlacePresence(2, Filter.JungleOrWetland, "W / J");
+			var placeOnWetlandOrJungle = new PlacePresence(2, Target.JungleOrWetland, "W / J");
 
 			GrowthOptions = new GrowthOption[]{
 				// reclaim, +1 power card
@@ -154,11 +154,11 @@ namespace SpiritIsland.Basegame {
 		}
 
 		readonly List<PowerCard> PowerProgression = new List<PowerCard>{
-			PowerCard.For<TheTreesAndStonesSpeakOfWar>(),
-			PowerCard.For<InfiniteVitality>(),
 			PowerCard.For<DriftDownIntoSlumber>(),
-			PowerCard.For<GiftOfLivingEnergy>(),  // MAJOR?
+			PowerCard.For<GiftOfLivingEnergy>(),
+			PowerCard.For<TheTreesAndStonesSpeakOfWar>(), // major
 			PowerCard.For<LureOfTheUnknown>(),
+			PowerCard.For<InfiniteVitality>(), // major
 			PowerCard.For<EnticingSplendor>(),
 		};
 

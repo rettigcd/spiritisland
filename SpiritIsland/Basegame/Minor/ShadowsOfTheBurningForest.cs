@@ -6,7 +6,7 @@ namespace SpiritIsland.Basegame {
 	class ShadowsOfTheBurningForest {
 
 		[MinorCard("Shadows of the Burning Forest",0,Speed.Slow,Element.Moon,Element.Fire,Element.Plant)]
-		[FromPresence(0,Filter.Invader)]
+		[FromPresence(0,Target.Invader)]
 		static public async Task Act(ActionEngine engine,Space target){
 			// 2 fear
 			engine.GameState.AddFear(2);

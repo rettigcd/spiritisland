@@ -10,7 +10,7 @@ namespace SpiritIsland.Basegame {
 
 
 		[MajorCard(Tsunami.Name,6,Speed.Slow,Element.Water,Element.Earth)]
-		[FromSacredSite(2,Filter.Costal)]
+		[FromSacredSite(2,Target.Costal)]
 		static public Task ActAsync(ActionEngine engine,Space space){
 			var(self,gameState) = engine;
 			// 2 fear

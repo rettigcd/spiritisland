@@ -8,7 +8,7 @@ namespace SpiritIsland.Basegame {
 		public const string Name = "Pull Beneath the Hungry Earth";
 
 		[MinorCard(PullBeneathTheHungryEarth.Name,1,Speed.Slow,Element.Moon,Element.Water,Element.Earth)]
-		[FromPresence(1,Filter.None)] // !!! Add unit test that we don't accidentally switch this back to .SandOrWetland
+		[FromPresence(1,Target.Any)] // !!! Add unit test that we don't accidentally switch this back to .SandOrWetland
 		static public void ActAsync(ActionEngine eng, Space target){
 
 			var (self,gameState) = eng;

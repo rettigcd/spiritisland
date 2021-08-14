@@ -5,7 +5,7 @@ namespace SpiritIsland.Basegame {
 	class VoraciousGrowth {
 
 		[MinorCard("Voracious Growth",1,Speed.Slow,Element.Water,Element.Plant)]
-		[FromSacredSite(1,Filter.JungleOrWetland)]
+		[FromSacredSite(1,Target.JungleOrWetland)]
 		static public async Task ActAsync(ActionEngine engine,Space target){
 			var (_,gs) = engine;
 

@@ -7,7 +7,7 @@ namespace SpiritIsland.Core {
 	public class PlacePresence : GrowthActionFactory {
 
 		readonly int range;
-		readonly Filter filterEnum;
+		readonly Target filterEnum;
 
 		public override string ShortDescription {get;}
 
@@ -15,13 +15,13 @@ namespace SpiritIsland.Core {
 
 		public PlacePresence( int range ){
 			this.range = range;
-			filterEnum = Filter.None;
+			filterEnum = Target.Any;
 			ShortDescription = $"PlacePresence({range})";
 		}
 
 		public PlacePresence(
 			int range,
-			Filter filterEnum,
+			Target filterEnum,
 			string funcDescriptor
 		) {
 			this.range = range;

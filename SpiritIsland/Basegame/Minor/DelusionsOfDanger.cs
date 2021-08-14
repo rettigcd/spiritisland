@@ -6,7 +6,7 @@ namespace SpiritIsland.Basegame {
 	class DelusionsOfDanger {
 
 		[MinorCard("Delusions of Danger",1,Speed.Fast,Element.Sun,Element.Moon,Element.Air)]
-		[FromPresence(1,Filter.Explorer)]
+		[FromPresence(1,Target.Explorer)]
 		static public async Task ActionAsync(ActionEngine engine, Space target){
 
 			const string PushKey = "Push 1 Explorer";

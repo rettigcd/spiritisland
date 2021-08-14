@@ -1,11 +1,12 @@
-﻿using SpiritIsland.Basegame;
+﻿using Shouldly;
+using SpiritIsland.Basegame;
 using Xunit;
 
 namespace SpiritIsland.Tests.Basegame.Spirits {
 
 	public class RampantGreen_GrowthTests : GrowthTests {
 
-		public RampantGreen_GrowthTests():base( new RampantGreen() ){}
+		public RampantGreen_GrowthTests():base( new ASpreadOfRampantGreen() ){}
 
 		// +1 presense to jungle or wetland - range 2(Always do this + one of the following)
 		// reclaim, +1 power card
@@ -22,8 +23,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 			When_Growing( 0 );
 			Resolve_PlacePresence( "A2;A3;A5");
 
-			Assert_AllCardsAvailableToPlay();
-			Assert_GainPowercard( 1 );
+			Assert_AllCardsAvailableToPlay(5);
 		}
 
 		[Theory]
@@ -63,17 +63,17 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 
 			Assert.Equal(1,spirit.EnergyPerTurn);
 			Assert_HasEnergy(3+1);
-			Assert_GainPowercard(1);
+			spirit.Hand.Count.ShouldBe(5);
 		}
 
 		[Theory]
 		[InlineDataAttribute(1,0,"")]
 		[InlineDataAttribute(2,1,"")]
 		[InlineDataAttribute(3,1,"P")]
-		[InlineDataAttribute(4,2,"P")]
-		[InlineDataAttribute(5,2,"P")]
-		[InlineDataAttribute(6,2,"PP")]
-		[InlineDataAttribute(7,3,"PP")]
+		[InlineDataAttribute( 4, 2, "P" )]
+		[InlineDataAttribute( 5, 2, "P" )]
+		[InlineDataAttribute( 6, 2, "PP" )]
+		[InlineDataAttribute( 7, 3, "PP" )]
 		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 			// energy: 0 1 plant 2 2 plant 3
 			spirit.Presence.Energy.RevealedCount = revealedSpaces;

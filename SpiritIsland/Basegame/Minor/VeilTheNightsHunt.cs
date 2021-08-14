@@ -6,7 +6,7 @@ namespace SpiritIsland.Basegame {
 	public class VeilTheNightsHunt {
 
 		[MinorCard( "Veil the Night's Hunt", 1, Speed.Fast, Element.Moon, Element.Air, Element.Animal)]
-		[FromPresence( 2, Filter.Dahan )]
+		[FromPresence( 2, Target.Dahan )]
 		static public async Task Act( ActionEngine engine, Space target ) {
 
 			int dahanCount = engine.GameState.GetDahanOnSpace(target);

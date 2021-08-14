@@ -7,9 +7,9 @@ namespace SpiritIsland.Core {
 
 	abstract class TargetSpaceAttribute : Attribute {
 		readonly int range;
-		readonly Filter filterEnum;
+		readonly Target filterEnum;
 
-		public TargetSpaceAttribute(int range,Filter filter){
+		public TargetSpaceAttribute(int range,Target filter){
 			this.range = range;
 			this.filterEnum = filter;
 		}
@@ -20,28 +20,28 @@ namespace SpiritIsland.Core {
 			return engine.Api.TargetSpace(engine,source,range, filter );
 		}
 
-		static public Func<Space, bool> ToLambda(ActionEngine engine, Filter filterEnum){
+		static public Func<Space, bool> ToLambda(ActionEngine engine, Target filterEnum){
 			var (self,gameState) = engine;
 			bool HasExplorer( Space space ) => gameState.InvadersOn( space ).HasExplorer;
 			bool TownOrExplorer( Space space ) => gameState.InvadersOn( space ).FilterBy( Invader.Explorer, Invader.Town ).Length > 0;
 
 			return filterEnum switch {
-				Filter.None => (s)=>true, // Is land?
-				Filter.Dahan => gameState.HasDahan,
-				Filter.Explorer => HasExplorer,
-				Filter.TownOrExplorer => TownOrExplorer,
-				Filter.Invader => gameState.HasInvaders,
-				Filter.NoInvader => (s)=>!gameState.HasInvaders(s),
-				Filter.Costal => (s => s.IsCostal),
-				Filter.SandOrWetland => (s => s.Terrain.IsIn( Terrain.Sand, Terrain.Wetland )),
-				Filter.JungleOrMountain => (( space ) => space.Terrain.IsIn( Terrain.Jungle, Terrain.Mountain )),
-				Filter.JungleOrWetland => (( space ) => space.Terrain.IsIn( Terrain.Jungle, Terrain.Wetland )),
-				Filter.MountainOrWetland => (( space ) => space.Terrain.IsIn( Terrain.Mountain, Terrain.Wetland )),
-				Filter.NoBlight => (s => !gameState.HasBlight( s )),
-				Filter.BeastOrJungle => (s) => s.Terrain == Terrain.Jungle || gameState.HasBeasts( s ),
-				Filter.PresenceOrWilds => (s) => self.Presence.IsOn( s ) || gameState.HasWilds( s ),
-				Filter.DahanOrInvaders => (s) => gameState.HasDahan( s ) || gameState.HasInvaders( s ),
-			_ => throw new ArgumentException("Unexpected filter",nameof(filterEnum)),
+				Core.Target.Any => (s)=>true, // Is land?
+				Core.Target.Dahan => gameState.HasDahan,
+				Core.Target.Explorer => HasExplorer,
+				Core.Target.TownOrExplorer => TownOrExplorer,
+				Core.Target.Invader => gameState.HasInvaders,
+				Core.Target.NoInvader => (s)=>!gameState.HasInvaders( s ),
+				Core.Target.Costal => (s => s.IsCostal),
+				Core.Target.SandOrWetland => (s => s.Terrain.IsIn( Terrain.Sand, Terrain.Wetland )),
+				Core.Target.JungleOrMountain => (( space ) => space.Terrain.IsIn( Terrain.Jungle, Terrain.Mountain )),
+				Core.Target.JungleOrWetland => (( space ) => space.Terrain.IsIn( Terrain.Jungle, Terrain.Wetland )),
+				Core.Target.MountainOrWetland => (( space ) => space.Terrain.IsIn( Terrain.Mountain, Terrain.Wetland )),
+				Core.Target.NoBlight => (s => !gameState.HasBlight( s )),
+				Core.Target.BeastOrJungle => (s) => s.Terrain == Terrain.Jungle || gameState.HasBeasts( s ),
+				Core.Target.PresenceOrWilds => (s) => self.Presence.IsOn( s ) || gameState.HasWilds( s ),
+				Core.Target.DahanOrInvaders => (s) => gameState.HasDahan( s ) || gameState.HasInvaders( s ),
+			_ => throw new ArgumentException( "Unexpected filter",nameof( filterEnum ) ),
 			};
 		}
 

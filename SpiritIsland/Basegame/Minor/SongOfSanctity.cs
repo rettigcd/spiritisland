@@ -8,7 +8,7 @@ namespace SpiritIsland.Basegame {
 		public const string Name = "Song of Sanctity";
 
 		[MinorCard(SongOfSanctity.Name, 1, Speed.Slow,Element.Sun,Element.Water,Element.Plant)]
-		[FromPresence(1,Filter.JungleOrMountain)]
+		[FromPresence(1,Target.JungleOrMountain)]
 		static public async Task ActionAsync(ActionEngine engine, Space target){
 			var (_,gameState) = engine;
 			var group = gameState.InvadersOn(target);

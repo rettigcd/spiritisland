@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 		public const string Name = "Harbingers of the Lightning";
 
 		[SpiritCard(HarbingersOfTheLightning.Name,0,Speed.Slow,Element.Fire,Element.Air)]
-		[FromPresence(1,Filter.Dahan)]
+		[FromPresence(1,Target.Dahan)]
 		static public async Task ActionAsync(ActionEngine engine,Space target){
 
 			// Push up to 2 dahan.

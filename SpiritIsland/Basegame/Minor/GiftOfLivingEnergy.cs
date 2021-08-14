@@ -1,4 +1,6 @@
 ﻿using SpiritIsland.Core;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 	public class GiftOfLivingEnergy {

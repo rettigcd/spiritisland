@@ -57,7 +57,7 @@ namespace SpiritIsland.BranchAndClaw {
 			new NullPowerCard( "D", 0, Speed.Fast )
 		) {
 		
-			var beastOrJungleRange3 = new PlacePresence(3, Filter.BeastOrJungle,"beast or jungle");
+			var beastOrJungleRange3 = new PlacePresence(3, Target.BeastOrJungle,"beast or jungle");
 
 			var a = new GrowthActionFactory[]{
 				new ReclaimAll()       // A

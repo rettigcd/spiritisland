@@ -178,7 +178,7 @@ namespace SpiritIsland.Core {
 			return InvaderPicker.PickOne(grp,availableDamage);
 		}
 
-		static public Task PlacePresence( this ActionEngine engine, int range, Filter filterEnum ) {
+		static public Task PlacePresence( this ActionEngine engine, int range, Target filterEnum ) {
 			Space[] destinationOptions = engine.Self.Presence.Spaces
 				.SelectMany( s => s.SpacesWithin( range ) )
 				.Distinct()

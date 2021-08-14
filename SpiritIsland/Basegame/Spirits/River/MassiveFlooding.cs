@@ -5,7 +5,7 @@ using SpiritIsland.Core;
 namespace SpiritIsland.Basegame {
 
 	[InnatePower(MassiveFlooding.Name,Speed.Slow)]
-	[FromSacredSite(1,Filter.TownOrExplorer)]
+	[FromSacredSite(1,Target.TownOrExplorer)]
 	public class MassiveFlooding {
 
 		public const string Name = "Massive Flooding";

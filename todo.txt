@@ -1,16 +1,31 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
-SpiritControl
-4	show $$ in gui
-4	show spirit icon in GUI
-	#s on elements on wrong side / spacing
-	show Growth options in GUI
 
-Misc
-	give presence shadows
-5	replace board presence icons with color presence
-5	LOG fear actions / results
+// === Basegame Road Map ===
+UI		Display Spirit Name / Image
+UI		Display $$
+BASE	Minor Cards (Easy) / Identify (hard)
+BASE	Major Cards (Easy) / Identify (hard)
+CORE	Implement Major/Minor Deck with shuffling
+CORE	Make Power-Progression Plugable / Default Back to regular Draw Card
+BASE	Bringer
+BASE	Ocean
+CORE	Split Growth Option into parts
+UI  Re-evaluate Buttons - change to dropdown?  run along top to get more width for spirit card?
+UI	Cards - scroll bar
+UI	Display Growth Options in GUI
+UI	show COLOR presence on board - GUI
+UI	click on invaders on board - GUI
+UI	Fix Fear card experience - logging or showing cards
+UI	Enhance Ravage / Build images
+BASE	Review Major / Minor, decide which need Unit Tests and Implement
+BASE	Implement Hard major/minor cards
+BONUS	Generate Innate images from innate metadata
+== Done ==
 
+Power Card Troubles
+	+4 dahan health
+	Increase Range // custom attribute on card that overrides normal
 
 Fix
 	Words of Warning
@@ -18,21 +33,12 @@ Fix
 	While selecting cards, show total elements, allow selecting all cards before selecting 'done/commit'.  Select/Unselect.
 	At the end of each ActionTree (maybe after each invader is destroyed?), test if we have a Terror Level victory.
 
-Not Implemented
-	Minor Cards
-	Major Cards
-	Normal Drawing cards
-
 Improve
 5	Show $money after energy track.
-4	Make Power Progression Pluggable / Optional
-4	click on tracks & innates
-3	Display Damaged Cities / Towns
 	Manually select who to apply damage to
 	Display Icons (white w/#s)
 	click on explorers on board instead of buttons
 	Display Card modifications slow/fast
-	Scale Cards to Window
 
 Unit Test
 	Thunderspeakers - move-with-the-dahan

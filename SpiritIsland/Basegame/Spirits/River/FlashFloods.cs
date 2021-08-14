@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 
 		public const string Name = "Flash Floods";
 		[SpiritCard(FlashFloods.Name,2,Speed.Fast,Element.Sun,Element.Water)]
-		[FromPresence(1,Filter.Invader)]
+		[FromPresence(1,Target.Invader)]
 		static public async Task ActionAsync(ActionEngine engine,Space target){
 			var (_,gameState) = engine;	
 

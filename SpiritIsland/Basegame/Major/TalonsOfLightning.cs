@@ -6,7 +6,7 @@ namespace SpiritIsland.Basegame {
 	public class TalonsOfLightning {
 
 		[MajorCard( "Talons of Lightning", 6, Speed.Fast, Element.Fire, Element.Air )]
-		[FromPresence(1,Filter.MountainOrWetland)]
+		[FromPresence(1,Target.MountainOrWetland)]
 		static public async Task ActionAsync( ActionEngine engine, Space target ) {
 
 			// if you have: 3 fire, 3 air
@@ -20,7 +20,7 @@ namespace SpiritIsland.Basegame {
 					engine,
 					engine.Self.Presence.Spaces,
 					3, 
-					TargetSpaceAttribute.ToLambda(engine,Filter.MountainOrWetland)
+					TargetSpaceAttribute.ToLambda(engine,Target.MountainOrWetland)
 				);
 
 			// 3 fear

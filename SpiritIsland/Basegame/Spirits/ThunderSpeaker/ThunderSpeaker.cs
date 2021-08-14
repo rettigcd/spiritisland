@@ -56,8 +56,8 @@ namespace SpiritIsland.Basegame {
 					new DrawPowerCard(2)
 				),
 				new GrowthOption( 
-					new PlacePresence(2,Filter.Dahan,"dahan"),
-					new PlacePresence(1,Filter.Dahan,"dahan")
+					new PlacePresence(2,Target.Dahan,"dahan"),
+					new PlacePresence(1,Target.Dahan,"dahan")
 				),
 				new GrowthOption( 
 					new PlacePresence(1), 
