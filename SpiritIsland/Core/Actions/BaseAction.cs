@@ -6,8 +6,8 @@ namespace SpiritIsland.Core {
 
 	sealed public class BaseAction : IAction {
 
-		public BaseAction(ActionEngine engine){
-			this.Decisions = engine.Self.decisions;
+		public BaseAction(Spirit spirit){
+			this.Decisions = spirit.decisions;
 		}
 
 		public bool IsResolved => Options.Length == 0;

@@ -16,7 +16,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			//  When: activating card
 			var engine = new ActionEngine( spirit, gameState );
 			card.Activate( engine );
-			var action = new BaseAction( engine );
+			var action = new BaseAction( spirit );
 
 			//  Then: card has 0 options
 			Assert.Empty(action.Options);
@@ -43,7 +43,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			//  When: activating card
 			var engine = new ActionEngine( spirit, gameState );
 			card.Activate( engine );
-			action = new BaseAction( engine );
+			action = new BaseAction( spirit );
 
 			var invader = action.Options[0] as Invader;
 			Then_SelectInvaderToPush(invader,invader.Summary,"Done");
@@ -77,7 +77,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			//  When: activating card
 			var engine = new ActionEngine( spirit, gameState );
 			card.Activate( engine );
-			action = new BaseAction( engine );
+			action = new BaseAction( spirit );
 
 			Then_SelectInvaderToPush( Invader.Explorer, "E@1", "Done" );
 			
@@ -102,7 +102,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			//  When: activating card
 			var engine = new ActionEngine( spirit, gameState );
 			card.Activate( engine );
-			action = new BaseAction( engine );
+			action = new BaseAction( spirit );
 
 			//  Then: Select Explorer
 			Assert.False(action.IsResolved);
@@ -145,7 +145,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			//  When: activating card
 			var engine = new ActionEngine( spirit, gameState );
 			card.Activate( engine );
-			action = new BaseAction( engine );
+			action = new BaseAction( spirit );
 
 			//  Auto-Selects: target space
 			//			action.Select( targetSpace );

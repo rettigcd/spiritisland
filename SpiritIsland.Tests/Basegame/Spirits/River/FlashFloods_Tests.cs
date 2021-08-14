@@ -38,7 +38,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			//  When: activating flash flood
 			var engine = new ActionEngine( spirit, gameState );
 			card.Activate( engine );
-			action = new BaseAction( engine );
+			action = new BaseAction( spirit );
 
 			// Then: Auto selecting only target space avaialbe
 
@@ -78,7 +78,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			//  When: activating flash flood
 			var engine = new ActionEngine( spirit, gameState );
 			card.Activate( engine );
-			action = new BaseAction( engine );
+			action = new BaseAction( spirit );
 
 			//// Then: can target any land within 1 of presence.
 			//Assert.False(action.IsResolved);

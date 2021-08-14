@@ -69,7 +69,7 @@ namespace SpiritIsland {
 			var engine = new ActionEngine(this,gameState);
 			foreach(var factory in factories) {
 				factory.Activate(engine);
-				var action = new BaseAction(engine);
+				var action = new BaseAction(this);
 				if(action.IsResolved)
 					Resolve(factory);
 				else

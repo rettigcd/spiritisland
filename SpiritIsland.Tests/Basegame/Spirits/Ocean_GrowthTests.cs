@@ -38,7 +38,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 			if(gather != null){
 				var engine = new ActionEngine( spirit, gameState );
 				_ = gather.Activate( engine );
-				var action = new BaseAction( engine );
+				var action = new BaseAction( spirit );
 				while(!action.IsResolved){
 					var source = action.Options.Single(x=>moveBySrc.ContainsKey(x.Text));
 					action.Select(source);
@@ -93,7 +93,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 				.First();
 			var engine = new ActionEngine( spirit, gameState );
 			ppFactory.Activate( engine );
-			var ppAction = new BaseAction(engine);
+			var ppAction = new BaseAction(spirit);
 
 			// take from precense track
 			ppAction.Select( source );
@@ -129,7 +129,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 			if(push != null){
 				var engine = new ActionEngine( spirit, gameState );
 				_ = push.Activate( engine );
-				var action = new BaseAction(engine);
+				var action = new BaseAction(spirit);
 				while(!action.IsResolved){
 					var options = action.Options;
 					var target = options.Single(t=>targets.Contains(t.Text));
