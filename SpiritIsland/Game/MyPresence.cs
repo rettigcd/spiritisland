@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SpiritIsland {
@@ -9,7 +10,32 @@ namespace SpiritIsland {
 			CardPlays = cardPlays;
 		}
 
-		public void Place(Space space) => Placed.Add(space);
+		public Track[] GetPlaceableFromTracks() {
+			var tracks = new List<Track>();
+			if(Energy.HasMore) tracks.Add( Energy.Next );
+			if(CardPlays.HasMore) tracks.Add( CardPlays.Next );
+			if(CanPlaceDestroyedPresence && destroyed>0) tracks.Add(Track.Destroyed);
+			return tracks.ToArray();
+		}
+
+		public bool CanPlaceDestroyedPresence = false;
+
+		public void PlaceFromBoard( Track from, Space to ) {
+			// from
+			if(from == Track.Destroyed)
+				--destroyed;
+			else if(from == Energy.Next)
+				Energy.RevealedCount++;
+			else if(from == CardPlays.Next)
+				CardPlays.RevealedCount++;
+			else
+				throw new ArgumentException( from.ToString() );
+
+			// To
+			PlaceOn( to );
+		}
+
+		public void PlaceOn(Space space) => Placed.Add(space);
 		public void Place( IEnumerable<Space> spaces ) => Placed.AddRange( spaces );
 		public IEnumerable<Space> Spaces => Placed.Distinct();
 

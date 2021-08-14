@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace SpiritIsland.Basegame {
 
 	public class StemTheFlowOfFreshWater {
-		[SpiritCard( "STep the Flow of Fresh Water", 0, Speed.Slow, Element.Water, Element.Plant )]
+		[SpiritCard( "Stem the Flow of Fresh Water", 0, Speed.Slow, Element.Water, Element.Plant )]
 		[FromSacredSite( 1 )]
 		static public async Task ActionAsync( ActionEngine eng, Space target ) {
 

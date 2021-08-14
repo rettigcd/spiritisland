@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using SpiritIsland.Basegame.Spirits.VitalStrength;
 using SpiritIsland.Core;
 
@@ -89,21 +90,22 @@ Power Progression:
 		public override void Initialize( Board board, GameState gameState ){
 			base.Initialize( board, gameState );
 			InitPresence( board );
-			gameState.Ravaging += GameState_Ravaging;
+			gameState.PreRavaging.Handlers.Add( GameState_Ravaging );
 			giftOfStrength.Initialize(gameState);
 		}
 
 		void InitPresence( Board board ){
 			var higestJungle = board.Spaces.OrderByDescending( s => s.Label ).First( s => s.Terrain == Terrain.Jungle );
 			var higestMountain = board.Spaces.OrderByDescending( s => s.Label ).First( s => s.Terrain == Terrain.Mountain );
-			Presence.Place( higestMountain );
-			Presence.Place( higestMountain );
-			Presence.Place( higestJungle );
+			Presence.PlaceOn( higestMountain );
+			Presence.PlaceOn( higestMountain );
+			Presence.PlaceOn( higestJungle );
 		}
 
-		void GameState_Ravaging( GameState gs, Space[] ravageSpaces ) {
+		Task GameState_Ravaging( GameState gs, Space[] ravageSpaces ) {
 			foreach(var space in SacredSites.Where(ravageSpaces.Contains))
 				gs.Defend( space, 3 );
+			return Task.CompletedTask;
 		}
 
 

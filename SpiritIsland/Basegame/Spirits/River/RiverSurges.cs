@@ -76,27 +76,6 @@ namespace SpiritIsland.Basegame {
 			};
 		}
 
-//		bool Reclaim1FromCardTrack => this.RevealedCardSpaces >= 5;
-
-		//public override int RevealedCardSpaces {
-		//	get{ return base.RevealedCardSpaces; }
-		//	set{
-		//		// this never happens during Reclaim-all so is always ok to add here
-		//		bool hadReclaim1 = Reclaim1FromCardTrack;
-		//		base.RevealedCardSpaces = value;
-		//		if(!hadReclaim1 && Reclaim1FromCardTrack)
-		//			AddActionFactory(new Reclaim1());
-		//	}
-		//}
-
-		//public override void Grow(GameState gameState, int optionIndex) {
-		//	if( optionIndex != 0 // Reclaim-All
-		//		&& Reclaim1FromCardTrack
-		//	)
-		//		AddActionFactory(new Reclaim1());
-		//	base.Grow(gameState, optionIndex);
-		//}
-
 		public override IEnumerable<Space> SacredSites {get{
 			return Presence.Spaces
 				.Where(s=>s.Terrain==Terrain.Wetland)
@@ -129,7 +108,7 @@ namespace SpiritIsland.Basegame {
 		public override void Initialize( Board board, GameState gs ) {
 			base.Initialize( board, gs );
 
-			Presence.Place( board.Spaces.Reverse().First( s => s.Terrain == Terrain.Wetland ) );
+			Presence.PlaceOn( board.Spaces.Reverse().First( s => s.Terrain == Terrain.Wetland ) );
 		}
 
 	}

@@ -3,6 +3,9 @@
 namespace SpiritIsland {
 
 	public class Track : IOption {
+
+		static public readonly Track Destroyed = new Track("destroyed"); 
+
 		static Track MkEnergy( int energy ) { return new Track( energy + " energy" ) { Energy = energy }; }
 		static Track MkEnergy( Element el ) { return new Track( el.ToString().ToLower() + " energy" ) { Element = el }; }
 		// ! Instead of enumerating this here, we could generate them when needed in the spirit

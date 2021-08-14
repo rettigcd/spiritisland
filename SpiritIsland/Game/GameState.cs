@@ -27,6 +27,10 @@ namespace SpiritIsland {
 			skipExplore.Add(target);
 		}
 
+		internal void SkipRavage( params Space[] space ) {
+			skipRavage.AddRange(space);
+		}
+
 		internal void SkipBuild( params Space[] target ) {
 			skipBuild.AddRange( target );
 		}
@@ -65,7 +69,8 @@ namespace SpiritIsland {
 
 
 		public event Action<GameState> TimePassed;
-		public event Action<GameState, Space[]> Ravaging;
+		public AsyncEvent<Space[]> PreRavaging = new AsyncEvent<Space[]>();
+		public AsyncEvent<Space[]> PreBuilding = new AsyncEvent<Space[]>();
 		public AsyncEvent<DahanMovedArgs> DahanMoved = new AsyncEvent<DahanMovedArgs>();
 		public AsyncEvent<DahanDestroyedArgs> DahanDestroyed = new AsyncEvent<DahanDestroyedArgs>();
 		public Stack<Action<GameState>> EndOfRoundCleanupAction = new Stack<Action<GameState>>();
@@ -139,6 +144,7 @@ namespace SpiritIsland {
 
 		}
 		public void RemoveBlight( Space space){
+			if(blightCount[space]==0) return;
 			blightCount[space]--;
 			blightOnCard++;
 		}
@@ -210,15 +216,16 @@ namespace SpiritIsland {
 		public async Task<string[]> Ravage( InvaderCard invaderCard ) {
 			if(invaderCard == null) return Array.Empty<string>();
 
-			// 1 point of damage,  Prefer C@1  ---  ---  T@1  ---  E@1 >>> C@2, T@2, C@3
-			// 2 points of damage, Prefer C@1  C@2  ---  T@1  T@2  E@1 >>> C@3
-			// 3 points of damage, Prefer C@1  C@2  C@3  T@1  T@2  E@1
-			var ravageSpaces = Island.Boards.SelectMany( board => board.Spaces )
+			var initialRavageSpaces = Island.Boards.SelectMany( board => board.Spaces )
 				.Where( invaderCard.Matches )
 				.Except( skipRavage )
 				.ToArray();
 
-			Ravaging?.Invoke( this, ravageSpaces );
+			PreRavaging?.Invoke( this, initialRavageSpaces );
+
+			var ravageSpaces = initialRavageSpaces
+				.Except( skipRavage ) // apply this again in case it changed
+				.ToArray();
 
 			var ravageGroups = ravageSpaces
 				.Select( InvadersOn )
@@ -232,9 +239,17 @@ namespace SpiritIsland {
 		}
 
 		public string[] Build( InvaderCard invaderCard ) {
-			return Island.Boards.SelectMany( board => board.Spaces )
+
+			var buildLands = Island.Boards.SelectMany( board => board.Spaces )
 				.Where( invaderCard.Matches )
 				.Except( skipBuild )
+				.ToArray();
+
+			PreBuilding?.Invoke(this,buildLands);
+
+			buildLands = buildLands.Except( skipBuild ).ToArray(); // reload in case they changed
+
+			return buildLands
 				.Select( InvadersOn )
 				.Where( group => group.InvaderTypesPresent.Any() )
 				.Select( Build )

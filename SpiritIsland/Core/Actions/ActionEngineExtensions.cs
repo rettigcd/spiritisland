@@ -112,17 +112,11 @@ namespace SpiritIsland.Core {
 		}
 
 		static public async Task PushInvader( this ActionEngine eng, Space source, Invader invader){
-  			var destination = await eng.SelectSpace("Push "+invader.Summary+" to"
+			var destination = await eng.SelectSpace("Push "+invader.Summary+" to"
 				,source.Neighbors.Where(x=>x.IsLand)
 			);
 			eng.GameState.Move(invader,source,destination);
 		}
-
-		static Invader[] KillOrder => killOrder ??= "C@1 C@2 C@3 T@1 T@2 E@1".Split( ' ' ).Select( k => Invader.Lookup[k] ).ToArray();
-		static Invader[] killOrder;
-
-		static Invader[] LeftOverOrder => leftOverOrder ??= "C@2 T@2 C@3".Split( ' ' ).Select( k => Invader.Lookup[k] ).ToArray();
-		static Invader[] leftOverOrder;
 
 		// !!! Swap this out with user choosing.  Which user chooses when dahan are doing damage????
 		static public Task ApplyDamageToGroup( this InvaderGroup grp, int startingDamage, List<string> log = null ) {
@@ -138,13 +132,50 @@ namespace SpiritIsland.Core {
 			return Task.CompletedTask;
 		}
 
-		public static Invader PickInvaderToDamage( this InvaderGroup grp, int availableDamage ) {
-			return KillOrder
+		static public Task ApplyDamageToTypes( this InvaderGroup grp, int startingDamage, params Invader[] healthyInvaders ) {
+			int damageToInvaders = startingDamage;
+
+			var allTargetTypes = healthyInvaders.SelectMany(x=>x.AliveVariations).ToArray();
+
+			var picker = new SmartInvaderKiller();
+			picker.LimitTo(allTargetTypes);
+
+			// While damage remains    &&    we have invaders
+			IEnumerable<Invader> Targets() => grp.InvaderTypesPresent.Intersect(allTargetTypes);
+
+			while(damageToInvaders > 0 && Targets().Any()) {
+				Invader invaderToDamage = picker.PickOne(grp, damageToInvaders );
+				damageToInvaders -= grp.ApplyDamageTo1( invaderToDamage, damageToInvaders );
+			}
+
+			return Task.CompletedTask;
+		}
+
+
+
+		class SmartInvaderKiller {
+			public Invader[] KillOrder = "C@1 C@2 C@3 T@1 T@2 E@1".Split( ' ' ).Select( k => Invader.Lookup[k] ).ToArray();
+			public Invader[] LeftOverOrder = "C@2 T@2 C@3".Split( ' ' ).Select( k => Invader.Lookup[k] ).ToArray();
+
+			public void LimitTo(Invader[] types ) {
+				KillOrder = KillOrder.Where(x=>types.Contains(x)).ToArray();
+				LeftOverOrder = LeftOverOrder.Where( x => types.Contains( x ) ).ToArray();
+			}
+
+			public Invader PickOne(InvaderGroup grp, int availableDamage) {
+				return KillOrder
 				.FirstOrDefault( invader =>
 					invader.Health <= availableDamage // prefer things we can kill
 					&& grp[invader] > 0
 				)
 				?? LeftOverOrder.First( invader => grp[invader] > 0 ); // left-over damage
+			}
+
+		}
+
+		static readonly SmartInvaderKiller InvaderPicker = new SmartInvaderKiller();
+		public static Invader PickInvaderToDamage( this InvaderGroup grp, int availableDamage ) {
+			return InvaderPicker.PickOne(grp,availableDamage);
 		}
 
 		static public Task PlacePresence( this ActionEngine engine, int range, Filter filterEnum ) {
@@ -159,24 +190,9 @@ namespace SpiritIsland.Core {
 
 		static public async Task PlacePresence( this ActionEngine engine, params Space[] destinationOptions ) {
 
-			// From
 			var from = await engine.SelectTrack();
-
-			// To
 			var to = await engine.SelectSpace( "Where would you like to place your presence?", destinationOptions );
-
-			// from
-			if(from == engine.Self.Presence.Energy.Next)
-				engine.Self.Presence.Energy.RevealedCount++;
-			else if(from == engine.Self.Presence.CardPlays.Next)
-				engine.Self.Presence.CardPlays.RevealedCount++;
-			else
-				throw new ArgumentException( from.ToString() );
-
-			// To
-			engine.Self.Presence.Place( to );
-
-			// pull this into Presence maybe!!!
+			engine.Self.Presence.PlaceFromBoard( from, to );
 
 		}
 
