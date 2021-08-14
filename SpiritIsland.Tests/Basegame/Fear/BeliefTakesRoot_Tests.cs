@@ -31,7 +31,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			//   And: Presence
 			var spirit = gameState.Spirits[0];
 			while(presenceCount-->0)
-				spirit.Presence.Add( ravageSpace );
+				spirit.Presence.Place( ravageSpace );
 		}
 
 		[Fact]

@@ -91,8 +91,8 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 			base.Initialize(board,gs);
 			// Setup: put 2 pressence in highest numbered sands
 			var space = board.Spaces.Reverse().First(x=>x.Terrain==Terrain.Sand);
-			Presence.Add(space);
-			Presence.Add(space);
+			Presence.Place(space);
+			Presence.Place(space);
 		}
 
 

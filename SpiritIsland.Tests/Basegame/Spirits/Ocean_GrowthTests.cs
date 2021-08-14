@@ -83,7 +83,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 			gameState.Island = new Island(BoardA,BoardB);
 
 			When_Growing(1);
-			Resolve_PlacePresenceInOcean( "A0;B0", spirit.EnergyTrack.Next);
+			Resolve_PlacePresenceInOcean( "A0;B0", spirit.Presence.Energy.Next);
 			
 			Assert_HasEnergy(1);
 		}
@@ -160,7 +160,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 		[InlineDataAttribute(7,2,"MWEW")]
 		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 			// energy: 0 moon water 1 earth water 2
-			spirit.EnergyTrack.RevealedCount = revealedSpaces;
+			spirit.Presence.Energy.RevealedCount = revealedSpaces;
 			Assert_EnergyTrackIs( expectedEnergyGrowth );
 			When_Growing( 0 ); // triggers elements
 			Assert_BonusElements( elements );
@@ -175,7 +175,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 		[InlineDataAttribute(6,5)]
 		public void CardTrack(int revealedSpaces, int expectedCardPlayCount ){
 			// card:	1 2 2 3 4 5
-			spirit.CardTrack.RevealedCount = revealedSpaces;
+			spirit.Presence.CardPlays.RevealedCount = revealedSpaces;
 			Assert_CardTrackIs( expectedCardPlayCount );
 		}
 

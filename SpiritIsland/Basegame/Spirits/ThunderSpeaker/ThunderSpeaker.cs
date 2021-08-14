@@ -78,17 +78,17 @@ namespace SpiritIsland.Basegame {
 			base.Initialize(board, gs);
 
 			// Put 2 Presence on your starting board: 1 in each of the 2 lands with the most Dahanicon.png
-			Presence.AddRange(board.Spaces.OrderByDescending(gs.GetDahanOnSpace).Take(2));
+			Presence.Place( board.Spaces.OrderByDescending(gs.GetDahanOnSpace).Take(2) );
 
 			// Special Rules -Ally of the Dahan - Your presense may move with dahan
 			gs.DahanMoved.Handlers.Add( MovePresenceWithDahan );
 
-		    // Special Rules - Sworn to Victory - For each dahan stroyed by invaders ravaging a land, destroy 1 of your presense withing 1
+			// Special Rules - Sworn to Victory - For each dahan stroyed by invaders ravaging a land, destroy 1 of your presense withing 1
 			gs.DahanDestroyed.Handlers.Add( DestroyNearbyPresence );
 		}
 
 		async Task MovePresenceWithDahan(GameState gs, DahanMovedArgs args) {
-			int maxThatCanMove = Math.Min(args.count,Presence.Count(p=>p==args.from));
+			int maxThatCanMove = Math.Min(args.count,Presence.Placed.Count(p=>p==args.from));
 			// 0 -> no action
 			if(maxThatCanMove==0) return;
 			var moveLookup = new Dictionary<string,int>();
@@ -100,10 +100,9 @@ namespace SpiritIsland.Basegame {
 				.SelectText("Move presence with dahan?", moveLookup.OrderByDescending(p=>p.Value).Select(p=>p.Key).ToArray()); 
 			int countToMove = moveLookup[s];
 
-			while(countToMove-- > 0) {
-				Presence.Remove(args.from);
-				Presence.Add(args.to);
-			}
+			while(countToMove-- > 0)
+				Presence.Move(args.from,args.to);
+
 		}
 
 		async Task DestroyNearbyPresence( GameState gameState, DahanDestroyedArgs args ) {
@@ -114,10 +113,10 @@ namespace SpiritIsland.Basegame {
 
 			int numToDestroy = args.count;
 			Space[] options;
-			Space[] Calc() => args.space.SpacesWithin( 1 ).Intersect( Presence ).ToArray();
+			Space[] Calc() => args.space.SpacesWithin( 1 ).Intersect( Presence.Placed ).ToArray();
 
 			while(numToDestroy-->0 && (options=Calc()).Length > 0)
-				Presence.Remove( await eng.SelectSpace( prompt, options ) );
+				Presence.Placed.Remove( await eng.SelectSpace( prompt, options ) );
 
 		}
 

@@ -18,7 +18,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			gameState.Island = new Island( board );
 
 			//   And: Presence on A4
-			spirit.Presence.Add( board[4] );
+			spirit.Presence.Place( board[4] );
 
 			//   And: Purchased WashAway
 			card = spirit.Hand.Single( c => c.Name == RiversBounty.Name );
@@ -53,7 +53,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			int endingEnergy
 		) {
 			// Given: spirit has 1 presence
-			Space target = spirit.Presence.Single();
+			Space target = spirit.Presence.Placed.Single();
 
 			//   And: presence space has dahan
 			Given_AddDahan( startingCount, target );
@@ -82,7 +82,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		[Fact]
 		public void DahanComingDifferentLands() {
 			// Given: spirit has 1 presence
-			Space target = spirit.Presence.Single();
+			Space target = spirit.Presence.Placed.Single();
 
 			//   And: neighbors have 1 dahan each 
 			const int dahanToGather = 2;
@@ -108,8 +108,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		[Fact]
 		public void TwoPresenceSpaces(){
 			// Given: spirit has presence on A4 && A8
-			spirit.Presence.Add(board[8]);
-			var targetOptions = spirit.Presence.Distinct().ToArray();
+			spirit.Presence.Place(board[8]);
+			var targetOptions = spirit.Presence.Placed.Distinct().ToArray();
 			Assert.Equal(2,targetOptions.Length);
 
 			//   And: 2 dahan in A5 (touches both)
@@ -137,7 +137,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		[Fact]
 		public void TwoDahanOnPresenceSpace(){
 			// Given: spirit has presence on A4
-			var targetOptions = spirit.Presence.Distinct().ToArray();
+			var targetOptions = spirit.Presence.Placed.Distinct().ToArray();
 			Assert.Single( targetOptions);
 
 			//   And: 2 dahan in A5 (touches both)

@@ -8,7 +8,7 @@ namespace SpiritIsland.Basegame {
 	public class PushPresenceFromOcean : GrowthActionFactory {
 
 		public override async Task Activate(ActionEngine engine) {
-			List<Space> pushSpaces = engine.Self.Presence
+			List<Space> pushSpaces = engine.Self.Presence.Placed
 				.Where( p => p.IsOcean )
 				.Distinct()
 				.ToList();
@@ -21,8 +21,7 @@ namespace SpiritIsland.Basegame {
 				);
 
 				// apply...
-				engine.Self.Presence.Remove( currentSource );
-				engine.Self.Presence.Add( destination );
+				engine.Self.Presence.Move(currentSource, destination);
 
 				// next
 				pushSpaces.RemoveAt( 0 );

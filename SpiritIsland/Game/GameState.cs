@@ -130,8 +130,8 @@ namespace SpiritIsland {
 			AddBlight(space);
 
 			foreach(var spirit in Spirits)
-				if(spirit.Presence.Contains(space))
-					spirit.Presence.Remove(space);
+				if(spirit.Presence.Placed.Contains(space))
+					spirit.Presence.Placed.Remove(space);
 
 			--blightOnCard;
 			if(BlightCard != null && blightOnCard==0)

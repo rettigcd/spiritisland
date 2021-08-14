@@ -15,7 +15,7 @@ namespace SpiritIsland.Basegame {
 		}
 
 		static void Defend2WherePresence( GameState gs ) {
-			foreach(var space in gs.Spirits.SelectMany( s => s.Presence ).Distinct())
+			foreach(var space in gs.Spirits.SelectMany( s => s.Presence.Placed ).Distinct())
 				gs.Defend( space, 2 );
 		}
 
@@ -32,7 +32,7 @@ namespace SpiritIsland.Basegame {
 			var used = new HashSet<Space>();
 			foreach(var spirit in gs.Spirits) {
 				var engine = new ActionEngine(spirit,gs);
-				var options = spirit.Presence.Distinct()
+				var options = spirit.Presence.Placed.Distinct()
 					.Where(s=>gs.InvadersOn(s).Has(Invader.Town,Invader.Explorer))
 					.Except(used)
 					.ToArray();

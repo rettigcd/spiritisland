@@ -96,9 +96,9 @@ Power Progression:
 		void InitPresence( Board board ){
 			var higestJungle = board.Spaces.OrderByDescending( s => s.Label ).First( s => s.Terrain == Terrain.Jungle );
 			var higestMountain = board.Spaces.OrderByDescending( s => s.Label ).First( s => s.Terrain == Terrain.Mountain );
-			Presence.Add( higestMountain );
-			Presence.Add( higestMountain );
-			Presence.Add( higestJungle );
+			Presence.Place( higestMountain );
+			Presence.Place( higestMountain );
+			Presence.Place( higestJungle );
 		}
 
 		void GameState_Ravaging( GameState gs, Space[] ravageSpaces ) {

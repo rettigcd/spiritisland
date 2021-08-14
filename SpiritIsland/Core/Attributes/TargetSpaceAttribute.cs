@@ -38,7 +38,7 @@ namespace SpiritIsland.Core {
 				Filter.MountainOrWetland => (( space ) => space.Terrain.IsIn( Terrain.Mountain, Terrain.Wetland )),
 				Filter.NoBlight => (s => !gameState.HasBlight( s )),
 				Filter.BeastOrJungle => (s) => s.Terrain == Terrain.Jungle || gameState.HasBeasts( s ),
-				Filter.PresenceOrWilds => (s) => self.Presence.Contains( s ) || gameState.HasWilds( s ),
+				Filter.PresenceOrWilds => (s) => self.Presence.Placed.Contains( s ) || gameState.HasWilds( s ),
 				Filter.DahanOrInvaders => (s) => gameState.HasDahan( s ) || gameState.HasInvaders( s ),
 			_ => throw new ArgumentException("Unexpected filter",nameof(filterEnum)),
 			};

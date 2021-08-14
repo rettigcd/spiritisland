@@ -16,7 +16,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			};
 
 			// And: Spirit in spot 1
-			spirit.Presence.Add( a[1] );
+			spirit.Presence.Place( a[1] );
 
 			eng = new ActionEngine( spirit, gs );
 			action = new BaseAction( eng );

@@ -18,8 +18,8 @@ namespace SpiritIsland.Basegame {
 			// Spirit destorys a presence.
 			foreach(var spirit in gs.Spirits) {
 				var engine = new ActionEngine( spirit, gs );
-				var presence = await engine.SelectSpace( "BLIGHT: Select presence to destroy.", spirit.Presence.Distinct().ToArray() );
-				spirit.Presence.Remove( presence );
+				var presence = await engine.SelectSpace( "BLIGHT: Select presence to destroy.", spirit.Presence.Placed.Distinct().ToArray() );
+				spirit.Presence.Placed.Remove( presence );
 			}
 		}
 

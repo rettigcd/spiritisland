@@ -231,7 +231,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			//   And: Presence on A5 (city/costal)
 			var presenceSpace = board.Spaces.Single(s=>s.Label==startingPresence);
-			spirit.Presence.Add(presenceSpace);
+			spirit.Presence.Place(presenceSpace);
 
 			//   And: Purchased WashAway
 			card = spirit.Hand.Single(c => c.Name == WashAway.Name);

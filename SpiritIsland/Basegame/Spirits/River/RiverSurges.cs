@@ -98,7 +98,7 @@ namespace SpiritIsland.Basegame {
 		//}
 
 		public override IEnumerable<Space> SacredSites {get{
-			var x = Presence;
+			var x = Presence.Placed;
 			return x
 				.Where(s=>s.Terrain==Terrain.Wetland)
 				.Union( base.SacredSites )
@@ -130,7 +130,7 @@ namespace SpiritIsland.Basegame {
 		public override void Initialize( Board board, GameState gs ) {
 			base.Initialize( board, gs );
 
-			Presence.Add( board.Spaces.Reverse().First( s => s.Terrain == Terrain.Wetland ) );
+			Presence.Place( board.Spaces.Reverse().First( s => s.Terrain == Terrain.Wetland ) );
 		}
 
 	}

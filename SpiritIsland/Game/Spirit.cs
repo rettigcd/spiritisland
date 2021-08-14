@@ -14,8 +14,10 @@ namespace SpiritIsland {
 			, Track[] cardTrack
 			, params PowerCard[] initialCards 
 		){
-			EnergyTrack = new PresenceTrack( energyTrack );
-			CardTrack = new PresenceTrack( cardTrack );
+			Presence = new MyPresence(
+				new PresenceTrack( energyTrack ),
+				new PresenceTrack( cardTrack )
+			);
 
 			foreach(var card in initialCards)
 				RegisterNewCard(card);
@@ -128,14 +130,14 @@ namespace SpiritIsland {
 				// Energy
 				Energy += EnergyPerTurn;
 				// Elements
-				Elements.AddRange( EnergyTrack.Revealed.Where( t => t.Element.HasValue ).Select( t => t.Element.Value ) );
-				Elements.AddRange( CardTrack.Revealed.Where( t => t.Element.HasValue ).Select( t => t.Element.Value ) );
+				Elements.AddRange( Presence.Energy.Revealed.Where( t => t.Element.HasValue ).Select( t => t.Element.Value ) );
+				Elements.AddRange( Presence.CardPlays.Revealed.Where( t => t.Element.HasValue ).Select( t => t.Element.Value ) );
 
 				// Reclaims-1
 				if(!(selectedActionFactory is Reclaim1)) { // prevent retriggering following Reclaim1
 					int reclaim1Count = Math.Min( 
 						DiscardPile.Count,	// Reclaim-all will make this 0, disabling any reclaim-1
-						CardTrack.Revealed.Count( x => x.ReclaimOne ) 
+						Presence.CardPlays.Revealed.Count( x => x.ReclaimOne ) 
 					);
 					while(reclaim1Count-->0)
 						AddActionFactory( new Reclaim1() );
@@ -182,9 +184,7 @@ namespace SpiritIsland {
 
 		#region presence
 
-		public readonly List<Space> Presence = new List<Space>();
-		public int PresenceOn(Space space) => Presence.Count(s=>s==space);
-		public virtual IEnumerable<Space> SacredSites => Presence
+		public virtual IEnumerable<Space> SacredSites => Presence.Placed
 			.GroupBy(x=>x)
 			.Where(grp=>grp.Count()>1)
 			.Select(grp=>grp.Key);
@@ -196,14 +196,12 @@ namespace SpiritIsland {
 		/// <summary> # of coins in the bank. </summary>
 		public int Energy { get; set; }
 
-		public PresenceTrack EnergyTrack {get; }
-
-		public PresenceTrack CardTrack { get; }
+		public MyPresence Presence {get; }
 
 		/// <summary> Energy gain per turn </summary>
-		public int EnergyPerTurn => EnergyTrack.Revealed.Where( x => x.Energy.HasValue ).Last().Energy.Value;
+		public int EnergyPerTurn => Presence.Energy.Revealed.Where( x => x.Energy.HasValue ).Last().Energy.Value;
 
-		public virtual int NumberOfCardsPlayablePerTurn => CardTrack.Revealed.Where(x=>x.CardPlay.HasValue).Last().CardPlay.Value;
+		public virtual int NumberOfCardsPlayablePerTurn => Presence.CardPlays.Revealed.Where(x=>x.CardPlay.HasValue).Last().CardPlay.Value;
 
 		public abstract string Text { get; }
 
@@ -254,6 +252,28 @@ namespace SpiritIsland {
 		public bool HasMore => RevealedCount < slots.Length;
 		public int RevealedCount { get; set; } = 1;
 		public int TotalCount => slots.Length;
+	}
+
+	public class MyPresence {
+
+		public MyPresence(PresenceTrack energy, PresenceTrack cardPlays){
+			Energy = energy;
+			CardPlays = cardPlays;
+		}
+
+		public void Place(Space space) => Placed.Add(space);
+		public void Place( IEnumerable<Space> spaces ) => Placed.AddRange( spaces );
+
+		public void Move(Space from, Space to ) {
+			Placed.Remove( from );
+			Placed.Add( to );
+		}
+
+		public PresenceTrack Energy { get; }
+		public PresenceTrack CardPlays { get; }
+
+		public readonly List<Space> Placed = new List<Space>();
+
 	}
 
 }

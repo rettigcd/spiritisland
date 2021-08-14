@@ -19,7 +19,7 @@ namespace SpiritIsland.Basegame {
 				++damage;
 
 			// If target land has your presence, 1 fear and 1 damage
-			bool GeneratesDamageAndFear(Space space) => self.Presence.Contains(space);
+			bool GeneratesDamageAndFear(Space space) => self.Presence.Placed.Contains(space);
 			if(GeneratesDamageAndFear(target)){
 				++damage;
 				gameState.AddFear(1);

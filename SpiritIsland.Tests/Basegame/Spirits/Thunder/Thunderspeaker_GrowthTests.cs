@@ -64,7 +64,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 		[InlineDataAttribute(6,3,"AFS")]
 		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 			// energy:	1 air 2 fire sun 3
-			spirit.EnergyTrack.RevealedCount = revealedSpaces;
+			spirit.Presence.Energy.RevealedCount = revealedSpaces;
 			Assert_PresenceTracksAre( expectedEnergyGrowth, 1 );
 			When_Growing(0); // finish growth to trigger elements
 			Assert_BonusElements( elements );
@@ -84,7 +84,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 
 			Given_HasPresence( board[3] );
 
-			spirit.CardTrack.RevealedCount = revealedSpaces;
+			spirit.Presence.CardPlays.RevealedCount = revealedSpaces;
 			Assert_PresenceTracksAre(1,expectedCardPlayCount);
 
 			When_Growing(2);

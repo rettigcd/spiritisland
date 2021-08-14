@@ -80,12 +80,13 @@ namespace SpiritIsland.Core {
 		public Task<Track> SelectTrack() {
 			var result = new TaskCompletionSource<Track>();
 
+			// !!! Move this bit inside MyPresence
 			var tracks = new List<Track>();
-			if(Self.EnergyTrack.HasMore)
-				tracks.Add( Self.EnergyTrack.Next );
+			if(Self.Presence.Energy.HasMore)
+				tracks.Add( Self.Presence.Energy.Next );
 
-			if(Self.CardTrack.HasMore)
-				tracks.Add( Self.CardTrack.Next );
+			if(Self.Presence.CardPlays.HasMore)
+				tracks.Add( Self.Presence.CardPlays.Next );
 
 			decisions.Push( new SelectAsync<Track>( 
 				"Select Presence to place.", 

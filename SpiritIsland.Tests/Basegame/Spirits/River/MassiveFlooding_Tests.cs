@@ -122,12 +122,12 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 		void Given_SpiritCardPlayCount( int target ) {
 			while(game.Spirit.NumberOfCardsPlayablePerTurn < target)
-				game.Spirit.CardTrack.RevealedCount++;
+				game.Spirit.Presence.CardPlays.RevealedCount++;
 		}
 
 		void Given_SpiritGetMoney( int target ) {
 			while(game.Spirit.EnergyPerTurn < target)
-				game.Spirit.EnergyTrack.RevealedCount++;
+				game.Spirit.Presence.Energy.RevealedCount++;
 		}
 
 

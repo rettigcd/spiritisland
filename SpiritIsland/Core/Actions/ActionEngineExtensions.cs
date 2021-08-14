@@ -148,7 +148,7 @@ namespace SpiritIsland.Core {
 		}
 
 		static public Task PlacePresence( this ActionEngine engine, int range, Filter filterEnum ) {
-			Space[] destinationOptions = engine.Self.Presence
+			Space[] destinationOptions = engine.Self.Presence.Placed
 				.SelectMany( s => s.SpacesWithin( range ) )
 				.Distinct()
 				.Where( TargetSpaceAttribute.ToLambda( engine, filterEnum ) )
@@ -166,18 +166,18 @@ namespace SpiritIsland.Core {
 			var to = await engine.SelectSpace( "Where would you like to place your presence?", destinationOptions );
 
 			// from
-			if(from == engine.Self.EnergyTrack.Next)
-				engine.Self.EnergyTrack.RevealedCount++;
-			else if(from == engine.Self.CardTrack.Next)
-				engine.Self.CardTrack.RevealedCount++;
+			if(from == engine.Self.Presence.Energy.Next)
+				engine.Self.Presence.Energy.RevealedCount++;
+			else if(from == engine.Self.Presence.CardPlays.Next)
+				engine.Self.Presence.CardPlays.RevealedCount++;
 			else
 				throw new ArgumentException( from.ToString() );
 
-			// !!!!   Moving To down here fixes pulls from _Card_track
-
-
 			// To
-			engine.Self.Presence.Add( to );
+			engine.Self.Presence.Place( to );
+
+			// pull this into Presence maybe!!!
+
 		}
 
 	}

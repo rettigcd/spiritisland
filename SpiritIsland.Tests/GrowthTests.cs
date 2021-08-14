@@ -49,7 +49,7 @@ namespace SpiritIsland.Tests {
 		}
 
 		protected void Given_HasPresence( params Space[] spaces ) {
-			spirit.Presence.AddRange( spaces );
+			spirit.Presence.Place( spaces );
 		}
 
 		protected void Given_HasPresence( string presenceString ) {
@@ -80,7 +80,7 @@ namespace SpiritIsland.Tests {
 		#region Asserts Presence
 
 		protected void Assert_BoardPresenceIs( string expected ) {
-			var actual = spirit.Presence.Select(s=>s.Label).OrderBy(l=>l).Join();
+			var actual = spirit.Presence.Placed.Select(s=>s.Label).OrderBy(l=>l).Join();
 			Assert.Equal(expected, actual); // , Is.EqualTo(expected),"Presence in wrong place");
 		}
 
@@ -112,7 +112,7 @@ namespace SpiritIsland.Tests {
 		#region Resolve_
 
 		protected void Resolve_PlacePresence( string placeOptions, string factory=null) {
-			Resolve_PlacePresence( placeOptions, spirit.EnergyTrack.Next, factory );
+			Resolve_PlacePresence( placeOptions, spirit.Presence.Energy.Next, factory );
 		}
 
 		protected void Resolve_PlacePresence(string placeOptions, Track source, string factoryDescription=null ) {
@@ -125,7 +125,7 @@ namespace SpiritIsland.Tests {
 			ppFactory.Activate( engine );
 			var ppAction = new BaseAction(engine);
 
-			if(engine.Self.CardTrack.HasMore && engine.Self.EnergyTrack.HasMore){ // there are 2 option available
+			if(engine.Self.Presence.CardPlays.HasMore && engine.Self.Presence.Energy.HasMore){ // there are 2 option available
 				ppAction.Options.Select(x=>x.Text).Join(",").ShouldContain(source.Text);
 				// take from precense track
 				ppAction.Select(source);
