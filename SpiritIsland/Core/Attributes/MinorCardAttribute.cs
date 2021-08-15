@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SpiritIsland.Core {
+namespace SpiritIsland {
 	[AttributeUsage(AttributeTargets.Class|AttributeTargets.Method)]
 	public class MinorCardAttribute : BaseCardAttribute {
 		public MinorCardAttribute(string name, int cost, Speed speed, params Element[] elements)

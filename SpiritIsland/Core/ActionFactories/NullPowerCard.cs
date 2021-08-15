@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace SpiritIsland.Core {
+namespace SpiritIsland {
 	public class NullPowerCard : PowerCard {
 		public NullPowerCard(string name, int cost, Speed speed, params Element[] elements){
 			this.Name = name;

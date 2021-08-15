@@ -1,4 +1,4 @@
-﻿namespace SpiritIsland.Core {
+﻿namespace SpiritIsland {
 	public enum Target {
 		Any,
 		Dahan,
@@ -10,6 +10,7 @@
 		JungleOrWetland,
 		MountainOrWetland,
 		SandOrWetland,
+		Blight,
 		NoBlight,
 		NoInvader,
 

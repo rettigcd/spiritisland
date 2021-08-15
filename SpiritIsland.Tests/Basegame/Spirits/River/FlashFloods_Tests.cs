@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using SpiritIsland.Basegame;
-using SpiritIsland.Core;
+using SpiritIsland;
 using Xunit;
 
 namespace SpiritIsland.Tests.Basegame.Spirits.River {

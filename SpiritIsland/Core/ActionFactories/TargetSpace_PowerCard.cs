@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace SpiritIsland.Core {
+namespace SpiritIsland {
 
 	/// <summary>
 	/// ActionFactory based on Method-implemented powers
@@ -36,7 +36,7 @@ namespace SpiritIsland.Core {
 		}
 
 		async Task PickSpaceAndActivate( ActionEngine engine ){
-			var target = await targetSpace.Target( engine );
+			var target = await targetSpace.GetTarget( engine );
 			if(target == null) return; // no space available that meets criteria.   !!! needs unit test showing if no-target-space simply does nothing, and doesn't crash
 			TargetedSpace?.Invoke(new SpaceTargetedArgs{Initiator=engine.Self,Card=this,Target=target } );
 			InvokeAgainst( engine, target );

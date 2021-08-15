@@ -1,4 +1,4 @@
-﻿using SpiritIsland.Core;
+﻿using SpiritIsland;
 
 namespace SpiritIsland.Basegame {
 	class CallOfTheDahanWays {

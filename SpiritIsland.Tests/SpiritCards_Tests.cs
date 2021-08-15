@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using SpiritIsland.Core;
+using SpiritIsland;
 using Xunit;
 
 namespace SpiritIsland.Tests {

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace SpiritIsland.Core {
+namespace SpiritIsland {
 
 	public class DrawPowerCard : GrowthActionFactory {
 

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using SpiritIsland.BranchAndClaw;
-using SpiritIsland.Core;
+using SpiritIsland;
 using Xunit;
 
 namespace SpiritIsland.Tests.BranchAndClaw.Spirits {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace SpiritIsland.Core {
+namespace SpiritIsland {
 
 	public abstract class InnatePower : IActionFactory {
 
@@ -92,7 +92,7 @@ namespace SpiritIsland.Core {
 		#endregion
 
 		public override async Task Activate( ActionEngine engine ) {
-			var target = await targetSpace.Target( engine );
+			var target = await targetSpace.GetTarget( engine );
 			HighestMethod( engine.Self ).Invoke( null, new object[] { engine, target } );
 		}
 

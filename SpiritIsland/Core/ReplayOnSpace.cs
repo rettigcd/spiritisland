@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace SpiritIsland.Core {
+namespace SpiritIsland {
 	class ReplayOnSpace : IActionFactory {
 		readonly TargetSpace_PowerCard original;
 		readonly Space target;

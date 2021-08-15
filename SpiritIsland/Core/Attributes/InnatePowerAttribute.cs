@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SpiritIsland.Core {
+namespace SpiritIsland {
 
 	[AttributeUsage(AttributeTargets.Class)]
 	public class InnatePowerAttribute : System.Attribute {

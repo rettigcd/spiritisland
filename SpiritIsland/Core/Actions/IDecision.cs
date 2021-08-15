@@ -1,4 +1,4 @@
-﻿namespace SpiritIsland.Core {
+﻿namespace SpiritIsland {
 	public interface IDecision {
 		public string Prompt { get; }
 		public IOption[] Options { get; }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Shouldly;
-using SpiritIsland.Core;
+using SpiritIsland;
 using Xunit;
 
 namespace SpiritIsland.Tests.Core {

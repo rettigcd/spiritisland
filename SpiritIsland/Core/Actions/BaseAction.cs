@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SpiritIsland.Core {
+namespace SpiritIsland {
 
 	sealed public class BaseAction : IAction {
 

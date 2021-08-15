@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace SpiritIsland.Core {
+namespace SpiritIsland {
 	public interface IFearCard {
 		Task Level1(GameState gs);
 		Task Level2( GameState gs );

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace SpiritIsland.Core {
+namespace SpiritIsland {
 	public interface IBlightCard {
 		void OnGameStart( GameState gs );
 		void OnBlightDepleated( GameState gs );

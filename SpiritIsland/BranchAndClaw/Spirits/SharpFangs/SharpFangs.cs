@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using SpiritIsland.Core;
+using SpiritIsland;
 
 namespace SpiritIsland.BranchAndClaw {
 

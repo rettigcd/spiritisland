@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using SpiritIsland.Core;
+using SpiritIsland;
 
 namespace SpiritIsland.Basegame {
 	class MantleOfDread {

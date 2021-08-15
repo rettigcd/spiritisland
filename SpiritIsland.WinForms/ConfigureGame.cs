@@ -1,5 +1,5 @@
 ﻿using SpiritIsland.Basegame;
-using SpiritIsland.Core;
+using SpiritIsland;
 using SpiritIsland.SinglePlayer;
 using System;
 using System.Linq;

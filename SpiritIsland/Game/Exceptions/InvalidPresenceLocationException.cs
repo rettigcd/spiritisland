@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using SpiritIsland.Core;
+using SpiritIsland;
 
 namespace SpiritIsland {
 	public class InvalidPresenceLocationException : Exception {

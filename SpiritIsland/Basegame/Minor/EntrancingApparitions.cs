@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using SpiritIsland.Core;
+using SpiritIsland;
 
 namespace SpiritIsland.Basegame {
 
@@ -17,7 +17,7 @@ namespace SpiritIsland.Basegame {
 			if(gs.HasInvaders(target)) return;
 
 			int remaining = 2;
-			Space[] CalcSpaceOptions() => target.Neighbors.Where(n=>gs.InvadersOn(n).HasExplorer).ToArray();
+			Space[] CalcSpaceOptions() => target.Adjacent.Where(n=>gs.InvadersOn(n).HasExplorer).ToArray();
 			Space[] spacesWithExplorers = CalcSpaceOptions();
 			while(remaining>0 && spacesWithExplorers.Length>0){
 				var source = await engine.SelectSpace("pull explorer from",spacesWithExplorers,true);

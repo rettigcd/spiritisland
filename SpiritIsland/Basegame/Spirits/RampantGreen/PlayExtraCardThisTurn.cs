@@ -1,5 +1,5 @@
 ﻿
-using SpiritIsland.Core;
+using SpiritIsland;
 using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {

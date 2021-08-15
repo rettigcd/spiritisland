@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SpiritIsland.Core;
+using SpiritIsland;
 
-namespace SpiritIsland.Core {
+namespace SpiritIsland {
 
 	// Plug into the DrawPowerCard API on the spirit
 	class PowerProgression {

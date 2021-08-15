@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SpiritIsland.Core {
+namespace SpiritIsland {
 
 	[AttributeUsage(AttributeTargets.Class|AttributeTargets.Method)]
 	public class InnateOptionAttribute : Attribute {

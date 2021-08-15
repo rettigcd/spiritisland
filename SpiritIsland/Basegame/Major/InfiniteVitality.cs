@@ -1,12 +1,12 @@
 ﻿using System.Threading.Tasks;
-using SpiritIsland.Core;
+using SpiritIsland;
 
 namespace SpiritIsland.Basegame {
 	public class InfiniteVitality {
 
 		[MajorCard( "Infinite Vitality", 3, Speed.Fast, Element.Earth, Element.Plant, Element.Animal )]
 		[FromSacredSite( 1 )]
-		static public Task ActAsync( ActionEngine eng, Space target ) {
+		static public Task ActAsync( ActionEngine _, Space _1 ) {
 			// dahan have +4 health while in target land.
 			// whenever blight would be added to target land, instead leave it on the card
 

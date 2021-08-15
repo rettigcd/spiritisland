@@ -1,4 +1,4 @@
-﻿using SpiritIsland.Core;
+﻿using SpiritIsland;
 using System;
 using System.Collections.Generic;
 using System.Data;

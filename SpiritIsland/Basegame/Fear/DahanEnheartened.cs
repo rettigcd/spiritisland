@@ -1,4 +1,4 @@
-﻿using SpiritIsland.Core;
+﻿using SpiritIsland;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,7 +13,7 @@ namespace SpiritIsland.Basegame {
 				var engine = new ActionEngine(spirit,gs);
 				var target = await engine.SelectSpace("Select Space to Gather or push 1 dahan",gs.Island.AllSpaces.Where(x=>x.IsLand).ToArray());
 				bool canPush = gs.HasDahan(target);
-				bool canGather = target.Neighbors.Any(gs.HasDahan);
+				bool canGather = target.Adjacent.Any(gs.HasDahan);
 				if(canPush && canGather) {
 					if(await engine.SelectText("Push or Gather?","push","gather")=="push")
 						canPush=false;

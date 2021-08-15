@@ -1,4 +1,4 @@
-﻿//namespace SpiritIsland.Core {
+﻿//namespace SpiritIsland {
 
 //	class AddPresence {
 //		public AddPresence(Space to){this.to = to;}

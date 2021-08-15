@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SpiritIsland.Core;
+using SpiritIsland;
 
 namespace SpiritIsland.Basegame {
 
@@ -11,7 +11,7 @@ namespace SpiritIsland.Basegame {
 		public override async Task Activate( ActionEngine engine ) {
 			List<Space> gatherSpaces = engine.Self.Presence.Spaces
 				.Where( p => p.IsCostal )
-				.Select( p => p.Neighbors.Single( o => o.IsOcean ) )
+				.Select( p => p.Adjacent.Single( o => o.IsOcean ) )
 				.Distinct()
 				.ToList();
 
@@ -20,7 +20,7 @@ namespace SpiritIsland.Basegame {
 				Space currentTarget = gatherSpaces[0];
 				Space source = await engine.SelectSpace(
 					$"Select source of Presence to Gather into {currentTarget}"
-					, currentTarget.Neighbors
+					, currentTarget.Adjacent
 						.Where( engine.Self.Presence.Spaces.Contains )
 						.ToArray()
 				);

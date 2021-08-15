@@ -1,4 +1,4 @@
-﻿using SpiritIsland.Core;
+﻿using SpiritIsland;
 using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
@@ -14,9 +14,7 @@ namespace SpiritIsland.Basegame {
 			grp.DestroyType(Invader.Town,int.MaxValue);
 
 			// 1 damage to each town/city - (!! duplicate in Quick the Earths Struggles)
-			foreach(var invader in new Invader[] { Invader.Town1, Invader.Town, Invader.City1, Invader.City2, Invader.City })
-				while(grp[invader] > 0) 
-					grp.ApplyDamageTo1(invader,1);
+			grp.ApplyDamageToEach(1,Invader.Town,Invader.City);
 
 			// add 1 blight
 			engine.GameState.AddBlight(target,1);

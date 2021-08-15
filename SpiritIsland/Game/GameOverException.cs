@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SpiritIsland.Core {
+namespace SpiritIsland {
 	public class GameOverException : Exception {
 		static public void Win() => throw new GameOverException(WinLoseStatus.Won);
 		static public void Lose() => throw new GameOverException( WinLoseStatus.Lost );

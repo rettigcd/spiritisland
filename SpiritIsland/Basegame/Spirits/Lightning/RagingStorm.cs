@@ -1,6 +1,7 @@
 ﻿
+using System.Linq;
 using System.Threading.Tasks;
-using SpiritIsland.Core;
+using SpiritIsland;
 
 namespace SpiritIsland.Basegame {
 	
@@ -11,15 +12,10 @@ namespace SpiritIsland.Basegame {
 		[FromPresence(1)]
 		static public Task Act(ActionEngine engine,Space target){
 			var (_,gameState) = engine;
-			var orig = gameState.InvadersOn(target);
 
 			// 1 damange to each invader.
-			var changing = gameState.InvadersOn(target);
-			foreach(var invader in orig.InvaderTypesPresent){
-				int count = orig[invader];
-				while(count-->0)
-					changing.ApplyDamageTo1(invader,1);
-			}
+			var grp = gameState.InvadersOn(target);
+			grp.ApplyDamageToEach(1, grp.HealthyInvaderTypesPresent.ToArray() );
 			return Task.CompletedTask;
 		}
 

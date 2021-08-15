@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SpiritIsland.Core {
+namespace SpiritIsland {
 
 	/// <summary>
 	/// Replaces the DrawCard Growth Action when receiving a Major Power Progression Card.

@@ -1,5 +1,5 @@
 ﻿
-namespace SpiritIsland.Core {
+namespace SpiritIsland {
 	class ResolvedAction : IAction {
 
 		void IAction.Select( IOption option ) {

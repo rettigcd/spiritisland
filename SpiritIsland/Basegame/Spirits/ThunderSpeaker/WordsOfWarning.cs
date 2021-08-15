@@ -1,4 +1,4 @@
-﻿using SpiritIsland.Core;
+﻿using SpiritIsland;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -50,9 +50,9 @@ namespace SpiritIsland.Basegame {
 
 				while(deadDahanDamage > 0 && grp.InvaderTypesPresent.Any()) {
 					// pick best invader knowing total damage
-					Invader invaderToDamage = grp.PickInvaderToDamage( expectedLivingDahanDamage + deadDahanDamage );
+					Invader invaderToDamage = grp.PickSmartInvaderToDamage( expectedLivingDahanDamage + deadDahanDamage );
 					// apply our dead-dahan-damage to that invader
-					deadDahanDamage -= grp.ApplyDamageTo1( invaderToDamage, deadDahanDamage );
+					deadDahanDamage -= grp.ApplyDamageTo1( deadDahanDamage, invaderToDamage );
 				}
 				// any left over damage will be finished off by the living dahan
 			}

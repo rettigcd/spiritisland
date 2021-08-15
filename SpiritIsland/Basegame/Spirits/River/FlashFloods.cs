@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using SpiritIsland.Core;
+using SpiritIsland;
 
 namespace SpiritIsland.Basegame {
 
@@ -10,19 +10,13 @@ namespace SpiritIsland.Basegame {
 		public const string Name = "Flash Floods";
 		[SpiritCard(FlashFloods.Name,2,Speed.Fast,Element.Sun,Element.Water)]
 		[FromPresence(1,Target.Invaders)]
-		static public async Task ActionAsync(ActionEngine engine,Space target){
-			var (_,gameState) = engine;	
+		static public async Task ActionAsync(ActionEngine engine,Space target) {
+			var (_, gameState) = engine;
 
 			// +1 damage, if costal +1 additional damage
 			int damage = target.IsCostal ? 2 : 1;
 
-			var group = gameState.InvadersOn(target);
-			while(damage>0){
-				var invader = await engine.SelectInvader("Select invader to damage.",group.InvaderTypesPresent.ToArray());
-				if(invader == null) break;
-
-				damage -= group.ApplyDamageTo1(invader,damage);
-			}
+			await engine.UserSelectDamage( damage, gameState.InvadersOn( target ) );
 		}
 
 	}

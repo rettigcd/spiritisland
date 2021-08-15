@@ -1,5 +1,5 @@
 ﻿using SpiritIsland.Basegame;
-using SpiritIsland.Core;
+using SpiritIsland;
 using System.Linq;
 using Xunit;
 
@@ -59,7 +59,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Given_AddDahan( startingCount, target );
 
 			//   And: neighbors have some dahan
-			Space neighbor = target.Neighbors.First();
+			Space neighbor = target.Adjacent.First();
 			Given_AddDahan( dahanToGather, neighbor );
 
 			When_PlayingCard();
@@ -86,7 +86,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			//   And: neighbors have 1 dahan each 
 			const int dahanToGather = 2;
-			var neighbors = target.Neighbors.ToArray();
+			var neighbors = target.Adjacent.ToArray();
 			for(int i=0;i<dahanToGather;++i)
 				Given_AddDahan( 1, neighbors[i] );
 

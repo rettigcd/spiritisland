@@ -1,4 +1,4 @@
-﻿using SpiritIsland.Core;
+﻿using SpiritIsland;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +11,7 @@ namespace SpiritIsland.Basegame {
 		[FearLevel( 1, "Each player may Push 1 Explorer into a land with more Town / City than the land it came from." )]
 		public async Task Level1( GameState gs ) {
 			var buildingCounts = gs.Island.AllSpaces.ToDictionary(s=>s,s=>gs.InvadersOn(s).TypeCount(Invader.City,Invader.Town));
-			Space[] GetNeighborWithMoreBuildings( Space s ) => s.Neighbors.Where( n => buildingCounts[n] > buildingCounts[s] ).ToArray();
+			Space[] GetNeighborWithMoreBuildings( Space s ) => s.Adjacent.Where( n => buildingCounts[n] > buildingCounts[s] ).ToArray();
 			bool HasNeighborWithMoreBuildings(Space s) => GetNeighborWithMoreBuildings(s).Any();
 			foreach(var spirit in gs.Spirits) {
 				var engine = new ActionEngine(spirit,gs);
@@ -41,7 +41,7 @@ namespace SpiritIsland.Basegame {
 				if(grp.HasCity) invadersToGather.Add( Invader.Town );
 				if(grp.HasTown) invadersToGather.Add( Invader.Explorer );
 				var x = invadersToGather.ToArray();
-				var sourceOptions = dest.Neighbors.Where(s=>gs.InvadersOn(s).Has(x)).ToArray();
+				var sourceOptions = dest.Adjacent.Where(s=>gs.InvadersOn(s).Has(x)).ToArray();
 				if(sourceOptions.Length==0) continue;
 				var source = await engine.SelectSpace("Select source of invaders to gather",sourceOptions);
 				var invaderOptions = gs.InvadersOn(source).InvaderTypesPresent.Intersect(x).ToArray();

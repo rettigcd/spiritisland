@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using SpiritIsland.Core;
+using SpiritIsland;
 
-namespace SpiritIsland.Core {
+namespace SpiritIsland {
 
 	public class SelectAsync<T> : IDecision where T:class,IOption {
 

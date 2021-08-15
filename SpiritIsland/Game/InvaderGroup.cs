@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using SpiritIsland.Core;
+using SpiritIsland;
 
 namespace SpiritIsland {
 
@@ -35,8 +35,15 @@ namespace SpiritIsland {
 
 		#endregion
 
+		public void ApplyDamageToEach( int individualDamage, params Invader[] healthyInvaders ) {
+			foreach(var healthy in healthyInvaders)
+				foreach(var part in healthy.AliveVariations)
+					while(this[part] > 0)
+						ApplyDamageTo1( individualDamage, part );
+		}
+
 		/// <returns>damage inflicted to invaders</returns>
-		public int ApplyDamageTo1( Invader invader, int availableDamage ) {
+		public int ApplyDamageTo1( int availableDamage, Invader invader ) {
 			int damageToInvader = Math.Min( invader.Health, availableDamage );
 
 			var damagedInvader = invader.Damage( damageToInvader );
@@ -52,7 +59,6 @@ namespace SpiritIsland {
 			return damageToInvader;
 		}
 
-
 		public int DestroyType( Invader healthy, int max ) => (max == 0) ? 0 : DestroyInner( healthy, max );
 
 		int DestroyInner( Invader healthy, int countToDestory ) {
@@ -64,7 +70,7 @@ namespace SpiritIsland {
 			int totalDestoyed = 0;
 			foreach(var invaderType in invaderTypesToDestory) {
 				while(countToDestory>0 && counts[idx[invaderType]] > 0) {
-					ApplyDamageTo1( invaderType, invaderType.Health );
+					ApplyDamageTo1( invaderType.Health, invaderType );
 					++totalDestoyed;
 					--countToDestory;
 				}
@@ -75,11 +81,6 @@ namespace SpiritIsland {
 		#region public Read-Only
 
 		public int this[Invader i] => counts[idx[i]];
-
-		public Invader[] FilterBy( params Invader[] healthyTypes ) => healthyTypes
-			.SelectMany(x=>x.AliveVariations)
-			.Intersect( InvaderTypesPresent )
-			.ToArray();
 
 		public Space Space { get; }
 
@@ -93,6 +94,8 @@ namespace SpiritIsland {
 
 		/// <summary> Includes damaged invaders.</summary>
 		public IEnumerable<Invader> InvaderTypesPresent => idx.Keys.Where(invader=>invader.Health>0 && counts[idx[invader]]>0);
+		public IEnumerable<Invader> HealthyInvaderTypesPresent => InvaderTypesPresent.Select(x=>x.Healthy).Distinct(); // not full healthy, but the full healthy equivalent of healty and damaged
+		public Invader[] FilterBy( params Invader[] healthyTypes ) => healthyTypes.SelectMany( x => x.AliveVariations ).Intersect( InvaderTypesPresent ).ToArray();
 
 		public int TotalCount => counts.Sum();
 

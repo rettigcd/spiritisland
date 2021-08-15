@@ -1,5 +1,5 @@
 ﻿using SpiritIsland.Basegame;
-using SpiritIsland.Core;
+using SpiritIsland;
 using System.Linq;
 using Xunit;
 
@@ -49,7 +49,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Then_SelectInvaderToPush(invader,invader.Summary,"Done");
 
 			//  Then: card has options of where to push 1 explorer
-			Assert_Options(	targetSpace.Neighbors );
+			Assert_Options(	targetSpace.Adjacent );
 
 			var invaderDestination = board[2];
 			action.Select( invaderDestination.Label );
@@ -82,7 +82,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Then_SelectInvaderToPush( Invader.Explorer, "E@1", "Done" );
 			
 			//  Then: card has options of where to push 1 explorer
-			Assert_Options( targetSpace.Neighbors.Where(x=>x.IsLand) );
+			Assert_Options( targetSpace.Adjacent.Where(x=>x.IsLand) );
 
 		}
 

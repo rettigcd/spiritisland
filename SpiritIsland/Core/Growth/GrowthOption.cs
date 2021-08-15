@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace SpiritIsland.Core {
+namespace SpiritIsland {
 
 	public class GrowthOption : IOption {
 

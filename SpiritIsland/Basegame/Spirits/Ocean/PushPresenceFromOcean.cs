@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SpiritIsland.Core;
+using SpiritIsland;
 
 namespace SpiritIsland.Basegame {
 
@@ -17,7 +17,7 @@ namespace SpiritIsland.Basegame {
 				var currentSource = pushSpaces[0];
 				var destination = await engine.SelectSpace(
 					$"Select target of Presence to Push from {currentSource}",
-					currentSource.Neighbors
+					currentSource.Adjacent
 				);
 
 				// apply...

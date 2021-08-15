@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using SpiritIsland.Basegame.Spirits.VitalStrength;
-using SpiritIsland.Core;
+using SpiritIsland;
 
 namespace SpiritIsland.Basegame {
 

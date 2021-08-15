@@ -1,6 +1,6 @@
 ﻿using Shouldly;
 using SpiritIsland.Basegame;
-using SpiritIsland.Core;
+using SpiritIsland;
 using System.Linq;
 
 namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {

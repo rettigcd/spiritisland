@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SpiritIsland.Core {
+namespace SpiritIsland {
 
 	// Base Attribute type for Major / Minor / Spirit cards 
 	[AttributeUsage(AttributeTargets.Method)]

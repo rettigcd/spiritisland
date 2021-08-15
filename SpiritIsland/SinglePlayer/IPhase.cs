@@ -1,5 +1,5 @@
 ﻿using System;
-using SpiritIsland.Core;
+using SpiritIsland;
 
 namespace SpiritIsland.SinglePlayer {
 

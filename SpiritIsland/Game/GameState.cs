@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SpiritIsland.Core;
+using SpiritIsland;
 
 namespace SpiritIsland {
 
@@ -344,7 +344,7 @@ namespace SpiritIsland {
 
 				// damage: Invaders
 				if(dahan>0)
-					await ravageGroup.ApplyDamageToGroup( dahan * 2, log );
+					await ravageGroup.SmartDamageToGroup( dahan * 2, log );
 
 				// flush invader damage - post dahan
 			}
@@ -356,7 +356,7 @@ namespace SpiritIsland {
 
 		public void DamageInvaders(Space space,int damage){ // !!! let players choose the item to apply damage to
 			if(damage==0) return;
-			InvadersOn(space).ApplyDamageToGroup( damage );
+			InvadersOn(space).SmartDamageToGroup( damage );
 		}
 
 		#endregion

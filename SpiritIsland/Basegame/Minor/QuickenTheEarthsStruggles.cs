@@ -1,4 +1,4 @@
-﻿using SpiritIsland.Core;
+﻿using SpiritIsland;
 using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
@@ -9,10 +9,7 @@ namespace SpiritIsland.Basegame {
 		static public async Task ActAsync( ActionEngine eng, Space target ) {
 			if(await eng.SelectTextIndex("Select power option", "1 damage to each town/city","defend 10") == 0) {
 				// 1 damage to each town/city
-				var grp = eng.GameState.InvadersOn(target);
-				foreach(var invader in new Invader[] { Invader.Town1, Invader.Town, Invader.City1, Invader.City2, Invader.City })
-					while(grp[invader] > 0)
-						grp.ApplyDamageTo1( invader, 1 );
+				eng.GameState.InvadersOn(target).ApplyDamageToEach(1,Invader.City,Invader.Town);
 			} else {
 				// defend 10
 				eng.GameState.Defend(target,10);

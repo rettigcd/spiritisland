@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SpiritIsland.Core;
+using SpiritIsland;
 
-namespace SpiritIsland.Core {
+namespace SpiritIsland {
 
 	public static class SpecificEngineExtensions{
 
@@ -43,7 +43,7 @@ namespace SpiritIsland.Core {
 
 		static public async Task GatherUpToNDahan( this ActionEngine eng, Space target, int dahanToGather ) {
   			int gathered = 0;
-			var neighborsWithDahan = target.Neighbors.Where(eng.GameState.HasDahan).ToArray();
+			var neighborsWithDahan = target.Adjacent.Where(eng.GameState.HasDahan).ToArray();
 			while(gathered<dahanToGather && neighborsWithDahan.Length>0){
 				var source = await eng.SelectSpace( $"Gather dahan {gathered+1} of {dahanToGather} from:", neighborsWithDahan, true);
 				if(source == null) break;
@@ -51,14 +51,14 @@ namespace SpiritIsland.Core {
 				await eng.GameState.MoveDahan(source,target);
 
 				++gathered;
-				neighborsWithDahan = target.Neighbors.Where(eng.GameState.HasDahan).ToArray();
+				neighborsWithDahan = target.Adjacent.Where(eng.GameState.HasDahan).ToArray();
 			}
 
 		}
 
 		static public async Task GatherUpToNInvaders( this ActionEngine eng, Space target, int countToGather, params Invader[] ofType ) {
 			Invader[] spaceInvaders(Space space) => eng.GameState.InvadersOn(space).FilterBy(ofType);
-			Space[] CalcSource() => target.Neighbors
+			Space[] CalcSource() => target.Adjacent
 				.Where(s=>spaceInvaders(s).Any())
 				.ToArray();
 
@@ -85,7 +85,7 @@ namespace SpiritIsland.Core {
 			dahanToPush = System.Math.Min(dahanToPush,eng.GameState.GetDahanOnSpace(source));
 			while(0<dahanToPush){
 				Space destination = await eng.SelectSpace("Select destination for dahan"
-					,source.Neighbors.Where(n=>n.IsLand)
+					,source.Adjacent.Where(n=>n.IsLand)
 					,true
 				);
 				if(destination == null) break;
@@ -113,69 +113,9 @@ namespace SpiritIsland.Core {
 
 		static public async Task PushInvader( this ActionEngine eng, Space source, Invader invader){
 			var destination = await eng.SelectSpace("Push "+invader.Summary+" to"
-				,source.Neighbors.Where(x=>x.IsLand)
+				,source.Adjacent.Where(x=>x.IsLand)
 			);
 			eng.GameState.Move(invader,source,destination);
-		}
-
-		// !!! Swap this out with user choosing.  Which user chooses when dahan are doing damage????
-		static public Task ApplyDamageToGroup( this InvaderGroup grp, int startingDamage, List<string> log = null ) {
-			int damageToInvaders = startingDamage;
-
-			// While damage remains    &&    we have invaders
-			while(damageToInvaders > 0 && grp.InvaderTypesPresent.Any()) {
-				Invader invaderToDamage = PickInvaderToDamage( grp, damageToInvaders );
-				damageToInvaders -= grp.ApplyDamageTo1( invaderToDamage, damageToInvaders );
-			}
-			if(log != null) log.Add( $"{startingDamage} damage to invaders leaving {grp}." );
-
-			return Task.CompletedTask;
-		}
-
-		static public Task ApplyDamageToTypes( this InvaderGroup grp, int startingDamage, params Invader[] healthyInvaders ) {
-			int damageToInvaders = startingDamage;
-
-			var allTargetTypes = healthyInvaders.SelectMany(x=>x.AliveVariations).ToArray();
-
-			var picker = new SmartInvaderKiller();
-			picker.LimitTo(allTargetTypes);
-
-			// While damage remains    &&    we have invaders
-			IEnumerable<Invader> Targets() => grp.InvaderTypesPresent.Intersect(allTargetTypes);
-
-			while(damageToInvaders > 0 && Targets().Any()) {
-				Invader invaderToDamage = picker.PickOne(grp, damageToInvaders );
-				damageToInvaders -= grp.ApplyDamageTo1( invaderToDamage, damageToInvaders );
-			}
-
-			return Task.CompletedTask;
-		}
-
-
-
-		class SmartInvaderKiller {
-			public Invader[] KillOrder = "C@1 C@2 C@3 T@1 T@2 E@1".Split( ' ' ).Select( k => Invader.Lookup[k] ).ToArray();
-			public Invader[] LeftOverOrder = "C@2 T@2 C@3".Split( ' ' ).Select( k => Invader.Lookup[k] ).ToArray();
-
-			public void LimitTo(Invader[] types ) {
-				KillOrder = KillOrder.Where(x=>types.Contains(x)).ToArray();
-				LeftOverOrder = LeftOverOrder.Where( x => types.Contains( x ) ).ToArray();
-			}
-
-			public Invader PickOne(InvaderGroup grp, int availableDamage) {
-				return KillOrder
-				.FirstOrDefault( invader =>
-					invader.Health <= availableDamage // prefer things we can kill
-					&& grp[invader] > 0
-				)
-				?? LeftOverOrder.First( invader => grp[invader] > 0 ); // left-over damage
-			}
-
-		}
-
-		static readonly SmartInvaderKiller InvaderPicker = new SmartInvaderKiller();
-		public static Invader PickInvaderToDamage( this InvaderGroup grp, int availableDamage ) {
-			return InvaderPicker.PickOne(grp,availableDamage);
 		}
 
 		static public Task PlacePresence( this ActionEngine engine, int range, Target filterEnum ) {

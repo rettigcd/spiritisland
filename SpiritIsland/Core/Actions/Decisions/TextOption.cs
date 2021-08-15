@@ -1,4 +1,4 @@
-﻿namespace SpiritIsland.Core {
+﻿namespace SpiritIsland {
 
 	public class TextOption : IOption {
 

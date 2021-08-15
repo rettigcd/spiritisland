@@ -4,10 +4,8 @@
 // === Basegame Road Map ===
 UI		Display Spirit Name / Image
 UI		Display $$
-BASE	Minor Cards (Easy) / Identify (hard)
 BASE	Major Cards (Easy) / Identify (hard)
 CORE	Implement Major/Minor Deck with shuffling
-CORE	Make Power-Progression Plugable / Default Back to regular Draw Card
 BASE	Bringer
 BASE	Ocean
 CORE	Split Growth Option into parts
@@ -20,13 +18,16 @@ UI	Fix Fear card experience - logging or showing cards
 UI	Enhance Ravage / Build images
 BASE	Review Major / Minor, decide which need Unit Tests and Implement
 BASE	Implement Hard major/minor cards
+BASE	Allow Task.CompleteTask to return void instead.
 BONUS	Generate Innate images from innate metadata
 == Done ==
 
 Power Card Troubles
-	+4 dahan health
+	Invinite Vitality - (+4 dahan health) - don't add blight, solution: swap out Blight action,
 	Increase Range // custom attribute on card that overrides normal
 	Sap the Strength of Multitudes - range changes
+	EntwinedPower  (Does a bunch of stuff with placing presence and sharing power cards) -- instead of passing SS and Presence, pass in enum tellit it which to use (then it can override that behavior)
+	Vengence of the Dead - need a hook for when dahan/city/towns destroyed, 
 
 Fix
 	Words of Warning
