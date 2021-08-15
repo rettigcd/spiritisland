@@ -1,5 +1,9 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
+== Jonah ideas ===
+Display destroyed presence
+make SS dispay differently
+
 
 // === Basegame Road Map ===
 UI		Display Spirit Name / Image

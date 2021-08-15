@@ -18,7 +18,7 @@ namespace SpiritIsland.Basegame {
 			// You and target spirit may use each other's presence to target powers.
 
 			// Target spirit gains a power Card.
-			await target.DrawPowerCard(engine,"");
+			await target.CardDrawer.Draw( engine );
 
 			// You gain one of the power Cards they did not keep.
 

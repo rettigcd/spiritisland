@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 		[TargetSpirit]
 		static public Task ActAsync( ActionEngine engine, Spirit target ) {
 			// gain a minor power card
-			return target.DrawPowerCard(engine,"minor"); 
+			return target.CardDrawer.DrawMinor(engine); 
 		}
 
 	}

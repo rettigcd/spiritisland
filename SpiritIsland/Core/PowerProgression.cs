@@ -2,26 +2,29 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SpiritIsland;
 
 namespace SpiritIsland {
 
 	// Plug into the DrawPowerCard API on the spirit
-	class PowerProgression {
+	public class PowerProgression : IPowerCardDrawer {
 		readonly List<PowerCard> cards;
 		public PowerProgression( params PowerCard[] cards ) {
 			this.cards = cards.ToList();
 		}
-		public Task DrawCard( ActionEngine eng, string typeString) {
-			var (spirit, _) = eng;
 
-			// typeString should be "major", "minor", or "" if don't care
-			var newCard = typeString switch{
-				"major" => cards.First(c=>c.PowerType==PowerType.Major),
-				"minor" => cards.First(c=>c.PowerType==PowerType.Minor),
-				"" => cards[0],
-				_ => throw new ArgumentException(typeString+" is not valid. should be major, minor or empty string")
-			};
+		public Task Draw( ActionEngine engine ) {
+			return Take( engine.Self, cards.First() );
+		}
+
+		public Task DrawMajor( ActionEngine engine ) {
+			return Take( engine.Self, cards.First( c => c.PowerType == PowerType.Major ) );
+		}
+
+		public Task DrawMinor( ActionEngine engine ) {
+			return Take( engine.Self, cards.First( c => c.PowerType == PowerType.Minor ) );
+		}
+
+		Task Take( Spirit spirit, PowerCard newCard ) {
 			cards.Remove( newCard );
 
 			spirit.RegisterNewCard( newCard );

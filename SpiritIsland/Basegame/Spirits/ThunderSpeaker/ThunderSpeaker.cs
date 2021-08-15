@@ -72,7 +72,10 @@ namespace SpiritIsland.Basegame {
 				InnatePower.For<LeadTheFuriousAssult_Fast>(),
 			};
 
-			DrawPowerCard = new PowerProgression(
+		}
+
+		protected override PowerProgression GetPowerProgression() =>
+			new PowerProgression(
 				PowerCard.For<VeilTheNightsHunt>(),
 				PowerCard.For<ReachingGrasp>(),
 				//PowerCard.For<WrapInWingsOfSunlight>(),      // Major
@@ -88,13 +91,10 @@ namespace SpiritIsland.Basegame {
 				PowerCard.For<EntrancingApparitions>(),
 				PowerCard.For<CallToIsolation>()
 
-				//PowerCard.For<TalonsOfLightning>(),			 // Major
-				//PowerCard.For<VigorOfTheBreakingDawn>(),	 // major
-				//PowerCard.For<TheTreesAndStonesSpeakOfWar>(),// Major
-			).DrawCard;
-
-
-		}
+			//PowerCard.For<TalonsOfLightning>(),			 // Major
+			//PowerCard.For<VigorOfTheBreakingDawn>(),	 // major
+			//PowerCard.For<TheTreesAndStonesSpeakOfWar>(),// Major
+			);
 
 		public override void Initialize( Board board, GameState gs ) {
 			base.Initialize(board, gs);

@@ -6,7 +6,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 
 	public class RampantGreen_GrowthTests : GrowthTests {
 
-		public RampantGreen_GrowthTests():base( new ASpreadOfRampantGreen() ){}
+		public RampantGreen_GrowthTests():base( new ASpreadOfRampantGreen().UsePowerProgression() ){}
 
 		// +1 presense to jungle or wetland - range 2(Always do this + one of the following)
 		// reclaim, +1 power card

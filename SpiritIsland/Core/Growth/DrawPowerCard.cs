@@ -11,7 +11,7 @@ namespace SpiritIsland {
 
 		public override async Task Activate( ActionEngine engine ) {
 			for(int i=0;i<count;++i)
-				await engine.Self.DrawPowerCard(engine,"");
+				await engine.Self.CardDrawer.Draw(engine);
 		}
 
 	}

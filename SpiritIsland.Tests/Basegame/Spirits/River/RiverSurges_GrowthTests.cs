@@ -8,7 +8,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 	public class RiverSurges_GrowthTests : GrowthTests{
 
-		public RiverSurges_GrowthTests():base( new RiverSurges() ){}
+		public RiverSurges_GrowthTests():base( new RiverSurges().UsePowerProgression() ){}
 
 		#region growth
 

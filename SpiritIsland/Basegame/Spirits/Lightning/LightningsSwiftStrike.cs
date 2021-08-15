@@ -54,7 +54,10 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 				InnatePower.For<ThunderingDestruction>()
 			};
 
-			DrawPowerCard = new PowerProgression(
+		}
+
+		protected override PowerProgression GetPowerProgression() =>
+			new PowerProgression(
 				PowerCard.For<DelusionsOfDanger>(),
 				PowerCard.For<CallToBloodshed>(),
 				PowerCard.For<PowerStorm>(),
@@ -62,10 +65,8 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 				PowerCard.For<PillarOfLivingFlame>(),
 				PowerCard.For<EntrancingApparitions>(),
 				PowerCard.For<CallToIsolation>()
-			).DrawCard;
+			);
 
-
-		}
 
 		public override string Text => Name;
 

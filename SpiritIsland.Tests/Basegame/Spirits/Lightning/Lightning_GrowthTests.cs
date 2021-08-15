@@ -6,7 +6,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Lightning {
 	public class Lightning_GrowthTests : GrowthTests{
 
 		public Lightning_GrowthTests()
-			:base(new LightningsSwiftStrike()){}
+			:base(new LightningsSwiftStrike().UsePowerProgression()){}
 
 		[Fact]
 		public void Reclaim_Power_Energy(){

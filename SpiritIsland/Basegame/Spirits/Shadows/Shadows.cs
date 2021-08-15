@@ -64,7 +64,11 @@ Shadows Flicker like Flame:
 			};
 			this.PowerCardApi = new ShadowApi();
 
-			DrawPowerCard = new PowerProgression(
+
+		}
+
+		protected override PowerProgression GetPowerProgression() =>
+			new PowerProgression(
 				PowerCard.For<DarkAndTangledWoods>(),
 				PowerCard.For<ShadowsOfTheBurningForest>(),
 				PowerCard.For<TheJungleHungers>(), // Major
@@ -72,9 +76,8 @@ Shadows Flicker like Flame:
 				PowerCard.For<TerrifyingNightmares>(),// Major
 				PowerCard.For<CallOfTheDahanWays>(),
 				PowerCard.For<VisionsOfFieryDoom>()
-			).DrawCard;
+			);
 
-		}
 
 		class ShadowApi : PowerCardApi {
 

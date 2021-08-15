@@ -75,7 +75,10 @@ namespace SpiritIsland.Basegame {
 				InnatePower.For<MassiveFlooding>()
 			};
 
-			DrawPowerCard = new PowerProgression(
+		}
+
+		protected override PowerProgression GetPowerProgression() => 
+			new PowerProgression(
 				PowerCard.For<UncannyMelting>(),
 				PowerCard.For<NaturesResilience>(),
 				PowerCard.For<PullBeneathTheHungryEarth>(),
@@ -83,11 +86,9 @@ namespace SpiritIsland.Basegame {
 				PowerCard.For<SongOfSanctity>(),
 				PowerCard.For<Tsunami>(),
 				PowerCard.For<EncompassingWard>()
-			).DrawCard;
+			);
 
-	}
-
-	public override IEnumerable<Space> SacredSites {get{
+		public override IEnumerable<Space> SacredSites {get{
 			return Presence.Spaces
 				.Where(s=>s.Terrain==Terrain.Wetland)
 				.Union( base.SacredSites )

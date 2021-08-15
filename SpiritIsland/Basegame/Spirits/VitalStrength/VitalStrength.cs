@@ -61,7 +61,10 @@ Power Progression:
 			this.giftOfStrength = new GiftOfStrength_InnatePower();
 			this.InnatePowers = new InnatePower[]{ giftOfStrength };
 
-			DrawPowerCard = new PowerProgression(
+		}
+
+		protected override PowerProgression GetPowerProgression() =>
+			new PowerProgression(
 				PowerCard.For<RouseTheTreesAndStones>(),
 				PowerCard.For<CallToMigrate>(),
 				PowerCard.For<PoisonedLand>(), // Major
@@ -69,9 +72,8 @@ Power Progression:
 				PowerCard.For<VigorOfTheBreakingDawn>(),// Major
 				PowerCard.For<VoraciousGrowth>(),
 				PowerCard.For<SavageMawbeasts>()
-			).DrawCard;
+			);
 
-		}
 
 		readonly GiftOfStrength_InnatePower giftOfStrength;
 

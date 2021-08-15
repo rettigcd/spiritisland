@@ -6,7 +6,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 
 	public class VitalStrength_GrowthTests : GrowthTests {
 
-		public VitalStrength_GrowthTests():base( new VitalStrength() ){}
+		public VitalStrength_GrowthTests():base( new VitalStrength().UsePowerProgression() ){}
 
 		[Fact]
 		public void ReclaimAndPresence(){

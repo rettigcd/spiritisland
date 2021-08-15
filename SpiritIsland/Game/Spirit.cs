@@ -183,9 +183,16 @@ namespace SpiritIsland {
 			Elements.AddRange( card.Elements );
 		}
 
+		public Spirit UsePowerProgression() {
+			CardDrawer = GetPowerProgression();
+			return this;
+		}
+
+		protected virtual PowerProgression GetPowerProgression() => throw new NotImplementedException();
+
 		#endregion
 
-		#region presence
+			#region presence
 
 		public virtual IEnumerable<Space> SacredSites => Presence.Placed
 			.GroupBy(x=>x)
@@ -237,18 +244,14 @@ namespace SpiritIsland {
 
 		#endregion
 
-		static Task DefaultDrawPowerCard(ActionEngine engine, string majorMinor ) {
-			engine.Self.PowerCardsToDraw++;
-			return Task.CompletedTask;
-		}
-
 		// pluggable, draw power card, or powerprogression
-		// string should be "major", "minor" or ""
-		public Func<ActionEngine,string, Task> DrawPowerCard = DefaultDrawPowerCard;
+		public IPowerCardDrawer CardDrawer = DefaultCardDrawer;
 
 		public Stack<IDecision> decisions = new();
 
 		public event SpaceTargetedEvent TargetedSpace;
+
+		static readonly IPowerCardDrawer DefaultCardDrawer = new IncrementCountCardDrawer();
 
 	}
 

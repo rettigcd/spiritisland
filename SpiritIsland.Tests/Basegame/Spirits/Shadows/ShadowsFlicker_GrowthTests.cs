@@ -5,7 +5,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 
 	public class ShadowsFlicker_GrowthTests : GrowthTests {
 
-		public ShadowsFlicker_GrowthTests():base( new Shadows() ){
+		public ShadowsFlicker_GrowthTests():base( new Shadows().UsePowerProgression() ){
 		}
 
 		[Fact]
