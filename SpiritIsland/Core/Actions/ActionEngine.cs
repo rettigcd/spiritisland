@@ -95,6 +95,13 @@ namespace SpiritIsland.Core {
 			return result.Task;
 		}
 
+		public async Task<int> SelectTextIndex( string prompt, params string[] options ) {
+			string result = await SelectText(prompt,options);
+			for(int i=0;i<options.Length;++i)
+				if(result == options[i]) return i;
+			return -1;
+		}
+
 
 		#endregion
 

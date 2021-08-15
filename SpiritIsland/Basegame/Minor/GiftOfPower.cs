@@ -1,14 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using SpiritIsland.Core;
 using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
-	class GiftOfPower {
-		// NOT IMPLEMENTED!!!
-		//0 slow, moon,water,earth,plant
-		// any spirit
-		// gain a minor power card
+
+	public class GiftOfPower {
+
+		[MinorCard( "Gift of Power", 0, Speed.Slow,"moon, water, earth, plant")]
+		[TargetSpirit]
+		static public Task ActAsync( ActionEngine engine, Spirit target ) {
+			// gain a minor power card
+			return engine.Self.DrawPowerCard(engine,"minor"); 
+		}
+
 	}
 }

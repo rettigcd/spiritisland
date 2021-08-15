@@ -30,7 +30,7 @@ namespace SpiritIsland.Core {
 				Core.Target.Dahan => gameState.HasDahan,
 				Core.Target.Explorer => HasExplorer,
 				Core.Target.TownOrExplorer => TownOrExplorer,
-				Core.Target.Invader => gameState.HasInvaders,
+				Core.Target.Invaders => gameState.HasInvaders,
 				Core.Target.NoInvader => (s)=>!gameState.HasInvaders( s ),
 				Core.Target.Costal => (s => s.IsCostal),
 				Core.Target.SandOrWetland => (s => s.Terrain.IsIn( Terrain.Sand, Terrain.Wetland )),

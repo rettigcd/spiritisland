@@ -26,6 +26,7 @@ BONUS	Generate Innate images from innate metadata
 Power Card Troubles
 	+4 dahan health
 	Increase Range // custom attribute on card that overrides normal
+	Sap the Strength of Multitudes - range changes
 
 Fix
 	Words of Warning

@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using SpiritIsland.Basegame;
 using SpiritIsland.Core;
 using Xunit;
@@ -110,9 +111,6 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			if(canReclaim1)
 				AndWhen_ReclaimingFirstCard();
 
-
-			// !!! for this test to work, we also need a test shows too many or too few resolvers, throw exception
-
 		}
 
 		#endregion
@@ -125,9 +123,11 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		[InlineData(5,"Song of Sanctity")]
 		[InlineData(6,"Tsunami")]
 		[InlineData(7,"Encompassing Ward")]
-		public void PowerProgressionCards( int count, string lastPowerCard ){
+		public async Task PowerProgressionCards( int count, string lastPowerCard ){
+			var drawPowerCard = new DrawPowerCard();
+			var eng = new ActionEngine(spirit,gameState);
 			while(count--!=0)
-				spirit.AddActionFactory(new DrawPowerCard());
+				await drawPowerCard.Activate( eng );
 
 			Assert_HasCardAvailable( lastPowerCard );
 		}

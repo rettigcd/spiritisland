@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using SpiritIsland.Core;
 
 namespace SpiritIsland {
@@ -235,6 +236,15 @@ namespace SpiritIsland {
 		}
 
 		#endregion
+
+		static Task DefaultDrawPowerCard(ActionEngine engine, string majorMinor ) {
+			engine.Self.PowerCardsToDraw++;
+			return Task.CompletedTask;
+		}
+
+		// pluggable, draw power card, or powerprogression
+		// string should be "major", "minor" or ""
+		public Func<ActionEngine,string, Task> DrawPowerCard = DefaultDrawPowerCard;
 
 		public Stack<IDecision> decisions = new();
 

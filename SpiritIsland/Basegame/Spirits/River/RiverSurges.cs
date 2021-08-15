@@ -74,36 +74,25 @@ namespace SpiritIsland.Basegame {
 			this.InnatePowers = new InnatePower[]{
 				InnatePower.For<MassiveFlooding>()
 			};
-		}
 
-		public override IEnumerable<Space> SacredSites {get{
+			DrawPowerCard = new PowerProgression(
+				PowerCard.For<UncannyMelting>(),
+				PowerCard.For<NaturesResilience>(),
+				PowerCard.For<PullBeneathTheHungryEarth>(),
+				PowerCard.For<AcceleratedRot>(),  // MAJOR?
+				PowerCard.For<SongOfSanctity>(),
+				PowerCard.For<Tsunami>(),
+				PowerCard.For<EncompassingWard>()
+			).DrawCard;
+
+	}
+
+	public override IEnumerable<Space> SacredSites {get{
 			return Presence.Spaces
 				.Where(s=>s.Terrain==Terrain.Wetland)
 				.Union( base.SacredSites )
 				.Distinct();
 		}}
-
-		public override void AddActionFactory(IActionFactory actionFactory) {
-
-			if(actionFactory is DrawPowerCard){
-				var newCard = PowerProgression[0];
-				this.RegisterNewCard( newCard );
-				PowerProgression.RemoveAt( 0 );
-				if(newCard.PowerType == PowerType.Major)
-					base.AddActionFactory(new ForgetPowerCard());
-			} else
-				base.AddActionFactory(actionFactory);
-		}
-
-		readonly List<PowerCard> PowerProgression = new List<PowerCard>{
-			PowerCard.For<UncannyMelting>(),
-			PowerCard.For<NaturesResilience>(),
-			PowerCard.For<PullBeneathTheHungryEarth>(),
-			PowerCard.For<AcceleratedRot>(),  // MAJOR?
-			PowerCard.For<SongOfSanctity>(),
-			PowerCard.For<Tsunami>(),
-			PowerCard.For<EncompassingWard>()
-		};
 
 		public override void Initialize( Board board, GameState gs ) {
 			base.Initialize( board, gs );
@@ -112,5 +101,6 @@ namespace SpiritIsland.Basegame {
 		}
 
 	}
+
 
 }

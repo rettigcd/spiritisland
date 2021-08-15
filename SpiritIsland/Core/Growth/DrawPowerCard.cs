@@ -9,9 +9,9 @@ namespace SpiritIsland.Core {
 			this.count = count;
 		}
 
-		public override Task Activate( ActionEngine engine ) {
-			engine.Self.PowerCardsToDraw += count;
-			return Task.CompletedTask;
+		public override async Task Activate( ActionEngine engine ) {
+			for(int i=0;i<count;++i)
+				await engine.Self.DrawPowerCard(engine,"");
 		}
 
 	}

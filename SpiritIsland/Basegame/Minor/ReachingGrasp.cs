@@ -14,9 +14,11 @@ namespace SpiritIsland.Basegame {
 			var original = target.PowerCardApi;
 			target.PowerCardApi = new ExtendRange( 2, original );
 
-			engine.GameState.EndOfRoundCleanupAction.Push((_)=>{ 
+			Task cleanup(GameState _ ) {
 				target.PowerCardApi = original;
-			});
+				return Task.CompletedTask;
+			}
+			engine.GameState.EndOfRoundCleanupAction.Push(cleanup);
 			return Task.CompletedTask;
 		}
 

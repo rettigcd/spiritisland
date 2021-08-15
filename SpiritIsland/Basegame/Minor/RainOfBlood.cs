@@ -1,15 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using SpiritIsland.Core;
 using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
-	class RainOfBlood {
-		// NOT IMPLEMENTED!!!
-		// 0, slow, air, water, animal
-		// range 1 from SS, invaders
-		// 2 fear
-		// if target land has at least 2 towns/cities, +1 fear
+	public class RainOfBlood {
+
+		[MinorCard("Rain of Blood", 0, Speed.Slow, "air, water, animal")]
+		[FromSacredSite(1,Target.Invaders)]
+		static public Task ActAsync(ActionEngine engine, Space target ) {
+			int fear = 2;
+			if(2<=engine.GameState.InvadersOn( target ).TypeCount(Invader.Town,Invader.City))
+				++fear;
+
+			engine.GameState.AddFear( fear );
+			return Task.CompletedTask;
+		}
+
+
 	}
 }

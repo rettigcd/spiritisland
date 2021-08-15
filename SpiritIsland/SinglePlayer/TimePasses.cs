@@ -18,9 +18,7 @@ namespace SpiritIsland.SinglePlayer {
 		public event Action Complete;
 
 		public void Initialize() {
-			this.gameState.TimePasses();
-
-			// !!! heal dahan & invaders
+			_ = this.gameState.TimePasses();
 			this.Complete?.Invoke();
 		}
 

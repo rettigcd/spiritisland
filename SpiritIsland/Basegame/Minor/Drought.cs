@@ -13,9 +13,10 @@ namespace SpiritIsland.Basegame {
 			// Destory 3 towns.
 			grp.DestroyType(Invader.Town,int.MaxValue);
 
-			// 1 damage to each town/city
-			while(grp[Invader.Town1] > 0) grp.ApplyDamageTo1(Invader.Town1,1);
-			while(grp[Invader.Town] > 0) grp.ApplyDamageTo1( Invader.Town, 1 );
+			// 1 damage to each town/city - (!! duplicate in Quick the Earths Struggles)
+			foreach(var invader in new Invader[] { Invader.Town1, Invader.Town, Invader.City1, Invader.City2, Invader.City })
+				while(grp[invader] > 0) 
+					grp.ApplyDamageTo1(invader,1);
 
 			// add 1 blight
 			engine.GameState.AddBlight(target,1);

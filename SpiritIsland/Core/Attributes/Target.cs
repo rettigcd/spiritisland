@@ -4,7 +4,7 @@
 		Dahan,
 		Explorer,
 		TownOrExplorer,
-		Invader,
+		Invaders,
 		Costal,
 		JungleOrMountain,
 		JungleOrWetland,

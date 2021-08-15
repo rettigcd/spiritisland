@@ -34,11 +34,11 @@ namespace SpiritIsland.Core {
 
 		#region private
 
-		bool initialized = false;
+//		bool initialized = false;
 
 		void InitializeIfNeeded() {
-			if(initialized) return;
-			initialized = true;
+//			if(initialized) return;
+//			initialized = true;
 			AutoSelectSingleOptions();
 		}
 

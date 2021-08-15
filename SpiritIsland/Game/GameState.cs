@@ -73,7 +73,7 @@ namespace SpiritIsland {
 		public AsyncEvent<Space[]> PreBuilding = new AsyncEvent<Space[]>();
 		public AsyncEvent<DahanMovedArgs> DahanMoved = new AsyncEvent<DahanMovedArgs>();
 		public AsyncEvent<DahanDestroyedArgs> DahanDestroyed = new AsyncEvent<DahanDestroyedArgs>();
-		public Stack<Action<GameState>> EndOfRoundCleanupAction = new Stack<Action<GameState>>();
+		public Stack<Func<GameState,Task>> EndOfRoundCleanupAction = new Stack<Func<GameState,Task>>();
 
 		void InitSpirits() {
 			if(Spirits.Length != Island.Boards.Length)
@@ -82,7 +82,7 @@ namespace SpiritIsland {
 				Spirits[i].Initialize( Island.Boards[i], this );
 		}
 
-		public void TimePasses() {
+		public async Task TimePasses() {
 			// heal
 			foreach(var pair in invaderCount) 
 				new InvaderGroup(pair.Key,pair.Value,null).Heal();
@@ -92,7 +92,7 @@ namespace SpiritIsland {
 
 			// stack allows us to unwind items in reverse order from when we set them up
 			while(EndOfRoundCleanupAction.Count>0)
-				EndOfRoundCleanupAction.Pop()(this);
+				await EndOfRoundCleanupAction.Pop()(this);
 
 			TimePassed?.Invoke(this);
 		}
