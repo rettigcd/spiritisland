@@ -91,6 +91,15 @@ namespace SpiritIsland.Basegame {
 				InnatePower.For<AllEnvelopingGreen>(),
 			};
 
+			DrawPowerCard = new PowerProgression(
+				PowerCard.For<DriftDownIntoSlumber>(),
+				PowerCard.For<GiftOfLivingEnergy>(),
+				PowerCard.For<TheTreesAndStonesSpeakOfWar>(), // major
+				PowerCard.For<LureOfTheUnknown>(),
+				PowerCard.For<InfiniteVitality>(), // major
+				PowerCard.For<EnticingSplendor>()
+			).DrawCard;
+
 		}
 
 		public override int NumberOfCardsPlayablePerTurn => base.NumberOfCardsPlayablePerTurn + tempCardBoost;
@@ -140,27 +149,6 @@ namespace SpiritIsland.Basegame {
 			}
 			return skipped.ToArray();
 		}
-
-		public override void AddActionFactory( IActionFactory actionFactory ) {
-
-			if(actionFactory is DrawPowerCard) {
-				var newCard = PowerProgression[0];
-				this.RegisterNewCard( newCard );
-				PowerProgression.RemoveAt( 0 );
-				if(newCard.PowerType == PowerType.Major)
-					base.AddActionFactory( new ForgetPowerCard() );
-			} else
-				base.AddActionFactory( actionFactory );
-		}
-
-		readonly List<PowerCard> PowerProgression = new List<PowerCard>{
-			PowerCard.For<DriftDownIntoSlumber>(),
-			PowerCard.For<GiftOfLivingEnergy>(),
-			PowerCard.For<TheTreesAndStonesSpeakOfWar>(), // major
-			PowerCard.For<LureOfTheUnknown>(),
-			PowerCard.For<InfiniteVitality>(), // major
-			PowerCard.For<EnticingSplendor>(),
-		};
 
 	}
 

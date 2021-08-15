@@ -61,31 +61,19 @@ Power Progression:
 			this.giftOfStrength = new GiftOfStrength_InnatePower();
 			this.InnatePowers = new InnatePower[]{ giftOfStrength };
 
+			DrawPowerCard = new PowerProgression(
+				PowerCard.For<RouseTheTreesAndStones>(),
+				PowerCard.For<CallToMigrate>(),
+				PowerCard.For<PoisonedLand>(), // Major
+				PowerCard.For<DevouringAnts>(),
+				PowerCard.For<VigorOfTheBreakingDawn>(),// Major
+				PowerCard.For<VoraciousGrowth>(),
+				PowerCard.For<SavageMawbeasts>()
+			).DrawCard;
+
 		}
 
 		readonly GiftOfStrength_InnatePower giftOfStrength;
-
-		public override void AddActionFactory(IActionFactory actionFactory) {
-
-			if(actionFactory is DrawPowerCard){
-				var newCard = PowerProgression[0];
-				this.RegisterNewCard( newCard );
-				PowerProgression.RemoveAt( 0 );
-				if(newCard.PowerType == PowerType.Major)
-					base.AddActionFactory(new ForgetPowerCard());
-			} else
-				base.AddActionFactory(actionFactory);
-		}
-
-		readonly List<PowerCard> PowerProgression = new List<PowerCard>{
-			PowerCard.For<RouseTheTreesAndStones>(),
-			PowerCard.For<CallToMigrate>(),
-			PowerCard.For<PoisonedLand>(), // Major
-			PowerCard.For<DevouringAnts>(),  
-			PowerCard.For<VigorOfTheBreakingDawn>(),// Major
-			PowerCard.For<VoraciousGrowth>(),
-			PowerCard.For<SavageMawbeasts>()
-		};
 
 		public override void Initialize( Board board, GameState gameState ){
 			base.Initialize( board, gameState );

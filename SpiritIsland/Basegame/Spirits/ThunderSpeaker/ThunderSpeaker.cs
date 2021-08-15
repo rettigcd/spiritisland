@@ -72,6 +72,28 @@ namespace SpiritIsland.Basegame {
 				InnatePower.For<LeadTheFuriousAssult_Fast>(),
 			};
 
+			DrawPowerCard = new PowerProgression(
+				PowerCard.For<VeilTheNightsHunt>(),
+				PowerCard.For<ReachingGrasp>(),
+				//PowerCard.For<WrapInWingsOfSunlight>(),      // Major
+				PowerCard.For<Drought>(),
+				PowerCard.For<ElementalBoon>(),
+
+				// Borrowing Lightnings Swift Strike Power Progression until we get below implemented
+				PowerCard.For<DelusionsOfDanger>(),
+				PowerCard.For<CallToBloodshed>(),
+				PowerCard.For<PowerStorm>(),
+				PowerCard.For<PurifyingFlame>(),
+				PowerCard.For<PillarOfLivingFlame>(),
+				PowerCard.For<EntrancingApparitions>(),
+				PowerCard.For<CallToIsolation>()
+
+				//PowerCard.For<TalonsOfLightning>(),			 // Major
+				//PowerCard.For<VigorOfTheBreakingDawn>(),	 // major
+				//PowerCard.For<TheTreesAndStonesSpeakOfWar>(),// Major
+			).DrawCard;
+
+
 		}
 
 		public override void Initialize( Board board, GameState gs ) {
@@ -119,42 +141,6 @@ namespace SpiritIsland.Basegame {
 				Presence.Destroy( await eng.SelectSpace( prompt, options ) );
 
 		}
-
-		public override void AddActionFactory( IActionFactory actionFactory ) {
-
-			if(actionFactory is DrawPowerCard drawCards) {
-				for(int i = 0; i < drawCards.count;++i) {
-					var newCard = PowerProgression[0];
-					this.RegisterNewCard( newCard );
-					PowerProgression.RemoveAt( 0 );
-					if(newCard.PowerType == PowerType.Major)
-						base.AddActionFactory( new ForgetPowerCard() );
-				}
-			} else
-				base.AddActionFactory( actionFactory );
-		}
-
-		readonly List<PowerCard> PowerProgression = new List<PowerCard>{
-
-			// Borrowing Lightnings Swift Strike Power Progression until we get below implemented
-			PowerCard.For<DelusionsOfDanger>(),
-			PowerCard.For<CallToBloodshed>(),
-			PowerCard.For<PowerStorm>(),
-			PowerCard.For<PurifyingFlame>(),
-			PowerCard.For<PillarOfLivingFlame>(),
-			PowerCard.For<EntrancingApparitions>(),
-			PowerCard.For<CallToIsolation>(),
-
-			PowerCard.For<VeilTheNightsHunt>(),
-			PowerCard.For<ReachingGrasp>(),
-			//PowerCard.For<WrapInWingsOfSunlight>(),      // Major
-			PowerCard.For<Drought>(),
-			PowerCard.For<ElementalBoon>(),
-			//PowerCard.For<TalonsOfLightning>(),			 // Major
-			//PowerCard.For<VigorOfTheBreakingDawn>(),	 // major
-			//PowerCard.For<TheTreesAndStonesSpeakOfWar>(),// Major
-		};
-
 
 	}
 

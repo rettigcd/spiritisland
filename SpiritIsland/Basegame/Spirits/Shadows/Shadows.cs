@@ -63,29 +63,18 @@ Shadows Flicker like Flame:
 				InnatePower.For<DarknessSwallowsTheUnwary>()
 			};
 			this.PowerCardApi = new ShadowApi();
+
+			DrawPowerCard = new PowerProgression(
+				PowerCard.For<DarkAndTangledWoods>(),
+				PowerCard.For<ShadowsOfTheBurningForest>(),
+				PowerCard.For<TheJungleHungers>(), // Major
+				PowerCard.For<LandOfHauntsAndEmbers>(),
+				PowerCard.For<TerrifyingNightmares>(),// Major
+				PowerCard.For<CallOfTheDahanWays>(),
+				PowerCard.For<VisionsOfFieryDoom>()
+			).DrawCard;
+
 		}
-
-		public override void AddActionFactory(IActionFactory actionFactory) {
-
-			if(actionFactory is DrawPowerCard){
-				var newCard = PowerProgression[0];
-				this.RegisterNewCard( newCard );
-				PowerProgression.RemoveAt( 0 );
-				if(newCard.PowerType == PowerType.Major)
-					base.AddActionFactory(new ForgetPowerCard());
-			} else
-				base.AddActionFactory(actionFactory);
-		}
-
-		readonly List<PowerCard> PowerProgression = new List<PowerCard>{
-			PowerCard.For<DarkAndTangledWoods>(),
-			PowerCard.For<ShadowsOfTheBurningForest>(),
-			PowerCard.For<TheJungleHungers>(), // Major
-			PowerCard.For<LandOfHauntsAndEmbers>(),
-			PowerCard.For<TerrifyingNightmares>(),// Major
-			PowerCard.For<CallOfTheDahanWays>(),
-			PowerCard.For<VisionsOfFieryDoom>()
-		};
 
 		class ShadowApi : PowerCardApi {
 

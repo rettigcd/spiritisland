@@ -54,6 +54,17 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 				InnatePower.For<ThunderingDestruction>()
 			};
 
+			DrawPowerCard = new PowerProgression(
+				PowerCard.For<DelusionsOfDanger>(),
+				PowerCard.For<CallToBloodshed>(),
+				PowerCard.For<PowerStorm>(),
+				PowerCard.For<PurifyingFlame>(),
+				PowerCard.For<PillarOfLivingFlame>(),
+				PowerCard.For<EntrancingApparitions>(),
+				PowerCard.For<CallToIsolation>()
+			).DrawCard;
+
+
 		}
 
 		public override string Text => Name;
@@ -63,29 +74,6 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 			swiftness.OnActivateCards( this );
 		}
 		static readonly SwiftnessOfLightning swiftness = new SwiftnessOfLightning();
-
-		public override void AddActionFactory(IActionFactory actionFactory) {
-			// !!! duplicated in River
-
-			if(actionFactory is DrawPowerCard){
-				var newCard = PowerProgression[0];
-				this.RegisterNewCard( newCard );
-				PowerProgression.RemoveAt( 0 );
-				if(newCard.PowerType == PowerType.Major)
-					base.AddActionFactory(new ForgetPowerCard());
-			} else
-				base.AddActionFactory(actionFactory);
-		}
-
-		readonly List<PowerCard> PowerProgression = new List<PowerCard>{
-			PowerCard.For<DelusionsOfDanger>(),
-			PowerCard.For<CallToBloodshed>(),
-			PowerCard.For<PowerStorm>(),
-			PowerCard.For<PurifyingFlame>(),
-			PowerCard.For<PillarOfLivingFlame>(),
-			PowerCard.For<EntrancingApparitions>(),
-			PowerCard.For<CallToIsolation>()
-		};
 
 		public override void Initialize( Board board, GameState gs ) {
 			base.Initialize(board,gs);
