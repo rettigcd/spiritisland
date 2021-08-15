@@ -19,20 +19,9 @@ namespace SpiritIsland.Basegame {
 
 			if( pushDahan )
 				await engine.PushUpToNDahan(target,1);
-			else {
-
+			else
 				// push 1 explorer/town per dahan
-				Invader[] CalcAvailableInvaders() => grp.InvaderTypesPresent.Where(i=>i.Summary.IsIn("E@1","T@2","T@1")).ToArray();
-				Invader[] invadersToPush = CalcAvailableInvaders();
-				while(0<pushCount && 0<invadersToPush.Length){
-					var invader = await engine.SelectInvader("Invader to push",invadersToPush,true);
-					if(invader==null) break;
-					await engine.PushInvader(target,invader);
-
-					invadersToPush = CalcAvailableInvaders();
-					--pushCount;
-				}
-			}
+				await engine.PushUpToNInvaders(target,pushCount,Invader.Town,Invader.Explorer);
 
 		}
 

@@ -14,7 +14,7 @@ namespace SpiritIsland.Basegame {
 			string text = await engine.SelectText("Select power",PushKey,FearKey);
 			switch(text){
 				case PushKey: 
-					await engine.PushInvader(target,Invader.Explorer);
+					await engine.PushInvader(target,InvaderSpecific.Explorer);
 					break;
 				case FearKey: 
 					engine.GameState.AddFear(2); 

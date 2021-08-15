@@ -8,7 +8,7 @@ namespace SpiritIsland.Basegame {
 		[FromSacredSite(1,Target.Invaders)]
 		static public Task ActAsync(ActionEngine engine, Space target ) {
 			int fear = 2;
-			if(2<=engine.GameState.InvadersOn( target ).TypeCount(Invader.Town,Invader.City))
+			if(2<=engine.GameState.InvadersOn( target ).TownsAndCitiesCount)
 				++fear;
 
 			engine.GameState.AddFear( fear );

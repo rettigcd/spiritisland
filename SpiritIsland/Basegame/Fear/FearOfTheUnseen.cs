@@ -10,13 +10,11 @@ namespace SpiritIsland.Basegame {
 		public async Task Level1( GameState gs ) {
 			foreach(var spirit in gs.Spirits) {
 				var engine = new ActionEngine(spirit,gs);
-				var options = spirit.SacredSites.Where(s=>gs.InvadersOn(s).Has(Invader.Explorer,Invader.Town)).ToArray();
+				var options = spirit.SacredSites.Where(s=>gs.InvadersOn(s).HasAny(Invader.Explorer,Invader.Town)).ToArray();
 				if(options.Length==0) return;
 				var target = await engine.SelectSpace("Select SS land to remove 1 explorer/town.",options);
 				var grp = gs.InvadersOn(target);
-				var invaderToRemove = (grp[Invader.Town]>0 ) ? Invader.Town
-					: grp[Invader.Town1]>0 ? Invader.Town1
-					: Invader.Explorer;
+				var invaderToRemove = grp.PickBestInvaderToRemove(Invader.Town,Invader.Explorer);
 				gs.Adjust(target,invaderToRemove,-1);
 			}
 		}
@@ -25,16 +23,13 @@ namespace SpiritIsland.Basegame {
 		public async Task Level2( GameState gs ) {
 			foreach(var spirit in gs.Spirits) {
 				var engine = new ActionEngine( spirit, gs );
-				var options = spirit.Presence.Spaces.Where( s => gs.InvadersOn( s ).Has( Invader.Explorer, Invader.Town ) )
-					.Union(spirit.SacredSites.Where(s=>gs.InvadersOn(s).HasCity))
+				var options = spirit.Presence.Spaces.Where( s => gs.InvadersOn( s ).HasAny( Invader.Explorer, Invader.Town ) )
+					.Union(spirit.SacredSites.Where(s=>gs.InvadersOn(s).Has(Invader.City)))
 					.ToArray();
 				if(options.Length == 0) return;
 				var target = await engine.SelectSpace( "Select land to remove 1 explorer/town/city.", options );
 				var grp = gs.InvadersOn( target );
-				var invaderToRemove = spirit.SacredSites.Contains(target) && grp[Invader.City]>0 ? Invader.City2
-					: grp[Invader.Town] > 0 ? Invader.Town
-					: grp[Invader.Town1] > 0 ? Invader.Town1
-					: Invader.Explorer;
+				var invaderToRemove = grp.PickBestInvaderToRemove(Invader.Town,Invader.Explorer);
 				gs.Adjust( target, invaderToRemove, -1 );
 			}
 		}
@@ -44,13 +39,11 @@ namespace SpiritIsland.Basegame {
 			Space[] sacredSites = gs.Spirits.SelectMany( spirit => spirit.Presence.Spaces ).Distinct().ToArray(); // !!! is this SS or Presence?
 			foreach(var spirit in gs.Spirits) {
 				var engine = new ActionEngine( spirit, gs );
-				var options = sacredSites.Where( s => gs.InvadersOn( s ).Has( Invader.Explorer, Invader.Town ) ).ToArray();
+				var options = sacredSites.Where( s => gs.InvadersOn( s ).HasAny( Invader.Explorer, Invader.Town ) ).ToArray();
 				if(options.Length == 0) return;
 				var target = await engine.SelectSpace( "Select SS land to remove 1 explorer/town.", options );
 				var grp = gs.InvadersOn( target );
-				var invaderToRemove = (grp[Invader.Town] > 0) ? Invader.Town
-					: grp[Invader.Town1] > 0 ? Invader.Town1
-					: Invader.Explorer;
+				var invaderToRemove = grp.PickBestInvaderToRemove( Invader.Town, Invader.Explorer );
 				gs.Adjust( target, invaderToRemove, -1 );
 			}
 		}

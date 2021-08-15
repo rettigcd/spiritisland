@@ -25,7 +25,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			// Given: dahan on a3
 			eng.GameState.AdjustDahan(a[3]);
 			//  and: 2 explorers on a2
-			eng.GameState.Adjust(a[2],Invader.Explorer,2);
+			eng.GameState.Adjust(a[2],InvaderSpecific.Explorer,2);
 
 			When_ActivateCard( SuddenAmbush.Name );
 			Step( "Select target.", "A1,A2,A4,A5,A6", a[2], false );
@@ -41,7 +41,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			eng.GameState.AdjustDahan( a[2] );
 			eng.GameState.AdjustDahan( a[1], 2 );
 			//  and: 5 explorers on a1
-			eng.GameState.Adjust( a[1], Invader.Explorer, 5 );
+			eng.GameState.Adjust( a[1], InvaderSpecific.Explorer, 5 );
 
 			When_ActivateCard( SuddenAmbush.Name );
 			Step( "Select target.", "A1,A2,A4,A5,A6", a[1], false );
@@ -57,7 +57,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			eng.GameState.AdjustDahan(a[2]);
 			eng.GameState.AdjustDahan(a[1], 2);
 			//  and: 1 town on a1
-			eng.GameState.Adjust(a[1], Invader.Town, 1);
+			eng.GameState.Adjust(a[1], InvaderSpecific.Town, 1);
 
 			When_ActivateCard(SuddenAmbush.Name);
 			Step("Select target.", "A1,A2,A4,A5,A6", a[1], false);

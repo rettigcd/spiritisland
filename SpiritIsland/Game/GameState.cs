@@ -106,9 +106,9 @@ namespace SpiritIsland {
 
 		void InitSpace( Space space ) {
 			var counts = space.StartUpCounts;
-			Adjust( space, Invader.City, counts.Cities );
-			Adjust( space, Invader.Town, counts.Towns );
-			Adjust( space, Invader.Explorer, counts.Explorers );
+			Adjust( space, InvaderSpecific.City, counts.Cities );
+			Adjust( space, InvaderSpecific.Town, counts.Towns );
+			Adjust( space, InvaderSpecific.Explorer, counts.Explorers );
 			this.AdjustDahan( space, counts.Dahan );
 			if(counts.Blight > 0) this.AddBlight( space ); // add 1
 		}
@@ -270,17 +270,17 @@ namespace SpiritIsland {
 				.ToArray();
 
 			foreach(var space in exploredSpaces)
-				Adjust( space, Invader.Explorer, 1 );
+				Adjust( space, InvaderSpecific.Explorer, 1 );
 			return exploredSpaces;
 		}
 
 		public bool HasInvaders( Space space ) 
 			=> GetCounts(space).Any(x=>x>0);
 
-		public void Adjust(Space space, Invader invader, int count){
+		public void Adjust(Space space, InvaderSpecific invader, int count){
 			InvaderGroup.Adjust( GetCounts( space ), invader, count);
 		}
-		public void Move(Invader invader, Space from, Space to ) {
+		public void Move(InvaderSpecific invader, Space from, Space to ) {
 			Adjust( from,invader,-1);
 			Adjust( to, invader, 1 );
 		}
@@ -294,11 +294,11 @@ namespace SpiritIsland {
 		}
 
 		string Build( InvaderGroup group ) {
-			int townCount = group[Invader.Town] + group[Invader.Town1];
-			int cityCount = group[Invader.City] + group[Invader.City2] + group[Invader.City1];
-			var invaderToAdd = townCount > cityCount ? Invader.City : Invader.Town;
+			int townCount = group[InvaderSpecific.Town] + group[InvaderSpecific.Town1];
+			int cityCount = group[InvaderSpecific.City] + group[InvaderSpecific.City2] + group[InvaderSpecific.City1];
+			var invaderToAdd = townCount > cityCount ? InvaderSpecific.City : InvaderSpecific.Town;
 			Adjust( group.Space, invaderToAdd, 1 );
-			return $"{group.Space.Label} gets {invaderToAdd.Label}";
+			return $"{group.Space.Label} gets {invaderToAdd.Generic.Label}";
 		}
 
 		/// <summary> Fired before ravage occurs</summary>
@@ -369,7 +369,7 @@ namespace SpiritIsland {
 
 		int[] GetCounts(Space space ) {
 			if(invaderCount.ContainsKey(space)) return invaderCount[space];
-			return invaderCount[space] = new int[Invader.TypesCount+1]; // 1 for the total
+			return invaderCount[space] = new int[InvaderSpecific.TypesCount+1]; // 1 for the total
 		}
 
 		readonly CountDictionary<Space> dahanCount = new CountDictionary<Space>();

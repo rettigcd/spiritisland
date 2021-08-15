@@ -11,7 +11,7 @@ namespace SpiritIsland.Basegame {
 			var grp = engine.GameState.InvadersOn( target );
 
 			// Destory 3 towns.
-			grp.DestroyType(Invader.Town,int.MaxValue);
+			grp.Destroy(Invader.Town,int.MaxValue);
 
 			// 1 damage to each town/city - (!! duplicate in Quick the Earths Struggles)
 			grp.ApplyDamageToEach(1,Invader.Town,Invader.City);
@@ -21,7 +21,7 @@ namespace SpiritIsland.Basegame {
 
 			// if you have 3 sun, destory 1 city
 			if(3 <= engine.Self.Elements[Element.Sun])
-				grp.DestroyType(Invader.City,1);
+				grp.Destroy(Invader.City,1);
 
 			return Task.CompletedTask;
 		}

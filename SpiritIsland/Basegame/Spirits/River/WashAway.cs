@@ -11,23 +11,7 @@ namespace SpiritIsland.Basegame {
 		[SpiritCard(WashAway.Name, 1, Speed.Slow, Element.Water, Element.Earth)]
 		[FromPresence(1,Target.TownOrExplorer)]
 		static public async Task ActionAsync(ActionEngine engine,Space target){
-			var (_,gameState) = engine;
-			
-			int numToPush = 3;
-			Invader[] CalcInvaders() => gameState.InvadersOn( target )
-				.FilterBy(Invader.Town,Invader.Explorer);
-			var availableInvaders = CalcInvaders();
-			while(numToPush > 0 && availableInvaders.Length>0){
-				var invader = await engine.SelectInvader("Select invader to push."
-					,availableInvaders
-					,true
-				);
-				if(invader == null) break;
-				await engine.PushInvader(target,invader);
-
-				--numToPush;
-				availableInvaders = CalcInvaders();
-			}
+			await engine.PushUpToNInvaders(target,3, Invader.Town,Invader.Explorer);
 		}
 
 	}

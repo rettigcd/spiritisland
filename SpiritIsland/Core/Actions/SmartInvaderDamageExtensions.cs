@@ -24,7 +24,7 @@ namespace SpiritIsland {
 
 
 		static readonly SmartInvaderKiller InvaderPicker = new SmartInvaderKiller();
-		public static Invader PickSmartInvaderToDamage( this InvaderGroup grp, int availableDamage ) {
+		public static InvaderSpecific PickSmartInvaderToDamage( this InvaderGroup grp, int availableDamage ) {
 			return InvaderPicker.PickOne( grp, availableDamage );
 		}
 
@@ -34,7 +34,7 @@ namespace SpiritIsland {
 
 			// While damage remains    &&    we have invaders
 			while(damageToInvaders > 0 && grp.InvaderTypesPresent.Any()) {
-				Invader invaderToDamage = PickSmartInvaderToDamage( grp, damageToInvaders );
+				InvaderSpecific invaderToDamage = PickSmartInvaderToDamage( grp, damageToInvaders );
 				damageToInvaders -= grp.ApplyDamageTo1( damageToInvaders, invaderToDamage );
 			}
 			if(log != null) log.Add( $"{startingDamage} damage to invaders leaving {grp}." );
@@ -51,10 +51,10 @@ namespace SpiritIsland {
 			picker.LimitTo( allTargetTypes );
 
 			// While damage remains    &&    we have invaders
-			IEnumerable<Invader> Targets() => grp.InvaderTypesPresent.Intersect( allTargetTypes );
+			IEnumerable<InvaderSpecific> Targets() => grp.InvaderTypesPresent.Intersect( allTargetTypes );
 
 			while(damageToInvaders > 0 && Targets().Any()) {
-				Invader invaderToDamage = picker.PickOne( grp, damageToInvaders );
+				InvaderSpecific invaderToDamage = picker.PickOne( grp, damageToInvaders );
 				damageToInvaders -= grp.ApplyDamageTo1( damageToInvaders, invaderToDamage );
 			}
 
@@ -62,15 +62,15 @@ namespace SpiritIsland {
 		}
 
 		class SmartInvaderKiller {
-			public Invader[] KillOrder = "C@1 C@2 C@3 T@1 T@2 E@1".Split( ' ' ).Select( k => Invader.Lookup[k] ).ToArray();
-			public Invader[] LeftOverOrder = "C@2 T@2 C@3".Split( ' ' ).Select( k => Invader.Lookup[k] ).ToArray();
+			public InvaderSpecific[] KillOrder = "C@1 C@2 C@3 T@1 T@2 E@1".Split( ' ' ).Select( k => InvaderSpecific.Lookup[k] ).ToArray();
+			public InvaderSpecific[] LeftOverOrder = "C@2 T@2 C@3".Split( ' ' ).Select( k => InvaderSpecific.Lookup[k] ).ToArray();
 
-			public void LimitTo( Invader[] types ) {
+			public void LimitTo( InvaderSpecific[] types ) {
 				KillOrder = KillOrder.Where( x => types.Contains( x ) ).ToArray();
 				LeftOverOrder = LeftOverOrder.Where( x => types.Contains( x ) ).ToArray();
 			}
 
-			public Invader PickOne( InvaderGroup grp, int availableDamage ) {
+			public InvaderSpecific PickOne( InvaderGroup grp, int availableDamage ) {
 				return KillOrder
 				.FirstOrDefault( invader =>
 					invader.Health <= availableDamage // prefer things we can kill

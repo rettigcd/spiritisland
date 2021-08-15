@@ -13,7 +13,7 @@ namespace SpiritIsland.Basegame {
 			var (_,gameState) = engine;
 			var group = gameState.InvadersOn(target);
 
-			if( group[Invader.Explorer]>0 )
+			if( group[InvaderSpecific.Explorer]>0 )
 				await engine.PushUpToNInvaders(target,engine.GameState.InvadersOn(target)[Invader.Explorer],Invader.Explorer);
 			else if(gameState.HasBlight(target))
 				gameState.AddBlight(target,-1);

@@ -121,7 +121,7 @@ namespace SpiritIsland.Tests.Core {
 			var board = Board.BuildBoardA();
 			var gameState = new GameState( new RiverSurges() ) { Island = new Island(board)	};
 			//   And: explorer on target space
-			gameState.Adjust(board[5],Invader.Explorer,1);
+			gameState.Adjust(board[5],InvaderSpecific.Explorer,1);
 
 			// When: exploring (wet lands
 			gameState.Explore(InvaderDeck.Level1Cards.Single(c=>c.Text=="W"));
@@ -130,7 +130,7 @@ namespace SpiritIsland.Tests.Core {
 			//  and A5 (original) - proves explorers aren't reference types like towns
 			foreach(var space in board.Spaces){
 				var invaders = gameState.InvadersOn(space);
-				Assert.Equal(space == board[5] || space == board[2]?1:0,invaders[Invader.Explorer]);
+				Assert.Equal(space == board[5] || space == board[2]?1:0,invaders[InvaderSpecific.Explorer]);
 			}
 		}
 
@@ -153,7 +153,7 @@ namespace SpiritIsland.Tests.Core {
 			var gameState = new GameState( new RiverSurges() ) { Island = new Island(board)	};
 			//   And: Town on or next to wet land
 			var sourceSpace = board.Spaces.Single(s=>s.Label==townSpaceLabel);
-			var sourceInvader = Invader.Lookup[invaderKey];
+			var sourceInvader = InvaderSpecific.Lookup[invaderKey];
 			gameState.Adjust(sourceSpace,sourceInvader,1);
 
 			// When: exploring (wet lands
@@ -164,7 +164,7 @@ namespace SpiritIsland.Tests.Core {
 				var invaders = gameState.InvadersOn(space);
 				Assert.Equal(
 					space.Terrain == Terrain.Wetland?1:0
-					,invaders[Invader.Explorer]
+					,invaders[InvaderSpecific.Explorer]
 				);
 			}
 		}
@@ -180,7 +180,7 @@ namespace SpiritIsland.Tests.Core {
 			// Given: game on Board A
 			gameState = new GameState( new RiverSurges() ) { Island = new Island( board ) };
 			//   And: invader on every space
-			var startingInvader = Invader.Lookup[preInvaders];
+			var startingInvader = InvaderSpecific.Lookup[preInvaders];
 			foreach(var space in board.Spaces)
 				gameState.Adjust( space, startingInvader, 1 );
 
@@ -274,7 +274,7 @@ namespace SpiritIsland.Tests.Core {
 				if(itemSummary=="D@2"){
 					gameState.AdjustDahan(space,count);
 				} else {
-					var invader = Invader.Lookup[itemSummary];
+					var invader = InvaderSpecific.Lookup[itemSummary];
 					gameState.Adjust(space,invader,count);
 				}
 			}

@@ -57,7 +57,7 @@ namespace SpiritIsland {
 		}
 
 		static public async Task GatherUpToNInvaders( this ActionEngine eng, Space target, int countToGather, params Invader[] ofType ) {
-			Invader[] spaceInvaders(Space space) => eng.GameState.InvadersOn(space).FilterBy(ofType);
+			InvaderSpecific[] spaceInvaders(Space space) => eng.GameState.InvadersOn(space).FilterBy(ofType);
 			Space[] CalcSource() => target.Adjacent
 				.Where(s=>spaceInvaders(s).Any())
 				.ToArray();
@@ -99,7 +99,7 @@ namespace SpiritIsland {
 		static public async Task PushUpToNInvaders( this ActionEngine eng, Space source, int countToPush
 			,params Invader[] healthyInvaders
 		) {
-			Invader[] CalcInvaderTypes() => eng.GameState.InvadersOn(source).FilterBy(healthyInvaders);
+			InvaderSpecific[] CalcInvaderTypes() => eng.GameState.InvadersOn(source).FilterBy(healthyInvaders);
 			var invaders = CalcInvaderTypes();
 			while(0<countToPush && 0<invaders.Length){
 				var invader = await eng.SelectInvader("Select invader to push",invaders,true);
@@ -111,7 +111,7 @@ namespace SpiritIsland {
 			}
 		}
 
-		static public async Task PushInvader( this ActionEngine eng, Space source, Invader invader){
+		static public async Task PushInvader( this ActionEngine eng, Space source, InvaderSpecific invader){
 			var destination = await eng.SelectSpace("Push "+invader.Summary+" to"
 				,source.Adjacent.Where(x=>x.IsLand)
 			);

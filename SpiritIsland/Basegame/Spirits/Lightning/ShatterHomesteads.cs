@@ -11,11 +11,8 @@ namespace SpiritIsland.Basegame {
 		static public Task Act(ActionEngine engine, Space target){
 			var (_,gameState) = engine;
 			// Destroy 1 town
-			var grp = gameState.InvadersOn(target);
-			if(grp.HasTown){
-				var town = grp[Invader.Town] > 0 ? Invader.Town : Invader.Town1;
-				grp.DestroyType(town, 1);
-			}
+			gameState.InvadersOn(target).Destroy( Invader.Town, 1 );
+
 			// 1 fear
 			gameState.AddFear(1);
 			return Task.CompletedTask;

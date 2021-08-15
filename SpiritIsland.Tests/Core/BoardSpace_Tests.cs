@@ -224,12 +224,12 @@ namespace SpiritIsland.Tests.Boards {
 			var grp = gameState.InvadersOn(space);
 
 			int ee = items.Count(c=>c=='E');
-			int aa = grp[Invader.Explorer];
+			int aa = grp[InvaderSpecific.Explorer];
 			Assert.True(ee==aa,grp.ToString()+" ex:"+ee+" act:"+aa);
 
-			Assert.Equal(items.Count(c=>c=='C'), grp[Invader.City]);
-			Assert.Equal(items.Count(c=>c=='T'), grp[Invader.Town]);
-			Assert.Equal(items.Count(c=>c=='E'), grp[Invader.Explorer]);
+			Assert.Equal(items.Count(c=>c=='C'), grp[InvaderSpecific.City]);
+			Assert.Equal(items.Count(c=>c=='T'), grp[InvaderSpecific.Town]);
+			Assert.Equal(items.Count(c=>c=='E'), grp[InvaderSpecific.Explorer]);
 			Assert.Equal(items.Count(c=>c=='D'), gameState.GetDahanOnSpace(space));
 			Assert.Equal(items.Count(c=>c=='B'), gameState.HasBlight(space)?1:0);
 		}

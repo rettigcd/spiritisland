@@ -13,10 +13,10 @@ namespace SpiritIsland.Basegame {
 			// if your have 3 earth, 
 			if(3<=eng.Self.Elements[Element.Earth] && grp.HasTown)
 				// instead destroy 1 town
-				grp.DestroyType(Invader.Town,1);
+				grp.Destroy(Invader.Town,1);
 			else
 				// destroy 1 explorer
-				grp.DestroyType(Invader.Explorer,1);
+				grp.Destroy(Invader.Explorer,1);
 			return Task.CompletedTask;
 		}
 

@@ -36,16 +36,16 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// 1 explorer on A4
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[4];
-			gameState.Adjust(targetSpace,Invader.Explorer,explorerCount);
-			gameState.Adjust(targetSpace,Invader.Town,townCount);
-			gameState.Adjust(targetSpace,Invader.City,cityCount);
+			gameState.Adjust(targetSpace,InvaderSpecific.Explorer,explorerCount);
+			gameState.Adjust(targetSpace,InvaderSpecific.Town,townCount);
+			gameState.Adjust(targetSpace,InvaderSpecific.City,cityCount);
 
 			//  When: activating card
 			var engine = new ActionEngine( spirit, gameState );
 			card.Activate( engine );
 			action = spirit.Action;
 
-			var invader = action.Options[0] as Invader;
+			var invader = action.Options[0] as InvaderSpecific;
 			Then_SelectInvaderToPush(invader,invader.Summary,"Done");
 
 			//  Then: card has options of where to push 1 explorer
@@ -72,14 +72,14 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// 1 explorer on A4
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[2];
-			gameState.Adjust(targetSpace,Invader.Explorer,1);
+			gameState.Adjust(targetSpace,InvaderSpecific.Explorer,1);
 
 			//  When: activating card
 			var engine = new ActionEngine( spirit, gameState );
 			card.Activate( engine );
 			action = spirit.Action;
 
-			Then_SelectInvaderToPush( Invader.Explorer, "E@1", "Done" );
+			Then_SelectInvaderToPush( InvaderSpecific.Explorer, "E@1", "Done" );
 			
 			//  Then: card has options of where to push 1 explorer
 			Assert_Options( targetSpace.Adjacent.Where(x=>x.IsLand) );
@@ -93,8 +93,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// 1 explorer + 1 Town on A4
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[4];
-			gameState.Adjust(targetSpace,Invader.Explorer,1);
-			gameState.Adjust(targetSpace,Invader.Town,1);
+			gameState.Adjust(targetSpace,InvaderSpecific.Explorer,1);
+			gameState.Adjust(targetSpace,InvaderSpecific.Town,1);
 
 			var explorerDestination = board[2];
 			var townDestination = board[3];
@@ -107,7 +107,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			//  Then: Select Explorer
 			Assert.False(action.IsResolved);
 			Assert_Options("E@1,T@2","Done");
-			action.Select(Invader.Explorer);
+			action.Select(InvaderSpecific.Explorer);
 
 			//  Then: Select destination for Explorer
 			Assert.False(action.IsResolved);
@@ -116,7 +116,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			//  Then: Select Town
 			Assert.False(action.IsResolved);
 			Assert_Options("T@2","Done");
-			action.Select(Invader.Town);
+			action.Select(InvaderSpecific.Town);
 
 			//  Then: Select destination for Town
 			Assert.False(action.IsResolved);
@@ -138,7 +138,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// 1 damaged town on A4
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[4];
-			gameState.Adjust( targetSpace, Invader.Town1, 1 );
+			gameState.Adjust( targetSpace, InvaderSpecific.Town1, 1 );
 
 			var invaderDestination = board[2];
 
@@ -150,7 +150,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			//  Auto-Selects: target space
 			//			action.Select( targetSpace );
 
-			Then_SelectInvaderToPush( Invader.Town1, "T@1", "Done" );
+			Then_SelectInvaderToPush( InvaderSpecific.Town1, "T@1", "Done" );
 			Then_PushInvader( "T@1", invaderDestination, "A1","A2","A3","A5" );
 
 			Assert.True( action.IsResolved );
@@ -171,9 +171,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			action.Select( invaderDestination );
 		}
 
-		void Then_SelectInvaderToPush( Invader invader, params string[] options ) {
+		void Then_SelectInvaderToPush( InvaderSpecific invader, params string[] options ) {
 			Assert.False( action.IsResolved );
-			Assert.Equal( "Select invader to push.", action.Prompt );
+			Assert.Equal( "Select invader to push", action.Prompt );
 			Assert_Options( options );
 			action.Select( action.Options.Single( x => x.Text == invader.Summary ) );
 		}
@@ -187,26 +187,26 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// 1 explorer + 1 Town on A4
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[4];
-			gameState.Adjust( targetSpace, Invader.Explorer, 3 );
+			gameState.Adjust( targetSpace, InvaderSpecific.Explorer, 3 );
 
 			//  When: activating card
 			When_PlayingCard();
 
-			Then_SelectInvaderToPush(Invader.Explorer,"E@1","Done");
+			Then_SelectInvaderToPush(InvaderSpecific.Explorer,"E@1","Done");
 
 			//  Then: Select destination for Explorer 1
 			var dstn1 = board[2];
 			action.Select( dstn1 );
 			Assert.False( action.IsResolved );
 
-			Then_SelectInvaderToPush(Invader.Explorer,"E@1","Done");
+			Then_SelectInvaderToPush(InvaderSpecific.Explorer,"E@1","Done");
 
 			//  Then: Select destination for Explorer 2
 			var dstn2 = board[3];
 			action.Select( dstn2 );
 			Assert.False( action.IsResolved );
 
-			Then_SelectInvaderToPush(Invader.Explorer,"E@1","Done");
+			Then_SelectInvaderToPush(InvaderSpecific.Explorer,"E@1","Done");
 			//  Then: Select destination for Explorer 3
 			var dstn3 = board[5];
 			action.Select( dstn3 );

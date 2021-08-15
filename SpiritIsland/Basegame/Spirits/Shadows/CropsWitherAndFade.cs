@@ -18,10 +18,10 @@ namespace SpiritIsland.Basegame {
 			// replace 1 city with 1 town
 			var invaders = gs.InvadersOn(target).FilterBy(Invader.City,Invader.Town);
 			if(invaders.Length==0) return;
-			var invader = await engine.SelectInvader("Select invader to down-grade",invaders);
-			Invader newInvader = (invader.Label == "Town") ? Invader.Explorer
-				: invader.Health==1 ? Invader.Town1
-				: Invader.Town; // also replaces C@2 with T@2
+			InvaderSpecific invader = await engine.SelectInvader("Select invader to down-grade",invaders);
+			InvaderSpecific newInvader = (invader.Generic == Invader.Town) ? InvaderSpecific.Explorer
+				: invader.Health==1 ? InvaderSpecific.Town1
+				: InvaderSpecific.Town; // also replaces C@2 with T@2
 			gs.Adjust(target,newInvader,1);
 			gs.Adjust(target,invader,-1);
 		}

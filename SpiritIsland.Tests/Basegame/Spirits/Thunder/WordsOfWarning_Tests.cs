@@ -16,8 +16,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			eng.GameState.AdjustDahan( a[4] );
 
 			//  and: 4 explorers + 1 city
-			eng.GameState.Adjust( a[2], Invader.Explorer, 4 );
-			eng.GameState.Adjust( a[2], Invader.City, 1 );
+			eng.GameState.Adjust( a[2], InvaderSpecific.Explorer, 4 );
+			eng.GameState.Adjust( a[2], InvaderSpecific.City, 1 );
 			// and activate card
 			When_ActivateCard( WordsOfWarning.Name );
 			Step( "Select target.", "A2,A4", a[2], true );

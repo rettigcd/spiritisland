@@ -50,7 +50,7 @@ namespace SpiritIsland.Basegame {
 
 				while(deadDahanDamage > 0 && grp.InvaderTypesPresent.Any()) {
 					// pick best invader knowing total damage
-					Invader invaderToDamage = grp.PickSmartInvaderToDamage( expectedLivingDahanDamage + deadDahanDamage );
+					InvaderSpecific invaderToDamage = grp.PickSmartInvaderToDamage( expectedLivingDahanDamage + deadDahanDamage );
 					// apply our dead-dahan-damage to that invader
 					deadDahanDamage -= grp.ApplyDamageTo1( deadDahanDamage, invaderToDamage );
 				}

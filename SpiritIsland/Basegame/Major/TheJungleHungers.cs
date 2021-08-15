@@ -16,15 +16,15 @@ namespace SpiritIsland.Basegame {
 				&& 3<=eng.Self.Elements[Element.Plant];
 
 			// destroys all explorers and towns
-			grp.DestroyType(Invader.Explorer, int.MaxValue);
-			grp.DestroyType(Invader.Town, int.MaxValue );
+			grp.Destroy(Invader.Explorer, int.MaxValue);
+			grp.Destroy(Invader.Town, int.MaxValue );
 
 			// if you have 2 moon, 3 plant, Destroy 1 city and do not destroy dahan
 			if(!hasBonus){
 				int dahanCount = eng.GameState.GetDahanOnSpace(target);
 				await eng.GameState.DestoryDahan(target,dahanCount,DahanDestructionSource.PowerCard);
 			} else {
-				grp.DestroyType(Invader.City, 1);
+				grp.Destroy(Invader.City, 1);
 			}
 
 		}

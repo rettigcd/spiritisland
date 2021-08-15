@@ -31,16 +31,18 @@ namespace SpiritIsland.Basegame {
 				var engine = new ActionEngine( spirit, gs );
 				var options = gs.Island.AllSpaces
 					.Where( landFilter )
-					.Where( x => gs.InvadersOn( x ).Has( removable ) )
+					.Where( x => gs.InvadersOn( x ).HasAny( removable ) )
 					.ToArray();
 				if(options.Length == 0) break;
-				var target = await engine.SelectSpace( "Fear:Pick costal land remove explorer", options );
+				var target = await engine.SelectSpace( "Fear:Pick costal land remove invader", options );
 				var grp = gs.InvadersOn( target );
-				var invaderToRemove = grp.InvaderTypesPresent.Intersect( removable ).First();
+
+				var invaderToRemove = grp.PickBestInvaderToRemove( removable );
 				gs.Adjust( target, invaderToRemove, -1 );
 			}
 		}
 
 	}
+
 }
 

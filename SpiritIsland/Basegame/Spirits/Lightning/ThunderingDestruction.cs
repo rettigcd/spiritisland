@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,29 +39,21 @@ namespace SpiritIsland.Basegame {
 			return DestroyTownsOrCities( engine, target, 3 );
 		}
 
-		static async Task DestroyTowns(ActionEngine engine, Space target, int count){
-			var gameState = engine.GameState;
-			var grp = gameState.InvadersOn(target);
-			var invadersToDestroy = grp.FilterBy(Invader.Town);
-			while(count>0 && invadersToDestroy.Length >0){
-				var invader = await engine.SelectInvader("Select town/city to destroy.",invadersToDestroy,true);
-				if(invader==null) break;
-				grp.DestroyType(invader,1); //	grp.ApplyDamage(new DamagePlan(invader.Health,invader));
-
-				// next
-				invadersToDestroy = grp.FilterBy(Invader.Town);
-				--count;
-			}
+		static Task DestroyTowns(ActionEngine engine, Space target, int count){
+			engine.GameState.InvadersOn(target)
+				.Destroy( Invader.Town, count );
+			return Task.CompletedTask;
 		}
 
 		static async Task DestroyTownsOrCities(ActionEngine engine,Space target,int count){
 			var gameState = engine.GameState;
 			var grp = gameState.InvadersOn(target);
+			// !!! only show City/town, not individual health points
 			var invadersToDestroy = grp.FilterBy(Invader.City,Invader.Town);
 			while(count>0 && invadersToDestroy.Length >0){
 				var invader = await engine.SelectInvader("Select town/city to destroy.",invadersToDestroy,true);
 				if(invader==null) break;
-				grp.DestroyType( invader, 1 );
+				grp.Destroy( invader.Generic, 1 );
 
 				// next
 				invadersToDestroy = grp.FilterBy(Invader.City,Invader.Town);

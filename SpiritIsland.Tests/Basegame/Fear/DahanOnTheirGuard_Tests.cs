@@ -29,7 +29,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			gameState.AdjustDahan( ravageSpace, desiredDahan - gameState.GetDahanOnSpace( ravageSpace ) );
 			Assert.Equal(desiredDahan,gameState.GetDahanOnSpace(ravageSpace));
 
-			gameState.Adjust( ravageSpace, Invader.Town, desiredTown );
+			gameState.Adjust( ravageSpace, InvaderSpecific.Town, desiredTown );
 		}
 
 		[Fact]

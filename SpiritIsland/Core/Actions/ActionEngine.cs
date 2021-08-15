@@ -44,9 +44,9 @@ namespace SpiritIsland {
 			return result.Task;
 		}
 
-		public Task<Invader> SelectInvader( string prompt ,Invader[] invaders ,bool allowShortCircuit=false) {
-			var result = new TaskCompletionSource<Invader>();
-			decisions.Push( new SelectAsync<Invader>( 
+		public Task<InvaderSpecific> SelectInvader( string prompt ,InvaderSpecific[] invaders ,bool allowShortCircuit=false) {
+			var result = new TaskCompletionSource<InvaderSpecific>();
+			decisions.Push( new SelectAsync<InvaderSpecific>( 
 				prompt, 
 				invaders,
 				allowShortCircuit,

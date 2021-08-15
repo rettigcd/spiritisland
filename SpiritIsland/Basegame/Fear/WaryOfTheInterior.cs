@@ -29,11 +29,11 @@ namespace SpiritIsland.Basegame {
 				var engine = new ActionEngine( spirit, gs );
 				var options = gs.Island.AllSpaces
 					.Where( spaceCondition )
-					.Where( s => gs.InvadersOn( s ).Has( x ) )
+					.Where( s => gs.InvadersOn( s ).HasAny( x ) )
 					.ToArray();
 				if(options.Length == 0) break;
 				var target = await engine.SelectSpace( "Fear:select land to remove 1 explorer", options );
-				var invaderToRemove = gs.InvadersOn( target ).InvaderTypesPresent.Intersect( x ).OrderByDescending( x => x.Health ).First();
+				var invaderToRemove = gs.InvadersOn( target ).PickBestInvaderToRemove( x );
 				gs.Adjust( target, invaderToRemove, -1 );
 			}
 		}

@@ -10,7 +10,7 @@ namespace SpiritIsland.Basegame {
 		static public Task ActAsync( ActionEngine engine, Space target ) {
 			var (self, gs) = engine;
 			var grp = gs.InvadersOn( target );
-			var startingTownsAndCities = grp.TypeCount(Invader.Town,Invader.City);
+			var startingTownsAndCities = grp.TownsAndCitiesCount;
 			// 1 damage to each invader
 			grp.ApplyDamageToEach(1,grp.HealthyInvaderTypesPresent.ToArray());
 
@@ -20,7 +20,7 @@ namespace SpiritIsland.Basegame {
 				grp.SmartDamageToGroup(3);
 
 			// 1 fear per town/city this power destroys (to a max of 4)
-			int destroyedTownsAndCities = startingTownsAndCities - grp.TypeCount(Invader.Town,Invader.City);
+			int destroyedTownsAndCities = startingTownsAndCities - grp.TownsAndCitiesCount;
 			engine.GameState.AddFear( destroyedTownsAndCities );
 
 			return Task.CompletedTask;

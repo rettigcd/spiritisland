@@ -100,9 +100,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			// 1 city, 5 towns, 5 invaders on A4 (range 1 from SS)
 			var space = game.Spirit.SacredSites.First().Adjacent.First();
-			game.GameState.Adjust(space,Invader.City,1);
-			game.GameState.Adjust( space, Invader.Town, 5 );
-			game.GameState.Adjust( space, Invader.Explorer, 5 );
+			game.GameState.Adjust(space,InvaderSpecific.City,1);
+			game.GameState.Adjust( space, InvaderSpecific.Town, 5 );
+			game.GameState.Adjust( space, InvaderSpecific.Explorer, 5 );
 
 			Game_SelectGrowthOption( 0 ); // Reclaim
 

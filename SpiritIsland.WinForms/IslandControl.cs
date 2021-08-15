@@ -170,12 +170,12 @@ namespace SpiritIsland.WinForms
 			var grp = gameState.InvadersOn( space );
 			var invaders = grp.InvaderTypesPresent.Select( k => grp[k] + ":" + k.Summary ).Join( " " );
 			CountDictionary<Image> images = new();
-			images[city] = grp[Invader.City];
-			images[city2] = grp[Invader.City2];
-			images[city1] = grp[Invader.City1];
-			images[town] = grp[Invader.Town];
-			images[town1] = grp[Invader.Town1];
-			images[explorer] = grp[Invader.Explorer];;
+			images[city] = grp[InvaderSpecific.City];
+			images[city2] = grp[InvaderSpecific.City2];
+			images[city1] = grp[InvaderSpecific.City1];
+			images[town] = grp[InvaderSpecific.Town];
+			images[town1] = grp[InvaderSpecific.Town1];
+			images[explorer] = grp[InvaderSpecific.Explorer];;
 			DrawRow( graphics, x, ref y, iconWidth, xStep, images );
 
 			// dahan & presence & blight

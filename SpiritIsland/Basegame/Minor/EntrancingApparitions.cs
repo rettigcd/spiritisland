@@ -22,7 +22,7 @@ namespace SpiritIsland.Basegame {
 			while(remaining>0 && spacesWithExplorers.Length>0){
 				var source = await engine.SelectSpace("pull explorer from",spacesWithExplorers,true);
 				if(source==null) break;
-				gs.Move(Invader.Explorer,source,target);
+				gs.Move(InvaderSpecific.Explorer,source,target);
 				--remaining;
 				spacesWithExplorers = CalcSpaceOptions();;
 			}

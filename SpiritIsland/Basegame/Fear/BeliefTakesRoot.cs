@@ -33,7 +33,7 @@ namespace SpiritIsland.Basegame {
 			foreach(var spirit in gs.Spirits) {
 				var engine = new ActionEngine(spirit,gs);
 				var options = spirit.Presence.Spaces
-					.Where(s=>gs.InvadersOn(s).Has(Invader.Town,Invader.Explorer))
+					.Where(s=>gs.InvadersOn(s).HasAny(Invader.Town,Invader.Explorer))
 					.Except(used)
 					.ToArray();
 				if(options.Length==0) continue;
@@ -41,9 +41,9 @@ namespace SpiritIsland.Basegame {
 				used.Add(target);
 				var grp = gs.InvadersOn(target);
 				if(grp.HasTown)
-					gs.Adjust(target,Invader.Town,-1);
+					gs.Adjust(target,InvaderSpecific.Town,-1); // !!! what about damaged towns?  that is possible if fast caused damage
 				else
-					gs.Adjust(target,Invader.Explorer,-2);
+					gs.Adjust(target,InvaderSpecific.Explorer,-2);
 			}
 		}
 	}

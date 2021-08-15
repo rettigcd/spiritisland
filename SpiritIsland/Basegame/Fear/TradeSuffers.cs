@@ -20,8 +20,8 @@ namespace SpiritIsland.Basegame {
 				var options = gs.Island.AllSpaces.Where(s=>s.IsCostal&&gs.InvadersOn(s).HasTown).ToArray();
 				if(options.Length==0) return;
 				var target = await engine.SelectSpace("Replace town with explorer",options);
-				gs.Adjust(target,Invader.Town,-1);
-				gs.Adjust( target, Invader.Explorer, 1 );
+				gs.Adjust(target,InvaderSpecific.Town,-1);
+				gs.Adjust( target, InvaderSpecific.Explorer, 1 );
 			}
 		}
 
@@ -29,15 +29,15 @@ namespace SpiritIsland.Basegame {
 		public async Task Level3( GameState gs ) {
 			foreach(var spirit in gs.Spirits) {
 				var engine = new ActionEngine( spirit, gs );
-				var options = gs.Island.AllSpaces.Where( s => s.IsCostal && gs.InvadersOn( s ).Has(Invader.Town,Invader.City) ).ToArray();
+				var options = gs.Island.AllSpaces.Where( s => s.IsCostal && gs.InvadersOn( s ).HasAny(Invader.Town,Invader.City) ).ToArray();
 				if(options.Length == 0) return;
 				var target = await engine.SelectSpace( "Replace town with explorer", options );
 				if(gs.InvadersOn( target ).HasCity) {
-					gs.Adjust( target, Invader.City, -1 );
-					gs.Adjust( target, Invader.Town, 1 );
+					gs.Adjust( target, InvaderSpecific.City, -1 );
+					gs.Adjust( target, InvaderSpecific.Town, 1 );
 				} else {
-					gs.Adjust( target, Invader.Town, -1 );
-					gs.Adjust( target, Invader.Explorer, 1 );
+					gs.Adjust( target, InvaderSpecific.Town, -1 );
+					gs.Adjust( target, InvaderSpecific.Explorer, 1 );
 				}
 			}
 		}

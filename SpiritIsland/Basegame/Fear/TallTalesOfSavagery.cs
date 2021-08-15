@@ -14,7 +14,7 @@ namespace SpiritIsland.Basegame {
 				var options = gs.Island.AllSpaces.Where(s => gs.HasDahan(s) && gs.InvadersOn(s).HasExplorer ).ToArray();
 				if(options.Length==0) return;
 				var target = await engine.SelectSpace( "Fear:select land with dahan to remove explorer", options );
-				gs.Adjust( target, Invader.Explorer, -1 );
+				gs.Adjust( target, InvaderSpecific.Explorer, -1 );
 			}
 		}
 
@@ -34,16 +34,16 @@ namespace SpiritIsland.Basegame {
 			foreach(var space in gs.Island.AllSpaces.Where(gs.HasDahan))
 				RemoveTownOr2Explorers( gs, space );
 			foreach(var space in gs.Island.AllSpaces.Where( s=>gs.GetDahanOnSpace(s)>=2 && gs.InvadersOn(s).HasCity ))
-				gs.Adjust(space,Invader.City,-1);
+				gs.Adjust(space,InvaderSpecific.City,-1); // !!! what about damaged cities?
 			return Task.CompletedTask;
 		}
 
 		static void RemoveTownOr2Explorers( GameState gs, Space target ) {
 			var grp = gs.InvadersOn( target );
 			if(grp.HasTown)
-				gs.Adjust( target, Invader.Town, -1 );
+				gs.Adjust( target, InvaderSpecific.Town, -1 ); // !!! what about damaged towns?  shouldn't we be able to remove them also?
 			else
-				gs.Adjust( target, Invader.Explorer, -2 );
+				gs.Adjust( target, InvaderSpecific.Explorer, -2 );
 		}
 
 	}
