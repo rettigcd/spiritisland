@@ -4,7 +4,6 @@
 // === Basegame Road Map ===
 UI		Display Spirit Name / Image
 UI		Display $$
-BASE	Major Cards (Easy) / Identify (hard)
 CORE	Implement Major/Minor Deck with shuffling
 BASE	Bringer
 BASE	Ocean

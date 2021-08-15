@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 	class VengeanceOfTheDead {
-		// NOT IMPLEMENTED!!!
 		// 3 fast moon fire animal
 		// range 3
 		// 3 fear
