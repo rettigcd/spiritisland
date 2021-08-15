@@ -1,17 +1,12 @@
-﻿using SpiritIsland;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
-	
+
 
 	public class EntwinedPower {
 
 
-		[MajorCard( "Entwinded Power", 2, Speed.Fast, Element.Moon, Element.Water, Element.Plant )]
+		[MajorCard( "Entwined Power", 2, Speed.Fast, Element.Moon, Element.Water, Element.Plant )]
 		[TargetSpirit]
 		static public async Task ActAsync( ActionEngine engine, Spirit target ) {
 			var (self, gs) = engine;

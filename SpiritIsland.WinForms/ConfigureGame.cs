@@ -56,6 +56,7 @@ namespace SpiritIsland.WinForms {
 
 		private void OkButton_Click( object sender, EventArgs e ) {
 			Spirit spirit = SelectedSpirit();
+//			spirit.UsePowerProgression();
 			Board board = SelectedBoard();
 
 			Color = (colorListBox.SelectedIndex == 0)
@@ -68,6 +69,10 @@ namespace SpiritIsland.WinForms {
 				) {
 				Island = new Island( board )
 			};
+
+			gameState.MajorCards = new PowerCardDeck(PowerCard.GetMajors());
+			gameState.MinorCards = new PowerCardDeck( PowerCard.GetMinors() );
+
 			var baseGameFearCards = new IFearCard[] {
 				new AvoidTheDahan(),
 				new BeliefTakesRoot(),

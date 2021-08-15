@@ -377,6 +377,42 @@ namespace SpiritIsland {
 		readonly CountDictionary<Space> defendCount = new CountDictionary<Space>();
 		public readonly HashSet<Space> noDamageToDahan = new(); // !!! special case for Conceiling Shadows - refactor!
 		public int FearPool {get; private set; } = 0;
+
+		public PowerCardDeck MajorCards;
+		public PowerCardDeck MinorCards;
+	}
+
+	public class PowerCardDeck {
+		public PowerCardDeck(IList<PowerCard> cards ) {
+			discards = cards.ToList();
+		}
+		public async Task<PowerCard> Draw(ActionEngine engine ) {
+			var flipped = new List<PowerCard>();
+			for(int i=0;i<4;++i) flipped.Add( FlipNext() );
+
+			var selectedCard = (PowerCard)await engine.SelectFactory("Select new Power Card",flipped.ToArray());
+
+			discards.AddRange(flipped.Where(c => c != selectedCard));
+
+			return selectedCard;
+		}
+
+		PowerCard FlipNext() {
+			if(cards.Count == 0)
+				ReshuffleDiscardDeck();
+			var next = cards.Pop();
+			return next;
+		}
+
+		void ReshuffleDiscardDeck() {
+			discards.Shuffle();
+			foreach(var card in discards) cards.Push(card);
+			discards.Clear();
+		}
+
+		Stack<PowerCard> cards = new Stack<PowerCard>();
+		List<PowerCard> discards;
+
 	}
 
 

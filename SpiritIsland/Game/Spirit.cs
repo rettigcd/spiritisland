@@ -251,7 +251,8 @@ namespace SpiritIsland {
 
 		public event SpaceTargetedEvent TargetedSpace;
 
-		static readonly IPowerCardDrawer DefaultCardDrawer = new IncrementCountCardDrawer();
+//		static readonly IPowerCardDrawer DefaultCardDrawer = new IncrementCountCardDrawer();
+		static readonly IPowerCardDrawer DefaultCardDrawer = new DrawFromDeck();
 
 	}
 

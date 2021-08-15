@@ -30,6 +30,7 @@ namespace SpiritIsland {
 		}
 
 		static readonly Random rng = new Random();
+
 		static public void Shuffle<T>( this IList<T> list ) {
 			int n = list.Count;
 			while(n > 1) {
