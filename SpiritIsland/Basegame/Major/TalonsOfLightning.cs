@@ -17,9 +17,9 @@ namespace SpiritIsland.Basegame {
 				// increase this Power's Range to 3
 				target = await engine.Self.PowerCardApi.TargetSpace(
 					engine,
-					engine.Self.Presence.Spaces,
+					From.Presence,
 					3, 
-					TargetSpaceAttribute.ToLambda(engine,Target.MountainOrWetland)
+					Target.MountainOrWetland
 				);
 
 			// 3 fear

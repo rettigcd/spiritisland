@@ -29,7 +29,7 @@ namespace SpiritIsland {
 		}
 
 		// !!! When we swap this out for user choosing, Which user chooses when dahan are doing damage????
-		static public Task SmartDamageToGroup( this InvaderGroup grp, int startingDamage, List<string> log = null ) {
+		static public Task ApplySmartDamageToGroup( this InvaderGroup grp, int startingDamage, List<string> log = null ) {
 			int damageToInvaders = startingDamage;
 
 			// While damage remains    &&    we have invaders

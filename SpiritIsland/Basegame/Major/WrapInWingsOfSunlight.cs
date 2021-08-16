@@ -23,18 +23,12 @@ namespace SpiritIsland.Basegame {
 
 			// move dahan
 			int max = Math.Min( engine.GameState.GetDahanOnSpace( target ), 5 );
-			int countToMove = await SelectNumber( engine, "# of dahan to move", target, destination, max );
+			int countToMove = await engine.SelectNumber( "# of dahan to move", max );
 			await engine.GameState.MoveDahan( target, destination, countToMove );
 
 			// defend
 			engine.GameState.Defend( destination, 5 );
 
-		}
-
-		private static async Task<int> SelectNumber( ActionEngine engine, string prompt, Space target, Space destination, int count ) {
-			List<string> numToMove = new List<string>();
-			while(count > 0) numToMove.Add( (count--).ToString() );
-			return int.Parse( await engine.SelectText( prompt, numToMove.ToArray() ) );
 		}
 	}
 

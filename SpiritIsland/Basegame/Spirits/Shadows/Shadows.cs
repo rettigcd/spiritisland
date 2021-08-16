@@ -81,14 +81,13 @@ Shadows Flicker like Flame:
 
 		class ShadowApi : PowerCardApi {
 
-			public override async Task<Space> TargetSpace( ActionEngine engine, IEnumerable<Space> source, int range, Func<Space, bool> filter = null ) {
+			public override async Task<Space> TargetSpace( ActionEngine engine, From from, Terrain? sourceTerrain, int range, Target filter ) {
 				// no money, do normal
 				if(engine.Self.Energy == 0)
-					return await base.TargetSpace( engine, source, range, filter );
+					return await base.TargetSpace( engine, from, sourceTerrain, range, filter );
 
 				// find normal Targetable spaces
-				var normalSpaces = source.Range(range).ToArray();
-				if(filter!=null) normalSpaces = normalSpaces.Where(filter).ToArray();
+				var normalSpaces = base.GetTargetOptions( engine, from, sourceTerrain, range, filter );
 
 				// find dahan-only spaces that are not in targetable spaces
 				var dahanOnlySpaces = engine.GameState.Island.Boards
@@ -98,11 +97,13 @@ Shadows Flicker like Flame:
 					.ToArray();
 				// no dahan-only spaces, do normal
 				if(dahanOnlySpaces.Length == 0)
-					return await base.TargetSpace( engine, source, range, filter );
+					return await base.TargetSpace( engine, from, sourceTerrain, range, filter );
 
 				// append Target-Dahan option to end of list
 				var options = normalSpaces.Cast<IOption>().ToList();
 				options.Add(new TextOption("Pay 1 energy to target land with dahan"));
+
+				// let them select normal, or choose to pay
 				var option = await engine.SelectOption("Select target.",options.ToArray());
 
 				// if they select regular space, use it

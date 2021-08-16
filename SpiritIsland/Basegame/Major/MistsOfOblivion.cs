@@ -16,7 +16,7 @@ namespace SpiritIsland.Basegame {
 
 			// if you have 2 moon 3 air 2 water, 3 damage
 			if(self.Elements.Contains("2 moon,3 air,2 water"))
-				grp.SmartDamageToGroup(3);
+				grp.ApplySmartDamageToGroup(3);
 
 			// 1 fear per town/city this power destroys (to a max of 4)
 			int destroyedTownsAndCities = startingTownsAndCities - grp.TownsAndCitiesCount;

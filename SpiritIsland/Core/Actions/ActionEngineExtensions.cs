@@ -144,6 +144,12 @@ namespace SpiritIsland {
 			self.Forget( (PowerCard)cardToForget );
 		}
 
+		static public async Task<int> SelectNumber( this ActionEngine engine, string prompt, int max ) {
+			List<string> numToMove = new List<string>();
+			while(max > 0) numToMove.Add( (max--).ToString() );
+			return int.Parse( await engine.SelectText( prompt, numToMove.ToArray() ) );
+		}
+
 	}
 
 }

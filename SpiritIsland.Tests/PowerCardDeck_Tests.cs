@@ -14,7 +14,7 @@ namespace SpiritIsland.Tests {
 		[Fact]
 		public void Major32Count() {
 			var majorCards = PowerCard.GetMajors();
-			const int notImplementedCount = 4;
+			const int notImplementedCount = 3;
 			majorCards.Length.ShouldBe( 22-notImplementedCount );
 		}
 

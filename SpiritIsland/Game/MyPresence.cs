@@ -14,7 +14,7 @@ namespace SpiritIsland {
 			var tracks = new List<Track>();
 			if(Energy.HasMore) tracks.Add( Energy.Next );
 			if(CardPlays.HasMore) tracks.Add( CardPlays.Next );
-			if(CanPlaceDestroyedPresence && destroyed>0) tracks.Add(Track.Destroyed);
+			if(CanPlaceDestroyedPresence && Destroyed>0) tracks.Add(Track.Destroyed);
 			return tracks.ToArray();
 		}
 
@@ -23,7 +23,7 @@ namespace SpiritIsland {
 		public void PlaceFromBoard( Track from, Space to ) {
 			// from
 			if(from == Track.Destroyed)
-				--destroyed;
+				--Destroyed;
 			else if(from == Energy.Next)
 				Energy.RevealedCount++;
 			else if(from == CardPlays.Next)
@@ -42,8 +42,8 @@ namespace SpiritIsland {
 		public int On(Space space) => Placed.Count(p=>p==space);
 		public bool IsOn(Space space) => Placed.Contains(space);
 
-		public void Destroy(Space space) { Placed.Remove(space); ++destroyed; } 
-		int destroyed = 0;
+		public void Destroy(Space space) { Placed.Remove(space); ++Destroyed; } 
+		public int Destroyed {get; private set; }
 
 		public void Move(Space from, Space to ) {
 			Placed.Remove( from );

@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 		[FromPresenceIn(1,Terrain.Jungle)]
 		static public async Task Act(ActionEngine eng){
 			// range 1 from presence in jungle
-			var target = await eng.Api.TargetSpace( eng, eng.Self.Presence.Spaces.Where(s=>s.Terrain==Terrain.Jungle),1);
+			var target = await eng.Api.TargetSpace( eng, From.Presence, 1, Target.Jungle );
 			InvaderGroup grp = eng.GameState.InvadersOn(target);
 
 			// destroys all explorers and towns

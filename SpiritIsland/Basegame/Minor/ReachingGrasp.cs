@@ -30,8 +30,8 @@ namespace SpiritIsland.Basegame {
 				this.original = original;
 			}
 
-			public override Task<Space> TargetSpace( ActionEngine engine, IEnumerable<Space> source, int range, Func<Space, bool> filter = null )
-				=> original.TargetSpace( engine, source, range + extension, filter );
+			public override Task<Space> TargetSpace( ActionEngine engine, From from, Terrain? sourceTerrain, int range, Target target )
+				=> original.TargetSpace( engine, from, sourceTerrain, range + extension, target );
 
 		}
 

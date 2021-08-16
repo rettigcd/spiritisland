@@ -344,7 +344,7 @@ namespace SpiritIsland {
 
 				// damage: Invaders
 				if(dahan>0)
-					await ravageGroup.SmartDamageToGroup( dahan * 2, log );
+					await ravageGroup.ApplySmartDamageToGroup( dahan * 2, log );
 
 				// flush invader damage - post dahan
 			}
@@ -356,7 +356,7 @@ namespace SpiritIsland {
 
 		public void DamageInvaders(Space space,int damage){ // !!! let players choose the item to apply damage to
 			if(damage==0) return;
-			InvadersOn(space).SmartDamageToGroup( damage );
+			InvadersOn(space).ApplySmartDamageToGroup( damage );
 		}
 
 		#endregion
