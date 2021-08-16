@@ -1,5 +1,4 @@
-﻿using SpiritIsland;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 
@@ -10,7 +9,7 @@ namespace SpiritIsland.Basegame {
 		static public async Task ActionAsync( ActionEngine engine, Space target ) {
 
 			// if you have: 3 fire, 3 air
-			bool bonus = engine.Self.Elements.Has( ElementList.Parse( "3 fire, 3 air" ) );
+			bool bonus = engine.Self.Elements.Contains( "3 fire, 3 air" );
 
 			// !!! hack/bug! - if spirit wants to reuse card on the same target, they will get to pick a different one
 			// Could create an additional [SelectsTarget] attribute that gets loaded by PowerCard.For<...?

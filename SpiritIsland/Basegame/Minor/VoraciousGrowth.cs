@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using SpiritIsland;
 
 namespace SpiritIsland.Basegame {
 	class VoraciousGrowth {

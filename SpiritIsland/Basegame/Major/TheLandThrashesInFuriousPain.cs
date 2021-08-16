@@ -1,5 +1,4 @@
-﻿using SpiritIsland;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
@@ -14,8 +13,7 @@ namespace SpiritIsland.Basegame {
 			ApplyDamageFromBlight( target, gs );
 
 			// if you have 3 moon 3 earth
-			var el = self.Elements;
-			if( 3<= el[Element.Moon] && 3<=el[Element.Earth]) {
+			if(self.Elements.Contains("3 moon,3 earth")) {
 				// repeat on an adjacent land.
 				var alsoTarget = await engine.SelectSpace( "Select adjacent land to receive damage from blight", target.Adjacent);
 				ApplyDamageFromBlight( alsoTarget, gs );

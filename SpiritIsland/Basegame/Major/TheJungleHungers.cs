@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using SpiritIsland;
 
 namespace SpiritIsland.Basegame {
 
@@ -13,19 +12,16 @@ namespace SpiritIsland.Basegame {
 			var target = await eng.Api.TargetSpace( eng, eng.Self.Presence.Spaces.Where(s=>s.Terrain==Terrain.Jungle),1);
 			InvaderGroup grp = eng.GameState.InvadersOn(target);
 
-			bool hasBonus = 2<=eng.Self.Elements[Element.Moon] 
-				&& 3<=eng.Self.Elements[Element.Plant];
-
 			// destroys all explorers and towns
 			grp.Destroy(Invader.Explorer, int.MaxValue);
 			grp.Destroy(Invader.Town, int.MaxValue );
 
 			// if you have 2 moon, 3 plant, Destroy 1 city and do not destroy dahan
-			if(!hasBonus){
+			if(eng.Self.Elements.Contains( "2 moon,3 plant" )) {
+				grp.Destroy( Invader.City, 1 );
+			} else {
 				int dahanCount = eng.GameState.GetDahanOnSpace(target);
 				await eng.GameState.DestoryDahan(target,dahanCount,DahanDestructionSource.PowerCard);
-			} else {
-				grp.Destroy(Invader.City, 1);
 			}
 
 		}

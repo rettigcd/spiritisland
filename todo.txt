@@ -4,11 +4,15 @@
 Display destroyed presence
 make SS dispay differently
 
+== Test Special Cases ==
+Conceiling Shadows - no damage to dahan
+A Year of Perfect Stillness - skips invader actions
+Talons of Lightning - extended / conditional range 
+
 
 // === Basegame Road Map ===
 UI		Display Spirit Name / Image
 UI		Display $$
-CORE	Implement Major/Minor Deck with shuffling
 BASE	Bringer
 BASE	Ocean
 CORE	Split Growth Option into parts

@@ -39,7 +39,7 @@ namespace SpiritIsland {
 		public int PowersActivated(Spirit spirit){
 			return elementListByMethod
 				.OrderByDescending(pair=>pair.Value.Length)
-				.Where(pair=>spirit.Elements.Has(pair.Value))
+				.Where(pair=>spirit.Elements.Contains(pair.Value))
 				.Count();
 		}
 
@@ -59,7 +59,7 @@ namespace SpiritIsland {
 			var activatedElements = spirit.Elements;
 			return elementListByMethod
 				.OrderByDescending( pair => pair.Value.Length )
-				.Where( pair => activatedElements.Has( pair.Value ) )
+				.Where( pair => activatedElements.Contains( pair.Value ) )
 				.First().Key;
 		}
 

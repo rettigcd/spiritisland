@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using SpiritIsland;
 
 namespace SpiritIsland.Basegame {
 
@@ -11,8 +10,9 @@ namespace SpiritIsland.Basegame {
 			var (self,gameState) = engine;
 
 			// 3 fear, 5 damage
-			// if you have 4 fire, +2 fear, +5 damage
+			// if you have 4 fire
 			bool hasBonus = self.Elements[Element.Fire]>=4;
+			// +2 fear, +5 damage
 			gameState.AddFear( 3 + (hasBonus ? 2 : 0) );
 			gameState.DamageInvaders(targetLand, 5 + (hasBonus ? 5 : 0));
 

@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using SpiritIsland;
+﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 
@@ -17,11 +15,7 @@ namespace SpiritIsland.Basegame {
 			int damageToInvaders = 4;
 			gameState.AddFear(2);
 
-			if(spirit.Elements.Has(
-				Element.Sun,Element.Sun,Element.Sun,
-				Element.Water,Element.Water,
-				Element.Plant,Element.Plant,Element.Plant
-			)){
+			if(spirit.Elements.Contains("3 sun,2 water,3 plant")){
 				// +5 damage, remove 1 blight
 				damageToInvaders += 5;
 				gameState.AddBlight(target,-1);

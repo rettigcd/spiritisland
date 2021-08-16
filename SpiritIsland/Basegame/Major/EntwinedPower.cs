@@ -2,7 +2,6 @@
 
 namespace SpiritIsland.Basegame {
 
-
 	public class EntwinedPower {
 
 
@@ -17,7 +16,7 @@ namespace SpiritIsland.Basegame {
 
 			// You gain one of the power Cards they did not keep.
 
-			// if you have 2 water, 4 plant, you and target spirit each gain 3 energy and may gift the other 1 power from hand.
+			// !!!!if you have 2 water, 4 plant, you and target spirit each gain 3 energy and may gift the other 1 power from hand.
 		}
 
 	}

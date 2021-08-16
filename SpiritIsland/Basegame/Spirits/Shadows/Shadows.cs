@@ -121,7 +121,6 @@ Shadows Flicker like Flame:
 		public override void Initialize( Board board, GameState gs ) {
 			base.Initialize(board,gs);
 
-			// !!! extract this so we can reuse it between Shadow and Earth
 			var higestJungle = board.Spaces.OrderByDescending(s=>s.Label).First(s=>s.Terrain==Terrain.Jungle);
 
 			this.Presence.PlaceOn( higestJungle );

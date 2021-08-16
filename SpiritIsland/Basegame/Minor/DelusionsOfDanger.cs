@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using SpiritIsland;
 
 namespace SpiritIsland.Basegame {
 
@@ -9,17 +8,10 @@ namespace SpiritIsland.Basegame {
 		[FromPresence(1,Target.Explorer)]
 		static public async Task ActionAsync(ActionEngine engine, Space target){
 
-			const string PushKey = "Push 1 Explorer";
-			const string FearKey = "2 fear";
-			string text = await engine.SelectText("Select power",PushKey,FearKey);
-			switch(text){
-				case PushKey: 
-					await engine.PushInvader(target,InvaderSpecific.Explorer);
-					break;
-				case FearKey: 
-					engine.GameState.AddFear(2); 
-					break;
-			}
+			if(await engine.SelectFirstText( "Select power", "Push 1 Explorer", "2 fear" ))
+				await engine.PushInvader(target,InvaderSpecific.Explorer);
+			else
+				engine.GameState.AddFear(2); 
 
 		}
 

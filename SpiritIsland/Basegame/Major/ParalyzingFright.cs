@@ -14,8 +14,7 @@ namespace SpiritIsland.Basegame {
 			gs.SkipAllInvaderActions(target);
 
 			// if you have 2 air 3 earth, +4 fear
-			var el = self.Elements;
-			if(2<=el[Element.Air] && 3<=el[Element.Earth])
+			if(self.Elements.Contains("2 air,3 earth"))
 				gs.AddFear(4);
 			return Task.CompletedTask;
 		}

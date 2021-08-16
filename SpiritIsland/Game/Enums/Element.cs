@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SpiritIsland {
+
 	public enum Element{ 
 		None,	// none / default / error
 		Air,	// purple
@@ -37,6 +39,11 @@ namespace SpiritIsland {
 
 		static Element ParseEl( string text) => (Element)Enum.Parse( typeof( Element ), text, true );
 		
+		static public bool Contains(this CountDictionary<Element> dict, string subsetElementString) {
+			var subset = new CountDictionary<Element>( Parse(subsetElementString) );
+			return dict.Contains(subset);
+		}
+
 	}
 
 }

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using SpiritIsland;
+﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 	class PoisonedLand {
@@ -14,11 +12,7 @@ namespace SpiritIsland.Basegame {
 			gs.AddBlight(target,1);
 			gs.DestoryDahan(target,engine.GameState.GetDahanOnSpace(target),DahanDestructionSource.PowerCard);
 
-			bool hasBonus = engine.Self.Elements.Has(new Dictionary<Element,int>{
-				[Element.Earth] = 3,
-				[Element.Plant] = 2,
-				[Element.Animal] = 2
-			});
+			bool hasBonus = engine.Self.Elements.Contains("3 earth,2 plant,2 animal");
 			gs.AddFear(1+(hasBonus?1:0));
 			gs.DamageInvaders(target,7+(hasBonus?4:0));
 			return Task.CompletedTask;

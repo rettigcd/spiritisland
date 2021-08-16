@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using SpiritIsland;
+﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 

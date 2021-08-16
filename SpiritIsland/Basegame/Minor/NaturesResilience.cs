@@ -1,13 +1,10 @@
 ﻿using System.Threading.Tasks;
-using SpiritIsland;
 
 namespace SpiritIsland.Basegame {
 
 	public class NaturesResilience {
 
 		public const string Name = "Nature's Resilience";
-		const string DefendKey = "Defend 6";
-		const string RemoveBlightKey = "Remove Blight";
 
 		[MinorCard(NaturesResilience.Name,1,Speed.Fast,Element.Earth,Element.Plant,Element.Animal)]
 		[FromSacredSite(1)]
@@ -15,7 +12,7 @@ namespace SpiritIsland.Basegame {
 			var (self,gameState) = engine;
 			// if 2 water, you may INSTEAD remove 1 blight
 			bool removeBlight = self.Elements[Element.Water]>=2
-				&& await engine.SelectText("Select option",DefendKey, RemoveBlightKey) == RemoveBlightKey;
+				&& await engine.SelectFirstText("Select option", "Remove Blight", "Defend 6" );
 
 			if(removeBlight)
 				gameState.RemoveBlight(target);

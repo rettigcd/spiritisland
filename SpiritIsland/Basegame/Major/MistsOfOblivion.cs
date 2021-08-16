@@ -15,8 +15,7 @@ namespace SpiritIsland.Basegame {
 			grp.ApplyDamageToEach(1,grp.HealthyInvaderTypesPresent.ToArray());
 
 			// if you have 2 moon 3 air 2 water, 3 damage
-			var el = self.Elements;
-			if(2<=el[Element.Moon] && 3<=el[Element.Air] && 2<=el[Element.Water])
+			if(self.Elements.Contains("2 moon,3 air,2 water"))
 				grp.SmartDamageToGroup(3);
 
 			// 1 fear per town/city this power destroys (to a max of 4)

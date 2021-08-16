@@ -23,7 +23,6 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			Assert.True(action.IsResolved);
 
-			// !!! test that nothing changes
 		}
 
 		[Theory]

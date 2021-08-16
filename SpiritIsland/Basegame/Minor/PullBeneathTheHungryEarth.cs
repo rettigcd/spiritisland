@@ -1,7 +1,4 @@
-﻿using System.Threading.Tasks;
-using SpiritIsland;
-
-namespace SpiritIsland.Basegame {
+﻿namespace SpiritIsland.Basegame {
 
 	public class PullBeneathTheHungryEarth {
 

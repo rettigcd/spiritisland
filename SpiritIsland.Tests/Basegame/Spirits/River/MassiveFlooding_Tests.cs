@@ -130,9 +130,6 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 				game.Spirit.Presence.Energy.RevealedCount++;
 		}
 
-
-		// !!!!!!!!!   Rivers special rules -> presence in water is SS
-
 	}
 
 }

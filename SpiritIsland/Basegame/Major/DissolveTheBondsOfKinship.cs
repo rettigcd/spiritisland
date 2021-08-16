@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SpiritIsland.Basegame {
+﻿namespace SpiritIsland.Basegame {
 	class DissolveTheBondsOfKinship {// !!!!!!
 		// 4 slow fire earth animal
 		// range 1

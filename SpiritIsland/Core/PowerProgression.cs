@@ -30,7 +30,6 @@ namespace SpiritIsland {
 			spirit.RegisterNewCard( newCard );
 			if(newCard.PowerType == PowerType.Major)
 				await engine.ForgetPowerCard();
-//				spirit.AddActionFactory( new ForgetPowerCard() ); // !!! do this right now, don't make it another factory
 		}
 
 	}

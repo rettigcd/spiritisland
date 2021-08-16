@@ -127,7 +127,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			var drawPowerCard = new DrawPowerCard();
 			var eng = new ActionEngine(spirit,gameState);
 			while(count-- > 0) {
-				drawPowerCard.Activate( eng );
+				_ = drawPowerCard.Activate( eng );
 			}
 
 			Assert_HasCardAvailable( lastPowerCard );

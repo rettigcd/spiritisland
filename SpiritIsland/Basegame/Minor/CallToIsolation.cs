@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using SpiritIsland;
+﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 
@@ -12,10 +10,10 @@ namespace SpiritIsland.Basegame {
 			var (_,gameState) = engine;
 
 			var grp = gameState.InvadersOn(target);
-			int pushCount = gameState.GetDahanOnSpace(target);
-			const string pushDahanKey = "push 1 dahan";
+			int pushCount = gameState.GetDahanOnSpace(target); // push 1 explorer/town per dahan
+
 			bool pushDahan = !grp.HasExplorer && !grp.HasTown
-				|| await engine.SelectText("Select option",pushDahanKey,$"push {pushCount} explorer or towns") == pushDahanKey;
+				|| await engine.SelectFirstText("Select option", "push 1 dahan", $"push {pushCount} explorer or towns");
 
 			if( pushDahan )
 				await engine.PushUpToNDahan(target,1);

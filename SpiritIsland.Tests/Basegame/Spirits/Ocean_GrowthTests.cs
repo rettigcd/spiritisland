@@ -9,14 +9,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 
 	public class Ocean_GrowthTests : GrowthTests {
 
-
-		static Spirit GetOcean() {
-			var ocean = new Ocean();
-			ocean.CardDrawer = new IncrementCountCardDrawer();
-			return ocean;
-		}
-
-		public Ocean_GrowthTests():base(GetOcean()){}
+		public Ocean_GrowthTests():base( new Ocean { CardDrawer = new IncrementCountCardDrawer() } ) {}
 
 		[Theory]
 		[InlineData("A0","","A0")]
@@ -66,8 +59,6 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 			Given_HasPresence( starting );
 
 			// Changed implementation to not run unresolved things
-			// !!! should assert that unresolved actions has 1 item in it.
-			// Assert.Throws<InvalidOperationException>(()=>When_Growing(0));
 		}
 
 		[Fact]

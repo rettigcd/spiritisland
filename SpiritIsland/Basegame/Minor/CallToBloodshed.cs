@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using SpiritIsland;
+﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 
@@ -11,18 +9,12 @@ namespace SpiritIsland.Basegame {
 		static public async Task Act(ActionEngine engine,Space target){
 			var (_,gameState)=engine;
 
-			const string key1 = "1 damage per dahan";
-			const string key2 = "gather up to 3 dahan";
-			string opt = await engine.SelectText("Select option",key1,key2);
-
-			if(opt==key1){
+			if( await engine.SelectFirstText( "Select option", "1 damage per dahan", "gather up to 3 dahan" ) )
 				// opt 1 - 1 damage per dahan
 				gameState.DamageInvaders(target,gameState.GetDahanOnSpace(target));
-				return;
-			}
-
-			// opt 2 - gather up to 3 dahan
-			await engine.GatherUpToNDahan(target,3);
+			else
+				// opt 2 - gather up to 3 dahan
+				await engine.GatherUpToNDahan(target,3);
 		}
 	}
 }

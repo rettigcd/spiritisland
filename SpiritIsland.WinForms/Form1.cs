@@ -46,7 +46,6 @@ namespace SpiritIsland.WinForms {
 			var spirit = game.Spirit;
 			this.trackLabel.Text = $"Energy: ${spirit.Energy} (+{spirit.EnergyPerTurn}/turn)  Cards Plays: {game.Spirit.NumberOfCardsPlayablePerTurn}/turn";
 
-			// this.blightLabel.Text = $"Blight: {gs.blightOnCard} " + (gs.BlightCard.IslandIsBlighted ? "BLIGHTED":""); !!!
 		}
 
 		void ShowOptions() {

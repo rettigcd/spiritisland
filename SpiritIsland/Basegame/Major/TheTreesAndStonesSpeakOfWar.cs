@@ -1,5 +1,4 @@
-﻿using SpiritIsland;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
@@ -11,7 +10,7 @@ namespace SpiritIsland.Basegame {
 		static public async Task ActionAsync( ActionEngine engine, Space target ) {
 
 			// if you have 2 sun, 2 earth, 2 plant
-			bool bonus = engine.Self.Elements.Has(ElementList.Parse("2 sun, 2 earth, 2 plant"));
+			bool bonus = engine.Self.Elements.Contains("2 sun, 2 earth, 2 plant");
 
 			// for each dahan in target land, 1 damage and defend 2
 

@@ -220,7 +220,7 @@ namespace SpiritIsland.Tests.Core {
 
 		//// 3D@1, 1D@2 1C@3  => 1C@1,1T@2
 		[Theory]
-		[InlineData("3D@2,1T@2,1E@1","2D@2")] // !!! WRONG it should be 1D@2,1D@1 - not implemented parital yet
+		[InlineData("3D@2,1T@2,1E@1","2D@2")] // !!! WRONG it should be 1D@2,1D@1 (1 dahan is damaged) - not implemented parital yet
 		public async Task Ravage(string startingUnits,string endingUnits) {
 			gameState = new GameState(new RiverSurges()) { Island = new Island( board ) };
 

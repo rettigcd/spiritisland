@@ -75,8 +75,8 @@ namespace SpiritIslandCmd {
 
 		public string FormatTrack( Track track ) {
 			string details = track == Track.Energy1
-				? "$/turn = " + game.Spirit.EnergyPerTurn // !!! Display track
-				: "Card/turn = " + game.Spirit.NumberOfCardsPlayablePerTurn; // !!! display track
+				? "$/turn = " + game.Spirit.EnergyPerTurn
+				: "Card/turn = " + game.Spirit.NumberOfCardsPlayablePerTurn; 
 			return $"{track.Text} {details}";
 		}
 

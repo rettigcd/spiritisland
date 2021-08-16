@@ -3,7 +3,7 @@
 namespace SpiritIsland {
 	public class DrawFromDeck : IPowerCardDrawer {
 		public async Task Draw( ActionEngine engine ) {
-			if(await engine.SelectTextIndex("Which type do you wish to draw","minor","major") == 0)
+			if(await engine.SelectFirstText("Which type do you wish to draw","minor","major"))
 				await DrawMinor( engine );
 			else
 				await DrawMajor( engine );

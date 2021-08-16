@@ -1,5 +1,4 @@
-﻿using SpiritIsland;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 	public class EnticingSplendor {
