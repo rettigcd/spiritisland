@@ -48,8 +48,7 @@ namespace SpiritIsland.Basegame {
 		static async Task DestroyTownsOrCities(ActionEngine engine,Space target,int count){
 			var gameState = engine.GameState;
 			var grp = gameState.InvadersOn(target);
-			// !!! only show City/town, not individual health points
-			var invadersToDestroy = grp.FilterBy(Invader.City,Invader.Town);
+			InvaderSpecific[] invadersToDestroy = grp.FilterBy(Invader.City,Invader.Town);
 			while(count>0 && invadersToDestroy.Length >0){
 				var invader = await engine.SelectInvader("Select town/city to destroy.",invadersToDestroy,true);
 				if(invader==null) break;

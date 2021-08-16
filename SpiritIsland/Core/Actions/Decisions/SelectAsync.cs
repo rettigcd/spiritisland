@@ -32,7 +32,6 @@ namespace SpiritIsland {
 		public IOption[] Options {get;}
 
 		public void Select( IOption option ) {
-			// !!! need to test that we can short circuit this
 			if(allowShortCircuit && TextOption.Done.Matches(option))
 				promise.TrySetResult(null);
 			else

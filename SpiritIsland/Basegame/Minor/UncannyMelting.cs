@@ -13,7 +13,7 @@
 			if(gameState.HasInvaders(target))
 				gameState.AddFear(1);
 
-			// !!! unit test - requires Sand / Water
+			// !!! unit test - requires Sand / wetland
 			if(gameState.HasBlight(target) && target.Terrain.IsIn(Terrain.Wetland,Terrain.Sand))
 				gameState.RemoveBlight(target);
 
