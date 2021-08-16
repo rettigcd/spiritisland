@@ -12,7 +12,7 @@ namespace SpiritIsland {
 		public async Task DrawMajor( ActionEngine engine ) {
 			var card = await engine.GameState.MajorCards.Draw( engine );
 			engine.Self.Hand.Add( card );
-			// ??? should forget-card go here?
+			await engine.ForgetPowerCard();
 		}
 
 		public async Task DrawMinor( ActionEngine engine ) {

@@ -136,6 +136,14 @@ namespace SpiritIsland {
 
 		}
 
+		static public async Task ForgetPowerCard( this ActionEngine engine ) {
+			var self = engine.Self;
+			var options = self.PurchasedCards.Union( self.Hand ).Union( self.DiscardPile )
+				.ToArray();
+			var cardToForget = await engine.SelectFactory( "Select power card to forget", options );
+			self.Forget( (PowerCard)cardToForget );
+		}
+
 	}
 
 }

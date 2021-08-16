@@ -20,7 +20,6 @@ namespace SpiritIsland {
 		public static Element[] Parse( string elementFormat ) {
 			var items = new List<Element>();
 			foreach(var singleElementType in elementFormat.Split( ',' )) {
-				string[] parts = singleElementType.Trim().Split( ' ' );
 				var (count,el) = GetElementCounts(singleElementType);
 				while(count-- > 0)
 					items.Add( el );
@@ -31,11 +30,9 @@ namespace SpiritIsland {
 
 		static (int,Element) GetElementCounts(string single ) {
 			string[] parts = single.Trim().Split( ' ' );
-			if(parts.Length == 1)
-				return (1, ParseEl(parts[0]) );
-
-			return (int.Parse( parts[0] ), ParseEl(parts[1]));
-
+			return parts.Length == 1 
+				? (1, ParseEl(parts[0]) ) 
+				: (int.Parse( parts[0] ), ParseEl(parts[1]));
 		}
 
 		static Element ParseEl( string text) => (Element)Enum.Parse( typeof( Element ), text, true );

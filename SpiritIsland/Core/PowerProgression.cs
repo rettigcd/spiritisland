@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,24 +12,25 @@ namespace SpiritIsland {
 		}
 
 		public Task Draw( ActionEngine engine ) {
-			return Take( engine.Self, cards.First() );
+			return Take( engine, cards.First() );
 		}
 
 		public Task DrawMajor( ActionEngine engine ) {
-			return Take( engine.Self, cards.First( c => c.PowerType == PowerType.Major ) );
+			return Take( engine, cards.First( c => c.PowerType == PowerType.Major ) );
 		}
 
 		public Task DrawMinor( ActionEngine engine ) {
-			return Take( engine.Self, cards.First( c => c.PowerType == PowerType.Minor ) );
+			return Take( engine, cards.First( c => c.PowerType == PowerType.Minor ) );
 		}
 
-		Task Take( Spirit spirit, PowerCard newCard ) {
+		async Task Take( ActionEngine engine, PowerCard newCard ) {
+			var (spirit,_)=engine;
 			cards.Remove( newCard );
 
 			spirit.RegisterNewCard( newCard );
 			if(newCard.PowerType == PowerType.Major)
-				spirit.AddActionFactory( new ForgetPowerCard() ); // !!! do this right now, don't make it another factory
-			return Task.CompletedTask;
+				await engine.ForgetPowerCard();
+//				spirit.AddActionFactory( new ForgetPowerCard() ); // !!! do this right now, don't make it another factory
 		}
 
 	}

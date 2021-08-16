@@ -123,11 +123,12 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		[InlineData(5,"Song of Sanctity")]
 		[InlineData(6,"Tsunami")]
 		[InlineData(7,"Encompassing Ward")]
-		public async Task PowerProgressionCards( int count, string lastPowerCard ){
+		public void PowerProgressionCards( int count, string lastPowerCard ){
 			var drawPowerCard = new DrawPowerCard();
 			var eng = new ActionEngine(spirit,gameState);
-			while(count--!=0)
-				await drawPowerCard.Activate( eng );
+			while(count-- > 0) {
+				drawPowerCard.Activate( eng );
+			}
 
 			Assert_HasCardAvailable( lastPowerCard );
 		}

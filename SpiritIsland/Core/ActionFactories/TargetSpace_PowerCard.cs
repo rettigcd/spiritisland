@@ -15,7 +15,6 @@ namespace SpiritIsland {
 
 		public TargetSpace_PowerCard(MethodBase methodBase,TargetSpaceAttribute targetSpace){
 			this.methodBase = methodBase;
-			this.targetSpace = targetSpace;
 
 			var attr = methodBase.GetCustomAttributes<BaseCardAttribute>().VerboseSingle("Couldn't find BaseCardAttribute on PowerCard targeting a space");
 			Speed = attr.Speed;
@@ -23,6 +22,9 @@ namespace SpiritIsland {
 			Cost = attr.Cost;
 			Elements = attr.Elements;
 			PowerType = attr.PowerType;
+
+			this.targetSpace = targetSpace ?? throw new ArgumentNullException( nameof( targetSpace ), Name + " is missing targetting attribute" );
+
 		}
 
 		public event SpaceTargetedEvent TargetedSpace; // Targeter, Card, Targetee

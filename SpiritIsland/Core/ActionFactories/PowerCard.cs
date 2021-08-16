@@ -19,8 +19,9 @@ namespace SpiritIsland {
 			if(method.GetCustomAttributes<TargetSpiritAttribute>().Any())
 				return new TargetSpirit_PowerCard( method );
 
-			TargetSpaceAttribute targetSpace = (TargetSpaceAttribute)method.GetCustomAttributes<FromPresenceAttribute>().FirstOrDefault()
-				?? (TargetSpaceAttribute)method.GetCustomAttributes<FromSacredSiteAttribute>().FirstOrDefault();
+			//TargetSpaceAttribute targetSpace = (TargetSpaceAttribute)method.GetCustomAttributes<FromPresenceAttribute>().FirstOrDefault()
+			//	?? (TargetSpaceAttribute)method.GetCustomAttributes<FromSacredSiteAttribute>().FirstOrDefault();
+			TargetSpaceAttribute targetSpace = (TargetSpaceAttribute)method.GetCustomAttributes<TargetSpaceAttribute>().FirstOrDefault();
 
 			return new TargetSpace_PowerCard( method, targetSpace );
 		}

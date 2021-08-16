@@ -7,7 +7,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 
 	public class SharpFangs_GrowthTests : GrowthTests {
 
-		public SharpFangs_GrowthTests():base( new SharpFangs() ){
+		public SharpFangs_GrowthTests():base( new SharpFangs { CardDrawer = new IncrementCountCardDrawer() } ) {
 		
 			// Setup for growth option B
 			Given_HasPresence( board[2] ); // wetlands

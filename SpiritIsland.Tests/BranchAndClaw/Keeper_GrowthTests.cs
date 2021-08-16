@@ -6,7 +6,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 
 	public class Keeper_GrowthTests : GrowthTests {
 
-		public Keeper_GrowthTests():base(new Keeper()){}
+		public Keeper_GrowthTests():base( new Keeper { CardDrawer = new IncrementCountCardDrawer() } ) {}
 
 		// a) reclaim, +1 energy
 		// b) +1 power card

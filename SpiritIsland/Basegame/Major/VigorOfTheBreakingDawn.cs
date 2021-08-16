@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 
 	class VigorOfTheBreakingDawn {
 
-		[MajorCard("Vigor of the Breaking Down",3,Speed.Fast,Element.Sun,Element.Animal)]
+		[MajorCard("Vigor of the Breaking Dawn",3,Speed.Fast,Element.Sun,Element.Animal)]
 		[FromPresence(2,Target.Dahan)]
 		public static async Task ActAsync(ActionEngine engine,Space target){
 			var (spirit,gs) = engine;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace SpiritIsland {
+
 	[AttributeUsage( AttributeTargets.Class | AttributeTargets.Method )]
 	class FromPresenceInAttribute : TargetSpaceAttribute {
 		readonly Terrain terrain;

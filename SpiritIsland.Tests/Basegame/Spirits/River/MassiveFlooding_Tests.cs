@@ -29,7 +29,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 		public MassiveFlooding_Tests(){
 			// Given: River
-			var gameState = new GameState( new RiverSurges() ) {
+			var gameState = new GameState( new RiverSurges().UsePowerProgression() ) {
 				Island = new Island( Board.BuildBoardA() )
 			};
 			gameState.InvaderDeck = InvaderDeck.Unshuffled();

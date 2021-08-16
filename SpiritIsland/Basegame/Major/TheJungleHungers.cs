@@ -7,6 +7,7 @@ namespace SpiritIsland.Basegame {
 	class TheJungleHungers {
 
 		[MajorCard("The Jungle Hungers",3,Speed.Slow,Element.Moon,Element.Plant)]
+		[FromPresenceIn(1,Terrain.Jungle)]
 		static public async Task Act(ActionEngine eng){
 			// range 1 from presence in jungle
 			var target = await eng.Api.TargetSpace( eng, eng.Self.Presence.Spaces.Where(s=>s.Terrain==Terrain.Jungle),1);

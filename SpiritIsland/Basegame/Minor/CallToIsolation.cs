@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 		[MinorCard("Call to Isolation",0,Speed.Fast,Element.Sun,Element.Air,Element.Animal)]
 		[FromPresence(1,Target.Dahan)]
 		static public async Task Act(ActionEngine engine,Space target){
-			var (spirit,gameState) = engine;
+			var (_,gameState) = engine;
 
 			var grp = gameState.InvadersOn(target);
 			int pushCount = gameState.GetDahanOnSpace(target);

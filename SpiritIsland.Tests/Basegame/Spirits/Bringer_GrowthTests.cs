@@ -5,7 +5,13 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 
 	public class Bringer_GrowthTests : GrowthTests {
 
-		public Bringer_GrowthTests():base( new Bringer() ){}
+		static Spirit ConfigureBringer() {
+			var bringer = new Bringer();
+			bringer.CardDrawer = new IncrementCountCardDrawer();
+			return bringer;
+		}
+
+		public Bringer_GrowthTests():base( ConfigureBringer() ){}
 
 		[Fact] 
 		public void ReclaimAll_PowerCard(){

@@ -410,8 +410,8 @@ namespace SpiritIsland {
 			discards.Clear();
 		}
 
-		Stack<PowerCard> cards = new Stack<PowerCard>();
-		List<PowerCard> discards;
+		readonly Stack<PowerCard> cards = new Stack<PowerCard>();
+		readonly List<PowerCard> discards;
 
 	}
 

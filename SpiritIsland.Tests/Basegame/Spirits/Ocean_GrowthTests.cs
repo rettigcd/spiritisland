@@ -9,7 +9,14 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 
 	public class Ocean_GrowthTests : GrowthTests {
 
-		public Ocean_GrowthTests():base(new Ocean()){}
+
+		static Spirit GetOcean() {
+			var ocean = new Ocean();
+			ocean.CardDrawer = new IncrementCountCardDrawer();
+			return ocean;
+		}
+
+		public Ocean_GrowthTests():base(GetOcean()){}
 
 		[Theory]
 		[InlineData("A0","","A0")]
