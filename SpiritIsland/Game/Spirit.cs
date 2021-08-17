@@ -239,7 +239,7 @@ namespace SpiritIsland {
 
 		public virtual InnatePower[] InnatePowers { get; set; } = Array.Empty<InnatePower>();
 
-		public PowerCardApi PowerCardApi {get; set;} = new PowerCardApi();
+		public TargetLandApi PowerCardApi {get; set;} = new TargetLandApi();
 
 		public virtual void Initialize( Board board, GameState gameState ){
 			gameState.TimePassed += On_TimePassed;
@@ -258,10 +258,13 @@ namespace SpiritIsland {
 
 		// pluggable, draw power card, or powerprogression
 		public IPowerCardDrawer CardDrawer = DefaultCardDrawer;
+		public TargetLandApi TargetLandApi = DefaultTargetLandApi;
+		public virtual InvaderGroup BuildInvaderGroup( GameState gs, Space space ) => new InvaderGroup( space, gs.GetCounts(space), gs.AddFear );
 
 		public Stack<IDecision> decisions = new();
-
+		
 		static readonly IPowerCardDrawer DefaultCardDrawer = new DrawFromDeck();
+		static readonly TargetLandApi DefaultTargetLandApi = new TargetLandApi();
 
 		public event SpaceTargetedEvent TargetedSpace;
 	}

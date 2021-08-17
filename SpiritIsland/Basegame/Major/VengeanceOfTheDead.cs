@@ -44,7 +44,7 @@ namespace SpiritIsland.Basegame {
 				var newLand = await engine.SelectSpace( $"Apply up to {additionalDamage} vengeanance damage in:", targetLandOptions );
 				if(newLand == null) break;
 				int damage = await engine.SelectNumber( "How many damage to apply?", additionalDamage );// !!! add include0 bool?
-				engine.GameState.DamageInvaders( newLand, damage );
+				await engine.DamageInvaders( newLand, damage );
 				additionalDamage -= damage;
 			}
 		}

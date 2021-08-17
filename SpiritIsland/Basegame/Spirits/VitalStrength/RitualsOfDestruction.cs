@@ -10,12 +10,12 @@ namespace SpiritIsland.Basegame.Spirits.VitalStrength {
 		static public Task ActAsync(ActionEngine eng,Space target){
 
 			bool hasBonus = 3 <= eng.GameState.GetDahanOnSpace(target);
-			
-			eng.GameState.DamageInvaders(target, hasBonus ? 5 : 2);
 
 			if(hasBonus)
-				eng.GameState.AddFear(2);
-			return Task.CompletedTask;
+				eng.GameState.AddFear( 2 );
+
+			return eng.DamageInvaders(target, hasBonus ? 5 : 2);
+
 		}
 
 	}

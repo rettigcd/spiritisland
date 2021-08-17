@@ -17,7 +17,7 @@ namespace SpiritIsland.Basegame {
 				gs.AddBlight(target,-1);
 			else
 				// 2 damage
-				gs.DamageInvaders(target,2);
+				await engine.DamageInvaders(target,2);
 		}
 
 	}

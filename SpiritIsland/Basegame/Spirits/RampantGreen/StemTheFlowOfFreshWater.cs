@@ -12,13 +12,13 @@ namespace SpiritIsland.Basegame {
 			// If target land is mountain or sand, 
 			if( target.Terrain.IsIn( Terrain.Mountain, Terrain.Sand ) ) {
 				// instead 1 damange to EACH town/city
-				grp.ApplyDamageToEach(1,Invader.City,Invader.Town);
+				await grp.ApplyDamageToEach(1, Invader.City, Invader.Town);
 			} else {
 				// 1 damage to 1 town or city.
 				var types = grp.FilterBy(Invader.City,Invader.Town);
 				var invader = await eng.SelectInvader("1 damage to",types);
 				if(invader !=null)
-					grp.ApplyDamageTo1(1,invader);
+					await grp.ApplyDamageTo1(1,invader);
 			}
 
 		}

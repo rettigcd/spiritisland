@@ -19,9 +19,7 @@ namespace SpiritIsland.Basegame {
 			if(3 <= engine.Self.Elements[Element.Animal] )
 				++damage;
 
-			engine.GameState.DamageInvaders( target, damage );
-
-			return Task.CompletedTask;
+			return engine.DamageInvaders( target, damage );
 		}
 
 	}

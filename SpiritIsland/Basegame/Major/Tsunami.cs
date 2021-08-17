@@ -10,15 +10,15 @@ namespace SpiritIsland.Basegame {
 
 		[MajorCard(Tsunami.Name,6,Speed.Slow,Element.Water,Element.Earth)]
 		[FromSacredSite(2,Target.Costal)]
-		static public Task ActAsync(ActionEngine engine,Space space){
+		static public async Task ActAsync(ActionEngine engine,Space space){
 			var(self,gameState) = engine;
 			// 2 fear
 			gameState.AddFear(2);
 			// +8 damage
-			gameState.DamageInvaders(space,8);
+			await engine.DamageInvaders(space,8);
 			// destroy 2 dahan
 			int count = System.Math.Min(gameState.GetDahanOnSpace(space),2);
-			gameState.DestoryDahan(space,count,DahanDestructionSource.PowerCard);
+			await engine.GameState.DestoryDahan(space,count,DahanDestructionSource.PowerCard);
 
 			if(self.Elements.Contains("3 water,2 earth")){
 				var others = gameState.Island
@@ -28,13 +28,12 @@ namespace SpiritIsland.Basegame {
 				foreach(var otherCoast in others){
 					gameState.AddFear(1);
 					// 4 damage
-					gameState.DamageInvaders(otherCoast,4);
+					await engine.DamageInvaders(otherCoast,4);
 					// destroy 1 dahan
 					if(gameState.HasDahan(otherCoast))
-						gameState.DestoryDahan(otherCoast,1, DahanDestructionSource.PowerCard);
+						await gameState.DestoryDahan(otherCoast,1, DahanDestructionSource.PowerCard);
 				}
 			}
-			return Task.CompletedTask;
 		}
 
 	}

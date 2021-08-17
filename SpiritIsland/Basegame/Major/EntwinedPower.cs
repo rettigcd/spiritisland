@@ -12,7 +12,7 @@ namespace SpiritIsland.Basegame {
 			var (self, gs) = selfEng;
 			// !!! You and target spirit may use each other's presence to target powers.
 
-			PowerCardApi x = self.PowerCardApi;
+			TargetLandApi x = self.PowerCardApi;
 
 			// Target spirit gains a power Card.
 			var targetEng = new ActionEngine(target,selfEng.GameState);

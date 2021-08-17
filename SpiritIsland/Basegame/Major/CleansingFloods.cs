@@ -12,8 +12,7 @@ namespace SpiritIsland.Basegame {
 			int damage = (4 <= engine.Self.Elements[Element.Water])
 				? 14
 				: 4;
-			engine.GameState.DamageInvaders(target,damage);
-			return Task.CompletedTask;
+			return engine.DamageInvaders(target,damage);
 		}
 
 	}

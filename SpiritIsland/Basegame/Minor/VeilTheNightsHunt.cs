@@ -15,7 +15,7 @@ namespace SpiritIsland.Basegame {
 
 			if(damageInvaders)
 				// each dahan deals 1 damage to a different invader
-				engine.GameState.DamageInvaders(target,dahanCount);
+				await engine.DamageInvaders(target, dahanCount);
 			else
 				// push up to 3 dahan
 				await engine.PushUpToNDahan(target,3);

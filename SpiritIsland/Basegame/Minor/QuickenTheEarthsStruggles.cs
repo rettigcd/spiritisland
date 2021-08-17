@@ -10,7 +10,7 @@ namespace SpiritIsland.Basegame {
 
 			if(await eng.SelectFirstText("Select power option", "1 damage to each town/city","defend 10"))
 				// 1 damage to each town/city
-				grp.ApplyDamageToEach(1,Invader.City,Invader.Town);
+				await grp.ApplyDamageToEach(1,Invader.City,Invader.Town);
 			else
 				// defend 10
 				eng.GameState.Defend(target,10);

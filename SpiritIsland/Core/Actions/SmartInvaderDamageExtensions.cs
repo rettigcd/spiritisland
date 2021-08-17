@@ -14,7 +14,7 @@ namespace SpiritIsland {
 				var invader = await engine.SelectInvader( "Select invader to damage.", group.InvaderTypesPresent_Specific.ToArray() );
 				if(invader == null) break;
 
-				damage -= group.ApplyDamageTo1( damage, invader );
+				damage -= await group.ApplyDamageTo1( damage, invader );
 			}
 
 			return damage;
@@ -26,20 +26,18 @@ namespace SpiritIsland {
 		}
 
 		// !!! When we swap this out for user choosing, Which user chooses when dahan are doing damage????
-		static public Task ApplySmartDamageToGroup( this InvaderGroup grp, int startingDamage, List<string> log = null ) {
+		static public async Task ApplySmartDamageToGroup( this InvaderGroup grp, int startingDamage, List<string> log = null ) {
 			int damageToInvaders = startingDamage;
 
 			// While damage remains    &&    we have invaders
 			while(damageToInvaders > 0 && grp.InvaderTypesPresent_Specific.Any()) {
 				InvaderSpecific invaderToDamage = PickSmartInvaderToDamage( grp, damageToInvaders );
-				damageToInvaders -= grp.ApplyDamageTo1( damageToInvaders, invaderToDamage );
+				damageToInvaders -= await grp.ApplyDamageTo1( damageToInvaders, invaderToDamage );
 			}
 			if(log != null) log.Add( $"{startingDamage} damage to invaders leaving {grp}." );
-
-			return Task.CompletedTask;
 		}
 
-		static public Task SmartDamageToTypes( this InvaderGroup grp, int startingDamage, params Invader[] invaderGeneric ) {
+		static async public Task SmartDamageToTypes( this InvaderGroup grp, int startingDamage, params Invader[] invaderGeneric ) {
 			int damageToInvaders = startingDamage;
 
 			var allTargetTypes = invaderGeneric.SelectMany( x => x.AliveVariations ).ToArray();
@@ -49,10 +47,8 @@ namespace SpiritIsland {
 
 			while(damageToInvaders > 0 && Targets().Any()) {
 				InvaderSpecific invaderToDamage = SmartInvaderAttacker.GetKillOrder( grp, damageToInvaders ).Where(i=>invaderGeneric.Contains(i.Generic)).First();
-				damageToInvaders -= grp.ApplyDamageTo1( damageToInvaders, invaderToDamage );
+				damageToInvaders -= await grp.ApplyDamageTo1( damageToInvaders, invaderToDamage );
 			}
-
-			return Task.CompletedTask;
 		}
 
 		class SmartInvaderAttacker {

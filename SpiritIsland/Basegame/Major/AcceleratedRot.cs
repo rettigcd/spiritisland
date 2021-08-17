@@ -8,7 +8,7 @@ namespace SpiritIsland.Basegame {
 
 		[MajorCard(AcceleratedRot.Name,4,Speed.Slow,Element.Sun,Element.Water,Element.Plant)]
 		[FromPresence(2,Target.JungleOrWetland)]
-		static public Task ActAsync(ActionEngine engine, Space target){
+		static public async Task ActAsync(ActionEngine engine, Space target){
 			var (spirit,gameState) = engine;
 
 			// 2 fear, 4 damage
@@ -21,8 +21,7 @@ namespace SpiritIsland.Basegame {
 				gameState.AddBlight(target,-1);
 			}				
 
-			gameState.DamageInvaders(target, damageToInvaders);
-			return Task.CompletedTask;
+			await engine.DamageInvaders(target, damageToInvaders);
 		}
 
 	}

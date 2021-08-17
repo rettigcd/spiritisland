@@ -10,20 +10,20 @@ namespace SpiritIsland.Basegame {
 		static public async Task ActAsync(ActionEngine engine,Space target) {
 			var (self, gs) = engine;
 
-			ApplyDamageFromBlight( target, gs );
+			await ApplyDamageFromBlight( target, gs, engine );
 
 			// if you have 3 moon 3 earth
 			if(self.Elements.Contains("3 moon,3 earth")) {
 				// repeat on an adjacent land.
 				var alsoTarget = await engine.SelectSpace( "Select adjacent land to receive damage from blight", target.Adjacent);
-				ApplyDamageFromBlight( alsoTarget, gs );
+				await ApplyDamageFromBlight( alsoTarget, gs, engine );
 			}
 		}
 
-		static void ApplyDamageFromBlight( Space target, GameState gs ) {
+		static Task ApplyDamageFromBlight( Space target, GameState gs, ActionEngine engine ) {
 			int damage = gs.GetBlightOnSpace( target ) * 2  // 2 damage per blight in target land
 				+ target.Adjacent.Sum( x => gs.GetBlightOnSpace( x ) ); // +1 damage per blight in adjacent lands
-			gs.DamageInvaders( target, damage );
+			return engine.DamageInvaders( target, damage );
 		}
 	}
 }

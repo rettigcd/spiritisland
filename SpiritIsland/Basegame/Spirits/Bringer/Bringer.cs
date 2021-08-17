@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using SpiritIsland;
+using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 
@@ -68,6 +69,33 @@ namespace SpiritIsland.Basegame {
 			throw new System.NotImplementedException();
 		}
 
+		public override InvaderGroup BuildInvaderGroup( GameState gs, Space space ) {
+			return new ToDreamAThousandDeaths( new ActionEngine(this,gs), space, gs.GetCounts(space), gs.AddFear );
+		}
+	}
+
+	class ToDreamAThousandDeaths : InvaderGroup {
+
+		readonly ActionEngine engine; // for pushing
+
+		public ToDreamAThousandDeaths(ActionEngine engine, Space space, int[] counts, Action<int> addFear) : base( 
+			space, 
+			counts.ToList().ToArray(),  // make a copy so we don't really kill anything
+			addFear 
+		) {
+			this.engine = engine;
+		}
+
+		protected override async Task OnInvaderDestroyed( InvaderSpecific specific ) {
+			if(specific.Generic == Invader.City) {
+				addFear( 5 );
+			} else if(specific.Generic == Invader.Town) {
+				addFear( 2 );
+				await engine.PushUpToNInvaders( Space, 1, Invader.Town ); // !!! wrong, need to push correct hit-points
+			} else {
+				await engine.PushUpToNInvaders( Space, 1, Invader.Explorer );
+			}
+		}
 
 	}
 

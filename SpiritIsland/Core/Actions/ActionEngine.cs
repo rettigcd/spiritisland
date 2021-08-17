@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -6,20 +7,33 @@ namespace SpiritIsland {
 
 	public class ActionEngine {
 
+		public ActionEngine( Spirit self, GameState gameState ) {
+			Self = self;
+			GameState = gameState;
+			this.decisions = self.decisions;
+		}
+
 		public Spirit Self { get; }
 
 		public GameState GameState { get; }
 
-		public PowerCardApi Api { get; }
+		#region Spirit Configurable
 
-		public InvaderGroup InvadersOn(Space space) => (InvaderGroup)GameState.InvadersOn(space);
+		public Task<Space> TargetSpace( ActionEngine engine, From sourceEnum, int range, Target filterEnum )
+			=> Self.TargetLandApi.TargetSpace(engine,sourceEnum,range,filterEnum);
 
-		public ActionEngine(Spirit self,GameState gameState){
-			Self = self;
-			GameState = gameState;
-			Api = new PowerCardApi();
-			this.decisions = self.decisions;
+		public Task<Space> TargetSpace( ActionEngine engine, From sourceEnum, Terrain? sourceTerrain, int range, Target filterEnum )
+			=> Self.TargetLandApi.TargetSpace( engine, sourceEnum, sourceTerrain, range, filterEnum );
+
+		public InvaderGroup InvadersOn(Space space) => Self.BuildInvaderGroup(GameState,space);
+
+		public async Task DamageInvaders( Space space, int damage ) { // !!! let players choose the item to apply damage to
+			if(damage == 0) return;
+			await InvadersOn(space).ApplySmartDamageToGroup( damage );
 		}
+
+
+		#endregion
 
 		public void Deconstruct(out Spirit self, out GameState gameState) {
 	        self = Self;

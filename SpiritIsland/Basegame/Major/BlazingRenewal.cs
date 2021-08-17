@@ -16,7 +16,7 @@ namespace SpiritIsland.Basegame {
 
 			// into a single land, up to range 2 from your presence.
 			// Note - Jonah says it is the originators power and range and decision, not the targets
-			var landTarget = await engine.Api.TargetSpace( engine, From.Presence, 2, Target.Any );
+			var landTarget = await engine.TargetSpace( engine, From.Presence, 2, Target.Any );
 
 			// Add it!
 			for(int i=0;i<max;++i)
@@ -24,7 +24,7 @@ namespace SpiritIsland.Basegame {
 
 			// if any presene was added, 2 damage to each town/city in that land.
 			var grp = engine.InvadersOn(landTarget);
-			grp.ApplyDamageToEach(2,Invader.Town,Invader.City);
+			await grp.ApplyDamageToEach(2,Invader.Town,Invader.City);
 
 			// if you have 3 fire, 3 earth , 2 plant, 4 damage in that land
 			if(engine.Self.Elements.Contains("3 fire,3 earth,2 plant"))
@@ -34,7 +34,7 @@ namespace SpiritIsland.Basegame {
 		}
 	}
 
-	class Entwined : PowerCardApi {
+	class Entwined : TargetLandApi {
 
 		readonly Spirit[] spirits;
 

@@ -25,12 +25,12 @@ namespace SpiritIsland.Basegame {
 			// 3 fear
 			engine.GameState.AddFear(3);
 			// 5 damage
-			engine.GameState.DamageInvaders(target,5);
+			await engine.DamageInvaders(target, 5);
 
 			if(bonus)
 				// destory 1 town in each adjacent land
 				foreach(var neighbor in target.Adjacent)
-					engine.InvadersOn(neighbor).Destroy(Invader.Town,1);
+					await engine.InvadersOn(neighbor).Destroy(Invader.Town,1);
 
 		}
 

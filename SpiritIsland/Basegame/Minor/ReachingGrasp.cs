@@ -22,10 +22,10 @@ namespace SpiritIsland.Basegame {
 			return Task.CompletedTask;
 		}
 
-		class ExtendRange : PowerCardApi {
+		class ExtendRange : TargetLandApi {
 			readonly int extension;
-			readonly PowerCardApi original;
-			public ExtendRange(int extension,PowerCardApi original ) {
+			readonly TargetLandApi original;
+			public ExtendRange(int extension,TargetLandApi original ) {
 				this.extension = extension;
 				this.original = original;
 			}

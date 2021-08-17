@@ -21,27 +21,26 @@ namespace SpiritIsland.Basegame {
 		}
 
 		[FearLevel( 3, "Destroy all Explorer in lands with Town / City. Each City destroys 1 Town in its land." )]
-		public Task Level3( GameState gs ) {
+		public async Task Level3( GameState gs ) {
 			foreach(var space in gs.Island.AllSpaces) {
 				var grp = (InvaderGroup)gs.InvadersOn( space );
-				grp.Destroy(Invader.Explorer,int.MaxValue);
-				EachCityDestroys1Town( grp );
+				await grp.Destroy(Invader.Explorer,int.MaxValue);
+				await EachCityDestroys1Town( grp );
 		
 			}
-			return Task.CompletedTask;
 		}
 
-		static void EachTownDestroys1Explorer( InvaderGroup grp ) {
-			grp.Destroy( Invader.Explorer, grp[Invader.Town] );
+		static Task EachTownDestroys1Explorer( InvaderGroup grp ) {
+			return grp.Destroy( Invader.Explorer, grp[Invader.Town] );
 		}
 
-		static void EachCityDestroys1Town( InvaderGroup grp ) {
-			grp.Destroy( Invader.Town, grp[Invader.City] );
+		static Task EachCityDestroys1Town( InvaderGroup grp ) {
+			return grp.Destroy( Invader.Town, grp[Invader.City] );
 		}
 
-		static void EachTownDestroys1AndEachCityDestoys2( InvaderGroup grp ) {
+		static Task EachTownDestroys1AndEachCityDestoys2( InvaderGroup grp ) {
 			int numToDestory = grp[Invader.Town] + grp[Invader.City] * 2;
-			grp.Destroy(Invader.Explorer, numToDestory );
+			return grp.Destroy(Invader.Explorer, numToDestory );
 		}
 
 

@@ -300,9 +300,13 @@ namespace SpiritIsland {
 			Adjust( to, invader, 1 );
 		}
 
-		public ReadOnlyInvaderGroup InvadersOn(Space targetSpace) {
+		public InvaderGroup_Readonly InvadersOn(Space targetSpace) {
 			return new InvaderGroup( targetSpace, this.GetCounts( targetSpace ), AddFear );
 		}
+
+		//public InvaderGroup AttackInvadersOn( Space targetSpace, Func<GameState, Space, int[],InvaderGroup> factory ) {
+		//	return factory( this, targetSpace, this.GetCounts( targetSpace ) );
+		//}
 
 		string Build( InvaderGroup group ) {
 			int townCount = group[InvaderSpecific.Town] + group[InvaderSpecific.Town1];
@@ -313,9 +317,9 @@ namespace SpiritIsland {
 		}
 
 
-		public void DamageInvaders(Space space,int damage){ // !!! let players choose the item to apply damage to
+		public async Task SpiritFree_DamageInvaders(Space space,int damage){ // !!! let players choose the item to apply damage to
 			if(damage==0) return;
-			((InvaderGroup)InvadersOn(space)).ApplySmartDamageToGroup( damage );
+			await ((InvaderGroup)InvadersOn(space)).ApplySmartDamageToGroup( damage );
 		}
 
 		#endregion
@@ -326,7 +330,8 @@ namespace SpiritIsland {
 
 		readonly Dictionary<Space,int[]> invaderCount = new Dictionary<Space,int[]>();
 
-		int[] GetCounts(Space space ) {
+
+		public int[] GetCounts(Space space) {
 			if(invaderCount.ContainsKey(space)) return invaderCount[space];
 			return invaderCount[space] = new int[InvaderSpecific.TypesCount+1]; // 1 for the total
 		}

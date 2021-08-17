@@ -8,7 +8,7 @@ namespace SpiritIsland.Basegame {
 		[FromSacredSite(1,Target.NoBlight)]
 		static public async Task ActAsync(ActionEngine engine,Space target){
 			// 2 damage
-			engine.GameState.DamageInvaders(target,2);
+			await engine.DamageInvaders(target,2);
 			// push 1 explorer
 			await engine.PushUpToNInvaders(target,1,Invader.Explorer);
 		}

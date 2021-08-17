@@ -20,7 +20,7 @@ namespace SpiritIsland.Basegame {
 			bool doDamage = gameState.HasInvaders(target) && (!CanRemoveBlight(target) || await UserSelectsDamage());
 			if(doDamage)
 				// 1 damage per blight
-				gameState.DamageInvaders(target,gameState.GetBlightOnSpace(target));
+				await engine.DamageInvaders(target,gameState.GetBlightOnSpace(target));
 			else
 				// if target land is M/S, you may INSTEAD remove 1 blight
 				gameState.AddBlight(target,-1);

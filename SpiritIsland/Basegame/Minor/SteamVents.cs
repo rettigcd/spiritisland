@@ -6,17 +6,16 @@ namespace SpiritIsland.Basegame {
 
 		[MinorCard("Steam Vents", 1, Speed.Fast, "fire,air,water,earth")]
 		[FromPresence(0)]
-		static public Task ActAsync(ActionEngine eng,Space target ) {
+		static public async Task ActAsync(ActionEngine eng,Space target ) {
 			var grp = eng.InvadersOn(target);
 
 			// if your have 3 earth, 
 			if(3<=eng.Self.Elements[Element.Earth] && grp.HasTown)
 				// instead destroy 1 town
-				grp.Destroy(Invader.Town,1);
+				await grp.Destroy(Invader.Town,1);
 			else
 				// destroy 1 explorer
-				grp.Destroy(Invader.Explorer,1);
-			return Task.CompletedTask;
+				await grp.Destroy(Invader.Explorer,1);
 		}
 
 	}

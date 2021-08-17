@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
-	public class PowerCardApi {
+	public class TargetLandApi {
 
 		#region constructor
 
-		public PowerCardApi(){
+		public TargetLandApi(){
 		}
 
 		#endregion

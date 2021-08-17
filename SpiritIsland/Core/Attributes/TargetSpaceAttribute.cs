@@ -18,7 +18,7 @@ namespace SpiritIsland {
 		}
 
 		public Task<Space> GetTarget(ActionEngine engine){
-			return engine.Api.TargetSpace( engine, source, sourceTerrain, range, targetFilter );
+			return engine.TargetSpace( engine, source, sourceTerrain, range, targetFilter );
 		}
 
 		static public Func<Space, bool> ToLambda( Spirit self, GameState gameState, Target filterEnum){

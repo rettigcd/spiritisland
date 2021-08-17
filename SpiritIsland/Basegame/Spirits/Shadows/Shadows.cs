@@ -79,7 +79,7 @@ Shadows Flicker like Flame:
 			);
 
 
-		class ShadowApi : PowerCardApi {
+		class ShadowApi : TargetLandApi {
 
 			public override async Task<Space> TargetSpace( ActionEngine eng, From from, Terrain? sourceTerrain, int range, Target filter ) {
 				var (self,gameState) = eng;

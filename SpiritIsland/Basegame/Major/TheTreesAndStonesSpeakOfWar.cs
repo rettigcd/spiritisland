@@ -15,7 +15,7 @@ namespace SpiritIsland.Basegame {
 			// for each dahan in target land, 1 damage and defend 2
 
 			// -- damage --
-			engine.GameState.DamageInvaders( target, engine.GameState.GetDahanOnSpace(target) );
+			await engine.DamageInvaders( target, engine.GameState.GetDahanOnSpace(target) );
 
 			// you may push up to 2 dahan
 			Space[] dest = bonus ? await engine.PushUpToNDahan( target, 2 ) : Array.Empty<Space>();
