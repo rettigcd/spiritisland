@@ -14,12 +14,18 @@ namespace SpiritIsland {
 
 		#endregion
 
-		#region virutal Target
+		public Task<Space> TargetSpace( ActionEngine engine, From sourceEnum, int range, Target filterEnum )
+			=> TargetSpace( engine, sourceEnum, null, range, filterEnum );
 
-		public virtual IEnumerable<Space> GetTargetOptions( ActionEngine engine, From sourceEnum, Terrain? sourceTerrain, int range, Target filterEnum ) {
+		public async virtual Task<Space> TargetSpace( ActionEngine engine, From sourceEnum, Terrain? sourceTerrain, int range, Target filterEnum ) {
+			IEnumerable<Space> spaces = GetTargetOptions( engine.Self, sourceEnum, sourceTerrain, range, filterEnum, engine.GameState );
+			return await engine.SelectSpace( "Select target.", spaces );
+		}
+
+		public virtual IEnumerable<Space> GetTargetOptions( Spirit self, From sourceEnum, Terrain? sourceTerrain, int range, Target filterEnum, GameState gameState ) {
 			var source = sourceEnum switch {
-				From.Presence => engine.Self.Presence.Spaces,
-				From.SacredSite => engine.Self.SacredSites,
+				From.Presence => self.Presence.Spaces,
+				From.SacredSite => self.SacredSites,
 				_ => throw new ArgumentException( "Invalid presence source " + sourceEnum ),
 			};
 
@@ -28,22 +34,9 @@ namespace SpiritIsland {
 
 			IEnumerable<Space> spaces = source
 				.Range( range )
-				.Where( TargetSpaceAttribute.ToLambda( engine, filterEnum ) );
+				.Where( TargetSpaceAttribute.ToLambda( self, gameState, filterEnum ) );
 			return spaces;
 		}
-
-		public virtual async Task<Space> TargetSpace( ActionEngine engine, From sourceEnum, Terrain? sourceTerrain, int range, Target filterEnum ) {
-			IEnumerable<Space> spaces = GetTargetOptions( engine, sourceEnum, sourceTerrain, range, filterEnum );
-			return await engine.SelectSpace( "Select target.", spaces );
-		}
-
-		public Task<Space> TargetSpace( ActionEngine engine, From sourceEnum, int range, Target filterEnum )
-			=> TargetSpace(engine,sourceEnum,null,range,filterEnum);
-	
-		public IEnumerable<Space> GetTargetOptions( ActionEngine engine, From sourceEnum, int range, Target filterEnum )
-			=> GetTargetOptions( engine, sourceEnum, null, range, filterEnum );
-
-		#endregion
 
 	}
 

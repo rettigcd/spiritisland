@@ -26,7 +26,7 @@ namespace SpiritIsland.Basegame {
 		static public Task Option3Async(ActionEngine engine,Space target){
 			var group = engine.GameState.InvadersOn(target);
 
-			var invaderTypes = group.InvaderTypesPresent.ToDictionary(x=>x,x=>group[x]); // copy so we can modify
+			var invaderTypes = group.InvaderTypesPresent_Specific.ToDictionary(x=>x,x=>group[x]); // copy so we can modify
 			foreach(var (invader,origCount) in invaderTypes.Select(x=>(x.Key,x.Value))){
 				for(int i=0;i<origCount;++i)
 					group.ApplyDamageTo1( 2, invader );

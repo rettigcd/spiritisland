@@ -47,9 +47,9 @@ namespace SpiritIsland {
 			int damageToInvader = Math.Min( invader.Health, availableDamage );
 
 			var damagedInvader = invader.Damage( damageToInvader );
-			--counts[idx[invader]];
+			--this[invader];
 
-			++counts[idx[damagedInvader]];
+			++this[damagedInvader];
 
 			if(damagedInvader == InvaderSpecific.City0)
 				addFear( 2 );
@@ -68,9 +68,9 @@ namespace SpiritIsland {
 				.ToArray();
 
 			int totalDestoyed = 0;
-			foreach(var invaderType in invaderTypesToDestory) {
-				while(countToDestory>0 && counts[idx[invaderType]] > 0) {
-					ApplyDamageTo1( invaderType.Health, invaderType );
+			foreach(var specificInvader in invaderTypesToDestory) {
+				while(countToDestory>0 && this[specificInvader] > 0) {
+					ApplyDamageTo1( specificInvader.Health, specificInvader );
 					++totalDestoyed;
 					--countToDestory;
 				}
@@ -78,15 +78,34 @@ namespace SpiritIsland {
 			return totalDestoyed;
 		}
 
+		public void Adjust(InvaderSpecific invader,int delta ) {
+			this[invader] = Math.Max(0,this[invader]+delta);
+		}
+
+		static public void Adjust( int[] counts, InvaderSpecific invader, int delta ) {
+			int index = idx[invader];
+			counts[index] = Math.Max( 0, counts[index] + delta );
+		}
+
+		public void Heal() {
+			foreach(var damaged in damagedInvaders) {
+				this[damaged.Healthy] += this[damaged];
+				this[damaged] = 0;
+			}
+		}
+
 		#region Counts
 
-		public int this[InvaderSpecific i] => counts[idx[i]];
+		public int this[InvaderSpecific specific] {
+			get{ return counts[idx[specific]]; }
+			private set { counts[idx[specific]]=value; }
+		}
 
-		public int this[Invader i] => i.Parts.Sum(part=>counts[idx[part]]);
+		public int this[Invader generic] => generic.AliveVariations.Sum(part=>this[part]);
 
 		public int TownsAndCitiesCount => this[Invader.Town] + this[Invader.City];
 
-		public int TotalCount => counts.Sum();
+		public int TotalCount => counts.Sum(); // !!! if we add dahan to counts, this breaks
 
 		#endregion
 
@@ -103,7 +122,7 @@ namespace SpiritIsland {
 		public bool Has( Invader inv ) => inv.AliveVariations.Any( alive => this[alive] > 0 );
 
 		public InvaderSpecific PickBestInvaderToRemove( params Invader[] removable ) {
-			return removable.SelectMany( generic => generic.Parts )
+			return removable.SelectMany( generic => generic.Specifics )
 				.Where( generic => this[generic] > 0 )
 				.OrderByDescending( g => g.Generic.Healthy.Health )
 				.ThenByDescending( g => g.Health )
@@ -111,17 +130,16 @@ namespace SpiritIsland {
 		}
 
 		/// <summary> Includes damaged invaders.</summary>
-		public IEnumerable<InvaderSpecific> InvaderTypesPresent => idx.Keys.Where(invader=>invader.Health>0 && counts[idx[invader]]>0);
-		public IEnumerable<Invader> HealthyInvaderTypesPresent => InvaderTypesPresent.Select(x=>x.Generic).Distinct(); // not full healthy, but the full healthy equivalent of healty and damaged
-		public InvaderSpecific[] FilterBy( params Invader[] healthyTypes ) => healthyTypes.SelectMany( x => x.AliveVariations ).Intersect( InvaderTypesPresent ).ToArray();
+		public IEnumerable<InvaderSpecific> InvaderTypesPresent_Specific => idx.Keys.Where(invader=>invader.Health>0 && this[invader]>0);
+		public IEnumerable<Invader> InvaderTypesPresent_Generic => InvaderTypesPresent_Specific.Select(x=>x.Generic).Distinct(); // not full healthy, but the full healthy equivalent of healty and damaged
+		public InvaderSpecific[] FilterBy( params Invader[] healthyTypes ) => healthyTypes.SelectMany( x => x.AliveVariations ).Intersect( InvaderTypesPresent_Specific ).ToArray();
 
-		public int DamageInflictedByInvaders => InvaderTypesPresent.Select(invader=>invader.Healthy.Health * counts[idx[invader]] ).Sum();
-
+		public int DamageInflictedByInvaders => InvaderTypesPresent_Specific.Select(invader=>invader.Healthy.Health * counts[idx[invader]] ).Sum();
 
 		public override string ToString() {
 			static int Order_CitiesTownsExplorers( InvaderSpecific invader )
 				=> -(invader.Healthy.Health * 10 + invader.Health);
-			return InvaderTypesPresent
+			return InvaderTypesPresent_Specific
 				.Where( invader => counts[idx[invader]] > 0 )
 				.OrderBy( invader => Order_CitiesTownsExplorers( invader ) )
 				.Select( invader => counts[idx[invader]] + invader.Summary )
@@ -129,18 +147,6 @@ namespace SpiritIsland {
 		}
 
 		readonly static InvaderSpecific[] damagedInvaders = new[] { InvaderSpecific.City1, InvaderSpecific.City2, InvaderSpecific.Town1 };
-
-		public void Heal() {
-			foreach(var damaged in damagedInvaders) {
-				counts[idx[damaged.Healthy]] += counts[idx[damaged]];
-				counts[idx[damaged]] = 0;
-			}
-		}
-
-		static public void Adjust(int[] counts, InvaderSpecific invader, int delta ) {
-			int index = idx[invader];
-			counts[index] = Math.Max( 0, counts[index] + delta );
-		}
 
 		#endregion
 

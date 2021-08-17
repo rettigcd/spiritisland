@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,15 +12,15 @@ namespace SpiritIsland {
 			this.cards = cards.ToList();
 		}
 
-		public Task Draw( ActionEngine engine ) {
+		public Task Draw( ActionEngine engine, Func<List<PowerCard>, Task> _ ) {
 			return Take( engine, cards.First() );
 		}
 
-		public Task DrawMajor( ActionEngine engine ) {
+		public Task DrawMajor( ActionEngine engine, Func<List<PowerCard>, Task> _ ) {
 			return Take( engine, cards.First( c => c.PowerType == PowerType.Major ) );
 		}
 
-		public Task DrawMinor( ActionEngine engine ) {
+		public Task DrawMinor( ActionEngine engine, Func<List<PowerCard>, Task> _ ) {
 			return Take( engine, cards.First( c => c.PowerType == PowerType.Minor ) );
 		}
 

@@ -1,4 +1,4 @@
-﻿
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -9,20 +9,14 @@ namespace SpiritIsland.Basegame {
 		[TargetSpirit]
 		static public async Task ActAsync(ActionEngine engine, Spirit target ) {
 
-			var targetEngine = new ActionEngine(target,engine.GameState);
-
 			// target spirit adds 2 of their destroyed presence
+			var targetEngine = new ActionEngine( target, engine.GameState );
 			int max = await targetEngine.SelectNumber("Select # of destroyed presence to return to board", target.Presence.Destroyed );
 			if(max==0) return;
 
-			// Note:
-			// * Not using targets Api because the source is not their presence nor SS
-			// * Not using originators Api, beacuse it is not originators decision
-			// If either spirit has a range-extension, should it apply to this?
-
 			// into a single land, up to range 2 from your presence.
-			var targetSpaceOptions = engine.Self.Presence.Spaces.SelectMany(x=>x.SpacesWithin(2)).Distinct().ToArray();
-			var landTarget = await targetEngine.SelectSpace("Select new presence destination",targetSpaceOptions);
+			// Note - Jonah says it is the originators power and range and decision, not the targets
+			var landTarget = await engine.Api.TargetSpace( engine, From.Presence, 2, Target.Any );
 
 			// Add it!
 			for(int i=0;i<max;++i)
@@ -37,6 +31,21 @@ namespace SpiritIsland.Basegame {
 				await grp.ApplySmartDamageToGroup(4);
 
 
+		}
+	}
+
+	class Entwined : PowerCardApi {
+
+		readonly Spirit[] spirits;
+
+		public Entwined(params Spirit[] spirits){
+			this.spirits = spirits;
+		}
+
+		public override IEnumerable<Space> GetTargetOptions( Spirit _, From sourceEnum, Terrain? sourceTerrain, int range, Target filterEnum, GameState gameState ) {
+			return spirits
+				.SelectMany(Spirit=>base.GetTargetOptions(Spirit,sourceEnum,sourceTerrain,range,filterEnum,gameState))
+				.Distinct();
 		}
 	}
 }

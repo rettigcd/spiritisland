@@ -11,17 +11,17 @@ namespace SpiritIsland {
 
 		public Invader(string label, int length) { 
 			Label = label;
-			Parts = new InvaderSpecific[length]; 
+			Specifics = new InvaderSpecific[length]; 
 		}
 
 		public string Label { get; }
-		public InvaderSpecific[] Parts {get;}
+		public InvaderSpecific[] Specifics {get;}
 
 
-		public InvaderSpecific Healthy => Parts[^1]; // we know healthy is last
-		public InvaderSpecific Dead => Parts[0]; // we know we put dead in first
+		public InvaderSpecific Healthy => Specifics[^1]; // we know healthy is last
+		public InvaderSpecific Dead => Specifics[0]; // we know we put dead in first
 		/// <summary> Starts at 1-hp, going up </summary>
-		public IEnumerable<InvaderSpecific> AliveVariations => Parts.Skip( 1 ); // not-dead variations
+		public IEnumerable<InvaderSpecific> AliveVariations => Specifics.Skip( 1 ); // not-dead variations
 	}
 
 
@@ -42,9 +42,9 @@ namespace SpiritIsland {
 		static readonly public Dictionary<string,InvaderSpecific> Lookup;
 
 		static InvaderSpecific(){
-			Lookup = Invader.City.Parts
-				.Union( Invader.Town.Parts)
-				.Union( Invader.Explorer.Parts)
+			Lookup = Invader.City.Specifics
+				.Union( Invader.Town.Specifics)
+				.Union( Invader.Explorer.Specifics)
 				.ToDictionary(i=>i.Summary);
 		}
 
@@ -53,7 +53,7 @@ namespace SpiritIsland {
 		InvaderSpecific(Invader generic, int health){
 			this.Generic = generic;
 			Health = health;
-			generic.Parts[Health] = this;
+			generic.Specifics[Health] = this;
 		}
 
 		public readonly Invader Generic;
@@ -64,7 +64,7 @@ namespace SpiritIsland {
 		public char Initial => Generic.Label[0];
 
 		public InvaderSpecific Damage(int level){
-			return Generic.Parts[level > Health ? 0 : Health-level];
+			return Generic.Specifics[level > Health ? 0 : Health-level];
 		}
 
 		public int Health {get;}

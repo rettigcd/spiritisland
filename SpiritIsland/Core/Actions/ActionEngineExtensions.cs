@@ -122,7 +122,7 @@ namespace SpiritIsland {
 			Space[] destinationOptions = engine.Self.Presence.Spaces
 				.SelectMany( s => s.SpacesWithin( range ) )
 				.Distinct()
-				.Where( TargetSpaceAttribute.ToLambda( engine, filterEnum ) )
+				.Where( TargetSpaceAttribute.ToLambda( engine.Self, engine.GameState, filterEnum ) )
 				.OrderBy( x => x.Label )
 				.ToArray();
 			return engine.PlacePresence(destinationOptions);

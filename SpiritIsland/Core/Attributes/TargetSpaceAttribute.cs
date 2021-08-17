@@ -21,13 +21,12 @@ namespace SpiritIsland {
 			return engine.Api.TargetSpace( engine, source, sourceTerrain, range, targetFilter );
 		}
 
-		static public Func<Space, bool> ToLambda(ActionEngine engine, Target filterEnum){
-			var generalFilter = IncludeOceanToLambda(engine,filterEnum);
+		static public Func<Space, bool> ToLambda( Spirit self, GameState gameState, Target filterEnum){
+			var generalFilter = IncludeOceanToLambda(self, gameState,filterEnum);
 			return (space) => generalFilter(space) && space.IsLand; // filter out ocean
 		}
 
-		static Func<Space, bool> IncludeOceanToLambda( ActionEngine engine, Target filterEnum ) {
-			var (self, gameState) = engine;
+		static Func<Space, bool> IncludeOceanToLambda( Spirit self, GameState gameState, Target filterEnum ) {
 			bool HasExplorer( Space space ) => gameState.InvadersOn( space ).HasExplorer;
 			bool TownOrExplorer( Space space ) => gameState.InvadersOn( space ).FilterBy( Invader.Explorer, Invader.Town ).Length > 0;
 

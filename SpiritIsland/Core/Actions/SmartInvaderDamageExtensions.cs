@@ -11,7 +11,7 @@ namespace SpiritIsland {
 		// !! This is the replacement for SmartDamage To Types
 		static public async Task<int> UserSelectDamage( this ActionEngine engine, int damage, InvaderGroup group ) {
 			while(damage > 0) {
-				var invader = await engine.SelectInvader( "Select invader to damage.", group.InvaderTypesPresent.ToArray() );
+				var invader = await engine.SelectInvader( "Select invader to damage.", group.InvaderTypesPresent_Specific.ToArray() );
 				if(invader == null) break;
 
 				damage -= group.ApplyDamageTo1( damage, invader );
@@ -21,11 +21,8 @@ namespace SpiritIsland {
 		}
 
 
-
-
-		static readonly SmartInvaderKiller InvaderPicker = new SmartInvaderKiller();
 		public static InvaderSpecific PickSmartInvaderToDamage( this InvaderGroup grp, int availableDamage ) {
-			return InvaderPicker.PickOne( grp, availableDamage );
+			return SmartInvaderAttacker.GetKillOrder( grp, availableDamage ).First();
 		}
 
 		// !!! When we swap this out for user choosing, Which user chooses when dahan are doing damage????
@@ -33,7 +30,7 @@ namespace SpiritIsland {
 			int damageToInvaders = startingDamage;
 
 			// While damage remains    &&    we have invaders
-			while(damageToInvaders > 0 && grp.InvaderTypesPresent.Any()) {
+			while(damageToInvaders > 0 && grp.InvaderTypesPresent_Specific.Any()) {
 				InvaderSpecific invaderToDamage = PickSmartInvaderToDamage( grp, damageToInvaders );
 				damageToInvaders -= grp.ApplyDamageTo1( damageToInvaders, invaderToDamage );
 			}
@@ -42,41 +39,30 @@ namespace SpiritIsland {
 			return Task.CompletedTask;
 		}
 
-		static public Task SmartDamageToTypes( this InvaderGroup grp, int startingDamage, params Invader[] healthyInvaders ) {
+		static public Task SmartDamageToTypes( this InvaderGroup grp, int startingDamage, params Invader[] invaderGeneric ) {
 			int damageToInvaders = startingDamage;
 
-			var allTargetTypes = healthyInvaders.SelectMany( x => x.AliveVariations ).ToArray();
-
-			var picker = new SmartInvaderKiller();
-			picker.LimitTo( allTargetTypes );
+			var allTargetTypes = invaderGeneric.SelectMany( x => x.AliveVariations ).ToArray();
 
 			// While damage remains    &&    we have invaders
-			IEnumerable<InvaderSpecific> Targets() => grp.InvaderTypesPresent.Intersect( allTargetTypes );
+			IEnumerable<InvaderSpecific> Targets() => grp.InvaderTypesPresent_Specific.Intersect( allTargetTypes );
 
 			while(damageToInvaders > 0 && Targets().Any()) {
-				InvaderSpecific invaderToDamage = picker.PickOne( grp, damageToInvaders );
+				InvaderSpecific invaderToDamage = SmartInvaderAttacker.GetKillOrder( grp, damageToInvaders ).Where(i=>invaderGeneric.Contains(i.Generic)).First();
 				damageToInvaders -= grp.ApplyDamageTo1( damageToInvaders, invaderToDamage );
 			}
 
 			return Task.CompletedTask;
 		}
 
-		class SmartInvaderKiller {
-			public InvaderSpecific[] KillOrder = "C@1 C@2 C@3 T@1 T@2 E@1".Split( ' ' ).Select( k => InvaderSpecific.Lookup[k] ).ToArray();
-			public InvaderSpecific[] LeftOverOrder = "C@2 T@2 C@3".Split( ' ' ).Select( k => InvaderSpecific.Lookup[k] ).ToArray();
+		class SmartInvaderAttacker {
+			static public InvaderSpecific[] KillOrder = "C@1 C@2 C@3 T@1 T@2 E@1".Split( ' ' ).Select( k => InvaderSpecific.Lookup[k] ).ToArray();
+			static public InvaderSpecific[] LeftOverOrder = "C@2 T@2 C@3".Split( ' ' ).Select( k => InvaderSpecific.Lookup[k] ).ToArray();
 
-			public void LimitTo( InvaderSpecific[] types ) {
-				KillOrder = KillOrder.Where( x => types.Contains( x ) ).ToArray();
-				LeftOverOrder = LeftOverOrder.Where( x => types.Contains( x ) ).ToArray();
-			}
-
-			public InvaderSpecific PickOne( InvaderGroup grp, int availableDamage ) {
-				return KillOrder
-				.FirstOrDefault( invader =>
-					invader.Health <= availableDamage // prefer things we can kill
-					&& grp[invader] > 0
-				)
-				?? LeftOverOrder.First( invader => grp[invader] > 0 ); // left-over damage
+			static public IEnumerable<InvaderSpecific> GetKillOrder( InvaderGroup grp, int availableDamage ) {
+				return KillOrder.Where( specific => specific.Health <= availableDamage )
+					.Concat(LeftOverOrder)
+					.Where( specific => grp[specific] > 0 );
 			}
 
 		}

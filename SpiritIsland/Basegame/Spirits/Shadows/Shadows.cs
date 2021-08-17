@@ -81,40 +81,41 @@ Shadows Flicker like Flame:
 
 		class ShadowApi : PowerCardApi {
 
-			public override async Task<Space> TargetSpace( ActionEngine engine, From from, Terrain? sourceTerrain, int range, Target filter ) {
+			public override async Task<Space> TargetSpace( ActionEngine eng, From from, Terrain? sourceTerrain, int range, Target filter ) {
+				var (self,gameState) = eng;
 				// no money, do normal
-				if(engine.Self.Energy == 0)
-					return await base.TargetSpace( engine, from, sourceTerrain, range, filter );
+				if(self.Energy == 0)
+					return await base.TargetSpace( eng, from, sourceTerrain, range, filter );
 
 				// find normal Targetable spaces
-				var normalSpaces = base.GetTargetOptions( engine, from, sourceTerrain, range, filter );
+				var normalSpaces = base.GetTargetOptions( self, from, sourceTerrain, range, filter, gameState );
 
 				// find dahan-only spaces that are not in targetable spaces
-				var dahanOnlySpaces = engine.GameState.Island.Boards
+				var dahanOnlySpaces = gameState.Island.Boards
 					.SelectMany(board=>board.Spaces)
-					.Where(engine.GameState.HasDahan)
+					.Where(gameState.HasDahan)
 					.Except(normalSpaces)
 					.ToArray();
 				// no dahan-only spaces, do normal
 				if(dahanOnlySpaces.Length == 0)
-					return await base.TargetSpace( engine, from, sourceTerrain, range, filter );
+					return await base.TargetSpace( eng, from, sourceTerrain, range, filter );
 
 				// append Target-Dahan option to end of list
 				var options = normalSpaces.Cast<IOption>().ToList();
 				options.Add(new TextOption("Pay 1 energy to target land with dahan"));
 
 				// let them select normal, or choose to pay
-				var option = await engine.SelectOption("Select target.",options.ToArray());
+				var option = await eng.SelectOption("Select target.",options.ToArray());
 
 				// if they select regular space, use it
 				if(option is Space space)
 					return space;
 
 				// pay 1 energy
-				--engine.Self.Energy;
+				--self.Energy;
 
 				// pick from dahan-only spaces
-				return await engine.SelectSpace("Target land with dahan",dahanOnlySpaces);
+				return await eng.SelectSpace("Target land with dahan",dahanOnlySpaces);
 			}
 
 		}

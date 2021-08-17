@@ -15,7 +15,7 @@ namespace SpiritIsland.Basegame {
 
 			// 1 damange to each invader.
 			var grp = gameState.InvadersOn(target);
-			grp.ApplyDamageToEach(1, grp.HealthyInvaderTypesPresent.ToArray() );
+			grp.ApplyDamageToEach(1, grp.InvaderTypesPresent_Generic.ToArray() );
 			return Task.CompletedTask;
 		}
 

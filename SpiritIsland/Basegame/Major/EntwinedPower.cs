@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 
@@ -7,17 +8,39 @@ namespace SpiritIsland.Basegame {
 
 		[MajorCard( "Entwined Power", 2, Speed.Fast, Element.Moon, Element.Water, Element.Plant )]
 		[TargetSpirit]
-		static public async Task ActAsync( ActionEngine engine, Spirit target ) {
-			var (self, gs) = engine;
-			// You and target spirit may use each other's presence to target powers.
+		static public async Task ActAsync( ActionEngine selfEng, Spirit target ) {
+			var (self, gs) = selfEng;
+			// !!! You and target spirit may use each other's presence to target powers.
+
+			PowerCardApi x = self.PowerCardApi;
 
 			// Target spirit gains a power Card.
-			await target.CardDrawer.Draw( engine );
+			var targetEng = new ActionEngine(target,selfEng.GameState);
+			await selfEng.Self.CardDrawer.Draw(targetEng,(cards)=>{
+				// You gain one of the power Cards they did not keep.
+				return DrawFromDeck.TakeCard(selfEng,cards);
+			} );
 
-			// You gain one of the power Cards they did not keep.
+			// if you have 2 water, 4 plant, 
+			if(self.Elements.Contains("2 water,4 plant" )) {
+				// you and target spirit each gain 3 energy
+				self.Energy += 3;
+				target.Energy += 3;
+				// may gift the other 1 power from hand.
+				await GiftCardToSpirit( selfEng, target );
+				await GiftCardToSpirit( targetEng, self );
 
-			// !!!!if you have 2 water, 4 plant, you and target spirit each gain 3 energy and may gift the other 1 power from hand.
+			}
 		}
 
+		private static async Task GiftCardToSpirit( ActionEngine srcEngine, Spirit dst ) {
+			var src = srcEngine.Self;
+			var myGift = (PowerCard)await srcEngine.SelectFactory( "Select gift for " + dst.Text, src.Hand.ToArray(), true );
+			if(myGift != null) {
+				dst.Hand.Add( myGift );
+				src.Hand.Remove( myGift );
+			}
+		}
 	}
 }
+

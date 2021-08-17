@@ -45,7 +45,7 @@ namespace SpiritIsland.Basegame {
 				if(sourceOptions.Length==0) continue;
 				var source = await engine.SelectSpace("Select source of invaders to gather",sourceOptions);
 
-				var invaderOptions = gs.InvadersOn( source ).InvaderTypesPresent
+				var invaderOptions = gs.InvadersOn( source ).InvaderTypesPresent_Specific
 					.Where(specific => invadersToGatherArray.Contains(specific.Generic) )
 					.ToArray();
 

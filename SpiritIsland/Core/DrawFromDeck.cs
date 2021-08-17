@@ -1,24 +1,42 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SpiritIsland {
+
 	public class DrawFromDeck : IPowerCardDrawer {
-		public async Task Draw( ActionEngine engine ) {
-			if(await engine.SelectFirstText("Which type do you wish to draw","minor","major"))
-				await DrawMinor( engine );
-			else
-				await DrawMajor( engine );
+
+		public async Task Draw( ActionEngine engine, Func<List<PowerCard>, Task> handleNotUsed ) {
+			var deck = await engine.SelectFirstText( "Which type do you wish to draw", "minor", "major" )
+				? engine.GameState.MinorCards
+				: engine.GameState.MajorCards;
+			await DrawInner( engine, deck, handleNotUsed );
 		}
 
-		public async Task DrawMajor( ActionEngine engine ) {
-			var card = await engine.GameState.MajorCards.Draw( engine );
-			engine.Self.Hand.Add( card );
-			await engine.ForgetPowerCard();
+		public Task DrawMajor( ActionEngine engine, Func<List<PowerCard>, Task> handleNotUsed )
+			=> DrawInner(engine, engine.GameState.MajorCards, handleNotUsed );
+		
+
+		public Task DrawMinor( ActionEngine engine, Func<List<PowerCard>, Task> handleNotUsed )
+			=> DrawInner( engine, engine.GameState.MinorCards, handleNotUsed );
+
+		static async Task DrawInner( ActionEngine engine, PowerCardDeck deck, Func<List<PowerCard>, Task> handleNotUsed ) {
+			List<PowerCard> flipped = deck.Flip(4);
+
+			await TakeCard( engine, flipped );
+
+			if(handleNotUsed != null)
+				await handleNotUsed( flipped );
+
+			deck.Discard( flipped );
 		}
 
-		public async Task DrawMinor( ActionEngine engine ) {
-			var card = await engine.GameState.MinorCards.Draw( engine );
-			engine.Self.Hand.Add( card );
+		public static async Task TakeCard( ActionEngine engine, List<PowerCard> flipped ) {
+			var selectedCard = (PowerCard)await engine.SelectFactory( "Select new Power Card", flipped.ToArray() );
+			engine.Self.Hand.Add( selectedCard );
+			flipped.Remove( selectedCard );
 		}
+
 	}
 
 

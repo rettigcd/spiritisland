@@ -2,6 +2,7 @@
 using Xunit;
 using SpiritIsland.Basegame;
 using System.Threading.Tasks;
+using Shouldly;
 
 namespace SpiritIsland.Tests.Basegame.Fear {
 	
@@ -44,8 +45,8 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			await When_AddFearApplyFearAndRavage();
 
 			// Then: all dahan killed
-			Assert.Equal( 0, gameState.GetDahanOnSpace( ravageSpace ) );
-			Assert.True(gameState.HasBlight(ravageSpace));
+			gameState.GetDahanOnSpace( ravageSpace ).ShouldBe(0);
+			gameState.HasBlight( ravageSpace ).ShouldBe(true);
 		}
 
 		[Fact]

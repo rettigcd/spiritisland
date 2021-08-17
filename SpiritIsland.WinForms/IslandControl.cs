@@ -168,7 +168,7 @@ namespace SpiritIsland.WinForms
 			float y = xy.Y - iconWidth;
 			// invaders
 			var grp = gameState.InvadersOn( space );
-			var invaders = grp.InvaderTypesPresent.Select( k => grp[k] + ":" + k.Summary ).Join( " " );
+			var invaders = grp.InvaderTypesPresent_Specific.Select( k => grp[k] + ":" + k.Summary ).Join( " " );
 			CountDictionary<Image> images = new();
 			images[city] = grp[InvaderSpecific.City];
 			images[city2] = grp[InvaderSpecific.City2];

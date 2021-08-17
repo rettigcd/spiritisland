@@ -16,19 +16,20 @@ namespace SpiritIsland {
 			this.Spirits = spirits;
 			InvaderDeck = new InvaderDeck();
 			Round = 1;
-			// ! is there a better way to disable fear win during tests
+			// ! is there a better way to disable fear-win during tests
 			while(FearDeck.Count < 9)
 				FearDeck.Push( new NullFearCard() );
 		}
 
 		internal void SkipAllInvaderActions( Space target ) {
-			skipRavage.Add(target);
+			ModRavage(target, cfg=>cfg.ShouldRavage=false );
 			skipBuild.Add( target );
 			skipExplore.Add(target);
 		}
 
-		internal void SkipRavage( params Space[] space ) {
-			skipRavage.AddRange(space);
+		internal void SkipRavage( params Space[] spaces ) {
+			foreach(var space in spaces )
+				ModRavage(space, cfg=>cfg.ShouldRavage=false );
 		}
 
 		internal void SkipBuild( params Space[] target ) {
@@ -39,7 +40,6 @@ namespace SpiritIsland {
 			skipExplore.AddRange( target );
 		}
 
-		readonly List<Space> skipRavage = new List<Space>();
 		readonly List<Space> skipBuild = new List<Space>();
 		readonly List<Space> skipExplore = new List<Space>();
 
@@ -87,14 +87,15 @@ namespace SpiritIsland {
 			foreach(var pair in invaderCount) 
 				new InvaderGroup(pair.Key,pair.Value,null).Heal();
 
-			defendCount.Clear();
-			++Round;
+			_ravageConfig.Clear();
 
 			// stack allows us to unwind items in reverse order from when we set them up
 			while(EndOfRoundCleanupAction.Count>0)
 				await EndOfRoundCleanupAction.Pop()(this);
 
 			TimePassed?.Invoke(this);
+
+			++Round;
 		}
 
 
@@ -114,9 +115,9 @@ namespace SpiritIsland {
 		}
 
 		public void Defend( Space space, int delta ) {
-			defendCount[space] += delta;
+			ModRavage(space, cfg=>cfg.Defend += delta);
 		}
-		public int GetDefence(Space space) => defendCount[space];
+		public int GetDefence(Space space) => GetRavageConfiguration(space).Defend;
 
 		#region Beasts
 		public void AddBeast( Space space ){ beastCount[space]++; }
@@ -129,9 +130,9 @@ namespace SpiritIsland {
 		public IBlightCard BlightCard = new NullBlightCard();
 
 		/// <summary>Causes cascading</summary>
-		public void BlightLand( Space space ){
+		public Task BlightLand( Space space ){
 			if(HasBlight(space))
-				cascadingBlight.Push(space);
+				cascadingBlight.Push(space); // !!! resolve during battle
 			AddBlight(space);
 
 			foreach(var spirit in Spirits)
@@ -141,7 +142,7 @@ namespace SpiritIsland {
 			--blightOnCard;
 			if(BlightCard != null && blightOnCard==0)
 				BlightCard.OnBlightDepleated(this);
-
+			return Task.CompletedTask;
 		}
 		public void RemoveBlight( Space space){
 			if(blightCount[space]==0) return;
@@ -218,25 +219,37 @@ namespace SpiritIsland {
 
 			var initialRavageSpaces = Island.Boards.SelectMany( board => board.Spaces )
 				.Where( invaderCard.Matches )
-				.Except( skipRavage )
+				.Where( x=>GetRavageConfiguration(x).ShouldRavage )
 				.ToArray();
 
 			PreRavaging?.Invoke( this, initialRavageSpaces );
 
 			var ravageSpaces = initialRavageSpaces
-				.Except( skipRavage ) // apply this again in case it changed
+				.Where( x => GetRavageConfiguration( x ).ShouldRavage ) // not sure this is necessary since it is called during execute
 				.ToArray();
 
-			var ravageGroups = ravageSpaces
+			InvaderGroup[] ravageGroups = ravageSpaces
 				.Select( InvadersOn )
-				.Where( group => group.InvaderTypesPresent.Any() )
+				.Where( group => group.InvaderTypesPresent_Specific.Any() )
 				.ToArray();
 
 			var msgs = new List<string>();
-			foreach(var grp in ravageGroups)
-				msgs.Add(await RavageSpace(grp));
+			foreach(var grp in ravageGroups) {
+				var eng = new RavageEngine( this, grp, GetRavageConfiguration(grp.Space) );
+				await eng.Exec();
+				msgs.Add( grp.Space.Label + ": " + eng.log.Join( "  " ) );
+			}
 			return msgs.ToArray();
 		}
+
+		public ConfigureRavage GetRavageConfiguration(Space space) => _ravageConfig.ContainsKey(space) ? _ravageConfig[space] : new ConfigureRavage();
+		readonly Dictionary<Space,ConfigureRavage> _ravageConfig = new Dictionary<Space, ConfigureRavage>();
+		public void ModRavage(Space space,Action<ConfigureRavage> action) {
+			if(!_ravageConfig.ContainsKey(space)) 
+				_ravageConfig.Add(space,new ConfigureRavage());
+			action(_ravageConfig[space]);
+		}
+
 
 		public string[] Build( InvaderCard invaderCard ) {
 
@@ -251,7 +264,7 @@ namespace SpiritIsland {
 
 			return buildLands
 				.Select( InvadersOn )
-				.Where( group => group.InvaderTypesPresent.Any() )
+				.Where( group => group.InvaderTypesPresent_Specific.Any() )
 				.Select( Build )
 				.ToArray();
 		}
@@ -301,58 +314,6 @@ namespace SpiritIsland {
 			return $"{group.Space.Label} gets {invaderToAdd.Generic.Label}";
 		}
 
-		/// <summary> Fired before ravage occurs</summary>
-		async Task<string> RavageSpace( InvaderGroup ravageGroup ) {
-
-			var log = new List<String>();
-
-			int damageFromInvaders = ravageGroup.DamageInflictedByInvaders;
-			int dahan = GetDahanOnSpace( ravageGroup.Space );
-
-			if(damageFromInvaders==0) log.Add("-no ravage-");
-
-			if(damageFromInvaders>0){
-
-				// $$ flush accumulated invader damage - pre invaders
-
-				// calculate damage from invaders
-				int defend = defendCount[ravageGroup.Space];
-				int damageInflictedFromInvaders = Math.Max( damageFromInvaders - defend, 0);
-				log.Add($"{ravageGroup} inflicts {damageFromInvaders}-{defend}={damageInflictedFromInvaders} damage.");
-
-				// damage: Land
-				bool blight = damageInflictedFromInvaders>1;
-				if(blight){
-					BlightLand(ravageGroup.Space);
-					log.Add("Blights land.");
-				}
-				// damage: Dahan
-				if(noDamageToDahan.Contains(ravageGroup.Space)){ // Conceiling Shadows
-					log.Add("Dahan - protected from damange.");
-					noDamageToDahan.Remove(ravageGroup.Space);
-				} else {
-					int dahanKilled = Math.Min( damageInflictedFromInvaders / 2, dahan ); // rounding down
-					if(dahanKilled>0){
-
-						await DestoryDahan( ravageGroup.Space, dahanKilled, DahanDestructionSource.Invaders ); 
-
-						int remainingDahan = dahan - dahanKilled;
-						log.Add($"Kills {dahanKilled} of {dahan} Dahan leaving {remainingDahan} Dahan.");
-						dahan = remainingDahan;
-					}
-				}
-
-				// damage: Invaders
-				if(dahan>0)
-					await ravageGroup.ApplySmartDamageToGroup( dahan * 2, log );
-
-				// flush invader damage - post dahan
-			}
-
-			defendCount[ravageGroup.Space] = 0;
-			return ravageGroup.Space.Label+": "+log.Join("  ");
-		}
-
 
 		public void DamageInvaders(Space space,int damage){ // !!! let players choose the item to apply damage to
 			if(damage==0) return;
@@ -374,8 +335,6 @@ namespace SpiritIsland {
 
 		readonly CountDictionary<Space> dahanCount = new CountDictionary<Space>();
 
-		readonly CountDictionary<Space> defendCount = new CountDictionary<Space>();
-		public readonly HashSet<Space> noDamageToDahan = new(); // !!! special case for Conceiling Shadows - refactor!
 		public int FearPool {get; private set; } = 0;
 
 		public PowerCardDeck MajorCards;
@@ -383,26 +342,25 @@ namespace SpiritIsland {
 	}
 
 	public class PowerCardDeck {
+
 		public PowerCardDeck(IList<PowerCard> cards ) {
 			discards = cards.ToList();
 		}
-		public async Task<PowerCard> Draw(ActionEngine engine ) {
-			var flipped = new List<PowerCard>();
-			for(int i=0;i<4;++i) flipped.Add( FlipNext() );
 
-			var selectedCard = (PowerCard)await engine.SelectFactory("Select new Power Card",flipped.ToArray());
-
-			discards.AddRange(flipped.Where(c => c != selectedCard));
-
-			return selectedCard;
-		}
-
-		PowerCard FlipNext() {
+		public PowerCard FlipNext() {
 			if(cards.Count == 0)
 				ReshuffleDiscardDeck();
 			var next = cards.Pop();
 			return next;
 		}
+
+		public List<PowerCard> Flip( int count ) {
+			var flipped = new List<PowerCard>();
+			for(int i = 0; i < count; ++i) flipped.Add( FlipNext() );
+			return flipped;
+		}
+
+		public void Discard(IEnumerable<PowerCard> discards) => this.discards.AddRange(discards);
 
 		void ReshuffleDiscardDeck() {
 			discards.Shuffle();
@@ -441,6 +399,8 @@ namespace SpiritIsland {
 		public int count;
 		public DahanDestructionSource Source;
 	};
+
+
 
 
 }

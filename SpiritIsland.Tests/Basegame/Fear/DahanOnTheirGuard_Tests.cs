@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Shouldly;
 using SpiritIsland.Basegame;
 using Xunit;
 
@@ -49,20 +50,21 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		[Fact]
 		public async Task Level1_DefendOnly1AndNotMorePerDahan() { // not more th
 			Given_DahanAndTowns( 4, 4 );
+			// 4 dahan should defend 4
 
 			//   And: 4 fear / player
 			gameState.AddFear( 4 );
 
 			// When: Doing Invader phase (fear+ragage)
 			await gameState.ApplyFear();
-			await gameState.Ravage(invaderCard );
+			await gameState.Ravage(invaderCard);
 
 			// Then: 0 dahan left
-			Assert.Equal( 2, gameState.GetDahanOnSpace( ravageSpace ) );
+			gameState.GetDahanOnSpace( ravageSpace ).ShouldBe(2);
 
 			//   And: 2 towns
-			Assert.Equal( "2T@2", gameState.InvadersOn( ravageSpace ).ToString() );
-			Assert.True( gameState.HasBlight( ravageSpace ) );
+			gameState.InvadersOn( ravageSpace ).ToString().ShouldBe( "2T@2" );
+			gameState.HasBlight( ravageSpace ).ShouldBe(true);
 		}
 
 
