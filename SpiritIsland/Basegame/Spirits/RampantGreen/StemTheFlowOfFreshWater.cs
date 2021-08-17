@@ -7,8 +7,7 @@ namespace SpiritIsland.Basegame {
 		[SpiritCard( "Stem the Flow of Fresh Water", 0, Speed.Slow, Element.Water, Element.Plant )]
 		[FromSacredSite( 1 )]
 		static public async Task ActionAsync( ActionEngine eng, Space target ) {
-
-			var grp = eng.GameState.InvadersOn(target);
+			var grp = eng.InvadersOn(target);
 
 			// If target land is mountain or sand, 
 			if( target.Terrain.IsIn( Terrain.Mountain, Terrain.Sand ) ) {

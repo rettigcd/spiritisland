@@ -40,14 +40,13 @@ namespace SpiritIsland.Basegame {
 		}
 
 		static Task DestroyTowns(ActionEngine engine, Space target, int count){
-			engine.GameState.InvadersOn(target)
+			engine.InvadersOn(target)
 				.Destroy( Invader.Town, count );
 			return Task.CompletedTask;
 		}
 
 		static async Task DestroyTownsOrCities(ActionEngine engine,Space target,int count){
-			var gameState = engine.GameState;
-			var grp = gameState.InvadersOn(target);
+			var grp = engine.InvadersOn(target);
 			InvaderSpecific[] invadersToDestroy = grp.FilterBy(Invader.City,Invader.Town);
 			while(count>0 && invadersToDestroy.Length >0){
 				var invader = await engine.SelectInvader("Select town/city to destroy.",invadersToDestroy,true);

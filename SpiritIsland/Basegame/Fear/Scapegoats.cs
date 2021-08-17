@@ -7,7 +7,7 @@ namespace SpiritIsland.Basegame {
 		[FearLevel( 1, "Each Town destroys 1 Explorer in its land." )]
 		public Task Level1( GameState gs ) {
 			foreach(var space in gs.Island.AllSpaces)
-				EachTownDestroys1Explorer( gs.InvadersOn( space ) );
+				EachTownDestroys1Explorer( (InvaderGroup)gs.InvadersOn( space ) );
 			return Task.CompletedTask;
 		}
 
@@ -15,7 +15,7 @@ namespace SpiritIsland.Basegame {
 		public Task Level2( GameState gs ) {
 			foreach(var space in gs.Island.AllSpaces) {
 				var grp = gs.InvadersOn( space );
-				EachTownDestroys1AndEachCityDestoys2( grp );
+				EachTownDestroys1AndEachCityDestoys2( (InvaderGroup)grp );
 			}
 			return Task.CompletedTask;
 		}
@@ -23,7 +23,7 @@ namespace SpiritIsland.Basegame {
 		[FearLevel( 3, "Destroy all Explorer in lands with Town / City. Each City destroys 1 Town in its land." )]
 		public Task Level3( GameState gs ) {
 			foreach(var space in gs.Island.AllSpaces) {
-				var grp = gs.InvadersOn( space );
+				var grp = (InvaderGroup)gs.InvadersOn( space );
 				grp.Destroy(Invader.Explorer,int.MaxValue);
 				EachCityDestroys1Town( grp );
 		

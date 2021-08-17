@@ -11,10 +11,9 @@ namespace SpiritIsland.Basegame {
 		[SpiritCard(RagingStorm.Name,3,Speed.Slow,Element.Fire,Element.Air,Element.Water)]
 		[FromPresence(1)]
 		static public Task Act(ActionEngine engine,Space target){
-			var (_,gameState) = engine;
+			var grp = engine.InvadersOn( target );
 
 			// 1 damange to each invader.
-			var grp = gameState.InvadersOn(target);
 			grp.ApplyDamageToEach(1, grp.InvaderTypesPresent_Generic.ToArray() );
 			return Task.CompletedTask;
 		}

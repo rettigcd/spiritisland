@@ -24,7 +24,7 @@ namespace SpiritIsland.Basegame {
 
 		[InnateOption(Element.Sun,Element.Sun,Element.Sun,Element.Water,Element.Water,Element.Water,Element.Water,Element.Earth)]
 		static public Task Option3Async(ActionEngine engine,Space target){
-			var group = engine.GameState.InvadersOn(target);
+			var group = engine.InvadersOn(target);
 
 			var invaderTypes = group.InvaderTypesPresent_Specific.ToDictionary(x=>x,x=>group[x]); // copy so we can modify
 			foreach(var (invader,origCount) in invaderTypes.Select(x=>(x.Key,x.Value))){

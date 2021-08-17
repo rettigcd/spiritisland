@@ -228,9 +228,10 @@ namespace SpiritIsland {
 				.Where( x => GetRavageConfiguration( x ).ShouldRavage ) // not sure this is necessary since it is called during execute
 				.ToArray();
 
-			InvaderGroup[] ravageGroups = ravageSpaces
+			var ravageGroups = ravageSpaces
 				.Select( InvadersOn )
 				.Where( group => group.InvaderTypesPresent_Specific.Any() )
+				.Cast<InvaderGroup>()
 				.ToArray();
 
 			var msgs = new List<string>();
@@ -264,6 +265,7 @@ namespace SpiritIsland {
 
 			return buildLands
 				.Select( InvadersOn )
+				.Cast<InvaderGroup>()
 				.Where( group => group.InvaderTypesPresent_Specific.Any() )
 				.Select( Build )
 				.ToArray();
@@ -290,20 +292,16 @@ namespace SpiritIsland {
 		public bool HasInvaders( Space space ) 
 			=> GetCounts(space).Any(x=>x>0);
 
-		public void Adjust(Space space, InvaderSpecific invader, int count){
-			InvaderGroup.Adjust( GetCounts( space ), invader, count);
-		}
+		public void Adjust(Space space, InvaderSpecific invader, int count)
+			=> ((InvaderGroup)InvadersOn(space)).Adjust(invader,count);
+		
 		public void Move(InvaderSpecific invader, Space from, Space to ) {
 			Adjust( from,invader,-1);
 			Adjust( to, invader, 1 );
 		}
 
-		public InvaderGroup InvadersOn(Space targetSpace) {
-			return InitInvaderGroup(targetSpace);
-		}
-
-		InvaderGroup InitInvaderGroup(Space targetSpace) {
-			return new InvaderGroup( targetSpace, this.GetCounts(targetSpace), AddFear );
+		public ReadOnlyInvaderGroup InvadersOn(Space targetSpace) {
+			return new InvaderGroup( targetSpace, this.GetCounts( targetSpace ), AddFear );
 		}
 
 		string Build( InvaderGroup group ) {
@@ -317,7 +315,7 @@ namespace SpiritIsland {
 
 		public void DamageInvaders(Space space,int damage){ // !!! let players choose the item to apply damage to
 			if(damage==0) return;
-			InvadersOn(space).ApplySmartDamageToGroup( damage );
+			((InvaderGroup)InvadersOn(space)).ApplySmartDamageToGroup( damage );
 		}
 
 		#endregion

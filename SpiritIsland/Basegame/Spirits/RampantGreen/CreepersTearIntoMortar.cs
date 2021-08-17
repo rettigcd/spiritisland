@@ -27,7 +27,7 @@ namespace SpiritIsland.Basegame {
 		}
 
 		static Task DoDamage(ActionEngine engine, Space target, int damage ) {
-			return engine.GameState.InvadersOn( target ).SmartDamageToTypes( damage, Invader.City, Invader.Town );
+			return engine.InvadersOn( target ).SmartDamageToTypes( damage, Invader.City, Invader.Town );
 		}
 	}
 }

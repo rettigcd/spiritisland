@@ -20,7 +20,7 @@ namespace SpiritIsland.Basegame {
 			await Gather1Explorer(engine,target);
 
 			// destory 2 explorers (+1 fear/kill)
-			var grp = engine.GameState.InvadersOn( target );
+			var grp = engine.InvadersOn( target );
 			int destroyed = grp.Destroy(Invader.Explorer, 2 );
 			engine.GameState.AddFear( destroyed );
 		}

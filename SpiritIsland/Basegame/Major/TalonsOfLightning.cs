@@ -30,7 +30,7 @@ namespace SpiritIsland.Basegame {
 			if(bonus)
 				// destory 1 town in each adjacent land
 				foreach(var neighbor in target.Adjacent)
-					engine.GameState.InvadersOn(neighbor).Destroy(Invader.Town,1);
+					engine.InvadersOn(neighbor).Destroy(Invader.Town,1);
 
 		}
 

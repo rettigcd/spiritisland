@@ -4,12 +4,12 @@ using System.Threading.Tasks;
 namespace SpiritIsland.Basegame {
 	class MistsOfOblivion {
 
-
 		[MajorCard( "Mists of Oblivion", 4, Speed.Slow, Element.Moon, Element.Air, Element.Water )]
 		[FromPresence(3)]
 		static public Task ActAsync( ActionEngine engine, Space target ) {
-			var (self, gs) = engine;
-			var grp = gs.InvadersOn( target );
+			var grp = engine.InvadersOn( target );
+			var (self, _) = engine;
+
 			var startingTownsAndCities = grp.TownsAndCitiesCount;
 			// 1 damage to each invader
 			grp.ApplyDamageToEach(1,grp.InvaderTypesPresent_Generic.ToArray());

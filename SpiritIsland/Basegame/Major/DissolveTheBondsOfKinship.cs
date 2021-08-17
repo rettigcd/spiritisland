@@ -8,7 +8,7 @@ namespace SpiritIsland.Basegame {
 		[FromPresence(1)]
 		static public async Task ActAsync(ActionEngine engine,Space target ) {
 			var (self, gs) = engine;
-			var grp = gs.InvadersOn( target );
+			var grp = engine.InvadersOn( target );
 
 			// replace 1 city with 2 exploreres.
 			ReplaceInvaderWithExplorer( grp, Invader.City, 2 );

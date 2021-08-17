@@ -16,7 +16,7 @@ namespace SpiritIsland.Basegame {
 			// +1 damage, if costal +1 additional damage
 			int damage = target.IsCostal ? 2 : 1;
 
-			await engine.UserSelectDamage( damage, gameState.InvadersOn( target ) );
+			await engine.UserSelectDamage( damage, (InvaderGroup)gameState.InvadersOn(target) );
 		}
 
 	}

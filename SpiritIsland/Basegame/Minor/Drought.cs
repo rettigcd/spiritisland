@@ -7,7 +7,7 @@ namespace SpiritIsland.Basegame {
 		[MinorCard( "Drought", 1, Speed.Slow, Element.Sun, Element.Fire, Element.Earth )]
 		[FromPresence(1)]
 		static public Task Act( ActionEngine engine, Space target ) {
-			var grp = engine.GameState.InvadersOn( target );
+			var grp = engine.InvadersOn( target );
 
 			// Destory 3 towns.
 			grp.Destroy(Invader.Town,int.MaxValue);

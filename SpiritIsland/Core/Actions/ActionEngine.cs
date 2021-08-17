@@ -12,6 +12,8 @@ namespace SpiritIsland {
 
 		public PowerCardApi Api { get; }
 
+		public InvaderGroup InvadersOn(Space space) => (InvaderGroup)GameState.InvadersOn(space);
+
 		public ActionEngine(Spirit self,GameState gameState){
 			Self = self;
 			GameState = gameState;
