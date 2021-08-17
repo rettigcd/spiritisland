@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -34,7 +33,7 @@ namespace SpiritIsland {
 		}
 
 		public Task ActivateAgainstSpecificTarget( ActionEngine engine, Space preTarget ) {
-			return Task.Run( ()=>InvokeAgainst(engine,preTarget) );// ?????
+			return Task.Run( ()=>InvokeAgainst(engine,preTarget) );
 		}
 
 		async Task PickSpaceAndActivate( ActionEngine engine ){
@@ -48,9 +47,11 @@ namespace SpiritIsland {
 
 	}
 
+	/// <summary>
+	/// When a spirit targets a land, allows us to record this targetting
+	/// </summary>
+	public class SpaceTargetedArgs { public Spirit Initiator; public PowerCard Card; public Space Target; };
 
-	public class SpaceTargetedArgs{ public Spirit Initiator; public PowerCard Card; public Space Target; };
-	public delegate void SpaceTargetedEvent(SpaceTargetedArgs args);
-
+	public delegate void SpaceTargetedEvent( SpaceTargetedArgs args );
 
 }

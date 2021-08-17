@@ -102,10 +102,17 @@ namespace SpiritIsland {
 					yield return innate;		
 		} 
 
-		public IEnumerable<IActionFactory> GetUnresolvedActionFactories(Speed speed) {
-			return GetUnresolvedActionFactories()
-				.Where(f=>f.Speed == speed);
-		} 
+		public IEnumerable<IActionFactory> GetUnresolvedActionFactories(Speed speed)
+			=> GetUnresolvedActionFactories().Where( GetFilter( speed ) );
+		
+
+		static Func<IActionFactory, bool> GetFilter( Speed speed ) {
+			return speed switch {
+				Speed.Fast => ( x ) => x.Speed == Speed.Fast || x.Speed == Speed.FastOrSlow,
+				Speed.Slow => ( x ) => x.Speed == Speed.Slow || x.Speed == Speed.FastOrSlow,
+				_ => x => x.Speed == speed
+			};
+		}
 
 		/// <summary>
 		/// Removes from list.  Triggers Energy when last growth removed
@@ -129,26 +136,30 @@ namespace SpiritIsland {
 
 			_unresolvedActionFactories.RemoveAt( index );
 
-			if(_unresolvedActionFactories.Count == 0 && selectedActionFactory is GrowthActionFactory growthFactory) {
-				// Energy
-				Energy += EnergyPerTurn;
-				// Elements
-				Elements.AddRange( Presence.Energy.Revealed.Where( t => t.Element.HasValue ).Select( t => t.Element.Value ) );
-				Elements.AddRange( Presence.CardPlays.Revealed.Where( t => t.Element.HasValue ).Select( t => t.Element.Value ) );
+			if(_unresolvedActionFactories.Count == 0 && selectedActionFactory is GrowthActionFactory)
+				TriggerEnergyElementsAndReclaims( selectedActionFactory );
 
-				// Reclaims-1
-				if(!(selectedActionFactory is Reclaim1)) { // prevent retriggering following Reclaim1
-					int reclaim1Count = Math.Min( 
-						DiscardPile.Count,	// Reclaim-all will make this 0, disabling any reclaim-1
-						Presence.CardPlays.Revealed.Count( x => x.ReclaimOne ) 
-					);
-					while(reclaim1Count-->0)
-						AddActionFactory( new Reclaim1() );
-				}
+		}
+
+		void TriggerEnergyElementsAndReclaims( IActionFactory selectedActionFactory ) {
+			// Energy
+			Energy += EnergyPerTurn;
+			// Elements
+			Elements.AddRange( Presence.Energy.Revealed.Where( t => t.Element.HasValue ).Select( t => t.Element.Value ) );
+			Elements.AddRange( Presence.CardPlays.Revealed.Where( t => t.Element.HasValue ).Select( t => t.Element.Value ) );
+
+			// Reclaims-1
+			if(!(selectedActionFactory is Reclaim1)) { // prevent retriggering following Reclaim1
+				int reclaim1Count = Math.Min(
+					DiscardPile.Count,  // Reclaim-all will make this 0, disabling any reclaim-1
+					Presence.CardPlays.Revealed.Count( x => x.ReclaimOne )
+				);
+				while(reclaim1Count-- > 0)
+					AddActionFactory( new Reclaim1() );
 			}
 		}
 
-		public virtual void AddActionFactory( IActionFactory factory ) {
+		public void AddActionFactory( IActionFactory factory ) {
 			_unresolvedActionFactories.Add( factory );
 		}
 
@@ -166,11 +177,12 @@ namespace SpiritIsland {
 
 		public int Flush( Speed speed ) {
 			var toFlush = GetUnresolvedActionFactories()
-				.Where( f => f.Speed == speed )
+				.Where( x=>x.Speed == speed )
 				.ToArray();
 			foreach(var factory in toFlush)
 				RemoveUnresolvedFactory( factory );
-			return toFlush.Length;
+			return toFlush.Length 
+				+ (speed == Speed.Slow ? Flush(Speed.FastOrSlow) : 0 );
 		}
 
 		void PurchaseCard( PowerCard card ) {
@@ -192,7 +204,7 @@ namespace SpiritIsland {
 
 		#endregion
 
-			#region presence
+		#region presence
 
 		public virtual IEnumerable<Space> SacredSites => Presence.Placed
 			.GroupBy(x=>x)
@@ -249,11 +261,9 @@ namespace SpiritIsland {
 
 		public Stack<IDecision> decisions = new();
 
-		public event SpaceTargetedEvent TargetedSpace;
-
-//		static readonly IPowerCardDrawer DefaultCardDrawer = new IncrementCountCardDrawer();
 		static readonly IPowerCardDrawer DefaultCardDrawer = new DrawFromDeck();
 
+		public event SpaceTargetedEvent TargetedSpace;
 	}
 
 }

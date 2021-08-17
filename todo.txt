@@ -17,7 +17,6 @@ RAVAGE ENGINE - Conceiling Shadows - no damage to dahan
 RAVAGE ENGINE - Infinite Vitality - override Ragage Engine
 RAVAGE ENGINE - Rengence of the dead - override Ravage engine
 PP ENGINE - Entwined Power - implement place-presence engine and override it
-DO - PowerStormg - pay for card again.  (Not hard, just implement)
 DO - WindsOfRustAndAtrophy - not hard, just implement
 DO - Dissolve the Bonds of Kinship - no problem, just implement
 DO - Dissalow selecting growth option that requires money spirit doesn't have.
