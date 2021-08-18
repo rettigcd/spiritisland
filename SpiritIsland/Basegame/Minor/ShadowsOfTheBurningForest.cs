@@ -11,22 +11,11 @@ namespace SpiritIsland.Basegame {
 			engine.AddFear(2);
 
 			// if target is M/J, Push 1 explorer and 1 town
-
-			// duplicated in Mantle of dread
-			var grp = engine.GameState.InvadersOn(target);
-			// Push Town
-			var townInvaders = grp.FilterBy(Invader.Town);
-			if(townInvaders.Length>0){
-				var townInvader = await engine.SelectInvader("Select town to push",townInvaders,true);
-				if(townInvader != null)
-					await engine.PushInvader(target,townInvader);
-			}
-			// Push Explorer
-			if(grp.HasExplorer){
-				// allow short-circuit
-				var explorerInvader = await engine.SelectInvader("Select town to push",grp.FilterBy(Invader.Explorer),true);
-				if(explorerInvader != null)
-					await engine.PushInvader(target,explorerInvader);
+			if(target.Terrain.IsIn( Terrain.Mountain, Terrain.Jungle )) {
+				// Push Town
+				await engine.PushUpToNInvaders(target,1,Invader.Town);
+				// Push Explorer
+				await engine.PushUpToNInvaders( target, 1, Invader.Explorer );
 			}
 
 		}

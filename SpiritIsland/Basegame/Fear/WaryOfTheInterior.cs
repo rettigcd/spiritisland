@@ -25,13 +25,12 @@ namespace SpiritIsland.Basegame {
 
 		static async Task EachSpiritRemoves1Invader( GameState gs, Func<Space,bool> spaceCondition, params Invader[] x ) {
 			foreach(var spirit in gs.Spirits) {
-				var engine = spirit.Bind( gs );
 				var options = gs.Island.AllSpaces
 					.Where( spaceCondition )
 					.Where( s => gs.InvadersOn( s ).HasAny( x ) )
 					.ToArray();
 				if(options.Length == 0) break;
-				var target = await engine.SelectSpace( "Fear:select land to remove 1 explorer", options );
+				var target = await spirit.SelectSpace( "Fear:select land to remove 1 explorer", options );
 				var invaderToRemove = gs.InvadersOn( target ).PickBestInvaderToRemove( x );
 				gs.Adjust( target, invaderToRemove, -1 );
 			}

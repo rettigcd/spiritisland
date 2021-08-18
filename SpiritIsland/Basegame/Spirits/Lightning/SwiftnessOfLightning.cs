@@ -20,7 +20,7 @@ namespace SpiritIsland.Basegame {
 		}
 
 		public Task Activate( ActionEngine engine ) {
-			return engine.SelectActionsAndMakeFast( engine.Self, engine.Self.Elements[Element.Air] );
+			return engine.Self.SelectActionsAndMakeFast( engine.Self.Elements[Element.Air] );
 		}
 
 	}

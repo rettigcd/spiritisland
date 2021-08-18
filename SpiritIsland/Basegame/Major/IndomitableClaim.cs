@@ -8,7 +8,7 @@ namespace SpiritIsland.Basegame {
 		static public async Task ActAsync( ActionEngine engine, Space target ) {
 			var (self,gs) = engine;
 			// add 1 presence in target land even if you normally could not due to land type.
-			var source = await engine.SelectTrack();
+			var source = await engine.Self.SelectTrack();
 			self.Presence.PlaceFromBoard(source,target);
 			// Defend 20
 			gs.Defend(target,20);

@@ -105,7 +105,7 @@ Shadows Flicker like Flame:
 				options.Add(new TextOption("Pay 1 energy to target land with dahan"));
 
 				// let them select normal, or choose to pay
-				var option = await eng.SelectOption("Select target.",options.ToArray());
+				var option = await eng.Self.SelectOption("Select target.",options.ToArray());
 
 				// if they select regular space, use it
 				if(option is Space space)
@@ -115,7 +115,7 @@ Shadows Flicker like Flame:
 				--self.Energy;
 
 				// pick from dahan-only spaces
-				return await eng.SelectSpace("Target land with dahan",dahanOnlySpaces);
+				return await eng.Self.SelectSpace("Target land with dahan",dahanOnlySpaces);
 			}
 
 		}

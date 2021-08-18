@@ -22,11 +22,10 @@ namespace SpiritIsland.Basegame {
 
 		static async Task ForEachSpiritPushUpToNInvadersFromInland( GameState gs, int max, params Invader[] pushableInvaders ) {
 			foreach(var spirit in gs.Spirits) {
-				var engine = spirit.Bind( gs );
 				var options = gs.Island.AllSpaces.Where( s => !s.IsCostal && gs.InvadersOn( s ).HasExplorer ).ToArray();
 				if(options.Length == 0) break;
-				var target = await engine.SelectSpace( $"Fear:select land to push up to {max} invaders", options );
-				await engine.PushUpToNInvaders( target, max, pushableInvaders );
+				var target = await spirit.SelectSpace( $"Fear:select land to push up to {max} invaders", options );
+				await spirit.Bind( gs ).PushUpToNInvaders( target, max, pushableInvaders );
 			}
 		}
 

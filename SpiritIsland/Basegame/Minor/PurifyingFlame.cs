@@ -7,13 +7,13 @@ namespace SpiritIsland.Basegame {
 		[MinorCard("Purifying Flame",1,Speed.Slow,Element.Sun,Element.Fire,Element.Air,Element.Plant)]
 		[FromSacredSite(1)]
 		static public async Task Act(ActionEngine engine,Space target){
-			var (_,gameState) = engine;
+			var (self,gameState) = engine;
 
 			static bool CanRemoveBlight(Space space) => space.Terrain.IsIn(Terrain.Mountain,Terrain.Sand);
 
 			async Task<bool> UserSelectsDamage(){
 				const string damageInvaderKey = "damageInvaders";
-				return damageInvaderKey == await engine.SelectText("Select option",damageInvaderKey,"remove blight");
+				return damageInvaderKey == await self.SelectText("Select option",damageInvaderKey,"remove blight");
 			}
 
 			// on target, spirit should be able to do one or both

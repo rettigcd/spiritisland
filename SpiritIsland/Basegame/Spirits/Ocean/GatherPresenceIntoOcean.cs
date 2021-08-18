@@ -18,7 +18,7 @@ namespace SpiritIsland.Basegame {
 			while(0 < gatherSpaces.Count){
 
 				Space currentTarget = gatherSpaces[0];
-				Space source = await engine.SelectSpace(
+				Space source = await engine.Self.SelectSpace(
 					$"Select source of Presence to Gather into {currentTarget}"
 					, currentTarget.Adjacent
 						.Where( engine.Self.Presence.Spaces.Contains )

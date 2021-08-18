@@ -60,7 +60,7 @@ namespace SpiritIsland.SinglePlayer {
 			// Cascade blight
 			while(gameState.cascadingBlight.Count > 0) {
 				Space blightedSpace = gameState.cascadingBlight.Pop();
-				Space cascadeSpace = await engine.SelectSpace( "Select land to cascade blight from " + blightedSpace.Label,
+				Space cascadeSpace = await engine.Self.SelectSpace( "Select land to cascade blight from " + blightedSpace.Label,
 					blightedSpace.Adjacent
 						.Where( x => x.Terrain != Terrain.Ocean )
 				);

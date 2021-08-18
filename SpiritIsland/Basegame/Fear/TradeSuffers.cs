@@ -15,10 +15,9 @@ namespace SpiritIsland.Basegame {
 		[FearLevel( 2, "Each player may replace 1 Town with 1 Explorer in a Coastal land." )]
 		public async Task Level2( GameState gs ) {
 			foreach(var spirit in gs.Spirits) {
-				var engine = spirit.Bind(gs);
 				var options = gs.Island.AllSpaces.Where(s=>s.IsCostal&&gs.InvadersOn(s).HasTown).ToArray();
 				if(options.Length==0) return;
-				var target = await engine.SelectSpace("Replace town with explorer",options);
+				var target = await spirit.SelectSpace("Replace town with explorer",options);
 				gs.Adjust(target,InvaderSpecific.Town,-1);
 				gs.Adjust( target, InvaderSpecific.Explorer, 1 );
 			}
@@ -27,10 +26,9 @@ namespace SpiritIsland.Basegame {
 		[FearLevel( 3, "Each player may replace 1 City with 1 Town or 1 Town with 1 Explorer in a Coastal land." )]
 		public async Task Level3( GameState gs ) {
 			foreach(var spirit in gs.Spirits) {
-				var engine = spirit.Bind( gs );
 				var options = gs.Island.AllSpaces.Where( s => s.IsCostal && gs.InvadersOn( s ).HasAny(Invader.Town,Invader.City) ).ToArray();
 				if(options.Length == 0) return;
-				var target = await engine.SelectSpace( "Replace town with explorer", options );
+				var target = await spirit.SelectSpace( "Replace town with explorer", options );
 				if(gs.InvadersOn( target ).HasCity) {
 					gs.Adjust( target, InvaderSpecific.City, -1 );
 					gs.Adjust( target, InvaderSpecific.Town, 1 );

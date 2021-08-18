@@ -11,7 +11,7 @@ namespace SpiritIsland.Basegame {
 		[TargetSpirit]
 		static public async Task ActAsync(ActionEngine engine,Spirit target) {
 			// Taret spirit may use up to 2 slow powers as if they were fast powers this turn.
-			await engine.SelectActionsAndMakeFast( target, 2 );
+			await target.SelectActionsAndMakeFast( 2 );
 		}
 
 	}

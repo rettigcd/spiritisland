@@ -19,7 +19,7 @@ namespace SpiritIsland.Basegame {
 			Space[] CalcSpaceOptions() => target.Adjacent.Where(n=>gs.InvadersOn(n).HasExplorer).ToArray();
 			Space[] spacesWithExplorers = CalcSpaceOptions();
 			while(remaining>0 && spacesWithExplorers.Length>0){
-				var source = await engine.SelectSpace("pull explorer from",spacesWithExplorers,true);
+				var source = await engine.Self.SelectSpace("pull explorer from",spacesWithExplorers,true);
 				if(source==null) break;
 				gs.Move(InvaderSpecific.Explorer,source,target);
 				--remaining;

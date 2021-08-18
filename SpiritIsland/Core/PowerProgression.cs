@@ -30,7 +30,7 @@ namespace SpiritIsland {
 
 			spirit.RegisterNewCard( newCard );
 			if(newCard.PowerType == PowerType.Major)
-				await engine.ForgetPowerCard();
+				await spirit.ForgetPowerCard();
 			return newCard;
 		}
 

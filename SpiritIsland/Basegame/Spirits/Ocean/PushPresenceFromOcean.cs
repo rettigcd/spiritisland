@@ -15,7 +15,7 @@ namespace SpiritIsland.Basegame {
 
 			while(0 < pushSpaces.Count){
 				var currentSource = pushSpaces[0];
-				var destination = await engine.SelectSpace(
+				var destination = await engine.Self.SelectSpace(
 					$"Select target of Presence to Push from {currentSource}",
 					currentSource.Adjacent
 				);

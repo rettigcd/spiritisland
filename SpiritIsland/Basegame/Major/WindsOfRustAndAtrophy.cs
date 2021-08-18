@@ -27,7 +27,7 @@ namespace SpiritIsland.Basegame {
 			// replace 1 city with 1 town OR 1 town with 1 explorer
 			var grp = gs.InvadersOn( target );
 			var options = grp.FilterBy( Invader.City, Invader.Town );
-			var invader = await engine.SelectInvader( "Select invader to downgrade (city>town,town>explorer)", options );
+			var invader = await engine.Self.SelectInvader( "Select invader to downgrade (city>town,town>explorer)", options );
 			if(invader.Generic == Invader.City) {
 				gs.Adjust( target, invader, -1 );
 				gs.Adjust( target, InvaderSpecific.Town, 1 );

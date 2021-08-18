@@ -11,7 +11,7 @@ namespace SpiritIsland {
 		// !! This is the replacement for SmartDamage To Types
 		static public async Task<int> UserSelectDamage( this ActionEngine engine, int damage, InvaderGroup group ) {
 			while(damage > 0) {
-				var invader = await engine.SelectInvader( "Select invader to damage.", group.InvaderTypesPresent_Specific.ToArray() );
+				var invader = await engine.Self.SelectInvader( "Select invader to damage.", group.InvaderTypesPresent_Specific.ToArray() );
 				if(invader == null) break;
 
 				damage -= await group.ApplyDamageTo1( damage, invader );

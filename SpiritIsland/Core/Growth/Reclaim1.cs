@@ -10,7 +10,7 @@ namespace SpiritIsland {
 			var discardCards = engine.Self.DiscardPile.ToArray();
 			if(discardCards.Length > 0) {
 				var dict = discardCards.ToDictionary(c=>$"{c.Text} ${c.Cost} ({c.Speed})",c=>(PowerCard)c);
-				var txt = await engine.SelectText( "Select card to reclaim.", dict.Keys.ToArray() );
+				var txt = await engine.Self.SelectText( "Select card to reclaim.", dict.Keys.ToArray() );
 				if(txt != null) {
 					PowerCard card = dict[txt];
 					if(engine.Self.DiscardPile.Contains( card )) {

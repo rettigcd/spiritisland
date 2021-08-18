@@ -10,7 +10,7 @@ namespace SpiritIsland.Basegame.Spirits.Bringer {
 		static public async Task ActAsync(ActionEngine engine, Space target ) {
 
 			bool doFear = engine.GameState.HasInvaders(target)
-				&& await engine.SelectFirstText("Select power option","2 fear","Draw Major Power");
+				&& await engine.Self.SelectFirstText("Select power option","2 fear","Draw Major Power");
 
 			if(doFear)
 				// if invaders are present, 2 fear

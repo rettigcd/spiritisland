@@ -12,7 +12,7 @@ namespace SpiritIsland.Basegame {
 			const string addFearText = "3 fear";
 			bool addFear = eng.Self.Presence.IsOn(target)
 				&& eng.GameState.HasInvaders(target)
-				&& await eng.SelectText( "Select power", "add 1 presence", addFearText ) == addFearText;
+				&& await eng.Self.SelectText( "Select power", "add 1 presence", addFearText ) == addFearText;
 
 			if( addFear )
 				eng.AddFear(3);

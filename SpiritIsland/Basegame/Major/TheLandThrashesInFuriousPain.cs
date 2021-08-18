@@ -15,7 +15,7 @@ namespace SpiritIsland.Basegame {
 			// if you have 3 moon 3 earth
 			if(self.Elements.Contains("3 moon,3 earth")) {
 				// repeat on an adjacent land.
-				var alsoTarget = await engine.SelectSpace( "Select adjacent land to receive damage from blight", target.Adjacent);
+				var alsoTarget = await self.SelectSpace( "Select adjacent land to receive damage from blight", target.Adjacent);
 				await ApplyDamageFromBlight( alsoTarget, gs, engine );
 			}
 		}

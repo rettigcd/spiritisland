@@ -12,7 +12,7 @@ namespace SpiritIsland.Basegame {
 
 			const string fearOption = "2 fear";
 			bool doFear = engine.GameState.HasInvaders( target ) 
-				&& await engine.SelectText( "Chose card option", fearOption, "push up to 4 dahan" ) == fearOption;
+				&& await engine.Self.SelectText( "Chose card option", fearOption, "push up to 4 dahan" ) == fearOption;
 
 			if( doFear )
 				engine.AddFear( 2 );

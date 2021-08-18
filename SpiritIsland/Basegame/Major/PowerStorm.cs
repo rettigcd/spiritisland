@@ -30,7 +30,7 @@ namespace SpiritIsland.Basegame {
 			public async Task Activate( ActionEngine engine ) {
 				var (self,_) = engine;
 				var cards = self.DiscardPile.Where(c=>c.Cost<=self.Energy).ToArray();
-				var card = (PowerCard)await engine.SelectFactory("Select card to replay",cards,true);
+				var card = (PowerCard)await self.SelectFactory("Select card to replay",cards,true);
 				if( card == null ) return;
 				self.Energy -= card.Cost;
 				await card.Activate(engine);

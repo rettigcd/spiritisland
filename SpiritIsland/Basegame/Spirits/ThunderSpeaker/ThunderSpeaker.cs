@@ -118,8 +118,7 @@ namespace SpiritIsland.Basegame {
 				moveLookup.Add($"Move {i} presence.",i );
 			moveLookup.Add( "stay",0);
 			
-			string s = await this.Bind( gs )
-				.SelectText("Move presence with dahan?", moveLookup.OrderByDescending(p=>p.Value).Select(p=>p.Key).ToArray()); 
+			string s = await this.SelectText("Move presence with dahan?", moveLookup.OrderByDescending(p=>p.Value).Select(p=>p.Key).ToArray()); 
 			int countToMove = moveLookup[s];
 
 			while(countToMove-- > 0)
@@ -138,7 +137,7 @@ namespace SpiritIsland.Basegame {
 			Space[] Calc() => args.space.SpacesWithin( 1 ).Intersect( Presence.Spaces ).ToArray();
 
 			while(numToDestroy-->0 && (options=Calc()).Length > 0)
-				Presence.Destroy( await eng.SelectSpace( prompt, options ) );
+				Presence.Destroy( await eng.Self.SelectSpace( prompt, options ) );
 
 		}
 

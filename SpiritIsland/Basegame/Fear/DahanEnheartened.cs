@@ -9,16 +9,17 @@ namespace SpiritIsland.Basegame {
 		[FearLevel( 1, "Each player may Push 1 Dahan from a land with Invaders or Gather 1 Dahan into a land with Invaders." )]
 		public async Task Level1( GameState gs ) {
 			foreach(var spirit in gs.Spirits) {
-				var engine = spirit.Bind(gs);
-				var target = await engine.SelectSpace("Select Space to Gather or push 1 dahan",gs.Island.AllSpaces.Where(x=>x.IsLand).ToArray());
+				var target = await spirit.SelectSpace("Select Space to Gather or push 1 dahan",gs.Island.AllSpaces.Where(x=>x.IsLand).ToArray());
 				bool canPush = gs.HasDahan(target);
 				bool canGather = target.Adjacent.Any(gs.HasDahan);
 				if(canPush && canGather) {
-					if(await engine.SelectText("Push or Gather?","push","gather")=="push")
+					if(await spirit.SelectText("Push or Gather?","push","gather")=="push")
 						canPush=false;
 					else
 						canGather=false;
 				}
+
+				var engine = spirit.Bind( gs );
 				if(canPush)
 					await engine.PushUpToNDahan(target,1);
 				else if(canGather)
@@ -32,7 +33,7 @@ namespace SpiritIsland.Basegame {
 			foreach(var spirit in gs.Spirits) {
 				var engine = spirit.Bind( gs );
 				var options = gs.Island.AllSpaces.Where( gs.HasDahan ).Except( used ).ToArray();
-				var target = await engine.SelectSpace( "Fear:select land with dahan for 1 damage", options );
+				var target = await spirit.SelectSpace( "Fear:select land with dahan for 1 damage", options );
 				await engine.GatherUpToNDahan(target,2);
 				if(gs.HasDahan(target))
 					await gs.SpiritFree_DamageInvaders(target, 1 );
@@ -44,10 +45,9 @@ namespace SpiritIsland.Basegame {
 		public async Task Level3( GameState gs ) {
 			HashSet<Space> used = new HashSet<Space>();
 			foreach(var spirit in gs.Spirits) {
-				var engine = spirit.Bind( gs );
 				var options = gs.Island.AllSpaces.Where( gs.HasDahan ).Except( used ).ToArray();
-				var target = await engine.SelectSpace( "Fear:select land with dahan for 1 damage", options );
-				await engine.GatherUpToNDahan( target, 2 );
+				var target = await spirit.SelectSpace( "Fear:select land with dahan for 1 damage", options );
+				await spirit.Bind( gs ).GatherUpToNDahan( target, 2 );
 				await gs.SpiritFree_DamageInvaders(target, gs.GetDahanOnSpace(target) );
 				used.Add( target );
 			}

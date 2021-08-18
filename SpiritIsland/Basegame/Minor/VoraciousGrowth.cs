@@ -11,7 +11,7 @@ namespace SpiritIsland.Basegame {
 			const string blightKey = "Remove 1 Blight";
 
 			bool removeBlight = gs.HasBlight(target) 
-				&& blightKey == await engine.SelectText("Select action","2 Damage",blightKey);
+				&& blightKey == await engine.Self.SelectText("Select action","2 Damage",blightKey);
 
 			if(removeBlight)
 				gs.AddBlight(target,-1);

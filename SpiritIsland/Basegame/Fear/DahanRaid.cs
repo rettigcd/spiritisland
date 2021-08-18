@@ -26,9 +26,8 @@ namespace SpiritIsland.Basegame {
 		static async Task ForEachPlayerChosenLandWithDahan( GameState gs, Func<Space,Task> action ) {
 			HashSet<Space> used = new HashSet<Space>();
 			foreach(var spirit in gs.Spirits) {
-				var engine = spirit.Bind( gs );
 				var options = gs.Island.AllSpaces.Where( gs.HasDahan ).Except( used ).ToArray();
-				var target = await engine.SelectSpace( "Fear:select land with dahan", options );
+				var target = await spirit.SelectSpace( "Fear:select land with dahan", options );
 				used.Add( target );
 				await action( target );
 			}

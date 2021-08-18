@@ -12,7 +12,7 @@ namespace SpiritIsland.Basegame {
 			var (self,gameState) = engine;
 			// if 2 water, you may INSTEAD remove 1 blight
 			bool removeBlight = self.Elements[Element.Water]>=2
-				&& await engine.SelectFirstText("Select option", "Remove Blight", "Defend 6" );
+				&& await engine.Self.SelectFirstText("Select option", "Remove Blight", "Defend 6" );
 
 			if(removeBlight)
 				gameState.RemoveBlight(target);

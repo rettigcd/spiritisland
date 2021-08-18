@@ -47,7 +47,7 @@ namespace SpiritIsland.Basegame {
 			var grp = engine.InvadersOn(target);
 			InvaderSpecific[] invadersToDestroy = grp.FilterBy(Invader.City,Invader.Town);
 			while(count>0 && invadersToDestroy.Length >0){
-				var invader = await engine.SelectInvader("Select town/city to destroy.",invadersToDestroy,true);
+				var invader = await engine.Self.SelectInvader("Select town/city to destroy.",invadersToDestroy,true);
 				if(invader==null) break;
 				await grp.Destroy( invader.Generic, 1 );
 

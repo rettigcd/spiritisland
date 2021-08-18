@@ -53,7 +53,7 @@ namespace SpiritIsland.Basegame {
 		}
 
 		async Task FindSpiritAndInvoke( ActionEngine engine, MethodBase methodBase ){
-			Spirit target = await engine.SelectSpirit(engine.GameState.Spirits);
+			Spirit target = await engine.Self.SelectSpirit(engine.GameState.Spirits);
 			methodBase.Invoke( null, new object[] { target, targetedList } );
 		}
 
@@ -76,7 +76,7 @@ namespace SpiritIsland.Basegame {
 		public IActionFactory Original => this;
 
 		public Task Activate( ActionEngine engine ) {
-			return engine.SelectSpaceCardToReplayForCost( engine.Self, maxCost, targetedList );
+			return engine.Self.SelectSpaceCardToReplayForCost( maxCost, targetedList );
 		}
 
 		readonly List<SpaceTargetedArgs> targetedList;

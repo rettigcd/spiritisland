@@ -11,7 +11,7 @@ namespace SpiritIsland.Basegame {
 			int dahanCount = engine.GameState.GetDahanOnSpace(target);
 			string damageInvadersText = $"{dahanCount} damage to invaders";
 			bool damageInvaders = engine.GameState.HasInvaders(target)
-				&& await engine.SelectText("Select card option", damageInvadersText, "push up to 3 dahan") == damageInvadersText;
+				&& await engine.Self.SelectText("Select card option", damageInvadersText, "push up to 3 dahan") == damageInvadersText;
 
 			if(damageInvaders)
 				// each dahan deals 1 damage to a different invader

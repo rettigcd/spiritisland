@@ -29,13 +29,12 @@ namespace SpiritIsland.Basegame {
 		public async Task Level3( GameState gs ) {
 			var used = new HashSet<Space>();
 			foreach(var spirit in gs.Spirits) {
-				var engine = spirit.Bind( gs );
 				var options = spirit.Presence.Spaces
 					.Where(s=>gs.InvadersOn(s).HasAny(Invader.Town,Invader.Explorer))
 					.Except(used)
 					.ToArray();
 				if(options.Length==0) continue;
-				var target = await engine.SelectSpace("Select land to remove 2 health worth of invaders/presence.",options);
+				var target = await spirit.SelectSpace("Select land to remove 2 health worth of invaders/presence.",options);
 				used.Add(target);
 				var grp = gs.InvadersOn(target);
 				if(grp.HasTown)

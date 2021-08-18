@@ -17,11 +17,10 @@ namespace SpiritIsland.Basegame {
 			if(!IslandIsBlighted) return;
 			// Forgets a Power or destorys a presence
 			foreach(var spirit in gs.Spirits) {
-				var engine = spirit.Bind(gs);
 				IOption[] options = spirit.Presence.Spaces.Cast<IOption>()
 					.Union( spirit.Hand.Union( spirit.DiscardPile ).Cast<IOption>() )
 					.ToArray();
-				var option = await engine.SelectOption("Select Power card to forget or presence to destroy.",options);
+				var option = await spirit.SelectOption("Select Power card to forget or presence to destroy.",options);
 				if(option is Space space)
 					spirit.Presence.Destroy(space);
 				else if(option is PowerCard card)

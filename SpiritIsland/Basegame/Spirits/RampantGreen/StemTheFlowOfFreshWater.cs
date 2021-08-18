@@ -16,7 +16,7 @@ namespace SpiritIsland.Basegame {
 			} else {
 				// 1 damage to 1 town or city.
 				var types = grp.FilterBy(Invader.City,Invader.Town);
-				var invader = await eng.SelectInvader("1 damage to",types);
+				var invader = await eng.Self.SelectInvader("1 damage to",types);
 				if(invader !=null)
 					await grp.ApplyDamageTo1(1,invader);
 			}

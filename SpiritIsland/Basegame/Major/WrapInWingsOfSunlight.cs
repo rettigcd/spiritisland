@@ -19,11 +19,11 @@ namespace SpiritIsland.Basegame {
 			// defend 5 in that land
 
 			// destination
-			var destination = await engine.SelectSpace( "Move dahan to", engine.GameState.Island.AllSpaces.Where( s => s.Terrain != Terrain.Ocean ) );
+			var destination = await engine.Self.SelectSpace( "Move dahan to", engine.GameState.Island.AllSpaces.Where( s => s.Terrain != Terrain.Ocean ) );
 
 			// move dahan
 			int max = Math.Min( engine.GameState.GetDahanOnSpace( target ), 5 );
-			int countToMove = await engine.SelectNumber( "# of dahan to move", max );
+			int countToMove = await engine.Self.SelectNumber( "# of dahan to move", max );
 			await engine.GameState.MoveDahan( target, destination, countToMove );
 
 			// defend

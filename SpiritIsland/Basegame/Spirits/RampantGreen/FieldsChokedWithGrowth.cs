@@ -20,7 +20,7 @@ namespace SpiritIsland.Basegame {
 
 			if(options.Count == 0) return;
 
-			string power = await eng.SelectText("Select item(s) to push",options.ToArray());
+			string power = await eng.Self.SelectText("Select item(s) to push",options.ToArray());
 
 			if(power == pushDahanText)
 				await eng.PushUpToNDahan(target,3);

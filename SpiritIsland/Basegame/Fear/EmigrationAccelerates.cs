@@ -27,13 +27,12 @@ namespace SpiritIsland.Basegame {
 			params Invader[] removable
 		) {
 			foreach(var spirit in gs.Spirits) {
-				var engine = spirit.Bind( gs );
 				var options = gs.Island.AllSpaces
 					.Where( landFilter )
 					.Where( x => gs.InvadersOn( x ).HasAny( removable ) )
 					.ToArray();
 				if(options.Length == 0) break;
-				var target = await engine.SelectSpace( "Fear:Pick costal land remove invader", options );
+				var target = await spirit.SelectSpace( "Fear:Pick costal land remove invader", options );
 				var grp = gs.InvadersOn( target );
 
 				var invaderToRemove = grp.PickBestInvaderToRemove( removable );

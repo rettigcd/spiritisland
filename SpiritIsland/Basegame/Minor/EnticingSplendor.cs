@@ -6,7 +6,7 @@ namespace SpiritIsland.Basegame {
 		[FromPresence( 0, Target.NoBlight )]
 		public static async Task ActAsync( ActionEngine eng, Space target ) {
 			const string dahanText = "2 dahan";
-			if(dahanText == await eng.SelectText( "Gather what?", dahanText, "1 Explorer/Town" ))
+			if(dahanText == await eng.Self.SelectText( "Gather what?", dahanText, "1 Explorer/Town" ))
 				await eng.GatherUpToNDahan( target, 2 );
 			else
 				await eng.GatherUpToNInvaders( target, 1, Invader.Explorer, Invader.Town );
