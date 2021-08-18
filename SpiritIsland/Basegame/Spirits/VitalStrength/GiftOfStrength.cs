@@ -53,7 +53,7 @@ namespace SpiritIsland.Basegame {
 		}
 
 		async Task FindSpiritAndInvoke( ActionEngine engine, MethodBase methodBase ){
-			Spirit target = await engine.SelectSpirit();
+			Spirit target = await engine.SelectSpirit(engine.GameState.Spirits);
 			methodBase.Invoke( null, new object[] { target, targetedList } );
 		}
 

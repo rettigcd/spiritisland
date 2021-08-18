@@ -10,7 +10,6 @@ namespace SpiritIsland.Basegame {
 		[FromPresence(1,Target.Any)] // !!! Add unit test that we don't accidentally switch this back to .SandOrWetland
 		static public Task ActAsync(ActionEngine eng, Space target){
 
-			var (self,gameState) = eng;
 			int damage = 0; // accumulate because +2 is better than +1 +1
 
 			// If target land is Sand or Water, 1 damage
@@ -18,9 +17,9 @@ namespace SpiritIsland.Basegame {
 				++damage;
 
 			// If target land has your presence, 1 fear and 1 damage
-			if(self.Presence.IsOn( target)){
+			if(eng.Self.Presence.IsOn( target)){
 				++damage;
-				gameState.AddFear(1);
+				eng.AddFear(1);
 			}
 
 			return eng.DamageInvaders(target,damage);

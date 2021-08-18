@@ -10,6 +10,13 @@ make SS dispay differently
 UI		Display Spirit Name / Image
 UI		Display $$
 BASE	Bringer
+	Any Elements
+	Night Terrors
+	Spirits May Yet Dream
+	Card 1
+	Card 2
+	Card 3
+	Card 4
 BASE	Ocean
 CORE	Split Growth Option into parts
 UI  Re-evaluate Buttons - change to dropdown?  run along top to get more width for spirit card?

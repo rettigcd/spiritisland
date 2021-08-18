@@ -12,7 +12,7 @@ namespace SpiritIsland.Basegame.Spirits.VitalStrength {
 			bool hasBonus = 3 <= eng.GameState.GetDahanOnSpace(target);
 
 			if(hasBonus)
-				eng.GameState.AddFear( 2 );
+				eng.AddFear( 2 );
 
 			return eng.DamageInvaders(target, hasBonus ? 5 : 2);
 

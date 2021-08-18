@@ -23,7 +23,7 @@ namespace SpiritIsland.Basegame {
 				})
 				.Any();
 			if(pushedToBuildingSpace)
-				engine.GameState.AddFear(1);
+				engine.AddFear(1);
 		}
 
 

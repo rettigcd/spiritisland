@@ -12,7 +12,7 @@ namespace SpiritIsland.Basegame {
 			var (_,gs) = engine;
 
 			// 2 fear
-			gs.AddFear(2);
+			engine.AddFear(2);
 
 			// target spirit may push 1 explorer and 1 town from land where it has presence
 			bool HasExplorerOrTown(Space space){

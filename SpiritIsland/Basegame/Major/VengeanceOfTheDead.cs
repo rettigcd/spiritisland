@@ -13,7 +13,7 @@ namespace SpiritIsland.Basegame {
 		[FromPresence(3)]
 		static public Task ActAsync(ActionEngine engine,Space target ) {
 			// 3 fear
-			engine.GameState.AddFear(3);
+			engine.AddFear(3);
 
 			var newDamageLands = new List<Space> { target };
 			if(engine.Self.Elements.Contains("3 animal"))

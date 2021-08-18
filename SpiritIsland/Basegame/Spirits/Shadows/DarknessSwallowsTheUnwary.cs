@@ -22,7 +22,7 @@ namespace SpiritIsland.Basegame {
 			// destory 2 explorers (+1 fear/kill)
 			var grp = engine.InvadersOn( target );
 			int destroyed = await grp.Destroy(Invader.Explorer, 2 );
-			engine.GameState.AddFear( destroyed );
+			engine.AddFear( destroyed );
 		}
 
 		[InnateOption("3 moon, 2 fire")]
@@ -34,7 +34,7 @@ namespace SpiritIsland.Basegame {
 			await engine.DamageInvaders(target, 3 );
 			int endingCount = engine.GameState.InvadersOn( target ).TotalCount;
 			int killed = startingCount - endingCount;
-			engine.GameState.AddFear( killed );
+			engine.AddFear( killed );
 		}
 
 	}

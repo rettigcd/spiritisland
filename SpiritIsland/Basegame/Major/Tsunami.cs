@@ -13,7 +13,7 @@ namespace SpiritIsland.Basegame {
 		static public async Task ActAsync(ActionEngine engine,Space space){
 			var(self,gameState) = engine;
 			// 2 fear
-			gameState.AddFear(2);
+			engine.AddFear(2);
 			// +8 damage
 			await engine.DamageInvaders(space,8);
 			// destroy 2 dahan
@@ -26,7 +26,7 @@ namespace SpiritIsland.Basegame {
 					.Spaces.Where(s=>s.IsCostal && s != space)
 					.ToArray();
 				foreach(var otherCoast in others){
-					gameState.AddFear(1);
+					engine.AddFear(1);
 					// 4 damage
 					await engine.DamageInvaders(otherCoast,4);
 					// destroy 1 dahan

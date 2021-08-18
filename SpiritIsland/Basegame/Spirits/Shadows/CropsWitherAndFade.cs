@@ -11,7 +11,7 @@ namespace SpiritIsland.Basegame {
 			var (_,gs) = engine;
 
 			// 2 fear
-			gs.AddFear(2);
+			engine.AddFear(2);
 
 			// replace 1 town with 1 explorer
 			// OR

@@ -36,7 +36,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Assert.Contains(card,spirit.GetUnresolvedActionFactories(card.Speed).OfType<PowerCard>().ToList()); // is fast
 
 			//  When: activating flash flood
-			var engine = new ActionEngine( spirit, gameState );
+			var engine = spirit.Bind( gameState );
 			card.Activate( engine );
 			action = spirit.Action;
 
@@ -76,7 +76,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Assert.Contains(card,spirit.GetUnresolvedActionFactories(card.Speed).OfType<PowerCard>().ToList()); // is fast
 
 			//  When: activating flash flood
-			var engine = new ActionEngine( spirit, gameState );
+			var engine = spirit.Bind( gameState );
 			card.Activate( engine );
 			action = spirit.Action;
 

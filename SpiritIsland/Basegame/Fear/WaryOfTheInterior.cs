@@ -25,7 +25,7 @@ namespace SpiritIsland.Basegame {
 
 		static async Task EachSpiritRemoves1Invader( GameState gs, Func<Space,bool> spaceCondition, params Invader[] x ) {
 			foreach(var spirit in gs.Spirits) {
-				var engine = new ActionEngine( spirit, gs );
+				var engine = spirit.Bind( gs );
 				var options = gs.Island.AllSpaces
 					.Where( spaceCondition )
 					.Where( s => gs.InvadersOn( s ).HasAny( x ) )

@@ -29,7 +29,7 @@ namespace SpiritIsland.Basegame {
 		public async Task Level3( GameState gs ) {
 			var used = new HashSet<Space>();
 			foreach(var spirit in gs.Spirits) {
-				var engine = new ActionEngine(spirit,gs);
+				var engine = spirit.Bind( gs );
 				var options = spirit.Presence.Spaces
 					.Where(s=>gs.InvadersOn(s).HasAny(Invader.Town,Invader.Explorer))
 					.Except(used)

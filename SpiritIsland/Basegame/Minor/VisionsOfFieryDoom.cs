@@ -8,7 +8,7 @@ namespace SpiritIsland.Basegame {
 		static public async Task Act(ActionEngine eng,Space target){
 			// 1 fear
 			bool hasBonus = eng.Self.Elements[Element.Fire]>=2;
-			eng.GameState.AddFear(hasBonus?2:1);
+			eng.AddFear(hasBonus?2:1);
 
 			// Push 1 explorer/town
 			await eng.PushUpToNInvaders(target,1,Invader.Explorer,Invader.Town);

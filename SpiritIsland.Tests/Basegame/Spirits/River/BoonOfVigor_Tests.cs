@@ -15,7 +15,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Assert_CardIsReady(card,Speed.Fast);
 
 			// When: targetting self
-			var engine = new ActionEngine( spirit, gameState );
+			var engine = spirit.Bind( gameState );
 			card.Activate( engine );
 			action = spirit.Action;
 			Assert.True(action.IsResolved);
@@ -42,7 +42,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Assert_CardIsReady(card,Speed.Fast);
 
 			// When: targetting other spirit
-			var engine = new ActionEngine( spirit, gameState );
+			var engine = spirit.Bind( gameState );
 			card.Activate( engine );
 			action = spirit.Action;
 			When_TargettingSpirit( otherSpirit );

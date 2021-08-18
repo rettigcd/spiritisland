@@ -24,7 +24,7 @@ namespace SpiritIsland {
 		}
 
 		public override async Task Activate( ActionEngine engine ) {
-			Spirit target = await engine.SelectSpirit();
+			Spirit target = await engine.SelectSpirit(engine.GameState.Spirits);
 			SpiritTargeted?.Invoke( engine.Self, this, target );
 			TargetSpirit( methodBase, engine, target );
 		}

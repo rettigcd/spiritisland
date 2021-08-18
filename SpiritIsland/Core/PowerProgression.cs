@@ -12,25 +12,26 @@ namespace SpiritIsland {
 			this.cards = cards.ToList();
 		}
 
-		public Task Draw( ActionEngine engine, Func<List<PowerCard>, Task> _ ) {
+		public Task<PowerCard> Draw( ActionEngine engine, Func<List<PowerCard>, Task> _ ) {
 			return Take( engine, cards.First() );
 		}
 
-		public Task DrawMajor( ActionEngine engine, Func<List<PowerCard>, Task> _ ) {
+		public Task<PowerCard> DrawMajor( ActionEngine engine, Func<List<PowerCard>, Task> _ ) {
 			return Take( engine, cards.First( c => c.PowerType == PowerType.Major ) );
 		}
 
-		public Task DrawMinor( ActionEngine engine, Func<List<PowerCard>, Task> _ ) {
+		public Task<PowerCard> DrawMinor( ActionEngine engine, Func<List<PowerCard>, Task> _ ) {
 			return Take( engine, cards.First( c => c.PowerType == PowerType.Minor ) );
 		}
 
-		async Task Take( ActionEngine engine, PowerCard newCard ) {
+		async Task<PowerCard> Take( ActionEngine engine, PowerCard newCard ) {
 			var (spirit,_)=engine;
 			cards.Remove( newCard );
 
 			spirit.RegisterNewCard( newCard );
 			if(newCard.PowerType == PowerType.Major)
 				await engine.ForgetPowerCard();
+			return newCard;
 		}
 
 	}

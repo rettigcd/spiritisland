@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 		[FromSacredSite(1)]
 		static public Task ActAsync(ActionEngine engine,Space target){
 			var (_,gs) = engine;
-			gs.AddFear(1);
+			engine.AddFear(1);
 			if(gs.GetDahanOnSpace(target)>0)
 				gs.DestoryDahan(target,1,DahanDestructionSource.PowerCard);
 			int bonusDamage = target.Terrain.IsIn(Terrain.Sand,Terrain.Jungle) ? 1 : 0;

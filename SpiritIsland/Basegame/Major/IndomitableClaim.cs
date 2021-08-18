@@ -15,7 +15,7 @@ namespace SpiritIsland.Basegame {
 			// if you have 2 sun, 3 earth,
 			if(self.Elements.Contains("2 sun,3 earth" )) {
 				// 3 fear
-				gs.AddFear(3);
+				engine.AddFear(3);
 				// if invaders are present, Invaders skip all actions in target land this turn.
 				if(gs.HasInvaders(target))
 					gs.SkipAllInvaderActions(target);

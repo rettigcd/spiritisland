@@ -12,11 +12,11 @@ namespace SpiritIsland.Basegame {
 			await eng.PushUpToNInvaders(target, 4, Invader.Explorer,Invader.Town);
 
 			// 2 fear
-			eng.GameState.AddFear(2);
+			eng.AddFear(2);
 
 			// if you have 4 moon, +4 fear
 			if( 4<=eng.Self.Elements[Element.Moon] )
-				eng.GameState.AddFear(4);
+				eng.AddFear(4);
 
 		}
 

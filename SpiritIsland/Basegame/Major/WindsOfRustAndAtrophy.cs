@@ -21,7 +21,7 @@ namespace SpiritIsland.Basegame {
 		static async Task ApplyEffect( ActionEngine engine, Space target ) {
 			var (_,gs) = engine;
 			// 1 fear and defend 6
-			gs.AddFear( 1 );
+			engine.AddFear( 1 );
 			gs.Defend( target, 6 );
 
 			// replace 1 city with 1 town OR 1 town with 1 explorer

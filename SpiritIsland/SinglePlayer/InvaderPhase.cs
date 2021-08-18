@@ -28,7 +28,7 @@ namespace SpiritIsland.SinglePlayer {
 		public event Action Complete;
 
 		public void Initialize() {
-			engine = new ActionEngine( gameState.Spirits[0], gameState );
+			engine = gameState.Spirits[0].Bind( gameState );
 			_ = Action();
 		}
 

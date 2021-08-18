@@ -23,7 +23,7 @@ namespace SpiritIsland.Basegame {
 				);
 
 			// 3 fear
-			engine.GameState.AddFear(3);
+			engine.AddFear(3);
 			// 5 damage
 			await engine.DamageInvaders(target, 5);
 

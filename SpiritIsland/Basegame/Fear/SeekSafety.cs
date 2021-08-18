@@ -14,7 +14,7 @@ namespace SpiritIsland.Basegame {
 			Space[] GetNeighborWithMoreBuildings( Space s ) => s.Adjacent.Where( n => buildingCounts[n] > buildingCounts[s] ).ToArray();
 			bool HasNeighborWithMoreBuildings(Space s) => GetNeighborWithMoreBuildings(s).Any();
 			foreach(var spirit in gs.Spirits) {
-				var engine = new ActionEngine(spirit,gs);
+				var engine = spirit.Bind(gs);
 				var options = gs.Island.AllSpaces
 					.Where(s=>gs.InvadersOn(s).HasExplorer && HasNeighborWithMoreBuildings(s))
 					.ToArray();
@@ -31,7 +31,7 @@ namespace SpiritIsland.Basegame {
 		[FearLevel( 2, "Each player may Gather 1 Explorer into a land with Town / City, or Gather 1 Town into a land with City." )]
 		public async Task Level2( GameState gs ) {
 			foreach(var spirit in gs.Spirits) {
-				var engine = new ActionEngine( spirit, gs );
+				var engine = spirit.Bind( gs );
 				var options = gs.Island.AllSpaces
 					.Where( s => gs.InvadersOn( s ).HasAny(Invader.Town,Invader.City) )
 					.ToArray();
@@ -57,7 +57,7 @@ namespace SpiritIsland.Basegame {
 		[FearLevel( 3, "Each player may remove up to 3 Health worth of Invaders from a land without Town." )]
 		public async Task Level3( GameState gs ) {
 			foreach(var spirit in gs.Spirits) {
-				var engine = new ActionEngine( spirit, gs );
+				var engine = spirit.Bind( gs );
 				var options = gs.Island.AllSpaces
 					.Where( s => {var grp = gs.InvadersOn( s ); return grp.TotalCount>0 && !grp.HasTown; } )
 					.ToArray();

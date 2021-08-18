@@ -23,7 +23,7 @@ namespace SpiritIsland.Basegame {
 			};
 			var selected = new List<Element>();
 
-			var targetSpiritEngine = new ActionEngine(target,engine.GameState);
+			var targetSpiritEngine = target.Bind(engine.GameState);
 
 			// Target Spirit games 3 _different_ Elements of their choice
 			const int totalToGain = 3;

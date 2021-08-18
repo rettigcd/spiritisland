@@ -15,7 +15,7 @@ namespace SpiritIsland.Basegame {
 				&& await engine.SelectText( "Chose card option", fearOption, "push up to 4 dahan" ) == fearOption;
 
 			if( doFear )
-				engine.GameState.AddFear( 2 );
+				engine.AddFear( 2 );
 			else
 				await engine.PushUpToNDahan(target,4);
 		}

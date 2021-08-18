@@ -12,7 +12,7 @@ namespace SpiritIsland.Basegame {
 			// if target is J/W, 1 fear & 1 damage
 			if(target.Terrain.IsIn( Terrain.Jungle, Terrain.Wetland )) {
 				++damage;
-				engine.GameState.AddFear(1);
+				engine.AddFear(1);
             }
 
 			// If 3 animals +1 damage

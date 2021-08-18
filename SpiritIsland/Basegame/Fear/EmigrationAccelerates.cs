@@ -27,7 +27,7 @@ namespace SpiritIsland.Basegame {
 			params Invader[] removable
 		) {
 			foreach(var spirit in gs.Spirits) {
-				var engine = new ActionEngine( spirit, gs );
+				var engine = spirit.Bind( gs );
 				var options = gs.Island.AllSpaces
 					.Where( landFilter )
 					.Where( x => gs.InvadersOn( x ).HasAny( removable ) )

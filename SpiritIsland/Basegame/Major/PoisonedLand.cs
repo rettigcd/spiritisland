@@ -13,7 +13,7 @@ namespace SpiritIsland.Basegame {
 			await gs.DestoryDahan(target,engine.GameState.GetDahanOnSpace(target),DahanDestructionSource.PowerCard);
 
 			bool hasBonus = engine.Self.Elements.Contains("3 earth,2 plant,2 animal");
-			gs.AddFear(1+(hasBonus?1:0));
+			engine.AddFear( 1+(hasBonus?1:0) );
 			await engine.DamageInvaders(target,7+(hasBonus?4:0));
 		}
 

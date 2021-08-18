@@ -121,7 +121,7 @@ namespace SpiritIsland.Tests {
 				.Where(f=> factoryDescription==null || factoryDescription == f.ShortDescription)
 				.First();
 
-			var engine = new ActionEngine( spirit, gameState );
+			var engine = spirit.Bind( gameState );
 			ppFactory.Activate( engine );
 			var ppAction = spirit.Action;
 
@@ -163,7 +163,7 @@ namespace SpiritIsland.Tests {
 		}
 
 		protected void AndWhen_ReclaimingFirstCard() {
-			var engine = new ActionEngine( spirit, gameState );
+			var engine = spirit.Bind( gameState );
 			_ = spirit.GetUnresolvedActionFactories(Speed.Growth).OfType<Reclaim1>().First().Activate( engine );
 			var reclaim = spirit.Action;
 			if(reclaim.Options.Length>0)

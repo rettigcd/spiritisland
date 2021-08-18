@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 		[FearLevel( 1, "Each player may Push 1 Dahan from a land with Invaders or Gather 1 Dahan into a land with Invaders." )]
 		public async Task Level1( GameState gs ) {
 			foreach(var spirit in gs.Spirits) {
-				var engine = new ActionEngine(spirit,gs);
+				var engine = spirit.Bind(gs);
 				var target = await engine.SelectSpace("Select Space to Gather or push 1 dahan",gs.Island.AllSpaces.Where(x=>x.IsLand).ToArray());
 				bool canPush = gs.HasDahan(target);
 				bool canGather = target.Adjacent.Any(gs.HasDahan);
@@ -30,7 +30,7 @@ namespace SpiritIsland.Basegame {
 		public async Task Level2( GameState gs ) {
 			HashSet<Space> used = new HashSet<Space>();
 			foreach(var spirit in gs.Spirits) {
-				var engine = new ActionEngine( spirit, gs );
+				var engine = spirit.Bind( gs );
 				var options = gs.Island.AllSpaces.Where( gs.HasDahan ).Except( used ).ToArray();
 				var target = await engine.SelectSpace( "Fear:select land with dahan for 1 damage", options );
 				await engine.GatherUpToNDahan(target,2);
@@ -44,7 +44,7 @@ namespace SpiritIsland.Basegame {
 		public async Task Level3( GameState gs ) {
 			HashSet<Space> used = new HashSet<Space>();
 			foreach(var spirit in gs.Spirits) {
-				var engine = new ActionEngine( spirit, gs );
+				var engine = spirit.Bind( gs );
 				var options = gs.Island.AllSpaces.Where( gs.HasDahan ).Except( used ).ToArray();
 				var target = await engine.SelectSpace( "Fear:select land with dahan for 1 damage", options );
 				await engine.GatherUpToNDahan( target, 2 );

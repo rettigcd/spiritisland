@@ -53,7 +53,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			// 4 dahan should defend 4
 
 			//   And: 4 fear / player
-			gameState.AddFear( 4 );
+			gameState.AddFearDirect( 4 );
 
 			// When: Doing Invader phase (fear+ragage)
 			await gameState.ApplyFear();
@@ -67,6 +67,6 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			gameState.HasBlight( ravageSpace ).ShouldBe(true);
 		}
 
-
 	}
+
 }

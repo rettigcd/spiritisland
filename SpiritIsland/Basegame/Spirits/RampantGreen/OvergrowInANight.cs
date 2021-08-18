@@ -15,7 +15,7 @@ namespace SpiritIsland.Basegame {
 				&& await eng.SelectText( "Select power", "add 1 presence", addFearText ) == addFearText;
 
 			if( addFear )
-				eng.GameState.AddFear(3);
+				eng.AddFear(3);
 			else
 				await eng.PlacePresence( target );
 		}

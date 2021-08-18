@@ -10,7 +10,7 @@ namespace SpiritIsland.Basegame {
 		static public async Task ActAsync(ActionEngine engine, Spirit target ) {
 
 			// target spirit adds 2 of their destroyed presence
-			var targetEngine = new ActionEngine( target, engine.GameState );
+			var targetEngine = target.Bind( engine.GameState );
 			int max = await targetEngine.SelectNumber("Select # of destroyed presence to return to board", target.Presence.Destroyed );
 			if(max==0) return;
 

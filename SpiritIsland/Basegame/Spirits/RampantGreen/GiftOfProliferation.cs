@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 		[TargetSpirit]
 		static public Task ActionAsync( ActionEngine eng, Spirit target ) {
 			// target spirit adds 1 presense up to 1 from their presesnse
-			return new ActionEngine(target,eng.GameState).PlacePresence(1,Target.Any);
+			return target.Bind( eng.GameState).PlacePresence(1,Target.Any);
 		}
 
 	}

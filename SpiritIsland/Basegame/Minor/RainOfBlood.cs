@@ -11,7 +11,7 @@ namespace SpiritIsland.Basegame {
 			if(2<=engine.GameState.InvadersOn( target ).TownsAndCitiesCount)
 				++fear;
 
-			engine.GameState.AddFear( fear );
+			engine.AddFear( fear );
 			return Task.CompletedTask;
 		}
 

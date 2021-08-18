@@ -17,7 +17,7 @@ namespace SpiritIsland.Basegame {
 			if(!IslandIsBlighted) return;
 			// Forgets a Power or destorys a presence
 			foreach(var spirit in gs.Spirits) {
-				var engine = new ActionEngine(spirit,gs);
+				var engine = spirit.Bind(gs);
 				IOption[] options = spirit.Presence.Spaces.Cast<IOption>()
 					.Union( spirit.Hand.Union( spirit.DiscardPile ).Cast<IOption>() )
 					.ToArray();

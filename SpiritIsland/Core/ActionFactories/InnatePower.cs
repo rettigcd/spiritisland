@@ -74,7 +74,7 @@ namespace SpiritIsland {
 		#endregion
 
 		public override async Task Activate( ActionEngine engine ) {
-			Spirit target = await engine.SelectSpirit();
+			Spirit target = await engine.SelectSpirit(engine.GameState.Spirits);
 			TargetSpirit_PowerCard.TargetSpirit( HighestMethod( engine.Self ), engine, target );
 		}
 

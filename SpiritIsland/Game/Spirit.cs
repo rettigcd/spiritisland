@@ -70,7 +70,7 @@ namespace SpiritIsland {
 		protected void RemoveResolvedActions( GameState gameState, Speed speed ) {
 
 			var factories = GetUnresolvedActionFactories( speed ).ToArray();
-			var engine = new ActionEngine(this,gameState);
+			var engine = this.Bind(gameState);
 			foreach(var factory in factories) {
 				factory.Activate(engine);
 				if(Action.IsResolved)
@@ -259,7 +259,7 @@ namespace SpiritIsland {
 		// pluggable, draw power card, or powerprogression
 		public IPowerCardDrawer CardDrawer = DefaultCardDrawer;
 		public TargetLandApi TargetLandApi = DefaultTargetLandApi;
-		public virtual InvaderGroup BuildInvaderGroup( GameState gs, Space space ) => new InvaderGroup( space, gs.GetCounts(space), gs.AddFear );
+		public virtual InvaderGroup BuildInvaderGroup( GameState gs, Space space ) => new InvaderGroup( space, gs.GetCounts(space), gs.AddFearDirect );
 
 		public Stack<IDecision> decisions = new();
 		
@@ -267,6 +267,8 @@ namespace SpiritIsland {
 		static readonly TargetLandApi DefaultTargetLandApi = new TargetLandApi();
 
 		public event SpaceTargetedEvent TargetedSpace;
+
+		public ActionEngine Bind(GameState gs) => new ActionEngine(this,gs);
 	}
 
 }

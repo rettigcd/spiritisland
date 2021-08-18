@@ -13,7 +13,7 @@ namespace SpiritIsland.Basegame {
 
 			// 2 fear, 4 damage
 			int damageToInvaders = 4;
-			gameState.AddFear(2);
+			engine.AddFear(2);
 
 			if(spirit.Elements.Contains("3 sun,2 water,3 plant")){
 				// +5 damage, remove 1 blight

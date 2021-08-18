@@ -5,19 +5,19 @@ using System.Threading.Tasks;
 namespace SpiritIsland {
 
 	public class IncrementCountCardDrawer : IPowerCardDrawer {
-		public Task Draw( ActionEngine engine, Func<List<PowerCard>, Task> _ ) {
+		public Task<PowerCard> Draw( ActionEngine engine, Func<List<PowerCard>, Task> _ ) {
 			engine.Self.PowerCardsToDraw++;
-			return Task.CompletedTask;
+			return Task.FromResult<PowerCard>( null );
 		}
 
-		public Task DrawMajor( ActionEngine engine, Func<List<PowerCard>, Task> _ ) {
+		public Task<PowerCard> DrawMajor( ActionEngine engine, Func<List<PowerCard>, Task> _ ) {
 			engine.Self.PowerCardsToDraw++;
-			return Task.CompletedTask;
+			return Task.FromResult<PowerCard>( null );
 		}
 
-		public Task DrawMinor( ActionEngine engine, Func<List<PowerCard>, Task> _ ) {
+		public Task<PowerCard> DrawMinor( ActionEngine engine, Func<List<PowerCard>, Task> _ ) {
 			engine.Self.PowerCardsToDraw++;
-			return Task.CompletedTask;
+			return Task.FromResult<PowerCard>(null);
 		}
 
 	}

@@ -118,7 +118,7 @@ namespace SpiritIsland.Basegame {
 				moveLookup.Add($"Move {i} presence.",i );
 			moveLookup.Add( "stay",0);
 			
-			string s = await new ActionEngine( this,gs )
+			string s = await this.Bind( gs )
 				.SelectText("Move presence with dahan?", moveLookup.OrderByDescending(p=>p.Value).Select(p=>p.Key).ToArray()); 
 			int countToMove = moveLookup[s];
 
@@ -131,7 +131,7 @@ namespace SpiritIsland.Basegame {
 			if(args.Source != DahanDestructionSource.Invaders) return;
 
 			string prompt = $"Sword to Victory: {args.count} dahan destroyed. Select presence to remove.";
-			var eng = new ActionEngine( this, gameState );
+			var eng = this.Bind( gameState );
 
 			int numToDestroy = args.count;
 			Space[] options;

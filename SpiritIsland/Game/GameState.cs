@@ -174,16 +174,16 @@ namespace SpiritIsland {
 			return terrorLevel;
 		} }
 
-		public void AddFear(int count) {
+		public void AddFearDirect(int count) {
 			FearPool += count;
 			if(4 <= FearPool) { // should be while() - need unit test
 				FearPool -= 4;
 				ActivatedFearCards.Push( FearDeck.Pop() );
 			}
-			if(FearDeck.Count==0)
+			if(FearDeck.Count == 0)
 				GameOverException.Win();
-
 		}
+
 		#endregion
 
 		#region Dahan
@@ -301,7 +301,7 @@ namespace SpiritIsland {
 		}
 
 		public InvaderGroup_Readonly InvadersOn(Space targetSpace) {
-			return new InvaderGroup( targetSpace, this.GetCounts( targetSpace ), AddFear );
+			return new InvaderGroup( targetSpace, this.GetCounts( targetSpace ), AddFearDirect );
 		}
 
 		//public InvaderGroup AttackInvadersOn( Space targetSpace, Func<GameState, Space, int[],InvaderGroup> factory ) {

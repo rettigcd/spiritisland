@@ -14,7 +14,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// no explorers
 
 			//  When: activating card
-			var engine = new ActionEngine( spirit, gameState );
+			var engine = spirit.Bind( gameState );
 			card.Activate( engine );
 			var action = spirit.Action;
 
@@ -40,7 +40,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			gameState.Adjust(targetSpace,InvaderSpecific.City,cityCount);
 
 			//  When: activating card
-			var engine = new ActionEngine( spirit, gameState );
+			var engine = spirit.Bind( gameState );
 			card.Activate( engine );
 			action = spirit.Action;
 
@@ -74,7 +74,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			gameState.Adjust(targetSpace,InvaderSpecific.Explorer,1);
 
 			//  When: activating card
-			var engine = new ActionEngine( spirit, gameState );
+			var engine = spirit.Bind( gameState );
 			card.Activate( engine );
 			action = spirit.Action;
 
@@ -99,7 +99,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			var townDestination = board[3];
 
 			//  When: activating card
-			var engine = new ActionEngine( spirit, gameState );
+			var engine = spirit.Bind( gameState );
 			card.Activate( engine );
 			action = spirit.Action;
 
@@ -142,7 +142,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			var invaderDestination = board[2];
 
 			//  When: activating card
-			var engine = new ActionEngine( spirit, gameState );
+			var engine = spirit.Bind( gameState );
 			card.Activate( engine );
 			action = spirit.Action;
 

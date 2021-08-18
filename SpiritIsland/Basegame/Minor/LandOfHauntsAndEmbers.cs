@@ -9,13 +9,13 @@ namespace SpiritIsland.Basegame {
 		static public async Task Act(ActionEngine engine,Space target){
 			
 			// 2 fear
-			engine.GameState.AddFear(2);
+			engine.AddFear(2);
 
 			bool hasBlight = engine.GameState.HasBlight(target);
 			// if target has blight
 			if(hasBlight){
 				// +2 fear
-				engine.GameState.AddFear(2);
+				engine.AddFear(2);
 				// add 1 blight
 				engine.GameState.AddBlight(target,1);
 			}

@@ -70,7 +70,7 @@ namespace SpiritIsland.Basegame {
 		}
 
 		public override InvaderGroup BuildInvaderGroup( GameState gs, Space space ) {
-			return new ToDreamAThousandDeaths( new ActionEngine(this,gs), space, gs.GetCounts(space), gs.AddFear );
+			return new ToDreamAThousandDeaths( this.Bind(gs), space, gs.GetCounts(space), gs.AddFearDirect );
 		}
 	}
 

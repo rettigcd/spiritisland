@@ -10,7 +10,6 @@ namespace SpiritIsland {
 		public ActionEngine( Spirit self, GameState gameState ) {
 			Self = self;
 			GameState = gameState;
-			this.decisions = self.decisions;
 		}
 
 		public Spirit Self { get; }
@@ -40,83 +39,84 @@ namespace SpiritIsland {
 			gameState = GameState;
 		}
 
-		#region basic selects
+		public void AddFear( int count) {
+			GameState.AddFearDirect( count );
+		}
 
-		readonly Stack<IDecision> decisions;
+	}
 
-		public Task<Spirit> SelectSpirit() {
+	static public class SpiritDecisionExtensinos {
+
+		static public Task<Spirit> SelectSpirit(this ActionEngine eng, Spirit[] spirits) {
 			var result = new TaskCompletionSource<Spirit>();
 
-			decisions.Push( new SelectSpirit( GameState.Spirits
+			eng.Self.decisions.Push( new SelectSpirit( spirits
 				, spirit => result.TrySetResult( spirit )
 			) );
 
 			return result.Task;
 		}
 
-		public Task<Space> SelectSpace( string prompt, IEnumerable<Space> spaces, bool allowShortCircuit = false ) {
+		static public Task<Space> SelectSpace( this ActionEngine eng, string prompt, IEnumerable<Space> spaces, bool allowShortCircuit = false ) {
 			var result = new TaskCompletionSource<Space>();
-			decisions.Push( new SelectAsync<Space>( prompt, spaces.ToArray(), allowShortCircuit, result ) );
+			eng.Self.decisions.Push( new SelectAsync<Space>( prompt, spaces.ToArray(), allowShortCircuit, result ) );
 			return result.Task;
 		}
 
-		public Task<InvaderSpecific> SelectInvader( string prompt ,InvaderSpecific[] invaders ,bool allowShortCircuit=false) {
+		static public Task<InvaderSpecific> SelectInvader( this ActionEngine eng, string prompt, InvaderSpecific[] invaders, bool allowShortCircuit = false ) {
 			var result = new TaskCompletionSource<InvaderSpecific>();
-			decisions.Push( new SelectAsync<InvaderSpecific>( 
-				prompt, 
+			eng.Self.decisions.Push( new SelectAsync<InvaderSpecific>(
+				prompt,
 				invaders,
 				allowShortCircuit,
-				result 
-			));
+				result
+			) );
 			return result.Task;
 		}
 
-		public Task<IOption> SelectOption( string prompt ,IOption[] options ,bool allowShortCircuit=false) {
+		static public Task<IOption> SelectOption( this ActionEngine eng, string prompt, IOption[] options, bool allowShortCircuit = false ) {
 			var result = new TaskCompletionSource<IOption>();
-			decisions.Push( new SelectAsync<IOption>( 
-				prompt, 
+			eng.Self.decisions.Push( new SelectAsync<IOption>(
+				prompt,
 				options,
 				allowShortCircuit,
-				result 
-			));
+				result
+			) );
 			return result.Task;
 		}
 
-		public Task<IActionFactory> SelectFactory( string prompt,IActionFactory[] options,bool allowShortCircuit=false) {
+		static public Task<IActionFactory> SelectFactory( this ActionEngine eng, string prompt, IActionFactory[] options, bool allowShortCircuit = false ) {
 			var result = new TaskCompletionSource<IActionFactory>();
-			decisions.Push( new SelectAsync<IActionFactory>( 
-				prompt, 
+			eng.Self.decisions.Push( new SelectAsync<IActionFactory>(
+				prompt,
 				options,
 				allowShortCircuit,
-				result 
-			));
+				result
+			) );
 			return result.Task;
 		}
 
-		public Task<Track> SelectTrack() {
+		static public Task<Track> SelectTrack( this ActionEngine eng ) {
 			var result = new TaskCompletionSource<Track>();
 
-			decisions.Push( new SelectAsync<Track>(
+			eng.Self.decisions.Push( new SelectAsync<Track>(
 				"Select Presence to place.",
-				Self.Presence.GetPlaceableFromTracks(),
+				eng.Self.Presence.GetPlaceableFromTracks(),
 				false,
 				result
 			) );
 			return result.Task;
 		}
 
-		public Task<string> SelectText( string prompt,params string[] options) {
+		static public Task<string> SelectText( this ActionEngine eng, string prompt, params string[] options ) {
 			var result = new TaskCompletionSource<string>();
-			decisions.Push( new SelectTextAsync(prompt, options,result));
+			eng.Self.decisions.Push( new SelectTextAsync( prompt, options, result ) );
 			return result.Task;
 		}
 
-		public async Task<bool> SelectFirstText( string prompt, string option1, string option2 ) {
-			return await SelectText(prompt,option1,option2) == option1;
+		static public async Task<bool> SelectFirstText( this ActionEngine eng, string prompt, string option1, string option2 ) {
+			return await eng.SelectText( prompt, option1, option2 ) == option1;
 		}
-
-		#endregion
-
 
 	}
 

@@ -11,7 +11,7 @@
 
 			// Invaders
 			if(gameState.HasInvaders(target))
-				gameState.AddFear(1);
+				eng.AddFear(1);
 
 			// !!! unit test - requires Sand / wetland
 			if(gameState.HasBlight(target) && target.Terrain.IsIn(Terrain.Wetland,Terrain.Sand))

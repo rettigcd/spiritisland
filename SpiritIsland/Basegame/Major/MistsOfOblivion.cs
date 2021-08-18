@@ -20,7 +20,7 @@ namespace SpiritIsland.Basegame {
 
 			// 1 fear per town/city this power destroys (to a max of 4)
 			int destroyedTownsAndCities = startingTownsAndCities - grp.TownsAndCitiesCount;
-			engine.GameState.AddFear( destroyedTownsAndCities );
+			engine.AddFear( destroyedTownsAndCities );
 		}
 
 	}

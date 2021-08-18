@@ -11,7 +11,7 @@ namespace SpiritIsland.Basegame {
 			if(await engine.SelectFirstText( "Select power", "Push 1 Explorer", "2 fear" ))
 				await engine.PushInvader(target,InvaderSpecific.Explorer);
 			else
-				engine.GameState.AddFear(2); 
+				engine.AddFear(2); 
 
 		}
 

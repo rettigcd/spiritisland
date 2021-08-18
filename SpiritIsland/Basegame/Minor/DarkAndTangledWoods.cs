@@ -8,7 +8,7 @@ namespace SpiritIsland.Basegame {
 		[FromPresence(1)]
 		static public Task Act(ActionEngine eng,Space target){
 			// 2 fear
-			eng.GameState.AddFear(2);
+			eng.AddFear(2);
 
 			// if target is M/J, Defend 3
 			if(target.Terrain.IsIn(Terrain.Jungle,Terrain.Mountain))

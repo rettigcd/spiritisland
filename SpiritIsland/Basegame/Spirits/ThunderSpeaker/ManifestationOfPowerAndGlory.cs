@@ -13,7 +13,7 @@ namespace SpiritIsland.Basegame {
 		[FromPresence(0,Target.Dahan)]
 		static public async Task Act( ActionEngine engine, Space target ) {
 			// 1 fear
-			engine.GameState.AddFear(1);
+			engine.AddFear(1);
 			// each dahan deals damange equal to the number of your presense in the target land
 			int dahan = engine.GameState.GetDahanOnSpace( target );
 			int presence = engine.Self.Presence.On(target);
