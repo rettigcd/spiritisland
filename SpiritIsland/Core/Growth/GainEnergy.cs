@@ -13,8 +13,8 @@ namespace SpiritIsland {
 		public override string ShortDescription => $"GainEnergy({delta})";
 
 
-		public override Task Activate(ActionEngine engine) {
-			engine.Self.Energy += delta;
+		public override Task Activate( Spirit spirit, GameState _) {
+			spirit.Energy += delta;
 			return Task.CompletedTask;
 		}
 

@@ -8,8 +8,8 @@ namespace SpiritIsland.Basegame {
 	/// </summary>
 	class PlayExtraCardThisTurn : GrowthActionFactory {
 
-		public override Task Activate( ActionEngine engine ) {
-			(engine.Self as ASpreadOfRampantGreen).tempCardBoost++;
+		public override Task Activate( Spirit self, GameState _ ) {
+			(self as ASpreadOfRampantGreen).tempCardBoost++;
 			return Task.CompletedTask;
 		}
 

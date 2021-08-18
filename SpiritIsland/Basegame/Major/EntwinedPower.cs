@@ -15,10 +15,9 @@ namespace SpiritIsland.Basegame {
 			TargetLandApi x = self.PowerCardApi;
 
 			// Target spirit gains a power Card.
-			var targetEng = target.Bind( selfEng.GameState);
-			await selfEng.Self.CardDrawer.Draw(targetEng,(cards)=>{
+			await selfEng.Self.CardDrawer.Draw(target,gs,(cards)=>{
 				// You gain one of the power Cards they did not keep.
-				return DrawFromDeck.TakeCard(selfEng,cards);
+				return DrawFromDeck.TakeCard(self,cards);
 			} );
 
 			// if you have 2 water, 4 plant, 
@@ -27,15 +26,14 @@ namespace SpiritIsland.Basegame {
 				self.Energy += 3;
 				target.Energy += 3;
 				// may gift the other 1 power from hand.
-				await GiftCardToSpirit( selfEng, target );
-				await GiftCardToSpirit( targetEng, self );
+				await GiftCardToSpirit( self, target );
+				await GiftCardToSpirit( target, self );
 
 			}
 		}
 
-		private static async Task GiftCardToSpirit( ActionEngine srcEngine, Spirit dst ) {
-			var src = srcEngine.Self;
-			var myGift = (PowerCard)await srcEngine.Self.SelectFactory( "Select gift for " + dst.Text, src.Hand.ToArray(), true );
+		private static async Task GiftCardToSpirit( Spirit src, Spirit dst ) {
+			var myGift = (PowerCard)await src.SelectFactory( "Select gift for " + dst.Text, src.Hand.ToArray(), true );
 			if(myGift != null) {
 				dst.Hand.Add( myGift );
 				src.Hand.Remove( myGift );

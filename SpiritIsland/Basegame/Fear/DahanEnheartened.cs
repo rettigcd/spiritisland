@@ -19,7 +19,7 @@ namespace SpiritIsland.Basegame {
 						canGather=false;
 				}
 
-				var engine = spirit.Bind( gs );
+				var engine = spirit.MakeDecisionsFor(gs);
 				if(canPush)
 					await engine.PushUpToNDahan(target,1);
 				else if(canGather)
@@ -31,7 +31,7 @@ namespace SpiritIsland.Basegame {
 		public async Task Level2( GameState gs ) {
 			HashSet<Space> used = new HashSet<Space>();
 			foreach(var spirit in gs.Spirits) {
-				var engine = spirit.Bind( gs );
+				var engine = spirit.MakeDecisionsFor( gs );
 				var options = gs.Island.AllSpaces.Where( gs.HasDahan ).Except( used ).ToArray();
 				var target = await spirit.SelectSpace( "Fear:select land with dahan for 1 damage", options );
 				await engine.GatherUpToNDahan(target,2);
@@ -47,7 +47,7 @@ namespace SpiritIsland.Basegame {
 			foreach(var spirit in gs.Spirits) {
 				var options = gs.Island.AllSpaces.Where( gs.HasDahan ).Except( used ).ToArray();
 				var target = await spirit.SelectSpace( "Fear:select land with dahan for 1 damage", options );
-				await spirit.Bind( gs ).GatherUpToNDahan( target, 2 );
+				await spirit.MakeDecisionsFor( gs ).GatherUpToNDahan( target, 2 );
 				await gs.SpiritFree_DamageInvaders(target, gs.GetDahanOnSpace(target) );
 				used.Add( target );
 			}

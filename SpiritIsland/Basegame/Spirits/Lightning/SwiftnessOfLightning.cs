@@ -19,8 +19,8 @@ namespace SpiritIsland.Basegame {
 				lightning.AddActionFactory( this );
 		}
 
-		public Task Activate( ActionEngine engine ) {
-			return engine.Self.SelectActionsAndMakeFast( engine.Self.Elements[Element.Air] );
+		public Task Activate( Spirit spirit, GameState _ ) {
+			return spirit.SelectActionsAndMakeFast( spirit.Elements[Element.Air] );
 		}
 
 	}

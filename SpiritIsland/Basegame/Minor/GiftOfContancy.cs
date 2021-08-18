@@ -6,7 +6,7 @@ namespace SpiritIsland.Basegame {
 
 		[MinorCard( "Gift of Contancy", 0, Speed.Fast, Element.Sun, Element.Earth )]
 		[TargetSpirit]
-		static public Task ActAsync( ActionEngine engine, Spirit target ) {
+		static public Task ActAsync( IMakeGamestateDecisions engine, Spirit target ) {
 			// target spirit gains 2 energy.  
 			target.Energy += 2;
 

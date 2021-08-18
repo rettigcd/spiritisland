@@ -8,8 +8,8 @@ namespace SpiritIsland.Basegame {
 
 	public class GatherPresenceIntoOcean : GrowthActionFactory {
 
-		public override async Task Activate( ActionEngine engine ) {
-			List<Space> gatherSpaces = engine.Self.Presence.Spaces
+		public override async Task Activate( Spirit self, GameState _ ) {
+			List<Space> gatherSpaces = self.Presence.Spaces
 				.Where( p => p.IsCostal )
 				.Select( p => p.Adjacent.Single( o => o.IsOcean ) )
 				.Distinct()
@@ -18,15 +18,15 @@ namespace SpiritIsland.Basegame {
 			while(0 < gatherSpaces.Count){
 
 				Space currentTarget = gatherSpaces[0];
-				Space source = await engine.Self.SelectSpace(
+				Space source = await self.SelectSpace(
 					$"Select source of Presence to Gather into {currentTarget}"
 					, currentTarget.Adjacent
-						.Where( engine.Self.Presence.Spaces.Contains )
+						.Where( self.Presence.Spaces.Contains )
 						.ToArray()
 				);
 
 				// apply...
-				engine.Self.Presence.Move(source,currentTarget);
+				self.Presence.Move(source,currentTarget);
 
 				// next
 				gatherSpaces.RemoveAt( 0 );

@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 
 		[MinorCard( "Reaching Grasp", 0, Speed.Fast, Element.Sun, Element.Air, Element.Water)]
 		[TargetSpirit]
-		static public Task Act( ActionEngine engine, Spirit target ) {
+		static public Task Act( IMakeGamestateDecisions engine, Spirit target ) {
 			// target spirit gets +2 range with all their Powers
 			var original = target.PowerCardApi;
 			target.PowerCardApi = new ExtendRange( 2, original );
@@ -30,8 +30,8 @@ namespace SpiritIsland.Basegame {
 				this.original = original;
 			}
 
-			public override Task<Space> TargetSpace( ActionEngine engine, From from, Terrain? sourceTerrain, int range, Target target )
-				=> original.TargetSpace( engine, from, sourceTerrain, range + extension, target );
+			public override Task<Space> TargetSpace( Spirit self, GameState gameState, From from, Terrain? sourceTerrain, int range, Target target )
+				=> original.TargetSpace( self, gameState, from, sourceTerrain, range + extension, target );
 
 		}
 

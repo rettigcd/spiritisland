@@ -36,8 +36,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Assert.Contains(card,spirit.GetUnresolvedActionFactories(card.Speed).OfType<PowerCard>().ToList()); // is fast
 
 			//  When: activating flash flood
-			var engine = spirit.Bind( gameState );
-			card.Activate( engine );
+			card.Activate( spirit, gameState );
 			action = spirit.Action;
 
 			// Then: Auto selecting only target space avaialbe
@@ -76,8 +75,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Assert.Contains(card,spirit.GetUnresolvedActionFactories(card.Speed).OfType<PowerCard>().ToList()); // is fast
 
 			//  When: activating flash flood
-			var engine = spirit.Bind( gameState );
-			card.Activate( engine );
+//			var engine = spirit.Bind( gameState );
+			card.Activate( spirit, gameState );
 			action = spirit.Action;
 
 			//// Then: can target any land within 1 of presence.

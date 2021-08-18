@@ -48,12 +48,12 @@ namespace SpiritIsland.Basegame {
 			gameState.TimePassed += (_) => targetedList.Clear();
 		}
 
-		public override Task Activate( ActionEngine engine) {
-			return FindSpiritAndInvoke( engine, HighestMethod( engine.Self ) );
+		public override Task Activate( Spirit self, GameState gameState ) {
+			return FindSpiritAndInvoke( self, gameState, HighestMethod( self ) );
 		}
 
-		async Task FindSpiritAndInvoke( ActionEngine engine, MethodBase methodBase ){
-			Spirit target = await engine.Self.SelectSpirit(engine.GameState.Spirits);
+		async Task FindSpiritAndInvoke( Spirit self, GameState gameState, MethodBase methodBase ){
+			Spirit target = await self.SelectSpirit(gameState.Spirits);
 			methodBase.Invoke( null, new object[] { target, targetedList } );
 		}
 
@@ -75,8 +75,8 @@ namespace SpiritIsland.Basegame {
 
 		public IActionFactory Original => this;
 
-		public Task Activate( ActionEngine engine ) {
-			return engine.Self.SelectSpaceCardToReplayForCost( maxCost, targetedList );
+		public Task Activate( Spirit self, GameState _ ) {
+			return self.SelectSpaceCardToReplayForCost( maxCost, targetedList );
 		}
 
 		readonly List<SpaceTargetedArgs> targetedList;

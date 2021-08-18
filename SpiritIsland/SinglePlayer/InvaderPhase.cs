@@ -28,7 +28,7 @@ namespace SpiritIsland.SinglePlayer {
 		public event Action Complete;
 
 		public void Initialize() {
-			engine = gameState.Spirits[0].Bind( gameState );
+			decisionMaker = gameState.Spirits[0];
 			_ = Action();
 		}
 
@@ -60,7 +60,7 @@ namespace SpiritIsland.SinglePlayer {
 			// Cascade blight
 			while(gameState.cascadingBlight.Count > 0) {
 				Space blightedSpace = gameState.cascadingBlight.Pop();
-				Space cascadeSpace = await engine.Self.SelectSpace( "Select land to cascade blight from " + blightedSpace.Label,
+				Space cascadeSpace = await decisionMaker.SelectSpace( "Select land to cascade blight from " + blightedSpace.Label,
 					blightedSpace.Adjacent
 						.Where( x => x.Terrain != Terrain.Ocean )
 				);
@@ -81,7 +81,7 @@ namespace SpiritIsland.SinglePlayer {
 			this.Complete?.Invoke();
 		}
 
-		ActionEngine engine;
+		Spirit decisionMaker;
 
 		void Log( string msg ) => NewLogEntry?.Invoke( msg );
 

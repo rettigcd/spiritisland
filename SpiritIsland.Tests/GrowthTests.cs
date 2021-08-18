@@ -121,11 +121,10 @@ namespace SpiritIsland.Tests {
 				.Where(f=> factoryDescription==null || factoryDescription == f.ShortDescription)
 				.First();
 
-			var engine = spirit.Bind( gameState );
-			ppFactory.Activate( engine );
+			ppFactory.Activate( spirit, gameState );
 			var ppAction = spirit.Action;
 
-			if(engine.Self.Presence.CardPlays.HasMore && engine.Self.Presence.Energy.HasMore){ // there are 2 option available
+			if(spirit.Presence.CardPlays.HasMore && spirit.Presence.Energy.HasMore){ // there are 2 option available
 				ppAction.Options.Select(x=>x.Text).Join(",").ShouldContain(source.Text);
 				// take from precense track
 				ppAction.Select(source);
@@ -163,8 +162,7 @@ namespace SpiritIsland.Tests {
 		}
 
 		protected void AndWhen_ReclaimingFirstCard() {
-			var engine = spirit.Bind( gameState );
-			_ = spirit.GetUnresolvedActionFactories(Speed.Growth).OfType<Reclaim1>().First().Activate( engine );
+			_ = spirit.GetUnresolvedActionFactories(Speed.Growth).OfType<Reclaim1>().First().Activate( spirit, gameState );
 			var reclaim = spirit.Action;
 			if(reclaim.Options.Length>0)
 				reclaim.Select( reclaim.Options[0] );

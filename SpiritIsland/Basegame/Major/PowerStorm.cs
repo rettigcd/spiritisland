@@ -27,13 +27,12 @@ namespace SpiritIsland.Basegame {
 			public IActionFactory Original => this;
 			public string Text => Name;
 
-			public async Task Activate( ActionEngine engine ) {
-				var (self,_) = engine;
+			public async Task Activate( Spirit self, GameState gameState ) {
 				var cards = self.DiscardPile.Where(c=>c.Cost<=self.Energy).ToArray();
 				var card = (PowerCard)await self.SelectFactory("Select card to replay",cards,true);
 				if( card == null ) return;
 				self.Energy -= card.Cost;
-				await card.Activate(engine);
+				await card.Activate(self,gameState);
 			}
 		}
 

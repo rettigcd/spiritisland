@@ -13,7 +13,7 @@ namespace SpiritIsland.Basegame {
 
 			// if you have 3 air 3 water 2 animal, repeat this power
 			if(self.Elements.Contains("3 air,2 water,2 animal" )) {
-				var secondTarget = await engine.TargetSpace(engine,From.SacredSite,3,Target.Any);
+				var secondTarget = await engine.TargetSpace(From.SacredSite,3,Target.Any);
 				await ApplyEffect( engine, secondTarget);
 			}
 		}

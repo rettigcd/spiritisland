@@ -70,9 +70,8 @@ namespace SpiritIsland {
 		protected void RemoveResolvedActions( GameState gameState, Speed speed ) {
 
 			var factories = GetUnresolvedActionFactories( speed ).ToArray();
-			var engine = this.Bind(gameState);
 			foreach(var factory in factories) {
-				factory.Activate(engine);
+				factory.Activate(this,gameState);
 				if(Action.IsResolved)
 					Resolve(factory);
 				else
@@ -268,7 +267,7 @@ namespace SpiritIsland {
 
 		public event SpaceTargetedEvent TargetedSpace;
 
-		public ActionEngine Bind(GameState gs) => new ActionEngine(this,gs);
+		public ActionEngine BindSpiritActions(GameState gs) => new ActionEngine(this,gs);
 	}
 
 }

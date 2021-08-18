@@ -11,19 +11,19 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			// Given: empty board
 			spirit = new ThunderSpeaker { Energy = 20 };
 			a = Board.BuildBoardA();
-			var gs = new GameState( spirit ) {
+			gs = new GameState( spirit ) {
 				Island = new Island( a )
 			};
 
 			// And: Spirit in spot 1
 			spirit.Presence.PlaceOn( a[1] );
 
-			eng = spirit.Bind( gs );
+//			eng = spirit.Bind( gs );
 			action = spirit.Action;
 		}
 
 		protected void When_ActivateCard( string cardName ) {
-			spirit.Hand.Single( x => x.Name == cardName ).Activate( eng );
+			spirit.Hand.Single( x => x.Name == cardName ).Activate( spirit, gs);
 		}
 
 		protected void Step( string expectedPrompt, string expectedOptions, IOption optionToSelect, bool expectedResolved ) {
@@ -35,7 +35,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 
 		protected readonly Board a;
 		protected readonly Spirit spirit;
-		protected readonly ActionEngine eng;
+		protected readonly GameState gs;
+//		protected readonly ActionEngine eng;
 		protected readonly BaseAction action;
 
 	}

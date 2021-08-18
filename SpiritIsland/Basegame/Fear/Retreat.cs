@@ -25,7 +25,7 @@ namespace SpiritIsland.Basegame {
 				var options = gs.Island.AllSpaces.Where( s => !s.IsCostal && gs.InvadersOn( s ).HasExplorer ).ToArray();
 				if(options.Length == 0) break;
 				var target = await spirit.SelectSpace( $"Fear:select land to push up to {max} invaders", options );
-				await spirit.Bind( gs ).PushUpToNInvaders( target, max, pushableInvaders );
+				await spirit.MakeDecisionsFor( gs ).PushUpToNInvaders( target, max, pushableInvaders );
 			}
 		}
 

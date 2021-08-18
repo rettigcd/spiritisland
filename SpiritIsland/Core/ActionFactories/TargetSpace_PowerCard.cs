@@ -28,22 +28,22 @@ namespace SpiritIsland {
 
 		public event SpaceTargetedEvent TargetedSpace; // Targeter, Card, Targetee
 
-		public override Task Activate( ActionEngine engine ) {
-			return PickSpaceAndActivate(engine);
+		public override Task Activate( Spirit spirit, GameState gameState ) {
+			return PickSpaceAndActivate(spirit,gameState);
 		}
 
-		public Task ActivateAgainstSpecificTarget( ActionEngine engine, Space preTarget ) {
-			return Task.Run( ()=>InvokeAgainst(engine,preTarget) );
+		public Task ActivateAgainstSpecificTarget( Spirit spirit, GameState gameState, Space preTarget ) {
+			return Task.Run( ()=>InvokeAgainst( spirit, gameState, preTarget) );
 		}
 
-		async Task PickSpaceAndActivate( ActionEngine engine ){
-			var target = await targetSpace.GetTarget( engine );
+		async Task PickSpaceAndActivate( Spirit spirit, GameState gameState ) {
+			var target = await targetSpace.GetTarget( spirit.BindSpiritActions(gameState) );
 			if(target == null) return; // no space available that meets criteria.   !!! needs unit test showing if no-target-space simply does nothing, and doesn't crash
-			TargetedSpace?.Invoke(new SpaceTargetedArgs{Initiator=engine.Self,Card=this,Target=target } );
-			InvokeAgainst( engine, target );
+			TargetedSpace?.Invoke(new SpaceTargetedArgs{Initiator=spirit,Card=this,Target=target } );
+			InvokeAgainst( spirit, gameState, target );
 		}
 
-		void InvokeAgainst(ActionEngine engine, Space target) => methodBase.Invoke( null, new object[] { engine, target } );
+		void InvokeAgainst( Spirit spirit, GameState gameState, Space target) => methodBase.Invoke( null, new object[] { spirit.BindSpiritActions(gameState), target } );
 
 	}
 

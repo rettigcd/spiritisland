@@ -14,12 +14,12 @@ namespace SpiritIsland {
 
 		#endregion
 
-		public Task<Space> TargetSpace( ActionEngine engine, From sourceEnum, int range, Target filterEnum )
-			=> TargetSpace( engine, sourceEnum, null, range, filterEnum );
+		public Task<Space> TargetSpace( Spirit self, GameState gameState, From sourceEnum, int range, Target filterEnum )
+			=> TargetSpace( self, gameState , sourceEnum, null, range, filterEnum );
 
-		public async virtual Task<Space> TargetSpace( ActionEngine engine, From sourceEnum, Terrain? sourceTerrain, int range, Target filterEnum ) {
-			IEnumerable<Space> spaces = GetTargetOptions( engine.Self, sourceEnum, sourceTerrain, range, filterEnum, engine.GameState );
-			return await engine.Self.SelectSpace( "Select target.", spaces );
+		public async virtual Task<Space> TargetSpace( Spirit self, GameState gameState, From sourceEnum, Terrain? sourceTerrain, int range, Target filterEnum ) {
+			IEnumerable<Space> spaces = GetTargetOptions( self, sourceEnum, sourceTerrain, range, filterEnum, gameState );
+			return await self.SelectSpace( "Select target.", spaces );
 		}
 
 		public virtual IEnumerable<Space> GetTargetOptions( Spirit self, From sourceEnum, Terrain? sourceTerrain, int range, Target filterEnum, GameState gameState ) {

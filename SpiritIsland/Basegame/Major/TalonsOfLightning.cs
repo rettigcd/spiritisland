@@ -16,7 +16,8 @@ namespace SpiritIsland.Basegame {
 			if(bonus)
 				// increase this Power's Range to 3
 				target = await engine.Self.PowerCardApi.TargetSpace(
-					engine,
+					engine.Self,
+					engine.GameState,
 					From.Presence,
 					3, 
 					Target.MountainOrWetland

@@ -125,10 +125,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		[InlineData(7,"Encompassing Ward")]
 		public void PowerProgressionCards( int count, string lastPowerCard ){
 			var drawPowerCard = new DrawPowerCard();
-			var eng = spirit.Bind( gameState);
-			while(count-- > 0) {
-				_ = drawPowerCard.Activate( eng );
-			}
+			while(count-- > 0)
+				_ = drawPowerCard.Activate( spirit, gameState );
 
 			Assert_HasCardAvailable( lastPowerCard );
 		}

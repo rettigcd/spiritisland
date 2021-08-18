@@ -46,8 +46,7 @@ namespace SpiritIsland.Tests {
 		}
 
 		protected void When_PlayingCard() {
-			var engine = spirit.Bind( gameState );
-			card.Activate( engine );
+			card.Activate( spirit, gameState );
 			action = spirit.Action;
 		}
 

@@ -81,11 +81,10 @@ Shadows Flicker like Flame:
 
 		class ShadowApi : TargetLandApi {
 
-			public override async Task<Space> TargetSpace( ActionEngine eng, From from, Terrain? sourceTerrain, int range, Target filter ) {
-				var (self,gameState) = eng;
+			public override async Task<Space> TargetSpace( Spirit self, GameState gameState, From from, Terrain? sourceTerrain, int range, Target filter ) {
 				// no money, do normal
 				if(self.Energy == 0)
-					return await base.TargetSpace( eng, from, sourceTerrain, range, filter );
+					return await base.TargetSpace( self, gameState, from, sourceTerrain, range, filter );
 
 				// find normal Targetable spaces
 				var normalSpaces = base.GetTargetOptions( self, from, sourceTerrain, range, filter, gameState );
@@ -98,14 +97,14 @@ Shadows Flicker like Flame:
 					.ToArray();
 				// no dahan-only spaces, do normal
 				if(dahanOnlySpaces.Length == 0)
-					return await base.TargetSpace( eng, from, sourceTerrain, range, filter );
+					return await base.TargetSpace( self, gameState, from, sourceTerrain, range, filter );
 
 				// append Target-Dahan option to end of list
 				var options = normalSpaces.Cast<IOption>().ToList();
 				options.Add(new TextOption("Pay 1 energy to target land with dahan"));
 
 				// let them select normal, or choose to pay
-				var option = await eng.Self.SelectOption("Select target.",options.ToArray());
+				var option = await self.SelectOption("Select target.",options.ToArray());
 
 				// if they select regular space, use it
 				if(option is Space space)
@@ -115,7 +114,7 @@ Shadows Flicker like Flame:
 				--self.Energy;
 
 				// pick from dahan-only spaces
-				return await eng.Self.SelectSpace("Target land with dahan",dahanOnlySpaces);
+				return await self.SelectSpace("Target land with dahan",dahanOnlySpaces);
 			}
 
 		}

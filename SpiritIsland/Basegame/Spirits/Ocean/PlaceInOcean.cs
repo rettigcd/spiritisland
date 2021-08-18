@@ -6,11 +6,11 @@ namespace SpiritIsland.Basegame {
 
 	public class PlaceInOcean : GrowthActionFactory {
 
-		public override Task Activate( ActionEngine engine ) {
-			var oceanSpaces = engine.GameState.Island.Boards
+		public override Task Activate( Spirit spirit, GameState gameState ) {
+			var oceanSpaces = gameState.Island.Boards
 				.Select( b=>b.Spaces.Single(s=>s.IsOcean) )
 				.ToArray();
-			return engine.PlacePresence( oceanSpaces );
+			return spirit.MakeDecisionsFor(gameState).PlacePresence( oceanSpaces );
 		}
 
 	}

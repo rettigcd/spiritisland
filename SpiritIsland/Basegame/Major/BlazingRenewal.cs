@@ -15,7 +15,7 @@ namespace SpiritIsland.Basegame {
 
 			// into a single land, up to range 2 from your presence.
 			// Note - Jonah says it is the originators power and range and decision, not the targets
-			var landTarget = await engine.TargetSpace( engine, From.Presence, 2, Target.Any );
+			var landTarget = await engine.TargetSpace( From.Presence, 2, Target.Any );
 
 			// Add it!
 			for(int i=0;i<max;++i)

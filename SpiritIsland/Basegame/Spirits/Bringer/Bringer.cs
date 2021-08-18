@@ -70,20 +70,20 @@ namespace SpiritIsland.Basegame {
 		}
 
 		public override InvaderGroup BuildInvaderGroup( GameState gs, Space space ) {
-			return new ToDreamAThousandDeaths( this.Bind(gs), space, gs.GetCounts(space), gs.AddFearDirect );
+			return new ToDreamAThousandDeaths( this, gs, space, gs.GetCounts(space), gs.AddFearDirect );
 		}
 	}
 
 	class ToDreamAThousandDeaths : InvaderGroup {
 
-		readonly ActionEngine engine; // for pushing
+		readonly IMakeGamestateDecisions engine; // for pushing
 
-		public ToDreamAThousandDeaths(ActionEngine engine, Space space, int[] counts, Action<int> addFear) : base( 
+		public ToDreamAThousandDeaths(Spirit spirit, GameState gameState, Space space, int[] counts, Action<int> addFear) : base( 
 			space, 
 			counts.ToList().ToArray(),  // make a copy so we don't really kill anything
 			addFear 
 		) {
-			this.engine = engine;
+			this.engine = spirit.MakeDecisionsFor(gameState);
 		}
 
 		protected override async Task OnInvaderDestroyed( InvaderSpecific specific ) {

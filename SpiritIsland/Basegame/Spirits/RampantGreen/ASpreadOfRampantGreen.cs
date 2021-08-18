@@ -143,10 +143,9 @@ namespace SpiritIsland.Basegame {
 			var stoppable = ravageSpaces.Intersect( SacredSites ).ToList();
 			bool costs1 = gs.BlightCard.IslandIsBlighted;
 			int maxStoppable = costs1 ? Energy : int.MaxValue;
-			var eng = this.Bind( gs );
 			var skipped = new List<Space>();
 			while(maxStoppable > 0 && stoppable.Count > 0) {
-				var stop = await eng.Self.SelectSpace( $"Stop {actionText} by destroying 1 presence", stoppable.ToArray(), true );
+				var stop = await this.SelectSpace( $"Stop {actionText} by destroying 1 presence", stoppable.ToArray(), true );
 				if(stop == null) break;
 				Presence.Destroy( stop );
 				skipped.Add( stop );

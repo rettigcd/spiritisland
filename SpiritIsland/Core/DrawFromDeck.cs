@@ -6,25 +6,24 @@ namespace SpiritIsland {
 
 	public class DrawFromDeck : IPowerCardDrawer {
 
-		public async Task<PowerCard> Draw( ActionEngine engine, Func<List<PowerCard>, Task> handleNotUsed ) {
-			var (self,gs)=engine;
-			var deck = await self.SelectFirstText( "Which type do you wish to draw", "minor", "major" )
+		public async Task<PowerCard> Draw( Spirit spirit, GameState gs, Func<List<PowerCard>, Task> handleNotUsed ) {
+			var deck = await spirit.SelectFirstText( "Which type do you wish to draw", "minor", "major" )
 				? gs.MinorCards
 				: gs.MajorCards;
-			return await DrawInner( engine, deck, handleNotUsed );
+			return await DrawInner( spirit, deck, handleNotUsed );
 		}
 
-		public Task<PowerCard> DrawMajor( ActionEngine engine, Func<List<PowerCard>, Task> handleNotUsed )
-			=> DrawInner(engine, engine.GameState.MajorCards, handleNotUsed );
+		public Task<PowerCard> DrawMajor( Spirit spirit, GameState gameState, Func<List<PowerCard>, Task> handleNotUsed )
+			=> DrawInner(spirit, gameState.MajorCards, handleNotUsed );
 		
 
-		public Task<PowerCard> DrawMinor( ActionEngine engine, Func<List<PowerCard>, Task> handleNotUsed )
-			=> DrawInner( engine, engine.GameState.MinorCards, handleNotUsed );
+		public Task<PowerCard> DrawMinor( Spirit spirit, GameState gameState, Func<List<PowerCard>, Task> handleNotUsed )
+			=> DrawInner( spirit, gameState.MinorCards, handleNotUsed );
 
-		static async Task<PowerCard> DrawInner( ActionEngine engine, PowerCardDeck deck, Func<List<PowerCard>, Task> handleNotUsed ) {
+		static async Task<PowerCard> DrawInner( Spirit spirit, PowerCardDeck deck, Func<List<PowerCard>, Task> handleNotUsed ) {
 			List<PowerCard> flipped = deck.Flip(4);
 
-			var selected = await TakeCard( engine, flipped );
+			var selected = await TakeCard( spirit, flipped );
 
 			if(handleNotUsed != null)
 				await handleNotUsed( flipped );
@@ -33,9 +32,9 @@ namespace SpiritIsland {
 			return selected;
 		}
 
-		public static async Task<PowerCard> TakeCard( ActionEngine engine, List<PowerCard> flipped ) {
-			var selectedCard = (PowerCard)await engine.Self.SelectFactory( "Select new Power Card", flipped.ToArray() );
-			engine.Self.Hand.Add( selectedCard );
+		public static async Task<PowerCard> TakeCard( Spirit spirit, List<PowerCard> flipped ) {
+			var selectedCard = (PowerCard)await spirit.SelectFactory( "Select new Power Card", flipped.ToArray() );
+			spirit.Hand.Add( selectedCard );
 			flipped.Remove( selectedCard );
 			return selectedCard;
 		}

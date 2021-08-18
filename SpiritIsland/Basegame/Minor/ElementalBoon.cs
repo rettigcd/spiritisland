@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 
 		[MinorCard( "Elemental Boon", 1, Speed.Fast )]
 		[TargetSpirit]
-		static public async Task Act( ActionEngine engine, Spirit target ) {
+		static public async Task Act( IMakeGamestateDecisions engine, Spirit target ) {
 
 			var elements = new List<Element>{
 				Element.Sun,

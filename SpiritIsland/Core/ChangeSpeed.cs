@@ -14,8 +14,8 @@ namespace SpiritIsland {
 
 		public string Text => Original.Text;
 
-		public Task Activate( ActionEngine engine ) {
-			return Original.Activate(engine);
+		public Task Activate( Spirit spirit, GameState gameState ) {
+			return Original.Activate(spirit, gameState);
 		}
 
 		public IActionFactory Original { get; }
