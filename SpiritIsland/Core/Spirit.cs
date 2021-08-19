@@ -256,13 +256,22 @@ namespace SpiritIsland {
 		#endregion
 
 		// pluggable, draw power card, or powerprogression
+		#region Draw Card
+		static readonly IPowerCardDrawer DefaultCardDrawer = new DrawFromDeck();
 		public IPowerCardDrawer CardDrawer = DefaultCardDrawer;
+
+		public Task<PowerCard> Draw( GameState gameState, Func<List<PowerCard>, Task> handleNotUsed ) => CardDrawer.Draw(this,gameState,handleNotUsed);
+		public Task<PowerCard> DrawMinor( GameState gameState ) => CardDrawer.DrawMinor(this, gameState,null);
+		public Task<PowerCard> DrawMajor( GameState gameState ) => CardDrawer.DrawMinor( this, gameState, null );
+
+		#endregion
+
+
 		public TargetLandApi TargetLandApi = DefaultTargetLandApi;
 		public virtual InvaderGroup BuildInvaderGroup( GameState gs, Space space ) => new InvaderGroup( space, gs.GetCounts(space), gs.AddFearDirect );
 
 		public Stack<IDecision> decisions = new();
 		
-		static readonly IPowerCardDrawer DefaultCardDrawer = new DrawFromDeck();
 		static readonly TargetLandApi DefaultTargetLandApi = new TargetLandApi();
 
 		public event SpaceTargetedEvent TargetedSpace;

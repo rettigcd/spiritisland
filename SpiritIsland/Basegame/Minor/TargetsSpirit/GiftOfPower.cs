@@ -8,7 +8,7 @@ namespace SpiritIsland.Basegame {
 		[TargetSpirit]
 		static public Task ActAsync( IMakeGamestateDecisions engine, Spirit target ) {
 			// gain a minor power card
-			return target.CardDrawer.DrawMinor(target,engine.GameState,null); 
+			return target.DrawMinor(engine.GameState); 
 		}
 
 	}

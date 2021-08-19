@@ -17,7 +17,7 @@ namespace SpiritIsland.Basegame {
 			TargetLandApi x = self.PowerCardApi;
 
 			// Target spirit gains a power Card.
-			await self.CardDrawer.Draw(target,gs,(cards)=>{
+			await target.Draw( gs,(cards)=>{
 				// You gain one of the power Cards they did not keep.
 				return DrawFromDeck.TakeCard(self,cards);
 			} );

@@ -89,7 +89,8 @@ namespace SpiritIsland {
 
 		public void ModRavage( Action<ConfigureRavage> action ) => GameState.ModRavage(Target,action);
 
-		public Task<PowerCard> DrawMajor() => Self.CardDrawer.DrawMajor( Self, GameState, null );
+		public Task<PowerCard> DrawMajor() => Self.DrawMajor( GameState );
+		public Task<PowerCard> DrawMinor() => Self.DrawMinor( GameState );
 
 	}
 
