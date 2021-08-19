@@ -7,7 +7,7 @@ namespace SpiritIsland.Basegame {
 		[FromSacredSite( 0 )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
-			if(await ctx.Self.SelectFirstText("Select power option", "1 damage to each town/city","defend 10"))
+			if(await ctx.Self.UserSelectsFirstText("Select power option", "1 damage to each town/city","defend 10"))
 				// 1 damage to each town/city
 				await ctx.InvadersOn.ApplyDamageToEach(1,Invader.City,Invader.Town);
 			else

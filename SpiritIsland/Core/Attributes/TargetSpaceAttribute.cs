@@ -7,7 +7,7 @@ namespace SpiritIsland {
 
 		readonly From source;
 		readonly Terrain? sourceTerrain;
-		readonly int range;
+		readonly protected int range;
 		readonly Target targetFilter;
 
 		public TargetSpaceAttribute(From source, Terrain? sourceTerrain, int range, Target targetFilter){
@@ -18,8 +18,9 @@ namespace SpiritIsland {
 		}
 
 		public Task<Space> GetTarget( IMakeGamestateDecisions engine ){
-			return engine.TargetSpace( source, sourceTerrain, range, targetFilter );
+			return engine.TargetSpace( source, sourceTerrain, CalcRange(engine), targetFilter ); // ! use Range property so we can 
 		}
+		protected virtual int CalcRange( IMakeGamestateDecisions ctx ) => range;
 
 		static public Func<Space, bool> ToLambda( Spirit self, GameState gameState, Target filterEnum){
 			var generalFilter = IncludeOceanToLambda(self, gameState,filterEnum);
@@ -77,5 +78,7 @@ namespace SpiritIsland {
 		public FromSacredSiteAttribute( int range, Target filter = Target.Any )
 			: base( From.SacredSite, null, range, filter ) { }
 	}
+
+	class XX()
 
 }

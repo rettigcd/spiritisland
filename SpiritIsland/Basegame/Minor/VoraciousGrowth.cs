@@ -8,7 +8,7 @@ namespace SpiritIsland.Basegame {
 		static public async Task ActAsync(TargetSpaceCtx ctx){
 
 			bool removeBlight = ctx.HasBlight
-				&& !await ctx.Self.SelectFirstText("Select action", "2 Damage","Remove 1 Blight" );
+				&& !await ctx.Self.UserSelectsFirstText("Select action", "2 Damage","Remove 1 Blight" );
 
 			if(removeBlight)
 				ctx.RemoveBlight();

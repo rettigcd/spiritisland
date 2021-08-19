@@ -7,7 +7,7 @@ namespace SpiritIsland {
 	public class DrawFromDeck : IPowerCardDrawer {
 
 		public async Task<PowerCard> Draw( Spirit spirit, GameState gs, Func<List<PowerCard>, Task> handleNotUsed ) {
-			var deck = await spirit.SelectFirstText( "Which type do you wish to draw", "minor", "major" )
+			var deck = await spirit.UserSelectsFirstText( "Which type do you wish to draw", "minor", "major" )
 				? gs.MinorCards
 				: gs.MajorCards;
 			return await DrawInner( spirit, deck, handleNotUsed );

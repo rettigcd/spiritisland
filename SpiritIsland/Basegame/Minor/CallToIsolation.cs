@@ -11,7 +11,7 @@ namespace SpiritIsland.Basegame {
 			int pushCount = ctx.DahanCount; // push 1 explorer/town per dahan
 
 			bool pushDahan = !ctx.Invaders.HasExplorer && !ctx.Invaders.HasTown
-				|| await ctx.Self.SelectFirstText("Select option", "push 1 dahan", $"push {pushCount} explorer or towns");
+				|| await ctx.Self.UserSelectsFirstText("Select option", "push 1 dahan", $"push {pushCount} explorer or towns");
 
 			if( pushDahan )
 				await ctx.PushUpToNDahan(1);

@@ -65,7 +65,7 @@ namespace SpiritIsland {
 			return result.Task;
 		}
 
-		static public async Task<bool> SelectFirstText( this Spirit spirit, string prompt, string option1, string option2 ) {
+		static public async Task<bool> UserSelectsFirstText( this Spirit spirit, string prompt, string option1, string option2 ) {
 			return await spirit.SelectText( prompt, option1, option2 ) == option1;
 		}
 

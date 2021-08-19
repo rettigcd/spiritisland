@@ -8,7 +8,7 @@ namespace SpiritIsland.Basegame {
 		[FromPresence(2,Target.Dahan)]
 		static public async Task Act(TargetSpaceCtx ctx){
 
-			if( await ctx.Self.SelectFirstText( "Select option", "1 damage per dahan", "gather up to 3 dahan" ) )
+			if( await ctx.Self.UserSelectsFirstText( "Select option", "1 damage per dahan", "gather up to 3 dahan" ) )
 				// opt 1 - 1 damage per dahan
 				await ctx.DamageInvaders(ctx.DahanCount);
 			else

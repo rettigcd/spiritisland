@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 		static public async Task Act( TargetSpaceCtx ctx ) {
 
 			bool damageInvaders = ctx.HasInvaders
-				&& await ctx.Self.SelectFirstText( "Select card option", $"{ctx.DahanCount} damage to invaders", "push up to 3 dahan" );
+				&& await ctx.Self.UserSelectsFirstText( "Select card option", $"{ctx.DahanCount} damage to invaders", "push up to 3 dahan" );
 
 			if(damageInvaders)
 				// each dahan deals 1 damage to a different invader

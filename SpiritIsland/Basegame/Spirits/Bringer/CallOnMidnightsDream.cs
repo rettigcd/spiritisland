@@ -11,7 +11,7 @@ namespace SpiritIsland.Basegame.Spirits.Bringer {
 			var (self,gs,target) = ctx;
 
 			bool doFear = gs.HasInvaders(target)
-				&& await self.SelectFirstText("Select power option","2 fear","Draw Major Power");
+				&& await self.UserSelectsFirstText("Select power option","2 fear","Draw Major Power");
 
 			if(doFear)
 				// if invaders are present, 2 fear

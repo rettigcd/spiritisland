@@ -11,7 +11,7 @@ namespace SpiritIsland.Basegame {
 			// on target, spirit should be able to do one or both
 			bool canRemoveBlight = ctx.IsOneOf( Terrain.Mountain, Terrain.Sand );
 			bool doDamage = ctx.HasInvaders 
-				&& (!canRemoveBlight || await ctx.Self.SelectFirstText( "Select option", "damageInvaders", "remove blight" ) );
+				&& (!canRemoveBlight || await ctx.Self.UserSelectsFirstText( "Select option", "damageInvaders", "remove blight" ) );
 			if(doDamage)
 				// 1 damage per blight
 				await ctx.DamageInvaders(ctx.BlightOnSpace);
