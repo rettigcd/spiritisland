@@ -50,10 +50,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			Game_DoneWith( Speed.Fast );
 
-			Prompt_Select( "Select Slow to resolve:", "River's Bounty,Massive Flooding,Done", "Massive Flooding" );
-			Prompt_Select( "Select target.", "A2,A3,A5,A8", "A8" );
-			Prompt_Select( "Select invader to push", "T@2,E@1,Done", "T@2" );
-			Prompt_Select( "Push T@2 to", "A5,A6,A7", "A5" );
+			game.Decision.AssertDecision( "Select Slow to resolve:", "River's Bounty,Massive Flooding,Done", "Massive Flooding" );
+			game.Decision.AssertDecision( "Select space to target.", "A2,A3,A5,A8", "A8" );
+			game.Decision.AssertDecision( "Select invader to push", "T@2,E@1,Done", "T@2" );
+			game.Decision.AssertDecision( "Push T@2 to", "A5,A6,A7", "A5" );
 		}
 
 		[Fact]
@@ -70,10 +70,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			Game_DoneWith( Speed.Fast );
 
-			Prompt_Select( "Select Slow to resolve:", "River's Bounty,Massive Flooding,Done", "Massive Flooding" );
-			Prompt_Select( "Select target.", "A5,A8", "A8" );
-			Prompt_Select( "Select invader to push", "E@1,Done", "E@1" );
-			Prompt_Select( "Push E@1 to", "A5,A6,A7", "A5" );
+			game.Decision.AssertDecision( "Select Slow to resolve:", "River's Bounty,Massive Flooding,Done", "Massive Flooding" );
+			game.Decision.AssertDecision( "Select space to target.", "A5,A8", "A8" );
+			game.Decision.AssertDecision( "Select invader to push", "E@1,Done", "E@1" );
+			game.Decision.AssertDecision( "Push E@1 to", "A5,A6,A7", "A5" );
 		}
 
 		[Fact]
@@ -99,7 +99,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Game_DoneWith( Speed.Fast );
 
 			Game_SelectOption( "Select Slow to resolve", "Massive Flooding" );
-			Game_SelectOption( "Select target.", space.Label);
+			Game_SelectOption( "Select space to target.", space.Label);
 			
 			Assert.Equal("1C@1",game.GameState.InvadersOn(space).ToString());
 		}

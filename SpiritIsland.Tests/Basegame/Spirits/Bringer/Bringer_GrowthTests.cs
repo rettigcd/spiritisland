@@ -1,4 +1,5 @@
-﻿using SpiritIsland.Basegame;
+﻿using Shouldly;
+using SpiritIsland.Basegame;
 using Xunit;
 
 namespace SpiritIsland.Tests.Basegame.Spirits {
@@ -22,14 +23,12 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 			Given_HalfOfPowercardsPlayed();
 			Given_HasPresence( board[4] );
 
-			//			When_Growing( 1, Resolve_PlacePresence( "A4"), Resolve_Reclaim( 0 ) );
 			When_Growing( 1 );
 			Resolve_PlacePresence( "A4" );
 
 			AndWhen_ReclaimingFirstCard();
 
-			Assert.Equal( 3, spirit.Hand.Count );
-
+			spirit.Hand.Count.ShouldBe( 3 );
 		}
 
 		[Fact] 

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
-	public class SelectAsync<T> : IDecision where T:class,IOption {
+	public class SelectAsync<T> : IDecisionPlus where T:class,IOption {
 
 		readonly TaskCompletionSource<T> promise;
 		readonly Present present;

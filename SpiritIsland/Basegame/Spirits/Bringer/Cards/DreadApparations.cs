@@ -24,4 +24,11 @@ namespace SpiritIsland.Basegame.Spirits.Bringer {
 		}
 
 	}
+
+
+	// Generate 2 direct fear from some power card - defends 2
+	// Generate 2 DATD fear by 'killing' a town - should defend 2
+	// Generate 5 DATD fear by 'killing' a city - should defend 5
+
+	// dahan ravaging - does not create a defend.
 }

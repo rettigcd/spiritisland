@@ -20,7 +20,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			gs.Adjust( a[2], InvaderSpecific.City, 1 );
 			// and activate card
 			When_ActivateCard( WordsOfWarning.Name );
-			Step( "Select target.", "A2,A4", a[2], true );
+			Step( "Select space to target.", "A2,A4", a[2], true );
 
 			// When: ravaging on A2
 			await gs.Ravage(new InvaderCard(a[2].Terrain));

@@ -104,7 +104,7 @@ Shadows Flicker like Flame:
 				options.Add(new TextOption("Pay 1 energy to target land with dahan"));
 
 				// let them select normal, or choose to pay
-				var option = await self.SelectOption("Select target.",options.ToArray());
+				var option = await self.SelectOption("Select land to target.",options.ToArray());
 
 				// if they select regular space, use it
 				if(option is Space space)

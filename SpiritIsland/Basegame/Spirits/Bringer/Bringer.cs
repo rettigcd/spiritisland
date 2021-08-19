@@ -91,9 +91,9 @@ namespace SpiritIsland.Basegame {
 				addFear( 5 );
 			} else if(specific.Generic == Invader.Town) {
 				addFear( 2 );
-				await engine.PushUpToNInvaders( Space, 1, Invader.Town ); // !!! wrong, need to push correct hit-points
+				await engine.PushNInvaders( Space, 1, Invader.Town ); // !!! wrong, need to push correct hit-points
 			} else {
-				await engine.PushUpToNInvaders( Space, 1, Invader.Explorer );
+				await engine.PushNInvaders( Space, 1, Invader.Explorer );
 			}
 		}
 

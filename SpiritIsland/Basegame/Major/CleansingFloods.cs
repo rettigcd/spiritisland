@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
-	class CleansingFloods { 
+	public class CleansingFloods { 
 
 		[MajorCard("Cleansing Floods",5, Speed.Slow, Element.Sun, Element.Water)]
 		[FromPresenceIn(1,Terrain.Wetland)]

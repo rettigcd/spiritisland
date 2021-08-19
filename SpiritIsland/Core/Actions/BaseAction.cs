@@ -4,9 +4,9 @@ using System.Linq;
 
 namespace SpiritIsland {
 
-	sealed public class BaseAction {
+	sealed public class BaseAction : IDecision {
 
-		public BaseAction( Stack<IDecision> decisions ) {
+		public BaseAction( Stack<IDecisionPlus> decisions ) {
 			this.Decisions = decisions;
 		}
 
@@ -73,13 +73,13 @@ namespace SpiritIsland {
 				throw new ArgumentException("You can't select an option that isn't there.");
 
 			string msg = decision.Prompt + "(" + decision.Options.Select(o=>o.Text).Join(",") + "):" + selection.Text;
-			if(auto) msg += "AUTO!";
+			if(auto) msg += " AUTO!";
 			selections.Add( msg );
 
 			decision.Select( selection );
 		}
 
-		readonly Stack<IDecision> Decisions;
+		readonly Stack<IDecisionPlus> Decisions;
 
 		#endregion
 

@@ -28,7 +28,6 @@ namespace SpiritIsland.SinglePlayer {
 		public void Initialize() {
 			_ = ActAsync();
 		}
-		public bool AllowAutoSelect => true; // not used - I think
 
 		async Task ActAsync() {
 			List<IActionFactory> matchingActionFactories;
