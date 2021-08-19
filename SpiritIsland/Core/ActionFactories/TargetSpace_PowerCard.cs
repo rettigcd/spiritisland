@@ -15,7 +15,7 @@ namespace SpiritIsland {
 		public TargetSpace_PowerCard(MethodBase methodBase,TargetSpaceAttribute targetSpace){
 			this.methodBase = methodBase;
 
-			var attr = methodBase.GetCustomAttributes<BaseCardAttribute>().VerboseSingle("Couldn't find BaseCardAttribute on PowerCard targeting a space");
+			var attr = methodBase.GetCustomAttributes<CardAttribute>().VerboseSingle("Couldn't find BaseCardAttribute on PowerCard targeting a space");
 			Speed = attr.Speed;
 			Name = attr.Name;
 			Cost = attr.Cost;

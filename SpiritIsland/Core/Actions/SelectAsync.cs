@@ -1,23 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using SpiritIsland;
 
 namespace SpiritIsland {
-
-	public enum Present {
-		/// <summary> Shows for 1 or more items.</summary>
-		Always,
-
-		/// <summary>
-		/// Shows for 2 or more options
-		/// </summary>
-		IfMoreThan1,
-
-		/// <summary>
-		/// Shows for 1 or more items, plus has done, cancel
-		/// </summary>
-		Done,
-	}
 
 	public class SelectAsync<T> : IDecision where T:class,IOption {
 
@@ -55,6 +39,21 @@ namespace SpiritIsland {
 				promise.TrySetResult((T)option);
 		}
 
+	}
+
+	public enum Present {
+		/// <summary> Shows for 1 or more items.</summary>
+		Always,
+
+		/// <summary>
+		/// Shows for 2 or more options
+		/// </summary>
+		IfMoreThan1,
+
+		/// <summary>
+		/// Shows for 1 or more items, plus has done, cancel
+		/// </summary>
+		Done,
 	}
 
 }

@@ -13,7 +13,7 @@ namespace SpiritIsland.Tests.Boards {
 		[InlineData( 2 )]
 		public void Space_IsWithinXDistanceFromSelf( int distance ) {
 			var space = MakeSpace();
-			var spaces = space.SpacesWithin( distance );
+			var spaces = space.Range( distance );
 			Assert.Contains( space, spaces );
 		}
 
@@ -39,11 +39,11 @@ namespace SpiritIsland.Tests.Boards {
 			main.SetAdjacentTo( neighbor1 );
 			main.SetAdjacentTo( neighbor2 );
 			// Then: it is adjacent to both
-			var neighbors = main.SpacesWithin( 1 );
+			var neighbors = main.Range( 1 );
 			Assert.Contains( neighbor1, neighbors );
 			Assert.Contains( neighbor2, neighbors );
 			//  And: Neighbors are 2 away from each other
-			Assert.Contains( neighbor2, neighbor1.SpacesWithin( 2 ) );
+			Assert.Contains( neighbor2, neighbor1.Range( 2 ) );
 			Assert.Contains( neighbor1, neighbor2.SpacesExactly( 2 ) );
 		}
 

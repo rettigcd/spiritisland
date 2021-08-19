@@ -2,6 +2,7 @@
 using System.Linq;
 
 namespace SpiritIsland {
+
 	public class PresenceTrack {
 		public PresenceTrack( params Track[] slots ) {
 			this.slots = slots;

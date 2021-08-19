@@ -279,7 +279,7 @@ namespace SpiritIsland {
 			var exploredSpaces = Island.Boards.SelectMany( board => board.Spaces )
 				.Where( invaderCard.Matches )
 				.Where( space => space.IsCostal
-						 || space.SpacesWithin( 1 ).Any( HasTownOrCity )
+						 || space.Range( 1 ).Any( HasTownOrCity )
 				)
 				.Except( skipExplore )
 				.ToArray();

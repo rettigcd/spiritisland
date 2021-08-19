@@ -12,7 +12,7 @@ namespace SpiritIsland {
 		static PowerCard For(Type type ) {
 			// try static method (spirit / major / minor)
 			var method = type.GetMethods( BindingFlags.Public | BindingFlags.Static )
-				.Where( m => m.GetCustomAttributes<BaseCardAttribute>().Count() == 1 )
+				.Where( m => m.GetCustomAttributes<CardAttribute>().Count() == 1 )
 				.VerboseSingle( $"PowerCard {type.Name} missing static method with SpiritCard, MinorCard or MajorCard attribute" );
 
 			// check if targets spirit
@@ -38,7 +38,6 @@ namespace SpiritIsland {
 
 		abstract public Task Activate( Spirit spirit, GameState gameState );
 
-
 		static public PowerCard[] GetMajors() {
 			static bool HasMajorAttribute( MethodBase m ) => m.GetCustomAttributes<MajorCardAttribute>().Any();
 			static bool HasMajorMethod( Type type ) => type.GetMethods().Any( HasMajorAttribute );
@@ -51,5 +50,7 @@ namespace SpiritIsland {
 		}
 
 	}
+
+	public enum PowerType { Minor, Major, Spirit }
 
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
@@ -21,6 +20,13 @@ namespace SpiritIsland {
 	        self = Self;
 			gameState = GameState;
 		}
+
+		public void Deconstruct( out Spirit self, out GameState gameState, out Space target ) {
+			self = Self;
+			gameState = GameState;
+			target = Target;
+		}
+
 
 	}
 

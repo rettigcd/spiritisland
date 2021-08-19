@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace SpiritIsland {
 
-	sealed public class BaseAction : IAction {
+	sealed public class BaseAction {
 
 		public BaseAction( Stack<IDecision> decisions ) {
 			this.Decisions = decisions;
@@ -17,6 +17,8 @@ namespace SpiritIsland {
 			Select_Inner( option, false );
 			AutoSelectSingleOptions();
 		}
+		public void Select(string text)
+			=> Select(Options.Single(o=>o.Text==text));
 
 		public IOption[] Options {
 			get{

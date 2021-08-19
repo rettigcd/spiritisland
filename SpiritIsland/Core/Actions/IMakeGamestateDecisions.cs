@@ -1,8 +1,7 @@
-﻿using System;
+﻿using SpiritIsland;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SpiritIsland;
 
 namespace SpiritIsland {
 
@@ -114,7 +113,7 @@ namespace SpiritIsland {
 
 		static public Task PlacePresence( this IMakeGamestateDecisions engine, int range, Target filterEnum ) {
 			Space[] destinationOptions = engine.Self.Presence.Spaces
-				.SelectMany( s => s.SpacesWithin( range ) )
+				.SelectMany( s => s.Range( range ) )
 				.Distinct()
 				.Where( TargetSpaceAttribute.ToLambda( engine.Self, engine.GameState, filterEnum ) )
 				.OrderBy( x => x.Label )

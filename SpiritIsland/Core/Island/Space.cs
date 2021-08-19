@@ -67,7 +67,7 @@ namespace SpiritIsland {
 
 		#endregion
 
-		public IEnumerable<Space> SpacesWithin( int distance ) {
+		public IEnumerable<Space> Range( int distance ) {
 			CalculateDistancesUpTo( distance );
 			return _distanceTo.Where( p => p.Value <= distance ).Select( p => p.Key );
 		}

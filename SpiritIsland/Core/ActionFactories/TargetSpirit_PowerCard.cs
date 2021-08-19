@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Threading.Tasks;
 
 namespace SpiritIsland {
@@ -12,7 +11,7 @@ namespace SpiritIsland {
 		readonly MethodBase methodBase;
 
 		public TargetSpirit_PowerCard(MethodBase methodBase){
-			var attr = methodBase.GetCustomAttributes<BaseCardAttribute>()
+			var attr = methodBase.GetCustomAttributes<CardAttribute>()
 				.VerboseSingle("bob22");
 
 			Speed = attr.Speed;

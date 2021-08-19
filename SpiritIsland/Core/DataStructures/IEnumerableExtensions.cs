@@ -24,11 +24,6 @@ namespace SpiritIsland {
 			throw new InvalidOperationException($"{msg} Expected 1 but found {result.Count} items of type {name}");
 		}
 
-		public static void AddCount<T>(this List<T> list, int count, T item){
-			while(count-->0)
-				list.Add(item);
-		}
-
 		static readonly Random rng = new Random();
 
 		static public void Shuffle<T>( this IList<T> list ) {

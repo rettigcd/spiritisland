@@ -133,7 +133,7 @@ namespace SpiritIsland.Basegame {
 
 			int numToDestroy = args.count;
 			Space[] options;
-			Space[] Calc() => args.space.SpacesWithin( 1 ).Intersect( Presence.Spaces ).ToArray();
+			Space[] Calc() => args.space.Range( 1 ).Intersect( Presence.Spaces ).ToArray();
 
 			while(numToDestroy-->0 && (options=Calc()).Length > 0)
 				Presence.Destroy( await this.SelectSpace( prompt, options ) );

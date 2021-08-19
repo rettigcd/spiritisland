@@ -9,7 +9,7 @@ namespace SpiritIsland.Tests {
 
 		protected Spirit spirit;
 		protected GameState gameState;
-		protected IAction action;
+		protected BaseAction action;
 		protected PowerCard card;
 
 		protected PowerCard Given_PurchasedCard(string cardName) {

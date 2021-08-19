@@ -4,9 +4,9 @@ namespace SpiritIsland {
 
 	// Base Attribute type for Major / Minor / Spirit cards 
 	[AttributeUsage(AttributeTargets.Method)]
-	public class BaseCardAttribute : Attribute {
+	public class CardAttribute : Attribute {
 
-		protected BaseCardAttribute(string name, int cost, Speed speed, PowerType type, Element[] elements){
+		protected CardAttribute(string name, int cost, Speed speed, PowerType type, Element[] elements){
 			this.Name = name;
 			this.Cost = cost;
 			this.Speed = speed;

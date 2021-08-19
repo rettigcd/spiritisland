@@ -7,8 +7,8 @@ namespace SpiritIsland {
 
 		static public IEnumerable<Space> Range(this IEnumerable<Space> source, int distance)
 			=> source
-					.SelectMany(x => x.SpacesWithin(distance))
-					.Distinct();
+				.SelectMany(x => x.Range(distance))
+				.Distinct();
 
 	}
 }
