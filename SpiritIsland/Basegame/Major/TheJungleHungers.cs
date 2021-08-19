@@ -20,8 +20,8 @@ namespace SpiritIsland.Basegame {
 			if(ctx.Self.Elements.Contains( "2 moon,3 plant" )) {
 				await grp.Destroy(Invader.City, 1 );
 			} else {
-				int dahanCount = ctx.GameState.GetDahanOnSpace(target);
-				await ctx.GameState.DestoryDahan(target,dahanCount,DahanDestructionSource.PowerCard);
+				int dahanCount = ctx.GameState.DahanCount(target);
+				await ctx.GameState.DestroyDahan(target,dahanCount,DahanDestructionSource.PowerCard);
 			}
 
 		}

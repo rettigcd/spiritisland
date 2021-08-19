@@ -180,7 +180,7 @@ namespace SpiritIsland.WinForms
 
 			// dahan & presence & blight
 			images.Clear();
-			images[dahan] = gameState.GetDahanOnSpace( space );
+			images[dahan] = gameState.DahanCount( space );
 			images[defend] = gameState.GetDefence( space );
 			images[presence] = spirit.Presence.On( space );
 			images[blight] = gameState.GetBlightOnSpace( space );

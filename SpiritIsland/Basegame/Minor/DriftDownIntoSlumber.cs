@@ -6,10 +6,9 @@ namespace SpiritIsland.Basegame {
 		[MinorCard( "Drift Down into Slumber", 0, Speed.Fast, Element.Air, Element.Earth, Element.Plant )]
 		[FromPresence( 2 )]
 		public static Task ActAsync( TargetSpaceCtx ctx ) {
-			var target = ctx.Target;
-			int defence = target.Terrain.IsIn( Terrain.Jungle, Terrain.Sand )
+			int defence = ctx.IsOneOf( Terrain.Jungle, Terrain.Sand )
 				? 4 : 1;
-			ctx.GameState.Defend( target, defence );
+			ctx.Defend( defence );
 			return Task.CompletedTask;
 		}
 	}

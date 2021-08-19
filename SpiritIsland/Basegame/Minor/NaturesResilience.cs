@@ -9,16 +9,15 @@ namespace SpiritIsland.Basegame {
 		[MinorCard(NaturesResilience.Name,1,Speed.Fast,Element.Earth,Element.Plant,Element.Animal)]
 		[FromSacredSite(1)]
 		static public async Task Act(TargetSpaceCtx ctx){
-			var target = ctx.Target;
-			var (self,gameState) = ctx;
+
 			// if 2 water, you may INSTEAD remove 1 blight
-			bool removeBlight = self.Elements[Element.Water]>=2
+			bool removeBlight = ctx.Self.Elements.Contains("2 water")
 				&& await ctx.Self.SelectFirstText("Select option", "Remove Blight", "Defend 6" );
 
 			if(removeBlight)
-				gameState.RemoveBlight(target);
+				ctx.RemoveBlight();
 			else 
-				gameState.Defend(target,6);
+				ctx.Defend(6);
 
 		}
 

@@ -17,7 +17,7 @@ namespace SpiritIsland.Basegame {
 			await ctx.GatherUpToNDahan( target, 2 );
 
 			// If there are now at least 2 dahan, then add 1 dahan and gain 1 energy
-			if(gameState.GetDahanOnSpace( target ) >= 2) {
+			if(gameState.DahanCount( target ) >= 2) {
 				gameState.AdjustDahan( target, 1 );
 				++self.Energy;
 			}

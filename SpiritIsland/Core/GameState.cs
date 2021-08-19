@@ -111,7 +111,7 @@ namespace SpiritIsland {
 			Adjust( space, InvaderSpecific.Town, counts.Towns );
 			Adjust( space, InvaderSpecific.Explorer, counts.Explorers );
 			this.AdjustDahan( space, counts.Dahan );
-			if(counts.Blight > 0) this.AddBlight( space ); // add 1
+			blightCount[space] += counts.Blight; // don't use AddBlight because that pulls it from the card and triggers blighted island
 		}
 
 		public void Defend( Space space, int delta ) {
@@ -144,13 +144,13 @@ namespace SpiritIsland {
 				BlightCard.OnBlightDepleated(this);
 			return Task.CompletedTask;
 		}
-		public void RemoveBlight( Space space){
-			if(blightCount[space]==0) return;
-			blightCount[space]--;
-			blightOnCard++;
-		}
 
-		public void AddBlight( Space space, int delta=1 ){ blightCount[space]+=delta; }
+		public void AddBlight( Space space, int delta=1 ){
+			int newCount = blightCount[space] + delta;
+			if(newCount<0) return;
+			blightCount[space] = newCount;
+			blightOnCard -= delta;
+		}
 
 		public bool HasBlight( Space s ) => blightCount[s] > 0;
 		public int GetBlightOnSpace( Space space ){ return blightCount[space]; }
@@ -191,8 +191,8 @@ namespace SpiritIsland {
 			dahanCount[space]+=delta;
 		}
 
-		public Task DestoryDahan(Space space,int countToDestroy, DahanDestructionSource source ) {
-			countToDestroy = Math.Min(countToDestroy,GetDahanOnSpace(space));
+		public Task DestroyDahan(Space space,int countToDestroy, DahanDestructionSource source ) {
+			countToDestroy = Math.Min(countToDestroy,DahanCount(space));
 			AdjustDahan(space, -countToDestroy );
 			return DahanDestroyed.Invoke(this,new DahanDestroyedArgs { space = space, count=countToDestroy, Source = source } );
 		}
@@ -203,8 +203,8 @@ namespace SpiritIsland {
 			return DahanMoved.Invoke(this, new DahanMovedArgs { from = from, to = to, count = count } );
 		}
 
-		public int GetDahanOnSpace( Space space ){ return dahanCount[space]; }
-		public bool HasDahan( Space space ) => GetDahanOnSpace(space)>0;
+		public int DahanCount( Space space ){ return dahanCount[space]; }
+		public bool HasDahan( Space space ) => DahanCount(space)>0;
 		#endregion
 
 		#region Invaders

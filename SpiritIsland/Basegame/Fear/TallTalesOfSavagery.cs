@@ -29,7 +29,7 @@ namespace SpiritIsland.Basegame {
 		public Task Level3( GameState gs ) {
 			foreach(var space in gs.Island.AllSpaces.Where(gs.HasDahan))
 				RemoveTownOr2Explorers( gs, space );
-			foreach(var space in gs.Island.AllSpaces.Where( s=>gs.GetDahanOnSpace(s)>=2 && gs.InvadersOn(s).HasCity ))
+			foreach(var space in gs.Island.AllSpaces.Where( s=>gs.DahanCount(s)>=2 && gs.InvadersOn(s).HasCity ))
 				gs.Adjust(space,InvaderSpecific.City,-1); // !!! what about damaged cities?
 			return Task.CompletedTask;
 		}

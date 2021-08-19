@@ -6,19 +6,15 @@ namespace SpiritIsland.Basegame {
 		[MinorCard("Voracious Growth",1,Speed.Slow,Element.Water,Element.Plant)]
 		[FromSacredSite(1,Target.JungleOrWetland)]
 		static public async Task ActAsync(TargetSpaceCtx ctx){
-			var (_,gs) = ctx;
-			var target = ctx.Target;
 
-			const string blightKey = "Remove 1 Blight";
-
-			bool removeBlight = gs.HasBlight(target) 
-				&& blightKey == await ctx.Self.SelectText("Select action","2 Damage",blightKey);
+			bool removeBlight = ctx.HasBlight
+				&& !await ctx.Self.SelectFirstText("Select action", "2 Damage","Remove 1 Blight" );
 
 			if(removeBlight)
-				gs.AddBlight(target,-1);
+				ctx.RemoveBlight();
 			else
 				// 2 damage
-				await ctx.DamageInvaders(target,2);
+				await ctx.DamageInvaders(2);
 		}
 
 	}

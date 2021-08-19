@@ -73,7 +73,7 @@ namespace SpiritIsland {
 
 		static public async Task<Space[]> PushUpToNDahan( this IMakeGamestateDecisions eng, Space source, int dahanToPush) {
 			HashSet<Space> pushedToLands = new HashSet<Space>();
-			dahanToPush = System.Math.Min(dahanToPush,eng.GameState.GetDahanOnSpace(source));
+			dahanToPush = System.Math.Min(dahanToPush,eng.GameState.DahanCount(source));
 			while(0<dahanToPush){
 				Space destination = await eng.Self.SelectSpace("Select destination for dahan"
 					,source.Adjacent.Where(n=>n.IsLand)
@@ -130,6 +130,24 @@ namespace SpiritIsland {
 		}
 
 		#endregion Place Presence
+
+
+		// Changable!
+		static public Task<Space> TargetSpace( this IMakeGamestateDecisions engine, From sourceEnum, Terrain? sourceTerrain, int range, Target filterEnum )
+			=> engine.Self.TargetLandApi.TargetSpace( engine.Self, engine.GameState, sourceEnum, sourceTerrain, range, filterEnum );
+
+		// Not Changable!
+		static public InvaderGroup InvadersOn( this IMakeGamestateDecisions engine, Space space )
+			=> engine.Self.BuildInvaderGroup( engine.GameState, space );
+
+		static public async Task DamageInvaders( this IMakeGamestateDecisions engine, Space space, int damage ) { // !!! let players choose the item to apply damage to
+			if(damage == 0) return;
+			await engine.InvadersOn( space ).ApplySmartDamageToGroup( damage );
+		}
+
+		static public void AddFear( this IMakeGamestateDecisions engine, int count ) { // need space so we can track fear-space association for bringer
+			engine.GameState.AddFearDirect( count );
+		}
 
 	}
 

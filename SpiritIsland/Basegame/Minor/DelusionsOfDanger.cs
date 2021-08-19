@@ -7,10 +7,9 @@ namespace SpiritIsland.Basegame {
 		[MinorCard("Delusions of Danger",1,Speed.Fast,Element.Sun,Element.Moon,Element.Air)]
 		[FromPresence(1,Target.Explorer)]
 		static public async Task ActionAsync(TargetSpaceCtx ctx){
-			var target = ctx.Target;
 
 			if(await ctx.Self.SelectFirstText( "Select power", "Push 1 Explorer", "2 fear" ))
-				await ctx.PushUpToNInvaders(target, 1, Invader.Explorer);
+				await ctx.PushUpToNInvaders(1, Invader.Explorer);
 			else
 				ctx.AddFear(2); 
 

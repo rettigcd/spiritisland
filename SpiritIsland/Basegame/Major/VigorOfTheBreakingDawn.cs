@@ -10,7 +10,7 @@ namespace SpiritIsland.Basegame {
 			var (spirit,gs) = ctx;
 
 			// 2 damage per dahan in target land
-			await ctx.DamageInvaders(ctx.Target,2*gs.GetDahanOnSpace(ctx.Target));
+			await ctx.DamageInvaders(ctx.Target,2*gs.DahanCount(ctx.Target));
 
 			if( spirit.Elements.Contains("3 sun,2 animal") ){
 
@@ -19,7 +19,7 @@ namespace SpiritIsland.Basegame {
 
 				// 2 damage per dahan
 				foreach(var neighbor in pushedToLands )
-					await ctx.DamageInvaders( neighbor, 2*gs.GetDahanOnSpace(neighbor) );
+					await ctx.DamageInvaders( neighbor, 2*gs.DahanCount(neighbor) );
 			}
 		}
 

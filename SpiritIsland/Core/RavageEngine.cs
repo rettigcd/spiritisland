@@ -46,7 +46,7 @@ namespace SpiritIsland {
 
 		bool HasInvaders => grp.InvaderTypesPresent_Specific.Any();
 
-		public int GetDamageInflictedByDahan() => gs.GetDahanOnSpace( grp.Space ) * 2;
+		public int GetDamageInflictedByDahan() => gs.DahanCount( grp.Space ) * 2;
 
 		public int GetDamageInflictedByInvaders() {
 			int damageFromInvaders = grp.DamageInflictedByInvaders;
@@ -71,11 +71,11 @@ namespace SpiritIsland {
 		public async Task<int> DamageDahan(int damageInflictedFromInvaders ) {
 			if(damageInflictedFromInvaders == 0 || !cfg.ShouldDamageDahan) return 0;
 
-			int dahanOnSpace = gs.GetDahanOnSpace( grp.Space );
+			int dahanOnSpace = gs.DahanCount( grp.Space );
 			int dahanDestroyed = Math.Min( damageInflictedFromInvaders / cfg.DahanHitpoints, dahanOnSpace ); // rounding down
 			if(dahanDestroyed == 0) return 0;
 
-			await gs.DestoryDahan( grp.Space, dahanDestroyed, DahanDestructionSource.Invaders );
+			await gs.DestroyDahan( grp.Space, dahanDestroyed, DahanDestructionSource.Invaders );
 			log.Add( $"Kills {dahanDestroyed} of {dahanOnSpace} Dahan leaving {dahanOnSpace - dahanDestroyed} Dahan." );
 			return dahanDestroyed;
 		}

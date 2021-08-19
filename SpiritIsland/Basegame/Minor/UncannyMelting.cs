@@ -9,16 +9,12 @@ namespace SpiritIsland.Basegame {
 		[MinorCard(UncannyMelting.Name,1, Speed.Slow,Element.Sun,Element.Moon,Element.Water)]
 		[FromSacredSite(1,Target.Any)]
 		static public Task ActAsync(TargetSpaceCtx ctx){
-			var (_,gameState) = ctx;
-			var target = ctx.Target;
 
-			// Invaders
-			if(gameState.HasInvaders(target))
+			if(ctx.HasInvaders)
 				ctx.AddFear(1);
 
-			// !!! unit test - requires Sand / wetland
-			if(gameState.HasBlight(target) && target.Terrain.IsIn(Terrain.Wetland,Terrain.Sand))
-				gameState.RemoveBlight(target);
+			if(ctx.HasBlight && ctx.IsOneOf(Terrain.Wetland,Terrain.Sand))
+				ctx.RemoveBlight();
 
 			return Task.CompletedTask;
 		}

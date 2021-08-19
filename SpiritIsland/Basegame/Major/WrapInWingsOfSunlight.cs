@@ -23,7 +23,7 @@ namespace SpiritIsland.Basegame {
 			var destination = await ctx.Self.SelectSpace( "Move dahan to", ctx.GameState.Island.AllSpaces.Where( s => s.Terrain != Terrain.Ocean ) );
 
 			// move dahan
-			int max = Math.Min( ctx.GameState.GetDahanOnSpace( target ), 5 );
+			int max = Math.Min( ctx.GameState.DahanCount( target ), 5 );
 			int countToMove = await ctx.Self.SelectNumber( "# of dahan to move", max );
 			await ctx.GameState.MoveDahan( target, destination, countToMove );
 

@@ -16,7 +16,7 @@ namespace SpiritIsland.Basegame {
 
 			// if invaders are present and dahan now out numberthem, 3 fear
 			var invaderCount = ctx.GameState.InvadersOn(target).TotalCount;
-			if(invaderCount > 0 && gameState.GetDahanOnSpace( target ) > invaderCount) {
+			if(invaderCount > 0 && gameState.DahanCount( target ) > invaderCount) {
 				ctx.AddFear( 3 );
 			}
 

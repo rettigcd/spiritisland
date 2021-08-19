@@ -17,8 +17,8 @@ namespace SpiritIsland.Basegame {
 			// +8 damage
 			await ctx.DamageInvaders( ctx.Target, 8);
 			// destroy 2 dahan
-			int count = System.Math.Min(gameState.GetDahanOnSpace( ctx.Target ),2);
-			await ctx.GameState.DestoryDahan( ctx.Target, count,DahanDestructionSource.PowerCard);
+			int count = System.Math.Min(gameState.DahanCount( ctx.Target ),2);
+			await ctx.GameState.DestroyDahan( ctx.Target, count,DahanDestructionSource.PowerCard);
 
 			if(self.Elements.Contains("3 water,2 earth")){
 				var others = gameState.Island
@@ -31,7 +31,7 @@ namespace SpiritIsland.Basegame {
 					await ctx.DamageInvaders(otherCoast,4);
 					// destroy 1 dahan
 					if(gameState.HasDahan(otherCoast))
-						await gameState.DestoryDahan(otherCoast,1, DahanDestructionSource.PowerCard);
+						await gameState.DestroyDahan(otherCoast,1, DahanDestructionSource.PowerCard);
 				}
 			}
 		}

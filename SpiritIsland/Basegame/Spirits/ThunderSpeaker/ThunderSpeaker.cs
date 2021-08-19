@@ -100,7 +100,7 @@ namespace SpiritIsland.Basegame {
 			base.Initialize(board, gs);
 
 			// Put 2 Presence on your starting board: 1 in each of the 2 lands with the most Dahanicon.png
-			Presence.Place( board.Spaces.OrderByDescending(gs.GetDahanOnSpace).Take(2) );
+			Presence.Place( board.Spaces.OrderByDescending(gs.DahanCount).Take(2) );
 
 			// Special Rules -Ally of the Dahan - Your presense may move with dahan
 			gs.DahanMoved.Handlers.Add( MovePresenceWithDahan );

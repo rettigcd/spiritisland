@@ -10,7 +10,7 @@ namespace SpiritIsland.Basegame {
 
 			// Add 1 blight, destroy all dahan
 			gs.AddBlight( ctx.Target, 1);
-			await gs.DestoryDahan( ctx.Target, ctx.GameState.GetDahanOnSpace( ctx.Target ),DahanDestructionSource.PowerCard);
+			await gs.DestroyDahan( ctx.Target, ctx.GameState.DahanCount( ctx.Target ),DahanDestructionSource.PowerCard);
 
 			bool hasBonus = ctx.Self.Elements.Contains("3 earth,2 plant,2 animal");
 			ctx.AddFear( 1+(hasBonus?1:0) );

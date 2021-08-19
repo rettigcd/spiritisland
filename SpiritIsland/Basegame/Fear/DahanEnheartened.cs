@@ -48,7 +48,7 @@ namespace SpiritIsland.Basegame {
 				var options = gs.Island.AllSpaces.Where( gs.HasDahan ).Except( used ).ToArray();
 				var target = await spirit.SelectSpace( "Fear:select land with dahan for 1 damage", options );
 				await spirit.MakeDecisionsFor( gs ).GatherUpToNDahan( target, 2 );
-				await gs.SpiritFree_DamageInvaders(target, gs.GetDahanOnSpace(target) );
+				await gs.SpiritFree_DamageInvaders(target, gs.DahanCount(target) );
 				used.Add( target );
 			}
 		}

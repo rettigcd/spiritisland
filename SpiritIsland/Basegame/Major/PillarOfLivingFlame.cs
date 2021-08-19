@@ -17,7 +17,7 @@ namespace SpiritIsland.Basegame {
 			await ctx.DamageInvaders( ctx.Target, 5 + (hasBonus ? 5 : 0));
 
 			// if target is Jungle / Wetland, add 1 blight
-			if(ctx.Target.Terrain.IsIn(Terrain.Jungle,Terrain.Wetland))
+			if(ctx.IsOneOf(Terrain.Jungle,Terrain.Wetland))
 				gameState.AddBlight( ctx.Target );
 
 		}

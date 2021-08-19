@@ -256,7 +256,7 @@ namespace SpiritIsland.Tests.Core {
 		void Assert_UnitsAre( string startingUnits, Space space ) {
 			List<string> items = new();
 
-			int dahanCount = gameState.GetDahanOnSpace(space);
+			int dahanCount = gameState.DahanCount(space);
 			if(dahanCount>0)
 				items.Add($"{dahanCount}D@2");
 			string actualInvaders = gameState.InvadersOn(space).ToString();

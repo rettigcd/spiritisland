@@ -11,7 +11,7 @@ namespace SpiritIsland.Basegame {
 			var grp = ctx.InvadersOn(target);
 
 			// If target land is mountain or sand, 
-			if( ctx.Target.Terrain.IsIn( Terrain.Mountain, Terrain.Sand ) ) {
+			if( ctx.IsOneOf( Terrain.Mountain, Terrain.Sand ) ) {
 				// instead 1 damange to EACH town/city
 				await grp.ApplyDamageToEach(1, Invader.City, Invader.Town);
 			} else {

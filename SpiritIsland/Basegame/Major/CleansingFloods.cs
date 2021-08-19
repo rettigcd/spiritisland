@@ -8,7 +8,7 @@ namespace SpiritIsland.Basegame {
 		static public Task ActAsync(TargetSpaceCtx ctx) {
 			// 4 damage, remove 1 blight
 			// if you have 4 water, +10 damage
-			ctx.GameState.RemoveBlight(ctx.Target);
+			ctx.RemoveBlight();
 			int damage = (4 <= ctx.Self.Elements[Element.Water])
 				? 14
 				: 4;
