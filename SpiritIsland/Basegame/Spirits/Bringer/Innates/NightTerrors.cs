@@ -1,17 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 
-	class NightTerrors {
+	[InnatePower( NightTerrors.Name, Speed.Fast )]
+	[FromPresence( 0, Target.Invaders )]
+	public class NightTerrors {
 
-		//	Innate 2 - Night Terrors => fast range 0, invaders
-		//1 moon 1 air    1 fear
-		//2 moon 1 air 1 beast   +1 fear
-		//3 moon 2 air 1 beast   +1 fear
+		public const string Name = "Night Terrors";
+
+		[InnateOption( "1 moon,1 air" )]
+		static public Task Option1Async( TargetSpaceCtx ctx ) {
+			// 1 fear
+			ctx.AddFear(1);
+			return Task.CompletedTask;
+		}
+
+		[InnateOption( "2 moon,1 air,1 animal")]
+		static public Task Option2Async( TargetSpaceCtx ctx ) {
+			//+1 fear
+			ctx.AddFear( 2 );
+			return Task.CompletedTask;
+		}
+
+		[InnateOption("3 moon,2 air,1 animal")]
+		static public Task Option3Async( TargetSpaceCtx ctx ) {
+			//+1 fear
+			ctx.AddFear( 3 );
+			return Task.CompletedTask;
+		}
+
 
 	}
 

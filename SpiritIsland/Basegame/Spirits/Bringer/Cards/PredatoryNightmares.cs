@@ -1,11 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 	class PredatoryNightmares {
-		// Predatory Nightmares => 2 => slow, 1 from sacred site, invaders => moon, fire, mountain, animal => 2 damange.  Push up to 2 dahan.  When your Powers would destroy invaders, instead they ggenerate fear and/or push those invaders
+		
+		// Predatory Nightmares => 2 => slow,
+		// 1 from sacred site, invaders =>
+		// moon, fire, mountain, animal =>
+		[SpiritCard("Predatory Nightmares",2,Speed.Slow,Element.Moon,Element.Fire,Element.Earth,Element.Animal)]
+		[FromSacredSite(1,Target.Invaders)]
+		static public async Task ActAsync(TargetSpaceCtx ctx ) {
+			// 2 damange.
+			await ctx.DamageInvaders(2);
+			// Push up to 2 dahan.
+			await ctx.PushUpToNDahan(2);
+
+			// When your Powers would destroy invaders, instead they generate fear and/or push those invaders
+			// NO! - Bringer gets this by default
+			// If this card is traded to another spirit, it is too hard to swap out their InvaderGroup builder
+		}
+
 	}
 }

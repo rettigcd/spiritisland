@@ -114,13 +114,6 @@ namespace SpiritIsland {
 		}
 
 		/// <summary>
-		/// Removes from list.  Triggers Energy when last growth removed
-		/// </summary>
-		public void Resolve( IActionFactory selectedActionFactory) {
-			RemoveUnresolvedFactory(selectedActionFactory); // collapse this method
-		}
-
-		/// <summary>
 		/// Removes it from the Unresolved-list
 		/// </summary>
 		public void RemoveUnresolvedFactory(IActionFactory selectedActionFactory ) {
@@ -146,6 +139,8 @@ namespace SpiritIsland {
 			// Elements
 			Elements.AddRange( Presence.Energy.Revealed.Where( t => t.Element.HasValue ).Select( t => t.Element.Value ) );
 			Elements.AddRange( Presence.CardPlays.Revealed.Where( t => t.Element.HasValue ).Select( t => t.Element.Value ) );
+
+			// !!! convert
 
 			// Reclaims-1
 			if(!(selectedActionFactory is Reclaim1)) { // prevent retriggering following Reclaim1

@@ -75,6 +75,12 @@ namespace SpiritIsland {
 			return int.Parse( await spirit.SelectText( prompt, numToMove.ToArray() ) );
 		}
 
+		static public async Task<Element> SelectElement( this Spirit spirit, string prompt, IEnumerable<Element> options ) {
+			var lookup = options.ToDictionary( el=>el.ToString(), el=>el );
+			string text = await spirit.SelectText(prompt,lookup.Keys.ToArray());
+			return lookup[text];
+		}
+
 		#region relies on Spirit State
 
 		static public Task<Track> SelectTrack( this Spirit spirit ) {

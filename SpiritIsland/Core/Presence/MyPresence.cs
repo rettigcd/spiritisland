@@ -36,7 +36,6 @@ namespace SpiritIsland {
 		}
 
 		public void PlaceOn(Space space) => Placed.Add(space);
-		public void Place( IEnumerable<Space> spaces ) => Placed.AddRange( spaces );
 		public IEnumerable<Space> Spaces => Placed.Distinct();
 
 		public int On(Space space) => Placed.Count(p=>p==space);

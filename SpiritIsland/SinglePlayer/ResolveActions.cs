@@ -54,7 +54,7 @@ namespace SpiritIsland.SinglePlayer {
 				// var growthName = selectedActionFactory.Name;
 				await selectedActionFactory.Activate( spirit, gameState );
 
-				spirit.Resolve(selectedActionFactory);
+				spirit.RemoveUnresolvedFactory( selectedActionFactory);
 			}
 
 			Done();

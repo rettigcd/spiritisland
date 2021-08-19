@@ -10,19 +10,19 @@ namespace SpiritIsland.Basegame {
 
 		public const string Name = "Massive Flooding";
 
-		[InnateOption(Element.Sun,Element.Water,Element.Water)]
+		[InnateOption("1 sun,2 water")]
 		static public Task Option1Async(TargetSpaceCtx ctx){
 			// Push 1 Town/Explorer
 			return ctx.PushUpToNInvaders(ctx.Target,1,Invader.Town,Invader.Explorer); 
 		}
 
-		[InnateOption(Element.Sun,Element.Sun,Element.Water,Element.Water,Element.Water)]
+		[InnateOption("2 sun,3 water")]
 		static public async Task Option2Async(TargetSpaceCtx ctx){
 			await ctx.DamageInvaders(ctx.Target, 2);
 			await ctx.PushUpToNInvaders(ctx.Target,3,Invader.Town,Invader.Explorer);
 		}
 
-		[InnateOption(Element.Sun,Element.Sun,Element.Sun,Element.Water,Element.Water,Element.Water,Element.Water,Element.Earth)]
+		[InnateOption("3 sun, 4 water,1 earth")]
 		static public async Task Option3Async(TargetSpaceCtx ctx){
 			var group = ctx.InvadersOn(ctx.Target);
 

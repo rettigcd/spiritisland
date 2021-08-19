@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -45,10 +44,10 @@ namespace SpiritIsland.Basegame {
 		public Bringer():base(
 			new Track[] {Track.Energy2, Track.AirEnergy, Track.Energy3, Track.MoonEnergy, Track.Energy4, Track.AnyEnergy,Track.Energy5, },
 			new Track[] {Track.Card2, Track.Card2, Track.Card2, Track.Card3, Track.Card3, Track.AnyEnergy },
-			new NullPowerCard( "A", 0, Speed.Fast ),
-			new NullPowerCard( "B", 0, Speed.Fast ),
-			new NullPowerCard( "C", 0, Speed.Fast ),
-			new NullPowerCard( "D", 0, Speed.Fast )
+			PowerCard.For<CallOnMidnightsDream>(),
+			PowerCard.For<DreadApparitions>(),
+			PowerCard.For<DreamsOfTheDahan>(),
+			PowerCard.For<PredatoryNightmares>()
 		) {
 
 			GrowthOptions = new GrowthOption[]{
@@ -62,11 +61,19 @@ namespace SpiritIsland.Basegame {
 				new GrowthOption(new GainEnergy(2), new PlacePresence(4,Target.DahanOrInvaders,"dahan or invaders"))
 			};
 
+			this.InnatePowers = new InnatePower[]{
+				InnatePower.For<SpiritsMayYetDream>(),
+				InnatePower.For<NightTerrors>()
+			};
+
 		}
 
 
-		public override void Initialize( Board _, GameState _1 ) {
-			throw new System.NotImplementedException();
+		public override void Initialize( Board board, GameState _1 ) {
+			// Setup: 2 presense in highest numbered sands
+			var startingIn = board.Spaces.Where(x=>x.Terrain==Terrain.Sand).Last();
+			Presence.PlaceOn( startingIn );
+			Presence.PlaceOn( startingIn );
 		}
 
 		public override InvaderGroup BuildInvaderGroup( GameState gs, Space space ) {

@@ -2,6 +2,10 @@
 
 BUG - Rampant green not given option to stop ravage with destroyed presence
 
+IMP - AnyElement in Bringer
+IMP - AnyElement in Spirits May Yet Dream
+
+
 == Jonah ideas ===
 Display destroyed presence
 make SS dispay differently
