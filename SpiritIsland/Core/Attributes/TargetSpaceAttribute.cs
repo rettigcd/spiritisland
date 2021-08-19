@@ -79,6 +79,4 @@ namespace SpiritIsland {
 			: base( From.SacredSite, null, range, filter ) { }
 	}
 
-	class XX()
-
 }

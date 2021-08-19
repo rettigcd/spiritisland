@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SpiritIsland {
@@ -51,6 +52,8 @@ namespace SpiritIsland {
 			=> this.Self.BuildInvaderGroup( GameState, Target );
 
 		public int DahanCount => GameState.DahanCount(Target);
+		public bool HasDahan => GameState.HasDahan( Target );
+
 
 		public async Task DamageInvaders( int damage ) {
 			if(damage == 0) return;
@@ -69,7 +72,7 @@ namespace SpiritIsland {
 
 		public void Defend(int defend) => GameState.Defend(Target,defend);
 
-		public void DestroyDahan(int countToDestroy,DahanDestructionSource source) => GameState.DestroyDahan(Target,countToDestroy,source);
+		public Task DestroyDahan(int countToDestroy,DahanDestructionSource source) => GameState.DestroyDahan(Target,countToDestroy,source);
 
 		public bool IsOneOf(params Terrain[] terrain) => terrain.Contains(Target.Terrain);
 
@@ -83,6 +86,11 @@ namespace SpiritIsland {
 		public int BlightOnSpace => GameState.GetBlightOnSpace(Target);
 
 		public bool HasInvaders => GameState.HasInvaders(Target);
+
+		public void ModRavage( Action<ConfigureRavage> action ) => GameState.ModRavage(Target,action);
+
+		public Task<PowerCard> DrawMajor() => Self.CardDrawer.DrawMajor( Self, GameState, null );
+
 	}
 
 }

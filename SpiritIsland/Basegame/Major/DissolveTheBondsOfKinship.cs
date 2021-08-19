@@ -7,18 +7,17 @@ namespace SpiritIsland.Basegame {
 		[MajorCard("Dissolve the Bonds of Kinship",4,Speed.Slow,Element.Fire,Element.Earth,Element.Animal)]
 		[FromPresence(1)]
 		static public async Task ActAsync(TargetSpaceCtx ctx) {
-			var (self, gs) = ctx;
-			var grp = ctx.InvadersOn( ctx.Target ); // !!! could gold this into TargetSpace context
+			var grp = ctx.InvadersOn;
 
 			// replace 1 city with 2 exploreres.
 			ReplaceInvaderWithExplorer( grp, Invader.City, 2 );
 			// replace 1 town with 1 explorer
 			ReplaceInvaderWithExplorer( grp, Invader.Town, 1 );
 			// replace 1 dahan with 1 explorer.
-			ReplaceDahanWithExplorer( gs, grp );
+			ReplaceDahanWithExplorer( ctx.GameState, grp );
 
 			// if you have 2 fire 2 water 3 animal
-			if(self.Elements.Contains("2 fire,2 water,3 animal" )) {
+			if(ctx.Self.Elements.Contains("2 fire,2 water,3 animal" )) {
 				// before pushing, explorers and city/town do damage to each other
 				int damageFromExplorers = grp[InvaderSpecific.Explorer];
 				int damageToExplorers = grp[Invader.City]*3 + grp[Invader.Town]*2;
@@ -27,7 +26,7 @@ namespace SpiritIsland.Basegame {
 			}
 
 			// Push all explorers from target land to as many different lands as possible
-			await ctx.PushUpToNInvaders( ctx.Target, int.MaxValue,Invader.Explorer);
+			await ctx.PushUpToNInvaders( int.MaxValue,Invader.Explorer);
 		}
 
 		static void ReplaceInvaderWithExplorer( InvaderGroup grp, Invader oldInvader, int replaceCount ) {

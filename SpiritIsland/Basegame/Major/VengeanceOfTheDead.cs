@@ -31,7 +31,7 @@ namespace SpiritIsland.Basegame {
 				await DistributeDamageToLands( ctx, newDamageLands, dahanKilled + cityKilled + townKilled );
 			}
 
-			ctx.GameState.ModRavage( ctx.Target, cfg => cfg.RavageSequence = RavagePlusBonusDamage );
+			ctx.ModRavage( cfg => cfg.RavageSequence = RavagePlusBonusDamage );
 
 			return Task.CompletedTask;
 		}

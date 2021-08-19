@@ -7,11 +7,10 @@ namespace SpiritIsland.Basegame {
 		[MajorCard("Winds of Rust and Atrophy",3,Speed.Fast,Element.Air,Element.Moon,Element.Animal)]
 		[FromSacredSite(3)]
 		static public async Task ActAsync(TargetSpaceCtx ctx) {
-			var (self, _) = ctx;
 			await ApplyEffect( ctx, ctx.Target );
 
 			// if you have 3 air 3 water 2 animal, repeat this power
-			if(self.Elements.Contains("3 air,2 water,2 animal" )) {
+			if(ctx.Self.Elements.Contains("3 air,2 water,2 animal" )) {
 				var secondTarget = await ctx.TargetSpace(From.SacredSite, null, 3,Target.Any);
 				await ApplyEffect( ctx, secondTarget);
 			}

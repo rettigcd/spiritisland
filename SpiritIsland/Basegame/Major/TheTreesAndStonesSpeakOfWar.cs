@@ -9,21 +9,22 @@ namespace SpiritIsland.Basegame {
 		[FromPresence(1,Target.Dahan)]
 		static public async Task ActionAsync( TargetSpaceCtx ctx ) {
 
-			// if you have 2 sun, 2 earth, 2 plant
-			bool bonus = ctx.Self.Elements.Contains("2 sun, 2 earth, 2 plant");
-
 			// for each dahan in target land, 1 damage and defend 2
 
 			// -- damage --
-			await ctx.DamageInvaders( ctx.Target, ctx.GameState.DahanCount( ctx.Target ) );
+			await ctx.DamageInvaders( ctx.DahanCount );
 
-			// you may push up to 2 dahan
-			Space[] dest = bonus ? await ctx.PushUpToNDahan( ctx.Target, 2 ) : Array.Empty<Space>();
+			// if you have 2 sun, 2 earth, 2 plant
+			if( ctx.Self.Elements.Contains( "2 sun, 2 earth, 2 plant" )) {
+				// you may push up to 2 dahan
+				Space[] dest = await ctx.PushUpToNDahan( 2 );
+				// defend pushed
+				foreach(var d in dest)
+					ctx.GameState.Defend( d, 2 );
+			}
 
-			// -- defend --
-			ctx.GameState.Defend( ctx.Target, ctx.GameState.DahanCount( ctx.Target ) *2 );
-			foreach(var d in dest)
-				ctx.GameState.Defend( d, 2 );
+			// -- defend remaining --
+			ctx.Defend( ctx.DahanCount * 2 );
 
 		}
 

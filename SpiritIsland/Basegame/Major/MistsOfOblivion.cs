@@ -7,15 +7,15 @@ namespace SpiritIsland.Basegame {
 		[MajorCard( "Mists of Oblivion", 4, Speed.Slow, Element.Moon, Element.Air, Element.Water )]
 		[FromPresence(3)]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
-			var grp = ctx.InvadersOn( ctx.Target ); // !!! 
-			var (self, _) = ctx;
+			var grp = ctx.InvadersOn;
 
 			var startingTownsAndCities = grp.TownsAndCitiesCount;
 			// 1 damage to each invader
 			await grp.ApplyDamageToEach(1,grp.InvaderTypesPresent_Generic.ToArray());
 
-			// if you have 2 moon 3 air 2 water, 3 damage
-			if(self.Elements.Contains("2 moon,3 air,2 water"))
+			// if you have 2 moon 3 air 2 water
+			if(ctx.Self.Elements.Contains("2 moon,3 air,2 water"))
+				// 3 damage
 				await grp.ApplySmartDamageToGroup(3);
 
 			// 1 fear per town/city this power destroys (to a max of 4)
