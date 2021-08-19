@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SpiritIsland.Basegame.Spirits.Bringer {
+namespace SpiritIsland.Basegame {
 	class SpiritsMayYetDream {
 
 		// Innate 1 - Spirits May Yet Dream => fast any spirit

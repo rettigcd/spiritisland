@@ -11,8 +11,6 @@ namespace SpiritIsland.Tests.Basegame {
 
 		readonly Board board;
 		readonly TargetSpaceCtx ctx;
-
-
 		public DreamAThousandDeaths_Tests() {
 			Bringer spirit = new Bringer();
 			board = Board.BuildBoardA();

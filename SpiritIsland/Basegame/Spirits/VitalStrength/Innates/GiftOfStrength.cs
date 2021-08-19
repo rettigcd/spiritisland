@@ -45,7 +45,7 @@ namespace SpiritIsland.Basegame {
 		public void Initialize( GameState gameState ){
 			foreach(var spirit in gameState.Spirits)
 				spirit.TargetedSpace += targetedList.Add;
-			gameState.TimePassed += (_) => targetedList.Clear();
+			gameState.TimePasses_ThisRound.Push((_) => { targetedList.Clear(); return Task.CompletedTask; } );
 		}
 
 		public override Task Activate( Spirit self, GameState gameState ) {

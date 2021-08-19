@@ -1,13 +1,12 @@
 ﻿using System.Threading.Tasks;
-using SpiritIsland;
 
 namespace SpiritIsland.Basegame {
 
-	class CropsWitherAndFade {
+	public class CropsWitherAndFade {
 
 		[SpiritCard("Crops Wither and Fade",1,Speed.Slow,Element.Moon,Element.Fire,Element.Plant)]
 		[FromPresence(0)]
-		static public async Task Act( TargetSpaceCtx ctx ){
+		static public async Task ActAsync( TargetSpaceCtx ctx ){
 			var target = ctx.Target;
 			var (_,gs) = ctx;
 

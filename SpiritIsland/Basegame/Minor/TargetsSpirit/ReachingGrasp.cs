@@ -15,7 +15,7 @@ namespace SpiritIsland.Basegame {
 				target.PowerCardApi = original;
 				return Task.CompletedTask;
 			}
-			engine.GameState.EndOfRoundCleanupAction.Push(cleanup);
+			engine.GameState.TimePasses_ThisRound.Push(cleanup);
 			return Task.CompletedTask;
 		}
 

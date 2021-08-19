@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 		static public async Task ActAsync(TargetSpaceCtx ctx){
 			ctx.AddFear(1);
 			if(ctx.DahanCount>0)
-				await ctx.DestroyDahan(1,DahanDestructionSource.PowerCard);
+				await ctx.DestroyDahan(1,Cause.Power);
 			int bonusDamage = ctx.IsOneOf(Terrain.Sand,Terrain.Jungle) ? 1 : 0;
 			await ctx.DamageInvaders( 1+bonusDamage );
 		}

@@ -78,7 +78,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		}
 
 		async Task When_AddFearApplyFearAndRavage() {
-			gameState.AddFearDirect( 4 );
+			gameState.AddFearDirect( new FearArgs{ count=4 } );
 			await gameState.ApplyFear();
 			await gameState.Ravage( invaderCard );
 		}

@@ -70,7 +70,7 @@ namespace SpiritIsland.Basegame {
 		}
 
 		public override InvaderGroup BuildInvaderGroup( GameState gs, Space space ) {
-			return new ToDreamAThousandDeaths( this, gs, space, gs.GetCounts(space), gs.AddFearDirect );
+			return new ToDreamAThousandDeaths( this, gs, space, gs.GetCounts(space), gs.AddFearDirect, Cause.Power );
 		}
 	}
 
@@ -78,19 +78,20 @@ namespace SpiritIsland.Basegame {
 
 		readonly IMakeGamestateDecisions engine; // for pushing
 
-		public ToDreamAThousandDeaths(Spirit spirit, GameState gameState, Space space, int[] counts, Action<int> addFear) : base( 
+		public ToDreamAThousandDeaths(Spirit spirit, GameState gameState, Space space, int[] counts, Action<FearArgs> addFear, Cause destructionSource) : base( 
 			space, 
 			counts.ToList().ToArray(),  // make a copy so we don't really kill anything
-			addFear 
+			addFear,
+			destructionSource
 		) {
 			this.engine = spirit.MakeDecisionsFor(gameState);
 		}
 
 		protected override async Task OnInvaderDestroyed( InvaderSpecific specific ) {
 			if(specific.Generic == Invader.City) {
-				addFear( 5 );
+				AddFear(5);
 			} else if(specific.Generic == Invader.Town) {
-				addFear( 2 );
+				AddFear(2);
 				await engine.PushNInvaders( Space, 1, Invader.Town ); // !!! wrong, need to push correct hit-points
 			} else {
 				await engine.PushNInvaders( Space, 1, Invader.Explorer );

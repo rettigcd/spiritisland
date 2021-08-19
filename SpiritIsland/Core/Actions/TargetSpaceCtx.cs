@@ -72,7 +72,7 @@ namespace SpiritIsland {
 
 		public void Defend(int defend) => GameState.Defend(Target,defend);
 
-		public Task DestroyDahan(int countToDestroy,DahanDestructionSource source) => GameState.DestroyDahan(Target,countToDestroy,source);
+		public Task DestroyDahan(int countToDestroy,Cause source) => GameState.DestroyDahan(Target,countToDestroy,source);
 
 		public bool IsOneOf(params Terrain[] terrain) => terrain.Contains(Target.Terrain);
 
@@ -91,6 +91,10 @@ namespace SpiritIsland {
 
 		public Task<PowerCard> DrawMajor() => Self.DrawMajor( GameState );
 		public Task<PowerCard> DrawMinor() => Self.DrawMinor( GameState );
+
+		public void AddFear(int count ) { // need space so we can track fear-space association for bringer
+			GameState.AddFearDirect( new FearArgs{ count=count, cause = Cause.Power, space = Target });
+		}
 
 	}
 

@@ -12,11 +12,11 @@ namespace SpiritIsland.Basegame {
 
 			// At end of turn, target spirit may reclaim 1 power card instead of discarding it.
 			var purchased = target.PurchasedCards;
-			engine.GameState.EndOfRoundCleanupAction.Push( new Reclaim1InsteadOfDiscard(target).Reclaim );
+			engine.GameState.TimePasses_ThisRound.Push( new Reclaim1InsteadOfDiscard(target).Reclaim );
 
 			// if you target anouther spirit you may also reclaim 1 power Card instead of discarding it.
 			if(target != engine.Self)
-				engine.GameState.EndOfRoundCleanupAction.Push( new Reclaim1InsteadOfDiscard( engine.Self ).Reclaim );
+				engine.GameState.TimePasses_ThisRound.Push( new Reclaim1InsteadOfDiscard( engine.Self ).Reclaim );
 
 			return Task.CompletedTask;
 		}

@@ -67,13 +67,16 @@ namespace SpiritIsland {
 			public Task Level3( GameState gs ) { return Task.CompletedTask; }
 		}
 
-
-		public event Action<GameState> TimePassed;
-		public AsyncEvent<Space[]> PreRavaging = new AsyncEvent<Space[]>();
-		public AsyncEvent<Space[]> PreBuilding = new AsyncEvent<Space[]>();
-		public AsyncEvent<DahanMovedArgs> DahanMoved = new AsyncEvent<DahanMovedArgs>();
-		public AsyncEvent<DahanDestroyedArgs> DahanDestroyed = new AsyncEvent<DahanDestroyedArgs>();
-		public Stack<Func<GameState,Task>> EndOfRoundCleanupAction = new Stack<Func<GameState,Task>>();
+		// == EVENTS ==
+		public AsyncEvent<Space[]> PreRavaging = new AsyncEvent<Space[]>();						// A Spread of Rampant Green - stop ravage
+		public AsyncEvent<Space[]> PreBuilding = new AsyncEvent<Space[]>();						// A Spread of Rampant Green - stop build
+		public AsyncEvent<DahanMovedArgs> DahanMoved = new AsyncEvent<DahanMovedArgs>();					// Thunderspeaker
+		public AsyncEvent<DahanDestroyedArgs> DahanDestroyed = new AsyncEvent<DahanDestroyedArgs>();		// Thunderspeaker
+		public event Action<GameState> TimePassed;												// Spirit cleanup
+		// == Single Round hooks
+		public SyncEvent<FearArgs> FearAdded_ThisRound = new SyncEvent<FearArgs>();						// Dread Apparations
+		public Stack<Func<GameState, Task>> TimePasses_ThisRound = new Stack<Func<GameState, Task>>();  // Gift of Power
+		readonly Dictionary<Space, ConfigureRavage> _ravageConfig = new Dictionary<Space, ConfigureRavage>(); // change ravage state of a Space
 
 		void InitSpirits() {
 			if(Spirits.Length != Island.Boards.Length)
@@ -84,21 +87,23 @@ namespace SpiritIsland {
 
 		public async Task TimePasses() {
 			// heal
-			foreach(var pair in invaderCount) 
-				new InvaderGroup(pair.Key,pair.Value,null).Heal();
-
-			_ravageConfig.Clear();
-
-			// stack allows us to unwind items in reverse order from when we set them up
-			while(EndOfRoundCleanupAction.Count>0)
-				await EndOfRoundCleanupAction.Pop()(this);
-
-			TimePassed?.Invoke(this);
-
+			foreach(var pair in invaderCount)
+				new InvaderGroup( pair.Key, pair.Value, null, Cause.None ).Heal();
+			await ExecuteAndClear_OneRoundEvents();
+			TimePassed?.Invoke( this );
 			++Round;
 		}
 
+		async Task ExecuteAndClear_OneRoundEvents() {
+			_ravageConfig.Clear();
 
+			// stack allows us to unwind items in reverse order from when we set them up
+			while(TimePasses_ThisRound.Count > 0)
+				await TimePasses_ThisRound.Pop()( this );
+
+			// clean out the 1-round-only events
+			FearAdded_ThisRound.Handlers.Clear();
+		}
 
 		void InitItemsMarkedOnBoard(Board board) {
 			foreach(var space in board.Spaces)
@@ -174,14 +179,16 @@ namespace SpiritIsland {
 			return terrorLevel;
 		} }
 
-		public void AddFearDirect(int count) {
-			FearPool += count;
+
+		public void AddFearDirect( FearArgs args ) {
+			FearPool += args.count;
 			if(4 <= FearPool) { // should be while() - need unit test
 				FearPool -= 4;
 				ActivatedFearCards.Push( FearDeck.Pop() );
 			}
 			if(FearDeck.Count == 0)
 				GameOverException.Win();
+			FearAdded_ThisRound?.Invoke(this,args);
 		}
 
 		#endregion
@@ -191,16 +198,16 @@ namespace SpiritIsland {
 			dahanCount[space]+=delta;
 		}
 
-		public Task DestroyDahan(Space space,int countToDestroy, DahanDestructionSource source ) {
+		public Task DestroyDahan(Space space,int countToDestroy, Cause source ) {
 			countToDestroy = Math.Min(countToDestroy,DahanCount(space));
 			AdjustDahan(space, -countToDestroy );
-			return DahanDestroyed.Invoke(this,new DahanDestroyedArgs { space = space, count=countToDestroy, Source = source } );
+			return DahanDestroyed.InvokeAsync(this,new DahanDestroyedArgs { space = space, count=countToDestroy, Source = source } );
 		}
 
 		public Task MoveDahan( Space from, Space to, int count = 1 ) {
 			AdjustDahan(from,-count);
 			AdjustDahan(to,count);
-			return DahanMoved.Invoke(this, new DahanMovedArgs { from = from, to = to, count = count } );
+			return DahanMoved.InvokeAsync(this, new DahanMovedArgs { from = from, to = to, count = count } );
 		}
 
 		public int DahanCount( Space space ){ return dahanCount[space]; }
@@ -222,7 +229,7 @@ namespace SpiritIsland {
 				.Where( x=>GetRavageConfiguration(x).ShouldRavage )
 				.ToArray();
 
-			PreRavaging?.Invoke( this, initialRavageSpaces );
+			PreRavaging?.InvokeAsync( this, initialRavageSpaces );
 
 			var ravageSpaces = initialRavageSpaces
 				.Where( x => GetRavageConfiguration( x ).ShouldRavage ) // not sure this is necessary since it is called during execute
@@ -244,7 +251,6 @@ namespace SpiritIsland {
 		}
 
 		public ConfigureRavage GetRavageConfiguration(Space space) => _ravageConfig.ContainsKey(space) ? _ravageConfig[space] : new ConfigureRavage();
-		readonly Dictionary<Space,ConfigureRavage> _ravageConfig = new Dictionary<Space, ConfigureRavage>();
 		public void ModRavage(Space space,Action<ConfigureRavage> action) {
 			if(!_ravageConfig.ContainsKey(space)) 
 				_ravageConfig.Add(space,new ConfigureRavage());
@@ -259,7 +265,7 @@ namespace SpiritIsland {
 				.Except( skipBuild )
 				.ToArray();
 
-			PreBuilding?.Invoke(this,buildLands);
+			PreBuilding?.InvokeAsync(this,buildLands);
 
 			buildLands = buildLands.Except( skipBuild ).ToArray(); // reload in case they changed
 
@@ -301,7 +307,7 @@ namespace SpiritIsland {
 		}
 
 		public InvaderGroup_Readonly InvadersOn(Space targetSpace) {
-			return new InvaderGroup( targetSpace, this.GetCounts( targetSpace ), AddFearDirect );
+			return new InvaderGroup( targetSpace, this.GetCounts( targetSpace ), AddFearDirect, Cause.Ravage );
 		}
 
 		//public InvaderGroup AttackInvadersOn( Space targetSpace, Func<GameState, Space, int[],InvaderGroup> factory ) {
@@ -344,48 +350,24 @@ namespace SpiritIsland {
 		public PowerCardDeck MinorCards;
 	}
 
-	public class PowerCardDeck {
-
-		public PowerCardDeck(IList<PowerCard> cards ) {
-			discards = cards.ToList();
-		}
-
-		public PowerCard FlipNext() {
-			if(cards.Count == 0)
-				ReshuffleDiscardDeck();
-			var next = cards.Pop();
-			return next;
-		}
-
-		public List<PowerCard> Flip( int count ) {
-			var flipped = new List<PowerCard>();
-			for(int i = 0; i < count; ++i) flipped.Add( FlipNext() );
-			return flipped;
-		}
-
-		public void Discard(IEnumerable<PowerCard> discards) => this.discards.AddRange(discards);
-
-		void ReshuffleDiscardDeck() {
-			discards.Shuffle();
-			foreach(var card in discards) cards.Push(card);
-			discards.Clear();
-		}
-
-		readonly Stack<PowerCard> cards = new Stack<PowerCard>();
-		readonly List<PowerCard> discards;
-
-	}
-
 
 	public class AsyncEvent<T> {
-		public async Task Invoke(GameState gameState,T t) {
-			var handlerCopy = Handlers.ToArray(); // so handlers can remove themselvers from the collection while looping over it (Collection was modified;)
-			foreach(var handler in handlerCopy)
-				await handler( gameState,t );
+		public async Task InvokeAsync(GameState gameState,T t) {
+			foreach(var handler in Handlers)
+				await handler( gameState, t );
 		}
 
 		public List<Func<GameState,T,Task>> Handlers = new List<Func<GameState, T,Task>>();
 	}
+
+	public class SyncEvent<T> {
+		public void Invoke( GameState gameState, T t ) {
+			foreach(var handler in Handlers)
+				handler( gameState, t );
+		}
+		public List<Action<GameState, T>> Handlers = new List<Action<GameState, T>>();
+	}
+
 
 	public class DahanMovedArgs {
 		public Space from;
@@ -393,17 +375,22 @@ namespace SpiritIsland {
 		public int count;
 	};
 
-	public enum DahanDestructionSource { Invaders,
-		PowerCard
+	public enum Cause {
+		None,
+		Invaders,
+		Power,
+		Ravage
 	}
 
 	public class DahanDestroyedArgs {
 		public Space space;
 		public int count;
-		public DahanDestructionSource Source;
+		public Cause Source;
 	};
 
-
-
-
+	public class FearArgs {
+		public int count;
+		public Space space;
+		public Cause cause;
+	}
 }

@@ -44,13 +44,12 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		}
 
 		async Task<Space[]> When_ApplyFearAndExplore() {
-			gameState.AddFearDirect( 4 );
+			gameState.AddFearDirect( new FearArgs{ count=4 } );
 			await gameState.ApplyFear();
 			Space[] explored = gameState.Explore( invaderCard );
 			return explored;
 		}
-
-
+		
 	}
 
 }

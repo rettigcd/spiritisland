@@ -268,7 +268,7 @@ namespace SpiritIsland {
 
 
 		public TargetLandApi TargetLandApi = DefaultTargetLandApi;
-		public virtual InvaderGroup BuildInvaderGroup( GameState gs, Space space ) => new InvaderGroup( space, gs.GetCounts(space), gs.AddFearDirect );
+		public virtual InvaderGroup BuildInvaderGroup( GameState gs, Space space ) => new InvaderGroup( space, gs.GetCounts(space), gs.AddFearDirect, Cause.Power );
 
 		public Stack<IDecisionPlus> decisions = new();
 		

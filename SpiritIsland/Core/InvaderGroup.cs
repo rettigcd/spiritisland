@@ -8,12 +8,15 @@ namespace SpiritIsland {
 
 		#region constructor
 
-		public InvaderGroup( Space space, int[] counts, Action<int> addFear )
+		public InvaderGroup( Space space, int[] counts, Action<FearArgs> addFear, Cause dSource )
 			: base( space, counts ) {
 			this.addFear = addFear;
+			destructionSource = dSource;
 		}
 
 		#endregion
+
+		protected readonly Cause destructionSource;
 
 		public async Task ApplyDamageToEach( int individualDamage, params Invader[] invaders ) {
 			foreach(Invader invader in invaders)
@@ -68,13 +71,15 @@ namespace SpiritIsland {
 
 		protected virtual Task OnInvaderDestroyed( InvaderSpecific specific ) {
 			if(specific == InvaderSpecific.City0)
-				addFear( 2 );
+				AddFear( 2 );
 			if(specific == InvaderSpecific.Town0)
-				addFear( 1 );
+				AddFear( 1 );
 			return Task.CompletedTask;
 		}
 
-		protected readonly Action<int> addFear;
+		protected void AddFear(int count) => addFear( new FearArgs { count = count, cause = this.destructionSource, space = Space } );
+
+		protected readonly Action<FearArgs> addFear;
 
 	}
 

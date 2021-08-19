@@ -166,10 +166,6 @@ namespace SpiritIsland {
 			await engine.InvadersOn( space ).ApplySmartDamageToGroup( damage );
 		}
 
-		static public void AddFear( this IMakeGamestateDecisions engine, int count ) { // need space so we can track fear-space association for bringer
-			engine.GameState.AddFearDirect( count );
-		}
-
 	}
 
 }

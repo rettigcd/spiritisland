@@ -25,7 +25,7 @@ namespace SpiritIsland.Basegame {
 			}
 
 			if(destroyAllDahan)
-				await ctx.DestroyDahan( ctx.DahanCount, DahanDestructionSource.PowerCard);
+				await ctx.DestroyDahan( ctx.DahanCount, Cause.Power);
 
 		}
 
