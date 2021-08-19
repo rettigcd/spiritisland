@@ -19,6 +19,8 @@ namespace SpiritIsland.SinglePlayer {
 
 		public event Action Complete;
 
+		public bool AllowAutoSelect { get; set; } = true;
+
 		public void Select(IOption option){
 			var options = spirit.GetGrowthOptions();
 			for(int i=0;i<options.Length;++i){

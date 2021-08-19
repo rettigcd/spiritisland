@@ -7,16 +7,17 @@ namespace SpiritIsland.Basegame {
 
 		[SpiritCard("Favors Called Due",1,Speed.Slow,Element.Moon,Element.Air,Element.Animal)]
 		[FromPresence(1)]
-		static public async Task Act(ActionEngine engine, Space target){
-			var (_,gameState) = engine;
+		static public async Task Act(TargetSpaceCtx ctx){
+			var target = ctx.Target;
+			var (_,gameState) = ctx;
 
 			// gather up to 4 dahan
-			await engine.GatherUpToNDahan( target, 4 );
+			await ctx.GatherUpToNDahan( target, 4 );
 
 			// if invaders are present and dahan now out numberthem, 3 fear
-			var invaderCount = engine.GameState.InvadersOn(target).TotalCount;
+			var invaderCount = ctx.GameState.InvadersOn(target).TotalCount;
 			if(invaderCount > 0 && gameState.GetDahanOnSpace( target ) > invaderCount) {
-				engine.AddFear( 3 );
+				ctx.AddFear( 3 );
 			}
 
 		}

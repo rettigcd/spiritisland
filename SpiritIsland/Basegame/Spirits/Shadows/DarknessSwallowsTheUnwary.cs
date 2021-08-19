@@ -11,30 +11,30 @@ namespace SpiritIsland.Basegame {
 		public const string Name = "Darkness Swallows the Unwary";
 
 		[InnateOption("2 moon, 1 fire")]
-		public static async Task Gather1Explorer( ActionEngine engine, Space target ) {
-			await engine.GatherUpToNInvaders( target, 1, Invader.Explorer );
+		public static async Task Gather1Explorer( TargetSpaceCtx ctx ) {
+			await ctx.GatherUpToNInvaders( ctx.Target, 1, Invader.Explorer );
 		}
 
 		[InnateOption("3 moon, 2 fire")]
-		public static async Task Plus_Destory2Explorers( ActionEngine engine, Space target){
-			await Gather1Explorer(engine,target);
+		public static async Task Plus_Destory2Explorers( TargetSpaceCtx ctx ){
+			await Gather1Explorer(ctx);
 
 			// destory 2 explorers (+1 fear/kill)
-			var grp = engine.InvadersOn( target );
+			var grp = ctx.InvadersOn( ctx.Target );
 			int destroyed = await grp.Destroy(Invader.Explorer, 2 );
-			engine.AddFear( destroyed );
+			ctx.AddFear( destroyed );
 		}
 
 		[InnateOption("3 moon, 2 fire")]
-		public static async Task Plus_3Damage( ActionEngine engine, Space target){
-			await Plus_Destory2Explorers(engine,target);
+		public static async Task Plus_3Damage( TargetSpaceCtx ctx ){
+			await Plus_Destory2Explorers(ctx);
 
 			// 3 more points of damage (+ 1 fear/kill )
-			int startingCount = engine.GameState.InvadersOn( target ).TotalCount;
-			await engine.DamageInvaders(target, 3 );
-			int endingCount = engine.GameState.InvadersOn( target ).TotalCount;
+			int startingCount = ctx.GameState.InvadersOn( ctx.Target ).TotalCount;
+			await ctx.DamageInvaders(ctx.Target, 3 );
+			int endingCount = ctx.GameState.InvadersOn( ctx.Target ).TotalCount;
 			int killed = startingCount - endingCount;
-			engine.AddFear( killed );
+			ctx.AddFear( killed );
 		}
 
 	}

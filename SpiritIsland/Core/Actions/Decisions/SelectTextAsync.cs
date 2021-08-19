@@ -1,27 +1,29 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿//using System.Collections.Generic;
+//using System.Linq;
+//using System.Threading.Tasks;
 
-namespace SpiritIsland {
-	public class SelectTextAsync : IDecision {
+//namespace SpiritIsland {
+//	public class SelectTextAsync : IDecision {
 
-		readonly TaskCompletionSource<string> promise;
+//		readonly TaskCompletionSource<string> promise;
 
-		public SelectTextAsync(string prompt, IEnumerable<string> options,TaskCompletionSource<string> promise ){
-			Prompt = prompt;
-			Options = options.Select(o=>new TextOption(o)).ToArray();
-			this.promise = promise;
-		}
+//		public SelectTextAsync(string prompt, IEnumerable<string> options,TaskCompletionSource<string> promise ){
+//			Prompt = prompt;
+//			Options = options.Select(o=>new TextOption(o)).ToArray();
+//			this.promise = promise;
+//		}
 
-		public string Prompt {get;}
+//		public string Prompt {get;}
 
-		public IOption[] Options {get;}
+//		public bool AllowAutoSelect { get; set; } = true;
 
-		public void Select( IOption option ) 
-			=> promise.TrySetResult(option.Text);
+//		public IOption[] Options {get;}
 
-	}
+//		public void Select( IOption option ) 
+//			=> promise.TrySetResult(option.Text);
+
+//	}
 
 
 
-}
+//}

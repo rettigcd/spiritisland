@@ -6,11 +6,12 @@ namespace SpiritIsland.Basegame {
 
 		[MinorCard("Rouse the Trees and Stones",1,Speed.Slow,Element.Fire,Element.Earth,Element.Plant)]
 		[FromSacredSite(1,Target.NoBlight)]
-		static public async Task ActAsync(ActionEngine engine,Space target){
+		static public async Task ActAsync(TargetSpaceCtx ctx){
+			var target = ctx.Target;
 			// 2 damage
-			await engine.DamageInvaders(target,2);
+			await ctx.DamageInvaders(target,2);
 			// push 1 explorer
-			await engine.PushUpToNInvaders(target,1,Invader.Explorer);
+			await ctx.PushUpToNInvaders(target,1,Invader.Explorer);
 		}
 
 	}

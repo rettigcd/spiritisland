@@ -5,14 +5,14 @@ namespace SpiritIsland.Basegame {
 
 		[MajorCard("Cleansing Floods",5, Speed.Slow, Element.Sun, Element.Water)]
 		[FromPresenceIn(1,Terrain.Wetland)]
-		static public Task ActAsync(ActionEngine engine, Space target ) {
+		static public Task ActAsync(TargetSpaceCtx ctx) {
 			// 4 damage, remove 1 blight
 			// if you have 4 water, +10 damage
-			engine.GameState.RemoveBlight(target);
-			int damage = (4 <= engine.Self.Elements[Element.Water])
+			ctx.GameState.RemoveBlight(ctx.Target);
+			int damage = (4 <= ctx.Self.Elements[Element.Water])
 				? 14
 				: 4;
-			return engine.DamageInvaders(target,damage);
+			return ctx.DamageInvaders(ctx.Target,damage);
 		}
 
 	}

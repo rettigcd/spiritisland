@@ -6,20 +6,21 @@ namespace SpiritIsland.Basegame {
 
 		[MinorCard("Savage Mawbeasts",0,Speed.Slow,Element.Fire,Element.Animal)]
 		[FromSacredSite(1)]
-		static public Task ActAsync(ActionEngine engine,Space target){
+		static public Task ActAsync(TargetSpaceCtx ctx){
+			var target = ctx.Target;
 			int damage = 0;
 
 			// if target is J/W, 1 fear & 1 damage
 			if(target.Terrain.IsIn( Terrain.Jungle, Terrain.Wetland )) {
 				++damage;
-				engine.AddFear(1);
+				ctx.AddFear(1);
             }
 
 			// If 3 animals +1 damage
-			if(3 <= engine.Self.Elements[Element.Animal] )
+			if(3 <= ctx.Self.Elements[Element.Animal] )
 				++damage;
 
-			return engine.DamageInvaders( target, damage );
+			return ctx.DamageInvaders( target, damage );
 		}
 
 	}

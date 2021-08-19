@@ -54,7 +54,7 @@ namespace SpiritIsland.Basegame {
 
 		async Task FindSpiritAndInvoke( Spirit self, GameState gameState, MethodBase methodBase ){
 			Spirit target = await self.SelectSpirit(gameState.Spirits);
-			methodBase.Invoke( null, new object[] { target, targetedList } );
+			await (Task)methodBase.Invoke( null, new object[] { target, targetedList } );
 		}
 
 		public readonly List<SpaceTargetedArgs> targetedList = new List<SpaceTargetedArgs>();

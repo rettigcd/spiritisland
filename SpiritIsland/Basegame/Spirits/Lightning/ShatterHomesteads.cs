@@ -8,12 +8,12 @@ namespace SpiritIsland.Basegame {
 
 		[SpiritCard(ShatterHomesteads.Name,2,Speed.Slow,Element.Fire,Element.Air)]
 		[FromSacredSite(2)]
-		static public async Task Act(ActionEngine engine, Space target){
+		static public async Task Act(TargetSpaceCtx ctx){
 			// Destroy 1 town
-			await engine.InvadersOn(target).Destroy( Invader.Town, 1 );
+			await ctx.InvadersOn(ctx.Target).Destroy( Invader.Town, 1 );
 
 			// 1 fear
-			engine.AddFear(1);
+			ctx.AddFear(1);
 		}
 
 	}

@@ -5,13 +5,14 @@ using System.Threading.Tasks;
 using SpiritIsland;
 
 namespace SpiritIsland {
+
 	static public class SmartInvaderDamageExtensions {
 
 
 		// !! This is the replacement for SmartDamage To Types
-		static public async Task<int> UserSelectDamage( this ActionEngine engine, int damage, InvaderGroup group ) {
+		static public async Task<int> UserSelectDamage( this IMakeGamestateDecisions ctx, int damage, InvaderGroup group ) {
 			while(damage > 0) {
-				var invader = await engine.Self.SelectInvader( "Select invader to damage.", group.InvaderTypesPresent_Specific.ToArray() );
+				var invader = await ctx.Self.SelectInvader( "Select invader to damage.", group.InvaderTypesPresent_Specific.ToArray(), Present.Always );
 				if(invader == null) break;
 
 				damage -= await group.ApplyDamageTo1( damage, invader );

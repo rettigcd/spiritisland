@@ -10,19 +10,19 @@ namespace SpiritIsland.Basegame {
 		public const string Name = "Lead the Furious Assult";
 
 		[InnateOption( "2 sun, 1 fire" )]
-		static public Task Option1Async(ActionEngine engine, Space target ) {
+		static public Task Option1Async(TargetSpaceCtx ctx ) {
 			// Destroy 1 town for every 2 dahan
-			return engine.InvadersOn(target)
-				.Destroy(Invader.Town,engine.GameState.GetDahanOnSpace(target)/2);
+			return ctx.InvadersOn(ctx.Target)
+				.Destroy(Invader.Town,ctx.GameState.GetDahanOnSpace(ctx.Target)/2);
 		}
 
 		[InnateOption( "4 sun, 3 fire" )]
-		static public async Task Option2Async( ActionEngine engine, Space target ) {
+		static public async Task Option2Async( TargetSpaceCtx ctx ) {
 			// Destroy 1 city for every 3 dahan
-			await engine.InvadersOn( target )
-				.Destroy( Invader.City, engine.GameState.GetDahanOnSpace( target ) / 3 );
+			await ctx.InvadersOn( ctx.Target )
+				.Destroy( Invader.City, ctx.GameState.GetDahanOnSpace( ctx.Target ) / 3 );
 
-			await Option1Async(engine,target);
+			await Option1Async(ctx);
 		}
 	}
 
@@ -32,15 +32,15 @@ namespace SpiritIsland.Basegame {
 		public const string Name = "Lead the Furious Assult";
 
 		[InnateOption( "4 air,2 sun, 1 fire" )]
-		static public Task Option1Async( ActionEngine engine, Space target ) {
-			GatherTheWarriors_Fast.RemoveSlow( engine.Self, GatherTheWarriors.Name );
-			return LeadTheFuriousAssult.Option1Async(engine, target);
+		static public Task Option1Async( TargetSpaceCtx ctx ) {
+			GatherTheWarriors_Fast.RemoveSlow( ctx.Self, GatherTheWarriors.Name );
+			return LeadTheFuriousAssult.Option1Async(ctx);
 		}
 
 		[InnateOption( "4 air, 4 sun, 3 fire" )]
-		static public Task Option2Async( ActionEngine engine, Space target ) {
-			GatherTheWarriors_Fast.RemoveSlow( engine.Self, GatherTheWarriors.Name );
-			return LeadTheFuriousAssult.Option2Async( engine, target );
+		static public Task Option2Async( TargetSpaceCtx ctx ) {
+			GatherTheWarriors_Fast.RemoveSlow( ctx.Self, GatherTheWarriors.Name );
+			return LeadTheFuriousAssult.Option2Async( ctx );
 		}
 
 	}

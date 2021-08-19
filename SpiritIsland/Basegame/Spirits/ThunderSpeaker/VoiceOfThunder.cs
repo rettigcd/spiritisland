@@ -7,17 +7,17 @@ namespace SpiritIsland.Basegame {
 
 		[SpiritCard( "Voice of Thunder", 0, Speed.Slow, Element.Sun, Element.Air )]
 		[FromPresence(1)]
-		static public async Task Act( ActionEngine engine, Space target ) {
+		static public async Task Act( TargetSpaceCtx ctx ) {
 			// push up to 4 dahan -OR- If invaders are present, 2 fear
 
 			const string fearOption = "2 fear";
-			bool doFear = engine.GameState.HasInvaders( target ) 
-				&& await engine.Self.SelectText( "Chose card option", fearOption, "push up to 4 dahan" ) == fearOption;
+			bool doFear = ctx.GameState.HasInvaders( ctx.Target ) 
+				&& await ctx.Self.SelectText( "Chose card option", fearOption, "push up to 4 dahan" ) == fearOption;
 
 			if( doFear )
-				engine.AddFear( 2 );
+				ctx.AddFear( 2 );
 			else
-				await engine.PushUpToNDahan(target,4);
+				await ctx.PushUpToNDahan(ctx.Target,4);
 		}
 	}
 }

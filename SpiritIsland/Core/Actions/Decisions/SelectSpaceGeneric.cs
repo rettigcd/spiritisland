@@ -8,14 +8,17 @@ namespace SpiritIsland {
 
 		readonly Action<Space> onSelect;
 
-		public SelectSpaceGeneric(string prompt, IEnumerable<Space> options, Action<Space> onSelect ){
+		public SelectSpaceGeneric(string prompt, IEnumerable<Space> options, Action<Space> onSelect, bool allowAutoSelect = true ){
 			this.Prompt = prompt;
 			this.onSelect = onSelect;
+			this.AllowAutoSelect = allowAutoSelect;
 
 			this.Options = options
 				.OrderBy(x=>x.Label)
 				.ToArray();
 		}
+
+		public bool AllowAutoSelect { get; }
 
 		public string Prompt {get;}
 

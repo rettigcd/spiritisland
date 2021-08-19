@@ -11,20 +11,20 @@ namespace SpiritIsland.Basegame {
 		public const string Name = "Massive Flooding";
 
 		[InnateOption(Element.Sun,Element.Water,Element.Water)]
-		static public Task Option1Async(ActionEngine engine,Space target){
+		static public Task Option1Async(TargetSpaceCtx ctx){
 			// Push 1 Town/Explorer
-			return engine.PushUpToNInvaders(target,1,Invader.Town,Invader.Explorer); 
+			return ctx.PushUpToNInvaders(ctx.Target,1,Invader.Town,Invader.Explorer); 
 		}
 
 		[InnateOption(Element.Sun,Element.Sun,Element.Water,Element.Water,Element.Water)]
-		static public async Task Option2Async(ActionEngine engine,Space target){
-			await engine.DamageInvaders(target, 2);
-			await engine.PushUpToNInvaders(target,3,Invader.Town,Invader.Explorer);
+		static public async Task Option2Async(TargetSpaceCtx ctx){
+			await ctx.DamageInvaders(ctx.Target, 2);
+			await ctx.PushUpToNInvaders(ctx.Target,3,Invader.Town,Invader.Explorer);
 		}
 
 		[InnateOption(Element.Sun,Element.Sun,Element.Sun,Element.Water,Element.Water,Element.Water,Element.Water,Element.Earth)]
-		static public async Task Option3Async(ActionEngine engine,Space target){
-			var group = engine.InvadersOn(target);
+		static public async Task Option3Async(TargetSpaceCtx ctx){
+			var group = ctx.InvadersOn(ctx.Target);
 
 			var invaderTypes = group.InvaderTypesPresent_Specific.ToDictionary(x=>x,x=>group[x]); // copy so we can modify
 			foreach(var (invader,origCount) in invaderTypes.Select(x=>(x.Key,x.Value))){

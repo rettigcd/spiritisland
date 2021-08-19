@@ -7,13 +7,13 @@ namespace SpiritIsland.Basegame.Spirits.VitalStrength {
 
 		[SpiritCard("Guard the Healing Land",3,Speed.Fast,Element.Water,Element.Earth,Element.Plant)]
 		[FromSacredSite(1)]
-		static public Task Act(ActionEngine eng,Space target){
+		static public Task Act(TargetSpaceCtx ctx){
 			
 			// remove 1 blight, defend 4
-			eng.GameState.Defend(target,4);
+			ctx.GameState.Defend(ctx.Target,4);
 
-			if(eng.GameState.GetBlightOnSpace(target)>0)
-				eng.GameState.AddBlight(target,-1);
+			if(ctx.GameState.GetBlightOnSpace(ctx.Target)>0)
+				ctx.GameState.AddBlight(ctx.Target,-1);
 			return Task.CompletedTask;
 		}
 

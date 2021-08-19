@@ -32,6 +32,7 @@ namespace SpiritIsland.SinglePlayer {
 			_ = Action();
 		}
 
+		public bool AllowAutoSelect => true; // not used - I think
 
 		async Task Action() {
 			// Blight

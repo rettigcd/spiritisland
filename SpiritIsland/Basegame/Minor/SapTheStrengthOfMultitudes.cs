@@ -9,9 +9,10 @@ namespace SpiritIsland.Basegame {
 
 		[MinorCard( "Sap the Strength of Multitudes", 0, Speed.Fast, "water, animal" )]
 		[FromPresence( 0 )]
-		static public Task ActAsync( ActionEngine engine, Space target ) {
+		static public Task ActAsync( TargetSpaceCtx ctx) {
+			var target = ctx.Target;
 			// defend 5
-			engine.GameState.Defend(target,5);
+			ctx.GameState.Defend(target,5);
 			return Task.CompletedTask;
 		}
 

@@ -6,19 +6,19 @@ namespace SpiritIsland.Basegame {
 
 		[MajorCard("Pillar of Living Flame",5,Speed.Slow,Element.Fire)]
 		[FromSacredSite(2)]
-		static public async Task ActionAsync(ActionEngine engine,Space targetLand){
-			var (self,gameState) = engine;
+		static public async Task ActionAsync(TargetSpaceCtx ctx){
+			var (self,gameState) = ctx;
 
 			// 3 fear, 5 damage
 			// if you have 4 fire
 			bool hasBonus = self.Elements[Element.Fire]>=4;
 			// +2 fear, +5 damage
-			engine.AddFear( 3 + (hasBonus ? 2 : 0) );
-			await engine.DamageInvaders(targetLand, 5 + (hasBonus ? 5 : 0));
+			ctx.AddFear( 3 + (hasBonus ? 2 : 0) );
+			await ctx.DamageInvaders( ctx.Target, 5 + (hasBonus ? 5 : 0));
 
 			// if target is Jungle / Wetland, add 1 blight
-			if(targetLand.Terrain.IsIn(Terrain.Jungle,Terrain.Wetland))
-				gameState.AddBlight(targetLand);
+			if(ctx.Target.Terrain.IsIn(Terrain.Jungle,Terrain.Wetland))
+				gameState.AddBlight( ctx.Target );
 
 		}
 

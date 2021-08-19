@@ -6,12 +6,13 @@ namespace SpiritIsland.Basegame {
 
 		[MinorCard("Delusions of Danger",1,Speed.Fast,Element.Sun,Element.Moon,Element.Air)]
 		[FromPresence(1,Target.Explorer)]
-		static public async Task ActionAsync(ActionEngine engine, Space target){
+		static public async Task ActionAsync(TargetSpaceCtx ctx){
+			var target = ctx.Target;
 
-			if(await engine.Self.SelectFirstText( "Select power", "Push 1 Explorer", "2 fear" ))
-				await engine.PushUpToNInvaders(target, 1, Invader.Explorer);
+			if(await ctx.Self.SelectFirstText( "Select power", "Push 1 Explorer", "2 fear" ))
+				await ctx.PushUpToNInvaders(target, 1, Invader.Explorer);
 			else
-				engine.AddFear(2); 
+				ctx.AddFear(2); 
 
 		}
 

@@ -12,22 +12,22 @@ namespace SpiritIsland.Basegame {
 	class CreepersTearIntoMortar {
 
 		[InnateOption( "1 moon, 2 plant" )]
-		static public Task Option1Async( ActionEngine engine, Space target ) {
-			return DoDamage( engine, target, 1 );
+		static public Task Option1Async( TargetSpaceCtx ctx ) {
+			return DoDamage( ctx, 1 );
 		}
 
 		[InnateOption( "2 moon, 3 plant" )]
-		static public Task Option2Async( ActionEngine engine, Space target ) {
-			return DoDamage( engine, target, 2 );
+		static public Task Option2Async( TargetSpaceCtx ctx ) {
+			return DoDamage( ctx, 2 );
 		}
 
 		[InnateOption( "3 moon, 4 plant" )]
-		static public Task Option3Async( ActionEngine engine, Space target ) {
-			return DoDamage(engine,target,3);
+		static public Task Option3Async( TargetSpaceCtx ctx ) {
+			return DoDamage(ctx,3);
 		}
 
-		static Task DoDamage(ActionEngine engine, Space target, int damage ) {
-			return engine.InvadersOn( target ).SmartDamageToTypes( damage, Invader.City, Invader.Town );
+		static Task DoDamage(TargetSpaceCtx ctx, int damage ) {
+			return ctx.InvadersOn( ctx.Target ).SmartDamageToTypes( damage, Invader.City, Invader.Town );
 		}
 	}
 }

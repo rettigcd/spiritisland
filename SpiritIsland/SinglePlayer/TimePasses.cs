@@ -13,6 +13,8 @@ namespace SpiritIsland.SinglePlayer {
 			this.gameState = gameState;
 		}
 
+		public bool AllowAutoSelect { get; set; } = true;
+
 		public IOption[] Options => Array.Empty<IOption>();
 
 		public event Action Complete;

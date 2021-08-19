@@ -11,13 +11,13 @@ namespace SpiritIsland.Basegame {
 		// range 3
 		[MajorCard("Vengeance of the Dead",3,Speed.Fast,Element.Moon,Element.Fire,Element.Animal)]
 		[FromPresence(3)]
-		static public Task ActAsync(ActionEngine engine,Space target ) {
+		static public Task ActAsync(TargetSpaceCtx ctx) {
 			// 3 fear
-			engine.AddFear(3);
+			ctx.AddFear(3);
 
-			var newDamageLands = new List<Space> { target };
-			if(engine.Self.Elements.Contains("3 animal"))
-				newDamageLands.AddRange(target.Adjacent.Where(x=>x.IsLand));
+			var newDamageLands = new List<Space> { ctx.Target };
+			if(ctx.Self.Elements.Contains("3 animal"))
+				newDamageLands.AddRange( ctx.Target.Adjacent.Where(x=>x.IsLand));
 
 			async Task RavagePlusBonusDamage( RavageEngine eng ) {
 				int damageInflictedFromInvaders = eng.GetDamageInflictedByInvaders();
@@ -28,23 +28,23 @@ namespace SpiritIsland.Basegame {
 
 				// after each effect that destorys a town/city/dahan in target land
 				// 1 damage per town/city/dahan destoryed
-				await DistributeDamageToLands( engine, newDamageLands, dahanKilled + cityKilled + townKilled );
+				await DistributeDamageToLands( ctx, newDamageLands, dahanKilled + cityKilled + townKilled );
 			}
 
-			engine.GameState.ModRavage( target, cfg => cfg.RavageSequence = RavagePlusBonusDamage );
+			ctx.GameState.ModRavage( ctx.Target, cfg => cfg.RavageSequence = RavagePlusBonusDamage );
 
 			return Task.CompletedTask;
 		}
 
-		static async Task DistributeDamageToLands( ActionEngine engine, List<Space> newDamageLands, int additionalDamage ) {
+		static async Task DistributeDamageToLands( TargetSpaceCtx ctx, List<Space> newDamageLands, int additionalDamage ) {
 			Space[] targetLandOptions;
 			while(additionalDamage > 0
-				&& (targetLandOptions = newDamageLands.Where( engine.GameState.HasInvaders ).ToArray()).Length > 0
+				&& (targetLandOptions = newDamageLands.Where( ctx.GameState.HasInvaders ).ToArray()).Length > 0
 			) {
-				var newLand = await engine.Self.SelectSpace( $"Apply up to {additionalDamage} vengeanance damage in:", targetLandOptions );
+				var newLand = await ctx.Self.SelectSpace( $"Apply up to {additionalDamage} vengeanance damage in:", targetLandOptions );
 				if(newLand == null) break;
-				int damage = await engine.Self.SelectNumber( "How many damage to apply?", additionalDamage );// !!! add include0 bool?
-				await engine.DamageInvaders( newLand, damage );
+				int damage = await ctx.Self.SelectNumber( "How many damage to apply?", additionalDamage );// !!! add include0 bool?
+				await ctx.DamageInvaders( newLand, damage );
 				additionalDamage -= damage;
 			}
 		}

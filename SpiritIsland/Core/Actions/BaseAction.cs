@@ -13,57 +13,56 @@ namespace SpiritIsland {
 		public bool IsResolved => Options.Length == 0;
 
 		public void Select(IOption option) {
-			InitializeIfNeeded();
-			InnerSelect(option);
+			AutoSelectSingleOptions();
+			Select_Inner( option, false );
 			AutoSelectSingleOptions();
 		}
 
 		public IOption[] Options {
 			get{
-				InitializeIfNeeded();
-				return GetOptionsSkippingAutoSelectCheck();
+				AutoSelectSingleOptions();
+				return Options_Inner;
 			}
 		}
 
-		public string Prompt => Decisions.Count > 0 ? Decisions.Peek().Prompt : "-";
+		public string Prompt { get {
+				AutoSelectSingleOptions();
+				return Prompt_Inner;
+			}
+		}
+
+		string Prompt_Inner => Decisions.Count > 0 ? Decisions.Peek().Prompt : "-";
+		IOption[] Options_Inner => Decisions.Count > 0
+				? Decisions.Peek().Options
+				: System.Array.Empty<IOption>();
+
+
+		#region selection log
 
 		/// <summary> Logs decisions made </summary>
 		public string Selections => selections.Join( " > " );
 
 		public readonly List<string> selections = new List<string>();
 
+		#endregion
+
 		#region private
 
-//		bool initialized = false;
-
-		void InitializeIfNeeded() {
-//			if(initialized) return;
-//			initialized = true;
-			AutoSelectSingleOptions();
-		}
 
 		void AutoSelectSingleOptions() {
-			var opt = GetOptionsSkippingAutoSelectCheck();
-			while(opt.Length == 1)
-			{
-				InnerSelect( opt[0] );
-				opt = GetOptionsSkippingAutoSelectCheck();
+			var opt = Options_Inner;
+			while(opt.Length == 1 && Decisions.Peek().AllowAutoSelect ) {
+				Select_Inner( opt[0], true );
+				opt = Options_Inner;
 			}
-			if(opt.Length == 0)
-			{
+			if(opt.Length == 0) {
 				int hiddenCount = Decisions.Count - 1;
 				if(hiddenCount > 0)
 					throw new System.InvalidOperationException( $"'{Decisions.Peek().Prompt}' returned 0 options leaving {hiddenCount} decision unresolved. " );
 			}
 		}
 
-		IOption[] GetOptionsSkippingAutoSelectCheck(){
-			return Decisions.Count>0 
-				? Decisions.Peek().Options 
-				: System.Array.Empty<IOption>();
-		}
-
-		void InnerSelect(IOption selection) {
+		void Select_Inner(IOption selection,bool auto) {
 			if(Decisions.Count == 0)
 				throw new System.NotImplementedException();
 
@@ -72,6 +71,7 @@ namespace SpiritIsland {
 				throw new ArgumentException("You can't select an option that isn't there.");
 
 			string msg = decision.Prompt + "(" + decision.Options.Select(o=>o.Text).Join(",") + "):" + selection.Text;
+			if(auto) msg += "AUTO!";
 			selections.Add( msg );
 
 			decision.Select( selection );

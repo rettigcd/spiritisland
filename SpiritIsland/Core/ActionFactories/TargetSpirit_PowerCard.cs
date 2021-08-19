@@ -26,13 +26,13 @@ namespace SpiritIsland {
 		public override async Task Activate( Spirit self, GameState gameState ) {
 			Spirit target = await self.SelectSpirit(gameState.Spirits);
 			SpiritTargeted?.Invoke( self, this, target );
-			TargetSpirit( methodBase, self, gameState, target );
+			await TargetSpirit( methodBase, self, gameState, target );
 		}
 
 		public event SpiritTargetedArgs SpiritTargeted; // Targeter, Card, Targetee
 
-
-		static public void TargetSpirit(MethodBase methodBase, Spirit self, GameState gameState, Spirit target) => methodBase.Invoke( null, new object[] { self.BindSpiritActions(gameState), target } );
+		static public Task TargetSpirit(MethodBase methodBase, Spirit self, GameState gameState, Spirit target) 
+			=> (Task)methodBase.Invoke( null, new object[] { self.MakeDecisionsFor( gameState ), target } );
 
 	}
 

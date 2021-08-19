@@ -7,7 +7,7 @@ namespace SpiritIsland.Basegame {
 
 		[MajorCard("Powerstorm",3,Speed.Fast,Element.Sun,Element.Fire,Element.Air)]
 		[TargetSpirit]
-		static public Task ActionAsync(ActionEngine _,Spirit target){
+		static public Task ActionAsync( IMakeGamestateDecisions _,Spirit target){
 			
 			// target spirit gains 3 energy
 			target.Energy += 3;

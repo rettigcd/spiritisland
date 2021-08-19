@@ -24,6 +24,8 @@ namespace SpiritIsland.SinglePlayer {
 
 		public event Action Complete;
 
+		public bool AllowAutoSelect { get; set; } = true;
+
 		public SelectPowerCards(Spirit spirit){
 			this.spirit = spirit;
 		}

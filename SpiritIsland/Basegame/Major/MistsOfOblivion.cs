@@ -6,9 +6,9 @@ namespace SpiritIsland.Basegame {
 
 		[MajorCard( "Mists of Oblivion", 4, Speed.Slow, Element.Moon, Element.Air, Element.Water )]
 		[FromPresence(3)]
-		static public async Task ActAsync( ActionEngine engine, Space target ) {
-			var grp = engine.InvadersOn( target );
-			var (self, _) = engine;
+		static public async Task ActAsync( TargetSpaceCtx ctx ) {
+			var grp = ctx.InvadersOn( ctx.Target ); // !!! 
+			var (self, _) = ctx;
 
 			var startingTownsAndCities = grp.TownsAndCitiesCount;
 			// 1 damage to each invader
@@ -20,7 +20,7 @@ namespace SpiritIsland.Basegame {
 
 			// 1 fear per town/city this power destroys (to a max of 4)
 			int destroyedTownsAndCities = startingTownsAndCities - grp.TownsAndCitiesCount;
-			engine.AddFear( destroyedTownsAndCities );
+			ctx.AddFear( destroyedTownsAndCities );
 		}
 
 	}

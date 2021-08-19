@@ -6,20 +6,20 @@ namespace SpiritIsland.Basegame {
 
 		[MajorCard("Vigor of the Breaking Dawn",3,Speed.Fast,Element.Sun,Element.Animal)]
 		[FromPresence(2,Target.Dahan)]
-		public static async Task ActAsync(ActionEngine engine,Space target){
-			var (spirit,gs) = engine;
+		public static async Task ActAsync(TargetSpaceCtx ctx){
+			var (spirit,gs) = ctx;
 
 			// 2 damage per dahan in target land
-			await engine.DamageInvaders(target,2*gs.GetDahanOnSpace(target));
+			await ctx.DamageInvaders(ctx.Target,2*gs.GetDahanOnSpace(ctx.Target));
 
 			if( spirit.Elements.Contains("3 sun,2 animal") ){
 
 				// you may push up to 2 dahan.
-				var pushedToLands = await engine.PushUpToNDahan(target, 2);
+				var pushedToLands = await ctx.PushUpToNDahan(ctx.Target, 2);
 
 				// 2 damage per dahan
 				foreach(var neighbor in pushedToLands )
-					await engine.DamageInvaders( neighbor, 2*gs.GetDahanOnSpace(neighbor) );
+					await ctx.DamageInvaders( neighbor, 2*gs.GetDahanOnSpace(neighbor) );
 			}
 		}
 

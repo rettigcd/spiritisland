@@ -5,16 +5,16 @@ namespace SpiritIsland.Basegame {
 
 		[MajorCard("Poisoned Land",3,Speed.Slow,Element.Earth,Element.Plant,Element.Animal)]
 		[FromPresence(1)]
-		static public async Task ActAsync(ActionEngine engine,Space target){
-			var (_,gs) = engine;
+		static public async Task ActAsync(TargetSpaceCtx ctx){
+			var (_,gs) = ctx;
 
 			// Add 1 blight, destroy all dahan
-			gs.AddBlight(target,1);
-			await gs.DestoryDahan(target,engine.GameState.GetDahanOnSpace(target),DahanDestructionSource.PowerCard);
+			gs.AddBlight( ctx.Target, 1);
+			await gs.DestoryDahan( ctx.Target, ctx.GameState.GetDahanOnSpace( ctx.Target ),DahanDestructionSource.PowerCard);
 
-			bool hasBonus = engine.Self.Elements.Contains("3 earth,2 plant,2 animal");
-			engine.AddFear( 1+(hasBonus?1:0) );
-			await engine.DamageInvaders(target,7+(hasBonus?4:0));
+			bool hasBonus = ctx.Self.Elements.Contains("3 earth,2 plant,2 animal");
+			ctx.AddFear( 1+(hasBonus?1:0) );
+			await ctx.DamageInvaders( ctx.Target, 7+(hasBonus?4:0));
 		}
 
 	}

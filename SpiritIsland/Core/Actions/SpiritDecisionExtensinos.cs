@@ -3,41 +3,41 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace SpiritIsland {
+
 	static public class SpiritDecisionExtensinos {
 
 		static public Task<Spirit> SelectSpirit(this Spirit spirit, Spirit[] spirits) {
 			var result = new TaskCompletionSource<Spirit>();
-
-			spirit.decisions.Push( new SelectSpirit( spirits
-				, spirit => result.TrySetResult( spirit )
-			) );
-
+			spirit.decisions.Push( new SelectAsync<Spirit>( "Select Spirit", spirits, Present.IfMoreThan1, result) );
 			return result.Task;
 		}
 
 		static public Task<Space> SelectSpace( this Spirit spirit, string prompt, IEnumerable<Space> spaces, bool allowShortCircuit = false ) {
 			var result = new TaskCompletionSource<Space>();
-			spirit.decisions.Push( new SelectAsync<Space>( prompt, spaces.ToArray(), allowShortCircuit, result ) );
+			spirit.decisions.Push( new SelectAsync<Space>( prompt, spaces.OrderBy(x=>x.Label).ToArray(), allowShortCircuit ? Present.Done : Present.IfMoreThan1, result ) );
 			return result.Task;
 		}
 
-		static public Task<InvaderSpecific> SelectInvader( this Spirit spirit, string prompt, InvaderSpecific[] invaders, bool allowShortCircuit = false ) {
+		static public Task<InvaderSpecific> SelectInvader( this Spirit spirit, string prompt, InvaderSpecific[] invaders, Present present = Present.IfMoreThan1 ) {
 			var result = new TaskCompletionSource<InvaderSpecific>();
-			spirit.decisions.Push( new SelectAsync<InvaderSpecific>(
+
+			var x = new SelectAsync<InvaderSpecific>(
 				prompt,
 				invaders,
-				allowShortCircuit,
+				present,
 				result
-			) );
+			);
+
+			spirit.decisions.Push( x );
 			return result.Task;
 		}
 
-		static public Task<IOption> SelectOption( this Spirit spirit, string prompt, IOption[] options, bool allowShortCircuit = false ) {
+		static public Task<IOption> SelectOption( this Spirit spirit, string prompt, IOption[] options, Present present = Present.IfMoreThan1 ) {
 			var result = new TaskCompletionSource<IOption>();
 			spirit.decisions.Push( new SelectAsync<IOption>(
 				prompt,
 				options,
-				allowShortCircuit,
+				present,
 				result
 			) );
 			return result.Task;
@@ -48,15 +48,20 @@ namespace SpiritIsland {
 			spirit.decisions.Push( new SelectAsync<IActionFactory>(
 				prompt,
 				options,
-				allowShortCircuit,
+				allowShortCircuit ? Present.Done : Present.IfMoreThan1,
 				result
 			) );
 			return result.Task;
 		}
 
-		static public Task<string> SelectText( this Spirit spirit, string prompt, params string[] options ) {
-			var result = new TaskCompletionSource<string>();
-			spirit.decisions.Push( new SelectTextAsync( prompt, options, result ) );
+		static public async Task<string> SelectText( this Spirit spirit, string prompt, params string[] textOptions ) {
+			TextOption[] options = textOptions.Select( x => new TextOption( x ) ).ToArray();
+			var selection = await spirit.SelectTextOption( prompt, options );
+			return selection?.Text;
+		}
+		static public Task<TextOption> SelectTextOption( this Spirit spirit, string prompt, params TextOption[] options ) {
+			var result = new TaskCompletionSource<TextOption>();
+			spirit.decisions.Push( new SelectAsync<TextOption>( prompt, options, Present.IfMoreThan1, result ) );
 			return result.Task;
 		}
 
@@ -78,7 +83,7 @@ namespace SpiritIsland {
 			spirit.decisions.Push( new SelectAsync<Track>(
 				"Select Presence to place.",
 				spirit.Presence.GetPlaceableFromTracks(), // state info, might someday be moved into game state, then this needs to move back to Action Engine
-				false,
+				Present.IfMoreThan1,
 				result
 			) );
 			return result.Task;

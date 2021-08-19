@@ -7,23 +7,23 @@ namespace SpiritIsland.Basegame {
 
 		[MajorCard("The Land Thrashes in Furious Pain",4, Speed.Slow, Element.Moon, Element.Fire,Element.Earth)]
 		[FromPresence(2,Target.Blight)]
-		static public async Task ActAsync(ActionEngine engine,Space target) {
-			var (self, gs) = engine;
+		static public async Task ActAsync(TargetSpaceCtx ctx) {
 
-			await ApplyDamageFromBlight( target, gs, engine );
+			await ApplyDamageFromBlight( ctx.Target, ctx );
 
 			// if you have 3 moon 3 earth
-			if(self.Elements.Contains("3 moon,3 earth")) {
+			if(ctx.Self.Elements.Contains("3 moon,3 earth")) {
 				// repeat on an adjacent land.
-				var alsoTarget = await self.SelectSpace( "Select adjacent land to receive damage from blight", target.Adjacent);
-				await ApplyDamageFromBlight( alsoTarget, gs, engine );
+				var alsoTarget = await ctx.Self.SelectSpace( "Select adjacent land to receive damage from blight", ctx.Target.Adjacent);
+				await ApplyDamageFromBlight( alsoTarget, ctx );
 			}
 		}
 
-		static Task ApplyDamageFromBlight( Space target, GameState gs, ActionEngine engine ) {
-			int damage = gs.GetBlightOnSpace( target ) * 2  // 2 damage per blight in target land
-				+ target.Adjacent.Sum( x => gs.GetBlightOnSpace( x ) ); // +1 damage per blight in adjacent lands
-			return engine.DamageInvaders( target, damage );
+		static Task ApplyDamageFromBlight( Space space, TargetSpaceCtx ctx ) {
+			GameState gs = ctx.GameState;
+			int damage = gs.GetBlightOnSpace( space ) * 2  // 2 damage per blight in target land
+				+ space.Adjacent.Sum( x => gs.GetBlightOnSpace( x ) ); // +1 damage per blight in adjacent lands
+			return ctx.DamageInvaders( space, damage );
 		}
 	}
 }

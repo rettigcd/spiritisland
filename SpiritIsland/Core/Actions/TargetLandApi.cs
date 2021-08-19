@@ -14,9 +14,6 @@ namespace SpiritIsland {
 
 		#endregion
 
-		public Task<Space> TargetSpace( Spirit self, GameState gameState, From sourceEnum, int range, Target filterEnum )
-			=> TargetSpace( self, gameState , sourceEnum, null, range, filterEnum );
-
 		public async virtual Task<Space> TargetSpace( Spirit self, GameState gameState, From sourceEnum, Terrain? sourceTerrain, int range, Target filterEnum ) {
 			IEnumerable<Space> spaces = GetTargetOptions( self, sourceEnum, sourceTerrain, range, filterEnum, gameState );
 			return await self.SelectSpace( "Select target.", spaces );

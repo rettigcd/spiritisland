@@ -6,9 +6,9 @@ namespace SpiritIsland.Basegame {
 
 		[MinorCard("Gnawing Rootbiters",0,Speed.Slow,"earth, animal")]
 		[FromPresence(1)]
-		static public Task ActAsync(ActionEngine eng, Space target ) {
+		static public Task ActAsync(TargetSpaceCtx ctx ) {
 			// push up to 2 towns
-			return eng.PushUpToNInvaders(target,2,Invader.Town);
+			return ctx.PushUpToNInvaders(ctx.Target,2,Invader.Town);
 		}
 
 	}

@@ -8,9 +8,10 @@ namespace SpiritIsland.Basegame {
 
 		[SpiritCard( WordsOfWarning.Name, 1, Speed.Fast, Element.Air, Element.Sun, Element.Animal )]
 		[FromPresence(1,Target.Dahan)]
-		static public Task Act( ActionEngine engine, Space target ) {
+		static public Task Act( TargetSpaceCtx ctx ) {
+			var target = ctx.Target;
 
-			engine.GameState.ModRavage( target, cfg => {
+			ctx.GameState.ModRavage( target, cfg => {
 				// defend 3
 				cfg.Defend += 3;
 				// dahan attach simultaneously with dahan

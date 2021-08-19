@@ -267,7 +267,6 @@ namespace SpiritIsland {
 
 		public event SpaceTargetedEvent TargetedSpace;
 
-		public ActionEngine BindSpiritActions(GameState gs) => new ActionEngine(this,gs);
 	}
 
 }

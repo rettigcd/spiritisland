@@ -10,9 +10,9 @@ namespace SpiritIsland.Basegame.Spirits.Bringer {
 
 		[SpiritCard("Dread Apparitions",2,Speed.Fast,Element.Moon,Element.Air)]
 		[FromPresence(1,Target.Invaders)]
-		static public Task ActAsync(ActionEngine engine,Space target ) {
+		static public Task ActAsync(TargetSpaceCtx ctx ) {
 			// 1 fear
-			engine.AddFear(1);
+			ctx.AddFear(1);
 
 			// When powers generate fear in target land, defend 1 per fear.
 			// 1 fear  (fear from to Dream a Thousands Deaths counts.

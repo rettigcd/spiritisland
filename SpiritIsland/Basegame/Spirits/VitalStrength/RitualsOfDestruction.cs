@@ -7,14 +7,14 @@ namespace SpiritIsland.Basegame.Spirits.VitalStrength {
 
 		[SpiritCard("Rituals of Destruction",3,Speed.Slow,Element.Sun,Element.Moon,Element.Fire,Element.Earth,Element.Plant)]
 		[FromSacredSite(1,Target.Dahan)]
-		static public Task ActAsync(ActionEngine eng,Space target){
+		static public Task ActAsync(TargetSpaceCtx ctx){
 
-			bool hasBonus = 3 <= eng.GameState.GetDahanOnSpace(target);
+			bool hasBonus = 3 <= ctx.GameState.GetDahanOnSpace(ctx.Target);
 
 			if(hasBonus)
-				eng.AddFear( 2 );
+				ctx.AddFear( 2 );
 
-			return eng.DamageInvaders(target, hasBonus ? 5 : 2);
+			return ctx.DamageInvaders(ctx.Target, hasBonus ? 5 : 2);
 
 		}
 

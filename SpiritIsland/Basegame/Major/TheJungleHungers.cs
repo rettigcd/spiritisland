@@ -7,21 +7,21 @@ namespace SpiritIsland.Basegame {
 
 		[MajorCard("The Jungle Hungers",3,Speed.Slow,Element.Moon,Element.Plant)]
 		[FromPresenceIn(1,Terrain.Jungle)]
-		static public async Task Act(ActionEngine eng){
+		static public async Task Act(TargetSpaceCtx ctx){
 			// range 1 from presence in jungle
-			var target = await eng.TargetSpace( From.Presence, 1, Target.Jungle );
-			var grp = eng.InvadersOn(target);
+			var target = await ctx.TargetSpace( From.Presence, null, 1, Target.Jungle );
+			var grp = ctx.InvadersOn(target);
 
 			// destroys all explorers and towns
 			await grp.Destroy(Invader.Explorer, int.MaxValue);
 			await grp.Destroy(Invader.Town, int.MaxValue );
 
 			// if you have 2 moon, 3 plant, Destroy 1 city and do not destroy dahan
-			if(eng.Self.Elements.Contains( "2 moon,3 plant" )) {
+			if(ctx.Self.Elements.Contains( "2 moon,3 plant" )) {
 				await grp.Destroy(Invader.City, 1 );
 			} else {
-				int dahanCount = eng.GameState.GetDahanOnSpace(target);
-				await eng.GameState.DestoryDahan(target,dahanCount,DahanDestructionSource.PowerCard);
+				int dahanCount = ctx.GameState.GetDahanOnSpace(target);
+				await ctx.GameState.DestoryDahan(target,dahanCount,DahanDestructionSource.PowerCard);
 			}
 
 		}

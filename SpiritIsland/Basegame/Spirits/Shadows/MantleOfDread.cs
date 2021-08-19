@@ -7,12 +7,12 @@ namespace SpiritIsland.Basegame {
 
 		[SpiritCard("Mantle of Dread",1,Speed.Slow,Element.Moon,Element.Fire,Element.Air)]
 		[TargetSpirit]
-		static public async Task Act( ActionEngine engine, Spirit target ){
+		static public async Task Act( IMakeGamestateDecisions ctx, Spirit target ){
 
-			var (_,gs) = engine;
+			var gs = ctx.GameState;
 
 			// 2 fear
-			engine.AddFear(2);
+			ctx.AddFear(2);
 
 			// target spirit may push 1 explorer and 1 town from land where it has presence
 			bool HasExplorerOrTown(Space space){
@@ -22,13 +22,13 @@ namespace SpiritIsland.Basegame {
 			// Select Land
 			var landsToPushInvadersFrom = target.Presence.Spaces.Where(HasExplorerOrTown).ToArray();
 			if(landsToPushInvadersFrom.Length == 0) return;
-			var space = await engine.Self.SelectSpace("Select land to push 1 exploer & 1 town from",landsToPushInvadersFrom,true);
+			var space = await ctx.Self.SelectSpace("Select land to push 1 exploer & 1 town from",landsToPushInvadersFrom,true);
 			if(space==null) return;
 
 			// Push Town
-			await engine.PushUpToNInvaders( space, 1, Invader.Town );
+			await ctx.PushUpToNInvaders( space, 1, Invader.Town );
 			// Push Explorer
-			await engine.PushUpToNInvaders( space, 1, Invader.Explorer );
+			await ctx.PushUpToNInvaders( space, 1, Invader.Explorer );
 			
 		}
 

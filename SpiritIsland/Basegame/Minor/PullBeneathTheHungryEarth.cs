@@ -8,7 +8,8 @@ namespace SpiritIsland.Basegame {
 
 		[MinorCard(PullBeneathTheHungryEarth.Name,1,Speed.Slow,Element.Moon,Element.Water,Element.Earth)]
 		[FromPresence(1,Target.Any)] // !!! Add unit test that we don't accidentally switch this back to .SandOrWetland
-		static public Task ActAsync(ActionEngine eng, Space target){
+		static public Task ActAsync(TargetSpaceCtx ctx){
+			var target = ctx.Target;
 
 			int damage = 0; // accumulate because +2 is better than +1 +1
 
@@ -17,12 +18,12 @@ namespace SpiritIsland.Basegame {
 				++damage;
 
 			// If target land has your presence, 1 fear and 1 damage
-			if(eng.Self.Presence.IsOn( target)){
+			if(ctx.Self.Presence.IsOn( target)){
 				++damage;
-				eng.AddFear(1);
+				ctx.AddFear(1);
 			}
 
-			return eng.DamageInvaders(target,damage);
+			return ctx.DamageInvaders(target,damage);
 
 		}
 

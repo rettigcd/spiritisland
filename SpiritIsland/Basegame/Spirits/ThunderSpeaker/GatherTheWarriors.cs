@@ -12,13 +12,13 @@ namespace SpiritIsland.Basegame {
 		public const String Name = "Gather the Warriors";
 
 		[InnateOption(Element.Animal)]
-		static public async Task OptionAsync(ActionEngine engine,Space target ) {
-			var elements = engine.Self.Elements;
+		static public async Task OptionAsync(TargetSpaceCtx ctx ) {
+			var elements = ctx.Self.Elements;
 			int gatherCount = elements[Element.Air];
 			int pushCount = elements[Element.Sun];
 
-			await engine.GatherUpToNDahan(target,gatherCount);
-			await engine.PushUpToNDahan(target,pushCount);
+			await ctx.GatherUpToNDahan(ctx.Target,gatherCount);
+			await ctx.PushUpToNDahan(ctx.Target,pushCount);
 		}
 
 
@@ -29,9 +29,9 @@ namespace SpiritIsland.Basegame {
 	public class GatherTheWarriors_Fast {
 
 		[InnateOption( "1 animal, 4 air" )]
-		static public Task OptionAsync( ActionEngine engine, Space target ) {
-			RemoveSlow( engine.Self, GatherTheWarriors.Name );
-			return GatherTheWarriors.OptionAsync( engine, target );
+		static public Task OptionAsync( TargetSpaceCtx ctx ) {
+			RemoveSlow( ctx.Self, GatherTheWarriors.Name );
+			return GatherTheWarriors.OptionAsync( ctx );
 
 		}
 

@@ -1,23 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using SpiritIsland;
 
 namespace SpiritIsland.SinglePlayer {
 
 	class ResolveActions : IPhase {
 
-		public string Prompt { get; private set; }
-		public IOption[] Options { get; private set; }
+		public string Prompt => spirit.Action.Prompt;
+		public IOption[] Options => spirit.Action.Options;
+		public void Select( IOption option ) => spirit.Action.Select( option );
 
 
 		readonly Spirit spirit;
 		readonly GameState gameState;
 		readonly Speed speed;
 		readonly bool allowEarlyDone;
-		IActionFactory selectedActionFactory;
-		IAction action;
-		string growthName;
 
 		public ResolveActions( Spirit spirit, GameState gameState, Speed speed, bool allowEarlyDone = false ) {
 			this.spirit = spirit;
@@ -27,55 +26,39 @@ namespace SpiritIsland.SinglePlayer {
 		}
 
 		public void Initialize() {
-			var matchingActionFactories = spirit.GetUnresolvedActionFactories( speed ).ToList();
-
-			if(matchingActionFactories.Count == 0) {
-				Done();
-				return;
-			}
-
-			Prompt = "Select " + speed + " to resolve:";
-			Options = GetActionFactoryOptions( matchingActionFactories ).ToArray();
-			action = null;
+			_ = ActAsync();
 		}
+		public bool AllowAutoSelect => true; // not used - I think
 
-		public void Select( IOption option ) {
-			if(action == null && TextOption.Done.Matches(option)){ 
-				Done(); 
-				return;
-			}
+		async Task ActAsync() {
+			List<IActionFactory> matchingActionFactories;
 
-			// Select action or apply option
-			if(action == null) {
-				// if use clicked a slow card that was made fast
-				// slow card won't be in the options
-				if(!Options.Contains( option ))
+			while((matchingActionFactories = spirit.GetUnresolvedActionFactories( speed ).ToList()).Count> 0) {
+
+				// -------------
+				// Select Actions to resolve
+				// -------------
+				var factoryOptions = GetActionFactoryOptions( matchingActionFactories ).ToArray();
+				var option = await spirit.SelectOption( "Select " + speed + " to resolve:", factoryOptions, Present.Always );
+				if(TextOption.Done.Matches( option ))
+					break;
+
+				// if use clicked a slow card that was made fast, // slow card won't be in the options
+				if(!factoryOptions.Contains( option ))
 					// find the fast version of the slow card that was clicked
-					option = Options.Cast<IActionFactory>()
-						.First(factory=>factory.Original==option);
+					option = factoryOptions.Cast<IActionFactory>()
+						.First( factory => factory.Original == option );
+				if(!factoryOptions.Contains( option ))
+					throw new Exception( "Dude! - You selected something that wasn't an option" );
 
-				selectedActionFactory = (IActionFactory)option;
+				var selectedActionFactory = (IActionFactory)option;
+				// var growthName = selectedActionFactory.Name;
+				await selectedActionFactory.Activate( spirit, gameState );
 
-				if(!Options.Contains(option))
-					throw new Exception("Dude! - You selected something that wasn't an option");
-
-				selectedActionFactory = (IActionFactory)option;
-				this.growthName = selectedActionFactory.Name;
-				selectedActionFactory.Activate( spirit, gameState );
-				action = spirit.Action;
-			} else {
-				action.Select( option );
+				spirit.Resolve(selectedActionFactory);
 			}
 
-			// next action or summarize options
-			if(action.IsResolved) {
-				// Next
-				spirit.Resolve( selectedActionFactory );
-				Initialize();
-			} else {
-				Prompt = growthName + " - " + action.Prompt;
-				Options = action.Options;
-			}
+			Done();
 		}
 
 		List<IOption> GetActionFactoryOptions( List<IActionFactory> actionFactories ) {

@@ -10,20 +10,20 @@ namespace SpiritIsland.Basegame {
 
 		[SpiritCard(HarbingersOfTheLightning.Name,0,Speed.Slow,Element.Fire,Element.Air)]
 		[FromPresence(1,Target.Dahan)]
-		static public async Task ActionAsync(ActionEngine engine,Space target){
+		static public async Task ActionAsync(TargetSpaceCtx ctx){
 
 			// Push up to 2 dahan.
-			var destinationSpaces = await engine.PushUpToNDahan(target,2);
+			var destinationSpaces = await ctx.PushUpToNDahan(ctx.Target,2);
 
 			// if pushed dahan into town or city
 			bool pushedToBuildingSpace = destinationSpaces
 				.Where(neighbor => {
-					var grp = engine.GameState.InvadersOn(neighbor);
+					var grp = ctx.GameState.InvadersOn(neighbor);
 					return grp.HasTown || grp.HasCity;
 				})
 				.Any();
 			if(pushedToBuildingSpace)
-				engine.AddFear(1);
+				ctx.AddFear(1);
 		}
 
 

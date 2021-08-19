@@ -75,7 +75,7 @@ namespace SpiritIsland {
 
 		public override async Task Activate( Spirit self, GameState gameState ) {
 			Spirit target = await self.SelectSpirit(gameState.Spirits);
-			TargetSpirit_PowerCard.TargetSpirit( HighestMethod( self ), self, gameState, target );
+			await TargetSpirit_PowerCard.TargetSpirit( HighestMethod( self ), self, gameState, target );
 		}
 
 	}
@@ -92,9 +92,11 @@ namespace SpiritIsland {
 		#endregion
 
 		public override async Task Activate( Spirit spirit, GameState gameState ) {
-			var engine = spirit.BindSpiritActions( gameState );
-			var target = await targetSpace.GetTarget( engine );
-			HighestMethod( engine.Self ).Invoke( null, new object[] { engine, target } );
+			var target = await targetSpace.GetTarget( spirit.MakeDecisionsFor(gameState) );
+			MethodInfo x = HighestMethod( spirit );
+			var engine = new TargetSpaceCtx( spirit, gameState, target );
+			// !! Make sure we await this
+			await (Task)x.Invoke( null, new object[] { engine } ); // Check Innate Powers that target spirits - what is first parameter?
 		}
 
 		readonly TargetSpaceAttribute targetSpace;

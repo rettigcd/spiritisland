@@ -26,7 +26,7 @@ namespace SpiritIsland.Basegame {
 			// Target Spirit games 3 _different_ Elements of their choice
 			const int totalToGain = 3;
 			while(selected.Count < totalToGain) {
-				var selection = await target.SelectOption($"Select {selected.Count+1} of {totalToGain} element to gain", elements.Select( x => new ItemOption<Element>( x ) ).ToArray(), true);
+				var selection = await target.SelectOption($"Select {selected.Count+1} of {totalToGain} element to gain", elements.Select( x => new ItemOption<Element>( x ) ).ToArray(), Present.Done );
 				if(selection == null) break;
 				var el = ((ItemOption<Element>)selection).Item;
 				selected.Add( el );

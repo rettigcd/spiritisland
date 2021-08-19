@@ -1,6 +1,6 @@
-﻿using System.Linq;
+﻿using Shouldly;
 using SpiritIsland.Basegame;
-using SpiritIsland;
+using System.Linq;
 using Xunit;
 
 namespace SpiritIsland.Tests.Basegame.Spirits.River {
@@ -66,7 +66,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			gameState.Adjust(targetSpace,InvaderSpecific.City,1);
 			gameState.Adjust(targetSpace,InvaderSpecific.Town,1);
 			gameState.Adjust(targetSpace,InvaderSpecific.Explorer,1);
-			Assert.Equal("1C@3,1T@2,1E@1",gameState.InvadersOn(targetSpace).ToString());
+			gameState.InvadersOn( targetSpace ).ToString().ShouldBe("1C@3,1T@2,1E@1");
 
 			//   And: Purchased FlashFloods
 			var card = spirit.Hand.Single(c=>c.Name == FlashFloods.Name);
@@ -75,23 +75,16 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Assert.Contains(card,spirit.GetUnresolvedActionFactories(card.Speed).OfType<PowerCard>().ToList()); // is fast
 
 			//  When: activating flash flood
-//			var engine = spirit.Bind( gameState );
 			card.Activate( spirit, gameState );
 			action = spirit.Action;
 
-			//// Then: can target any land within 1 of presence.
-			//Assert.False(action.IsResolved);
-			//Assert_Options(presenceSpace.SpacesWithin(1).Where(s=>s.IsLand));
-			//action.Select( targetSpace );
-
 			// Then: can apply 2 points of damage
-			Assert.False(action.IsResolved);
+			action.IsResolved.ShouldBeFalse();
 			Assert_Options("C@3","E@1","T@2");
 			action.Select( "C@3" );
 
-
 			// And: apply doesn't throw an exception
-			Assert.True(action.IsResolved);
+			action.IsResolved.ShouldBeTrue();
 			Assert.Equal("1C@1,1T@2,1E@1",gameState.InvadersOn(targetSpace).ToString());
 		}
 

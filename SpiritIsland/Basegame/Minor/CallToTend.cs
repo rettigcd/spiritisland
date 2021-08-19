@@ -6,12 +6,13 @@ namespace SpiritIsland.Basegame {
 
 		[MinorCard("Call to Tend",1,Speed.Slow,Element.Water,Element.Plant,Element.Animal)]
 		[FromPresence(1,Target.Dahan)]
-		static public async Task ActAsync(ActionEngine engine,Space target ) {
+		static public async Task ActAsync(TargetSpaceCtx ctx ) {
+			var target = ctx.Target;
 			// remove 1 blight OR push up to 3 dahan
-			if( await engine.Self.SelectFirstText("Select power","remove 1 blight","push up to 3 dahan") )
-				engine.GameState.RemoveBlight( target );
+			if( await ctx.Self.SelectFirstText("Select power","remove 1 blight","push up to 3 dahan") )
+				ctx.GameState.RemoveBlight( target );
 			else
-				await engine.PushUpToNDahan(target, 3);
+				await ctx.PushUpToNDahan(target, 3);
 		}
 
 	}

@@ -7,7 +7,7 @@ namespace SpiritIsland.Basegame {
 
 		[MajorCard("Blazing Renewal",5,Speed.Fast,Element.Fire,Element.Earth,Element.Plant)]
 		[TargetSpirit]
-		static public async Task ActAsync(ActionEngine engine, Spirit target ) {
+		static public async Task ActAsync( IMakeGamestateDecisions engine, Spirit target ) {
 
 			// target spirit adds 2 of their destroyed presence
 			int max = await target.SelectNumber("Select # of destroyed presence to return to board", target.Presence.Destroyed );
@@ -15,7 +15,7 @@ namespace SpiritIsland.Basegame {
 
 			// into a single land, up to range 2 from your presence.
 			// Note - Jonah says it is the originators power and range and decision, not the targets
-			var landTarget = await engine.TargetSpace( From.Presence, 2, Target.Any );
+			var landTarget = await engine.TargetSpace( From.Presence, null, 2, Target.Any );
 
 			// Add it!
 			for(int i=0;i<max;++i)

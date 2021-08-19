@@ -6,9 +6,9 @@ namespace SpiritIsland.Basegame {
 		
 		[MajorCard("Dissolve the Bonds of Kinship",4,Speed.Slow,Element.Fire,Element.Earth,Element.Animal)]
 		[FromPresence(1)]
-		static public async Task ActAsync(ActionEngine engine,Space target ) {
-			var (self, gs) = engine;
-			var grp = engine.InvadersOn( target );
+		static public async Task ActAsync(TargetSpaceCtx ctx) {
+			var (self, gs) = ctx;
+			var grp = ctx.InvadersOn( ctx.Target ); // !!! could gold this into TargetSpace context
 
 			// replace 1 city with 2 exploreres.
 			ReplaceInvaderWithExplorer( grp, Invader.City, 2 );
@@ -27,7 +27,7 @@ namespace SpiritIsland.Basegame {
 			}
 
 			// Push all explorers from target land to as many different lands as possible
-			await engine.PushUpToNInvaders(target,int.MaxValue,Invader.Explorer);
+			await ctx.PushUpToNInvaders( ctx.Target, int.MaxValue,Invader.Explorer);
 		}
 
 		static void ReplaceInvaderWithExplorer( InvaderGroup grp, Invader oldInvader, int replaceCount ) {

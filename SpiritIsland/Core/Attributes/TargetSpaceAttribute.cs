@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
-	abstract class TargetSpaceAttribute : Attribute {
+	public abstract class TargetSpaceAttribute : Attribute {
 
 		readonly From source;
 		readonly Terrain? sourceTerrain;
@@ -17,7 +17,7 @@ namespace SpiritIsland {
 			this.targetFilter = targetFilter;
 		}
 
-		public Task<Space> GetTarget(ActionEngine engine){
+		public Task<Space> GetTarget( IMakeGamestateDecisions engine ){
 			return engine.TargetSpace( source, sourceTerrain, range, targetFilter );
 		}
 

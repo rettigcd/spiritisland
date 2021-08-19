@@ -6,13 +6,14 @@ namespace SpiritIsland.Basegame {
 
 		[MinorCard("Dark and Tangled Woods", 1, Speed.Fast, Element.Moon, Element.Earth, Element.Plant)]
 		[FromPresence(1)]
-		static public Task Act(ActionEngine eng,Space target){
+		static public Task Act(TargetSpaceCtx ctx){
+			var target = ctx.Target;
 			// 2 fear
-			eng.AddFear(2);
+			ctx.AddFear(2);
 
 			// if target is M/J, Defend 3
 			if(target.Terrain.IsIn(Terrain.Jungle,Terrain.Mountain))
-				eng.GameState.Defend(target,3);
+				ctx.GameState.Defend(target,3);
 			return Task.CompletedTask;
 		}
 

@@ -37,13 +37,14 @@ namespace SpiritIsland {
 		}
 
 		async Task PickSpaceAndActivate( Spirit spirit, GameState gameState ) {
-			var target = await targetSpace.GetTarget( spirit.BindSpiritActions(gameState) );
+			var target = await targetSpace.GetTarget( spirit.MakeDecisionsFor(gameState) );
 			if(target == null) return; // no space available that meets criteria.   !!! needs unit test showing if no-target-space simply does nothing, and doesn't crash
 			TargetedSpace?.Invoke(new SpaceTargetedArgs{Initiator=spirit,Card=this,Target=target } );
-			InvokeAgainst( spirit, gameState, target );
+			await InvokeAgainst( spirit, gameState, target );
 		}
 
-		void InvokeAgainst( Spirit spirit, GameState gameState, Space target) => methodBase.Invoke( null, new object[] { spirit.BindSpiritActions(gameState), target } );
+		Task InvokeAgainst( Spirit spirit, GameState gameState, Space target) 
+			=> (Task)methodBase.Invoke( null, new object[] { new TargetSpaceCtx( spirit, gameState, target) } );
 
 	}
 

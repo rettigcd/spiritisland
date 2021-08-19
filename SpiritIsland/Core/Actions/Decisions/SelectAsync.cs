@@ -4,25 +4,40 @@ using SpiritIsland;
 
 namespace SpiritIsland {
 
+	public enum Present {
+		/// <summary> Shows for 1 or more items.</summary>
+		Always,
+
+		/// <summary>
+		/// Shows for 2 or more options
+		/// </summary>
+		IfMoreThan1,
+
+		/// <summary>
+		/// Shows for 1 or more items, plus has done, cancel
+		/// </summary>
+		Done,
+	}
+
 	public class SelectAsync<T> : IDecision where T:class,IOption {
 
 		readonly TaskCompletionSource<T> promise;
-		readonly bool allowShortCircuit;
+		readonly Present present;
 
 		public SelectAsync(
 			string prompt,
 			T[] options,
-			bool allowShortCircuit,
+			Present present,
 			TaskCompletionSource<T> promise
 		){
 			Prompt = prompt;
 			this.promise = promise;
-			this.allowShortCircuit = allowShortCircuit;
+			this.present = present;
 
 			var optionList = options.Cast<IOption>().ToList();
 			if(optionList.Count == 0)
 				promise.TrySetResult(null);
-			else if(allowShortCircuit)
+			else if(present == Present.Done)
 				optionList.Add(TextOption.Done);
 			Options = optionList.ToArray();
 		}
@@ -31,8 +46,10 @@ namespace SpiritIsland {
 
 		public IOption[] Options {get;}
 
+		public bool AllowAutoSelect => present != Present.Always;
+
 		public void Select( IOption option ) {
-			if(allowShortCircuit && TextOption.Done.Matches(option))
+			if(present == Present.Done && TextOption.Done.Matches(option))
 				promise.TrySetResult(null);
 			else
 				promise.TrySetResult((T)option);

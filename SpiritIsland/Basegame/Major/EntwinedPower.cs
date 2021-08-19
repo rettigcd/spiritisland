@@ -8,14 +8,16 @@ namespace SpiritIsland.Basegame {
 
 		[MajorCard( "Entwined Power", 2, Speed.Fast, Element.Moon, Element.Water, Element.Plant )]
 		[TargetSpirit]
-		static public async Task ActAsync( ActionEngine selfEng, Spirit target ) {
-			var (self, gs) = selfEng;
-			// !!! You and target spirit may use each other's presence to target powers.
+		static public async Task ActAsync( IMakeGamestateDecisions ctx, Spirit target ) {
+			var self = ctx.Self;
+			var gs = ctx.GameState;
+
+			// !!! You and target spirit may use each other's presence to target powers. - IMPLEMENT
 
 			TargetLandApi x = self.PowerCardApi;
 
 			// Target spirit gains a power Card.
-			await selfEng.Self.CardDrawer.Draw(target,gs,(cards)=>{
+			await self.CardDrawer.Draw(target,gs,(cards)=>{
 				// You gain one of the power Cards they did not keep.
 				return DrawFromDeck.TakeCard(self,cards);
 			} );

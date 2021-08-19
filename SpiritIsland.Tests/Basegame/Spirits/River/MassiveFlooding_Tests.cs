@@ -1,39 +1,25 @@
-﻿using SpiritIsland.Basegame;
+﻿using Shouldly;
+using SpiritIsland.Basegame;
 using SpiritIsland.SinglePlayer;
 using System.Linq;
 using Xunit;
 
 namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
-	public class RiverGame : GameBaseTests {
-		protected void Game_PlacePresence1( string sourceTrack, string destinationSpace ) {
-			Game_SelectOption( "Select Growth to resolve", "PlacePresence(1)" );
-			Game_SelectOptionContains( "PlacePresence(1) - Select Presence to place", sourceTrack );
-			Game_SelectOption( "PlacePresence(1) - Where would you like", destinationSpace );
-		}
-
-		protected void Game_PlacePresence1( Track sourceTrack, string destinationSpace ) {
-			Game_SelectOption( "Select Growth to resolve", "PlacePresence(1)" );
-			Game_SelectOption( "PlacePresence(1) - Select Presence to place", sourceTrack );
-			Game_SelectOption( "PlacePresence(1) - Where would you like", destinationSpace );
-		}
-
-		protected void Game_Reclaim1( string cardToReclaim ) {
-			Game_SelectOption( "Select Growth to resolve", "Reclaim(1)" );
-			Game_SelectOption( "Reclaim(1) - Select card", cardToReclaim );
-		}
-
-	}
-
 	public class MassiveFlooding_Tests : RiverGame {
+
+
+		readonly Spirit spirit;
+		readonly GameState gs;
 
 		public MassiveFlooding_Tests(){
 			// Given: River
-			var gameState = new GameState( new RiverSurges().UsePowerProgression() ) {
-				Island = new Island( Board.BuildBoardA() )
+			spirit = new RiverSurges().UsePowerProgression();
+			gs = new GameState( spirit ) {
+				Island = new Island( Board.BuildBoardA() ),
+				InvaderDeck = InvaderDeck.Unshuffled()
 			};
-			gameState.InvaderDeck = InvaderDeck.Unshuffled();
-			game = new SinglePlayerGame( gameState );
+			game = new SinglePlayerGame( gs );
 
 		}
 
@@ -64,10 +50,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			Game_DoneWith( Speed.Fast );
 
-			Game_SelectOption( "Select Slow to resolve", "Massive Flooding" );
-			Game_SelectOption( "Massive Flooding - Select target", "A8" ); // always a town on A8
-			Game_SelectOption( "Massive Flooding - Select invader to push", "T@2" );
-			Game_SelectOption( "Massive Flooding - Push T@2 to", "A5" );
+			Prompt_Select( "Select Slow to resolve:", "River's Bounty,Massive Flooding,Done", "Massive Flooding" );
+			Prompt_Select( "Select target.", "A2,A3,A5,A8", "A8" );
+			Prompt_Select( "Select invader to push", "T@2,E@1,Done", "T@2" );
+			Prompt_Select( "Push T@2 to", "A5,A6,A7", "A5" );
 		}
 
 		[Fact]
@@ -84,11 +70,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			Game_DoneWith( Speed.Fast );
 
-			Game_SelectOption( "Select Slow to resolve", "Massive Flooding" );
-			Game_SelectOption( "Massive Flooding - Select target", "A8");
-//			Game_SelectOption( "Massive Flooding - Select Innate option", MassiveFlooding.k2);
-			Game_SelectOption( "Massive Flooding - Select invader to push", "E@1" ); // always a town on A8
-			Game_SelectOption( "Massive Flooding - Push E@1 to", "A5" ); // always a town on A8
+			Prompt_Select( "Select Slow to resolve:", "River's Bounty,Massive Flooding,Done", "Massive Flooding" );
+			Prompt_Select( "Select target.", "A5,A8", "A8" );
+			Prompt_Select( "Select invader to push", "E@1,Done", "E@1" );
+			Prompt_Select( "Push E@1 to", "A5,A6,A7", "A5" );
 		}
 
 		[Fact]
@@ -114,7 +99,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Game_DoneWith( Speed.Fast );
 
 			Game_SelectOption( "Select Slow to resolve", "Massive Flooding" );
-			Game_SelectOption( "Massive Flooding - Select target.", space.Label);
+			Game_SelectOption( "Select target.", space.Label);
 			
 			Assert.Equal("1C@1",game.GameState.InvadersOn(space).ToString());
 		}

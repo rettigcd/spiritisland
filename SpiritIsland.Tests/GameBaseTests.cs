@@ -18,6 +18,18 @@ namespace SpiritIsland.Tests {
 			game.Decision.Select( game.Decision.Options[optionIndex] );
 		}
 
+		protected void Prompt_Select( string prompt, string optionsString, string select, bool done = false ) {
+			string msg = $"{prompt}:{optionsString}:{select}";
+			game.Decision.Prompt.ShouldBe( prompt, msg );
+			game.Decision.Options.Select( x => x.Text ).Join( "," ).ShouldBe( optionsString, msg );
+			IOption match = game.Decision.Options.Single( x => x.Text == select );
+			game.Decision.Select( match );
+			if(done)
+				game.Decision.Options.Length.ShouldBe(0, msg );
+			else
+				game.Decision.Options.Length.ShouldBeGreaterThan( 0, msg );
+		}
+
 		protected void Game_SelectOption( string prompt, string optionText ) {
 
 			if(!game.Decision.Prompt.StartsWith(prompt))

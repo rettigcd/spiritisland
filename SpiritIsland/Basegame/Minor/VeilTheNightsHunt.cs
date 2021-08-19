@@ -6,19 +6,20 @@ namespace SpiritIsland.Basegame {
 
 		[MinorCard( "Veil the Night's Hunt", 1, Speed.Fast, Element.Moon, Element.Air, Element.Animal)]
 		[FromPresence( 2, Target.Dahan )]
-		static public async Task Act( ActionEngine engine, Space target ) {
+		static public async Task Act( TargetSpaceCtx ctx ) {
+			var target = ctx.Target;
 
-			int dahanCount = engine.GameState.GetDahanOnSpace(target);
+			int dahanCount = ctx.GameState.GetDahanOnSpace(target);
 			string damageInvadersText = $"{dahanCount} damage to invaders";
-			bool damageInvaders = engine.GameState.HasInvaders(target)
-				&& await engine.Self.SelectText("Select card option", damageInvadersText, "push up to 3 dahan") == damageInvadersText;
+			bool damageInvaders = ctx.GameState.HasInvaders(target)
+				&& await ctx.Self.SelectText("Select card option", damageInvadersText, "push up to 3 dahan") == damageInvadersText;
 
 			if(damageInvaders)
 				// each dahan deals 1 damage to a different invader
-				await engine.DamageInvaders(target, dahanCount);
+				await ctx.DamageInvaders(target, dahanCount);
 			else
 				// push up to 3 dahan
-				await engine.PushUpToNDahan(target,3);
+				await ctx.PushUpToNDahan(target,3);
 		}
 
 	}

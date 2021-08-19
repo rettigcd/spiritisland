@@ -93,10 +93,12 @@ namespace SpiritIsland {
 		) {
 
 			InvaderSpecific[] CalcInvaderTypes() => eng.GameState.InvadersOn(source).FilterBy(healthyInvaders);
+
 			var invaders = CalcInvaderTypes();
 			while(0<countToPush && 0<invaders.Length){
-				var invader = await eng.Self.SelectInvader("Select invader to push",invaders,true);
-				if(invader==null) break;
+				var invader = await eng.Self.SelectInvader("Select invader to push",invaders, Present.Done );
+				if(invader==null) 
+					break;
 
 				var destination = await eng.Self.SelectSpace( "Push " + invader.Summary + " to", source.Adjacent.Where( x => x.IsLand ) );
 				eng.GameState.Move( invader, source, destination );

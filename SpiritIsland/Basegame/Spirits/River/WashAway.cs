@@ -10,9 +10,9 @@ namespace SpiritIsland.Basegame {
 
 		[SpiritCard(WashAway.Name, 1, Speed.Slow, Element.Water, Element.Earth)]
 		[FromPresence(1,Target.TownOrExplorer)]
-		static public async Task ActionAsync(ActionEngine engine,Space target){
+		static public async Task ActionAsync(TargetSpaceCtx ctx){
 
-			await engine.PushUpToNInvaders(target,3, Invader.Town,Invader.Explorer);
+			await ctx.PushUpToNInvaders(ctx.Target,3, Invader.Town,Invader.Explorer);
 
 		}
 
