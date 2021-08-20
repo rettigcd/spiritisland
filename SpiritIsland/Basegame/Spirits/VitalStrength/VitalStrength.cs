@@ -77,11 +77,10 @@ Power Progression:
 
 		readonly GiftOfStrength_InnatePower giftOfStrength;
 
-		public override void Initialize( Board board, GameState gameState ){
-			base.Initialize( board, gameState );
+		protected override void InitializeInternal( Board board, GameState gs ) {
 			InitPresence( board );
-			gameState.PreRavaging.Handlers.Add( GameState_Ravaging );
-			giftOfStrength.Initialize(gameState);
+			gs.PreRavaging.Handlers.Add( GameState_Ravaging );
+			giftOfStrength.Initialize(gs);
 		}
 
 		void InitPresence( Board board ){

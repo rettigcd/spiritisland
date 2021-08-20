@@ -6,7 +6,7 @@ namespace SpiritIsland {
 
 	public abstract class GrowthActionFactory : IActionFactory {
 
-		public abstract Task Activate( Spirit spirit, GameState gameState );
+		public abstract Task ActivateAsync( Spirit spirit, GameState gameState );
 
 		public virtual string ShortDescription => ToString().Split('.').Last();
 

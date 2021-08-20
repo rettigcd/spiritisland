@@ -14,7 +14,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// no explorers
 
 			//  When: activating card
-			card.Activate( spirit, gameState );
+			card.ActivateAsync( spirit, gameState );
 			var action = spirit.Action;
 
 			//  Then: card has 0 options
@@ -39,7 +39,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			gameState.Adjust(targetSpace,InvaderSpecific.City,cityCount);
 
 			//  When: activating card
-			card.Activate( spirit, gameState );
+			card.ActivateAsync( spirit, gameState );
 			action = spirit.Action;
 
 			var invader = action.Options[0] as InvaderSpecific;
@@ -73,7 +73,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			//  When: activating card
 //			var engine = spirit.Bind( gameState );
-			card.Activate( spirit, gameState );
+			card.ActivateAsync( spirit, gameState );
 			action = spirit.Action;
 
 			Then_SelectInvaderToPush( InvaderSpecific.Explorer, "E@1", "Done" );
@@ -97,7 +97,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			var townDestination = board[3];
 
 			//  When: activating card
-			card.Activate( spirit, gameState );
+			card.ActivateAsync( spirit, gameState );
 			action = spirit.Action;
 
 			//  Then: Select Explorer
@@ -139,7 +139,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			var invaderDestination = board[2];
 
 			//  When: activating card
-			card.Activate( spirit, gameState );
+			card.ActivateAsync( spirit, gameState );
 			action = spirit.Action;
 
 			//  Auto-Selects: target space

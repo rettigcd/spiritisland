@@ -15,7 +15,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Assert_CardIsReady(card,Speed.Fast);
 
 			// When: targetting self
-			card.Activate( spirit, gameState );
+			card.ActivateAsync( spirit, gameState );
 			action = spirit.Action;
 			Assert.True(action.IsResolved);
 
@@ -41,7 +41,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Assert_CardIsReady(card,Speed.Fast);
 
 			// When: targetting other spirit
-			card.Activate( spirit, gameState );
+			card.ActivateAsync( spirit, gameState );
 			action = spirit.Action;
 			When_TargettingSpirit( otherSpirit );
 

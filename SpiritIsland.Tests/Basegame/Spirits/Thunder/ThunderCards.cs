@@ -23,7 +23,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 		}
 
 		protected void When_ActivateCard( string cardName ) {
-			spirit.Hand.Single( x => x.Name == cardName ).Activate( spirit, gs);
+			spirit.Hand.Single( x => x.Name == cardName ).ActivateAsync( spirit, gs);
 		}
 
 		protected void Step( string expectedPrompt, string expectedOptions, IOption optionToSelect, bool expectedResolved ) {

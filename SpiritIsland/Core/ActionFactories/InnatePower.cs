@@ -51,7 +51,7 @@ namespace SpiritIsland {
 
 		public IActionFactory Original => this;
 
-		public abstract Task Activate( Spirit spirit, GameState gameState );
+		public abstract Task ActivateAsync( Spirit spirit, GameState gameState );
 
 		public Element[][] GetTriggerThresholds() => elementListByMethod.Values.ToArray();
 
@@ -73,7 +73,7 @@ namespace SpiritIsland {
 
 		#endregion
 
-		public override async Task Activate( Spirit self, GameState gameState ) {
+		public override async Task ActivateAsync( Spirit self, GameState gameState ) {
 			Spirit target = await self.SelectSpirit(gameState.Spirits);
 			await TargetSpirit_PowerCard.TargetSpirit( HighestMethod( self ), self, gameState, target );
 		}
@@ -91,7 +91,7 @@ namespace SpiritIsland {
 
 		#endregion
 
-		public override async Task Activate( Spirit spirit, GameState gameState ) {
+		public override async Task ActivateAsync( Spirit spirit, GameState gameState ) {
 			var target = await targetSpace.GetTarget( spirit.MakeDecisionsFor(gameState) );
 			MethodInfo x = HighestMethod( spirit );
 			var engine = new TargetSpaceCtx( spirit, gameState, target );

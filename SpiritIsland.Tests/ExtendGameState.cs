@@ -10,16 +10,4 @@ namespace SpiritIsland.Tests {
 		}
 	}
 
-	class NullFearCard : IFearCard {
-		public Task Level1( GameState gs ) { return Task.CompletedTask;}
-
-		public Task Level2( GameState gs ){
-			throw new System.NotImplementedException();
-		}
-
-		public Task Level3( GameState gs ){
-			throw new System.NotImplementedException();
-		}
-	}
-
 }

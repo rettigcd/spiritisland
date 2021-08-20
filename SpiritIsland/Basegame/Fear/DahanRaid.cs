@@ -7,6 +7,8 @@ namespace SpiritIsland.Basegame {
 
 	public class DahanRaid : IFearCard {
 
+		public const string Name = "Dahan Raid";
+
 		[FearLevel(1, "Each player chooses a different land with Dahan. 1 Damage there.")]
 		public Task Level1( GameState gs ) {
 			return ForEachPlayerChosenLandWithDahan( gs, ( s ) => gs.SpiritFree_DamageInvaders( s, 1 ) );

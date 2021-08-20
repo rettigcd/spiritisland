@@ -42,6 +42,7 @@ namespace SpiritIsland.SinglePlayer {
 				if(TextOption.Done.Matches( option ))
 					break;
 
+
 				// if use clicked a slow card that was made fast, // slow card won't be in the options
 				if(!factoryOptions.Contains( option ))
 					// find the fast version of the slow card that was clicked
@@ -50,9 +51,11 @@ namespace SpiritIsland.SinglePlayer {
 				if(!factoryOptions.Contains( option ))
 					throw new Exception( "Dude! - You selected something that wasn't an option" );
 
+
+
 				var selectedActionFactory = (IActionFactory)option;
 				// var growthName = selectedActionFactory.Name;
-				await selectedActionFactory.Activate( spirit, gameState );
+				await selectedActionFactory.ActivateAsync( spirit, gameState );
 
 				spirit.RemoveUnresolvedFactory( selectedActionFactory);
 			}

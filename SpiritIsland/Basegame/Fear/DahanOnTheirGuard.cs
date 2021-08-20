@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 namespace SpiritIsland.Basegame {
 
 	public class DahanOnTheirGuard : IFearCard {
+		public const string Name = "Dahan on their Guard";
 
 		[FearLevel( 1, "In each land, Defend 1 per Dahan." )]
 		public Task Level1( GameState gs ) {

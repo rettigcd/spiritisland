@@ -76,8 +76,7 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 		}
 		static readonly SwiftnessOfLightning swiftness = new SwiftnessOfLightning();
 
-		public override void Initialize( Board board, GameState gs ) {
-			base.Initialize(board,gs);
+		protected override void InitializeInternal( Board board, GameState gs ) {
 			// Setup: put 2 pressence in highest numbered sands
 			var space = board.Spaces.Reverse().First(x=>x.Terrain==Terrain.Sand);
 			Presence.PlaceOn(space);

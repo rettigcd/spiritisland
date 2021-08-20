@@ -92,8 +92,9 @@ namespace SpiritIsland.WinForms {
 				new WaryOfTheInterior()
 			};
 			baseGameFearCards.Shuffle();
+			gameState.FearDeck.Clear();
 			foreach(var f in baseGameFearCards.Take( 9 ))
-				gameState.FearDeck.Push( f );
+				gameState.AddFearCard( f );
 
 			gameState.BlightCard = ((int)DateTime.Now.Ticks) % 1 == 0
 				? new DownwardSpiral()

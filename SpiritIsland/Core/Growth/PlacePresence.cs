@@ -31,7 +31,7 @@ namespace SpiritIsland {
 
 		#endregion
 
-		public override Task Activate( Spirit spirit, GameState gameState ) {
+		public override Task ActivateAsync( Spirit spirit, GameState gameState ) {
 			return spirit.MakeDecisionsFor(gameState).PlacePresence( range, filterEnum );
 		}
 

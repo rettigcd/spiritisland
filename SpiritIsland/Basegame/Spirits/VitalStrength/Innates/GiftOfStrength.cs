@@ -13,22 +13,22 @@ namespace SpiritIsland.Basegame {
 		// * Note * these have a different signature than other Innates, called directly from GiftOfStrength_InnatePower
 
 		[InnateOption("1 sun,2 earth,2 plant")]
-		static public Task Option1( Spirit target, List<SpaceTargetedArgs> targetedList ) {
-			return RepeatPowerCard(target,2, targetedList );
+		static public Task Option1( TargetSpiritCtx ctx, List<SpaceTargetedArgs> targetedList ) {
+			return RepeatPowerCard(ctx,2, targetedList );
 		}
 
 		[InnateOption("2 sun,3 earth,2 plant")]
-		static public Task Option2( Spirit target, List<SpaceTargetedArgs> targetedList ) {
-			return RepeatPowerCard(target,4, targetedList );
+		static public Task Option2( TargetSpiritCtx ctx, List<SpaceTargetedArgs> targetedList ) {
+			return RepeatPowerCard(ctx,4, targetedList );
 		}
 
 		[InnateOption("2 sun,4 earth,3 plant")]
-		static public Task Option3( Spirit target, List<SpaceTargetedArgs> targetedList ) {
-			return RepeatPowerCard(target,6, targetedList );
+		static public Task Option3( TargetSpiritCtx ctx, List<SpaceTargetedArgs> targetedList ) {
+			return RepeatPowerCard(ctx,6, targetedList );
 		}
 
-		static Task RepeatPowerCard( Spirit target,  int maxCost, List<SpaceTargetedArgs> targetedList ) {
-			target.AddActionFactory(new ReplaySpaceCardForCost(maxCost,targetedList));
+		static Task RepeatPowerCard( TargetSpiritCtx ctx, int maxCost, List<SpaceTargetedArgs> targetedList ) {
+			ctx.Target.AddActionFactory(new ReplaySpaceCardForCost(maxCost,targetedList));
 			return Task.CompletedTask;
 		}
 
@@ -46,7 +46,7 @@ namespace SpiritIsland.Basegame {
 			gameState.TimePasses_ThisRound.Push((_) => { targetedList.Clear(); return Task.CompletedTask; } );
 		}
 
-		public override Task Activate( Spirit self, GameState gameState ) {
+		public override Task ActivateAsync( Spirit self, GameState gameState ) {
 			return FindSpiritAndInvoke( self, gameState, HighestMethod( self ) );
 		}
 
@@ -73,7 +73,7 @@ namespace SpiritIsland.Basegame {
 
 		public IActionFactory Original => this;
 
-		public Task Activate( Spirit self, GameState _ ) {
+		public Task ActivateAsync( Spirit self, GameState _ ) {
 			return self.SelectSpaceCardToReplayForCost( maxCost, targetedList );
 		}
 

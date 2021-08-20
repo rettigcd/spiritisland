@@ -42,7 +42,7 @@ namespace SpiritIsland.SinglePlayer {
 			// Fear
 			Log( $"Fear Pool:{gameState.FearPool} Activated:{gameState.ActivatedFearCards.Count}" );
 			while(gameState.ActivatedFearCards.Count > 0) {
-				var card = gameState.ActivatedFearCards.Pop();
+				var card = gameState.ActivatedFearCards.Pop().Card;
 				switch(gameState.TerrorLevel) {
 					case 1: await card.Level1( gameState ); break;
 					case 2: await card.Level2( gameState ); break;

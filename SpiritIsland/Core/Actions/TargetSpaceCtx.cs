@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
+
 	public class TargetSpaceCtx : IMakeGamestateDecisions {
 
 		public TargetSpaceCtx( Spirit self, GameState gameState, Space target ) {

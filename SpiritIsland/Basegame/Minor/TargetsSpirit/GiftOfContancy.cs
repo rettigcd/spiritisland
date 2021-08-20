@@ -6,17 +6,18 @@ namespace SpiritIsland.Basegame {
 
 		[MinorCard( "Gift of Contancy", 0, Speed.Fast, Element.Sun, Element.Earth )]
 		[TargetSpirit]
-		static public Task ActAsync( IMakeGamestateDecisions engine, Spirit target ) {
+		static public Task ActAsync( TargetSpiritCtx ctx ) {
+			var target = ctx.Target;
 			// target spirit gains 2 energy.  
 			target.Energy += 2;
 
 			// At end of turn, target spirit may reclaim 1 power card instead of discarding it.
 			var purchased = target.PurchasedCards;
-			engine.GameState.TimePasses_ThisRound.Push( new Reclaim1InsteadOfDiscard(target).Reclaim );
+			ctx.GameState.TimePasses_ThisRound.Push( new Reclaim1InsteadOfDiscard(target).Reclaim );
 
 			// if you target anouther spirit you may also reclaim 1 power Card instead of discarding it.
-			if(target != engine.Self)
-				engine.GameState.TimePasses_ThisRound.Push( new Reclaim1InsteadOfDiscard( engine.Self ).Reclaim );
+			if(target != ctx.Self)
+				ctx.GameState.TimePasses_ThisRound.Push( new Reclaim1InsteadOfDiscard( ctx.Self ).Reclaim );
 
 			return Task.CompletedTask;
 		}

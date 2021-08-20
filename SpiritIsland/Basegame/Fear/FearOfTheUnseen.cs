@@ -5,6 +5,8 @@ namespace SpiritIsland.Basegame {
 
 	public class FearOfTheUnseen : IFearCard {
 
+		public const string Name = "Fear of the Unseen";
+
 		[FearLevel( 1, "Each player removes 1 Explorer / Town from a land with SacredSite." )]
 		public async Task Level1( GameState gs ) {
 			foreach(var spirit in gs.Spirits) {

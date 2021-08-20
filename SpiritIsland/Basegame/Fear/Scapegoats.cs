@@ -4,6 +4,8 @@ namespace SpiritIsland.Basegame {
 
 	public class Scapegoats : IFearCard {
 
+		public const string Name = "Scapegoats";
+
 		[FearLevel( 1, "Each Town destroys 1 Explorer in its land." )]
 		public Task Level1( GameState gs ) {
 			foreach(var space in gs.Island.AllSpaces)

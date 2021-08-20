@@ -5,6 +5,8 @@ namespace SpiritIsland.Basegame {
 
 	public class TallTalesOfSavagery : IFearCard {
 
+		public const string Name = "Tall Tales of Savagery";
+
 		[FearLevel( 1, "Each player removes 1 Explorer from a land with Dahan." )]
 		public async Task Level1( GameState gs ) {
 			foreach(var spirit in gs.Spirits) {

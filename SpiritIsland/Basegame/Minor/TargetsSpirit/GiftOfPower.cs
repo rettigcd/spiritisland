@@ -6,9 +6,9 @@ namespace SpiritIsland.Basegame {
 
 		[MinorCard( "Gift of Power", 0, Speed.Slow,"moon, water, earth, plant")]
 		[TargetSpirit]
-		static public Task ActAsync( IMakeGamestateDecisions engine, Spirit target ) {
+		static public Task ActAsync( TargetSpiritCtx ctx ) {
 			// gain a minor power card
-			return target.DrawMinor(engine.GameState); 
+			return ctx.Target.DrawMinor(ctx.GameState); 
 		}
 
 	}

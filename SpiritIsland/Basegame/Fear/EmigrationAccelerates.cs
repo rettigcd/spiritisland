@@ -6,6 +6,8 @@ namespace SpiritIsland.Basegame {
 
 	public class EmigrationAccelerates : IFearCard {
 
+		public const string Name = "Emigration Accelerates";
+
 		[FearLevel( 1, "Each player removes 1 Explorer from a Coastal land." )]
 		public Task Level1( GameState gs ) {
 			return ForEachSpiritSelectedLandRemoveInvader( gs, x => x.IsCostal, Invader.Explorer );

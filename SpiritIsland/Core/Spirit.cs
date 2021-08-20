@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SpiritIsland;
 
 namespace SpiritIsland {
 
@@ -71,9 +70,9 @@ namespace SpiritIsland {
 
 			var factories = GetUnresolvedActionFactories( speed ).ToArray();
 			foreach(var factory in factories) {
-				factory.Activate(this,gameState);
+				factory.ActivateAsync(this,gameState);
 				if(Action.IsResolved)
-					Resolve(factory);
+					RemoveUnresolvedFactory(factory);
 				else
 					decisions.Clear(); // clean unresolved action decisions out
 			}
@@ -134,23 +133,30 @@ namespace SpiritIsland {
 		}
 
 		void TriggerEnergyElementsAndReclaims( IActionFactory selectedActionFactory ) {
+
+			// prevent retriggering following Reclaim1
+			if(selectedActionFactory is Reclaim1 || selectedActionFactory is SelectAnyElements)
+				return;
+
 			// Energy
 			Energy += EnergyPerTurn;
 			// Elements
 			Elements.AddRange( Presence.Energy.Revealed.Where( t => t.Element.HasValue ).Select( t => t.Element.Value ) );
 			Elements.AddRange( Presence.CardPlays.Revealed.Where( t => t.Element.HasValue ).Select( t => t.Element.Value ) );
+			int anyCount = Elements[Element.Any];
+			Elements[Element.Any] = 0; // we can't draw these in our activated element list
+			if(anyCount>0)
+				AddActionFactory( new SelectAnyElements( anyCount ) );
 
 			// !!! convert
 
 			// Reclaims-1
-			if(!(selectedActionFactory is Reclaim1)) { // prevent retriggering following Reclaim1
-				int reclaim1Count = Math.Min(
-					DiscardPile.Count,  // Reclaim-all will make this 0, disabling any reclaim-1
-					Presence.CardPlays.Revealed.Count( x => x.ReclaimOne )
-				);
-				while(reclaim1Count-- > 0)
-					AddActionFactory( new Reclaim1() );
-			}
+			int reclaim1Count = Math.Min(
+				DiscardPile.Count,  // Reclaim-all will make this 0, disabling any reclaim-1
+				Presence.CardPlays.Revealed.Count( x => x.ReclaimOne )
+			);
+			while(reclaim1Count-- > 0)
+				AddActionFactory( new Reclaim1() );
 		}
 
 		public void AddActionFactory( IActionFactory factory ) {
@@ -235,13 +241,14 @@ namespace SpiritIsland {
 
 		public TargetLandApi PowerCardApi {get; set;} = new TargetLandApi();
 
-		public virtual void Initialize( Board board, GameState gameState ){
+		public void Initialize( Board board, GameState gameState ){
 			gameState.TimePassed += On_TimePassed;
+			InitializeInternal(board,gameState);
 		}
 
+		protected abstract void InitializeInternal( Board board, GameState gameState );
+
 		void On_TimePassed(GameState _ ) {
-			// !!! Need a 2-turn unit test that makes sure these things get cleared each turn
-			// because it is easy to forget to call base.Initialize(board,gamestate)
 			DiscardPile.AddRange( PurchasedCards );
 			PurchasedCards.Clear();
 			usedInnates.Clear();

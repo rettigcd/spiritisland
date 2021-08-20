@@ -1,10 +1,7 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
 BUG - Rampant green not given option to stop ravage with destroyed presence
-
-IMP - AnyElement in Bringer
-IMP - AnyElement in Spirits May Yet Dream
-
+IMP - Entwined share presence for targetting
 
 == Jonah ideas ===
 Display destroyed presence
@@ -13,14 +10,6 @@ make SS dispay differently
 // === Basegame Road Map ===
 UI		Display Spirit Name / Image
 UI		Display $$
-BASE	Bringer
-	Any Elements
-	Night Terrors
-	Spirits May Yet Dream
-	Card 1
-	Card 2
-	Card 3
-	Card 4
 BASE	Ocean
 CORE	Split Growth Option into parts
 UI  Re-evaluate Buttons - change to dropdown?  run along top to get more width for spirit card?
@@ -30,7 +19,7 @@ UI	show COLOR presence on board - GUI
 UI	click on invaders on board - GUI
 UI	Fix Fear card experience - logging or showing cards
 UI	Enhance Ravage / Build images
-BASE	Review Major / Minor, decide which need Unit Tests and Implement
+BASE	Review Major / Minor, decide which need Unit Tests and Implement - Targets SPIRITS
 BONUS	Generate Innate images from innate metadata
 == Done ==
 

@@ -119,8 +119,7 @@ Shadows Flicker like Flame:
 
 		}
 
-		public override void Initialize( Board board, GameState gs ) {
-			base.Initialize(board,gs);
+		protected override void InitializeInternal( Board board, GameState gs ) {
 
 			var higestJungle = board.Spaces.OrderByDescending(s=>s.Label).First(s=>s.Terrain==Terrain.Jungle);
 

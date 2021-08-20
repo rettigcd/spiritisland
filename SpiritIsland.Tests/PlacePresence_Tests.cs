@@ -25,7 +25,7 @@ namespace SpiritIsland.Tests.Core {
 				};
 			}
 
-			public override void Initialize( Board _, GameState _1 ){
+			protected override void InitializeInternal( Board _, GameState _1 ){
 				throw new NotImplementedException();
 			}
 

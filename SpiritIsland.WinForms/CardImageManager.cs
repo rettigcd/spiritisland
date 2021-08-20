@@ -28,4 +28,28 @@ namespace SpiritIsland.WinForms {
 		readonly Dictionary<PowerCard, Image> images = new();
 	}
 
+	sealed public class FearCardImageManager : IDisposable {
+
+		public FearCardImageManager() {
+		}
+
+		public Image GetImage( string name ) {
+
+			if(!images.ContainsKey( name )) {
+				string filename = name.Replace( ' ', '_' ).Replace( "'", "" ).ToLower();
+				Image image = Image.FromFile( $".\\images\\fear\\{filename}.jpg" );
+				images.Add( name, image );
+			}
+			return images[name];
+		}
+
+		public void Dispose() {
+			foreach(var image in images.Values)
+				image.Dispose();
+			images.Clear();
+		}
+
+		readonly Dictionary<string, Image> images = new();
+	}
+
 }

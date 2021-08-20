@@ -42,7 +42,8 @@ namespace SpiritIsland.Basegame {
 		public override string Text => Name;
 
 		public Bringer():base(
-			new Track[] {Track.Energy2, Track.AirEnergy, Track.Energy3, Track.MoonEnergy, Track.Energy4, Track.AnyEnergy,Track.Energy5, },
+//			new Track[] { Track.Energy2, Track.AirEnergy, Track.Energy3, Track.MoonEnergy, Track.Energy4, Track.AnyEnergy, Track.Energy5, },
+			new Track[] {Track.Energy2, Track.AnyEnergy, Track.Energy3, Track.MoonEnergy, Track.Energy4, Track.AnyEnergy,Track.Energy5, },
 			new Track[] {Track.Card2, Track.Card2, Track.Card2, Track.Card3, Track.Card3, Track.AnyEnergy },
 			PowerCard.For<CallOnMidnightsDream>(),
 			PowerCard.For<DreadApparitions>(),
@@ -69,7 +70,7 @@ namespace SpiritIsland.Basegame {
 		}
 
 
-		public override void Initialize( Board board, GameState _1 ) {
+		protected override void InitializeInternal( Board board, GameState gs ) {
 			// Setup: 2 presense in highest numbered sands
 			var startingIn = board.Spaces.Where(x=>x.Terrain==Terrain.Sand).Last();
 			Presence.PlaceOn( startingIn );
@@ -79,6 +80,8 @@ namespace SpiritIsland.Basegame {
 		public override InvaderGroup BuildInvaderGroup( GameState gs, Space space ) {
 			return new ToDreamAThousandDeaths( this, gs, space, gs.GetCounts(space), gs.AddFearDirect, Cause.Power );
 		}
+
+
 	}
 
 	class ToDreamAThousandDeaths : InvaderGroup {

@@ -6,16 +6,16 @@ namespace SpiritIsland.Basegame {
 
 		[MinorCard( "Reaching Grasp", 0, Speed.Fast, Element.Sun, Element.Air, Element.Water)]
 		[TargetSpirit]
-		static public Task Act( IMakeGamestateDecisions engine, Spirit target ) {
+		static public Task Act( TargetSpiritCtx ctx ) {
 			// target spirit gets +2 range with all their Powers
-			var original = target.PowerCardApi;
-			target.PowerCardApi = new ExtendRange( 2, original );
+			var original = ctx.Target.PowerCardApi;
+			ctx.Target.PowerCardApi = new ExtendRange( 2, original );
 
 			Task cleanup(GameState _ ) {
-				target.PowerCardApi = original;
+				ctx.Target.PowerCardApi = original;
 				return Task.CompletedTask;
 			}
-			engine.GameState.TimePasses_ThisRound.Push(cleanup);
+			ctx.GameState.TimePasses_ThisRound.Push(cleanup);
 			return Task.CompletedTask;
 		}
 

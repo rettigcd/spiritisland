@@ -28,7 +28,7 @@ namespace SpiritIsland {
 
 		public event SpaceTargetedEvent TargetedSpace; // Targeter, Card, Targetee
 
-		public override Task Activate( Spirit spirit, GameState gameState ) {
+		public override Task ActivateAsync( Spirit spirit, GameState gameState ) {
 			return PickSpaceAndActivate(spirit,gameState);
 		}
 

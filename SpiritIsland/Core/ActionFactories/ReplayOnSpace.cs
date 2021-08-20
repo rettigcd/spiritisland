@@ -17,7 +17,7 @@ namespace SpiritIsland {
 
 		IActionFactory IActionFactory.Original => original;
 
-		public Task Activate( Spirit spirit, GameState gameState )
+		public Task ActivateAsync( Spirit spirit, GameState gameState )
 			=> original.ActivateAgainstSpecificTarget(spirit,gameState,target);
 		
 	}

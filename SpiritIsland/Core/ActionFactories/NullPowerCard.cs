@@ -11,7 +11,7 @@ namespace SpiritIsland {
 			this.PowerType = PowerType.Spirit; // HACK!
 		}
 
-		public override Task Activate( Spirit _, GameState _1 ) {return Task.CompletedTask;}
+		public override Task ActivateAsync( Spirit _, GameState _1 ) {return Task.CompletedTask;}
 
 	}
 

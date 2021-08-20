@@ -46,7 +46,7 @@ namespace SpiritIsland.Tests {
 		}
 
 		protected void When_PlayingCard() {
-			card.Activate( spirit, gameState );
+			card.ActivateAsync( spirit, gameState );
 			action = spirit.Action;
 		}
 

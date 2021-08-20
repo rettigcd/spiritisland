@@ -8,6 +8,8 @@ namespace SpiritIsland.Basegame {
 
 	public class SeekSafety : IFearCard {
 
+		public const string Name = "Seek Safety";
+
 		[FearLevel( 1, "Each player may Push 1 Explorer into a land with more Town / City than the land it came from." )]
 		public async Task Level1( GameState gs ) {
 			var buildingCounts = gs.Island.AllSpaces.ToDictionary(s=>s,s=>gs.InvadersOn(s).TownsAndCitiesCount);

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 namespace SpiritIsland.Basegame {
 
 	public class AvoidTheDahan : IFearCard {
+		public const string Name = "Avoid the Dahan";
 
 		[FearLevel(1, "Invaders do not Explore into lands with at least 2 Dahan." )]
 		public Task Level1(GameState gs) {

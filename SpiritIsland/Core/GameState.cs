@@ -10,15 +10,16 @@ namespace SpiritIsland {
 
 		// base-1,  game starts in round-1
 		public int Round { get; private set; }
-
+		
 		public GameState(params Spirit[] spirits){
 			if(spirits.Length==0) throw new ArgumentException("Game must include at least 1 spirit");
 			this.Spirits = spirits;
 			InvaderDeck = new InvaderDeck();
 			Round = 1;
+
 			// ! is there a better way to disable fear-win during tests
 			while(FearDeck.Count < 9)
-				FearDeck.Push( new NullFearCard() );
+				this.AddFearCard( new NullFearCard() );
 		}
 
 		internal void SkipAllInvaderActions( Space target ) {
@@ -57,14 +58,9 @@ namespace SpiritIsland {
 			InitSpirits();
 
 			while(FearDeck.Count<9)
-				FearDeck.Push(new NullFearCard());
+				AddFearCard(new NullFearCard());
 
 			BlightCard.OnGameStart(this);
-		}
-		class NullFearCard : IFearCard {
-			public Task Level1( GameState gs ) {return Task.CompletedTask;}
-			public Task Level2( GameState gs ) { return Task.CompletedTask; }
-			public Task Level3( GameState gs ) { return Task.CompletedTask; }
 		}
 
 		// == EVENTS ==
@@ -171,8 +167,15 @@ namespace SpiritIsland {
 
 		#region Fear
 
-		public readonly Stack<IFearCard> FearDeck = new Stack<IFearCard>();
-		public readonly Stack<IFearCard> ActivatedFearCards = new Stack<IFearCard>();
+		public void AddFearCard(IFearCard fearCard ) {
+			var labels = new string[]{"1-A","1-B","1-C","2-A","2-B","2-C","3-A","3-B","3-C" };
+			int index = 9- FearDeck.Count-1;
+			var td = new NamedFearCard { Card = fearCard, Text = "Lvl "+labels[index]};
+			FearDeck.Push( td ); 
+		}
+
+		public readonly Stack<NamedFearCard> FearDeck = new Stack<NamedFearCard>();
+		public readonly Stack<NamedFearCard> ActivatedFearCards = new Stack<NamedFearCard>();
 		public int TerrorLevel { get{
 			int ct = FearDeck.Count;
 			int terrorLevel = ct > 6 ? 1 : ct > 3 ? 2 : 1;
@@ -185,6 +188,7 @@ namespace SpiritIsland {
 			if(4 <= FearPool) { // should be while() - need unit test
 				FearPool -= 4;
 				ActivatedFearCards.Push( FearDeck.Pop() );
+				ActivatedFearCards.Peek().Text = "Active " + ActivatedFearCards.Count;
 			}
 			if(FearDeck.Count == 0)
 				GameOverException.Win();
@@ -218,7 +222,7 @@ namespace SpiritIsland {
 
 		public async Task ApplyFear() {
 			while( ActivatedFearCards.Count > 0 )
-				await ActivatedFearCards.Pop().Level1(this);
+				await ActivatedFearCards.Pop().Card.Level1(this);
 		}
 
 		public async Task<string[]> Ravage( InvaderCard invaderCard ) {
@@ -348,6 +352,7 @@ namespace SpiritIsland {
 
 		public PowerCardDeck MajorCards;
 		public PowerCardDeck MinorCards;
+
 	}
 
 
@@ -393,4 +398,12 @@ namespace SpiritIsland {
 		public Space space;
 		public Cause cause;
 	}
+
+	public class NullFearCard : IFearCard {
+		public Task Level1( GameState gs ) { return Task.CompletedTask; }
+		public Task Level2( GameState gs ) { return Task.CompletedTask; }
+		public Task Level3( GameState gs ) { return Task.CompletedTask; }
+	}
+
+
 }

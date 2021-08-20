@@ -5,6 +5,8 @@ namespace SpiritIsland.Basegame {
 
 	public class TradeSuffers : IFearCard {
 
+		public const string Name = "Trade Suffers";
+
 		[FearLevel( 1, "Invaders do not Build in lands with City." )]
 		public Task Level1( GameState gs ) {
 			gs.SkipBuild( gs.Island.AllSpaces.Where( s => gs.InvadersOn( s ).HasCity ).ToArray() );

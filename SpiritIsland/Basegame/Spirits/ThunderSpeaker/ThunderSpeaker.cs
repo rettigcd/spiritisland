@@ -96,8 +96,7 @@ namespace SpiritIsland.Basegame {
 			//PowerCard.For<TheTreesAndStonesSpeakOfWar>(),// Major
 			);
 
-		public override void Initialize( Board board, GameState gs ) {
-			base.Initialize(board, gs);
+		protected override void InitializeInternal( Board board, GameState gs ) {
 
 			// Put 2 Presence on your starting board: 1 in each of the 2 lands with the most Dahanicon.png
 			var spots = board.Spaces.OrderByDescending( gs.DahanCount ).Take( 2 ).ToArray();

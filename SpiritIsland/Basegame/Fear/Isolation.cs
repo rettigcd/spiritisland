@@ -5,6 +5,8 @@ namespace SpiritIsland.Basegame {
 
 	public class Isolation : IFearCard {
 
+		public const string Name = "Isolation";
+
 		[FearLevel( 1, "Each player removes 1 Explorer / Town from a land where it is the only Invader." )]
 		public Task Level1( GameState gs ) {
 			return RemoveInvaderWhenMax(gs,1, Invader.Explorer, Invader.Town );

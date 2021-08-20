@@ -118,28 +118,30 @@ namespace SpiritIsland.Tests {
 
 		protected void Resolve_PlacePresence(string placeOptions, Track source, string factoryDescription=null ) {
 
-			var ppFactory = spirit.GetUnresolvedActionFactories(Speed.Growth).OfType<PlacePresence>()
-				.Where(f=> factoryDescription==null || factoryDescription == f.ShortDescription)
-				.First();
+			ActivatePlacePresence( factoryDescription );
 
-			ppFactory.Activate( spirit, gameState );
-			var ppAction = spirit.Action;
 
-			if(spirit.Presence.CardPlays.HasMore && spirit.Presence.Energy.HasMore){ // there are 2 option available
-				ppAction.Options.Select(x=>x.Text).Join(",").ShouldContain(source.Text);
+			// Resolve Power
+			if(spirit.Presence.CardPlays.HasMore && spirit.Presence.Energy.HasMore) { // there are 2 option available
+				spirit.Action.Options.Select( x => x.Text ).Join( "," ).ShouldContain( source.Text );
 				// take from precense track
-				ppAction.Select(source);
+				spirit.Action.Select( source );
 			}
 
 			// place on board - first option
-			string[] options = placeOptions.Split(';');
-			if(options.Length>1) // this is wrong!  If we enter only 1 option, we aren't verifying it because we know the engine will auto-select it
-				ppAction.Select(ppAction.Options.Single(o=>o.Text==options[0]));
+			string[] options = placeOptions.Split( ';' );
+			if(options.Length > 1) // this is wrong!  If we enter only 1 option, we aren't verifying it because we know the engine will auto-select it
+				spirit.Action.Select( spirit.Action.Options.Single( o => o.Text == options[0] ) );
 
-			spirit.RemoveUnresolvedFactory(ppFactory);
 		}
 
-
+		void ActivatePlacePresence( string factoryDescription ) {
+			var ppFactory = spirit.GetUnresolvedActionFactories( Speed.Growth ).OfType<PlacePresence>()
+				.Where( f => factoryDescription == null || factoryDescription == f.ShortDescription )
+				.First();
+			spirit.RemoveUnresolvedFactory( ppFactory );
+			ppFactory.ActivateAsync( spirit, gameState );
+		}
 
 		protected void Assert_PresenceTracksAre(int expectedEnergy,int expectedCards) {
 			Assert_EnergyTrackIs( expectedEnergy );
@@ -163,7 +165,7 @@ namespace SpiritIsland.Tests {
 		}
 
 		protected void AndWhen_ReclaimingFirstCard() {
-			_ = spirit.GetUnresolvedActionFactories(Speed.Growth).OfType<Reclaim1>().First().Activate( spirit, gameState );
+			_ = spirit.GetUnresolvedActionFactories(Speed.Growth).OfType<Reclaim1>().First().ActivateAsync( spirit, gameState );
 			var reclaim = spirit.Action;
 			if(reclaim.Options.Length>0)
 				reclaim.Select( reclaim.Options[0] );

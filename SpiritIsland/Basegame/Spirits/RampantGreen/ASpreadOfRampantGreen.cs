@@ -114,8 +114,7 @@ namespace SpiritIsland.Basegame {
 
 
 
-		public override void Initialize( Board board, GameState gs ) {
-			base.Initialize(board,gs);
+		protected override void InitializeInternal( Board board, GameState gs ) {
 
 			// Setup: 1 in the highest numbered wetland and 1 in the jungle without any dahan
 			Presence.PlaceOn( board.Spaces.Reverse().First(x=>x.Terrain==Terrain.Wetland) );

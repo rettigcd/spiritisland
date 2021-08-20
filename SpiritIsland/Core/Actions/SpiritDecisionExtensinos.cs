@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SpiritIsland.Basegame;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -75,11 +76,17 @@ namespace SpiritIsland {
 			return int.Parse( await spirit.SelectText( prompt, numToMove.ToArray() ) );
 		}
 
-		static public async Task<Element> SelectElement( this Spirit spirit, string prompt, IEnumerable<Element> options ) {
-			var lookup = options.ToDictionary( el=>el.ToString(), el=>el );
-			string text = await spirit.SelectText(prompt,lookup.Keys.ToArray());
-			return lookup[text];
+		//static public async Task<Element> SelectElement( this Spirit spirit, string prompt, IEnumerable<Element> options ) {
+		//	var lookup = options.ToDictionary( el=>el.ToString(), el=>el );
+		//	string text = await spirit.SelectText(prompt,lookup.Keys.ToArray());
+		//	return lookup[text];
+		//}
+
+		static public async Task<Element> SelectElementAsync( this Spirit spirit, string prompt, IEnumerable<Element> elements ) {
+			var selection = await spirit.SelectOption( prompt, elements.Select( x => new ItemOption<Element>( x ) ).ToArray(), Present.Always );
+			return ((ItemOption<Element>)selection).Item;
 		}
+
 
 		#region relies on Spirit State
 
@@ -135,9 +142,14 @@ namespace SpiritIsland {
 			spirit.Forget( (PowerCard)cardToForget );
 		}
 
-
 		#endregion
 
+	}
+
+	class ItemOption<T> : IOption {
+		public T Item { get; }
+		public ItemOption( T item ) { Item = item; }
+		public string Text => Item.ToString();
 	}
 
 }

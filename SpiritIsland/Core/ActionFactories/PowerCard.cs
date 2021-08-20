@@ -36,7 +36,7 @@ namespace SpiritIsland {
 
 		public string Text => Name;
 
-		abstract public Task Activate( Spirit spirit, GameState gameState );
+		abstract public Task ActivateAsync( Spirit spirit, GameState gameState );
 
 		static public PowerCard[] GetMajors() {
 			static bool HasMajorAttribute( MethodBase m ) => m.GetCustomAttributes<MajorCardAttribute>().Any();

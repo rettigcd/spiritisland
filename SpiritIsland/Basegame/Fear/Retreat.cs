@@ -5,6 +5,8 @@ namespace SpiritIsland.Basegame {
 
 	public class Retreat : IFearCard {
 
+		public const string Name = "Retreat";
+
 		[FearLevel( 1, "Each player may Push up to 2 Explorer from an Inland land." )]
 		public Task Level1( GameState gs ) {
 			return ForEachSpiritPushUpToNInvadersFromInland( gs, 2, Invader.Explorer );
