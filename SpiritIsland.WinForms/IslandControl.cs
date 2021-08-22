@@ -26,7 +26,8 @@ namespace SpiritIsland.WinForms
 
 		Dictionary<string,PointF> spaceLookup;
 
-		public void Init( GameState gameState, IHaveOptions optionProvider ) {
+		public void Init( GameState gameState, IHaveOptions optionProvider, ResourceImages images, string tokenColor ) {
+			this.images = images;
 
 			optionProvider.OptionsChanged += OptionProvider_OptionsChanged;
 
@@ -98,7 +99,8 @@ namespace SpiritIsland.WinForms
 			town = Image.FromFile(".\\images\\Townicon.png");
 			town1 = Image.FromFile( ".\\images\\Town1icon.png" );
 			explorer = Image.FromFile(".\\images\\Explorericon.png");
-			presence = Image.FromFile(".\\images\\Presenceicon.png");
+			presence = images.GetPresenceIcon( tokenColor );
+//			presence = Image.FromFile( ".\\images\\Presenceicon.png" );
 			blight = Image.FromFile(".\\images\\Blighticon.png");
 			defend = Image.FromFile(".\\images\\defend1orange.png");
 
@@ -164,7 +166,8 @@ namespace SpiritIsland.WinForms
 
 			PointF normalized = spaceLookup[space.Label];
 			PointF xy = new PointF(normalized.X * boardScreenSize.Width, normalized.Y * boardScreenSize.Height);
-			float iconWidth = boardScreenSize.Width * .025f, xStep = iconWidth + 10f;
+			float iconWidth = boardScreenSize.Width * .035f; 
+			float xStep = iconWidth + 10f;
 
 			float x = xy.X - iconWidth;
 			float y = xy.Y - iconWidth;
@@ -193,19 +196,24 @@ namespace SpiritIsland.WinForms
 			if(!images.Keys.Any()) return;
 			float maxHeight = 0;
 
-			using Font simpleFont = new( "Arial", 6, FontStyle.Bold, GraphicsUnit.Point );
-			const float circleDiameter = 10f;
+			using Font countFont = new( "Arial", 7, FontStyle.Bold, GraphicsUnit.Point );
+			const float circleDiameter = 15f;
 
 			foreach(var img in images.Keys){
 				float height = width / img.Width * img.Height;
 				maxHeight = Math.Max(maxHeight,height); 
 				graphics.DrawImage( img, x, y, width, height);
+
+				// Count
 				int count = images[img];
 				if(count > 1) {
-					var numRect = new RectangleF(x-2,y+height-2, circleDiameter, circleDiameter );
+					string txt = "x" + count;
+					SizeF sz = graphics.MeasureString(txt, countFont );
+					var numRect = new RectangleF(x+width-sz.Width, y+height-sz.Height, sz.Width+2, sz.Height+2);
 					graphics.FillEllipse(Brushes.White,numRect);
-					graphics.DrawString(count.ToString(),simpleFont,Brushes.Black,numRect.X+2,numRect.Y);
+					graphics.DrawString(txt,countFont,Brushes.Black,numRect.X+2,numRect.Y+2);
 				}
+
 				x += step;
 			}
 
@@ -270,6 +278,8 @@ namespace SpiritIsland.WinForms
 			Cursor = inCircle ? Cursors.Hand : Cursors.Default;
 
 		}
+
+		ResourceImages images;
 
 		public event Action<Space> SpaceClicked;
 

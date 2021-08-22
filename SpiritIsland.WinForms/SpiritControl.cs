@@ -3,12 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
 
 namespace SpiritIsland.WinForms {
 
-    public partial class SpiritControl : Control {
+	public partial class SpiritControl : Control {
 
 		#region Constructor / Init
 
@@ -18,8 +17,9 @@ namespace SpiritIsland.WinForms {
 			this.Cursor = Cursors.Default;
 		}
 
-		public void Init( Spirit spirit, string presenceColor, IHaveOptions optionProvider ) {
+		public void Init( Spirit spirit, string presenceColor, IHaveOptions optionProvider, ResourceImages resourceImages ) {
 			this.spirit = spirit;
+			this.images = resourceImages;
 
 			this.presenceColor = presenceColor ?? throw new ArgumentNullException( nameof( presenceColor ) );
 
@@ -53,6 +53,7 @@ namespace SpiritIsland.WinForms {
 				DrawSpirit( pe.Graphics );
 		}
 
+
 		void DrawSpirit( Graphics graphics ) {
 
 			hotSpots.Clear();
@@ -64,8 +65,7 @@ namespace SpiritIsland.WinForms {
 			using Pen highlightPen = new( Color.Red, 10f );
 
 			// Load Presence image
-			using var presenceStream = assembly.GetManifestResourceStream( $"SpiritIsland.WinForms.images.presence.{presenceColor}.png" );
-			using Bitmap presence = new Bitmap( presenceStream );
+			using Bitmap presence = images.GetPresenceIcon(presenceColor);
 
 			// calc slot width and presence height
 			int maxLength = Math.Max( spirit.Presence.CardPlays.TotalCount, spirit.Presence.Energy.TotalCount ) + 2; // +2 for energy & Destroyed
@@ -73,7 +73,7 @@ namespace SpiritIsland.WinForms {
 			// Calc Presence and coin widths
 			float slotWidth = (Width - 2 * margin) / maxLength;
 			float presenceWidth = slotWidth * 0.9f;
-			SizeF presenceSize = new SizeF(presenceWidth, presenceWidth * presence.Height / presence.Width );
+			SizeF presenceSize = new SizeF( presenceWidth, presenceWidth * presence.Height / presence.Width );
 
 			int y = margin;
 			// Image
@@ -95,9 +95,9 @@ namespace SpiritIsland.WinForms {
 			foreach(string name in spirit.InnatePowers.Select( i => i.Name ).Distinct()) {
 				var sz = DrawInnates( graphics, name, highlightPen, x, y );
 				x += (sz.Width + margin);
-				maxHeight = Math.Max(maxHeight,sz.Height);
+				maxHeight = Math.Max( maxHeight, sz.Height );
 			}
-			y += (maxHeight+margin);
+			y += (maxHeight + margin);
 
 			// activated elements
 			DrawActivatedElements( graphics, simpleFont, y );
@@ -136,10 +136,8 @@ namespace SpiritIsland.WinForms {
 			foreach(var energy in spirit.Presence.Energy.slots) {
 				
 				// Draw - energy icons
-				using( var imgStream = assembly.GetManifestResourceStream( $"SpiritIsland.WinForms.images.tokens.{energy.Text}.png" ) ){
-					using var bitmap = new Bitmap( imgStream ); 
+				using( var bitmap = this.images.GetEnergyIcon(energy.Text))
 					graphics.DrawImage( bitmap, x + coinLeftOffset, y + presenceOffset, coinWidth, coinWidth );
-				};
 
 				RectangleF presenceRect = new RectangleF( x + (slotWidth-presenceSize.Width)/2, y, presenceSize.Width, presenceSize.Height );
 
@@ -191,8 +189,7 @@ namespace SpiritIsland.WinForms {
 			foreach(var track in spirit.Presence.CardPlays.slots) {
 
 				// card plays amount
-				using(var imgStream = assembly.GetManifestResourceStream( $"SpiritIsland.WinForms.images.tokens.{track.Text}.png" )) {
-					using var bitmap = new Bitmap( imgStream );
+				using( var bitmap = images.GetCardplayIcon(track.Text)) {
 					float cardHeight = cardWidth * bitmap.Height / bitmap.Width;
 					maxCardHeight = Math.Max(cardHeight,maxCardHeight);
 					graphics.DrawImage( bitmap, x+ cardLeft, cardY, cardWidth, cardHeight );
@@ -340,9 +337,9 @@ namespace SpiritIsland.WinForms {
 
 		#region private fields
 
-		readonly Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+		ResourceImages images;
+
 		const int margin = 10;
-		const float lineHeight = 60f;
 
 		string presenceColor;
 		Track[] trackOptions;
@@ -357,4 +354,5 @@ namespace SpiritIsland.WinForms {
 		#endregion
 
 	}
+
 }
