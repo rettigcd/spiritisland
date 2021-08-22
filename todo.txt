@@ -30,8 +30,8 @@ make SS dispay differently
 
 
 
-
 // === Basegame Road Map ===
+<<<<<<< HEAD
 UI		Display Spirit Name / Image
 UI		Display $$ / Destroyed presence
 UI	click on invaders on board - GUI
@@ -41,10 +41,18 @@ UI  Re-evaluate Buttons - change to dropdown?  run along top to get more width f
 UI	Cards - scroll bar
 UI	Cards - scroll bar
 UI	Display Growth Options in GUI
+=======
+>>>>>>> bcbdc0d (Added all Spirits images)
 UI	show COLOR presence on board - GUI
-UI	click on invaders on board - GUI
-UI	Enhance Ravage / Build images
 
+- requires engine changes
+UI	Display Growth Options in GUI
+UI	click on invaders on board - GUI
+UI	Fix Fear card experience - logging or showing cards
+
+UI	Cards - scroll bar
+
+UI	Enhance (Ravage/Build) images
 
 BASE	Review Major / Minor, decide which need Unit Tests and Implement - Targets SPIRITS
 BONUS	Generate Innate images from innate metadata

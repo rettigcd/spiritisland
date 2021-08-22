@@ -75,12 +75,12 @@ namespace SpiritIsland.WinForms {
 			float presenceWidth = slotWidth * 0.9f;
 			SizeF presenceSize = new SizeF(presenceWidth, presenceWidth * presence.Height / presence.Width );
 
-
-
-
+			int y = margin;
+			// Image
+			y += DrawSpiritImage( graphics, margin, y ).Height;
+			y += margin;
 
 			// Energy
-			int y=10;
 			y += DrawEnergyTrack( graphics, simpleFont, presence, (int)slotWidth, presenceSize, highlightPen, margin, y ).Height;
 			y += margin;
 
@@ -103,6 +103,13 @@ namespace SpiritIsland.WinForms {
 			DrawActivatedElements( graphics, simpleFont, y );
 
 			// !Note! - If you do not specify output width/height of image, .Net will scale image based on screen DPI and image DPI
+		}
+
+		Size DrawSpiritImage( Graphics graphics, int x, int y ) {
+			var image = spiritImage ??= LoadSpiritImage();
+			Size sz = new Size(180,120);
+			graphics.DrawImage(image,x,y,sz.Width,sz.Height);
+			return sz;
 		}
 
 		Size DrawEnergyTrack( Graphics graphics, Font simpleFont, Bitmap presence, int slotWidth, SizeF presenceSize, Pen highlightPen, int x, int y ) {
@@ -258,11 +265,17 @@ namespace SpiritIsland.WinForms {
 					);
 					x += 20;
 				}
-				graphics.DrawImage( GetImage( element ), x, y, elementSize, elementSize );
+				graphics.DrawImage( GetElementImage( element ), x, y, elementSize, elementSize );
 				x += elementSize;
 				x += 10;
 			}
 		}
+
+		Image LoadSpiritImage() {
+			string filename = spirit.Text.Replace( ' ', '_' );
+			return Image.FromFile( $".\\images\\spirits\\{filename}.png" );
+		}
+		Image spiritImage;
 
 		Image GetInnateImage( string innateCardName ) {
 			if(!innateImages.ContainsKey( innateCardName )) {
@@ -273,7 +286,7 @@ namespace SpiritIsland.WinForms {
 			return innateImages[innateCardName];
 		}
 
-		Image GetImage( Element element ) {
+		Image GetElementImage( Element element ) {
 
 			if(!elementImages.ContainsKey( element )) {
 				string filename = "Simple_" + element.ToString().ToLower();

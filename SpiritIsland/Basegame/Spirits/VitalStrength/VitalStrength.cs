@@ -41,7 +41,7 @@ Power Progression:
 
 	public class VitalStrength : Spirit {
 
-		public const string Name = "Vital Strength of Earth";
+		public const string Name = "Vital Strength of the Earth";
 		public override string Text => Name;
 
 		public VitalStrength():base(

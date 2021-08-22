@@ -9,7 +9,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 		public ThunderCards() {
 
 			// Given: empty board
-			spirit = new ThunderSpeaker { Energy = 20 };
+			spirit = new Thunderspeaker { Energy = 20 };
 			a = Board.BuildBoardA();
 			gs = new GameState( spirit ) {
 				Island = new Island( a )

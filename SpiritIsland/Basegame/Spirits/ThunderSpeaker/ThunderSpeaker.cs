@@ -36,13 +36,13 @@ namespace SpiritIsland.Basegame {
 
 	*/
 
-	public class ThunderSpeaker : Spirit {
+	public class Thunderspeaker : Spirit {
 
-		public const string Name = "Thunder Speaker";
+		public const string Name = "Thunderspeaker";
 
 		public override string Text => Name;
 
-		public ThunderSpeaker():base(
+		public Thunderspeaker():base(
 			new MyPresence(
 				new Track[] { Track.Energy1, Track.AirEnergy, Track.Energy2, Track.FireEnergy, Track.SunEnergy, Track.Energy3 },
 				new Track[] { Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Reclaim1, Track.Card3, Track.Card4 }

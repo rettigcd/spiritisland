@@ -43,7 +43,7 @@ Shadows Flicker like Flame:
 
 	public class Shadows : Spirit {
 
-		public const string Name = "Shadows Flicker Like Flames";
+		public const string Name = "Shadows Flicker Like Flame";
 		public override string Text => Name;
 
 		public Shadows():base(
