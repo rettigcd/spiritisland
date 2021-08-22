@@ -1,5 +1,6 @@
 ﻿
 namespace SpiritIsland.WinForms {
+
 	partial class Form1 {
 		/// <summary>
 		///  Required designer variable.
@@ -27,10 +28,7 @@ namespace SpiritIsland.WinForms {
             this.promptLabel = new System.Windows.Forms.Label();
             this.islandControl = new SpiritIsland.WinForms.IslandControl();
             this.cardControl = new SpiritIsland.WinForms.CardControl();
-            this.invaderBoardLabel = new System.Windows.Forms.Label();
-            this.trackLabel = new System.Windows.Forms.Label();
             this.spiritControl = new SpiritIsland.WinForms.SpiritControl();
-            this.logTextBox = new System.Windows.Forms.TextBox();
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.islandSpiritSplitter = new System.Windows.Forms.Splitter();
             this.textIslandSplitter = new System.Windows.Forms.Splitter();
@@ -57,10 +55,10 @@ namespace SpiritIsland.WinForms {
             // 
             this.islandControl.BackColor = System.Drawing.Color.Aqua;
             this.islandControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.islandControl.Location = new System.Drawing.Point(241, 0);
+            this.islandControl.Location = new System.Drawing.Point(10, 35);
             this.islandControl.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.islandControl.Name = "islandControl";
-            this.islandControl.Size = new System.Drawing.Size(614, 433);
+            this.islandControl.Size = new System.Drawing.Size(845, 398);
             this.islandControl.TabIndex = 2;
             this.islandControl.Text = "islandControl1";
             // 
@@ -76,48 +74,17 @@ namespace SpiritIsland.WinForms {
             this.cardControl.TabIndex = 3;
             this.cardControl.Text = "cardControl1";
             // 
-            // invaderBoardLabel
-            // 
-            this.invaderBoardLabel.AutoSize = true;
-            this.invaderBoardLabel.Location = new System.Drawing.Point(11, 24);
-            this.invaderBoardLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.invaderBoardLabel.Name = "invaderBoardLabel";
-            this.invaderBoardLabel.Size = new System.Drawing.Size(83, 15);
-            this.invaderBoardLabel.TabIndex = 4;
-            this.invaderBoardLabel.Text = "Ravage / Build";
-            // 
-            // trackLabel
-            // 
-            this.trackLabel.AutoSize = true;
-            this.trackLabel.Location = new System.Drawing.Point(11, 39);
-            this.trackLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.trackLabel.Name = "trackLabel";
-            this.trackLabel.Size = new System.Drawing.Size(89, 15);
-            this.trackLabel.TabIndex = 5;
-            this.trackLabel.Text = "Presence Tracks";
-            // 
             // spiritControl
             // 
             this.spiritControl.BackColor = System.Drawing.Color.LightYellow;
             this.spiritControl.Cursor = System.Windows.Forms.Cursors.Default;
             this.spiritControl.Dock = System.Windows.Forms.DockStyle.Right;
-            this.spiritControl.Location = new System.Drawing.Point(855, 0);
+            this.spiritControl.Location = new System.Drawing.Point(855, 35);
             this.spiritControl.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.spiritControl.Name = "spiritControl";
-            this.spiritControl.Size = new System.Drawing.Size(309, 433);
+            this.spiritControl.Size = new System.Drawing.Size(309, 398);
             this.spiritControl.TabIndex = 8;
             this.spiritControl.Text = "spiritControl1";
-            // 
-            // logTextBox
-            // 
-            this.logTextBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.logTextBox.Location = new System.Drawing.Point(0, 317);
-            this.logTextBox.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
-            this.logTextBox.Multiline = true;
-            this.logTextBox.Name = "logTextBox";
-            this.logTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.logTextBox.Size = new System.Drawing.Size(231, 116);
-            this.logTextBox.TabIndex = 9;
             // 
             // splitContainer
             // 
@@ -145,32 +112,29 @@ namespace SpiritIsland.WinForms {
             // islandSpiritSplitter
             // 
             this.islandSpiritSplitter.Dock = System.Windows.Forms.DockStyle.Right;
-            this.islandSpiritSplitter.Location = new System.Drawing.Point(843, 0);
+            this.islandSpiritSplitter.Location = new System.Drawing.Point(843, 35);
             this.islandSpiritSplitter.Name = "islandSpiritSplitter";
             this.islandSpiritSplitter.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.islandSpiritSplitter.Size = new System.Drawing.Size(12, 433);
+            this.islandSpiritSplitter.Size = new System.Drawing.Size(12, 398);
             this.islandSpiritSplitter.TabIndex = 9;
             this.islandSpiritSplitter.TabStop = false;
             // 
             // textIslandSplitter
             // 
-            this.textIslandSplitter.Location = new System.Drawing.Point(231, 0);
+            this.textIslandSplitter.Location = new System.Drawing.Point(0, 35);
             this.textIslandSplitter.Name = "textIslandSplitter";
-            this.textIslandSplitter.Size = new System.Drawing.Size(10, 433);
+            this.textIslandSplitter.Size = new System.Drawing.Size(10, 398);
             this.textIslandSplitter.TabIndex = 2;
             this.textIslandSplitter.TabStop = false;
             // 
             // textPanel
             // 
-            this.textPanel.Controls.Add(this.logTextBox);
             this.textPanel.Controls.Add(this.promptLabel);
-            this.textPanel.Controls.Add(this.trackLabel);
-            this.textPanel.Controls.Add(this.invaderBoardLabel);
             this.textPanel.Cursor = System.Windows.Forms.Cursors.Default;
-            this.textPanel.Dock = System.Windows.Forms.DockStyle.Left;
+            this.textPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.textPanel.Location = new System.Drawing.Point(0, 0);
             this.textPanel.Name = "textPanel";
-            this.textPanel.Size = new System.Drawing.Size(231, 433);
+            this.textPanel.Size = new System.Drawing.Size(1164, 35);
             this.textPanel.TabIndex = 1;
             // 
             // statusControl1
@@ -207,10 +171,7 @@ namespace SpiritIsland.WinForms {
 		private System.Windows.Forms.Label promptLabel;
 		private IslandControl islandControl;
 		private CardControl cardControl;
-		private System.Windows.Forms.Label invaderBoardLabel;
-		private System.Windows.Forms.Label trackLabel;
         private SpiritControl spiritControl;
-        private System.Windows.Forms.TextBox logTextBox;
 		private System.Windows.Forms.SplitContainer splitContainer;
 		private System.Windows.Forms.Splitter textIslandSplitter;
 		private System.Windows.Forms.Panel textPanel;

@@ -8,77 +8,72 @@ using SpiritIsland.SinglePlayer;
 namespace SpiritIsland.WinForms {
 	public partial class Form1 : Form, IHaveOptions {
 
-		SinglePlayerGame game;
-
 		public Form1() {
 			InitializeComponent();
 		}
 
-		private void Form1_Load( object sender, EventArgs e ) {
+		public event Action<IOption[]> OptionsChanged;
+
+		void Form1_Load( object sender, EventArgs e ) {
 
 			var config = new ConfigureGame();
 			if(config.ShowDialog() != DialogResult.OK) { return; }
 			this.game = config.Game;
-			this.game.NewLogEntry += (msg) => this.logTextBox.AppendText(msg+"\r\n");
+//			this.game.NewLogEntry += (msg) => this.logTextBox.AppendText(msg+"\r\n");
 
-			this.islandControl.InitBoard( game.GameState );
-			this.cardControl.Init( game.Spirit );
+			this.islandControl.Init( game.GameState, this );
+			this.cardControl.Init( game.Spirit, this );
 			this.spiritControl.Init( game.Spirit, config.Color, this );
 			this.statusControl1.Init( game.GameState, this );
+			this.OptionsChanged += UpdateButtons;
+
 			this.islandControl.SpaceClicked += Select;
 			this.cardControl.CardSelected += Select;
 			this.spiritControl.OptionSelected += Select;
 
 			ShowOptions();
-			UpdateDisplay();
+			islandControl.Invalidate();
 		}
 
-		void UpdateDisplay() {
-			this.islandControl.Invalidate();
-
-			var gs = game.GameState;
-			// invader deck
-			string ravage = gs.InvaderDeck.Ravage?.Text ?? "-";
-			string build = gs.InvaderDeck.Build?.Text ?? "-";
-			this.invaderBoardLabel.Text = $"Ravage {ravage}  Build {build}";
-
-			// card
-			var spirit = game.Spirit;
-			this.trackLabel.Text = $"Energy: ${spirit.Energy} (+{spirit.EnergyPerTurn}/turn)  Cards Plays: {game.Spirit.NumberOfCardsPlayablePerTurn}/turn";
-
-		}
 
 		void ShowOptions() {
-			ReleaseOldButtons();
-
-			var decision = game.DecisionProvider;
-
-			OptionsChanged?.Invoke(decision.Current.Options);
-
-			this.promptLabel.Text = decision.Current.Prompt;
-
-            IOption[] options = decision.Current.Options;
-			for(int i=0;i<options.Length;++i)
-				AddOptionButton( options[i], i );
-
-			this.islandControl.ActivateSpaces( decision.Current.Options.OfType<Space>() );
-
-			this.cardControl.HighlightCards(decision.Current.Options);
-
+			var decision = game.DecisionProvider.Current;
+			this.promptLabel.Text = decision.Prompt;
+			OptionsChanged?.Invoke( decision.Options );
 		}
 
-		void AddOptionButton( IOption option, int index ) {
+		void Select( IOption option ) {
+			this.game.DecisionProvider.Select( option );
+			this.ShowOptions();
+			islandControl.Invalidate();
+		}
+
+		#region Buttons
+
+		void UpdateButtons( IOption[] options ) {
+			ReleaseOldButtons();
+			int x = CalcWidth(this.promptLabel.Text);
+			for(int i = 0; i < options.Length; ++i) {
+				x += AddOptionButton( options[i], x, 0 ).Width;
+				x += 10;
+			}
+		}
+
+		static int CalcWidth(string s ) => s.Length * 7 + 20;
+
+		Size AddOptionButton( IOption option, int x, int y ) {
+			Size sz = new Size( CalcWidth( option.Text ), 30);
 			var btn = new System.Windows.Forms.Button {
 				Dock = DockStyle.None,
-				Location = new Point( 0, index * 50 + 150 ),
+				Location = new Point( x, y ),
 				Text = option.Text,
-				Height = 45,
-				Width = 250,
+				Size = sz,
 				Tag = option
 			};
 			btn.Click += Btn_Click;
 			this.textPanel.Controls.Add( btn );
 			buttons.Add( btn );
+			return sz;
 		}
 
 		void ReleaseOldButtons() {
@@ -89,20 +84,15 @@ namespace SpiritIsland.WinForms {
 			buttons.Clear();
 		}
 
-		readonly List<Button> buttons = new();
-
-        public event Action<IOption[]> OptionsChanged;
-
-        void Select(IOption option){
-			this.game.DecisionProvider.Select(option);
-			this.ShowOptions();
-			UpdateDisplay();
-		}
-
 		void Btn_Click( object sender, EventArgs e ) {
 			var btn = (Button)sender;
 			this.Select((IOption)btn.Tag);
 		}
+
+		#endregion
+
+		readonly List<Button> buttons = new();
+		SinglePlayerGame game;
 
 	}
 

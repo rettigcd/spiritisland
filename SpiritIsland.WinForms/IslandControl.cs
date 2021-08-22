@@ -24,13 +24,11 @@ namespace SpiritIsland.WinForms
 
 		Space[] activeSpaces;
 
-		public void ActivateSpaces(IEnumerable<Space> spaces){
-			this.activeSpaces = spaces.ToArray();
-		}
-
 		Dictionary<string,PointF> spaceLookup;
 
-		public void InitBoard(GameState gameState){
+		public void Init( GameState gameState, IHaveOptions optionProvider ) {
+
+			optionProvider.OptionsChanged += OptionProvider_OptionsChanged;
 
 			var board = gameState.Island.Boards.VerboseSingle("Multiple Island boards not supported.");
             switch(board[0].Label.Substring( 0, 1 )) {
@@ -106,6 +104,10 @@ namespace SpiritIsland.WinForms
 
 			this.gameState = gameState;
 			this.spirit = gameState.Spirits.Single();
+		}
+
+		void OptionProvider_OptionsChanged( IOption[] options ) {
+			this.activeSpaces = options.OfType<Space>().ToArray();
 		}
 
 		Image board;

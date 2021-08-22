@@ -21,13 +21,14 @@ namespace SpiritIsland.WinForms {
 		}
 
 
-		public void Init(Spirit spirit){
+		public void Init(Spirit spirit,IHaveOptions iHaveOptions){
 			this.spirit = spirit;
+			iHaveOptions.OptionsChanged += Options_OptionsChanged;
 		}
 
-		public void HighlightCards(IOption[] options){
+		void Options_OptionsChanged( IOption[] options ) {
 			this.optionCards = options.OfType<IActionFactory>() // includes modified powers
-				.Select(f=>f.Original) // use original
+				.Select( f => f.Original ) // use original
 				.OfType<PowerCard>() // only power cards
 				.ToArray();
 
@@ -35,6 +36,7 @@ namespace SpiritIsland.WinForms {
 
 			this.Invalidate();
 		}
+
 		DisplayFearCard fearCard;
 
 		public event Action<PowerCard> CardSelected;
