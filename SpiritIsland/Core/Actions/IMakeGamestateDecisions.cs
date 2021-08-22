@@ -57,7 +57,7 @@ namespace SpiritIsland {
 				var source = await eng.Self.SelectSpace( $"Gather {label} {gathered+1} of {countToGather} from:", neighborsWithItems, Present.Done);
 				if(source == null) break;
 
-				var invader = await eng.Self.SelectInvader("Select invader to gather "+source.Label+" => "+target.Label,spaceInvaders(source));
+				var invader = await eng.Self.SelectInvader(source,"Select invader to gather "+source.Label+" => "+target.Label,spaceInvaders(source));
 
 				await eng.GameState.MoveInvader(invader, source, target);
 
@@ -96,7 +96,7 @@ namespace SpiritIsland {
 
 			var invaders = CalcInvaderTypes();
 			while(0<countToPush && 0<invaders.Length){
-				var invader = await eng.Self.SelectInvader("Select invader to push",invaders, Present.Done );
+				var invader = await eng.Self.SelectInvader(source,"Select invader to push",invaders, Present.Done );
 				if(invader==null) 
 					break;
 

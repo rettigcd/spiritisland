@@ -21,7 +21,7 @@ namespace SpiritIsland {
 
 			var invaders = CalcInvaderTypes();
 			while(0 < countToPush && 0 < invaders.Length) {
-				var invader = await Self.SelectInvader( "Select invader to push", invaders, Present.Done );
+				var invader = await Self.SelectInvader(source, "Select invader to push", invaders, Present.Done );
 				if(invader == null)
 					break;
 

@@ -18,7 +18,7 @@ namespace SpiritIsland.Basegame {
 			// replace 1 city with 1 town
 			var invaders = gs.InvadersOn(target).FilterBy(Invader.City,Invader.Town);
 			if(invaders.Length==0) return;
-			InvaderSpecific invader = await ctx.Self.SelectInvader("Select invader to down-grade",invaders);
+			InvaderSpecific invader = await ctx.Self.SelectInvader(ctx.Target,"Select invader to down-grade",invaders);
 			InvaderSpecific newInvader = (invader.Generic == Invader.Town) ? InvaderSpecific.Explorer
 				: invader.Health==1 ? InvaderSpecific.Town1
 				: InvaderSpecific.Town; // also replaces C@2 with T@2

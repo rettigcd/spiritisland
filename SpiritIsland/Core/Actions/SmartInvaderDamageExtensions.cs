@@ -12,7 +12,7 @@ namespace SpiritIsland {
 		// !! This is the replacement for SmartDamage To Types
 		static public async Task<int> UserSelectDamage( this IMakeGamestateDecisions ctx, int damage, InvaderGroup group ) {
 			while(damage > 0) {
-				var invader = await ctx.Self.SelectInvader( "Select invader to damage.", group.InvaderTypesPresent_Specific.ToArray(), Present.Always );
+				var invader = await ctx.Self.SelectInvader(group.Space, "Select invader to damage.", group.InvaderTypesPresent_Specific.ToArray(), Present.Always );
 				if(invader == null) break;
 
 				damage -= await group.ApplyDamageTo1( damage, invader );
