@@ -22,6 +22,13 @@ UI	click on invaders on board - GUI
 UI	Display Growth Options in GUI
 
 UI	Cards - scroll bar
+<<<<<<< HEAD
+=======
+UI	Display Growth Options in GUI
+UI	show COLOR presence on board - GUI
+UI	click on invaders on board - GUI
+UI	Enhance Ravage / Build images
+>>>>>>> 9e3e100 (Show fear card to user)
 
 UI	Enhance (Ravage/Build) images
 

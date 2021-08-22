@@ -46,7 +46,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		}
 
 		[Fact]
-		public async Task Level1_DefendOnly1AndNotMorePerDahan() { // not more th
+		public void Level1_DefendOnly1AndNotMorePerDahan() { // not more th
 			Given_DahanAndTowns( 4, 4 );
 			// 4 dahan should defend 4
 
@@ -54,15 +54,19 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			gameState.AddFearDirect( new FearArgs{count=4} );
 
 			// When: Doing Invader phase (fear+ragage)
-			await gameState.ApplyFear();
-			await gameState.Ravage(invaderCard);
+			async Task DoIt() {
+				await gameState.ApplyFear();
+				await gameState.Ravage(invaderCard);
+			}
+			_ = DoIt();
+			gameState.Spirits[0].Action.AssertDecision( "Activating Fear", "Dahan on their Guard", "Dahan on their Guard", true );
 
 			// Then: 0 dahan left
-			gameState.DahanCount( ravageSpace ).ShouldBe(2);
-
+			gameState.DahanCount( ravageSpace ).ShouldBe( 2 );
 			//   And: 2 towns
 			gameState.InvadersOn( ravageSpace ).ToString().ShouldBe( "2T@2" );
-			gameState.HasBlight( ravageSpace ).ShouldBe(true);
+			gameState.HasBlight( ravageSpace ).ShouldBe( true );
+
 		}
 
 	}

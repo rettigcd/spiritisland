@@ -37,14 +37,15 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		}
 
 		[Fact]
-		public async Task NullFearCard_NormalRavage() {
+		public void NullFearCard_NormalRavage() {
 
 			gameState.FearDeck.Pop();
 			gameState.AddFearCard( new NullFearCard() );
 
 			Given_DahanAndTownsInSpaceWithPresence(10,1);
 
-			await When_AddFearApplyFearAndRavage();
+			_ = When_AddFearApplyFearAndRavage();
+			gameState.Spirits[0].Action.AssertDecision( "Activating Fear", "Null Fear Card", "Null Fear Card", true );
 
 			// Then: all dahan killed
 			gameState.DahanCount( ravageSpace ).ShouldBe(0);
@@ -52,24 +53,29 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		}
 
 		[Fact]
-		public async Task Level1_NoBlightDahanLives() {
+		public void Level1_NoBlightDahanLives() {
 			Given_DahanAndTownsInSpaceWithPresence(1,1);
 
-			await When_AddFearApplyFearAndRavage();
+			_ =  When_AddFearApplyFearAndRavage();
 
+			gameState.Spirits[0].Action.AssertDecision( "Activating Fear", CardName, CardName, true );
 			// Then: 1 dahan left
 			Assert.Equal( 1, gameState.DahanCount( ravageSpace ) );
 
 			//   And: 0 towns
-			Assert.Equal("", gameState.InvadersOn(ravageSpace).ToString() );
+			Assert.Equal( "", gameState.InvadersOn( ravageSpace ).ToString() );
 			Assert.False( gameState.HasBlight( ravageSpace ) );
+
 		}
 
+		const string CardName = "Belief takes Root";
+
 		[Fact]
-		public async Task Level1_DefendNotMoreThan2() { // not more th
+		public void Level1_DefendNotMoreThan2() { // not more th
 			Given_DahanAndTownsInSpaceWithPresence( 2, 5 );
 
-			await When_AddFearApplyFearAndRavage();
+			_ = When_AddFearApplyFearAndRavage();
+			gameState.Spirits[0].Action.AssertDecision( "Activating Fear", CardName, CardName, true );
 
 			// Then: 1 dahan left
 			Assert.Equal( 1, gameState.DahanCount( ravageSpace ) );

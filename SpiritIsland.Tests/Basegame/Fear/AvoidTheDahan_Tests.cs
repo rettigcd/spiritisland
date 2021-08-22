@@ -29,33 +29,40 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		}
 
 		[Fact]
-		public async Task NullFearCard_NormalExplore() {
+		public void NullFearCard_NormalExplore() {
 
 			gameState.FearDeck.Pop();
 			gameState.AddFearCard( new NullFearCard() );
 
-			Space[] explored = await When_ApplyFearAndExplore();
+			_ = When_ApplyFearAndExplore();
+
+			gameState.Spirits[0].Action.AssertDecision( "Activating Fear", "Null Fear Card", "Null Fear Card", true );
+
+
 			Assert.Equal( 2, explored.Length );
 		}
 
 		[Fact]
-		async public Task Level1_NoExplore() {
+		async public void Level1_NoExplore() {
 
 			gameState.FearDeck.Pop();
 			gameState.AddFearCard( new AvoidTheDahan() );
 
-			Space[] explored = await When_ApplyFearAndExplore();
+			_ = When_ApplyFearAndExplore();
+			gameState.Spirits[0].Action.AssertDecision( "Activating Fear", "Avoid the Dahan", "Avoid the Dahan", true );
+
 			// Then: "Invaders do not Explore into lands with at least 2 Dahan."
 			Assert.Single( explored );
 		}
 
-		async Task<Space[]> When_ApplyFearAndExplore() {
+		async Task When_ApplyFearAndExplore() {
 			gameState.AddFearDirect( new FearArgs{ count=4 } );
 			await gameState.ApplyFear();
-			Space[] explored = gameState.Explore( invaderCard );
-			return explored;
+			explored = gameState.Explore( invaderCard );
 		}
-		
+
+		Space[] explored;
+
 	}
 
 }
