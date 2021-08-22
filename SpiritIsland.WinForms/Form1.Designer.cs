@@ -58,7 +58,7 @@ namespace SpiritIsland.WinForms {
             this.islandControl.Location = new System.Drawing.Point(10, 35);
             this.islandControl.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.islandControl.Name = "islandControl";
-            this.islandControl.Size = new System.Drawing.Size(845, 398);
+            this.islandControl.Size = new System.Drawing.Size(658, 398);
             this.islandControl.TabIndex = 2;
             this.islandControl.Text = "islandControl1";
             // 
@@ -79,10 +79,10 @@ namespace SpiritIsland.WinForms {
             this.spiritControl.BackColor = System.Drawing.Color.LightYellow;
             this.spiritControl.Cursor = System.Windows.Forms.Cursors.Default;
             this.spiritControl.Dock = System.Windows.Forms.DockStyle.Right;
-            this.spiritControl.Location = new System.Drawing.Point(855, 35);
+            this.spiritControl.Location = new System.Drawing.Point(668, 35);
             this.spiritControl.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.spiritControl.Name = "spiritControl";
-            this.spiritControl.Size = new System.Drawing.Size(309, 398);
+            this.spiritControl.Size = new System.Drawing.Size(496, 398);
             this.spiritControl.TabIndex = 8;
             this.spiritControl.Text = "spiritControl1";
             // 
@@ -112,10 +112,10 @@ namespace SpiritIsland.WinForms {
             // islandSpiritSplitter
             // 
             this.islandSpiritSplitter.Dock = System.Windows.Forms.DockStyle.Right;
-            this.islandSpiritSplitter.Location = new System.Drawing.Point(843, 35);
+            this.islandSpiritSplitter.Location = new System.Drawing.Point(651, 35);
             this.islandSpiritSplitter.Name = "islandSpiritSplitter";
             this.islandSpiritSplitter.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.islandSpiritSplitter.Size = new System.Drawing.Size(12, 398);
+            this.islandSpiritSplitter.Size = new System.Drawing.Size(17, 398);
             this.islandSpiritSplitter.TabIndex = 9;
             this.islandSpiritSplitter.TabStop = false;
             // 

@@ -10,6 +10,8 @@ namespace SpiritIsland.WinForms {
 
     public partial class SpiritControl : Control {
 
+		#region Constructor / Init
+
 		public SpiritControl() {
 			InitializeComponent();
 			this.BackColor = Color.LightYellow;
@@ -31,7 +33,6 @@ namespace SpiritIsland.WinForms {
 				.OrderByDescending( list => list.Length )
 				.First();
 
-			elementOrder = new Dictionary<Element, int>();
 			int i = 0;
 			foreach(var innate in spirit.InnatePowers)
 				foreach(var el in Highest( innate ))
@@ -40,25 +41,9 @@ namespace SpiritIsland.WinForms {
 				if(!elementOrder.ContainsKey( el )) elementOrder[el] = i++;
 		}
 
-		Dictionary<Element, int> elementOrder;
+		#endregion
 
-        void OptionProvider_OptionsChanged( IOption[] obj ) {
-
-			trackOptions = obj.OfType<Track>().ToArray();
-
-			innateOptions = obj
-				.OfType<IActionFactory>()
-				.Select( x => x.Original )
-				.OfType<InnatePower>()
-				.ToArray();
-
-			this.Invalidate();
-		}
-
-		protected override void OnSizeChanged( EventArgs e ) {
-			base.OnSizeChanged( e );
-			this.Invalidate();
-		}
+		public event Action<IOption> OptionSelected;
 
 		#region Draw
 
@@ -83,56 +68,73 @@ namespace SpiritIsland.WinForms {
 			using Bitmap presence = new Bitmap( presenceStream );
 
 			// calc slot width and presence height
-			int maxLength = Math.Max( spirit.Presence.CardPlays.TotalCount, spirit.Presence.Energy.TotalCount );
-			float coinWidth = (Width - 2 * margin) / maxLength;
-			float presenceWidth = coinWidth * 0.9f;
+			int maxLength = Math.Max( spirit.Presence.CardPlays.TotalCount, spirit.Presence.Energy.TotalCount ) + 2; // +2 for energy & Destroyed
+
+			// Calc Presence and coin widths
+			float slotWidth = (Width - 2 * margin) / maxLength;
+			float presenceWidth = slotWidth * 0.9f;
 			SizeF presenceSize = new SizeF(presenceWidth, presenceWidth * presence.Height / presence.Width );
 
+
+
+
+
 			// Energy
-			float x, y=10f;
-			DrawEnergyTrack( graphics, simpleFont, presence, coinWidth, presenceSize, highlightPen, ref y );
+			int y=10;
+			y += DrawEnergyTrack( graphics, simpleFont, presence, (int)slotWidth, presenceSize, highlightPen, margin, y ).Height;
+			y += margin;
 
 			// Cards
-			DrawCardPlayTrack( graphics, simpleFont, presence, coinWidth, presenceSize, highlightPen, ref y );
-
+			y += DrawCardPlayTrack( graphics, simpleFont, presence, slotWidth, presenceSize, highlightPen, y ).Height;
+			y += margin;
 			y += margin;
 
 			// Innates
-			x = DrawInnates( graphics, highlightPen, ref y );
+			float x = margin;
+			int maxHeight = 0;
+			foreach(string name in spirit.InnatePowers.Select( i => i.Name ).Distinct()) {
+				var sz = DrawInnates( graphics, name, highlightPen, x, y );
+				x += (sz.Width + margin);
+				maxHeight = Math.Max(maxHeight,sz.Height);
+			}
+			y += (maxHeight+margin);
 
 			// activated elements
-			DrawActivatedElements( graphics, simpleFont, ref y );
+			DrawActivatedElements( graphics, simpleFont, y );
 
 			// !Note! - If you do not specify output width/height of image, .Net will scale image based on screen DPI and image DPI
 		}
 
-		void DrawEnergyTrack( Graphics graphics, Font simpleFont, Bitmap presence, float slotWidth, SizeF presenceSize, Pen highlightPen, ref float y ) {
+		Size DrawEnergyTrack( Graphics graphics, Font simpleFont, Bitmap presence, int slotWidth, SizeF presenceSize, Pen highlightPen, int x, int y ) {
 
-			float x = margin;
+			int startingX = x; // capture so we calc differene at end.
+			int startingY = y; // capture so we calc differene at end.
+
+			float coinWidth = slotWidth * 0.8f;
+			float coinLeftOffset = (slotWidth - coinWidth) / 2;
+
 
 			// Title
 			graphics.DrawString( "Energy", simpleFont, SystemBrushes.ControlDarkDark, x, y );
-			y += lineHeight;
+			SizeF textSize = graphics.MeasureString( "Energy", simpleFont );
+			y += margin + (int)textSize.Height;
 
 			int revealedEnergySpaces = spirit.Presence.Energy.RevealedCount;
-			int idx = 0;
 
-			// bool highlightEnergy = trackOptions.Contains( Track.Energy1 );
+			int idx = 0;
+			int maxY = y; // inc 
+
+			int presenceOffset = (int)presenceSize.Height / 2;
 
 			foreach(var energy in spirit.Presence.Energy.slots) {
 				
-				// energy amount
+				// Draw - energy icons
 				using( var imgStream = assembly.GetManifestResourceStream( $"SpiritIsland.WinForms.images.tokens.{energy.Text}.png" ) ){
 					using var bitmap = new Bitmap( imgStream ); 
-					graphics.DrawImage( bitmap, x, y, slotWidth, slotWidth );
+					graphics.DrawImage( bitmap, x + coinLeftOffset, y + presenceOffset, coinWidth, coinWidth );
 				};
 
-				RectangleF presenceRect = new RectangleF( 
-					x + (slotWidth-presenceSize.Width)/2, 
-					y - presenceSize.Height / 2, 
-					presenceSize.Width,
-					presenceSize.Height
-				);
+				RectangleF presenceRect = new RectangleF( x + (slotWidth-presenceSize.Width)/2, y, presenceSize.Width, presenceSize.Height );
 
 				// Highlight Option
 				if(revealedEnergySpaces == idx && trackOptions.Contains( energy )) {
@@ -146,42 +148,52 @@ namespace SpiritIsland.WinForms {
 
 				x += slotWidth;
 				++idx;
+				maxY = Math.Max(maxY,y+presenceOffset+(int)slotWidth);
 			}
 
-			y += slotWidth;
+			// Current $$ balance
+			graphics.DrawString( "$"+spirit.Energy, simpleFont, SystemBrushes.ControlDarkDark, x+slotWidth/2, y );
+
+			return new Size(
+				x - startingX, 
+				maxY - startingY // 
+			);
 		}
 
-		void DrawCardPlayTrack( Graphics graphics, Font simpleFont, Bitmap presence, float slotWidth, SizeF presenceSize, Pen highlightPen, ref float y ) {
+		Size DrawCardPlayTrack( Graphics graphics, Font simpleFont, Bitmap presence, float slotWidth, SizeF presenceSize, Pen highlightPen, int y ) {
+			int startingY = y; // capture so we can calc Height
 
 			float x = margin;
 
 			// draw title
+			SizeF titleSize = graphics.MeasureString("Cards", simpleFont);
 			graphics.DrawString( "Cards", simpleFont, SystemBrushes.ControlDarkDark, x, y );
-			y += lineHeight;
+			y += (int)(titleSize.Height + margin);
 
 			float maxCardHeight = 0;
-			float cardWidth = slotWidth * 0.8f;
+			float cardWidth = slotWidth * 0.6f;
 			float cardLeft = (slotWidth - cardWidth) / 2; // center
 
 			int revealedCardSpaces = spirit.Presence.CardPlays.RevealedCount;
 			int idx = 0;
 
+			int presenceYOffset = (int)presenceSize.Height / 2;
+
+			int maxY = y;
+			int cardY = y + presenceYOffset;
 			foreach(var track in spirit.Presence.CardPlays.slots) {
 
 				// card plays amount
 				using(var imgStream = assembly.GetManifestResourceStream( $"SpiritIsland.WinForms.images.tokens.{track.Text}.png" )) {
 					using var bitmap = new Bitmap( imgStream );
-					var cardHeight = cardWidth * bitmap.Height / bitmap.Width;
+					float cardHeight = cardWidth * bitmap.Height / bitmap.Width;
 					maxCardHeight = Math.Max(cardHeight,maxCardHeight);
-					graphics.DrawImage( bitmap, x+ cardLeft, y, cardWidth, cardHeight );
+					graphics.DrawImage( bitmap, x+ cardLeft, cardY, cardWidth, cardHeight );
+					maxY = Math.Max( maxY, cardY + (int)cardHeight );
 				};
 
-				RectangleF presenceRect = new RectangleF(
-					x + (slotWidth - presenceSize.Width) / 2,
-					y - presenceSize.Height / 2,
-					presenceSize.Width,
-					presenceSize.Height
-				);
+
+				RectangleF presenceRect = new RectangleF( x + (slotWidth - presenceSize.Width) / 2, y, presenceSize.Width, presenceSize.Height );
 
 				// Highlight Option
 				if(revealedCardSpaces == idx && trackOptions.Contains( track )) {
@@ -198,36 +210,38 @@ namespace SpiritIsland.WinForms {
 				++idx;
 			}
 
-			y += maxCardHeight;
+			// Current $$ balance
+			graphics.DrawString( $"{spirit.Presence.Destroyed} Destroyed", simpleFont, SystemBrushes.ControlDarkDark, x + slotWidth / 2, cardY );
+
+			return new Size(
+				0, // not used, ignored
+				maxY - startingY
+			);
 
 		}
 
-		float DrawInnates( Graphics graphics, Pen highlightPen, ref float y ) {
-			float x = margin;
+		Size DrawInnates( Graphics graphics, string name, Pen highlightPen, float x, float y ) {
 
-			// This non-sense is because Thunderspeaker has a fast & slow option with the same name.
-			string[] innateOptionNames = innateOptions.Select( x => x.Name ).ToArray();
-			foreach(var name in spirit.InnatePowers.Select( i => i.Name ).Distinct()) {
-				var image = GetInnateImage( name );
+			var image = GetInnateImage( name ); // This non-sense is because Thunderspeaker has a fast & slow option with the same name.
 
-				int drawWidth = Width - (int)x * 2;
-				int drawHeight = drawWidth * image.Height / image.Width;
-				graphics.DrawImage( image, x, y, drawWidth, drawHeight );
+			int drawWidth = (Width - 3*margin)/2; // 3 margins => left, center, right
+			Size sz = new Size(
+				drawWidth,
+				drawWidth * image.Height / image.Width
+			);
 
-				if(innateOptionNames.Contains( name )) {
-					var rect = new RectangleF(x,y,drawWidth,drawHeight);
-					graphics.DrawRectangle( highlightPen, rect.X, rect.Y, rect.Width, rect.Height );
-					hotSpots.Add(innateOptions.Single(x=>x.Name==name),rect);
-				}
+			graphics.DrawImage( image, x, y, sz.Width, sz.Height );
 
-				y += drawHeight;
-				y += 10;
+			if( innateOptions.Any( x => x.Name == name ) ) {
+				var rect = new RectangleF(x,y,drawWidth,sz.Height);
+				graphics.DrawRectangle( highlightPen, rect.X, rect.Y, rect.Width, rect.Height );
+				hotSpots.Add(innateOptions.Single(x=>x.Name==name),rect);
 			}
 
-			return x;
+			return sz;
 		}
 
-		void DrawActivatedElements( Graphics graphics, Font simpleFont, ref float y ) {
+		void DrawActivatedElements( Graphics graphics, Font simpleFont, float y ) {
 			y += 20;
 			const float elementSize = 50f;
 			var elements = spirit.Elements; // cache, don't recalculate
@@ -250,30 +264,6 @@ namespace SpiritIsland.WinForms {
 			}
 		}
 
-		#endregion
-
-		protected override void OnMouseMove( MouseEventArgs e ) {
-			base.OnMouseMove( e );
-			Point clientCoord = this.PointToClient( Control.MousePosition );
-			Cursor = HitTest( clientCoord ) != null ? Cursors.Hand : Cursors.Arrow;
-		}
-
-		protected override void OnClick( EventArgs e ) {
-			base.OnClick( e );
-			Point clientCoord = this.PointToClient( Control.MousePosition );
-			var option = HitTest( clientCoord );
-			if(option != null)
-				OptionSelected?.Invoke(option);
-		}
-
-		public event Action<IOption> OptionSelected;
-
-		IOption HitTest( Point clientCoord ) {
-			return hotSpots.Keys.FirstOrDefault(key=>hotSpots[key].Contains(clientCoord));
-		}
-
-		readonly Dictionary<IOption,RectangleF> hotSpots = new Dictionary<IOption, RectangleF>();
-
 		Image GetInnateImage( string innateCardName ) {
 			if(!innateImages.ContainsKey( innateCardName )) {
 				string filename = innateCardName.Replace( ' ', '_' ).Replace( "'", "" ).ToLower();
@@ -293,10 +283,52 @@ namespace SpiritIsland.WinForms {
 			return elementImages[element];
 		}
 
+		#endregion
+
+		#region UI event handlers
+
+		void OptionProvider_OptionsChanged( IOption[] obj ) {
+
+			trackOptions = obj.OfType<Track>().ToArray();
+
+			innateOptions = obj
+				.OfType<IActionFactory>()
+				.Select( x => x.Original )
+				.OfType<InnatePower>()
+				.ToArray();
+
+			this.Invalidate();
+		}
+
+		protected override void OnSizeChanged( EventArgs e ) {
+			base.OnSizeChanged( e );
+			this.Invalidate();
+		}
+
+		protected override void OnMouseMove( MouseEventArgs e ) {
+			base.OnMouseMove( e );
+			Point clientCoord = this.PointToClient( Control.MousePosition );
+			Cursor = HitTest( clientCoord ) != null ? Cursors.Hand : Cursors.Arrow;
+		}
+
+		protected override void OnClick( EventArgs e ) {
+			base.OnClick( e );
+			Point clientCoord = this.PointToClient( Control.MousePosition );
+			var option = HitTest( clientCoord );
+			if(option != null)
+				OptionSelected?.Invoke(option);
+		}
+
+		IOption HitTest( Point clientCoord ) {
+			return hotSpots.Keys.FirstOrDefault(key=>hotSpots[key].Contains(clientCoord));
+		}
+
+		#endregion
+
 		#region private fields
 
 		readonly Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
-		const float margin = 10f;
+		const int margin = 10;
 		const float lineHeight = 60f;
 
 		string presenceColor;
@@ -306,6 +338,9 @@ namespace SpiritIsland.WinForms {
 
 		readonly Dictionary<string, Image> innateImages = new();
 		readonly Dictionary<Element, Image> elementImages = new();
+		readonly Dictionary<Element, int> elementOrder = new();
+		readonly Dictionary<IOption, RectangleF> hotSpots = new();
+
 		#endregion
 
 	}
