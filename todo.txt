@@ -3,15 +3,41 @@
 BUG - Rampant green not given option to stop ravage with destroyed presence
 IMP - Entwined share presence for targetting
 
+Ocean
+
+	On boards with you presence, treat oceans as coastal wetlands for powers and blight.
+
+	Swallow the Land Dwellers - "Drown" generates energy for ocean
+
+	Tidal Boon - Pushing Dahan into ocean, essencially pushes them into another costal
+	Pushing Dahan into ocean destorys them - except for Tidal Boon
+
+	May move presence into oceans.
+	May not add/move presence into inlands.
+	Drown Destorys invader pieces, for every (# of players) invaders drowned, gain 1 energy
+
+== multiple versions of Earth ==
+strange one is here:
+https://ksr-ugc.imgix.net/assets/004/632/838/5d2ab2d8034c33718cc36b8b35895a8b_original.png?ixlib=rb-2.1.0&w=700&fit=max&v=1444076386&auto=format&frame=1&lossless=true&s=d78c6b898b9642540903d49183d9d11e
+
+== Steam updates - What's New (provide insite as to what they have trouble with) ==
+https://store.steampowered.com/news/app/1236720
+
+
 == Jonah ideas ===
 Display destroyed presence
 make SS dispay differently
 
+
+
+
 // === Basegame Road Map ===
 UI		Display Spirit Name / Image
-UI		Display $$
+UI		Display $$ / Destroyed presence
+
 BASE	Ocean
 CORE	Split Growth Option into parts
+
 UI  Re-evaluate Buttons - change to dropdown?  run along top to get more width for spirit card?
 UI	Cards - scroll bar
 UI	Display Growth Options in GUI
@@ -19,9 +45,15 @@ UI	show COLOR presence on board - GUI
 UI	click on invaders on board - GUI
 UI	Fix Fear card experience - logging or showing cards
 UI	Enhance Ravage / Build images
+
+
 BASE	Review Major / Minor, decide which need Unit Tests and Implement - Targets SPIRITS
 BONUS	Generate Innate images from innate metadata
+
 == Done ==
+
+
+
 
 == Test Special Cases ==
 Conceiling Shadows - no damage to dahan

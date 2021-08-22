@@ -47,8 +47,10 @@ Shadows Flicker like Flame:
 		public override string Text => Name;
 
 		public Shadows():base(
-			new Track[] { Track.Energy0, Track.Energy1, Track.Energy3, Track.Energy4, Track.Energy5, Track.Energy6 }, 
-			new Track[] { Track.Card1, Track.Card2, Track.Card3, Track.Card3, Track.Card4, Track.Card5 },
+			new MyPresence(
+				new Track[] { Track.Energy0, Track.Energy1, Track.Energy3, Track.Energy4, Track.Energy5, Track.Energy6 }, 
+				new Track[] { Track.Card1, Track.Card2, Track.Card3, Track.Card3, Track.Card4, Track.Card5 }
+			),
 			PowerCard.For<MantleOfDread>(),
 			PowerCard.For<FavorsCalledDue>(),
 			PowerCard.For<CropsWitherAndFade>(),
@@ -62,7 +64,7 @@ Shadows Flicker like Flame:
 			this.InnatePowers = new InnatePower[]{
 				InnatePower.For<DarknessSwallowsTheUnwary>()
 			};
-			this.PowerCardApi = new ShadowApi();
+			this.PowerApi = new ShadowApi();
 
 
 		}
@@ -81,10 +83,10 @@ Shadows Flicker like Flame:
 
 		class ShadowApi : TargetLandApi {
 
-			public override async Task<Space> TargetSpace( Spirit self, GameState gameState, From from, Terrain? sourceTerrain, int range, Target filter ) {
+			public override async Task<Space> TargetsSpace( Spirit self, GameState gameState, From from, Terrain? sourceTerrain, int range, Target filter ) {
 				// no money, do normal
 				if(self.Energy == 0)
-					return await base.TargetSpace( self, gameState, from, sourceTerrain, range, filter );
+					return await base.TargetsSpace( self, gameState, from, sourceTerrain, range, filter );
 
 				// find normal Targetable spaces
 				var normalSpaces = base.GetTargetOptions( self, from, sourceTerrain, range, filter, gameState );
@@ -97,7 +99,7 @@ Shadows Flicker like Flame:
 					.ToArray();
 				// no dahan-only spaces, do normal
 				if(dahanOnlySpaces.Length == 0)
-					return await base.TargetSpace( self, gameState, from, sourceTerrain, range, filter );
+					return await base.TargetsSpace( self, gameState, from, sourceTerrain, range, filter );
 
 				// append Target-Dahan option to end of list
 				var options = normalSpaces.Cast<IOption>().ToList();

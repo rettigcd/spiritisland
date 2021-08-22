@@ -49,8 +49,10 @@ namespace SpiritIsland.BranchAndClaw {
 		}
 
 		public SharpFangs():base(
-			new Track[] { Track.Energy1, Track.AnimalEnergy, Track.PlantEnergy, Track.Energy2, Track.AnimalEnergy, Track.Energy3, Track.Energy4 },
-			new Track[] { Track.Card2, Track.Card2, Track.Card3, Track.Reclaim1, Track.Card4, FivePlaysReclaim1() },
+			new MyPresence(
+				new Track[] { Track.Energy1, Track.AnimalEnergy, Track.PlantEnergy, Track.Energy2, Track.AnimalEnergy, Track.Energy3, Track.Energy4 },
+				new Track[] { Track.Card2, Track.Card2, Track.Card3, Track.Reclaim1, Track.Card4, FivePlaysReclaim1() }
+			),
 			new NullPowerCard( "A", 0, Speed.Fast ),
 			new NullPowerCard( "B", 0, Speed.Fast ),
 			new NullPowerCard( "C", 0, Speed.Fast ),

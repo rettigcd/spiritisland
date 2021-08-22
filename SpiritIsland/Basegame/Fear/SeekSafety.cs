@@ -20,12 +20,12 @@ namespace SpiritIsland.Basegame {
 					.Where(s=>gs.InvadersOn(s).HasExplorer && HasNeighborWithMoreBuildings(s))
 					.ToArray();
 				if(options.Length==0) return;
-				var target = await spirit.SelectSpace("Fear: Select land to push explorer from into more towns/cities",options,true);
+				var target = await spirit.SelectSpace("Fear: Select land to push explorer from into more towns/cities",options,Present.Done);
 				if(target==null) continue; // continue => next spirit, break/return => no more spirits
 				var destinations = GetNeighborWithMoreBuildings(target);
 				var dest = await spirit.SelectSpace("Fear: select destination with more towns/cities",destinations);
 				// push
-				gs.Move(InvaderSpecific.Explorer,target,dest);
+				await gs.MoveInvader(InvaderSpecific.Explorer,target,dest);
 			}
 		}
 
@@ -50,7 +50,7 @@ namespace SpiritIsland.Basegame {
 					.ToArray();
 
 				var invaderToGather = await spirit.SelectInvader("which invader to gather",invaderOptions);
-				gs.Move(invaderToGather,source,dest);
+				await gs.MoveInvader(invaderToGather,source,dest);
 			}
 		}
 

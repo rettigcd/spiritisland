@@ -50,7 +50,6 @@ namespace SpiritIsland.SinglePlayer {
 				}
 				Log( $"Applying Fear Card" );
 			}
-			//			await gameState.ApplyFear();
 
 			// Ravage
 			string[] ravageResults = await gameState.Ravage( invaderDeck.Ravage );
@@ -61,7 +60,7 @@ namespace SpiritIsland.SinglePlayer {
 				Space blightedSpace = gameState.cascadingBlight.Pop();
 				Space cascadeSpace = await decisionMaker.SelectSpace( "Select land to cascade blight from " + blightedSpace.Label,
 					blightedSpace.Adjacent
-						.Where( x => x.Terrain != Terrain.Ocean )
+						.Where( x => x.Terrain != Terrain.Ocean ) // $OCEAN$ - blight
 				);
 				gameState.AddBlight( cascadeSpace );
 			}

@@ -17,7 +17,7 @@ namespace SpiritIsland.Basegame {
 			if( doFear )
 				ctx.AddFear( 2 );
 			else
-				await ctx.PushUpToNDahan(ctx.Target,4);
+				await ctx.PowerPushUpToNDahan(4);
 		}
 	}
 }

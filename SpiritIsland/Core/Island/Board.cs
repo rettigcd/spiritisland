@@ -144,6 +144,7 @@ namespace SpiritIsland {
 		#region constructor
 		public Board(params Space[] spaces){
 			this.Spaces = spaces;
+			foreach(var space in spaces) space.Board = this;
 		}
 
 		#endregion
@@ -163,7 +164,7 @@ namespace SpiritIsland {
 
 		readonly List<ITileSide> sides = new List<ITileSide>();
 
-		public Space Ocean => Spaces.Single(space => space.IsOcean);
+		public Space Ocean => Spaces.Single(space => space.Terrain == Terrain.Ocean );
 
 		#region TileSide
 

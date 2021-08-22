@@ -1,27 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
 
-	public class TargetSpaceCtx : IMakeGamestateDecisions {
+	public class TargetSpaceCtx : PowerCtx {
 
-		public TargetSpaceCtx( Spirit self, GameState gameState, Space target ) {
-			Self = self;
-			GameState = gameState;
+		public TargetSpaceCtx( Spirit self, GameState gameState, Space target ):base(self,gameState) {
 			Target = target;
 		}
 
-		#region properties
-
-		public Spirit Self { get; }
-
-		public GameState GameState { get; }
-
 		public Space Target { get; }
-
-		#endregion
 
 		#region Deconstruct
 
@@ -37,6 +28,14 @@ namespace SpiritIsland {
 		}
 
 		#endregion
+
+		public Task<Space[]> PowerPushUpToNDahan( int dahanToPush )
+			=> base.PowerPushUpToNDahan( Target, dahanToPush );
+
+		public Task PowerPushUpToNInvaders( int countToPush, params Invader[] generics )
+			=> base.PowerPushUpToNInvaders( Target, countToPush, generics );
+
+		public IEnumerable<Space> PowerAdjacents() => PowerAdjacents(Target);
 
 		// Convenience Methods - That bind to .Target
 		// could be Extension Methods
@@ -64,12 +63,6 @@ namespace SpiritIsland {
 
 		public Task GatherUpToNDahan( int dahanToGather )
 			=> this.GatherUpToNDahan(Target, dahanToGather );
-
-		public Task<Space[]> PushUpToNDahan( int dahanToPush )
-			=> this.PushUpToNDahan( Target, dahanToPush );
-
-		public Task PushUpToNInvaders( int countToPush, params Invader[] healthyInvaders )
-			=> this.PushUpToNInvaders( Target, countToPush, healthyInvaders );
 
 		public void Defend(int defend) => GameState.Defend(Target,defend);
 

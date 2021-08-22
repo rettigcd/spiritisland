@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using SpiritIsland.Basegame;
 using SpiritIsland;
 using Xunit;
+using Shouldly;
 
 namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
@@ -106,7 +107,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Assert_PresenceTracksAre(1,expectedCardPlayCount);
 
 			When_Growing(2);
-			Resolve_PlacePresence( "A1;A2;A3;A4;A5");
+			Resolve_PlacePresence( "A1;A2;A3;A4;A5", spirit.Presence.Energy.Next );
 
 			if(canReclaim1)
 				AndWhen_ReclaimingFirstCard();
@@ -301,26 +302,29 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		public void Reclaim1_TriggersImmediately(){
 			// pull card track 2 * 2 = triggers reclaim 
 
-			Game_SelectGrowthOption(1);
-			Game_PlacePresence1("Card","A5");
-			Game_PlacePresence1("Card","A5");
+			game.Decision.Old_SelectGrowthOption(1);
+			game.Decision.Old_PlacePresence1("Card","A5");
+			game.Decision.Old_PlacePresence1("Card","A5");
 
-			Game_BuyPowerCards( WashAway.Name );
-			Game_BuyPowerCards( RiversBounty.Name );
+			game.Decision.Old_BuyPowerCards( WashAway.Name );
+			game.Decision.Old_BuyPowerCards( RiversBounty.Name );
 
-			Game_DoneWith(Speed.Slow);
+			game.Spirit.Energy++; // pretend we played Rivers Bounty and gained 1 energy
+			game.Decision.Old_DoneWith(Speed.Slow);
 
-			Game_SelectGrowthOption(1);
-			Game_PlacePresence1("Card","A5");
-			Game_PlacePresence1(game.Spirit.Presence.CardPlays.Next,"A5");
+			game.Decision.Old_SelectGrowthOption(1);
+			game.Decision.Old_PlacePresence1("Card","A5");
+			game.Decision.Old_PlacePresence1(game.Spirit.Presence.CardPlays.Next,"A5");
 
 			// Can reclaim River's Bounty
-			Game_Reclaim1( "River's Bounty $0 (Slow)" );
+			game.Decision.Old_Reclaim1( "River's Bounty $0 (Slow)" );
+
 			// Can buy all 3 of River's cards including Bounty
-			Game_BuyPowerCards( RiversBounty.Name );
-			Game_BuyPowerCards( BoonOfVigor.Name );
-			Game_BuyPowerCards( FlashFloods.Name );
-			Game_DoneWith(Speed.Fast);
+			game.Spirit.Energy.ShouldBe(2,"need 2 energy to purcahse 0+0+2 cards");
+			game.Decision.Old_BuyPowerCards( RiversBounty.Name ); // 0
+			game.Decision.Old_BuyPowerCards( BoonOfVigor.Name );  // 0
+			game.Decision.Old_BuyPowerCards( FlashFloods.Name );  // 2
+			game.Decision.Old_DoneWith(Speed.Fast);
 
 		}
 

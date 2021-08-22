@@ -19,6 +19,7 @@ namespace SpiritIsland.Basegame {
 
 			// destination
 			var destination = await ctx.Self.SelectSpace( "Move dahan to", ctx.GameState.Island.AllSpaces.Where( s => s.Terrain != Terrain.Ocean ) );
+			// technically could move to ocean while Ocean on board, but no reason to.
 
 			// move dahan
 			int max = Math.Min( ctx.DahanCount, 5 );

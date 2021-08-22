@@ -7,7 +7,7 @@ namespace SpiritIsland.Basegame {
 
 		[SpiritCard("Mantle of Dread",1,Speed.Slow,Element.Moon,Element.Fire,Element.Air)]
 		[TargetSpirit]
-		static public async Task Act( IMakeGamestateDecisions ctx, Spirit target ){
+		static public async Task Act( TargetSpiritCtx ctx ){
 
 			var gs = ctx.GameState;
 
@@ -20,15 +20,18 @@ namespace SpiritIsland.Basegame {
 				return grp.HasExplorer || grp.HasTown;
 			}
 			// Select Land
-			var landsToPushInvadersFrom = target.Presence.Spaces.Where(HasExplorerOrTown).ToArray();
+			var landsToPushInvadersFrom = ctx.Target.Presence.Spaces.Where(HasExplorerOrTown).ToArray();
 			if(landsToPushInvadersFrom.Length == 0) return;
-			var space = await ctx.Self.SelectSpace("Select land to push 1 exploer & 1 town from",landsToPushInvadersFrom,true);
+
+			var otherSpirit = new PowerCtx(ctx.Target,ctx.GameState);
+
+			var space = await otherSpirit.Self.SelectSpace("Select land to push 1 exploer & 1 town from",landsToPushInvadersFrom,Present.Done);
 			if(space==null) return;
 
 			// Push Town
-			await ctx.PushUpToNInvaders( space, 1, Invader.Town );
+			await otherSpirit.PowerPushUpToNInvaders( space, 1, Invader.Town );
 			// Push Explorer
-			await ctx.PushUpToNInvaders( space, 1, Invader.Explorer );
+			await otherSpirit.PowerPushUpToNInvaders( space, 1, Invader.Explorer );
 			
 		}
 

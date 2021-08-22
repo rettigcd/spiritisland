@@ -15,9 +15,9 @@ namespace SpiritIsland.Basegame {
 			// 3 fear
 			ctx.AddFear(3);
 
-			var newDamageLands = new List<Space> { ctx.Target };
+			var landsWeCanApplyTheDamageTo = new List<Space> { ctx.Target };
 			if(ctx.Self.Elements.Contains("3 animal"))
-				newDamageLands.AddRange( ctx.Target.Adjacent.Where(x=>x.IsLand));
+				landsWeCanApplyTheDamageTo.AddRange( ctx.PowerAdjacents() );
 
 			async Task RavagePlusBonusDamage( RavageEngine eng ) {
 				int damageInflictedFromInvaders = eng.GetDamageInflictedByInvaders();
@@ -28,7 +28,7 @@ namespace SpiritIsland.Basegame {
 
 				// after each effect that destorys a town/city/dahan in target land
 				// 1 damage per town/city/dahan destoryed
-				await DistributeDamageToLands( ctx, newDamageLands, dahanKilled + cityKilled + townKilled );
+				await DistributeDamageToLands( ctx, landsWeCanApplyTheDamageTo, dahanKilled + cityKilled + townKilled );
 			}
 
 			ctx.ModRavage( cfg => cfg.RavageSequence = RavagePlusBonusDamage );

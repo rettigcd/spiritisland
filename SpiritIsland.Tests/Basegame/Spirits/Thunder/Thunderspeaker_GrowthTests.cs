@@ -35,7 +35,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 				gameState.AdjustDahan( board[int.Parse( s )] );
 
 			When_Growing( 1 );
-			Resolve_PlacePresence( expectedPresenseOptions, "PlacePresence(2,dahan)" );
+			Resolve_PlacePresence( expectedPresenseOptions, spirit.Presence.Energy.Next, "PlacePresence(2,dahan)" );
 			// PlacePresence(2,dahan)
 
 			Assert_HasEnergy( 0 );
@@ -48,7 +48,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 
 			Given_HasPresence( board[1] );
 			When_Growing(2);
-			Resolve_PlacePresence( "A1;A2;A4;A5;A6");
+			Resolve_PlacePresence( "A1;A2;A4;A5;A6", spirit.Presence.Energy.Next );
 
 			Assert.Equal(1,spirit.EnergyPerTurn);
 			Assert_HasEnergy( 4+1 );
@@ -88,7 +88,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			Assert_PresenceTracksAre(1,expectedCardPlayCount);
 
 			When_Growing(2);
-			Resolve_PlacePresence( "A2;A3;A4");
+			Resolve_PlacePresence( "A2;A3;A4", spirit.Presence.Energy.Next );
 
 			if( canReclaim1 )
 				AndWhen_ReclaimingFirstCard();

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Xunit;
 
 
-namespace SpiritIsland.Tests.Basegame {
+namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 
 	public class DreamAThousandDeaths_Tests {
 

@@ -2,7 +2,7 @@
 using SpiritIsland.Basegame;
 using Xunit;
 
-namespace SpiritIsland.Tests.Basegame.Spirits {
+namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
 
 	public class RampantGreen_GrowthTests : GrowthTests {
 
@@ -21,7 +21,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 			Given_HasPresence( board[2] );
 
 			When_Growing( 0 );
-			Resolve_PlacePresence( "A2;A3;A5");
+			Resolve_PlacePresence( "A2;A3;A5", spirit.Presence.Energy.Next );
 
 			Assert_AllCardsAvailableToPlay(5);
 		}
@@ -39,7 +39,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 			Assert.Equal(1, spirit.NumberOfCardsPlayablePerTurn); // ,"Rampant Green should start with 1 card.");
 
 			When_Growing( 1 );
-			Resolve_PlacePresence( option, focus );
+			Resolve_PlacePresence( option, spirit.Presence.Energy.Next, focus );
 
 			// Player Gains +1 card to play this round
 			Assert.Equal(2, spirit.NumberOfCardsPlayablePerTurn); // , "Should gain 1 card to play this turn.");
@@ -59,7 +59,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 			Given_HasPresence( board[2] );
 
 			When_Growing( 2 );
-			Resolve_PlacePresence( "A2;A3;A5");
+			Resolve_PlacePresence("A2;A3;A5", spirit.Presence.Energy.Next ); // +1 from energy track
 
 			Assert.Equal(1,spirit.EnergyPerTurn);
 			Assert_HasEnergy(3+1);

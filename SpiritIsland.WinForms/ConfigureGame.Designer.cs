@@ -46,13 +46,15 @@ namespace SpiritIsland.WinForms {
             // 
             // spiritListBox
             // 
+            this.spiritListBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.spiritListBox.DisplayMember = "Name";
             this.spiritListBox.FormattingEnabled = true;
             this.spiritListBox.ItemHeight = 15;
             this.spiritListBox.Location = new System.Drawing.Point(8, 35);
             this.spiritListBox.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.spiritListBox.Name = "spiritListBox";
-            this.spiritListBox.Size = new System.Drawing.Size(136, 124);
+            this.spiritListBox.Size = new System.Drawing.Size(136, 184);
             this.spiritListBox.TabIndex = 1;
             this.spiritListBox.SelectedIndexChanged += new System.EventHandler(this.CheckOkStatus);
             // 
@@ -68,19 +70,22 @@ namespace SpiritIsland.WinForms {
             // 
             // boardListBox
             // 
+            this.boardListBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.boardListBox.FormattingEnabled = true;
             this.boardListBox.ItemHeight = 15;
             this.boardListBox.Location = new System.Drawing.Point(166, 35);
             this.boardListBox.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.boardListBox.Name = "boardListBox";
-            this.boardListBox.Size = new System.Drawing.Size(132, 124);
+            this.boardListBox.Size = new System.Drawing.Size(132, 184);
             this.boardListBox.TabIndex = 3;
             this.boardListBox.SelectedIndexChanged += new System.EventHandler(this.CheckOkStatus);
             // 
             // okButton
             // 
+            this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.okButton.Location = new System.Drawing.Point(8, 170);
+            this.okButton.Location = new System.Drawing.Point(8, 261);
             this.okButton.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(81, 22);
@@ -91,8 +96,9 @@ namespace SpiritIsland.WinForms {
             // 
             // cancelButton
             // 
+            this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(107, 170);
+            this.cancelButton.Location = new System.Drawing.Point(106, 261);
             this.cancelButton.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(81, 22);
@@ -111,11 +117,13 @@ namespace SpiritIsland.WinForms {
             // 
             // colorListBox
             // 
+            this.colorListBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.colorListBox.FormattingEnabled = true;
             this.colorListBox.ItemHeight = 15;
             this.colorListBox.Location = new System.Drawing.Point(322, 35);
             this.colorListBox.Name = "colorListBox";
-            this.colorListBox.Size = new System.Drawing.Size(100, 124);
+            this.colorListBox.Size = new System.Drawing.Size(100, 184);
             this.colorListBox.TabIndex = 7;
             // 
             // ConfigureGame
@@ -124,7 +132,7 @@ namespace SpiritIsland.WinForms {
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size(440, 211);
+            this.ClientSize = new System.Drawing.Size(440, 296);
             this.Controls.Add(this.colorListBox);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.cancelButton);

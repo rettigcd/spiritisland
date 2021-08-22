@@ -32,7 +32,7 @@ namespace SpiritIsland {
   			int gathered = 0;
 			var neighborsWithDahan = target.Adjacent.Where(eng.GameState.HasDahan).ToArray();
 			while(gathered<dahanToGather && neighborsWithDahan.Length>0){
-				var source = await eng.Self.SelectSpace( $"Gather dahan {gathered+1} of {dahanToGather} from:", neighborsWithDahan, true);
+				var source = await eng.Self.SelectSpace( $"Gather dahan {gathered+1} of {dahanToGather} from:", neighborsWithDahan, Present.Done);
 				if(source == null) break;
 
 				await eng.GameState.MoveDahan(source,target);
@@ -54,12 +54,12 @@ namespace SpiritIsland {
 			Space[] neighborsWithItems = CalcSource();
   			int gathered = 0;
 			while(gathered<countToGather && neighborsWithItems.Length>0){
-				var source = await eng.Self.SelectSpace( $"Gather {label} {gathered+1} of {countToGather} from:", neighborsWithItems, true);
+				var source = await eng.Self.SelectSpace( $"Gather {label} {gathered+1} of {countToGather} from:", neighborsWithItems, Present.Done);
 				if(source == null) break;
 
 				var invader = await eng.Self.SelectInvader("Select invader to gather "+source.Label+" => "+target.Label,spaceInvaders(source));
 
-				eng.GameState.Move(invader,source,target);
+				await eng.GameState.MoveInvader(invader, source, target);
 
 				++gathered;
 				neighborsWithItems = CalcSource();
@@ -71,13 +71,13 @@ namespace SpiritIsland {
 
 		#region Push
 
-		static public async Task<Space[]> PushUpToNDahan( this IMakeGamestateDecisions eng, Space source, int dahanToPush) {
+		static public async Task<Space[]> FearPushUpToNDahan( this IMakeGamestateDecisions eng, Space source, int dahanToPush) {
 			HashSet<Space> pushedToLands = new HashSet<Space>();
 			dahanToPush = System.Math.Min(dahanToPush,eng.GameState.DahanCount(source));
 			while(0<dahanToPush){
 				Space destination = await eng.Self.SelectSpace("Select destination for dahan"
-					,source.Adjacent.Where(n=>n.IsLand)
-					,true
+					,source.Adjacent.Where(n=>n.Terrain != Terrain.Ocean ) // This is non-power push, so directly checking ocean is ok
+					,Present.Done
 				);
 				if(destination == null) break;
 				pushedToLands.Add(destination);
@@ -87,7 +87,8 @@ namespace SpiritIsland {
 			return pushedToLands.ToArray();
 		}
 
-		static public async Task PushUpToNInvaders( this IMakeGamestateDecisions eng, Space source, int countToPush
+		// non-power push (for fear)
+		static public async Task FearPushUpToNInvaders( this IMakeGamestateDecisions eng, Space source, int countToPush
 			,params Invader[] healthyInvaders
 		) {
 
@@ -99,34 +100,13 @@ namespace SpiritIsland {
 				if(invader==null) 
 					break;
 
-				var destination = await eng.Self.SelectSpace( "Push " + invader.Summary + " to", source.Adjacent.Where( x => x.IsLand ) );
-				eng.GameState.Move( invader, source, destination );
+				var destination = await eng.Self.SelectSpace( "Push " + invader.Summary + " to", source.Adjacent.Where( x => x.Terrain != Terrain.Ocean ) ); 
+				await eng.GameState.MoveInvader(invader, source, destination );
 
 				--countToPush;
 				invaders = CalcInvaderTypes();
 			}
 		}
-
-		static public async Task PushNInvaders( this IMakeGamestateDecisions eng, Space source, int countToPush
-			, params Invader[] healthyInvaders
-		) {
-
-			InvaderSpecific[] CalcInvaderTypes() => eng.GameState.InvadersOn( source ).FilterBy( healthyInvaders );
-
-			var invaders = CalcInvaderTypes();
-			while(0 < countToPush && 0 < invaders.Length) {
-				var invader = await eng.Self.SelectInvader( "Select invader to push", invaders, Present.Always );
-				if(invader == null)
-					break;
-
-				var destination = await eng.Self.SelectSpace( "Push " + invader.Summary + " to", source.Adjacent.Where( x => x.IsLand ) );
-				eng.GameState.Move( invader, source, destination );
-
-				--countToPush;
-				invaders = CalcInvaderTypes();
-			}
-		}
-
 
 		#endregion Push
 
@@ -136,7 +116,7 @@ namespace SpiritIsland {
 			Space[] destinationOptions = engine.Self.Presence.Spaces
 				.SelectMany( s => s.Range( range ) )
 				.Distinct()
-				.Where( TargetSpaceAttribute.ToLambda( engine.Self, engine.GameState, filterEnum ) )
+				.Where( SpaceFilter.ForPlacingPresence.GetFilter( engine.Self, engine.GameState, filterEnum ) )
 				.OrderBy( x => x.Label )
 				.ToArray();
 			return engine.PlacePresence(destinationOptions);
@@ -145,6 +125,7 @@ namespace SpiritIsland {
 		static public async Task PlacePresence( this IMakeGamestateDecisions engine, params Space[] destinationOptions ) {
 
 			var from = await engine.Self.SelectTrack();
+
 			var to = await engine.Self.SelectSpace( "Where would you like to place your presence?", destinationOptions );
 			engine.Self.Presence.PlaceFromBoard( from, to );
 
@@ -153,9 +134,11 @@ namespace SpiritIsland {
 		#endregion Place Presence
 
 
-		// Changable!
-		static public Task<Space> TargetSpace( this IMakeGamestateDecisions engine, From sourceEnum, Terrain? sourceTerrain, int range, Target filterEnum )
-			=> engine.Self.TargetLandApi.TargetSpace( engine.Self, engine.GameState, sourceEnum, sourceTerrain, range, filterEnum );
+		/// <summary>
+		/// Used for Power-targetting, where range sympols appear.
+		/// </summary>
+		static public Task<Space> PowerTargetsSpace( this IMakeGamestateDecisions engine, From sourceEnum, Terrain? sourceTerrain, int range, Target filterEnum )
+			=> engine.Self.PowerApi.TargetsSpace( engine.Self, engine.GameState, sourceEnum, sourceTerrain, range, filterEnum );
 
 		// Not Changable!
 		static public InvaderGroup InvadersOn( this IMakeGamestateDecisions engine, Space space )

@@ -1,7 +1,7 @@
 ﻿using SpiritIsland.Basegame;
 using Xunit;
 
-namespace SpiritIsland.Tests.Basegame.Spirits {
+namespace SpiritIsland.Tests.Basegame.Spirits.ShadowsNS {
 
 	public class ShadowsFlicker_GrowthTests : GrowthTests {
 
@@ -21,7 +21,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 			// gain power card, add a presense range 1
 			Given_HasPresence( board[1] );
 			When_Growing(1);
-			Resolve_PlacePresence( "A1;A2;A4;A5;A6");
+			Resolve_PlacePresence( "A1;A2;A4;A5;A6", spirit.Presence.Energy.Next );
 			Assert.Equal(5,this.spirit.Hand.Count); // drew 1 card
 		}
 
@@ -30,7 +30,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 			// add a presence withing 3, +3 energy
 			Given_HasPresence( board[3] );
 			When_Growing( 2 );
-			Resolve_PlacePresence( "A1;A2;A3;A4;A5;A6;A7;A8");
+			Resolve_PlacePresence( "A1;A2;A3;A4;A5;A6;A7;A8", spirit.Presence.Energy.Next );
 
 			Assert_HasEnergy(3+1); // 1 from energy track
 		}

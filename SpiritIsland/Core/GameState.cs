@@ -66,7 +66,8 @@ namespace SpiritIsland {
 		// == EVENTS ==
 		public AsyncEvent<Space[]> PreRavaging = new AsyncEvent<Space[]>();						// A Spread of Rampant Green - stop ravage
 		public AsyncEvent<Space[]> PreBuilding = new AsyncEvent<Space[]>();						// A Spread of Rampant Green - stop build
-		public AsyncEvent<DahanMovedArgs> DahanMoved = new AsyncEvent<DahanMovedArgs>();					// Thunderspeaker
+		public AsyncEvent<DahanMovedArgs> DahanMoved = new AsyncEvent<DahanMovedArgs>();                    // Thunderspeaker
+		public AsyncEvent<InvaderMovedArgs> InvaderMoved = new AsyncEvent<InvaderMovedArgs>();                    // Thunderspeaker
 		public AsyncEvent<DahanDestroyedArgs> DahanDestroyed = new AsyncEvent<DahanDestroyedArgs>();		// Thunderspeaker
 		public event Action<GameState> TimePassed;												// Spirit cleanup
 		// == Single Round hooks
@@ -168,6 +169,7 @@ namespace SpiritIsland {
 		#region Fear
 
 		public void AddFearCard(IFearCard fearCard ) {
+			if(FearDeck.Count >= 9) throw new InvalidOperationException("Fear deck is full.");
 			var labels = new string[]{"1-A","1-B","1-C","2-A","2-B","2-C","3-A","3-B","3-C" };
 			int index = 9- FearDeck.Count-1;
 			var td = new NamedFearCard { Card = fearCard, Text = "Lvl "+labels[index]};
@@ -305,9 +307,10 @@ namespace SpiritIsland {
 		public void Adjust(Space space, InvaderSpecific invader, int count)
 			=> ((InvaderGroup)InvadersOn(space)).Adjust(invader,count);
 		
-		public void Move(InvaderSpecific invader, Space from, Space to ) {
+		public Task MoveInvader(InvaderSpecific invader, Space from, Space to ) {
 			Adjust( from,invader,-1);
 			Adjust( to, invader, 1 );
+			return InvaderMoved.InvokeAsync( this, new InvaderMovedArgs { from = from, to = to, Invader = invader } );
 		}
 
 		public InvaderGroup_Readonly InvadersOn(Space targetSpace) {
@@ -379,6 +382,13 @@ namespace SpiritIsland {
 		public Space to;
 		public int count;
 	};
+
+	public class InvaderMovedArgs {
+		public InvaderSpecific Invader;
+		public Space from;
+		public Space to;
+	};
+
 
 	public enum Cause {
 		None,

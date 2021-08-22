@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 		static public async Task ActionAsync(TargetSpaceCtx ctx){
 
 			if(await ctx.Self.UserSelectsFirstText( "Select power", "Push 1 Explorer", "2 fear" ))
-				await ctx.PushUpToNInvaders(1, Invader.Explorer);
+				await ctx.PowerPushUpToNInvaders(1, Invader.Explorer);
 			else
 				ctx.AddFear(2); 
 

@@ -8,7 +8,7 @@ namespace SpiritIsland.Basegame {
 
 		public override async Task ActivateAsync( Spirit self, GameState gameState ) {
 			List<Space> pushSpaces = self.Presence.Spaces
-				.Where( p => p.IsOcean )
+				.Where( p => p.Terrain == Terrain.Ocean )
 				.Distinct()
 				.ToList();
 

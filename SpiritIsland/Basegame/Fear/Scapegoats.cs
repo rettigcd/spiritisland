@@ -26,7 +26,7 @@ namespace SpiritIsland.Basegame {
 		public async Task Level3( GameState gs ) {
 			foreach(var space in gs.Island.AllSpaces) {
 				var grp = (InvaderGroup)gs.InvadersOn( space );
-				await grp.Destroy(Invader.Explorer,int.MaxValue);
+				await grp.Destroy( Invader.Explorer, int.MaxValue );
 				await EachCityDestroys1Town( grp );
 		
 			}
@@ -42,7 +42,7 @@ namespace SpiritIsland.Basegame {
 
 		static Task EachTownDestroys1AndEachCityDestoys2( InvaderGroup grp ) {
 			int numToDestory = grp[Invader.Town] + grp[Invader.City] * 2;
-			return grp.Destroy(Invader.Explorer, numToDestory );
+			return grp.Destroy( Invader.Explorer, numToDestory );
 		}
 
 

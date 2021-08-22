@@ -1,5 +1,4 @@
 ﻿using SpiritIsland.Basegame;
-using SpiritIsland;
 using SpiritIsland.SinglePlayer;
 using System;
 using System.Linq;
@@ -20,6 +19,7 @@ namespace SpiritIsland.WinForms {
 				typeof(ThunderSpeaker),
 				typeof(ASpreadOfRampantGreen),
 				typeof(Bringer),
+				typeof(Ocean),
 			};
 			spiritListBox.Items.Add("[Random]");
 			foreach(var spirit in spirits) {

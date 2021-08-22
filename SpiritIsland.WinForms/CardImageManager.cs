@@ -12,7 +12,11 @@ namespace SpiritIsland.WinForms {
 		public Image GetImage( PowerCard card ) {
 
 			if(!images.ContainsKey( card )) {
-				string filename = card.Name.Replace( ' ', '_' ).Replace( "'", "" ).ToLower();
+				string filename = card.Name
+					.Replace( ' ', '_' )
+					.Replace( "'", "" )
+					.Replace( "-", "" )
+					.ToLower();
 				Image image = Image.FromFile( $".\\images\\cards\\{filename}.jpg" );
 				images.Add( card, image );
 			}

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SpiritIsland {
@@ -35,8 +36,10 @@ namespace SpiritIsland {
 		public void Select( IOption option ) {
 			if(present == Present.Done && TextOption.Done.Matches(option))
 				promise.TrySetResult(null);
-			else
+			else if(Options.Contains(option))
 				promise.TrySetResult((T)option);
+			else
+				promise.TrySetException(new Exception($"{option.Text} not found in options"));
 		}
 
 	}

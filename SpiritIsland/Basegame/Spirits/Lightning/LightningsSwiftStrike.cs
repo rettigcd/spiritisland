@@ -28,8 +28,10 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 		public const string Name = "Lightning's Swift Strike";
 
 		public LightningsSwiftStrike():base(
-			new Track[] { Track.Energy1, Track.Energy1, Track.Energy2, Track.Energy2, Track.Energy3, Track.Energy4, Track.Energy4, Track.Energy5, },
-			new Track[] { Track.Card2, Track.Card3, Track.Card4, Track.Card5, Track.Card6 },
+			new MyPresence(
+				new PresenceTrack( Track.Energy1, Track.Energy1, Track.Energy2, Track.Energy2, Track.Energy3, Track.Energy4, Track.Energy4, Track.Energy5 ),
+				new PresenceTrack( Track.Card2, Track.Card3, Track.Card4, Track.Card5, Track.Card6 )
+			),
 			PowerCard.For<HarbingersOfTheLightning>(),
 			PowerCard.For<LightningsBoon>(),
 			PowerCard.For<RagingStorm>(),

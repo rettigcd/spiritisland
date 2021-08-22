@@ -26,7 +26,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Lightning {
 
 			Given_HasPresence( board[1] );
 			When_Growing( 2 );
-			Resolve_PlacePresence( "A1;A2;A4;A5;A6");
+			Resolve_PlacePresence( "A1;A2;A4;A5;A6", spirit.Presence.Energy.Next );
 
 			Assert.Equal(1,spirit.EnergyPerTurn);
 			Assert_HasEnergy( 3 + 1 ); // 1 from energy track
@@ -38,7 +38,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Lightning {
 			Given_HasPresence( board[3] ); 
 
 			When_Growing( 1 );
-			Resolve_PlacePresence( "A1;A2;A3;A4;A5","PlacePresence(2)");
+			Resolve_PlacePresence( "A1;A2;A3;A4;A5", spirit.Presence.Energy.Next, "PlacePresence(2)");
 
 			Assert_HasEnergy( 0 );
 

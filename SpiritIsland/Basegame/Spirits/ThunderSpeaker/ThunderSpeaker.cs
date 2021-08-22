@@ -43,8 +43,10 @@ namespace SpiritIsland.Basegame {
 		public override string Text => Name;
 
 		public ThunderSpeaker():base(
-			new Track[] { Track.Energy1, Track.AirEnergy, Track.Energy2, Track.FireEnergy, Track.SunEnergy, Track.Energy3 },
-			new Track[] { Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Reclaim1, Track.Card3, Track.Card4 },
+			new MyPresence(
+				new Track[] { Track.Energy1, Track.AirEnergy, Track.Energy2, Track.FireEnergy, Track.SunEnergy, Track.Energy3 },
+				new Track[] { Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Reclaim1, Track.Card3, Track.Card4 }
+			),
 			PowerCard.For<ManifestationOfPowerAndGlory>(),
 			PowerCard.For<SuddenAmbush>(),
 			PowerCard.For<VoiceOfThunder>(),
@@ -111,7 +113,7 @@ namespace SpiritIsland.Basegame {
 		}
 
 		async Task MovePresenceWithDahan(GameState gs, DahanMovedArgs args) {
-			int maxThatCanMove = Math.Min(args.count,Presence.On(args.from));
+			int maxThatCanMove = Math.Min(args.count,Presence.CountOn(args.from));
 			// 0 -> no action
 			if(maxThatCanMove==0) return;
 			var moveLookup = new Dictionary<string,int>();

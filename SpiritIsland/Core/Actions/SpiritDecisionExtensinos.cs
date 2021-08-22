@@ -13,9 +13,9 @@ namespace SpiritIsland {
 			return result.Task;
 		}
 
-		static public Task<Space> SelectSpace( this Spirit spirit, string prompt, IEnumerable<Space> spaces, bool allowShortCircuit = false ) {
+		static public Task<Space> SelectSpace( this Spirit spirit, string prompt, IEnumerable<Space> spaces, Present present = Present.IfMoreThan1 ) {
 			var result = new TaskCompletionSource<Space>();
-			spirit.decisions.Push( new SelectAsync<Space>( prompt, spaces.OrderBy(x=>x.Label).ToArray(), allowShortCircuit ? Present.Done : Present.IfMoreThan1, result ) );
+			spirit.decisions.Push( new SelectAsync<Space>( prompt, spaces.OrderBy(x=>x.Label).ToArray(), present, result ) );
 			return result.Task;
 		}
 
@@ -44,12 +44,12 @@ namespace SpiritIsland {
 			return result.Task;
 		}
 
-		static public Task<IActionFactory> SelectFactory( this Spirit spirit, string prompt, IActionFactory[] options, bool allowShortCircuit = false ) {
+		static public Task<IActionFactory> SelectFactory( this Spirit spirit, string prompt, IActionFactory[] options, Present present=Present.IfMoreThan1 ) {
 			var result = new TaskCompletionSource<IActionFactory>();
 			spirit.decisions.Push( new SelectAsync<IActionFactory>(
 				prompt,
 				options,
-				allowShortCircuit ? Present.Done : Present.IfMoreThan1,
+				present,
 				result
 			) );
 			return result.Task;
@@ -114,7 +114,7 @@ namespace SpiritIsland {
 				var factory = await spirit.SelectFactory(
 					$"Select action to make fast. max:{maxCountToMakeFast}",
 					slowFactories,
-					true
+					Present.Done
 				);
 
 				spirit.RemoveUnresolvedFactory( factory ); // remove it as slow

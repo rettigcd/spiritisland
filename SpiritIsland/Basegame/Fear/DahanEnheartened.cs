@@ -11,7 +11,8 @@ namespace SpiritIsland.Basegame {
 		[FearLevel( 1, "Each player may Push 1 Dahan from a land with Invaders or Gather 1 Dahan into a land with Invaders." )]
 		public async Task Level1( GameState gs ) {
 			foreach(var spirit in gs.Spirits) {
-				var target = await spirit.SelectSpace("Select Space to Gather or push 1 dahan",gs.Island.AllSpaces.Where(x=>x.IsLand).ToArray());
+				var spacesWithInvaders = gs.Island.AllSpaces.Where( gs.HasInvaders ).ToArray();
+				var target = await spirit.SelectSpace("Select Space to Gather or push 1 dahan",spacesWithInvaders);
 				bool canPush = gs.HasDahan(target);
 				bool canGather = target.Adjacent.Any(gs.HasDahan);
 				if(canPush && canGather) {
@@ -23,7 +24,7 @@ namespace SpiritIsland.Basegame {
 
 				var engine = spirit.MakeDecisionsFor(gs);
 				if(canPush)
-					await engine.PushUpToNDahan(target,1);
+					await engine.FearPushUpToNDahan(target,1);
 				else if(canGather)
 					await engine.GatherUpToNDahan(target,1);
 			}

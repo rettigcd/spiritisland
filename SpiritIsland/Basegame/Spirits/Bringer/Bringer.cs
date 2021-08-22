@@ -42,9 +42,10 @@ namespace SpiritIsland.Basegame {
 		public override string Text => Name;
 
 		public Bringer():base(
-//			new Track[] { Track.Energy2, Track.AirEnergy, Track.Energy3, Track.MoonEnergy, Track.Energy4, Track.AnyEnergy, Track.Energy5, },
-			new Track[] {Track.Energy2, Track.AnyEnergy, Track.Energy3, Track.MoonEnergy, Track.Energy4, Track.AnyEnergy,Track.Energy5, },
-			new Track[] {Track.Card2, Track.Card2, Track.Card2, Track.Card3, Track.Card3, Track.AnyEnergy },
+			new MyPresence(
+				new PresenceTrack( Track.Energy2, Track.AirEnergy, Track.Energy3, Track.MoonEnergy, Track.Energy4, Track.AnyEnergy, Track.Energy5 ),
+				new PresenceTrack( Track.Card2, Track.Card2, Track.Card2, Track.Card3, Track.Card3, Track.AnyEnergy )
+			),
 			PowerCard.For<CallOnMidnightsDream>(),
 			PowerCard.For<DreadApparitions>(),
 			PowerCard.For<DreamsOfTheDahan>(),
@@ -102,9 +103,32 @@ namespace SpiritIsland.Basegame {
 				AddFear(5);
 			} else if(specific.Generic == Invader.Town) {
 				AddFear(2);
-				await engine.PushNInvaders( Space, 1, Invader.Town ); // !!! wrong, need to push correct hit-points
+				await BringerPushNInvaders( Space, 1, Invader.Town ); // !!! wrong, need to push correct hit-points
 			} else {
-				await engine.PushNInvaders( Space, 1, Invader.Explorer );
+				await BringerPushNInvaders( Space, 1, Invader.Explorer );
+			}
+		}
+
+		async Task BringerPushNInvaders( Space source, int countToPush
+			, params Invader[] healthyInvaders
+		) {
+
+			InvaderSpecific[] CalcInvaderTypes() => engine.GameState.InvadersOn( source ).FilterBy( healthyInvaders );
+
+			var invaders = CalcInvaderTypes();
+			while(0 < countToPush && 0 < invaders.Length) {
+				var invader = await engine.Self.SelectInvader( "Select invader to push", invaders, Present.Always );
+				if(invader == null)
+					break;
+
+				var destination = await engine.Self.SelectSpace( 
+					"Push " + invader.Summary + " to", 
+					source.Adjacent.Where( SpaceFilter.ForCascadingBlight.GetFilter( engine.Self, engine.GameState, Target.Any ) ) 
+				);
+				await engine.GameState.MoveInvader( invader, source, destination );
+
+				--countToPush;
+				invaders = CalcInvaderTypes();
 			}
 		}
 

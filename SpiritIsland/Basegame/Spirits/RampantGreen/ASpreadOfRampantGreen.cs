@@ -53,8 +53,10 @@ namespace SpiritIsland.Basegame {
 		public override string Text => Name;
 
 		public ASpreadOfRampantGreen():base(
-			new Track[] { Track.Energy0, Track.Energy1, Track.PlantEnergy, Track.Energy2, Track.Energy2, Track.PlantEnergy, Track.Energy3 },
-			new Track[] { Track.Card1, Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4 },
+			new MyPresence(
+				new Track[] { Track.Energy0, Track.Energy1, Track.PlantEnergy, Track.Energy2, Track.Energy2, Track.PlantEnergy, Track.Energy3 },
+				new Track[] { Track.Card1, Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4 }
+			),
 			PowerCard.For<FieldsChokedWithGrowth>(),
 			PowerCard.For<GiftOfProliferation>(),
 			PowerCard.For<OvergrowInANight>(),
@@ -144,7 +146,7 @@ namespace SpiritIsland.Basegame {
 			int maxStoppable = costs1 ? Energy : int.MaxValue;
 			var skipped = new List<Space>();
 			while(maxStoppable > 0 && stoppable.Count > 0) {
-				var stop = await this.SelectSpace( $"Stop {actionText} by destroying 1 presence", stoppable.ToArray(), true );
+				var stop = await this.SelectSpace( $"Stop {actionText} by destroying 1 presence", stoppable.ToArray(), Present.Done );
 				if(stop == null) break;
 				Presence.Destroy( stop );
 				skipped.Add( stop );

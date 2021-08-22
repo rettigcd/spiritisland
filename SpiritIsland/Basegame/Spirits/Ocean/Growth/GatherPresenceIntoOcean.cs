@@ -11,7 +11,7 @@ namespace SpiritIsland.Basegame {
 		public override async Task ActivateAsync( Spirit self, GameState _ ) {
 			List<Space> gatherSpaces = self.Presence.Spaces
 				.Where( p => p.IsCostal )
-				.Select( p => p.Adjacent.Single( o => o.IsOcean ) )
+				.Select( p => p.Adjacent.Single( o => o.Terrain == Terrain.Ocean ) )
 				.Distinct()
 				.ToList();
 

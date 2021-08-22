@@ -79,7 +79,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Then_SelectInvaderToPush( InvaderSpecific.Explorer, "E@1", "Done" );
 			
 			//  Then: card has options of where to push 1 explorer
-			Assert_Options( targetSpace.Adjacent.Where(x=>x.IsLand) );
+			Assert_Options( targetSpace.Adjacent.Where(x=>x.Terrain != Terrain.Ocean ) );
 
 		}
 

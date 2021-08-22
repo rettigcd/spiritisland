@@ -11,8 +11,10 @@ namespace SpiritIsland.Tests.Core {
 		class TestSpirit : Spirit {
 
 			public TestSpirit():base(
-				new Track[]{ Track.Energy0, Track.Energy0, Track.Energy0 },
-				new Track[] { Track.Card1, Track.Card2, Track.Card3, Track.Card4, Track.Card5 }
+				new MyPresence(
+					new PresenceTrack( Track.Energy0, Track.Energy0, Track.Energy0 ),
+					new PresenceTrack( Track.Card1, Track.Card2, Track.Card3, Track.Card4, Track.Card5 )
+				)
 			) {
 
 			}
@@ -42,7 +44,6 @@ namespace SpiritIsland.Tests.Core {
 			// Given: spirit has one place presence action
 			Given_SpiritGrowsByPlacingPresence();
 			When_Growing(0);
-//			Resolve_PlacePresence( "A1" );
 			Resolve_PlacePresence( "A1;A2", spirit.Presence.Energy.Next, null );
 
 			spirit.Presence.Energy.RevealedCount.ShouldBe(2);

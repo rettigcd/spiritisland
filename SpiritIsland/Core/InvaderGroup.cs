@@ -43,6 +43,31 @@ namespace SpiritIsland {
 			return totalDestoyed;
 		}
 
+		public async Task<int> Destroy( int countToDestory, InvaderSpecific specificInvader ) {
+			if(countToDestory == 0) return 0;
+			int numToDestory = Math.Min(countToDestory, this[specificInvader] );
+			for(int i = 0; i < numToDestory; ++i)
+				await ApplyDamageTo1( specificInvader.Health, specificInvader );
+			return numToDestory;
+		}
+
+
+		public async Task DestroyAny( int count, params Invader[] generics ) {
+			// !! this could be cleaned up
+			InvaderSpecific[] invadersToDestroy = FilterBy( generics );
+			while(count > 0 && invadersToDestroy.Length > 0) {
+				var invader = invadersToDestroy
+					.OrderByDescending(x=>x.Healthy.Health)
+					// .ThenByDescending(x=>x.Health) assume this line is in Destroy(...)
+					.First();
+				await Destroy( invader.Generic, 1 );
+
+				// next
+				invadersToDestroy = FilterBy( generics );
+				--count;
+			}
+		}
+
 		/// <returns>damage inflicted to invaders</returns>
 		public async Task<int> ApplyDamageTo1( int availableDamage, InvaderSpecific invader ) {
 			int damageToInvader = Math.Min( invader.Health, availableDamage );

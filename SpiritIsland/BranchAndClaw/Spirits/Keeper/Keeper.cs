@@ -44,8 +44,10 @@ namespace SpiritIsland.BranchAndClaw {
 		public override string Text => "Keeper of the Forbidden Wilds";
 
 		public Keeper():base(
-			new Track[] { Track.Energy2, Track.SunEnergy, Track.Energy4, Track.Energy5, Track.PlantEnergy, Track.Energy7, Track.Energy8, Track.Energy9 },
-			new Track[] { Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4, Track.Card5 },
+			new MyPresence(
+				new Track[] { Track.Energy2, Track.SunEnergy, Track.Energy4, Track.Energy5, Track.PlantEnergy, Track.Energy7, Track.Energy8, Track.Energy9 },
+				new Track[] { Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4, Track.Card5 }
+			),
 			new NullPowerCard( "A", 0, Speed.Fast ),
 			new NullPowerCard( "B", 0, Speed.Fast ),
 			new NullPowerCard( "C", 0, Speed.Fast ),

@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Shouldly;
+﻿using Shouldly;
 using SpiritIsland.Basegame;
+using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace SpiritIsland.Tests.Basegame.Fear {
@@ -20,6 +17,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			};
 			gameState.DisableInvaderDeck();
 			gameState.InitIsland();
+			gameState.FearDeck.Pop();
 			gameState.AddFearCard( new DahanOnTheirGuard() );
 
 			invaderCard = InvaderDeck.Level1Cards[0];

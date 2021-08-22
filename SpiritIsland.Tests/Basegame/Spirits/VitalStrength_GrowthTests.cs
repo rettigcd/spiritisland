@@ -2,7 +2,7 @@
 using SpiritIsland.Basegame;
 using Xunit;
 
-namespace SpiritIsland.Tests.Basegame.Spirits {
+namespace SpiritIsland.Tests.Basegame.Spirits.VitalStrengthNS {
 
 	public class VitalStrength_GrowthTests : GrowthTests {
 
@@ -15,7 +15,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 			Given_HasPresence( board[3] );
 
 			When_Growing( 0 );
-			Resolve_PlacePresence( "A1;A2;A3;A4;A5");
+			Resolve_PlacePresence( "A1;A2;A3;A4;A5", spirit.Presence.Energy.Next );
 
 			this.Assert_AllCardsAvailableToPlay();
 
@@ -27,7 +27,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 			Given_HasPresence( board[4] );
 
 			When_Growing( 1 );
-			Resolve_PlacePresence( "A4");
+			Resolve_PlacePresence( "A4", spirit.Presence.Energy.Next );
 
 			Assert.Equal(5,spirit.Hand.Count);
 		}

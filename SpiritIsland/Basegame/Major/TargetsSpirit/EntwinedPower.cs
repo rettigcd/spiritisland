@@ -15,7 +15,7 @@ namespace SpiritIsland.Basegame {
 
 			// !!! You and target spirit may use each other's presence to target powers. - IMPLEMENT
 
-			TargetLandApi x = self.PowerCardApi;
+			TargetLandApi x = self.PowerApi;
 
 			// Target spirit gains a power Card.
 			await ctx.Target.Draw( gs,(cards)=>{
@@ -36,7 +36,7 @@ namespace SpiritIsland.Basegame {
 		}
 
 		private static async Task GiftCardToSpirit( Spirit src, Spirit dst ) {
-			var myGift = (PowerCard)await src.SelectFactory( "Select gift for " + dst.Text, src.Hand.ToArray(), true );
+			var myGift = (PowerCard)await src.SelectFactory( "Select gift for " + dst.Text, src.Hand.ToArray(), Present.Done );
 			if(myGift != null) {
 				dst.Hand.Add( myGift );
 				src.Hand.Remove( myGift );

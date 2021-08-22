@@ -9,15 +9,8 @@ namespace SpiritIsland {
 
 		#region constructor
 
-		public Spirit( 
-			Track[] energyTrack
-			, Track[] cardTrack
-			, params PowerCard[] initialCards 
-		){
-			Presence = new MyPresence(
-				new PresenceTrack( energyTrack ),
-				new PresenceTrack( cardTrack )
-			);
+		public Spirit( MyPresence presence, params PowerCard[] initialCards ){
+			Presence = presence;
 
 			foreach(var card in initialCards)
 				RegisterNewCard(card);
@@ -239,8 +232,6 @@ namespace SpiritIsland {
 
 		public virtual InnatePower[] InnatePowers { get; set; } = Array.Empty<InnatePower>();
 
-		public TargetLandApi PowerCardApi {get; set;} = new TargetLandApi();
-
 		public void Initialize( Board board, GameState gameState ){
 			gameState.TimePassed += On_TimePassed;
 			InitializeInternal(board,gameState);
@@ -268,14 +259,12 @@ namespace SpiritIsland {
 
 		#endregion
 
+		public TargetLandApi PowerApi = new TargetLandApi(); // Replace by: Reaching Grasp, Entwined Power, Shadows
 
-		public TargetLandApi TargetLandApi = DefaultTargetLandApi;
 		public virtual InvaderGroup BuildInvaderGroup( GameState gs, Space space ) => new InvaderGroup( space, gs.GetCounts(space), gs.AddFearDirect, Cause.Power );
 
 		public Stack<IDecisionPlus> decisions = new();
 		
-		static readonly TargetLandApi DefaultTargetLandApi = new TargetLandApi();
-
 		public event SpaceTargetedEvent TargetedSpace;
 
 	}

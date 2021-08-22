@@ -45,8 +45,10 @@ Power Progression:
 		public override string Text => Name;
 
 		public VitalStrength():base(
-			new Track[] { Track.Energy2, Track.Energy3, Track.Energy4, Track.Energy6, Track.Energy7, Track.Energy8 },
-			new Track[] { Track.Card1, Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4 },
+			new MyPresence(
+				new Track[] { Track.Energy2, Track.Energy3, Track.Energy4, Track.Energy6, Track.Energy7, Track.Energy8 },
+				new Track[] { Track.Card1, Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4 }
+			),
 			PowerCard.For<GuardTheHealingLand>(),
 			PowerCard.For<AYearOfPerfectStillness>(),
 			PowerCard.For<RitualsOfDestruction>(),

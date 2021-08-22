@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Shouldly;
 using SpiritIsland;
 using Xunit;
@@ -105,21 +106,16 @@ namespace SpiritIsland.Tests {
 		}
 
 		protected void Assert_HasEnergy( int expectedChange ) {
-			Assert.Equal( expectedChange, spirit.Energy ); // , $"Expected {expectedChange} energy change" );
+			spirit.Energy.ShouldBe( expectedChange );
 		}
 
 		#endregion
 
 		#region Resolve_
 
-		protected void Resolve_PlacePresence( string placeOptions, string factory=null) {
-			Resolve_PlacePresence( placeOptions, spirit.Presence.Energy.Next, factory );
-		}
-
 		protected void Resolve_PlacePresence(string placeOptions, Track source, string factoryDescription=null ) {
 
-			ActivatePlacePresence( factoryDescription );
-
+			_ = ActivatePlacePresenceAsync( factoryDescription );
 
 			// Resolve Power
 			if(spirit.Presence.CardPlays.HasMore && spirit.Presence.Energy.HasMore) { // there are 2 option available
@@ -135,12 +131,16 @@ namespace SpiritIsland.Tests {
 
 		}
 
-		void ActivatePlacePresence( string factoryDescription ) {
+		async Task ActivatePlacePresenceAsync( string factoryDescription ) {
 			var ppFactory = spirit.GetUnresolvedActionFactories( Speed.Growth ).OfType<PlacePresence>()
 				.Where( f => factoryDescription == null || factoryDescription == f.ShortDescription )
 				.First();
+
+			await ppFactory.ActivateAsync( spirit, gameState );
+
+			// MUST AWAIT the action to finish before we remove the factory
+			// need presence to be placed prior to the growth-complete method being called
 			spirit.RemoveUnresolvedFactory( ppFactory );
-			ppFactory.ActivateAsync( spirit, gameState );
 		}
 
 		protected void Assert_PresenceTracksAre(int expectedEnergy,int expectedCards) {
@@ -160,7 +160,7 @@ namespace SpiritIsland.Tests {
 			var spiritElements = spirit.Elements;
 			foreach(var pair in GrowthTests.ElementChars) {
 				int expected = expectedElements.Count( x => x == pair.Value );
-				spiritElements[pair.Key].ShouldBe( expected );
+				spiritElements[pair.Key].ShouldBe( expected, pair.Key.ToString() );
 			}
 		}
 

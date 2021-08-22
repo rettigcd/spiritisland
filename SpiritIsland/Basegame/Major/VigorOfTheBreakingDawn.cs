@@ -14,7 +14,7 @@ namespace SpiritIsland.Basegame {
 			if( ctx.Self.Elements.Contains("3 sun,2 animal") ){
 
 				// you may push up to 2 dahan.
-				var pushedToLands = await ctx.PushUpToNDahan(2);
+				var pushedToLands = await ctx.PowerPushUpToNDahan(2);
 
 				// 2 damage per dahan
 				foreach(var neighbor in pushedToLands )

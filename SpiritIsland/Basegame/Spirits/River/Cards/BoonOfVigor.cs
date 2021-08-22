@@ -8,8 +8,10 @@ namespace SpiritIsland.Basegame {
 		public const string Name = "Boon of Vigor";
 		[SpiritCard(BoonOfVigor.Name, 0, Speed.Fast,Element.Sun,Element.Water,Element.Plant)]
 		[TargetSpirit]
-		static public Task ActionAsync( IMakeGamestateDecisions engine,Spirit target){
-			target.Energy += (target==engine.Self) ? 1 : target.PurchasedCards.Count;
+		static public Task ActionAsync( TargetSpiritCtx ctx){
+			ctx.Target.Energy += (ctx.Target==ctx.Self) 
+				? 1 
+				: ctx.Target.PurchasedCards.Count;
 			return Task.CompletedTask;
 		}
 

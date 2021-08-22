@@ -8,7 +8,7 @@ namespace SpiritIsland.Basegame {
 		[FromPresence(1)]
 		static public Task ActAsync(TargetSpaceCtx ctx ) {
 			// push up to 2 towns
-			return ctx.PushUpToNInvaders(2,Invader.Town);
+			return ctx.PowerPushUpToNInvaders(2,Invader.Town);
 		}
 
 	}

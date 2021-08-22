@@ -5,7 +5,7 @@ using SpiritIsland.Basegame;
 using SpiritIsland;
 using Xunit;
 
-namespace SpiritIsland.Tests.Basegame.Spirits {
+namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 
 	public class Ocean_GrowthTests : GrowthTests {
 
@@ -112,7 +112,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 			Given_HasPresence( starting );
 
 			When_Growing(2);
-			Resolve_PlacePresence( placeOptions);
+			Resolve_PlacePresence( placeOptions, spirit.Presence.Energy.Next );
 
 			var targets = pushStr.Split(',')
 				.Where(s=>!string.IsNullOrEmpty(s))

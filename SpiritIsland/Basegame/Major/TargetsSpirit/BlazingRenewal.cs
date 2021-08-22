@@ -16,7 +16,7 @@ namespace SpiritIsland.Basegame {
 
 			// into a single land, up to range 2 from your presence.
 			// Note - Jonah says it is the originators power and range and decision, not the targets
-			var landTarget = await ctx.TargetSpace( From.Presence, null, 2, Target.Any );
+			var landTarget = await ctx.PowerTargetsSpace( From.Presence, null, 2, Target.Any );
 
 			// Add it!
 			for(int i=0;i<max;++i)
@@ -42,10 +42,12 @@ namespace SpiritIsland.Basegame {
 			this.spirits = spirits;
 		}
 
-		public override IEnumerable<Space> GetTargetOptions( Spirit _, From sourceEnum, Terrain? sourceTerrain, int range, Target filterEnum, GameState gameState ) {
+		protected override IEnumerable<Space> GetTargetOptions( Spirit _, From sourceEnum, Terrain? sourceTerrain, int range, Target filterEnum, GameState gameState ) {
 			return spirits
 				.SelectMany(Spirit=>base.GetTargetOptions(Spirit,sourceEnum,sourceTerrain,range,filterEnum,gameState))
 				.Distinct();
 		}
+
 	}
+
 }

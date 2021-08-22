@@ -2,7 +2,7 @@
 using SpiritIsland.Basegame;
 using Xunit;
 
-namespace SpiritIsland.Tests.Basegame.Spirits {
+namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 
 	public class Bringer_GrowthTests : GrowthTests {
 
@@ -24,7 +24,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 			Given_HasPresence( board[4] );
 
 			When_Growing( 1 );
-			Resolve_PlacePresence( "A4" );
+			Resolve_PlacePresence( "A4", spirit.Presence.Energy.Next );
 
 			AndWhen_ReclaimingFirstCard();
 
@@ -36,7 +36,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 			// +1 power card, +1 pressence range 1
 			Given_HasPresence( board[1] );
 			When_Growing(2);
-			Resolve_PlacePresence( "A1;A2;A4;A5;A6");
+			Resolve_PlacePresence( "A1;A2;A4;A5;A6", spirit.Presence.Energy.Next );
 			Assert_GainPowercard(1);
 			Assert_BoardPresenceIs("A1A1");
 		}
@@ -66,8 +66,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 		[InlineDataAttribute(3,3,"A")]
 		[InlineDataAttribute(4,3,"AM")]
 		[InlineDataAttribute(5,4,"AM")]
-		[InlineDataAttribute(6,4,"AM*")]
-		[InlineDataAttribute(7,5,"AM*")]
+		[InlineDataAttribute(6,4,"AM")] // !!! Test SelectAnyElement() growth action is in the list
+		[InlineDataAttribute(7,5,"AM")] // !!! same
 		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 			// energy:	2 air 3 moon 4 any 5
 			spirit.Presence.Energy.RevealedCount = revealedSpaces;
@@ -82,7 +82,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits {
 		[InlineDataAttribute(3,2,"")]
 		[InlineDataAttribute(4,3,"")]
 		[InlineDataAttribute(5,3,"")]
-		[InlineDataAttribute(6,3,"*")] // will fail until we convert cards over also
+		[InlineDataAttribute(6,3,"")] // !!! need way to test this 'Any' element
 		public void CardTrack(int revealedSpaces, int expectedCardPlayCount, string elements){
 			// card:	2 2 2 3 3 any
 			spirit.Presence.CardPlays.RevealedCount = revealedSpaces;

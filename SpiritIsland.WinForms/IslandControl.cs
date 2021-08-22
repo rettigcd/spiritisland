@@ -182,7 +182,7 @@ namespace SpiritIsland.WinForms
 			images.Clear();
 			images[dahan] = gameState.DahanCount( space );
 			images[defend] = gameState.GetDefence( space );
-			images[presence] = spirit.Presence.On( space );
+			images[presence] = spirit.Presence.CountOn( space );
 			images[blight] = gameState.GetBlightOnSpace( space );
 			DrawRow( graphics, x, ref y, iconWidth, xStep, images );
 		}
