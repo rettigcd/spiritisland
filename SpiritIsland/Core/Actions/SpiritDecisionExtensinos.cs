@@ -144,6 +144,11 @@ namespace SpiritIsland {
 
 		#endregion
 
+		static public Task ShowFearCardToUser( this Spirit spirit, string prompt, NamedFearCard cardToShow ) {
+			return spirit.SelectOption( prompt, new IOption[] { new DisplayFearCard { Text = cardToShow.CardName } }, Present.Always );
+		}
+
+
 	}
 
 	class ItemOption<T> : IOption {

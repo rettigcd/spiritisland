@@ -223,8 +223,13 @@ namespace SpiritIsland {
 		#region Invaders
 
 		public async Task ApplyFear() {
-			while( ActivatedFearCards.Count > 0 )
-				await ActivatedFearCards.Pop().Card.Level1(this);
+			while( ActivatedFearCards.Count > 0) {
+				NamedFearCard fearCard = ActivatedFearCards.Pop();
+				// show card to each user
+				foreach(var spirit in Spirits)
+					await spirit.ShowFearCardToUser( "Activating Fear", fearCard );
+				await fearCard.Card.Level1(this);
+			}
 		}
 
 		public async Task<string[]> Ravage( InvaderCard invaderCard ) {

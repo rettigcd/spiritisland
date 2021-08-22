@@ -15,10 +15,10 @@ namespace SpiritIsland.Basegame {
 		static public async Task Option1( TargetSpiritCtx ctx ) {
 
 			// Turn any face-down fear card face-up
-			var cards = ctx.GameState.FearDeck.Concat(ctx.GameState.ActivatedFearCards).ToArray();
-			var cardToShow = (NamedFearCard)await ctx.Self.SelectOption("Select fear to reveal", cards, Present.Always);
+			var cards = ctx.GameState.FearDeck.Concat( ctx.GameState.ActivatedFearCards ).ToArray();
+			var cardToShow = (NamedFearCard)await ctx.Self.SelectOption( "Select fear to reveal", cards, Present.Always );
 
-			await ctx.Self.SelectOption("Done",new IOption[] { new DisplayFearCard{ Text = cardToShow.CardName } }, Present.Always );
+			await ctx.Self.ShowFearCardToUser( "Done", cardToShow );
 		}
 
 		[InnateOption( "3 moon" )]

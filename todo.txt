@@ -43,7 +43,6 @@ UI	Cards - scroll bar
 UI	Display Growth Options in GUI
 UI	show COLOR presence on board - GUI
 UI	click on invaders on board - GUI
-UI	Fix Fear card experience - logging or showing cards
 UI	Enhance Ravage / Build images
 
 
