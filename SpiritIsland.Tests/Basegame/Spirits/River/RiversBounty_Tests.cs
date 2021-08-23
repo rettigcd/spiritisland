@@ -98,7 +98,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			action.Choose(neighbors[0]);
 			// Select 2nd land
 			Assert.False( action.IsResolved );
-			action.Choose( action.Current.Options[0] );
+			action.Choose( action.GetCurrent().Options[0] );
 
 			Assert.True( action.IsResolved );
 

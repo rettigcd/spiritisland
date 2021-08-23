@@ -1,5 +1,6 @@
 ﻿using Shouldly;
 using SpiritIsland.Basegame;
+using SpiritIsland.SinglePlayer;
 using Xunit;
 
 namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
@@ -13,6 +14,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			// reclaim, +1 power card
 			Given_HalfOfPowercardsPlayed();
 			When_Growing(0);
+			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			spirit.Activate_DrawPowerCard();
+			spirit.Activate_ReclaimAll();
 			Assert_AllCardsAvailableToPlay();
 			Assert_GainPowercard(1);
 		}
@@ -24,9 +28,12 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			Given_HasPresence( board[4] );
 
 			When_Growing( 1 );
+			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			spirit.Activate_Reclaim1();
+			spirit.Action.AssertDecision( "Select card to reclaim.", "Predatory Nightmares $2 (Slow),Dreams of the Dahan $0 (Fast)", "Dreams of the Dahan $0 (Fast)" );
 			Resolve_PlacePresence( "A4", spirit.Presence.Energy.Next );
 
-			AndWhen_ReclaimingFirstCard();
+//			AndWhen_ReclaimingFirstCard();
 
 			spirit.Hand.Count.ShouldBe( 3 );
 		}
@@ -36,6 +43,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			// +1 power card, +1 pressence range 1
 			Given_HasPresence( board[1] );
 			When_Growing(2);
+			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			spirit.Activate_DrawPowerCard();
 			Resolve_PlacePresence( "A1;A2;A4;A5;A6", spirit.Presence.Energy.Next );
 			Assert_GainPowercard(1);
 			Assert_BoardPresenceIs("A1A1");
@@ -53,6 +62,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 
 			// add presense range 4 Dahan or Invadors, +2 energy
 			When_Growing(3);
+			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			spirit.Activate_GainEnergy();
 			Resolve_PlacePresence( "T6;T7;T8;T9",spirit.Presence.Energy.Next);
 
 			Assert.Equal(2,spirit.EnergyPerTurn);
@@ -73,6 +84,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			spirit.Presence.Energy.RevealedCount = revealedSpaces;
 			Assert_EnergyTrackIs( expectedEnergyGrowth );
 			When_Growing(0); // triggers elements
+			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			spirit.Activate_DrawPowerCard();
+			spirit.Activate_ReclaimAll();
+
 			Assert_BonusElements( elements );
 		}
 

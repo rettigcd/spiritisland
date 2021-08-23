@@ -4,6 +4,7 @@ using System.Linq;
 using SpiritIsland.Basegame;
 using SpiritIsland;
 using Xunit;
+using SpiritIsland.SinglePlayer;
 
 namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 
@@ -38,7 +39,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			if(gather != null){
 				_ = gather.ActivateAsync( spirit, gameState );
 				while(!spirit.Action.IsResolved){
-					var source = spirit.Action.Current.Options.Single(x=>moveBySrc.ContainsKey(x.Text));
+					var source = spirit.Action.GetCurrent().Options.Single(x=>moveBySrc.ContainsKey(x.Text));
 					spirit.Action.Choose(source);
 				}
 			}
@@ -66,6 +67,12 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			
 			Given_HalfOfPowercardsPlayed();
 			When_Growing(0);
+			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			spirit.Activate_ReclaimAll();
+			spirit.Activate_DrawPowerCard();
+			spirit.Activate_GainEnergy();
+			spirit.Action.AssertDecision( "Select Growth to resolve:", "GatherPresenceIntoOcean", "GatherPresenceIntoOcean", true );
+
 			Assert_AllCardsAvailableToPlay();
 			Assert_GainPowercard(1);
 			Assert_HasEnergy(2);
@@ -79,9 +86,20 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			gameState.Island = new Island(BoardA,BoardB);
 
 			When_Growing(1);
-			Resolve_PlacePresenceInOcean( "A0;B0", spirit.Presence.Energy.Next);
-			
-			Assert_HasEnergy(1);
+			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			spirit.Activate_GainEnergy();
+			spirit.Action.AssertDecision( "Select Growth to resolve:", "PlaceInOcean,PlaceInOcean", "PlaceInOcean" );
+			spirit.Action.AssertDecision( "Select Presence to place.", "moon energy,2 cardplay", "moon energy" );
+			spirit.Action.AssertDecision( "Where would you like to place your presence?", "A0,B0", "A0" );
+
+			spirit.Action.AssertDecision( "Select Growth to resolve:", "PlaceInOcean", "PlaceInOcean" );
+			spirit.Action.AssertDecision( "Select Presence to place.", "water energy,2 cardplay", "water energy" );
+			spirit.Action.AssertDecision( "Where would you like to place your presence?", "A0,B0", "B0", true );
+
+
+			//			Resolve_PlacePresenceInOcean( "A0;B0", spirit.Presence.Energy.Next);
+
+			Assert_HasEnergy( 1);
 		}
 
 		protected void Resolve_PlacePresenceInOcean( string placeOptions, Track source) {
@@ -96,15 +114,15 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			// place on board - first option
 			string[] options = placeOptions.Split( ';' );
 			if(options.Length > 1) // not auto selecting
-				ppAction.Choose( ppAction.Current.Options.Single( o => o.Text == options[0] ) );
+				ppAction.Choose( ppAction.GetCurrent().Options.Single( o => o.Text == options[0] ) );
 
 			spirit.RemoveUnresolvedFactory( ppFactory );
 		}
 
 
 		[Theory]
-		[InlineData("A0","A0>A2","A1;A2;A3","A1A2")]
-		public void PowerPlaceAndPush( string starting, string pushStr, string placeOptions, string ending ){
+		[InlineData("A0","A1;A2;A3","A1A2")]
+		public void PowerPlaceAndPush( string starting, string placeOptions, string ending ){
 			// gain power card
 			// push 1 presense from each ocean
 			// add presense on costal land range 1
@@ -112,35 +130,14 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			Given_HasPresence( starting );
 
 			When_Growing(2);
+			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
 			Resolve_PlacePresence( placeOptions, spirit.Presence.Energy.Next );
+			spirit.Activate_DrawPowerCard();
 
-			var targets = pushStr.Split(',')
-				.Where(s=>!string.IsNullOrEmpty(s))
-				.Select(s=>s.Split('>')[1])
-				.ToArray();
+			spirit.Action.AssertDecision( "Select Growth to resolve:", "PushPresenceFromOcean", "PushPresenceFromOcean" );
+			spirit.Action.AssertDecision( "Select target of Presence to Push from A0", "A1,A2,A3", "A2", true );
 
-			var push = spirit.GetUnresolvedActionFactories(Speed.Growth).OfType<PushPresenceFromOcean>().SingleOrDefault();
-
-			if(push != null){
-				_ = push.ActivateAsync( spirit, gameState );
-				var action = spirit.Action;
-				while(!action.IsResolved){
-					var options = action.Current.Options;
-					var target = options.Single(t=>targets.Contains(t.Text));
-					action.Choose(target);
-				}
-			}
-
-
-			// !! fix
-			//string[] p = push.Split( '>' );
-			//var action = spirit.UnresolvedActionFactories.OfType<PushPresence>()
-			//	.First(act=>act.From.Label==p[0]);
-			//Assert.Equal(placeOptions,action.Options.Select(o=>o.Text).OrderBy(x=>x).Join(";"));
-			//action.Select(action.From.SpacesWithin(1).Single(s=>s.Label==p[1]));
-			//action.Apply();
-
-			Assert_GainPowercard(1);
+			Assert_GainPowercard( 1);
 			Assert_BoardPresenceIs(ending);
 		}
 
@@ -157,6 +154,12 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			spirit.Presence.Energy.RevealedCount = revealedSpaces;
 			Assert_EnergyTrackIs( expectedEnergyGrowth );
 			When_Growing( 0 ); // triggers elements
+			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			spirit.Activate_ReclaimAll();
+			spirit.Activate_DrawPowerCard();
+			spirit.Activate_GainEnergy();
+			spirit.Action.AssertDecision( "Select Growth to resolve:", "GatherPresenceIntoOcean","GatherPresenceIntoOcean",true);
+
 			Assert_BonusElements( elements );
 		}
 

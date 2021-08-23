@@ -1,4 +1,5 @@
 ﻿using SpiritIsland.Basegame;
+using SpiritIsland.SinglePlayer;
 using Xunit;
 
 namespace SpiritIsland.Tests.Basegame.Spirits.Lightning {
@@ -14,8 +15,13 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Lightning {
 
 			Given_HalfOfPowercardsPlayed();
 			When_Growing( 0 );
+			_ = new ResolveActions(spirit,gameState,Speed.Growth).ActAsync();
 
-			Assert_AllCardsAvailableToPlay(5); // drew a power card
+			spirit.Activate_ReclaimAll();
+			spirit.Activate_GainEnergy();
+			spirit.Activate_DrawPowerCard();
+
+			Assert_AllCardsAvailableToPlay( 5); // drew a power card
 			Assert_HasEnergy(1+1); // 1 from energy track
 
 		}
@@ -26,6 +32,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Lightning {
 
 			Given_HasPresence( board[1] );
 			When_Growing( 2 );
+			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			spirit.Activate_GainEnergy();
 			Resolve_PlacePresence( "A1;A2;A4;A5;A6", spirit.Presence.Energy.Next );
 
 			Assert.Equal(1,spirit.EnergyPerTurn);
@@ -38,6 +46,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Lightning {
 			Given_HasPresence( board[3] ); 
 
 			When_Growing( 1 );
+			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
 			Resolve_PlacePresence( "A1;A2;A3;A4;A5", spirit.Presence.Energy.Next, "PlacePresence(2)");
 
 			Assert_HasEnergy( 0 );

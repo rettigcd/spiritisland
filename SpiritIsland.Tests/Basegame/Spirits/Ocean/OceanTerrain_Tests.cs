@@ -40,7 +40,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			// Talons ofLightning - Range 1
 			_ = PowerCard.For<TalonsOfLightning>().ActivateAsync( river, gs );
 
-			Assert_Options( expectedOptions, river.Action.Current.Options, hasOcean ? "include ocean" : "exclude ocean" );
+			Assert_Options( expectedOptions, river.Action.GetCurrent().Options, hasOcean ? "include ocean" : "exclude ocean" );
 
 			static void Assert_Options( string expectedOptions, IEnumerable<IOption> actual, string msg ) {
 				var options = actual.Select( x => x.Text ).OrderBy( x => x ).Join( "," );

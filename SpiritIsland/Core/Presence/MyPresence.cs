@@ -49,9 +49,9 @@ namespace SpiritIsland {
 			// from
 			if(from == Track.Destroyed)
 				--Destroyed;
-			else if(from == Energy.Next)
+			else if(Energy.HasMore && from == Energy.Next)
 				Energy.RevealedCount++;
-			else if(from == CardPlays.Next)
+			else if(CardPlays.HasMore && from == CardPlays.Next)
 				CardPlays.RevealedCount++;
 			else
 				throw new ArgumentException( from.ToString() );

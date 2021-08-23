@@ -5,7 +5,7 @@ namespace SpiritIsland.SinglePlayer {
 
 	class TimePasses : IPhase {
 
-		public IDecision Current => Decision.Null;
+		public IDecision GetCurrent() => Decision.Null;
 
 		readonly GameState gameState;
 		public bool IsResolved => true;

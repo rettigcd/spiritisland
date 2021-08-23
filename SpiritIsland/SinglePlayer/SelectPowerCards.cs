@@ -5,7 +5,7 @@ namespace SpiritIsland.SinglePlayer {
 
 	class SelectPowerCards : IPhase {
 
-		public IDecision Current => spirit.Action.Current;
+		public IDecision GetCurrent() => spirit.Action.GetCurrent();
 		public void Choose( IOption option ) => spirit.Action.Choose( option );
 		public bool IsResolved => spirit.Action.IsResolved;
 

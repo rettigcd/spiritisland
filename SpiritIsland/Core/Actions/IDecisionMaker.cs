@@ -27,7 +27,7 @@ namespace SpiritIsland {
 	/// </summary>
 	public interface IDecisionStream {
 
-		public IDecision Current { get; }
+		public IDecision GetCurrent();
 
 		public void Choose( IOption option );
 

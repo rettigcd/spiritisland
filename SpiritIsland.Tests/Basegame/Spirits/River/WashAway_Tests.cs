@@ -40,14 +40,14 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			card.ActivateAsync( spirit, gameState );
 			action = spirit.Action;
 
-			var invader = action.Current.Options[0] as InvaderSpecific;
+			var invader = action.GetCurrent().Options[0] as InvaderSpecific;
 			Then_SelectInvaderToPush(invader,invader.Summary,"Done");
 
 			//  Then: card has options of where to push 1 explorer
 			Assert_Options(	targetSpace.Adjacent );
 
 			var invaderDestination = board[2];
-			action.Select( invaderDestination.Label );
+			action.Choose( invaderDestination.Label );
 
 			// And: apply doesn't throw an exception
 			Assert.True(action.IsResolved);
@@ -159,16 +159,16 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			params string[] options
 		) {
 			Assert.False( action.IsResolved );
-			Assert.Equal( "Push "+invaderText+" to", action.Current.Prompt );
+			Assert.Equal( "Push "+invaderText+" to", action.GetCurrent().Prompt );
 			Assert_Options( options );
 			action.Choose( invaderDestination );
 		}
 
 		void Then_SelectInvaderToPush( InvaderSpecific invader, params string[] options ) {
 			Assert.False( action.IsResolved );
-			Assert.Equal( "Select invader to push", action.Current.Prompt );
+			Assert.Equal( "Select invader to push", action.GetCurrent().Prompt );
 			Assert_Options( options );
-			action.Choose( action.Current.Options.Single( x => x.Text == invader.Summary ) );
+			action.Choose( action.GetCurrent().Options.Single( x => x.Text == invader.Summary ) );
 		}
 
 		// WashAway: push 3 different invaders to 3 different lands

@@ -6,9 +6,9 @@ using SpiritIsland;
 
 namespace SpiritIsland.SinglePlayer {
 
-	class ResolveActions : IPhase {
+	public class ResolveActions : IPhase {
 
-		public IDecision Current => spirit.Action.Current;
+		public IDecision GetCurrent() => spirit.Action.GetCurrent();
 		public bool IsResolved => spirit.Action.IsResolved;
 
 		public void Choose( IOption option ) => spirit.Action.Choose( option );
@@ -29,7 +29,7 @@ namespace SpiritIsland.SinglePlayer {
 			_ = ActAsync();
 		}
 
-		async Task ActAsync() {
+		public async Task ActAsync() {
 			List<IActionFactory> matchingActionFactories;
 
 			while((matchingActionFactories = spirit.GetUnresolvedActionFactories( speed ).ToList()).Count> 0) {

@@ -4,6 +4,7 @@ using SpiritIsland.Basegame;
 using SpiritIsland;
 using Xunit;
 using Shouldly;
+using SpiritIsland.SinglePlayer;
 
 namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
@@ -26,8 +27,13 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Assert.Equal(1,spirit.EnergyPerTurn);
 
 			When_Growing( 0 );
+			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
 
-			Assert_AllCardsAvailableToPlay(5);
+			spirit.Activate_DrawPowerCard();
+			spirit.Activate_GainEnergy();
+			spirit.Activate_ReclaimAll();
+
+			Assert_AllCardsAvailableToPlay( 5);
 			Assert_HasCardAvailable( "Uncanny Melting" ); // gains 1st card in power progression
 			Assert_HasEnergy( 1+1 ); // 1 Growth energy + 1 from energy track
 
@@ -43,6 +49,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Assert.Equal(1,spirit.Presence.Energy.RevealedCount);
 
 			When_Growing( 1 );
+			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+
 			Resolve_PlacePresence( "A2;A3;A4", spirit.Presence.Energy.Next);
 			Resolve_PlacePresence( "A1;A2;A3;A4", spirit.Presence.Energy.Next );
 
@@ -61,6 +69,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Given_HasPresence( board[3] );
 
 			When_Growing( 2 );
+			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+
+			spirit.Activate_DrawPowerCard();
 			Resolve_PlacePresence( "A1;A2;A3;A4;A5", spirit.Presence.CardPlays.Next);
 
 			Assert_HasCardAvailable( "Uncanny Melting" ); // gains 1st card in power progression
@@ -107,6 +118,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Assert_PresenceTracksAre(1,expectedCardPlayCount);
 
 			When_Growing(2);
+			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+
+			spirit.Activate_DrawPowerCard();
 			Resolve_PlacePresence( "A1;A2;A3;A4;A5", spirit.Presence.Energy.Next );
 
 			if(canReclaim1)

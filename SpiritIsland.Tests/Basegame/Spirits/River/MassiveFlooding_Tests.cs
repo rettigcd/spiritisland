@@ -2,6 +2,7 @@
 using SpiritIsland.Basegame;
 using SpiritIsland.SinglePlayer;
 using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace SpiritIsland.Tests.Basegame.Spirits.River {
@@ -28,6 +29,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		public void InsufficientElements() {
 
 			game.DecisionProvider.Old_SelectGrowthOption( 0 ); // reclaim
+			spirit.Activate_DrawPowerCard();
+			spirit.Activate_GainEnergy();
+			spirit.Activate_ReclaimAll();
+
 			game.DecisionProvider.Old_BuyPowerCards( "Done" );
 
 			//   And: in slow phase
@@ -63,6 +68,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Given_SpiritGetMoney( 5 );
 
 			game.DecisionProvider.Old_SelectGrowthOption( 0 ); // Reclaim
+			spirit.Activate_DrawPowerCard();
+			spirit.Activate_GainEnergy();
+			spirit.Activate_ReclaimAll();
 
 			game.DecisionProvider.Old_BuyPowerCards( FlashFloods.Name ); // fast - sun, water
 			game.DecisionProvider.Old_BuyPowerCards( RiversBounty.Name ); // slow - sun, water, animal
@@ -90,6 +98,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			game.GameState.Adjust( space, InvaderSpecific.Explorer, 5 );
 
 			game.DecisionProvider.Old_SelectGrowthOption( 0 ); // Reclaim
+			spirit.Activate_DrawPowerCard();
+			spirit.Activate_GainEnergy();
+			spirit.Activate_ReclaimAll();
 
 			game.DecisionProvider.Old_BuyPowerCards( FlashFloods.Name );  // fast - sun, water
 			game.DecisionProvider.Old_BuyPowerCards( RiversBounty.Name ); // slow - sun, water, animal

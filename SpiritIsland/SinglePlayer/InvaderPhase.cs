@@ -6,7 +6,7 @@ namespace SpiritIsland.SinglePlayer {
 
 	class InvaderPhase : IPhase {
 
-		public IDecision Current => spirit.Action.Current;
+		public IDecision GetCurrent() => spirit.Action.GetCurrent();
 
 		public bool IsResolved => spirit.Action.IsResolved;
 

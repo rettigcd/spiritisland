@@ -39,7 +39,7 @@ namespace SpiritIsland.WinForms {
 
 
 		void ShowOptions() {
-			IDecision decision = game.DecisionProvider.Current;
+			IDecision decision = game.DecisionProvider.GetCurrent();
 			this.promptLabel.Text = decision.Prompt;
 			NewDecision?.Invoke( decision );
 		}

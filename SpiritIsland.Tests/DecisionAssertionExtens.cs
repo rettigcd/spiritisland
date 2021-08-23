@@ -11,9 +11,13 @@ namespace SpiritIsland.Tests {
 
 		static public void AssertDecision( this IDecisionStream decision, string prompt, string optionsString, string select, bool done = false ) {
 			string msg = $"{prompt}:{optionsString}:{select}";
-			decision.Current.Prompt.ShouldBe( prompt, msg, StringCompareShould.IgnoreCase );
-			decision.Current.Options.Select( x => x.Text ).Join( "," ).ShouldBe( optionsString, msg );
-			IOption match = decision.Current.Options.Single( x => x.Text == select );
+
+			decision.IsResolved.ShouldBeFalse($"Dude! Decision [{prompt}] is not there.");
+
+			var current = decision.GetCurrent();
+			current.Prompt.ShouldBe( prompt, msg, StringCompareShould.IgnoreCase );
+			current.Options.Select( x => x.Text ).Join( "," ).ShouldBe( optionsString, msg );
+			IOption match = current.Options.First( x => x.Text == select ); // sometimes we will have double
 			decision.Choose( match );
 			if(done)
 				decision.IsResolved.ShouldBeTrue( msg );
@@ -24,20 +28,20 @@ namespace SpiritIsland.Tests {
 		// === older ===
 		static public void Old_SelectOption( this IDecisionStream decision, string prompt, string optionText ) {
 
-			if(!decision.Current.Prompt.StartsWith( prompt ))
-				decision.Current.Prompt.ShouldBe( prompt );
+			if(!decision.GetCurrent().Prompt.StartsWith( prompt ))
+				decision.GetCurrent().Prompt.ShouldBe( prompt );
 
-			var option = decision.Current.Options.FirstOrDefault( o => o.Text == optionText );
+			var option = decision.GetCurrent().Options.FirstOrDefault( o => o.Text == optionText );
 			if(option == null)
 				throw new Exception( $"option ({optionText} not found in "
-					+ decision.Current.Options.Select( x => x.Text ).Join( ", " )
+					+ decision.GetCurrent().Options.Select( x => x.Text ).Join( ", " )
 				);
 			decision.Choose( option );
 		}
 
 		static public void Old_SelectGrowthOption(this IDecisionStream decision, int optionIndex ) {
-			Assert.Equal( "Select Growth Option", decision.Current.Prompt );
-			decision.Choose( decision.Current.Options[optionIndex] );
+			Assert.Equal( "Select Growth Option", decision.GetCurrent().Prompt );
+			decision.Choose( decision.GetCurrent().Options[optionIndex] );
 		}
 
 
@@ -49,20 +53,20 @@ namespace SpiritIsland.Tests {
 
 		static public void Old_SelectOption( this IDecisionStream decision, string prompt, IOption option ) {
 
-			if(!decision.Current.Prompt.StartsWith( prompt ))
-				Assert.Equal( prompt, decision.Current.Prompt );
+			if(!decision.GetCurrent().Prompt.StartsWith( prompt ))
+				Assert.Equal( prompt, decision.GetCurrent().Prompt );
 			decision.Choose( option );
 		}
 
 		static public void Old_SelectOptionContains( this IDecisionStream decision, string prompt, string substring ) {
 
-			if(!decision.Current.Prompt.StartsWith( prompt ))
-				Assert.Equal( prompt, decision.Current.Prompt );
+			if(!decision.GetCurrent().Prompt.StartsWith( prompt ))
+				Assert.Equal( prompt, decision.GetCurrent().Prompt );
 
-			var option = decision.Current.Options.FirstOrDefault( o => o.Text.ToLower().Contains( substring.ToLower() ) );
+			var option = decision.GetCurrent().Options.FirstOrDefault( o => o.Text.ToLower().Contains( substring.ToLower() ) );
 			if(option == null)
 				throw new Exception( $"option ({substring} not found in "
-					+ decision.Current.Options.Select( x => x.Text ).Join( ", " )
+					+ decision.GetCurrent().Options.Select( x => x.Text ).Join( ", " )
 				);
 			decision.Choose( option );
 		}

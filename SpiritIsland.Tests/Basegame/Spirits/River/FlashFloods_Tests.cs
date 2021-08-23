@@ -44,7 +44,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// When: selecting a damage optin
 			Assert.False(action.IsResolved);
 			Assert_Options( "C@3","E@1","T@2" );
-			action.Select( "E@1" );
+			action.Choose( "E@1" );
 
 			// Then: resolved => Applu
 			Assert.True(action.IsResolved);
@@ -81,7 +81,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// Then: can apply 2 points of damage
 			action.IsResolved.ShouldBeFalse();
 			Assert_Options("C@3","E@1","T@2");
-			action.Select( "C@3" );
+			action.Choose( "C@3" );
 
 			// And: apply doesn't throw an exception
 			action.IsResolved.ShouldBeTrue();

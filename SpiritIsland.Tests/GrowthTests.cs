@@ -115,19 +115,24 @@ namespace SpiritIsland.Tests {
 
 		protected void Resolve_PlacePresence(string placeOptions, Track source, string factoryDescription=null ) {
 
-			_ = ActivatePlacePresenceAsync( factoryDescription );
+			var current = spirit.Action.GetCurrent();
+
+			var op = current.Options.First(o=>o.Text.StartsWith("PlacePre"));
+			spirit.Action.Choose(op);
 
 			// Resolve Power
 			if(spirit.Presence.CardPlays.HasMore && spirit.Presence.Energy.HasMore) { // there are 2 option available
-				spirit.Action.Current.Options.Select( x => x.Text ).Join( "," ).ShouldContain( source.Text );
+				spirit.Action.GetCurrent().Options.Select( x => x.Text ).Join( "," ).ShouldContain( source.Text );
 				// take from precense track
 				spirit.Action.Choose( source );
 			}
 
 			// place on board - first option
-			string[] options = placeOptions.Split( ';' );
-			if(options.Length > 1) // this is wrong!  If we enter only 1 option, we aren't verifying it because we know the engine will auto-select it
-				spirit.Action.Choose( spirit.Action.Current.Options.Single( o => o.Text == options[0] ) );
+			if(!spirit.Action.IsResolved) {
+				string[] expectedOptions = placeOptions.Split( ';' );
+				var actualOptions = spirit.Action.GetCurrent().Options;
+				spirit.Action.Choose( actualOptions.Single( o => o.Text == expectedOptions[0] ) );
+			}
 
 		}
 
@@ -165,14 +170,45 @@ namespace SpiritIsland.Tests {
 		}
 
 		protected void AndWhen_ReclaimingFirstCard() {
+			// This is for River, which doesn't auto-select the reclaim-1 so we have to do it for them.
 			_ = spirit.GetUnresolvedActionFactories(Speed.Growth).OfType<Reclaim1>().First().ActivateAsync( spirit, gameState );
+
 			var reclaim = spirit.Action;
-			if(reclaim.Current.Options.Length>0)
-				reclaim.Choose( reclaim.Current.Options[0] );
+			if(reclaim.GetCurrent().Options.Length>0)
+				reclaim.Choose( reclaim.GetCurrent().Options[0] );
 		}
 
 		#endregion
 
 	}
+
+	static public class Spirit_Activate_Extensions {
+		static public void Activate_DrawPowerCard(this Spirit spirit) {
+			spirit.Action.Choose( "DrawPowerCard" );
+		}
+
+		static public void Activate_GainEnergy( this Spirit spirit ) {
+			var selection = spirit.Action.GetCurrent().Options.First(x=>x.Text.StartsWith("GainEnergy"));
+			spirit.Action.Choose( selection );
+		}
+
+		static public void Activate_PlayExtraCard( this Spirit spirit ) {
+			var selection = spirit.Action.GetCurrent().Options.First( x => x.Text.StartsWith( "PlayExtra" ) );
+			spirit.Action.Choose( selection );
+		}
+
+
+		static public void Activate_ReclaimAll( this Spirit spirit ) {
+			spirit.Action.Choose( "ReclaimAll" );
+		}
+
+		static public void Activate_Reclaim1( this Spirit spirit ) {
+			spirit.Action.Choose( "Reclaim(1)" );
+		}
+
+
+	}
+
+
 
 }

@@ -62,9 +62,9 @@ namespace SpiritIsland {
 
 		protected void RemoveResolvedActions( GameState gameState, Speed speed ) {
 
-			var factories = GetUnresolvedActionFactories( speed ).ToArray();
-			foreach(var factory in factories)
-				RemoveSingleIfResolved( gameState, factory );
+//			var factories = GetUnresolvedActionFactories( speed ).ToArray();
+//			foreach(var factory in factories)
+//				RemoveSingleIfResolved( gameState, factory );
 
 		}
 
@@ -126,7 +126,7 @@ namespace SpiritIsland {
 			_unresolvedActionFactories.RemoveAt( index );
 
 			if(_unresolvedActionFactories.Count == 0 && selectedActionFactory is GrowthActionFactory)
-				TriggerEnergyElementsAndReclaims( selectedActionFactory );
+				                                TriggerEnergyElementsAndReclaims( selectedActionFactory );
 
 		}
 

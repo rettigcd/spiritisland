@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using SpiritIsland.Basegame;
+using SpiritIsland.SinglePlayer;
 using Xunit;
 
 namespace SpiritIsland.Tests.Basegame.Spirits.VitalStrengthNS {
@@ -15,6 +16,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.VitalStrengthNS {
 			Given_HasPresence( board[3] );
 
 			When_Growing( 0 );
+			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			spirit.Activate_ReclaimAll();
+
 			Resolve_PlacePresence( "A1;A2;A3;A4;A5", spirit.Presence.Energy.Next );
 
 			this.Assert_AllCardsAvailableToPlay();
@@ -27,6 +31,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.VitalStrengthNS {
 			Given_HasPresence( board[4] );
 
 			When_Growing( 1 );
+			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			spirit.Activate_DrawPowerCard();
+
 			Resolve_PlacePresence( "A4", spirit.Presence.Energy.Next );
 
 			Assert.Equal(5,spirit.Hand.Count);
@@ -37,6 +44,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.VitalStrengthNS {
 			// +1 presence range 1, +2 energy
 			Given_HasPresence( board[1] );
 			When_Growing(2);
+			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			spirit.Activate_GainEnergy();
+
 			Resolve_PlacePresence( "A1;A2;A4;A5;A6",spirit.Presence.Energy.Next);
 			Assert.Equal(3,spirit.EnergyPerTurn);
 			Assert_HasEnergy(3+2);

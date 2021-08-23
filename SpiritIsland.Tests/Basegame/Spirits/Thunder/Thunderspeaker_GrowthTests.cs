@@ -2,6 +2,7 @@
 using SpiritIsland.Basegame;
 using SpiritIsland;
 using Xunit;
+using SpiritIsland.SinglePlayer;
 
 namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 
@@ -16,8 +17,11 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			Given_HalfOfPowercardsPlayed();
 
 			When_Growing( 0 );
+			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			spirit.Activate_ReclaimAll();
+			spirit.Activate_DrawPowerCard();
 
-			Assert_AllCardsAvailableToPlay(6);
+			Assert_AllCardsAvailableToPlay( 6);
 			Assert_HasEnergy(1);
 		}
 
@@ -35,6 +39,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 				gameState.AdjustDahan( board[int.Parse( s )] );
 
 			When_Growing( 1 );
+			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
 			Resolve_PlacePresence( expectedPresenseOptions, spirit.Presence.Energy.Next, "PlacePresence(2,dahan)" );
 			// PlacePresence(2,dahan)
 
@@ -48,6 +53,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 
 			Given_HasPresence( board[1] );
 			When_Growing(2);
+			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			spirit.Activate_GainEnergy();
 			Resolve_PlacePresence( "A1;A2;A4;A5;A6", spirit.Presence.Energy.Next );
 
 			Assert.Equal(1,spirit.EnergyPerTurn);
@@ -67,6 +74,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			spirit.Presence.Energy.RevealedCount = revealedSpaces;
 			Assert_PresenceTracksAre( expectedEnergyGrowth, 1 );
 			When_Growing(0); // finish growth to trigger elements
+			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			spirit.Activate_ReclaimAll();
+			spirit.Activate_DrawPowerCard();
+
 			Assert_BonusElements( elements );
 		}
 
@@ -88,6 +99,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			Assert_PresenceTracksAre(1,expectedCardPlayCount);
 
 			When_Growing(2);
+			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			spirit.Activate_GainEnergy();
 			Resolve_PlacePresence( "A2;A3;A4", spirit.Presence.Energy.Next );
 
 			if( canReclaim1 )

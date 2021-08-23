@@ -11,14 +11,14 @@ namespace SpiritIsland {
 		/// Blocks and waits for there to be a decision. 
 		/// Don't call unless you are willing to block.
 		/// </summary>
-		public IDecision Current => WaitForNextDecisionAndCacheIt;
+		public IDecision GetCurrent() => WaitForNextDecisionAndCacheIt;
 
 		IDecisionMaker WaitForNextDecisionAndCacheIt => userAccessedDecision ??= WaitForNextActiveDecision();
 		IDecisionMaker userAccessedDecision;
 
 		public bool IsResolved => acitveDecisionMaker == null;
 
-		public void Select( string text ) => Choose( Current.Options.Single( o => o.Text == text ) );
+		public void Choose( string text ) => Choose( GetCurrent().Options.VerboseSingle( o => o.Text == text ) );
 
 		public void Choose(IOption selection) {
 			var poppedDecision = WaitForNextDecisionAndCacheIt;

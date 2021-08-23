@@ -1,5 +1,6 @@
 ﻿using Shouldly;
 using SpiritIsland.Basegame;
+using SpiritIsland.SinglePlayer;
 using Xunit;
 
 namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
@@ -21,15 +22,16 @@ namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
 			Given_HasPresence( board[2] );
 
 			When_Growing( 0 );
+			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			spirit.Activate_ReclaimAll();
+			spirit.Activate_DrawPowerCard();
 			Resolve_PlacePresence( "A2;A3;A5", spirit.Presence.Energy.Next );
 
 			Assert_AllCardsAvailableToPlay(5);
 		}
 
-		[Theory]
-		[InlineData("PlacePresence(2,W / J)","A2;A3;A5")]
-		[InlineData("PlacePresence(1)","A1;A2;A3;A4")]
-		public void PlayExtraCard_2Presence(string focus, string option){
+		[Fact]
+		public void PlayExtraCard_2Presence(){
 			// +1 presense to jungle or wetland - range 2
 			// +1 presense range 1, play +1 extra card this turn
 
@@ -39,7 +41,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
 			Assert.Equal(1, spirit.NumberOfCardsPlayablePerTurn); // ,"Rampant Green should start with 1 card.");
 
 			When_Growing( 1 );
-			Resolve_PlacePresence( option, spirit.Presence.Energy.Next, focus );
+			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			Resolve_PlacePresence( "A2;A3;A5", spirit.Presence.Energy.Next, "PlacePresence(2,W / J)" );
+			Resolve_PlacePresence( "A2;A3;A5", spirit.Presence.Energy.Next, "PlacePresence(1)" );
+			spirit.Activate_PlayExtraCard();
 
 			// Player Gains +1 card to play this round
 			Assert.Equal(2, spirit.NumberOfCardsPlayablePerTurn); // , "Should gain 1 card to play this turn.");
@@ -59,7 +64,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
 			Given_HasPresence( board[2] );
 
 			When_Growing( 2 );
-			Resolve_PlacePresence("A2;A3;A5", spirit.Presence.Energy.Next ); // +1 from energy track
+			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			Resolve_PlacePresence( "A2;A3;A5", spirit.Presence.Energy.Next ); // +1 from energy track
+			spirit.Activate_DrawPowerCard();
+			spirit.Activate_GainEnergy();
 
 			Assert.Equal(1,spirit.EnergyPerTurn);
 			Assert_HasEnergy(3+1);
@@ -67,22 +75,26 @@ namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
 		}
 
 		[Theory]
-		[InlineDataAttribute(1,0,"")]
-		[InlineDataAttribute(2,1,"")]
-		[InlineDataAttribute(3,1,"P")]
+		[InlineDataAttribute( 1,0,"")]
+		[InlineDataAttribute( 2,1,"")]
+		[InlineDataAttribute( 3,1,"P")]
 		[InlineDataAttribute( 4, 2, "P" )]
 		[InlineDataAttribute( 5, 2, "P" )]
 		[InlineDataAttribute( 6, 2, "PP" )]
 		[InlineDataAttribute( 7, 3, "PP" )]
 		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
+			spirit.Presence.PlaceOn( gameState.Island.Boards[0][5] );
+
 			// energy: 0 1 plant 2 2 plant 3
 			spirit.Presence.Energy.RevealedCount = revealedSpaces;
 			Assert_PresenceTracksAre( expectedEnergyGrowth, 1 );
 
 			When_Growing( 0 ); // triggers elements
+			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			spirit.Activate_ReclaimAll();
+			spirit.Activate_DrawPowerCard();
 
-			if(revealedSpaces<7) // when we hit 7, there will only be prsence on the card-track and PP will auto-resolve
-				Resolve_PlacePresence("A1",spirit.Presence.CardPlays.Next);
+			Resolve_PlacePresence("A2",spirit.Presence.CardPlays.Next);
 
 			Assert_BonusElements( elements );
 		}

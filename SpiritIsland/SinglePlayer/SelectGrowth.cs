@@ -6,7 +6,8 @@ namespace SpiritIsland.SinglePlayer {
 
 	class SelectGrowth : IPhase {
 
-		public IDecision Current {get; private set; }
+		public IDecision GetCurrent() => gg;
+		IDecision gg;
 		public bool IsResolved => spirit.Action.IsResolved;
 
 		readonly Spirit spirit;
@@ -34,7 +35,7 @@ namespace SpiritIsland.SinglePlayer {
 		public SelectGrowth(Spirit spirit,GameState gameState){
 			this.spirit = spirit;
 			this.gameState = gameState;
-			Current = new Decision {
+			gg = new Decision {
 				Prompt = "Select Growth Option",
 				Options = spirit.GetGrowthOptions().Cast<IOption>().ToArray()
 			};
@@ -45,7 +46,7 @@ namespace SpiritIsland.SinglePlayer {
 		public bool AllowAutoSelect { get; set; } = true;
 
 		public void Choose(IOption option){
-			var options = Current.Options;
+			var options = GetCurrent().Options;
 			for(int i=0;i<options.Length;++i){
 				if(options[i].Equals(option)){
 					spirit.Grow(gameState,i);
