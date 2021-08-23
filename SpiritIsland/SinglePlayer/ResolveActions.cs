@@ -21,7 +21,12 @@ namespace SpiritIsland.SinglePlayer {
 		}
 
 		public void Initialize() {
-			_ = ActAsync();
+			_ = ActAndTrigger();
+		}
+
+		async Task ActAndTrigger() {
+			await ActAsync();
+			Done();
 		}
 
 		public async Task ActAsync() {
@@ -54,8 +59,6 @@ namespace SpiritIsland.SinglePlayer {
 
 				spirit.RemoveUnresolvedFactory( selectedActionFactory);
 			}
-
-			Done();
 		}
 
 		List<IOption> GetActionFactoryOptions( List<IActionFactory> actionFactories ) {

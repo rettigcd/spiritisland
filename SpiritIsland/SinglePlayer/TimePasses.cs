@@ -1,5 +1,5 @@
-﻿using SpiritIsland;
-using System;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace SpiritIsland.SinglePlayer {
 
@@ -11,12 +11,19 @@ namespace SpiritIsland.SinglePlayer {
 			this.gameState = gameState;
 		}
 
-		public event Action Complete;
-
-		public void Initialize() {
+		public Task ActAsync() {
 			_ = this.gameState.TimePasses();
+			return Task.CompletedTask;
+		}
+
+		async Task ActAndTrigger() {
+			await ActAsync();
 			this.Complete?.Invoke();
 		}
+
+		public event Action Complete;
+
+		public void Initialize() { _ = ActAndTrigger(); }
 
 	}
 

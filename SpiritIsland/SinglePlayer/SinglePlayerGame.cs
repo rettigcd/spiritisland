@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SpiritIsland.SinglePlayer {
 
@@ -56,6 +57,21 @@ namespace SpiritIsland.SinglePlayer {
 			timePasses.Complete       += () => selectGrowth.Initialize();
 
 			selectGrowth.Initialize();
+
+			//async Task Loop() {
+			//	while(true) {
+			//		await selectGrowth.ActAsync();
+			//		await resolveGrowth.ActAsync();
+			//		await selectPowerCards.ActAsync();
+			//		await fastActions.ActAsync();
+			//		await invaders.ActAsync();
+			//		await slowActions.ActAsync();
+			//		await timePasses.ActAsync();
+			//	}
+			//}
+			//_ = Loop();
+
+
 		}
 
 		#endregion

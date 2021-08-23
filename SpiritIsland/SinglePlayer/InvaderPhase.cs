@@ -18,10 +18,16 @@ namespace SpiritIsland.SinglePlayer {
 		public event Action Complete;
 
 		public void Initialize() {
-			_ = Action();
+			_ = ActAndTrigger();
 		}
 
-		async Task Action() {
+		public async Task ActAndTrigger() {
+			await ActAsync();
+			this.Complete?.Invoke();
+		}
+
+
+		public async Task ActAsync() {
 
 			var decisionMaker = spirit;
 
@@ -67,8 +73,6 @@ namespace SpiritIsland.SinglePlayer {
 			gameState.Explore( invaderDeck.Explore );
 
 			invaderDeck.Advance();
-
-			this.Complete?.Invoke();
 		}
 
 		void Log( string msg ) => NewLogEntry?.Invoke( msg );

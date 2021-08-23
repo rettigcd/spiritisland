@@ -18,8 +18,13 @@ namespace SpiritIsland.SinglePlayer {
 		}
 
 		async Task ActAndPublishComplete() {
-			await spirit.BuyPowerCardsAsync();
+			await ActAsync();
 			Complete?.Invoke();
+		}
+
+
+		public Task ActAsync() {
+			return spirit.BuyPowerCardsAsync();
 		}
 
 	}

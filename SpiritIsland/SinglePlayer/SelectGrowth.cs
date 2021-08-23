@@ -10,7 +10,12 @@ namespace SpiritIsland.SinglePlayer {
 		readonly GameState gameState;
 
 		public void Initialize() {
-			_ = ActAsync();
+			_ = ActAndTrigger();
+		}
+
+		public async Task ActAndTrigger() {
+			await ActAsync();
+			this.Complete?.Invoke();
 		}
 
 		public async Task ActAsync() {
@@ -24,9 +29,7 @@ namespace SpiritIsland.SinglePlayer {
 
 			spirit.Grow( gameState, i );
 
-			this.Complete?.Invoke();
 		}
-
 
 		public SelectGrowth(Spirit spirit,GameState gameState){
 			this.spirit = spirit;
