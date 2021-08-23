@@ -5,10 +5,7 @@ namespace SpiritIsland.SinglePlayer {
 
 	class TimePasses : IPhase {
 
-		public IDecision GetCurrent() => Decision.Null;
-
 		readonly GameState gameState;
-		public bool IsResolved => true;
 
 		public TimePasses(GameState gameState){
 			this.gameState = gameState;
@@ -21,9 +18,6 @@ namespace SpiritIsland.SinglePlayer {
 			this.Complete?.Invoke();
 		}
 
-		public void Choose( IOption option ) {
-			throw new NotImplementedException();
-		}
 	}
 
 }

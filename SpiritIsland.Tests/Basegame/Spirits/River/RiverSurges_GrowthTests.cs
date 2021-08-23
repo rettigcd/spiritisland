@@ -317,8 +317,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// pull card track 2 * 2 = triggers reclaim 
 
 			game.DecisionProvider.Old_SelectGrowthOption(1);
-			game.DecisionProvider.Old_PlacePresence1("Card","A5");
-			game.DecisionProvider.Old_PlacePresence1("Card","A5");
+			game.DecisionProvider.Old_PlacePresence1( Track.Card2, "A5");
+			game.DecisionProvider.Old_PlacePresence1( Track.Card2, "A5");
 
 			game.DecisionProvider.Old_BuyPowerCards( WashAway.Name );
 			game.DecisionProvider.Old_BuyPowerCards( RiversBounty.Name );
@@ -327,8 +327,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			game.DecisionProvider.Old_DoneWith(Speed.Slow);
 
 			game.DecisionProvider.Old_SelectGrowthOption(1);
-			game.DecisionProvider.Old_PlacePresence1("Card","A5");
-			game.DecisionProvider.Old_PlacePresence1(game.Spirit.Presence.CardPlays.Next,"A5");
+			game.DecisionProvider.Old_PlacePresence1( Track.Card3, "A5");
+			game.DecisionProvider.Old_PlacePresence1( Track.Reclaim1,"A5");
 
 			// Can reclaim River's Bounty
 			game.DecisionProvider.Old_Reclaim1( "River's Bounty $0 (Slow)" );

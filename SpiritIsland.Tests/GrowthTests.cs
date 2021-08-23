@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Shouldly;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Shouldly;
-using SpiritIsland;
 using Xunit;
 
 namespace SpiritIsland.Tests {
@@ -113,7 +112,7 @@ namespace SpiritIsland.Tests {
 
 		#region Resolve_
 
-		protected void Resolve_PlacePresence(string placeOptions, Track source, string factoryDescription=null ) {
+		protected void Resolve_PlacePresence(string placeOptions, Track source ) {
 
 			var current = spirit.Action.GetCurrent();
 
@@ -134,18 +133,6 @@ namespace SpiritIsland.Tests {
 				spirit.Action.Choose( actualOptions.Single( o => o.Text == expectedOptions[0] ) );
 			}
 
-		}
-
-		async Task ActivatePlacePresenceAsync( string factoryDescription ) {
-			var ppFactory = spirit.GetUnresolvedActionFactories( Speed.Growth ).OfType<PlacePresence>()
-				.Where( f => factoryDescription == null || factoryDescription == f.ShortDescription )
-				.First();
-
-			await ppFactory.ActivateAsync( spirit, gameState );
-
-			// MUST AWAIT the action to finish before we remove the factory
-			// need presence to be placed prior to the growth-complete method being called
-			spirit.RemoveUnresolvedFactory( ppFactory );
 		}
 
 		protected void Assert_PresenceTracksAre(int expectedEnergy,int expectedCards) {

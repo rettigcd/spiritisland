@@ -6,12 +6,6 @@ namespace SpiritIsland.SinglePlayer {
 
 	class InvaderPhase : IPhase {
 
-		public IDecision GetCurrent() => spirit.Action.GetCurrent();
-
-		public bool IsResolved => spirit.Action.IsResolved;
-
-		public void Choose( IOption option ) => spirit.Action.Choose( option );
-
 		public InvaderPhase(GameState gameState){
 			this.gameState = gameState;
 			this.spirit = gameState.Spirits[0];
@@ -20,17 +14,17 @@ namespace SpiritIsland.SinglePlayer {
 
 		readonly Spirit spirit;
 
-
-
 		public event Action<string> NewLogEntry;
 		public event Action Complete;
 
 		public void Initialize() {
-			decisionMaker = gameState.Spirits[0];
 			_ = Action();
 		}
 
 		async Task Action() {
+
+			var decisionMaker = spirit;
+
 			// Blight
 			if(gameState.BlightCard.IslandIsBlighted) {
 				Log( "Island is blighted" );
@@ -76,8 +70,6 @@ namespace SpiritIsland.SinglePlayer {
 
 			this.Complete?.Invoke();
 		}
-
-		Spirit decisionMaker;
 
 		void Log( string msg ) => NewLogEntry?.Invoke( msg );
 

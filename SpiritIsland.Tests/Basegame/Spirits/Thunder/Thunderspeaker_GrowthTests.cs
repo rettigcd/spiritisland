@@ -40,7 +40,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 
 			When_Growing( 1 );
 			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
-			Resolve_PlacePresence( expectedPresenseOptions, spirit.Presence.Energy.Next, "PlacePresence(2,dahan)" );
+			Resolve_PlacePresence( expectedPresenseOptions, spirit.Presence.Energy.Next );
 			// PlacePresence(2,dahan)
 
 			Assert_HasEnergy( 0 );

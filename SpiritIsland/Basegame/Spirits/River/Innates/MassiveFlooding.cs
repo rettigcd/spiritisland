@@ -26,11 +26,13 @@ namespace SpiritIsland.Basegame {
 		static public async Task Option3Async(TargetSpaceCtx ctx){
 			var group = ctx.InvadersOn(ctx.Target);
 
-			var invaderTypes = group.InvaderTypesPresent_Specific.ToDictionary(x=>x,x=>group[x]); // copy so we can modify
-			foreach(var (invader,origCount) in invaderTypes.Select(x=>(x.Key,x.Value))){
+			// copy so we can modify
+			var invaderTypes = group.InvaderTypesPresent_Specific.ToDictionary(x=>x,x=>group[x]); 
+
+			foreach(var (invader,origCount) in invaderTypes.Select(x=>(x.Key,x.Value)))
 				for(int i=0;i<origCount;++i)
 					await group.ApplyDamageTo1( 2, invader );
-			}
+			
 		}
 
 	}

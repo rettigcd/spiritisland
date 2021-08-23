@@ -112,6 +112,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			game.DecisionProvider.Old_SelectOption( "Select Slow to resolve", "Massive Flooding" );
 			game.DecisionProvider.Old_SelectOption( "Select space to target.", space.Label);
 			
+			System.Threading.Thread.Sleep(50);
 			Assert.Equal("1C@1",game.GameState.InvadersOn(space).ToString());
 		}
 

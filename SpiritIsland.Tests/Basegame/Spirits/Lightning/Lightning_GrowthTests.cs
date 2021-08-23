@@ -47,7 +47,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Lightning {
 
 			When_Growing( 1 );
 			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
-			Resolve_PlacePresence( "A1;A2;A3;A4;A5", spirit.Presence.Energy.Next, "PlacePresence(2)");
+			Resolve_PlacePresence( "A1;A2;A3;A4;A5", spirit.Presence.Energy.Next);
 
 			Assert_HasEnergy( 0 );
 

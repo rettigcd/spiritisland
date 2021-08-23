@@ -8,11 +8,6 @@ namespace SpiritIsland.SinglePlayer {
 
 	public class ResolveActions : IPhase {
 
-		public IDecision GetCurrent() => spirit.Action.GetCurrent();
-		public bool IsResolved => spirit.Action.IsResolved;
-
-		public void Choose( IOption option ) => spirit.Action.Choose( option );
-
 		readonly Spirit spirit;
 		readonly GameState gameState;
 		readonly Speed speed;

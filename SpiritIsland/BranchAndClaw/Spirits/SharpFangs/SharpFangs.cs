@@ -104,9 +104,6 @@ namespace SpiritIsland.BranchAndClaw {
 			if(1 <= Energy)
 				AddActionFactory( actions[5] );
 
-
-			RemoveResolvedActions( gameState, Speed.Growth );
-
 		}
 
 		protected override void InitializeInternal( Board _, GameState _1 ) {

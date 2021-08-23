@@ -43,9 +43,6 @@ namespace SpiritIsland {
 			foreach(GrowthActionFactory action in option.GrowthActions)
 				AddActionFactory( action );
 
-			// Done as a batch to trigger done-with-growth actions
-			RemoveResolvedActions( gameState, Speed.Growth );
-
 		}
 
 		public virtual GrowthOption[] GetGrowthOptions() => GrowthOptions;
@@ -59,22 +56,6 @@ namespace SpiritIsland {
 		public List<PowerCard> DiscardPile = new List<PowerCard>();     // discarded
 		readonly List<IActionFactory> _unresolvedActionFactories = new List<IActionFactory>(); // public for testing
 		readonly List<InnatePower> usedInnates = new List<InnatePower>();
-
-		protected void RemoveResolvedActions( GameState gameState, Speed speed ) {
-
-//			var factories = GetUnresolvedActionFactories( speed ).ToArray();
-//			foreach(var factory in factories)
-//				RemoveSingleIfResolved( gameState, factory );
-
-		}
-
-		void RemoveSingleIfResolved( GameState gameState, IActionFactory factory ) {
-			factory.ActivateAsync( this, gameState );
-			if(Action.IsResolved)
-				RemoveUnresolvedFactory( factory );
-			else
-				Action.Clear(); // clean unresolved action decisions out
-		}
 
 		public void Forget( PowerCard cardToRemove ) {
 			// A card can be in one of 3 places

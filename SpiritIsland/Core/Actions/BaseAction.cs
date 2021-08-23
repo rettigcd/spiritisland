@@ -26,7 +26,7 @@ namespace SpiritIsland {
 			this.userAccessedDecision = null;
 
 			if(!poppedDecision.Options.Contains( selection ))
-				throw new ArgumentException( "You can't select an option that isn't there." );
+				throw new ArgumentException( selection.Text + " not found in options("+poppedDecision.Options.Select(x=>x.Text).Join(",") + ")" );
 
 			Log( selection, poppedDecision, false );
 

@@ -20,6 +20,7 @@ namespace SpiritIsland.SinglePlayer {
 			this.GameState = gameState;
 			gameState.InitIsland();
 			Spirit = gameState.Spirits.Single(); // this player only handles single-player.
+			this.DecisionProvider = Spirit.Action;
 			InitPhases();
 		}
 
@@ -46,20 +47,15 @@ namespace SpiritIsland.SinglePlayer {
 
 			invaders.NewLogEntry += OnNewLogEntry;
 
-			selectGrowth.Complete += () => TransitionTo( resolveGrowth );
-			resolveGrowth.Complete += () => TransitionTo( selectPowerCards );
-			selectPowerCards.Complete += () => TransitionTo( fastActions );
-			fastActions.Complete += () => TransitionTo( invaders );
-			invaders.Complete += () => TransitionTo( slowActions );
-			slowActions.Complete += () => TransitionTo( timePasses );
-			timePasses.Complete += () => TransitionTo( selectGrowth );
+			selectGrowth.Complete     += () => resolveGrowth.Initialize();
+			resolveGrowth.Complete    += () => selectPowerCards.Initialize();
+			selectPowerCards.Complete += () => fastActions.Initialize();
+			fastActions.Complete      += () => invaders.Initialize();
+			invaders.Complete         += () => slowActions.Initialize();
+			slowActions.Complete      += () => timePasses.Initialize();
+			timePasses.Complete       += () => selectGrowth.Initialize();
 
-			TransitionTo( selectGrowth );
-		}
-
-		void TransitionTo(IPhase phase){
-			this.DecisionProvider = phase; // ! this must go first! because .Initialize might trigger the next phase
-			phase.Initialize();
+			selectGrowth.Initialize();
 		}
 
 		#endregion

@@ -42,8 +42,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
 
 			When_Growing( 1 );
 			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
-			Resolve_PlacePresence( "A2;A3;A5", spirit.Presence.Energy.Next, "PlacePresence(2,W / J)" );
-			Resolve_PlacePresence( "A2;A3;A5", spirit.Presence.Energy.Next, "PlacePresence(1)" );
+			Resolve_PlacePresence( "A2;A3;A5", spirit.Presence.Energy.Next );
+			Resolve_PlacePresence( "A2;A3;A5", spirit.Presence.Energy.Next );
 			spirit.Activate_PlayExtraCard();
 
 			// Player Gains +1 card to play this round
