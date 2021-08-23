@@ -1,20 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using SpiritIsland;
 
 namespace SpiritIsland.SinglePlayer {
 
 	class SelectPowerCards : IPhase {
 
-		public string Prompt => $"Buy power cards: (${energy} / {canPurchase})";
+		public IDecision Current {get; private set; }
 
-		public IOption[] Options { get {
-			var options = new List<IOption>();
-			options.AddRange( this.powerCardOptions );
-			options.Add( TextOption.Done );
-			return options.ToArray();
-		} }
+		public string Prompt => Current.Prompt;
+
+		public IOption[] Options => Current.Options;
 
 		readonly Spirit spirit;
 		List<PowerCard> selectedCards;
@@ -35,6 +31,11 @@ namespace SpiritIsland.SinglePlayer {
 			energy = spirit.Energy;
 			selectedCards = new List<PowerCard>();
 			EvaluateCards();
+			Current = new Decision {
+				Prompt = $"Buy power cards: (${energy} / {canPurchase})",
+				Options = CalcOptions( this.powerCardOptions ),
+			};
+			
 		}
 
 		void EvaluateCards(){
@@ -62,6 +63,13 @@ namespace SpiritIsland.SinglePlayer {
 				EvaluateCards();
 				return;
 			}
+		}
+
+		static IOption[] CalcOptions( List<PowerCard> xx ) {
+			var options = new List<IOption>();
+			options.AddRange( xx );
+			options.Add( TextOption.Done );
+			return options.ToArray();
 		}
 
 	}

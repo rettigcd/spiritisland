@@ -33,7 +33,7 @@ namespace SpiritIslandCmd {
 
 		public void Play(){
 
-			while(shouldRun && game.Decision != null){
+			while(shouldRun && game.DecisionProvider != null){
 
 				uiMap = new UiMap(game);
 				Console.WriteLine(uiMap.ToPrompt());
@@ -41,7 +41,7 @@ namespace SpiritIslandCmd {
 				string cmd = Console.ReadLine().ToLower().Trim();
 				var option = uiMap.GetOption(cmd);
 				if(option != null)
-					game.Decision.Select(option);
+					game.DecisionProvider.Select(option);
 				else
 					Generic(cmd); // UI
 			}

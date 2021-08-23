@@ -7,7 +7,7 @@ namespace SpiritIsland.SinglePlayer {
 	public class SinglePlayerGame {
 
 		/// <summary> The main interface that drives the UI</summary>
-		public IDecision Decision {get; set;}
+		public IDecisionStream DecisionProvider {get; set;}
 
 		// Public for querying gamestate ad hoc
 		public GameState GameState { get; }
@@ -59,7 +59,7 @@ namespace SpiritIsland.SinglePlayer {
 		}
 
 		void TransitionTo(IPhase phase){
-			this.Decision = phase; // ! this must go first! because .Initialize might trigger the next phase
+			this.DecisionProvider = phase; // ! this must go first! because .Initialize might trigger the next phase
 			phase.Initialize();
 		}
 

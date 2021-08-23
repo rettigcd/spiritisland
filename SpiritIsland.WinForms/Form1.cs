@@ -51,19 +51,19 @@ namespace SpiritIsland.WinForms {
 		void ShowOptions() {
 			ReleaseOldButtons();
 
-			var decision = game.Decision;
+			var decision = game.DecisionProvider;
 
-			OptionsChanged?.Invoke(decision.Options);
+			OptionsChanged?.Invoke(decision.Current.Options);
 
-			this.promptLabel.Text = decision.Prompt;
+			this.promptLabel.Text = decision.Current.Prompt;
 
-            IOption[] options = decision.Options;
+            IOption[] options = decision.Current.Options;
 			for(int i=0;i<options.Length;++i)
 				AddOptionButton( options[i], i );
 
-			this.islandControl.ActivateSpaces( decision.Options.OfType<Space>() );
+			this.islandControl.ActivateSpaces( decision.Current.Options.OfType<Space>() );
 
-			this.cardControl.HighlightCards(decision.Options);
+			this.cardControl.HighlightCards(decision.Current.Options);
 
 		}
 
@@ -94,7 +94,7 @@ namespace SpiritIsland.WinForms {
         public event Action<IOption[]> OptionsChanged;
 
         void Select(IOption option){
-			this.game.Decision.Select(option);
+			this.game.DecisionProvider.Select(option);
 			this.ShowOptions();
 			UpdateDisplay();
 		}

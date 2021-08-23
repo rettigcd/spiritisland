@@ -4,7 +4,17 @@ using System.Linq;
 
 namespace SpiritIsland {
 
-	sealed public class BaseAction : IDecision {
+	sealed public class BaseAction : IDecisionStream {
+
+		public IDecision Current { get {
+			AutoSelectSingleOptions();
+			return Decision_Inner;
+		} }
+
+		IDecision Decision_Inner => Decisions.Count > 0 ? Decisions.Peek() : Decision.Null;
+
+		public IOption[] Options => Current.Options;
+		public string Prompt => Current.Prompt;
 
 		public BaseAction( Stack<IDecisionPlus> decisions ) {
 			this.Decisions = decisions;
@@ -20,25 +30,6 @@ namespace SpiritIsland {
 		public void Select(string text)
 			=> Select(Options.Single(o=>o.Text==text));
 
-		public IOption[] Options {
-			get{
-				AutoSelectSingleOptions();
-				return Options_Inner;
-			}
-		}
-
-		public string Prompt { get {
-				AutoSelectSingleOptions();
-				return Prompt_Inner;
-			}
-		}
-
-		string Prompt_Inner => Decisions.Count > 0 ? Decisions.Peek().Prompt : "-";
-		IOption[] Options_Inner => Decisions.Count > 0
-				? Decisions.Peek().Options
-				: System.Array.Empty<IOption>();
-
-
 		#region selection log
 
 		/// <summary> Logs decisions made </summary>
@@ -52,10 +43,10 @@ namespace SpiritIsland {
 
 
 		void AutoSelectSingleOptions() {
-			var opt = Options_Inner;
+			var opt = Decision_Inner.Options;
 			while(opt.Length == 1 && Decisions.Peek().AllowAutoSelect ) {
 				Select_Inner( opt[0], true );
-				opt = Options_Inner;
+				opt = Decision_Inner.Options;
 			}
 			if(opt.Length == 0) {
 				int hiddenCount = Decisions.Count - 1;

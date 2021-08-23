@@ -3,7 +3,7 @@ using SpiritIsland;
 
 namespace SpiritIsland.SinglePlayer {
 
-	interface IPhase : IDecision {
+	interface IPhase : IDecisionStream {
 		void Initialize();
 		event Action Complete;
 	}

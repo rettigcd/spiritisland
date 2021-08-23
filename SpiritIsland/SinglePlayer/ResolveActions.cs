@@ -8,8 +8,11 @@ namespace SpiritIsland.SinglePlayer {
 
 	class ResolveActions : IPhase {
 
-		public string Prompt => spirit.Action.Prompt;
-		public IOption[] Options => spirit.Action.Options;
+		public IDecision Current => spirit.Action.Current;
+
+		public string Prompt => Current.Prompt;
+		public IOption[] Options => Current.Options;
+
 		public void Select( IOption option ) => spirit.Action.Select( option );
 
 

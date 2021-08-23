@@ -1,12 +1,15 @@
-﻿using SpiritIsland;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace SpiritIsland.SinglePlayer {
 
 	class InvaderPhase : IPhase {
+
+		public IDecision Current => spirit.decisions.Peek();
+		public string Prompt => Current.Prompt;
+		public IOption[] Options => Current.Options;
+
 
 		public InvaderPhase(GameState gameState){
 			this.gameState = gameState;
@@ -16,8 +19,7 @@ namespace SpiritIsland.SinglePlayer {
 
 		readonly Spirit spirit;
 
-		public string Prompt => spirit.decisions.Peek().Prompt;
-		public IOption[] Options => spirit.decisions.Peek().Options;
+
 		public void Select( IOption option ) {
 			var decision = spirit.decisions.Pop();
 			decision.Select( option );

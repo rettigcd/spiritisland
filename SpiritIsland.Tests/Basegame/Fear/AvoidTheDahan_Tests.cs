@@ -43,7 +43,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		}
 
 		[Fact]
-		async public void Level1_NoExplore() {
+		public void Level1_NoExplore() {
 
 			gameState.FearDeck.Pop();
 			gameState.AddFearCard( new AvoidTheDahan() );

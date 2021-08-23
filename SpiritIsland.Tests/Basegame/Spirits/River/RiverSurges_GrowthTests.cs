@@ -302,29 +302,29 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		public void Reclaim1_TriggersImmediately(){
 			// pull card track 2 * 2 = triggers reclaim 
 
-			game.Decision.Old_SelectGrowthOption(1);
-			game.Decision.Old_PlacePresence1("Card","A5");
-			game.Decision.Old_PlacePresence1("Card","A5");
+			game.DecisionProvider.Old_SelectGrowthOption(1);
+			game.DecisionProvider.Old_PlacePresence1("Card","A5");
+			game.DecisionProvider.Old_PlacePresence1("Card","A5");
 
-			game.Decision.Old_BuyPowerCards( WashAway.Name );
-			game.Decision.Old_BuyPowerCards( RiversBounty.Name );
+			game.DecisionProvider.Old_BuyPowerCards( WashAway.Name );
+			game.DecisionProvider.Old_BuyPowerCards( RiversBounty.Name );
 
 			game.Spirit.Energy++; // pretend we played Rivers Bounty and gained 1 energy
-			game.Decision.Old_DoneWith(Speed.Slow);
+			game.DecisionProvider.Old_DoneWith(Speed.Slow);
 
-			game.Decision.Old_SelectGrowthOption(1);
-			game.Decision.Old_PlacePresence1("Card","A5");
-			game.Decision.Old_PlacePresence1(game.Spirit.Presence.CardPlays.Next,"A5");
+			game.DecisionProvider.Old_SelectGrowthOption(1);
+			game.DecisionProvider.Old_PlacePresence1("Card","A5");
+			game.DecisionProvider.Old_PlacePresence1(game.Spirit.Presence.CardPlays.Next,"A5");
 
 			// Can reclaim River's Bounty
-			game.Decision.Old_Reclaim1( "River's Bounty $0 (Slow)" );
+			game.DecisionProvider.Old_Reclaim1( "River's Bounty $0 (Slow)" );
 
 			// Can buy all 3 of River's cards including Bounty
 			game.Spirit.Energy.ShouldBe(2,"need 2 energy to purcahse 0+0+2 cards");
-			game.Decision.Old_BuyPowerCards( RiversBounty.Name ); // 0
-			game.Decision.Old_BuyPowerCards( BoonOfVigor.Name );  // 0
-			game.Decision.Old_BuyPowerCards( FlashFloods.Name );  // 2
-			game.Decision.Old_DoneWith(Speed.Fast);
+			game.DecisionProvider.Old_BuyPowerCards( RiversBounty.Name ); // 0
+			game.DecisionProvider.Old_BuyPowerCards( BoonOfVigor.Name );  // 0
+			game.DecisionProvider.Old_BuyPowerCards( FlashFloods.Name );  // 2
+			game.DecisionProvider.Old_DoneWith(Speed.Fast);
 
 		}
 

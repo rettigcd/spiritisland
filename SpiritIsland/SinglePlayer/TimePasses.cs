@@ -5,7 +5,12 @@ namespace SpiritIsland.SinglePlayer {
 
 	class TimePasses : IPhase {
 
-		public string Prompt => "nothing to do while time passes.";
+		public IDecision Current => Decision.Null;
+
+
+		public string Prompt => Current.Prompt;
+		public IOption[] Options => Current.Options;
+
 
 		readonly GameState gameState;
 
@@ -15,7 +20,6 @@ namespace SpiritIsland.SinglePlayer {
 
 		public bool AllowAutoSelect { get; set; } = true;
 
-		public IOption[] Options => Array.Empty<IOption>();
 
 		public event Action Complete;
 

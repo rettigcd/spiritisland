@@ -15,10 +15,10 @@ namespace SpiritIslandCmd {
 
 		public UiMap(SinglePlayerGame game ){
 			this.game=game;
-			var decision = game.Decision;
-			Prompt = decision.Prompt;
+			var decisionProvider = game.DecisionProvider;
+			Prompt = decisionProvider.Current.Prompt;
 			
-			var cachedOptions = decision.Options; // cache in case calculated on the fly
+			var cachedOptions = decisionProvider.Current.Options; // cache in case calculated on the fly
 
 			int pad = 0;
 			foreach(var o in cachedOptions){

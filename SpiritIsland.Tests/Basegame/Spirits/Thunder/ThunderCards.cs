@@ -18,7 +18,6 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			// And: Spirit in spot 1
 			spirit.Presence.PlaceOn( a[1] );
 
-//			eng = spirit.Bind( gs );
 			action = spirit.Action;
 		}
 
@@ -36,7 +35,6 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 		protected readonly Board a;
 		protected readonly Spirit spirit;
 		protected readonly GameState gs;
-//		protected readonly ActionEngine eng;
 		protected readonly BaseAction action;
 
 	}
