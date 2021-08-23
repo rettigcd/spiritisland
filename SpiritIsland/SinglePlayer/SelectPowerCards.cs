@@ -6,7 +6,7 @@ namespace SpiritIsland.SinglePlayer {
 
 	class SelectPowerCards : IPhase {
 
-		public IDecision Current {get; private set; }
+		public IDecision Current { get; private set; }
 
 		public string Prompt => Current.Prompt;
 
@@ -22,7 +22,7 @@ namespace SpiritIsland.SinglePlayer {
 
 		public bool AllowAutoSelect { get; set; } = true;
 
-		public SelectPowerCards(Spirit spirit){
+		public SelectPowerCards( Spirit spirit ) {
 			this.spirit = spirit;
 		}
 
@@ -30,34 +30,35 @@ namespace SpiritIsland.SinglePlayer {
 			canPurchase = spirit.NumberOfCardsPlayablePerTurn;
 			energy = spirit.Energy;
 			selectedCards = new List<PowerCard>();
+
 			EvaluateCards();
+		}
+
+		void EvaluateCards() {
+			powerCardOptions = spirit.Hand
+				.Except( selectedCards )
+				.Where( c => c.Cost <= energy && canPurchase > 0 )
+				.ToList();
 			Current = new Decision {
 				Prompt = $"Buy power cards: (${energy} / {canPurchase})",
 				Options = CalcOptions( this.powerCardOptions ),
 			};
-			
-		}
 
-		void EvaluateCards(){
-			powerCardOptions = spirit.Hand
-				.Except(selectedCards)
-				.Where(c=>c.Cost<=energy && canPurchase>0)
-				.ToList();
-			if(powerCardOptions.Count == 0){
-				spirit.PurchaseAvailableCards(selectedCards.ToArray());
+			if(powerCardOptions.Count == 0) {
+				spirit.PurchaseAvailableCards( selectedCards.ToArray() );
 				Complete?.Invoke();
 				return;
 			}
 		}
 
-		public void Select(IOption option){
-			if(TextOption.Done.Matches(option)){
-				spirit.PurchaseAvailableCards(selectedCards.ToArray());
+		public void Select( IOption option ) {
+			if(TextOption.Done.Matches( option )) {
+				spirit.PurchaseAvailableCards( selectedCards.ToArray() );
 				Complete?.Invoke();
 				return;
 			}
-			if(option is PowerCard card){
-				selectedCards.Add(card);
+			if(option is PowerCard card) {
+				selectedCards.Add( card );
 				energy -= card.Cost;
 				--canPurchase;
 				EvaluateCards();
