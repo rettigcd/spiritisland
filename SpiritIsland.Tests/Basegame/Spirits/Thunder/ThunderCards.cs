@@ -26,9 +26,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 		}
 
 		protected void Step( string expectedPrompt, string expectedOptions, IOption optionToSelect, bool expectedResolved ) {
-			action.Prompt.ShouldBe( expectedPrompt );
-			action.Options.Select( o => o.Text ).OrderBy( x => x ).Join( "," ).ShouldBe( expectedOptions );
-			action.Select( optionToSelect );
+			action.Current.Prompt.ShouldBe( expectedPrompt );
+			action.Current.Options.Select( o => o.Text ).OrderBy( x => x ).Join( "," ).ShouldBe( expectedOptions );
+			action.Choose( optionToSelect );
 			action.IsResolved.ShouldBe( expectedResolved );
 		}
 

@@ -6,10 +6,11 @@ namespace SpiritIsland.SinglePlayer {
 
 	class InvaderPhase : IPhase {
 
-		public IDecision Current => spirit.decisions.Peek();
-		public string Prompt => Current.Prompt;
-		public IOption[] Options => Current.Options;
+		public IDecision Current => spirit.Action.Current;
 
+		public bool IsResolved => spirit.Action.IsResolved;
+
+		public void Choose( IOption option ) => spirit.Action.Choose( option );
 
 		public InvaderPhase(GameState gameState){
 			this.gameState = gameState;
@@ -19,11 +20,6 @@ namespace SpiritIsland.SinglePlayer {
 
 		readonly Spirit spirit;
 
-
-		public void Select( IOption option ) {
-			var decision = spirit.decisions.Pop();
-			decision.Select( option );
-		}
 
 
 		public event Action<string> NewLogEntry;

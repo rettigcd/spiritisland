@@ -45,7 +45,7 @@ namespace SpiritIsland.WinForms {
 		}
 
 		void Select( IOption option ) {
-			this.game.DecisionProvider.Select( option );
+			this.game.DecisionProvider.Choose( option );
 			this.ShowOptions();
 			islandControl.Invalidate();
 		}

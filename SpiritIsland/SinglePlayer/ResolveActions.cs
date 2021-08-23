@@ -9,12 +9,9 @@ namespace SpiritIsland.SinglePlayer {
 	class ResolveActions : IPhase {
 
 		public IDecision Current => spirit.Action.Current;
+		public bool IsResolved => spirit.Action.IsResolved;
 
-		public string Prompt => Current.Prompt;
-		public IOption[] Options => Current.Options;
-
-		public void Select( IOption option ) => spirit.Action.Select( option );
-
+		public void Choose( IOption option ) => spirit.Action.Choose( option );
 
 		readonly Spirit spirit;
 		readonly GameState gameState;

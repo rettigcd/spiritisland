@@ -14,11 +14,11 @@ namespace SpiritIsland.Tests {
 			decision.Current.Prompt.ShouldBe( prompt, msg, StringCompareShould.IgnoreCase );
 			decision.Current.Options.Select( x => x.Text ).Join( "," ).ShouldBe( optionsString, msg );
 			IOption match = decision.Current.Options.Single( x => x.Text == select );
-			decision.Select( match );
+			decision.Choose( match );
 			if(done)
-				decision.Current.Options.Length.ShouldBe( 0, msg );
+				decision.IsResolved.ShouldBeTrue( msg );
 			else
-				decision.Current.Options.Length.ShouldBeGreaterThan( 0, msg );
+				decision.IsResolved.ShouldBeFalse( msg );
 		}
 
 		// === older ===
@@ -32,12 +32,12 @@ namespace SpiritIsland.Tests {
 				throw new Exception( $"option ({optionText} not found in "
 					+ decision.Current.Options.Select( x => x.Text ).Join( ", " )
 				);
-			decision.Select( option );
+			decision.Choose( option );
 		}
 
 		static public void Old_SelectGrowthOption(this IDecisionStream decision, int optionIndex ) {
 			Assert.Equal( "Select Growth Option", decision.Current.Prompt );
-			decision.Select( decision.Current.Options[optionIndex] );
+			decision.Choose( decision.Current.Options[optionIndex] );
 		}
 
 
@@ -51,7 +51,7 @@ namespace SpiritIsland.Tests {
 
 			if(!decision.Current.Prompt.StartsWith( prompt ))
 				Assert.Equal( prompt, decision.Current.Prompt );
-			decision.Select( option );
+			decision.Choose( option );
 		}
 
 		static public void Old_SelectOptionContains( this IDecisionStream decision, string prompt, string substring ) {
@@ -64,7 +64,7 @@ namespace SpiritIsland.Tests {
 				throw new Exception( $"option ({substring} not found in "
 					+ decision.Current.Options.Select( x => x.Text ).Join( ", " )
 				);
-			decision.Select( option );
+			decision.Choose( option );
 		}
 
 		static public void Old_PlacePresence1( this IDecisionStream decision, string sourceTrack, string destinationSpace ) {

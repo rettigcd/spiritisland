@@ -119,15 +119,15 @@ namespace SpiritIsland.Tests {
 
 			// Resolve Power
 			if(spirit.Presence.CardPlays.HasMore && spirit.Presence.Energy.HasMore) { // there are 2 option available
-				spirit.Action.Options.Select( x => x.Text ).Join( "," ).ShouldContain( source.Text );
+				spirit.Action.Current.Options.Select( x => x.Text ).Join( "," ).ShouldContain( source.Text );
 				// take from precense track
-				spirit.Action.Select( source );
+				spirit.Action.Choose( source );
 			}
 
 			// place on board - first option
 			string[] options = placeOptions.Split( ';' );
 			if(options.Length > 1) // this is wrong!  If we enter only 1 option, we aren't verifying it because we know the engine will auto-select it
-				spirit.Action.Select( spirit.Action.Options.Single( o => o.Text == options[0] ) );
+				spirit.Action.Choose( spirit.Action.Current.Options.Single( o => o.Text == options[0] ) );
 
 		}
 
@@ -167,8 +167,8 @@ namespace SpiritIsland.Tests {
 		protected void AndWhen_ReclaimingFirstCard() {
 			_ = spirit.GetUnresolvedActionFactories(Speed.Growth).OfType<Reclaim1>().First().ActivateAsync( spirit, gameState );
 			var reclaim = spirit.Action;
-			if(reclaim.Options.Length>0)
-				reclaim.Select( reclaim.Options[0] );
+			if(reclaim.Current.Options.Length>0)
+				reclaim.Choose( reclaim.Current.Options[0] );
 		}
 
 		#endregion

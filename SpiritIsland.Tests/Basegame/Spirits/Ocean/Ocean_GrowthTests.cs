@@ -38,8 +38,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			if(gather != null){
 				_ = gather.ActivateAsync( spirit, gameState );
 				while(!spirit.Action.IsResolved){
-					var source = spirit.Action.Options.Single(x=>moveBySrc.ContainsKey(x.Text));
-					spirit.Action.Select(source);
+					var source = spirit.Action.Current.Options.Single(x=>moveBySrc.ContainsKey(x.Text));
+					spirit.Action.Choose(source);
 				}
 			}
 
@@ -91,12 +91,12 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			var ppAction = spirit.Action;
 
 			// take from precense track
-			ppAction.Select( source );
+			ppAction.Choose( source );
 
 			// place on board - first option
 			string[] options = placeOptions.Split( ';' );
 			if(options.Length > 1) // not auto selecting
-				ppAction.Select( ppAction.Options.Single( o => o.Text == options[0] ) );
+				ppAction.Choose( ppAction.Current.Options.Single( o => o.Text == options[0] ) );
 
 			spirit.RemoveUnresolvedFactory( ppFactory );
 		}
@@ -125,9 +125,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 				_ = push.ActivateAsync( spirit, gameState );
 				var action = spirit.Action;
 				while(!action.IsResolved){
-					var options = action.Options;
+					var options = action.Current.Options;
 					var target = options.Single(t=>targets.Contains(t.Text));
-					action.Select(target);
+					action.Choose(target);
 				}
 			}
 

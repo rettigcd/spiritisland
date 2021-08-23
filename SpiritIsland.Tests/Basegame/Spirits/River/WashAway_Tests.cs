@@ -17,9 +17,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			card.ActivateAsync( spirit, gameState );
 			var action = spirit.Action;
 
-			//  Then: card has 0 options
-			Assert.Empty(action.Options);
-
+			//  Then: card is resolved
 			Assert.True(action.IsResolved);
 
 		}
@@ -42,7 +40,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			card.ActivateAsync( spirit, gameState );
 			action = spirit.Action;
 
-			var invader = action.Options[0] as InvaderSpecific;
+			var invader = action.Current.Options[0] as InvaderSpecific;
 			Then_SelectInvaderToPush(invader,invader.Summary,"Done");
 
 			//  Then: card has options of where to push 1 explorer
@@ -103,20 +101,20 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			//  Then: Select Explorer
 			Assert.False(action.IsResolved);
 			Assert_Options("E@1,T@2","Done");
-			action.Select(InvaderSpecific.Explorer);
+			action.Choose(InvaderSpecific.Explorer);
 
 			//  Then: Select destination for Explorer
 			Assert.False(action.IsResolved);
-			action.Select( explorerDestination );
+			action.Choose( explorerDestination );
 
 			//  Then: Select Town
 			Assert.False(action.IsResolved);
 			Assert_Options("T@2","Done");
-			action.Select(InvaderSpecific.Town);
+			action.Choose(InvaderSpecific.Town);
 
 			//  Then: Select destination for Town
 			Assert.False(action.IsResolved);
-			action.Select( townDestination );
+			action.Choose( townDestination );
 
 			// And: apply doesn't throw an exception
 			Assert.True(action.IsResolved);
@@ -161,16 +159,16 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			params string[] options
 		) {
 			Assert.False( action.IsResolved );
-			Assert.Equal( "Push "+invaderText+" to", action.Prompt );
+			Assert.Equal( "Push "+invaderText+" to", action.Current.Prompt );
 			Assert_Options( options );
-			action.Select( invaderDestination );
+			action.Choose( invaderDestination );
 		}
 
 		void Then_SelectInvaderToPush( InvaderSpecific invader, params string[] options ) {
 			Assert.False( action.IsResolved );
-			Assert.Equal( "Select invader to push", action.Prompt );
+			Assert.Equal( "Select invader to push", action.Current.Prompt );
 			Assert_Options( options );
-			action.Select( action.Options.Single( x => x.Text == invader.Summary ) );
+			action.Choose( action.Current.Options.Single( x => x.Text == invader.Summary ) );
 		}
 
 		// WashAway: push 3 different invaders to 3 different lands
@@ -191,20 +189,20 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			//  Then: Select destination for Explorer 1
 			var dstn1 = board[2];
-			action.Select( dstn1 );
+			action.Choose( dstn1 );
 			Assert.False( action.IsResolved );
 
 			Then_SelectInvaderToPush(InvaderSpecific.Explorer,"E@1","Done");
 
 			//  Then: Select destination for Explorer 2
 			var dstn2 = board[3];
-			action.Select( dstn2 );
+			action.Choose( dstn2 );
 			Assert.False( action.IsResolved );
 
 			Then_SelectInvaderToPush(InvaderSpecific.Explorer,"E@1","Done");
 			//  Then: Select destination for Explorer 3
 			var dstn3 = board[5];
-			action.Select( dstn3 );
+			action.Choose( dstn3 );
 			Assert.True( action.IsResolved );
 
 			// And: apply doesn't throw an exception

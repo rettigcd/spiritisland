@@ -55,9 +55,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		void When_TargettingSpirit(Spirit otherSpirit) {
 			Assert.False(action.IsResolved);
 			Assert.Equal(gameState.Spirits.Select(x => x.Text).OrderBy(x => x).Join(",")
-				, action.Options.Select(x => x.Text).OrderBy(x => x).Join(",")
+				, action.Current.Options.Select(x => x.Text).OrderBy(x => x).Join(",")
 			);
-			action.Select(otherSpirit);
+			action.Choose(otherSpirit);
 		}
 
 		[Fact]

@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Linq;
-using SpiritIsland;
 
 namespace SpiritIsland.SinglePlayer {
 
 	class SelectGrowth : IPhase {
 
 		public IDecision Current {get; private set; }
-
-		public string Prompt => Current.Prompt;
-		public IOption[] Options => Current.Options;
+		public bool IsResolved => spirit.Action.IsResolved;
 
 		readonly Spirit spirit;
 		readonly GameState gameState;
@@ -27,7 +24,7 @@ namespace SpiritIsland.SinglePlayer {
 
 		public bool AllowAutoSelect { get; set; } = true;
 
-		public void Select(IOption option){
+		public void Choose(IOption option){
 			var options = Current.Options;
 			for(int i=0;i<options.Length;++i){
 				if(options[i].Equals(option)){

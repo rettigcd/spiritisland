@@ -18,7 +18,7 @@ namespace SpiritIsland {
 		public void Select(IOption option);
 	}
 
-	public interface IDecisionPlus : IDecisionMaker {
+	public interface IDecisionMakerPlus : IDecisionMaker {
 		public bool AllowAutoSelect { get; }
 	}
 
@@ -29,19 +29,24 @@ namespace SpiritIsland {
 
 		public IDecision Current { get; }
 
-		public void Select( IOption option );
+		public void Choose( IOption option );
 
+		public bool IsResolved { get; }
 	}
 
 	/// <summary>
 	/// A decision / choice that needs to be made
 	/// </summary>
-	class Decision : IDecision {
+	class Decision : IDecisionMakerPlus {
 		public string Prompt {get; set; }
 
 		public IOption[] Options {get;set; }
 
+		public bool AllowAutoSelect => false;
+
 		static public readonly Decision Null = new Decision { Prompt = "-", Options = Array.Empty<IOption>() };
+
+		public void Select( IOption option ) { throw new NotImplementedException(); }
 	}
 
 }

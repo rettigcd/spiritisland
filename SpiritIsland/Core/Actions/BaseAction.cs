@@ -1,36 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace SpiritIsland {
 
 	sealed public class BaseAction : IDecisionStream {
 
-		public IDecision Current { get {
-			AutoSelectSingleOptions();
-			return Decision_Inner;
-		} }
+		/// <summary>
+		/// Blocks and waits for there to be a decision. 
+		/// Don't call unless you are willing to block.
+		/// </summary>
+		public IDecision Current => WaitForNextDecisionAndCacheIt;
 
-		IDecision Decision_Inner => Decisions.Count > 0 ? Decisions.Peek() : Decision.Null;
+		IDecisionMaker WaitForNextDecisionAndCacheIt => userAccessedDecision ??= WaitForNextActiveDecision();
+		IDecisionMaker userAccessedDecision;
 
-		public IOption[] Options => Current.Options;
-		public string Prompt => Current.Prompt;
+		public bool IsResolved => acitveDecisionMaker == null;
 
-		public BaseAction( Stack<IDecisionPlus> decisions ) {
-			this.Decisions = decisions;
+		public void Select( string text ) => Choose( Current.Options.Single( o => o.Text == text ) );
+
+		public void Choose(IOption selection) {
+			var poppedDecision = WaitForNextDecisionAndCacheIt;
+			this.acitveDecisionMaker = null;
+			this.userAccessedDecision = null;
+
+			if(!poppedDecision.Options.Contains( selection ))
+				throw new ArgumentException( "You can't select an option that isn't there." );
+
+			Log( selection, poppedDecision, false );
+
+			poppedDecision.Select( selection );
 		}
-
-		public bool IsResolved => Options.Length == 0;
-
-		public void Select(IOption option) {
-			AutoSelectSingleOptions();
-			Select_Inner( option, false );
-			AutoSelectSingleOptions();
-		}
-		public void Select(string text)
-			=> Select(Options.Single(o=>o.Text==text));
 
 		#region selection log
+
+		void Log( IOption selection, IDecisionMaker decision, bool auto ) {
+			string msg = decision.Prompt + "(" + decision.Options.Select( o => o.Text ).Join( "," ) + "):" + selection.Text;
+			if(auto) msg += " AUTO";
+			selections.Add( msg );
+		}
 
 		/// <summary> Logs decisions made </summary>
 		public string Selections => selections.Join( " > " );
@@ -39,38 +48,33 @@ namespace SpiritIsland {
 
 		#endregion
 
+		public void Push(IDecisionMakerPlus decision){
+			if(decision == null)
+				throw new ArgumentNullException(nameof(decision));
+			if(acitveDecisionMaker != null ) 
+				throw new InvalidOperationException("decision already pending");
+
+			if(decision.Options.Length==1 && decision.AllowAutoSelect) {
+				decision.Select(decision.Options[0]);
+				Log( decision.Options[0], decision, true );
+			} else if( decision.Options.Length > 0 ) {
+				acitveDecisionMaker = decision;
+				signal.Set();
+			}
+		}
+
+		public void Clear(){ 
+			acitveDecisionMaker = null;	// This does something that lets unit tests pass
+		}
+
 		#region private
 
-
-		void AutoSelectSingleOptions() {
-			var opt = Decision_Inner.Options;
-			while(opt.Length == 1 && Decisions.Peek().AllowAutoSelect ) {
-				Select_Inner( opt[0], true );
-				opt = Decision_Inner.Options;
-			}
-			if(opt.Length == 0) {
-				int hiddenCount = Decisions.Count - 1;
-				if(hiddenCount > 0)
-					throw new System.InvalidOperationException( $"'{Decisions.Peek().Prompt}' returned 0 options leaving {hiddenCount} decision unresolved. " );
-			}
+		readonly AutoResetEvent signal = new AutoResetEvent( false );
+		IDecisionMaker acitveDecisionMaker;
+		IDecisionMaker WaitForNextActiveDecision() {
+			signal.WaitOne();
+			return acitveDecisionMaker;
 		}
-
-		void Select_Inner(IOption selection,bool auto) {
-			if(Decisions.Count == 0)
-				throw new System.NotImplementedException();
-
-			var decision = Decisions.Pop();
-			if(!decision.Options.Contains(selection))
-				throw new ArgumentException("You can't select an option that isn't there.");
-
-			string msg = decision.Prompt + "(" + decision.Options.Select(o=>o.Text).Join(",") + "):" + selection.Text;
-			if(auto) msg += " AUTO!";
-			selections.Add( msg );
-
-			decision.Select( selection );
-		}
-
-		readonly Stack<IDecisionPlus> Decisions;
 
 		#endregion
 

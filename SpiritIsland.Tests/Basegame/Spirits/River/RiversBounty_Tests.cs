@@ -67,12 +67,12 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// Select source 1
 			if(dahanToGather>0){
 				Assert.False( action.IsResolved );
-				action.Select(neighbor);
+				action.Choose(neighbor);
 			}
 			// Select source 2
 			if(dahanToGather>1){
 				Assert.False( action.IsResolved );
-				action.Select(neighbor);
+				action.Choose(neighbor);
 			}
 
 			Assert.Equal( endingCount, gameState.DahanCount( target ) ); // same as original
@@ -95,10 +95,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// Select 1st land
 			Assert.False( action.IsResolved );
 			Assert_Options( neighbors.Take(dahanToGather), TextOption.Done );
-			action.Select(neighbors[0]);
+			action.Choose(neighbors[0]);
 			// Select 2nd land
 			Assert.False( action.IsResolved );
-			action.Select( action.Options[0] );
+			action.Choose( action.Current.Options[0] );
 
 			Assert.True( action.IsResolved );
 
@@ -121,13 +121,13 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Assert.False( action.IsResolved );
 			Assert_Options( targetOptions );
 			var target = targetOptions[0];
-			action.Select( target );
+			action.Choose( target );
 			// Select 1st source land
 			Assert.False( action.IsResolved );
-			action.Select( board[5] );
+			action.Choose( board[5] );
 			// Select 2nd source land
 			Assert.False( action.IsResolved );
-			action.Select( board[5] );
+			action.Choose( board[5] );
 
 			Assert.True( action.IsResolved );
 

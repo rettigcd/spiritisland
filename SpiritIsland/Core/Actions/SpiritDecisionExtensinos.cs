@@ -9,13 +9,13 @@ namespace SpiritIsland {
 
 		static public Task<Spirit> SelectSpirit(this Spirit spirit, Spirit[] spirits) {
 			var result = new TaskCompletionSource<Spirit>();
-			spirit.decisions.Push( new SelectAsync<Spirit>( "Select Spirit", spirits, Present.IfMoreThan1, result) );
+			spirit.Action.Push( new SelectAsync<Spirit>( "Select Spirit", spirits, Present.IfMoreThan1, result) );
 			return result.Task;
 		}
 
 		static public Task<Space> SelectSpace( this Spirit spirit, string prompt, IEnumerable<Space> spaces, Present present = Present.IfMoreThan1 ) {
 			var result = new TaskCompletionSource<Space>();
-			spirit.decisions.Push( new SelectAsync<Space>( prompt, spaces.OrderBy(x=>x.Label).ToArray(), present, result ) );
+			spirit.Action.Push( new SelectAsync<Space>( prompt, spaces.OrderBy(x=>x.Label).ToArray(), present, result ) );
 			return result.Task;
 		}
 
@@ -30,13 +30,15 @@ namespace SpiritIsland {
 				result
 			);
 
-			spirit.decisions.Push( x );
+			spirit.Action.Push( x );
 			return result.Task;
 		}
 
+		// !!! all of these could be combined into template methods
+
 		static public Task<IOption> SelectOption( this Spirit spirit, string prompt, IOption[] options, Present present = Present.IfMoreThan1 ) {
 			var result = new TaskCompletionSource<IOption>();
-			spirit.decisions.Push( new SelectAsync<IOption>(
+			spirit.Action.Push( new SelectAsync<IOption>(
 				prompt,
 				options,
 				present,
@@ -45,9 +47,21 @@ namespace SpiritIsland {
 			return result.Task;
 		}
 
+		static public Task<PowerCard> SelectPowerCard( this Spirit spirit, string prompt, PowerCard[] options, Present present = Present.IfMoreThan1 ) {
+			var result = new TaskCompletionSource<PowerCard>();
+			spirit.Action.Push( new SelectAsync<PowerCard>(
+				prompt,
+				options,
+				present,
+				result
+			) );
+			return result.Task;
+		}
+
+
 		static public Task<IActionFactory> SelectFactory( this Spirit spirit, string prompt, IActionFactory[] options, Present present=Present.IfMoreThan1 ) {
 			var result = new TaskCompletionSource<IActionFactory>();
-			spirit.decisions.Push( new SelectAsync<IActionFactory>(
+			spirit.Action.Push( new SelectAsync<IActionFactory>(
 				prompt,
 				options,
 				present,
@@ -63,7 +77,7 @@ namespace SpiritIsland {
 		}
 		static public Task<TextOption> SelectTextOption( this Spirit spirit, string prompt, params TextOption[] options ) {
 			var result = new TaskCompletionSource<TextOption>();
-			spirit.decisions.Push( new SelectAsync<TextOption>( prompt, options, Present.IfMoreThan1, result ) );
+			spirit.Action.Push( new SelectAsync<TextOption>( prompt, options, Present.IfMoreThan1, result ) );
 			return result.Task;
 		}
 
@@ -94,7 +108,7 @@ namespace SpiritIsland {
 		static public Task<Track> SelectTrack( this Spirit spirit ) {
 			var result = new TaskCompletionSource<Track>();
 
-			spirit.decisions.Push( new SelectAsync<Track>(
+			spirit.Action.Push( new SelectAsync<Track>(
 				"Select Presence to place.",
 				spirit.Presence.GetPlaceableFromTracks(), // state info, might someday be moved into game state, then this needs to move back to Action Engine
 				Present.IfMoreThan1,

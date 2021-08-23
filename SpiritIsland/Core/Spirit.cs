@@ -15,7 +15,7 @@ namespace SpiritIsland {
 			foreach(var card in initialCards)
 				RegisterNewCard(card);
 
-			Action = new BaseAction(decisions);
+			Action = new BaseAction();
 		}
 		public BaseAction Action { get; }
 
@@ -37,12 +37,13 @@ namespace SpiritIsland {
 
 		public GrowthOption[] GrowthOptions { get; protected set; }
 
-		public virtual void Grow( GameState gameState, int optionIndex ) {
+		public virtual void Grow( GameState gameState, int optionIndex ) { // overrident by Keeper and Sharp Fangs
 
 			GrowthOption option = this.GetGrowthOptions()[optionIndex];
-			foreach(var action in option.GrowthActions)
+			foreach(GrowthActionFactory action in option.GrowthActions)
 				AddActionFactory( action );
 
+			// Done as a batch to trigger done-with-growth actions
 			RemoveResolvedActions( gameState, Speed.Growth );
 
 		}
@@ -62,13 +63,17 @@ namespace SpiritIsland {
 		protected void RemoveResolvedActions( GameState gameState, Speed speed ) {
 
 			var factories = GetUnresolvedActionFactories( speed ).ToArray();
-			foreach(var factory in factories) {
-				factory.ActivateAsync(this,gameState);
-				if(Action.IsResolved)
-					RemoveUnresolvedFactory(factory);
-				else
-					decisions.Clear(); // clean unresolved action decisions out
-			}
+			foreach(var factory in factories)
+				RemoveSingleIfResolved( gameState, factory );
+
+		}
+
+		void RemoveSingleIfResolved( GameState gameState, IActionFactory factory ) {
+			factory.ActivateAsync( this, gameState );
+			if(Action.IsResolved)
+				RemoveUnresolvedFactory( factory );
+			else
+				Action.Clear(); // clean unresolved action decisions out
 		}
 
 		public void Forget( PowerCard cardToRemove ) {
@@ -262,10 +267,38 @@ namespace SpiritIsland {
 		public TargetLandApi PowerApi = new TargetLandApi(); // Replace by: Reaching Grasp, Entwined Power, Shadows
 
 		public virtual InvaderGroup BuildInvaderGroup( GameState gs, Space space ) => new InvaderGroup( space, gs.GetCounts(space), gs.AddFearDirect, Cause.Power );
-
-		public Stack<IDecisionPlus> decisions = new();
 		
 		public event SpaceTargetedEvent TargetedSpace;
+
+		public async Task BuyPowerCardsAsync() {
+			List<PowerCard> selectedCards = new List<PowerCard>();
+			int energy = Energy;
+			var canPurchase = NumberOfCardsPlayablePerTurn;
+
+			var powerCardOptions = Hand
+				.Except( selectedCards )
+				.Where( c => c.Cost <= energy && canPurchase > 0 )
+				.ToArray();
+
+			while(powerCardOptions.Length > 0) {
+				string prompt = $"Buy power cards: (${energy} / {canPurchase})";
+				var card = await this.SelectPowerCard( prompt, powerCardOptions, Present.Done );
+				if(card == null)
+					break;
+
+				selectedCards.Add( card );
+				energy -= card.Cost;
+				--canPurchase;
+
+				powerCardOptions = Hand
+					.Except( selectedCards )
+					.Where( c => c.Cost <= energy && canPurchase > 0 )
+					.ToArray();
+			}
+
+			PurchaseAvailableCards( selectedCards.ToArray() );
+
+		}
 
 	}
 
