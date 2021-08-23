@@ -19,6 +19,13 @@ namespace SpiritIsland {
 			return result.Task;
 		}
 
+		static public Task<GrowthOption> SelectGrowth( this Spirit spirit, string prompt, GrowthOption[] options ) {
+			var result = new TaskCompletionSource<GrowthOption>();
+			spirit.Action.Push( new SelectAsync<GrowthOption>( prompt, options, Present.Always, result ) );
+			return result.Task;
+		}
+
+
 		static public Task<InvaderSpecific> SelectInvader( this Spirit spirit, Space invaderLocation, string prompt, InvaderSpecific[] invaders, Present present = Present.IfMoreThan1 ) {
 			var result = new TaskCompletionSource<InvaderSpecific>();
 
@@ -90,12 +97,6 @@ namespace SpiritIsland {
 			while(max > 0) numToMove.Add( (max--).ToString() );
 			return int.Parse( await spirit.SelectText( prompt, numToMove.ToArray() ) );
 		}
-
-		//static public async Task<Element> SelectElement( this Spirit spirit, string prompt, IEnumerable<Element> options ) {
-		//	var lookup = options.ToDictionary( el=>el.ToString(), el=>el );
-		//	string text = await spirit.SelectText(prompt,lookup.Keys.ToArray());
-		//	return lookup[text];
-		//}
 
 		static public async Task<Element> SelectElementAsync( this Spirit spirit, string prompt, IEnumerable<Element> elements ) {
 			var selection = await spirit.SelectOption( prompt, elements.Select( x => new ItemOption<Element>( x ) ).ToArray(), Present.Always );

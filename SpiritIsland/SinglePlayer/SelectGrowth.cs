@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SpiritIsland.SinglePlayer {
 
@@ -10,6 +11,25 @@ namespace SpiritIsland.SinglePlayer {
 
 		readonly Spirit spirit;
 		readonly GameState gameState;
+
+		public void Initialize() {
+			
+		}
+
+		public async Task ActAsync() {
+			GrowthOption[] options = spirit.GetGrowthOptions();
+
+			var option = (GrowthOption)await spirit.SelectGrowth( "Select Growth Option", options );
+
+			int i=0;
+			for(; i < options.Length; ++i)
+				if(options[i].Equals( option )) break;
+
+			spirit.Grow( gameState, i );
+
+			this.Complete?.Invoke();
+		}
+
 
 		public SelectGrowth(Spirit spirit,GameState gameState){
 			this.spirit = spirit;
@@ -36,7 +56,6 @@ namespace SpiritIsland.SinglePlayer {
 			throw new Exception("growth option not found");
 		}
 
-		public void Initialize() {}
 	}
 
 }
