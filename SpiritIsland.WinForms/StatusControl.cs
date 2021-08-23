@@ -10,7 +10,7 @@ namespace SpiritIsland.WinForms {
 		public void Init(GameState gameState, IHaveOptions optionProvider ) {
 			this.gameState = gameState;
 			// !! This is the wrong event.  But it fires all of the time so it will do for now.
-			optionProvider.OptionsChanged += (obj) => this.Invalidate();
+			optionProvider.NewDecision += (obj) => this.Invalidate();
 		}
 
 		GameState gameState;

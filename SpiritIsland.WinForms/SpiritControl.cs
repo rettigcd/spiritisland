@@ -25,7 +25,7 @@ namespace SpiritIsland.WinForms {
 
 			InitElementDisplayOrder( spirit );
 
-			optionProvider.OptionsChanged += OptionProvider_OptionsChanged;
+			optionProvider.NewDecision += OptionProvider_OptionsChanged;
 		}
 
 		void InitElementDisplayOrder( Spirit spirit ) {
@@ -297,11 +297,11 @@ namespace SpiritIsland.WinForms {
 
 		#region UI event handlers
 
-		void OptionProvider_OptionsChanged( IOption[] obj ) {
+		void OptionProvider_OptionsChanged( IDecision decision ) {
 
-			trackOptions = obj.OfType<Track>().ToArray();
+			trackOptions = decision.Options.OfType<Track>().ToArray();
 
-			innateOptions = obj
+			innateOptions = decision.Options
 				.OfType<IActionFactory>()
 				.Select( x => x.Original )
 				.OfType<InnatePower>()

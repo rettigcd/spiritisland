@@ -22,7 +22,7 @@ namespace SpiritIsland {
 		static public Task<InvaderSpecific> SelectInvader( this Spirit spirit, Space invaderLocation, string prompt, InvaderSpecific[] invaders, Present present = Present.IfMoreThan1 ) {
 			var result = new TaskCompletionSource<InvaderSpecific>();
 
-			var x = new InvadersOnSpaceDecesion(
+			var x = new InvadersOnSpaceDecision(
 				prompt,
 				invaderLocation,
 				invaders,
@@ -158,8 +158,8 @@ namespace SpiritIsland {
 		public string Text => Item.ToString();
 	}
 
-	public class InvadersOnSpaceDecesion : SelectAsync<InvaderSpecific> {
-		public InvadersOnSpaceDecesion(string prompt, Space space, InvaderSpecific[] options, Present present, TaskCompletionSource<InvaderSpecific> promise )
+	public class InvadersOnSpaceDecision : SelectAsync<InvaderSpecific> {
+		public InvadersOnSpaceDecision( string prompt, Space space, InvaderSpecific[] options, Present present, TaskCompletionSource<InvaderSpecific> promise )
 			: base( prompt, options, present, promise ) { 
 			Space = space;
 		}

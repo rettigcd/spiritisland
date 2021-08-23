@@ -27,9 +27,8 @@ namespace SpiritIsland.WinForms
 		Dictionary<string,PointF> spaceLookup;
 
 		public void Init( GameState gameState, IHaveOptions optionProvider, ResourceImages images, string tokenColor ) {
-			this.images = images;
 
-			optionProvider.OptionsChanged += OptionProvider_OptionsChanged;
+			optionProvider.NewDecision += OptionProvider_OptionsChanged;
 
 			var board = gameState.Island.Boards.VerboseSingle("Multiple Island boards not supported.");
             switch(board[0].Label.Substring( 0, 1 )) {
@@ -108,8 +107,8 @@ namespace SpiritIsland.WinForms
 			this.spirit = gameState.Spirits.Single();
 		}
 
-		void OptionProvider_OptionsChanged( IOption[] options ) {
-			this.activeSpaces = options.OfType<Space>().ToArray();
+		void OptionProvider_OptionsChanged( IDecision decision ) {
+			this.activeSpaces = decision.Options.OfType<Space>().ToArray();
 		}
 
 		Image board;
@@ -197,7 +196,7 @@ namespace SpiritIsland.WinForms
 			float maxHeight = 0;
 
 			using Font countFont = new( "Arial", 7, FontStyle.Bold, GraphicsUnit.Point );
-			const float circleDiameter = 15f;
+//			const float circleDiameter = 15f;
 
 			foreach(var img in images.Keys){
 				float height = width / img.Width * img.Height;
@@ -279,7 +278,7 @@ namespace SpiritIsland.WinForms
 
 		}
 
-		ResourceImages images;
+//		ResourceImages images;
 
 		public event Action<Space> SpaceClicked;
 

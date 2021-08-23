@@ -12,7 +12,7 @@ namespace SpiritIsland.WinForms {
 			InitializeComponent();
 		}
 
-		public event Action<IOption[]> OptionsChanged;
+		public event Action<IDecision> NewDecision;
 
 		void Form1_Load( object sender, EventArgs e ) {
 
@@ -27,7 +27,7 @@ namespace SpiritIsland.WinForms {
 			this.cardControl.Init( game.Spirit, this );
 			this.spiritControl.Init( game.Spirit, config.Color, this, resourceImages );
 			this.statusControl1.Init( game.GameState, this );
-			this.OptionsChanged += UpdateButtons;
+			this.NewDecision += UpdateButtons;
 
 			this.islandControl.SpaceClicked += Select;
 			this.cardControl.CardSelected += Select;
@@ -39,9 +39,9 @@ namespace SpiritIsland.WinForms {
 
 
 		void ShowOptions() {
-			var decision = game.DecisionProvider.Current;
+			IDecision decision = game.DecisionProvider.Current;
 			this.promptLabel.Text = decision.Prompt;
-			OptionsChanged?.Invoke( decision.Options );
+			NewDecision?.Invoke( decision );
 		}
 
 		void Select( IOption option ) {
@@ -52,11 +52,11 @@ namespace SpiritIsland.WinForms {
 
 		#region Buttons
 
-		void UpdateButtons( IOption[] options ) {
+		void UpdateButtons( IDecision decision ) {
 			ReleaseOldButtons();
 			int x = CalcWidth(this.promptLabel.Text);
-			for(int i = 0; i < options.Length; ++i) {
-				x += AddOptionButton( options[i], x, 0 ).Width;
+			for(int i = 0; i < decision.Options.Length; ++i) {
+				x += AddOptionButton( decision.Options[i], x, 0 ).Width;
 				x += 10;
 			}
 		}
@@ -99,7 +99,7 @@ namespace SpiritIsland.WinForms {
 	}
 
 	public interface IHaveOptions {
-		event Action<IOption[]> OptionsChanged;
+		event Action<IDecision> NewDecision;
     }
 
 }
