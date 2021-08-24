@@ -17,7 +17,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 				Island = new Island( Board.BuildBoardA() )
 			};
 			gameState.DisableInvaderDeck();
-			gameState.InitIsland(); 
+			gameState.Initialize(); 
 			gameState.FearDeck.Pop();
 			gameState.AddFearCard( new BeliefTakesRoot() );
 
@@ -45,7 +45,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			Given_DahanAndTownsInSpaceWithPresence(10,1);
 
 			_ = When_AddFearApplyFearAndRavage();
-			gameState.Spirits[0].Action.AssertDecision( "Activating Fear", "Null Fear Card", "Null Fear Card", true );
+			gameState.Spirits[0].Action.AssertDecision( "Activating Fear", "Null Fear Card", "Null Fear Card" );
 
 			// Then: all dahan killed
 			gameState.DahanCount( ravageSpace ).ShouldBe(0);
@@ -58,7 +58,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 
 			_ =  When_AddFearApplyFearAndRavage();
 
-			gameState.Spirits[0].Action.AssertDecision( "Activating Fear", CardName, CardName, true );
+			gameState.Spirits[0].Action.AssertDecision( "Activating Fear", CardName, CardName );
 			// Then: 1 dahan left
 			Assert.Equal( 1, gameState.DahanCount( ravageSpace ) );
 
@@ -75,7 +75,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			Given_DahanAndTownsInSpaceWithPresence( 2, 5 );
 
 			_ = When_AddFearApplyFearAndRavage();
-			gameState.Spirits[0].Action.AssertDecision( "Activating Fear", CardName, CardName, true );
+			gameState.Spirits[0].Action.AssertDecision( "Activating Fear", CardName, CardName );
 
 			// Then: 1 dahan left
 			Assert.Equal( 1, gameState.DahanCount( ravageSpace ) );

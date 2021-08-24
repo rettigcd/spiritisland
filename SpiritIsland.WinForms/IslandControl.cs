@@ -121,7 +121,7 @@ namespace SpiritIsland.WinForms
 			this.activeSpaces = decision.Options.OfType<Space>().ToArray();
 		}
 		InvadersOnSpaceDecision ios;
-		List<(Rectangle,IOption)> optionRects = new List<(Rectangle, IOption)>();
+		readonly List<(Rectangle,IOption)> optionRects = new List<(Rectangle, IOption)>();
 
 		Image board;
 

@@ -42,8 +42,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 
 			// Then: dream-death allows User pushes them
 			for(int i = 0; i < count; ++i) {
-				ctx.AssertDecision( "Select invader to push","E@1", "E@1" );
-				ctx.AssertDecision( "Push E@1 to", "A1,A4,A6,A7,A8", "A7", i== count-1 );
+				ctx.Self.Action.AssertDecision( "Select invader to push","E@1", "E@1" );
+				ctx.Self.Action.AssertDecision( "Push E@1 to", "A1,A4,A6,A7,A8", "A7" );
 			}
 
 			// And: 0-fear
@@ -69,8 +69,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 
 			// Then: dream-death allows User pushes them
 			for(int i = 0; i < count; ++i) {
-				ctx.AssertDecision( "Select invader to push", "T@2", "T@2" );
-				ctx.AssertDecision( "Push T@2 to", "A1,A4,A6,A7,A8", "A7", i == count-1 );
+				ctx.Self.Action.AssertDecision( "Select invader to push", "T@2", "T@2" );
+				ctx.Self.Action.AssertDecision( "Push T@2 to", "A1,A4,A6,A7,A8", "A7" );
 			}
 
 			// And:4-fear

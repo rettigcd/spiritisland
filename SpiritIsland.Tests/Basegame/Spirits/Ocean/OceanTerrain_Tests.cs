@@ -21,7 +21,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 				? new GameState( river, ocean ) { Island = new Island( board, Board.BuildBoardB() ) }
 				: new GameState( river ) { Island = new Island( board ) };
 
-			gs.InitIsland();
+			gs.Initialize();
 
 			if(oceanIsPlaying)
 				ocean.Presence.PlaceOn( gs.Island.Boards[0][8] ); // put ocean presence on river's board, but not in the ocean

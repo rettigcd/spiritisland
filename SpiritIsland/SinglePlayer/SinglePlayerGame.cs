@@ -19,7 +19,7 @@ namespace SpiritIsland.SinglePlayer {
 
 		public SinglePlayerGame(GameState gameState){
 			this.GameState = gameState;
-			gameState.InitIsland();
+			gameState.Initialize();
 			Spirit = gameState.Spirits.Single(); // this player only handles single-player.
 			this.DecisionProvider = Spirit.Action;
 			InitPhases();

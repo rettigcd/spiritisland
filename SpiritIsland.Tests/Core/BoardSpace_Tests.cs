@@ -218,7 +218,7 @@ namespace SpiritIsland.Tests.Boards {
 			};
 			gameState.DisableInvaderDeck();
 			// When:
-			gameState.InitIsland();
+			gameState.Initialize();
 			// Then:
 			var space = board.Spaces.Single(x=>x.Label==spaceLabel);
 			var grp = gameState.InvadersOn(space);

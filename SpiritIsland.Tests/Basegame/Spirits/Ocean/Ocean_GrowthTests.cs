@@ -71,7 +71,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			spirit.Activate_ReclaimAll();
 			spirit.Activate_DrawPowerCard();
 			spirit.Activate_GainEnergy();
-			spirit.Action.AssertDecision( "Select Growth to resolve:", "GatherPresenceIntoOcean", "GatherPresenceIntoOcean", true );
+			spirit.Action.AssertDecision( "Select Growth to resolve:", "GatherPresenceIntoOcean", "GatherPresenceIntoOcean" );
 
 			Assert_AllCardsAvailableToPlay();
 			Assert_GainPowercard(1);
@@ -94,7 +94,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 
 			spirit.Action.AssertDecision( "Select Growth to resolve:", "PlaceInOcean", "PlaceInOcean" );
 			spirit.Action.AssertDecision( "Select Presence to place.", "water energy,2 cardplay", "water energy" );
-			spirit.Action.AssertDecision( "Where would you like to place your presence?", "A0,B0", "B0", true );
+			spirit.Action.AssertDecision( "Where would you like to place your presence?", "A0,B0", "B0" );
 
 
 			//			Resolve_PlacePresenceInOcean( "A0;B0", spirit.Presence.Energy.Next);
@@ -135,7 +135,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			spirit.Activate_DrawPowerCard();
 
 			spirit.Action.AssertDecision( "Select Growth to resolve:", "PushPresenceFromOcean", "PushPresenceFromOcean" );
-			spirit.Action.AssertDecision( "Select target of Presence to Push from A0", "A1,A2,A3", "A2", true );
+			spirit.Action.AssertDecision( "Select target of Presence to Push from A0", "A1,A2,A3", "A2" );
 
 			Assert_GainPowercard( 1);
 			Assert_BoardPresenceIs(ending);
@@ -158,7 +158,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			spirit.Activate_ReclaimAll();
 			spirit.Activate_DrawPowerCard();
 			spirit.Activate_GainEnergy();
-			spirit.Action.AssertDecision( "Select Growth to resolve:", "GatherPresenceIntoOcean","GatherPresenceIntoOcean",true);
+			spirit.Action.AssertDecision( "Select Growth to resolve:", "GatherPresenceIntoOcean","GatherPresenceIntoOcean");
 
 			Assert_BonusElements( elements );
 		}

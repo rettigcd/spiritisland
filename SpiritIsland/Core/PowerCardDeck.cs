@@ -2,9 +2,10 @@
 using System.Linq;
 
 namespace SpiritIsland {
+
 	public class PowerCardDeck {
 
-		public PowerCardDeck(IList<PowerCard> cards ) {
+		public PowerCardDeck(IList<PowerCard> cards) {
 			discards = cards.ToList();
 		}
 

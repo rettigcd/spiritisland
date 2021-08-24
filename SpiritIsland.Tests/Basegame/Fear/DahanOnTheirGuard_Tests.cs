@@ -16,7 +16,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 				Island = new Island( Board.BuildBoardA() )
 			};
 			gameState.DisableInvaderDeck();
-			gameState.InitIsland();
+			gameState.Initialize();
 			gameState.FearDeck.Pop();
 			gameState.AddFearCard( new DahanOnTheirGuard() );
 
@@ -59,7 +59,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 				await gameState.Ravage(invaderCard);
 			}
 			_ = DoIt();
-			gameState.Spirits[0].Action.AssertDecision( "Activating Fear", "Dahan on their Guard", "Dahan on their Guard", true );
+			gameState.Spirits[0].Action.AssertDecision( "Activating Fear", "Dahan on their Guard", "Dahan on their Guard" );
 
 			// Then: 0 dahan left
 			gameState.DahanCount( ravageSpace ).ShouldBe( 2 );

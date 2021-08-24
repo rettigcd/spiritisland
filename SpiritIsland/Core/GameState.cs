@@ -48,7 +48,7 @@ namespace SpiritIsland {
 		public Island Island { get; set; }
 		public Spirit[] Spirits { get; }
 
-		public void InitIsland() {
+		public void Initialize() {
 
 			foreach(var board in Island.Boards)
 				InitItemsMarkedOnBoard( board );

@@ -6,26 +6,32 @@ using Xunit;
 namespace SpiritIsland.Tests {
 	static class DecisionAssertionExtens {
 
-		static public void AssertDecision( this TargetSpaceCtx ctx, string prompt, string optionsString, string select, bool done = false ) 
-			=> ctx.Self.Action.AssertDecision(prompt,optionsString,select,done);
+		static public void AssertPrompt_ChooseFirst( this IDecisionStream decision, string prompt ) {
+			string msg = $"{prompt}:[any]:[first]";
+			if(decision.IsResolved)
+				System.Threading.Thread.Sleep( 50 );
+			decision.IsResolved.ShouldBeFalse( $"Prompt [{prompt}] is not there." );
+			var current = decision.GetCurrent();
+			current.Prompt.ShouldBe( prompt, msg, StringCompareShould.IgnoreCase );
 
-		static public void AssertDecision( this IDecisionStream decision, string prompt, string optionsString, string select, bool _ = false ) {
+			IOption choice = current.Options[0];
+			decision.Choose( choice );
+
+		}
+
+		static public void AssertDecision( this IDecisionStream decision, string prompt, string optionsString, string select ) {
 			string msg = $"{prompt}:{optionsString}:{select}";
 
 			// we might get an error if the engine isn't here yet
 			if( decision.IsResolved ) 
 				System.Threading.Thread.Sleep(50);
-			decision.IsResolved.ShouldBeFalse($"Dude! Decision [{prompt}] is not there.");
+			decision.IsResolved.ShouldBeFalse($"Prompt [{prompt}] is not there.");
 
 			var current = decision.GetCurrent();
 			current.Prompt.ShouldBe( prompt, msg, StringCompareShould.IgnoreCase );
 			current.Options.Select( x => x.Text ).Join( "," ).ShouldBe( optionsString, msg );
 			IOption match = current.Options.First( x => x.Text == select ); // sometimes we will have double
 			decision.Choose( match );
-			//if(done)
-			//	decision.IsResolved.ShouldBeTrue( msg );
-			//else
-			//	decision.IsResolved.ShouldBeFalse( msg );
 		}
 
 		// === older ===

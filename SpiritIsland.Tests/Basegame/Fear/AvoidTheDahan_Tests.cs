@@ -18,7 +18,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			gameState = new GameState( new LightningsSwiftStrike() ) {
 				Island = new Island( Board.BuildBoardA() )
 			};
-			gameState.InitIsland();
+			gameState.Initialize();
 
 			invaderCard = InvaderDeck.Level1Cards[0];
 			exploringSpace = gameState.Island.Boards[0].Spaces.Where( invaderCard.Matches ).First();
@@ -36,7 +36,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 
 			_ = When_ApplyFearAndExplore();
 
-			gameState.Spirits[0].Action.AssertDecision( "Activating Fear", "Null Fear Card", "Null Fear Card", true );
+			gameState.Spirits[0].Action.AssertDecision( "Activating Fear", "Null Fear Card", "Null Fear Card" );
 
 
 			Assert.Equal( 2, explored.Length );
@@ -49,7 +49,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			gameState.AddFearCard( new AvoidTheDahan() );
 
 			_ = When_ApplyFearAndExplore();
-			gameState.Spirits[0].Action.AssertDecision( "Activating Fear", "Avoid the Dahan", "Avoid the Dahan", true );
+			gameState.Spirits[0].Action.AssertDecision( "Activating Fear", "Avoid the Dahan", "Avoid the Dahan" );
 
 			// Then: "Invaders do not Explore into lands with at least 2 Dahan."
 			Assert.Single( explored );

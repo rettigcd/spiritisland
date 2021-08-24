@@ -1,18 +1,18 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
-BUG - Rampant green not given option to stop ravage with destroyed presence
-BUG - Lightnings Air-power that makes things fast, ended with no-options ('-') after buying 2 cheap cards
-BUG - nobody seems to have to discard for Major Powers
-IMP - Entwined share presence for targetting
-
-// === Basegame Road Map ===
+=============================
+===== Basegame Road Map =====
 UI	Display Growth Options in GUI
 UI	Enhance (Ravage/Build) images
 
+BUG - Rampant green not given option to stop ravage with destroyed presence
+BUG - Lightnings Air-power that makes things fast, ended with no-options ('-') after buying 2 cheap cards
+IMP - Entwined share presence for targetting
+
 BASE	Review Major / Minor, decide which need Unit Tests and Implement - Targets SPIRITS
-BONUS	Split Growth Option into parts
 BONUS	Generate Innate images from innate metadata
-== Done ==
+======  Done  ================
+==============================
 
 == Jonah ideas ===
 make SS dispay differently
@@ -20,12 +20,10 @@ make SS dispay differently
 == Steam updates - What's New (provide insite as to what they have trouble with) ==
 https://store.steampowered.com/news/app/1236720
 
-
 == Test Special Cases ==
 Conceiling Shadows - no damage to dahan
 A Year of Perfect Stillness - skips invader actions
 Talons of Lightning - extended / conditional range 
-Words of Warning - dahan strike at same time as defenders
 
 
 Power Card Troubles

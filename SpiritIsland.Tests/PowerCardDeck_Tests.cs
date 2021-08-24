@@ -1,4 +1,5 @@
 ﻿using Shouldly;
+using SpiritIsland.Basegame;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,5 +73,30 @@ namespace SpiritIsland.Tests {
 			problems.Length.ShouldBe( 0, problems.Take( 5 ).Join( "\r\n" ) );
 		}
 
+
+		[Theory]
+		[InlineData(true)]
+		[InlineData( false )]
+		public void DrawingMajor_ForgetACard(bool drawDirect) {
+			var spirit = new RiverSurges();
+			var gs = new GameState( spirit ) {
+				Island = new Island( Board.BuildBoardC() ),
+				MajorCards = new PowerCardDeck( PowerCard.GetMajors() ),
+				MinorCards = new PowerCardDeck( PowerCard.GetMinors() )
+			};
+			gs.Initialize();
+
+			if(drawDirect)
+				_= spirit.DrawMajor(gs);
+			else { 
+				_= spirit.Draw(gs,null);
+				spirit.Action.AssertDecision( "Which type do you wish to draw", "minor,major","major");
+			}
+
+			spirit.Action.AssertPrompt_ChooseFirst("Select Major Power Card");
+			spirit.Action.AssertPrompt_ChooseFirst( "Select power card to forget" );
+		}
+
 	}
+
 }
