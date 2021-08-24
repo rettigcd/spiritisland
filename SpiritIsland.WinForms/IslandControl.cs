@@ -162,6 +162,29 @@ namespace SpiritIsland.WinForms {
 
 			DrawHighlights( pe );
 
+			DrawInvaderCards( pe.Graphics );
+
+		}
+
+		void DrawInvaderCards( Graphics graphics ) {
+			const float margin = 15;
+			const float textHeight = 20f;
+			const float width = 160f;
+			const float height = 240f;
+
+			float x = ClientRectangle.Width-width-margin-margin;
+			float y = ClientRectangle.Height-height-margin*2;
+
+			using var myFont = new Font( ResourceImages.Singleton.Fonts.Families[0], textHeight );
+			graphics.DrawInvaderCard(new RectangleF(x,y-textHeight,width,height),gameState.InvaderDeck.Build);
+			float textWidth = graphics.MeasureString("Build",myFont).Width;
+			graphics.DrawString("Build", myFont,Brushes.Black, x+(width-textWidth)/2, ClientRectangle.Bottom-textHeight-margin);
+
+			x-=width;
+			x-=margin;
+			graphics.DrawInvaderCard( new RectangleF( x, y-textHeight, width, height ), gameState.InvaderDeck.Ravage );
+			textWidth = graphics.MeasureString( "Ravage", myFont ).Width;
+			graphics.DrawString( "Ravage", myFont, Brushes.Black, x+(width-textWidth)/2, ClientRectangle.Bottom - textHeight-margin );
 		}
 
 		void DrawHighlights( PaintEventArgs pe ) {

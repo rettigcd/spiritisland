@@ -40,7 +40,7 @@ namespace SpiritIsland.SinglePlayer {
 
             var selectGrowth = new SelectGrowth( Spirit, GameState );
             var resolveGrowth = new ResolveActions( Spirit, GameState, Speed.Growth );
-            var selectPowerCards = new SelectPowerCards( Spirit );
+            var selectPowerCards = new BuyPowerCards( Spirit );
             var fastActions = new ResolveActions( Spirit, GameState, Speed.Fast, true );
             var invaders = new InvaderPhase( GameState );
             var slowActions = new ResolveActions( Spirit, GameState, Speed.Slow, true );

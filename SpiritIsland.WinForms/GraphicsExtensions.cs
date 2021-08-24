@@ -20,6 +20,12 @@ namespace SpiritIsland.WinForms {
 		}
 		readonly static Font countFont = new( "Arial", 7, FontStyle.Bold, GraphicsUnit.Point );
 
+		static public void DrawInvaderCard( this Graphics graphics, RectangleF rect, InvaderCard card ) {
+			if(card==null) return;
+			using var img = ResourceImages.Singleton.GetInvaderCard(card.Text);
+			graphics.DrawImage(img,rect);
+		}
+
 		static Rectangle ToRect(RectangleF r) => new Rectangle((int)r.X,(int)r.Y,(int)r.Width,(int)r.Height);
 	}
 

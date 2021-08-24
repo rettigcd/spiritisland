@@ -161,7 +161,7 @@ namespace SpiritIsland {
 			foreach(var card in cards)
 				PurchaseCard( card );
 
-			foreach(var card in PurchasedCards)
+			foreach(var card in cards)
 				AddActionFactory( card );
 
 		}
@@ -264,12 +264,12 @@ namespace SpiritIsland {
 		public event SpaceTargetedEvent TargetedSpace;
 
 		public async Task BuyPowerCardsAsync() {
-			List<PowerCard> selectedCards = new List<PowerCard>();
+			// List<PowerCard> selectedCards = new List<PowerCard>();
 			int energy = Energy;
 			var canPurchase = NumberOfCardsPlayablePerTurn;
 
 			var powerCardOptions = Hand
-				.Except( selectedCards )
+				//.Except( selectedCards )
 				.Where( c => c.Cost <= energy && canPurchase > 0 )
 				.ToArray();
 
@@ -285,7 +285,7 @@ namespace SpiritIsland {
 				--canPurchase;
 
 				powerCardOptions = Hand
-					.Except( selectedCards )
+//					.Except( selectedCards )
 					.Where( c => c.Cost <= energy && canPurchase > 0 )
 					.ToArray();
 			}

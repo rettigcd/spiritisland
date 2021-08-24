@@ -124,7 +124,7 @@ namespace SpiritIsland.WinForms {
 			// Title
 			graphics.DrawString( "Energy", simpleFont, SystemBrushes.ControlDarkDark, x, y );
 			SizeF textSize = graphics.MeasureString( "Energy", simpleFont );
-			y += margin + (int)textSize.Height;
+			// y += margin + (int)textSize.Height;
 
 			int revealedEnergySpaces = spirit.Presence.Energy.RevealedCount;
 
@@ -182,7 +182,7 @@ namespace SpiritIsland.WinForms {
 			// draw title
 			SizeF titleSize = graphics.MeasureString("Cards", simpleFont);
 			graphics.DrawString( "Cards", simpleFont, SystemBrushes.ControlDarkDark, x, y );
-			y += (int)(titleSize.Height + margin);
+			// y += (int)(titleSize.Height + margin);
 
 			float maxCardHeight = 0;
 			float cardWidth = slotWidth * 0.6f;
@@ -271,7 +271,7 @@ namespace SpiritIsland.WinForms {
 
 		void DrawActivatedElements( Graphics graphics, Font simpleFont, float y ) {
 			y += 20;
-			const float elementSize = 30f;
+			const float elementSize = 40f;
 			var elements = spirit.Elements; // cache, don't recalculate
 			float x = margin;
 

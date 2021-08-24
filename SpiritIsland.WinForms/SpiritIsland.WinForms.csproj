@@ -7,6 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="images\invaders\2j.jpg" />
+    <None Remove="images\invaders\2m.jpg" />
+    <None Remove="images\invaders\2s.jpg" />
+    <None Remove="images\invaders\2w.jpg" />
+    <None Remove="images\invaders\costal.jpg" />
+    <None Remove="images\invaders\j+m.jpg" />
+    <None Remove="images\invaders\j+s.jpg" />
+    <None Remove="images\invaders\J+W.jpg" />
+    <None Remove="images\invaders\j.jpg" />
+    <None Remove="images\invaders\m+s.jpg" />
+    <None Remove="images\invaders\m+w.jpg" />
+    <None Remove="images\invaders\m.jpg" />
+    <None Remove="images\invaders\s+w.jpg" />
+    <None Remove="images\invaders\s.jpg" />
+    <None Remove="images\invaders\w.jpg" />
     <None Remove="images\presence\blue.png" />
     <None Remove="images\presence\dkblue.png" />
     <None Remove="images\presence\green.png" />
@@ -49,6 +64,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="images\invaders\J.jpg" />
+    <EmbeddedResource Include="images\invaders\M.jpg" />
+    <EmbeddedResource Include="images\invaders\S.jpg" />
+    <EmbeddedResource Include="images\invaders\W.jpg" />
+    <EmbeddedResource Include="images\invaders\Costal.jpg" />
+    <EmbeddedResource Include="images\invaders\2j.jpg" />
+    <EmbeddedResource Include="images\invaders\2m.jpg" />
+    <EmbeddedResource Include="images\invaders\2s.jpg" />
+    <EmbeddedResource Include="images\invaders\2w.jpg" />
+    <EmbeddedResource Include="images\invaders\J+M.jpg" />
+    <EmbeddedResource Include="images\invaders\J+S.jpg" />
+    <EmbeddedResource Include="images\invaders\M+S.jpg" />
+    <EmbeddedResource Include="images\invaders\M+W.jpg" />
+    <EmbeddedResource Include="images\invaders\S+W.jpg" />
+    <EmbeddedResource Include="images\invaders\J+W.jpg" />
     <EmbeddedResource Include="images\presence\blue.png" />
     <EmbeddedResource Include="images\presence\dkblue.png" />
     <EmbeddedResource Include="images\presence\green.png" />

@@ -3,13 +3,13 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland.SinglePlayer {
 
-	class SelectPowerCards : IPhase {
+	class BuyPowerCards : IPhase {
 
 		readonly Spirit spirit;
 
 		public event Action Complete;
 
-		public SelectPowerCards( Spirit spirit ) {
+		public BuyPowerCards( Spirit spirit ) {
 			this.spirit = spirit;
 		}
 
