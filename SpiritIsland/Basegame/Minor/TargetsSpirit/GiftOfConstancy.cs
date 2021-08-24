@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
-	public class GiftOfContancy {
+	public class GiftOfConstancy {
 
-		[MinorCard( "Gift of Contancy", 0, Speed.Fast, Element.Sun, Element.Earth )]
+		[MinorCard( "Gift of Constancy", 0, Speed.Fast, Element.Sun, Element.Earth )]
 		[TargetSpirit]
 		static public Task ActAsync( TargetSpiritCtx ctx ) {
 			var target = ctx.Target;

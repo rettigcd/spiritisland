@@ -65,7 +65,7 @@ namespace SpiritIsland.SinglePlayer {
 
 			// Building
 			Log( "Building:" + invaderDeck.Build?.Text ?? "-" );
-			var builds = gameState.Build( invaderDeck.Build );
+			var builds = await gameState.Build( invaderDeck.Build );
 			Log( builds.Join( "\r\n" ) );
 
 			// Exploring

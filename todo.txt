@@ -5,7 +5,6 @@
 UI	Display Growth Options in GUI
 UI	Enhance (Ravage/Build) images
 
-BUG - Rampant green not given option to stop ravage with destroyed presence
 BUG - Lightnings Air-power that makes things fast, ended with no-options ('-') after buying 2 cheap cards
 IMP - Entwined share presence for targetting
 

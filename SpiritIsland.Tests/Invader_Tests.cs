@@ -185,7 +185,7 @@ namespace SpiritIsland.Tests.Core {
 				gameState.Adjust( space, startingInvader, 1 );
 
 			// When: build in Sand
-			gameState.Build( InvaderDeck.Level1Cards.Single( c => c.Text == "S" ) );
+			_ = gameState.Build( InvaderDeck.Level1Cards.Single( c => c.Text == "S" ) );
 
 			// Then: 2 Sand spaces should have ending Invader Count
 			Assert.Equal( endingInvaderCount, gameState.InvadersOn( board[4] ).ToString() );

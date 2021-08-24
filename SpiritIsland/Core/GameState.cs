@@ -240,7 +240,7 @@ namespace SpiritIsland {
 				.Where( x=>GetRavageConfiguration(x).ShouldRavage )
 				.ToArray();
 
-			PreRavaging?.InvokeAsync( this, initialRavageSpaces );
+			await PreRavaging?.InvokeAsync( this, initialRavageSpaces );
 
 			var ravageSpaces = initialRavageSpaces
 				.Where( x => GetRavageConfiguration( x ).ShouldRavage ) // not sure this is necessary since it is called during execute
@@ -269,14 +269,14 @@ namespace SpiritIsland {
 		}
 
 
-		public string[] Build( InvaderCard invaderCard ) {
+		public async Task<string[]> Build( InvaderCard invaderCard ) {
 
 			var buildLands = Island.Boards.SelectMany( board => board.Spaces )
 				.Where( invaderCard.Matches )
 				.Except( skipBuild )
 				.ToArray();
 
-			PreBuilding?.InvokeAsync(this,buildLands);
+			await PreBuilding?.InvokeAsync(this,buildLands);
 
 			buildLands = buildLands.Except( skipBuild ).ToArray(); // reload in case they changed
 
@@ -367,7 +367,17 @@ namespace SpiritIsland {
 	public class AsyncEvent<T> {
 		public async Task InvokeAsync(GameState gameState,T t) {
 			foreach(var handler in Handlers)
+				await TryHandle( handler, gameState, t );
+
+		}
+
+		static async Task TryHandle( Func<GameState, T, Task> handler, GameState gameState, T t ) {
+			try {
 				await handler( gameState, t );
+			}
+			catch(Exception ex) {
+				int i = 0; // do something here
+			}
 		}
 
 		public List<Func<GameState,T,Task>> Handlers = new List<Func<GameState, T,Task>>();
