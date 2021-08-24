@@ -279,7 +279,8 @@ namespace SpiritIsland {
 				if(card == null)
 					break;
 
-				selectedCards.Add( card );
+				
+				PurchaseAvailableCards( card ); // selectedCards.Add( card );
 				energy -= card.Cost;
 				--canPurchase;
 
@@ -289,7 +290,7 @@ namespace SpiritIsland {
 					.ToArray();
 			}
 
-			PurchaseAvailableCards( selectedCards.ToArray() );
+			// PurchaseAvailableCards( selectedCards.ToArray() );
 
 		}
 
