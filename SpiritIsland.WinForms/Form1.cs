@@ -1,9 +1,8 @@
-﻿using System;
+﻿using SpiritIsland.SinglePlayer;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
-using SpiritIsland.SinglePlayer;
 
 namespace SpiritIsland.WinForms {
 	public partial class Form1 : Form, IHaveOptions {
@@ -30,24 +29,23 @@ namespace SpiritIsland.WinForms {
 			this.NewDecision += UpdateButtons;
 
 			this.islandControl.SpaceClicked += Select;
+			this.islandControl.InvaderClicked += Select;
 			this.cardControl.CardSelected += Select;
 			this.spiritControl.OptionSelected += Select;
 
 			ShowOptions();
-			islandControl.Invalidate();
-		}
-
-
-		void ShowOptions() {
-			IDecision decision = game.DecisionProvider.GetCurrent();
-			this.promptLabel.Text = decision.Prompt;
-			NewDecision?.Invoke( decision );
 		}
 
 		void Select( IOption option ) {
 			this.game.DecisionProvider.Choose( option );
 			this.ShowOptions();
+		}
+
+		void ShowOptions() {
+			IDecision decision = game.DecisionProvider.GetCurrent();
+			this.promptLabel.Text = decision.Prompt;
 			islandControl.Invalidate();
+			NewDecision?.Invoke( decision );
 		}
 
 		#region Buttons

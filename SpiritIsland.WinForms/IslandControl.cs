@@ -103,13 +103,25 @@ namespace SpiritIsland.WinForms
 			blight = Image.FromFile(".\\images\\Blighticon.png");
 			defend = Image.FromFile(".\\images\\defend1orange.png");
 
+			invaderImages = new Dictionary<InvaderSpecific, Image> {
+				[InvaderSpecific.City] = city,
+				[InvaderSpecific.City2] = city2,
+				[InvaderSpecific.City1] = city1,
+				[InvaderSpecific.Town] = town,
+				[InvaderSpecific.Town1] = town1,
+				[InvaderSpecific.Explorer] = explorer,
+			};
+
 			this.gameState = gameState;
 			this.spirit = gameState.Spirits.Single();
 		}
 
 		void OptionProvider_OptionsChanged( IDecision decision ) {
+			ios = decision as InvadersOnSpaceDecision;
 			this.activeSpaces = decision.Options.OfType<Space>().ToArray();
 		}
+		InvadersOnSpaceDecision ios;
+		List<(Rectangle,IOption)> optionRects = new List<(Rectangle, IOption)>();
 
 		Image board;
 
@@ -143,21 +155,26 @@ namespace SpiritIsland.WinForms
 				pe.Graphics.DrawImage( board, 0, 0, boardWidth, boardHeight );
 			}
 
+			optionRects.Clear();
+
 			if(gameState != null)
 				foreach(var space in gameState.Island.Boards[0].Spaces)
 					DecorateSpace(pe.Graphics,space);
 
-			if(activeSpaces != null)
-				CirleActiveSpaces( pe );
+			DrawHighlights( pe );
 
 		}
 
-		void CirleActiveSpaces( PaintEventArgs pe ) {
+		void DrawHighlights( PaintEventArgs pe ) {
 			using var pen = new Pen(Brushes.Aquamarine,5);
-			foreach(var space in activeSpaces) {
-				var center = SpaceCenter(space);
-				pe.Graphics.DrawEllipse( pen, center.X- radius, center.Y- radius, radius * 2, radius * 2 );
-			}
+			if(activeSpaces != null)
+				foreach(var space in activeSpaces) {
+					var center = SpaceCenter(space);
+					pe.Graphics.DrawEllipse( pen, center.X- radius, center.Y- radius, radius * 2, radius * 2 );
+				}
+			foreach(var (rect,_) in optionRects)
+				pe.Graphics.DrawRectangle(pen,rect);
+
 		}
 		
 		void DecorateSpace( Graphics graphics, Space space ) {
@@ -170,19 +187,11 @@ namespace SpiritIsland.WinForms
 
 			float x = xy.X - iconWidth;
 			float y = xy.Y - iconWidth;
-			// invaders
-			var grp = gameState.InvadersOn( space );
-			var invaders = grp.InvaderTypesPresent_Specific.Select( k => grp[k] + ":" + k.Summary ).Join( " " );
-			CountDictionary<Image> images = new();
-			images[city] = grp[InvaderSpecific.City];
-			images[city2] = grp[InvaderSpecific.City2];
-			images[city1] = grp[InvaderSpecific.City1];
-			images[town] = grp[InvaderSpecific.Town];
-			images[town1] = grp[InvaderSpecific.Town1];
-			images[explorer] = grp[InvaderSpecific.Explorer];;
-			DrawRow( graphics, x, ref y, iconWidth, xStep, images );
+
+			DrawInvaderRow( graphics, x, ref y, iconWidth, xStep, space );
 
 			// dahan & presence & blight
+			CountDictionary<Image> images = new();
 			images.Clear();
 			images[dahan] = gameState.DahanCount( space );
 			images[defend] = gameState.GetDefence( space );
@@ -191,14 +200,57 @@ namespace SpiritIsland.WinForms
 			DrawRow( graphics, x, ref y, iconWidth, xStep, images );
 		}
 
+		Dictionary<InvaderSpecific, Image> invaderImages;
+
+		void DrawInvaderRow( Graphics graphics, float x, ref float y, float width, float step, Space space ) {
+			bool isInvaderSpace = ios!=null && ios.Space == space;
+
+			// invaders
+			var grp = gameState.InvadersOn( space );
+			if(grp.TotalCount==0) return;
+
+			float maxHeight = 0;
+
+			using Font countFont = new( "Arial", 7, FontStyle.Bold, GraphicsUnit.Point );
+
+			foreach(var specific in grp.InvaderTypesPresent_Specific) {
+				var img = invaderImages[specific];
+
+				// Draw Invaders
+				float height = width / img.Width * img.Height;
+				var rect = new Rectangle((int)x, (int)y, (int)width, (int)height );
+				maxHeight = Math.Max( maxHeight, height );
+				graphics.DrawImage( img, rect );
+				if(isInvaderSpace)
+					optionRects.Add((rect,specific));
+
+				// Count
+				int count = grp[specific];
+				if(count > 1) {
+					string txt = "x" + count;
+					SizeF sz = graphics.MeasureString( txt, countFont );
+					var numRect = new RectangleF( x + width - sz.Width, y + height - sz.Height, sz.Width + 2, sz.Height + 2 );
+					graphics.FillEllipse( Brushes.White, numRect );
+					graphics.DrawString( txt, countFont, Brushes.Black, numRect.X + 2, numRect.Y + 2 );
+				}
+
+				x += step;
+			}
+
+			float gap = step - width;
+			y += maxHeight + gap;
+		}
+
+
 		private static void DrawRow( Graphics graphics, float x, ref float y, float width, float step, CountDictionary<Image> images ) {
 			if(!images.Keys.Any()) return;
 			float maxHeight = 0;
 
 			using Font countFont = new( "Arial", 7, FontStyle.Bold, GraphicsUnit.Point );
-//			const float circleDiameter = 15f;
 
 			foreach(var img in images.Keys){
+
+				// Draw Tokens
 				float height = width / img.Width * img.Height;
 				maxHeight = Math.Max(maxHeight,height); 
 				graphics.DrawImage( img, x, y, width, height);
@@ -224,35 +276,19 @@ namespace SpiritIsland.WinForms
 
 			Point clientCoords = this.PointToClient(Control.MousePosition);
 
-			var xx = activeSpaces
-				.Select(s=> {
-					PointF center = SpaceCenter( s );
-					float dx = clientCoords.X - center.X;
-					float dy = clientCoords.Y - center.Y;
-					return new { Space = s, d2 = dx * dx + dy * dy };
-				} )
-				.ToArray();
-
-			var match = xx
-				.Where(x=>x.d2<radius*radius)
-				.OrderBy(x=>x.d2)
-				.Select(x=>x.Space)
-				.FirstOrDefault();
-
-			if(match != null) {
-				SpaceClicked?.Invoke(match);
-				return;
-			}
+			var match = FindOption();
+			if(match is Space space)
+				SpaceClicked?.Invoke(space);
+			else if(match is InvaderSpecific invader)
+				InvaderClicked?.Invoke( invader );
 
 			// Calculate %
-			if(board==null) return;
-			float normalizedX = (float)clientCoords.X / (float)boardScreenSize.Width;
-			float normalizedY = (float)clientCoords.Y / (float)boardScreenSize.Height;
-
-
-			string msg = $"({normalizedX:0.###},{normalizedY:0.###})";
-			Clipboard.SetText(msg);
-			MessageBox.Show(msg);
+			//if(board==null) return;
+			//float normalizedX = (float)clientCoords.X / (float)boardScreenSize.Width;
+			//float normalizedY = (float)clientCoords.Y / (float)boardScreenSize.Height;
+			//string msg = $"({normalizedX:0.###},{normalizedY:0.###})";
+			//Clipboard.SetText(msg);
+			//MessageBox.Show(msg);
 
 		}
 
@@ -266,22 +302,42 @@ namespace SpiritIsland.WinForms
 
 			if(activeSpaces==null) return;
 
-			var clientCoord = this.PointToClient(Control.MousePosition);
-			bool inCircle = activeSpaces
-				.Select(s=>{
-					var center = SpaceCenter(s);
-					float dx = clientCoord.X-center.X, dy=clientCoord.Y-center.Y;
-					return dx*dx+dy*dy;
-				})
-				.Any(distSquared => distSquared<radius*radius);
+			bool inCircle = FindOption() != null;
 			Cursor = inCircle ? Cursors.Hand : Cursors.Default;
 
 		}
 
-//		ResourceImages images;
+		IOption FindOption() {
+			Point clientCoords = this.PointToClient( Control.MousePosition );
+			return FindInvader( clientCoords )
+				?? FindSpaces( clientCoords );
+		}
+
+		IOption FindSpaces( Point clientCoords ) {
+			return activeSpaces
+				.Select( s => {
+					PointF center = SpaceCenter( s );
+					float dx = clientCoords.X - center.X;
+					float dy = clientCoords.Y - center.Y;
+					return new { Space = s, d2 = dx * dx + dy * dy };
+				} )
+				.Where( x => x.d2 < radius * radius )
+				.OrderBy( x => x.d2 )
+				.Select( x => x.Space )
+				.FirstOrDefault();
+		}
+
+		IOption FindInvader( Point clientCoords ) {
+			return optionRects
+				.Where(t=>t.Item1.Contains(clientCoords))
+				.Select(t=>t.Item2)
+				.FirstOrDefault();
+		}
+
 
 		public event Action<Space> SpaceClicked;
-
+		public event Action<InvaderSpecific> InvaderClicked;
+		
 	}
 
 }
