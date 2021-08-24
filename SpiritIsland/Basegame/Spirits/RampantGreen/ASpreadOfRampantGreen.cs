@@ -137,8 +137,6 @@ namespace SpiritIsland.Basegame {
 		async Task ChokeTheLandWithGreen_Build( GameState gs, Space[] ravageSpaces ) {
 			var stopped = await ChokeTheLandWithGreen( gs, ravageSpaces, "build" );
 			gs.SkipBuild( stopped );
-			var i = 0;
-			++i;
 		}
 
 		async Task<Space[]> ChokeTheLandWithGreen( GameState gs, Space[] ravageSpaces, string actionText ) {

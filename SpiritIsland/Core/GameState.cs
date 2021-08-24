@@ -375,8 +375,7 @@ namespace SpiritIsland {
 			try {
 				await handler( gameState, t );
 			}
-			catch(Exception ex) {
-				int i = 0; // do something here
+			catch(Exception) {
 			}
 		}
 

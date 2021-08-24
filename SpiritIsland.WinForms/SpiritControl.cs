@@ -17,9 +17,9 @@ namespace SpiritIsland.WinForms {
 			this.Cursor = Cursors.Default;
 		}
 
-		public void Init( Spirit spirit, string presenceColor, IHaveOptions optionProvider, ResourceImages resourceImages ) {
+		public void Init( Spirit spirit, string presenceColor, IHaveOptions optionProvider ) {
 			this.spirit = spirit;
-			this.images = resourceImages;
+			this.images = ResourceImages.Singleton;
 
 			this.presenceColor = presenceColor ?? throw new ArgumentNullException( nameof( presenceColor ) );
 
@@ -134,35 +134,44 @@ namespace SpiritIsland.WinForms {
 			int presenceOffset = (int)presenceSize.Height / 2;
 
 			foreach(var energy in spirit.Presence.Energy.slots) {
-				
+
 				// Draw - energy icons
-				using( var bitmap = this.images.GetEnergyIcon(energy.Text))
+				using(var bitmap = this.images.GetTokenIcon( energy.Text ))
 					graphics.DrawImage( bitmap, x + coinLeftOffset, y + presenceOffset, coinWidth, coinWidth );
 
-				RectangleF presenceRect = new RectangleF( x + (slotWidth-presenceSize.Width)/2, y, presenceSize.Width, presenceSize.Height );
+				RectangleF presenceRect = new RectangleF( x + (slotWidth - presenceSize.Width) / 2, y, presenceSize.Width, presenceSize.Height );
 
 				// Highlight Option
 				if(revealedEnergySpaces == idx && trackOptions.Contains( energy )) {
-					graphics.DrawEllipse(highlightPen, presenceRect );
-					hotSpots.Add(energy,presenceRect);
+					graphics.DrawEllipse( highlightPen, presenceRect );
+					hotSpots.Add( energy, presenceRect );
 				}
 
 				// presence
-				if(revealedEnergySpaces <= idx )
+				if(revealedEnergySpaces <= idx)
 					graphics.DrawImage( presence, presenceRect );
 
 				x += slotWidth;
 				++idx;
-				maxY = Math.Max(maxY,y+presenceOffset+(int)slotWidth);
+				maxY = Math.Max( maxY, y + presenceOffset + (int)slotWidth );
 			}
 
-			// Current $$ balance
-			graphics.DrawString( "$"+spirit.Energy, simpleFont, SystemBrushes.ControlDarkDark, x+slotWidth/2, y );
+			const float scaleCoin = 0.7f;
+			DrawEnergyBalance( graphics, new RectangleF( x + slotWidth*(1- scaleCoin), y/*+slotWidth * (1 - scaleCoin)*/, slotWidth * (1+ scaleCoin), slotWidth * (1 + scaleCoin) ) );
 
 			return new Size(
-				x - startingX, 
+				x - startingX,
 				maxY - startingY // 
 			);
+		}
+
+		private void DrawEnergyBalance( Graphics graphics, RectangleF bounds ) {
+			string txt = spirit.Energy.ToString();
+			var coin = ResourceImages.Singleton.GetTokenIcon( "coin" );
+			graphics.DrawImage( coin, bounds );
+			Font coinFont = new Font( ResourceImages.Singleton.Fonts.Families[0], bounds.Height * .5f );
+			SizeF textSize = graphics.MeasureString( txt, coinFont );
+			graphics.DrawString( txt, coinFont, Brushes.Black, bounds.X + bounds.Width / 2 - textSize.Width * .5f, bounds.Y + bounds.Height * .5f - textSize.Height * .45f );
 		}
 
 		Size DrawCardPlayTrack( Graphics graphics, Font simpleFont, Bitmap presence, float slotWidth, SizeF presenceSize, Pen highlightPen, int y ) {
@@ -189,7 +198,7 @@ namespace SpiritIsland.WinForms {
 			foreach(var track in spirit.Presence.CardPlays.slots) {
 
 				// card plays amount
-				using( var bitmap = images.GetCardplayIcon(track.Text)) {
+				using( var bitmap = images.GetTokenIcon(track.Text)) {
 					float cardHeight = cardWidth * bitmap.Height / bitmap.Width;
 					maxCardHeight = Math.Max(cardHeight,maxCardHeight);
 					graphics.DrawImage( bitmap, x+ cardLeft, cardY, cardWidth, cardHeight );
@@ -214,8 +223,23 @@ namespace SpiritIsland.WinForms {
 				++idx;
 			}
 
-			// Current $$ balance
-			graphics.DrawString( $"{spirit.Presence.Destroyed} Destroyed", simpleFont, SystemBrushes.ControlDarkDark, x + slotWidth / 2, cardY );
+			// Destroyed
+			if(spirit.Presence.Destroyed > 0) {
+				var rect = new Rectangle((int)(x+slotWidth/2), (int)(cardY), (int)presenceSize.Width, (int)presenceSize.Height );
+
+				// Highlight Option
+				if(trackOptions.Contains( Track.Destroyed )) {
+					graphics.DrawEllipse( highlightPen, rect );
+					hotSpots.Add( Track.Destroyed, rect );
+				}
+
+				// Presence & Red X
+				graphics.DrawImage( presence, rect );
+				using var redX = images.GetTokenIcon( "red-x" );
+				graphics.DrawImage( redX, rect.X, rect.Y, rect.Width*2/3,rect.Height*2/3 );
+				// count
+				graphics.DrawCount( rect, spirit.Presence.Destroyed );
+			}
 
 			return new Size(
 				0, // not used, ignored
@@ -247,24 +271,17 @@ namespace SpiritIsland.WinForms {
 
 		void DrawActivatedElements( Graphics graphics, Font simpleFont, float y ) {
 			y += 20;
-			const float elementSize = 50f;
+			const float elementSize = 30f;
 			var elements = spirit.Elements; // cache, don't recalculate
 			float x = margin;
 
 			var orderedElements = elements.Keys.OrderBy( el => elementOrder[el] );
 			foreach(var element in orderedElements) {
-				if(elements[element] > 1) {
-					graphics.DrawString(
-						elements[element].ToString(),
-						simpleFont,
-						Brushes.Black
-						, x, y
-					);
-					x += 20;
-				}
-				graphics.DrawImage( GetElementImage( element ), x, y, elementSize, elementSize );
+				var rect = new RectangleF(x,y,elementSize,elementSize);
+				graphics.DrawImage( GetElementImage( element ), rect );
+				graphics.DrawCount( rect, elements[element]);
 				x += elementSize;
-				x += 10;
+				x += 15;
 			}
 		}
 

@@ -5,8 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace SpiritIsland.WinForms
-{
+namespace SpiritIsland.WinForms {
 	public partial class IslandControl : Control {
 
 		const float radius = 40f;
@@ -26,7 +25,7 @@ namespace SpiritIsland.WinForms
 
 		Dictionary<string,PointF> spaceLookup;
 
-		public void Init( GameState gameState, IHaveOptions optionProvider, ResourceImages images, string tokenColor ) {
+		public void Init( GameState gameState, IHaveOptions optionProvider, string tokenColor ) {
 
 			optionProvider.NewDecision += OptionProvider_OptionsChanged;
 
@@ -98,7 +97,7 @@ namespace SpiritIsland.WinForms
 			town = Image.FromFile(".\\images\\Townicon.png");
 			town1 = Image.FromFile( ".\\images\\Town1icon.png" );
 			explorer = Image.FromFile(".\\images\\Explorericon.png");
-			presence = images.GetPresenceIcon( tokenColor );
+			presence = ResourceImages.Singleton.GetPresenceIcon( tokenColor );
 //			presence = Image.FromFile( ".\\images\\Presenceicon.png" );
 			blight = Image.FromFile(".\\images\\Blighticon.png");
 			defend = Image.FromFile(".\\images\\defend1orange.png");
@@ -211,28 +210,19 @@ namespace SpiritIsland.WinForms
 
 			float maxHeight = 0;
 
-			using Font countFont = new( "Arial", 7, FontStyle.Bold, GraphicsUnit.Point );
-
 			foreach(var specific in grp.InvaderTypesPresent_Specific) {
 				var img = invaderImages[specific];
 
 				// Draw Invaders
 				float height = width / img.Width * img.Height;
-				var rect = new Rectangle((int)x, (int)y, (int)width, (int)height );
+				var rect = new Rectangle( (int)x, (int)y, (int)width, (int)height );
 				maxHeight = Math.Max( maxHeight, height );
 				graphics.DrawImage( img, rect );
 				if(isInvaderSpace)
-					optionRects.Add((rect,specific));
+					optionRects.Add( (rect, specific) );
 
 				// Count
-				int count = grp[specific];
-				if(count > 1) {
-					string txt = "x" + count;
-					SizeF sz = graphics.MeasureString( txt, countFont );
-					var numRect = new RectangleF( x + width - sz.Width, y + height - sz.Height, sz.Width + 2, sz.Height + 2 );
-					graphics.FillEllipse( Brushes.White, numRect );
-					graphics.DrawString( txt, countFont, Brushes.Black, numRect.X + 2, numRect.Y + 2 );
-				}
+				graphics.DrawCount( rect, grp[specific] );
 
 				x += step;
 			}
@@ -240,7 +230,6 @@ namespace SpiritIsland.WinForms
 			float gap = step - width;
 			y += maxHeight + gap;
 		}
-
 
 		private static void DrawRow( Graphics graphics, float x, ref float y, float width, float step, CountDictionary<Image> images ) {
 			if(!images.Keys.Any()) return;
@@ -253,17 +242,10 @@ namespace SpiritIsland.WinForms
 				// Draw Tokens
 				float height = width / img.Width * img.Height;
 				maxHeight = Math.Max(maxHeight,height); 
-				graphics.DrawImage( img, x, y, width, height);
+				var rect = new Rectangle((int)x, (int)y, (int)width, (int)height );
+				graphics.DrawImage( img, rect );
 
-				// Count
-				int count = images[img];
-				if(count > 1) {
-					string txt = "x" + count;
-					SizeF sz = graphics.MeasureString(txt, countFont );
-					var numRect = new RectangleF(x+width-sz.Width, y+height-sz.Height, sz.Width+2, sz.Height+2);
-					graphics.FillEllipse(Brushes.White,numRect);
-					graphics.DrawString(txt,countFont,Brushes.Black,numRect.X+2,numRect.Y+2);
-				}
+				graphics.DrawCount( rect, images[img] );
 
 				x += step;
 			}
@@ -337,7 +319,7 @@ namespace SpiritIsland.WinForms
 
 		public event Action<Space> SpaceClicked;
 		public event Action<InvaderSpecific> InvaderClicked;
-		
+
 	}
 
 }

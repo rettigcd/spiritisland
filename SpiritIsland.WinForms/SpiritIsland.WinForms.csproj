@@ -32,13 +32,16 @@
     <None Remove="images\tokens\8 energy.png" />
     <None Remove="images\tokens\air energy.png" />
     <None Remove="images\tokens\any energy.png" />
+    <None Remove="images\tokens\coin.png" />
     <None Remove="images\tokens\earth energy.png" />
     <None Remove="images\tokens\fire energy.png" />
     <None Remove="images\tokens\moon energy.png" />
     <None Remove="images\tokens\plant energy.png" />
     <None Remove="images\tokens\reclaim 1.png" />
+    <None Remove="images\tokens\red-x.png" />
     <None Remove="images\tokens\sun energy.png" />
     <None Remove="images\tokens\water energy.png" />
+    <None Remove="leaguegothic-regular-webfont.ttf" />
   </ItemGroup>
 
   <ItemGroup>
@@ -105,6 +108,7 @@
     <EmbeddedResource Include="images\tokens\any energy.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\coin.png" />
     <EmbeddedResource Include="images\tokens\earth energy.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -118,12 +122,14 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="images\tokens\reclaim 1.png" />
+    <EmbeddedResource Include="images\tokens\red-x.png" />
     <EmbeddedResource Include="images\tokens\sun energy.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="images\tokens\water energy.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="leaguegothic-regular-webfont.ttf" />
   </ItemGroup>
 
   <ItemGroup>

@@ -20,11 +20,9 @@ namespace SpiritIsland.WinForms {
 			this.game = config.Game;
 //			this.game.NewLogEntry += (msg) => this.logTextBox.AppendText(msg+"\r\n");
 
-			var resourceImages = new ResourceImages();
-
-			this.islandControl.Init( game.GameState, this, resourceImages, config.Color );
+			this.islandControl.Init( game.GameState, this, config.Color );
 			this.cardControl.Init( game.Spirit, this );
-			this.spiritControl.Init( game.Spirit, config.Color, this, resourceImages );
+			this.spiritControl.Init( game.Spirit, config.Color, this );
 			this.statusControl1.Init( game.GameState, this );
 			this.NewDecision += UpdateButtons;
 
