@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -19,15 +20,15 @@ namespace SpiritIsland.SinglePlayer {
 		}
 
 		public async Task ActAsync() {
-			GrowthOption[] options = spirit.GetGrowthOptions();
+			var (allGrowthOptions,count) = spirit.GetGrowthOptions();
 
-			var option = (GrowthOption)await spirit.SelectGrowth( "Select Growth Option", options );
+			List<GrowthOption> currentOptions = allGrowthOptions.ToList();
 
-			int i=0;
-			for(; i < options.Length; ++i)
-				if(options[i].Equals( option )) break;
-
-			spirit.Grow( gameState, i );
+			while(count-->0) {
+				var option = (GrowthOption)await spirit.SelectGrowth( "Select Growth Option", currentOptions.ToArray() );
+				currentOptions.Remove(option);
+				spirit.Grow( gameState, option );
+			}
 
 		}
 

@@ -35,17 +35,29 @@ namespace SpiritIsland {
 
 		#region Growth
 
+
+
 		public GrowthOption[] GrowthOptions { get; protected set; }
+
 
 		public virtual void Grow( GameState gameState, int optionIndex ) { // overrident by Keeper and Sharp Fangs
 
-			GrowthOption option = this.GetGrowthOptions()[optionIndex];
+			var (growthOptions,_) = this.GetGrowthOptions();
+
+			GrowthOption option = growthOptions[optionIndex];
 			foreach(GrowthActionFactory action in option.GrowthActions)
 				AddActionFactory( action );
 
 		}
 
-		public virtual GrowthOption[] GetGrowthOptions() => GrowthOptions;
+		public virtual void Grow( GameState gameState, GrowthOption option ) { // overrident by Keeper and Sharp Fangs
+			foreach(GrowthActionFactory action in option.GrowthActions)
+				AddActionFactory( action );
+		}
+
+		public virtual (GrowthOption[],int) GetGrowthOptions() => (GrowthOptions,1);
+
+
 
 		#endregion
 

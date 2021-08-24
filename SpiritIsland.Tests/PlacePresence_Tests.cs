@@ -22,10 +22,11 @@ namespace SpiritIsland.Tests.Core {
 
 			public override string Text => "Test Spirit";
 
-			public override GrowthOption[] GetGrowthOptions() {
-				return new GrowthOption[]{
-					new GrowthOption(this.actions.ToArray())
+			public override (GrowthOption[],int) GetGrowthOptions() {
+				var x = new GrowthOption[]{
+					new GrowthOption( this.actions.ToArray())
 				};
+				return (x,1);
 			}
 
 			protected override void InitializeInternal( Board _, GameState _1 ){

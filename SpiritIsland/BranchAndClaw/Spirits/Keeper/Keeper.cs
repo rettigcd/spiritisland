@@ -86,7 +86,9 @@ namespace SpiritIsland.BranchAndClaw {
 
 		public override void Grow( GameState gameState, int optionIndex ) {
 
-			var actions = this.GetGrowthOptions()[optionIndex].GrowthActions;
+			var (growthOptions,_) = this.GetGrowthOptions();
+
+			var actions = growthOptions[optionIndex].GrowthActions;
 			// gain energy
 			AddActionFactory( actions[0] );
 			AddActionFactory( actions[1] );
