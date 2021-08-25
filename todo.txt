@@ -2,8 +2,6 @@
 
 =============================
 ===== Basegame Road Map =====
-IMP - Entwined share presence for targetting
-
 BASE	Review Major / Minor, decide which need Unit Tests and Implement - Targets SPIRITS
 BONUS	Generate Innate images from innate metadata
 ======  Done  ================
