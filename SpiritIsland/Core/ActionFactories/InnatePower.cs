@@ -43,7 +43,7 @@ namespace SpiritIsland {
 				.Count();
 		}
 
-		public Speed Speed {get;}
+		public Speed Speed {get;set;}
 
 		public string Name {get;}
 

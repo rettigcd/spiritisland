@@ -9,7 +9,10 @@ namespace SpiritIsland {
 			this.target = target;
 		}
 
-		public Speed Speed => original.Speed;
+		public Speed Speed {
+			get{ return original.Speed; }
+			set { original.Speed = value; }
+		}
 
 		public string Name => original.Name;
 

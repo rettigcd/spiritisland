@@ -12,7 +12,10 @@ namespace SpiritIsland {
 
 		public virtual string Name => this.ShortDescription;
 
-		public Speed Speed => Speed.Growth;
+		public Speed Speed { 
+			get{ return Speed.Growth; }
+			set { throw new System.InvalidOperationException("can't change growth speed"); }
+		}
 
 		public string Text => this.ShortDescription;
 

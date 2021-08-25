@@ -28,7 +28,7 @@ namespace SpiritIsland {
 
 		public string Name { get; protected set; }
 		public int Cost { get; protected set;  }
-		public Speed Speed { get; protected set;  }
+		public Speed Speed { get; set;  }
 		public PowerCard Original => this;
 		public Element[] Elements { get; protected set;  }
 		public PowerType PowerType { get; protected set;  }

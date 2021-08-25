@@ -2,10 +2,11 @@
 
 namespace SpiritIsland.Basegame {
 
-	// Lightnong - Special Rule
+	// Lightning - Special Rule
 
 	public class SwiftnessOfLightning : IActionFactory {
-		public Speed Speed => Speed.Fast;
+
+		public Speed Speed {get;set; } = Speed.Fast;
 
 		public string Name => "Swiftness of Lightning";
 
@@ -19,8 +20,8 @@ namespace SpiritIsland.Basegame {
 				lightning.AddActionFactory( this );
 		}
 
-		public Task ActivateAsync( Spirit spirit, GameState _ ) {
-			return spirit.SelectActionsAndMakeFast( spirit.Elements[Element.Air] );
+		public Task ActivateAsync( Spirit spirit, GameState gameState ) {
+			return spirit.SelectActionsAndMakeFast( gameState, spirit.Elements[Element.Air] );
 		}
 
 	}

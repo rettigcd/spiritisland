@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -66,7 +67,10 @@ namespace SpiritIsland.Basegame {
 			this.targetedList = targetedList;
 		}
 
-		public Speed Speed => throw new System.NotImplementedException();
+		public Speed Speed {
+			get { throw new NotImplementedException( "" ); }
+			set { throw new NotImplementedException( "" ); }
+		}
 
 		public string Name => "Replay Card for cost";
 		public string Text => Name;

@@ -22,7 +22,9 @@ namespace SpiritIsland.Basegame {
 		}
 
 		public class RepeatCardForCost : IActionFactory {
-			public Speed Speed => Speed.FastOrSlow;
+
+			public Speed Speed {get;set; } = Speed.FastOrSlow;
+
 			public string Name => "Replay Cards for Cost";
 			public IActionFactory Original => this;
 			public string Text => Name;
