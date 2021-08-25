@@ -71,7 +71,8 @@ namespace SpiritIsland.WinForms {
 			int maxLength = Math.Max( spirit.Presence.CardPlays.TotalCount, spirit.Presence.Energy.TotalCount ) + 2; // +2 for energy & Destroyed
 
 			// Calc Presence and coin widths
-			float slotWidth = (Width - 2 * margin) / maxLength;
+			float usableWidth = (Width - 2 * margin);
+			float slotWidth = usableWidth / maxLength;
 			float presenceWidth = slotWidth * 0.9f;
 			SizeF presenceSize = new SizeF( presenceWidth, presenceWidth * presence.Height / presence.Width );
 
@@ -103,7 +104,7 @@ namespace SpiritIsland.WinForms {
 
 			// Energy
 			y += new EnergyTrackPainter( graphics, spirit, presence, presenceSize, simpleFont, highlightPen, trackOptions, hotSpots )
-				.DrawEnergyRow( (int)slotWidth, margin, y ).Height;
+				.DrawEnergyRow( slotWidth, margin, y, usableWidth ).Height;
 			y += margin;
 
 			// Cards

@@ -30,7 +30,7 @@ namespace SpiritIsland.WinForms {
 			coin = ResourceImages.Singleton.GetTokenIcon( "coin" );
 		}
 
-		public Size DrawEnergyRow(int slotWidth, int x, int y ) {
+		public Size DrawEnergyRow(float slotWidth, int x, int y, float width ) {
 			int startingX = x; // capture so we calc differene at end.
 			int startingY = y; // capture so we calc differene at end.
 
@@ -43,18 +43,24 @@ namespace SpiritIsland.WinForms {
 			float maxY = y; // inc 
 
 			foreach(var energy in spirit.Presence.Energy.slots) {
-				float height = DrawEnergySlot( x, y, slotWidth, highlightPen, energy,
+				float height = DrawEnergySlot( x, y, (int)slotWidth, highlightPen, energy,
 					revealedEnergySpaces == idx && trackOptions.Contains( energy ),
 					revealedEnergySpaces <= idx
 				);
 
 				++idx;
-				x += slotWidth;
+				x += (int)slotWidth;
 				maxY = Math.Max( maxY, y + height );
 			}
 
 			const float scaleCoin = 0.7f;
-			DrawEnergyBalance( new RectangleF( x + slotWidth * (1 - scaleCoin), y/*+slotWidth * (1 - scaleCoin)*/, slotWidth * (1 + scaleCoin), slotWidth * (1 + scaleCoin) ) );
+			var energyRect = new RectangleF( 
+				startingX + (int)width - slotWidth * (1 + scaleCoin), 
+				y, 
+				slotWidth * (1 + scaleCoin), 
+				slotWidth * (1 + scaleCoin)
+			);
+			DrawEnergyBalance( energyRect );
 
 			return new Size(
 				x - startingX,
