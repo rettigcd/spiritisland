@@ -59,21 +59,20 @@ namespace SpiritIsland.Basegame {
 		}
 	}
 
-	public class SharedPresenceTargeting : TargetLandApi {
-		Spirit[] spirits;
-		public SharedPresenceTargeting( params Spirit[] spirits ) { this.spirits = spirits; }
-		protected override IEnumerable<Space> GetPresenceSpaces( Spirit self ) {
-			ValidateSpirit( self );
-			return spirits.SelectMany( s => s.Presence.Spaces ).Distinct();
+	class SharedPresenceTargeting : TargetLandApi {
+
+		readonly Spirit[] spirits;
+
+		public SharedPresenceTargeting( params Spirit[] spirits ) {
+			this.spirits = spirits;
 		}
 
-		protected override IEnumerable<Space> GetSacredSites( Spirit self ) {
-			ValidateSpirit( self );
-			return spirits.SelectMany( s => s.SacredSites ).Distinct();
+		protected override IEnumerable<Space> GetTargetOptions( Spirit _, From sourceEnum, Terrain? sourceTerrain, int range, Target filterEnum, GameState gameState ) {
+			return spirits
+				.SelectMany( spirit => base.GetTargetOptions( spirit, sourceEnum, sourceTerrain, range, filterEnum, gameState ) )
+				.Distinct();
 		}
-		void ValidateSpirit( Spirit spirit ) {
-			if(spirits.Contains( spirit )) throw new System.InvalidOperationException( $"{spirit.Text} is not part of the group and can't used their shared presence." );
-		}
+
 	}
 
 }

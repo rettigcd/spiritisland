@@ -14,32 +14,24 @@ namespace SpiritIsland {
 
 		/// <remarks> Virtual so Entwined can override it </remarks>
 		protected virtual IEnumerable<Space> GetTargetOptions( Spirit self, From sourceEnum, Terrain? sourceTerrain, int range, Target filterEnum, GameState gameState ) {
+			// Select Source
 			IEnumerable<Space> source = GetSource( self, sourceEnum );
-			var debug = source.ToArray();
 			if(sourceTerrain.HasValue)
-				source = source.Where( x => x.Terrain == sourceTerrain.Value );
+				source = source.Where( x => x.Terrain == sourceTerrain.Value ); // filter source
 
-			IEnumerable<Space> spaces = source
-				.Range( range )
-				.Where( SpaceFilter.ForPowers.GetFilter( self, gameState, filterEnum ) );
-			return spaces;
+			return source		// starting here
+				.Range( range ) // find spaces within range
+				.Where( SpaceFilter.ForPowers.GetFilter( self, gameState, filterEnum ) ); // matching this destination
 		}
 
-		IEnumerable<Space> GetSource( Spirit self, From sourceEnum ) {
+		static IEnumerable<Space> GetSource( Spirit self, From sourceEnum ) {
 			return sourceEnum switch {
-				From.Presence => GetPresenceSpaces( self ),
-				From.SacredSite => GetSacredSites( self ),
+				From.Presence => self.Presence.Spaces,
+				From.SacredSite => self.SacredSites,
 				_ => throw new ArgumentException( "Invalid presence source " + sourceEnum ),
 			};
 		}
 
-		protected virtual IEnumerable<Space> GetSacredSites( Spirit self ) {
-			return self.SacredSites;
-		}
-
-		protected virtual IEnumerable<Space> GetPresenceSpaces( Spirit self ) {
-			return self.Presence.Spaces;
-		}
 	}
 
 	public enum From { None, Presence, SacredSite };

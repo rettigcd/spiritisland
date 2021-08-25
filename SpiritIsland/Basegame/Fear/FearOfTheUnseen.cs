@@ -9,14 +9,17 @@ namespace SpiritIsland.Basegame {
 
 		[FearLevel( 1, "Each player removes 1 Explorer / Town from a land with SacredSite." )]
 		public async Task Level1( GameState gs ) {
-			foreach(var spirit in gs.Spirits) {
-				var options = spirit.SacredSites.Where(s=>gs.InvadersOn(s).HasAny(Invader.Explorer,Invader.Town)).ToArray();
-				if(options.Length==0) return;
-				var target = await spirit.SelectSpace("Select SS land to remove 1 explorer/town.",options);
-				var grp = gs.InvadersOn(target);
-				var invaderToRemove = grp.PickBestInvaderToRemove(Invader.Town,Invader.Explorer);
-				gs.Adjust(target,invaderToRemove,-1);
-			}
+			foreach(var spirit in gs.Spirits)
+				await Remove1ExplorerOrTownFromLandWithSacredSite(spirit,gs);
+		}
+
+		static async Task Remove1ExplorerOrTownFromLandWithSacredSite(Spirit spirit,GameState gs ) {
+			var options = spirit.SacredSites.Where( s => gs.InvadersOn( s ).HasAny( Invader.Explorer, Invader.Town ) ).ToArray();
+			if(options.Length == 0) return;
+			var target = await spirit.SelectSpace( "Select SS land to remove 1 explorer/town.", options );
+			var grp = gs.InvadersOn( target );
+			var invaderToRemove = grp.PickBestInvaderToRemove( Invader.Town, Invader.Explorer );
+			gs.Adjust( target, invaderToRemove, -1 );
 		}
 
 		[FearLevel( 2, "Each player removes 1 Explorer / Town from a land with Presence." )]

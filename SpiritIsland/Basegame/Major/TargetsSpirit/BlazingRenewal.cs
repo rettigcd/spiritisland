@@ -34,20 +34,4 @@ namespace SpiritIsland.Basegame {
 		}
 	}
 
-	class Entwined : TargetLandApi {
-
-		readonly Spirit[] spirits;
-
-		public Entwined(params Spirit[] spirits){
-			this.spirits = spirits;
-		}
-
-		protected override IEnumerable<Space> GetTargetOptions( Spirit _, From sourceEnum, Terrain? sourceTerrain, int range, Target filterEnum, GameState gameState ) {
-			return spirits
-				.SelectMany(Spirit=>base.GetTargetOptions(Spirit,sourceEnum,sourceTerrain,range,filterEnum,gameState))
-				.Distinct();
-		}
-
-	}
-
 }

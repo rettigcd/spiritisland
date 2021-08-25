@@ -119,7 +119,7 @@ namespace SpiritIsland {
 			_unresolvedActionFactories.RemoveAt( index );
 
 			if(_unresolvedActionFactories.Count == 0 && selectedActionFactory is GrowthActionFactory)
-				                                TriggerEnergyElementsAndReclaims( selectedActionFactory );
+				TriggerEnergyElementsAndReclaims( selectedActionFactory );
 
 		}
 

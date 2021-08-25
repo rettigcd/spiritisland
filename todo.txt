@@ -7,10 +7,13 @@ BONUS	Generate Innate images from innate metadata
 ======  Done  ================
 ==============================
 
+-- Bug --
+Fear of the Unseen - Level 1 (program hung)
+
 == Jonah ideas ===
 make SS dispay differently
 
-== Steam updates - What's New (provide insite as to what they have trouble with) ==
+== Steam updates - What's New (provide insight as to what they have trouble with) ==
 https://store.steampowered.com/news/app/1236720
 
 == Test Special Cases ==

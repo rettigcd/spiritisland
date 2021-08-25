@@ -5,18 +5,11 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland.SinglePlayer {
 
-	class SelectGrowth : IPhase {
+	class SelectGrowth {
 
-		readonly Spirit spirit;
-		readonly GameState gameState;
-
-		public void Initialize() {
-			_ = ActAndTrigger();
-		}
-
-		public async Task ActAndTrigger() {
-			await ActAsync();
-			this.Complete?.Invoke();
+		public SelectGrowth( Spirit spirit, GameState gameState ) {
+			this.spirit = spirit;
+			this.gameState = gameState;
 		}
 
 		public async Task ActAsync() {
@@ -32,12 +25,10 @@ namespace SpiritIsland.SinglePlayer {
 
 		}
 
-		public SelectGrowth(Spirit spirit,GameState gameState){
-			this.spirit = spirit;
-			this.gameState = gameState;
-		}
-
-		public event Action Complete;
+		#region private
+		readonly Spirit spirit;
+		readonly GameState gameState;
+		#endregion
 
 	}
 

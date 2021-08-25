@@ -45,7 +45,7 @@ namespace SpiritIsland.Tests.Core {
 			// Given: spirit has one place presence action
 			Given_SpiritGrowsByPlacingPresence();
 			When_Growing(0);
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			_ = new ResolveActions( spirit, gameState, Speed.Growth, false ).ActAsync();
 			Resolve_PlacePresence( "A1;A2", spirit.Presence.Energy.Next );
 
 			spirit.Presence.Energy.RevealedCount.ShouldBe(2);

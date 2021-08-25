@@ -1,47 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using SpiritIsland;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
-using SpiritIsland;
 
 namespace SpiritIsland.SinglePlayer {
 
-	public class ResolveActions : IPhase {
-
-		readonly Spirit spirit;
-		readonly GameState gameState;
-		readonly Speed speed;
-		readonly bool allowEarlyDone;
+	public class ResolveActions {
 
 		public ResolveActions( Spirit spirit, GameState gameState, Speed speed, bool allowEarlyDone = false ) {
 			this.spirit = spirit;
 			this.gameState = gameState;
 			this.speed = speed;
-			this.allowEarlyDone = allowEarlyDone;
-		}
-
-		public void Initialize() {
-			_ = ActAndTrigger();
-		}
-
-		async Task ActAndTrigger() {
-			await ActAsync();
-			Done();
+			this.present = allowEarlyDone ? Present.Done : Present.Always;
 		}
 
 		public async Task ActAsync() {
-			List<IActionFactory> matchingActionFactories;
+			IActionFactory[] factoryOptions;
 
-			while((matchingActionFactories = spirit.GetUnresolvedActionFactories( speed ).ToList()).Count> 0) {
+			while((factoryOptions = spirit.GetUnresolvedActionFactories( speed ).ToArray()).Length> 0) {
 
 				// -------------
 				// Select Actions to resolve
 				// -------------
-				var factoryOptions = GetActionFactoryOptions( matchingActionFactories ).ToArray();
-				var option = await spirit.SelectOption( "Select " + speed + " to resolve:", factoryOptions, Present.Always );
-				if(TextOption.Done.Matches( option ))
+				var option = await spirit.SelectFactory( "Select " + speed + " to resolve:", factoryOptions, present );
+				if(option == null) {
+					spirit.Flush(speed); // ! this is important or we can leave old actions in the unresolved stack
 					break;
-
+				}
 
 				// if use clicked a slow card that was made fast, // slow card won't be in the options
 				if(!factoryOptions.Contains( option ))
@@ -59,22 +44,18 @@ namespace SpiritIsland.SinglePlayer {
 
 				spirit.RemoveUnresolvedFactory( selectedActionFactory);
 			}
+
+			var facts = spirit.GetUnresolvedActionFactories(Speed.Growth).ToArray();
+			string s = facts.ToString();
+
 		}
 
-		List<IOption> GetActionFactoryOptions( List<IActionFactory> actionFactories ) {
-			var list = actionFactories.Cast<IOption>().ToList();
-			if(allowEarlyDone) list.Add( TextOption.Done );
-			return list;
-		}
-
-		void Done() {
-			int numberFlushed = spirit.Flush(speed);
-			Console.WriteLine( $"{speed} Done! - Flushed {numberFlushed} actions." );
-
-			this.Complete?.Invoke();
-		}
-
-		public event Action Complete;
+		#region private
+		readonly Spirit spirit;
+		readonly GameState gameState;
+		readonly Speed speed;
+		readonly Present present;
+		#endregion
 
 	}
 

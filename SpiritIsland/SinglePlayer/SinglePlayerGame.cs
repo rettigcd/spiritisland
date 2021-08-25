@@ -15,6 +15,8 @@ namespace SpiritIsland.SinglePlayer {
 		// simplies accessing the only spirit playing
 		public Spirit Spirit {get; set;}
 
+		public bool LogExceptions { get; set; }
+
 		#region constructor 
 
 		public SinglePlayerGame(GameState gameState){
@@ -39,38 +41,36 @@ namespace SpiritIsland.SinglePlayer {
 		void InitPhases() {
 
             var selectGrowth = new SelectGrowth( Spirit, GameState );
-            var resolveGrowth = new ResolveActions( Spirit, GameState, Speed.Growth );
-            var selectPowerCards = new BuyPowerCards( Spirit );
+            var resolveGrowth = new ResolveActions( Spirit, GameState, Speed.Growth, false );
             var fastActions = new ResolveActions( Spirit, GameState, Speed.Fast, true );
             var invaders = new InvaderPhase( GameState );
             var slowActions = new ResolveActions( Spirit, GameState, Speed.Slow, true );
-            var timePasses = new TimePasses( GameState );
 
 			invaders.NewLogEntry += OnNewLogEntry;
 
-			selectGrowth.Complete     += () => resolveGrowth.Initialize();
-			resolveGrowth.Complete    += () => selectPowerCards.Initialize();
-			selectPowerCards.Complete += () => fastActions.Initialize();
-			fastActions.Complete      += () => invaders.Initialize();
-			invaders.Complete         += () => slowActions.Initialize();
-			slowActions.Complete      += () => timePasses.Initialize();
-			timePasses.Complete       += () => selectGrowth.Initialize();
-
-			selectGrowth.Initialize();
-
-			//async Task Loop() {
-			//	while(true) {
-			//		await selectGrowth.ActAsync();
-			//		await resolveGrowth.ActAsync();
-			//		await selectPowerCards.ActAsync();
-			//		await fastActions.ActAsync();
-			//		await invaders.ActAsync();
-			//		await slowActions.ActAsync();
-			//		await timePasses.ActAsync();
-			//	}
-			//}
-			//_ = Loop();
-
+			async Task LoopAsync() {
+				try {
+					while(true) {
+						await selectGrowth.ActAsync();
+						await resolveGrowth.ActAsync();
+						await Spirit.BuyPowerCardsAsync();
+						await fastActions.ActAsync();
+						await invaders.ActAsync();
+						await slowActions.ActAsync();
+						await GameState.TimePasses();
+					}
+				}
+				catch(Exception ex) {
+					if(LogExceptions) {
+						const string filename = @"C:\users\rettigcd\desktop\si_log.txt";
+						System.IO.File.AppendAllText(filename, $"\r\n===={DateTime.Now}=====\r\n"+ex.ToString() );
+						await Spirit.UserSelectsFirstText("Exception - Check Log File!", filename, "program is going to lock up");
+					} else {
+						await Spirit.UserSelectsFirstText( "Exception!", "-", "-" );
+					}
+				}
+			}
+			_ = LoopAsync();
 
 		}
 

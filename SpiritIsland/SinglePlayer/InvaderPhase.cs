@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland.SinglePlayer {
 
-	public class InvaderPhase : IPhase {
+	public class InvaderPhase {
 
 		public InvaderPhase(GameState gameState){
 			this.gameState = gameState;
@@ -12,20 +12,7 @@ namespace SpiritIsland.SinglePlayer {
 			this.invaderDeck = gameState.InvaderDeck;
 		}
 
-		readonly Spirit spirit;
-
 		public event Action<string> NewLogEntry;
-		public event Action Complete;
-
-		public void Initialize() {
-			_ = ActAndTrigger();
-		}
-
-		async Task ActAndTrigger() {
-			await ActAsync();
-			this.Complete?.Invoke();
-		}
-
 
 		public async Task ActAsync() {
 
@@ -70,6 +57,7 @@ namespace SpiritIsland.SinglePlayer {
 
 		#region private fields
 
+		readonly Spirit spirit;
 		readonly GameState gameState;
 		readonly InvaderDeck invaderDeck;
 

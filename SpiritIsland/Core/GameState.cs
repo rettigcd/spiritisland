@@ -29,6 +29,12 @@ namespace SpiritIsland {
 			// ! is there a better way to disable fear-win during tests
 			while(FearDeck.Count < 9)
 				this.AddFearCard( new NullFearCard() );
+
+			// Debugging
+			//FearDeck.Pop();
+			//AddFearCard( new Basegame.FearOfTheUnseen() );
+			//AddFearDirect( new FearArgs { count = 5 } );
+
 		}
 
 		internal void SkipAllInvaderActions( Space target ) {
@@ -95,7 +101,9 @@ namespace SpiritIsland {
 			// heal
 			foreach(var pair in invaderCount)
 				new InvaderGroup( pair.Key, pair.Value, null, Cause.None ).Heal();
-			await ExecuteAndClear_OneRoundEvents();
+
+			await ExecuteAndClear_OneRoundEvents(); // this is async because of Gift of Contancy has user action 'at end of turn'
+
 			TimePassed?.Invoke( this );
 			++Round;
 		}

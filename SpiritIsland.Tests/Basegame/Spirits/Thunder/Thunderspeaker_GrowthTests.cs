@@ -17,7 +17,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			Given_HalfOfPowercardsPlayed();
 
 			When_Growing( 0 );
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			_ = new ResolveActions( spirit, gameState, Speed.Growth, false ).ActAsync();
 			spirit.Activate_ReclaimAll();
 			spirit.Activate_DrawPowerCard();
 
@@ -53,7 +53,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 
 			Given_HasPresence( board[1] );
 			When_Growing(2);
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			_ = new ResolveActions( spirit, gameState, Speed.Growth, false ).ActAsync();
 			spirit.Activate_GainEnergy();
 			Resolve_PlacePresence( "A1;A2;A4;A5;A6", spirit.Presence.Energy.Next );
 
