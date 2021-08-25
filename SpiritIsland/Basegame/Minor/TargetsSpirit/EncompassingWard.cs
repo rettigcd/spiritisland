@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.Basegame {
+﻿using System.Threading.Tasks;
+
+namespace SpiritIsland.Basegame {
 
 	public class EncompassingWard {
 
@@ -6,10 +8,11 @@
 
 		[MinorCard(EncompassingWard.Name,1,Speed.Fast,Element.Sun,Element.Water,Element.Earth)]
 		[TargetSpirit]
-		static public void Act( TargetSpiritCtx ctx ) {
+		static public Task Act( TargetSpiritCtx ctx ) {
 			// defend 2 in every land where spirit has presence
 			foreach(var space in ctx.Target.Presence.Spaces)
 				ctx.GameState.Defend(space,2);
+			return Task.CompletedTask;
 		}
 	}
 }

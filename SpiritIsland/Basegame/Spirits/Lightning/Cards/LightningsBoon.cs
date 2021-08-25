@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using SpiritIsland;
+﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 
@@ -9,9 +7,9 @@ namespace SpiritIsland.Basegame {
 
 		[SpiritCard(LightningsBoon.Name,1,Speed.Fast,Element.Fire,Element.Air)]
 		[TargetSpirit]
-		static public async Task ActAsync( IMakeGamestateDecisions _,Spirit target) {
+		static public async Task ActAsync( TargetSpiritCtx ctx ) {
 			// Taret spirit may use up to 2 slow powers as if they were fast powers this turn.
-			await target.SelectActionsAndMakeFast( 2 );
+			await ctx.Target.SelectActionsAndMakeFast( 2 );
 		}
 
 	}
