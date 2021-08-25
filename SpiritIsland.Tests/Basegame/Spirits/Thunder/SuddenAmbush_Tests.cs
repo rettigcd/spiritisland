@@ -11,7 +11,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 		public void IsFastAndCost1() {
 			var suddenAmbush = PowerCard.For<SuddenAmbush>();
 			suddenAmbush.Speed.ShouldBe(Speed.Fast);
-			suddenAmbush.Cost.ShouldBe( 1 );
+			suddenAmbush.Cost.ShouldBe( 2 );
 		}
 
 		[Fact]

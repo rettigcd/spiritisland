@@ -264,33 +264,25 @@ namespace SpiritIsland {
 		public event SpaceTargetedEvent TargetedSpace;
 
 		public async Task BuyPowerCardsAsync() {
-			// List<PowerCard> selectedCards = new List<PowerCard>();
-			int energy = Energy;
 			var canPurchase = NumberOfCardsPlayablePerTurn;
 
 			var powerCardOptions = Hand
-				//.Except( selectedCards )
-				.Where( c => c.Cost <= energy && canPurchase > 0 )
+				.Where( c => c.Cost <= Energy && canPurchase > 0 )
 				.ToArray();
 
 			while(powerCardOptions.Length > 0) {
-				string prompt = $"Buy power cards: (${energy} / {canPurchase})";
+				string prompt = $"Buy power cards: (${Energy} / {canPurchase})";
 				var card = await this.SelectPowerCard( prompt, powerCardOptions, Present.Done );
 				if(card == null)
 					break;
-
 				
-				PurchaseAvailableCards( card ); // selectedCards.Add( card );
-				energy -= card.Cost;
+				PurchaseAvailableCards( card );
 				--canPurchase;
 
 				powerCardOptions = Hand
-//					.Except( selectedCards )
-					.Where( c => c.Cost <= energy && canPurchase > 0 )
+					.Where( c => c.Cost <= Energy && canPurchase > 0 )
 					.ToArray();
 			}
-
-			// PurchaseAvailableCards( selectedCards.ToArray() );
 
 		}
 
