@@ -13,9 +13,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		readonly Space ravageSpace;
 
 		public BeliefTakesRoot_Tests() {
-			gameState = new GameState( new LightningsSwiftStrike() ) {
-				Island = new Island( Board.BuildBoardA() )
-			};
+			gameState = new GameState( new LightningsSwiftStrike(), Board.BuildBoardA() );
 			gameState.DisableInvaderDeck();
 			gameState.Initialize(); 
 			gameState.FearDeck.Pop();

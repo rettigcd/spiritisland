@@ -1,7 +1,6 @@
 ﻿using Shouldly;
 using SpiritIsland.Basegame;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Xunit;
@@ -79,8 +78,7 @@ namespace SpiritIsland.Tests {
 		[InlineData( false )]
 		public void DrawingMajor_ForgetACard(bool drawDirect) {
 			var spirit = new RiverSurges();
-			var gs = new GameState( spirit ) {
-				Island = new Island( Board.BuildBoardC() ),
+			var gs = new GameState( spirit, Board.BuildBoardC() ) {
 				MajorCards = new PowerCardDeck( PowerCard.GetMajors() ),
 				MinorCards = new PowerCardDeck( PowerCard.GetMinors() )
 			};

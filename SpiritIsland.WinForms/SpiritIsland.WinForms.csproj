@@ -22,6 +22,7 @@
     <None Remove="images\invaders\s+w.jpg" />
     <None Remove="images\invaders\s.jpg" />
     <None Remove="images\invaders\w.jpg" />
+    <None Remove="images\Presenceicon.png" />
     <None Remove="images\presence\blue.png" />
     <None Remove="images\presence\dkblue.png" />
     <None Remove="images\presence\green.png" />
@@ -47,13 +48,32 @@
     <None Remove="images\tokens\8 energy.png" />
     <None Remove="images\tokens\air energy.png" />
     <None Remove="images\tokens\any energy.png" />
+    <None Remove="images\tokens\Cardplayplusone.png" />
     <None Remove="images\tokens\coin.png" />
     <None Remove="images\tokens\earth energy.png" />
+    <None Remove="images\tokens\Energy_Plus_1.png" />
+    <None Remove="images\tokens\Energy_Plus_2.png" />
+    <None Remove="images\tokens\Energy_Plus_3.png" />
+    <None Remove="images\tokens\Energy_Plus_4.png" />
     <None Remove="images\tokens\fire energy.png" />
+    <None Remove="images\tokens\GainCard.png" />
+    <None Remove="images\tokens\Gathertoocean.png" />
     <None Remove="images\tokens\moon energy.png" />
+    <None Remove="images\tokens\Ocean.png" />
     <None Remove="images\tokens\plant energy.png" />
+    <None Remove="images\tokens\Pushfromocean.png" />
+    <None Remove="images\tokens\Range.png" />
     <None Remove="images\tokens\reclaim 1.png" />
+    <None Remove="images\tokens\Reclaimall.png" />
     <None Remove="images\tokens\red-x.png" />
+    <None Remove="images\tokens\Simple_air.png" />
+    <None Remove="images\tokens\Simple_animal.png" />
+    <None Remove="images\tokens\Simple_earth.png" />
+    <None Remove="images\tokens\Simple_fire.png" />
+    <None Remove="images\tokens\Simple_moon.png" />
+    <None Remove="images\tokens\Simple_plant.png" />
+    <None Remove="images\tokens\Simple_sun.png" />
+    <None Remove="images\tokens\Simple_water.png" />
     <None Remove="images\tokens\sun energy.png" />
     <None Remove="images\tokens\water energy.png" />
     <None Remove="leaguegothic-regular-webfont.ttf" />
@@ -79,6 +99,9 @@
     <EmbeddedResource Include="images\invaders\M+W.jpg" />
     <EmbeddedResource Include="images\invaders\S+W.jpg" />
     <EmbeddedResource Include="images\invaders\J+W.jpg" />
+    <EmbeddedResource Include="images\Presenceicon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="images\presence\blue.png" />
     <EmbeddedResource Include="images\presence\dkblue.png" />
     <EmbeddedResource Include="images\presence\green.png" />
@@ -138,21 +161,56 @@
     <EmbeddedResource Include="images\tokens\any energy.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\Cardplayplusone.png" />
     <EmbeddedResource Include="images\tokens\coin.png" />
     <EmbeddedResource Include="images\tokens\earth energy.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\Energy_Plus_1.png" />
+    <EmbeddedResource Include="images\tokens\Energy_Plus_2.png" />
+    <EmbeddedResource Include="images\tokens\Energy_Plus_3.png" />
+    <EmbeddedResource Include="images\tokens\Energy_Plus_4.png" />
     <EmbeddedResource Include="images\tokens\fire energy.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\GainCard.png" />
+    <EmbeddedResource Include="images\tokens\Gathertoocean.png" />
     <EmbeddedResource Include="images\tokens\moon energy.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\Ocean.png" />
     <EmbeddedResource Include="images\tokens\plant energy.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\Pushfromocean.png" />
+    <EmbeddedResource Include="images\tokens\Range.png" />
     <EmbeddedResource Include="images\tokens\reclaim 1.png" />
+    <EmbeddedResource Include="images\tokens\ReclaimAll.png" />
     <EmbeddedResource Include="images\tokens\red-x.png" />
+    <EmbeddedResource Include="images\tokens\Simple_air.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\Simple_animal.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\Simple_earth.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\Simple_fire.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\Simple_moon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\Simple_plant.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\Simple_sun.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\Simple_water.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="images\tokens\sun energy.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -703,9 +761,6 @@
     <None Update="images\powerstorm.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="images\Presenceicon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="images\pull_beneath_the_hungry_earth.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -884,30 +939,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\tokens\Plantenergy.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\tokens\Simple_air.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\tokens\Simple_animal.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\tokens\Simple_earth.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\tokens\Simple_fire.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\tokens\Simple_moon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\tokens\Simple_plant.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\tokens\Simple_sun.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\tokens\Simple_water.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\Town1icon.png">

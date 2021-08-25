@@ -22,16 +22,33 @@ namespace SpiritIsland.Tests {
 		static public void AssertDecision( this IDecisionStream decision, string prompt, string optionsString, string select ) {
 			string msg = $"{prompt}:{optionsString}:{select}";
 
-			// we might get an error if the engine isn't here yet
-			if( decision.IsResolved ) 
-				System.Threading.Thread.Sleep(50);
-			decision.IsResolved.ShouldBeFalse($"Prompt [{prompt}] is not there.");
-
-			var current = decision.GetCurrent();
+			var current = decision.Assert_HasCurrent( prompt );
 			current.Prompt.ShouldBe( prompt, msg, StringCompareShould.IgnoreCase );
 			current.Options.Select( x => x.Text ).Join( "," ).ShouldBe( optionsString, msg );
-			IOption match = current.Options.First( x => x.Text == select ); // sometimes we will have double
+			IOption match = current.FindRequiredOptionByText( select );
 			decision.Choose( match );
+		}
+
+		static public void AssertDecision( this IDecisionStream decision, string prompt, string select ) {
+			string msg = $"{prompt}:{select}";
+
+			var current = decision.Assert_HasCurrent(msg);
+			current.Prompt.ShouldBe( prompt, msg, StringCompareShould.IgnoreCase );
+//			current.Prompt.ShouldStartWith( prompt );
+			IOption match = current.FindRequiredOptionByText( select );
+			decision.Choose( match );
+		}
+
+		static IDecision Assert_HasCurrent( this IDecisionStream decision, string prompt ) {
+			if(decision.IsResolved)
+				System.Threading.Thread.Sleep( 50 );
+			decision.IsResolved.ShouldBeFalse( $"Prompt [{prompt}] is not there." );
+			return decision.GetCurrent();
+		}
+
+		static IOption FindRequiredOptionByText( this IDecision current, string select ) {
+			return current.Options.FirstOrDefault( x => x.Text == select ) // sometimes we will have double
+				?? throw new Exception( $"option ({select} not found in " + current.Options.Select( x => x.Text ).Join( ", " ) );
 		}
 
 		// === older ===
@@ -53,7 +70,6 @@ namespace SpiritIsland.Tests {
 			decision.Choose( decision.GetCurrent().Options[optionIndex] );
 		}
 
-
 		static public void Old_BuyPowerCards( this IDecisionStream decision, string text ) => decision.Old_SelectOption( "Buy power cards:", text );
 
 		static public void Old_DoneWith( this IDecisionStream decision, Speed speed ) {
@@ -67,22 +83,9 @@ namespace SpiritIsland.Tests {
 			decision.Choose( option );
 		}
 
-		static public void Old_SelectOptionContains( this IDecisionStream decision, string prompt, string substring ) {
-
-			if(!decision.GetCurrent().Prompt.StartsWith( prompt ))
-				Assert.Equal( prompt, decision.GetCurrent().Prompt );
-
-			var option = decision.GetCurrent().Options.FirstOrDefault( o => o.Text.ToLower().Contains( substring.ToLower() ) );
-			if(option == null)
-				throw new Exception( $"option ({substring} not found in "
-					+ decision.GetCurrent().Options.Select( x => x.Text ).Join( ", " )
-				);
-			decision.Choose( option );
-		}
-
 		static public void Old_PlacePresence1( this IDecisionStream decision, string sourceTrack, string destinationSpace ) {
 			decision.Old_SelectOption( "Select Growth to resolve", "PlacePresence(1)" );
-			decision.Old_SelectOptionContains( "Select Presence to place", sourceTrack );
+			decision.AssertDecision( "Select Presence to place.", sourceTrack );
 			decision.Old_SelectOption( "Where would you like", destinationSpace );
 		}
 

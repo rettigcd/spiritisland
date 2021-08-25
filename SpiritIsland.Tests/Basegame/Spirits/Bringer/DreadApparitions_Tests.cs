@@ -13,7 +13,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 		public DreadApparitions_Tests() {
 			Bringer spirit = new Bringer();
 			board = Board.BuildBoardA();
-			GameState gs = new GameState( spirit ) { Island = new Island( board ) };
+			GameState gs = new GameState( spirit, board );;
 			ctx = new TargetSpaceCtx( spirit, gs, board[5] );
 		}
 

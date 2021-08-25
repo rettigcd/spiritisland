@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using Shouldly;
-using SpiritIsland;
+﻿using Shouldly;
 using SpiritIsland.SinglePlayer;
+using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace SpiritIsland.Tests.Core {

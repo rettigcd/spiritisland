@@ -213,9 +213,7 @@ namespace SpiritIsland.Tests.Boards {
 				"D" => Board.BuildBoardD(),
 				_ => null
 			};
-			var gameState = new GameState( new RiverSurges() ){
-				Island = new Island( board )
-			};
+			var gameState = new GameState( new RiverSurges(), board );
 			gameState.DisableInvaderDeck();
 			// When:
 			gameState.Initialize();

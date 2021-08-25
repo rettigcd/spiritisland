@@ -119,7 +119,7 @@ namespace SpiritIsland.Tests.Core {
 		public void NoTownsOrCities_HasStartingExplorer_ExploreCoast() {
 			// Given: game on Board A
 			var board = Board.BuildBoardA();
-			var gameState = new GameState( new RiverSurges() ) { Island = new Island(board)	};
+			var gameState = new GameState( new RiverSurges(), board );
 			//   And: explorer on target space
 			gameState.Adjust(board[5],InvaderSpecific.Explorer,1);
 
@@ -150,7 +150,7 @@ namespace SpiritIsland.Tests.Core {
 		public void InOrNextToTown_ExploresTownSpace(string townSpaceLabel,string invaderKey) {
 			// Given: game on Board A
 			var board = Board.BuildBoardA();
-			var gameState = new GameState( new RiverSurges() ) { Island = new Island(board)	};
+			var gameState = new GameState( new RiverSurges(), board );
 			//   And: Town on or next to wet land
 			var sourceSpace = board.Spaces.Single(s=>s.Label==townSpaceLabel);
 			var sourceInvader = InvaderSpecific.Lookup[invaderKey];
@@ -178,7 +178,7 @@ namespace SpiritIsland.Tests.Core {
 		[InlineData("C@1","1C@1,1T@2")]
 		public void BuildInSpaceWithAnyInvader(string preInvaders,string endingInvaderCount) {
 			// Given: game on Board A
-			gameState = new GameState( new RiverSurges() ) { Island = new Island( board ) };
+			gameState = new GameState( new RiverSurges(), board );
 			//   And: invader on every space
 			var startingInvader = InvaderSpecific.Lookup[preInvaders];
 			foreach(var space in board.Spaces)
@@ -222,7 +222,7 @@ namespace SpiritIsland.Tests.Core {
 		[Theory]
 		[InlineData("3D@2,1T@2,1E@1","2D@2")] // !!! WRONG it should be 1D@2,1D@1 (1 dahan is damaged) - not implemented parital yet
 		public async Task Ravage(string startingUnits,string endingUnits) {
-			gameState = new GameState(new RiverSurges()) { Island = new Island( board ) };
+			gameState = new GameState(new RiverSurges(), board);
 
 			// Given: Invaders on a Mountain space
 			var space = board[1];

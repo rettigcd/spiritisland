@@ -118,7 +118,10 @@ namespace SpiritIsland.WinForms {
 		void OptionProvider_OptionsChanged( IDecision decision ) {
 			ios = decision as InvadersOnSpaceDecision;
 			this.activeSpaces = decision.Options.OfType<Space>().ToArray();
+			fearCard = decision.Options.OfType<DisplayFearCard>().FirstOrDefault();
 		}
+
+		DisplayFearCard fearCard;
 		InvadersOnSpaceDecision ios;
 		readonly List<(Rectangle,IOption)> optionRects = new List<(Rectangle, IOption)>();
 
@@ -163,28 +166,34 @@ namespace SpiritIsland.WinForms {
 			DrawHighlights( pe );
 
 			DrawInvaderCards( pe.Graphics );
-
 		}
 
 		void DrawInvaderCards( Graphics graphics ) {
+			// Invaders
 			const float margin = 15;
 			const float textHeight = 20f;
 			const float width = 160f;
 			const float height = 240f;
 
 			float x = ClientRectangle.Width-width-margin-margin;
-			float y = ClientRectangle.Height-height-margin*2;
+			float y = ClientRectangle.Height-height-margin*2 - textHeight;
 
+			// Build
 			using var myFont = new Font( ResourceImages.Singleton.Fonts.Families[0], textHeight );
-			graphics.DrawInvaderCard(new RectangleF(x,y-textHeight,width,height),gameState.InvaderDeck.Build);
+			graphics.DrawInvaderCard(new RectangleF(x,y,width,height),gameState.InvaderDeck.Build);
 			float textWidth = graphics.MeasureString("Build",myFont).Width;
 			graphics.DrawString("Build", myFont,Brushes.Black, x+(width-textWidth)/2, ClientRectangle.Bottom-textHeight-margin);
 
-			x-=width;
+			// Fear
+			graphics.DrawFearCard( new RectangleF(x,y-height-margin,width,height), fearCard );
+
+			// Ravage
+			x -= width;
 			x-=margin;
-			graphics.DrawInvaderCard( new RectangleF( x, y-textHeight, width, height ), gameState.InvaderDeck.Ravage );
+			graphics.DrawInvaderCard( new RectangleF( x, y, width, height ), gameState.InvaderDeck.Ravage );
 			textWidth = graphics.MeasureString( "Ravage", myFont ).Width;
 			graphics.DrawString( "Ravage", myFont, Brushes.Black, x+(width-textWidth)/2, ClientRectangle.Bottom - textHeight-margin );
+
 		}
 
 		void DrawHighlights( PaintEventArgs pe ) {

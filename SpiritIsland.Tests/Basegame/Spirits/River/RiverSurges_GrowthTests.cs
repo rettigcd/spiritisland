@@ -306,9 +306,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 		public RiverSurges_GrowthTests2(){
 			var spirit = new RiverSurges();
-			var gs = new GameState( spirit ) {
-				Island = new Island( Board.BuildBoardA() )
-			};
+			var gs = new GameState( spirit, Board.BuildBoardA() );
 			game = new SinglePlayer.SinglePlayerGame(gs);
 		}
 

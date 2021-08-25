@@ -62,7 +62,7 @@ namespace SpiritIsland.WinForms {
 
 			using Brush coverBrush = new SolidBrush( Color.FromArgb( 128, Color.Gray ) );
 			Brush currentBrush = Brushes.Yellow;
-			using Pen highlightPen = new( Color.Red, 10f );
+			using Pen highlightPen = new( Color.Red, 8f );
 
 			// Load Presence image
 			using Bitmap presence = images.GetPresenceIcon(presenceColor);
@@ -77,11 +77,33 @@ namespace SpiritIsland.WinForms {
 
 			int y = margin;
 			// Image
-			y += DrawSpiritImage( graphics, margin, y ).Height;
+			var imageSz = DrawSpiritImage( graphics, margin, y );
+
+			var painter = new GrowthPainter(graphics);
+			var growthHeight = painter.Paint(spirit.GrowthOptions,margin+imageSz.Width,y,Width-imageSz.Width-margin*2);
+			// highlight growth
+			foreach(var (opt,rect) in painter.layout.EachGrowth()) {
+				if(growthOptions.Contains( opt )) {
+					hotSpots.Add(opt,rect);
+					graphics.DrawRectangle(highlightPen,rect.ToInts());
+				}
+			}
+			// highlight growth - action
+			foreach(var (opt, rect) in painter.layout.EachAction()) {
+				if(growthActions.Contains( opt )) {
+					if(!hotSpots.ContainsKey(opt))
+						hotSpots.Add( opt, rect ); // sometimes growth reuses object, only show highlight the first 1 - for now.
+					graphics.DrawRectangle( highlightPen, rect.ToInts() );
+				}
+			}
+
+
+			y += Math.Max(imageSz.Height,(int)growthHeight);
 			y += margin;
 
 			// Energy
-			y += DrawEnergyTrack( graphics, simpleFont, presence, (int)slotWidth, presenceSize, highlightPen, margin, y ).Height;
+			y += new EnergyTrackPainter( graphics, spirit, presence, presenceSize, simpleFont, highlightPen, trackOptions, hotSpots )
+				.DrawEnergyRow( (int)slotWidth, margin, y ).Height;
 			y += margin;
 
 			// Cards
@@ -100,7 +122,7 @@ namespace SpiritIsland.WinForms {
 			y += (maxHeight + margin);
 
 			// activated elements
-			DrawActivatedElements( graphics, simpleFont, y );
+			DrawActivatedElements( graphics, y );
 
 			// !Note! - If you do not specify output width/height of image, .Net will scale image based on screen DPI and image DPI
 		}
@@ -112,67 +134,6 @@ namespace SpiritIsland.WinForms {
 			return sz;
 		}
 
-		Size DrawEnergyTrack( Graphics graphics, Font simpleFont, Bitmap presence, int slotWidth, SizeF presenceSize, Pen highlightPen, int x, int y ) {
-
-			int startingX = x; // capture so we calc differene at end.
-			int startingY = y; // capture so we calc differene at end.
-
-			float coinWidth = slotWidth * 0.8f;
-			float coinLeftOffset = (slotWidth - coinWidth) / 2;
-
-
-			// Title
-			graphics.DrawString( "Energy", simpleFont, SystemBrushes.ControlDarkDark, x, y );
-			SizeF textSize = graphics.MeasureString( "Energy", simpleFont );
-			// y += margin + (int)textSize.Height;
-
-			int revealedEnergySpaces = spirit.Presence.Energy.RevealedCount;
-
-			int idx = 0;
-			int maxY = y; // inc 
-
-			int presenceOffset = (int)presenceSize.Height / 2;
-
-			foreach(var energy in spirit.Presence.Energy.slots) {
-
-				// Draw - energy icons
-				using(var bitmap = this.images.GetTokenIcon( energy.Text ))
-					graphics.DrawImage( bitmap, x + coinLeftOffset, y + presenceOffset, coinWidth, coinWidth );
-
-				RectangleF presenceRect = new RectangleF( x + (slotWidth - presenceSize.Width) / 2, y, presenceSize.Width, presenceSize.Height );
-
-				// Highlight Option
-				if(revealedEnergySpaces == idx && trackOptions.Contains( energy )) {
-					graphics.DrawEllipse( highlightPen, presenceRect );
-					hotSpots.Add( energy, presenceRect );
-				}
-
-				// presence
-				if(revealedEnergySpaces <= idx)
-					graphics.DrawImage( presence, presenceRect );
-
-				x += slotWidth;
-				++idx;
-				maxY = Math.Max( maxY, y + presenceOffset + (int)slotWidth );
-			}
-
-			const float scaleCoin = 0.7f;
-			DrawEnergyBalance( graphics, new RectangleF( x + slotWidth*(1- scaleCoin), y/*+slotWidth * (1 - scaleCoin)*/, slotWidth * (1+ scaleCoin), slotWidth * (1 + scaleCoin) ) );
-
-			return new Size(
-				x - startingX,
-				maxY - startingY // 
-			);
-		}
-
-		private void DrawEnergyBalance( Graphics graphics, RectangleF bounds ) {
-			string txt = spirit.Energy.ToString();
-			var coin = ResourceImages.Singleton.GetTokenIcon( "coin" );
-			graphics.DrawImage( coin, bounds );
-			Font coinFont = new Font( ResourceImages.Singleton.Fonts.Families[0], bounds.Height * .5f );
-			SizeF textSize = graphics.MeasureString( txt, coinFont );
-			graphics.DrawString( txt, coinFont, Brushes.Black, bounds.X + bounds.Width / 2 - textSize.Width * .5f, bounds.Y + bounds.Height * .5f - textSize.Height * .45f );
-		}
 
 		Size DrawCardPlayTrack( Graphics graphics, Font simpleFont, Bitmap presence, float slotWidth, SizeF presenceSize, Pen highlightPen, int y ) {
 			int startingY = y; // capture so we can calc Height
@@ -180,9 +141,7 @@ namespace SpiritIsland.WinForms {
 			float x = margin;
 
 			// draw title
-			SizeF titleSize = graphics.MeasureString("Cards", simpleFont);
 			graphics.DrawString( "Cards", simpleFont, SystemBrushes.ControlDarkDark, x, y );
-			// y += (int)(titleSize.Height + margin);
 
 			float maxCardHeight = 0;
 			float cardWidth = slotWidth * 0.6f;
@@ -269,7 +228,7 @@ namespace SpiritIsland.WinForms {
 			return sz;
 		}
 
-		void DrawActivatedElements( Graphics graphics, Font simpleFont, float y ) {
+		void DrawActivatedElements( Graphics graphics, float y ) {
 			y += 20;
 			const float elementSize = 40f;
 			var elements = spirit.Elements; // cache, don't recalculate
@@ -324,6 +283,9 @@ namespace SpiritIsland.WinForms {
 				.OfType<InnatePower>()
 				.ToArray();
 
+			growthOptions = decision.Options.OfType<GrowthOption>().ToArray();
+			growthActions = decision.Options.OfType<GrowthActionFactory>().ToArray();
+
 			this.Invalidate();
 		}
 
@@ -361,11 +323,14 @@ namespace SpiritIsland.WinForms {
 		string presenceColor;
 		Track[] trackOptions;
 		InnatePower[] innateOptions;
+		GrowthOption[] growthOptions;
+		GrowthActionFactory[] growthActions;
 		Spirit spirit;
 
 		readonly Dictionary<string, Image> innateImages = new();
 		readonly Dictionary<Element, Image> elementImages = new();
 		readonly Dictionary<Element, int> elementOrder = new();
+
 		readonly Dictionary<IOption, RectangleF> hotSpots = new();
 
 		#endregion

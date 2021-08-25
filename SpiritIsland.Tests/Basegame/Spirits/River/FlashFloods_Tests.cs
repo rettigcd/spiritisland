@@ -57,7 +57,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			var spirit = new RiverSurges();
 			//   And: a game on Board-A
 			var board = Board.BuildBoardA();
-			var gameState = new GameState(spirit){ Island = new Island(board) };
+			var gameState = new GameState(spirit,board);
 			//   And: Presence on A2 (city/costal)
 			var presenceSpace = board[2];
 			spirit.Presence.PlaceOn(presenceSpace);

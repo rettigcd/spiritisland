@@ -2,9 +2,8 @@
 
 =============================
 ===== Basegame Road Map =====
-UI	Display Growth Options in GUI
-
 BUG - Lightnings Air-power that makes things fast, ended with no-options ('-') after buying 2 cheap cards
+BUG - Gift of Proliferation
 IMP - Entwined share presence for targetting
 
 BASE	Review Major / Minor, decide which need Unit Tests and Implement - Targets SPIRITS

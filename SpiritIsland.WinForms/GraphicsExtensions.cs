@@ -2,11 +2,11 @@
 
 namespace SpiritIsland.WinForms {
 
-	public static class GraphicsExtensions {
+	static public class GraphicsExtensions {
 
 
 		static public void DrawCount( this Graphics graphics, RectangleF rect, int count )
-			=> DrawCount(graphics, ToRect(rect),count);
+			=> DrawCount(graphics, ToInts(rect),count);
 
 		static public void DrawCount(this Graphics graphics, Rectangle rect, int count ) {
 			if(count > 1) {
@@ -26,7 +26,20 @@ namespace SpiritIsland.WinForms {
 			graphics.DrawImage(img,rect);
 		}
 
-		static Rectangle ToRect(RectangleF r) => new Rectangle((int)r.X,(int)r.Y,(int)r.Width,(int)r.Height);
+		static public void DrawFearCard( this Graphics graphics, RectangleF rect, DisplayFearCard x ) {
+			if(x==null) return;
+			var img = new FearCardImageManager().GetImage( x.Text );
+			graphics.DrawImage( img, rect );
+		}
+
+
+		static public Rectangle ToInts(this RectangleF r) => new Rectangle((int)r.X,(int)r.Y,(int)r.Width,(int)r.Height);
+		static public RectangleF ToRectF( this Rectangle r ) => new RectangleF( r.X, r.Y, r.Width, r.Height );
+
+		static public RectangleF Scale( this RectangleF src, float scale ) => new RectangleF( src.X * scale, src.Y * scale, src.Width * scale, src.Height * scale );
+		static public SizeF Scale( this SizeF src, float scale ) => new SizeF( src.Width * scale, src.Height * scale );
+		static public RectangleF Translate( this RectangleF src, float deltaX, float deltaY ) => new RectangleF( src.X +deltaX, src.Y +deltaY, src.Width, src.Height );
+
 	}
 
 

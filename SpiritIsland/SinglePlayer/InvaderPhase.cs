@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland.SinglePlayer {
 
-	class InvaderPhase : IPhase {
+	public class InvaderPhase : IPhase {
 
 		public InvaderPhase(GameState gameState){
 			this.gameState = gameState;
@@ -21,7 +21,7 @@ namespace SpiritIsland.SinglePlayer {
 			_ = ActAndTrigger();
 		}
 
-		public async Task ActAndTrigger() {
+		async Task ActAndTrigger() {
 			await ActAsync();
 			this.Complete?.Invoke();
 		}
@@ -38,16 +38,7 @@ namespace SpiritIsland.SinglePlayer {
 			}
 
 			// Fear
-			Log( $"Fear Pool:{gameState.FearPool} Activated:{gameState.ActivatedFearCards.Count}" );
-			while(gameState.ActivatedFearCards.Count > 0) {
-				var card = gameState.ActivatedFearCards.Pop().Card;
-				switch(gameState.TerrorLevel) {
-					case 1: await card.Level1( gameState ); break;
-					case 2: await card.Level2( gameState ); break;
-					case 3: await card.Level3( gameState ); break;
-				}
-				Log( $"Applying Fear Card" );
-			}
+			await gameState.ApplyFear();
 
 			// Ravage
 			string[] ravageResults = await gameState.Ravage( invaderDeck.Ravage );

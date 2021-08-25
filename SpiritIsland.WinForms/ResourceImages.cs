@@ -23,6 +23,7 @@ namespace SpiritIsland.WinForms {
 
 		public Bitmap GetTokenIcon( string cardText )             => GetResourceImage( $"tokens.{cardText}.png" );
 		public Bitmap GetInvaderCard( string filename ) => GetResourceImage( $"invaders.{filename}.jpg" );
+		public Bitmap GetBlackIcon( string filename ) => GetResourceImage( $"{filename}.png" );
 
 		#region private
 

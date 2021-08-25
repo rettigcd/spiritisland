@@ -19,7 +19,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 		public GameState GetGame(bool oceanIsPlaying ) {
 			var gs = oceanIsPlaying
 				? new GameState( river, ocean ) { Island = new Island( board, Board.BuildBoardB() ) }
-				: new GameState( river ) { Island = new Island( board ) };
+				: new GameState( river, board );
 
 			gs.Initialize();
 

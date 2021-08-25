@@ -11,9 +11,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			// Given: empty board
 			spirit = new Thunderspeaker { Energy = 20 };
 			a = Board.BuildBoardA();
-			gs = new GameState( spirit ) {
-				Island = new Island( a )
-			};
+			gs = new GameState( spirit, a );
 
 			// And: Spirit in spot 1
 			spirit.Presence.PlaceOn( a[1] );

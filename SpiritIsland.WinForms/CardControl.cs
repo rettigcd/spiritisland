@@ -33,12 +33,8 @@ namespace SpiritIsland.WinForms {
 				.OfType<PowerCard>() // only power cards
 				.ToArray();
 
-			fearCard = options.OfType<DisplayFearCard>().FirstOrDefault();
-
 			this.Invalidate();
 		}
-
-		DisplayFearCard fearCard;
 
 		public event Action<PowerCard> CardSelected;
 
@@ -52,15 +48,6 @@ namespace SpiritIsland.WinForms {
 			this.x = 0;
 
 			if(spirit != null){
-
-				// fear
-				if(fearCard != null) {
-					var img = fearCardImages.GetImage(fearCard.Text);
-					var rect = new Rectangle( x, 0, cardWidth, cardHeight );
-					pe.Graphics.DrawImage( img, rect );
-					x+=rect.Width+20;
-				}
-
 
 				// Missing (drawing)
 				var missingCards = optionCards.Except(spirit.PurchasedCards).Except(spirit.Hand).ToArray();
@@ -78,8 +65,6 @@ namespace SpiritIsland.WinForms {
 			}
 
 		}
-
-		readonly FearCardImageManager fearCardImages = new FearCardImageManager();
 
 		void DrawCards( Graphics graphics, IList<PowerCard> cards ) {
 

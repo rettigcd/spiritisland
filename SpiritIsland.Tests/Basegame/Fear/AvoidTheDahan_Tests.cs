@@ -15,9 +15,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		readonly Space exploringSpace;
 
 		public AvoidTheDahan_Tests() {
-			gameState = new GameState( new LightningsSwiftStrike() ) {
-				Island = new Island( Board.BuildBoardA() )
-			};
+			gameState = new GameState( new LightningsSwiftStrike(), Board.BuildBoardA() );
 			gameState.Initialize();
 
 			invaderCard = InvaderDeck.Level1Cards[0];

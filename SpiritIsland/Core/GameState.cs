@@ -10,7 +10,16 @@ namespace SpiritIsland {
 
 		// base-1,  game starts in round-1
 		public int Round { get; private set; }
-		
+
+		/// <summary>
+		/// Simplified constructor for single-player
+		/// </summary>
+		/// <param name="spirit"></param>
+		/// <param name="board"></param>
+		public GameState( Spirit spirit, Board board ) : this(spirit) {
+			this.Island = new Island(board);
+		}
+
 		public GameState(params Spirit[] spirits){
 			if(spirits.Length==0) throw new ArgumentException("Game must include at least 1 spirit");
 			this.Spirits = spirits;
@@ -95,8 +104,9 @@ namespace SpiritIsland {
 			_ravageConfig.Clear();
 
 			// stack allows us to unwind items in reverse order from when we set them up
-			while(TimePasses_ThisRound.Count > 0)
+			while(TimePasses_ThisRound.Count > 0) 
 				await TimePasses_ThisRound.Pop()( this );
+	
 
 			// clean out the 1-round-only events
 			FearAdded_ThisRound.Handlers.Clear();
@@ -228,7 +238,12 @@ namespace SpiritIsland {
 				// show card to each user
 				foreach(var spirit in Spirits)
 					await spirit.ShowFearCardToUser( "Activating Fear", fearCard );
-				await fearCard.Card.Level1(this);
+
+				switch( TerrorLevel ) {
+					case 1: await fearCard.Card.Level1( this ); break;
+					case 2: await fearCard.Card.Level2( this ); break;
+					case 3: await fearCard.Card.Level3( this ); break;
+				}
 			}
 		}
 

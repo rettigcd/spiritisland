@@ -16,8 +16,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		public MassiveFlooding_Tests(){
 			// Given: River
 			spirit = new RiverSurges().UsePowerProgression();
-			gs = new GameState( spirit ) {
-				Island = new Island( Board.BuildBoardA() ),
+			gs = new GameState( spirit, Board.BuildBoardA() ) {
 				InvaderDeck = InvaderDeck.Unshuffled()
 			};
 			game = new SinglePlayerGame( gs );
@@ -47,8 +46,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			game.DecisionProvider.Old_SelectGrowthOption( 1 ); // PP-1 PP-1
 
-			game.DecisionProvider.Old_PlacePresence1("Energy","A4");
-			game.DecisionProvider.Old_PlacePresence1("Card","A2");
+			game.DecisionProvider.Old_PlacePresence1("2 energy","A4");
+			game.DecisionProvider.Old_PlacePresence1("2 cardplay","A2");
 
 			game.DecisionProvider.Old_BuyPowerCards( FlashFloods.Name ); // fast
 			game.DecisionProvider.Old_BuyPowerCards( RiversBounty.Name );// slow
