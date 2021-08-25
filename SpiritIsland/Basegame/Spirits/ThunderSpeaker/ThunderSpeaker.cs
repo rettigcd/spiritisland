@@ -55,7 +55,8 @@ namespace SpiritIsland.Basegame {
 			GrowthOptions = new GrowthOption[]{
 				new GrowthOption( 
 					new ReclaimAll(), 
-					new DrawPowerCard(2)
+					new DrawPowerCard(1),
+					new DrawPowerCard(1)
 				),
 				new GrowthOption( 
 					new PlacePresence(2,Target.Dahan,"dahan"),

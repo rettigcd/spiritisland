@@ -20,6 +20,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			_ = new ResolveActions( spirit, gameState, Speed.Growth, false ).ActAsync();
 			spirit.Activate_ReclaimAll();
 			spirit.Activate_DrawPowerCard();
+			spirit.Activate_DrawPowerCard();
 
 			Assert_AllCardsAvailableToPlay( 6);
 			Assert_HasEnergy(1);
@@ -76,6 +77,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			When_Growing(0); // finish growth to trigger elements
 			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
 			spirit.Activate_ReclaimAll();
+			spirit.Activate_DrawPowerCard();
 			spirit.Activate_DrawPowerCard();
 
 			Assert_BonusElements( elements );
