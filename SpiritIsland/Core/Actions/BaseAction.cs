@@ -48,7 +48,7 @@ namespace SpiritIsland {
 
 		#endregion
 
-		public void Push(IDecisionMakerPlus decision){
+		public void Push(IDecisionMaker decision){
 			if(decision == null)
 				throw new ArgumentNullException(nameof(decision));
 			if(acitveDecisionMaker != null ) 
