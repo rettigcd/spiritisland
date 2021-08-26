@@ -19,7 +19,7 @@ namespace SpiritIsland.Basegame {
 			foreach(var spirit in gs.Spirits) {
 				var options = gs.Island.AllSpaces.Where(s=>s.IsCostal&&gs.InvadersOn(s).HasTown).ToArray();
 				if(options.Length==0) return;
-				var target = await spirit.SelectSpace("Replace town with explorer",options);
+				var target = await spirit.Action.Choose( new TargetSpaceDecision( "Replace town with explorer", options));
 				gs.Adjust(target,InvaderSpecific.Town,-1);
 				gs.Adjust( target, InvaderSpecific.Explorer, 1 );
 			}
@@ -30,7 +30,7 @@ namespace SpiritIsland.Basegame {
 			foreach(var spirit in gs.Spirits) {
 				var options = gs.Island.AllSpaces.Where( s => s.IsCostal && gs.InvadersOn( s ).HasAny(Invader.Town,Invader.City) ).ToArray();
 				if(options.Length == 0) return;
-				var target = await spirit.SelectSpace( "Replace town with explorer", options );
+				var target = await spirit.Action.Choose( new TargetSpaceDecision( "Replace town with explorer", options ));
 				if(gs.InvadersOn( target ).HasCity) {
 					gs.Adjust( target, InvaderSpecific.City, -1 );
 					gs.Adjust( target, InvaderSpecific.Town, 1 );

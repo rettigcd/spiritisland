@@ -123,10 +123,10 @@ namespace SpiritIsland.Basegame {
 				if(invader == null)
 					break;
 
-				var destination = await engine.Self.SelectSpace( 
+				var destination = await engine.Self.Action.Choose( new TargetSpaceDecision(
 					"Push " + invader.Summary + " to", 
 					source.Adjacent.Where( SpaceFilter.ForCascadingBlight.GetFilter( engine.Self, engine.GameState, Target.Any ) ) 
-				);
+				));
 				await engine.GameState.MoveInvader( invader, source, destination );
 
 				--countToPush;

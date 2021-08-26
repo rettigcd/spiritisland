@@ -116,7 +116,7 @@ Shadows Flicker like Flame:
 				--self.Energy;
 
 				// pick from dahan-only spaces
-				return await self.SelectSpace("Target land with dahan",dahanOnlySpaces);
+				return await self.Action.Choose( new TargetSpaceDecision( "Target land with dahan", dahanOnlySpaces));
 			}
 
 		}

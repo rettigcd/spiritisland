@@ -20,7 +20,7 @@ namespace SpiritIsland {
   			int gathered = 0;
 			var neighborsWithDahan = target.Adjacent.Where(eng.GameState.HasDahan).ToArray();
 			while(gathered<dahanToGather && neighborsWithDahan.Length>0){
-				var source = await eng.Self.SelectSpace( $"Gather dahan {gathered+1} of {dahanToGather} from:", neighborsWithDahan, Present.Done);
+				var source = await eng.Self.Action.Choose( new TargetSpaceDecision( $"Gather dahan {gathered+1} of {dahanToGather} from:", neighborsWithDahan, Present.Done));
 				if(source == null) break;
 
 				await eng.GameState.MoveDahan(source,target);
@@ -42,7 +42,7 @@ namespace SpiritIsland {
 			Space[] neighborsWithItems = CalcSource();
   			int gathered = 0;
 			while(gathered<countToGather && neighborsWithItems.Length>0){
-				var source = await ctx.Self.SelectSpace( $"Gather {label} {gathered+1} of {countToGather} from:", neighborsWithItems, Present.Done);
+				var source = await ctx.Self.Action.Choose( new TargetSpaceDecision( $"Gather {label} {gathered+1} of {countToGather} from:", neighborsWithItems, Present.Done));
 				if(source == null) break;
 
 				var invader = await ctx.Self.Action.Choose( new SelectInvaderToGatherDecision( source, target, spaceInvaders(source), Present.IfMoreThan1 ) );
@@ -129,7 +129,7 @@ namespace SpiritIsland {
 
 			var from = await engine.Self.SelectTrack();
 
-			var to = await engine.Self.SelectSpace( "Where would you like to place your presence?", destinationOptions, Present.Always );
+			var to = await engine.Self.Action.Choose( new TargetSpaceDecision( "Where would you like to place your presence?", destinationOptions, Present.Always ));
 			engine.Self.Presence.PlaceFromBoard( from, to );
 
 		}

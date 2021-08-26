@@ -10,11 +10,6 @@ namespace SpiritIsland {
 			return spirit.Action.Choose( new TypedDecision<T>( prompt, options, present ) );
 		}
 
-		// sorts by Label
-		static public Task<Space> SelectSpace( this Spirit spirit, string prompt, IEnumerable<Space> spaces, Present present = Present.IfMoreThan1 ) {
-			return spirit.Action.Choose( new TypedDecision<Space>( prompt, spaces.OrderBy( x => x.Label ).ToArray(), present ) );
-		}
-
 		#region Simple Wrappers
 
 		// wrapper - switches type to String

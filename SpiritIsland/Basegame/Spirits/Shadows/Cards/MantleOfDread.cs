@@ -25,7 +25,7 @@ namespace SpiritIsland.Basegame {
 
 			var otherSpirit = new PowerCtx(ctx.Target,ctx.GameState);
 
-			var space = await otherSpirit.Self.SelectSpace("Select land to push 1 exploer & 1 town from",landsToPushInvadersFrom,Present.Done);
+			var space = await otherSpirit.Self.Action.Choose( new TargetSpaceDecision( "Select land to push 1 exploer & 1 town from", landsToPushInvadersFrom,Present.Done));
 			if(space==null) return;
 
 			// Push Town

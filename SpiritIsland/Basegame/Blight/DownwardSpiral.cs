@@ -17,7 +17,7 @@ namespace SpiritIsland.Basegame {
 			if(!IslandIsBlighted) return;
 			// Spirit destorys a presence.
 			foreach(var spirit in gs.Spirits) {
-				var presence = await spirit.SelectSpace( "BLIGHT: Select presence to destroy.", spirit.Presence.Spaces.ToArray() );
+				var presence = await spirit.Action.Choose( new TargetSpaceDecision( "BLIGHT: Select presence to destroy.", spirit.Presence.Spaces.ToArray() ));
 				spirit.Presence.Destroy( presence );
 			}
 		}

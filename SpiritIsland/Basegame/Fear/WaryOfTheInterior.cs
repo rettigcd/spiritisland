@@ -32,7 +32,7 @@ namespace SpiritIsland.Basegame {
 					.Where( s => gs.InvadersOn( s ).HasAny( x ) )
 					.ToArray();
 				if(options.Length == 0) break;
-				var target = await spirit.SelectSpace( "Fear:select land to remove 1 explorer", options );
+				var target = await spirit.Action.Choose( new TargetSpaceDecision( "Fear:select land to remove 1 explorer", options ));
 				var invaderToRemove = gs.InvadersOn( target ).PickBestInvaderToRemove( x );
 				gs.Adjust( target, invaderToRemove, -1 );
 			}

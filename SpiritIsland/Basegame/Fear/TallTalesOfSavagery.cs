@@ -12,7 +12,7 @@ namespace SpiritIsland.Basegame {
 			foreach(var spirit in gs.Spirits) {
 				var options = gs.Island.AllSpaces.Where(s => gs.HasDahan(s) && gs.InvadersOn(s).HasExplorer ).ToArray();
 				if(options.Length==0) return;
-				var target = await spirit.SelectSpace( "Fear:select land with dahan to remove explorer", options );
+				var target = await spirit.Action.Choose( new TargetSpaceDecision( "Fear:select land with dahan to remove explorer", options ));
 				gs.Adjust( target, InvaderSpecific.Explorer, -1 );
 			}
 		}
@@ -22,7 +22,7 @@ namespace SpiritIsland.Basegame {
 			foreach(var spirit in gs.Spirits) {
 				var options = gs.Island.AllSpaces.Where( s => gs.HasDahan( s ) && gs.InvadersOn( s ).HasExplorer ).ToArray();
 				if(options.Length == 0) return;
-				var target = await spirit.SelectSpace( "Fear:select land with dahan to remove explorer", options );
+				var target = await spirit.Action.Choose( new TargetSpaceDecision( "Fear:select land with dahan to remove explorer", options ));
 				RemoveTownOr2Explorers( gs, target );
 			}
 		}

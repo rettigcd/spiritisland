@@ -36,7 +36,7 @@ namespace SpiritIsland.Basegame {
 					.Except(used)
 					.ToArray();
 				if(options.Length==0) continue;
-				var target = await spirit.SelectSpace("Select land to remove 2 health worth of invaders/presence.",options);
+				var target = await spirit.Action.Choose( new TargetSpaceDecision( "Select land to remove 2 health worth of invaders/presence.", options));
 				used.Add(target);
 				var grp = gs.InvadersOn(target);
 				if(grp.HasTown)

@@ -41,7 +41,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			action = spirit.Action;
 
 			var invader = action.GetCurrent().Options[0] as InvaderSpecific;
-			Then_SelectInvaderToPush(invader,invader.Summary,"Done");
+			Then_SelectInvaderToPush(invader,3, invader.Summary,"Done");
 
 			//  Then: card has options of where to push 1 explorer
 			Assert_Options(	targetSpace.Adjacent, new TextOption("Done") );
@@ -74,7 +74,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			card.ActivateAsync( spirit, gameState );
 			action = spirit.Action;
 
-			Then_SelectInvaderToPush( InvaderSpecific.Explorer, "E@1", "Done" );
+			Then_SelectInvaderToPush( InvaderSpecific.Explorer, 3,"E@1", "Done" );
 			
 			//  Then: card has options of where to push 1 explorer
 			Assert_Options( targetSpace.Adjacent.Where(x=>x.Terrain != Terrain.Ocean ), new TextOption("Done") );
@@ -143,7 +143,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			//  Auto-Selects: target space
 			//			action.Select( targetSpace );
 
-			Then_SelectInvaderToPush( InvaderSpecific.Town1, "T@1", "Done" );
+			Then_SelectInvaderToPush( InvaderSpecific.Town1, 3, "T@1", "Done" );
 			Then_PushInvader( "T@1", invaderDestination, "A1","A2","A3","A5","Done" );
 
 			Assert.True( action.IsResolved );
@@ -164,9 +164,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			action.Choose( invaderDestination );
 		}
 
-		void Then_SelectInvaderToPush( InvaderSpecific invader, params string[] options ) {
+		void Then_SelectInvaderToPush( InvaderSpecific invader, int remaining, params string[] options ) {
 			Assert.False( action.IsResolved );
-			Assert.Equal( "Select invader to push", action.GetCurrent().Prompt );
+			Assert.Equal( $"Select invader to push ({remaining} remaining)", action.GetCurrent().Prompt );
 			Assert_Options( options );
 			action.Choose( action.GetCurrent().Options.Single( x => x.Text == invader.Summary ) );
 		}
@@ -185,21 +185,21 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			//  When: activating card
 			When_PlayingCard();
 
-			Then_SelectInvaderToPush(InvaderSpecific.Explorer,"E@1","Done");
+			Then_SelectInvaderToPush(InvaderSpecific.Explorer,3, "E@1","Done");
 
 			//  Then: Select destination for Explorer 1
 			var dstn1 = board[2];
 			action.Choose( dstn1 );
 			Assert.False( action.IsResolved );
 
-			Then_SelectInvaderToPush(InvaderSpecific.Explorer,"E@1","Done");
+			Then_SelectInvaderToPush(InvaderSpecific.Explorer,2,"E@1","Done");
 
 			//  Then: Select destination for Explorer 2
 			var dstn2 = board[3];
 			action.Choose( dstn2 );
 			Assert.False( action.IsResolved );
 
-			Then_SelectInvaderToPush(InvaderSpecific.Explorer,"E@1","Done");
+			Then_SelectInvaderToPush(InvaderSpecific.Explorer,1,"E@1","Done");
 			//  Then: Select destination for Explorer 3
 			var dstn3 = board[5];
 			action.Choose( dstn3 );
