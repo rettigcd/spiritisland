@@ -117,7 +117,9 @@ namespace SpiritIsland.Basegame {
 
 			var invaders = CalcInvaderTypes();
 			while(0 < countToPush && 0 < invaders.Length) {
-				var invader = await engine.Self.SelectInvader( source, "Select invader to push", invaders, Present.Always );
+//				var invader = await engine.Self.SelectInvader( source, "Select invader to push", invaders, Present.Always );
+				var invader = await engine.Self.Action.Choose( new SelectInvaderToPushDecision( source, countToPush, invaders, Present.Always ) );
+
 				if(invader == null)
 					break;
 

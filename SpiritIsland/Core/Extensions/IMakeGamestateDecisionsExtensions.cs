@@ -31,8 +31,8 @@ namespace SpiritIsland {
 
 		}
 
-		static public async Task GatherUpToNInvaders( this IMakeGamestateDecisions eng, Space target, int countToGather, params Invader[] ofType ) {
-			InvaderSpecific[] spaceInvaders(Space space) => eng.GameState.InvadersOn(space).FilterBy(ofType);
+		static public async Task GatherUpToNInvaders( this IMakeGamestateDecisions ctx, Space target, int countToGather, params Invader[] ofType ) {
+			InvaderSpecific[] spaceInvaders(Space space) => ctx.GameState.InvadersOn(space).FilterBy(ofType);
 			Space[] CalcSource() => target.Adjacent
 				.Where(s=>spaceInvaders(s).Any())
 				.ToArray();
@@ -42,12 +42,12 @@ namespace SpiritIsland {
 			Space[] neighborsWithItems = CalcSource();
   			int gathered = 0;
 			while(gathered<countToGather && neighborsWithItems.Length>0){
-				var source = await eng.Self.SelectSpace( $"Gather {label} {gathered+1} of {countToGather} from:", neighborsWithItems, Present.Done);
+				var source = await ctx.Self.SelectSpace( $"Gather {label} {gathered+1} of {countToGather} from:", neighborsWithItems, Present.Done);
 				if(source == null) break;
 
-				var invader = await eng.Self.SelectInvader(source,"Select invader to gather "+source.Label+" => "+target.Label,spaceInvaders(source));
+				var invader = await ctx.Self.Action.Choose( new SelectInvaderToGatherDecision( source, target, spaceInvaders(source), Present.IfMoreThan1 ) );
 
-				await eng.GameState.MoveInvader(invader, source, target);
+				await ctx.GameState.MoveInvader(invader, source, target);
 
 				++gathered;
 				neighborsWithItems = CalcSource();
@@ -77,25 +77,26 @@ namespace SpiritIsland {
 		}
 
 		// non-power push (for fear)
-		static public async Task FearPushUpToNInvaders( this IMakeGamestateDecisions eng, Space source, int countToPush
+		static public async Task FearPushUpToNInvaders( this IMakeGamestateDecisions ctx, Space source, int countToPush
 			,params Invader[] healthyInvaders
 		) {
 
-			InvaderSpecific[] CalcInvaderTypes() => eng.GameState.InvadersOn(source).FilterBy(healthyInvaders);
+			InvaderSpecific[] CalcInvaderTypes() => ctx.GameState.InvadersOn(source).FilterBy(healthyInvaders);
 
 			var invaders = CalcInvaderTypes();
 			while(0<countToPush && 0<invaders.Length){
-				var invader = await eng.Self.SelectInvader(source,"Select invader to push",invaders, Present.Done );
+				var invader = await ctx.Self.Action.Choose( new SelectInvaderToPushDecision( source, countToPush, invaders, Present.Done ) );
+
 				if(invader==null) 
 					break;
 
-				var destination = await eng.Self.Action.Choose( new PushInvaderDecision(
+				var destination = await ctx.Self.Action.Choose( new PushInvaderDecision(
 					invader,
 					source,
 					source.Adjacent.Where( x => x.Terrain != Terrain.Ocean ),
 					Present.Always
 				)); 
-				await eng.GameState.MoveInvader(invader, source, destination );
+				await ctx.GameState.MoveInvader(invader, source, destination );
 
 				--countToPush;
 				invaders = CalcInvaderTypes();

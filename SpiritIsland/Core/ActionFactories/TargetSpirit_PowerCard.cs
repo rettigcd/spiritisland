@@ -23,7 +23,8 @@ namespace SpiritIsland {
 		}
 
 		public override async Task ActivateAsync( Spirit self, GameState gameState ) {
-			Spirit target = await self.SelectSpirit(gameState.Spirits);
+			Spirit target = await self.Action.Choose(new TargetSpiritDecision(gameState.Spirits));
+
 			SpiritTargeted?.Invoke( self, this, target );
 			await TargetSpirit( methodBase, self, gameState, target );
 		}

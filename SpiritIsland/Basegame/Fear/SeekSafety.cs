@@ -49,7 +49,8 @@ namespace SpiritIsland.Basegame {
 					.Where(specific => invadersToGatherArray.Contains(specific.Generic) )
 					.ToArray();
 
-				var invaderToGather = await spirit.SelectInvader(source,"which invader to gather",invaderOptions);
+				var invaderToGather = await spirit.Action.Choose( new SelectInvaderToGatherDecision( source, dest, invaderOptions, Present.IfMoreThan1 ) );
+				
 				await gs.MoveInvader(invaderToGather,source,dest);
 			}
 		}

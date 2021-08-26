@@ -15,16 +15,6 @@ namespace SpiritIsland {
 			return spirit.Action.Choose( new TypedDecision<Space>( prompt, spaces.OrderBy( x => x.Label ).ToArray(), present ) );
 		}
 
-		// Adds Prompt
-		static public Task<Spirit> SelectSpirit(this Spirit spirit, Spirit[] spirits) {
-			return spirit.Action.Choose( new TypedDecision<Spirit>( "Select Spirit", spirits, Present.IfMoreThan1) );
-		}
-
-		// Derived Type
-		static public Task<InvaderSpecific> SelectInvader( this Spirit spirit, Space invaderLocation, string prompt, InvaderSpecific[] invaders, Present present = Present.IfMoreThan1 ) {
-			return spirit.Action.Choose( new InvadersOnSpaceDecision( prompt, invaderLocation, invaders, present ) );
-		}
-
 		#region Simple Wrappers
 
 		// wrapper - switches type to String
@@ -109,7 +99,7 @@ namespace SpiritIsland {
 		static public async Task SelectCardToReplayForCost( this Spirit spirit, int maxCost, PowerCard[] options ) {
 			maxCost = System.Math.Min( maxCost, spirit.Energy );
 			if(options.Length == 0) return;
-			var factory = (TargetSpace_PowerCard)await spirit.Select( "Select card to replay", options );
+			var factory = (TargetSpace_PowerCard)await spirit.Select( "Select card to replay", options.Where(x=>x.Cost<=maxCost).ToArray() );
 
 			spirit.Energy -= factory.Cost;
 			spirit.AddActionFactory( factory );
