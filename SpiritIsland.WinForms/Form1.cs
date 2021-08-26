@@ -18,7 +18,6 @@ namespace SpiritIsland.WinForms {
 			var config = new ConfigureGame();
 			if(config.ShowDialog() != DialogResult.OK) { return; }
 			this.game = config.Game;
-//			this.game.NewLogEntry += (msg) => this.logTextBox.AppendText(msg+"\r\n");
 
 			this.islandControl.Init( game.GameState, this, config.Color );
 			this.cardControl.Init( game.Spirit, this );
@@ -36,7 +35,15 @@ namespace SpiritIsland.WinForms {
 
 		void Select( IOption option ) {
 			this.game.DecisionProvider.Choose( option );
-			this.ShowOptions();
+			
+			if(this.game.WinLoseStatus == WinLoseStatus.Playing) {
+				this.ShowOptions();
+				return;
+			}
+
+			this.Text = this.game.WinLoseStatus.ToString();
+			// ! clear out all options
+
 		}
 
 		void ShowOptions() {

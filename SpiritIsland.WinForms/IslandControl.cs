@@ -159,13 +159,12 @@ namespace SpiritIsland.WinForms {
 
 			optionRects.Clear();
 
-			if(gameState != null)
+			if(gameState != null) {
 				foreach(var space in gameState.Island.Boards[0].Spaces)
 					DecorateSpace(pe.Graphics,space);
-
-			DrawHighlights( pe );
-
-			DrawInvaderCards( pe.Graphics );
+				DrawHighlights( pe );
+				DrawInvaderCards( pe.Graphics );
+			}
 		}
 
 		void DrawInvaderCards( Graphics graphics ) {

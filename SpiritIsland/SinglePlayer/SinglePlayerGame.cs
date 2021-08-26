@@ -6,6 +6,8 @@ namespace SpiritIsland.SinglePlayer {
 
 	public class SinglePlayerGame {
 
+		public WinLoseStatus WinLoseStatus = WinLoseStatus.Playing;
+
 		/// <summary> The main interface that drives the UI</summary>
 		public IDecisionStream DecisionProvider {get; set;}
 
@@ -59,6 +61,9 @@ namespace SpiritIsland.SinglePlayer {
 						await slowActions.ActAsync();
 						await GameState.TimePasses();
 					}
+				}
+				catch(GameOverException gameOver) {
+					this.WinLoseStatus = gameOver.Status;
 				}
 				catch(Exception ex) {
 					if(LogExceptions) {

@@ -7,6 +7,15 @@ BONUS	Generate Innate images from innate metadata
 ======  Done  ================
 ==============================
 
+Game Play needs:
+	- Undo / go back to beginning of turn
+	- Visuals so we know when we are 
+		(a) buying cards (b) selcting cards to play
+		(a) selecting space to taret (b) pushing invaders / dahan to, (c) gather invaders / dahan from
+	- logging game and results
+	- catching exceptions in engine
+	- catch GameOver exception (and display to user)
+
 -- Bug --
 Fear of the Unseen - Level 1 (program hung)
 
