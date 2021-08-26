@@ -5,6 +5,7 @@ using SpiritIsland.Basegame;
 using SpiritIsland;
 using Xunit;
 using SpiritIsland.SinglePlayer;
+using System.Threading.Tasks;
 
 namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 
@@ -103,20 +104,19 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 		}
 
 		protected void Resolve_PlacePresenceInOcean( string placeOptions, Track source) {
-			var ppFactory = spirit.GetUnresolvedActionFactories( Speed.Growth ).OfType<PlaceInOcean>()
+			PlaceInOcean ppFactory = spirit.GetUnresolvedActionFactories( Speed.Growth ).OfType<PlaceInOcean>()
 				.First();
-			ppFactory.ActivateAsync( spirit, gameState );
-			var ppAction = spirit.Action;
+
+			_ = spirit.TakeAction(ppFactory,gameState);
 
 			// take from precense track
-			ppAction.Choose( source );
+			spirit.Action.Choose( source );
 
 			// place on board - first option
 			string[] options = placeOptions.Split( ';' );
 			if(options.Length > 1) // not auto selecting
-				ppAction.Choose( ppAction.GetCurrent().Options.Single( o => o.Text == options[0] ) );
+				spirit.Action.Choose( spirit.Action.GetCurrent().Options.Single( o => o.Text == options[0] ) );
 
-			spirit.RemoveUnresolvedFactory( ppFactory );
 		}
 
 

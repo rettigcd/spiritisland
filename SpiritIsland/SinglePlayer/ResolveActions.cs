@@ -36,13 +36,7 @@ namespace SpiritIsland.SinglePlayer {
 				if(!factoryOptions.Contains( option ))
 					throw new Exception( "Dude! - You selected something that wasn't an option" );
 
-
-
-				var selectedActionFactory = (IActionFactory)option;
-				// var growthName = selectedActionFactory.Name;
-				await selectedActionFactory.ActivateAsync( spirit, gameState );
-
-				spirit.RemoveUnresolvedFactory( selectedActionFactory);
+				await spirit.TakeAction( (IActionFactory)option, gameState );
 			}
 
 			var facts = spirit.GetUnresolvedActionFactories(Speed.Growth).ToArray();

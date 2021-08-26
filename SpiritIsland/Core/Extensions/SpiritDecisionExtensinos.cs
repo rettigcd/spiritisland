@@ -113,7 +113,7 @@ namespace SpiritIsland {
 			var factory = (TargetSpace_PowerCard)await spirit.Select( "Select card to replay", options );
 
 			spirit.Energy -= factory.Cost;
-			spirit.AddActionFactory( new ReplayOnSpace( factory, played.Single( p => p.Card == factory ).Target ) );
+			spirit.AddActionFactory( factory );
 		}
 
 		static public async Task ForgetPowerCard( this Spirit spirit ) {

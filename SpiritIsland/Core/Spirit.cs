@@ -166,6 +166,11 @@ namespace SpiritIsland {
 
 		}
 
+		public async Task TakeAction(IActionFactory factory, GameState gameState) {
+			await factory.ActivateAsync( this, gameState );
+			RemoveUnresolvedFactory( factory );
+		}
+
 		public int Flush( Speed speed ) {
 			var toFlush = GetUnresolvedActionFactories()
 				.Where( x=>x.Speed == speed )

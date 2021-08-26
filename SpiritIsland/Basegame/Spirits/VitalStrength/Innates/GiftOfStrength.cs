@@ -15,16 +15,19 @@ namespace SpiritIsland.Basegame {
 
 		[InnateOption("1 sun,2 earth,2 plant")]
 		static public Task Option1( TargetSpiritCtx ctx, List<SpaceTargetedArgs> targetedList ) {
+			// Once this turn, Target Spirit may Repeat 1 Power Card with Energy cost of 1 or less.
 			return RepeatPowerCard(ctx,2, targetedList );
 		}
 
 		[InnateOption("2 sun,3 earth,2 plant")]
 		static public Task Option2( TargetSpiritCtx ctx, List<SpaceTargetedArgs> targetedList ) {
+			//  Instead, the Energy cost limit is 3 or less.
 			return RepeatPowerCard(ctx,4, targetedList );
 		}
 
 		[InnateOption("2 sun,4 earth,3 plant")]
 		static public Task Option3( TargetSpiritCtx ctx, List<SpaceTargetedArgs> targetedList ) {
+			// Instead, the Energy cost limit is 6 or less.
 			return RepeatPowerCard(ctx,6, targetedList );
 		}
 
