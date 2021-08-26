@@ -9,34 +9,40 @@ namespace SpiritIsland {
 		readonly TaskCompletionSource<T> promise;
 		readonly Present present;
 
+		public IDecisionPlus Decision { get; }
+
 		public SelectAsync(
 			string prompt,
 			T[] options,
 			Present present,
 			TaskCompletionSource<T> promise
 		){
-			Prompt = prompt;
 			this.promise = promise;
-			this.present = present;
 
 			var optionList = options.Cast<IOption>().ToList();
 			if(optionList.Count == 0)
 				promise.TrySetResult(null);
 			else if(present == Present.Done)
 				optionList.Add(TextOption.Done);
-			Options = optionList.ToArray();
+
+			Decision = new DecisionInner {
+				Prompt = prompt,
+				Options = optionList.ToArray(),
+				AllowAutoSelect = present != Present.Always,
+			};
+
 		}
 
-		public string Prompt {get;}
-
-		public IOption[] Options {get;}
-
-		public bool AllowAutoSelect => present != Present.Always;
+		class DecisionInner : IDecisionPlus {
+			public bool AllowAutoSelect {get; set; }
+			public string Prompt {get;set; }
+			public IOption[] Options {get;set;}
+		}
 
 		public void Select( IOption option ) {
-			if(present == Present.Done && TextOption.Done.Matches(option))
+			if(/*present == Present.Done &&*/ TextOption.Done.Matches(option))
 				promise.TrySetResult(null);
-			else if(Options.Contains(option))
+			else if(Decision.Options.Contains(option))
 				promise.TrySetResult((T)option);
 			else
 				promise.TrySetException(new Exception($"{option.Text} not found in options"));
