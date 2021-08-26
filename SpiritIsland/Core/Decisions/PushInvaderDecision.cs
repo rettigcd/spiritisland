@@ -6,7 +6,7 @@ namespace SpiritIsland {
 	public class PushInvaderDecision : SelectAdjacentDecision {
 
 		public PushInvaderDecision( InvaderSpecific specific, Space source, IEnumerable<Space> destinationOptions, Present present )
-			: base( "Push " + specific.Summary + " to", source, destinationOptions, present ) {
+			: base( "Push " + specific.Summary + " to", source, GatherPush.Push, destinationOptions, present ) {
 			Source = source;
 			Invader = specific;
 		}

@@ -85,43 +85,6 @@ namespace SpiritIsland {
 
 		readonly Dictionary<Space, int> _distanceTo = new Dictionary<Space, int>();
 
-		public bool Matches( Spirit self, GameState gameState, Target filterEnum ) => StandardPowerEvaluator( self, gameState, filterEnum, this );
-
-		public Func<Spirit, GameState, Target, Space, bool> matcher = StandardPowerEvaluator;
-
-		static public bool StandardPowerEvaluator( Spirit self, GameState gameState, Target filterEnum, Space s ) {
-			return AllowOceanForPower(self,gameState,filterEnum,s) && s.Terrain != Terrain.Ocean;
-		}
-
-		static public bool AllowOceanForPower( Spirit self, GameState gameState, Target filterEnum, Space s ) {
-			return filterEnum switch {
-				// Depends on Terrain only
-				Target.Any => true,
-				Target.Costal => s.IsCostal,
-				Target.SandOrWetland => s.Terrain.IsIn( Terrain.Sand, Terrain.Wetland ),
-				Target.Jungle => s.Terrain == Terrain.Jungle,
-				Target.Wetland => s.Terrain == Terrain.Wetland,
-				Target.JungleOrMountain => s.Terrain.IsIn( Terrain.Jungle, Terrain.Mountain ),
-				Target.JungleOrWetland => s.Terrain.IsIn( Terrain.Jungle, Terrain.Wetland ),
-				Target.MountainOrWetland => s.Terrain.IsIn( Terrain.Mountain, Terrain.Wetland ),
-				// Add Gamestate
-				Target.Dahan => gameState.HasDahan( s ),
-				Target.Invaders => gameState.HasInvaders( s ),
-				Target.Blight => gameState.HasBlight( s ),
-				Target.Explorer => gameState.InvadersOn( s ).HasExplorer,
-				Target.TownOrExplorer => gameState.InvadersOn( s ).HasAny( Invader.Explorer, Invader.Town ),
-				Target.BeastOrJungle => s.Terrain == Terrain.Jungle || gameState.HasBeasts( s ),
-
-				Target.NoInvader => !gameState.HasInvaders( s ),
-				Target.NoBlight => !gameState.HasBlight( s ),
-				Target.DahanOrInvaders => gameState.HasDahan( s ) || gameState.HasInvaders( s ),
-				// Add self
-				Target.PresenceOrWilds => (self.Presence.IsOn( s ) || gameState.HasWilds( s )),
-				_ => throw new ArgumentException( "Unexpected filter", nameof( filterEnum ) ),
-			} && s.Terrain != Terrain.Ocean;
-		}
-
-
 	}
 
 }

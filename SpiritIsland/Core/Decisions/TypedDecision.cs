@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,7 +15,7 @@ namespace SpiritIsland {
 
 		public TypedDecision(
 			string prompt,
-			T[] options,
+			IEnumerable<T> options,
 			Present present
 		){
 

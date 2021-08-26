@@ -5,7 +5,7 @@ namespace SpiritIsland {
 
 	class TargetSpiritDecision : TypedDecision<Spirit> {
 		public TargetSpiritDecision( IEnumerable<Spirit> spirits )
-			: base( "Select Spirit to target", spirits.ToArray(), Present.IfMoreThan1 ) {
+			: base( "Select Spirit to target", spirits, Present.IfMoreThan1 ) {
 		}
 	}
 }

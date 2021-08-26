@@ -11,13 +11,14 @@ Game Play needs:
 	- Undo / go back to beginning of turn
 	- Visuals so we know when we are 
 		(a) buying cards (b) selcting cards to play
-		(a) selecting space to taret (b) pushing invaders / dahan to, (c) gather invaders / dahan from
+		(a) selecting a push vs a gather space. (Lead the Furious assult)
 	- logging game and results
 	- catching exceptions in engine
 	- catch GameOver exception (and display to user)
 
 -- Bug --
 Fear of the Unseen - Level 1 (program hung)
+Lure of the Unknown - didn't allow be to target land with no invaders and withing 2 of presence
 
 == Jonah ideas ===
 make SS dispay differently

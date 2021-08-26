@@ -117,12 +117,14 @@ namespace SpiritIsland.WinForms {
 
 		void OptionProvider_OptionsChanged( IDecision decision ) {
 			ios = decision as InvadersOnSpaceDecision;
+			adjacentDecision = decision as SelectAdjacentDecision;
 			this.activeSpaces = decision.Options.OfType<Space>().ToArray();
 			fearCard = decision.Options.OfType<DisplayFearCard>().FirstOrDefault();
 		}
 
 		DisplayFearCard fearCard;
 		InvadersOnSpaceDecision ios;
+		SelectAdjacentDecision adjacentDecision;
 		readonly List<(Rectangle,IOption)> optionRects = new List<(Rectangle, IOption)>();
 
 		Image board;
@@ -197,11 +199,36 @@ namespace SpiritIsland.WinForms {
 
 		void DrawHighlights( PaintEventArgs pe ) {
 			using var pen = new Pen(Brushes.Aquamarine,5);
+
+			// Space Circles
 			if(activeSpaces != null)
 				foreach(var space in activeSpaces) {
 					var center = SpaceCenter(space);
 					pe.Graphics.DrawEllipse( pen, center.X- radius, center.Y- radius, radius * 2, radius * 2 );
 				}
+
+			// adjacent
+			if(adjacentDecision != null) {
+				using Pen p = new Pen( Color.DeepSkyBlue, 3 );
+
+				var center = SpaceCenter(adjacentDecision.Original);
+				var others = adjacentDecision.Adjacent.Select(x=> SpaceCenter(x) ).ToArray();
+				foreach(var other in others)
+					pe.Graphics.DrawLine( p, other, center );
+
+				const float radius = 20;
+				switch(adjacentDecision.GatherPush) {
+					case GatherPush.Gather:
+						pe.Graphics.DrawEllipse(p,center.X-radius,center.Y-radius,radius*2,radius*2);
+						break;
+					case GatherPush.Push:
+						foreach(var other in others)
+							pe.Graphics.DrawEllipse( p, other.X - radius, other.Y - radius, radius * 2, radius * 2 );
+						break;
+				}
+			}
+
+			// Invader Boxes
 			foreach(var (rect,_) in optionRects)
 				pe.Graphics.DrawRectangle(pen,rect);
 
@@ -227,6 +254,7 @@ namespace SpiritIsland.WinForms {
 			images[defend] = gameState.GetDefence( space );
 			images[presence] = spirit.Presence.CountOn( space );
 			images[blight] = gameState.GetBlightOnSpace( space );
+			// invaders
 			DrawRow( graphics, x, ref y, iconWidth, xStep, images );
 		}
 
@@ -346,6 +374,7 @@ namespace SpiritIsland.WinForms {
 				.Select(t=>t.Item2)
 				.FirstOrDefault();
 		}
+
 
 
 		public event Action<Space> SpaceClicked;
