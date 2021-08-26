@@ -20,7 +20,7 @@ namespace SpiritIsland {
   			int gathered = 0;
 			var neighborsWithDahan = target.Adjacent.Where(eng.GameState.HasDahan).ToArray();
 			while(gathered<dahanToGather && neighborsWithDahan.Length>0){
-				var source = await eng.Self.Action.Choose( new TargetSpaceDecision( $"Gather dahan {gathered+1} of {dahanToGather} from:", neighborsWithDahan, Present.Done));
+				var source = await eng.Self.Action.Choose( new GatherDahanFromDecision( dahanToGather-gathered, target, neighborsWithDahan, Present.Done));
 				if(source == null) break;
 
 				await eng.GameState.MoveDahan(source,target);
@@ -31,18 +31,18 @@ namespace SpiritIsland {
 
 		}
 
-		static public async Task GatherUpToNInvaders( this IMakeGamestateDecisions ctx, Space target, int countToGather, params Invader[] ofType ) {
-			InvaderSpecific[] spaceInvaders(Space space) => ctx.GameState.InvadersOn(space).FilterBy(ofType);
+		static public async Task GatherUpToNInvaders( this IMakeGamestateDecisions ctx, Space target, int countToGather, params Invader[] invaderTypes ) {
+			InvaderSpecific[] spaceInvaders(Space space) => ctx.GameState.InvadersOn(space).FilterBy(invaderTypes);
 			Space[] CalcSource() => target.Adjacent
 				.Where(s=>spaceInvaders(s).Any())
 				.ToArray();
 
-			string label = ofType.Select(it=>it.Label).Join("/");
+			string label = invaderTypes.Select(it=>it.Label).Join("/");
 
 			Space[] neighborsWithItems = CalcSource();
   			int gathered = 0;
 			while(gathered<countToGather && neighborsWithItems.Length>0){
-				var source = await ctx.Self.Action.Choose( new TargetSpaceDecision( $"Gather {label} {gathered+1} of {countToGather} from:", neighborsWithItems, Present.Done));
+				var source = await ctx.Self.Action.Choose( new GatherInvaderFromDecision( countToGather-gathered, invaderTypes, target, neighborsWithItems, Present.Done ));
 				if(source == null) break;
 
 				var invader = await ctx.Self.Action.Choose( new SelectInvaderToGatherDecision( source, target, spaceInvaders(source), Present.IfMoreThan1 ) );

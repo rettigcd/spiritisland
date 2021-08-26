@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland {
+﻿
+namespace SpiritIsland {
+
 	public class SelectInvaderToGatherDecision : InvadersOnSpaceDecision {
 		public Space From { get; }
 		public Space To { get; }

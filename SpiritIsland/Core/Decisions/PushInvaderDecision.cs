@@ -3,10 +3,10 @@ using System.Linq;
 
 namespace SpiritIsland {
 
-	public class PushInvaderDecision : TypedDecision<Space> {
+	public class PushInvaderDecision : SelectAdjacentDecision {
 
 		public PushInvaderDecision( InvaderSpecific specific, Space source, IEnumerable<Space> destinationOptions, Present present )
-			: base( "Push " + specific.Summary + " to", destinationOptions.ToArray(), present ) {
+			: base( "Push " + specific.Summary + " to", source, destinationOptions, present ) {
 			Source = source;
 			Invader = specific;
 		}

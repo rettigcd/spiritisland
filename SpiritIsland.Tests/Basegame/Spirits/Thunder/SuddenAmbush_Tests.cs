@@ -29,7 +29,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 
 			When_ActivateCard( SuddenAmbush.Name );
 			Step( "Select space to target.", "A1,A2,A4,A5,A6", a[2], false );
-			Step( "Gather dahan 1 of 1 from:", "A3,Done", a[3], true);
+			Step( "Gather Dahan (1 remaining)", "A3,Done", a[3], true);
 
 			// Then: 1 explorer left
 			gs.InvadersOn( a[2] ).ToString().ShouldBe("1E@1");
@@ -45,7 +45,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 
 			When_ActivateCard( SuddenAmbush.Name );
 			Step( "Select space to target.", "A1,A2,A4,A5,A6", a[1], false );
-			Step( "Gather dahan 1 of 1 from:", "A2,Done", a[2], true );
+			Step( "Gather Dahan (1 remaining)", "A2,Done", a[2], true );
 
 			// Then: 5-2-1 = 2 explorers left
 			gs.InvadersOn( a[1] ).ToString().ShouldBe( "2E@1" );
@@ -61,7 +61,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 
 			When_ActivateCard(SuddenAmbush.Name);
 			Step("Select space to target.", "A1,A2,A4,A5,A6", a[1], false);
-			Step("Gather dahan 1 of 1 from:", "A2,Done", a[2], true);
+			Step("Gather Dahan (1 remaining)", "A2,Done", a[2], true);
 
 			// Then: 5-2-1 = 2 explorers left
 			gs.InvadersOn(a[1]).ToString().ShouldBe("1T@2");

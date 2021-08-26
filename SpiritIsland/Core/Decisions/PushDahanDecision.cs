@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace SpiritIsland {
 
-	public class PushDahanDecision : TypedDecision<Space> {
+	public class PushDahanDecision : SelectAdjacentDecision {
 
 		public PushDahanDecision( Space source, IEnumerable<Space> destinationOptions, Present present)
-			: base( "Select destination for dahan", destinationOptions.ToArray(), present ) {
+			: base( "Select destination for dahan", source, destinationOptions, present ) {
 			Source = source;
 		}
 
