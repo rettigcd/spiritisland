@@ -209,23 +209,38 @@ namespace SpiritIsland.WinForms {
 
 			// adjacent
 			if(adjacentDecision != null) {
-				using Pen p = new Pen( Color.DeepSkyBlue, 3 );
 
 				var center = SpaceCenter(adjacentDecision.Original);
 				var others = adjacentDecision.Adjacent.Select(x=> SpaceCenter(x) ).ToArray();
-				foreach(var other in others)
-					pe.Graphics.DrawLine( p, other, center );
 
+				//foreach(var other in others)
+				//	pe.Graphics.DrawLine( p, other, center );
+
+				//const float radius = 20;
+				//switch(adjacentDecision.GatherPush) {
+				//	case GatherPush.Gather:
+				//		pe.Graphics.DrawEllipse( p, center.X - radius, center.Y - radius, radius * 2, radius * 2 );
+				//		break;
+				//	case GatherPush.Push:
+				//		foreach(var other in others)
+				//			pe.Graphics.DrawEllipse( p, other.X - radius, other.Y - radius, radius * 2, radius * 2 );
+				//		break;
+				//}
+
+				using Pen p = new Pen( Color.DeepSkyBlue, 7 );
+				var drawer = new ArrowDrawer(pe.Graphics,p);
 				const float radius = 20;
 				switch(adjacentDecision.GatherPush) {
 					case GatherPush.Gather:
-						pe.Graphics.DrawEllipse(p,center.X-radius,center.Y-radius,radius*2,radius*2);
+						foreach(var other in others)
+							drawer.Draw( other, center );
 						break;
 					case GatherPush.Push:
 						foreach(var other in others)
-							pe.Graphics.DrawEllipse( p, other.X - radius, other.Y - radius, radius * 2, radius * 2 );
+							drawer.Draw( center, other );
 						break;
 				}
+
 			}
 
 			// Invader Boxes
@@ -234,6 +249,34 @@ namespace SpiritIsland.WinForms {
 
 		}
 		
+		class ArrowDrawer {
+			readonly Graphics graphics; 
+			readonly Pen pen;
+			const float startNorm = 0.2f;
+			const float endNorm = 0.8f;
+			const float arrowNorm = .1f;
+			public ArrowDrawer(Graphics graphics, Pen pen){
+				this.graphics = graphics;
+				this.pen = pen;
+			}
+			public void Draw(PointF from, PointF to ) {
+				float dx = to.X-from.X;
+				float dy = to.Y-from.Y;
+				PointF newFrom = new PointF( from.X+dx*startNorm, from.Y+dy*startNorm );
+				PointF newTo = new PointF( from.X + dx * endNorm, from.Y + dy * endNorm );
+
+				float inlineX = dx * arrowNorm, inlineY = dy * arrowNorm;
+				float perpX = -inlineY, perpY = inlineX;
+
+				PointF wing1 = new PointF( newTo.X +perpX-inlineX, newTo.Y + perpY-inlineY );
+				PointF wing2 = new PointF( newTo.X - perpX - inlineX, newTo.Y - perpY - inlineY );
+
+				graphics.DrawLine( pen,newFrom,newTo );
+				graphics.DrawLine( pen,newTo,wing1);
+				graphics.DrawLine( pen, newTo, wing2 );
+			}
+		}
+
 		void DecorateSpace( Graphics graphics, Space space ) {
 			if(!spaceLookup.ContainsKey(space.Label)) return; // happens during developement
 
