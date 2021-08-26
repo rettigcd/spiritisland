@@ -69,10 +69,8 @@ namespace SpiritIsland.Basegame {
 			};
 
 			this.InnatePowers = new InnatePower[]{
-				InnatePower.For<GatherTheWarriors>(),
-				InnatePower.For<GatherTheWarriors_Fast>(),
-				InnatePower.For<LeadTheFuriousAssult>(),
-				InnatePower.For<LeadTheFuriousAssult_Fast>(),
+				new FastIf4Air<GatherTheWarriors>(),
+				new FastIf4Air<LeadTheFuriousAssult>(),
 			};
 
 		}
@@ -93,10 +91,6 @@ namespace SpiritIsland.Basegame {
 				PowerCard.For<PillarOfLivingFlame>(),
 				PowerCard.For<EntrancingApparitions>(),
 				PowerCard.For<CallToIsolation>()
-
-			//PowerCard.For<TalonsOfLightning>(),			 // Major
-			//PowerCard.For<VigorOfTheBreakingDawn>(),	 // major
-			//PowerCard.For<TheTreesAndStonesSpeakOfWar>(),// Major
 			);
 
 		protected override void InitializeInternal( Board board, GameState gs ) {

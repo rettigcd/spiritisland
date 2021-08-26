@@ -85,10 +85,12 @@ namespace SpiritIsland {
 		// depends on Fast/Slow phase to only select the actions that are appropriate
 		protected IEnumerable<IActionFactory> AvailableActions { get {
 			foreach(var action in availableActions) yield return action;
-			foreach(var innate in this.InnatePowers)
-				if(!usedInnates.Contains(innate) && innate.PowersActivated(this)>0)
-					yield return innate;		
+			foreach(var innate in AvailableDynamicActions)	yield return innate;		
 		} }
+		protected IEnumerable<IActionFactory> AvailableDynamicActions => InnatePowers
+			.Where( innate => !usedInnates.Contains( innate )     // if it is used,
+				&& innate.UpdateAndISActivatedBy( this.Elements ) // we don't update 'Lead the Furious Assult' and 'Gather the Warriors' speed anymore (incase someone is replaying it)
+			);
 
 		// so spirits can replay used cards or collect them instead of discard
 		public IEnumerable<IActionFactory> UsedActions => usedActions.Distinct();  // distinct incase played twice

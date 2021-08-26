@@ -36,11 +36,10 @@ namespace SpiritIsland {
 
 		readonly Dictionary<MethodInfo, Element[]> elementListByMethod;
 
-		public int PowersActivated(Spirit spirit){
+		public virtual bool UpdateAndISActivatedBy(CountDictionary<Element> elements){
 			return elementListByMethod
 				.OrderByDescending(pair=>pair.Value.Length)
-				.Where(pair=>spirit.Elements.Contains(pair.Value))
-				.Count();
+				.Any(pair=>elements.Contains(pair.Value));
 		}
 
 		public Speed Speed {get;set;}

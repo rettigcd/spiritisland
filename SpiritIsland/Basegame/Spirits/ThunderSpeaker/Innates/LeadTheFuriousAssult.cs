@@ -1,5 +1,4 @@
-﻿using SpiritIsland;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 
 namespace SpiritIsland.Basegame {
@@ -26,24 +25,13 @@ namespace SpiritIsland.Basegame {
 		}
 	}
 
-	[InnatePower( LeadTheFuriousAssult.Name, Speed.Fast )]
-	[FromPresence( 0 )]
-	public class LeadTheFuriousAssult_Fast {
-		public const string Name = "Lead the Furious Assult";
+	class FastIf4Air<T> : InnatePower_TargetSpace {
+		public FastIf4Air() : base( typeof( T ) ) { }
 
-		[InnateOption( "4 air,2 sun, 1 fire" )]
-		static public Task Option1Async( TargetSpaceCtx ctx ) {
-			GatherTheWarriors_Fast.RemoveSlow( ctx.Self, GatherTheWarriors.Name );
-			return LeadTheFuriousAssult.Option1Async(ctx);
+		public override bool UpdateAndISActivatedBy( CountDictionary<Element> elements ) {
+			Speed = 4<=elements[Element.Air] ? Speed.FastOrSlow : Speed.Slow; // SIDE EFFECT!
+			return base.UpdateAndISActivatedBy( elements );
 		}
-
-		[InnateOption( "4 air, 4 sun, 3 fire" )]
-		static public Task Option2Async( TargetSpaceCtx ctx ) {
-			GatherTheWarriors_Fast.RemoveSlow( ctx.Self, GatherTheWarriors.Name );
-			return LeadTheFuriousAssult.Option2Async( ctx );
-		}
-
 	}
-
 
 }
