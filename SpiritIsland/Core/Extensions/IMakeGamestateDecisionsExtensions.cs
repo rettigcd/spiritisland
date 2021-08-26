@@ -63,10 +63,11 @@ namespace SpiritIsland {
 			HashSet<Space> pushedToLands = new HashSet<Space>();
 			dahanToPush = System.Math.Min(dahanToPush,eng.GameState.DahanCount(source));
 			while(0<dahanToPush){
-				Space destination = await eng.Self.SelectSpace("Select destination for dahan"
+				Space destination = await eng.Self.Action.Choose(new PushDahanDecision(
+					source
 					,source.Adjacent.Where(n=>n.Terrain != Terrain.Ocean ) // This is non-power push, so directly checking ocean is ok
 					,Present.Done
-				);
+				));
 				if(destination == null) break;
 				pushedToLands.Add(destination);
 				await eng.GameState.MoveDahan(source,destination);
@@ -88,7 +89,12 @@ namespace SpiritIsland {
 				if(invader==null) 
 					break;
 
-				var destination = await eng.Self.SelectSpace( "Push " + invader.Summary + " to", source.Adjacent.Where( x => x.Terrain != Terrain.Ocean ) ); 
+				var destination = await eng.Self.Action.Choose( new PushInvaderDecision(
+					invader,
+					source,
+					source.Adjacent.Where( x => x.Terrain != Terrain.Ocean ),
+					Present.Always
+				)); 
 				await eng.GameState.MoveInvader(invader, source, destination );
 
 				--countToPush;

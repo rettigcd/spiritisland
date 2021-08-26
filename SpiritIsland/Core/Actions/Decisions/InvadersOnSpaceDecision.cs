@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace SpiritIsland {
+﻿namespace SpiritIsland {
 
 	public class InvadersOnSpaceDecision : TypedDecision<InvaderSpecific> {
 		public InvadersOnSpaceDecision( string prompt, Space space, InvaderSpecific[] options, Present present )
