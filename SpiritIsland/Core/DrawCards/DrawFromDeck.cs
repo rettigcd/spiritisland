@@ -37,7 +37,7 @@ namespace SpiritIsland {
 
 		public static async Task<PowerCard> TakeCard( Spirit spirit, List<PowerCard> flipped ) {
 			string powerType = flipped.Select(x=>x.PowerType.ToString() ).Distinct().Join("/");
-			var selectedCard = (PowerCard)await spirit.SelectFactory( $"Select {powerType} Power Card", flipped.ToArray() );
+			var selectedCard = (PowerCard)await spirit.Select( $"Select {powerType} Power Card", flipped.ToArray() );
 			spirit.Hand.Add( selectedCard );
 			flipped.Remove( selectedCard );
 			return selectedCard;

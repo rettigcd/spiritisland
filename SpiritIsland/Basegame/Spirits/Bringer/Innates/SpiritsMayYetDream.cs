@@ -16,7 +16,7 @@ namespace SpiritIsland.Basegame {
 
 			// Turn any face-down fear card face-up
 			var cards = ctx.GameState.FearDeck.Concat( ctx.GameState.ActivatedFearCards ).ToArray();
-			var cardToShow = (NamedFearCard)await ctx.Self.SelectOption( "Select fear to reveal", cards, Present.Always );
+			var cardToShow = (NamedFearCard)await ctx.Self.Select( "Select fear to reveal", cards, Present.Always );
 
 			await ctx.Self.ShowFearCardToUser( "Done", cardToShow );
 		}

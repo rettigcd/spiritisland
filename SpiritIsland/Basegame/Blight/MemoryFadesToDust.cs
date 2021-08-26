@@ -20,7 +20,7 @@ namespace SpiritIsland.Basegame {
 				IOption[] options = spirit.Presence.Spaces.Cast<IOption>()
 					.Union( spirit.Hand.Union( spirit.DiscardPile ).Cast<IOption>() )
 					.ToArray();
-				var option = await spirit.SelectOption("Select Power card to forget or presence to destroy.",options);
+				var option = await spirit.Select("Select Power card to forget or presence to destroy.",options);
 				if(option is Space space)
 					spirit.Presence.Destroy(space);
 				else if(option is PowerCard card)

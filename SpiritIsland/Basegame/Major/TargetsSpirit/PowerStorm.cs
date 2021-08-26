@@ -31,7 +31,7 @@ namespace SpiritIsland.Basegame {
 
 			public async Task ActivateAsync( Spirit self, GameState gameState ) {
 				var cards = self.DiscardPile.Where(c=>c.Cost<=self.Energy).ToArray();
-				var card = (PowerCard)await self.SelectFactory("Select card to replay",cards,Present.Done);
+				var card = (PowerCard)await self.Select("Select card to replay",cards,Present.Done);
 				if( card == null ) return;
 				self.Energy -= card.Cost;
 				await card.ActivateAsync(self,gameState);

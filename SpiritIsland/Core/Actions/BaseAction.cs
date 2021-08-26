@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
@@ -31,7 +32,7 @@ namespace SpiritIsland {
 
 			Log( selection, poppedDecisionMaker.Decision, false );
 
-			poppedDecisionMaker.Select( selection );
+			poppedDecisionMaker.Select( selection ); // ####
 		}
 
 		#region selection log
@@ -49,20 +50,28 @@ namespace SpiritIsland {
 
 		#endregion
 
-		public void Push(IDecisionMaker decisionMaker){
-			if(decisionMaker == null)
-				throw new ArgumentNullException(nameof(decisionMaker));
-			if(acitveDecisionMaker != null ) 
-				throw new InvalidOperationException("decision already pending");
+		public Task<T> Choose<T>( TypedDecision<T> originalDecision ) where T:class,IOption{
+			if(originalDecision == null) throw new ArgumentNullException(nameof(originalDecision));
+			if(acitveDecisionMaker != null ) throw new InvalidOperationException("decision already pending");
 
+			var promise = new TaskCompletionSource<T>();
+			var decisionMaker = new ActionHelper<T>( originalDecision, promise );
 			var decision = decisionMaker.Decision;
-			if(decision.Options.Length==1 && decision.AllowAutoSelect) {
-				decisionMaker.Select( decision.Options[0]);
+
+			if(decision.Options.Length == 0)
+
+				promise.TrySetResult( null );
+
+			else if(decision.Options.Length==1 && decision.AllowAutoSelect) {
+
+				decisionMaker.Select( decision.Options[0]); // ####
 				Log( decision.Options[0], decision, true );
-			} else if(decision.Options.Length > 0 ) {
+
+			} else  {
 				acitveDecisionMaker = decisionMaker;
 				signal.Set();
 			}
+			return promise.Task;
 		}
 
 		public void Clear(){ 
@@ -79,6 +88,37 @@ namespace SpiritIsland {
 		}
 
 		#endregion
+
+		static public void Select<T>( IOption option, IOption[] options, TaskCompletionSource<T> promise ) where T:class,IOption {
+			if(/*present == Present.Done &&*/ TextOption.Done.Matches( option ))
+				promise.TrySetResult( null );
+			else if(options.Contains( option ))
+				promise.TrySetResult( (T)option );
+			else
+				promise.TrySetException( new Exception( $"{option.Text} not found in options" ) );
+		}
+
+		class ActionHelper<T> : IDecisionMaker where T : class, IOption {
+
+			public IDecisionPlus Decision { get; }
+
+			public ActionHelper( IDecisionPlus decision, TaskCompletionSource<T> promise ) {
+				Decision = decision;
+				this.promise = promise;
+			}
+
+			public void Select( IOption selection ) {
+				if(/*present == Present.Done &&*/ TextOption.Done.Matches( selection ))
+					promise.TrySetResult( null );
+				else if(Decision.Options.Contains( selection ))
+					promise.TrySetResult( (T)selection );
+				else
+					promise.TrySetException( new Exception( $"{selection.Text} not found in options" ) );
+			}
+
+			TaskCompletionSource<T> promise;
+
+		}
 
 	}
 

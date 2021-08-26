@@ -30,7 +30,7 @@ namespace SpiritIsland.Basegame {
 				this.purchased = spirit.PurchasedCards.ToArray(); // make copy in case spirit is cleaned up before this is called
 			}
 			public async Task Reclaim(GameState _) {
-				var reclaimCard = (PowerCard)await spirit.SelectFactory( "Gift of Contancy - Reclaim 1", purchased.Cast<IActionFactory>().ToArray(), Present.Done );
+				var reclaimCard = (PowerCard)await spirit.Select( "Gift of Contancy - Reclaim 1", purchased.Cast<IActionFactory>().ToArray(), Present.Done );
 				if(reclaimCard != null) {
 					spirit.Hand.Add( reclaimCard );
 					spirit.DiscardPile.Remove( reclaimCard );

@@ -18,7 +18,7 @@ namespace SpiritIsland.SinglePlayer {
 			List<GrowthOption> currentOptions = allGrowthOptions.ToList();
 
 			while(count-->0) {
-				var option = (GrowthOption)await spirit.SelectGrowth( "Select Growth Option", currentOptions.ToArray() );
+				var option = (GrowthOption)await spirit.Select( "Select Growth Option", currentOptions.ToArray() );
 				currentOptions.Remove(option);
 				spirit.Grow( gameState, option );
 			}

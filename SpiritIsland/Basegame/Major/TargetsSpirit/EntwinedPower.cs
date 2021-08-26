@@ -51,7 +51,7 @@ namespace SpiritIsland.Basegame {
 		}
 
 		static async Task GiftCardToSpirit( Spirit src, Spirit dst ) {
-			var myGift = (PowerCard)await src.SelectFactory( "Select gift for " + dst.Text, src.Hand.ToArray(), Present.Done );
+			var myGift = (PowerCard)await src.Select( "Select gift for " + dst.Text, src.Hand.ToArray(), Present.Done );
 			if(myGift != null) {
 				dst.Hand.Add( myGift );
 				src.Hand.Remove( myGift );
