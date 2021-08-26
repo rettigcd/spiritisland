@@ -17,7 +17,7 @@ namespace SpiritIsland.SinglePlayer {
 		public async Task ActAsync() {
 			IActionFactory[] factoryOptions;
 
-			while((factoryOptions = spirit.GetUnresolvedActionFactories( speed ).ToArray()).Length> 0) {
+			while((factoryOptions = spirit.GetAvailableActions( speed ).ToArray()).Length> 0) {
 
 				// -------------
 				// Select Actions to resolve
@@ -39,7 +39,7 @@ namespace SpiritIsland.SinglePlayer {
 				await spirit.TakeAction( (IActionFactory)option, gameState );
 			}
 
-			var facts = spirit.GetUnresolvedActionFactories(Speed.Growth).ToArray();
+			var facts = spirit.GetAvailableActions(Speed.Growth).ToArray();
 			string s = facts.ToString();
 
 		}

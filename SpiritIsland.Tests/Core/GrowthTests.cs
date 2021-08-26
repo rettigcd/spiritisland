@@ -156,7 +156,7 @@ namespace SpiritIsland.Tests {
 
 		protected void AndWhen_ReclaimingFirstCard() {
 			// This is for River, which doesn't auto-select the reclaim-1 so we have to do it for them.
-			_ = spirit.GetUnresolvedActionFactories(Speed.Growth).OfType<Reclaim1>().First().ActivateAsync( spirit, gameState );
+			_ = spirit.GetAvailableActions(Speed.Growth).OfType<Reclaim1>().First().ActivateAsync( spirit, gameState );
 
 			var reclaim = spirit.Action;
 			if(reclaim.GetCurrent().Options.Length>0)

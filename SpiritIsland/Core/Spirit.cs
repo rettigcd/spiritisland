@@ -13,16 +13,14 @@ namespace SpiritIsland {
 			Presence = presence;
 
 			foreach(var card in initialCards)
-				RegisterNewCard(card);
+				AddCardToHand(card);
 
 			Action = new BaseAction();
 		}
 		public BaseAction Action { get; }
 
-		public void RegisterNewCard( PowerCard card ){
+		public void AddCardToHand( PowerCard card ){
 			Hand.Add(card);
-			if(card is TargetSpace_PowerCard ts)
-				ts.TargetedSpace += (args) => TargetedSpace?.Invoke(args);
 		}
 
 		#endregion
@@ -66,7 +64,8 @@ namespace SpiritIsland {
 		public List<PowerCard> Hand = new List<PowerCard>();	// in hand
 		public List<PowerCard> PurchasedCards = new List<PowerCard>();		// paid for
 		public List<PowerCard> DiscardPile = new List<PowerCard>();     // discarded
-		readonly List<IActionFactory> _unresolvedActionFactories = new List<IActionFactory>(); // public for testing
+		readonly List<IActionFactory> availableActions = new List<IActionFactory>();
+		readonly List<IActionFactory> usedActions = new List<IActionFactory>();
 		readonly List<InnatePower> usedInnates = new List<InnatePower>();
 
 		public void Forget( PowerCard cardToRemove ) {
@@ -84,16 +83,18 @@ namespace SpiritIsland {
 
 		// Holds Fast and Slow actions,
 		// depends on Fast/Slow phase to only select the actions that are appropriate
-		protected IEnumerable<IActionFactory> GetUnresolvedActionFactories() {
-			foreach(var action in _unresolvedActionFactories) yield return action;
+		protected IEnumerable<IActionFactory> AvailableActions { get {
+			foreach(var action in availableActions) yield return action;
 			foreach(var innate in this.InnatePowers)
 				if(!usedInnates.Contains(innate) && innate.PowersActivated(this)>0)
 					yield return innate;		
-		} 
+		} }
 
-		public IEnumerable<IActionFactory> GetUnresolvedActionFactories(Speed speed)
-			=> GetUnresolvedActionFactories().Where( GetFilter( speed ) );
-		
+		// so spirits can replay used cards or collect them instead of discard
+		public IEnumerable<IActionFactory> UsedActions => usedActions.Distinct();  // distinct incase played twice
+
+		public IEnumerable<IActionFactory> GetAvailableActions(Speed speed)
+			=> AvailableActions.Where( GetFilter( speed ) );
 
 		static Func<IActionFactory, bool> GetFilter( Speed speed ) {
 			return speed switch {
@@ -106,19 +107,19 @@ namespace SpiritIsland {
 		/// <summary>
 		/// Removes it from the Unresolved-list
 		/// </summary>
-		public void RemoveUnresolvedFactory(IActionFactory selectedActionFactory ) {
-			if(selectedActionFactory is InnatePower ip) {
+		public void RemoveUnresolvedActions(IActionFactory selectedActionFactory ) {
+			if(selectedActionFactory is InnatePower ip) { // Could reverse this and instead of listing the used, create a not-used list that we remove them from when used
 				usedInnates.Add( ip );
 				return;
 			}
 
-			int index = _unresolvedActionFactories.IndexOf( selectedActionFactory );
+			int index = availableActions.IndexOf( selectedActionFactory );
 			if(index == -1) 
 				throw new InvalidOperationException( "can't remove factory that isn't there." );
+			usedActions.Add(availableActions[index]);
+			availableActions.RemoveAt( index );
 
-			_unresolvedActionFactories.RemoveAt( index );
-
-			if(_unresolvedActionFactories.Count == 0 && selectedActionFactory is GrowthActionFactory)
+			if(availableActions.Count == 0 && selectedActionFactory is GrowthActionFactory)
 				TriggerEnergyElementsAndReclaims( selectedActionFactory );
 
 		}
@@ -151,7 +152,7 @@ namespace SpiritIsland {
 		}
 
 		public void AddActionFactory( IActionFactory factory ) {
-			_unresolvedActionFactories.Add( factory );
+			availableActions.Add( factory );
 		}
 
 		public virtual void PurchaseAvailableCards( params PowerCard[] cards ) {
@@ -168,15 +169,15 @@ namespace SpiritIsland {
 
 		public async Task TakeAction(IActionFactory factory, GameState gameState) {
 			await factory.ActivateAsync( this, gameState );
-			RemoveUnresolvedFactory( factory );
+			RemoveUnresolvedActions( factory );
 		}
 
 		public int Flush( Speed speed ) {
-			var toFlush = GetUnresolvedActionFactories()
+			var toFlush = AvailableActions
 				.Where( x=>x.Speed == speed )
 				.ToArray();
 			foreach(var factory in toFlush)
-				RemoveUnresolvedFactory( factory );
+				RemoveUnresolvedActions( factory );
 			return toFlush.Length 
 				+ (speed == Speed.Slow ? Flush(Speed.FastOrSlow) : 0 );
 		}
@@ -243,9 +244,12 @@ namespace SpiritIsland {
 		protected abstract void InitializeInternal( Board board, GameState gameState );
 
 		void On_TimePassed(GameState _ ) {
+			// reset cards / powers
 			DiscardPile.AddRange( PurchasedCards );
 			PurchasedCards.Clear();
+			usedActions.Clear();
 			usedInnates.Clear();
+
 			Elements.Clear();
 		}
 
@@ -265,8 +269,6 @@ namespace SpiritIsland {
 		public TargetLandApi PowerApi = new TargetLandApi(); // Replace by: Reaching Grasp, Entwined Power, Shadows
 
 		public virtual InvaderGroup BuildInvaderGroup( GameState gs, Space space ) => new InvaderGroup( space, gs.GetCounts(space), gs.AddFearDirect, Cause.Power );
-		
-		public event SpaceTargetedEvent TargetedSpace;
 
 		public async Task BuyPowerCardsAsync() {
 			var canPurchase = NumberOfCardsPlayablePerTurn;

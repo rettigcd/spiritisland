@@ -67,7 +67,7 @@ namespace SpiritIsland {
 		static public async Task SelectActionsAndMakeFast( this Spirit spirit, GameState gameState, int maxCountToMakeFast ) {
 
 			IActionFactory[] CalcSlowFacts() => spirit
-				.GetUnresolvedActionFactories( Speed.Slow )
+				.GetAvailableActions( Speed.Slow )
 				.ToArray();
 			IActionFactory[] slowFactories = CalcSlowFacts();
 			// clip count to available slow stuff
@@ -106,9 +106,8 @@ namespace SpiritIsland {
 			}
 		}
 
-		static public async Task SelectSpaceCardToReplayForCost( this Spirit spirit, int maxCost, List<SpaceTargetedArgs> played ) {
+		static public async Task SelectCardToReplayForCost( this Spirit spirit, int maxCost, PowerCard[] options ) {
 			maxCost = System.Math.Min( maxCost, spirit.Energy );
-			var options = played.Select( p => p.Card ).ToArray();
 			if(options.Length == 0) return;
 			var factory = (TargetSpace_PowerCard)await spirit.Select( "Select card to replay", options );
 

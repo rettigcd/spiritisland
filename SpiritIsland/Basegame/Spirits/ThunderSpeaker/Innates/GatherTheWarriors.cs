@@ -38,9 +38,9 @@ namespace SpiritIsland.Basegame {
 		// ?? make method on Spirit ????
 		public static void RemoveSlow( Spirit self, string name ) {
 			// Remove slow version from Unresolved list
-			var slow = self.GetUnresolvedActionFactories( Speed.Slow )
+			var slow = self.GetAvailableActions( Speed.Slow )
 				.Single( x => x.Name == name );
-			self.RemoveUnresolvedFactory( slow );
+			self.RemoveUnresolvedActions( slow );
 		}
 	}
 

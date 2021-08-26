@@ -118,7 +118,7 @@ namespace SpiritIslandCmd {
 			var spirit = game.Spirit;
 			var speed = factory.Speed;
 			char speedChar = speed.ToString()[0];
-			char unresolved = spirit.GetUnresolvedActionFactories(speed).Contains(factory) ? '*' : ' ';
+			char unresolved = spirit.GetAvailableActions(speed).Contains(factory) ? '*' : ' ';
 			string cost = factory is PowerCard card ? card.Cost.ToString() : "-";
 
 			string name = Pad(factory.Name,nameWidth);

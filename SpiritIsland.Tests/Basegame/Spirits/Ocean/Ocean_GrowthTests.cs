@@ -35,7 +35,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 				.Select(s=>s.Split('>'))
 				.ToDictionary(a=>a[0],a=>a[1]);
 
-			var gather = spirit.GetUnresolvedActionFactories(Speed.Growth).OfType<GatherPresenceIntoOcean>().SingleOrDefault();
+			var gather = spirit.GetAvailableActions(Speed.Growth).OfType<GatherPresenceIntoOcean>().SingleOrDefault();
 
 			if(gather != null){
 				_ = gather.ActivateAsync( spirit, gameState );
@@ -104,7 +104,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 		}
 
 		protected void Resolve_PlacePresenceInOcean( string placeOptions, Track source) {
-			PlaceInOcean ppFactory = spirit.GetUnresolvedActionFactories( Speed.Growth ).OfType<PlaceInOcean>()
+			PlaceInOcean ppFactory = spirit.GetAvailableActions( Speed.Growth ).OfType<PlaceInOcean>()
 				.First();
 
 			_ = spirit.TakeAction(ppFactory,gameState);

@@ -26,8 +26,6 @@ namespace SpiritIsland {
 
 		}
 
-		public event SpaceTargetedEvent TargetedSpace; // Targeter, Card, Targetee
-
 		public override Task ActivateAsync( Spirit spirit, GameState gameState ) {
 			return PickSpaceAndActivate(spirit,gameState);
 		}
@@ -39,7 +37,6 @@ namespace SpiritIsland {
 		async Task PickSpaceAndActivate( Spirit spirit, GameState gameState ) {
 			var target = await targetSpace.GetTarget( spirit.MakeDecisionsFor(gameState) );
 			if(target == null) return; // no space available that meets criteria.   !!! needs unit test showing if no-target-space simply does nothing, and doesn't crash
-			TargetedSpace?.Invoke(new SpaceTargetedArgs{Initiator=spirit,Card=this } );
 			await InvokeAgainst( spirit, gameState, target );
 		}
 
@@ -47,12 +44,5 @@ namespace SpiritIsland {
 			=> (Task)methodBase.Invoke( null, new object[] { new TargetSpaceCtx( spirit, gameState, target) } );
 
 	}
-
-	/// <summary>
-	/// When a spirit targets a land, allows us to record this targetting
-	/// </summary>
-	public class SpaceTargetedArgs { public Spirit Initiator; public PowerCard Card; };
-
-	public delegate void SpaceTargetedEvent( SpaceTargetedArgs args );
 
 }

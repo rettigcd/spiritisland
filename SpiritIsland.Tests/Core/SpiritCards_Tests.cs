@@ -41,7 +41,7 @@ namespace SpiritIsland.Tests {
 		}
 
 		protected void Assert_CardIsReady( PowerCard card, Speed speed ) {
-			Assert.Contains(card, spirit.GetUnresolvedActionFactories(speed).OfType<PowerCard>().ToList());
+			Assert.Contains(card, spirit.GetAvailableActions(speed).OfType<PowerCard>().ToList());
 		}
 
 		protected void When_PlayingCard() {

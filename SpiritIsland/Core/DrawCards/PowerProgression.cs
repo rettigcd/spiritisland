@@ -27,7 +27,7 @@ namespace SpiritIsland {
 		async Task<PowerCard> Take( Spirit self, PowerCard newCard ) {
 			cards.Remove( newCard );
 
-			self.RegisterNewCard( newCard );
+			self.AddCardToHand( newCard );
 			if(newCard.PowerType == PowerType.Major)
 				await self.ForgetPowerCard();
 			return newCard;

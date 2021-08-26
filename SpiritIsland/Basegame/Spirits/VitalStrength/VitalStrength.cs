@@ -60,8 +60,9 @@ Power Progression:
 				new GrowthOption( new GainEnergy(2), new PlacePresence(1) ),
 			};
 
-			this.giftOfStrength = new GiftOfStrength_InnatePower();
-			this.InnatePowers = new InnatePower[]{ giftOfStrength };
+			this.InnatePowers = new InnatePower[]{ 
+				InnatePower.For<GiftOfStrength>()
+			};
 
 		}
 
@@ -76,13 +77,9 @@ Power Progression:
 				PowerCard.For<SavageMawbeasts>()
 			);
 
-
-		readonly GiftOfStrength_InnatePower giftOfStrength;
-
 		protected override void InitializeInternal( Board board, GameState gs ) {
 			InitPresence( board );
 			gs.PreRavaging.Handlers.Add( GameState_Ravaging );
-			giftOfStrength.Initialize(gs);
 		}
 
 		void InitPresence( Board board ){
