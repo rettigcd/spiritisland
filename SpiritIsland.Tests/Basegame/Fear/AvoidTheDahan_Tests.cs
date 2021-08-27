@@ -29,8 +29,8 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		[Fact]
 		public void NullFearCard_NormalExplore() {
 
-			gameState.FearDeck.Pop();
-			gameState.AddFearCard( new NullFearCard() );
+			gameState.Fear.Deck.Pop();
+			gameState.Fear.AddCard( new NullFearCard() );
 
 			_ = When_ApplyFearAndExplore();
 
@@ -43,8 +43,8 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		[Fact]
 		public void Level1_NoExplore() {
 
-			gameState.FearDeck.Pop();
-			gameState.AddFearCard( new AvoidTheDahan() );
+			gameState.Fear.Deck.Pop();
+			gameState.Fear.AddCard( new AvoidTheDahan() );
 
 			_ = When_ApplyFearAndExplore();
 			gameState.Spirits[0].Action.AssertDecision( "Activating Fear", "Avoid the Dahan", "Avoid the Dahan" );
@@ -54,8 +54,8 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		}
 
 		async Task When_ApplyFearAndExplore() {
-			gameState.AddFearDirect( new FearArgs{ count=4 } );
-			await gameState.ApplyFear();
+			gameState.Fear.AddDirect( new FearArgs{ count=4 } );
+			await gameState.Fear.Apply();
 			explored = gameState.Explore( invaderCard );
 		}
 

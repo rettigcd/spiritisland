@@ -19,7 +19,7 @@ namespace SpiritIsland.Basegame {
 					gs.Defend( args.space, args.count );
 			}
 
-			ctx.GameState.FearAdded_ThisRound.Handlers.Add(FearAdded);
+			ctx.GameState.Fear.Added_ThisRound.Handlers.Add(FearAdded);
 
 			return Task.CompletedTask;
 		}

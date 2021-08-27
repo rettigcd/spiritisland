@@ -144,8 +144,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 		}
 
 		void Assert_GeneratedFear( int expectedFearCount ) {
-			ctx.GameState.FearPool.ShouldBe( expectedFearCount % 4 );
-			ctx.GameState.ActivatedFearCards.Count.ShouldBe( expectedFearCount / 4 );
+			ctx.GameState.Fear.Pool.ShouldBe( expectedFearCount % 4 );
+			ctx.GameState.Fear.ActivatedCards.Count.ShouldBe( expectedFearCount / 4 );
 		}
 
 	}

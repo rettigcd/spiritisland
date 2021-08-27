@@ -653,7 +653,7 @@
     <None Update="images\fear\emigration_accelerates.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="images\fear\fear_of_the_unseen.jpg">
+    <None Update="images\fear\Fear.of_the_unseen.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\fear\isolation.jpg">

@@ -15,8 +15,8 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			gameState = new GameState( new LightningsSwiftStrike(), Board.BuildBoardA() );
 			gameState.DisableInvaderDeck();
 			gameState.Initialize();
-			gameState.FearDeck.Pop();
-			gameState.AddFearCard( new DahanOnTheirGuard() );
+			gameState.Fear.Deck.Pop();
+			gameState.Fear.AddCard( new DahanOnTheirGuard() );
 
 			invaderCard = InvaderDeck.Level1Cards[0];
 			ravageSpace = gameState.Island.Boards[0].Spaces.Where( invaderCard.Matches ).First();
@@ -35,7 +35,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			Given_DahanAndTowns( 2, 2 );
 
 			// When: Doing Invader phase (fear+ragage)
-			await gameState.ApplyFear();
+			await gameState.Fear.Apply();
 			await gameState.Ravage(invaderCard );
 
 			// Then: all dahan killed
@@ -49,11 +49,11 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			// 4 dahan should defend 4
 
 			//   And: 4 fear / player
-			gameState.AddFearDirect( new FearArgs{count=4} );
+			gameState.Fear.AddDirect( new FearArgs{count=4} );
 
 			// When: Doing Invader phase (fear+ragage)
 			async Task DoIt() {
-				await gameState.ApplyFear();
+				await gameState.Fear.Apply();
 				await gameState.Ravage(invaderCard);
 			}
 			_ = DoIt();

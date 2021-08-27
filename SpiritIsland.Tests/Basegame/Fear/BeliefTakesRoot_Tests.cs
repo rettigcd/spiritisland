@@ -16,8 +16,8 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			gameState = new GameState( new LightningsSwiftStrike(), Board.BuildBoardA() );
 			gameState.DisableInvaderDeck();
 			gameState.Initialize(); 
-			gameState.FearDeck.Pop();
-			gameState.AddFearCard( new BeliefTakesRoot() );
+			gameState.Fear.Deck.Pop();
+			gameState.Fear.AddCard( new BeliefTakesRoot() );
 
 			invaderCard = InvaderDeck.Level1Cards[0];
 			ravageSpace = gameState.Island.Boards[0].Spaces.Where( invaderCard.Matches ).First();
@@ -37,8 +37,8 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		[Fact]
 		public void NullFearCard_NormalRavage() {
 
-			gameState.FearDeck.Pop();
-			gameState.AddFearCard( new NullFearCard() );
+			gameState.Fear.Deck.Pop();
+			gameState.Fear.AddCard( new NullFearCard() );
 
 			Given_DahanAndTownsInSpaceWithPresence(10,1);
 
@@ -84,8 +84,8 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		}
 
 		async Task When_AddFearApplyFearAndRavage() {
-			gameState.AddFearDirect( new FearArgs{ count=4 } );
-			await gameState.ApplyFear();
+			gameState.Fear.AddDirect( new FearArgs{ count=4 } );
+			await gameState.Fear.Apply();
 			await gameState.Ravage( invaderCard );
 		}
 	}

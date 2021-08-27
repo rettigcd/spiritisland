@@ -16,7 +16,7 @@ namespace SpiritIsland.Tests {
 		[Fact]
 		public void TriggerDirect() {
 			Given_EnoughFearToTriggerCard();
-			_ = gs.ApplyFear(); // When
+			_ = gs.Fear.Apply(); // When
 			Assert_PresentsFearToUser();
 		}
 
@@ -28,7 +28,7 @@ namespace SpiritIsland.Tests {
 		}
 
 		void Given_EnoughFearToTriggerCard() {
-			gs.AddFearDirect( new FearArgs { count = 4 } );
+			gs.Fear.AddDirect( new FearArgs { count = 4 } );
 		}
 
 		void Assert_PresentsFearToUser() {

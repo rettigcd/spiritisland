@@ -101,7 +101,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 				await DreadApparitions.ActAsync( ctx );
 
 				// When: Power causes fear in a different land
-				ctx.GameState.AddFearDirect(new FearArgs { space = board[1], cause = Cause.Power, count = 6 } );
+				ctx.GameState.Fear.AddDirect(new FearArgs { space = board[1], cause = Cause.Power, count = 6 } );
 			}
 			_ = When();
 
@@ -112,8 +112,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 
 
 		void Assert_GeneratedFear( int expectedFearCount ) {
-			ctx.GameState.FearPool.ShouldBe( expectedFearCount % 4 );
-			ctx.GameState.ActivatedFearCards.Count.ShouldBe( expectedFearCount / 4 );
+			ctx.GameState.Fear.Pool.ShouldBe( expectedFearCount % 4 );
+			ctx.GameState.Fear.ActivatedCards.Count.ShouldBe( expectedFearCount / 4 );
 		}
 
 

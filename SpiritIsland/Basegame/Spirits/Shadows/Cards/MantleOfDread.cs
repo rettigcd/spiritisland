@@ -12,7 +12,7 @@ namespace SpiritIsland.Basegame {
 			var gs = ctx.GameState;
 
 			// 2 fear
-			ctx.GameState.AddFearDirect(new FearArgs{ count=2,cause=Cause.Power,space=null }); // not associated with any space
+			ctx.GameState.Fear.AddDirect(new FearArgs{ count=2,cause=Cause.Power,space=null }); // not associated with any space
 
 			// target spirit may push 1 explorer and 1 town from land where it has presence
 			bool HasExplorerOrTown(Space space){

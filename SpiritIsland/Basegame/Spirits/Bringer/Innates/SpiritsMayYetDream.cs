@@ -15,7 +15,7 @@ namespace SpiritIsland.Basegame {
 		static public async Task Option1( TargetSpiritCtx ctx ) {
 
 			// Turn any face-down fear card face-up
-			var cards = ctx.GameState.FearDeck.Concat( ctx.GameState.ActivatedFearCards ).ToArray();
+			var cards = ctx.GameState.Fear.Deck.Concat( ctx.GameState.Fear.ActivatedCards ).ToArray();
 			var cardToShow = (NamedFearCard)await ctx.Self.Select( "Select fear to reveal", cards, Present.Always );
 
 			await ctx.Self.ShowFearCardToUser( "Done", cardToShow );

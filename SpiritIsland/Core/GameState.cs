@@ -24,17 +24,18 @@ namespace SpiritIsland {
 			InvaderDeck = new InvaderDeck();
 			Round = 1;
 			Dahan = new Dahan(this);
-
-			// ! is there a better way to disable fear-win during tests
-			while(FearDeck.Count < 9)
-				this.AddFearCard( new NullFearCard() );
-
-			// Debugging
-			//FearDeck.Pop();
-			//AddFearCard( new Basegame.FearOfTheUnseen() );
-			//AddFearDirect( new FearArgs { count = 5 } );
-
+			Fear = new Fear( this );
 		}
+
+		// == Components ==
+		public Fear Fear { get; }
+		public Dahan Dahan { get; }
+		public InvaderDeck InvaderDeck { get; set; }
+		public Island Island { get; set; }
+		public Spirit[] Spirits { get; }
+		public PowerCardDeck MajorCards {get; set; }
+		public PowerCardDeck MinorCards { get; set; }
+
 
 		internal void SkipAllInvaderActions( Space target ) {
 			ModRavage(target, cfg=>cfg.ShouldRavage=false );
@@ -58,23 +59,17 @@ namespace SpiritIsland {
 		readonly List<Space> skipBuild = new List<Space>();
 		readonly List<Space> skipExplore = new List<Space>();
 
-		public InvaderDeck InvaderDeck { get; set; }
-		public Island Island { get; set; }
-		public Spirit[] Spirits { get; }
-
 		public void Initialize() {
 
 			foreach(var board in Island.Boards)
-				InitItemsMarkedOnBoard( board );
+				foreach(var space in board.Spaces)
+					InitSpace( space );
 
 			Explore( InvaderDeck.Explore );
 			InvaderDeck.Advance();
 			InitSpirits();
 
-			while(FearDeck.Count<9)
-				AddFearCard(new NullFearCard());
-
-			BlightCard.OnGameStart(this);
+			BlightCard.OnGameStart( this );
 		}
 
 		// == EVENTS ==
@@ -83,9 +78,7 @@ namespace SpiritIsland {
 		public AsyncEvent<InvaderMovedArgs> InvaderMoved = new AsyncEvent<InvaderMovedArgs>();                    // Thunderspeaker
 		public event Action<GameState> TimePassed;												// Spirit cleanup
 		// == Single Round hooks
-		public SyncEvent<FearArgs> FearAdded_ThisRound = new SyncEvent<FearArgs>();						// Dread Apparations
-		public Stack<Func<GameState, Task>> TimePasses_ThisRound = new Stack<Func<GameState, Task>>();  // Gift of Power
-		readonly Dictionary<Space, ConfigureRavage> _ravageConfig = new Dictionary<Space, ConfigureRavage>(); // change ravage state of a Space
+		public Stack<Func<GameState, Task>> TimePasses_ThisRound = new Stack<Func<GameState, Task>>();        // Gift of Power
 
 		void InitSpirits() {
 			if(Spirits.Length != Island.Boards.Length)
@@ -111,15 +104,6 @@ namespace SpiritIsland {
 			// stack allows us to unwind items in reverse order from when we set them up
 			while(TimePasses_ThisRound.Count > 0) 
 				await TimePasses_ThisRound.Pop()( this );
-	
-
-			// clean out the 1-round-only events
-			FearAdded_ThisRound.Handlers.Clear();
-		}
-
-		void InitItemsMarkedOnBoard(Board board) {
-			foreach(var space in board.Spaces)
-				InitSpace( space );
 		}
 
 		void InitSpace( Space space ) {
@@ -134,11 +118,12 @@ namespace SpiritIsland {
 		public void Defend( Space space, int delta ) {
 			ModRavage(space, cfg=>cfg.Defend += delta);
 		}
-		public int GetDefence(Space space) => GetRavageConfiguration(space).Defend;
 
 		#region Beasts
 		public void AddBeast( Space space ){ beastCount[space]++; }
 		public bool HasBeasts( Space s ) => beastCount[s] > 0;
+		readonly CountDictionary<Space> beastCount = new CountDictionary<Space>();
+
 		#endregion
 
 		#region Blight
@@ -179,59 +164,23 @@ namespace SpiritIsland {
 		#region Wilds
 		public void AddWilds( Space space ){ wildsCount[space]++; }
 		public bool HasWilds( Space s ) => wildsCount[s] > 0;
-		#endregion
-
-		#region Fear
-
-		public void AddFearCard(IFearCard fearCard ) {
-			if(FearDeck.Count >= 9) throw new InvalidOperationException("Fear deck is full.");
-			var labels = new string[]{"1-A","1-B","1-C","2-A","2-B","2-C","3-A","3-B","3-C" };
-			int index = 9- FearDeck.Count-1;
-			var td = new NamedFearCard { Card = fearCard, Text = "Lvl "+labels[index]};
-			FearDeck.Push( td ); 
-		}
-
-		public readonly Stack<NamedFearCard> FearDeck = new Stack<NamedFearCard>();
-		public readonly Stack<NamedFearCard> ActivatedFearCards = new Stack<NamedFearCard>();
-		public int TerrorLevel { get{
-			int ct = FearDeck.Count;
-			int terrorLevel = ct > 6 ? 1 : ct > 3 ? 2 : 1;
-			return terrorLevel;
-		} }
-
-
-		public void AddFearDirect( FearArgs args ) {
-			FearPool += args.count;
-			if(4 <= FearPool) { // should be while() - need unit test
-				FearPool -= 4;
-				ActivatedFearCards.Push( FearDeck.Pop() );
-				ActivatedFearCards.Peek().Text = "Active " + ActivatedFearCards.Count;
-			}
-			if(FearDeck.Count == 0)
-				GameOverException.Win();
-			FearAdded_ThisRound?.Invoke(this,args);
-		}
+		readonly CountDictionary<Space> wildsCount = new CountDictionary<Space>();
 
 		#endregion
-
-		public Dahan Dahan {get;} 
 
 		#region Invaders
 
-		public async Task ApplyFear() {
-			while( ActivatedFearCards.Count > 0) {
-				NamedFearCard fearCard = ActivatedFearCards.Pop();
-				// show card to each user
-				foreach(var spirit in Spirits)
-					await spirit.ShowFearCardToUser( "Activating Fear", fearCard );
+		public int GetDefence( Space space ) => GetRavageConfiguration( space ).Defend;
 
-				switch( TerrorLevel ) {
-					case 1: await fearCard.Card.Level1( this ); break;
-					case 2: await fearCard.Card.Level2( this ); break;
-					case 3: await fearCard.Card.Level3( this ); break;
-				}
-			}
+		public ConfigureRavage GetRavageConfiguration( Space space ) => _ravageConfig.ContainsKey( space ) ? _ravageConfig[space] : new ConfigureRavage();
+
+		public void ModRavage( Space space, Action<ConfigureRavage> action ) {
+			if(!_ravageConfig.ContainsKey( space ))
+				_ravageConfig.Add( space, new ConfigureRavage() );
+			action( _ravageConfig[space] );
 		}
+
+		readonly Dictionary<Space, ConfigureRavage> _ravageConfig = new Dictionary<Space, ConfigureRavage>(); // change ravage state of a Space
 
 		public async Task<string[]> Ravage( InvaderCard invaderCard ) {
 			if(invaderCard == null) return Array.Empty<string>();
@@ -261,14 +210,6 @@ namespace SpiritIsland {
 			}
 			return msgs.ToArray();
 		}
-
-		public ConfigureRavage GetRavageConfiguration(Space space) => _ravageConfig.ContainsKey(space) ? _ravageConfig[space] : new ConfigureRavage();
-		public void ModRavage(Space space,Action<ConfigureRavage> action) {
-			if(!_ravageConfig.ContainsKey(space)) 
-				_ravageConfig.Add(space,new ConfigureRavage());
-			action(_ravageConfig[space]);
-		}
-
 
 		public async Task<string[]> Build( InvaderCard invaderCard ) {
 
@@ -320,7 +261,7 @@ namespace SpiritIsland {
 		}
 
 		public InvaderGroup_Readonly InvadersOn(Space targetSpace) {
-			return new InvaderGroup( targetSpace, this.GetCounts( targetSpace ), AddFearDirect, Cause.Ravage );
+			return new InvaderGroup( targetSpace, this.GetCounts( targetSpace ), Fear.AddDirect, Cause.Ravage );
 		}
 
 		//public InvaderGroup AttackInvadersOn( Space targetSpace, Func<GameState, Space, int[],InvaderGroup> factory ) {
@@ -344,21 +285,13 @@ namespace SpiritIsland {
 		#endregion
 
 		readonly CountDictionary<Space> blightCount = new CountDictionary<Space>();
-		readonly CountDictionary<Space> beastCount = new CountDictionary<Space>();
-		readonly CountDictionary<Space> wildsCount = new CountDictionary<Space>();
 
 		readonly Dictionary<Space,int[]> invaderCount = new Dictionary<Space,int[]>();
-
 
 		public int[] GetCounts(Space space) {
 			if(invaderCount.ContainsKey(space)) return invaderCount[space];
 			return invaderCount[space] = new int[InvaderSpecific.TypesCount+1]; // 1 for the total
 		}
-
-		public int FearPool {get; private set; } = 0;
-
-		public PowerCardDeck MajorCards;
-		public PowerCardDeck MinorCards;
 
 	}
 

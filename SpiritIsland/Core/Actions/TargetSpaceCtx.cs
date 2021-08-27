@@ -88,7 +88,7 @@ namespace SpiritIsland {
 		public Task<PowerCard> DrawMinor() => Self.DrawMinor( GameState );
 
 		public void AddFear(int count ) { // need space so we can track fear-space association for bringer
-			GameState.AddFearDirect( new FearArgs{ count=count, cause = Cause.Power, space = Target });
+			GameState.Fear.AddDirect( new FearArgs{ count=count, cause = Cause.Power, space = Target });
 		}
 
 	}
