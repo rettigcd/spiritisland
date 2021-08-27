@@ -35,7 +35,9 @@ namespace SpiritIsland {
 		public Spirit[] Spirits { get; }
 		public PowerCardDeck MajorCards {get; set; }
 		public PowerCardDeck MinorCards { get; set; }
-
+		// Branch & Claw
+		public TokenCounts Beasts { get; set; } = new TokenCounts();
+		public TokenCounts Wilds { get; set; } = new TokenCounts();
 
 		internal void SkipAllInvaderActions( Space target ) {
 			ModRavage(target, cfg=>cfg.ShouldRavage=false );
@@ -119,13 +121,6 @@ namespace SpiritIsland {
 			ModRavage(space, cfg=>cfg.Defend += delta);
 		}
 
-		#region Beasts
-		public void AddBeast( Space space ){ beastCount[space]++; }
-		public bool HasBeasts( Space s ) => beastCount[s] > 0;
-		readonly CountDictionary<Space> beastCount = new CountDictionary<Space>();
-
-		#endregion
-
 		#region Blight
 
 		public int blightOnCard; // 2 per player
@@ -158,13 +153,6 @@ namespace SpiritIsland {
 		public int GetBlightOnSpace( Space space ){ return blightCount[space]; }
 
 		public Stack<Space> cascadingBlight = new Stack<Space>();
-
-		#endregion
-
-		#region Wilds
-		public void AddWilds( Space space ){ wildsCount[space]++; }
-		public bool HasWilds( Space s ) => wildsCount[s] > 0;
-		readonly CountDictionary<Space> wildsCount = new CountDictionary<Space>();
 
 		#endregion
 
@@ -322,5 +310,10 @@ namespace SpiritIsland {
 		public List<Action<GameState, T>> Handlers = new List<Action<GameState, T>>();
 	}
 
+	public class TokenCounts {
+		public void AddTo( Space space ) { count[space]++; }
+		public bool AreOn( Space s ) => count[s] > 0;
+		readonly CountDictionary<Space> count = new CountDictionary<Space>();
+	}
 
 }

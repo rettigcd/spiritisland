@@ -43,7 +43,7 @@ namespace SpiritIsland.Tests {
 		#region Given
 
 		protected void Given_HasWilds( Space space ) {
-			gameState.AddWilds( space );
+			gameState.Wilds.AddTo( space );
 		}
 
 		protected void Given_HasPresence( params Space[] spaces ) {
