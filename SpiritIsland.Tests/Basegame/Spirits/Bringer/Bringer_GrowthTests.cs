@@ -55,7 +55,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 
 			board = LineBoard.MakeBoard();
 			Given_HasPresence(board[5]);
-			gameState.AdjustDahan(board[6]);
+			gameState.Dahan.Adjust(board[6]);
 			gameState.Adjust(board[7],InvaderSpecific.Explorer,1);
 			gameState.Adjust(board[8],InvaderSpecific.Town,1);
 			gameState.Adjust(board[9],InvaderSpecific.City,1);

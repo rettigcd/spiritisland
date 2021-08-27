@@ -94,7 +94,7 @@ Shadows Flicker like Flame:
 				// find dahan-only spaces that are not in targetable spaces
 				var dahanOnlySpaces = gameState.Island.Boards
 					.SelectMany(board=>board.Spaces)
-					.Where(gameState.HasDahan)
+					.Where(gameState.Dahan.Has)
 					.Except(normalSpaces)
 					.ToArray();
 				// no dahan-only spaces, do normal

@@ -29,8 +29,8 @@ namespace SpiritIsland.Basegame {
 					// 4 damage
 					await ctx.DamageInvaders(otherCoast,4);
 					// destroy 1 dahan
-					if(ctx.GameState.HasDahan(otherCoast))
-						await ctx.GameState.DestroyDahan(otherCoast,1, Cause.Power);
+					if(ctx.GameState.Dahan.Has(otherCoast))
+						await ctx.GameState.Dahan.Destroy(otherCoast,1, Cause.Power);
 				}
 			}
 		}

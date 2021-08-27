@@ -96,15 +96,15 @@ namespace SpiritIsland.Basegame {
 		protected override void InitializeInternal( Board board, GameState gs ) {
 
 			// Put 2 Presence on your starting board: 1 in each of the 2 lands with the most Dahanicon.png
-			var spots = board.Spaces.OrderByDescending( gs.DahanCount ).Take( 2 ).ToArray();
+			var spots = board.Spaces.OrderByDescending( gs.Dahan.Count ).Take( 2 ).ToArray();
 			Presence.PlaceOn( spots[0] );
 			Presence.PlaceOn( spots[1] );
 
 			// Special Rules -Ally of the Dahan - Your presense may move with dahan
-			gs.DahanMoved.Handlers.Add( MovePresenceWithDahan );
+			gs.Dahan.Moved.Handlers.Add( MovePresenceWithDahan );
 
 			// Special Rules - Sworn to Victory - For each dahan stroyed by invaders ravaging a land, destroy 1 of your presense withing 1
-			gs.DahanDestroyed.Handlers.Add( DestroyNearbyPresence );
+			gs.Dahan.Destroyed.Handlers.Add( DestroyNearbyPresence );
 		}
 
 		async Task MovePresenceWithDahan(GameState gs, DahanMovedArgs args) {

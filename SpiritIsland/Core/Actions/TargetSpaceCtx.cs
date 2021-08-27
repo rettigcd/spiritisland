@@ -43,7 +43,7 @@ namespace SpiritIsland {
 			=> GameState.Adjust( Target, invader, delta );
 
 		public void AdjustDahan( int delta )
-			=> GameState.AdjustDahan(Target, delta );
+			=> GameState.Dahan.Adjust(Target, delta );
 
 		public InvaderGroup_Readonly Invaders => invadersRO ??= GameState.InvadersOn(Target);
 		InvaderGroup_Readonly invadersRO;
@@ -51,8 +51,9 @@ namespace SpiritIsland {
 		public InvaderGroup InvadersOn
 			=> this.Self.BuildInvaderGroup( GameState, Target );
 
-		public int DahanCount => GameState.DahanCount(Target);
-		public bool HasDahan => GameState.HasDahan( Target );
+		public int DahanCount => GameState.Dahan.Count(Target);
+
+		public bool HasDahan => GameState.Dahan.Has( Target );
 
 
 		public async Task DamageInvaders( int damage ) {
@@ -66,7 +67,7 @@ namespace SpiritIsland {
 
 		public void Defend(int defend) => GameState.Defend(Target,defend);
 
-		public Task DestroyDahan(int countToDestroy,Cause source) => GameState.DestroyDahan(Target,countToDestroy,source);
+		public Task DestroyDahan(int countToDestroy,Cause source) => GameState.Dahan.Destroy(Target,countToDestroy,source);
 
 		public bool IsOneOf(params Terrain[] terrain) => terrain.Contains(Target.Terrain);
 

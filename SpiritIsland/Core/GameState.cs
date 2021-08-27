@@ -14,8 +14,6 @@ namespace SpiritIsland {
 		/// <summary>
 		/// Simplified constructor for single-player
 		/// </summary>
-		/// <param name="spirit"></param>
-		/// <param name="board"></param>
 		public GameState( Spirit spirit, Board board ) : this(spirit) {
 			this.Island = new Island(board);
 		}
@@ -25,6 +23,7 @@ namespace SpiritIsland {
 			this.Spirits = spirits;
 			InvaderDeck = new InvaderDeck();
 			Round = 1;
+			Dahan = new Dahan(this);
 
 			// ! is there a better way to disable fear-win during tests
 			while(FearDeck.Count < 9)
@@ -81,9 +80,7 @@ namespace SpiritIsland {
 		// == EVENTS ==
 		public AsyncEvent<Space[]> PreRavaging = new AsyncEvent<Space[]>();						// A Spread of Rampant Green - stop ravage
 		public AsyncEvent<Space[]> PreBuilding = new AsyncEvent<Space[]>();						// A Spread of Rampant Green - stop build
-		public AsyncEvent<DahanMovedArgs> DahanMoved = new AsyncEvent<DahanMovedArgs>();                    // Thunderspeaker
 		public AsyncEvent<InvaderMovedArgs> InvaderMoved = new AsyncEvent<InvaderMovedArgs>();                    // Thunderspeaker
-		public AsyncEvent<DahanDestroyedArgs> DahanDestroyed = new AsyncEvent<DahanDestroyedArgs>();		// Thunderspeaker
 		public event Action<GameState> TimePassed;												// Spirit cleanup
 		// == Single Round hooks
 		public SyncEvent<FearArgs> FearAdded_ThisRound = new SyncEvent<FearArgs>();						// Dread Apparations
@@ -130,7 +127,7 @@ namespace SpiritIsland {
 			Adjust( space, InvaderSpecific.City, counts.Cities );
 			Adjust( space, InvaderSpecific.Town, counts.Towns );
 			Adjust( space, InvaderSpecific.Explorer, counts.Explorers );
-			this.AdjustDahan( space, counts.Dahan );
+			this.Dahan.Adjust( space, counts.Dahan );
 			blightCount[space] += counts.Blight; // don't use AddBlight because that pulls it from the card and triggers blighted island
 		}
 
@@ -217,26 +214,7 @@ namespace SpiritIsland {
 
 		#endregion
 
-		#region Dahan
-		public void AdjustDahan( Space space, int delta=1 ){ 	
-			dahanCount[space]+=delta;
-		}
-
-		public Task DestroyDahan(Space space,int countToDestroy, Cause source ) {
-			countToDestroy = Math.Min(countToDestroy,DahanCount(space));
-			AdjustDahan(space, -countToDestroy );
-			return DahanDestroyed.InvokeAsync(this,new DahanDestroyedArgs { space = space, count=countToDestroy, Source = source } );
-		}
-
-		public Task MoveDahan( Space from, Space to, int count = 1 ) {
-			AdjustDahan(from,-count);
-			AdjustDahan(to,count);
-			return DahanMoved.InvokeAsync(this, new DahanMovedArgs { from = from, to = to, count = count } );
-		}
-
-		public int DahanCount( Space space ){ return dahanCount[space]; }
-		public bool HasDahan( Space space ) => DahanCount(space)>0;
-		#endregion
+		public Dahan Dahan {get;} 
 
 		#region Invaders
 
@@ -377,8 +355,6 @@ namespace SpiritIsland {
 			return invaderCount[space] = new int[InvaderSpecific.TypesCount+1]; // 1 for the total
 		}
 
-		readonly CountDictionary<Space> dahanCount = new CountDictionary<Space>();
-
 		public int FearPool {get; private set; } = 0;
 
 		public PowerCardDeck MajorCards;
@@ -411,47 +387,6 @@ namespace SpiritIsland {
 				handler( gameState, t );
 		}
 		public List<Action<GameState, T>> Handlers = new List<Action<GameState, T>>();
-	}
-
-
-	public class DahanMovedArgs {
-		public Space from;
-		public Space to;
-		public int count;
-	};
-
-	public class InvaderMovedArgs {
-		public InvaderSpecific Invader;
-		public Space from;
-		public Space to;
-	};
-
-
-	public enum Cause {
-		None,
-		Invaders,
-		Power,
-		Ravage
-	}
-
-	public class DahanDestroyedArgs {
-		public Space space;
-		public int count;
-		public Cause Source;
-	};
-
-	public class FearArgs {
-		public int count;
-		public Space space;
-		public Cause cause;
-	}
-
-	public class NullFearCard : IFearCard {
-	
-		public const string Name = "Null Fear Card";
-		public Task Level1( GameState gs ) { return Task.CompletedTask; }
-		public Task Level2( GameState gs ) { return Task.CompletedTask; }
-		public Task Level3( GameState gs ) { return Task.CompletedTask; }
 	}
 
 

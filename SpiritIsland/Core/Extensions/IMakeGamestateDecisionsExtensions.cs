@@ -18,15 +18,15 @@ namespace SpiritIsland {
 
 		static public async Task GatherUpToNDahan( this IMakeGamestateDecisions eng, Space target, int dahanToGather ) {
   			int gathered = 0;
-			var neighborsWithDahan = target.Adjacent.Where(eng.GameState.HasDahan).ToArray();
+			var neighborsWithDahan = target.Adjacent.Where(eng.GameState.Dahan.Has).ToArray();
 			while(gathered<dahanToGather && neighborsWithDahan.Length>0){
 				var source = await eng.Self.Action.Choose( new GatherDahanFromDecision( dahanToGather-gathered, target, neighborsWithDahan, Present.Done));
 				if(source == null) break;
 
-				await eng.GameState.MoveDahan(source,target);
+				await eng.GameState.Dahan.Move(source,target);
 
 				++gathered;
-				neighborsWithDahan = target.Adjacent.Where(eng.GameState.HasDahan).ToArray();
+				neighborsWithDahan = target.Adjacent.Where(eng.GameState.Dahan.Has).ToArray();
 			}
 
 		}
@@ -61,7 +61,7 @@ namespace SpiritIsland {
 
 		static public async Task<Space[]> FearPushUpToNDahan( this IMakeGamestateDecisions eng, Space source, int dahanToPush) {
 			HashSet<Space> pushedToLands = new HashSet<Space>();
-			dahanToPush = System.Math.Min(dahanToPush,eng.GameState.DahanCount(source));
+			dahanToPush = System.Math.Min(dahanToPush,eng.GameState.Dahan.Count(source));
 			while(0<dahanToPush){
 				Space destination = await eng.Self.Action.Choose(new PushDahanDecision(
 					source
@@ -70,7 +70,7 @@ namespace SpiritIsland {
 				));
 				if(destination == null) break;
 				pushedToLands.Add(destination);
-				await eng.GameState.MoveDahan(source,destination);
+				await eng.GameState.Dahan.Move(source,destination);
 				--dahanToPush;
 			}
 			return pushedToLands.ToArray();

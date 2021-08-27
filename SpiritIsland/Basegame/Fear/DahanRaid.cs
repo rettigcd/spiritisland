@@ -17,18 +17,18 @@ namespace SpiritIsland.Basegame {
 
 		[FearLevel( 2, "Each player chooses a different land with Dahan. 1 Damage per Dahan there." )]
 		public Task Level2( GameState gs ) {
-			return ForEachPlayerChosenLandWithDahan( gs, ( s ) => gs.SpiritFree_DamageInvaders( s, gs.DahanCount(s) ) );
+			return ForEachPlayerChosenLandWithDahan( gs, ( s ) => gs.SpiritFree_DamageInvaders( s, gs.Dahan.Count(s) ) );
 		}
 
 		[FearLevel( 3, "Each player chooses a different land with Dahan. 2 Damage per Dahan there." )]
 		public Task Level3( GameState gs ) {
-			return ForEachPlayerChosenLandWithDahan( gs, ( s ) => gs.SpiritFree_DamageInvaders( s, 2*gs.DahanCount( s ) ) );
+			return ForEachPlayerChosenLandWithDahan( gs, ( s ) => gs.SpiritFree_DamageInvaders( s, 2*gs.Dahan.Count( s ) ) );
 		}
 
 		static async Task ForEachPlayerChosenLandWithDahan( GameState gs, Func<Space,Task> action ) {
 			HashSet<Space> used = new HashSet<Space>();
 			foreach(var spirit in gs.Spirits) {
-				var options = gs.Island.AllSpaces.Where( gs.HasDahan ).Except( used ).ToArray();
+				var options = gs.Island.AllSpaces.Where( gs.Dahan.Has ).Except( used ).ToArray();
 				var target = await spirit.Action.Choose( new TargetSpaceDecision( "Fear:select land with dahan", options ));
 				used.Add( target );
 				await action( target );

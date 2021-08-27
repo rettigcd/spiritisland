@@ -25,7 +25,7 @@ namespace SpiritIsland.Basegame {
 				await ctx.GameState.MoveInvader( ctx.Invaders[InvaderSpecific.Town]>0? InvaderSpecific.Town:InvaderSpecific.Town1, ctx.Target, drowningOcean );
 			await ctx.InvadersOn.Destroy( Invader.Town, 1 );
 
-			await ctx.GameState.DestroyDahan(ctx.Target,1,Cause.Power);
+			await ctx.GameState.Dahan.Destroy(ctx.Target,1,Cause.Power);
 		}
 	}
 }

@@ -228,7 +228,7 @@ namespace SpiritIsland.Tests.Boards {
 			Assert.Equal(items.Count(c=>c=='C'), grp[InvaderSpecific.City]);
 			Assert.Equal(items.Count(c=>c=='T'), grp[InvaderSpecific.Town]);
 			Assert.Equal(items.Count(c=>c=='E'), grp[InvaderSpecific.Explorer]);
-			Assert.Equal(items.Count(c=>c=='D'), gameState.DahanCount(space));
+			Assert.Equal(items.Count(c=>c=='D'), gameState.Dahan.Count(space));
 			Assert.Equal(items.Count(c=>c=='B'), gameState.HasBlight(space)?1:0);
 		}
 

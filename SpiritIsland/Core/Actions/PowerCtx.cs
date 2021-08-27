@@ -36,7 +36,7 @@ namespace SpiritIsland {
 
 		public async Task<Space[]> PowerPushUpToNDahan( Space source, int dahanToPush ) {
 			HashSet<Space> pushedToLands = new HashSet<Space>();
-			dahanToPush = System.Math.Min( dahanToPush, GameState.DahanCount( source ) );
+			dahanToPush = System.Math.Min( dahanToPush, GameState.Dahan.Count( source ) );
 			while(0 < dahanToPush) {
 				Space destination = await Self.Action.Choose(new PushDahanDecision(
 					source
@@ -45,7 +45,7 @@ namespace SpiritIsland {
 				));
 				if(destination == null) break;
 				pushedToLands.Add( destination );
-				await GameState.MoveDahan( source, destination );
+				await GameState.Dahan.Move( source, destination );
 				--dahanToPush;
 			}
 			return pushedToLands.ToArray();

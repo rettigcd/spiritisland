@@ -29,11 +29,11 @@ namespace SpiritIsland {
 				Target.NoBlight          => ( s ) => !gameState.HasBlight( s ),
 				Target.BeastOrJungle     => ( s ) => SelectTerrain( s ) == Terrain.Jungle || gameState.HasBeasts( s ),
 				Target.PresenceOrWilds   => ( s ) => (self.Presence.IsOn( s ) || gameState.HasWilds( s )),
-				Target.DahanOrInvaders   => ( s ) => (gameState.HasDahan( s ) || gameState.HasInvaders( s )),
+				Target.DahanOrInvaders   => ( s ) => (gameState.Dahan.Has( s ) || gameState.HasInvaders( s )),
 				Target.Costal            => ( s ) => s.IsCostal,
 				Target.Explorer          => ( s ) => gameState.InvadersOn( s ).HasExplorer,
 				Target.TownOrExplorer    => ( s ) => gameState.InvadersOn( s ).HasAny( Invader.Explorer, Invader.Town ),
-				Target.Dahan             => gameState.HasDahan,
+				Target.Dahan             => gameState.Dahan.Has,
 				Target.Invaders          => gameState.HasInvaders,
 				_                        => throw new ArgumentException( "Unexpected filter", nameof( filterEnum ) ),
 			};

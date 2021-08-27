@@ -37,7 +37,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			Given_HasPresence( board[3] );
 			//	 And: dahan on initial spot
 			foreach(string s in initialDahanSquares.Split( ',' ))
-				gameState.AdjustDahan( board[int.Parse( s )] );
+				gameState.Dahan.Adjust( board[int.Parse( s )] );
 
 			When_Growing( 1 );
 			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();

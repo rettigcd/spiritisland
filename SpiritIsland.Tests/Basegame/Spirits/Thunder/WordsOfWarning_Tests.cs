@@ -11,9 +11,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 		public async Task DeadDahanDoDamage() {
 
 			// Given: 2 dahan on a2
-			gs.AdjustDahan( a[2], 2 );
+			gs.Dahan.Adjust( a[2], 2 );
 			// and: dahan on a4 so it doesn't auto-select the only target available
-			gs.AdjustDahan( a[4] );
+			gs.Dahan.Adjust( a[4] );
 
 			//  and: 4 explorers + 1 city
 			gs.Adjust( a[2], InvaderSpecific.Explorer, 4 );
