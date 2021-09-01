@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using SpiritIsland;
+﻿using System.Linq;
 
 namespace SpiritIsland.BranchAndClaw {
 
@@ -44,15 +42,17 @@ namespace SpiritIsland.BranchAndClaw {
 		public override string Text => "Keeper of the Forbidden Wilds";
 
 		public Keeper():base(
-			new MyPresence(
-				new Track[] { Track.Energy2, Track.SunEnergy, Track.Energy4, Track.Energy5, Track.PlantEnergy, Track.Energy7, Track.Energy8, Track.Energy9 },
-				new Track[] { Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4, Track.Card5 }
+			new KeeperPresence(
+				new PresenceTrack( Track.Energy2, Track.SunEnergy, Track.Energy4, Track.Energy5, Track.PlantEnergy, Track.Energy7, Track.Energy8, Track.Energy9 ),
+				new PresenceTrack( Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4, Track.Card5 )
 			),
-			new NullPowerCard( "A", 0, Speed.Fast ),
-			new NullPowerCard( "B", 0, Speed.Fast ),
-			new NullPowerCard( "C", 0, Speed.Fast ),
-			new NullPowerCard( "D", 0, Speed.Fast )
+			PowerCard.For<BoonOfGrowingPower>(),
+			PowerCard.For<RegrowFromRoots>(),
+			PowerCard.For<SacrosanctWilderness>(),
+			PowerCard.For<TowingWrath>()
 		) {
+			(this.Presence as KeeperPresence).keeper = this;
+
 			var a = new GrowthActionFactory[]{
 				new ReclaimAll()	
 				,new GainEnergy(1)
@@ -82,31 +82,19 @@ namespace SpiritIsland.BranchAndClaw {
 				,Join( b, d ) // -3
 			};
 
+			InnatePowers = new InnatePower[] {
+				InnatePower.For<PunishThoseWhoTresspass>(),
+				InnatePower.For<SpreadingWilds>(),
+			};
 		}
 
-		//public override void Grow( GameState gameState, int optionIndex ) {
-
-		//	var (growthOptions,_) = this.GetGrowthOptions();
-
-		//	var actions = growthOptions[optionIndex].GrowthActions;
-		//	// gain energy
-		//	AddActionFactory( actions[0] );
-		//	AddActionFactory( actions[1] );
-		//	AddActionFactory( actions[2] );
-		//	// cost 2
-		//	if(2 <= Energy) {
-		//		AddActionFactory( actions[3] );
-		//		AddActionFactory( actions[4] );
-		//	}
-		//	// cost 3
-		//	if(3 <= Energy) {
-		//		AddActionFactory( actions[5] );
-		//	}
-
-		//}
-
-		protected override void InitializeInternal( Board _, GameState _1 ){
-			throw new System.NotImplementedException();
+		protected override void InitializeInternal( Board board, GameState gs ){
+			// In the highest-numbered Jungle.
+			var space = board.Spaces.OrderByDescending( x => x.Terrain == Terrain.Jungle ).First();
+			// Put 1 Presence
+			Presence.PlaceOn( space );
+			// 1 Wild 
+			((GameState_BranchAndClaw)gs).Wilds.AddOneTo(space);
 		}
 
 	}

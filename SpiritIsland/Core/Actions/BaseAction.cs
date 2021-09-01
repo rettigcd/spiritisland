@@ -116,7 +116,7 @@ namespace SpiritIsland {
 					promise.TrySetException( new Exception( $"{selection.Text} not found in options" ) );
 			}
 
-			TaskCompletionSource<T> promise;
+			readonly TaskCompletionSource<T> promise;
 
 		}
 

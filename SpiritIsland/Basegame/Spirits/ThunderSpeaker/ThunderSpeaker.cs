@@ -102,7 +102,7 @@ namespace SpiritIsland.Basegame {
 			int countToMove = moveLookup[s];
 
 			while(countToMove-- > 0)
-				Presence.Move(args.from,args.to);
+				Presence.Move( args.from, args.to );
 
 		}
 

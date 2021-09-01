@@ -6,8 +6,8 @@ namespace SpiritIsland {
 
 	public class PlacePresence : GrowthActionFactory {
 
-		readonly int range;
-		readonly Target filterEnum;
+		readonly protected int range;
+		readonly protected Target filterEnum;
 
 		public override string ShortDescription {get;}
 

@@ -3,6 +3,7 @@ using SpiritIsland.Basegame;
 using SpiritIsland.BranchAndClaw;
 using SpiritIsland.SinglePlayer;
 using System;
+using System.Linq;
 using Xunit;
 
 namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
@@ -168,6 +169,25 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 
 		// !!! test that Keeper can't choose growth option when they insufficent energy
 
+		[Fact]
+		public void SacredSitesPushDahan() {
+			// Given: space with 2 dahan
+			var space = board[5];
+			gameState.Dahan.Adjust(space,2);
+			//   and presence on that space
+			spirit.Presence.PlaceOn( space );
+
+			// When: we place a presence on that space
+			_ = spirit.Presence.PlaceFromBoard( spirit.Presence.Energy.Next, space, gameState );
+
+			spirit.Action.AssertDecision( "Select destination for dahan", "A4");
+			spirit.Action.AssertDecision( "Select destination for dahan", "A7" );
+
+			spirit.SacredSites.ShouldContain(space);
+			gameState.Dahan.Count(space).ShouldBe(0,"SS should push dahan from space");
+		}
+
+
 		[Theory]
 		[InlineDataAttribute( 1, 2, "" )]
 		[InlineDataAttribute( 2, 2, "S" )]
@@ -218,14 +238,6 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 
 		void Given_HasWilds( Space space ) {
 			gsbac.Wilds.AddOneTo(space);
-		}
-
-		void Resolve_PlacePresence( string _ ) {
-			spirit.Action.AssertDecision("prompt","decision");
-		}
-
-		void Resolve_PlacePresence( string expected, string focus ) {
-			throw new NotImplementedException();
 		}
 
 	}

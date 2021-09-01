@@ -108,7 +108,12 @@ namespace SpiritIsland {
 		#region Place Presence
 
 		static public Task PlacePresence( this IMakeGamestateDecisions engine, int range, Target filterEnum ) {
+			Space[] destinationOptions = CalcDestinationOptions( engine, range, filterEnum );
+			return engine.PlacePresence( destinationOptions );
+		}
 
+		static Space[] CalcDestinationOptions( IMakeGamestateDecisions engine, int range, Target filterEnum ) {
+			// Calculate options
 			var existing = engine.Self.Presence.Spaces.ToArray();
 
 			var inRange = existing
@@ -121,17 +126,14 @@ namespace SpiritIsland {
 				.OrderBy( x => x.Label )
 				.ToArray();
 			return destinationOptions.Length == 0
-				? Task.FromException( new System.Exception( "dude you don't have anywhere to place your presence" ) )
-				: engine.PlacePresence(destinationOptions);
+				? throw new System.Exception( "dude you don't have anywhere to place your presence" )
+				: destinationOptions;
 		}
 
 		static public async Task PlacePresence( this IMakeGamestateDecisions engine, params Space[] destinationOptions ) {
-
 			var from = await engine.Self.SelectTrack();
-
 			var to = await engine.Self.Action.Choose( new TargetSpaceDecision( "Where would you like to place your presence?", destinationOptions, Present.Always ));
-			engine.Self.Presence.PlaceFromBoard( from, to );
-
+			await engine.Self.Presence.PlaceFromBoard(from, to, engine.GameState );
 		}
 
 		#endregion Place Presence

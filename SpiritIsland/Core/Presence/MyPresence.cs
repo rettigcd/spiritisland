@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SpiritIsland {
+
 	public class MyPresence {
 
 		public MyPresence( Track[] energy, Track[] cardPlays ){
@@ -45,7 +47,7 @@ namespace SpiritIsland {
 
 		#region Game-Play things you can do with presence
 
-		public void PlaceFromBoard( Track from, Space to ) {
+		public virtual Task PlaceFromBoard( Track from, Space to, GameState _ ) {
 			// from
 			if(from == Track.Destroyed)
 				--Destroyed;
@@ -58,6 +60,7 @@ namespace SpiritIsland {
 
 			// To
 			PlaceOn( to );
+			return Task.CompletedTask;
 		}
 
 		public void Move( Space from, Space to ) {

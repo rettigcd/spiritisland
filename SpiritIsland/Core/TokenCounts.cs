@@ -1,9 +1,10 @@
 ﻿namespace SpiritIsland {
 	public class TokenCounts {
-		public void AddOneTo( Space space ) { count[space]++; }
-		public void RemoveOneFrom( Space space ) { count[space]--; }
-		public bool AreOn( Space s ) => count[s] > 0;
-		readonly CountDictionary<Space> count = new CountDictionary<Space>();
+		public void AddOneTo( Space space ) { counts[space]++; }
+		public void RemoveOneFrom( Space space ) { counts[space]--; }
+		public bool AreOn( Space s ) => counts[s] > 0;
+		public int GetCount( Space s ) => counts[s];
+		readonly CountDictionary<Space> counts = new CountDictionary<Space>();
 	}
 
 }

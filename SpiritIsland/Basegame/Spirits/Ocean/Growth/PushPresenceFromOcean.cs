@@ -20,7 +20,7 @@ namespace SpiritIsland.Basegame {
 				));
 
 				// apply...
-				self.Presence.Move(currentSource, destination);
+				self.Presence.Move( currentSource, destination );
 
 				// next
 				pushSpaces.RemoveAt( 0 );

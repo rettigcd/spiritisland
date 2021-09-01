@@ -159,7 +159,7 @@ namespace SpiritIsland.Tests {
 
 
 		static public void Activate_ReclaimAll( this Spirit spirit ) {
-			var current = spirit.Action.GetCurrent();
+			// var current = spirit.Action.GetCurrent();
 			spirit.Action.Choose( "ReclaimAll" );
 		}
 

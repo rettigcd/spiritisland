@@ -20,7 +20,7 @@ namespace SpiritIsland.Basegame {
 
 			// Add it!
 			for(int i=0;i<max;++i)
-				target.Presence.PlaceFromBoard(Track.Destroyed,landTarget);
+				await target.Presence.PlaceFromBoard(Track.Destroyed,landTarget, ctx.GameState);
 
 			// if any presene was added, 2 damage to each town/city in that land.
 			var grp = ctx.GameState.Invaders.On(landTarget,Cause.Power);
