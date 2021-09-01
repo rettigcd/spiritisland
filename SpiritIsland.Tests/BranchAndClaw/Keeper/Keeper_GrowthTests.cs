@@ -26,10 +26,6 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			gameState = gsbac;
 		}
 
-		void Assert_GainsFirstPowerProgressionCard() {
-			Assert_HasCardAvailable( "Veil the Night's Hunt" );
-		}
-
 		// a) reclaim, +1 energy
 		// b) +1 power card
 		// c) add presense range 3 containing wilds or presense, +1 energy
@@ -49,7 +45,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 
 			Assert_AllCardsAvailableToPlay(1+4);
 			Assert_HasEnergy( 1 + 2 );
-			Assert_GainsFirstPowerProgressionCard();
+			Assert_HasPowerProgressionCard(0);
 		}
 
 		[Fact]
@@ -93,7 +89,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 
 			Assert_AllCardsAvailableToPlay(4+1);     // A
 			Assert_HasEnergy( 0 );                   // A & D
-			Assert_GainsFirstPowerProgressionCard(); // D
+			Assert_HasPowerProgressionCard(0); // D
 			Assert_BoardPresenceIs( "A3A7" );        // D
 
 		}
@@ -114,7 +110,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			spirit.Activate_GainEnergy(); // C
 			spirit.Activate_PlacePresence( "A3;A8", spirit.Presence.Energy.Next ); // C
 
-			Assert_GainsFirstPowerProgressionCard(); // B
+			Assert_HasPowerProgressionCard(0); // B
 			Assert_HasEnergy( 1 + 2 );             // C
 			Assert_BoardPresenceIs( "A3A3" );     // C
 		}
@@ -136,7 +132,8 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			spirit.Activate_DrawPowerCard(); // D
 			spirit.Activate_PlacePresence( "A7", spirit.Presence.CardPlays.Next ); // D
 
-			Assert_GainsFirstPowerProgressionCard(); // B
+			Assert_HasPowerProgressionCard(0); // B
+			Assert_HasPowerProgressionCard( 1 ); // B
 			Assert_HasCardAvailable( "Reaching Grasp" ); // D
 			Assert_BoardPresenceIs( "A3A7" );     // D
 
@@ -163,7 +160,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			spirit.Activate_PlacePresence( "PlacePresence(3,no blight)", "A7", spirit.Presence.CardPlays.Next ); // D
 
 			Assert_HasEnergy( startingEnergy + spirit.EnergyPerTurn - 2  );          // C & D
-			Assert_GainsFirstPowerProgressionCard(); // D
+			Assert_HasPowerProgressionCard(0); // D
 
 		}
 
@@ -184,7 +181,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			spirit.Action.AssertDecision( "Select destination for dahan", "A7" );
 
 			spirit.SacredSites.ShouldContain(space);
-			gameState.Dahan.Count(space).ShouldBe(0,"SS should push dahan from space");
+			gameState.Dahan.GetCount(space).ShouldBe(0,"SS should push dahan from space");
 		}
 
 

@@ -10,8 +10,8 @@ namespace SpiritIsland.Tests.BranchAndClaw {
 
 	public class Strife_Tests {
 
-		InvaderSpecific city;
-		InvaderSpecific strifedCity;
+		readonly InvaderSpecific city;
+		readonly InvaderSpecific strifedCity;
 
 		public Strife_Tests() {
 			city = Invader.City.Healthy;
@@ -158,7 +158,7 @@ namespace SpiritIsland.Tests.BranchAndClaw {
 			await gs.Ravage( new InvaderCard( space.Terrain ) );
 
 			//  Then: dahan survives
-			gs.Dahan.Count( space ).ShouldBe( 1, "dahan should survive due to strife on town" );
+			gs.Dahan.GetCount( space ).ShouldBe( 1, "dahan should survive due to strife on town" );
 
 			//   and so does city, but strife is gone
 			counts.ToSummary().ShouldBe( "1C@1", "strife should be used up" );

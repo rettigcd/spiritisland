@@ -75,7 +75,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 				action.Choose(neighbor);
 			}
 
-			Assert.Equal( endingCount, gameState.Dahan.Count( target ) ); // same as original
+			Assert.Equal( endingCount, gameState.Dahan.GetCount( target ) ); // same as original
 			Assert.Equal( endingEnergy, spirit.Energy );
 		}
 
@@ -102,7 +102,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			Assert.True( action.IsResolved );
 
-			Assert.Equal( 3, gameState.Dahan.Count( target ) ); // same as original
+			Assert.Equal( 3, gameState.Dahan.GetCount( target ) ); // same as original
 		}
 
 		[Fact]
@@ -131,7 +131,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			Assert.True( action.IsResolved );
 
-			Assert.Equal( 3, gameState.Dahan.Count( target ) ); // same as original
+			Assert.Equal( 3, gameState.Dahan.GetCount( target ) ); // same as original
 		}
 
 		[Fact]
@@ -153,14 +153,14 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			Assert.True( action.IsResolved );
 
-			Assert.Equal( 3, gameState.Dahan.Count( target ) ); // same as original
+			Assert.Equal( 3, gameState.Dahan.GetCount( target ) ); // same as original
 
 		}
 
 
 		void Given_AddDahan( int startingCount, Space target ) {
 			gameState.Dahan.Adjust( target, startingCount );
-			Assert.Equal( startingCount, gameState.Dahan.Count( target ) );
+			Assert.Equal( startingCount, gameState.Dahan.GetCount( target ) );
 		}
 
 	}

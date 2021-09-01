@@ -7,25 +7,27 @@ namespace SpiritIsland {
 
 	// Plug into the DrawPowerCard API on the spirit
 	public class PowerProgression : IPowerCardDrawer {
-		readonly List<PowerCard> cards;
+		public readonly PowerCard[] Cards;
+		readonly List<PowerCard> remainingCards;
 		public PowerProgression( params PowerCard[] cards ) {
-			this.cards = cards.ToList();
+			this.Cards = cards;
+			this.remainingCards = cards.ToList();
 		}
 
 		public Task<PowerCard> Draw( Spirit self, GameState _, Func<List<PowerCard>, Task> _1 ) {
-			return Take( self, cards.First() );
+			return Take( self, remainingCards.First() );
 		}
 
 		public Task<PowerCard> DrawMajor( Spirit self, GameState _, Func<List<PowerCard>, Task> _1 ) {
-			return Take( self, cards.First( c => c.PowerType == PowerType.Major ) );
+			return Take( self, remainingCards.First( c => c.PowerType == PowerType.Major ) );
 		}
 
 		public Task<PowerCard> DrawMinor( Spirit self, GameState _, Func<List<PowerCard>, Task> _1 ) {
-			return Take( self, cards.First( c => c.PowerType == PowerType.Minor ) );
+			return Take( self, remainingCards.First( c => c.PowerType == PowerType.Minor ) );
 		}
 
 		async Task<PowerCard> Take( Spirit self, PowerCard newCard ) {
-			cards.Remove( newCard );
+			remainingCards.Remove( newCard );
 
 			self.AddCardToHand( newCard );
 			if(newCard.PowerType == PowerType.Major)

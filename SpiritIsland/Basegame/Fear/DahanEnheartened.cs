@@ -13,8 +13,8 @@ namespace SpiritIsland.Basegame {
 			foreach(var spirit in gs.Spirits) {
 				var spacesWithInvaders = gs.Island.AllSpaces.Where( gs.Invaders.AreOn ).ToArray();
 				var target = await spirit.Action.Choose( new TargetSpaceDecision( "Select Space to Gather or push 1 dahan", spacesWithInvaders));
-				bool canPush = gs.Dahan.Has(target);
-				bool canGather = target.Adjacent.Any(gs.Dahan.Has);
+				bool canPush = gs.Dahan.AreOn(target);
+				bool canGather = target.Adjacent.Any(gs.Dahan.AreOn);
 				if(canPush && canGather) {
 					if(await spirit.SelectText("Push or Gather?","push","gather")=="push")
 						canPush=false;
@@ -35,10 +35,10 @@ namespace SpiritIsland.Basegame {
 			HashSet<Space> used = new HashSet<Space>();
 			foreach(var spirit in gs.Spirits) {
 				var engine = spirit.MakeDecisionsFor( gs );
-				var options = gs.Island.AllSpaces.Where( gs.Dahan.Has ).Except( used ).ToArray();
+				var options = gs.Island.AllSpaces.Where( gs.Dahan.AreOn ).Except( used ).ToArray();
 				var target = await spirit.Action.Choose( new TargetSpaceDecision( "Fear:select land with dahan for 1 damage", options ));
 				await engine.GatherUpToNDahan(target,2);
-				if(gs.Dahan.Has(target))
+				if(gs.Dahan.AreOn(target))
 					await gs.SpiritFree_FearCard_DamageInvaders(target, 1 );
 				used.Add( target );
 			}
@@ -48,10 +48,10 @@ namespace SpiritIsland.Basegame {
 		public async Task Level3( GameState gs ) {
 			HashSet<Space> used = new HashSet<Space>();
 			foreach(var spirit in gs.Spirits) {
-				var options = gs.Island.AllSpaces.Where( gs.Dahan.Has ).Except( used ).ToArray();
+				var options = gs.Island.AllSpaces.Where( gs.Dahan.AreOn ).Except( used ).ToArray();
 				var target = await spirit.Action.Choose( new TargetSpaceDecision( "Fear:select land with dahan for 1 damage", options ));
 				await spirit.MakeDecisionsFor( gs ).GatherUpToNDahan( target, 2 );
-				await gs.SpiritFree_FearCard_DamageInvaders(target, gs.Dahan.Count(target) );
+				await gs.SpiritFree_FearCard_DamageInvaders(target, gs.Dahan.GetCount(target) );
 				used.Add( target );
 			}
 		}

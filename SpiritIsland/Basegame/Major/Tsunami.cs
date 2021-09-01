@@ -29,7 +29,7 @@ namespace SpiritIsland.Basegame {
 					// 4 damage
 					await ctx.DamageInvaders(otherCoast,4);
 					// destroy 1 dahan
-					if(ctx.GameState.Dahan.Has(otherCoast))
+					if(ctx.GameState.Dahan.AreOn(otherCoast))
 						await ctx.GameState.Dahan.Destroy(otherCoast,1, Cause.Power);
 				}
 			}

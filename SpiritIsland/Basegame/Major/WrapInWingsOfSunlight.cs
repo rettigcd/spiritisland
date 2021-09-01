@@ -24,7 +24,8 @@ namespace SpiritIsland.Basegame {
 			// move dahan
 			int max = Math.Min( ctx.DahanCount, 5 );
 			int countToMove = await ctx.Self.SelectNumber( "# of dahan to move", max );
-			await ctx.GameState.Dahan.Move( ctx.Target, destination, countToMove );
+			while(countToMove-->0)
+				await ctx.GameState.Dahan.Move( ctx.Target, destination, 1 );
 
 			// defend
 			ctx.GameState.Defend( destination, 5 );

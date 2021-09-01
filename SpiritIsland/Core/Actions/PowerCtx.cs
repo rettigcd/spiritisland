@@ -15,9 +15,11 @@ namespace SpiritIsland {
 			GameState = gameState;
 		}
 
-		public async Task PowerPushUpToNInvaders( Space source, int countToPush , params Invader[] generics ) {
+		public async Task<int> PowerPushUpToNInvaders( Space source, int countToPush , params Invader[] generics ) {
 
 			InvaderSpecific[] CalcInvaderTypes() => GameState.Invaders.Counts[ source ].FilterBy( generics );
+
+			int pushed = 0;
 
 			var invaders = CalcInvaderTypes();
 			while(0 < countToPush && 0 < invaders.Length) {
@@ -28,14 +30,16 @@ namespace SpiritIsland {
 				var destination = await Self.Action.Choose( new PushInvaderDecision( invader, source, PowerAdjacents(source), Present.Done ) );
 				await GameState.Invaders.Move(invader, source, destination );
 
+				++pushed;
 				--countToPush;
 				invaders = CalcInvaderTypes();
 			}
+			return pushed;
 		}
 
 		public async Task<Space[]> PowerPushUpToNDahan( Space source, int dahanToPush ) {
 			HashSet<Space> pushedToLands = new HashSet<Space>();
-			dahanToPush = System.Math.Min( dahanToPush, GameState.Dahan.Count( source ) );
+			dahanToPush = System.Math.Min( dahanToPush, GameState.Dahan.GetCount( source ) );
 			while(0 < dahanToPush) {
 				Space destination = await Self.Action.Choose(new PushDahanDecision(
 					source

@@ -88,6 +88,10 @@ namespace SpiritIsland.Tests {
 			Assert.True(spirit.Hand.Any( nameMatches ),$"Hand does not contain {name}");
 		}
 
+		protected void Assert_HasPowerProgressionCard( int index ) {
+			Assert_HasCardAvailable( (spirit.CardDrawer as PowerProgression).Cards[index].Name );
+		}
+
 		protected void Assert_AllCardsAvailableToPlay(int expectedAvailableCount = 4) {
 			// Then: all cards reclaimed (including unplayed)
 			Assert.Empty( spirit.DiscardPile ); // , "Should not be any cards in 'played' pile" );

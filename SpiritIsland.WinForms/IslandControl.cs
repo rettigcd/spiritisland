@@ -292,7 +292,7 @@ namespace SpiritIsland.WinForms {
 			// dahan & presence & blight
 			CountDictionary<Image> images = new();
 			images.Clear();
-			images[dahan] = gameState.Dahan.Count( space );
+			images[dahan] = gameState.Dahan.GetCount( space );
 			images[defend] = gameState.GetDefence( space );
 			images[presence] = spirit.Presence.CountOn( space );
 			images[blight] = gameState.GetBlightOnSpace( space );

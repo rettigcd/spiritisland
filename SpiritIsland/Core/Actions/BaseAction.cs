@@ -19,7 +19,10 @@ namespace SpiritIsland {
 
 		public bool IsResolved => acitveDecisionMaker == null;
 
-		public void Choose( string text ) => Choose( GetCurrent().Options.First( o => o.Text == text ) ); // not single because some options appear twice
+		public void Choose( string text ) {
+			var current = GetCurrent();
+			Choose( current.Options.First( o => o.Text == text ) ); // not single because some options appear twice
+		}
 
 		public void Choose(IOption selection) {
 			var poppedDecisionMaker = WaitForNextDecisionAndCacheIt;

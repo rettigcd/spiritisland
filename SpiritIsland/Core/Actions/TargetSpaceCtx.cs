@@ -32,7 +32,7 @@ namespace SpiritIsland {
 		public Task<Space[]> PowerPushUpToNDahan( int dahanToPush )
 			=> base.PowerPushUpToNDahan( Target, dahanToPush );
 
-		public Task PowerPushUpToNInvaders( int countToPush, params Invader[] generics )
+		public Task<int> PowerPushUpToNInvaders( int countToPush, params Invader[] generics )
 			=> base.PowerPushUpToNInvaders( Target, countToPush, generics );
 
 		public IEnumerable<Space> PowerAdjacents() => PowerAdjacents(Target);
@@ -50,9 +50,9 @@ namespace SpiritIsland {
 		//public InvaderGroup Invaders
 		//	=> this.Self.BuildInvaderGroup( GameState, Target );
 
-		public int DahanCount => GameState.Dahan.Count(Target);
+		public int DahanCount => GameState.Dahan.GetCount(Target);
 
-		public bool HasDahan => GameState.Dahan.Has( Target );
+		public bool HasDahan => GameState.Dahan.AreOn( Target );
 
 		public Task GatherUpToNDahan( int dahanToGather )
 			=> this.GatherUpToNDahan(Target, dahanToGather );

@@ -22,6 +22,7 @@ namespace SpiritIsland.WinForms {
 				typeof(Bringer),
 				typeof(Ocean),
 				typeof(Keeper),
+				typeof(SharpFangs),
 			};
 			spiritListBox.Items.Add("[Random]");
 			foreach(var spirit in spirits) {
@@ -112,6 +113,7 @@ namespace SpiritIsland.WinForms {
 				Bringer.Name => "pink",
 				Ocean.Name => "dkblue",
 				Keeper.Name => "greenorangeswirl",
+				SharpFangs.Name => "red",
 				_ => "green"
 			};
 		}

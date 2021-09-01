@@ -49,6 +49,7 @@
     <None Remove="images\tokens\8 energy.png" />
     <None Remove="images\tokens\9 energy.png" />
     <None Remove="images\tokens\air energy.png" />
+    <None Remove="images\tokens\animal energy.png" />
     <None Remove="images\tokens\any energy.png" />
     <None Remove="images\tokens\Cardplayplusone.png" />
     <None Remove="images\tokens\coin.png" />
@@ -162,6 +163,7 @@
     <EmbeddedResource Include="images\tokens\air energy.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\animal energy.png" />
     <EmbeddedResource Include="images\tokens\any energy.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -450,6 +452,9 @@
     <None Update="images\cards\predatory_nightmares.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="images\cards\prey_on_the_builders.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="images\cards\pull_beneath_the_hungry_earth.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -513,6 +518,12 @@
     <None Update="images\cards\talons_of_lightning.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="images\cards\teeth_gleam_from_darkness.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\cards\terrifying_chase.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="images\cards\terrifying_nightmares.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -526,6 +537,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\cards\tidal_boon.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\cards\too_near_the_jungle.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\cards\towering_wrath.jpg">
@@ -720,6 +734,9 @@
     <None Update="images\innates\darkness_swallows_the_unwary.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="images\innates\frenzied_assult.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="images\innates\gather_the_warriors.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -742,6 +759,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\innates\punish_those_who_trespass.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\innates\raging_hunt.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\innates\spirits_may_yet_dream.jpg">

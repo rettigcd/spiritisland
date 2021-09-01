@@ -2,37 +2,48 @@
 using System.Threading.Tasks;
 
 namespace SpiritIsland {
+
+	// ! with a little work, we could make this inherit from TokenCounts
 	public class Dahan {
 
-		readonly GameState gs;
+		readonly GameState gameState;
 
 		public Dahan( GameState gs ) {
-			this.gs = gs;
+			this.gameState = gs;
 		}
+
+		public bool AreOn( Space space ) => GetCount( space ) > 0;
+
+		public int GetCount( Space space ) => count[space];
+
+		public Task Move( Space from, Space to, int count = 1 ) {
+			this.count[from] -= count;
+			this.count[to] += count;
+			return Moved.InvokeAsync( gameState, new TokenMovedArgs { from = from, to = to, count = count } );
+		}
+
+		public AsyncEvent<TokenMovedArgs> Moved = new AsyncEvent<TokenMovedArgs>();                    // Thunderspeaker
+
+		readonly CountDictionary<Space> count = new CountDictionary<Space>();
+
+		#region adjust
 
 		public void Adjust( Space space, int delta = 1 ) {
 			count[space] += delta;
 		}
 
+		#endregion
+
+
+
 		public Task Destroy( Space space, int countToDestroy, Cause source ) {
-			countToDestroy = Math.Min( countToDestroy, Count( space ) );
+			countToDestroy = Math.Min( countToDestroy, GetCount( space ) );
 			Adjust( space, -countToDestroy );
-			return Destroyed.InvokeAsync( gs, new DahanDestroyedArgs { space = space, count = countToDestroy, Source = source } );
+			return Destroyed.InvokeAsync( gameState, new DahanDestroyedArgs { space = space, count = countToDestroy, Source = source } );
 		}
 
-		public Task Move( Space from, Space to, int count = 1 ) {
-			Adjust( from, -count );
-			Adjust( to, count );
-			return Moved.InvokeAsync( gs, new DahanMovedArgs { from = from, to = to, count = count } );
-		}
-
-		public int Count( Space space ) { return count[space]; }
-		public bool Has( Space space ) => Count( space ) > 0;
-
-		public AsyncEvent<DahanMovedArgs> Moved = new AsyncEvent<DahanMovedArgs>();                    // Thunderspeaker
 		public AsyncEvent<DahanDestroyedArgs> Destroyed = new AsyncEvent<DahanDestroyedArgs>();        // Thunderspeaker
 
-		readonly CountDictionary<Space> count = new CountDictionary<Space>();
 
 	}
 
@@ -42,7 +53,7 @@ namespace SpiritIsland {
 		public Cause Source;
 	};
 
-	public class DahanMovedArgs {
+	public class TokenMovedArgs {
 		public Space from;
 		public Space to;
 		public int count;

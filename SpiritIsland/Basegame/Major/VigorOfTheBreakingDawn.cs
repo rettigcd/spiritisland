@@ -18,7 +18,7 @@ namespace SpiritIsland.Basegame {
 
 				// 2 damage per dahan
 				foreach(var neighbor in pushedToLands )
-					await ctx.DamageInvaders( neighbor, 2*ctx.GameState.Dahan.Count(neighbor) );
+					await ctx.DamageInvaders( neighbor, 2*ctx.GameState.Dahan.GetCount(neighbor) );
 			}
 		}
 

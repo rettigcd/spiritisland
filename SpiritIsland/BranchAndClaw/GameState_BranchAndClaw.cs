@@ -5,9 +5,13 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class GameState_BranchAndClaw : GameState {
 
-		public GameState_BranchAndClaw(Spirit spirit,Board board ) : base( spirit, board ) { }
+		public GameState_BranchAndClaw(Spirit spirit,Board board ) : base( spirit, board ) {
+		Beasts = new TokenCounts(this);
+		Wilds = new TokenCounts(this);
+		Disease = new TokenCounts(this);
+	}
 
-		protected override bool ExploresSpace( Space space ) {
+	protected override bool ExploresSpace( Space space ) {
 			if(Wilds.AreOn( space )) {
 				Wilds.RemoveOneFrom( space );
 				return false;
@@ -30,9 +34,9 @@ namespace SpiritIsland.BranchAndClaw {
 			return grp.Space.Label + ": " + eng.log.Join( "  " );
 		}
 
-		public TokenCounts Beasts { get; } = new TokenCounts();
-		public TokenCounts Wilds { get; } = new TokenCounts();
-		public TokenCounts Disease { get; } = new TokenCounts();
+		public TokenCounts Beasts { get; }
+		public TokenCounts Wilds { get; }
+		public TokenCounts Disease { get; }
 
 	}
 

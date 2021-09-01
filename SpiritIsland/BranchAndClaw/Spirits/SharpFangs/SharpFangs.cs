@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using SpiritIsland;
+﻿using System.Linq;
 
 namespace SpiritIsland.BranchAndClaw {
 
@@ -40,7 +37,9 @@ namespace SpiritIsland.BranchAndClaw {
 	 */
 	public class SharpFangs : Spirit {
 
-		public override string Text => "Sharp Fangs";
+		public const string Name = "Sharp Fangs Behind the Leaves";
+
+		public override string Text => Name;
 
 		static Track FivePlaysReclaim1() {
 			var track = Track.MkCard(5);
@@ -53,10 +52,10 @@ namespace SpiritIsland.BranchAndClaw {
 				new Track[] { Track.Energy1, Track.AnimalEnergy, Track.PlantEnergy, Track.Energy2, Track.AnimalEnergy, Track.Energy3, Track.Energy4 },
 				new Track[] { Track.Card2, Track.Card2, Track.Card3, Track.Reclaim1, Track.Card4, FivePlaysReclaim1() }
 			),
-			new NullPowerCard( "A", 0, Speed.Fast ),
-			new NullPowerCard( "B", 0, Speed.Fast ),
-			new NullPowerCard( "C", 0, Speed.Fast ),
-			new NullPowerCard( "D", 0, Speed.Fast )
+			PowerCard.For<PreyOnTheBuilders>(),
+			PowerCard.For<TeethGleamFromDarkness>(),
+			PowerCard.For<TerrifyingChase>(),
+			PowerCard.For<TooNearTheJungle>()
 		) {
 		
 			var beastOrJungleRange3 = new PlacePresence(3, Target.BeastOrJungle,"beast or jungle");
@@ -92,6 +91,11 @@ namespace SpiritIsland.BranchAndClaw {
 				,Join(a,b) // -1 
 			};
 
+			this.InnatePowers = new InnatePower[] {
+				InnatePower.For<FrenziedAssult>(),
+				InnatePower.For<RagingHunt>(),
+			};
+
 		}
 
 		public override void Grow( GameState gameState, int optionIndex ) {
@@ -102,14 +106,21 @@ namespace SpiritIsland.BranchAndClaw {
 			foreach(var action in actions.Take(5))
 				AddActionFactory( action );
 
-			// costs 1
-			if(1 <= Energy)
-				AddActionFactory( actions[5] );
+			AddActionFactory( new ReplacePresenceWithBeast() );
 
 		}
 
-		protected override void InitializeInternal( Board _, GameState _1 ) {
-			throw new System.NotImplementedException();
+		protected override void InitializeInternal( Board board, GameState gs ) {
+			var highestJungle = board.Spaces.Where(x=>x.Terrain == Terrain.Jungle).Last();
+			Presence.PlaceOn(highestJungle);
+			var gsbac = (gs as GameState_BranchAndClaw);
+			gsbac.Beasts.AddOneTo(highestJungle);
+
+			// init special growth (note - we don't want this growth in Unit tests, so only add it if we call InitializeInternal())
+			this.AddActionFactory(new PlacePresenceOnBeastLand());
+
+			gsbac.Beasts.Moved.Handlers.Add( new SpiritIsland.Basegame.MovePresenceWithTokens( this, "Move presence with beast?" ).CheckForMove );
+
 		}
 
 	}

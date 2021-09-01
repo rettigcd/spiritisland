@@ -29,15 +29,15 @@ namespace SpiritIsland {
 				[Target.NoInvader         ]= ( s ) => !gameState.Invaders.AreOn( s ),
 				[Target.Blight            ]= ( s ) => gameState.HasBlight( s ),
 				[Target.NoBlight          ]= ( s ) => !gameState.HasBlight( s ),
-				[Target.DahanOrInvaders   ]= ( s ) => (gameState.Dahan.Has( s ) || gameState.Invaders.AreOn( s )),
+				[Target.DahanOrInvaders   ]= ( s ) => (gameState.Dahan.AreOn( s ) || gameState.Invaders.AreOn( s )),
 				[Target.Costal            ]= ( s ) => s.IsCostal,
 				[Target.Explorer          ]= ( s ) => gameState.Invaders.Counts[ s ].Has(Invader.Explorer),
 				[Target.TownOrExplorer    ]= ( s ) => gameState.Invaders.Counts[ s ].HasAny( Invader.Explorer, Invader.Town ),
-				[Target.Dahan             ]= gameState.Dahan.Has,
+				[Target.Dahan             ]= gameState.Dahan.AreOn,
 				[Target.Invaders          ]= gameState.Invaders.AreOn,
 				// !!! These 2 need to be removed from base game and added via strings
-//				[Target.BeastOrJungle     ]= ( s ) => SelectTerrain( s ) == Terrain.Jungle || gameState.Beasts.AreOn( s ),
-				[Target.PresenceOrWilds   ]= ( s ) => (self.Presence.IsOn( s ) || ((GameState_BranchAndClaw)gameState).Wilds.AreOn( s )),
+				[Target.BeastOrJungle     ]= ( s ) => SelectTerrain( s ) == Terrain.Jungle || (gameState as GameState_BranchAndClaw).Beasts.AreOn( s ),
+				[Target.PresenceOrWilds   ]= ( s ) => (self.Presence.IsOn( s ) || (gameState as GameState_BranchAndClaw).Wilds.AreOn( s )),
 			};
 			var baseFilter = lookup.ContainsKey(filterEnum) 
 				? lookup[filterEnum]

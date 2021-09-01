@@ -94,7 +94,7 @@ namespace SpiritIslandCmd {
 			var details = gameState.Invaders.Counts[ space ].ToSummary();
 
 			// dahan
-			int dahanCount = gameState.Dahan.Count( space );
+			int dahanCount = gameState.Dahan.GetCount( space );
 			string dahan = (dahanCount > 0) ? ("D" + dahanCount) :"  ";
 
 			int blightCount = gameState.GetBlightOnSpace( space );
