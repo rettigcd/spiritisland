@@ -39,7 +39,9 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class Keeper : Spirit {
 
-		public override string Text => "Keeper of the Forbidden Wilds";
+		public const string Name = "Keeper of the Forbidden Wilds";
+
+		public override string Text => Name;
 
 		public Keeper():base(
 			new KeeperPresence(
@@ -83,7 +85,7 @@ namespace SpiritIsland.BranchAndClaw {
 			};
 
 			InnatePowers = new InnatePower[] {
-				InnatePower.For<PunishThoseWhoTresspass>(),
+				InnatePower.For<PunishThoseWhoTrespass>(),
 				InnatePower.For<SpreadingWilds>(),
 			};
 		}

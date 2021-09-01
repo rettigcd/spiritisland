@@ -1,4 +1,5 @@
 ﻿using SpiritIsland.Basegame;
+using SpiritIsland.BranchAndClaw;
 using SpiritIsland.SinglePlayer;
 using System;
 using System.Linq;
@@ -20,6 +21,7 @@ namespace SpiritIsland.WinForms {
 				typeof(ASpreadOfRampantGreen),
 				typeof(Bringer),
 				typeof(Ocean),
+				typeof(Keeper),
 			};
 			spiritListBox.Items.Add("[Random]");
 			foreach(var spirit in spirits) {
@@ -45,6 +47,7 @@ namespace SpiritIsland.WinForms {
 			colorListBox.Items.Add( "dkblue" );
 			colorListBox.Items.Add( "purple" );
 			colorListBox.Items.Add( "pink" );
+			colorListBox.Items.Add( "greenorangeswirl" );
 			colorListBox.SelectedIndex = 0;
 
 
@@ -64,15 +67,10 @@ namespace SpiritIsland.WinForms {
 				? GetColorForSpirit(spirit)
 				: colorListBox.SelectedItem as string;
 
-
-			var gameState = new GameState(
-					spirit
-				) {
-				Island = new Island( board )
+			var gameState = new GameState_BranchAndClaw( spirit, board ) {
+				MajorCards = new PowerCardDeck( PowerCard.GetMajors() ),
+				MinorCards = new PowerCardDeck( PowerCard.GetMinors() )
 			};
-
-			gameState.MajorCards = new PowerCardDeck(PowerCard.GetMajors());
-			gameState.MinorCards = new PowerCardDeck( PowerCard.GetMinors() );
 
 			var baseGameFearCards = new IFearCard[] {
 				new AvoidTheDahan(),
@@ -113,6 +111,7 @@ namespace SpiritIsland.WinForms {
 				ASpreadOfRampantGreen.Name => "green",
 				Bringer.Name => "pink",
 				Ocean.Name => "dkblue",
+				Keeper.Name => "greenorangeswirl",
 				_ => "green"
 			};
 		}

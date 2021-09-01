@@ -26,6 +26,7 @@
     <None Remove="images\presence\blue.png" />
     <None Remove="images\presence\dkblue.png" />
     <None Remove="images\presence\green.png" />
+    <None Remove="images\presence\greenorangeswirl.png" />
     <None Remove="images\presence\orange.png" />
     <None Remove="images\presence\pink.png" />
     <None Remove="images\presence\purple.png" />
@@ -46,6 +47,7 @@
     <None Remove="images\tokens\6 energy.png" />
     <None Remove="images\tokens\7 energy.png" />
     <None Remove="images\tokens\8 energy.png" />
+    <None Remove="images\tokens\9 energy.png" />
     <None Remove="images\tokens\air energy.png" />
     <None Remove="images\tokens\any energy.png" />
     <None Remove="images\tokens\Cardplayplusone.png" />
@@ -105,6 +107,7 @@
     <EmbeddedResource Include="images\presence\blue.png" />
     <EmbeddedResource Include="images\presence\dkblue.png" />
     <EmbeddedResource Include="images\presence\green.png" />
+    <EmbeddedResource Include="images\presence\greenorangeswirl.png" />
     <EmbeddedResource Include="images\presence\orange.png" />
     <EmbeddedResource Include="images\presence\pink.png" />
     <EmbeddedResource Include="images\presence\purple.png" />
@@ -155,6 +158,7 @@
     <EmbeddedResource Include="images\tokens\8 energy.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\9 energy.png" />
     <EmbeddedResource Include="images\tokens\air energy.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -288,6 +292,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\cards\blazing_renewal.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\cards\boon_of_growing_power.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\cards\boon_of_vigor.jpg">
@@ -461,6 +468,9 @@
     <None Update="images\cards\reaching_grasp.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="images\cards\regrow_from_roots.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="images\cards\rituals_of_destruction.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -468,6 +478,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\cards\rouse_the_trees_and_stones.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\cards\sacrosanct_wilderness.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\cards\sap_the_strength_of_multitudes.jpg">
@@ -513,6 +526,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\cards\tidal_boon.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\cards\towering_wrath.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\cards\tsunami.jpg">
@@ -725,7 +741,13 @@
     <None Update="images\innates\pound_ships_to_splinters.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="images\innates\punish_those_who_trespass.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="images\innates\spirits_may_yet_dream.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\innates\spreading_wilds.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\innates\thundering_destruction.jpg">

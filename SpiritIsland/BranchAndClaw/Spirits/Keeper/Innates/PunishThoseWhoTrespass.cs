@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland.BranchAndClaw {
 
-	[InnatePower( "Punish Those Who Tresspass", Speed.Slow )]
+	[InnatePower( "Punish Those Who Trespass", Speed.Slow )]
 	[FromPresence( 0 )]
-	public class PunishThoseWhoTresspass {
+	public class PunishThoseWhoTrespass {
 
 		[InnateOption("2 sun,1 fire,2 plant")]
 		static public Task Option1(TargetSpaceCtx ctx ) {
