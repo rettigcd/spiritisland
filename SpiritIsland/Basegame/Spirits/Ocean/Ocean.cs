@@ -70,15 +70,14 @@ namespace SpiritIsland.Basegame {
 			// could give ocean a 1 time growth option of Place-On-Costal
 			Presence.PlaceOn(board[3]);
 
-			gameState.InvaderMoved.Handlers.Add(InvadersMoved);
+			gameState.Invaders.Moved.Handlers.Add(InvadersMoved);
 		}
 
 		async Task InvadersMoved(GameState gs, InvaderMovedArgs args ) {
 			if(args.to.Terrain!=Terrain.Ocean) return;
 
-			drownedCount += args.Invader.Healthy.Health;
-			var grp = (InvaderGroup)gs.InvadersOn( args.to );
-			await grp.Destroy( 1,args.Invader );
+			drownedCount += args.Invader.FullHealth;
+			await gs.Invaders.On( args.to, Cause.Ocean ).Destroy( 1,args.Invader );
 
 			int spiritCount = gs.Spirits.Length;
 			while(spiritCount <= drownedCount) {

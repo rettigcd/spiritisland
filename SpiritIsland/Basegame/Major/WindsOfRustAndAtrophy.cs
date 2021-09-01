@@ -23,16 +23,16 @@ namespace SpiritIsland.Basegame {
 			gs.Defend( target, 6 );
 
 			// replace 1 city with 1 town OR 1 town with 1 explorer
-			var grp = gs.InvadersOn( target );
-			var options = grp.FilterBy( Invader.City, Invader.Town );
-			var invader = await ctx.Self.Action.Choose( new SelectInvaderToDowngrade( target, options, Present.IfMoreThan1 ) );
+			var counts = gs.Invaders.Counts[ target ];
+			var options = counts.FilterBy( Invader.City, Invader.Town );
+			InvaderSpecific invader = await ctx.Self.Action.Choose( new SelectInvaderToDowngrade( target, options, Present.IfMoreThan1 ) );
 
 			if(invader.Generic == Invader.City) {
-				gs.Adjust( target, invader, -1 );
-				gs.Adjust( target, InvaderSpecific.Town, 1 );
+				counts.Adjust( invader, -1 );
+				counts.Adjust( Invader.Town[2], 1 );
 			} else if(invader.Generic == Invader.Town) {
-				gs.Adjust( target, invader, -1 );
-				gs.Adjust( target, InvaderSpecific.Explorer, 1 );
+				counts.Adjust( invader, -1 );
+				counts.Adjust( Invader.Explorer[1], 1 );
 			}
 		}
 	}

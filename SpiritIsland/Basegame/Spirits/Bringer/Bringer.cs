@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 
@@ -78,62 +78,34 @@ namespace SpiritIsland.Basegame {
 			Presence.PlaceOn( startingIn );
 		}
 
-		public override InvaderGroup BuildInvaderGroup( GameState gs, Space space ) {
-			return new ToDreamAThousandDeaths( this, gs, space, gs.GetCounts(space), gs.Fear.AddDirect, Cause.Power );
+		public override InvaderGroup BuildInvaderGroupForPowers( GameState gs, Space space ) {
+			var invaderCounts = gs.Invaders.Counts[ space ];
+			var detached = new DetachedInvaderCounts( invaderCounts );
+			return new InvaderGroup( space, detached ) {
+				DestroyInvaderStrategy = new ToDreamAThousandDeaths_DestroyStrategy( gs.Fear.AddDirect, Cause.Power, this.MakeDecisionsFor( gs ) ),
+			};
 		}
 
 
 	}
 
-	class ToDreamAThousandDeaths : InvaderGroup {
-
-		readonly IMakeGamestateDecisions engine; // for pushing
-
-		public ToDreamAThousandDeaths(Spirit spirit, GameState gameState, Space space, int[] counts, Action<FearArgs> addFear, Cause destructionSource) : base( 
-			space, 
-			counts.ToList().ToArray(),  // make a copy so we don't really kill anything
-			addFear,
-			destructionSource
-		) {
-			this.engine = spirit.MakeDecisionsFor(gameState);
+	public class DetachedInvaderCounts : IInvaderCounts {
+		public DetachedInvaderCounts( IInvaderCounts src ) {
+			counts = new CountDictionary<InvaderSpecific>();
+			foreach(var invader in src.Keys)
+				counts[invader] = src[invader];
+		}
+		public int this[InvaderSpecific invader] {
+			get => counts[invader];
+			set => counts[invader] = value;
 		}
 
-		protected override async Task OnInvaderDestroyed( InvaderSpecific specific ) {
-			if(specific.Generic == Invader.City) {
-				AddFear(5);
-			} else if(specific.Generic == Invader.Town) {
-				AddFear(2);
-				await BringerPushNInvaders( Space, 1, Invader.Town ); // !!! wrong, need to push correct hit-points
-			} else {
-				await BringerPushNInvaders( Space, 1, Invader.Explorer );
-			}
-		}
+		public IEnumerable<InvaderSpecific> Keys => counts.Keys;
 
-		async Task BringerPushNInvaders( Space source, int countToPush
-			, params Invader[] healthyInvaders
-		) {
+		public int Total => counts.Values.Sum();
 
-			InvaderSpecific[] CalcInvaderTypes() => engine.GameState.InvadersOn( source ).FilterBy( healthyInvaders );
-
-			var invaders = CalcInvaderTypes();
-			while(0 < countToPush && 0 < invaders.Length) {
-//				var invader = await engine.Self.SelectInvader( source, "Select invader to push", invaders, Present.Always );
-				var invader = await engine.Self.Action.Choose( new SelectInvaderToPushDecision( source, countToPush, invaders, Present.Always ) );
-
-				if(invader == null)
-					break;
-
-				var destination = await engine.Self.Action.Choose( new TargetSpaceDecision(
-					"Push " + invader.Summary + " to", 
-					source.Adjacent.Where( SpaceFilter.ForCascadingBlight.GetFilter( engine.Self, engine.GameState, Target.Any ) ) 
-				));
-				await engine.GameState.MoveInvader( invader, source, destination );
-
-				--countToPush;
-				invaders = CalcInvaderTypes();
-			}
-		}
-
+		readonly CountDictionary<InvaderSpecific> counts;
 	}
+
 
 }

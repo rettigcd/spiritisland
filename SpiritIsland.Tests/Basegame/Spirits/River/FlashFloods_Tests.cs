@@ -24,10 +24,11 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			spirit.Presence.PlaceOn(presenceSpace);
 			//   And: 1 of each type of Invaders in Inland space (A4)
 			Space targetSpace = board[4];
-			gameState.Adjust(targetSpace,InvaderSpecific.City,1);
-			gameState.Adjust(targetSpace,InvaderSpecific.Town,1);
-			gameState.Adjust(targetSpace,InvaderSpecific.Explorer,1);
-			Assert.Equal("1C@3,1T@2,1E@1",gameState.InvadersOn(targetSpace).ToString());
+			var counts = gameState.Invaders.Counts[targetSpace];
+			counts.Add(Invader.City,1);
+			counts.Add(Invader.Town,1);
+			counts.Add(Invader.Explorer,1);
+			gameState.Assert_Invaders(targetSpace, "1C@3,1T@2,1E@1" );
 
 			//   And: Purchased FlashFloods
 			var card = spirit.Hand.Single(c=>c.Name == FlashFloods.Name);
@@ -48,7 +49,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			// Then: resolved => Applu
 			Assert.True(action.IsResolved);
-			Assert.Equal("1C@3,1T@2",gameState.InvadersOn(targetSpace).ToString());
+			gameState.Assert_Invaders(targetSpace, "1C@3,1T@2" );
 		}
 
 		[Fact]
@@ -63,10 +64,11 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			spirit.Presence.PlaceOn(presenceSpace);
 			//   And: 1 of each type of Invaders in Costal space (A2)
 			Space targetSpace = board[2];
-			gameState.Adjust(targetSpace,InvaderSpecific.City,1);
-			gameState.Adjust(targetSpace,InvaderSpecific.Town,1);
-			gameState.Adjust(targetSpace,InvaderSpecific.Explorer,1);
-			gameState.InvadersOn( targetSpace ).ToString().ShouldBe("1C@3,1T@2,1E@1");
+			var grp = gameState.Invaders.Counts[targetSpace];
+			grp.Add(Invader.City,1);
+			grp.Add(Invader.Town,1);
+			grp.Add(Invader.Explorer,1);
+			gameState.Assert_Invaders(targetSpace, "1C@3,1T@2,1E@1" );
 
 			//   And: Purchased FlashFloods
 			var card = spirit.Hand.Single(c=>c.Name == FlashFloods.Name);
@@ -85,7 +87,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			// And: apply doesn't throw an exception
 			action.IsResolved.ShouldBeTrue();
-			Assert.Equal("1C@1,1T@2,1E@1",gameState.InvadersOn(targetSpace).ToString());
+			gameState.Assert_Invaders(targetSpace, "1C@1,1T@2,1E@1" );
 		}
 
 		//[Fact(Skip = "not implemented")]

@@ -25,14 +25,14 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			// Given: dahan on a3
 			gs.Dahan.Adjust(a[3]);
 			//  and: 2 explorers on a2
-			gs.Adjust(a[2],InvaderSpecific.Explorer,2);
+			gs.Invaders.Counts[a[2]].Adjust(Invader.Explorer[1],2);
 
 			When_ActivateCard( SuddenAmbush.Name );
 			Step( "Select space to target.", "A1,A2,A4,A5,A6", a[2], false );
 			Step( "Gather Dahan (1 remaining)", "A3,Done", a[3], true);
 
 			// Then: 1 explorer left
-			gs.InvadersOn( a[2] ).ToString().ShouldBe("1E@1");
+			gs.Assert_Invaders( a[2], "1E@1" );
 		}
 
 		[Fact]
@@ -41,14 +41,14 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			gs.Dahan.Adjust( a[2] );
 			gs.Dahan.Adjust( a[1], 2 );
 			//  and: 5 explorers on a1
-			gs.Adjust( a[1], InvaderSpecific.Explorer, 5 );
+			gs.Invaders.Counts[a[1]].Adjust( Invader.Explorer[1], 5 );
 
 			When_ActivateCard( SuddenAmbush.Name );
 			Step( "Select space to target.", "A1,A2,A4,A5,A6", a[1], false );
 			Step( "Gather Dahan (1 remaining)", "A2,Done", a[2], true );
 
 			// Then: 5-2-1 = 2 explorers left
-			gs.InvadersOn( a[1] ).ToString().ShouldBe( "2E@1" );
+			gs.Assert_Invaders( a[1], "2E@1" );
 		}
 
 		[Fact]
@@ -57,14 +57,14 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			gs.Dahan.Adjust(a[2]);
 			gs.Dahan.Adjust(a[1], 2);
 			//  and: 1 town on a1
-			gs.Adjust(a[1], InvaderSpecific.Town, 1);
+			gs.Invaders.Counts[a[1]].Add(Invader.Town);
 
 			When_ActivateCard(SuddenAmbush.Name);
 			Step("Select space to target.", "A1,A2,A4,A5,A6", a[1], false);
 			Step("Gather Dahan (1 remaining)", "A2,Done", a[2], true);
 
 			// Then: 5-2-1 = 2 explorers left
-			gs.InvadersOn(a[1]).ToString().ShouldBe("1T@2");
+			gs.Assert_Invaders(a[1], "1T@2" );
 		}
 
 	}

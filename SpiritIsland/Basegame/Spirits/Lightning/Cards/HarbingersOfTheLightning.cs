@@ -18,8 +18,8 @@ namespace SpiritIsland.Basegame {
 			// if pushed dahan into town or city
 			bool pushedToBuildingSpace = destinationSpaces
 				.Where(neighbor => {
-					var grp = ctx.GameState.InvadersOn(neighbor);
-					return grp.HasTown || grp.HasCity;
+					var grp = ctx.GameState.Invaders.Counts[neighbor];
+					return grp.Has(Invader.Town) || grp.Has(Invader.City);
 				})
 				.Any();
 			if(pushedToBuildingSpace)

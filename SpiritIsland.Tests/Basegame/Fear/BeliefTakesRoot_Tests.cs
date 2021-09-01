@@ -26,7 +26,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		void Given_DahanAndTownsInSpaceWithPresence(int desiredCount,int presenceCount) { 
 			//   And: dahan & towns
 			gameState.Dahan.Adjust( ravageSpace, desiredCount - gameState.Dahan.Count(ravageSpace) );
-			gameState.Adjust( ravageSpace, InvaderSpecific.Town, desiredCount );
+			gameState.Invaders.Counts[ravageSpace].Add( Invader.Town, desiredCount );
 
 			//   And: Presence
 			var spirit = gameState.Spirits[0];
@@ -61,7 +61,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			Assert.Equal( 1, gameState.Dahan.Count( ravageSpace ) );
 
 			//   And: 0 towns
-			Assert.Equal( "", gameState.InvadersOn( ravageSpace ).ToString() );
+			gameState.Assert_Invaders(ravageSpace,"");
 			Assert.False( gameState.HasBlight( ravageSpace ) );
 
 		}
@@ -79,7 +79,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			Assert.Equal( 1, gameState.Dahan.Count( ravageSpace ) );
 
 			//   And: 0 towns
-			Assert.Equal( "1T@2", gameState.InvadersOn( ravageSpace ).ToString() );
+			gameState.Assert_Invaders(ravageSpace, "1T@2" );
 			Assert.True( gameState.HasBlight( ravageSpace ) );
 		}
 
@@ -89,4 +89,5 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			await gameState.Ravage( invaderCard );
 		}
 	}
+
 }

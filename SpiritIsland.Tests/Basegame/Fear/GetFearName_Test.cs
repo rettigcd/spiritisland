@@ -2,7 +2,7 @@
 using SpiritIsland.Basegame;
 using Shouldly;
 
-namespace SpiritIsland.Tests {
+namespace SpiritIsland.Tests.Core {
 	public class GetFearName_Test {
 		[Fact]
 		public void GetName() {

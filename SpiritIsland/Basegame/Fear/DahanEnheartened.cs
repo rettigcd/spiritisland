@@ -11,7 +11,7 @@ namespace SpiritIsland.Basegame {
 		[FearLevel( 1, "Each player may Push 1 Dahan from a land with Invaders or Gather 1 Dahan into a land with Invaders." )]
 		public async Task Level1( GameState gs ) {
 			foreach(var spirit in gs.Spirits) {
-				var spacesWithInvaders = gs.Island.AllSpaces.Where( gs.HasInvaders ).ToArray();
+				var spacesWithInvaders = gs.Island.AllSpaces.Where( gs.Invaders.AreOn ).ToArray();
 				var target = await spirit.Action.Choose( new TargetSpaceDecision( "Select Space to Gather or push 1 dahan", spacesWithInvaders));
 				bool canPush = gs.Dahan.Has(target);
 				bool canGather = target.Adjacent.Any(gs.Dahan.Has);
@@ -39,7 +39,7 @@ namespace SpiritIsland.Basegame {
 				var target = await spirit.Action.Choose( new TargetSpaceDecision( "Fear:select land with dahan for 1 damage", options ));
 				await engine.GatherUpToNDahan(target,2);
 				if(gs.Dahan.Has(target))
-					await gs.SpiritFree_DamageInvaders(target, 1 );
+					await gs.SpiritFree_FearCard_DamageInvaders(target, 1 );
 				used.Add( target );
 			}
 		}
@@ -51,7 +51,7 @@ namespace SpiritIsland.Basegame {
 				var options = gs.Island.AllSpaces.Where( gs.Dahan.Has ).Except( used ).ToArray();
 				var target = await spirit.Action.Choose( new TargetSpaceDecision( "Fear:select land with dahan for 1 damage", options ));
 				await spirit.MakeDecisionsFor( gs ).GatherUpToNDahan( target, 2 );
-				await gs.SpiritFree_DamageInvaders(target, gs.Dahan.Count(target) );
+				await gs.SpiritFree_FearCard_DamageInvaders(target, gs.Dahan.Count(target) );
 				used.Add( target );
 			}
 		}

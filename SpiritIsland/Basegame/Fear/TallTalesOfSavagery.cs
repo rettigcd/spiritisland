@@ -10,17 +10,17 @@ namespace SpiritIsland.Basegame {
 		[FearLevel( 1, "Each player removes 1 Explorer from a land with Dahan." )]
 		public async Task Level1( GameState gs ) {
 			foreach(var spirit in gs.Spirits) {
-				var options = gs.Island.AllSpaces.Where(s => gs.Dahan.Has(s) && gs.InvadersOn(s).HasExplorer ).ToArray();
+				var options = gs.Island.AllSpaces.Where(s => gs.Dahan.Has(s) && gs.Invaders.Counts[s].Has(Invader.Explorer) ).ToArray();
 				if(options.Length==0) return;
 				var target = await spirit.Action.Choose( new TargetSpaceDecision( "Fear:select land with dahan to remove explorer", options ));
-				gs.Adjust( target, InvaderSpecific.Explorer, -1 );
+				gs.Invaders.Counts[target].Adjust( Invader.Explorer[1], -1 );
 			}
 		}
 
 		[FearLevel( 2, "Each player removes 2 Explorer or 1 Town from a land with Dahan." )]
 		public async Task Level2( GameState gs ) {
 			foreach(var spirit in gs.Spirits) {
-				var options = gs.Island.AllSpaces.Where( s => gs.Dahan.Has( s ) && gs.InvadersOn( s ).HasExplorer ).ToArray();
+				var options = gs.Island.AllSpaces.Where( s => gs.Dahan.Has( s ) && gs.Invaders.Counts[ s ].Has(Invader.Explorer) ).ToArray();
 				if(options.Length == 0) return;
 				var target = await spirit.Action.Choose( new TargetSpaceDecision( "Fear:select land with dahan to remove explorer", options ));
 				RemoveTownOr2Explorers( gs, target );
@@ -31,17 +31,17 @@ namespace SpiritIsland.Basegame {
 		public Task Level3( GameState gs ) {
 			foreach(var space in gs.Island.AllSpaces.Where(gs.Dahan.Has))
 				RemoveTownOr2Explorers( gs, space );
-			foreach(var space in gs.Island.AllSpaces.Where( s=>gs.Dahan.Count(s)>=2 && gs.InvadersOn(s).HasCity ))
-				gs.Adjust(space,InvaderSpecific.City,-1); // !!! what about damaged cities?
+			foreach(var space in gs.Island.AllSpaces.Where( s=>gs.Dahan.Count(s)>=2 && gs.Invaders.Counts[s].Has(Invader.City) ))
+				gs.Invaders.Counts[space].Remove(Invader.City);
 			return Task.CompletedTask;
 		}
 
 		static void RemoveTownOr2Explorers( GameState gs, Space target ) {
-			var grp = gs.InvadersOn( target );
-			if(grp.HasTown)
-				gs.Adjust( target, InvaderSpecific.Town, -1 ); // !!! what about damaged towns?  shouldn't we be able to remove them also?
+			var grp = gs.Invaders.Counts[ target ];
+			if(grp.Has(Invader.Town))
+				grp.Remove( Invader.Town );
 			else
-				gs.Adjust( target, InvaderSpecific.Explorer, -2 );
+				grp.Adjust( Invader.Explorer[1], -2 );
 		}
 
 	}

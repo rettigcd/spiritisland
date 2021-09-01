@@ -32,9 +32,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// 1 explorer on A4
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[4];
-			gameState.Adjust(targetSpace,InvaderSpecific.Explorer,explorerCount);
-			gameState.Adjust(targetSpace,InvaderSpecific.Town,townCount);
-			gameState.Adjust(targetSpace,InvaderSpecific.City,cityCount);
+			var grp = gameState.Invaders.Counts[targetSpace];
+			grp.Add( Invader.Explorer,explorerCount );
+			grp.Add( Invader.Town,townCount );
+			grp.Add( Invader.City,cityCount );
 
 			//  When: activating card
 			card.ActivateAsync( spirit, gameState );
@@ -53,8 +54,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Assert.True(action.IsResolved);
 
 			// check that explore was moved
-			Assert.Equal(expectedTargetResult, gameState.InvadersOn(targetSpace).ToString());
-			Assert.Equal(expectedDestinationResult, gameState.InvadersOn(invaderDestination).ToString());
+			gameState.Assert_Invaders(targetSpace, expectedTargetResult );
+			gameState.Assert_Invaders( invaderDestination, expectedDestinationResult );
 		}
 
 		// WashAway: Multiple target lands
@@ -67,14 +68,14 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// 1 explorer on A4
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[2];
-			gameState.Adjust(targetSpace,InvaderSpecific.Explorer,1);
+			gameState.Invaders.Counts[targetSpace].Add(Invader.Explorer);
 
 			//  When: activating card
 //			var engine = spirit.Bind( gameState );
 			card.ActivateAsync( spirit, gameState );
 			action = spirit.Action;
 
-			Then_SelectInvaderToPush( InvaderSpecific.Explorer, 3,"E@1", "Done" );
+			Then_SelectInvaderToPush( Invader.Explorer[1], 3,"E@1", "Done" );
 			
 			//  Then: card has options of where to push 1 explorer
 			Assert_Options( targetSpace.Adjacent.Where(x=>x.Terrain != Terrain.Ocean ), new TextOption("Done") );
@@ -88,8 +89,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// 1 explorer + 1 Town on A4
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[4];
-			gameState.Adjust(targetSpace,InvaderSpecific.Explorer,1);
-			gameState.Adjust(targetSpace,InvaderSpecific.Town,1);
+			var grp =gameState.Invaders.Counts[targetSpace];
+			grp.Add(Invader.Explorer);
+			grp.Add(Invader.Town);
 
 			var explorerDestination = board[2];
 			var townDestination = board[3];
@@ -101,7 +103,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			//  Then: Select Explorer
 			Assert.False(action.IsResolved);
 			Assert_Options("E@1,T@2","Done");
-			action.Choose(InvaderSpecific.Explorer);
+			action.Choose("E@1");
 
 			//  Then: Select destination for Explorer
 			Assert.False(action.IsResolved);
@@ -110,7 +112,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			//  Then: Select Town
 			Assert.False(action.IsResolved);
 			Assert_Options("T@2","Done");
-			action.Choose(InvaderSpecific.Town);
+			action.Choose( "T@2" );
 
 			//  Then: Select destination for Town
 			Assert.False(action.IsResolved);
@@ -120,9 +122,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Assert.True(action.IsResolved);
 
 			// check that explore was moved
-			Assert.Equal("", gameState.InvadersOn(targetSpace).ToString());
-			Assert.Equal("1E@1", gameState.InvadersOn(explorerDestination).ToString());
-			Assert.Equal("1T@2", gameState.InvadersOn(townDestination).ToString());
+			gameState.Assert_Invaders(targetSpace,"");
+			gameState.Assert_Invaders(explorerDestination, "1E@1" );
+			gameState.Assert_Invaders(townDestination, "1T@2" );
 		}
 
 		[Fact]
@@ -132,7 +134,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// 1 damaged town on A4
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[4];
-			gameState.Adjust( targetSpace, InvaderSpecific.Town1, 1 );
+			gameState.Invaders.Counts[targetSpace].Adjust( Invader.Town[1], 1 );
 
 			var invaderDestination = board[2];
 
@@ -143,14 +145,14 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			//  Auto-Selects: target space
 			//			action.Select( targetSpace );
 
-			Then_SelectInvaderToPush( InvaderSpecific.Town1, 3, "T@1", "Done" );
+			Then_SelectInvaderToPush( Invader.Town[1], 3, "T@1", "Done" );
 			Then_PushInvader( "T@1", invaderDestination, "A1","A2","A3","A5","Done" );
 
 			Assert.True( action.IsResolved );
 
 			// check that explore was moved
-			Assert.Equal( "", gameState.InvadersOn( targetSpace ).ToString() );
-			Assert.Equal( "1T@1", gameState.InvadersOn( invaderDestination ).ToString() );
+			gameState.Assert_Invaders( targetSpace, "" );
+			gameState.Assert_Invaders( invaderDestination, "1T@1" );
 		}
 
 		void Then_PushInvader( 
@@ -180,26 +182,26 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// 1 explorer + 1 Town on A4
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[4];
-			gameState.Adjust( targetSpace, InvaderSpecific.Explorer, 3 );
+			gameState.Invaders.Counts[ targetSpace ].Add( Invader.Explorer, 3 );
 
 			//  When: activating card
 			When_PlayingCard();
 
-			Then_SelectInvaderToPush(InvaderSpecific.Explorer,3, "E@1","Done");
+			Then_SelectInvaderToPush(Invader.Explorer[1],3, "E@1","Done");
 
 			//  Then: Select destination for Explorer 1
 			var dstn1 = board[2];
 			action.Choose( dstn1 );
 			Assert.False( action.IsResolved );
 
-			Then_SelectInvaderToPush(InvaderSpecific.Explorer,2,"E@1","Done");
+			Then_SelectInvaderToPush(Invader.Explorer[1],2,"E@1","Done");
 
 			//  Then: Select destination for Explorer 2
 			var dstn2 = board[3];
 			action.Choose( dstn2 );
 			Assert.False( action.IsResolved );
 
-			Then_SelectInvaderToPush(InvaderSpecific.Explorer,1,"E@1","Done");
+			Then_SelectInvaderToPush(Invader.Explorer[1],1,"E@1","Done");
 			//  Then: Select destination for Explorer 3
 			var dstn3 = board[5];
 			action.Choose( dstn3 );
@@ -208,10 +210,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// And: apply doesn't throw an exception
 
 			// check that explore was moved
-			Assert.Equal( "", gameState.InvadersOn( targetSpace ).ToString() );
-			Assert.Equal( "1E@1", gameState.InvadersOn( dstn1 ).ToString() );
-			Assert.Equal( "1E@1", gameState.InvadersOn( dstn2 ).ToString() );
-			Assert.Equal( "1E@1", gameState.InvadersOn( dstn3 ).ToString() );
+			gameState.Assert_Invaders(targetSpace,"");
+			gameState.Assert_Invaders(dstn1, "1E@1" );
+			gameState.Assert_Invaders( dstn2, "1E@1" );
+			gameState.Assert_Invaders( dstn3, "1E@1" );
 		}
 
 		void Given_RiverPlayingWashAway(string startingPresence="A5") {

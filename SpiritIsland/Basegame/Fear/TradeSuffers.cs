@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 
 		[FearLevel( 1, "Invaders do not Build in lands with City." )]
 		public Task Level1( GameState gs ) {
-			gs.SkipBuild( gs.Island.AllSpaces.Where( s => gs.InvadersOn( s ).HasCity ).ToArray() );
+			gs.SkipBuild( gs.Island.AllSpaces.Where( s => gs.Invaders.Counts[ s ].Has(Invader.City) ).ToArray() );
 			// !! no unit tests on this
 			return Task.CompletedTask;
 		}
@@ -17,26 +17,28 @@ namespace SpiritIsland.Basegame {
 		[FearLevel( 2, "Each player may replace 1 Town with 1 Explorer in a Coastal land." )]
 		public async Task Level2( GameState gs ) {
 			foreach(var spirit in gs.Spirits) {
-				var options = gs.Island.AllSpaces.Where(s=>s.IsCostal&&gs.InvadersOn(s).HasTown).ToArray();
+				var options = gs.Island.AllSpaces.Where(s=>s.IsCostal&&gs.Invaders.Counts[s].Has(Invader.Town)).ToArray();
 				if(options.Length==0) return;
 				var target = await spirit.Action.Choose( new TargetSpaceDecision( "Replace town with explorer", options));
-				gs.Adjust(target,InvaderSpecific.Town,-1);
-				gs.Adjust( target, InvaderSpecific.Explorer, 1 );
+				var grp = gs.Invaders.Counts[ target ];
+				grp.Remove( Invader.Town );
+				grp.Adjust( Invader.Explorer[1], 1 );
 			}
 		}
 
 		[FearLevel( 3, "Each player may replace 1 City with 1 Town or 1 Town with 1 Explorer in a Coastal land." )]
 		public async Task Level3( GameState gs ) {
 			foreach(var spirit in gs.Spirits) {
-				var options = gs.Island.AllSpaces.Where( s => s.IsCostal && gs.InvadersOn( s ).HasAny(Invader.Town,Invader.City) ).ToArray();
+				var options = gs.Island.AllSpaces.Where( s => s.IsCostal && gs.Invaders.Counts[ s ].HasAny(Invader.Town,Invader.City) ).ToArray();
 				if(options.Length == 0) return;
 				var target = await spirit.Action.Choose( new TargetSpaceDecision( "Replace town with explorer", options ));
-				if(gs.InvadersOn( target ).HasCity) {
-					gs.Adjust( target, InvaderSpecific.City, -1 );
-					gs.Adjust( target, InvaderSpecific.Town, 1 );
+				var cnts = gs.Invaders.Counts[target];
+				if(cnts.Has(Invader.City)) {
+					cnts.Remove( Invader.City);
+					cnts.Adjust( Invader.Town[2], 1 );
 				} else {
-					gs.Adjust( target, InvaderSpecific.Town, -1 );
-					gs.Adjust( target, InvaderSpecific.Explorer, 1 );
+					cnts.Remove( Invader.Town );
+					cnts.Adjust( Invader.Explorer[1], 1 );
 				}
 			}
 		}

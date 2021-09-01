@@ -34,13 +34,13 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 		[Fact]
 		public void TownDamage_Generates2Defend() {
 			// has town
-			ctx.Invaders.Adjust(InvaderSpecific.Town,1);
+			ctx.InvaderCounts.Add(Invader.Town);
 
 			async Task When() {
 				// Given: using Dread Apparitions
 				await DreadApparitions.ActAsync( ctx );
 				// When: destroying the town
-				await ctx.InvadersOn.Destroy(Invader.Town,1);
+				await ctx.PowerInvaders.Destroy(Invader.Town,1);
 			}
 			_ = When();
 
@@ -51,17 +51,13 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 
 		// Generate 5 DATD fear by 'killing' a city - should defend 5
 		[Fact]
-		public void CityDamage_Generates5Defend() {
+		public async Task CityDamage_Generates5Defend() {
 			// has city
-			ctx.Invaders.Adjust( InvaderSpecific.City, 1 );
+			ctx.InvaderCounts.Add( Invader.City );
 
-			async Task When() {
-				// Given: using Dread Apparitions
-				await DreadApparitions.ActAsync( ctx );
-				// When: destroying the city
-				await ctx.InvadersOn.Destroy( Invader.City, 1 );
-			}
-			_ = When();
+			await DreadApparitions.ActAsync( ctx );
+			// When: destroying the city
+			await ctx.PowerInvaders.Destroy( Invader.City, 1 );
 
 			// Then: 5 fear should have triggered 2 defend
 			ctx.GameState.GetDefence( ctx.Target ).ShouldBe( 5 );
@@ -69,19 +65,16 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 		}
 
 		[Fact]
-		public void DahanDamage_Generates0() {
+		public async Task DahanDamage_Generates0() {
 			// has 1 city and lots of dahan
-			ctx.Invaders.Adjust( InvaderSpecific.City, 1 );
+			ctx.InvaderCounts.Add( Invader.City ); // don't use ctx.Invaders because it has a fake/dream invader count
 			ctx.AdjustDahan(10);
 
-			async Task When() {
-				// Given: using Dread Apparitions
-				await DreadApparitions.ActAsync( ctx );
+			// Given: using Dread Apparitions
+			await DreadApparitions.ActAsync( ctx );
 
-				// When: dahan destroy the city
-				await ctx.GameState.Ravage(new InvaderCard(ctx.Target.Terrain));
-			}
-			_ = When();
+			// When: dahan destroy the city
+			await ctx.GameState.Ravage( new InvaderCard( ctx.Target.Terrain ) );
 
 			// Then: 2 fear from city
 			Assert_GeneratedFear(2); // normal
@@ -93,7 +86,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 		[Fact]
 		public void FearInOtherLand_Generates0() {
 			// has 1 city and lots of dahan
-			ctx.Invaders.Adjust( InvaderSpecific.City, 1 );
+			ctx.InvaderCounts.Add( Invader.City );
 			ctx.AdjustDahan( 10 );
 
 			async Task When() {
@@ -112,8 +105,14 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 
 
 		void Assert_GeneratedFear( int expectedFearCount ) {
-			ctx.GameState.Fear.Pool.ShouldBe( expectedFearCount % 4 );
-			ctx.GameState.Fear.ActivatedCards.Count.ShouldBe( expectedFearCount / 4 );
+
+			int actualFear = ctx.GameState.Fear.Pool
+				+ 4 * ctx.GameState.Fear.ActivatedCards.Count;
+
+			actualFear.ShouldBe(expectedFearCount,"fear count is wrong");
+
+//			ctx.GameState.Fear.Pool.ShouldBe( expectedFearCount % 4 );
+//			ctx.GameState.Fear.ActivatedCards.Count.ShouldBe( expectedFearCount / 4 );
 		}
 
 

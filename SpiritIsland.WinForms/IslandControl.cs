@@ -103,12 +103,12 @@ namespace SpiritIsland.WinForms {
 			defend = Image.FromFile(".\\images\\defend1orange.png");
 
 			invaderImages = new Dictionary<InvaderSpecific, Image> {
-				[InvaderSpecific.City] = city,
-				[InvaderSpecific.City2] = city2,
-				[InvaderSpecific.City1] = city1,
-				[InvaderSpecific.Town] = town,
-				[InvaderSpecific.Town1] = town1,
-				[InvaderSpecific.Explorer] = explorer,
+				[Invader.City[3]] = city,
+				[Invader.City[2]] = city2,
+				[Invader.City[1]] = city1,
+				[Invader.Town[2]] = town,
+				[Invader.Town[1]] = town1,
+				[Invader.Explorer[1]] = explorer,
 			};
 
 			this.gameState = gameState;
@@ -229,7 +229,6 @@ namespace SpiritIsland.WinForms {
 
 				using Pen p = new Pen( Color.DeepSkyBlue, 7 );
 				var drawer = new ArrowDrawer(pe.Graphics,p);
-				const float radius = 20;
 				switch(adjacentDecision.GatherPush) {
 					case GatherPush.Gather:
 						foreach(var other in others)
@@ -307,12 +306,12 @@ namespace SpiritIsland.WinForms {
 			bool isInvaderSpace = ios!=null && ios.Space == space;
 
 			// invaders
-			var grp = gameState.InvadersOn( space );
-			if(grp.TotalCount==0) return;
+			var grp = gameState.Invaders.Counts[space];
+			if(!grp.Keys.Any()) return;
 
 			float maxHeight = 0;
 
-			foreach(var specific in grp.InvaderTypesPresent_Specific) {
+			foreach(var specific in grp.Keys) {
 				var img = invaderImages[specific];
 
 				// Draw Invaders

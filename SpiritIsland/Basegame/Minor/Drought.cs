@@ -7,7 +7,7 @@ namespace SpiritIsland.Basegame {
 		[MinorCard( "Drought", 1, Speed.Slow, Element.Sun, Element.Fire, Element.Earth )]
 		[FromPresence(1)]
 		static public async Task Act( TargetSpaceCtx ctx ) {
-			var grp = ctx.InvadersOn;
+			var grp = ctx.PowerInvaders;
 
 			// Destory 3 towns.
 			await grp.Destroy(Invader.Town, int.MaxValue);

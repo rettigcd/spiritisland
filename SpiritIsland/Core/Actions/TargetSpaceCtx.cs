@@ -40,27 +40,19 @@ namespace SpiritIsland {
 		// Convenience Methods - That bind to .Target
 		// could be Extension Methods
 		public void Adjust( InvaderSpecific invader, int delta )
-			=> GameState.Adjust( Target, invader, delta );
+			=> InvaderCounts.Adjust( invader, delta );
+
+		public IInvaderCounts InvaderCounts	=> GameState.Invaders.Counts[Target];
 
 		public void AdjustDahan( int delta )
 			=> GameState.Dahan.Adjust(Target, delta );
 
-		public InvaderGroup_Readonly Invaders => invadersRO ??= GameState.InvadersOn(Target);
-		InvaderGroup_Readonly invadersRO;
-
-		public InvaderGroup InvadersOn
-			=> this.Self.BuildInvaderGroup( GameState, Target );
+		//public InvaderGroup Invaders
+		//	=> this.Self.BuildInvaderGroup( GameState, Target );
 
 		public int DahanCount => GameState.Dahan.Count(Target);
 
 		public bool HasDahan => GameState.Dahan.Has( Target );
-
-
-		public async Task DamageInvaders( int damage ) {
-			if(damage == 0) return;
-			await Self.BuildInvaderGroup( GameState, Target )
-				.ApplySmartDamageToGroup( damage );
-		}
 
 		public Task GatherUpToNDahan( int dahanToGather )
 			=> this.GatherUpToNDahan(Target, dahanToGather );
@@ -80,7 +72,7 @@ namespace SpiritIsland {
 
 		public int BlightOnSpace => GameState.GetBlightOnSpace(Target);
 
-		public bool HasInvaders => GameState.HasInvaders(Target);
+		public bool HasInvaders => GameState.Invaders.AreOn(Target);
 
 		public void ModRavage( Action<ConfigureRavage> action ) => GameState.ModRavage(Target,action);
 
@@ -90,6 +82,22 @@ namespace SpiritIsland {
 		public void AddFear(int count ) { // need space so we can track fear-space association for bringer
 			GameState.Fear.AddDirect( new FearArgs{ count=count, cause = Cause.Power, space = Target });
 		}
+
+		// Use this to create Power-Damage and Power-Fear
+		public InvaderGroup PowerInvadersOn( Space target )
+			=> Self.BuildInvaderGroupForPowers( GameState, target );
+
+		// The current targets power
+		public InvaderGroup PowerInvaders => invadersRO ??= PowerInvadersOn( Target );
+
+		// Damage invaders in the current target space
+		public async Task DamageInvaders( int damage ) {
+			if(damage == 0) return;
+			await PowerInvaders.ApplySmartDamageToGroup( damage );
+		}
+
+		InvaderGroup invadersRO;
+
 
 	}
 

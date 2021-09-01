@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 		static public async Task ActAsync(TargetSpaceCtx ctx){
 
 			// destroys all explorers and towns
-			var grp = ctx.InvadersOn;
+			var grp = ctx.PowerInvaders;
 			await grp.Destroy(Invader.Explorer, int.MaxValue);
 			await grp.Destroy(Invader.Town, int.MaxValue );
 

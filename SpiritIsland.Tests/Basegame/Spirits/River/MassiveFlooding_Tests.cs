@@ -1,8 +1,6 @@
-﻿using Shouldly;
-using SpiritIsland.Basegame;
+﻿using SpiritIsland.Basegame;
 using SpiritIsland.SinglePlayer;
 using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace SpiritIsland.Tests.Basegame.Spirits.River {
@@ -92,9 +90,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			// 1 city, 5 towns, 5 invaders on A4 (range 1 from SS)
 			var space = game.Spirit.SacredSites.First().Adjacent.First();
-			game.GameState.Adjust(space,InvaderSpecific.City,1);
-			game.GameState.Adjust( space, InvaderSpecific.Town, 5 );
-			game.GameState.Adjust( space, InvaderSpecific.Explorer, 5 );
+			var grp = game.GameState.Invaders.Counts[space];
+			grp.Add( Invader.City,1);
+			grp.Add( Invader.Town, 5 );
+			grp.Add( Invader.Explorer, 5 );
 
 			game.DecisionProvider.Old_SelectGrowthOption( 0 ); // Reclaim
 			spirit.Activate_DrawPowerCard();
@@ -112,7 +111,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			game.DecisionProvider.Old_SelectOption( "Select space to target.", space.Label);
 			
 			System.Threading.Thread.Sleep(50);
-			Assert.Equal("1C@1",game.GameState.InvadersOn(space).ToString());
+			game.GameState.Assert_Invaders(space, "1C@1" );
 		}
 
 

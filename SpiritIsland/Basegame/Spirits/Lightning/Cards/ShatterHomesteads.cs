@@ -10,7 +10,7 @@ namespace SpiritIsland.Basegame {
 		[FromSacredSite(2)]
 		static public async Task Act(TargetSpaceCtx ctx){
 			// Destroy 1 town
-			await ctx.InvadersOn(ctx.Target).Destroy( Invader.Town, 1 );
+			await ctx.PowerInvaders.Destroy( Invader.Town, 1 );
 
 			// 1 fear
 			ctx.AddFear(1);

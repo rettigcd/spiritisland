@@ -14,7 +14,7 @@ namespace SpiritIsland {
 			protected override Terrain SelectTerrain( Space space ) => space.TerrainForPower;
 		}
 
-		public Func<Space, bool> GetFilter( Spirit self, GameState gameState, Target filterEnum ) {
+		public Func<Space, bool> GetFilter( Spirit _, GameState gameState, Target filterEnum ) {
 
 			Predicate<Space> baseFilter = filterEnum switch {
 				Target.Any               => ( s ) => true,
@@ -24,17 +24,17 @@ namespace SpiritIsland {
 				Target.JungleOrMountain  => ( s ) => SelectTerrain( s ).IsIn( Terrain.Jungle, Terrain.Mountain ),
 				Target.JungleOrWetland   => ( s ) => SelectTerrain( s ).IsIn( Terrain.Jungle, Terrain.Wetland ),
 				Target.MountainOrWetland => ( s ) => SelectTerrain( s ).IsIn( Terrain.Mountain, Terrain.Wetland ),
-				Target.NoInvader         => ( s ) => !gameState.HasInvaders( s ),
+				Target.NoInvader         => ( s ) => !gameState.Invaders.AreOn( s ),
 				Target.Blight            => ( s ) => gameState.HasBlight( s ),
 				Target.NoBlight          => ( s ) => !gameState.HasBlight( s ),
-				Target.BeastOrJungle     => ( s ) => SelectTerrain( s ) == Terrain.Jungle || gameState.Beasts.AreOn( s ),
-				Target.PresenceOrWilds   => ( s ) => (self.Presence.IsOn( s ) || gameState.Wilds.AreOn( s )),
-				Target.DahanOrInvaders   => ( s ) => (gameState.Dahan.Has( s ) || gameState.HasInvaders( s )),
+//				Target.BeastOrJungle     => ( s ) => SelectTerrain( s ) == Terrain.Jungle || gameState.Beasts.AreOn( s ),
+//				Target.PresenceOrWilds   => ( s ) => (self.Presence.IsOn( s ) || gameState.Wilds.AreOn( s )),
+				Target.DahanOrInvaders   => ( s ) => (gameState.Dahan.Has( s ) || gameState.Invaders.AreOn( s )),
 				Target.Costal            => ( s ) => s.IsCostal,
-				Target.Explorer          => ( s ) => gameState.InvadersOn( s ).HasExplorer,
-				Target.TownOrExplorer    => ( s ) => gameState.InvadersOn( s ).HasAny( Invader.Explorer, Invader.Town ),
+				Target.Explorer          => ( s ) => gameState.Invaders.Counts[ s ].Has(Invader.Explorer),
+				Target.TownOrExplorer    => ( s ) => gameState.Invaders.Counts[ s ].HasAny( Invader.Explorer, Invader.Town ),
 				Target.Dahan             => gameState.Dahan.Has,
-				Target.Invaders          => gameState.HasInvaders,
+				Target.Invaders          => gameState.Invaders.AreOn,
 				_                        => throw new ArgumentException( "Unexpected filter", nameof( filterEnum ) ),
 			};
 			return ( s ) => baseFilter( s ) && SelectTerrain( s ) != Terrain.Ocean;

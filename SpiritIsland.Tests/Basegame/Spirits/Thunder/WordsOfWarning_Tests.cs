@@ -16,8 +16,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			gs.Dahan.Adjust( a[4] );
 
 			//  and: 4 explorers + 1 city
-			gs.Adjust( a[2], InvaderSpecific.Explorer, 4 );
-			gs.Adjust( a[2], InvaderSpecific.City, 1 );
+			var counts = gs.Invaders.Counts[ a[2] ];
+			counts.Add( Invader.Explorer, 4 );
+			counts.Add( Invader.City );
 			// and activate card
 			When_ActivateCard( WordsOfWarning.Name );
 			Step( "Select space to target.", "A2,A4", a[2], true );
@@ -28,7 +29,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			// Then: 1 explorer left
 			// Words of Warning defend 3 cancelling out City attack leaving only 4 damage from explorers
 			// 2 Dahan attack simultaneously doing 4 points of damage, killing City and 1 explorer leaving 3 explorers
-			gs.InvadersOn( a[2] ).ToString().ShouldBe( "3E@1" );
+			gs.Assert_Invaders(a[2], "3E@1" );
 		}
 
 	}

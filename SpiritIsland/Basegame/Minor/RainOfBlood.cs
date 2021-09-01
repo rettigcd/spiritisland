@@ -6,7 +6,7 @@ namespace SpiritIsland.Basegame {
 		[MinorCard("Rain of Blood", 0, Speed.Slow, "air, water, animal")]
 		[FromSacredSite(1,Target.Invaders)]
 		static public Task ActAsync(TargetSpaceCtx ctx ) {
-			int fear = (2 <= ctx.InvadersOn.TownsAndCitiesCount)
+			int fear = (2 <= ctx.PowerInvaders.Counts.TownsAndCitiesCount())
 				? 3 
 				: 2;
 			ctx.AddFear( fear );

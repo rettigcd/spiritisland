@@ -29,12 +29,13 @@ namespace SpiritIsland.Basegame {
 			foreach(var spirit in gs.Spirits) {
 				var options = gs.Island.AllSpaces
 					.Where( spaceCondition )
-					.Where( s => gs.InvadersOn( s ).HasAny( x ) )
+					.Where( s => gs.Invaders.Counts[ s ].HasAny( x ) )
 					.ToArray();
 				if(options.Length == 0) break;
 				var target = await spirit.Action.Choose( new TargetSpaceDecision( "Fear:select land to remove 1 explorer", options ));
-				var invaderToRemove = gs.InvadersOn( target ).PickBestInvaderToRemove( x );
-				gs.Adjust( target, invaderToRemove, -1 );
+				var grp = gs.Invaders.Counts[target];
+				var invaderToRemove = grp.PickBestInvaderToRemove( x );
+				grp.Adjust( invaderToRemove, -1 );
 			}
 		}
 

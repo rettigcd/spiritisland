@@ -31,14 +31,14 @@ namespace SpiritIsland.Basegame {
 			foreach(var spirit in gs.Spirits) {
 				var options = gs.Island.AllSpaces
 					.Where( landFilter )
-					.Where( x => gs.InvadersOn( x ).HasAny( removable ) )
+					.Where( x => gs.Invaders.Counts[ x ].HasAny( removable ) )
 					.ToArray();
 				if(options.Length == 0) break;
 				var target = await spirit.Action.Choose( new TargetSpaceDecision( "Fear:Pick costal land remove invader", options ));
-				var grp = gs.InvadersOn( target );
+				var grp = gs.Invaders.Counts[ target ];
 
 				var invaderToRemove = grp.PickBestInvaderToRemove( removable );
-				gs.Adjust( target, invaderToRemove, -1 );
+				grp.Adjust( invaderToRemove, -1 );
 			}
 		}
 

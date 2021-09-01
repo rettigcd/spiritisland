@@ -23,8 +23,9 @@ namespace SpiritIsland {
 			this.Spirits = spirits;
 			InvaderDeck = new InvaderDeck();
 			Round = 1;
-			Dahan = new Dahan(this);
+			Dahan = new Dahan( this );
 			Fear = new Fear( this );
+			Invaders = new Invaders( this );
 		}
 
 		// == Components ==
@@ -36,9 +37,6 @@ namespace SpiritIsland {
 		public PowerCardDeck MajorCards {get; set; }
 		public PowerCardDeck MinorCards { get; set; }
 		// Branch & Claw
-		public TokenCounts Beasts { get; set; } = new TokenCounts();
-		public TokenCounts Wilds { get; set; } = new TokenCounts();
-
 		internal void SkipAllInvaderActions( Space target ) {
 			ModRavage(target, cfg=>cfg.ShouldRavage=false );
 			skipBuild.Add( target );
@@ -77,7 +75,6 @@ namespace SpiritIsland {
 		// == EVENTS ==
 		public AsyncEvent<Space[]> PreRavaging = new AsyncEvent<Space[]>();						// A Spread of Rampant Green - stop ravage
 		public AsyncEvent<Space[]> PreBuilding = new AsyncEvent<Space[]>();						// A Spread of Rampant Green - stop build
-		public AsyncEvent<InvaderMovedArgs> InvaderMoved = new AsyncEvent<InvaderMovedArgs>();                    // Thunderspeaker
 		public event Action<GameState> TimePassed;												// Spirit cleanup
 		// == Single Round hooks
 		public Stack<Func<GameState, Task>> TimePasses_ThisRound = new Stack<Func<GameState, Task>>();        // Gift of Power
@@ -90,9 +87,6 @@ namespace SpiritIsland {
 		}
 
 		public async Task TimePasses() {
-			// heal
-			foreach(var pair in invaderCount)
-				new InvaderGroup( pair.Key, pair.Value, null, Cause.None ).Heal();
 
 			await ExecuteAndClear_OneRoundEvents(); // this is async because of Gift of Contancy has user action 'at end of turn'
 
@@ -110,9 +104,10 @@ namespace SpiritIsland {
 
 		void InitSpace( Space space ) {
 			var counts = space.StartUpCounts;
-			Adjust( space, InvaderSpecific.City, counts.Cities );
-			Adjust( space, InvaderSpecific.Town, counts.Towns );
-			Adjust( space, InvaderSpecific.Explorer, counts.Explorers );
+			var invaders = Invaders.Counts[space];
+			invaders.Adjust( Invader.City[3], counts.Cities );
+			invaders.Adjust( Invader.Town[2], counts.Towns );
+			invaders.Adjust( Invader.Explorer[1], counts.Explorers );
 			this.Dahan.Adjust( space, counts.Dahan );
 			blightCount[space] += counts.Blight; // don't use AddBlight because that pulls it from the card and triggers blighted island
 		}
@@ -184,19 +179,26 @@ namespace SpiritIsland {
 				.Where( x => GetRavageConfiguration( x ).ShouldRavage ) // not sure this is necessary since it is called during execute
 				.ToArray();
 
-			var ravageGroups = ravageSpaces
-				.Select( InvadersOn )
-				.Where( group => group.InvaderTypesPresent_Specific.Any() )
+			var xx = ravageSpaces
+				.Select( x => Invaders.On( x, Cause.Ravage ) )
+				.ToList();
+
+			var ravageGroups = xx
+				.Where( group => group.Counts.Keys.Any() )
 				.Cast<InvaderGroup>()
 				.ToArray();
 
 			var msgs = new List<string>();
-			foreach(var grp in ravageGroups) {
-				var eng = new RavageEngine( this, grp, GetRavageConfiguration(grp.Space) );
-				await eng.Exec();
-				msgs.Add( grp.Space.Label + ": " + eng.log.Join( "  " ) );
-			}
+			foreach(var grp in ravageGroups)
+				msgs.Add(await RavageSpace( grp ) );
 			return msgs.ToArray();
+		}
+
+		protected virtual async Task<string> RavageSpace( InvaderGroup grp ) {
+			var cfg = GetRavageConfiguration( grp.Space );
+			var eng = new RavageEngine( this, grp, cfg );
+			await eng.Exec();
+			return grp.Space.Label + ": " + eng.log.Join( "  " );
 		}
 
 		public async Task<string[]> Build( InvaderCard invaderCard ) {
@@ -211,75 +213,50 @@ namespace SpiritIsland {
 			buildLands = buildLands.Except( skipBuild ).ToArray(); // reload in case they changed
 
 			return buildLands
-				.Select( InvadersOn )
-				.Cast<InvaderGroup>()
-				.Where( group => group.InvaderTypesPresent_Specific.Any() )
-				.Select( Build )
+				.Select( x=>new {space=x, cts=Invaders.Counts[x]} )
+				.Where( tup => tup.cts.Keys.Any() )
+				.Select( tup => tup.space.Label + " gets " + Build( tup.space, tup.cts ) )
 				.ToArray();
+		}
+
+		protected virtual string Build( Space space, IInvaderCounts counts ) {
+			int townCount = counts.SumEach( Invader.Town );
+			int cityCount = counts.SumEach( Invader.City );
+			InvaderSpecific invaderToAdd = townCount > cityCount ? Invader.City[3] : Invader.Town[2];
+			counts.Adjust( invaderToAdd, 1 );
+			return invaderToAdd.Generic.Label;
 		}
 
 		public Space[] Explore( InvaderCard invaderCard ) {
 			bool HasTownOrCity( Space space ) {
-				var invaders = InvadersOn( space );
-				return invaders.HasTown || invaders.HasCity;
+				return Invaders.Counts[ space ].HasAny(Invader.Town,Invader.City);
 			}
-			var exploredSpaces = Island.Boards.SelectMany( board => board.Spaces )
+			return Island.Boards.SelectMany( board => board.Spaces )
 				.Where( invaderCard.Matches )
-				.Where( space => space.IsCostal
-						 || space.Range( 1 ).Any( HasTownOrCity )
-				)
+				.Where( space => space.IsCostal || space.Range( 1 ).Any( HasTownOrCity ) )
 				.Except( skipExplore )
+				.Where( ExploresSpace )
 				.ToArray();
-
-			foreach(var space in exploredSpaces)
-				Adjust( space, InvaderSpecific.Explorer, 1 );
-			return exploredSpaces;
 		}
 
-		public bool HasInvaders( Space space ) 
-			=> GetCounts(space).Any(x=>x>0);
-
-		public void Adjust(Space space, InvaderSpecific invader, int count)
-			=> ((InvaderGroup)InvadersOn(space)).Adjust(invader,count);
-		
-		public Task MoveInvader(InvaderSpecific invader, Space from, Space to ) {
-			Adjust( from,invader,-1);
-			Adjust( to, invader, 1 );
-			return InvaderMoved.InvokeAsync( this, new InvaderMovedArgs { from = from, to = to, Invader = invader } );
-		}
-
-		public InvaderGroup_Readonly InvadersOn(Space targetSpace) {
-			return new InvaderGroup( targetSpace, this.GetCounts( targetSpace ), Fear.AddDirect, Cause.Ravage );
-		}
-
-		//public InvaderGroup AttackInvadersOn( Space targetSpace, Func<GameState, Space, int[],InvaderGroup> factory ) {
-		//	return factory( this, targetSpace, this.GetCounts( targetSpace ) );
-		//}
-
-		string Build( InvaderGroup group ) {
-			int townCount = group[InvaderSpecific.Town] + group[InvaderSpecific.Town1];
-			int cityCount = group[InvaderSpecific.City] + group[InvaderSpecific.City2] + group[InvaderSpecific.City1];
-			var invaderToAdd = townCount > cityCount ? InvaderSpecific.City : InvaderSpecific.Town;
-			Adjust( group.Space, invaderToAdd, 1 );
-			return $"{group.Space.Label} gets {invaderToAdd.Generic.Label}";
+		protected virtual bool ExploresSpace(Space space ) {
+			Invaders.Counts[space].Adjust( Invader.Explorer[1], 1 );
+			return true;
 		}
 
 
-		public async Task SpiritFree_DamageInvaders(Space space,int damage){ // !!! let players choose the item to apply damage to
+		public Invaders Invaders { get; }
+
+
+
+		public async Task SpiritFree_FearCard_DamageInvaders(Space space,int damage){ // !!! let players choose the item to apply damage to
 			if(damage==0) return;
-			await ((InvaderGroup)InvadersOn(space)).ApplySmartDamageToGroup( damage );
+			await Invaders.On(space,Cause.Fear).ApplySmartDamageToGroup( damage );
 		}
 
 		#endregion
 
 		readonly CountDictionary<Space> blightCount = new CountDictionary<Space>();
-
-		readonly Dictionary<Space,int[]> invaderCount = new Dictionary<Space,int[]>();
-
-		public int[] GetCounts(Space space) {
-			if(invaderCount.ContainsKey(space)) return invaderCount[space];
-			return invaderCount[space] = new int[InvaderSpecific.TypesCount+1]; // 1 for the total
-		}
 
 	}
 
@@ -310,10 +287,5 @@ namespace SpiritIsland {
 		public List<Action<GameState, T>> Handlers = new List<Action<GameState, T>>();
 	}
 
-	public class TokenCounts {
-		public void AddTo( Space space ) { count[space]++; }
-		public bool AreOn( Space s ) => count[s] > 0;
-		readonly CountDictionary<Space> count = new CountDictionary<Space>();
-	}
 
 }

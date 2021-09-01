@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 	class MistsOfOblivion {
@@ -7,11 +6,11 @@ namespace SpiritIsland.Basegame {
 		[MajorCard( "Mists of Oblivion", 4, Speed.Slow, Element.Moon, Element.Air, Element.Water )]
 		[FromPresence(3)]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
-			var grp = ctx.InvadersOn;
+			var grp = ctx.PowerInvaders;
 
-			var startingTownsAndCities = grp.TownsAndCitiesCount;
+			int startingTownsAndCities = grp.Counts.TownsAndCitiesCount();
 			// 1 damage to each invader
-			await grp.ApplyDamageToEach(1,grp.InvaderTypesPresent_Generic.ToArray());
+			await grp.ApplyDamageToSpecifics(1,grp.Counts.Keys);
 
 			// if you have 2 moon 3 air 2 water
 			if(ctx.Self.Elements.Contains("2 moon,3 air,2 water"))
@@ -19,7 +18,7 @@ namespace SpiritIsland.Basegame {
 				await grp.ApplySmartDamageToGroup(3);
 
 			// 1 fear per town/city this power destroys (to a max of 4)
-			int destroyedTownsAndCities = startingTownsAndCities - grp.TownsAndCitiesCount;
+			int destroyedTownsAndCities = startingTownsAndCities - grp.Counts.TownsAndCitiesCount();
 			ctx.AddFear( destroyedTownsAndCities );
 		}
 

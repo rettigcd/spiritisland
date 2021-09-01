@@ -9,15 +9,15 @@ namespace SpiritIsland.Basegame {
 		[FearLevel( 1, "Each Town destroys 1 Explorer in its land." )]
 		public Task Level1( GameState gs ) {
 			foreach(var space in gs.Island.AllSpaces)
-				EachTownDestroys1Explorer( (InvaderGroup)gs.InvadersOn( space ) );
+				Destroy_1ExplorerPerTown( gs.Invaders.On( space, Cause.Fear ) );
 			return Task.CompletedTask;
 		}
 
 		[FearLevel( 2, "Each Town destroys 1 Explorer in its land. Each City destroys 2 Explorer in its land." )]
 		public Task Level2( GameState gs ) {
 			foreach(var space in gs.Island.AllSpaces) {
-				var grp = gs.InvadersOn( space );
-				EachTownDestroys1AndEachCityDestoys2( (InvaderGroup)grp );
+				var grp = gs.Invaders.On( space, Cause.Fear );
+				Destory_1ExplorerPerTownAnd2ExplorersPerCity( grp );
 			}
 			return Task.CompletedTask;
 		}
@@ -25,23 +25,23 @@ namespace SpiritIsland.Basegame {
 		[FearLevel( 3, "Destroy all Explorer in lands with Town / City. Each City destroys 1 Town in its land." )]
 		public async Task Level3( GameState gs ) {
 			foreach(var space in gs.Island.AllSpaces) {
-				var grp = (InvaderGroup)gs.InvadersOn( space );
+				var grp = (InvaderGroup)gs.Invaders.On( space, Cause.Fear );
 				await grp.Destroy( Invader.Explorer, int.MaxValue );
 				await EachCityDestroys1Town( grp );
 		
 			}
 		}
 
-		static Task EachTownDestroys1Explorer( InvaderGroup grp ) {
-			return grp.Destroy( Invader.Explorer, grp[Invader.Town] );
+		static Task Destroy_1ExplorerPerTown( InvaderGroup grp ) {
+			return grp.Destroy( Invader.Explorer, grp.Counts.SumEach(Invader.Town) );
 		}
 
 		static Task EachCityDestroys1Town( InvaderGroup grp ) {
-			return grp.Destroy( Invader.Town, grp[Invader.City] );
+			return grp.Destroy( Invader.Town, grp.Counts.SumEach(Invader.City) );
 		}
 
-		static Task EachTownDestroys1AndEachCityDestoys2( InvaderGroup grp ) {
-			int numToDestory = grp[Invader.Town] + grp[Invader.City] * 2;
+		static Task Destory_1ExplorerPerTownAnd2ExplorersPerCity( InvaderGroup grp ) {
+			int numToDestory = grp.Counts.SumEach(Invader.Town) + grp.Counts.SumEach(Invader.City) * 2;
 			return grp.Destroy( Invader.Explorer, numToDestory );
 		}
 

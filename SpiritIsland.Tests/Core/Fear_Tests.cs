@@ -2,7 +2,7 @@
 using SpiritIsland.SinglePlayer;
 using Xunit;
 
-namespace SpiritIsland.Tests {
+namespace SpiritIsland.Tests.Core {
 
 	public class Fear_Tests {
 

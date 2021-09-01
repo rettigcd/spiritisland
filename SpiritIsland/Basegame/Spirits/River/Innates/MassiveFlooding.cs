@@ -24,10 +24,10 @@ namespace SpiritIsland.Basegame {
 
 		[InnateOption("3 sun, 4 water,1 earth")]
 		static public async Task Option3Async(TargetSpaceCtx ctx){
-			var group = ctx.InvadersOn(ctx.Target);
+			var group = ctx.PowerInvaders;
 
 			// copy so we can modify
-			var invaderTypes = group.InvaderTypesPresent_Specific.ToDictionary(x=>x,x=>group[x]); 
+			var invaderTypes = group.Counts.Keys.ToDictionary(x=>x,x=>group[x]); 
 
 			foreach(var (invader,origCount) in invaderTypes.Select(x=>(x.Key,x.Value)))
 				for(int i=0;i<origCount;++i)

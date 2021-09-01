@@ -34,7 +34,6 @@ namespace SpiritIsland.Tests {
 
 			var current = decision.Assert_HasCurrent(msg);
 			current.Prompt.ShouldBe( prompt, msg, StringCompareShould.IgnoreCase );
-//			current.Prompt.ShouldStartWith( prompt );
 			IOption match = current.FindRequiredOptionByText( select );
 			decision.Choose( match );
 		}
@@ -100,6 +99,9 @@ namespace SpiritIsland.Tests {
 			decision.Old_SelectOption( "Select card to reclaim.", cardToReclaim );
 		}
 
+		static public void Assert_Invaders( this GameState gameState, Space space, string expectedString ) {
+			gameState.Invaders.Counts[ space ].ToSummary().ShouldBe( expectedString );
+		}
 
 
 	}

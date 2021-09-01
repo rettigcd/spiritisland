@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,6 +11,18 @@ namespace SpiritIsland.Tests.Core {
 
 	public class Invader_Tests {
 
+		static InvaderSpecific Parse(string s ) {
+			return s switch {
+				"C@3" => Invader.City[3],
+				"C@2" => Invader.City[2],
+				"C@1" => Invader.City[1],
+				"T@2" => Invader.Town[2],
+				"T@1" => Invader.Town[1],
+				"E@1" => Invader.Explorer[1],
+				_=>throw new FormatException("unknown invader format: "+s),
+			};
+		}
+
 		public Invader_Tests(){
 			board = Board.BuildBoardA();
 		}
@@ -18,44 +31,49 @@ namespace SpiritIsland.Tests.Core {
 		GameState gameState;
 
 		[Fact]
+		public void CantInvadeOceans() {
+			Assert.Throws<ArgumentException>(()=>new InvaderCard(Terrain.Ocean));
+		}
+
+		[Fact]
 		public void StartsWithExplorer(){
-			var deck = new InvaderDeck();
-			Assert.NotNull(deck.Explore);
-			Assert.Null(deck.Build);
-			Assert.Null(deck.Ravage);
+			var sut = new InvaderDeck();
+			Assert.NotNull(sut.Explore);
+			Assert.Null(sut.Build);
+			Assert.Null(sut.Ravage);
 		}
 
 		[Fact]
 		public void AdvanceCards(){
 
-			var deck = new InvaderDeck();
+			var sut = new InvaderDeck();
 
 			// Advance the cards 12 times
 			for(int i=0;i<11;++i){
 
-				var explore = deck.Explore;
-				var build = deck.Build;
-				var ravage = deck.Ravage;
-				int discardCount = deck.CountInDiscard;
+				var explore = sut.Explore;
+				var build = sut.Build;
+				var ravage = sut.Ravage;
+				int discardCount = sut.CountInDiscard;
 
 				// When: advance the cards
-				deck.Advance();
+				sut.Advance();
 
 				// Then cards advance
-				Assert.NotEqual(explore,deck.Explore);
-				Assert.Equal(explore,deck.Build);
-				Assert.Equal(build,deck.Ravage);
-				Assert.Equal(discardCount+(ravage==null?0:1),deck.CountInDiscard);
+				Assert.NotEqual(explore,sut.Explore);
+				Assert.Equal(explore,sut.Build);
+				Assert.Equal(build,sut.Ravage);
+				Assert.Equal(discardCount+(ravage==null?0:1),sut.CountInDiscard);
 
 			}
 		}
 
 		[Fact]
 		public void CardsUsedAre_3L1_4L2_5L3() {
-			var deck = new InvaderDeck();
-			Assert_NextNCardsFromDeck( deck, InvaderDeck.Level1Cards, 3 );
-			Assert_NextNCardsFromDeck( deck, InvaderDeck.Level2Cards, 4 );
-			Assert_NextNCardsFromDeck( deck, InvaderDeck.Level3Cards, 5 );
+			var sut = new InvaderDeck();
+			Assert_NextNCardsFromDeck( sut, InvaderDeck.Level1Cards, 3 );
+			Assert_NextNCardsFromDeck( sut, InvaderDeck.Level2Cards, 4 );
+			Assert_NextNCardsFromDeck( sut, InvaderDeck.Level3Cards, 5 );
 		}
 
 		[Theory]
@@ -64,8 +82,8 @@ namespace SpiritIsland.Tests.Core {
 		[InlineDataAttribute("W","A2,A5")]
 		[InlineDataAttribute("S","A4,A7")]
 		public void Level1CardTargets(string cardText,string expectedTargets){
-			var card = InvaderDeck.Level1Cards.Single(c=>c.Text==cardText);
-			var targets = board.Spaces.Where(card.Matches).Select(x=>x.Label).ToArray();
+			var sut = InvaderDeck.Level1Cards.Single(c=>c.Text==cardText);
+			var targets = board.Spaces.Where(sut.Matches).Select(x=>x.Label).ToArray();
 			Assert.Equal(expectedTargets,targets.Join(","));
 		}
 
@@ -77,8 +95,8 @@ namespace SpiritIsland.Tests.Core {
 		[InlineDataAttribute("Costal","A1,A2,A3")]
 		public void Level2CardTargets(string cardText,string expectedTargets){
 			var cards = InvaderDeck.Level2Cards.Where(c=>c.Text==cardText);
-			var card = Assert.Single(cards);
-			var targets = board.Spaces.Where(card.Matches).Select(x=>x.Label).ToArray();
+			var sut = Assert.Single(cards);
+			var targets = board.Spaces.Where(sut.Matches).Select(x=>x.Label).ToArray();
 			Assert.Equal(expectedTargets,targets.Join(","));
 		}
 
@@ -91,8 +109,8 @@ namespace SpiritIsland.Tests.Core {
 		[InlineDataAttribute("S+W","A2,A4,A5,A7")]
 		public void Level3CardTargets(string cardText,string expectedTargets){
 			var cards = InvaderDeck.Level3Cards.Where(c=>c.Text==cardText);
-			var card = Assert.Single(cards);
-			var targets = board.Spaces.Where(card.Matches).Select(x=>x.Label).ToArray();
+			var sut = Assert.Single(cards);
+			var targets = board.Spaces.Where(sut.Matches).Select(x=>x.Label).ToArray();
 			Assert.Equal(expectedTargets,targets.Join(","));
 		}
 
@@ -121,7 +139,7 @@ namespace SpiritIsland.Tests.Core {
 			var board = Board.BuildBoardA();
 			var gameState = new GameState( new RiverSurges(), board );
 			//   And: explorer on target space
-			gameState.Adjust(board[5],InvaderSpecific.Explorer,1);
+			gameState.Invaders.Counts[ board[5] ].Adjust(Invader.Explorer[1],1);
 
 			// When: exploring (wet lands
 			gameState.Explore(InvaderDeck.Level1Cards.Single(c=>c.Text=="W"));
@@ -129,8 +147,8 @@ namespace SpiritIsland.Tests.Core {
 			// Then: 1 Explorer on A2 (new explored)
 			//  and A5 (original) - proves explorers aren't reference types like towns
 			foreach(var space in board.Spaces){
-				var invaders = gameState.InvadersOn(space);
-				Assert.Equal(space == board[5] || space == board[2]?1:0,invaders[InvaderSpecific.Explorer]);
+				var invaders = gameState.Invaders.Counts[space];
+				Assert.Equal(space == board[5] || space == board[2]?1:0,invaders[Invader.Explorer[1]]);
 			}
 		}
 
@@ -153,18 +171,18 @@ namespace SpiritIsland.Tests.Core {
 			var gameState = new GameState( new RiverSurges(), board );
 			//   And: Town on or next to wet land
 			var sourceSpace = board.Spaces.Single(s=>s.Label==townSpaceLabel);
-			var sourceInvader = InvaderSpecific.Lookup[invaderKey];
-			gameState.Adjust(sourceSpace,sourceInvader,1);
+			var sourceInvader = Parse(invaderKey);
+			gameState.Invaders.Counts[sourceSpace].Adjust(sourceInvader,1);
 
 			// When: exploring (wet lands
 			gameState.Explore(InvaderDeck.Level1Cards.Single(c=>c.Text=="W"));
 
 			// Then: Explores A2 and other space only
 			foreach(var space in board.Spaces){
-				var invaders = gameState.InvadersOn(space);
+				var invaders = gameState.Invaders.Counts[space];
 				Assert.Equal(
 					space.Terrain == Terrain.Wetland?1:0
-					,invaders[InvaderSpecific.Explorer]
+					,invaders[Invader.Explorer[1]]
 				);
 			}
 		}
@@ -180,16 +198,16 @@ namespace SpiritIsland.Tests.Core {
 			// Given: game on Board A
 			gameState = new GameState( new RiverSurges(), board );
 			//   And: invader on every space
-			var startingInvader = InvaderSpecific.Lookup[preInvaders];
+			var startingInvader = Parse(preInvaders);
 			foreach(var space in board.Spaces)
-				gameState.Adjust( space, startingInvader, 1 );
+				gameState.Invaders.Counts[space].Adjust( startingInvader, 1 );
 
 			// When: build in Sand
 			_ = gameState.Build( InvaderDeck.Level1Cards.Single( c => c.Text == "S" ) );
 
 			// Then: 2 Sand spaces should have ending Invader Count
-			Assert.Equal( endingInvaderCount, gameState.InvadersOn( board[4] ).ToString() );
-			Assert.Equal( endingInvaderCount, gameState.InvadersOn( board[7] ).ToString() );
+			gameState.Assert_Invaders( board[4], endingInvaderCount );
+			gameState.Assert_Invaders( board[7], endingInvaderCount );
 			//  And: the other spaces have what they started with
 			string origSummary = "1" + preInvaders;
 			Assert_SpaceHasInvaders( board[1], origSummary );
@@ -201,7 +219,7 @@ namespace SpiritIsland.Tests.Core {
 		}
 
 		void Assert_SpaceHasInvaders( Space space, string origSummary ) {
-			Assert.Equal( origSummary, gameState.InvadersOn( space ).ToString() );
+			gameState.Assert_Invaders(space,origSummary);
 		}
 
 		// Ravage
@@ -259,7 +277,7 @@ namespace SpiritIsland.Tests.Core {
 			int dahanCount = gameState.Dahan.Count(space);
 			if(dahanCount>0)
 				items.Add($"{dahanCount}D@2");
-			string actualInvaders = gameState.InvadersOn(space).ToString();
+			string actualInvaders = gameState.Invaders.Counts[space].ToSummary();
 
 			if(actualInvaders.Length>0)
 				items.Add(actualInvaders);
@@ -274,8 +292,8 @@ namespace SpiritIsland.Tests.Core {
 				if(itemSummary=="D@2"){
 					gameState.Dahan.Adjust(space,count);
 				} else {
-					var invader = InvaderSpecific.Lookup[itemSummary];
-					gameState.Adjust(space,invader,count);
+					var invader = Parse(itemSummary);
+					gameState.Invaders.Counts[space].Adjust(invader,count);
 				}
 			}
 		}

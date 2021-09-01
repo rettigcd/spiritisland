@@ -3,7 +3,7 @@ using System.Linq;
 using SpiritIsland.Basegame;
 using Xunit;
 
-namespace SpiritIsland.Tests.Boards {
+namespace SpiritIsland.Tests.Core {
 
 	public class BoardSpace_Tests {
 
@@ -219,15 +219,15 @@ namespace SpiritIsland.Tests.Boards {
 			gameState.Initialize();
 			// Then:
 			var space = board.Spaces.Single(x=>x.Label==spaceLabel);
-			var grp = gameState.InvadersOn(space);
+			var counts = gameState.Invaders.Counts[space];
 
 			int ee = items.Count(c=>c=='E');
-			int aa = grp[InvaderSpecific.Explorer];
-			Assert.True(ee==aa,grp.ToString()+" ex:"+ee+" act:"+aa);
+			int aa = counts[Invader.Explorer[1]];
+			Assert.True(ee==aa,counts.ToSummary()+" ex:"+ee+" act:"+aa);
 
-			Assert.Equal(items.Count(c=>c=='C'), grp[InvaderSpecific.City]);
-			Assert.Equal(items.Count(c=>c=='T'), grp[InvaderSpecific.Town]);
-			Assert.Equal(items.Count(c=>c=='E'), grp[InvaderSpecific.Explorer]);
+			Assert.Equal(items.Count(c=>c=='C'), counts[Invader.City[3]]);
+			Assert.Equal(items.Count(c=>c=='T'), counts[Invader.Town[2]]);
+			Assert.Equal(items.Count(c=>c=='E'), counts[Invader.Explorer[1]]);
 			Assert.Equal(items.Count(c=>c=='D'), gameState.Dahan.Count(space));
 			Assert.Equal(items.Count(c=>c=='B'), gameState.HasBlight(space)?1:0);
 		}

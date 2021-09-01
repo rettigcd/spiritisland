@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 
 			if(await ctx.Self.UserSelectsFirstText("Select power option", "1 damage to each town/city","defend 10"))
 				// 1 damage to each town/city
-				await ctx.InvadersOn.ApplyDamageToEach(1,Invader.City,Invader.Town);
+				await ctx.PowerInvaders.ApplyDamageToEach(1,Invader.City,Invader.Town);
 			else
 				// defend 10
 				ctx.Defend(10);

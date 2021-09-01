@@ -15,7 +15,7 @@ namespace SpiritIsland.Basegame {
 		[FearLevel( 2, "Invaders do not Build in lands where Dahan outnumber Town / City." )]
 		public Task Level2( GameState gs ) {
 			gs.SkipBuild( gs.Island.AllSpaces
-				.Where( s => gs.InvadersOn(s).TownsAndCitiesCount < gs.Dahan.Count(s)
+				.Where( s => gs.Invaders.Counts[s].TownsAndCitiesCount() < gs.Dahan.Count(s)
 				).ToArray()
 			);
 			return Task.CompletedTask;

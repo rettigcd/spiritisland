@@ -21,9 +21,11 @@ namespace SpiritIsland {
 		public List<string> log = new List<String>();
 		public int DahanDestroyed { get; private set; }
 		
-		readonly GameState gs;
-		readonly InvaderGroup grp;
-		readonly ConfigureRavage cfg;
+		public IInvaderCounts Counts => grp.Counts;
+
+		readonly protected InvaderGroup grp;
+		readonly protected GameState gs;
+		readonly protected ConfigureRavage cfg;
 
 		public RavageEngine(GameState gs,InvaderGroup grp, ConfigureRavage cfg ) {
 			this.gs = gs;
@@ -44,11 +46,11 @@ namespace SpiritIsland {
 			await eng.DamageInvaders( damageFromDahan );
 		}
 
-		bool HasInvaders => grp.InvaderTypesPresent_Specific.Any();
+		bool HasInvaders => grp.Counts.Keys.Any();
 
 		public int GetDamageInflictedByDahan() => gs.Dahan.Count( grp.Space ) * 2;
 
-		public int GetDamageInflictedByInvaders() {
+		public virtual int GetDamageInflictedByInvaders() {
 			int damageFromInvaders = grp.DamageInflictedByInvaders;
 			int damageInflictedFromInvaders = Math.Max( damageFromInvaders - cfg.Defend, 0 );
 
@@ -81,13 +83,10 @@ namespace SpiritIsland {
 		}
 
 		/// <returns>(city-dead,town-dead,explorer-dead)</returns>
-		public async Task<(int,int,int)> DamageInvaders( int damageFromDahan ) {
+		public async Task DamageInvaders( int damageFromDahan ) {
 			await grp.ApplySmartDamageToGroup( damageFromDahan, log );
-			return (grp[Invader.City.Dead], grp[Invader.Town.Dead], grp[Invader.Explorer.Dead]);
 		}
 	}
-
-
 
 
 }

@@ -12,11 +12,16 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 		readonly Board board;
 		readonly TargetSpaceCtx ctx;
 		public DreamAThousandDeaths_Tests() {
-			Bringer spirit = new Bringer();
+			spirit = new Bringer();
 			board = Board.BuildBoardA();
-			GameState gs = new GameState( spirit, board );
-			ctx = new TargetSpaceCtx( spirit, gs, board[5] );
+			gs = new GameState( spirit, board );
+			ctx = MakeFreshCtx();
 		}
+		readonly Bringer spirit;
+		readonly GameState gs;
+
+		TargetSpaceCtx MakeFreshCtx() => new TargetSpaceCtx( spirit, gs, board[5] );
+
 
 		// 1: Raging Storm - 1 damage to each invader (slow)
 		static readonly Func<TargetSpaceCtx,Task> OneDamageToEachAsync = RagingStorm.ActAsync;
@@ -32,7 +37,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			const int count = 2;
 
 			// Given: 2 explorers
-			ctx.Adjust(InvaderSpecific.Explorer, count );
+			ctx.InvaderCounts.Add(Invader.Explorer, count );
 
 			// When: causing 1 damage to each invader
 			switch(method) {
@@ -50,9 +55,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			Assert_GeneratedFear( 0 );
 
 			//  and: explorer on destination
-			ctx.InvadersOn(board[7]).ToString().ShouldBe($"{count}E@1");
+			ctx.GameState.Assert_Invaders( board[7], $"{count}E@1" );
 			//  and: not at origin
-			ctx.Invaders.ToString().ShouldBe( "" );
+			ctx.PowerInvaders.ToString().ShouldBe( "" );
 		}
 
 		[Fact]
@@ -62,7 +67,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			// pushes town
 
 			// Given: 1 town
-			ctx.Adjust( InvaderSpecific.Town, count );
+			ctx.InvaderCounts.Add( Invader.Town, count );
 
 			// When: destorying towns
 			_ = DestroyAllExplorersAndTownsAsync( ctx );
@@ -77,9 +82,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			Assert_GeneratedFear( count * 2 );
 
 			//  and: town on destination
-			ctx.InvadersOn( board[7] ).ToString().ShouldBe( $"{count}T@2" );
+			ctx.GameState.Assert_Invaders( board[7], $"{count}T@2" );
 			//  and: not at origin
-			ctx.Invaders.ToString().ShouldBe("");
+			ctx.PowerInvaders.ToString().ShouldBe("");
 
 		}
 
@@ -87,13 +92,13 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 		public void DreamDamageResetsEachPower() {
 
 			// Given: 2 explorers
-			ctx.Adjust( InvaderSpecific.City, 1 );
+			ctx.InvaderCounts.Add( Invader.City );
 
 			// When: 3 separate actinos cause 1 damage
 			async Task Run3Async(){
-				await OneDamageToEachAsync( ctx );
-				await OneDamageToEachAsync( ctx );
-				await OneDamageToEachAsync(ctx );
+				await OneDamageToEachAsync( MakeFreshCtx() );
+				await OneDamageToEachAsync( MakeFreshCtx() );
+				await OneDamageToEachAsync( MakeFreshCtx() );
 			}
 			_=Run3Async();
 
@@ -105,34 +110,32 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 
 
 		[Fact]
-		public void ConsecutivePowersCanDreamKillMultipletimes() {
+		public async Task ConsecutivePowersCanDreamKillMultipletimes() {
 
 			// Given: 1 very-damaged city
-			ctx.Adjust( InvaderSpecific.City1, 1 );
+			ctx.Adjust( Invader.City[1], 1 );
 
 			// When: 3 separate actinos cause 1 damage
-			async Task Run3Async() {
-				await OneDamageToEachAsync( ctx );
-				await OneDamageToEachAsync( ctx );
-				await OneDamageToEachAsync( ctx );
-			}
-			_ = Run3Async();
+			// EACH power gets a fresh ctx so INVADERS can reset
+			await OneDamageToEachAsync( MakeFreshCtx() ); 
+			await OneDamageToEachAsync( MakeFreshCtx() );
+			await OneDamageToEachAsync( MakeFreshCtx() );
 
 			ctx.Self.Action.IsResolved.ShouldBeTrue();
 
 			// And: 0-fear
 			Assert_GeneratedFear( 3*5 ); // city never destroyed
 			// City still there
-			ctx.Invaders[InvaderSpecific.City1].ShouldBe(1);
+			ctx.PowerInvaders[Invader.City[1]].ShouldBe(1);
 		}
 
 		[Fact]
-		public void MaxKillOnce() {
+		public async Task MaxKillOnce() {
 			// Given: 1 very-damaged city
-			ctx.Adjust( InvaderSpecific.City1, 1 );
+			ctx.Adjust( Invader.City[1], 1 );
 
 			// When: doing 4 points of damage
-			_ = FourDamage(ctx);
+			await FourDamage( MakeFreshCtx() );
 
 			ctx.Self.Action.IsResolved.ShouldBeTrue();
 
@@ -140,12 +143,15 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			Assert_GeneratedFear( 1 * 5 ); // city only destroyed once
 
 			// City with partial damage still there
-			ctx.Invaders[InvaderSpecific.City1].ShouldBe( 1 );
+			ctx.PowerInvaders[Invader.City[1]].ShouldBe( 1 );
 		}
 
 		void Assert_GeneratedFear( int expectedFearCount ) {
-			ctx.GameState.Fear.Pool.ShouldBe( expectedFearCount % 4 );
-			ctx.GameState.Fear.ActivatedCards.Count.ShouldBe( expectedFearCount / 4 );
+			int actualGeneratedFear = ctx.GameState.Fear.Pool
+				+ 4 * ctx.GameState.Fear.ActivatedCards.Count;
+			actualGeneratedFear.ShouldBe(expectedFearCount,"fear countis wrong");
+//			ctx.GameState.Fear.Pool.ShouldBe( expectedFearCount % 4 );
+//			ctx.GameState.Fear.ActivatedCards.Count.ShouldBe( expectedFearCount / 4 );
 		}
 
 	}

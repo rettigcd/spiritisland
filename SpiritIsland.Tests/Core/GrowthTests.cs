@@ -42,10 +42,6 @@ namespace SpiritIsland.Tests {
 
 		#region Given
 
-		protected void Given_HasWilds( Space space ) {
-			gameState.Wilds.AddTo( space );
-		}
-
 		protected void Given_HasPresence( params Space[] spaces ) {
 			foreach(var x in spaces)
 				spirit.Presence.PlaceOn( x );

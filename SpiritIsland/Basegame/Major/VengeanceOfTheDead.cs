@@ -19,12 +19,21 @@ namespace SpiritIsland.Basegame {
 			if(ctx.Self.Elements.Contains("3 animal"))
 				landsWeCanApplyTheDamageTo.AddRange( ctx.PowerAdjacents() );
 
-			async Task RavagePlusBonusDamage( RavageEngine eng ) {
-				int damageInflictedFromInvaders = eng.GetDamageInflictedByInvaders();
-				await eng.DamageLand( damageInflictedFromInvaders );
-				int dahanKilled = await eng.DamageDahan( damageInflictedFromInvaders ); // !!! for consealing shadows remove this part
-				int damageFromDahan = eng.GetDamageInflictedByDahan();
-				var (cityKilled, townKilled, _) = await eng.DamageInvaders( damageFromDahan );
+			async Task RavagePlusBonusDamage( RavageEngine ravageEngine ) {
+				int damageInflictedFromInvaders = ravageEngine.GetDamageInflictedByInvaders();
+				await ravageEngine.DamageLand( damageInflictedFromInvaders );
+				int dahanKilled = await ravageEngine.DamageDahan( damageInflictedFromInvaders ); // !!! for consealing shadows remove this part
+				int damageFromDahan = ravageEngine.GetDamageInflictedByDahan();
+
+				var grpCounts = ravageEngine.Counts;
+				int preCityCount = grpCounts.SumEach(Invader.City);
+				int preTownCount = grpCounts.SumEach(Invader.Town);
+
+				await ravageEngine.DamageInvaders( damageFromDahan );
+
+				int cityKilled = preCityCount - grpCounts.SumEach(Invader.City);
+				int townKilled = preTownCount - grpCounts.SumEach(Invader.Town);
+
 
 				// after each effect that destorys a town/city/dahan in target land
 				// 1 damage per town/city/dahan destoryed
@@ -39,7 +48,7 @@ namespace SpiritIsland.Basegame {
 		static async Task DistributeDamageToLands( TargetSpaceCtx ctx, List<Space> newDamageLands, int additionalDamage ) {
 			Space[] targetLandOptions;
 			while(additionalDamage > 0
-				&& (targetLandOptions = newDamageLands.Where( ctx.GameState.HasInvaders ).ToArray()).Length > 0
+				&& (targetLandOptions = newDamageLands.Where( ctx.GameState.Invaders.AreOn ).ToArray()).Length > 0
 			) {
 				var newLand = await ctx.Self.Action.Choose( new TargetSpaceDecision( $"Apply up to {additionalDamage} vengeanance damage in:", targetLandOptions ));
 				if(newLand == null) break;

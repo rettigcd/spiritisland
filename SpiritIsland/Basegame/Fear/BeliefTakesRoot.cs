@@ -23,26 +23,38 @@ namespace SpiritIsland.Basegame {
 		public Task Level2( GameState gs ) {
 			Defend2WherePresence( gs );
 			foreach(var spirit in gs.Spirits)
-				spirit.Energy += spirit.SacredSites.Count( gs.HasInvaders );
+				spirit.Energy += spirit.SacredSites.Count( gs.Invaders.AreOn );
 			return Task.CompletedTask;
 		}
 
 		[FearLevel( 3, "Each player chooses a different land and removes up to 2 Health worth of Invaders per Presence there." )]
 		public async Task Level3( GameState gs ) {
 			var used = new HashSet<Space>();
-			foreach(var spirit in gs.Spirits) {
-				var options = spirit.Presence.Spaces
-					.Where(s=>gs.InvadersOn(s).HasAny(Invader.Town,Invader.Explorer))
-					.Except(used)
-					.ToArray();
-				if(options.Length==0) continue;
-				var target = await spirit.Action.Choose( new TargetSpaceDecision( "Select land to remove 2 health worth of invaders/presence.", options));
-				used.Add(target);
-				var grp = gs.InvadersOn(target);
-				if(grp.HasTown)
-					gs.Adjust(target,InvaderSpecific.Town,-1); // !!! what about damaged towns?  that is possible if fast caused damage
-				else
-					gs.Adjust(target,InvaderSpecific.Explorer,-2);
+			foreach(var spirit in gs.Spirits)
+				await X(spirit,used,gs);
+
+		}
+
+		async Task X(Spirit spirit, HashSet<Space> used, GameState gs) {
+			// pick land
+			var targetOptions = spirit.Presence.Spaces
+				.Where( s => gs.Invaders.Counts[s].HasAny( Invader.Town, Invader.Explorer ) )
+				.Except( used )
+				.ToArray();
+			if(targetOptions.Length==0) return;
+			var target = await spirit.Action.Choose( new TargetSpaceDecision( "Select land to remove 2 health worth of invaders/presence.", targetOptions ) );
+			// mark used
+			used.Add(target);
+
+			int damage = 2 * spirit.Presence.Placed.Count(x=>x==target);
+
+			var counts = gs.Invaders.Counts[target];
+			InvaderSpecific pick;
+			while(damage > 0 
+				&& (pick = SmartInvaderDamageExtensions.PickSmartInvaderToDamage( counts, damage ))!=null
+			) {
+				--counts[pick];
+				damage -= pick.Health;
 			}
 		}
 	}

@@ -15,9 +15,8 @@ namespace SpiritIsland.Basegame {
 			await ctx.GatherUpToNDahan(target, 1);
 
 			// Each dahan destroys 1 explorer
-			var grp = ctx.InvadersOn(target);
 			int dahahCount = ctx.GameState.Dahan.Count( target );
-			await grp.Destroy(Invader.Explorer, dahahCount);
+			await ctx.PowerInvaders.Destroy(Invader.Explorer, dahahCount);
 		}
 
 	}

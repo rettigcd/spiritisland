@@ -8,12 +8,12 @@ namespace SpiritIsland.Basegame {
 		static public Task Act(TargetSpaceCtx ctx){
 
 			// if you have 2 moon, you may instead replace 1 town with 1 dahan
-			if(ctx.Invaders.HasTown && 2 <= ctx.Self.Elements[ Element.Moon ]) {
-				ctx.Adjust( InvaderSpecific.Town,-1 );
+			if(ctx.PowerInvaders.Counts.Has(Invader.Town) && 2 <= ctx.Self.Elements[ Element.Moon ]) {
+				ctx.InvaderCounts.Remove( Invader.Town );
 				ctx.AdjustDahan( 1 );
-			} else if(ctx.Invaders.HasExplorer) {
+			} else if(ctx.PowerInvaders.Counts.Has(Invader.Explorer)) {
 				// replace 1 explorer with 1 dahan
-				ctx.Adjust( InvaderSpecific.Explorer, -1 );
+				ctx.Adjust( Invader.Explorer[1], -1 );
 				ctx.AdjustDahan( 1 );
 			}
 			return Task.CompletedTask;

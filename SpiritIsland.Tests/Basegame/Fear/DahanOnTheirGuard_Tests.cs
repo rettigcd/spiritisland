@@ -26,7 +26,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			gameState.Dahan.Adjust( ravageSpace, desiredDahan - gameState.Dahan.Count( ravageSpace ) );
 			Assert.Equal(desiredDahan,gameState.Dahan.Count(ravageSpace));
 
-			gameState.Adjust( ravageSpace, InvaderSpecific.Town, desiredTown );
+			gameState.Invaders.Counts[ravageSpace].Add( Invader.Town, desiredTown );
 		}
 
 		[Fact]
@@ -62,7 +62,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			// Then: 0 dahan left
 			gameState.Dahan.Count( ravageSpace ).ShouldBe( 2 );
 			//   And: 2 towns
-			gameState.InvadersOn( ravageSpace ).ToString().ShouldBe( "2T@2" );
+			gameState.Assert_Invaders(ravageSpace, "2T@2" );
 			gameState.HasBlight( ravageSpace ).ShouldBe( true );
 
 		}

@@ -1,8 +1,10 @@
 ﻿namespace SpiritIsland {
 	public enum Cause {
 		None,
-		Invaders,
+		Invaders, // blight reason
 		Power,
+		Fear,
+		Ocean,
 		Ravage
 	}
 

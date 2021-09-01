@@ -14,7 +14,7 @@ namespace SpiritIsland.Basegame {
 
 			if(ctx.HasDahan)
 				options.Add(pushDahanText);
-			if(ctx.InvadersOn.HasTown)
+			if(ctx.PowerInvaders.Counts.Has(Invader.Town))
 				options.Add( "1 town" );
 
 			if(options.Count == 0) return;

@@ -270,7 +270,12 @@ namespace SpiritIsland {
 
 		public TargetLandApi PowerApi = new TargetLandApi(); // Replace by: Reaching Grasp, Entwined Power, Shadows
 
-		public virtual InvaderGroup BuildInvaderGroup( GameState gs, Space space ) => new InvaderGroup( space, gs.GetCounts(space), gs.Fear.AddDirect, Cause.Power );
+		public virtual InvaderGroup BuildInvaderGroupForPowers( GameState gs, Space space ) {
+			var invaderCounts = gs.Invaders.Counts[ space ];
+			return new InvaderGroup( space, invaderCounts ) {
+				DestroyInvaderStrategy = new DestroyInvaderStrategy( gs.Fear.AddDirect, Cause.Power ),
+			};
+		}
 
 		public async Task BuyPowerCardsAsync() {
 			var canPurchase = NumberOfCardsPlayablePerTurn;

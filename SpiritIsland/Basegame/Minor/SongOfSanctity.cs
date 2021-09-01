@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 		[MinorCard(SongOfSanctity.Name, 1, Speed.Slow,Element.Sun,Element.Water,Element.Plant)]
 		[FromPresence(1,Target.JungleOrMountain)]
 		static public async Task ActionAsync(TargetSpaceCtx ctx){
-			int explorerCount = ctx.Invaders[InvaderSpecific.Explorer];
+			int explorerCount = ctx.PowerInvaders[Invader.Explorer[1]];
 			if( 0 < explorerCount )
 				await ctx.PowerPushUpToNInvaders( explorerCount, Invader.Explorer);
 			else if( ctx.HasBlight )

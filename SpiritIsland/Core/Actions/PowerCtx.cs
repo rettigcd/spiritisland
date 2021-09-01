@@ -17,17 +17,16 @@ namespace SpiritIsland {
 
 		public async Task PowerPushUpToNInvaders( Space source, int countToPush , params Invader[] generics ) {
 
-			InvaderSpecific[] CalcInvaderTypes() => GameState.InvadersOn( source ).FilterBy( generics );
+			InvaderSpecific[] CalcInvaderTypes() => GameState.Invaders.Counts[ source ].FilterBy( generics );
 
 			var invaders = CalcInvaderTypes();
 			while(0 < countToPush && 0 < invaders.Length) {
-//				var invader = await Self.SelectInvader(source, , invaders, Present.Done );
 				var invader = await Self.Action.Choose( new SelectInvaderToPushDecision( source, countToPush, invaders, Present.Done ) );
 				if(invader == null)
 					break;
 
 				var destination = await Self.Action.Choose( new PushInvaderDecision( invader, source, PowerAdjacents(source), Present.Done ) );
-				await GameState.MoveInvader(invader, source, destination );
+				await GameState.Invaders.Move(invader, source, destination );
 
 				--countToPush;
 				invaders = CalcInvaderTypes();

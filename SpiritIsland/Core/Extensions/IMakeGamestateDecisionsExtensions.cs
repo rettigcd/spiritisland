@@ -32,7 +32,7 @@ namespace SpiritIsland {
 		}
 
 		static public async Task GatherUpToNInvaders( this IMakeGamestateDecisions ctx, Space target, int countToGather, params Invader[] invaderTypes ) {
-			InvaderSpecific[] spaceInvaders(Space space) => ctx.GameState.InvadersOn(space).FilterBy(invaderTypes);
+			InvaderSpecific[] spaceInvaders(Space space) => ctx.GameState.Invaders.Counts[space].FilterBy(invaderTypes);
 			Space[] CalcSource() => target.Adjacent
 				.Where(s=>spaceInvaders(s).Any())
 				.ToArray();
@@ -47,7 +47,7 @@ namespace SpiritIsland {
 
 				var invader = await ctx.Self.Action.Choose( new SelectInvaderToGatherDecision( source, target, spaceInvaders(source), Present.IfMoreThan1 ) );
 
-				await ctx.GameState.MoveInvader(invader, source, target);
+				await ctx.GameState.Invaders.Move(invader, source, target);
 
 				++gathered;
 				neighborsWithItems = CalcSource();
@@ -81,7 +81,7 @@ namespace SpiritIsland {
 			,params Invader[] healthyInvaders
 		) {
 
-			InvaderSpecific[] CalcInvaderTypes() => ctx.GameState.InvadersOn(source).FilterBy(healthyInvaders);
+			InvaderSpecific[] CalcInvaderTypes() => ctx.GameState.Invaders.Counts[source].FilterBy(healthyInvaders);
 
 			var invaders = CalcInvaderTypes();
 			while(0<countToPush && 0<invaders.Length){
@@ -96,7 +96,7 @@ namespace SpiritIsland {
 					source.Adjacent.Where( x => x.Terrain != Terrain.Ocean ),
 					Present.Always
 				)); 
-				await ctx.GameState.MoveInvader(invader, source, destination );
+				await ctx.GameState.Invaders.Move(invader, source, destination );
 
 				--countToPush;
 				invaders = CalcInvaderTypes();
@@ -143,9 +143,9 @@ namespace SpiritIsland {
 		static public Task<Space> PowerTargetsSpace( this IMakeGamestateDecisions engine, From sourceEnum, Terrain? sourceTerrain, int range, Target filterEnum )
 			=> engine.Self.PowerApi.TargetsSpace( engine.Self, engine.GameState, sourceEnum, sourceTerrain, range, filterEnum );
 
-		// Not Changable!
+		//// Not Changable!
 		static public InvaderGroup InvadersOn( this IMakeGamestateDecisions engine, Space space )
-			=> engine.Self.BuildInvaderGroup( engine.GameState, space );
+			=> engine.Self.BuildInvaderGroupForPowers( engine.GameState, space );
 
 		static public async Task DamageInvaders( this IMakeGamestateDecisions engine, Space space, int damage ) { // !!! let players choose the item to apply damage to
 			if(damage == 0) return;

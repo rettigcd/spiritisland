@@ -11,14 +11,14 @@ namespace SpiritIsland.Basegame {
 		[InnateOption( "2 sun, 1 fire" )]
 		static public Task Option1Async(TargetSpaceCtx ctx ) {
 			// Destroy 1 town for every 2 dahan
-			return ctx.InvadersOn(ctx.Target)
+			return ctx.PowerInvaders
 				.Destroy(Invader.Town,ctx.GameState.Dahan.Count(ctx.Target)/2);
 		}
 
 		[InnateOption( "4 sun, 3 fire" )]
 		static public async Task Option2Async( TargetSpaceCtx ctx ) {
 			// Destroy 1 city for every 3 dahan
-			await ctx.InvadersOn( ctx.Target )
+			await ctx.PowerInvaders
 				.Destroy( Invader.City, ctx.GameState.Dahan.Count( ctx.Target ) / 3 );
 
 			await Option1Async(ctx);
