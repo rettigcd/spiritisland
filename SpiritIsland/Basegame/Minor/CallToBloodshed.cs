@@ -2,7 +2,7 @@
 
 namespace SpiritIsland.Basegame {
 
-	class CallToBloodshed {
+	public class CallToBloodshed {
 
 		[MinorCard("Call to Bloodshed",1,Speed.Slow,Element.Sun,Element.Fire,Element.Animal)]
 		[FromPresence(2,Target.Dahan)]

@@ -84,26 +84,26 @@ namespace SpiritIsland.BranchAndClaw {
 
 		}
 
-		public override void Grow( GameState gameState, int optionIndex ) {
+		//public override void Grow( GameState gameState, int optionIndex ) {
 
-			var (growthOptions,_) = this.GetGrowthOptions();
+		//	var (growthOptions,_) = this.GetGrowthOptions();
 
-			var actions = growthOptions[optionIndex].GrowthActions;
-			// gain energy
-			AddActionFactory( actions[0] );
-			AddActionFactory( actions[1] );
-			AddActionFactory( actions[2] );
-			// cost 2
-			if(2 <= Energy) {
-				AddActionFactory( actions[3] );
-				AddActionFactory( actions[4] );
-			}
-			// cost 3
-			if(3 <= Energy) {
-				AddActionFactory( actions[5] );
-			}
+		//	var actions = growthOptions[optionIndex].GrowthActions;
+		//	// gain energy
+		//	AddActionFactory( actions[0] );
+		//	AddActionFactory( actions[1] );
+		//	AddActionFactory( actions[2] );
+		//	// cost 2
+		//	if(2 <= Energy) {
+		//		AddActionFactory( actions[3] );
+		//		AddActionFactory( actions[4] );
+		//	}
+		//	// cost 3
+		//	if(3 <= Energy) {
+		//		AddActionFactory( actions[5] );
+		//	}
 
-		}
+		//}
 
 		protected override void InitializeInternal( Board _, GameState _1 ){
 			throw new System.NotImplementedException();

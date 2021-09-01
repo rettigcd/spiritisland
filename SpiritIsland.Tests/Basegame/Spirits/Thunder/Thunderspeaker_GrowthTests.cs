@@ -1,15 +1,24 @@
-﻿using System.Collections.Generic;
-using SpiritIsland.Basegame;
-using SpiritIsland;
-using Xunit;
+﻿using SpiritIsland.Basegame;
 using SpiritIsland.SinglePlayer;
+using Xunit;
 
 namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 
 	public class Thunderspeaker_GrowthTests : GrowthTests{
 
-		public Thunderspeaker_GrowthTests():base( new Thunderspeaker().UsePowerProgression() ){
+		static Spirit InitSpirit() {
+			return new Thunderspeaker {
+				CardDrawer = new PowerProgression(
+					PowerCard.For<VeilTheNightsHunt>(),
+					PowerCard.For<ReachingGrasp>(),
+					//PowerCard.For<WrapInWingsOfSunlight>(),      // Major
+					PowerCard.For<Drought>(),
+					PowerCard.For<ElementalBoon>()
+				),
+			};
 		}
+
+		public Thunderspeaker_GrowthTests():base( InitSpirit() ){}
 
 		[Fact]
 		public void ReclaimAnd2PowerCards() {

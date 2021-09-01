@@ -1,17 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using SpiritIsland;
 using SpiritIsland.Basegame;
-using SpiritIsland;
-using Xunit;
 using SpiritIsland.SinglePlayer;
-using System.Threading.Tasks;
+using System;
+using System.Linq;
+using Xunit;
 
 namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 
 	public class Ocean_GrowthTests : GrowthTests {
 
-		public Ocean_GrowthTests():base( new Ocean { CardDrawer = new IncrementCountCardDrawer() } ) {}
+		static Spirit InitSpirit() {
+			return new Ocean {
+				CardDrawer = new PowerProgression(
+					PowerCard.For<VeilTheNightsHunt>(),
+					PowerCard.For<ReachingGrasp>(),
+					PowerCard.For<Drought>(),
+					PowerCard.For<ElementalBoon>()
+				)
+			};
+		}
+
+		public Ocean_GrowthTests():base( InitSpirit() ) {}
 
 		[Theory]
 		[InlineData("A0","","A0")]
@@ -74,9 +83,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			spirit.Activate_GainEnergy();
 			spirit.Action.AssertDecision( "Select Growth to resolve:", "GatherPresenceIntoOcean", "GatherPresenceIntoOcean" );
 
-			Assert_AllCardsAvailableToPlay();
-			Assert_GainPowercard(1);
-			Assert_HasEnergy(2);
+			Assert_AllCardsAvailableToPlay(4+1);
+			Assert_GainsFirstPowerProgressionCard();
+			Assert_HasEnergy( 2);
 		}
 
 		[Fact]
@@ -137,8 +146,12 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			spirit.Action.AssertDecision( "Select Growth to resolve:", "PushPresenceFromOcean", "PushPresenceFromOcean" );
 			spirit.Action.AssertDecision( "Select target of Presence to Push from A0", "A1,A2,A3", "A2" );
 
-			Assert_GainPowercard( 1);
+			Assert_GainsFirstPowerProgressionCard();
 			Assert_BoardPresenceIs(ending);
+		}
+
+		void Assert_GainsFirstPowerProgressionCard() {
+			Assert_HasCardAvailable( "Veil the Night's Hunt" );
 		}
 
 		[Theory]

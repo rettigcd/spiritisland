@@ -228,12 +228,6 @@ namespace SpiritIsland {
 
 		#endregion
 
-		#region intermediate growth states
-
-		public int PowerCardsToDraw; // temporary...
-
-		#endregion
-
 		#region abstract
 
 		public virtual InnatePower[] InnatePowers { get; set; } = Array.Empty<InnatePower>();

@@ -2,7 +2,7 @@
 
 namespace SpiritIsland.Basegame {
 
-	class CallToIsolation {
+	public class CallToIsolation {
 
 		[MinorCard("Call to Isolation",0,Speed.Fast,Element.Sun,Element.Air,Element.Animal)]
 		[FromPresence(1,Target.Dahan)]

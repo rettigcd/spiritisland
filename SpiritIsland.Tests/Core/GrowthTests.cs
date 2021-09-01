@@ -27,8 +27,8 @@ namespace SpiritIsland.Tests {
 		protected GrowthTests(Spirit spirit){
 			// PlayerState requires Spirit to be known because Spirit creates playerState.
 			this.spirit = spirit;
-			gameState = new GameState(spirit,BoardA);
-			board = gameState.Island.Boards[0];
+			board = BoardA;
+			gameState = new GameState(spirit, board );
 		}
 
 		#region Board factories
@@ -83,10 +83,6 @@ namespace SpiritIsland.Tests {
 
 		#region Asserts (Other)
 
-		protected void Assert_GainPowercard( int expected ) {
-			Assert.Equal( expected, spirit.PowerCardsToDraw ); // , $"Expected to gain {expected} power card" );
-		}
-
 		protected void Assert_HasCardAvailable( string name ){
 			bool nameMatches( PowerCard card ) => string.Compare(name,card.Name,true) == 0;
 			Assert.True(spirit.Hand.Any( nameMatches ),$"Hand does not contain {name}");
@@ -107,26 +103,7 @@ namespace SpiritIsland.Tests {
 		#region Resolve_
 
 		protected void Resolve_PlacePresence(string placeOptions, Track source ) {
-
-			var current = spirit.Action.GetCurrent();
-
-			var op = current.Options.First(o=>o.Text.StartsWith("PlacePre"));
-			spirit.Action.Choose(op);
-
-			// Resolve Power
-			if(spirit.Presence.CardPlays.HasMore && spirit.Presence.Energy.HasMore) { // there are 2 option available
-				spirit.Action.GetCurrent().Options.Select( x => x.Text ).Join( "," ).ShouldContain( source.Text );
-				// take from precense track
-				spirit.Action.Choose( source );
-			}
-
-			// place on board - first option
-			if(!spirit.Action.IsResolved) {
-				string[] expectedOptions = placeOptions.Split( ';' );
-				var actualOptions = spirit.Action.GetCurrent().Options;
-				spirit.Action.Choose( actualOptions.Single( o => o.Text == expectedOptions[0] ) );
-			}
-
+			spirit.Activate_PlacePresence(placeOptions,source);
 		}
 
 		protected void Assert_PresenceTracksAre(int expectedEnergy,int expectedCards) {
@@ -169,17 +146,20 @@ namespace SpiritIsland.Tests {
 		}
 
 		static public void Activate_GainEnergy( this Spirit spirit ) {
-			var selection = spirit.Action.GetCurrent().Options.First(x=>x.Text.StartsWith("GainEnergy"));
+			var current = spirit.Action.GetCurrent();
+			var selection = current.Options.First(x=>x.Text.StartsWith("GainEnergy"));
 			spirit.Action.Choose( selection );
 		}
 
 		static public void Activate_PlayExtraCard( this Spirit spirit ) {
-			var selection = spirit.Action.GetCurrent().Options.First( x => x.Text.StartsWith( "PlayExtra" ) );
+			var current = spirit.Action.GetCurrent();
+			var selection = current.Options.First( x => x.Text.StartsWith( "PlayExtra" ) );
 			spirit.Action.Choose( selection );
 		}
 
 
 		static public void Activate_ReclaimAll( this Spirit spirit ) {
+			var current = spirit.Action.GetCurrent();
 			spirit.Action.Choose( "ReclaimAll" );
 		}
 
@@ -187,6 +167,36 @@ namespace SpiritIsland.Tests {
 			spirit.Action.Choose( "Reclaim(1)" );
 		}
 
+		static public void Activate_PlacePresence( this Spirit spirit, string placeOptions, Track source )
+			=> spirit.Activate_PlacePresence( "PlacePre", placeOptions, source);
+
+		static public void Activate_PlacePresence( this Spirit spirit, string promptStartsWith, string placeOptions, Track source ) {
+
+			var current = spirit.Action.GetCurrent();
+
+			var op = current.Options.First( o => o.Text.StartsWith( promptStartsWith ) );
+			spirit.Action.Choose( op );
+
+			// Resolve Power
+			if(spirit.Presence.CardPlays.HasMore && spirit.Presence.Energy.HasMore) { // there are 2 option available
+				var cardDecision = spirit.Action.GetCurrent();
+				cardDecision.Options.Select( x => x.Text ).Join( "," ).ShouldContain( source.Text );
+				// take from precense track
+				spirit.Action.Choose( source );
+			}
+
+			// place on board - first option
+			if(!spirit.Action.IsResolved) {
+				string[] expectedOptions = placeOptions.Split( ';' );
+				var destinationDecision = spirit.Action.GetCurrent();
+				var actualOptions = destinationDecision.Options;
+				var choice = actualOptions.SingleOrDefault( o => o.Text == expectedOptions[0] );
+				if(choice==null)
+					throw new System.ArgumentOutOfRangeException(nameof(placeOptions), $"'{expectedOptions[0]}' not found in "+ actualOptions.Select(o=>o.Text).Join("," ));
+				spirit.Action.Choose( choice );
+			}
+
+		}
 
 	}
 

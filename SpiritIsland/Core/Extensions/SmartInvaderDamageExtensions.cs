@@ -98,10 +98,6 @@ namespace SpiritIsland {
 				.First();
 		}
 
-		#region private
-		readonly InvaderSpecific[] LeftOverOrder;
-		#endregion
-
 	}
 
 }

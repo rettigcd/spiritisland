@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 
-	class ElementalBoon {
+	public class ElementalBoon {
 
 		[MinorCard( "Elemental Boon", 1, Speed.Fast )]
 		[TargetSpirit]

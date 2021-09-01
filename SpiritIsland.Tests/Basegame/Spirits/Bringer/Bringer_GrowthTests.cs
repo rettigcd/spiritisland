@@ -7,18 +7,31 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 
 	public class Bringer_GrowthTests : GrowthTests {
 
-		public Bringer_GrowthTests():base( new Bringer { CardDrawer = new IncrementCountCardDrawer() } ) {}
+		static Spirit InitSpirit() {
+			return new Bringer {
+				CardDrawer = new PowerProgression(
+					PowerCard.For<VeilTheNightsHunt>(),
+					PowerCard.For<ReachingGrasp>()
+				),
+			};
+		}
+
+		public Bringer_GrowthTests():base( InitSpirit() ) {}
 
 		[Fact] 
 		public void ReclaimAll_PowerCard(){
 			// reclaim, +1 power card
 			Given_HalfOfPowercardsPlayed();
+
 			When_Growing(0);
 			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
 			spirit.Activate_DrawPowerCard();
 			spirit.Activate_ReclaimAll();
-			Assert_AllCardsAvailableToPlay();
-			Assert_GainPowercard(1);
+
+			// Then:
+			Assert_AllCardsAvailableToPlay(4+1);
+			Assert_HasCardAvailable( "Veil the Night's Hunt" );
+
 		}
 
 		[Fact] 
@@ -32,22 +45,24 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			spirit.Activate_Reclaim1();
 			spirit.Action.AssertDecision( "Select card to reclaim.", "Predatory Nightmares $2 (Slow),Dreams of the Dahan $0 (Fast)", "Dreams of the Dahan $0 (Fast)" );
 			Resolve_PlacePresence( "A4", spirit.Presence.Energy.Next );
-
-//			AndWhen_ReclaimingFirstCard();
-
 			spirit.Hand.Count.ShouldBe( 3 );
 		}
 
 		[Fact] 
-		public void PowerCard_Presence(){
+		public void PowerCard_Presence() {
 			// +1 power card, +1 pressence range 1
 			Given_HasPresence( board[1] );
-			When_Growing(2);
+
+			When_Growing( 2 );
 			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
 			spirit.Activate_DrawPowerCard();
 			Resolve_PlacePresence( "A1;A2;A4;A5;A6", spirit.Presence.Energy.Next );
-			Assert_GainPowercard(1);
-			Assert_BoardPresenceIs("A1A1");
+			Assert_GainsFirstPowerProgressionCard(); // gains 1st card in power progression
+			Assert_BoardPresenceIs( "A1A1" );
+		}
+
+		void Assert_GainsFirstPowerProgressionCard() {
+			Assert_HasCardAvailable( "Veil the Night's Hunt" );
 		}
 
 		[Fact] 

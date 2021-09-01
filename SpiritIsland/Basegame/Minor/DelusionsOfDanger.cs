@@ -2,7 +2,7 @@
 
 namespace SpiritIsland.Basegame {
 
-	class DelusionsOfDanger {
+	public class DelusionsOfDanger {
 
 		[MinorCard("Delusions of Danger",1,Speed.Fast,Element.Sun,Element.Moon,Element.Air)]
 		[FromPresence(1,Target.Explorer)]

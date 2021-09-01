@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 
-	class EntrancingApparitions {
+	public class EntrancingApparitions {
 
 		[MinorCard("Entrancing Apparitions",1,Speed.Fast,Element.Moon,Element.Air,Element.Water)]
 		[FromPresence(1)]

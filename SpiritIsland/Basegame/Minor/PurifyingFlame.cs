@@ -2,7 +2,7 @@
 
 namespace SpiritIsland.Basegame {
 
-	class PurifyingFlame {
+	public class PurifyingFlame {
 
 		[MinorCard("Purifying Flame",1,Speed.Slow,Element.Sun,Element.Fire,Element.Air,Element.Plant)]
 		[FromSacredSite(1)]

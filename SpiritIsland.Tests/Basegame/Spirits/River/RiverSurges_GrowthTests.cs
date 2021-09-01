@@ -54,7 +54,6 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Resolve_PlacePresence( "A2;A3;A4", spirit.Presence.Energy.Next);
 			Resolve_PlacePresence( "A1;A2;A3;A4", spirit.Presence.Energy.Next );
 
-			Assert_GainPowercard( 0 );
 			Assert.Equal(2,spirit.EnergyPerTurn);
 			Assert_HasEnergy( 2 ); // 2 from energy track
 			Assert.Equal(3,spirit.Presence.Energy.RevealedCount); // # of spaces revealed, not energy per turn
@@ -75,7 +74,6 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Resolve_PlacePresence( "A1;A2;A3;A4;A5", spirit.Presence.CardPlays.Next);
 
 			Assert_HasCardAvailable( "Uncanny Melting" ); // gains 1st card in power progression
-			Assert_GainPowercard( 0 );
 			Assert_HasEnergy( 1 ); // didn't increase energy track.
 			Assert.Equal(1,spirit.Presence.Energy.RevealedCount);
 			Assert.Equal(2,spirit.Presence.CardPlays.RevealedCount);

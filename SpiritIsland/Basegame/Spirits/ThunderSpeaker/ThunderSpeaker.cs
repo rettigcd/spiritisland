@@ -75,24 +75,6 @@ namespace SpiritIsland.Basegame {
 
 		}
 
-		protected override PowerProgression GetPowerProgression() =>
-			new PowerProgression(
-				PowerCard.For<VeilTheNightsHunt>(),
-				PowerCard.For<ReachingGrasp>(),
-				//PowerCard.For<WrapInWingsOfSunlight>(),      // Major
-				PowerCard.For<Drought>(),
-				PowerCard.For<ElementalBoon>(),
-
-				// Borrowing Lightnings Swift Strike Power Progression until we get below implemented
-				PowerCard.For<DelusionsOfDanger>(),
-				PowerCard.For<CallToBloodshed>(),
-				PowerCard.For<PowerStorm>(),
-				PowerCard.For<PurifyingFlame>(),
-				PowerCard.For<PillarOfLivingFlame>(),
-				PowerCard.For<EntrancingApparitions>(),
-				PowerCard.For<CallToIsolation>()
-			);
-
 		protected override void InitializeInternal( Board board, GameState gs ) {
 
 			// Put 2 Presence on your starting board: 1 in each of the 2 lands with the most Dahanicon.png
