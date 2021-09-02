@@ -13,7 +13,7 @@ namespace SpiritIsland.Basegame {
 			this.engine = engine;
 		}
 
-		public override async Task OnInvaderDestroyed( Space space, InvaderSpecific specific ) {
+		public override async Task OnInvaderDestroyed( Space space, Token specific ) {
 			if(specific.Generic == Invader.City) {
 				AddFear( space, 5 );
 			} else if(specific.Generic == Invader.Town) {
@@ -25,14 +25,14 @@ namespace SpiritIsland.Basegame {
 		}
 
 		async Task BringerPushNInvaders( Space source, int countToPush
-			, params Invader[] healthyInvaders
+			, params TokenGroup[] healthyInvaders
 		) {
 
-			InvaderSpecific[] CalcInvaderTypes() => engine.GameState.Invaders.Counts[ source ].FilterBy( healthyInvaders );
+			Token[] CalcInvaderTypes() => engine.GameState.Tokens[ source ].OfAnyType( healthyInvaders );
 
 			var invaders = CalcInvaderTypes();
 			while(0 < countToPush && 0 < invaders.Length) {
-				var invader = await engine.Self.Action.Choose( new SelectInvaderToPushDecision( source, countToPush, invaders, Present.Always ) );
+				var invader = await engine.Self.Action.Choose( new SelectTokenToPushDecision( source, countToPush, invaders, Present.Always ) );
 
 				if(invader == null)
 					break;
@@ -41,7 +41,7 @@ namespace SpiritIsland.Basegame {
 					"Push " + invader.Summary + " to",
 					source.Adjacent.Where( SpaceFilter.ForCascadingBlight.GetFilter( engine.Self, engine.GameState, Target.Any ) )
 				) );
-				await engine.GameState.Invaders.Move( invader, source, destination );
+				await engine.GameState.Move( invader, source, destination );
 
 				--countToPush;
 				invaders = CalcInvaderTypes();

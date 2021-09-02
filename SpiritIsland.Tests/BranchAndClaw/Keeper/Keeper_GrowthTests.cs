@@ -170,18 +170,18 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 		public void SacredSitesPushDahan() {
 			// Given: space with 2 dahan
 			var space = board[5];
-			gameState.Dahan.Adjust(space,2);
+			gameState.DahanAdjust(space,2);
 			//   and presence on that space
 			spirit.Presence.PlaceOn( space );
 
 			// When: we place a presence on that space
 			_ = spirit.Presence.PlaceFromBoard( spirit.Presence.Energy.Next, space, gameState );
 
-			spirit.Action.AssertDecision( "Select destination for dahan", "A4");
-			spirit.Action.AssertDecision( "Select destination for dahan", "A7" );
+			spirit.Action.AssertDecision( "Push D@2 to", "A4");
+			spirit.Action.AssertDecision( "Push D@2 to", "A7" );
 
 			spirit.SacredSites.ShouldContain(space);
-			gameState.Dahan.GetCount(space).ShouldBe(0,"SS should push dahan from space");
+			gameState.DahanGetCount(space).ShouldBe(0,"SS should push dahan from space");
 		}
 
 
@@ -234,7 +234,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 		}
 
 		void Given_HasWilds( Space space ) {
-			gsbac.Wilds.AddOneTo(space);
+			gameState.Tokens[space].Adjust(BacTokens.Wilds,1);
 		}
 
 	}

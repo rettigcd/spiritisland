@@ -14,7 +14,7 @@ namespace SpiritIsland.Basegame {
 
 			// if no invaders are present, gather 2 explorers
 			if(!ctx.HasInvaders)
-				await ctx.GatherUpToNInvaders(2, Invader.Explorer);
+				await ctx.GatherUpToNTokens(2, Invader.Explorer);
 
 		}
 

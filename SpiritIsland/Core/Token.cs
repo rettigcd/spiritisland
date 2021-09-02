@@ -1,36 +1,37 @@
 ﻿
 namespace SpiritIsland {
 
-	public class InvaderSpecific : IOption {
+	public class Token : IOption {
 
 		#region private
 
-		public InvaderSpecific(Invader generic, InvaderSpecific[] seq, int health){
+		public Token(TokenGroup generic, Token[] seq, int health){
 			this.Generic = generic;
 			Health = health;
 			this.seq = seq;
 		}
 
-		public readonly Invader Generic;
+		public readonly TokenGroup Generic;
 
 		#endregion
 
 		public virtual string Summary => Initial+"@"+Health; // C@3, T@2
+
 		public char Initial => Generic.Label[0];
 
-		public InvaderSpecific Damage(int level){
+		public Token Damage(int level){
 			return seq[level > Health ? 0 : Health-level];
 		}
 
 		public int Health {get;}
 
-		public InvaderSpecific Healthy => seq[^1];
+		public Token Healthy => seq[^1];
 
 		public int FullHealth => Healthy.Health;
 
 		string IOption.Text =>  Summary; // + health ?
 
-		readonly InvaderSpecific[] seq;
+		readonly Token[] seq;
 	}
 
 }

@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland {
 
-	public class InvadersOnSpaceDecision : TypedDecision<InvaderSpecific> {
-		protected InvadersOnSpaceDecision( string prompt, Space space, InvaderSpecific[] options, Present present )
+	public class InvadersOnSpaceDecision : TypedDecision<Token> {
+		protected InvadersOnSpaceDecision( string prompt, Space space, Token[] options, Present present )
 			: base( prompt, options, present ) { 
 			Space = space;
 		}

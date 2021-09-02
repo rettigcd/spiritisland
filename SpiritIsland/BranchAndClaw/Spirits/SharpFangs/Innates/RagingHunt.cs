@@ -8,16 +8,22 @@ namespace SpiritIsland.BranchAndClaw {
 
 		[InnateOption("2 animal")]
 		static public async Task Option1(TargetSpaceCtx ctx ) {
-			await ctx.GatherUpToNBeasts(ctx.Target,1);
-			await ctx.PowerPushUpToNBeasts(ctx.Target,2);
+			await Gather( ctx );
+			await Push( ctx );
 		}
 
 		[InnateOption( "2 plant,3 animal" )]
 		static public async Task Option2( TargetSpaceCtx ctx ) {
-			await ctx.GatherUpToNBeasts( ctx.Target, 1 );
-			await ctx.DamageInvaders( ctx.GameState.BAC().Beasts.GetCount(ctx.Target) );
-			await ctx.PowerPushUpToNBeasts( ctx.Target, 2 );
+			await Gather( ctx );
+			await ctx.DamageInvaders( ctx.Tokens[BacTokens.Beast] );
+			await Push( ctx );
 		}
+
+		static Task Gather( TargetSpaceCtx ctx )
+			=> ctx.GatherUpToNTokens( ctx.Target, 1, BacTokens.Beast.Generic );
+
+		static Task Push( TargetSpaceCtx ctx )
+			=> ctx.PowerPushUpToNTokens( ctx.Target, 2, BacTokens.Beast.Generic );
 
 	}
 

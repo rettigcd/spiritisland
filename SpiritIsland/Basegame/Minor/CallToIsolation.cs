@@ -14,10 +14,10 @@ namespace SpiritIsland.Basegame {
 				|| await ctx.Self.UserSelectsFirstText("Select option", "push 1 dahan", $"push {pushCount} explorer or towns");
 
 			if( pushDahan )
-				await ctx.PowerPushUpToNDahan(1);
+				await ctx.PowerPushUpToNTokens(1);
 			else
 				// push 1 explorer/town per dahan
-				await ctx.PowerPushUpToNInvaders(pushCount,Invader.Town,Invader.Explorer);
+				await ctx.PowerPushUpToNTokens(pushCount,Invader.Town,Invader.Explorer);
 
 		}
 

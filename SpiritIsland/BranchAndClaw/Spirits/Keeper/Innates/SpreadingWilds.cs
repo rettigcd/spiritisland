@@ -10,14 +10,14 @@ namespace SpiritIsland.BranchAndClaw {
 		[InnateOption( "2 sun" )]
 		static public Task Option1( TargetSpaceCtx ctx ) {
 			// push 1 explorer from target land per 2 sun you have
-			return ctx.PowerPushUpToNInvaders(ctx.Self.Elements[Element.Sun]/2,Invader.Explorer);
+			return ctx.PowerPushUpToNTokens(ctx.Self.Elements[Element.Sun]/2,Invader.Explorer);
 		}
 
 		[InnateOption( "1 plant" )]
 		static public Task Option2( TargetSpaceCtx ctx ) {
 			// if target land has no explorer, add 1 wilds
-			if( !ctx.InvaderCounts.HasAny(Invader.Explorer) )
-				(ctx.GameState as GameState_BranchAndClaw).Wilds.AddOneTo(ctx.Target);
+			if( !ctx.Tokens.HasAny(Invader.Explorer) )
+				ctx.Tokens.Adjust(BacTokens.Wilds,1);
 			return Task.CompletedTask;
 		}
 

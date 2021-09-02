@@ -22,7 +22,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			exploringSpace = gameState.Island.Boards[0].Spaces.Where( invaderCard.Matches ).First();
 
 			//   And: 2 dahan on space
-			gameState.Dahan.Adjust( exploringSpace, 2 );
+			gameState.DahanAdjust( exploringSpace, 2 );
 
 		}
 

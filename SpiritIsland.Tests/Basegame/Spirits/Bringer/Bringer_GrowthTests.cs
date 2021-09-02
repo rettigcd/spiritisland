@@ -70,10 +70,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 
 			board = LineBoard.MakeBoard();
 			Given_HasPresence(board[5]);
-			gameState.Dahan.Adjust(board[6]);
-			gameState.Invaders.Counts[board[7]].Add(Invader.Explorer,1);
-			gameState.Invaders.Counts[board[8]].Add(Invader.Town,1);
-			gameState.Invaders.Counts[board[0]].Add(Invader.City,1);
+			gameState.DahanAdjust(board[6]);
+			gameState.Tokens[board[7]].Add(Invader.Explorer,1);
+			gameState.Tokens[board[8]].Add(Invader.Town,1);
+			gameState.Tokens[board[0]].Add(Invader.City,1);
 
 			// add presense range 4 Dahan or Invadors, +2 energy
 			When_Growing(3);

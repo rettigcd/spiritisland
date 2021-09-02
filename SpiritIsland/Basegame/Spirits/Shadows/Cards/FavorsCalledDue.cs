@@ -12,11 +12,11 @@ namespace SpiritIsland.Basegame {
 			var (_,gameState) = ctx;
 
 			// gather up to 4 dahan
-			await ctx.GatherUpToNDahan( target, 4 );
+			await ctx.GatherUpToNTokens( target, 4, TokenType.Dahan );
 
 			// if invaders are present and dahan now out numberthem, 3 fear
-			var invaderCount = ctx.GameState.Invaders.Counts[target].Total;
-			if(invaderCount > 0 && gameState.Dahan.GetCount( target ) > invaderCount) {
+			var invaderCount = ctx.Tokens.InvaderTotal();
+			if(invaderCount > 0 && gameState.DahanGetCount( target ) > invaderCount) {
 				ctx.AddFear( 3 );
 			}
 

@@ -25,17 +25,17 @@ namespace SpiritIsland.Basegame {
 		/// <summary>
 		/// Conditionally Removes an invader based on the Total # of invaders in a space
 		/// </summary>
-		static async Task RemoveInvaderWhenMax(GameState gs, int invaderMax, params Invader[] removeableInvaders ) {
+		static async Task RemoveInvaderWhenMax(GameState gs, int invaderMax, params TokenGroup[] removeableInvaders ) {
 			foreach(var spirit in gs.Spirits) {
 				var options = gs.Island.AllSpaces.Where( s => {
-					var grp = gs.Invaders.Counts[ s ];
-					return grp.HasAny( removeableInvaders ) && grp.Total <= invaderMax;
+					var counts = gs.Tokens[ s ];
+					return counts.HasAny( removeableInvaders ) && counts.InvaderTotal() <= invaderMax;
 				} ).ToArray();
 				if(options.Length == 0) return;
 
 				var target = await spirit.Action.Choose( new TargetSpaceDecision( "fear:Select land to remove 1 explorer", options ));
 
-				var grp = gs.Invaders.Counts[ target ];
+				var grp = gs.Tokens[ target ];
 				var invaderToRemove = grp.PickBestInvaderToRemove(removeableInvaders);
 				grp.Adjust( invaderToRemove, -1 );
 			}

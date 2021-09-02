@@ -22,9 +22,9 @@ namespace SpiritIsland.Basegame {
 			string power = await ctx.Self.SelectText("Select item(s) to push",options.ToArray());
 
 			if(power == pushDahanText)
-				await ctx.PowerPushUpToNDahan(3);
+				await ctx.PowerPushUpToNTokens(3);
 			else
-				await ctx.PowerPushUpToNInvaders(1,Invader.Town); // PowerPush!
+				await ctx.PowerPushUpToNTokens(1,Invader.Town); // PowerPush!
 		}
 	}
 }

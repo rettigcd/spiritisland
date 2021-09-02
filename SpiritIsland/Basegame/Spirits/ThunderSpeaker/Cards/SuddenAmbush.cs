@@ -12,10 +12,10 @@ namespace SpiritIsland.Basegame {
 		static public async Task Act( TargetSpaceCtx ctx ) {
 			var target = ctx.Target;
 			// you may gather 1 dahan
-			await ctx.GatherUpToNDahan(target, 1);
+			await ctx.GatherUpToNTokens(target, 1, TokenType.Dahan );
 
 			// Each dahan destroys 1 explorer
-			int dahahCount = ctx.GameState.Dahan.GetCount( target );
+			int dahahCount = ctx.GameState.DahanGetCount( target );
 			await ctx.PowerInvaders.Destroy(Invader.Explorer, dahahCount);
 		}
 

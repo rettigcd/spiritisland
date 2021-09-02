@@ -11,13 +11,13 @@ namespace SpiritIsland.Basegame {
 			// push up to 4 dahan -OR- If invaders are present, 2 fear
 
 			const string fearOption = "2 fear";
-			bool doFear = ctx.GameState.Invaders.AreOn( ctx.Target ) 
+			bool doFear = ctx.Tokens.HasInvaders()
 				&& await ctx.Self.SelectText( "Chose card option", fearOption, "push up to 4 dahan" ) == fearOption;
 
 			if( doFear )
 				ctx.AddFear( 2 );
 			else
-				await ctx.PowerPushUpToNDahan(4);
+				await ctx.PowerPushUpToNTokens(4, TokenType.Dahan );
 		}
 	}
 }

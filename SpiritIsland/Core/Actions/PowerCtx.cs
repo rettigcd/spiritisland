@@ -15,45 +15,28 @@ namespace SpiritIsland {
 			GameState = gameState;
 		}
 
-		public async Task<int> PowerPushUpToNInvaders( Space source, int countToPush , params Invader[] generics ) {
+		/// <summary> Returns destinations of push </summary>
+		public async Task<Space[]> PowerPushUpToNTokens( Space source, int countToPush , params TokenGroup[] generics ) {
 
-			InvaderSpecific[] CalcInvaderTypes() => GameState.Invaders.Counts[ source ].FilterBy( generics );
+			Token[] CalcTokenTypes() => GameState.Tokens[ source ].OfAnyType( generics );
 
-			int pushed = 0;
+			var pushedToSpaces = new List<Space>();
 
-			var invaders = CalcInvaderTypes();
-			while(0 < countToPush && 0 < invaders.Length) {
-				var invader = await Self.Action.Choose( new SelectInvaderToPushDecision( source, countToPush, invaders, Present.Done ) );
-				if(invader == null)
+			var tokens = CalcTokenTypes();
+			while(0 < countToPush && 0 < tokens.Length) {
+				var token = await Self.Action.Choose( new SelectTokenToPushDecision( source, countToPush, tokens, Present.Done ) );
+				if(token == null)
 					break;
 
-				var destination = await Self.Action.Choose( new PushInvaderDecision( invader, source, PowerAdjacents(source), Present.Done ) );
-				await GameState.Invaders.Move(invader, source, destination );
+				var destination = await Self.Action.Choose( new PushTokenDecision( token, source, PowerAdjacents(source), Present.Done ) );
+				await GameState.Move(token, source, destination );
 
-				++pushed;
+				pushedToSpaces.Add(destination);
 				--countToPush;
-				invaders = CalcInvaderTypes();
+				tokens = CalcTokenTypes();
 			}
-			return pushed;
+			return pushedToSpaces.ToArray();
 		}
-
-		public async Task<Space[]> PowerPushUpToNDahan( Space source, int dahanToPush ) {
-			HashSet<Space> pushedToLands = new HashSet<Space>();
-			dahanToPush = System.Math.Min( dahanToPush, GameState.Dahan.GetCount( source ) );
-			while(0 < dahanToPush) {
-				Space destination = await Self.Action.Choose(new PushDahanDecision(
-					source
-					, PowerAdjacents(source)
-					, Present.Done
-				));
-				if(destination == null) break;
-				pushedToLands.Add( destination );
-				await GameState.Dahan.Move( source, destination );
-				--dahanToPush;
-			}
-			return pushedToLands.ToArray();
-		}
-
 
 		static public IEnumerable<Space> PowerAdjacents(Space source) => source
 			.Adjacent

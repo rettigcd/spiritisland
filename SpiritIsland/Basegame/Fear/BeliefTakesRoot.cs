@@ -23,7 +23,7 @@ namespace SpiritIsland.Basegame {
 		public Task Level2( GameState gs ) {
 			Defend2WherePresence( gs );
 			foreach(var spirit in gs.Spirits)
-				spirit.Energy += spirit.SacredSites.Count( gs.Invaders.AreOn );
+				spirit.Energy += spirit.SacredSites.Count( gs.HasInvaders );
 			return Task.CompletedTask;
 		}
 
@@ -35,10 +35,10 @@ namespace SpiritIsland.Basegame {
 
 		}
 
-		async Task X(Spirit spirit, HashSet<Space> used, GameState gs) {
+		static async Task X(Spirit spirit, HashSet<Space> used, GameState gs) {
 			// pick land
 			var targetOptions = spirit.Presence.Spaces
-				.Where( s => gs.Invaders.Counts[s].HasAny( Invader.Town, Invader.Explorer ) )
+				.Where( s => gs.Tokens[s].HasAny( Invader.Town, Invader.Explorer ) )
 				.Except( used )
 				.ToArray();
 			if(targetOptions.Length==0) return;
@@ -48,8 +48,8 @@ namespace SpiritIsland.Basegame {
 
 			int damage = 2 * spirit.Presence.Placed.Count(x=>x==target);
 
-			var counts = gs.Invaders.Counts[target];
-			InvaderSpecific pick;
+			var counts = gs.Tokens[target];
+			Token pick;
 			while(damage > 0 
 				&& (pick = SmartInvaderDamageExtensions.PickSmartInvaderToDamage( counts, damage ))!=null
 			) {

@@ -12,7 +12,7 @@ namespace SpiritIsland.Basegame {
 			if(dahanText == await ctx.Self.SelectText( "Gather what?", dahanText, "1 Explorer/Town" ))
 				await ctx.GatherUpToNDahan( 2 );
 			else
-				await ctx.GatherUpToNInvaders( 1, Invader.Explorer, Invader.Town );
+				await ctx.GatherUpToNTokens( 1, Invader.Explorer, Invader.Town );
 		}
 	}
 

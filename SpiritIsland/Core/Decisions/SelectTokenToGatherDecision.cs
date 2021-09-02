@@ -1,10 +1,10 @@
 ﻿
 namespace SpiritIsland {
 
-	public class SelectInvaderToGatherDecision : InvadersOnSpaceDecision {
+	public class SelectTokenToGatherDecision : InvadersOnSpaceDecision {
 		public Space From { get; }
 		public Space To { get; }
-		public SelectInvaderToGatherDecision( Space from, Space to, InvaderSpecific[] options, Present present )
+		public SelectTokenToGatherDecision( Space from, Space to, Token[] options, Present present )
 			: base( $"Invader to gather ({from.Label}=>{to.Label})", from, options, present ) {
 			From = from;
 			To = to;

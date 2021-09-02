@@ -10,11 +10,11 @@ namespace SpiritIsland.Tests.BranchAndClaw {
 
 	public class Strife_Tests {
 
-		readonly InvaderSpecific city;
-		readonly InvaderSpecific strifedCity;
+		readonly Token city;
+		readonly Token strifedCity;
 
 		public Strife_Tests() {
-			city = Invader.City.Healthy;
+			city = Invader.City.Default;
 			strifedCity = city.WithStrife(1);
 		}
 
@@ -58,7 +58,7 @@ namespace SpiritIsland.Tests.BranchAndClaw {
 		[Fact]
 		public void AddingStrife() {
 			int expected = 0;
-			InvaderSpecific inv = city;
+			Token inv = city;
 			void Add(int delta ) {
 				expected+=delta;
 				inv = inv.AddStrife(delta);
@@ -78,21 +78,21 @@ namespace SpiritIsland.Tests.BranchAndClaw {
 		public void MoveStrife() {
 			var board = Board.BuildBoardB();
 			var gs = new GameState( new Shadows(), board );
-			var space = board.Spaces.Skip( 1 ).First( x => !gs.Invaders.Counts[x].HasAny() );
-			var counts = gs.Invaders.Counts[space];
+			var space = board.Spaces.Skip( 1 ).First( x => !gs.Tokens[x].HasAny() );
+			var counts = gs.Tokens[space];
 
 			// Given: 1 town and 1 strifed town
 			counts[Invader.Town[2]] = 2;
 			counts.AddStrifeTo( Invader.Town[2] );
-			var strifedTown = counts.Keys.Single( k => k != Invader.Town[2] );
+			var strifedTown = counts.OfType(Invader.Town).Single( k => k != Invader.Town[2] );
 
 			// When: move
 			var destination = space.Adjacent.First( x => x.Terrain != Terrain.Ocean );
-			gs.Invaders.Move( strifedTown, space, destination );
+			gs.Move( strifedTown, space, destination );
 
 			// Then:
 			counts.ToSummary().ShouldBe( "1T@2" );
-			gs.Invaders.Counts[destination].ToSummary().ShouldBe( "1T@2^" );
+			gs.Tokens[destination].ToSummary().ShouldBe( "1T@2^" );
 
 		}
 
@@ -107,8 +107,8 @@ namespace SpiritIsland.Tests.BranchAndClaw {
 		public void Add_Strife( string startingInvaders, string addTo, string endingInvaders ) {
 			var board = Board.BuildBoardB();
 			var gs = new GameState( new Shadows(), board );
-			var space = board.Spaces.Skip( 1 ).First( x => !gs.Invaders.Counts[x].HasAny() );
-			var counts = gs.Invaders.Counts[space];
+			var space = board.Spaces.Skip( 1 ).First( x => !gs.Tokens[x].HasAny() );
+			var counts = gs.Tokens[space];
 
 			// Given: staring invaders
 			switch(startingInvaders) {
@@ -143,22 +143,22 @@ namespace SpiritIsland.Tests.BranchAndClaw {
 			var gs = new GameState_BranchAndClaw( new Thunderspeaker(), Board.BuildBoardC() );
 			Space space = gs.Island.AllSpaces
 				.First( s => s.Terrain != Terrain.Ocean
-					&& !gs.Invaders.Counts[s].Keys.Any() // 0 invaders
+					&& !gs.Tokens[s].HasInvaders() // 0 invaders
 				);
 
 			// Given: 1 strifed city
-			var counts = gs.Invaders.Counts[space];
-			counts[Invader.City.Healthy.WithStrife( 1 )] = 1;
+			var counts = gs.Tokens[space];
+			counts[Invader.City.Default.WithStrife( 1 )] = 1;
 			counts.ToSummary().ShouldBe( "1C@3^", "strife should be used up" );
 
 			//   and: 1 dahan
-			gs.Dahan.Adjust( space, 1 );
+			gs.DahanAdjust( space, 1 );
 
 			//  When: we ravage there
 			await gs.Ravage( new InvaderCard( space.Terrain ) );
 
 			//  Then: dahan survives
-			gs.Dahan.GetCount( space ).ShouldBe( 1, "dahan should survive due to strife on town" );
+			gs.DahanGetCount( space ).ShouldBe( 1, "dahan should survive due to strife on town" );
 
 			//   and so does city, but strife is gone
 			counts.ToSummary().ShouldBe( "1C@1", "strife should be used up" );

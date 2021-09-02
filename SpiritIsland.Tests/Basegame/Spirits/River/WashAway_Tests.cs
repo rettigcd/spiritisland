@@ -32,7 +32,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// 1 explorer on A4
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[4];
-			var grp = gameState.Invaders.Counts[targetSpace];
+			var grp = gameState.Tokens[targetSpace];
 			grp.Add( Invader.Explorer,explorerCount );
 			grp.Add( Invader.Town,townCount );
 			grp.Add( Invader.City,cityCount );
@@ -41,7 +41,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			card.ActivateAsync( spirit, gameState );
 			action = spirit.Action;
 
-			var invader = action.GetCurrent().Options[0] as InvaderSpecific;
+			var invader = action.GetCurrent().Options[0] as Token;
 			Then_SelectInvaderToPush(invader,3, invader.Summary,"Done");
 
 			//  Then: card has options of where to push 1 explorer
@@ -68,7 +68,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// 1 explorer on A4
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[2];
-			gameState.Invaders.Counts[targetSpace].Add(Invader.Explorer);
+			gameState.Tokens[targetSpace].Add(Invader.Explorer);
 
 			//  When: activating card
 //			var engine = spirit.Bind( gameState );
@@ -89,7 +89,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// 1 explorer + 1 Town on A4
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[4];
-			var grp =gameState.Invaders.Counts[targetSpace];
+			var grp =gameState.Tokens[targetSpace];
 			grp.Add(Invader.Explorer);
 			grp.Add(Invader.Town);
 
@@ -134,7 +134,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// 1 damaged town on A4
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[4];
-			gameState.Invaders.Counts[targetSpace].Adjust( Invader.Town[1], 1 );
+			gameState.Tokens[targetSpace].Adjust( Invader.Town[1], 1 );
 
 			var invaderDestination = board[2];
 
@@ -166,9 +166,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			action.Choose( invaderDestination );
 		}
 
-		void Then_SelectInvaderToPush( InvaderSpecific invader, int remaining, params string[] options ) {
+		void Then_SelectInvaderToPush( Token invader, int remaining, params string[] options ) {
 			Assert.False( action.IsResolved );
-			Assert.Equal( $"Select invader to push ({remaining} remaining)", action.GetCurrent().Prompt );
+			Assert.Equal( $"Select item to push ({remaining} remaining)", action.GetCurrent().Prompt );
 			Assert_Options( options );
 			action.Choose( action.GetCurrent().Options.Single( x => x.Text == invader.Summary ) );
 		}
@@ -182,7 +182,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// 1 explorer + 1 Town on A4
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[4];
-			gameState.Invaders.Counts[ targetSpace ].Add( Invader.Explorer, 3 );
+			gameState.Tokens[ targetSpace ].Add( Invader.Explorer, 3 );
 
 			//  When: activating card
 			When_PlayingCard();

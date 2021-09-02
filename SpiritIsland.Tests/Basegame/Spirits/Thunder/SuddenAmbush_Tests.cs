@@ -23,9 +23,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 		[Fact]
 		public void Gather1_Kill1() {
 			// Given: dahan on a3
-			gs.Dahan.Adjust(a[3]);
+			gs.DahanAdjust(a[3]);
 			//  and: 2 explorers on a2
-			gs.Invaders.Counts[a[2]].Adjust(Invader.Explorer[1],2);
+			gs.Tokens[a[2]].Adjust(Invader.Explorer[1],2);
 
 			When_ActivateCard( SuddenAmbush.Name );
 			Step( "Select space to target.", "A1,A2,A4,A5,A6", a[2], false );
@@ -38,10 +38,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 		[Fact]
 		public void Gather1_Kills3() {
 			// Given: 1 dahan on a2 & 2 dahan on a1
-			gs.Dahan.Adjust( a[2] );
-			gs.Dahan.Adjust( a[1], 2 );
+			gs.DahanAdjust( a[2] );
+			gs.DahanAdjust( a[1], 2 );
 			//  and: 5 explorers on a1
-			gs.Invaders.Counts[a[1]].Adjust( Invader.Explorer[1], 5 );
+			gs.Tokens[a[1]].Adjust( Invader.Explorer[1], 5 );
 
 			When_ActivateCard( SuddenAmbush.Name );
 			Step( "Select space to target.", "A1,A2,A4,A5,A6", a[1], false );
@@ -54,10 +54,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 		[Fact]
 		public void DoesntKillTown() {
 			// Given: 1 dahan on a2 & 2 dahan on a1
-			gs.Dahan.Adjust(a[2]);
-			gs.Dahan.Adjust(a[1], 2);
+			gs.DahanAdjust(a[2]);
+			gs.DahanAdjust(a[1], 2);
 			//  and: 1 town on a1
-			gs.Invaders.Counts[a[1]].Add(Invader.Town);
+			gs.Tokens[a[1]].Add(Invader.Town);
 
 			When_ActivateCard(SuddenAmbush.Name);
 			Step("Select space to target.", "A1,A2,A4,A5,A6", a[1], false);

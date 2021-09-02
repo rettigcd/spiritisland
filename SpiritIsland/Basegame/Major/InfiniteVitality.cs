@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 		[FromSacredSite( 1 )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
-			ctx.ModRavage( cfg => {
+			ctx.ModifyRavage( cfg => {
 				// dahan have +4 health while in target land.
 				cfg.DahanHitpoints += 4;
 				// whenever blight would be added to target land, instead leave it on the card

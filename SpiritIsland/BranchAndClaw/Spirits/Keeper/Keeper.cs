@@ -96,7 +96,7 @@ namespace SpiritIsland.BranchAndClaw {
 			// Put 1 Presence
 			Presence.PlaceOn( space );
 			// 1 Wild 
-			((GameState_BranchAndClaw)gs).Wilds.AddOneTo(space);
+			gs.Tokens[space].Adjust(BacTokens.Wilds,1);
 		}
 
 	}

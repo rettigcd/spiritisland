@@ -113,14 +113,13 @@ namespace SpiritIsland.BranchAndClaw {
 		protected override void InitializeInternal( Board board, GameState gs ) {
 			var highestJungle = board.Spaces.Where(x=>x.Terrain == Terrain.Jungle).Last();
 			Presence.PlaceOn(highestJungle);
-			var gsbac = (gs as GameState_BranchAndClaw);
-			gsbac.Beasts.AddOneTo(highestJungle);
+			gs.Tokens[highestJungle][BacTokens.Beast]++;
 
 			// init special growth (note - we don't want this growth in Unit tests, so only add it if we call InitializeInternal())
-			this.AddActionFactory(new PlacePresenceOnBeastLand());
+			this.AddActionFactory(new Setup_PlacePresenceOnBeastLand());
 
-			gsbac.Beasts.Moved.Handlers.Add( new SpiritIsland.Basegame.MovePresenceWithTokens( this, "Move presence with beast?" ).CheckForMove );
-
+			var x = new SpiritIsland.Basegame.MovePresenceWithTokens( this, "Move presence with beast?", BacTokens.Beast.Generic );
+			gs.Tokens.TokenMoved.Handlers.Add( x.CheckForMove );
 		}
 
 	}

@@ -16,7 +16,7 @@ namespace SpiritIsland.Basegame {
 				await ctx.DamageInvaders( ctx.DahanCount );
 			else
 				// push up to 3 dahan
-				await ctx.PowerPushUpToNDahan(3);
+				await ctx.PowerPushUpToNTokens(3, TokenType.Dahan );
 		}
 
 	}

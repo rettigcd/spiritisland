@@ -3,25 +3,30 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland.BranchAndClaw {
 
+	public static class BacTokens {
+		static readonly public Token Beast = new TokenGroup("Beast",1).Default;
+		static readonly public Token Wilds = new TokenGroup("Wilds",1).Default;
+		static readonly public Token Disease = new TokenGroup("Zizease",1).Default;
+	}
+
 	public class GameState_BranchAndClaw : GameState {
 
 		public GameState_BranchAndClaw(Spirit spirit,Board board ) : base( spirit, board ) {
-		Beasts = new TokenCounts(this);
-		Wilds = new TokenCounts(this);
-		Disease = new TokenCounts(this);
-	}
+		}
 
-	protected override bool ExploresSpace( Space space ) {
-			if(Wilds.AreOn( space )) {
-				Wilds.RemoveOneFrom( space );
+		protected override bool ExploresSpace( Space space ) {
+			var counts = Tokens[space];
+			if(counts.Has(BacTokens.Wilds)) {
+				counts.Adjust( BacTokens.Wilds, -1 );
 				return false;
 			}
 			return base.ExploresSpace( space );
 		}
 
-		protected override string Build( Space space, IInvaderCounts group ) {
-			if(Disease.AreOn( space )) {
-				Disease.RemoveOneFrom( space );
+		protected override string Build( Space space, TokenCountDictionary group ) {
+			var counts = Tokens[space];
+			if(counts.Has(BacTokens.Disease)) {
+				counts.Adjust( BacTokens.Disease, -1 );
 				return space.Label +" build stopped by disease";
 			}
 			return base.Build( space, group );
@@ -33,10 +38,6 @@ namespace SpiritIsland.BranchAndClaw {
 			await eng.Exec();
 			return grp.Space.Label + ": " + eng.log.Join( "  " );
 		}
-
-		public TokenCounts Beasts { get; }
-		public TokenCounts Wilds { get; }
-		public TokenCounts Disease { get; }
 
 	}
 

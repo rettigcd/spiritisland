@@ -3,16 +3,16 @@ using System.Linq;
 
 namespace SpiritIsland {
 
-	public class PushInvaderDecision : SelectAdjacentDecision {
+	public class PushTokenDecision : SelectAdjacentDecision {
 
-		public PushInvaderDecision( InvaderSpecific specific, Space source, IEnumerable<Space> destinationOptions, Present present )
+		public PushTokenDecision( Token specific, Space source, IEnumerable<Space> destinationOptions, Present present )
 			: base( "Push " + specific.Summary + " to", source, GatherPush.Push, destinationOptions, present ) {
 			Source = source;
 			Invader = specific;
 		}
 
 		public Space Source { get; }
-		public InvaderSpecific Invader { get; }
+		public Token Invader { get; }
 	}
 
 }

@@ -75,19 +75,20 @@ namespace SpiritIsland.Basegame {
 		protected override void InitializeInternal( Board board, GameState gs ) {
 
 			// Put 2 Presence on your starting board: 1 in each of the 2 lands with the most Dahanicon.png
-			var spots = board.Spaces.OrderByDescending( gs.Dahan.GetCount ).Take( 2 ).ToArray();
+			var spots = board.Spaces.OrderByDescending( gs.DahanGetCount ).Take( 2 ).ToArray();
 			Presence.PlaceOn( spots[0] );
 			Presence.PlaceOn( spots[1] );
 
 			// Special Rules -Ally of the Dahan - Your presense may move with dahan
-			gs.Dahan.Moved.Handlers.Add( new MovePresenceWithTokens( this, "Move presence with dahan?" ).CheckForMove );
+			gs.Tokens.TokenMoved.Handlers.Add( new MovePresenceWithTokens( this, "Move presence with dahan?", TokenType.Dahan ).CheckForMove );
 
 			// Special Rules - Sworn to Victory - For each dahan stroyed by invaders ravaging a land, destroy 1 of your presense withing 1
-			gs.Dahan.Destroyed.Handlers.Add( DestroyNearbyPresence );
+			gs.Tokens.TokenDestroyed.Handlers.Add( DestroyNearbyPresence );
 		}
 
-		async Task DestroyNearbyPresence( GameState _, DahanDestroyedArgs args ) {
+		async Task DestroyNearbyPresence( GameState _, TokenDestroyedArgs args ) {
 			if(args.Source != Cause.Invaders) return;
+			if(args.Token != TokenType.Dahan) return;
 
 			string prompt = $"Sword to Victory: {args.count} dahan destroyed. Select presence to remove.";
 

@@ -219,7 +219,7 @@ namespace SpiritIsland.Tests.Core {
 			gameState.Initialize();
 			// Then:
 			var space = board.Spaces.Single(x=>x.Label==spaceLabel);
-			var counts = gameState.Invaders.Counts[space];
+			var counts = gameState.Tokens[space];
 
 			int ee = items.Count(c=>c=='E');
 			int aa = counts[Invader.Explorer[1]];
@@ -228,7 +228,7 @@ namespace SpiritIsland.Tests.Core {
 			Assert.Equal(items.Count(c=>c=='C'), counts[Invader.City[3]]);
 			Assert.Equal(items.Count(c=>c=='T'), counts[Invader.Town[2]]);
 			Assert.Equal(items.Count(c=>c=='E'), counts[Invader.Explorer[1]]);
-			Assert.Equal(items.Count(c=>c=='D'), gameState.Dahan.GetCount(space));
+			Assert.Equal(items.Count(c=>c=='D'), gameState.DahanGetCount(space));
 			Assert.Equal(items.Count(c=>c=='B'), gameState.HasBlight(space)?1:0);
 		}
 

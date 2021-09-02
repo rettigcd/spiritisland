@@ -26,16 +26,16 @@ namespace SpiritIsland.Basegame {
 		static async Task ForEachSpiritSelectedLandRemoveInvader( 
 			GameState gs, 
 			Func<Space, bool> landFilter, 
-			params Invader[] removable
+			params TokenGroup[] removable
 		) {
 			foreach(var spirit in gs.Spirits) {
 				var options = gs.Island.AllSpaces
 					.Where( landFilter )
-					.Where( x => gs.Invaders.Counts[ x ].HasAny( removable ) )
+					.Where( x => gs.Tokens[ x ].HasAny( removable ) )
 					.ToArray();
 				if(options.Length == 0) break;
 				var target = await spirit.Action.Choose( new TargetSpaceDecision( "Fear:Pick costal land remove invader", options ));
-				var grp = gs.Invaders.Counts[ target ];
+				var grp = gs.Tokens[ target ];
 
 				var invaderToRemove = grp.PickBestInvaderToRemove( removable );
 				grp.Adjust( invaderToRemove, -1 );

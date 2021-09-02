@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 
 			// if you have 2 moon, you may instead replace 1 town with 1 dahan
 			if(ctx.PowerInvaders.Counts.Has(Invader.Town) && 2 <= ctx.Self.Elements[ Element.Moon ]) {
-				ctx.InvaderCounts.Remove( Invader.Town );
+				ctx.Tokens.Remove( Invader.Town );
 				ctx.AdjustDahan( 1 );
 			} else if(ctx.PowerInvaders.Counts.Has(Invader.Explorer)) {
 				// replace 1 explorer with 1 dahan

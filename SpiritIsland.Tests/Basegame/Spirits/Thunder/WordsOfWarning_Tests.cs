@@ -11,12 +11,12 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 		public async Task DeadDahanDoDamage() {
 
 			// Given: 2 dahan on a2
-			gs.Dahan.Adjust( a[2], 2 );
+			gs.DahanAdjust( a[2], 2 );
 			// and: dahan on a4 so it doesn't auto-select the only target available
-			gs.Dahan.Adjust( a[4] );
+			gs.DahanAdjust( a[4] );
 
 			//  and: 4 explorers + 1 city
-			var counts = gs.Invaders.Counts[ a[2] ];
+			var counts = gs.Tokens[ a[2] ];
 			counts.Add( Invader.Explorer, 4 );
 			counts.Add( Invader.City );
 			// and activate card

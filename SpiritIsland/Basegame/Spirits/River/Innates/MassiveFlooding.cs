@@ -13,13 +13,13 @@ namespace SpiritIsland.Basegame {
 		[InnateOption("1 sun,2 water")]
 		static public Task Option1Async(TargetSpaceCtx ctx){
 			// Push 1 Town/Explorer
-			return ctx.PowerPushUpToNInvaders(1,Invader.Town,Invader.Explorer); 
+			return ctx.PowerPushUpToNTokens(1,Invader.Town,Invader.Explorer); 
 		}
 
 		[InnateOption("2 sun,3 water")]
 		static public async Task Option2Async(TargetSpaceCtx ctx){
 			await ctx.DamageInvaders(ctx.Target, 2);
-			await ctx.PowerPushUpToNInvaders(3,Invader.Town,Invader.Explorer);
+			await ctx.PowerPushUpToNTokens(3,Invader.Town,Invader.Explorer);
 		}
 
 		[InnateOption("3 sun, 4 water,1 earth")]
@@ -27,7 +27,7 @@ namespace SpiritIsland.Basegame {
 			var group = ctx.PowerInvaders;
 
 			// copy so we can modify
-			var invaderTypes = group.Counts.Keys.ToDictionary(x=>x,x=>group[x]); 
+			var invaderTypes = group.Counts.Invaders().ToDictionary(x=>x,x=>group[x]); 
 
 			foreach(var (invader,origCount) in invaderTypes.Select(x=>(x.Key,x.Value)))
 				for(int i=0;i<origCount;++i)

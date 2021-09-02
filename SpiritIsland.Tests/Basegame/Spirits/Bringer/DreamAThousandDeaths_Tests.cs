@@ -37,7 +37,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			const int count = 2;
 
 			// Given: 2 explorers
-			ctx.InvaderCounts.Add(Invader.Explorer, count );
+			ctx.Tokens.Add(Invader.Explorer, count );
 
 			// When: causing 1 damage to each invader
 			switch(method) {
@@ -47,7 +47,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 
 			// Then: dream-death allows User pushes them
 			for(int i = 0; i < count; ++i) {
-				ctx.Self.Action.AssertDecision( "Select invader to push (1 remaining)","E@1", "E@1" );
+				ctx.Self.Action.AssertDecision( "Select item to push (1 remaining)","E@1", "E@1" );
 				ctx.Self.Action.AssertDecision( "Push E@1 to", "A1,A4,A6,A7,A8", "A7" );
 			}
 
@@ -67,14 +67,14 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			// pushes town
 
 			// Given: 1 town
-			ctx.InvaderCounts.Add( Invader.Town, count );
+			ctx.Tokens.Add( Invader.Town, count );
 
 			// When: destorying towns
 			_ = DestroyAllExplorersAndTownsAsync( ctx );
 
 			// Then: dream-death allows User pushes them
 			for(int i = 0; i < count; ++i) {
-				ctx.Self.Action.AssertDecision( "Select invader to push (1 remaining)", "T@2", "T@2" );
+				ctx.Self.Action.AssertDecision( "Select item to push (1 remaining)", "T@2", "T@2" );
 				ctx.Self.Action.AssertDecision( "Push T@2 to", "A1,A4,A6,A7,A8", "A7" );
 			}
 
@@ -92,7 +92,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 		public void DreamDamageResetsEachPower() {
 
 			// Given: 2 explorers
-			ctx.InvaderCounts.Add( Invader.City );
+			ctx.Tokens.Add( Invader.City );
 
 			// When: 3 separate actinos cause 1 damage
 			async Task Run3Async(){

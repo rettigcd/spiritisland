@@ -16,7 +16,7 @@ namespace SpiritIsland.Basegame {
 
 			// target spirit may push 1 explorer and 1 town from land where it has presence
 			bool HasExplorerOrTown(Space space){
-				return gs.Invaders.Counts[ space ].HasAny(Invader.Explorer,Invader.Town);
+				return gs.Tokens[ space ].HasAny(Invader.Explorer,Invader.Town);
 			}
 			// Select Land
 			var landsToPushInvadersFrom = ctx.Target.Presence.Spaces.Where(HasExplorerOrTown).ToArray();
@@ -28,9 +28,9 @@ namespace SpiritIsland.Basegame {
 			if(space==null) return;
 
 			// Push Town
-			await otherSpirit.PowerPushUpToNInvaders( space, 1, Invader.Town );
+			await otherSpirit.PowerPushUpToNTokens( space, 1, Invader.Town );
 			// Push Explorer
-			await otherSpirit.PowerPushUpToNInvaders( space, 1, Invader.Explorer );
+			await otherSpirit.PowerPushUpToNTokens( space, 1, Invader.Explorer );
 			
 		}
 

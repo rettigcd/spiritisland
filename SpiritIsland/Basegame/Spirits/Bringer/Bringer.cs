@@ -79,33 +79,18 @@ namespace SpiritIsland.Basegame {
 		}
 
 		public override InvaderGroup BuildInvaderGroupForPowers( GameState gs, Space space ) {
-			var invaderCounts = gs.Invaders.Counts[ space ];
-			var detached = new DetachedInvaderCounts( invaderCounts );
-			return new InvaderGroup( space, detached ) {
+			var src = gs.Tokens[ space ];
+
+			var detached = new CountDictionary<Token>();
+			foreach(var invader in src.Invaders())
+				detached[invader] = src[invader];
+
+			return new InvaderGroup( space, new TokenCountDictionary(space, detached) ) {
 				DestroyInvaderStrategy = new ToDreamAThousandDeaths_DestroyStrategy( gs.Fear.AddDirect, Cause.Power, this.MakeDecisionsFor( gs ) ),
 			};
 		}
 
 
 	}
-
-	public class DetachedInvaderCounts : IInvaderCounts {
-		public DetachedInvaderCounts( IInvaderCounts src ) {
-			counts = new CountDictionary<InvaderSpecific>();
-			foreach(var invader in src.Keys)
-				counts[invader] = src[invader];
-		}
-		public int this[InvaderSpecific invader] {
-			get => counts[invader];
-			set => counts[invader] = value;
-		}
-
-		public IEnumerable<InvaderSpecific> Keys => counts.Keys;
-
-		public int Total => counts.Values.Sum();
-
-		readonly CountDictionary<InvaderSpecific> counts;
-	}
-
 
 }

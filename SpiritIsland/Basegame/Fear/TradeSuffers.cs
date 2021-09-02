@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 
 		[FearLevel( 1, "Invaders do not Build in lands with City." )]
 		public Task Level1( GameState gs ) {
-			gs.SkipBuild( gs.Island.AllSpaces.Where( s => gs.Invaders.Counts[ s ].Has(Invader.City) ).ToArray() );
+			gs.SkipBuild( gs.Island.AllSpaces.Where( s => gs.Tokens[ s ].Has(Invader.City) ).ToArray() );
 			// !! no unit tests on this
 			return Task.CompletedTask;
 		}
@@ -17,10 +17,10 @@ namespace SpiritIsland.Basegame {
 		[FearLevel( 2, "Each player may replace 1 Town with 1 Explorer in a Coastal land." )]
 		public async Task Level2( GameState gs ) {
 			foreach(var spirit in gs.Spirits) {
-				var options = gs.Island.AllSpaces.Where(s=>s.IsCostal&&gs.Invaders.Counts[s].Has(Invader.Town)).ToArray();
+				var options = gs.Island.AllSpaces.Where(s=>s.IsCostal&&gs.Tokens[s].Has(Invader.Town)).ToArray();
 				if(options.Length==0) return;
 				var target = await spirit.Action.Choose( new TargetSpaceDecision( "Replace town with explorer", options));
-				var grp = gs.Invaders.Counts[ target ];
+				var grp = gs.Tokens[ target ];
 				grp.Remove( Invader.Town );
 				grp.Adjust( Invader.Explorer[1], 1 );
 			}
@@ -29,10 +29,10 @@ namespace SpiritIsland.Basegame {
 		[FearLevel( 3, "Each player may replace 1 City with 1 Town or 1 Town with 1 Explorer in a Coastal land." )]
 		public async Task Level3( GameState gs ) {
 			foreach(var spirit in gs.Spirits) {
-				var options = gs.Island.AllSpaces.Where( s => s.IsCostal && gs.Invaders.Counts[ s ].HasAny(Invader.Town,Invader.City) ).ToArray();
+				var options = gs.Island.AllSpaces.Where( s => s.IsCostal && gs.Tokens[ s ].HasAny(Invader.Town,Invader.City) ).ToArray();
 				if(options.Length == 0) return;
 				var target = await spirit.Action.Choose( new TargetSpaceDecision( "Replace town with explorer", options ));
-				var cnts = gs.Invaders.Counts[target];
+				var cnts = gs.Tokens[target];
 				if(cnts.Has(Invader.City)) {
 					cnts.Remove( Invader.City);
 					cnts.Adjust( Invader.Town[2], 1 );

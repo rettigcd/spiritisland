@@ -16,38 +16,23 @@ namespace SpiritIsland {
 
 		#region Gather
 
-		static public async Task GatherUpToNDahan( this IMakeGamestateDecisions eng, Space target, int dahanToGather ) {
-  			int gathered = 0;
-			var neighborsWithDahan = target.Adjacent.Where(eng.GameState.Dahan.AreOn).ToArray();
-			while(gathered<dahanToGather && neighborsWithDahan.Length>0){
-				var source = await eng.Self.Action.Choose( new GatherDahanFromDecision( dahanToGather-gathered, target, neighborsWithDahan, Present.Done));
-				if(source == null) break;
-
-				await eng.GameState.Dahan.Move(source,target);
-
-				++gathered;
-				neighborsWithDahan = target.Adjacent.Where(eng.GameState.Dahan.AreOn).ToArray();
-			}
-
-		}
-
-		static public async Task GatherUpToNInvaders( this IMakeGamestateDecisions ctx, Space target, int countToGather, params Invader[] invaderTypes ) {
-			InvaderSpecific[] spaceInvaders(Space space) => ctx.GameState.Invaders.Counts[space].FilterBy(invaderTypes);
+		static public async Task GatherUpToNTokens( this IMakeGamestateDecisions ctx, Space target, int countToGather, params TokenGroup[] groups ) {
+			Token[] calcTokens(Space space) => ctx.GameState.Tokens[space].OfAnyType(groups);
 			Space[] CalcSource() => target.Adjacent
-				.Where(s=>spaceInvaders(s).Any())
+				.Where(s=>calcTokens(s).Any())
 				.ToArray();
 
-			string label = invaderTypes.Select(it=>it.Label).Join("/");
+			string label = groups.Select(it=>it.Label).Join("/");
 
 			Space[] neighborsWithItems = CalcSource();
   			int gathered = 0;
 			while(gathered<countToGather && neighborsWithItems.Length>0){
-				var source = await ctx.Self.Action.Choose( new GatherInvaderFromDecision( countToGather-gathered, invaderTypes, target, neighborsWithItems, Present.Done ));
+				var source = await ctx.Self.Action.Choose( new GatherTokensFromDecision( countToGather-gathered, groups, target, neighborsWithItems, Present.Done ));
 				if(source == null) break;
 
-				var invader = await ctx.Self.Action.Choose( new SelectInvaderToGatherDecision( source, target, spaceInvaders(source), Present.IfMoreThan1 ) );
+				var invader = await ctx.Self.Action.Choose( new SelectTokenToGatherDecision( source, target, calcTokens(source), Present.IfMoreThan1 ) );
 
-				await ctx.GameState.Invaders.Move(invader, source, target);
+				await ctx.GameState.Move(invader, source, target);
 
 				++gathered;
 				neighborsWithItems = CalcSource();
@@ -59,47 +44,37 @@ namespace SpiritIsland {
 
 		#region Push
 
-		static public async Task<Space[]> FearPushUpToNDahan( this IMakeGamestateDecisions eng, Space source, int dahanToPush) {
-			HashSet<Space> pushedToLands = new HashSet<Space>();
-			dahanToPush = System.Math.Min(dahanToPush,eng.GameState.Dahan.GetCount(source));
-			while(0<dahanToPush){
-				Space destination = await eng.Self.Action.Choose(new PushDahanDecision(
-					source
-					,source.Adjacent.Where(n=>n.Terrain != Terrain.Ocean ) // This is non-power push, so directly checking ocean is ok
-					,Present.Done
-				));
-				if(destination == null) break;
-				pushedToLands.Add(destination);
-				await eng.GameState.Dahan.Move(source,destination);
-				--dahanToPush;
-			}
-			return pushedToLands.ToArray();
-		}
+		static public Task FearPushNTokens( this IMakeGamestateDecisions ctx, Space source, int countToPush , params TokenGroup[] groups ) 
+			=> ctx.FearPushTokens(source,true,countToPush,groups);
 
-		// non-power push (for fear)
-		static public async Task FearPushUpToNInvaders( this IMakeGamestateDecisions ctx, Space source, int countToPush
-			,params Invader[] healthyInvaders
+		static public Task FearPushUpToNTokens( this IMakeGamestateDecisions ctx, Space source, int countToPush , params TokenGroup[] groups ) 
+			=> ctx.FearPushTokens( source, false, countToPush, groups );
+
+		static public async Task FearPushTokens( this IMakeGamestateDecisions ctx, Space source, bool force, int countToPush
+			,params TokenGroup[] groups
 		) {
 
-			InvaderSpecific[] CalcInvaderTypes() => ctx.GameState.Invaders.Counts[source].FilterBy(healthyInvaders);
+			var counts = ctx.GameState.Tokens[source];
+			Token[] GetTokens() => counts.OfAnyType(groups);
+			countToPush = System.Math.Min(countToPush,counts.SumAny(groups));
 
-			var invaders = CalcInvaderTypes();
-			while(0<countToPush && 0<invaders.Length){
-				var invader = await ctx.Self.Action.Choose( new SelectInvaderToPushDecision( source, countToPush, invaders, Present.Done ) );
+			var tokens = GetTokens();
+			while(0<countToPush && 0<tokens.Length){
+				var token = await ctx.Self.Action.Choose( new SelectTokenToPushDecision( source, countToPush, tokens, force ? Present.IfMoreThan1 : Present.Done ) );
 
-				if(invader==null) 
+				if(token==null) 
 					break;
 
-				var destination = await ctx.Self.Action.Choose( new PushInvaderDecision(
-					invader,
+				var destination = await ctx.Self.Action.Choose( new PushTokenDecision(
+					token,
 					source,
 					source.Adjacent.Where( x => x.Terrain != Terrain.Ocean ),
 					Present.Always
 				)); 
-				await ctx.GameState.Invaders.Move(invader, source, destination );
+				await ctx.GameState.Move(token, source, destination );
 
 				--countToPush;
-				invaders = CalcInvaderTypes();
+				tokens = GetTokens();
 			}
 		}
 

@@ -26,18 +26,18 @@ namespace SpiritIsland {
 				[Target.JungleOrMountain  ]= ( s ) => SelectTerrain( s ).IsIn( Terrain.Jungle, Terrain.Mountain ),
 				[Target.JungleOrWetland   ]= ( s ) => SelectTerrain( s ).IsIn( Terrain.Jungle, Terrain.Wetland ),
 				[Target.MountainOrWetland ]= ( s ) => SelectTerrain( s ).IsIn( Terrain.Mountain, Terrain.Wetland ),
-				[Target.NoInvader         ]= ( s ) => !gameState.Invaders.AreOn( s ),
+				[Target.NoInvader         ]= ( s ) => !gameState.HasInvaders( s ),
 				[Target.Blight            ]= ( s ) => gameState.HasBlight( s ),
 				[Target.NoBlight          ]= ( s ) => !gameState.HasBlight( s ),
-				[Target.DahanOrInvaders   ]= ( s ) => (gameState.Dahan.AreOn( s ) || gameState.Invaders.AreOn( s )),
+				[Target.DahanOrInvaders   ]= ( s ) => (gameState.DahanIsOn( s ) || gameState.Tokens[s].HasInvaders()),
 				[Target.Costal            ]= ( s ) => s.IsCostal,
-				[Target.Explorer          ]= ( s ) => gameState.Invaders.Counts[ s ].Has(Invader.Explorer),
-				[Target.TownOrExplorer    ]= ( s ) => gameState.Invaders.Counts[ s ].HasAny( Invader.Explorer, Invader.Town ),
-				[Target.Dahan             ]= gameState.Dahan.AreOn,
-				[Target.Invaders          ]= gameState.Invaders.AreOn,
+				[Target.Explorer          ]= ( s ) => gameState.Tokens[ s ].Has(Invader.Explorer),
+				[Target.TownOrExplorer    ]= ( s ) => gameState.Tokens[ s ].HasAny( Invader.Explorer, Invader.Town ),
+				[Target.Dahan             ]= gameState.DahanIsOn,
+				[Target.Invaders          ]= gameState.HasInvaders,
 				// !!! These 2 need to be removed from base game and added via strings
-				[Target.BeastOrJungle     ]= ( s ) => SelectTerrain( s ) == Terrain.Jungle || (gameState as GameState_BranchAndClaw).Beasts.AreOn( s ),
-				[Target.PresenceOrWilds   ]= ( s ) => (self.Presence.IsOn( s ) || (gameState as GameState_BranchAndClaw).Wilds.AreOn( s )),
+				[Target.BeastOrJungle     ]= ( s ) => SelectTerrain( s ) == Terrain.Jungle || gameState.Tokens[s][BacTokens.Beast]>0,
+				[Target.PresenceOrWilds   ]= ( s ) => (self.Presence.IsOn( s ) || gameState.Tokens[s].Has(BacTokens.Wilds))
 			};
 			var baseFilter = lookup.ContainsKey(filterEnum) 
 				? lookup[filterEnum]
@@ -56,8 +56,8 @@ namespace SpiritIsland {
 			//	Target.NoBlight          => ( s ) => !gameState.HasBlight( s ),
 			//	Target.DahanOrInvaders   => ( s ) => (gameState.Dahan.Has( s ) || gameState.Invaders.AreOn( s )),
 			//	Target.Costal            => ( s ) => s.IsCostal,
-			//	Target.Explorer          => ( s ) => gameState.Invaders.Counts[ s ].Has(Invader.Explorer),
-			//	Target.TownOrExplorer    => ( s ) => gameState.Invaders.Counts[ s ].HasAny( Invader.Explorer, Invader.Town ),
+			//	Target.Explorer          => ( s ) => gameState.Invaders.Counts[ s ].Has(Invader1.Explorer),
+			//	Target.TownOrExplorer    => ( s ) => gameState.Invaders.Counts[ s ].HasAny( Invader1.Explorer, Invader1.Town ),
 			//	Target.Dahan             => gameState.Dahan.Has,
 			//	Target.Invaders          => gameState.Invaders.AreOn,
 			//	//				Target.BeastOrJungle     => ( s ) => SelectTerrain( s ) == Terrain.Jungle || gameState.Beasts.AreOn( s ),

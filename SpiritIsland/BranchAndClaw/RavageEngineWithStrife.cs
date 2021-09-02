@@ -11,12 +11,12 @@ namespace SpiritIsland.BranchAndClaw {
 
 		public override int GetDamageInflictedByInvaders() {
 			// Calc damage
-			int damageFromInvaders = Counts.Keys
+			int damageFromInvaders = Counts.Invaders()
 				.Where(x=>!(x is StrifedInvader))
 				.Select( invader => invader.FullHealth * Counts[invader] ).Sum();
 
 			// decrement strife
-			var strifed = Counts.Keys.OfType<StrifedInvader>()
+			var strifed = Counts.Invaders().OfType<StrifedInvader>()
 				.OrderBy(x=>x.StrifeCount) // smallest first
 				.ToArray();
 			foreach(var orig in strifed) {

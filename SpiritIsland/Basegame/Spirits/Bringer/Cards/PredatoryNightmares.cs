@@ -12,7 +12,7 @@ namespace SpiritIsland.Basegame {
 			// 2 damange.
 			await ctx.DamageInvaders(2);
 			// Push up to 2 dahan.
-			await ctx.PowerPushUpToNDahan(2);
+			await ctx.PowerPushUpToNTokens(2, TokenType.Dahan );
 
 			// When your Powers would destroy invaders, instead they generate fear and/or push those invaders
 			// NO! - Bringer gets this by default

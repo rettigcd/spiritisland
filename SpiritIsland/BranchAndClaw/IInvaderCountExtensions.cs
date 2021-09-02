@@ -4,8 +4,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	static public class IInvaderCountExtensions {
 
-		static public void AddStrifeTo(this IInvaderCounts counts, InvaderSpecific invader, int count = 1 ) {
-			var concreate = (InvaderCounts)counts;
+		static public void AddStrifeTo(this TokenCountDictionary counts, Token invader, int count = 1 ) {
+			var concreate = (TokenCountDictionary)counts;
 
 			// Remove old type from 
 			if(concreate[invader]<count)
@@ -22,18 +22,18 @@ namespace SpiritIsland.BranchAndClaw {
 		/// <summary>
 		/// Gets strifed token with exactly # of strife listed.
 		/// </summary>
-		static public InvaderSpecific WithStrife(this InvaderSpecific orig, int strifeCount ) {
+		static public Token WithStrife(this Token orig, int strifeCount ) {
 			return StrifedInvader.Generator.WithStrife( orig, strifeCount );
 		}
 
-		static public int Strife( this InvaderSpecific orig ) {
+		static public int Strife( this Token orig ) {
 			return orig is StrifedInvader si 
 				? si.StrifeCount
 				: 0;
 		}
 
 
-		static public InvaderSpecific AddStrife(this InvaderSpecific orig, int deltaStrife ) {
+		static public Token AddStrife(this Token orig, int deltaStrife ) {
 			return orig.WithStrife( orig.Strife()+ deltaStrife );
 		}
 

@@ -26,13 +26,13 @@ namespace SpiritIsland.Basegame {
 				int damageFromDahan = ravageEngine.GetDamageInflictedByDahan();
 
 				var grpCounts = ravageEngine.Counts;
-				int preCityCount = grpCounts.SumEach(Invader.City);
-				int preTownCount = grpCounts.SumEach(Invader.Town);
+				int preCityCount = grpCounts.Sum(Invader.City);
+				int preTownCount = grpCounts.Sum(Invader.Town);
 
 				await ravageEngine.DamageInvaders( damageFromDahan );
 
-				int cityKilled = preCityCount - grpCounts.SumEach(Invader.City);
-				int townKilled = preTownCount - grpCounts.SumEach(Invader.Town);
+				int cityKilled = preCityCount - grpCounts.Sum(Invader.City);
+				int townKilled = preTownCount - grpCounts.Sum(Invader.Town);
 
 
 				// after each effect that destorys a town/city/dahan in target land
@@ -40,7 +40,7 @@ namespace SpiritIsland.Basegame {
 				await DistributeDamageToLands( ctx, landsWeCanApplyTheDamageTo, dahanKilled + cityKilled + townKilled );
 			}
 
-			ctx.ModRavage( cfg => cfg.RavageSequence = RavagePlusBonusDamage );
+			ctx.ModifyRavage( cfg => cfg.RavageSequence = RavagePlusBonusDamage );
 
 			return Task.CompletedTask;
 		}
@@ -48,7 +48,7 @@ namespace SpiritIsland.Basegame {
 		static async Task DistributeDamageToLands( TargetSpaceCtx ctx, List<Space> newDamageLands, int additionalDamage ) {
 			Space[] targetLandOptions;
 			while(additionalDamage > 0
-				&& (targetLandOptions = newDamageLands.Where( ctx.GameState.Invaders.AreOn ).ToArray()).Length > 0
+				&& (targetLandOptions = newDamageLands.Where( ctx.GameState.HasInvaders ).ToArray()).Length > 0
 			) {
 				var newLand = await ctx.Self.Action.Choose( new TargetSpaceDecision( $"Apply up to {additionalDamage} vengeanance damage in:", targetLandOptions ));
 				if(newLand == null) break;

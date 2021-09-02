@@ -102,7 +102,7 @@ namespace SpiritIsland.WinForms {
 			blight = Image.FromFile(".\\images\\Blighticon.png");
 			defend = Image.FromFile(".\\images\\defend1orange.png");
 
-			invaderImages = new Dictionary<InvaderSpecific, Image> {
+			invaderImages = new Dictionary<Token, Image> {
 				[Invader.City[3]] = city,
 				[Invader.City[2]] = city2,
 				[Invader.City[1]] = city1,
@@ -292,7 +292,7 @@ namespace SpiritIsland.WinForms {
 			// dahan & presence & blight
 			CountDictionary<Image> images = new();
 			images.Clear();
-			images[dahan] = gameState.Dahan.GetCount( space );
+			images[dahan] = gameState.DahanGetCount( space );
 			images[defend] = gameState.GetDefence( space );
 			images[presence] = spirit.Presence.CountOn( space );
 			images[blight] = gameState.GetBlightOnSpace( space );
@@ -300,18 +300,18 @@ namespace SpiritIsland.WinForms {
 			DrawRow( graphics, x, ref y, iconWidth, xStep, images );
 		}
 
-		Dictionary<InvaderSpecific, Image> invaderImages;
+		Dictionary<Token, Image> invaderImages;
 
 		void DrawInvaderRow( Graphics graphics, float x, ref float y, float width, float step, Space space ) {
 			bool isInvaderSpace = ios!=null && ios.Space == space;
 
 			// invaders
-			var grp = gameState.Invaders.Counts[space];
-			if(!grp.Keys.Any()) return;
+			var counts = gameState.Tokens[space];
+			if(!counts.HasInvaders()) return;
 
 			float maxHeight = 0;
 
-			foreach(var specific in grp.Keys) {
+			foreach(var specific in counts.Invaders()) {
 				var img = invaderImages[specific];
 
 				// Draw Invaders
@@ -323,7 +323,7 @@ namespace SpiritIsland.WinForms {
 					optionRects.Add( (rect, specific) );
 
 				// Count
-				graphics.DrawCount( rect, grp[specific] );
+				graphics.DrawCount( rect, counts[specific] );
 
 				x += step;
 			}
@@ -362,7 +362,7 @@ namespace SpiritIsland.WinForms {
 			var match = FindOption();
 			if(match is Space space)
 				SpaceClicked?.Invoke(space);
-			else if(match is InvaderSpecific invader)
+			else if(match is Token invader)
 				InvaderClicked?.Invoke( invader );
 
 			// Calculate %
@@ -420,7 +420,7 @@ namespace SpiritIsland.WinForms {
 
 
 		public event Action<Space> SpaceClicked;
-		public event Action<InvaderSpecific> InvaderClicked;
+		public event Action<Token> InvaderClicked;
 
 	}
 

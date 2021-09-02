@@ -10,6 +10,7 @@ namespace SpiritIsland {
 
 		public TargetSpaceCtx( Spirit self, GameState gameState, Space target ):base(self,gameState) {
 			Target = target;
+			Tokens = gameState.Tokens[target];
 		}
 
 		public Space Target { get; }
@@ -29,37 +30,39 @@ namespace SpiritIsland {
 
 		#endregion
 
-		public Task<Space[]> PowerPushUpToNDahan( int dahanToPush )
-			=> base.PowerPushUpToNDahan( Target, dahanToPush );
+		public TokenCountDictionary Tokens { get; }
 
-		public Task<int> PowerPushUpToNInvaders( int countToPush, params Invader[] generics )
-			=> base.PowerPushUpToNInvaders( Target, countToPush, generics );
+		public Task<Space[]> PowerPushUpToNTokens( int countToPush, params TokenGroup[] generics )
+			=> base.PowerPushUpToNTokens( Target, countToPush, generics );
+
+		// Binds to Dahan
+		public Task GatherUpToNDahan( int dahanToGather )
+			=> this.GatherUpToNTokens( dahanToGather, TokenType.Dahan );
+
+		// Binds to .Target
+		public Task GatherUpToNTokens( int countToGather, params TokenGroup[] ofType )
+			=> this.GatherUpToNTokens( Target, countToGather, ofType );
 
 		public IEnumerable<Space> PowerAdjacents() => PowerAdjacents(Target);
 
 		// Convenience Methods - That bind to .Target
 		// could be Extension Methods
-		public void Adjust( InvaderSpecific invader, int delta )
-			=> InvaderCounts.Adjust( invader, delta );
-
-		public IInvaderCounts InvaderCounts	=> GameState.Invaders.Counts[Target];
+		public void Adjust( Token invader, int delta )
+			=> Tokens.Adjust( invader, delta );
 
 		public void AdjustDahan( int delta )
-			=> GameState.Dahan.Adjust(Target, delta );
+			=> Tokens.Adjust(TokenType.Dahan.Default, delta );
 
 		//public InvaderGroup Invaders
 		//	=> this.Self.BuildInvaderGroup( GameState, Target );
 
-		public int DahanCount => GameState.Dahan.GetCount(Target);
+		public int DahanCount => Tokens[TokenType.Dahan.Default];
 
-		public bool HasDahan => GameState.Dahan.AreOn( Target );
-
-		public Task GatherUpToNDahan( int dahanToGather )
-			=> this.GatherUpToNDahan(Target, dahanToGather );
+		public bool HasDahan => DahanCount>0;
 
 		public void Defend(int defend) => GameState.Defend(Target,defend);
 
-		public Task DestroyDahan(int countToDestroy,Cause source) => GameState.Dahan.Destroy(Target,countToDestroy,source);
+		public Task DestroyDahan(int countToDestroy,Cause source) => GameState.DahanDestroy(Target,countToDestroy,source);
 
 		public bool IsOneOf(params Terrain[] terrain) => terrain.Contains(Target.Terrain);
 
@@ -67,14 +70,11 @@ namespace SpiritIsland {
 		public void AddBlight(int delta=1) => GameState.AddBlight(Target,delta); // delta=-1 used to remove blight. // !!! Some card (Infinite Vitality?) stops blight, will it stop this?
 		public void RemoveBlight() => GameState.AddBlight( Target, -1 );
 
-		public Task GatherUpToNInvaders( int countToGather, params Invader[] ofType )
-			=> this.GatherUpToNInvaders( Target, countToGather, ofType );
-
 		public int BlightOnSpace => GameState.GetBlightOnSpace(Target);
 
-		public bool HasInvaders => GameState.Invaders.AreOn(Target);
+		public bool HasInvaders => Tokens.HasInvaders();
 
-		public void ModRavage( Action<ConfigureRavage> action ) => GameState.ModRavage(Target,action);
+		public void ModifyRavage( Action<ConfigureRavage> action ) => GameState.ModifyRavage(Target,action);
 
 		public Task<PowerCard> DrawMajor() => Self.DrawMajor( GameState );
 		public Task<PowerCard> DrawMinor() => Self.DrawMinor( GameState );

@@ -23,9 +23,9 @@ namespace SpiritIsland.Basegame {
 			gs.Defend( target, 6 );
 
 			// replace 1 city with 1 town OR 1 town with 1 explorer
-			var counts = gs.Invaders.Counts[ target ];
-			var options = counts.FilterBy( Invader.City, Invader.Town );
-			InvaderSpecific invader = await ctx.Self.Action.Choose( new SelectInvaderToDowngrade( target, options, Present.IfMoreThan1 ) );
+			var counts = gs.Tokens[ target ];
+			var options = counts.OfAnyType( Invader.City, Invader.Town );
+			Token invader = await ctx.Self.Action.Choose( new SelectInvaderToDowngrade( target, options, Present.IfMoreThan1 ) );
 
 			if(invader.Generic == Invader.City) {
 				counts.Adjust( invader, -1 );

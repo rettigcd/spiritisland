@@ -33,15 +33,15 @@ namespace SpiritIsland.Basegame {
 		}
 
 		static Task Destroy_1ExplorerPerTown( InvaderGroup grp ) {
-			return grp.Destroy( Invader.Explorer, grp.Counts.SumEach(Invader.Town) );
+			return grp.Destroy( Invader.Explorer, grp.Counts.Sum(Invader.Town) );
 		}
 
 		static Task EachCityDestroys1Town( InvaderGroup grp ) {
-			return grp.Destroy( Invader.Town, grp.Counts.SumEach(Invader.City) );
+			return grp.Destroy( Invader.Town, grp.Counts.Sum(Invader.City) );
 		}
 
 		static Task Destory_1ExplorerPerTownAnd2ExplorersPerCity( InvaderGroup grp ) {
-			int numToDestory = grp.Counts.SumEach(Invader.Town) + grp.Counts.SumEach(Invader.City) * 2;
+			int numToDestory = grp.Counts.Sum(Invader.Town) + grp.Counts.Sum(Invader.City) * 2;
 			return grp.Destroy( Invader.Explorer, numToDestory );
 		}
 

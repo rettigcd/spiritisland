@@ -5,12 +5,20 @@ using System.Threading.Tasks;
 using SpiritIsland;
 
 namespace SpiritIsland.Basegame {
+
 	public class MovePresenceWithTokens {
 
 		readonly Spirit spirit;
 		readonly string prompt;
-		public MovePresenceWithTokens( Spirit spirit, string prompt ) { this.prompt = prompt; this.spirit = spirit; }
+		readonly TokenGroup tokenGroup;
+		public MovePresenceWithTokens( Spirit spirit, string prompt, TokenGroup group ) { 
+			this.prompt = prompt; 
+			this.spirit = spirit; 
+			this.tokenGroup = group;
+		}
 		public async Task CheckForMove( GameState _, TokenMovedArgs args ) {
+			if( args.Token.Generic != tokenGroup) return;
+
 			int maxThatCanMove = Math.Min( args.count, spirit.Presence.CountOn( args.from ) );
 			// 0 -> no action
 			if(maxThatCanMove == 0) return;

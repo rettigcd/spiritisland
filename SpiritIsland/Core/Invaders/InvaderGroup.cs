@@ -9,7 +9,7 @@ namespace SpiritIsland {
 
 		#region constructor
 
-		public InvaderGroup( Space space, IInvaderCounts aliveCounts) {
+		public InvaderGroup( Space space, TokenCountDictionary aliveCounts) {
 			this.Counts = aliveCounts;
 			this.Space = space;
 		}
@@ -18,7 +18,7 @@ namespace SpiritIsland {
 
 		public Space Space { get; }
 
-		public int this[InvaderSpecific specific] { 
+		public int this[Token specific] { 
 			get{ return Counts[specific]; }
 			set{ Counts[specific] = value; }
 		}
@@ -28,28 +28,28 @@ namespace SpiritIsland {
 
 		#region Extension Methods to Pull off
 
-		public int DamageInflictedByInvaders => Counts.Keys.Select( invader => invader.FullHealth * this[invader] ).Sum();
+		public int DamageInflictedByInvaders => Counts.Invaders().Select( invader => invader.FullHealth * this[invader] ).Sum();
 
-		public async Task ApplyDamageToEach( int individualDamage, params Invader[] generic ) {
-			foreach(var invader in Counts.Keys)
+		public async Task ApplyDamageToEach( int individualDamage, params TokenGroup[] generic ) {
+			foreach(var invader in Counts.Invaders())
 				if(generic.Contains(invader.Generic))
 					await ApplyDamageToSpecific( individualDamage, invader );
 		}
 
-		public async Task ApplyDamageToSpecifics( int individualDamage, IEnumerable<InvaderSpecific> part ) {
+		public async Task ApplyDamageToSpecifics( int individualDamage, IEnumerable<Token> part ) {
 			var ordered = part.OrderByDescending( x => x.Health );// MUST damage healthy first so we don't double damage 
 			foreach(var specific in ordered)
 				await ApplyDamageToSpecific(individualDamage,specific);
 		}
 
-		async Task ApplyDamageToSpecific( int individualDamage, InvaderSpecific part ) {
+		async Task ApplyDamageToSpecific( int individualDamage, Token part ) {
 			while(this[part] > 0)
 				await ApplyDamageTo1( individualDamage, part );
 		}
 
-		public async Task<int> Destroy( Invader generic, int countToDestory ) {
+		public async Task<int> Destroy( TokenGroup generic, int countToDestory ) {
 			if(countToDestory == 0) return 0;
-			InvaderSpecific[] invaderTypesToDestory = Counts.Keys
+			Token[] invaderTypesToDestory = Counts.Invaders()
 				.Where( x=> x.Generic==generic )
 				.OrderByDescending( x => x.Health ) // kill healthiest first
 				.ToArray();
@@ -65,7 +65,7 @@ namespace SpiritIsland {
 			return totalDestoyed;
 		}
 
-		public async Task<int> Destroy( int countToDestory, InvaderSpecific specificInvader ) {
+		public async Task<int> Destroy( int countToDestory, Token specificInvader ) {
 			if(countToDestory == 0) return 0;
 			int numToDestory = Math.Min(countToDestory, this[specificInvader] );
 			for(int i = 0; i < numToDestory; ++i)
@@ -73,9 +73,9 @@ namespace SpiritIsland {
 			return numToDestory;
 		}
 
-		public async Task DestroyAny( int count, params Invader[] generics ) {
+		public async Task DestroyAny( int count, params TokenGroup[] generics ) {
 			// !! this could be cleaned up
-			InvaderSpecific[] invadersToDestroy = Counts.FilterBy( generics );
+			Token[] invadersToDestroy = Counts.OfAnyType( generics );
 			while(count > 0 && invadersToDestroy.Length > 0) {
 				var invader = invadersToDestroy
 					.OrderByDescending(x=>x.FullHealth)
@@ -84,7 +84,7 @@ namespace SpiritIsland {
 				await Destroy( invader.Generic, 1 );
 
 				// next
-				invadersToDestroy = Counts.FilterBy( generics );
+				invadersToDestroy = Counts.OfAnyType( generics );
 				--count;
 			}
 		}
@@ -92,7 +92,7 @@ namespace SpiritIsland {
 		#endregion
 
 		/// <returns>damage inflicted to invaders</returns>
-		public async Task<int> ApplyDamageTo1( int availableDamage, InvaderSpecific invader ) {
+		public async Task<int> ApplyDamageTo1( int availableDamage, Token invader ) {
 			int damageToInvader = Math.Min( invader.Health, availableDamage );
 
 			var damagedInvader = invader.Damage( damageToInvader );
@@ -107,7 +107,7 @@ namespace SpiritIsland {
 
 		public void Heal() {
 
-			void Heal( InvaderSpecific damaged ) {
+			void Heal( Token damaged ) {
 				int num = this[damaged];
 				Counts.Adjust(damaged.Healthy, num );
 				Counts.Adjust(damaged, -num);
@@ -118,12 +118,12 @@ namespace SpiritIsland {
 			Heal( Invader.Town[1] );
 		}
 
-		protected virtual Task OnInvaderDestroyed( InvaderSpecific specific ) {
+		protected virtual Task OnInvaderDestroyed( Token specific ) {
 			return DestroyInvaderStrategy.OnInvaderDestroyed(Space,specific);
 		}
 
 		public DestroyInvaderStrategy DestroyInvaderStrategy; // This will be null for Building
-		public readonly IInvaderCounts Counts;
+		public readonly TokenCountDictionary Counts;
 
 	}
 
@@ -136,7 +136,7 @@ namespace SpiritIsland {
 			this.destructionSource = destructionSource;
 		}
 
-		public virtual Task OnInvaderDestroyed( Space space, InvaderSpecific specific ) {
+		public virtual Task OnInvaderDestroyed( Space space, Token specific ) {
 			if(specific == Invader.City[0])
 				AddFear( space, 2 );
 			if(specific == Invader.Town[0])

@@ -11,7 +11,7 @@ namespace SpiritIsland.Tests.Core {
 
 	public class Invader_Tests {
 
-		static InvaderSpecific Parse(string s ) {
+		static Token Parse(string s ) {
 			return s switch {
 				"C@3" => Invader.City[3],
 				"C@2" => Invader.City[2],
@@ -139,7 +139,7 @@ namespace SpiritIsland.Tests.Core {
 			var board = Board.BuildBoardA();
 			var gameState = new GameState( new RiverSurges(), board );
 			//   And: explorer on target space
-			gameState.Invaders.Counts[ board[5] ].Adjust(Invader.Explorer[1],1);
+			gameState.Tokens[ board[5] ].Adjust(Invader.Explorer[1],1);
 
 			// When: exploring (wet lands
 			gameState.Explore(InvaderDeck.Level1Cards.Single(c=>c.Text=="W"));
@@ -147,7 +147,7 @@ namespace SpiritIsland.Tests.Core {
 			// Then: 1 Explorer on A2 (new explored)
 			//  and A5 (original) - proves explorers aren't reference types like towns
 			foreach(var space in board.Spaces){
-				var invaders = gameState.Invaders.Counts[space];
+				var invaders = gameState.Tokens[space];
 				Assert.Equal(space == board[5] || space == board[2]?1:0,invaders[Invader.Explorer[1]]);
 			}
 		}
@@ -172,14 +172,14 @@ namespace SpiritIsland.Tests.Core {
 			//   And: Town on or next to wet land
 			var sourceSpace = board.Spaces.Single(s=>s.Label==townSpaceLabel);
 			var sourceInvader = Parse(invaderKey);
-			gameState.Invaders.Counts[sourceSpace].Adjust(sourceInvader,1);
+			gameState.Tokens[sourceSpace].Adjust(sourceInvader,1);
 
 			// When: exploring (wet lands
 			gameState.Explore(InvaderDeck.Level1Cards.Single(c=>c.Text=="W"));
 
 			// Then: Explores A2 and other space only
 			foreach(var space in board.Spaces){
-				var invaders = gameState.Invaders.Counts[space];
+				var invaders = gameState.Tokens[space];
 				Assert.Equal(
 					space.Terrain == Terrain.Wetland?1:0
 					,invaders[Invader.Explorer[1]]
@@ -200,7 +200,7 @@ namespace SpiritIsland.Tests.Core {
 			//   And: invader on every space
 			var startingInvader = Parse(preInvaders);
 			foreach(var space in board.Spaces)
-				gameState.Invaders.Counts[space].Adjust( startingInvader, 1 );
+				gameState.Tokens[space].Adjust( startingInvader, 1 );
 
 			// When: build in Sand
 			_ = gameState.Build( InvaderDeck.Level1Cards.Single( c => c.Text == "S" ) );
@@ -274,10 +274,10 @@ namespace SpiritIsland.Tests.Core {
 		void Assert_UnitsAre( string startingUnits, Space space ) {
 			List<string> items = new();
 
-			int dahanCount = gameState.Dahan.GetCount(space);
+			int dahanCount = gameState.DahanGetCount(space);
 			if(dahanCount>0)
 				items.Add($"{dahanCount}D@2");
-			string actualInvaders = gameState.Invaders.Counts[space].ToSummary();
+			string actualInvaders = gameState.Tokens[space].ToSummary();
 
 			if(actualInvaders.Length>0)
 				items.Add(actualInvaders);
@@ -290,10 +290,10 @@ namespace SpiritIsland.Tests.Core {
 				int count = unit[0] - '0';
 				string itemSummary = unit[1..];
 				if(itemSummary=="D@2"){
-					gameState.Dahan.Adjust(space,count);
+					gameState.DahanAdjust(space,count);
 				} else {
 					var invader = Parse(itemSummary);
-					gameState.Invaders.Counts[space].Adjust(invader,count);
+					gameState.Tokens[space].Adjust(invader,count);
 				}
 			}
 		}

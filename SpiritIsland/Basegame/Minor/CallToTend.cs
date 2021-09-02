@@ -11,7 +11,7 @@ namespace SpiritIsland.Basegame {
 			if( await ctx.Self.UserSelectsFirstText("Select power","remove 1 blight","push up to 3 dahan") )
 				ctx.RemoveBlight();
 			else
-				await ctx.PowerPushUpToNDahan(3);
+				await ctx.PowerPushUpToNTokens(3, TokenType.Dahan );
 		}
 
 	}

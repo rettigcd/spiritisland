@@ -15,8 +15,8 @@ namespace SpiritIsland.Basegame {
 			// and may push 1 town and up to 2 dahan from one of their lands.
 			var pushLand = await targetCtx.Self.Action.Choose( new TargetSpaceDecision( "Select land to push town and 2 dahan", ctx.Target.Presence.Spaces, Present.Done ));
 			if(pushLand==null) return;
-			await targetCtx.PowerPushUpToNInvaders(pushLand,1,Invader.Town);
-			await targetCtx.PowerPushUpToNDahan(pushLand,2);
+			await targetCtx.PowerPushUpToNTokens(pushLand,1,Invader.Town);
+			await targetCtx.PowerPushUpToNTokens(pushLand,2,TokenType.Dahan);
 
 			// !!! If dahan are pushed to your ocean, you may move them to any costal land instead of drowning them.
 		}

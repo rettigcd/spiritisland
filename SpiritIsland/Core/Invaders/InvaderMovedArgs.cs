@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland {
 	public class InvaderMovedArgs {
-		public InvaderSpecific Invader;
+		public Token Invader;
 		public Space from;
 		public Space to;
 	};

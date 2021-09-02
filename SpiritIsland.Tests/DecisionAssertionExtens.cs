@@ -100,7 +100,7 @@ namespace SpiritIsland.Tests {
 		}
 
 		static public void Assert_Invaders( this GameState gameState, Space space, string expectedString ) {
-			gameState.Invaders.Counts[ space ].ToSummary().ShouldBe( expectedString );
+			gameState.Tokens[ space ].ToSummary().ShouldBe( expectedString );
 		}
 
 
