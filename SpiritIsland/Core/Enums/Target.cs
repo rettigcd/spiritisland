@@ -8,6 +8,7 @@
 		Costal,
 		Jungle,
 		JungleOrMountain,
+		JungleOrSand,
 		JungleOrWetland,
 		MountainOrWetland,
 		SandOrWetland,

@@ -24,6 +24,7 @@ namespace SpiritIsland {
 				[Target.Jungle            ]= ( s ) => SelectTerrain( s ) == Terrain.Jungle,
 				[Target.Wetland           ]= ( s ) => SelectTerrain( s ) == Terrain.Wetland,
 				[Target.JungleOrMountain  ]= ( s ) => SelectTerrain( s ).IsIn( Terrain.Jungle, Terrain.Mountain ),
+				[Target.JungleOrSand      ]= ( s ) => SelectTerrain( s ).IsIn( Terrain.Jungle, Terrain.Sand ),
 				[Target.JungleOrWetland   ]= ( s ) => SelectTerrain( s ).IsIn( Terrain.Jungle, Terrain.Wetland ),
 				[Target.MountainOrWetland ]= ( s ) => SelectTerrain( s ).IsIn( Terrain.Mountain, Terrain.Wetland ),
 				[Target.NoInvader         ]= ( s ) => !gameState.HasInvaders( s ),
