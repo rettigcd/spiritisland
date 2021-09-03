@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace SpiritIsland.BranchAndClaw.Minor {
+namespace SpiritIsland.BranchAndClaw {
 	class DisorientingLandscape {
 
 		[MinorCard( "Disorienting Landscape", 1, Speed.Fast, Element.Moon, Element.Air, Element.Plant )]

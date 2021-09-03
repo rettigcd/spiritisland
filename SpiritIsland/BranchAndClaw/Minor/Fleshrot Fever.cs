@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SpiritIsland.BranchAndClaw.Minor {
+namespace SpiritIsland.BranchAndClaw {
+
 	class Fleshrot_Fever {
 	}
+
 }

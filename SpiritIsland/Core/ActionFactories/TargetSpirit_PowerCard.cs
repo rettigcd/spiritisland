@@ -11,8 +11,8 @@ namespace SpiritIsland {
 		readonly MethodBase methodBase;
 
 		public TargetSpirit_PowerCard(MethodBase methodBase){
-			var attr = methodBase.GetCustomAttributes<CardAttribute>()
-				.VerboseSingle("bob22");
+			var attr = methodBase.GetCustomAttributes<CardAttribute>().VerboseSingle("bob22");
+			this.MethodType = methodBase.DeclaringType;
 
 			Speed = attr.Speed;
 			Name = attr.Name;

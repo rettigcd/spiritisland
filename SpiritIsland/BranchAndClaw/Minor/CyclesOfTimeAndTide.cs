@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace SpiritIsland.BranchAndClaw.Minor {
+namespace SpiritIsland.BranchAndClaw {
 
 	public class CyclesOfTimeAndTide {
 

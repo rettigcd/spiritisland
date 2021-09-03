@@ -11,13 +11,25 @@ namespace SpiritIsland.WinForms {
 
 		public Image GetImage( PowerCard card ) {
 
+			string ns = card.MethodType.Namespace;
+			string edition = ns.Contains("Basegame") ? "basegame"
+				:ns.Contains("BranchAndClaw") ? "bac"
+				:ns;
+
+			string cardType = card.PowerType switch {
+				PowerType.Minor => "minor",
+				PowerType.Major => "major",
+				PowerType.Spirit => "spirit",
+				_ => throw new Exception()
+			};
+
 			if(!images.ContainsKey( card )) {
 				string filename = card.Name
 					.Replace( ' ', '_' )
 					.Replace( "'", "" )
 					.Replace( "-", "" )
 					.ToLower();
-				Image image = Image.FromFile( $".\\images\\cards\\{filename}.jpg" );
+				Image image = Image.FromFile( $".\\images\\{edition}\\{cardType}\\{filename}.jpg" );
 				images.Add( card, image );
 			}
 			return images[card];
