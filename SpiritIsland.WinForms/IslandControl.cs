@@ -116,10 +116,10 @@ namespace SpiritIsland.WinForms {
 		}
 
 		void OptionProvider_OptionsChanged( IDecision decision ) {
-			ios = decision as InvadersOnSpaceDecision;
-			adjacentDecision = decision as SelectAdjacentDecision;
+			ios               = decision as InvadersOnSpaceDecision;
+			adjacentDecision  = decision as SelectAdjacentDecision;
 			this.activeSpaces = decision.Options.OfType<Space>().ToArray();
-			fearCard = decision.Options.OfType<DisplayFearCard>().FirstOrDefault();
+			fearCard          = decision.Options.OfType<DisplayFearCard>().FirstOrDefault();
 		}
 
 		DisplayFearCard fearCard;
@@ -311,19 +311,19 @@ namespace SpiritIsland.WinForms {
 
 			float maxHeight = 0;
 
-			foreach(var specific in counts.Invaders()) {
-				var img = invaderImages[specific];
+			foreach(Token token in counts.Invaders()) {
+				var img = invaderImages[token];
 
 				// Draw Invaders
 				float height = width / img.Width * img.Height;
 				var rect = new Rectangle( (int)x, (int)y, (int)width, (int)height );
 				maxHeight = Math.Max( maxHeight, height );
 				graphics.DrawImage( img, rect );
-				if(isInvaderSpace)
-					optionRects.Add( (rect, specific) );
+				if(isInvaderSpace && ios.Options.Contains(token))
+					optionRects.Add( (rect, token) );
 
 				// Count
-				graphics.DrawCount( rect, counts[specific] );
+				graphics.DrawCount( rect, counts[token] );
 
 				x += step;
 			}
@@ -364,15 +364,6 @@ namespace SpiritIsland.WinForms {
 				SpaceClicked?.Invoke(space);
 			else if(match is Token invader)
 				InvaderClicked?.Invoke( invader );
-
-			// Calculate %
-			//if(board==null) return;
-			//float normalizedX = (float)clientCoords.X / (float)boardScreenSize.Width;
-			//float normalizedY = (float)clientCoords.Y / (float)boardScreenSize.Height;
-			//string msg = $"({normalizedX:0.###},{normalizedY:0.###})";
-			//Clipboard.SetText(msg);
-			//MessageBox.Show(msg);
-
 		}
 
 		private PointF SpaceCenter( Space s ) {
