@@ -44,7 +44,7 @@ namespace SpiritIsland {
 
 		#region Push
 
-		static public Task FearPushNTokens( this IMakeGamestateDecisions ctx, Space source, int countToPush , params TokenGroup[] groups ) 
+		static public Task PushNTokens( this IMakeGamestateDecisions ctx, Space source, int countToPush , params TokenGroup[] groups ) 
 			=> ctx.FearPushTokens(source,true,countToPush,groups);
 
 		static public Task FearPushUpToNTokens( this IMakeGamestateDecisions ctx, Space source, int countToPush , params TokenGroup[] groups ) 

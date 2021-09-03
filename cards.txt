@@ -119,105 +119,6 @@ new FearCard(ProductSet.Basegame, FearType.Fear, "Wary of the Interior", "Each p
 //=====  Branch and Claw  ==================
 //==========================================
 
-// Beasts
-TokenEvent["BeastsAttack"] = "Beasts Attack: Each Beasts deals 2 Damage. Remove any token that destroys Town / City.";
-TokenEvent["BeastsFindNewHomes"] = "Beasts Find New Homes: On Each Board: Push 1 Beasts to an adjacent land without Blight. 1 Fear if Invaders are present there.";
-TokenEvent["BeastsProwl"] = "Beasts Prowl: Each Beasts generates 1 Fear if Invaders are present, and moves to an adjacent land if not.";
-TokenEvent["PreyOnTheUnwaryTo"] = "Prey on the Unwary: Each Beasts destroys 1 Explorer. Add 1 Beasts to a board without one.";
-TokenEvent["PreyOnTheUnwaryOn"] = "Prey on the Unwary: Each Beasts destroys 1 Explorer. Add 1 Beasts on a board without one.";
-TokenEvent["SavageFrenzy"] = "Savage Frenzy: Each Beasts destroys 1 Explorer and deals 2 Damage.";
-TokenEvent["BeastsOfTheJungle"] = "Beasts of the Jungle: On Each Board: Add 1 Beasts to a Jungle without Blight. 1 Fear if Invaders are present.";
-TokenEvent["DistantHunt"] = "Distant Hunt: On Each Board: Push 1 Beasts to an adjacent land with no Blight. It deals 1 Damage there.";
-TokenEvent["BeastsProvoked"] = "Beasts Provoked: On Each Board: Add 1 Beasts to a land without Blight that has Town.";
-
-TokenEvent["NewDiseases"] = "New Diseases: On half of the boards (rounding up) add 1 Disease to a land with both Dahan and Invaders. Do 2 Damage to Dahan there.";
-TokenEvent["LingeringPlagues"] = "Lingering Plagues: On Each Board: Add 1 Disease. Ignore Disease during Builds this Invader Phase.";
-TokenEvent["WheezelungOutbreak"] = "Wheezelung Outbreak: On Each Board: Add Disease to the Jungle / Wetland with the most Town / City (minimum 1).";
-TokenEvent["GrimToll"] = "Grim Toll: On Each Board: Choose a land with Disease. In that land, do 2 Damage to Invaders and 2 Damage to Dahan.";
-TokenEvent["SandfeverOutbreak"] = "Sandfever Outbreak: On Each Board: Add 1 Disease to the Sands or Mountains with the most Town / City (minimum 1).";
-TokenEvent["ForeignDiseases"] = "Foreign Diseases: On Each Board, in the land with the most combined Invaders + Dahan (min. 1 of each): Add 1 Disease. 2 Damage to Dahan.";
-
-DahanEvent["CannyDefense"] = "Canny Defense: During Ravage, in every land, Defend 1 per Dahan in the land.";
-DahanEvent["OfferingsOfPatternAndDance"] = "Offerings of Pattern and Dance: Each Spirit with at least 2 Dahan among all its lands gains 1 Energy.";
-DahanEvent["ReclaimTerritory"] = "Reclaim Territory: Each player may Push 1 Dahan to an adjacent land, doing 1 Damage there.";
-DahanEvent["SpiritSpeakersSolveRiddlesOfPower"] = "Spirit-Speakers Solve Riddles of Power: Each Spirit with at least 4 Dahan among its lands gains a Minor Power.";
-DahanEvent["RaidsInForce"] = "Raids in Force: Each Spirit chooses a different land where Dahan outnumber Town / City. Each Dahan there does 1 Damage.";
-DahanEvent["SeekASaferHome"] = "Seek a Safer Home: On Each Board: Push 2 Dahan from a land with Beasts / Disease / Wilds to a land without any of these tokens.";
-DahanEvent["ForsakeTheBarrenLand"] = "Forsake the Barren Land: On Each Board: Push 2 Dahan from a land with Blight to a land without Blight.";
-DahanEvent["Retreat"] = "Retreat: On Each Board: Push 2 Dahan from a land with City to a land without City.";
-DahanEvent["TendTheLand"] = "Tend the Land: On Each Board: Remove 1 Blight from a land with at least 2 Dahan.";
-DahanEvent["ComingOfAgeMountainSands"] = "Coming of Age: On Each Board: Add 1 Dahan to a Mountain or Sands with Dahan.";
-DahanEvent["ComingOfAgeCoastal"] = "Coming of Age: On Each Board: Add 1 Dahan to a Coastal land with Dahan.";
-DahanEvent["ComingOfAgeInland"] = "Coming of Age: On Each Board: Add 1 Dahan to an Inland land with Dahan.";
-DahanEvent["ComingOfAgeJungleWetland"] = "Coming of Age: On Each Board: Add 1 Dahan to a Jungle or Wetland with Dahan.";
-DahanEvent["ComingOfAge2Dahan"] = "Coming of Age: On Each Board: Add 1 Dahan to a land with 2 or more Dahan.";
-DahanEvent["ComingOfAgeNoToken"] = "Coming of Age: On Each Board: Add 1 Dahan to a land with Dahan and no Badlands / Beasts / Disease / Wilds.";
-DahanEvent["ComingOfAgeNoBlightDisease"] = "Coming of Age: On Each Board: Add 1 Dahan to a land with Dahan and no Blight / Disease.";
-DahanEvent["RecklessOffensive"] = "Reckless Offensive: On Each Board: Choose a land with at least 2 Dahan and at least 2 Town / City. Each Dahan destroys 1 Town / City. Add 1 Blight.";
-DahanEvent["RouseTheSpirits"] = "Rouse the Spirits: Each Spirit with at least 3 Dahan among all its lands may use a Slow Power now (instead of later).";
-DahanEvent["FierceMien"] = "Fierce Mien: 1 Fear per land with Invaders where Dahan outnumber Town / City.";
-DahanEvent["TrapsAndSnares"] = "Traps and Snares: On Each Board: Add 1 Wilds to a land with Dahan.";
-DahanEvent["DriveOffTheInterlopers"] = "Drive off the Interlopers: Each player may Push 1 Explorer / Town from a land with Dahan.";
-DahanEvent["AidTheUprising"] = "Aid the Uprising: Invaders with Strife take 1 Damage per Dahan present. Add 1 Dahan per Town / City this destroys.";
-
-Events.LetThePlantsDieAndTheLandWither = new ChoiceDesc("Let the Plants Die and the Land Wither", null, ["For each board, discard the top Minor Power. If it lacks Water, add 1 Blight to a Sands.","Town, City and Dahan have -1 Health (minimum 1) until the end of the turn."]);
-Events.ActToEaseTheDrought = new ChoiceDesc("Act to ease the Drought", new ChoiceCost(4, "player", Elements.Water), ["Each Spirit may add 1 Presence to one of their lands with Dahan."]);
-Events.SpurnTheInvaders = new ChoiceDesc("Spurn the Invaders", null, ["On Each Board: 2 Damage to Dahan in a land with Town / City and Dahan.","On Each Board: Add 1 Blight to a land with at least 2 Town / City.","Town / City have -1 Health (to a minimum of 1) until the end of the turn."]);
-Events.TeachTheInvaders = new ChoiceDesc("Teach the Invaders", null, ["On Each Board: add 1 Town to a land with Dahan.", "The next normal Ravage becomes a Build (This could be on a future turn.)"]);
-Events.LetTheInvasiveSpeciesBloom = new ChoiceDesc("Let the Invasive Species Bloom", null, ["For each board, discard the top Minor Power. If it is Fast, add 1 Blight to a land with Town / City.","After resolving this card, return it to the Event Deck under the top 2 cards."]);
-Events.TransmuteTheWorstOfTheSpecies = new ChoiceDesc("Transmute the Worst of the Species", new ChoiceCost(4, "player", Elements.Moon), ["1 Fear per player. On Each Board: Add 1 Beasts to a land with Town / City."]);
-Events.AllowTheAttacks = new ChoiceDesc("Allow the Attacks", null, ["For each board, discard the top Major Power. Deal its Energy in Damage to Invaders and the land in the Coastal land with the most Town / City (minimum 1). Defend reduces the Damage to both Invaders and the Land."]);
-Events.HelpRepelTheNewcomers = new ChoiceDesc("Help Repel the Newcomers", new ChoiceCost(1, "player", null), ["Add a Fear Card to the top of the Fear Deck."]);
-Events.LetTheIslandsStrengthRepulseThem = new ChoiceDesc("Let the Island's Strength Repulse Them", null, ["Each SacredSite Pushes 1 Explorer / Town to an adjacent land.", "Remove 1 Blight per player from the Blight Card, returning it to the box."]);
-Events.GuardThemYourselfForWellOrIll = new ChoiceDesc("Guard them Yourself, for Well or Ill", new ChoiceCost(3, "land where you do damage", Elements.Fire), ["In each land with SacredSite and Invaders: Either do 2 Damage. -or- Destroy 1 Presence from each Spirit."]);
-Events.StaySteadyAndSlow = new ChoiceDesc("Stay Steady and Slow", null, ["Discard the Power Card.", "Gain 1 Energy, plus the card's printed Energy cost."]);
-Events.WorkToMatchTheirPace = new ChoiceDesc("Work to Match their Pace", null, ["Pay 3 Energy -or- destroy 2 Presence.", "You may choose to resolve the Power Card now. (Instead of during the Slow Phase.)"]);
-Events.IgnoreTheirContactWithTheDahan = new ChoiceDesc("Ignore their Contact with the Dahan", null, ["For each board, discard the top Minor Power. If it has Sun, Push 1 Explorer from a land with Dahan. Otherwise. replace 1 Dahan with 1 Town.","After resolving this card, return it to the Event Deck under the top 2 cards."]);
-Events.CurseTheTonguesOfTheForeigners = new ChoiceDesc("Curse the Tongues of the Foreigners", new ChoiceCost(4, "player", Elements.Sun), ["Each Spirit adds 1 Disease to a land with City.", "2 Fear per Player.", "During the next normal Ravage, City do +3 Damage."]);
-Events.LetThemRampageUntoDeath = new ChoiceDesc("Let them Rampage unto Death", null, ["Each Beasts destroys 1 Dahan.", "Remove 1 Beasts from each board."]);
-Events.GuideTheMadness = new ChoiceDesc("Guide the Madness", new ChoiceCost(3, "Beasts you decide to keep on the island. (min 3 Energy).", Elements.Animal), ["Remove any number of Beasts.", "Each Spirit may Push 1 Beasts to an adjacent land"]);
-Events.IgnoreTheCuriosity = new ChoiceDesc("Ignore the Curiosity", null, ["Return the top card of the Invader Deck to the box. (Skip cards specially placed during Setup.)", "On Each Board: Add 1 Town to a land without one."]);
-Events.WeaveLiesInTheMindsOfTheirObservers = new ChoiceDesc("Weave Lies in the Minds of their Observers", new ChoiceCost(4, "player", Elements.Air), ["Return the top Fear Card to the Box.", "During the next normal Ravage, each Town / City does +1 Damage."]);
-
-// Stage Events
-Events.SeekingTheInterior = new EventDesc("Seeking the Interior", "In each Coastal land, Push 1 Explorer one land Inland.");
-Events.LocalDiaspora = new EventDesc("Local Diaspora", "In the single land with the most Invaders, Push 1 Explorer / Town to each adjacent land.");
-Events.WaveOfReconnaissance = new EventDesc("Wave of Reconnaissance", "When Exploring: Add 1 additional Explorer to each land Explored.");
-Events.Urbanization = new EventDesc("Urbanization", "In each land with at least 2 Town, replace half the Town (rounding up) with City.");
-Events.InterestingDiscoveries = new EventDesc("Interesting Discoveries", "On Each Board: Choose a SacredSite. Gather 1 Explorer into its land, and add 1 additional Explorer.");
-Events.IncreasingAggression = new EventDesc("Increasing Aggression", "Invaders do +1 Damage (per land) when Ravaging.");
-Events.StrangeTalesAttractExplorers = new EventDesc("Strange Tales attract Explorers", "Now: 1 Fear per Spirit that has at least 1 SacredSite. After advancing Invader Cards: Add 1 Explorer to each land with SacredSite.");
-Events.Fortification = new EventDesc("Fortification", "After advancing Invader Cards: Invaders Build in one terrain not shown under any Invader Action. (If there's no such terrain, nothing happens.)");
-Events.SmallUprising = new EventDesc("Small Uprising", "On Each Board: add 1 Strife to 1 Town. After finishing this Event Card, draw another one, then return this card to the Event Deck as per Setup.");
-Events.Rebellion = new EventDesc("Rebellion!", "On Each Board: Destroy 1 Town. Add 1 Strife to any 2 Town / City. Then, every Invader takes 1 Damage per Strife it has. After finishing this Event card, draw another one. This card is discarded.");
-
-// Terror Level
-Events.CulturalAssimilation = new EventDesc("Cultural Assimilation", "On Each Board: In a land with exactly 1 Dahan that has or is adjacent to a City, replace that Dahan with 1 Town.");
-Events.ReprisalAgainstTheDahan = new EventDesc("Reprisal Against the Dahan", "On Each Board: choose a land with Dahan and Town / City. Invaders do 3 Damage to Dahan there, ignoring Defend Powers.");
-Events.InvestigationOfDangers = new EventDesc("Investigation of Dangers", "On Each Board: Add 1 Explorer to a land without Invaders or Dahan.");
-Events.DestroyTheUnnatural = new EventDesc("Destroy the unnatural!", "Invaders do +3 Damage (per land) when Ravaging in lands with Presence.");
-Events.DistantExploration = new EventDesc("Distant Exploration", "During the Explore step, Invaders Explore at +1 distance. (So a land 2 away from a Town / City / Ocean will be Explored into.)");
-Events.FearfulMobs = new EventDesc("Fearful Mobs", "When Ravaging, Invaders do +3 Damage (per land) in lands with 3 or more Invaders.");
-
-// Healthy / Blight Land
-Events.PuttingDownRoots = new EventDesc("Putting down Roots", "On an Inland Land on Each Board: Replace 1 Explorer with 1 Town.");
-Events.TheCenterCrumbles = new EventDesc("The Center Crumbles", "On Each Board With Invaders: Add 1 Blight to an Inland land. Spirits may prevent this on any / all boards by destroying 3 Presence from each board to be protected.");
-Events.SearchForNewLands = new EventDesc("Search for new Lands", "In Each Land With at least 2 Explorer: Push 1 Explorer to an adjacent land without Invaders.");
-Events.DevastatedShores = new EventDesc("Devastated Shores", "On Each Board With Invaders: Add 1 Blight to a Coastal land. Spirits may prevent this on any / all boards by destroying 2 Presence from each board to be protected.");
-Events.InvadersSurgeInland = new EventDesc("Invaders Surge Inland", "On a Coastal land on Each Board: Move 1 Town one or two lands inland.");
-Events.WideningDestruction = new EventDesc("Widening Destruction", "On Each Board: add 1 Blight to a land with / adjacent to Town / City. Spirits may prevent this on any / all boards by destroying 2 Presence from each board to be protected.");
-Events.TightKnitCommunities = new EventDesc("Tight-Knit Communities", "For the rest of the turn, Town / City have +1 Health.");
-Events.BlightSpreads = new EventDesc("Blight Spreads", "On Each Board: Add 1 Blight to a land adjacent to a land with Blight. Spirits may prevent this on any / all boards by destroying 2 Presence from each board to be protected.");
-Events.WellPreparedExplorers = new EventDesc("Well-Prepared Explorers", "For the rest of this turn, Explorer have +1 Health.");
-Events.PopulationRises = new EventDesc("Population Rises", "On Each Board: Add 1 Town to a land with Explorer / Town.");
-Events.PowerFades = new EventDesc("Power Fades", "Each Spirit chooses independently to: Destroy 2 of their Presence, -or- Forget 2 of their Powers, -or- Take 1 Blight from the Blight Card and remove it from the game.");
-Events.UrbanDevelopment = new EventDesc("Urban Development", "During the next normal Ravage, each City does +2 Damage. (If there is no Ravage this phase, leave this card by the Ravage space until one happens.)");
-Events.FesteringPitsOfBlight = new EventDesc("Festering Pits of Blight", "On Each Board With Invaders: Add 1 Blight to a land with at least 2 Blight, but do not cascade.");
-Events.HeavyFarming = new EventDesc("Heavy Farming", "During the next normal Ravage, each Town does +1 Damage. (If there is no Ravage this phase, leave this card by the Ravage space until one happens.)");
-Events.OvercrowdedCities = new EventDesc("Overcrowded Cities", "On Each Board with City: Add 1 Blight to a land with City. Spirits may prevent this on any / all boards by destroying 2 Presence from each board to be protected.");
-Events.PromisingFarmland = new EventDesc("Promising Farmland", "When Exploring, once per board, place 1 Town instead of 1 Explorer.");
-Events.NewCashCropsTakeHold = new EventDesc("New Cash Crops Take Hold", "Invaders immediately Ravage in 1 terrain type not showing under any Invader Action. Spirits may prevent this Ravage on any / all boards by destroying 2 Presence from each board to be protected.");
-
 // Majors
 new PowerCard(ProductSet.BranchAndClaw, PowerDeckType.Major, "Strangling Firevine", 4, Speed.Slow, new Ranges(Source.Presence, 1, [Land.Sands]), LandAny, [Elements.Fire, Elements.Plant], "Nolan Nasser", "Destroy all Explorer. Add 1 Wilds. Add 1 Wilds in the originating Sands. 1 Damage per Wilds in / adjacent to target land. -If you have- 2 Fire, 3 Plant: +1 Damage per Wilds in / adjacent to target land."),
 new PowerCard(ProductSet.BranchAndClaw, PowerDeckType.Major, "Bloodwrack Plague", 4, Speed.Fast, new Ranges(Source.SacredSite, 1), LandAny, [Elements.Water, Elements.Earth, Elements.Animal], "Jorge Ramos", "Add 2 Disease. For each Disease in target land, Defend 1 in target and all adjacent lands. -If you have- 2 Earth, 4 Animal: 2 Fear. For each Disease in target land do 1 Damage in target or an adjacent land."),
@@ -285,39 +186,42 @@ new PowerCard(ProductSet.BranchAndClaw, Unique.KeeperOfTheForbiddenWilds, "Boon 
 new PowerCard(ProductSet.BranchAndClaw, Unique.KeeperOfTheForbiddenWilds, "Sacrosanct Wilderness", 2, Speed.Fast, new Ranges(Source.Presence, 1), TargetProperty.NoBlight, [Elements.Sun, Elements.Earth, Elements.Plant], "Joshua Wright", "Push 2 Dahan. 2 Damage per Wilds in target land. -or- Add 1 Wilds."),
 
 // Fear
-new FearCard(ProductSet.BranchAndClaw, FearType.Fear, "Demoralized", "Defend 1 in all lands.", "Defend 2 in all lands.", "Defend 3 in all lands."),
-new FearCard(ProductSet.BranchAndClaw, FearType.Fear, "Plan for Departure", "Each player may Gather 1 Town into a Coastal land.", "Each player may Gather 1 Explorer / Town into a Coastal land. Defend 2 in all Coastal lands.", "Each player may Gather up to 2 Explorer / Town into a Coastal land. Defend 4 in all Coastal lands."),
-new FearCard(ProductSet.BranchAndClaw, FearType.Fear, "Tread Carefully", "Each player may choose a land with Dahan or adjacent to at least 5 Dahan. Invaders do not Ravage there this turn.", "Each player may choose a land with Dahan or adjacent to at least 3 Dahan. Invaders do not Ravage there this turn.", "Each player may choose a land with Dahan or adjacent to Dahan. Invaders do not Ravage there this turn."),
 new FearCard(ProductSet.BranchAndClaw, FearType.Fear, "Dahan Attack", "Each player removes 1 Explorer from a land with Dahan.", "Each player chooses a different land with Dahan. 1 Damager per Dahan there.", "Each player chooses a different land with Town / City. Gather 1 Dahan into that land. Then, 2 Damage per Dahan there."),
+new FearCard(ProductSet.BranchAndClaw, FearType.Fear, "Dahan Threaten", "Each player adds 1 Strife in a land with Dahan.", "Each player adds 1 Strife in a land with Dahan. For the rest of this turn, Invaders have -1 Health per Strife to a minimum of 1.", "Each player adds 1 Strife in a land with Dahan. In every land with Strife, 1 Damage per Dahan."),
+new FearCard(ProductSet.BranchAndClaw, FearType.Fear, "Demoralized", "Defend 1 in all lands.", "Defend 2 in all lands.", "Defend 3 in all lands."),
+new FearCard(ProductSet.BranchAndClaw, FearType.Fear, "Depart the Dangerous Land", "Each player removes 1 Explorer from a land with Beasts, Disease, or at least 2 Dahan.", "Each player removes 1 Explorer / town from a land with Beasts, Disease, or at least 2 Dahan.", "Each player removes up to 4 Health worth of Invaders from a land with Beasts, Disease, or at least 2 Dahan."),
+new FearCard(ProductSet.BranchAndClaw, FearType.Fear, "Discord", "Each player adds 1 Strife in a different land with at least 2 Invaders.", "Each player adds 1 Strife in a different land with at least 2 Invaders. Then, each Invader takes 1 Damage per Strife it has.", "Each player adds 1 Strife in a different land with at least 2 Invaders. Then, each Invader with Strife deals Damage to other Invaders in its land."),
 new FearCard(ProductSet.BranchAndClaw, FearType.Fear, "Explorers are Reluctant", "During the next normal Explore, skip the lowest-numbered land matching the Invader Card on each board.", "Skip the next normal Explore. During the next invader Phase, draw an additional Explore card.", "Skip the next normal Explore, but still reveal a card. (Perform the Stage II Escalation if relevant.) Cards shift left as usual."),
-new FearCard(ProductSet.BranchAndClaw, FearType.Fear, "Immigration Slows", "During the next normal Build, skip the lowest-numbered land matching the Invader Card on each board.", "Skip the next normal Build. The Build Card remains in place instead of shifting left.", "Skip the next normal Build. The Build Card shifts left as usual."),
 new FearCard(ProductSet.BranchAndClaw, FearType.Fear, "Flee the Pestilent Land", "Each player removes 1 Explorer / Town from a land with Disease.", "Each player removes up to 3 Health of Invaders from a land with Disease or 1 Explorer from an Inland land.", "Each player removes up to 5 Health of Invaders from a land with Disease, or 1 Explorer / Town from an Inland land."),
+new FearCard(ProductSet.BranchAndClaw, FearType.Fear, "Immigration Slows", "During the next normal Build, skip the lowest-numbered land matching the Invader Card on each board.", "Skip the next normal Build. The Build Card remains in place instead of shifting left.", "Skip the next normal Build. The Build Card shifts left as usual."),
+new FearCard(ProductSet.BranchAndClaw, FearType.Fear, "Panic", "Each player adds 1 Strife in a land with Beasts / Disease / Dahan.", "Each player adds 1 Strife in a land with Beasts / Disease / Dahan. For the rest of this turn, Invaders have -1 Health per Strife to a minimum of 1.", "Each player adds 1 Strife to an Invader. For the rest of this turn, Invaders have -1 Health per Strife to a minimum of 1."),
+new FearCard(ProductSet.BranchAndClaw, FearType.Fear, "Panicked by Wild Beasts", "Each player adds 1 Strife in a land with or adjacent to Beasts.", "Each player adds 1 Strife in a land with or adjacent to Beasts. Invaders skip their normal Explore and Build in lands with Beasts.", "Each player adds 1 Strife in a land with or adjacent to Beasts. Invaders skip all normal Actions in lands with Beasts."),
+new FearCard(ProductSet.BranchAndClaw, FearType.Fear, "Plan for Departure", "Each player may Gather 1 Town into a Coastal land.", "Each player may Gather 1 Explorer / Town into a Coastal land. Defend 2 in all Coastal lands.", "Each player may Gather up to 2 Explorer / Town into a Coastal land. Defend 4 in all Coastal lands."),
 new FearCard(ProductSet.BranchAndClaw, FearType.Fear, "Quarantine", "Explore does not affect Coastal lands.", "Explore does not affect Coastal lands. Lands with Disease are not a source of Invaders when Exploring.", "Explore does not affect Coastal lands. Invaders do not act in lands with Disease."),
 new FearCard(ProductSet.BranchAndClaw, FearType.Fear, "Too Many Monsters", "Each player removes 1 Explorer / Town from a land with Beasts.", "Each player removes 1 Explorer and 1 Town from a land with Beasts, or 1 Explorer from a land adjacent to Beasts.", "Each player removes 2 Explorer and 2 Town from a land with Beasts or 1 Explorer / Town from a land adjacent to Beasts."),
-new FearCard(ProductSet.BranchAndClaw, FearType.Fear, "Panicked by Wild Beasts", "Each player adds 1 Strife in a land with or adjacent to Beasts.", "Each player adds 1 Strife in a land with or adjacent to Beasts. Invaders skip their normal Explore and Build in lands with Beasts.", "Each player adds 1 Strife in a land with or adjacent to Beasts. Invaders skip all normal Actions in lands with Beasts."),
-new FearCard(ProductSet.BranchAndClaw, FearType.Fear, "Depart the Dangerous Land", "Each player removes 1 Explorer from a land with Beasts, Disease, or at least 2 Dahan.", "Each player removes 1 Explorer / town from a land with Beasts, Disease, or at least 2 Dahan.", "Each player removes up to 4 Health worth of Invaders from a land with Beasts, Disease, or at least 2 Dahan."),
+new FearCard(ProductSet.BranchAndClaw, FearType.Fear, "Tread Carefully", "Each player may choose a land with Dahan or adjacent to at least 5 Dahan. Invaders do not Ravage there this turn.", "Each player may choose a land with Dahan or adjacent to at least 3 Dahan. Invaders do not Ravage there this turn.", "Each player may choose a land with Dahan or adjacent to Dahan. Invaders do not Ravage there this turn."),
 new FearCard(ProductSet.BranchAndClaw, FearType.Fear, "Unrest", "Each player adds 1 Strife to a Town.", "Each player adds 1 Strife to a Town. For the rest of this turn, Invaders have -1 Health per Strife to a minimum of 1.", "Each player adds 1 Strife to an Invader. For the rest of this turn, Invaders have -1 Health per Strife to a minimum of 1."),
-new FearCard(ProductSet.BranchAndClaw, FearType.Fear, "Panic", "Each player adds 1 Strife in a land with Beasts / Disease / Dahan.", "Each player adds 1 Strife in a land with Beasts / Disease / Dahan. For the rest of this turn, Invaders have -1 Health per Strife to a minimum of 1.", "Each player adds 1 Strife to an Invader. For the rest of this turn, Invaders have -1 Health per Strife to a minimum of 1."),
-new FearCard(ProductSet.BranchAndClaw, FearType.Fear, "Discord", "Each player adds 1 Strife in a different land with at least 2 Invaders.", "Each player adds 1 Strife in a different land with at least 2 Invaders. Then, each Invader takes 1 Damage per Strife it has.", "Each player adds 1 Strife in a different land with at least 2 Invaders. Then, each Invader with Strife deals Damage to other Invaders in its land."),
-new FearCard(ProductSet.BranchAndClaw, FearType.Fear, "Dahan Threaten", "Each player adds 1 Strife in a land with Dahan.", "Each player adds 1 Strife in a land with Dahan. For the rest of this turn, Invaders have -1 Health per Strife to a minimum of 1.", "Each player adds 1 Strife in a land with Dahan. In every land with Strife, 1 Damage per Dahan."),
 
 // Branch & Claw
-new ChoiceEventCard(ProductSet.BranchAndClaw, "Years of Little Rain", "A terrible drought parches the island. You may:", [Events.LetThePlantsDieAndTheLandWither, Events.ActToEaseTheDrought], TokenEvent.BeastsAttack, DahanEvent.CannyDefense),
-new ChoiceEventCard(ProductSet.BranchAndClaw, "Farmers Seek the Dahan for Aid", "The Dahan are uncertain whether to teach the Invaders farming techniques more in tune with the island's life. You recommend they:", [Events.SpurnTheInvaders, Events.TeachTheInvaders], TokenEvent.NewDiseases, null),
-new ChoiceEventCard(ProductSet.BranchAndClaw, "New Species Spread", "New plants and animals brought by the Invaders damage the local ecology. You may:", [Events.LetTheInvasiveSpeciesBloom, Events.TransmuteTheWorstOfTheSpecies], TokenEvent.NewDiseases, DahanEvent.OfferingsOfPatternAndDance),
-new ChoiceEventCard(ProductSet.BranchAndClaw, "War Touches the Island's Shores", "Invaders from a different faraway land assault the ones here, torching farms and bombarding Cities. You may:", [Events.AllowTheAttacks, Events.HelpRepelTheNewcomers], TokenEvent.BeastsFindNewHomes, DahanEvent.ReclaimTerritory),
-new ChoiceEventCard(ProductSet.BranchAndClaw, "Sacred Sites under Threat", "Invaders have begun to find hidden places of natural power. You may:", [Events.LetTheIslandsStrengthRepulseThem, Events.GuardThemYourselfForWellOrIll], TokenEvent.BeastsProwl, DahanEvent.SpiritSpeakersSolveRiddlesOfPower),
-new ChoiceEventCard(ProductSet.BranchAndClaw, "Outpaced", "Humanity has always been faster than you, but the Invaders' terrifying speed catches you off-guard. Each Spirit chooses independently for each of their Slow Power Cards played this turn:", [Events.StaySteadyAndSlow, Events.WorkToMatchTheirPace], TokenEvent.LingeringPlagues, DahanEvent.RaidsInForce),
-new ChoiceEventCard(ProductSet.BranchAndClaw, "Missionaries Arrive", "They teach and spread lessons of a foreign god. You may:", [Events.IgnoreTheirContactWithTheDahan, Events.CurseTheTonguesOfTheForeigners], TokenEvent.PreyOnTheUnwaryTo, null),
-new ChoiceEventCard(ProductSet.BranchAndClaw, "A Strange Madness among the Beasts", "They grow even wilder and more savage. You may:", [Events.LetThemRampageUntoDeath, Events.GuideTheMadness], TokenEvent.SavageFrenzy, DahanEvent.SeekASaferHome),
-new StageEventCard(ProductSet.BranchAndClaw, Events.SeekingTheInterior, Events.LocalDiaspora, Events.LocalDiaspora, TokenEvent.BeastsProwl, DahanEvent.ForsakeTheBarrenLand),
-new StageEventCard(ProductSet.BranchAndClaw, Events.WaveOfReconnaissance, Events.Urbanization, Events.Urbanization, TokenEvent.StrickenOr, DahanEvent.Retreat),
-new StageEventCard(ProductSet.BranchAndClaw, Events.InterestingDiscoveries, Events.IncreasingAggression, Events.IncreasingAggression, TokenEvent.WheezelungOutbreak, DahanEvent.TendTheLand),
-new StageEventCard(ProductSet.BranchAndClaw, Events.StrangeTalesAttractExplorers, Events.Fortification, Events.Fortification, TokenEvent.BeastsAttack, DahanEvent.ComingOfAgeMountainSands),
-new TerrorLevelEventCard(ProductSet.BranchAndClaw, Events.CulturalAssimilation, Events.CulturalAssimilation, Events.ReprisalAgainstTheDahan, TokenEvent.BeastsAttack, DahanEvent.RecklessOffensive),
-new TerrorLevelEventCard(ProductSet.BranchAndClaw, Events.InvestigationOfDangers, Events.DestroyTheUnnatural, Events.DestroyTheUnnatural, TokenEvent.PreyOnTheUnwaryOn, DahanEvent.RouseTheSpirits),
-new TerrorLevelEventCard(ProductSet.BranchAndClaw, Events.DistantExploration, Events.FearfulMobs, Events.FearfulMobs, TokenEvent.GrimToll, DahanEvent.FierceMien),
-new ChoiceEventCard(ProductSet.BranchAndClaw, "Rising Interest in the Island", "Your island is unlike any the Invaders have seen. Their leaders begin to take interest in tales of strangeness. You may:", [Events.IgnoreTheCuriosity, Events.WeaveLiesInTheMindsOfTheirObservers], TokenEvent.BeastsOfTheJungle, DahanEvent.TrapsAndSnares),
+new ChoiceEventCard             (ProductSet.BranchAndClaw, "Years of Little Rain", "A terrible drought parches the island. You may:", [Events.LetThePlantsDieAndTheLandWither, Events.ActToEaseTheDrought], TokenEvent.BeastsAttack, DahanEvent.CannyDefense),
+new ChoiceEventCard             (ProductSet.BranchAndClaw, "Farmers Seek the Dahan for Aid", "The Dahan are uncertain whether to teach the Invaders farming techniques more in tune with the island's life. You recommend they:", [Events.SpurnTheInvaders, Events.TeachTheInvaders], TokenEvent.NewDiseases, null),
+new ChoiceEventCard             (ProductSet.BranchAndClaw, "New Species Spread", "New plants and animals brought by the Invaders damage the local ecology. You may:", [Events.LetTheInvasiveSpeciesBloom, Events.TransmuteTheWorstOfTheSpecies], TokenEvent.NewDiseases, DahanEvent.OfferingsOfPatternAndDance),
+new ChoiceEventCard             (ProductSet.BranchAndClaw, "War Touches the Island's Shores", "Invaders from a different faraway land assault the ones here, torching farms and bombarding Cities. You may:", [Events.AllowTheAttacks, Events.HelpRepelTheNewcomers], TokenEvent.BeastsFindNewHomes, DahanEvent.ReclaimTerritory),
+new ChoiceEventCard             (ProductSet.BranchAndClaw, "Sacred Sites under Threat", "Invaders have begun to find hidden places of natural power. You may:", [Events.LetTheIslandsStrengthRepulseThem, Events.GuardThemYourselfForWellOrIll], TokenEvent.BeastsProwl, DahanEvent.SpiritSpeakersSolveRiddlesOfPower),
+new ChoiceEventCard             (ProductSet.BranchAndClaw, "Outpaced", "Humanity has always been faster than you, but the Invaders' terrifying speed catches you off-guard. Each Spirit chooses independently for each of their Slow Power Cards played this turn:", [Events.StaySteadyAndSlow, Events.WorkToMatchTheirPace], TokenEvent.LingeringPlagues, DahanEvent.RaidsInForce),
+new ChoiceEventCard             (ProductSet.BranchAndClaw, "Missionaries Arrive", "They teach and spread lessons of a foreign god. You may:", [Events.IgnoreTheirContactWithTheDahan, Events.CurseTheTonguesOfTheForeigners], TokenEvent.PreyOnTheUnwaryTo, null),
+new ChoiceEventCard             (ProductSet.BranchAndClaw, "A Strange Madness among the Beasts", "They grow even wilder and more savage. You may:", [Events.LetThemRampageUntoDeath, Events.GuideTheMadness], TokenEvent.SavageFrenzy, DahanEvent.SeekASaferHome),
+new ChoiceEventCard             (ProductSet.BranchAndClaw, "Rising Interest in the Island", "Your island is unlike any the Invaders have seen. Their leaders begin to take interest in tales of strangeness. You may:", [Events.IgnoreTheCuriosity, Events.WeaveLiesInTheMindsOfTheirObservers], TokenEvent.BeastsOfTheJungle, DahanEvent.TrapsAndSnares),
+
+new StageEventCard              (ProductSet.BranchAndClaw, Events.SeekingTheInterior, Events.LocalDiaspora, Events.LocalDiaspora, TokenEvent.BeastsProwl, DahanEvent.ForsakeTheBarrenLand),
+new StageEventCard              (ProductSet.BranchAndClaw, Events.WaveOfReconnaissance, Events.Urbanization, Events.Urbanization, TokenEvent.StrickenOr, DahanEvent.Retreat),
+new StageEventCard              (ProductSet.BranchAndClaw, Events.InterestingDiscoveries, Events.IncreasingAggression, Events.IncreasingAggression, TokenEvent.WheezelungOutbreak, DahanEvent.TendTheLand),
+new StageEventCard              (ProductSet.BranchAndClaw, Events.StrangeTalesAttractExplorers, Events.Fortification, Events.Fortification, TokenEvent.BeastsAttack, DahanEvent.ComingOfAgeMountainSands),
+
+new TerrorLevelEventCard        (ProductSet.BranchAndClaw, Events.CulturalAssimilation, Events.CulturalAssimilation, Events.ReprisalAgainstTheDahan, TokenEvent.BeastsAttack, DahanEvent.RecklessOffensive),
+new TerrorLevelEventCard        (ProductSet.BranchAndClaw, Events.InvestigationOfDangers, Events.DestroyTheUnnatural, Events.DestroyTheUnnatural, TokenEvent.PreyOnTheUnwaryOn, DahanEvent.RouseTheSpirits),
+new TerrorLevelEventCard        (ProductSet.BranchAndClaw, Events.DistantExploration, Events.FearfulMobs, Events.FearfulMobs, TokenEvent.GrimToll, DahanEvent.FierceMien),
+
 new HealthyBlightedLandEventCard(ProductSet.BranchAndClaw, Events.PuttingDownRoots, Events.TheCenterCrumbles, TokenEvent.StrickenSlash, DahanEvent.DriveOffTheInterlopers),
 new HealthyBlightedLandEventCard(ProductSet.BranchAndClaw, Events.SearchForNewLands, Events.DevastatedShores, TokenEvent.DistantHunt, DahanEvent.CannyDefense),
 new HealthyBlightedLandEventCard(ProductSet.BranchAndClaw, Events.InvadersSurgeInland, Events.WideningDestruction, TokenEvent.GrimToll, DahanEvent.CannyDefense),
@@ -327,7 +231,7 @@ new HealthyBlightedLandEventCard(ProductSet.BranchAndClaw, Events.PopulationRise
 new HealthyBlightedLandEventCard(ProductSet.BranchAndClaw, Events.UrbanDevelopment, Events.FesteringPitsOfBlight, TokenEvent.LingeringPlagues, DahanEvent.FierceMien),
 new HealthyBlightedLandEventCard(ProductSet.BranchAndClaw, Events.HeavyFarming, Events.OvercrowdedCities, TokenEvent.PreyOnTheUnwaryOn, DahanEvent.ComingOfAgeJungleWetland),
 new HealthyBlightedLandEventCard(ProductSet.BranchAndClaw, Events.PromisingFarmland, Events.NewCashCropsTakeHold, TokenEvent.BeastsProvoked, DahanEvent.CannyDefense),
-new AdversaryEvent(ProductSet.BranchAndClaw, "Slave Rebellion", Adversary.KingdomOfFrance, new StageEventCard(ProductSet.BranchAndClaw, Events.SmallUprising, Events.SmallUprising, Events.Rebellion, null, DahanEvent.AidTheUprising)),
+new AdversaryEvent              (ProductSet.BranchAndClaw, "Slave Rebellion", Adversary.KingdomOfFrance, new StageEventCard(ProductSet.BranchAndClaw, Events.SmallUprising, Events.SmallUprising, Events.Rebellion, null, DahanEvent.AidTheUprising)),
 
 
 //==========================================
@@ -623,3 +527,108 @@ new TerrorLevelEventCard(ProductSet.JaggedEarth, Events.RelentlessOptimism, Even
 new TerrorLevelEventCard(ProductSet.JaggedEarth, Events.PullTogetherInAdversity, Events.PullTogetherInAdversity, Events.PurgeTheLandWithSaltAndFire, TokenEvent.ExplorersBlunder, DahanEvent.CarefulDefense),
 new TerrorLevelEventCard(ProductSet.JaggedEarth, Events.TemporaryTruce, Events.TemporaryCaution, Events.TemporaryCaution, TokenEvent.PreyOnTheHeedless, DahanEvent.SpeakOfTheSpiritsAnger),
 new TerrorLevelEventCard(ProductSet.JaggedEarth, Events.Overconfidence, Events.TerrorBreedsAggression, Events.TerrorBreedsAggression, TokenEvent.BeastsMultiply, DahanEvent.CoordinatedDefense),
+
+
+
+
+
+
+TokenEvent["BeastsFindNewHomes"] = "Beasts Find New Homes: On Each Board: Push 1 Beasts to an adjacent land without Blight. 1 Fear if Invaders are present there.";
+TokenEvent["BeastsProwl"]        = "Beasts Prowl: Each Beasts generates 1 Fear if Invaders are present, and moves to an adjacent land if not.";
+TokenEvent["PreyOnTheUnwaryTo"]  = "Prey on the Unwary: Each Beasts destroys 1 Explorer. Add 1 Beasts to a board without one.";
+TokenEvent["PreyOnTheUnwaryOn"]  = "Prey on the Unwary: Each Beasts destroys 1 Explorer. Add 1 Beasts on a board without one.";
+TokenEvent["SavageFrenzy"]       = "Savage Frenzy: Each Beasts destroys 1 Explorer and deals 2 Damage.";
+TokenEvent["BeastsOfTheJungle"]  = "Beasts of the Jungle: On Each Board: Add 1 Beasts to a Jungle without Blight. 1 Fear if Invaders are present.";
+TokenEvent["DistantHunt"]        = "Distant Hunt: On Each Board: Push 1 Beasts to an adjacent land with no Blight. It deals 1 Damage there.";
+TokenEvent["BeastsProvoked"]     = "Beasts Provoked: On Each Board: Add 1 Beasts to a land without Blight that has Town.";
+
+TokenEvent["NewDiseases"]        = "New Diseases: On half of the boards (rounding up) add 1 Disease to a land with both Dahan and Invaders. Do 2 Damage to Dahan there.";
+TokenEvent["LingeringPlagues"]   = "Lingering Plagues: On Each Board: Add 1 Disease. Ignore Disease during Builds this Invader Phase.";
+TokenEvent["WheezelungOutbreak"] = "Wheezelung Outbreak: On Each Board: Add Disease to the Jungle / Wetland with the most Town / City (minimum 1).";
+TokenEvent["GrimToll"]           = "Grim Toll: On Each Board: Choose a land with Disease. In that land, do 2 Damage to Invaders and 2 Damage to Dahan.";
+TokenEvent["SandfeverOutbreak"]  = "Sandfever Outbreak: On Each Board: Add 1 Disease to the Sands or Mountains with the most Town / City (minimum 1).";
+TokenEvent["ForeignDiseases"]    = "Foreign Diseases: On Each Board, in the land with the most combined Invaders + Dahan (min. 1 of each): Add 1 Disease. 2 Damage to Dahan.";
+
+DahanEvent["CannyDefense"]                      = "Canny Defense: During Ravage, in every land, Defend 1 per Dahan in the land.";
+DahanEvent["OfferingsOfPatternAndDance"]        = "Offerings of Pattern and Dance: Each Spirit with at least 2 Dahan among all its lands gains 1 Energy.";
+DahanEvent["ReclaimTerritory"]                  = "Reclaim Territory: Each player may Push 1 Dahan to an adjacent land, doing 1 Damage there.";
+DahanEvent["SpiritSpeakersSolveRiddlesOfPower"] = "Spirit-Speakers Solve Riddles of Power: Each Spirit with at least 4 Dahan among its lands gains a Minor Power.";
+DahanEvent["RaidsInForce"]                      = "Raids in Force: Each Spirit chooses a different land where Dahan outnumber Town / City. Each Dahan there does 1 Damage.";
+DahanEvent["SeekASaferHome"]                    = "Seek a Safer Home: On Each Board: Push 2 Dahan from a land with Beasts / Disease / Wilds to a land without any of these tokens.";
+DahanEvent["ForsakeTheBarrenLand"]              = "Forsake the Barren Land: On Each Board: Push 2 Dahan from a land with Blight to a land without Blight.";
+DahanEvent["Retreat"]                           = "Retreat: On Each Board: Push 2 Dahan from a land with City to a land without City.";
+DahanEvent["TendTheLand"]                       = "Tend the Land: On Each Board: Remove 1 Blight from a land with at least 2 Dahan.";
+DahanEvent["ComingOfAgeMountainSands"]          = "Coming of Age: On Each Board: Add 1 Dahan to a Mountain or Sands with Dahan.";
+DahanEvent["ComingOfAgeCoastal"]                = "Coming of Age: On Each Board: Add 1 Dahan to a Coastal land with Dahan.";
+DahanEvent["ComingOfAgeInland"]                 = "Coming of Age: On Each Board: Add 1 Dahan to an Inland land with Dahan.";
+DahanEvent["ComingOfAgeJungleWetland"]          = "Coming of Age: On Each Board: Add 1 Dahan to a Jungle or Wetland with Dahan.";
+DahanEvent["ComingOfAge2Dahan"]                 = "Coming of Age: On Each Board: Add 1 Dahan to a land with 2 or more Dahan.";
+DahanEvent["ComingOfAgeNoToken"]                = "Coming of Age: On Each Board: Add 1 Dahan to a land with Dahan and no Badlands / Beasts / Disease / Wilds.";
+DahanEvent["ComingOfAgeNoBlightDisease"]        = "Coming of Age: On Each Board: Add 1 Dahan to a land with Dahan and no Blight / Disease.";
+DahanEvent["RecklessOffensive"]                 = "Reckless Offensive: On Each Board: Choose a land with at least 2 Dahan and at least 2 Town / City. Each Dahan destroys 1 Town / City. Add 1 Blight.";
+DahanEvent["RouseTheSpirits"]                   = "Rouse the Spirits: Each Spirit with at least 3 Dahan among all its lands may use a Slow Power now (instead of later).";
+DahanEvent["FierceMien"]                        = "Fierce Mien: 1 Fear per land with Invaders where Dahan outnumber Town / City.";
+DahanEvent["TrapsAndSnares"]                    = "Traps and Snares: On Each Board: Add 1 Wilds to a land with Dahan.";
+DahanEvent["DriveOffTheInterlopers"]            = "Drive off the Interlopers: Each player may Push 1 Explorer / Town from a land with Dahan.";
+DahanEvent["AidTheUprising"]                    = "Aid the Uprising: Invaders with Strife take 1 Damage per Dahan present. Add 1 Dahan per Town / City this destroys.";
+
+
+
+TokenEvent["BeastsAttack"]       = "Beasts Attack: Each Beasts deals 2 Damage. Remove any token that destroys Town / City.";
+Events.LetThePlantsDieAndTheLandWither     = new ChoiceDesc("Let the Plants Die and the Land Wither", null, ["For each board, discard the top Minor Power. If it lacks Water, add 1 Blight to a Sands.","Town, City and Dahan have -1 Health (minimum 1) until the end of the turn."]);
+Events.ActToEaseTheDrought                 = new ChoiceDesc("Act to ease the Drought", new ChoiceCost(4, "player", Elements.Water), ["Each Spirit may add 1 Presence to one of their lands with Dahan."]);
+Events.SpurnTheInvaders                    = new ChoiceDesc("Spurn the Invaders", null, ["On Each Board: 2 Damage to Dahan in a land with Town / City and Dahan.","On Each Board: Add 1 Blight to a land with at least 2 Town / City.","Town / City have -1 Health (to a minimum of 1) until the end of the turn."]);
+Events.TeachTheInvaders                    = new ChoiceDesc("Teach the Invaders", null, ["On Each Board: add 1 Town to a land with Dahan.", "The next normal Ravage becomes a Build (This could be on a future turn.)"]);
+Events.LetTheInvasiveSpeciesBloom          = new ChoiceDesc("Let the Invasive Species Bloom", null, ["For each board, discard the top Minor Power. If it is Fast, add 1 Blight to a land with Town / City.","After resolving this card, return it to the Event Deck under the top 2 cards."]);
+Events.TransmuteTheWorstOfTheSpecies       = new ChoiceDesc("Transmute the Worst of the Species", new ChoiceCost(4, "player", Elements.Moon), ["1 Fear per player. On Each Board: Add 1 Beasts to a land with Town / City."]);
+Events.AllowTheAttacks                     = new ChoiceDesc("Allow the Attacks", null, ["For each board, discard the top Major Power. Deal its Energy in Damage to Invaders and the land in the Coastal land with the most Town / City (minimum 1). Defend reduces the Damage to both Invaders and the Land."]);
+Events.HelpRepelTheNewcomers               = new ChoiceDesc("Help Repel the Newcomers", new ChoiceCost(1, "player", null), ["Add a Fear Card to the top of the Fear Deck."]);
+Events.LetTheIslandsStrengthRepulseThem    = new ChoiceDesc("Let the Island's Strength Repulse Them", null, ["Each SacredSite Pushes 1 Explorer / Town to an adjacent land.", "Remove 1 Blight per player from the Blight Card, returning it to the box."]);
+Events.GuardThemYourselfForWellOrIll       = new ChoiceDesc("Guard them Yourself, for Well or Ill", new ChoiceCost(3, "land where you do damage", Elements.Fire), ["In each land with SacredSite and Invaders: Either do 2 Damage. -or- Destroy 1 Presence from each Spirit."]);
+Events.StaySteadyAndSlow                   = new ChoiceDesc("Stay Steady and Slow", null, ["Discard the Power Card.", "Gain 1 Energy, plus the card's printed Energy cost."]);
+Events.WorkToMatchTheirPace                = new ChoiceDesc("Work to Match their Pace", null, ["Pay 3 Energy -or- destroy 2 Presence.", "You may choose to resolve the Power Card now. (Instead of during the Slow Phase.)"]);
+Events.IgnoreTheirContactWithTheDahan      = new ChoiceDesc("Ignore their Contact with the Dahan", null, ["For each board, discard the top Minor Power. If it has Sun, Push 1 Explorer from a land with Dahan. Otherwise. replace 1 Dahan with 1 Town.","After resolving this card, return it to the Event Deck under the top 2 cards."]);
+Events.CurseTheTonguesOfTheForeigners      = new ChoiceDesc("Curse the Tongues of the Foreigners", new ChoiceCost(4, "player", Elements.Sun), ["Each Spirit adds 1 Disease to a land with City.", "2 Fear per Player.", "During the next normal Ravage, City do +3 Damage."]);
+Events.LetThemRampageUntoDeath             = new ChoiceDesc("Let them Rampage unto Death", null, ["Each Beasts destroys 1 Dahan.", "Remove 1 Beasts from each board."]);
+Events.GuideTheMadness                     = new ChoiceDesc("Guide the Madness", new ChoiceCost(3, "Beasts you decide to keep on the island. (min 3 Energy).", Elements.Animal), ["Remove any number of Beasts.", "Each Spirit may Push 1 Beasts to an adjacent land"]);
+Events.IgnoreTheCuriosity                  = new ChoiceDesc("Ignore the Curiosity", null, ["Return the top card of the Invader Deck to the box. (Skip cards specially placed during Setup.)", "On Each Board: Add 1 Town to a land without one."]);
+Events.WeaveLiesInTheMindsOfTheirObservers = new ChoiceDesc("Weave Lies in the Minds of their Observers", new ChoiceCost(4, "player", Elements.Air), ["Return the top Fear Card to the Box.", "During the next normal Ravage, each Town / City does +1 Damage."]);
+
+// Stage Events
+Events.SeekingTheInterior           = new EventDesc("Seeking the Interior", "In each Coastal land, Push 1 Explorer one land Inland.");
+Events.LocalDiaspora                = new EventDesc("Local Diaspora", "In the single land with the most Invaders, Push 1 Explorer / Town to each adjacent land.");
+Events.WaveOfReconnaissance         = new EventDesc("Wave of Reconnaissance", "When Exploring: Add 1 additional Explorer to each land Explored.");
+Events.Urbanization                 = new EventDesc("Urbanization", "In each land with at least 2 Town, replace half the Town (rounding up) with City.");
+Events.InterestingDiscoveries       = new EventDesc("Interesting Discoveries", "On Each Board: Choose a SacredSite. Gather 1 Explorer into its land, and add 1 additional Explorer.");
+Events.IncreasingAggression         = new EventDesc("Increasing Aggression", "Invaders do +1 Damage (per land) when Ravaging.");
+Events.StrangeTalesAttractExplorers = new EventDesc("Strange Tales attract Explorers", "Now: 1 Fear per Spirit that has at least 1 SacredSite. After advancing Invader Cards: Add 1 Explorer to each land with SacredSite.");
+Events.Fortification                = new EventDesc("Fortification", "After advancing Invader Cards: Invaders Build in one terrain not shown under any Invader Action. (If there's no such terrain, nothing happens.)");
+Events.SmallUprising                = new EventDesc("Small Uprising", "On Each Board: add 1 Strife to 1 Town. After finishing this Event Card, draw another one, then return this card to the Event Deck as per Setup.");
+Events.Rebellion                    = new EventDesc("Rebellion!", "On Each Board: Destroy 1 Town. Add 1 Strife to any 2 Town / City. Then, every Invader takes 1 Damage per Strife it has. After finishing this Event card, draw another one. This card is discarded.");
+
+// Terror Level
+Events.CulturalAssimilation = new EventDesc("Cultural Assimilation", "On Each Board: In a land with exactly 1 Dahan that has or is adjacent to a City, replace that Dahan with 1 Town.");
+Events.ReprisalAgainstTheDahan = new EventDesc("Reprisal Against the Dahan", "On Each Board: choose a land with Dahan and Town / City. Invaders do 3 Damage to Dahan there, ignoring Defend Powers.");
+Events.InvestigationOfDangers = new EventDesc("Investigation of Dangers", "On Each Board: Add 1 Explorer to a land without Invaders or Dahan.");
+Events.DestroyTheUnnatural = new EventDesc("Destroy the unnatural!", "Invaders do +3 Damage (per land) when Ravaging in lands with Presence.");
+Events.DistantExploration = new EventDesc("Distant Exploration", "During the Explore step, Invaders Explore at +1 distance. (So a land 2 away from a Town / City / Ocean will be Explored into.)");
+Events.FearfulMobs = new EventDesc("Fearful Mobs", "When Ravaging, Invaders do +3 Damage (per land) in lands with 3 or more Invaders.");
+
+// Healthy / Blight Land
+Events.PuttingDownRoots = new EventDesc("Putting down Roots", "On an Inland Land on Each Board: Replace 1 Explorer with 1 Town.");
+Events.TheCenterCrumbles = new EventDesc("The Center Crumbles", "On Each Board With Invaders: Add 1 Blight to an Inland land. Spirits may prevent this on any / all boards by destroying 3 Presence from each board to be protected.");
+Events.SearchForNewLands = new EventDesc("Search for new Lands", "In Each Land With at least 2 Explorer: Push 1 Explorer to an adjacent land without Invaders.");
+Events.DevastatedShores = new EventDesc("Devastated Shores", "On Each Board With Invaders: Add 1 Blight to a Coastal land. Spirits may prevent this on any / all boards by destroying 2 Presence from each board to be protected.");
+Events.InvadersSurgeInland = new EventDesc("Invaders Surge Inland", "On a Coastal land on Each Board: Move 1 Town one or two lands inland.");
+Events.WideningDestruction = new EventDesc("Widening Destruction", "On Each Board: add 1 Blight to a land with / adjacent to Town / City. Spirits may prevent this on any / all boards by destroying 2 Presence from each board to be protected.");
+Events.TightKnitCommunities = new EventDesc("Tight-Knit Communities", "For the rest of the turn, Town / City have +1 Health.");
+Events.BlightSpreads = new EventDesc("Blight Spreads", "On Each Board: Add 1 Blight to a land adjacent to a land with Blight. Spirits may prevent this on any / all boards by destroying 2 Presence from each board to be protected.");
+Events.WellPreparedExplorers = new EventDesc("Well-Prepared Explorers", "For the rest of this turn, Explorer have +1 Health.");
+Events.PopulationRises = new EventDesc("Population Rises", "On Each Board: Add 1 Town to a land with Explorer / Town.");
+Events.PowerFades = new EventDesc("Power Fades", "Each Spirit chooses independently to: Destroy 2 of their Presence, -or- Forget 2 of their Powers, -or- Take 1 Blight from the Blight Card and remove it from the game.");
+Events.UrbanDevelopment = new EventDesc("Urban Development", "During the next normal Ravage, each City does +2 Damage. (If there is no Ravage this phase, leave this card by the Ravage space until one happens.)");
+Events.FesteringPitsOfBlight = new EventDesc("Festering Pits of Blight", "On Each Board With Invaders: Add 1 Blight to a land with at least 2 Blight, but do not cascade.");
+Events.HeavyFarming = new EventDesc("Heavy Farming", "During the next normal Ravage, each Town does +1 Damage. (If there is no Ravage this phase, leave this card by the Ravage space until one happens.)");
+Events.OvercrowdedCities = new EventDesc("Overcrowded Cities", "On Each Board with City: Add 1 Blight to a land with City. Spirits may prevent this on any / all boards by destroying 2 Presence from each board to be protected.");
+Events.PromisingFarmland = new EventDesc("Promising Farmland", "When Exploring, once per board, place 1 Town instead of 1 Explorer.");
+Events.NewCashCropsTakeHold = new EventDesc("New Cash Crops Take Hold", "Invaders immediately Ravage in 1 terrain type not showing under any Invader Action. Spirits may prevent this Ravage on any / all boards by destroying 2 Presence from each board to be protected.");

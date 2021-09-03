@@ -1,8 +1,11 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
 =============================
-===== Basegame Road Map =====
-BASE	Review Major / Minor, decide which need Unit Tests and Implement - Targets SPIRITS
+===== Brnach and Claw Road Map =====
+HARD	Confounding Mists - invaders added may be immediatly pushed
+HARD	Call to Trade - changes a ravage to a biuld
+HARD	Twilight Fox Brings Madness - dahan take 1 damage each
+
 BONUS	Generate Innate images from innate metadata
 ======  Done  ================
 ==============================
