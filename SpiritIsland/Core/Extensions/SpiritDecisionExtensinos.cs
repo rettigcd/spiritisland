@@ -64,6 +64,8 @@ namespace SpiritIsland {
 					slowFactories,
 					Present.Done
 				);
+				if(factory==null)
+					break;
 
 				var speedReseter = new RememberFactorySpeed(factory);
 				factory.Speed = Speed.Fast;
