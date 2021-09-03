@@ -8,8 +8,8 @@ namespace SpiritIsland.BranchAndClaw {
 		[FromPresence( 0 )]
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 			return ctx.SelectPowerOption(
-				new PowerOption( "1 fear, Destory 1 explorer", FearAndExplorer ),
-				new PowerOption("add 1 wilds", ctx => ctx.Tokens[BacTokens.Wilds]++ )
+				new PowerOption( "1 fear, Destory 1 explorer", ()=>FearAndExplorer(ctx) ),
+				new PowerOption("add 1 wilds", () => ctx.Tokens[BacTokens.Wilds]++ )
 			);
 		}
 

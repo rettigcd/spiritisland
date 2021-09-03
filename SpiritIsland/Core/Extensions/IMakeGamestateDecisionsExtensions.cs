@@ -35,10 +35,10 @@ namespace SpiritIsland {
 			Space[] neighborsWithItems = CalcSource();
   			int gathered = 0;
 			while(gathered<countToGather && neighborsWithItems.Length>0){
-				var source = await ctx.Self.Action.Choose( new GatherTokensFromDecision( countToGather-gathered, groups, target, neighborsWithItems, Present.Done ));
+				var source = await ctx.Self.Action.Decide( new GatherTokensFromDecision( countToGather-gathered, groups, target, neighborsWithItems, Present.Done ));
 				if(source == null) break;
 
-				var invader = await ctx.Self.Action.Choose( new SelectTokenToGatherDecision( source, target, calcTokens(source), Present.IfMoreThan1 ) );
+				var invader = await ctx.Self.Action.Decide( new SelectTokenToGatherDecision( source, target, calcTokens(source), Present.IfMoreThan1 ) );
 
 				await ctx.GameState.Move(invader, source, target);
 
@@ -72,12 +72,12 @@ namespace SpiritIsland {
 			var tokens = GetTokens();
 			while(0<countToPush && 0<tokens.Length){
 				var decision = new SelectTokenToPushDecision( source, countToPush, tokens, present );
-				var token = await ctx.Self.Action.Choose( decision );
+				var token = await ctx.Self.Action.Decide( decision );
 
 				if(token==null) 
 					break;
 
-				var destination = await ctx.Self.Action.Choose( new PushTokenDecision(token,source,destinationOptions,Present.Always)); 
+				var destination = await ctx.Self.Action.Decide( new PushTokenDecision(token,source,destinationOptions,Present.Always)); 
 				await ctx.GameState.Move(token, source, destination );
 
 				pushedToSpaces.Add( destination );
@@ -98,7 +98,7 @@ namespace SpiritIsland {
 
 		static public async Task PlacePresence( this IMakeGamestateDecisions engine, params Space[] destinationOptions ) {
 			var from = await engine.Self.SelectTrack();
-			var to = await engine.Self.Action.Choose( new TargetSpaceDecision( "Where would you like to place your presence?", destinationOptions, Present.Always ));
+			var to = await engine.Self.Action.Decide( new TargetSpaceDecision( "Where would you like to place your presence?", destinationOptions, Present.Always ));
 			await engine.Self.Presence.PlaceFromBoard(from, to, engine.GameState );
 		}
 
@@ -133,6 +133,21 @@ namespace SpiritIsland {
 		}
 
 		#endregion
+
+		// convenience for ctx so we don't have to do ctx.Self.SelectPowerOption(...)
+		static public Task SelectPowerOption( this IMakeGamestateDecisions eng, params PowerOption[] options )
+			=> eng.Self.SelectPowerOption(options);
+
+		static public async Task SelectPowerOption( this Spirit spirit, params PowerOption[] options ) {
+			var applicable = options.Where( opt => opt.IsApplicable ).ToArray();
+			string text = await spirit.SelectText( "Select Power Option", applicable.Select( a => a.Description ).ToArray() );
+			if(text != null) {
+				var selectedOption = applicable.Single( a => a.Description == text );
+				await selectedOption.Action();
+			}
+		}
+
+
 
 		/// <summary>
 		/// Used for Power-targetting, where range sympols appear.

@@ -1,10 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+namespace SpiritIsland.BranchAndClaw {
 
-namespace SpiritIsland.BranchAndClaw.Minor {
-	class SpurOnWithWordsOfFire {
-	}
+	public class SpurOnWithWordsOfFire {
+
+        [MinorCard("Spur on with Words of Fire", 1, Speed.Fast, Element.Sun, Element.Fire, Element.Air)]
+        [TargetSpirit]
+        static public Task ActAsync(TargetSpiritCtx ctx) {
+
+			// If you target a spirit other than yourself, they gain +1 energy
+
+			// target spirit may immediately play another power Card by paying its cost.
+			// if it is slow, it does not resolve until later
+
+
+            throw new NotImplementedException();
+        }
+
+    }
+
 }

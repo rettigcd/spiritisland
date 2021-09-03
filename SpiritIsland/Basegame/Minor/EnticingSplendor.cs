@@ -9,8 +9,8 @@ namespace SpiritIsland.Basegame {
 		public static Task ActAsync( TargetSpaceCtx ctx) {
 
 			return ctx.SelectPowerOption(
-				new PowerOption( "Gather 1 explorer/town", ctx => ctx.GatherUpToNTokens( 1, Invader.Explorer, Invader.Town ) ),
-				new PowerOption( "Gather 2 dahan", ctx => ctx.GatherUpToNDahan( 2 ) )
+				new PowerOption( "Gather 1 explorer/town", () => ctx.GatherUpToNTokens( 1, Invader.Explorer, Invader.Town ) ),
+				new PowerOption( "Gather 2 dahan", () => ctx.GatherUpToNDahan( 2 ) )
 			);
 
 		}

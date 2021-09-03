@@ -47,7 +47,7 @@ namespace SpiritIsland {
 				await ApplyDamageTo1( individualDamage, part );
 		}
 
-		public async Task<int> Destroy( TokenGroup generic, int countToDestory ) {
+		public async Task<int> Destroy( int countToDestory, TokenGroup generic ) {
 			if(countToDestory == 0) return 0;
 			Token[] invaderTypesToDestory = Counts.Invaders()
 				.Where( x=> x.Generic==generic )
@@ -81,7 +81,7 @@ namespace SpiritIsland {
 					.OrderByDescending(x=>x.FullHealth)
 					// .ThenByDescending(x=>x.Health) assume this line is in Destroy(...)
 					.First();
-				await Destroy( invader.Generic, 1 );
+				await Destroy( 1, invader.Generic );
 
 				// next
 				invadersToDestroy = Counts.OfAnyType( generics );

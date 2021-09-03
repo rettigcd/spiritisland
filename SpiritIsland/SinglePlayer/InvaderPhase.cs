@@ -34,7 +34,7 @@ namespace SpiritIsland.SinglePlayer {
 			// Cascade blight
 			while(gameState.cascadingBlight.Count > 0) {
 				Space blightedSpace = gameState.cascadingBlight.Pop();
-				Space cascadeSpace = await decisionMaker.Action.Choose(new TargetSpaceDecision( "Select land to cascade blight from " + blightedSpace.Label,
+				Space cascadeSpace = await decisionMaker.Action.Decide(new TargetSpaceDecision( "Select land to cascade blight from " + blightedSpace.Label,
 					blightedSpace.Adjacent
 						.Where( x => x.Terrain != Terrain.Ocean ) // $OCEAN$ - blight
 				));

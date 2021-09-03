@@ -20,10 +20,10 @@ namespace SpiritIsland.Basegame {
 					.Where(s=>gs.Tokens[s].Has(Invader.Explorer) && HasNeighborWithMoreBuildings(s))
 					.ToArray();
 				if(options.Length==0) return;
-				var target = await spirit.Action.Choose( new TargetSpaceDecision( "Fear: Select land to push explorer from into more towns/cities", options,Present.Done));
+				var target = await spirit.Action.Decide( new TargetSpaceDecision( "Fear: Select land to push explorer from into more towns/cities", options,Present.Done));
 				if(target==null) continue; // continue => next spirit, break/return => no more spirits
 				var destinations = GetNeighborWithMoreBuildings(target);
-				var dest = await spirit.Action.Choose( new TargetSpaceDecision( "Fear: select destination with more towns/cities", destinations));
+				var dest = await spirit.Action.Decide( new TargetSpaceDecision( "Fear: select destination with more towns/cities", destinations));
 				// push
 				await gs.Move(Invader.Explorer[1],target,dest);
 			}
@@ -35,7 +35,7 @@ namespace SpiritIsland.Basegame {
 				var options = gs.Island.AllSpaces
 					.Where( s => gs.Tokens[ s ].HasAny(Invader.Town,Invader.City) )
 					.ToArray();
-				var dest = await spirit.Action.Choose( new TargetSpaceDecision( "Select space to gather town to city OR explorer to town", options));
+				var dest = await spirit.Action.Decide( new TargetSpaceDecision( "Select space to gather town to city OR explorer to town", options));
 				var grp = gs.Tokens[dest];
 				var invadersToGather = new List<TokenGroup>();
 				if(grp.Has(Invader.City)) invadersToGather.Add( Invader.Town );
@@ -43,13 +43,13 @@ namespace SpiritIsland.Basegame {
 				TokenGroup[] invadersToGatherArray = invadersToGather.ToArray();
 				var sourceOptions = dest.Adjacent.Where(s=>gs.Tokens[s].HasAny(invadersToGatherArray)).ToArray();
 				if(sourceOptions.Length==0) continue;
-				var source = await spirit.Action.Choose( new GatherTokensFromDecision( 1, invadersToGatherArray, dest, sourceOptions ));
+				var source = await spirit.Action.Decide( new GatherTokensFromDecision( 1, invadersToGatherArray, dest, sourceOptions ));
 
 				var invaderOptions = gs.Tokens[source].Invaders()
 					.Where(specific => invadersToGatherArray.Contains(specific.Generic) )
 					.ToArray();
 
-				var invaderToGather = await spirit.Action.Choose( new SelectTokenToGatherDecision( source, dest, invaderOptions, Present.IfMoreThan1 ) );
+				var invaderToGather = await spirit.Action.Decide( new SelectTokenToGatherDecision( source, dest, invaderOptions, Present.IfMoreThan1 ) );
 				
 				await gs.Move( invaderToGather, source, dest);
 			}
@@ -62,7 +62,7 @@ namespace SpiritIsland.Basegame {
 					.Where( s => {var counts = gs.Tokens[ s ]; return counts.HasInvaders() && !counts.Has(Invader.Town); } )
 					.ToArray();
 				if(options.Length==0) return;
-				var target = await spirit.Action.Choose( new TargetSpaceDecision( "Select space to remove 3 health of invaders", options));
+				var target = await spirit.Action.Decide( new TargetSpaceDecision( "Select space to remove 3 health of invaders", options));
 				var grp = gs.Tokens[target];
 				if(grp.Has(Invader.City))
 					grp.Remove(Invader.City);

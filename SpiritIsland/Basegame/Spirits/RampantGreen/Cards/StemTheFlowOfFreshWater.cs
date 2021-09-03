@@ -15,7 +15,7 @@ namespace SpiritIsland.Basegame {
 			} else {
 				// 1 damage to 1 town or city.
 				var types = ctx.PowerInvaders.Counts.OfAnyType(Invader.City,Invader.Town);
-				var invader = await ctx.Self.Action.Choose( new SelectInvaderToDamage( 1, ctx.Target, types, Present.IfMoreThan1 ) );
+				var invader = await ctx.Self.Action.Decide( new SelectInvaderToDamage( 1, ctx.Target, types, Present.IfMoreThan1 ) );
 				if(invader !=null)
 					await ctx.PowerInvaders.ApplyDamageTo1(1,invader);
 			}

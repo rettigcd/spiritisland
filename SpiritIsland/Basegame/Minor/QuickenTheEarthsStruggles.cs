@@ -8,8 +8,8 @@ namespace SpiritIsland.Basegame {
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 
 			return ctx.SelectPowerOption(
-				new PowerOption( "1 damage to each town/city", ctx => ctx.PowerInvaders.ApplyDamageToEach( 1, Invader.City, Invader.Town ) ),
-				new PowerOption( "defend 10", ctx => ctx.Defend( 10 ) )
+				new PowerOption( "1 damage to each town/city", () => ctx.PowerInvaders.ApplyDamageToEach( 1, Invader.City, Invader.Town ) ),
+				new PowerOption( "defend 10", () => ctx.Defend( 10 ) )
 			);
 
 		}

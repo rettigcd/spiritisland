@@ -9,8 +9,8 @@ namespace SpiritIsland.Basegame {
 		static public Task Act( TargetSpaceCtx ctx ) {
 
 			return ctx.SelectPowerOption(
-				new PowerOption( $"Each dahan deals 1 damage to a different invader", ctx => ctx.DamageInvaders( ctx.DahanCount ) ), // !!! Wrong - damage must be on different invaders
-				new PowerOption( "push up to 3 dahan", ctx => ctx.PushUpToNTokens( 3, TokenType.Dahan ) )
+				new PowerOption( $"Each dahan deals 1 damage to a different invader", () => ctx.DamageInvaders( ctx.DahanCount ) ), // !!! Wrong - damage must be on different invaders
+				new PowerOption( "push up to 3 dahan", () => ctx.PushUpToNTokens( 3, TokenType.Dahan ) )
 			);
 
 		}

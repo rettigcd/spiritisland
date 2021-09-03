@@ -9,8 +9,8 @@ namespace SpiritIsland.BranchAndClaw {
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 
 			return ctx.SelectPowerOption(
-				new PowerOption( "add disease ", AddDisease),
-				new PowerOption( "1 fear and 1 strife", FearAndStrife )
+				new PowerOption( "add disease ", () => AddDisease(ctx)),
+				new PowerOption( "1 fear and 1 strife", () => FearAndStrife(ctx) )
 			);
 		}
 

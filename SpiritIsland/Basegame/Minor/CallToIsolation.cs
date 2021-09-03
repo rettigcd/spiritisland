@@ -9,8 +9,8 @@ namespace SpiritIsland.Basegame {
 		static public Task Act(TargetSpaceCtx ctx){
 			int pushCount = ctx.DahanCount; // push 1 explorer/town per dahan
 			return ctx.SelectPowerOption(
-				new PowerOption( "push 1 dahan", ctx => ctx.PushUpToNTokens( 1, TokenType.Dahan ) ),
-				new PowerOption( "push {pushCount} explorer or towns", ctx => ctx.PushUpToNTokens( pushCount, Invader.Town, Invader.Explorer ), pushCount>0 )
+				new PowerOption( "push 1 dahan", () => ctx.PushUpToNTokens( 1, TokenType.Dahan ) ),
+				new PowerOption( "push {pushCount} explorer or towns", () => ctx.PushUpToNTokens( pushCount, Invader.Town, Invader.Explorer ), pushCount>0 )
 			);
 		}
 

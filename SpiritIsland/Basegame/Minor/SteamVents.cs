@@ -12,10 +12,10 @@ namespace SpiritIsland.Basegame {
 			// if your have 3 earth, 
 			if( ctx.Self.Elements.Contains("3 earth") && grp.Counts.Has(Invader.Town) )
 				// instead destroy 1 town
-				await grp.Destroy(Invader.Town,1);
+				await grp.Destroy(1, Invader.Town);
 			else
 				// destroy 1 explorer
-				await grp.Destroy(Invader.Explorer,1);
+				await grp.Destroy(1, Invader.Explorer);
 		}
 
 	}

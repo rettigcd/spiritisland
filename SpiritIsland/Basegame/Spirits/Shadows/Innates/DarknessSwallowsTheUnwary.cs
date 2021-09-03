@@ -21,7 +21,7 @@ namespace SpiritIsland.Basegame {
 
 			// destory 2 explorers (+1 fear/kill)
 			var grp = ctx.PowerInvaders;
-			int destroyed = await grp.Destroy(Invader.Explorer, 2 );
+			int destroyed = await grp.Destroy( 2, Invader.Explorer );
 			ctx.AddFear( destroyed );
 		}
 

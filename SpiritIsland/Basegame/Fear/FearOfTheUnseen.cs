@@ -16,7 +16,7 @@ namespace SpiritIsland.Basegame {
 		static async Task Remove1ExplorerOrTownFromLandWithSacredSite(Spirit spirit,GameState gs ) {
 			var options = spirit.SacredSites.Where( s => gs.Tokens[ s ].HasAny( Invader.Explorer, Invader.Town ) ).ToArray();
 			if(options.Length == 0) return;
-			var target = await spirit.Action.Choose( new TargetSpaceDecision( "Select SS land to remove 1 explorer/town.", options ));
+			var target = await spirit.Action.Decide( new TargetSpaceDecision( "Select SS land to remove 1 explorer/town.", options ));
 			var grp = gs.Tokens[target];
 			var invaderToRemove = grp.PickBestInvaderToRemove( Invader.Town, Invader.Explorer );
 			grp.Adjust( invaderToRemove, -1 );
@@ -29,7 +29,7 @@ namespace SpiritIsland.Basegame {
 					.Union(spirit.SacredSites.Where(s=>gs.Tokens[s].Has(Invader.City)))
 					.ToArray();
 				if(options.Length == 0) return;
-				var target = await spirit.Action.Choose( new TargetSpaceDecision( "Select land to remove 1 explorer/town/city.", options ));
+				var target = await spirit.Action.Decide( new TargetSpaceDecision( "Select land to remove 1 explorer/town/city.", options ));
 				var grp = gs.Tokens[ target ];
 				var invaderToRemove = grp.PickBestInvaderToRemove(Invader.Town,Invader.Explorer);
 				grp.Adjust( invaderToRemove, -1 );
@@ -42,7 +42,7 @@ namespace SpiritIsland.Basegame {
 			foreach(var spirit in gs.Spirits) {
 				var options = sacredSites.Where( s => gs.Tokens[ s ].HasAny( Invader.Explorer, Invader.Town ) ).ToArray();
 				if(options.Length == 0) return;
-				var target = await spirit.Action.Choose( new TargetSpaceDecision( "Select SS land to remove 1 explorer/town.", options ));
+				var target = await spirit.Action.Decide( new TargetSpaceDecision( "Select SS land to remove 1 explorer/town.", options ));
 				var grp = gs.Tokens[target];
 				var invaderToRemove = grp.PickBestInvaderToRemove( Invader.Town, Invader.Explorer );
 				grp.Adjust( invaderToRemove, -1 );

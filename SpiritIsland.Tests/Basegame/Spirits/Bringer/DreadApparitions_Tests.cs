@@ -40,7 +40,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 				// Given: using Dread Apparitions
 				await DreadApparitions.ActAsync( ctx );
 				// When: destroying the town
-				await ctx.PowerInvaders.Destroy(Invader.Town,1);
+				await ctx.PowerInvaders.Destroy(1,Invader.Town);
 			}
 			_ = When();
 
@@ -57,7 +57,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 
 			await DreadApparitions.ActAsync( ctx );
 			// When: destroying the city
-			await ctx.PowerInvaders.Destroy( Invader.City, 1 );
+			await ctx.PowerInvaders.Destroy( 1, Invader.City );
 
 			// Then: 5 fear should have triggered 2 defend
 			ctx.GameState.GetDefence( ctx.Target ).ShouldBe( 5 );

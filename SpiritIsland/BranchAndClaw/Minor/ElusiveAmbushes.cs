@@ -9,8 +9,8 @@ namespace SpiritIsland.BranchAndClaw {
 		static public Task ActAsync(TargetSpaceCtx ctx ) {
 
 			return ctx.SelectPowerOption(
-				new PowerOption("1 damage", ctx=>ctx.DamageInvaders(1)),
-				new PowerOption("Defend 4", ctx=>ctx.Defend(4))
+				new PowerOption("1 damage", ()=>ctx.DamageInvaders(1)),
+				new PowerOption("Defend 4", () => ctx.Defend(4))
 			);
 
 		}

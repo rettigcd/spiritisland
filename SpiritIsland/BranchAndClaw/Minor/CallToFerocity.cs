@@ -8,8 +8,8 @@ namespace SpiritIsland.BranchAndClaw {
 		[FromPresence( 1, Target.Invaders )]
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 			return ctx.SelectPowerOption(
-				new PowerOption( "Gather up to 3 dahan", ctx => ctx.GatherUpToNDahan( 3 ) ),
-				new PowerOption( "1 fear and push 1 explorer and 1 town", Opt2 )
+				new PowerOption( "Gather up to 3 dahan", () => ctx.GatherUpToNDahan( 3 ) ),
+				new PowerOption( "1 fear and push 1 explorer and 1 town", ()=>Opt2(ctx) )
 			);
 		}
 

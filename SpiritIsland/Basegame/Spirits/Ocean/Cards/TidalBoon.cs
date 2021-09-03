@@ -13,7 +13,7 @@ namespace SpiritIsland.Basegame {
 			targetCtx.Self.Energy += 2;
 
 			// and may push 1 town and up to 2 dahan from one of their lands.
-			var pushLand = await targetCtx.Self.Action.Choose( new TargetSpaceDecision( "Select land to push town and 2 dahan", ctx.Target.Presence.Spaces, Present.Done ));
+			var pushLand = await targetCtx.Self.Action.Decide( new TargetSpaceDecision( "Select land to push town and 2 dahan", ctx.Target.Presence.Spaces, Present.Done ));
 			if(pushLand==null) return;
 			await targetCtx.PushUpToNTokens(pushLand,1,Invader.Town);
 			await targetCtx.PushUpToNTokens(pushLand,2,TokenType.Dahan);

@@ -10,7 +10,7 @@ namespace SpiritIsland.Basegame {
 		[InnateOption( "2 water,1 earth" )]
 		static public Task Option1( TargetSpaceCtx ctx ) {
 			// drown 1 town
-			return ctx.PowerInvaders.Destroy(Invader.Town,1); // !!! Destroy would have nicer syntax if count comes first
+			return ctx.PowerInvaders.Destroy(1,Invader.Town);
 		}
 
 		[InnateOption( "3 water,2 earth" )]

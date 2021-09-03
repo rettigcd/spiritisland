@@ -9,8 +9,8 @@ namespace SpiritIsland.Basegame {
 		static public Task ActAsync(TargetSpaceCtx ctx ) {
 
 			return ctx.SelectPowerOption(
-				new PowerOption( "remove 1 blight", ctx => ctx.RemoveBlight() ),
-				new PowerOption( "push up to 3 dahan", ctx => ctx.PushUpToNTokens( 3, TokenType.Dahan ) )
+				new PowerOption( "remove 1 blight", () => ctx.RemoveBlight() ),
+				new PowerOption( "push up to 3 dahan", () => ctx.PushUpToNTokens( 3, TokenType.Dahan ) )
 			);
 
 		}

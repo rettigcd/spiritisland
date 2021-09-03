@@ -94,7 +94,7 @@ namespace SpiritIsland.Basegame {
 		// ! Can't used normal PlacePresence, because it must be range-1, range 0 not allowed.
 		public override async Task ActivateAsync( Spirit spirit, GameState gameState ) {
 			var options = spirit.Presence.Spaces.First().Adjacent;
-			var space = await spirit.Action.Choose( new TargetSpaceDecision( "Add presence to", options ) );
+			var space = await spirit.Action.Decide( new TargetSpaceDecision( "Add presence to", options ) );
 			spirit.Presence.PlaceOn( space );
 		}
 	}

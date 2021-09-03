@@ -23,7 +23,7 @@ namespace SpiritIsland.Basegame {
 			// drop town in the ocean to drown
 			if(ctx.PowerInvaders.Counts.Has(Invader.Town))
 				await ctx.GameState.Move( ctx.PowerInvaders.Counts[Invader.Town[2]]>0 ? Invader.Town[2] : Invader.Town[1], ctx.Target, drowningOcean );
-			await ctx.PowerInvaders.Destroy( Invader.Town, 1 );
+			await ctx.PowerInvaders.Destroy( 1, Invader.Town );
 
 			await ctx.GameState.DahanDestroy(ctx.Target,1,Cause.Power);
 		}

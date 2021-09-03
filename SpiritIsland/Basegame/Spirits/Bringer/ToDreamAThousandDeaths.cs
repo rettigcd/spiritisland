@@ -32,12 +32,12 @@ namespace SpiritIsland.Basegame {
 
 			var invaders = CalcInvaderTypes();
 			while(0 < countToPush && 0 < invaders.Length) {
-				var invader = await engine.Self.Action.Choose( new SelectTokenToPushDecision( source, countToPush, invaders, Present.Always ) );
+				var invader = await engine.Self.Action.Decide( new SelectTokenToPushDecision( source, countToPush, invaders, Present.Always ) );
 
 				if(invader == null)
 					break;
 
-				var destination = await engine.Self.Action.Choose( new TargetSpaceDecision(
+				var destination = await engine.Self.Action.Decide( new TargetSpaceDecision(
 					"Push " + invader.Summary + " to",
 					source.Adjacent.Where( SpaceFilter.ForPowers.GetFilter( engine.Self, engine.GameState, Target.Any ) )
 				) );

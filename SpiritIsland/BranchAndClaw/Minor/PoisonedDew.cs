@@ -1,10 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.BranchAndClaw {
-	class PoisonedDew {
+	public class PoisonedDew {
+
+		[MinorCard( "Poisoned Dew", 1, Speed.Slow, Element.Fire, Element.Water, Element.Plant )]
+		[FromPresence( 1 )]
+		static public Task ActAsync( TargetSpaceCtx ctx ) {
+			int countToDestory = ctx.IsOneOf(Terrain.Jungle,Terrain.Wetland)
+				? int.MaxValue
+				: 1;
+			return ctx.InvadersOn(ctx.Target).Destroy(countToDestory,Invader.Explorer);
+		}
+
 	}
+
 }

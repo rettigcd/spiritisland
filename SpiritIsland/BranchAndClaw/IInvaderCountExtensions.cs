@@ -37,7 +37,7 @@ namespace SpiritIsland.BranchAndClaw {
 		}
 
 		static public async Task SelectInvader_ToStrife( this Spirit spirit, TokenCountDictionary tokens ) {
-			var invader = await spirit.Action.Choose( new AddStrifeDecision( tokens ) );
+			var invader = await spirit.Action.Decide( new AddStrifeDecision( tokens ) );
 			if(invader != null)
 				tokens.AddStrifeTo( invader );
 		}

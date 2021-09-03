@@ -8,8 +8,8 @@ namespace SpiritIsland.BranchAndClaw {
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 
 			return ctx.SelectPowerOption(
-				new PowerOption( "Add 1 beast", ctx=>ctx.Tokens[BacTokens.Beast]++),
-				new PowerOption( "Push up to 2 explorers", ctx => ctx.PushUpToNTokens( 2, Invader.Explorer ), ctx.Tokens.Has(BacTokens.Beast) )
+				new PowerOption( "Add 1 beast", () => ctx.Tokens[BacTokens.Beast]++),
+				new PowerOption( "Push up to 2 explorers", () => ctx.PushUpToNTokens( 2, Invader.Explorer ), ctx.Tokens.Has(BacTokens.Beast) )
 			);
 
 		}

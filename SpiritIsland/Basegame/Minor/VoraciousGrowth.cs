@@ -8,8 +8,8 @@ namespace SpiritIsland.Basegame {
 		static public Task ActAsync(TargetSpaceCtx ctx){
 
 			return ctx.SelectPowerOption(
-				new PowerOption( "2 Damage", ctx => ctx.DamageInvaders( 2 ), ctx.HasInvaders ),
-				new PowerOption( "Remove 1 Blight", ctx => ctx.PushUpToNTokens( 3, TokenType.Dahan ), ctx.Tokens.Has( TokenType.Blight ) )
+				new PowerOption( "2 Damage", () => ctx.DamageInvaders( 2 ), ctx.HasInvaders ),
+				new PowerOption( "Remove 1 Blight", () => ctx.PushUpToNTokens( 3, TokenType.Dahan ), ctx.Tokens.Has( TokenType.Blight ) )
 			);
 
 		}

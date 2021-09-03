@@ -38,6 +38,30 @@ namespace SpiritIsland {
 			poppedDecisionMaker.Select( selection ); // ####
 		}
 
+		public Task<T> Decide<T>( TypedDecision<T> originalDecision ) where T : class, IOption {
+			if(originalDecision == null) throw new ArgumentNullException( nameof( originalDecision ) );
+			if(acitveDecisionMaker != null) throw new InvalidOperationException( "decision already pending" );
+
+			var promise = new TaskCompletionSource<T>();
+			var decisionMaker = new ActionHelper<T>( originalDecision, promise );
+			var decision = decisionMaker.Decision;
+
+			if(decision.Options.Length == 0)
+
+				promise.TrySetResult( null );
+
+			else if(decision.Options.Length == 1 && decision.AllowAutoSelect) {
+
+				decisionMaker.Select( decision.Options[0] ); // ####
+				Log( decision.Options[0], decision, true );
+
+			} else {
+				acitveDecisionMaker = decisionMaker;
+				signal.Set();
+			}
+			return promise.Task;
+		}
+
 		#region selection log
 
 		void Log( IOption selection, IDecision decision, bool auto ) {
@@ -52,30 +76,6 @@ namespace SpiritIsland {
 		public readonly List<string> selections = new List<string>();
 
 		#endregion
-
-		public Task<T> Choose<T>( TypedDecision<T> originalDecision ) where T:class,IOption{
-			if(originalDecision == null) throw new ArgumentNullException(nameof(originalDecision));
-			if(acitveDecisionMaker != null ) throw new InvalidOperationException("decision already pending");
-
-			var promise = new TaskCompletionSource<T>();
-			var decisionMaker = new ActionHelper<T>( originalDecision, promise );
-			var decision = decisionMaker.Decision;
-
-			if(decision.Options.Length == 0)
-
-				promise.TrySetResult( null );
-
-			else if(decision.Options.Length==1 && decision.AllowAutoSelect) {
-
-				decisionMaker.Select( decision.Options[0]); // ####
-				Log( decision.Options[0], decision, true );
-
-			} else  {
-				acitveDecisionMaker = decisionMaker;
-				signal.Set();
-			}
-			return promise.Task;
-		}
 
 		public void Clear(){ 
 			acitveDecisionMaker = null;	// This does something that lets unit tests pass

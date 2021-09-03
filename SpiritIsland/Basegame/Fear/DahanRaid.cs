@@ -29,7 +29,7 @@ namespace SpiritIsland.Basegame {
 			HashSet<Space> used = new HashSet<Space>();
 			foreach(var spirit in gs.Spirits) {
 				var options = gs.Island.AllSpaces.Where( gs.DahanIsOn ).Except( used ).ToArray();
-				var target = await spirit.Action.Choose( new TargetSpaceDecision( "Fear:select land with dahan", options ));
+				var target = await spirit.Action.Decide( new TargetSpaceDecision( "Fear:select land with dahan", options ));
 				used.Add( target );
 				await action( target );
 			}

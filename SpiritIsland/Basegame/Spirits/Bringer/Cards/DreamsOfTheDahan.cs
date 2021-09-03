@@ -11,12 +11,12 @@ namespace SpiritIsland.Basegame {
 
 			return ctx.SelectPowerOption(
 				new PowerOption(
-					"Gather up to 2 dahan", 
-					ctx => ctx.GatherUpToNDahan( 2 )
+					"Gather up to 2 dahan",
+					() => ctx.GatherUpToNDahan( 2 )
 				),
 				new PowerOption(
-					"1 fear/dahan, max 3", 
-					ctx => ctx.AddFear(Math.Min(3,ctx.DahanCount)), 
+					"1 fear/dahan, max 3",
+					() => ctx.AddFear(Math.Min(3,ctx.DahanCount)), 
 					ctx.Tokens.HasAny( Invader.City, Invader.Town ) 
 				)
 			);

@@ -10,8 +10,8 @@ namespace SpiritIsland.Basegame {
 
 			// destroys all explorers and towns
 			var grp = ctx.PowerInvaders;
-			await grp.Destroy(Invader.Explorer, int.MaxValue);
-			await grp.Destroy(Invader.Town, int.MaxValue );
+			await grp.Destroy( int.MaxValue, Invader.Explorer);
+			await grp.Destroy( int.MaxValue, Invader.Town );
 
 			// Destroy all dahan
 			bool destroyAllDahan = true;
@@ -19,7 +19,7 @@ namespace SpiritIsland.Basegame {
 			// if you have 2 moon, 3 plant
 			if(ctx.Self.Elements.Contains( "2 moon,3 plant" )) {
 				// Destroy 1 city
-				await grp.Destroy(Invader.City, 1 );
+				await grp.Destroy( 1, Invader.City );
 				// do not destroy dahan
 				destroyAllDahan = false;
 			}

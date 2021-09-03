@@ -1,10 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.BranchAndClaw {
-	class TeemingRivers {
+
+	public class TeemingRivers {
+
+		[MinorCard( "Teeming Rivers", 1, Speed.Slow, Element.Sun, Element.Water, Element.Plant, Element.Animal )]
+		[FromSacredSite( 2, Target.MountainOrWetland )]
+		static public Task ActAsync( TargetSpaceCtx ctx ) {
+
+			int blightCount = ctx.Tokens[TokenType.Blight];
+
+			if( blightCount == 0 )
+				ctx.Tokens[BacTokens.Beast]++;
+
+			if( blightCount == 1 )
+				ctx.GameState.AddBlight(ctx.Target,-1);
+
+			return Task.CompletedTask;
+		}
+
 	}
+
 }

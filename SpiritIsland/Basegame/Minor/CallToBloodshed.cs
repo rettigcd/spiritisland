@@ -8,8 +8,8 @@ namespace SpiritIsland.Basegame {
 		[FromPresence(2,Target.Dahan)]
 		static public Task Act(TargetSpaceCtx ctx){
 			return ctx.SelectPowerOption(
-				new PowerOption( "1 damage per dahan", ctx=> ctx.DamageInvaders( ctx.DahanCount ) ),
-				new PowerOption( "gather up to 3 dahan", ctx => ctx.GatherUpToNDahan( 3 ) )
+				new PowerOption( "1 damage per dahan", () => ctx.DamageInvaders( ctx.DahanCount ) ),
+				new PowerOption( "gather up to 3 dahan", () => ctx.GatherUpToNDahan( 3 ) )
 			);
 		}
 	}

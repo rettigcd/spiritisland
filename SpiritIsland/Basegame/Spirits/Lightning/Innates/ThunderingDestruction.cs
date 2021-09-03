@@ -13,7 +13,7 @@ namespace SpiritIsland.Basegame {
 		// 3 fire 2 air    destroy 1 town
 		[InnateOption("3 fire, 2 air")]
 		public static Task Destroy_Town( TargetSpaceCtx ctx ) {
-			return ctx.PowerInvaders.Destroy( Invader.Town, 1 );
+			return ctx.PowerInvaders.Destroy( 1, Invader.Town );
 		}
 
 		// 4 fire 3 air    you may instead destroy 1 city

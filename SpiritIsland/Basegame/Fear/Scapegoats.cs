@@ -26,23 +26,23 @@ namespace SpiritIsland.Basegame {
 		public async Task Level3( GameState gs ) {
 			foreach(var space in gs.Island.AllSpaces) {
 				var grp = (InvaderGroup)gs.Invaders.On( space, Cause.Fear );
-				await grp.Destroy( Invader.Explorer, int.MaxValue );
+				await grp.Destroy( int.MaxValue, Invader.Explorer );
 				await EachCityDestroys1Town( grp );
 		
 			}
 		}
 
 		static Task Destroy_1ExplorerPerTown( InvaderGroup grp ) {
-			return grp.Destroy( Invader.Explorer, grp.Counts.Sum(Invader.Town) );
+			return grp.Destroy( grp.Counts.Sum( Invader.Town ), Invader.Explorer );
 		}
 
 		static Task EachCityDestroys1Town( InvaderGroup grp ) {
-			return grp.Destroy( Invader.Town, grp.Counts.Sum(Invader.City) );
+			return grp.Destroy( grp.Counts.Sum( Invader.City ), Invader.Town );
 		}
 
 		static Task Destory_1ExplorerPerTownAnd2ExplorersPerCity( InvaderGroup grp ) {
 			int numToDestory = grp.Counts.Sum(Invader.Town) + grp.Counts.Sum(Invader.City) * 2;
-			return grp.Destroy( Invader.Explorer, numToDestory );
+			return grp.Destroy( numToDestory, Invader.Explorer );
 		}
 
 

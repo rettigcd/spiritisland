@@ -7,7 +7,7 @@ namespace SpiritIsland {
 	static public class SpiritDecisionExtensinos {
 
 		static public Task<T> Select<T>( this Spirit spirit, string prompt, T[] options, Present present = Present.IfMoreThan1 ) where T : class, IOption {
-			return spirit.Action.Choose( new TypedDecision<T>( prompt, options, present ) );
+			return spirit.Action.Decide( new TypedDecision<T>( prompt, options, present ) );
 		}
 
 		#region Simple Wrappers
@@ -42,7 +42,7 @@ namespace SpiritIsland {
 		#region Higher Level of abstraction / uses Spirit State
 
 		static public Task<Track> SelectTrack( this Spirit spirit ) {
-			return spirit.Action.Choose( new TypedDecision<Track>(
+			return spirit.Action.Decide( new TypedDecision<Track>(
 				"Select Presence to place.",
 				spirit.Presence.GetPlaceableFromTracks(), // state info, might someday be moved into game state, then this needs to move back to Action Engine
 				Present.IfMoreThan1

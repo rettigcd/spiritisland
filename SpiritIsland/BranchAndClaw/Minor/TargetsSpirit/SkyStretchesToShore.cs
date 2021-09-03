@@ -1,10 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SpiritIsland.BranchAndClaw.Minor {
-	class SkyStretchesToShore {
+
+	public class SkyStretchesToShore {
+
+		[MinorCard( "Sky Stretches to Shore", 1, Speed.Fast, Element.Sun, Element.Air, Element.Water, Element.Earth )]
+		[TargetSpirit]
+		static public Task ActAsync( TargetSpiritCtx ctx ) {
+
+			// this turn, target spirit may use 1 slow power as if it wer fast
+			// or vice versa
+
+			// Target Spirit gains +3 for targeting costal lands only
+
+			throw new NotImplementedException();
+		}
+
+
+
 	}
 }

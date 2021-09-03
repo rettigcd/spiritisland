@@ -10,8 +10,8 @@ namespace SpiritIsland.Basegame {
 		static public Task ActAsync(TargetSpaceCtx ctx) {
 
 			return ctx.SelectPowerOption(
-				new PowerOption("Draw Major Power", DrawMajorOrGetEnergy, ctx.HasDahan ),
-				new PowerOption("2 fear", ctx => ctx.AddFear(2), ctx.HasInvaders )
+				new PowerOption("Draw Major Power", ()=>DrawMajorOrGetEnergy(ctx), ctx.HasDahan ),
+				new PowerOption("2 fear", () => ctx.AddFear(2), ctx.HasInvaders )
 			);
 
 		}
