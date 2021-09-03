@@ -6,17 +6,17 @@ namespace SpiritIsland.Basegame {
 
 		[SpiritCard( "Overgrow in a Night", 2, Speed.Fast, Element.Moon, Element.Plant )]
 		[FromPresence( 1 )]
-		static public async Task ActionAsync( TargetSpaceCtx ctx ) {
+		static public Task ActionAsync( TargetSpaceCtx ctx ) {
 
-			const string addFearText = "3 fear";
-			bool addFear = ctx.Self.Presence.IsOn(ctx.Target)
-				&& ctx.Tokens.HasInvaders()
-				&& await ctx.Self.SelectText( "Select power", "add 1 presence", addFearText ) == addFearText;
+			return ctx.SelectPowerOption(
+				new PowerOption("Add 1 presence", ctx => ctx.PlacePresence( ctx.Target )),
+				new PowerOption(
+					"3 fear", 
+					ctx => ctx.AddFear(3), 
+					ctx.Self.Presence.IsOn( ctx.Target ) && ctx.Tokens.HasInvaders()  // if presence and invaders
+				)
+			);
 
-			if( addFear )
-				ctx.AddFear(3);
-			else
-				await ctx.PlacePresence( ctx.Target );
 		}
 
 	}

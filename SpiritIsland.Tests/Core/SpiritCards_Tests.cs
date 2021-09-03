@@ -51,9 +51,10 @@ namespace SpiritIsland.Tests {
 
 		protected void Assert_Options( params string[] expected ) {
 			if(action==null) throw new System.InvalidOperationException("action is null");
+			var current = action.GetCurrent();
 			Assert.Equal(
 				expected.OrderBy(x=>x).Join(",")
-				,action.GetCurrent().Options.Select(s=>s.Text).OrderBy(x=>x).Join(",")
+				,current.Options.Select(s=>s.Text).OrderBy(x=>x).Join(",")
 			);
 		}
 

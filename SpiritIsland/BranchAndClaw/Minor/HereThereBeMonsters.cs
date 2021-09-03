@@ -1,10 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.BranchAndClaw {
-	class HereThereBeMonsters {
+
+	public class HereThereBeMonsters {
+
+		[MinorCard( "Here There Be Monsters", 0, Speed.Slow, Element.Moon, Element.Air, Element.Animal )]
+		[FromPresence( 0, Target.Inland )]
+		static public Task ActAsync( TargetSpaceCtx ctx ) {
+			ctx.AddFear(2 + (ctx.Tokens.Has(BacTokens.Beast)?1:0));
+			return ctx.PushUpToNTokens(1,Invader.Explorer,Invader.Town,TokenType.Dahan);
+		}
+
 	}
+
 }

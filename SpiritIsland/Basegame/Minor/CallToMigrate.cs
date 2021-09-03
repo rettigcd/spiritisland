@@ -8,7 +8,7 @@ namespace SpiritIsland.Basegame {
 		[FromPresence(1)]
 		static public async Task ActAsync(TargetSpaceCtx ctx){
 			await ctx.GatherUpToNDahan(3);
-			await ctx.PowerPushUpToNTokens(3, TokenType.Dahan );
+			await ctx.PushUpToNTokens(3, TokenType.Dahan );
 		}
 
 	}

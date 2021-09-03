@@ -28,9 +28,9 @@ namespace SpiritIsland.Basegame {
 			if(space==null) return;
 
 			// Push Town
-			await otherSpirit.PowerPushUpToNTokens( space, 1, Invader.Town );
+			await otherSpirit.PushUpToNTokens( space, 1, Invader.Town );
 			// Push Explorer
-			await otherSpirit.PowerPushUpToNTokens( space, 1, Invader.Explorer );
+			await otherSpirit.PushUpToNTokens( space, 1, Invader.Explorer );
 			
 		}
 

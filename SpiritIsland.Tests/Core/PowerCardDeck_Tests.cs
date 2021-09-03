@@ -12,7 +12,8 @@ namespace SpiritIsland.Tests.Core {
 		[Fact]
 		public void Minor36Count() {
 			var minorCards = PowerCard.GetMinors();
-			minorCards.Length.ShouldBe( 36 );
+			// minorCards.Length.ShouldBe( 36 ); // Basegame
+			minorCards.Length.ShouldBeGreaterThanOrEqualTo( 36 );
 		}
 
 		[Fact]

@@ -5,6 +5,9 @@
 HARD	Confounding Mists - invaders added may be immediatly pushed
 HARD	Call to Trade - changes a ravage to a biuld
 HARD	Twilight Fox Brings Madness - dahan take 1 damage each
+Test	With and Without Ocean, PowerTarget, Push & Blight Include/Don't include ocean spaces.
+// !!! Create an Options object that has a title and an action, that we can pass to a desicion
+// !!! Derive the Option, allow filtering the option out, (See Infested Aquifers) if option is not available, then don't need to present it.
 
 BONUS	Generate Innate images from innate metadata
 ======  Done  ================

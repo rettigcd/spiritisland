@@ -23,7 +23,7 @@ namespace SpiritIsland.BranchAndClaw {
 			=> ctx.GatherUpToNTokens( ctx.Target, 1, BacTokens.Beast.Generic );
 
 		static Task Push( TargetSpaceCtx ctx )
-			=> ctx.PowerPushUpToNTokens( ctx.Target, 2, BacTokens.Beast.Generic );
+			=> ctx.PushUpToNTokens( ctx.Target, 2, BacTokens.Beast.Generic );
 
 	}
 

@@ -32,8 +32,9 @@ namespace SpiritIsland {
 
 		public TokenCountDictionary Tokens { get; }
 
-		public Task<Space[]> PowerPushUpToNTokens( int countToPush, params TokenGroup[] generics )
-			=> base.PowerPushUpToNTokens( Target, countToPush, generics );
+		// Binds Target
+		public Task<Space[]> PushUpToNTokens( int countToPush, params TokenGroup[] generics )
+			=> this.PushUpToNTokens( Target, countToPush, generics );
 
 		// Binds to Dahan
 		public Task GatherUpToNDahan( int dahanToGather )
@@ -43,6 +44,7 @@ namespace SpiritIsland {
 		public Task GatherUpToNTokens( int countToGather, params TokenGroup[] ofType )
 			=> this.GatherUpToNTokens( Target, countToGather, ofType );
 
+		/// <summary> Use this for Power-Pushing, since Powers can push invaders into the ocean. </summary>
 		public IEnumerable<Space> PowerAdjacents() => PowerAdjacents(Target);
 
 		// Convenience Methods - That bind to .Target
@@ -96,9 +98,47 @@ namespace SpiritIsland {
 			await PowerInvaders.ApplySmartDamageToGroup( damage );
 		}
 
+		public async Task SelectPowerOption( params PowerOption[] options ) {
+			var applicable = options.Where( opt => opt.IsApplicable ).ToArray();
+			string text = await Self.SelectText( "Select Power Option", applicable.Select( a => a.Description ).ToArray() );
+			if(text != null) {
+				var selectedOption = applicable.Single( a => a.Description == text );
+				await selectedOption.Action( this );
+			}
+		}
+
+
 		InvaderGroup invadersRO;
 
 
 	}
+
+	public class PowerOption {
+		public string Description { get; }
+		public bool IsApplicable { get; }
+
+		public Task Action(TargetSpaceCtx ctx){
+			if( func!=null )
+				return func(ctx);
+			action(ctx);
+			return Task.CompletedTask;
+		}
+
+		readonly Func<TargetSpaceCtx, Task> func;
+		readonly Action<TargetSpaceCtx> action;
+
+		public PowerOption( string description, Action<TargetSpaceCtx> action, bool applicable = true ) {
+			Description = description;
+			this.action = action;
+			IsApplicable = applicable;
+		}
+
+		public PowerOption( string description, Func<TargetSpaceCtx, Task> action, bool applicable = true ) {
+			Description = description;
+			IsApplicable = applicable;
+			func = action;
+		}
+	}
+
 
 }

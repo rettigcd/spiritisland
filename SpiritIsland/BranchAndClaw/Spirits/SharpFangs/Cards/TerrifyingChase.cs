@@ -14,7 +14,7 @@ namespace SpiritIsland.BranchAndClaw {
 			int startingInvaderCount = ctx.Tokens.InvaderTotal();
 
 			// first push invaders
-			await ctx.PowerPushUpToNTokens(pushCount,TokenType.Dahan,Invader.Explorer,Invader.Town);
+			await ctx.PushUpToNTokens(pushCount,TokenType.Dahan,Invader.Explorer,Invader.Town);
 
 			// if you pushed any invaders, 2 fear
 			if( ctx.Tokens.InvaderTotal() < startingInvaderCount )

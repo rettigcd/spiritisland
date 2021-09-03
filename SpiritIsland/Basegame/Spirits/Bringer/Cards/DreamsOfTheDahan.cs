@@ -7,17 +7,19 @@ namespace SpiritIsland.Basegame {
 
 		[SpiritCard("Dreams of the Dahan",0,Speed.Fast,Element.Moon,Element.Air)]
 		[FromPresence(2)]
-		static public async Task ActAsync(TargetSpaceCtx ctx ) {
-			// if target land has town/city,
-			bool doFear = ctx.PowerInvaders.Counts.HasAny(Invader.City,Invader.Town)
-				&& await ctx.Self.UserSelectsFirstText("Select power option","1 fear/dahan up to 3","gather up to 2 dahan");
+		static public Task ActAsync(TargetSpaceCtx ctx ) {
 
-			if(doFear)
-				// 1 fear for each dahan, to a maximum of 3 fear
-				ctx.AddFear(Math.Min(3,ctx.DahanCount));
-			else
-				// gather up to 2 dahan
-				await ctx.GatherUpToNDahan(2);
+			return ctx.SelectPowerOption(
+				new PowerOption(
+					"Gather up to 2 dahan", 
+					ctx => ctx.GatherUpToNDahan( 2 )
+				),
+				new PowerOption(
+					"1 fear/dahan, max 3", 
+					ctx => ctx.AddFear(Math.Min(3,ctx.DahanCount)), 
+					ctx.Tokens.HasAny( Invader.City, Invader.Town ) 
+				)
+			);
 
 		}
 	}

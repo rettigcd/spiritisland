@@ -6,21 +6,18 @@ namespace SpiritIsland.BranchAndClaw {
 
 		[MinorCard( "Call to Ferocity", 0, Speed.Slow, Element.Sun, Element.Fire, Element.Earth )]
 		[FromPresence( 1, Target.Invaders )]
-		static public async Task ActAsync( TargetSpaceCtx ctx ) {
-
-			bool shouldGather = !ctx.HasDahan  // no dahan, can't do 2nd option
-				|| await ctx.Self.UserSelectsFirstText("Select power", "Gather up to 3 dhan", "1 fear and push 1 explorer and 1 town" ); // use selects gather
-
-			if( shouldGather) {
-				await ctx.GatherUpToNDahan(3);
-			} else {
-				ctx.AddFear(1);
-				await ctx.PushNTokens(ctx.Target,1,Invader.Explorer);
-				await ctx.PushNTokens( ctx.Target, 1, Invader.Town );
-			}
-
+		static public Task ActAsync( TargetSpaceCtx ctx ) {
+			return ctx.SelectPowerOption(
+				new PowerOption( "Gather up to 3 dahan", ctx => ctx.GatherUpToNDahan( 3 ) ),
+				new PowerOption( "1 fear and push 1 explorer and 1 town", Opt2 )
+			);
 		}
 
+		static async Task Opt2( TargetSpaceCtx ctx ) {
+			ctx.AddFear( 1 );
+			await ctx.PushNTokens( ctx.Target, 1, Invader.Explorer );
+			await ctx.PushNTokens( ctx.Target, 1, Invader.Town );
+		}
 	}
 
 }

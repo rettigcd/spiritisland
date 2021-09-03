@@ -10,7 +10,7 @@ namespace SpiritIsland.BranchAndClaw {
 		[InnateOption( "2 sun" )]
 		static public Task Option1( TargetSpaceCtx ctx ) {
 			// push 1 explorer from target land per 2 sun you have
-			return ctx.PowerPushUpToNTokens(ctx.Self.Elements[Element.Sun]/2,Invader.Explorer);
+			return ctx.PushUpToNTokens(ctx.Self.Elements[Element.Sun]/2,Invader.Explorer);
 		}
 
 		[InnateOption( "1 plant" )]

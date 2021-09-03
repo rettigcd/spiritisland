@@ -12,7 +12,7 @@ namespace SpiritIsland.Basegame {
 			ctx.AddFear( ctx.Self.Elements.Contains( "2 fire" ) ? 2 : 1 );
 
 			// Push 1 explorer/town
-			await ctx.PowerPushUpToNTokens(1,Invader.Explorer,Invader.Town);
+			await ctx.PushUpToNTokens(1,Invader.Explorer,Invader.Town);
 		}
 
 	}

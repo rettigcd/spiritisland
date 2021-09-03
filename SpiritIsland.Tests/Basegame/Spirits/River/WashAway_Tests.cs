@@ -42,10 +42,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			action = spirit.Action;
 
 			var invader = action.GetCurrent().Options[0] as Token;
-			Then_SelectInvaderToPush(invader,3, invader.Summary,"Done");
+			Then_SelectInvaderToPush(invader,1, invader.Summary,"Done");
 
 			//  Then: card has options of where to push 1 explorer
-			Assert_Options(	targetSpace.Adjacent, new TextOption("Done") );
+			Assert_Options(	targetSpace.Adjacent );
 
 			var invaderDestination = board[2];
 			action.Choose( invaderDestination.Label );
@@ -71,14 +71,13 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			gameState.Tokens[targetSpace].Add(Invader.Explorer);
 
 			//  When: activating card
-//			var engine = spirit.Bind( gameState );
 			card.ActivateAsync( spirit, gameState );
 			action = spirit.Action;
 
-			Then_SelectInvaderToPush( Invader.Explorer[1], 3,"E@1", "Done" );
+			Then_SelectInvaderToPush( Invader.Explorer[1], 1,"E@1", "Done" );
 			
 			//  Then: card has options of where to push 1 explorer
-			Assert_Options( targetSpace.Adjacent.Where(x=>x.Terrain != Terrain.Ocean ), new TextOption("Done") );
+			Assert_Options( targetSpace.Adjacent.Where(x=>x.Terrain != Terrain.Ocean ) );
 
 		}
 
@@ -145,8 +144,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			//  Auto-Selects: target space
 			//			action.Select( targetSpace );
 
-			Then_SelectInvaderToPush( Invader.Town[1], 3, "T@1", "Done" );
-			Then_PushInvader( "T@1", invaderDestination, "A1","A2","A3","A5","Done" );
+			Then_SelectInvaderToPush( Invader.Town[1], 1, "T@1", "Done" );
+			Then_PushInvader( "T@1", invaderDestination, "A1","A2","A3","A5" );
 
 			Assert.True( action.IsResolved );
 

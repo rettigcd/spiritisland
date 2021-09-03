@@ -39,7 +39,7 @@ namespace SpiritIsland.Basegame {
 
 				var destination = await engine.Self.Action.Choose( new TargetSpaceDecision(
 					"Push " + invader.Summary + " to",
-					source.Adjacent.Where( SpaceFilter.ForCascadingBlight.GetFilter( engine.Self, engine.GameState, Target.Any ) )
+					source.Adjacent.Where( SpaceFilter.ForPowers.GetFilter( engine.Self, engine.GameState, Target.Any ) )
 				) );
 				await engine.GameState.Move( invader, source, destination );
 

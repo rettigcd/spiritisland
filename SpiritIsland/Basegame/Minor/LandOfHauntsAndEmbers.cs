@@ -23,7 +23,7 @@ namespace SpiritIsland.Basegame {
 				++pushCount;
 			}
 
-			await ctx.PowerPushUpToNTokens(pushCount,Invader.Explorer,Invader.Town);
+			await ctx.PushUpToNTokens(pushCount,Invader.Explorer,Invader.Town);
 		}
 
 	}

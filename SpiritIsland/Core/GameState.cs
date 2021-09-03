@@ -127,7 +127,7 @@ namespace SpiritIsland {
 			return Task.CompletedTask;
 		}
 
-		public void AddBlight( Space space, int delta=1 ){
+		public void AddBlight( Space space, int delta=1 ){ // also used for removing blight
 			var counts = Tokens[space];
 			int newCount = counts[TokenType.Blight] + delta;
 			if(newCount<0) return;

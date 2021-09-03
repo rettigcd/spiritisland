@@ -13,9 +13,9 @@ namespace SpiritIsland.Basegame {
 			// if target is M/J, Push 1 explorer and 1 town
 			if(ctx.IsOneOf( Terrain.Mountain, Terrain.Jungle )) {
 				// Push Town
-				await ctx.PowerPushUpToNTokens(1,Invader.Town);
+				await ctx.PushUpToNTokens(1,Invader.Town);
 				// Push Explorer
-				await ctx.PowerPushUpToNTokens(1, Invader.Explorer );
+				await ctx.PushUpToNTokens(1, Invader.Explorer );
 			}
 
 		}

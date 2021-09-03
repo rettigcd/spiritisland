@@ -1,5 +1,4 @@
-﻿using SpiritIsland;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 
@@ -7,17 +6,13 @@ namespace SpiritIsland.Basegame {
 
 		[SpiritCard( "Voice of Thunder", 0, Speed.Slow, Element.Sun, Element.Air )]
 		[FromPresence(1)]
-		static public async Task Act( TargetSpaceCtx ctx ) {
-			// push up to 4 dahan -OR- If invaders are present, 2 fear
+		static public Task Act( TargetSpaceCtx ctx ) {
 
-			const string fearOption = "2 fear";
-			bool doFear = ctx.Tokens.HasInvaders()
-				&& await ctx.Self.SelectText( "Chose card option", fearOption, "push up to 4 dahan" ) == fearOption;
+			return ctx.SelectPowerOption(
+				new PowerOption("push up to 4 dahan", ctx => ctx.PushUpToNTokens( 4, TokenType.Dahan ), ctx.HasDahan),
+				new PowerOption("2 fear", ctx => ctx.AddFear(2), ctx.Tokens.HasInvaders() ) 
+			);
 
-			if( doFear )
-				ctx.AddFear( 2 );
-			else
-				await ctx.PowerPushUpToNTokens(4, TokenType.Dahan );
 		}
 	}
 }

@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 		static public async Task Act(TargetSpaceCtx ctx){
 
 			// push up to 4 explorers or towns
-			await ctx.PowerPushUpToNTokens(4, Invader.Explorer,Invader.Town);
+			await ctx.PushUpToNTokens(4, Invader.Explorer,Invader.Town);
 
 			// 2 fear
 			ctx.AddFear(2);

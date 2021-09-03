@@ -15,32 +15,15 @@ namespace SpiritIsland {
 			GameState = gameState;
 		}
 
-		/// <summary> Returns destinations of push </summary>
-		public async Task<Space[]> PowerPushUpToNTokens( Space source, int countToPush , params TokenGroup[] generics ) {
-
-			Token[] CalcTokenTypes() => GameState.Tokens[ source ].OfAnyType( generics );
-
-			var pushedToSpaces = new List<Space>();
-
-			var tokens = CalcTokenTypes();
-			while(0 < countToPush && 0 < tokens.Length) {
-				var token = await Self.Action.Choose( new SelectTokenToPushDecision( source, countToPush, tokens, Present.Done ) );
-				if(token == null)
-					break;
-
-				var destination = await Self.Action.Choose( new PushTokenDecision( token, source, PowerAdjacents(source), Present.Done ) );
-				await GameState.Move(token, source, destination );
-
-				pushedToSpaces.Add(destination);
-				--countToPush;
-				tokens = CalcTokenTypes();
-			}
-			return pushedToSpaces.ToArray();
-		}
-
+		// !!! Spirit Powers, Special Rules, & Blight should use this.
+		// Oceans are treated as Coastal Wetlands for
+		//		* Spirit Powers
+		//		* Special Rules
+		//		* Blight
 		static public IEnumerable<Space> PowerAdjacents(Space source) => source
 			.Adjacent
-			.Where( x => x.Terrain != Terrain.Ocean );// $ OCEAN $ Special case for Ocean changing what is adjacent for Power stuff
+//			.Where( x => x.TerrainForPower != Terrain.Ocean );
+			.Where( x => SpaceFilter.ForPowers.SelectTerrain(x) != Terrain.Ocean );
 
 	}
 

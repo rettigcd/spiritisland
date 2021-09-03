@@ -25,7 +25,7 @@ namespace SpiritIsland.Basegame {
 			}
 
 			// Push all explorers from target land to as many different lands as possible
-			await ctx.PowerPushUpToNTokens( int.MaxValue,Invader.Explorer);
+			await ctx.PushUpToNTokens( int.MaxValue,Invader.Explorer);
 		}
 
 		static void ReplaceInvaderWithExplorer( InvaderGroup grp, TokenGroup oldInvader, int replaceCount ) {

@@ -10,7 +10,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			// if ther are 2 blight or fewer in target land, remove 1 blight
 			if( ctx.Tokens[TokenType.Blight] <= 2)
-				--ctx.Tokens[TokenType.Blight];
+				ctx.RemoveBlight();
 
 			return Task.CompletedTask;
 

@@ -19,6 +19,10 @@ namespace SpiritIsland.Basegame {
 			ctx.AddFear( fear );
 			await ctx.DamageInvaders( damage );
 
+			// !!! Can you target an ocean space?  
+			// !!! It is a 'Power'
+			// !!! We should be able to Add Blight to the ocean also
+
 			// if target is Jungle / Wetland, add 1 blight
 			if(ctx.IsOneOf(Terrain.Jungle,Terrain.Wetland))
 				ctx.AddBlight();

@@ -6,19 +6,12 @@ namespace SpiritIsland.Basegame {
 
 		[MinorCard("Call to Isolation",0,Speed.Fast,Element.Sun,Element.Air,Element.Animal)]
 		[FromPresence(1,Target.Dahan)]
-		static public async Task Act(TargetSpaceCtx ctx){
-
+		static public Task Act(TargetSpaceCtx ctx){
 			int pushCount = ctx.DahanCount; // push 1 explorer/town per dahan
-
-			bool pushDahan = !ctx.PowerInvaders.Counts.Has(Invader.Explorer) && !ctx.PowerInvaders.Counts.Has(Invader.Town)
-				|| await ctx.Self.UserSelectsFirstText("Select option", "push 1 dahan", $"push {pushCount} explorer or towns");
-
-			if( pushDahan )
-				await ctx.PowerPushUpToNTokens(1);
-			else
-				// push 1 explorer/town per dahan
-				await ctx.PowerPushUpToNTokens(pushCount,Invader.Town,Invader.Explorer);
-
+			return ctx.SelectPowerOption(
+				new PowerOption( "push 1 dahan", ctx => ctx.PushUpToNTokens( 1, TokenType.Dahan ) ),
+				new PowerOption( "push {pushCount} explorer or towns", ctx => ctx.PushUpToNTokens( pushCount, Invader.Town, Invader.Explorer ), pushCount>0 )
+			);
 		}
 
 	}

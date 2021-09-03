@@ -8,23 +8,13 @@ namespace SpiritIsland.Basegame {
 		// push 1 town -OR- push 3 dahan
 		[SpiritCard( "Fields Choked with Growth", 0, Speed.Slow, Element.Sun, Element.Water, Element.Plant )]
 		[FromPresence( 1 )]
-		static public async Task ActionAsync( TargetSpaceCtx ctx ) {
-			const string pushDahanText = "3 dahan";
-			var options = new List<string>();
+		static public Task ActionAsync( TargetSpaceCtx ctx ) {
 
-			if(ctx.HasDahan)
-				options.Add(pushDahanText);
-			if(ctx.PowerInvaders.Counts.Has(Invader.Town))
-				options.Add( "1 town" );
+			return ctx.SelectPowerOption(
+				new PowerOption("Push 1 town", ctx => ctx.PushUpToNTokens(1,Invader.Town),ctx.Tokens.Has(Invader.Town)),
+				new PowerOption("Push 3 dahan", ctx => ctx.PushUpToNTokens(3,TokenType.Dahan),ctx.HasDahan)
+			);
 
-			if(options.Count == 0) return;
-
-			string power = await ctx.Self.SelectText("Select item(s) to push",options.ToArray());
-
-			if(power == pushDahanText)
-				await ctx.PowerPushUpToNTokens(3);
-			else
-				await ctx.PowerPushUpToNTokens(1,Invader.Town); // PowerPush!
 		}
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace SpiritIsland.BranchAndClaw {
 
@@ -19,9 +20,7 @@ namespace SpiritIsland.BranchAndClaw {
 			concreate[strifed] += count;
 		}
 
-		/// <summary>
-		/// Gets strifed token with exactly # of strife listed.
-		/// </summary>
+		/// <summary> Gets strifed token with exactly # of strife listed. </summary>
 		static public Token WithStrife(this Token orig, int strifeCount ) {
 			return StrifedInvader.Generator.WithStrife( orig, strifeCount );
 		}
@@ -35,6 +34,12 @@ namespace SpiritIsland.BranchAndClaw {
 
 		static public Token AddStrife(this Token orig, int deltaStrife ) {
 			return orig.WithStrife( orig.Strife()+ deltaStrife );
+		}
+
+		static public async Task SelectInvader_ToStrife( this Spirit spirit, TokenCountDictionary tokens ) {
+			var invader = await spirit.Action.Choose( new AddStrifeDecision( tokens ) );
+			if(invader != null)
+				tokens.AddStrifeTo( invader );
 		}
 
 	}

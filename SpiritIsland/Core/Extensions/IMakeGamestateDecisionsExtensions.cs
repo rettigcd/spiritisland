@@ -3,9 +3,15 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace SpiritIsland {
+
+	// High-Level game actions
 	public static class IMakeGamestateDecisionsExtensions {
 
-		static public IMakeGamestateDecisions MakeDecisionsFor(this Spirit spirit, GameState gameState ) => new GsDecisionMaker(spirit,gameState);
+		static public IMakeGamestateDecisions MakeDecisionsFor(this Spirit spirit, GameState gameState ) 
+//			=> new GsDecisionMaker(spirit,gameState);
+			=> new PowerCtx( spirit, gameState );
+
+		#region IMakeGamestateDecision class
 
 		class GsDecisionMaker : IMakeGamestateDecisions {
 			public GsDecisionMaker(Spirit spirit,GameState gs ) { this.Self = spirit; GameState = gs; }
@@ -13,6 +19,8 @@ namespace SpiritIsland {
 
 			public GameState GameState { get; }
 		}
+
+		#endregion
 
 		#region Gather
 
@@ -44,38 +52,39 @@ namespace SpiritIsland {
 
 		#region Push
 
-		static public Task PushNTokens( this IMakeGamestateDecisions ctx, Space source, int countToPush , params TokenGroup[] groups ) 
-			=> ctx.FearPushTokens(source,true,countToPush,groups);
+		static public Task<Space[]> PushNTokens( this IMakeGamestateDecisions ctx, Space source, int countToPush , params TokenGroup[] groups ) 
+			=> ctx.PushTokens_Inner(source,countToPush,groups, Present.IfMoreThan1 );
 
-		static public Task FearPushUpToNTokens( this IMakeGamestateDecisions ctx, Space source, int countToPush , params TokenGroup[] groups ) 
-			=> ctx.FearPushTokens( source, false, countToPush, groups );
+		static public Task<Space[]> PushUpToNTokens( this IMakeGamestateDecisions ctx, Space source, int countToPush , params TokenGroup[] groups ) 
+			=> ctx.PushTokens_Inner( source, countToPush, groups, Present.Done );
 
-		static public async Task FearPushTokens( this IMakeGamestateDecisions ctx, Space source, bool force, int countToPush
-			,params TokenGroup[] groups
-		) {
+		static async Task<Space[]> PushTokens_Inner( this IMakeGamestateDecisions ctx, Space source, int countToPush, TokenGroup[] groups, Present present )  {
+
+			// !!! This next line needs to Use Power Adjacents for Powers
+			var destinationOptions = source.Adjacent.Where( x => x.Terrain != Terrain.Ocean );
 
 			var counts = ctx.GameState.Tokens[source];
 			Token[] GetTokens() => counts.OfAnyType(groups);
 			countToPush = System.Math.Min(countToPush,counts.SumAny(groups));
 
+			var pushedToSpaces = new List<Space>();
+
 			var tokens = GetTokens();
 			while(0<countToPush && 0<tokens.Length){
-				var token = await ctx.Self.Action.Choose( new SelectTokenToPushDecision( source, countToPush, tokens, force ? Present.IfMoreThan1 : Present.Done ) );
+				var decision = new SelectTokenToPushDecision( source, countToPush, tokens, present );
+				var token = await ctx.Self.Action.Choose( decision );
 
 				if(token==null) 
 					break;
 
-				var destination = await ctx.Self.Action.Choose( new PushTokenDecision(
-					token,
-					source,
-					source.Adjacent.Where( x => x.Terrain != Terrain.Ocean ),
-					Present.Always
-				)); 
+				var destination = await ctx.Self.Action.Choose( new PushTokenDecision(token,source,destinationOptions,Present.Always)); 
 				await ctx.GameState.Move(token, source, destination );
 
+				pushedToSpaces.Add( destination );
 				--countToPush;
 				tokens = GetTokens();
 			}
+			return pushedToSpaces.ToArray();
 		}
 
 		#endregion Push
@@ -85,6 +94,12 @@ namespace SpiritIsland {
 		static public Task PlacePresence( this IMakeGamestateDecisions engine, int range, Target filterEnum ) {
 			Space[] destinationOptions = CalcDestinationOptions( engine, range, filterEnum );
 			return engine.PlacePresence( destinationOptions );
+		}
+
+		static public async Task PlacePresence( this IMakeGamestateDecisions engine, params Space[] destinationOptions ) {
+			var from = await engine.Self.SelectTrack();
+			var to = await engine.Self.Action.Choose( new TargetSpaceDecision( "Where would you like to place your presence?", destinationOptions, Present.Always ));
+			await engine.Self.Presence.PlaceFromBoard(from, to, engine.GameState );
 		}
 
 		static Space[] CalcDestinationOptions( IMakeGamestateDecisions engine, int range, Target filterEnum ) {
@@ -105,22 +120,10 @@ namespace SpiritIsland {
 				: destinationOptions;
 		}
 
-		static public async Task PlacePresence( this IMakeGamestateDecisions engine, params Space[] destinationOptions ) {
-			var from = await engine.Self.SelectTrack();
-			var to = await engine.Self.Action.Choose( new TargetSpaceDecision( "Where would you like to place your presence?", destinationOptions, Present.Always ));
-			await engine.Self.Presence.PlaceFromBoard(from, to, engine.GameState );
-		}
-
 		#endregion Place Presence
 
+		#region Damage Invaders
 
-		/// <summary>
-		/// Used for Power-targetting, where range sympols appear.
-		/// </summary>
-		static public Task<Space> PowerTargetsSpace( this IMakeGamestateDecisions engine, From sourceEnum, Terrain? sourceTerrain, int range, Target filterEnum )
-			=> engine.Self.PowerApi.TargetsSpace( engine.Self, engine.GameState, sourceEnum, sourceTerrain, range, filterEnum );
-
-		//// Not Changable!
 		static public InvaderGroup InvadersOn( this IMakeGamestateDecisions engine, Space space )
 			=> engine.Self.BuildInvaderGroupForPowers( engine.GameState, space );
 
@@ -128,6 +131,14 @@ namespace SpiritIsland {
 			if(damage == 0) return;
 			await engine.InvadersOn( space ).ApplySmartDamageToGroup( damage );
 		}
+
+		#endregion
+
+		/// <summary>
+		/// Used for Power-targetting, where range sympols appear.
+		/// </summary>
+		static public Task<Space> PowerTargetsSpace( this IMakeGamestateDecisions engine, From sourceEnum, Terrain? sourceTerrain, int range, Target filterEnum )
+			=> engine.Self.PowerApi.TargetsSpace( engine.Self, engine.GameState, sourceEnum, sourceTerrain, range, filterEnum );
 
 	}
 
