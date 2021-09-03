@@ -31,7 +31,6 @@ namespace SpiritIsland.Basegame {
 	3 water 1 rock 5 plant  also, remove 1 blight
 
 	Special Rules - Choke the land with green - whenever invaders would ravage or build in a land with your sacred site, you may prevent it by destroying one of your presense in that land
-		* Option > At growth time, create a pre-ravaging event for every land
 
 	Special Rules - Steady regeneration - when adding presense to the board via growth, yo may optionally use your destroyed presense.
 	// If the island is helathy, do so freely.  If the island is blighted, doing so costs 1 energy per destroyed presense you add.
@@ -51,6 +50,8 @@ namespace SpiritIsland.Basegame {
 		public const string Name = "A Spread of Rampant Green";
 
 		public override string Text => Name;
+
+		public override string SpecialRules => "Choke the land with green - whenever invaders would ravage or build in a land with your sacred site, you may prevent it by destroying one of your presense in that land";
 
 		public ASpreadOfRampantGreen():base(
 			new MyPresence(

@@ -45,6 +45,7 @@ namespace SpiritIsland.Basegame {
 
 		public const string Name = "River Surges in Sunlight";
 
+		public override string SpecialRules => "Rivers Domain - Your presense in wetlands count as sacred";
 		public override string Text => Name;
 
 		public RiverSurges():base(

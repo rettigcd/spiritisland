@@ -173,8 +173,8 @@ namespace SpiritIsland.WinForms {
 			// Invaders
 			const float margin = 15;
 			const float textHeight = 20f;
-			const float width = 160f;
-			const float height = 240f;
+			float height = this.Height *.33f;
+			float width = height * .66f;
 
 			float x = ClientRectangle.Width-width-margin-margin;
 			float y = ClientRectangle.Height-height-margin*2 - textHeight;

@@ -41,6 +41,8 @@ namespace SpiritIsland.Basegame {
 
 		public override string Text => Name;
 
+		public override string SpecialRules => "TO DREAM A THOUSAND DEATHS -  Your Powers never cause Damage, nor can they Destroy anything other than your own Presence. When your Powers would Destroy Invaders, instead generate 0/2/5 Fear and Pushes Invaders";
+
 		public Bringer():base(
 			new MyPresence(
 				new PresenceTrack( Track.Energy2, Track.AirEnergy, Track.Energy3, Track.MoonEnergy, Track.Energy4, Track.AnyEnergy, Track.Energy5 ),

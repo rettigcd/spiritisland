@@ -251,6 +251,8 @@ namespace SpiritIsland {
 
 		#endregion
 
+		abstract public string SpecialRules { get; }
+
 		// pluggable, draw power card, or powerprogression
 		#region Draw Card
 		static readonly IPowerCardDrawer DefaultCardDrawer = new DrawFromDeck();

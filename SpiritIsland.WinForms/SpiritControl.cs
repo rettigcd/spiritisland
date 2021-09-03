@@ -130,10 +130,11 @@ namespace SpiritIsland.WinForms {
 
 		Size DrawSpiritImage( Graphics graphics, int x, int y ) {
 			var image = spiritImage ??= LoadSpiritImage();
-			Size sz = new Size(180,120);
-			graphics.DrawImage(image,x,y,sz.Width,sz.Height);
-			return sz;
+			SpiritLocation = new Rectangle(x,y,180,120);
+			graphics.DrawImage(image, SpiritLocation );
+			return SpiritLocation.Size;
 		}
+		Rectangle SpiritLocation;
 
 
 		Size DrawCardPlayTrack( Graphics graphics, Font simpleFont, Bitmap presence, float slotWidth, SizeF presenceSize, Pen highlightPen, int y ) {
@@ -307,6 +308,9 @@ namespace SpiritIsland.WinForms {
 			var option = HitTest( clientCoord );
 			if(option != null)
 				OptionSelected?.Invoke(option);
+
+			if(SpiritLocation.Contains(clientCoord))
+				MessageBox.Show(this.spirit.SpecialRules);
 		}
 
 		IOption HitTest( Point clientCoord ) {

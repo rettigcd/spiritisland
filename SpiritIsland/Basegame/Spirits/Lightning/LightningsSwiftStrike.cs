@@ -27,6 +27,8 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 	public class LightningsSwiftStrike : Spirit {
 		public const string Name = "Lightning's Swift Strike";
 
+		public override string SpecialRules => "SWIFTNESS OF LIGHTNING - For every Simple air you have, you may use 1 Slow Power as if it were fast";
+
 		public LightningsSwiftStrike():base(
 			new MyPresence(
 				new PresenceTrack( Track.Energy1, Track.Energy1, Track.Energy2, Track.Energy2, Track.Energy3, Track.Energy4, Track.Energy4, Track.Energy5 ),

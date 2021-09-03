@@ -37,6 +37,9 @@ namespace SpiritIsland.Basegame {
 
 		public const string Name = "Thunderspeaker";
 
+		public override string SpecialRules => "ALLY OF THE DAHAN - Your Presence may move with Dahan. (Whenever a Dahan moves from 1 of your lands to another land, you may move 1 Presence along with it.)"
+			+ "SWORN TO VICTORY - After a Ravage Action destroys 1 or more Dahan, for each Dahan Destroyed, Destroy 1 of your Presence within 1";
+
 		public override string Text => Name;
 
 		public Thunderspeaker():base(
@@ -74,7 +77,7 @@ namespace SpiritIsland.Basegame {
 
 		protected override void InitializeInternal( Board board, GameState gs ) {
 
-			// Put 2 Presence on your starting board: 1 in each of the 2 lands with the most Dahanicon.png
+			// Put 2 Presence on your starting board: 1 in each of the 2 lands with the most Dahan
 			var spots = board.Spaces.OrderByDescending( gs.DahanGetCount ).Take( 2 ).ToArray();
 			Presence.PlaceOn( spots[0] );
 			Presence.PlaceOn( spots[1] );

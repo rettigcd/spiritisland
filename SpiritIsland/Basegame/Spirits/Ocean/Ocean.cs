@@ -19,6 +19,8 @@ namespace SpiritIsland.Basegame {
 	public class Ocean : Spirit {
 
 		public const string Name = "Ocean's Hungry Grasp";
+		public override string SpecialRules => "OCEAN IN PLAY - You may add/move Presence into Oceans, but may not add/move Presence into Inland lands. On boards where you have 1 or more Presenceicon.png, Oceans are treated as Coastal Wetlands for Spirit Powers/Special Rules and Blighticon.png.You Drown any Invaders or Dahanicon.png moved to those Oceans."
+			+"\r\n" + "DROWNING - Destroy Drowned pieces, placing Drowned Invaders here. At any time you may exchange (X) Health of these Invaders for 1 Energy, where X = number of players.";
 
 		public Ocean():base(
 			new OceanPresence(

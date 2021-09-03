@@ -46,6 +46,8 @@ Shadows Flicker like Flame:
 		public const string Name = "Shadows Flicker Like Flame";
 		public override string Text => Name;
 
+		public override string SpecialRules => "Shadows of the Dahan - Whenever you use a power, you may pay 1 energy to target land with Dahan regardless of range";
+
 		public Shadows():base(
 			new MyPresence(
 				new Track[] { Track.Energy0, Track.Energy1, Track.Energy3, Track.Energy4, Track.Energy5, Track.Energy6 }, 

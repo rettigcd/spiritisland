@@ -39,6 +39,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 		public const string Name = "Sharp Fangs Behind the Leaves";
 
+		public override string SpecialRules => "Ally of the Beasts - Your presensee may move with beast.";
+
 		public override string Text => Name;
 
 		static Track FivePlaysReclaim1() {

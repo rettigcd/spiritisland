@@ -43,6 +43,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 		public override string Text => Name;
 
+		public override string SpecialRules => "Forbidden Ground - any time you create a sacred site, push all dahan from that land.  Dahan events never move dahan to you sacred site but powers can do so.";
+
 		public Keeper():base(
 			new KeeperPresence(
 				new PresenceTrack( Track.Energy2, Track.SunEnergy, Track.Energy4, Track.Energy5, Track.PlantEnergy, Track.Energy7, Track.Energy8, Track.Energy9 ),
