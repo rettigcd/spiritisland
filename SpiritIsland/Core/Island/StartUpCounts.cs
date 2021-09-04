@@ -3,6 +3,7 @@
 namespace SpiritIsland {
 	public class StartUpCounts {
 		readonly string config;
+		public bool Empty => string.IsNullOrEmpty(config);
 		public StartUpCounts(string config){this.config = config;}
 		public int Cities => config.Count(c=>c=='C');
 		public int Towns => config.Count(c=>c=='T');

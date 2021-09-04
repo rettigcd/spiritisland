@@ -51,8 +51,10 @@
     <None Remove="images\tokens\air energy.png" />
     <None Remove="images\tokens\animal energy.png" />
     <None Remove="images\tokens\any energy.png" />
+    <None Remove="images\tokens\Beast.png" />
     <None Remove="images\tokens\Cardplayplusone.png" />
     <None Remove="images\tokens\coin.png" />
+    <None Remove="images\tokens\Disease.png" />
     <None Remove="images\tokens\earth energy.png" />
     <None Remove="images\tokens\Energy_Plus_1.png" />
     <None Remove="images\tokens\Energy_Plus_2.png" />
@@ -77,8 +79,10 @@
     <None Remove="images\tokens\Simple_plant.png" />
     <None Remove="images\tokens\Simple_sun.png" />
     <None Remove="images\tokens\Simple_water.png" />
+    <None Remove="images\tokens\Strife.png" />
     <None Remove="images\tokens\sun energy.png" />
     <None Remove="images\tokens\water energy.png" />
+    <None Remove="images\tokens\Wilds.png" />
     <None Remove="leaguegothic-regular-webfont.ttf" />
   </ItemGroup>
 
@@ -167,8 +171,10 @@
     <EmbeddedResource Include="images\tokens\any energy.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\beast.png" />
     <EmbeddedResource Include="images\tokens\Cardplayplusone.png" />
     <EmbeddedResource Include="images\tokens\coin.png" />
+    <EmbeddedResource Include="images\tokens\disease.png" />
     <EmbeddedResource Include="images\tokens\earth energy.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -217,12 +223,14 @@
     <EmbeddedResource Include="images\tokens\Simple_water.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\strife.png" />
     <EmbeddedResource Include="images\tokens\sun energy.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="images\tokens\water energy.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\wilds.png" />
     <EmbeddedResource Include="leaguegothic-regular-webfont.ttf" />
   </ItemGroup>
 

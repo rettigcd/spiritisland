@@ -12,7 +12,7 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 			// this turn, target spirit may use 1 slow power as if it wer fast
 			// or vice versa
 
-			// Target Spirit gains +3 for targeting costal lands only
+			// Target Spirit gains +3 range for targeting costal lands only
 
 			throw new NotImplementedException();
 		}

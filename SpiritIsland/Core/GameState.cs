@@ -59,7 +59,7 @@ namespace SpiritIsland {
 		readonly List<Space> skipBuild = new List<Space>();
 		readonly List<Space> skipExplore = new List<Space>();
 
-		public void Initialize() {
+		public virtual void Initialize() {
 
 			foreach(var board in Island.Boards)
 				foreach(var space in board.Spaces)

@@ -1,4 +1,5 @@
 ﻿
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SpiritIsland.BranchAndClaw {
@@ -12,6 +13,15 @@ namespace SpiritIsland.BranchAndClaw {
 	public class GameState_BranchAndClaw : GameState {
 
 		public GameState_BranchAndClaw(Spirit spirit,Board board ) : base( spirit, board ) {
+		}
+
+		public override void Initialize() {
+			base.Initialize();
+			foreach(var board in Island.Boards) {
+				Tokens[board[2]][BacTokens.Disease]++;
+				var lowest = board.Spaces.Skip(1).First(s=>s.StartUpCounts.Empty);
+				Tokens[lowest][BacTokens.Beast]++;
+			}
 		}
 
 		protected override bool ExploresSpace( Space space ) {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpiritIsland.BranchAndClaw;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
@@ -98,9 +99,13 @@ namespace SpiritIsland.WinForms {
 			town1 = Image.FromFile( ".\\images\\Town1icon.png" );
 			explorer = Image.FromFile(".\\images\\Explorericon.png");
 			presence = ResourceImages.Singleton.GetPresenceIcon( tokenColor );
-//			presence = Image.FromFile( ".\\images\\Presenceicon.png" );
 			blight = Image.FromFile(".\\images\\Blighticon.png");
 			defend = Image.FromFile(".\\images\\defend1orange.png");
+
+			wilds = ResourceImages.Singleton.GetTokenIcon("wilds");
+			disease = ResourceImages.Singleton.GetTokenIcon( "disease" );
+			beast = ResourceImages.Singleton.GetTokenIcon( "beast" );
+			strife = ResourceImages.Singleton.GetTokenIcon( "strife" );
 
 			invaderImages = new Dictionary<Token, Image> {
 				[Invader.City[3]] = city,
@@ -139,6 +144,11 @@ namespace SpiritIsland.WinForms {
 		Image presence;
 		Image blight;
 		Image defend;
+
+		Image disease;
+		Image beast;
+		Image strife;
+		Image wilds;
 
 		GameState gameState;
 		Spirit spirit;
@@ -290,14 +300,20 @@ namespace SpiritIsland.WinForms {
 			DrawInvaderRow( graphics, x, ref y, iconWidth, xStep, space );
 
 			// dahan & presence & blight
+			var tokens = gameState.Tokens[space];
 			CountDictionary<Image> images = new();
-			images.Clear();
 			images[dahan] = gameState.DahanGetCount( space );
 			images[defend] = gameState.GetDefence( space );
 			images[presence] = spirit.Presence.CountOn( space );
 			images[blight] = gameState.GetBlightOnSpace( space );
-			// invaders
 			DrawRow( graphics, x, ref y, iconWidth, xStep, images );
+			images.Clear();
+			images[beast] = tokens[BacTokens.Beast];
+			images[wilds] =  tokens[BacTokens.Wilds];
+			images[disease] = tokens[BacTokens.Disease];
+//			images[strife] = tokens[BacTokens.StrgameState.GetBlightOnSpace( space );
+			DrawRow( graphics, x, ref y, iconWidth, xStep, images );
+
 		}
 
 		Dictionary<Token, Image> invaderImages;

@@ -10,6 +10,8 @@ namespace SpiritIsland.Tests.Core {
 
 		class TestSpirit : Spirit {
 
+			public override string SpecialRules => throw new NotImplementedException();
+
 			public TestSpirit():base(
 				new MyPresence(
 					new PresenceTrack( Track.Energy0, Track.Energy0, Track.Energy0 ),
