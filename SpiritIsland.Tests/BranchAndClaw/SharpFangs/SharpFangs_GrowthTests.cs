@@ -41,7 +41,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			// b) add a presense to jungle or a land with beasts ( range 3)
 			Given_HalfOfPowercardsPlayed();
 
-			When_SharpFangsGrow( 5 );
+			When_SharpFangsGrow();
 			Activate_A();
 			Activate_B();
 
@@ -58,7 +58,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			// c) gain power card, gain +1 energy
 
 			Given_HalfOfPowercardsPlayed();
-			When_SharpFangsGrow( 0 );
+			When_SharpFangsGrow();
 			Activate_A();
 			Activate_C();
 
@@ -75,7 +75,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 
 			Given_HalfOfPowercardsPlayed();
 
-			When_SharpFangsGrow( 1 );
+			When_SharpFangsGrow();
 			Activate_A();
 			Activate_D();
 
@@ -90,7 +90,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			// b) add a presense to jungle or a land with beasts ( range 3)
 			// c) gain power card, gain +1 energy
 
-			When_SharpFangsGrow( 2 );
+			When_SharpFangsGrow();
 			Activate_B();
 			Activate_C();
 
@@ -104,7 +104,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			// b) add a presense to jungle or a land with beasts ( range 3)
 			// d) +3 energy
 
-			When_SharpFangsGrow( 3 );
+			When_SharpFangsGrow();
 			Activate_B();
 			Activate_D();
 
@@ -117,7 +117,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			// c) gain power card, gain +1 energy
 			// d) +3 energy
 
-			When_SharpFangsGrow( 4 );
+			When_SharpFangsGrow();
 			Activate_C();
 			Activate_D();
 
@@ -137,9 +137,10 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			// energy:	1 animal plant 2 animal 3 4
 			spirit.Presence.Energy.RevealedCount = revealedSpaces;
 
-			When_SharpFangsGrow( 4 );
-			Activate_C();
-			Activate_D();
+			spirit.TriggerEnergyElementsAndReclaims();
+//			When_SharpFangsGrow();
+//			Activate_C();
+//			Activate_D();
 
 			Assert_PresenceTracksAre( expectedEnergyGrowth, 2 );
 			Assert_BonusElements( elements );
@@ -161,7 +162,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			// Test the reclaim bit
 			Given_HasPresence( board[3] ); // added extra presence, need to 
 
-			When_SharpFangsGrow( 4 );
+			When_SharpFangsGrow();
 
 			Activate_C();
 			Activate_D();
@@ -170,35 +171,47 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 				AndWhen_ReclaimingFirstCard();
 		}
 
-
 		Task When_SharpFangsGrow( int index ) {
 			When_Growing( index );
 			var task = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
 
-			// remove the Replace-presnece-with-beast action
-			spirit.Action.Choose( "ReplacePresenceWithBeast" );
-			if(spirit.Presence.Placed.Count>1)
-				spirit.Action.Choose("Done"); // skip
+			Remove_ReplacePresenceWithBeast();
 
 			return task;
 		}
 
+		void When_SharpFangsGrow() {
+			When_StartingGrowth();
+//			Remove_ReplacePresenceWithBeast();
+		}
+
+
+		private void Remove_ReplacePresenceWithBeast() {
+			spirit.Action.Choose( "ReplacePresenceWithBeast" );
+			if(spirit.Presence.Placed.Count > 1)
+				spirit.Action.Choose( "Done" ); // skip
+		}
+
 		void Activate_A() {
+			spirit.Action.Choose( "ReclaimAll / GainEnergy(-1) / DrawPowerCard" );
 			spirit.Activate_GainEnergy();    // A
 			spirit.Activate_ReclaimAll();    // A
 			spirit.Activate_DrawPowerCard(); // A
 		}
 
 		void Activate_B() {
+			spirit.Action.Choose( "PlacePresence(3,beast or jungle)" );
 			spirit.Activate_PlacePresence( "A3;A7;A8", spirit.Presence.Energy.Next ); // B
 		}
 
 		void Activate_C() {
+			spirit.Action.Choose( "DrawPowerCard / GainEnergy(1)" );
 			spirit.Activate_GainEnergy();                                             // C
 			spirit.Activate_DrawPowerCard();                                          // C
 		}
 
 		void Activate_D() {
+			spirit.Action.Choose( "GainEnergy(3)" );
 			spirit.Activate_GainEnergy();                                             // D
 		}
 

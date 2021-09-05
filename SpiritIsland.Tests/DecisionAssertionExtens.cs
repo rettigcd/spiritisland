@@ -95,7 +95,6 @@ namespace SpiritIsland.Tests {
 		}
 
 		static public void Old_Reclaim1( this IDecisionStream decision, string cardToReclaim ) {
-			decision.Old_SelectOption( "Select Growth to resolve", "Reclaim(1)" );
 			decision.Old_SelectOption( "Select card to reclaim.", cardToReclaim );
 		}
 

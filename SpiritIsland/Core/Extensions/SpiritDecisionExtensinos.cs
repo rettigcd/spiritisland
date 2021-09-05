@@ -13,9 +13,9 @@ namespace SpiritIsland {
 		#region Simple Wrappers
 
 		// wrapper - switches type to String
-		static public async Task<string> SelectText( this Spirit spirit, string prompt, params string[] textOptions ) {
+		static public async Task<string> SelectText( this Spirit spirit, string prompt, string[] textOptions, Present present=Present.IfMoreThan1 ) {
 			TextOption[] options = textOptions.Select( x => new TextOption( x ) ).ToArray();
-			var selection = await spirit.Select( prompt, options );
+			var selection = await spirit.Select( prompt, options, present );
 			return selection?.Text;
 		}
 
@@ -26,8 +26,8 @@ namespace SpiritIsland {
 		}
 
 		// wrapper - checks for first response
-		static public async Task<bool> UserSelectsFirstText( this Spirit spirit, string prompt, string option1, string option2 ) {
-			return await spirit.SelectText( prompt, option1, option2 ) == option1;
+		static public async Task<bool> UserSelectsFirstText( this Spirit spirit, string prompt, params string[] options ) {
+			return await spirit.SelectText( prompt, options ) == options[0];
 		}
 
 		// wrapper

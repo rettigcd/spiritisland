@@ -63,9 +63,6 @@ namespace SpiritIsland.BranchAndClaw {
 			var beastOrJungleRange3 = new PlacePresence(3, Target.BeastOrJungle,"beast or jungle");
 
 			var a = new GrowthActionFactory[]{
-				new ReclaimAll()       // A
-				,new GainEnergy(-1)   // A
-				,new DrawPowerCard(1) // A
 			};
 
 			var b= new GrowthActionFactory[]{
@@ -73,8 +70,6 @@ namespace SpiritIsland.BranchAndClaw {
 			};
 
 			var c = new GrowthActionFactory[]{
-				new DrawPowerCard(1) // C
-				,new GainEnergy(1)   // C
 			};
 
 			var d = new GrowthActionFactory[]{
@@ -85,13 +80,16 @@ namespace SpiritIsland.BranchAndClaw {
 				=> new GrowthOption( a.Union(b).ToArray() );
 
 			GrowthOptions = new GrowthOption[]{
-				 Join(a,c) // -1+1
-				,Join(a,d) // -1+3
-				,Join(b,c) // +1
-				,Join(b,d) // +3
-				,Join(c,d) // +1 + 3
-				,Join(a,b) // -1 
+				// A
+				new GrowthOption( new ReclaimAll(), new GainEnergy(-1), new DrawPowerCard(1) ),
+				// B
+				new GrowthOption( beastOrJungleRange3 ),
+				// C
+				new GrowthOption( new DrawPowerCard(1), new GainEnergy(1) ),
+				// D
+				new GrowthOption( new GainEnergy(3) )
 			};
+			this.growthOptionSelectionCount = 2;
 
 			this.InnatePowers = new InnatePower[] {
 				InnatePower.For<FrenziedAssult>(),

@@ -16,7 +16,7 @@ namespace SpiritIsland.Basegame {
 				bool canPush = gs.DahanIsOn(target);
 				bool canGather = target.Adjacent.Any(gs.DahanIsOn);
 				if(canPush && canGather) {
-					if(await spirit.SelectText("Push or Gather?","push","gather")=="push")
+					if(await spirit.UserSelectsFirstText("Push or Gather?","push","gather"))
 						canPush=false;
 					else
 						canGather=false;

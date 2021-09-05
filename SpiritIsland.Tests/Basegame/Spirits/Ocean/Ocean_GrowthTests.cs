@@ -166,13 +166,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			// energy: 0 moon water 1 earth water 2
 			spirit.Presence.Energy.RevealedCount = revealedSpaces;
 			Assert_EnergyTrackIs( expectedEnergyGrowth );
-			When_Growing( 0 ); // triggers elements
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
-			spirit.Activate_ReclaimAll();
-			spirit.Activate_DrawPowerCard();
-			spirit.Activate_GainEnergy();
-			spirit.Action.AssertDecision( "Select Growth to resolve:", "GatherPresenceIntoOcean","GatherPresenceIntoOcean");
-
+			spirit.TriggerEnergyElementsAndReclaims();
 			Assert_BonusElements( elements );
 		}
 

@@ -28,7 +28,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 
 		// a) reclaim, +1 energy
 		// b) +1 power card
-		// c) add presense range 3 containing wilds or presense, +1 energy
+		// c) add presense range 3 containing wilds or presence, +1 energy
 		// d) -3 energy, +1 power card, add presense to land without blight range 3
 
 		[Fact]
@@ -37,15 +37,13 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			// b) +1 power card
 			Given_HalfOfPowercardsPlayed();
 
-			When_Growing( 1 ); // (a&b) - Reclaim-All, +1 Energy, Gain PowerCard
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
-			spirit.Activate_ReclaimAll();    // A
-			spirit.Activate_GainEnergy();    // A
-			spirit.Activate_DrawPowerCard(); // B
+			When_StartingGrowth();
+			Activate_A();
+			Activate_B();
 
-			Assert_AllCardsAvailableToPlay(1+4);
+			Assert_AllCardsAvailableToPlay( 1 + 4 );
 			Assert_HasEnergy( 1 + 2 );
-			Assert_HasPowerProgressionCard(0);
+			Assert_HasPowerProgressionCard( 0 );
 		}
 
 		[Fact]
@@ -57,17 +55,15 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			Given_HalfOfPowercardsPlayed();
 			Given_HasWilds( board[8] ); // 3 spaces away
 
-			When_Growing( 0 );
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
-			spirit.Activate_ReclaimAll(); // A
-			spirit.Activate_GainEnergy(); // A
-			spirit.Activate_GainEnergy(); // C
-			spirit.Activate_PlacePresence( "A3;A8", spirit.Presence.Energy.Next ); // C
+			When_StartingGrowth();
+			Activate_A();
+			Activate_C();
 
 			Assert_AllCardsAvailableToPlay();      // A
 			Assert_HasEnergy( 2 + 2 );             // A & C
 			Assert_BoardPresenceIs( "A3A3" );      // C
 		}
+
 
 		[Fact]
 		public void A_Reclaim_Energy_D_Presence_PowerCard_LoseEnergy() {
@@ -79,15 +75,11 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			Given_HasPresence( board[3] );
 			Given_BlightEverywhereExcept7();
 
-			When_Growing( 3 );
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
-			spirit.Activate_ReclaimAll();    // A
-			spirit.Activate_GainEnergy();    // A
-			spirit.Activate_GainEnergy();    // D
-			spirit.Activate_DrawPowerCard(); // D
-			spirit.Activate_PlacePresence("A7",spirit.Presence.CardPlays.Next);
+			When_StartingGrowth();
+			Activate_A();
+			Activate_D();
 
-			Assert_AllCardsAvailableToPlay(4+1);     // A
+			Assert_AllCardsAvailableToPlay( 4+1);     // A
 			Assert_HasEnergy( 0 );                   // A & D
 			Assert_HasPowerProgressionCard(0); // D
 			Assert_BoardPresenceIs( "A3A7" );        // D
@@ -104,13 +96,11 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			// Given: 1 wilds, 3 away
 			Given_HasWilds( board[8] );
 
-			When_Growing( 2 );
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
-			spirit.Activate_DrawPowerCard(); // B
-			spirit.Activate_GainEnergy(); // C
-			spirit.Activate_PlacePresence( "A3;A8", spirit.Presence.Energy.Next ); // C
+			When_StartingGrowth();
+			Activate_B();
+			Activate_C();
 
-			Assert_HasPowerProgressionCard(0); // B
+			Assert_HasPowerProgressionCard( 0); // B
 			Assert_HasEnergy( 1 + 2 );             // C
 			Assert_BoardPresenceIs( "A3A3" );     // C
 		}
@@ -125,14 +115,11 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			Given_BlightEverywhereExcept7();
 			spirit.Energy = 1; // so we can do this option
 
-			When_Growing( 5 );
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
-			spirit.Activate_DrawPowerCard(); // B
-			spirit.Activate_GainEnergy();    // D
-			spirit.Activate_DrawPowerCard(); // D
-			spirit.Activate_PlacePresence( "A7", spirit.Presence.CardPlays.Next ); // D
+			When_StartingGrowth();
+			Activate_B();
+			Activate_D();
 
-			Assert_HasPowerProgressionCard(0); // B
+			Assert_HasPowerProgressionCard( 0); // B
 			Assert_HasPowerProgressionCard( 1 ); // B
 			Assert_HasCardAvailable( "Reaching Grasp" ); // D
 			Assert_BoardPresenceIs( "A3A7" );     // D
@@ -151,13 +138,9 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			Given_HasWilds( board[8] );
 			Given_BlightEverywhereExcept7();
 
-			When_Growing( 4 );
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
-			spirit.Activate_GainEnergy(); // C
-			spirit.Activate_PlacePresence( "PlacePresence(3,presence or wilds)", "A3;A8", spirit.Presence.Energy.Next ); // C
-			spirit.Activate_GainEnergy();    // D
-			spirit.Activate_DrawPowerCard(); // D
-			spirit.Activate_PlacePresence( "PlacePresence(3,no blight)", "A7", spirit.Presence.CardPlays.Next ); // D
+			When_StartingGrowth();
+			Activate_C();
+			Activate_D();
 
 			Assert_HasEnergy( startingEnergy + spirit.EnergyPerTurn - 2  );          // C & D
 			Assert_HasPowerProgressionCard(0); // D
@@ -198,11 +181,16 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			// energy:	2 sun 4 5 plant 7 8 9
 			spirit.Presence.Energy.RevealedCount = revealedSpaces;
 
-			When_Growing( 1 ); // (a&b) - Reclaim-All, +1 Energy, Gain PowerCard
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
-			spirit.Activate_DrawPowerCard();
-			spirit.Activate_GainEnergy();
-			spirit.Activate_ReclaimAll();
+			When_StartingGrowth();
+			Activate_A();
+			Activate_B();
+
+
+			//When_Growing( 1 ); // (a&b) - Reclaim-All, +1 Energy, Gain PowerCard
+			//_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			//spirit.Activate_DrawPowerCard();
+			//spirit.Activate_GainEnergy();
+			//spirit.Activate_ReclaimAll();
 
 			Assert_EnergyTrackIs( expectedEnergyGrowth );
 			Assert_BonusElements( elements );
@@ -235,6 +223,30 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 
 		void Given_HasWilds( Space space ) {
 			gameState.Tokens[space].Adjust(BacTokens.Wilds,1);
+		}
+
+		void Activate_A() {
+			spirit.Action.Choose( "ReclaimAll / GainEnergy(1)" );
+			spirit.Activate_ReclaimAll();    // A
+			spirit.Activate_GainEnergy();    // A
+		}
+
+		void Activate_B() {
+			spirit.Action.Choose( "DrawPowerCard" );
+			spirit.Activate_DrawPowerCard(); // B
+		}
+
+		void Activate_C() {
+			spirit.Action.Choose( "GainEnergy(1) / PlacePresence(3,presence or wilds)" );
+			spirit.Activate_GainEnergy(); // C
+			spirit.Activate_PlacePresence( "A3;A8", spirit.Presence.Energy.Next ); // C
+		}
+
+		void Activate_D() {
+			spirit.Action.Choose( "GainEnergy(-3) / DrawPowerCard / PlacePresence(3,no blight)" );
+			spirit.Activate_GainEnergy();    // D
+			spirit.Activate_DrawPowerCard(); // D
+			spirit.Activate_PlacePresence( "A7", spirit.Presence.CardPlays.Next );
 		}
 
 	}

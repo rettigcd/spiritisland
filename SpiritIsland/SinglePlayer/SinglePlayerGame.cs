@@ -42,11 +42,11 @@ namespace SpiritIsland.SinglePlayer {
 
 		void InitPhases() {
 
-            var selectGrowth = new SelectGrowth( Spirit, GameState );
-            var resolveGrowth = new ResolveActions( Spirit, GameState, Speed.Growth, false );
-            var fastActions = new ResolveActions( Spirit, GameState, Speed.Fast, true );
-            var invaders = new InvaderPhase( GameState );
-            var slowActions = new ResolveActions( Spirit, GameState, Speed.Slow, true );
+			var selectGrowth = new SelectGrowth( Spirit, GameState );
+
+			var fastActions = new ResolveActions( Spirit, GameState, Speed.Fast, true );
+			var invaders = new InvaderPhase( GameState );
+			var slowActions = new ResolveActions( Spirit, GameState, Speed.Slow, true );
 
 			invaders.NewLogEntry += OnNewLogEntry;
 
@@ -54,7 +54,6 @@ namespace SpiritIsland.SinglePlayer {
 				try {
 					while(true) {
 						await selectGrowth.ActAsync();
-						await resolveGrowth.ActAsync();
 						await Spirit.BuyPowerCardsAsync();
 						await fastActions.ActAsync();
 						await invaders.ActAsync();

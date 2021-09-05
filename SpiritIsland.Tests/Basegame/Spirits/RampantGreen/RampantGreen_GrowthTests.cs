@@ -63,8 +63,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
 			// +1 power card, +3 energy
 			Given_HasPresence( board[2] );
 
-			When_Growing( 2 );
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			When_StartingGrowth();
+			spirit.Action.Choose( "PlacePresence(2,W / J) / GainEnergy(3) / DrawPowerCard" );
 			Resolve_PlacePresence( "A2;A3;A5", spirit.Presence.Energy.Next ); // +1 from energy track
 			spirit.Activate_DrawPowerCard();
 			spirit.Activate_GainEnergy();
@@ -89,12 +89,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
 			spirit.Presence.Energy.RevealedCount = revealedSpaces;
 			Assert_PresenceTracksAre( expectedEnergyGrowth, 1 );
 
-			When_Growing( 0 ); // triggers elements
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
-			spirit.Activate_ReclaimAll();
-			spirit.Activate_DrawPowerCard();
-
-			Resolve_PlacePresence("A2",spirit.Presence.CardPlays.Next);
+			spirit.TriggerEnergyElementsAndReclaims();
 
 			Assert_BonusElements( elements );
 		}

@@ -25,8 +25,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			// Growth Option 1 - Reclaim All, +2 Power cards
 			Given_HalfOfPowercardsPlayed();
 
-			When_Growing( 0 );
-			_ = new ResolveActions( spirit, gameState, Speed.Growth, false ).ActAsync();
+			When_StartingGrowth();
+			spirit.Action.Choose( "ReclaimAll / DrawPowerCard / DrawPowerCard" );
 			spirit.Activate_ReclaimAll();
 			spirit.Activate_DrawPowerCard();
 			spirit.Activate_DrawPowerCard();
@@ -60,10 +60,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 		[Fact]
 		public void PresenseAndEnergy() {
 			// +1 presense within 1, +4 energy
-
 			Given_HasPresence( board[1] );
-			When_Growing(2);
-			_ = new ResolveActions( spirit, gameState, Speed.Growth, false ).ActAsync();
+
+			When_StartingGrowth();
+			spirit.Action.Choose( "PlacePresence(1) / GainEnergy(4)" );
 			spirit.Activate_GainEnergy();
 			Resolve_PlacePresence( "A1;A2;A4;A5;A6", spirit.Presence.Energy.Next );
 
@@ -83,11 +83,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			// energy:	1 air 2 fire sun 3
 			spirit.Presence.Energy.RevealedCount = revealedSpaces;
 			Assert_PresenceTracksAre( expectedEnergyGrowth, 1 );
-			When_Growing(0); // finish growth to trigger elements
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
-			spirit.Activate_ReclaimAll();
-			spirit.Activate_DrawPowerCard();
-			spirit.Activate_DrawPowerCard();
+
+			spirit.TriggerEnergyElementsAndReclaims();
 
 			Assert_BonusElements( elements );
 		}
@@ -109,8 +106,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			spirit.Presence.CardPlays.RevealedCount = revealedSpaces;
 			Assert_PresenceTracksAre(1,expectedCardPlayCount);
 
-			When_Growing(2);
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			When_StartingGrowth();
+			spirit.Action.Choose( "PlacePresence(1) / GainEnergy(4)" );
+
 			spirit.Activate_GainEnergy();
 			Resolve_PlacePresence( "A2;A3;A4", spirit.Presence.Energy.Next );
 

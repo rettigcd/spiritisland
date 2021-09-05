@@ -53,9 +53,8 @@ namespace SpiritIsland {
 				AddActionFactory( action );
 		}
 
-		public virtual (GrowthOption[],int) GetGrowthOptions() => (GrowthOptions,1);
-
-
+		public virtual (GrowthOption[],int) GetGrowthOptions() => (GrowthOptions, growthOptionSelectionCount);
+		protected int growthOptionSelectionCount = 1;
 
 		#endregion
 
@@ -121,16 +120,14 @@ namespace SpiritIsland {
 			usedActions.Add(availableActions[index]);
 			availableActions.RemoveAt( index );
 
-			if(availableActions.Count == 0 && selectedActionFactory is GrowthActionFactory)
-				TriggerEnergyElementsAndReclaims( selectedActionFactory );
+			//if(availableActions.Count == 0 && selectedActionFactory is GrowthActionFactory
+			//	&& !(selectedActionFactory is Reclaim1 || selectedActionFactory is SelectAnyElements)
+			//)
+			//	TriggerEnergyElementsAndReclaims();
 
 		}
 
-		void TriggerEnergyElementsAndReclaims( IActionFactory selectedActionFactory ) {
-
-			// prevent retriggering following Reclaim1
-			if(selectedActionFactory is Reclaim1 || selectedActionFactory is SelectAnyElements)
-				return;
+		public async Task TriggerEnergyElementsAndReclaims() {
 
 			// Energy
 			Energy += EnergyPerTurn;
@@ -150,7 +147,8 @@ namespace SpiritIsland {
 				Presence.CardPlays.Revealed.Count( x => x.ReclaimOne )
 			);
 			while(reclaim1Count-- > 0)
-				AddActionFactory( new Reclaim1() );
+				await new Reclaim1().ActivateAsync(this,null);
+
 		}
 
 		public void AddActionFactory( IActionFactory factory ) {

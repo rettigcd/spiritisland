@@ -1,4 +1,5 @@
 ﻿using Shouldly;
+using SpiritIsland.SinglePlayer;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -132,12 +133,13 @@ namespace SpiritIsland.Tests {
 		}
 
 		protected void AndWhen_ReclaimingFirstCard() {
-			// This is for River, which doesn't auto-select the reclaim-1 so we have to do it for them.
-			_ = spirit.GetAvailableActions(Speed.Growth).OfType<Reclaim1>().First().ActivateAsync( spirit, gameState );
-
 			var reclaim = spirit.Action;
 			if(reclaim.GetCurrent().Options.Length>0)
 				reclaim.Choose( reclaim.GetCurrent().Options[0] );
+		}
+
+		protected void When_StartingGrowth() {
+			_ = new SelectGrowth( spirit, gameState ).ActAsync();
 		}
 
 		#endregion

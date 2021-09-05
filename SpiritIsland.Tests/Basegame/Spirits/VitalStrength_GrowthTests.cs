@@ -43,8 +43,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.VitalStrengthNS {
 		public void PresenseAndEnergy(){
 			// +1 presence range 1, +2 energy
 			Given_HasPresence( board[1] );
-			When_Growing(2);
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+
+			When_StartingGrowth();
+			spirit.Action.Choose( "GainEnergy(2) / PlacePresence(1)" );
+
 			spirit.Activate_GainEnergy();
 
 			Resolve_PlacePresence( "A1;A2;A4;A5;A6",spirit.Presence.Energy.Next);

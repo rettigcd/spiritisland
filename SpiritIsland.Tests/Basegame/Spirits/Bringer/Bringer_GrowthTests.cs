@@ -76,8 +76,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			gameState.Tokens[board[0]].Add(Invader.City,1);
 
 			// add presense range 4 Dahan or Invadors, +2 energy
-			When_Growing(3);
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			When_StartingGrowth();
+			spirit.Action.Choose( "GainEnergy(2) / PlacePresence(4,dahan or invaders)" );
 			spirit.Activate_GainEnergy();
 			Resolve_PlacePresence( "T6;T7;T8;T9",spirit.Presence.Energy.Next);
 
@@ -98,10 +98,13 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			// energy:	2 air 3 moon 4 any 5
 			spirit.Presence.Energy.RevealedCount = revealedSpaces;
 			Assert_EnergyTrackIs( expectedEnergyGrowth );
-			When_Growing(0); // triggers elements
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
-			spirit.Activate_DrawPowerCard();
-			spirit.Activate_ReclaimAll();
+
+			spirit.TriggerEnergyElementsAndReclaims();
+
+			//When_Growing(0); // triggers elements
+			//_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			//spirit.Activate_DrawPowerCard();
+			//spirit.Activate_ReclaimAll();
 
 			Assert_BonusElements( elements );
 		}

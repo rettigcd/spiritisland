@@ -14,8 +14,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Lightning {
 			// * reclaim, +1 power card, +1 energy
 
 			Given_HalfOfPowercardsPlayed();
-			When_Growing( 0 );
-			_ = new ResolveActions(spirit,gameState,Speed.Growth).ActAsync();
+			When_StartingGrowth();
+			spirit.Action.Choose( "ReclaimAll / DrawPowerCard / GainEnergy(1)" );
 
 			spirit.Activate_ReclaimAll();
 			spirit.Activate_GainEnergy();
@@ -31,8 +31,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Lightning {
 			// +1 presense range 1, +3 energy
 
 			Given_HasPresence( board[1] );
-			When_Growing( 2 );
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+
+			When_StartingGrowth();
+			spirit.Action.Choose( "GainEnergy(3) / PlacePresence(1)" );
 			spirit.Activate_GainEnergy();
 			Resolve_PlacePresence( "A1;A2;A4;A5;A6", spirit.Presence.Energy.Next );
 

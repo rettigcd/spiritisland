@@ -26,8 +26,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			//  And: energy track is at 1
 			Assert.Equal(1,spirit.EnergyPerTurn);
 
-			When_Growing( 0 );
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			When_StartingGrowth();
+			spirit.Action.Choose( "ReclaimAll / DrawPowerCard / GainEnergy(1)" );
 
 			spirit.Activate_DrawPowerCard();
 			spirit.Activate_GainEnergy();
@@ -48,8 +48,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Given_HasPresence( board[3] );
 			Assert.Equal(1,spirit.Presence.Energy.RevealedCount);
 
-			When_Growing( 1 );
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			When_StartingGrowth();
+			spirit.Action.Choose( "PlacePresence(1) / PlacePresence(1)" );
 
 			Resolve_PlacePresence( "A2;A3;A4", spirit.Presence.Energy.Next);
 			Resolve_PlacePresence( "A1;A2;A3;A4", spirit.Presence.Energy.Next );
@@ -67,8 +67,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Assert.Equal(1,spirit.Presence.Energy.RevealedCount);
 			Given_HasPresence( board[3] );
 
-			When_Growing( 2 );
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			When_StartingGrowth();
+			spirit.Action.Choose( "DrawPowerCard / PlacePresence(2)" );
 
 			spirit.Activate_DrawPowerCard();
 			Resolve_PlacePresence( "A1;A2;A3;A4;A5", spirit.Presence.CardPlays.Next);
@@ -115,8 +115,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			spirit.Presence.CardPlays.RevealedCount = revealedSpaces;
 			Assert_PresenceTracksAre(1,expectedCardPlayCount);
 
-			When_Growing(2);
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			When_StartingGrowth();
+			spirit.Action.Choose( "DrawPowerCard / PlacePresence(2)" );
 
 			spirit.Activate_DrawPowerCard();
 			Resolve_PlacePresence( "A1;A2;A3;A4;A5", spirit.Presence.Energy.Next );

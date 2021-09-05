@@ -21,7 +21,10 @@ namespace SpiritIsland {
 
 		public void Choose( string text ) {
 			var current = GetCurrent();
-			Choose( current.Options.First( o => o.Text == text ) ); // not single because some options appear twice
+			var choice = current.Options.FirstOrDefault( o => o.Text == text );
+			if(choice == null)
+				throw new ArgumentOutOfRangeException(nameof(text),"sequence ["+current.Options.Select(x=>x.Text).Join(",")+"]does not contain option: "+text);
+			Choose( choice ); // not single because some options appear twice
 		}
 
 		public void Choose(IOption selection) {

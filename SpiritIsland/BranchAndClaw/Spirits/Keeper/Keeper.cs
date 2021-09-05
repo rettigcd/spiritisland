@@ -78,13 +78,14 @@ namespace SpiritIsland.BranchAndClaw {
 				=> new GrowthOption( a.Union(b).ToArray() );
 
 			GrowthOptions = new GrowthOption[]{
-				Join( a, c ) // 2
-				,Join( a, b ) // 1
-				,Join( b, c ) // 1
-				,Join( a, d ) // -2
-				,Join( c, d ) // -2
-				,Join( b, d ) // -3
+				new GrowthOption( new ReclaimAll() ,new GainEnergy(1) ),
+				new GrowthOption( new DrawPowerCard(1) ),
+				new GrowthOption( new GainEnergy(1) ,new PlacePresence(3,Target.PresenceOrWilds,"presence or wilds") ),
+				new GrowthOption( new GainEnergy(-3)
+			,new DrawPowerCard(1)
+				,new PlacePresence(3,Target.NoBlight,"no blight")),
 			};
+			growthOptionSelectionCount = 2;
 
 			InnatePowers = new InnatePower[] {
 				InnatePower.For<PunishThoseWhoTrespass>(),

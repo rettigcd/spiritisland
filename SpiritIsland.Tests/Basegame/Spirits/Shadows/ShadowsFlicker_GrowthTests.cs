@@ -36,8 +36,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.ShadowsNS {
 		public void PresenceAndEnergy(){
 			// add a presence withing 3, +3 energy
 			Given_HasPresence( board[3] );
-			When_Growing( 2 );
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+
+			When_StartingGrowth();
+			spirit.Action.Choose( "PlacePresence(3) / GainEnergy(3)" );
 			spirit.Activate_GainEnergy();
 
 			Resolve_PlacePresence( "A1;A2;A3;A4;A5;A6;A7;A8", spirit.Presence.Energy.Next );
