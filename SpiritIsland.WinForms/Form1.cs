@@ -57,17 +57,19 @@ namespace SpiritIsland.WinForms {
 
 		void UpdateButtons( IDecision decision ) {
 			ReleaseOldButtons();
-			int x = CalcWidth(this.promptLabel.Text);
+			using var calc = new FontSizeCalculator(this);
+			var size = calc.CalcSize( this.promptLabel.Text );
+			int x = (int)size.Width + 50;
 			for(int i = 0; i < decision.Options.Length; ++i) {
-				x += AddOptionButton( decision.Options[i], x, 0 ).Width;
-				x += 10;
+				var option = decision.Options[i];
+				size = calc.CalcSize( option.Text );
+				var sz = new Size((int)size.Width+20,(int)size.Height+20);
+				AddOptionButton( option, x, 10, sz );
+				x += sz.Width+10;
 			}
 		}
 
-		static int CalcWidth(string s ) => s.Length * 7 + 20;
-
-		Size AddOptionButton( IOption option, int x, int y ) {
-			Size sz = new Size( CalcWidth( option.Text ), 30);
+		void AddOptionButton( IOption option, int x, int y, Size sz ) {
 			var btn = new System.Windows.Forms.Button {
 				Dock = DockStyle.None,
 				Location = new Point( x, y ),
@@ -78,8 +80,26 @@ namespace SpiritIsland.WinForms {
 			btn.Click += Btn_Click;
 			this.textPanel.Controls.Add( btn );
 			buttons.Add( btn );
-			return sz;
 		}
+
+		class FontSizeCalculator : IDisposable {
+			Graphics graphics;
+			Font font;
+			public FontSizeCalculator( Control control ) {
+				this.graphics = control.CreateGraphics();
+				this.font = control.Font;
+			}
+
+			public SizeF CalcSize( string s ) => graphics.MeasureString( s, font );
+
+			public void Dispose() {
+				if(graphics != null) {
+					graphics.Dispose();
+					graphics = null;
+				}
+			}
+		}
+
 
 		void ReleaseOldButtons() {
 			foreach(var old in buttons) {
