@@ -7,7 +7,7 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 
 		[MinorCard("Growth Through Sacrifice",0,Speed.Fast,Element.Moon,Element.Fire,Element.Water,Element.Plant)]
 		[TargetSpirit]
-		static public async Task ActAsync(TargetSpiritCtx ctx ) {
+		static public async Task ActAsync( TargetSpiritCtx ctx ) {
 			// destroy one of your presence
 			await DestoryOnePresence( ctx.Self );
 
@@ -18,7 +18,7 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 			// If 2 sun, do both in the same land
 
 			async Task RemoveBlightFromTargetsLands() {
-				var space = await ctx.Target.Action.Decide( new SelectDeployedPresence("Select location to remove blight", ctx.Target) );
+				var space = await ctx.TargetSelectsPresenceLand("Select location to remove blight");
 				ctx.GameState.AddBlight(space,-1);
 			}
 
@@ -27,7 +27,7 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 			}
 
 			if( ctx.Self.Elements.Contains("2 sun")) {
-				var space = await ctx.Target.Action.Decide( new SelectDeployedPresence( "Select location to remove blight and add presence", ctx.Target ) );
+				var space = await ctx.TargetSelectsPresenceLand( "Select location to remove blight and add presence" );
 				ctx.GameState.AddBlight( space, -1 );
 				await ctx.Target.MakeDecisionsFor( ctx.GameState ).PlacePresence( space );
 			} else

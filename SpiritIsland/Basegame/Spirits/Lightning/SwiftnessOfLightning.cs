@@ -21,7 +21,7 @@ namespace SpiritIsland.Basegame {
 		}
 
 		public Task ActivateAsync( Spirit spirit, GameState gameState ) {
-			return spirit.SelectActionsAndMakeFast( gameState, spirit.Elements[Element.Air] );
+			return new SpeedChanger( spirit, gameState, Speed.Fast, spirit.Elements[Element.Air] ).Exec();
 		}
 
 	}

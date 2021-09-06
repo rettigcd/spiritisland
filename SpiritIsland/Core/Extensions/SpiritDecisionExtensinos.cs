@@ -49,50 +49,6 @@ namespace SpiritIsland {
 			) );
 		}
 
-		static public async Task SelectActionsAndMakeFast( this Spirit spirit, GameState gameState, int maxCountToMakeFast ) {
-
-			IActionFactory[] CalcSlowFacts() => spirit
-				.GetAvailableActions( Speed.Slow )
-				.ToArray();
-			IActionFactory[] slowFactories = CalcSlowFacts();
-			// clip count to available slow stuff
-			maxCountToMakeFast = System.Math.Min( maxCountToMakeFast, slowFactories.Length ); // !! unit test that we are limited by slow cards & by countToMakeFAst
-
-			while(maxCountToMakeFast > 0) {
-				var factory = await spirit.Select(
-					$"Select action to make fast. max:{maxCountToMakeFast}",
-					slowFactories,
-					Present.Done
-				);
-				if(factory==null)
-					break;
-
-				var speedReseter = new RememberFactorySpeed(factory);
-				factory.Speed = Speed.Fast;
-
-				gameState.TimePasses_ThisRound.Push( speedReseter.Reset );
-
-				slowFactories = CalcSlowFacts();
-				--maxCountToMakeFast;
-			}
-		}
-
-		/// <summary>
-		/// This provides a javascript-like closure to capture the factory that needs reset to fast;
-		/// </summary>
-		class RememberFactorySpeed {
-			readonly IActionFactory factory;
-			readonly Speed originalSpeed;
-			public RememberFactorySpeed( IActionFactory factory ) {
-				this.factory = factory;
-				this.originalSpeed = factory.Speed;
-			}
-			public Task Reset(GameState _) {
-				factory.Speed = originalSpeed;
-				return Task.CompletedTask;
-			}
-		}
-
 		static public async Task SelectCardToReplayForCost( this Spirit spirit, int maxCost, PowerCard[] options ) {
 			maxCost = System.Math.Min( maxCost, spirit.Energy );
 			if(options.Length == 0) return;
@@ -122,5 +78,6 @@ namespace SpiritIsland {
 		public ItemOption( T item ) { Item = item; }
 		public string Text => Item.ToString();
 	}
+
 
 }

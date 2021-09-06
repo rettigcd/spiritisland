@@ -3,12 +3,10 @@
 ====================================
 ===== Brnach and Claw Road Map =====
 
-UI		Split 2-part Growth Options
-
 HARD	Confounding Mists - invaders added may be immediatly pushed
 HARD	Call to Trade - changes a ravage to a biuld
 HARD	Twilight Fox Brings Madness - dahan take 1 damage each
-HARD	Sky Stretches to shore
+HARD	Sky Stretches to shore (+3 range for targetting costal)
 HARD	Spur on with words of fire
 
 BONUS	Switch Lightnings Make-Fast ability to dynamic so only presents # of slows available to make fast
@@ -19,6 +17,12 @@ Test	With and Without Ocean, PowerTarget, Push & Blight Include/Don't include oc
 BONUS	Generate Innate images from innate metadata
 ======  Done  ================
 ==============================
+
+-- When Targetting spirits --
+Bind Spirit to GameState
+	=> when( picking a land, like normal card space targetting)
+	=> create a secondary target-land context for the second spirit.
+
 
 Game Play needs:
 	- Undo / go back to beginning of turn
