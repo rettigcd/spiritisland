@@ -18,6 +18,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritIsland", "SpiritIslan
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritIsland.WinForms", "SpiritIsland.WinForms\SpiritIsland.WinForms.csproj", "{AA682A20-CD08-4362-9E8F-1CB84947B8F0}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritIsland.BranchAndClaw", "SpiritIsland.BranchAndClaw\SpiritIsland.BranchAndClaw.csproj", "{42C8506D-2058-44BC-A4E7-7D359A2955FB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritIsland.Basegame", "SpiritIsland.Basegame\SpiritIsland.Basegame.csproj", "{B254B6B4-47D9-4382-9CFB-7DB60C5C2BCA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +44,14 @@ Global
 		{AA682A20-CD08-4362-9E8F-1CB84947B8F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA682A20-CD08-4362-9E8F-1CB84947B8F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA682A20-CD08-4362-9E8F-1CB84947B8F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42C8506D-2058-44BC-A4E7-7D359A2955FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42C8506D-2058-44BC-A4E7-7D359A2955FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42C8506D-2058-44BC-A4E7-7D359A2955FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42C8506D-2058-44BC-A4E7-7D359A2955FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B254B6B4-47D9-4382-9CFB-7DB60C5C2BCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B254B6B4-47D9-4382-9CFB-7DB60C5C2BCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B254B6B4-47D9-4382-9CFB-7DB60C5C2BCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B254B6B4-47D9-4382-9CFB-7DB60C5C2BCA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

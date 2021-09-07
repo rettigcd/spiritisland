@@ -37,7 +37,7 @@ namespace SpiritIsland {
 
 		async Task PickSpaceAndActivate( Spirit spirit, GameState gameState ) {
 			var target = await targetSpaceAttr.GetTarget( spirit, gameState );
-			if(target == null) return; // no space available that meets criteria.   !!! needs unit test showing if no-target-space simply does nothing, and doesn't crash
+			if(target == null) return; // no space available that meets criteria.
 			await InvokeAgainst( spirit, gameState, target );
 		}
 

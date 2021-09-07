@@ -7,12 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Basegame\Major\**" />
-    <Compile Remove="Basegame\Minor\**" />
-    <EmbeddedResource Remove="Basegame\Major\**" />
-    <EmbeddedResource Remove="Basegame\Minor\**" />
-    <None Remove="Basegame\Major\**" />
-    <None Remove="Basegame\Minor\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,8 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SpiritIsland.Basegame\SpiritIsland.Basegame.csproj" />
-    <ProjectReference Include="..\SpiritIsland.BranchAndClaw\SpiritIsland.BranchAndClaw.csproj" />
     <ProjectReference Include="..\SpiritIsland\SpiritIsland.csproj" />
   </ItemGroup>
 

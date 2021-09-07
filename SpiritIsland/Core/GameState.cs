@@ -37,22 +37,22 @@ namespace SpiritIsland {
 		public PowerCardDeck MajorCards {get; set; }
 		public PowerCardDeck MinorCards { get; set; }
 		// Branch & Claw
-		internal void SkipAllInvaderActions( Space target ) {
+		public void SkipAllInvaderActions( Space target ) {
 			ModifyRavage(target, cfg=>cfg.ShouldRavage=false );
 			skipBuild.Add( target );
 			skipExplore.Add(target);
 		}
 
-		internal void SkipRavage( params Space[] spaces ) {
+		public void SkipRavage( params Space[] spaces ) {
 			foreach(var space in spaces )
 				ModifyRavage(space, cfg=>cfg.ShouldRavage=false );
 		}
 
-		internal void SkipBuild( params Space[] target ) {
+		public void SkipBuild( params Space[] target ) {
 			skipBuild.AddRange( target );
 		}
 
-		internal void SkipExplore( params Space[] target ) {
+		public void SkipExplore( params Space[] target ) {
 			skipExplore.AddRange( target );
 		}
 
@@ -204,13 +204,13 @@ namespace SpiritIsland {
 			buildLands = buildLands.Except( skipBuild ).ToArray(); // reload in case they changed
 
 			return buildLands
-				.Select( x=>new {space=x, cts=Tokens[x]} ) // !!! store space in Counts
-				.Where( tup => tup.cts.HasInvaders() )
-				.Select( tup => tup.space.Label + " gets " + Build( tup.space, tup.cts ) )
+				.Select( x=> Tokens[x] ) // !!! store space in Counts
+				.Where( tup => tup.HasInvaders() )
+				.Select( tup => tup.Space.Label + " gets " + Build( tup ) )
 				.ToArray();
 		}
 
-		protected virtual string Build( Space space, TokenCountDictionary counts ) {
+		protected virtual string Build( TokenCountDictionary counts ) {
 			int townCount = counts.Sum( Invader.Town );
 			int cityCount = counts.Sum( Invader.City );
 			Token invaderToAdd = townCount > cityCount ? Invader.City[3] : Invader.Town[2];

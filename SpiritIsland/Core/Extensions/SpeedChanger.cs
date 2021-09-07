@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace SpiritIsland {
 
 
-	class SpeedChanger {
+	public class SpeedChanger {
 
 		readonly Spirit spirit;
 		readonly GameState gameState;
@@ -45,7 +45,7 @@ namespace SpiritIsland {
 
 		}
 
-		// !!! if we have a repeat ability, maybe in clude played cards.
+		// !!! if we have a repeat ability, maybe include played cards.
 		// OR we could make sure all Repeat abilities, put cards back into the Available List
 		// where they could then be switched speed if available
 		protected IActionFactory[] CalcSlowFactories() {

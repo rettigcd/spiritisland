@@ -139,8 +139,6 @@ namespace SpiritIsland {
 			if(anyCount>0)
 				AddActionFactory( new SelectAnyElements( anyCount ) );
 
-			// !!! convert
-
 			// Reclaims-1
 			int reclaim1Count = Math.Min(
 				DiscardPile.Count,  // Reclaim-all will make this 0, disabling any reclaim-1

@@ -69,8 +69,8 @@ namespace SpiritIsland.WinForms {
 				: colorListBox.SelectedItem as string;
 
 			var gameState = new GameState_BranchAndClaw( spirit, board ) {
-				MajorCards = new PowerCardDeck( PowerCard.GetMajors() ),
-				MinorCards = new PowerCardDeck( PowerCard.GetMinors() )
+				MajorCards = new PowerCardDeck( PowerCard.GetMajors( typeof( AcceleratedRot ) ) ),   // BASE GAME ONLY!
+				MinorCards = new PowerCardDeck( PowerCard.GetMinors( typeof( AcceleratedRot ) ) )  // BASE GAME ONLY!
 			};
 
 			var baseGameFearCards = new IFearCard[] {

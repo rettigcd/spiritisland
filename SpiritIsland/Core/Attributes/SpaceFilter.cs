@@ -1,5 +1,4 @@
-﻿using SpiritIsland.BranchAndClaw;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace SpiritIsland {
@@ -8,7 +7,7 @@ namespace SpiritIsland {
 
 		static public readonly SpaceFilter ForPlacingPresence = new SpaceFilter();
 		static public readonly SpaceFilter ForCascadingBlight = new UsesSpecialTerrain();
-		static public readonly SpaceFilter ForPowers          = new UsesSpecialTerrain(); // !!! Power Push should use this also.
+		static public readonly SpaceFilter ForPowers          = new UsesSpecialTerrain(); // !!! Power Push should use this also
 
 		public static readonly Dictionary<string,Func<SpaceFilterCtx, Space,bool>> lookup = new Dictionary<string, Func<SpaceFilterCtx, Space, bool>> {
 			[Target.Any               ] = ( _, s ) => true,
@@ -29,10 +28,6 @@ namespace SpiritIsland {
 			[Target.TownOrExplorer    ] = ( ctx, s ) => ctx.GameState.Tokens[ s ].HasAny( Invader.Explorer, Invader.Town ),
 			[Target.Dahan             ] = ( ctx, s ) => ctx.GameState.DahanIsOn(s),
 			[Target.Invaders          ] = ( ctx, s ) => ctx.GameState.HasInvaders(s),
-			// !!! These 2 need to be removed from base game and added via strings
-			[Target.BeastOrJungle     ] = ( ctx, s ) => ctx.SelectTerrain( s ) == Terrain.Jungle || ctx.GameState.Tokens[s][BacTokens.Beast]>0,
-			[Target.PresenceOrWilds   ] = ( ctx, s ) => (ctx.Spirit.Presence.IsOn( s ) || ctx.GameState.Tokens[s].Has(BacTokens.Wilds)),
-			[Target.Inland            ] = ( ctx, s ) => s.Terrain != Terrain.Ocean && !s.IsCostal // Don't use SelectTerrain because even if ocean is Wetland, it is not inland.
 		};
 
 		public Func<Space, Terrain> TerrainMapper = (Space space) => space.Terrain;

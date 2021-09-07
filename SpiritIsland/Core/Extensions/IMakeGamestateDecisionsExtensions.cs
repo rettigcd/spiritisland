@@ -135,10 +135,10 @@ namespace SpiritIsland {
 		#endregion
 
 		// convenience for ctx so we don't have to do ctx.Self.SelectPowerOption(...)
-		static public Task SelectPowerOption( this IMakeGamestateDecisions eng, params PowerOption[] options )
+		static public Task SelectActionOption( this IMakeGamestateDecisions eng, params ActionOption[] options )
 			=> eng.Self.SelectPowerOption(options);
 
-		static public async Task SelectPowerOption( this Spirit spirit, params PowerOption[] options ) {
+		static public async Task SelectPowerOption( this Spirit spirit, params ActionOption[] options ) {
 			var applicable = options.Where( opt => opt.IsApplicable ).ToArray();
 			string text = await spirit.SelectText( "Select Power Option", applicable.Select( a => a.Description ).ToArray() );
 			if(text != null) {

@@ -11,14 +11,14 @@ namespace SpiritIsland.Tests.Core {
 
 		[Fact]
 		public void Minor36Count() {
-			var minorCards = PowerCard.GetMinors();
+			var minorCards = PowerCard.GetMinors(typeof(RiversBounty));
 			// minorCards.Length.ShouldBe( 36 ); // Basegame
 			minorCards.Length.ShouldBeGreaterThanOrEqualTo( 36 );
 		}
 
 		[Fact]
 		public void Major22Count() {
-			var majorCards = PowerCard.GetMajors();
+			var majorCards = PowerCard.GetMajors(typeof(RiversBounty));
 			majorCards.Length.ShouldBeGreaterThanOrEqualTo( 22 );
 		}
 
@@ -139,8 +139,8 @@ namespace SpiritIsland.Tests.Core {
 		public void DrawingMajor_ForgetACard(bool drawDirect) {
 			var spirit = new RiverSurges();
 			var gs = new GameState( spirit, Board.BuildBoardC() ) {
-				MajorCards = new PowerCardDeck( PowerCard.GetMajors() ),
-				MinorCards = new PowerCardDeck( PowerCard.GetMinors() )
+				MajorCards = new PowerCardDeck( PowerCard.GetMajors(typeof(RiversBounty)) ),
+				MinorCards = new PowerCardDeck( PowerCard.GetMinors( typeof( RiversBounty ) ) )
 			};
 			gs.Initialize();
 

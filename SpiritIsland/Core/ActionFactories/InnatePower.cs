@@ -79,11 +79,11 @@ namespace SpiritIsland {
 
 	}
 
-	internal class InnatePower_TargetSpace : InnatePower, IActionFactory {
+	public class InnatePower_TargetSpace : InnatePower, IActionFactory {
 
 		#region Constructors and factories
 
-		internal InnatePower_TargetSpace( Type type	) : base( type ) {
+		public InnatePower_TargetSpace( Type type	) : base( type ) {
 			this.targetSpaceAttribute = (TargetSpaceAttribute)type.GetCustomAttributes<FromPresenceAttribute>().FirstOrDefault()
 				?? (TargetSpaceAttribute)type.GetCustomAttributes<FromSacredSiteAttribute>().FirstOrDefault();
 		}
