@@ -84,21 +84,21 @@ namespace SpiritIsland {
 		#region Constructors and factories
 
 		internal InnatePower_TargetSpace( Type type	) : base( type ) {
-			this.targetSpace = (TargetSpaceAttribute)type.GetCustomAttributes<FromPresenceAttribute>().FirstOrDefault()
+			this.targetSpaceAttribute = (TargetSpaceAttribute)type.GetCustomAttributes<FromPresenceAttribute>().FirstOrDefault()
 				?? (TargetSpaceAttribute)type.GetCustomAttributes<FromSacredSiteAttribute>().FirstOrDefault();
 		}
 
 		#endregion
 
 		public override async Task ActivateAsync( Spirit spirit, GameState gameState ) {
-			var target = await targetSpace.GetTarget( spirit.MakeDecisionsFor(gameState) );
+			var target = await targetSpaceAttribute.GetTarget( spirit, gameState );
 			MethodInfo x = HighestMethod( spirit );
 			var engine = new TargetSpaceCtx( spirit, gameState, target );
 			// !! Make sure we await this
 			await (Task)x.Invoke( null, new object[] { engine } ); // Check Innate Powers that target spirits - what is first parameter?
 		}
 
-		readonly TargetSpaceAttribute targetSpace;
+		readonly TargetSpaceAttribute targetSpaceAttribute;
 
 	}
 

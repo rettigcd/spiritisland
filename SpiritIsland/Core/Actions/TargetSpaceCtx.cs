@@ -66,7 +66,10 @@ namespace SpiritIsland {
 
 		public Task DestroyDahan(int countToDestroy,Cause source) => GameState.DahanDestroy(Target,countToDestroy,source);
 
-		public bool IsOneOf(params Terrain[] terrain) => terrain.Contains(Target.Terrain);
+		public Terrain Terrain => SpaceFilter.ForPowers.SelectTerrain( Target );
+
+		/// <summary> The effective Terrain for powers. Will be Wetland for Ocean when Oceans-Hungry-Grasp is on board </summary>
+		public bool IsOneOf(params Terrain[] terrain) => Terrain.IsIn(terrain);
 
 		public bool HasBlight => GameState.HasBlight(Target);
 		public void AddBlight(int delta=1) => GameState.AddBlight(Target,delta); // delta=-1 used to remove blight. // !!! Some card (Infinite Vitality?) stops blight, will it stop this?
@@ -98,8 +101,10 @@ namespace SpiritIsland {
 			await PowerInvaders.ApplySmartDamageToGroup( damage );
 		}
 
-		InvaderGroup invadersRO;
+		public bool IsSelfSacredSite => Self.SacredSites.Contains(Target);
+		public bool HasSelfPresence => Self.Presence.Spaces.Contains(Target);
 
+		InvaderGroup invadersRO;
 
 	}
 

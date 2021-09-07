@@ -17,7 +17,7 @@ namespace SpiritIsland.Basegame {
 				++damage;
 
 			// If target land has your presence, 1 fear and 1 damage
-			if(ctx.Self.Presence.IsOn( ctx.Target)){
+			if( ctx.HasSelfPresence ){
 				++damage;
 				ctx.AddFear(1);
 			}

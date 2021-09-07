@@ -9,7 +9,7 @@ namespace SpiritIsland.BranchAndClaw {
 		static public Task ActAsync(TargetSpaceCtx ctx ) {
 			ctx.GatherUpToNTokens(1,Invader.Explorer);
 			ctx.GatherUpToNTokens(1,Invader.Town);
-			return ctx.Self.SelectInvader_ToStrife(ctx.Tokens);
+			return ctx.AddStrife();
 		}
 
 	}

@@ -8,9 +8,7 @@ namespace SpiritIsland.BranchAndClaw {
 		[FromSacredSite(1)]
 		static public async Task ActAsync(TargetSpaceCtx ctx ) {
 			ctx.AddFear( 2 );
-
-			await ctx.Self.SelectInvader_ToStrife( ctx.Tokens );
-
+			await ctx.AddStrife();
 		}
 
 	}

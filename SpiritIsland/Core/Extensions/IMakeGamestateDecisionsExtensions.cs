@@ -147,14 +147,17 @@ namespace SpiritIsland {
 			}
 		}
 
-
-
 		/// <summary>
 		/// Used for Power-targetting, where range sympols appear.
 		/// </summary>
 		static public Task<Space> PowerTargetsSpace( this IMakeGamestateDecisions engine, From sourceEnum, Terrain? sourceTerrain, int range, Target filterEnum )
 			=> engine.Self.PowerApi.TargetsSpace( engine.Self, engine.GameState, sourceEnum, sourceTerrain, range, filterEnum );
 
+		// Syntax Options
+		// ctx.Target.MakeDecisionsFor(gameState).PowerTargetsSpace(...);
+		// ctx.TargetSpiritTargets(...)
+
 	}
+
 
 }

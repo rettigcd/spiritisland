@@ -5,21 +5,22 @@ namespace SpiritIsland {
 
 	public abstract class TargetSpaceAttribute : Attribute {
 
-		readonly From source;
+		readonly From fromSourceEnum;
 		readonly Terrain? sourceTerrain;
 		readonly protected int range;
 		readonly Target targetFilter;
 
 		public TargetSpaceAttribute(From source, Terrain? sourceTerrain, int range, Target targetFilter){
-			this.source = source;
+			this.fromSourceEnum = source;
 			this.sourceTerrain = sourceTerrain;
 			this.range = range;
 			this.targetFilter = targetFilter;
 		}
 
-		public Task<Space> GetTarget( IMakeGamestateDecisions engine ){
-			return engine.PowerTargetsSpace( source, sourceTerrain, CalcRange(engine), targetFilter );
+		public Task<Space> GetTarget( Spirit spirit, GameState gameState ){
+			return spirit.PowerApi.TargetsSpace( spirit, gameState, fromSourceEnum, sourceTerrain, range, targetFilter );
 		}
+
 		protected virtual int CalcRange( IMakeGamestateDecisions ctx ) => range;
 
 	}

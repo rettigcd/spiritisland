@@ -18,7 +18,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 		static Task FearAndStrife( TargetSpaceCtx ctx ) {
 			ctx.AddFear( 1 );
-			return ctx.Self.SelectInvader_ToStrife( ctx.Tokens );
+			return ctx.AddStrife();
 		}
 
 

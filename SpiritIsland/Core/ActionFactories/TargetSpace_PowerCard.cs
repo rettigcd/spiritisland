@@ -10,7 +10,7 @@ namespace SpiritIsland {
 	class TargetSpace_PowerCard : PowerCard {
 
 		readonly MethodBase methodBase;
-		readonly TargetSpaceAttribute targetSpace;
+		readonly TargetSpaceAttribute targetSpaceAttr;
 
 		public TargetSpace_PowerCard(MethodBase methodBase,TargetSpaceAttribute targetSpace){
 			this.methodBase = methodBase;
@@ -23,7 +23,7 @@ namespace SpiritIsland {
 			Elements = attr.Elements;
 			PowerType = attr.PowerType;
 
-			this.targetSpace = targetSpace ?? throw new ArgumentNullException( nameof( targetSpace ), Name + " is missing targetting attribute" );
+			this.targetSpaceAttr = targetSpace ?? throw new ArgumentNullException( nameof( targetSpace ), Name + " is missing targetting attribute" );
 
 		}
 
@@ -36,7 +36,7 @@ namespace SpiritIsland {
 		}
 
 		async Task PickSpaceAndActivate( Spirit spirit, GameState gameState ) {
-			var target = await targetSpace.GetTarget( spirit.MakeDecisionsFor(gameState) );
+			var target = await targetSpaceAttr.GetTarget( spirit, gameState );
 			if(target == null) return; // no space available that meets criteria.   !!! needs unit test showing if no-target-space simply does nothing, and doesn't crash
 			await InvokeAgainst( spirit, gameState, target );
 		}

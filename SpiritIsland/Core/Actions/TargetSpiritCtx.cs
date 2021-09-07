@@ -15,12 +15,14 @@ namespace SpiritIsland {
 
 		public Spirit Target { get; }
 
+		public IMakeGamestateDecisions TargetCtx => Target.MakeDecisionsFor(GameState);
 
-		public Task<Space> TargetSelectsPresenceLand(string prompt) {
-			return Target.Action.Decide( new SelectDeployedPresence( 
+		public async Task<TargetSpaceCtx> TargetSelectsPresenceLand(string prompt) {
+			var space = await Target.Action.Decide( new SelectDeployedPresence( 
 				"Select location to remove blight and add presence", 
 				Target 
 			) );
+			return new TargetSpaceCtx(Target,GameState,space);
 		}
 
 	}

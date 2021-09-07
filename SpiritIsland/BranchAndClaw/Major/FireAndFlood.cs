@@ -1,10 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
-namespace SpiritIsland.BranchAndClaw.Major {
-	class FireAndFlood {
+namespace SpiritIsland.BranchAndClaw {
+
+	public class FireAndFlood {
+
+		[MajorCard( "Fire and Flood", 9, Speed.Slow, Element.Sun, Element.Fire, Element.Water )]
+		[FromSacredSite( 1 )]
+//		[FromSacredSite( 2 )]  2 lands!!!
+		static public Task ActAsync( TargetSpaceCtx ctx ) {
+			// 4 damage in each target land  (range must be measured from same SS)
+			return Task.CompletedTask;
+		}
+
 	}
+
 }
