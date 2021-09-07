@@ -8,9 +8,9 @@ namespace SpiritIsland {
 		readonly From fromSourceEnum;
 		readonly Terrain? sourceTerrain;
 		readonly protected int range;
-		readonly Target targetFilter;
+		readonly string targetFilter;
 
-		public TargetSpaceAttribute(From source, Terrain? sourceTerrain, int range, Target targetFilter){
+		public TargetSpaceAttribute(From source, Terrain? sourceTerrain, int range, string targetFilter){
 			this.fromSourceEnum = source;
 			this.sourceTerrain = sourceTerrain;
 			this.range = range;
@@ -27,20 +27,20 @@ namespace SpiritIsland {
 
 	[AttributeUsage( AttributeTargets.Class | AttributeTargets.Method )]
 	class FromPresenceAttribute : TargetSpaceAttribute {
-		public FromPresenceAttribute( int range, Target filter = Target.Any )
+		public FromPresenceAttribute( int range, string filter = Target.Any )
 			: base( From.Presence, null, range, filter ) {
 		}
 	}
 
 	[AttributeUsage( AttributeTargets.Class | AttributeTargets.Method )]
 	class FromPresenceInAttribute : TargetSpaceAttribute {
-		public FromPresenceInAttribute( int range, Terrain sourceTerrain, Target filter = Target.Any )
+		public FromPresenceInAttribute( int range, Terrain sourceTerrain, string filter = Target.Any )
 			: base( From.Presence, sourceTerrain, range, filter ) {}
 	}
 
 	[AttributeUsage( AttributeTargets.Class | AttributeTargets.Method )]
 	class FromSacredSiteAttribute : TargetSpaceAttribute {
-		public FromSacredSiteAttribute( int range, Target filter = Target.Any )
+		public FromSacredSiteAttribute( int range, string filter = Target.Any )
 			: base( From.SacredSite, null, range, filter ) { }
 	}
 

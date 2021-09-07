@@ -6,8 +6,7 @@ namespace SpiritIsland.SinglePlayer {
 
 	public class SelectGrowth {
 
-		ResolveActions resolveGrowth;
-
+		readonly ResolveActions resolveGrowth;
 
 		public SelectGrowth( Spirit spirit, GameState gameState ) {
 			this.spirit = spirit;

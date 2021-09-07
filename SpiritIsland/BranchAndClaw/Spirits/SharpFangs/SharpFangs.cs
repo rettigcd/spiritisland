@@ -76,9 +76,6 @@ namespace SpiritIsland.BranchAndClaw {
 				new GainEnergy(3)   // D
 			};
 
-			static GrowthOption Join(GrowthActionFactory[] a,GrowthActionFactory[] b) 
-				=> new GrowthOption( a.Union(b).ToArray() );
-
 			GrowthOptions = new GrowthOption[]{
 				// A
 				new GrowthOption( new ReclaimAll(), new GainEnergy(-1), new DrawPowerCard(1) ),

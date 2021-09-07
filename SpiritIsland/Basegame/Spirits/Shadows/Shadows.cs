@@ -85,7 +85,7 @@ Shadows Flicker like Flame:
 
 		class ShadowApi : TargetLandApi {
 
-			public override async Task<Space> TargetsSpace( Spirit self, GameState gameState, From from, Terrain? sourceTerrain, int range, Target filter ) {
+			public override async Task<Space> TargetsSpace( Spirit self, GameState gameState, From from, Terrain? sourceTerrain, int range, string filter ) {
 				// no money, do normal
 				if(self.Energy == 0)
 					return await base.TargetsSpace( self, gameState, from, sourceTerrain, range, filter );

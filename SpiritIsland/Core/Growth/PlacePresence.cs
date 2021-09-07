@@ -1,13 +1,11 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
 	public class PlacePresence : GrowthActionFactory {
 
 		readonly protected int range;
-		readonly protected Target filterEnum;
+		readonly protected string filterEnum;
 
 		public override string ShortDescription {get;}
 
@@ -21,7 +19,7 @@ namespace SpiritIsland {
 
 		public PlacePresence(
 			int range,
-			Target filterEnum,
+			string filterEnum,
 			string funcDescriptor
 		) {
 			this.range = range;

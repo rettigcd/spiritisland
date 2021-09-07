@@ -91,7 +91,7 @@ namespace SpiritIsland {
 
 		#region Place Presence
 
-		static public Task PlacePresence( this IMakeGamestateDecisions engine, int range, Target filterEnum ) {
+		static public Task PlacePresence( this IMakeGamestateDecisions engine, int range, string filterEnum ) {
 			Space[] destinationOptions = CalcDestinationOptions( engine, range, filterEnum );
 			return engine.PlacePresence( destinationOptions );
 		}
@@ -102,7 +102,7 @@ namespace SpiritIsland {
 			await engine.Self.Presence.PlaceFromBoard(from, to, engine.GameState );
 		}
 
-		static Space[] CalcDestinationOptions( IMakeGamestateDecisions engine, int range, Target filterEnum ) {
+		static Space[] CalcDestinationOptions( IMakeGamestateDecisions engine, int range, string filterEnum ) {
 			// Calculate options
 			var existing = engine.Self.Presence.Spaces.ToArray();
 
@@ -150,7 +150,7 @@ namespace SpiritIsland {
 		/// <summary>
 		/// Used for Power-targetting, where range sympols appear.
 		/// </summary>
-		static public Task<Space> PowerTargetsSpace( this IMakeGamestateDecisions engine, From sourceEnum, Terrain? sourceTerrain, int range, Target filterEnum )
+		static public Task<Space> PowerTargetsSpace( this IMakeGamestateDecisions engine, From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum )
 			=> engine.Self.PowerApi.TargetsSpace( engine.Self, engine.GameState, sourceEnum, sourceTerrain, range, filterEnum );
 
 		// Syntax Options

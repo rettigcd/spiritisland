@@ -27,7 +27,7 @@ namespace SpiritIsland.Basegame {
 		// range 1
 		[AttributeUsage( AttributeTargets.Class | AttributeTargets.Method )]
 		public class CustomAttribute : SpiritIsland.TargetSpaceAttribute {
-			public CustomAttribute( From from, int range,Target targetType) : base( from, null, range, targetType ) { }
+			public CustomAttribute( From from, int range,string targetType) : base( from, null, range, targetType ) { }
 			protected override int CalcRange( IMakeGamestateDecisions ctx ) 
 				=> Has3Fire3Air(ctx.Self) ? 3 : range; // aka 1
 		}

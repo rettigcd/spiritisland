@@ -66,7 +66,7 @@ namespace SpiritIsland {
 
 		public Task DestroyDahan(int countToDestroy,Cause source) => GameState.DahanDestroy(Target,countToDestroy,source);
 
-		public Terrain Terrain => SpaceFilter.ForPowers.SelectTerrain( Target );
+		public Terrain Terrain => SpaceFilter.ForPowers.TerrainMapper( Target );
 
 		/// <summary> The effective Terrain for powers. Will be Wetland for Ocean when Oceans-Hungry-Grasp is on board </summary>
 		public bool IsOneOf(params Terrain[] terrain) => Terrain.IsIn(terrain);

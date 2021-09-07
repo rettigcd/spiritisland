@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
@@ -22,8 +21,7 @@ namespace SpiritIsland {
 		//		* Blight
 		static public IEnumerable<Space> PowerAdjacents(Space source) => source
 			.Adjacent
-//			.Where( x => x.TerrainForPower != Terrain.Ocean );
-			.Where( x => SpaceFilter.ForPowers.SelectTerrain(x) != Terrain.Ocean );
+			.Where( x => SpaceFilter.ForPowers.TerrainMapper(x) != Terrain.Ocean );
 
 	}
 

@@ -34,7 +34,7 @@ namespace SpiritIsland.Basegame {
 			From from, 
 			Terrain? sourceTerrain, 
 			int range, 
-			Target target
+			string target
 		)
 			=> originalApi.TargetsSpace( self, gameState, from, sourceTerrain, range + extension, target );
 

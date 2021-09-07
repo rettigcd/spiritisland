@@ -12,6 +12,15 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class GameState_BranchAndClaw : GameState {
 
+		static GameState_BranchAndClaw() {
+			// Register new filters needed for Branch and Claw
+			SpaceFilter.lookup[Target.BeastOrJungle]   = ( ctx, s ) => ctx.SelectTerrain( s ) == Terrain.Jungle || ctx.GameState.Tokens[s][BacTokens.Beast] > 0;
+			SpaceFilter.lookup[Target.PresenceOrWilds] = ( ctx, s ) => (ctx.Spirit.Presence.IsOn( s ) || ctx.GameState.Tokens[s].Has( BacTokens.Wilds ));
+
+			// Don't use SelectTerrain because even if ocean is Wetland, it is not inland.
+			SpaceFilter.lookup[Target.Inland]          = ( ctx, s ) => s.Terrain != Terrain.Ocean && !s.IsCostal;
+		}
+
 		public GameState_BranchAndClaw(Spirit spirit,Board board ) : base( spirit, board ) {
 		}
 
