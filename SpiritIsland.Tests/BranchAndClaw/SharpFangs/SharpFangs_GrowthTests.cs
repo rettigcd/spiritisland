@@ -133,14 +133,11 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 		[InlineDataAttribute( 5, 2, "BPB" )]
 		[InlineDataAttribute( 6, 3, "BPB" )]
 		[InlineDataAttribute( 7, 4, "BPB" )]
-		public void EnergyTrack( int revealedSpaces, int expectedEnergyGrowth, string elements ) {
+		public async Task EnergyTrack( int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 			// energy:	1 animal plant 2 animal 3 4
 			spirit.Presence.Energy.RevealedCount = revealedSpaces;
 
-			spirit.TriggerEnergyElementsAndReclaims();
-//			When_SharpFangsGrow();
-//			Activate_C();
-//			Activate_D();
+			await spirit.TriggerEnergyElementsAndReclaims();
 
 			Assert_PresenceTracksAre( expectedEnergyGrowth, 2 );
 			Assert_BonusElements( elements );
@@ -169,15 +166,6 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 
 			while(reclaimCount-- > 0)
 				AndWhen_ReclaimingFirstCard();
-		}
-
-		Task When_SharpFangsGrow( int index ) {
-			When_Growing( index );
-			var task = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
-
-			Remove_ReplacePresenceWithBeast();
-
-			return task;
 		}
 
 		void When_SharpFangsGrow() {

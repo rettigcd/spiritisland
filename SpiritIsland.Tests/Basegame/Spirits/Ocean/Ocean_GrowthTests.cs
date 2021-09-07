@@ -3,6 +3,7 @@ using SpiritIsland.Basegame;
 using SpiritIsland.SinglePlayer;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
@@ -162,11 +163,11 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 		[InlineDataAttribute(5,1,"MWE")]
 		[InlineDataAttribute(6,1,"MWEW")]
 		[InlineDataAttribute(7,2,"MWEW")]
-		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
+		public async Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 			// energy: 0 moon water 1 earth water 2
 			spirit.Presence.Energy.RevealedCount = revealedSpaces;
 			Assert_EnergyTrackIs( expectedEnergyGrowth );
-			spirit.TriggerEnergyElementsAndReclaims();
+			await spirit.TriggerEnergyElementsAndReclaims();
 			Assert_BonusElements( elements );
 		}
 

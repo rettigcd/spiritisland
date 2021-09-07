@@ -271,27 +271,28 @@ namespace SpiritIsland {
 			};
 		}
 
-		public async Task BuyPowerCardsAsync() {
-			var canPurchase = NumberOfCardsPlayablePerTurn;
+		public Task BuyPowerCardsAsync() =>PurchaseCards( NumberOfCardsPlayablePerTurn );
 
-			var powerCardOptions = Hand
-				.Where( c => c.Cost <= Energy && canPurchase > 0 )
+
+		// Called for both normal buy-cards & from select Power cards that allow puchasing additional
+		public async Task PurchaseCards( int canPurchase ) {
+			PowerCard[] getPowerCardOptions() => Hand
+				.Where( c => c.Cost <= Energy )
 				.ToArray();
 
-			while(powerCardOptions.Length > 0) {
+			PowerCard[] powerCardOptions;
+			while(0 < canPurchase
+				&& 0 < (powerCardOptions = getPowerCardOptions()).Length
+			) {
 				string prompt = $"Buy power cards: (${Energy} / {canPurchase})";
 				var card = await this.Select( prompt, powerCardOptions, Present.Done );
-				if(card == null)
-					break;
-				
-				PurchaseAvailableCards( card );
-				--canPurchase;
+				if(card != null) {
+					PurchaseAvailableCards( card );
+					--canPurchase;
+				} else
+					canPurchase = 0;
 
-				powerCardOptions = Hand
-					.Where( c => c.Cost <= Energy && canPurchase > 0 )
-					.ToArray();
 			}
-
 		}
 
 	}

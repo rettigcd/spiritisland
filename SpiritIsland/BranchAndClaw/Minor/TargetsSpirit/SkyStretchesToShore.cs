@@ -40,4 +40,6 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 		public Task ActivateAsync( Spirit spirit, GameState gameState ) {
 			return new SpeedChanger( spirit, gameState, Speed.Fast, 2 ).Exec();
 		}
+
 	}
+}
