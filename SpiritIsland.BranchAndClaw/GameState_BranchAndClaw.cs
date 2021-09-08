@@ -42,12 +42,13 @@ namespace SpiritIsland.BranchAndClaw {
 			return base.ExploresSpace( space );
 		}
 
-		protected override string Build( TokenCountDictionary group ) {
+		protected override string Build( TokenCountDictionary group, BuildingEventArgs.BuildType buildType ) {
+			// ! Instead of overriding this, we could handle the pre-build event
 			if(group.Has(BacTokens.Disease)) {
 				group.Adjust( BacTokens.Disease, -1 );
 				return group.Space.Label +" build stopped by disease";
 			}
-			return base.Build( group );
+			return base.Build( group, buildType );
 		}
 
 		protected override async Task<string> RavageSpace( InvaderGroup grp ) {

@@ -128,19 +128,21 @@ namespace SpiritIsland.Basegame {
 
 		}
 
-		async Task ChokeTheLandWithGreen_Ravage( GameState gs, Space[] ravageSpaces ) {
-			var stopped = await ChokeTheLandWithGreen( gs, ravageSpaces, "ravage" );
+		async Task ChokeTheLandWithGreen_Ravage( GameState gs, Space[] spaces ) {
+			var stopped = await ChokeTheLandWithGreen( gs, spaces, "ravage" );
 			gs.SkipRavage( stopped );
 		}
 
-		async Task ChokeTheLandWithGreen_Build( GameState gs, Space[] ravageSpaces ) {
-			Space[] stopped = await ChokeTheLandWithGreen( gs, ravageSpaces, "build" );
-			gs.SkipBuild( stopped );
+		async Task ChokeTheLandWithGreen_Build( GameState gs, BuildingEventArgs args ) {
+			Space[] buildSpaces = args.Spaces.Keys.Where( k => args.Spaces[k] > 0 ).ToArray();
+			Space[] stopped = await ChokeTheLandWithGreen( gs, buildSpaces, "build" ); 
+			foreach(var s in stopped)
+				args.Spaces[s]--;
 		}
 
-		async Task<Space[]> ChokeTheLandWithGreen( GameState gs, Space[] ravageSpaces, string actionText ) {
+		async Task<Space[]> ChokeTheLandWithGreen( GameState gs, Space[] spaces, string actionText ) {
 
-			var stoppable = ravageSpaces.Intersect( SacredSites ).ToList();
+			var stoppable = spaces.Intersect( SacredSites ).ToList();
 			bool costs1 = gs.BlightCard.IslandIsBlighted;
 			int maxStoppable = costs1 ? Energy : int.MaxValue;
 

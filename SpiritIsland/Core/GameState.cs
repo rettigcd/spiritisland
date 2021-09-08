@@ -42,7 +42,7 @@ namespace SpiritIsland {
 		// Branch & Claw
 		public void SkipAllInvaderActions( Space target ) {
 			ModifyRavage(target, cfg=>cfg.ShouldRavage=false );
-			skipBuild.Add( target );
+			SkipBuild( target );
 			skipExplore.Add(target);
 		}
 
@@ -67,7 +67,7 @@ namespace SpiritIsland {
 
 		// == EVENTS ==
 		public AsyncEvent<Space[]> PreRavaging = new AsyncEvent<Space[]>();						// A Spread of Rampant Green - stop ravage
-		public AsyncEvent<Space[]> PreBuilding = new AsyncEvent<Space[]>();						// A Spread of Rampant Green - stop build
+		public AsyncEvent<BuildingEventArgs> PreBuilding = new AsyncEvent<BuildingEventArgs>();						// A Spread of Rampant Green - stop build
 		public event Action<GameState> TimePassed;												// Spirit cleanup
 
 		// == Single Round hooks
@@ -208,33 +208,48 @@ namespace SpiritIsland {
 			// Build normal
 			var buildLands = Island.Boards.SelectMany( board => board.Spaces )
 				.Where( invaderCard.Matches )
-				.ToArray();
+				.GroupBy( s=>s )
+				.ToDictionary( grp=>grp.Key, grp=>grp.Count() );
 
-			// Process Changes
-			buildLands = buildLands.Except( skipBuild ).ToArray();
+			var args = new BuildingEventArgs {
+				 BuildTypes = new Dictionary<Space, BuildingEventArgs.BuildType>(),
+				 Spaces = new CountDictionary<Space>( buildLands ),
+			};
 
-			await PreBuilding?.InvokeAsync(this,buildLands);
+			await PreBuilding?.InvokeAsync(this,args);
 
-			buildLands = buildLands.Except( skipBuild ).ToArray(); // reload in case they changed
-
-			return buildLands
-				.Select( x=> Tokens[x] )
-				.Where( tup => tup.HasInvaders() )
-				.Select( tup => tup.Space.Label + " gets " + Build( tup ) )
+			return args.Spaces
+				.Where( pair=>pair.Value>=0 ) // in case we end up with any negative counts
+				.Select( pair => Tokens[pair.Key] )
+				.Where( tokens => tokens.HasInvaders() )
+				.Select( tokens => tokens.Space.Label + " gets " + Build( tokens, args.BuildTypes.ContainsKey(tokens.Space) ? args.BuildTypes[tokens.Space] : BuildingEventArgs.BuildType.TownsAndCities ) )
 				.ToArray();
 		}
 
 		public void SkipBuild( params Space[] target ) {
-			skipBuild.AddRange( target );
+			PreBuilding.ForRound.Add( (GameState gs, BuildingEventArgs args) => {
+				foreach(var skip in target)
+					args.Spaces[skip]--;
+				return Task.CompletedTask;
+			});
 		}
-		readonly List<Space> skipBuild = new List<Space>();
 
-		protected virtual string Build( TokenCountDictionary counts ) {
+		protected virtual string Build( TokenCountDictionary counts, BuildingEventArgs.BuildType buildType ) {
+			// Determine type to build
 			int townCount = counts.Sum( Invader.Town );
 			int cityCount = counts.Sum( Invader.City );
-			Token invaderToAdd = townCount > cityCount ? Invader.City[3] : Invader.Town[2];
-			counts.Adjust( invaderToAdd, 1 );
-			return invaderToAdd.Generic.Label;
+			TokenGroup invaderToAdd = townCount > cityCount ? Invader.City : Invader.Town;
+
+			// check if we should
+			bool shouldBuild = buildType switch {
+				BuildingEventArgs.BuildType.CitiesOnly => invaderToAdd == Invader.City,
+				BuildingEventArgs.BuildType.TownsOnly => invaderToAdd == Invader.Town,
+				_ => true,
+			};
+			// build it
+			if(shouldBuild)
+				counts.Adjust( invaderToAdd.Default, 1 );
+			return invaderToAdd.Label;
 		}
 
 		public Space[] Explore( InvaderCard invaderCard ) {
@@ -328,5 +343,10 @@ namespace SpiritIsland {
 		public List<Action<GameState, T>> ForGame = new List<Action<GameState, T>>();
 	}
 
+	public class BuildingEventArgs {
+		public CountDictionary<Space> Spaces;
+		public Dictionary<Space,BuildType> BuildTypes;
+		public enum BuildType { TownsAndCities, TownsOnly, CitiesOnly }
+	}
 
 }

@@ -16,7 +16,7 @@ namespace SpiritIsland.Basegame {
 		[FearLevel( 2, "Defend 6 in all Coastal lands. Invaders do not Build City in Coastal lands this turn." )]
 		Task IFearCard.Level2( GameState gs ){
 			DefendCostal( gs, 6 );
-			SkipCostalBuild( gs ); // !!! bug, should only prevent cities
+			SkipCostalBuild( gs );
 			return Task.CompletedTask;
 		}
 
@@ -33,8 +33,12 @@ namespace SpiritIsland.Basegame {
 		}
 
 		static void SkipCostalBuild( GameState gs ) {
-			foreach(var space in gs.Island.AllSpaces.Where( s => s.IsCostal ))
-				gs.SkipBuild(space);
+			var spaces = gs.Island.AllSpaces.Where( s => s.IsCostal ).ToArray();
+			gs.PreBuilding.ForRound.Add( ( GameState gs, BuildingEventArgs args ) => {
+				foreach(var space in spaces)
+					args.BuildTypes[space] = BuildingEventArgs.BuildType.TownsOnly; // !! This is not Additive, if something had Skip Towns, it might switch this to cities only
+				return Task.CompletedTask;
+			} );
 		}
 
 	}
