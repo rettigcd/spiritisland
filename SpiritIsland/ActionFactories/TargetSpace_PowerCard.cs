@@ -7,7 +7,7 @@ namespace SpiritIsland {
 	/// <summary>
 	/// ActionFactory based on Method-implemented powers
 	/// </summary>
-	class TargetSpace_PowerCard : PowerCard {
+	public class TargetSpace_PowerCard : PowerCard {
 
 		readonly MethodBase methodBase;
 		readonly TargetSpaceAttribute targetSpaceAttr;

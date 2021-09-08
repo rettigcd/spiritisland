@@ -13,13 +13,18 @@ namespace SpiritIsland.BranchAndClaw {
 			);
 		}
 
-		static Task PushFutureInvadersFromLands( TargetSpaceCtx _ ) {
+		static void PushFutureInvadersFromLands( TargetSpaceCtx ctx ) {
 
 			// each invader added to target land this turn may be immediatley pushed to any adjacent land
-			// !!!
+			ctx.GameState.Tokens.TokenAdded.ForRound.Add( PushAddedInvader );
 
-			return Task.CompletedTask;
+			async Task PushAddedInvader( GameState gs, TokenAddedArgs args ) {
+				var group = args.Token.Generic;
+				if(group == Invader.Explorer || group == Invader.Town || group == Invader.City)
+					await ctx.Self.MakeDecisionsFor( gs ).PushUpToNTokens( args.Space, args.count, group );
+			}
 		}
+
 	}
 
 }

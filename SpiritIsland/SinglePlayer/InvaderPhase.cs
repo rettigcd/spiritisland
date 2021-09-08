@@ -38,7 +38,7 @@ namespace SpiritIsland.SinglePlayer {
 
 			// Exploring
 			Log( "Exploring:" + invaderDeck.Explore?.Text ?? "-" );
-			gameState.Explore( invaderDeck.Explore );
+			await gameState.Explore( invaderDeck.Explore );
 
 			invaderDeck.Advance();
 		}

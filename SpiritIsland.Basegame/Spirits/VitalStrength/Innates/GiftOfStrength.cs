@@ -8,8 +8,6 @@ namespace SpiritIsland.Basegame {
 	[TargetSpirit]
 	public class GiftOfStrength {
 
-		#region options
-
 		// * Note * these have a different signature than other Innates, called directly from GiftOfStrength_InnatePower
 
 		[InnateOption("1 sun,2 earth,2 plant")]
@@ -34,8 +32,6 @@ namespace SpiritIsland.Basegame {
 			spirit.AddActionFactory(new ReplayCardForCost(maxCost));
 			return Task.CompletedTask;
 		}
-
-		#endregion
 
 	}
 

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
+
 	public class ReplayCardForCost : IActionFactory {
 
 		public ReplayCardForCost(int maxCost) {
@@ -19,8 +20,18 @@ namespace SpiritIsland.Basegame {
 
 		public IActionFactory Original => this;
 
-		public Task ActivateAsync( Spirit self, GameState _ ) {
-			return self.SelectCardToReplayForCost( maxCost, self.UsedActions.OfType<PowerCard>().ToArray() );
+		public async Task ActivateAsync( Spirit self, GameState _ ) {
+
+			int maxCost = System.Math.Min( this.maxCost, self.Energy );
+			var options = self.UsedActions.OfType<PowerCard>().ToArray();
+			if(options.Length == 0) return;
+
+			var factory = await self.Select( "Select card to replay", options.Where( x => x.Cost <= maxCost ).ToArray() );
+			if(factory == null) return;
+
+			self.Energy -= factory.Cost;
+			self.AddActionFactory( factory );
+
 		}
 
 		readonly int maxCost;

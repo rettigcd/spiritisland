@@ -37,7 +37,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			const int count = 2;
 
 			// Given: 2 explorers
-			ctx.Tokens.Add(Invader.Explorer, count );
+			ctx.Tokens.Adjust(Invader.Explorer.Default, count );
 
 			// When: causing 1 damage to each invader
 			switch(method) {
@@ -57,7 +57,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			//  and: explorer on destination
 			ctx.GameState.Assert_Invaders( board[7], $"{count}E@1" );
 			//  and: not at origin
-			ctx.PowerInvaders.ToString().ShouldBe( "" );
+			ctx.PowerInvaders.Counts.Summary.ShouldBe( "" );
 		}
 
 		[Fact]
@@ -66,8 +66,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			// generate 2 fear per town destoryed,
 			// pushes town
 
-			// Given: 1 town
-			ctx.Tokens.Add( Invader.Town, count );
+			// Given: 2 town
+			ctx.Tokens.Adjust( Invader.Town.Default, count );
 
 			// When: destorying towns
 			_ = DestroyAllExplorersAndTownsAsync( ctx );
@@ -84,7 +84,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			//  and: town on destination
 			ctx.GameState.Assert_Invaders( board[7], $"{count}T@2" );
 			//  and: not at origin
-			ctx.PowerInvaders.ToString().ShouldBe("");
+			ctx.PowerInvaders.Counts.Summary.ShouldBe("");
 
 		}
 
@@ -92,7 +92,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 		public void DreamDamageResetsEachPower() {
 
 			// Given: 2 explorers
-			ctx.Tokens.Add( Invader.City );
+			ctx.Tokens.Adjust( Invader.City.Default, 1 );
 
 			// When: 3 separate actinos cause 1 damage
 			async Task Run3Async(){

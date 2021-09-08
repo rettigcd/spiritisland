@@ -3,12 +3,13 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
-	public class IslandTokens {
+	public class Tokens_ForIsland {
 
 		readonly GameState gs;
-		public IslandTokens( GameState gs ) {
+		public Tokens_ForIsland( GameState gs ) {
 			this.gs = gs;
 
+			gs.TimePassed += TokenAdded.EndOfRound;
 			gs.TimePassed += TokenMoved.EndOfRound;
 			gs.TimePassed += TokenDestroyed.EndOfRound;
 		}
@@ -37,6 +38,22 @@ namespace SpiritIsland {
 			} );
 		}
 
+		// For Build / Explore.
+		// Not for gather / push / replace
+		public async Task Add( TokenGroup group, Space space, int delta = 1 ) {
+			if(delta < 0) throw new System.ArgumentOutOfRangeException( nameof( delta ) );
+			var token = group.Default;
+			this[space][token] += delta;
+
+			await TokenAdded.InvokeAsync( gs, new TokenAddedArgs{ 
+				count = delta,
+				Space = space,
+				Token = token
+			} );
+		}
+
+
+		public AsyncEvent<TokenAddedArgs> TokenAdded = new AsyncEvent<TokenAddedArgs>();
 		public AsyncEvent<TokenMovedArgs> TokenMoved = new AsyncEvent<TokenMovedArgs>();
 		public AsyncEvent<TokenDestroyedArgs> TokenDestroyed = new AsyncEvent<TokenDestroyedArgs>();
 

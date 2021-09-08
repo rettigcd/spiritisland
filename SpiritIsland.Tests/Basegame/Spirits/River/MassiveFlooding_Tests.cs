@@ -91,9 +91,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// 1 city, 5 towns, 5 invaders on A4 (range 1 from SS)
 			var space = game.Spirit.SacredSites.First().Adjacent.First();
 			var grp = game.GameState.Tokens[space];
-			grp.Add( Invader.City,1);
-			grp.Add( Invader.Town, 5 );
-			grp.Add( Invader.Explorer, 5 );
+			grp.Adjust( Invader.City.Default, 1);
+			grp.Adjust( Invader.Town.Default, 5 );
+			grp.Adjust( Invader.Explorer.Default, 5 );
 
 			game.DecisionProvider.Old_SelectGrowthOption( 0 ); // Reclaim
 			spirit.Activate_DrawPowerCard();

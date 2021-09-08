@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SpiritIsland {
 
@@ -36,39 +37,19 @@ namespace SpiritIsland {
 
 		readonly CountDictionary<Token> counts;
 
+		public string Summary { get {
+			static int Order_CitiesTownsExplorers( Token invader )
+				=> -(invader.FullHealth * 10 + invader.Health);
+			return this.Invaders()
+				.OrderBy( Order_CitiesTownsExplorers )
+				.Select( invader => counts[invader] + invader.Summary )
+				.Join( "," );
+		} }
+
 		#endregion
 
-		public TokenCountDictionary Clone() {
-			var copy = new CountDictionary<Token>();
-			foreach(var invader in this.Invaders())
-				copy[invader] = this[invader];
-			return new TokenCountDictionary(Space,copy);
-		}
-
-		public TokenBinding Blight => new TokenBinding(this,TokenType.Blight);
+		public TokenBinding Blight => new TokenBinding( this, TokenType.Blight);
 		public TokenBinding Defend => new TokenBinding( this, TokenType.Defend );
-
-	}
-
-
-	public class TokenBinding {
-
-		TokenCountDictionary counts;
-		Token token;
-		public TokenBinding( TokenCountDictionary tokens, Token token ) {
-			this.counts = tokens;
-			this.token = token;
-		}
-		public bool Any => Count > 0;
-		public int Count {
-			get => counts[token];
-			set => counts[token] = value;
-		}
-
-		public static implicit operator int( TokenBinding b ) => b.Count;
-
-		//public static TokenBinding operator --( TokenBinding s ) { --s.Count; return s; }
-		//public static TokenBinding operator ++( TokenBinding s ) { ++s.Count; return s; }
 
 	}
 

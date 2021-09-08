@@ -25,7 +25,7 @@ namespace SpiritIsland {
 			Round = 1;
 			Fear = new Fear( this );
 			Invaders = new Invaders( this );
-			Tokens = new IslandTokens( this );
+			Tokens = new Tokens_ForIsland( this );
 
 			TimePassed += PreRavaging.EndOfRound;
 			TimePassed += PreBuilding.EndOfRound;
@@ -36,7 +36,7 @@ namespace SpiritIsland {
 		public InvaderDeck InvaderDeck { get; set; }
 		public Island Island { get; set; }
 		public Spirit[] Spirits { get; }
-		public IslandTokens Tokens { get; }
+		public Tokens_ForIsland Tokens { get; }
 		public PowerCardDeck MajorCards {get; set; }
 		public PowerCardDeck MinorCards { get; set; }
 		// Branch & Claw
@@ -58,7 +58,7 @@ namespace SpiritIsland {
 				foreach(var space in board.Spaces)
 					space.InitTokens( Tokens[space] );
 
-			Explore( InvaderDeck.Explore );
+			Task.WaitAll( Explore( InvaderDeck.Explore ) );
 			InvaderDeck.Advance();
 			InitSpirits();
 
@@ -234,7 +234,7 @@ namespace SpiritIsland {
 			});
 		}
 
-		protected virtual string Build( TokenCountDictionary counts, BuildingEventArgs.BuildType buildType ) {
+		protected virtual async Task<string> Build( TokenCountDictionary counts, BuildingEventArgs.BuildType buildType ) {
 			// Determine type to build
 			int townCount = counts.Sum( Invader.Town );
 			int cityCount = counts.Sum( Invader.City );
@@ -248,24 +248,29 @@ namespace SpiritIsland {
 			};
 			// build it
 			if(shouldBuild)
-				counts.Adjust( invaderToAdd.Default, 1 );
+				await Tokens.Add( invaderToAdd, counts.Space, 1 );
+
 			return invaderToAdd.Label;
 		}
 
-		public Space[] Explore( InvaderCard invaderCard ) {
+		public async Task<Space[]> Explore( InvaderCard invaderCard ) {
 			bool HasTownOrCity( Space space ) {
 				return Tokens[ space ].HasAny(Invader.Town,Invader.City);
 			}
-			return Island.Boards.SelectMany( board => board.Spaces )
+			var bob = Island.Boards.SelectMany( board => board.Spaces )
 				.Where( invaderCard.Matches )
 				.Where( space => space.IsCostal || space.Range( 1 ).Any( HasTownOrCity ) )
 				.Except( skipExplore )
-				.Where( ExploresSpace )
 				.ToArray();
+			var spaces = new List<Space>();
+			foreach(var b in bob)
+				if( await ExploresSpace( b ) )
+					spaces.Add( b );
+			return spaces.ToArray();
 		}
 
-		protected virtual bool ExploresSpace(Space space ) {
-			Tokens[space].Adjust( Invader.Explorer[1], 1 );
+		protected virtual async Task<bool> ExploresSpace(Space space ) {
+			await Tokens.Add( Invader.Explorer, space );
 			return true;
 		}
 

@@ -33,9 +33,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[4];
 			var grp = gameState.Tokens[targetSpace];
-			grp.Add( Invader.Explorer,explorerCount );
-			grp.Add( Invader.Town,townCount );
-			grp.Add( Invader.City,cityCount );
+			grp.Adjust( Invader.Explorer.Default, explorerCount );
+			grp.Adjust( Invader.Town.Default, townCount );
+			grp.Adjust( Invader.City.Default, cityCount );
 
 			//  When: activating card
 			card.ActivateAsync( spirit, gameState );
@@ -68,7 +68,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// 1 explorer on A4
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[2];
-			gameState.Tokens[targetSpace].Add(Invader.Explorer);
+			gameState.Tokens[targetSpace].Adjust(Invader.Explorer.Default, 1);
 
 			//  When: activating card
 			card.ActivateAsync( spirit, gameState );
@@ -89,8 +89,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[4];
 			var grp =gameState.Tokens[targetSpace];
-			grp.Add(Invader.Explorer);
-			grp.Add(Invader.Town);
+			grp.Adjust(Invader.Explorer.Default, 1);
+			grp.Adjust(Invader.Town.Default, 1);
 
 			var explorerDestination = board[2];
 			var townDestination = board[3];
@@ -181,7 +181,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// 1 explorer + 1 Town on A4
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[4];
-			gameState.Tokens[ targetSpace ].Add( Invader.Explorer, 3 );
+			gameState.Tokens[ targetSpace ].Adjust( Invader.Explorer.Default, 3 );
 
 			//  When: activating card
 			When_PlayingCard();

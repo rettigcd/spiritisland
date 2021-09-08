@@ -26,7 +26,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			gameState.DahanAdjust( ravageSpace, desiredDahan - gameState.DahanGetCount( ravageSpace ) );
 			Assert.Equal(desiredDahan,gameState.DahanGetCount(ravageSpace));
 
-			gameState.Tokens[ravageSpace].Add( Invader.Town, desiredTown );
+			gameState.Tokens[ravageSpace].Adjust( Invader.Town.Default, desiredTown );
 		}
 
 		[Fact]

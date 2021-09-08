@@ -223,7 +223,7 @@ namespace SpiritIsland.Tests.Core {
 
 			int ee = items.Count(c=>c=='E');
 			int aa = counts[Invader.Explorer[1]];
-			Assert.True(ee==aa,counts.ToSummary()+" ex:"+ee+" act:"+aa);
+			Assert.True(ee==aa,counts.Summary+" ex:"+ee+" act:"+aa);
 
 			Assert.Equal(items.Count(c=>c=='C'), counts[Invader.City[3]]);
 			Assert.Equal(items.Count(c=>c=='T'), counts[Invader.Town[2]]);

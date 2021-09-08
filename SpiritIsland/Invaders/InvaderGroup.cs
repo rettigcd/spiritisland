@@ -11,20 +11,16 @@ namespace SpiritIsland {
 
 		public InvaderGroup( Space space, TokenCountDictionary aliveCounts) {
 			this.Counts = aliveCounts;
-			this.Space = space;
 		}
 
 		#endregion
 
-		public Space Space { get; }
+		public Space Space => Counts.Space;
 
 		public int this[Token specific] { 
 			get{ return Counts[specific]; }
 			set{ Counts[specific] = value; }
 		}
-
-		public override string ToString()
-			=> Counts.ToSummary();
 
 		#region Extension Methods to Pull off
 
@@ -89,66 +85,43 @@ namespace SpiritIsland {
 			}
 		}
 
-		#endregion
-
 		/// <returns>damage inflicted to invaders</returns>
 		public async Task<int> ApplyDamageTo1( int availableDamage, Token invader ) {
 			int damageToInvader = Math.Min( invader.Health, availableDamage );
 
 			var damagedInvader = invader.Damage( damageToInvader );
-			Counts.Adjust(invader,-1);
-			if(damagedInvader.Health>0) // don't track dead invaders
-				Counts.Adjust(damagedInvader,1);
+			this.
+			Counts.Adjust( invader, -1 );
+
+			if(damagedInvader.Health > 0) // don't track dead invaders
+				Counts.Adjust( damagedInvader, 1 );
 
 			if(damagedInvader.Health == 0)
-				await OnInvaderDestroyed(damagedInvader);
+				await DestroyInvaderStrategy.OnInvaderDestroyed( Space, damagedInvader );
 			return damageToInvader;
 		}
 
-		public void Heal() {
-
-			void Heal( Token damaged ) {
-				int num = this[damaged];
-				Counts.Adjust(damaged.Healthy, num );
-				Counts.Adjust(damaged, -num);
-			}
-
-			Heal( Invader.City[1] );
-			Heal( Invader.City[2] );
-			Heal( Invader.Town[1] );
-			Heal( TokenType.Dahan[1] );
-		}
-
-		protected virtual Task OnInvaderDestroyed( Token specific ) {
-			return DestroyInvaderStrategy.OnInvaderDestroyed(Space,specific);
-		}
+		#endregion
 
 		public DestroyInvaderStrategy DestroyInvaderStrategy; // This will be null for Building
 		public readonly TokenCountDictionary Counts;
 
-	}
+		static public void HealTokens( TokenCountDictionary counts ) {
+			void Heal( Token damaged ) {
+				int num = counts[damaged];
+				counts.Adjust( damaged.Healthy, num );
+				counts.Adjust( damaged, -num );
+			}
 
-	public class DestroyInvaderStrategy {
+			void HealGroup( TokenGroup group ) {
+				for(int health = group.Default.Health - 1; health > 0; --health)
+					Heal( group[health] );
+			}
 
-		public DestroyInvaderStrategy( Action<FearArgs> addFear, Cause destructionSource ) {
-			if(destructionSource == Cause.None) 
-				throw new ArgumentException("if we are destroying things, there must be a cause");
-			this.addFear = addFear;
-			this.destructionSource = destructionSource;
+			HealGroup( Invader.City );
+			HealGroup( Invader.Town );
+			HealGroup( TokenType.Dahan );
 		}
-
-		public virtual Task OnInvaderDestroyed( Space space, Token specific ) {
-			if(specific == Invader.City[0])
-				AddFear( space, 2 );
-			if(specific == Invader.Town[0])
-				AddFear( space, 1 );
-			return Task.CompletedTask;
-		}
-
-		protected void AddFear( Space space, int count ) => addFear( new FearArgs { count = count, cause = this.destructionSource, space = space } );
-
-		readonly Action<FearArgs> addFear;
-		readonly Cause destructionSource;
 
 	}
 

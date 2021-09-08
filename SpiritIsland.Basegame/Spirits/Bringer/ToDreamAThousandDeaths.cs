@@ -13,24 +13,40 @@ namespace SpiritIsland.Basegame {
 			this.engine = engine;
 		}
 
-		public override async Task OnInvaderDestroyed( Space space, Token specific ) {
-			if(specific.Generic == Invader.City) {
+		public override async Task OnInvaderDestroyed( Space space, Token token ) {
+			if(token.Generic == Invader.City) {
 				AddFear( space, 5 );
 			} else {
-				if(specific.Generic == Invader.Town)
+				if(token.Generic == Invader.Town)
 					AddFear( space, 2 );
-				await BringerPushNInvader( space, 1, specific );
+				await BringerPushNInvaders( space, 1, token.Generic );
 			}
 		}
 
-		async Task BringerPushNInvader( Space source, int countToPush ,Token invader ) {
+		async Task BringerPushNInvaders( Space source, int countToPush
+				, params TokenGroup[] healthyInvaders
+			) {
 
-			var destination = await engine.Self.Action.Decide( new TargetSpaceDecision(
-				"Push " + invader.Summary + " to",
-				source.Adjacent.Where( SpaceFilter.ForPowers.GetFilter( engine.Self, engine.GameState, Target.Any ) )
-			) );
-			await engine.GameState.Move( invader, source, destination );
+			// We can't track which original invader is was killed, so let the user choose.
 
+			Token[] CalcInvaderTypes() => engine.GameState.Tokens[source].OfAnyType( healthyInvaders );
+
+			var invaders = CalcInvaderTypes();
+			while(0 < countToPush && 0 < invaders.Length) {
+				var invader = await engine.Self.Action.Decide( new SelectTokenToPushDecision( source, countToPush, invaders, Present.Always ) );
+
+				if(invader == null)
+					break;
+
+				var destination = await engine.Self.Action.Decide( new TargetSpaceDecision(
+					"Push " + invader.Summary + " to",
+					source.Adjacent.Where( SpaceFilter.ForPowers.GetFilter( engine.Self, engine.GameState, Target.Any ) )
+				) );
+				await engine.GameState.Move( invader, source, destination );
+
+				--countToPush;
+				invaders = CalcInvaderTypes();
+			}
 		}
 
 	}

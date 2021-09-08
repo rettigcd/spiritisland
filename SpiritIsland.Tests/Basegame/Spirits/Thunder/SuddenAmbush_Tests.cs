@@ -57,7 +57,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			gs.DahanAdjust(a[2]);
 			gs.DahanAdjust(a[1], 2);
 			//  and: 1 town on a1
-			gs.Tokens[a[1]].Add(Invader.Town);
+			gs.Tokens[a[1]].Adjust(Invader.Town.Default, 1);
 
 			When_ActivateCard(SuddenAmbush.Name);
 			Step("Select space to target.", "A1,A2,A4,A5,A6", a[1], false);

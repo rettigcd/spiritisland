@@ -28,23 +28,23 @@ namespace SpiritIsland.BranchAndClaw {
 		}
 
 		// only gets called when explorer is actually going to explore
-		protected override bool ExploresSpace( Space space ) {
+		protected override Task<bool> ExploresSpace( Space space ) {
 			var wilds = Tokens[space].Wilds();
 			if(wilds == 0)
 				return base.ExploresSpace( space );
 
 			wilds.Count--;
-			return false;
+			return Task.FromResult(false);
 		}
 
-		protected override string Build( TokenCountDictionary tokens, BuildingEventArgs.BuildType buildType ) {
+		protected override async Task<string> Build( TokenCountDictionary tokens, BuildingEventArgs.BuildType buildType ) {
 			// ! Instead of overriding this, we could handle the pre-build event
 			var disease = tokens.Disease();
 			if(disease.Any) {
 				disease.Count--;
 				return tokens.Space.Label +" build stopped by disease";
 			}
-			return base.Build( tokens, buildType );
+			return await base.Build( tokens, buildType );
 		}
 
 		protected override async Task<string> RavageSpace( InvaderGroup grp ) {

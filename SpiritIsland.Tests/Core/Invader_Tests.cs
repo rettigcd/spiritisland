@@ -277,7 +277,7 @@ namespace SpiritIsland.Tests.Core {
 			int dahanCount = gameState.DahanGetCount(space);
 			if(dahanCount>0)
 				items.Add($"{dahanCount}D@2");
-			string actualInvaders = gameState.Tokens[space].ToSummary();
+			string actualInvaders = gameState.Tokens[space].Summary;
 
 			if(actualInvaders.Length>0)
 				items.Add(actualInvaders);

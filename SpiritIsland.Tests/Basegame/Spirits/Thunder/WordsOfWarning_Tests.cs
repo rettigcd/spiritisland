@@ -17,8 +17,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 
 			//  and: 4 explorers + 1 city
 			var counts = gs.Tokens[ a[2] ];
-			counts.Add( Invader.Explorer, 4 );
-			counts.Add( Invader.City );
+			counts.Adjust( Invader.Explorer.Default, 4 );
+			counts.Adjust( Invader.City.Default, 1 );
 			// and activate card
 			When_ActivateCard( WordsOfWarning.Name );
 			Step( "Select space to target.", "A2,A4", a[2], true );

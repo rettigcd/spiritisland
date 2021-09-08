@@ -50,15 +50,6 @@ namespace SpiritIsland {
 			) );
 		}
 
-		static public async Task SelectCardToReplayForCost( this Spirit spirit, int maxCost, PowerCard[] options ) {
-			maxCost = System.Math.Min( maxCost, spirit.Energy );
-			if(options.Length == 0) return;
-			var factory = (TargetSpace_PowerCard)await spirit.Select( "Select card to replay", options.Where(x=>x.Cost<=maxCost).ToArray() );
-			if(factory == null) return;
-			spirit.Energy -= factory.Cost;
-			spirit.AddActionFactory( factory );
-		}
-
 		static public async Task ForgetPowerCard( this Spirit spirit ) {
 			var options = spirit.PurchasedCards.Union( spirit.Hand ).Union( spirit.DiscardPile )
 				.ToArray();

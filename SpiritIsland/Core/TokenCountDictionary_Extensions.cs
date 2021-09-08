@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace SpiritIsland {
+
 	public static class TokenCountDictionary_Extensions {
 
 		#region Invader Specific
@@ -53,21 +54,6 @@ namespace SpiritIsland {
 			if(specific.Health == 0) throw new System.ArgumentException( "Don't try to track dead invaders." );
 			counts[specific] += delta;
 		}
-
-		static public void Add( this TokenCountDictionary counts, TokenGroup generic, int delta=1 ) {
-			if(delta<0) throw new ArgumentOutOfRangeException(nameof(delta));
-			counts[generic.Default] += delta;
-		}
-
-		static public string ToSummary(this TokenCountDictionary counts) {
-			static int Order_CitiesTownsExplorers( Token invader )
-				=> -(invader.FullHealth * 10 + invader.Health);
-			return counts.Invaders()
-				.OrderBy( Order_CitiesTownsExplorers )
-				.Select( invader => counts[invader] + invader.Summary )
-				.Join( "," );
-		}
-
 
 	}
 

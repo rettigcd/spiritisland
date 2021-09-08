@@ -56,7 +56,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		async Task When_ApplyFearAndExplore() {
 			gameState.Fear.AddDirect( new FearArgs{ count=4 } );
 			await gameState.Fear.Apply();
-			explored = gameState.Explore( invaderCard );
+			explored = await gameState.Explore( invaderCard );
 		}
 
 		Space[] explored;
