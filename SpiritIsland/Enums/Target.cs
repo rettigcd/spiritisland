@@ -21,6 +21,7 @@
 
 		// BAC
 		public const string BeastOrJungle    = "BeastOrJunlge";
+		public const string Beast            = "Beast";
 		public const string PresenceOrWilds  = "PresenceOrWilds";
 		public const string Inland           = "Inland";
 	}

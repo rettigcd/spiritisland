@@ -8,6 +8,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 		static GameState_BranchAndClaw() {
 			// Register new filters needed for Branch and Claw
+			SpaceFilter.lookup[Target.Beast]           = ( ctx, s ) => ctx.GameState.Tokens[s].Beasts().Any;
 			SpaceFilter.lookup[Target.BeastOrJungle]   = ( ctx, s ) => ctx.SelectTerrain( s ) == Terrain.Jungle || ctx.GameState.Tokens[s].Beasts().Any;
 			SpaceFilter.lookup[Target.PresenceOrWilds] = ( ctx, s ) => (ctx.Spirit.Presence.IsOn( s ) || ctx.GameState.Tokens[s].Wilds() > 0 );
 
