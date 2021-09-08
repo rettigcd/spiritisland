@@ -53,7 +53,7 @@ namespace SpiritIsland {
 			maxCost = System.Math.Min( maxCost, spirit.Energy );
 			if(options.Length == 0) return;
 			var factory = (TargetSpace_PowerCard)await spirit.Select( "Select card to replay", options.Where(x=>x.Cost<=maxCost).ToArray() );
-
+			if(factory == null) return;
 			spirit.Energy -= factory.Cost;
 			spirit.AddActionFactory( factory );
 		}

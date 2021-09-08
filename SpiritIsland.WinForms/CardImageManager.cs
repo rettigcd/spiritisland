@@ -53,7 +53,7 @@ namespace SpiritIsland.WinForms {
 
 			if(!images.ContainsKey( name )) {
 				string filename = name.Replace( ' ', '_' ).Replace( "'", "" ).ToLower();
-				Image image = Image.FromFile( $".\\images\\fear\\{filename}.jpg" );
+				Image image = Image.FromFile( $".\\images\\basegame\\fear\\{filename}.jpg" );
 				images.Add( name, image );
 			}
 			return images[name];

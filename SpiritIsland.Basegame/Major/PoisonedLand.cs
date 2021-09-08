@@ -7,8 +7,6 @@ namespace SpiritIsland.Basegame {
 		[FromPresence(1)]
 		static public async Task ActAsync(TargetSpaceCtx ctx){
 
-			// !!! Target Ocean and add blight there?  (in case just doing for Fear)
-
 			// Add 1 blight, destroy all dahan
 			ctx.AddBlight(1);
 			await ctx.DestroyDahan( ctx.DahanCount, Cause.Power );

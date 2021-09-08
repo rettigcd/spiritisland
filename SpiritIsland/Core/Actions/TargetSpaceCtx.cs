@@ -33,8 +33,8 @@ namespace SpiritIsland {
 		public TokenCountDictionary Tokens { get; }
 
 		// Binds Target
-		public Task<Space[]> PushUpToNTokens( int countToPush, params TokenGroup[] generics )
-			=> this.PushUpToNTokens( Target, countToPush, generics );
+		public Task<Space[]> PushUpToNTokens( int countToPush, params TokenGroup[] groups )
+			=> new PowerTokenPusher( this, this.Target, countToPush, groups, Present.Done ).Exec();
 
 		// Binds to Dahan
 		public Task GatherUpToNDahan( int dahanToGather )
@@ -72,7 +72,7 @@ namespace SpiritIsland {
 		public bool IsOneOf(params Terrain[] terrain) => Terrain.IsIn(terrain);
 
 		public bool HasBlight => GameState.HasBlight(Target);
-		public void AddBlight(int delta=1) => GameState.AddBlight(Target,delta); // delta=-1 used to remove blight. // !!! Some card (Infinite Vitality?) stops blight, will it stop this?
+		public void AddBlight(int delta=1) => GameState.AddBlight(Target,delta); // This is for adjusting, NOT blighting land
 		public void RemoveBlight() => GameState.AddBlight( Target, -1 );
 
 		public int BlightOnSpace => GameState.GetBlightOnSpace(Target);

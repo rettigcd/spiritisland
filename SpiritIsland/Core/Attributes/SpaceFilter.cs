@@ -7,7 +7,7 @@ namespace SpiritIsland {
 
 		static public readonly SpaceFilter ForPlacingPresence = new SpaceFilter();
 		static public readonly SpaceFilter ForCascadingBlight = new UsesSpecialTerrain();
-		static public readonly SpaceFilter ForPowers          = new UsesSpecialTerrain(); // !!! Power Push should use this also
+		static public readonly SpaceFilter ForPowers          = new UsesSpecialTerrain();
 
 		public static readonly Dictionary<string,Func<SpaceFilterCtx, Space,bool>> lookup = new Dictionary<string, Func<SpaceFilterCtx, Space, bool>> {
 			[Target.Any               ] = ( _, s ) => true,

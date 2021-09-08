@@ -38,22 +38,18 @@ namespace SpiritIsland {
 		public async Task Exec() {
 
 			// clip count to available slow stuff
-			countToChange = System.Math.Min( countToChange, CalcSlowFactories().Length ); // !! unit test that we are limited by slow cards & by countToMakeFAst
+			countToChange = System.Math.Min( countToChange, FindSouceFactories().Length );
 
 			while(countToChange > 0)
 				await FindAndChange();
 
 		}
 
-		// !!! if we have a repeat ability, maybe include played cards.
-		// OR we could make sure all Repeat abilities, put cards back into the Available List
-		// where they could then be switched speed if available
-		protected IActionFactory[] CalcSlowFactories() {
-			return spirit.GetAvailableActions( toChangeFrom ).ToArray();
-		}
+		protected IActionFactory[] FindSouceFactories()
+			=> spirit.GetAvailableActions( toChangeFrom ).ToArray();
 
 		async Task FindAndChange( ) {
-			var changeableFactories = CalcSlowFactories();
+			var changeableFactories = FindSouceFactories();
 			IActionFactory factory = await spirit.Select( prompt + $" (remaining: {countToChange})",
 				changeableFactories,
 				Present.Done

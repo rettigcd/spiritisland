@@ -28,7 +28,7 @@ namespace SpiritIsland.WinForms {
 
 		static public void DrawFearCard( this Graphics graphics, RectangleF rect, DisplayFearCard x ) {
 			if(x==null) return;
-			var img = new FearCardImageManager().GetImage( x.Text );
+			using var img = new FearCardImageManager().GetImage( x.Text );
 			graphics.DrawImage( img, rect );
 		}
 

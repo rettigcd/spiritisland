@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 
 namespace SpiritIsland {
@@ -8,7 +7,6 @@ namespace SpiritIsland {
 	public static class IMakeGamestateDecisionsExtensions {
 
 		static public IMakeGamestateDecisions MakeDecisionsFor(this Spirit spirit, GameState gameState ) 
-//			=> new GsDecisionMaker(spirit,gameState);
 			=> new PowerCtx( spirit, gameState );
 
 		#region IMakeGamestateDecision class
@@ -52,40 +50,12 @@ namespace SpiritIsland {
 
 		#region Push
 
-		static public Task<Space[]> PushNTokens( this IMakeGamestateDecisions ctx, Space source, int countToPush , params TokenGroup[] groups ) 
-			=> ctx.PushTokens_Inner(source,countToPush,groups, Present.IfMoreThan1 );
+		static public Task<Space[]> PushNTokens( this IMakeGamestateDecisions ctx, Space source, int countToPush , params TokenGroup[] groups )
+			//			=> ctx.PushTokens_Inner(source,countToPush,groups, Present.IfMoreThan1 );
+			=> new TokenPusher( ctx, source, countToPush, groups, Present.IfMoreThan1 ).Exec();
 
 		static public Task<Space[]> PushUpToNTokens( this IMakeGamestateDecisions ctx, Space source, int countToPush , params TokenGroup[] groups ) 
-			=> ctx.PushTokens_Inner( source, countToPush, groups, Present.Done );
-
-		static async Task<Space[]> PushTokens_Inner( this IMakeGamestateDecisions ctx, Space source, int countToPush, TokenGroup[] groups, Present present )  {
-
-			// !!! This next line needs to Use Power Adjacents for Powers
-			var destinationOptions = source.Adjacent.Where( x => x.Terrain != Terrain.Ocean );
-
-			var counts = ctx.GameState.Tokens[source];
-			Token[] GetTokens() => counts.OfAnyType(groups);
-			countToPush = System.Math.Min(countToPush,counts.SumAny(groups));
-
-			var pushedToSpaces = new List<Space>();
-
-			var tokens = GetTokens();
-			while(0<countToPush && 0<tokens.Length){
-				var decision = new SelectTokenToPushDecision( source, countToPush, tokens, present );
-				var token = await ctx.Self.Action.Decide( decision );
-
-				if(token==null) 
-					break;
-
-				var destination = await ctx.Self.Action.Decide( new PushTokenDecision(token,source,destinationOptions,Present.Always)); 
-				await ctx.GameState.Move(token, source, destination );
-
-				pushedToSpaces.Add( destination );
-				--countToPush;
-				tokens = GetTokens();
-			}
-			return pushedToSpaces.ToArray();
-		}
+			=> new TokenPusher(ctx,source,countToPush,groups,Present.Done).Exec();
 
 		#endregion Push
 
@@ -127,7 +97,7 @@ namespace SpiritIsland {
 		static public InvaderGroup InvadersOn( this IMakeGamestateDecisions engine, Space space )
 			=> engine.Self.BuildInvaderGroupForPowers( engine.GameState, space );
 
-		static public async Task DamageInvaders( this IMakeGamestateDecisions engine, Space space, int damage ) { // !!! let players choose the item to apply damage to
+		static public async Task DamageInvaders( this IMakeGamestateDecisions engine, Space space, int damage ) {
 			if(damage == 0) return;
 			await engine.InvadersOn( space ).ApplySmartDamageToGroup( damage );
 		}
@@ -153,11 +123,6 @@ namespace SpiritIsland {
 		static public Task<Space> PowerTargetsSpace( this IMakeGamestateDecisions engine, From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum )
 			=> engine.Self.PowerApi.TargetsSpace( engine.Self, engine.GameState, sourceEnum, sourceTerrain, range, filterEnum );
 
-		// Syntax Options
-		// ctx.Target.MakeDecisionsFor(gameState).PowerTargetsSpace(...);
-		// ctx.TargetSpiritTargets(...)
-
 	}
-
 
 }

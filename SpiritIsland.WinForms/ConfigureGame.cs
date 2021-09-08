@@ -12,23 +12,7 @@ namespace SpiritIsland.WinForms {
 		}
 
 		void ConfigureGame_Load( object sender, EventArgs e ) {
-			var spirits = new Type[] {
-				typeof(RiverSurges),
-				typeof(LightningsSwiftStrike),
-				typeof(Shadows),
-				typeof(VitalStrength),
-				typeof(Thunderspeaker),
-				typeof(ASpreadOfRampantGreen),
-				typeof(Bringer),
-				typeof(Ocean),
-				typeof(Keeper),
-				typeof(SharpFangs),
-			};
-			spiritListBox.Items.Add("[Random]");
-			foreach(var spirit in spirits) {
-				spiritListBox.Items.Add(spirit);
-			}
-			spiritListBox.SelectedIndex = 0;
+			Init_SpiritList();
 
 			// boards
 			boardListBox.Items.Add( "[Random]" );
@@ -52,7 +36,28 @@ namespace SpiritIsland.WinForms {
 			colorListBox.SelectedIndex = 0;
 
 
-			CheckOkStatus( null,null);
+			CheckOkStatus( null, null );
+		}
+
+		private void Init_SpiritList() {
+			spiritListBox.Items.Clear();
+			spiritListBox.Items.Add( "[Random]" );
+			// Base Game
+			spiritListBox.Items.Add( typeof( RiverSurges ) );
+			spiritListBox.Items.Add( typeof( LightningsSwiftStrike ) );
+			spiritListBox.Items.Add( typeof( Shadows ) );
+			spiritListBox.Items.Add( typeof( VitalStrength ) );
+			spiritListBox.Items.Add( typeof( Thunderspeaker ) );
+			spiritListBox.Items.Add( typeof( ASpreadOfRampantGreen ) );
+			spiritListBox.Items.Add( typeof( Bringer ) );
+			spiritListBox.Items.Add( typeof( Ocean ) );
+
+			// Branch And Claw
+			if(branchAndClawCheckBox.Checked) {
+				spiritListBox.Items.Add( typeof( Keeper ) );
+				spiritListBox.Items.Add( typeof( SharpFangs ) );
+			}
+			spiritListBox.SelectedIndex = 0;
 		}
 
 		private void CheckOkStatus( object sender, EventArgs e ) {
@@ -61,17 +66,33 @@ namespace SpiritIsland.WinForms {
 
 		private void OkButton_Click( object sender, EventArgs e ) {
 			Spirit spirit = SelectedSpirit();
-//			spirit.UsePowerProgression();
+			if( powerProgressionCheckBox.Checked) {
+				try {
+					spirit.UsePowerProgression();
+				} catch {
+					MessageBox.Show("Unable to use power progression for "+spirit.Text);
+				}
+			}
 			Board board = SelectedBoard();
 
 			Color = (colorListBox.SelectedIndex == 0)
 				? GetColorForSpirit(spirit)
 				: colorListBox.SelectedItem as string;
 
-			var gameState = new GameState_BranchAndClaw( spirit, board ) {
-				MajorCards = new PowerCardDeck( PowerCard.GetMajors( typeof( AcceleratedRot ) ) ),   // BASE GAME ONLY!
-				MinorCards = new PowerCardDeck( PowerCard.GetMinors( typeof( AcceleratedRot ) ) )  // BASE GAME ONLY!
-			};
+			var majorCards = PowerCard.GetMajors( typeof( AcceleratedRot ) ).ToList();
+			var minorCards = PowerCard.GetMinors( typeof( AcceleratedRot ) ).ToList();
+
+			if(branchAndClawCheckBox.Checked) {
+				majorCards.AddRange( PowerCard.GetMajors(typeof(CastDownIntoTheBrinyDeep)) );
+				minorCards.AddRange( PowerCard.GetMinors( typeof( CastDownIntoTheBrinyDeep ) ) );
+			}
+
+			var gameState = !branchAndClawCheckBox.Checked
+				? new GameState( spirit, board )
+				: new GameState_BranchAndClaw( spirit, board );
+
+			gameState.MajorCards = new PowerCardDeck( majorCards.ToArray() );
+			gameState.MinorCards = new PowerCardDeck( minorCards.ToArray() );
 
 			var baseGameFearCards = new IFearCard[] {
 				new AvoidTheDahan(),
@@ -104,17 +125,17 @@ namespace SpiritIsland.WinForms {
 
 		static string GetColorForSpirit( Spirit spirit ) {
 			return spirit.Text switch {
-				RiverSurges.Name => "blue",
+				RiverSurges.Name           => "blue",
 				LightningsSwiftStrike.Name => "yellow",
-				VitalStrength.Name => "orange",
-				Shadows.Name => "purple",
-				Thunderspeaker.Name => "red",
+				VitalStrength.Name         => "orange",
+				Shadows.Name               => "purple",
+				Thunderspeaker.Name        => "red",
 				ASpreadOfRampantGreen.Name => "green",
-				Bringer.Name => "pink",
-				Ocean.Name => "dkblue",
-				Keeper.Name => "greenorangeswirl",
-				SharpFangs.Name => "red",
-				_ => "green"
+				Bringer.Name               => "pink",
+				Ocean.Name                 => "dkblue",
+				Keeper.Name                => "greenorangeswirl",
+				SharpFangs.Name            => "red",
+				_                          => "green"
 			};
 		}
 
@@ -142,7 +163,11 @@ namespace SpiritIsland.WinForms {
 		}
 
 		public string Color { get; private set; }
+
 		public SinglePlayerGame Game { get; private set; }
 
+		private void checkBox1_CheckedChanged( object sender, EventArgs e ) {
+			Init_SpiritList();
+		}
 	}
 }

@@ -14,11 +14,6 @@ namespace SpiritIsland {
 			GameState = gameState;
 		}
 
-		// !!! Spirit Powers, Special Rules, & Blight should use this.
-		// Oceans are treated as Coastal Wetlands for
-		//		* Spirit Powers
-		//		* Special Rules
-		//		* Blight
 		static public IEnumerable<Space> PowerAdjacents(Space source) => source
 			.Adjacent
 			.Where( x => SpaceFilter.ForPowers.TerrainMapper(x) != Terrain.Ocean );

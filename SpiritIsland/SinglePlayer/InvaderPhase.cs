@@ -31,16 +31,6 @@ namespace SpiritIsland.SinglePlayer {
 			string[] ravageResults = await gameState.Ravage( invaderDeck.Ravage );
 			Log( "Ravaging:" + (invaderDeck.Ravage?.Text ?? "-") + "\r\n" + ravageResults.Join( "\r\n" ) );
 
-			// Cascade blight
-			while(gameState.cascadingBlight.Count > 0) {
-				Space blightedSpace = gameState.cascadingBlight.Pop();
-				Space cascadeSpace = await decisionMaker.Action.Decide(new TargetSpaceDecision( "Select land to cascade blight from " + blightedSpace.Label,
-					blightedSpace.Adjacent
-						.Where( x => x.Terrain != Terrain.Ocean ) // $OCEAN$ - blight
-				));
-				gameState.AddBlight( cascadeSpace );
-			}
-
 			// Building
 			Log( "Building:" + invaderDeck.Build?.Text ?? "-" );
 			var builds = await gameState.Build( invaderDeck.Build );

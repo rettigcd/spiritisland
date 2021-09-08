@@ -22,7 +22,7 @@ namespace SpiritIsland.Basegame {
 			async Task RavagePlusBonusDamage( RavageEngine ravageEngine ) {
 				int damageInflictedFromInvaders = ravageEngine.GetDamageInflictedByInvaders();
 				await ravageEngine.DamageLand( damageInflictedFromInvaders );
-				int dahanKilled = await ravageEngine.DamageDahan( damageInflictedFromInvaders ); // !!! for consealing shadows remove this part
+				int dahanKilled = await ravageEngine.DamageDahan( damageInflictedFromInvaders );
 				int damageFromDahan = ravageEngine.GetDamageInflictedByDahan();
 
 				var grpCounts = ravageEngine.Counts;

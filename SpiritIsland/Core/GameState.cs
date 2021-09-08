@@ -112,19 +112,32 @@ namespace SpiritIsland {
 		public IBlightCard BlightCard = new NullBlightCard();
 
 		/// <summary>Causes cascading</summary>
-		public Task BlightLand( Space space ){
-			if(HasBlight(space))
-				cascadingBlight.Push(space); // !!! resolve during battle
-			AddBlight(space);
+		public async Task BlightLand( Space blightSpace ){
 
-			foreach(var spirit in Spirits)
-				if(spirit.Presence.IsOn(space))
-					spirit.Presence.Destroy(space);
+			while(blightSpace != null) {
 
-			--blightOnCard;
-			if(BlightCard != null && blightOnCard==0)
-				BlightCard.OnBlightDepleated(this);
-			return Task.CompletedTask;
+				var tokens = Tokens[blightSpace];
+				bool isFirstBlight = tokens[TokenType.Blight] == 0;
+
+				foreach(var spirit in Spirits)
+					if(spirit.Presence.IsOn( blightSpace ))
+						spirit.Presence.Destroy( blightSpace );
+
+				++tokens[TokenType.Blight];
+				--blightOnCard;
+				if(BlightCard != null && blightOnCard == 0)
+					BlightCard.OnBlightDepleated( this );
+
+				blightSpace = isFirstBlight ? null
+					: await Spirits[0].Action.Decide(new SelectAdjacentDecision(
+						"Cascade blight to", 
+						blightSpace, 
+						GatherPush.None,
+						blightSpace.Adjacent.Where( x => SpaceFilter.ForCascadingBlight.TerrainMapper( x ) != Terrain.Ocean ),
+						Present.Always
+					));
+			}
+
 		}
 
 		public void AddBlight( Space space, int delta=1 ){ // also used for removing blight
@@ -136,9 +149,8 @@ namespace SpiritIsland {
 		}
 
 		public bool HasBlight( Space s ) => GetBlightOnSpace(s) > 0;
-		public int GetBlightOnSpace( Space space ){ return Tokens[space][TokenType.Blight]; }
 
-		public Stack<Space> cascadingBlight = new Stack<Space>();
+		public int GetBlightOnSpace( Space space ){ return Tokens[space][TokenType.Blight]; }
 
 		#endregion
 
@@ -204,7 +216,7 @@ namespace SpiritIsland {
 			buildLands = buildLands.Except( skipBuild ).ToArray(); // reload in case they changed
 
 			return buildLands
-				.Select( x=> Tokens[x] ) // !!! store space in Counts
+				.Select( x=> Tokens[x] )
 				.Where( tup => tup.HasInvaders() )
 				.Select( tup => tup.Space.Label + " gets " + Build( tup ) )
 				.ToArray();
@@ -266,7 +278,7 @@ namespace SpiritIsland {
 
 		public bool HasInvaders( Space space ) => Tokens[space].HasInvaders();
 
-		public async Task SpiritFree_FearCard_DamageInvaders( Space space, int damage ) { // !!! let players choose the item to apply damage to
+		public async Task SpiritFree_FearCard_DamageInvaders( Space space, int damage ) {
 			if(damage == 0) return;
 			await Invaders.On( space, Cause.Fear ).ApplySmartDamageToGroup( damage );
 		}
