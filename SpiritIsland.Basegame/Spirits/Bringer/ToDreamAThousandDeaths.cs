@@ -16,36 +16,21 @@ namespace SpiritIsland.Basegame {
 		public override async Task OnInvaderDestroyed( Space space, Token specific ) {
 			if(specific.Generic == Invader.City) {
 				AddFear( space, 5 );
-			} else if(specific.Generic == Invader.Town) {
-				AddFear( space, 2 );
-				await BringerPushNInvaders( space, 1, Invader.Town ); // !!! wrong, need to push correct hit-points
 			} else {
-				await BringerPushNInvaders( space, 1, Invader.Explorer );
+				if(specific.Generic == Invader.Town)
+					AddFear( space, 2 );
+				await BringerPushNInvader( space, 1, specific );
 			}
 		}
 
-		async Task BringerPushNInvaders( Space source, int countToPush
-			, params TokenGroup[] healthyInvaders
-		) {
+		async Task BringerPushNInvader( Space source, int countToPush ,Token invader ) {
 
-			Token[] CalcInvaderTypes() => engine.GameState.Tokens[ source ].OfAnyType( healthyInvaders );
+			var destination = await engine.Self.Action.Decide( new TargetSpaceDecision(
+				"Push " + invader.Summary + " to",
+				source.Adjacent.Where( SpaceFilter.ForPowers.GetFilter( engine.Self, engine.GameState, Target.Any ) )
+			) );
+			await engine.GameState.Move( invader, source, destination );
 
-			var invaders = CalcInvaderTypes();
-			while(0 < countToPush && 0 < invaders.Length) {
-				var invader = await engine.Self.Action.Decide( new SelectTokenToPushDecision( source, countToPush, invaders, Present.Always ) );
-
-				if(invader == null)
-					break;
-
-				var destination = await engine.Self.Action.Decide( new TargetSpaceDecision(
-					"Push " + invader.Summary + " to",
-					source.Adjacent.Where( SpaceFilter.ForPowers.GetFilter( engine.Self, engine.GameState, Target.Any ) )
-				) );
-				await engine.GameState.Move( invader, source, destination );
-
-				--countToPush;
-				invaders = CalcInvaderTypes();
-			}
 		}
 
 	}

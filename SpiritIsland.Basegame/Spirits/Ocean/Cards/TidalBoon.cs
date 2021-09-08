@@ -19,8 +19,17 @@ namespace SpiritIsland.Basegame {
 			await spaceCtx.PushUpToNTokens(1,Invader.Town);
 			await spaceCtx.PushUpToNTokens(2,TokenType.Dahan);
 
-			// !!! If dahan are pushed to your ocean, you may move them to any costal land instead of drowning them.
+			// If dahan are pushed to your ocean, you may move them to any costal land instead of drowning them.
+			ctx.GameState.Tokens.TokenMoved.ForRound.Add( PushDahanOutOfOcean );
+
+			async Task PushDahanOutOfOcean( GameState gs, TokenMovedArgs args ) {
+				if(args.Token.Generic != TokenType.Dahan) return;
+				if(args.to.Terrain != Terrain.Ocean) return;
+				await ctx.Self.MakeDecisionsFor(gs).PushUpToNTokens(args.to,args.count,TokenType.Dahan);
+			}
+
 		}
+
 
 	}
 }

@@ -31,19 +31,18 @@ namespace SpiritIsland {
 		public int DamageInflictedByInvaders => Counts.Invaders().Select( invader => invader.FullHealth * this[invader] ).Sum();
 
 		public async Task ApplyDamageToEach( int individualDamage, params TokenGroup[] generic ) {
-			// !!! this is wrong - only applies damage to single item
 			foreach(var invader in Counts.Invaders())
 				if(generic.Contains(invader.Generic))
-					await ApplyDamageToSpecific( individualDamage, invader );
+					await ApplyDamageToAllTokensOfType( individualDamage, invader );
 		}
 
-		public async Task ApplyDamageToSpecifics( int individualDamage, IEnumerable<Token> part ) {
+		public async Task ApplyDamageToAllTokensOfType( int individualDamage, IEnumerable<Token> part ) {
 			var ordered = part.OrderByDescending( x => x.Health );// MUST damage healthy first so we don't double damage 
 			foreach(var specific in ordered)
-				await ApplyDamageToSpecific(individualDamage,specific);
+				await ApplyDamageToAllTokensOfType(individualDamage,specific);
 		}
 
-		async Task ApplyDamageToSpecific( int individualDamage, Token token ) {
+		async Task ApplyDamageToAllTokensOfType( int individualDamage, Token token ) {
 			while(this[token] > 0)
 				await ApplyDamageTo1( individualDamage, token );
 		}

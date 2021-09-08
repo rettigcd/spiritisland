@@ -38,6 +38,13 @@ namespace SpiritIsland {
 
 		#endregion
 
+		public TokenCountDictionary Clone() {
+			var copy = new CountDictionary<Token>();
+			foreach(var invader in this.Invaders())
+				copy[invader] = this[invader];
+			return new TokenCountDictionary(Space,copy);
+		}
+
 		public TokenBinding Blight => new TokenBinding(this,TokenType.Blight);
 		public TokenBinding Defend => new TokenBinding( this, TokenType.Defend );
 

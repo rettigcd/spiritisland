@@ -71,20 +71,31 @@ namespace SpiritIsland.Basegame {
 			this.AddActionFactory( new Setup_PlacePresenceInCostal() ); // let user pick initial ocean
 
 			gameState.Tokens.TokenMoved.ForGame.Add(InvadersMoved);
+			gameState.TimePassed += RemoveDrownedDahan;
+		}
+
+		void RemoveDrownedDahan( GameState gs ) {
+			foreach(var board in gs.Island.Boards) {
+				var oceanTokens = gs.Tokens[board[0]];
+				oceanTokens[TokenType.Dahan[1]] = 0;
+				oceanTokens[TokenType.Dahan[2]] = 0;
+			}
 		}
 
 		async Task InvadersMoved(GameState gs, TokenMovedArgs args ) {
 			if(args.to.Terrain!=Terrain.Ocean) return;
 			var grp = args.Token.Generic;
-			if( grp != Invader.City && grp != Invader.Town && grp != Invader.Explorer ) return; // Could created an Invader subclass that is easier to test.
 
-			drownedCount += args.Token.FullHealth;
-			await gs.Invaders.On( args.to, Cause.Ocean ).Destroy( 1,args.Token );
+			if( grp == Invader.City || grp == Invader.Town || grp == Invader.Explorer ) { // Could created an Invader subclass that is easier to test.
+				// Drown Invaders for points
+				drownedCount += args.Token.FullHealth;
+				await gs.Invaders.On( args.to, Cause.Ocean ).Destroy( 1,args.Token );
 
-			int spiritCount = gs.Spirits.Length;
-			while(spiritCount <= drownedCount) {
-				++Energy;
-				drownedCount -= spiritCount;
+				int spiritCount = gs.Spirits.Length;
+				while(spiritCount <= drownedCount) {
+					++Energy;
+					drownedCount -= spiritCount;
+				}
 			}
 
 		}

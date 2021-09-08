@@ -81,13 +81,8 @@ namespace SpiritIsland.Basegame {
 		}
 
 		public override InvaderGroup BuildInvaderGroupForPowers( GameState gs, Space space ) {
-			var src = gs.Tokens[ space ];
-
-			var detached = new CountDictionary<Token>();
-			foreach(var invader in src.Invaders())
-				detached[invader] = src[invader];
-
-			return new InvaderGroup( space, new TokenCountDictionary(space, detached) ) {
+			var detached = gs.Tokens[space].Clone(); 
+			return new InvaderGroup( space, detached ) {
 				DestroyInvaderStrategy = new ToDreamAThousandDeaths_DestroyStrategy( gs.Fear.AddDirect, Cause.Power, this.MakeDecisionsFor( gs ) ),
 			};
 		}
