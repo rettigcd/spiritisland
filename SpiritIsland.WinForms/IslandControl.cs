@@ -92,6 +92,7 @@ namespace SpiritIsland.WinForms {
 			//			boardA = Image.FromFile(".\\images\\board a.png");
 
 			dahan = Image.FromFile(".\\images\\Dahanicon.png");
+			dahan1 = Image.FromFile( ".\\images\\Dahan1icon.png" ); // !!!
 			city = Image.FromFile(".\\images\\Cityicon.png");
 			city2 = Image.FromFile( ".\\images\\City2icon.png" );
 			city1 = Image.FromFile( ".\\images\\City1icon.png" );
@@ -135,6 +136,7 @@ namespace SpiritIsland.WinForms {
 		Image board;
 
 		Image dahan;
+		Image dahan1;
 		Image city;
 		Image city2;
 		Image city1;
@@ -302,16 +304,18 @@ namespace SpiritIsland.WinForms {
 			// dahan & presence & blight
 			var tokens = gameState.Tokens[space];
 			CountDictionary<Image> images = new();
-			images[dahan] = gameState.DahanGetCount( space );
-			images[defend] = gameState.GetDefence( space );
+			images[dahan]    = tokens[TokenType.Dahan[2]];
+			images[dahan1]   = tokens[TokenType.Dahan[1]];
+			images[defend]   = gameState.GetDefence( space );
 			images[presence] = spirit.Presence.CountOn( space );
-			images[blight] = gameState.GetBlightOnSpace( space );
+			images[blight]   = gameState.GetBlightOnSpace( space );
 			DrawRow( graphics, x, ref y, iconWidth, xStep, images );
+
 			images.Clear();
-			images[beast] = tokens[BacTokens.Beast];
-			images[wilds] =  tokens[BacTokens.Wilds];
-			images[disease] = tokens[BacTokens.Disease];
-//			images[strife] = tokens[BacTokens.StrgameState.GetBlightOnSpace( space );
+			images[beast]    = tokens[BacTokens.Beast];
+			images[wilds]    = tokens[BacTokens.Wilds];
+			images[disease]  = tokens[BacTokens.Disease];
+//			images[strife]   = tokens[BacTokens.StrgameState.GetBlightOnSpace( space );
 			DrawRow( graphics, x, ref y, iconWidth, xStep, images );
 
 		}

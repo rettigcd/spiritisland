@@ -116,6 +116,7 @@ namespace SpiritIsland {
 			Heal( Invader.City[1] );
 			Heal( Invader.City[2] );
 			Heal( Invader.Town[1] );
+			Heal( TokenType.Dahan[1] );
 		}
 
 		protected virtual Task OnInvaderDestroyed( Token specific ) {

@@ -26,6 +26,7 @@ namespace SpiritIsland {
 		void Heal( GameState obj ) {
 			foreach(var space in gs.Tokens.Keys)
 				new InvaderGroup( space, gs.Tokens[space] ).Heal();
+
 		}
 
 		readonly GameState gs;

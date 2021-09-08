@@ -43,11 +43,6 @@ namespace SpiritIsland {
 			skipExplore.Add(target);
 		}
 
-		public void SkipRavage( params Space[] spaces ) {
-			foreach(var space in spaces )
-				ModifyRavage(space, cfg=>cfg.ShouldRavage=false );
-		}
-
 		public void SkipBuild( params Space[] target ) {
 			skipBuild.AddRange( target );
 		}
@@ -102,10 +97,6 @@ namespace SpiritIsland {
 				await TimePasses_ThisRound.Pop()( this );
 		}
 
-		public void Defend( Space space, int delta ) {
-			ModifyRavage(space, cfg=>cfg.Defend += delta);
-		}
-
 		#region Blight
 
 		public int blightOnCard; // 2 per player
@@ -158,6 +149,11 @@ namespace SpiritIsland {
 
 		public int GetDefence( Space space ) => GetRavageConfiguration( space ).Defend;
 
+
+		public void Defend( Space space, int delta ) {
+			ModifyRavage( space, cfg => cfg.Defend += delta );
+		}
+
 		public ConfigureRavage GetRavageConfiguration( Space space ) => _ravageConfig.ContainsKey( space ) ? _ravageConfig[space] : new ConfigureRavage();
 
 		public void ModifyRavage( Space space, Action<ConfigureRavage> action ) {
@@ -165,8 +161,6 @@ namespace SpiritIsland {
 				_ravageConfig.Add( space, new ConfigureRavage() );
 			action( _ravageConfig[space] );
 		}
-
-		readonly Dictionary<Space, ConfigureRavage> _ravageConfig = new Dictionary<Space, ConfigureRavage>(); // change ravage state of a Space
 
 		public async Task<string[]> Ravage( InvaderCard invaderCard ) {
 			if(invaderCard == null) return Array.Empty<string>();
@@ -196,6 +190,13 @@ namespace SpiritIsland {
 				msgs.Add(await RavageSpace( grp ) );
 			return msgs.ToArray();
 		}
+
+		public void SkipRavage( params Space[] spaces ) {
+			foreach(var space in spaces)
+				ModifyRavage( space, cfg => cfg.ShouldRavage = false );
+		}
+
+		readonly Dictionary<Space, ConfigureRavage> _ravageConfig = new Dictionary<Space, ConfigureRavage>(); // change ravage state of a Space
 
 		protected virtual async Task<string> RavageSpace( InvaderGroup grp ) {
 			var cfg = GetRavageConfiguration( grp.Space );

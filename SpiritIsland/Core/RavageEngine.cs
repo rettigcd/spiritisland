@@ -73,11 +73,20 @@ namespace SpiritIsland {
 		public async Task<int> DamageDahan(int damageInflictedFromInvaders ) {
 			if(damageInflictedFromInvaders == 0 || !cfg.ShouldDamageDahan) return 0;
 
+			// destroy dahan
 			int dahanOnSpace = gs.DahanGetCount( grp.Space );
 			int dahanDestroyed = Math.Min( damageInflictedFromInvaders / cfg.DahanHitpoints, dahanOnSpace ); // rounding down
-			if(dahanDestroyed == 0) return 0;
+			if(dahanDestroyed != 0) {
+				await gs.DahanDestroy( grp.Space, dahanDestroyed, Cause.Invaders );
+			}
 
-			await gs.DahanDestroy( grp.Space, dahanDestroyed, Cause.Invaders );
+			int leftOverDamage = damageInflictedFromInvaders - dahanDestroyed * cfg.DahanHitpoints;
+			bool convert1To1HitPoint = leftOverDamage == cfg.DahanHitpoints - 1;
+			if(convert1To1HitPoint && gs.DahanGetCount( grp.Space )>0) {
+				Counts[TokenType.Dahan[2]]--;
+				Counts[TokenType.Dahan[1]]++;
+			}
+
 			log.Add( $"Kills {dahanDestroyed} of {dahanOnSpace} Dahan leaving {dahanOnSpace - dahanDestroyed} Dahan." );
 			return dahanDestroyed;
 		}
