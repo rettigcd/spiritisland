@@ -67,13 +67,14 @@ namespace SpiritIsland.Basegame {
 			this.spirits = spirits;
 		}
 
-		protected override IEnumerable<Space> GetTargetOptions( Spirit _, From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum, GameState gameState ) {
+		protected override IEnumerable<Space> GetTargetOptions( Spirit self, From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum, GameState gameState ) {
 			return spirits
-				.SelectMany( spirit => base.GetTargetOptions( spirit, sourceEnum, sourceTerrain, range, filterEnum, gameState ) )
+				.SelectMany(
+					spirit => base.GetTargetOptions(spirit, sourceEnum, sourceTerrain, range ,filterEnum, gameState)
+				)
 				.Distinct();
 		}
 
 	}
-
 }
 

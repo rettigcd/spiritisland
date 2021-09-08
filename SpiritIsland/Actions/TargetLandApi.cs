@@ -12,14 +12,28 @@ namespace SpiritIsland {
 			return await self.Action.Decide( new TargetSpaceDecision( "Select space to target.", spaces ));
 		}
 
-		/// <remarks> Virtual so Entwined can override it </remarks>
 		protected virtual IEnumerable<Space> GetTargetOptions( Spirit self, From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum, GameState gameState ) {
+			IEnumerable<Space> source = FindSources( self, sourceEnum, sourceTerrain );
+			return GetTargetOptions( self, gameState, source, range, filterEnum );
+		}
+
+		/// <remarks> Virtual so Entwined can override it </remarks>
+		public virtual IEnumerable<Space> FindSources( Spirit self, From sourceEnum, Terrain? sourceTerrain ) {
 			// Select Source
 			IEnumerable<Space> source = GetSource( self, sourceEnum );
 			if(sourceTerrain.HasValue)
 				source = source.Where( x => x.Terrain == sourceTerrain.Value ); // filter source
+			return source;
+		}
 
-			return source		// starting here
+		public IEnumerable<Space> GetTargetOptions( 
+			Spirit self, 
+			GameState gameState, 
+			IEnumerable<Space> source, 
+			int range, 
+			string filterEnum 
+		) {
+			return source       // starting here
 				.Range( range ) // find spaces within range
 				.Where( SpaceFilter.ForPowers.GetFilter( self, gameState, filterEnum ) ); // matching this destination
 		}
