@@ -8,10 +8,10 @@ namespace SpiritIsland.BranchAndClaw {
 		[FromSacredSite( 2, Target.MountainOrWetland )]
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 
-			int blightCount = ctx.Tokens[TokenType.Blight];
+			int blightCount = ctx.Tokens.Blight;
 
 			if( blightCount == 0 )
-				ctx.Tokens[BacTokens.Beast]++;
+				ctx.Tokens.Beasts().Count++;
 
 			if( blightCount == 1 )
 				ctx.GameState.AddBlight(ctx.Target,-1);

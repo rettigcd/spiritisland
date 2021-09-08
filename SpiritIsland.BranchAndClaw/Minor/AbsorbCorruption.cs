@@ -16,14 +16,14 @@ namespace SpiritIsland.BranchAndClaw {
 				new ActionOption(
 					"Pay 1 Energy to remove 1 blight", 
 					()=>Pay1EnergyToRemoveBlight(ctx), 
-					ctx.Tokens.Has(TokenType.Blight) && ctx.Self.Energy>=1
+					ctx.Tokens.Blight>0 && ctx.Self.Energy>=1
 				)
 			);
 
 		}
 
 		static void Pay1EnergyToRemoveBlight( TargetSpaceCtx ctx ) {
-			ctx.Tokens[TokenType.Blight]--;
+			ctx.Tokens.Blight.Count--;
 			ctx.Self.Energy--;
 		}
 	}

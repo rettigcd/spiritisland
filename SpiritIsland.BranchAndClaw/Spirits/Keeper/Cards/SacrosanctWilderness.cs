@@ -14,15 +14,15 @@ namespace SpiritIsland.BranchAndClaw {
 			// push 2 dahan
 			await ctx.PushUpToNTokens(2, TokenType.Dahan );
 
-			bool applyDamage = ctx.Tokens.Has(BacTokens.Wilds)
+			bool applyDamage = ctx.Tokens.Wilds()>0
 				&& await ctx.Self.UserSelectsFirstText( "Select power","2 damage per wilds","add 1 wilds" );
 
 			if( applyDamage )
 				// 2 damage per wilds in target land
-				await ctx.DamageInvaders( 2 * ctx.Tokens[BacTokens.Wilds] );
+				await ctx.DamageInvaders( 2 * ctx.Tokens.Wilds() );
 			else
 				// add 1 wilds
-				ctx.Tokens.Adjust(BacTokens.Wilds,1);
+				ctx.Tokens.Wilds().Count++;
 		}
 
 

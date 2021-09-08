@@ -12,7 +12,7 @@ namespace SpiritIsland.Basegame {
 			var target = ctx.Target;
 
 			// defend 3
-			ctx.Tokens[TokenType.Defend]+=3;
+			ctx.Tokens.Defend.Count += 3;
 			ctx.GameState.ModifyRavage( target, cfg => {
 				// dahan attach simultaneously with dahan
 				cfg.RavageSequence = SimultaneousDamage;

@@ -27,7 +27,7 @@ namespace SpiritIsland {
 		readonly protected GameState gs;
 		readonly protected ConfigureRavage cfg;
 
-		protected int Defend => Counts[TokenType.Defend];
+		protected int Defend => Counts.Defend;
 
 		public RavageEngine(GameState gs,InvaderGroup grp, ConfigureRavage cfg ) {
 			this.gs = gs;

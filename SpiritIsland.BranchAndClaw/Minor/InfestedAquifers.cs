@@ -10,11 +10,11 @@ namespace SpiritIsland.BranchAndClaw {
 
 			return ctx.SelectActionOption(
 				new ActionOption( "1 damage to each invader"
-					, () => ctx.InvadersOn( ctx.Target ).ApplyDamageToEach( 1, Invader.City, Invader.Town, Invader.Explorer )
-					, ctx.Tokens.Has( BacTokens.Disease )
+					, () => ctx.PowerInvaders.ApplyDamageToEach( 1, Invader.City, Invader.Town, Invader.Explorer )
+					, ctx.Tokens.Disease().Any
 				),
 				new ActionOption( "1 fear and 1 disease"
-					, () => { ctx.Tokens[BacTokens.Disease]++; return Task.CompletedTask; }
+					, () => { ctx.Tokens.Disease().Count++; return Task.CompletedTask; }
 					, ctx.IsOneOf(Terrain.Mountain,Terrain.Wetland)
 				)
 			);

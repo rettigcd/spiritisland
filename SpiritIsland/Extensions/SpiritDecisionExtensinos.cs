@@ -31,9 +31,10 @@ namespace SpiritIsland {
 		}
 
 		// wrapper
-		static public async Task<int> SelectNumber( this Spirit spirit, string prompt, int max ) {
+		static public async Task<int> SelectNumber( this Spirit spirit, string prompt, int max, int min = 1 ) {
 			List<string> numToMove = new List<string>();
-			while(max > 0) numToMove.Add( (max--).ToString() );
+			int cur = max;
+			while(min <= cur ) numToMove.Add( (cur--).ToString() );
 			return int.Parse( await spirit.SelectText( prompt, numToMove.ToArray() ) );
 		}
 

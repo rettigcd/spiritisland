@@ -222,7 +222,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 		}
 
 		void Given_HasWilds( Space space ) {
-			gameState.Tokens[space].Adjust(BacTokens.Wilds,1);
+			gameState.Tokens[space].Wilds().Count++;
 		}
 
 		void Activate_A() {

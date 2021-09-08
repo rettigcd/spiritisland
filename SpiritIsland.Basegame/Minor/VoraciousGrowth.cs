@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 
 			return ctx.SelectActionOption(
 				new ActionOption( "2 Damage", () => ctx.DamageInvaders( 2 ), ctx.HasInvaders ),
-				new ActionOption( "Remove 1 Blight", () => ctx.PushUpToNTokens( 3, TokenType.Dahan ), ctx.Tokens.Has( TokenType.Blight ) )
+				new ActionOption( "Remove 1 Blight", () => ctx.PushUpToNTokens( 3, TokenType.Dahan ), ctx.Tokens.Blight > 0 )
 			);
 
 		}

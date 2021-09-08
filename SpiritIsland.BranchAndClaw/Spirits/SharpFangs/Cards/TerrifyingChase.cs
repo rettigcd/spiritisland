@@ -9,7 +9,7 @@ namespace SpiritIsland.BranchAndClaw {
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 			// push 2 exploeres / towns / dahan
 			// push another 2 explorers / towns / dahan pers beast in target land
-			int pushCount = 2 + 2 * ctx.Tokens[ BacTokens.Beast ];
+			int pushCount = 2 + 2 * ctx.Tokens.Beasts().Count;
 
 			int startingInvaderCount = ctx.Tokens.InvaderTotal();
 

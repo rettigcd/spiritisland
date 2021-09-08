@@ -52,7 +52,7 @@ namespace SpiritIsland.Basegame {
 			) {
 				var newLand = await ctx.Self.Action.Decide( new TargetSpaceDecision( $"Apply up to {additionalDamage} vengeanance damage in:", targetLandOptions ));
 				if(newLand == null) break;
-				int damage = await ctx.Self.SelectNumber( "How many damage to apply?", additionalDamage );// !!! add include0 bool?
+				int damage = await ctx.Self.SelectNumber( "How many damage to apply?", additionalDamage, 0 );
 				await ctx.DamageInvaders( newLand, damage );
 				additionalDamage -= damage;
 			}

@@ -15,7 +15,7 @@ namespace SpiritIsland.BranchAndClaw {
 		[InnateOption( "2 plant,3 animal" )]
 		static public async Task Option2( TargetSpaceCtx ctx ) {
 			await Gather( ctx );
-			await ctx.DamageInvaders( ctx.Tokens[BacTokens.Beast] );
+			await ctx.DamageInvaders( ctx.Tokens.Beasts().Count );
 			await Push( ctx );
 		}
 

@@ -31,6 +31,7 @@ namespace SpiritIsland {
 		public int DamageInflictedByInvaders => Counts.Invaders().Select( invader => invader.FullHealth * this[invader] ).Sum();
 
 		public async Task ApplyDamageToEach( int individualDamage, params TokenGroup[] generic ) {
+			// !!! this is wrong - only applies damage to single item
 			foreach(var invader in Counts.Invaders())
 				if(generic.Contains(invader.Generic))
 					await ApplyDamageToSpecific( individualDamage, invader );
@@ -42,9 +43,9 @@ namespace SpiritIsland {
 				await ApplyDamageToSpecific(individualDamage,specific);
 		}
 
-		async Task ApplyDamageToSpecific( int individualDamage, Token part ) {
-			while(this[part] > 0)
-				await ApplyDamageTo1( individualDamage, part );
+		async Task ApplyDamageToSpecific( int individualDamage, Token token ) {
+			while(this[token] > 0)
+				await ApplyDamageTo1( individualDamage, token );
 		}
 
 		public async Task<int> Destroy( int countToDestory, TokenGroup generic ) {

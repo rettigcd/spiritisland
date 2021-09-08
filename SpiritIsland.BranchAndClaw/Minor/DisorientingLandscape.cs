@@ -9,7 +9,7 @@ namespace SpiritIsland.BranchAndClaw {
 			await ctx.PushUpToNTokens(2, Invader.Explorer);
 
 			if(ctx.Target.Terrain.IsIn(Terrain.Mountain,Terrain.Jungle))
-				ctx.Tokens[BacTokens.Wilds]++;
+				ctx.Tokens.Wilds().Count++;
 		}
 
 	}

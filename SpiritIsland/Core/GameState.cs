@@ -107,13 +107,13 @@ namespace SpiritIsland {
 			while(blightSpace != null) {
 
 				var tokens = Tokens[blightSpace];
-				bool isFirstBlight = tokens[TokenType.Blight] == 0;
+				bool isFirstBlight = tokens.Blight.Count == 0;
 
 				foreach(var spirit in Spirits)
 					if(spirit.Presence.IsOn( blightSpace ))
 						spirit.Presence.Destroy( blightSpace );
 
-				++tokens[TokenType.Blight];
+				tokens.Blight.Count++;
 				--blightOnCard;
 				if(BlightCard != null && blightOnCard == 0)
 					BlightCard.OnBlightDepleated( this );
@@ -132,24 +132,24 @@ namespace SpiritIsland {
 
 		public void AddBlight( Space space, int delta=1 ){ // also used for removing blight
 			var counts = Tokens[space];
-			int newCount = counts[TokenType.Blight] + delta;
+			int newCount = counts.Blight + delta;
 			if(newCount<0) return;
-			counts[TokenType.Blight] = newCount;
+			counts.Blight.Count = newCount;
 			blightOnCard -= delta;
 		}
 
 		public bool HasBlight( Space s ) => GetBlightOnSpace(s) > 0;
 
-		public int GetBlightOnSpace( Space space ){ return Tokens[space][TokenType.Blight]; }
+		public int GetBlightOnSpace( Space space ){ return Tokens[space].Blight; }
 
 		#endregion
 
 		#region Invaders
 
-		public int GetDefence( Space space ) => Tokens[space][TokenType.Defend];
+		public int GetDefence( Space space ) => Tokens[space].Defend;
 
 		public void Defend( Space space, int delta ) {
-			Tokens[space] [TokenType.Defend] += delta;
+			Tokens[space].Defend.Count += delta;
 		}
 
 		public ConfigureRavage GetRavageConfiguration( Space space ) => _ravageConfig.ContainsKey( space ) ? _ravageConfig[space] : new ConfigureRavage();

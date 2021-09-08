@@ -17,7 +17,7 @@ namespace SpiritIsland.BranchAndClaw {
 		static public Task Option2( TargetSpaceCtx ctx ) {
 			// if target land has no explorer, add 1 wilds
 			if( !ctx.Tokens.HasAny(Invader.Explorer) )
-				ctx.Tokens.Adjust(BacTokens.Wilds,1);
+				ctx.Tokens.Wilds().Count++;
 			return Task.CompletedTask;
 		}
 

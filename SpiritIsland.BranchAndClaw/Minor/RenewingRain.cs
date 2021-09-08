@@ -11,7 +11,7 @@ namespace SpiritIsland.BranchAndClaw {
 				ctx.RemoveBlight();
 
 			if(ctx.Self.Elements.Contains("3 plant"))
-				ctx.Tokens[BacTokens.Wilds]++;
+				ctx.Tokens.Wilds().Count++;
 			return Task.CompletedTask;
 		}
 

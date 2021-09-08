@@ -9,17 +9,17 @@ namespace SpiritIsland.BranchAndClaw {
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 			return ctx.SelectActionOption(
 				new ActionOption( "1 fear, add beast", ()=>FearAndBeast(ctx) ),
-				new ActionOption( "destroy 1 explorer/town", ()=>DestroyExplorerTown(ctx), ctx.Tokens.Has(BacTokens.Beast) )
+				new ActionOption( "destroy 1 explorer/town", ()=>DestroyExplorerTown(ctx), ctx.Tokens.Beasts().Any )
 			);
 		}
 
 		static void FearAndBeast( TargetSpaceCtx ctx ) {
 			ctx.AddFear( 1 );
-			ctx.Tokens[BacTokens.Beast]++;
+			ctx.Tokens.Beasts().Count++;
 		}
 
 		static Task DestroyExplorerTown( TargetSpaceCtx ctx ) {
-			return ctx.InvadersOn( ctx.Target ).DestroyAny( 1, Invader.Explorer, Invader.Town );
+			return ctx.PowerInvaders.DestroyAny( 1, Invader.Explorer, Invader.Town );
 		}
 
 	}

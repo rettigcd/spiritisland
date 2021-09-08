@@ -9,7 +9,7 @@ namespace SpiritIsland.BranchAndClaw {
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 
 			// if ther are 2 blight or fewer in target land, remove 1 blight
-			if( ctx.Tokens[TokenType.Blight] <= 2)
+			if( ctx.Tokens.Blight <= 2)
 				ctx.RemoveBlight();
 
 			return Task.CompletedTask;

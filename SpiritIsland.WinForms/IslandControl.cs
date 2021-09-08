@@ -306,15 +306,15 @@ namespace SpiritIsland.WinForms {
 			CountDictionary<Image> images = new();
 			images[dahan]    = tokens[TokenType.Dahan[2]];
 			images[dahan1]   = tokens[TokenType.Dahan[1]];
-			images[defend]   = gameState.GetDefence( space );
+			images[defend]   = tokens.Defend;
+			images[blight] = tokens.Blight;
 			images[presence] = spirit.Presence.CountOn( space );
-			images[blight]   = gameState.GetBlightOnSpace( space );
 			DrawRow( graphics, x, ref y, iconWidth, xStep, images );
 
 			images.Clear();
-			images[beast]    = tokens[BacTokens.Beast];
-			images[wilds]    = tokens[BacTokens.Wilds];
-			images[disease]  = tokens[BacTokens.Disease];
+			images[beast]    = tokens.Beasts();
+			images[wilds]    = tokens.Wilds();
+			images[disease]  = tokens.Disease();
 //			images[strife]   = tokens[BacTokens.StrgameState.GetBlightOnSpace( space );
 			DrawRow( graphics, x, ref y, iconWidth, xStep, images );
 

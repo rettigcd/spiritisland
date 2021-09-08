@@ -14,7 +14,7 @@ namespace SpiritIsland.BranchAndClaw {
 			);
 		}
 
-		static void AddDisease( TargetSpaceCtx ctx ) => ctx.Tokens[BacTokens.Disease]++;
+		static void AddDisease( TargetSpaceCtx ctx ) => ctx.Tokens.Disease().Count++;
 
 		static Task FearAndStrife( TargetSpaceCtx ctx ) {
 			ctx.AddFear( 1 );

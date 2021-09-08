@@ -79,7 +79,7 @@ namespace SpiritIsland.BranchAndClaw {
 			// Put 1 Presence
 			Presence.PlaceOn( space );
 			// 1 Wild 
-			gs.Tokens[space].Adjust(BacTokens.Wilds,1);
+			gs.Tokens[space].Wilds().Count++;
 		}
 
 	}
