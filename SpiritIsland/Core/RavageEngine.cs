@@ -12,7 +12,6 @@ namespace SpiritIsland {
 		public bool ShouldDamageDahan { get; set; } = true;
 
 		public int DahanHitpoints { get; set; } = 2;
-		public int Defend { get; set; } = 0;
 		public Func<RavageEngine, Task> RavageSequence = null; // null triggers default
 	}
 
@@ -20,12 +19,15 @@ namespace SpiritIsland {
 
 		public List<string> log = new List<String>();
 		public int DahanDestroyed { get; private set; }
-		
+
+	
 		public TokenCountDictionary Counts => grp.Counts;
 
 		readonly protected InvaderGroup grp;
 		readonly protected GameState gs;
 		readonly protected ConfigureRavage cfg;
+
+		protected int Defend => Counts[TokenType.Defend];
 
 		public RavageEngine(GameState gs,InvaderGroup grp, ConfigureRavage cfg ) {
 			this.gs = gs;
@@ -52,12 +54,12 @@ namespace SpiritIsland {
 
 		public virtual int GetDamageInflictedByInvaders() {
 			int damageFromInvaders = grp.DamageInflictedByInvaders;
-			int damageInflictedFromInvaders = Math.Max( damageFromInvaders - cfg.Defend, 0 );
+			int damageInflictedFromInvaders = Math.Max( damageFromInvaders - Defend, 0 );
 
 			if(damageInflictedFromInvaders == 0)
 				log.Add( "no damage from invaders" );
 			else
-				log.Add( $"{grp} inflicts {damageFromInvaders}-{cfg.Defend}={damageInflictedFromInvaders} damage." );
+				log.Add( $"{grp} inflicts {damageFromInvaders}-{Defend}={damageInflictedFromInvaders} damage." );
 
 			return damageInflictedFromInvaders;
 		}

@@ -57,26 +57,6 @@ namespace SpiritIsland.BranchAndClaw {
 		) {
 			(this.Presence as KeeperPresence).keeper = this;
 
-			var a = new GrowthActionFactory[]{
-				new ReclaimAll()	
-				,new GainEnergy(1)
-			};
-			var b = new GrowthActionFactory[]{
-				new DrawPowerCard(1)
-			};
-			var c = new GrowthActionFactory[]{
-				new GainEnergy(1)
-				,new PlacePresence(3,Target.PresenceOrWilds,"presence or wilds")
-			};
-			var d = new GrowthActionFactory[]{
-				new GainEnergy(-3)
-				,new DrawPowerCard(1)
-				,new PlacePresence(3,Target.NoBlight,"no blight")
-			};
-
-			static GrowthOption Join(GrowthActionFactory[] a,GrowthActionFactory[] b) 
-				=> new GrowthOption( a.Union(b).ToArray() );
-
 			GrowthOptions = new GrowthOption[]{
 				new GrowthOption( new ReclaimAll() ,new GainEnergy(1) ),
 				new GrowthOption( new DrawPowerCard(1) ),

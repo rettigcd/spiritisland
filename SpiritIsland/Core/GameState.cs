@@ -147,11 +147,10 @@ namespace SpiritIsland {
 
 		#region Invaders
 
-		public int GetDefence( Space space ) => GetRavageConfiguration( space ).Defend;
-
+		public int GetDefence( Space space ) => Tokens[space][TokenType.Defend];
 
 		public void Defend( Space space, int delta ) {
-			ModifyRavage( space, cfg => cfg.Defend += delta );
+			Tokens[space] [TokenType.Defend] += delta;
 		}
 
 		public ConfigureRavage GetRavageConfiguration( Space space ) => _ravageConfig.ContainsKey( space ) ? _ravageConfig[space] : new ConfigureRavage();

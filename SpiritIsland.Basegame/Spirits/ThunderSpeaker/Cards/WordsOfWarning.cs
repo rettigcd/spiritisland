@@ -11,9 +11,9 @@ namespace SpiritIsland.Basegame {
 		static public Task Act( TargetSpaceCtx ctx ) {
 			var target = ctx.Target;
 
+			// defend 3
+			ctx.Tokens[TokenType.Defend]+=3;
 			ctx.GameState.ModifyRavage( target, cfg => {
-				// defend 3
-				cfg.Defend += 3;
 				// dahan attach simultaneously with dahan
 				cfg.RavageSequence = SimultaneousDamage;
 			} );

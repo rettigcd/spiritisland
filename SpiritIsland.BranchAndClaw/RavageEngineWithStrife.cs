@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace SpiritIsland.BranchAndClaw {
@@ -26,7 +25,7 @@ namespace SpiritIsland.BranchAndClaw {
 			}
 
 			// Defend
-			int damageInflictedFromInvaders = Math.Max( damageFromInvaders - cfg.Defend, 0 );
+			int damageInflictedFromInvaders = Math.Max( damageFromInvaders - Defend, 0 );
 
 			return damageInflictedFromInvaders;
 		}
