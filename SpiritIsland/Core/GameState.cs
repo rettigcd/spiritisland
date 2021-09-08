@@ -26,10 +26,13 @@ namespace SpiritIsland {
 			Fear = new Fear( this );
 			Invaders = new Invaders( this );
 			Tokens = new IslandTokens( this );
+
+			TimePassed += PreRavaging.EndOfRound;
+			TimePassed += PreBuilding.EndOfRound;
 		}
 
-		// == Components ==
-		public Fear Fear { get; }
+	// == Components ==
+	public Fear Fear { get; }
 		public InvaderDeck InvaderDeck { get; set; }
 		public Island Island { get; set; }
 		public Spirit[] Spirits { get; }
@@ -43,15 +46,10 @@ namespace SpiritIsland {
 			skipExplore.Add(target);
 		}
 
-		public void SkipBuild( params Space[] target ) {
-			skipBuild.AddRange( target );
-		}
-
 		public void SkipExplore( params Space[] target ) {
 			skipExplore.AddRange( target );
 		}
 
-		readonly List<Space> skipBuild = new List<Space>();
 		readonly List<Space> skipExplore = new List<Space>();
 
 		public virtual void Initialize() {
@@ -71,6 +69,7 @@ namespace SpiritIsland {
 		public AsyncEvent<Space[]> PreRavaging = new AsyncEvent<Space[]>();						// A Spread of Rampant Green - stop ravage
 		public AsyncEvent<Space[]> PreBuilding = new AsyncEvent<Space[]>();						// A Spread of Rampant Green - stop build
 		public event Action<GameState> TimePassed;												// Spirit cleanup
+
 		// == Single Round hooks
 		public Stack<Func<GameState, Task>> TimePasses_ThisRound = new Stack<Func<GameState, Task>>();        // Gift of Power
 
@@ -206,10 +205,13 @@ namespace SpiritIsland {
 
 		public async Task<string[]> Build( InvaderCard invaderCard ) {
 
+			// Build normal
 			var buildLands = Island.Boards.SelectMany( board => board.Spaces )
 				.Where( invaderCard.Matches )
-				.Except( skipBuild )
 				.ToArray();
+
+			// Process Changes
+			buildLands = buildLands.Except( skipBuild ).ToArray();
 
 			await PreBuilding?.InvokeAsync(this,buildLands);
 
@@ -221,6 +223,11 @@ namespace SpiritIsland {
 				.Select( tup => tup.Space.Label + " gets " + Build( tup ) )
 				.ToArray();
 		}
+
+		public void SkipBuild( params Space[] target ) {
+			skipBuild.AddRange( target );
+		}
+		readonly List<Space> skipBuild = new List<Space>();
 
 		protected virtual string Build( TokenCountDictionary counts ) {
 			int townCount = counts.Sum( Invader.Town );
@@ -289,10 +296,12 @@ namespace SpiritIsland {
 
 
 	public class AsyncEvent<T> {
-		public async Task InvokeAsync(GameState gameState,T t) {
-			foreach(var handler in Handlers)
-				await TryHandle( handler, gameState, t );
 
+		public async Task InvokeAsync(GameState gameState,T t) {
+			foreach(var handler in ForRound)
+				await TryHandle( handler, gameState, t );
+			foreach(var handler in ForGame)
+				await TryHandle( handler, gameState, t );
 		}
 
 		static async Task TryHandle( Func<GameState, T, Task> handler, GameState gameState, T t ) {
@@ -302,16 +311,21 @@ namespace SpiritIsland {
 			catch(Exception) {
 			}
 		}
-
-		public List<Func<GameState,T,Task>> Handlers = new List<Func<GameState, T,Task>>();
+		public void EndOfRound(GameState _) { ForRound.Clear(); }
+		public List<Func<GameState,T,Task>> ForRound = new List<Func<GameState, T,Task>>();
+		public List<Func<GameState, T, Task>> ForGame = new List<Func<GameState, T, Task>>();
 	}
 
 	public class SyncEvent<T> {
 		public void Invoke( GameState gameState, T t ) {
-			foreach(var handler in Handlers)
+			foreach(var handler in ForRound)
+				handler( gameState, t );
+			foreach(var handler in ForGame)
 				handler( gameState, t );
 		}
-		public List<Action<GameState, T>> Handlers = new List<Action<GameState, T>>();
+		public void EndOfRound(GameState _) { ForRound.Clear(); }
+		public List<Action<GameState, T>> ForRound = new List<Action<GameState, T>>();
+		public List<Action<GameState, T>> ForGame = new List<Action<GameState, T>>();
 	}
 
 

@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.BranchAndClaw {
+
 	public class PortentsOfDisaster {
 
 		[MinorCard( "Portents of Disaster", 0, Speed.Fast, Element.Sun, Element.Moon, Element.Air )]
@@ -17,7 +18,7 @@ namespace SpiritIsland.BranchAndClaw {
 				}
 				return Task.CompletedTask;
 			}
-			ctx.GameState.Tokens.TokenDestroyed.Handlers.Add( Add1MoreFearForFirstDestoryedInvader );
+			ctx.GameState.Tokens.TokenDestroyed.ForRound.Add( Add1MoreFearForFirstDestoryedInvader );
 
 			return Task.CompletedTask;
 		}

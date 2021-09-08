@@ -70,7 +70,7 @@ namespace SpiritIsland.Basegame {
 
 			this.AddActionFactory( new Setup_PlacePresenceInCostal() ); // let user pick initial ocean
 
-			gameState.Tokens.TokenMoved.Handlers.Add(InvadersMoved);
+			gameState.Tokens.TokenMoved.ForGame.Add(InvadersMoved);
 		}
 
 		async Task InvadersMoved(GameState gs, TokenMovedArgs args ) {

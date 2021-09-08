@@ -123,12 +123,10 @@ namespace SpiritIsland.Basegame {
 			Presence.PlaceOn( board.Spaces.Reverse().First(x=>x.Terrain==Terrain.Wetland) );
 			Presence.PlaceOn( board.Spaces.Single(x=>x.Terrain==Terrain.Jungle && gs.DahanGetCount(x)==0) );
 
-			gs.PreRavaging.Handlers.Add( ChokeTheLandWithGreen_Ravage );
-			gs.PreBuilding.Handlers.Add( ChokeTheLandWithGreen_Build );
+			gs.PreRavaging.ForGame.Add( ChokeTheLandWithGreen_Ravage );
+			gs.PreBuilding.ForGame.Add( ChokeTheLandWithGreen_Build );
 
 		}
-
-
 
 		async Task ChokeTheLandWithGreen_Ravage( GameState gs, Space[] ravageSpaces ) {
 			var stopped = await ChokeTheLandWithGreen( gs, ravageSpaces, "ravage" );
@@ -136,7 +134,7 @@ namespace SpiritIsland.Basegame {
 		}
 
 		async Task ChokeTheLandWithGreen_Build( GameState gs, Space[] ravageSpaces ) {
-			var stopped = await ChokeTheLandWithGreen( gs, ravageSpaces, "build" );
+			Space[] stopped = await ChokeTheLandWithGreen( gs, ravageSpaces, "build" );
 			gs.SkipBuild( stopped );
 		}
 

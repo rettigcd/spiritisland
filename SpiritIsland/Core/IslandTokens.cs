@@ -8,6 +8,9 @@ namespace SpiritIsland {
 		readonly GameState gs;
 		public IslandTokens( GameState gs ) {
 			this.gs = gs;
+
+			gs.TimePassed += TokenMoved.EndOfRound;
+			gs.TimePassed += TokenDestroyed.EndOfRound;
 		}
 
 		public TokenCountDictionary this[Space space] {

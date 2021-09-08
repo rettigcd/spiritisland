@@ -83,10 +83,10 @@ namespace SpiritIsland.Basegame {
 			Presence.PlaceOn( spots[1] );
 
 			// Special Rules -Ally of the Dahan - Your presense may move with dahan
-			gs.Tokens.TokenMoved.Handlers.Add( new MovePresenceWithTokens( this, "Move presence with dahan?", TokenType.Dahan ).CheckForMove );
+			gs.Tokens.TokenMoved.ForGame.Add( new MovePresenceWithTokens( this, "Move presence with dahan?", TokenType.Dahan ).CheckForMove );
 
 			// Special Rules - Sworn to Victory - For each dahan stroyed by invaders ravaging a land, destroy 1 of your presense withing 1
-			gs.Tokens.TokenDestroyed.Handlers.Add( DestroyNearbyPresence );
+			gs.Tokens.TokenDestroyed.ForGame.Add( DestroyNearbyPresence );
 		}
 
 		async Task DestroyNearbyPresence( GameState _, TokenDestroyedArgs args ) {

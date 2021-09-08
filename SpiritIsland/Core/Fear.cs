@@ -9,7 +9,7 @@ namespace SpiritIsland {
 		readonly GameState gs;
 		public Fear(GameState gs ) {
 			this.gs = gs;
-			gs.TimePassed += ClearOneTurnHandlers;
+			gs.TimePassed += FearAdded.EndOfRound;
 			Init();
 		}
 
@@ -43,14 +43,12 @@ namespace SpiritIsland {
 			}
 			if(Deck.Count == 0)
 				GameOverException.Win();
-			Added_ThisRound?.Invoke( gs, args );
+			FearAdded?.Invoke( gs, args );
 		}
 
 		public int Pool { get; private set; } = 0;
 		public readonly Stack<NamedFearCard> Deck = new Stack<NamedFearCard>();
 		public readonly Stack<NamedFearCard> ActivatedCards = new Stack<NamedFearCard>();
-
-		public SyncEvent<FearArgs> Added_ThisRound = new SyncEvent<FearArgs>();                     // Dread Apparations
 
 		public async Task Apply() {
 			while(ActivatedCards.Count > 0) {
@@ -67,9 +65,7 @@ namespace SpiritIsland {
 			}
 		}
 
-		void ClearOneTurnHandlers( GameState obj ) {
-			Added_ThisRound.Handlers.Clear();
-		}
+		public SyncEvent<FearArgs> FearAdded = new SyncEvent<FearArgs>();                     // Dread Apparations
 
 	}
 

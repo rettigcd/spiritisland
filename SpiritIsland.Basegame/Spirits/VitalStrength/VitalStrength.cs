@@ -81,7 +81,7 @@ Power Progression:
 
 		protected override void InitializeInternal( Board board, GameState gs ) {
 			InitPresence( board );
-			gs.PreRavaging.Handlers.Add( GameState_Ravaging );
+			gs.PreRavaging.ForGame.Add( GameState_Ravaging );
 		}
 
 		void InitPresence( Board board ){
