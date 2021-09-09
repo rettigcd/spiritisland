@@ -76,7 +76,7 @@ namespace SpiritIsland {
 	/// Overrides Selecting destination with a fixed destination
 	/// </summary>
 	public class TokenMover : TokenPusher {
-		Space destination;
+		readonly Space destination;
 		public TokenMover( IMakeGamestateDecisions ctx, Space source, Space destination ) : base( ctx, source ) { 
 			this.destination = destination;
 		}

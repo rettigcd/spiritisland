@@ -256,7 +256,10 @@ namespace SpiritIsland {
 		public IPowerCardDrawer CardDrawer = DefaultCardDrawer;
 
 		public Task<PowerCard> Draw( GameState gameState, Func<List<PowerCard>, Task> handleNotUsed ) => CardDrawer.Draw(this,gameState,handleNotUsed);
-		public Task<PowerCard> DrawMinor( GameState gameState ) => CardDrawer.DrawMinor(this, gameState,null);
+
+		/// <summary> short cut to CardDrawer.DrawMinor </summary>
+		public Task<PowerCard> DrawMinor( GameState gameState ) => CardDrawer.DrawMinor( this, gameState, null );
+		/// <summary> short cut to CardDrawer.DrawMajor </summary>
 		public Task<PowerCard> DrawMajor( GameState gameState ) => CardDrawer.DrawMajor( this, gameState, null );
 
 		#endregion
@@ -270,7 +273,7 @@ namespace SpiritIsland {
 			};
 		}
 
-		public Task BuyPowerCardsAsync() =>PurchaseCards( NumberOfCardsPlayablePerTurn );
+		public Task BuyPowerCardsAsync() => PurchaseCards( NumberOfCardsPlayablePerTurn );
 
 
 		// Called for both normal buy-cards & from select Power cards that allow puchasing additional

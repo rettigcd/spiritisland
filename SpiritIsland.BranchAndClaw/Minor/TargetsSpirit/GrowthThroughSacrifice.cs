@@ -23,12 +23,12 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 			}
 
 			Task AddPresenceToTargetsLand()
-				=> ctx.Target.MakeDecisionsFor(ctx.GameState).PlacePresence(ctx.Target.Presence.Spaces.ToArray());
+				=> ctx.Target.MakeDecisionsFor(ctx.GameState).Presence_SelectFromTo(ctx.Target.Presence.Spaces.ToArray());
 
 			if( ctx.Self.Elements.Contains("2 sun")) {
 				var spaceCtx = await ctx.TargetSelectsPresenceLand( "Select location to remove blight and add presence" );
 				spaceCtx.AddBlight( -1 );
-				await ctx.Target.MakeDecisionsFor( ctx.GameState ).PlacePresence( spaceCtx.Target );
+				await ctx.Target.MakeDecisionsFor( ctx.GameState ).Presence_SelectFromTo( spaceCtx.Target );
 			} else
 				await ctx.Target.SelectPowerOption(
 					new ActionOption( "Remove 1 blight from one of your lands", RemoveBlightFromTargetsLands ),

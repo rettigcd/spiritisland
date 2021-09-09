@@ -13,18 +13,17 @@ namespace SpiritIsland {
 				: await DrawMajor( spirit, gs, handleNotUsed );
 		}
 
-		public async Task<PowerCard> DrawMajor( Spirit spirit, GameState gameState, Func<List<PowerCard>, Task> handleNotUsed ) {
-			var card = await DrawInner(spirit, gameState.MajorCards, handleNotUsed );
+		public async Task<PowerCard> DrawMajor( Spirit spirit, GameState gameState, Func<List<PowerCard>, Task> handleNotUsed, int numberToDraw = 4 ) {
+			var card = await DrawInner(spirit, gameState.MajorCards, numberToDraw, handleNotUsed );
 			await spirit.ForgetPowerCard();
 			return card;
 		}
 
+		public Task<PowerCard> DrawMinor( Spirit spirit, GameState gameState, Func<List<PowerCard>, Task> handleNotUsed, int numberToDraw = 4 )
+			=> DrawInner( spirit, gameState.MinorCards, numberToDraw, handleNotUsed );
 
-		public Task<PowerCard> DrawMinor( Spirit spirit, GameState gameState, Func<List<PowerCard>, Task> handleNotUsed )
-			=> DrawInner( spirit, gameState.MinorCards, handleNotUsed );
-
-		static async Task<PowerCard> DrawInner( Spirit spirit, PowerCardDeck deck, Func<List<PowerCard>, Task> handleNotUsed ) {
-			List<PowerCard> flipped = deck.Flip(4);
+		static async Task<PowerCard> DrawInner( Spirit spirit, PowerCardDeck deck, int numberToDraw, Func<List<PowerCard>, Task> handleNotUsed ) {
+			List<PowerCard> flipped = deck.Flip(numberToDraw);
 
 			var selected = await TakeCard( spirit, flipped );
 
@@ -44,6 +43,5 @@ namespace SpiritIsland {
 		}
 
 	}
-
 
 }

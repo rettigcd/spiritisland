@@ -3,6 +3,9 @@
 ====================================
 ===== Brnach and Claw Road Map =====
 
+Consolidate the Place Presnece methods (PowerApi,CalcDestinationOptions,)
+
+
 BONUS	Switch Lightnings Make-Fast ability to dynamic so only presents # of slows available to make fast
 BONUS	Draw Fast / Slow icons over existing cards when speed changes
 

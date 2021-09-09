@@ -18,11 +18,11 @@ namespace SpiritIsland {
 			return Take( self, remainingCards.First() );
 		}
 
-		public Task<PowerCard> DrawMajor( Spirit self, GameState _, Func<List<PowerCard>, Task> _1 ) {
+		public Task<PowerCard> DrawMajor( Spirit self, GameState _, Func<List<PowerCard>, Task> _1, int _2 ) {
 			return Take( self, remainingCards.First( c => c.PowerType == PowerType.Major ) );
 		}
 
-		public Task<PowerCard> DrawMinor( Spirit self, GameState _, Func<List<PowerCard>, Task> _1 ) {
+		public Task<PowerCard> DrawMinor( Spirit self, GameState _, Func<List<PowerCard>, Task> _1, int _2 ) {
 			return Take( self, remainingCards.First( c => c.PowerType == PowerType.Minor ) );
 		}
 

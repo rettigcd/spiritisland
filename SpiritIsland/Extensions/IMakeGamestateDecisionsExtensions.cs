@@ -61,17 +61,17 @@ namespace SpiritIsland {
 		#region Place Presence
 
 		static public Task PlacePresence( this IMakeGamestateDecisions engine, int range, string filterEnum ) {
-			Space[] destinationOptions = CalcDestinationOptions( engine, range, filterEnum );
-			return engine.PlacePresence( destinationOptions );
+			Space[] destinationOptions = Presence_DestinationOptions( engine, range, filterEnum );
+			return engine.Presence_SelectFromTo( destinationOptions );
 		}
 
-		static public async Task PlacePresence( this IMakeGamestateDecisions engine, params Space[] destinationOptions ) {
+		static public async Task Presence_SelectFromTo( this IMakeGamestateDecisions engine, params Space[] destinationOptions ) {
 			var from = await engine.Self.SelectTrack();
 			var to = await engine.Self.Action.Decide( new TargetSpaceDecision( "Where would you like to place your presence?", destinationOptions, Present.Always ));
 			await engine.Self.Presence.PlaceFromBoard(from, to, engine.GameState );
 		}
 
-		static Space[] CalcDestinationOptions( IMakeGamestateDecisions engine, int range, string filterEnum ) {
+		static public Space[] Presence_DestinationOptions( this IMakeGamestateDecisions engine, int range, string filterEnum ) {
 			// Calculate options
 			var existing = engine.Self.Presence.Spaces.ToArray();
 
@@ -105,16 +105,26 @@ namespace SpiritIsland {
 
 		// convenience for ctx so we don't have to do ctx.Self.SelectPowerOption(...)
 		static public Task SelectActionOption( this IMakeGamestateDecisions eng, params ActionOption[] options )
-			=> eng.Self.SelectPowerOption(options);
+			=> eng.Self.SelectAction( "Select Power Option", options );
 
-		static public async Task SelectPowerOption( this Spirit spirit, params ActionOption[] options ) {
+		static public async Task SelectAction( this Spirit spirit, string prompt, params ActionOption[] options ) {
 			var applicable = options.Where( opt => opt.IsApplicable ).ToArray();
-			string text = await spirit.SelectText( "Select Power Option", applicable.Select( a => a.Description ).ToArray() );
+			string text = await spirit.SelectText( prompt, applicable.Select( a => a.Description ).ToArray() );
 			if(text != null) {
 				var selectedOption = applicable.Single( a => a.Description == text );
 				await selectedOption.Action();
 			}
 		}
+
+		static public async Task SelectOptionalAction( this Spirit spirit, string prompt, params ActionOption[] options ) {
+			var applicable = options.Where( opt => opt.IsApplicable ).ToArray();
+			string text = await spirit.SelectText( prompt, applicable.Select( a => a.Description ).ToArray(), Present.Done );
+			if(text != null) {
+				var selectedOption = applicable.Single( a => a.Description == text );
+				await selectedOption.Action();
+			}
+		}
+
 
 		/// <summary>
 		/// Used for Power-targetting, where range sympols appear.
