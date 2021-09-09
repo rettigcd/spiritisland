@@ -4,7 +4,10 @@ using System.Linq;
 
 namespace SpiritIsland {
 	public class Island {
-		public Board[] Boards {get; }
+		public Board[] Boards { get; private set; }
+		public void RemoveBoard( Board b ) {
+			Boards = Boards.Where(x=>x!=b).ToArray();
+		}
 		public Island(params Board[] boards){
 			this.Boards = boards;
 			switch(boards.Length){

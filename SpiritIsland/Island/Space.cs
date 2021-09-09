@@ -11,16 +11,25 @@ namespace SpiritIsland {
 		/// <summary> If adjacent to ocean, sets is-costal </summary>
 		public void SetAdjacentToSpaces( params Space[] spaces ) {
 			foreach(var land in spaces) {
-				SetAdjacent( land );
-				land.SetAdjacent( this );
+				AddAdjacent( land );
+				land.AddAdjacent( this );
 			}
 		}
 
-		void SetAdjacent( Space neighbor ) {
-			adjacents.Add(neighbor);
-			if(neighbor.Terrain == Terrain.Ocean)
+		void AddAdjacent( Space adjacent ) {
+			adjacents.Add(adjacent);
+			if(adjacent.Terrain == Terrain.Ocean)
 				this.IsCostal = true;
 		}
+
+		public void Destroy() {
+			// Disconnect us from neighbors
+			foreach(var a in adjacents)
+				a.adjacents.Remove(this);
+			// Disconnect neighbors from us
+			adjacents.Clear();
+		}
+
 		readonly List<Space> adjacents = new List<Space>();
 		#endregion
 

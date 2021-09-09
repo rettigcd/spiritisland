@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SpiritIsland.Basegame {
+namespace SpiritIsland {
 
 	public class ReplayCardForCost : IActionFactory {
 
