@@ -84,8 +84,8 @@ namespace SpiritIsland {
 		#region Constructors and factories
 
 		public InnatePower_TargetSpace( Type type	) : base( type ) {
-			this.targetSpaceAttribute = (TargetSpaceAttribute)type.GetCustomAttributes<FromPresenceAttribute>().FirstOrDefault()
-				?? (TargetSpaceAttribute)type.GetCustomAttributes<FromSacredSiteAttribute>().FirstOrDefault();
+			this.targetSpaceAttribute = (TargetSpaceAttribute)type.GetCustomAttributes<TargetSpaceAttribute>().FirstOrDefault()
+				?? throw new Exception("missing TargetSpace attribute");
 		}
 
 		#endregion

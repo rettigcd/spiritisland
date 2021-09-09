@@ -51,25 +51,25 @@ namespace SpiritIsland.WinForms {
 				case "PlacePresence(2)": PlacePresence( rect, 2 ); break;
 				case "PlacePresence(3)": PlacePresence( rect, 3 ); break;
 				// thunderspeaker
-				case "PlacePresence(1,dahan)": PlacePresence( rect, 1, "dahan" ); break;
-				case "PlacePresence(2,dahan)": PlacePresence( rect, 2, "dahan" ); break;
+				case "PlacePresence(1,dahan)": PlacePresence( rect, 1, "Dahanicon" ); break;
+				case "PlacePresence(2,dahan)": PlacePresence( rect, 2, "Dahanicon" ); break;
 				// rampant green
-				case "PlacePresence(2,W / J)": PlacePresence( rect, 2, "j/w" ); break;
+				case "PlacePresence(2,W / J)": PlacePresence( rect, 2, "Junglewetland" ); break;
 				case "PlayExtraCardThisTurn": AdditionalPlay( rect ); break;
+
 				// bringger
-				case "PlacePresence(4,dahan or invaders)": PlacePresence( rect, 4 ); break; // !!! missing dahan or invaders
+				case "PlacePresence(4,dahan or invaders)": PlacePresence( rect, 4, "DahanOrInvaders" ); break;
+
 				// ocean
-				case "PlacePresence(1,coatal)": PlacePresence( rect, 1 ); break; //            !!! missing costal
+				case "PlacePresence(1,coastal)": PlacePresence( rect, 1, "Coastal" ); break;
 				case "GatherPresenceIntoOcean": GatherToOcean(rect); break;
 				case "PlaceInOcean": PlaceInOcean( rect ); break;
 				case "PushPresenceFromOcean": PushFromOcean( rect ); break;
 				// Keeper
-				case "PlacePresence(3,presence or wilds)": PlacePresence( rect, 3); break; //  !!!
-				case "PlacePresence(3,no blight)": //                                          !!!
+				case "PlacePresence(3,presence or wilds)": PlacePresence( rect, 3, "wildsorpresence"); break;
+				case "PlacePresence(3,no blight)": PlacePresence( rect, 3, "Noblight" ); break;
 				// Sharp Fangs
-				case "PlacePresence(3,beast or jungle)":
-					graphics.FillRectangle( Brushes.SeaGreen, Rectangle.Inflate( rect.ToInts(), -5, -5 ) );
-					break;
+				case "PlacePresence(3,beast or jungle)": PlacePresence( rect, 3, "JungleOrBeast" ); break;
 				default:
 					graphics.FillRectangle( Brushes.Goldenrod, Rectangle.Inflate( rect.ToInts(), -5, -5 ) );
 					break;
@@ -78,7 +78,7 @@ namespace SpiritIsland.WinForms {
 		}
 
 		void PushFromOcean( RectangleF rect )          => DrawTokenInCenter(rect, "Pushfromocean");
-		void PlaceInOcean( RectangleF rect )           => DrawTokenInCenter( rect, "Ocean" );
+
 		void AdditionalPlay( RectangleF rect )         => DrawTokenInCenter( rect, "Cardplayplusone");
 		void Reclaim1( RectangleF rect )               => DrawTokenInCenter( rect, "reclaim 1");
 		void DrawPowerCard( RectangleF rect )          => DrawTokenInCenter( rect, "GainCard" );
@@ -111,30 +111,35 @@ namespace SpiritIsland.WinForms {
 			graphics.DrawImage( img, rect.X, rect.Y + (rect.Height - imgHeight) / 2, imgWidth, imgHeight );
 		}
 
+		void PlaceInOcean( RectangleF rect ) {
+			PlacePresence( rect, null, "Ocean" );
+		}
 
+		void PlacePresence( RectangleF rect, int? range, string iconFilename = "" ) {
 
-		void PlacePresence( RectangleF rect, int range, string icon = "" ) {
-
-			var font = SystemFonts.IconTitleFont;
+			using Font font = new Font( ResourceImages.Singleton.Fonts.Families[0], rect.Height * .15f );
+			// var font = SystemFonts.IconTitleFont;
 
 			// + presence
-			float presencePercent = icon == "" ? .3f : .2f;
+			float presencePercent = iconFilename == "" ? .3f : .2f;
 			float plusY = rect.Y + rect.Height * presencePercent; // top of presence
 			graphics.DrawString("+",font,Brushes.Black,rect.X+rect.Width*0.25f,plusY);
 			using var presenceIcon = ResourceImages.Singleton.GetBlackIcon( "Presenceicon" );
 			graphics.DrawImage(presenceIcon, rect.X + rect.Width * 0.4f, plusY-rect.Height*.1f, rect.Width*.5f, rect.Height*.2f );
 
 			// icon
-			if(icon != "") {
-				string filename = icon switch {
-					"dahan" => ".\\images\\Dahanicon.png",
-					"j/w" => ".\\images\\Junglewetland.png",
-					_ => "(error)"
-				};
-				using var image = Image.FromFile( filename );
+			if(iconFilename != "") {
+				// using var image = Image.FromFile( ".\\images\\" + iconFilename + ".png" );
+				using var image = ResourceImages.Singleton.GetTokenIcon( iconFilename );
 				float iconPercentage = .4f;
 				float iconHeight = rect.Height * .3f;
 				float iconWidth = iconHeight * image.Width / image.Height;
+
+				if(iconWidth > rect.Width) { // too wide, switch scaling to width limited
+					iconWidth = rect.Width;
+					iconHeight = iconWidth * image.Height / image.Width;
+				}
+
 				graphics.DrawImage( image, 
 					rect.X + (rect.Width - iconWidth)/2, 
 					rect.Y + rect.Height * iconPercentage,
@@ -143,19 +148,19 @@ namespace SpiritIsland.WinForms {
 				);
 			}
 
-			// range # text
-			float rangeTextTop = rect.Y + rect.Height * .7f;
-			string txt = range.ToString();
-			SizeF rangeTextSize = graphics.MeasureString(txt,font);
-			graphics.DrawString(txt,font,Brushes.Black,rect.X+(rect.Width-rangeTextSize.Width)/2,rangeTextTop);
+			if(range.HasValue) {
+				// range # text
+				float rangeTextTop = rect.Y + rect.Height * .65f;
+				string txt = range.Value.ToString();
+				SizeF rangeTextSize = graphics.MeasureString(txt,font);
+				graphics.DrawString(txt,font,Brushes.Black,rect.X+(rect.Width-rangeTextSize.Width)/2,rangeTextTop);
 
-			// range arrow
-			float rangeArrowTop = rect.Y + rect.Height * .85f;
-			using var rangeIcon = ResourceImages.Singleton.GetTokenIcon( "Range" );
-			float arrowWidth = rect.Width * .8f, arrowHeight = arrowWidth * rangeIcon.Height / rangeIcon.Width;
-			graphics.DrawImage( rangeIcon, rect.X + (rect.Width-arrowWidth)/2, rangeArrowTop, arrowWidth, arrowHeight );
-
-			// graphics.FillRectangle( Brushes.Goldenrod, Rectangle.Inflate( rect.ToInts(), -5, -5 ) );
+				// range arrow
+				float rangeArrowTop = rect.Y + rect.Height * .85f;
+				using var rangeIcon = ResourceImages.Singleton.GetTokenIcon( "Range" );
+				float arrowWidth = rect.Width * .8f, arrowHeight = arrowWidth * rangeIcon.Height / rangeIcon.Width;
+				graphics.DrawImage( rangeIcon, rect.X + (rect.Width-arrowWidth)/2, rangeArrowTop, arrowWidth, arrowHeight );
+			}
 
 		}
 	}

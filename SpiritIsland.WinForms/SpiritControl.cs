@@ -265,7 +265,7 @@ namespace SpiritIsland.WinForms {
 
 			if(!elementImages.ContainsKey( element )) {
 				string filename = "Simple_" + element.ToString().ToLower();
-				Image image = Image.FromFile( $".\\images\\tokens\\{filename}.png" );
+				Image image = ResourceImages.Singleton.GetTokenIcon(filename); //  Image.FromFile( $".\\images\\tokens\\{filename}.png" );
 				elementImages.Add( element, image );
 			}
 			return elementImages[element];

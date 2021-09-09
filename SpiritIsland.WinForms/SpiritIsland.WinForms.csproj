@@ -53,13 +53,19 @@
     <None Remove="images\tokens\any energy.png" />
     <None Remove="images\tokens\Beast.png" />
     <None Remove="images\tokens\Cardplayplusone.png" />
+    <None Remove="images\tokens\Coastal.png" />
     <None Remove="images\tokens\coin.png" />
+    <None Remove="images\tokens\Dahanicon.png" />
+    <None Remove="images\tokens\DahanOrInvaders.png" />
     <None Remove="images\tokens\Disease.png" />
     <None Remove="images\tokens\earth energy.png" />
     <None Remove="images\tokens\fire energy.png" />
     <None Remove="images\tokens\GainCard.png" />
     <None Remove="images\tokens\Gathertoocean.png" />
+    <None Remove="images\tokens\JungleOrBeast.png" />
+    <None Remove="images\tokens\Junglewetland.png" />
     <None Remove="images\tokens\moon energy.png" />
+    <None Remove="images\tokens\Noblight.png" />
     <None Remove="images\tokens\Ocean.png" />
     <None Remove="images\tokens\plant energy.png" />
     <None Remove="images\tokens\Pushfromocean.png" />
@@ -79,6 +85,7 @@
     <None Remove="images\tokens\sun energy.png" />
     <None Remove="images\tokens\water energy.png" />
     <None Remove="images\tokens\Wilds.png" />
+    <None Remove="images\tokens\wildsorpresence.png" />
     <None Remove="leaguegothic-regular-webfont.ttf" />
   </ItemGroup>
 
@@ -171,7 +178,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="images\tokens\beast.png" />
     <EmbeddedResource Include="images\tokens\Cardplayplusone.png" />
+    <EmbeddedResource Include="images\tokens\Coastal.png" />
     <EmbeddedResource Include="images\tokens\coin.png" />
+    <EmbeddedResource Include="images\tokens\Dahanicon.png" />
+    <EmbeddedResource Include="images\tokens\DahanOrInvaders.png" />
     <EmbeddedResource Include="images\tokens\disease.png" />
     <EmbeddedResource Include="images\tokens\earth energy.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
@@ -181,9 +191,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="images\tokens\GainCard.png" />
     <EmbeddedResource Include="images\tokens\Gathertoocean.png" />
+    <EmbeddedResource Include="images\tokens\JungleOrBeast.png" />
+    <EmbeddedResource Include="images\tokens\Junglewetland.png" />
     <EmbeddedResource Include="images\tokens\moon energy.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\Noblight.png" />
     <EmbeddedResource Include="images\tokens\Ocean.png" />
     <EmbeddedResource Include="images\tokens\plant energy.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
@@ -194,28 +207,28 @@
     <EmbeddedResource Include="images\tokens\ReclaimAll.png" />
     <EmbeddedResource Include="images\tokens\red-x.png" />
     <EmbeddedResource Include="images\tokens\Simple_air.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="images\tokens\Simple_animal.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="images\tokens\Simple_earth.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="images\tokens\Simple_fire.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="images\tokens\Simple_moon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="images\tokens\Simple_plant.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="images\tokens\Simple_sun.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="images\tokens\Simple_water.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="images\tokens\strife.png" />
     <EmbeddedResource Include="images\tokens\sun energy.png">
@@ -225,6 +238,7 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="images\tokens\wilds.png" />
+    <EmbeddedResource Include="images\tokens\wildsorpresence.png" />
     <EmbeddedResource Include="leaguegothic-regular-webfont.ttf" />
   </ItemGroup>
 
@@ -1436,9 +1450,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\innates\thundering_destruction.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\Junglewetland.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\land_of_haunts_and_embers.jpg">

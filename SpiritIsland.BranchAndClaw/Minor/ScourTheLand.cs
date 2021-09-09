@@ -4,7 +4,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class ScourTheLand {
 
-		[MinorCard( "Scour hte Land", 1, Speed.Slow, Element.Air, Element.Earth )]
+		[MinorCard( "Scour the Land", 1, Speed.Slow, Element.Air, Element.Earth )]
 		[FromSacredSite( 2 )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 

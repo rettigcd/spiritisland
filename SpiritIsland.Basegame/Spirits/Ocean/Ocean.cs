@@ -51,7 +51,7 @@ namespace SpiritIsland.Basegame {
 				new GrowthOption( 
 					new PushPresenceFromOcean(),
 					new DrawPowerCard(),
-					new PlacePresence(1, Target.Costal, "coatal" )
+					new PlacePresence(1, Target.Costal, "coastal" )
 				)
 			};
 

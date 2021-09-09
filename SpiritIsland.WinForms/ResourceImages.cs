@@ -21,14 +21,14 @@ namespace SpiritIsland.WinForms {
 
 		public Bitmap GetPresenceIcon( string presenceColor ) => GetResourceImage( $"presence.{presenceColor}.png" );
 
-		public Bitmap GetTokenIcon( string cardText )             => GetResourceImage( $"tokens.{cardText}.png" );
+		public Bitmap GetTokenIcon( string fileName )             => GetResourceImage( $"tokens.{fileName}.png" );
 		public Bitmap GetInvaderCard( string filename ) => GetResourceImage( $"invaders.{filename}.jpg" );
 		public Bitmap GetBlackIcon( string filename ) => GetResourceImage( $"{filename}.png" );
 
 		#region private
 
-		Bitmap GetResourceImage( string s ) {
-			var imgStream = assembly.GetManifestResourceStream( "SpiritIsland.WinForms.images."+s );
+		Bitmap GetResourceImage( string filename ) {
+			var imgStream = assembly.GetManifestResourceStream( "SpiritIsland.WinForms.images."+filename );
 			return new Bitmap( imgStream );
 		}
 
