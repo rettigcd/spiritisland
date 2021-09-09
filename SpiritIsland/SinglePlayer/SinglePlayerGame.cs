@@ -52,6 +52,9 @@ namespace SpiritIsland.SinglePlayer {
 
 			async Task LoopAsync() {
 				try {
+					// Handle any unresolved Initialization action - (ocean/beast)
+					await new ResolveActions( Spirit, GameState, Speed.Growth, false ).ActAsync();
+
 					while(true) {
 						await selectGrowth.ActAsync();
 						await Spirit.BuyPowerCardsAsync();
