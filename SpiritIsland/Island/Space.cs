@@ -7,37 +7,21 @@ namespace SpiritIsland {
 	public class Space : IOption{
 
 		#region SetUp
-		int _highestDistanceCalculated = 0;
-		void CalculateDistancesUpTo( int distance ) {
-			while(_highestDistanceCalculated < distance) {
-				int nextLevel = _highestDistanceCalculated + 1;
-				var newSpaces = _distanceTo
-					.Where( p => p.Value == _highestDistanceCalculated )
-					.SelectMany( p => p.Key._distanceTo.Where(n=>n.Value==1).Select(q=>q.Key) ) // must get this directly
-					.Distinct()
-					.Where( space => !_distanceTo.ContainsKey( space )  // new space
-						|| _distanceTo[space] > nextLevel ) // has a longer path than this path
-					.ToList(); // force iteration so we can make changes to _distanceTo
-				foreach(var newSpace in newSpaces)
-					_distanceTo[newSpace] = nextLevel;
-				_highestDistanceCalculated = nextLevel;
-			}
-		}
+
 		/// <summary> If adjacent to ocean, sets is-costal </summary>
-		public void SetAdjacentTo( params Space[] spaces ) {
+		public void SetAdjacentToSpaces( params Space[] spaces ) {
 			foreach(var land in spaces) {
-				SetNeighbor( land );
-				land.SetNeighbor( this );
+				SetAdjacent( land );
+				land.SetAdjacent( this );
 			}
-
-			_highestDistanceCalculated = 1;
 		}
 
-		void SetNeighbor( Space neighbor ) {
-			_distanceTo.Add( neighbor, 1 ); // @@@ 
+		void SetAdjacent( Space neighbor ) {
+			adjacents.Add(neighbor);
 			if(neighbor.Terrain == Terrain.Ocean)
 				this.IsCostal = true;
 		}
+		readonly List<Space> adjacents = new List<Space>();
 		#endregion
 
 		#region constructor
@@ -46,7 +30,6 @@ namespace SpiritIsland {
 			this.Terrain = terrain;
 			this.Label = label;
 			this.StartUpCounts = new StartUpCounts(startingItems);
-			_distanceTo.Add(this,0);
 		}
 
 		#endregion
@@ -82,20 +65,46 @@ namespace SpiritIsland {
 		public StartUpCounts StartUpCounts { get; }
 
 		public IEnumerable<Space> Range( int distance ) {
-			CalculateDistancesUpTo( distance );
-			return _distanceTo.Where( p => p.Value <= distance ).Select( p => p.Key );
+			Dictionary<Space, int> shortestDistances = CalcDistances( distance );
+			return shortestDistances.Keys;
 		}
 
 		public IEnumerable<Space> SpacesExactly( int distance ) {
-			CalculateDistancesUpTo( distance );
-			return _distanceTo.Where( p => p.Value == distance ).Select( p => p.Key );
+			return distance switch {
+				0 => new Space[] {this},
+				1 => adjacents,
+				_ => CalcDistances( distance ).Where( p => p.Value == distance ).Select( p => p.Key ),
+			};
 		}
 
-		public IEnumerable<Space> Adjacent => SpacesExactly(1);
+		Dictionary<Space, int> CalcDistances( int distance ) {
+			Queue<Space> spacesLessThanLimit = new Queue<Space>();
+			// collects distances that are <= distance
+			var shortestDistances = new Dictionary<Space, int> { { this, 0 } };
+
+			if(distance > 0)
+				spacesLessThanLimit.Enqueue( this );
+
+			while(spacesLessThanLimit.Count > 0) {
+				var cur = spacesLessThanLimit.Dequeue();
+				int neighborDist = shortestDistances[cur] + 1;
+				bool neighborIsLessThanLimit = neighborDist < distance;
+				foreach(var a in cur.adjacents) {
+					if(shortestDistances.ContainsKey( a ) && shortestDistances[a] <= neighborDist)
+						continue;
+					shortestDistances[a] = neighborDist;
+					if(neighborIsLessThanLimit)
+						spacesLessThanLimit.Enqueue( a );
+				}
+
+			}
+
+			return shortestDistances;
+		}
+
+		public IEnumerable<Space> Adjacent => adjacents;
 
 		public override string ToString() =>Label;
-
-		readonly Dictionary<Space, int> _distanceTo = new Dictionary<Space, int>();
 
 		public void InitTokens( TokenCountDictionary counts ) {
 			StartUpCounts initialCounts = StartUpCounts;

@@ -24,7 +24,7 @@ namespace SpiritIsland.Tests.Core {
 			// Given: land-1 is adjacent to land-2
 			var land1 = MakeSpace();
 			var land2 = MakeSpace();
-			land1.SetAdjacentTo( land2 );
+			land1.SetAdjacentToSpaces( land2 );
 			// Then: land2 is adjacent to land 1
 			Assert.Contains( land1, land2.SpacesExactly( 1 ) );
 			Assert.Contains( land2, land1.SpacesExactly( 1 ) );
@@ -36,8 +36,8 @@ namespace SpiritIsland.Tests.Core {
 			var main = MakeSpace();
 			var neighbor1 = MakeSpace();
 			var neighbor2 = MakeSpace();
-			main.SetAdjacentTo( neighbor1 );
-			main.SetAdjacentTo( neighbor2 );
+			main.SetAdjacentToSpaces( neighbor1 );
+			main.SetAdjacentToSpaces( neighbor2 );
 			// Then: it is adjacent to both
 			var neighbors = main.Range( 1 );
 			Assert.Contains( neighbor1, neighbors );

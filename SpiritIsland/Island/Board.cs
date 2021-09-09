@@ -159,7 +159,7 @@ namespace SpiritIsland {
 		/// public so we can build a test board.
 		/// </summary>
 		public void SetNeighbors(int srcIndex, params int[] neighborIndex){
-			Spaces[srcIndex].SetAdjacentTo(neighborIndex.Select(i=>Spaces[i]).ToArray());
+			Spaces[srcIndex].SetAdjacentToSpaces(neighborIndex.Select(i=>Spaces[i]).ToArray());
 		}
 
 		readonly List<ITileSide> sides = new List<ITileSide>();
@@ -199,14 +199,14 @@ namespace SpiritIsland {
 				int otherIndex = 0;
 				do{
 					// current territories are adjacent
-					thisSpaces[thisIndex].SetAdjacentTo(otherSpaces[otherIndex]);
+					thisSpaces[thisIndex].SetAdjacentToSpaces(otherSpaces[otherIndex]);
 					// advance whichever board is shorter 
 					if(thisBreakPoints[thisIndex+1] < otherBreakPoints[otherIndex+1])
 						thisIndex++;
 					else
 						otherIndex++;
 				} while(thisIndex<thisBreakPoints.Count-2 || otherIndex<otherBreakPoints.Count-2 );
-				thisSpaces[thisIndex].SetAdjacentTo(otherSpaces[otherIndex]);
+				thisSpaces[thisIndex].SetAdjacentToSpaces(otherSpaces[otherIndex]);
 			}
 
 			readonly Space[] spaces;
