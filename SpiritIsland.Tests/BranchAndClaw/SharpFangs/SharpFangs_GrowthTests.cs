@@ -37,6 +37,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 
 		[Fact]
 		public void AB() {
+			spirit.Energy = 10; 
 			// a) cost -1, reclaim cards, gain +1 power card
 			// b) add a presense to jungle or a land with beasts ( range 3)
 			Given_HalfOfPowercardsPlayed();
@@ -46,7 +47,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			Activate_B();
 
 			Assert_AllCardsAvailableToPlay( 4+1);  // A
-			Assert_HasEnergy( -1 + 1 );         // A
+			Assert_HasEnergy( 10 -1 + 1 );         // A
 			Assert_HasPowerProgressionCard( 0 );    // A
 
 			Assert_BoardPresenceIs( "A2A3" );    // B
@@ -59,8 +60,8 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 
 			Given_HalfOfPowercardsPlayed();
 			When_SharpFangsGrow();
+			Activate_C(); // gain 1 energy before we spend it
 			Activate_A();
-			Activate_C();
 
 			Assert_AllCardsAvailableToPlay( 5 + 1 );  // A
 			Assert_HasEnergy( 0 + 1 );            // A & C
@@ -70,18 +71,18 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 
 		[Fact]
 		public void AD() {
-			// a) cost -1, reclaim cards, gain +1 power card
-			// d) +3 energy
+			// d) 3 energy
+			// a) -1 energy, reclaim cards, gain +1 power card
 
 			Given_HalfOfPowercardsPlayed();
 
 			When_SharpFangsGrow();
-			Activate_A();
 			Activate_D();
+			Activate_A();
 
-			Assert_AllCardsAvailableToPlay(5);   // A
+			Assert_AllCardsAvailableToPlay(5);      // A
 			Assert_HasPowerProgressionCard( 0 );    // A
-			Assert_HasEnergy( 2 + 1 );          // A & D
+			Assert_HasEnergy( 3-1+1 );      // A & D
 
 		}
 

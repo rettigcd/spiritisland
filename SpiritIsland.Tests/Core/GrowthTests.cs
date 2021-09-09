@@ -18,7 +18,6 @@ namespace SpiritIsland.Tests {
 				[Element.Plant] = 'P',
 				[Element.Sun] = 'S',
 				[Element.Water] = 'W',
-				[Element.Any] = '*',
 			};
 
 		protected Spirit spirit;

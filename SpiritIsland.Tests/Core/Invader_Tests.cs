@@ -238,7 +238,7 @@ namespace SpiritIsland.Tests.Core {
 
 		//// 3D@1, 1D@2 1C@3  => 1C@1,1T@2
 		[Theory]
-		[InlineData("3D@2,1T@2,1E@1","2D@2")] // !!! WRONG it should be 1D@2,1D@1 (1 dahan is damaged) - not implemented parital yet
+		[InlineData("3D@2,1T@2,1E@1","1D@2,1D@1")]
 		public async Task Ravage(string startingUnits,string endingUnits) {
 			gameState = new GameState(new RiverSurges(), board);
 
@@ -274,10 +274,14 @@ namespace SpiritIsland.Tests.Core {
 		void Assert_UnitsAre( string startingUnits, Space space ) {
 			List<string> items = new();
 
-			int dahanCount = gameState.DahanGetCount(space);
-			if(dahanCount>0)
-				items.Add($"{dahanCount}D@2");
-			string actualInvaders = gameState.Tokens[space].Summary;
+			var tokens = gameState.Tokens[space];
+
+			if(tokens[TokenType.Dahan[2]] > 0)
+				items.Add( $"{tokens[TokenType.Dahan[2]]}D@2" );
+			if(tokens[TokenType.Dahan[1]]>0)
+				items.Add($"{tokens[TokenType.Dahan[1]]}D@1");
+
+			string actualInvaders = tokens.InvaderSummary;
 
 			if(actualInvaders.Length>0)
 				items.Add(actualInvaders);

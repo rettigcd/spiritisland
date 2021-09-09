@@ -134,6 +134,7 @@ namespace SpiritIsland {
 			// Elements
 			Elements.AddRange( Presence.Energy.Revealed.Where( t => t.Element.HasValue ).Select( t => t.Element.Value ) );
 			Elements.AddRange( Presence.CardPlays.Revealed.Where( t => t.Element.HasValue ).Select( t => t.Element.Value ) );
+
 			int anyCount = Elements[Element.Any];
 			Elements[Element.Any] = 0; // we can't draw these in our activated element list
 			if(anyCount>0)

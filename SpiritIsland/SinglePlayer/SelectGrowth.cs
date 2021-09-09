@@ -17,11 +17,12 @@ namespace SpiritIsland.SinglePlayer {
 		public async Task ActAsync() {
 			var (allGrowthOptions,count) = spirit.GetGrowthOptions();
 
-			List<GrowthOption> currentOptions = allGrowthOptions.ToList();
+			List<GrowthOption> remainingOptions = allGrowthOptions.ToList();
 
 			while(count-->0) {
-				var option = (GrowthOption)await spirit.Select( "Select Growth Option", currentOptions.ToArray() );
-				currentOptions.Remove(option);
+				var currentOptions = remainingOptions.Where(o=>o.GainEnergy+spirit.Energy>=0).ToArray();
+				var option = (GrowthOption)await spirit.Select( "Select Growth Option", currentOptions );
+				remainingOptions.Remove(option);
 				spirit.Grow( gameState, option );
 				await resolveGrowth.ActAsync();
 			}

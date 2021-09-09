@@ -37,7 +37,7 @@ namespace SpiritIsland {
 
 		readonly CountDictionary<Token> counts;
 
-		public string Summary { get {
+		public string InvaderSummary { get {
 			static int Order_CitiesTownsExplorers( Token invader )
 				=> -(invader.FullHealth * 10 + invader.Health);
 			return this.Invaders()

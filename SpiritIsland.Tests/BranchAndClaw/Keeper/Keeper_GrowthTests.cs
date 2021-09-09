@@ -67,6 +67,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 
 		[Fact]
 		public void A_Reclaim_Energy_D_Presence_PowerCard_LoseEnergy() {
+			spirit.Energy = 10; // so we can -3 it
 			// a) reclaim, +1 energy
 			// d) -3 energy, +1 power card, add presense to land without blight range 3
 
@@ -80,7 +81,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			Activate_D();
 
 			Assert_AllCardsAvailableToPlay( 4+1);     // A
-			Assert_HasEnergy( 0 );                   // A & D
+			Assert_HasEnergy( 10 + 2-3+1 );                // A & D
 			Assert_HasPowerProgressionCard(0); // D
 			Assert_BoardPresenceIs( "A3A7" );        // D
 
@@ -113,7 +114,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			// Given: presence on board A  (default island is Board A)
 			Given_HasPresence( board[3] );
 			Given_BlightEverywhereExcept7();
-			spirit.Energy = 1; // so we can do this option
+			spirit.Energy = 10; // so we can do this option
 
 			When_StartingGrowth();
 			Activate_B();
@@ -123,7 +124,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			Assert_HasPowerProgressionCard( 1 ); // B
 			Assert_HasCardAvailable( "Reaching Grasp" ); // D
 			Assert_BoardPresenceIs( "A3A7" );     // D
-
+			Assert_HasEnergy( 10 + 2 - 3 );
 		}
 
 		[Fact]
@@ -146,8 +147,6 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			Assert_HasPowerProgressionCard(0); // D
 
 		}
-
-		// !!! test that Keeper can't choose growth option when they insufficent energy
 
 		[Fact]
 		public void SacredSitesPushDahan() {

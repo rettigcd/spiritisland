@@ -99,7 +99,7 @@ namespace SpiritIsland.Tests {
 		}
 
 		static public void Assert_Invaders( this GameState gameState, Space space, string expectedString ) {
-			gameState.Tokens[ space ].Summary.ShouldBe( expectedString );
+			gameState.Tokens[ space ].InvaderSummary.ShouldBe( expectedString );
 		}
 
 

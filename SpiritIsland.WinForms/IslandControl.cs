@@ -92,7 +92,7 @@ namespace SpiritIsland.WinForms {
 			//			boardA = Image.FromFile(".\\images\\board a.png");
 
 			dahan = Image.FromFile(".\\images\\Dahanicon.png");
-			dahan1 = Image.FromFile( ".\\images\\Dahan1icon.png" ); // !!!
+			dahan1 = Image.FromFile( ".\\images\\Dahan1icon.png" );
 			city = Image.FromFile(".\\images\\Cityicon.png");
 			city2 = Image.FromFile( ".\\images\\City2icon.png" );
 			city1 = Image.FromFile( ".\\images\\City1icon.png" );

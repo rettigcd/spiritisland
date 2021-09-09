@@ -5,6 +5,8 @@ namespace SpiritIsland {
 
 	public class GrowthOption : IOption {
 
+		public int GainEnergy = 0; // indicator to limit option availability
+
 		public GrowthOption(params GrowthActionFactory[] actions){ 
 			this.GrowthActions = actions; 
 		}

@@ -91,7 +91,7 @@ namespace SpiritIslandCmd {
 				: "       "; 
 
 			// invaders
-			var details = gameState.Tokens[ space ].Summary;
+			var details = gameState.Tokens[ space ].InvaderSummary;
 
 			// dahan
 			int dahanCount = gameState.DahanGetCount( space );

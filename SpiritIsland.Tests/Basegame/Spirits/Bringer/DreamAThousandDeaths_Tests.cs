@@ -57,7 +57,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			//  and: explorer on destination
 			ctx.GameState.Assert_Invaders( board[7], $"{count}E@1" );
 			//  and: not at origin
-			ctx.PowerInvaders.Counts.Summary.ShouldBe( "" );
+			ctx.PowerInvaders.Counts.InvaderSummary.ShouldBe( "" );
 		}
 
 		[Fact]
@@ -84,7 +84,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			//  and: town on destination
 			ctx.GameState.Assert_Invaders( board[7], $"{count}T@2" );
 			//  and: not at origin
-			ctx.PowerInvaders.Counts.Summary.ShouldBe("");
+			ctx.PowerInvaders.Counts.InvaderSummary.ShouldBe("");
 
 		}
 

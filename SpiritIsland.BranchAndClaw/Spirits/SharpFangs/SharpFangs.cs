@@ -62,19 +62,6 @@ namespace SpiritIsland.BranchAndClaw {
 		
 			var beastOrJungleRange3 = new PlacePresence(3, Target.BeastOrJungle,"beast or jungle");
 
-			var a = new GrowthActionFactory[]{
-			};
-
-			var b= new GrowthActionFactory[]{
-				beastOrJungleRange3
-			};
-
-			var c = new GrowthActionFactory[]{
-			};
-
-			var d = new GrowthActionFactory[]{
-				new GainEnergy(3)   // D
-			};
 
 			GrowthOptions = new GrowthOption[]{
 				// A

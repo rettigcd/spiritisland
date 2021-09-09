@@ -1,6 +1,7 @@
 ﻿using Shouldly;
 using SpiritIsland.Basegame;
 using SpiritIsland.SinglePlayer;
+using System.Linq;
 using Xunit;
 
 namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
@@ -92,14 +93,17 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 		[InlineDataAttribute(3,3,"A")]
 		[InlineDataAttribute(4,3,"AM")]
 		[InlineDataAttribute(5,4,"AM")]
-		[InlineDataAttribute(6,4,"AM")] // !!! Test SelectAnyElement() growth action is in the list
-		[InlineDataAttribute(7,5,"AM")] // !!! same
+		[InlineDataAttribute(6,4,"AM*")]
+		[InlineDataAttribute(7,5,"AM*")]
 		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 			// energy:	2 air 3 moon 4 any 5
 			spirit.Presence.Energy.RevealedCount = revealedSpaces;
 			Assert_EnergyTrackIs( expectedEnergyGrowth );
 
 			spirit.TriggerEnergyElementsAndReclaims();
+
+			if(elements.Contains( '*' ))
+				spirit.GetAvailableActions(Speed.Growth).Single().Name.ShouldBe("Select elements (1)");
 
 			//When_Growing(0); // triggers elements
 			//_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
@@ -115,12 +119,17 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 		[InlineDataAttribute(3,2,"")]
 		[InlineDataAttribute(4,3,"")]
 		[InlineDataAttribute(5,3,"")]
-		[InlineDataAttribute(6,3,"")] // !!! need way to test this 'Any' element
+		[InlineDataAttribute(6,3,"*")]
 		public void CardTrack(int revealedSpaces, int expectedCardPlayCount, string elements){
 			// card:	2 2 2 3 3 any
 			spirit.Presence.CardPlays.RevealedCount = revealedSpaces;
 			Assert_CardTrackIs(expectedCardPlayCount);
-			When_Growing(0);
+
+			spirit.TriggerEnergyElementsAndReclaims();
+
+			if(elements.Contains( '*' ))
+				spirit.GetAvailableActions( Speed.Growth ).Single().Name.ShouldBe( "Select elements (1)" );
+
 			Assert_BonusElements( elements );
 		}
 

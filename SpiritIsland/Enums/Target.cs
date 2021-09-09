@@ -24,6 +24,7 @@
 		public const string Beast            = "Beast";
 		public const string PresenceOrWilds  = "PresenceOrWilds";
 		public const string Inland           = "Inland";
+		public const string CostalOrWetlands = "CostalOrWetlands";
 	}
 
 }
