@@ -175,11 +175,11 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 		}
 
 
-		private void Remove_ReplacePresenceWithBeast() {
-			spirit.Action.Choose( "ReplacePresenceWithBeast" );
-			if(spirit.Presence.Placed.Count > 1)
-				spirit.Action.Choose( "Done" ); // skip
-		}
+		//private void Remove_ReplacePresenceWithBeast() {
+		//	spirit.Action.Choose( "ReplacePresenceWithBeast" );
+		//	if(spirit.Presence.Placed.Count > 1)
+		//		spirit.Action.Choose( "Done" ); // skip
+		//}
 
 		void Activate_A() {
 			spirit.Action.Choose( "ReclaimAll / GainEnergy(-1) / DrawPowerCard" );

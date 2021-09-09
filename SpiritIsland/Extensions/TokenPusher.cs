@@ -4,66 +4,86 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
-	public class PowerTokenPusher : TokenPusher {
-		public PowerTokenPusher( IMakeGamestateDecisions ctx, Space source, int countToPush, TokenGroup[] groups, Present present )
-			:base(ctx,source,countToPush,groups,present)
-		{}
-
-		protected override IEnumerable<Space> GetAdjacents() {
-			var mapper = SpaceFilter.ForPowers.TerrainMapper;
-			return source.Adjacent.Where(s=>mapper(s) != Terrain.Ocean);
-		}
-	}
-
 	public class TokenPusher {
-		public TokenPusher( IMakeGamestateDecisions ctx, Space source, int countToPush, TokenGroup[] groups, Present present ) {
+
+		public TokenPusher( IMakeGamestateDecisions ctx, Space source ) {
 			this.ctx = ctx;
 			this.source = source;
-			this.countToPush = countToPush;
-			this.groups = groups;
-			this.present = present;
 		}
 
-		public async Task<Space[]> Exec() {
+		public TokenPusher ForPowerOrBlight() {
+			spaceFilter = SpaceFilter.ForPowers;
+			return this;
+		}
 
-			IEnumerable<Space> destinationOptions = GetAdjacents();
+		public TokenPusher AddGroup(int count,params TokenGroup[] groups ) {
+
+			count = System.Math.Min( count, ctx.GameState.Tokens[source].SumAny(groups) );
+
+			int index = countArray.Count;
+			countArray.Add( count );
+			foreach(var group in groups) indexLookup.Add( group, index );
+
+			return this; // chain together
+		}
+
+		public Task<Space[]> MoveN() => Exec( Present.IfMoreThan1 ); // ? switch to .Always ?
+		public Task<Space[]> MoveUpToN() => Exec( Present.Done );
+
+		async Task<Space[]> Exec( Present present ) {
 
 			var counts = ctx.GameState.Tokens[source];
-			Token[] GetTokens() => counts.OfAnyType( groups );
-			countToPush = System.Math.Min( countToPush, counts.SumAny( groups ) );
+			Token[] GetTokens() => counts.OfAnyType( indexLookup.Where( pair=>countArray[pair.Value]>0).Select(p=>p.Key).ToArray() );
 
 			var pushedToSpaces = new List<Space>();
 
-			var tokens = GetTokens();
-			while(0 < countToPush && 0 < tokens.Length) {
-				var decision = new SelectTokenToPushDecision( source, countToPush, tokens, present );
+			Token[] tokens;
+			while(0 < (tokens = GetTokens()).Length) {
+				var decision = new SelectTokenToPushDecision( source, countArray.Sum(), tokens, present );
 				var token = await ctx.Self.Action.Decide( decision );
 
 				if(token == null)
 					break;
 
-				var destination = await ctx.Self.Action.Decide( new PushTokenDecision( token, source, destinationOptions, Present.Always ) );
+				Space destination = await SelectDestination( token );
 				await ctx.GameState.Move( token, source, destination );
 
-				pushedToSpaces.Add( destination );
-				--countToPush;
-				tokens = GetTokens();
+				pushedToSpaces.Add( destination ); // record push
+				--countArray[indexLookup[token.Generic]]; // decrement count
 			}
 			return pushedToSpaces.ToArray();
 		}
 
-		protected virtual IEnumerable<Space> GetAdjacents()
-			=> source.Adjacent.Where( x => x.Terrain != Terrain.Ocean );
+		protected virtual async Task<Space> SelectDestination( Token token ) {
+			IEnumerable<Space> destinationOptions = source.Adjacent.Where( s => spaceFilter.TerrainMapper( s ) != Terrain.Ocean );
+			return await ctx.Self.Action.Decide( new PushTokenDecision( token, source, destinationOptions, Present.Always ) );
+		}
 
 		#region private
 
 		readonly IMakeGamestateDecisions ctx;
 		protected readonly Space source;
-		int countToPush;
-		readonly TokenGroup[] groups;
-		readonly Present present;
+
+		readonly List<int> countArray = new();
+		readonly Dictionary<TokenGroup, int> indexLookup = new();
+		SpaceFilter spaceFilter = SpaceFilter.Normal;
 
 		#endregion
+
+	}
+
+	/// <summary>
+	/// Overrides Selecting destination with a fixed destination
+	/// </summary>
+	public class TokenMover : TokenPusher {
+		Space destination;
+		public TokenMover( IMakeGamestateDecisions ctx, Space source, Space destination ) : base( ctx, source ) { 
+			this.destination = destination;
+		}
+
+		protected override Task<Space> SelectDestination( Token token ) {
+			return Task.FromResult(destination);
+		}
 
 	}
 

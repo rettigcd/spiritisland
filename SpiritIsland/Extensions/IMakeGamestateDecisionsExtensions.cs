@@ -51,11 +51,10 @@ namespace SpiritIsland {
 		#region Push
 
 		static public Task<Space[]> PushNTokens( this IMakeGamestateDecisions ctx, Space source, int countToPush , params TokenGroup[] groups )
-			//			=> ctx.PushTokens_Inner(source,countToPush,groups, Present.IfMoreThan1 );
-			=> new TokenPusher( ctx, source, countToPush, groups, Present.IfMoreThan1 ).Exec();
+			=> new TokenPusher( ctx, source ).AddGroup(countToPush,groups).MoveN();
 
 		static public Task<Space[]> PushUpToNTokens( this IMakeGamestateDecisions ctx, Space source, int countToPush , params TokenGroup[] groups ) 
-			=> new TokenPusher(ctx,source,countToPush,groups,Present.Done).Exec();
+			=> new TokenPusher( ctx, source ).AddGroup(countToPush,groups).MoveUpToN();
 
 		#endregion Push
 
@@ -82,7 +81,7 @@ namespace SpiritIsland {
 				.ToArray();
 
 			Space[] destinationOptions = inRange
-				.Where( SpaceFilter.ForPlacingPresence.GetFilter( engine.Self, engine.GameState, filterEnum ) )
+				.Where( SpaceFilter.Normal.GetFilter( engine.Self, engine.GameState, filterEnum ) )
 				.OrderBy( x => x.Label )
 				.ToArray();
 			return destinationOptions.Length == 0

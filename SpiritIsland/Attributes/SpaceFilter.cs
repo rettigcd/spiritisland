@@ -5,7 +5,7 @@ namespace SpiritIsland {
 
 	public class SpaceFilter {
 
-		static public readonly SpaceFilter ForPlacingPresence = new SpaceFilter();
+		static public readonly SpaceFilter Normal = new SpaceFilter();
 		static public readonly SpaceFilter ForCascadingBlight = new UsesSpecialTerrain();
 		static public readonly SpaceFilter ForPowers          = new UsesSpecialTerrain();
 

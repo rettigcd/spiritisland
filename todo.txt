@@ -3,12 +3,6 @@
 ====================================
 ===== Brnach and Claw Road Map =====
 
-HARD	Confounding Mists - invaders added may be immediatly pushed
-HARD	Call to Trade - changes a ravage to a biuld
-HARD	Twilight Fox Brings Madness - dahan take 1 damage each
-HARD	Sky Stretches to shore (+3 range for targetting costal)
-HARD	Spur on with words of fire
-
 BONUS	Switch Lightnings Make-Fast ability to dynamic so only presents # of slows available to make fast
 BONUS	Draw Fast / Slow icons over existing cards when speed changes
 

@@ -34,7 +34,9 @@ namespace SpiritIsland {
 
 		// Binds Target
 		public Task<Space[]> PushUpToNTokens( int countToPush, params TokenGroup[] groups )
-			=> new PowerTokenPusher( this, this.Target, countToPush, groups, Present.Done ).Exec();
+			=> new TokenPusher( this, this.Target ).ForPowerOrBlight()
+				.AddGroup( countToPush, groups )
+				.MoveUpToN();
 
 		// Binds to Dahan
 		public Task GatherUpToNDahan( int dahanToGather )
