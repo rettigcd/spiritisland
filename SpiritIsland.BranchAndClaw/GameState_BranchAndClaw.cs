@@ -11,7 +11,7 @@ namespace SpiritIsland.BranchAndClaw {
 			SpaceFilter.lookup[Target.Beast]           = ( ctx, s ) => ctx.GameState.Tokens[s].Beasts().Any;
 			SpaceFilter.lookup[Target.BeastOrJungle]   = ( ctx, s ) => ctx.SelectTerrain( s ) == Terrain.Jungle || ctx.GameState.Tokens[s].Beasts().Any;
 			SpaceFilter.lookup[Target.PresenceOrWilds] = ( ctx, s ) => ctx.Spirit.Presence.IsOn( s ) || ctx.GameState.Tokens[s].Wilds() > 0 ;
-			SpaceFilter.lookup[Target.CoastalOrWetlands]= ( ctx, s ) => ctx.SelectTerrain( s ) == Terrain.Wetland || s.IsCostal;
+			SpaceFilter.lookup[Target.CoastalOrWetlands]= ( ctx, s ) => ctx.SelectTerrain( s ) == Terrain.Wetland || ctx.IsCoastal( s );
 
 			// Don't use SelectTerrain because even if ocean is Wetland, it is not inland.
 			SpaceFilter.lookup[Target.Inland]          = ( ctx, s ) => s.Terrain != Terrain.Ocean && !s.IsCostal;

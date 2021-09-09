@@ -44,7 +44,6 @@ namespace SpiritIsland {
 
 		public Space(Terrain terrain, string label,string startingItems=""){
 			this.Terrain = terrain;
-			this.TerrainForPower = terrain;
 			this.Label = label;
 			this.StartUpCounts = new StartUpCounts(startingItems);
 			_distanceTo.Add(this,0);
@@ -60,8 +59,21 @@ namespace SpiritIsland {
 
 		public string Label { get; }
 
+		#region for Power
+
 		public Terrain Terrain { get; }
-		public Terrain TerrainForPower { get; set; }
+		public Terrain TerrainForPower {
+			get => terrainForPower ?? Terrain;
+			set => terrainForPower = value;
+		}
+		Terrain? terrainForPower;
+		public bool IsCostalForPower { 
+			get => isCostalForPower ?? IsCostal;
+			set => isCostalForPower = value;
+		}
+		bool? isCostalForPower;
+
+		#endregion
 
 		public bool IsCostal { get; set; }
 

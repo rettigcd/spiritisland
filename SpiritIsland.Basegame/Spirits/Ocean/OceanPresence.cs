@@ -8,17 +8,24 @@ namespace SpiritIsland.Basegame {
 
 		public override void PlaceOn( Space space ) {
 			base.PlaceOn( space );
-			// Mark the ocean on this board as a Wetland
-			space.Board[0].TerrainForPower = Terrain.Wetland;
+			MakeOceanCostalWetland( space.Board[0] );
 		}
 
 		public override void RemoveFrom( Space space ) {
 			base.RemoveFrom( space );
 			var board = space.Board;
-			// If no ocean left on this board
-			if(!Spaces.Any(s=>s.Board == board))
-				// restore Ocean to an Ocean terrain
-				board[0].TerrainForPower = Terrain.Ocean;
+			if(!Spaces.Any(s=>s.Board == board ))
+				RestoreOcean( board[0] );
+		}
+
+		static void RestoreOcean( Space ocean ) {
+			ocean.TerrainForPower = Terrain.Ocean;
+			ocean.IsCostalForPower = true;
+		}
+
+		static void MakeOceanCostalWetland( Space ocean ) {
+			ocean.TerrainForPower = Terrain.Wetland;
+			ocean.IsCostalForPower = true;
 		}
 
 	}

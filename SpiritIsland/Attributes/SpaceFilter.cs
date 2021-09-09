@@ -19,7 +19,7 @@ namespace SpiritIsland {
 			[Target.JungleOrSand      ] = ( ctx, s ) => ctx.SelectTerrain( s ).IsIn( Terrain.Jungle, Terrain.Sand ),
 			[Target.JungleOrWetland   ] = ( ctx, s ) => ctx.SelectTerrain( s ).IsIn( Terrain.Jungle, Terrain.Wetland ),
 			[Target.MountainOrWetland ] = ( ctx, s ) => ctx.SelectTerrain( s ).IsIn( Terrain.Mountain, Terrain.Wetland ),
-			[Target.Coastal           ] = ( _, s ) => s.IsCostal,
+			[Target.Coastal           ] = ( ctx, s ) => ctx.IsCoastal( s ),
 			[Target.NoInvader         ] = ( ctx, s ) => !ctx.GameState.HasInvaders( s ),
 			[Target.Blight            ] = ( ctx, s ) => ctx.GameState.HasBlight( s ),
 			[Target.NoBlight          ] = ( ctx, s ) => !ctx.GameState.HasBlight( s ),
@@ -31,9 +31,13 @@ namespace SpiritIsland {
 		};
 
 		public Func<Space, Terrain> TerrainMapper = (Space space) => space.Terrain;
+		public Func<Space, bool> IsCoastal = (Space space) => space.IsCostal;
 
 		class UsesSpecialTerrain : SpaceFilter {
-			public UsesSpecialTerrain() { TerrainMapper = ( Space space ) => space.TerrainForPower; }
+			public UsesSpecialTerrain() { 
+				TerrainMapper = ( Space space ) => space.TerrainForPower;
+				IsCoastal = (Space space) => space.IsCostalForPower;
+			}
 		}
 
 		public Func<Space, bool> GetFilter( Spirit self, GameState gameState, string filterEnum ) {
@@ -42,6 +46,7 @@ namespace SpiritIsland {
 				Spirit = self, 
 				GameState = gameState,
 				SelectTerrain = TerrainMapper,
+				IsCoastal = IsCoastal,
 				baseFilter = lookup.ContainsKey(filterEnum) 
 					? lookup[filterEnum]
 					: throw new ArgumentException( "Unexpected filter", nameof( filterEnum ) )
@@ -54,6 +59,7 @@ namespace SpiritIsland {
 		public Spirit Spirit;
 		public GameState GameState;
 		public Func<Space,Terrain> SelectTerrain;
+		public Func<Space, bool> IsCoastal;
 		public Func<SpaceFilterCtx, Space, bool> baseFilter;
 		public bool Match(Space space) => baseFilter(this,space) && SelectTerrain(space) != Terrain.Ocean;
 	}
