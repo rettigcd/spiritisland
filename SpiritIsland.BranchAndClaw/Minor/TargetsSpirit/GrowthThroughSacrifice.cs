@@ -30,7 +30,7 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 				spaceCtx.AddBlight( -1 );
 				await ctx.Target.MakeDecisionsFor( ctx.GameState ).Presence_SelectFromTo( spaceCtx.Target );
 			} else
-				await ctx.Target.SelectPowerOption(
+				await ctx.SelectActionOption(
 					new ActionOption( "Remove 1 blight from one of your lands", RemoveBlightFromTargetsLands ),
 					new ActionOption( "Add 1 presence to one of your lands", AddPresenceToTargetsLand )
 				);

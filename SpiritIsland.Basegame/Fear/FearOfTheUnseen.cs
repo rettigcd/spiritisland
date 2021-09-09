@@ -52,7 +52,8 @@ namespace SpiritIsland.Basegame {
 					gs.Tokens[space].Remove(removeType);
 				}
 
-				await spirit.SelectPowerOption(
+				await spirit.SelectAction(
+					"Select invader to remove",
 					new ActionOption( "remove 1 explorer from land with presence", ()=>Remove(explorerOptions,Invader.Explorer), explorerOptions.Length>0 ),
 					new ActionOption( "remove 1 town from land with presence",     () => Remove( townOptions, Invader.Town ), townOptions.Length > 0 ),
 					new ActionOption( "remove 1 city from land with sacred site",  () => Remove( cityOptions, Invader.City ), cityOptions.Length > 0 )
