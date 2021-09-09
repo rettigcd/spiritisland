@@ -60,7 +60,7 @@ namespace SpiritIsland.BranchAndClaw {
 			PowerCard.For<TooNearTheJungle>()
 		) {
 		
-			var beastOrJungleRange3 = new PlacePresence(3, Target.BeastOrJungle,"beast or jungle");
+			var beastOrJungleRange3 = new PlacePresence(3, Target.BeastOrJungle);
 
 
 			GrowthOptions = new GrowthOption[]{

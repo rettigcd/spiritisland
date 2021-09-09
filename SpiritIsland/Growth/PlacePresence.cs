@@ -19,12 +19,11 @@ namespace SpiritIsland {
 
 		public PlacePresence(
 			int range,
-			string filterEnum,
-			string funcDescriptor
+			string filterEnum
 		) {
 			this.range = range;
 			this.filterEnum = filterEnum;
-			ShortDescription = $"PlacePresence({range},{funcDescriptor})";
+			ShortDescription = $"PlacePresence({range},{filterEnum})";
 		}
 
 		#endregion

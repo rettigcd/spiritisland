@@ -19,7 +19,7 @@ namespace SpiritIsland {
 			[Target.JungleOrSand      ] = ( ctx, s ) => ctx.SelectTerrain( s ).IsIn( Terrain.Jungle, Terrain.Sand ),
 			[Target.JungleOrWetland   ] = ( ctx, s ) => ctx.SelectTerrain( s ).IsIn( Terrain.Jungle, Terrain.Wetland ),
 			[Target.MountainOrWetland ] = ( ctx, s ) => ctx.SelectTerrain( s ).IsIn( Terrain.Mountain, Terrain.Wetland ),
-			[Target.Costal            ] = ( _, s ) => s.IsCostal,
+			[Target.Coastal           ] = ( _, s ) => s.IsCostal,
 			[Target.NoInvader         ] = ( ctx, s ) => !ctx.GameState.HasInvaders( s ),
 			[Target.Blight            ] = ( ctx, s ) => ctx.GameState.HasBlight( s ),
 			[Target.NoBlight          ] = ( ctx, s ) => !ctx.GameState.HasBlight( s ),

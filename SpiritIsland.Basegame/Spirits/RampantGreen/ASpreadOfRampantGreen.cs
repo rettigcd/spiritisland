@@ -66,7 +66,7 @@ namespace SpiritIsland.Basegame {
 			// Special rules: steady regeneration
 			this.Presence.CanPlaceDestroyedPresence = true; // !! leaky abstractions
 
-			static PlacePresence placeOnWetlandOrJungle() => new PlacePresence( 2, Target.JungleOrWetland, "W / J" );
+			static PlacePresence placeOnWetlandOrJungle() => new PlacePresence( 2, Target.JungleOrWetland );
 
 			GrowthOptions = new GrowthOption[]{
 				// reclaim, +1 power card

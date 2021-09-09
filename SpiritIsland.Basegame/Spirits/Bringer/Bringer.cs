@@ -62,7 +62,7 @@ namespace SpiritIsland.Basegame {
 				// +1 power card, +1 pressence range 1
 				new GrowthOption(new DrawPowerCard(1), new PlacePresence(1) ),
 				// add presense range Dahan or Invadors, +2 energy
-				new GrowthOption(new GainEnergy(2), new PlacePresence(4,Target.DahanOrInvaders,"dahan or invaders"))
+				new GrowthOption(new GainEnergy(2), new PlacePresence(4,Target.DahanOrInvaders))
 			};
 
 			this.InnatePowers = new InnatePower[]{

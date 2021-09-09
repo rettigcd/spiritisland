@@ -3,7 +3,7 @@
 namespace SpiritIsland.Basegame {
 
 	[InnatePower( "Ocean Breaks the Shore", Speed.Slow )]
-	[FromPresence( 0, Target.Costal )]
+	[FromPresence( 0, Target.Coastal )]
 	public class OceanBreaksTheShore {
 
 		

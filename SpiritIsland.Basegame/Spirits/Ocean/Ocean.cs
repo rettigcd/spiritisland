@@ -1,6 +1,4 @@
-﻿
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 	/*
@@ -51,7 +49,7 @@ namespace SpiritIsland.Basegame {
 				new GrowthOption( 
 					new PushPresenceFromOcean(),
 					new DrawPowerCard(),
-					new PlacePresence(1, Target.Costal, "coastal" )
+					new PlacePresence(1, Target.Coastal )
 				)
 			};
 
@@ -101,37 +99,6 @@ namespace SpiritIsland.Basegame {
 		}
 
 		int drownedCount = 0;
-	}
-
-	class Setup_PlacePresenceInCostal : GrowthActionFactory {
-		// ! Can't used normal PlacePresence, because it must be range-1, range 0 not allowed.
-		public override async Task ActivateAsync( Spirit spirit, GameState gameState ) {
-			var options = spirit.Presence.Spaces.First().Adjacent;
-			var space = await spirit.Action.Decide( new TargetSpaceDecision( "Add presence to", options ) );
-			spirit.Presence.PlaceOn( space );
-		}
-	}
-
-
-	public class OceanPresence : MyPresence {
-
-		public OceanPresence( PresenceTrack energy, PresenceTrack cardPlays ) : base( energy, cardPlays ) { }
-
-		public override void PlaceOn( Space space ) {
-			base.PlaceOn( space );
-			// Mark the ocean on this board as a Wetland
-			space.Board[0].TerrainForPower = Terrain.Wetland;
-		}
-
-		public override void RemoveFrom( Space space ) {
-			base.RemoveFrom( space );
-			var board = space.Board;
-			// If no ocean left on this board
-			if(!Spaces.Any(s=>s.Board == board))
-				// restore Ocean to an Ocean terrain
-				board[0].TerrainForPower = Terrain.Ocean;
-		}
-
 	}
 
 }

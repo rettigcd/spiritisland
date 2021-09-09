@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 
 
 		[MajorCard(Tsunami.Name,6,Speed.Slow,Element.Water,Element.Earth)]
-		[FromSacredSite(2,Target.Costal)]
+		[FromSacredSite(2,Target.Coastal)]
 		static public async Task ActAsync(TargetSpaceCtx ctx){
 			// 2 fear
 			ctx.AddFear(2);

@@ -60,8 +60,8 @@ namespace SpiritIsland.BranchAndClaw {
 			GrowthOptions = new GrowthOption[]{
 				new GrowthOption( new ReclaimAll() ,new GainEnergy(1) ){ GainEnergy = 1 },
 				new GrowthOption( new DrawPowerCard(1) ),
-				new GrowthOption( new GainEnergy(1) ,new PlacePresence(3,Target.PresenceOrWilds,"presence or wilds") ){ GainEnergy = 1 },
-				new GrowthOption( new GainEnergy(-3),new DrawPowerCard(1) ,new PlacePresence(3,Target.NoBlight,"no blight") ){ GainEnergy = -3 },
+				new GrowthOption( new GainEnergy(1) ,new PlacePresence(3,Target.PresenceOrWilds) ){ GainEnergy = 1 },
+				new GrowthOption( new GainEnergy(-3),new DrawPowerCard(1) ,new PlacePresence(3,Target.NoBlight) ){ GainEnergy = -3 },
 			};
 			growthOptionSelectionCount = 2;
 

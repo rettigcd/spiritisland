@@ -5,7 +5,7 @@ namespace SpiritIsland.BranchAndClaw {
 	public class CyclesOfTimeAndTide {
 
 		[MinorCard( "Cycles of Time and Tide", 1, Speed.Fast, Element.Sun, Element.Moon, Element.Water )]
-		[FromPresence( 1, Target.Costal )]
+		[FromPresence( 1, Target.Coastal )]
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 
 			if(ctx.HasDahan)
