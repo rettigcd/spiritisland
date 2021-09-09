@@ -43,6 +43,9 @@ namespace SpiritIsland.WinForms {
 				case "GainEnergy(2)": GainEnergy( rect, 2 ); break;
 				case "GainEnergy(3)": GainEnergy( rect, 3 ); break;
 				case "GainEnergy(4)": GainEnergy( rect, 4 ); break;
+				case "GainEnergy(-3)": GainEnergy( rect, -3 ); break;
+				case "GainEnergy(-1)": GainEnergy( rect, -1 ); break;
+
 				case "PlacePresence(0)": PlacePresence( rect, 0 ); break;
 				case "PlacePresence(1)": PlacePresence( rect, 1 ); break;
 				case "PlacePresence(2)": PlacePresence( rect, 2 ); break;
@@ -62,10 +65,8 @@ namespace SpiritIsland.WinForms {
 				case "PushPresenceFromOcean": PushFromOcean( rect ); break;
 				// Keeper
 				case "PlacePresence(3,presence or wilds)": PlacePresence( rect, 3); break; //  !!!
-				case "GainEnergy(-3)": //                                                      !!!
 				case "PlacePresence(3,no blight)": //                                          !!!
 				// Sharp Fangs
-				case "GainEnergy(-1)":
 				case "PlacePresence(3,beast or jungle)":
 					graphics.FillRectangle( Brushes.SeaGreen, Rectangle.Inflate( rect.ToInts(), -5, -5 ) );
 					break;
@@ -76,14 +77,33 @@ namespace SpiritIsland.WinForms {
 
 		}
 
-		void PushFromOcean( RectangleF rect ) => DrawTokenInCenter(rect, "Pushfromocean");
-		void PlaceInOcean( RectangleF rect ) => DrawTokenInCenter( rect, "Ocean" );
+		void PushFromOcean( RectangleF rect )          => DrawTokenInCenter(rect, "Pushfromocean");
+		void PlaceInOcean( RectangleF rect )           => DrawTokenInCenter( rect, "Ocean" );
 		void AdditionalPlay( RectangleF rect )         => DrawTokenInCenter( rect, "Cardplayplusone");
 		void Reclaim1( RectangleF rect )               => DrawTokenInCenter( rect, "reclaim 1");
 		void DrawPowerCard( RectangleF rect )          => DrawTokenInCenter( rect, "GainCard" );
 		void GatherToOcean( RectangleF rect )          => DrawTokenInCenter( rect, "Gathertoocean" );
 		void ReclaimAll( RectangleF rect )             => DrawTokenInCenter( rect, "ReclaimAll" );
-		void GainEnergy( RectangleF rect, int delta )  => DrawTokenInCenter( rect, "Energy_Plus_"+delta);
+
+		void GainEnergy( RectangleF bounds, int delta ){
+			// DrawTokenInCenter( rect, "Energy_Plus_"+delta);
+			using var img = ResourceImages.Singleton.GetTokenIcon( "coin" );
+			float imgWidth = bounds.Width, imgHeight = img.Height * imgWidth / img.Width; // assuming width limited
+			graphics.DrawImage( img, bounds.X, bounds.Y + (bounds.Height - imgHeight) / 2, imgWidth, imgHeight );
+
+			using Font coinFont = new Font( ResourceImages.Singleton.Fonts.Families[0], imgHeight * .5f );
+			string txt = delta > 0 
+				? ("+" + delta.ToString())
+				: ("\u2014" + (-delta).ToString());
+			SizeF textSize = graphics.MeasureString( txt, coinFont );
+			PointF textTopLeft = new PointF(
+				bounds.X + (bounds.Width - textSize.Width) * .35f,
+				bounds.Y + (bounds.Height - textSize.Height) * .60f
+			);
+			graphics.DrawString( txt, coinFont, Brushes.Black, textTopLeft );
+			// graphics.DrawRectangle( Pens.Red, textTopLeft.X, textTopLeft.Y, textSize.Width, textSize.Height );
+
+		}
 
 		void DrawTokenInCenter( RectangleF rect, string file ) {
 			var img = ResourceImages.Singleton.GetTokenIcon( file );

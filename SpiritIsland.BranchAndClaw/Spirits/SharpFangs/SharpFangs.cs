@@ -64,14 +64,10 @@ namespace SpiritIsland.BranchAndClaw {
 
 
 			GrowthOptions = new GrowthOption[]{
-				// A
-				new GrowthOption( new ReclaimAll(), new GainEnergy(-1), new DrawPowerCard(1) ),
-				// B
+				new GrowthOption( new ReclaimAll(), new GainEnergy(-1), new DrawPowerCard(1) ){ GainEnergy=-1 },
 				new GrowthOption( beastOrJungleRange3 ),
-				// C
-				new GrowthOption( new DrawPowerCard(1), new GainEnergy(1) ),
-				// D
-				new GrowthOption( new GainEnergy(3) )
+				new GrowthOption( new DrawPowerCard(1), new GainEnergy(1) ){ GainEnergy = 1 },
+				new GrowthOption( new GainEnergy(3) ){ GainEnergy = 3 }
 			};
 			this.growthOptionSelectionCount = 2;
 

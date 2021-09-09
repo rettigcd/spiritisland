@@ -108,7 +108,10 @@ namespace SpiritIsland.WinForms {
 			graphics.DrawImage( coin, bounds );
 			Font coinFont = new Font( ResourceImages.Singleton.Fonts.Families[0], bounds.Height * .5f );
 			SizeF textSize = graphics.MeasureString( txt, coinFont );
-			graphics.DrawString( txt, coinFont, Brushes.Black, bounds.X + bounds.Width / 2 - textSize.Width * .5f, bounds.Y + bounds.Height * .5f - textSize.Height * .45f );
+			graphics.DrawString( txt, coinFont, Brushes.Black, 
+				bounds.X + bounds.Width / 2 - textSize.Width * .5f, 
+				bounds.Y + (bounds.Height - textSize.Height) * .5f 
+			);
 		}
 
 	}

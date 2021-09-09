@@ -56,10 +56,6 @@
     <None Remove="images\tokens\coin.png" />
     <None Remove="images\tokens\Disease.png" />
     <None Remove="images\tokens\earth energy.png" />
-    <None Remove="images\tokens\Energy_Plus_1.png" />
-    <None Remove="images\tokens\Energy_Plus_2.png" />
-    <None Remove="images\tokens\Energy_Plus_3.png" />
-    <None Remove="images\tokens\Energy_Plus_4.png" />
     <None Remove="images\tokens\fire energy.png" />
     <None Remove="images\tokens\GainCard.png" />
     <None Remove="images\tokens\Gathertoocean.png" />
@@ -180,10 +176,6 @@
     <EmbeddedResource Include="images\tokens\earth energy.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="images\tokens\Energy_Plus_1.png" />
-    <EmbeddedResource Include="images\tokens\Energy_Plus_2.png" />
-    <EmbeddedResource Include="images\tokens\Energy_Plus_3.png" />
-    <EmbeddedResource Include="images\tokens\Energy_Plus_4.png" />
     <EmbeddedResource Include="images\tokens\fire energy.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
