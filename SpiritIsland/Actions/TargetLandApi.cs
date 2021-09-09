@@ -8,17 +8,16 @@ namespace SpiritIsland {
 	public class TargetLandApi {
 
 		public async virtual Task<Space> TargetsSpace( Spirit self, GameState gameState, From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum ) {
-			IEnumerable<Space> spaces = GetTargetOptions( self, sourceEnum, sourceTerrain, range, filterEnum, gameState );
+			IEnumerable<Space> spaces = GetTargetOptions( self, gameState, sourceEnum, sourceTerrain, range, filterEnum );
 			return await self.Action.Decide( new TargetSpaceDecision( "Select space to target.", spaces ));
 		}
 
-		protected virtual IEnumerable<Space> GetTargetOptions( Spirit self, From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum, GameState gameState ) {
+		public virtual IEnumerable<Space> GetTargetOptions( Spirit self, GameState gameState, From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum ) {
 			IEnumerable<Space> source = FindSources( self, sourceEnum, sourceTerrain );
 			return GetTargetOptions( self, gameState, source, range, filterEnum );
 		}
 
-		/// <remarks> Virtual so Entwined can override it </remarks>
-		public virtual IEnumerable<Space> FindSources( Spirit self, From sourceEnum, Terrain? sourceTerrain ) {
+		protected IEnumerable<Space> FindSources( Spirit self, From sourceEnum, Terrain? sourceTerrain ) {
 			// Select Source
 			IEnumerable<Space> source = GetSource( self, sourceEnum );
 			if(sourceTerrain.HasValue)

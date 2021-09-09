@@ -91,7 +91,7 @@ Shadows Flicker like Flame:
 					return await base.TargetsSpace( self, gameState, from, sourceTerrain, range, filter );
 
 				// find normal Targetable spaces
-				var normalSpaces = base.GetTargetOptions( self, from, sourceTerrain, range, filter, gameState );
+				var normalSpaces = base.GetTargetOptions( self, gameState, from, sourceTerrain, range, filter );
 
 				// find dahan-only spaces that are not in targetable spaces
 				var dahanOnlySpaces = gameState.Island.Boards
