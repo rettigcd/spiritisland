@@ -196,7 +196,7 @@ namespace SpiritIsland {
 
 		readonly Dictionary<Space, ConfigureRavage> _ravageConfig = new Dictionary<Space, ConfigureRavage>(); // change ravage state of a Space
 
-		protected virtual async Task<string> RavageSpace( InvaderGroup grp ) {
+		public virtual async Task<string> RavageSpace( InvaderGroup grp ) {
 			var cfg = GetRavageConfiguration( grp.Space );
 			var eng = new RavageEngine( this, grp, cfg );
 			await eng.Exec();

@@ -49,7 +49,7 @@ namespace SpiritIsland.BranchAndClaw {
 			return await base.Build( tokens, buildType );
 		}
 
-		protected override async Task<string> RavageSpace( InvaderGroup grp ) {
+		public override async Task<string> RavageSpace( InvaderGroup grp ) {
 			var cfg = GetRavageConfiguration( grp.Space );
 			var eng = new RavageEngineWithStrife( this, grp, cfg );
 			await eng.Exec();

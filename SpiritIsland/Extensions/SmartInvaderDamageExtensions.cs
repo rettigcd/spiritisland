@@ -67,9 +67,11 @@ namespace SpiritIsland {
 
 	public class SmartInvaderAttacker {
 
-		static public SmartInvaderAttacker Singleton = new SmartInvaderAttacker();
+		static readonly public SmartInvaderAttacker Singleton = new SmartInvaderAttacker();
 
+#pragma warning disable CA1822 // Mark members as static
 		public Token GetKillOrder( 
+#pragma warning restore CA1822 // Mark members as static
 			TokenCountDictionary counts, 
 			int availableDamage
 			, params TokenGroup[] invaderGeneric
@@ -82,7 +84,7 @@ namespace SpiritIsland {
 				?? PickItemToDamage( candidates );
 		}
 
-		Token PickItemToKill(IEnumerable<Token> candidates, int availableDamage) {
+		static Token PickItemToKill(IEnumerable<Token> candidates, int availableDamage) {
 			return candidates
 				.Where( specific => specific.Health <= availableDamage ) // can be killed
 				.OrderByDescending( k => k.FullHealth ) // pick items with most Full Health
@@ -90,7 +92,7 @@ namespace SpiritIsland {
 				.FirstOrDefault();
 		}
 
-		Token PickItemToDamage( IEnumerable<Token> candidates ) {
+		static Token PickItemToDamage( IEnumerable<Token> candidates ) {
 			return candidates
 				.OrderBy(i=>i.Health) // closest to dead
 				.ThenByDescending(i=>i.FullHealth) // biggest impact
