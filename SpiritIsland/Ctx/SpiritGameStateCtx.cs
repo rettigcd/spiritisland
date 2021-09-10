@@ -33,7 +33,7 @@ namespace SpiritIsland {
 
 		#region Gather
 
-		public async Task GatherUpToN( Space target, int countToGather, params TokenGroup[] groups ) {
+		public async Task GatherUpTo( Space target, int countToGather, params TokenGroup[] groups ) {
 			Token[] calcTokens( Space space ) => GameState.Tokens[space].OfAnyType( groups );
 			Space[] CalcSource() => target.Adjacent
 				.Where( s => calcTokens( s ).Any() )

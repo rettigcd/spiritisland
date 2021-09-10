@@ -2,7 +2,9 @@
 using System.Threading.Tasks;
 
 namespace SpiritIsland.BranchAndClaw.Minor {
+
 	public class ChangeSpeed : IActionFactory {
+
 		public Speed Speed {
 			get => Speed.FastOrSlow;
 			set => throw new InvalidOperationException();

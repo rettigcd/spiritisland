@@ -12,7 +12,7 @@ namespace SpiritIsland.Basegame {
 
 		[InnateOption("2 moon, 1 fire")]
 		public static async Task Gather1Explorer( TargetSpaceCtx ctx ) {
-			await ctx.GatherUpToN( ctx.Space, 1, Invader.Explorer );
+			await ctx.GatherUpTo( ctx.Space, 1, Invader.Explorer );
 		}
 
 		[InnateOption("3 moon, 2 fire")]

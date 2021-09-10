@@ -11,10 +11,9 @@ namespace SpiritIsland.Basegame {
 		[SpiritCard(RagingStorm.Name,3,Speed.Slow,Element.Fire,Element.Air,Element.Water)]
 		[FromPresence(1)]
 		static public async Task ActAsync(TargetSpaceCtx ctx){
-			var grp = ctx.Invaders;
 
 			// 1 damange to each invader.
-			await grp.ApplyDamageToAllTokensOfType(1, grp.Tokens.Invaders());
+			await ctx.Invaders.ApplyDamageToAllTokensOfType(1, ctx.Tokens.Invaders());
 		}
 
 	}

@@ -12,9 +12,13 @@ namespace SpiritIsland {
 		readonly Speed resultingSpeed;
 		int countToChange;
 
-		public SpeedChanger( Spirit spirit, GameState gameState, Speed resultingSpeed, int maxCountToChange ) {
+		public SpeedChanger( SpiritGameStateCtx ctx, Speed resultingSpeed, int maxCountToChange )
+			:this(ctx.Self,ctx.GameState,resultingSpeed,maxCountToChange) 
+		{}
+
+		public SpeedChanger( Spirit spirit, GameState gs, Speed resultingSpeed, int maxCountToChange ) {
 			this.spirit = spirit;
-			this.gameState = gameState; // for Time-Passes Hook, to reset
+			this.gameState = gs; // for Time-Passes Hook, to reset
 			this.countToChange = maxCountToChange;
 			this.resultingSpeed = resultingSpeed;
 

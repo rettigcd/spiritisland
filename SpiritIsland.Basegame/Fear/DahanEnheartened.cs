@@ -26,7 +26,7 @@ namespace SpiritIsland.Basegame {
 				if(canPush)
 					await engine.PushUpToN(target,1,TokenType.Dahan );
 				else if(canGather)
-					await engine.GatherUpToN(target,1,TokenType.Dahan);
+					await engine.GatherUpTo(target,1,TokenType.Dahan);
 			}
 		}
 
@@ -37,7 +37,7 @@ namespace SpiritIsland.Basegame {
 				var engine = spirit.MakeDecisionsFor( gs );
 				var options = gs.Island.AllSpaces.Where( gs.DahanIsOn ).Except( used ).ToArray();
 				var target = await spirit.Action.Decide( new TargetSpaceDecision( "Fear:select land with dahan for 1 damage", options ));
-				await engine.GatherUpToN(target,2, TokenType.Dahan );
+				await engine.GatherUpTo(target,2, TokenType.Dahan );
 				if(gs.DahanIsOn(target))
 					await gs.SpiritFree_FearCard_DamageInvaders(target, 1 );
 				used.Add( target );
@@ -50,7 +50,7 @@ namespace SpiritIsland.Basegame {
 			foreach(var spirit in gs.Spirits) {
 				var options = gs.Island.AllSpaces.Where( gs.DahanIsOn ).Except( used ).ToArray();
 				var target = await spirit.Action.Decide( new TargetSpaceDecision( "Fear:select land with dahan for 1 damage", options ));
-				await spirit.MakeDecisionsFor( gs ).GatherUpToN( target, 2, TokenType.Dahan );
+				await spirit.MakeDecisionsFor( gs ).GatherUpTo( target, 2, TokenType.Dahan );
 				await gs.SpiritFree_FearCard_DamageInvaders(target, gs.DahanGetCount(target) );
 				used.Add( target );
 			}

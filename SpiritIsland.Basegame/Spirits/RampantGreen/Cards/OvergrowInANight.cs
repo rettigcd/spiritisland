@@ -13,7 +13,7 @@ namespace SpiritIsland.Basegame {
 				new ActionOption(
 					"3 fear",
 					() => ctx.AddFear(3), 
-					ctx.Self.Presence.IsOn( ctx.Space ) && ctx.Tokens.HasInvaders()  // if presence and invaders
+					ctx.HasSelfPresence && ctx.Tokens.HasInvaders()  // if presence and invaders
 				)
 			);
 

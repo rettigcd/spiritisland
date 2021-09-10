@@ -44,6 +44,8 @@ namespace SpiritIsland {
 				.AddGroup( countToPush, groups )
 				.MoveUpToN();
 
+		public TokenPusher Pusher => new TokenPusher( this, this.Space ).ForPowerOrBlight();
+
 		public Task<Space[]> Push( int countToPush, params TokenGroup[] groups )
 			=> new TokenPusher( this, Space ).ForPowerOrBlight()
 				.AddGroup( countToPush, groups )
@@ -59,7 +61,7 @@ namespace SpiritIsland {
 
 		// Binds to .Target
 		public Task GatherUpTo( int countToGather, params TokenGroup[] ofType )
-			=> this.GatherUpToN( Space, countToGather, ofType );
+			=> this.GatherUpTo( Space, countToGather, ofType );
 
 		#endregion Gather
 
@@ -122,6 +124,8 @@ namespace SpiritIsland {
 
 		public bool IsSelfSacredSite => Self.SacredSites.Contains(Space);
 		public bool HasSelfPresence => Self.Presence.Spaces.Contains(Space);
+
+		public int PresenceCount => Self.Presence.CountOn(Space);
 
 		public Task PlacePresenceOnTarget() => Self.Presence.PlaceFromBoard( Track.Destroyed, Space, GameState );
 
