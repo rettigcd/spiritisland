@@ -8,11 +8,10 @@ namespace SpiritIsland.BranchAndClaw {
 		static public async Task ActAsync( TargetSpiritCtx ctx ) {
 			// Target spirit gathers 1 dahan into one of their lands
 			var spaceCtx = await ctx.OtherCtx.TargetLandWithPresence("Gather 1 dahan to");
-			await spaceCtx.GatherUpTo(1,TokenType.Dahan);
+			await spaceCtx.GatherUpToNDahan(1);
 
 			// 1 damage in that land per dahan present
-			int dahanPresent = spaceCtx.Tokens.Sum(TokenType.Dahan);
-			spaceCtx.Defend( dahanPresent );
+			spaceCtx.DamageInvaders( spaceCtx.DahanCount );
 
 		}
 

@@ -11,10 +11,11 @@ namespace SpiritIsland.BranchAndClaw {
 
 			await ctx.GatherUpToNDahan(1);
 
-			if(ctx.GameState.Fear.TerrorLevel <= 2) {
-				await ctx.GatherUpTo(1,Invader.Town);
+			if( ctx.GameState.Fear.TerrorLevel <= 2 ) {
+				await ctx.Gather( 1,Invader.Town );
 
 				// And the first ravage in target land becomes a build there instead.
+				// !!! this would be a LOT simpler if the Ravage / Build lands were initialized at the beginning of the round
 				bool hasRavage = false;
 				Task RemoveRavage(GameState gs,Space[] spaces ) {
 					hasRavage = spaces.Contains(ctx.Space);

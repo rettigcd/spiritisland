@@ -24,7 +24,7 @@ namespace SpiritIsland.Basegame {
 
 				var engine = spirit.MakeDecisionsFor(gs);
 				if(canPush)
-					await engine.PushUpToN(target,1,TokenType.Dahan );
+					await engine.PushUpTo(target,1,TokenType.Dahan );
 				else if(canGather)
 					await engine.GatherUpTo(target,1,TokenType.Dahan);
 			}

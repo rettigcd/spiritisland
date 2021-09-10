@@ -38,11 +38,6 @@ namespace SpiritIsland {
 
 		public TargetSpaceCtx TargetSpace( Space space ) => new TargetSpaceCtx( Self, GameState, space );
 
-		public async Task<TargetSpaceCtx> TargetLandWithPresence( string prompt ) {
-			var space = await Self.Action.Decide( new SelectDeployedPresence( prompt, Self ) );
-			return new TargetSpaceCtx( Self, GameState, space );
-		}
-
 	}
 
 }

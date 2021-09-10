@@ -10,6 +10,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			// Add 1 strife
 			await ctx.Self.SelectInvader_ToStrife( ctx.Tokens );
+
 			// Push 1 dahan
 			await ctx.PushDahan( 1 );
 

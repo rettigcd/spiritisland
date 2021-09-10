@@ -63,6 +63,9 @@ namespace SpiritIsland {
 		public Task GatherUpTo( int countToGather, params TokenGroup[] ofType )
 			=> this.GatherUpTo( Space, countToGather, ofType );
 
+		public Task Gather( int countToGather, params TokenGroup[] groups )
+			=> this.Gather( Space, countToGather, groups);
+
 		#endregion Gather
 
 		/// <summary> Use this for Power-Pushing, since Powers can push invaders into the ocean. </summary>

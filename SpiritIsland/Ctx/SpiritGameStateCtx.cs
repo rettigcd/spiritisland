@@ -23,10 +23,10 @@ namespace SpiritIsland {
 
 		#region Push
 
-		public Task<Space[]> PushN( Space source, int countToPush, params TokenGroup[] groups )
+		public Task<Space[]> Push( Space source, int countToPush, params TokenGroup[] groups )
 			=> new TokenPusher( this, source ).AddGroup( countToPush, groups ).MoveN();
 
-		public Task<Space[]> PushUpToN( Space source, int countToPush, params TokenGroup[] groups )
+		public Task<Space[]> PushUpTo( Space source, int countToPush, params TokenGroup[] groups )
 			=> new TokenPusher( this, source ).AddGroup( countToPush, groups ).MoveUpToN();
 
 		#endregion Push
@@ -56,6 +56,31 @@ namespace SpiritIsland {
 			}
 
 		}
+
+		public async Task Gather( Space target, int countToGather, params TokenGroup[] groups ) {
+			Token[] calcTokens( Space space ) => GameState.Tokens[space].OfAnyType( groups );
+			Space[] CalcSource() => AdjacentTo( target )
+				.Where( s => calcTokens( s ).Any() )
+				.ToArray();
+
+			string label = groups.Select( it => it.Label ).Join( "/" );
+
+			Space[] neighborsWithItems = CalcSource();
+			int gathered = 0;
+			while(gathered < countToGather && neighborsWithItems.Length > 0) {
+				var source = await Self.Action.Decide( new GatherTokensFromDecision( countToGather - gathered, groups, target, neighborsWithItems, Present.Always ) );
+				if(source == null) break;
+
+				var invader = await Self.Action.Decide( new SelectTokenToGatherDecision( source, target, calcTokens( source ), Present.IfMoreThan1 ) );
+
+				await GameState.Move( invader, source, target );
+
+				++gathered;
+				neighborsWithItems = CalcSource();
+			}
+
+		}
+
 
 		#endregion Gather
 
@@ -104,6 +129,11 @@ namespace SpiritIsland {
 
 		public virtual void AddFear( int count ) { // need space so we can track fear-space association for bringer
 			GameState.Fear.AddDirect( new FearArgs { count = count, cause = Cause.None, space = null } );
+		}
+
+		public async Task<TargetSpaceCtx> TargetLandWithPresence( string prompt ) {
+			var space = await Self.Action.Decide( new SelectDeployedPresence( prompt, Self ) );
+			return new TargetSpaceCtx( Self, GameState, space );
 		}
 
 	}
