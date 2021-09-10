@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.BranchAndClaw {
 
@@ -10,7 +9,7 @@ namespace SpiritIsland.BranchAndClaw {
 		static public async Task ActAsync( TargetSpiritCtx ctx ) {
 
 			// target Spirit gains a major power by drawing 2 and keeping 1, without having to forget another power card
-			var card = await ctx.Target.CardDrawer.DrawMajor( ctx.Target, ctx.GameState, null, 2 );
+			PowerCard card = await ctx.Target.CardDrawer.DrawMajor( ctx.Target, ctx.GameState, null, 2 );
 			ctx.Target.AddCardToHand( card );
 
 			// if 2 of each element,
@@ -31,10 +30,7 @@ namespace SpiritIsland.BranchAndClaw {
 					$"forgetting at end of turn", 
 					() => {
 						ctx.Target.AddActionFactory( card );
-						ctx.GameState.TimePasses_ThisRound.Push( ( _ ) => { 
-							ctx.Target.Forget(card); 
-							return Task.CompletedTask; 
-						} );
+						ctx.GameState.TimePasses_ThisRound.Push(new ForgetCard(ctx.Target,card).Forget);
 					}
 				);
 				// It gains all elmemental thresholds.

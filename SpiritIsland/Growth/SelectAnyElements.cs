@@ -14,7 +14,7 @@ namespace SpiritIsland {
 			var elements = new Element[] { Element.Sun, Element.Moon, Element.Air, Element.Fire, Element.Water, Element.Earth, Element.Plant, Element.Animal };
 
 			for(int i = 0; i < count; ++i) {
-				var newEl = await self.SelectElementAsync($"Assign 'Any' element ({i+1}of{count})",elements);
+				var newEl = await self.SelectElement($"Assign 'Any' element ({i+1}of{count})",elements);
 				++self.Elements[newEl];
 			}
 		}

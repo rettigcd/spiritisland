@@ -48,14 +48,10 @@ namespace SpiritIsland {
 
 		#region Static Public
 
-		static public void ScheduleRestore( TargetSpiritCtx ctx ) {
-			var original = ctx.Target.PowerApi;
-			Task cleanup( GameState _ ) {
-				ctx.Target.PowerApi = original;
-				return Task.CompletedTask;
-			}
-			ctx.GameState.TimePasses_ThisRound.Push( cleanup );
+		static public void ScheduleRestore( SpiritGameStateCtx ctx ) {
+			ctx.GameState.TimePasses_ThisRound.Push( new PowerApiRestorer( ctx.Self ).Restore );
 		}
+
 		static public void ExtendRange( Spirit spirit, int rangeExtension ) {
 			spirit.PowerApi = new TargetLandApi_ExtendRange( rangeExtension, spirit.PowerApi );
 		}

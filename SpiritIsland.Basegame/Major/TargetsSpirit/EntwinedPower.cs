@@ -12,7 +12,12 @@ namespace SpiritIsland.Basegame {
 		static public async Task ActAsync( TargetSpiritCtx ctx ) {
 			var gs = ctx.GameState;
 
-			ConfigSharedPresenceForTargeting( ctx );
+			// You and other spirit share presence for targeting
+			if( ctx.Self != ctx.Target) {
+				TargetLandApi.ScheduleRestore( ctx );
+				TargetLandApi.ScheduleRestore( ctx.TargetCtx );
+				_ = new SharedPresenceTargeting( ctx.Self, ctx.Target ); // auto-binds to spirits
+			}
 
 			// Target spirit gains a power Card.
 			await ctx.Target.Draw( gs, ( cards ) => {
@@ -28,26 +33,7 @@ namespace SpiritIsland.Basegame {
 				// may gift the other 1 power from hand.
 				await GiftCardToSpirit( ctx.Self, ctx.Target );
 				await GiftCardToSpirit( ctx.Target, ctx.Self );
-
 			}
-		}
-
-		static void ConfigSharedPresenceForTargeting( TargetSpiritCtx ctx ) {
-			// You and target spirit may use each other's presence to target powers. - IMPLEMENT
-			// - capture old so we can restore it
-			var oldSelfApi = ctx.Self.PowerApi;
-			var oldTargetApi = ctx.Target.PowerApi;
-			Task Restore( GameState _ ) {
-				ctx.Self.PowerApi = oldSelfApi;
-				ctx.Target.PowerApi = oldTargetApi;
-				return Task.CompletedTask;
-			}
-			// - update to shared
-			var sharedPowerApi = new SharedPresenceTargeting( ctx.Self, ctx.Target );
-			ctx.Self.PowerApi = sharedPowerApi;
-			ctx.Target.PowerApi = sharedPowerApi;
-			// put it back when we are done
-			ctx.GameState.TimePasses_ThisRound.Push( Restore );
 		}
 
 		static async Task GiftCardToSpirit( Spirit src, Spirit dst ) {

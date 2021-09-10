@@ -20,10 +20,23 @@ namespace SpiritIsland {
 		}
 
 		// wrapper - switches type to Element
-		static public async Task<Element> SelectElementAsync( this Spirit spirit, string prompt, IEnumerable<Element> elements ) {
+		static public async Task<Element> SelectElement( this Spirit spirit, string prompt, IEnumerable<Element> elements ) {
 			var selection = await spirit.Select( prompt, elements.Select( x => new ItemOption<Element>( x ) ).ToArray(), Present.Always );
 			return ((ItemOption<Element>)selection).Item;
 		}
+
+		static public async Task<Element[]> SelectElements( this Spirit spirit, int totalToGain, params Element[] elements ) {
+			var selected = new List<Element>();
+			List<Element> available = elements.ToList();
+
+			while(selected.Count < totalToGain) {
+				var el = await spirit.SelectElement( $"Select {selected.Count + 1} of {totalToGain} element to gain", available );
+				selected.Add( el );
+				available.Remove( el );
+			}
+			return selected.ToArray();
+		}
+
 
 		// wrapper - checks for first response
 		static public async Task<bool> UserSelectsFirstText( this Spirit spirit, string prompt, params string[] options ) {

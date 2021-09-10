@@ -15,13 +15,8 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 			ctx.Target.AddActionFactory( new ChangeSpeed() );
 
 			// Target Spirit gains +3 range for targeting costal lands only
-			var originalApi = ctx.Self.PowerApi;
-			ctx.Self.PowerApi = new SkyStretchesToShoreApi( originalApi );
-			ctx.GameState.TimePasses_ThisRound.Push( RestoreApi );
-			Task RestoreApi(GameState _ ) {
-				ctx.Self.PowerApi = originalApi;
-				return Task.CompletedTask;
-			}
+			TargetLandApi.ScheduleRestore( ctx.TargetCtx );
+			_ = new SkyStretchesToShoreApi( ctx.Target ); // Auto-binds to spirit
 
 			return Task.CompletedTask;
 		}
@@ -29,8 +24,9 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 	}
 
 	class SkyStretchesToShoreApi : TargetLandApi {
-		public SkyStretchesToShoreApi( TargetLandApi orig ) {
-			this.orig = orig;
+		public SkyStretchesToShoreApi( Spirit spirit ) {
+			this.orig = spirit.PowerApi;
+			spirit.PowerApi = this;
 		}
 
 		public override IEnumerable<Space> GetTargetOptions( Spirit self, GameState gameState, From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum ) {

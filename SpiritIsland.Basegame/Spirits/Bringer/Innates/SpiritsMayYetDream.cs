@@ -24,7 +24,7 @@ namespace SpiritIsland.Basegame {
 		[InnateOption( "3 moon" )]
 		static public async Task Option2( TargetSpiritCtx ctx ) {
 			// Target spirit gains an element they have at least 1 of
-			Element el = await ctx.Target.SelectElementAsync("Gain element",ctx.Target.Elements.Keys);
+			Element el = await ctx.Target.SelectElement("Gain element",ctx.Target.Elements.Keys);
 			++ctx.Target.Elements[el];
 		}
 

@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
-
 	public class SpeedChanger {
 
 		readonly Spirit spirit;
@@ -63,25 +62,8 @@ namespace SpiritIsland {
 		}
 
 		void Change( IActionFactory factory ) {
+			gameState.TimePasses_ThisRound.Push( new RememberFactorySpeed( factory ).Reset );
 			factory.Speed = resultingSpeed;
-
-			var speedReseter = new RememberFactorySpeed( factory );
-			gameState.TimePasses_ThisRound.Push( speedReseter.Reset );
-
-		}
-
-		/// <summary> This provides a javascript-like closure to capture the factory that needs reset to fast;</summary>
-		class RememberFactorySpeed {
-			readonly IActionFactory factory;
-			readonly Speed originalSpeed;
-			public RememberFactorySpeed( IActionFactory factory ) {
-				this.factory = factory;
-				this.originalSpeed = factory.Speed;
-			}
-			public Task Reset( GameState _ ) {
-				factory.Speed = originalSpeed;
-				return Task.CompletedTask;
-			}
 		}
 
 	}

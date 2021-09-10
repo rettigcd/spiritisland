@@ -8,8 +8,8 @@ namespace SpiritIsland.BranchAndClaw {
 		[TargetSpirit]
 		static public async Task ActAsync( TargetSpiritCtx ctx ) {
 			// target spirit gets +2 range with all Powers.
-			TargetLandApi.ScheduleRestore( ctx );
-			TargetLandApi.ExtendRange( ctx.Self, 2 );
+			TargetLandApi.ScheduleRestore( ctx.TargetCtx );
+			TargetLandApi.ExtendRange( ctx.Target, 2 );
 
 			// Target spirit may push 1 of their presence to an adjacent land
 			var source = await ctx.Target.Action.Decide(new SelectDeployedPresence("Push Presence (bringing up to 2 explorers, 2 towns, 2 dahan)",ctx.Target));
