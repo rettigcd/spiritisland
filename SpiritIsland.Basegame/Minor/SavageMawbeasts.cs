@@ -16,7 +16,7 @@ namespace SpiritIsland.Basegame {
             }
 
 			// If 3 animals +1 damage
-			if( ctx.Self.Elements.Contains("3 animal") )
+			if( ctx.YouHave("3 animal") )
 				++damage;
 
 			return ctx.DamageInvaders( damage );

@@ -12,7 +12,7 @@ namespace SpiritIsland.Basegame {
 			int explorerCount = ctx.Invaders[Invader.Explorer[1]];
 			if( 0 < explorerCount )
 				await ctx.Push( explorerCount, Invader.Explorer);
-			else if( ctx.HasBlight )
+			else 
 				ctx.RemoveBlight();
 		}
 
