@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.BranchAndClaw {
 
@@ -10,36 +9,37 @@ namespace SpiritIsland.BranchAndClaw {
 		static public async Task ActAsync( TargetSpiritCtx ctx ) {
 
 			// target Spirit gains a major power by drawing 2 and keeping 1, without having to forget another power card
-			var card = await ctx.Target.CardDrawer.DrawMajor( ctx.Target, ctx.GameState, null, 2 );
-			ctx.Target.AddCardToHand( card );
+			PowerCard card = await ctx.Other.CardDrawer.DrawMajor( ctx.Other, ctx.GameState, null, 2 );
+			ctx.Other.AddCardToHand( card );
 
 			// if 2 of each element,
-			if(ctx.Self.Elements.Contains("2 sun,2 moon,2 fire,2 air,2 water,2 earth,2 plant,2 animal" )) {
+			if(ctx.YouHave( "2 sun,2 moon,2 fire,2 air,2 water,2 earth,2 plant,2 animal" )) {
 				// target spirit may now play the major power they keep by:
 				//    * paying half its cost (round up) OR
-				int cost = card.Cost/2;
+				int cost = (card.Cost + card.Cost%2)/2;
 				var payingHalfCostOption = new ActionOption(
 					$"paying {cost}", 
 					()=> { 
-						ctx.Target.AddActionFactory(card); 
-						ctx.Target.Energy -= cost;
+						ctx.Other.AddActionFactory(card); 
+						ctx.Other.Energy -= cost;
 					},
-					cost <= ctx.Target.Energy
+					cost <= ctx.Other.Energy
 				);
 				//    * forgetting it at the end of turn.
 				var forgettingCardOption = new ActionOption( 
 					$"forgetting at end of turn", 
 					() => {
-						ctx.Target.AddActionFactory( card );
-						ctx.GameState.TimePasses_ThisRound.Push( ( _ ) => { 
-							ctx.Target.Forget(card); 
-							return Task.CompletedTask; 
-						} );
+						ctx.Other.AddActionFactory( card );
+						ctx.GameState.TimePasses_ThisRound.Push(new ForgetCard(ctx.Other,card).Forget);
 					}
 				);
 				// It gains all elmemental thresholds.
 
-				await ctx.Target.SelectOptionalAction( $"Play {card.Name} now by:",payingHalfCostOption, forgettingCardOption );
+				await ctx.Other.SelectOptionalAction( $"Play {card.Name} now by:",
+					payingHalfCostOption, 
+					forgettingCardOption,
+					new ActionOption( $"Done", () => { } )
+				);
 			}
 
 		}

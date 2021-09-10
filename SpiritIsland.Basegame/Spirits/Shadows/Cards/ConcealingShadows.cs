@@ -7,7 +7,12 @@ namespace SpiritIsland.Basegame {
 		[SpiritCard("Concealing Shadows",0,Speed.Fast,Element.Moon,Element.Air)]
 		[FromPresence(0)]
 		static public Task Act(TargetSpaceCtx ctx){
-			ctx.GameState.ModifyRavage( ctx.Target, cfg=>cfg.ShouldDamageDahan = false );
+			// 1 fear
+			ctx.AddFear(1);
+
+			// dahan take no damage from raving invaders this turn
+			ctx.GameState.ModifyRavage( ctx.Space, cfg=>cfg.ShouldDamageDahan = false );
+
 			return Task.CompletedTask;
 		}
 

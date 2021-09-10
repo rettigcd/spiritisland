@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using SpiritIsland;
 
 namespace SpiritIsland.Basegame {
 
@@ -8,17 +7,14 @@ namespace SpiritIsland.Basegame {
 		[SpiritCard("Favors Called Due",1,Speed.Slow,Element.Moon,Element.Air,Element.Animal)]
 		[FromPresence(1)]
 		static public async Task Act(TargetSpaceCtx ctx){
-			var target = ctx.Target;
-			var (_,gameState) = ctx;
 
 			// gather up to 4 dahan
-			await ctx.GatherUpToNTokens( target, 4, TokenType.Dahan );
+			await ctx.GatherUpToNDahan( 4 );
 
 			// if invaders are present and dahan now out numberthem, 3 fear
 			var invaderCount = ctx.Tokens.InvaderTotal();
-			if(invaderCount > 0 && gameState.DahanGetCount( target ) > invaderCount) {
+			if(0 < invaderCount && invaderCount < ctx.DahanCount)
 				ctx.AddFear( 3 );
-			}
 
 		}
 	}

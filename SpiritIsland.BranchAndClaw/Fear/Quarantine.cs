@@ -5,6 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SpiritIsland.BranchAndClaw.Fear {
-	class QuarantineClass1 {
+	class Quarantine {
 	}
 }

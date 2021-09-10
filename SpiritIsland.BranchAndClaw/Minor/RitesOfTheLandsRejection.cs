@@ -9,7 +9,7 @@ namespace SpiritIsland.BranchAndClaw {
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 
 			void StopBuild_FearForCitiesTownsAndDahan() {
-				ctx.GameState.SkipBuild( ctx.Target );
+				ctx.GameState.SkipBuild( ctx.Space );
 
 				int cityTownCount = ctx.Tokens.SumAny( Invader.Town, Invader.City );
 				ctx.AddFear( Math.Min( ctx.DahanCount, cityTownCount ) );
@@ -17,7 +17,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			return ctx.SelectActionOption(
 				new ActionOption( "Stop build, 1 fear / (Dahan+T/C)", StopBuild_FearForCitiesTownsAndDahan ),
-				new ActionOption( "Push up to 3 dahan", () => ctx.PushUpToNTokens(3,TokenType.Dahan ))
+				new ActionOption( "Push up to 3 dahan", () => ctx.PushUpToNDahan(3) )
 			);
 		}
 

@@ -9,8 +9,8 @@ namespace SpiritIsland.Basegame {
 		[FromPresence(1,Target.Invaders)]
 		static public async Task ActionAsync(TargetSpaceCtx ctx) {
 			// +1 damage, if costal +1 additional damage
-			int damage = ctx.Target.IsCostal ? 2 : 1;
-			await ctx.UserSelectDamage( damage, ctx.PowerInvaders );
+			int damage = ctx.Space.IsCostal ? 2 : 1;
+			await ctx.UserSelectDamage( damage, ctx.Invaders );
 		}
 
 	}

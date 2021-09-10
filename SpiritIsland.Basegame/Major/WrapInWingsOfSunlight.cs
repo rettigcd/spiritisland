@@ -11,25 +11,24 @@ namespace SpiritIsland.Basegame {
 		static public async Task ActAsync(TargetSpaceCtx ctx) {
 
 			// if you have 2 sun, 2 air, 2 animal, // First Gather up to 3 dahan
-			if(ctx.Self.Elements.Contains( "2 sun,2 air,2 animal" ))
+			if(ctx.YouHave( "2 sun,2 air,2 animal" ))
 				await ctx.GatherUpToNDahan( 3 );
 
 			// move up to 5 dahan from target land to any land.
 			// defend 5 in that land
 
 			// destination
-			var destination = await ctx.Self.Action.Decide( new TargetSpaceDecision( "Move dahan to", ctx.GameState.Island.AllSpaces.Where( s => s.Terrain != Terrain.Ocean ) ) );
+			var destination = await ctx.Self.Action.Decision( new Decision.TargetSpace( "Move dahan to", ctx.GameState.Island.AllSpaces.Where( s => s.Terrain != Terrain.Ocean ) ) );
 			// technically could move to ocean while Ocean on board, but no reason to.
 
 			// move dahan
 			int max = Math.Min( ctx.DahanCount, 5 );
 			int countToMove = await ctx.Self.SelectNumber( "# of dahan to move", max );
 			while(countToMove-->0)
-//				await ctx.GameState.Dahan.Move( ctx.Target, destination, 1 );
-				await ctx.GameState.Tokens.Move( TokenType.Dahan.Default, ctx.Target, destination, 1 );
+				await ctx.GameState.Tokens.Move( TokenType.Dahan.Default, ctx.Space, destination, 1 );
 
 			// defend
-			ctx.GameState.Defend( destination, 5 );
+			ctx.TargetSpace(destination).Defend(5);
 
 		}
 	}

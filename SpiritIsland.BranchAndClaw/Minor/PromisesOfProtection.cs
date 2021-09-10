@@ -10,7 +10,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			await ctx.GatherUpToNDahan( 2 );
 
-			ctx.GameState.ModifyRavage(ctx.Target, cfg => cfg.DahanHitpoints+=2 );
+			ctx.GameState.ModifyRavage(ctx.Space, cfg => cfg.DahanHitpoints += 2 );
 
 		}
 

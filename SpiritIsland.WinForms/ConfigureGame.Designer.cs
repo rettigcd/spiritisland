@@ -126,7 +126,7 @@ namespace SpiritIsland.WinForms {
             this.branchAndClawCheckBox.TabIndex = 8;
             this.branchAndClawCheckBox.Text = "Branch And Claw";
             this.branchAndClawCheckBox.UseVisualStyleBackColor = true;
-            this.branchAndClawCheckBox.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            this.branchAndClawCheckBox.CheckedChanged += new System.EventHandler(this.CheckBox1_CheckedChanged);
             // 
             // powerProgressionCheckBox
             // 

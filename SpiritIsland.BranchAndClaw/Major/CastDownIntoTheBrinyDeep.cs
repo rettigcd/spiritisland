@@ -11,10 +11,10 @@ namespace SpiritIsland.BranchAndClaw {
 			// 6 fear
 			ctx.AddFear(6);
 			// destroy all invaders
-			await ctx.PowerInvaders.DestroyAny(int.MaxValue,Invader.City,Invader.Town,Invader.Explorer);
+			await ctx.Invaders.DestroyAny(int.MaxValue,Invader.City,Invader.Town,Invader.Explorer);
 
 			// if you have (2 sun, 2 moon, 4 water, 4 earth):
-			if(ctx.Self.Elements.Contains( "2 sun,2 moon,4 water,4 earth" ))
+			if(ctx.YouHave( "2 sun,2 moon,4 water,4 earth" ))
 				await DestroyBoard( ctx );
 		}
 
@@ -23,41 +23,39 @@ namespace SpiritIsland.BranchAndClaw {
 			// All destroyed blight is removed from the game instead of being returned to the blight card.
 			await DestoryTokens( ctx );
 
-			if(!ctx.Self.Text.StartsWith( "Bringer" )) { // !!!
+			if(!ctx.Self.Text.StartsWith( "Bringer" )) { // !!! Maybe Api shoudl have method called "Destroy Space" or "DestoryBoard"
 
 				// destory presence
 				foreach(var spirit in ctx.GameState.Spirits)
-				foreach(var p in spirit.Presence.Placed.Where(p=>p.Board==ctx.Target.Board).ToArray() )
+				foreach(var p in spirit.Presence.Placed.Where(p=>p.Board==ctx.Space.Board).ToArray() )
 					spirit.Presence.Destroy(p);
 
 				// destroy board - spaces
-				foreach(var space in ctx.Target.Board.Spaces)
+				foreach(var space in ctx.Space.Board.Spaces)
 					space.Destroy();
 
-				ctx.GameState.Island.RemoveBoard( ctx.Target.Board );
+				ctx.GameState.Island.RemoveBoard( ctx.Space.Board );
 
 			}
 		}
 
-		private static async Task DestoryTokens( TargetSpaceCtx ctx ) {
+		static async Task DestoryTokens( TargetSpaceCtx ctx ) {
 
-			foreach(var space in ctx.Target.Board.Spaces) {
+			foreach(var space in ctx.Space.Board.Spaces) {
+
+				var spaceCtx = ctx.TargetSpace( space );
 
 				// Destory Invaders
-				var invaders = ctx.GameState.Invaders.On( space, Cause.Power );
-				await invaders.DestroyAny( int.MaxValue, Invader.City, Invader.Town, Invader.Explorer );
+				await spaceCtx.Invaders.DestroyAny( int.MaxValue, Invader.City, Invader.Town, Invader.Explorer );
+
+				// Destory Dahan
+				await spaceCtx.DestroyDahan( int.MaxValue );
 
 				if(!ctx.Self.Text.StartsWith("Bringer")) { // !!!
-
-					// Destory Dahan
-					// !!! needs to go through spirit so Bringer doesn't destory dahan
-					await ctx.GameState.DahanDestroy( space, int.MaxValue, Cause.Power );
-
 					// Destroy all other tokens
-					var counts = invaders.Counts;
+					var counts = spaceCtx.Tokens;
 					foreach(var tokens in counts.Keys.ToArray())
 						counts[tokens] = 0;
-
 				}
 			}
 		}

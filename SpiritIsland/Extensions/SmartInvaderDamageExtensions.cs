@@ -11,7 +11,7 @@ namespace SpiritIsland {
 		//  This is the replacement for SmartDamage To Types
 		static public async Task<int> UserSelectDamage( this IMakeGamestateDecisions ctx, int damage, InvaderGroup group ) {
 			while(damage > 0) {
-				var invader = await ctx.Self.Action.Decide( new SelectInvaderToDamage( damage, group.Space, group.Counts.Invaders(), Present.Always ) );
+				var invader = await ctx.Self.Action.Decision( new Decision.InvaderToDamage( damage, group.Space, group.Tokens.Invaders(), Present.Always ) );
 				if(invader == null) break;
 
 				damage -= await group.ApplyDamageTo1( damage, invader );
@@ -29,8 +29,8 @@ namespace SpiritIsland {
 			int damageToInvaders = startingDamage;
 
 			// While damage remains    &&    we have invaders
-			while(damageToInvaders > 0 && grp.Counts.HasInvaders()) {
-				Token invaderToDamage = grp.Counts.PickSmartInvaderToDamage( damageToInvaders );
+			while(damageToInvaders > 0 && grp.Tokens.HasInvaders()) {
+				Token invaderToDamage = grp.Tokens.PickSmartInvaderToDamage( damageToInvaders );
 				damageToInvaders -= await grp.ApplyDamageTo1( damageToInvaders, invaderToDamage );
 			}
 			if(log != null) log.Add( $"{startingDamage} damage to invaders leaving {grp}." );
@@ -40,10 +40,10 @@ namespace SpiritIsland {
 			int damageToInvaders = startingDamage;
 
 			// While damage remains    &&    we have invaders
-			IEnumerable<Token> Targets() => grp.Counts.OfAnyType(invaderGenerics);
+			IEnumerable<Token> Targets() => grp.Tokens.OfAnyType(invaderGenerics);
 
 			while(damageToInvaders > 0 && Targets().Any()) {
-				Token invaderToDamage = grp.Counts.PickSmartInvaderToDamage( damageToInvaders, invaderGenerics );
+				Token invaderToDamage = grp.Tokens.PickSmartInvaderToDamage( damageToInvaders, invaderGenerics );
 				damageToInvaders -= await grp.ApplyDamageTo1( damageToInvaders, invaderToDamage );
 			}
 		}

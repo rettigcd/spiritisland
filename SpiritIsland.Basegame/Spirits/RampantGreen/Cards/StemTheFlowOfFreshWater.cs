@@ -11,13 +11,13 @@ namespace SpiritIsland.Basegame {
 			// If target land is mountain or sand, 
 			if( ctx.IsOneOf( Terrain.Mountain, Terrain.Sand ) ) {
 				// instead 1 damange to EACH town/city
-				await ctx.PowerInvaders.ApplyDamageToEach(1, Invader.City, Invader.Town);
+				await ctx.Invaders.ApplyDamageToEach(1, Invader.City, Invader.Town);
 			} else {
 				// 1 damage to 1 town or city.
-				var types = ctx.PowerInvaders.Counts.OfAnyType(Invader.City,Invader.Town);
-				var invader = await ctx.Self.Action.Decide( new SelectInvaderToDamage( 1, ctx.Target, types, Present.IfMoreThan1 ) );
+				var types = ctx.Invaders.Tokens.OfAnyType(Invader.City,Invader.Town);
+				var invader = await ctx.Self.Action.Decision( new Decision.InvaderToDamage( 1, ctx.Space, types, Present.IfMoreThan1 ) );
 				if(invader !=null)
-					await ctx.PowerInvaders.ApplyDamageTo1(1,invader);
+					await ctx.Invaders.ApplyDamageTo1(1,invader);
 			}
 
 		}

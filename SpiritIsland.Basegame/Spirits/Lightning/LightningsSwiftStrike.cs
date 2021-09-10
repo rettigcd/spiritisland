@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using SpiritIsland;
 
 namespace SpiritIsland.Basegame {
@@ -74,19 +75,59 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 
 		public override string Text => Name;
 
-		public override void PurchaseAvailableCards( params PowerCard[] cards ) {
-			base.PurchaseAvailableCards( cards );
-			swiftness.OnActivateCards( this );
-		}
-		static readonly SwiftnessOfLightning swiftness = new SwiftnessOfLightning();
+//		public override void PurchaseAvailableCards( params PowerCard[] cards ) {
+//			base.PurchaseAvailableCards( cards );
+////			swiftness.OnActivateCards( this );
+//		}
 
 		protected override void InitializeInternal( Board board, GameState gs ) {
 			// Setup: put 2 pressence in highest numbered sands
 			var space = board.Spaces.Reverse().First(x=>x.Terrain==Terrain.Sand);
 			Presence.PlaceOn(space);
 			Presence.PlaceOn(space);
+
+			gs.TimePassed += Gs_TimePassed;
+		}
+
+		private void Gs_TimePassed( GameState obj ) {
+			usedAirForFastCount = 0;
+		}
+
+		const string SwiftnessOfLightning = "Swiftness of Lightning";
+
+		public override IEnumerable<IActionFactory> GetAvailableActions( Speed speed ) {
+			var availableActions = AvailableActions.ToArray();
+
+			// Update each default
+			foreach(var action in availableActions)
+				action.UpdateFromSpiritState( this.Elements );
+
+			// in Fast phase
+			if(speed == Speed.Fast){
+				SpeedOverride slowOverride = Elements[Element.Air] > usedAirForFastCount ? new SpeedOverride(Speed.FastOrSlow, SwiftnessOfLightning ) : null;
+				foreach(var action in availableActions)
+					if(action.DefaultSpeed == Speed.Slow)
+						action.OverrideSpeed = slowOverride;
+			}
+
+			return AvailableActions.Where( GetFilter( speed ) );
+		}
+
+		public override Task TakeAction( IActionFactory factory, GameState gameState ) {
+			// check if we are using up an air
+			// Only slow cards should get the override
+			// If the card was used Slow, it just may increment higher than Air count
+			if(factory.OverrideSpeed != null && factory.OverrideSpeed.Source == SwiftnessOfLightning)
+				++usedAirForFastCount;
+
+			return base.TakeAction(factory,gameState);
 		}
 
 
+		int usedAirForFastCount = 0;
+
+	//	static readonly SwiftnessOfLightning swiftness = new SwiftnessOfLightning();
+
 	}
+
 }

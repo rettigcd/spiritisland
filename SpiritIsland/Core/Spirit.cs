@@ -82,22 +82,31 @@ namespace SpiritIsland {
 
 		// Holds Fast and Slow actions,
 		// depends on Fast/Slow phase to only select the actions that are appropriate
-		protected IEnumerable<IActionFactory> AvailableActions { get {
-			foreach(var action in availableActions) yield return action;
-			foreach(var innate in AvailableDynamicActions)	yield return innate;		
-		} }
-		protected IEnumerable<IActionFactory> AvailableDynamicActions => InnatePowers
-			.Where( innate => !usedInnates.Contains( innate )     // if it is used,
-				&& innate.UpdateAndISActivatedBy( this.Elements ) // we don't update 'Lead the Furious Assult' and 'Gather the Warriors' speed anymore (incase someone is replaying it)
-			);
+		protected IEnumerable<IActionFactory> AvailableActions { 
+			get {
+				foreach(var action in availableActions) {
+					action.UpdateFromSpiritState( this.Elements );
+					yield return action;
+				}
+				foreach(var innate in InnatePowers) {
+					if( usedInnates.Contains( innate ) ) continue; // explude played
+					innate.UpdateFromSpiritState( this.Elements ); // update status
+					if(innate.IsTriggered)
+						yield return innate;
+				}
+			}
+		}
 
 		// so spirits can replay used cards or collect them instead of discard
 		public IEnumerable<IActionFactory> UsedActions => usedActions.Distinct();  // distinct incase played twice
 
-		public IEnumerable<IActionFactory> GetAvailableActions(Speed speed)
-			=> AvailableActions.Where( GetFilter( speed ) );
+		public virtual IEnumerable<IActionFactory> GetAvailableActions(Speed speed) {
+			foreach( var action in AvailableActions )
+				action.UpdateFromSpiritState( this.Elements );
+			return AvailableActions.Where( GetFilter( speed ) );
+		}
 
-		static Func<IActionFactory, bool> GetFilter( Speed speed ) {
+		static protected Func<IActionFactory, bool> GetFilter( Speed speed ) {
 			return speed switch {
 				Speed.Fast => ( x ) => x.Speed == Speed.Fast || x.Speed == Speed.FastOrSlow,
 				Speed.Slow => ( x ) => x.Speed == Speed.Slow || x.Speed == Speed.FastOrSlow,
@@ -166,7 +175,7 @@ namespace SpiritIsland {
 
 		}
 
-		public async Task TakeAction(IActionFactory factory, GameState gameState) {
+		public virtual async Task TakeAction(IActionFactory factory, GameState gameState) {
 			await factory.ActivateAsync( this, gameState );
 			RemoveUnresolvedActions( factory );
 		}
@@ -273,6 +282,10 @@ namespace SpiritIsland {
 			};
 		}
 
+		public virtual Task DestroyDahanForPowers( GameState gs, Space space, int count, Token dahanToken ) {
+			return gs.DahanDestroy(space,count,dahanToken, Cause.Power);
+		}
+
 		public Task BuyPowerCardsAsync() => PurchaseCards( NumberOfCardsPlayablePerTurn );
 
 
@@ -287,7 +300,7 @@ namespace SpiritIsland {
 				&& 0 < (powerCardOptions = getPowerCardOptions()).Length
 			) {
 				string prompt = $"Buy power cards: (${Energy} / {canPurchase})";
-				var card = await this.Select( prompt, powerCardOptions, Present.Done );
+				var card = await this.SelectPowerCard( prompt, powerCardOptions, Present.Done );
 				if(card != null) {
 					PurchaseAvailableCards( card );
 					--canPurchase;

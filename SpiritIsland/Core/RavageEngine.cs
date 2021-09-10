@@ -21,7 +21,7 @@ namespace SpiritIsland {
 		public int DahanDestroyed { get; private set; }
 
 	
-		public TokenCountDictionary Counts => grp.Counts;
+		public TokenCountDictionary Counts => grp.Tokens;
 
 		readonly protected InvaderGroup grp;
 		readonly protected GameState gs;
@@ -48,7 +48,7 @@ namespace SpiritIsland {
 			await eng.DamageInvaders( damageFromDahan );
 		}
 
-		bool HasInvaders => grp.Counts.HasInvaders();
+		bool HasInvaders => grp.Tokens.HasInvaders();
 
 		public int GetDamageInflictedByDahan() => gs.DahanGetCount( grp.Space ) * 2;
 
@@ -79,7 +79,7 @@ namespace SpiritIsland {
 			int dahanOnSpace = gs.DahanGetCount( grp.Space );
 			int dahanDestroyed = Math.Min( damageInflictedFromInvaders / cfg.DahanHitpoints, dahanOnSpace ); // rounding down
 			if(dahanDestroyed != 0) {
-				await gs.DahanDestroy( grp.Space, dahanDestroyed, Cause.Invaders );
+				await gs.DahanDestroy( grp.Space, dahanDestroyed, TokenType.Dahan.Default, Cause.Invaders );
 			}
 
 			int leftOverDamage = damageInflictedFromInvaders - dahanDestroyed * cfg.DahanHitpoints;

@@ -22,7 +22,8 @@ namespace SpiritIsland {
 
 			int index = countArray.Count;
 			countArray.Add( count );
-			foreach(var group in groups) indexLookup.Add( group, index );
+			foreach(var group in groups) 
+				indexLookup.Add( group, index );
 
 			return this; // chain together
 		}
@@ -33,20 +34,25 @@ namespace SpiritIsland {
 		async Task<Space[]> Exec( Present present ) {
 
 			var counts = ctx.GameState.Tokens[source];
-			Token[] GetTokens() => counts.OfAnyType( indexLookup.Where( pair=>countArray[pair.Value]>0).Select(p=>p.Key).ToArray() );
+			Token[] GetTokens() {
+				var groupsWithRemainingCounts = indexLookup
+					.Where( pair => countArray[pair.Value] > 0 )
+					.Select( p => p.Key )
+					.ToArray();
+				return counts.OfAnyType( groupsWithRemainingCounts );
+			}
 
 			var pushedToSpaces = new List<Space>();
 
 			Token[] tokens;
 			while(0 < (tokens = GetTokens()).Length) {
-				var decision = new SelectTokenToPushDecision( source, countArray.Sum(), tokens, present );
-				var token = await ctx.Self.Action.Decide( decision );
+				var decision = new Decision.TokenToPush( source, countArray.Sum(), tokens, present );
+				var token = await ctx.Self.Action.Decision( decision );
 
 				if(token == null)
 					break;
 
-				Space destination = await SelectDestination( token );
-				await ctx.GameState.Move( token, source, destination );
+				Space destination = await PushToken( token );
 
 				pushedToSpaces.Add( destination ); // record push
 				--countArray[indexLookup[token.Generic]]; // decrement count
@@ -54,9 +60,15 @@ namespace SpiritIsland {
 			return pushedToSpaces.ToArray();
 		}
 
+		public async Task<Space> PushToken( Token token ) {
+			Space destination = await SelectDestination( token );
+			await ctx.GameState.Move( token, source, destination );
+			return destination;
+		}
+
 		protected virtual async Task<Space> SelectDestination( Token token ) {
 			IEnumerable<Space> destinationOptions = source.Adjacent.Where( s => spaceFilter.TerrainMapper( s ) != Terrain.Ocean );
-			return await ctx.Self.Action.Decide( new PushTokenDecision( token, source, destinationOptions, Present.Always ) );
+			return await ctx.Self.Action.Decision( (Decision.TypedDecision<Space>)new Decision.AdjacentSpaceTokenDestination( token, source, destinationOptions, Present.Always ) );
 		}
 
 		#region private
@@ -64,8 +76,9 @@ namespace SpiritIsland {
 		readonly IMakeGamestateDecisions ctx;
 		protected readonly Space source;
 
-		readonly List<int> countArray = new();
-		readonly Dictionary<TokenGroup, int> indexLookup = new();
+		readonly List<int> countArray = new(); // the # we push from each group
+		readonly Dictionary<TokenGroup, int> indexLookup = new(); // map from group back to its count
+
 		SpaceFilter spaceFilter = SpaceFilter.Normal;
 
 		#endregion

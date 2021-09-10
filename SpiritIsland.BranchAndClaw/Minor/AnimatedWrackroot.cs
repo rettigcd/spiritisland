@@ -14,8 +14,10 @@ namespace SpiritIsland.BranchAndClaw {
 		}
 
 		private static async Task FearAndExplorer( TargetSpaceCtx ctx ) {
+			// 1 fear
 			ctx.AddFear( 1 );
-			await ctx.PowerInvaders.Destroy( 1, Invader.Explorer[1] );
+			// destory 1 explorer
+			await ctx.Invaders.Destroy( 1, Invader.Explorer[1] );
 		}
 	}
 

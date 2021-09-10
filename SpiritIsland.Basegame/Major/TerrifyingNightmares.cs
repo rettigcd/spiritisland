@@ -8,14 +8,14 @@ namespace SpiritIsland.Basegame {
 		[FromPresence(2)]
 		static public async Task Act(TargetSpaceCtx ctx){
 
-			// push up to 4 explorers or towns
-			await ctx.PushUpToNTokens(4, Invader.Explorer,Invader.Town);
-
 			// 2 fear
-			ctx.AddFear(2);
+			ctx.AddFear( 2 );
+
+			// push up to 4 explorers or towns
+			await ctx.PushUpTo(4, Invader.Explorer,Invader.Town);
 
 			// if you have 4 moon, +4 fear
-			if( ctx.Self.Elements.Contains("4 moon") )
+			if( ctx.YouHave("4 moon") )
 				ctx.AddFear(4);
 
 		}

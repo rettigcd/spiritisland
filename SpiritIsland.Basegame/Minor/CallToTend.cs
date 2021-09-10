@@ -10,7 +10,7 @@ namespace SpiritIsland.Basegame {
 
 			return ctx.SelectActionOption(
 				new ActionOption( "remove 1 blight", () => ctx.RemoveBlight() ),
-				new ActionOption( "push up to 3 dahan", () => ctx.PushUpToNTokens( 3, TokenType.Dahan ) )
+				new ActionOption( "push up to 3 dahan", () => ctx.PushUpToNDahan( 3 ) )
 			);
 
 		}

@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
-namespace SpiritIsland {
+namespace SpiritIsland.Decision {
 
-	public class PushTokenDecision : SelectAdjacentDecision {
+	public class AdjacentSpaceTokenDestination : AdjacentSpace {
 
-		public PushTokenDecision( Token specific, Space source, IEnumerable<Space> destinationOptions, Present present )
+		public AdjacentSpaceTokenDestination( Token specific, Space source, IEnumerable<Space> destinationOptions, Present present )
 			: base( "Push " + specific.Summary + " to", source, GatherPush.Push, destinationOptions, present ) {
 			Source = source;
 			Invader = specific;

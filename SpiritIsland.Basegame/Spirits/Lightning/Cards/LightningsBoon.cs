@@ -8,8 +8,10 @@ namespace SpiritIsland.Basegame {
 		[SpiritCard(LightningsBoon.Name,1,Speed.Fast,Element.Fire,Element.Air)]
 		[TargetSpirit]
 		static public Task ActAsync( TargetSpiritCtx ctx ) {
+
 			// Taret spirit may use up to 2 slow powers as if they were fast powers this turn.
-			return new SpeedChanger( ctx.Target, ctx.GameState, Speed.Fast, 2 ).Exec();
+			return new SpeedChanger( ctx.OtherCtx, Speed.Fast, 2 ).Exec();
+
 		}
 
 	}

@@ -11,12 +11,12 @@ namespace SpiritIsland.BranchAndClaw {
 			return ctx.SelectActionOption(
 				new ActionOption(
 					"Gather 1 blight", 
-					() => ctx.GatherUpToNTokens( 1, TokenType.Blight.Generic ) 
+					() => ctx.Gather( 1, TokenType.Blight.Generic ) 
 				),
 				new ActionOption(
 					"Pay 1 Energy to remove 1 blight", 
 					()=>Pay1EnergyToRemoveBlight(ctx), 
-					ctx.Tokens.Blight>0 && ctx.Self.Energy>=1
+					ctx.Tokens.Blight>0 && 1 <= ctx.Self.Energy
 				)
 			);
 

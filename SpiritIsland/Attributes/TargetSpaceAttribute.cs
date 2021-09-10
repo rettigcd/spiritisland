@@ -21,7 +21,7 @@ namespace SpiritIsland {
 			return spirit.PowerApi.TargetsSpace( spirit, gameState, fromSourceEnum, sourceTerrain, range, targetFilter );
 		}
 
-		protected virtual int CalcRange( IMakeGamestateDecisions ctx ) => range;
+		protected virtual int CalcRange( SpiritGameStateCtx ctx ) => range;
 
 	}
 

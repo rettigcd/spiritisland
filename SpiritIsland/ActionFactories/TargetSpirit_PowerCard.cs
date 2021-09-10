@@ -8,22 +8,16 @@ namespace SpiritIsland {
 	/// </summary>
 	class TargetSpirit_PowerCard : PowerCard {
 
-		readonly MethodBase methodBase;
-
-		public TargetSpirit_PowerCard(MethodBase methodBase){
-			var attr = methodBase.GetCustomAttributes<CardAttribute>().VerboseSingle("bob22");
-			this.MethodType = methodBase.DeclaringType;
-
-			Speed = attr.Speed;
-			Name = attr.Name;
-			Cost = attr.Cost;
-			Elements = attr.Elements;
-			PowerType = attr.PowerType;
-			this.methodBase = methodBase;
+		public TargetSpirit_PowerCard(MethodBase methodBase):base(methodBase){
+			DefaultSpeed = cardAttr.Speed;
+			Name = cardAttr.Name;
+			Cost = cardAttr.Cost;
+			Elements = cardAttr.Elements;
+			PowerType = cardAttr.PowerType;
 		}
 
 		public override async Task ActivateAsync( Spirit self, GameState gameState ) {
-			Spirit target = await self.Action.Decide(new TargetSpiritDecision(gameState.Spirits));
+			Spirit target = await self.Action.Decision(new Decision.TargetSpirit(gameState.Spirits));
 
 			SpiritTargeted?.Invoke( self, this, target );
 			await TargetSpirit( methodBase, self, gameState, target );

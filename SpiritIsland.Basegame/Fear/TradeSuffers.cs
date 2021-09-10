@@ -10,19 +10,16 @@ namespace SpiritIsland.Basegame {
 		[FearLevel( 1, "Invaders do not Build in lands with City." )]
 		public Task Level1( GameState gs ) {
 			gs.SkipBuild( gs.Island.AllSpaces.Where( s => gs.Tokens[ s ].Has(Invader.City) ).ToArray() );
-			// !! no unit tests on this
 			return Task.CompletedTask;
 		}
 
 		[FearLevel( 2, "Each player may replace 1 Town with 1 Explorer in a Coastal land." )]
 		public async Task Level2( GameState gs ) {
 			foreach(var spirit in gs.Spirits) {
-				var options = gs.Island.AllSpaces.Where(s=>s.IsCostal&&gs.Tokens[s].Has(Invader.Town)).ToArray();
-				if(options.Length==0) return;
-				var target = await spirit.Action.Decide( new TargetSpaceDecision( "Replace town with explorer", options));
-				var grp = gs.Tokens[ target ];
-				grp.Remove( Invader.Town );
-				grp.Adjust( Invader.Explorer[1], 1 );
+				var options = gs.Island.AllSpaces.Where( s => s.IsCostal && gs.Tokens[s].Has( Invader.Town ) ).ToArray();
+				if(options.Length == 0) return;
+				var target = await spirit.Action.Decision( new Decision.TargetSpace( "Replace town with explorer", options ) );
+				await Replace.Downgrade( spirit, gs.Invaders.On( target, Cause.Fear ), Invader.Town );
 			}
 		}
 
@@ -31,15 +28,8 @@ namespace SpiritIsland.Basegame {
 			foreach(var spirit in gs.Spirits) {
 				var options = gs.Island.AllSpaces.Where( s => s.IsCostal && gs.Tokens[ s ].HasAny(Invader.Town,Invader.City) ).ToArray();
 				if(options.Length == 0) return;
-				var target = await spirit.Action.Decide( new TargetSpaceDecision( "Replace town with explorer", options ));
-				var cnts = gs.Tokens[target];
-				if(cnts.Has(Invader.City)) {
-					cnts.Remove( Invader.City);
-					cnts.Adjust( Invader.Town[2], 1 );
-				} else {
-					cnts.Remove( Invader.Town );
-					cnts.Adjust( Invader.Explorer[1], 1 );
-				}
+				var target = await spirit.Action.Decision( new Decision.TargetSpace( "Replace town with explorer or city with town", options ));
+				await Replace.Downgrade( spirit, gs.Invaders.On( target, Cause.Fear ), Invader.City, Invader.Town );
 			}
 		}
 

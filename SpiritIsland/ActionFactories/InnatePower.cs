@@ -20,8 +20,8 @@ namespace SpiritIsland {
 		}
 
 		internal InnatePower(Type actionType){
-			InnatePowerAttribute innatePowerAttr = actionType.GetCustomAttribute<InnatePowerAttribute>();
-			Speed = innatePowerAttr.Speed;
+			innatePowerAttr = actionType.GetCustomAttribute<InnatePowerAttribute>();
+			DefaultSpeed = innatePowerAttr.Speed;
 			Name = innatePowerAttr.Name;
 
 			// try static method (spirit / major / minor)
@@ -34,15 +34,13 @@ namespace SpiritIsland {
 
 		#endregion
 
+		readonly InnatePowerAttribute innatePowerAttr;
+
 		readonly Dictionary<MethodInfo, Element[]> elementListByMethod;
 
-		public virtual bool UpdateAndISActivatedBy(CountDictionary<Element> elements){
-			return elementListByMethod
-				.OrderByDescending(pair=>pair.Value.Length)
-				.Any(pair=>elements.Contains(pair.Value));
-		}
-
-		public Speed Speed {get;set;}
+		public Speed Speed => OverrideSpeed!=null ? OverrideSpeed.Speed : DefaultSpeed;
+		public Speed DefaultSpeed { get; set; }
+		public SpeedOverride OverrideSpeed { get; set; }
 
 		public string Name {get;}
 
@@ -62,6 +60,16 @@ namespace SpiritIsland {
 				.First().Key;
 		}
 
+		public bool IsTriggered { get; private set; }
+
+		public virtual void UpdateFromSpiritState( CountDictionary<Element> elements ) {
+//			defaultSpeed = this.innatePowerAttr.
+
+			this.IsTriggered = elementListByMethod
+				.OrderByDescending( pair => pair.Value.Length )
+				.Any( pair => elements.Contains( pair.Value ) );
+		}
+
 	}
 
 	public class InnatePower_TargetSpirit : InnatePower, IActionFactory {
@@ -73,7 +81,7 @@ namespace SpiritIsland {
 		#endregion
 
 		public override async Task ActivateAsync( Spirit self, GameState gameState ) {
-			Spirit target = await self.Action.Decide( new TargetSpiritDecision( gameState.Spirits) );
+			Spirit target = await self.Action.Decision( new Decision.TargetSpirit( gameState.Spirits) );
 			await TargetSpirit_PowerCard.TargetSpirit( HighestMethod( self ), self, gameState, target );
 		}
 
@@ -101,7 +109,5 @@ namespace SpiritIsland {
 		readonly TargetSpaceAttribute targetSpaceAttribute;
 
 	}
-
-
 
 }

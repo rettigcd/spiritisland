@@ -20,7 +20,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 		static async Task Execute( TargetSpaceCtx ctx, int fear, int damage ) {
 			ctx.AddFear( fear );
-			await ctx.PowerInvaders.SmartDamageToTypes( damage );
+			await ctx.Invaders.SmartDamageToTypes( damage );
 			// remove 1 beast
 			ctx.Tokens.Beasts().Count--;
 		}

@@ -19,9 +19,8 @@ namespace SpiritIsland.BranchAndClaw {
 			ctx.GameState.Tokens.TokenAdded.ForRound.Add( PushAddedInvader );
 
 			async Task PushAddedInvader( GameState gs, TokenAddedArgs args ) {
-				var group = args.Token.Generic;
-				if(group == Invader.Explorer || group == Invader.Town || group == Invader.City)
-					await ctx.Self.MakeDecisionsFor( gs ).PushUpToNTokens( args.Space, args.count, group );
+				if(args.Space == ctx.Space && args.Token.Generic.IsOneOf(Invader.Explorer,Invader.Town,Invader.City))
+					await new TargetSpaceCtx(ctx.Self,gs,ctx.Space).Pusher.PushToken( args.Token );
 			}
 		}
 

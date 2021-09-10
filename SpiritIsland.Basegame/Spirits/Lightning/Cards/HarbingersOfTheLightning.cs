@@ -13,15 +13,12 @@ namespace SpiritIsland.Basegame {
 		static public async Task ActionAsync(TargetSpaceCtx ctx){
 
 			// Push up to 2 dahan.
-			var destinationSpaces = await ctx.PushUpToNTokens(2, TokenType.Dahan );
+			var destinationSpaces = await ctx.PushUpToNDahan(2);
 
 			// if pushed dahan into town or city
 			bool pushedToBuildingSpace = destinationSpaces
-				.Where(neighbor => {
-					var grp = ctx.GameState.Tokens[neighbor];
-					return grp.Has(Invader.Town) || grp.Has(Invader.City);
-				})
-				.Any();
+				.Any( neighbor => ctx.GameState.Tokens[neighbor].HasAny(Invader.Town,Invader.City) );
+
 			if(pushedToBuildingSpace)
 				ctx.AddFear(1);
 		}

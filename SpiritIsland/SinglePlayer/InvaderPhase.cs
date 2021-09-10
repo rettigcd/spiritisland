@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SpiritIsland.SinglePlayer {
@@ -8,15 +7,12 @@ namespace SpiritIsland.SinglePlayer {
 
 		public InvaderPhase(GameState gameState){
 			this.gameState = gameState;
-			this.spirit = gameState.Spirits[0];
 			this.invaderDeck = gameState.InvaderDeck;
 		}
 
 		public event Action<string> NewLogEntry;
 
 		public async Task ActAsync() {
-
-			var decisionMaker = spirit;
 
 			// Blight
 			if(gameState.BlightCard.IslandIsBlighted) {
@@ -28,12 +24,12 @@ namespace SpiritIsland.SinglePlayer {
 			await gameState.Fear.Apply();
 
 			// Ravage
-			string[] ravageResults = await gameState.Ravage( invaderDeck.Ravage );
+			string[] ravageResults = await gameState.Ravage();
 			Log( "Ravaging:" + (invaderDeck.Ravage?.Text ?? "-") + "\r\n" + ravageResults.Join( "\r\n" ) );
 
 			// Building
 			Log( "Building:" + invaderDeck.Build?.Text ?? "-" );
-			var builds = await gameState.Build( invaderDeck.Build );
+			var builds = await gameState.Build();
 			Log( builds.Join( "\r\n" ) );
 
 			// Exploring
@@ -47,7 +43,6 @@ namespace SpiritIsland.SinglePlayer {
 
 		#region private fields
 
-		readonly Spirit spirit;
 		readonly GameState gameState;
 		readonly InvaderDeck invaderDeck;
 

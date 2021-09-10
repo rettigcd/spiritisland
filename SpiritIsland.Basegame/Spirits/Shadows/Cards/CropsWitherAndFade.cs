@@ -12,19 +12,10 @@ namespace SpiritIsland.Basegame {
 			ctx.AddFear( 2 );
 
 			return ctx.SelectActionOption(
-				new ActionOption("replace town with explorer", () => Replace1(ctx,Invader.Town,Invader.Explorer)),
-				new ActionOption("reaplce city with town", () => Replace1(ctx,Invader.City,Invader.Town))
+				new ActionOption("replace town with explorer", () => Replace.Downgrade(ctx,Invader.Town)),
+				new ActionOption("replace city with town", () => Replace.Downgrade(ctx,Invader.City))
 			);
 
-		}
-
-		static async Task Replace1( TargetSpaceCtx ctx, TokenGroup group, TokenGroup newToken ) {
-			var origTokens = ctx.Tokens.OfType(group);
-			var oldToken = await ctx.Self.Action.Decide( new SelectInvaderToDowngrade( ctx.Target, origTokens, Present.IfMoreThan1 ) );
-			if(oldToken != null) return;
-
-			ctx.Tokens.Adjust( oldToken, -1 );
-			ctx.Tokens.Adjust( newToken.Default, 1 );
 		}
 
 	}

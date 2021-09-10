@@ -15,9 +15,9 @@ namespace SpiritIsland.Basegame {
 			await ctx.DamageInvaders( ctx.DahanCount );
 
 			// if you have 2 sun, 2 earth, 2 plant
-			if( ctx.Self.Elements.Contains( "2 sun, 2 earth, 2 plant" )) {
+			if( ctx.YouHave( "2 sun, 2 earth, 2 plant" )) {
 				// you may push up to 2 dahan
-				Space[] dest = await ctx.PushUpToNTokens( 2, TokenType.Dahan );
+				Space[] dest = await ctx.PushUpToNDahan( 2 );
 				// defend pushed
 				foreach(var d in dest)
 					ctx.GameState.Defend( d, 2 );

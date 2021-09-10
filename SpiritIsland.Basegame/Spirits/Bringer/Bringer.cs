@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
+using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 
@@ -93,6 +92,9 @@ namespace SpiritIsland.Basegame {
 			};
 		}
 
+		public override Task DestroyDahanForPowers( GameState gs, Space space, int count, Token dahanToken ) {
+			return Task.CompletedTask;
+		}
 
 	}
 

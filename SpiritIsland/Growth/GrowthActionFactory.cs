@@ -8,13 +8,17 @@ namespace SpiritIsland {
 
 		public abstract Task ActivateAsync( Spirit spirit, GameState gameState );
 
+		public void UpdateFromSpiritState( CountDictionary<Element> elements ) {} // no effect
+
 		public virtual string ShortDescription => ToString().Split('.').Last();
 
 		public virtual string Name => this.ShortDescription;
 
-		public Speed Speed { 
-			get{ return Speed.Growth; }
-			set { throw new System.InvalidOperationException("can't change growth speed"); }
+		public Speed Speed => DefaultSpeed;
+		public Speed DefaultSpeed => Speed.Growth;
+		public SpeedOverride OverrideSpeed { 
+			get => null;
+			set => throw new System.InvalidOperationException();
 		}
 
 		public string Text => this.ShortDescription;

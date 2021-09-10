@@ -128,8 +128,8 @@ namespace SpiritIsland.Basegame {
 
 		}
 
-		async Task ChokeTheLandWithGreen_Ravage( GameState gs, Space[] spaces ) {
-			var stopped = await ChokeTheLandWithGreen( gs, spaces, "ravage" );
+		async Task ChokeTheLandWithGreen_Ravage( GameState gs, List<Space> spaces ) {
+			var stopped = await ChokeTheLandWithGreen( gs, spaces.ToArray(), "ravage" );
 			gs.SkipRavage( stopped );
 		}
 
@@ -148,7 +148,7 @@ namespace SpiritIsland.Basegame {
 
 			var skipped = new List<Space>();
 			while(maxStoppable > 0 && stoppable.Count > 0) {
-				var stop = await this.Action.Decide( new TargetSpaceDecision( $"Stop {actionText} by destroying 1 presence", stoppable.ToArray(), Present.Done ) );
+				var stop = await this.Action.Decision( new Decision.TargetSpace( $"Stop {actionText} by destroying 1 presence", stoppable.ToArray(), Present.Done ) );
 				if(stop == null) break;
 
 				Presence.Destroy( stop );

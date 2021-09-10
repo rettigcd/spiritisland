@@ -104,11 +104,11 @@ Shadows Flicker like Flame:
 					return await base.TargetsSpace( self, gameState, from, sourceTerrain, range, filter );
 
 				// append Target-Dahan option to end of list
-				var options = normalSpaces.Cast<IOption>().ToList();
+				List<IOption> options = normalSpaces.Cast<IOption>().ToList();
 				options.Add(new TextOption("Pay 1 energy to target land with dahan"));
 
 				// let them select normal, or choose to pay
-				var option = await self.Select("Select land to target.",options.ToArray());
+				IOption option = await self.Select("Select land to target.",options.ToArray());
 
 				// if they select regular space, use it
 				if(option is Space space)
@@ -118,7 +118,7 @@ Shadows Flicker like Flame:
 				--self.Energy;
 
 				// pick from dahan-only spaces
-				return await self.Action.Decide( new TargetSpaceDecision( "Target land with dahan", dahanOnlySpaces));
+				return await self.Action.Decision( new Decision.TargetSpace( "Target land with dahan", dahanOnlySpaces));
 			}
 
 		}

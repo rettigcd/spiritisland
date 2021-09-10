@@ -9,21 +9,23 @@ namespace SpiritIsland.Basegame {
 		[FromPresence(2,Target.Blight)]
 		static public async Task ActAsync(TargetSpaceCtx ctx) {
 
-			await ApplyDamageFromBlight( ctx.Target, ctx );
+			static Task DamageLandFromBlight( TargetSpaceCtx ctx ) {
+				// 2 damage per blight in target land
+				int damage = ctx.BlightOnSpace * 2
+					// +1 damage per blight in adjacent lands
+					+ ctx.Adjacents.Sum( x => ctx.GameState.GetBlightOnSpace( x ) );
+				return ctx.DamageInvaders( ctx.Space, damage );
+			}
+
+			await DamageLandFromBlight( ctx );
 
 			// if you have 3 moon 3 earth
-			if(ctx.Self.Elements.Contains("3 moon,3 earth")) {
+			if(ctx.YouHave("3 moon,3 earth")) {
 				// repeat on an adjacent land.
-				var alsoTarget = await ctx.Self.Action.Decide( new TargetSpaceDecision( "Select adjacent land to receive damage from blight", ctx.Target.Adjacent));
-				await ApplyDamageFromBlight( alsoTarget, ctx );
+				var alsoTarget = await ctx.Self.Action.Decision( new Decision.TargetSpace( "Select additional land to receive blight damage", ctx.Space.Adjacent));
+				await DamageLandFromBlight( ctx.TargetSpace( alsoTarget ) );
 			}
 		}
 
-		static Task ApplyDamageFromBlight( Space space, TargetSpaceCtx ctx ) {
-			GameState gs = ctx.GameState;
-			int damage = gs.GetBlightOnSpace( space ) * 2  // 2 damage per blight in target land
-				+ space.Adjacent.Sum( x => gs.GetBlightOnSpace( x ) ); // +1 damage per blight in adjacent lands
-			return ctx.DamageInvaders( space, damage );
-		}
 	}
 }

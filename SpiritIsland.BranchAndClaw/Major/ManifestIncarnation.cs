@@ -12,9 +12,12 @@ namespace SpiritIsland.BranchAndClaw {
 		[MajorCard( "Manifest Incarnation", 6, Speed.Slow, Element.Sun, Element.Moon, Element.Earth, Element.Animal )]
 		[FromPresence( 0, "Cities" )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
+			// 6 fear
+			ctx.AddFear(6);
+
 			// +1 fear for each town/city and for each of your presence in target land.
 			int fearCount = ctx.Tokens.SumAny(Invader.City,Invader.Town)
-				+ ctx.Self.Presence.Placed.Count(x=>x==ctx.Target);
+				+ ctx.Self.Presence.Placed.Count(x=>x==ctx.Space);
 			ctx.AddFear(fearCount);
 
 			// Remove 1 city, 1 town and 1 explorer.
@@ -23,11 +26,11 @@ namespace SpiritIsland.BranchAndClaw {
 			tokenToRemove     = ctx.Tokens.PickBestInvaderToRemove( Invader.Explorer ); ctx.Tokens.Adjust( tokenToRemove, -1 );
 
 			// if you have 3 sun and 3 moon, invaders do -6 damage on their ravage.
-			if(ctx.Self.Elements.Contains( "3 sun,3 moon" ))
+			if(ctx.YouHave( "3 sun,3 moon" ))
 				ctx.Defend( 6 ); // !! not exactly correct but close
 
 			// Then, Invaders in target land ravage.
-			await ctx.GameState.RavageSpace( ctx.PowerInvaders );
+			await ctx.GameState.RavageSpace( ctx.Invaders );
 		}
 
 	}

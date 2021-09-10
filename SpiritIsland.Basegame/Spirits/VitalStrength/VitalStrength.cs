@@ -92,7 +92,7 @@ Power Progression:
 			Presence.PlaceOn( higestJungle );
 		}
 
-		Task GameState_Ravaging( GameState gs, Space[] ravageSpaces ) {
+		Task GameState_Ravaging( GameState gs, List<Space> ravageSpaces ) {
 			foreach(var space in SacredSites.Where(ravageSpaces.Contains))
 				gs.Defend( space, 3 );
 			return Task.CompletedTask;

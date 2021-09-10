@@ -2,11 +2,14 @@
 using System.Threading.Tasks;
 
 namespace SpiritIsland.BranchAndClaw.Minor {
+
+	// Change Speed - delayed.  They don't have to pick it immediately - similar to Lightning
 	public class ChangeSpeed : IActionFactory {
-		public Speed Speed {
-			get => Speed.FastOrSlow;
-			set => throw new InvalidOperationException();
-		}
+
+		public Speed Speed => Speed;
+		public Speed DefaultSpeed => Speed.FastOrSlow;
+
+		public SpeedOverride OverrideSpeed { get => null; set => throw new InvalidOperationException(); }
 
 		public string Name => "Change Speed";
 
@@ -18,5 +21,6 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 			return new SpeedChanger( spirit, gameState, Speed.Fast, 2 ).Exec();
 		}
 
+		public void UpdateFromSpiritState( CountDictionary<Element> elements ) {} // no effect
 	}
 }

@@ -17,8 +17,8 @@ namespace SpiritIsland.Basegame {
 			int gatherCount = elements[Element.Air];
 			int pushCount = elements[Element.Sun];
 
-			await ctx.GatherUpToNTokens(ctx.Target,gatherCount, TokenType.Dahan );
-			await ctx.PushUpToNTokens(pushCount, TokenType.Dahan );
+			await ctx.GatherUpTo(ctx.Space,gatherCount, TokenType.Dahan );
+			await ctx.PushUpTo(pushCount, TokenType.Dahan );
 		}
 
 

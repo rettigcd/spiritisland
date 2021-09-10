@@ -13,7 +13,7 @@ namespace SpiritIsland.Basegame {
 			if(ctx.HasInvaders)
 				ctx.AddFear(1);
 
-			if(ctx.HasBlight && ctx.IsOneOf(Terrain.Wetland,Terrain.Sand))
+			if(ctx.HasBlight && ctx.IsOneOf( Terrain.Sand, Terrain.Wetland))
 				ctx.RemoveBlight();
 
 			return Task.CompletedTask;

@@ -10,11 +10,11 @@ namespace SpiritIsland.BranchAndClaw {
 		static public async Task ActAsync( TargetSpiritCtx ctx ) {
 
 			// target spirit gains a power card
-			await ctx.Target.Draw(ctx.GameState, null);
+			await ctx.Other.Draw(ctx.GameState, null);
 
 			// if you target another spirit, they also gain 1 energy
-			if(ctx.Target != ctx.Self)
-				++ctx.Target.Energy;
+			if(ctx.Other != ctx.Self)
+				++ctx.Other.Energy;
 
 		}
 

@@ -9,7 +9,7 @@ namespace SpiritIsland {
 
 		public async virtual Task<Space> TargetsSpace( Spirit self, GameState gameState, From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum ) {
 			IEnumerable<Space> spaces = GetTargetOptions( self, gameState, sourceEnum, sourceTerrain, range, filterEnum );
-			return await self.Action.Decide( new TargetSpaceDecision( "Select space to target.", spaces ));
+			return await self.Action.Decision( new Decision.TargetSpace( "Select space to target.", spaces ));
 		}
 
 		public virtual IEnumerable<Space> GetTargetOptions( Spirit self, GameState gameState, From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum ) {
@@ -33,7 +33,8 @@ namespace SpiritIsland {
 			string filterEnum 
 		) {
 			return source       // starting here
-				.Range( range ) // find spaces within range
+				.SelectMany( x => x.Range( range ) )
+				.Distinct()
 				.Where( SpaceFilter.ForPowers.GetFilter( self, gameState, filterEnum ) ); // matching this destination
 		}
 
@@ -47,14 +48,10 @@ namespace SpiritIsland {
 
 		#region Static Public
 
-		static public void ScheduleRestore( TargetSpiritCtx ctx ) {
-			var original = ctx.Target.PowerApi;
-			Task cleanup( GameState _ ) {
-				ctx.Target.PowerApi = original;
-				return Task.CompletedTask;
-			}
-			ctx.GameState.TimePasses_ThisRound.Push( cleanup );
+		static public void ScheduleRestore( SpiritGameStateCtx ctx ) {
+			ctx.GameState.TimePasses_ThisRound.Push( new PowerApiRestorer( ctx.Self ).Restore );
 		}
+
 		static public void ExtendRange( Spirit spirit, int rangeExtension ) {
 			spirit.PowerApi = new TargetLandApi_ExtendRange( rangeExtension, spirit.PowerApi );
 		}

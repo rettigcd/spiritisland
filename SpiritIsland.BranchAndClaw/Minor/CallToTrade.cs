@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.BranchAndClaw {
 
@@ -11,28 +10,15 @@ namespace SpiritIsland.BranchAndClaw {
 
 			await ctx.GatherUpToNDahan(1);
 
-			if(ctx.GameState.Fear.TerrorLevel <= 2) {
-				await ctx.GatherUpToNTokens(1,Invader.Town);
+			if( ctx.GameState.Fear.TerrorLevel <= 2 ) {
+				await ctx.Gather( 1,Invader.Town );
 
 				// And the first ravage in target land becomes a build there instead.
-				bool hasRavage = false;
-				Task RemoveRavage(GameState gs,Space[] spaces ) {
-					hasRavage = spaces.Contains(ctx.Target);
-					ctx.GameState.ModifyRavage(ctx.Target,cfg=>cfg.ShouldRavage = false);
-					return Task.CompletedTask;
+				if(ctx.GameState.ScheduledRavageSpaces.Contains( ctx.Space )) {
+					ctx.GameState.ScheduledRavageSpaces.Remove(ctx.Space);
+					ctx.GameState.ScheduledBuildLands[ctx.Space]++;
 				}
-
-				Task AddBuild(GameState gs,BuildingEventArgs args ) {
-					if( hasRavage )
-						args.Spaces[ctx.Target]++;
-					return Task.CompletedTask;
-				}
-
-				ctx.GameState.PreRavaging.ForRound.Add( RemoveRavage );
-				ctx.GameState.PreBuilding.ForRound.Add( AddBuild );
-
 			}
-
 
 		}
 

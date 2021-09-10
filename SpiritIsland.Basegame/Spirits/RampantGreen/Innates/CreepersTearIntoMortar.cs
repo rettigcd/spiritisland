@@ -22,7 +22,7 @@ namespace SpiritIsland.Basegame {
 		}
 
 		static Task DoDamage(TargetSpaceCtx ctx, int damage ) {
-			return ctx.PowerInvaders.SmartDamageToTypes( damage, Invader.City, Invader.Town );
+			return ctx.Invaders.SmartDamageToTypes( damage, Invader.City, Invader.Town );
 		}
 	}
 }

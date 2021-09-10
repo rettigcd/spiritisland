@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 
 namespace SpiritIsland.BranchAndClaw {
 
@@ -10,15 +11,37 @@ namespace SpiritIsland.BranchAndClaw {
 			// add 1 strife
 			await ctx.AddStrife();
 
-			// each invader with strife deals damage to other invaders in target land
+			// See default action below
 
-			// !!! Ravage status must be known at start of round in order to detect this.
+			int damageFromStrifedInvaders = ctx.Tokens.Invaders().OfType<StrifedInvader>().Sum( si => si.FullHealth * ctx.Tokens[si] );
+
 
 			// if you have 4 sun, 2 fire 2 animal:
-			// Instead, if invaders ravage in target land, they damage invaders in adjacent lands instead of dahan and the land.
-			// dahan in target land do not fight back.
+			// Instead, if invaders ravage in target land,
+			bool invadersRavageInTargetLand = ctx.GameState.ScheduledRavageSpaces.Contains(ctx.Space);
+			if(invadersRavageInTargetLand && ctx.YouHave("4 sun,2 fire,2 animal" )) {
+				async Task Sequence(RavageEngine eng ) {
+					// they damage invaders in adjacent lands instead of dahan and the land.
+					var invaderSpaceCtx = await ctx.SelectAdjacentLand($"Apply {damageFromStrifedInvaders} damage to", x=>x.HasInvaders);
+					if(invaderSpaceCtx != null)
+						await DamageUnStriffed( damageFromStrifedInvaders, invaderSpaceCtx );
+					// dahan in target land do not fight back.
+				}
+				ctx.ModifyRavage(cfg => cfg.RavageSequence = Sequence );
+			} else {
+
+				// This is the default action
+
+				// each invader with strife deals damage to other invaders in target land
+				await DamageUnStriffed( damageFromStrifedInvaders, ctx );
+			}
+
 		}
 
+		static async Task DamageUnStriffed( int damageFromStrifedInvaders, TargetSpaceCtx invaderSpaceCtx ) {
+			// !! this isn't 100% correct, the damage will start applying to unstrifed, but will then spill over onto strifed
+			await invaderSpaceCtx.DamageInvaders( damageFromStrifedInvaders );
+		}
 	}
 
 }

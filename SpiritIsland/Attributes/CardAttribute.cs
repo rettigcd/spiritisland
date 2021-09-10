@@ -20,6 +20,8 @@ namespace SpiritIsland {
 		public Element[] Elements { get; }
 		public PowerType PowerType { get; }
 
+		public virtual void UpdateFromSpiritState( CountDictionary<Element> elements, PowerCard card ) { }
+
 	}
 
 

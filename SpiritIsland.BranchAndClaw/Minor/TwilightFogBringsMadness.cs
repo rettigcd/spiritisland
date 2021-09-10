@@ -10,8 +10,9 @@ namespace SpiritIsland.BranchAndClaw {
 
 			// Add 1 strife
 			await ctx.Self.SelectInvader_ToStrife( ctx.Tokens );
+
 			// Push 1 dahan
-			await ctx.PushUpToNTokens( 1, TokenType.Dahan );
+			await ctx.PushDahan( 1 );
 
 			// Each remaining Dahan take 1 damage
 			await RemainingDahanTake1Damage( ctx );
@@ -24,7 +25,7 @@ namespace SpiritIsland.BranchAndClaw {
 			ctx.Tokens[TokenType.Dahan[2]] = 0;
 			await ctx.GameState.Tokens.TokenDestroyed.InvokeAsync( ctx.GameState, new TokenDestroyedArgs {
 				Token = TokenType.Dahan,
-				space = ctx.Target,
+				space = ctx.Space,
 				count = dahanDestroyed,
 				Source = Cause.Power
 			} );

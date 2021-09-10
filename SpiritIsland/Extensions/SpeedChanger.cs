@@ -3,19 +3,22 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
-
 	public class SpeedChanger {
 
 		readonly Spirit spirit;
 		readonly GameState gameState;
 		readonly string prompt;
-		Speed toChangeFrom;
-		Speed resultingSpeed;
+		readonly Speed toChangeFrom;
+		readonly Speed resultingSpeed;
 		int countToChange;
 
-		public SpeedChanger( Spirit spirit, GameState gameState, Speed resultingSpeed, int maxCountToChange ) {
+		public SpeedChanger( SpiritGameStateCtx ctx, Speed resultingSpeed, int maxCountToChange )
+			:this(ctx.Self,ctx.GameState,resultingSpeed,maxCountToChange) 
+		{}
+
+		public SpeedChanger( Spirit spirit, GameState gs, Speed resultingSpeed, int maxCountToChange ) {
 			this.spirit = spirit;
-			this.gameState = gameState; // for Time-Passes Hook, to reset
+			this.gameState = gs; // for Time-Passes Hook, to reset
 			this.countToChange = maxCountToChange;
 			this.resultingSpeed = resultingSpeed;
 
@@ -23,14 +26,14 @@ namespace SpiritIsland {
 				Speed.Fast => "Select action to make fast.",
 				Speed.Slow => "Select action to make slow.",
 				Speed.FastOrSlow => "Select action to toggle fast/slow.",
-				_ => throw new System.ArgumentException( nameof(resultingSpeed), "can't toggle " + resultingSpeed )
+				_ => throw new System.ArgumentException( "can't toggle " + resultingSpeed, nameof( resultingSpeed ) )
 			};
 
 			toChangeFrom = resultingSpeed switch {
 				Speed.Fast => Speed.Slow,
 				Speed.Slow => Speed.Fast,
 				Speed.FastOrSlow => Speed.FastOrSlow,
-				_ => throw new System.ArgumentException( nameof( resultingSpeed ), "can't toggle " + resultingSpeed )
+				_ => throw new System.ArgumentException( "can't toggle " + resultingSpeed, nameof( resultingSpeed ) )
 			};
 
 		}
@@ -50,7 +53,7 @@ namespace SpiritIsland {
 
 		async Task FindAndChange( ) {
 			var changeableFactories = FindSouceFactories();
-			IActionFactory factory = await spirit.Select( prompt + $" (remaining: {countToChange})",
+			IActionFactory factory = await spirit.SelectFactory( prompt + $" (remaining: {countToChange})",
 				changeableFactories,
 				Present.Done
 			);
@@ -63,25 +66,9 @@ namespace SpiritIsland {
 		}
 
 		void Change( IActionFactory factory ) {
-			factory.Speed = resultingSpeed;
-
-			var speedReseter = new RememberFactorySpeed( factory );
-			gameState.TimePasses_ThisRound.Push( speedReseter.Reset );
-
-		}
-
-		/// <summary> This provides a javascript-like closure to capture the factory that needs reset to fast;</summary>
-		class RememberFactorySpeed {
-			readonly IActionFactory factory;
-			readonly Speed originalSpeed;
-			public RememberFactorySpeed( IActionFactory factory ) {
-				this.factory = factory;
-				this.originalSpeed = factory.Speed;
-			}
-			public Task Reset( GameState _ ) {
-				factory.Speed = originalSpeed;
-				return Task.CompletedTask;
-			}
+			Task Restore(GameState _) { factory.OverrideSpeed = null; return Task.CompletedTask; }
+			gameState.TimePasses_ThisRound.Push( Restore );
+			factory.OverrideSpeed = new SpeedOverride( resultingSpeed, "SpeedChanger" );
 		}
 
 	}

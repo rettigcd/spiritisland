@@ -6,10 +6,11 @@ namespace SpiritIsland.BranchAndClaw {
 
 		[MinorCard("Gold's Allure",0,Speed.Slow,Element.Fire,Element.Earth,Element.Animal)]
 		[FromPresence(1,Target.Mountain)]
-		static public Task ActAsync(TargetSpaceCtx ctx ) {
-			ctx.GatherUpToNTokens(1,Invader.Explorer);
-			ctx.GatherUpToNTokens(1,Invader.Town);
-			return ctx.AddStrife();
+		static public async Task ActAsync(TargetSpaceCtx ctx ) {
+			await ctx.Gather(1,Invader.Explorer);
+			await ctx.Gather(1,Invader.Town);
+
+			await ctx.AddStrife();
 		}
 
 	}

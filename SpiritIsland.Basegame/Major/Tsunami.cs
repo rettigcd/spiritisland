@@ -7,34 +7,38 @@ namespace SpiritIsland.Basegame {
 
 		public const string Name = "Tsunami";
 
-
 		[MajorCard(Tsunami.Name,6,Speed.Slow,Element.Water,Element.Earth)]
 		[FromSacredSite(2,Target.Coastal)]
 		static public async Task ActAsync(TargetSpaceCtx ctx){
 			// 2 fear
 			ctx.AddFear(2);
+
 			// +8 damage
 			await ctx.DamageInvaders(8);
-			// destroy 2 dahan
-			int count = System.Math.Min(ctx.DahanCount,2);
-			await ctx.DestroyDahan( count,Cause.Power);
 
-			if(ctx.Self.Elements.Contains("3 water,2 earth")){
-				var others = ctx.GameState.Island
-					.Boards.Single(b=>b[1].Label[0]== ctx.Target.Label[0])
-					.Spaces.Where(s=>s.IsCostal && s != ctx.Target )
+			// destroy 2 dahan
+			await ctx.DestroyDahan( 2 );
+
+			if(ctx.YouHave("3 water,2 earth")){
+				var otherCoastalsOnSameBoard = ctx.Space.Board
+					.Spaces.Where(s=>ctx.IsCostal(s) && s != ctx.Space )
 					.ToArray();
-				foreach(var otherCoast in others){
-					ctx.AddFear(1);
-					// 4 damage
-					await ctx.DamageInvaders(otherCoast,4);
-					// destroy 1 dahan
-					if(ctx.GameState.DahanIsOn(otherCoast))
-						await ctx.GameState.DahanDestroy(otherCoast,1, Cause.Power);
-				}
+
+				foreach(var otherCoast in otherCoastalsOnSameBoard)
+					await DamageOtherCoast( ctx.TargetSpace( otherCoast ) );
+
 			}
 		}
 
+		static async Task DamageOtherCoast( TargetSpaceCtx otherCtx ) {
+			// 1 fear
+			otherCtx.AddFear( 1 );
+			// 4 damage
+			await otherCtx.DamageInvaders( 4 );
+			// destroy 1 dahan
+			if(otherCtx.HasDahan)
+				await otherCtx.DestroyDahan( 1 );
+		}
 	}
 
 }

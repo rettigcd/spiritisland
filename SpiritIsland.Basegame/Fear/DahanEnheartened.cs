@@ -12,21 +12,13 @@ namespace SpiritIsland.Basegame {
 		public async Task Level1( GameState gs ) {
 			foreach(var spirit in gs.Spirits) {
 				var spacesWithInvaders = gs.Island.AllSpaces.Where( gs.HasInvaders ).ToArray();
-				var target = await spirit.Action.Decide( new TargetSpaceDecision( "Select Space to Gather or push 1 dahan", spacesWithInvaders));
-				bool canPush = gs.DahanIsOn(target);
-				bool canGather = target.Adjacent.Any(gs.DahanIsOn);
-				if(canPush && canGather) {
-					if(await spirit.UserSelectsFirstText("Push or Gather?","push","gather"))
-						canPush=false;
-					else
-						canGather=false;
-				}
+				var target = await spirit.Action.Decision( new Decision.TargetSpace( "Select Space to Gather or push 1 dahan", spacesWithInvaders));
 
-				var engine = spirit.MakeDecisionsFor(gs);
-				if(canPush)
-					await engine.PushUpToNTokens(target,1,TokenType.Dahan );
-				else if(canGather)
-					await engine.GatherUpToNTokens(target,1,TokenType.Dahan);
+				SpiritGameStateCtx ctx = spirit.MakeDecisionsFor( gs );
+				await ctx.SelectActionOption(
+					new ActionOption("Push",    () => ctx.PushUpTo( target, 1, TokenType.Dahan) ),
+					new ActionOption( "Gather", () => ctx.GatherUpTo( target, 1, TokenType.Dahan ) )
+				);
 			}
 		}
 
@@ -36,8 +28,8 @@ namespace SpiritIsland.Basegame {
 			foreach(var spirit in gs.Spirits) {
 				var engine = spirit.MakeDecisionsFor( gs );
 				var options = gs.Island.AllSpaces.Where( gs.DahanIsOn ).Except( used ).ToArray();
-				var target = await spirit.Action.Decide( new TargetSpaceDecision( "Fear:select land with dahan for 1 damage", options ));
-				await engine.GatherUpToNTokens(target,2, TokenType.Dahan );
+				var target = await spirit.Action.Decision( new Decision.TargetSpace( "Fear:select land with dahan for 1 damage", options ));
+				await engine.GatherUpTo(target,2, TokenType.Dahan );
 				if(gs.DahanIsOn(target))
 					await gs.SpiritFree_FearCard_DamageInvaders(target, 1 );
 				used.Add( target );
@@ -49,8 +41,8 @@ namespace SpiritIsland.Basegame {
 			HashSet<Space> used = new HashSet<Space>();
 			foreach(var spirit in gs.Spirits) {
 				var options = gs.Island.AllSpaces.Where( gs.DahanIsOn ).Except( used ).ToArray();
-				var target = await spirit.Action.Decide( new TargetSpaceDecision( "Fear:select land with dahan for 1 damage", options ));
-				await spirit.MakeDecisionsFor( gs ).GatherUpToNTokens( target, 2, TokenType.Dahan );
+				var target = await spirit.Action.Decision( new Decision.TargetSpace( "Fear:select land with dahan for 1 damage", options ));
+				await spirit.MakeDecisionsFor( gs ).GatherUpTo( target, 2, TokenType.Dahan );
 				await gs.SpiritFree_FearCard_DamageInvaders(target, gs.DahanGetCount(target) );
 				used.Add( target );
 			}

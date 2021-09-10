@@ -24,22 +24,22 @@ namespace SpiritIsland.BranchAndClaw {
 
 		static async Task ActAsync( TargetSpaceCtx ctx, int damage ) {
 			// Destroy 1 dahan
-			await ctx.DestroyDahan( 1, Cause.Power );
+			await ctx.DestroyDahan( 1 );
 
 			// 4 plant  split this power's damage however desired between target land and another 1 of your lands
 			int damageToTarget = ctx.Self.Elements[Element.Air] < 4 && ctx.Self.Presence.Spaces.Count()>1
 				? damage
-				: await ctx.Self.SelectNumber("Damage to apply to "+ctx.Target.Label, damage );
+				: await ctx.Self.SelectNumber("Damage to apply to "+ctx.Space.Label, damage );
 
 			await ctx.DamageInvaders( damage );
 
 			int remainingDamage = damage - damageToTarget;
 			if(remainingDamage > 0) {
-				var secondaryTarget = await ctx.Self.Action.Decide(new TargetSpaceDecision(
+				var secondaryTarget = await ctx.Self.Action.Decision(new Decision.TargetSpace(
 					$"Apply {remainingDamage} reamaining damage"
 					,ctx.Self.Presence.Spaces
 				));
-				await ctx.PowerInvadersOn(secondaryTarget).ApplySmartDamageToGroup(remainingDamage);
+				await ctx.InvadersOn(secondaryTarget).ApplySmartDamageToGroup(remainingDamage);
 			}
 
 		}

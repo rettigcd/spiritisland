@@ -9,14 +9,12 @@ namespace SpiritIsland.Basegame {
 		[SpiritCard( WordsOfWarning.Name, 1, Speed.Fast, Element.Air, Element.Sun, Element.Animal )]
 		[FromPresence(1,Target.Dahan)]
 		static public Task Act( TargetSpaceCtx ctx ) {
-			var target = ctx.Target;
 
 			// defend 3
-			ctx.Tokens.Defend.Count += 3;
-			ctx.GameState.ModifyRavage( target, cfg => {
-				// dahan attach simultaneously with dahan
-				cfg.RavageSequence = SimultaneousDamage;
-			} );
+			ctx.Defend(3);
+
+			// During Ravage, dahan in target land deal damage simultaneiously with invaders
+			ctx.GameState.ModifyRavage( ctx.Space, cfg => cfg.RavageSequence = SimultaneousDamage );
 
 			return Task.CompletedTask;
 		}

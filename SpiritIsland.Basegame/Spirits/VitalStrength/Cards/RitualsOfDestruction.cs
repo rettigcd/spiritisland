@@ -9,12 +9,15 @@ namespace SpiritIsland.Basegame.Spirits.VitalStrength {
 		[FromSacredSite(1,Target.Dahan)]
 		static public Task ActAsync(TargetSpaceCtx ctx){
 
-			bool hasBonus = 3 <= ctx.GameState.DahanGetCount(ctx.Target);
+			// 2 damage
+			int damage = 2;
 
-			if(hasBonus)
+			if( 3 <= ctx.GameState.DahanGetCount(ctx.Space)) {
+				damage += 3;
 				ctx.AddFear( 2 );
+			}
 
-			return ctx.DamageInvaders(ctx.Target, hasBonus ? 5 : 2);
+			return ctx.DamageInvaders( damage );
 
 		}
 

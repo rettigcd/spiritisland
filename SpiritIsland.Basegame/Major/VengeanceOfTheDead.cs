@@ -15,32 +15,21 @@ namespace SpiritIsland.Basegame {
 			// 3 fear
 			ctx.AddFear(3);
 
-			var landsWeCanApplyTheDamageTo = new List<Space> { ctx.Target };
-			if(ctx.Self.Elements.Contains("3 animal"))
-				landsWeCanApplyTheDamageTo.AddRange( ctx.PowerAdjacents() );
+			var landsWeCanApplyTheDamageTo = new List<Space> { ctx.Space };
 
-			async Task RavagePlusBonusDamage( RavageEngine ravageEngine ) {
-				int damageInflictedFromInvaders = ravageEngine.GetDamageInflictedByInvaders();
-				await ravageEngine.DamageLand( damageInflictedFromInvaders );
-				int dahanKilled = await ravageEngine.DamageDahan( damageInflictedFromInvaders );
-				int damageFromDahan = ravageEngine.GetDamageInflictedByDahan();
-
-				var grpCounts = ravageEngine.Counts;
-				int preCityCount = grpCounts.Sum(Invader.City);
-				int preTownCount = grpCounts.Sum(Invader.Town);
-
-				await ravageEngine.DamageInvaders( damageFromDahan );
-
-				int cityKilled = preCityCount - grpCounts.Sum(Invader.City);
-				int townKilled = preTownCount - grpCounts.Sum(Invader.Town);
-
-
-				// after each effect that destorys a town/city/dahan in target land
-				// 1 damage per town/city/dahan destoryed
-				await DistributeDamageToLands( ctx, landsWeCanApplyTheDamageTo, dahanKilled + cityKilled + townKilled );
+			// After each effect that destroys...
+			async Task DealVengenceDamage( GameState gs, TokenDestroyedArgs args ) {
+				//  ...a town / city / dahan in target land
+				if( args.space == ctx.Space && args.Token.IsOneOf( Invader.Town, Invader.City, TokenType.Dahan) )
+					// 1 damage per token destoryed
+					await DistributeDamageToLands( ctx, landsWeCanApplyTheDamageTo, 1 );
 			}
+			ctx.GameState.Tokens.TokenDestroyed.ForRound.Add( DealVengenceDamage );
 
-			ctx.ModifyRavage( cfg => cfg.RavageSequence = RavagePlusBonusDamage );
+			// if you have 3 animal
+			if(ctx.YouHave( "3 animal" ))
+				// damage may be dealt into adjacent lands
+				landsWeCanApplyTheDamageTo.AddRange( ctx.Adjacents );
 
 			return Task.CompletedTask;
 		}
@@ -50,7 +39,7 @@ namespace SpiritIsland.Basegame {
 			while(additionalDamage > 0
 				&& (targetLandOptions = newDamageLands.Where( ctx.GameState.HasInvaders ).ToArray()).Length > 0
 			) {
-				var newLand = await ctx.Self.Action.Decide( new TargetSpaceDecision( $"Apply up to {additionalDamage} vengeanance damage in:", targetLandOptions ));
+				var newLand = await ctx.Self.Action.Decision( new Decision.TargetSpace( $"Apply up to {additionalDamage} vengeanance damage in:", targetLandOptions ));
 				if(newLand == null) break;
 				int damage = await ctx.Self.SelectNumber( "How many damage to apply?", additionalDamage, 0 );
 				await ctx.DamageInvaders( newLand, damage );

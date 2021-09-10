@@ -10,11 +10,13 @@ namespace SpiritIsland.BranchAndClaw {
 
 			int blightCount = ctx.Tokens.Blight;
 
+			// if target land has no blight, add 1 beast
 			if( blightCount == 0 )
 				ctx.Tokens.Beasts().Count++;
 
+			// if target land has exactly 1 blight, remove it
 			if( blightCount == 1 )
-				ctx.GameState.AddBlight(ctx.Target,-1);
+				ctx.GameState.AddBlight(ctx.Space,-1);
 
 			return Task.CompletedTask;
 		}

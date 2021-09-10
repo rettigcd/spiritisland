@@ -13,13 +13,12 @@ namespace SpiritIsland.BranchAndClaw {
 			ctx.AddFear( 2 );
 
 			// for each of your SS in / adjacent to target land, 2 damage
-			int sacredSiteCount = ctx.Target.Adjacent.Intersect( ctx.Self.SacredSites ).Count() + 1;
+			int sacredSiteCount = ctx.Space.Adjacent.Intersect( ctx.Self.SacredSites ).Count() + 1;
 			await ctx.DamageInvaders( 2 * sacredSiteCount );
 
 			// destroy all dahan
-			await ctx.DestroyDahan(int.MaxValue,Cause.Power);
+			await ctx.DestroyDahan( int.MaxValue );
 		}
-
 
 	}
 

@@ -6,12 +6,28 @@ namespace SpiritIsland.BranchAndClaw {
 
 		[MajorCard( "Sea Monsters", 5, Speed.Slow, Element.Water, Element.Animal )]
 		[FromPresence( 1, Target.CoastalOrWetlands )]
-		static public Task ActAsync( TargetSpaceCtx ctx ) {
-			// add 1 beast.  IF invaders are present, 2 fear per beast (max 8 fear).  3 damage per besast, 1 damage per blight
+		static public async Task ActAsync( TargetSpaceCtx ctx ) {
+			await DoPowerAction( ctx );
+
 			// if you have 3 water and 3 animal: repeat this power
-			return Task.CompletedTask;
+			if(ctx.YouHave("3 water,3 animal"))
+				await DoPowerAction( ctx );
 		}
 
+		static async Task DoPowerAction( TargetSpaceCtx ctx ) {
+			// add 1 beast.
+			var beasts = ctx.Tokens.Beasts();
+			beasts.Count++;
+
+			// IF invaders are present,
+			if(ctx.HasInvaders)
+				// 2 fear per beast (max 8 fear).
+				ctx.AddFear( System.Math.Min( 8, beasts.Count * 2 ) );
+
+			int damage = 3 * beasts.Count // 3 damage per beast
+				+ ctx.Tokens.Blight.Count; // 1 damage per blight
+			await ctx.DamageInvaders( damage );
+		}
 	}
 
 

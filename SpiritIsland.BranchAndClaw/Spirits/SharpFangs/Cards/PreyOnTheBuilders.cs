@@ -6,10 +6,13 @@ namespace SpiritIsland.BranchAndClaw {
 
 		[SpiritCard( "Prey on the Builders", 1, Speed.Fast, Element.Moon, Element.Fire, Element.Animal )]
 		[FromPresence(0)]
-		public static Task ActAsync(TargetSpaceCtx ctx ) {
+		public static async Task ActAsync(TargetSpaceCtx ctx ) {
+			// you may gather 1 beast
+			await ctx.GatherUpTo(1, BacTokens.Beast.Generic);
+
 			if( ctx.Tokens.Beasts().Any )
-				ctx.GameState.SkipBuild(ctx.Target);
-			return Task.CompletedTask;
+				ctx.GameState.SkipBuild(ctx.Space);
+
 		}
 
 	}

@@ -9,11 +9,11 @@ namespace SpiritIsland.Basegame {
 		static public Task ActionAsync( TargetSpaceCtx ctx ) {
 
 			return ctx.SelectActionOption(
-				new ActionOption("Add 1 presence", () => ctx.Presence_SelectFromTo( ctx.Target )),
+				new ActionOption("Add 1 presence", () => ctx.Presence_SelectFromTo( ctx.Space )),
 				new ActionOption(
 					"3 fear",
 					() => ctx.AddFear(3), 
-					ctx.Self.Presence.IsOn( ctx.Target ) && ctx.Tokens.HasInvaders()  // if presence and invaders
+					ctx.HasSelfPresence && ctx.Tokens.HasInvaders()  // if presence and invaders
 				)
 			);
 

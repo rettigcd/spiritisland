@@ -9,7 +9,7 @@ namespace SpiritIsland.BranchAndClaw {
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 			ctx.AddFear(1);
-			await ctx.PowerInvaders.DestroyAny(1,Invader.Explorer);
+			await ctx.Invaders.DestroyAny(1,Invader.Explorer);
 		}
 
 

@@ -11,7 +11,7 @@ namespace SpiritIsland {
 
 		static public PowerCard For<T>() => For(typeof(T));
 
-		static PowerCard For(Type type ) {
+		static PowerCard For( Type type ) {
 
 			// try static method (spirit / major / minor)
 			var method = type.GetMethods( BindingFlags.Public | BindingFlags.Static )
@@ -24,20 +24,37 @@ namespace SpiritIsland {
 
 			//TargetSpaceAttribute targetSpace = (TargetSpaceAttribute)method.GetCustomAttributes<FromPresenceAttribute>().FirstOrDefault()
 			//	?? (TargetSpaceAttribute)method.GetCustomAttributes<FromSacredSiteAttribute>().FirstOrDefault();
-			TargetSpaceAttribute targetSpace = (TargetSpaceAttribute)method.GetCustomAttributes<TargetSpaceAttribute>().FirstOrDefault();
+			TargetSpaceAttribute targetSpace = method.GetCustomAttributes<TargetSpaceAttribute>().FirstOrDefault();
 
 			return new TargetSpace_PowerCard( method, targetSpace );
 		}
 
 		#endregion
 
+		protected PowerCard(MethodBase methodBase ) {
+			this.methodBase = methodBase;
+			cardAttr = methodBase.GetCustomAttributes<CardAttribute>().VerboseSingle( "Couldn't find CardAttribute on PowerCard targeting a space" );
+		}
+
 		public string Name { get; protected set; }
+
 		public int Cost { get; protected set;  }
-		public Speed Speed { get; set;  }
-		public PowerCard Original => this;
+
+		public Speed Speed => OverrideSpeed != null ? OverrideSpeed.Speed : DefaultSpeed;
+		public Speed DefaultSpeed { get; protected set; }
+		public SpeedOverride OverrideSpeed { get; set; }
+
 		public Element[] Elements { get; protected set; }
 		public PowerType PowerType { get; protected set; }
-		public Type MethodType { get; protected set;}
+		public PowerCard Original => this;
+		public Type MethodType => methodBase.DeclaringType; // for determining card namespace and Basegame, BranchAndClaw, etc
+
+		readonly protected CardAttribute cardAttr;
+		readonly protected MethodBase methodBase;
+
+		public void UpdateFromSpiritState( CountDictionary<Element> elements ) {
+			cardAttr.UpdateFromSpiritState( elements, this );
+		}
 
 		IActionFactory IActionFactory.Original => this;
 

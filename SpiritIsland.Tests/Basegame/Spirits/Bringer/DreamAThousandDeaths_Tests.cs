@@ -57,7 +57,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			//  and: explorer on destination
 			ctx.GameState.Assert_Invaders( board[7], $"{count}E@1" );
 			//  and: not at origin
-			ctx.PowerInvaders.Counts.InvaderSummary.ShouldBe( "" );
+			ctx.Invaders.Tokens.InvaderSummary.ShouldBe( "" );
 		}
 
 		[Fact]
@@ -84,7 +84,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			//  and: town on destination
 			ctx.GameState.Assert_Invaders( board[7], $"{count}T@2" );
 			//  and: not at origin
-			ctx.PowerInvaders.Counts.InvaderSummary.ShouldBe("");
+			ctx.Invaders.Tokens.InvaderSummary.ShouldBe("");
 
 		}
 
@@ -126,7 +126,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			// And: 0-fear
 			Assert_GeneratedFear( 3*5 ); // city never destroyed
 			// City still there
-			ctx.PowerInvaders[Invader.City[1]].ShouldBe(1);
+			ctx.Invaders[Invader.City[1]].ShouldBe(1);
 		}
 
 		[Fact]
@@ -143,7 +143,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			Assert_GeneratedFear( 1 * 5 ); // city only destroyed once
 
 			// City with partial damage still there
-			ctx.PowerInvaders[Invader.City[1]].ShouldBe( 1 );
+			ctx.Invaders[Invader.City[1]].ShouldBe( 1 );
 		}
 
 		void Assert_GeneratedFear( int expectedFearCount ) {

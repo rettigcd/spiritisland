@@ -22,7 +22,7 @@ namespace SpiritIsland.SinglePlayer {
 				// -------------
 				// Select Actions to resolve
 				// -------------
-				var option = await spirit.Select( "Select " + speed + " to resolve:", factoryOptions, present );
+				IActionFactory option = await spirit.SelectFactory( "Select " + speed + " to resolve:", factoryOptions, present );
 				if(option == null) {
 					spirit.Flush(speed); // ! this is important or we can leave old actions in the unresolved stack
 					break;

@@ -24,7 +24,7 @@ namespace SpiritIsland.Tests {
 
 		protected static void Given_PurchasedFakePowercards(Spirit otherSpirit, int expectedEnergyBonus) {
 			for (int i = 0; i < expectedEnergyBonus; ++i) {
-				var otherCard = new NullPowerCard("Fake-" + i, 0, Speed.Slow);
+				var otherCard = PowerCard.For<SpiritIsland.Basegame.GiftOfLivingEnergy>();
 				otherSpirit.PurchasedCards.Add(otherCard);
 				otherSpirit.AddActionFactory(otherCard);
 			}

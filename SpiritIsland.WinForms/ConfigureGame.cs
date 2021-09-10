@@ -166,7 +166,7 @@ namespace SpiritIsland.WinForms {
 
 		public SinglePlayerGame Game { get; private set; }
 
-		private void checkBox1_CheckedChanged( object sender, EventArgs e ) {
+		private void CheckBox1_CheckedChanged( object sender, EventArgs e ) {
 			Init_SpiritList();
 		}
 	}

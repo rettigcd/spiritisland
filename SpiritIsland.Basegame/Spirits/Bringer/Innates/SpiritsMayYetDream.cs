@@ -15,8 +15,8 @@ namespace SpiritIsland.Basegame {
 		static public async Task Option1( TargetSpiritCtx ctx ) {
 
 			// Turn any face-down fear card face-up
-			var cards = ctx.GameState.Fear.Deck.Concat( ctx.GameState.Fear.ActivatedCards ).ToArray();
-			var cardToShow = (NamedFearCard)await ctx.Self.Select( "Select fear to reveal", cards, Present.Always );
+			NamedFearCard[] cards = ctx.GameState.Fear.Deck.Concat( ctx.GameState.Fear.ActivatedCards ).ToArray();
+			var cardToShow = await ctx.Self.Select( "Select fear to reveal", cards, Present.Always );
 
 			await ctx.Self.ShowFearCardToUser( "Done", cardToShow );
 		}
@@ -24,8 +24,9 @@ namespace SpiritIsland.Basegame {
 		[InnateOption( "3 moon" )]
 		static public async Task Option2( TargetSpiritCtx ctx ) {
 			// Target spirit gains an element they have at least 1 of
-			Element el = await ctx.Target.SelectElementAsync("Gain element",ctx.Target.Elements.Keys);
-			++ctx.Target.Elements[el];
+			Element el = (await ctx.Other.SelectElements(1,ctx.Other.Elements.Keys.ToArray())).FirstOrDefault();
+			if(el != default)
+				++ctx.Other.Elements[el];
 		}
 
 		// Opt 1 & 2 don't build on each other, this is the union

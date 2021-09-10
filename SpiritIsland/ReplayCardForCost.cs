@@ -10,9 +10,11 @@ namespace SpiritIsland {
 			this.maxCost = maxCost;
 		}
 
-		public Speed Speed {
-			get { return Speed.FastOrSlow; }
-			set { throw new InvalidOperationException("you may not change the speed of a fast/slow"); }
+		public Speed Speed => DefaultSpeed;
+		public Speed DefaultSpeed => Speed.FastOrSlow;
+		public SpeedOverride OverrideSpeed {
+			get => null;
+			set => throw new InvalidOperationException( "you may not change the speed of a fast/slow" );
 		}
 
 		public string Name => "Replay Card for cost";
@@ -26,13 +28,15 @@ namespace SpiritIsland {
 			var options = self.UsedActions.OfType<PowerCard>().ToArray();
 			if(options.Length == 0) return;
 
-			var factory = await self.Select( "Select card to replay", options.Where( x => x.Cost <= maxCost ).ToArray() );
+			PowerCard factory = await self.SelectPowerCard( "Select card to replay", options.Where( x => x.Cost <= maxCost ).ToArray() );
 			if(factory == null) return;
 
 			self.Energy -= factory.Cost;
 			self.AddActionFactory( factory );
 
 		}
+
+		public void UpdateFromSpiritState( CountDictionary<Element> elements ) {} // no effect
 
 		readonly int maxCost;
 	}
