@@ -17,13 +17,13 @@ namespace SpiritIsland.Basegame {
 			// drown 1 explorer, 1 town, and 1 dahan
 
 			// drop explorer in the ocean to drown
-			if( ctx.PowerInvaders.Counts.Has(Invader.Explorer))
+			if( ctx.Invaders.Counts.Has(Invader.Explorer))
 				await ctx.GameState.Move(Invader.Explorer[1],ctx.Target,drowningOcean);
 
 			// drop town in the ocean to drown
-			if(ctx.PowerInvaders.Counts.Has(Invader.Town))
-				await ctx.GameState.Move( ctx.PowerInvaders.Counts[Invader.Town[2]]>0 ? Invader.Town[2] : Invader.Town[1], ctx.Target, drowningOcean );
-			await ctx.PowerInvaders.Destroy( 1, Invader.Town );
+			if(ctx.Invaders.Counts.Has(Invader.Town))
+				await ctx.GameState.Move( ctx.Invaders.Counts[Invader.Town[2]]>0 ? Invader.Town[2] : Invader.Town[1], ctx.Target, drowningOcean );
+			await ctx.Invaders.Destroy( 1, Invader.Town );
 
 			await ctx.GameState.DahanDestroy(ctx.Target,1,Cause.Power);
 		}

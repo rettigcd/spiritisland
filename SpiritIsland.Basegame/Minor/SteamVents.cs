@@ -7,7 +7,7 @@ namespace SpiritIsland.Basegame {
 		[MinorCard("Steam Vents", 1, Speed.Fast, "fire,air,water,earth")]
 		[FromPresence(0)]
 		static public async Task ActAsync(TargetSpaceCtx ctx ) {
-			var grp = ctx.PowerInvaders;
+			var grp = ctx.Invaders;
 
 			// if your have 3 earth, 
 			if( ctx.Self.Elements.Contains("3 earth") && grp.Counts.Has(Invader.Town) )

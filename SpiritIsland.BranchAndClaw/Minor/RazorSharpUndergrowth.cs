@@ -7,7 +7,7 @@ namespace SpiritIsland.BranchAndClaw {
 		[FromPresence( 0, Target.NoBlight )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
-			await ctx.PowerInvaders.Destroy(1,Invader.Explorer);
+			await ctx.Invaders.Destroy(1,Invader.Explorer);
 
 			await ctx.GameState.DahanDestroy(ctx.Target,1,Cause.Power);
 

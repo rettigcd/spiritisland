@@ -8,8 +8,8 @@ namespace SpiritIsland.BranchAndClaw {
 		[FromSacredSite( 2 )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
-			await ctx.PowerInvaders.Destroy(3,Invader.Town);
-			await ctx.PowerInvaders.Destroy(int.MaxValue,Invader.Explorer);
+			await ctx.Invaders.Destroy(3,Invader.Town);
+			await ctx.Invaders.Destroy(int.MaxValue,Invader.Explorer);
 			ctx.AddBlight(1);
 		}
 

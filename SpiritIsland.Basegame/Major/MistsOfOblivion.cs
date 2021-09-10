@@ -6,7 +6,7 @@ namespace SpiritIsland.Basegame {
 		[MajorCard( "Mists of Oblivion", 4, Speed.Slow, Element.Moon, Element.Air, Element.Water )]
 		[FromPresence(3)]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
-			var grp = ctx.PowerInvaders;
+			var grp = ctx.Invaders;
 
 			int startingTownsAndCities = grp.Counts.TownsAndCitiesCount();
 			// 1 damage to each invader

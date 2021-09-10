@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
-
 	public class TargetSpaceCtx : PowerCtx {
 
 		public TargetSpaceCtx( Spirit self, GameState gameState, Space target ):base(self,gameState) {
@@ -47,7 +46,7 @@ namespace SpiritIsland {
 			=> this.GatherUpToNTokens( Target, countToGather, ofType );
 
 		/// <summary> Use this for Power-Pushing, since Powers can push invaders into the ocean. </summary>
-		public IEnumerable<Space> PowerAdjacents() => PowerAdjacents(Target);
+		public IEnumerable<Space> PowerAdjacents() => AdjacentTo( Target );
 
 		// Convenience Methods - That bind to .Target
 		// could be Extension Methods
@@ -66,7 +65,7 @@ namespace SpiritIsland {
 
 		public void Defend(int defend) => GameState.Defend(Target,defend);
 
-		public Task DestroyDahan(int countToDestroy,Cause source) => GameState.DahanDestroy(Target,countToDestroy,source);
+		public Task DestroyDahan(int countToDestroy,Cause source) => GameState.DahanDestroy(Target,countToDestroy,source); // !!! should go through Same Mechanism that Bringer uses to not destroy things
 
 		public Terrain Terrain => SpaceFilter.ForPowers.TerrainMapper( Target );
 
@@ -86,22 +85,20 @@ namespace SpiritIsland {
 		public Task<PowerCard> DrawMajor() => Self.DrawMajor( GameState );
 		public Task<PowerCard> DrawMinor() => Self.DrawMinor( GameState );
 
-		public void AddFear(int count ) { // need space so we can track fear-space association for bringer
-			GameState.Fear.AddDirect( new FearArgs{ count=count, cause = Cause.Power, space = Target });
-		}
-
-		// Use this to create Power-Damage and Power-Fear
-		public InvaderGroup PowerInvadersOn( Space target )
-			=> Self.BuildInvaderGroupForPowers( GameState, target );
-
 		// The current targets power
-		public InvaderGroup PowerInvaders => invadersRO ??= PowerInvadersOn( Target );
+		public InvaderGroup Invaders => invadersRO ??= InvadersOn( Target );
 
 		// Damage invaders in the current target space
 		public async Task DamageInvaders( int damage ) {
 			if(damage == 0) return;
-			await PowerInvaders.ApplySmartDamageToGroup( damage );
+			await Invaders.ApplySmartDamageToGroup( damage );
 		}
+
+		/// <summary> adds Target to Fear context </summary>
+		public override void AddFear( int count ) { 
+			GameState.Fear.AddDirect( new FearArgs { count = count, cause = Cause.Power, space = Target } );
+		}
+
 
 		public bool IsSelfSacredSite => Self.SacredSites.Contains(Target);
 		public bool HasSelfPresence => Self.Presence.Spaces.Contains(Target);

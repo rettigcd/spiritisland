@@ -19,7 +19,7 @@ namespace SpiritIsland.BranchAndClaw {
 		}
 
 		static Task DestroyExplorerTown( TargetSpaceCtx ctx ) {
-			return ctx.PowerInvaders.DestroyAny( 1, Invader.Explorer, Invader.Town );
+			return ctx.Invaders.DestroyAny( 1, Invader.Explorer, Invader.Town );
 		}
 
 	}

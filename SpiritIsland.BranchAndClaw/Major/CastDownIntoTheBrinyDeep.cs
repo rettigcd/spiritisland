@@ -11,7 +11,7 @@ namespace SpiritIsland.BranchAndClaw {
 			// 6 fear
 			ctx.AddFear(6);
 			// destroy all invaders
-			await ctx.PowerInvaders.DestroyAny(int.MaxValue,Invader.City,Invader.Town,Invader.Explorer);
+			await ctx.Invaders.DestroyAny(int.MaxValue,Invader.City,Invader.Town,Invader.Explorer);
 
 			// if you have (2 sun, 2 moon, 4 water, 4 earth):
 			if(ctx.Self.Elements.Contains( "2 sun,2 moon,4 water,4 earth" ))

@@ -10,7 +10,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			return ctx.SelectActionOption(
 				new ActionOption( "1 damage to each invader"
-					, () => ctx.PowerInvaders.ApplyDamageToEach( 1, Invader.City, Invader.Town, Invader.Explorer )
+					, () => ctx.Invaders.ApplyDamageToEach( 1, Invader.City, Invader.Town, Invader.Explorer )
 					, ctx.Tokens.Disease().Any
 				),
 				new ActionOption( "1 fear and 1 disease"

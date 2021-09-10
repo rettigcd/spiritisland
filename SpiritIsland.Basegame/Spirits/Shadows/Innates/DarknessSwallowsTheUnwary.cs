@@ -20,7 +20,7 @@ namespace SpiritIsland.Basegame {
 			await Gather1Explorer(ctx);
 
 			// destory 2 explorers (+1 fear/kill)
-			var grp = ctx.PowerInvaders;
+			var grp = ctx.Invaders;
 			int destroyed = await grp.Destroy( 2, Invader.Explorer );
 			ctx.AddFear( destroyed );
 		}
@@ -30,9 +30,9 @@ namespace SpiritIsland.Basegame {
 			await Plus_Destory2Explorers(ctx);
 
 			// 3 more points of damage (+ 1 fear/kill )
-			int startingCount = ctx.PowerInvaders.Counts.InvaderTotal();
+			int startingCount = ctx.Invaders.Counts.InvaderTotal();
 			await ctx.DamageInvaders(ctx.Target, 3 );
-			int endingCount = ctx.PowerInvaders.Counts.InvaderTotal();
+			int endingCount = ctx.Invaders.Counts.InvaderTotal();
 			int killed = startingCount - endingCount;
 			ctx.AddFear( killed );
 		}

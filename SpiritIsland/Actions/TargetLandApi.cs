@@ -33,7 +33,8 @@ namespace SpiritIsland {
 			string filterEnum 
 		) {
 			return source       // starting here
-				.Range( range ) // find spaces within range
+				.SelectMany( x => x.Range( range ) )
+				.Distinct()
 				.Where( SpaceFilter.ForPowers.GetFilter( self, gameState, filterEnum ) ); // matching this destination
 		}
 

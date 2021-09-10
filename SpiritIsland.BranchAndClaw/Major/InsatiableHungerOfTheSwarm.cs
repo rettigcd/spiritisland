@@ -31,7 +31,7 @@ namespace SpiritIsland.BranchAndClaw {
 			// 1 fear
 			ctx.AddFear( beasts.Count );
 			// 2 damage to invaders
-			await ctx.PowerInvaders.ApplySmartDamageToGroup( beasts.Count * 2 );
+			await ctx.Invaders.ApplySmartDamageToGroup( beasts.Count * 2 );
 			// and 2 damage to dahan.
 			await ctx.GameState.DahanDestroy( ctx.Target, beasts.Count, Cause.Power ); // !!! this is not correct, dahan might have 1 health
 
