@@ -7,26 +7,26 @@ namespace SpiritIsland.BranchAndClaw {
 		[MajorCard("Flow Like Water, Reach Like Air",2,Speed.Fast,Element.Air,Element.Water)]
 		[TargetSpirit]
 		static public async Task ActAsync( TargetSpiritCtx ctx ) {
+
 			// target spirit gets +2 range with all Powers.
 			TargetLandApi.ScheduleRestore( ctx.OtherCtx );
 			TargetLandApi.ExtendRange( ctx.Other, 2 );
 
 			// Target spirit may push 1 of their presence to an adjacent land
-			var source = await ctx.Other.Action.Decide(new SelectDeployedPresence("Push Presence (bringing up to 2 explorers, 2 towns, 2 dahan)",ctx.Other));
-			var landCtx = new TargetSpaceCtx(ctx.Other,ctx.GameState,source);
+			var sourceCtx = await ctx.OtherCtx.TargetLandWithPresence("Push Presence (bringing up to 2 explorers, 2 towns, 2 dahan)");
 
-			var destination = await landCtx.Self.Action.Decide( new SelectAdjacentDecision(
+			var destination = await sourceCtx.Self.Action.Decide( new SelectAdjacentDecision(
 				"Move Presence + up to 2 explorers,towns,dahan to",
-				source,
+				sourceCtx.Space,
 				GatherPush.Push,
-				landCtx.Adjacents,
+				sourceCtx.Adjacents,
 				Present.Always
 			));
 
 			// move presence
-			ctx.Other.Presence.Move(source,destination);
+			ctx.Other.Presence.Move( sourceCtx.Space, destination);
 
-			var mover = new TokenMover(ctx.OtherCtx,source,destination);
+			var mover = new TokenMover(ctx.OtherCtx, sourceCtx.Space, destination);
 			// bringing up to 2 explorers, 2 towns and 2 dahan along with it.
 			mover.AddGroup(2,Invader.Explorer);
 			mover.AddGroup(2,Invader.Town);

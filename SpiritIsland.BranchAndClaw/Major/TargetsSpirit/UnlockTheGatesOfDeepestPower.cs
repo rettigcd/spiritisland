@@ -16,7 +16,7 @@ namespace SpiritIsland.BranchAndClaw {
 			if(ctx.Self.Elements.Contains("2 sun,2 moon,2 fire,2 air,2 water,2 earth,2 plant,2 animal" )) {
 				// target spirit may now play the major power they keep by:
 				//    * paying half its cost (round up) OR
-				int cost = card.Cost/2;
+				int cost = card.Cost/2; // !!! need to round up
 				var payingHalfCostOption = new ActionOption(
 					$"paying {cost}", 
 					()=> { 
@@ -35,7 +35,10 @@ namespace SpiritIsland.BranchAndClaw {
 				);
 				// It gains all elmemental thresholds.
 
-				await ctx.Other.SelectOptionalAction( $"Play {card.Name} now by:",payingHalfCostOption, forgettingCardOption );
+				await ctx.Other.SelectOptionalAction( $"Play {card.Name} now by:",
+					payingHalfCostOption, 
+					forgettingCardOption
+				); // !!! need a way they can select neither / done to not play card
 			}
 
 		}
