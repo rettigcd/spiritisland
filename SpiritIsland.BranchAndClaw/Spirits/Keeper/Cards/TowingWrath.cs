@@ -20,7 +20,6 @@ namespace SpiritIsland.BranchAndClaw {
 			await ctx.DestroyDahan( int.MaxValue );
 		}
 
-
 	}
 
 }
