@@ -17,12 +17,12 @@ namespace SpiritIsland.Basegame {
 			await ctx.DamageInvaders(8);
 			// destroy 2 dahan
 			int count = System.Math.Min(ctx.DahanCount,2);
-			await ctx.DestroyDahan( count,Cause.Power);
+			await ctx.DestroyDahan( count );
 
 			if(ctx.Self.Elements.Contains("3 water,2 earth")){
 				var others = ctx.GameState.Island
-					.Boards.Single(b=>b[1].Label[0]== ctx.Target.Label[0])
-					.Spaces.Where(s=>s.IsCostal && s != ctx.Target )
+					.Boards.Single(b=>b[1].Label[0]== ctx.Space.Label[0])
+					.Spaces.Where(s=>s.IsCostal && s != ctx.Space )
 					.ToArray();
 				foreach(var otherCoast in others){
 					ctx.AddFear(1);

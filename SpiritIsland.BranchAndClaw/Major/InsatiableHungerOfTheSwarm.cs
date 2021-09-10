@@ -11,7 +11,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			// if you have 2 air, 4 animal, repeat power on adjacent land.
 			if(ctx.Self.Elements.Contains( "2 air,4 animal" )) {
-				var otherSpace = await ctx.Self.Action.Decide( new SelectAdjacentDecision( "Repeate Power", ctx.Target, GatherPush.None, ctx.PowerAdjacents() ) );
+				var otherSpace = await ctx.Self.Action.Decide( new SelectAdjacentDecision( "Repeate Power", ctx.Space, GatherPush.None, ctx.Adjacents ) );
 				await ApplyPowerOnTarget( new TargetSpaceCtx(ctx.Self,ctx.GameState,otherSpace) );
 			}
 		}
@@ -25,7 +25,7 @@ namespace SpiritIsland.BranchAndClaw {
 			beasts.Count += 2;
 
 			// Gather up to 2 beasts
-			ctx.GatherUpToNTokens( 2, BacTokens.Beast.Generic );
+			await ctx.GatherUpTo( 2, BacTokens.Beast.Generic );
 
 			// each beast deals:
 			// 1 fear
@@ -33,7 +33,7 @@ namespace SpiritIsland.BranchAndClaw {
 			// 2 damage to invaders
 			await ctx.Invaders.ApplySmartDamageToGroup( beasts.Count * 2 );
 			// and 2 damage to dahan.
-			await ctx.GameState.DahanDestroy( ctx.Target, beasts.Count, Cause.Power ); // !!! this is not correct, dahan might have 1 health
+			await ctx.GameState.DahanDestroy( ctx.Space, beasts.Count, Cause.Power ); // !!! this is not correct, dahan might have 1 health
 
 			// Destroy 1 beast.
 			beasts.Count--;

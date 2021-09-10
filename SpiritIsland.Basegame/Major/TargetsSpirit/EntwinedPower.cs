@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 
@@ -13,14 +11,14 @@ namespace SpiritIsland.Basegame {
 			var gs = ctx.GameState;
 
 			// You and other spirit share presence for targeting
-			if( ctx.Self != ctx.Target) {
+			if( ctx.Self != ctx.Other) {
 				TargetLandApi.ScheduleRestore( ctx );
-				TargetLandApi.ScheduleRestore( ctx.TargetCtx );
-				_ = new SharedPresenceTargeting( ctx.Self, ctx.Target ); // auto-binds to spirits
+				TargetLandApi.ScheduleRestore( ctx.OtherCtx );
+				_ = new SharedPresenceTargeting( ctx.Self, ctx.Other ); // auto-binds to spirits
 			}
 
 			// Target spirit gains a power Card.
-			await ctx.Target.Draw( gs, ( cards ) => {
+			await ctx.Other.Draw( gs, ( cards ) => {
 				// You gain one of the power Cards they did not keep.
 				return DrawFromDeck.TakeCard( ctx.Self, cards );
 			} );
@@ -29,10 +27,10 @@ namespace SpiritIsland.Basegame {
 			if(ctx.Self.Elements.Contains( "2 water,4 plant" )) {
 				// you and target spirit each gain 3 energy
 				ctx.Self.Energy += 3;
-				ctx.Target.Energy += 3;
+				ctx.Other.Energy += 3;
 				// may gift the other 1 power from hand.
-				await GiftCardToSpirit( ctx.Self, ctx.Target );
-				await GiftCardToSpirit( ctx.Target, ctx.Self );
+				await GiftCardToSpirit( ctx.Self, ctx.Other );
+				await GiftCardToSpirit( ctx.Other, ctx.Self );
 			}
 		}
 
@@ -43,28 +41,6 @@ namespace SpiritIsland.Basegame {
 				src.Hand.Remove( myGift );
 			}
 		}
-	}
-
-	class SharedPresenceTargeting : TargetLandApi {
-
-		readonly Spirit[] spirits;
-		readonly TargetLandApi[] origApis;
-
-		public SharedPresenceTargeting( params Spirit[] spirits ) {
-			this.spirits = spirits;
-			this.origApis = spirits.Select(x=>x.PowerApi).ToArray();
-			
-			foreach(var spirit in spirits)
-				spirit.PowerApi = this;
-		}
-
-		public override IEnumerable<Space> GetTargetOptions( Spirit self, GameState gameState, From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum ) {
-			List<Space> options = new List<Space>();
-			for(int i = 0; i < spirits.Length; ++i)
-				options.AddRange( origApis[i].GetTargetOptions( spirits[i], gameState, sourceEnum, sourceTerrain, range, filterEnum ) );
-			return options.Distinct();
-		}
-
 	}
 }
 

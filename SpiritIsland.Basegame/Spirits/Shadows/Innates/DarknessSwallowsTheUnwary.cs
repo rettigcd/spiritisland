@@ -12,7 +12,7 @@ namespace SpiritIsland.Basegame {
 
 		[InnateOption("2 moon, 1 fire")]
 		public static async Task Gather1Explorer( TargetSpaceCtx ctx ) {
-			await ctx.GatherUpToNTokens( ctx.Target, 1, Invader.Explorer );
+			await ctx.GatherUpToN( ctx.Space, 1, Invader.Explorer );
 		}
 
 		[InnateOption("3 moon, 2 fire")]
@@ -30,9 +30,9 @@ namespace SpiritIsland.Basegame {
 			await Plus_Destory2Explorers(ctx);
 
 			// 3 more points of damage (+ 1 fear/kill )
-			int startingCount = ctx.Invaders.Counts.InvaderTotal();
-			await ctx.DamageInvaders(ctx.Target, 3 );
-			int endingCount = ctx.Invaders.Counts.InvaderTotal();
+			int startingCount = ctx.Invaders.Tokens.InvaderTotal();
+			await ctx.DamageInvaders(ctx.Space, 3 );
+			int endingCount = ctx.Invaders.Tokens.InvaderTotal();
 			int killed = startingCount - endingCount;
 			ctx.AddFear( killed );
 		}

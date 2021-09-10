@@ -15,9 +15,9 @@ namespace SpiritIsland.Basegame {
 			// 3 fear
 			ctx.AddFear(3);
 
-			var landsWeCanApplyTheDamageTo = new List<Space> { ctx.Target };
+			var landsWeCanApplyTheDamageTo = new List<Space> { ctx.Space };
 			if(ctx.Self.Elements.Contains("3 animal"))
-				landsWeCanApplyTheDamageTo.AddRange( ctx.PowerAdjacents() );
+				landsWeCanApplyTheDamageTo.AddRange( ctx.Adjacents );
 
 			async Task RavagePlusBonusDamage( RavageEngine ravageEngine ) {
 				int damageInflictedFromInvaders = ravageEngine.GetDamageInflictedByInvaders();

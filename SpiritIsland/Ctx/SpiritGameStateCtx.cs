@@ -19,17 +19,17 @@ namespace SpiritIsland {
 
 		#region Push
 
-		public Task<Space[]> PushNTokens( Space source, int countToPush, params TokenGroup[] groups )
+		public Task<Space[]> PushN( Space source, int countToPush, params TokenGroup[] groups )
 			=> new TokenPusher( this, source ).AddGroup( countToPush, groups ).MoveN();
 
-		public Task<Space[]> PushUpToNTokens( Space source, int countToPush, params TokenGroup[] groups )
+		public Task<Space[]> PushUpToN( Space source, int countToPush, params TokenGroup[] groups )
 			=> new TokenPusher( this, source ).AddGroup( countToPush, groups ).MoveUpToN();
 
 		#endregion Push
 
 		#region Gather
 
-		public async Task GatherUpToNTokens( Space target, int countToGather, params TokenGroup[] groups ) {
+		public async Task GatherUpToN( Space target, int countToGather, params TokenGroup[] groups ) {
 			Token[] calcTokens( Space space ) => GameState.Tokens[space].OfAnyType( groups );
 			Space[] CalcSource() => target.Adjacent
 				.Where( s => calcTokens( s ).Any() )

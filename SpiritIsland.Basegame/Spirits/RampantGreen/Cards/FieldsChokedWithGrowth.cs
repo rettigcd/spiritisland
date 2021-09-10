@@ -11,8 +11,8 @@ namespace SpiritIsland.Basegame {
 		static public Task ActionAsync( TargetSpaceCtx ctx ) {
 
 			return ctx.SelectActionOption(
-				new ActionOption("Push 1 town", () => ctx.PushUpToNTokens(1,Invader.Town),ctx.Tokens.Has(Invader.Town)),
-				new ActionOption("Push 3 dahan", () => ctx.PushUpToNTokens(3,TokenType.Dahan),ctx.HasDahan)
+				new ActionOption("Push 1 town", () => ctx.Push(1,Invader.Town),ctx.Tokens.Has(Invader.Town)),
+				new ActionOption("Push 3 dahan", () => ctx.PushDahan(3),ctx.HasDahan)
 			);
 
 		}

@@ -13,6 +13,7 @@ namespace SpiritIsland.Basegame {
 			// if target is M/J, Defend 3
 			if(ctx.IsOneOf(Terrain.Jungle,Terrain.Mountain))
 				ctx.Defend(3);
+
 			return Task.CompletedTask;
 		}
 

@@ -13,7 +13,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			// for each disease in target land, defend 1 in target and all adjacent lands
 			ctx.Defend(1);
-			foreach(var adjacent in ctx.PowerAdjacents())
+			foreach( var adjacent in ctx.Adjacents )
 				ctx.GameState.Defend(adjacent,1);
 
 			// if you have 2 earthn 4 animal:
@@ -22,7 +22,7 @@ namespace SpiritIsland.BranchAndClaw {
 				ctx.AddFear(2);
 				// For each disease in target land, do 1 damage in target or adjacent land
 				int damage = disease.Count;
-				var space = await ctx.Self.Action.Decide(new TypedDecision<Space>($"Select space to apply {damage} damage", ctx.Target.Range(1), Present.Always ));
+				var space = await ctx.Self.Action.Decide(new TypedDecision<Space>($"Select space to apply {damage} damage", ctx.Space.Range(1), Present.Always ));
 				await ctx.InvadersOn(space).ApplySmartDamageToGroup(damage);
 			}
 		}

@@ -7,7 +7,7 @@ namespace SpiritIsland.Basegame {
 		[SpiritCard( "Manifestation of Power and Glory", 3, Speed.Slow, Element.Sun, Element.Fire, Element.Air )]
 		[FromPresence(0,Target.Dahan)]
 		static public async Task Act( TargetSpaceCtx ctx ) {
-			var target = ctx.Target;
+			var target = ctx.Space;
 			// 1 fear
 			ctx.AddFear(1);
 			// each dahan deals damange equal to the number of your presense in the target land

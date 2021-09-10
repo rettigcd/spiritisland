@@ -8,7 +8,7 @@ namespace SpiritIsland.BranchAndClaw {
 		[FromPresence(0)]
 		public static Task ActAsync(TargetSpaceCtx ctx ) {
 			if( ctx.Tokens.Beasts().Any )
-				ctx.GameState.SkipBuild(ctx.Target);
+				ctx.GameState.SkipBuild(ctx.Space);
 			return Task.CompletedTask;
 		}
 

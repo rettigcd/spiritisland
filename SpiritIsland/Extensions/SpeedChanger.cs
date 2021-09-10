@@ -8,8 +8,8 @@ namespace SpiritIsland {
 		readonly Spirit spirit;
 		readonly GameState gameState;
 		readonly string prompt;
-		Speed toChangeFrom;
-		Speed resultingSpeed;
+		readonly Speed toChangeFrom;
+		readonly Speed resultingSpeed;
 		int countToChange;
 
 		public SpeedChanger( Spirit spirit, GameState gameState, Speed resultingSpeed, int maxCountToChange ) {
@@ -22,14 +22,14 @@ namespace SpiritIsland {
 				Speed.Fast => "Select action to make fast.",
 				Speed.Slow => "Select action to make slow.",
 				Speed.FastOrSlow => "Select action to toggle fast/slow.",
-				_ => throw new System.ArgumentException( nameof(resultingSpeed), "can't toggle " + resultingSpeed )
+				_ => throw new System.ArgumentException( "can't toggle " + resultingSpeed, nameof( resultingSpeed ) )
 			};
 
 			toChangeFrom = resultingSpeed switch {
 				Speed.Fast => Speed.Slow,
 				Speed.Slow => Speed.Fast,
 				Speed.FastOrSlow => Speed.FastOrSlow,
-				_ => throw new System.ArgumentException( nameof( resultingSpeed ), "can't toggle " + resultingSpeed )
+				_ => throw new System.ArgumentException( "can't toggle " + resultingSpeed, nameof( resultingSpeed ) )
 			};
 
 		}

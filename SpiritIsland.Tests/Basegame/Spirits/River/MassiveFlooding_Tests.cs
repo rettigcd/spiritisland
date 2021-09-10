@@ -54,7 +54,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			game.DecisionProvider.AssertDecision( "Select Slow to resolve:", "River's Bounty,Massive Flooding,Done", "Massive Flooding" );
 			game.DecisionProvider.AssertDecision( "Select space to target.", "A2,A3,A5,A8", "A8" );
-			game.DecisionProvider.AssertDecision( "Select item to push (1 remaining)", "T@2,E@1,Done", "T@2" );
+			game.DecisionProvider.AssertDecision( "Select item to push (1 remaining)", "T@2,E@1", "T@2" );
 			game.DecisionProvider.AssertDecision( "Push T@2 to", "A5,A6,A7", "A5" );
 		}
 

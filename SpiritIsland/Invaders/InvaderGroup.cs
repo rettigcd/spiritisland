@@ -10,24 +10,24 @@ namespace SpiritIsland {
 		#region constructor
 
 		public InvaderGroup( Space space, TokenCountDictionary aliveCounts) {
-			this.Counts = aliveCounts;
+			this.Tokens = aliveCounts;
 		}
 
 		#endregion
 
-		public Space Space => Counts.Space;
+		public Space Space => Tokens.Space;
 
 		public int this[Token specific] { 
-			get{ return Counts[specific]; }
-			set{ Counts[specific] = value; }
+			get{ return Tokens[specific]; }
+			set{ Tokens[specific] = value; }
 		}
 
 		#region Extension Methods to Pull off
 
-		public int DamageInflictedByInvaders => Counts.Invaders().Select( invader => invader.FullHealth * this[invader] ).Sum();
+		public int DamageInflictedByInvaders => Tokens.Invaders().Select( invader => invader.FullHealth * this[invader] ).Sum();
 
 		public async Task ApplyDamageToEach( int individualDamage, params TokenGroup[] generic ) {
-			foreach(var invader in Counts.Invaders())
+			foreach(var invader in Tokens.Invaders())
 				if(generic.Contains(invader.Generic))
 					await ApplyDamageToAllTokensOfType( individualDamage, invader );
 		}
@@ -45,7 +45,7 @@ namespace SpiritIsland {
 
 		public async Task<int> Destroy( int countToDestory, TokenGroup generic ) {
 			if(countToDestory == 0) return 0;
-			Token[] invaderTypesToDestory = Counts.Invaders()
+			Token[] invaderTypesToDestory = Tokens.Invaders()
 				.Where( x=> x.Generic==generic )
 				.OrderByDescending( x => x.Health ) // kill healthiest first
 				.ToArray();
@@ -71,7 +71,7 @@ namespace SpiritIsland {
 
 		public async Task DestroyAny( int count, params TokenGroup[] generics ) {
 			// !! this could be cleaned up
-			Token[] invadersToDestroy = Counts.OfAnyType( generics );
+			Token[] invadersToDestroy = Tokens.OfAnyType( generics );
 			while(count > 0 && invadersToDestroy.Length > 0) {
 				var invader = invadersToDestroy
 					.OrderByDescending(x=>x.FullHealth)
@@ -80,7 +80,7 @@ namespace SpiritIsland {
 				await Destroy( 1, invader.Generic );
 
 				// next
-				invadersToDestroy = Counts.OfAnyType( generics );
+				invadersToDestroy = Tokens.OfAnyType( generics );
 				--count;
 			}
 		}
@@ -91,10 +91,10 @@ namespace SpiritIsland {
 
 			var damagedInvader = invader.Damage( damageToInvader );
 			this.
-			Counts.Adjust( invader, -1 );
+			Tokens.Adjust( invader, -1 );
 
 			if(damagedInvader.Health > 0) // don't track dead invaders
-				Counts.Adjust( damagedInvader, 1 );
+				Tokens.Adjust( damagedInvader, 1 );
 
 			if(damagedInvader.Health == 0)
 				await DestroyInvaderStrategy.OnInvaderDestroyed( Space, damagedInvader );
@@ -104,7 +104,7 @@ namespace SpiritIsland {
 		#endregion
 
 		public DestroyInvaderStrategy DestroyInvaderStrategy; // This will be null for Building
-		public readonly TokenCountDictionary Counts;
+		public readonly TokenCountDictionary Tokens;
 
 		static public void HealTokens( TokenCountDictionary counts ) {
 			void Heal( Token damaged ) {

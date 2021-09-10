@@ -12,7 +12,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			bool addFear = true;
 			Task Add1MoreFearForFirstDestoryedInvader(GameState gs,TokenDestroyedArgs args ) {
-				if(addFear && args.space == ctx.Target && IsInvader(args.Token)){
+				if(addFear && args.space == ctx.Space && IsInvader(args.Token)){
 					ctx.AddFear(1);
 					addFear = false;
 				}

@@ -29,11 +29,22 @@ namespace SpiritIsland {
 			GameState.Fear.AddDirect( new FearArgs { count = count, cause = Cause.Power, space = null } );
 		}
 
+		public bool YouHave(string elementString ) => Self.Elements.Contains( elementString );
+
 		/// <summary>
 		/// Used for Power-targetting, where range sympols appear.
 		/// </summary>
-		public Task<Space> PowerTargetsSpace( From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum )
-			=> Self.PowerApi.TargetsSpace( Self, GameState, sourceEnum, sourceTerrain, range, filterEnum );
+		public async Task<TargetSpaceCtx> TargetsSpace( From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum ) {
+			var space = await Self.PowerApi.TargetsSpace( Self, GameState, sourceEnum, sourceTerrain, range, filterEnum );
+			return new TargetSpaceCtx( Self, GameState, space );
+		}
+
+		public TargetSpaceCtx TargetSpace( Space space ) => new TargetSpaceCtx( Self, GameState, space );
+
+		public async Task<TargetSpaceCtx> TargetLandWithPresence( string prompt ) {
+			var space = await Self.Action.Decide( new SelectDeployedPresence( prompt, Self ) );
+			return new TargetSpaceCtx( Self, GameState, space );
+		}
 
 	}
 

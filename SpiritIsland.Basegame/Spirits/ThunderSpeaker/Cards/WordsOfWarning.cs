@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 		[SpiritCard( WordsOfWarning.Name, 1, Speed.Fast, Element.Air, Element.Sun, Element.Animal )]
 		[FromPresence(1,Target.Dahan)]
 		static public Task Act( TargetSpaceCtx ctx ) {
-			var target = ctx.Target;
+			var target = ctx.Space;
 
 			// defend 3
 			ctx.Tokens.Defend.Count += 3;

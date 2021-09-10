@@ -7,8 +7,8 @@ namespace SpiritIsland.BranchAndClaw {
 		[MinorCard("Gold's Allure",0,Speed.Slow,Element.Fire,Element.Earth,Element.Animal)]
 		[FromPresence(1,Target.Mountain)]
 		static public Task ActAsync(TargetSpaceCtx ctx ) {
-			ctx.GatherUpToNTokens(1,Invader.Explorer);
-			ctx.GatherUpToNTokens(1,Invader.Town);
+			ctx.GatherUpTo(1,Invader.Explorer);
+			ctx.GatherUpTo(1,Invader.Town);
 			return ctx.AddStrife();
 		}
 

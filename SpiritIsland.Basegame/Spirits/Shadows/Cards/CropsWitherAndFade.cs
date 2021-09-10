@@ -20,7 +20,7 @@ namespace SpiritIsland.Basegame {
 
 		static async Task Replace1( TargetSpaceCtx ctx, TokenGroup group, TokenGroup newToken ) {
 			var origTokens = ctx.Tokens.OfType(group);
-			var oldToken = await ctx.Self.Action.Decide( new SelectInvaderToDowngrade( ctx.Target, origTokens, Present.IfMoreThan1 ) );
+			var oldToken = await ctx.Self.Action.Decide( new SelectInvaderToDowngrade( ctx.Space, origTokens, Present.IfMoreThan1 ) );
 			if(oldToken != null) return;
 
 			ctx.Tokens.Adjust( oldToken, -1 );

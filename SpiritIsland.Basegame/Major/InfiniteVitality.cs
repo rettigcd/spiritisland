@@ -25,7 +25,7 @@ namespace SpiritIsland.Basegame {
 
 		static async Task RemoveBlightFromLandOrAdjacent( TargetSpaceCtx ctx ) {
 			// remove 1 blight from target or adjacent land
-			var blightedLands = ctx.Target.Range( 1 ).Where( ctx.GameState.HasBlight ).ToArray();
+			var blightedLands = ctx.Space.Range( 1 ).Where( ctx.GameState.HasBlight ).ToArray();
 			var unblightLand = await ctx.Self.Action.Decide( new TargetSpaceDecision( "Remove 1 blight from", blightedLands ));
 			if(unblightLand != null)
 				ctx.GameState.AddBlight( unblightLand, -1 );

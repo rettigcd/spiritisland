@@ -11,7 +11,7 @@ namespace SpiritIsland.Basegame {
 		static public async Task ActionAsync(TargetSpaceCtx ctx){
 			int explorerCount = ctx.Invaders[Invader.Explorer[1]];
 			if( 0 < explorerCount )
-				await ctx.PushUpToNTokens( explorerCount, Invader.Explorer);
+				await ctx.Push( explorerCount, Invader.Explorer);
 			else if( ctx.HasBlight )
 				ctx.RemoveBlight();
 		}

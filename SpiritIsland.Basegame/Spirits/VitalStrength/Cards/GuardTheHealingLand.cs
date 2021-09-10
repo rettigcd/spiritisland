@@ -10,10 +10,10 @@ namespace SpiritIsland.Basegame.Spirits.VitalStrength {
 		static public Task Act(TargetSpaceCtx ctx){
 			
 			// remove 1 blight, defend 4
-			ctx.GameState.Defend(ctx.Target,4);
+			ctx.GameState.Defend(ctx.Space,4);
 
-			if(ctx.GameState.GetBlightOnSpace(ctx.Target)>0)
-				ctx.GameState.AddBlight(ctx.Target,-1);
+			if(ctx.GameState.GetBlightOnSpace(ctx.Space)>0)
+				ctx.GameState.AddBlight(ctx.Space,-1);
 			return Task.CompletedTask;
 		}
 

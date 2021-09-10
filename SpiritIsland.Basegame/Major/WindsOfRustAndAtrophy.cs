@@ -7,25 +7,25 @@ namespace SpiritIsland.Basegame {
 		[MajorCard("Winds of Rust and Atrophy",3,Speed.Fast,Element.Air,Element.Moon,Element.Animal)]
 		[FromSacredSite(3)]
 		static public async Task ActAsync(TargetSpaceCtx ctx) {
-			await ApplyEffect( ctx, ctx.Target );
+			await ApplyEffect( ctx );
 
 			// if you have 3 air 3 water 2 animal, repeat this power
 			if(ctx.Self.Elements.Contains("3 air,2 water,2 animal" )) {
-				var secondTarget = await ctx.PowerTargetsSpace(From.SacredSite, null, 3,Target.Any);
-				await ApplyEffect( ctx, secondTarget);
+				var secondTarget = await ctx.TargetsSpace(From.SacredSite, null, 3,Target.Any);
+				await ApplyEffect( secondTarget );
 			}
 		}
 
-		static async Task ApplyEffect( TargetSpaceCtx ctx, Space target ) {
+		static async Task ApplyEffect( TargetSpaceCtx ctx ) {
 			var (_,gs) = ctx;
 			// 1 fear and defend 6
 			ctx.AddFear( 1 );
-			gs.Defend( target, 6 );
+			gs.Defend( ctx.Space, 6 );
 
 			// replace 1 city with 1 town OR 1 town with 1 explorer
-			var counts = gs.Tokens[ target ];
+			var counts = gs.Tokens[ ctx.Space ];
 			var options = counts.OfAnyType( Invader.City, Invader.Town );
-			Token invader = await ctx.Self.Action.Decide( new SelectInvaderToDowngrade( target, options, Present.IfMoreThan1 ) );
+			Token invader = await ctx.Self.Action.Decide( new SelectInvaderToDowngrade( ctx.Space, options, Present.IfMoreThan1 ) );
 
 			if(invader.Generic == Invader.City) {
 				counts.Adjust( invader, -1 );

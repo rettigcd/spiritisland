@@ -10,7 +10,7 @@ namespace SpiritIsland.Basegame {
 
 			return ctx.SelectActionOption(
 				new ActionOption( $"Each dahan deals 1 damage to a different invader", () => DamageDifferentInvaders(ctx, 1, ctx.DahanCount, Invader.City,Invader.Town,Invader.Explorer ) ),
-				new ActionOption( "push up to 3 dahan", () => ctx.PushUpToNTokens( 3, TokenType.Dahan ) )
+				new ActionOption( "push up to 3 dahan", () => ctx.PushUpToNDahan( 3 ) )
 			);
 
 		}
@@ -30,7 +30,7 @@ namespace SpiritIsland.Basegame {
 
 			// get invaders
 			while(numberToDamage-- > 0) {
-				var invader = await ctx.Self.Action.Decide(new SelectInvaderToDamage(damagePerInvader,ctx.Target,orig.Keys,Present.Done));
+				var invader = await ctx.Self.Action.Decide(new SelectInvaderToDamage(damagePerInvader,ctx.Space,orig.Keys,Present.Done));
 				if(invader != null) {
 					await ctx.Invaders.ApplyDamageTo1(damagePerInvader,invader);
 					orig[invader]--;

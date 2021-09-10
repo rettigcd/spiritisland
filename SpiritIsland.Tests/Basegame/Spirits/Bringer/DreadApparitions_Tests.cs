@@ -28,7 +28,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			}
 			_ = When();
 
-			ctx.GameState.GetDefence(ctx.Target).ShouldBe(2);
+			ctx.GameState.GetDefence(ctx.Space).ShouldBe(2);
 		}
 
 		[Fact]
@@ -45,7 +45,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			_ = When();
 
 			// Then: 2 fear should have triggered 2 defend
-			ctx.GameState.GetDefence( ctx.Target ).ShouldBe( 2 );
+			ctx.GameState.GetDefence( ctx.Space ).ShouldBe( 2 );
 
 		}
 
@@ -60,7 +60,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			await ctx.Invaders.Destroy( 1, Invader.City );
 
 			// Then: 5 fear should have triggered 2 defend
-			ctx.GameState.GetDefence( ctx.Target ).ShouldBe( 5 );
+			ctx.GameState.GetDefence( ctx.Space ).ShouldBe( 5 );
 
 		}
 
@@ -74,12 +74,12 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			await DreadApparitions.ActAsync( ctx );
 
 			// When: dahan destroy the city
-			await ctx.GameState.Ravage( new InvaderCard( ctx.Target.Terrain ) );
+			await ctx.GameState.Ravage( new InvaderCard( ctx.Space.Terrain ) );
 
 			// Then: 2 fear from city
 			Assert_GeneratedFear(2); // normal
 			// but no defend bonus
-			ctx.GameState.GetDefence( ctx.Target ).ShouldBe( 0 );
+			ctx.GameState.GetDefence( ctx.Space ).ShouldBe( 0 );
 
 		}
 
@@ -99,7 +99,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			_ = When();
 
 			// but no defend bonus
-			ctx.GameState.GetDefence( ctx.Target ).ShouldBe( 0 );
+			ctx.GameState.GetDefence( ctx.Space ).ShouldBe( 0 );
 
 		}
 

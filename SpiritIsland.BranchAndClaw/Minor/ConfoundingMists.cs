@@ -21,7 +21,7 @@ namespace SpiritIsland.BranchAndClaw {
 			async Task PushAddedInvader( GameState gs, TokenAddedArgs args ) {
 				var group = args.Token.Generic;
 				if(group == Invader.Explorer || group == Invader.Town || group == Invader.City)
-					await ctx.Self.MakeDecisionsFor( gs ).PushUpToNTokens( args.Space, args.count, group );
+					await ctx.Self.MakeDecisionsFor( gs ).PushUpToN( args.Space, args.count, group );
 			}
 		}
 

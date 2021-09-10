@@ -9,14 +9,14 @@ namespace SpiritIsland.BranchAndClaw {
 		static public async Task ActAsync( TargetSpiritCtx ctx ) {
 
 			// target spirit adds 2 presence and 1 wilds to a land at range 1
-			Space[] destinationOptions = ctx.TargetCtx.Presence_DestinationOptions( 1, Target.Any );
-			var to = await ctx.Target.Action.Decide( new TargetSpaceDecision( "Where would you like to place your presence?", destinationOptions, Present.Always ) );
+			Space[] destinationOptions = ctx.OtherCtx.Presence_DestinationOptions( 1, Target.Any );
+			var to = await ctx.Other.Action.Decide( new TargetSpaceDecision( "Where would you like to place your presence?", destinationOptions, Present.Always ) );
 			var tokens = ctx.GameState.Tokens[to];
 			var wilds = tokens.Wilds();
 			wilds.Count++;
 			for(int i = 0; i < 2; ++i) {
-				var from = await ctx.Target.SelectTrack();
-				await ctx.Target.Presence.PlaceFromBoard( from, to, ctx.GameState );
+				var from = await ctx.Other.SelectTrack();
+				await ctx.Other.Presence.PlaceFromBoard( from, to, ctx.GameState );
 			}
 
 			// if you have 3 sun, 3 plant

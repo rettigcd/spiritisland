@@ -8,9 +8,9 @@ namespace SpiritIsland.Basegame {
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 			var grp = ctx.Invaders;
 
-			int startingTownsAndCities = grp.Counts.TownsAndCitiesCount();
+			int startingTownsAndCities = grp.Tokens.TownsAndCitiesCount();
 			// 1 damage to each invader
-			await grp.ApplyDamageToAllTokensOfType(1,grp.Counts.Invaders());
+			await grp.ApplyDamageToAllTokensOfType(1,grp.Tokens.Invaders());
 
 			// if you have 2 moon 3 air 2 water
 			if(ctx.Self.Elements.Contains("2 moon,3 air,2 water"))
@@ -18,7 +18,7 @@ namespace SpiritIsland.Basegame {
 				await grp.ApplySmartDamageToGroup(3);
 
 			// 1 fear per town/city this power destroys (to a max of 4)
-			int destroyedTownsAndCities = startingTownsAndCities - grp.Counts.TownsAndCitiesCount();
+			int destroyedTownsAndCities = startingTownsAndCities - grp.Tokens.TownsAndCitiesCount();
 			ctx.AddFear( destroyedTownsAndCities );
 		}
 

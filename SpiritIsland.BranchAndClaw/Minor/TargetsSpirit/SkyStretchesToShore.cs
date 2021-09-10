@@ -12,11 +12,11 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 		static public Task ActAsync( TargetSpiritCtx ctx ) {
 
 			// this turn, target spirit may use 1 slow power as if it wer fast or vice versa
-			ctx.Target.AddActionFactory( new ChangeSpeed() );
+			ctx.Other.AddActionFactory( new ChangeSpeed() );
 
 			// Target Spirit gains +3 range for targeting costal lands only
-			TargetLandApi.ScheduleRestore( ctx.TargetCtx );
-			_ = new SkyStretchesToShoreApi( ctx.Target ); // Auto-binds to spirit
+			TargetLandApi.ScheduleRestore( ctx.OtherCtx );
+			_ = new SkyStretchesToShoreApi( ctx.Other ); // Auto-binds to spirit
 
 			return Task.CompletedTask;
 		}

@@ -12,7 +12,7 @@ namespace SpiritIsland.Basegame {
 		[FromPresence(1,Target.TownOrExplorer)]
 		static public async Task ActionAsync(TargetSpaceCtx ctx){
 
-			await ctx.PushUpToNTokens( 3, Invader.Town,Invader.Explorer );
+			await ctx.PushUpTo( 3, Invader.Town,Invader.Explorer );
 
 		}
 

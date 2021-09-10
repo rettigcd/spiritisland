@@ -179,7 +179,7 @@ namespace SpiritIsland {
 				.ToList();
 
 			var ravageGroups = xx
-				.Where( group => group.Counts.HasInvaders() )
+				.Where( group => group.Tokens.HasInvaders() )
 				.Cast<InvaderGroup>()
 				.ToArray();
 

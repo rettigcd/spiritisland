@@ -9,12 +9,12 @@ namespace SpiritIsland.BranchAndClaw {
 		static public async Task ActAsync(TargetSpiritCtx ctx) {
 
 			// If you target a spirit other than yourself, they gain +1 energy
-			if(ctx.Target != ctx.Self)
-				ctx.Target.Energy++;
+			if(ctx.Other != ctx.Self)
+				ctx.Other.Energy++;
 
 			// target spirit may immediately play another power Card by paying its cost.
 			// if it is slow, it does not resolve until later
-			await ctx.Target.PurchaseCards(1);
+			await ctx.Other.PurchaseCards(1);
 
 		}
 

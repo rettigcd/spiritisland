@@ -9,9 +9,9 @@ namespace SpiritIsland.Basegame {
 		[SpiritCard(BoonOfVigor.Name, 0, Speed.Fast,Element.Sun,Element.Water,Element.Plant)]
 		[TargetSpirit]
 		static public Task ActionAsync( TargetSpiritCtx ctx){
-			ctx.Target.Energy += (ctx.Target==ctx.Self) 
+			ctx.Other.Energy += (ctx.Other==ctx.Self) 
 				? 1 
-				: ctx.Target.PurchasedCards.Count;
+				: ctx.Other.PurchasedCards.Count;
 			return Task.CompletedTask;
 		}
 

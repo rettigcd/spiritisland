@@ -14,7 +14,7 @@ namespace SpiritIsland.BranchAndClaw {
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 			// +1 fear for each town/city and for each of your presence in target land.
 			int fearCount = ctx.Tokens.SumAny(Invader.City,Invader.Town)
-				+ ctx.Self.Presence.Placed.Count(x=>x==ctx.Target);
+				+ ctx.Self.Presence.Placed.Count(x=>x==ctx.Space);
 			ctx.AddFear(fearCount);
 
 			// Remove 1 city, 1 town and 1 explorer.

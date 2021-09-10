@@ -14,7 +14,7 @@ namespace SpiritIsland.BranchAndClaw {
 				ctx.Tokens.Beasts().Count++;
 
 			if( blightCount == 1 )
-				ctx.GameState.AddBlight(ctx.Target,-1);
+				ctx.GameState.AddBlight(ctx.Space,-1);
 
 			return Task.CompletedTask;
 		}

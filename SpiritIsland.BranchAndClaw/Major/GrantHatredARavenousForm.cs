@@ -24,7 +24,7 @@ namespace SpiritIsland.BranchAndClaw {
 			// if you have 4 moon, 2 fire
 			if(ctx.Self.Elements.Contains("4 moon,2 fire" )) {
 				// add 1 strife in up to 3 adjacent lands.
-				TokenCountDictionary[] tokenSpaces = ctx.PowerAdjacents()
+				TokenCountDictionary[] tokenSpaces = ctx.Adjacents
 					.Select(x=>ctx.GameState.Tokens[x])
 					.Where(tokens=> tokens.HasInvaders())
 					.Take(3)

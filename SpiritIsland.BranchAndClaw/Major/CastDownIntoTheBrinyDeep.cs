@@ -27,21 +27,21 @@ namespace SpiritIsland.BranchAndClaw {
 
 				// destory presence
 				foreach(var spirit in ctx.GameState.Spirits)
-				foreach(var p in spirit.Presence.Placed.Where(p=>p.Board==ctx.Target.Board).ToArray() )
+				foreach(var p in spirit.Presence.Placed.Where(p=>p.Board==ctx.Space.Board).ToArray() )
 					spirit.Presence.Destroy(p);
 
 				// destroy board - spaces
-				foreach(var space in ctx.Target.Board.Spaces)
+				foreach(var space in ctx.Space.Board.Spaces)
 					space.Destroy();
 
-				ctx.GameState.Island.RemoveBoard( ctx.Target.Board );
+				ctx.GameState.Island.RemoveBoard( ctx.Space.Board );
 
 			}
 		}
 
 		private static async Task DestoryTokens( TargetSpaceCtx ctx ) {
 
-			foreach(var space in ctx.Target.Board.Spaces) {
+			foreach(var space in ctx.Space.Board.Spaces) {
 
 				// Destory Invaders
 				var invaders = ctx.GameState.Invaders.On( space, Cause.Power );
@@ -54,7 +54,7 @@ namespace SpiritIsland.BranchAndClaw {
 					await ctx.GameState.DahanDestroy( space, int.MaxValue, Cause.Power );
 
 					// Destroy all other tokens
-					var counts = invaders.Counts;
+					var counts = invaders.Tokens;
 					foreach(var tokens in counts.Keys.ToArray())
 						counts[tokens] = 0;
 

@@ -19,17 +19,17 @@ namespace SpiritIsland.Basegame {
 			if(ctx.Self.Elements.Contains("2 fire,2 water,3 animal" )) {
 				// before pushing, explorers and city/town do damage to each other
 				int damageFromExplorers = ctx.Invaders[Invader.Explorer[1]];
-				int damageToExplorers = ctx.Invaders.Counts.Sum(Invader.City)*3 + ctx.Invaders.Counts.Sum(Invader.Town)*2;
+				int damageToExplorers = ctx.Invaders.Tokens.Sum(Invader.City)*3 + ctx.Invaders.Tokens.Sum(Invader.Town)*2;
 				await ctx.Invaders.SmartDamageToTypes(damageFromExplorers,Invader.City,Invader.Town);
 				await ctx.Invaders.SmartDamageToTypes( damageToExplorers, Invader.Explorer );
 			}
 
 			// Push all explorers from target land to as many different lands as possible
-			await ctx.PushUpToNTokens( int.MaxValue,Invader.Explorer);
+			await ctx.Push( int.MaxValue,Invader.Explorer);
 		}
 
 		static void ReplaceInvaderWithExplorer( InvaderGroup grp, TokenGroup oldInvader, int replaceCount ) {
-			var counts = grp.Counts;
+			var counts = grp.Tokens;
 			var specific = counts.OfType( oldInvader ).OrderByDescending( x => x.Health ).FirstOrDefault();
 			if(specific != null) {
 				counts.Adjust( specific, -1 );
@@ -40,7 +40,7 @@ namespace SpiritIsland.Basegame {
 		static void ReplaceDahanWithExplorer(TargetSpaceCtx ctx ) {
 			if(ctx.HasDahan) { 
 				ctx.AdjustDahan(-1);
-				ctx.Invaders.Counts.Adjust( Invader.Explorer[1], 1 );
+				ctx.Invaders.Tokens.Adjust( Invader.Explorer[1], 1 );
 			}
 		}
 

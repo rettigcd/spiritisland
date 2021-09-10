@@ -8,22 +8,25 @@ namespace SpiritIsland.Basegame {
 		[FromPresence(2)]
 		static public async Task Act(TargetSpaceCtx ctx){
 
-			int pushCount = 2;
-
 			// 2 fear
 			ctx.AddFear(2);
+
+			// Push up to 2 explorer/towns
+			int pushCount = 2;
 
 			// if target has blight
 			if(ctx.HasBlight) {
 				// +2 fear
 				ctx.AddFear(2);
-				// add 1 blight
-				ctx.AddBlight();
-				// push up to 2 more explorers/towns, add 1 blight
-				++pushCount;
+
+				// push up to 2 more explorers/towns
+				pushCount += 2;
 			}
 
-			await ctx.PushUpToNTokens(pushCount,Invader.Explorer,Invader.Town);
+			// add 1 blight
+			ctx.AddBlight();
+
+			await ctx.PushUpTo(pushCount,Invader.Explorer,Invader.Town);
 		}
 
 	}

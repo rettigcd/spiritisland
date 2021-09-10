@@ -9,7 +9,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			await ctx.Invaders.Destroy(1,Invader.Explorer);
 
-			await ctx.GameState.DahanDestroy(ctx.Target,1,Cause.Power);
+			await ctx.GameState.DahanDestroy(ctx.Space,1,Cause.Power);
 
 			ctx.Tokens.Wilds().Count++;
 

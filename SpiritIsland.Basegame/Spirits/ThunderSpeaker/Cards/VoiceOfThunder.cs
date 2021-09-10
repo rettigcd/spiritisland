@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 		static public Task Act( TargetSpaceCtx ctx ) {
 
 			return ctx.SelectActionOption(
-				new ActionOption("push up to 4 dahan", () => ctx.PushUpToNTokens( 4, TokenType.Dahan ), ctx.HasDahan),
+				new ActionOption("push up to 4 dahan", () => ctx.PushUpTo( 4, TokenType.Dahan ), ctx.HasDahan),
 				new ActionOption("2 fear", () => ctx.AddFear(2), ctx.Tokens.HasInvaders() ) 
 			);
 

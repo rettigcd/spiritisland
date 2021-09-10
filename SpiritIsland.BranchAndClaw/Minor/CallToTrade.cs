@@ -12,19 +12,19 @@ namespace SpiritIsland.BranchAndClaw {
 			await ctx.GatherUpToNDahan(1);
 
 			if(ctx.GameState.Fear.TerrorLevel <= 2) {
-				await ctx.GatherUpToNTokens(1,Invader.Town);
+				await ctx.GatherUpTo(1,Invader.Town);
 
 				// And the first ravage in target land becomes a build there instead.
 				bool hasRavage = false;
 				Task RemoveRavage(GameState gs,Space[] spaces ) {
-					hasRavage = spaces.Contains(ctx.Target);
-					ctx.GameState.ModifyRavage(ctx.Target,cfg=>cfg.ShouldRavage = false);
+					hasRavage = spaces.Contains(ctx.Space);
+					ctx.GameState.ModifyRavage(ctx.Space,cfg=>cfg.ShouldRavage = false);
 					return Task.CompletedTask;
 				}
 
 				Task AddBuild(GameState gs,BuildingEventArgs args ) {
 					if( hasRavage )
-						args.Spaces[ctx.Target]++;
+						args.Spaces[ctx.Space]++;
 					return Task.CompletedTask;
 				}
 

@@ -17,10 +17,10 @@ namespace SpiritIsland.Basegame {
 			// target spirit may push 1 explorer and 1 town from land where it has presence
 
 			// Select Land
-			var landsToPushInvadersFrom = ctx.Target.Presence.Spaces.Where( space => gs.Tokens[space].HasAny( Invader.Explorer, Invader.Town ) ).ToArray();
+			var landsToPushInvadersFrom = ctx.Other.Presence.Spaces.Where( space => gs.Tokens[space].HasAny( Invader.Explorer, Invader.Town ) ).ToArray();
 			if(landsToPushInvadersFrom.Length == 0) return;
 
-			var otherSpirit = new PowerCtx(ctx.Target,ctx.GameState);
+			var otherSpirit = new PowerCtx(ctx.Other,ctx.GameState);
 
 			var space = await otherSpirit.Self.Action.Decide( new TargetSpaceDecision( "Select land to push 1 exploer & 1 town from", landsToPushInvadersFrom,Present.Done));
 			if(space==null) return;

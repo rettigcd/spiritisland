@@ -14,7 +14,7 @@ namespace SpiritIsland.Basegame {
 			var grp = ctx.Invaders;
 
 			// 1 damange to each invader.
-			await grp.ApplyDamageToAllTokensOfType(1, grp.Counts.Invaders());
+			await grp.ApplyDamageToAllTokensOfType(1, grp.Tokens.Invaders());
 		}
 
 	}

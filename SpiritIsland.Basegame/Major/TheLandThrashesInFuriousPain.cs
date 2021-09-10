@@ -9,12 +9,12 @@ namespace SpiritIsland.Basegame {
 		[FromPresence(2,Target.Blight)]
 		static public async Task ActAsync(TargetSpaceCtx ctx) {
 
-			await ApplyDamageFromBlight( ctx.Target, ctx );
+			await ApplyDamageFromBlight( ctx.Space, ctx );
 
 			// if you have 3 moon 3 earth
 			if(ctx.Self.Elements.Contains("3 moon,3 earth")) {
 				// repeat on an adjacent land.
-				var alsoTarget = await ctx.Self.Action.Decide( new TargetSpaceDecision( "Select adjacent land to receive damage from blight", ctx.Target.Adjacent));
+				var alsoTarget = await ctx.Self.Action.Decide( new TargetSpaceDecision( "Select adjacent land to receive damage from blight", ctx.Space.Adjacent));
 				await ApplyDamageFromBlight( alsoTarget, ctx );
 			}
 		}

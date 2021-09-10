@@ -18,17 +18,17 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 			// If 2 sun, do both in the same land
 
 			async Task RemoveBlightFromTargetsLands() {
-				var spaceCtx = await ctx.TargetSelectsPresenceLand("Select location to remove blight");
+				var spaceCtx = await ctx.OtherCtx.TargetLandWithPresence("Select location to remove blight");
 				spaceCtx.AddBlight( -1 );
 			}
 
 			Task AddPresenceToTargetsLand()
-				=> ctx.Target.MakeDecisionsFor(ctx.GameState).Presence_SelectFromTo(ctx.Target.Presence.Spaces.ToArray());
+				=> ctx.Other.MakeDecisionsFor(ctx.GameState).Presence_SelectFromTo(ctx.Other.Presence.Spaces.ToArray());
 
 			if( ctx.Self.Elements.Contains("2 sun")) {
-				var spaceCtx = await ctx.TargetSelectsPresenceLand( "Select location to remove blight and add presence" );
+				var spaceCtx = await ctx.OtherCtx.TargetLandWithPresence( "Select location to remove blight and add presence" );
 				spaceCtx.AddBlight( -1 );
-				await ctx.Target.MakeDecisionsFor( ctx.GameState ).Presence_SelectFromTo( spaceCtx.Target );
+				await ctx.Other.MakeDecisionsFor( ctx.GameState ).Presence_SelectFromTo( spaceCtx.Space );
 			} else
 				await ctx.SelectActionOption(
 					new ActionOption( "Remove 1 blight from one of your lands", RemoveBlightFromTargetsLands ),

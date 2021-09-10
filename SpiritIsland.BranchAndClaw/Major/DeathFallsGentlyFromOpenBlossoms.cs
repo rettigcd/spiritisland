@@ -19,7 +19,7 @@ namespace SpiritIsland.BranchAndClaw {
 				// 3 fear.
 				ctx.AddFear(3);
 				// Add 1 disease to 2 adjacent lands with invaders.
-				var x = ctx.PowerAdjacents().Where(a=>ctx.GameState.Tokens[a].HasInvaders()).Take(2).ToArray();
+				var x = ctx.Adjacents.Where(a=>ctx.GameState.Tokens[a].HasInvaders()).Take(2).ToArray();
 				foreach(var y in x)
 					ctx.GameState.Tokens[y].Disease().Count++;
 			}

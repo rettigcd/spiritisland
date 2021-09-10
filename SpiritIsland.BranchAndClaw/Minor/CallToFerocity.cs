@@ -15,8 +15,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 		static async Task Opt2( TargetSpaceCtx ctx ) {
 			ctx.AddFear( 1 );
-			await ctx.PushNTokens( ctx.Target, 1, Invader.Explorer );
-			await ctx.PushNTokens( ctx.Target, 1, Invader.Town );
+			await ctx.PushN( ctx.Space, 1, Invader.Explorer );
+			await ctx.PushN( ctx.Space, 1, Invader.Town );
 		}
 	}
 

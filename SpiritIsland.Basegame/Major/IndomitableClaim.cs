@@ -8,7 +8,7 @@ namespace SpiritIsland.Basegame {
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 			// add 1 presence in target land even if you normally could not due to land type.
 			var source = await ctx.Self.SelectTrack();
-			await ctx.Self.Presence.PlaceFromBoard(source,ctx.Target,ctx.GameState);
+			await ctx.Self.Presence.PlaceFromBoard(source,ctx.Space,ctx.GameState);
 			// Defend 20
 			ctx.Defend(20);
 			// if you have 2 sun, 3 earth,
@@ -17,7 +17,7 @@ namespace SpiritIsland.Basegame {
 				ctx.AddFear(3);
 				// if invaders are present, Invaders skip all actions in target land this turn.
 				if(ctx.HasInvaders)
-					ctx.GameState.SkipAllInvaderActions( ctx.Target );
+					ctx.GameState.SkipAllInvaderActions( ctx.Space );
 			}
 		}
 
