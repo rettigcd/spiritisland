@@ -9,18 +9,23 @@ namespace SpiritIsland.Basegame {
 		[FromSacredSite( 1 )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
+			bool bonus = ctx.YouHave( "4 earth" );
+
 			ctx.ModifyRavage( cfg => {
 				// dahan have +4 health while in target land.
 				cfg.DahanHitpoints += 4;
+
 				// whenever blight would be added to target land, instead leave it on the card
 				cfg.ShouldDamageLand = false;
+
 				// if you have 4 earth,
-				if(ctx.Self.Elements.Contains( "4 earth" ))
+				if(bonus)
 					// dahan ignore damage and destruction effects, 
 					cfg.ShouldDamageDahan = false;
 			} );
 
-			await RemoveBlightFromLandOrAdjacent( ctx );
+			if(bonus)
+				await RemoveBlightFromLandOrAdjacent( ctx );
 		}
 
 		static async Task RemoveBlightFromLandOrAdjacent( TargetSpaceCtx ctx ) {

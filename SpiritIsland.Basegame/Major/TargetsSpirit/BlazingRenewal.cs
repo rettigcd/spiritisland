@@ -18,7 +18,7 @@ namespace SpiritIsland.Basegame {
 			// Add it!
 			var targetSpiritOnSpace = ctx.OtherCtx.TargetSpace( selfPickLandCtx.Space );
 			for(int i = 0; i < max; ++i)
-				await PlacePresenceOnTarget( targetSpiritOnSpace );
+				await targetSpiritOnSpace.PlacePresenceOnTarget();
 
 			// if any presene was added, 2 damage to each town/city in that land.
 			var grp = selfPickLandCtx.Invaders;
@@ -31,9 +31,6 @@ namespace SpiritIsland.Basegame {
 
 		}
 
-		static async Task PlacePresenceOnTarget( TargetSpaceCtx ctx ) {
-			await ctx.Self.Presence.PlaceFromBoard( Track.Destroyed, ctx.Space, ctx.GameState );
-		}
 	}
 
 }

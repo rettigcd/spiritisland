@@ -41,7 +41,10 @@ namespace SpiritIsland {
 		// space.Terrain.IsIn(Terrain.Wetland,Terrain.Sand)
 		// vs.
 		// new Terraion[]{Terrain.Wetland,Terrain.Sand}.Contains(space.Terrain);
-		static public bool IsIn<T>( this T needle, params T[] haystack ) where T : Enum
+		static public bool IsOneOf<T>( this T needle, params T[] haystack ) where T : Enum
+			=> haystack.Contains( needle );
+
+		static public bool IsOneOf( this TokenGroup needle, params TokenGroup[] haystack )
 			=> haystack.Contains( needle );
 
 	}

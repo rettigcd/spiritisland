@@ -89,7 +89,7 @@ namespace SpiritIsland {
 		public Terrain Terrain => SpaceFilter.ForPowers.TerrainMapper( Space );
 
 		/// <summary> The effective Terrain for powers. Will be Wetland for Ocean when Oceans-Hungry-Grasp is on board </summary>
-		public bool IsOneOf(params Terrain[] terrain) => Terrain.IsIn(terrain);
+		public bool IsOneOf(params Terrain[] terrain) => Terrain.IsOneOf(terrain);
 
 		public bool HasBlight => GameState.HasBlight(Space);
 		public void AddBlight(int delta=1) => GameState.AddBlight(Space,delta); // This is for adjusting, NOT blighting land
@@ -118,9 +118,14 @@ namespace SpiritIsland {
 			GameState.Fear.AddDirect( new FearArgs { count = count, cause = Cause.Power, space = Space } );
 		}
 
+		#region presence
 
 		public bool IsSelfSacredSite => Self.SacredSites.Contains(Space);
 		public bool HasSelfPresence => Self.Presence.Spaces.Contains(Space);
+
+		public Task PlacePresenceOnTarget() => Self.Presence.PlaceFromBoard( Track.Destroyed, Space, GameState );
+
+		#endregion
 
 		InvaderGroup invadersRO;
 

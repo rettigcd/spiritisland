@@ -30,7 +30,7 @@ namespace SpiritIsland.BranchAndClaw {
 		[AttributeUsage( AttributeTargets.Class | AttributeTargets.Method )]
 		public class FromPresenceAttribute : TargetSpaceAttribute {
 			public FromPresenceAttribute() : base( From.Presence, null, 1, Target.NoBlight ) { }
-			protected override int CalcRange( IMakeGamestateDecisions ctx ) => range
+			protected override int CalcRange( SpiritGameStateCtx ctx ) => range
 				// 3 plant    this power has +1 range
 				+ (ctx.Self.Elements.Contains( "3 plant" ) ? 1 : 0)
 				// 1 air      this power has +1 range

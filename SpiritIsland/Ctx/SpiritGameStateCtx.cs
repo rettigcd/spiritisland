@@ -14,8 +14,12 @@ namespace SpiritIsland {
 			this.GameState = gameState;
 		}
 
-		public virtual IEnumerable<Space> AdjacentTo( Space source )
-			=> source.Adjacent.Where( x => SpaceFilter.Normal.TerrainMapper( x ) != Terrain.Ocean );
+		public IEnumerable<Space> AdjacentTo( Space source )
+			=> source.Adjacent.Where( x => this.SpaceFilter.TerrainMapper( x ) != Terrain.Ocean );
+
+		public bool IsCostal( Space space ) => this.SpaceFilter.IsCoastal( space );
+
+		protected virtual SpaceFilter SpaceFilter => SpaceFilter.Normal;
 
 		#region Push
 
@@ -95,6 +99,8 @@ namespace SpiritIsland {
 			=> Self.SelectAction( "Select Power Option", options );
 
 		#endregion
+
+		public bool YouHave( string elementString ) => Self.Elements.Contains( elementString );
 
 		public virtual void AddFear( int count ) { // need space so we can track fear-space association for bringer
 			GameState.Fear.AddDirect( new FearArgs { count = count, cause = Cause.None, space = null } );

@@ -12,8 +12,7 @@ namespace SpiritIsland {
 
 		#endregion
 
-		public override IEnumerable<Space> AdjacentTo( Space source )
-			=> source.Adjacent.Where( x => SpaceFilter.ForPowers.TerrainMapper( x ) != Terrain.Ocean );
+		protected override SpaceFilter SpaceFilter => SpaceFilter.ForPowers;
 
 		// Use this to create Power-Damage and Power-Fear
 		public InvaderGroup InvadersOn( Space target )
@@ -28,8 +27,6 @@ namespace SpiritIsland {
 		public override void AddFear( int count ) { // need space so we can track fear-space association for bringer
 			GameState.Fear.AddDirect( new FearArgs { count = count, cause = Cause.Power, space = null } );
 		}
-
-		public bool YouHave(string elementString ) => Self.Elements.Contains( elementString );
 
 		/// <summary>
 		/// Used for Power-targetting, where range sympols appear.

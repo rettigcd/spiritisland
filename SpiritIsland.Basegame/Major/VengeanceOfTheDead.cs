@@ -16,31 +16,20 @@ namespace SpiritIsland.Basegame {
 			ctx.AddFear(3);
 
 			var landsWeCanApplyTheDamageTo = new List<Space> { ctx.Space };
-			if(ctx.Self.Elements.Contains("3 animal"))
-				landsWeCanApplyTheDamageTo.AddRange( ctx.Adjacents );
 
-			async Task RavagePlusBonusDamage( RavageEngine ravageEngine ) {
-				int damageInflictedFromInvaders = ravageEngine.GetDamageInflictedByInvaders();
-				await ravageEngine.DamageLand( damageInflictedFromInvaders );
-				int dahanKilled = await ravageEngine.DamageDahan( damageInflictedFromInvaders );
-				int damageFromDahan = ravageEngine.GetDamageInflictedByDahan();
-
-				var grpCounts = ravageEngine.Counts;
-				int preCityCount = grpCounts.Sum(Invader.City);
-				int preTownCount = grpCounts.Sum(Invader.Town);
-
-				await ravageEngine.DamageInvaders( damageFromDahan );
-
-				int cityKilled = preCityCount - grpCounts.Sum(Invader.City);
-				int townKilled = preTownCount - grpCounts.Sum(Invader.Town);
-
-
-				// after each effect that destorys a town/city/dahan in target land
-				// 1 damage per town/city/dahan destoryed
-				await DistributeDamageToLands( ctx, landsWeCanApplyTheDamageTo, dahanKilled + cityKilled + townKilled );
+			// After each effect that destroys...
+			async Task DealVengenceDamage( GameState gs, TokenDestroyedArgs args ) {
+				//  ...a town / city / dahan in target land
+				if( args.space == ctx.Space && args.Token.IsOneOf( Invader.Town, Invader.City, TokenType.Dahan) )
+					// 1 damage per token destoryed
+					await DistributeDamageToLands( ctx, landsWeCanApplyTheDamageTo, 1 );
 			}
+			ctx.GameState.Tokens.TokenDestroyed.ForRound.Add( DealVengenceDamage );
 
-			ctx.ModifyRavage( cfg => cfg.RavageSequence = RavagePlusBonusDamage );
+			// if you have 3 animal
+			if(ctx.YouHave( "3 animal" ))
+				// damage may be dealt into adjacent lands
+				landsWeCanApplyTheDamageTo.AddRange( ctx.Adjacents );
 
 			return Task.CompletedTask;
 		}

@@ -9,17 +9,16 @@ namespace SpiritIsland.Basegame {
 		static public async Task ActAsync(TargetSpaceCtx ctx){
 
 			// destroys all explorers and towns
-			var grp = ctx.Invaders;
-			await grp.Destroy( int.MaxValue, Invader.Explorer);
-			await grp.Destroy( int.MaxValue, Invader.Town );
+			await ctx.Invaders.Destroy( int.MaxValue, Invader.Explorer);
+			await ctx.Invaders.Destroy( int.MaxValue, Invader.Town );
 
 			// Destroy all dahan
 			bool destroyAllDahan = true;
 
 			// if you have 2 moon, 3 plant
-			if(ctx.Self.Elements.Contains( "2 moon,3 plant" )) {
+			if(ctx.YouHave( "2 moon,3 plant" )) {
 				// Destroy 1 city
-				await grp.Destroy( 1, Invader.City );
+				await ctx.Invaders.Destroy( 1, Invader.City );
 				// do not destroy dahan
 				destroyAllDahan = false;
 			}

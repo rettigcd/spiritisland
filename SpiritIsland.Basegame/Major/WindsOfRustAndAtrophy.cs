@@ -17,23 +17,37 @@ namespace SpiritIsland.Basegame {
 		}
 
 		static async Task ApplyEffect( TargetSpaceCtx ctx ) {
-			var (_,gs) = ctx;
 			// 1 fear and defend 6
 			ctx.AddFear( 1 );
-			gs.Defend( ctx.Space, 6 );
+			ctx.Defend( 6 );
 
 			// replace 1 city with 1 town OR 1 town with 1 explorer
-			var counts = gs.Tokens[ ctx.Space ];
-			var options = counts.OfAnyType( Invader.City, Invader.Town );
+			var options = ctx.Tokens.OfAnyType( Invader.City, Invader.Town );
 			Token invader = await ctx.Self.Action.Decide( new SelectInvaderToDowngrade( ctx.Space, options, Present.IfMoreThan1 ) );
 
 			if(invader.Generic == Invader.City) {
-				counts.Adjust( invader, -1 );
-				counts.Adjust( Invader.Town[2], 1 );
+				await ReplaceCityWithTown( ctx, invader );
 			} else if(invader.Generic == Invader.Town) {
-				counts.Adjust( invader, -1 );
-				counts.Adjust( Invader.Explorer[1], 1 );
+				await ReplaceTownWithExplorer( ctx, invader );
 			}
+		}
+
+		static Task ReplaceTownWithExplorer( TargetSpaceCtx ctx, Token town ) {
+			// deals pre-existing damage to resulting token
+			if( town.Health == 1 )
+				return ctx.Invaders.Destroy(1,town);
+			ctx.Tokens.Adjust( town, -1 );
+			ctx.Tokens.Adjust( Invader.Explorer[1], 1 );
+			return Task.CompletedTask;
+		}
+
+		static Task ReplaceCityWithTown( TargetSpaceCtx ctx, Token city ) {
+			// deals pre-existing damage to resulting token
+			if( city.Health == 1 )
+				return ctx.Invaders.Destroy(1,city);
+			ctx.Tokens.Adjust( city, -1 );
+			ctx.Tokens.Adjust( Invader.Town[city.Health-1], 1);
+			return Task.CompletedTask;
 		}
 	}
 }

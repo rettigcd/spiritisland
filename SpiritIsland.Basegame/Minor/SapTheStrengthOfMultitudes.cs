@@ -17,7 +17,7 @@ namespace SpiritIsland.Basegame {
 		[AttributeUsage( AttributeTargets.Class | AttributeTargets.Method )]
 		public class FromPresenceAttribute : TargetSpaceAttribute {
 			public FromPresenceAttribute() : base( From.Presence, null, 0, Target.Any ) { }
-			protected override int CalcRange( IMakeGamestateDecisions ctx ) => range
+			protected override int CalcRange( SpiritGameStateCtx ctx ) => range
 				// if you have 1 air, increate this power's range by 1
 				+ (ctx.Self.Elements.Contains("1 air") ? 1 : 0);
 		}

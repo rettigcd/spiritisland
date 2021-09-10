@@ -7,13 +7,25 @@ namespace SpiritIsland.Basegame {
 		[FromPresence(1)]
 		static public async Task ActAsync(TargetSpaceCtx ctx){
 
-			// Add 1 blight, destroy all dahan
+			// 1 fear
+			ctx.AddFear(1);
+
+			// 7 damage
+			int damage = 7;
+
+			// add 1 blight
 			ctx.AddBlight(1);
+
+			// destroy all dahan
 			await ctx.DestroyDahan( ctx.DahanCount );
 
-			bool hasBonus = ctx.Self.Elements.Contains("3 earth,2 plant,2 animal");
-			ctx.AddFear( 1+(hasBonus?1:0) );
-			await ctx.DamageInvaders( ctx.Space, 7+(hasBonus?4:0));
+			if(ctx.YouHave( "3 earth,2 plant,2 animal" )) {
+				int blightCount = ctx.BlightOnSpace;
+				ctx.AddFear(blightCount);
+				damage += 4 * blightCount;
+			}
+
+			await ctx.DamageInvaders( damage );
 		}
 
 	}
