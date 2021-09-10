@@ -19,8 +19,20 @@ namespace SpiritIsland.BranchAndClaw {
 			await ctx.DamageInvaders( 4 );
 			await ctx.InvadersOn(secondTarget).ApplySmartDamageToGroup(4);
 			
+			// if 3 fire
+			if(ctx.YouHave("3 fire" ))
+				await Apply3DamageInOneOfThese( ctx, secondTarget, "fire" );
+
+			// if 3 water
+			if(ctx.YouHave( "3 water" ))
+				await Apply3DamageInOneOfThese( ctx, secondTarget, "water" );
+
 		}
 
+		static async Task Apply3DamageInOneOfThese( TargetSpaceCtx ctx, Space secondTarget, string damageType ) {
+			var space = await ctx.Self.Action.Decide( new TypedDecision<Space>( "Apply 3 " + damageType + " damage to", new Space[] { ctx.Space, secondTarget }, Present.Always ) );
+			await ctx.TargetSpace( space ).DamageInvaders( 3 );
+		}
 	}
 
 }

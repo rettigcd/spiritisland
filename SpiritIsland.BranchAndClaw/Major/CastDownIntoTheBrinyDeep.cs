@@ -23,7 +23,7 @@ namespace SpiritIsland.BranchAndClaw {
 			// All destroyed blight is removed from the game instead of being returned to the blight card.
 			await DestoryTokens( ctx );
 
-			if(!ctx.Self.Text.StartsWith( "Bringer" )) { // !!!
+			if(!ctx.Self.Text.StartsWith( "Bringer" )) { // !!! Maybe Api shoudl have method called "Destroy Space" or "DestoryBoard"
 
 				// destory presence
 				foreach(var spirit in ctx.GameState.Spirits)
@@ -39,7 +39,7 @@ namespace SpiritIsland.BranchAndClaw {
 			}
 		}
 
-		private static async Task DestoryTokens( TargetSpaceCtx ctx ) {
+		static async Task DestoryTokens( TargetSpaceCtx ctx ) {
 
 			foreach(var space in ctx.Space.Board.Spaces) {
 

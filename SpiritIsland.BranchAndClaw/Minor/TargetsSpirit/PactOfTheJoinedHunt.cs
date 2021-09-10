@@ -11,7 +11,7 @@ namespace SpiritIsland.BranchAndClaw {
 			await spaceCtx.GatherUpToNDahan(1);
 
 			// 1 damage in that land per dahan present
-			spaceCtx.DamageInvaders( spaceCtx.DahanCount );
+			await spaceCtx.DamageInvaders( spaceCtx.DahanCount );
 
 		}
 

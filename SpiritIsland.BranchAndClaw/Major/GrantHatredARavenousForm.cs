@@ -9,22 +9,24 @@ namespace SpiritIsland.BranchAndClaw {
 		[FromPresence( 1 )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
-			bool hasInvaders = ctx.HasInvaders;
+			bool originallyHadInvaders = ctx.HasInvaders;
 
-			// for each strife or blight in target land, 1 fear and 2 damage.
+			// for each strife or blight in target land, 
 			int count = ctx.Tokens.Keys.OfType<StrifedInvader>().Sum(x=>x.StrifeCount * ctx.Tokens[x])
 				+ ctx.Tokens.Blight.Count;
+			// 1 fear 
 			ctx.AddFear( count );
+			// and 2 damage.
 			await ctx.DamageInvaders( count * 2 );
 
 			// if this destorys all invaders in target land, add 1 beast.
-			if(hasInvaders && !ctx.HasInvaders)
+			if(originallyHadInvaders && !ctx.HasInvaders)
 				ctx.Tokens.Beasts().Count++;
 
 			// if you have 4 moon, 2 fire
-			if(ctx.Self.Elements.Contains("4 moon,2 fire" )) {
+			if(ctx.YouHave("4 moon,2 fire" )) {
 				// add 1 strife in up to 3 adjacent lands.
-				TokenCountDictionary[] tokenSpaces = ctx.Adjacents
+				TokenCountDictionary[] tokenSpaces = ctx.Adjacents   // !!! if we had a better way of use picking adjacent lands, I could fix this
 					.Select(x=>ctx.GameState.Tokens[x])
 					.Where(tokens=> tokens.HasInvaders())
 					.Take(3)
