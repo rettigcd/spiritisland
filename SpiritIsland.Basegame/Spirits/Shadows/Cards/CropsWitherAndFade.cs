@@ -23,7 +23,7 @@ namespace SpiritIsland.Basegame {
 			// !!! Does not handle pre-dealth damage
 
 			var origTokens = ctx.Tokens.OfType(group);
-			var oldToken = await ctx.Self.Action.Decide( new SelectInvaderToDowngrade( ctx.Space, origTokens, Present.IfMoreThan1 ) );
+			var oldToken = await ctx.Self.Action.Decision( new Decision.InvaderToDowngrade( ctx.Space, origTokens, Present.IfMoreThan1 ) );
 			if(oldToken != null) return;
 
 			ctx.Tokens.Adjust( oldToken, -1 );

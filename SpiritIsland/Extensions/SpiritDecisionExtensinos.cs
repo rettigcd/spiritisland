@@ -6,8 +6,9 @@ namespace SpiritIsland {
 
 	static public class SpiritDecisionExtensinos {
 
+		// !!! used almost entirely to select power cards - create a separte Select_PowerCard(...) 
 		static public Task<T> Select<T>( this Spirit spirit, string prompt, T[] options, Present present = Present.IfMoreThan1 ) where T : class, IOption {
-			return spirit.Action.Decide( new TypedDecision<T>( prompt, options, present ) );
+			return spirit.Action.Decision( new Decision.TypedDecision<T>( prompt, options, present ) );
 		}
 
 		#region Simple Wrappers
@@ -20,7 +21,7 @@ namespace SpiritIsland {
 		}
 
 		// wrapper - switches type to Element
-		static public async Task<Element> SelectElement( this Spirit spirit, string prompt, IEnumerable<Element> elements ) {
+		static async Task<Element> SelectElement( this Spirit spirit, string prompt, IEnumerable<Element> elements ) {
 			var selection = await spirit.Select( prompt, elements.Select( x => new ItemOption<Element>( x ) ).ToArray(), Present.Always );
 			return ((ItemOption<Element>)selection).Item;
 		}
@@ -38,7 +39,7 @@ namespace SpiritIsland {
 		}
 
 
-		// wrapper - checks for first response
+		// only used for Major/Minor deck selection and presenting erors / Fear card.
 		static public async Task<bool> UserSelectsFirstText( this Spirit spirit, string prompt, params string[] options ) {
 			return await spirit.SelectText( prompt, options ) == options[0];
 		}
@@ -56,11 +57,7 @@ namespace SpiritIsland {
 		#region Higher Level of abstraction / uses Spirit State
 
 		static public Task<Track> SelectTrack( this Spirit spirit ) {
-			return spirit.Action.Decide( new TypedDecision<Track>(
-				"Select Presence to place.",
-				spirit.Presence.GetPlaceableFromTracks(), // state info, might someday be moved into game state, then this needs to move back to Action Engine
-				Present.IfMoreThan1
-			) );
+			return spirit.Action.Decision( new Decision.PresenceToRemoveFromTrack(spirit) );
 		}
 
 		static public async Task ForgetPowerCard( this Spirit spirit ) {
@@ -77,6 +74,7 @@ namespace SpiritIsland {
 		}
 
 	}
+
 
 	class ItemOption<T> : IOption {
 		public T Item { get; }

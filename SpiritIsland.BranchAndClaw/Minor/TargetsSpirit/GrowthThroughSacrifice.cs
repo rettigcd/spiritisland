@@ -30,12 +30,12 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 		static Task AddPresenceToTargetsLand(SpiritGameStateCtx ctx) 
 			=> ctx.Presence_SelectFromTo( ctx.Self.Presence.Spaces.ToArray() );
 
-		static async Task RemoveBlightFromOwnLand(SpiritGameStateCtx ctx)
+		static async Task RemoveBlightFromOwnLand(PowerCtx ctx)
 			=> (await ctx.TargetLandWithPresence( "Select location to remove blight" )).RemoveBlight();
 
 
 		static async Task DestoryOnePresence( Spirit spirit ) {
-			var space = await spirit.Action.Decide( new SelectPresenceToDestory(spirit) );
+			var space = await spirit.Action.Decision( new Decision.PresenceToDestory(spirit) );
 			spirit.Presence.Destroy(space);
 		}
 

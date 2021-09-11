@@ -39,8 +39,8 @@ namespace SpiritIsland {
 
 			Token[] tokens;
 			while(0 < (tokens = GetTokens()).Length) {
-				var decision = new SelectTokenToPushDecision( source, countArray.Sum(), tokens, present );
-				var token = await ctx.Self.Action.Decide( decision );
+				var decision = new Decision.TokenToPush( source, countArray.Sum(), tokens, present );
+				var token = await ctx.Self.Action.Decision( decision );
 
 				if(token == null)
 					break;
@@ -56,7 +56,7 @@ namespace SpiritIsland {
 
 		protected virtual async Task<Space> SelectDestination( Token token ) {
 			IEnumerable<Space> destinationOptions = source.Adjacent.Where( s => spaceFilter.TerrainMapper( s ) != Terrain.Ocean );
-			return await ctx.Self.Action.Decide( new PushTokenDecision( token, source, destinationOptions, Present.Always ) );
+			return await ctx.Self.Action.Decision( (Decision.TypedDecision<Space>)new Decision.AdjacentSpaceTokenDestination( token, source, destinationOptions, Present.Always ) );
 		}
 
 		#region private

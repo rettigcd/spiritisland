@@ -12,7 +12,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			// Select destination
 			Space[] destinationOptions = ctx.OtherCtx.Presence_DestinationOptions( 1, Target.Any );
-			var to = await ctx.Other.Action.Decide( new TargetSpaceDecision( "Where would you like to place your presence?", destinationOptions, Present.Always ) );
+			var to = await ctx.Other.Action.Decision( new Decision.TargetSpace( "Where would you like to place your presence?", destinationOptions, Present.Always ) );
 
 			// add wilds
 			var tokens = ctx.GameState.Tokens[to];

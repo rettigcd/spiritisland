@@ -44,10 +44,10 @@ namespace SpiritIsland {
 			Space[] neighborsWithItems = CalcSource();
 			int gathered = 0;
 			while(gathered < countToGather && neighborsWithItems.Length > 0) {
-				var source = await Self.Action.Decide( new GatherTokensFromDecision( countToGather - gathered, groups, target, neighborsWithItems, Present.Done ) );
+				var source = await Self.Action.Decision( new Decision.AdjacentSpaceWithTokensToGathers( countToGather - gathered, groups, target, neighborsWithItems, Present.Done ) );
 				if(source == null) break;
 
-				var invader = await Self.Action.Decide( new SelectTokenToGatherDecision( source, target, calcTokens( source ), Present.IfMoreThan1 ) );
+				var invader = await Self.Action.Decision( new Decision.TokenToGather( source, target, calcTokens( source ), Present.IfMoreThan1 ) );
 
 				await GameState.Move( invader, source, target );
 
@@ -68,10 +68,10 @@ namespace SpiritIsland {
 			Space[] neighborsWithItems = CalcSource();
 			int gathered = 0;
 			while(gathered < countToGather && neighborsWithItems.Length > 0) {
-				var source = await Self.Action.Decide( new GatherTokensFromDecision( countToGather - gathered, groups, target, neighborsWithItems, Present.Always ) );
+				var source = await Self.Action.Decision( new Decision.AdjacentSpaceWithTokensToGathers( countToGather - gathered, groups, target, neighborsWithItems, Present.Always ) );
 				if(source == null) break;
 
-				var invader = await Self.Action.Decide( new SelectTokenToGatherDecision( source, target, calcTokens( source ), Present.IfMoreThan1 ) );
+				var invader = await Self.Action.Decision( new Decision.TokenToGather( source, target, calcTokens( source ), Present.IfMoreThan1 ) );
 
 				await GameState.Move( invader, source, target );
 
@@ -93,7 +93,7 @@ namespace SpiritIsland {
 
 		public async Task Presence_SelectFromTo( params Space[] destinationOptions ) {
 			var from = await Self.SelectTrack();
-			var to = await Self.Action.Decide( new TargetSpaceDecision( "Where would you like to place your presence?", destinationOptions, Present.Always ) );
+			var to = await Self.Action.Decision( new Decision.TargetSpace( "Where would you like to place your presence?", destinationOptions, Present.Always ) );
 			await Self.Presence.PlaceFromBoard( from, to, GameState );
 		}
 
@@ -129,11 +129,6 @@ namespace SpiritIsland {
 
 		public virtual void AddFear( int count ) { // need space so we can track fear-space association for bringer
 			GameState.Fear.AddDirect( new FearArgs { count = count, cause = Cause.None, space = null } );
-		}
-
-		public async Task<TargetSpaceCtx> TargetLandWithPresence( string prompt ) {
-			var space = await Self.Action.Decide( new SelectDeployedPresence( prompt, Self ) );
-			return new TargetSpaceCtx( Self, GameState, space );
 		}
 
 	}

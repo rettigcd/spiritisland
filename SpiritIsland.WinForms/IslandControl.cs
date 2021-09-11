@@ -122,15 +122,15 @@ namespace SpiritIsland.WinForms {
 		}
 
 		void OptionProvider_OptionsChanged( IDecision decision ) {
-			ios               = decision as InvadersOnSpaceDecision;
-			adjacentDecision  = decision as SelectAdjacentDecision;
+			ios               = decision as Decision.TokenOnSpace;
+			adjacentDecision  = decision as Decision.AdjacentSpace;
 			this.activeSpaces = decision.Options.OfType<Space>().ToArray();
 			fearCard          = decision.Options.OfType<DisplayFearCard>().FirstOrDefault();
 		}
 
 		DisplayFearCard fearCard;
-		InvadersOnSpaceDecision ios;
-		SelectAdjacentDecision adjacentDecision;
+		Decision.TokenOnSpace ios;
+		Decision.AdjacentSpace adjacentDecision;
 		readonly List<(Rectangle,IOption)> optionRects = new List<(Rectangle, IOption)>();
 
 		Image board;
@@ -225,28 +225,14 @@ namespace SpiritIsland.WinForms {
 				var center = SpaceCenter(adjacentDecision.Original);
 				var others = adjacentDecision.Adjacent.Select(x=> SpaceCenter(x) ).ToArray();
 
-				//foreach(var other in others)
-				//	pe.Graphics.DrawLine( p, other, center );
-
-				//const float radius = 20;
-				//switch(adjacentDecision.GatherPush) {
-				//	case GatherPush.Gather:
-				//		pe.Graphics.DrawEllipse( p, center.X - radius, center.Y - radius, radius * 2, radius * 2 );
-				//		break;
-				//	case GatherPush.Push:
-				//		foreach(var other in others)
-				//			pe.Graphics.DrawEllipse( p, other.X - radius, other.Y - radius, radius * 2, radius * 2 );
-				//		break;
-				//}
-
 				using Pen p = new Pen( Color.DeepSkyBlue, 7 );
 				var drawer = new ArrowDrawer(pe.Graphics,p);
 				switch(adjacentDecision.GatherPush) {
-					case GatherPush.Gather:
+					case Decision.GatherPush.Gather:
 						foreach(var other in others)
 							drawer.Draw( other, center );
 						break;
-					case GatherPush.Push:
+					case Decision.GatherPush.Push:
 						foreach(var other in others)
 							drawer.Draw( center, other );
 						break;

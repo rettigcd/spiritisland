@@ -41,7 +41,7 @@ namespace SpiritIsland {
 			poppedDecisionMaker.Select( selection ); // ####
 		}
 
-		public Task<T> Decide<T>( TypedDecision<T> originalDecision ) where T : class, IOption {
+		public Task<T> Decision<T>( Decision.TypedDecision<T> originalDecision ) where T : class, IOption {
 			if(originalDecision == null) throw new ArgumentNullException( nameof( originalDecision ) );
 			if(acitveDecisionMaker != null) throw new InvalidOperationException( "decision already pending" );
 

@@ -138,7 +138,7 @@ namespace SpiritIsland {
 			var options = Adjacents;
 			if(filter != null)
 				options = options.Where( s => filter( TargetSpace( s ) ) );
-			var space = await Self.Action.Decide( new SelectAdjacentDecision( prompt, Space, GatherPush.None, options, Present.Always ) );
+			var space = await Self.Action.Decision( new Decision.AdjacentSpace( prompt, Space, Decision.GatherPush.None, options, Present.Always ) );
 			return space != null ? TargetSpace( space )
 				: null;
 		}

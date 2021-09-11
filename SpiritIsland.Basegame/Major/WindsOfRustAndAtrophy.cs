@@ -23,7 +23,7 @@ namespace SpiritIsland.Basegame {
 
 			// replace 1 city with 1 town OR 1 town with 1 explorer
 			var options = ctx.Tokens.OfAnyType( Invader.City, Invader.Town );
-			Token invader = await ctx.Self.Action.Decide( new SelectInvaderToDowngrade( ctx.Space, options, Present.IfMoreThan1 ) );
+			Token invader = await ctx.Self.Action.Decision( new Decision.InvaderToDowngrade( ctx.Space, options, Present.IfMoreThan1 ) );
 
 			if(invader.Generic == Invader.City) {
 				await ReplaceCityWithTown( ctx, invader );

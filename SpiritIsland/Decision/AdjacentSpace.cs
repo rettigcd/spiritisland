@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace SpiritIsland {
+namespace SpiritIsland.Decision {
 
-	public class SelectAdjacentDecision : TypedDecision<Space> {
+	/// <summary>
+	/// For when we are going to push/pull tokens between current space and an adjacent one.
+	/// </summary>
+	public class AdjacentSpace : TypedDecision<Space> {
 
-		public SelectAdjacentDecision( string prompt, Space original, GatherPush gatherPush, IEnumerable<Space> spaces, Present present = Present.IfMoreThan1 )
+		public AdjacentSpace( string prompt, Space original, GatherPush gatherPush, IEnumerable<Space> spaces, Present present = Present.IfMoreThan1 )
 			: base( prompt, spaces.OrderBy( x => x.Label ), present ) {
 			Original = original;
 			GatherPush = gatherPush;

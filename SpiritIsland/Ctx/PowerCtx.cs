@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
@@ -37,6 +35,12 @@ namespace SpiritIsland {
 		}
 
 		public TargetSpaceCtx TargetSpace( Space space ) => new TargetSpaceCtx( Self, GameState, space );
+
+		// Don't put this in SpiritGameStateCtx because it returns a derivitive of PowerCtx
+		public async Task<TargetSpaceCtx> TargetLandWithPresence( string prompt ) {
+			var space = await Self.Action.Decision( new Decision.PresenceDeployed( prompt, Self ) );
+			return new TargetSpaceCtx( Self, GameState, space );
+		}
 
 	}
 

@@ -30,7 +30,7 @@ namespace SpiritIsland.Basegame {
 
 			// get invaders
 			while(numberToDamage-- > 0) {
-				var invader = await ctx.Self.Action.Decide(new SelectInvaderToDamage(damagePerInvader,ctx.Space,orig.Keys,Present.Done));
+				var invader = await ctx.Self.Action.Decision(new Decision.InvaderToDamage(damagePerInvader,ctx.Space,orig.Keys,Present.Done));
 				if(invader != null) {
 					await ctx.Invaders.ApplyDamageTo1(damagePerInvader,invader);
 					orig[invader]--;

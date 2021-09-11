@@ -41,17 +41,6 @@ namespace SpiritIsland.BranchAndClaw {
 				await ctx.GameState.Move( ctx.Tokens.OfAnyType( groups ).First(), ctx.Space, destination.Space );
 		}
 
-		static Space[] FindSpacesCloserToNearestOcean( TargetSpaceCtx ctx ) {
-			var oceans = ctx.GameState.Island.Boards.Select( b => b[0] );
-
-			var distanceFromOceans = new MinDistanceCalculator()
-				.SetTargets( oceans )
-				.Calculate();
-
-			int curDistance = distanceFromOceans[ctx.Space];
-			return ctx.Adjacents.Where(a=> distanceFromOceans[a]<curDistance).ToArray();
-		}
-
 	}
 
 }

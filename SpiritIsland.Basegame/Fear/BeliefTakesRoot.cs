@@ -42,7 +42,7 @@ namespace SpiritIsland.Basegame {
 				.Except( used )
 				.ToArray();
 			if(targetOptions.Length==0) return;
-			var target = await spirit.Action.Decide( new TargetSpaceDecision( "Select land to remove 2 health worth of invaders/presence.", targetOptions ) );
+			var target = await spirit.Action.Decision( new Decision.TargetSpace( "Select land to remove 2 health worth of invaders/presence.", targetOptions ) );
 			// mark used
 			used.Add(target);
 

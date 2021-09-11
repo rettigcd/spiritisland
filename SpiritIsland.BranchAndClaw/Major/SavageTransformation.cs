@@ -20,7 +20,7 @@ namespace SpiritIsland.BranchAndClaw {
 				// replace 1 additional explorer with 1 beat in either target or adjacent land
 				var neighborsWithExplorers = ctx.Adjacents.Where(s=>ctx.TargetSpace(s).Tokens.Has(Invader.Explorer)).ToList();
 				if(ctx.Tokens.Has(Invader.Explorer)) neighborsWithExplorers.Add(ctx.Space);
-				var secondSpace = await ctx.Self.Action.Decide(new TypedDecision<Space>("convert 2nd explorer to beast",neighborsWithExplorers,Present.Always)); // !!! simplify UI
+				var secondSpace = await ctx.Self.Action.Decision(new Decision.TargetSpace("convert 2nd explorer to beast",neighborsWithExplorers,Present.Always)); // !!! simplify UI
 				if( secondSpace != null )
 					ReplaceExplorerWithBeast( ctx.TargetSpace( secondSpace ) );
 			}

@@ -13,7 +13,7 @@ namespace SpiritIsland.BranchAndClaw {
 			var spiritSS = ctx.Self.SacredSites.ToArray();
 			var ss = ctx.Space.Range(1).Where(s=>spiritSS.Contains(s)).ToArray();
 			var secondOptions = ctx.Self.PowerApi.GetTargetOptions( ctx.Self,ctx.GameState,ss,2,Target.Any);
-			var secondTarget = await ctx.Self.Action.Decide( new TargetSpaceDecision( "Select space to target.", secondOptions ) );
+			var secondTarget = await ctx.Self.Action.Decision( new Decision.TargetSpace( "Select space to target.", secondOptions ) );
 
 			// 4 damage in each target land  (range must be measured from same SS)
 			await ctx.DamageInvaders( 4 );
@@ -30,7 +30,7 @@ namespace SpiritIsland.BranchAndClaw {
 		}
 
 		static async Task Apply3DamageInOneOfThese( TargetSpaceCtx ctx, Space secondTarget, string damageType ) {
-			var space = await ctx.Self.Action.Decide( new TypedDecision<Space>( "Apply 3 " + damageType + " damage to", new Space[] { ctx.Space, secondTarget }, Present.Always ) );
+			var space = await ctx.Self.Action.Decision( new Decision.TargetSpace( "Apply 3 " + damageType + " damage to", new Space[] { ctx.Space, secondTarget }, Present.Always ) );
 			await ctx.TargetSpace( space ).DamageInvaders( 3 );
 		}
 	}

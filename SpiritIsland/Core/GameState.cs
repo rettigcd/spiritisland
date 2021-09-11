@@ -119,10 +119,10 @@ namespace SpiritIsland {
 					BlightCard.OnBlightDepleated( this );
 
 				blightSpace = isFirstBlight ? null
-					: await Spirits[0].Action.Decide(new SelectAdjacentDecision(
+					: await Spirits[0].Action.Decision(new Decision.AdjacentSpace(
 						"Cascade blight to", 
 						blightSpace, 
-						GatherPush.None,
+						Decision.GatherPush.None,
 						blightSpace.Adjacent.Where( x => SpaceFilter.ForCascadingBlight.TerrainMapper( x ) != Terrain.Ocean ),
 						Present.Always
 					));
