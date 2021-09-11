@@ -6,11 +6,20 @@ namespace SpiritIsland.BranchAndClaw {
 
 		[MajorCard( "Smothering Infestation", 3, Speed.Slow, Element.Water, Element.Plant)]
 		[FromPresence( 0 )]
-		static public Task ActAsync( TargetSpaceCtx ctx ) {
+		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 			// add 1 disease
+			ctx.Tokens.Disease().Count++;
+
+			// if you have 2 water and 2 plant:  1 dmaage to each invader (doing this first because our smart-damage result will be better)
+			if(ctx.YouHave( "2 water,2 plant" ))
+				await ctx.Invaders.ApplyDamageToEach( 1, Invader.Explorer, Invader.Town, Invader.City );
+
 			// if target land is J/W, 2 fear and 3 damage
-			// if you have 2 water and 2 plant:  1 dmaage to each invader
-			return Task.CompletedTask;
+			if(ctx.Terrain.IsOneOf( Terrain.Jungle, Terrain.Wetland )) {
+				ctx.AddFear(3);
+				await ctx.DamageInvaders(3);
+			}
+
 		}
 
 	}

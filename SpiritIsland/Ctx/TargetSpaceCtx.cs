@@ -134,6 +134,15 @@ namespace SpiritIsland {
 
 		#endregion
 
+		public async Task<TargetSpaceCtx> SelectAdjacentLand( string prompt, System.Func<TargetSpaceCtx, bool> filter = null ) {
+			var options = Adjacents;
+			if(filter != null)
+				options = options.Where( s => filter( TargetSpace( s ) ) );
+			var space = await Self.Action.Decide( new SelectAdjacentDecision( prompt, Space, GatherPush.None, options, Present.Always ) );
+			return space != null ? TargetSpace( space )
+				: null;
+		}
+
 		InvaderGroup invadersRO;
 
 	}

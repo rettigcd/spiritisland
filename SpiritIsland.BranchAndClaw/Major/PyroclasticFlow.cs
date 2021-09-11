@@ -6,12 +6,21 @@ namespace SpiritIsland.BranchAndClaw {
 
 		[MajorCard( "Pyroclastic Flow", 3, Speed.Fast, Element.Fire, Element.Air, Element.Earth )]
 		[FromPresenceIn( 1, Terrain.Mountain )]
-		static public Task ActAsync( TargetSpaceCtx ctx ) {
+		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 			// 2 damage. Destory all explorers
+			await ctx.Invaders.Destroy(int.MaxValue,Invader.Explorer);
+			int damage = 2;
+
 			// if target land is J/W, add 1 blight
+			if(ctx.Terrain.IsOneOf(Terrain.Jungle,Terrain.Mountain))
+				ctx.AddBlight(1);
 
 			// if you have 2 fire, 3 air, 2 earth: +4 damage. Add 1 wilds
-			return Task.CompletedTask;
+			if(ctx.YouHave("2 fire,3 air, 2 earth" )) {
+				ctx.Tokens.Wilds().Count++;
+				damage += 4;
+			}
+			await ctx.DamageInvaders( damage );
 		}
 
 	}

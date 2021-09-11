@@ -87,6 +87,7 @@ namespace SpiritIsland {
 		}
 
 		Dictionary<Space, int> CalcDistances( int distance ) {
+
 			Queue<Space> spacesLessThanLimit = new Queue<Space>();
 			// collects distances that are <= distance
 			var shortestDistances = new Dictionary<Space, int> { { this, 0 } };

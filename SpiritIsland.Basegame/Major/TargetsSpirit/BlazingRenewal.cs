@@ -25,7 +25,7 @@ namespace SpiritIsland.Basegame {
 			await grp.ApplyDamageToEach(2,Invader.Town,Invader.City);
 
 			// if you have 3 fire, 3 earth , 2 plant, 4 damage in that land
-			if(ctx.Self.Elements.Contains("3 fire,3 earth,2 plant"))
+			if(ctx.YouHave( "3 fire,3 earth,2 plant"))
 				await grp.ApplySmartDamageToGroup(4);
 
 

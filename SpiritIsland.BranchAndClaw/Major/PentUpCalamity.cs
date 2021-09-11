@@ -6,6 +6,7 @@ namespace SpiritIsland.BranchAndClaw {
 		[MajorCard( "Pent-Up Calamity", 3, Speed.Fast, Element.Moon, Element.Fire, Element.Earth,Element.Plant,Element.Animal )]
 		[FromPresence( 2 )]
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
+			// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			// add 1 disease and 1 strife
 			// OR
 			// remove any number of beast / disease/strife/wilds.  For each token removed, 1 fear and 3 damage

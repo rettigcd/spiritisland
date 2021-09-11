@@ -32,9 +32,9 @@ namespace SpiritIsland.BranchAndClaw {
 			public FromPresenceAttribute() : base( From.Presence, null, 1, Target.NoBlight ) { }
 			protected override int CalcRange( SpiritGameStateCtx ctx ) => range
 				// 3 plant    this power has +1 range
-				+ (ctx.Self.Elements.Contains( "3 plant" ) ? 1 : 0)
+				+ (ctx.YouHave( "3 plant" ) ? 1 : 0)
 				// 1 air      this power has +1 range
-				+ (ctx.Self.Elements.Contains( "1 air" ) ? 1 : 0);
+				+ (ctx.YouHave( "1 air" ) ? 1 : 0);
 		}
 
 	}

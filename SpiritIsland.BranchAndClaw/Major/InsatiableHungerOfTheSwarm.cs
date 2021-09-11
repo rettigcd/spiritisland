@@ -33,7 +33,7 @@ namespace SpiritIsland.BranchAndClaw {
 			await ApplyPowerOnTarget( ctx );
 
 			// if you have 2 air, 4 animal, repeat power on adjacent land.
-			if(ctx.Self.Elements.Contains( "2 air,4 animal" )) {
+			if(ctx.YouHave( "2 air,4 animal" )) {
 				var otherSpace = await ctx.Self.Action.Decide( new SelectAdjacentDecision( "Repeat Power", ctx.Space, GatherPush.None, ctx.Adjacents ) ); // !!! need shortcut to pick adjacent
 				await ApplyPowerOnTarget( ctx.TargetSpace(otherSpace) );
 			}
