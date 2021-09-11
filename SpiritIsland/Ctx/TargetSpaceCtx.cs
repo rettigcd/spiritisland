@@ -89,7 +89,7 @@ namespace SpiritIsland {
 		public void Defend(int defend) => GameState.Defend(Space,defend);
 
 		public Task DestroyDahan(int countToDestroy) 
-			=> GameState.DahanDestroy(Space,countToDestroy,Cause.Power); // !!! should go through Same Mechanism that Bringer uses to not destroy things
+			=> Self.DestroyDahanForPowers( GameState, Space, countToDestroy );
 
 		public Terrain Terrain => SpaceFilter.ForPowers.TerrainMapper( Space );
 

@@ -27,7 +27,7 @@ namespace SpiritIsland.Basegame {
 			if(ctx.Invaders.Tokens.Has(Invader.Town))
 				await ctx.GameState.Move( ctx.Invaders.Tokens[Invader.Town[2]]>0 ? Invader.Town[2] : Invader.Town[1], ctx.Space, drowningOcean );
 
-			await ctx.GameState.DahanDestroy(ctx.Space,1,Cause.Power); // destorying dahan is the same as drowning them
+			await ctx.DestroyDahan(1); // destorying dahan is the same as drowning them
 		}
 	}
 }

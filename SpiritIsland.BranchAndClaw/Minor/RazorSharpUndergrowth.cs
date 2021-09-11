@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.BranchAndClaw {
+
 	public class RazorSharpUndergrowth {
 
 		[MinorCard( "Razor-Sharp Undergrowth", 1, Speed.Fast, Element.Moon, Element.Plant )]
@@ -10,7 +11,7 @@ namespace SpiritIsland.BranchAndClaw {
 			// destory 1 explorer
 			await ctx.Invaders.Destroy(1,Invader.Explorer);
 			// and 1 dahan
-			await ctx.GameState.DahanDestroy(ctx.Space,1,Cause.Power); // !!! can this be foldeded int TargetSpaceContext to remove some of the parameters
+			await ctx.DestroyDahan( 1 );
 			// add 1 wilds
 			ctx.Tokens.Wilds().Count++;
 			// defend 2

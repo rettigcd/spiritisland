@@ -32,7 +32,7 @@ namespace SpiritIsland.Basegame {
 			}
 		}
 
-		static Task ReplaceTownWithExplorer( TargetSpaceCtx ctx, Token town ) {
+		static Task ReplaceTownWithExplorer( TargetSpaceCtx ctx, Token town ) { // !!! use this!
 			// deals pre-existing damage to resulting token
 			if( town.Health == 1 )
 				return ctx.Invaders.Destroy(1,town);
@@ -41,7 +41,7 @@ namespace SpiritIsland.Basegame {
 			return Task.CompletedTask;
 		}
 
-		static Task ReplaceCityWithTown( TargetSpaceCtx ctx, Token city ) {
+		static Task ReplaceCityWithTown( TargetSpaceCtx ctx, Token city ) { //  // !!! use this!
 			// deals pre-existing damage to resulting token
 			if( city.Health == 1 )
 				return ctx.Invaders.Destroy(1,city);

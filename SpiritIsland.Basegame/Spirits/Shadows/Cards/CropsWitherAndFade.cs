@@ -20,7 +20,7 @@ namespace SpiritIsland.Basegame {
 
 		static async Task Replace1( TargetSpaceCtx ctx, TokenGroup group, TokenGroup newToken ) {
 
-			// !!! Does not handle pre-dealth damage
+			// !!! when replacing, need to divy up pre-existing damage $$$
 
 			var origTokens = ctx.Tokens.OfType(group);
 			var oldToken = await ctx.Self.Action.Decision( new Decision.InvaderToDowngrade( ctx.Space, origTokens, Present.IfMoreThan1 ) );

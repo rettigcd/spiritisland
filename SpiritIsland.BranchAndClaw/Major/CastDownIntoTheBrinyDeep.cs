@@ -43,21 +43,19 @@ namespace SpiritIsland.BranchAndClaw {
 
 			foreach(var space in ctx.Space.Board.Spaces) {
 
+				var spaceCtx = ctx.TargetSpace( space );
+
 				// Destory Invaders
-				var invaders = ctx.GameState.Invaders.On( space, Cause.Power );
-				await invaders.DestroyAny( int.MaxValue, Invader.City, Invader.Town, Invader.Explorer );
+				await spaceCtx.Invaders.DestroyAny( int.MaxValue, Invader.City, Invader.Town, Invader.Explorer );
+
+				// Destory Dahan
+				await spaceCtx.DestroyDahan( int.MaxValue );
 
 				if(!ctx.Self.Text.StartsWith("Bringer")) { // !!!
-
-					// Destory Dahan
-					// !!! needs to go through spirit so Bringer doesn't destory dahan
-					await ctx.GameState.DahanDestroy( space, int.MaxValue, Cause.Power );
-
 					// Destroy all other tokens
-					var counts = invaders.Tokens;
+					var counts = spaceCtx.Tokens;
 					foreach(var tokens in counts.Keys.ToArray())
 						counts[tokens] = 0;
-
 				}
 			}
 		}

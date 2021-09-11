@@ -273,6 +273,10 @@ namespace SpiritIsland {
 			};
 		}
 
+		public virtual Task DestroyDahanForPowers( GameState gs, Space space, int count ) {
+			return gs.DahanDestroy(space,count,Cause.Power);
+		}
+
 		public Task BuyPowerCardsAsync() => PurchaseCards( NumberOfCardsPlayablePerTurn );
 
 

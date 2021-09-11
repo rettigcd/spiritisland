@@ -31,7 +31,7 @@ namespace SpiritIsland.Basegame {
 		}
 
 		static void ReplaceInvaderWithExplorer( InvaderGroup grp, TokenGroup oldInvader, int replaceCount ) {
-			// !!! when replacing, need to divy up pre-existing damage
+			// !!! when replacing, need to divy up pre-existing damage $$$
 			var counts = grp.Tokens;
 			var specific = counts.OfType( oldInvader ).OrderByDescending( x => x.Health ).FirstOrDefault();
 			if(specific != null) {
@@ -41,7 +41,7 @@ namespace SpiritIsland.Basegame {
 		}
 
 		static void ReplaceDahanWithExplorer(TargetSpaceCtx ctx ) {
-			// !!! when replacing, need to divy up pre-existing damage
+			// !!! when replacing, need to divy up pre-existing damage $$$
 			if(ctx.HasDahan) { 
 				ctx.AdjustDahan(-1);
 				ctx.Invaders.Tokens.Adjust( Invader.Explorer[1], 1 );

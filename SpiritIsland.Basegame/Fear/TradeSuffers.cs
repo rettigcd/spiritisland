@@ -19,14 +19,14 @@ namespace SpiritIsland.Basegame {
 			foreach(var spirit in gs.Spirits) {
 				var options = gs.Island.AllSpaces.Where(s=>s.IsCostal&&gs.Tokens[s].Has(Invader.Town)).ToArray();
 				if(options.Length==0) return;
-				var target = await spirit.Action.Decision( new Decision.TargetSpace( "Replace town with explorer", options));
+				var target = await spirit.Action.Decision( new Decision.TargetSpace( "Replace town with explorer", options)); // !!! replace needs to apply damage
 				var grp = gs.Tokens[ target ];
 				grp.Remove( Invader.Town );
 				grp.Adjust( Invader.Explorer[1], 1 );
 			}
 		}
 
-		[FearLevel( 3, "Each player may replace 1 City with 1 Town or 1 Town with 1 Explorer in a Coastal land." )]
+		[FearLevel( 3, "Each player may replace 1 City with 1 Town or 1 Town with 1 Explorer in a Coastal land." )] // !!! reaplce should apply damage
 		public async Task Level3( GameState gs ) {
 			foreach(var spirit in gs.Spirits) {
 				var options = gs.Island.AllSpaces.Where( s => s.IsCostal && gs.Tokens[ s ].HasAny(Invader.Town,Invader.City) ).ToArray();
