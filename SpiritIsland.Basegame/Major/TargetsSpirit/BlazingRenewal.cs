@@ -26,7 +26,7 @@ namespace SpiritIsland.Basegame {
 
 			// if you have 3 fire, 3 earth , 2 plant, 4 damage in that land
 			if(ctx.YouHave( "3 fire,3 earth,2 plant"))
-				await grp.ApplySmartDamageToGroup(4);
+				await grp.SmartDamageToGroup(4);
 
 
 		}

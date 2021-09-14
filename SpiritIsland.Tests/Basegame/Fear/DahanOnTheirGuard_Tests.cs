@@ -57,7 +57,11 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 				await gameState.Ravage(invaderCard);
 			}
 			_ = DoIt();
-			gameState.Spirits[0].Action.AssertDecision( "Activating Fear", "Dahan on their Guard", "Dahan on their Guard" );
+			gameState.Spirits[0].Action.AssertDecision( 
+				"Activating Fear",
+				"Dahan on their Guard:1:In each land, Defend 1 per Dahan.",
+				"Dahan on their Guard:1:In each land, Defend 1 per Dahan."
+			);
 
 			// Then: 0 dahan left
 			gameState.DahanGetCount( ravageSpace ).ShouldBe( 2 );

@@ -9,7 +9,7 @@ namespace SpiritIsland {
 	static public class SmartInvaderDamageExtensions {
 
 		//  This is the replacement for SmartDamage To Types
-		static public async Task<int> UserSelectDamage( this IMakeGamestateDecisions ctx, int damage, InvaderGroup group ) {
+		static public async Task<int> UserSelectDamage( this SpiritGameStateCtx ctx, int damage, InvaderGroup group ) {
 			while(damage > 0) {
 				var invader = await ctx.Self.Action.Decision( new Decision.InvaderToDamage( damage, group.Space, group.Tokens.Invaders(), Present.Always ) );
 				if(invader == null) break;
@@ -25,7 +25,7 @@ namespace SpiritIsland {
 		}
 
 		// When we swap this out for user choosing, Which user chooses when dahan are doing damage????
-		static public async Task ApplySmartDamageToGroup( this InvaderGroup grp, int startingDamage, List<string> log = null ) {
+		static public async Task SmartDamageToGroup( this InvaderGroup grp, int startingDamage, List<string> log = null ) {
 			int damageToInvaders = startingDamage;
 
 			// While damage remains    &&    we have invaders
@@ -35,6 +35,29 @@ namespace SpiritIsland {
 			}
 			if(log != null) log.Add( $"{startingDamage} damage to invaders leaving {grp}." );
 		}
+
+		static public void SmartRemovalOfHealth( this InvaderGroup grp, int startingDamage ) {
+			int damageToInvaders = startingDamage;
+
+			// While damage remains    &&    we have invaders
+			while(damageToInvaders > 0 && grp.Tokens.HasInvaders()) {
+				Token invaderToDamage = grp.Tokens.PickSmartInvaderToDamage( damageToInvaders );
+				if(invaderToDamage.Health < damageToInvaders) {
+					--grp.Tokens[invaderToDamage];
+					damageToInvaders -= invaderToDamage.Health;
+				} else {
+					break;
+				}
+			}
+		}
+
+		// Stolen from Emigration Accelerates
+		static public void RemoveInvader( this TokenCountDictionary grp, params TokenGroup[] removable ) {
+			if(grp.SumAny(removable) == 0) return;
+			var invaderToRemove = grp.PickBestInvaderToRemove( removable );
+			grp.Adjust( invaderToRemove, -1 );
+		}
+
 
 		static async public Task SmartDamageToTypes( this InvaderGroup grp, int startingDamage, params TokenGroup[] invaderGenerics ) {
 			int damageToInvaders = startingDamage;
@@ -69,13 +92,7 @@ namespace SpiritIsland {
 
 		static readonly public SmartInvaderAttacker Singleton = new SmartInvaderAttacker();
 
-#pragma warning disable CA1822 // Mark members as static
-		public Token GetKillOrder( 
-#pragma warning restore CA1822 // Mark members as static
-			TokenCountDictionary counts, 
-			int availableDamage
-			, params TokenGroup[] invaderGeneric
-		) {
+		public Token GetKillOrder(  TokenCountDictionary counts,  int availableDamage , params TokenGroup[] invaderGeneric ) {
 			var candidates = counts.Invaders();
 			if(invaderGeneric != null && invaderGeneric.Length > 0)
 				candidates = candidates.Where( i => invaderGeneric.Contains( i.Generic ) );

@@ -95,7 +95,7 @@ namespace SpiritIsland {
 
 		/// <returns>(city-dead,town-dead,explorer-dead)</returns>
 		public async Task DamageInvaders( int damageFromDahan ) {
-			await grp.ApplySmartDamageToGroup( damageFromDahan, log );
+			await grp.SmartDamageToGroup( damageFromDahan, log );
 		}
 	}
 

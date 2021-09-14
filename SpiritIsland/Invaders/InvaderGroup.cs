@@ -38,7 +38,7 @@ namespace SpiritIsland {
 				await ApplyDamageToAllTokensOfType(individualDamage,specific);
 		}
 
-		async Task ApplyDamageToAllTokensOfType( int individualDamage, Token token ) {
+		async public Task ApplyDamageToAllTokensOfType( int individualDamage, Token token ) {
 			while(this[token] > 0)
 				await ApplyDamageTo1( individualDamage, token );
 		}
@@ -89,7 +89,7 @@ namespace SpiritIsland {
 		public async Task<int> ApplyDamageTo1( int availableDamage, Token invader ) {
 			int damageToInvader = Math.Min( invader.Health, availableDamage );
 
-			var damagedInvader = invader.Damage( damageToInvader );
+			var damagedInvader = invader.ResultingDamagedInvader( damageToInvader );
 			this.
 			Tokens.Adjust( invader, -1 );
 

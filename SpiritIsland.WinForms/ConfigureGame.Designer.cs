@@ -120,6 +120,8 @@ namespace SpiritIsland.WinForms {
             // branchAndClawCheckBox
             // 
             this.branchAndClawCheckBox.AutoSize = true;
+            this.branchAndClawCheckBox.Checked = true;
+            this.branchAndClawCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.branchAndClawCheckBox.Location = new System.Drawing.Point(11, 11);
             this.branchAndClawCheckBox.Name = "branchAndClawCheckBox";
             this.branchAndClawCheckBox.Size = new System.Drawing.Size(117, 19);

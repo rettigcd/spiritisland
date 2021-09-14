@@ -2,6 +2,7 @@
 using SpiritIsland.BranchAndClaw;
 using SpiritIsland.SinglePlayer;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -66,24 +67,24 @@ namespace SpiritIsland.WinForms {
 
 		private void OkButton_Click( object sender, EventArgs e ) {
 			Spirit spirit = SelectedSpirit();
-			if( powerProgressionCheckBox.Checked) {
+			if(powerProgressionCheckBox.Checked) {
 				try {
 					spirit.UsePowerProgression();
 				} catch {
-					MessageBox.Show("Unable to use power progression for "+spirit.Text);
+					MessageBox.Show( "Unable to use power progression for " + spirit.Text );
 				}
 			}
 			Board board = SelectedBoard();
 
 			Color = (colorListBox.SelectedIndex == 0)
-				? GetColorForSpirit(spirit)
+				? GetColorForSpirit( spirit )
 				: colorListBox.SelectedItem as string;
 
 			var majorCards = PowerCard.GetMajors( typeof( AcceleratedRot ) ).ToList();
 			var minorCards = PowerCard.GetMinors( typeof( AcceleratedRot ) ).ToList();
 
 			if(branchAndClawCheckBox.Checked) {
-				majorCards.AddRange( PowerCard.GetMajors(typeof(CastDownIntoTheBrinyDeep)) );
+				majorCards.AddRange( PowerCard.GetMajors( typeof( CastDownIntoTheBrinyDeep ) ) );
 				minorCards.AddRange( PowerCard.GetMinors( typeof( CastDownIntoTheBrinyDeep ) ) );
 			}
 
@@ -94,27 +95,18 @@ namespace SpiritIsland.WinForms {
 			gameState.MajorCards = new PowerCardDeck( majorCards.ToArray() );
 			gameState.MinorCards = new PowerCardDeck( minorCards.ToArray() );
 
-			var baseGameFearCards = new IFearCard[] {
-				new AvoidTheDahan(),
-				new BeliefTakesRoot(),
-				new DahanEnheartened(),
-				new DahanOnTheirGuard(),
-				new DahanRaid(),
-				new EmigrationAccelerates(),
-				new FearOfTheUnseen(),
-				new Isolation(),
-				new OverseasTradeSeemSafer(),
-				new Retreat(),
-				new Scapegoats(),
-				new SeekSafety(),
-				new TallTalesOfSavagery(),
-				new TradeSuffers(),
-				new WaryOfTheInterior()
-			};
-			baseGameFearCards.Shuffle();
+			List<IFearOptions> fearCards = new List<IFearOptions>();
+			fearCards.AddRange( SpiritIsland.Basegame.FearCards.GetFearCards() );
+			if(branchAndClawCheckBox.Checked)
+				fearCards.AddRange( SpiritIsland.BranchAndClaw.FearCards.GetFearCards() );
+
+			fearCards.Shuffle();
+
 			gameState.Fear.Deck.Clear();
-			foreach(var f in baseGameFearCards.Take( 9 ))
+			foreach(var f in fearCards.Take( 9 ))
 				gameState.Fear.AddCard( f );
+
+//			gameState.Fear.AddDirect( new FearArgs { count = 4*8 } ); // !!!
 
 			gameState.BlightCard = ((int)DateTime.Now.Ticks) % 1 == 0
 				? new DownwardSpiral()
@@ -155,8 +147,10 @@ namespace SpiritIsland.WinForms {
 		}
 
 		Spirit SelectedSpirit() {
+			int numberOfSpirits = spiritListBox.Items.Count-1;
+
 			Type spiritType = (spiritListBox.SelectedIndex == 0)
-				? spiritListBox.Items[1 + (int)((DateTime.Now.Ticks / 4) % 4)] as Type
+				? spiritListBox.Items[1 + (int)(DateTime.Now.Ticks % numberOfSpirits)] as Type
 				: spiritListBox.SelectedItem as Type;
 			Spirit spirit = (Spirit)Activator.CreateInstance( spiritType );
 			return spirit;

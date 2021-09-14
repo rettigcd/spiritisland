@@ -3,18 +3,20 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 
-	public class TradeSuffers : IFearCard {
+	public class TradeSuffers : IFearOptions {
 
 		public const string Name = "Trade Suffers";
 
 		[FearLevel( 1, "Invaders do not Build in lands with City." )]
-		public Task Level1( GameState gs ) {
+		public Task Level1( FearCtx ctx ) {
+			var gs = ctx.GameState;
 			gs.SkipBuild( gs.Island.AllSpaces.Where( s => gs.Tokens[ s ].Has(Invader.City) ).ToArray() );
 			return Task.CompletedTask;
 		}
 
 		[FearLevel( 2, "Each player may replace 1 Town with 1 Explorer in a Coastal land." )]
-		public async Task Level2( GameState gs ) {
+		public async Task Level2( FearCtx ctx ) {
+			var gs = ctx.GameState;
 			foreach(var spirit in gs.Spirits) {
 				var options = gs.Island.AllSpaces.Where( s => s.IsCostal && gs.Tokens[s].Has( Invader.Town ) ).ToArray();
 				if(options.Length == 0) return;
@@ -24,7 +26,8 @@ namespace SpiritIsland.Basegame {
 		}
 
 		[FearLevel( 3, "Each player may replace 1 City with 1 Town or 1 Town with 1 Explorer in a Coastal land." )]
-		public async Task Level3( GameState gs ) {
+		public async Task Level3( FearCtx ctx ) {
+			var gs = ctx.GameState;
 			foreach(var spirit in gs.Spirits) {
 				var options = gs.Island.AllSpaces.Where( s => s.IsCostal && gs.Tokens[ s ].HasAny(Invader.Town,Invader.City) ).ToArray();
 				if(options.Length == 0) return;

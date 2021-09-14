@@ -23,5 +23,6 @@ namespace SpiritIsland.Basegame {
 		}
 
 	}
+
 }
 

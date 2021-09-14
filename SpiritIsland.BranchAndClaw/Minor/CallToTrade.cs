@@ -16,7 +16,7 @@ namespace SpiritIsland.BranchAndClaw {
 				// And the first ravage in target land becomes a build there instead.
 				if(ctx.GameState.ScheduledRavageSpaces.Contains( ctx.Space )) {
 					ctx.GameState.ScheduledRavageSpaces.Remove(ctx.Space);
-					ctx.GameState.ScheduledBuildLands[ctx.Space]++;
+					ctx.GameState.ScheduledBuildSpaces[ctx.Space]++;
 				}
 			}
 

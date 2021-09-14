@@ -77,12 +77,14 @@ namespace SpiritIsland {
 
 		#endregion
 
-		static public Task ShowFearCardToUser( this Spirit spirit, string prompt, NamedFearCard cardToShow ) {
-			return spirit.Select( prompt, new IOption[] { new DisplayFearCard { Text = cardToShow.CardName } }, Present.Always );
+		static public Task ShowFearCardToUser( this Spirit spirit, string prompt, PositionFearCard cardToShow, int? activationLevel = null ) {
+			var display = activationLevel != null 
+				? new DisplayFearCard( cardToShow.FearOptions, activationLevel.Value )
+				: new DisplayFearCard( cardToShow.FearOptions );
+			return spirit.Select( prompt, new IOption[] { display }, Present.Always );
 		}
 
 	}
-
 
 	class ItemOption<T> : IOption {
 		public T Item { get; }

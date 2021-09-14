@@ -4,13 +4,13 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 
-	public class BeliefTakesRoot : IFearCard {
+	public class BeliefTakesRoot : IFearOptions {
 
 		public const string Name = "Belief takes Root";
 
 		[FearLevel( 1, "Defend 2 in all lands with Presence." )]
-		public Task Level1( GameState gs ) {
-			Defend2WherePresence( gs );
+		public Task Level1( FearCtx ctx ) {
+			Defend2WherePresence( ctx.GameState );
 			return Task.CompletedTask;
 		}
 
@@ -20,18 +20,18 @@ namespace SpiritIsland.Basegame {
 		}
 
 		[FearLevel( 2, "Defend 2 in all lands with Presence. Each Spirit gains 1 Energy per SacredSite they have in lands with Invaders." )]
-		public Task Level2( GameState gs ) {
-			Defend2WherePresence( gs );
-			foreach(var spirit in gs.Spirits)
-				spirit.Energy += spirit.SacredSites.Count( gs.HasInvaders );
+		public Task Level2( FearCtx ctx ) {
+			Defend2WherePresence( ctx.GameState );
+			foreach(var spirit in ctx.GameState.Spirits)
+				spirit.Energy += spirit.SacredSites.Count( ctx.GameState.HasInvaders );
 			return Task.CompletedTask;
 		}
 
 		[FearLevel( 3, "Each player chooses a different land and removes up to 2 Health worth of Invaders per Presence there." )]
-		public async Task Level3( GameState gs ) {
+		public async Task Level3( FearCtx ctx ) {
 			var used = new HashSet<Space>();
-			foreach(var spirit in gs.Spirits)
-				await X(spirit,used,gs);
+			foreach(var spirit in ctx.GameState.Spirits)
+				await X( spirit, used, ctx.GameState );
 
 		}
 

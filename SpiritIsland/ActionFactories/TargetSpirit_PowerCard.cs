@@ -26,7 +26,7 @@ namespace SpiritIsland {
 		public event SpiritTargetedArgs SpiritTargeted; // Targeter, Card, Targetee
 
 		static public Task TargetSpirit(MethodBase methodBase, Spirit self, GameState gameState, Spirit target) 
-			=> (Task)methodBase.Invoke( null, new object[] { new TargetSpiritCtx(self,gameState,target) } );
+			=> (Task)methodBase.Invoke( null, new object[] { new TargetSpiritCtx(self,gameState,target,Cause.Power) } );
 
 	}
 

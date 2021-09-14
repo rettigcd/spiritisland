@@ -20,9 +20,9 @@ namespace SpiritIsland.WinForms {
 			this.game = config.Game;
 
 			this.islandControl.Init( game.GameState, this, config.Color );
-			this.cardControl.Init( game.Spirit, this );
-			this.spiritControl.Init( game.Spirit, config.Color, this );
-			this.statusControl1.Init( game.GameState, this );
+			this.cardControl.Init( game.Spirit,      this );
+			this.spiritControl.Init( game.Spirit,    config.Color, this );
+			this.statusControl1.Init(                game.GameState, this );
 			this.NewDecision += UpdateButtons;
 
 			this.islandControl.SpaceClicked += Select;
@@ -63,8 +63,8 @@ namespace SpiritIsland.WinForms {
 			for(int i = 0; i < decision.Options.Length; ++i) {
 				var option = decision.Options[i];
 				size = calc.CalcSize( option.Text );
-				var sz = new Size((int)size.Width+20,(int)size.Height+20);
-				AddOptionButton( option, x, 10, sz );
+				var sz = new Size((int)size.Width+20,(int)size.Height+15);
+				AddOptionButton( option, x, 1, sz );
 				x += sz.Width+10;
 			}
 		}
@@ -84,7 +84,7 @@ namespace SpiritIsland.WinForms {
 
 		class FontSizeCalculator : IDisposable {
 			Graphics graphics;
-			Font font;
+			readonly Font font;
 			public FontSizeCalculator( Control control ) {
 				this.graphics = control.CreateGraphics();
 				this.font = control.Font;

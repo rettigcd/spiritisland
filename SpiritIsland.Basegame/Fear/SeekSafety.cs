@@ -6,22 +6,31 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 
-	public class SeekSafety : IFearCard {
+	public class SeekSafety : IFearOptions {
 
 		public const string Name = "Seek Safety";
 
 		[FearLevel( 1, "Each player may Push 1 Explorer into a land with more Town / City than the land it came from." )]
-		public async Task Level1( GameState gs ) {
+		public async Task Level1( FearCtx ctx ) {
+			var gs = ctx.GameState;
+
+			// !!! Refactor this - not sure it is correct.
+			// Seemed liked it was doing a gather when it should be doing a push
+			// ??? were we in Level 2 when I thought we were in level 1?
+
 			var buildingCounts = gs.Island.AllSpaces.ToDictionary(s=>s,s=>gs.Tokens[s].TownsAndCitiesCount());
 			Space[] GetNeighborWithMoreBuildings( Space s ) => s.Adjacent.Where( n => buildingCounts[n] > buildingCounts[s] ).ToArray();
 			bool HasNeighborWithMoreBuildings(Space s) => GetNeighborWithMoreBuildings(s).Any();
+			// Each player may
 			foreach(var spirit in gs.Spirits) {
+				// Push 1 Explorer into a land with more Town / City than the land it came from.
 				var options = gs.Island.AllSpaces
 					.Where(s=>gs.Tokens[s].Has(Invader.Explorer) && HasNeighborWithMoreBuildings(s))
 					.ToArray();
 				if(options.Length==0) return;
 				var target = await spirit.Action.Decision( new Decision.TargetSpace( "Fear: Select land to push explorer from into more towns/cities", options,Present.Done));
 				if(target==null) continue; // continue => next spirit, break/return => no more spirits
+
 				var destinations = GetNeighborWithMoreBuildings(target);
 				var dest = await spirit.Action.Decision( new Decision.TargetSpace( "Fear: select destination with more towns/cities", destinations));
 				// push
@@ -30,7 +39,8 @@ namespace SpiritIsland.Basegame {
 		}
 
 		[FearLevel( 2, "Each player may Gather 1 Explorer into a land with Town / City, or Gather 1 Town into a land with City." )]
-		public async Task Level2( GameState gs ) {
+		public async Task Level2( FearCtx ctx ) {
+			var gs = ctx.GameState;
 			foreach(var spirit in gs.Spirits) {
 				var options = gs.Island.AllSpaces
 					.Where( s => gs.Tokens[ s ].HasAny(Invader.Town,Invader.City) )
@@ -56,7 +66,8 @@ namespace SpiritIsland.Basegame {
 		}
 
 		[FearLevel( 3, "Each player may remove up to 3 Health worth of Invaders from a land without Town." )]
-		public async Task Level3( GameState gs ) {
+		public async Task Level3( FearCtx ctx ) {
+			var gs = ctx.GameState;
 			foreach(var spirit in gs.Spirits) {
 				var options = gs.Island.AllSpaces
 					.Where( s => {var counts = gs.Tokens[ s ]; return counts.HasInvaders() && !counts.Has(Invader.Town); } )

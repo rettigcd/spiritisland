@@ -101,7 +101,7 @@ namespace SpiritIsland {
 		public override async Task ActivateAsync( Spirit spirit, GameState gameState ) {
 			var target = await targetSpaceAttribute.GetTarget( spirit, gameState );
 			MethodInfo x = HighestMethod( spirit );
-			var engine = new TargetSpaceCtx( spirit, gameState, target );
+			var engine = new TargetSpaceCtx( spirit, gameState, target, Cause.Power );
 			// !! Make sure we await this
 			await (Task)x.Invoke( null, new object[] { engine } ); // Check Innate Powers that target spirits - what is first parameter?
 		}

@@ -4,22 +4,69 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
-	public class SpiritGameStateCtx : IMakeGamestateDecisions {
+	public class SpiritGameStateCtx {
 
 		public Spirit Self { get; }
 		public GameState GameState { get; }
+		public Cause Cause { get; }
 
-		public SpiritGameStateCtx(Spirit self,GameState gameState ) {
-			this.Self = self;
-			this.GameState = gameState;
+		#region constructor
+
+		public SpiritGameStateCtx(Spirit self,GameState gameState, Cause cause) {
+			Self = self;
+			GameState = gameState;
+			Cause = cause;
 		}
+
+		#endregion constructor
+
+		#region GameState only / Non-spirit parts
 
 		public IEnumerable<Space> AdjacentTo( Space source )
 			=> source.Adjacent.Where( x => this.SpaceFilter.TerrainMapper( x ) != Terrain.Ocean );
 
 		public bool IsCostal( Space space ) => this.SpaceFilter.IsCoastal( space );
 
-		protected virtual SpaceFilter SpaceFilter => SpaceFilter.Normal;
+		public async Task DamageInvaders( Space space, int damage ) {
+			if(damage == 0) return;
+			await InvadersOn( space ).SmartDamageToGroup( damage );
+		}
+
+		protected virtual SpaceFilter SpaceFilter => Cause switch {
+			Cause.Power => SpaceFilter.ForPowers,
+			_ => SpaceFilter.Normal
+		};
+
+		#endregion
+
+		public virtual InvaderGroup InvadersOn( Space target )
+			=> Cause switch {
+				Cause.Power => Self.BuildInvaderGroupForPowers(GameState, target),
+				_ => GameState.Invaders.On( target, Cause )
+			};
+
+		public virtual void AddFear( int count ) { // need space so we can track fear-space association for bringer
+			GameState.Fear.AddDirect( new FearArgs { 
+				count = count, 
+				cause = Cause, 
+				space = null 
+			} );
+		}
+
+		/// <summary>
+		/// Used for Power-targetting, where range sympols appear.
+		/// </summary>
+		public async Task<TargetSpaceCtx> TargetsSpace( From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum ) {
+			var space = await Self.PowerApi.TargetsSpace( Self, GameState, sourceEnum, sourceTerrain, range, filterEnum );
+			return new TargetSpaceCtx( Self, GameState, space, Cause );
+		}
+
+		public TargetSpaceCtx TargetSpace( Space space ) => new TargetSpaceCtx( Self, GameState, space, Cause );
+
+		public async Task<TargetSpaceCtx> TargetLandWithPresence( string prompt ) {
+			var space = await Self.Action.Decision( new Decision.PresenceDeployed( prompt, Self ) );
+			return new TargetSpaceCtx( Self, GameState, space, Cause );
+		}
 
 		#region Push
 
@@ -127,9 +174,37 @@ namespace SpiritIsland {
 
 		public bool YouHave( string elementString ) => Self.Elements.Contains( elementString );
 
-		public virtual void AddFear( int count ) { // need space so we can track fear-space association for bringer
-			GameState.Fear.AddDirect( new FearArgs { count = count, cause = Cause.None, space = null } );
+		public async Task<TargetSpaceCtx> SelectSpace( string prompt, IEnumerable<Space> options ) {
+			var space = await Self.Action.Decision( new Decision.TargetSpace( prompt, options, Present.Always ) );
+			return space != null
+				? new TargetSpaceCtx( Self, GameState, space, Cause )
+				: null;
 		}
+
+
+		#region used in Fear
+
+		public async Task RemoveHealthFromOne( int healthToRemove, IEnumerable<Space> options ) {
+			var space = await SelectSpace( $"remove {healthToRemove} invader health from", options );
+			space.Invaders.SmartRemovalOfHealth( healthToRemove );
+		}
+
+		public async Task<Space> RemoveTokenFromOne( IEnumerable<Space> spaceOptions, int count, params TokenGroup[] removable ) {
+			var space = await SelectSpace( "Remove invader from", spaceOptions );
+			if(space != null)
+				while(count-->0)
+					space.Tokens.RemoveInvader( removable );
+			return space?.Space;
+		}
+
+		public async Task GatherExplorerToOne( IEnumerable<Space> spaceOptions, int count, params TokenGroup[] typeToGather ) {
+			var spaceCtx = await SelectSpace( "Gather Invader to", spaceOptions );
+			if(spaceCtx != null)
+				await spaceCtx.GatherUpTo(count,typeToGather);
+		}
+
+
+		#endregion
 
 	}
 

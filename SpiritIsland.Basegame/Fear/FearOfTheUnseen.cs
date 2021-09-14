@@ -3,12 +3,13 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 
-	public class FearOfTheUnseen : IFearCard {
+	public class FearOfTheUnseen : IFearOptions {
 
 		public const string Name = "Fear of the Unseen";
 
 		[FearLevel( 1, "Each player removes 1 Explorer / Town from a land with SacredSite." )]
-		public async Task Level1( GameState gs ) {
+		public async Task Level1( FearCtx ctx ) {
+			var gs = ctx.GameState;
 			foreach(var spirit in gs.Spirits)
 				await Remove1ExplorerOrTownFromLandWithSacredSite(spirit,gs);
 		}
@@ -23,7 +24,8 @@ namespace SpiritIsland.Basegame {
 		}
 
 		[FearLevel( 2, "Each player removes 1 Explorer / Town from a land with Presence." )]
-		public async Task Level2( GameState gs ) {
+		public async Task Level2( FearCtx ctx ) {
+			var gs = ctx.GameState;
 			foreach(var spirit in gs.Spirits) {
 				var options = spirit.Presence.Spaces.Where( s => gs.Tokens[s].HasAny( Invader.Explorer, Invader.Town ) )
 					.Union(spirit.SacredSites.Where(s=>gs.Tokens[s].Has(Invader.City)))
@@ -37,7 +39,8 @@ namespace SpiritIsland.Basegame {
 		}
 
 		[FearLevel( 3, "Each player removes 1 Explorer / Town from a land with Presence, or 1 City from a land with SacredSite." )]
-		public async Task Level3( GameState gs ) {
+		public async Task Level3( FearCtx ctx ) {
+			var gs = ctx.GameState;
 			Space[] sacredSites = gs.Spirits.SelectMany( spirit => spirit.SacredSites ).Distinct().ToArray();
 			Space[] presences = gs.Spirits.SelectMany( spirit => spirit.Presence.Spaces ).Distinct().ToArray();
 

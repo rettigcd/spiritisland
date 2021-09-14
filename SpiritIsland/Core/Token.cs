@@ -19,8 +19,8 @@ namespace SpiritIsland {
 
 		public char Initial => Generic.Label[0];
 
-		public Token Damage(int level){
-			return seq[level > Health ? 0 : Health-level];
+		public Token ResultingDamagedInvader(int level){
+			return seq[ level > Health ? 0 : Health-level ];
 		}
 
 		public int Health {get;}

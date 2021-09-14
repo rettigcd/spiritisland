@@ -29,10 +29,11 @@ namespace SpiritIsland {
 
 			TimePassed += PreRavaging.EndOfRound;
 			TimePassed += PreBuilding.EndOfRound;
+			TimePassed += PreExplore.EndOfRound;
 		}
 
-	// == Components ==
-	public Fear Fear { get; }
+		// == Components ==
+		public Fear Fear { get; }
 		public InvaderDeck InvaderDeck { get; set; }
 		public Island Island { get; set; }
 		public Spirit[] Spirits { get; }
@@ -40,17 +41,22 @@ namespace SpiritIsland {
 		public PowerCardDeck MajorCards {get; set; }
 		public PowerCardDeck MinorCards { get; set; }
 		// Branch & Claw
-		public void SkipAllInvaderActions( Space target ) {
-			ModifyRavage(target, cfg=>cfg.ShouldRavage=false );
-			SkipBuild( target );
-			skipExplore.Add(target);
+		public void SkipAllInvaderActions( params Space[] targets ) {
+			foreach(var target in targets) {
+				ModifyRavage(target, cfg=>cfg.ShouldRavage=false );
+				SkipBuild( target );
+				SkipExplore(target);
+			}
 		}
 
 		public void SkipExplore( params Space[] target ) {
-			skipExplore.AddRange( target );
+			PreExplore.ForRound.Add( ( gs, args ) => {
+				foreach(var space in target) {
+					args.SpacesMatchingCards.Remove(space);
+				}
+				return Task.CompletedTask;
+			} );
 		}
-
-		readonly List<Space> skipExplore = new List<Space>();
 
 		public virtual void Initialize() {
 
@@ -68,8 +74,9 @@ namespace SpiritIsland {
 		}
 
 		// == EVENTS ==
-		public AsyncEvent<List<Space>> PreRavaging = new AsyncEvent<List<Space>>();						// A Spread of Rampant Green - stop ravage
-		public AsyncEvent<BuildingEventArgs> PreBuilding = new AsyncEvent<BuildingEventArgs>();						// A Spread of Rampant Green - stop build
+		public AsyncEvent<List<Space>> PreRavaging = new AsyncEvent<List<Space>>();				// A Spread of Rampant Green - stop ravage
+		public AsyncEvent<BuildingEventArgs> PreBuilding = new AsyncEvent<BuildingEventArgs>();	// A Spread of Rampant Green - stop build
+		public AsyncEvent<ExploreEventArgs> PreExplore = new AsyncEvent<ExploreEventArgs>();	       
 		public event Action<GameState> TimePassed;												// Spirit cleanup
 
 		// == Single Round hooks
@@ -85,6 +92,10 @@ namespace SpiritIsland {
 		public async Task TimePasses() {
 
 			await ExecuteAndClear_OneRoundEvents(); // this is async because of Gift of Contancy has user action 'at end of turn'
+
+			// Clear Defend
+			foreach(var s in Island.AllSpaces)
+				Tokens[s][TokenType.Defend] = 0;
 
 			TimePassed?.Invoke( this );
 			++Round;
@@ -167,7 +178,6 @@ namespace SpiritIsland {
 		}
 
 
-		public List<Space> ScheduledRavageSpaces {get; private set; } // loaded at the beginning of the round with spaces that should get a ravage the next round
 		void InitRavageFromDeck() {
 			ScheduledRavageSpaces = InvaderDeck.Ravage != null
 				? Island.Boards.SelectMany( board => board.Spaces )
@@ -222,9 +232,8 @@ namespace SpiritIsland {
 
 		readonly Dictionary<Space, ConfigureRavage> _ravageConfig = new Dictionary<Space, ConfigureRavage>(); // change ravage state of a Space
 
-		public CountDictionary<Space> ScheduledBuildLands;
 		public void InitBuildFromDeck() {
-			ScheduledBuildLands = Island.Boards.SelectMany( board => board.Spaces )
+			ScheduledBuildSpaces = Island.Boards.SelectMany( board => board.Spaces )
 				.Where( InvaderDeck.Build.Matches )
 				.GroupBy( s => s )
 				.ToDictionary( grp => grp.Key, grp => grp.Count() )
@@ -234,7 +243,7 @@ namespace SpiritIsland {
 		public async Task<string[]> Build( InvaderCard invaderCard ) {
 
 			// Build normal
-			ScheduledBuildLands = Island.Boards.SelectMany( board => board.Spaces )
+			ScheduledBuildSpaces = Island.Boards.SelectMany( board => board.Spaces )
 				.Where( invaderCard.Matches )
 				.GroupBy( s => s )
 				.ToDictionary( grp => grp.Key, grp => grp.Count() )
@@ -246,10 +255,10 @@ namespace SpiritIsland {
 		public async Task<string[]> Build() {
 			var args = new BuildingEventArgs {
 				BuildTypes = new Dictionary<Space, BuildingEventArgs.BuildType>(),
-				Spaces = ScheduledBuildLands,
+				Spaces = ScheduledBuildSpaces,
 			};
 
-			await PreBuilding?.InvokeAsync( this, args );
+			await PreBuilding.InvokeAsync( this, args );
 
 			return args.Spaces
 				.Where( pair => pair.Value >= 0 ) // in case we end up with any negative counts
@@ -287,24 +296,36 @@ namespace SpiritIsland {
 		}
 
 		public async Task<Space[]> Explore( InvaderCard invaderCard ) {
-			bool HasTownOrCity( Space space ) {
-				return Tokens[ space ].HasAny(Invader.Town,Invader.City);
-			}
-			var bob = Island.Boards.SelectMany( board => board.Spaces )
+			bool HasTownOrCity( Space space ) { return Tokens[ space ].HasAny(Invader.Town,Invader.City); }
+
+			HashSet<Space> sources = Island.AllSpaces
+				.Where( s => s.Terrain == Terrain.Ocean || HasTownOrCity(s) )
+				.ToHashSet();
+
+			List<Space> spacesThatMatchCards = Island.Boards.SelectMany( board => board.Spaces )
 				.Where( invaderCard.Matches )
-				.Where( space => space.IsCostal || space.Range( 1 ).Any( HasTownOrCity ) )
-				.Except( skipExplore )
-				.ToArray();
-			var spaces = new List<Space>();
-			foreach(var b in bob)
-				if( await ExploresSpace( b ) )
-					spaces.Add( b );
-			return spaces.ToArray();
+				.ToList();
+
+			// Run special event cards over it
+			await this.PreExplore.InvokeAsync( this, new ExploreEventArgs {
+				Sources = sources,
+				SpacesMatchingCards = spacesThatMatchCards,
+			} ); // not really necessary if we are exposing GameSTate.explorationSpaces
+
+			// Add new spaces
+			var spacesToExplore = spacesThatMatchCards
+				.Where( space => space.Range( 1 ).Any( sources.Contains ) );
+
+			// Explore
+			var explored = spacesToExplore.ToArray();
+			foreach(var b in explored)
+				await ExploresSpace( b );
+
+			return explored;
 		}
 
-		protected virtual async Task<bool> ExploresSpace(Space space ) {
+		protected virtual async Task ExploresSpace(Space space ) {
 			await Tokens.Add( Invader.Explorer, space );
-			return true;
 		}
 
 		public Invaders Invaders { get; }
@@ -340,51 +361,27 @@ namespace SpiritIsland {
 
 		public async Task SpiritFree_FearCard_DamageInvaders( Space space, int damage ) {
 			if(damage == 0) return;
-			await Invaders.On( space, Cause.Fear ).ApplySmartDamageToGroup( damage );
+			await Invaders.On( space, Cause.Fear ).SmartDamageToGroup( damage );
 		}
 
 		#endregion
 
-	}
-
-
-	public class AsyncEvent<T> {
-
-		public async Task InvokeAsync(GameState gameState,T t) {
-			foreach(var handler in ForRound)
-				await TryHandle( handler, gameState, t );
-			foreach(var handler in ForGame)
-				await TryHandle( handler, gameState, t );
-		}
-
-		static async Task TryHandle( Func<GameState, T, Task> handler, GameState gameState, T t ) {
-			try {
-				await handler( gameState, t );
-			}
-			catch(Exception) {
-			}
-		}
-		public void EndOfRound(GameState _) { ForRound.Clear(); }
-		public List<Func<GameState,T,Task>> ForRound = new List<Func<GameState, T,Task>>();
-		public List<Func<GameState, T, Task>> ForGame = new List<Func<GameState, T, Task>>();
-	}
-
-	public class SyncEvent<T> {
-		public void Invoke( GameState gameState, T t ) {
-			foreach(var handler in ForRound)
-				handler( gameState, t );
-			foreach(var handler in ForGame)
-				handler( gameState, t );
-		}
-		public void EndOfRound(GameState _) { ForRound.Clear(); }
-		public List<Action<GameState, T>> ForRound = new List<Action<GameState, T>>();
-		public List<Action<GameState, T>> ForGame = new List<Action<GameState, T>>();
+		public CountDictionary<Space> ScheduledBuildSpaces; // Counts of build spaces
+		public List<Space> ScheduledRavageSpaces { get; private set; } // loaded at the beginning of the round with spaces that should get a ravage that round
 	}
 
 	public class BuildingEventArgs {
 		public CountDictionary<Space> Spaces;
 		public Dictionary<Space,BuildType> BuildTypes;
 		public enum BuildType { TownsAndCities, TownsOnly, CitiesOnly }
+	}
+
+	public class ExploreEventArgs {
+
+		public HashSet<Space> Sources;
+
+		public List<Space> SpacesMatchingCards;
+
 	}
 
 }

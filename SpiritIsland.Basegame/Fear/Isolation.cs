@@ -3,22 +3,25 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 
-	public class Isolation : IFearCard {
+	public class Isolation : IFearOptions {
 
 		public const string Name = "Isolation";
 
 		[FearLevel( 1, "Each player removes 1 Explorer / Town from a land where it is the only Invader." )]
-		public Task Level1( GameState gs ) {
+		public Task Level1( FearCtx ctx ) {
+			var gs = ctx.GameState;
 			return RemoveInvaderWhenMax(gs, 1, Invader.Explorer, Invader.Town );
 		}
 
 		[FearLevel( 2, "Each player removes 1 Explorer / Town from a land with 2 or fewer Invaders." )]
-		public Task Level2( GameState gs ) {
+		public Task Level2( FearCtx ctx ) {
+			var gs = ctx.GameState;
 			return RemoveInvaderWhenMax( gs, 2, Invader.Explorer, Invader.Town );
 		}
 
 		[FearLevel( 3, "Each player removes an Invader from a land with 2 or fewer Invaders." )]
-		public Task Level3( GameState gs ) {
+		public Task Level3( FearCtx ctx ) {
+			var gs = ctx.GameState;
 			return RemoveInvaderWhenMax( gs, 2, Invader.City, Invader.Explorer, Invader.Town );
 		}
 

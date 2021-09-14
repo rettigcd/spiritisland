@@ -6,7 +6,7 @@ namespace SpiritIsland {
 
 	public class TokenPusher {
 
-		public TokenPusher( IMakeGamestateDecisions ctx, Space source ) {
+		public TokenPusher( SpiritGameStateCtx ctx, Space source ) {
 			this.ctx = ctx;
 			this.source = source;
 		}
@@ -73,7 +73,7 @@ namespace SpiritIsland {
 
 		#region private
 
-		readonly IMakeGamestateDecisions ctx;
+		readonly SpiritGameStateCtx ctx;
 		protected readonly Space source;
 
 		readonly List<int> countArray = new(); // the # we push from each group
@@ -90,7 +90,7 @@ namespace SpiritIsland {
 	/// </summary>
 	public class TokenMover : TokenPusher {
 		readonly Space destination;
-		public TokenMover( IMakeGamestateDecisions ctx, Space source, Space destination ) : base( ctx, source ) { 
+		public TokenMover( SpiritGameStateCtx ctx, Space source, Space destination ) : base( ctx, source ) { 
 			this.destination = destination;
 		}
 

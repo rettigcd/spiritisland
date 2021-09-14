@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
-	public class TargetSpaceCtx : PowerCtx {
+	public class TargetSpaceCtx : SpiritGameStateCtx {
 
-		public TargetSpaceCtx( Spirit self, GameState gameState, Space target ):base(self,gameState) {
+		public TargetSpaceCtx( Spirit self, GameState gameState, Space target, Cause cause ):base( self, gameState, cause ) {
 			Space = target;
 			Tokens = gameState.Tokens[target];
 		}
@@ -115,7 +115,7 @@ namespace SpiritIsland {
 		// Damage invaders in the current target space
 		public async Task DamageInvaders( int damage ) {
 			if(damage == 0) return;
-			await Invaders.ApplySmartDamageToGroup( damage );
+			await Invaders.SmartDamageToGroup( damage );
 		}
 
 		/// <summary> adds Target to Fear context </summary>

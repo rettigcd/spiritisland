@@ -6,9 +6,9 @@ namespace SpiritIsland.Basegame {
 
 	public class ToDreamAThousandDeaths_DestroyStrategy : DestroyInvaderStrategy {
 
-		readonly IMakeGamestateDecisions engine;
+		readonly SpiritGameStateCtx engine;
 
-		public ToDreamAThousandDeaths_DestroyStrategy( Action<FearArgs> addFear, Cause destructionSource, IMakeGamestateDecisions engine )
+		public ToDreamAThousandDeaths_DestroyStrategy( Action<FearArgs> addFear, Cause destructionSource, SpiritGameStateCtx engine )
 			:base(addFear,destructionSource) {
 			this.engine = engine;
 		}

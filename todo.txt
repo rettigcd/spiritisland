@@ -1,25 +1,23 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
+
+REFACTOR
+When filtering, pass in TargetSpaceCtx instead of Space - simplify API by folding spirit and gamestate into Ctx
+
+
+
+
 ====================================
 ===== Brnach and Claw Road Map =====
 
-Consolidate the Place Presnece methods (PowerApi,CalcDestinationOptions,)
-
-
-BONUS	Switch Lightnings Make-Fast ability to dynamic so only presents # of slows available to make fast
 BONUS	Draw Fast / Slow icons over existing cards when speed changes
 
 Test	With and Without Ocean, PowerTarget, Push & Blight Include/Don't include ocean spaces.
+Test    Imigratino Slows & Explorers Are Reluctant (Explorer card manipulation)
 
 BONUS	Generate Innate images from innate metadata
 ======  Done  ================
 ==============================
-
--- When Targetting spirits --
-Bind Spirit to GameState
-	=> when( picking a land, like normal card space targetting)
-	=> create a secondary target-land context for the second spirit.
-
 
 Game Play needs:
 	- Undo / go back to beginning of turn

@@ -4,7 +4,12 @@ namespace SpiritIsland {
 
 	[AttributeUsage( AttributeTargets.Class | AttributeTargets.Method )]
 	public class FearLevelAttribute : Attribute {
-		public FearLevelAttribute(int _, string _1 ) { }
+
+		public string Description { get; }
+
+		public FearLevelAttribute(int _, string description ) {
+			this.Description = description;
+		}
 	}
 
 }

@@ -198,7 +198,9 @@ namespace SpiritIsland.WinForms {
 			graphics.DrawString("Build", myFont,Brushes.Black, x+(width-textWidth)/2, ClientRectangle.Bottom-textHeight-margin);
 
 			// Fear
-			graphics.DrawFearCard( new RectangleF(x,y-height-margin,width,height), fearCard );
+			var fearHeight = this.Height * .8f;
+			var fearWidth = fearHeight * .66f;
+			graphics.DrawFearCard( new RectangleF(Width-fearWidth-this.Height*.1f,(Height-fearHeight)/2,fearWidth,fearHeight), fearCard );
 
 			// Ravage
 			x -= width;
@@ -318,24 +320,41 @@ namespace SpiritIsland.WinForms {
 			float maxHeight = 0;
 
 			foreach(Token token in counts.Invaders()) {
-				var img = invaderImages[token];
 
-				// Draw Invaders
-				float height = width / img.Width * img.Height;
-				var rect = new Rectangle( (int)x, (int)y, (int)width, (int)height );
-				maxHeight = Math.Max( maxHeight, height );
+				// Strife
+				Token imageToken;
+				if(token is StrifedInvader si) {
+					imageToken = si.WithStrife( 0 );
+
+					Rectangle strifeRect = FitWidth( x, y, width, strife );
+					graphics.DrawImage( strife, strifeRect );
+					graphics.DrawSuperscript( strifeRect, counts[token] );
+				} else {
+					imageToken = token;
+				}
+
+
+				// Draw Token
+				Image img = invaderImages[imageToken];
+				Rectangle rect = FitWidth( x, y, width, img );
 				graphics.DrawImage( img, rect );
-				if(isInvaderSpace && ios.Options.Contains(token))
+
+				if(isInvaderSpace && ios.Options.Contains( token ))
 					optionRects.Add( (rect, token) );
 
 				// Count
-				graphics.DrawCount( rect, counts[token] );
+				graphics.DrawSubscript( rect, counts[token] );
 
+				maxHeight = Math.Max( maxHeight, rect.Height );
 				x += step;
 			}
 
 			float gap = step - width;
 			y += maxHeight + gap;
+		}
+
+		private static Rectangle FitWidth( float x, float y, float width, Image img ) {
+			return new Rectangle( (int)x, (int)y, (int)width, (int)(width / img.Width * img.Height) );
 		}
 
 		private static void DrawRow( Graphics graphics, float x, ref float y, float width, float step, CountDictionary<Image> images ) {
@@ -352,7 +371,7 @@ namespace SpiritIsland.WinForms {
 				var rect = new Rectangle((int)x, (int)y, (int)width, (int)height );
 				graphics.DrawImage( img, rect );
 
-				graphics.DrawCount( rect, images[img] );
+				graphics.DrawSubscript( rect, images[img] );
 
 				x += step;
 			}

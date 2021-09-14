@@ -5,23 +5,25 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 
-	public class DahanRaid : IFearCard {
+	public class DahanRaid : IFearOptions {
 
 		public const string Name = "Dahan Raid";
 
 		[FearLevel(1, "Each player chooses a different land with Dahan. 1 Damage there.")]
-		public Task Level1( GameState gs ) {
-			return ForEachPlayerChosenLandWithDahan( gs, ( s ) => gs.SpiritFree_FearCard_DamageInvaders( s, 1 ) );
+		public Task Level1( FearCtx ctx ) {
+			return ForEachPlayerChosenLandWithDahan( ctx.GameState, ( s ) => ctx.GameState.SpiritFree_FearCard_DamageInvaders( s, 1 ) );
 		}
 
 
 		[FearLevel( 2, "Each player chooses a different land with Dahan. 1 Damage per Dahan there." )]
-		public Task Level2( GameState gs ) {
+		public Task Level2( FearCtx ctx ) {
+			var gs = ctx.GameState;
 			return ForEachPlayerChosenLandWithDahan( gs, ( s ) => gs.SpiritFree_FearCard_DamageInvaders( s, gs.DahanGetCount(s) ) );
 		}
 
 		[FearLevel( 3, "Each player chooses a different land with Dahan. 2 Damage per Dahan there." )]
-		public Task Level3( GameState gs ) {
+		public Task Level3( FearCtx ctx ) {
+			var gs = ctx.GameState;
 			return ForEachPlayerChosenLandWithDahan( gs, ( s ) => gs.SpiritFree_FearCard_DamageInvaders( s, 2*gs.DahanGetCount( s ) ) );
 		}
 

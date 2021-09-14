@@ -38,7 +38,7 @@ namespace SpiritIsland {
 		}
 
 		Task InvokeAgainst( Spirit spirit, GameState gameState, Space target) 
-			=> (Task)methodBase.Invoke( null, new object[] { new TargetSpaceCtx( spirit, gameState, target) } );
+			=> (Task)methodBase.Invoke( null, new object[] { new TargetSpaceCtx( spirit, gameState, target, Cause.Power) } );
 
 	}
 

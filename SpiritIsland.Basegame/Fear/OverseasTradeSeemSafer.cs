@@ -3,25 +3,28 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 
-	public class OverseasTradeSeemSafer : IFearCard {
+	public class OverseasTradeSeemSafer : IFearOptions {
 
 		public const string Name = "Overseas Trade Seem Safer";
 
 		[FearLevel( 1, "Defend 3 in all Coastal lands." )]
-		public Task Level1( GameState gs ) {
+		public Task Level1( FearCtx ctx ) {
+			var gs = ctx.GameState;
 			DefendCostal( gs, 3 );
 			return Task.CompletedTask;
 		}
 
 		[FearLevel( 2, "Defend 6 in all Coastal lands. Invaders do not Build City in Coastal lands this turn." )]
-		Task IFearCard.Level2( GameState gs ){
+		Task IFearOptions.Level2( FearCtx ctx ) {
+			var gs = ctx.GameState;
 			DefendCostal( gs, 6 );
 			SkipCostalBuild( gs );
 			return Task.CompletedTask;
 		}
 
 		[FearLevel( 3, "Defend 9 in all Coastal lands. Invaders do not Build in Coastal lands this turn." )]
-		Task IFearCard.Level3( GameState gs ){
+		Task IFearOptions.Level3( FearCtx ctx ) {
+			var gs = ctx.GameState;
 			DefendCostal( gs, 9 );
 			SkipCostalBuild( gs );
 			return Task.CompletedTask;

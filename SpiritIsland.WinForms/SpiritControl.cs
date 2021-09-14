@@ -199,7 +199,7 @@ namespace SpiritIsland.WinForms {
 				using var redX = images.GetTokenIcon( "red-x" );
 				graphics.DrawImage( redX, rect.X, rect.Y, rect.Width*2/3,rect.Height*2/3 );
 				// count
-				graphics.DrawCount( rect, spirit.Presence.Destroyed );
+				graphics.DrawSubscript( rect, spirit.Presence.Destroyed );
 			}
 
 			return new Size(

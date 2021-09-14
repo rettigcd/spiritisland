@@ -3,22 +3,25 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 
-	public class Retreat : IFearCard {
+	public class Retreat : IFearOptions {
 
 		public const string Name = "Retreat";
 
 		[FearLevel( 1, "Each player may Push up to 2 Explorer from an Inland land." )]
-		public Task Level1( GameState gs ) {
+		public Task Level1( FearCtx ctx ) {
+			var gs = ctx.GameState;
 			return ForEachSpiritPushUpToNTokesnsFromInland( gs, 2, Invader.Explorer );
 		}
 
 		[FearLevel( 2, "Each player may Push up to 3 Explorer / Town from an Inland land." )]
-		public Task Level2( GameState gs ) {
+		public Task Level2( FearCtx ctx ) {
+			var gs = ctx.GameState;
 			return ForEachSpiritPushUpToNTokesnsFromInland( gs, 3, Invader.Town, Invader.Explorer );
 		}
 
 		[FearLevel( 3, "Each player may Push any number of Explorer / Town from one land." )]
-		public Task Level3( GameState gs ) {
+		public Task Level3( FearCtx ctx ) {
+			var gs = ctx.GameState;
 			return ForEachSpiritPushUpToNTokesnsFromInland( gs, int.MaxValue, Invader.Town, Invader.Explorer );
 		}
 

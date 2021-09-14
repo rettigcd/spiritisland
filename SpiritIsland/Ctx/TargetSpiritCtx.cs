@@ -2,15 +2,15 @@
 
 namespace SpiritIsland {
 
-	public class TargetSpiritCtx : PowerCtx {
+	public class TargetSpiritCtx : SpiritGameStateCtx {
 
-		public TargetSpiritCtx( Spirit self, GameState gs, Spirit target ) : base(self,gs) {
+		public TargetSpiritCtx( Spirit self, GameState gs, Spirit target, Cause cause ) : base(self,gs,cause) {
 			Other = target;
 		}
 
 		public Spirit Other { get; }
 
-		public PowerCtx OtherCtx => new PowerCtx( Other, GameState );
+		public SpiritGameStateCtx OtherCtx => new SpiritGameStateCtx( Other, GameState, Cause );
 
 	}
 

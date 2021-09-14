@@ -44,7 +44,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			Given_DahanAndTownsInSpaceWithPresence(10,1);
 
 			_ = When_AddFearApplyFearAndRavage();
-			gameState.Spirits[0].Action.AssertDecision( "Activating Fear", "Null Fear Card", "Null Fear Card" );
+			gameState.Spirits[0].Action.AssertDecision( "Activating Fear", "Null Fear Card:1:x", "Null Fear Card:1:x" );
 
 			// Then: all dahan killed
 			gameState.DahanGetCount( ravageSpace ).ShouldBe(0);
@@ -57,7 +57,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 
 			_ =  When_AddFearApplyFearAndRavage();
 
-			gameState.Spirits[0].Action.AssertDecision( "Activating Fear", CardName, CardName );
+			gameState.Spirits[0].Action.AssertDecision( "Activating Fear", CardName+ ":1:Defend 2 in all lands with Presence.", CardName + ":1:Defend 2 in all lands with Presence." );
 			// Then: 1 dahan left
 			Assert.Equal( 1, gameState.DahanGetCount( ravageSpace ) );
 
@@ -74,7 +74,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			Given_DahanAndTownsInSpaceWithPresence( 2, 5 );
 
 			_ = When_AddFearApplyFearAndRavage();
-			gameState.Spirits[0].Action.AssertDecision( "Activating Fear", CardName, CardName );
+			gameState.Spirits[0].Action.AssertDecision( "Activating Fear", CardName+ ":1:Defend 2 in all lands with Presence.", CardName + ":1:Defend 2 in all lands with Presence." );
 
 			// Then: 1 dahan left
 			Assert.Equal( 1, gameState.DahanGetCount( ravageSpace ) );

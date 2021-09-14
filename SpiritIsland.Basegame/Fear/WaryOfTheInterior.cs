@@ -4,22 +4,25 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 
-	public class WaryOfTheInterior : IFearCard {
+	public class WaryOfTheInterior : IFearOptions {
 
 		public const string Name = "Wary of the Interior";
 
 		[FearLevel( 1, "Each player removes 1 Explorer from an Inland land." )]
-		public Task Level1( GameState gs ) {
+		public Task Level1( FearCtx ctx ) {
+			var gs = ctx.GameState;
 			return EachSpiritRemoves1Invader( gs, IsInland, Invader.Explorer );
 		}
 
 		[FearLevel( 2, "Each player removes 1 Explorer / Town from an Inland land." )]
-		public Task Level2( GameState gs ) {
+		public Task Level2( FearCtx ctx ) {
+			var gs = ctx.GameState;
 			return EachSpiritRemoves1Invader( gs, IsInland, Invader.Explorer, Invader.Town );
 		}
 
 		[FearLevel( 3, "Each player removes 1 Explorer / Town from any land." )]
-		public Task Level3( GameState gs ) {
+		public Task Level3( FearCtx ctx ) {
+			var gs = ctx.GameState;
 			return EachSpiritRemoves1Invader( gs, s=>true, Invader.Explorer, Invader.Town );
 		}
 

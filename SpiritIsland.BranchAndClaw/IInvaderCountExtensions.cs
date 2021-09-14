@@ -36,12 +36,6 @@ namespace SpiritIsland.BranchAndClaw {
 			return orig.WithStrife( orig.Strife()+ deltaStrife );
 		}
 
-		static public async Task SelectInvader_ToStrife( this Spirit spirit, TokenCountDictionary tokens ) {
-			var invader = await spirit.Action.Decision( new AddStrifeDecision( tokens ) );
-			if(invader != null)
-				tokens.AddStrifeTo( invader );
-		}
-
 	}
 
 }

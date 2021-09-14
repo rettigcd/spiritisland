@@ -7,7 +7,7 @@ namespace SpiritIsland {
 	public static class IMakeGamestateDecisionsExtensions {
 
 		static public SpiritGameStateCtx MakeDecisionsFor(this Spirit spirit, GameState gameState ) 
-			=> new SpiritGameStateCtx( spirit, gameState );
+			=> new SpiritGameStateCtx( spirit, gameState, Cause.None );
 
 		#region extends spirits - Select Action
 

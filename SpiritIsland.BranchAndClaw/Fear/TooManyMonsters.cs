@@ -1,10 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
-namespace SpiritIsland.BranchAndClaw.Fear {
-	class TooManyMonsters {
+namespace SpiritIsland.BranchAndClaw {
+
+	class TooManyMonsters : IFearOptions {
+		public const string Name = "Too Many Monsters";
+
+		[FearLevel( 1, "Each player removes 1 explorer / town from a land with beast." )]
+		public async Task Level1( FearCtx ctx ) {
+
+			// Each player removes 1 explorer / town from a land with beast.
+			foreach(var spiritCtx in ctx.Spirits)
+				await spiritCtx.RemoveTokenFromOne( ctx.LandsWithBeasts(), 1, Invader.Explorer );
+
+		}
+
+		[FearLevel( 2, "Each player removes 1 explorer and 1 town from a land with beast or 1 explorer from a and adjacent to beast" )]
+		public async Task Level2( FearCtx ctx ) {
+
+			// Each player removes 1 explorer and 1 town from a land with beast or 1 explorer from a land adjacent to beast
+			foreach(var spirit in ctx.Spirits)
+				await RemoveTokenChoice( ctx,spirit, 1, Invader.Explorer );
+
+		}
+
+		[FearLevel( 3, "Each player removes 2 explorers and 2 towns from a land with beast or 1 explorer/town from a land adjacent to beast" )]
+		public async Task Level3( FearCtx ctx ) {
+
+			// Each player removes 2 explorers and 2 towns from a land with beast or 1 explorer/town from a land adjacent to beast
+			foreach(var spirit in ctx.Spirits)
+				await RemoveTokenChoice( ctx, spirit, 2, Invader.Explorer, Invader.Town );
+		}
+
+		static Task RemoveTokenChoice( FearCtx ctx, SpiritGameStateCtx spiritCtx, int count, params TokenGroup[] interiorGroup ) {
+			return spiritCtx.SelectActionOption(
+				new ActionOption("Remove 1 explorer & 1 town from a land with beast", () => { 
+					return spiritCtx.RemoveTokenFromOne( ctx.LandsWithBeasts(), count, Invader.Explorer, Invader.Town );
+				}),
+				new ActionOption("Remove 1 explorer from a land adjacent to beast", () => { 
+					return spiritCtx.RemoveTokenFromOne( ctx.LandsAdjacentToBeasts(), 1, interiorGroup );
+				})
+			);
+		}
+
+
 	}
+
 }

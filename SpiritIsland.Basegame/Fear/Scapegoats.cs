@@ -2,19 +2,21 @@
 
 namespace SpiritIsland.Basegame {
 
-	public class Scapegoats : IFearCard {
+	public class Scapegoats : IFearOptions {
 
 		public const string Name = "Scapegoats";
 
 		[FearLevel( 1, "Each Town destroys 1 Explorer in its land." )]
-		public Task Level1( GameState gs ) {
+		public Task Level1( FearCtx ctx ) {
+			var gs = ctx.GameState;
 			foreach(var space in gs.Island.AllSpaces)
 				Destroy_1ExplorerPerTown( gs.Invaders.On( space, Cause.Fear ) );
 			return Task.CompletedTask;
 		}
 
 		[FearLevel( 2, "Each Town destroys 1 Explorer in its land. Each City destroys 2 Explorer in its land." )]
-		public Task Level2( GameState gs ) {
+		public Task Level2( FearCtx ctx ) {
+			var gs = ctx.GameState;
 			foreach(var space in gs.Island.AllSpaces) {
 				var grp = gs.Invaders.On( space, Cause.Fear );
 				Destory_1ExplorerPerTownAnd2ExplorersPerCity( grp );
@@ -23,7 +25,8 @@ namespace SpiritIsland.Basegame {
 		}
 
 		[FearLevel( 3, "Destroy all Explorer in lands with Town / City. Each City destroys 1 Town in its land." )]
-		public async Task Level3( GameState gs ) {
+		public async Task Level3( FearCtx ctx ) {
+			var gs = ctx.GameState;
 			foreach(var space in gs.Island.AllSpaces) {
 				var grp = (InvaderGroup)gs.Invaders.On( space, Cause.Fear );
 				await grp.Destroy( int.MaxValue, Invader.Explorer );

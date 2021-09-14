@@ -30,13 +30,12 @@ namespace SpiritIsland.BranchAndClaw {
 		}
 
 		// only gets called when explorer is actually going to explore
-		protected override Task<bool> ExploresSpace( Space space ) {
+		protected override async Task ExploresSpace( Space space ) {
 			var wilds = Tokens[space].Wilds();
 			if(wilds == 0)
-				return base.ExploresSpace( space );
-
-			wilds.Count--;
-			return Task.FromResult(false);
+				await base.ExploresSpace( space );
+			else
+				wilds.Count--;
 		}
 
 		protected override async Task<string> Build( TokenCountDictionary tokens, BuildingEventArgs.BuildType buildType ) {
