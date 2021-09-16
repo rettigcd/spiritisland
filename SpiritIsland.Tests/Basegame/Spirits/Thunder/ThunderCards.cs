@@ -23,9 +23,11 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			spirit.Hand.Single( x => x.Name == cardName ).ActivateAsync( spirit, gs);
 		}
 
-		protected void Step( string expectedPrompt, string expectedOptions, IOption optionToSelect, bool expectedResolved ) {
-			action.GetCurrent().Prompt.ShouldBe( expectedPrompt );
-			action.GetCurrent().Options.Select( o => o.Text ).OrderBy( x => x ).Join( "," ).ShouldBe( expectedOptions );
+		protected void Step( string expectedPrompt, string expectedOptions, string optionTextToSelect, bool expectedResolved ) {
+			var current = action.GetCurrent();
+			current.Prompt.ShouldBe( expectedPrompt );
+			current.Options.Select( o => o.Text ).OrderBy( x => x ).Join( "," ).ShouldBe( expectedOptions );
+			var optionToSelect = current.Options.First(o=>o.Text == optionTextToSelect);
 			action.Choose( optionToSelect );
 			action.IsResolved.ShouldBe( expectedResolved );
 		}

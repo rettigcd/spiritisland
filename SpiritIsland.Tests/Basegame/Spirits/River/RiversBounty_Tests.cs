@@ -64,15 +64,19 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			When_PlayingCard();
 
+			string token = "D@2 on " + neighbor.Label;
+
 			// Select source 1
 			if(dahanToGather>0){
 				Assert.False( action.IsResolved );
-				action.Choose(neighbor);
+				Assert_Options( token,"Done" );
+				action.Choose( token );
 			}
 			// Select source 2
 			if(dahanToGather>1){
 				Assert.False( action.IsResolved );
-				action.Choose(neighbor);
+				Assert_Options( token, "Done" );
+				action.Choose( token );
 			}
 
 			Assert.Equal( endingCount, gameState.DahanGetCount( target ) ); // same as original
@@ -94,11 +98,13 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			// Select 1st land
 			Assert.False( action.IsResolved );
-			Assert_Options( neighbors.Take(dahanToGather), TextOption.Done );
-			action.Choose(neighbors[0]);
+			Assert_Options( "D@2 on A1,D@2 on A2,Done".Split(',') );
+			action.Choose( "D@2 on A1" );
+
 			// Select 2nd land
 			Assert.False( action.IsResolved );
-			action.Choose( action.GetCurrent().Options[0] );
+			Assert_Options( "D@2 on A2,Done".Split( ',' ) );
+			action.Choose( "D@2 on A2" );
 
 			Assert.True( action.IsResolved );
 
@@ -124,10 +130,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			action.Choose( target );
 			// Select 1st source land
 			Assert.False( action.IsResolved );
-			action.Choose( board[5] );
+			action.Choose( "D@2 on " + board[5].Label );
 			// Select 2nd source land
 			Assert.False( action.IsResolved );
-			action.Choose( board[5] );
+			action.Choose( "D@2 on "+ board[5].Label );
 
 			Assert.True( action.IsResolved );
 

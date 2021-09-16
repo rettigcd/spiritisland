@@ -18,6 +18,7 @@ namespace SpiritIsland {
 
 		public TokenGroup(string label, int fullHealth) {
 			Label = label;
+			Initial = label[0];
 
 			// Build different health level Sequence
 			seq = BuildHealthSequence(this, fullHealth);
@@ -26,6 +27,21 @@ namespace SpiritIsland {
 			Default = seq[^1];
 
 		}
+
+		public TokenGroup( string label, int fullHealth, char initial ) {
+			Label = label;
+			Initial = initial;
+
+			// Build different health level Sequence
+			seq = BuildHealthSequence( this, fullHealth );
+
+			// Capture default cast (????_
+			Default = seq[^1];
+
+		}
+
+
+		public char Initial { get; }
 
 		public string Label { get; }
 

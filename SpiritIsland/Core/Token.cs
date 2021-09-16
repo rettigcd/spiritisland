@@ -17,7 +17,7 @@ namespace SpiritIsland {
 
 		public virtual string Summary => Initial+"@"+Health; // C@3, T@2
 
-		public char Initial => Generic.Label[0];
+		public char Initial => Generic.Initial;
 
 		public Token ResultingDamagedInvader(int level){
 			return seq[ level > Health ? 0 : Health-level ];

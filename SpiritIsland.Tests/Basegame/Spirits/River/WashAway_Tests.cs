@@ -167,7 +167,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 		void Then_SelectInvaderToPush( Token invader, int remaining, params string[] options ) {
 			Assert.False( action.IsResolved );
-			Assert.Equal( $"Select item to push ({remaining} remaining)", action.GetCurrent().Prompt );
+			Assert.Equal( $"Push up to ({remaining})", action.GetCurrent().Prompt );
 			Assert_Options( options );
 			action.Choose( action.GetCurrent().Options.Single( x => x.Text == invader.Summary ) );
 		}

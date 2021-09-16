@@ -17,7 +17,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 		[Fact]
 		public void NoDahanToGather() {
 			When_ActivateCard( SuddenAmbush.Name );
-			Step( "Select space to target.", "A1,A2,A4,A5,A6", a[2], true );
+			Step( "Select space to target.", "A1,A2,A4,A5,A6", "A2", true );
 		}
 
 		[Fact]
@@ -28,8 +28,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			gs.Tokens[a[2]].Adjust(Invader.Explorer[1],2);
 
 			When_ActivateCard( SuddenAmbush.Name );
-			Step( "Select space to target.", "A1,A2,A4,A5,A6", a[2], false );
-			Step( "Gather Dahan (1 remaining)", "A3,Done", a[3], true);
+			Step( "Select space to target.", "A1,A2,A4,A5,A6", "A2", false );
+			Step( "Gather up to 1", "D@2 on A3,Done", "D@2 on A3", true);
 
 			// Then: 1 explorer left
 			gs.Assert_Invaders( a[2], "1E@1" );
@@ -44,8 +44,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			gs.Tokens[a[1]].Adjust( Invader.Explorer[1], 5 );
 
 			When_ActivateCard( SuddenAmbush.Name );
-			Step( "Select space to target.", "A1,A2,A4,A5,A6", a[1], false );
-			Step( "Gather Dahan (1 remaining)", "A2,Done", a[2], true );
+			Step( "Select space to target.", "A1,A2,A4,A5,A6", "A1", false );
+			Step( "Gather up to 1", "D@2 on A2,Done", "D@2 on A2", true );
 
 			// Then: 5-2-1 = 2 explorers left
 			gs.Assert_Invaders( a[1], "2E@1" );
@@ -60,8 +60,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			gs.Tokens[a[1]].Adjust(Invader.Town.Default, 1);
 
 			When_ActivateCard(SuddenAmbush.Name);
-			Step("Select space to target.", "A1,A2,A4,A5,A6", a[1], false);
-			Step("Gather Dahan (1 remaining)", "A2,Done", a[2], true);
+			Step("Select space to target.", "A1,A2,A4,A5,A6", "A1", false);
+			Step("Gather up to 1", "D@2 on A2,Done", "D@2 on A2", true);
 
 			// Then: 5-2-1 = 2 explorers left
 			gs.Assert_Invaders(a[1], "1T@2" );

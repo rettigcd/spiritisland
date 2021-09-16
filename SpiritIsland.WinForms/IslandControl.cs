@@ -108,13 +108,20 @@ namespace SpiritIsland.WinForms {
 			beast = ResourceImages.Singleton.GetTokenIcon( "beast" );
 			strife = ResourceImages.Singleton.GetTokenIcon( "strife" );
 
-			invaderImages = new Dictionary<Token, Image> {
+			tokenImages = new Dictionary<Token, Image> {
 				[Invader.City[3]] = city,
 				[Invader.City[2]] = city2,
 				[Invader.City[1]] = city1,
 				[Invader.Town[2]] = town,
 				[Invader.Town[1]] = town1,
 				[Invader.Explorer[1]] = explorer,
+				[TokenType.Dahan[2]] = dahan,
+				[TokenType.Dahan[1]] = dahan1,
+				[TokenType.Defend] = defend,
+				[TokenType.Blight] = blight,
+				[BacTokens.Beast] = beast,
+				[BacTokens.Wilds] = wilds,
+				[BacTokens.Disease] = disease,
 			};
 
 			this.gameState = gameState;
@@ -122,16 +129,21 @@ namespace SpiritIsland.WinForms {
 		}
 
 		void OptionProvider_OptionsChanged( IDecision decision ) {
-			ios               = decision as Decision.TokenOnSpace;
-			adjacentDecision  = decision as Decision.AdjacentSpace;
+			tokenOnSpace      = decision as Decision.TokenOnSpace;
+			adjacentDecision  = decision as Decision.IsGatherOrPush;
+			spaceTokens       = decision as Decision.TypedDecision<SpaceToken>;
 			this.activeSpaces = decision.Options.OfType<Space>().ToArray();
 			fearCard          = decision.Options.OfType<DisplayFearCard>().FirstOrDefault();
 		}
 
 		DisplayFearCard fearCard;
-		Decision.TokenOnSpace ios;
-		Decision.AdjacentSpace adjacentDecision;
+		Decision.TokenOnSpace tokenOnSpace;
+		Decision.IsGatherOrPush adjacentDecision;
+		Decision.TypedDecision<SpaceToken> spaceTokens;
+		
 		readonly List<(Rectangle,IOption)> optionRects = new List<(Rectangle, IOption)>();
+
+		readonly Dictionary<string,Rectangle> tokenLocations = new Dictionary<string, Rectangle>();
 
 		Image board;
 
@@ -172,6 +184,7 @@ namespace SpiritIsland.WinForms {
 			}
 
 			optionRects.Clear();
+			tokenLocations.Clear();
 
 			if(gameState != null) {
 				foreach(var space in gameState.Island.Boards[0].Spaces)
@@ -182,32 +195,43 @@ namespace SpiritIsland.WinForms {
 		}
 
 		void DrawInvaderCards( Graphics graphics ) {
+
 			// Invaders
 			const float margin = 15;
 			const float textHeight = 20f;
 			float height = this.Height *.33f;
 			float width = height * .66f;
+			using var buildRavageFont = new Font( ResourceImages.Singleton.Fonts.Families[0], textHeight );
 
 			float x = ClientRectangle.Width-width-margin-margin;
 			float y = ClientRectangle.Height-height-margin*2 - textHeight;
 
-			// Build
-			using var myFont = new Font( ResourceImages.Singleton.Fonts.Families[0], textHeight );
-			graphics.DrawInvaderCard(new RectangleF(x,y,width,height),gameState.InvaderDeck.Build);
-			float textWidth = graphics.MeasureString("Build",myFont).Width;
-			graphics.DrawString("Build", myFont,Brushes.Black, x+(width-textWidth)/2, ClientRectangle.Bottom-textHeight-margin);
+			// Build Metrics
+			var buildRect = new RectangleF( x, y, width, height );
+			float buildTextWidth = graphics.MeasureString( "Build", buildRavageFont ).Width;
+			var buildTextTopLeft = new PointF( x + (width - buildTextWidth) / 2, ClientRectangle.Bottom - textHeight - margin );
 
-			// Fear
+			// Ravage Metrics
+			float ravageX = x - (width + margin);
+			var ravageRect = new RectangleF( ravageX, y, width, height );
+			float textWidth = graphics.MeasureString( "Ravage", buildRavageFont ).Width;
+			PointF ravageTextTopLeft = new PointF( ravageX + (width - textWidth) / 2, ClientRectangle.Bottom - textHeight - margin );
+
+			// Fear Metrics
 			var fearHeight = this.Height * .8f;
 			var fearWidth = fearHeight * .66f;
-			graphics.DrawFearCard( new RectangleF(Width-fearWidth-this.Height*.1f,(Height-fearHeight)/2,fearWidth,fearHeight), fearCard );
+			var fearRect = new RectangleF( Width - fearWidth - this.Height * .1f, (Height - fearHeight) / 2, fearWidth, fearHeight );
+
+			// Build
+			graphics.DrawInvaderCard( buildRect, gameState.InvaderDeck.Build );
+			graphics.DrawString("Build", buildRavageFont,Brushes.Black, buildTextTopLeft );
 
 			// Ravage
-			x -= width;
-			x-=margin;
-			graphics.DrawInvaderCard( new RectangleF( x, y, width, height ), gameState.InvaderDeck.Ravage );
-			textWidth = graphics.MeasureString( "Ravage", myFont ).Width;
-			graphics.DrawString( "Ravage", myFont, Brushes.Black, x+(width-textWidth)/2, ClientRectangle.Bottom - textHeight-margin );
+			graphics.DrawInvaderCard( ravageRect, gameState.InvaderDeck.Ravage );
+			graphics.DrawString( "Ravage", buildRavageFont, Brushes.Black, ravageTextTopLeft );
+
+			// Fear
+			graphics.DrawFearCard( fearRect, fearCard );
 
 		}
 
@@ -242,9 +266,31 @@ namespace SpiritIsland.WinForms {
 
 			}
 
-			// Invader Boxes
-			foreach(var (rect,_) in optionRects)
-				pe.Graphics.DrawRectangle(pen,rect);
+			if(spaceTokens != null) {
+				// Draw tokens on space && set them as hotspots
+				foreach(var st in spaceTokens.Options.OfType<SpaceToken>()) {
+					string key = st.Space.Label + ":" + st.Token.Summary;
+					if(tokenLocations.ContainsKey( key )) {
+						var rect = tokenLocations[key];
+						rect.Inflate( 4, 4 );
+						optionRects.Add( (rect, st) );
+						pe.Graphics.DrawRectangle( pen, rect );
+					}
+				}
+			}
+
+			if(tokenOnSpace != null) {
+				// Draw tokens on space && set them as hotspots
+				foreach(var token in tokenOnSpace.Options.OfType<Token>()) {
+					string key = tokenOnSpace.Space.Label + ":" + token.Summary;
+					if(tokenLocations.ContainsKey( key )) {
+						var rect = tokenLocations[key];
+						rect.Inflate(4,4);
+						optionRects.Add( (rect, token) );
+						pe.Graphics.DrawRectangle( pen, rect );
+					}
+				}
+			}
 
 		}
 		
@@ -287,39 +333,34 @@ namespace SpiritIsland.WinForms {
 			float x = xy.X - iconWidth;
 			float y = xy.Y - iconWidth;
 
-			DrawInvaderRow( graphics, x, ref y, iconWidth, xStep, space );
+			TokenCountDictionary tokens = gameState.Tokens[space];
+			DrawInvaderRow( graphics, x, ref y, iconWidth, xStep, tokens );
 
 			// dahan & presence & blight
-			var tokens = gameState.Tokens[space];
-			CountDictionary<Image> images = new();
-			images[dahan]    = tokens[TokenType.Dahan[2]];
-			images[dahan1]   = tokens[TokenType.Dahan[1]];
-			images[defend]   = tokens.Defend;
-			images[blight] = tokens.Blight;
-			images[presence] = spirit.Presence.CountOn( space );
-			DrawRow( graphics, x, ref y, iconWidth, xStep, images );
+			int presenceCount = spirit.Presence.CountOn( space );
+			bool isSS = spirit.SacredSites.Contains( space );
+			DrawRow( graphics, tokens, x, ref y, iconWidth, xStep, presenceCount, isSS
+				, TokenType.Dahan[2], TokenType.Dahan[1],TokenType.Defend,TokenType.Blight
+			);
 
-			images.Clear();
-			images[beast]    = tokens.Beasts();
-			images[wilds]    = tokens.Wilds();
-			images[disease]  = tokens.Disease();
-//			images[strife]   = tokens[BacTokens.StrgameState.GetBlightOnSpace( space );
-			DrawRow( graphics, x, ref y, iconWidth, xStep, images );
+			DrawRow( graphics, tokens, x, ref y, iconWidth, xStep, 0, false
+				, BacTokens.Beast, BacTokens.Wilds, BacTokens.Disease
+			);
 
 		}
 
-		Dictionary<Token, Image> invaderImages;
+		Dictionary<Token, Image> tokenImages;
 
-		void DrawInvaderRow( Graphics graphics, float x, ref float y, float width, float step, Space space ) {
-			bool isInvaderSpace = ios!=null && ios.Space == space;
+		void DrawInvaderRow( Graphics graphics, float x, ref float y, float width, float step, TokenCountDictionary tokens ) {
 
-			// invaders
-			var counts = gameState.Tokens[space];
-			if(!counts.HasInvaders()) return;
+			Space space = tokens.Space;
+
+			// tokens
+			if(!tokens.HasInvaders()) return;
 
 			float maxHeight = 0;
 
-			foreach(Token token in counts.Invaders()) {
+			foreach(Token token in tokens.Invaders()) {
 
 				// Strife
 				Token imageToken;
@@ -328,22 +369,22 @@ namespace SpiritIsland.WinForms {
 
 					Rectangle strifeRect = FitWidth( x, y, width, strife );
 					graphics.DrawImage( strife, strifeRect );
-					graphics.DrawSuperscript( strifeRect, counts[token] );
+					graphics.DrawSuperscript( strifeRect, tokens[token] );
 				} else {
 					imageToken = token;
 				}
 
 
 				// Draw Token
-				Image img = invaderImages[imageToken];
+				Image img = tokenImages[imageToken];
 				Rectangle rect = FitWidth( x, y, width, img );
 				graphics.DrawImage( img, rect );
 
-				if(isInvaderSpace && ios.Options.Contains( token ))
-					optionRects.Add( (rect, token) );
+				// record token location
+				tokenLocations.Add(space.Label+":"+token.Summary,rect);
 
 				// Count
-				graphics.DrawSubscript( rect, counts[token] );
+				graphics.DrawSubscript( rect, tokens[token] );
 
 				maxHeight = Math.Max( maxHeight, rect.Height );
 				x += step;
@@ -357,23 +398,50 @@ namespace SpiritIsland.WinForms {
 			return new Rectangle( (int)x, (int)y, (int)width, (int)(width / img.Width * img.Height) );
 		}
 
-		private static void DrawRow( Graphics graphics, float x, ref float y, float width, float step, CountDictionary<Image> images ) {
-			if(!images.Keys.Any()) return;
+		private void DrawRow( Graphics graphics, TokenCountDictionary tokens, float x, ref float y, float width, float step, int presenceCount, bool isSacredSite, params Token[] tokenTypes ) {
 			float maxHeight = 0;
 
 			using Font countFont = new( "Arial", 7, FontStyle.Bold, GraphicsUnit.Point );
 
-			foreach(var img in images.Keys){
+			foreach(var token in tokenTypes) {
+				int count = tokens[token];
+				if(count == 0) continue;
+				var img = tokenImages[token];
+
+				// calc rect
+				float height = width / img.Width * img.Height;
+				maxHeight = Math.Max( maxHeight, height );
+				var rect = new Rectangle( (int)x, (int)y, (int)width, (int)height );
+				x += step;
+
+				// record token location
+				tokenLocations.Add( tokens.Space.Label + ":" + token.Summary, rect );
 
 				// Draw Tokens
-				float height = width / img.Width * img.Height;
-				maxHeight = Math.Max(maxHeight,height); 
-				var rect = new Rectangle((int)x, (int)y, (int)width, (int)height );
 				graphics.DrawImage( img, rect );
+				graphics.DrawSubscript( rect, count );
+			}
 
-				graphics.DrawSubscript( rect, images[img] );
-
+			if(presenceCount > 0) { 
+				// calc rect
+				float height = width / presence.Width * presence.Height;
+				maxHeight = Math.Max( maxHeight, height );
+				var rect = new Rectangle( (int)x, (int)y, (int)width, (int)height );
 				x += step;
+
+				if( isSacredSite ) {
+					const int inflationSize = 10;
+					rect.Inflate( inflationSize, inflationSize );
+					Color newColor = Color.FromArgb( 100, Color.Yellow );
+					using var brush = new SolidBrush(newColor);
+					graphics.FillEllipse(brush,rect);
+					rect.Inflate( -inflationSize, -inflationSize );
+				}
+
+				// Draw Presence
+				graphics.DrawImage( presence, rect );
+				graphics.DrawSubscript( rect, presenceCount );
+
 			}
 
 			float gap = step-width;
@@ -384,11 +452,14 @@ namespace SpiritIsland.WinForms {
 
 			Point clientCoords = this.PointToClient(Control.MousePosition);
 
-			var match = FindOption();
+			IOption match = FindOption();
 			if(match is Space space)
 				SpaceClicked?.Invoke(space);
 			else if(match is Token invader)
-				InvaderClicked?.Invoke( invader );
+				TokenClicked?.Invoke( invader );
+			else if(match is SpaceToken st)
+				SpaceTokenClicked?.Invoke( st );
+
 		}
 
 		private PointF SpaceCenter( Space s ) {
@@ -436,7 +507,8 @@ namespace SpiritIsland.WinForms {
 
 
 		public event Action<Space> SpaceClicked;
-		public event Action<Token> InvaderClicked;
+		public event Action<Token> TokenClicked;
+		public event Action<SpaceToken> SpaceTokenClicked;
 
 	}
 

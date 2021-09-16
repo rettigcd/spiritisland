@@ -81,6 +81,22 @@ namespace SpiritIsland {
 		#region Gather
 
 		public async Task GatherUpTo( Space target, int countToGather, params TokenGroup[] groups ) {
+			SpaceToken[] GetOptions() => target.Adjacent
+				.SelectMany(a=>GameState.Tokens[a].OfAnyType(groups).Select(t=>new SpaceToken(a,t)))
+				.ToArray();
+
+			SpaceToken[] options;
+			while( 0 < countToGather
+				&& (options=GetOptions()).Length>0
+			) {
+				var source = await Self.Action.Decision( new Decision.AdjacentSpaceTokensToGathers(countToGather, target, options, Present.Done ));
+				if(source == null) break;
+				await GameState.Move( source.Token, source.Space, target );
+				--countToGather;
+			}
+		}
+
+		public async Task Old_GatherUpTo( Space target, int countToGather, params TokenGroup[] groups ) {
 			Token[] calcTokens( Space space ) => GameState.Tokens[space].OfAnyType( groups );
 			Space[] CalcSource() => target.Adjacent
 				.Where( s => calcTokens( s ).Any() )

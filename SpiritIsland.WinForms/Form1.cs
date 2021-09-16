@@ -26,7 +26,8 @@ namespace SpiritIsland.WinForms {
 			this.NewDecision += UpdateButtons;
 
 			this.islandControl.SpaceClicked += Select;
-			this.islandControl.InvaderClicked += Select;
+			this.islandControl.TokenClicked += Select;
+			this.islandControl.SpaceTokenClicked += Select;
 			this.cardControl.CardSelected += Select;
 			this.spiritControl.OptionSelected += Select;
 
