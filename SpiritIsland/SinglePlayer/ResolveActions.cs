@@ -32,7 +32,7 @@ namespace SpiritIsland.SinglePlayer {
 				if(!factoryOptions.Contains( option ))
 					// find the fast version of the slow card that was clicked
 					option = factoryOptions.Cast<IActionFactory>()
-						.First( factory => factory.Original == option );
+						.First( factory => factory == option );
 				if(!factoryOptions.Contains( option ))
 					throw new Exception( "Dude! - You selected something that wasn't an option" );
 

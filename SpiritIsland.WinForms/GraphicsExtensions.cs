@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 
 namespace SpiritIsland.WinForms {
 
@@ -52,6 +54,59 @@ namespace SpiritIsland.WinForms {
 		static public RectangleF Scale( this RectangleF src, float scale ) => new RectangleF( src.X * scale, src.Y * scale, src.Width * scale, src.Height * scale );
 		static public SizeF Scale( this SizeF src, float scale ) => new SizeF( src.Width * scale, src.Height * scale );
 		static public RectangleF Translate( this RectangleF src, float deltaX, float deltaY ) => new RectangleF( src.X +deltaX, src.Y +deltaY, src.Width, src.Height );
+
+
+		static public RectangleF[] SplitHorizontally( this RectangleF rect, params float[] splitPercentages) {
+			var xs = new List<float>() { rect.X };
+			xs.AddRange(splitPercentages.Select(p=>rect.X+rect.Width*p));
+			xs.Add( rect.Right );
+			var result = new RectangleF[ splitPercentages.Length+1 ];
+			for(int i=0;i<xs.Count-1;++i)
+				result[i] = new RectangleF(xs[i],rect.Y,xs[i+1]-xs[i],rect.Height);
+			return result;
+		}
+
+		static public RectangleF[] SplitHorizontally( this RectangleF rect, int divisions) {
+			var result = new RectangleF[ divisions ];
+			float width = rect.Width/divisions;
+			for(int i=0;i<divisions;++i)
+				result[i] = new RectangleF( rect.X+i*width, rect.Y, width, rect.Height);
+			return result;
+		}
+
+		static public RectangleF[] SplitVertically( this RectangleF rect, int divisions) {
+			var result = new RectangleF[ divisions ];
+			float height = rect.Height/divisions;
+			for(int i=0;i<divisions;++i)
+				result[i] = new RectangleF(rect.X,rect.Y+i*height,rect.Width,height);
+			return result;
+		}
+
+		static public RectangleF[] SplitVertically( this RectangleF rect, params float[] splitPercentages) {
+			var ys = new List<float>() { rect.Y };
+			ys.AddRange(splitPercentages.Select(p=>rect.Y+rect.Height*p));
+			ys.Add( rect.Bottom );
+			var result = new RectangleF[ splitPercentages.Length+1 ];
+			for(int i=0;i<ys.Count-1;++i)
+				result[i] = new RectangleF( rect.X ,ys[i], rect.Width, ys[i+1]-ys[i]);
+			return result;
+		}
+
+		static public void DrawImageFitHeight( this Graphics graphics, Image image, RectangleF bounds ) {
+			float width = bounds.Height * image.Width / image.Height;
+			// Centered Horizontally
+			graphics.DrawImage(image,bounds.X + (bounds.Width-width)/2,bounds.Y,width,bounds.Height);
+		}
+
+		static public RectangleF InflateBy(this RectangleF rect, float delta ) {
+			float d2 = delta*2;
+			return new RectangleF( rect.X-delta, rect.Y-delta, rect.Width+d2, rect.Height+d2);
+		}
+
+		//static public void DrawString(this Graphics graphics, string text, Font font, Brush brush,  ) {
+		//				graphics.DrawString("some string", font, Brushes.Black, PositionInside(boundingRect,Left,Middle)
+
+		//}
 
 	}
 

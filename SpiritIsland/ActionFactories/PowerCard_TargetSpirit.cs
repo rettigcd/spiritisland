@@ -6,9 +6,9 @@ namespace SpiritIsland {
 	/// <summary>
 	/// ActionFactory based on Method-implemented powers
 	/// </summary>
-	class TargetSpirit_PowerCard : PowerCard {
+	class PowerCard_TargetSpirit : PowerCard {
 
-		public TargetSpirit_PowerCard(MethodBase methodBase):base(methodBase){
+		public PowerCard_TargetSpirit(MethodBase methodBase):base(methodBase){
 			DefaultSpeed = cardAttr.Speed;
 			Name = cardAttr.Name;
 			Cost = cardAttr.Cost;

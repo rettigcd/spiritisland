@@ -20,7 +20,7 @@ namespace SpiritIsland {
 		public string Name => "Replay Card for cost";
 		public string Text => Name;
 
-		public IActionFactory Original => this;
+//		public IActionFactory Original => this;
 
 		public async Task ActivateAsync( Spirit self, GameState _ ) {
 

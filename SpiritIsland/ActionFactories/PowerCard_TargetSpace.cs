@@ -7,11 +7,11 @@ namespace SpiritIsland {
 	/// <summary>
 	/// ActionFactory based on Method-implemented powers
 	/// </summary>
-	public class TargetSpace_PowerCard : PowerCard {
+	public class PowerCard_TargetSpace : PowerCard {
 
 		readonly TargetSpaceAttribute targetSpaceAttr;
 
-		public TargetSpace_PowerCard( MethodBase methodBase, TargetSpaceAttribute targetSpace ):base(methodBase){
+		public PowerCard_TargetSpace( MethodBase methodBase, TargetSpaceAttribute targetSpace ):base(methodBase){
 
 			targetSpaceAttr = targetSpace ?? throw new ArgumentNullException( nameof( targetSpace ), Name + " is missing targetting attribute" );
 

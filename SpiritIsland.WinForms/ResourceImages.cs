@@ -20,10 +20,9 @@ namespace SpiritIsland.WinForms {
 		public readonly PrivateFontCollection Fonts; // 			return new Font( fonts.Families[0], 22 );
 
 		public Bitmap GetPresenceIcon( string presenceColor ) => GetResourceImage( $"presence.{presenceColor}.png" );
-
-		public Bitmap GetTokenIcon( string fileName )             => GetResourceImage( $"tokens.{fileName}.png" );
+		public Bitmap GetTokenIcon( string fileName )         => GetResourceImage( $"tokens.{fileName}.png" );
 		public Bitmap GetInvaderCard( string filename ) => GetResourceImage( $"invaders.{filename}.jpg" );
-		public Bitmap GetBlackIcon( string filename ) => GetResourceImage( $"{filename}.png" );
+//		public Bitmap GetBlackIcon( string filename ) => GetResourceImage( $"{filename}.png" );
 
 		#region private
 

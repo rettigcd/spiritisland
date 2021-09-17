@@ -4,9 +4,20 @@
 REFACTOR
 When filtering, pass in TargetSpaceCtx instead of Space - simplify API by folding spirit and gamestate into Ctx
 
-
 Need to Manually Select Damage - (I had 2 cities in River, each needing 1 damage, so massive flooding could kill them, but it applied 2 to 1.)
 
+
+=== innate cleanup ===
+
+Calculate Option Boxes (separate from drawing them)
+
+Highlight active selections
+AliceBlue background
+
+ICONS  Range icons
+ICONS  Target icons
+ICONS  use clean tokens
+ICONS  +1 range.
 
 
 ====================================
@@ -16,6 +27,11 @@ BONUS	Draw Fast / Slow icons over existing cards when speed changes
 
 Test	With and Without Ocean, PowerTarget, Push & Blight Include/Don't include ocean spaces.
 Test    Imigratino Slows & Explorers Are Reluctant (Explorer card manipulation)
+Test    Conceiling Shadows - no damage to dahan
+Test    A Year of Perfect Stillness - skips invader actions
+Test    Talons of Lightning - extended / conditional range 
+Test    Sap the Strength of Multitudes - range changes
+
 
 BONUS	Generate Innate images from innate metadata
 ======  Done  ================
@@ -34,24 +50,8 @@ Game Play needs:
 Fear of the Unseen - Level 1 (program hung)
 Lure of the Unknown - didn't allow be to target land with no invaders and withing 2 of presence
 
-== Jonah ideas ===
-make SS dispay differently
-
 == Steam updates - What's New (provide insight as to what they have trouble with) ==
 https://store.steampowered.com/news/app/1236720
-
-== Test Special Cases ==
-Conceiling Shadows - no damage to dahan
-A Year of Perfect Stillness - skips invader actions
-Talons of Lightning - extended / conditional range 
-
-
-Power Card Troubles
-	Invinite Vitality - (+4 dahan health) - don't add blight, solution: swap out Blight action,
-	Increase Range // custom attribute on card that overrides normal
-	Sap the Strength of Multitudes - range changes
-	EntwinedPower  (Does a bunch of stuff with placing presence and sharing power cards) -- instead of passing SS and Presence, pass in enum tellit it which to use (then it can override that behavior)
-	Vengence of the Dead - need a hook for when dahan/city/towns destroyed, 
 
 Fix
 	Based on the size of the first card, calculate width required, if insufficient, add scroll bar.
@@ -60,7 +60,6 @@ Fix
 
 Improve
 	Manually select who to apply damage to
-	Display Icons (white w/#s)
 	Display Card modifications slow/fast
 
 Unit Test

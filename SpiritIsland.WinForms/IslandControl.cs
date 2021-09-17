@@ -91,17 +91,18 @@ namespace SpiritIsland.WinForms {
 			}
 			//			boardA = Image.FromFile(".\\images\\board a.png");
 
-			dahan = Image.FromFile(".\\images\\Dahanicon.png");
-			dahan1 = Image.FromFile( ".\\images\\Dahan1icon.png" );
-			city = Image.FromFile(".\\images\\Cityicon.png");
-			city2 = Image.FromFile( ".\\images\\City2icon.png" );
-			city1 = Image.FromFile( ".\\images\\City1icon.png" );
-			town = Image.FromFile(".\\images\\Townicon.png");
-			town1 = Image.FromFile( ".\\images\\Town1icon.png" );
-			explorer = Image.FromFile(".\\images\\Explorericon.png");
-			presence = ResourceImages.Singleton.GetPresenceIcon( tokenColor );
-			blight = Image.FromFile(".\\images\\Blighticon.png");
-			defend = Image.FromFile(".\\images\\defend1orange.png");
+			var images = ResourceImages.Singleton;
+			dahan = images.GetTokenIcon("Dahanicon");
+			dahan1 = images.GetTokenIcon( "Dahan1icon" );
+			city = images.GetTokenIcon( "Cityicon" );
+			city2    = images.GetTokenIcon( "City2icon" );
+			city1    = images.GetTokenIcon( "City1icon" );
+			town     = images.GetTokenIcon( "Townicon");
+			town1    = images.GetTokenIcon( "Town1icon" );
+			explorer = images.GetTokenIcon( "Explorericon" );
+			blight   = images.GetTokenIcon( "Blighticon" );
+			defend   = images.GetTokenIcon( "defend1orange" );
+			presence = images.GetPresenceIcon( tokenColor );
 
 			wilds = ResourceImages.Singleton.GetTokenIcon("wilds");
 			disease = ResourceImages.Singleton.GetTokenIcon( "disease" );
@@ -130,7 +131,7 @@ namespace SpiritIsland.WinForms {
 
 		void OptionProvider_OptionsChanged( IDecision decision ) {
 			tokenOnSpace      = decision as Decision.TokenOnSpace;
-			adjacentDecision  = decision as Decision.IsGatherOrPush;
+			adjacentDecision  = decision as Decision.IPerformGatherOrPush;
 			spaceTokens       = decision as Decision.TypedDecision<SpaceToken>;
 			this.activeSpaces = decision.Options.OfType<Space>().ToArray();
 			fearCard          = decision.Options.OfType<DisplayFearCard>().FirstOrDefault();
@@ -138,7 +139,7 @@ namespace SpiritIsland.WinForms {
 
 		DisplayFearCard fearCard;
 		Decision.TokenOnSpace tokenOnSpace;
-		Decision.IsGatherOrPush adjacentDecision;
+		Decision.IPerformGatherOrPush adjacentDecision;
 		Decision.TypedDecision<SpaceToken> spaceTokens;
 		
 		readonly List<(Rectangle,IOption)> optionRects = new List<(Rectangle, IOption)>();
@@ -192,6 +193,7 @@ namespace SpiritIsland.WinForms {
 				DrawHighlights( pe );
 				DrawInvaderCards( pe.Graphics );
 			}
+
 		}
 
 		void DrawInvaderCards( Graphics graphics ) {

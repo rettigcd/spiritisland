@@ -30,7 +30,7 @@ namespace SpiritIsland.Basegame {
 		public SpeedOverride OverrideSpeed { get => null; set => throw new System.InvalidOperationException(); }
 
 		public string Name => "Replay Cards for Cost";
-		public IActionFactory Original => this;
+//		public IActionFactory Original => this;
 		public string Text => Name;
 
 		public async Task ActivateAsync( Spirit self, GameState gameState ) {

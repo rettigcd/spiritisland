@@ -124,7 +124,7 @@ namespace SpiritIsland.WinForms {
 			float presencePercent = iconFilename == "" ? .3f : .2f;
 			float plusY = rect.Y + rect.Height * presencePercent; // top of presence
 			graphics.DrawString("+",font,Brushes.Black,rect.X+rect.Width*0.25f,plusY);
-			using var presenceIcon = ResourceImages.Singleton.GetBlackIcon( "Presenceicon" );
+			using var presenceIcon = ResourceImages.Singleton.GetTokenIcon( "Presenceicon" );
 			graphics.DrawImage(presenceIcon, rect.X + rect.Width * 0.4f, plusY-rect.Height*.1f, rect.Width*.5f, rect.Height*.2f );
 
 			// icon

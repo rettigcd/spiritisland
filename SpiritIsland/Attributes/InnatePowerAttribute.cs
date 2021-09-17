@@ -12,9 +12,6 @@ namespace SpiritIsland {
 		public string Name { get; }
 		public Speed Speed { get; }
 
-//		public virtual void UpdateInnateFromSpirit(Spirit spirit, InnatePower pwr ) {}
-
 	}
-
 
 }

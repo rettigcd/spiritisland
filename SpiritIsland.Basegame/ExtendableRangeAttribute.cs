@@ -10,6 +10,9 @@ namespace SpiritIsland.Basegame {
 			this.triggeringElements = triggeringElements;
 			this.extension = extention;
 		}
+
+		public override string RangeText => "+"+extension;
+
 		protected override int CalcRange( SpiritGameStateCtx ctx ) => range
 			+ (ctx.YouHave( triggeringElements ) ? extension : 0);
 	}

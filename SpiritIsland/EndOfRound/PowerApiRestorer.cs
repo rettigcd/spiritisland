@@ -2,8 +2,9 @@
 
 namespace SpiritIsland {
 	public class PowerApiRestorer {
-		Spirit spirit;
-		TargetLandApi original;
+
+		readonly Spirit spirit;
+		readonly TargetLandApi original;
 		public PowerApiRestorer(Spirit spirit ) {
 			this.spirit = spirit;
 			this.original = spirit.PowerApi; // capture so we can put it back later
@@ -12,6 +13,7 @@ namespace SpiritIsland {
 			spirit.PowerApi = original;
 			return Task.CompletedTask;
 		}
+
 	}
 
 }

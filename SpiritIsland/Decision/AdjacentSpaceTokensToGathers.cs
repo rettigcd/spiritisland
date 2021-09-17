@@ -2,7 +2,7 @@
 using System.Linq;
 
 namespace SpiritIsland.Decision {
-	public class AdjacentSpaceTokensToGathers : TypedDecision<SpaceToken>, IsGatherOrPush  {
+	public class AdjacentSpaceTokensToGathers : TypedDecision<SpaceToken>, IPerformGatherOrPush  {
 
 		public AdjacentSpaceTokensToGathers(
 			int remaining,

@@ -29,7 +29,7 @@ namespace SpiritIsland.WinForms {
 		void Options_NewDecision( IDecision decision ) {
 			IOption[] options = decision.Options;
 			this.optionCards = options.OfType<IActionFactory>() // includes modified powers
-				.Select( f => f.Original ) // use original
+//				.Select( f => f.Original ) // use original
 				.OfType<PowerCard>() // only power cards
 				.ToArray();
 
@@ -106,6 +106,7 @@ namespace SpiritIsland.WinForms {
 
 		protected override void OnMouseMove( MouseEventArgs e ) {
 			base.OnMouseMove( e );
+			if(optionCards == null) return;
 			this.Cursor = GetCardAt( PointToClient( Control.MousePosition ) ) == null
 				? Cursors.Default
 				: Cursors.Hand;

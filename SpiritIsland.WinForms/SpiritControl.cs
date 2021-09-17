@@ -115,17 +115,17 @@ namespace SpiritIsland.WinForms {
 			// Innates
 			float x = margin;
 			int maxHeight = 0;
-			foreach(string name in spirit.InnatePowers.Select( i => i.Name ).Distinct()) {
-				var sz = DrawInnates( graphics, name, highlightPen, x, y );
+			int innateWidth = (Width - 3 * margin) / 2; // 3 margins => left, center, right
+			foreach(InnatePower power in spirit.InnatePowers ) {
+				var sz = DrawInnates( graphics, power, highlightPen, x, y, innateWidth );
 				x += (sz.Width + margin);
-				maxHeight = Math.Max( maxHeight, sz.Height );
+				maxHeight = Math.Max( maxHeight, (int)sz.Height );
 			}
 			y += (maxHeight + margin);
 
 			// activated elements
 			DrawActivatedElements( graphics, y );
 
-			// !Note! - If you do not specify output width/height of image, .Net will scale image based on screen DPI and image DPI
 		}
 
 		Size DrawSpiritImage( Graphics graphics, int x, int y ) {
@@ -209,25 +209,16 @@ namespace SpiritIsland.WinForms {
 
 		}
 
-		Size DrawInnates( Graphics graphics, string name, Pen highlightPen, float x, float y ) {
+		SizeF DrawInnates( Graphics graphics, InnatePower power, Pen highlightPen, float x, float y, float width ) {
 
-			var image = GetInnateImage( name ); // This non-sense is because Thunderspeaker has a fast & slow option with the same name.
-
-			int drawWidth = (Width - 3*margin)/2; // 3 margins => left, center, right
-			Size sz = new Size(
-				drawWidth,
-				drawWidth * image.Height / image.Width
-			);
-
-			graphics.DrawImage( image, x, y, sz.Width, sz.Height );
-
-			if( innateOptions.Any( x => x.Name == name ) ) {
-				var rect = new RectangleF(x,y,drawWidth,sz.Height);
-				graphics.DrawRectangle( highlightPen, rect.X, rect.Y, rect.Width, rect.Height );
-				hotSpots.Add(innateOptions.Single(x=>x.Name==name),rect);
+			// Draw Dynamic Inates
+			using var innatePainter = new InnatePainter( graphics, width );
+			RectangleF bounds = innatePainter.Paint( spirit, power, x, y ); // Calcs Metrics and paints
+			if(innateOptions.Any( x => x.Name == power.Name )) {
+				graphics.DrawRectangle( highlightPen, bounds.ToInts() );
+				hotSpots.Add( innateOptions.Single( x => x.Name == power.Name ), bounds.ToInts() );
 			}
-
-			return sz;
+			return bounds.Size;
 		}
 
 		void DrawActivatedElements( Graphics graphics, float y ) {
@@ -280,8 +271,6 @@ namespace SpiritIsland.WinForms {
 			trackOptions = decision.Options.OfType<Track>().ToArray();
 
 			innateOptions = decision.Options
-				.OfType<IActionFactory>()
-				.Select( x => x.Original )
 				.OfType<InnatePower>()
 				.ToArray();
 

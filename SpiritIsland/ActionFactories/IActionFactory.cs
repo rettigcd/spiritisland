@@ -11,7 +11,7 @@ namespace SpiritIsland {
 		public SpeedOverride OverrideSpeed { get; set; }
 
 		string Name { get; }
-		IActionFactory Original { get; }
+//		IActionFactory Original { get; }
 
 		// Used by Innates to set Triggered / Not Triggered
 		// Used by certain innates and Cards to determine speed

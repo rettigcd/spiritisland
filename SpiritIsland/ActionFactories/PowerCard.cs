@@ -20,13 +20,13 @@ namespace SpiritIsland {
 
 			// check if targets spirit
 			if(method.GetCustomAttributes<TargetSpiritAttribute>().Any())
-				return new TargetSpirit_PowerCard( method );
+				return new PowerCard_TargetSpirit( method );
 
 			//TargetSpaceAttribute targetSpace = (TargetSpaceAttribute)method.GetCustomAttributes<FromPresenceAttribute>().FirstOrDefault()
 			//	?? (TargetSpaceAttribute)method.GetCustomAttributes<FromSacredSiteAttribute>().FirstOrDefault();
 			TargetSpaceAttribute targetSpace = method.GetCustomAttributes<TargetSpaceAttribute>().FirstOrDefault();
 
-			return new TargetSpace_PowerCard( method, targetSpace );
+			return new PowerCard_TargetSpace( method, targetSpace );
 		}
 
 		#endregion
@@ -46,7 +46,7 @@ namespace SpiritIsland {
 
 		public Element[] Elements { get; protected set; }
 		public PowerType PowerType { get; protected set; }
-		public PowerCard Original => this;
+//		public PowerCard Original => this;
 		public Type MethodType => methodBase.DeclaringType; // for determining card namespace and Basegame, BranchAndClaw, etc
 
 		readonly protected CardAttribute cardAttr;
@@ -56,7 +56,7 @@ namespace SpiritIsland {
 			cardAttr.UpdateFromSpiritState( elements, this );
 		}
 
-		IActionFactory IActionFactory.Original => this;
+//		IActionFactory IActionFactory.Original => this;
 
 		public string Text => Name;
 

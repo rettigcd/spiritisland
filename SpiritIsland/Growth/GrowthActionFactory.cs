@@ -23,7 +23,8 @@ namespace SpiritIsland {
 
 		public string Text => this.ShortDescription;
 
-		public IActionFactory Original => this;
+//		public IActionFactory Original => this;
+
 	}
 
 }

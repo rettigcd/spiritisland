@@ -13,7 +13,7 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 
 		public string Name => "Change Speed";
 
-		public IActionFactory Original => this;
+//		public IActionFactory Original => this;
 
 		public string Text => Name;
 

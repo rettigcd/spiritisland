@@ -8,14 +8,18 @@ namespace SpiritIsland.Basegame {
 	public class LeadTheFuriousAssult {
 		public const string Name = "Lead the Furious Assult";
 
-		[InnateOption( "2 sun, 1 fire" )]
+		[InnateOption( "4 air", "This Power may be fast.", AttributePurpose.DisplayOnly )]
+		static public Task MayBeFastAsync(TargetSpaceCtx _ ) { return null; }
+
+
+		[InnateOption( "2 sun,1 fire", "Destory 1 town for every 2 dahan in target land." )]
 		static public Task Option1Async(TargetSpaceCtx ctx ) {
 			// Destroy 1 town for every 2 dahan
 			return ctx.Invaders
 				.Destroy(ctx.GameState.DahanGetCount(ctx.Space)/2, Invader.Town );
 		}
 
-		[InnateOption( "4 sun, 3 fire" )]
+		[InnateOption( "4 sun,3 fire", "Destory 1 city for every 3 dahan in target land." )]
 		static public async Task Option2Async( TargetSpaceCtx ctx ) {
 			// Destroy 1 city for every 3 dahan
 			await ctx.Invaders
@@ -34,21 +38,5 @@ namespace SpiritIsland.Basegame {
 		}
 
 	}
-
-	// This is hard - need to allow attribute to dynamically update innate speed
-
-	//class InnateConditinalFastAttribute : InnatePowerAttribute {
-	//	string fastTriggerElements;
-	//	public InnateConditinalFastAttribute( string name, Speed speed, string triggerElements )
-	//		: base( name, speed ) {
-	//		this.fastTriggerElements = triggerElements;
-	//	}
-
-	//	public override void UpdateFromSpiritState( CountDictionary<Element> elements, InnatePower card ) {
-	//		// if you have 3 air, this power may be fast
-	//		card.OverrideSpeed = elements.Contains( fastTriggerElements ) ? Speed.FastOrSlow : null;
-	//	}
-
-	//}
 
 }

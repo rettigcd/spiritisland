@@ -6,17 +6,17 @@ namespace SpiritIsland.Basegame {
 	[FromPresence( 0 )]
 	class CreepersTearIntoMortar {
 
-		[InnateOption( "1 moon, 2 plant" )]
+		[InnateOption( "1 moon,2 plant", "1 Damage to 1 town/city." )]
 		static public Task Option1Async( TargetSpaceCtx ctx ) {
 			return DoDamage( ctx, 1 );
 		}
 
-		[InnateOption( "2 moon, 3 plant" )]
+		[InnateOption( "2 moon,3 plant","Repeat this Power." )]
 		static public Task Option2Async( TargetSpaceCtx ctx ) {
 			return DoDamage( ctx, 2 );
 		}
 
-		[InnateOption( "3 moon, 4 plant" )]
+		[InnateOption( "3 moon,4 plant","Repeat this Power again." )]
 		static public Task Option3Async( TargetSpaceCtx ctx ) {
 			return DoDamage(ctx,3);
 		}

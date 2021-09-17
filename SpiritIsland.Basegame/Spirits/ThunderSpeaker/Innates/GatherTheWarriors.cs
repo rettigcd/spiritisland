@@ -1,6 +1,4 @@
-﻿using SpiritIsland;
-using System;
-using System.Linq;
+﻿using System;
 using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
@@ -11,7 +9,11 @@ namespace SpiritIsland.Basegame {
 
 		public const String Name = "Gather the Warriors";
 
-		[InnateOption(Element.Animal)]
+		[InnateOption( "4 air", "This Power may be fast.", AttributePurpose.DisplayOnly )]
+		static public Task MayBeFastAsync(TargetSpaceCtx _ ) { return null; }
+
+
+		[InnateOption( "1 animal", "Gather up to 1 dahan per air you have. Push up to 1 dahan per sun you have." )]
 		static public async Task OptionAsync(TargetSpaceCtx ctx ) {
 			var elements = ctx.Self.Elements;
 			int gatherCount = elements[Element.Air];
