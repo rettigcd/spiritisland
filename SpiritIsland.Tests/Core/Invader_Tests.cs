@@ -39,8 +39,8 @@ namespace SpiritIsland.Tests.Core {
 		public void StartsWithExplorer(){
 			var sut = new InvaderDeck();
 			Assert.NotNull(sut.Explore);
-			Assert.Null(sut.Build);
-			Assert.Null(sut.Ravage);
+			Assert.Empty(sut.Build);
+			Assert.Empty(sut.Ravage);
 		}
 
 		[Fact]
@@ -51,9 +51,9 @@ namespace SpiritIsland.Tests.Core {
 			// Advance the cards 12 times
 			for(int i=0;i<11;++i){
 
-				var explore = sut.Explore;
-				var build = sut.Build;
-				var ravage = sut.Ravage;
+				var explore = sut.Explore.ToArray();
+				var build = sut.Build.ToArray();
+				var ravage = sut.Ravage.ToArray();
 				int discardCount = sut.CountInDiscard;
 
 				// When: advance the cards
@@ -63,7 +63,7 @@ namespace SpiritIsland.Tests.Core {
 				Assert.NotEqual(explore,sut.Explore);
 				Assert.Equal(explore,sut.Build);
 				Assert.Equal(build,sut.Ravage);
-				Assert.Equal(discardCount+(ravage==null?0:1),sut.CountInDiscard);
+				Assert.Equal(discardCount+(ravage.Length==0?0:1),sut.CountInDiscard);
 
 			}
 		}
@@ -142,7 +142,7 @@ namespace SpiritIsland.Tests.Core {
 			gameState.Tokens[ board[5] ].Adjust(Invader.Explorer[1],1);
 
 			// When: exploring (wet lands
-			gameState.Explore(InvaderDeck.Level1Cards.Single(c=>c.Text=="W"));
+			_ = gameState.Explore(InvaderDeck.Level1Cards.Single(c=>c.Text=="W"));
 
 			// Then: 1 Explorer on A2 (new explored)
 			//  and A5 (original) - proves explorers aren't reference types like towns
@@ -175,7 +175,7 @@ namespace SpiritIsland.Tests.Core {
 			gameState.Tokens[sourceSpace].Adjust(sourceInvader,1);
 
 			// When: exploring (wet lands
-			gameState.Explore(InvaderDeck.Level1Cards.Single(c=>c.Text=="W"));
+			_ = gameState.Explore(InvaderDeck.Level1Cards.Single(c=>c.Text=="W"));
 
 			// Then: Explores A2 and other space only
 			foreach(var space in board.Spaces){
@@ -258,7 +258,7 @@ namespace SpiritIsland.Tests.Core {
 			var deck = new InvaderDeck();
 			var cards = new InvaderCard[12];
 			for(int i = 0; i < 12; ++i) {
-				cards[i] = deck.Explore;
+				cards[i] = deck.Explore[0];
 				deck.Advance();
 			}
 			return cards;
@@ -266,7 +266,7 @@ namespace SpiritIsland.Tests.Core {
 
 		static void Assert_NextNCardsFromDeck( InvaderDeck deck, ImmutableList<InvaderCard> cardSet, int count ) {
 			for(int i = 0; i < count; ++i) {
-				Assert.Contains( deck.Explore, cardSet );
+				Assert.Contains( deck.Explore[0], cardSet );
 				deck.Advance();
 			}
 		}

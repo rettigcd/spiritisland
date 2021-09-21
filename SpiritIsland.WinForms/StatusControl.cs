@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace SpiritIsland.WinForms {
@@ -20,8 +21,8 @@ namespace SpiritIsland.WinForms {
 			base.OnPaint( pe );
 
 			if(gameState != null) {
-				string ravage = gameState.InvaderDeck.Ravage?.Text ?? "-";
-				string build = gameState.InvaderDeck.Build?.Text ?? "-";
+				string ravage = gameState.InvaderDeck.Ravage.FirstOrDefault()?.Text ?? "-";
+				string build = gameState.InvaderDeck.Build.FirstOrDefault()?.Text ?? "-";
 				string msg = $"Energy: {gameState.Spirits[0].Energy}      ---      "
 					+ $"Turn: {gameState.Round} --- Ravage: {ravage}  Build: {build}      ---      "
 					+ $"Fear Pool: {gameState.Fear.Pool}  Activated: {gameState.Fear.ActivatedCards.Count}  Terror Level: {gameState.Fear.TerrorLevel}     ----       "

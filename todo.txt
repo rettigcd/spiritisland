@@ -1,23 +1,23 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
+Multiple Invader cards in same slot
 Bookkeeping		Game # - replay it
 DAMAGE	Need to Manually Select Damage - (I had 2 cities in River, each needing 1 damage, so massive flooding could kill them, but it applied 2 to 1.)
-Multiple Invader cards in same slot
 
 REFACTOR	When filtering, pass in TargetSpaceCtx instead of Space - simplify API by folding spirit and gamestate into Ctx
 REFACTOR	Drawing - Separate Layout from Drawing / Calc Layout once
 REFACTOR	InvaderGroup Damage/Destory methods.  Create a virtual 'included tokens' group that combines single-token and token Group actions
 
-CARDS	Display Card modifications slow/fast
 CARDS	scroll bar
 CARDS	show decks & discard pile
 CARDS	Draw Cards from metadata.
+CARDS	Display Card modifications slow/fast
 Innate	Range icons
 Innate	Target icons
 Innate	use clean tokens
 Innate	+1 range.
 
-Bookkeeping		Undo / go back to beginning
+Bookkeeping		Undo / go back to beginning   (spirit:Presence & cards, Invader/Fear/Major/Minor, tokens, blight? )
 Bookkeeping		Visual indicator of Phase
 Bookkeeping		Log game Results
 Bookkeeping		Log Decisoins / view Decisions
@@ -26,13 +26,17 @@ Engine			Check Game Win/Loss
 Engine			Fix Blight
 
 Place Presence from board
+Click on Invader card to close it.
 
 ====================================
 ===== Testing =====
 
 With and Without Ocean, PowerTarget, Push & Blight Include/Don't include ocean spaces.
 Modifications to invader DECK
-	Imigratino Slows & Explorers Are Reluctant (Explorer card manipulation)
+	Fear - Explorers Are Reluctant
+	Fear - Imigration Slows
+	Fear - Panicked By Wild Beasts (skip in some lands)
+	Fear - Quarantine? - Explore 
 	A Year of Perfect Stillness - skips invader actions
 Modifications to Range
 	Talons of Lightning - extended / conditional range 

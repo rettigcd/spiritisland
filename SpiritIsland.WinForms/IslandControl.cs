@@ -209,13 +209,21 @@ namespace SpiritIsland.WinForms {
 			float y = ClientRectangle.Height-height-margin*2 - textHeight;
 
 			// Build Metrics
-			var buildRect = new RectangleF( x, y, width, height );
+			int buildCount = gameState.InvaderDeck.Build.Count;
+			RectangleF[] buildRect = new RectangleF[ buildCount ];
+			float buildWidth = width / buildCount, buildHeight = height / buildCount;
+			for(int i=0;i<buildCount;++i)
+				buildRect[i] = new RectangleF( x+i*buildWidth, y+i*buildHeight, buildWidth, buildHeight );
 			float buildTextWidth = graphics.MeasureString( "Build", buildRavageFont ).Width;
-			var buildTextTopLeft = new PointF( x + (width - buildTextWidth) / 2, ClientRectangle.Bottom - textHeight - margin );
+			PointF buildTextTopLeft = new PointF( x + (width - buildTextWidth) / 2, ClientRectangle.Bottom - textHeight - margin );
 
 			// Ravage Metrics
 			float ravageX = x - (width + margin);
-			var ravageRect = new RectangleF( ravageX, y, width, height );
+			int ravageCounts = gameState.InvaderDeck.Ravage.Count;
+			var ravageRects = new RectangleF[ ravageCounts];
+			float ravageWidth = width / ravageCounts, ravageHeight = height / ravageCounts;
+			for(int i=0;i<ravageCounts;++i)
+				ravageRects[i] = new RectangleF( ravageX+i*ravageWidth, y+i*ravageHeight, ravageWidth, ravageHeight );
 			float textWidth = graphics.MeasureString( "Ravage", buildRavageFont ).Width;
 			PointF ravageTextTopLeft = new PointF( ravageX + (width - textWidth) / 2, ClientRectangle.Bottom - textHeight - margin );
 
@@ -225,11 +233,13 @@ namespace SpiritIsland.WinForms {
 			var fearRect = new RectangleF( Width - fearWidth - this.Height * .1f, (Height - fearHeight) / 2, fearWidth, fearHeight );
 
 			// Build
-			graphics.DrawInvaderCard( buildRect, gameState.InvaderDeck.Build );
+			for(int i=0;i<buildRect.Length;++i) 
+				graphics.DrawInvaderCard( buildRect[i], gameState.InvaderDeck.Build[i] );
 			graphics.DrawString("Build", buildRavageFont,Brushes.Black, buildTextTopLeft );
 
 			// Ravage
-			graphics.DrawInvaderCard( ravageRect, gameState.InvaderDeck.Ravage );
+			for(int i=0; i<ravageRects.Length;++i)
+				graphics.DrawInvaderCard( ravageRects[i], gameState.InvaderDeck.Ravage[i] );
 			graphics.DrawString( "Ravage", buildRavageFont, Brushes.Black, ravageTextTopLeft );
 
 			// Fear

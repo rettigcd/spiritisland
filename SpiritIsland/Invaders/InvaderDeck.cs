@@ -7,6 +7,8 @@ namespace SpiritIsland {
 
 	public class InvaderDeck {
 
+		#region public static
+
 		public static readonly ImmutableList<InvaderCard> Level1Cards = ImmutableList.Create(
 			new InvaderCard(Terrain.Jungle),
 			new InvaderCard(Terrain.Wetland),
@@ -31,16 +33,19 @@ namespace SpiritIsland {
 			new InvaderCard(Terrain.Sand,Terrain.Wetland)
 		);
 
-		readonly InvaderCard[] cards;
-		int exploreIndex;
-
 		public static InvaderDeck Unshuffled() => new InvaderDeck(false);
 
-		public InvaderDeck():this(true){}
+		#endregion
+
+		#region constructors
 
 		public InvaderDeck(params InvaderCard[] cards ) {
-			this.cards = cards;
+			this.cards = cards.ToList();
+			for(int i=0;i<cards.Count();++i) drawCount.Add(1);
+			Advance(); // turn first explorer card up
 		}
+
+		public InvaderDeck():this(true){}
 
 		InvaderDeck(bool shuffle){
 
@@ -54,6 +59,7 @@ namespace SpiritIsland {
 				level3.Shuffle(); 
 			}
 
+			static void Discard1(List<InvaderCard> list){ list.RemoveAt(list.Count-1); }
 			Discard1(level1);
 			Discard1(level2);
 			Discard1(level3);
@@ -63,22 +69,44 @@ namespace SpiritIsland {
 			all.AddRange(level1);
 			all.AddRange(level2);
 			all.AddRange(level3);
-			cards = all.ToArray();
+			cards = all.ToList();
+
+			for(int i=0;i<cards.Count();++i) drawCount.Add(1);
+			Advance(); // turn first explorer card up
 		}
 
-		static void Discard1(List<InvaderCard> list){
-			list.RemoveAt(list.Count-1);
-		}
+		#endregion
 
-		public InvaderCard Explore => cards[exploreIndex];
-		public InvaderCard Build => 1<=exploreIndex ? cards[exploreIndex-1] : null;
-		public InvaderCard Ravage => 2<=exploreIndex ? cards[exploreIndex-2] : null;
+		public List<InvaderCard> Explore {get;} = new List<InvaderCard>();
 
-		public int CountInDiscard => exploreIndex <3 ? 0 : exploreIndex-2;
+		public List<InvaderCard> Build { get; } = new List<InvaderCard>();
+
+		public List<InvaderCard> Ravage { get; } = new List<InvaderCard>();
+
+		public int CountInDiscard {get; private set; }
 
 		public void Advance(){
-			++exploreIndex;
+			// Move Ravage to Discard
+			CountInDiscard += Ravage.Count;
+			// Move Build to Ravage
+			Ravage.Clear();
+			Ravage.AddRange( Build );
+			// move Explore to BUid
+			Build.Clear();
+			Build.AddRange( Explore );
+			// turn over explore
+			Explore.Clear();
+			if(cards.Count > 0) {
+				int count = drawCount[0]; drawCount.RemoveAt(0);
+				while(count-- > 0) {
+					Explore.Add( cards[0] );
+					cards.RemoveAt(0);
+				}
+			}
 		}
+
+		readonly List<InvaderCard> cards;
+		public readonly List<int> drawCount = new List<int>(); // tracks how many cards to draw each turn
 
 	}
 

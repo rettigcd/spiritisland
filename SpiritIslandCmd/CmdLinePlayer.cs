@@ -99,8 +99,8 @@ namespace SpiritIslandCmd {
 			var d = game.GameState.InvaderDeck;
 			Console.WriteLine( "Invaders" );
 			Console.WriteLine( "\tDiscard: " + d.CountInDiscard );
-			Console.WriteLine( "\tRavage:  " + d.Ravage?.Text );
-			Console.WriteLine( "\tBuild:   " + d.Build?.Text );
+			Console.WriteLine( "\tRavage:  " + d.Ravage.Select(x=>x.Text).Join(" - " ));
+			Console.WriteLine( "\tBuild:   " + d.Build.Select(x=>x.Text).Join(" - " ));
 			Console.WriteLine( "\tExplore: " + "???" );
 			//					Console.WriteLine("\tRemaining:"+invaderDeck.);
 			Console.WriteLine();

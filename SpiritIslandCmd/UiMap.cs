@@ -83,8 +83,8 @@ namespace SpiritIslandCmd {
 		public string FormatSpace( Space space ) {
 			var gameState = game.GameState;
 			var deck = gameState.InvaderDeck;
-			bool ravage = deck.Ravage?.Matches(space) ?? false;
-			bool build = deck.Build?.Matches(space) ?? false;
+			bool ravage = deck.Ravage.Count > 0 && deck.Ravage[0].Matches(space); // !! show multiple, not just first
+			bool build = deck.Build.Count > 0 && deck.Build[0].Matches(space); // !! show multiple, not just first
 			string threat = (ravage&&build) ? "Rvg+Bld"
 				: ravage ?"  Rvg  "
 				: build ? "  Bld  "

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SpiritIsland.SinglePlayer {
@@ -25,16 +26,16 @@ namespace SpiritIsland.SinglePlayer {
 
 			// Ravage
 			string[] ravageResults = await gameState.Ravage();
-			Log( "Ravaging:" + (invaderDeck.Ravage?.Text ?? "-") + "\r\n" + ravageResults.Join( "\r\n" ) );
+			Log( "Ravaging:" + gameState.InvaderDeck.Ravage.Select(x=>x.Text).Join("/") + "\r\n" + ravageResults.Join( "\r\n" ) );
 
 			// Building
-			Log( "Building:" + invaderDeck.Build?.Text ?? "-" );
+			Log( "Building:" + gameState.InvaderDeck.Build.Select(x=>x.Text).Join("/") );
 			var builds = await gameState.Build();
 			Log( builds.Join( "\r\n" ) );
 
 			// Exploring
-			Log( "Exploring:" + invaderDeck.Explore?.Text ?? "-" );
-			await gameState.Explore( invaderDeck.Explore );
+			Log( "Exploring:" + (invaderDeck.Explore.Count > 0 ? invaderDeck.Explore[0].Text : "-") );
+			await gameState.Explore( invaderDeck.Explore[0] );
 
 			invaderDeck.Advance();
 		}

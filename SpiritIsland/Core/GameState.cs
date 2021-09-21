@@ -64,7 +64,7 @@ namespace SpiritIsland {
 				foreach(var space in board.Spaces)
 					space.InitTokens( Tokens[space] );
 
-			Task.WaitAll( Explore( InvaderDeck.Explore ) );
+			Task.WaitAll( Explore( InvaderDeck.Explore[0] ) );
 			InvaderDeck.Advance();
 			InitRavageFromDeck();
 			InitBuildFromDeck();
@@ -179,11 +179,9 @@ namespace SpiritIsland {
 
 
 		void InitRavageFromDeck() {
-			ScheduledRavageSpaces = InvaderDeck.Ravage != null
-				? Island.Boards.SelectMany( board => board.Spaces )
-					.Where( InvaderDeck.Ravage.Matches )
-					.ToList()
-				: new List<Space>();
+			this.ScheduledRavageSpaces = InvaderDeck.Ravage
+				.SelectMany(card => Island.AllSpaces.Where( card.Matches ))
+				.ToList();
 		}
 
 		public async Task<string[]> Ravage( InvaderCard invaderCard ) {
@@ -233,8 +231,8 @@ namespace SpiritIsland {
 		readonly Dictionary<Space, ConfigureRavage> _ravageConfig = new Dictionary<Space, ConfigureRavage>(); // change ravage state of a Space
 
 		public void InitBuildFromDeck() {
-			ScheduledBuildSpaces = Island.Boards.SelectMany( board => board.Spaces )
-				.Where( InvaderDeck.Build.Matches )
+			ScheduledBuildSpaces = InvaderDeck.Build
+				.SelectMany(card => Island.AllSpaces.Where( card.Matches ))
 				.GroupBy( s => s )
 				.ToDictionary( grp => grp.Key, grp => grp.Count() )
 				.ToCountDict();

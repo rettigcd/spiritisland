@@ -170,14 +170,14 @@ namespace SpiritIsland.WinForms {
 		}
 		Image spiritImage;
 
-		Image GetInnateImage( string innateCardName ) {
-			if(!innateImages.ContainsKey( innateCardName )) {
-				string filename = innateCardName.Replace( ' ', '_' ).Replace( "'", "" ).ToLower();
-				Image image = Image.FromFile( $".\\images\\innates\\{filename}.jpg" );
-				innateImages.Add( innateCardName, image );
-			}
-			return innateImages[innateCardName];
-		}
+		//Image GetInnateImage( string innateCardName ) {
+		//	if(!innateImages.ContainsKey( innateCardName )) {
+		//		string filename = innateCardName.Replace( ' ', '_' ).Replace( "'", "" ).ToLower();
+		//		Image image = Image.FromFile( $".\\images\\innates\\{filename}.jpg" );
+		//		innateImages.Add( innateCardName, image );
+		//	}
+		//	return innateImages[innateCardName];
+		//}
 
 		Image GetElementImage( Element element ) {
 
@@ -248,7 +248,6 @@ namespace SpiritIsland.WinForms {
 		GrowthActionFactory[] growthActions;
 		Spirit spirit;
 
-		readonly Dictionary<string, Image> innateImages = new();
 		readonly Dictionary<Element, Image> elementImages = new();
 		readonly Dictionary<Element, int> elementOrder = new();
 
