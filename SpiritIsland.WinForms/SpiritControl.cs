@@ -103,12 +103,12 @@ namespace SpiritIsland.WinForms {
 			y += margin;
 
 			// Energy
-			y += new EnergyTrackPainter( graphics, spirit, presence, presenceSize, simpleFont, highlightPen, trackOptions, hotSpots )
-				.DrawEnergyRow( slotWidth, margin, y, usableWidth ).Height;
+			var trackPainter = new EnergyTrackPainter( graphics, spirit, presence, presenceSize, simpleFont, highlightPen, trackOptions, hotSpots );
+			y += trackPainter.DrawEnergyRow( slotWidth, margin, y, usableWidth ).Height;
 			y += margin;
 
 			// Cards
-			y += DrawCardPlayTrack( graphics, simpleFont, presence, slotWidth, presenceSize, highlightPen, y ).Height;
+			y += (int)trackPainter.DrawCardPlayTrack( slotWidth, margin, y );
 			y += margin;
 			y += margin;
 
@@ -135,79 +135,6 @@ namespace SpiritIsland.WinForms {
 			return SpiritLocation.Size;
 		}
 		Rectangle SpiritLocation;
-
-
-		Size DrawCardPlayTrack( Graphics graphics, Font simpleFont, Bitmap presence, float slotWidth, SizeF presenceSize, Pen highlightPen, int y ) {
-			int startingY = y; // capture so we can calc Height
-
-			float x = margin;
-
-			// draw title
-			graphics.DrawString( "Cards", simpleFont, SystemBrushes.ControlDarkDark, x, y );
-
-			float maxCardHeight = 0;
-			float cardWidth = slotWidth * 0.6f;
-			float cardLeft = (slotWidth - cardWidth) / 2; // center
-
-			int revealedCardSpaces = spirit.Presence.CardPlays.RevealedCount;
-			int idx = 0;
-
-			int presenceYOffset = (int)presenceSize.Height / 2;
-
-			int maxY = y;
-			int cardY = y + presenceYOffset;
-			foreach(var track in spirit.Presence.CardPlays.slots) {
-
-				// card plays amount
-				using( var bitmap = images.GetTokenIcon(track.Text)) {
-					float cardHeight = cardWidth * bitmap.Height / bitmap.Width;
-					maxCardHeight = Math.Max(cardHeight,maxCardHeight);
-					graphics.DrawImage( bitmap, x+ cardLeft, cardY, cardWidth, cardHeight );
-					maxY = Math.Max( maxY, cardY + (int)cardHeight );
-				};
-
-
-				RectangleF presenceRect = new RectangleF( x + (slotWidth - presenceSize.Width) / 2, y, presenceSize.Width, presenceSize.Height );
-
-				// Highlight Option
-				if(revealedCardSpaces == idx && trackOptions.Contains( track )) {
-					graphics.DrawEllipse( highlightPen, presenceRect );
-					hotSpots.Add( track, presenceRect );
-				}
-
-
-				// presence
-				if(revealedCardSpaces <= idx)
-					graphics.DrawImage( presence, presenceRect );
-
-				x += slotWidth;
-				++idx;
-			}
-
-			// Destroyed
-			if(spirit.Presence.Destroyed > 0) {
-				var rect = new Rectangle((int)(x+slotWidth/2), (int)(cardY), (int)presenceSize.Width, (int)presenceSize.Height );
-
-				// Highlight Option
-				if(trackOptions.Contains( Track.Destroyed )) {
-					graphics.DrawEllipse( highlightPen, rect );
-					hotSpots.Add( Track.Destroyed, rect );
-				}
-
-				// Presence & Red X
-				graphics.DrawImage( presence, rect );
-				using var redX = images.GetTokenIcon( "red-x" );
-				graphics.DrawImage( redX, rect.X, rect.Y, rect.Width*2/3,rect.Height*2/3 );
-				// count
-				graphics.DrawSubscript( rect, spirit.Presence.Destroyed );
-			}
-
-			return new Size(
-				0, // not used, ignored
-				maxY - startingY
-			);
-
-		}
 
 		SizeF DrawInnates( Graphics graphics, InnatePower power, Pen highlightPen, float x, float y, float width ) {
 

@@ -32,25 +32,12 @@
     <None Remove="images\presence\purple.png" />
     <None Remove="images\presence\red.png" />
     <None Remove="images\presence\yellow.png" />
-    <None Remove="images\tokens\0 energy.png" />
     <None Remove="images\tokens\1 cardplay.png" />
-    <None Remove="images\tokens\1 energy.png" />
     <None Remove="images\tokens\2 cardplay.png" />
-    <None Remove="images\tokens\2 energy.png" />
     <None Remove="images\tokens\3 cardplay.png" />
-    <None Remove="images\tokens\3 energy.png" />
     <None Remove="images\tokens\4 cardplay.png" />
-    <None Remove="images\tokens\4 energy.png" />
     <None Remove="images\tokens\5 cardplay.png" />
-    <None Remove="images\tokens\5 energy.png" />
     <None Remove="images\tokens\6 cardplay.png" />
-    <None Remove="images\tokens\6 energy.png" />
-    <None Remove="images\tokens\7 energy.png" />
-    <None Remove="images\tokens\8 energy.png" />
-    <None Remove="images\tokens\9 energy.png" />
-    <None Remove="images\tokens\air energy.png" />
-    <None Remove="images\tokens\animal energy.png" />
-    <None Remove="images\tokens\any energy.png" />
     <None Remove="images\tokens\Beast.png" />
     <None Remove="images\tokens\Beasticon.png" />
     <None Remove="images\tokens\Blighticon.png" />
@@ -66,20 +53,16 @@
     <None Remove="images\tokens\defend1orange.png" />
     <None Remove="images\tokens\Disease.png" />
     <None Remove="images\tokens\Diseaseicon.png" />
-    <None Remove="images\tokens\earth energy.png" />
     <None Remove="images\tokens\Explorericon.png" />
     <None Remove="images\tokens\Fasticon.png" />
     <None Remove="images\tokens\Fearicon.png" />
-    <None Remove="images\tokens\fire energy.png" />
     <None Remove="images\tokens\GainCard.png" />
     <None Remove="images\tokens\Gathertoocean.png" />
     <None Remove="images\tokens\Jungle.png" />
     <None Remove="images\tokens\JungleOrBeast.png" />
     <None Remove="images\tokens\Junglewetland.png" />
-    <None Remove="images\tokens\moon energy.png" />
     <None Remove="images\tokens\Noblight.png" />
     <None Remove="images\tokens\Ocean.png" />
-    <None Remove="images\tokens\plant energy.png" />
     <None Remove="images\tokens\Presenceicon.png" />
     <None Remove="images\tokens\Pushfromocean.png" />
     <None Remove="images\tokens\Range.png" />
@@ -89,6 +72,7 @@
     <None Remove="images\tokens\red-x.png" />
     <None Remove="images\tokens\Simple_air.png" />
     <None Remove="images\tokens\Simple_animal.png" />
+    <None Remove="images\tokens\Simple_any.png" />
     <None Remove="images\tokens\Simple_earth.png" />
     <None Remove="images\tokens\Simple_fire.png" />
     <None Remove="images\tokens\Simple_moon.png" />
@@ -101,7 +85,6 @@
     <None Remove="images\tokens\sun energy.png" />
     <None Remove="images\tokens\Town1icon.png" />
     <None Remove="images\tokens\Townicon.png" />
-    <None Remove="images\tokens\water energy.png" />
     <None Remove="images\tokens\Wilds.png" />
     <None Remove="images\tokens\Wildsicon.png" />
     <None Remove="images\tokens\wildsorpresence.png" />
@@ -157,41 +140,6 @@
     <EmbeddedResource Include="images\tokens\6 cardplay.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="images\tokens\0 energy.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="images\tokens\1 energy.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="images\tokens\2 energy.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="images\tokens\3 energy.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="images\tokens\4 energy.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="images\tokens\5 energy.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="images\tokens\6 energy.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="images\tokens\7 energy.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="images\tokens\8 energy.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="images\tokens\9 energy.png" />
-    <EmbeddedResource Include="images\tokens\air energy.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="images\tokens\animal energy.png" />
-    <EmbeddedResource Include="images\tokens\any energy.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
     <EmbeddedResource Include="images\tokens\beast.png" />
     <EmbeddedResource Include="images\tokens\Beasticon.png" />
     <EmbeddedResource Include="images\tokens\Blighticon.png" />
@@ -207,28 +155,16 @@
     <EmbeddedResource Include="images\tokens\defend1orange.png" />
     <EmbeddedResource Include="images\tokens\disease.png" />
     <EmbeddedResource Include="images\tokens\Diseaseicon.png" />
-    <EmbeddedResource Include="images\tokens\earth energy.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
     <EmbeddedResource Include="images\tokens\Explorericon.png" />
     <EmbeddedResource Include="images\tokens\Fasticon.png" />
     <EmbeddedResource Include="images\tokens\Fearicon.png" />
-    <EmbeddedResource Include="images\tokens\fire energy.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
     <EmbeddedResource Include="images\tokens\GainCard.png" />
     <EmbeddedResource Include="images\tokens\Gathertoocean.png" />
     <EmbeddedResource Include="images\tokens\Jungle.png" />
     <EmbeddedResource Include="images\tokens\JungleOrBeast.png" />
     <EmbeddedResource Include="images\tokens\Junglewetland.png" />
-    <EmbeddedResource Include="images\tokens\moon energy.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
     <EmbeddedResource Include="images\tokens\Noblight.png" />
     <EmbeddedResource Include="images\tokens\Ocean.png" />
-    <EmbeddedResource Include="images\tokens\plant energy.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
     <EmbeddedResource Include="images\tokens\Presenceicon.png" />
     <EmbeddedResource Include="images\tokens\Pushfromocean.png" />
     <EmbeddedResource Include="images\tokens\Range.png" />
@@ -242,6 +178,7 @@
     <EmbeddedResource Include="images\tokens\Simple_animal.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\Simple_any.png" />
     <EmbeddedResource Include="images\tokens\Simple_earth.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -268,9 +205,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="images\tokens\Town1icon.png" />
     <EmbeddedResource Include="images\tokens\Townicon.png" />
-    <EmbeddedResource Include="images\tokens\water energy.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
     <EmbeddedResource Include="images\tokens\Wildsicon.png" />
     <EmbeddedResource Include="images\tokens\wilds.png" />
     <EmbeddedResource Include="images\tokens\wildsorpresence.png" />

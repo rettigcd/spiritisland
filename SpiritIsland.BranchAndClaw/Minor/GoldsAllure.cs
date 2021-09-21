@@ -7,6 +7,7 @@ namespace SpiritIsland.BranchAndClaw {
 		[MinorCard("Gold's Allure",0,Speed.Slow,Element.Fire,Element.Earth,Element.Animal)]
 		[FromPresence(1,Target.Mountain)]
 		static public async Task ActAsync(TargetSpaceCtx ctx ) {
+			// !!! change Gather show objects being gathered like GathernN
 			await ctx.Gather(1,Invader.Explorer);
 			await ctx.Gather(1,Invader.Town);
 

@@ -96,53 +96,46 @@ namespace SpiritIsland {
 			}
 		}
 
-		public async Task Old_GatherUpTo( Space target, int countToGather, params TokenGroup[] groups ) {
-			Token[] calcTokens( Space space ) => GameState.Tokens[space].OfAnyType( groups );
-			Space[] CalcSource() => target.Adjacent
-				.Where( s => calcTokens( s ).Any() )
-				.ToArray();
-
-			string label = groups.Select( it => it.Label ).Join( "/" );
-
-			Space[] neighborsWithItems = CalcSource();
-			int gathered = 0;
-			while(gathered < countToGather && neighborsWithItems.Length > 0) {
-				var source = await Self.Action.Decision( new Decision.AdjacentSpaceWithTokensToGathers( countToGather - gathered, groups, target, neighborsWithItems, Present.Done ) );
-				if(source == null) break;
-
-				var invader = await Self.Action.Decision( new Decision.TokenToGather( source, target, calcTokens( source ), Present.IfMoreThan1 ) );
-
-				await GameState.Move( invader, source, target );
-
-				++gathered;
-				neighborsWithItems = CalcSource();
-			}
-
-		}
-
 		public async Task Gather( Space target, int countToGather, params TokenGroup[] groups ) {
-			Token[] calcTokens( Space space ) => GameState.Tokens[space].OfAnyType( groups );
-			Space[] CalcSource() => AdjacentTo( target )
-				.Where( s => calcTokens( s ).Any() )
+			SpaceToken[] GetOptions() => target.Adjacent
+				.SelectMany(a=>GameState.Tokens[a].OfAnyType(groups).Select(t=>new SpaceToken(a,t)))
 				.ToArray();
 
-			string label = groups.Select( it => it.Label ).Join( "/" );
-
-			Space[] neighborsWithItems = CalcSource();
-			int gathered = 0;
-			while(gathered < countToGather && neighborsWithItems.Length > 0) {
-				var source = await Self.Action.Decision( new Decision.AdjacentSpaceWithTokensToGathers( countToGather - gathered, groups, target, neighborsWithItems, Present.Always ) );
+			SpaceToken[] options;
+			while( 0 < countToGather
+				&& (options=GetOptions()).Length>0
+			) {
+				var source = await Self.Action.Decision( new Decision.AdjacentSpaceTokensToGathers(countToGather, target, options, Present.IfMoreThan1 ));
 				if(source == null) break;
-
-				var invader = await Self.Action.Decision( new Decision.TokenToGather( source, target, calcTokens( source ), Present.IfMoreThan1 ) );
-
-				await GameState.Move( invader, source, target );
-
-				++gathered;
-				neighborsWithItems = CalcSource();
+				await GameState.Move( source.Token, source.Space, target );
+				--countToGather;
 			}
-
 		}
+
+
+		//public async Task OldGather( Space target, int countToGather, params TokenGroup[] groups ) {
+		//	Token[] calcTokens( Space space ) => GameState.Tokens[space].OfAnyType( groups );
+		//	Space[] CalcSource() => AdjacentTo( target )
+		//		.Where( s => calcTokens( s ).Any() )
+		//		.ToArray();
+
+		//	string label = groups.Select( it => it.Label ).Join( "/" );
+
+		//	Space[] neighborsWithItems = CalcSource();
+		//	int gathered = 0;
+		//	while(gathered < countToGather && neighborsWithItems.Length > 0) {
+		//		var source = await Self.Action.Decision( new Decision.AdjacentSpaceWithTokensToGathers( countToGather - gathered, groups, target, neighborsWithItems, Present.Always ) );
+		//		if(source == null) break;
+
+		//		var invader = await Self.Action.Decision( new Decision.TokenToGather( source, target, calcTokens( source ), Present.IfMoreThan1 ) );
+
+		//		await GameState.Move( invader, source, target );
+
+		//		++gathered;
+		//		neighborsWithItems = CalcSource();
+		//	}
+
+		//}
 
 
 		#endregion Gather

@@ -1,93 +1,57 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
+Bookkeeping		Game # - replay it
+DAMAGE	Need to Manually Select Damage - (I had 2 cities in River, each needing 1 damage, so massive flooding could kill them, but it applied 2 to 1.)
+Multiple Invader cards in same slot
 
-REFACTOR
-When filtering, pass in TargetSpaceCtx instead of Space - simplify API by folding spirit and gamestate into Ctx
+REFACTOR	When filtering, pass in TargetSpaceCtx instead of Space - simplify API by folding spirit and gamestate into Ctx
+REFACTOR	Drawing - Separate Layout from Drawing / Calc Layout once
+REFACTOR	InvaderGroup Damage/Destory methods.  Create a virtual 'included tokens' group that combines single-token and token Group actions
 
-Need to Manually Select Damage - (I had 2 cities in River, each needing 1 damage, so massive flooding could kill them, but it applied 2 to 1.)
+CARDS	Display Card modifications slow/fast
+CARDS	scroll bar
+CARDS	show decks & discard pile
+CARDS	Draw Cards from metadata.
+Innate	Range icons
+Innate	Target icons
+Innate	use clean tokens
+Innate	+1 range.
 
+Bookkeeping		Undo / go back to beginning
+Bookkeeping		Visual indicator of Phase
+Bookkeeping		Log game Results
+Bookkeeping		Log Decisoins / view Decisions
+Bookkeeping		Log Ravage / Build / Explore / Fear / Blight
+Engine			Check Game Win/Loss
+Engine			Fix Blight
 
-=== innate cleanup ===
-
-Calculate Option Boxes (separate from drawing them)
-
-Highlight active selections
-AliceBlue background
-
-ICONS  Range icons
-ICONS  Target icons
-ICONS  use clean tokens
-ICONS  +1 range.
-
+Place Presence from board
 
 ====================================
-===== Brnach and Claw Road Map =====
+===== Testing =====
 
-BONUS	Draw Fast / Slow icons over existing cards when speed changes
+With and Without Ocean, PowerTarget, Push & Blight Include/Don't include ocean spaces.
+Modifications to invader DECK
+	Imigratino Slows & Explorers Are Reluctant (Explorer card manipulation)
+	A Year of Perfect Stillness - skips invader actions
+Modifications to Range
+	Talons of Lightning - extended / conditional range 
+	Sap the Strength of Multitudes - range changes
+Modifications to Speed
+Modifications to Ravage
+	Conceiling Shadows - no damage to dahan
 
-Test	With and Without Ocean, PowerTarget, Push & Blight Include/Don't include ocean spaces.
-Test    Imigratino Slows & Explorers Are Reluctant (Explorer card manipulation)
-Test    Conceiling Shadows - no damage to dahan
-Test    A Year of Perfect Stillness - skips invader actions
-Test    Talons of Lightning - extended / conditional range 
-Test    Sap the Strength of Multitudes - range changes
+Thunderspeakers - move-with-the-dahan
+Harbinger of the Lightning
 
+Destroying Town or Town1 creates 1 fear
+Destroying City, City1, City 2, creates 2 fear
+Spirit.SacredSites
+River.SacredSites
+Fear
+Blight causes spirit to lose 1 presence on space
 
-BONUS	Generate Innate images from innate metadata
-======  Done  ================
-==============================
-
-Game Play needs:
-	- Undo / go back to beginning of turn
-	- Visuals so we know when we are 
-		(a) buying cards (b) selcting cards to play
-		(a) selecting a push vs a gather space. (Lead the Furious assult)
-	- logging game and results
-	- catching exceptions in engine
-	- catch GameOver exception (and display to user)
-
--- Bug --
-Fear of the Unseen - Level 1 (program hung)
-Lure of the Unknown - didn't allow be to target land with no invaders and withing 2 of presence
-
+====================================================================================
 == Steam updates - What's New (provide insight as to what they have trouble with) ==
 https://store.steampowered.com/news/app/1236720
 
-Fix
-	Based on the size of the first card, calculate width required, if insufficient, add scroll bar.
-	At the end of each ActionTree (maybe after each invader is destroyed?), test if we have a Terror Level victory.
-	IF user selects damage distribution, who makes the choice, and which actions do we keep as automatic?
-
-Improve
-	Manually select who to apply damage to
-	Display Card modifications slow/fast
-
-Unit Test
-	Thunderspeakers - move-with-the-dahan
-	Harbinger of the Lightning
-		- Elements, speed, cost
-		- target - range 1
-		- push 2 dahan
-		- pushed into town or city triggers 1 fear
-			- 2 pushed into same > 1
-			- 2 pushed into different > 1
-			- 1 pushed into town > 1
-			- 1 pushed into city > 1
-			- 1 pushed into explorer > 0
-		- no dahan to push > doesn't crash
-
-	Destroying Town or Town1 creates 1 fear
-	Destroying City, City1, City 2, creates 2 fear
-
-	Spirit.SacredSites
-	River.SacredSites
-	Fear
-	Uncanny Melting
-	Nature's Resilience
-	Pull Beneath the Hungry Earth
-	Tests for Power Progression Cards ** INCLUDING Attributes **
-	Blight Cards
-	Cascading Blight
-	Blight causes spirit to lose 1 presence on space
-	All of Lightning
-	All of Shadows Flicker
