@@ -42,6 +42,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			// Then: Auto selecting only target space avaialbe
 
+			//  Select: A2
+			Assert_Options("A4");
+			action.Choose("A4");
+
 			// When: selecting a damage optin
 			Assert.False(action.IsResolved);
 			Assert_Options( "C@3","E@1","T@2" );
@@ -79,6 +83,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			//  When: activating flash flood
 			card.ActivateAsync( spirit, gameState );
 			action = spirit.Action;
+
+			//  Select: A2
+			Assert_Options("A2");
+			action.Choose("A2");
 
 			// Then: can apply 2 points of damage
 			action.IsResolved.ShouldBeFalse();

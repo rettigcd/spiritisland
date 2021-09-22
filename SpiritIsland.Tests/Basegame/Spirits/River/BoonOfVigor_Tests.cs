@@ -4,6 +4,7 @@ using SpiritIsland;
 using Xunit;
 
 namespace SpiritIsland.Tests.Basegame.Spirits.River {
+
 	public class BoonOfVigor_Tests : SpiritCards_Tests {
 
 		[Fact]
@@ -17,6 +18,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// When: targetting self
 			card.ActivateAsync( spirit, gameState );
 			action = spirit.Action;
+
+			spirit.Action.AssertDecision( "Select Spirit to target", "River Surges in Sunlight", "River Surges in Sunlight" );
+
 			Assert.True(action.IsResolved);
 
 			// Then: received 1 energy

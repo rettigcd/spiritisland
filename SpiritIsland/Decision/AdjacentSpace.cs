@@ -8,7 +8,7 @@ namespace SpiritIsland.Decision {
 	/// </summary>
 	public class AdjacentSpace : TypedDecision<Space>, IPerformGatherOrPush {
 
-		public AdjacentSpace( string prompt, Space original, GatherPush gatherPush, IEnumerable<Space> spaces, Present present = Present.IfMoreThan1 )
+		public AdjacentSpace( string prompt, Space original, GatherPush gatherPush, IEnumerable<Space> spaces, Present present = Present.Always )
 			: base( prompt, spaces.OrderBy( x => x.Label ), present ) {
 			Original = original;
 			GatherPush = gatherPush;

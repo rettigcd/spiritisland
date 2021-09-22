@@ -7,22 +7,22 @@ namespace SpiritIsland {
 	static public class SpiritDecisionExtensinos {
 
 		// used for Fear / Growth / Generic / options that combine different types
-		static public Task<T> Select<T>( this Spirit spirit, string prompt, T[] options, Present present = Present.IfMoreThan1 ) where T : class, IOption {
+		static public Task<T> Select<T>( this Spirit spirit, string prompt, T[] options, Present present = Present.Always ) where T : class, IOption {
 			return spirit.Action.Decision( new Decision.TypedDecision<T>( prompt, options, present ) );
 		}
 
 		#region Simple Wrappers
 
-		static public Task<PowerCard> SelectPowerCard( this Spirit spirit, string prompt, PowerCard[] options, Present present = Present.IfMoreThan1 ) {
+		static public Task<PowerCard> SelectPowerCard( this Spirit spirit, string prompt, PowerCard[] options, Present present = Present.Always ) {
 			return spirit.Action.Decision( new Decision.TypedDecision<PowerCard>( prompt, options, present ) );
 		}
 
-		static public Task<IActionFactory> SelectFactory( this Spirit spirit, string prompt, IActionFactory[] options, Present present = Present.IfMoreThan1 ) {
+		static public Task<IActionFactory> SelectFactory( this Spirit spirit, string prompt, IActionFactory[] options, Present present = Present.Always ) {
 			return spirit.Action.Decision( new Decision.TypedDecision<IActionFactory>( prompt, options, present ) );
 		}
 
 		// wrapper - switches type to String
-		static public async Task<string> SelectText( this Spirit spirit, string prompt, string[] textOptions, Present present=Present.IfMoreThan1 ) {
+		static public async Task<string> SelectText( this Spirit spirit, string prompt, string[] textOptions, Present present=Present.Always ) {
 			TextOption[] options = textOptions.Select( x => new TextOption( x ) ).ToArray();
 			var selection = await spirit.Select( prompt, options, present );
 			return selection?.Text;

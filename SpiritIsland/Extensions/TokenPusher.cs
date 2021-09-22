@@ -28,7 +28,7 @@ namespace SpiritIsland {
 			return this; // chain together
 		}
 
-		public Task<Space[]> MoveN() => Exec( Present.IfMoreThan1 ); // ? switch to .Always ?
+		public Task<Space[]> MoveN() => Exec( Present.Always );
 		public Task<Space[]> MoveUpToN() => Exec( Present.Done );
 
 		async Task<Space[]> Exec( Present present ) {

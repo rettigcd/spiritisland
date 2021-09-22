@@ -39,11 +39,6 @@ namespace SpiritIsland {
 		Always,
 
 		/// <summary>
-		/// Shows for 2 or more options
-		/// </summary>
-		IfMoreThan1,
-
-		/// <summary>
 		/// Shows for 1 or more items, plus has done, cancel
 		/// </summary>
 		Done,

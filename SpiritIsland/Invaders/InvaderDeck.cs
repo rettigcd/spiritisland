@@ -41,7 +41,7 @@ namespace SpiritIsland {
 
 		public InvaderDeck(params InvaderCard[] cards ) {
 			this.cards = cards.ToList();
-			for(int i=0;i<cards.Count();++i) drawCount.Add(1);
+			for(int i=0;i<cards.Length;++i) drawCount.Add(1);
 			Advance(); // turn first explorer card up
 		}
 
@@ -71,7 +71,7 @@ namespace SpiritIsland {
 			all.AddRange(level3);
 			cards = all.ToList();
 
-			for(int i=0;i<cards.Count();++i) drawCount.Add(1);
+			for(int i=0;i<cards.Count;++i) drawCount.Add(1);
 			Advance(); // turn first explorer card up
 		}
 

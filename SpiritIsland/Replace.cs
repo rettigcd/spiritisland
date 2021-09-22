@@ -11,7 +11,7 @@ namespace SpiritIsland {
 		public static async Task Downgrade( Spirit spirit, InvaderGroup group, params TokenGroup[] groups ) {
 
 			var options = group.Tokens.OfAnyType( groups );
-			Token oldInvader = await spirit.Action.Decision( new Decision.InvaderToDowngrade( group.Space, options, Present.IfMoreThan1 ) );
+			Token oldInvader = await spirit.Action.Decision( new Decision.InvaderToDowngrade( group.Space, options, Present.Always ) );
 			if(oldInvader == null) return;
 
 			if(oldInvader.Generic == Invader.City) {

@@ -64,6 +64,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			When_PlayingCard();
 
+			//  Select: A4
+			Assert_Options("A4"); action.Choose("A4");
+
 			string token = "D@2 on " + neighbor.Label;
 
 			// Select source 1
@@ -95,6 +98,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 				Given_AddDahan( 1, neighbors[i] );
 
 			When_PlayingCard();
+
+			action.Choose( "A4" );
 
 			// Select 1st land
 			Assert.False( action.IsResolved );
@@ -152,14 +157,12 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			When_PlayingCard();
 
 			// Select 1st land
-//			Assert.False( action.IsResolved );
-//			Assert_Options( targetOptions );
-			var target = targetOptions[0];
-//			action.Select( target );
+			Assert.False( action.IsResolved );
+			Assert_Options( targetOptions );
+			action.Choose("A4");
+
 
 			Assert.True( action.IsResolved );
-
-			Assert.Equal( 3, gameState.DahanGetCount( target ) ); // same as original
 
 		}
 

@@ -8,7 +8,7 @@ namespace SpiritIsland.Decision {
 			int remaining,
 			Space to,
 			IEnumerable<SpaceToken> tokens,
-			Present present = Present.IfMoreThan1
+			Present present = Present.Always
 		) : base(
 			present == Present.Done 
 				? $"Gather up to {remaining}"

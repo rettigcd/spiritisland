@@ -159,7 +159,9 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			// When: we place a presence on that space
 			_ = spirit.Presence.PlaceFromBoard( spirit.Presence.Energy.Next, space, gameState );
 
+			spirit.Action.AssertDecision( "Push (2)", "D@2");
 			spirit.Action.AssertDecision( "Push D@2 to", "A4");
+			spirit.Action.AssertDecision( "Push (1)", "D@2");
 			spirit.Action.AssertDecision( "Push D@2 to", "A7" );
 
 			spirit.SacredSites.ShouldContain(space);

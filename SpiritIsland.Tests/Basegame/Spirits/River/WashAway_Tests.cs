@@ -41,6 +41,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			card.ActivateAsync( spirit, gameState );
 			action = spirit.Action;
 
+			action.Choose( targetSpace.Label );
+
 			var invader = action.GetCurrent().Options[0] as Token;
 			Then_SelectInvaderToPush(invader,1, invader.Summary,"Done");
 
@@ -73,6 +75,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			//  When: activating card
 			card.ActivateAsync( spirit, gameState );
 			action = spirit.Action;
+			action.Choose( targetSpace.Label );
 
 			Then_SelectInvaderToPush( Invader.Explorer[1], 1,"E@1", "Done" );
 			
@@ -98,6 +101,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			//  When: activating card
 			card.ActivateAsync( spirit, gameState );
 			action = spirit.Action;
+
+			action.Choose( targetSpace.Label );
 
 			//  Then: Select Explorer
 			Assert.False(action.IsResolved);
@@ -143,6 +148,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			//  Auto-Selects: target space
 			//			action.Select( targetSpace );
+			action.Choose( targetSpace.Label );
 
 			Then_SelectInvaderToPush( Invader.Town[1], 1, "T@1", "Done" );
 			Then_PushInvader( "T@1", invaderDestination, "A1","A2","A3","A5" );
@@ -185,6 +191,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			//  When: activating card
 			When_PlayingCard();
+
+			action.Choose( targetSpace.Label );
 
 			Then_SelectInvaderToPush(Invader.Explorer[1],3, "E@1","Done");
 

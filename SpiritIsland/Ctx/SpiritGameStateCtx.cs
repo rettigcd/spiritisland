@@ -105,7 +105,7 @@ namespace SpiritIsland {
 			while( 0 < countToGather
 				&& (options=GetOptions()).Length>0
 			) {
-				var source = await Self.Action.Decision( new Decision.AdjacentSpaceTokensToGathers(countToGather, target, options, Present.IfMoreThan1 ));
+				var source = await Self.Action.Decision( new Decision.AdjacentSpaceTokensToGathers(countToGather, target, options, Present.Always ));
 				if(source == null) break;
 				await GameState.Move( source.Token, source.Space, target );
 				--countToGather;

@@ -10,7 +10,7 @@ namespace SpiritIsland.Decision {
 			TokenGroup[] ofType, 
 			Space to, 
 			IEnumerable<Space> spaces, 
-			Present present = Present.IfMoreThan1 
+			Present present = Present.Always 
 		) : base( 
 			$"Gather {ofType.Select( it => it.Label ).Join( "/" )} ({remaining} remaining)", 
 			to, 
