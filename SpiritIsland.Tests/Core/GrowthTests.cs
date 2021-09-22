@@ -183,12 +183,12 @@ namespace SpiritIsland.Tests {
 			spirit.Action.Choose( op );
 
 			// Resolve Power
-			if(spirit.Presence.CardPlays.HasMore && spirit.Presence.Energy.HasMore) { // there are 2 option available
+//			if(spirit.Presence.CardPlays.HasMore && spirit.Presence.Energy.HasMore) { // there are 2 option available
 				var cardDecision = spirit.Action.GetCurrent();
 				cardDecision.Options.Select( x => x.Text ).Join( "," ).ShouldContain( source.Text );
 				// take from precense track
 				spirit.Action.Choose( source );
-			}
+//			}
 
 			// place on board - first option
 			if(!spirit.Action.IsResolved) {
