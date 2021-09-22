@@ -1,7 +1,6 @@
 ﻿using SpiritIsland;
 using SpiritIsland.Basegame;
 using SpiritIsland.SinglePlayer;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
@@ -45,7 +44,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 				.Select(s=>s.Split('>'))
 				.ToDictionary(a=>a[0],a=>a[1]);
 
-			var gather = spirit.GetAvailableActions(Speed.Growth).OfType<GatherPresenceIntoOcean>().SingleOrDefault();
+			GatherPresenceIntoOcean gather = spirit.GetAvailableActions(Speed.Growth).OfType<GatherPresenceIntoOcean>().SingleOrDefault();
 
 			if(gather != null){
 				_ = gather.ActivateAsync( spirit, gameState );
@@ -73,82 +72,58 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 		}
 
 		[Fact]
-		public void ReclaimGather_NonGatherParts(){
+		public void ReclaimGather_NonGatherParts() {
 			// reclaim, +1 power, gather 1 presense into EACH ocean, +2 energy
-			
-			Given_HalfOfPowercardsPlayed();
-			When_Growing(0);
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
-			spirit.Activate_ReclaimAll();
-			spirit.Activate_DrawPowerCard();
-			spirit.Activate_GainEnergy();
-			spirit.Action.AssertDecision( "Select Growth to resolve:", "GatherPresenceIntoOcean", "GatherPresenceIntoOcean" );
 
-			Assert_AllCardsAvailableToPlay(4+1);
+			Given_HalfOfPowercardsPlayed();
+			When_Growing( 0 );
+			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+
+			User.ReclaimsAll();
+			User.DrawsPowerCard();
+			User.GainsEnergy();
+			User.GathersPresenceIntoOcean();
+
+			Assert_AllCardsAvailableToPlay( 4 + 1 );
 			Assert_GainsFirstPowerProgressionCard();
-			Assert_HasEnergy( 2);
+			Assert_HasEnergy( 2 );
 		}
 
 		[Fact]
-		public void TwoPresenceInOceans(){
+		public void TwoPresenceInOceans() {
 			// +1 presence range any ocean, +1 presense in any ociean, +1 energy
 
 			// Given: island has 2 boards, hence 2 oceans
-			gameState.Island = new Island(BoardA,BoardB);
+			gameState.Island = new Island( BoardA, BoardB );
 
-			When_Growing(1);
+			When_Growing( 1 );
 			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
-			spirit.Activate_GainEnergy();
-			spirit.Action.AssertDecision( "Select Growth to resolve:", "PlaceInOcean,PlaceInOcean", "PlaceInOcean" );
-			spirit.Action.AssertDecision( "Select Presence to place.", "moon energy,2 cardplay", "moon energy" );
-			spirit.Action.AssertDecision( "Where would you like to place your presence?", "A0,B0", "A0" );
 
-			spirit.Action.AssertDecision( "Select Growth to resolve:", "PlaceInOcean", "PlaceInOcean" );
-			spirit.Action.AssertDecision( "Select Presence to place.", "water energy,2 cardplay", "water energy" );
-			spirit.Action.AssertDecision( "Where would you like to place your presence?", "A0,B0", "B0" );
+			User.GainsEnergy();
+			User.PlacesPresenceInOcean( "PlaceInOcean,(PlaceInOcean)", "(moon energy),2 cardplay", "(A0),B0" );
+			User.PlacesPresenceInOcean( "PlaceInOcean", "(water energy),2 cardplay", "A0,(B0)" );
 
-
-			//			Resolve_PlacePresenceInOcean( "A0;B0", spirit.Presence.Energy.Next);
-
-			Assert_HasEnergy( 1);
+			Assert_HasEnergy( 1 );
 		}
-
-		protected void Resolve_PlacePresenceInOcean( string placeOptions, Track source) {
-			PlaceInOcean ppFactory = spirit.GetAvailableActions( Speed.Growth ).OfType<PlaceInOcean>()
-				.First();
-
-			_ = spirit.TakeAction(ppFactory,gameState);
-
-			// take from precense track
-			spirit.Action.Choose( source );
-
-			// place on board - first option
-			string[] options = placeOptions.Split( ';' );
-			if(options.Length > 1) // not auto selecting
-				spirit.Action.Choose( spirit.Action.GetCurrent().Options.Single( o => o.Text == options[0] ) );
-
-		}
-
 
 		[Theory]
 		[InlineData("A0","A1;A2;A3","A1A2")]
-		public void PowerPlaceAndPush( string starting, string placeOptions, string ending ){
+		public void PowerPlaceAndPush( string starting, string placeOptions, string ending ) {
 			// gain power card
 			// push 1 presense from each ocean
 			// add presense on costal land range 1
-			gameState.Island = new Island(BoardA,BoardB,BoardC);
+			gameState.Island = new Island( BoardA, BoardB, BoardC );
 			Given_HasPresence( starting );
 
-			When_Growing(2);
+			When_Growing( 2 );
 			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
-			Resolve_PlacePresence( placeOptions, spirit.Presence.Energy.Next );
-			spirit.Activate_DrawPowerCard();
 
-			spirit.Action.AssertDecision( "Select Growth to resolve:", "PushPresenceFromOcean", "PushPresenceFromOcean" );
-			spirit.Action.AssertDecision( "Select target of Presence to Push from A0", "A1,A2,A3", "A2" );
+			User.PlacesPresence( placeOptions, spirit.Presence.Energy.Next );
+			User.DrawsPowerCard();
+			User.PushesPresenceFromOcean("A1,(A2),A3");
 
 			Assert_GainsFirstPowerProgressionCard();
-			Assert_BoardPresenceIs(ending);
+			Assert_BoardPresenceIs( ending );
 		}
 
 		void Assert_GainsFirstPowerProgressionCard() {
@@ -184,15 +159,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			Assert_CardTrackIs( expectedCardPlayCount );
 		}
 
-
-		#region helpers
-
 		void Given_IslandIsABC() {
 			// Given: 3-board island
 			gameState.Island = new Island( BoardA, BoardB, BoardC );
 		}
-
-		#endregion
 
 	}
 

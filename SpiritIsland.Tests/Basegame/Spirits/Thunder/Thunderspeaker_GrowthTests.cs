@@ -26,10 +26,11 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			Given_HalfOfPowercardsPlayed();
 
 			When_StartingGrowth();
-			spirit.Action.Choose( "ReclaimAll / DrawPowerCard / DrawPowerCard" );
-			spirit.Activate_ReclaimAll();
-			spirit.Activate_DrawPowerCard();
-			spirit.Activate_DrawPowerCard();
+
+			User.SelectsGrowthOption("ReclaimAll / DrawPowerCard / DrawPowerCard");
+			User.ReclaimsAll();
+			User.DrawsPowerCard();
+			User.DrawsPowerCard();
 
 			Assert_AllCardsAvailableToPlay( 6);
 			Assert_HasEnergy(1);
@@ -50,8 +51,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 
 			When_Growing( 1 );
 			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
-			Resolve_PlacePresence( expectedPresenseOptions, spirit.Presence.Energy.Next );
-			// PlacePresence(2,dahan)
+
+			User.PlacesPresence( expectedPresenseOptions, spirit.Presence.Energy.Next );
 
 			Assert_HasEnergy( 0 );
 
@@ -63,9 +64,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			Given_HasPresence( board[1] );
 
 			When_StartingGrowth();
-			spirit.Action.Choose( "PlacePresence(1) / GainEnergy(4)" );
-			spirit.Activate_GainEnergy();
-			Resolve_PlacePresence( "A1;A2;A4;A5;A6", spirit.Presence.Energy.Next );
+
+			User.SelectsGrowthOption( "PlacePresence(1) / GainEnergy(4)" );
+			User.GainsEnergy();
+			User.PlacesPresence( "A1;A2;A4;A5;A6", spirit.Presence.Energy.Next );
 
 			Assert.Equal(1,spirit.EnergyPerTurn);
 			Assert_HasEnergy( 4+1 );
@@ -80,6 +82,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 		[InlineDataAttribute(5,2,"AFS")]
 		[InlineDataAttribute(6,3,"AFS")]
 		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
+
 			// energy:	1 air 2 fire sun 3
 			spirit.Presence.Energy.RevealedCount = revealedSpaces;
 			Assert_PresenceTracksAre( expectedEnergyGrowth, 1 );
@@ -98,6 +101,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 		[InlineDataAttribute(6,3,true)]
 		[InlineDataAttribute(7,4,true)]
 		public void CardTrack(int revealedSpaces, int expectedCardPlayCount, bool canReclaim1 ){
+
 			// card:	1 2 2 3 reclaim-1 3 4
 			Given_HalfOfPowercardsPlayed();
 
@@ -107,14 +111,13 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			Assert_PresenceTracksAre(1,expectedCardPlayCount);
 
 			When_StartingGrowth();
-			spirit.Action.Choose( "PlacePresence(1) / GainEnergy(4)" );
 
-			spirit.Activate_GainEnergy();
-			Resolve_PlacePresence( "A2;A3;A4", spirit.Presence.Energy.Next );
+			User.SelectsGrowthOption( "PlacePresence(1) / GainEnergy(4)" );
+			User.GainsEnergy();
+			User.PlacesPresence( "A2;A3;A4", spirit.Presence.Energy.Next );
 
 			if( canReclaim1 )
-				AndWhen_ReclaimingFirstCard();
-
+				User.Reclaims1CardIfAny();
 		}
 
 	}

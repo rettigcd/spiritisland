@@ -23,37 +23,39 @@ namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
 
 			When_Growing( 0 );
 			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
-			spirit.Activate_ReclaimAll();
-			spirit.Activate_DrawPowerCard();
-			Resolve_PlacePresence( "A2;A3;A5", spirit.Presence.Energy.Next );
+
+			User.ReclaimsAll();
+			User.DrawsPowerCard();
+			User.PlacesPresence( "A2;A3;A5", spirit.Presence.Energy.Next );
 
 			Assert_AllCardsAvailableToPlay(5);
 		}
 
 		[Fact]
-		public void PlayExtraCard_2Presence(){
+		public void PlayExtraCard_2Presence() {
 			// +1 presense to jungle or wetland - range 2
 			// +1 presense range 1, play +1 extra card this turn
 
 			// Presense Options
 			Given_HasPresence( board[2] );
 
-			Assert.Equal(1, spirit.NumberOfCardsPlayablePerTurn); // ,"Rampant Green should start with 1 card.");
+			Assert.Equal( 1, spirit.NumberOfCardsPlayablePerTurn ); // ,"Rampant Green should start with 1 card.");
 
 			When_Growing( 1 );
 			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
-			Resolve_PlacePresence( "A2;A3;A5", spirit.Presence.Energy.Next );
-			Resolve_PlacePresence( "A2;A3;A5", spirit.Presence.Energy.Next );
-			spirit.Activate_PlayExtraCard();
+
+			User.PlacesPresence( "A2;A3;A5", spirit.Presence.Energy.Next );
+			User.PlacesPresence( "A2;A3;A5", spirit.Presence.Energy.Next );
+			User.ActivatesExtraCardPlay();
 
 			// Player Gains +1 card to play this round
-			Assert.Equal(2, spirit.NumberOfCardsPlayablePerTurn); // , "Should gain 1 card to play this turn.");
+			Assert.Equal( 2, spirit.NumberOfCardsPlayablePerTurn ); // , "Should gain 1 card to play this turn.");
 
 			// But count drops back down after played
-			spirit.PurchaseAvailableCards(spirit.Hand[0]);
+			spirit.PurchaseAvailableCards( spirit.Hand[0] );
 
 			// Back to original
-			Assert.Equal(1, spirit.NumberOfCardsPlayablePerTurn); // ,"Available card count should be back to original");
+			Assert.Equal( 1, spirit.NumberOfCardsPlayablePerTurn ); // ,"Available card count should be back to original");
 
 		}
 
@@ -64,10 +66,11 @@ namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
 			Given_HasPresence( board[2] );
 
 			When_StartingGrowth();
-			spirit.Action.Choose( "PlacePresence(2,W / J) / GainEnergy(3) / DrawPowerCard" );
-			Resolve_PlacePresence( "A2;A3;A5", spirit.Presence.Energy.Next ); // +1 from energy track
-			spirit.Activate_DrawPowerCard();
-			spirit.Activate_GainEnergy();
+
+			User.SelectsGrowthOption( "PlacePresence(2,W / J) / GainEnergy(3) / DrawPowerCard" );
+			User.PlacesPresence( "A2;A3;A5", spirit.Presence.Energy.Next ); // +1 from energy track
+			User.DrawsPowerCard();
+			User.GainsEnergy();
 
 			Assert.Equal(1,spirit.EnergyPerTurn);
 			Assert_HasEnergy(3+1);
@@ -89,7 +92,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
 			spirit.Presence.Energy.RevealedCount = revealedSpaces;
 			Assert_PresenceTracksAre( expectedEnergyGrowth, 1 );
 
-			spirit.TriggerEnergyElementsAndReclaims();
+			_ = spirit.TriggerEnergyElementsAndReclaims();
 
 			Assert_BonusElements( elements );
 		}

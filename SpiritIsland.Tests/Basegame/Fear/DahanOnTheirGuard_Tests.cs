@@ -6,13 +6,13 @@ using Xunit;
 
 namespace SpiritIsland.Tests.Basegame.Fear {
 
-	public class DahanOnTheirGuard_Tests {
+	public class DahanOnTheirGuard_Tests : DecisionTests {
 		readonly GameState gameState;
 		readonly InvaderCard invaderCard;
 		readonly Space ravageSpace;
 
-		public DahanOnTheirGuard_Tests() {
-			gameState = new GameState( new LightningsSwiftStrike(), Board.BuildBoardA() );
+		public DahanOnTheirGuard_Tests():base(new LightningsSwiftStrike()) {
+			gameState = new GameState( spirit, Board.BuildBoardA() );
 			gameState.DisableInvaderDeck();
 			gameState.Initialize();
 			gameState.Fear.Deck.Pop();
@@ -57,14 +57,11 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 				await gameState.Ravage(invaderCard);
 			}
 			_ = DoIt();
-			gameState.Spirits[0].Action.AssertDecision( 
-				"Activating Fear",
-				"Dahan on their Guard:1:In each land, Defend 1 per Dahan.",
-				"Dahan on their Guard:1:In each land, Defend 1 per Dahan."
-			);
+			User.AcknowledgesFearCard( "Dahan on their Guard:1:In each land, Defend 1 per Dahan." );
 
 			// Then: 0 dahan left
 			gameState.DahanGetCount( ravageSpace ).ShouldBe( 2 );
+
 			//   And: 2 towns
 			gameState.Assert_Invaders(ravageSpace, "2T@2" );
 			gameState.HasBlight( ravageSpace ).ShouldBe( true );

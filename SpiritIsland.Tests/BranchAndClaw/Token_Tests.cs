@@ -22,7 +22,7 @@ namespace SpiritIsland.Tests.BranchAndClaw {
 			counts.Wilds().Count++;
 
 			//  When: we explore there
-			gs.Explore(new InvaderCard(noInvaderSpace.Terrain));
+			_ = gs.Explore(new InvaderCard(noInvaderSpace.Terrain));
 
 			//  Then: still no invaders
 			gs.HasInvaders(noInvaderSpace).ShouldBeFalse("there should be no explorers in "+noInvaderSpace.Label);

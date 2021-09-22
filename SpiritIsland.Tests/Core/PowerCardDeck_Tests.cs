@@ -138,6 +138,7 @@ namespace SpiritIsland.Tests.Core {
 		[InlineData( false )]
 		public void DrawingMajor_ForgetACard(bool drawDirect) {
 			var spirit = new RiverSurges();
+			var user = new VirtualUser(spirit);
 			var gs = new GameState( spirit, Board.BuildBoardC() ) {
 				MajorCards = new PowerCardDeck( PowerCard.GetMajors(typeof(RiversBounty)) ),
 				MinorCards = new PowerCardDeck( PowerCard.GetMinors( typeof( RiversBounty ) ) )
@@ -148,11 +149,11 @@ namespace SpiritIsland.Tests.Core {
 				_= spirit.DrawMajor(gs);
 			else { 
 				_= spirit.Draw(gs,null);
-				spirit.Action.AssertDecision( "Which type do you wish to draw", "minor,major","major");
+				user.SelectsMajorPowerCard();
 			}
 
-			spirit.Action.AssertPrompt_ChooseFirst("Select Major Power Card");
-			spirit.Action.AssertPrompt_ChooseFirst( "Select power card to forget" );
+			user.SelectsFirstOption( "Select Major Power Card" );
+			user.SelectsFirstOption( "Select power card to forget" );
 		}
 
 	}

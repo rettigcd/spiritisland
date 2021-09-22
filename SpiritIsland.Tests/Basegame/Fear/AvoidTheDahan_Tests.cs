@@ -1,21 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using SpiritIsland.Basegame;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
-using SpiritIsland.Basegame;
 
 namespace SpiritIsland.Tests.Basegame.Fear {
 
-	public class AvoidTheDahan_Tests {
+	public class AvoidTheDahan_Tests : DecisionTests {
 
 		readonly GameState gameState;
 		readonly InvaderCard invaderCard;
 		readonly Space exploringSpace;
 
-		public AvoidTheDahan_Tests() {
-			gameState = new GameState( new LightningsSwiftStrike(), Board.BuildBoardA() );
+		public AvoidTheDahan_Tests():base( new LightningsSwiftStrike() ) {
+			gameState = new GameState( spirit, Board.BuildBoardA() );
 			gameState.Initialize();
 
 			invaderCard = InvaderDeck.Level1Cards[0];
@@ -34,8 +31,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 
 			_ = When_ApplyFearAndExplore();
 
-			gameState.Spirits[0].Action.AssertDecision( "Activating Fear", "Null Fear Card:1:x", "Null Fear Card:1:x" );
-
+			User.AcknowledgesFearCard( "Null Fear Card:1:x" );
 
 			Assert.Equal( 2, explored.Length );
 		}
@@ -47,11 +43,8 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			gameState.Fear.AddCard( new AvoidTheDahan() );
 
 			_ = When_ApplyFearAndExplore();
-			gameState.Spirits[0].Action.AssertDecision( 
-				"Activating Fear",
-				"Avoid the Dahan:1:Invaders do not Explore into lands with at least 2 Dahan.",
-				"Avoid the Dahan:1:Invaders do not Explore into lands with at least 2 Dahan."
-			);
+
+			User.AcknowledgesFearCard( "Avoid the Dahan:1:Invaders do not Explore into lands with at least 2 Dahan." );
 
 			// Then: "Invaders do not Explore into lands with at least 2 Dahan."
 			Assert.Single( explored );

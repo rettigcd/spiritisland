@@ -1,30 +1,29 @@
-﻿using System.Linq;
-using SpiritIsland.Basegame;
-using SpiritIsland;
+﻿using SpiritIsland.Basegame;
 using Xunit;
 
 namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 	public class BoonOfVigor_Tests : SpiritCards_Tests {
 
+		public BoonOfVigor_Tests():base( new RiverSurges() ) { }
+
 		[Fact]
 		public void BoonOfVigor_TargetSelf() {
 
-			Given_GameWithSpirits( new RiverSurges() );
+			Given_GameWithSpirits( spirit );
 
-			var card = Given_PurchasedCard(BoonOfVigor.Name);
-			Assert_CardIsReady(card,Speed.Fast);
+			var card = Given_PurchasedCard( BoonOfVigor.Name );
+			Assert_CardIsReady( card, Speed.Fast );
 
 			// When: targetting self
 			card.ActivateAsync( spirit, gameState );
-			action = spirit.Action;
 
-			spirit.Action.AssertDecision( "Select Spirit to target", "River Surges in Sunlight", "River Surges in Sunlight" );
+			User.TargetsSpirit( RiverSurges.Name );
 
-			Assert.True(action.IsResolved);
+			User.Assert_Done();
 
 			// Then: received 1 energy
-			Assert.Equal(1, spirit.Energy);
+			Assert.Equal( 1, spirit.Energy );
 
 		}
 
@@ -34,7 +33,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		[InlineData( 10 )]
 		public void BoonOfVigor_TargetOther( int expectedEnergyBonus ) {
 
-			Given_GameWithSpirits(new RiverSurges(), new LightningsSwiftStrike());
+			Given_GameWithSpirits(spirit, new LightningsSwiftStrike());
 
 			//  That: purchase N cards
 			var otherSpirit = gameState.Spirits[1];
@@ -46,22 +45,14 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			// When: targetting other spirit
 			card.ActivateAsync( spirit, gameState );
-			action = spirit.Action;
-			When_TargettingSpirit( otherSpirit );
+			
+			User.TargetsSpirit("River Surges in Sunlight,(Lightning's Swift Strike)");
 
-			Assert.True(action.IsResolved);
+			User.Assert_Done();
 
 			// Then: received 1 energy
 			Assert.Equal(expectedEnergyBonus, otherSpirit.Energy);
 
-		}
-
-		void When_TargettingSpirit(Spirit otherSpirit) {
-			Assert.False(action.IsResolved);
-			Assert.Equal(gameState.Spirits.Select(x => x.Text).OrderBy(x => x).Join(",")
-				, action.GetCurrent().Options.Select(x => x.Text).OrderBy(x => x).Join(",")
-			);
-			action.Choose(otherSpirit);
 		}
 
 		[Fact]

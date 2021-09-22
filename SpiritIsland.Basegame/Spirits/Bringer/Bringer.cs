@@ -87,7 +87,7 @@ namespace SpiritIsland.Basegame {
 				copy[invader] = src[invader];
 			var detached = new TokenCountDictionary( space, copy );
 
-			return new InvaderGroup( space, detached ) {
+			return new InvaderGroup( detached ) {
 				DestroyInvaderStrategy = new ToDreamAThousandDeaths_DestroyStrategy( gs.Fear.AddDirect, Cause.Power, this.MakeDecisionsFor( gs ) ),
 			};
 		}

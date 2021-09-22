@@ -7,13 +7,11 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 	public class MassiveFlooding_Tests : RiverGame {
 
-
-		readonly Spirit spirit;
 		readonly GameState gs;
 
-		public MassiveFlooding_Tests(){
+		public MassiveFlooding_Tests():base(){
 			// Given: River
-			spirit = new RiverSurges().UsePowerProgression();
+			spirit.UsePowerProgression();
 			gs = new GameState( spirit, Board.BuildBoardA() ) {
 				InvaderDeck = InvaderDeck.Unshuffled()
 			};
@@ -25,12 +23,12 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		[Fact]
 		public void InsufficientElements() {
 
-			game.DecisionProvider.Old_SelectGrowthOption( 0 ); // reclaim
-			spirit.Activate_DrawPowerCard();
-			spirit.Activate_GainEnergy();
-			spirit.Activate_ReclaimAll();
+			User.SelectsGrowthOption( 0 );
+			User.DrawsPowerCard();
+			User.GainsEnergy();
+			User.ReclaimsAll();
 
-			game.DecisionProvider.Old_BuyPowerCards( "Done" );
+			User.IsDoneBuyingCards();
 
 			//   And: in slow phase
 
@@ -42,20 +40,19 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		[Fact]
 		public void Level1_Pushes1TownOrExplorer() { // 1-Sun, 2-Water
 
-			game.DecisionProvider.Old_SelectGrowthOption( 1 ); // PP-1 PP-1
+			User.SelectsGrowthOption( 1 ); // PP-1 PP-1
 
-			game.DecisionProvider.Old_PlacePresence1("2 energy","A4");
-			game.DecisionProvider.Old_PlacePresence1("2 cardplay","A2");
+			User.PlacesPresence( "2 energy", "A4" );
+			User.PlacesPresence( "2 cardplay", "A2" );
 
-			game.DecisionProvider.Old_BuyPowerCards( FlashFloods.Name ); // fast
-			game.DecisionProvider.Old_BuyPowerCards( RiversBounty.Name );// slow
+			User.BuysPowerCard( FlashFloods.Name ); // fast
+			User.BuysPowerCard( RiversBounty.Name );// slow
 
-			game.DecisionProvider.Old_DoneWith( Speed.Fast );
+			User.IsDoneWith( Speed.Fast );
 
-			game.DecisionProvider.AssertDecision( "Select Slow to resolve:", "River's Bounty,Massive Flooding,Done", "Massive Flooding" );
-			game.DecisionProvider.AssertDecision( "Select space to target.", "A2,A3,A5,A8", "A8" );
-			game.DecisionProvider.AssertDecision( "Push (1)", "T@2,E@1", "T@2" );
-			game.DecisionProvider.AssertDecision( "Push T@2 to", "A5,A6,A7", "A5" );
+			User.SelectsSlowAction("River's Bounty,(Massive Flooding)");
+			User.TargetsLand( "A2,A3,A5,(A8)" );
+			User.PushesTokensTo( "(T@2),E@1", "(A5),A6,A7" );
 		}
 
 		[Fact]
@@ -64,21 +61,20 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Given_SpiritCardPlayCount( 3 );
 			Given_SpiritGetMoney( 5 );
 
-			game.DecisionProvider.Old_SelectGrowthOption( 0 ); // Reclaim
-			spirit.Activate_DrawPowerCard();
-			spirit.Activate_GainEnergy();
-			spirit.Activate_ReclaimAll();
+			User.SelectsGrowthOption( 0 ); // reclaim
+			User.DrawsPowerCard();
+			User.GainsEnergy();
+			User.ReclaimsAll();
 
-			game.DecisionProvider.Old_BuyPowerCards( FlashFloods.Name ); // fast - sun, water
-			game.DecisionProvider.Old_BuyPowerCards( RiversBounty.Name ); // slow - sun, water, animal
-			game.DecisionProvider.Old_BuyPowerCards( BoonOfVigor.Name ); // fast - sun, water, plant
+			User.BuysPowerCard( FlashFloods.Name ); // fast - sun, water
+			User.BuysPowerCard( RiversBounty.Name ); // slow - sun, water, animal
+			User.BuysPowerCard( BoonOfVigor.Name ); // fast - sun, water, plant
 
-			game.DecisionProvider.Old_DoneWith( Speed.Fast );
+			User.IsDoneWith( Speed.Fast );
 
-			game.DecisionProvider.AssertDecision( "Select Slow to resolve:", "River's Bounty,Massive Flooding,Done", "Massive Flooding" );
-			game.DecisionProvider.AssertDecision( "Select space to target.", "A5,A8", "A8" );
-			game.DecisionProvider.AssertDecision( "Push up to (1)", "E@1,Done", "E@1" );
-			game.DecisionProvider.AssertDecision( "Push E@1 to", "A5,A6,A7", "A5" );
+			User.SelectsSlowAction("River's Bounty,(Massive Flooding)" );
+			User.TargetsLand("A5,(A8)");
+			User.OptionallyPushesInvaderTo("E@1","(A5),A6,A7");
 		}
 
 		[Fact]
@@ -95,20 +91,20 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			grp.Adjust( Invader.Town.Default, 5 );
 			grp.Adjust( Invader.Explorer.Default, 5 );
 
-			game.DecisionProvider.Old_SelectGrowthOption( 0 ); // Reclaim
-			spirit.Activate_DrawPowerCard();
-			spirit.Activate_GainEnergy();
-			spirit.Activate_ReclaimAll();
+			User.SelectsGrowthOption( 0 ); // Reclaim
+			User.DrawsPowerCard();
+			User.GainsEnergy();
+			User.ReclaimsAll();
 
-			game.DecisionProvider.Old_BuyPowerCards( FlashFloods.Name );  // fast - sun, water
-			game.DecisionProvider.Old_BuyPowerCards( RiversBounty.Name ); // slow - sun, water, animal
-			game.DecisionProvider.Old_BuyPowerCards( BoonOfVigor.Name );  // fast - sun, water, plant
-			game.DecisionProvider.Old_BuyPowerCards( WashAway.Name );     // slow -      water, earth
+			User.BuysPowerCard( FlashFloods.Name );  // fast - sun, water
+			User.BuysPowerCard( RiversBounty.Name ); // slow - sun, water, animal
+			User.BuysPowerCard( BoonOfVigor.Name );  // fast - sun, water, plant
+			User.BuysPowerCard( WashAway.Name );     // slow -      water, earth
 
-			game.DecisionProvider.Old_DoneWith( Speed.Fast );
+			User.IsDoneWith( Speed.Fast );
 
-			game.DecisionProvider.Old_SelectOption( "Select Slow to resolve", "Massive Flooding" );
-			game.DecisionProvider.Old_SelectOption( "Select space to target.", space.Label);
+			User.SelectsSlowAction("River's Bounty,Wash Away,(Massive Flooding)" );
+			User.TargetsLand( "(A1),A5,A8" );
 			
 			System.Threading.Thread.Sleep(50);
 			game.GameState.Assert_Invaders(space, "1C@1" );

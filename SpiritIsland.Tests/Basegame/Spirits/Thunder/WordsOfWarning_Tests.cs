@@ -1,5 +1,4 @@
-﻿using Shouldly;
-using SpiritIsland.Basegame;
+﻿using SpiritIsland.Basegame;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -21,7 +20,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			counts.Adjust( Invader.City.Default, 1 );
 			// and activate card
 			When_ActivateCard( WordsOfWarning.Name );
-			Step( "Select space to target.", "A2,A4", "A2", true );
+			
+			User.TargetsLand("(A2),A4");
 
 			// When: ravaging on A2
 			await gs.Ravage(new InvaderCard(a[2].Terrain));

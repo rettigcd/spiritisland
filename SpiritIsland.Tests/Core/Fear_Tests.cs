@@ -8,8 +8,10 @@ namespace SpiritIsland.Tests.Core {
 
 		readonly Spirit spirit;
 		readonly GameState gs;
+		readonly VirtualUser user;
 		public Fear_Tests() {
 			spirit = new RiverSurges();
+			user = new VirtualUser( spirit );
 			gs = new GameState( spirit, Board.BuildBoardA() );
 		}
 
@@ -32,7 +34,7 @@ namespace SpiritIsland.Tests.Core {
 		}
 
 		void Assert_PresentsFearToUser() {
-			spirit.Action.AssertPrompt_ChooseFirst( "Activating Fear" );
+			user.AcknowledgesFearCard("Null Fear Card:1:x");
 		}
 
 

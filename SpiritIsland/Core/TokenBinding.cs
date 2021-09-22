@@ -1,8 +1,8 @@
 ﻿namespace SpiritIsland {
 	public class TokenBinding {
 
-		TokenCountDictionary counts;
-		Token token;
+		readonly TokenCountDictionary counts;
+		readonly Token token;
 		public TokenBinding( TokenCountDictionary tokens, Token token ) {
 			this.counts = tokens;
 			this.token = token;

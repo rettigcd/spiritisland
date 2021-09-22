@@ -9,7 +9,7 @@ namespace SpiritIsland {
 
 		#region constructor
 
-		public InvaderGroup( Space space, TokenCountDictionary aliveCounts) {
+		public InvaderGroup( TokenCountDictionary aliveCounts) {
 			this.Tokens = aliveCounts;
 		}
 

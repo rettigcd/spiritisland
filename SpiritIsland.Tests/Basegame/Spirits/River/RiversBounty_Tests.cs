@@ -9,9 +9,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 		readonly Board board;
 
-		public RiversBounty_Tests() {
+		public RiversBounty_Tests():base(new RiverSurges() ) {
+
 			// A5 is the 'Y' land in the middle
-			Given_GameWithSpirits( new RiverSurges() );
+			Given_GameWithSpirits( spirit );
 
 			//   And: a game on Board-A
 			board = Board.BuildBoardA();
@@ -65,22 +66,18 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			When_PlayingCard();
 
 			//  Select: A4
-			Assert_Options("A4"); action.Choose("A4");
+			User.TargetsLand("A4");
 
 			string token = "D@2 on " + neighbor.Label;
 
 			// Select source 1
-			if(dahanToGather>0){
-				Assert.False( action.IsResolved );
-				Assert_Options( token,"Done" );
-				action.Choose( token );
-			}
+			if(dahanToGather>0)
+				User.GathersOptionalToken( token );
+			
 			// Select source 2
-			if(dahanToGather>1){
-				Assert.False( action.IsResolved );
-				Assert_Options( token, "Done" );
-				action.Choose( token );
-			}
+			if(dahanToGather>1)
+				User.GathersOptionalToken( token );
+			
 
 			Assert.Equal( endingCount, gameState.DahanGetCount( target ) ); // same as original
 			Assert.Equal( endingEnergy, spirit.Energy );
@@ -99,19 +96,11 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			When_PlayingCard();
 
-			action.Choose( "A4" );
+			User.TargetsLand( "A4" );
+			User.GathersOptionalToken("(D@2 on A1),D@2 on A2");
+			User.GathersOptionalToken("D@2 on A2");
 
-			// Select 1st land
-			Assert.False( action.IsResolved );
-			Assert_Options( "D@2 on A1,D@2 on A2,Done".Split(',') );
-			action.Choose( "D@2 on A1" );
-
-			// Select 2nd land
-			Assert.False( action.IsResolved );
-			Assert_Options( "D@2 on A2,Done".Split( ',' ) );
-			action.Choose( "D@2 on A2" );
-
-			Assert.True( action.IsResolved );
+			User.Assert_Done();
 
 			Assert.Equal( 3, gameState.DahanGetCount( target ) ); // same as original
 		}
@@ -128,21 +117,13 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			When_PlayingCard();
 
-			// Select Target / Destination land
-			Assert.False( action.IsResolved );
-			Assert_Options( targetOptions );
-			var target = targetOptions[0];
-			action.Choose( target );
-			// Select 1st source land
-			Assert.False( action.IsResolved );
-			action.Choose( "D@2 on " + board[5].Label );
-			// Select 2nd source land
-			Assert.False( action.IsResolved );
-			action.Choose( "D@2 on "+ board[5].Label );
+			User.TargetsLand("(A4),A8");
+			User.GathersOptionalToken( "D@2 on A5" );
+			User.GathersOptionalToken( "D@2 on A5" );
 
-			Assert.True( action.IsResolved );
+			User.Assert_Done();
 
-			Assert.Equal( 3, gameState.DahanGetCount( target ) ); // same as original
+			Assert.Equal( 3, gameState.DahanGetCount( board[4] ) ); // same as original
 		}
 
 		[Fact]
@@ -157,12 +138,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			When_PlayingCard();
 
 			// Select 1st land
-			Assert.False( action.IsResolved );
-			Assert_Options( targetOptions );
-			action.Choose("A4");
+			User.TargetsLand( "A4" );
 
-
-			Assert.True( action.IsResolved );
+			User.Assert_Done();
 
 		}
 

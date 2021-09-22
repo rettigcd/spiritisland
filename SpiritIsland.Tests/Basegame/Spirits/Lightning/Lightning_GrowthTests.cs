@@ -7,22 +7,23 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Lightning {
 	public class Lightning_GrowthTests : GrowthTests{
 
 		public Lightning_GrowthTests()
-			:base(new LightningsSwiftStrike().UsePowerProgression()){}
+			:base(new LightningsSwiftStrike().UsePowerProgression())
+		{}
 
 		[Fact]
-		public void Reclaim_Power_Energy(){
+		public void Reclaim_Power_Energy() {
 			// * reclaim, +1 power card, +1 energy
 
 			Given_HalfOfPowercardsPlayed();
 			When_StartingGrowth();
-			spirit.Action.Choose( "ReclaimAll / DrawPowerCard / GainEnergy(1)" );
 
-			spirit.Activate_ReclaimAll();
-			spirit.Activate_GainEnergy();
-			spirit.Activate_DrawPowerCard();
+			User.SelectsGrowthOption( "ReclaimAll / DrawPowerCard / GainEnergy(1)" );
+			User.ReclaimsAll();
+			User.GainsEnergy();
+			User.DrawsPowerCard();
 
-			Assert_AllCardsAvailableToPlay( 5); // drew a power card
-			Assert_HasEnergy(1+1); // 1 from energy track
+			Assert_AllCardsAvailableToPlay( 5 ); // drew a power card
+			Assert_HasEnergy( 1 + 1 ); // 1 from energy track
 
 		}
 
@@ -33,9 +34,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Lightning {
 			Given_HasPresence( board[1] );
 
 			When_StartingGrowth();
-			spirit.Action.Choose( "GainEnergy(3) / PlacePresence(1)" );
-			spirit.Activate_GainEnergy();
-			Resolve_PlacePresence( "A1;A2;A4;A5;A6", spirit.Presence.Energy.Next );
+
+			User.SelectsGrowthOption( "GainEnergy(3) / PlacePresence(1)" );
+			User.GainsEnergy();
+			User.PlacesPresence( "A1;A2;A4;A5;A6", spirit.Presence.Energy.Next );
 
 			Assert.Equal(1,spirit.EnergyPerTurn);
 			Assert_HasEnergy( 3 + 1 ); // 1 from energy track
@@ -47,8 +49,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Lightning {
 			Given_HasPresence( board[3] ); 
 
 			When_Growing( 1 );
+
 			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
-			Resolve_PlacePresence( "A1;A2;A3;A4;A5", spirit.Presence.Energy.Next);
+
+			User.PlacesPresence( "A1;A2;A3;A4;A5", spirit.Presence.Energy.Next);
 
 			Assert_HasEnergy( 0 );
 

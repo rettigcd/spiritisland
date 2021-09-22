@@ -43,8 +43,8 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			Given_HalfOfPowercardsPlayed();
 
 			When_SharpFangsGrow();
-			Activate_A();
-			Activate_B();
+			User_Activates_A();
+			User_Activates_B();
 
 			Assert_AllCardsAvailableToPlay( 4+1);  // A
 			Assert_HasEnergy( 10 -1 + 1 );         // A
@@ -60,8 +60,8 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 
 			Given_HalfOfPowercardsPlayed();
 			When_SharpFangsGrow();
-			Activate_C(); // gain 1 energy before we spend it
-			Activate_A();
+			USer_Activates_C(); // gain 1 energy before we spend it
+			User_Activates_A();
 
 			Assert_AllCardsAvailableToPlay( 5 + 1 );  // A
 			Assert_HasEnergy( 0 + 1 );            // A & C
@@ -77,8 +77,8 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			Given_HalfOfPowercardsPlayed();
 
 			When_SharpFangsGrow();
-			Activate_D();
-			Activate_A();
+			User_Activate_D();
+			User_Activates_A();
 
 			Assert_AllCardsAvailableToPlay(5);      // A
 			Assert_HasPowerProgressionCard( 0 );    // A
@@ -92,8 +92,8 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			// c) gain power card, gain +1 energy
 
 			When_SharpFangsGrow();
-			Activate_B();
-			Activate_C();
+			User_Activates_B();
+			USer_Activates_C();
 
 			Assert_BoardPresenceIs( "A2A3" );  // B
 			Assert_HasEnergy( 1 + 1 );         // C
@@ -106,8 +106,8 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			// d) +3 energy
 
 			When_SharpFangsGrow();
-			Activate_B();
-			Activate_D();
+			User_Activates_B();
+			User_Activate_D();
 
 			Assert_BoardPresenceIs( "A2A3" );  // B
 			Assert_HasEnergy( 3 + 1 );         // D
@@ -119,8 +119,8 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			// d) +3 energy
 
 			When_SharpFangsGrow();
-			Activate_C();
-			Activate_D();
+			USer_Activates_C();
+			User_Activate_D();
 
 			Assert_HasPowerProgressionCard( 0 );    // C
 			Assert_HasEnergy( 1 + 3 + 1 );     // C + D
@@ -162,46 +162,38 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 
 			When_SharpFangsGrow();
 
-			Activate_C();
-			Activate_D();
+			USer_Activates_C();
+			User_Activate_D();
 
 			while(reclaimCount-- > 0)
-				AndWhen_ReclaimingFirstCard();
+				User.Reclaims1CardIfAny();
 		}
 
 		void When_SharpFangsGrow() {
 			When_StartingGrowth();
-//			Remove_ReplacePresenceWithBeast();
 		}
 
-
-		//private void Remove_ReplacePresenceWithBeast() {
-		//	spirit.Action.Choose( "ReplacePresenceWithBeast" );
-		//	if(spirit.Presence.Placed.Count > 1)
-		//		spirit.Action.Choose( "Done" ); // skip
-		//}
-
-		void Activate_A() {
-			spirit.Action.Choose( "ReclaimAll / GainEnergy(-1) / DrawPowerCard" );
-			spirit.Activate_GainEnergy();    // A
-			spirit.Activate_ReclaimAll();    // A
-			spirit.Activate_DrawPowerCard(); // A
+		void User_Activates_A() {
+			User.SelectsGrowthOption( "ReclaimAll / GainEnergy(-1) / DrawPowerCard" );
+			User.GainsEnergy();
+			User.ReclaimsAll();
+			User.DrawsPowerCard();
 		}
 
-		void Activate_B() {
-			spirit.Action.Choose( "PlacePresence(3,beast or jungle)" );
-			spirit.Activate_PlacePresence( "A3;A7;A8", spirit.Presence.Energy.Next ); // B
+		void User_Activates_B() {
+			User.SelectsGrowthOption( "PlacePresence(3,beast or jungle)" );
+			User.PlacesPresence( "A3;A7;A8", spirit.Presence.Energy.Next );
 		}
 
-		void Activate_C() {
-			spirit.Action.Choose( "DrawPowerCard / GainEnergy(1)" );
-			spirit.Activate_GainEnergy();                                             // C
-			spirit.Activate_DrawPowerCard();                                          // C
+		void USer_Activates_C() {
+			User.SelectsGrowthOption( "DrawPowerCard / GainEnergy(1)" );
+			User.GainsEnergy();
+			User.DrawsPowerCard();
 		}
 
-		void Activate_D() {
-			spirit.Action.Choose( "GainEnergy(3)" );
-			spirit.Activate_GainEnergy();                                             // D
+		void User_Activate_D() {
+			User.SelectsGrowthOption( "GainEnergy(3)" );
+			User.GainsEnergy();
 		}
 
 	}

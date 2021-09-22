@@ -111,8 +111,6 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 
 			actualFear.ShouldBe(expectedFearCount,"fear count is wrong");
 
-//			ctx.GameState.Fear.Pool.ShouldBe( expectedFearCount % 4 );
-//			ctx.GameState.Fear.ActivatedCards.Count.ShouldBe( expectedFearCount / 4 );
 		}
 
 

@@ -277,7 +277,7 @@ namespace SpiritIsland {
 
 		public virtual InvaderGroup BuildInvaderGroupForPowers( GameState gs, Space space ) {
 			var invaderCounts = gs.Tokens[ space ];
-			return new InvaderGroup( space, invaderCounts ) {
+			return new InvaderGroup( invaderCounts ) {
 				DestroyInvaderStrategy = new DestroyInvaderStrategy( gs.Fear.AddDirect, Cause.Power ),
 			};
 		}

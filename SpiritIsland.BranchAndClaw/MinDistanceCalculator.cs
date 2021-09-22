@@ -4,8 +4,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public partial class SweepIntoTheSea {
 		class MinDistanceCalculator {
-			Queue<Space> spacesLessThanLimit = new();
-			Dictionary<Space, int> shortestDistances = new();
+			readonly Queue<Space> spacesLessThanLimit = new();
+			readonly Dictionary<Space, int> shortestDistances = new();
 			
 			public MinDistanceCalculator SetTargets(IEnumerable<Space> targets ) {
 				foreach(var target in targets) {

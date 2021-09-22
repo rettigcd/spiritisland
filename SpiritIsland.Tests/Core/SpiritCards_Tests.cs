@@ -1,14 +1,13 @@
-using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
 namespace SpiritIsland.Tests {
 
-	public class SpiritCards_Tests {
+	public class SpiritCards_Tests : DecisionTests {
 
-		protected Spirit spirit;
+		protected SpiritCards_Tests(Spirit spirit ) : base( spirit ) { }
+
 		protected GameState gameState;
-		protected BaseAction action;
 		protected PowerCard card;
 
 		protected PowerCard Given_PurchasedCard(string cardName) {
@@ -18,7 +17,6 @@ namespace SpiritIsland.Tests {
 		}
 
 		protected void Given_GameWithSpirits(params Spirit[] spirits) {
-			spirit = spirits[0];
 			gameState = new GameState(spirits);
 		}
 
@@ -46,23 +44,6 @@ namespace SpiritIsland.Tests {
 
 		protected void When_PlayingCard() {
 			card.ActivateAsync( spirit, gameState );
-			action = spirit.Action;
-		}
-
-		protected void Assert_Options( params string[] expected ) {
-			if(action==null) throw new System.InvalidOperationException("action is null");
-			var current = action.GetCurrent();
-			Assert.Equal(
-				expected.OrderBy(x=>x).Join(",")
-				,current.Options.Select(s=>s.Text).OrderBy(x=>x).Join(",")
-			);
-		}
-
-		protected void Assert_Options( IEnumerable<IOption> expected, params IOption[] plus ){
-			expected = expected.Union(plus);
-			string expectedStr = expected.Select(s=>s.Text).OrderBy(x=>x).Join(",");
-			string actualOptions = action.GetCurrent().Options.Select(s=>s.Text).OrderBy(x=>x).Join(",");
-			Assert.Equal( expectedStr, actualOptions);
 		}
 
 	}

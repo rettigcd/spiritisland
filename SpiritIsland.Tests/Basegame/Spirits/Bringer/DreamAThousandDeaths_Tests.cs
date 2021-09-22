@@ -7,21 +7,19 @@ using Xunit;
 
 namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 
-	public class DreamAThousandDeaths_Tests {
+	public class DreamAThousandDeaths_Tests : DecisionTests {
 
 		readonly Board board;
+		readonly GameState gs;
 		readonly TargetSpaceCtx ctx;
-		public DreamAThousandDeaths_Tests() {
-			spirit = new Bringer();
+
+		public DreamAThousandDeaths_Tests():base(new Bringer()) {
 			board = Board.BuildBoardA();
 			gs = new GameState( spirit, board );
 			ctx = MakeFreshCtx();
 		}
-		readonly Bringer spirit;
-		readonly GameState gs;
 
 		TargetSpaceCtx MakeFreshCtx() => new TargetSpaceCtx( spirit, gs, board[5], Cause.Power );
-
 
 		// 1: Raging Storm - 1 damage to each invader (slow)
 		static readonly Func<TargetSpaceCtx,Task> OneDamageToEachAsync = RagingStorm.ActAsync;
@@ -46,10 +44,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			}
 
 			// Then: dream-death allows User pushes them
-			for(int i = 0; i < count; ++i) {
-				ctx.Self.Action.AssertDecision( "Push (1)","E@1", "E@1" );
-				ctx.Self.Action.AssertDecision( "Push E@1 to", "A1,A4,A6,A7,A8", "A7" );
-			}
+			for(int i = 0; i < count; ++i)
+				User.PushesTokensTo( "E@1", "A1,A4,A6,(A7),A8" );
 
 			// And: 0-fear
 			Assert_GeneratedFear( 0 );
@@ -73,10 +69,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			_ = DestroyAllExplorersAndTownsAsync( ctx );
 
 			// Then: dream-death allows User pushes them
-			for(int i = 0; i < count; ++i) {
-				ctx.Self.Action.AssertDecision( "Push (1)", "T@2", "T@2" );
-				ctx.Self.Action.AssertDecision( "Push T@2 to", "A1,A4,A6,A7,A8", "A7" );
-			}
+			for(int i = 0; i < count; ++i)
+				User.PushesTokensTo("T@2","A1,A4,A6,(A7),A8" );
 
 			// And:4-fear
 			Assert_GeneratedFear( count * 2 );
@@ -95,19 +89,18 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			ctx.Tokens.Adjust( Invader.City.Default, 1 );
 
 			// When: 3 separate actinos cause 1 damage
-			async Task Run3Async(){
+			async Task Run3Async() {
 				await OneDamageToEachAsync( MakeFreshCtx() );
 				await OneDamageToEachAsync( MakeFreshCtx() );
 				await OneDamageToEachAsync( MakeFreshCtx() );
 			}
-			_=Run3Async();
+			_ = Run3Async();
 
-			ctx.Self.Action.IsResolved.ShouldBeTrue();
+			User.Assert_Done();
 
 			// And: 0-fear
-			Assert_GeneratedFear(0); // city never destroyed
+			Assert_GeneratedFear( 0 ); // city never destroyed
 		}
-
 
 		[Fact]
 		public async Task ConsecutivePowersCanDreamKillMultipletimes() {
@@ -121,7 +114,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			await OneDamageToEachAsync( MakeFreshCtx() );
 			await OneDamageToEachAsync( MakeFreshCtx() );
 
-			ctx.Self.Action.IsResolved.ShouldBeTrue();
+			User.Assert_Done();
 
 			// And: 0-fear
 			Assert_GeneratedFear( 3*5 ); // city never destroyed
@@ -137,7 +130,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			// When: doing 4 points of damage
 			await FourDamage( MakeFreshCtx() );
 
-			ctx.Self.Action.IsResolved.ShouldBeTrue();
+			User.Assert_Done();
 
 			// And: 0-fear
 			Assert_GeneratedFear( 1 * 5 ); // city only destroyed once
@@ -150,8 +143,6 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			int actualGeneratedFear = ctx.GameState.Fear.Pool
 				+ 4 * ctx.GameState.Fear.ActivatedCards.Count;
 			actualGeneratedFear.ShouldBe(expectedFearCount,"fear countis wrong");
-//			ctx.GameState.Fear.Pool.ShouldBe( expectedFearCount % 4 );
-//			ctx.GameState.Fear.ActivatedCards.Count.ShouldBe( expectedFearCount / 4 );
 		}
 
 	}

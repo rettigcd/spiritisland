@@ -27,11 +27,12 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Assert.Equal(1,spirit.EnergyPerTurn);
 
 			When_StartingGrowth();
-			spirit.Action.Choose( "ReclaimAll / DrawPowerCard / GainEnergy(1)" );
 
-			spirit.Activate_DrawPowerCard();
-			spirit.Activate_GainEnergy();
-			spirit.Activate_ReclaimAll();
+			User.SelectsGrowthOption("ReclaimAll / DrawPowerCard / GainEnergy(1)");
+
+			User.DrawsPowerCard();
+			User.GainsEnergy();
+			User.ReclaimsAll();
 
 			Assert_AllCardsAvailableToPlay( 5);
 			Assert_HasCardAvailable( "Uncanny Melting" ); // gains 1st card in power progression
@@ -49,10 +50,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Assert.Equal(1,spirit.Presence.Energy.RevealedCount);
 
 			When_StartingGrowth();
-			spirit.Action.Choose( "PlacePresence(1) / PlacePresence(1)" );
-
-			Resolve_PlacePresence( "A2;A3;A4", spirit.Presence.Energy.Next);
-			Resolve_PlacePresence( "A1;A2;A3;A4", spirit.Presence.Energy.Next );
+			User.SelectsGrowthOption( "PlacePresence(1) / PlacePresence(1)" );
+			User.PlacesPresence( "A2;A3;A4", spirit.Presence.Energy.Next);
+			User.PlacesPresence( "A1;A2;A3;A4", spirit.Presence.Energy.Next );
 
 			Assert.Equal(2,spirit.EnergyPerTurn);
 			Assert_HasEnergy( 2 ); // 2 from energy track
@@ -68,10 +68,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Given_HasPresence( board[3] );
 
 			When_StartingGrowth();
-			spirit.Action.Choose( "DrawPowerCard / PlacePresence(2)" );
 
-			spirit.Activate_DrawPowerCard();
-			Resolve_PlacePresence( "A1;A2;A3;A4;A5", spirit.Presence.CardPlays.Next);
+			User.SelectsGrowthOption( "DrawPowerCard / PlacePresence(2)" );
+			User.DrawsPowerCard();
+			User.PlacesPresence( "A1;A2;A3;A4;A5", spirit.Presence.CardPlays.Next);
 
 			Assert_HasCardAvailable( "Uncanny Melting" ); // gains 1st card in power progression
 			Assert_HasEnergy( 1 ); // didn't increase energy track.
@@ -116,14 +116,13 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Assert_PresenceTracksAre(1,expectedCardPlayCount);
 
 			When_StartingGrowth();
-			spirit.Action.Choose( "DrawPowerCard / PlacePresence(2)" );
 
-			spirit.Activate_DrawPowerCard();
-			Resolve_PlacePresence( "A1;A2;A3;A4;A5", spirit.Presence.Energy.Next );
+			User.SelectsGrowthOption( "DrawPowerCard / PlacePresence(2)" );
+			User.DrawsPowerCard();
+			User.PlacesPresence( "A1;A2;A3;A4;A5", spirit.Presence.Energy.Next );
 
 			if(canReclaim1)
-				AndWhen_ReclaimingFirstCard();
-
+				User.Reclaims1CardIfAny();
 		}
 
 		#endregion
@@ -178,21 +177,6 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Assert.Equal(0, spirit.Energy);
 
 		}
-
-		//void Assert_InnateInActionListIf(Speed currentSpeed) {
-		//	var unresolvedInnates = spirit.UnresolvedActionFactories
-		//		.OfType<InnatePower>()
-		//		.ToArray();
-
-		//	var innate = spirit.InnatePowers[0];
-
-		//	if (innate.Speed == currentSpeed)
-		//		//  And: card is in Unresolved Action list
-		//		Assert.Contains(innate, unresolvedInnates);
-		//	else
-		//		//  And: card is NOT in Unresolved Action list
-		//		Assert.DoesNotContain(innate, unresolvedInnates);
-		//}
 
 		protected void Assert_CardInActionListIf(PowerCard card) {
 
@@ -267,15 +251,6 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 		#endregion
 
-		#region Fast
-
-		[Fact]
-		public void BooneOfVigor_PlayOnSelf(){
-
-		}
-
-		#endregion Fast
-
 		#region Initial Presence Placing
 
 		[Theory]
@@ -303,7 +278,6 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 	public class RiverSurges_GrowthTests2 : RiverGame {
 
 		public RiverSurges_GrowthTests2(){
-			var spirit = new RiverSurges();
 			var gs = new GameState( spirit, Board.BuildBoardA() );
 			game = new SinglePlayer.SinglePlayerGame(gs);
 		}
@@ -312,29 +286,34 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		public void Reclaim1_TriggersImmediately(){
 			// pull card track 2 * 2 = triggers reclaim 
 
-			game.DecisionProvider.Old_SelectGrowthOption(1);
-			game.DecisionProvider.Old_PlacePresence1( Track.Card2, "A5");
-			game.DecisionProvider.Old_PlacePresence1( Track.Card2, "A5");
+			// !!! I think there is an await missing between SelectsGrowthOptions(1) and the 1st place-precense
+			// which causes the thread to return before the engine has queued up the PlacePresence decision
+			// Problem only appears in things that use RiverGame base class.
 
-			game.DecisionProvider.Old_BuyPowerCards( WashAway.Name );
-			game.DecisionProvider.Old_BuyPowerCards( RiversBounty.Name );
+			User.SelectsGrowthOption(1);
+			User.PlacesPresence( Track.Card2.Text, "A5");
+			User.PlacesPresence( Track.Card2.Text, "A5");
+
+			User.BuysPowerCard( WashAway.Name );
+			User.BuysPowerCard( RiversBounty.Name );
 
 			game.Spirit.Energy++; // pretend we played Rivers Bounty and gained 1 energy
-			game.DecisionProvider.Old_DoneWith(Speed.Slow);
+			User.IsDoneWith(Speed.Slow);
 
-			game.DecisionProvider.Old_SelectGrowthOption(1);
-			game.DecisionProvider.Old_PlacePresence1( Track.Card3, "A5");
-			game.DecisionProvider.Old_PlacePresence1( Track.Reclaim1,"A5");
+			User.SelectsGrowthOption(1);
+			User.PlacesPresence( Track.Card3.Text, "A5");
+			User.PlacesPresence( Track.Reclaim1.Text,"A5");
 
 			// Can reclaim River's Bounty
-			game.DecisionProvider.Old_Reclaim1( "River's Bounty $0 (Slow)" );
+			User.Reclaims1FromTrackBonus( "Wash Away $1 (Slow),{River's Bounty $0 (Slow)}" );
 
 			// Can buy all 3 of River's cards including Bounty
 			game.Spirit.Energy.ShouldBe(2,"need 2 energy to purcahse 0+0+2 cards");
-			game.DecisionProvider.Old_BuyPowerCards( RiversBounty.Name ); // 0
-			game.DecisionProvider.Old_BuyPowerCards( BoonOfVigor.Name );  // 0
-			game.DecisionProvider.Old_BuyPowerCards( FlashFloods.Name );  // 2
-			game.DecisionProvider.Old_DoneWith(Speed.Fast);
+
+			User.BuysPowerCard( RiversBounty.Name ); // 0
+			User.BuysPowerCard( BoonOfVigor.Name );  // 0
+			User.BuysPowerCard( FlashFloods.Name );  // 2
+			User.IsDoneWith( Speed.Fast );
 
 		}
 

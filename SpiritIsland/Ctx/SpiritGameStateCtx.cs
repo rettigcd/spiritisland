@@ -142,9 +142,15 @@ namespace SpiritIsland {
 
 		#region Place Presence
 
-		public Task PlacePresence( int range, string filterEnum ) {
+		public async Task PlacePresence( int range, string filterEnum ) {
+//			Space[] destinationOptions = Presence_DestinationOptions( range, filterEnum );
+//			return Presence_SelectFromTo( destinationOptions );
+			var from = await Self.SelectTrack();
+
 			Space[] destinationOptions = Presence_DestinationOptions( range, filterEnum );
-			return Presence_SelectFromTo( destinationOptions );
+			var to = await Self.Action.Decision( new Decision.TargetSpace( "Where would you like to place your presence?", destinationOptions, Present.Always ) );
+
+			await Self.Presence.PlaceFromBoard( from, to, GameState );
 		}
 
 		public async Task Presence_SelectFromTo( params Space[] destinationOptions ) {

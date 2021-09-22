@@ -13,10 +13,12 @@ namespace SpiritIsland.Tests.Basegame.Spirits.ShadowsNS {
 		public void Reclaim_PowerCard(){
 			// reclaim, gain power Card
 			Given_HalfOfPowercardsPlayed();
+
 			When_Growing( 0 );
 			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
-			spirit.Activate_DrawPowerCard();
-			spirit.Activate_ReclaimAll();
+
+			User.DrawsPowerCard();
+			User.ReclaimsAll();
 
 			Assert.Equal(5,this.spirit.Hand.Count); // drew 1 card
 		}
@@ -25,10 +27,13 @@ namespace SpiritIsland.Tests.Basegame.Spirits.ShadowsNS {
 		public void PowerAndPresence(){
 			// gain power card, add a presense range 1
 			Given_HasPresence( board[1] );
+
 			When_Growing(1);
 			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
-			spirit.Activate_DrawPowerCard();
-			Resolve_PlacePresence( "A1;A2;A4;A5;A6", spirit.Presence.Energy.Next );
+
+			User.DrawsPowerCard();
+			User.PlacesPresence( "A1;A2;A4;A5;A6", spirit.Presence.Energy.Next );
+
 			Assert.Equal(5,this.spirit.Hand.Count); // drew 1 card
 		}
 
@@ -38,10 +43,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.ShadowsNS {
 			Given_HasPresence( board[3] );
 
 			When_StartingGrowth();
-			spirit.Action.Choose( "PlacePresence(3) / GainEnergy(3)" );
-			spirit.Activate_GainEnergy();
 
-			Resolve_PlacePresence( "A1;A2;A3;A4;A5;A6;A7;A8", spirit.Presence.Energy.Next );
+			User.SelectsGrowthOption( "PlacePresence(3) / GainEnergy(3)" );
+			User.GainsEnergy();
+			User.PlacesPresence( "A1;A2;A3;A4;A5;A6;A7;A8", spirit.Presence.Energy.Next );
 
 			Assert_HasEnergy(3+1); // 1 from energy track
 		}

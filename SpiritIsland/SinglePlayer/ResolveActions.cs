@@ -28,7 +28,7 @@ namespace SpiritIsland.SinglePlayer {
 					break;
 				}
 
-				// if use clicked a slow card that was made fast, // slow card won't be in the options
+				// if user clicked a slow card that was made fast, // slow card won't be in the options
 				if(!factoryOptions.Contains( option ))
 					// find the fast version of the slow card that was clicked
 					option = factoryOptions.Cast<IActionFactory>()

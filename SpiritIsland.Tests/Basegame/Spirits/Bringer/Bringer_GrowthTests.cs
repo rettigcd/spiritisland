@@ -20,17 +20,18 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 		public Bringer_GrowthTests():base( InitSpirit() ) {}
 
 		[Fact] 
-		public void ReclaimAll_PowerCard(){
+		public void ReclaimAll_PowerCard() {
 			// reclaim, +1 power card
 			Given_HalfOfPowercardsPlayed();
 
-			When_Growing(0);
+			When_Growing( 0 );
 			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
-			spirit.Activate_DrawPowerCard();
-			spirit.Activate_ReclaimAll();
+
+			User.DrawsPowerCard();
+			User.ReclaimsAll();
 
 			// Then:
-			Assert_AllCardsAvailableToPlay(4+1);
+			Assert_AllCardsAvailableToPlay( 4 + 1 );
 			Assert_HasCardAvailable( "Veil the Night's Hunt" );
 
 		}
@@ -43,9 +44,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 
 			When_Growing( 1 );
 			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
-			spirit.Activate_Reclaim1();
-			spirit.Action.AssertDecision( "Select card to reclaim.", "Predatory Nightmares $2 (Slow),Dreams of the Dahan $0 (Fast)", "Dreams of the Dahan $0 (Fast)" );
-			Resolve_PlacePresence( "A4", spirit.Presence.Energy.Next );
+
+			User.Reclaims1FromGrowth("Predatory Nightmares $2 (Slow),{Dreams of the Dahan $0 (Fast)}");
+			User.PlacesPresence( "A4", spirit.Presence.Energy.Next );
+
 			spirit.Hand.Count.ShouldBe( 3 );
 		}
 
@@ -56,14 +58,12 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 
 			When_Growing( 2 );
 			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
-			spirit.Activate_DrawPowerCard();
-			Resolve_PlacePresence( "A1;A2;A4;A5;A6", spirit.Presence.Energy.Next );
+
+			User.DrawsPowerCard();
+			User.PlacesPresence( "A1;A2;A4;A5;A6", spirit.Presence.Energy.Next );
+
 			Assert_GainsFirstPowerProgressionCard(); // gains 1st card in power progression
 			Assert_BoardPresenceIs( "A1A1" );
-		}
-
-		void Assert_GainsFirstPowerProgressionCard() {
-			Assert_HasCardAvailable( "Veil the Night's Hunt" );
 		}
 
 		[Fact] 
@@ -78,9 +78,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 
 			// add presense range 4 Dahan or Invadors, +2 energy
 			When_StartingGrowth();
-			spirit.Action.Choose( "GainEnergy(2) / PlacePresence(4,dahan or invaders)" );
-			spirit.Activate_GainEnergy();
-			Resolve_PlacePresence( "T6;T7;T8;T9",spirit.Presence.Energy.Next);
+
+			User.SelectsGrowthOption( "GainEnergy(2) / PlacePresence(4,dahan or invaders)" );
+			User.GainsEnergy();
+			User.PlacesPresence( "T6;T7;T8;T9",spirit.Presence.Energy.Next);
 
 			Assert.Equal(2,spirit.EnergyPerTurn);
 			Assert_HasEnergy(2+2);
@@ -96,19 +97,15 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 		[InlineDataAttribute(6,4,"AM*")]
 		[InlineDataAttribute(7,5,"AM*")]
 		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
+
 			// energy:	2 air 3 moon 4 any 5
 			spirit.Presence.Energy.RevealedCount = revealedSpaces;
 			Assert_EnergyTrackIs( expectedEnergyGrowth );
 
-			spirit.TriggerEnergyElementsAndReclaims();
+			_ = spirit.TriggerEnergyElementsAndReclaims();
 
 			if(elements.Contains( '*' ))
 				spirit.GetAvailableActions(Speed.Growth).Single().Name.ShouldBe("Select elements (1)");
-
-			//When_Growing(0); // triggers elements
-			//_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
-			//spirit.Activate_DrawPowerCard();
-			//spirit.Activate_ReclaimAll();
 
 			Assert_BonusElements( elements );
 		}
@@ -125,12 +122,16 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			spirit.Presence.CardPlays.RevealedCount = revealedSpaces;
 			Assert_CardTrackIs(expectedCardPlayCount);
 
-			spirit.TriggerEnergyElementsAndReclaims();
+			_ = spirit.TriggerEnergyElementsAndReclaims();
 
 			if(elements.Contains( '*' ))
 				spirit.GetAvailableActions( Speed.Growth ).Single().Name.ShouldBe( "Select elements (1)" );
 
 			Assert_BonusElements( elements );
+		}
+
+		void Assert_GainsFirstPowerProgressionCard() {
+			Assert_HasCardAvailable( "Veil the Night's Hunt" );
 		}
 
 	}

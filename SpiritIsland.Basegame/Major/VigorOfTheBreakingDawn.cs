@@ -18,13 +18,13 @@ namespace SpiritIsland.Basegame {
 
 				// 2 damage per dahan
 				foreach(var neighbor in pushedToLands)
-					DahanDeal2DamageEach( ctx.TargetSpace( neighbor ) );
+					await DahanDeal2DamageEach( ctx.TargetSpace( neighbor ) );
 
 			}
 		}
 
-		static void DahanDeal2DamageEach( TargetSpaceCtx ctx ) {
-			ctx.DamageInvaders( ctx.DahanCount * 2 );
+		static Task DahanDeal2DamageEach( TargetSpaceCtx ctx ) {
+			return ctx.DamageInvaders( ctx.DahanCount * 2 );
 		}
 	}
 

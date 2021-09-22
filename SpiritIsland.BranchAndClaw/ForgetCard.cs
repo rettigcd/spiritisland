@@ -3,8 +3,8 @@
 namespace SpiritIsland.BranchAndClaw {
 	// end of round action
 	public class ForgetCard {
-		Spirit spirit;
-		PowerCard card;
+		readonly Spirit spirit;
+		readonly PowerCard card;
 		public ForgetCard(Spirit spirit, PowerCard card ) {
 			this.spirit = spirit;
 			this.card = card;

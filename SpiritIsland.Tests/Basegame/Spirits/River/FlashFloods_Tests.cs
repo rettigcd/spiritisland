@@ -10,56 +10,47 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		// immutable
 		readonly PowerCard flashFloodsCard = PowerCard.For<FlashFloods>();
 
+		public FlashFloods_Tests():base(new RiverSurges() ) { }
+
 		[Fact]
 		public void FlashFloods_Inland() {
 
-			Given_GameWithSpirits( new RiverSurges() );
+			Given_GameWithSpirits( spirit );
 
 			//   And: a game on Board-A
 			var board = Board.BuildBoardA();
-			gameState.Island = new Island(board);
+			gameState.Island = new Island( board );
 
 			//   And: Presence on A2 (city/costal)
 			var presenceSpace = board[2];
-			spirit.Presence.PlaceOn(presenceSpace);
+			spirit.Presence.PlaceOn( presenceSpace );
 			//   And: 1 of each type of Invaders in Inland space (A4)
 			Space targetSpace = board[4];
 			var counts = gameState.Tokens[targetSpace];
-			counts.Adjust(Invader.City.Default,1);
-			counts.Adjust(Invader.Town.Default,1);
-			counts.Adjust(Invader.Explorer.Default,1);
-			gameState.Assert_Invaders(targetSpace, "1C@3,1T@2,1E@1" );
+			counts.Adjust( Invader.City.Default, 1 );
+			counts.Adjust( Invader.Town.Default, 1 );
+			counts.Adjust( Invader.Explorer.Default, 1 );
+			gameState.Assert_Invaders( targetSpace, "1C@3,1T@2,1E@1" );
 
 			//   And: Purchased FlashFloods
-			var card = spirit.Hand.Single(c=>c.Name == FlashFloods.Name);
+			var card = spirit.Hand.Single( c => c.Name == FlashFloods.Name );
 			spirit.Energy = card.Cost;
-			spirit.PurchaseAvailableCards(card);
-			Assert.Contains(card,spirit.GetAvailableActions(card.Speed).OfType<PowerCard>().ToList()); // is fast
+			spirit.PurchaseAvailableCards( card );
+			Assert.Contains( card, spirit.GetAvailableActions( card.Speed ).OfType<PowerCard>().ToList() ); // is fast
 
 			//  When: activating flash flood
 			card.ActivateAsync( spirit, gameState );
-			action = spirit.Action;
 
-			// Then: Auto selecting only target space avaialbe
+			User.TargetsLand( "A4" );
+			User.SelectsDamageRecipient( 1, "C@3,T@2,(E@1)" ); // select damage option
 
-			//  Select: A2
-			Assert_Options("A4");
-			action.Choose("A4");
-
-			// When: selecting a damage optin
-			Assert.False(action.IsResolved);
-			Assert_Options( "C@3","E@1","T@2" );
-			action.Choose( "E@1" );
-
-			// Then: resolved => Applu
-			Assert.True(action.IsResolved);
-			gameState.Assert_Invaders(targetSpace, "1C@3,1T@2" );
+			User.Assert_Done();
+			gameState.Assert_Invaders( targetSpace, "1C@3,1T@2" );
 		}
 
 		[Fact]
 		public void FlashFloods_Costal() {
 			// Given: River
-			var spirit = new RiverSurges();
 			//   And: a game on Board-A
 			var board = Board.BuildBoardA();
 			var gameState = new GameState(spirit,board);
@@ -82,19 +73,15 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			//  When: activating flash flood
 			card.ActivateAsync( spirit, gameState );
-			action = spirit.Action;
 
 			//  Select: A2
-			Assert_Options("A2");
-			action.Choose("A2");
+			User.TargetsLand("A2");
 
 			// Then: can apply 2 points of damage
-			action.IsResolved.ShouldBeFalse();
-			Assert_Options("C@3","E@1","T@2");
-			action.Choose( "C@3" );
+			User.SelectsDamageRecipient( 2, "(C@3),T@2,E@1" );
 
 			// And: apply doesn't throw an exception
-			action.IsResolved.ShouldBeTrue();
+			User.Assert_Done();
 			gameState.Assert_Invaders(targetSpace, "1C@1,1T@2,1E@1" );
 		}
 
