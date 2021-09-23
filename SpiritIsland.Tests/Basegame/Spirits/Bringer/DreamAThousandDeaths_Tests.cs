@@ -7,13 +7,17 @@ using Xunit;
 
 namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 
-	public class DreamAThousandDeaths_Tests : DecisionTests {
+	public class DreamAThousandDeaths_Tests {
 
 		readonly Board board;
 		readonly GameState gs;
 		readonly TargetSpaceCtx ctx;
+		readonly Spirit spirit;
+		readonly VirtualUser User;
 
-		public DreamAThousandDeaths_Tests():base(new Bringer()) {
+		public DreamAThousandDeaths_Tests(){
+			spirit = new Bringer();
+			User = new VirtualUser(spirit);
 			board = Board.BuildBoardA();
 			gs = new GameState( spirit, board );
 			ctx = MakeFreshCtx();

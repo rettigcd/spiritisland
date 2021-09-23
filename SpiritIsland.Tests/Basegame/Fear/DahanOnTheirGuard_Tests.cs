@@ -6,12 +6,13 @@ using Xunit;
 
 namespace SpiritIsland.Tests.Basegame.Fear {
 
-	public class DahanOnTheirGuard_Tests : DecisionTests {
-		readonly GameState gameState;
-		readonly InvaderCard invaderCard;
-		readonly Space ravageSpace;
+	public class DahanOnTheirGuard_Tests {
 
-		public DahanOnTheirGuard_Tests():base(new LightningsSwiftStrike()) {
+		#region constructor
+
+		public DahanOnTheirGuard_Tests() {
+			spirit = new LightningsSwiftStrike();
+			User = new VirtualUser( spirit );
 			gameState = new GameState( spirit, Board.BuildBoardA() );
 			gameState.DisableInvaderDeck();
 			gameState.Initialize();
@@ -22,12 +23,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			ravageSpace = gameState.Island.Boards[0].Spaces.Where( invaderCard.Matches ).First();
 		}
 
-		void Given_DahanAndTowns( int desiredDahan, int desiredTown ) {
-			gameState.DahanAdjust( ravageSpace, desiredDahan - gameState.DahanGetCount( ravageSpace ) );
-			Assert.Equal(desiredDahan,gameState.DahanGetCount(ravageSpace));
-
-			gameState.Tokens[ravageSpace].Adjust( Invader.Town.Default, desiredTown );
-		}
+		#endregion
 
 		[Fact]
 		public async Task NoFearCard_NormalRavage() {
@@ -67,6 +63,19 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			gameState.HasBlight( ravageSpace ).ShouldBe( true );
 
 		}
+
+		void Given_DahanAndTowns( int desiredDahan, int desiredTown ) {
+			gameState.DahanAdjust( ravageSpace, desiredDahan - gameState.DahanGetCount( ravageSpace ) );
+			Assert.Equal(desiredDahan,gameState.DahanGetCount(ravageSpace));
+
+			gameState.Tokens[ravageSpace].Adjust( Invader.Town.Default, desiredTown );
+		}
+
+		readonly GameState gameState;
+		readonly InvaderCard invaderCard;
+		readonly Space ravageSpace;
+		readonly Spirit spirit;
+		readonly VirtualUser User;
 
 	}
 

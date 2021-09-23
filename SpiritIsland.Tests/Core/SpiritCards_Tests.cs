@@ -3,12 +3,17 @@ using Xunit;
 
 namespace SpiritIsland.Tests {
 
-	public class SpiritCards_Tests : DecisionTests {
+	public class SpiritCards_Tests {
 
-		protected SpiritCards_Tests(Spirit spirit ) : base( spirit ) { }
+		protected SpiritCards_Tests(Spirit spirit ) {
+			this.spirit = spirit;
+			this.User = new VirtualUser( spirit );
+		}
 
 		protected GameState gameState;
 		protected PowerCard card;
+		protected Spirit spirit;
+		protected VirtualUser User { get; }
 
 		protected PowerCard Given_PurchasedCard(string cardName) {
 			var card = spirit.Hand.Single(c => c.Name == cardName);

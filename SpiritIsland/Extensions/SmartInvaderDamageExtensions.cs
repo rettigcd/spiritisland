@@ -21,7 +21,7 @@ namespace SpiritIsland {
 		}
 
 		public static Token PickSmartInvaderToDamage( this TokenCountDictionary counts, int availableDamage, params TokenGroup[] invaderGeneric ) { // $$
-			return SmartInvaderAttacker.Singleton.GetKillOrder( counts, availableDamage, invaderGeneric );
+			return SmartInvaderAttacker.GetKillOrder( counts, availableDamage, invaderGeneric );
 		}
 
 		// When we swap this out for user choosing, Which user chooses when dahan are doing damage????
@@ -92,7 +92,7 @@ namespace SpiritIsland {
 
 		static readonly public SmartInvaderAttacker Singleton = new SmartInvaderAttacker();
 
-		public Token GetKillOrder(  TokenCountDictionary counts,  int availableDamage , params TokenGroup[] invaderGeneric ) {
+		static public Token GetKillOrder(  TokenCountDictionary counts,  int availableDamage , params TokenGroup[] invaderGeneric ) {
 			var candidates = counts.Invaders();
 			if(invaderGeneric != null && invaderGeneric.Length > 0)
 				candidates = candidates.Where( i => invaderGeneric.Contains( i.Generic ) );

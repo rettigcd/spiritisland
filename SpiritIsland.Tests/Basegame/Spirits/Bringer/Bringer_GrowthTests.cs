@@ -21,6 +21,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 
 		[Fact] 
 		public void ReclaimAll_PowerCard() {
+
 			// reclaim, +1 power card
 			Given_HalfOfPowercardsPlayed();
 
@@ -46,7 +47,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
 
 			User.Reclaims1FromGrowth("Predatory Nightmares $2 (Slow),{Dreams of the Dahan $0 (Fast)}");
-			User.PlacesPresence( "A4", spirit.Presence.Energy.Next );
+			User.PlacesPresence( "energy>A4" );
 
 			spirit.Hand.Count.ShouldBe( 3 );
 		}
@@ -60,7 +61,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
 
 			User.DrawsPowerCard();
-			User.PlacesPresence( "A1;A2;A4;A5;A6", spirit.Presence.Energy.Next );
+			User.PlacesEnergyPresence( "A1;A2;A4;A5;A6" );
 
 			Assert_GainsFirstPowerProgressionCard(); // gains 1st card in power progression
 			Assert_BoardPresenceIs( "A1A1" );
@@ -81,7 +82,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 
 			User.SelectsGrowthOption( "GainEnergy(2) / PlacePresence(4,dahan or invaders)" );
 			User.GainsEnergy();
-			User.PlacesPresence( "T6;T7;T8;T9",spirit.Presence.Energy.Next);
+			User.PlacesEnergyPresence( "T6;T7;T8;T9" );
 
 			Assert.Equal(2,spirit.EnergyPerTurn);
 			Assert_HasEnergy(2+2);

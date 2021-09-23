@@ -26,7 +26,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
 
 			User.ReclaimsAll();
 			User.DrawsPowerCard();
-			User.PlacesPresence( "A2;A3;A5", spirit.Presence.Energy.Next );
+			User.PlacesEnergyPresence( "A2;A3;A5" );
 
 			Assert_AllCardsAvailableToPlay(5);
 		}
@@ -44,8 +44,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
 			When_Growing( 1 );
 			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
 
-			User.PlacesPresence( "A2;A3;A5", spirit.Presence.Energy.Next );
-			User.PlacesPresence( "A2;A3;A5", spirit.Presence.Energy.Next );
+			User.PlacesEnergyPresence( "A2;A3;A5" );
+			User.PlacesEnergyPresence( "A2;A3;A5" );
 			User.ActivatesExtraCardPlay();
 
 			// Player Gains +1 card to play this round
@@ -68,7 +68,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
 			When_StartingGrowth();
 
 			User.SelectsGrowthOption( "PlacePresence(2,W / J) / GainEnergy(3) / DrawPowerCard" );
-			User.PlacesPresence( "A2;A3;A5", spirit.Presence.Energy.Next ); // +1 from energy track
+			User.PlacesEnergyPresence( "A2;A3;A5" ); // +1 from energy track
 			User.DrawsPowerCard();
 			User.GainsEnergy();
 

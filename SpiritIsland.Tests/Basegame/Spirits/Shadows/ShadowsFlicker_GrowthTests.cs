@@ -32,7 +32,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.ShadowsNS {
 			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
 
 			User.DrawsPowerCard();
-			User.PlacesPresence( "A1;A2;A4;A5;A6", spirit.Presence.Energy.Next );
+			User.PlacesEnergyPresence( "A1;A2;A4;A5;A6" );
 
 			Assert.Equal(5,this.spirit.Hand.Count); // drew 1 card
 		}
@@ -46,7 +46,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.ShadowsNS {
 
 			User.SelectsGrowthOption( "PlacePresence(3) / GainEnergy(3)" );
 			User.GainsEnergy();
-			User.PlacesPresence( "A1;A2;A3;A4;A5;A6;A7;A8", spirit.Presence.Energy.Next );
+			User.PlacesEnergyPresence( "A1;A2;A3;A4;A5;A6;A7;A8" );
 
 			Assert_HasEnergy(3+1); // 1 from energy track
 		}

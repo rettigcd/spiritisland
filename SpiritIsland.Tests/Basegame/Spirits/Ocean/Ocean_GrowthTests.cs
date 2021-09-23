@@ -118,7 +118,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			When_Growing( 2 );
 			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
 
-			User.PlacesPresence( placeOptions, spirit.Presence.Energy.Next );
+			User.PlacesEnergyPresence( placeOptions );
 			User.DrawsPowerCard();
 			User.PushesPresenceFromOcean("A1,(A2),A3");
 

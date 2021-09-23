@@ -37,7 +37,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Lightning {
 
 			User.SelectsGrowthOption( "GainEnergy(3) / PlacePresence(1)" );
 			User.GainsEnergy();
-			User.PlacesPresence( "A1;A2;A4;A5;A6", spirit.Presence.Energy.Next );
+			User.PlacesEnergyPresence( "A1;A2;A4;A5;A6" );
 
 			Assert.Equal(1,spirit.EnergyPerTurn);
 			Assert_HasEnergy( 3 + 1 ); // 1 from energy track
@@ -52,7 +52,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Lightning {
 
 			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
 
-			User.PlacesPresence( "A1;A2;A3;A4;A5", spirit.Presence.Energy.Next);
+			User.PlacesEnergyPresence( "A1;A2;A3;A4;A5" );
 
 			Assert_HasEnergy( 0 );
 

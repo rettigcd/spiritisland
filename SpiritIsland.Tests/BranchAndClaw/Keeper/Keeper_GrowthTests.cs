@@ -228,14 +228,14 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 		void User_Activates_C() {
 			User.SelectsGrowthOption( "GainEnergy(1) / PlacePresence(3,presence or wilds)" );
 			User.GainsEnergy();
-			User.PlacesPresence( "A3;A8", spirit.Presence.Energy.Next );
+			User.PlacesEnergyPresence( "A3;A8" );
 		}
 
 		void User_Activates_D() {
 			User.SelectsGrowthOption( "GainEnergy(-3) / DrawPowerCard / PlacePresence(3,no blight)" );
 			User.GainsEnergy();
 			User.DrawsPowerCard();
-			User.PlacesPresence( "A7", spirit.Presence.CardPlays.Next );
+			User.PlacesCardPlayPresence( "A7" );
 		}
 
 	}

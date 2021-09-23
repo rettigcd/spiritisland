@@ -23,10 +23,11 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		[Fact]
 		public void InsufficientElements() {
 
-			User.SelectsGrowthOption( 0 );
-			User.DrawsPowerCard();
-			User.GainsEnergy();
-			User.ReclaimsAll();
+			User.SelectsGrowthA_Reclaim();
+			//User.SelectsGrowthOption( 0 );
+			//User.DrawsPowerCard();
+			//User.GainsEnergy();
+			//User.ReclaimsAll();
 
 			User.IsDoneBuyingCards();
 
@@ -40,10 +41,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		[Fact]
 		public void Level1_Pushes1TownOrExplorer() { // 1-Sun, 2-Water
 
-			User.SelectsGrowthOption( 1 ); // PP-1 PP-1
-
-			User.PlacesPresence( "2 energy", "A4" );
-			User.PlacesPresence( "2 cardplay", "A2" );
+			User.SelectsGrowthB_2PP("energy>A4","cardplays>A2");
 
 			User.BuysPowerCard( FlashFloods.Name ); // fast
 			User.BuysPowerCard( RiversBounty.Name );// slow
@@ -61,10 +59,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Given_SpiritCardPlayCount( 3 );
 			Given_SpiritGetMoney( 5 );
 
-			User.SelectsGrowthOption( 0 ); // reclaim
-			User.DrawsPowerCard();
-			User.GainsEnergy();
-			User.ReclaimsAll();
+			User.SelectsGrowthA_Reclaim();
 
 			User.BuysPowerCard( FlashFloods.Name ); // fast - sun, water
 			User.BuysPowerCard( RiversBounty.Name ); // slow - sun, water, animal
@@ -91,10 +86,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			grp.Adjust( Invader.Town.Default, 5 );
 			grp.Adjust( Invader.Explorer.Default, 5 );
 
-			User.SelectsGrowthOption( 0 ); // Reclaim
-			User.DrawsPowerCard();
-			User.GainsEnergy();
-			User.ReclaimsAll();
+			User.SelectsGrowthA_Reclaim();
 
 			User.BuysPowerCard( FlashFloods.Name );  // fast - sun, water
 			User.BuysPowerCard( RiversBounty.Name ); // slow - sun, water, animal

@@ -2,11 +2,10 @@
 
 Bookkeeping		Game # - replay it
 DAMAGE	Need to Manually Select Damage - (I had 2 cities in River, each needing 1 damage, so massive flooding could kill them, but it applied 2 to 1.)
-
+REFACTOR	Drawing - Separate Layout from Drawing / Calc Layout once
 Multiple Invader cards in same slot - Need Unit tests to verify this
 
 REFACTOR	When filtering, pass in TargetSpaceCtx instead of Space - simplify API by folding spirit and gamestate into Ctx
-REFACTOR	Drawing - Separate Layout from Drawing / Calc Layout once
 REFACTOR	InvaderGroup Damage/Destory methods.  Create a virtual 'included tokens' group that combines single-token and token Group actions
 
 CARDS	scroll bar
@@ -17,6 +16,9 @@ Innate	Range icons
 Innate	Target icons
 Innate	use clean tokens
 Innate	+1 range.
+
+Engine   Need to add thread signally so we don't read state before engine is ready.
+		 Maybe Everything in the VirtualUser waits for EngineIsWaiting signal before returning from selections.
 
 Bookkeeping		Undo / go back to beginning   (spirit:Presence & cards, Invader/Fear/Major/Minor, tokens, blight? )
 Bookkeeping		Visual indicator of Phase

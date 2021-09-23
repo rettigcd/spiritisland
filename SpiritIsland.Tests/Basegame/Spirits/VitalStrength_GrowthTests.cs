@@ -19,7 +19,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.VitalStrengthNS {
 			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
 
 			User.ReclaimsAll();
-			User.PlacesPresence( "A1;A2;A3;A4;A5", spirit.Presence.Energy.Next );
+			User.PlacesEnergyPresence( "A1;A2;A3;A4;A5" );
 
 			this.Assert_AllCardsAvailableToPlay();
 
@@ -34,7 +34,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.VitalStrengthNS {
 			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
 
 			User.DrawsPowerCard();
-			User.PlacesPresence( "A4", spirit.Presence.Energy.Next );
+			User.PlacesEnergyPresence( "A4" );
 
 			Assert.Equal(5,spirit.Hand.Count);
 		}
@@ -48,7 +48,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.VitalStrengthNS {
 
 			User.SelectsGrowthOption( "GainEnergy(2) / PlacePresence(1)" );
 			User.GainsEnergy();
-			User.PlacesPresence( "A1;A2;A4;A5;A6",spirit.Presence.Energy.Next );
+			User.PlacesEnergyPresence( "A1;A2;A4;A5;A6" );
 
 			Assert.Equal(3,spirit.EnergyPerTurn);
 			Assert_HasEnergy(3+2);

@@ -29,14 +29,6 @@ namespace SpiritIsland {
 
 		public IEnumerable<Token> Keys => counts.Keys;
 
-		#region private
-		static void ValidateIsAlive( Token specific ) {
-			if(specific.Health == 0) 
-				throw new ArgumentException( "We don't store dead counts" );
-		}
-
-		readonly CountDictionary<Token> counts;
-
 		public string InvaderSummary { get {
 			static int Order_CitiesTownsExplorers( Token invader )
 				=> -(invader.FullHealth * 10 + invader.Health);
@@ -46,10 +38,20 @@ namespace SpiritIsland {
 				.Join( "," );
 		} }
 
-		#endregion
-
 		public TokenBinding Blight => new TokenBinding( this, TokenType.Blight);
+
 		public TokenBinding Defend => new TokenBinding( this, TokenType.Defend );
+
+		#region private
+
+		static void ValidateIsAlive( Token specific ) {
+			if(specific.Health == 0) 
+				throw new ArgumentException( "We don't store dead counts" );
+		}
+
+		readonly CountDictionary<Token> counts;
+
+		#endregion
 
 	}
 

@@ -13,7 +13,21 @@ namespace SpiritIsland.Tests {
 			AssertDecision( "Activating Fear", fearCard, fearCard ); // some of the fear cards have commas in them
 		}
 
-		public void PlacesPresence( string placeOptions, Track source ) {
+		public void PlacesPresence( string placeOptions ) {
+			string[] parts = placeOptions.Split('>');
+			Track source = parts[0].ToLower() switch {
+				"energy" => spirit.Presence.Energy.Next,
+				"cardplay" => spirit.Presence.CardPlays.Next,
+				"cardplays" => spirit.Presence.CardPlays.Next,
+				_ => throw new ArgumentOutOfRangeException(nameof(placeOptions)),
+			};
+			PlacesPresence( source, parts[1] );
+		}
+
+		public void PlacesEnergyPresence( string placeOptions ) => PlacesPresence( spirit.Presence.Energy.Next, placeOptions );
+		public void PlacesCardPlayPresence( string placeOptions ) => PlacesPresence( spirit.Presence.CardPlays.Next, placeOptions );
+
+		public void PlacesPresence( Track source, string placeOptions ) {
 
 			var current = spirit.Action.GetCurrent();
 
@@ -27,15 +41,13 @@ namespace SpiritIsland.Tests {
 			spirit.Action.Choose( source );
 
 			// place on board - first option
-			if(!spirit.Action.IsResolved) {
-				string[] expectedOptions = placeOptions.Split( ';' );
-				var destinationDecision = spirit.Action.GetCurrent();
-				var actualOptions = destinationDecision.Options;
-				var choice = actualOptions.SingleOrDefault( o => o.Text == expectedOptions[0] );
-				if(choice==null)
-					throw new System.ArgumentOutOfRangeException(nameof(placeOptions), $"'{expectedOptions[0]}' not found in "+ actualOptions.Select(o=>o.Text).Join("," ));
-				spirit.Action.Choose( choice );
-			}
+			string[] expectedOptions = placeOptions.Split( ';' );
+			var destinationDecision = spirit.Action.GetCurrent();
+			var actualOptions = destinationDecision.Options;
+			var choice = actualOptions.SingleOrDefault( o => o.Text == expectedOptions[0] );
+			if(choice==null)
+				throw new System.ArgumentOutOfRangeException(nameof(placeOptions), $"'{expectedOptions[0]}' not found in "+ actualOptions.Select(o=>o.Text).Join("," ));
+			spirit.Action.Choose( choice );
 
 		}
 
@@ -264,7 +276,7 @@ namespace SpiritIsland.Tests {
 
 		#endregion
 
-		readonly Spirit spirit;
+		readonly protected Spirit spirit;
 
 	}
 

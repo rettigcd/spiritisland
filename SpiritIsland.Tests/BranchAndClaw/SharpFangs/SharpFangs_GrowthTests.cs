@@ -182,7 +182,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 
 		void User_Activates_B() {
 			User.SelectsGrowthOption( "PlacePresence(3,beast or jungle)" );
-			User.PlacesPresence( "A3;A7;A8", spirit.Presence.Energy.Next );
+			User.PlacesEnergyPresence( "A3;A7;A8" );
 		}
 
 		void USer_Activates_C() {

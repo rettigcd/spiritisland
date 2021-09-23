@@ -3,11 +3,16 @@ using SpiritIsland.SinglePlayer;
 
 namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
-	public class RiverGame : DecisionTests {
+	public class RiverGame {
 
-		public RiverGame():base(new RiverSurges() ) { }
+		public RiverGame() {
+			spirit = new RiverSurges();
+			User = new VirtualRiverUser( spirit );
+		}
 
 		protected SinglePlayerGame game;
+		protected readonly Spirit spirit;
+		protected readonly VirtualRiverUser User;
 	}
 
 }

@@ -10,6 +10,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 
 		readonly Board board;
 		readonly TargetSpaceCtx ctx;
+
 		public DreadApparitions_Tests() {
 			Bringer spirit = new Bringer();
 			board = Board.BuildBoardA();

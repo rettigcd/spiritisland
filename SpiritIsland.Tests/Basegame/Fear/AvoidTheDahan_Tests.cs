@@ -5,13 +5,13 @@ using Xunit;
 
 namespace SpiritIsland.Tests.Basegame.Fear {
 
-	public class AvoidTheDahan_Tests : DecisionTests {
+	public class AvoidTheDahan_Tests {
 
-		readonly GameState gameState;
-		readonly InvaderCard invaderCard;
-		readonly Space exploringSpace;
+		#region constructor
 
-		public AvoidTheDahan_Tests():base( new LightningsSwiftStrike() ) {
+		public AvoidTheDahan_Tests() {
+			spirit = new LightningsSwiftStrike();
+			User = new VirtualUser( spirit );
 			gameState = new GameState( spirit, Board.BuildBoardA() );
 			gameState.Initialize();
 
@@ -22,6 +22,8 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			gameState.DahanAdjust( exploringSpace, 2 );
 
 		}
+
+		#endregion
 
 		[Fact]
 		public void NullFearCard_NormalExplore() {
@@ -57,6 +59,11 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		}
 
 		Space[] explored;
+		readonly GameState gameState;
+		readonly InvaderCard invaderCard;
+		readonly Space exploringSpace;
+		readonly Spirit spirit;
+		readonly VirtualUser User;
 
 	}
 

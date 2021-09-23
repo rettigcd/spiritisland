@@ -52,7 +52,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			When_Growing( 1 );
 			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
 
-			User.PlacesPresence( expectedPresenseOptions, spirit.Presence.Energy.Next );
+			User.PlacesEnergyPresence( expectedPresenseOptions );
 
 			Assert_HasEnergy( 0 );
 
@@ -67,7 +67,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 
 			User.SelectsGrowthOption( "PlacePresence(1) / GainEnergy(4)" );
 			User.GainsEnergy();
-			User.PlacesPresence( "A1;A2;A4;A5;A6", spirit.Presence.Energy.Next );
+			User.PlacesEnergyPresence( "A1;A2;A4;A5;A6" );
 
 			Assert.Equal(1,spirit.EnergyPerTurn);
 			Assert_HasEnergy( 4+1 );
@@ -114,7 +114,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 
 			User.SelectsGrowthOption( "PlacePresence(1) / GainEnergy(4)" );
 			User.GainsEnergy();
-			User.PlacesPresence( "A2;A3;A4", spirit.Presence.Energy.Next );
+			User.PlacesEnergyPresence( "A2;A3;A4" );
 
 			if( canReclaim1 )
 				User.Reclaims1CardIfAny();

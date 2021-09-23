@@ -6,7 +6,7 @@ using Xunit;
 
 namespace SpiritIsland.Tests {
 
-	public class GrowthTests : DecisionTests {
+	public class GrowthTests {
 
 		public static readonly Dictionary<Element,char> ElementChars = new() {
 				[Element.Air] = 'A',
@@ -19,11 +19,16 @@ namespace SpiritIsland.Tests {
 				[Element.Water] = 'W',
 			};
 
+		protected Spirit spirit;
+		protected VirtualUser User {get; }
+
 		protected GameState gameState;
 		protected Board board;
 
-		protected GrowthTests(Spirit spirit):base(spirit){
+		protected GrowthTests(Spirit spirit):base(){
 			// PlayerState requires Spirit to be known because Spirit creates playerState.
+			this.spirit = spirit;
+			this.User = new VirtualUser(spirit);
 			board = BoardA;
 			gameState = new GameState(spirit, board );
 		}

@@ -3,9 +3,12 @@ using System.Linq;
 
 namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 
-	public class ThunderCards : DecisionTests {
+	public class ThunderCards {
 
-		public ThunderCards():base(new Thunderspeaker { Energy = 20 } ) { 
+		public ThunderCards() { 
+
+			spirit = new Thunderspeaker { Energy = 20 };
+			User = new VirtualUser( spirit );
 
 			// Given: empty board
 			a = Board.BuildBoardA();
@@ -21,6 +24,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			spirit.Hand.Single( x => x.Name == cardName ).ActivateAsync( spirit, gs);
 		}
 
+		protected readonly Spirit spirit;
+		protected readonly VirtualUser User;
 		protected readonly Board a;
 		protected readonly GameState gs;
 		protected readonly BaseAction action;

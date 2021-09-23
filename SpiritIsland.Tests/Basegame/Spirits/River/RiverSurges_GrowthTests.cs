@@ -1,16 +1,18 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using SpiritIsland.Basegame;
+﻿using Shouldly;
 using SpiritIsland;
+using SpiritIsland.Basegame;
+using System.Linq;
 using Xunit;
-using Shouldly;
-using SpiritIsland.SinglePlayer;
 
 namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
-	public class RiverSurges_GrowthTests : GrowthTests{
+	public class RiverSurges_GrowthTests : GrowthTests {
 
-		public RiverSurges_GrowthTests():base( new RiverSurges().UsePowerProgression() ){}
+		protected new VirtualRiverUser User;
+
+		public RiverSurges_GrowthTests():base( new RiverSurges().UsePowerProgression() ){
+			User = new VirtualRiverUser( spirit );
+		}
 
 		#region growth
 
@@ -20,23 +22,19 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// Given: using power pregression
 
 			//   And: all cards played
-			spirit.DiscardPile.AddRange(spirit.Hand);
+			spirit.DiscardPile.AddRange( spirit.Hand );
 			spirit.Hand.Clear();
 
 			//  And: energy track is at 1
-			Assert.Equal(1,spirit.EnergyPerTurn);
+			Assert.Equal( 1, spirit.EnergyPerTurn );
 
 			When_StartingGrowth();
 
-			User.SelectsGrowthOption("ReclaimAll / DrawPowerCard / GainEnergy(1)");
+			User.SelectsGrowthA_Reclaim();
 
-			User.DrawsPowerCard();
-			User.GainsEnergy();
-			User.ReclaimsAll();
-
-			Assert_AllCardsAvailableToPlay( 5);
+			Assert_AllCardsAvailableToPlay( 5 );
 			Assert_HasCardAvailable( "Uncanny Melting" ); // gains 1st card in power progression
-			Assert_HasEnergy( 1+1 ); // 1 Growth energy + 1 from energy track
+			Assert_HasEnergy( 1 + 1 ); // 1 Growth energy + 1 from energy track
 
 		}
 
@@ -50,9 +48,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Assert.Equal(1,spirit.Presence.Energy.RevealedCount);
 
 			When_StartingGrowth();
-			User.SelectsGrowthOption( "PlacePresence(1) / PlacePresence(1)" );
-			User.PlacesPresence( "A2;A3;A4", spirit.Presence.Energy.Next);
-			User.PlacesPresence( "A1;A2;A3;A4", spirit.Presence.Energy.Next );
+			User.SelectsGrowthB_2PP();
 
 			Assert.Equal(2,spirit.EnergyPerTurn);
 			Assert_HasEnergy( 2 ); // 2 from energy track
@@ -69,9 +65,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			When_StartingGrowth();
 
-			User.SelectsGrowthOption( "DrawPowerCard / PlacePresence(2)" );
-			User.DrawsPowerCard();
-			User.PlacesPresence( "A1;A2;A3;A4;A5", spirit.Presence.CardPlays.Next);
+			User.SelectsGrowthC_Draw_Energy();
 
 			Assert_HasCardAvailable( "Uncanny Melting" ); // gains 1st card in power progression
 			Assert_HasEnergy( 1 ); // didn't increase energy track.
@@ -117,9 +111,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			When_StartingGrowth();
 
-			User.SelectsGrowthOption( "DrawPowerCard / PlacePresence(2)" );
-			User.DrawsPowerCard();
-			User.PlacesPresence( "A1;A2;A3;A4;A5", spirit.Presence.Energy.Next );
+			User.SelectsGrowthC_Draw_Energy( "energy>A1;A2;A3;A4;A5" );
 
 			if(canReclaim1)
 				User.Reclaims1CardIfAny();
@@ -232,16 +224,6 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Assert.Throws<CardNotAvailableException>( Purchase );
 		}
 
-		#region Innates
-
-		[Fact]
-		public void Innate(){
-			// ! should always add to unresolved list - since elements might change and make it active or not
-			
-		}
-
-		#endregion Innates
-
 		void Discard(PowerCard card) {
 			spirit.Hand.Remove(card);
 			spirit.DiscardPile.Add(card);
@@ -290,9 +272,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// which causes the thread to return before the engine has queued up the PlacePresence decision
 			// Problem only appears in things that use RiverGame base class.
 
-			User.SelectsGrowthOption(1);
-			User.PlacesPresence( Track.Card2.Text, "A5");
-			User.PlacesPresence( Track.Card2.Text, "A5");
+			User.SelectsGrowthB_2PP( "cardplays>A5", "cardplays>A5" );
 
 			User.BuysPowerCard( WashAway.Name );
 			User.BuysPowerCard( RiversBounty.Name );
@@ -300,9 +280,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			game.Spirit.Energy++; // pretend we played Rivers Bounty and gained 1 energy
 			User.IsDoneWith(Speed.Slow);
 
-			User.SelectsGrowthOption(1);
-			User.PlacesPresence( Track.Card3.Text, "A5");
-			User.PlacesPresence( Track.Reclaim1.Text,"A5");
+			User.SelectsGrowthB_2PP("cardplays>A5","cardplays>A5");
 
 			// Can reclaim River's Bounty
 			User.Reclaims1FromTrackBonus( "Wash Away $1 (Slow),{River's Bounty $0 (Slow)}" );
