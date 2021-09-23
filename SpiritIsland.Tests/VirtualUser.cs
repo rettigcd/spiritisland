@@ -140,6 +140,10 @@ namespace SpiritIsland.Tests {
 			AssertDecisionX( "Apply damage("+damage+") to:", tokens );
 		}
 
+		public void SelectsDamageRecipient2( int damageAvailable, string tokens ) {
+			AssertDecisionX( "Damage ("+damageAvailable+" remaining)", tokens );
+		}
+
 		public void BuysPowerCard( string powerCardName ) {
 			SelectOption( "Buy power cards:", powerCardName );
 		}

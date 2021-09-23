@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 
 namespace SpiritIsland.BranchAndClaw {
 
@@ -32,10 +33,12 @@ namespace SpiritIsland.BranchAndClaw {
 			foreach(SpiritGameStateCtx spirit in ctx.Spirits)
 				await spirit.AddStrifeToOne( ctx.Lands(ctx.WithDahan) );
 
+			var decidingSpirit = ctx.Spirits.First();
 			// in every land with strife, 1 damage per dahan
+
 			foreach(var space in ctx.LandsWithStrife()) {
-				var grp = ctx.InvadersOn( space );
-				await grp.SmartDamageToGroup( grp.Tokens.Sum(TokenType.Dahan) );
+				var spaceCtx = decidingSpirit.TargetSpace(space);
+				await spaceCtx.DamageInvaders( spaceCtx.Tokens.Sum(TokenType.Dahan) );
 			}
 		}
 

@@ -69,6 +69,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			User.SelectsSlowAction("River's Bounty,(Massive Flooding)" );
 			User.TargetsLand("A5,(A8)");
+
+			User.AssertDecision("Damage (2 remaining)","T@2,E@1,C@3","T@2");
+			User.AssertDecision("Damage (1 remaining)","T@1,E@1,C@3","T@1");
+
 			User.OptionallyPushesInvaderTo("E@1","(A5),A6,A7");
 		}
 

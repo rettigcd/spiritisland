@@ -127,14 +127,14 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 		}
 
 		[Fact]
-		public async Task MaxKillOnce() {
+		public void MaxKillOnce() {
 			// Given: 1 very-damaged city
 			ctx.Adjust( Invader.City[1], 1 );
 
 			// When: doing 4 points of damage
-			await FourDamage( MakeFreshCtx() );
+			_= FourDamage( MakeFreshCtx() );
 
-			User.Assert_Done();
+			User.SelectsDamageRecipient2(4,"C@1");
 
 			// And: 0-fear
 			Assert_GeneratedFear( 1 * 5 ); // city only destroyed once

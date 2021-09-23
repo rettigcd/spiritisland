@@ -1,7 +1,7 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
+
 Bookkeeping		Game # - replay it
-DAMAGE	Need to Manually Select Damage - (I had 2 cities in River, each needing 1 damage, so massive flooding could kill them, but it applied 2 to 1.)
 REFACTOR	Drawing - Separate Layout from Drawing / Calc Layout once
 Multiple Invader cards in same slot - Need Unit tests to verify this
 BUG - Gift of Strength (Vital Strength) - forces replay to happen now, If card not yet played, doesn't get to play a second time.

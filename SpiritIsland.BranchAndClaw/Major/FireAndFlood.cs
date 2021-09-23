@@ -17,7 +17,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			// 4 damage in each target land  (range must be measured from same SS)
 			await ctx.DamageInvaders( 4 );
-			await ctx.InvadersOn(secondTarget).SmartDamageToGroup(4);
+			await ctx.TargetSpace(secondTarget).DamageInvaders(4);
 			
 			// if 3 fire
 			if(ctx.YouHave("3 fire" ))

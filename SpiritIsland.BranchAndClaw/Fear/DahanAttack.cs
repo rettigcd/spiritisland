@@ -41,7 +41,7 @@ namespace SpiritIsland.BranchAndClaw {
 					// Gather 1 dahan into that land.
 					await spaceCtx.Gather(1, TokenType.Dahan);
 					// Then 2 damage per dahan there
-					await spaceCtx.Invaders.SmartDamageToGroup( 2*spaceCtx.DahanCount );
+					await spaceCtx.DamageInvaders( 2*spaceCtx.DahanCount );
 				}
 			}
 		}
@@ -49,7 +49,7 @@ namespace SpiritIsland.BranchAndClaw {
 		static async Task<Space> DamagePerDahanOnOne( List<Space> options, SpiritGameStateCtx spirit ) {
 			var spaceCtx = await spirit.SelectSpace( "1 damage per dahan", options );
 			if(spaceCtx != null) {
-				await spaceCtx.Invaders.SmartDamageToGroup( spaceCtx.Tokens.Sum( TokenType.Dahan ) );
+				await spaceCtx.DamageInvaders( spaceCtx.Tokens.Sum( TokenType.Dahan ) );
 				return spaceCtx.Space;
 			}
 			return null;

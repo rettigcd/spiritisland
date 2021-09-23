@@ -303,4 +303,5 @@ namespace SpiritIsland.Tests.Core {
 		}
 
 	}
+
 }

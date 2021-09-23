@@ -5,7 +5,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.VitalStrengthNS {
 
 	public class VitalStrength_GrowthTests : GrowthTests {
 
-		new VirtualEarthUser User;
+		readonly new VirtualEarthUser User;
 
 		public VitalStrength_GrowthTests()
 			:base( new VitalStrength().UsePowerProgression() ){

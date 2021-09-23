@@ -29,7 +29,7 @@ namespace SpiritIsland {
 
 		public async Task DamageInvaders( Space space, int damage ) {
 			if(damage == 0) return;
-			await InvadersOn( space ).SmartDamageToGroup( damage );
+			await TargetSpace( space ).DamageInvaders( damage );
 		}
 
 		protected virtual SpaceFilter SpaceFilter => Cause switch {

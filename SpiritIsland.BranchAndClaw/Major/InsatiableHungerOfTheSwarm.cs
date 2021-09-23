@@ -23,7 +23,7 @@ namespace SpiritIsland.BranchAndClaw {
 				// 1 fear
 				ctx.AddFear( beasts.Count );
 				// 2 damage to invaders
-				await ctx.Invaders.SmartDamageToGroup( beasts.Count * 2 );
+				await ctx.DamageInvaders( beasts.Count * 2 );
 				// and 2 damage to dahan.
 				await ApplyDamageToDahan( ctx, beasts.Count );
 

@@ -17,7 +17,7 @@ namespace SpiritIsland {
 			return GetTargetOptions( self, gameState, source, range, filterEnum );
 		}
 
-		protected IEnumerable<Space> FindSources( Spirit self, From sourceEnum, Terrain? sourceTerrain ) {
+		static protected IEnumerable<Space> FindSources( Spirit self, From sourceEnum, Terrain? sourceTerrain ) {
 			// Select Source
 			IEnumerable<Space> source = GetSource( self, sourceEnum );
 			if(sourceTerrain.HasValue)
@@ -25,7 +25,9 @@ namespace SpiritIsland {
 			return source;
 		}
 
+#pragma warning disable CA1822 // Mark members as static
 		public IEnumerable<Space> GetTargetOptions( 
+#pragma warning restore CA1822 // Mark members as static
 			Spirit self, 
 			GameState gameState, 
 			IEnumerable<Space> source, 

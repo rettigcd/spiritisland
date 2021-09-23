@@ -25,15 +25,15 @@ namespace SpiritIsland {
 		}
 
 		// When we swap this out for user choosing, Which user chooses when dahan are doing damage????
-		static public async Task SmartDamageToGroup( this InvaderGroup grp, int startingDamage, List<string> log = null ) {
-			int damageToInvaders = startingDamage;
+		static public async Task SmartDamageToGroup( this InvaderGroup grp, int startingdamage, List<string> log = null ) {
+			int damagetoinvaders = startingdamage;
 
-			// While damage remains    &&    we have invaders
-			while(damageToInvaders > 0 && grp.Tokens.HasInvaders()) {
-				Token invaderToDamage = grp.Tokens.PickSmartInvaderToDamage( damageToInvaders );
-				damageToInvaders -= await grp.ApplyDamageTo1( damageToInvaders, invaderToDamage );
+			// while damage remains    &&    we have invaders
+			while(damagetoinvaders > 0 && grp.Tokens.HasInvaders()) {
+				Token invadertodamage = grp.Tokens.PickSmartInvaderToDamage( damagetoinvaders );
+				damagetoinvaders -= await grp.ApplyDamageTo1( damagetoinvaders, invadertodamage );
 			}
-			if(log != null) log.Add( $"{startingDamage} damage to invaders leaving {grp}." );
+			if(log != null) log.Add( $"{startingdamage} damage to invaders leaving {grp}." );
 		}
 
 		static public void SmartRemovalOfHealth( this InvaderGroup grp, int startingDamage ) {
