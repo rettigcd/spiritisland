@@ -100,7 +100,10 @@ namespace SpiritIsland {
 		// so spirits can replay used cards or collect them instead of discard
 		public IEnumerable<IActionFactory> UsedActions => usedActions.Distinct();  // distinct incase played twice
 
+		public Speed LastSpeedRequested; // trying to capture what phase spirit is in.
+
 		public virtual IEnumerable<IActionFactory> GetAvailableActions(Speed speed) {
+			LastSpeedRequested = speed;
 			foreach( var action in AvailableActions )
 				action.UpdateFromSpiritState( this.Elements );
 			return AvailableActions.Where( GetFilter( speed ) );

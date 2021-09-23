@@ -11,13 +11,16 @@ namespace SpiritIsland {
 
 		static public PowerCard For<T>() => For(typeof(T));
 
-		static PowerCard For( Type type ) {
+		static PowerCard For( Type type ) => For( FindMethod( type ) );
 
+		static MethodInfo FindMethod( Type type ) {
 			// try static method (spirit / major / minor)
-			var method = type.GetMethods( BindingFlags.Public | BindingFlags.Static )
+			return type.GetMethods( BindingFlags.Public | BindingFlags.Static )
 				.Where( m => m.GetCustomAttributes<CardAttribute>().Count() == 1 )
 				.VerboseSingle( $"PowerCard {type.Name} missing static method with SpiritCard, MinorCard or MajorCard attribute" );
+		}
 
+		static public PowerCard For( MethodInfo method ) {
 			// check if targets spirit
 			if(method.GetCustomAttributes<TargetSpiritAttribute>().Any())
 				return new PowerCard_TargetSpirit( method );
@@ -31,7 +34,7 @@ namespace SpiritIsland {
 
 		#endregion
 
-		protected PowerCard(MethodBase methodBase ) {
+		protected PowerCard( MethodBase methodBase ) {
 			this.methodBase = methodBase;
 			cardAttr = methodBase.GetCustomAttributes<CardAttribute>().VerboseSingle( "Couldn't find CardAttribute on PowerCard targeting a space" );
 		}
@@ -46,7 +49,6 @@ namespace SpiritIsland {
 
 		public Element[] Elements { get; protected set; }
 		public PowerType PowerType { get; protected set; }
-//		public PowerCard Original => this;
 		public Type MethodType => methodBase.DeclaringType; // for determining card namespace and Basegame, BranchAndClaw, etc
 
 		readonly protected CardAttribute cardAttr;

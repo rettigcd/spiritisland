@@ -1,25 +1,26 @@
-﻿using System.Collections.Generic;
-using SpiritIsland.Basegame;
-using SpiritIsland.SinglePlayer;
+﻿using SpiritIsland.Basegame;
 using Xunit;
 
 namespace SpiritIsland.Tests.Basegame.Spirits.VitalStrengthNS {
 
 	public class VitalStrength_GrowthTests : GrowthTests {
 
-		public VitalStrength_GrowthTests():base( new VitalStrength().UsePowerProgression() ){}
+		new VirtualEarthUser User;
+
+		public VitalStrength_GrowthTests()
+			:base( new VitalStrength().UsePowerProgression() ){
+			User = new VirtualEarthUser( spirit );
+		}
 
 		[Fact]
-		public void ReclaimAndPresence(){
-			// reclaim, +1 presense range 2
+		public void ReclaimAndPresence() {
+			// (A) reclaim, +1 presense range 2
 			Given_HalfOfPowercardsPlayed();
 			Given_HasPresence( board[3] );
 
-			When_Growing( 0 );
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			When_StartingGrowth();
 
-			User.ReclaimsAll();
-			User.PlacesEnergyPresence( "A1;A2;A3;A4;A5" );
+			User.SelectsGrowthA_Reclaim_PP2();
 
 			this.Assert_AllCardsAvailableToPlay();
 
@@ -27,31 +28,27 @@ namespace SpiritIsland.Tests.Basegame.Spirits.VitalStrengthNS {
 
 		[Fact]
 		public void PowercardAndPresence() {
-			// +1 power card, +1 presense range 0
+			// (B) +1 power card, +1 presense range 0
 			Given_HasPresence( board[4] );
 
-			When_Growing( 1 );
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			When_StartingGrowth();
 
-			User.DrawsPowerCard();
-			User.PlacesEnergyPresence( "A4" );
+			User.SelectsGrowthB_DrawCard_PP0();
 
-			Assert.Equal(5,spirit.Hand.Count);
+			Assert.Equal( 5, spirit.Hand.Count );
 		}
 
 		[Fact]
-		public void PresenseAndEnergy(){
-			// +1 presence range 1, +2 energy
+		public void PresenseAndEnergy() {
+			// (C) +1 presence range 1, +2 energy
 			Given_HasPresence( board[1] );
 
 			When_StartingGrowth();
 
-			User.SelectsGrowthOption( "GainEnergy(2) / PlacePresence(1)" );
-			User.GainsEnergy();
-			User.PlacesEnergyPresence( "A1;A2;A4;A5;A6" );
+			User.SelectsGrowthC_Energy_PP1();
 
-			Assert.Equal(3,spirit.EnergyPerTurn);
-			Assert_HasEnergy(3+2);
+			Assert.Equal( 3, spirit.EnergyPerTurn );
+			Assert_HasEnergy( 3 + 2 );
 		}
 
 		[Theory]
@@ -79,9 +76,6 @@ namespace SpiritIsland.Tests.Basegame.Spirits.VitalStrengthNS {
 			spirit.Presence.CardPlays.RevealedCount = revealedSpaces;
 			Assert_CardTrackIs( expectedCardPlayCount );
 		}
-
-
-
 
 	}
 

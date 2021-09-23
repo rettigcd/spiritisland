@@ -26,7 +26,7 @@ namespace SpiritIsland.SinglePlayer {
 			gameState.Initialize();
 			Spirit = gameState.Spirits.Single(); // this player only handles single-player.
 			this.DecisionProvider = Spirit.Action;
-			InitPhases();
+			StartLoop();
 		}
 
 
@@ -40,7 +40,7 @@ namespace SpiritIsland.SinglePlayer {
 			NewLogEntry?.Invoke( msg );
 		}
 
-		void InitPhases() {
+		void StartLoop() {
 
 			var selectGrowth = new SelectGrowth( Spirit, GameState );
 

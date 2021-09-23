@@ -247,7 +247,7 @@ namespace SpiritIsland.Tests {
 			AssertDecision( prompt, options, choice );
 		}
 
-		protected void AssertDecision( string prompt, string optionsString, string select ) {
+		public void AssertDecision( string prompt, string optionsString, string select ) {
 			IDecisionStream decision = spirit.Action;
 			string msg = $"{prompt}:{optionsString}:{select}";
 
