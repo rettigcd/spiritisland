@@ -64,10 +64,6 @@ namespace SpiritIsland {
 
 		#region Higher Level of abstraction / uses Spirit State
 
-		static public Task<Track> SelectTrack( this Spirit spirit ) {
-			return spirit.Action.Decision( new Decision.PresenceToRemoveFromTrack(spirit) );
-		}
-
 		static public async Task ForgetPowerCard( this Spirit spirit ) {
 			var options = spirit.PurchasedCards.Union( spirit.Hand ).Union( spirit.DiscardPile )
 				.ToArray();

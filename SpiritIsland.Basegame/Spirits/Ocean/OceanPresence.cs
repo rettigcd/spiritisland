@@ -2,6 +2,7 @@
 using System.Linq;
 
 namespace SpiritIsland.Basegame {
+
 	public class OceanPresence : MyPresence {
 
 		public OceanPresence( PresenceTrack energy, PresenceTrack cardPlays ) : base( energy, cardPlays ) { }

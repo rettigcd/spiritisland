@@ -9,12 +9,6 @@ namespace SpiritIsland {
 			this.maxCost = maxCost;
 		}
 
-		public Speed Speed => Speed.FastOrSlow;
-		public SpeedOverride OverrideSpeed {
-			get => null;
-			set => throw new InvalidOperationException( "you may not change the speed of a fast/slow" );
-		}
-
 		public bool IsActiveDuring( Speed speed ) => speed == Speed.Fast || speed == Speed.Slow;
 		public bool IsInactiveAfter( Speed speed ) => speed == Speed.Slow;
 

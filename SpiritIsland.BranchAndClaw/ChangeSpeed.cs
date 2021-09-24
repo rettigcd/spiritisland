@@ -9,8 +9,6 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 		public bool IsActiveDuring( Speed speed ) => speed == Speed.Fast || speed == Speed.Slow;
 		public bool IsInactiveAfter( Speed speed ) => speed == Speed.Slow;
 
-		public SpeedOverride OverrideSpeed { get => null; set => throw new InvalidOperationException(); }
-
 		public string Name => "Change Speed";
 
 		public string Text => Name;

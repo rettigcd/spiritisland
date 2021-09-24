@@ -47,16 +47,23 @@ namespace SpiritIsland {
 
 		#region Game-Play things you can do with presence
 
-		public virtual Task PlaceFromBoard( Track from, Space to, GameState _ ) {
+		public virtual Task PlaceFromBoard( IOption from, Space to, GameState _ ) {
 			// from
-			if(from == Track.Destroyed)
-				--Destroyed;
-			else if(Energy.HasMore && from == Energy.Next)
-				Energy.RevealedCount++;
-			else if(CardPlays.HasMore && from == CardPlays.Next)
-				CardPlays.RevealedCount++;
-			else
-				throw new ArgumentException( from.ToString() );
+			if(from is Track track) {
+				if(track == Track.Destroyed && Destroyed>0)
+					--Destroyed;
+				else if(Energy.HasMore && track == Energy.Next)
+					Energy.RevealedCount++;
+				else if(CardPlays.HasMore && track == CardPlays.Next)
+					CardPlays.RevealedCount++;
+				else
+					throw new ArgumentException( "Can't pull from track:" + from.ToString() );
+			} else if(from is Space space) {
+				if( Spaces.Contains(space) )
+					RemoveFrom( space );
+				else
+					throw new ArgumentException( "Can't pull from island space:" + from.ToString() );
+			}
 
 			// To
 			PlaceOn( to );
@@ -78,6 +85,7 @@ namespace SpiritIsland {
 		#region Setup / Adjust
 		public virtual void PlaceOn(Space space) => placed.Add(space);
 
+		/// <remarks>public so we can remove it for Replacing with Beast and advanced spirit strangness</remarks>
 		public virtual void RemoveFrom( Space space ) => placed.Remove( space );
 
 		#endregion

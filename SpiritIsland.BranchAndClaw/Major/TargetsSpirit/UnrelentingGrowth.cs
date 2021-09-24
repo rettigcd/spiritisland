@@ -11,8 +11,7 @@ namespace SpiritIsland.BranchAndClaw {
 			// target spirit adds 2 presence and 1 wilds to a land at range 1
 
 			// Select destination
-			Space[] destinationOptions = ctx.OtherCtx.Presence_DestinationOptions( 1, Target.Any );
-			var to = await ctx.Other.Action.Decision( new Decision.TargetSpace( "Where would you like to place your presence?", destinationOptions, Present.Always ) );
+			var to = await ctx.OtherCtx.SelectPresenceDestination( 1, Target.Any );
 
 			// add wilds
 			var tokens = ctx.GameState.Tokens[to];
@@ -21,7 +20,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			// Add presence
 			for(int i = 0; i < 2; ++i) {
-				var from = await ctx.Other.SelectTrack();
+				var from = await ctx.OtherCtx.SelectPresenceSource();
 				await ctx.Other.Presence.PlaceFromBoard( from, to, ctx.GameState );
 			}
 

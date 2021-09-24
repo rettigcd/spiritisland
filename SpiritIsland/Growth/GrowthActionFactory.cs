@@ -17,12 +17,6 @@ namespace SpiritIsland {
 		public bool IsActiveDuring( Speed speed ) => speed == Speed.Growth;
 		public bool IsInactiveAfter( Speed speed ) => speed == Speed.Growth;
 
-
-		public SpeedOverride OverrideSpeed { 
-			get => null;
-			set => throw new System.InvalidOperationException();
-		}
-
 		public string Text => this.ShortDescription;
 
 	}

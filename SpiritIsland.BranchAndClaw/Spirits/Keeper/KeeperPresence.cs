@@ -11,7 +11,7 @@ namespace SpiritIsland.BranchAndClaw {
 			:base( energy, cardPlays )
 		{ }
 
-		public override async Task PlaceFromBoard( Track from, Space to, GameState gs ) {
+		public override async Task PlaceFromBoard( IOption from, Space to, GameState gs ) {
 			await base.PlaceFromBoard( from, to, gs );
 			if(gs.DahanIsOn(to) && keeper.SacredSites.Contains(to))
 				await keeper.MakeDecisionsFor(gs).Push(to,int.MaxValue,TokenType.Dahan);

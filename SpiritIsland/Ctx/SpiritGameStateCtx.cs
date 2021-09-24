@@ -64,7 +64,7 @@ namespace SpiritIsland {
 		public TargetSpaceCtx TargetSpace( Space space ) => new TargetSpaceCtx( Self, GameState, space, Cause );
 
 		public async Task<TargetSpaceCtx> TargetLandWithPresence( string prompt ) {
-			var space = await Self.Action.Decision( new Decision.PresenceDeployed( prompt, Self ) );
+			var space = await Self.Action.Decision( new Decision.Presence.Deployed( prompt, Self ) );
 			return new TargetSpaceCtx( Self, GameState, space, Cause );
 		}
 
@@ -112,69 +112,32 @@ namespace SpiritIsland {
 			}
 		}
 
-
-		//public async Task OldGather( Space target, int countToGather, params TokenGroup[] groups ) {
-		//	Token[] calcTokens( Space space ) => GameState.Tokens[space].OfAnyType( groups );
-		//	Space[] CalcSource() => AdjacentTo( target )
-		//		.Where( s => calcTokens( s ).Any() )
-		//		.ToArray();
-
-		//	string label = groups.Select( it => it.Label ).Join( "/" );
-
-		//	Space[] neighborsWithItems = CalcSource();
-		//	int gathered = 0;
-		//	while(gathered < countToGather && neighborsWithItems.Length > 0) {
-		//		var source = await Self.Action.Decision( new Decision.AdjacentSpaceWithTokensToGathers( countToGather - gathered, groups, target, neighborsWithItems, Present.Always ) );
-		//		if(source == null) break;
-
-		//		var invader = await Self.Action.Decision( new Decision.TokenToGather( source, target, calcTokens( source ), Present.IfMoreThan1 ) );
-
-		//		await GameState.Move( invader, source, target );
-
-		//		++gathered;
-		//		neighborsWithItems = CalcSource();
-		//	}
-
-		//}
-
-
 		#endregion Gather
 
 		#region Place Presence
 
+		/// <summary> Selects: (Source then Destination) for placing presence </summary>
+		/// <remarks> Called from normal PlacePresence Growth + Gift of Proliferation. </remarks>
 		public async Task PlacePresence( int range, string filterEnum ) {
-//			Space[] destinationOptions = Presence_DestinationOptions( range, filterEnum );
-//			return Presence_SelectFromTo( destinationOptions );
-			var from = await Self.SelectTrack();
-
-			Space[] destinationOptions = Presence_DestinationOptions( range, filterEnum );
-			var to = await Self.Action.Decision( new Decision.TargetSpace( "Where would you like to place your presence?", destinationOptions, Present.Always ) );
-
+			var from = await SelectPresenceSource();
+			Space to = await SelectPresenceDestination( range, filterEnum );
 			await Self.Presence.PlaceFromBoard( from, to, GameState );
 		}
 
-		public async Task Presence_SelectFromTo( params Space[] destinationOptions ) {
-			var from = await Self.SelectTrack();
-			var to = await Self.Action.Decision( new Decision.TargetSpace( "Where would you like to place your presence?", destinationOptions, Present.Always ) );
+		/// <summary> Selects: Source then Destination(predetermined) for placing presence.</summary>
+		/// <returns>Place in Ocean, Growth through sacrifice</returns>
+		public async Task PlacePresence( params Space[] destinationOptions ) {
+			var from = await SelectPresenceSource();
+			var to = await Self.Action.Decision( new Decision.Presence.PlaceOn( Self, destinationOptions ) );
 			await Self.Presence.PlaceFromBoard( from, to, GameState );
 		}
 
-		public Space[] Presence_DestinationOptions( int range, string filterEnum ) {
-			// Calculate options
-			var existing = Self.Presence.Spaces.ToArray();
+		public Task<Track> SelectPresenceSource() {
+			return Self.Action.Decision( new Decision.Presence.ToRemoveFromTrack( Self ) );
+		}
 
-			var inRange = existing
-				.SelectMany( s => s.Range( range ) )
-				.Distinct()
-				.ToArray();
-
-			Space[] destinationOptions = inRange
-				.Where( SpaceFilter.Normal.GetFilter( Self, GameState, filterEnum ) )
-				.OrderBy( x => x.Label )
-				.ToArray();
-			return destinationOptions.Length == 0
-				? throw new System.Exception( "dude you don't have anywhere to place your presence" )
-				: destinationOptions;
+		public async Task<Space> SelectPresenceDestination( int range, string filterEnum ) {
+			return await Self.Action.Decision( new Decision.Presence.PlaceOn( this, range, filterEnum ) );
 		}
 
 		#endregion Place Presence

@@ -22,20 +22,20 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 				// If 2 sun, do both in the same land
 				var spaceCtx = await other.TargetLandWithPresence( "Select location to remove blight and add presence" );
 				spaceCtx.AddBlight( -1 );
-				await other.Presence_SelectFromTo( spaceCtx.Space );
+				await other.PlacePresence( spaceCtx.Space );
 			}
 
 		}
 
 		static Task AddPresenceToTargetsLand(SpiritGameStateCtx ctx) 
-			=> ctx.Presence_SelectFromTo( ctx.Self.Presence.Spaces.ToArray() );
+			=> ctx.PlacePresence( ctx.Self.Presence.Spaces.ToArray() );
 
 		static async Task RemoveBlightFromOwnLand(SpiritGameStateCtx ctx)
 			=> (await ctx.TargetLandWithPresence( "Select location to remove blight" )).RemoveBlight();
 
 
 		static async Task DestoryOnePresence( Spirit spirit ) {
-			var space = await spirit.Action.Decision( new Decision.PresenceToDestory(spirit) );
+			var space = await spirit.Action.Decision( new Decision.Presence.ToDestory(spirit) );
 			spirit.Presence.Destroy(space);
 		}
 
