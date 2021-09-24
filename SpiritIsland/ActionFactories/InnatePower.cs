@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
-	public abstract class InnatePower : IActionFactory {
+	public abstract class InnatePower : IFlexibleSpeedActionFactory {
 
 		#region Constructors and factories
 
@@ -22,7 +22,7 @@ namespace SpiritIsland {
 
 		internal InnatePower(Type actionType,LandOrSpirit landOrSpirit){
 			innatePowerAttr = actionType.GetCustomAttribute<InnatePowerAttribute>();
-			DefaultSpeed = innatePowerAttr.Speed;
+			Speed = innatePowerAttr.Speed;
 			Name = innatePowerAttr.Name;
 			LandOrSpirit = landOrSpirit;
 
@@ -42,9 +42,12 @@ namespace SpiritIsland {
 
 		#region Speed
 
-		public Speed Speed => OverrideSpeed!=null ? OverrideSpeed.Speed : DefaultSpeed;
-		public Speed DefaultSpeed { get; set; }
+		Speed EffectiveSpeed => OverrideSpeed!=null ? OverrideSpeed.Speed : Speed;
+		public Speed Speed { get; set; }
 		public SpeedOverride OverrideSpeed { get; set; }
+
+		public bool IsActiveDuring( Speed speed ) => speed == EffectiveSpeed || EffectiveSpeed == Speed.FastOrSlow;
+		public bool IsInactiveAfter( Speed speed ) => speed == EffectiveSpeed || speed == Speed.Slow;
 
 		#endregion
 

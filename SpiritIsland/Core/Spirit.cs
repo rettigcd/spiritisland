@@ -104,17 +104,9 @@ namespace SpiritIsland {
 
 		public virtual IEnumerable<IActionFactory> GetAvailableActions(Speed speed) {
 			LastSpeedRequested = speed;
-			foreach( var action in AvailableActions )
+			foreach(IActionFactory action in AvailableActions )
 				action.UpdateFromSpiritState( this.Elements );
-			return AvailableActions.Where( GetFilter( speed ) );
-		}
-
-		static protected Func<IActionFactory, bool> GetFilter( Speed speed ) {
-			return speed switch {
-				Speed.Fast => ( x ) => x.Speed == Speed.Fast || x.Speed == Speed.FastOrSlow,
-				Speed.Slow => ( x ) => x.Speed == Speed.Slow || x.Speed == Speed.FastOrSlow,
-				_ => x => x.Speed == speed
-			};
+			return AvailableActions.Where( action=>action.IsActiveDuring( speed ) );
 		}
 
 		/// <summary>
@@ -131,11 +123,6 @@ namespace SpiritIsland {
 				throw new InvalidOperationException( "can't remove factory that isn't there." );
 			usedActions.Add(availableActions[index]);
 			availableActions.RemoveAt( index );
-
-			//if(availableActions.Count == 0 && selectedActionFactory is GrowthActionFactory
-			//	&& !(selectedActionFactory is Reclaim1 || selectedActionFactory is SelectAnyElements)
-			//)
-			//	TriggerEnergyElementsAndReclaims();
 
 		}
 
@@ -185,7 +172,7 @@ namespace SpiritIsland {
 
 		public int Flush( Speed speed ) {
 			var toFlush = AvailableActions
-				.Where( x=>x.Speed == speed )
+				.Where( x=>x.IsInactiveAfter(speed) )
 				.ToArray();
 			foreach(var factory in toFlush)
 				RemoveUnresolvedActions( factory );

@@ -25,12 +25,10 @@ namespace SpiritIsland.Basegame {
 
 	public class RepeatCardForCost : IActionFactory {
 
-		public Speed Speed => DefaultSpeed;
-		public Speed DefaultSpeed => Speed.FastOrSlow;
-		public SpeedOverride OverrideSpeed { get => null; set => throw new System.InvalidOperationException(); }
+		public bool IsActiveDuring( Speed speed ) => speed == Speed.Fast || speed == Speed.Slow;
+		public bool IsInactiveAfter( Speed speed ) => speed == Speed.Slow;
 
 		public string Name => "Replay Cards for Cost";
-//		public IActionFactory Original => this;
 		public string Text => Name;
 
 		public async Task ActivateAsync( Spirit self, GameState gameState ) {

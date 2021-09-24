@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
-	public abstract class PowerCard : IActionFactory, IOption {
+	public abstract class PowerCard : IFlexibleSpeedActionFactory, IOption {
 
 		#region static
 
@@ -43,9 +43,13 @@ namespace SpiritIsland {
 
 		public int Cost { get; protected set;  }
 
-		public Speed Speed => OverrideSpeed != null ? OverrideSpeed.Speed : DefaultSpeed;
-		public Speed DefaultSpeed { get; protected set; }
+		Speed EfectiveSpeed => OverrideSpeed != null ? OverrideSpeed.Speed : Speed;
+		public Speed Speed { get; protected set; }
 		public SpeedOverride OverrideSpeed { get; set; }
+
+		public bool IsActiveDuring( Speed speed ) => speed == EfectiveSpeed || EfectiveSpeed == Speed.FastOrSlow;
+		public bool IsInactiveAfter( Speed speed ) => speed == EfectiveSpeed || speed == Speed.Slow;
+
 
 		public Element[] Elements { get; protected set; }
 		public PowerType PowerType { get; protected set; }

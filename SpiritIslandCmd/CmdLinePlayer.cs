@@ -62,13 +62,13 @@ namespace SpiritIslandCmd {
 			var cards = game.Spirit.Hand
 				.Union( game.Spirit.PurchasedCards )
 				.Union( game.Spirit.DiscardPile )
-				.Cast<IActionFactory>()
-				.Union( game.Spirit.GetAvailableActions(Speed.Growth) )
+				.Cast<PowerCard>()
+//				.Union( game.Spirit.GetAvailableActions(Speed.Growth) )
 				.Union( game.Spirit.GetAvailableActions(Speed.Fast) )
 				.Union( game.Spirit.GetAvailableActions(Speed.Slow) )
 				.Distinct()
-				.OrderBy( x => x.Speed == Speed.Growth ? 0 : x.Speed == Speed.Fast ? 1 : 2 )
-				.ThenBy( x => x.Name )
+//				.OrderBy( x => x.Speed == Speed.Growth ? 0 : x.Speed == Speed.Fast ? 1 : 2 )
+				.OrderBy( x => x.Name )
 				.ToList();
 			int maxNameWidth = cards.Select( c => c.Name.Length ).Max();
 			Console.WriteLine( "Cards:" );

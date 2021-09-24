@@ -9,7 +9,7 @@ namespace SpiritIsland {
 	class PowerCard_TargetSpirit : PowerCard {
 
 		public PowerCard_TargetSpirit(MethodBase methodBase):base(methodBase){
-			DefaultSpeed = cardAttr.Speed;
+			Speed = cardAttr.Speed;
 			Name = cardAttr.Name;
 			Cost = cardAttr.Cost;
 			Elements = cardAttr.Elements;

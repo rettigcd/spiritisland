@@ -90,7 +90,7 @@ namespace SpiritIsland.WinForms {
 			graphics.FillRectangle( Brushes.BlanchedAlmond, brownBoxRows[1] );
 			foreach(var valueRect in headingValueRects)
 				graphics.DrawRectangle( Pens.Black, valueRect.ToInts() );
-			graphics.DrawImageFitHeight( GetImage(power.DefaultSpeed == Speed.Slow ? "slow" : "fast"), headingValueRects[0].InflateBy( -headingValueRects[0].Height*.2f ) );
+			graphics.DrawImageFitHeight( GetImage(power.Speed == Speed.Slow ? "slow" : "fast"), headingValueRects[0].InflateBy( -headingValueRects[0].Height*.2f ) );
 			graphics.DrawString( power.RangeText, boldFont, Brushes.Black, headingValueRects[1], centerBoth );
 			graphics.DrawString( power.TargetFilter.ToUpper(), boldFont, Brushes.Black, headingValueRects[2], centerBoth );
 

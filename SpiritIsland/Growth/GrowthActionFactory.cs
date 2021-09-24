@@ -14,16 +14,16 @@ namespace SpiritIsland {
 
 		public virtual string Name => this.ShortDescription;
 
-		public Speed Speed => DefaultSpeed;
-		public Speed DefaultSpeed => Speed.Growth;
+		public bool IsActiveDuring( Speed speed ) => speed == Speed.Growth;
+		public bool IsInactiveAfter( Speed speed ) => speed == Speed.Growth;
+
+
 		public SpeedOverride OverrideSpeed { 
 			get => null;
 			set => throw new System.InvalidOperationException();
 		}
 
 		public string Text => this.ShortDescription;
-
-//		public IActionFactory Original => this;
 
 	}
 

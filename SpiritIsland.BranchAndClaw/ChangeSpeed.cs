@@ -6,8 +6,8 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 	// Change Speed - delayed.  They don't have to pick it immediately - similar to Lightning
 	public class ChangeSpeed : IActionFactory {
 
-		public Speed Speed => DefaultSpeed;
-		public Speed DefaultSpeed => Speed.FastOrSlow;
+		public bool IsActiveDuring( Speed speed ) => speed == Speed.Fast || speed == Speed.Slow;
+		public bool IsInactiveAfter( Speed speed ) => speed == Speed.Slow;
 
 		public SpeedOverride OverrideSpeed { get => null; set => throw new InvalidOperationException(); }
 

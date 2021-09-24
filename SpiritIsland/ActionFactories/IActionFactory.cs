@@ -5,19 +5,23 @@ namespace SpiritIsland {
 	public interface IActionFactory : IOption {
 
 		Task ActivateAsync(Spirit spirit, GameState gameState);
-		Speed Speed { get; }
-		Speed DefaultSpeed { get; }
 
-		public SpeedOverride OverrideSpeed { get; set; }
+		bool IsActiveDuring( Speed speed );
+
+		bool IsInactiveAfter( Speed speed );
 
 		string Name { get; }
-//		IActionFactory Original { get; }
 
 		// Used by Innates to set Triggered / Not Triggered
 		// Used by certain innates and Cards to determine speed
 		void UpdateFromSpiritState( CountDictionary<Element> elements );
 
 			
+	}
+
+	public interface IFlexibleSpeedActionFactory : IActionFactory {
+		Speed Speed { get; }
+		SpeedOverride OverrideSpeed { get; set; }
 	}
 
 	public class SpeedOverride {

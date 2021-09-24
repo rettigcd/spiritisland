@@ -75,11 +75,6 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 
 		public override string Text => Name;
 
-//		public override void PurchaseAvailableCards( params PowerCard[] cards ) {
-//			base.PurchaseAvailableCards( cards );
-////			swiftness.OnActivateCards( this );
-//		}
-
 		protected override void InitializeInternal( Board board, GameState gs ) {
 			// Setup: put 2 pressence in highest numbered sands
 			var space = board.Spaces.Reverse().First(x=>x.Terrain==Terrain.Sand);
@@ -105,19 +100,25 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 			// in Fast phase
 			if(speed == Speed.Fast){
 				SpeedOverride slowOverride = Elements[Element.Air] > usedAirForFastCount ? new SpeedOverride(Speed.FastOrSlow, SwiftnessOfLightning ) : null;
-				foreach(var action in availableActions)
-					if(action.DefaultSpeed == Speed.Slow)
+				foreach(var action in availableActions.OfType<PowerCard>())
+					if(action.Speed == Speed.Slow)
+						action.OverrideSpeed = slowOverride;
+				foreach(var action in availableActions.OfType<InnatePower>())
+					if(action.Speed == Speed.Slow)
 						action.OverrideSpeed = slowOverride;
 			}
 
-			return AvailableActions.Where( GetFilter( speed ) );
+			return AvailableActions.Where( x=>x.IsActiveDuring( speed ) );
 		}
 
 		public override Task TakeAction( IActionFactory factory, GameState gameState ) {
 			// check if we are using up an air
 			// Only slow cards should get the override
 			// If the card was used Slow, it just may increment higher than Air count
-			if(factory.OverrideSpeed != null && factory.OverrideSpeed.Source == SwiftnessOfLightning)
+			if(factory is IFlexibleSpeedActionFactory flex 
+				&& flex.OverrideSpeed != null 
+				&& flex.OverrideSpeed.Source == SwiftnessOfLightning
+			)
 				++usedAirForFastCount;
 
 			return base.TakeAction(factory,gameState);

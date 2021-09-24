@@ -9,12 +9,14 @@ namespace SpiritIsland {
 			this.maxCost = maxCost;
 		}
 
-		public Speed Speed => DefaultSpeed;
-		public Speed DefaultSpeed => Speed.FastOrSlow;
+		public Speed Speed => Speed.FastOrSlow;
 		public SpeedOverride OverrideSpeed {
 			get => null;
 			set => throw new InvalidOperationException( "you may not change the speed of a fast/slow" );
 		}
+
+		public bool IsActiveDuring( Speed speed ) => speed == Speed.Fast || speed == Speed.Slow;
+		public bool IsInactiveAfter( Speed speed ) => speed == Speed.Slow;
 
 		public string Name => $"Replay Card [max cost:{maxCost}]";
 		public string Text => Name;
@@ -24,7 +26,7 @@ namespace SpiritIsland {
 			var options = self.UsedActions	// used
 				.OfType<PowerCard>()		// only power cards, not innates
 				.Where(card=>card.Cost <= maxCost)
-				.Where(card=>card.Speed == self.LastSpeedRequested) // if cards are played at a differnet speed, is that the speed we want to replay?
+				.Where(card=>card.IsActiveDuring(self.LastSpeedRequested)) // if cards are played at a differnet speed, is that the speed we want to replay?
 				.ToArray(); 
 			if(options.Length == 0) return;
 

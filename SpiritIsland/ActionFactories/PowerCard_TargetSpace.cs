@@ -17,7 +17,7 @@ namespace SpiritIsland {
 
 			Name = cardAttr.Name;
 			Cost = cardAttr.Cost;
-			DefaultSpeed = cardAttr.Speed;
+			Speed = cardAttr.Speed;
 			Elements = cardAttr.Elements;
 			PowerType = cardAttr.PowerType;
 

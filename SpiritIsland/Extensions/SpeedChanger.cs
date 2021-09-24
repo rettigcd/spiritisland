@@ -48,12 +48,12 @@ namespace SpiritIsland {
 
 		}
 
-		protected IActionFactory[] FindSouceFactories()
-			=> spirit.GetAvailableActions( toChangeFrom ).ToArray();
+		protected IFlexibleSpeedActionFactory[] FindSouceFactories()
+			=> spirit.GetAvailableActions( toChangeFrom ).OfType<IFlexibleSpeedActionFactory>().ToArray();
 
 		async Task FindAndChange( ) {
 			var changeableFactories = FindSouceFactories();
-			IActionFactory factory = await spirit.SelectFactory( prompt + $" (remaining: {countToChange})",
+			IFlexibleSpeedActionFactory factory = (IFlexibleSpeedActionFactory)await spirit.SelectFactory( prompt + $" (remaining: {countToChange})",
 				changeableFactories,
 				Present.Done
 			);
@@ -65,7 +65,7 @@ namespace SpiritIsland {
 				countToChange = 0;
 		}
 
-		void Change( IActionFactory factory ) {
+		void Change( IFlexibleSpeedActionFactory factory ) {
 			Task Restore(GameState _) { factory.OverrideSpeed = null; return Task.CompletedTask; }
 			gameState.TimePasses_ThisRound.Push( Restore );
 			factory.OverrideSpeed = new SpeedOverride( resultingSpeed, "SpeedChanger" );
