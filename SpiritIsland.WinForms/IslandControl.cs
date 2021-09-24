@@ -203,7 +203,7 @@ namespace SpiritIsland.WinForms {
 			const float textHeight = 20f;
 			float height = this.Height *.33f;
 			float width = height * .66f;
-			using var buildRavageFont = new Font( ResourceImages.Singleton.Fonts.Families[0], textHeight );
+			using var buildRavageFont = new Font( ResourceImages.Singleton.Fonts.Families[0], textHeight, GraphicsUnit.Pixel );
 
 			float x = ClientRectangle.Width-width-margin-margin;
 			float y = ClientRectangle.Height-height-margin*2 - textHeight;

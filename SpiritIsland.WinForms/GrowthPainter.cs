@@ -91,7 +91,7 @@ namespace SpiritIsland.WinForms {
 			float imgWidth = bounds.Width, imgHeight = img.Height * imgWidth / img.Width; // assuming width limited
 			graphics.DrawImage( img, bounds.X, bounds.Y + (bounds.Height - imgHeight) / 2, imgWidth, imgHeight );
 
-			using Font coinFont = new Font( ResourceImages.Singleton.Fonts.Families[0], imgHeight * .5f );
+			using Font coinFont = new Font( ResourceImages.Singleton.Fonts.Families[0], imgHeight * .5f, GraphicsUnit.Pixel );
 			string txt = delta > 0 
 				? ("+" + delta.ToString())
 				: ("\u2014" + (-delta).ToString());
@@ -117,7 +117,7 @@ namespace SpiritIsland.WinForms {
 
 		void PlacePresence( RectangleF rect, int? range, string iconFilename = "" ) {
 
-			using Font font = new Font( ResourceImages.Singleton.Fonts.Families[0], rect.Height * .15f );
+			using Font font = new Font( ResourceImages.Singleton.Fonts.Families[0], rect.Height * .15f, GraphicsUnit.Pixel  );
 			// var font = SystemFonts.IconTitleFont;
 
 			// + presence

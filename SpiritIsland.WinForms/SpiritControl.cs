@@ -13,6 +13,7 @@ namespace SpiritIsland.WinForms {
 
 		public SpiritControl() {
 			InitializeComponent();
+
 			this.BackColor = Color.LightYellow;
 			this.Cursor = Cursors.Default;
 		}

@@ -21,8 +21,8 @@ namespace SpiritIsland.WinForms {
 			this.width = width;
 			//			this.font =  new Font( ResourceImages.Singleton.Fonts.Families[0], 20 );
 			textEmSize = width * .033f;
-			this.font = new Font( FontFamily.GenericSansSerif, textEmSize );
-			this.boldFont = new Font( FontFamily.GenericSansSerif, textEmSize, FontStyle.Bold);
+			this.font = new Font( FontFamily.GenericSansSerif, textEmSize, GraphicsUnit.Pixel );
+			this.boldFont = new Font( FontFamily.GenericSansSerif, textEmSize, FontStyle.Bold, GraphicsUnit.Pixel );
 			this.iconHeight = textEmSize * 1.9f;
 			this.elementHeight = iconHeight * 1.2f;
 			this.rowHeight = elementHeight * 1.1f;
@@ -73,14 +73,14 @@ namespace SpiritIsland.WinForms {
 			graphics.FillRectangle(Brushes.AliceBlue,totalOptionBounds);
 
 			// Title
-			using(var titleFont = new Font("Arial",textEmSize,FontStyle.Bold|FontStyle.Italic) )
+			using(var titleFont = new Font("Arial",textEmSize,FontStyle.Bold|FontStyle.Italic, GraphicsUnit.Pixel ) )
 				graphics.DrawString(power.Name.ToUpper(),titleFont,Brushes.Black,titleRect,new StringFormat{ Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Center });
 
 			// Attribute Headers
 			using(var titleBg = new SolidBrush( Color.FromArgb( 0xae, 0x98, 0x69 ) )) // ae9869
 				graphics.FillRectangle(titleBg,brownBoxRows[0]);
 			var centerBoth = new StringFormat{ Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-			using( Font titleFont = new Font("Arial",textEmSize*0.8f,FontStyle.Bold)) {
+			using( Font titleFont = new Font("Arial",textEmSize*0.8f,FontStyle.Bold, GraphicsUnit.Pixel)) {
 				graphics.DrawString("SPEED"      ,titleFont,Brushes.White,headingHeaderRects[0],centerBoth);
 				graphics.DrawString("RANGE"      ,titleFont,Brushes.White,headingHeaderRects[1],centerBoth);
 				graphics.DrawString(power.LandOrSpirit==LandOrSpirit.Land?"TARGET LAND":"TARGET",titleFont,Brushes.White,headingHeaderRects[2],centerBoth);

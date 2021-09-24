@@ -173,7 +173,8 @@ namespace SpiritIsland.WinForms {
 				var elementBounds = bounds.InflateBy(-bounds.Height/4);
 				graphics.DrawImageFitHeight(image,elementBounds);
 			} else {
-				using Font coinFont = new Font( ResourceImages.Singleton.Fonts.Families[0], bounds.Height * .5f );
+				bounds.Y += bounds.Height * .05f; // it looks too high
+				using Font coinFont = new Font( ResourceImages.Singleton.Fonts.Families[0], bounds.Height * .6f, GraphicsUnit.Pixel );
 				StringFormat center = new StringFormat{ Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
 				graphics.DrawString( txt, coinFont, Brushes.Black, bounds, center );
 			}

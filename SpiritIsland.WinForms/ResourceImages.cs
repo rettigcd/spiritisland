@@ -17,7 +17,7 @@ namespace SpiritIsland.WinForms {
 			LoadFont( "leaguegothic-regular-webfont.ttf" );
 		}
 
-		public readonly PrivateFontCollection Fonts; // 			return new Font( fonts.Families[0], 22 );
+		public readonly PrivateFontCollection Fonts;
 
 		public Bitmap GetPresenceIcon( string presenceColor ) => GetResourceImage( $"presence.{presenceColor}.png" );
 		public Bitmap GetTokenIcon( string fileName )         => GetResourceImage( $"tokens.{fileName}.png" );

@@ -25,8 +25,9 @@ namespace SpiritIsland.WinForms {
 
 			if(!images.ContainsKey( card )) {
 				string filename = card.Name
-					.Replace( ' ', '_' )
 					.Replace( ',', '_' )
+					.Replace( ' ', '_' )
+					.Replace( "__", "_" )
 					.Replace( "'", "" )
 					.Replace( "-", "" )
 					.ToLower();
