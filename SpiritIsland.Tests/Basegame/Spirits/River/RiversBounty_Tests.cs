@@ -2,6 +2,7 @@
 using SpiritIsland;
 using System.Linq;
 using Xunit;
+using Shouldly;
 
 namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
@@ -106,6 +107,31 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		}
 
 		[Fact]
+		public void DamagedDahanComingDifferentLands() {
+			// Given: spirit has 1 presence
+			Space target = spirit.Presence.Placed.Single();
+			var ctx = new TargetSpaceCtx(spirit,gameState,target,Cause.Power);
+
+			//   And: neighbors have 1 damaged dahan each 
+			const int dahanToGather = 2;
+			var neighbors = ctx.Adjacents.ToArray();
+			for(int i = 0; i<dahanToGather;++i)
+			foreach(var n in neighbors)
+				ctx.TargetSpace(neighbors[i]).Tokens[TokenType.Dahan[1]] = 1;
+
+			When_PlayingCard();
+
+			User.TargetsLand( "A4" );
+			User.GathersOptionalToken("(D@1 on A1),D@1 on A2");
+			User.GathersOptionalToken("D@1 on A2");
+
+			User.Assert_Done();
+
+			Assert.Equal( 3, gameState.DahanGetCount( target ) ); // same as original
+		}
+
+
+		[Fact]
 		public void TwoPresenceSpaces(){
 			// Given: spirit has presence on A4 && A8
 			spirit.Presence.PlaceOn(board[8]);
@@ -144,6 +170,17 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 		}
 
+
+
+		[Fact]
+		public void DahanCountIncludesDamaged() {
+			// This is a nice test, but it is too close to the implementation.  Refactoring might not use ctx.DahanCount
+			var space = gameState.Island.Boards[0][4];
+			var ctx = new TargetSpaceCtx(spirit,gameState,space, Cause.None);
+			ctx.Tokens[TokenType.Dahan[1]] = 5;
+			ctx.Tokens[TokenType.Dahan[2]] = 7;
+			ctx.DahanCount.ShouldBe(12);
+		}
 
 		void Given_AddDahan( int startingCount, Space target ) {
 			gameState.DahanAdjust( target, startingCount );

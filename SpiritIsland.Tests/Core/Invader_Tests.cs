@@ -119,8 +119,8 @@ namespace SpiritIsland.Tests.Core {
 			var origCards = NewDeckCards();
 			var indxToCheck = new HashSet<int>{ 0,1,2,3,4,5,6,7,8,9,10,11};
 			
-			// try up to 10 different test decks
-			for(int attempt=0;attempt<10;++attempt){
+			// try up to 6 different test decks
+			for(int attempt=0;attempt<6;++attempt){
 				var testDeck = NewDeckCards();
 				// if test deck has a different card in the slot, that slot is shuffled
 				for(int idx=0;idx<12;++idx)
@@ -255,7 +255,7 @@ namespace SpiritIsland.Tests.Core {
 		}
 
 		static InvaderCard[] NewDeckCards() {
-			var deck = new InvaderDeck(null);
+			var deck = new InvaderDeck(new Random());
 			var cards = new InvaderCard[12];
 			for(int i = 0; i < 12; ++i) {
 				cards[i] = deck.Explore[0];

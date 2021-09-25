@@ -1,6 +1,5 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
-BUG - River's Bounty - Damaged Dahan don't count towards 2 for generating 3rd.
 ENHANCEMENT - Targetting Spirit - When only 1, no need to select it.  Not confusing, just an busy work.
 
 * REFACTOR	Drawing - Separate Layout from Drawing / Calc Layout once

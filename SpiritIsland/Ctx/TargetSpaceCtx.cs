@@ -82,7 +82,7 @@ namespace SpiritIsland {
 		//public InvaderGroup Invaders
 		//	=> this.Self.BuildInvaderGroup( GameState, Target );
 
-		public int DahanCount => Tokens[TokenType.Dahan.Default];
+		public int DahanCount => Tokens[TokenType.Dahan[2]] + Tokens[TokenType.Dahan[1]];
 
 		public bool HasDahan => DahanCount>0;
 
