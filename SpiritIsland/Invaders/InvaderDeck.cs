@@ -33,30 +33,30 @@ namespace SpiritIsland {
 			new InvaderCard(Terrain.Sand,Terrain.Wetland)
 		);
 
-		public static InvaderDeck Unshuffled() => new InvaderDeck(false);
+		public static InvaderDeck Unshuffled() => new InvaderDeck((Random)null);
 
 		#endregion
 
 		#region constructors
 
-		public InvaderDeck(params InvaderCard[] cards ) {
+		static public InvaderDeck BuildTestDeck( params InvaderCard[] cards ) => new InvaderDeck( cards );
+
+		private InvaderDeck( params InvaderCard[] cards ) {
 			this.cards = cards.ToList();
 			for(int i=0;i<cards.Length;++i) drawCount.Add(1);
 			Advance(); // turn first explorer card up
 		}
 
-		public InvaderDeck():this(true){}
-
-		InvaderDeck(bool shuffle){
+		public InvaderDeck( Random random ){
 
 			var level1 = Level1Cards.ToList();
 			var level2 = Level2Cards.ToList();
 			var level3 = Level3Cards.ToList();
 
-			if(shuffle){
-				level1.Shuffle();
-				level2.Shuffle();
-				level3.Shuffle(); 
+			if( random != null ){
+				random.Shuffle(level1);
+				random.Shuffle(level2);
+				random.Shuffle(level3);
 			}
 
 			static void Discard1(List<InvaderCard> list){ list.RemoveAt(list.Count-1); }

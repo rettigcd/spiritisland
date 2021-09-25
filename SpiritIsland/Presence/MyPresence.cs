@@ -20,12 +20,12 @@ namespace SpiritIsland {
 
 		#region Tracks / Board
 
-		public Track[] GetPlaceableFromTracks() {
-			var tracks = new List<Track>();
-			if(Energy.HasMore) tracks.Add( Energy.Next );
-			if(CardPlays.HasMore) tracks.Add( CardPlays.Next );
-			if(CanPlaceDestroyedPresence && Destroyed>0) tracks.Add(Track.Destroyed);
-			return tracks.ToArray();
+		public Track[] GetPlaceableTrackOptions() {
+			var options = new List<Track>();
+			if(Energy.HasMore) options.Add( Energy.Next );
+			if(CardPlays.HasMore) options.Add( CardPlays.Next );
+			if(CanPlaceDestroyedPresence && Destroyed>0) options.Add(Track.Destroyed);
+			return options.ToArray();
 		}
 
 		public bool CanPlaceDestroyedPresence = false;

@@ -1,12 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SpiritIsland {
 
 	public class PowerCardDeck {
 
-		public PowerCardDeck(IList<PowerCard> cards) {
+		readonly Random randomizer;
+
+		public PowerCardDeck(IList<PowerCard> cards, Random randomizer) {
 			discards = cards.ToList();
+			this.randomizer = randomizer;
 		}
 
 		public PowerCard FlipNext() {
@@ -25,7 +29,7 @@ namespace SpiritIsland {
 		public void Discard(IEnumerable<PowerCard> discards) => this.discards.AddRange(discards);
 
 		void ReshuffleDiscardDeck() {
-			discards.Shuffle();
+			randomizer.Shuffle(discards);
 			foreach(var card in discards) cards.Push(card);
 			discards.Clear();
 		}

@@ -37,7 +37,7 @@ namespace SpiritIsland.Tests.Core {
 
 		[Fact]
 		public void StartsWithExplorer(){
-			var sut = new InvaderDeck();
+			var sut = new InvaderDeck(null);
 			Assert.NotNull(sut.Explore);
 			Assert.Empty(sut.Build);
 			Assert.Empty(sut.Ravage);
@@ -46,7 +46,7 @@ namespace SpiritIsland.Tests.Core {
 		[Fact]
 		public void AdvanceCards(){
 
-			var sut = new InvaderDeck();
+			var sut = new InvaderDeck(null);
 
 			// Advance the cards 12 times
 			for(int i=0;i<11;++i){
@@ -70,7 +70,7 @@ namespace SpiritIsland.Tests.Core {
 
 		[Fact]
 		public void CardsUsedAre_3L1_4L2_5L3() {
-			var sut = new InvaderDeck();
+			var sut = new InvaderDeck(null);
 			Assert_NextNCardsFromDeck( sut, InvaderDeck.Level1Cards, 3 );
 			Assert_NextNCardsFromDeck( sut, InvaderDeck.Level2Cards, 4 );
 			Assert_NextNCardsFromDeck( sut, InvaderDeck.Level3Cards, 5 );
@@ -255,7 +255,7 @@ namespace SpiritIsland.Tests.Core {
 		}
 
 		static InvaderCard[] NewDeckCards() {
-			var deck = new InvaderDeck();
+			var deck = new InvaderDeck(null);
 			var cards = new InvaderCard[12];
 			for(int i = 0; i < 12; ++i) {
 				cards[i] = deck.Explore[0];

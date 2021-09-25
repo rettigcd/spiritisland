@@ -7,8 +7,8 @@ using System.Linq;
 using System.Windows.Forms;
 
 namespace SpiritIsland.WinForms {
-	public partial class ConfigureGame : Form {
-		public ConfigureGame() {
+	public partial class ConfigureGameDialog : Form {
+		public ConfigureGameDialog() {
 			InitializeComponent();
 		}
 
@@ -66,57 +66,23 @@ namespace SpiritIsland.WinForms {
 		}
 
 		private void OkButton_Click( object sender, EventArgs e ) {
-			Spirit spirit = SelectedSpirit();
-			if(powerProgressionCheckBox.Checked) {
-				try {
-					spirit.UsePowerProgression();
-				} catch {
-					MessageBox.Show( "Unable to use power progression for " + spirit.Text );
-				}
-			}
-			Board board = SelectedBoard();
-
-			Color = (colorListBox.SelectedIndex == 0)
-				? GetColorForSpirit( spirit )
+			var gameSettings = new GameConfiguration {
+				GameNumber = new Random().Next( 0, 999_999_999 ),
+				UseBranchAndClaw = branchAndClawCheckBox.Checked,
+				SpiritType = SelectedSpiritType(),
+				UsePowerProgression = powerProgressionCheckBox.Checked,
+				Board = SelectedBoard()
+			};
+			gameSettings.Color = (colorListBox.SelectedIndex == 0)
+				? GetColorForSpirit( gameSettings.SpiritType )
 				: colorListBox.SelectedItem as string;
+			GameConfiguration = gameSettings;
 
-			var majorCards = PowerCard.GetMajors( typeof( AcceleratedRot ) ).ToList();
-			var minorCards = PowerCard.GetMinors( typeof( AcceleratedRot ) ).ToList();
-
-			if(branchAndClawCheckBox.Checked) {
-				majorCards.AddRange( PowerCard.GetMajors( typeof( CastDownIntoTheBrinyDeep ) ) );
-				minorCards.AddRange( PowerCard.GetMinors( typeof( CastDownIntoTheBrinyDeep ) ) );
-			}
-
-			var gameState = !branchAndClawCheckBox.Checked
-				? new GameState( spirit, board )
-				: new GameState_BranchAndClaw( spirit, board );
-
-			gameState.MajorCards = new PowerCardDeck( majorCards.ToArray() );
-			gameState.MinorCards = new PowerCardDeck( minorCards.ToArray() );
-
-			List<IFearOptions> fearCards = new List<IFearOptions>();
-			fearCards.AddRange( SpiritIsland.Basegame.FearCards.GetFearCards() );
-			if(branchAndClawCheckBox.Checked)
-				fearCards.AddRange( SpiritIsland.BranchAndClaw.FearCards.GetFearCards() );
-
-			fearCards.Shuffle();
-
-			gameState.Fear.Deck.Clear();
-			foreach(var f in fearCards.Take( 9 ))
-				gameState.Fear.AddCard( f );
-
-//			gameState.Fear.AddDirect( new FearArgs { count = 4*8 } ); // !!!
-
-			gameState.BlightCard = ((int)DateTime.Now.Ticks) % 1 == 0
-				? new DownwardSpiral()
-				: new MemoryFadesToDust();
-
-			this.Game = new SinglePlayerGame( gameState );
 		}
 
-		static string GetColorForSpirit( Spirit spirit ) {
-			return spirit.Text switch {
+		static string GetColorForSpirit( Type spiritType ) {
+			string spiritName = ((Spirit)Activator.CreateInstance( spiritType )).Text;
+			return spiritName switch {
 				RiverSurges.Name           => "blue",
 				LightningsSwiftStrike.Name => "yellow",
 				VitalStrength.Name         => "orange",
@@ -131,37 +97,96 @@ namespace SpiritIsland.WinForms {
 			};
 		}
 
-		Board SelectedBoard() {
-			string boardOption = (boardListBox.SelectedIndex == 0)
+		string SelectedBoard() {
+			return (boardListBox.SelectedIndex == 0)
 				? boardListBox.Items[1 + (int)(DateTime.Now.Ticks % 4)] as string
 				: boardListBox.SelectedItem as string;
-
-			var board = boardOption switch {
-				"A" => Board.BuildBoardA(),
-				"B" => Board.BuildBoardB(),
-				"C" => Board.BuildBoardC(),
-				"D" => Board.BuildBoardD(),
-				_ => null,
-			};
-			return board;
 		}
 
-		Spirit SelectedSpirit() {
+		Type SelectedSpiritType() {
 			int numberOfSpirits = spiritListBox.Items.Count-1;
 
-			Type spiritType = (spiritListBox.SelectedIndex == 0)
+			return (spiritListBox.SelectedIndex == 0)
 				? spiritListBox.Items[1 + (int)(DateTime.Now.Ticks % numberOfSpirits)] as Type
 				: spiritListBox.SelectedItem as Type;
-			Spirit spirit = (Spirit)Activator.CreateInstance( spiritType );
-			return spirit;
 		}
 
-		public string Color { get; private set; }
-
-		public SinglePlayerGame Game { get; private set; }
+		public GameConfiguration GameConfiguration { get; private set; }
 
 		private void CheckBox1_CheckedChanged( object sender, EventArgs e ) {
 			Init_SpiritList();
 		}
 	}
+
+	public class GameConfiguration {
+		public int GameNumber;
+		public bool UseBranchAndClaw;
+		public Type SpiritType;
+		public bool UsePowerProgression;
+		public string Board;
+		public string Color;
+
+		public GameState BuildGame() {
+			var gameSettings = this;
+			Spirit spirit = (Spirit)Activator.CreateInstance( gameSettings.SpiritType );
+			if(gameSettings.UsePowerProgression) {
+				try {
+					spirit.UsePowerProgression();
+				} catch {
+					MessageBox.Show( "Unable to use power progression for " + spirit.Text );
+				}
+			}
+
+			Board board = gameSettings.Board switch {
+				"A" => SpiritIsland.Board.BuildBoardA(),
+				"B" => SpiritIsland.Board.BuildBoardB(),
+				"C" => SpiritIsland.Board.BuildBoardC(),
+				"D" => SpiritIsland.Board.BuildBoardD(),
+				_ => null,
+			};
+
+			var majorCards = PowerCard.GetMajors( typeof( AcceleratedRot ) ).ToList();
+			var minorCards = PowerCard.GetMinors( typeof( AcceleratedRot ) ).ToList();
+
+			if(gameSettings.UseBranchAndClaw) {
+				majorCards.AddRange( PowerCard.GetMajors( typeof( CastDownIntoTheBrinyDeep ) ) );
+				minorCards.AddRange( PowerCard.GetMinors( typeof( CastDownIntoTheBrinyDeep ) ) );
+			}
+
+			// GameState
+			var gameState = !gameSettings.UseBranchAndClaw
+				? new GameState( spirit, board )
+				: new GameState_BranchAndClaw( spirit, board );
+
+			// Game # - Randomizers
+			var randomizer = new Random( gameSettings.GameNumber );
+
+			gameState.InvaderDeck = new InvaderDeck( randomizer );
+
+			// Shuffle Major / Minor Cards
+			gameState.MajorCards = new PowerCardDeck( majorCards.ToArray(), randomizer );
+			gameState.MinorCards = new PowerCardDeck( minorCards.ToArray(), randomizer );
+
+			// --- start FEAR ---
+			List<IFearOptions> fearCards = new List<IFearOptions>();
+			fearCards.AddRange( SpiritIsland.Basegame.FearCards.GetFearCards() );
+			if(gameSettings.UseBranchAndClaw)
+				fearCards.AddRange( SpiritIsland.BranchAndClaw.FearCards.GetFearCards() );
+
+			// Shuffle Fear cards
+			randomizer.Shuffle( fearCards );
+
+			gameState.Fear.Deck.Clear();
+			foreach(var f in fearCards.Take( 9 ))
+				gameState.Fear.AddCard( f );
+			// --- End FEAR
+
+			gameState.BlightCard = ((int)DateTime.Now.Ticks) % 1 == 0
+				? new DownwardSpiral()
+				: new MemoryFadesToDust();
+			return gameState;
+		}
+
+	}
+
 }

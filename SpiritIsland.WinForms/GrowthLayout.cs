@@ -69,4 +69,5 @@ namespace SpiritIsland.WinForms {
 		public RectangleF[] ActionRects;
 
 	}
+
 }

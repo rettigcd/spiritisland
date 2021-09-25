@@ -132,8 +132,9 @@ namespace SpiritIsland {
 			await Self.Presence.PlaceFromBoard( from, to, GameState );
 		}
 
-		public Task<Track> SelectPresenceSource() {
-			return Self.Action.Decision( new Decision.Presence.ToRemoveFromTrack( Self ) );
+		public async Task<IOption> SelectPresenceSource() {
+			return (IOption)await Self.Action.Decision( new Decision.Presence.Source( Self ) )
+				?? (IOption)await Self.Action.Decision( new Decision.Presence.TakeFromBoard( Self ) );
 		}
 
 		public async Task<Space> SelectPresenceDestination( int range, string filterEnum ) {

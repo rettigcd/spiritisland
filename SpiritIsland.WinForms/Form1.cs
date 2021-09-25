@@ -15,23 +15,13 @@ namespace SpiritIsland.WinForms {
 
 		void Form1_Load( object sender, EventArgs e ) {
 
-			var config = new ConfigureGame();
-			if(config.ShowDialog() != DialogResult.OK) { return; }
-			this.game = config.Game;
-
-			this.islandControl.Init( game.GameState, this, config.Color );
-			this.cardControl.Init( game.Spirit,      this );
-			this.spiritControl.Init( game.Spirit,    config.Color, this );
-			this.statusControl1.Init(                game.GameState, this );
 			this.NewDecision += UpdateButtons;
-
 			this.islandControl.SpaceClicked += Select;
 			this.islandControl.TokenClicked += Select;
 			this.islandControl.SpaceTokenClicked += Select;
 			this.cardControl.CardSelected += Select;
 			this.spiritControl.OptionSelected += Select;
 
-			ShowOptions();
 		}
 
 		void Select( IOption option ) {
@@ -118,8 +108,36 @@ namespace SpiritIsland.WinForms {
 		#endregion
 
 		readonly List<Button> buttons = new();
+		GameConfiguration gameConfiguration;
 		SinglePlayerGame game;
 
+		void GameNewStripMenuItem_Click( object sender, EventArgs e ) {
+			var gameConfigDialog = new ConfigureGameDialog();
+			if(gameConfigDialog.ShowDialog() != DialogResult.OK) { return; }
+			this.gameConfiguration = gameConfigDialog.GameConfiguration;
+			InitGameFromConfiguration();
+		}
+
+		void InitGameFromConfiguration() {
+			this.game = new SinglePlayerGame( gameConfiguration.BuildGame() );
+			this.islandControl.Init( game.GameState, this, gameConfiguration.Color );
+			this.cardControl.Init( game.Spirit, this );
+			this.spiritControl.Init( game.Spirit, gameConfiguration.Color, this );
+			this.statusControl1.Init( game.GameState, this );
+			this.Text = "Spirit Island - Single Player Game #"+gameConfiguration.GameNumber;
+			ShowOptions();
+		}
+
+		void ExitToolStripMenuItem_Click( object sender, EventArgs e ) {
+			Close();
+		}
+
+		private void replaySameGameToolStripMenuItem_Click( object sender, EventArgs e ) {
+			if(gameConfiguration!=null)
+				InitGameFromConfiguration();
+			else
+				MessageBox.Show("No game configured.");
+		}
 	}
 
 	public interface IHaveOptions {

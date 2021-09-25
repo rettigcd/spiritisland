@@ -139,9 +139,10 @@ namespace SpiritIsland.Tests.Core {
 		public void DrawingMajor_ForgetACard(bool drawDirect) {
 			var spirit = new RiverSurges();
 			var user = new VirtualUser(spirit);
+			var randomizer = new Random();
 			var gs = new GameState( spirit, Board.BuildBoardC() ) {
-				MajorCards = new PowerCardDeck( PowerCard.GetMajors(typeof(RiversBounty)) ),
-				MinorCards = new PowerCardDeck( PowerCard.GetMinors( typeof( RiversBounty ) ) )
+				MajorCards = new PowerCardDeck( PowerCard.GetMajors(typeof(RiversBounty)), randomizer ),
+				MinorCards = new PowerCardDeck( PowerCard.GetMinors( typeof( RiversBounty ) ), randomizer )
 			};
 			gs.Initialize();
 

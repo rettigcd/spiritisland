@@ -1,6 +1,6 @@
 ﻿
 namespace SpiritIsland.WinForms {
-    partial class ConfigureGame {
+    partial class ConfigureGameDialog {
         /// <summary>
         /// Required designer variable.
         /// </summary>

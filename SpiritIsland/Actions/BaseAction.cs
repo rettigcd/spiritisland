@@ -114,10 +114,10 @@ namespace SpiritIsland {
 			}
 
 			public void Select( IOption selection ) {
-				if(/*present == Present.Done &&*/ TextOption.Done.Matches( selection ))
+				if( TextOption.Done.Matches( selection ) || selection is not T tt )
 					promise.TrySetResult( null );
 				else if(Decision.Options.Contains( selection ))
-					promise.TrySetResult( (T)selection );
+					promise.TrySetResult( tt );
 				else
 					promise.TrySetException( new Exception( $"{selection.Text} not found in options" ) );
 			}

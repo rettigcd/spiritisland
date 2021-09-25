@@ -21,7 +21,7 @@ namespace SpiritIsland {
 		public GameState(params Spirit[] spirits){
 			if(spirits.Length==0) throw new ArgumentException("Game must include at least 1 spirit");
 			this.Spirits = spirits;
-			InvaderDeck = new InvaderDeck();
+			InvaderDeck = new InvaderDeck(new Random());
 			Round = 1;
 			Fear = new Fear( this );
 			Invaders = new Invaders( this );

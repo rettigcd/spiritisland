@@ -30,6 +30,22 @@ namespace SpiritIsland {
 
 			}
 
+			public TypedDecision(
+				string prompt,
+				IEnumerable<T> options,
+				string cancelPrompt = null
+			){
+
+				var optionList = options.Cast<IOption>().ToList();
+				if(optionList.Count != 0 && cancelPrompt != null )
+					optionList.Add(new TextOption(cancelPrompt));
+
+				Prompt = prompt;
+				Options = optionList.ToArray();
+				AllowAutoSelect = false;
+
+			}
+
 			public void Select( IOption option ) => throw new NotImplementedException();
 		}
 	}
