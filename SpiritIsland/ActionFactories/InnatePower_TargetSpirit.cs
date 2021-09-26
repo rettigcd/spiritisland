@@ -12,7 +12,10 @@ namespace SpiritIsland {
 		#endregion
 
 		public override async Task ActivateAsync( Spirit self, GameState gameState ) {
-			Spirit target = await self.Action.Decision( new Decision.TargetSpirit( gameState.Spirits) );
+			Spirit target = gameState.Spirits.Length == 1
+				? gameState.Spirits[0]
+				: await self.Action.Decision(new Decision.TargetSpirit(gameState.Spirits));
+
 			await PowerCard_TargetSpirit.TargetSpirit( HighestMethod( self ), self, gameState, target );
 		}
 

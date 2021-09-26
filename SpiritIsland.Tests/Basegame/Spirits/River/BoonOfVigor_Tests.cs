@@ -18,8 +18,6 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// When: targetting self
 			card.ActivateAsync( spirit, gameState );
 
-			User.TargetsSpirit( RiverSurges.Name );
-
 			User.Assert_Done();
 
 			// Then: received 1 energy

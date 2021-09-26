@@ -95,7 +95,6 @@ namespace SpiritIsland.Tests.Basegame.Spirits.VitalStrengthNS {
 			// When: user applies 'Gift of Strength' to self
 			System.Threading.Thread.Sleep( 5 ); // let engine catch up
 			User.SelectsFastAction( "Fast-0,(Gift of Strength)" );
-			User.TargetsSpirit( "Vital Strength of the Earth" );
 		}
 
 

@@ -149,6 +149,7 @@ namespace SpiritIsland.Tests {
 		}
 
 		public void IsDoneBuyingCards() {
+			System.Threading.Thread.Sleep( 10 );
 			SelectOption( "Buy power cards:", "Done" );
 		}
 
@@ -188,7 +189,7 @@ namespace SpiritIsland.Tests {
 		public void SelectsFirstOption( string prompt ) {
 			string msg = $"{prompt}:[any]:[first]";
 			if(spirit.Action.IsResolved)
-				System.Threading.Thread.Sleep( 50 );
+				System.Threading.Thread.Sleep( 20 );
 			spirit.Action.IsResolved.ShouldBeFalse( $"Prompt [{prompt}] is not there." );
 			var current = spirit.Action.GetCurrent();
 			current.Prompt.ShouldBe( prompt, msg, StringCompareShould.IgnoreCase );

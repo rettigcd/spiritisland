@@ -1,12 +1,12 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
-ENHANCEMENT - Targetting Spirit - When only 1, no need to select it.  Not confusing, just an busy work.
-
 * REFACTOR	Drawing - Separate Layout from Drawing / Calc Layout once
 * Multiple Invader cards in same slot - Need Unit tests to verify this
 
+
 REFACTOR	When filtering, pass in TargetSpaceCtx instead of Space - simplify API by folding spirit and gamestate into Ctx
 REFACTOR	InvaderGroup Damage/Destory methods.  Create a virtual 'included tokens' group that combines single-token and token Group actions
+REFACTOR	Everything in Power Cards should go through CTX (is that feasible?) so it can be overriden / adjusted by spirit
 
 CARDS	scroll bar
 CARDS	show decks & discard pile
