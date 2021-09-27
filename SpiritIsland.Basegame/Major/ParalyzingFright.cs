@@ -1,9 +1,12 @@
 ﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
+
 	public class ParalyzingFright {
 
-		[MajorCard("Paralyzing Fright",4,Speed.Fast,Element.Air,Element.Earth)]
+		public const string Name = "Paralyzing Fright";
+
+		[MajorCard(ParalyzingFright.Name,4,Speed.Fast,Element.Air,Element.Earth)]
 		[FromSacredSite(1)]
 		static public Task ActAsync(TargetSpaceCtx ctx ) {
 			// 4 fear

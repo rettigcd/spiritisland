@@ -18,7 +18,7 @@ namespace SpiritIsland.Basegame {
 			// Add it!
 			var targetSpiritOnSpace = ctx.OtherCtx.TargetSpace( selfPickLandCtx.Space );
 			for(int i = 0; i < max; ++i)
-				await targetSpiritOnSpace.PlacePresenceOnTarget();
+				await targetSpiritOnSpace.PlaceDestroyedPresenceOnTarget();
 
 			// if any presene was added, 2 damage to each town/city in that land.
 			InvaderGroup grp = selfPickLandCtx.Invaders;

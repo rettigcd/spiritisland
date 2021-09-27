@@ -34,21 +34,24 @@ namespace SpiritIsland.Tests {
 			var op = current.Options.First( o => o.Text.StartsWith( "PlacePre" ) );
 			spirit.Action.Choose( op );
 
-			// Resolve Power
-			var cardDecision = spirit.Action.GetCurrent();
-			cardDecision.Options.Select( x => x.Text ).Join( "," ).ShouldContain( source.Text );
-			// take from precense track
-			spirit.Action.Choose( source );
+			// Source
+			PullsPresenceFromTrack( source );
 
 			// place on board - first option
 			string[] expectedOptions = placeOptions.Split( ';' );
 			var destinationDecision = spirit.Action.GetCurrent();
 			var actualOptions = destinationDecision.Options;
 			var choice = actualOptions.SingleOrDefault( o => o.Text == expectedOptions[0] );
-			if(choice==null)
-				throw new System.ArgumentOutOfRangeException(nameof(placeOptions), $"'{expectedOptions[0]}' not found in "+ actualOptions.Select(o=>o.Text).Join("," ));
+			if(choice == null)
+				throw new System.ArgumentOutOfRangeException( nameof( placeOptions ), $"'{expectedOptions[0]}' not found in " + actualOptions.Select( o => o.Text ).Join( "," ) );
 			spirit.Action.Choose( choice );
 
+		}
+
+		public void PullsPresenceFromTrack( Track source ) {
+			var sourceDecision = spirit.Action.GetCurrent();
+			sourceDecision.Options.Select( x => x.Text ).Join( "," ).ShouldContain( source.Text );
+			spirit.Action.Choose( source );
 		}
 
 		public void DrawsPowerCard() {

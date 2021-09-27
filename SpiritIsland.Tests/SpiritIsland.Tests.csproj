@@ -7,11 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Basegame\Major\**" />
     <Compile Remove="Basegame\Minor\**" />
-    <EmbeddedResource Remove="Basegame\Major\**" />
     <EmbeddedResource Remove="Basegame\Minor\**" />
-    <None Remove="Basegame\Major\**" />
     <None Remove="Basegame\Minor\**" />
   </ItemGroup>
 

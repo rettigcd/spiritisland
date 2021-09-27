@@ -45,5 +45,4 @@ namespace SpiritIsland.Tests.BranchAndClaw.Minor {
 
 	}
 
-
 }

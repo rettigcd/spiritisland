@@ -134,12 +134,14 @@ namespace SpiritIsland {
 
 		#region presence
 
+		// ! See base class for more Presence options
+
 		public bool IsSelfSacredSite => Self.SacredSites.Contains(Space);
 		public bool HasSelfPresence => Self.Presence.Spaces.Contains(Space);
 
 		public int PresenceCount => Self.Presence.CountOn(Space);
 
-		public Task PlacePresenceOnTarget() => Self.Presence.PlaceFromBoard( Track.Destroyed, Space, GameState );
+		public Task PlaceDestroyedPresenceOnTarget() => Self.Presence.PlaceFromBoard( Track.Destroyed, Space, GameState );
 
 		#endregion
 

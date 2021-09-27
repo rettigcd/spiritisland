@@ -1,14 +1,18 @@
 ﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
+
 	public class IndomitableClaim {
 
-		[MajorCard( "Indomitable Claim", 4, Speed.Fast, Element.Sun, Element.Earth )]
+		public const string Name = "Indomitable Claim";
+
+		[MajorCard( IndomitableClaim.Name, 4, Speed.Fast, Element.Sun, Element.Earth )]
 		[FromPresence( 1 )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 			// add 1 presence in target land even if you normally could not due to land type.
-			await ctx.PlacePresenceOnTarget();
+			var from = await ctx.SelectPresenceSource();
+			await ctx.Self.Presence.PlaceFromBoard( from, ctx.Space, ctx.GameState );
 
 			// Defend 20
 			ctx.Defend(20);

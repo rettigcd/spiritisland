@@ -16,8 +16,8 @@ Major
 	Indomitable Claim (basegame)
 	Paralyzing Fright (basegame)
 Minor
-	Call to Trade (bac)
-	Rites of the Land's Rejection
+	Call to Trade (bac) - DONE
+	Rites of the Land's Rejection - DONE
 
 
 ===== Ravage Engine - Tests =====

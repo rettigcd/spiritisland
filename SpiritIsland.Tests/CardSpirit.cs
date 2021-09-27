@@ -1,6 +1,7 @@
 ﻿using System;
 
-namespace SpiritIsland.Tests.BranchAndClaw.Minor {
+namespace SpiritIsland.Tests {
+
 	// Test spirit that has lots of energy and you can select the card they start with
 	class CardSpirit : Spirit {
 
