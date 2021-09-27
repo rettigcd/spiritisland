@@ -34,29 +34,11 @@ namespace SpiritIsland {
 
 		// == Components ==
 		public Fear Fear { get; }
-		public InvaderDeck InvaderDeck { get; set; }
 		public Island Island { get; set; }
 		public Spirit[] Spirits { get; }
 		public Tokens_ForIsland Tokens { get; }
 		public PowerCardDeck MajorCards {get; set; }
 		public PowerCardDeck MinorCards { get; set; }
-		// Branch & Claw
-		public void SkipAllInvaderActions( params Space[] targets ) {
-			foreach(var target in targets) {
-				ModifyRavage(target, cfg=>cfg.ShouldRavage=false );
-				SkipBuild( target );
-				SkipExplore(target);
-			}
-		}
-
-		public void SkipExplore( params Space[] target ) {
-			PreExplore.ForRound.Add( ( gs, args ) => {
-				foreach(var space in target) {
-					args.SpacesMatchingCards.Remove(space);
-				}
-				return Task.CompletedTask;
-			} );
-		}
 
 		public virtual void Initialize() {
 
@@ -161,12 +143,40 @@ namespace SpiritIsland {
 
 		#endregion
 
-		#region Invaders
-
 		public int GetDefence( Space space ) => Tokens[space].Defend;
 
 		public void Defend( Space space, int delta ) {
 			Tokens[space].Defend.Count += delta;
+		}
+
+		public Invaders Invaders { get; }
+
+		#region Invaders
+
+		public event Action<string> NewInvaderLogEntry;
+		void Log(string msg ) {
+			NewInvaderLogEntry?.Invoke(msg);
+		}
+
+		// =================================================
+		// ==============  Invader Actions  ================
+
+		public InvaderDeck InvaderDeck { get; set; }
+		public void SkipAllInvaderActions( params Space[] targets ) {
+			foreach(var target in targets) {
+				ModifyRavage(target, cfg=>cfg.ShouldRavage=false );
+				SkipBuild( target );
+				SkipExplore(target);
+			}
+		}
+
+		public void SkipExplore( params Space[] target ) {
+			PreExplore.ForRound.Add( ( gs, args ) => {
+				foreach(var space in target) {
+					args.SpacesMatchingCards.Remove(space);
+				}
+				return Task.CompletedTask;
+			} );
 		}
 
 		public ConfigureRavage GetRavageConfiguration( Space space ) => _ravageConfig.ContainsKey( space ) ? _ravageConfig[space] : new ConfigureRavage();
@@ -184,23 +194,53 @@ namespace SpiritIsland {
 				.ToList();
 		}
 
-		public async Task<string[]> Ravage( InvaderCard invaderCard ) {
-			if(invaderCard == null) return Array.Empty<string>();
+		public async Task Ravage( InvaderCard invaderCard ) {
+			if(invaderCard == null) return;
 
 			ScheduledRavageSpaces = Island.Boards.SelectMany( board => board.Spaces )
 				.Where( invaderCard.Matches )
 				.ToList();
 
-			return await Ravage();
+			await Ravage();
+		}
+
+		public async Task DoInvaderPhase() {
+
+			// Duplicate of InvaderPhase.ActAsync without the logging
+
+			// Blight
+			if(BlightCard.IslandIsBlighted) {
+				Log( "Island is blighted" );
+				await BlightCard.OnStartOfInvaders( this );
+			}
+
+			// Fear
+			await Fear.Apply();
+
+			// Ravage
+			var deck = InvaderDeck;
+			Log( "Ravaging:" + deck.Ravage.Select(x=>x.Text).Join("/") );
+			await Ravage();
+
+			// Building
+			Log( "Building:" + deck.Build.Select(x=>x.Text).Join("/") );
+			await Build();
+
+			// Exploring
+			Log( "Exploring:" + (deck.Explore.Count > 0 ? deck.Explore[0].Text : "-") );
+			await Explore( deck.Explore[0] );
+
+			deck.Advance();
 		}
 
 		/// <summary>
 		/// Ravages whatever is in scheduledRavageSpaces
 		/// </summary>
 		/// <returns></returns>
-		public async Task<string[]> Ravage() {
+		public async Task Ravage() {
 			await PreRavaging?.InvokeAsync( this, ScheduledRavageSpaces );
 
+			if(ScheduledRavageSpaces==null) throw new InvalidOperationException("dude! you forgot to schedule the ravages.");
 			var ravageGroups = ScheduledRavageSpaces
 				.Where( x => GetRavageConfiguration( x ).ShouldRavage )
 				.Select( x => Invaders.On( x, Cause.Ravage ) )
@@ -208,10 +248,10 @@ namespace SpiritIsland {
 				.Cast<InvaderGroup>()
 				.ToArray();
 
-			var msgs = new List<string>();
-			foreach(var grp in ravageGroups)
-				msgs.Add( await RavageSpace( grp ) );
-			return msgs.ToArray();
+			foreach(var grp in ravageGroups) {
+				string ravageSpaceResults = await RavageSpace( grp );
+				Log( ravageSpaceResults );
+			}
 		}
 
 		public virtual async Task<string> RavageSpace( InvaderGroup grp ) {
@@ -220,8 +260,6 @@ namespace SpiritIsland {
 			await eng.Exec();
 			return grp.Space.Label + ": " + eng.log.Join( "  " );
 		}
-
-
 
 		public void SkipRavage( params Space[] spaces ) {
 			foreach(var space in spaces)
@@ -238,7 +276,7 @@ namespace SpiritIsland {
 				.ToCountDict();
 		}
 
-		public async Task<string[]> Build( InvaderCard invaderCard ) {
+		public async Task Build( InvaderCard invaderCard ) {
 
 			// Build normal
 			ScheduledBuildSpaces = Island.Boards.SelectMany( board => board.Spaces )
@@ -247,10 +285,10 @@ namespace SpiritIsland {
 				.ToDictionary( grp => grp.Key, grp => grp.Count() )
 				.ToCountDict();
 
-			return await Build();
+			await Build();
 		}
 
-		public async Task<string[]> Build() {
+		public async Task Build() {
 			var args = new BuildingEventArgs {
 				BuildTypes = new Dictionary<Space, BuildingEventArgs.BuildType>(),
 				Spaces = ScheduledBuildSpaces,
@@ -258,12 +296,20 @@ namespace SpiritIsland {
 
 			await PreBuilding.InvokeAsync( this, args );
 
-			return args.Spaces
-				.Where( pair => pair.Value >= 0 ) // in case we end up with any negative counts
-				.Select( pair => Tokens[pair.Key] )
-				.Where( tokens => tokens.HasInvaders() )
-				.Select( tokens => tokens.Space.Label + " gets " + Build( tokens, args.BuildTypes.ContainsKey( tokens.Space ) ? args.BuildTypes[tokens.Space] : BuildingEventArgs.BuildType.TownsAndCities ) )
-				.ToArray();
+			List<Space> buildSpacesWithInvaders = new List<Space>();
+			foreach(var pair in args.Spaces.Where(p=>Tokens[p.Key].HasInvaders() ) ) {
+				for(int i=0;i<pair.Value;++i)
+					buildSpacesWithInvaders.Add(pair.Key); // space might have mutliple builds
+			}
+
+			foreach(var space in buildSpacesWithInvaders) {
+				var buildType = args.BuildTypes.ContainsKey( space ) 
+					? args.BuildTypes[space] 
+					: BuildingEventArgs.BuildType.TownsAndCities;
+				var buildResult = await Build( Tokens[space], buildType );
+				Log( space.Label + " gets " + buildResult );
+			}
+
 		}
 
 		public void SkipBuild( params Space[] target ) {
@@ -326,7 +372,8 @@ namespace SpiritIsland {
 			await Tokens.Add( Invader.Explorer, space );
 		}
 
-		public Invaders Invaders { get; }
+		// End of invaders
+
 
 		#endregion
 
@@ -375,9 +422,7 @@ namespace SpiritIsland {
 	}
 
 	public class ExploreEventArgs {
-
 		public HashSet<Space> Sources;
-
 		public List<Space> SpacesMatchingCards;
 
 	}

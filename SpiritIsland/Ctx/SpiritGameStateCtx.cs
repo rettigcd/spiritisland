@@ -39,6 +39,8 @@ namespace SpiritIsland {
 
 		#endregion
 
+		public IEnumerable<Space> AllSpaces => GameState.Island.AllSpaces;
+
 		public virtual InvaderGroup InvadersOn( Space target )
 			=> Cause switch {
 				Cause.Power => Self.BuildInvaderGroupForPowers(GameState, target),

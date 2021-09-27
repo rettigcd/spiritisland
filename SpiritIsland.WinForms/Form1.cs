@@ -132,7 +132,7 @@ namespace SpiritIsland.WinForms {
 			Close();
 		}
 
-		private void replaySameGameToolStripMenuItem_Click( object sender, EventArgs e ) {
+		private void ReplaySameGameToolStripMenuItem_Click( object sender, EventArgs e ) {
 			if(gameConfiguration!=null)
 				InitGameFromConfiguration();
 			else

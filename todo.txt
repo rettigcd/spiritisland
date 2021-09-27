@@ -3,6 +3,38 @@
 * REFACTOR	Drawing - Separate Layout from Drawing / Calc Layout once
 * Multiple Invader cards in same slot - Need Unit tests to verify this
 
+===== Invader Cards - Tests =====
+Fear
+	Avoid the Dahan
+	Trade Suffers
+	Explorers are Recluctant
+	Immigration Slows
+	Quarentine
+	Tread Carefully
+
+Major
+	Indomitable Claim (basegame)
+	Paralyzing Fright (basegame)
+Minor
+	Call to Trade (bac)
+	Rites of the Land's Rejection
+
+
+===== Ravage Engine - Tests =====
+
+	Dissolve the Bonds of Kinship
+	Infinite Vitality
+	Instruments of Their Own Ruin
+	Manifest Incarnation
+
+
+===== Repeat Card / Change Speed =====
+
+	PowerStorm
+	Spur on With words of Fire
+
+===================
+
 
 REFACTOR	When filtering, pass in TargetSpaceCtx instead of Space - simplify API by folding spirit and gamestate into Ctx
 REFACTOR	InvaderGroup Damage/Destory methods.  Create a virtual 'included tokens' group that combines single-token and token Group actions
@@ -57,6 +89,35 @@ Spirit.SacredSites
 River.SacredSites
 Fear
 Blight causes spirit to lose 1 presence on space
+
+
+== Ideas ==
+Cards
+	- selecting for purchase
+	- Drawing from Deck
+	- select card to Forget
+	- view discard
+	- scroll cards
+
+Tests / Refactor Invader Cards and Fear / Power modifications
+
+Destroy Space / Board API
+Use it for Bringer
+Select neigher / done to not play card
+
+
+Need icons for: 
+    elements:  {air}{sun}{plant}
+
+    invaders: {town} {city} {explorer} {dahan}
+    tokens: {wilds}{beast}
+    misc: {+1range}
+
+
+
+
+
+
 
 ====================================================================================
 == Steam updates - What's New (provide insight as to what they have trouble with) ==

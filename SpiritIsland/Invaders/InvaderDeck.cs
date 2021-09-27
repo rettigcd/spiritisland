@@ -85,6 +85,9 @@ namespace SpiritIsland {
 
 		public int CountInDiscard {get; private set; }
 
+		/// <summary>
+		/// Triggers Ravage / 
+		/// </summary>
 		public void Advance(){
 			// Move Ravage to Discard
 			CountInDiscard += Ravage.Count;

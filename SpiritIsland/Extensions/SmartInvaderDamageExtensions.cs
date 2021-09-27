@@ -33,7 +33,7 @@ namespace SpiritIsland {
 				Token invadertodamage = grp.Tokens.PickSmartInvaderToDamage( damagetoinvaders );
 				damagetoinvaders -= await grp.ApplyDamageTo1( damagetoinvaders, invadertodamage );
 			}
-			if(log != null) log.Add( $"{startingdamage} damage to invaders leaving {grp}." );
+			if(log != null) log.Add( $"{startingdamage} damage to invaders leaving {grp.Tokens.InvaderSummary}." );
 		}
 
 		static public void SmartRemovalOfHealth( this InvaderGroup grp, int startingDamage ) {

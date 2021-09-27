@@ -136,6 +136,13 @@ namespace SpiritIsland.Tests {
 			AssertDecisionX( "Select space to target.", space );
 		}
 
+		public void TargetsLand_IgnoreOptions( string space ) {
+			var current = Assert_HasCurrent( "Select space to target." );
+			IOption match = FindRequiredOptionByText( current, space );
+			spirit.Action.Choose( match );
+		}
+
+
 		public void SelectsDamageRecipient( int damage, string tokens ) {
 			AssertDecisionX( "Apply damage("+damage+") to:", tokens );
 		}
@@ -247,7 +254,7 @@ namespace SpiritIsland.Tests {
 			spirit.Action.Choose( match );
 		}
 
-		protected void AssertDecisionX( string prompt, string optionInfo, string markers = "()" ) {
+		public void AssertDecisionX( string prompt, string optionInfo, string markers = "()" ) {
 			var (options,choice) = SplitOptionsAndChoice( optionInfo, markers );
 			AssertDecision( prompt, options, choice );
 		}

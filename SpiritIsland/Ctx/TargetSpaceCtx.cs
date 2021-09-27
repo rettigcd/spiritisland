@@ -29,8 +29,11 @@ namespace SpiritIsland {
 
 		#endregion
 
-		public TokenCountDictionary Tokens { get; }
+		public bool MatchesRavageCard => GameState.InvaderDeck.Ravage.Any(c=>c.Matches(Space));
+		public bool MatchesBuildCard => GameState.InvaderDeck.Build.Any(c=>c.Matches(Space));
 
+
+		public TokenCountDictionary Tokens { get; }
 
 		#region Push
 

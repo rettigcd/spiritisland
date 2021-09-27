@@ -1,0 +1,55 @@
+== Thunderspeaker Strategy ==
+
+Luca Iennaco
+@Luke the Flaming
+Posted,Nov 29, 2018
+My favourite Spirit (played her 45 times so far, with various combinations of allies and adversaries).
+
+Her opening move is not a puzzle at all.
+
++1 presence and +4 energy
+Take the presence from the "cards" track.
+Play Voice of Thunder and Sudden Ambush (3 energies left).
+Kill one of the starting explorers (the only one who is alone, if the other is with a settlement placed in the setup) with Ambush, so they won't build there.
+Move the natives around (with Voice and Innate) to prepare for next turn (you'll want at least one - better two if possible so they'll answer with 4 damage - with the other explorer if he started alone and is now with just a town, since you'll Defend 3 with Word of Warning. You'll want two with a town - a starting one is fine - to detonate it next turn with Furious Assault).
+Remember to move your presence along with the natives (0 range is not an issue, since we'll relocate natives constantly).
+
+Next turn, +2 presences (both from "card" track).
+Play Word of Warning and Manifestation of G&P (0 energies left).
+If the surviving starting explorer was alone (and thus is now with a town), Word of Warning there (we have a native or two or there, remember?).
+They'll deal no damage and be obliterated.
+Use the Innate again (and move presence with them, as usual) to obliterate another land with Manifestation of G&P (one of those that were explored on Turn 1 and where they've build in this turn).
+We've also a town to crack with Furious Assault (at worst, on Turn 1 they explored a land where they already had a settlement; so on this turn they've built there the other settlement, for a total of explorer, town and city. Even if we had no natives there, moving two now with Assault - along with a presence each - will be enough: Manifestation will deal 4 damage to kill the city and the explorer, while Assault will take care of the town).
+
+Turn 3 is the "weak" one.
+Pick "reclaim all" (of course) and two Minor Powers.
+Top priority is "cost: 0" (lack of energy is Thunderspeaker's weakness).
+Other priority is on symbolos (Sun > Air > Fire and try to have Animal on about half of the cards, if possible).
+Apart that, cards realated to natives are obviously best (and luckily common).
+
+We may play 3 cards but have only 1 energy, so the options are limited: Voice, maybe Word (if conditions are right), one or both the new Powers (zero cost was the priority for a reason).
+From here, there are too many variables to have a "universal" guide to follow.
+We may get one Blight (no big deal, just be sure that it does not happen in the only land that begins blighted in the setup).
+
+Turn 4 we'll usually pick "+1 presence and +3 energy" , again taking presence from the "cards" track and reveal the useful "reclaim one".
+
+In general, "+2 presences" we'll be rarely picked (only turn 2 and potentially some late turn, if the game lasts more than 7 or so).
+
+Play cards (and pick new ones) to be able to use Assault every turn (to blast towns) and move natives around with the other Innate Power.
+
+Manifestation of G&P will become (apart turn 2) "destroy all invaders in a land"; use it accordingly (as a side note, it goes especially well with Minor Powers that move invaders: throw them in the land that is going to be nuked just before it happens).
+Voice is never used to score 2 Fears (couple if with Manifestation from Turn 4 onwards to easily maximize the damage).
+
+We'll never see Major Powers (there are too many that do very little for us, especially for their cost. It'd be a lottery to get one the nice - for us - ones, so it's not worth playing it. Especially since Minor Powers can occasionally be fed to Events in lieu of energy - our scarce and thus dearest resource - so we'll just stockpile them).
+Side note: if the game lasts enough (turn 8 or so), we could get a Major Power... and play it maybe once (not exactly the pivot of our strategy anyway. By then we should have already won or lost anyway).
+Turn 9 is when the first "double ravage" happen (barring Events, Fear cards or Prussia) so we'd like to win before that.
+Ideally, the Fast Phase of Turn 8 (before the first "double build" that risks to put new cities in play) is a good objective to win with Terror 3 and no cities.
+
+As usual (that's what makes the game interesting), allies and enemies (England is the worst, unsurpisingly) can force us to adpat.
+
+The worst setup is when they explore a terrain that has (in both lands) a starting settlement.
+Ambush won't be able to clear a land and prevent their build there, besides Word won't be able to protect any of the two lands (as both will contain explorer, town and city by the time they ravage on Turn 2).
+It may be worth to switch to "plan B" in such unfortunate case: same Growth picks but play cards in the opposite order: Word and Manifestation on Turn 1, the other two on Turn 2.
+Word is used for the symbols only. Move two natives with Gather the Warriors (along with their starting presence and the one you just added) and use Manifestation plus Ambush to nuke (barely) one the two lands.
+The other will get a Blight (we'll survive).
+On Turn 2, use Ambush to kill one of the explorers who arrived on Turn 1 in a solitary land (so at least we'll have only the other one to care about on the weak Turn 3; if he was alone as well, Word will be enough to save us. At worst, we'll get a second Blight... it's the worst setup for a reason!).

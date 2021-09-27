@@ -184,7 +184,7 @@ namespace SpiritIsland.WinForms {
             this.replaySameGameToolStripMenuItem.Name = "replaySameGameToolStripMenuItem";
             this.replaySameGameToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.replaySameGameToolStripMenuItem.Text = "&Replay Same Game";
-            this.replaySameGameToolStripMenuItem.Click += new System.EventHandler(this.replaySameGameToolStripMenuItem_Click);
+            this.replaySameGameToolStripMenuItem.Click += new System.EventHandler(this.ReplaySameGameToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 

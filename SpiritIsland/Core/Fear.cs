@@ -31,7 +31,9 @@ namespace SpiritIsland {
 		public int TerrorLevel {
 			get {
 				int ct = Deck.Count;
-				int terrorLevel = ct > 6 ? 1 : ct > 3 ? 2 : 1;
+				int terrorLevel = ct > 6 ? 1 
+					: ct > 3 ? 2 
+					: 3;
 				return terrorLevel;
 			}
 		}
