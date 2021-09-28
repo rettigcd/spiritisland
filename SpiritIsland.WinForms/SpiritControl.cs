@@ -22,6 +22,11 @@ namespace SpiritIsland.WinForms {
 			this.spirit = spirit;
 			this.images = ResourceImages.Singleton;
 
+			if(spiritImage != null) {
+				spiritImage.Dispose();
+				spiritImage = null;
+			}
+
 			this.presenceColor = presenceColor ?? throw new ArgumentNullException( nameof( presenceColor ) );
 
 			InitElementDisplayOrder( spirit );
@@ -167,7 +172,7 @@ namespace SpiritIsland.WinForms {
 
 		Image LoadSpiritImage() {
 			string filename = spirit.Text.Replace( ' ', '_' );
-			return Image.FromFile( $".\\images\\spirits\\{filename}.png" );
+			return Image.FromFile( $".\\images\\spirits\\{filename}.jpg" );
 		}
 		Image spiritImage;
 

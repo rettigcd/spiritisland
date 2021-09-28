@@ -1,0 +1,36 @@
+--- Path 1, Lightning, destroyer of towns. ---
+
+The goal of this path is to destroy 2 towns almost every turn.  Its strength is you can keep your area free from towns for a long time, the downside is you aren't growing very fast, and need some card luck.
+The basics of this path are reclaim a lot, and don't play Raging Storm.
+
+1) Growth 3: (3 energy and take from 3 card play)  Play 3 (not storm), using Shatter Homesteads and Thundering Destruction to destroy 2 towns.
+2) Growth 1: (reclaim)  Repeat and hope you get a 0 cost card with a fire element in your first 2 reclaims.  
+Once you get 6 cards, take the +3 energy when you don't need to reclaim, and increase your card play when you get enough cards that fuel your innate.  
+If you have leftover energy, save it, you will use it later, don't just play Raging Storm because you can afford it now.
+This growth plan works really well when you can get some extra energy, for example river giving you 3 energy at the start can let you slip in a 2 presence growth that will up your static power gain to 2 and get you a second sacred site.
+Your end game may be disappointing, but the early power keeps you from needing to clear late game strongholds.
+
+--- Path 2, stable card play. ---
+
+This path you focus on emptying your hand before reclaiming, and gaining energy to fuel those plays.  It gets good presence out and good card play, but you won't be activating your innate until turn 5.
+
+1) Growth 2: (both from energy) Play 2 cards
+2) Growth 3: (1 from energy, +3 energy) Play 2 cards
+3) Growth 1: (Reclaim)  Play 2
+4) Growth 2: (1 from energy, 1 from card)
+Continue this way, taking 4 card plays after your reclaim leaves you with 7, switching to gain major powers at 6 or 8 cards, depending on how far you want to take card play.
+
+This path is good for players without much experience playing Lightning.  The overall power output is lower, but it is a more familiar playstyle.
+
+
+--- Path 3, riding the storm. ---
+
+Somewhat a hybrid of the other two paths, this path takes down turns to fuel massive outbursts of destruction.  I find it to be the most destructive, and you will gain a lot of sacred sites so it has fantastic reach, but many players aren't interested in weak turns ever, let alone almost every other turn.
+
+Start by placing 2 presence from your energy track, then only play 1 card.  Second turn place presence to get your third card play and 3 energy and play 3.  Next reclaim and play two, then place 2 more from energy and play 3.  You can jump to 4 or even 5 plays, because you aren't worried about having turns where you play 1 or 2 cards, trading consistency for huge destruction from your innate.
+If you are willing to play 0 cards your first (or second) turn you can turn the 1 presence, +3 energy growth into a place 2 presence growth and get ahead even more.  You have a lot of flexibility in this plan, you can reclaim and go for a big turn right away or save it for the next turn.  A big thing to remember with this path is Lightning can use his slow powers as slow or as fast, and their are times for each.  You can even throw down a big innate slow, then reclaim, and do it again fast, getting both in between invader phases.
+
+
+
+
+
