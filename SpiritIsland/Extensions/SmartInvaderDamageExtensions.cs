@@ -8,18 +8,6 @@ namespace SpiritIsland {
 
 	static public class SmartInvaderDamageExtensions {
 
-		//  This is the replacement for SmartDamage To Types
-		static public async Task<int> UserSelectDamage( this SpiritGameStateCtx ctx, int damage, InvaderGroup group ) {
-			while(damage > 0) {
-				var invader = await ctx.Self.Action.Decision( new Decision.InvaderToDamage( damage, group.Space, group.Tokens.Invaders(), Present.Always ) );
-				if(invader == null) break;
-
-				damage -= await group.ApplyDamageTo1( damage, invader );
-			}
-
-			return damage;
-		}
-
 		public static Token PickSmartInvaderToDamage( this TokenCountDictionary counts, int availableDamage, params TokenGroup[] invaderGeneric ) { // $$
 			return SmartInvaderAttacker.GetKillOrder( counts, availableDamage, invaderGeneric );
 		}

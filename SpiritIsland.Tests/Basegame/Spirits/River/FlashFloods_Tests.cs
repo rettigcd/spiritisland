@@ -79,6 +79,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			// Then: can apply 2 points of damage
 			User.SelectsDamageRecipient( 2, "(C@3),T@2,E@1" );
+			User.SelectsDamageRecipient( 1, "(C@2),T@2,E@1" );
 
 			// And: apply doesn't throw an exception
 			User.Assert_Done();

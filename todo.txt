@@ -12,11 +12,10 @@ Fear
 	Quarentine
 	Tread Carefully
 
-Major
-	Indomitable Claim (basegame)
-	Paralyzing Fright (basegame)
-Minor
-	Call to Trade (bac) - DONE
+Power Cards - Done
+	Indomitable Claim - DONE
+	Paralyzing Fright - DONE
+	Call to Trade  - DONE
 	Rites of the Land's Rejection - DONE
 
 

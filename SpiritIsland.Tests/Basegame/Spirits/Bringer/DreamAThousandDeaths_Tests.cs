@@ -134,7 +134,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			// When: doing 4 points of damage
 			_= FourDamage( MakeFreshCtx() );
 
-			User.SelectsDamageRecipient2(4,"C@1");
+			User.SelectsDamageRecipient(4,"C@1");
 
 			// And: 0-fear
 			Assert_GeneratedFear( 1 * 5 ); // city only destroyed once

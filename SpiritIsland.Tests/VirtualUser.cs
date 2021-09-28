@@ -145,12 +145,7 @@ namespace SpiritIsland.Tests {
 			spirit.Action.Choose( match );
 		}
 
-
-		public void SelectsDamageRecipient( int damage, string tokens ) {
-			AssertDecisionX( "Apply damage("+damage+") to:", tokens );
-		}
-
-		public void SelectsDamageRecipient2( int damageAvailable, string tokens ) {
+		public void SelectsDamageRecipient( int damageAvailable, string tokens ) {
 			AssertDecisionX( "Damage ("+damageAvailable+" remaining)", tokens );
 		}
 
