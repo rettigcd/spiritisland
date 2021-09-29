@@ -191,21 +191,10 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			spaceCtx.Tokens.Summary.ShouldBe( "1B@1,1C@3,1E@1,1T@2" );
 		}
 
+
 		#region private
 
-		void ElevateTerrorLevelTo( int desiredFearLevel ) {
-			while(ctx.GameState.Fear.TerrorLevel < desiredFearLevel)
-				ctx.GameState.Fear.Deck.Pop();
-		}
-
-
-		void ClearBlightAndDoNothing() {
-			ClearBlight();
-			user.DoesNothingForARound();
-			System.Threading.Thread.Sleep( 10 );
-		}
-
-		static InvaderDeck MountainThenAllSands() {
+		static public InvaderDeck MountainThenAllSands() {
 			var sand = new InvaderCard( Terrain.Sand );
 			return InvaderDeck.BuildTestDeck(
 				new InvaderCard( Terrain.Mountain ), // initial explorer in mountains
@@ -213,18 +202,28 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			);
 		}
 
+		void ElevateTerrorLevelTo( int desiredFearLevel ) {
+			while(ctx.GameState.Fear.TerrorLevel < desiredFearLevel)
+				ctx.GameState.Fear.Deck.Pop();
+		}
+
 		void ActivateFearCard(IFearOptions fearCard) {
 			ctx.GameState.Fear.Deck.Pop();
 			ctx.GameState.Fear.ActivatedCards.Push( new PositionFearCard{ FearOptions=fearCard, Text="FearCard" } );
 		}
 
-		void ClearBlight() {
+
+		void ClearBlightAndDoNothing() {
+
 			// So it doesn't cascade during ravage
 			foreach(var space in ctx.AllSpaces) {
 				var tmpCtx = ctx.TargetSpace(space);
 				while(tmpCtx.HasBlight)
 					tmpCtx.RemoveBlight();
 			}
+
+			user.DoesNothingForARound();
+			System.Threading.Thread.Sleep( 10 );
 		}
 
 		readonly VirtualTestUser user;
