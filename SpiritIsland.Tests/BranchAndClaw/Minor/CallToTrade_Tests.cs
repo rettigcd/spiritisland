@@ -13,7 +13,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Minor {
 		[Fact]
 		public void NoRavage_NoBuild() {
 
-			var (user, ctx) = CardSpirit.SetupGame( PowerCard.For<CallToTrade>() );
+			var (user, ctx) = TestSpirit.SetupGame( PowerCard.For<CallToTrade>() );
 
 			// Given: a space that is not part of the build nor ravage
 			var spaceCtx = ctx.AllSpaces
@@ -35,11 +35,10 @@ namespace SpiritIsland.Tests.BranchAndClaw.Minor {
 
 		[Fact]
 		public void OneRavage_ReplacedWithBuild() {
-			var (user, ctx) = CardSpirit.SetupGame( PowerCard.For<CallToTrade>() );
+			var (user, ctx) = TestSpirit.SetupGame( PowerCard.For<CallToTrade>() );
 
 			// Given: advance to 2nd round where we have a ravage
-			user.Grows();
-			user.IsDoneBuyingCards();
+			user.DoesNothingForARound();
 
 			// Given: a space that IS-RAVAGE but NOT-BUILD
 			var spaceCtx = ctx.AllSpaces
@@ -64,14 +63,13 @@ namespace SpiritIsland.Tests.BranchAndClaw.Minor {
 
 		[Fact]
 		public void TerrorLevel3_RavageRemainsRavage() {
-			var (user, ctx) = CardSpirit.SetupGame( PowerCard.For<CallToTrade>() );
+			var (user, ctx) = TestSpirit.SetupGame( PowerCard.For<CallToTrade>() );
 
 			// Elevate to Terror Level 3
 			Given_TerrorLevelIs3( ctx );
 
 			// Given: advance to 2nd round where we have a ravage
-			user.Grows();
-			user.IsDoneBuyingCards();
+			user.DoesNothingForARound();
 
 			// Given: a space that IS-RAVAGE but NOT-BUILD
 			var spaceCtx = ctx.AllSpaces
@@ -96,15 +94,14 @@ namespace SpiritIsland.Tests.BranchAndClaw.Minor {
 			List<string> invaderLog = new List<string>();
 
 			// Given: Going to Ravage / Build in Jungle
-			var (user, ctx) = CardSpirit.SetupGame( PowerCard.For<CallToTrade>(), (gs)=>{ 
+			var (user, ctx) = TestSpirit.SetupGame( PowerCard.For<CallToTrade>(), (gs)=>{ 
 				var jungleCard = new InvaderCard(Terrain.Jungle);
 				gs.InvaderDeck = InvaderDeck.BuildTestDeck( jungleCard, jungleCard, jungleCard, jungleCard );
 				gs.NewInvaderLogEntry += (s) => invaderLog.Add(s);
 			} );
 
 			// Given: advance to 2nd round where we have a ravage
-			user.Grows();
-			user.IsDoneBuyingCards();
+			user.DoesNothingForARound();
 			invaderLog.Clear();
 
 			// Given: a space that IS-RAVAGE AND BUILD
@@ -163,7 +160,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Minor {
 		}
 
 
-		static void When_GrowsBuysAndActivatesCard( VirtualCardUser user, TargetSpaceCtx spaceCtx ) {
+		static void When_GrowsBuysAndActivatesCard( VirtualTestUser user, TargetSpaceCtx spaceCtx ) {
 			// When: grows and purchases card
 			user.Grows();
 			user.BuysPowerCard( CallToTrade.Name );

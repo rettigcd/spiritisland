@@ -62,7 +62,7 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 		}
 
 		protected override PowerProgression GetPowerProgression() =>
-			new PowerProgression(
+			new(
 				PowerCard.For<DelusionsOfDanger>(),
 				PowerCard.For<CallToBloodshed>(),
 				PowerCard.For<PowerStorm>(),

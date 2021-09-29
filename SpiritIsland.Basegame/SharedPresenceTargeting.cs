@@ -16,7 +16,7 @@ namespace SpiritIsland.Basegame {
 		}
 
 		public override IEnumerable<Space> GetTargetOptions( Spirit self, GameState gameState, From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum ) {
-			List<Space> options = new List<Space>();
+			List<Space> options = new ();
 			for(int i = 0; i < spirits.Length; ++i)
 				options.AddRange( origApis[i].GetTargetOptions( spirits[i], gameState, sourceEnum, sourceTerrain, range, filterEnum ) );
 			return options.Distinct();

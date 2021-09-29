@@ -81,7 +81,7 @@ namespace SpiritIsland.Basegame {
 		}
 
 		protected override PowerProgression GetPowerProgression() => 
-			new PowerProgression(
+			new (
 				PowerCard.For<UncannyMelting>(),
 				PowerCard.For<NaturesResilience>(),
 				PowerCard.For<PullBeneathTheHungryEarth>(),

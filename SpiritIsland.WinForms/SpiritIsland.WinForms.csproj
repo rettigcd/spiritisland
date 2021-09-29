@@ -5,6 +5,8 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
 	<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+	<ApplicationIcon>app.ico</ApplicationIcon>
+	<NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
 
   <ItemGroup>

@@ -69,7 +69,7 @@ Power Progression:
 		}
 
 		protected override PowerProgression GetPowerProgression() =>
-			new PowerProgression(
+			new(
 				PowerCard.For<RouseTheTreesAndStones>(),
 				PowerCard.For<CallToMigrate>(),
 				PowerCard.For<PoisonedLand>(), // Major
@@ -81,7 +81,7 @@ Power Progression:
 
 		protected override void InitializeInternal( Board board, GameState gs ) {
 			InitPresence( board );
-			gs.PreRavaging.ForGame.Add( GameState_Ravaging );
+			gs.PreRavaging.Add( GameState_Ravaging );
 		}
 
 		void InitPresence( Board board ){

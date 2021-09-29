@@ -99,7 +99,7 @@ namespace SpiritIsland.BranchAndClaw {
 			this.AddActionFactory(new Setup_PlacePresenceOnBeastLand());
 
 			var x = new SpiritIsland.MovePresenceWithTokens( this, "Move presence with beast?", BacTokens.Beast.Generic );
-			gs.Tokens.TokenMoved.ForGame.Add( x.CheckForMove );
+			gs.Tokens.TokenMoved.Always( x.CheckForMove );
 		}
 
 	}

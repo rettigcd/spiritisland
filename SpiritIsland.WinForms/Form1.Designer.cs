@@ -25,6 +25,7 @@ namespace SpiritIsland.WinForms {
 		///  the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.promptLabel = new System.Windows.Forms.Label();
             this.islandControl = new SpiritIsland.WinForms.IslandControl();
             this.cardControl = new SpiritIsland.WinForms.CardControl();
@@ -175,21 +176,21 @@ namespace SpiritIsland.WinForms {
             // newToolStripMenuItem
             // 
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.newToolStripMenuItem.Text = "&New";
             this.newToolStripMenuItem.Click += new System.EventHandler(this.GameNewStripMenuItem_Click);
             // 
             // replaySameGameToolStripMenuItem
             // 
             this.replaySameGameToolStripMenuItem.Name = "replaySameGameToolStripMenuItem";
-            this.replaySameGameToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.replaySameGameToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.replaySameGameToolStripMenuItem.Text = "&Replay Same Game";
             this.replaySameGameToolStripMenuItem.Click += new System.EventHandler(this.ReplaySameGameToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.exitToolStripMenuItem.Text = "E&xit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
@@ -201,6 +202,7 @@ namespace SpiritIsland.WinForms {
             this.Controls.Add(this.splitContainer);
             this.Controls.Add(this.statusControl1);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.Name = "Form1";

@@ -11,7 +11,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Minor {
 		[InlineDataAttribute(true,"1E@1")]
 		public void SingleBuild(bool playsCard, string result) {
 
-			var (user,ctx) = CardSpirit.SetupGame( PowerCard.For<RitesOfTheLandsRejection>() );
+			var (user,ctx) = TestSpirit.SetupGame( PowerCard.For<RitesOfTheLandsRejection>() );
 
 			// Given: find a space with 1 explorer
 			var spaceCtx = ctx.AllSpaces

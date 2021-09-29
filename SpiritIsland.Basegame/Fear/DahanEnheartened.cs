@@ -26,7 +26,7 @@ namespace SpiritIsland.Basegame {
 		[FearLevel( 2, "Each player chooses a different land. In chosen lands: Gather up to 2 Dahan, then 1 Damage if Dahan are present." )]
 		public async Task Level2( FearCtx ctx ) {
 			var gs = ctx.GameState;
-			HashSet<Space> used = new HashSet<Space>();
+			HashSet<Space> used = new ();
 			foreach(var spirit in gs.Spirits) {
 				var engine = spirit.MakeDecisionsFor( gs );
 				var options = gs.Island.AllSpaces.Where( gs.DahanIsOn ).Except( used ).ToArray();
@@ -40,7 +40,7 @@ namespace SpiritIsland.Basegame {
 
 		[FearLevel( 3, "Each player chooses a different land. In chosen lands: Gather up to 2 Dahan, then 1 Damage per Dahan present." )]
 		public async Task Level3( FearCtx ctx ) {
-			HashSet<Space> used = new HashSet<Space>();
+			HashSet<Space> used = new ();
 			var gs = ctx.GameState;
 			foreach(var spirit in gs.Spirits) {
 				var options = gs.Island.AllSpaces.Where( gs.DahanIsOn ).Except( used ).ToArray();

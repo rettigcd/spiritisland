@@ -38,6 +38,15 @@ namespace SpiritIsland {
 				.Join( "," );
 		} }
 
+		public string Summary { get {
+			return this.Keys
+				.OrderBy( k=>k.Summary )
+				.Select( invader => counts[invader] + invader.Summary )
+				.Join( "," );
+		} }
+
+		public override string ToString() => Space.Label + ":" + Summary;
+
 		public TokenBinding Blight => new TokenBinding( this, TokenType.Blight);
 
 		public TokenBinding Defend => new TokenBinding( this, TokenType.Defend );

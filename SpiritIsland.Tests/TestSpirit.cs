@@ -3,9 +3,9 @@
 namespace SpiritIsland.Tests {
 
 	// Test spirit that has lots of energy and you can select the card they start with
-	class CardSpirit : Spirit {
+	class TestSpirit : Spirit {
 
-		public CardSpirit(PowerCard powerCard):base(
+		public TestSpirit(PowerCard powerCard):base(
 			new MyPresence(new PresenceTrack(Track.Energy5,Track.Energy9),new PresenceTrack(Track.Card1,Track.Card2))
 			,powerCard
 		) {
@@ -22,28 +22,33 @@ namespace SpiritIsland.Tests {
 			Presence.PlaceOn(space);
 		}
 
-		static public (VirtualCardUser, SpiritGameStateCtx) SetupGame( PowerCard powerCard, Action<GameState> modGameState = null ) {
-			var spirit = new CardSpirit( powerCard );
+		static public (VirtualTestUser, SpiritGameStateCtx) SetupGame( PowerCard powerCard, Action<GameState> modGameState = null ) {
+			var spirit = new TestSpirit( powerCard );
 			var gs = new GameState( spirit, Board.BuildBoardA() ) {
 				InvaderDeck = new InvaderDeck( null ) // Same order every time
 			};
 			modGameState?.Invoke( gs );
 			_ = new SinglePlayer.SinglePlayerGame( gs );
 
-			var user = new VirtualCardUser( spirit );
+			var user = new VirtualTestUser( spirit );
 			var starterCtx = new SpiritGameStateCtx( spirit, gs, Cause.None );
 			return (user,starterCtx);
 		}
 
 	}
 
-	public class VirtualCardUser : VirtualUser {
+	public class VirtualTestUser : VirtualUser {
 
-		public VirtualCardUser(Spirit spirit ) : base( spirit ) { }
+		public VirtualTestUser(Spirit spirit ) : base( spirit ) { }
 
 		public void Grows() {
 			SelectsGrowthOption( "ReclaimAll" );
 			ReclaimsAll();
+		}
+
+		public void DoesNothingForARound() {
+			Grows();
+			IsDoneBuyingCards();
 		}
 
 	}

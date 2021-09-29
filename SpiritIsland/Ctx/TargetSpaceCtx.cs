@@ -101,6 +101,7 @@ namespace SpiritIsland {
 
 		public bool HasBlight => GameState.HasBlight(Space);
 		public void AddBlight(int delta=1) => GameState.AddBlight(Space,delta); // This is for adjusting, NOT blighting land
+		/// <summary> Returns blight from the board to the blight card. </summary>
 		public void RemoveBlight() => GameState.AddBlight( Space, -1 );
 
 		public int BlightOnSpace => GameState.GetBlightOnSpace(Space);

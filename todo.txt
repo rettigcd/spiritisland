@@ -4,20 +4,18 @@
 * Multiple Invader cards in same slot - Need Unit tests to verify this
 
 ===== Invader Cards - Tests =====
-Fear
-	Avoid the Dahan
-	Trade Suffers
-	Explorers are Recluctant
-	Immigration Slows
-	Quarentine
-	Tread Carefully
-
 Power Cards - Done
 	Indomitable Claim - DONE
 	Paralyzing Fright - DONE
 	Call to Trade  - DONE
 	Rites of the Land's Rejection - DONE
-
+Fear
+	Avoid the Dahan - DONE
+	Trade Suffers
+	Explorers are Recluctant
+	Immigration Slows
+	Quarentine
+	Tread Carefully
 
 ===== Ravage Engine - Tests =====
 

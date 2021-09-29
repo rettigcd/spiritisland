@@ -11,6 +11,7 @@ namespace SpiritIsland.Tests {
 
 		public void AcknowledgesFearCard( string fearCard ) {
 			AssertDecision( "Activating Fear", fearCard, fearCard ); // some of the fear cards have commas in them
+			System.Threading.Thread.Sleep(5);
 		}
 
 		public void PlacesPresence( string placeOptions ) {

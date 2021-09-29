@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SpiritIsland {
@@ -9,23 +10,23 @@ namespace SpiritIsland {
 		public Tokens_ForIsland( GameState gs ) {
 			this.gs = gs;
 
-			gs.TimePassed += TokenAdded.EndOfRound;
-			gs.TimePassed += TokenMoved.EndOfRound;
-			gs.TimePassed += TokenDestroyed.EndOfRound;
+			gs.TimePassed += TokenAdded.OnEndOfRound;
+			gs.TimePassed += TokenMoved.OnEndOfRound;
+			gs.TimePassed += TokenDestroyed.OnEndOfRound;
 		}
 
 		public TokenCountDictionary this[Space space] {
 			get {
-				var countArray = invaderCount.ContainsKey( space )
-					? invaderCount[space]
-					: invaderCount[space] = new CountDictionary<Token>();
+				var countArray = tokenCounts.ContainsKey( space )
+					? tokenCounts[space]
+					: tokenCounts[space] = new CountDictionary<Token>();
 				return new TokenCountDictionary( space, countArray );
 			}
 		}
 
-		public IEnumerable<Space> Keys => invaderCount.Keys;
+		public IEnumerable<Space> Keys => tokenCounts.Keys;
 
-		readonly Dictionary<Space, CountDictionary<Token>> invaderCount = new Dictionary<Space, CountDictionary<Token>>();
+		readonly Dictionary<Space, CountDictionary<Token>> tokenCounts = new Dictionary<Space, CountDictionary<Token>>();
 
 		public Task Move( Token token, Space from, Space to, int count = 1 ) {
 			this[ from ].Adjust( token, -count );
@@ -52,6 +53,12 @@ namespace SpiritIsland {
 			} );
 		}
 
+		public override string ToString() {
+			return tokenCounts.Keys
+				.OrderBy(space=>space.Label)
+				.Select(space => this[space].ToString()+"; " )
+				.Join("\r\n");
+		}
 
 		public AsyncEvent<TokenAddedArgs> TokenAdded = new AsyncEvent<TokenAddedArgs>();
 		public AsyncEvent<TokenMovedArgs> TokenMoved = new AsyncEvent<TokenMovedArgs>();

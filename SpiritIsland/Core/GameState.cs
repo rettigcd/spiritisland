@@ -11,6 +11,8 @@ namespace SpiritIsland {
 		// base-1,  game starts in round-1
 		public int Round { get; private set; }
 
+		#region constructors
+
 		/// <summary>
 		/// Simplified constructor for single-player
 		/// </summary>
@@ -27,10 +29,12 @@ namespace SpiritIsland {
 			Invaders = new Invaders( this );
 			Tokens = new Tokens_ForIsland( this );
 
-			TimePassed += PreRavaging.EndOfRound;
-			TimePassed += PreBuilding.EndOfRound;
-			TimePassed += PreExplore.EndOfRound;
+			TimePassed += PreRavaging.OnEndOfRound;
+			TimePassed += PreBuilding.OnEndOfRound;
+			TimePassed += PreExplore.OnEndOfRound;
 		}
+
+		#endregion
 
 		// == Components ==
 		public Fear Fear { get; }
@@ -129,6 +133,7 @@ namespace SpiritIsland {
 
 		}
 
+		/// <summary> Adds blight from the blight card to a space on the board. </summary>
 		public void AddBlight( Space space, int delta=1 ){ // also used for removing blight
 			var counts = Tokens[space];
 			int newCount = counts.Blight + delta;
@@ -171,7 +176,7 @@ namespace SpiritIsland {
 		}
 
 		public void SkipExplore( params Space[] target ) {
-			PreExplore.ForRound.Add( ( gs, args ) => {
+			PreExplore.Add( ( gs, args ) => {
 				foreach(var space in target) {
 					args.SpacesMatchingCards.Remove(space);
 				}
@@ -313,7 +318,7 @@ namespace SpiritIsland {
 		}
 
 		public void SkipBuild( params Space[] target ) {
-			PreBuilding.ForRound.Add( (GameState gs, BuildingEventArgs args) => {
+			PreBuilding.Add( (GameState gs, BuildingEventArgs args) => {
 				foreach(var skip in target)
 					args.Spaces[skip]--;
 				return Task.CompletedTask;

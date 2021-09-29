@@ -7,9 +7,9 @@
 
 
 	public static class ExtendTokens {
-		static public TokenBinding Beasts( this TokenCountDictionary counts ) => new TokenBinding( counts, BacTokens.Beast );
-		static public TokenBinding Disease( this TokenCountDictionary counts ) => new TokenBinding( counts, BacTokens.Disease );
-		static public TokenBinding Wilds( this TokenCountDictionary counts ) => new TokenBinding( counts, BacTokens.Wilds );
+		static public TokenBinding Beasts( this TokenCountDictionary counts ) => new ( counts, BacTokens.Beast );
+		static public TokenBinding Disease( this TokenCountDictionary counts ) => new ( counts, BacTokens.Disease );
+		static public TokenBinding Wilds( this TokenCountDictionary counts ) => new ( counts, BacTokens.Wilds );
 	}
 
 

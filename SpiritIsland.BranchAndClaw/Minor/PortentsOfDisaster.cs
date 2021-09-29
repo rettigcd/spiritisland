@@ -19,7 +19,7 @@ namespace SpiritIsland.BranchAndClaw {
 				}
 				return Task.CompletedTask;
 			}
-			ctx.GameState.Tokens.TokenDestroyed.ForRound.Add( Add1MoreFearForFirstDestoryedInvader );
+			ctx.GameState.Tokens.TokenDestroyed.Add( Add1MoreFearForFirstDestoryedInvader );
 
 			return Task.CompletedTask;
 		}

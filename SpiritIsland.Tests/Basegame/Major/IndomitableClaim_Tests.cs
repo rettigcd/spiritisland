@@ -14,7 +14,7 @@ namespace SpiritIsland.Tests.Basegame {
 		public void StopsAllInvaderActions() {
 			List<string> invaderLog = new List<string>();
 
-			var (user, ctx) = CardSpirit.SetupGame( PowerCard.For<IndomitableClaim>(), (gs)=>{ 
+			var (user, ctx) = TestSpirit.SetupGame( PowerCard.For<IndomitableClaim>(), (gs)=>{ 
 				var jungleCard = new InvaderCard(Terrain.Jungle);
 				gs.InvaderDeck = InvaderDeck.BuildTestDeck( jungleCard, jungleCard, jungleCard, jungleCard );
 				gs.NewInvaderLogEntry += (s) => invaderLog.Add(s);

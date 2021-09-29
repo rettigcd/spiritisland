@@ -66,7 +66,7 @@ namespace SpiritIsland.Basegame {
 			// Special rules: steady regeneration
 			this.Presence.CanPlaceDestroyedPresence = true; // !! leaky abstractions
 
-			static PlacePresence placeOnWetlandOrJungle() => new PlacePresence( 2, Target.JungleOrWetland );
+			static PlacePresence placeOnWetlandOrJungle() => new ( 2, Target.JungleOrWetland );
 
 			GrowthOptions = new GrowthOption[]{
 				// reclaim, +1 power card
@@ -97,7 +97,7 @@ namespace SpiritIsland.Basegame {
 		}
 
 		protected override PowerProgression GetPowerProgression() =>
-			new PowerProgression(
+			new (
 				PowerCard.For<DriftDownIntoSlumber>(),
 				PowerCard.For<GiftOfLivingEnergy>(),
 				PowerCard.For<TheTreesAndStonesSpeakOfWar>(), // major
@@ -123,8 +123,8 @@ namespace SpiritIsland.Basegame {
 			Presence.PlaceOn( board.Spaces.Reverse().First(x=>x.Terrain==Terrain.Wetland) );
 			Presence.PlaceOn( board.Spaces.Single(x=>x.Terrain==Terrain.Jungle && gs.DahanGetCount(x)==0) );
 
-			gs.PreRavaging.ForGame.Add( ChokeTheLandWithGreen_Ravage );
-			gs.PreBuilding.ForGame.Add( ChokeTheLandWithGreen_Build );
+			gs.PreRavaging.Always( ChokeTheLandWithGreen_Ravage );
+			gs.PreBuilding.Always( ChokeTheLandWithGreen_Build );
 
 		}
 

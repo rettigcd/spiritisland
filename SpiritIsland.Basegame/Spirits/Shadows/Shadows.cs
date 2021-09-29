@@ -72,7 +72,7 @@ Shadows Flicker like Flame:
 		}
 
 		protected override PowerProgression GetPowerProgression() =>
-			new PowerProgression(
+			new (
 				PowerCard.For<DarkAndTangledWoods>(),
 				PowerCard.For<ShadowsOfTheBurningForest>(),
 				PowerCard.For<TheJungleHungers>(), // Major

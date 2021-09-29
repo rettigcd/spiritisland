@@ -64,6 +64,7 @@ namespace SpiritIsland {
 		}
 
 		public TargetSpaceCtx TargetSpace( Space space ) => new TargetSpaceCtx( Self, GameState, space, Cause );
+		public TargetSpaceCtx TargetSpace( string spaceLabel ) => new TargetSpaceCtx( Self, GameState, GameState.Island.AllSpaces.First(s=>s.Label==spaceLabel), Cause );
 
 		public async Task<TargetSpaceCtx> TargetLandWithPresence( string prompt ) {
 			var space = await Self.Action.Decision( new Decision.Presence.Deployed( prompt, Self ) );

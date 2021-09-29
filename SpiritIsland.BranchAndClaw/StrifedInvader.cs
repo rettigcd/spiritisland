@@ -4,7 +4,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class StrifedInvader : Token {
 
-		static internal readonly StrifedInvaderGenerator Generator = new StrifedInvaderGenerator();
+		static internal readonly StrifedInvaderGenerator Generator = new();
 
 		public StrifedInvader(TokenGroup generic,Token[] seq,int health, int strifeCount)
 			:base( generic, seq, health ) {
@@ -45,7 +45,7 @@ namespace SpiritIsland.BranchAndClaw {
 				return seq;
 			}
 
-			readonly Dictionary<string, StrifedInvader[]> sequenceCache = new Dictionary<string, StrifedInvader[]>();
+			readonly Dictionary<string, StrifedInvader[]> sequenceCache = new();
 
 		}
 
