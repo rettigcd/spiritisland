@@ -2,7 +2,7 @@
 	public static class BacTokens {
 		static readonly public Token Beast = new TokenGroup("Beast",1,'A').Default; // need to use A for animal since B is already taken for blight
 		static readonly public Token Wilds = new TokenGroup("Wilds",1).Default;
-		static readonly public Token Disease = new TokenGroup("Zizease",1).Default;
+		static readonly public Token Disease = new TokenGroup("Dizease",1,'Z').Default;
 	}
 
 

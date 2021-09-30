@@ -7,7 +7,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Fear {
 		const string FearAck1 = "Immigration Slows:1:During the next normal build, skip the lowest numbered land matching the invader card on each board.";
 		const string FearAck2 = "Immigration Slows:2:Skip the next normal build. The build card remains in place instead of shifting left.";
 		const string FearAck3 = "Immigration Slows:3:Skip the next normal build.  The build card shifts left as usual.";
-		IFearOptions card = new ImmigrationSlows();
+		readonly IFearOptions card = new ImmigrationSlows();
 
 		[Fact]
 		public void Level1_SkipBuildInLowestNumberedLand() {
@@ -15,25 +15,25 @@ namespace SpiritIsland.Tests.BranchAndClaw.Fear {
 
 			AdvanceToInvaderPhase();
 
-			Assert_Ravaged();
-			Assert_Built( "A3", "A8" );
-			Assert_Explored( "A2", "A5" );
+			log.Assert_Ravaged();
+			log.Assert_Built( "A3", "A8" );
+			log.Assert_Explored( "A2", "A5" );
 
 			// Given: Explorers Are Reluctant
-			ActivateFearCard( card );
+			ctx.ActivateFearCard( card );
 
 			AdvanceToInvaderPhase();
 			user.AcknowledgesFearCard( FearAck1 );
 
-			Assert_Ravaged( "A3", "A8" );
-			Assert_Built( "A5" ); // Skipped A2
-			Assert_Explored( "A4", "A7" ); 
+			log.Assert_Ravaged( "A3", "A8" );
+			log.Assert_Built( "A5" ); // Skipped A2
+			log.Assert_Explored( "A4", "A7" ); 
 
 			AdvanceToInvaderPhase();
 
-			Assert_Ravaged( "A2", "A5" );
-			Assert_Built( "A4", "A7" );
-			Assert_Explored( "A3", "A8" );
+			log.Assert_Ravaged( "A2", "A5" );
+			log.Assert_Built( "A4", "A7" );
+			log.Assert_Explored( "A3", "A8" );
 
 		}
 
@@ -46,31 +46,31 @@ namespace SpiritIsland.Tests.BranchAndClaw.Fear {
 
 			AdvanceToInvaderPhase();
 
-			Assert_Ravaged();
-			Assert_Built( "A3", "A8" );
-			Assert_Explored( "A2", "A5" );
+			log.Assert_Ravaged();
+			log.Assert_Built( "A3", "A8" );
+			log.Assert_Explored( "A2", "A5" );
 
 			// Card Advance #3 - End of 1st round
 
 			// Given: Explorers Are Reluctant
-			ActivateFearCard( card );
+			ctx.ActivateFearCard( card );
 			//   And: Terror Level 2
-			ElevateTerrorLevelTo( 2 );
+			ctx.ElevateTerrorLevelTo( 2 );
 
 			AdvanceToInvaderPhase();
 			user.AcknowledgesFearCard( FearAck2 );
 
 			// Card Advance #4 - End of 2st round
 
-			Assert_Ravaged( "A3", "A8" );
-			Assert_Built(); // Skip A2 & A5
-			Assert_Explored("A4","A7");
+			log.Assert_Ravaged( "A3", "A8" );
+			log.Assert_Built(); // Skip A2 & A5
+			log.Assert_Explored("A4","A7");
 
 			AdvanceToInvaderPhase();
 
-			Assert_Ravaged(); // no ravage
-			Assert_Built( "A2", "A4", "A5", "A7" ); // double up Builds
-			Assert_Explored( "A3", "A8" );
+			log.Assert_Ravaged(); // no ravage
+			log.Assert_Built( "A2", "A4", "A5", "A7" ); // double up Builds
+			log.Assert_Explored( "A3", "A8" );
 
 		}
 
@@ -80,30 +80,29 @@ namespace SpiritIsland.Tests.BranchAndClaw.Fear {
 
 			AdvanceToInvaderPhase();
 
-			Assert_Ravaged();
-			Assert_Built( "A3", "A8" );
-			Assert_Explored( "A2", "A5" );
+			log.Assert_Ravaged();
+			log.Assert_Built( "A3", "A8" );
+			log.Assert_Explored( "A2", "A5" );
 
 			// Given: Explorers Are Reluctant
-			ActivateFearCard( card );
-			ElevateTerrorLevelTo( 3 );
+			ctx.ActivateFearCard( card );
+			ctx.ElevateTerrorLevelTo( 3 );
 
 			AdvanceToInvaderPhase();
 			user.AcknowledgesFearCard( FearAck3 );
 
-			Assert_Ravaged( "A3", "A8" );
-			Assert_Built(); // Skipped A2 & A5
-			Assert_Explored("A4", "A7");
+			log.Assert_Ravaged( "A3", "A8" );
+			log.Assert_Built(); // Skipped A2 & A5
+			log.Assert_Explored("A4", "A7");
 
 			AdvanceToInvaderPhase();
 
-			Assert_Ravaged( "A2", "A5" );
-			Assert_Built("A4", "A7"); // normal build
-			Assert_Explored( "A3", "A8" ); // A4 & A7 happen together with next
+			log.Assert_Ravaged( "A2", "A5" );
+			log.Assert_Built("A4", "A7"); // normal build
+			log.Assert_Explored( "A3", "A8" ); // A4 & A7 happen together with next
 
 		}
 
 	}
-
 
 }

@@ -22,7 +22,10 @@ namespace SpiritIsland.Tests {
 			Presence.PlaceOn(space);
 		}
 
-		static public (VirtualTestUser, SpiritGameStateCtx) SetupGame( PowerCard powerCard, Action<GameState> modGameState = null ) {
+		static public (VirtualTestUser, SpiritGameStateCtx) SetupGame( 
+			PowerCard powerCard, 
+			Action<GameState> modGameState = null 
+		) {
 			var spirit = new TestSpirit( powerCard );
 			var gs = new GameState( spirit, Board.BuildBoardA() ) {
 				InvaderDeck = new InvaderDeck( null ) // Same order every time

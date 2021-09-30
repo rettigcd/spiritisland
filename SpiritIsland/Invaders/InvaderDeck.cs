@@ -17,10 +17,10 @@ namespace SpiritIsland {
 		);
 
 		public static readonly ImmutableList<InvaderCard> Level2Cards = ImmutableList.Create(
-			new InvaderCard(Terrain.Jungle),
-			new InvaderCard(Terrain.Wetland),
-			new InvaderCard(Terrain.Sand),
-			new InvaderCard(Terrain.Mountain),
+			new InvaderCard(Terrain.Jungle, true),
+			new InvaderCard(Terrain.Wetland, true),
+			new InvaderCard(Terrain.Sand, true),
+			new InvaderCard(Terrain.Mountain, true),
 			InvaderCard.Costal
 		);
 
@@ -58,10 +58,10 @@ namespace SpiritIsland {
 				random.Shuffle( level3 );
 			}
 
-			static void Discard1( List<InvaderCard> list ) { list.RemoveAt( list.Count - 1 ); }
-			Discard1( level1 );
-			Discard1( level2 );
-			Discard1( level3 );
+			static void DiscardLast( List<InvaderCard> list ) { list.RemoveAt( list.Count - 1 ); }
+			DiscardLast( level1 );
+			DiscardLast( level2 );
+			DiscardLast( level3 );
 
 			// Merge
 			var all = new List<InvaderCard>();
@@ -108,9 +108,6 @@ namespace SpiritIsland {
 			// move Explore to BUid
 			Build.AddRange( Explore );
 			Explore.Clear();
-
-			// turn over explore
-//			TurnOverExploreCards();
 
 		}
 

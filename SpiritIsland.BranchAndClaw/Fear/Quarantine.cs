@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland.BranchAndClaw {
 
-	class Quarantine : IFearOptions {
+	public class Quarantine : IFearOptions {
 		public const string Name = "Quarantine";
 
 		[FearLevel( 1, "Explore does not affect coastal lands." )]
@@ -15,7 +15,7 @@ namespace SpiritIsland.BranchAndClaw {
 			return Task.CompletedTask;
 		}
 
-		[FearLevel( 2, "Explore does not affect coastal lands. Lands with disease are not a source of invaders when exploring" )]
+		[FearLevel( 2, "Explore does not affect coastal lands. Lands with disease are not a source of invaders when exploring." )]
 		public Task Level2( FearCtx ctx ) {
 
 			// Explore does not affect coastal lands.
