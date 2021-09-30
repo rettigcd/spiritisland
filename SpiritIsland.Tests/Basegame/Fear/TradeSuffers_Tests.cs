@@ -80,7 +80,6 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			}
 
 			user.DoesNothingForARound();
-			System.Threading.Thread.Sleep( 10 );
 		}
 
 		void ActivateFearCard(IFearOptions fearCard) {

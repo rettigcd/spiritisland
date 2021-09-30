@@ -14,7 +14,6 @@
 		public void SelectsGrowthB_2PP(string pp1="energy>A2;A3;A4", string pp2="energy>A1;A2;A3;A4") {
 			SelectsGrowthOption( "PlacePresence(1) / PlacePresence(1)" );
 			PlacesPresence( pp1 );
-			System.Threading.Thread.Sleep(5); // need to let engine place the presence before we read the next spot on the track
 			PlacesPresence( pp2 );
 		}
 

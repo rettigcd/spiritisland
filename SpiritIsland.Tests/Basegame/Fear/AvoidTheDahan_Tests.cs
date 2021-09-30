@@ -216,7 +216,6 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		void ClearBlightAndDoNothing() {
 			ctx.ClearAllBlight();
 			user.DoesNothingForARound();
-			System.Threading.Thread.Sleep( 10 );
 		}
 
 		readonly VirtualTestUser user;

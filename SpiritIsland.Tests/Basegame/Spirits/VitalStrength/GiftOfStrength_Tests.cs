@@ -42,9 +42,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.VitalStrengthNS {
 			User_PlaysGiftOfStrengthOnSelf();
 
 			// Then: user can replay ONLY the played: Fast-1 card.
-			System.Threading.Thread.Sleep( 5 );  // let engine catch up
 			User.SelectsFastAction( "Fast-0,(Replay Card [max cost:1])" );
-			System.Threading.Thread.Sleep( 20 );
 			User.AssertDecision( "Select card to replay", "Fast-1", "Fast-1" ); // !!! should there be a ,Done here?
 
 		}
@@ -63,7 +61,6 @@ namespace SpiritIsland.Tests.Basegame.Spirits.VitalStrengthNS {
 			spirit.AddActionFactory( MakePowerCard( Slow0 ) ); // not played
 			spirit.AddActionFactory( MakePowerCard( Slow1 ) ); // played - should appear
 			spirit.AddActionFactory( MakePowerCard( Slow2 ) ); // played - no - too expensive
-			Hesitate();
 			User.IsDoneBuyingCards();
 
 			//  And: played GOS on self
@@ -75,25 +72,15 @@ namespace SpiritIsland.Tests.Basegame.Spirits.VitalStrengthNS {
 			// (now in slow...)
 
 			//  And: plays Slow-1
-			Hesitate();
 			User.SelectsSlowAction( "Slow-0,(Slow-1),Slow-2,Replay Card [max cost:1]" );
 
 			// When: Replaying card
-			Hesitate();
 			User.SelectsSlowAction( "Slow-0,Slow-2,(Replay Card [max cost:1])" );
-			System.Threading.Thread.Sleep( 20 );
 			User.AssertDecision( "Select card to replay", "Slow-1", "Slow-1" ); // !!! should there be a ,Done here?
-		}
-
-		private static void Hesitate() {
-			// ! This is starting to become a problem.
-			// ! Need to add signalling.
-			System.Threading.Thread.Sleep( 5 );
 		}
 
 		void User_PlaysGiftOfStrengthOnSelf() {
 			// When: user applies 'Gift of Strength' to self
-			System.Threading.Thread.Sleep( 5 ); // let engine catch up
 			User.SelectsFastAction( "Fast-0,(Gift of Strength)" );
 		}
 

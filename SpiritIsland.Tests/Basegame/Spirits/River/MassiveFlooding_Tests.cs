@@ -102,7 +102,6 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			User.SelectsSlowAction("River's Bounty,Wash Away,(Massive Flooding)" );
 			User.TargetsLand( "(A1),A5,A8" );
 			
-			System.Threading.Thread.Sleep(50);
 			game.GameState.Assert_Invaders(space, "1C@1" );
 		}
 

@@ -172,7 +172,6 @@ namespace SpiritIsland.Tests.BranchAndClaw.Fear {
 		protected void AdvanceToInvaderPhase() {
 			ctx.ClearAllBlight();
 			user.DoesNothingForARound();
-			System.Threading.Thread.Sleep( 5 );
 		}
 
 		#endregion

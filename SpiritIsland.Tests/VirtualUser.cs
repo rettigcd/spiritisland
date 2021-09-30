@@ -7,11 +7,14 @@ namespace SpiritIsland.Tests {
 
 	public class VirtualUser {
 
+		#region constructor
+
 		public VirtualUser(Spirit spirit ) { this.spirit = spirit; }
+
+		#endregion
 
 		public void AcknowledgesFearCard( string fearCard ) {
 			AssertDecision( "Activating Fear", fearCard, fearCard ); // some of the fear cards have commas in them
-			System.Threading.Thread.Sleep(5);
 		}
 
 		public void PlacesPresence( string placeOptions ) {
@@ -33,7 +36,7 @@ namespace SpiritIsland.Tests {
 			var current = spirit.Action.GetCurrent();
 
 			var op = current.Options.First( o => o.Text.StartsWith( "PlacePre" ) );
-			spirit.Action.Choose( op );
+			Choose( op );
 
 			// Source
 			PullsPresenceFromTrack( source );
@@ -45,22 +48,21 @@ namespace SpiritIsland.Tests {
 			var choice = actualOptions.SingleOrDefault( o => o.Text == expectedOptions[0] );
 			if(choice == null)
 				throw new System.ArgumentOutOfRangeException( nameof( placeOptions ), $"'{expectedOptions[0]}' not found in " + actualOptions.Select( o => o.Text ).Join( "," ) );
-			spirit.Action.Choose( choice );
-
+			Choose( choice );
 		}
 
 		public void PullsPresenceFromTrack( Track source ) {
 			var sourceDecision = spirit.Action.GetCurrent();
 			sourceDecision.Options.Select( x => x.Text ).Join( "," ).ShouldContain( source.Text );
-			spirit.Action.Choose( source );
+			Choose( source );
 		}
 
 		public void DrawsPowerCard() {
-			spirit.Action.Choose( "DrawPowerCard" );
+			Choose( "DrawPowerCard" );
 		}
 
 		public void ReclaimsAll() {
-			spirit.Action.Choose( "ReclaimAll" );
+			Choose( "ReclaimAll" );
 		}
 
 		public void Reclaims1FromTrackBonus(string cards) {
@@ -72,10 +74,6 @@ namespace SpiritIsland.Tests {
 			AssertDecisionX( "Select card to reclaim.",  cards, "{}" );
 		}
 		
-		//public void SelectsExplorerToPush( string explorerOptions, string explorerChoice ) {
-		//	AssertDecision( "Push (1)", explorerOptions, explorerChoice );
-		//}
-
 		public void PushesTokensTo( string invaders, string destinations, int numToPush=1 ) {
 			var (_,tokenToPush) = SplitOptionsAndChoice( invaders );
 			AssertDecisionX( "Push ("+numToPush+")", invaders );
@@ -90,19 +88,19 @@ namespace SpiritIsland.Tests {
 
 		public void SelectsGrowthOption( string growthOption ) {
 			Assert.Equal( "Select Growth Option", spirit.Action.GetCurrent().Prompt );
-			spirit.Action.Choose( growthOption );
+			Choose( growthOption );
 		}
 
 		public void SelectsGrowthOption(int growthOptionIndex) {
 			var current = spirit.Action.GetCurrent();
 			Assert.Equal( "Select Growth Option", current.Prompt );
-			spirit.Action.Choose( current.Options[growthOptionIndex] );
+			Choose( current.Options[growthOptionIndex] );
 		}
 
 		public void GainsEnergy() {
 			var current = spirit.Action.GetCurrent();
 			var selection = current.Options.First(x=>x.Text.StartsWith("GainEnergy"));
-			spirit.Action.Choose( selection );
+			Choose( selection );
 		}
 
 		public void GathersPresenceIntoOcean() {
@@ -129,7 +127,7 @@ namespace SpiritIsland.Tests {
 		public void ActivatesExtraCardPlay() {
 			var current = spirit.Action.GetCurrent();
 			var selection = current.Options.First( x => x.Text.StartsWith( "PlayExtra" ) );
-			spirit.Action.Choose( selection );
+			Choose( selection );
 		}
 
 		public void TargetsSpirit( string spirits ) {
@@ -143,7 +141,7 @@ namespace SpiritIsland.Tests {
 		public void TargetsLand_IgnoreOptions( string space ) {
 			var current = Assert_HasCurrent( "Select space to target." );
 			IOption match = FindRequiredOptionByText( current, space );
-			spirit.Action.Choose( match );
+			Choose( match );
 		}
 
 		public void SelectsDamageRecipient( int damageAvailable, string tokens ) {
@@ -155,7 +153,6 @@ namespace SpiritIsland.Tests {
 		}
 
 		public void IsDoneBuyingCards() {
-			System.Threading.Thread.Sleep( 10 );
 			SelectOption( "Buy power cards:", "Done" );
 		}
 
@@ -194,8 +191,6 @@ namespace SpiritIsland.Tests {
 
 		public void SelectsFirstOption( string prompt ) {
 			string msg = $"{prompt}:[any]:[first]";
-			if(spirit.Action.IsResolved)
-				System.Threading.Thread.Sleep( 20 );
 			spirit.Action.IsResolved.ShouldBeFalse( $"Prompt [{prompt}] is not there." );
 			var current = spirit.Action.GetCurrent();
 			current.Prompt.ShouldBe( prompt, msg, StringCompareShould.IgnoreCase );
@@ -241,7 +236,7 @@ namespace SpiritIsland.Tests {
 				throw new Exception( $"option ({optionText} not found in "
 					+ decision.GetCurrent().Options.Select( x => x.Text ).Join( ", " )
 				);
-			decision.Choose( option );
+			Choose( option );
 		}
 
 		protected void AssertDecision( string prompt, string select ) {
@@ -266,15 +261,11 @@ namespace SpiritIsland.Tests {
 			current.Prompt.ShouldBe( prompt, msg, StringCompareShould.IgnoreCase );
 			current.Options.Select( x => x.Text ).Join( "," ).ShouldBe( optionsString, msg );
 			IOption match = FindRequiredOptionByText( current, select );
-			decision.Choose( match );
+			Choose( match );
 		}
 
 		protected IDecision Assert_HasCurrent( string prompt ) {
 			var decision = spirit.Action;
-
-			// There is a problem with the Single-Player-Game that doesn't get to the next option fast enough.
-			if(decision.IsResolved)
-				System.Threading.Thread.Sleep( 5 );
 
 			decision.IsResolved.ShouldBeFalse( $"Prompt [{prompt}] is not there." );
 			return decision.GetCurrent();
@@ -283,6 +274,20 @@ namespace SpiritIsland.Tests {
 		static protected IOption FindRequiredOptionByText( IDecision current, string select ) {
 			return current.Options.FirstOrDefault( x => x.Text == select ) // sometimes we will have double
 				?? throw new Exception( $"option ({select} not found in " + current.Options.Select( x => x.Text ).Join( ", " ) );
+		}
+
+		protected void Choose(IOption option ) {
+			spirit.Action.Choose( option );
+			WaitForSignal();
+		}
+		protected void Choose( string option ) {
+			spirit.Action.Choose( option );
+			WaitForSignal();
+		}
+
+		protected void WaitForSignal() {
+			if(spirit.Action.IsResolved)
+				System.Threading.Thread.Sleep(1);
 		}
 
 		#endregion

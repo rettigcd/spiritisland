@@ -1,49 +1,50 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
-* REFACTOR	Drawing - Separate Layout from Drawing / Calc Layout once
-* Multiple Invader cards in same slot - Need Unit tests to verify this
+== Clean-up ==
 
-===== Ravage Engine - Tests =====
+* Grapics / Layout
+* Portal - Event Driven / Blocking
+* Power Cards don't directly access GameState
+* InvaderEngine - pull Invader Actions into a plugable object that can be called from the InvaderDesk
+* draw innates - range icons, Target icons, clean tokens, +1 range
+* Blight Tests
 
-	Dissolve the Bonds of Kinship
-	Infinite Vitality
-	Instruments of Their Own Ruin
-	Manifest Incarnation
+== Bonus - Fun ==
 
-===== Repeat Card / Change Speed =====
+* Draw cards from metadata
+* hovering over cards, show what lands they target
+* Cards ui - scrolling, decks & discard pile, 
+* Visual indication of phase
 
-	PowerStorm
-	Spur on With words of Fire
+== Book Keeping ==
+
+* Undo / go back to beginning   (spirit:Presence & cards, Invader/Fear/Major/Minor, tokens, blight? )
+* Visual indicator of Phase
+* Log game Results
+* Log Decisoins / view Decisions
+* Log Ravage / Build / Explore / Fear / Blight
+
+== Tests: Ravage Engine =====
+
+* Dissolve the Bonds of Kinship
+* Infinite Vitality
+* Instruments of Their Own Ruin
+* Manifest Incarnation
+
+== Tests: Repeat Card / Change Speed =====
+
+* PowerStorm
+* Spur on With words of Fire
 
 ===================
 
-
 REFACTOR	When filtering, pass in TargetSpaceCtx instead of Space - simplify API by folding spirit and gamestate into Ctx
 REFACTOR	InvaderGroup Damage/Destory methods.  Create a virtual 'included tokens' group that combines single-token and token Group actions
-REFACTOR	Everything in Power Cards should go through CTX (is that feasible?) so it can be overriden / adjusted by spirit
 
-CARDS	scroll bar
-CARDS	show decks & discard pile
-CARDS	Draw Cards from metadata.
-CARDS	Display Card modifications slow/fast
-Innate	Range icons
-Innate	Target icons
-Innate	use clean tokens
-Innate	+1 range.
-
-Engine   Need to add thread signally so we don't read state before engine is ready.
-		 Maybe Everything in the VirtualUser waits for EngineIsWaiting signal before returning from selections.
-
-Bookkeeping		Undo / go back to beginning   (spirit:Presence & cards, Invader/Fear/Major/Minor, tokens, blight? )
-Bookkeeping		Visual indicator of Phase
-Bookkeeping		Log game Results
-Bookkeeping		Log Decisoins / view Decisions
-Bookkeeping		Log Ravage / Build / Explore / Fear / Blight
 Engine			Check Game Win/Loss
 Engine			Fix Blight
 
-Place Presence from board
-Click on Invader card to close it.
+Click on Fear card to close it.
 
 ====================================
 ===== Testing =====

@@ -35,7 +35,6 @@ namespace SpiritIsland.Tests.BranchAndClaw.Minor {
 				user.IsDoneWith( Speed.Fast );
 
 			// Then: space should have a building
-			System.Threading.Thread.Sleep( 20 );
 			spaceCtx.Tokens.InvaderSummary.ShouldBe( result );
 
 		}

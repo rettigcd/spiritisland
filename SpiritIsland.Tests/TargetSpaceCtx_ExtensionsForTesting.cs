@@ -56,7 +56,6 @@ namespace SpiritIsland.Tests {
 		#region Log Asserting
 
 		public static void Assert_Ravaged( this Queue<string> log, params string[] spaces ) {
-			System.Threading.Thread.Sleep(10);
 
 			log.Dequeue().ShouldStartWith( "Ravaging" );
 			foreach(var s in spaces)
@@ -64,7 +63,6 @@ namespace SpiritIsland.Tests {
 		}
 
 		public static void Assert_Built( this Queue<string> log, params string[] spaces ) {
-			System.Threading.Thread.Sleep(10);
 
 			log.Dequeue().ShouldStartWith( "Building" );
 			foreach(var s in spaces)
@@ -72,7 +70,6 @@ namespace SpiritIsland.Tests {
 		}
 
 		public static void Assert_Explored( this Queue<string> log, params string[] spaces ) {
-			System.Threading.Thread.Sleep(10);
 			if(spaces.Length>log.Count)
 				throw new System.Exception("Not enough log entries.:" + log.Join(" -- "));
 

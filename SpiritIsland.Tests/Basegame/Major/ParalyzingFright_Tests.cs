@@ -54,7 +54,6 @@ namespace SpiritIsland.Tests.Basegame {
 			user.SelectsFirstOption("Activating Fear");
 
 			// Then: nothing changed
-			System.Threading.Thread.Sleep( 20 );
 			spaceCtx.Tokens.InvaderSummary.ShouldBe( "3E@1", "should be same that we started with" );
 
 			// Make sure that we actually executed the Ravage Build / Explore Bit
