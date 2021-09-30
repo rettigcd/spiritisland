@@ -178,7 +178,7 @@ namespace SpiritIsland {
 		public void SkipAllInvaderActions( params Space[] targets ) {
 			foreach(var target in targets) {
 				ModifyRavage(target, cfg=>cfg.ShouldRavage=false );
-				SkipBuild( target );
+				Skip1Build( target );
 				SkipExplore(target);
 			}
 		}
@@ -329,7 +329,7 @@ namespace SpiritIsland {
 
 		}
 
-		public void SkipBuild( params Space[] target ) {
+		public void Skip1Build( params Space[] target ) {
 			PreBuilding.Add( (GameState gs, BuildingEventArgs args) => {
 				foreach(var skip in target)
 					args.SpaceCounts[skip]--;

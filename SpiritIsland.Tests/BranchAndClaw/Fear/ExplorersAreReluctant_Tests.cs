@@ -1,21 +1,9 @@
-﻿using Shouldly;
-using SpiritIsland.Basegame;
-using SpiritIsland.BranchAndClaw;
-using System.Collections.Generic;
-using System.Linq;
+﻿using SpiritIsland.BranchAndClaw;
 using Xunit;
 
 namespace SpiritIsland.Tests.BranchAndClaw.Fear {
 
-	public class ExplorersAreReluctant_Tests {
-
-		public ExplorersAreReluctant_Tests() {
-			var (userLocal,ctxLocal) = TestSpirit.SetupGame(PowerCard.For<CallToTend>(),gs=>{ 
-				gs.NewInvaderLogEntry += (s) => log.Add(s);
-			} );
-			user = userLocal;
-			ctx = ctxLocal;
-		}
+	public class ExplorersAreReluctant_Tests : TestInvaderDeckSequence_Base {
 
 		[Fact]
 		public void NormalInvaderPhases() {
@@ -134,62 +122,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Fear {
 
 		}
 
-		#region private
-
-		void ActivateFearCard(IFearOptions fearCard) {
-			ctx.GameState.Fear.Deck.Pop();
-			ctx.GameState.Fear.ActivatedCards.Push( new PositionFearCard{ FearOptions=fearCard, Text="FearCard" } );
-		}
-
-		void AdvanceToInvaderPhase() {
-			ResetLog();
-			ctx.ClearAllBlight();
-			user.DoesNothingForARound();
-			System.Threading.Thread.Sleep( 5 );
-		}
-
-		void ResetLog() {
-			log.Clear(); logIndex = 0;
-		}
-
-		void ElevateTerrorLevelTo( int desiredFearLevel ) {
-			while(ctx.GameState.Fear.TerrorLevel < desiredFearLevel)
-				ctx.GameState.Fear.Deck.Pop();
-		}
-
-		void Assert_Explored( params string[] spaces ) {
-			System.Threading.Thread.Sleep(10);
-			if(logIndex + spaces.Length>log.Count)
-				throw new System.Exception("Not enough log entries.:" + log.Skip(logIndex).Join(" -- "));
-
-			log[logIndex++].ShouldStartWith( "Exploring" );
-			foreach(var s in spaces)
-				log[logIndex++].ShouldStartWith( s );
-		}
-
-		void Assert_Ravaged( params string[] spaces ) {
-			System.Threading.Thread.Sleep(10);
-
-			log[logIndex++].ShouldStartWith( "Ravaging" );
-			foreach(var s in spaces)
-				log[logIndex++].ShouldStartWith( s );
-		}
-
-		void Assert_Built( params string[] spaces ) {
-			System.Threading.Thread.Sleep(10);
-
-			log[logIndex++].ShouldStartWith( "Building" );
-			foreach(var s in spaces)
-				log[logIndex++].ShouldStartWith( s );
-		}
-
-		readonly VirtualTestUser user;
-		readonly SpiritGameStateCtx ctx;
-		readonly List<string> log = new();
-		int logIndex;
-
-		#endregion
-
 	}
+
 
 }

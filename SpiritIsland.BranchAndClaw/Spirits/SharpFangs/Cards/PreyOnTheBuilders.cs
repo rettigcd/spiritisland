@@ -11,7 +11,7 @@ namespace SpiritIsland.BranchAndClaw {
 			await ctx.GatherUpTo(1, BacTokens.Beast.Generic);
 
 			if( ctx.Tokens.Beasts().Any )
-				ctx.GameState.SkipBuild(ctx.Space);
+				ctx.GameState.Skip1Build(ctx.Space);
 
 		}
 

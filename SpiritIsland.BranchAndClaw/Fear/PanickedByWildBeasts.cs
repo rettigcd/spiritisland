@@ -24,7 +24,7 @@ namespace SpiritIsland.BranchAndClaw {
 			foreach(var land in ctx.GameState.Island.AllSpaces)
 				if(ctx.GameState.Tokens[land].Beasts().Any) {
 					ctx.GameState.SkipExplore(land);
-					ctx.GameState.SkipBuild( land );
+					ctx.GameState.Skip1Build( land );
 				}
 		}
 

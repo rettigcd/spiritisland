@@ -89,6 +89,8 @@ namespace SpiritIsland {
 
 		public int CountInDiscard {get; private set; }
 
+		public bool KeepBuildCards = false;
+
 		/// <summary>
 		/// Triggers Ravage / 
 		/// </summary>
@@ -97,8 +99,12 @@ namespace SpiritIsland {
 			CountInDiscard += Ravage.Count;
 			Ravage.Clear();
 			// Move Build to Ravage
-			Ravage.AddRange( Build );
-			Build.Clear();
+			if(KeepBuildCards)
+				KeepBuildCards = false;
+			else {
+				Ravage.AddRange( Build );
+				Build.Clear();
+			}
 			// move Explore to BUid
 			Build.AddRange( Explore );
 			Explore.Clear();

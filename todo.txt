@@ -12,9 +12,9 @@ Power Cards - Done
 Fear
 	Avoid the Dahan - DONE
 	Trade Suffers - DONE
+	Explorers are Recluctant - DONE
+	Immigration Slows - DONE
 
-	Explorers are Recluctant
-	Immigration Slows
 	Quarentine
 	Tread Carefully
 
