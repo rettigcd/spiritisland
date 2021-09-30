@@ -3,28 +3,12 @@
 * REFACTOR	Drawing - Separate Layout from Drawing / Calc Layout once
 * Multiple Invader cards in same slot - Need Unit tests to verify this
 
-===== Invader Cards - Tests =====
-Power Cards - Done
-	Indomitable Claim - DONE
-	Paralyzing Fright - DONE
-	Call to Trade  - DONE
-	Rites of the Land's Rejection - DONE
-Fear
-	Avoid the Dahan - DONE
-	Trade Suffers - DONE
-	Explorers are Recluctant - DONE
-	Immigration Slows - DONE
-
-	Quarentine
-	Tread Carefully
-
 ===== Ravage Engine - Tests =====
 
 	Dissolve the Bonds of Kinship
 	Infinite Vitality
 	Instruments of Their Own Ruin
 	Manifest Incarnation
-
 
 ===== Repeat Card / Change Speed =====
 

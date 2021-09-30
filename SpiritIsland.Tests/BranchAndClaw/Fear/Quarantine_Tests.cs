@@ -130,6 +130,39 @@ namespace SpiritIsland.Tests.BranchAndClaw.Fear {
 		}
 
 
+		[Theory]
+		[InlineData(false)]
+		[InlineData(true)]
+		public void SkipRavageWorks( bool skipARavage ) {
+			// Not really for quarantine, just a general test without a ghome
+
+			// Skip over the coastal build
+			AdvanceToInvaderPhase();
+
+			// The only thing around A8 (a jungle) is a diseased town
+			ctx.TargetSpace("A5").Tokens.Init("");
+			ctx.TargetSpace("A6").Tokens.Init("");
+			ctx.TargetSpace("A7").Tokens.Init("1T@2,1Z@1"); // town & diZease
+			ctx.TargetSpace("A8").Tokens.Init("");
+
+			if(skipARavage)
+				ctx.GameState.SkipRavage(ctx.TargetSpace("A4").Space);
+
+			log.Clear();
+			AdvanceToInvaderPhase();
+
+			if(skipARavage)
+				log.Assert_Ravaged ( "A7" );             // Sand - A4 skipped
+			else
+				log.Assert_Ravaged ( "A4", "A7" );       // Sand
+
+			log.Assert_Built   ( "A1", "A2", "A3" ); // Costal
+			log.Assert_Explored( "A3", "A8" );
+
+		}
+
+
+
 		#region protected / private
 
 		protected VirtualTestUser user;
