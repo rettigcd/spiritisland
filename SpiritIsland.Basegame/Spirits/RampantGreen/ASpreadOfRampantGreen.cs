@@ -134,10 +134,10 @@ namespace SpiritIsland.Basegame {
 		}
 
 		async Task ChokeTheLandWithGreen_Build( GameState gs, BuildingEventArgs args ) {
-			Space[] buildSpaces = args.Spaces.Keys.Where( k => args.Spaces[k] > 0 ).ToArray();
+			Space[] buildSpaces = args.SpaceCounts.Keys.Where( k => args.SpaceCounts[k] > 0 ).ToArray();
 			Space[] stopped = await ChokeTheLandWithGreen( gs, buildSpaces, "build" ); 
 			foreach(var s in stopped)
-				args.Spaces[s]--;
+				args.SpaceCounts[s]--;
 		}
 
 		async Task<Space[]> ChokeTheLandWithGreen( GameState gs, Space[] spaces, string actionText ) {

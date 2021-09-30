@@ -32,7 +32,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 
 			// Given: 1 city and nothing else
 			var spaceCtx = ctx.TargetSpace( "A7" );
-			spaceCtx.InitTokens("1C@3");
+			spaceCtx.Tokens.Init("1C@3");
 
 			// When: activating fear
 			ClearBlightAndDoNothing();
@@ -55,7 +55,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 
 			// Given: 1 city and a enough dahan to kill the city but not the last explorer
 			var spaceCtx = ctx.TargetSpace( "A7" );
-			spaceCtx.InitTokens("1C@3,4D@2,2E@1");
+			spaceCtx.Tokens.Init("1C@3,4D@2,2E@1");
 
 			// When: activating fear
 			ClearBlightAndDoNothing();

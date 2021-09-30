@@ -23,10 +23,10 @@ namespace SpiritIsland.Basegame {
 		[FearLevel( 2, "Invaders do not Build in lands where Dahan outnumber Town / City." )]
 		public Task Level2( FearCtx ctx ) {
 			ctx.GameState.PreBuilding.Add( ( gs, args ) => {
-				foreach(var space in args.Spaces.Keys.ToArray()) {
+				foreach(var space in args.SpaceCounts.Keys.ToArray()) {
 					var tokens = gs.Tokens[space];
 					if(tokens.SumAny(Invader.City,Invader.Town) < tokens.Sum(TokenType.Dahan))
-						args.Spaces[space] = 0;
+						args.SpaceCounts[space] = 0;
 				}
 			} );
 
@@ -36,9 +36,9 @@ namespace SpiritIsland.Basegame {
 		[FearLevel( 3, "Invaders do not Build in lands with Dahan." )]
 		public Task Level3( FearCtx ctx ) {
 			ctx.GameState.PreBuilding.Add( ( gs, args ) => {
-				foreach(var space in args.Spaces.Keys.ToArray()) {
+				foreach(var space in args.SpaceCounts.Keys.ToArray()) {
 					if(0 < gs.Tokens[space].Sum(TokenType.Dahan))
-						args.Spaces[space] = 0;
+						args.SpaceCounts[space] = 0;
 				}
 			} );
 			return Task.CompletedTask;

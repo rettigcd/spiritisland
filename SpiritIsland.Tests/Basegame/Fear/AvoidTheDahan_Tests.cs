@@ -94,7 +94,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 
 			// Given: Starting out Dahan(3) outnumber town/city(2)
 			var spaceCtx = ctx.TargetSpace( "A7" );
-			spaceCtx.InitTokens( "3D@2,2T@2" );
+			spaceCtx.Tokens.Init( "3D@2,2T@2" );
 
 			// When: activating fear
 			ClearBlightAndDoNothing();
@@ -123,7 +123,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 
 			// Given: Dahan(2) outnumber town/city(0)  + 3 explorer (to enable build)
 			var spaceCtx = ctx.TargetSpace( "A7" );
-			spaceCtx.InitTokens("2D@2,3E@1");
+			spaceCtx.Tokens.Init("2D@2,3E@1");
 
 			// When: activating fear
 			ClearBlightAndDoNothing();
@@ -148,7 +148,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 
 			// Given: Starting out Dahan(3) outnumber town/city(2)
 			var spaceCtx = ctx.TargetSpace( "A7" );
-			spaceCtx.InitTokens( "3D@2,2T@2" );
+			spaceCtx.Tokens.Init( "3D@2,2T@2" );
 
 			// When: activating fear
 			ClearBlightAndDoNothing();
@@ -176,7 +176,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 
 			// Given: Starting out Dahan(3) outnumber town/city(2)
 			var spaceCtx = ctx.TargetSpace( "A7" );
-			spaceCtx.InitTokens("1D@2,1T@2");
+			spaceCtx.Tokens.Init("1D@2,1T@2");
 
 			// When: activating fear
 			ClearBlightAndDoNothing();
@@ -214,14 +214,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 
 
 		void ClearBlightAndDoNothing() {
-
-			// So it doesn't cascade during ravage
-			foreach(var space in ctx.AllSpaces) {
-				var tmpCtx = ctx.TargetSpace(space);
-				while(tmpCtx.HasBlight)
-					tmpCtx.RemoveBlight();
-			}
-
+			ctx.ClearAllBlight();
 			user.DoesNothingForARound();
 			System.Threading.Thread.Sleep( 10 );
 		}

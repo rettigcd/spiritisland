@@ -58,6 +58,7 @@ namespace SpiritIsland.Tests.Core {
 
 				// When: advance the cards
 				sut.Advance();
+				sut.TurnOverExploreCards();
 
 				// Then cards advance
 				Assert.NotEqual(explore,sut.Explore);
@@ -260,6 +261,7 @@ namespace SpiritIsland.Tests.Core {
 			for(int i = 0; i < 12; ++i) {
 				cards[i] = deck.Explore[0];
 				deck.Advance();
+				deck.TurnOverExploreCards();
 			}
 			return cards;
 		}
@@ -268,6 +270,7 @@ namespace SpiritIsland.Tests.Core {
 			for(int i = 0; i < count; ++i) {
 				Assert.Contains( deck.Explore[0], cardSet );
 				deck.Advance();
+				deck.TurnOverExploreCards();
 			}
 		}
 

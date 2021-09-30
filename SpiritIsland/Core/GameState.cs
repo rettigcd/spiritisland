@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using SpiritIsland;
@@ -23,7 +24,7 @@ namespace SpiritIsland {
 		public GameState(params Spirit[] spirits){
 			if(spirits.Length==0) throw new ArgumentException("Game must include at least 1 spirit");
 			this.Spirits = spirits;
-			InvaderDeck = new InvaderDeck(new Random());
+			// Note: don't init invader deck here, let users substitute
 			Round = 1;
 			Fear = new Fear( this );
 			Invaders = new Invaders( this );
@@ -46,12 +47,19 @@ namespace SpiritIsland {
 
 		public virtual void Initialize() {
 
+			// Custom Deck not supplied, use default deck
+			if(InvaderDeck == null)
+				InvaderDeck = new InvaderDeck(new Random());
+
 			foreach(var board in Island.Boards)
 				foreach(var space in board.Spaces)
 					space.InitTokens( Tokens[space] );
 
+			// Do Explore - Advance card to the Build
+//			deck.TurnOverExploreCards();
 			Task.WaitAll( Explore( InvaderDeck.Explore[0] ) );
 			InvaderDeck.Advance();
+
 			InitRavageFromDeck();
 			InitBuildFromDeck();
 			InitSpirits();
@@ -177,9 +185,8 @@ namespace SpiritIsland {
 
 		public void SkipExplore( params Space[] target ) {
 			PreExplore.Add( ( gs, args ) => {
-				foreach(var space in target) {
-					args.SpacesMatchingCards.Remove(space);
-				}
+				foreach(var space in target)
+					args.Skip(space);
 				return Task.CompletedTask;
 			} );
 		}
@@ -232,8 +239,9 @@ namespace SpiritIsland {
 			await Build();
 
 			// Exploring
+			deck.TurnOverExploreCards();
 			Log( "Exploring:" + (deck.Explore.Count > 0 ? deck.Explore[0].Text : "-") );
-			await Explore( deck.Explore[0] );
+			await Explore( deck.Explore.ToArray() );
 
 			deck.Advance();
 		}
@@ -296,23 +304,27 @@ namespace SpiritIsland {
 		public async Task Build() {
 			var args = new BuildingEventArgs {
 				BuildTypes = new Dictionary<Space, BuildingEventArgs.BuildType>(),
-				Spaces = ScheduledBuildSpaces,
+				SpaceCounts = ScheduledBuildSpaces,
 			};
 
 			await PreBuilding.InvokeAsync( this, args );
 
 			List<Space> buildSpacesWithInvaders = new List<Space>();
-			foreach(var pair in args.Spaces.Where(p=>Tokens[p.Key].HasInvaders() ) ) {
-				for(int i=0;i<pair.Value;++i)
-					buildSpacesWithInvaders.Add(pair.Key); // space might have mutliple builds
-			}
+			foreach(var space in args.SpaceCounts.Keys.OrderBy(x=>x.Label) ) {
+				int count = args.SpaceCounts[space];
+				var tokens = Tokens[space];
+				while(count-- > 0) {
+					if(tokens.HasInvaders()) {
+						var buildType = args.BuildTypes.ContainsKey( space ) 
+							? args.BuildTypes[space] 
+							: BuildingEventArgs.BuildType.TownsAndCities;
+						var buildResult = await Build( Tokens[space], buildType );
+						Log( space.Label + ": gets " + buildResult );
+					} else {
+						Log( space.Label + ": no invaders " );
+					}
 
-			foreach(var space in buildSpacesWithInvaders) {
-				var buildType = args.BuildTypes.ContainsKey( space ) 
-					? args.BuildTypes[space] 
-					: BuildingEventArgs.BuildType.TownsAndCities;
-				var buildResult = await Build( Tokens[space], buildType );
-				Log( space.Label + " gets " + buildResult );
+				}
 			}
 
 		}
@@ -320,7 +332,7 @@ namespace SpiritIsland {
 		public void SkipBuild( params Space[] target ) {
 			PreBuilding.Add( (GameState gs, BuildingEventArgs args) => {
 				foreach(var skip in target)
-					args.Spaces[skip]--;
+					args.SpaceCounts[skip]--;
 				return Task.CompletedTask;
 			});
 		}
@@ -344,7 +356,8 @@ namespace SpiritIsland {
 			return invaderToAdd.Label;
 		}
 
-		public async Task<Space[]> Explore( InvaderCard invaderCard ) {
+		public async Task Explore( params InvaderCard[] invaderCards ) {
+
 			bool HasTownOrCity( Space space ) { return Tokens[ space ].HasAny(Invader.Town,Invader.City); }
 
 			HashSet<Space> sources = Island.AllSpaces
@@ -352,28 +365,29 @@ namespace SpiritIsland {
 				.ToHashSet();
 
 			List<Space> spacesThatMatchCards = Island.Boards.SelectMany( board => board.Spaces )
-				.Where( invaderCard.Matches )
+				.Where( space => invaderCards.Any(card=>card.Matches(space)) )
 				.ToList();
 
 			// Run special event cards over it
-			await this.PreExplore.InvokeAsync( this, new ExploreEventArgs {
-				Sources = sources,
-				SpacesMatchingCards = spacesThatMatchCards,
-			} ); // not really necessary if we are exposing GameSTate.explorationSpaces
+			var args = new ExploreEventArgs( sources, spacesThatMatchCards );
+			await this.PreExplore.InvokeAsync( this, args );
+
+			// not really necessary if we are exposing GameSTate.explorationSpaces
 
 			// Add new spaces
-			var spacesToExplore = spacesThatMatchCards
-				.Where( space => space.Range( 1 ).Any( sources.Contains ) );
+			var spacesToExplore = args.SpacesMatchingCards.Except(args.Skipped)
+				.OrderBy(x=>x.Label)
+				.Where( space => space.Range( 1 ).Any( sources.Contains ) )
+				.ToArray();
 
 			// Explore
-			var explored = spacesToExplore.ToArray();
-			foreach(var b in explored)
+			foreach(var b in spacesToExplore)
 				await ExploresSpace( b );
 
-			return explored;
 		}
 
 		protected virtual async Task ExploresSpace(Space space ) {
+			Log(space+":gains explorer");
 			await Tokens.Add( Invader.Explorer, space );
 		}
 
@@ -421,14 +435,34 @@ namespace SpiritIsland {
 	}
 
 	public class BuildingEventArgs {
-		public CountDictionary<Space> Spaces;
+		public CountDictionary<Space> SpaceCounts;
 		public Dictionary<Space,BuildType> BuildTypes;
 		public enum BuildType { TownsAndCities, TownsOnly, CitiesOnly }
 	}
 
 	public class ExploreEventArgs {
+
+		public ExploreEventArgs(HashSet<Space> sources,List<Space> spacesMatchingCards ) {
+			this.Sources = sources;
+			this.SpacesMatchingCards = spacesMatchingCards.ToImmutableList();
+		}
+
+		/// <summary> Towns, cities, and coasts. </summary>
 		public HashSet<Space> Sources;
-		public List<Space> SpacesMatchingCards;
+
+		/// <summary> Should be 2,3 or 4 per board.  (doesn't check sources) </summary>
+		public ImmutableList<Space> SpacesMatchingCards;
+
+		public IEnumerable<Space> Skipped => _skipped;
+
+		public void Skip( Space space ) {
+			_skipped.Add( space );
+		}
+		public void SkipAll() {
+			_skipped.AddRange(SpacesMatchingCards);
+		}
+
+		readonly List<Space> _skipped = new List<Space>();
 
 	}
 

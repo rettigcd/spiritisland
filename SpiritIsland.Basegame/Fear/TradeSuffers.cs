@@ -10,9 +10,9 @@ namespace SpiritIsland.Basegame {
 		[FearLevel( 1, "Invaders do not Build in lands with City." )]
 		public Task Level1( FearCtx ctx ) {
 			ctx.GameState.PreBuilding.Add( ( gs, args ) => {
-				foreach(var space in args.Spaces.Keys.ToArray()) {
+				foreach(var space in args.SpaceCounts.Keys.ToArray()) {
 					if(0 < gs.Tokens[space].Sum(Invader.City))
-						args.Spaces[space] = 0;
+						args.SpaceCounts[space] = 0;
 				}
 			} );
 			return Task.CompletedTask;

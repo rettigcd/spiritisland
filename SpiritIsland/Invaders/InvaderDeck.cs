@@ -43,36 +43,40 @@ namespace SpiritIsland {
 
 		private InvaderDeck( params InvaderCard[] cards ) {
 			this.cards = cards.ToList();
-			for(int i=0;i<cards.Length;++i) drawCount.Add(1);
-			Advance(); // turn first explorer card up
+			Init();
 		}
 
-		public InvaderDeck( Random random ){
+		public InvaderDeck( Random random ) {
 
 			var level1 = Level1Cards.ToList();
 			var level2 = Level2Cards.ToList();
 			var level3 = Level3Cards.ToList();
 
-			if( random != null ){
-				random.Shuffle(level1);
-				random.Shuffle(level2);
-				random.Shuffle(level3);
+			if(random != null) {
+				random.Shuffle( level1 );
+				random.Shuffle( level2 );
+				random.Shuffle( level3 );
 			}
 
-			static void Discard1(List<InvaderCard> list){ list.RemoveAt(list.Count-1); }
-			Discard1(level1);
-			Discard1(level2);
-			Discard1(level3);
+			static void Discard1( List<InvaderCard> list ) { list.RemoveAt( list.Count - 1 ); }
+			Discard1( level1 );
+			Discard1( level2 );
+			Discard1( level3 );
 
 			// Merge
 			var all = new List<InvaderCard>();
-			all.AddRange(level1);
-			all.AddRange(level2);
-			all.AddRange(level3);
+			all.AddRange( level1 );
+			all.AddRange( level2 );
+			all.AddRange( level3 );
 			cards = all.ToList();
 
-			for(int i=0;i<cards.Count;++i) drawCount.Add(1);
-			Advance(); // turn first explorer card up
+			Init();
+		}
+
+		void Init() {
+			for(int i = 0; i < cards.Count; ++i) 
+				drawCount.Add( 1 );
+			TurnOverExploreCards(); // Advance(); // initialize the first explorer card up
 		}
 
 		#endregion
@@ -88,22 +92,28 @@ namespace SpiritIsland {
 		/// <summary>
 		/// Triggers Ravage / 
 		/// </summary>
-		public void Advance(){
+		public void Advance() {
 			// Move Ravage to Discard
 			CountInDiscard += Ravage.Count;
-			// Move Build to Ravage
 			Ravage.Clear();
+			// Move Build to Ravage
 			Ravage.AddRange( Build );
-			// move Explore to BUid
 			Build.Clear();
+			// move Explore to BUid
 			Build.AddRange( Explore );
-			// turn over explore
 			Explore.Clear();
+
+			// turn over explore
+//			TurnOverExploreCards();
+
+		}
+
+		public void TurnOverExploreCards() {
 			if(cards.Count > 0) {
-				int count = drawCount[0]; drawCount.RemoveAt(0);
+				int count = drawCount[0]; drawCount.RemoveAt( 0 );
 				while(count-- > 0) {
 					Explore.Add( cards[0] );
-					cards.RemoveAt(0);
+					cards.RemoveAt( 0 );
 				}
 			}
 		}
