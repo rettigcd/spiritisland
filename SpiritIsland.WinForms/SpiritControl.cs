@@ -71,7 +71,7 @@ namespace SpiritIsland.WinForms {
 			using Pen highlightPen = new( Color.Red, 8f );
 
 			// Load Presence image
-			using Bitmap presence = images.GetPresenceIcon(presenceColor);
+			using Bitmap presence = images.GetPresenceIcon( presenceColor );
 
 			// calc slot width and presence height
 			int maxLength = Math.Max( spirit.Presence.CardPlays.TotalCount, spirit.Presence.Energy.TotalCount ) + 2; // +2 for energy & Destroyed
@@ -86,26 +86,26 @@ namespace SpiritIsland.WinForms {
 			// Image
 			var imageSz = DrawSpiritImage( graphics, margin, y );
 
-			var painter = new GrowthPainter(graphics);
-			var growthHeight = painter.Paint(spirit.GrowthOptions,margin+imageSz.Width,y,Width-imageSz.Width-margin*2);
+			var painter = new GrowthPainter( graphics );
+			var growthHeight = painter.Paint( spirit.GrowthOptions, margin + imageSz.Width, y, Width - imageSz.Width - margin * 2 );
 			// highlight growth
-			foreach(var (opt,rect) in painter.layout.EachGrowth()) {
+			foreach(var (opt, rect) in painter.layout.EachGrowth()) {
 				if(growthOptions.Contains( opt )) {
-					hotSpots.Add(opt,rect);
-					graphics.DrawRectangle(highlightPen,rect.ToInts());
+					hotSpots.Add( opt, rect );
+					graphics.DrawRectangle( highlightPen, rect.ToInts() );
 				}
 			}
 			// highlight growth - action
 			foreach(var (opt, rect) in painter.layout.EachAction()) {
 				if(growthActions.Contains( opt )) {
-					if(!hotSpots.ContainsKey(opt))
+					if(!hotSpots.ContainsKey( opt ))
 						hotSpots.Add( opt, rect ); // sometimes growth reuses object, only show highlight the first 1 - for now.
 					graphics.DrawRectangle( highlightPen, rect.ToInts() );
 				}
 			}
 
 
-			y += Math.Max(imageSz.Height,(int)growthHeight);
+			y += Math.Max( imageSz.Height, (int)growthHeight );
 			y += margin;
 
 			// Energy
@@ -113,16 +113,19 @@ namespace SpiritIsland.WinForms {
 			y += trackPainter.DrawEnergyRow( slotWidth, margin, y, usableWidth ).Height;
 			y += margin;
 
+			DrawDestroyed( graphics, highlightPen, presence, slotWidth, presenceSize, ClientRectangle.Width-2.5f*slotWidth, y + slotWidth*.5f );
+
 			// Cards
 			y += (int)trackPainter.DrawCardPlayTrack( slotWidth, margin, y );
 			y += margin;
 			y += margin;
 
+
 			// Innates
 			float x = margin;
 			int maxHeight = 0;
 			int innateWidth = (Width - 3 * margin) / 2; // 3 margins => left, center, right
-			foreach(InnatePower power in spirit.InnatePowers ) {
+			foreach(InnatePower power in spirit.InnatePowers) {
 				var sz = DrawInnates( graphics, power, highlightPen, x, y, innateWidth );
 				x += (sz.Width + margin);
 				maxHeight = Math.Max( maxHeight, (int)sz.Height );
@@ -132,6 +135,25 @@ namespace SpiritIsland.WinForms {
 			// activated elements
 			DrawActivatedElements( graphics, y );
 
+		}
+
+		void DrawDestroyed( Graphics graphics, Pen highlightPen, Bitmap presence, float slotWidth, SizeF presenceSize, float x, float cardY ) {
+			if(spirit.Presence.Destroyed == 0) return;
+
+			var rect = new Rectangle( (int)(x + slotWidth / 2), (int)(cardY), (int)presenceSize.Width, (int)presenceSize.Height );
+
+			// Highlight Option
+			if(trackOptions.Contains( Track.Destroyed )) {
+				graphics.DrawEllipse( highlightPen, rect );
+				hotSpots.Add( Track.Destroyed, rect );
+			}
+
+			// Presence & Red X
+			graphics.DrawImage( presence, rect );
+			using var redX = images.GetTokenIcon( "red-x" );
+			graphics.DrawImage( redX, rect.X, rect.Y, rect.Width * 2 / 3, rect.Height * 2 / 3 );
+			// count
+			graphics.DrawCount( rect, spirit.Presence.Destroyed );
 		}
 
 		Size DrawSpiritImage( Graphics graphics, int x, int y ) {
