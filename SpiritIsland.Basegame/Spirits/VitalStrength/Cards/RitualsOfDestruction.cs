@@ -12,7 +12,7 @@ namespace SpiritIsland.Basegame.Spirits.VitalStrength {
 			// 2 damage
 			int damage = 2;
 
-			if( 3 <= ctx.GameState.DahanGetCount(ctx.Space)) {
+			if( 3 <= ctx.DahanCount ) {
 				damage += 3;
 				ctx.AddFear( 2 );
 			}

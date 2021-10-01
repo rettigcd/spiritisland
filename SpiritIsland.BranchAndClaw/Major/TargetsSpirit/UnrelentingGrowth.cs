@@ -11,10 +11,10 @@ namespace SpiritIsland.BranchAndClaw {
 			// target spirit adds 2 presence and 1 wilds to a land at range 1
 
 			// Select destination
-			var to = await ctx.OtherCtx.SelectPresenceDestination( 1, Target.Any );
+			var to = await ctx.OtherCtx.SelectSpaceWithinRangeOfCurrentPresence( 1, Target.Any );
 
 			// add wilds
-			var tokens = ctx.GameState.Tokens[to];
+			var tokens = ctx.Target(to).Tokens;
 			var wilds = tokens.Wilds();
 			wilds.Count++;
 

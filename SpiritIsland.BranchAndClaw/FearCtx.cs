@@ -26,7 +26,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 		// Extension to SpiritGameStateCtx
 		public static async Task<Space> AddStrifeToOne( this SpiritGameStateCtx spirit, IEnumerable<Space> options, params TokenGroup[] groups ) {
-			bool HasInvaders( Space s ) => spirit.GameState.Tokens[s].HasInvaders();
+			bool HasInvaders( Space s ) => spirit.Target(s).HasInvaders;
 			var space = await spirit.SelectSpace( "Add strife", options.Where( HasInvaders ) );
 			if(space != null)
 				await space.AddStrife( groups );

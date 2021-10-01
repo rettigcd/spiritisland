@@ -37,7 +37,7 @@ namespace SpiritIsland.Tests {
 		public static void ClearAllBlight( this SpiritGameStateCtx ctx ) {
 			// So it doesn't cascade and require extra interactions...
 			foreach(var space in ctx.AllSpaces) {
-				var tmpCtx = ctx.TargetSpace(space);
+				var tmpCtx = ctx.Target(space);
 				while(tmpCtx.HasBlight)
 					tmpCtx.RemoveBlight();
 			}

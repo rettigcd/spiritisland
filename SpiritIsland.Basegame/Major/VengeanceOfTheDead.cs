@@ -29,7 +29,7 @@ namespace SpiritIsland.Basegame {
 			// if you have 3 animal
 			if(ctx.YouHave( "3 animal" ))
 				// damage may be dealt into adjacent lands
-				landsWeCanApplyTheDamageTo.AddRange( ctx.Adjacents );
+				landsWeCanApplyTheDamageTo.AddRange( ctx.Adjacent );
 
 			return Task.CompletedTask;
 		}
@@ -37,12 +37,12 @@ namespace SpiritIsland.Basegame {
 		static async Task DistributeDamageToLands( TargetSpaceCtx ctx, List<Space> newDamageLands, int additionalDamage ) {
 			Space[] targetLandOptions;
 			while(additionalDamage > 0
-				&& (targetLandOptions = newDamageLands.Where( ctx.GameState.HasInvaders ).ToArray()).Length > 0
+				&& (targetLandOptions = newDamageLands.Where( s => ctx.Target(s).HasInvaders ).ToArray()).Length > 0
 			) {
 				var newLand = await ctx.Self.Action.Decision( new Decision.TargetSpace( $"Apply up to {additionalDamage} vengeanance damage in:", targetLandOptions ));
 				if(newLand == null) break;
 				int damage = await ctx.Self.SelectNumber( "How many damage to apply?", additionalDamage, 0 );
-				await ctx.DamageInvaders( newLand, damage );
+				await ctx.Target( newLand ).DamageInvaders( damage );
 				additionalDamage -= damage;
 			}
 		}

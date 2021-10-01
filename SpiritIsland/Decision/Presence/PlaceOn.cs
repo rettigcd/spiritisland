@@ -12,8 +12,12 @@ namespace SpiritIsland.Decision.Presence {
 		{
 			Spirit = spirit;
 		}
+
+		/// <summary>
+		/// Allows users to select a space that is within [range] of their existing presence
+		/// </summary>
 		public PlaceOn(SpiritGameStateCtx ctx, int range, string filterEnum )
-			:this( ctx.Self, CalcDestinationOptions(ctx,range,filterEnum ) ) 
+			:this( ctx.Self, FindSpacesWithinRangeOfSpiritsPresence(ctx,range,filterEnum ) ) 
 		{ 
 		}
 
@@ -21,7 +25,10 @@ namespace SpiritIsland.Decision.Presence {
 
 		public Spirit Spirit { get; }
 
-		static Space[] CalcDestinationOptions( SpiritGameStateCtx ctx, int range, string filterEnum ) {
+		/// <summary>
+		/// Finds spaces within [range] of spirits existing presence
+		/// </summary>
+		static Space[] FindSpacesWithinRangeOfSpiritsPresence( SpiritGameStateCtx ctx, int range, string filterEnum ) {
 			// Calculate options
 			var existing = ctx.Self.Presence.Spaces.ToArray();
 
@@ -31,7 +38,7 @@ namespace SpiritIsland.Decision.Presence {
 				.ToArray();
 
 			Space[] destinationOptions = inRange
-				.Where( s=>ctx.TargetSpace(s).Matches(filterEnum) )
+				.Where( s=>ctx.Target(s).Matches(filterEnum) )
 				.OrderBy( x => x.Label )
 				.ToArray();
 

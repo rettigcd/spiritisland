@@ -128,7 +128,8 @@ namespace SpiritIsland {
 
 				tokens.Blight.Count++;
 				--blightOnCard;
-				if(BlightCard != null && blightOnCard == 0)
+
+				if(BlightCard != null && blightOnCard <= 0)
 					BlightCard.OnBlightDepleated( this );
 
 				blightSpace = isFirstBlight ? null

@@ -16,7 +16,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			// if target land has exactly 1 blight, remove it
 			if( blightCount == 1 )
-				ctx.GameState.AddBlight(ctx.Space,-1);
+				ctx.RemoveBlight();
 
 			return Task.CompletedTask;
 		}

@@ -38,7 +38,7 @@ namespace SpiritIsland {
 			return source       // starting here
 				.SelectMany( x => x.Range( range ) )
 				.Distinct()
-				.Where( s => ctx.TargetSpace(s).Matches( filterEnum ) ); // matching this destination
+				.Where( s => ctx.Target(s).Matches( filterEnum ) ); // matching this destination
 		}
 
 		static IEnumerable<Space> GetSource( Spirit self, From sourceEnum ) {

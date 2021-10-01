@@ -18,7 +18,7 @@ namespace SpiritIsland.Basegame {
 
 				// 2 damage per dahan
 				foreach(var neighbor in pushedToLands)
-					await DahanDeal2DamageEach( ctx.TargetSpace( neighbor ) );
+					await DahanDeal2DamageEach( ctx.Target( neighbor ) );
 
 			}
 		}

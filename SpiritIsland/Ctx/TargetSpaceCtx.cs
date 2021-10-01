@@ -76,7 +76,7 @@ namespace SpiritIsland {
 		#endregion Gather
 
 		/// <summary> Use this for Power-Pushing, since Powers can push invaders into the ocean. </summary>
-		public IEnumerable<Space> Adjacents => AdjacentTo( Space );
+		public IEnumerable<Space> Adjacent => Space.Adjacent.Where( adj => Target(adj).IsInPlay );
 
 		// Convenience Methods - That bind to .Target
 		// could be Extension Methods
@@ -123,7 +123,13 @@ namespace SpiritIsland {
 		public Task<PowerCard> DrawMinor() => Self.DrawMinor( GameState );
 
 		// The current targets power
-		public InvaderGroup Invaders => invadersRO ??= InvadersOn( Space );
+		public InvaderGroup Invaders => invadersRO ??= Cause switch {
+				Cause.Power => Self.BuildInvaderGroupForPowers( GameState, Space ),
+				_ => GameState.Invaders.On( Space, Cause )
+			};
+
+		public void SkipAllInvaderActions() => GameState.SkipAllInvaderActions(Space);
+		public void Skip1Build() => GameState.Skip1Build(Space);
 
 		// Damage invaders in the current target space
 		public async Task DamageInvaders( int damage ) {
@@ -153,24 +159,29 @@ namespace SpiritIsland {
 
 		public Task PlaceDestroyedPresenceOnTarget() => Self.Presence.PlaceFromBoard( Track.Destroyed, Space, GameState );
 
+		public async Task PlacePresenceHere() {
+			var from = await SelectPresenceSource();
+			await Self.Presence.PlaceFromBoard( from, Space, GameState );
+		}
+
 		#endregion
 
 		public async Task<TargetSpaceCtx> SelectAdjacentLand( string prompt, System.Func<TargetSpaceCtx, bool> filter = null ) {
-			var options = Adjacents;
+			var options = Adjacent;
 			if(filter != null)
-				options = options.Where( s => filter( TargetSpace( s ) ) );
+				options = options.Where( s => filter( Target( s ) ) );
 			var space = await Self.Action.Decision( new Decision.AdjacentSpace( prompt, Space, Decision.GatherPush.None, options, Present.Always ) );
-			return space != null ? TargetSpace( space )
+			return space != null ? Target( space )
 				: null;
 		}
 
 		public async Task<TargetSpaceCtx> SelectAdjacentLandOrSelf( string prompt, System.Func<TargetSpaceCtx, bool> filter = null ) {
-			List<Space> options = Adjacents.ToList();
+			List<Space> options = Adjacent.ToList();
 			options.Add(Space);
 			if(filter != null)
-				options = options.Where( s => filter( TargetSpace( s ) ) ).ToList();
+				options = options.Where( s => filter( Target( s ) ) ).ToList();
 			var space = await Self.Action.Decision( new Decision.AdjacentSpace( prompt, Space, Decision.GatherPush.None, options, Present.Always ) );
-			return space != null ? TargetSpace( space )
+			return space != null ? Target( space )
 				: null;
 		}
 

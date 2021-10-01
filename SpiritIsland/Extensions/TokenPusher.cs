@@ -28,7 +28,7 @@ namespace SpiritIsland {
 
 		async Task<Space[]> Exec( Present present ) {
 
-			var counts = ctx.GameState.Tokens[source];
+			var counts = ctx.Target(source).Tokens;
 			Token[] GetTokens() {
 				var groupsWithRemainingCounts = indexLookup
 					.Where( pair => countArray[pair.Value] > 0 )
@@ -57,12 +57,12 @@ namespace SpiritIsland {
 
 		public async Task<Space> PushToken( Token token ) {
 			Space destination = await SelectDestination( token );
-			await ctx.GameState.Move( token, source, destination );
+			await ctx.Move( token, source, destination );
 			return destination;
 		}
 
 		protected virtual async Task<Space> SelectDestination( Token token ) {
-			IEnumerable<Space> destinationOptions = source.Adjacent.Where( s => ctx.TargetSpace(s).IsInPlay );
+			IEnumerable<Space> destinationOptions = source.Adjacent.Where( s => ctx.Target(s).IsInPlay );
 			return await ctx.Self.Action.Decision( (Decision.TypedDecision<Space>)new Decision.AdjacentSpaceTokenDestination( token, source, destinationOptions, Present.Always ) );
 		}
 

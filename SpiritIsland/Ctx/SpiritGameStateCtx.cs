@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -28,27 +29,18 @@ namespace SpiritIsland {
 
 		#endregion constructor
 
-		#region GameState only / Non-spirit parts
-
-		public IEnumerable<Space> AdjacentTo( Space source )
-			=> source.Adjacent.Where( x => TargetSpace(x).IsInPlay );
-
-		public async Task DamageInvaders( Space space, int damage ) {
-			if(damage == 0) return;
-			await TargetSpace( space ).DamageInvaders( damage );
-		}
-
-		#endregion
+		#region convenience Read-Only methods
 
 		public IEnumerable<Space> AllSpaces => GameState.Island.AllSpaces;
 
-		public virtual InvaderGroup InvadersOn( Space target )
-			=> Cause switch {
-				Cause.Power => Self.BuildInvaderGroupForPowers(GameState, target),
-				_ => GameState.Invaders.On( target, Cause )
-			};
+		public Task Move(Token token, Space from, Space to, int count = 1 )
+			=> GameState.Tokens.Move( token, from, to, count );
 
-		public virtual void AddFear( int count ) { // need space so we can track fear-space association for bringer
+		public bool YouHave( string elementString ) => Self.Elements.Contains( elementString );
+
+		#endregion
+
+		public virtual void AddFear( int count ) { // overriden by TargetSpaceCtx to add the location
 			GameState.Fear.AddDirect( new FearArgs { 
 				count = count, 
 				cause = Cause, 
@@ -59,18 +51,27 @@ namespace SpiritIsland {
 		/// <summary>
 		/// Used for Power-targetting, where range sympols appear.
 		/// </summary>
-		public async Task<TargetSpaceCtx> TargetsSpace( From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum ) {
+		public async Task<TargetSpaceCtx> SelectTargetSpace( From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum ) {
 			var space = await Self.PowerApi.TargetsSpace( Self, GameState, sourceEnum, sourceTerrain, range, filterEnum );
 			return new TargetSpaceCtx( this, space );
 		}
 
-		public TargetSpaceCtx TargetSpace( Space space ) => new TargetSpaceCtx( this, space );
+		public TargetSpaceCtx Target( Space space ) => new TargetSpaceCtx( this, space );
 		public TargetSpaceCtx TargetSpace( string spaceLabel ) => new TargetSpaceCtx( this, GameState.Island.AllSpaces.First(s=>s.Label==spaceLabel) );
 
 		public async Task<TargetSpaceCtx> TargetLandWithPresence( string prompt ) {
 			var space = await Self.Action.Decision( new Decision.Presence.Deployed( prompt, Self ) );
 			return new TargetSpaceCtx( this, space );
 		}
+
+		#region Draw Cards
+
+		public Task<PowerCard> Draw( Func<List<PowerCard>, Task> handleNotUsed ) => Self.Draw( GameState, handleNotUsed );
+		public Task<PowerCard> DrawMinor() => Self.DrawMinor( GameState );
+		public Task<PowerCard> DrawMajor( int numberToDraw = 4 ) => Self.CardDrawer.DrawMajor( Self, GameState, null, numberToDraw );
+
+
+		#endregion
 
 		#region Push
 
@@ -95,7 +96,7 @@ namespace SpiritIsland {
 			) {
 				var source = await Self.Action.Decision( new Decision.AdjacentSpaceTokensToGathers(countToGather, target, options, Present.Done ));
 				if(source == null) break;
-				await GameState.Move( source.Token, source.Space, target );
+				await Move( source.Token, source.Space, target );
 				--countToGather;
 			}
 		}
@@ -111,7 +112,7 @@ namespace SpiritIsland {
 			) {
 				var source = await Self.Action.Decision( new Decision.AdjacentSpaceTokensToGathers(countToGather, target, options, Present.Always ));
 				if(source == null) break;
-				await GameState.Move( source.Token, source.Space, target );
+				await Move( source.Token, source.Space, target );
 				--countToGather;
 			}
 		}
@@ -124,7 +125,7 @@ namespace SpiritIsland {
 		/// <remarks> Called from normal PlacePresence Growth + Gift of Proliferation. </remarks>
 		public async Task PlacePresence( int range, string filterEnum ) {
 			var from = await SelectPresenceSource();
-			Space to = await SelectPresenceDestination( range, filterEnum );
+			Space to = await SelectSpaceWithinRangeOfCurrentPresence( range, filterEnum );
 			await Self.Presence.PlaceFromBoard( from, to, GameState );
 		}
 
@@ -141,21 +142,20 @@ namespace SpiritIsland {
 				?? (IOption)await Self.Action.Decision( new Decision.Presence.TakeFromBoard( Self ) );
 		}
 
-		public async Task<Space> SelectPresenceDestination( int range, string filterEnum ) {
+		/// <summary>
+		/// Selects a space within [range] of current presence
+		/// </summary>
+		public async Task<Space> SelectSpaceWithinRangeOfCurrentPresence( int range, string filterEnum ) {
 			return await Self.Action.Decision( new Decision.Presence.PlaceOn( this, range, filterEnum ) );
+		}
+
+		public IEnumerable<Space> FindSpacesWithinRangeOf( IEnumerable<Space> source, int range, string filterEnum ) {
+			return Self.PowerApi.GetTargetOptions( Self, GameState, source, range, filterEnum );
 		}
 
 		#endregion Place Presence
 
-		#region Select Action
-
-		// convenience for ctx so we don't have to do ctx.Self.SelectPowerOption(...)
-		public Task SelectActionOption( params ActionOption[] options )
-			=> Self.SelectAction( "Select Power Option", options );
-
-		#endregion
-
-		public bool YouHave( string elementString ) => Self.Elements.Contains( elementString );
+		#region Generic Select space / option
 
 		public async Task<TargetSpaceCtx> SelectSpace( string prompt, IEnumerable<Space> options ) {
 			var space = await Self.Action.Decision( new Decision.TargetSpace( prompt, options, Present.Always ) );
@@ -164,12 +164,15 @@ namespace SpiritIsland {
 				: null;
 		}
 
-		#region SpaceFilter
-		protected readonly TerrainMapper TerrainMapper;
+		// convenience for ctx so we don't have to do ctx.Self.SelectPowerOption(...)
+		public Task SelectActionOption( params ActionOption[] options )
+			=> Self.SelectAction( "Select Power Option", options );
 
 		#endregion
 
-		#region used in Fear
+		protected readonly TerrainMapper TerrainMapper;
+
+		#region High level fear-specific decisions
 
 		public async Task RemoveHealthFromOne( int healthToRemove, IEnumerable<Space> options ) {
 			var space = await SelectSpace( $"remove {healthToRemove} invader health from", options );

@@ -21,11 +21,11 @@ namespace SpiritIsland.Basegame {
 
 			// drop explorer in the ocean to drown
 			if( ctx.Tokens.Has(Invader.Explorer))
-				await ctx.GameState.Move( Invader.Explorer[1], ctx.Space, drowningOcean );
+				await ctx.Move( Invader.Explorer[1], ctx.Space, drowningOcean );
 
 			// drop town in the ocean to drown
 			if(ctx.Invaders.Tokens.Has(Invader.Town))
-				await ctx.GameState.Move( ctx.Invaders.Tokens[Invader.Town[2]]>0 ? Invader.Town[2] : Invader.Town[1], ctx.Space, drowningOcean );
+				await ctx.Move( ctx.Invaders.Tokens[Invader.Town[2]]>0 ? Invader.Town[2] : Invader.Town[1], ctx.Space, drowningOcean );
 
 			await ctx.DestroyDahan(1); // destorying dahan is the same as drowning them
 		}

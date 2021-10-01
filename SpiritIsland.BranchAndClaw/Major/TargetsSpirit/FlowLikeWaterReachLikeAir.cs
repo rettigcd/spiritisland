@@ -19,7 +19,7 @@ namespace SpiritIsland.BranchAndClaw {
 				"Move Presence + up to 2 explorers,towns,dahan to",
 				sourceCtx.Space,
 				Decision.GatherPush.Push,
-				sourceCtx.Adjacents,
+				sourceCtx.Adjacent,
 				Present.Always
 			));
 

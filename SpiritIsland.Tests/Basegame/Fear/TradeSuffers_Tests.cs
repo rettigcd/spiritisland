@@ -74,7 +74,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 
 			// So it doesn't cascade during ravage
 			foreach(var space in ctx.AllSpaces) {
-				var tmpCtx = ctx.TargetSpace(space);
+				var tmpCtx = ctx.Target(space);
 				while(tmpCtx.HasBlight)
 					tmpCtx.RemoveBlight();
 			}

@@ -13,14 +13,14 @@ namespace SpiritIsland.Basegame {
 		[InnateOption("1 water,3 plant","Defend 2.")]
 		static public Task Option1Async( TargetSpaceCtx ctx ) {
 			//defend 2
-			ctx.GameState.Defend( ctx.Space, 2 );
+			ctx.Defend(2);
 			return Task.CompletedTask;
 		}
 
 		[InnateOption( "2 water,4 plant","Instead, Defend 4." )]
 		static public Task Option2Async( TargetSpaceCtx ctx ) {
 			//defend 4 (instead)
-			ctx.GameState.Defend(ctx.Space,4);
+			ctx.Defend(4);
 			return Task.CompletedTask;
 		}
 

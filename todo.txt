@@ -2,20 +2,18 @@
 
 == Clean-up ==
 
-4 Portal - Event Driven / Blocking
-4 InvaderEngine - pull Invader Actions into a plugable object that can be called from the InvaderDesk
-4 Power Cards don't directly access GameState
-* Grapics / Layout
+5 InvaderEngine - pull Invader Actions into a plugable object that can be called from the InvaderDesk
+4 Grapics / Layout
 * draw innates - range icons, Target icons, clean tokens, +1 range
-* Blight Tests
+4 Blight Tests
 
 == Bonus - Fun ==
 
-5 Click on Fear card to close it.
-* Draw cards from metadata
-* hovering over cards, show what lands they target
-* Cards ui - scrolling, decks & discard pile, 
-* Visual indication of phase
+3 Draw cards from metadata
+2 Click on Fear card to close it.
+2 Visual indication of phase
+2 hovering over cards, show what lands they target
+1 Cards ui - scrolling, decks & discard pile, 
 
 
 == Book Keeping ==

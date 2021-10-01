@@ -21,11 +21,11 @@ namespace SpiritIsland.Basegame {
 
 			if(ctx.YouHave("3 water,2 earth")){
 				var otherCoastalsOnSameBoard = ctx.Space.Board
-					.Spaces.Where( s=> s != ctx.Space && ctx.TargetSpace(s).IsCoastal )
+					.Spaces.Where( s=> s != ctx.Space && ctx.Target(s).IsCoastal )
 					.ToArray();
 
 				foreach(var otherCoast in otherCoastalsOnSameBoard)
-					await DamageOtherCoast( ctx.TargetSpace( otherCoast ) );
+					await DamageOtherCoast( ctx.Target( otherCoast ) );
 
 			}
 		}

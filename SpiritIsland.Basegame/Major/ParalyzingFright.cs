@@ -13,7 +13,7 @@ namespace SpiritIsland.Basegame {
 			ctx.AddFear(4);
 
 			// invaders skip all actions in target land this turn
-			ctx.GameState.SkipAllInvaderActions( ctx.Space );
+			ctx.SkipAllInvaderActions();
 
 			// if you have 2 air 3 earth, +4 fear
 			if(ctx.YouHave("2 air,3 earth"))

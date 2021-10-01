@@ -26,7 +26,7 @@ namespace SpiritIsland.BranchAndClaw {
 				// Add 1 wilds.
 				ctx.Tokens.Wilds().Count++;
 				// In  each adjacent land:
-				foreach(var adj in ctx.Adjacents.Select( ctx.TargetSpace ))
+				foreach(var adj in ctx.Adjacent.Select( ctx.Target ))
 					await EffectAdjacentLand( adj );
 			}
 

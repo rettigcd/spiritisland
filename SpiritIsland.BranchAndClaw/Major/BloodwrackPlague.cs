@@ -13,8 +13,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 			// for each disease in target land, defend 1 in target and all adjacent lands
 			ctx.Defend( disease.Count );
-			foreach( var adjacent in ctx.Adjacents )
-				ctx.GameState.Defend(adjacent, disease.Count );
+			foreach( var adjacent in ctx.Adjacent )
+				ctx.Target(adjacent).Defend( disease.Count );
 
 			// if you have 2 earthn 4 animal:
 			if(ctx.YouHave("2 earth,4 animal")) { 
@@ -23,7 +23,7 @@ namespace SpiritIsland.BranchAndClaw {
 				// For each disease in target land, do 1 damage in target or adjacent land
 				int damage = disease.Count;
 				var space = await ctx.Self.Action.Decision(new Decision.TargetSpace($"Select space to apply {damage} damage", ctx.Space.Range(1), Present.Always )); // can we wrap this and make it easier to call?
-				await ctx.TargetSpace(space).DamageInvaders( damage );
+				await ctx.Target(space).DamageInvaders( damage );
 			}
 		}
 

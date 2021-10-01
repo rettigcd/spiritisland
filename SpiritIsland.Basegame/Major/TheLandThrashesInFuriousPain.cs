@@ -13,8 +13,8 @@ namespace SpiritIsland.Basegame {
 				// 2 damage per blight in target land
 				int damage = ctx.BlightOnSpace * 2
 					// +1 damage per blight in adjacent lands
-					+ ctx.Adjacents.Sum( x => ctx.GameState.GetBlightOnSpace( x ) );
-				return ctx.DamageInvaders( ctx.Space, damage );
+					+ ctx.Adjacent.Sum( x => ctx.Target(x).BlightOnSpace );
+				return ctx.DamageInvaders( damage );
 			}
 
 			await DamageLandFromBlight( ctx );
@@ -23,7 +23,7 @@ namespace SpiritIsland.Basegame {
 			if(ctx.YouHave("3 moon,3 earth")) {
 				// repeat on an adjacent land.
 				var alsoTarget = await ctx.Self.Action.Decision( new Decision.TargetSpace( "Select additional land to receive blight damage", ctx.Space.Adjacent));
-				await DamageLandFromBlight( ctx.TargetSpace( alsoTarget ) );
+				await DamageLandFromBlight( ctx.Target( alsoTarget ) );
 			}
 		}
 

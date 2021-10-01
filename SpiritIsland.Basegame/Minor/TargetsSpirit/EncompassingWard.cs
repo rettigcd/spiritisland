@@ -12,7 +12,7 @@ namespace SpiritIsland.Basegame {
 
 			// defend 2 in every land where spirit has presence
 			foreach(var space in ctx.Other.Presence.Spaces)
-				ctx.GameState.Defend(space,2);
+				ctx.Target(space).Defend(2);
 
 			return Task.CompletedTask;
 		}

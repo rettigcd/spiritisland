@@ -18,7 +18,7 @@ namespace SpiritIsland.Basegame {
 
 		[InnateOption("2 sun,3 water", "Instead, 2 Damage.  Push up to 3 explorer/town." )]
 		static public async Task Option2Async(TargetSpaceCtx ctx){
-			await ctx.DamageInvaders(ctx.Space, 2);
+			await ctx.DamageInvaders( 2 );
 			await ctx.PushUpTo(3,Invader.Town,Invader.Explorer);
 		}
 

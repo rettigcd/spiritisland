@@ -29,7 +29,7 @@ namespace SpiritIsland.Basegame {
 
 			// We can't track which original invader is was killed, so let the user choose.
 
-			Token[] CalcInvaderTypes() => ctx.GameState.Tokens[source].OfAnyType( healthyInvaders );
+			Token[] CalcInvaderTypes() => ctx.Target(source).Tokens.OfAnyType( healthyInvaders );
 
 			var invaders = CalcInvaderTypes();
 			while(0 < countToPush && 0 < invaders.Length) {
@@ -40,9 +40,9 @@ namespace SpiritIsland.Basegame {
 
 				var destination = await ctx.Self.Action.Decision( new Decision.TargetSpace(
 					"Push " + invader.Summary + " to",
-					source.Adjacent.Where( s=>ctx.TargetSpace(s).IsInPlay )
+					source.Adjacent.Where( s=>ctx.Target(s).IsInPlay )
 				) );
-				await ctx.GameState.Move( invader, source, destination );
+				await ctx.Move( invader, source, destination );
 
 				--countToPush;
 				invaders = CalcInvaderTypes();

@@ -27,7 +27,7 @@ namespace SpiritIsland.Tests.Basegame {
 
 			// and: there is a space a space that IS-RAVAGE AND BUILD (aka: Jungle - see above)
 			var spaceCtx = ctx.AllSpaces
-				.Select( ctx.TargetSpace )
+				.Select( ctx.Target )
 				.Last( s => s.MatchesRavageCard && s.MatchesBuildCard ); // last stays away from city and ocean
 			invaderLog.Add("Selected target:"+spaceCtx.Space.Label );
 

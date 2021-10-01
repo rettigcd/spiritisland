@@ -20,7 +20,7 @@ namespace SpiritIsland.Basegame {
 				Space[] dest = await ctx.PushUpToNDahan( 2 );
 				// defend pushed
 				foreach(var d in dest)
-					ctx.GameState.Defend( d, 2 );
+					ctx.Target(d).Defend( 2 );
 			}
 
 			// -- defend remaining --

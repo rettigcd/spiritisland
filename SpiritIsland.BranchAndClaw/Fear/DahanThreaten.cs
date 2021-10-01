@@ -37,7 +37,7 @@ namespace SpiritIsland.BranchAndClaw {
 			// in every land with strife, 1 damage per dahan
 
 			foreach(var space in ctx.LandsWithStrife()) {
-				var spaceCtx = decidingSpirit.TargetSpace(space);
+				var spaceCtx = decidingSpirit.Target(space);
 				await spaceCtx.DamageInvaders( spaceCtx.Tokens.Sum(TokenType.Dahan) );
 			}
 		}

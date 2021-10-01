@@ -17,7 +17,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Minor {
 
 			// Given: a space that is not part of the build nor ravage
 			var spaceCtx = ctx.AllSpaces
-				.Select( ctx.TargetSpace )
+				.Select( ctx.Target )
 				.Last( s => !s.MatchesBuildCard && !s.MatchesRavageCard ); // last stays away from city and ocean
 
 			Given_HasOnly3Explorers( spaceCtx );
@@ -41,7 +41,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Minor {
 
 			// Given: a space that IS-RAVAGE but NOT-BUILD
 			var spaceCtx = ctx.AllSpaces
-				.Select( ctx.TargetSpace )
+				.Select( ctx.Target )
 				.Last( s => s.MatchesRavageCard && !s.MatchesBuildCard ); // last stays away from city and ocean
 																		  //  And: it has 3 explorers (in case dahan attacks during ravage, would still 1 left over
 			Given_HasOnly3Explorers( spaceCtx );
@@ -71,7 +71,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Minor {
 
 			// Given: a space that IS-RAVAGE but NOT-BUILD
 			var spaceCtx = ctx.AllSpaces
-				.Select( ctx.TargetSpace )
+				.Select( ctx.Target )
 				.Last( s => s.MatchesRavageCard && !s.MatchesBuildCard ); // last stays away from city and ocean
 																		  //  And: it has 3 explorers (in case dahan attacks during ravage, would still 1 left over
 			Given_HasOnly3Explorers( spaceCtx );
@@ -103,7 +103,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Minor {
 
 			// Given: a space that IS-RAVAGE AND BUILD
 			var spaceCtx = ctx.AllSpaces
-				.Select( ctx.TargetSpace )
+				.Select( ctx.Target )
 				.Last( s => s.MatchesRavageCard && s.MatchesBuildCard ); // last stays away from city and ocean
 			invaderLog.Add("Selected target:"+spaceCtx.Space.Label );
 
@@ -132,14 +132,14 @@ namespace SpiritIsland.Tests.BranchAndClaw.Minor {
 
 		static void Given_NoSuroundingTowns( TargetSpaceCtx spaceCtx ) {
 			// Simplifies power card because it has a Gather-Towns we don't want to deal with.
-			foreach(var adj in spaceCtx.Adjacents)
-				spaceCtx.TargetSpace( adj ).Tokens[Invader.Town.Default] = 0;
+			foreach(var adj in spaceCtx.Adjacent)
+				spaceCtx.Target( adj ).Tokens[Invader.Town.Default] = 0;
 		}
 
 		static void Given_NoSuroundingDahan( TargetSpaceCtx spaceCtx ) {
 			// Simplifies power card because it has a Gather-dahan we don't want to deal with.
-			foreach(var adj in spaceCtx.Adjacents)
-				spaceCtx.TargetSpace( adj ).Tokens[TokenType.Dahan.Default] = 0;
+			foreach(var adj in spaceCtx.Adjacent)
+				spaceCtx.Target( adj ).Tokens[TokenType.Dahan.Default] = 0;
 		}
 
 		static void Given_Has2Dahan( TargetSpaceCtx spaceCtx ) {

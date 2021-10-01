@@ -15,7 +15,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Minor {
 
 			// Given: find a space with 1 explorer
 			var spaceCtx = ctx.AllSpaces
-				.Select( ctx.TargetSpace )
+				.Select( ctx.Target )
 				.First( sc => sc.Tokens.InvaderSummary == "1E@1" );
 
 			//   And: add Dahan (because card requires it)

@@ -39,7 +39,7 @@ namespace SpiritIsland.BranchAndClaw {
 					$"Apply {remainingDamage} reamaining damage"
 					,ctx.Self.Presence.Spaces
 				));
-				await ctx.TargetSpace(secondaryTarget).DamageInvaders(remainingDamage);
+				await ctx.Target(secondaryTarget).DamageInvaders(remainingDamage);
 			}
 
 		}

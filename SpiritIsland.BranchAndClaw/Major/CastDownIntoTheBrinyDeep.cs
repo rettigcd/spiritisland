@@ -27,8 +27,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 				// destory presence
 				foreach(var spirit in ctx.GameState.Spirits)
-				foreach(var p in spirit.Presence.Placed.Where(p=>p.Board==ctx.Space.Board).ToArray() )
-					spirit.Presence.Destroy(p);
+					foreach(var p in spirit.Presence.Placed.Where(p=>p.Board==ctx.Space.Board).ToArray() )
+						spirit.Presence.Destroy(p);
 
 				// destroy board - spaces
 				foreach(var space in ctx.Space.Board.Spaces)
@@ -43,7 +43,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			foreach(var space in ctx.Space.Board.Spaces) {
 
-				var spaceCtx = ctx.TargetSpace( space );
+				var spaceCtx = ctx.Target( space );
 
 				// Destory Invaders
 				await spaceCtx.Invaders.DestroyAny( int.MaxValue, Invader.City, Invader.Town, Invader.Explorer );

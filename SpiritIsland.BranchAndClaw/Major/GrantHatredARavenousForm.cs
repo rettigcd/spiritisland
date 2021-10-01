@@ -27,12 +27,12 @@ namespace SpiritIsland.BranchAndClaw {
 			// if you have 4 moon, 2 fire
 			if(ctx.YouHave("4 moon,2 fire" )) {
 				// add 1 strife in up to 3 adjacent lands.
-				var tokenSpaces = ctx.Adjacents
-					.Where(s => ctx.GameState.Tokens[s].HasInvaders())
+				var tokenSpaces = ctx.Adjacent
+					.Where(s => ctx.Target(s).HasInvaders)
 					.ToList();
 				for(int i = 0; tokenSpaces.Count >0 && i < 3; ++i) {
 					var space = await ctx.Self.Action.Decision(new Decision.TargetSpace("Add Strife", tokenSpaces, Present.Done));
-					await ctx.Self.SelectInvader_ToStrife( ctx.GameState.Tokens[space] );
+					await ctx.Self.SelectInvader_ToStrife( ctx.Target(space).Tokens );
 					tokenSpaces.Remove(space);
 				}
 

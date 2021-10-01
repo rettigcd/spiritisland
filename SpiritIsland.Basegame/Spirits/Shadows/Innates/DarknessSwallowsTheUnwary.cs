@@ -31,7 +31,7 @@ namespace SpiritIsland.Basegame {
 
 			// 3 more points of damage (+ 1 fear/kill )
 			int startingCount = ctx.Invaders.Tokens.InvaderTotal();
-			await ctx.DamageInvaders(ctx.Space, 3 );
+			await ctx.DamageInvaders( 3 );
 			int endingCount = ctx.Invaders.Tokens.InvaderTotal();
 			int killed = startingCount - endingCount;
 			ctx.AddFear( killed );

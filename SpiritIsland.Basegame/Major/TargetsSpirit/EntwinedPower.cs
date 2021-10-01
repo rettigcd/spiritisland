@@ -8,7 +8,6 @@ namespace SpiritIsland.Basegame {
 		[MajorCard( "Entwined Power", 2, Speed.Fast, Element.Moon, Element.Water, Element.Plant )]
 		[TargetSpirit]
 		static public async Task ActAsync( TargetSpiritCtx ctx ) {
-			var gs = ctx.GameState;
 
 			// You and other spirit share presence for targeting
 			if( ctx.Self != ctx.Other) {
@@ -18,7 +17,7 @@ namespace SpiritIsland.Basegame {
 			}
 
 			// Target spirit gains a power Card.
-			await ctx.Other.Draw( gs, ( cards ) => {
+			await ctx.OtherCtx.Draw( cards => {
 				// You gain one of the power Cards they did not keep.
 				return DrawFromDeck.TakeCard( ctx.Self, cards );
 			} );

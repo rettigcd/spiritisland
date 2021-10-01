@@ -11,8 +11,7 @@ namespace SpiritIsland.Basegame {
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 			// add 1 presence in target land even if you normally could not due to land type.
-			var from = await ctx.SelectPresenceSource();
-			await ctx.Self.Presence.PlaceFromBoard( from, ctx.Space, ctx.GameState );
+			await ctx.PlacePresenceHere();
 
 			// Defend 20
 			ctx.Defend(20);
@@ -25,7 +24,7 @@ namespace SpiritIsland.Basegame {
 					ctx.AddFear(3);
 
 				// Invaders skip all actions in target land this turn.
-				ctx.GameState.SkipAllInvaderActions( ctx.Space );
+				ctx.SkipAllInvaderActions();
 			}
 		}
 

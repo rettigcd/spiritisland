@@ -18,17 +18,17 @@ namespace SpiritIsland.Basegame {
 			// defend 5 in that land
 
 			// destination
-			var destination = await ctx.Self.Action.Decision( new Decision.TargetSpace( "Move dahan to", ctx.GameState.Island.AllSpaces.Where( s => s.Terrain != Terrain.Ocean ) ) );
+			var destination = await ctx.Self.Action.Decision( new Decision.TargetSpace( "Move dahan to", ctx.AllSpaces.Where( s => s.Terrain != Terrain.Ocean ) ) );
 			// technically could move to ocean while Ocean on board, but no reason to.
 
 			// move dahan
 			int max = Math.Min( ctx.DahanCount, 5 );
 			int countToMove = await ctx.Self.SelectNumber( "# of dahan to move", max );
 			while(countToMove-->0)
-				await ctx.GameState.Tokens.Move( TokenType.Dahan.Default, ctx.Space, destination, 1 );
+				await ctx.Move( TokenType.Dahan.Default, ctx.Space, destination );
 
 			// defend
-			ctx.TargetSpace(destination).Defend(5);
+			ctx.Target(destination).Defend(5);
 
 		}
 	}

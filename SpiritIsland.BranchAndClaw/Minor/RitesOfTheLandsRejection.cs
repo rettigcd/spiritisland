@@ -13,7 +13,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			void StopBuild_FearForCitiesTownsAndDahan() {
 				// Invaders Do not build in target land this turn
-				ctx.GameState.Skip1Build( ctx.Space );
+				ctx.Skip1Build();
 
 				// 1 fear per town/city OR 1 fear per dahan, whichever is less
 				int cityTownCount = ctx.Tokens.SumAny( Invader.Town, Invader.City );
