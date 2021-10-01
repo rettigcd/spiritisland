@@ -22,7 +22,7 @@ namespace SpiritIsland.Basegame {
 		public async Task Level2( FearCtx ctx ) {
 			var gs = ctx.GameState;
 			foreach(var spirit in gs.Spirits) {
-				var options = gs.Island.AllSpaces.Where( s => s.IsCostal && gs.Tokens[s].Has( Invader.Town ) ).ToArray();
+				var options = gs.Island.AllSpaces.Where( s => s.IsCoastal && gs.Tokens[s].Has( Invader.Town ) ).ToArray();
 				if(options.Length == 0) return;
 				var target = await spirit.Action.Decision( new Decision.TargetSpace( "Replace town with explorer", options ) );
 				await Replace.Downgrade( spirit, gs.Invaders.On( target, Cause.Fear ), Invader.Town );
@@ -33,7 +33,7 @@ namespace SpiritIsland.Basegame {
 		public async Task Level3( FearCtx ctx ) {
 			var gs = ctx.GameState;
 			foreach(var spirit in gs.Spirits) {
-				var options = gs.Island.AllSpaces.Where( s => s.IsCostal && gs.Tokens[ s ].HasAny(Invader.Town,Invader.City) ).ToArray();
+				var options = gs.Island.AllSpaces.Where( s => s.IsCoastal && gs.Tokens[ s ].HasAny(Invader.Town,Invader.City) ).ToArray();
 				if(options.Length == 0) return;
 				var target = await spirit.Action.Decision( new Decision.TargetSpace( "Replace town with explorer or city with town", options ));
 				await Replace.Downgrade( spirit, gs.Invaders.On( target, Cause.Fear ), Invader.City, Invader.Town );

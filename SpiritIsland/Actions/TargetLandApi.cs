@@ -34,10 +34,11 @@ namespace SpiritIsland {
 			int range, 
 			string filterEnum 
 		) {
+			var ctx = new SpiritGameStateCtx( self, gameState, Cause.Power );
 			return source       // starting here
 				.SelectMany( x => x.Range( range ) )
 				.Distinct()
-				.Where( SpaceFilter.ForPowers.GetFilter( self, gameState, filterEnum ) ); // matching this destination
+				.Where( s => ctx.TargetSpace(s).Matches( filterEnum ) ); // matching this destination
 		}
 
 		static IEnumerable<Space> GetSource( Spirit self, From sourceEnum ) {

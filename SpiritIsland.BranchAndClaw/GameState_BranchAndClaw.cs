@@ -8,13 +8,14 @@ namespace SpiritIsland.BranchAndClaw {
 
 		static GameState_BranchAndClaw() {
 			// Register new filters needed for Branch and Claw
-			SpaceFilter.lookup[Target.Beast]           = ( ctx, s ) => ctx.GameState.Tokens[s].Beasts().Any;
-			SpaceFilter.lookup[Target.BeastOrJungle]   = ( ctx, s ) => ctx.SelectTerrain( s ) == Terrain.Jungle || ctx.GameState.Tokens[s].Beasts().Any;
-			SpaceFilter.lookup[Target.PresenceOrWilds] = ( ctx, s ) => ctx.Spirit.Presence.IsOn( s ) || ctx.GameState.Tokens[s].Wilds() > 0 ;
-			SpaceFilter.lookup[Target.CoastalOrWetlands]= ( ctx, s ) => ctx.SelectTerrain( s ) == Terrain.Wetland || ctx.IsCoastal( s );
+			SpaceFilterMap.Register(Target.Beast,            ( ctx ) => ctx.Tokens.Beasts().Any );
+			SpaceFilterMap.Register(Target.BeastOrJungle,    ( ctx ) => ctx.Terrain == Terrain.Jungle || ctx.Tokens.Beasts().Any );
+			SpaceFilterMap.Register(Target.PresenceOrWilds,  ( ctx ) => ctx.IsPresent || ctx.Tokens.Wilds() > 0 );
+			SpaceFilterMap.Register(Target.CoastalOrWetlands,( ctx ) => ctx.Terrain == Terrain.Wetland || ctx.IsCoastal );
+			SpaceFilterMap.Register(Target.City, (ctx) => ctx.Tokens.Has(Invader.City) );
 
-			// Don't use SelectTerrain because even if ocean is Wetland, it is not inland.
-			SpaceFilter.lookup[Target.Inland]          = ( ctx, s ) => s.Terrain != Terrain.Ocean && !s.IsCostal;
+			// Don't use TerrainMapper, Inland should ignore terrain modifications (I think)
+			SpaceFilterMap.Register(Target.Inland,           ( ctx ) => ctx.Space.Terrain != Terrain.Ocean && !ctx.Space.IsCoastal );
 		}
 
 		public GameState_BranchAndClaw(Spirit spirit,Board board ) : base( spirit, board ) {

@@ -115,6 +115,8 @@ namespace SpiritIsland {
 		/// <summary>Causes cascading</summary>
 		public async Task BlightLand( Space blightSpace ){
 
+			var terrainMapper = TerrainMapper.For(Cause.Blight);
+
 			while(blightSpace != null) {
 
 				var tokens = Tokens[blightSpace];
@@ -134,7 +136,7 @@ namespace SpiritIsland {
 						"Cascade blight to", 
 						blightSpace, 
 						Decision.GatherPush.None,
-						blightSpace.Adjacent.Where( x => SpaceFilter.ForCascadingBlight.TerrainMapper( x ) != Terrain.Ocean ),
+						blightSpace.Adjacent.Where( x => terrainMapper.GetTerrain( x ) != Terrain.Ocean ),
 						Present.Always
 					));
 			}

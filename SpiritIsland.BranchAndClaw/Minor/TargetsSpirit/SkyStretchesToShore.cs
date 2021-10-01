@@ -32,7 +32,7 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 		public override IEnumerable<Space> GetTargetOptions( Spirit self, GameState gameState, From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum ) {
 			var normal = orig.GetTargetOptions( self, gameState, sourceEnum, sourceTerrain, range, filterEnum );
 			var shore = orig.GetTargetOptions( self, gameState, sourceEnum, sourceTerrain, range+3, filterEnum )
-				.Where(x => x.IsCostal);
+				.Where(x => x.IsCoastal);
 			return normal.Union(shore);
 		}
 

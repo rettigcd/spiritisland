@@ -16,6 +16,14 @@ namespace SpiritIsland {
 			Self = self;
 			GameState = gameState;
 			Cause = cause;
+			TerrainMapper = TerrainMapper.For(cause); // !! could make TerrainMapper a property on Cause so we don't have to look it up.
+		}
+
+		protected SpiritGameStateCtx(SpiritGameStateCtx src) {
+			Self = src.Self;
+			GameState = src.GameState;
+			Cause = src.Cause;
+			TerrainMapper = src.TerrainMapper;
 		}
 
 		#endregion constructor
@@ -23,19 +31,12 @@ namespace SpiritIsland {
 		#region GameState only / Non-spirit parts
 
 		public IEnumerable<Space> AdjacentTo( Space source )
-			=> source.Adjacent.Where( x => this.SpaceFilter.TerrainMapper( x ) != Terrain.Ocean );
-
-		public bool IsCostal( Space space ) => this.SpaceFilter.IsCoastal( space );
+			=> source.Adjacent.Where( x => TargetSpace(x).IsInPlay );
 
 		public async Task DamageInvaders( Space space, int damage ) {
 			if(damage == 0) return;
 			await TargetSpace( space ).DamageInvaders( damage );
 		}
-
-		protected virtual SpaceFilter SpaceFilter => Cause switch {
-			Cause.Power => SpaceFilter.ForPowers,
-			_ => SpaceFilter.Normal
-		};
 
 		#endregion
 
@@ -60,15 +61,15 @@ namespace SpiritIsland {
 		/// </summary>
 		public async Task<TargetSpaceCtx> TargetsSpace( From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum ) {
 			var space = await Self.PowerApi.TargetsSpace( Self, GameState, sourceEnum, sourceTerrain, range, filterEnum );
-			return new TargetSpaceCtx( Self, GameState, space, Cause );
+			return new TargetSpaceCtx( this, space );
 		}
 
-		public TargetSpaceCtx TargetSpace( Space space ) => new TargetSpaceCtx( Self, GameState, space, Cause );
-		public TargetSpaceCtx TargetSpace( string spaceLabel ) => new TargetSpaceCtx( Self, GameState, GameState.Island.AllSpaces.First(s=>s.Label==spaceLabel), Cause );
+		public TargetSpaceCtx TargetSpace( Space space ) => new TargetSpaceCtx( this, space );
+		public TargetSpaceCtx TargetSpace( string spaceLabel ) => new TargetSpaceCtx( this, GameState.Island.AllSpaces.First(s=>s.Label==spaceLabel) );
 
 		public async Task<TargetSpaceCtx> TargetLandWithPresence( string prompt ) {
 			var space = await Self.Action.Decision( new Decision.Presence.Deployed( prompt, Self ) );
-			return new TargetSpaceCtx( Self, GameState, space, Cause );
+			return new TargetSpaceCtx( this, space );
 		}
 
 		#region Push
@@ -159,10 +160,14 @@ namespace SpiritIsland {
 		public async Task<TargetSpaceCtx> SelectSpace( string prompt, IEnumerable<Space> options ) {
 			var space = await Self.Action.Decision( new Decision.TargetSpace( prompt, options, Present.Always ) );
 			return space != null
-				? new TargetSpaceCtx( Self, GameState, space, Cause )
+				? new TargetSpaceCtx( this, space )
 				: null;
 		}
 
+		#region SpaceFilter
+		protected readonly TerrainMapper TerrainMapper;
+
+		#endregion
 
 		#region used in Fear
 

@@ -26,7 +26,7 @@ namespace SpiritIsland {
 			.Where(s=>s.Terrain!=Terrain.Ocean)
 			.Where(withCondition);
 
-		public IEnumerable<Space> InlandLands                 => GameState.Island.AllSpaces.Where( s => !s.IsCostal && s.Terrain != Terrain.Ocean );
+		public IEnumerable<Space> InlandLands                 => GameState.Island.AllSpaces.Where( s => !s.IsCoastal && s.Terrain != Terrain.Ocean );
 
 		public bool WithDahanAndExplorers( Space space ) => WithDahan(space) && WithExplorers(space);
 		public bool WithDahanAndInvaders( Space space ) => WithDahan( space ) && WithInvaders( space );

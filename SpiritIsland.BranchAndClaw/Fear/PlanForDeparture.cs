@@ -10,7 +10,7 @@ namespace SpiritIsland.BranchAndClaw {
 		public async Task Level1( FearCtx ctx ) {
 
 			// Each player may gather 1 town into a costal land.
-			var coastal = ctx.GameState.Island.AllSpaces.Where(x=>x.IsCostal).ToArray();
+			var coastal = ctx.GameState.Island.AllSpaces.Where(x=>x.IsCoastal).ToArray();
 			foreach(var spiritCtx in ctx.Spirits )
 				await spiritCtx.GatherExplorerToOne(coastal,1,Invader.Town);
 
@@ -20,7 +20,7 @@ namespace SpiritIsland.BranchAndClaw {
 		public async Task Level2( FearCtx ctx ) {
 
 			// Each player may gather 1 explroer / town into a costal land.
-			var coastal = ctx.GameState.Island.AllSpaces.Where( x => x.IsCostal ).ToArray();
+			var coastal = ctx.GameState.Island.AllSpaces.Where( x => x.IsCoastal ).ToArray();
 			foreach(var spiritCtx in ctx.Spirits)
 				await spiritCtx.GatherExplorerToOne( coastal, 1, Invader.Town );
 
@@ -33,7 +33,7 @@ namespace SpiritIsland.BranchAndClaw {
 		public async Task Level3( FearCtx ctx ) {
 
 			// Each player may gather 2 explorer / town into a costal land.
-			var coastal = ctx.GameState.Island.AllSpaces.Where( x => x.IsCostal ).ToArray();
+			var coastal = ctx.GameState.Island.AllSpaces.Where( x => x.IsCoastal ).ToArray();
 			foreach(var spiritCtx in ctx.Spirits)
 				await spiritCtx.GatherExplorerToOne( coastal, 1, Invader.Town );
 

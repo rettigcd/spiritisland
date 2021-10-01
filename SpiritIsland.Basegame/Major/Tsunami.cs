@@ -21,7 +21,7 @@ namespace SpiritIsland.Basegame {
 
 			if(ctx.YouHave("3 water,2 earth")){
 				var otherCoastalsOnSameBoard = ctx.Space.Board
-					.Spaces.Where(s=>ctx.IsCostal(s) && s != ctx.Space )
+					.Spaces.Where( s=> s != ctx.Space && ctx.TargetSpace(s).IsCoastal )
 					.ToArray();
 
 				foreach(var otherCoast in otherCoastalsOnSameBoard)

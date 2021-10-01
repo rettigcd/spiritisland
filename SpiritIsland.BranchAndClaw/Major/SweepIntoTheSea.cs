@@ -16,7 +16,7 @@ namespace SpiritIsland.BranchAndClaw {
 		static async Task DoPower( TargetSpaceCtx ctx ) {
 			await ctx.SelectActionOption(
 				new ActionOption( "Push explorers and towns toward nearest ocean", () => PushExplorersAndTownsTowardsOcean( ctx ) ),
-				new ActionOption( "Destroy all explorers and towns", () => ctx.Invaders.DestroyAny( int.MaxValue, Invader.Explorer, Invader.Town ), ctx.IsCostal( ctx.Space ) )
+				new ActionOption( "Destroy all explorers and towns", () => ctx.Invaders.DestroyAny( int.MaxValue, Invader.Explorer, Invader.Town ), ctx.IsCoastal )
 			);
 		}
 

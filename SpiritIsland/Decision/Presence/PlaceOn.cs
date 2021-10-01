@@ -31,7 +31,7 @@ namespace SpiritIsland.Decision.Presence {
 				.ToArray();
 
 			Space[] destinationOptions = inRange
-				.Where( SpaceFilter.Normal.GetFilter( ctx.Self, ctx.GameState, filterEnum ) )
+				.Where( s=>ctx.TargetSpace(s).Matches(filterEnum) )
 				.OrderBy( x => x.Label )
 				.ToArray();
 

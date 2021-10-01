@@ -11,13 +11,13 @@ namespace SpiritIsland.Basegame {
 		[FearLevel( 1, "Each player removes 1 Explorer from a Coastal land." )]
 		public Task Level1( FearCtx ctx ) {
 			var gs = ctx.GameState;
-			return ForEachSpiritSelectedLandRemoveInvader( gs, x => x.IsCostal, Invader.Explorer );
+			return ForEachSpiritSelectedLandRemoveInvader( gs, x => x.IsCoastal, Invader.Explorer );
 		}
 
 		[FearLevel( 2, "Each player removes 1 Explorer / Town from a Coastal land." )]
 		public Task Level2( FearCtx ctx ) {
 			var gs = ctx.GameState;
-			return ForEachSpiritSelectedLandRemoveInvader( gs, x => x.IsCostal, Invader.Town, Invader.Explorer );
+			return ForEachSpiritSelectedLandRemoveInvader( gs, x => x.IsCoastal, Invader.Town, Invader.Explorer );
 		}
 
 		[FearLevel( 3, "Each player removes 1 Explorer / Town from any land." )]

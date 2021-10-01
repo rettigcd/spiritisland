@@ -3,6 +3,7 @@
 		None,
 		Invaders, // blight reason
 		Power,
+		Blight,
 		Fear,
 		Ocean,
 		Ravage

@@ -11,11 +11,6 @@ namespace SpiritIsland {
 			this.source = source;
 		}
 
-		public TokenPusher ForPowerOrBlight() {
-			spaceFilter = SpaceFilter.ForPowers;
-			return this;
-		}
-
 		public TokenPusher AddGroup(int count,params TokenGroup[] groups ) {
 
 			count = System.Math.Min( count, ctx.GameState.Tokens[source].SumAny(groups) );
@@ -67,7 +62,7 @@ namespace SpiritIsland {
 		}
 
 		protected virtual async Task<Space> SelectDestination( Token token ) {
-			IEnumerable<Space> destinationOptions = source.Adjacent.Where( s => spaceFilter.TerrainMapper( s ) != Terrain.Ocean );
+			IEnumerable<Space> destinationOptions = source.Adjacent.Where( s => ctx.TargetSpace(s).IsInPlay );
 			return await ctx.Self.Action.Decision( (Decision.TypedDecision<Space>)new Decision.AdjacentSpaceTokenDestination( token, source, destinationOptions, Present.Always ) );
 		}
 
@@ -78,8 +73,6 @@ namespace SpiritIsland {
 
 		readonly List<int> countArray = new(); // the # we push from each group
 		readonly Dictionary<TokenGroup, int> indexLookup = new(); // map from group back to its count
-
-		SpaceFilter spaceFilter = SpaceFilter.Normal;
 
 		#endregion
 

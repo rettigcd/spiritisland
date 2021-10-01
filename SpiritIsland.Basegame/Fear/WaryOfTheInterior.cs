@@ -26,7 +26,7 @@ namespace SpiritIsland.Basegame {
 			return EachSpiritRemoves1Invader( gs, s=>true, Invader.Explorer, Invader.Town );
 		}
 
-		static bool IsInland(Space space) => !space.IsCostal;
+		static bool IsInland(Space space) => !space.IsCoastal;
 
 		static async Task EachSpiritRemoves1Invader( GameState gs, Func<Space,bool> spaceCondition, params TokenGroup[] x ) {
 			foreach(var spirit in gs.Spirits) {

@@ -6,11 +6,11 @@ namespace SpiritIsland.Basegame {
 
 	public class ToDreamAThousandDeaths_DestroyStrategy : DestroyInvaderStrategy {
 
-		readonly SpiritGameStateCtx engine;
+		readonly SpiritGameStateCtx ctx;
 
-		public ToDreamAThousandDeaths_DestroyStrategy( Action<FearArgs> addFear, Cause destructionSource, SpiritGameStateCtx engine )
+		public ToDreamAThousandDeaths_DestroyStrategy( Action<FearArgs> addFear, Cause destructionSource, SpiritGameStateCtx ctx )
 			:base(addFear,destructionSource) {
-			this.engine = engine;
+			this.ctx = ctx;
 		}
 
 		public override async Task OnInvaderDestroyed( Space space, Token token ) {
@@ -29,20 +29,20 @@ namespace SpiritIsland.Basegame {
 
 			// We can't track which original invader is was killed, so let the user choose.
 
-			Token[] CalcInvaderTypes() => engine.GameState.Tokens[source].OfAnyType( healthyInvaders );
+			Token[] CalcInvaderTypes() => ctx.GameState.Tokens[source].OfAnyType( healthyInvaders );
 
 			var invaders = CalcInvaderTypes();
 			while(0 < countToPush && 0 < invaders.Length) {
-				var invader = await engine.Self.Action.Decision( new Decision.TokenToPush( source, countToPush, invaders, Present.Always ) );
+				var invader = await ctx.Self.Action.Decision( new Decision.TokenToPush( source, countToPush, invaders, Present.Always ) );
 
 				if(invader == null)
 					break;
 
-				var destination = await engine.Self.Action.Decision( new Decision.TargetSpace(
+				var destination = await ctx.Self.Action.Decision( new Decision.TargetSpace(
 					"Push " + invader.Summary + " to",
-					source.Adjacent.Where( SpaceFilter.ForPowers.GetFilter( engine.Self, engine.GameState, Target.Any ) )
+					source.Adjacent.Where( s=>ctx.TargetSpace(s).IsInPlay )
 				) );
-				await engine.GameState.Move( invader, source, destination );
+				await ctx.GameState.Move( invader, source, destination );
 
 				--countToPush;
 				invaders = CalcInvaderTypes();

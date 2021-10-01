@@ -5,10 +5,6 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class ManifestIncarnation {
 
-		static ManifestIncarnation() {
-			SpaceFilter.lookup["Cities"] = (ctx, space) => ctx.GameState.Tokens[space].Has(Invader.City);
-		}
-
 		[MajorCard( "Manifest Incarnation", 6, Speed.Slow, Element.Sun, Element.Moon, Element.Earth, Element.Animal )]
 		[FromPresence( 0, "Cities" )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {

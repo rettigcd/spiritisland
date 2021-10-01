@@ -19,7 +19,7 @@ namespace SpiritIsland {
 		void AddAdjacent( Space adjacent ) {
 			adjacents.Add(adjacent);
 			if(adjacent.Terrain == Terrain.Ocean)
-				this.IsCostal = true;
+				this.IsCoastal = true;
 		}
 
 		public void Destroy() {
@@ -60,14 +60,14 @@ namespace SpiritIsland {
 		}
 		Terrain? terrainForPower;
 		public bool IsCostalForPower { 
-			get => isCostalForPower ?? IsCostal;
+			get => isCostalForPower ?? IsCoastal;
 			set => isCostalForPower = value;
 		}
 		bool? isCostalForPower;
 
 		#endregion
 
-		public bool IsCostal { get; set; }
+		public bool IsCoastal { get; set; }
 
 		string IOption.Text => Label;
 

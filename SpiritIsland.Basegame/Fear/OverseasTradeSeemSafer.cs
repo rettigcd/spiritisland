@@ -31,12 +31,12 @@ namespace SpiritIsland.Basegame {
 		}
 
 		static void DefendCostal( GameState gs, int defense ) {
-			foreach(var space in gs.Island.AllSpaces.Where( s => s.IsCostal ))
+			foreach(var space in gs.Island.AllSpaces.Where( s => s.IsCoastal ))
 				gs.Defend( space, defense );
 		}
 
 		static void SkipCostalBuild( GameState gs ) {
-			var spaces = gs.Island.AllSpaces.Where( s => s.IsCostal ).ToArray();
+			var spaces = gs.Island.AllSpaces.Where( s => s.IsCoastal ).ToArray();
 			gs.PreBuilding.Add( ( GameState gs, BuildingEventArgs args ) => {
 				foreach(var space in spaces)
 					args.BuildTypes[space] = BuildingEventArgs.BuildType.TownsOnly; // !! This is not Additive, if something had Skip Towns, it might switch this to cities only

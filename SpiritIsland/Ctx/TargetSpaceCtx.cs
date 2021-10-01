@@ -9,7 +9,10 @@ namespace SpiritIsland {
 
 		public TargetSpaceCtx( Spirit self, GameState gameState, Space target, Cause cause ):base( self, gameState, cause ) {
 			Space = target;
-			Tokens = gameState.Tokens[target];
+		}
+
+		public TargetSpaceCtx( SpiritGameStateCtx ctx, Space target ):base( ctx ) {
+			Space = target;
 		}
 
 		public Space Space { get; }
@@ -33,7 +36,8 @@ namespace SpiritIsland {
 		public bool MatchesBuildCard => GameState.InvaderDeck.Build.Any(c=>c.Matches(Space));
 
 
-		public TokenCountDictionary Tokens { get; }
+		public TokenCountDictionary Tokens => _tokens ??= GameState.Tokens[Space];
+		TokenCountDictionary _tokens;
 
 		#region Push
 
@@ -43,14 +47,14 @@ namespace SpiritIsland {
 
 		// Binds Target
 		public Task<Space[]> PushUpTo( int countToPush, params TokenGroup[] groups )
-			=> new TokenPusher( this, this.Space ).ForPowerOrBlight()
+			=> new TokenPusher( this, this.Space )
 				.AddGroup( countToPush, groups )
 				.MoveUpToN();
 
-		public TokenPusher Pusher => new TokenPusher( this, this.Space ).ForPowerOrBlight();
+		public TokenPusher Pusher => new TokenPusher( this, this.Space );
 
 		public Task<Space[]> Push( int countToPush, params TokenGroup[] groups )
-			=> new TokenPusher( this, Space ).ForPowerOrBlight()
+			=> new TokenPusher( this, Space )
 				.AddGroup( countToPush, groups )
 				.MoveN();
 
@@ -94,7 +98,12 @@ namespace SpiritIsland {
 		public Task DestroyDahan(int countToDestroy, Token dahanToken = null) 
 			=> Self.DestroyDahanForPowers( GameState, Space, countToDestroy, dahanToken ?? TokenType.Dahan.Default );
 
-		public Terrain Terrain => SpaceFilter.ForPowers.TerrainMapper( Space );
+		public Terrain Terrain => TerrainMapper.GetTerrain( Space );
+		public bool IsCoastal   => TerrainMapper.IsCoastal( Space );
+		public bool IsInPlay   => Terrain != Terrain.Ocean;
+		public bool Matches( string filterEnum ) => Terrain != Terrain.Ocean && SpaceFilterMap.Get(filterEnum)(this);
+
+		public bool IsPresent => Self.Presence.IsOn( Space );
 
 		/// <summary> The effective Terrain for powers. Will be Wetland for Ocean when Oceans-Hungry-Grasp is on board </summary>
 		public bool IsOneOf(params Terrain[] terrain) => Terrain.IsOneOf(terrain);

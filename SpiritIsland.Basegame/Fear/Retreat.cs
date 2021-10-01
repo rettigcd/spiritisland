@@ -27,7 +27,7 @@ namespace SpiritIsland.Basegame {
 
 		static async Task ForEachSpiritPushUpToNTokesnsFromInland( GameState gs, int max, params TokenGroup[] pushableInvaders ) {
 			foreach(var spirit in gs.Spirits) {
-				var options = gs.Island.AllSpaces.Where( s => !s.IsCostal && gs.Tokens[s].Has(Invader.Explorer) ).ToArray();
+				var options = gs.Island.AllSpaces.Where( s => !s.IsCoastal && gs.Tokens[s].Has(Invader.Explorer) ).ToArray();
 				if(options.Length == 0) break;
 				var target = await spirit.Action.Decision( new Decision.TargetSpace( $"Fear:select land to push up to {max} invaders", options ));
 				await spirit.MakeDecisionsFor( gs ).PushUpTo( target, max, pushableInvaders );

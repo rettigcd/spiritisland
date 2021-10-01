@@ -58,9 +58,9 @@ namespace SpiritIsland.Tests.Core {
 			Assert_CanReachSpaceWithNHops( boardA[0], 2, boardA[4], boardA[5], boardA[6] );
 			Assert_CanReachSpaceWithNHops( boardA[0], 3, boardA[7], boardA[8] );
 
-			Assert.True( boardA[1].IsCostal );
-			Assert.True( boardA[2].IsCostal );
-			Assert.True( boardA[3].IsCostal );
+			Assert.True( boardA[1].IsCoastal );
+			Assert.True( boardA[2].IsCoastal );
+			Assert.True( boardA[3].IsCoastal );
 
 		}
 

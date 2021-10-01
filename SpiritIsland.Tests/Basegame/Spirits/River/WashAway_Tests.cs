@@ -1,5 +1,4 @@
 ﻿using SpiritIsland.Basegame;
-using SpiritIsland;
 using System.Linq;
 using Xunit;
 
@@ -112,6 +111,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			//  When: activating card
 			card.ActivateAsync( spirit, gameState );
+			System.Threading.Thread.Sleep(50);
 
 			User.TargetsLand( targetSpace.Label );
 			User.OptionallyPushesInvaderTo("T@1","A1,(A2),A3,A5");

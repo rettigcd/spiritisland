@@ -23,7 +23,7 @@ namespace SpiritIsland {
 			Text = t1.ToString().Substring(0,1)+"+"+t2.ToString().Substring(0,1);
 		}
 
-		InvaderCard(){ Matches = s=>s.IsCostal; Text="Costal"; } // costal constructor
+		InvaderCard(){ Matches = s=>s.IsCoastal; Text="Costal"; } // costal constructor
 
 		#endregion
 	}

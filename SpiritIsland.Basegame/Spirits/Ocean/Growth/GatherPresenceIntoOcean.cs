@@ -10,7 +10,7 @@ namespace SpiritIsland.Basegame {
 
 		public override async Task ActivateAsync( Spirit self, GameState gs ) {
 			List<Space> gatherSpaces = self.Presence.Spaces
-				.Where( p => p.IsCostal )
+				.Where( p => p.IsCoastal )
 				.Select( p => p.Adjacent.Single( o => o.Terrain == Terrain.Ocean ) )
 				.Distinct()
 				.ToList();

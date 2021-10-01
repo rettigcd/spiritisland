@@ -5,7 +5,7 @@ namespace SpiritIsland.Basegame {
 	public class DelusionsOfDanger {
 
 		[MinorCard("Delusions of Danger",1,Speed.Fast,Element.Sun,Element.Moon,Element.Air)]
-		[FromPresence(1,Target.Explorer)]
+		[FromPresence(1,Target.Any)]
 		static public Task ActionAsync(TargetSpaceCtx ctx){
 
 			return ctx.SelectActionOption(
