@@ -9,7 +9,7 @@ namespace SpiritIsland.SinglePlayer {
 		public WinLoseStatus WinLoseStatus = WinLoseStatus.Playing;
 
 		/// <summary> The main interface that drives the UI</summary>
-		public IDecisionStream DecisionProvider {get; set;}
+		public IUserPortal DecisionProvider {get; set;}
 
 		// Public for querying gamestate ad hoc
 		public GameState GameState { get; }

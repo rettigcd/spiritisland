@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
-	sealed public class BaseAction : IDecisionStream {
+	sealed public class ActionGateway : IUserPortal, IEnginePortal {
+
+		#region IUserPortal
 
 		/// <summary>
 		/// Blocks and waits for there to be a decision. 
@@ -14,10 +16,24 @@ namespace SpiritIsland {
 		/// </summary>
 		public IDecision GetCurrent() => WaitForNextDecisionAndCacheIt.Decision;
 
-		IDecisionMaker WaitForNextDecisionAndCacheIt => userAccessedDecision ??= WaitForNextActiveDecision();
-		IDecisionMaker userAccessedDecision;
+		IDecisionMaker WaitForNextDecisionAndCacheIt { get {
+				if(userAccessedDecision == null) {
+					signal.WaitOne();
+					userAccessedDecision = activeDecisionMaker;
+				}
+				return userAccessedDecision;
+			}
+		}
 
-		public bool IsResolved => acitveDecisionMaker == null;
+		public bool WaitForNextDecision( int milliseconds ) {
+			if(signal.WaitOne( milliseconds )) {
+				userAccessedDecision = activeDecisionMaker;
+				return true;
+			}
+			return false;
+		}
+
+		public bool IsResolved => activeDecisionMaker == null;
 
 		public void Choose( string text ) {
 			var current = GetCurrent();
@@ -30,20 +46,25 @@ namespace SpiritIsland {
 		public void Choose(IOption selection) {
 			var poppedDecisionMaker = WaitForNextDecisionAndCacheIt;
 			var poppedDecision = poppedDecisionMaker.Decision;
-			this.acitveDecisionMaker = null;
+			this.activeDecisionMaker = null;
 			this.userAccessedDecision = null;
 
 			if(!poppedDecision.Options.Contains( selection ))
 				throw new ArgumentException( selection.Text + " not found in options("+ poppedDecision.Options.Select(x=>x.Text).Join(",") + ")" );
 
-			Log( selection, poppedDecisionMaker.Decision, false );
+			Log( selection, poppedDecision, false );
 
 			poppedDecisionMaker.Select( selection ); // ####
 		}
 
+		#endregion
+
+		/// <summary>
+		/// Caller presents a decision to the Gateway and waits for the gateway to return an choice.
+		/// </summary>
 		public Task<T> Decision<T>( Decision.TypedDecision<T> originalDecision ) where T : class, IOption {
 			if(originalDecision == null) throw new ArgumentNullException( nameof( originalDecision ) );
-			if(acitveDecisionMaker != null) throw new InvalidOperationException( "decision already pending" );
+			if(activeDecisionMaker != null) throw new InvalidOperationException( "decision already pending" );
 
 			var promise = new TaskCompletionSource<T>();
 			var decisionMaker = new ActionHelper<T>( originalDecision, promise );
@@ -59,13 +80,13 @@ namespace SpiritIsland {
 				Log( decision.Options[0], decision, true );
 
 			} else {
-				acitveDecisionMaker = decisionMaker;
+				activeDecisionMaker = decisionMaker;
 				signal.Set();
 			}
 			return promise.Task;
 		}
 
-		#region selection log
+		#region selection log / private
 
 		void Log( IOption selection, IDecision decision, bool auto ) {
 			string msg = decision.Prompt + "(" + decision.Options.Select( o => o.Text ).Join( "," ) + "):" + selection.Text;
@@ -73,36 +94,13 @@ namespace SpiritIsland {
 			selections.Add( msg );
 		}
 
-		/// <summary> Logs decisions made </summary>
-		public string Selections => selections.Join( " > " );
-
 		public readonly List<string> selections = new List<string>();
 
-		#endregion
-
-		public void Clear(){ 
-			acitveDecisionMaker = null;	// This does something that lets unit tests pass
-		}
-
-		#region private
-
 		readonly AutoResetEvent signal = new AutoResetEvent( false );
-		IDecisionMaker acitveDecisionMaker;
-		IDecisionMaker WaitForNextActiveDecision() {
-			signal.WaitOne();
-			return acitveDecisionMaker;
-		}
+		IDecisionMaker activeDecisionMaker;
+		IDecisionMaker userAccessedDecision;
 
 		#endregion
-
-		static public void Select<T>( IOption option, IOption[] options, TaskCompletionSource<T> promise ) where T:class,IOption {
-			if(/*present == Present.Done &&*/ TextOption.Done.Matches( option ))
-				promise.TrySetResult( null );
-			else if(options.Contains( option ))
-				promise.TrySetResult( (T)option );
-			else
-				promise.TrySetException( new Exception( $"{option.Text} not found in options" ) );
-		}
 
 		class ActionHelper<T> : IDecisionMaker where T : class, IOption {
 

@@ -28,7 +28,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 		protected readonly VirtualUser User;
 		protected readonly Board a;
 		protected readonly GameState gs;
-		protected readonly BaseAction action;
+		protected readonly ActionGateway action;
 
 	}
 }

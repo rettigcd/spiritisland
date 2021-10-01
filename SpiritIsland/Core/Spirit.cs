@@ -15,9 +15,9 @@ namespace SpiritIsland {
 			foreach(var card in initialCards)
 				AddCardToHand(card);
 
-			Action = new BaseAction();
+			Action = new ActionGateway();
 		}
-		public BaseAction Action { get; }
+		public ActionGateway Action { get; }
 
 		public void AddCardToHand( PowerCard card ){
 			Hand.Add(card);

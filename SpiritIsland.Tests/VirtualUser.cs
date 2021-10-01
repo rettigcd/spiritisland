@@ -9,7 +9,10 @@ namespace SpiritIsland.Tests {
 
 		#region constructor
 
-		public VirtualUser(Spirit spirit ) { this.spirit = spirit; }
+		public VirtualUser(Spirit spirit ) { 
+			this.spirit = spirit;
+			this.userPortal = spirit.Action;
+		}
 
 		#endregion
 
@@ -33,7 +36,7 @@ namespace SpiritIsland.Tests {
 
 		public void PlacesPresence( Track source, string placeOptions ) {
 
-			var current = spirit.Action.GetCurrent();
+			var current = userPortal.GetCurrent();
 
 			var op = current.Options.First( o => o.Text.StartsWith( "PlacePre" ) );
 			Choose( op );
@@ -43,7 +46,7 @@ namespace SpiritIsland.Tests {
 
 			// place on board - first option
 			string[] expectedOptions = placeOptions.Split( ';' );
-			var destinationDecision = spirit.Action.GetCurrent();
+			var destinationDecision = userPortal.GetCurrent();
 			var actualOptions = destinationDecision.Options;
 			var choice = actualOptions.SingleOrDefault( o => o.Text == expectedOptions[0] );
 			if(choice == null)
@@ -52,7 +55,7 @@ namespace SpiritIsland.Tests {
 		}
 
 		public void PullsPresenceFromTrack( Track source ) {
-			var sourceDecision = spirit.Action.GetCurrent();
+			var sourceDecision = userPortal.GetCurrent();
 			sourceDecision.Options.Select( x => x.Text ).Join( "," ).ShouldContain( source.Text );
 			Choose( source );
 		}
@@ -70,7 +73,7 @@ namespace SpiritIsland.Tests {
 		}
 
 		public void Reclaims1FromGrowth(string cards) {
-			spirit.Action.Choose( "Reclaim(1)" );
+			Choose( "Reclaim(1)" );
 			AssertDecisionX( "Select card to reclaim.",  cards, "{}" );
 		}
 		
@@ -87,18 +90,18 @@ namespace SpiritIsland.Tests {
 		}
 
 		public void SelectsGrowthOption( string growthOption ) {
-			Assert.Equal( "Select Growth Option", spirit.Action.GetCurrent().Prompt );
+			Assert.Equal( "Select Growth Option", userPortal.GetCurrent().Prompt );
 			Choose( growthOption );
 		}
 
 		public void SelectsGrowthOption(int growthOptionIndex) {
-			var current = spirit.Action.GetCurrent();
+			var current = userPortal.GetCurrent();
 			Assert.Equal( "Select Growth Option", current.Prompt );
 			Choose( current.Options[growthOptionIndex] );
 		}
 
 		public void GainsEnergy() {
-			var current = spirit.Action.GetCurrent();
+			var current = userPortal.GetCurrent();
 			var selection = current.Options.First(x=>x.Text.StartsWith("GainEnergy"));
 			Choose( selection );
 		}
@@ -125,7 +128,7 @@ namespace SpiritIsland.Tests {
 		}
 
 		public void ActivatesExtraCardPlay() {
-			var current = spirit.Action.GetCurrent();
+			var current = userPortal.GetCurrent();
 			var selection = current.Options.First( x => x.Text.StartsWith( "PlayExtra" ) );
 			Choose( selection );
 		}
@@ -175,14 +178,14 @@ namespace SpiritIsland.Tests {
 
 			void Assert_Options( params string[] expected ) {
 				// This is kind of crappy
-				var current = spirit.Action.GetCurrent();
+				var current = userPortal.GetCurrent();
 				Assert.Equal(
 					expected.OrderBy(x=>x).Join(",")
 					,current.Options.Select(s=>s.Text).OrderBy(x=>x).Join(",")
 				);
 			}
 			Assert_Options( options, "Done" );
-			spirit.Action.Choose( choice );
+			userPortal.Choose( choice );
 		}
 
 		public void SelectsMajorPowerCard() {
@@ -191,23 +194,23 @@ namespace SpiritIsland.Tests {
 
 		public void SelectsFirstOption( string prompt ) {
 			string msg = $"{prompt}:[any]:[first]";
-			spirit.Action.IsResolved.ShouldBeFalse( $"Prompt [{prompt}] is not there." );
-			var current = spirit.Action.GetCurrent();
+			userPortal.IsResolved.ShouldBeFalse( $"Prompt [{prompt}] is not there." );
+			var current = userPortal.GetCurrent();
 			current.Prompt.ShouldBe( prompt, msg, StringCompareShould.IgnoreCase );
 
 			IOption choice = current.Options[0];
-			spirit.Action.Choose( choice );
+			userPortal.Choose( choice );
 
 		}
 
 		public void Reclaims1CardIfAny() {
-			var current = spirit.Action.GetCurrent();
+			var current = userPortal.GetCurrent();
 			if(current.Options.Length>0)
-				spirit.Action.Choose( current.Options[0] );
+				userPortal.Choose( current.Options[0] );
 		}
 
 		public void Assert_Done() {
-			spirit.Action.IsResolved.ShouldBeTrue();
+			userPortal.IsResolved.ShouldBeTrue();
 		}
 
 		#region protected
@@ -226,15 +229,14 @@ namespace SpiritIsland.Tests {
 		}
 
 		protected void SelectOption( string prompt, string optionText ) {
-			var decision = spirit.Action;
-			var current = decision.GetCurrent();
+			var current = userPortal.GetCurrent();
 			if(!current.Prompt.StartsWith( prompt ))
 				current.Prompt.ShouldBe( prompt );
 
 			var option = current.Options.FirstOrDefault( o => o.Text == optionText );
 			if(option == null)
 				throw new Exception( $"option ({optionText} not found in "
-					+ decision.GetCurrent().Options.Select( x => x.Text ).Join( ", " )
+					+ userPortal.GetCurrent().Options.Select( x => x.Text ).Join( ", " )
 				);
 			Choose( option );
 		}
@@ -245,7 +247,7 @@ namespace SpiritIsland.Tests {
 			var current = Assert_HasCurrent(msg);
 			current.Prompt.ShouldBe( prompt, msg, StringCompareShould.IgnoreCase );
 			IOption match = FindRequiredOptionByText( current, select );
-			spirit.Action.Choose( match );
+			userPortal.Choose( match );
 		}
 
 		public void AssertDecisionX( string prompt, string optionInfo, string markers = "()" ) {
@@ -254,7 +256,6 @@ namespace SpiritIsland.Tests {
 		}
 
 		public void AssertDecision( string prompt, string optionsString, string select ) {
-			IDecisionStream decision = spirit.Action;
 			string msg = $"{prompt}:{optionsString}:{select}";
 
 			var current = Assert_HasCurrent( prompt );
@@ -265,10 +266,8 @@ namespace SpiritIsland.Tests {
 		}
 
 		protected IDecision Assert_HasCurrent( string prompt ) {
-			var decision = spirit.Action;
-
-			decision.IsResolved.ShouldBeFalse( $"Prompt [{prompt}] is not there." );
-			return decision.GetCurrent();
+			userPortal.IsResolved.ShouldBeFalse( $"Prompt [{prompt}] is not there." );
+			return userPortal.GetCurrent();
 		}
 
 		static protected IOption FindRequiredOptionByText( IDecision current, string select ) {
@@ -277,22 +276,22 @@ namespace SpiritIsland.Tests {
 		}
 
 		protected void Choose(IOption option ) {
-			spirit.Action.Choose( option );
+			userPortal.Choose( option );
 			WaitForSignal();
 		}
 		protected void Choose( string option ) {
-			spirit.Action.Choose( option );
+			userPortal.Choose( option );
 			WaitForSignal();
 		}
 
 		protected void WaitForSignal() {
-			if(spirit.Action.IsResolved)
-				System.Threading.Thread.Sleep(1);
+			userPortal.WaitForNextDecision(10);
 		}
 
 		#endregion
 
 		readonly protected Spirit spirit;
+		readonly protected IUserPortal userPortal;
 
 	}
 
