@@ -18,7 +18,7 @@ namespace SpiritIsland.SinglePlayer {
 		public event Action<string> NewLogEntry;
 
 		public async Task ActAsync() {
-			await gameState.DoInvaderPhase();
+			await gameState.InvaderEngine.DoInvaderPhase();
 		}
 
 		#region private fields

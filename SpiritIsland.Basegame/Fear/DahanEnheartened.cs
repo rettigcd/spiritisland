@@ -11,14 +11,14 @@ namespace SpiritIsland.Basegame {
 		[FearLevel( 1, "Each player may Push 1 Dahan from a land with Invaders or Gather 1 Dahan into a land with Invaders." )]
 		public async Task Level1( FearCtx ctx ) {
 			var gs = ctx.GameState;
-			foreach(var spirit in gs.Spirits) {
-				var spacesWithInvaders = gs.Island.AllSpaces.Where( gs.HasInvaders ).ToArray();
-				var target = await spirit.Action.Decision( new Decision.TargetSpace( "Select Space to Gather or push 1 dahan", spacesWithInvaders));
+			foreach( var spirit in ctx.Spirits ) {
+				var spacesWithInvaders = gs.Island.AllSpaces.Where( s=>spirit.Target(s).HasInvaders ).ToArray();
+				var target = await spirit.Self.Action.Decision( new Decision.TargetSpace( "Select Space to Gather or push 1 dahan", spacesWithInvaders));
 
-				SpiritGameStateCtx ctx1 = spirit.MakeDecisionsFor( gs );
-				await ctx1.SelectActionOption(
-					new ActionOption("Push",    () => ctx1.PushUpTo( target, 1, TokenType.Dahan) ),
-					new ActionOption( "Gather", () => ctx1.GatherUpTo( target, 1, TokenType.Dahan ) )
+				var spaceCtx = spirit.Target(target);
+				await spirit.SelectActionOption(
+					new ActionOption("Push",    () => spaceCtx.PushUpTo( 1, TokenType.Dahan) ),
+					new ActionOption( "Gather", () => spaceCtx.GatherUpTo( 1, TokenType.Dahan ) )
 				);
 			}
 		}

@@ -93,7 +93,7 @@ namespace SpiritIsland {
 
 		public bool HasDahan => DahanCount>0;
 
-		public void Defend(int defend) => GameState.Defend(Space,defend);
+		public void Defend(int defend) => Tokens.Defend.Count += defend;
 
 		public Task DestroyDahan(int countToDestroy, Token dahanToken = null) 
 			=> Self.DestroyDahanForPowers( GameState, Space, countToDestroy, dahanToken ?? TokenType.Dahan.Default );
@@ -120,7 +120,7 @@ namespace SpiritIsland {
 		public void ModifyRavage( Action<ConfigureRavage> action ) => GameState.ModifyRavage(Space,action);
 
 		public Task<PowerCard> DrawMajor() => Self.DrawMajor( GameState );
-		public Task<PowerCard> DrawMinor() => Self.DrawMinor( GameState );
+		public new Task<PowerCard> DrawMinor() => Self.DrawMinor( GameState );
 
 		// The current targets power
 		public InvaderGroup Invaders => invadersRO ??= Cause switch {

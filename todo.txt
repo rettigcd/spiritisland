@@ -2,14 +2,13 @@
 
 == Clean-up ==
 
-5 InvaderEngine - pull Invader Actions into a plugable object that can be called from the InvaderDesk
 4 Grapics / Layout
-* draw innates - range icons, Target icons, clean tokens, +1 range
 4 Blight Tests
 
 == Bonus - Fun ==
 
 3 Draw cards from metadata
+3 draw innates - range icons, Target icons, clean tokens, +1 range
 2 Click on Fear card to close it.
 2 Visual indication of phase
 2 hovering over cards, show what lands they target

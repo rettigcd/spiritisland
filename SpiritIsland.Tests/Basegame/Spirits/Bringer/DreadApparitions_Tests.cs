@@ -20,16 +20,20 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 
 		[Fact]
 		public void DirectFear_GeneratesDefend() {
-			
-			async Task When(){
+
+			async Task When() {
 				// Given: using Dread Apparitions
-				await DreadApparitions.ActAsync(ctx);
+				await DreadApparitions.ActAsync( ctx );
 				// When: generating 2 fear
-				ctx.AddFear(2);
+				ctx.AddFear( 2 );
 			}
 			_ = When();
 
-			ctx.GameState.GetDefence(ctx.Space).ShouldBe(2);
+			Assert_DefenceIs( 2 );
+		}
+
+		private void Assert_DefenceIs(int expectedDefence) {
+			ctx.Tokens.Defend.Count.ShouldBe( expectedDefence );
 		}
 
 		[Fact]
@@ -46,7 +50,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			_ = When();
 
 			// Then: 2 fear should have triggered 2 defend
-			ctx.GameState.GetDefence( ctx.Space ).ShouldBe( 2 );
+			Assert_DefenceIs( 2 );
 
 		}
 
@@ -61,7 +65,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			await ctx.Invaders.Destroy( 1, Invader.City );
 
 			// Then: 5 fear should have triggered 2 defend
-			ctx.GameState.GetDefence( ctx.Space ).ShouldBe( 5 );
+			Assert_DefenceIs( 5 );
 
 		}
 
@@ -75,12 +79,12 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			await DreadApparitions.ActAsync( ctx );
 
 			// When: dahan destroy the city
-			await ctx.GameState.Ravage( new InvaderCard( ctx.Space.Terrain ) );
+			await ctx.GameState.InvaderEngine.TestRavage( new InvaderCard( ctx.Space.Terrain ) );
 
 			// Then: 2 fear from city
 			Assert_GeneratedFear(2); // normal
 			// but no defend bonus
-			ctx.GameState.GetDefence( ctx.Space ).ShouldBe( 0 );
+			Assert_DefenceIs( 0 );
 
 		}
 
@@ -100,7 +104,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			_ = When();
 
 			// but no defend bonus
-			ctx.GameState.GetDefence( ctx.Space ).ShouldBe( 0 );
+			Assert_DefenceIs( 0 );
 
 		}
 

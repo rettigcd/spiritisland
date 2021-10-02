@@ -21,7 +21,6 @@ namespace SpiritIsland {
 			this.ForRound.Add((gs,args)=>{ action(gs,args); return Task.CompletedTask; } );
 		}
 
-
 		public void Always( Func<GameState,T,Task> action ) {
 			this.ForGame.Add(action);
 		}

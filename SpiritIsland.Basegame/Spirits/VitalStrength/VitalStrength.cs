@@ -81,7 +81,7 @@ Power Progression:
 
 		protected override void InitializeInternal( Board board, GameState gs ) {
 			InitPresence( board );
-			gs.PreRavaging.Add( GameState_Ravaging );
+			gs.PreRavaging.Add( Defend3InSacredSites );
 		}
 
 		void InitPresence( Board board ){
@@ -92,9 +92,9 @@ Power Progression:
 			Presence.PlaceOn( higestJungle );
 		}
 
-		Task GameState_Ravaging( GameState gs, List<Space> ravageSpaces ) {
+		Task Defend3InSacredSites( GameState gs, List<Space> ravageSpaces ) {
 			foreach(var space in SacredSites.Where(ravageSpaces.Contains))
-				gs.Defend( space, 3 );
+				gs.Tokens[space].Defend.Count += 3;
 			return Task.CompletedTask;
 		}
 

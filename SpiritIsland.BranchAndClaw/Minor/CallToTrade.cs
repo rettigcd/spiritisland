@@ -15,15 +15,25 @@ namespace SpiritIsland.BranchAndClaw {
 			// If the Terro Level is 2 or lower
 			if( ctx.GameState.Fear.TerrorLevel <= 2 ) {
 				// Gather 1 town
-				await ctx.Gather( 1,Invader.Town );
+				await ctx.Gather( 1, Invader.Town );
 
 				// And the first ravage in target land becomes a build there instead.
-				if(ctx.GameState.ScheduledRavageSpaces.Contains( ctx.Space )) {
-					ctx.GameState.ScheduledRavageSpaces.Remove(ctx.Space);
-					ctx.GameState.ScheduledBuildSpaces[ctx.Space]++;
-				}
+				FirstRavageBecomesABuild( ctx );
 			}
 
+		}
+
+		static void FirstRavageBecomesABuild( TargetSpaceCtx ctx ) {
+			ctx.GameState.PreRavaging.Add( (gs, spaces)=>{
+				if(!spaces.Contains( ctx.Space )) return;
+
+				// Stop Ravage
+				spaces.Remove(ctx.Space); // Stop Ravage
+
+				// Add Build
+				gs.PreBuilding.Add( ( _, buildArgs ) => buildArgs.Add( ctx.Space ) );
+
+			});
 		}
 
 	}

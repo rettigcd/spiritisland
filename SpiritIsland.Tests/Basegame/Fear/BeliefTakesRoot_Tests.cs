@@ -88,7 +88,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		async Task When_AddFearApplyFearAndRavage() {
 			gameState.Fear.AddDirect( new FearArgs{ count=4 } );
 			await gameState.Fear.Apply();
-			await gameState.Ravage( invaderCard );
+			await gameState.InvaderEngine.TestRavage( invaderCard );
 		}
 
 		const string FearCardAction = "Belief takes Root:1:Defend 2 in all lands with Presence.";

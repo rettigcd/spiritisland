@@ -10,20 +10,21 @@ namespace SpiritIsland.Basegame {
 
 		[FearLevel( 1, "Defend 2 in all lands with Presence." )]
 		public Task Level1( FearCtx ctx ) {
-			Defend2WherePresence( ctx.GameState );
+			Defend2WherePresence( ctx );
 			return Task.CompletedTask;
 		}
 
-		static void Defend2WherePresence( GameState gs ) {
+		static void Defend2WherePresence( FearCtx ctx ) {
+			GameState gs = ctx.GameState;
 			foreach(var space in gs.Spirits.SelectMany( s => s.Presence.Spaces ).Distinct())
-				gs.Defend( space, 2 );
+				gs.Tokens[space].Defend.Count += 2;
 		}
 
 		[FearLevel( 2, "Defend 2 in all lands with Presence. Each Spirit gains 1 Energy per SacredSite they have in lands with Invaders." )]
 		public Task Level2( FearCtx ctx ) {
-			Defend2WherePresence( ctx.GameState );
-			foreach(var spirit in ctx.GameState.Spirits)
-				spirit.Energy += spirit.SacredSites.Count( ctx.GameState.HasInvaders );
+			Defend2WherePresence( ctx );
+			foreach(var spirit in ctx.Spirits)
+				spirit.Self.Energy += spirit.Self.SacredSites.Count( s => spirit.Target(s).HasInvaders );
 			return Task.CompletedTask;
 		}
 

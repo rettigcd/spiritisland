@@ -3,7 +3,7 @@ namespace SpiritIsland {
 
 	public class Invaders {
 
-		// !! This wrapper class (around SpaceInvaderCount) acts more like an Extension Method Class
+		// !! This wrapper class (around TokenCountDictionary) acts more like an Extension Method Class
 
 		#region constructor
 

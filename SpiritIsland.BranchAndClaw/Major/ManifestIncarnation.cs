@@ -26,7 +26,7 @@ namespace SpiritIsland.BranchAndClaw {
 				ctx.Defend( 6 ); // !! not exactly correct but close
 
 			// Then, Invaders in target land ravage.
-			await ctx.GameState.RavageSpace( ctx.Invaders );
+			await ctx.GameState.InvaderEngine.RavageSpace( ctx.Invaders );
 		}
 
 	}

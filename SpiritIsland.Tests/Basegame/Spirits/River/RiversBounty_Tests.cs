@@ -67,21 +67,24 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			When_PlayingCard();
 
 			//  Select: A4
-			User.TargetsLand("A4");
+			User.TargetsLand( "A4" );
 
 			string token = "D@2 on " + neighbor.Label;
 
 			// Select source 1
-			if(dahanToGather>0)
+			if(dahanToGather > 0)
 				User.GathersOptionalToken( token );
-			
-			// Select source 2
-			if(dahanToGather>1)
-				User.GathersOptionalToken( token );
-			
 
-			Assert.Equal( endingCount, gameState.DahanGetCount( target ) ); // same as original
-			Assert.Equal( endingEnergy, spirit.Energy );
+			// Select source 2
+			if(dahanToGather > 1)
+				User.GathersOptionalToken( token );
+
+			Assert_DahanCount( target, endingCount );
+			spirit.Energy.ShouldBe( endingEnergy );
+		}
+
+		void Assert_DahanCount( Space target, int endingCount ) {
+			gameState.Tokens[target].Sum(TokenType.Dahan).ShouldBe( endingCount ); // same as original
 		}
 
 		[Fact]
@@ -103,7 +106,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			User.Assert_Done();
 
-			Assert.Equal( 3, gameState.DahanGetCount( target ) ); // same as original
+			Assert_DahanCount( target, 3 );
 		}
 
 		[Fact]
@@ -127,7 +130,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			User.Assert_Done();
 
-			Assert.Equal( 3, gameState.DahanGetCount( target ) ); // same as original
+			Assert_DahanCount( target, 3 );
 		}
 
 
@@ -149,7 +152,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			User.Assert_Done();
 
-			Assert.Equal( 3, gameState.DahanGetCount( board[4] ) ); // same as original
+			Assert_DahanCount( board[4], 3 );
+
 		}
 
 		[Fact]
@@ -184,7 +188,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 		void Given_AddDahan( int startingCount, Space target ) {
 			gameState.DahanAdjust( target, startingCount );
-			Assert.Equal( startingCount, gameState.DahanGetCount( target ) );
+			Assert_DahanCount( target, startingCount );
 		}
 
 	}

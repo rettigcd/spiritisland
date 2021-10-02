@@ -7,7 +7,6 @@ namespace SpiritIsland {
 
 	public class ConfigureRavage {
 
-		public bool ShouldRavage { get; set; } = true;
 		public bool ShouldDamageLand { get; set; } = true;
 		public bool ShouldDamageDahan { get; set; } = true;
 
@@ -36,7 +35,7 @@ namespace SpiritIsland {
 		}
 
 		public async Task Exec() {
-			if(cfg.ShouldRavage && HasInvaders)
+			if(HasInvaders)
 				await (cfg.RavageSequence ?? DefaultRavageSequence)( this);
 		}
 

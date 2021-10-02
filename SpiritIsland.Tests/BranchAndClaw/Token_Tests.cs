@@ -14,7 +14,7 @@ namespace SpiritIsland.Tests.BranchAndClaw {
 			var gs = new GameState_BranchAndClaw( new Thunderspeaker(), Board.BuildBoardC());
 
 			// Given: a space with no invaders
-			Space noInvaderSpace = gs.Island.AllSpaces.First(s=>s.Terrain!=Terrain.Ocean && !gs.HasInvaders(s));
+			Space noInvaderSpace = gs.Island.AllSpaces.First(s=>s.Terrain!=Terrain.Ocean && !gs.Tokens[s].HasInvaders());
 			var counts = gs.Tokens[noInvaderSpace];
 			//   And: 1 neighboring town
 			gs.Tokens[ noInvaderSpace.Adjacent.First() ].Adjust(Invader.Town[2],1);
@@ -22,10 +22,10 @@ namespace SpiritIsland.Tests.BranchAndClaw {
 			counts.Wilds().Count++;
 
 			//  When: we explore there
-			_ = gs.Explore(new InvaderCard(noInvaderSpace.Terrain));
+			_ = gs.InvaderEngine.Explore( new InvaderCard(noInvaderSpace.Terrain) );
 
 			//  Then: still no invaders
-			gs.HasInvaders(noInvaderSpace).ShouldBeFalse("there should be no explorers in "+noInvaderSpace.Label);
+			gs.Tokens[noInvaderSpace].HasInvaders().ShouldBeFalse("there should be no explorers in "+noInvaderSpace.Label);
 			//   And: no wilds here
 			(counts.Wilds()>0).ShouldBeFalse("wilds should be used up");
 
@@ -36,13 +36,13 @@ namespace SpiritIsland.Tests.BranchAndClaw {
 			var gs = new GameState_BranchAndClaw( new Thunderspeaker(), Board.BuildBoardC() );
 
 			// Given: a space with ONLY 1 explorer
-			Space space = gs.Island.AllSpaces.First( s => s.Terrain != Terrain.Ocean && !gs.HasInvaders( s ) ); // 0 invaders
+			Space space = gs.Island.AllSpaces.First( s => s.Terrain != Terrain.Ocean && !gs.Tokens[s].HasInvaders() ); // 0 invaders
 			gs.Tokens[space].Adjust( Invader.Explorer[1], 1 ); // add explorer
 			//   And: 1 diseases there
 			gs.Tokens[space].Disease().Count++;
 
 			//  When: we build there
-			await gs.Build( new InvaderCard( space.Terrain ) );
+			await gs.InvaderEngine.TestBuild( new InvaderCard( space.Terrain ) );
 
 			//  Then: still no towns (just original explorer)
 			gs.Assert_Invaders(space, "1E@1" ); // "should be no town on "+space.Label

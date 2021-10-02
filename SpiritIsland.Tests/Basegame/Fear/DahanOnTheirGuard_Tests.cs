@@ -32,7 +32,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 
 			// When: Doing Invader phase (fear+ragage)
 			await gameState.Fear.Apply();
-			await gameState.Ravage(invaderCard );
+			await gameState.InvaderEngine.TestRavage(invaderCard );
 
 			// Then: all dahan killed
 			Assert.Equal( 0, gameState.DahanGetCount( ravageSpace ) );
@@ -50,7 +50,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			// When: Doing Invader phase (fear+ragage)
 			async Task DoIt() {
 				await gameState.Fear.Apply();
-				await gameState.Ravage(invaderCard);
+				await gameState.InvaderEngine.TestRavage(invaderCard);
 			}
 			_ = DoIt();
 			User.AcknowledgesFearCard( "Dahan on their Guard:1:In each land, Defend 1 per Dahan." );

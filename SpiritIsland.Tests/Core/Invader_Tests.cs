@@ -143,7 +143,7 @@ namespace SpiritIsland.Tests.Core {
 			gameState.Tokens[ board[5] ].Adjust(Invader.Explorer[1],1);
 
 			// When: exploring (wet lands
-			_ = gameState.Explore(InvaderDeck.Level1Cards.Single(c=>c.Text=="W"));
+			_ = gameState.InvaderEngine.Explore(InvaderDeck.Level1Cards.Single(c=>c.Text=="W"));
 
 			// Then: 1 Explorer on A2 (new explored)
 			//  and A5 (original) - proves explorers aren't reference types like towns
@@ -176,7 +176,7 @@ namespace SpiritIsland.Tests.Core {
 			gameState.Tokens[sourceSpace].Adjust(sourceInvader,1);
 
 			// When: exploring (wet lands
-			_ = gameState.Explore(InvaderDeck.Level1Cards.Single(c=>c.Text=="W"));
+			_ = gameState.InvaderEngine.Explore(InvaderDeck.Level1Cards.Single(c=>c.Text=="W"));
 
 			// Then: Explores A2 and other space only
 			foreach(var space in board.Spaces){
@@ -204,7 +204,7 @@ namespace SpiritIsland.Tests.Core {
 				gameState.Tokens[space].Adjust( startingInvader, 1 );
 
 			// When: build in Sand
-			_ = gameState.Build( InvaderDeck.Level1Cards.Single( c => c.Text == "S" ) );
+			_ = gameState.InvaderEngine.TestBuild( InvaderDeck.Level1Cards.Single( c => c.Text == "S" ) );
 
 			// Then: 2 Sand spaces should have ending Invader Count
 			gameState.Assert_Invaders( board[4], endingInvaderCount );
@@ -250,7 +250,7 @@ namespace SpiritIsland.Tests.Core {
 			Assert_UnitsAre( startingUnits, space );
 
 			// When: Ravaging in Mountains
-			await gameState.Ravage(new InvaderCard(Terrain.Mountain));
+			await gameState.InvaderEngine.TestRavage(new InvaderCard(Terrain.Mountain));
 
 			Assert_UnitsAre( endingUnits, space );
 		}
