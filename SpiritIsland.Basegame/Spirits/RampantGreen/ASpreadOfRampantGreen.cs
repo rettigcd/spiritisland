@@ -123,8 +123,8 @@ namespace SpiritIsland.Basegame {
 			Presence.PlaceOn( board.Spaces.Reverse().First(x=>x.Terrain==Terrain.Wetland) );
 			Presence.PlaceOn( board.Spaces.Single(x=>x.Terrain==Terrain.Jungle && gs.DahanGetCount(x)==0) );
 
-			gs.PreRavaging.Always( ChokeTheLandWithGreen_Ravage );
-			gs.PreBuilding.Always( ChokeTheLandWithGreen_Build );
+			gs.PreRavaging.ForEntireGame( ChokeTheLandWithGreen_Ravage );
+			gs.PreBuilding.ForEntireGame( ChokeTheLandWithGreen_Build );
 
 		}
 

@@ -24,14 +24,14 @@ namespace SpiritIsland.BranchAndClaw {
 		}
 
 		static void FirstRavageBecomesABuild( TargetSpaceCtx ctx ) {
-			ctx.GameState.PreRavaging.Add( (gs, spaces)=>{
+			ctx.GameState.PreRavaging.ForThisRound( (gs, spaces)=>{
 				if(!spaces.Contains( ctx.Space )) return;
 
 				// Stop Ravage
 				spaces.Remove(ctx.Space); // Stop Ravage
 
 				// Add Build
-				gs.PreBuilding.Add( ( _, buildArgs ) => buildArgs.Add( ctx.Space ) );
+				gs.PreBuilding.ForThisRound( ( _, buildArgs ) => buildArgs.Add( ctx.Space ) );
 
 			});
 		}

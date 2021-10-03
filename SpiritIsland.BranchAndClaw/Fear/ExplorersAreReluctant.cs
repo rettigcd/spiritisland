@@ -10,7 +10,7 @@ namespace SpiritIsland.BranchAndClaw {
 		public Task Level1( FearCtx ctx ) {
 			var gs = ctx.GameState;
 			// During the next normal explore, skip the lowest - numbered land matching the invader card on each board.
-			gs.PreExplore.Add( (gs, args) => {
+			gs.PreExplore.ForThisRound( (gs, args) => {
 				var spacesToSkip = args.SpacesMatchingCards
 					.GroupBy(s=>s.Board)
 					.Select(grp=>grp.OrderBy(s=>s.Label).First()) // lowest #'d land
@@ -38,7 +38,7 @@ namespace SpiritIsland.BranchAndClaw {
 		public Task Level3( FearCtx ctx ) {
 
 			// Skip the next normal explore, but still reveal a card. Perform the flag if relavant. Cards shift left as usual
-			ctx.GameState.PreExplore.Add( ( gs, args ) => {
+			ctx.GameState.PreExplore.ForThisRound( ( gs, args ) => {
 				args.SkipAll();
 				// !! Not doing flags at the moment....
 				return Task.CompletedTask;

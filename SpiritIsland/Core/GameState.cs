@@ -164,21 +164,21 @@ namespace SpiritIsland {
 		}
 
 		public void SkipRavage( params Space[] spacesToSkip ) {
-			PreRavaging.Add( ( gs, ravageSpaces ) => {
+			PreRavaging.ForThisRound( ( gs, ravageSpaces ) => {
 				foreach(var skip in spacesToSkip)
 					ravageSpaces.Remove(skip);
 			} );
 		}
 
 		public void Skip1Build( params Space[] target ) {
-			PreBuilding.Add( (GameState gs, BuildingEventArgs args) => {
+			PreBuilding.ForThisRound( (GameState gs, BuildingEventArgs args) => {
 				foreach(var skip in target)
 					args.Skip1(skip);
 			});
 		}
 
 		public void SkipExplore( params Space[] target ) {
-			PreExplore.Add( ( gs, args ) => {
+			PreExplore.ForThisRound( ( gs, args ) => {
 				foreach(var space in target)
 					args.Skip(space);
 			} );

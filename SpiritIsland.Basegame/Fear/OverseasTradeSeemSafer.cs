@@ -37,7 +37,7 @@ namespace SpiritIsland.Basegame {
 
 		static void SkipCostalBuild( GameState gs ) {
 			var spaces = gs.Island.AllSpaces.Where( s => s.IsCoastal ).ToArray();
-			gs.PreBuilding.Add( ( GameState gs, BuildingEventArgs args ) => {
+			gs.PreBuilding.ForThisRound( ( GameState gs, BuildingEventArgs args ) => {
 				foreach(var space in spaces)
 					args.BuildTypes[space] = BuildingEventArgs.BuildType.TownsOnly; // !! This is not Additive, if something had Skip Towns, it might switch this to cities only
 				return Task.CompletedTask;

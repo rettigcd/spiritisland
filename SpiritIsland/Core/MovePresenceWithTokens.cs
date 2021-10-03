@@ -21,7 +21,8 @@ namespace SpiritIsland {
 
 			int maxThatCanMove = Math.Min( args.count, spirit.Presence.CountOn( args.from ) );
 			// 0 -> no action
-			if(maxThatCanMove == 0) return;
+			if(maxThatCanMove == 0)
+				return;
 			var moveLookup = new Dictionary<string, int>();
 			for(int i = maxThatCanMove; 0 < i; --i)
 				moveLookup.Add( $"Move {i} presence.", i );
@@ -32,6 +33,8 @@ namespace SpiritIsland {
 
 			while(countToMove-- > 0)
 				spirit.Presence.Move( args.from, args.to );
+
+			int debig=0;
 		}
 
 	}

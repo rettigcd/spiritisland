@@ -24,7 +24,7 @@ namespace SpiritIsland.Basegame {
 					// 1 damage per token destoryed
 					await DistributeDamageToLands( ctx, landsWeCanApplyTheDamageTo, 1 );
 			}
-			ctx.GameState.Tokens.TokenDestroyed.Add( DealVengenceDamage );
+			ctx.GameState.Tokens.TokenDestroyed.ForThisRound( DealVengenceDamage );
 
 			// if you have 3 animal
 			if(ctx.YouHave( "3 animal" ))
