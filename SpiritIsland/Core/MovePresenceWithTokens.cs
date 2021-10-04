@@ -28,13 +28,11 @@ namespace SpiritIsland {
 				moveLookup.Add( $"Move {i} presence.", i );
 			moveLookup.Add( "stay", 0 );
 
-			string s = await spirit.SelectText( prompt, moveLookup.OrderByDescending( p => p.Value ).Select( p => p.Key ).ToArray() );
+			string s = await spirit.SelectText( prompt, moveLookup.OrderByDescending( p => p.Value ).Select( p => p.Key ).ToArray(), Present.Always );
 			int countToMove = moveLookup[s];
 
 			while(countToMove-- > 0)
 				spirit.Presence.Move( args.from, args.to );
-
-			int debig=0;
 		}
 
 	}

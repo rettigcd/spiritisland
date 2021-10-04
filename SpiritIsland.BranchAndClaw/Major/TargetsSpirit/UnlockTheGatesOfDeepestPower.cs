@@ -35,10 +35,9 @@ namespace SpiritIsland.BranchAndClaw {
 				);
 				// It gains all elmemental thresholds.
 
-				await ctx.Other.SelectOptionalAction( $"Play {card.Name} now by:",
+				await ctx.OtherCtx.SelectOptionalAction( $"Play {card.Name} now by:",
 					payingHalfCostOption, 
-					forgettingCardOption,
-					new ActionOption( $"Done", () => { } )
+					forgettingCardOption
 				);
 			}
 

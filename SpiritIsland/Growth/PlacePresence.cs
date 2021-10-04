@@ -29,7 +29,7 @@ namespace SpiritIsland {
 		#endregion
 
 		public override Task ActivateAsync( Spirit spirit, GameState gameState ) {
-			return spirit.MakeDecisionsFor(gameState).PlacePresence( range, filterEnum );
+			return new SpiritGameStateCtx(spirit,gameState,Cause.None).PlacePresence( range, filterEnum );
 		}
 
 	}

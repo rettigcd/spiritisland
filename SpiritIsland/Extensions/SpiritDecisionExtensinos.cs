@@ -22,7 +22,7 @@ namespace SpiritIsland {
 		}
 
 		// wrapper - switches type to String
-		static public async Task<string> SelectText( this Spirit spirit, string prompt, string[] textOptions, Present present=Present.Always ) {
+		static public async Task<string> SelectText( this Spirit spirit, string prompt, string[] textOptions, Present present ) {
 			TextOption[] options = textOptions.Select( x => new TextOption( x ) ).ToArray();
 			var selection = await spirit.Select( prompt, options, present );
 			return selection?.Text;
@@ -49,7 +49,7 @@ namespace SpiritIsland {
 
 		// only used for Major/Minor deck selection and presenting erors / Fear card.
 		static public async Task<bool> UserSelectsFirstText( this Spirit spirit, string prompt, params string[] options ) {
-			return await spirit.SelectText( prompt, options ) == options[0];
+			return await spirit.SelectText( prompt, options, Present.Always ) == options[0];
 		}
 
 		// wrapper
@@ -57,7 +57,7 @@ namespace SpiritIsland {
 			List<string> numToMove = new List<string>();
 			int cur = max;
 			while(min <= cur ) numToMove.Add( (cur--).ToString() );
-			return int.Parse( await spirit.SelectText( prompt, numToMove.ToArray() ) );
+			return int.Parse( await spirit.SelectText( prompt, numToMove.ToArray(), Present.Always ) );
 		}
 
 		#endregion

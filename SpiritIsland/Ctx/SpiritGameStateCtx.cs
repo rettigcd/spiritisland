@@ -166,7 +166,25 @@ namespace SpiritIsland {
 
 		// convenience for ctx so we don't have to do ctx.Self.SelectPowerOption(...)
 		public Task SelectActionOption( params ActionOption[] options )
-			=> Self.SelectAction( "Select Power Option", options );
+			=> SelectActionOption( "Select Power Option", options );
+
+		public async Task SelectActionOption( string prompt, params ActionOption[] options ) {
+			ActionOption[] applicable = options.Where( opt => opt.IsApplicable ).ToArray();
+			string text = await Self.SelectText( prompt, applicable.Select( a => a.Description ).ToArray(), Present.Always );
+			if(text != null) {
+				var selectedOption = applicable.Single( a => a.Description == text );
+				await selectedOption.Action();
+			}
+		}
+
+		public async Task SelectOptionalAction( string prompt, params ActionOption[] options ) {
+			var applicable = options.Where( opt => opt.IsApplicable ).ToArray();
+			string text = await Self.SelectText( prompt, applicable.Select( a => a.Description ).ToArray(), Present.Done );
+			if( text != null && text != TextOption.Done.Text ) {
+				var selectedOption = applicable.Single( a => a.Description == text );
+				await selectedOption.Action();
+			}
+		}
 
 		#endregion
 

@@ -23,10 +23,15 @@ namespace SpiritIsland {
 		}
 
 		public DisplayFearCard(IFearOptions options, int activation ) {
-			FearOptions = options;
+			FearOptions = options ?? throw new ArgumentNullException(nameof(options));
 			Name = GetFearCardName( options );
 
-			var member = FearOptions.GetType().GetMethod("Level"+activation);
+			var memberName = "Level"+activation;
+
+			// This does not find interface methods declared as: void IFearCardOption.Level2(...)
+			var member = FearOptions.GetType().GetMethod(memberName) 
+				?? throw new Exception(memberName +" not found on "+options.GetType().Name);
+
 			var attr = (FearLevelAttribute)member.GetCustomAttributes(typeof( FearLevelAttribute )).Single();
 
 			Text = $"{Name}:{activation}:{attr.Description}";

@@ -24,7 +24,7 @@ namespace SpiritIsland.Basegame {
 
 		// "In each land, Defend 2 per Dahan."),
 		[FearLevel( 3, "" )]
-		Task IFearOptions.Level3( FearCtx ctx ) {
+		public Task Level3( FearCtx ctx ) {
 			var gs = ctx.GameState;
 			int defend( Space space ) => 2* gs.DahanGetCount( space );
 			return DefendIt( gs, defend );

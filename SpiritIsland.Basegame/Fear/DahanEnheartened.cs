@@ -25,15 +25,13 @@ namespace SpiritIsland.Basegame {
 
 		[FearLevel( 2, "Each player chooses a different land. In chosen lands: Gather up to 2 Dahan, then 1 Damage if Dahan are present." )]
 		public async Task Level2( FearCtx ctx ) {
-			var gs = ctx.GameState;
 			HashSet<Space> used = new ();
-			foreach(var spirit in gs.Spirits) {
-				var engine = spirit.MakeDecisionsFor( gs );
-				var options = gs.Island.AllSpaces.Where( gs.DahanIsOn ).Except( used ).ToArray();
-				var target = await spirit.Action.Decision( new Decision.TargetSpace( "Fear:select land with dahan for 1 damage", options ));
-				await engine.GatherUpTo(target,2, TokenType.Dahan );
-				if(gs.DahanIsOn(target))
-					await gs.SpiritFree_FearCard_DamageInvaders(target, 1 );
+			foreach(var spiritCtx in ctx.Spirits) {
+				var options = spiritCtx.AllSpaces.Where( s=>spiritCtx.Target(s).HasDahan ).Except( used ).ToArray();
+				var target = await spiritCtx.Self.Action.Decision( new Decision.TargetSpace( "Fear:select land with dahan for 1 damage", options ));
+				await spiritCtx.GatherUpTo(target,2, TokenType.Dahan );
+				if(ctx.GameState.DahanIsOn(target))
+					await ctx.GameState.SpiritFree_FearCard_DamageInvaders(target, 1 );
 				used.Add( target );
 			}
 		}
@@ -41,12 +39,11 @@ namespace SpiritIsland.Basegame {
 		[FearLevel( 3, "Each player chooses a different land. In chosen lands: Gather up to 2 Dahan, then 1 Damage per Dahan present." )]
 		public async Task Level3( FearCtx ctx ) {
 			HashSet<Space> used = new ();
-			var gs = ctx.GameState;
-			foreach(var spirit in gs.Spirits) {
-				var options = gs.Island.AllSpaces.Where( gs.DahanIsOn ).Except( used ).ToArray();
-				var target = await spirit.Action.Decision( new Decision.TargetSpace( "Fear:select land with dahan for 1 damage", options ));
-				await spirit.MakeDecisionsFor( gs ).GatherUpTo( target, 2, TokenType.Dahan );
-				await gs.SpiritFree_FearCard_DamageInvaders(target, gs.DahanGetCount(target) );
+			foreach(var spiritCtx in ctx.Spirits) {
+				var options = spiritCtx.AllSpaces.Where( s => spiritCtx.Target(s).HasDahan ).Except( used ).ToArray();
+				var target = await spiritCtx.Self.Action.Decision( new Decision.TargetSpace( "Fear:select land with dahan for 1 damage", options ));
+				await spiritCtx.GatherUpTo( target, 2, TokenType.Dahan );
+				await ctx.GameState.SpiritFree_FearCard_DamageInvaders(target, spiritCtx.Target(target).DahanCount );
 				used.Add( target );
 			}
 		}

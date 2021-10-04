@@ -9,8 +9,8 @@ namespace SpiritIsland.BranchAndClaw {
 		[FromSacredSite( 1 )]
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 
-			return ctx.Self.SelectAction( "Select Power Card option"
-				,new ActionOption(
+			return ctx.SelectActionOption( 
+				new ActionOption(
 					"Add strife. Invaders with strife deal Damage to other Invaders in target land.", 
 					() => StrifedInvadersDamageUnstrifed( ctx )
 				)
