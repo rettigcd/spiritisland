@@ -290,7 +290,7 @@ namespace SpiritIsland {
 				&& 0 < (powerCardOptions = getPowerCardOptions()).Length
 			) {
 				string prompt = $"Buy power cards: (${Energy} / {canPurchase})";
-				var card = await this.SelectPowerCard( prompt, powerCardOptions, Present.Done );
+				var card = await this.SelectPowerCard( prompt, powerCardOptions, CardUse.Buy, Present.Done );
 				if(card != null) {
 					PurchaseAvailableCards( card );
 					--canPurchase;

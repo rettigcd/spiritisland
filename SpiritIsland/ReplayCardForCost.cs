@@ -22,7 +22,7 @@ namespace SpiritIsland {
 			var options = self.UsedActions.OfType<PowerCard>().ToArray();
 			if(options.Length == 0) return;
 
-			PowerCard factory = await self.SelectPowerCard( "Select card to replay", options.Where( x => x.Cost <= maxCost ).ToArray() );
+			PowerCard factory = await self.SelectPowerCard( "Select card to replay", options.Where( x => x.Cost <= maxCost ), CardUse.Replay, Present.Always );
 			if(factory == null) return;
 
 			self.Energy -= factory.Cost;

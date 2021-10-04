@@ -13,8 +13,8 @@ namespace SpiritIsland {
 
 		#region Simple Wrappers
 
-		static public Task<PowerCard> SelectPowerCard( this Spirit spirit, string prompt, PowerCard[] options, Present present = Present.Always ) {
-			return spirit.Action.Decision( new Decision.TypedDecision<PowerCard>( prompt, options, present ) );
+		static public Task<PowerCard> SelectPowerCard( this Spirit spirit, string prompt, IEnumerable<PowerCard> options, CardUse cardUse, Present present ) {
+			return spirit.Action.Decision( new Decision.PickPowerCard( prompt, options.ToArray(), cardUse, present ) );
 		}
 
 		static public Task<IActionFactory> SelectFactory( this Spirit spirit, string prompt, IActionFactory[] options, Present present = Present.Always ) {
@@ -67,7 +67,7 @@ namespace SpiritIsland {
 		static public async Task ForgetPowerCard( this Spirit spirit ) {
 			var options = spirit.PurchasedCards.Union( spirit.Hand ).Union( spirit.DiscardPile )
 				.ToArray();
-			PowerCard cardToForget = await spirit.SelectPowerCard( "Select power card to forget", options );
+			PowerCard cardToForget = await spirit.SelectPowerCard( "Select power card to forget", options, CardUse.Forget, Present.Always );
 			spirit.Forget( (PowerCard)cardToForget );
 		}
 

@@ -14,7 +14,7 @@ namespace SpiritIsland {
 		}
 
 		public async Task Reclaim( GameState _ ) {
-			var reclaimCard = await spirit.SelectPowerCard( "Reclaim 1 played card", purchased, Present.Done );
+			var reclaimCard = await spirit.SelectPowerCard( "Reclaim 1 played card", purchased, CardUse.Reclaim, Present.Done );
 			if(reclaimCard == null) return;
 
 			spirit.Hand.Add( reclaimCard );

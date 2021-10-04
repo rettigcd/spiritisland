@@ -24,7 +24,7 @@ namespace SpiritIsland {
 				.ToArray(); 
 			if(options.Length == 0) return;
 
-			PowerCard factory = await self.SelectPowerCard( "Select card to replay", options.ToArray() );
+			PowerCard factory = await self.SelectPowerCard( "Select card to replay", options, CardUse.Replay, Present.Always );
 			if(factory == null) return;
 
 			self.AddActionFactory( factory );

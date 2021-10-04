@@ -48,6 +48,7 @@ namespace SpiritIsland {
 
 			public void Select( IOption option ) => throw new NotImplementedException();
 		}
+
 	}
 
 	public enum Present {
@@ -59,5 +60,7 @@ namespace SpiritIsland {
 		/// </summary>
 		Done,
 	}
+
+
 
 }
