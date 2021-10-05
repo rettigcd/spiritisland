@@ -81,7 +81,7 @@ Power Progression:
 
 		protected override void InitializeInternal( Board board, GameState gs ) {
 			InitPresence( board );
-			gs.PreRavaging.ForThisRound( Defend3InSacredSites );
+			gs.PreRavaging.ForEntireGame( Defend3InSacredSites );
 		}
 
 		void InitPresence( Board board ){
