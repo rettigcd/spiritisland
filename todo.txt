@@ -2,15 +2,19 @@
 
 == Clean-up ==
 
-4 Grapics / Layout
 4 Blight Tests
+3 Store Spirit State (presence/elements/cards/other?) in the gamestate OR something clonable.   (other state to store - board )
+3 Instead of ocean modifying Space State, Ocean should modify the default Terrain behavior of the Ctx - using a Ctx factory?
 
 == Bonus - Fun ==
 
-3 Draw cards from metadata
-3 draw innates - range icons, Target icons, clean tokens, +1 range
+3 Create a target-space preview, when hovering over cards
 2 Click on Fear card to close it.
+3 Draw cards from metadata
 2 Visual indication of phase
+
+2 When presenting options, Icon-draw them.
+3 draw innates - range icons, Target icons, clean tokens, +1 range
 2 hovering over cards, show what lands they target
 1 Cards ui - scrolling, decks & discard pile, 
 

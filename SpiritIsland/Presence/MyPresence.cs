@@ -20,15 +20,13 @@ namespace SpiritIsland {
 
 		#region Tracks / Board
 
-		public Track[] GetPlaceableTrackOptions() {
+		public virtual IEnumerable<Track> GetPlaceableTrackOptions() {
 			var options = new List<Track>();
 			if(Energy.HasMore) options.Add( Energy.Next );
 			if(CardPlays.HasMore) options.Add( CardPlays.Next );
-			if(CanPlaceDestroyedPresence && Destroyed>0) options.Add(Track.Destroyed);
-			return options.ToArray();
+			return options;
 		}
 
-		public bool CanPlaceDestroyedPresence = false;
 		public PresenceTrack Energy { get; }
 		public PresenceTrack CardPlays { get; }
 		public int Destroyed { get; private set; }
@@ -91,8 +89,33 @@ namespace SpiritIsland {
 		#endregion
 
 		public IReadOnlyCollection<Space> Placed => placed.AsReadOnly();
+
 		readonly List<Space> placed = new List<Space>();
 
+		// Revealed Count + Placed.
+		public virtual IPresenceMemento SaveToMemento() => new Memento(this);
+		public virtual void LoadFrom( IPresenceMemento memento ) => ((Memento)memento).Init(this);
+
+		protected class Memento : IPresenceMemento {
+			public Memento(MyPresence src) {
+				placed = src.placed.ToArray();
+				revealedEnergy = src.Energy.RevealedCount;
+				revealedCardPlays = src.CardPlays.RevealedCount;
+				destroyed = src.Destroyed;
+			}
+			public void Init(MyPresence src ) {
+				src.placed.Clear(); src.placed.AddRange( placed );
+				src.Energy.RevealedCount = revealedEnergy;
+				src.CardPlays.RevealedCount = revealedCardPlays;
+				src.Destroyed = destroyed;
+			}
+			readonly Space[] placed;
+			readonly int revealedEnergy;
+			readonly int revealedCardPlays;
+			readonly int destroyed;
+		}
 	}
+
+	public interface IPresenceMemento { }
 
 }

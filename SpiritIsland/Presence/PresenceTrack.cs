@@ -13,8 +13,8 @@ namespace SpiritIsland {
 
 		public Track Next => slots[RevealedCount];
 		public bool HasMore => RevealedCount < slots.Length;
-		public int RevealedCount { get; set; } = 1;
 		public int TotalCount => slots.Length;
+		public int RevealedCount { get; set; } = 1;
 	}
 
 }

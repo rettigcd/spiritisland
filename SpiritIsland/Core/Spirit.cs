@@ -33,8 +33,6 @@ namespace SpiritIsland {
 
 		#region Growth
 
-
-
 		public GrowthOption[] GrowthOptions { get; protected set; }
 
 
@@ -300,6 +298,48 @@ namespace SpiritIsland {
 			}
 		}
 
+		// Revealed Count + Placed.
+		public virtual ISpiritMemento SaveToMemento() => new Memento(this);
+		public virtual void LoadFrom( ISpiritMemento memento ) => ((Memento)memento).Init(this);
+
+		protected class Memento : ISpiritMemento {
+			public Memento(Spirit spirit) {
+				energy = spirit.Energy;
+				elements = spirit.Elements.ToArray();
+				presence = spirit.Presence.SaveToMemento();
+				hand      = spirit.Hand.ToArray();
+				purchased = spirit.PurchasedCards.ToArray();
+				discarded = spirit.DiscardPile.ToArray();
+				available = spirit.availableActions.ToArray();
+				usedActions = spirit.usedActions.ToArray();
+				usedInnates = spirit.usedInnates.ToArray();
+			}
+			public void Init(Spirit spirit) {
+				spirit.Energy = energy;
+				spirit.Elements.Clear(); foreach(var p in elements) spirit.Elements[p.Key]=p.Value;
+				spirit.Presence.LoadFrom(presence);
+				Restore( spirit.Hand, hand );
+				Restore( spirit.PurchasedCards, purchased);
+				Restore( spirit.DiscardPile, discarded );
+				Restore( spirit.availableActions, available );
+				Restore( spirit.usedActions, usedActions );
+				Restore( spirit.usedInnates, usedInnates );
+			}
+			static void Restore<T>(List<T> list, T[] saved ) { list.Clear(); list.AddRange(saved);}
+			readonly int energy;
+			readonly KeyValuePair<Element,int>[] elements;
+			readonly IPresenceMemento presence;
+			readonly PowerCard[] hand;
+			readonly PowerCard[] purchased;
+			readonly PowerCard[] discarded;
+			readonly IActionFactory[] available;
+			readonly IActionFactory[] usedActions;
+			readonly InnatePower[] usedInnates;
+
+		}
+
 	}
+
+	public interface ISpiritMemento { }
 
 }

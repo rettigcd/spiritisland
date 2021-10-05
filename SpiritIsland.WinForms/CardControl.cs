@@ -19,7 +19,7 @@ namespace SpiritIsland.WinForms {
 				| ControlStyles.ResizeRedraw, true
 			);
 			this.Cursor = Cursors.Default;
-			this.options = new PowerCard[0];
+			this.options = Array.Empty<PowerCard>();
 		}
 
 

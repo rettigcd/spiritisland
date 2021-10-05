@@ -1,6 +1,4 @@
-﻿
-using SpiritIsland;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -54,17 +52,13 @@ namespace SpiritIsland.Basegame {
 		public override string SpecialRules => "Choke the land with green - whenever invaders would ravage or build in a land with your sacred site, you may prevent it by destroying one of your presense in that land";
 
 		public ASpreadOfRampantGreen():base(
-			new MyPresence(
-				new Track[] { Track.Energy0, Track.Energy1, Track.PlantEnergy, Track.Energy2, Track.Energy2, Track.PlantEnergy, Track.Energy3 },
-				new Track[] { Track.Card1, Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4 }
-			),
+			new RampantGreenPresence(),
 			PowerCard.For<FieldsChokedWithGrowth>(),
 			PowerCard.For<GiftOfProliferation>(),
 			PowerCard.For<OvergrowInANight>(),
 			PowerCard.For<StemTheFlowOfFreshWater>()
 		) {
 			// Special rules: steady regeneration
-			this.Presence.CanPlaceDestroyedPresence = true; // !! leaky abstractions
 
 			static PlacePresence placeOnWetlandOrJungle() => new ( 2, Target.JungleOrWetland );
 
@@ -160,6 +154,22 @@ namespace SpiritIsland.Basegame {
 				if(costs1) --Energy;
 			}
 			return skipped.ToArray();
+		}
+
+	}
+
+	public class RampantGreenPresence : MyPresence {
+
+		public RampantGreenPresence() 
+			: base(
+				new Track[] { Track.Energy0, Track.Energy1, Track.PlantEnergy, Track.Energy2, Track.Energy2, Track.PlantEnergy, Track.Energy3 },
+				new Track[] { Track.Card1, Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4 }
+			) { }
+
+		public override IEnumerable<Track> GetPlaceableTrackOptions() {
+			var options = base.GetPlaceableTrackOptions().ToList();
+			if( Destroyed>0 ) options.Add(Track.Destroyed);
+			return options;
 		}
 
 	}
