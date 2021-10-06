@@ -67,7 +67,7 @@ namespace SpiritIsland.SinglePlayer {
 							await invaders.ActAsync();
 							await slowActions.ActAsync();
 							await GameState.TimePasses();
-						} catch( GameStateCommandException cmdEx) {
+						} catch( GameStateCommandException _) {
 							// if they want to go back withing 5 seconds of a save, throw away the save and go back one more slot
 							if(DateTime.Now < lastSaveTimeStamp.Add(TimeSpan.FromSeconds(5)) && savedGameStates.Count>1)
 								savedGameStates.Pop();

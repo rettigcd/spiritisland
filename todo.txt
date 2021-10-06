@@ -6,6 +6,10 @@
 4 Display Fear Pool
 4 Show log of User actions, Invader Actions
 3 Instead of ocean modifying Space State, Ocean should modify the default Terrain behavior of the Ctx - using a Ctx factory?
+* Visual indicator of Phase
+* Log Decisoins / view Decisions
+* Log Ravage / Build / Explore / Fear / Blight
+
 
 == Bonus - Fun ==
 
@@ -18,15 +22,6 @@
 3 draw innates - range icons, Target icons, clean tokens, +1 range
 2 hovering over cards, show what lands they target
 1 Cards ui - scrolling, decks & discard pile, 
-
-
-== Book Keeping ==
-
-* Undo / go back to beginning   (spirit:Presence & cards, Invader/Fear/Major/Minor, tokens, blight? )
-* Visual indicator of Phase
-* Log game Results
-* Log Decisoins / view Decisions
-* Log Ravage / Build / Explore / Fear / Blight
 
 == Tests: Ravage Engine =====
 

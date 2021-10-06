@@ -62,8 +62,6 @@ namespace SpiritIsland {
 			cardAttr.UpdateFromSpiritState( elements, this );
 		}
 
-//		IActionFactory IActionFactory.Original => this;
-
 		public string Text => Name;
 
 		abstract public Task ActivateAsync( Spirit spirit, GameState gameState );
@@ -85,5 +83,30 @@ namespace SpiritIsland {
 	}
 
 	public enum PowerType { Minor, Major, Spirit }
+
+	static public class PowerCardExtensions_ForWinForms {
+
+		public static string GetImageFilename( this PowerCard card ) {
+			string filename = card.Name
+				.Replace( ',', '_' )
+				.Replace( ' ', '_' )
+				.Replace( "__", "_" )
+				.Replace( "'", "" )
+				.Replace( "-", "" )
+				.ToLower();
+			string cardType = card.PowerType switch {
+				PowerType.Minor => "minor",
+				PowerType.Major => "major",
+				PowerType.Spirit => "spirit",
+				_ => throw new Exception()
+			};
+			string ns = card.MethodType.Namespace;
+			string edition = ns.Contains( "Basegame" ) ? "basegame"
+				: ns.Contains( "BranchAndClaw" ) ? "bac"
+				: ns;
+			return $".\\images\\{edition}\\{cardType}\\{filename}.jpg";
+		}
+
+	}
 
 }

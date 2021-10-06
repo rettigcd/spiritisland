@@ -139,7 +139,7 @@ namespace SpiritIsland.WinForms {
 				MessageBox.Show("No game configured.");
 		}
 
-		void replayRoundToolStripMenuItem_Click( object sender, EventArgs e ) {
+		void ReplayRoundToolStripMenuItem_Click( object sender, EventArgs e ) {
 			this.game.UserPortal.GoBackToBeginningOfRound();
 			this.ShowOptions();
 		}

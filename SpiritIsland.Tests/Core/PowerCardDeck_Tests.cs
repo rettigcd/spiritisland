@@ -1,5 +1,6 @@
 ﻿using Shouldly;
 using SpiritIsland.Basegame;
+using SpiritIsland.BranchAndClaw;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -155,6 +156,20 @@ namespace SpiritIsland.Tests.Core {
 
 			user.SelectsFirstOption( "Select Major Power Card" );
 			user.SelectsFirstOption( "Select power card to forget" );
+		}
+
+		[Theory]
+		[InlineData("basegame")]
+		[InlineData("bac")]
+		public void PowerCards_HaveNames(string edition) {
+
+			 var refObject = edition=="bac" ? typeof( SharpFangs  ) : typeof( RiverSurges );
+			var x = PowerCard.GetMajors( refObject ).ToList();
+			x.AddRange( PowerCard.GetMinors( refObject ) );
+
+			foreach(var card in x)
+				card.Name.ShouldNotBeNullOrEmpty();
+
 		}
 
 	}

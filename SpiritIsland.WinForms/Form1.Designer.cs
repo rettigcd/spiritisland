@@ -194,7 +194,7 @@ namespace SpiritIsland.WinForms {
             this.replayRoundToolStripMenuItem.Name = "replayRoundToolStripMenuItem";
             this.replayRoundToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.replayRoundToolStripMenuItem.Text = "Replay &Round";
-            this.replayRoundToolStripMenuItem.Click += new System.EventHandler(this.replayRoundToolStripMenuItem_Click);
+            this.replayRoundToolStripMenuItem.Click += new System.EventHandler(this.ReplayRoundToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
