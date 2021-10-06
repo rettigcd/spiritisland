@@ -124,6 +124,22 @@ namespace SpiritIsland {
 		readonly List<InvaderCard> cards;
 		public readonly List<int> drawCount = new List<int>(); // tracks how many cards to draw each turn
 
+		public virtual IMemento<InvaderDeck> SaveToMemento() => new Memento(this);
+		public virtual void LoadFrom( IMemento<InvaderDeck> memento ) => ((Memento)memento).Restore(this);
+
+		protected class Memento : IMemento<InvaderDeck> {
+			public Memento(InvaderDeck src) {
+				cards = src.cards.ToArray();
+				drawCount = src.drawCount.ToArray();
+			}
+			public void Restore(InvaderDeck src ) {
+				src.cards.SetItems(cards);
+				src.drawCount.SetItems(drawCount);
+			}
+			readonly InvaderCard[] cards;
+			readonly int[] drawCount;
+		}
+
 	}
 
 }

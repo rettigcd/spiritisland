@@ -64,6 +64,29 @@ namespace SpiritIsland {
 		public AsyncEvent<TokenMovedArgs> TokenMoved = new AsyncEvent<TokenMovedArgs>();
 		public AsyncEvent<TokenDestroyedArgs> TokenDestroyed = new AsyncEvent<TokenDestroyedArgs>();
 
+		#region Memento
+
+		public virtual IMemento<Tokens_ForIsland> SaveToMemento() => new Memento(this);
+		public virtual void LoadFrom( IMemento<Tokens_ForIsland> memento ) => ((Memento)memento).Restore(this);
+
+		protected class Memento : IMemento<Tokens_ForIsland> {
+			public Memento(Tokens_ForIsland src) {
+				foreach(var pair in src.tokenCounts)
+					tc[pair.Key] = pair.Value.ToDictionary(p=>p.Key,p=>p.Value);
+			}
+			public void Restore(Tokens_ForIsland src ) {
+				src.tokenCounts.Clear();
+				foreach(var space in tc.Keys) {
+					var tokens = src[space];
+					foreach(var p in tc[space])
+						tokens[p.Key] = p.Value;
+				}
+			}
+			readonly Dictionary<Space, Dictionary<Token,int>> tc = new Dictionary<Space, Dictionary<Token,int>>();
+		}
+
+		#endregion Memento
+
 	}
 
 }

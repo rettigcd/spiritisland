@@ -10,7 +10,7 @@ namespace SpiritIsland {
 	public class GameState {
 
 		// base-1,  game starts in round-1
-		public int Round { get; private set; }
+		public int RoundNumber { get; private set; }
 
 		#region constructors
 
@@ -25,7 +25,7 @@ namespace SpiritIsland {
 			if(spirits.Length==0) throw new ArgumentException("Game must include at least 1 spirit");
 			this.Spirits = spirits;
 			// Note: don't init invader deck here, let users substitute
-			Round = 1;
+			RoundNumber = 1;
 			Fear = new Fear( this );
 			Invaders = new Invaders( this );
 			Tokens = new Tokens_ForIsland( this );
@@ -34,10 +34,6 @@ namespace SpiritIsland {
 			TimePassed += PreBuilding.OnEndOfRound;
 			TimePassed += PreExplore.OnEndOfRound;
 		}
-
-		#endregion
-
-		#region Initialization
 
 		public virtual void Initialize() {
 
@@ -90,7 +86,7 @@ namespace SpiritIsland {
 				Tokens[s][TokenType.Defend] = 0;
 
 			TimePassed?.Invoke( this );
-			++Round;
+			++RoundNumber;
 		}
 
 		async Task ExecuteAndClear_OneRoundEvents() {
@@ -241,6 +237,48 @@ namespace SpiritIsland {
 		#endregion
 
 		public Task Move( Token invader, Space from, Space to ) => Tokens.Move( invader, from, to );
+
+		#region Memento
+
+		public virtual IMemento<GameState> SaveToMemento() => new Memento(this);
+		public virtual void LoadFrom( IMemento<GameState> memento ) => ((Memento)memento).Restore(this);
+
+		protected class Memento : IMemento<GameState> {
+			public Memento(GameState src) {
+				roundNumber  = src.RoundNumber;
+				blightOnCard = src.blightOnCard;
+				isBlighted   = src.BlightCard.IslandIsBlighted;
+				spirits      = src.Spirits.Select(s=>s.SaveToMemento()).ToArray();
+				major        = src.MajorCards.SaveToMemento();
+				minor        = src.MinorCards.SaveToMemento();
+				invaderDeck  = src.InvaderDeck.SaveToMemento();
+				fear         = src.Fear.SaveToMemento();
+				tokens       = src.Tokens.SaveToMemento();
+			}
+			public void Restore(GameState src ) {
+				src.RoundNumber = roundNumber;
+				src.blightOnCard = blightOnCard;
+				src.BlightCard.IslandIsBlighted = isBlighted;
+				for(int i=0;i<spirits.Length;++i) src.Spirits[i].LoadFrom( spirits[i] );
+				src.MajorCards.LoadFrom( major );
+				src.MinorCards.LoadFrom( minor );
+				src.InvaderDeck.LoadFrom( invaderDeck );
+				src.Fear.LoadFrom( fear );
+				src.Tokens.LoadFrom( tokens );
+			}
+			readonly int roundNumber;
+			readonly int blightOnCard;
+			readonly bool isBlighted;
+			readonly IMemento<Spirit>[] spirits;
+			readonly IMemento<PowerCardDeck> major;
+			readonly IMemento<PowerCardDeck> minor;
+			readonly IMemento<InvaderDeck> invaderDeck;
+			readonly IMemento<Fear> fear;
+			readonly IMemento<Tokens_ForIsland> tokens;
+		}
+
+		#endregion Memento
+
 
 	}
 

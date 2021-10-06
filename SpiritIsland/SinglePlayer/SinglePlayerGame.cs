@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -9,7 +10,7 @@ namespace SpiritIsland.SinglePlayer {
 		public WinLoseStatus WinLoseStatus = WinLoseStatus.Playing;
 
 		/// <summary> The main interface that drives the UI</summary>
-		public IUserPortal DecisionProvider {get; set;}
+		public IUserPortal UserPortal {get; set;}
 
 		// Public for querying gamestate ad hoc
 		public GameState GameState { get; }
@@ -25,7 +26,7 @@ namespace SpiritIsland.SinglePlayer {
 			this.GameState = gameState;
 			gameState.Initialize();
 			Spirit = gameState.Spirits.Single(); // this player only handles single-player.
-			this.DecisionProvider = Spirit.Action;
+			this.UserPortal = Spirit.Action;
 			StartLoop();
 		}
 
@@ -55,13 +56,23 @@ namespace SpiritIsland.SinglePlayer {
 					// Handle any unresolved Initialization action - (ocean/beast)
 					await new ResolveActions( Spirit, GameState, Speed.Growth, false ).ActAsync();
 
+					Stack<IMemento<GameState>> savedGameStates = new Stack<IMemento<GameState>>();
 					while(true) {
-						await selectGrowth.ActAsync();
-						await Spirit.BuyPowerCardsAsync();
-						await fastActions.ActAsync();
-						await invaders.ActAsync();
-						await slowActions.ActAsync();
-						await GameState.TimePasses();
+						savedGameStates.Push( GameState.SaveToMemento() );
+						DateTime lastSaveTimeStamp= DateTime.Now;
+						try {
+							await selectGrowth.ActAsync();
+							await Spirit.BuyPowerCardsAsync();
+							await fastActions.ActAsync();
+							await invaders.ActAsync();
+							await slowActions.ActAsync();
+							await GameState.TimePasses();
+						} catch( GameStateCommandException cmdEx) {
+							// if they want to go back withing 5 seconds of a save, throw away the save and go back one more slot
+							if(DateTime.Now < lastSaveTimeStamp.Add(TimeSpan.FromSeconds(5)) && savedGameStates.Count>1)
+								savedGameStates.Pop();
+							GameState.LoadFrom( savedGameStates.Pop() );
+						}
 					}
 				}
 				catch(GameOverException gameOver) {

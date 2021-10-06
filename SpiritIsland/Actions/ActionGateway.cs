@@ -14,15 +14,14 @@ namespace SpiritIsland {
 		/// Blocks and waits for there to be a decision. 
 		/// Don't call unless you are willing to block.
 		/// </summary>
-		public IDecision GetCurrent() => WaitForNextDecisionAndCacheIt.Decision;
+		public IDecision GetCurrent() => WaitForNextDecisionAndCacheIt().Decision;
 
-		IDecisionMaker WaitForNextDecisionAndCacheIt { get {
-				if(userAccessedDecision == null) {
-					signal.WaitOne();
-					userAccessedDecision = activeDecisionMaker;
-				}
-				return userAccessedDecision;
+		IDecisionMaker WaitForNextDecisionAndCacheIt() {
+			if(userAccessedDecision == null) {
+				signal.WaitOne();
+				userAccessedDecision = activeDecisionMaker;
 			}
+			return userAccessedDecision;
 		}
 
 		public bool WaitForNextDecision( int milliseconds ) {
@@ -44,7 +43,7 @@ namespace SpiritIsland {
 		}
 
 		public void Choose(IOption selection) {
-			var poppedDecisionMaker = WaitForNextDecisionAndCacheIt;
+			var poppedDecisionMaker = WaitForNextDecisionAndCacheIt();
 			var poppedDecision = poppedDecisionMaker.Decision;
 			this.activeDecisionMaker = null;
 			this.userAccessedDecision = null;
@@ -55,6 +54,13 @@ namespace SpiritIsland {
 			Log( selection, poppedDecision, false );
 
 			poppedDecisionMaker.Select( selection ); // ####
+		}
+
+		public void GoBackToBeginningOfRound() {
+			var poppedDecisionMaker = WaitForNextDecisionAndCacheIt();
+			this.activeDecisionMaker = null;
+			this.userAccessedDecision = null;
+			poppedDecisionMaker.IssueCommand( GameStateCommand.ReturnToBeginningOfRound );
 		}
 
 		#endregion
@@ -102,6 +108,12 @@ namespace SpiritIsland {
 
 		#endregion
 
+		interface IDecisionMaker {
+			public IDecisionPlus Decision { get; }
+			public void Select(IOption option);
+			public void IssueCommand( GameStateCommand cmd );
+		}
+
 		class ActionHelper<T> : IDecisionMaker where T : class, IOption {
 
 			public IDecisionPlus Decision { get; }
@@ -118,6 +130,10 @@ namespace SpiritIsland {
 					promise.TrySetResult( tt );
 				else
 					promise.TrySetException( new Exception( $"{selection.Text} not found in options" ) );
+			}
+
+			public void IssueCommand( GameStateCommand cmd ) {
+				promise.TrySetException( new GameStateCommandException(cmd) );
 			}
 
 			readonly TaskCompletionSource<T> promise;

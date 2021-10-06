@@ -25,7 +25,7 @@ namespace SpiritIsland.WinForms {
 		}
 
 		void Select( IOption option ) {
-			this.game.DecisionProvider.Choose( option );
+			this.game.UserPortal.Choose( option );
 			
 			if(this.game.WinLoseStatus == WinLoseStatus.Playing) {
 				this.ShowOptions();
@@ -38,7 +38,7 @@ namespace SpiritIsland.WinForms {
 		}
 
 		void ShowOptions() {
-			IDecision decision = game.DecisionProvider.GetCurrent();
+			IDecision decision = game.UserPortal.GetCurrent();
 			this.promptLabel.Text = decision.Prompt;
 			islandControl.Invalidate();
 			NewDecision?.Invoke( decision );
@@ -138,6 +138,12 @@ namespace SpiritIsland.WinForms {
 			else
 				MessageBox.Show("No game configured.");
 		}
+
+		void replayRoundToolStripMenuItem_Click( object sender, EventArgs e ) {
+			this.game.UserPortal.GoBackToBeginningOfRound();
+			this.ShowOptions();
+		}
+
 	}
 
 	public interface IHaveOptions {

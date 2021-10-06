@@ -3,7 +3,8 @@
 == Clean-up ==
 
 4 Blight Tests
-3 Store Spirit State (presence/elements/cards/other?) in the gamestate OR something clonable.   (other state to store - board )
+4 Display Fear Pool
+4 Show log of User actions, Invader Actions
 3 Instead of ocean modifying Space State, Ocean should modify the default Terrain behavior of the Ctx - using a Ctx factory?
 
 == Bonus - Fun ==

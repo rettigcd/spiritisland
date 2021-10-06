@@ -4,10 +4,12 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
+	/// <remarks>
+	/// Not an engine because it contains games state.
+	/// So it is ok to hold a GameState instance.
+	/// </remarks>
 	public class Fear {
 
-		readonly GameState gs;
-		readonly int activationThreshold;
 		public Fear(GameState gs ) {
 			this.gs = gs;
 			this.activationThreshold = gs.Spirits.Length * 4;
@@ -50,10 +52,6 @@ namespace SpiritIsland {
 			FearAdded?.Invoke( gs, args );
 		}
 
-		public int Pool { get; private set; } = 0;
-		public readonly Stack<PositionFearCard> Deck = new Stack<PositionFearCard>();
-		public readonly Stack<PositionFearCard> ActivatedCards = new Stack<PositionFearCard>();
-
 		public async Task Apply() {
 			while(ActivatedCards.Count > 0) {
 				PositionFearCard fearCard = ActivatedCards.Pop();
@@ -70,7 +68,38 @@ namespace SpiritIsland {
 			}
 		}
 
+		// - ints -
+		public int Pool { get; private set; } = 0;
+		readonly int activationThreshold;
+		// - cards -
+		public readonly Stack<PositionFearCard> Deck = new Stack<PositionFearCard>();
+		public readonly Stack<PositionFearCard> ActivatedCards = new Stack<PositionFearCard>();
+		// - events -
 		public SyncEvent<FearArgs> FearAdded = new SyncEvent<FearArgs>();                     // Dread Apparations
+		readonly GameState gs;
+
+		#region Memento
+
+		public virtual IMemento<Fear> SaveToMemento() => new Memento(this);
+		public virtual void LoadFrom( IMemento<Fear> memento ) => ((Memento)memento).Restore(this);
+
+		protected class Memento : IMemento<Fear> {
+			public Memento(Fear src) {
+				pool = src.Pool;
+				deck = src.Deck.ToArray();
+				activatedCards = src.ActivatedCards.ToArray();
+			}
+			public void Restore(Fear src ) {
+				src.Pool = pool;
+				src.Deck.SetItems( deck );
+				src.ActivatedCards.SetItems(activatedCards);
+			}
+			readonly int pool;
+			readonly PositionFearCard[] deck;
+			readonly PositionFearCard[] activatedCards;
+		}
+
+		#endregion Memento
 
 	}
 

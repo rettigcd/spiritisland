@@ -37,5 +37,21 @@ namespace SpiritIsland {
 		readonly Stack<PowerCard> cards = new Stack<PowerCard>();
 		readonly List<PowerCard> discards;
 
+		public virtual IMemento<PowerCardDeck> SaveToMemento() => new Memento(this);
+		public virtual void LoadFrom( IMemento<PowerCardDeck> memento ) => ((Memento)memento).Restore(this);
+
+		protected class Memento : IMemento<PowerCardDeck> {
+			public Memento(PowerCardDeck src) {
+				cards = src.cards.ToArray();
+				discards = src.discards.ToArray();
+			}
+			public void Restore( PowerCardDeck src ) {
+				src.cards.SetItems( cards );
+				src.discards.SetItems(discards);
+			}
+			readonly PowerCard[] cards;
+			readonly PowerCard[] discards;
+		}
+
 	}
 }

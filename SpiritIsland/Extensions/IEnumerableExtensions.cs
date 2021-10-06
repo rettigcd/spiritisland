@@ -45,6 +45,17 @@ namespace SpiritIsland {
 		static public bool IsOneOf( this TokenGroup needle, params TokenGroup[] haystack )
 			=> haystack.Contains( needle );
 
+		static public void SetItems<T>(this List<T> list, params T[] saved ) { list.Clear(); list.AddRange(saved);}
+
+		/// <summary>
+		/// [0] => top of stack, [^1] => bottom of stack
+		/// </summary>
+		static public void SetItems<T>(this Stack<T> stack, params T[] saved ) { 
+			stack.Clear(); 				
+			for(int i=saved.Length;i-->0;) 
+				stack.Push(saved[i]);
+		}
+
 	}
 
 }

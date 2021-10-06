@@ -39,6 +39,7 @@ namespace SpiritIsland.WinForms {
             this.gameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.replaySameGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.replayRoundToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
@@ -168,6 +169,7 @@ namespace SpiritIsland.WinForms {
             this.gameToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newToolStripMenuItem,
             this.replaySameGameToolStripMenuItem,
+            this.replayRoundToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.gameToolStripMenuItem.Name = "gameToolStripMenuItem";
             this.gameToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
@@ -176,21 +178,28 @@ namespace SpiritIsland.WinForms {
             // newToolStripMenuItem
             // 
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.newToolStripMenuItem.Text = "&New";
             this.newToolStripMenuItem.Click += new System.EventHandler(this.GameNewStripMenuItem_Click);
             // 
             // replaySameGameToolStripMenuItem
             // 
             this.replaySameGameToolStripMenuItem.Name = "replaySameGameToolStripMenuItem";
-            this.replaySameGameToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
-            this.replaySameGameToolStripMenuItem.Text = "&Replay Same Game";
+            this.replaySameGameToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.replaySameGameToolStripMenuItem.Text = "Replay Same &Game";
             this.replaySameGameToolStripMenuItem.Click += new System.EventHandler(this.ReplaySameGameToolStripMenuItem_Click);
+            // 
+            // replayRoundToolStripMenuItem
+            // 
+            this.replayRoundToolStripMenuItem.Name = "replayRoundToolStripMenuItem";
+            this.replayRoundToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.replayRoundToolStripMenuItem.Text = "Replay &Round";
+            this.replayRoundToolStripMenuItem.Click += new System.EventHandler(this.replayRoundToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exitToolStripMenuItem.Text = "E&xit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
@@ -236,6 +245,7 @@ namespace SpiritIsland.WinForms {
 		private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem replaySameGameToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem replayRoundToolStripMenuItem;
 	}
 }
 

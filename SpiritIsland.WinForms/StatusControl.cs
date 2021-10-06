@@ -24,7 +24,7 @@ namespace SpiritIsland.WinForms {
 				string ravage = gameState.InvaderDeck.Ravage.FirstOrDefault()?.Text ?? "-";
 				string build = gameState.InvaderDeck.Build.FirstOrDefault()?.Text ?? "-";
 				string msg = $"Energy: {gameState.Spirits[0].Energy}      ---      "
-					+ $"Turn: {gameState.Round} --- Ravage: {ravage}  Build: {build}      ---      "
+					+ $"Turn: {gameState.RoundNumber} --- Ravage: {ravage}  Build: {build}      ---      "
 					+ $"Fear Pool: {gameState.Fear.Pool}  Activated: {gameState.Fear.ActivatedCards.Count}  Terror Level: {gameState.Fear.TerrorLevel}     ----       "
 					+$"Blight Remaining: {gameState.blightOnCard}";
 				pe.Graphics.DrawString(msg,SystemFonts.DefaultFont,Brushes.Black,0,0);

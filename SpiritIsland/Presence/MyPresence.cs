@@ -93,17 +93,17 @@ namespace SpiritIsland {
 		readonly List<Space> placed = new List<Space>();
 
 		// Revealed Count + Placed.
-		public virtual IPresenceMemento SaveToMemento() => new Memento(this);
-		public virtual void LoadFrom( IPresenceMemento memento ) => ((Memento)memento).Init(this);
+		public virtual IMemento<MyPresence> SaveToMemento() => new Memento(this);
+		public virtual void LoadFrom( IMemento<MyPresence> memento ) => ((Memento)memento).Restore(this);
 
-		protected class Memento : IPresenceMemento {
+		protected class Memento : IMemento<MyPresence> {
 			public Memento(MyPresence src) {
 				placed = src.placed.ToArray();
 				revealedEnergy = src.Energy.RevealedCount;
 				revealedCardPlays = src.CardPlays.RevealedCount;
 				destroyed = src.Destroyed;
 			}
-			public void Init(MyPresence src ) {
+			public void Restore(MyPresence src ) {
 				src.placed.Clear(); src.placed.AddRange( placed );
 				src.Energy.RevealedCount = revealedEnergy;
 				src.CardPlays.RevealedCount = revealedCardPlays;
@@ -115,7 +115,5 @@ namespace SpiritIsland {
 			readonly int destroyed;
 		}
 	}
-
-	public interface IPresenceMemento { }
 
 }

@@ -299,10 +299,10 @@ namespace SpiritIsland {
 		}
 
 		// Revealed Count + Placed.
-		public virtual ISpiritMemento SaveToMemento() => new Memento(this);
-		public virtual void LoadFrom( ISpiritMemento memento ) => ((Memento)memento).Init(this);
+		public virtual IMemento<Spirit> SaveToMemento() => new Memento(this);
+		public virtual void LoadFrom( IMemento<Spirit> memento ) => ((Memento)memento).Restore(this);
 
-		protected class Memento : ISpiritMemento {
+		protected class Memento : IMemento<Spirit> {
 			public Memento(Spirit spirit) {
 				energy = spirit.Energy;
 				elements = spirit.Elements.ToArray();
@@ -314,21 +314,20 @@ namespace SpiritIsland {
 				usedActions = spirit.usedActions.ToArray();
 				usedInnates = spirit.usedInnates.ToArray();
 			}
-			public void Init(Spirit spirit) {
+			public void Restore(Spirit spirit) {
 				spirit.Energy = energy;
 				spirit.Elements.Clear(); foreach(var p in elements) spirit.Elements[p.Key]=p.Value;
 				spirit.Presence.LoadFrom(presence);
-				Restore( spirit.Hand, hand );
-				Restore( spirit.PurchasedCards, purchased);
-				Restore( spirit.DiscardPile, discarded );
-				Restore( spirit.availableActions, available );
-				Restore( spirit.usedActions, usedActions );
-				Restore( spirit.usedInnates, usedInnates );
+				spirit.Hand.SetItems( hand );
+				spirit.PurchasedCards.SetItems( purchased );
+				spirit.DiscardPile.SetItems( discarded );
+				spirit.availableActions.SetItems( available );
+				spirit.usedActions.SetItems( usedActions );
+				spirit.usedInnates.SetItems( usedInnates );
 			}
-			static void Restore<T>(List<T> list, T[] saved ) { list.Clear(); list.AddRange(saved);}
 			readonly int energy;
 			readonly KeyValuePair<Element,int>[] elements;
-			readonly IPresenceMemento presence;
+			readonly IMemento<MyPresence> presence;
 			readonly PowerCard[] hand;
 			readonly PowerCard[] purchased;
 			readonly PowerCard[] discarded;
@@ -339,7 +338,5 @@ namespace SpiritIsland {
 		}
 
 	}
-
-	public interface ISpiritMemento { }
 
 }

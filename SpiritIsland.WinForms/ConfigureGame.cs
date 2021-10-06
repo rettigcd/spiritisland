@@ -181,7 +181,7 @@ namespace SpiritIsland.WinForms {
 				gameState.Fear.AddCard( f );
 			// --- End FEAR
 
-			gameState.BlightCard = ((int)DateTime.Now.Ticks) % 1 == 0
+			gameState.BlightCard = (randomizer.Next(1) == 0)
 				? new DownwardSpiral()
 				: new MemoryFadesToDust();
 			return gameState;

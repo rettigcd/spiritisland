@@ -14,6 +14,7 @@ namespace SpiritIsland {
 		void Choose( IOption option );
 		void Choose( string text );
 
+		void GoBackToBeginningOfRound();
 	}
 
 	/// <summary>

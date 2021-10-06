@@ -1,8 +1,10 @@
 ﻿using System.Threading.Tasks;
 
 namespace SpiritIsland {
+
 	public class NullBlightCard : IBlightCard {
-		public bool IslandIsBlighted {get; private set; }
+
+		public bool IslandIsBlighted {get; set; }
 
 		public void OnBlightDepleated( GameState gs ) {
 			if(IslandIsBlighted) GameOverException.Lose();
@@ -15,5 +17,6 @@ namespace SpiritIsland {
 		}
 
 		public Task OnStartOfInvaders( GameState gs ) {return Task.CompletedTask;}
+
 	}
 }
