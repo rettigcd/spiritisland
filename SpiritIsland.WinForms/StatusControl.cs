@@ -21,8 +21,6 @@ namespace SpiritIsland.WinForms {
 			base.OnPaint( pe );
 
 			if(gameState != null) {
-				string ravage = gameState.InvaderDeck.Ravage.FirstOrDefault()?.Text ?? "-";
-				string build = gameState.InvaderDeck.Build.FirstOrDefault()?.Text ?? "-";
 				string msg = $"Turn: {gameState.RoundNumber} ---    Blight Remaining: {gameState.blightOnCard}";
 				pe.Graphics.DrawString(msg,SystemFonts.DefaultFont,Brushes.Black,0,0);
 			}

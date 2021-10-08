@@ -21,7 +21,7 @@ namespace SpiritIsland.SinglePlayer {
 
 			while(count-->0) {
 				var currentOptions = remainingOptions.Where(o=>o.GainEnergy+spirit.Energy>=0).ToArray();
-				GrowthOption option = (GrowthOption)await spirit.Select( "Select Growth Option", currentOptions );
+				GrowthOption option = (GrowthOption)await spirit.Select( "Select Growth Option", currentOptions, Present.Always );
 				remainingOptions.Remove(option);
 				spirit.Grow( gameState, option );
 				await resolveGrowth.ActAsync();

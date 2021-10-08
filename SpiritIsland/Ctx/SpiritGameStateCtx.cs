@@ -170,7 +170,7 @@ namespace SpiritIsland {
 
 		public async Task SelectActionOption( string prompt, params ActionOption[] options ) {
 			ActionOption[] applicable = options.Where( opt => opt.IsApplicable ).ToArray();
-			string text = await Self.SelectText( prompt, applicable.Select( a => a.Description ).ToArray(), Present.Always );
+			string text = await Self.SelectText( prompt, applicable.Select( a => a.Description ).ToArray(), Present.AutoSelectSingle );
 			if(text != null) {
 				var selectedOption = applicable.Single( a => a.Description == text );
 				await selectedOption.Action();

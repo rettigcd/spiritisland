@@ -7,7 +7,7 @@ namespace SpiritIsland {
 	static public class SpiritDecisionExtensinos {
 
 		// used for Fear / Growth / Generic / options that combine different types
-		static public Task<T> Select<T>( this Spirit spirit, string prompt, T[] options, Present present = Present.Always ) where T : class, IOption {
+		static public Task<T> Select<T>( this Spirit spirit, string prompt, T[] options, Present present ) where T : class, IOption {
 			return spirit.Action.Decision( new Decision.TypedDecision<T>( prompt, options, present ) );
 		}
 

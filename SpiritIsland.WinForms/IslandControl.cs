@@ -91,7 +91,6 @@ namespace SpiritIsland.WinForms {
 			strife   = images.GetToken( "strife" );
 			fear     = images.GetToken( "fear" );
 			grayFear = images.GetToken( "fear_gray");
-			fearCardImage = images.GetToken( "fearcard" );
 
 			tokenImages = new Dictionary<Token, Image> {
 				[Invader.City[3]] = images.GetToken( "city" ),
@@ -296,7 +295,11 @@ namespace SpiritIsland.WinForms {
 
 			float maxHeight = 0;
 
-			foreach(Token token in tokens.Invaders()) {
+			var orderedInvaders = tokens.Invaders()
+				.OrderByDescending(i=>i.FullHealth)
+				.ThenBy(i=>i.Health); // show damaged first so when we apply damage, the damaged one replaces the old undamaged one.
+
+			foreach(Token token in orderedInvaders) {
 
 				// Strife
 				Token imageToken;
@@ -513,7 +516,6 @@ namespace SpiritIsland.WinForms {
 		Image strife;
 		Image fear;
 		Image grayFear;
-		Image fearCardImage;
 		Dictionary<Token, Image> tokenImages;
 		#endregion
 
