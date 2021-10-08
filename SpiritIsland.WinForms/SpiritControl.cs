@@ -150,7 +150,7 @@ namespace SpiritIsland.WinForms {
 
 			// Presence & Red X
 			graphics.DrawImage( presence, rect );
-			using var redX = images.GetTokenIcon( "red-x" );
+			using var redX = images.GetIcon( "red-x" );
 			graphics.DrawImage( redX, rect.X, rect.Y, rect.Width * 2 / 3, rect.Height * 2 / 3 );
 			// count
 			graphics.DrawCount( rect, spirit.Presence.Destroyed );
@@ -198,20 +198,11 @@ namespace SpiritIsland.WinForms {
 		}
 		Image spiritImage;
 
-		//Image GetInnateImage( string innateCardName ) {
-		//	if(!innateImages.ContainsKey( innateCardName )) {
-		//		string filename = innateCardName.Replace( ' ', '_' ).Replace( "'", "" ).ToLower();
-		//		Image image = Image.FromFile( $".\\images\\innates\\{filename}.jpg" );
-		//		innateImages.Add( innateCardName, image );
-		//	}
-		//	return innateImages[innateCardName];
-		//}
-
 		Image GetElementImage( Element element ) {
 
 			if(!elementImages.ContainsKey( element )) {
 				string filename = "Simple_" + element.ToString().ToLower();
-				Image image = ResourceImages.Singleton.GetTokenIcon(filename); //  Image.FromFile( $".\\images\\tokens\\{filename}.png" );
+				Image image = ResourceImages.Singleton.GetIcon(filename); //  Image.FromFile( $".\\images\\tokens\\{filename}.png" );
 				elementImages.Add( element, image );
 			}
 			return elementImages[element];

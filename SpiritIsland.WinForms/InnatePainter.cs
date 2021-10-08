@@ -244,7 +244,7 @@ namespace SpiritIsland.WinForms {
 				"slow" => "Slowicon",
 				_ => "Simple_" + token // elements
 			};
-			images.Add( token, ResourceImages.Singleton.GetTokenIcon(filename) );
+			images.Add( token, ResourceImages.Singleton.GetIcon(filename) );
 		}
 
 		readonly Dictionary<string,Image> images = new Dictionary<string, Image>();

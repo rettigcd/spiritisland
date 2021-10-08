@@ -92,22 +92,22 @@ namespace SpiritIsland.WinForms {
 			//			boardA = Image.FromFile(".\\images\\board a.png");
 
 			var images = ResourceImages.Singleton;
-			dahan = images.GetTokenIcon("Dahanicon");
-			dahan1 = images.GetTokenIcon( "Dahan1icon" );
-			city = images.GetTokenIcon( "Cityicon" );
-			city2    = images.GetTokenIcon( "City2icon" );
-			city1    = images.GetTokenIcon( "City1icon" );
-			town     = images.GetTokenIcon( "Townicon");
-			town1    = images.GetTokenIcon( "Town1icon" );
-			explorer = images.GetTokenIcon( "Explorericon" );
-			blight   = images.GetTokenIcon( "Blighticon" );
-			defend   = images.GetTokenIcon( "defend1orange" );
+			dahan    = images.GetToken( "dahan" );
+			dahan1   = images.GetToken( "dahan1" );
+			city     = images.GetToken( "city" );
+			city2    = images.GetToken( "city2" );
+			city1    = images.GetToken( "city1" );
+			town     = images.GetToken( "town" );
+			town1    = images.GetToken( "town1" );
+			explorer = images.GetToken( "explorer" );
+			blight   = images.GetToken( "blight" );
+			defend   = images.GetToken( "defend1orange" );
 			presence = images.GetPresenceIcon( tokenColor );
 
-			wilds = ResourceImages.Singleton.GetTokenIcon("wilds");
-			disease = ResourceImages.Singleton.GetTokenIcon( "disease" );
-			beast = ResourceImages.Singleton.GetTokenIcon( "beast" );
-			strife = ResourceImages.Singleton.GetTokenIcon( "strife" );
+			wilds = ResourceImages.Singleton.GetToken("wilds");
+			disease = ResourceImages.Singleton.GetToken( "disease" );
+			beast = ResourceImages.Singleton.GetToken( "beast" );
+			strife = ResourceImages.Singleton.GetToken( "strife" );
 
 			tokenImages = new Dictionary<Token, Image> {
 				[Invader.City[3]] = city,
@@ -339,7 +339,7 @@ namespace SpiritIsland.WinForms {
 
 			PointF normalized = spaceLookup[space.Label];
 			PointF xy = new PointF(normalized.X * boardScreenSize.Width, normalized.Y * boardScreenSize.Height);
-			float iconWidth = boardScreenSize.Width * .035f; 
+			float iconWidth = boardScreenSize.Width * .045f; 
 			float xStep = iconWidth + 10f;
 
 			float x = xy.X - iconWidth;

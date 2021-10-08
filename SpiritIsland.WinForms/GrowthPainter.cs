@@ -87,7 +87,7 @@ namespace SpiritIsland.WinForms {
 
 		void GainEnergy( RectangleF bounds, int delta ){
 			// DrawTokenInCenter( rect, "Energy_Plus_"+delta);
-			using var img = ResourceImages.Singleton.GetTokenIcon( "coin" );
+			using var img = ResourceImages.Singleton.GetToken( "coin" );
 			float imgWidth = bounds.Width, imgHeight = img.Height * imgWidth / img.Width; // assuming width limited
 			graphics.DrawImage( img, bounds.X, bounds.Y + (bounds.Height - imgHeight) / 2, imgWidth, imgHeight );
 
@@ -106,7 +106,7 @@ namespace SpiritIsland.WinForms {
 		}
 
 		void DrawTokenInCenter( RectangleF rect, string file ) {
-			var img = ResourceImages.Singleton.GetTokenIcon( file );
+			var img = ResourceImages.Singleton.GetIcon( file );
 			float imgWidth = rect.Width, imgHeight = img.Height * imgWidth / img.Width;
 			graphics.DrawImage( img, rect.X, rect.Y + (rect.Height - imgHeight) / 2, imgWidth, imgHeight );
 		}
@@ -124,13 +124,13 @@ namespace SpiritIsland.WinForms {
 			float presencePercent = iconFilename == "" ? .3f : .2f;
 			float plusY = rect.Y + rect.Height * presencePercent; // top of presence
 			graphics.DrawString("+",font,Brushes.Black,rect.X+rect.Width*0.25f,plusY);
-			using var presenceIcon = ResourceImages.Singleton.GetTokenIcon( "Presenceicon" );
+			using var presenceIcon = ResourceImages.Singleton.GetIcon( "Presenceicon" );
 			graphics.DrawImage(presenceIcon, rect.X + rect.Width * 0.4f, plusY-rect.Height*.1f, rect.Width*.5f, rect.Height*.2f );
 
 			// icon
 			if(iconFilename != "") {
 				// using var image = Image.FromFile( ".\\images\\" + iconFilename + ".png" );
-				using var image = ResourceImages.Singleton.GetTokenIcon( iconFilename );
+				using var image = ResourceImages.Singleton.GetIcon( iconFilename );
 				float iconPercentage = .4f;
 				float iconHeight = rect.Height * .3f;
 				float iconWidth = iconHeight * image.Width / image.Height;
@@ -157,7 +157,7 @@ namespace SpiritIsland.WinForms {
 
 				// range arrow
 				float rangeArrowTop = rect.Y + rect.Height * .85f;
-				using var rangeIcon = ResourceImages.Singleton.GetTokenIcon( "Range" );
+				using var rangeIcon = ResourceImages.Singleton.GetIcon( "Range" );
 				float arrowWidth = rect.Width * .8f, arrowHeight = arrowWidth * rangeIcon.Height / rangeIcon.Width;
 				graphics.DrawImage( rangeIcon, rect.X + (rect.Width-arrowWidth)/2, rangeArrowTop, arrowWidth, arrowHeight );
 			}

@@ -27,7 +27,7 @@ namespace SpiritIsland.WinForms {
 			this.highlightPen = highlightPen;
 			this.trackOptions = trackOptions;
 			this.hotSpots = hotSpots;
-			coin = ResourceImages.Singleton.GetTokenIcon( "coin" );
+			coin = ResourceImages.Singleton.GetToken( "coin" );
 		}
 
 		public Size DrawEnergyRow(float slotWidth, int x, int y, float width ) {
@@ -128,7 +128,7 @@ namespace SpiritIsland.WinForms {
 					var rr = new RectangleF(x+slotWidth*.1f,cardY,coinWidth,coinWidth);
 					DrawCoin( rr, track.Text );
 				} else
-					using( var bitmap = ResourceImages.Singleton.GetTokenIcon(track.Text)) {
+					using( var bitmap = ResourceImages.Singleton.GetIcon(track.Text)) {
 
 						float cardHeight = cardWidth * bitmap.Height / bitmap.Width;
 						maxCardHeight = Math.Max(cardHeight,maxCardHeight);
@@ -169,7 +169,7 @@ namespace SpiritIsland.WinForms {
 
 			if("sun|moon|fire|air|water|earth|plant|animal|any".Contains( txt )) {
 				string filename = "Simple_" + txt.ToString().ToLower();
-				using Image image = ResourceImages.Singleton.GetTokenIcon(filename); //  Image.FromFile( $".\\images\\tokens\\{filename}.png" );
+				using Image image = ResourceImages.Singleton.GetToken(filename); //  Image.FromFile( $".\\images\\tokens\\{filename}.png" );
 				var elementBounds = bounds.InflateBy(-bounds.Height/4);
 				graphics.DrawImageFitHeight(image,elementBounds);
 			} else {
