@@ -22,7 +22,7 @@ namespace SpiritIsland.Basegame {
 			// if you have 3 moon 3 earth
 			if(ctx.YouHave("3 moon,3 earth")) {
 				// repeat on an adjacent land.
-				var alsoTarget = await ctx.Self.Action.Decision( new Decision.TargetSpace( "Select additional land to receive blight damage", ctx.Space.Adjacent));
+				var alsoTarget = await ctx.Self.Action.Decision( new Decision.TargetSpace( "Select additional land to receive blight damage", ctx.Space.Adjacent, Present.Always));
 				await DamageLandFromBlight( ctx.Target( alsoTarget ) );
 			}
 		}

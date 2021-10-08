@@ -38,6 +38,7 @@ namespace SpiritIsland.BranchAndClaw {
 				var secondaryTarget = await ctx.Self.Action.Decision(new Decision.TargetSpace(
 					$"Apply {remainingDamage} reamaining damage"
 					,ctx.Self.Presence.Spaces
+					, Present.Always
 				));
 				await ctx.Target(secondaryTarget).DamageInvaders(remainingDamage);
 			}

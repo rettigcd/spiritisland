@@ -37,7 +37,7 @@ namespace SpiritIsland.Basegame {
 					.Where( x => gs.Tokens[x].HasAny( removable ) )
 					.ToArray();
 				if(options.Length == 0) break;
-				var target = await spirit.Action.Decision( new Decision.TargetSpace( "Fear:Pick costal land remove invader", options ) );
+				var target = await spirit.Action.Decision( new Decision.TargetSpace( "Fear:Pick costal land remove invader", options, Present.Always ) );
 				var grp = gs.Tokens[target];
 				RemoveInvader( grp, removable );
 			}

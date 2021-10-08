@@ -138,8 +138,8 @@ namespace SpiritIsland {
 		}
 
 		public async Task<IOption> SelectPresenceSource() {
-			return (IOption)await Self.Action.Decision( new Decision.Presence.Source( Self ) )
-				?? (IOption)await Self.Action.Decision( new Decision.Presence.TakeFromBoard( Self ) );
+			return (IOption)await Self.Action.Decision( new Decision.Presence.SourceFromTrack( Self ) )
+				?? (IOption)await Self.Action.Decision( new Decision.Presence.DeployedAsSource( Self ) );
 		}
 
 		/// <summary>

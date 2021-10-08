@@ -41,6 +41,7 @@ namespace SpiritIsland.Basegame {
 				var destination = await ctx.Self.Action.Decision( new Decision.TargetSpace(
 					"Push " + invader.Summary + " to",
 					source.Adjacent.Where( s=>ctx.Target(s).IsInPlay )
+					, Present.Always
 				) );
 				await ctx.Move( invader, source, destination );
 

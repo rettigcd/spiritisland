@@ -36,7 +36,7 @@ namespace SpiritIsland.Basegame {
 				} ).ToArray();
 				if(options.Length == 0) return;
 
-				var target = await spirit.Action.Decision( new Decision.TargetSpace( "fear:Select land to remove 1 explorer", options ));
+				var target = await spirit.Action.Decision( new Decision.TargetSpace( "fear:Select land to remove 1 explorer", options, Present.Always ));
 
 				var grp = gs.Tokens[ target ];
 				var invaderToRemove = grp.PickBestInvaderToRemove(removeableInvaders);

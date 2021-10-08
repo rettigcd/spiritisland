@@ -1,6 +1,4 @@
-﻿using SpiritIsland;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 
@@ -17,7 +15,7 @@ namespace SpiritIsland.Basegame {
 			if(!IslandIsBlighted) return;
 			// Spirit destorys a presence.
 			foreach(var spirit in gs.Spirits) {
-				var presence = await spirit.Action.Decision( new Decision.TargetSpace( "BLIGHT: Select presence to destroy.", spirit.Presence.Spaces.ToArray() ));
+				var presence = await spirit.Action.Decision( new Decision.Presence.Deployed( "BLIGHT: Select presence to destroy.", spirit ));
 				spirit.Presence.Destroy( presence );
 			}
 		}

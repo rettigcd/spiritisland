@@ -116,6 +116,7 @@ namespace SpiritIsland.WinForms {
 			tokenOnSpace      = decision as Decision.TokenOnSpace;
 			adjacentDecision  = decision as Decision.IAdjacentDecision;
 			spaceTokens       = decision as Decision.TypedDecision<SpaceToken>;
+			deployedPresence  = decision as Decision.Presence.Deployed;
 			this.activeSpaces = decision.Options.OfType<Space>().ToArray();
 			fearCard          = decision.Options.OfType<DisplayFearCard>().FirstOrDefault();
 		}
@@ -142,12 +143,12 @@ namespace SpiritIsland.WinForms {
 			if(gameState != null) {
 				foreach(var space in gameState.Island.Boards[0].Spaces)
 					DecorateSpace(pe.Graphics,space);
-				DrawHighlights( pe );
 				DrawFearPool( pe.Graphics, new RectangleF(Width*.75f,0f,Width*.25f,Width*.05f ) );
 				DrawBlight  ( pe.Graphics, new RectangleF(Width*.80f,Width*.05f,Width*.20f,Width*.03f ) );
 				DrawRound( pe.Graphics );
-				DrawInvaderCards( pe.Graphics ); // Do this last since it contains the Fear Card that we want to be on top of everything.
-			
+				DrawInvaderCards( pe.Graphics ); // other than highlights, do this last since it contains the Fear Card that we want to be on top of everything.
+
+				DrawHighlights( pe );
 			}
 
 		}
@@ -211,13 +212,6 @@ namespace SpiritIsland.WinForms {
 		void DrawHighlights( PaintEventArgs pe ) {
 			using var pen = new Pen(Brushes.Aquamarine,5);
 
-			// Space Circles
-			if(activeSpaces != null)
-				foreach(var space in activeSpaces) {
-					var center = SpaceCenter(space);
-					pe.Graphics.DrawEllipse( pen, center.X- radius, center.Y- radius, radius * 2, radius * 2 );
-				}
-
 			// adjacent
 			if(adjacentDecision != null) {
 
@@ -264,6 +258,27 @@ namespace SpiritIsland.WinForms {
 					}
 				}
 			}
+
+			if(deployedPresence != null) {
+				activeSpaces = null; // disable circle drawing
+				// Presence (inherits from Space Cirlcles
+				foreach(var space in deployedPresence.Options.OfType<Space>()) {
+					string key = space.Label + ":" + "Presence";
+					if(tokenLocations.ContainsKey( key )) {
+						var rect = tokenLocations[key];
+						rect.Inflate(4,4);
+						optionRects.Add( (rect, space) );
+						pe.Graphics.DrawRectangle( pen, rect );
+					}
+				}
+			}
+			
+			if(activeSpaces != null)
+				// Space Circles
+				foreach(var space in activeSpaces) {
+					var center = SpaceCenter(space);
+					pe.Graphics.DrawEllipse( pen, center.X- radius, center.Y- radius, radius * 2, radius * 2 );
+				}
 
 		}
 		
@@ -431,21 +446,23 @@ namespace SpiritIsland.WinForms {
 				// calc rect
 				float height = width / presence.Width * presence.Height;
 				maxHeight = Math.Max( maxHeight, height );
-				var rect = new Rectangle( (int)x, (int)y, (int)width, (int)height );
+				var presenceRect = new Rectangle( (int)x, (int)y, (int)width, (int)height );
 				x += step;
+
+				tokenLocations.Add( tokens.Space.Label + ":" + "Presence", presenceRect );
 
 				if( isSacredSite ) {
 					const int inflationSize = 10;
-					rect.Inflate( inflationSize, inflationSize );
+					presenceRect.Inflate( inflationSize, inflationSize );
 					Color newColor = Color.FromArgb( 100, Color.Yellow );
 					using var brush = new SolidBrush(newColor);
-					graphics.FillEllipse(brush,rect);
-					rect.Inflate( -inflationSize, -inflationSize );
+					graphics.FillEllipse(brush,presenceRect);
+					presenceRect.Inflate( -inflationSize, -inflationSize );
 				}
 
 				// Draw Presence
-				graphics.DrawImage( presence, rect );
-				graphics.DrawSubscript( rect, presenceCount );
+				graphics.DrawImage( presence, presenceRect );
+				graphics.DrawSubscript( presenceRect, presenceCount );
 
 			}
 
@@ -526,6 +543,7 @@ namespace SpiritIsland.WinForms {
 		Decision.TokenOnSpace tokenOnSpace;
 		Decision.IAdjacentDecision adjacentDecision;
 		Decision.TypedDecision<SpaceToken> spaceTokens;
+		Decision.Presence.Deployed deployedPresence;
 		
 		readonly List<(Rectangle,IOption)> optionRects = new List<(Rectangle, IOption)>();
 

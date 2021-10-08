@@ -18,7 +18,7 @@ namespace SpiritIsland.Basegame {
 			// defend 5 in that land
 
 			// destination
-			var destination = await ctx.Self.Action.Decision( new Decision.TargetSpace( "Move dahan to", ctx.AllSpaces.Where( s => s.Terrain != Terrain.Ocean ) ) );
+			var destination = await ctx.Self.Action.Decision( new Decision.TargetSpace( "Move dahan to", ctx.AllSpaces.Where( s => s.Terrain != Terrain.Ocean ), Present.Always ) );
 			// technically could move to ocean while Ocean on board, but no reason to.
 
 			// move dahan

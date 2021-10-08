@@ -35,7 +35,7 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 
 
 		static async Task DestoryOnePresence( Spirit spirit ) {
-			var space = await spirit.Action.Decision( new Decision.Presence.ToDestory(spirit) );
+			var space = await spirit.Action.Decision( new Decision.Presence.DeployedToDestory(spirit) );
 			spirit.Presence.Destroy(space);
 		}
 

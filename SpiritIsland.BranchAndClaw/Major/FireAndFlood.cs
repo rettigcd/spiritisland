@@ -14,7 +14,7 @@ namespace SpiritIsland.BranchAndClaw {
 			var possibleSacredSiteSourcesForThisSpace = ctx.Space.Range(1).Where(s=>spiritSS.Contains(s)).ToArray();
 			var secondTargetOptions = ctx.FindSpacesWithinRangeOf( possibleSacredSiteSourcesForThisSpace, 2, Target.Any );
 
-			var secondTarget = await ctx.Self.Action.Decision( new Decision.TargetSpace( "Select space to target.", secondTargetOptions ) );
+			var secondTarget = await ctx.Self.Action.Decision( new Decision.TargetSpace( "Select space to target.", secondTargetOptions, Present.Always ) );
 
 
 			// 4 damage in each target land  (range must be measured from same SS)

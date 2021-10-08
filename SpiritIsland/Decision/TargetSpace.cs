@@ -5,10 +5,11 @@ namespace SpiritIsland.Decision {
 
 	public class TargetSpace : TypedDecision<Space> {
 
-		public TargetSpace( string prompt, IEnumerable<Space> spaces, Present present = Present.Always )
+		public TargetSpace( string prompt, IEnumerable<Space> spaces, Present present )
 			: base( prompt, spaces.OrderBy( x => x.Label ), present ) {
 		}
 
 	}
+
 
 }

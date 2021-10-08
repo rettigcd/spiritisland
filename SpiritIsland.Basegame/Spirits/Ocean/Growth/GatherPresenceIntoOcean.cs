@@ -23,6 +23,7 @@ namespace SpiritIsland.Basegame {
 					, currentTarget.Adjacent
 						.Where( self.Presence.Spaces.Contains )
 						.ToArray()
+					, Present.Always
 				));
 
 				// apply...

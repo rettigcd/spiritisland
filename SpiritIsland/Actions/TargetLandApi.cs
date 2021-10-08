@@ -9,7 +9,7 @@ namespace SpiritIsland {
 
 		public async virtual Task<Space> TargetsSpace( Spirit self, GameState gameState, From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum ) {
 			IEnumerable<Space> spaces = GetTargetOptions( self, gameState, sourceEnum, sourceTerrain, range, filterEnum );
-			return await self.Action.Decision( new Decision.TargetSpace( "Select space to target.", spaces ));
+			return await self.Action.Decision( new Decision.TargetSpace( "Select space to target.", spaces, Present.Always ));
 		}
 
 		public virtual IEnumerable<Space> GetTargetOptions( Spirit self, GameState gameState, From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum ) {

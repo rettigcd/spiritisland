@@ -17,6 +17,7 @@ namespace SpiritIsland.Basegame {
 				var destination = await self.Action.Decision( new Decision.TargetSpace(
 					$"Select target of Presence to Push from {currentSource}",
 					currentSource.Adjacent
+					, Present.Always
 				));
 
 				// apply...

@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using SpiritIsland;
 
 namespace SpiritIsland {
 
+	// used both for thunderspeaker and sharp fangs
 	public class MovePresenceWithTokens {
 
 		readonly Spirit spirit;
@@ -23,15 +21,12 @@ namespace SpiritIsland {
 			// 0 -> no action
 			if(maxThatCanMove == 0)
 				return;
-			var moveLookup = new Dictionary<string, int>();
-			for(int i = maxThatCanMove; 0 < i; --i)
-				moveLookup.Add( $"Move {i} presence.", i );
-			moveLookup.Add( "stay", 0 );
 
-			string s = await spirit.SelectText( prompt, moveLookup.OrderByDescending( p => p.Value ).Select( p => p.Key ).ToArray(), Present.Always );
-			int countToMove = moveLookup[s];
+			if(maxThatCanMove>1)
+				throw new InvalidOperationException("Method is only designed to accept 1 move at a time.");
 
-			while(countToMove-- > 0)
+			var source = await spirit.Action.Decision( new Decision.Presence.Deployed("Move presence with "+args.Token.Generic.Label+"?", new Space[]{ args.from }, Present.Done ) );
+			if( source != null )
 				spirit.Presence.Move( args.from, args.to );
 		}
 
