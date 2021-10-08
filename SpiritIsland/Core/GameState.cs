@@ -126,9 +126,9 @@ namespace SpiritIsland {
 
 				blightSpace = isFirstBlight ? null
 					: await Spirits[0].Action.Decision(new Decision.AdjacentSpace(
-						"Cascade blight to", 
+						$"Cascade blight from {blightSpace.Label} to", 
 						blightSpace, 
-						Decision.GatherPush.None,
+						Decision.AdjacentDirection.Outgoing,
 						blightSpace.Adjacent.Where( x => terrainMapper.GetTerrain( x ) != Terrain.Ocean ),
 						Present.Always
 					));

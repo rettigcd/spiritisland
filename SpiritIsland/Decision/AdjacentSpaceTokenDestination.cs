@@ -5,7 +5,7 @@ namespace SpiritIsland.Decision {
 	public class AdjacentSpaceTokenDestination : AdjacentSpace {
 
 		public AdjacentSpaceTokenDestination( Token specific, Space source, IEnumerable<Space> destinationOptions, Present present )
-			: base( "Push " + specific.Summary + " to", source, GatherPush.Push, destinationOptions, present ) {
+			: base( "Push " + specific.Summary + " to", source, AdjacentDirection.Outgoing, destinationOptions, present ) {
 			Source = source;
 			Invader = specific;
 		}

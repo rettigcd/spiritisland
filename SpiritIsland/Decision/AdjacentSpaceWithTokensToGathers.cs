@@ -14,7 +14,7 @@ namespace SpiritIsland.Decision {
 		) : base( 
 			$"Gather {ofType.Select( it => it.Label ).Join( "/" )} ({remaining} remaining)", 
 			to, 
-			GatherPush.Gather, 
+			AdjacentDirection.Incoming, 
 			spaces, 
 			present 
 		) {

@@ -2,7 +2,7 @@
 using System.Linq;
 
 namespace SpiritIsland.Decision {
-	public class AdjacentSpaceTokensToGathers : TypedDecision<SpaceToken>, IPerformGatherOrPush  {
+	public class AdjacentSpaceTokensToGathers : TypedDecision<SpaceToken>, IAdjacentDecision  {
 
 		public AdjacentSpaceTokensToGathers(
 			int remaining,
@@ -20,7 +20,7 @@ namespace SpiritIsland.Decision {
 			Adjacent = tokens.Select(s=>s.Space).Distinct().ToArray();
 		}
 
-		public GatherPush GatherPush => GatherPush.Gather;
+		public AdjacentDirection Direction => AdjacentDirection.Incoming;
 
 		public Space Original { get; }
 

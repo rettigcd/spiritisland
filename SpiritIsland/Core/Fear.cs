@@ -12,7 +12,7 @@ namespace SpiritIsland {
 
 		public Fear(GameState gs ) {
 			this.gs = gs;
-			this.activationThreshold = gs.Spirits.Length * 4;
+			this.ActivationThreshold = gs.Spirits.Length * 4;
 			gs.TimePassed += FearAdded.EndOfRound;
 			Init();
 		}
@@ -42,8 +42,8 @@ namespace SpiritIsland {
 
 		public void AddDirect( FearArgs args ) {
 			Pool += args.count;
-			while(activationThreshold <= Pool) { // should be while() - need unit test
-				Pool -= activationThreshold;
+			while(ActivationThreshold <= Pool) { // should be while() - need unit test
+				Pool -= ActivationThreshold;
 				ActivatedCards.Push( Deck.Pop() );
 				ActivatedCards.Peek().Text = "Active " + ActivatedCards.Count;
 			}
@@ -70,7 +70,7 @@ namespace SpiritIsland {
 
 		// - ints -
 		public int Pool { get; private set; } = 0;
-		readonly int activationThreshold;
+		public int ActivationThreshold { get; }
 		// - cards -
 		public readonly Stack<PositionFearCard> Deck = new Stack<PositionFearCard>();
 		public readonly Stack<PositionFearCard> ActivatedCards = new Stack<PositionFearCard>();

@@ -170,7 +170,7 @@ namespace SpiritIsland {
 			var options = Adjacent;
 			if(filter != null)
 				options = options.Where( s => filter( Target( s ) ) );
-			var space = await Self.Action.Decision( new Decision.AdjacentSpace( prompt, Space, Decision.GatherPush.None, options, Present.Always ) );
+			var space = await Self.Action.Decision( new Decision.AdjacentSpace( prompt, Space, Decision.AdjacentDirection.None, options, Present.Always ) );
 			return space != null ? Target( space )
 				: null;
 		}
@@ -180,7 +180,7 @@ namespace SpiritIsland {
 			options.Add(Space);
 			if(filter != null)
 				options = options.Where( s => filter( Target( s ) ) ).ToList();
-			var space = await Self.Action.Decision( new Decision.AdjacentSpace( prompt, Space, Decision.GatherPush.None, options, Present.Always ) );
+			var space = await Self.Action.Decision( new Decision.AdjacentSpace( prompt, Space, Decision.AdjacentDirection.None, options, Present.Always ) );
 			return space != null ? Target( space )
 				: null;
 		}

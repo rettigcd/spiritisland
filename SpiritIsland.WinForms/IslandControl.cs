@@ -9,8 +9,6 @@ using System.Windows.Forms;
 namespace SpiritIsland.WinForms {
 	public partial class IslandControl : Control {
 
-		const float radius = 40f;
-
 		public IslandControl() {
 			InitializeComponent();
 
@@ -22,9 +20,6 @@ namespace SpiritIsland.WinForms {
 
 		}
 
-		Space[] activeSpaces;
-
-		Dictionary<string,PointF> spaceLookup;
 
 		public void Init( GameState gameState, IHaveOptions optionProvider, string tokenColor ) {
 
@@ -49,15 +44,15 @@ namespace SpiritIsland.WinForms {
                 case "B":
 					this.board = Image.FromFile( ".\\images\\board b.png" );
 					spaceLookup = new Dictionary<string, PointF> {
-						["B0"] = new PointF( 0.191f, 0.392f ),
-						["B1"] = new PointF( 0.401f, 0.252f ),
-						["B2"] = new PointF( 0.280f, 0.570f ),
-						["B3"] = new PointF( 0.203f, 0.857f ),
-						["B4"] = new PointF( 0.477f, 0.683f ),
-						["B5"] = new PointF( 0.575f, 0.473f ),
-						["B6"] = new PointF( 0.642f, 0.245f ),
-						["B7"] = new PointF( 0.725f, 0.605f ),
-						["B8"] = new PointF( 0.810f, 0.183f ),
+						["B0"] = new PointF( 0.19f, 0.39f ),
+						["B1"] = new PointF( 0.40f, 0.25f ),
+						["B2"] = new PointF( 0.28f, 0.57f ),
+						["B3"] = new PointF( 0.20f, 0.86f ),
+						["B4"] = new PointF( 0.48f, 0.68f ),
+						["B5"] = new PointF( 0.58f, 0.47f ),
+						["B6"] = new PointF( 0.60f, 0.23f ),
+						["B7"] = new PointF( 0.73f, 0.61f ),
+						["B8"] = new PointF( 0.81f, 0.18f ),
 					};
 					break;
                 case "C":
@@ -92,37 +87,26 @@ namespace SpiritIsland.WinForms {
 			//			boardA = Image.FromFile(".\\images\\board a.png");
 
 			var images = ResourceImages.Singleton;
-			dahan    = images.GetToken( "dahan" );
-			dahan1   = images.GetToken( "dahan1" );
-			city     = images.GetToken( "city" );
-			city2    = images.GetToken( "city2" );
-			city1    = images.GetToken( "city1" );
-			town     = images.GetToken( "town" );
-			town1    = images.GetToken( "town1" );
-			explorer = images.GetToken( "explorer" );
-			blight   = images.GetToken( "blight" );
-			defend   = images.GetToken( "defend1orange" );
 			presence = images.GetPresenceIcon( tokenColor );
-
-			wilds = ResourceImages.Singleton.GetToken("wilds");
-			disease = ResourceImages.Singleton.GetToken( "disease" );
-			beast = ResourceImages.Singleton.GetToken( "beast" );
-			strife = ResourceImages.Singleton.GetToken( "strife" );
+			strife   = images.GetToken( "strife" );
+			fear     = images.GetToken( "fear" );
+			grayFear = images.GetToken( "fear_gray");
+			fearCardImage = images.GetToken( "fearcard" );
 
 			tokenImages = new Dictionary<Token, Image> {
-				[Invader.City[3]] = city,
-				[Invader.City[2]] = city2,
-				[Invader.City[1]] = city1,
-				[Invader.Town[2]] = town,
-				[Invader.Town[1]] = town1,
-				[Invader.Explorer[1]] = explorer,
-				[TokenType.Dahan[2]] = dahan,
-				[TokenType.Dahan[1]] = dahan1,
-				[TokenType.Defend] = defend,
-				[TokenType.Blight] = blight,
-				[BacTokens.Beast] = beast,
-				[BacTokens.Wilds] = wilds,
-				[BacTokens.Disease] = disease,
+				[Invader.City[3]] = images.GetToken( "city" ),
+				[Invader.City[2]] = images.GetToken( "city2" ),
+				[Invader.City[1]] = images.GetToken( "city1" ),
+				[Invader.Town[2]] = images.GetToken( "town" ),
+				[Invader.Town[1]] = images.GetToken( "town1" ),
+				[Invader.Explorer[1]] = images.GetToken( "explorer" ),
+				[TokenType.Dahan[2]] = images.GetToken( "dahan" ),
+				[TokenType.Dahan[1]] = images.GetToken( "dahan1" ),
+				[TokenType.Defend] = images.GetToken( "defend1orange" ),
+				[TokenType.Blight] = images.GetToken( "blight" ),
+				[BacTokens.Beast] = images.GetToken( "beast" ),
+				[BacTokens.Wilds] = images.GetToken("wilds"),
+				[BacTokens.Disease] = images.GetToken( "disease" ),
 			};
 
 			this.gameState = gameState;
@@ -131,44 +115,13 @@ namespace SpiritIsland.WinForms {
 
 		void OptionProvider_OptionsChanged( IDecision decision ) {
 			tokenOnSpace      = decision as Decision.TokenOnSpace;
-			adjacentDecision  = decision as Decision.IPerformGatherOrPush;
+			adjacentDecision  = decision as Decision.IAdjacentDecision;
 			spaceTokens       = decision as Decision.TypedDecision<SpaceToken>;
 			this.activeSpaces = decision.Options.OfType<Space>().ToArray();
 			fearCard          = decision.Options.OfType<DisplayFearCard>().FirstOrDefault();
 		}
 
-		DisplayFearCard fearCard;
-		Decision.TokenOnSpace tokenOnSpace;
-		Decision.IPerformGatherOrPush adjacentDecision;
-		Decision.TypedDecision<SpaceToken> spaceTokens;
-		
-		readonly List<(Rectangle,IOption)> optionRects = new List<(Rectangle, IOption)>();
-
-		readonly Dictionary<string,Rectangle> tokenLocations = new Dictionary<string, Rectangle>();
-
-		Image board;
-
-		Image dahan;
-		Image dahan1;
-		Image city;
-		Image city2;
-		Image city1;
-		Image town;
-		Image town1;
-		Image explorer;
-		Image presence;
-		Image blight;
-		Image defend;
-
-		Image disease;
-		Image beast;
-		Image strife;
-		Image wilds;
-
-		GameState gameState;
-		Spirit spirit;
-
-		Size boardScreenSize;
+		#region Paint
 
 		protected override void OnPaint( PaintEventArgs pe ) {
 			base.OnPaint( pe );
@@ -192,6 +145,7 @@ namespace SpiritIsland.WinForms {
 					DecorateSpace(pe.Graphics,space);
 				DrawHighlights( pe );
 				DrawInvaderCards( pe.Graphics );
+				DrawFearPool( pe.Graphics, new RectangleF(Width*.75f,0f,Width*.25f,Width*.05f ) );
 			}
 
 		}
@@ -265,12 +219,12 @@ namespace SpiritIsland.WinForms {
 
 				using Pen p = new Pen( Color.DeepSkyBlue, 7 );
 				var drawer = new ArrowDrawer(pe.Graphics,p);
-				switch(adjacentDecision.GatherPush) {
-					case Decision.GatherPush.Gather:
+				switch(adjacentDecision.Direction) {
+					case Decision.AdjacentDirection.Incoming:
 						foreach(var other in others)
 							drawer.Draw( other, center );
 						break;
-					case Decision.GatherPush.Push:
+					case Decision.AdjacentDirection.Outgoing:
 						foreach(var other in others)
 							drawer.Draw( center, other );
 						break;
@@ -306,34 +260,6 @@ namespace SpiritIsland.WinForms {
 
 		}
 		
-		class ArrowDrawer {
-			readonly Graphics graphics; 
-			readonly Pen pen;
-			const float startNorm = 0.2f;
-			const float endNorm = 0.8f;
-			const float arrowNorm = .1f;
-			public ArrowDrawer(Graphics graphics, Pen pen){
-				this.graphics = graphics;
-				this.pen = pen;
-			}
-			public void Draw(PointF from, PointF to ) {
-				float dx = to.X-from.X;
-				float dy = to.Y-from.Y;
-				PointF newFrom = new PointF( from.X+dx*startNorm, from.Y+dy*startNorm );
-				PointF newTo = new PointF( from.X + dx * endNorm, from.Y + dy * endNorm );
-
-				float inlineX = dx * arrowNorm, inlineY = dy * arrowNorm;
-				float perpX = -inlineY, perpY = inlineX;
-
-				PointF wing1 = new PointF( newTo.X +perpX-inlineX, newTo.Y + perpY-inlineY );
-				PointF wing2 = new PointF( newTo.X - perpX - inlineX, newTo.Y - perpY - inlineY );
-
-				graphics.DrawLine( pen,newFrom,newTo );
-				graphics.DrawLine( pen,newTo,wing1);
-				graphics.DrawLine( pen, newTo, wing2 );
-			}
-		}
-
 		void DecorateSpace( Graphics graphics, Space space ) {
 			if(!spaceLookup.ContainsKey(space.Label)) return; // happens during developement
 
@@ -361,8 +287,6 @@ namespace SpiritIsland.WinForms {
 
 		}
 
-		Dictionary<Token, Image> tokenImages;
-
 		void DrawInvaderRow( Graphics graphics, float x, ref float y, float width, float step, TokenCountDictionary tokens ) {
 
 			Space space = tokens.Space;
@@ -379,7 +303,7 @@ namespace SpiritIsland.WinForms {
 				if(token is StrifedInvader si) {
 					imageToken = si.WithStrife( 0 );
 
-					Rectangle strifeRect = FitWidth( x, y, width, strife );
+					Rectangle strifeRect = FitWidth( x, y, width, strife.Size );
 					graphics.DrawImage( strife, strifeRect );
 					graphics.DrawSuperscript( strifeRect, tokens[token] );
 				} else {
@@ -389,7 +313,7 @@ namespace SpiritIsland.WinForms {
 
 				// Draw Token
 				Image img = tokenImages[imageToken];
-				Rectangle rect = FitWidth( x, y, width, img );
+				Rectangle rect = FitWidth( x, y, width, img.Size );
 				graphics.DrawImage( img, rect );
 
 				// record token location
@@ -406,11 +330,49 @@ namespace SpiritIsland.WinForms {
 			y += maxHeight + gap;
 		}
 
-		private static Rectangle FitWidth( float x, float y, float width, Image img ) {
-			return new Rectangle( (int)x, (int)y, (int)width, (int)(width / img.Width * img.Height) );
+		void DrawFearPool( Graphics graphics, RectangleF bounds ) {
+			float margin = Math.Max(5f, bounds.Height*.05f);
+			float slotWidth = bounds.Height; 
+
+			int fearCount = this.gameState.Fear.Pool;
+			int maxSpaces = this.gameState.Fear.ActivationThreshold;
+
+			float step = (bounds.Width-2*margin-3*slotWidth)/(maxSpaces-1); 
+			// -1 slot width for #/# and 
+			// -1 slot width for last fear token
+			float tokenWidth = slotWidth-2*margin;
+			float tokenHeight = fear.Height * tokenWidth / fear.Width;
+			RectangleF CalcBounds(int i) => new RectangleF( bounds.X+slotWidth+margin+step*i, bounds.Y+margin, tokenWidth, tokenHeight );
+
+			// Terror Level
+			using var terror = ResourceImages.Singleton.GetIcon( "TerrorLevel"+gameState.Fear.TerrorLevel );
+			graphics.DrawImage(terror,new RectangleF(bounds.X+margin,bounds.Y+margin,tokenWidth,tokenHeight));
+
+			// draw gray underneath
+			for(int i = fearCount; i < maxSpaces; ++i)
+				graphics.DrawImage(grayFear,CalcBounds(i));
+			// draw fear tokens
+			for(int i = 0; i<fearCount; ++i)
+				graphics.DrawImage(fear,CalcBounds(i));
+
+			// Activated Cards
+			int activated = gameState.Fear.ActivatedCards.Count;
+			if(activated > 0) {
+				using var card = ResourceImages.Singleton.GetToken( "fearcard" );
+				var rect = new RectangleF(bounds.Right-margin-slotWidth,bounds.Y+margin,tokenWidth,tokenHeight);
+				graphics.DrawImageFitHeight(card,rect);
+				rect.X -= rect.Width * .25f; // shift x2 left onto the card
+				graphics.DrawSubscript( rect.ToInts(), activated );
+			}
+
 		}
 
-		private void DrawRow( Graphics graphics, TokenCountDictionary tokens, float x, ref float y, float width, float step, int presenceCount, bool isSacredSite, params Token[] tokenTypes ) {
+		//void DrawBlight( Graphics graphics, RectangleF bounds ) {
+
+		//}
+
+
+		void DrawRow( Graphics graphics, TokenCountDictionary tokens, float x, ref float y, float width, float step, int presenceCount, bool isSacredSite, params Token[] tokenTypes ) {
 			float maxHeight = 0;
 
 			using Font countFont = new( "Arial", 7, FontStyle.Bold, GraphicsUnit.Point );
@@ -460,6 +422,18 @@ namespace SpiritIsland.WinForms {
 			y += maxHeight + gap;
 		}
 
+		static Rectangle FitWidth( float x, float y, float width, Size sz ) {
+			return new Rectangle( (int)x, (int)y, (int)width, (int)(width / sz.Width * sz.Height) );
+		}
+
+		/// <returns>the center of a Game Space</returns>
+		PointF SpaceCenter( Space s ) {
+			var norm = this.spaceLookup[s.Label];
+			return new PointF( norm.X * boardScreenSize.Width, norm.Y * boardScreenSize.Height );
+		}
+
+		#endregion
+
 		protected override void OnClick( EventArgs e ) {
 
 			Point clientCoords = this.PointToClient(Control.MousePosition);
@@ -472,11 +446,6 @@ namespace SpiritIsland.WinForms {
 			else if(match is SpaceToken st)
 				SpaceTokenClicked?.Invoke( st );
 
-		}
-
-		private PointF SpaceCenter( Space s ) {
-			var norm = this.spaceLookup[s.Label];
-			return new PointF( norm.X * boardScreenSize.Width, norm.Y * boardScreenSize.Height );
 		}
 
 		protected override void OnMouseMove( MouseEventArgs e ) {
@@ -516,12 +485,67 @@ namespace SpiritIsland.WinForms {
 				.FirstOrDefault();
 		}
 
-
-
 		public event Action<Space> SpaceClicked;
 		public event Action<Token> TokenClicked;
 		public event Action<SpaceToken> SpaceTokenClicked;
 
+		#region private fields
+
+		DisplayFearCard fearCard;
+		Decision.TokenOnSpace tokenOnSpace;
+		Decision.IAdjacentDecision adjacentDecision;
+		Decision.TypedDecision<SpaceToken> spaceTokens;
+		
+		readonly List<(Rectangle,IOption)> optionRects = new List<(Rectangle, IOption)>();
+
+		readonly Dictionary<string,Rectangle> tokenLocations = new Dictionary<string, Rectangle>();
+
+		GameState gameState;
+		Spirit spirit;
+
+		Size boardScreenSize;
+		const float radius = 40f;
+		Space[] activeSpaces;
+		Dictionary<string,PointF> spaceLookup;
+
+		Image board;
+		Image presence;
+		Image strife;
+		Image fear;
+		Image grayFear;
+		Image fearCardImage;
+		Dictionary<Token, Image> tokenImages;
+		#endregion
+
 	}
+
+	class ArrowDrawer {
+		readonly Graphics graphics; 
+		readonly Pen pen;
+		const float startNorm = 0.2f;
+		const float endNorm = 0.8f;
+		const float arrowNorm = .1f;
+		public ArrowDrawer(Graphics graphics, Pen pen){
+			this.graphics = graphics;
+			this.pen = pen;
+		}
+		public void Draw(PointF from, PointF to ) {
+			float dx = to.X-from.X;
+			float dy = to.Y-from.Y;
+			PointF newFrom = new PointF( from.X+dx*startNorm, from.Y+dy*startNorm );
+			PointF newTo = new PointF( from.X + dx * endNorm, from.Y + dy * endNorm );
+
+			float inlineX = dx * arrowNorm, inlineY = dy * arrowNorm;
+			float perpX = -inlineY, perpY = inlineX;
+
+			PointF wing1 = new PointF( newTo.X +perpX-inlineX, newTo.Y + perpY-inlineY );
+			PointF wing2 = new PointF( newTo.X - perpX - inlineX, newTo.Y - perpY - inlineY );
+
+			graphics.DrawLine( pen,newFrom,newTo );
+			graphics.DrawLine( pen,newTo,wing1);
+			graphics.DrawLine( pen, newTo, wing2 );
+		}
+	}
+
 
 }

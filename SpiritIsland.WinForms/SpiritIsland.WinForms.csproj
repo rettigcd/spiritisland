@@ -51,6 +51,9 @@
     <None Remove="images\icons\Simple_water.png" />
     <None Remove="images\icons\Slowicon.png" />
     <None Remove="images\icons\Strifeicon.png" />
+    <None Remove="images\icons\TerrorLevel1.png" />
+    <None Remove="images\icons\TerrorLevel2.png" />
+    <None Remove="images\icons\TerrorLevel3.png" />
     <None Remove="images\icons\Townicon.png" />
     <None Remove="images\icons\Wildsicon.png" />
     <None Remove="images\icons\wildsorpresence.png" />
@@ -111,7 +114,9 @@
     <None Remove="images\tokens\Explorericon.png" />
     <None Remove="images\tokens\Fasticon.png" />
     <None Remove="images\tokens\fear.png" />
+    <None Remove="images\tokens\fearcard.png" />
     <None Remove="images\tokens\Fearicon.png" />
+    <None Remove="images\tokens\fear_gray.png" />
     <None Remove="images\tokens\GainCard.png" />
     <None Remove="images\tokens\Gathertoocean.png" />
     <None Remove="images\tokens\Jungle.png" />
@@ -197,6 +202,9 @@
     <EmbeddedResource Include="images\icons\Simple_water.png" />
     <EmbeddedResource Include="images\icons\Slowicon.png" />
     <EmbeddedResource Include="images\icons\Strifeicon.png" />
+    <EmbeddedResource Include="images\icons\TerrorLevel1.png" />
+    <EmbeddedResource Include="images\icons\TerrorLevel2.png" />
+    <EmbeddedResource Include="images\icons\TerrorLevel3.png" />
     <EmbeddedResource Include="images\icons\Townicon.png" />
     <EmbeddedResource Include="images\icons\Wildsicon.png" />
     <EmbeddedResource Include="images\icons\wildsorpresence.png" />
@@ -236,6 +244,8 @@
     <EmbeddedResource Include="images\tokens\disease.png" />
     <EmbeddedResource Include="images\tokens\explorer.png" />
     <EmbeddedResource Include="images\tokens\fear.png" />
+    <EmbeddedResource Include="images\tokens\fearcard.png" />
+    <EmbeddedResource Include="images\tokens\fear_gray.png" />
     <EmbeddedResource Include="images\tokens\Simple_air.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>

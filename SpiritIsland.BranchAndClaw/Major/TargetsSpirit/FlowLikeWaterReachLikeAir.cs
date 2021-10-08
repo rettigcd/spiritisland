@@ -18,7 +18,7 @@ namespace SpiritIsland.BranchAndClaw {
 			var destination = await sourceCtx.Self.Action.Decision( new Decision.AdjacentSpace(
 				"Move Presence + up to 2 explorers,towns,dahan to",
 				sourceCtx.Space,
-				Decision.GatherPush.Push,
+				Decision.AdjacentDirection.Outgoing,
 				sourceCtx.Adjacent,
 				Present.Always
 			));
