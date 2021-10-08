@@ -122,9 +122,10 @@ namespace SpiritIsland.Basegame {
 
 		}
 
-		async Task ChokeTheLandWithGreen_Ravage( GameState gs, List<Space> spaces ) {
-			var stopped = await ChokeTheLandWithGreen( gs, spaces.ToArray(), "ravage" );
-			gs.SkipRavage( stopped );
+		async Task ChokeTheLandWithGreen_Ravage( GameState gs, RavagingEventArgs args ) {
+			var stopped = await ChokeTheLandWithGreen( gs, args.Spaces.ToArray(), "ravage" );
+			foreach(var space in stopped)
+				args.Skip1( space );
 		}
 
 		async Task ChokeTheLandWithGreen_Build( GameState gs, BuildingEventArgs args ) {

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 namespace SpiritIsland.WinForms {
+
 	public partial class IslandControl : Control {
 
 		public IslandControl() {
@@ -19,7 +20,6 @@ namespace SpiritIsland.WinForms {
 			);
 
 		}
-
 
 		public void Init( GameState gameState, IHaveOptions optionProvider, string tokenColor ) {
 
@@ -143,10 +143,18 @@ namespace SpiritIsland.WinForms {
 				foreach(var space in gameState.Island.Boards[0].Spaces)
 					DecorateSpace(pe.Graphics,space);
 				DrawHighlights( pe );
-				DrawInvaderCards( pe.Graphics );
 				DrawFearPool( pe.Graphics, new RectangleF(Width*.75f,0f,Width*.25f,Width*.05f ) );
+				DrawBlight  ( pe.Graphics, new RectangleF(Width*.80f,Width*.05f,Width*.20f,Width*.03f ) );
+				DrawRound( pe.Graphics );
+				DrawInvaderCards( pe.Graphics ); // Do this last since it contains the Fear Card that we want to be on top of everything.
+			
 			}
 
+		}
+
+		void DrawRound( Graphics graphics ) {
+			using var font = new Font( ResourceImages.Singleton.Fonts.Families[0], Height*.065f, GraphicsUnit.Pixel );
+			graphics.DrawString("round: "+gameState.RoundNumber, font, Brushes.SteelBlue, 0, 0);
 		}
 
 		void DrawInvaderCards( Graphics graphics ) {
@@ -370,9 +378,29 @@ namespace SpiritIsland.WinForms {
 
 		}
 
-		//void DrawBlight( Graphics graphics, RectangleF bounds ) {
+		void DrawBlight( Graphics graphics, RectangleF bounds ) {
 
-		//}
+			float margin = Math.Max(5f, bounds.Height*.05f);
+			float slotWidth = bounds.Height; 
+
+			int count = this.gameState.blightOnCard;
+			int maxSpaces = 6;
+
+			float step = (bounds.Width-2*margin-2*slotWidth)/(maxSpaces-1); 
+			// -1 slot width for #/# and 
+			// -1 slot width for last fear token
+			float tokenWidth = slotWidth-2*margin;
+			float tokenHeight = fear.Height * tokenWidth / fear.Width;
+			RectangleF CalcBounds(int i) => new RectangleF( bounds.X+slotWidth+margin+step*i, bounds.Y+margin, tokenWidth, tokenHeight );
+
+			// draw fear tokens
+			var img = this.tokenImages[TokenType.Blight];
+			for(int i = 0; i<count; ++i)
+				graphics.DrawImage(img,CalcBounds(i));
+
+			if(gameState.BlightCard.IslandIsBlighted)
+				graphics.DrawString("Blighted!",SystemFonts.DialogFont, Brushes.Red, bounds.Right-slotWidth*1.5f,bounds.Top);
+		}
 
 
 		void DrawRow( Graphics graphics, TokenCountDictionary tokens, float x, ref float y, float width, float step, int presenceCount, bool isSacredSite, params Token[] tokenTypes ) {

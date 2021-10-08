@@ -157,7 +157,7 @@ namespace SpiritIsland {
 		}
 
 		private async Task RavageTheseSpaces( List<Space> myRavageSpaces ) {
-			await gs.PreRavaging?.InvokeAsync( gs, myRavageSpaces );
+			await gs.PreRavaging?.InvokeAsync( gs, new RavagingEventArgs{ Spaces = myRavageSpaces } );
 
 			if(myRavageSpaces == null) throw new InvalidOperationException( "dude! you forgot to schedule the ravages." );
 			var ravageGroups = myRavageSpaces

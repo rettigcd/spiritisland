@@ -12,4 +12,9 @@ namespace SpiritIsland {
 
 	}
 
+	public class RavagingEventArgs {
+		public List<Space> Spaces;
+		public void Skip1(Space space) => Spaces.Remove(space);
+	}
+
 }

@@ -92,8 +92,8 @@ Power Progression:
 			Presence.PlaceOn( higestJungle );
 		}
 
-		Task Defend3InSacredSites( GameState gs, List<Space> ravageSpaces ) {
-			foreach(var space in SacredSites.Where(ravageSpaces.Contains))
+		Task Defend3InSacredSites( GameState gs, RavagingEventArgs args ) {
+			foreach(var space in SacredSites.Where(args.Spaces.Contains))
 				gs.Tokens[space].Defend.Count += 3;
 			return Task.CompletedTask;
 		}

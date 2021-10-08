@@ -160,9 +160,9 @@ namespace SpiritIsland {
 		}
 
 		public void SkipRavage( params Space[] spacesToSkip ) {
-			PreRavaging.ForThisRound( ( gs, ravageSpaces ) => {
+			PreRavaging.ForThisRound( ( gs, args ) => {
 				foreach(var skip in spacesToSkip)
-					ravageSpaces.Remove(skip);
+					args.Skip1(skip);
 			} );
 		}
 
@@ -180,7 +180,7 @@ namespace SpiritIsland {
 			} );
 		}
 
-		public AsyncEvent<List<Space>> PreRavaging = new AsyncEvent<List<Space>>();				// A Spread of Rampant Green - stop ravage
+		public AsyncEvent<RavagingEventArgs> PreRavaging = new AsyncEvent<RavagingEventArgs>();				// A Spread of Rampant Green - stop ravage
 		public AsyncEvent<BuildingEventArgs> PreBuilding = new AsyncEvent<BuildingEventArgs>();	// A Spread of Rampant Green - stop build
 		public AsyncEvent<ExploreEventArgs> PreExplore = new AsyncEvent<ExploreEventArgs>();
 
@@ -249,8 +249,8 @@ namespace SpiritIsland {
 				blightOnCard = src.blightOnCard;
 				isBlighted   = src.BlightCard.IslandIsBlighted;
 				spirits      = src.Spirits.Select(s=>s.SaveToMemento()).ToArray();
-				major        = src.MajorCards.SaveToMemento();
-				minor        = src.MinorCards.SaveToMemento();
+				if(src.MajorCards != null) major = src.MajorCards.SaveToMemento();
+				if(src.MinorCards != null) minor = src.MinorCards.SaveToMemento();
 				invaderDeck  = src.InvaderDeck.SaveToMemento();
 				fear         = src.Fear.SaveToMemento();
 				tokens       = src.Tokens.SaveToMemento();
@@ -260,8 +260,8 @@ namespace SpiritIsland {
 				src.blightOnCard = blightOnCard;
 				src.BlightCard.IslandIsBlighted = isBlighted;
 				for(int i=0;i<spirits.Length;++i) src.Spirits[i].LoadFrom( spirits[i] );
-				src.MajorCards.LoadFrom( major );
-				src.MinorCards.LoadFrom( minor );
+				if(src.MajorCards != null ) src.MajorCards.LoadFrom( major );
+				if(src.MinorCards != null ) src.MinorCards.LoadFrom( minor );
 				src.InvaderDeck.LoadFrom( invaderDeck );
 				src.Fear.LoadFrom( fear );
 				src.Tokens.LoadFrom( tokens );
