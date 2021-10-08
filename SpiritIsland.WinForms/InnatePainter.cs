@@ -141,13 +141,15 @@ namespace SpiritIsland.WinForms {
 						int lengthThatFits = GetCharcterLengthThatFitsInWidth( current, font, left+width-x );
 						if( lengthThatFits == current.Length) {
 							// it all fits
-							texts.Add( new TextPosition { Text = current, TopLeft = new PointF(x,y), Font = font } );
-							x += graphics.MeasureString(current,font).Width;
+							var textSize = graphics.MeasureString(current,font);
+							texts.Add( new TextPosition { Text = current, Bounds = new RectangleF(x,y,textSize.Width,rowHeight), Font = font } );
+							x += textSize.Width;
 							current = "";
 						} else {
 							// only part fits
 							string subString = current.Substring(0,lengthThatFits);
-							texts.Add( new TextPosition { Text = subString, TopLeft = new PointF(x,y), Font = font} );
+							var textSize = graphics.MeasureString(current,font);
+							texts.Add( new TextPosition { Text = subString, Bounds = new RectangleF(x,y,textSize.Width,rowHeight), Font = font} );
 							x = left;
 							y += rowHeight;
 							current = current[lengthThatFits..].Trim();
@@ -168,7 +170,7 @@ namespace SpiritIsland.WinForms {
 		public class TextPosition {
 			public string Text;
 			public Font Font;
-			public PointF TopLeft;
+			public RectangleF Bounds;
 		}
 		public class WrappingTextInfo {
 			public InnateOptionAttribute Attribute;
@@ -177,11 +179,11 @@ namespace SpiritIsland.WinForms {
 			public RectangleF Bounds;
 
 			public void Draw( Graphics graphics ) {
-				WrappingTextInfo wrappingText=this;
-				foreach(var tp in wrappingText.tokens)
-					graphics.DrawImage( tp.image, tp.Rect );
-				foreach(var sp in wrappingText.texts)
-					graphics.DrawString( sp.Text, sp.Font, Brushes.Black, sp.TopLeft );
+				foreach(var tp in this.tokens)
+					graphics.DrawImage( tp.image, tp.Rect  );
+				var stringFormat = new StringFormat{ LineAlignment = StringAlignment.Center };
+				foreach(var sp in this.texts)
+					graphics.DrawString( sp.Text, sp.Font, Brushes.Black, sp.Bounds, stringFormat );
 			}
 
 
@@ -217,7 +219,7 @@ namespace SpiritIsland.WinForms {
 
 			var tp = new TokenPosition {
 				image = img,
-				Rect = new RectangleF(x,(y + this.textEmSize * .5f) - height * .4f, width, height ),
+				Rect = new RectangleF(x, y, width, height ),
 			};
 			x += width;
 
