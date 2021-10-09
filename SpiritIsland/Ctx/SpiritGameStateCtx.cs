@@ -17,7 +17,7 @@ namespace SpiritIsland {
 			Self = self;
 			GameState = gameState;
 			Cause = cause;
-			TerrainMapper = TerrainMapper.For(cause); // !! could make TerrainMapper a property on Cause so we don't have to look it up.
+			TerrainMapper = gameState.Island.TerrainMapFor(cause); // !! could make TerrainMapper a property on Cause so we don't have to look it up.
 		}
 
 		protected SpiritGameStateCtx(SpiritGameStateCtx src) {

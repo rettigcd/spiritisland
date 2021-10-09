@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 	/*
@@ -63,6 +64,9 @@ namespace SpiritIsland.Basegame {
 		public override string Text => Name;
 
 		protected override void InitializeInternal( Board board, GameState gameState ) {
+			// Swap out Terrain evaluator for power
+			gameState.Island.Terrain_ForPowerAndBlight = new OceanTerrainForPower(this);
+
 			// Place in Ocean
 			Presence.PlaceOn(board[0]);
 
@@ -100,5 +104,6 @@ namespace SpiritIsland.Basegame {
 
 		int drownedCount = 0;
 	}
+
 
 }

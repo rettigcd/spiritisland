@@ -23,6 +23,9 @@ namespace SpiritIsland.Tests {
 
 		protected void Given_GameWithSpirits(params Spirit[] spirits) {
 			gameState = new GameState(spirits);
+			gameState.Island = spirits.Length==0 
+				? new Island(Board.BuildBoardA()) 
+				: new Island(Board.BuildBoardA(),Board.BuildBoardB());
 		}
 
 		protected static void Given_PurchasedFakePowercards(Spirit otherSpirit, int expectedEnergyBonus) {

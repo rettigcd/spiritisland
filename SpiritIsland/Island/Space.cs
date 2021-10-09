@@ -51,21 +51,7 @@ namespace SpiritIsland {
 
 		public string Label { get; }
 
-		#region for Power
-
 		public Terrain Terrain { get; }
-		public Terrain TerrainForPower {
-			get => terrainForPower ?? Terrain;
-			set => terrainForPower = value;
-		}
-		Terrain? terrainForPower;
-		public bool IsCostalForPower { 
-			get => isCostalForPower ?? IsCoastal;
-			set => isCostalForPower = value;
-		}
-		bool? isCostalForPower;
-
-		#endregion
 
 		public bool IsCoastal { get; set; }
 

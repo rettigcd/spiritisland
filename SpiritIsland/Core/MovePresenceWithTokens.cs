@@ -7,10 +7,8 @@ namespace SpiritIsland {
 	public class MovePresenceWithTokens {
 
 		readonly Spirit spirit;
-		readonly string prompt;
 		readonly TokenGroup tokenGroup;
-		public MovePresenceWithTokens( Spirit spirit, string prompt, TokenGroup group ) { 
-			this.prompt = prompt; 
+		public MovePresenceWithTokens( Spirit spirit, TokenGroup group ) { 
 			this.spirit = spirit; 
 			this.tokenGroup = group;
 		}

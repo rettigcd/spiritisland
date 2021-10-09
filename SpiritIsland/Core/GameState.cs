@@ -107,7 +107,7 @@ namespace SpiritIsland {
 		/// <summary>Causes cascading</summary>
 		public async Task BlightLand( Space blightSpace ){
 
-			var terrainMapper = TerrainMapper.For(Cause.Blight);
+			var terrainMapper = Island.TerrainMapFor(Cause.Blight);
 
 			while(blightSpace != null) {
 

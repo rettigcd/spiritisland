@@ -1,4 +1,5 @@
 ﻿
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SpiritIsland.Basegame {
@@ -9,25 +10,19 @@ namespace SpiritIsland.Basegame {
 
 		public override void PlaceOn( Space space ) {
 			base.PlaceOn( space );
-			MakeOceanCostalWetland( space.Board[0] );
+			currentBoards.Add( space.Board );
 		}
 
 		public override void RemoveFrom( Space space ) {
 			base.RemoveFrom( space );
 			var board = space.Board;
 			if(!Spaces.Any(s=>s.Board == board ))
-				RestoreOcean( board[0] );
+				currentBoards.Remove( board );
 		}
 
-		static void RestoreOcean( Space ocean ) {
-			ocean.TerrainForPower = Terrain.Ocean;
-			ocean.IsCostalForPower = true;
-		}
+		public bool IsOnBoard(Board board) => currentBoards.Contains(board);
 
-		static void MakeOceanCostalWetland( Space ocean ) {
-			ocean.TerrainForPower = Terrain.Wetland;
-			ocean.IsCostalForPower = true;
-		}
+		HashSet<Board> currentBoards = new HashSet<Board>();
 
 	}
 
