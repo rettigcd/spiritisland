@@ -7,8 +7,8 @@ namespace SpiritIsland.Decision.Presence {
 	public class PlaceOn : TargetSpace {
 
 		#region constructor
-		public PlaceOn(Spirit spirit, IEnumerable<Space> destinationOptions )
-			:base( "Where would you like to place your presence?", destinationOptions, Present.Always )
+		public PlaceOn(Spirit spirit, IEnumerable<Space> destinationOptions, Present present )
+			:base( "Where would you like to place your presence?", destinationOptions, present )
 		{
 			Spirit = spirit;
 		}
@@ -17,7 +17,7 @@ namespace SpiritIsland.Decision.Presence {
 		/// Allows users to select a space that is within [range] of their existing presence
 		/// </summary>
 		public PlaceOn(SpiritGameStateCtx ctx, int range, string filterEnum )
-			:this( ctx.Self, FindSpacesWithinRangeOfSpiritsPresence(ctx,range,filterEnum ) ) 
+			:this( ctx.Self, FindSpacesWithinRangeOfSpiritsPresence(ctx,range,filterEnum ), Present.Always ) 
 		{ 
 		}
 

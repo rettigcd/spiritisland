@@ -133,7 +133,7 @@ namespace SpiritIsland {
 		/// <returns>Place in Ocean, Growth through sacrifice</returns>
 		public async Task PlacePresence( params Space[] destinationOptions ) {
 			var from = await SelectPresenceSource();
-			var to = await Self.Action.Decision( new Decision.Presence.PlaceOn( Self, destinationOptions ) );
+			var to = await Self.Action.Decision( new Decision.Presence.PlaceOn( Self, destinationOptions, Present.Always ) );
 			await Self.Presence.PlaceFromBoard( from, to, GameState );
 		}
 
