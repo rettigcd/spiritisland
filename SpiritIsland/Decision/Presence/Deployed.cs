@@ -18,4 +18,21 @@ namespace SpiritIsland.Decision.Presence {
 
 	}
 
+	public class DeployedMove : Deployed, IAdjacentDecision {
+
+		public DeployedMove(string prompt, Space from, Space to ) 
+			:base(prompt,new Space[]{ from }, Present.Done)
+		{
+			this.Original = from;
+			this.Adjacent = new Space[] { to };
+		}
+
+		public AdjacentDirection Direction => AdjacentDirection.Outgoing;
+
+		public Space Original { get; }
+
+		public Space[] Adjacent { get; }
+	}
+
+
 }
