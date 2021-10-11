@@ -22,7 +22,10 @@ namespace SpiritIsland {
 
 		internal InnatePower(Type actionType,LandOrSpirit landOrSpirit){
 			innatePowerAttr = actionType.GetCustomAttribute<InnatePowerAttribute>();
-			Speed = innatePowerAttr.Speed;
+			speedAttr = actionType.GetCustomAttribute<SpeedAttribute>(false) 
+				?? throw new InvalidOperationException("Missing Speed attribute for "+actionType.Name);
+
+			Speed = speedAttr.Speed;
 			Name = innatePowerAttr.Name;
 			LandOrSpirit = landOrSpirit;
 
@@ -37,6 +40,7 @@ namespace SpiritIsland {
 		#endregion
 
 		readonly InnatePowerAttribute innatePowerAttr;
+		readonly protected SpeedAttribute speedAttr;
 
 		readonly List<MethodTuple> elementListByMethod;
 		class MethodTuple {

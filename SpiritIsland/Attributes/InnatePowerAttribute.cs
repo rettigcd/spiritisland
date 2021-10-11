@@ -4,13 +4,11 @@ namespace SpiritIsland {
 
 	[AttributeUsage(AttributeTargets.Class)]
 	public class InnatePowerAttribute : System.Attribute {
-		public InnatePowerAttribute(string name, Speed speed){
+		public InnatePowerAttribute(string name){
 			this.Name = name;
-			this.Speed = speed;
 		}
 
 		public string Name { get; }
-		public Speed Speed { get; }
 
 	}
 

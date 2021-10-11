@@ -2,7 +2,7 @@
 
 namespace SpiritIsland.Basegame {
 
-	[InnatePower( PoundShipsToSplinters.Name, Speed.Fast )]
+	[InnatePower( PoundShipsToSplinters.Name ),Fast]
 	[FromPresence( 0, Target.Coastal )]
 	public class PoundShipsToSplinters {
 

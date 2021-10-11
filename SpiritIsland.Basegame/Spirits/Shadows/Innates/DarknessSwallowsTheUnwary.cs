@@ -4,7 +4,7 @@ using SpiritIsland;
 
 namespace SpiritIsland.Basegame {
 
-	[InnatePower(DarknessSwallowsTheUnwary.Name,Speed.Fast)]
+	[InnatePower(DarknessSwallowsTheUnwary.Name),Fast]
 	[FromSacredSite(1)]
 	public class DarknessSwallowsTheUnwary {
 

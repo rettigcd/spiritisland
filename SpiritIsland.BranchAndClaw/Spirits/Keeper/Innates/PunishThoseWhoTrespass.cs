@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland.BranchAndClaw {
 
-	[InnatePower( "Punish Those Who Trespass", Speed.Slow )]
+	[InnatePower( "Punish Those Who Trespass" ),Slow]
 	[FromPresence( 0 )]
 	public class PunishThoseWhoTrespass {
 

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland.BranchAndClaw {
 
-	[InnatePower( "Spreading Wilds", Speed.Slow )]
+	[InnatePower( "Spreading Wilds" ),Slow]
 	[SpreadingWilds.FromPresence]
 	public class SpreadingWilds {
 

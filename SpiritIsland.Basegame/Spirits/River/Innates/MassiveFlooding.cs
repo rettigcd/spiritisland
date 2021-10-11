@@ -4,7 +4,7 @@ using SpiritIsland;
 
 namespace SpiritIsland.Basegame {
 
-	[InnatePower(MassiveFlooding.Name,Speed.Slow)]
+	[InnatePower(MassiveFlooding.Name),Slow]
 	[FromSacredSite(1,Target.Invaders)]
 	public class MassiveFlooding {
 

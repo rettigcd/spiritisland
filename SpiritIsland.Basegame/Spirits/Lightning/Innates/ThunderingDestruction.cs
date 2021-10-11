@@ -4,7 +4,7 @@ namespace SpiritIsland.Basegame {
 
 	// Innate:  Thundering Destruction => slow, 1 from sacred, any
 
-	[InnatePower( ThunderingDestruction.Name, Speed.Slow )]
+	[InnatePower( ThunderingDestruction.Name),Slow]
 	[FromSacredSite(1)]
 	class ThunderingDestruction {
 

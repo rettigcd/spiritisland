@@ -2,7 +2,7 @@
 
 namespace SpiritIsland.Basegame {
 
-	[InnatePower("Gift of Strength",Speed.Fast)]
+	[InnatePower("Gift of Strength"),Fast]
 	[TargetSpirit]
 	public class GiftOfStrength {
 

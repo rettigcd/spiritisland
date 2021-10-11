@@ -3,7 +3,7 @@
 
 namespace SpiritIsland.Basegame {
 
-	[InnatePower( LeadTheFuriousAssult.Name,Speed.Slow)]
+	[InnatePower( LeadTheFuriousAssult.Name ),Slow]
 	[FromPresence(0)]
 	public class LeadTheFuriousAssult {
 		public const string Name = "Lead the Furious Assult";

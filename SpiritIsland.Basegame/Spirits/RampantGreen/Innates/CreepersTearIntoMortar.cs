@@ -2,7 +2,7 @@
 
 namespace SpiritIsland.Basegame {
 
-	[InnatePower( "Creepers Tear into Mortar", Speed.Slow )]
+	[InnatePower( "Creepers Tear into Mortar" ),Slow]
 	[FromPresence( 0 )]
 	class CreepersTearIntoMortar {
 

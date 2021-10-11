@@ -2,7 +2,7 @@
 
 namespace SpiritIsland {
 
-	[AttributeUsage(AttributeTargets.Method)]
+	[AttributeUsage(AttributeTargets.Method|AttributeTargets.Class)]
 	public class SpeedAttribute : Attribute {
 		public Speed Speed { get; }
 		public SpeedAttribute(Speed speed ) { Speed = speed; }

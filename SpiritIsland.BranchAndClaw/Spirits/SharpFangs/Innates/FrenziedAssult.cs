@@ -2,7 +2,7 @@
 
 namespace SpiritIsland.BranchAndClaw {
 
-	[InnatePower( "Frenzied Assult", Speed.Slow )]
+	[InnatePower( "Frenzied Assult" ),Slow]
 	[FromPresence( 1, Target.Beast )]
 	class FrenziedAssult {
 

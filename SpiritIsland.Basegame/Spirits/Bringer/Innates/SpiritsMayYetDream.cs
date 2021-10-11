@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace SpiritIsland.Basegame {
 
 	// Innate 1 - Spirits May Yet Dream => fast any spirit
-	[InnatePower( "Spirits May Yet Dream", Speed.Fast )]
+	[InnatePower( "Spirits May Yet Dream" ),Fast]
 	[TargetSpirit]
 	class SpiritsMayYetDream {
 

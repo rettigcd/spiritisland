@@ -6,7 +6,7 @@ namespace SpiritIsland.Basegame {
 	//2 water 4 plant instead, defend 4
 	//3 water 1 rock 5 plant also, remove 1 blight
 
-	[InnatePower("All Enveloping Green",Speed.Fast)]
+	[InnatePower("All Enveloping Green"),Fast]
 	[FromSacredSite(1)]
 	class AllEnvelopingGreen {
 

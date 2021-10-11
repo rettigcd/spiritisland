@@ -2,7 +2,7 @@
 
 namespace SpiritIsland.BranchAndClaw {
 
-	[InnatePower("Raging Hunt",Speed.Fast)]
+	[InnatePower("Raging Hunt"),Fast]
 	[FromPresence(1,Target.NoBlight)]
 	public class RagingHunt {
 
