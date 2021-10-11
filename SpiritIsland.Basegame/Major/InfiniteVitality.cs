@@ -5,7 +5,8 @@ namespace SpiritIsland.Basegame {
 
 	public class InfiniteVitality {
 
-		[MajorCard( "Infinite Vitality", 3, Speed.Fast, Element.Earth, Element.Plant, Element.Animal )]
+		[MajorCard( "Infinite Vitality", 3, Element.Earth, Element.Plant, Element.Animal )]
+		[Fast]
 		[FromSacredSite( 1 )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 

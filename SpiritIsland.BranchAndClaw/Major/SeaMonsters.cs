@@ -4,7 +4,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class SeaMonsters {
 
-		[MajorCard( "Sea Monsters", 5, Speed.Slow, Element.Water, Element.Animal )]
+		[MajorCard( "Sea Monsters", 5, Element.Water, Element.Animal )]
+		[Slow]
 		[FromPresence( 1, Target.CoastalOrWetlands )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 			await DoPowerAction( ctx );

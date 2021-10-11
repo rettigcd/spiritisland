@@ -4,7 +4,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class InflameTheFiresOfLife {
 
-		[MinorCard( "Inflame the Fires of Life", 1, Speed.Slow, Element.Moon, Element.Fire, Element.Plant, Element.Animal )]
+		[MinorCard( "Inflame the Fires of Life", 1, Element.Moon, Element.Fire, Element.Plant, Element.Animal )]
+		[Slow]
 		[FromSacredSite( 1 )]
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 

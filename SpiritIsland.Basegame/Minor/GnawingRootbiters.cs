@@ -4,7 +4,8 @@ namespace SpiritIsland.Basegame {
 
 	public class GnawingRootbiters {
 
-		[MinorCard("Gnawing Rootbiters",0,Speed.Slow,"earth, animal")]
+		[MinorCard("Gnawing Rootbiters",0,"earth, animal")]
+		[Slow]
 		[FromPresence(1)]
 		static public Task ActAsync(TargetSpaceCtx ctx ) {
 

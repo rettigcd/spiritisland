@@ -4,7 +4,8 @@ namespace SpiritIsland.Basegame {
 
 	class ConcealingShadows {
 
-		[SpiritCard("Concealing Shadows",0,Speed.Fast,Element.Moon,Element.Air)]
+		[SpiritCard("Concealing Shadows",0,Element.Moon,Element.Air)]
+		[Fast]
 		[FromPresence(0)]
 		static public Task Act(TargetSpaceCtx ctx){
 			// 1 fear

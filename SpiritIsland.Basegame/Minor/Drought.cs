@@ -4,7 +4,8 @@ namespace SpiritIsland.Basegame {
 
 	public class Drought {
 
-		[MinorCard( "Drought", 1, Speed.Slow, Element.Sun, Element.Fire, Element.Earth )]
+		[MinorCard( "Drought", 1, Element.Sun, Element.Fire, Element.Earth )]
+		[Slow]
 		[FromPresence(1)]
 		static public async Task Act( TargetSpaceCtx ctx ) {
 			var invaders = ctx.Invaders;

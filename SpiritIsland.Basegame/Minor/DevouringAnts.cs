@@ -4,7 +4,8 @@ namespace SpiritIsland.Basegame {
 
 	class DevouringAnts {
 
-		[MinorCard("Devouring Ants",1,Speed.Slow,Element.Sun,Element.Earth,Element.Animal)]
+		[MinorCard("Devouring Ants",1,Element.Sun,Element.Earth,Element.Animal)]
+		[Slow]
 		[FromSacredSite(1)]
 		static public async Task ActAsync(TargetSpaceCtx ctx){
 

@@ -4,7 +4,8 @@ namespace SpiritIsland.Basegame {
 
 	public class TalonsOfLightning {
 
-		[MajorCard( "Talons of Lightning", 6, Speed.Fast, Element.Fire, Element.Air )]
+		[MajorCard( "Talons of Lightning", 6, Element.Fire, Element.Air )]
+		[Fast]
 		[ExtendableRange( From.Presence, 1, Target.MountainOrWetland, "3 fire,3 air", 2 )]
 		static public async Task ActionAsync( TargetSpaceCtx ctx ) {
 

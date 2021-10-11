@@ -4,7 +4,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class ConfoundingMists {
 
-		[MinorCard( "Confounding Mists", 1, Speed.Fast, Element.Air, Element.Water )]
+		[MinorCard( "Confounding Mists", 1, Element.Air, Element.Water )]
+		[Fast]
 		[FromPresence( 1 )]
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 			return ctx.SelectActionOption(

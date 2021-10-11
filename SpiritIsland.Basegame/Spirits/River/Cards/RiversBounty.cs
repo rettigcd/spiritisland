@@ -5,7 +5,8 @@ namespace SpiritIsland.Basegame {
 	public class RiversBounty {
 
 		public const string Name = "River's Bounty";
-		[SpiritCard(RiversBounty.Name, 0, Speed.Slow,Element.Sun,Element.Water,Element.Animal)]
+		[SpiritCard(RiversBounty.Name, 0, Element.Sun,Element.Water,Element.Animal)]
+		[Slow]
 		[FromPresence(0)]
 		static public async Task ActionAsync(TargetSpaceCtx ctx) {
 

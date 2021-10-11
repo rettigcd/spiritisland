@@ -5,7 +5,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class TowingWrath {
 
-		[SpiritCard("Towering Wrath",3,Speed.Slow,Element.Sun,Element.Fire,Element.Plant)]
+		[SpiritCard("Towering Wrath",3,Element.Sun,Element.Fire,Element.Plant)]
+		[Slow]
 		[FromSacredSite(1)]
 		static public async Task ActAsync(TargetSpaceCtx ctx ) {
 

@@ -7,7 +7,8 @@ namespace SpiritIsland.BranchAndClaw {
 		// 2 fast, sun, earth, plant, 
 		// range 1, no blight
 
-		[SpiritCard("Sacrosanct Wilderness",2,Speed.Fast,Element.Sun,Element.Earth,Element.Plant)]
+		[SpiritCard("Sacrosanct Wilderness",2,Element.Sun,Element.Earth,Element.Plant)]
+		[Fast]
 		[FromPresence(1,Target.NoBlight)]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 

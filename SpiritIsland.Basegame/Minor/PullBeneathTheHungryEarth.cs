@@ -6,7 +6,8 @@ namespace SpiritIsland.Basegame {
 
 		public const string Name = "Pull Beneath the Hungry Earth";
 
-		[MinorCard(PullBeneathTheHungryEarth.Name,1,Speed.Slow,Element.Moon,Element.Water,Element.Earth)]
+		[MinorCard(PullBeneathTheHungryEarth.Name,1,Element.Moon,Element.Water,Element.Earth)]
+		[Slow]
 		[FromPresence(1,Target.Any)]
 		static public Task ActAsync(TargetSpaceCtx ctx){
 

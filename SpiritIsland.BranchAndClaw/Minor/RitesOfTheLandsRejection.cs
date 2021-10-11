@@ -7,7 +7,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 		public const string Name = "Rites of the Land's Rejection";
 
-		[MinorCard( RitesOfTheLandsRejection.Name, 1, Speed.Fast, Element.Moon, Element.Fire, Element.Earth )]
+		[MinorCard( RitesOfTheLandsRejection.Name, 1, Element.Moon, Element.Fire, Element.Earth )]
+		[Fast]
 		[FromSacredSite( 2, Target.Dahan )]
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 

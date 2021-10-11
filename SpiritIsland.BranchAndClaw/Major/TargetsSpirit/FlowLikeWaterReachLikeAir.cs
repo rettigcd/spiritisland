@@ -4,7 +4,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class FlowLikeWaterReachLikeAir {
 
-		[MajorCard("Flow Like Water, Reach Like Air",2,Speed.Fast,Element.Air,Element.Water)]
+		[MajorCard("Flow Like Water, Reach Like Air",2,Element.Air,Element.Water)]
+		[Fast]
 		[TargetSpirit]
 		static public async Task ActAsync( TargetSpiritCtx ctx ) {
 

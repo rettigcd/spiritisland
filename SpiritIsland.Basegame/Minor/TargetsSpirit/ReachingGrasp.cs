@@ -4,7 +4,8 @@ namespace SpiritIsland.Basegame {
 
 	public class ReachingGrasp {
 
-		[MinorCard( "Reaching Grasp", 0, Speed.Fast, Element.Sun, Element.Air, Element.Water )]
+		[MinorCard( "Reaching Grasp", 0, Element.Sun, Element.Air, Element.Water )]
+		[Fast]
 		[TargetSpirit]
 		static public Task Act( TargetSpiritCtx ctx ) {
 

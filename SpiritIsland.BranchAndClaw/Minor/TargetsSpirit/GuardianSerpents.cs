@@ -4,7 +4,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class GuardianSerpents {
 
-		[MinorCard( "Guardian Serpents", 1, Speed.Fast, Element.Sun, Element.Moon, Element.Earth, Element.Animal )]
+		[MinorCard( "Guardian Serpents", 1, Element.Sun, Element.Moon, Element.Earth, Element.Animal )]
+		[Fast]
 		[TargetSpirit]
 		static public async Task ActAsync( TargetSpiritCtx ctx ) {
 

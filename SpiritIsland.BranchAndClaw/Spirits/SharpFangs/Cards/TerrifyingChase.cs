@@ -4,7 +4,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class TerrifyingChase {
 
-		[SpiritCard( "Terrifying Chase", 1, Speed.Slow, Element.Sun, Element.Animal )]
+		[SpiritCard( "Terrifying Chase", 1, Element.Sun, Element.Animal )]
+		[Slow]
 		[FromPresence( 0 )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 

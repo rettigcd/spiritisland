@@ -4,7 +4,8 @@ namespace SpiritIsland.Basegame {
 
 	class OvergrowInANight {
 
-		[SpiritCard( "Overgrow in a Night", 2, Speed.Fast, Element.Moon, Element.Plant )]
+		[SpiritCard( "Overgrow in a Night", 2, Element.Moon, Element.Plant )]
+		[Fast]
 		[FromPresence( 1 )]
 		static public Task ActionAsync( TargetSpaceCtx ctx ) {
 

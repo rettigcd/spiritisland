@@ -5,7 +5,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public partial class SweepIntoTheSea {
 
-		[MajorCard( "Sweep into the Sea", 4, Speed.Slow, Element.Sun, Element.Air, Element.Water )]
+		[MajorCard( "Sweep into the Sea", 4, Element.Sun, Element.Air, Element.Water )]
+		[Slow]
 		[FromPresence( 2 )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 			await DoPower( ctx );

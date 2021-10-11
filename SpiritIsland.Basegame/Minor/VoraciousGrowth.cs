@@ -3,7 +3,8 @@
 namespace SpiritIsland.Basegame {
 	class VoraciousGrowth {
 
-		[MinorCard("Voracious Growth",1,Speed.Slow,Element.Water,Element.Plant)]
+		[MinorCard("Voracious Growth",1,Element.Water,Element.Plant)]
+		[Slow]
 		[FromSacredSite(1,Target.JungleOrWetland)]
 		static public Task ActAsync(TargetSpaceCtx ctx){
 

@@ -4,8 +4,8 @@ namespace SpiritIsland.BranchAndClaw {
 	public class MinorCardConditinalFastAttribute : MinorCardAttribute {
 
 		readonly string fastTriggerElements;
-		public MinorCardConditinalFastAttribute( string name, int cost, Speed speed, string triggerElements, params Element[] elements )
-			: base( name, cost, speed, elements ) {
+		public MinorCardConditinalFastAttribute( string name, int cost, string triggerElements, params Element[] elements )
+			: base( name, cost, elements ) {
 			this.fastTriggerElements = triggerElements;
 		}
 

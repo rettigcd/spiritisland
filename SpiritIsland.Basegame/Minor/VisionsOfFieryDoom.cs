@@ -4,7 +4,8 @@ namespace SpiritIsland.Basegame {
 
 	class VisionsOfFieryDoom {
 
-		[MinorCard("Visions of Fiery Doom",1, Speed.Fast,Element.Moon,Element.Fire)]
+		[MinorCard("Visions of Fiery Doom",1, Element.Moon,Element.Fire)]
+		[Fast]
 		[FromPresence(0)]
 		static public async Task Act(TargetSpaceCtx ctx){
 			// 1 fear

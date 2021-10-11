@@ -92,28 +92,28 @@ namespace SpiritIsland.Tests.Basegame.Spirits.VitalStrengthNS {
 
 		static public PowerCard MakePowerCard( Func<TargetSpaceCtx,Task> d ) => PowerCard.For( d.Method );
 
-		[SpiritCard("Slow-0",0,Speed.Slow)]
+		[SpiritCard("Slow-0",0),Slow]
 		[FromPresenceIn(0,Terrain.Ocean)] // will skip the Target-Space step
 		static Task Slow0(TargetSpaceCtx _) => Task.CompletedTask;
 
-		[SpiritCard("Slow-1",1,Speed.Slow)]
+		[SpiritCard("Slow-1",1),Slow]
 		[FromPresenceIn(0,Terrain.Ocean)] // will skip the Target-Space step
 		static Task Slow1(TargetSpaceCtx _) => Task.CompletedTask;
 
-		[SpiritCard("Slow-2",2,Speed.Slow)]
+		[SpiritCard("Slow-2",2),Slow]
 		[FromPresenceIn(0,Terrain.Ocean)] // will skip the Target-Space step
 		static Task Slow2(TargetSpaceCtx _) => Task.CompletedTask;
 
 
-		[SpiritCard("Fast-0",0,Speed.Fast)]
+		[SpiritCard("Fast-0",0),Fast]
 		[FromPresenceIn(0,Terrain.Ocean)] // will skip the Target-Space step
 		static Task Fast0(TargetSpaceCtx _) => Task.CompletedTask;
 
-		[SpiritCard("Fast-1",1,Speed.Fast)]
+		[SpiritCard("Fast-1",1),Fast]
 		[FromPresenceIn(0,Terrain.Ocean)] // will skip the Target-Space step
 		static Task Fast1(TargetSpaceCtx _) => Task.CompletedTask;
 
-		[SpiritCard("Fast-2",2,Speed.Fast)]
+		[SpiritCard("Fast-2",2),Fast]
 		[FromPresenceIn(0,Terrain.Ocean)] // will skip the Target-Space step
 		static Task Fast2(TargetSpaceCtx _) => Task.CompletedTask;
 

@@ -4,7 +4,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class PortentsOfDisaster {
 
-		[MinorCard( "Portents of Disaster", 0, Speed.Fast, Element.Sun, Element.Moon, Element.Air )]
+		[MinorCard( "Portents of Disaster", 0, Element.Sun, Element.Moon, Element.Air )]
+		[Fast]
 		[FromSacredSite( 0, Target.Inland )]
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 			// 2 fear

@@ -3,7 +3,8 @@
 namespace SpiritIsland.BranchAndClaw {
 	public class TormentingRotFlies {
 
-		[MinorCard( "Tormenting Rotflies", 1, Speed.Slow, Element.Air, Element.Plant, Element.Animal )]
+		[MinorCard( "Tormenting Rotflies", 1, Element.Air, Element.Plant, Element.Animal )]
+		[Slow]
 		[FromPresence( 2, Target.SandOrWetland )]
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 

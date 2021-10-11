@@ -4,7 +4,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class ProwlingPanthers {
 
-		[MinorCard( "Prowling Panthers", 1, Speed.Slow, Element.Moon, Element.Fire, Element.Animal )]
+		[MinorCard( "Prowling Panthers", 1, Element.Moon, Element.Fire, Element.Animal )]
+		[Slow]
 		[FromPresence( 1 )]
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 			return ctx.SelectActionOption(

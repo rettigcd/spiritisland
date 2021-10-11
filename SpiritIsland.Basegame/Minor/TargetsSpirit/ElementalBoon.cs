@@ -4,7 +4,8 @@ namespace SpiritIsland.Basegame {
 
 	public class ElementalBoon {
 
-		[MinorCard( "Elemental Boon", 1, Speed.Fast )]
+		[MinorCard( "Elemental Boon", 1)]
+		[Fast]
 		[TargetSpirit]
 		static public async Task Act( TargetSpiritCtx ctx ) {
 

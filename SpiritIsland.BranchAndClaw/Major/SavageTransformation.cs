@@ -5,7 +5,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class SavageTransformation {
 
-		[MajorCard( "Savage Transformation", 2, Speed.Slow, Element.Moon, Element.Animal )]
+		[MajorCard( "Savage Transformation", 2, Element.Moon, Element.Animal )]
+		[Slow]
 		[FromPresence( 1 )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 			// 2 fear

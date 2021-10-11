@@ -6,7 +6,8 @@ namespace SpiritIsland.Basegame {
 
 		public const string Name = "Encompassing Ward";
 
-		[MinorCard(EncompassingWard.Name,1,Speed.Fast,Element.Sun,Element.Water,Element.Earth)]
+		[MinorCard(EncompassingWard.Name,1,Element.Sun,Element.Water,Element.Earth)]
+		[Fast]
 		[TargetSpirit]
 		static public Task Act( TargetSpiritCtx ctx ) {
 

@@ -6,7 +6,8 @@ namespace SpiritIsland.Basegame {
 
 		public const string Name = "Indomitable Claim";
 
-		[MajorCard( IndomitableClaim.Name, 4, Speed.Fast, Element.Sun, Element.Earth )]
+		[MajorCard( IndomitableClaim.Name, 4, Element.Sun, Element.Earth )]
+		[Fast]
 		[FromPresence( 1 )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 

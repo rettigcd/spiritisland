@@ -8,13 +8,7 @@ namespace SpiritIsland {
 	/// </summary>
 	class PowerCard_TargetSpirit : PowerCard {
 
-		public PowerCard_TargetSpirit(MethodBase methodBase):base(methodBase){
-			Speed = cardAttr.Speed;
-			Name = cardAttr.Name;
-			Cost = cardAttr.Cost;
-			Elements = cardAttr.Elements;
-			PowerType = cardAttr.PowerType;
-		}
+		public PowerCard_TargetSpirit(MethodBase methodBase):base(methodBase){}
 
 		public override async Task ActivateAsync( Spirit self, GameState gameState ) {
 			Spirit target = gameState.Spirits.Length == 1

@@ -5,7 +5,8 @@ namespace SpiritIsland.Basegame {
 
 	class SapTheStrengthOfMultitudes {
 
-		[MinorCard( "Sap the Strength of Multitudes", 0, Speed.Fast, "water, animal" )]
+		[MinorCard( "Sap the Strength of Multitudes", 0, "water, animal" )]
+		[Fast]
 		[ExtendableRange(From.Presence,0,Target.Any,"1 air",1)]
 		static public Task ActAsync( TargetSpaceCtx ctx) {
 			// defend 5

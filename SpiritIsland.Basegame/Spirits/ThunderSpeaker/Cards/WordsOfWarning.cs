@@ -6,7 +6,8 @@ namespace SpiritIsland.Basegame {
 
 		public const string Name = "Words of Warning";
 
-		[SpiritCard( WordsOfWarning.Name, 1, Speed.Fast, Element.Air, Element.Sun, Element.Animal )]
+		[SpiritCard( WordsOfWarning.Name, 1, Element.Air, Element.Sun, Element.Animal )]
+		[Fast]
 		[FromPresence(1,Target.Dahan)]
 		static public Task Act( TargetSpaceCtx ctx ) {
 

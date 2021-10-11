@@ -5,7 +5,8 @@ namespace SpiritIsland.Basegame {
 	public class CallOnMidnightsDream {
 
 
-		[SpiritCard("Call on Midnight's Dream",0, Speed.Fast,Element.Moon,Element.Animal)]
+		[SpiritCard("Call on Midnight's Dream",0, Element.Moon,Element.Animal)]
+		[Fast]
 		[FromPresence(0,Target.DahanOrInvaders)] // adding dahan or invaders so that card does something.
 		static public Task ActAsync(TargetSpaceCtx ctx) {
 

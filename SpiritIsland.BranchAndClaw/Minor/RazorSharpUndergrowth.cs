@@ -4,7 +4,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class RazorSharpUndergrowth {
 
-		[MinorCard( "Razor-Sharp Undergrowth", 1, Speed.Fast, Element.Moon, Element.Plant )]
+		[MinorCard( "Razor-Sharp Undergrowth", 1, Element.Moon, Element.Plant )]
+		[Fast]
 		[FromPresence( 0, Target.NoBlight )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 

@@ -3,7 +3,8 @@
 namespace SpiritIsland.BranchAndClaw {
 	public class TeethGleamFromDarkness {
 
-		[SpiritCard("Teeth Gleam from Darkness",1,Speed.Slow,Element.Moon,Element.Plant,Element.Animal)]
+		[SpiritCard("Teeth Gleam from Darkness",1,Element.Moon,Element.Plant,Element.Animal)]
+		[Slow]
 		[FromPresenceIn(1,Terrain.Jungle,Target.NoBlight)]
 		static public async Task ActAsync(TargetSpaceCtx ctx ) {
 

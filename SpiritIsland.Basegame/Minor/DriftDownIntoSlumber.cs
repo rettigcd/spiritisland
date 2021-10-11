@@ -3,7 +3,8 @@
 namespace SpiritIsland.Basegame {
 	public class DriftDownIntoSlumber {
 
-		[MinorCard( "Drift Down into Slumber", 0, Speed.Fast, Element.Air, Element.Earth, Element.Plant )]
+		[MinorCard( "Drift Down into Slumber", 0, Element.Air, Element.Earth, Element.Plant )]
+		[Fast]
 		[FromPresence( 2 )]
 		public static Task ActAsync( TargetSpaceCtx ctx ) {
 			// defend 1

@@ -4,7 +4,8 @@ namespace SpiritIsland.Basegame {
 
 	public class CallToTend {
 
-		[MinorCard("Call to Tend",1,Speed.Slow,Element.Water,Element.Plant,Element.Animal)]
+		[MinorCard("Call to Tend",1,Element.Water,Element.Plant,Element.Animal)]
+		[Slow]
 		[FromPresence(1,Target.Dahan)]
 		static public Task ActAsync(TargetSpaceCtx ctx ) {
 

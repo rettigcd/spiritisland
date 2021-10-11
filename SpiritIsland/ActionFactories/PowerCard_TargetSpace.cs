@@ -15,12 +15,6 @@ namespace SpiritIsland {
 
 			targetSpaceAttr = targetSpace ?? throw new ArgumentNullException( nameof( targetSpace ), Name + " is missing targetting attribute" );
 
-			Name = cardAttr.Name;
-			Cost = cardAttr.Cost;
-			Speed = cardAttr.Speed;
-			Elements = cardAttr.Elements;
-			PowerType = cardAttr.PowerType;
-
 		}
 
 		public override Task ActivateAsync( Spirit spirit, GameState gameState ) {

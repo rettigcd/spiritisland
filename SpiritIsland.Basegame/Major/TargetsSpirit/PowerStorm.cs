@@ -5,7 +5,8 @@ namespace SpiritIsland.Basegame {
 
 	public class PowerStorm {
 
-		[MajorCard("Powerstorm",3,Speed.Fast,Element.Sun,Element.Fire,Element.Air)]
+		[MajorCard("Powerstorm",3,Element.Sun,Element.Fire,Element.Air)]
+		[Fast]
 		[TargetSpirit]
 		static public Task ActionAsync( TargetSpiritCtx ctx ) {
 			

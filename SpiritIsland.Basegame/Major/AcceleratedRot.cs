@@ -6,7 +6,8 @@ namespace SpiritIsland.Basegame {
 
 		public const string Name = "Accelerated Rot";
 
-		[MajorCard(AcceleratedRot.Name,4,Speed.Slow,Element.Sun,Element.Water,Element.Plant)]
+		[MajorCard(AcceleratedRot.Name,4,Element.Sun,Element.Water,Element.Plant)]
+		[Slow]
 		[FromPresence(2,Target.JungleOrWetland)]
 		static public async Task ActAsync(TargetSpaceCtx ctx){
 

@@ -5,7 +5,8 @@ namespace SpiritIsland.Basegame {
 	public class EntwinedPower {
 
 
-		[MajorCard( "Entwined Power", 2, Speed.Fast, Element.Moon, Element.Water, Element.Plant )]
+		[MajorCard( "Entwined Power", 2, Element.Moon, Element.Water, Element.Plant )]
+		[Fast]
 		[TargetSpirit]
 		static public async Task ActAsync( TargetSpiritCtx ctx ) {
 

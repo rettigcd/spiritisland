@@ -4,7 +4,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class AbsorbCorruption {
 
-		[MinorCard( "Absorb Corruption", 1, Speed.Slow, Element.Sun, Element.Earth, Element.Plant )]
+		[MinorCard( "Absorb Corruption", 1, Element.Sun, Element.Earth, Element.Plant )]
+		[Slow]
 		[FromPresence( 0 )]
 		static public Task ActAsync(TargetSpaceCtx ctx ) {
 

@@ -4,7 +4,8 @@ namespace SpiritIsland.Basegame {
 
 	public class StemTheFlowOfFreshWater {
 
-		[SpiritCard( "Stem the Flow of Fresh Water", 0, Speed.Slow, Element.Water, Element.Plant )]
+		[SpiritCard( "Stem the Flow of Fresh Water", 0, Element.Water, Element.Plant )]
+		[Slow]
 		[FromSacredSite( 1 )]
 		static public async Task ActionAsync( TargetSpaceCtx ctx ) {
 

@@ -4,7 +4,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class PyroclasticFlow {
 
-		[MajorCard( "Pyroclastic Flow", 3, Speed.Fast, Element.Fire, Element.Air, Element.Earth )]
+		[MajorCard( "Pyroclastic Flow", 3, Element.Fire, Element.Air, Element.Earth )]
+		[Fast]
 		[FromPresenceIn( 1, Terrain.Mountain )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 			// 2 damage. Destory all explorers

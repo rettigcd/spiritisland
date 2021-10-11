@@ -5,7 +5,8 @@ namespace SpiritIsland.Basegame {
 
 	public class DreamsOfTheDahan {
 
-		[SpiritCard("Dreams of the Dahan",0,Speed.Fast,Element.Moon,Element.Air)]
+		[SpiritCard("Dreams of the Dahan",0,Element.Moon,Element.Air)]
+		[Fast]
 		[FromPresence(2)]
 		static public Task ActAsync(TargetSpaceCtx ctx ) {
 

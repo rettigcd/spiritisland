@@ -4,7 +4,8 @@ namespace SpiritIsland.Basegame {
 
 	public class TidalBoon {
 
-		[SpiritCard("Tidal Boon",1,Speed.Slow,Element.Moon,Element.Water,Element.Earth)]
+		[SpiritCard("Tidal Boon",1,Element.Moon,Element.Water,Element.Earth)]
+		[Slow]
 		[TargetSpirit]
 		static public async Task Act(TargetSpiritCtx ctx ) {
 

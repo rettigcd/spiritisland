@@ -6,7 +6,8 @@ namespace SpiritIsland.Basegame {
 		// Predatory Nightmares => 2 => slow,
 		// 1 from sacred site, invaders =>
 		// moon, fire, mountain, animal =>
-		[SpiritCard("Predatory Nightmares",2,Speed.Slow,Element.Moon,Element.Fire,Element.Earth,Element.Animal)]
+		[SpiritCard("Predatory Nightmares",2,Element.Moon,Element.Fire,Element.Earth,Element.Animal)]
+		[Slow]
 		[FromSacredSite(1,Target.Invaders)]
 		static public async Task ActAsync(TargetSpaceCtx ctx ) {
 			// 2 damange.

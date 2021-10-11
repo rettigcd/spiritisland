@@ -4,7 +4,8 @@ namespace SpiritIsland.Basegame {
 
 	public class PillarOfLivingFlame {
 
-		[MajorCard("Pillar of Living Flame",5,Speed.Slow,Element.Fire)]
+		[MajorCard("Pillar of Living Flame",5,Element.Fire)]
+		[Slow]
 		[FromSacredSite(2)]
 		static public async Task ActionAsync(TargetSpaceCtx ctx){
 

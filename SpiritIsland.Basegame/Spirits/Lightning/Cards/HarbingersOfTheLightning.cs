@@ -8,7 +8,8 @@ namespace SpiritIsland.Basegame {
 	public class HarbingersOfTheLightning {
 		public const string Name = "Harbingers of the Lightning";
 
-		[SpiritCard(HarbingersOfTheLightning.Name,0,Speed.Slow,Element.Fire,Element.Air)]
+		[SpiritCard(HarbingersOfTheLightning.Name,0,Element.Fire,Element.Air)]
+		[Slow]
 		[FromPresence(1,Target.Dahan)]
 		static public async Task ActionAsync(TargetSpaceCtx ctx){
 

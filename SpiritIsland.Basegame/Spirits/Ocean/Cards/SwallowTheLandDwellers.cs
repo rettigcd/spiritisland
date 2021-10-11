@@ -5,7 +5,8 @@ namespace SpiritIsland.Basegame {
 
 	public class SwallowTheLandDwellers {
 
-		[SpiritCard("Swallow the Land-Dwellers",0,Speed.Slow,Element.Water,Element.Earth)]
+		[SpiritCard("Swallow the Land-Dwellers",0,Element.Water,Element.Earth)]
+		[Slow]
 		[FromPresence(0,Target.Coastal)]
 		static public async Task Act(TargetSpaceCtx ctx ) {
 

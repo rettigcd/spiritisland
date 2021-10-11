@@ -5,12 +5,12 @@ namespace SpiritIsland {
 	[AttributeUsage(AttributeTargets.Class|AttributeTargets.Method)]
 	public class MinorCardAttribute : CardAttribute {
 
-		public MinorCardAttribute(string name, int cost, Speed speed, params Element[] elements)
-			:base(name,cost,speed,PowerType.Minor,elements)
+		public MinorCardAttribute(string name, int cost, params Element[] elements)
+			:base(name,cost,PowerType.Minor,elements)
 		{ }
 
-		public MinorCardAttribute( string name, int cost, Speed speed, string elementString )
-			: base( name, cost, speed, PowerType.Minor, ElementList.Parse(elementString) ) { }
+		public MinorCardAttribute( string name, int cost, string elementString )
+			: base( name, cost, PowerType.Minor, ElementList.Parse(elementString) ) { }
 
 	}
 

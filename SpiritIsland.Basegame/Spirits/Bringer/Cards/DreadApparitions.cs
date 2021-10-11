@@ -8,7 +8,8 @@ namespace SpiritIsland.Basegame {
 
 	public class DreadApparitions {
 
-		[SpiritCard("Dread Apparitions",2,Speed.Fast,Element.Moon,Element.Air)]
+		[SpiritCard("Dread Apparitions",2,Element.Moon,Element.Air)]
+		[Fast]
 		[FromPresence(1,Target.Invaders)]
 		static public Task ActAsync(TargetSpaceCtx ctx ) {
 

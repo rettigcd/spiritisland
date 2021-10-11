@@ -4,7 +4,8 @@ namespace SpiritIsland.Basegame {
 
 	public class EnticingSplendor {
 
-		[MinorCard( "Enticing Splendor", 0, Speed.Fast, Element.Sun, Element.Air, Element.Plant )]
+		[MinorCard( "Enticing Splendor", 0, Element.Sun, Element.Air, Element.Plant )]
+		[Fast]
 		[FromPresence( 0, Target.NoBlight )]
 		public static Task ActAsync( TargetSpaceCtx ctx) {
 

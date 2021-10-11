@@ -5,7 +5,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class DeathFallsGentlyFromOpenBlossoms {
 
-		[MajorCard("Death Falls Gently from Open Blossoms",4, Speed.Slow, Element.Moon,Element.Air,Element.Plant)]
+		[MajorCard("Death Falls Gently from Open Blossoms",4, Element.Moon,Element.Air,Element.Plant)]
+		[Slow]
 		[FromPresence(3,Target.JungleOrSand)]
 		static public async Task ActAsync(TargetSpaceCtx ctx ) {
 			// 4 damage.

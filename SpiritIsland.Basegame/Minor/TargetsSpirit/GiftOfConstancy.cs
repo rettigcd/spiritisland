@@ -4,7 +4,8 @@ namespace SpiritIsland.Basegame {
 
 	public partial class GiftOfConstancy {
 
-		[MinorCard( "Gift of Constancy", 0, Speed.Fast, Element.Sun, Element.Earth )]
+		[MinorCard( "Gift of Constancy", 0, Element.Sun, Element.Earth )]
+		[Fast]
 		[TargetSpirit]
 		static public Task ActAsync( TargetSpiritCtx ctx ) {
 

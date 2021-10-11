@@ -37,16 +37,19 @@ namespace SpiritIsland {
 		protected PowerCard( MethodBase methodBase ) {
 			this.methodBase = methodBase;
 			cardAttr = methodBase.GetCustomAttributes<CardAttribute>().VerboseSingle( "Couldn't find CardAttribute on PowerCard targeting a space" );
+			speedAttr = methodBase.GetCustomAttribute<SpeedAttribute>(false) ?? throw new InvalidOperationException("Missing Speed attribute for "+methodBase.DeclaringType.Name);
 		}
 
-		public string Name { get; protected set; }
-
-		public int Cost { get; protected set;  }
+		public string Name         => cardAttr.Name;
+		public int Cost            => cardAttr.Cost;
+		public Speed Speed         => speedAttr.Speed;
+		public Element[] Elements  => cardAttr.Elements;
+		public PowerType PowerType => cardAttr.PowerType;
+		public Type MethodType     => methodBase.DeclaringType; // for determining card namespace and Basegame, BranchAndClaw, etc
 
 		#region speed
 
 		Speed EfectiveSpeed => OverrideSpeed != null ? OverrideSpeed.Speed : Speed;
-		public Speed Speed { get; protected set; }
 		public SpeedOverride OverrideSpeed { get; set; }
 
 		public void UpdateFromSpiritState( CountDictionary<Element> elements ) {
@@ -58,11 +61,7 @@ namespace SpiritIsland {
 		public bool IsActiveDuring( Speed speed ) => speed == EfectiveSpeed || EfectiveSpeed == Speed.FastOrSlow;
 		public bool IsInactiveAfter( Speed speed ) => speed == EfectiveSpeed || speed == Speed.Slow;
 
-
-		public Element[] Elements { get; protected set; }
-		public PowerType PowerType { get; protected set; }
-		public Type MethodType => methodBase.DeclaringType; // for determining card namespace and Basegame, BranchAndClaw, etc
-
+		readonly protected SpeedAttribute speedAttr;
 		readonly protected CardAttribute cardAttr;
 		readonly protected MethodBase methodBase;
 

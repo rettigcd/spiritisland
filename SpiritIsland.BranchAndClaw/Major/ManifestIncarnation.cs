@@ -5,7 +5,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class ManifestIncarnation {
 
-		[MajorCard( "Manifest Incarnation", 6, Speed.Slow, Element.Sun, Element.Moon, Element.Earth, Element.Animal )]
+		[MajorCard( "Manifest Incarnation", 6, Element.Sun, Element.Moon, Element.Earth, Element.Animal )]
+		[Slow]
 		[FromPresence( 0, "Cities" )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 			// 6 fear

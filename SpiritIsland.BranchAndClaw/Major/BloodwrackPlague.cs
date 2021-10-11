@@ -4,7 +4,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class BloodwrackPlague {
 
-		[MajorCard("Bloodwrack Plague",4,Speed.Fast,Element.Water,Element.Earth,Element.Animal)]
+		[MajorCard("Bloodwrack Plague",4,Element.Water,Element.Earth,Element.Animal)]
+		[Fast]
 		[FromSacredSite(1)]
 		static public async Task ActAsync(TargetSpaceCtx ctx ) {
 			// add 2 disease

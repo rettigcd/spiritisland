@@ -4,7 +4,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class HereThereBeMonsters {
 
-		[MinorCard( "Here There Be Monsters", 0, Speed.Slow, Element.Moon, Element.Air, Element.Animal )]
+		[MinorCard( "Here There Be Monsters", 0, Element.Moon, Element.Air, Element.Animal )]
+		[Slow]
 		[FromPresence( 0, Target.Inland )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 			// you may push 1 explorer / town / dahan

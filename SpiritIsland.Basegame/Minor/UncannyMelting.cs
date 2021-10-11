@@ -6,7 +6,8 @@ namespace SpiritIsland.Basegame {
 
 		public const string Name = "Uncanny Melting";
 
-		[MinorCard(UncannyMelting.Name,1, Speed.Slow,Element.Sun,Element.Moon,Element.Water)]
+		[MinorCard(UncannyMelting.Name,1, Element.Sun,Element.Moon,Element.Water)]
+		[Slow]
 		[FromSacredSite(1,Target.Any)]
 		static public Task ActAsync(TargetSpaceCtx ctx){
 

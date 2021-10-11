@@ -5,7 +5,8 @@ namespace SpiritIsland.Basegame {
 
 	public class EntrancingApparitions {
 
-		[MinorCard("Entrancing Apparitions",1,Speed.Fast,Element.Moon,Element.Air,Element.Water)]
+		[MinorCard("Entrancing Apparitions",1,Element.Moon,Element.Air,Element.Water)]
+		[Fast]
 		[FromPresence(1)]
 		static public async Task Act(TargetSpaceCtx ctx){
 

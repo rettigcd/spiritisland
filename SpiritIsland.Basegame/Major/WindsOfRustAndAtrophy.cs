@@ -4,7 +4,8 @@ namespace SpiritIsland.Basegame {
 
 	public class WindsOfRustAndAtrophy {
 
-		[MajorCard("Winds of Rust and Atrophy",3,Speed.Fast,Element.Air,Element.Moon,Element.Animal)]
+		[MajorCard("Winds of Rust and Atrophy",3,Element.Air,Element.Moon,Element.Animal)]
+		[Fast]
 		[FromSacredSite(3)]
 		static public async Task ActAsync(TargetSpaceCtx ctx) {
 			await ApplyEffect( ctx );

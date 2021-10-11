@@ -5,7 +5,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class TigersHunting {
 
-        [MajorCard("Tigers Hunting", 2, Speed.Fast, Element.Sun, Element.Moon, Element.Animal)]
+        [MajorCard("Tigers Hunting", 2, Element.Sun, Element.Moon, Element.Animal)]
+		[Fast]
         [FromPresenceIn(1,Terrain.Jungle,Target.NoBlight)]
         static public async Task ActAsync(TargetSpaceCtx ctx) {
 			// 2 fear

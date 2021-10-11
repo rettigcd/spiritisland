@@ -4,7 +4,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class SwarmingWasps {
 
-		[MinorCard( "Swarming Wasps", 0, Speed.Fast, Element.Fire, Element.Air, Element.Animal )]
+		[MinorCard( "Swarming Wasps", 0, Element.Fire, Element.Air, Element.Animal )]
+		[Fast]
 		[FromPresence( 1, Target.NoBlight )]
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 

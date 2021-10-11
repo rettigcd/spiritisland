@@ -4,7 +4,8 @@ namespace SpiritIsland.Basegame {
 
 	class ShadowsOfTheBurningForest {
 
-		[MinorCard("Shadows of the Burning Forest",0,Speed.Slow,Element.Moon,Element.Fire,Element.Plant)]
+		[MinorCard("Shadows of the Burning Forest",0,Element.Moon,Element.Fire,Element.Plant)]
+		[Slow]
 		[FromPresence(0,Target.Invaders)]
 		static public async Task Act(TargetSpaceCtx ctx){
 

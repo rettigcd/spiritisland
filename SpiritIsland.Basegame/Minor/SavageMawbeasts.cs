@@ -4,7 +4,8 @@ namespace SpiritIsland.Basegame {
 
 	class SavageMawbeasts {
 
-		[MinorCard("Savage Mawbeasts",0,Speed.Slow,Element.Fire,Element.Animal)]
+		[MinorCard("Savage Mawbeasts",0,Element.Fire,Element.Animal)]
+		[Slow]
 		[FromSacredSite(1)]
 		static public Task ActAsync(TargetSpaceCtx ctx){
 			int damage = 0;

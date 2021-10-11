@@ -4,7 +4,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class UnrelentingGrowth {
 
-		[MajorCard( "Unrelenting Growth", 4, Speed.Slow, Element.Sun, Element.Fire, Element.Water, Element.Plant )]
+		[MajorCard( "Unrelenting Growth", 4, Element.Sun, Element.Fire, Element.Water, Element.Plant )]
+		[Slow]
 		[TargetSpirit]
 		static public async Task ActAsync( TargetSpiritCtx ctx ) {
 

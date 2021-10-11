@@ -5,7 +5,8 @@ namespace SpiritIsland.Basegame {
 
 	class TheLandThrashesInFuriousPain {
 
-		[MajorCard("The Land Thrashes in Furious Pain",4, Speed.Slow, Element.Moon, Element.Fire,Element.Earth)]
+		[MajorCard("The Land Thrashes in Furious Pain",4, Element.Moon, Element.Fire,Element.Earth)]
+		[Slow]
 		[FromPresence(2,Target.Blight)]
 		static public async Task ActAsync(TargetSpaceCtx ctx) {
 

@@ -6,7 +6,8 @@ namespace SpiritIsland.Basegame {
 	public class FieldsChokedWithGrowth {
 
 		// push 1 town -OR- push 3 dahan
-		[SpiritCard( "Fields Choked with Growth", 0, Speed.Slow, Element.Sun, Element.Water, Element.Plant )]
+		[SpiritCard( "Fields Choked with Growth", 0, Element.Sun, Element.Water, Element.Plant )]
+		[Slow]
 		[FromPresence( 1 )]
 		static public Task ActionAsync( TargetSpaceCtx ctx ) {
 

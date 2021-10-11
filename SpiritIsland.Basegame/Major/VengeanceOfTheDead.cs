@@ -9,7 +9,8 @@ namespace SpiritIsland.Basegame {
 
 		// 3 fast moon fire animal
 		// range 3
-		[MajorCard("Vengeance of the Dead",3,Speed.Fast,Element.Moon,Element.Fire,Element.Animal)]
+		[MajorCard("Vengeance of the Dead",3,Element.Moon,Element.Fire,Element.Animal)]
+		[Fast]
 		[FromPresence(3)]
 		static public Task ActAsync(TargetSpaceCtx ctx) {
 			// 3 fear

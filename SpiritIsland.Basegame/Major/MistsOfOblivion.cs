@@ -3,7 +3,8 @@
 namespace SpiritIsland.Basegame {
 	class MistsOfOblivion {
 
-		[MajorCard( "Mists of Oblivion", 4, Speed.Slow, Element.Moon, Element.Air, Element.Water )]
+		[MajorCard( "Mists of Oblivion", 4, Element.Moon, Element.Air, Element.Water )]
+		[Slow]
 		[FromPresence(3)]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 

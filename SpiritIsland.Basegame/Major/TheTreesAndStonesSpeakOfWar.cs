@@ -5,7 +5,8 @@ namespace SpiritIsland.Basegame {
 
 	public class TheTreesAndStonesSpeakOfWar {
 
-		[MajorCard( "The Trees and Stones Speak of War", 2, Speed.Fast, Element.Sun, Element.Earth, Element.Plant )]
+		[MajorCard( "The Trees and Stones Speak of War", 2, Element.Sun, Element.Earth, Element.Plant )]
+		[Fast]
 		[FromPresence(1,Target.Dahan)]
 		static public async Task ActionAsync( TargetSpaceCtx ctx ) {
 

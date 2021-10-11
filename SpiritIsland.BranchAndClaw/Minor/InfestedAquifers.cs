@@ -4,7 +4,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class InfestedAquifers {
 
-		[MinorCard( "Infested Aquifers", 0, Speed.Slow, Element.Moon, Element.Water, Element.Earth, Element.Animal )]
+		[MinorCard( "Infested Aquifers", 0, Element.Moon, Element.Water, Element.Earth, Element.Animal )]
+		[Slow]
 		[FromPresence( 0 )]
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 

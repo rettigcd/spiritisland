@@ -6,7 +6,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 		public const string Name = "Call to Trade";
 
-		[MinorCard( CallToTrade.Name, 1, Speed.Fast, Element.Air, Element.Water, Element.Earth, Element.Plant )]
+		[MinorCard( CallToTrade.Name, 1, Element.Air, Element.Water, Element.Earth, Element.Plant )]
+		[Fast]
 		[FromPresence( 1, Target.Invaders )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 			// You may Gather 1 dahan

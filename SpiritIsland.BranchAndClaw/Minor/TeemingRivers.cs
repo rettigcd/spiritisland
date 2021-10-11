@@ -4,7 +4,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class TeemingRivers {
 
-		[MinorCard( "Teeming Rivers", 1, Speed.Slow, Element.Sun, Element.Water, Element.Plant, Element.Animal )]
+		[MinorCard( "Teeming Rivers", 1, Element.Sun, Element.Water, Element.Plant, Element.Animal )]
+		[Slow]
 		[FromSacredSite( 2, Target.MountainOrWetland )]
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 

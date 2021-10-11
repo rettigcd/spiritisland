@@ -4,7 +4,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class CallToFerocity {
 
-		[MinorCard( "Call to Ferocity", 0, Speed.Slow, Element.Sun, Element.Fire, Element.Earth )]
+		[MinorCard( "Call to Ferocity", 0, Element.Sun, Element.Fire, Element.Earth )]
+		[Slow]
 		[FromPresence( 1, Target.Invaders )]
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 			return ctx.SelectActionOption(

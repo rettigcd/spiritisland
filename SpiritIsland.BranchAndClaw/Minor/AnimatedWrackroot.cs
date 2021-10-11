@@ -4,7 +4,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class AnimatedWrackroot {
 
-		[MinorCard( "Animated WrackRoot", 0, Speed.Slow, Element.Moon, Element.Fire, Element.Plant )]
+		[MinorCard( "Animated WrackRoot", 0, Element.Moon, Element.Fire, Element.Plant )]
+		[Slow]
 		[FromPresence( 0 )]
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 			return ctx.SelectActionOption(

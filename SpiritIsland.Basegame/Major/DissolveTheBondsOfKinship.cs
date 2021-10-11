@@ -3,7 +3,8 @@
 namespace SpiritIsland.Basegame {
 	class DissolveTheBondsOfKinship {
 		
-		[MajorCard("Dissolve the Bonds of Kinship",4,Speed.Slow,Element.Fire,Element.Earth,Element.Animal)]
+		[MajorCard("Dissolve the Bonds of Kinship",4,Element.Fire,Element.Earth,Element.Animal)]
+		[Slow]
 		[FromPresence(1)]
 		static public async Task ActAsync(TargetSpaceCtx ctx) {
 

@@ -5,7 +5,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class InstrumentsOfTheirOwnRuin {
 
-		[MajorCard( "Instruments of Their Own Ruin", 4, Speed.Fast, Element.Sun, Element.Fire, Element.Air, Element.Animal )]
+		[MajorCard( "Instruments of Their Own Ruin", 4, Element.Sun, Element.Fire, Element.Air, Element.Animal )]
+		[Fast]
 		[FromSacredSite( 1 )]
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 

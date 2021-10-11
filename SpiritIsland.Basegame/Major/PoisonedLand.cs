@@ -3,7 +3,8 @@
 namespace SpiritIsland.Basegame {
 	class PoisonedLand {
 
-		[MajorCard("Poisoned Land",3,Speed.Slow,Element.Earth,Element.Plant,Element.Animal)]
+		[MajorCard("Poisoned Land",3,Element.Earth,Element.Plant,Element.Animal)]
+		[Slow]
 		[FromPresence(1)]
 		static public async Task ActAsync(TargetSpaceCtx ctx){
 

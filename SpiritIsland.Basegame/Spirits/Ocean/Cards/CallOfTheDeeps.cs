@@ -4,7 +4,8 @@ namespace SpiritIsland.Basegame {
 
 	public class CallOfTheDeeps {
 
-		[SpiritCard("Call of the Deeps",0,Speed.Fast,Element.Moon,Element.Air,Element.Water)]
+		[SpiritCard("Call of the Deeps",0,Element.Moon,Element.Air,Element.Water)]
+		[Fast]
 		[FromPresence(0,Target.Coastal)]
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 

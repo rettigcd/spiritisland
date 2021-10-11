@@ -5,7 +5,8 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 
 	public class GrowthThroughSacrifice {
 
-		[MinorCard("Growth Through Sacrifice",0,Speed.Fast,Element.Moon,Element.Fire,Element.Water,Element.Plant)]
+		[MinorCard("Growth Through Sacrifice",0,Element.Moon,Element.Fire,Element.Water,Element.Plant)]
+		[Fast]
 		[TargetSpirit]
 		static public async Task ActAsync( TargetSpiritCtx ctx ) {
 			// destroy one of your presence

@@ -4,7 +4,8 @@ namespace SpiritIsland.Basegame {
 
 	public class VeilTheNightsHunt {
 
-		[MinorCard( "Veil the Night's Hunt", 1, Speed.Fast, Element.Moon, Element.Air, Element.Animal)]
+		[MinorCard( "Veil the Night's Hunt", 1, Element.Moon, Element.Air, Element.Animal)]
+		[Fast]
 		[FromPresence( 2, Target.Dahan )]
 		static public Task Act( TargetSpaceCtx ctx ) {
 

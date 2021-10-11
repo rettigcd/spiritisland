@@ -4,7 +4,8 @@ namespace SpiritIsland.Basegame {
 
 	class ManifestationOfPowerAndGlory {
 
-		[SpiritCard( "Manifestation of Power and Glory", 3, Speed.Slow, Element.Sun, Element.Fire, Element.Air )]
+		[SpiritCard( "Manifestation of Power and Glory", 3, Element.Sun, Element.Fire, Element.Air )]
+		[Slow]
 		[FromPresence(0,Target.Dahan)]
 		static public Task Act( TargetSpaceCtx ctx ) {
 

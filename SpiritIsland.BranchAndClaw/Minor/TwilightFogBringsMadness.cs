@@ -4,7 +4,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class TwilightFogBringsMadness {
 
-		[MinorCard( "Twilight Fog Brings Madness", 0, Speed.Slow, Element.Sun, Element.Moon, Element.Air, Element.Water )]
+		[MinorCard( "Twilight Fog Brings Madness", 0, Element.Sun, Element.Moon, Element.Air, Element.Water )]
+		[Slow]
 		[FromPresence( 1 )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 

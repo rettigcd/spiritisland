@@ -5,7 +5,8 @@ namespace SpiritIsland.Basegame {
 	public class SteamVents {
 
 
-		[MinorCard("Steam Vents", 1, Speed.Fast, "fire,air,water,earth")]
+		[MinorCard("Steam Vents", 1, "fire,air,water,earth")]
+		[Fast]
 		[FromPresence(0)]
 		static public async Task ActAsync(TargetSpaceCtx ctx ) {
 

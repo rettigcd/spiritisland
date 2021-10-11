@@ -4,7 +4,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class UnlockTheGatesOfDeepestPower {
 
-		[MajorCard( "Unlock the Gates of Deepest Power", 4, Speed.Fast, Element.Sun,Element.Moon,Element.Fire,Element.Air,Element.Water,Element.Earth,Element.Plant,Element.Animal )]
+		[MajorCard( "Unlock the Gates of Deepest Power", 4, Element.Sun,Element.Moon,Element.Fire,Element.Air,Element.Water,Element.Earth,Element.Plant,Element.Animal )]
+		[Fast]
 		[TargetSpirit]
 		static public async Task ActAsync( TargetSpiritCtx ctx ) {
 

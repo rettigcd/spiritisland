@@ -3,7 +3,8 @@
 namespace SpiritIsland.Basegame {
 	public class CleansingFloods { 
 
-		[MajorCard("Cleansing Floods",5, Speed.Slow, Element.Sun, Element.Water)]
+		[MajorCard("Cleansing Floods",5, Element.Sun, Element.Water)]
+		[Slow]
 		[FromPresenceIn(1,Terrain.Wetland)]
 		static public Task ActAsync(TargetSpaceCtx ctx) {
 

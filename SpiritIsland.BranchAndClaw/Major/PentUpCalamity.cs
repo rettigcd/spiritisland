@@ -6,7 +6,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class PentUpCalamity {
 
-		[MajorCard( "Pent-Up Calamity", 3, Speed.Fast, Element.Moon, Element.Fire, Element.Earth, Element.Plant, Element.Animal )]
+		[MajorCard( "Pent-Up Calamity", 3, Element.Moon, Element.Fire, Element.Earth, Element.Plant, Element.Animal )]
+		[Fast]
 		[FromPresence( 2 )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 

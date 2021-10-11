@@ -5,7 +5,8 @@ namespace SpiritIsland.Basegame {
 
 	public class GiftOfLivingEnergy {
 
-		[MinorCard( "Gift of Living Energy", 0, Speed.Fast, Element.Sun, Element.Fire, Element.Plant )]
+		[MinorCard( "Gift of Living Energy", 0, Element.Sun, Element.Fire, Element.Plant )]
+		[Fast]
 		[TargetSpirit]
 		public static Task ActAsync( TargetSpiritCtx ctx ) {
 

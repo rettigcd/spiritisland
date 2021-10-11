@@ -6,7 +6,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class GrantHatredARavenousForm {
 
-		[MajorCard( "Grant Hatred a Ravenous Form", 4, Speed.Slow, Element.Moon, Element.Fire )]
+		[MajorCard( "Grant Hatred a Ravenous Form", 4, Element.Moon, Element.Fire )]
+		[Slow]
 		[FromPresence( 1 )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 

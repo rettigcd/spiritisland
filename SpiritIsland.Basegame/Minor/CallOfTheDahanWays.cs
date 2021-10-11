@@ -3,7 +3,8 @@
 namespace SpiritIsland.Basegame {
 	class CallOfTheDahanWays {
 
-		[MinorCard("Call of the Dahan Ways",1,Speed.Slow,Element.Moon,Element.Water,Element.Animal)]
+		[MinorCard("Call of the Dahan Ways",1,Element.Moon,Element.Water,Element.Animal)]
+		[Slow]
 		[FromPresence(1,Target.Dahan)]
 		static public Task Act(TargetSpaceCtx ctx){
 

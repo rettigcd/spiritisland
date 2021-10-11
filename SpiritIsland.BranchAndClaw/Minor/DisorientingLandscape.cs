@@ -3,7 +3,8 @@
 namespace SpiritIsland.BranchAndClaw {
 	class DisorientingLandscape {
 
-		[MinorCard( "Disorienting Landscape", 1, Speed.Fast, Element.Moon, Element.Air, Element.Plant )]
+		[MinorCard( "Disorienting Landscape", 1, Element.Moon, Element.Air, Element.Plant )]
+		[Fast]
 		[FromSacredSite( 2 )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 			await ctx.Push(1, Invader.Explorer);

@@ -7,7 +7,8 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 
 	public class SkyStretchesToShore {
 
-		[MinorCard( "Sky Stretches to Shore", 1, Speed.Fast, Element.Sun, Element.Air, Element.Water, Element.Earth )]
+		[MinorCard( "Sky Stretches to Shore", 1, Element.Sun, Element.Air, Element.Water, Element.Earth )]
+		[Fast]
 		[TargetSpirit]
 		static public Task ActAsync( TargetSpiritCtx ctx ) {
 

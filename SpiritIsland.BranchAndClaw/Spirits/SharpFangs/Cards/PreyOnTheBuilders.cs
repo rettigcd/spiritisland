@@ -4,7 +4,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class PreyOnTheBuilders {
 
-		[SpiritCard( "Prey on the Builders", 1, Speed.Fast, Element.Moon, Element.Fire, Element.Animal )]
+		[SpiritCard( "Prey on the Builders", 1, Element.Moon, Element.Fire, Element.Animal )]
+		[Fast]
 		[FromPresence(0)]
 		public static async Task ActAsync(TargetSpaceCtx ctx ) {
 			// you may gather 1 beast

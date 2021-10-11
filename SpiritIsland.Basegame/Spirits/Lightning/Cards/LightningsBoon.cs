@@ -5,7 +5,8 @@ namespace SpiritIsland.Basegame {
 	public class LightningsBoon {
 		public const string Name = "Lightning's Boon";
 
-		[SpiritCard(LightningsBoon.Name,1,Speed.Fast,Element.Fire,Element.Air)]
+		[SpiritCard(LightningsBoon.Name,1,Element.Fire,Element.Air)]
+		[Fast]
 		[TargetSpirit]
 		static public Task ActAsync( TargetSpiritCtx ctx ) {
 

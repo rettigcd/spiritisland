@@ -5,7 +5,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class CastDownIntoTheBrinyDeep {
 
-		[MajorCard( "Cast Down Into the Briny Deep", 9, Speed.Slow, Element.Sun, Element.Moon, Element.Water, Element.Earth )]
+		[MajorCard( "Cast Down Into the Briny Deep", 9, Element.Sun, Element.Moon, Element.Water, Element.Earth )]
+		[Slow]
 		[FromSacredSite( 1, Target.Coastal )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 			// 6 fear

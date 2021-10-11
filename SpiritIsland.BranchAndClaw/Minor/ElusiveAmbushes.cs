@@ -4,7 +4,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class ElusiveAmbushes {
 
-		[MinorCard("Elusive Ambushes",1,Speed.Fast,Element.Sun,Element.Fire,Element.Water)]
+		[MinorCard("Elusive Ambushes",1,Element.Sun,Element.Fire,Element.Water)]
+		[Fast]
 		[FromPresence(1,Target.Dahan)]
 		static public Task ActAsync(TargetSpaceCtx ctx ) {
 

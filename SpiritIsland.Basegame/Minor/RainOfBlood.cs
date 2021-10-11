@@ -3,7 +3,8 @@
 namespace SpiritIsland.Basegame {
 	public class RainOfBlood {
 
-		[MinorCard("Rain of Blood", 0, Speed.Slow, "air, water, animal")]
+		[MinorCard("Rain of Blood", 0, "air, water, animal")]
+		[Slow]
 		[FromSacredSite(1,Target.Invaders)]
 		static public Task ActAsync(TargetSpaceCtx ctx ) {
 			// 2 fear

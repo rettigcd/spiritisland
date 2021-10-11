@@ -4,7 +4,8 @@ namespace SpiritIsland.Basegame {
 
 	class TerrifyingNightmares {
 
-		[MajorCard("Terrifying Nightmares",4,Speed.Fast,Element.Moon,Element.Air)]
+		[MajorCard("Terrifying Nightmares",4,Element.Moon,Element.Air)]
+		[Fast]
 		[FromPresence(2)]
 		static public async Task Act(TargetSpaceCtx ctx){
 

@@ -4,7 +4,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class InsatiableHungerOfTheSwarm {
 
-		[MajorCard( "Insatiable Hunger of the Swarm", 4, Speed.Fast, Element.Air, Element.Plant, Element.Animal )]
+		[MajorCard( "Insatiable Hunger of the Swarm", 4, Element.Air, Element.Plant, Element.Animal )]
+		[Fast]
 		[FromSacredSite( 2 )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 

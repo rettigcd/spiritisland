@@ -6,7 +6,8 @@ namespace SpiritIsland.Basegame {
 
 		public const string Name = "Paralyzing Fright";
 
-		[MajorCard(ParalyzingFright.Name,4,Speed.Fast,Element.Air,Element.Earth)]
+		[MajorCard(ParalyzingFright.Name,4,Element.Air,Element.Earth)]
+		[Fast]
 		[FromSacredSite(1)]
 		static public Task ActAsync(TargetSpaceCtx ctx ) {
 			// 4 fear

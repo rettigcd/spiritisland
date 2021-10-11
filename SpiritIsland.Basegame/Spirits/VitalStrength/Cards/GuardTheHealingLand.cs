@@ -5,7 +5,8 @@ namespace SpiritIsland.Basegame.Spirits.VitalStrength {
 
 	class GuardTheHealingLand {
 
-		[SpiritCard("Guard the Healing Land",3,Speed.Fast,Element.Water,Element.Earth,Element.Plant)]
+		[SpiritCard("Guard the Healing Land",3,Element.Water,Element.Earth,Element.Plant)]
+		[Fast]
 		[FromSacredSite(1)]
 		static public Task Act(TargetSpaceCtx ctx){
 

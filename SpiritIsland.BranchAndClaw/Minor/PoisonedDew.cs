@@ -3,7 +3,8 @@
 namespace SpiritIsland.BranchAndClaw {
 	public class PoisonedDew {
 
-		[MinorCard( "Poisoned Dew", 1, Speed.Slow, Element.Fire, Element.Water, Element.Plant )]
+		[MinorCard( "Poisoned Dew", 1, Element.Fire, Element.Water, Element.Plant )]
+		[Slow]
 		[FromPresence( 1 )]
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 

@@ -4,7 +4,8 @@ using System.Threading.Tasks;
 namespace SpiritIsland.BranchAndClaw {
 	public class StranglingFirevine {
 
-		[MajorCard( "Strangling Firevine", 4, Speed.Slow, Element.Fire, Element.Plant )]
+		[MajorCard( "Strangling Firevine", 4, Element.Fire, Element.Plant )]
+		[Slow]
 		[FromPresenceIn( 1, Terrain.Sand )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 

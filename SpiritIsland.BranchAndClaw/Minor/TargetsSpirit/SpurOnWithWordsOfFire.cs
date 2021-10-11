@@ -4,7 +4,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class SpurOnWithWordsOfFire {
 
-		[MinorCard("Spur on with Words of Fire", 1, Speed.Fast, Element.Sun, Element.Fire, Element.Air)]
+		[MinorCard("Spur on with Words of Fire", 1, Element.Sun, Element.Fire, Element.Air)]
+		[Fast]
 		[TargetSpirit]
 		static public async Task ActAsync(TargetSpiritCtx ctx) {
 

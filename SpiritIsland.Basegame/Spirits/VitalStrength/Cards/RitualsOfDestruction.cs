@@ -5,7 +5,8 @@ namespace SpiritIsland.Basegame.Spirits.VitalStrength {
 	
 	class RitualsOfDestruction {
 
-		[SpiritCard("Rituals of Destruction",3,Speed.Slow,Element.Sun,Element.Moon,Element.Fire,Element.Earth,Element.Plant)]
+		[SpiritCard("Rituals of Destruction",3,Element.Sun,Element.Moon,Element.Fire,Element.Earth,Element.Plant)]
+		[Slow]
 		[FromSacredSite(1,Target.Dahan)]
 		static public Task ActAsync(TargetSpaceCtx ctx){
 

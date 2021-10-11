@@ -5,7 +5,8 @@ using SpiritIsland;
 namespace SpiritIsland.Basegame {
 	class MantleOfDread {
 
-		[SpiritCard("Mantle of Dread",1,Speed.Slow,Element.Moon,Element.Fire,Element.Air)]
+		[SpiritCard("Mantle of Dread",1,Element.Moon,Element.Fire,Element.Air)]
+		[Slow]
 		[TargetSpirit]
 		static public async Task Act( TargetSpiritCtx ctx ){
 

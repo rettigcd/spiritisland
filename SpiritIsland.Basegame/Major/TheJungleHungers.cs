@@ -4,7 +4,8 @@ namespace SpiritIsland.Basegame {
 
 	public class TheJungleHungers {
 
-		[MajorCard("The Jungle Hungers",3,Speed.Slow,Element.Moon,Element.Plant)]
+		[MajorCard("The Jungle Hungers",3,Element.Moon,Element.Plant)]
+		[Slow]
 		[FromPresenceIn(1,Terrain.Jungle)]
 		static public async Task ActAsync(TargetSpaceCtx ctx){
 

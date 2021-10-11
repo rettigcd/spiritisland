@@ -3,7 +3,8 @@
 namespace SpiritIsland.Basegame {
 	class BlazingRenewal {
 
-		[MajorCard("Blazing Renewal",5,Speed.Fast,Element.Fire,Element.Earth,Element.Plant)]
+		[MajorCard("Blazing Renewal",5,Element.Fire,Element.Earth,Element.Plant)]
+		[Fast]
 		[TargetSpirit]
 		static public async Task ActAsync( TargetSpiritCtx ctx ) {
 

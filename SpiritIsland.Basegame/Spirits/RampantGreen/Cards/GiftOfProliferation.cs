@@ -5,7 +5,8 @@ namespace SpiritIsland.Basegame {
 
 	class GiftOfProliferation {
 
-		[SpiritCard( "Gift of Proliferation", 1, Speed.Fast, Element.Moon, Element.Plant )]
+		[SpiritCard( "Gift of Proliferation", 1, Element.Moon, Element.Plant )]
+		[Fast]
 		[TargetSpirit]
 		static public Task ActionAsync( TargetSpiritCtx ctx ) {
 			// target spirit adds 1 presense up to range 1 from their presesnse

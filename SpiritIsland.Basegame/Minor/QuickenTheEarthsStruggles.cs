@@ -3,7 +3,8 @@
 namespace SpiritIsland.Basegame {
 	class QuickenTheEarthsStruggles {
 
-		[MinorCard( "Quicken the Earths Struggles", 1, Speed.Fast, "moon, fire, earth, animal" )]
+		[MinorCard( "Quicken the Earths Struggles", 1, "moon, fire, earth, animal" )]
+		[Fast]
 		[FromSacredSite( 0 )]
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 

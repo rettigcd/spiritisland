@@ -4,7 +4,8 @@ namespace SpiritIsland.Basegame {
 
 	public class CallToBloodshed {
 
-		[MinorCard("Call to Bloodshed",1,Speed.Slow,Element.Sun,Element.Fire,Element.Animal)]
+		[MinorCard("Call to Bloodshed",1,Element.Sun,Element.Fire,Element.Animal)]
+		[Slow]
 		[FromPresence(2,Target.Dahan)]
 		static public Task Act(TargetSpaceCtx ctx){
 			return ctx.SelectActionOption(

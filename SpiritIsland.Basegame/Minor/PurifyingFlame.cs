@@ -4,7 +4,8 @@ namespace SpiritIsland.Basegame {
 
 	public class PurifyingFlame {
 
-		[MinorCard("Purifying Flame",1,Speed.Slow,Element.Sun,Element.Fire,Element.Air,Element.Plant)]
+		[MinorCard("Purifying Flame",1,Element.Sun,Element.Fire,Element.Air,Element.Plant)]
+		[Slow]
 		[FromSacredSite(1)]
 		static public Task Act(TargetSpaceCtx ctx){
 

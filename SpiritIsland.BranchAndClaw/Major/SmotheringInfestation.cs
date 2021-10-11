@@ -4,7 +4,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class SmotheringInfestation {
 
-		[MajorCard( "Smothering Infestation", 3, Speed.Slow, Element.Water, Element.Plant)]
+		[MajorCard( "Smothering Infestation", 3, Element.Water, Element.Plant)]
+		[Slow]
 		[FromPresence( 0 )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 			// add 1 disease

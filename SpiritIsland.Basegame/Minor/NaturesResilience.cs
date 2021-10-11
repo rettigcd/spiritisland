@@ -6,7 +6,8 @@ namespace SpiritIsland.Basegame {
 
 		public const string Name = "Nature's Resilience";
 
-		[MinorCard(NaturesResilience.Name,1,Speed.Fast,Element.Earth,Element.Plant,Element.Animal)]
+		[MinorCard(NaturesResilience.Name,1,Element.Earth,Element.Plant,Element.Animal)]
+		[Fast]
 		[FromSacredSite(1)]
 		static public Task Act(TargetSpaceCtx ctx){
 

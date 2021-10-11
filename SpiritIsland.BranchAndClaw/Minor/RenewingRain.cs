@@ -4,7 +4,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class RenewingRain {
 
-		[MinorCard( "Renewing Rain", 1, Speed.Slow, Element.Water, Element.Earth, Element.Plant )]
+		[MinorCard( "Renewing Rain", 1, Element.Water, Element.Earth, Element.Plant )]
+		[Slow]
 		[FromSacredSite( 1 )]
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 

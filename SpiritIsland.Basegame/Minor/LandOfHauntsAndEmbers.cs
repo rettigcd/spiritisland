@@ -4,7 +4,8 @@ namespace SpiritIsland.Basegame {
 
 	class LandOfHauntsAndEmbers {
 
-		[MinorCard("Land of Haunts and Embers",0,Speed.Fast,Element.Moon,Element.Fire,Element.Air)]
+		[MinorCard("Land of Haunts and Embers",0,Element.Moon,Element.Fire,Element.Air)]
+		[Fast]
 		[FromPresence(2)]
 		static public async Task Act(TargetSpaceCtx ctx){
 

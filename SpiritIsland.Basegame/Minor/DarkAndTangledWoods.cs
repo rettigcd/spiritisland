@@ -4,7 +4,8 @@ namespace SpiritIsland.Basegame {
 
 	class DarkAndTangledWoods {
 
-		[MinorCard("Dark and Tangled Woods", 1, Speed.Fast, Element.Moon, Element.Earth, Element.Plant)]
+		[MinorCard("Dark and Tangled Woods", 1, Element.Moon, Element.Earth, Element.Plant)]
+		[Fast]
 		[FromPresence(1)]
 		static public Task Act(TargetSpaceCtx ctx){
 			// 2 fear

@@ -4,7 +4,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class ScourTheLand {
 
-		[MinorCardConditinalFast( "Scour the Land", 1, Speed.Slow, "3 air", Element.Air, Element.Earth )]
+		[MinorCardConditinalFast( "Scour the Land", 1, "3 air", Element.Air, Element.Earth )] // !!!
+		[Slow]
 		[FromSacredSite( 2 )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 

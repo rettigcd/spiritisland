@@ -4,7 +4,8 @@ using System.Threading.Tasks;
 namespace SpiritIsland.BranchAndClaw {
 
 	public class VolcanicEruption {
-        [MajorCard("Volcanic Eruption", 8, Speed.Slow, Element.Fire, Element.Earth)]
+        [MajorCard("Volcanic Eruption", 8, Element.Fire, Element.Earth)]
+		[Slow]
         [FromPresenceIn(1,Terrain.Mountain)]
         static public async Task ActAsync(TargetSpaceCtx ctx) {
 			// 6 fear

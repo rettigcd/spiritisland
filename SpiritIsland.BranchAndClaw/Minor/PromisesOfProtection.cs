@@ -4,7 +4,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class PromisesOfProtection {
 
-		[MinorCard( "Promises of Protection", 0, Speed.Fast, Element.Sun, Element.Earth, Element.Animal )]
+		[MinorCard( "Promises of Protection", 0, Element.Sun, Element.Earth, Element.Animal )]
+		[Fast]
 		[FromSacredSite( 2 )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
