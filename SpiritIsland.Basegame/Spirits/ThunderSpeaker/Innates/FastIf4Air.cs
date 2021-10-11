@@ -5,9 +5,9 @@ namespace SpiritIsland.Basegame {
 
 		public FastIf4Air() : base( typeof( T ) ) { }
 
-		public override void UpdateFromSpiritState( CountDictionary<Element> elements ) {
-			base.UpdateFromSpiritState( elements );
-			OverrideSpeed = elements.Contains("4 air") ? new SpeedOverride( Speed.FastOrSlow, LeadTheFuriousAssult.Name )  : null;
+		public override bool IsActiveDuring( Speed speed, CountDictionary<Element> elements ) {
+			return base.IsActiveDuring( speed, elements )
+				|| IsTriggered && elements.Contains("4 air") && speed == Speed.Fast;
 		}
 
 	}

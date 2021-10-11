@@ -8,6 +8,7 @@ namespace SpiritIsland {
 
 		static Track MkEnergy( int energy ) { return new Track( energy + " energy" ) { Energy = energy }; }
 		static Track MkEnergy( Element el ) { return new Track( el.ToString().ToLower() + " energy" ) { Element = el }; }
+		public static Track MkElement(Element el) { return new Track( el.ToString().ToLower() ) { Element = el }; }
 
 		// ! Instead of enumerating this here, we could generate them when needed in the spirit
 		public static readonly Track Energy0     = MkEnergy( 0 );

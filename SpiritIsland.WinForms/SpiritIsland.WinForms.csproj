@@ -157,6 +157,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SpiritIsland.Basegame\SpiritIsland.Basegame.csproj" />
     <ProjectReference Include="..\SpiritIsland.BranchAndClaw\SpiritIsland.BranchAndClaw.csproj" />
+    <ProjectReference Include="..\SpiritIsland.PromoPack1\SpiritIsland.PromoPack1.csproj" />
     <ProjectReference Include="..\SpiritIsland\SpiritIsland.csproj" />
   </ItemGroup>
 
@@ -507,7 +508,16 @@
     <None Update="images\bac\minor\twilight_fog_brings_madness.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="images\bac\spirit\asphyxiating_smoke.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="images\bac\spirit\boon_of_growing_power.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\bac\spirit\flames_fury.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\bac\spirit\flashfires.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\bac\spirit\prey_on_the_builders.jpg">
@@ -523,6 +533,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\bac\spirit\terrifying_chase.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\bac\spirit\threatening_flames.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\bac\spirit\too_near_the_jungle.jpg">

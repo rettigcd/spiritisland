@@ -8,14 +8,7 @@ namespace SpiritIsland {
 
 		bool IsActiveDuring( Speed speed, CountDictionary<Element> elements );
 
-		bool IsInactiveAfter( Speed speed );
-
 		string Name { get; }
-
-		// Used by Innates to set Triggered / Not Triggered
-		// Used by certain innates and Cards to determine speed
-		void UpdateFromSpiritState( CountDictionary<Element> elements );
-
 			
 	}
 

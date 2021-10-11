@@ -228,11 +228,11 @@ namespace SpiritIsland.WinForms {
 
 		private Image GetImage( string token ) {
 			if(!images.ContainsKey( token ))
-				LoadImage( token );
+				LoadIcon( token );
 			return images[token];
 		}
 
-		void LoadImage( string token ) {
+		void LoadIcon( string token ) {
 			string filename = token switch {
 				"dahan" => "Dahanicon",
 				"city" => "Cityicon",
@@ -243,6 +243,7 @@ namespace SpiritIsland.WinForms {
 				"fear" => "Fearicon",
 				"wilds" => "Wildsicon",
 				"fast" => "Fasticon",
+				"presence" => "Presenceicon",
 				"slow" => "Slowicon",
 				_ => "Simple_" + token // elements
 			};

@@ -123,11 +123,20 @@ namespace SpiritIsland.WinForms {
 
 				// card plays amount
 
+				string txt = track.Text;
+				if(txt.EndsWith(" energy")) txt = txt[..^7];
 				if(track.Text == "any energy") {
 					float coinWidth = slotWidth * 0.8f;
 					var rr = new RectangleF(x+slotWidth*.1f,cardY,coinWidth,coinWidth);
 					DrawCoin( rr, track.Text );
+				} else if("sun|moon|fire|air|water|earth|plant|animal|any".Contains( txt )) {
+					string filename = "Simple_" + txt.ToString().ToLower();
+					using Image image = ResourceImages.Singleton.GetToken(filename); //  Image.FromFile( $".\\images\\tokens\\{filename}.png" );
+					float coinWidth = slotWidth * 0.8f;
+					var rr = new RectangleF(x+slotWidth*.1f,cardY,coinWidth,coinWidth);
+					graphics.DrawImageFitHeight(image,rr);
 				} else
+
 					using( var bitmap = ResourceImages.Singleton.GetIcon(track.Text)) {
 
 						float cardHeight = cardWidth * bitmap.Height / bitmap.Width;

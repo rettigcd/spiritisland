@@ -4,16 +4,12 @@ namespace SpiritIsland {
 
 	[AttributeUsage(AttributeTargets.Method|AttributeTargets.Class)]
 	public class SpeedAttribute : Attribute {
-		public Speed Speed { get; }
-		public SpeedAttribute(Speed speed ) { Speed = speed; }
-	}
+		public Speed DisplaySpeed { get; }
+		public SpeedAttribute(Speed speed ) { DisplaySpeed = speed; }
 
-	public class FastAttribute : SpeedAttribute {
-		public FastAttribute() : base( Speed.Fast ) { }
-	}
-
-	public class SlowAttribute : SpeedAttribute {
-		public SlowAttribute() : base( Speed.Slow ) { }
+		public virtual bool IsActiveFor( Speed requestSpeed, CountDictionary<Element> _) {
+			return DisplaySpeed.IsOneOf( requestSpeed, Speed.FastOrSlow );
+		}
 	}
 
 

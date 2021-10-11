@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -63,7 +64,15 @@ namespace SpiritIsland {
 
 		protected virtual async Task<Space> SelectDestination( Token token ) {
 			IEnumerable<Space> destinationOptions = source.Adjacent.Where( s => ctx.Target(s).IsInPlay );
+			foreach(var filter in destinationFilters)
+				destinationOptions = destinationOptions.Where(filter);
+
 			return await ctx.Self.Action.Decision( (Decision.TypedDecision<Space>)new Decision.AdjacentSpace_TokenDestination( token, source, destinationOptions, Present.Always ) );
+		}
+
+		public TokenPusher FilterDestinations(Func<Space,bool> destinationFilter ) {
+			destinationFilters.Add(destinationFilter);
+			return this;
 		}
 
 		#region private
@@ -71,6 +80,7 @@ namespace SpiritIsland {
 		readonly SpiritGameStateCtx ctx;
 		protected readonly Space source;
 
+		readonly List<Func<Space,bool>> destinationFilters = new List<Func<Space, bool>>();
 		readonly List<int> countArray = new(); // the # we push from each group
 		readonly Dictionary<TokenGroup, int> indexLookup = new(); // map from group back to its count
 

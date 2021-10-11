@@ -88,42 +88,22 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 			usedAirForFastCount = 0;
 		}
 
-		const string SwiftnessOfLightning = "Swiftness of Lightning";
-
 		public override IEnumerable<IActionFactory> GetAvailableActions( Speed speed ) {
-			var availableActions = AvailableActions.ToArray();
 
-			// Update each default
-			foreach(var action in availableActions)
-				action.UpdateFromSpiritState( this.Elements );
+			bool canMakeSlowFast = speed == Speed.Fast 
+				&& Elements[Element.Air] > usedAirForFastCount;
 
-			// in Fast phase
-			if(speed == Speed.Fast){
+			foreach(var h in AvailableActions)
+				if(IsActiveDuring( speed, h ) || canMakeSlowFast && IsActiveDuring( Speed.Slow, h ) )
+					yield return h;
 
-				// if we have air elements available, make slows fast
-				// othwise reset them to slow again
-				SpeedOverride slowOverride = Elements[Element.Air] > usedAirForFastCount 
-					? new SpeedOverride(Speed.FastOrSlow, SwiftnessOfLightning ) : null;
-
-				foreach(var action in availableActions.OfType<PowerCard>())
-					if(action.Speed == Speed.Slow)
-						action.OverrideSpeed = slowOverride;
-				foreach(var action in availableActions.OfType<InnatePower>())
-					if(action.Speed == Speed.Slow)
-						action.OverrideSpeed = slowOverride;
-			}
-
-			return AvailableActions.Where( x=>x.IsActiveDuring( speed, Elements ) );
 		}
 
 		public override Task TakeAction( IActionFactory factory, GameState gameState ) {
-			// check if we are using up an air
-			// Only slow cards should get the override
-			// If the card was used Slow, it just may increment higher than Air count
-			if(factory is IFlexibleSpeedActionFactory flex 
-				&& flex.OverrideSpeed != null 
-				&& flex.OverrideSpeed.Source == SwiftnessOfLightning
-			)
+
+			// we can decrement any time a slow card is used,
+			// even during slow because we no longer care about this
+			if(factory.IsActiveDuring(Speed.Slow, Elements))
 				++usedAirForFastCount;
 
 			return base.TakeAction(factory,gameState);

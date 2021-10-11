@@ -1,5 +1,6 @@
 ﻿using SpiritIsland.Basegame;
 using SpiritIsland.BranchAndClaw;
+using SpiritIsland.PromoPack1;
 using SpiritIsland.SinglePlayer;
 using System;
 using System.Collections.Generic;
@@ -57,6 +58,7 @@ namespace SpiritIsland.WinForms {
 			if(branchAndClawCheckBox.Checked) {
 				spiritListBox.Items.Add( typeof( Keeper ) );
 				spiritListBox.Items.Add( typeof( SharpFangs ) );
+				spiritListBox.Items.Add( typeof( HeartOfTheWildfire ) );
 			}
 			spiritListBox.SelectedIndex = 0;
 		}
@@ -93,6 +95,7 @@ namespace SpiritIsland.WinForms {
 				Ocean.Name                 => "dkblue",
 				Keeper.Name                => "greenorangeswirl",
 				SharpFangs.Name            => "red",
+				HeartOfTheWildfire.Name    => "orange",
 				_                          => "green"
 			};
 		}

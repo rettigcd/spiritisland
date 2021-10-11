@@ -7,7 +7,6 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 	public class ChangeSpeed : IActionFactory {
 
 		public bool IsActiveDuring( Speed speed, CountDictionary<Element> _ ) => speed == Speed.Fast || speed == Speed.Slow;
-		public bool IsInactiveAfter( Speed speed ) => speed == Speed.Slow;
 
 		public string Name => "Change Speed";
 
@@ -17,6 +16,6 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 			return new SpeedChanger( spirit, gameState, Speed.Fast, 2 ).Exec();
 		}
 
-		public void UpdateFromSpiritState( CountDictionary<Element> elements ) {} // no effect
 	}
+
 }

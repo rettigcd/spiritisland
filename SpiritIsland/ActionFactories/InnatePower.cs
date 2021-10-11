@@ -25,13 +25,12 @@ namespace SpiritIsland {
 			speedAttr = actionType.GetCustomAttribute<SpeedAttribute>(false) 
 				?? throw new InvalidOperationException("Missing Speed attribute for "+actionType.Name);
 
-			Speed = speedAttr.Speed;
 			Name = innatePowerAttr.Name;
 			LandOrSpirit = landOrSpirit;
 
 			// try static method (spirit / major / minor)
 			this.elementListByMethod = actionType
-				.GetMethods( BindingFlags.Public | BindingFlags.Static )
+				.GetMethods( BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static )
 				.Select( m => new MethodTuple(m) )
 				.Where( x => x.Attr != null )
 				.ToList();
@@ -56,13 +55,19 @@ namespace SpiritIsland {
 
 		#region Speed
 
-		Speed EffectiveSpeed => OverrideSpeed!=null ? OverrideSpeed.Speed : Speed;
-		public Speed Speed { get; set; }
+		public Speed Speed => speedAttr.DisplaySpeed;
 		public SpeedOverride OverrideSpeed { get; set; }
 
-		public bool IsActiveDuring( Speed speed, CountDictionary<Element> _ ) => IsTriggered
-			&& (speed == EffectiveSpeed || EffectiveSpeed == Speed.FastOrSlow);
-		public bool IsInactiveAfter( Speed speed ) => speed == EffectiveSpeed || speed == Speed.Slow;
+		public virtual bool IsActiveDuring( Speed requestSpeed, CountDictionary<Element> elements ){
+			this.IsTriggered = elementListByMethod
+				.OrderByDescending( x => x.Elements.Length )
+				.Any( x => elements.Contains( x.Elements ) );
+			return IsTriggered && 
+				(OverrideSpeed != null
+					? OverrideSpeed.Speed.IsOneOf( requestSpeed, Speed.FastOrSlow)
+					: speedAttr.IsActiveFor(requestSpeed,elements)
+				);
+		}
 
 		#endregion
 
@@ -92,13 +97,7 @@ namespace SpiritIsland {
 			return bestMatch;
 		}
 
-		bool IsTriggered;
-
-		public virtual void UpdateFromSpiritState( CountDictionary<Element> elements ) {
-			this.IsTriggered = elementListByMethod
-				.OrderByDescending( x => x.Elements.Length )
-				.Any( x => elements.Contains( x.Elements ) );
-		}
+		protected bool IsTriggered;
 
 		public IEnumerable<InnateOptionAttribute> Options => elementListByMethod.Select(x=>x.Attr);
 

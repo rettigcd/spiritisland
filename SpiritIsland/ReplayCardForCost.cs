@@ -11,7 +11,6 @@ namespace SpiritIsland {
 		}
 
 		public bool IsActiveDuring( Speed speed, CountDictionary<Element> _ ) => speed == Speed.Fast || speed == Speed.Slow;
-		public bool IsInactiveAfter( Speed speed ) => speed == Speed.Slow;
 
 		public string Name => "Replay Card for Cost";
 		public string Text => Name;
@@ -29,8 +28,6 @@ namespace SpiritIsland {
 			self.AddActionFactory( factory );
 
 		}
-
-		public void UpdateFromSpiritState( CountDictionary<Element> elements ) {} // no effect
 
 		readonly int maxCost;
 	}

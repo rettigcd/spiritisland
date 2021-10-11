@@ -98,12 +98,13 @@ namespace SpiritIsland {
 
 		public virtual IEnumerable<IActionFactory> GetAvailableActions(Speed speed) {
 			LastSpeedRequested = speed;
-			foreach(IActionFactory action in AvailableActions )
-				action.UpdateFromSpiritState( this.Elements );
-			return AvailableActions.Where( action=>action.IsActiveDuring( speed, Elements ) );
+			foreach(var action in AvailableActions) {
+				if(IsActiveDuring( speed, action ))
+					yield return action;
+			}
 		}
 
-		public bool IsActiveDuring(Speed speed, PowerCard card) => card.IsActiveDuring(speed,Elements);
+		public bool IsActiveDuring(Speed speed, IActionFactory card) => card.IsActiveDuring(speed,Elements);
 
 
 		/// <summary>
@@ -164,17 +165,6 @@ namespace SpiritIsland {
 		public virtual async Task TakeAction(IActionFactory factory, GameState gameState) {
 			await factory.ActivateAsync( this, gameState );
 			RemoveUnresolvedActions( factory );
-		}
-
-		public int Flush( Speed speed ) {
-			var toFlush = AvailableActions
-				// Assuming they don't need updated
-				.Where( x=>x.IsInactiveAfter(speed) )
-				.ToArray();
-			foreach(var factory in toFlush)
-				RemoveUnresolvedActions( factory );
-			return toFlush.Length 
-				+ (speed == Speed.Slow ? Flush(Speed.FastOrSlow) : 0 );
 		}
 
 		void PurchaseCard( PowerCard card ) {

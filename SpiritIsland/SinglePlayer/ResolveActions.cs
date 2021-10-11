@@ -23,10 +23,8 @@ namespace SpiritIsland.SinglePlayer {
 				// Select Actions to resolve
 				// -------------
 				IActionFactory option = await spirit.SelectFactory( "Select " + speed + " to resolve:", factoryOptions, present );
-				if(option == null) {
-					spirit.Flush(speed); // ! this is important or we can leave old actions in the unresolved stack
+				if(option == null)
 					break;
-				}
 
 				// if user clicked a slow card that was made fast, // slow card won't be in the options
 				if(!factoryOptions.Contains( option ))

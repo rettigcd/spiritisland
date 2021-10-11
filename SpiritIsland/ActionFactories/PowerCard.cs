@@ -42,24 +42,22 @@ namespace SpiritIsland {
 
 		public string Name         => cardAttr.Name;
 		public int Cost            => cardAttr.Cost;
-		public Speed Speed         => speedAttr.Speed;
+		public Speed Speed         => speedAttr.DisplaySpeed;
 		public Element[] Elements  => cardAttr.Elements;
 		public PowerType PowerType => cardAttr.PowerType;
 		public Type MethodType     => methodBase.DeclaringType; // for determining card namespace and Basegame, BranchAndClaw, etc
 
 		#region speed
 
-		Speed EfectiveSpeed => OverrideSpeed != null ? OverrideSpeed.Speed : Speed;
 		public SpeedOverride OverrideSpeed { get; set; }
-
-		public void UpdateFromSpiritState( CountDictionary<Element> elements ) {
-			cardAttr.UpdateFromSpiritState( elements, this );
-		}
 
 		#endregion
 
-		public bool IsActiveDuring( Speed speed, CountDictionary<Element> _ ) => speed == EfectiveSpeed || EfectiveSpeed == Speed.FastOrSlow;
-		public bool IsInactiveAfter( Speed speed ) => speed == EfectiveSpeed || speed == Speed.Slow;
+		public bool IsActiveDuring( Speed requestSpeed, CountDictionary<Element> elements ){
+			return OverrideSpeed != null
+				? OverrideSpeed.Speed.IsOneOf( requestSpeed, Speed.FastOrSlow)
+				: speedAttr.IsActiveFor(requestSpeed,elements);
+		}
 
 		readonly protected SpeedAttribute speedAttr;
 		readonly protected CardAttribute cardAttr;
@@ -106,6 +104,7 @@ namespace SpiritIsland {
 			string ns = card.MethodType.Namespace;
 			string edition = ns.Contains( "Basegame" ) ? "basegame"
 				: ns.Contains( "BranchAndClaw" ) ? "bac"
+				: ns.Contains( "PromoPack1" ) ? "bac"  // !!! temporary
 				: ns;
 			return $".\\images\\{edition}\\{cardType}\\{filename}.jpg";
 		}

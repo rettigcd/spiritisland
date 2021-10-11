@@ -226,8 +226,9 @@ namespace SpiritIsland {
 
 		/// <remarks>Called from (1) Ravage Engine and (2) Spirit-de</remarks>
 		public Task DestroyToken( Space space, int countToDestroy, Token token, Cause source ) {
-			countToDestroy = Math.Min( countToDestroy, DahanGetCount( space ) );
-			Tokens[space][token] -= countToDestroy;
+			var tokens = Tokens[space];
+			countToDestroy = Math.Min( countToDestroy, tokens[token] );
+			tokens[token] -= countToDestroy;
 			return Tokens.TokenDestroyed.InvokeAsync( this, new TokenDestroyedArgs {
 				Token = token.Generic,
 				space = space,

@@ -30,7 +30,7 @@ namespace SpiritIsland {
 
 		public static Func<TargetSpaceCtx,bool> Get(string filterEnum) => lookup.ContainsKey(filterEnum) 
 			? lookup[filterEnum] 
-			: throw new ArgumentException( "Unexpected filter", nameof( filterEnum ) );
+			: throw new ArgumentException( "Unexpected filter:" + filterEnum, nameof( filterEnum ) );
 
 	}
 
