@@ -20,6 +20,9 @@ namespace SpiritIsland.BranchAndClaw {
 		}
 
 		static async Task RemainingDahanTake1Damage( TargetSpaceCtx ctx ) {
+
+			// This is applying 1 damage to each dahan. (and reports dahan destroyed)
+
 			int dahanDestroyed = ctx.Tokens[TokenType.Dahan[1]];
 			ctx.Tokens[TokenType.Dahan[1]] = ctx.Tokens[TokenType.Dahan[2]];
 			ctx.Tokens[TokenType.Dahan[2]] = 0;

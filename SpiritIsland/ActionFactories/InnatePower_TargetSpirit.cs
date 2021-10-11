@@ -16,7 +16,10 @@ namespace SpiritIsland {
 				? gameState.Spirits[0]
 				: await self.Action.Decision(new Decision.TargetSpirit(gameState.Spirits));
 
-			await PowerCard_TargetSpirit.TargetSpirit( HighestMethod( self ), self, gameState, target );
+			var methods = HighestMethod( self );
+			var ctx = new TargetSpiritCtx(self,gameState,target,Cause.Power);
+			foreach(var method in methods)
+				await PowerCard_TargetSpirit.TargetSpirit( method, ctx );
 		}
 
 		public override string TargetFilter => "Spirit";

@@ -29,16 +29,26 @@ namespace SpiritIsland {
 			// try static method (spirit / major / minor)
 			this.elementListByMethod = actionType
 				.GetMethods( BindingFlags.Public | BindingFlags.Static )
-				.ToDictionary( m => m, m => m.GetCustomAttributes<InnateOptionAttribute>().FirstOrDefault() )
-				.Where( p => p.Value != null )
-				.ToDictionary( p => p.Key, p => p.Value );
+				.Select( m => new MethodTuple(m) )
+				.Where( x => x.Attr != null )
+				.ToList();
 		}
 
 		#endregion
 
 		readonly InnatePowerAttribute innatePowerAttr;
 
-		readonly Dictionary<MethodInfo, InnateOptionAttribute> elementListByMethod;
+		readonly List<MethodTuple> elementListByMethod;
+		class MethodTuple {
+			public MethodTuple(MethodInfo m ) {
+				Method = m;
+				Attr = m.GetCustomAttributes<InnateOptionAttribute>().FirstOrDefault();
+			}
+			public MethodInfo Method { get; }
+			public InnateOptionAttribute Attr { get; }
+			public Element[] Elements => Attr.Elements;
+			public int Group => Attr.Group;
+		}
 
 		#region Speed
 
@@ -63,25 +73,29 @@ namespace SpiritIsland {
 
 		public abstract string TargetFilter { get; }
 
-		public Element[][] GetTriggerThresholds() => elementListByMethod.Values.Select(a=>a.Elements).ToArray();
+		public Element[][] GetTriggerThresholds() => elementListByMethod.Select(a=>a.Attr.Elements).ToArray();
 
-		protected MethodInfo HighestMethod( Spirit spirit ) {
+		protected MethodInfo[] HighestMethod( Spirit spirit ) {
 			var activatedElements = spirit.Elements;
-			return elementListByMethod
-				.Where( pair => activatedElements.Contains( pair.Value.Elements ) && pair.Value.Purpose != AttributePurpose.DisplayOnly )
-				.OrderByDescending( pair => pair.Value.Elements.Length )
-				.First().Key;
+			var bestMatch = elementListByMethod
+				// filter first - so we only have groups that have matches
+				.Where( pair => activatedElements.Contains( pair.Elements ) && pair.Attr.Purpose != AttributePurpose.DisplayOnly )
+				.GroupBy(x=>x.Group)
+				// from each group, select method with most elements
+				.Select( grp => grp.OrderByDescending( pair => pair.Elements.Length ).First().Method )
+				.ToArray();
+			return bestMatch;
 		}
 
 		public bool IsTriggered { get; private set; }
 
 		public virtual void UpdateFromSpiritState( CountDictionary<Element> elements ) {
 			this.IsTriggered = elementListByMethod
-				.OrderByDescending( pair => pair.Value.Elements.Length )
-				.Any( pair => elements.Contains( pair.Value.Elements ) );
+				.OrderByDescending( x => x.Elements.Length )
+				.Any( x => elements.Contains( x.Elements ) );
 		}
 
-		public IEnumerable<InnateOptionAttribute> Options => elementListByMethod.Values;
+		public IEnumerable<InnateOptionAttribute> Options => elementListByMethod.Select(x=>x.Attr);
 
 		static public string[] Tokenize( string s ) {
 

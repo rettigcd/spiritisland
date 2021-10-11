@@ -6,7 +6,7 @@ namespace SpiritIsland.Decision {
 	/// <summary>
 	/// For when we are going to push/pull tokens between current space and an adjacent one.
 	/// </summary>
-	public class AdjacentSpace : TypedDecision<Space>, IAdjacentDecision {
+	public class AdjacentSpace : TargetSpace, IAdjacentDecision {
 
 		public AdjacentSpace( string prompt, Space original, AdjacentDirection gatherPush, IEnumerable<Space> spaces, Present present = Present.Always )
 			: base( prompt, spaces.OrderBy( x => x.Label ), present ) {

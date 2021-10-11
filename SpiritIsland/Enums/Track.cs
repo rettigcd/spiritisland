@@ -8,6 +8,7 @@ namespace SpiritIsland {
 
 		static Track MkEnergy( int energy ) { return new Track( energy + " energy" ) { Energy = energy }; }
 		static Track MkEnergy( Element el ) { return new Track( el.ToString().ToLower() + " energy" ) { Element = el }; }
+
 		// ! Instead of enumerating this here, we could generate them when needed in the spirit
 		public static readonly Track Energy0     = MkEnergy( 0 );
 		public static readonly Track Energy1     = MkEnergy( 1 );
@@ -39,11 +40,18 @@ namespace SpiritIsland {
 
 		public static readonly Track Reclaim1 = new Track( "reclaim 1" ){ ReclaimOne=true };
 
-		Track( string text){ this.Text = text; }
+		protected Track( string text ){ this.Text = text; }
 
 		public string Text {get; }
 		public int? Energy { get; private set; }
-		public Element? Element { get; private set; }
+
+		Element? Element;
+
+		public virtual void AddElement( CountDictionary<Element> elements ) {
+			if(Element.HasValue)
+				elements[Element.Value]++;
+		}
+
 		public int? CardPlay { get; set; }
 		public bool ReclaimOne { get; set; }
 	}

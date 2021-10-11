@@ -129,12 +129,11 @@ namespace SpiritIsland {
 			// Energy
 			Energy += EnergyPerTurn;
 			// Elements
-			Elements.AddRange( Presence.Energy.Revealed.Where( t => t.Element.HasValue ).Select( t => t.Element.Value ) );
-			Elements.AddRange( Presence.CardPlays.Revealed.Where( t => t.Element.HasValue ).Select( t => t.Element.Value ) );
+			Presence.AddElements( Elements );
 
 			int anyCount = Elements[Element.Any];
 			Elements[Element.Any] = 0; // we can't draw these in our activated element list
-			if(anyCount>0)
+			if(anyCount > 0)
 				AddActionFactory( new SelectAnyElements( anyCount ) );
 
 			// Reclaims-1
@@ -143,7 +142,7 @@ namespace SpiritIsland {
 				Presence.CardPlays.Revealed.Count( x => x.ReclaimOne )
 			);
 			while(reclaim1Count-- > 0)
-				await new Reclaim1().ActivateAsync(this,null);
+				await new Reclaim1().ActivateAsync( this, null );
 
 		}
 
@@ -270,8 +269,8 @@ namespace SpiritIsland {
 			};
 		}
 
-		public virtual Task DestroyDahanForPowers( GameState gs, Space space, int count, Token dahanToken ) {
-			return gs.DahanDestroy(space,count,dahanToken, Cause.Power);
+		public virtual Task DestroyTokenForPowers( GameState gs, Space space, int count, Token token ) { // overriden by Bringer
+			return gs.DestroyToken(space,count,token, Cause.Power);
 		}
 
 		public Task BuyPowerCardsAsync() => PurchaseCards( NumberOfCardsPlayablePerTurn );

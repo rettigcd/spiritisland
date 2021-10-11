@@ -43,9 +43,17 @@ namespace SpiritIsland {
 
 		public int Cost { get; protected set;  }
 
+		#region speed
+
 		Speed EfectiveSpeed => OverrideSpeed != null ? OverrideSpeed.Speed : Speed;
 		public Speed Speed { get; protected set; }
 		public SpeedOverride OverrideSpeed { get; set; }
+
+		public void UpdateFromSpiritState( CountDictionary<Element> elements ) {
+			cardAttr.UpdateFromSpiritState( elements, this );
+		}
+
+		#endregion
 
 		public bool IsActiveDuring( Speed speed ) => speed == EfectiveSpeed || EfectiveSpeed == Speed.FastOrSlow;
 		public bool IsInactiveAfter( Speed speed ) => speed == EfectiveSpeed || speed == Speed.Slow;
@@ -57,10 +65,6 @@ namespace SpiritIsland {
 
 		readonly protected CardAttribute cardAttr;
 		readonly protected MethodBase methodBase;
-
-		public void UpdateFromSpiritState( CountDictionary<Element> elements ) {
-			cardAttr.UpdateFromSpiritState( elements, this );
-		}
 
 		public string Text => Name;
 

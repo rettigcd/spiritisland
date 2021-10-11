@@ -22,13 +22,15 @@ namespace SpiritIsland {
 				: await self.Action.Decision(new Decision.TargetSpirit(gameState.Spirits));
 
 			SpiritTargeted?.Invoke( self, this, target );
-			await TargetSpirit( methodBase, self, gameState, target );
+			var ctx = new TargetSpiritCtx(self,gameState,target,Cause.Power);
+			await TargetSpirit( methodBase, ctx );
 		}
 
 		public event SpiritTargetedArgs SpiritTargeted; // Targeter, Card, Targetee
 
-		static public Task TargetSpirit(MethodBase methodBase, Spirit self, GameState gameState, Spirit target) 
-			=> (Task)methodBase.Invoke( null, new object[] { new TargetSpiritCtx(self,gameState,target,Cause.Power) } );
+		static public Task TargetSpirit(MethodBase methodBase, TargetSpiritCtx ctx ) {
+			return (Task)methodBase.Invoke( null, new object[] { ctx } );
+		}
 
 	}
 

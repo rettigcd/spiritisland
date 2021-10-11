@@ -113,7 +113,7 @@ namespace SpiritIsland.WinForms {
 		}
 
 		void OptionProvider_OptionsChanged( IDecision decision ) {
-			tokenOnSpace      = decision as Decision.TokenOnSpace;
+			tokenOnSpace      = decision as Decision.TokenOnSpace; // 
 			adjacentDecision  = decision as Decision.IAdjacentDecision;
 			spaceTokens       = decision as Decision.TypedDecision<SpaceToken>;
 			deployedPresence  = decision as Decision.Presence.Deployed;

@@ -17,18 +17,4 @@ namespace SpiritIsland.BranchAndClaw {
 
 	}
 
-	class MinorCardConditinalFastAttribute : MinorCardAttribute {
-		readonly string fastTriggerElements;
-		public MinorCardConditinalFastAttribute( string name, int cost, Speed speed, string triggerElements, params Element[] elements )
-			: base( name, cost, speed, elements ) {
-			this.fastTriggerElements = triggerElements;
-		}
-
-		public override void UpdateFromSpiritState( CountDictionary<Element> elements, PowerCard card ) {
-			// if you have 3 air, this power may be fast
-			card.OverrideSpeed = elements.Contains(fastTriggerElements) ? new SpeedOverride( Speed.FastOrSlow, "scour the land" ) : null;
-		}
-
-	}
-
 }

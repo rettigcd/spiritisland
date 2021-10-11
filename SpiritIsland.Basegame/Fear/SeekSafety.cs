@@ -47,22 +47,14 @@ namespace SpiritIsland.Basegame {
 					.Where( s => gs.Tokens[ s ].HasAny(Invader.Town,Invader.City) )
 					.ToArray();
 				var dest = await spiritCtx.Self.Action.Decision( new Decision.TargetSpace( "Select space to gather town to city OR explorer to town", options, Present.Always));
-				var grp = gs.Tokens[dest];
+				var destCtx = spiritCtx.Target(dest);
+				var grp = destCtx.Tokens;
 				var invadersToGather = new List<TokenGroup>();
 				if(grp.Has(Invader.City)) invadersToGather.Add( Invader.Town );
 				if(grp.Has(Invader.Town)) invadersToGather.Add( Invader.Explorer );
 				TokenGroup[] invadersToGatherArray = invadersToGather.ToArray();
-				var sourceOptions = dest.Adjacent.Where(s=>gs.Tokens[s].HasAny(invadersToGatherArray)).ToArray();
-				if(sourceOptions.Length==0) continue;
-				var source = await spiritCtx.Self.Action.Decision( new Decision.AdjacentSpaceWithTokensToGathers( 1, invadersToGatherArray, dest, sourceOptions ));
 
-				var invaderOptions = gs.Tokens[source].Invaders()
-					.Where(specific => invadersToGatherArray.Contains(specific.Generic) )
-					.ToArray();
-
-				var invaderToGather = await spiritCtx.Self.Action.Decision( new Decision.TokenToGather( source, dest, invaderOptions, Present.Always ) );
-				
-				await spiritCtx.Move( invaderToGather, source, dest);
+				await destCtx.GatherUpTo(1, invadersToGatherArray);
 			}
 		}
 

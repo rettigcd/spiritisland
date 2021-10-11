@@ -19,10 +19,14 @@ namespace SpiritIsland {
 		public override async Task ActivateAsync( Spirit spirit, GameState gameState ) {
 			var target = await targetSpaceAttribute.GetTarget( spirit, gameState );
 			if(target == null) return;
-			MethodInfo x = HighestMethod( spirit );
-			var engine = new TargetSpaceCtx( spirit, gameState, target, Cause.Power );
-			// !! Make sure we await this
-			await (Task)x.Invoke( null, new object[] { engine } ); // Check Innate Powers that target spirits - what is first parameter?
+			MethodInfo[] methods = HighestMethod( spirit );
+			var ctx = new TargetSpaceCtx( spirit, gameState, target, Cause.Power );
+			foreach(var method in methods)
+				await ExecuteMethod( ctx, method );
+		}
+
+		private static Task ExecuteMethod( TargetSpaceCtx ctx, MethodInfo method ) {
+			return (Task)method.Invoke( null, new object[] { ctx } );
 		}
 
 		readonly TargetSpaceAttribute targetSpaceAttribute;

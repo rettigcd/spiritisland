@@ -94,7 +94,7 @@ namespace SpiritIsland {
 			while( 0 < countToGather
 				&& (options=GetOptions()).Length>0
 			) {
-				var source = await Self.Action.Decision( new Decision.AdjacentSpaceTokensToGathers(countToGather, target, options, Present.Done ));
+				var source = await Self.Action.Decision( new Decision.SpaceTokens_ToGather(countToGather, target, options, Present.Done ));
 				if(source == null) break;
 				await Move( source.Token, source.Space, target );
 				--countToGather;
@@ -110,7 +110,7 @@ namespace SpiritIsland {
 			while( 0 < countToGather
 				&& (options=GetOptions()).Length>0
 			) {
-				var source = await Self.Action.Decision( new Decision.AdjacentSpaceTokensToGathers(countToGather, target, options, Present.Always ));
+				var source = await Self.Action.Decision( new Decision.SpaceTokens_ToGather(countToGather, target, options, Present.Always ));
 				if(source == null) break;
 				await Move( source.Token, source.Space, target );
 				--countToGather;

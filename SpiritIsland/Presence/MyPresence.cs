@@ -90,6 +90,11 @@ namespace SpiritIsland {
 
 		public IReadOnlyCollection<Space> Placed => placed.AsReadOnly();
 
+		public void AddElements( CountDictionary<Element> elements ) {
+			Energy.AddElements( elements );
+			CardPlays.AddElements( elements);
+		}
+
 		readonly List<Space> placed = new List<Space>();
 
 		// Revealed Count + Placed.

@@ -96,7 +96,7 @@ namespace SpiritIsland.Basegame {
 			};
 		}
 
-		public override Task DestroyDahanForPowers( GameState gs, Space space, int count, Token dahanToken ) {
+		public override Task DestroyTokenForPowers( GameState gs, Space space, int count, Token dahanToken ) {
 			return Task.CompletedTask;
 		}
 

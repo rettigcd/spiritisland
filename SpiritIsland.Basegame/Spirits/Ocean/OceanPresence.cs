@@ -22,7 +22,7 @@ namespace SpiritIsland.Basegame {
 
 		public bool IsOnBoard(Board board) => currentBoards.Contains(board);
 
-		HashSet<Board> currentBoards = new HashSet<Board>();
+		readonly HashSet<Board> currentBoards = new HashSet<Board>();
 
 	}
 

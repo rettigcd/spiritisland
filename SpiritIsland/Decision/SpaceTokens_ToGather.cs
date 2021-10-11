@@ -2,9 +2,10 @@
 using System.Linq;
 
 namespace SpiritIsland.Decision {
-	public class AdjacentSpaceTokensToGathers : TypedDecision<SpaceToken>, IAdjacentDecision  {
 
-		public AdjacentSpaceTokensToGathers(
+	public class SpaceTokens_ToGather : SpaceTokens, IAdjacentDecision  {
+
+		public SpaceTokens_ToGather(
 			int remaining,
 			Space to,
 			IEnumerable<SpaceToken> tokens,
@@ -26,6 +27,5 @@ namespace SpiritIsland.Decision {
 
 		public Space[] Adjacent { get; }
 	}
-
 
 }

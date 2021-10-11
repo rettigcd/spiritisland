@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland.Basegame {
 	public class OceanTerrainForPower : TerrainMapper {
 
-		OceanPresence oceanPresence;
+		readonly OceanPresence oceanPresence;
 
 		public OceanTerrainForPower( Ocean ocean ) {
 			oceanPresence = (OceanPresence)ocean.Presence;

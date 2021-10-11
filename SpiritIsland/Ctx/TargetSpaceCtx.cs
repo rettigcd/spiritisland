@@ -95,8 +95,13 @@ namespace SpiritIsland {
 
 		public void Defend(int defend) => Tokens.Defend.Count += defend;
 
-		public Task DestroyDahan(int countToDestroy, Token dahanToken = null) 
-			=> Self.DestroyDahanForPowers( GameState, Space, countToDestroy, dahanToken ?? TokenType.Dahan.Default );
+		// !!! this might be a bug.  By default, it does not destory damaged dahan, only healthy dahan
+		public Task DestroyDahan(int countToDestroy, Token dahanToken = null)
+			=> Destroy(countToDestroy, dahanToken ?? TokenType.Dahan.Default );
+
+		// !!! this method assumes we are destroying for powers.  make sure nothing else is calling it.
+		public Task Destroy(int countToDestroy, Token token) 
+			=> Self.DestroyTokenForPowers( GameState, Space, countToDestroy, token );
 
 		public Terrain Terrain => TerrainMapper.GetTerrain( Space );
 		public bool IsCoastal   => TerrainMapper.IsCoastal( Space );
@@ -170,7 +175,7 @@ namespace SpiritIsland {
 			var options = Adjacent;
 			if(filter != null)
 				options = options.Where( s => filter( Target( s ) ) );
-			var space = await Self.Action.Decision( new Decision.AdjacentSpace( prompt, Space, Decision.AdjacentDirection.None, options, Present.Always ) );
+			var space = await Self.Action.Decision( new Decision.AdjacentSpace( prompt, Space, Decision.AdjacentDirection.None, options, Present.Always ) ); // !! could let caller pass in direction if appropriate
 			return space != null ? Target( space )
 				: null;
 		}

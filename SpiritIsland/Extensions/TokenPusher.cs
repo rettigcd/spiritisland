@@ -63,7 +63,7 @@ namespace SpiritIsland {
 
 		protected virtual async Task<Space> SelectDestination( Token token ) {
 			IEnumerable<Space> destinationOptions = source.Adjacent.Where( s => ctx.Target(s).IsInPlay );
-			return await ctx.Self.Action.Decision( (Decision.TypedDecision<Space>)new Decision.AdjacentSpaceTokenDestination( token, source, destinationOptions, Present.Always ) );
+			return await ctx.Self.Action.Decision( (Decision.TypedDecision<Space>)new Decision.AdjacentSpace_TokenDestination( token, source, destinationOptions, Present.Always ) );
 		}
 
 		#region private

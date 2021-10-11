@@ -2,9 +2,9 @@
 
 namespace SpiritIsland.Decision {
 
-	public class AdjacentSpaceTokenDestination : AdjacentSpace {
+	public class AdjacentSpace_TokenDestination : AdjacentSpace {
 
-		public AdjacentSpaceTokenDestination( Token specific, Space source, IEnumerable<Space> destinationOptions, Present present )
+		public AdjacentSpace_TokenDestination( Token specific, Space source, IEnumerable<Space> destinationOptions, Present present )
 			: base( "Push " + specific.Summary + " to", source, AdjacentDirection.Outgoing, destinationOptions, present ) {
 			Source = source;
 			Invader = specific;
