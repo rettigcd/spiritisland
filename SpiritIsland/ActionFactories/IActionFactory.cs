@@ -6,7 +6,7 @@ namespace SpiritIsland {
 
 		Task ActivateAsync(Spirit spirit, GameState gameState);
 
-		bool IsActiveDuring( Speed speed );
+		bool IsActiveDuring( Speed speed, CountDictionary<Element> elements );
 
 		bool IsInactiveAfter( Speed speed );
 

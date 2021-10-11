@@ -39,9 +39,6 @@ namespace SpiritIsland.SinglePlayer {
 				await spirit.TakeAction( (IActionFactory)option, gameState );
 			}
 
-			var facts = spirit.GetAvailableActions(Speed.Growth).ToArray();
-			string s = facts.ToString();
-
 		}
 
 		#region private

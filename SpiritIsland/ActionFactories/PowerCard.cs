@@ -58,7 +58,7 @@ namespace SpiritIsland {
 
 		#endregion
 
-		public bool IsActiveDuring( Speed speed ) => speed == EfectiveSpeed || EfectiveSpeed == Speed.FastOrSlow;
+		public bool IsActiveDuring( Speed speed, CountDictionary<Element> _ ) => speed == EfectiveSpeed || EfectiveSpeed == Speed.FastOrSlow;
 		public bool IsInactiveAfter( Speed speed ) => speed == EfectiveSpeed || speed == Speed.Slow;
 
 		readonly protected SpeedAttribute speedAttr;

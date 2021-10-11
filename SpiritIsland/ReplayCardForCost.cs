@@ -10,7 +10,7 @@ namespace SpiritIsland {
 			this.maxCost = maxCost;
 		}
 
-		public bool IsActiveDuring( Speed speed ) => speed == Speed.Fast || speed == Speed.Slow;
+		public bool IsActiveDuring( Speed speed, CountDictionary<Element> _ ) => speed == Speed.Fast || speed == Speed.Slow;
 		public bool IsInactiveAfter( Speed speed ) => speed == Speed.Slow;
 
 		public string Name => "Replay Card for Cost";

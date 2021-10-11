@@ -6,7 +6,7 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 	// Change Speed - delayed.  They don't have to pick it immediately - similar to Lightning
 	public class ChangeSpeed : IActionFactory {
 
-		public bool IsActiveDuring( Speed speed ) => speed == Speed.Fast || speed == Speed.Slow;
+		public bool IsActiveDuring( Speed speed, CountDictionary<Element> _ ) => speed == Speed.Fast || speed == Speed.Slow;
 		public bool IsInactiveAfter( Speed speed ) => speed == Speed.Slow;
 
 		public string Name => "Change Speed";

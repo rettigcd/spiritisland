@@ -60,7 +60,8 @@ namespace SpiritIsland {
 		public Speed Speed { get; set; }
 		public SpeedOverride OverrideSpeed { get; set; }
 
-		public bool IsActiveDuring( Speed speed ) => speed == EffectiveSpeed || EffectiveSpeed == Speed.FastOrSlow;
+		public bool IsActiveDuring( Speed speed, CountDictionary<Element> _ ) => IsTriggered
+			&& (speed == EffectiveSpeed || EffectiveSpeed == Speed.FastOrSlow);
 		public bool IsInactiveAfter( Speed speed ) => speed == EffectiveSpeed || speed == Speed.Slow;
 
 		#endregion
@@ -91,7 +92,7 @@ namespace SpiritIsland {
 			return bestMatch;
 		}
 
-		public bool IsTriggered { get; private set; }
+		bool IsTriggered;
 
 		public virtual void UpdateFromSpiritState( CountDictionary<Element> elements ) {
 			this.IsTriggered = elementListByMethod

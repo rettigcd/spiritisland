@@ -3,13 +3,14 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace SpiritIsland {
+
 	public class ReplayCard : IActionFactory {
 
 		public ReplayCard( int maxCost ) {
 			this.maxCost = maxCost;
 		}
 
-		public bool IsActiveDuring( Speed speed ) => speed == Speed.Fast || speed == Speed.Slow;
+		public bool IsActiveDuring( Speed speed, CountDictionary<Element> _ ) => speed == Speed.Fast || speed == Speed.Slow;
 		public bool IsInactiveAfter( Speed speed ) => speed == Speed.Slow;
 
 		public string Name => $"Replay Card [max cost:{maxCost}]";
@@ -20,7 +21,7 @@ namespace SpiritIsland {
 			var options = self.UsedActions	// used
 				.OfType<PowerCard>()		// only power cards, not innates
 				.Where(card=>card.Cost <= maxCost)
-				.Where(card=>card.IsActiveDuring(self.LastSpeedRequested)) // if cards are played at a differnet speed, is that the speed we want to replay?
+				.Where(card=>self.IsActiveDuring(self.LastSpeedRequested,card)) // if cards are played at a differnet speed, is that the speed we want to replay?
 				.ToArray(); 
 			if(options.Length == 0) return;
 

@@ -82,16 +82,12 @@ namespace SpiritIsland {
 		// depends on Fast/Slow phase to only select the actions that are appropriate
 		protected IEnumerable<IActionFactory> AvailableActions { 
 			get {
-				foreach(var action in availableActions) {
-					action.UpdateFromSpiritState( this.Elements );
+				foreach(IActionFactory action in availableActions)
 					yield return action;
-				}
-				foreach(var innate in InnatePowers) {
-					if( usedInnates.Contains( innate ) ) continue; // explude played
-					innate.UpdateFromSpiritState( this.Elements ); // update status
-					if(innate.IsTriggered)
+
+				foreach(InnatePower innate in InnatePowers)
+					if( !usedInnates.Contains( innate ) )
 						yield return innate;
-				}
 			}
 		}
 
@@ -104,8 +100,11 @@ namespace SpiritIsland {
 			LastSpeedRequested = speed;
 			foreach(IActionFactory action in AvailableActions )
 				action.UpdateFromSpiritState( this.Elements );
-			return AvailableActions.Where( action=>action.IsActiveDuring( speed ) );
+			return AvailableActions.Where( action=>action.IsActiveDuring( speed, Elements ) );
 		}
+
+		public bool IsActiveDuring(Speed speed, PowerCard card) => card.IsActiveDuring(speed,Elements);
+
 
 		/// <summary>
 		/// Removes it from the Unresolved-list
@@ -169,6 +168,7 @@ namespace SpiritIsland {
 
 		public int Flush( Speed speed ) {
 			var toFlush = AvailableActions
+				// Assuming they don't need updated
 				.Where( x=>x.IsInactiveAfter(speed) )
 				.ToArray();
 			foreach(var factory in toFlush)

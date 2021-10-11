@@ -14,7 +14,7 @@ namespace SpiritIsland {
 
 		public virtual string Name => this.ShortDescription;
 
-		public bool IsActiveDuring( Speed speed ) => speed == Speed.Growth;
+		public bool IsActiveDuring( Speed speed, CountDictionary<Element> _ ) => speed == Speed.Growth;
 		public bool IsInactiveAfter( Speed speed ) => speed == Speed.Growth;
 
 		public string Text => this.ShortDescription;

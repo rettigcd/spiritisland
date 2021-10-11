@@ -99,7 +99,12 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 
 			// in Fast phase
 			if(speed == Speed.Fast){
-				SpeedOverride slowOverride = Elements[Element.Air] > usedAirForFastCount ? new SpeedOverride(Speed.FastOrSlow, SwiftnessOfLightning ) : null;
+
+				// if we have air elements available, make slows fast
+				// othwise reset them to slow again
+				SpeedOverride slowOverride = Elements[Element.Air] > usedAirForFastCount 
+					? new SpeedOverride(Speed.FastOrSlow, SwiftnessOfLightning ) : null;
+
 				foreach(var action in availableActions.OfType<PowerCard>())
 					if(action.Speed == Speed.Slow)
 						action.OverrideSpeed = slowOverride;
@@ -108,7 +113,7 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 						action.OverrideSpeed = slowOverride;
 			}
 
-			return AvailableActions.Where( x=>x.IsActiveDuring( speed ) );
+			return AvailableActions.Where( x=>x.IsActiveDuring( speed, Elements ) );
 		}
 
 		public override Task TakeAction( IActionFactory factory, GameState gameState ) {
