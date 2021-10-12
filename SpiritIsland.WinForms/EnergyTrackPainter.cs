@@ -175,13 +175,14 @@ namespace SpiritIsland.WinForms {
 			if(txt.EndsWith(" energy"))
 				txt = txt[..^7];
 
-
-			if("sun|moon|fire|air|water|earth|plant|animal|any".Contains( txt )) {
+			if("sun|moon|fire|air|water|earth|plant|animal|any|FirePlant".Contains( txt )) {
+				// Draw Image
 				string filename = "Simple_" + txt.ToString().ToLower();
-				using Image image = ResourceImages.Singleton.GetToken(filename); //  Image.FromFile( $".\\images\\tokens\\{filename}.png" );
+				using Image image = ResourceImages.Singleton.GetToken(filename);
 				var elementBounds = bounds.InflateBy(-bounds.Height/4);
 				graphics.DrawImageFitHeight(image,elementBounds);
 			} else {
+				// Draw Text
 				bounds.Y += bounds.Height * .05f; // it looks too high
 				using Font coinFont = new Font( ResourceImages.Singleton.Fonts.Families[0], bounds.Height * .6f, GraphicsUnit.Pixel );
 				StringFormat center = new StringFormat{ Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };

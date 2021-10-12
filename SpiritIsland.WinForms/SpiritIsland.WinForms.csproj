@@ -34,6 +34,7 @@
     <None Remove="images\icons\Junglewetland.png" />
     <None Remove="images\icons\Noblight.png" />
     <None Remove="images\icons\Ocean.png" />
+    <None Remove="images\icons\Oneenergyfire.png" />
     <None Remove="images\icons\Presenceicon.png" />
     <None Remove="images\icons\Pushfromocean.png" />
     <None Remove="images\icons\Range.png" />
@@ -136,6 +137,7 @@
     <None Remove="images\tokens\Simple_any.png" />
     <None Remove="images\tokens\Simple_earth.png" />
     <None Remove="images\tokens\Simple_fire.png" />
+    <None Remove="images\tokens\Simple_fireplant.png" />
     <None Remove="images\tokens\Simple_moon.png" />
     <None Remove="images\tokens\Simple_plant.png" />
     <None Remove="images\tokens\Simple_sun.png" />
@@ -186,6 +188,7 @@
     <EmbeddedResource Include="images\icons\Junglewetland.png" />
     <EmbeddedResource Include="images\icons\Noblight.png" />
     <EmbeddedResource Include="images\icons\Ocean.png" />
+    <EmbeddedResource Include="images\icons\Oneenergyfire.png" />
     <EmbeddedResource Include="images\icons\Presenceicon.png" />
     <EmbeddedResource Include="images\icons\Pushfromocean.png" />
     <EmbeddedResource Include="images\icons\Range.png" />
@@ -260,6 +263,7 @@
     <EmbeddedResource Include="images\tokens\Simple_fire.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="images\tokens\Simple_fireplant.png" />
     <EmbeddedResource Include="images\tokens\Simple_moon.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>

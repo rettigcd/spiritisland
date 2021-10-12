@@ -9,7 +9,7 @@ namespace SpiritIsland.PromoPack1 {
 			:base( energy, cardPlays )
 		{ }
 
-		int FireShowing() {
+		public int FireShowing() {
 			var dict = new CountDictionary<Element>();
 			Energy.AddElements(dict);
 			CardPlays.AddElements(dict);

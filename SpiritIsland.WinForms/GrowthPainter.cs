@@ -70,6 +70,8 @@ namespace SpiritIsland.WinForms {
 				case "PlacePresence(3,no blight)": PlacePresence( rect, 3, "Noblight" ); break;
 				// Sharp Fangs
 				case "PlacePresence(3,beast or jungle)": PlacePresence( rect, 3, "JungleOrBeast" ); break;
+				// Heart of the WildFire
+				case "EnergyForFire": EnergyForFire( rect ); break;
 				default:
 					graphics.FillRectangle( Brushes.Goldenrod, Rectangle.Inflate( rect.ToInts(), -5, -5 ) );
 					break;
@@ -84,6 +86,7 @@ namespace SpiritIsland.WinForms {
 		void DrawPowerCard( RectangleF rect )          => DrawTokenInCenter( rect, "GainCard" );
 		void GatherToOcean( RectangleF rect )          => DrawTokenInCenter( rect, "Gathertoocean" );
 		void ReclaimAll( RectangleF rect )             => DrawTokenInCenter( rect, "ReclaimAll" );
+		void EnergyForFire( RectangleF rect )          => DrawTokenInCenter( rect, "Oneenergyfire");
 
 		void GainEnergy( RectangleF bounds, int delta ){
 			// DrawTokenInCenter( rect, "Energy_Plus_"+delta);

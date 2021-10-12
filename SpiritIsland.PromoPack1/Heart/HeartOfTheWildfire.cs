@@ -42,8 +42,8 @@ namespace SpiritIsland.PromoPack1 {
 				),
 				new GrowthOption(
 					new PlacePresence(1),
-					new GainEnergy(2)
-					// +1 energy per fire showing    // !!!!!
+					new GainEnergy(2),
+					new EnergyForFire()
 				),
 			};
 
