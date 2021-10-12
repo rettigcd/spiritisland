@@ -137,15 +137,10 @@ namespace SpiritIsland {
 		public void Skip1Build() => GameState.Skip1Build(Space);
 
 		// Damage invaders in the current target space
-		public async Task DamageInvaders( int damage ) {
-			Token[] invaderTokens;
-			while(damage>0 && (invaderTokens=Tokens.Invaders().ToArray()).Length > 0) {
-				var invaderToDamage = await Self.Action.Decision(new Decision.TokenOnSpace($"Damage ({damage} remaining)",Space,invaderTokens,Present.Always ));
-				await Invaders.ApplyDamageTo1(1,invaderToDamage);
-				damage--;
-			}
-			//if(damage == 0) return;
-			//await Invaders.SmartDamageToGroup( damage );
+		public Task DamageInvaders( int damage, params TokenGroup[] allowedTypes ) {
+			if(allowedTypes==null || allowedTypes.Length==0)
+				allowedTypes = new TokenGroup[] { Invader.City, Invader.Town, Invader.Explorer };
+			return Invaders.UserSelectedDamage( damage, Self, allowedTypes );
 		}
 
 		/// <summary> adds Target to Fear context </summary>

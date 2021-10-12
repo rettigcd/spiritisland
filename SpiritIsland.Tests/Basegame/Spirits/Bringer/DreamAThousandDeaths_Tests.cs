@@ -123,7 +123,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			// And: 0-fear
 			Assert_GeneratedFear( 3*5 ); // city never destroyed
 			// City still there
-			ctx.Invaders[Invader.City[1]].ShouldBe(1);
+			ctx.Invaders.Tokens[Invader.City[1]].ShouldBe(1);
 		}
 
 		[Fact]

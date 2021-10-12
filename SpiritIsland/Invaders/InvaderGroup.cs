@@ -9,22 +9,24 @@ namespace SpiritIsland {
 
 		#region constructor
 
-		public InvaderGroup( TokenCountDictionary aliveCounts) {
+		public InvaderGroup( TokenCountDictionary aliveCounts, DestroyInvaderStrategy destoryStrategy, IDamageApplier customeDamageApplicationStrategy = null) {
 			this.Tokens = aliveCounts;
+			this.damageApplicationStrategy = customeDamageApplicationStrategy ?? DefaultDamageApplicationStrategy;
+			this.DestroyStrategy = destoryStrategy;
 		}
 
 		#endregion
 
 		public Space Space => Tokens.Space;
 
-		public int this[Token specific] { 
-			get{ return Tokens[specific]; }
-			set{ Tokens[specific] = value; }
-		}
-
-		#region Extension Methods to Pull off
+		#region Read-only
+		public int this[Token specific] => Tokens[specific];
 
 		public int DamageInflictedByInvaders => Tokens.Invaders().Select( invader => invader.FullHealth * this[invader] ).Sum();
+
+		#endregion
+
+		#region Damage
 
 		public async Task ApplyDamageToEach( int individualDamage, params TokenGroup[] generic ) {
 			foreach(var invader in Tokens.Invaders())
@@ -42,6 +44,23 @@ namespace SpiritIsland {
 			while(this[token] > 0)
 				await ApplyDamageTo1( individualDamage, token );
 		}
+
+		/// <returns>damage inflicted to invaders</returns>
+		public async Task<int> ApplyDamageTo1( int availableDamage, Token invaderToken ) {
+
+			Token damagedInvader = damageApplicationStrategy.ApplyDamage( Tokens, availableDamage, invaderToken );
+
+			if(0 == damagedInvader.Health)
+				await DestroyStrategy.OnInvaderDestroyed( Space, damagedInvader );
+
+			return invaderToken.Health - damagedInvader.Health; // damage inflicted
+		}
+
+		IDamageApplier damageApplicationStrategy;
+
+		#endregion
+
+		#region Destroy
 
 		public async Task<int> Destroy( int countToDestory, TokenGroup generic ) {
 			if(countToDestory == 0) return 0;
@@ -85,26 +104,7 @@ namespace SpiritIsland {
 			}
 		}
 
-		/// <returns>damage inflicted to invaders</returns>
-		public async Task<int> ApplyDamageTo1( int availableDamage, Token invader ) {
-			int damageToInvader = Math.Min( invader.Health, availableDamage );
-
-			var damagedInvader = invader.ResultingDamagedInvader( damageToInvader );
-			this.
-			Tokens.Adjust( invader, -1 );
-
-			if(damagedInvader.Health > 0) // don't track dead invaders
-				Tokens.Adjust( damagedInvader, 1 );
-
-			if(damagedInvader.Health == 0)
-				await DestroyInvaderStrategy.OnInvaderDestroyed( Space, damagedInvader );
-			return damageToInvader;
-		}
-
-		#endregion
-
-		public DestroyInvaderStrategy DestroyInvaderStrategy; // This will be null for Building
-		public readonly TokenCountDictionary Tokens;
+		#endregion Destroy
 
 		static public void HealTokens( TokenCountDictionary counts ) {
 			void Heal( Token damaged ) {
@@ -123,6 +123,37 @@ namespace SpiritIsland {
 			HealGroup( TokenType.Dahan );
 		}
 
+		public async Task UserSelectedDamage( int damage, Spirit damagePicker, params TokenGroup[] allowedTypes ) {
+			if(allowedTypes == null || allowedTypes.Length == 0)
+				allowedTypes = new TokenGroup[] { Invader.Explorer, Invader.Town, Invader.City };
+
+			Token[] invaderTokens;
+			while(damage>0 && (invaderTokens=Tokens.OfAnyType(allowedTypes).ToArray()).Length > 0) {
+				var invaderToDamage = await damagePicker.Action.Decision(new Decision.TokenOnSpace($"Damage ({damage} remaining)",Space,invaderTokens,Present.Always ));
+				await ApplyDamageTo1(1,invaderToDamage);
+				damage--;
+			}
+		}
+
+		public readonly DestroyInvaderStrategy DestroyStrategy;
+		public readonly TokenCountDictionary Tokens;
+
+		static readonly DamageApplier DefaultDamageApplicationStrategy = new DamageApplier();
+		class DamageApplier : IDamageApplier {
+			Token IDamageApplier.ApplyDamage( TokenCountDictionary tokens, int availableDamage, Token invaderToken ) {
+				var damagedInvader = invaderToken.ResultingDamagedInvader( availableDamage );
+				tokens.Adjust( invaderToken, -1 );
+				if(0 < damagedInvader.Health) // only track alive invaders
+					tokens.Adjust( damagedInvader, 1 );
+				return damagedInvader;
+			}
+		}
+
+	}
+
+	// Allows to intercept applying specific damage (Flame's Fury)
+	public interface IDamageApplier {
+		Token ApplyDamage( TokenCountDictionary tokens, int availableDamage, Token invaderToken );
 	}
 
 }

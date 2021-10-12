@@ -7,6 +7,43 @@ namespace SpiritIsland {
 
 	public abstract class PowerCard : IFlexibleSpeedActionFactory, IOption {
 
+		#region constructor
+
+		protected PowerCard( MethodBase methodBase ) {
+			this.methodBase = methodBase;
+			cardAttr = methodBase.GetCustomAttributes<CardAttribute>().VerboseSingle( "Couldn't find CardAttribute on PowerCard targeting a space" );
+			speedAttr = methodBase.GetCustomAttribute<SpeedAttribute>(false) ?? throw new InvalidOperationException("Missing Speed attribute for "+methodBase.DeclaringType.Name);
+		}
+
+		#endregion
+
+		public string Text => Name;
+
+		public string Name         => cardAttr.Name;
+		public Speed Speed         => speedAttr.DisplaySpeed;
+		public SpeedOverride OverrideSpeed { get; set; }
+
+		public int Cost            => cardAttr.Cost;
+		public Element[] Elements  => cardAttr.Elements;
+		public PowerType PowerType => cardAttr.PowerType;
+		public Type MethodType     => methodBase.DeclaringType; // for determining card namespace and Basegame, BranchAndClaw, etc
+
+		public bool IsActiveDuring( Speed requestSpeed, CountDictionary<Element> elements ){
+			return OverrideSpeed != null
+				? OverrideSpeed.Speed.IsOneOf( requestSpeed, Speed.FastOrSlow)
+				: speedAttr.IsActiveFor(requestSpeed,elements);
+		}
+
+		abstract public Task ActivateAsync( Spirit spirit, GameState gameState );
+
+		#region private
+
+		readonly protected SpeedAttribute speedAttr;
+		readonly protected CardAttribute cardAttr;
+		readonly protected MethodBase methodBase;
+
+		#endregion
+
 		#region static
 
 		static public PowerCard For<T>() => For(typeof(T));
@@ -32,42 +69,6 @@ namespace SpiritIsland {
 			return new PowerCard_TargetSpace( method, targetSpace );
 		}
 
-		#endregion
-
-		protected PowerCard( MethodBase methodBase ) {
-			this.methodBase = methodBase;
-			cardAttr = methodBase.GetCustomAttributes<CardAttribute>().VerboseSingle( "Couldn't find CardAttribute on PowerCard targeting a space" );
-			speedAttr = methodBase.GetCustomAttribute<SpeedAttribute>(false) ?? throw new InvalidOperationException("Missing Speed attribute for "+methodBase.DeclaringType.Name);
-		}
-
-		public string Name         => cardAttr.Name;
-		public int Cost            => cardAttr.Cost;
-		public Speed Speed         => speedAttr.DisplaySpeed;
-		public Element[] Elements  => cardAttr.Elements;
-		public PowerType PowerType => cardAttr.PowerType;
-		public Type MethodType     => methodBase.DeclaringType; // for determining card namespace and Basegame, BranchAndClaw, etc
-
-		#region speed
-
-		public SpeedOverride OverrideSpeed { get; set; }
-
-		#endregion
-
-		public bool IsActiveDuring( Speed requestSpeed, CountDictionary<Element> elements ){
-			return OverrideSpeed != null
-				? OverrideSpeed.Speed.IsOneOf( requestSpeed, Speed.FastOrSlow)
-				: speedAttr.IsActiveFor(requestSpeed,elements);
-		}
-
-		readonly protected SpeedAttribute speedAttr;
-		readonly protected CardAttribute cardAttr;
-		readonly protected MethodBase methodBase;
-
-		public string Text => Name;
-
-		abstract public Task ActivateAsync( Spirit spirit, GameState gameState );
-
-		#region get cards
 		static public PowerCard[] GetMajors(Type assemblyRefType) {
 			static bool HasMajorAttribute( MethodBase m ) => m.GetCustomAttributes<MajorCardAttribute>().Any();
 			static bool HasMajorMethod( Type type ) => type.GetMethods().Any( HasMajorAttribute );

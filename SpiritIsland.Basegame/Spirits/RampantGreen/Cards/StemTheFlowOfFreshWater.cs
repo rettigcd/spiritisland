@@ -14,11 +14,7 @@ namespace SpiritIsland.Basegame {
 				// instead 1 damange to EACH town/city
 				await ctx.Invaders.ApplyDamageToEach(1, Invader.City, Invader.Town);
 			} else {
-				// 1 damage to 1 town or city.
-				var types = ctx.Invaders.Tokens.OfAnyType(Invader.City,Invader.Town);
-				var invader = await ctx.Self.Action.Decision( new Decision.InvaderToDamage( 1, ctx.Space, types, Present.Always ) );
-				if(invader !=null)
-					await ctx.Invaders.ApplyDamageTo1(1,invader);
+				await ctx.DamageInvaders( 1, Invader.Town, Invader.City );
 			}
 
 		}

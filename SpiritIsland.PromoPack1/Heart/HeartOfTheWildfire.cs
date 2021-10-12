@@ -21,6 +21,7 @@ namespace SpiritIsland.PromoPack1 {
 			,PowerCard.For<AsphyxiatingSmoke>()
 			,PowerCard.For<FlashFires>()
 			,PowerCard.For<ThreateningFlames>()
+			,PowerCard.For<FlamesFury>()
 		) {
 			((HeartPresence)Presence).spirit = this;
 			InnatePowers = new InnatePower[] {

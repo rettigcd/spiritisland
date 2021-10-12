@@ -110,7 +110,7 @@ namespace SpiritIsland {
 		/// <summary>
 		/// Removes it from the Unresolved-list
 		/// </summary>
-		public void RemoveUnresolvedActions(IActionFactory selectedActionFactory ) {
+		public void RemoveFromUnresolvedActions(IActionFactory selectedActionFactory ) {
 			if(selectedActionFactory is InnatePower ip) { // Could reverse this and instead of listing the used, create a not-used list that we remove them from when used
 				usedInnates.Add( ip );
 				return;
@@ -163,8 +163,14 @@ namespace SpiritIsland {
 		}
 
 		public virtual async Task TakeAction(IActionFactory factory, GameState gameState) {
-			await factory.ActivateAsync( this, gameState );
-			RemoveUnresolvedActions( factory );
+			var oldActionGuid = CurrentActionId; // capture old
+			CurrentActionId = Guid.NewGuid(); // set new
+			try {
+				await factory.ActivateAsync( this, gameState );
+				RemoveFromUnresolvedActions( factory );
+			} finally {
+				CurrentActionId = oldActionGuid; // restore
+			}
 		}
 
 		void PurchaseCard( PowerCard card ) {
@@ -252,11 +258,16 @@ namespace SpiritIsland {
 
 		public TargetLandApi PowerApi = new TargetLandApi(); // Replace by: Reaching Grasp, Entwined Power, Shadows
 
+		public Guid CurrentActionId; // Used by Flame's Fury to detect new actions
+		public IDamageApplier CustomDamageStrategy = null;
+
 		public virtual InvaderGroup BuildInvaderGroupForPowers( GameState gs, Space space ) {
 			var invaderCounts = gs.Tokens[ space ];
-			return new InvaderGroup( invaderCounts ) {
-				DestroyInvaderStrategy = new DestroyInvaderStrategy( gs.Fear.AddDirect, Cause.Power ),
-			};
+			return new InvaderGroup( 
+				invaderCounts,
+				new DestroyInvaderStrategy( gs.Fear.AddDirect, Cause.Power ),
+				CustomDamageStrategy
+			);
 		}
 
 		public virtual Task DestroyTokenForPowers( GameState gs, Space space, int count, Token token ) { // overriden by Bringer
@@ -264,7 +275,6 @@ namespace SpiritIsland {
 		}
 
 		public Task BuyPowerCardsAsync() => PurchaseCards( NumberOfCardsPlayablePerTurn );
-
 
 		// Called for both normal buy-cards & from select Power cards that allow puchasing additional
 		public async Task PurchaseCards( int canPurchase ) {
@@ -287,7 +297,7 @@ namespace SpiritIsland {
 			}
 		}
 
-		// Revealed Count + Placed.
+		#region Save/Load Memento
 		public virtual IMemento<Spirit> SaveToMemento() => new Memento(this);
 		public virtual void LoadFrom( IMemento<Spirit> memento ) => ((Memento)memento).Restore(this);
 
@@ -323,8 +333,8 @@ namespace SpiritIsland {
 			readonly IActionFactory[] available;
 			readonly IActionFactory[] usedActions;
 			readonly InnatePower[] usedInnates;
-
 		}
+		#endregion
 
 	}
 

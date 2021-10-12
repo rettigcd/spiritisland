@@ -24,15 +24,7 @@ namespace SpiritIsland.Basegame {
 
 		[InnateOption("3 sun, 4 water,1 earth", "Instead, 2 Damage to each Invader" )]
 		static public async Task Option3Async(TargetSpaceCtx ctx){
-			var group = ctx.Invaders;
-
-			// copy so we can modify
-			var invaderTypes = group.Tokens.Invaders().ToDictionary(x=>x,x=>group[x]); 
-
-			foreach(var (invader,origCount) in invaderTypes.Select(x=>(x.Key,x.Value)))
-				for(int i=0;i<origCount;++i)
-					await group.ApplyDamageTo1( 2, invader );
-			
+			await ctx.Invaders.ApplyDamageToEach(2,Invader.Explorer,Invader.Town,Invader.City);
 		}
 
 	}

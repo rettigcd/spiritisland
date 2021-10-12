@@ -71,7 +71,6 @@ namespace SpiritIsland.Basegame {
 
 		}
 
-
 		protected override void InitializeInternal( Board board, GameState gs ) {
 			// Setup: 2 presense in highest numbered sands
 			var startingIn = board.Spaces.Where(x=>x.Terrain==Terrain.Sand).Last();
@@ -79,6 +78,10 @@ namespace SpiritIsland.Basegame {
 			Presence.PlaceOn( startingIn );
 		}
 
+		/// <summary>
+		/// Swaps out the effected tokens so real tokens don't get destoryed.
+		/// Swaps out what happens when invaders get 'destroyed'
+		/// </summary>
 		public override InvaderGroup BuildInvaderGroupForPowers( GameState gs, Space space ) {
 			var src = gs.Tokens[space];
 
@@ -87,13 +90,15 @@ namespace SpiritIsland.Basegame {
 				copy[invader] = src[invader];
 			var detached = new TokenCountDictionary( space, copy );
 
-			return new InvaderGroup( detached ) {
-				DestroyInvaderStrategy = new ToDreamAThousandDeaths_DestroyStrategy( 
+			return new InvaderGroup( 
+				detached,
+				new ToDreamAThousandDeaths_DestroyStrategy( 
 					gs.Fear.AddDirect, 
 					Cause.Power,  
 					new SpiritGameStateCtx(this,gs,Cause.Power)
 				),
-			};
+				CustomDamageStrategy
+			);
 		}
 
 		public override Task DestroyTokenForPowers( GameState gs, Space space, int count, Token dahanToken ) {
