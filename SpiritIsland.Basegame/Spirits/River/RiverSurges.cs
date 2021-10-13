@@ -49,7 +49,7 @@ namespace SpiritIsland.Basegame {
 		public override string Text => Name;
 
 		public RiverSurges():base(
-			new MyPresence(
+			new SpiritPresence(
 				new Track[] { Track.Energy1, Track.Energy2, Track.Energy2, Track.Energy3, Track.Energy4, Track.Energy4, Track.Energy5, },
 				new Track[] { Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Reclaim1, Track.Card4, Track.Card5 }
 			),

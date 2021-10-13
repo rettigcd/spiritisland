@@ -9,7 +9,7 @@ namespace SpiritIsland {
 
 		#region constructor
 
-		public Spirit( MyPresence presence, params PowerCard[] initialCards ){
+		public Spirit( SpiritPresence presence, params PowerCard[] initialCards ){
 			Presence = presence;
 
 			foreach(var card in initialCards)
@@ -206,7 +206,7 @@ namespace SpiritIsland {
 		/// <summary> # of coins in the bank. </summary>
 		public int Energy { get; set; }
 
-		public MyPresence Presence {get; }
+		public SpiritPresence Presence {get; }
 
 		/// <summary> Energy gain per turn </summary>
 		public int EnergyPerTurn => Presence.Energy.Revealed.Where( x => x.Energy.HasValue ).Last().Energy.Value;
@@ -326,7 +326,7 @@ namespace SpiritIsland {
 			}
 			readonly int energy;
 			readonly KeyValuePair<Element,int>[] elements;
-			readonly IMemento<MyPresence> presence;
+			readonly IMemento<SpiritPresence> presence;
 			readonly PowerCard[] hand;
 			readonly PowerCard[] purchased;
 			readonly PowerCard[] discarded;

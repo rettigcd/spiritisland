@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.PromoPack1 {
-	public class HeartPresence : MyPresence {
+	public class HeartPresence : SpiritPresence {
 
 		public HeartOfTheWildfire spirit;
 

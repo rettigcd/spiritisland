@@ -60,7 +60,7 @@ namespace SpiritIsland.WinForms {
 				slotWidth * (1 + scaleCoin), 
 				slotWidth * (1 + scaleCoin)
 			);
-			DrawCoin( energyRect, spirit.Energy.ToString() );
+			DrawCoin( energyRect, spirit.Energy );
 
 			return new Size(
 				x - startingX,
@@ -87,7 +87,7 @@ namespace SpiritIsland.WinForms {
 			var presenceRect   = new RectangleF( x + (slotWidth - presenceSize.Width) / 2, y, presenceSize.Width, presenceSize.Height );
 
 			// Draw - energy icons
-			DrawCoin(energyIconRect,energy.Text);
+			DrawCoin( energyIconRect, energy );
 
 			// Highlight Option
 			if(isNextToPlace) {
@@ -108,7 +108,8 @@ namespace SpiritIsland.WinForms {
 			// draw title
 			graphics.DrawString( "Cards", simpleFont, SystemBrushes.ControlDarkDark, x, y );
 
-			float maxCardHeight = 0;
+			float usableWidth = slotWidth * 0.8f;
+
 			float cardWidth = slotWidth * 0.6f;
 			float cardLeft = (slotWidth - cardWidth) / 2; // center
 
@@ -121,46 +122,21 @@ namespace SpiritIsland.WinForms {
 			int cardY = y + presenceYOffset;
 			foreach(var track in spirit.Presence.CardPlays.slots) {
 
-				// card plays amount
+				var rect = new RectangleF( x + slotWidth * .1f, cardY, usableWidth, usableWidth );
+				var presenceRect = new RectangleF( x + (slotWidth - presenceSize.Width) / 2, y, presenceSize.Width, presenceSize.Height );
 
-				string txt = track.Text;
-				if(txt.EndsWith(" energy")) txt = txt[..^7];
-				if(track.Text == "any energy") {
-					float coinWidth = slotWidth * 0.8f;
-					var rr = new RectangleF(x+slotWidth*.1f,cardY,coinWidth,coinWidth);
-					DrawCoin( rr, track.Text );
-				} else if("sun|moon|fire|air|water|earth|plant|animal|any".Contains( txt )) {
-					string filename = "Simple_" + txt.ToString().ToLower();
-					using Image image = ResourceImages.Singleton.GetToken(filename); //  Image.FromFile( $".\\images\\tokens\\{filename}.png" );
-					float coinWidth = slotWidth * 0.8f;
-					var rr = new RectangleF(x+slotWidth*.1f,cardY,coinWidth,coinWidth);
-					graphics.DrawImageFitHeight(image,rr);
-				} else
-
-					using( var bitmap = ResourceImages.Singleton.GetIcon(track.Text)) {
-
-						float cardHeight = cardWidth * bitmap.Height / bitmap.Width;
-						maxCardHeight = Math.Max(cardHeight,maxCardHeight);
-
-						var rect = new RectangleF( x+ cardLeft, cardY, cardWidth, cardHeight );
-						graphics.DrawImage( bitmap, rect );
-						maxY = Math.Max( maxY, cardY + (int)cardHeight );
-					};
-
-
-				RectangleF presenceRect = new RectangleF( x + (slotWidth - presenceSize.Width) / 2, y, presenceSize.Width, presenceSize.Height );
+				DrawCard( track, rect );
 
 				// Highlight Option
 				if(revealedCardSpaces == idx && trackOptions.Contains( track )) {
 					graphics.DrawEllipse( highlightPen, presenceRect );
 					hotSpots.Add( track, presenceRect );
 				}
-
-
 				// presence
 				if(revealedCardSpaces <= idx)
 					graphics.DrawImage( presence, presenceRect );
 
+				maxY = Math.Max( maxY, (int)rect.Bottom );
 				x += (int)slotWidth;
 				++idx;
 			}
@@ -169,26 +145,64 @@ namespace SpiritIsland.WinForms {
 
 		}
 
-		public void DrawCoin( RectangleF bounds, string txt ) {
+		public void DrawCoin( RectangleF bounds, int energy ) {
+			graphics.DrawImage( coin, bounds );
+			DrawTextOnCoin( bounds, energy.ToString() );
+		}
+
+		void DrawTextOnCoin( RectangleF bounds, string txt ) {
+			// Draw Text
+			bounds.Y += bounds.Height * .05f; // it looks too high
+			Font coinFont = new Font( ResourceImages.Singleton.Fonts.Families[0], bounds.Height * .6f, GraphicsUnit.Pixel );
+			StringFormat center = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+			graphics.DrawString( txt, coinFont, Brushes.Black, bounds, center );
+		}
+
+		public void DrawCoin( RectangleF bounds, Track track ) {
+			string txt = track.Text;
+
 			graphics.DrawImage( coin, bounds );
 
-			if(txt.EndsWith(" energy"))
+			if(txt.EndsWith(" energy" )) {
 				txt = txt[..^7];
 
-			if("sun|moon|fire|air|water|earth|plant|animal|any|FirePlant".Contains( txt )) {
-				// Draw Image
-				string filename = "Simple_" + txt.ToString().ToLower();
-				using Image image = ResourceImages.Singleton.GetToken(filename);
-				var elementBounds = bounds.InflateBy(-bounds.Height/4);
-				graphics.DrawImageFitHeight(image,elementBounds);
+				if("sun|moon|fire|air|water|earth|plant|animal|any|FirePlant".Contains( txt )) {
+					// Draw Image
+					DrawElement( bounds, txt );
+				} else if(txt == "reclaim 1") {
+					// Draw Reclaim
+					using Image image = ResourceImages.Singleton.GetIcon("reclaim 1");
+					var elementBounds = bounds.InflateBy(-bounds.Height/6);
+					graphics.DrawImageFitHeight(image,elementBounds);
+				} else {
+					DrawTextOnCoin(bounds,txt);
+				}
 			} else {
-				// Draw Text
-				bounds.Y += bounds.Height * .05f; // it looks too high
-				using Font coinFont = new Font( ResourceImages.Singleton.Fonts.Families[0], bounds.Height * .6f, GraphicsUnit.Pixel );
-				StringFormat center = new StringFormat{ Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-				graphics.DrawString( txt, coinFont, Brushes.Black, bounds, center );
+				throw new Exception(txt);
 			}
 
+		}
+
+		void DrawElement( RectangleF bounds, string txt ) {
+			string filename = "Simple_" + txt.ToString().ToLower();
+			Image image = ResourceImages.Singleton.GetToken( filename );
+			var elementBounds = bounds.InflateBy( -bounds.Height / 5 );
+			graphics.DrawImageFitHeight( image, elementBounds );
+		}
+
+		void DrawCard( Track track, RectangleF bounds ) {
+			// card plays amount
+			string txt = track.Text;
+
+			// Elements appearing in the Card-Play track still have the 'energy' suffix
+			if(txt.EndsWith( " energy" )) txt = txt[..^7];
+			if("sun|moon|fire|air|water|earth|plant|animal|any".Contains( txt ))
+				DrawElement( bounds, txt );
+			else {
+				// draw icon
+				using(var bitmap = ResourceImages.Singleton.GetIcon( track.Text ))
+					graphics.DrawImageFitHeight( bitmap, bounds );
+			}
 		}
 
 	}

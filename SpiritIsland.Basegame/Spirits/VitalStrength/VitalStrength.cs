@@ -47,7 +47,7 @@ Power Progression:
 		public override string SpecialRules => "Earth's Vitality - Defend 3 in every land where you have sacred site.";
 
 		public VitalStrength():base(
-			new MyPresence(
+			new SpiritPresence(
 				new Track[] { Track.Energy2, Track.Energy3, Track.Energy4, Track.Energy6, Track.Energy7, Track.Energy8 },
 				new Track[] { Track.Card1, Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4 }
 			),

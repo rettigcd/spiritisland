@@ -1,20 +1,17 @@
-﻿namespace SpiritIsland.PromoPack1 {
+﻿using System.Collections.Generic;
+
+namespace SpiritIsland.PromoPack1 {
 
 	// Presence Tracks
 	// Innates
 	// Power CArds
 
 	// !!! Card 5 needs Reclaim One
-	// !!! need to link Earth Element
-	// !!! absorbed presence - Limit of 5, 7, 8, 10, 11, 12, 13 /
 
 	public class SerpentSlumbering : Spirit {
 
 		public SerpentSlumbering() :base (
-			new MyPresence(
-				new Track[]{ Track.Energy1, Track.FireEnergy, Track.AnimalEnergy, Track.Reclaim1, Track.EarthEnergy, Track.Energy6, Track.AnyEnergy, Track.MkEnergy(12) },
-				new Track[]{ Track.Card1, Track.MoonEnergy, Track.Card2, Track.WaterEnergy, Track.EarthEnergy, Track.Card4, Track.Card5 }
-			)
+			new SerpentPresence()
 			,PowerCard.For<ElementalAegis>()
 			,PowerCard.For<AbsorbEssence>()
 			,PowerCard.For<GiftOfFlowingPower>()
@@ -48,5 +45,29 @@
 
 	}
 
+	class SerpentPresence : SpiritPresence {
+
+		public SerpentPresence():base(
+			new Track[]{ Track.Energy1, Track.FireEnergy, Track.AnyEnergy,    Track.Reclaim1Energy, Track.EarthEnergy, Track.Energy6, Track.AnyEnergy, Track.MkEnergy(12) },
+			new Track[]{ Track.Card1,   Track.MoonEnergy, Track.Card2,        Track.WaterEnergy, Track.EarthEnergy, Track.Card4,   Track.Card5Reclaim1 }
+		){
+		}
+
+		public override IEnumerable<Track> GetPlaceableTrackOptions() {
+			if(Placed.Count < MaxPresenceOnBoard) {
+
+				if(Energy.RevealedCount <= 4 || Energy.HasMore && 4 < CardPlays.RevealedCount ) 
+					yield return Energy.Next;
+
+				if(CardPlays.RevealedCount <= 4 || CardPlays.HasMore && 4 < Energy.RevealedCount ) 
+					yield return CardPlays.Next;
+			}
+		}
+
+		public List<Spirit> AbsorbedPresences = new List<Spirit>(); // don't let it grow pas 6 elements
+
+		public int MaxPresenceOnBoard => new int[]{5,7,8,10,11,12,13 }[AbsorbedPresences.Count];
+
+	}
 
 }

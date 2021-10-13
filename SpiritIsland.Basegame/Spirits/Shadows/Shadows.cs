@@ -49,7 +49,7 @@ Shadows Flicker like Flame:
 		public override string SpecialRules => "Shadows of the Dahan - Whenever you use a power, you may pay 1 energy to target land with Dahan regardless of range";
 
 		public Shadows():base(
-			new MyPresence(
+			new SpiritPresence(
 				new Track[] { Track.Energy0, Track.Energy1, Track.Energy3, Track.Energy4, Track.Energy5, Track.Energy6 }, 
 				new Track[] { Track.Card1, Track.Card2, Track.Card3, Track.Card3, Track.Card4, Track.Card5 }
 			),

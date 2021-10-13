@@ -6,7 +6,7 @@ namespace SpiritIsland.Tests {
 	class TestSpirit : Spirit {
 
 		public TestSpirit(PowerCard powerCard):base(
-			new MyPresence(new PresenceTrack(Track.Energy5,Track.Energy9),new PresenceTrack(Track.Card1,Track.Card2))
+			new SpiritPresence(new PresenceTrack(Track.Energy5,Track.Energy9),new PresenceTrack(Track.Card1,Track.Card2))
 			,powerCard
 		) {
 			GrowthOptions = new GrowthOption[] { new GrowthOption( new ReclaimAll() ) };

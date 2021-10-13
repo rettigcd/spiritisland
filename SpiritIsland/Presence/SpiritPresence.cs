@@ -5,14 +5,14 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
-	public class MyPresence {
+	public class SpiritPresence {
 
-		public MyPresence( Track[] energy, Track[] cardPlays ){
+		public SpiritPresence( Track[] energy, Track[] cardPlays ){
 			Energy = new PresenceTrack(energy);
 			CardPlays = new PresenceTrack(cardPlays);
 		}
 
-		public MyPresence( PresenceTrack energy, PresenceTrack cardPlays ) {
+		public SpiritPresence( PresenceTrack energy, PresenceTrack cardPlays ) {
 			Energy = energy;
 			CardPlays = cardPlays;
 		}
@@ -21,10 +21,8 @@ namespace SpiritIsland {
 		#region Tracks / Board
 
 		public virtual IEnumerable<Track> GetPlaceableTrackOptions() {
-			var options = new List<Track>();
-			if(Energy.HasMore) options.Add( Energy.Next );
-			if(CardPlays.HasMore) options.Add( CardPlays.Next );
-			return options;
+			if(Energy.HasMore) yield return Energy.Next;
+			if(CardPlays.HasMore) yield return CardPlays.Next;
 		}
 
 		public PresenceTrack Energy { get; }
@@ -98,17 +96,17 @@ namespace SpiritIsland {
 		readonly List<Space> placed = new List<Space>();
 
 		// Revealed Count + Placed.
-		public virtual IMemento<MyPresence> SaveToMemento() => new Memento(this);
-		public virtual void LoadFrom( IMemento<MyPresence> memento ) => ((Memento)memento).Restore(this);
+		public virtual IMemento<SpiritPresence> SaveToMemento() => new Memento(this);
+		public virtual void LoadFrom( IMemento<SpiritPresence> memento ) => ((Memento)memento).Restore(this);
 
-		protected class Memento : IMemento<MyPresence> {
-			public Memento(MyPresence src) {
+		protected class Memento : IMemento<SpiritPresence> {
+			public Memento(SpiritPresence src) {
 				placed = src.placed.ToArray();
 				revealedEnergy = src.Energy.RevealedCount;
 				revealedCardPlays = src.CardPlays.RevealedCount;
 				destroyed = src.Destroyed;
 			}
-			public void Restore(MyPresence src ) {
+			public void Restore(SpiritPresence src ) {
 				src.placed.Clear(); src.placed.AddRange( placed );
 				src.Energy.RevealedCount = revealedEnergy;
 				src.CardPlays.RevealedCount = revealedCardPlays;

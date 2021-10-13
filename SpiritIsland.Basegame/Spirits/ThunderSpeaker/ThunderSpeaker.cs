@@ -43,7 +43,7 @@ namespace SpiritIsland.Basegame {
 		public override string Text => Name;
 
 		public Thunderspeaker():base(
-			new MyPresence(
+			new SpiritPresence(
 				new Track[] { Track.Energy1, Track.AirEnergy, Track.Energy2, Track.FireEnergy, Track.SunEnergy, Track.Energy3 },
 				new Track[] { Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Reclaim1, Track.Card3, Track.Card4 }
 			),

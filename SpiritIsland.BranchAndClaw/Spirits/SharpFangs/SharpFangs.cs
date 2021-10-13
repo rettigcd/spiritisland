@@ -43,16 +43,10 @@ namespace SpiritIsland.BranchAndClaw {
 
 		public override string Text => Name;
 
-		static Track FivePlaysReclaim1() {
-			var track = Track.MkCard(5);
-			track.ReclaimOne = true;
-			return track;
-		}
-
 		public SharpFangs():base(
-			new MyPresence(
+			new SpiritPresence(
 				new Track[] { Track.Energy1, Track.AnimalEnergy, Track.PlantEnergy, Track.Energy2, Track.AnimalEnergy, Track.Energy3, Track.Energy4 },
-				new Track[] { Track.Card2, Track.Card2, Track.Card3, Track.Reclaim1, Track.Card4, FivePlaysReclaim1() }
+				new Track[] { Track.Card2, Track.Card2, Track.Card3, Track.Reclaim1, Track.Card4, Track.Card5Reclaim1 }
 			),
 			PowerCard.For<PreyOnTheBuilders>(),
 			PowerCard.For<TeethGleamFromDarkness>(),

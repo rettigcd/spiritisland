@@ -1,4 +1,5 @@
 ﻿namespace SpiritIsland {
+
 	public class TokenBinding {
 
 		readonly TokenCountDictionary counts;

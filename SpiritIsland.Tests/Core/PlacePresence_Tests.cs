@@ -13,7 +13,7 @@ namespace SpiritIsland.Tests.Core {
 			public override string SpecialRules => throw new NotImplementedException();
 
 			public TestSpirit():base(
-				new MyPresence(
+				new SpiritPresence(
 					new PresenceTrack( Track.Energy0, Track.Energy0, Track.Energy0 ),
 					new PresenceTrack( Track.Card1, Track.Card2, Track.Card3, Track.Card4, Track.Card5 )
 				)

@@ -4,7 +4,7 @@ using SpiritIsland;
 
 namespace SpiritIsland.BranchAndClaw {
 
-	public class KeeperPresence : MyPresence {
+	public class KeeperPresence : SpiritPresence {
 
 		public Spirit keeper;
 

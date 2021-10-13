@@ -40,6 +40,8 @@ namespace SpiritIsland {
 		public static readonly Track Card6 = MkCard(6);
 
 		public static readonly Track Reclaim1 = new Track( "reclaim 1" ){ ReclaimOne=true };
+		public static readonly Track Reclaim1Energy = new Track( "reclaim 1 energy" ){ ReclaimOne=true };
+		public static readonly Track Card5Reclaim1 = new Track( "Fivereclaimone" ){ Energy=5, ReclaimOne=true };
 
 		protected Track( string text ){ this.Text = text; }
 

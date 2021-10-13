@@ -159,7 +159,7 @@ namespace SpiritIsland.Basegame {
 
 	}
 
-	public class RampantGreenPresence : MyPresence {
+	public class RampantGreenPresence : SpiritPresence {
 
 		public RampantGreenPresence() 
 			: base(
