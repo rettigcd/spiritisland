@@ -18,7 +18,7 @@ namespace SpiritIsland {
 
 		IDecisionMaker WaitForNextDecisionAndCacheIt() {
 			if(userAccessedDecision == null) {
-				signal.WaitOne();
+				signal.WaitOne(); // !!! When we get too much blight, this will lock up the UI - replace with a timed signal
 				userAccessedDecision = activeDecisionMaker;
 			}
 			return userAccessedDecision;

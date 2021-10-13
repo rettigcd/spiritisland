@@ -46,14 +46,7 @@ namespace SpiritIsland {
 		public virtual Task PlaceFromBoard( IOption from, Space to, GameState _ ) {
 			// from
 			if(from is Track track) {
-				if(track == Track.Destroyed && Destroyed>0)
-					--Destroyed;
-				else if(Energy.HasMore && track == Energy.Next)
-					Energy.RevealedCount++;
-				else if(CardPlays.HasMore && track == CardPlays.Next)
-					CardPlays.RevealedCount++;
-				else
-					throw new ArgumentException( "Can't pull from track:" + from.ToString() );
+				RemoveFromTrack( track );
 			} else if(from is Space space) {
 				if( Spaces.Contains(space) )
 					RemoveFrom( space );
@@ -64,6 +57,17 @@ namespace SpiritIsland {
 			// To
 			PlaceOn( to );
 			return Task.CompletedTask;
+		}
+
+		protected virtual void RemoveFromTrack( Track track ) {
+			if(track == Track.Destroyed && Destroyed > 0)
+				--Destroyed;
+			else if(Energy.HasMore && track == Energy.Next)
+				Energy.RevealedCount++;
+			else if(CardPlays.HasMore && track == CardPlays.Next)
+				CardPlays.RevealedCount++;
+			else
+				throw new ArgumentException( "Can't pull from track:" + track.ToString() );
 		}
 
 		public void Move( Space from, Space to ) {

@@ -85,6 +85,7 @@ namespace SpiritIsland.SinglePlayer {
 						await Spirit.UserSelectsFirstText("Exception - Check Log File!", filename, "program is going to lock up");
 					} else {
 						await Spirit.UserSelectsFirstText( "Exception!", "-", "-" );
+						// !!! need to detect if all presence is destroyed
 					}
 				}
 			}
