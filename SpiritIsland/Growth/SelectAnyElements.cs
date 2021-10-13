@@ -1,7 +1,8 @@
 ﻿using System.Threading.Tasks;
 
 namespace SpiritIsland {
-	public class SelectAnyElements : GrowthActionFactory {
+
+	public class SelectAnyElements : IActionFactory {
 
 		readonly int count;
 
@@ -9,7 +10,11 @@ namespace SpiritIsland {
 			this.count = count;
 		}
 
-		public override async Task ActivateAsync( Spirit self, GameState _ ) {
+		public string Name => $"Select elements ({count})";
+
+		public string Text => Name;
+
+		public async Task ActivateAsync( Spirit self, GameState _ ) {
 
 			var elements = new Element[] { Element.Sun, Element.Moon, Element.Air, Element.Fire, Element.Water, Element.Earth, Element.Plant, Element.Animal };
 
@@ -19,7 +24,7 @@ namespace SpiritIsland {
 			
 		}
 
-		public override string ShortDescription => $"Select elements ({count})";
+		public bool IsActiveDuring( Speed _, CountDictionary<Element> _1 ) => true;
 
 	}
 

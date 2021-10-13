@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
-	static public class Replace {
+	static public class ReplaceInvader {
 
 		public static Task Downgrade( TargetSpaceCtx ctx, params TokenGroup[] groups )
 			=> Downgrade(ctx.Self,ctx.Invaders,groups);

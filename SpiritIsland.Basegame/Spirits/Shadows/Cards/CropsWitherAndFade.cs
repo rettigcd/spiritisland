@@ -13,8 +13,8 @@ namespace SpiritIsland.Basegame {
 			ctx.AddFear( 2 );
 
 			return ctx.SelectActionOption(
-				new ActionOption("replace town with explorer", () => Replace.Downgrade(ctx,Invader.Town)),
-				new ActionOption("replace city with town", () => Replace.Downgrade(ctx,Invader.City))
+				new ActionOption("replace town with explorer", () => ReplaceInvader.Downgrade(ctx,Invader.Town)),
+				new ActionOption("replace city with town", () => ReplaceInvader.Downgrade(ctx,Invader.City))
 			);
 
 		}
