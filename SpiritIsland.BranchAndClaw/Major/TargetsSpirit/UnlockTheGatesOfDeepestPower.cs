@@ -10,7 +10,7 @@ namespace SpiritIsland.BranchAndClaw {
 		static public async Task ActAsync( TargetSpiritCtx ctx ) {
 
 			// target Spirit gains a major power by drawing 2 and keeping 1, without having to forget another power card
-			PowerCard card = await ctx.OtherCtx.DrawMajor( 2 );
+			PowerCard card = await ctx.OtherCtx.DrawMajor( 2, false );
 			ctx.Other.AddCardToHand( card );
 
 			// if 2 of each element,

@@ -72,6 +72,8 @@ namespace SpiritIsland.WinForms {
 				case "PlacePresence(3,beast or jungle)": PlacePresence( rect, 3, "JungleOrBeast" ); break;
 				// Heart of the WildFire
 				case "EnergyForFire": EnergyForFire( rect ); break;
+				// Serpent
+				case "MovePresence": MovePresence( rect, 1 ); break;
 				default:
 					graphics.FillRectangle( Brushes.Goldenrod, Rectangle.Inflate( rect.ToInts(), -5, -5 ) );
 					break;
@@ -166,5 +168,54 @@ namespace SpiritIsland.WinForms {
 			}
 
 		}
+
+		void MovePresence( RectangleF rect, int range, string iconFilename = "" ) {
+
+			using Font font = new Font( ResourceImages.Singleton.Fonts.Families[0], rect.Height * .15f, GraphicsUnit.Pixel  );
+			// var font = SystemFonts.IconTitleFont;
+
+			// + presence
+			float presencePercent = iconFilename == "" ? .3f : .2f;
+			float plusY = rect.Y + rect.Height * presencePercent; // top of presence
+			graphics.DrawString("+",font,Brushes.Black,rect.X+rect.Width*0.25f,plusY);
+			using var presenceIcon = ResourceImages.Singleton.GetIcon( "Presenceicon" );
+			graphics.DrawImage(presenceIcon, rect.X + rect.Width * 0.4f, plusY-rect.Height*.1f, rect.Width*.5f, rect.Height*.2f );
+
+			// icon
+			if(iconFilename != "") {
+				// using var image = Image.FromFile( ".\\images\\" + iconFilename + ".png" );
+				using var image = ResourceImages.Singleton.GetIcon( iconFilename );
+				float iconPercentage = .4f;
+				float iconHeight = rect.Height * .3f;
+				float iconWidth = iconHeight * image.Width / image.Height;
+
+				if(iconWidth > rect.Width) { // too wide, switch scaling to width limited
+					iconWidth = rect.Width;
+					iconHeight = iconWidth * image.Height / image.Width;
+				}
+
+				graphics.DrawImage( image, 
+					rect.X + (rect.Width - iconWidth)/2, 
+					rect.Y + rect.Height * iconPercentage,
+					iconWidth,
+					iconHeight
+				);
+			}
+
+			// range # text
+			float rangeTextTop = rect.Y + rect.Height * .65f;
+			string txt = range.ToString();
+			SizeF rangeTextSize = graphics.MeasureString(txt,font);
+			graphics.DrawString(txt,font,Brushes.Black,rect.X+(rect.Width-rangeTextSize.Width)/2,rangeTextTop);
+
+			// range arrow
+			float rangeArrowTop = rect.Y + rect.Height * .85f;
+			using var rangeIcon = ResourceImages.Singleton.GetIcon( "Moveicon" );
+			float arrowWidth = rect.Width * .8f, arrowHeight = arrowWidth * rangeIcon.Height / rangeIcon.Width;
+			graphics.DrawImage( rangeIcon, rect.X + (rect.Width-arrowWidth)/2, rangeArrowTop, arrowWidth, arrowHeight );
+
+		}
+
+
 	}
 }

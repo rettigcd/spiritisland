@@ -2,12 +2,11 @@
 
 == Clean-up ==
 
+* BUG - ANY elements not working
+
 4 Blight Tests
-4 Display Fear Pool
 4 Show log of User actions, Invader Actions
-3 Instead of ocean modifying Space State, Ocean should modify the default Terrain behavior of the Ctx - using a Ctx factory?
 * Visual indicator of Phase
-* Log Decisoins / view Decisions
 * Log Ravage / Build / Explore / Fear / Blight
 
 
@@ -30,6 +29,8 @@
 * Instruments of Their Own Ruin
 * Manifest Incarnation
 * A Year of Perfect Stillness - skips invader actions
+* Bringer
+* the +1 from Fires Fury (Heart of Wildfire)
 
 == Tests: Repeat Card / Change Speed =====
 

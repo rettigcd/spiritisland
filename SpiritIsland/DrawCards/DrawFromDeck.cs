@@ -13,9 +13,10 @@ namespace SpiritIsland {
 				: await DrawMajor( spirit, gs, handleNotUsed );
 		}
 
-		public async Task<PowerCard> DrawMajor( Spirit spirit, GameState gameState, Func<List<PowerCard>, Task> handleNotUsed, int numberToDraw = 4 ) {
+		public async Task<PowerCard> DrawMajor( Spirit spirit, GameState gameState, Func<List<PowerCard>, Task> handleNotUsed, bool forgetCard = true, int numberToDraw = 4 ) {
 			var card = await DrawInner(spirit, gameState.MajorCards, numberToDraw, handleNotUsed );
-			await spirit.ForgetPowerCard();
+			if(forgetCard)
+				await spirit.ForgetPowerCard();
 			return card;
 		}
 

@@ -253,9 +253,11 @@ namespace SpiritIsland {
 		public Task<PowerCard> Draw( GameState gameState, Func<List<PowerCard>, Task> handleNotUsed ) => CardDrawer.Draw(this,gameState,handleNotUsed);
 
 		/// <summary> short cut to CardDrawer.DrawMinor </summary>
-		public Task<PowerCard> DrawMinor( GameState gameState ) => CardDrawer.DrawMinor( this, gameState, null );
+		public Task<PowerCard> DrawMinor( GameState gameState ) 
+			=> CardDrawer.DrawMinor( this, gameState, null );
 		/// <summary> short cut to CardDrawer.DrawMajor </summary>
-		public Task<PowerCard> DrawMajor( GameState gameState ) => CardDrawer.DrawMajor( this, gameState, null );
+		public Task<PowerCard> DrawMajor( GameState gameState, int numberToDraw=4, bool forgetCard=true ) 
+			=> CardDrawer.DrawMajor( this, gameState, null, forgetCard, numberToDraw ); // Instead of passing in null, could return Tupple with discard cards in it()
 
 		#endregion
 

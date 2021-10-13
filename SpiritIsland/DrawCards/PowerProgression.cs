@@ -18,7 +18,7 @@ namespace SpiritIsland {
 			return Take( self, remainingCards.First() );
 		}
 
-		public Task<PowerCard> DrawMajor( Spirit self, GameState _, Func<List<PowerCard>, Task> _1, int _2 ) {
+		public Task<PowerCard> DrawMajor( Spirit self, GameState _, Func<List<PowerCard>, Task> _1, bool _2, int _3 ) {
 			return Take( self, remainingCards.First( c => c.PowerType == PowerType.Major ) );
 		}
 

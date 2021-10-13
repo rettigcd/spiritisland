@@ -33,6 +33,7 @@
     <None Remove="images\icons\Jungle.png" />
     <None Remove="images\icons\JungleOrBeast.png" />
     <None Remove="images\icons\Junglewetland.png" />
+    <None Remove="images\icons\Moveicon.png" />
     <None Remove="images\icons\Noblight.png" />
     <None Remove="images\icons\Ocean.png" />
     <None Remove="images\icons\Oneenergyfire.png" />
@@ -188,6 +189,7 @@
     <EmbeddedResource Include="images\icons\Jungle.png" />
     <EmbeddedResource Include="images\icons\JungleOrBeast.png" />
     <EmbeddedResource Include="images\icons\Junglewetland.png" />
+    <EmbeddedResource Include="images\icons\Moveicon.png" />
     <EmbeddedResource Include="images\icons\Noblight.png" />
     <EmbeddedResource Include="images\icons\Ocean.png" />
     <EmbeddedResource Include="images\icons\Oneenergyfire.png" />

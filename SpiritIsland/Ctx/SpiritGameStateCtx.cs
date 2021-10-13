@@ -74,8 +74,7 @@ namespace SpiritIsland {
 
 		public Task<PowerCard> Draw( Func<List<PowerCard>, Task> handleNotUsed ) => Self.Draw( GameState, handleNotUsed );
 		public Task<PowerCard> DrawMinor() => Self.DrawMinor( GameState );
-		public Task<PowerCard> DrawMajor() => Self.DrawMajor( GameState );
-		public Task<PowerCard> DrawMajor( int numberToDraw = 4 ) => Self.CardDrawer.DrawMajor( Self, GameState, null, numberToDraw );
+		public Task<PowerCard> DrawMajor( int numberToDraw = 4, bool forgetCard=true ) => Self.DrawMajor( GameState, numberToDraw, forgetCard );
 
 
 		#endregion
