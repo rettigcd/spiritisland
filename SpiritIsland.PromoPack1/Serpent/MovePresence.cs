@@ -1,0 +1,14 @@
+﻿using System.Threading.Tasks;
+
+namespace SpiritIsland.PromoPack1 {
+	public class MovePresence : GrowthActionFactory {
+
+		public override async Task ActivateAsync( Spirit self, GameState gameState ) {
+			var from = await self.Action.Decision( new Decision.Presence.Deployed("Move presence from:", self ) );
+			var to = await self.Action.Decision( new Decision.AdjacentSpace("Move preseence to:", from, Decision.AdjacentDirection.Outgoing, from.Adjacent));
+			self.Presence.Move( from, to );
+		}
+	}
+
+
+}

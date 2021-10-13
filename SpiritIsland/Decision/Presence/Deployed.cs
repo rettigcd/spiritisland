@@ -18,9 +18,12 @@ namespace SpiritIsland.Decision.Presence {
 
 	}
 
-	public class DeployedMove : Deployed, IAdjacentDecision {
+	/// <summary>
+	/// Presence follows another token
+	/// </summary>
+	public class DeployedFollow : Deployed, IAdjacentDecision {
 
-		public DeployedMove(string prompt, Space from, Space to ) 
+		public DeployedFollow(string prompt, Space from, Space to ) 
 			:base(prompt,new Space[]{ from }, Present.Done)
 		{
 			this.Original = from;

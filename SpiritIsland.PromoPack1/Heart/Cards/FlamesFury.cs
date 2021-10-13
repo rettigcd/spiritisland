@@ -7,7 +7,7 @@ namespace SpiritIsland.PromoPack1 {
 	public class FlamesFury{
 
 		[SpiritCard("Flame's Fury",0,Element.Sun,Element.Fire,Element.Plant),Fast,TargetSpirit]
-		static public async Task ActAsync( TargetSpiritCtx ctx ) {
+		static public Task ActAsync( TargetSpiritCtx ctx ) {
 
 			// Target Spirit gains 1 energy.
 			++ctx.Other.Energy;
@@ -20,6 +20,7 @@ namespace SpiritIsland.PromoPack1 {
 				return Task.CompletedTask;
 			} );
 
+			return Task.CompletedTask;
 		}
 
 	}

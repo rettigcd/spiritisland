@@ -14,7 +14,7 @@ namespace SpiritIsland.BranchAndClaw {
 			TargetLandApi.ExtendRange( ctx.Other, 2 );
 
 			// Target spirit may push 1 of their presence to an adjacent land
-			var sourceCtx = await ctx.OtherCtx.TargetLandWithPresence("Push Presence (bringing up to 2 explorers, 2 towns, 2 dahan)");
+			var sourceCtx = await ctx.OtherCtx.TargetDeployedPresence("Push Presence (bringing up to 2 explorers, 2 towns, 2 dahan)");
 
 			var destination = await sourceCtx.Self.Action.Decision( new Decision.AdjacentSpace(
 				"Move Presence + up to 2 explorers,towns,dahan to",

@@ -59,10 +59,16 @@ namespace SpiritIsland {
 		public TargetSpaceCtx Target( Space space ) => new TargetSpaceCtx( this, space );
 		public TargetSpaceCtx TargetSpace( string spaceLabel ) => new TargetSpaceCtx( this, GameState.Island.AllSpaces.First(s=>s.Label==spaceLabel) );
 
-		public async Task<TargetSpaceCtx> TargetLandWithPresence( string prompt ) {
+		public async Task<TargetSpaceCtx> TargetDeployedPresence( string prompt ) {
 			var space = await Self.Action.Decision( new Decision.Presence.Deployed( prompt, Self ) );
 			return new TargetSpaceCtx( this, space );
 		}
+
+		public async Task<TargetSpaceCtx> TargetLandWithPresence( string prompt ) {
+			var space = await Self.Action.Decision( new Decision.TargetSpace(prompt,Self.Presence.Spaces, Present.Always ) );
+			return new TargetSpaceCtx( this, space );
+		}
+
 
 		#region Draw Cards
 
@@ -137,6 +143,7 @@ namespace SpiritIsland {
 			await Self.Presence.PlaceFromBoard( from, to, GameState );
 		}
 
+		/// <summary> Tries Presence Tracks first, then fails over to placed-presence on Island </summary>
 		public async Task<IOption> SelectPresenceSource() {
 			return (IOption)await Self.Action.Decision( new Decision.Presence.SourceFromTrack( Self ) )
 				?? (IOption)await Self.Action.Decision( new Decision.Presence.DeployedAsSource( Self ) );

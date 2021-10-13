@@ -59,6 +59,7 @@ namespace SpiritIsland.WinForms {
 				spiritListBox.Items.Add( typeof( Keeper ) );
 				spiritListBox.Items.Add( typeof( SharpFangs ) );
 				spiritListBox.Items.Add( typeof( HeartOfTheWildfire ) );
+				spiritListBox.Items.Add( typeof( SerpentSlumbering ) );
 			}
 			spiritListBox.SelectedIndex = 0;
 		}
@@ -95,8 +96,9 @@ namespace SpiritIsland.WinForms {
 				Ocean.Name                 => "dkblue",
 				Keeper.Name                => "greenorangeswirl",
 				SharpFangs.Name            => "red",
-				HeartOfTheWildfire.Name    => "orange",
-				_                          => "green"
+				HeartOfTheWildfire.Name    => "green",
+				SerpentSlumbering.Name     => "orange",
+				_                          => "blue"
 			};
 		}
 

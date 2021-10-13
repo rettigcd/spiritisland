@@ -23,7 +23,7 @@ namespace SpiritIsland {
 			if(maxThatCanMove>1)
 				throw new InvalidOperationException("Method is only designed to accept 1 move at a time.");
 
-			var source = await spirit.Action.Decision( new Decision.Presence.DeployedMove("Move presence with "+args.Token.Generic.Label+"?", args.from, args.to ) );
+			var source = await spirit.Action.Decision( new Decision.Presence.DeployedFollow("Move presence with "+args.Token.Generic.Label+"?", args.from, args.to ) );
 			if( source != null )
 				spirit.Presence.Move( args.from, args.to );
 		}
