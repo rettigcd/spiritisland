@@ -9,7 +9,7 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 
 		[MinorCard( "Sky Stretches to Shore", 1, Element.Sun, Element.Air, Element.Water, Element.Earth )]
 		[Fast]
-		[TargetSpirit]
+		[AnySpirit]
 		static public Task ActAsync( TargetSpiritCtx ctx ) {
 
 			// this turn, target spirit may use 1 slow power as if it wer fast or vice versa

@@ -8,7 +8,7 @@ namespace SpiritIsland.Basegame {
 
 		[MinorCard(EncompassingWard.Name,1,Element.Sun,Element.Water,Element.Earth)]
 		[Fast]
-		[TargetSpirit]
+		[AnySpirit]
 		static public Task Act( TargetSpiritCtx ctx ) {
 
 			// defend 2 in every land where spirit has presence

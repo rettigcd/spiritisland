@@ -7,7 +7,7 @@ namespace SpiritIsland.BranchAndClaw {
 		// target spirit
 		[SpiritCard("Boon of Growing Power",1,Element.Sun,Element.Moon,Element.Plant)]
 		[Slow]
-		[TargetSpirit]
+		[AnySpirit]
 		static public async Task ActAsync( TargetSpiritCtx ctx ) {
 
 			// target spirit gains a power card

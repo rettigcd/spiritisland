@@ -64,7 +64,7 @@ namespace SpiritIsland.Tests.Core {
 		[Fact]
 		public void PowerCard_Targets_Spirit_CorrectParameters() {
 			// Since PowerCards and innates use Reflection to map to the Async task, we need to make sure method signature is correct.
-			static bool MethodTargetsSpace( MethodBase m ) => m.GetCustomAttributes<TargetSpiritAttribute>().Any();
+			static bool MethodTargetsSpace( MethodBase m ) => m.GetCustomAttributes<AnySpiritAttribute>().Any();
 			var methods = typeof( PowerCard ).Assembly.GetTypes()
 				.OrderBy( x => x.Namespace )
 				.ThenBy( x => x.Name )
@@ -79,7 +79,7 @@ namespace SpiritIsland.Tests.Core {
 		public void Innate_Targets_Spirit_CorrectParameters() {
 			// Since PowerCards and innates use Reflection to map to the Async task, we need to make sure method signature is correct.
 
-			static bool TypeTargetsSpace( Type m ) => m.GetCustomAttributes<TargetSpiritAttribute>().Any();
+			static bool TypeTargetsSpace( Type m ) => m.GetCustomAttributes<AnySpiritAttribute>().Any();
 			static bool MethodIsOption( MethodBase m ) => m.GetCustomAttributes<InnateOptionAttribute>().Any();
 			var methods = typeof( PowerCard ).Assembly.GetTypes()
 				.Where( x=>x!=typeof( GiftOfStrength ) ) // ! this has a different signature - !! review it and see if it is still relavent

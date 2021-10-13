@@ -56,7 +56,7 @@ namespace SpiritIsland {
 			return invaderToken.Health - damagedInvader.Health; // damage inflicted
 		}
 
-		IDamageApplier damageApplicationStrategy;
+		readonly IDamageApplier damageApplicationStrategy;
 
 		#endregion
 

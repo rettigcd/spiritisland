@@ -5,7 +5,7 @@ namespace SpiritIsland.Basegame {
 
 		[MajorCard("Blazing Renewal",5,Element.Fire,Element.Earth,Element.Plant)]
 		[Fast]
-		[TargetSpirit]
+		[AnySpirit]
 		static public async Task ActAsync( TargetSpiritCtx ctx ) {
 
 			// target spirit adds 2 of their destroyed presence

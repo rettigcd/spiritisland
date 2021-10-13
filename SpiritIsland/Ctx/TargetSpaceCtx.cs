@@ -124,9 +124,6 @@ namespace SpiritIsland {
 
 		public void ModifyRavage( Action<ConfigureRavage> action ) => GameState.ModifyRavage(Space,action);
 
-		public Task<PowerCard> DrawMajor() => Self.DrawMajor( GameState );
-		public new Task<PowerCard> DrawMinor() => Self.DrawMinor( GameState );
-
 		// The current targets power
 		public InvaderGroup Invaders => invadersRO ??= Cause switch {
 				Cause.Power => Self.BuildInvaderGroupForPowers( GameState, Space ),

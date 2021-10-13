@@ -6,7 +6,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 		[MinorCard("Spur on with Words of Fire", 1, Element.Sun, Element.Fire, Element.Air)]
 		[Fast]
-		[TargetSpirit]
+		[AnySpirit]
 		static public async Task ActAsync(TargetSpiritCtx ctx) {
 
 			// If you target a spirit other than yourself, they gain +1 energy

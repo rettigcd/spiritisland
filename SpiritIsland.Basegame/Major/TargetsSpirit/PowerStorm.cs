@@ -6,7 +6,7 @@ namespace SpiritIsland.Basegame {
 
 		[MajorCard("Powerstorm",3,Element.Sun,Element.Fire,Element.Air)]
 		[Fast]
-		[TargetSpirit]
+		[AnySpirit]
 		static public Task ActionAsync( TargetSpiritCtx ctx ) {
 			
 			// target spirit gains 3 energy
@@ -17,7 +17,7 @@ namespace SpiritIsland.Basegame {
 			int repeats = ctx.Other.Elements.Contains("2 sun,2 fire,3 air") ? 3 : 1;
 
 			while(repeats-->0)
-				ctx.Other.AddActionFactory( new RepeatCardForCost( ) );
+				ctx.Other.AddActionFactory( new ReplayCardForCost() );
 			return Task.CompletedTask;
 		}
 

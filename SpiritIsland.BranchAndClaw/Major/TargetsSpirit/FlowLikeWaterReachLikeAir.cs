@@ -6,7 +6,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 		[MajorCard("Flow Like Water, Reach Like Air",2,Element.Air,Element.Water)]
 		[Fast]
-		[TargetSpirit]
+		[AnySpirit]
 		static public async Task ActAsync( TargetSpiritCtx ctx ) {
 
 			// target spirit gets +2 range with all Powers.

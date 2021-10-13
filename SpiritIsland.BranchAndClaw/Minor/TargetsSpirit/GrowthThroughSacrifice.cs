@@ -7,7 +7,7 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 
 		[MinorCard("Growth Through Sacrifice",0,Element.Moon,Element.Fire,Element.Water,Element.Plant)]
 		[Fast]
-		[TargetSpirit]
+		[AnySpirit]
 		static public async Task ActAsync( TargetSpiritCtx ctx ) {
 			// destroy one of your presence
 			await DestoryOnePresence( ctx.Self );

@@ -6,7 +6,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 		[MajorCard( "Unrelenting Growth", 4, Element.Sun, Element.Fire, Element.Water, Element.Plant )]
 		[Slow]
-		[TargetSpirit]
+		[AnySpirit]
 		static public async Task ActAsync( TargetSpiritCtx ctx ) {
 
 			// target spirit adds 2 presence and 1 wilds to a land at range 1

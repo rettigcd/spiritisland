@@ -5,9 +5,7 @@ namespace SpiritIsland.Basegame {
 	public class EntwinedPower {
 
 
-		[MajorCard( "Entwined Power", 2, Element.Moon, Element.Water, Element.Plant )]
-		[Fast]
-		[TargetSpirit]
+		[MajorCard( "Entwined Power", 2, Element.Moon, Element.Water, Element.Plant ),Fast,AnotherSpirit]
 		static public async Task ActAsync( TargetSpiritCtx ctx ) {
 
 			// You and other spirit share presence for targeting

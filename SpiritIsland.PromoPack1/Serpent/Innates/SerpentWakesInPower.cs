@@ -2,7 +2,7 @@
 
 namespace SpiritIsland.PromoPack1 {
 
-	[InnatePower( SerpentWakesInPower.Name ), Slow, TargetSpirit] // !!! target self
+	[InnatePower( SerpentWakesInPower.Name ), Slow, Yourself]
 	public class SerpentWakesInPower {
 
 		public const string Name = "Serpent Wakes in Power";

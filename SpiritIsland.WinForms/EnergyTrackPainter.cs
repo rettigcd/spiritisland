@@ -110,8 +110,6 @@ namespace SpiritIsland.WinForms {
 
 			float usableWidth = slotWidth * 0.8f;
 
-			float cardWidth = slotWidth * 0.6f;
-			float cardLeft = (slotWidth - cardWidth) / 2; // center
 
 			int revealedCardSpaces = spirit.Presence.CardPlays.RevealedCount;
 			int idx = 0;
@@ -200,8 +198,8 @@ namespace SpiritIsland.WinForms {
 				DrawElement( bounds, txt );
 			else {
 				// draw icon
-				using(var bitmap = ResourceImages.Singleton.GetIcon( track.Text ))
-					graphics.DrawImageFitHeight( bitmap, bounds );
+				using var bitmap = ResourceImages.Singleton.GetIcon( track.Text );
+				graphics.DrawImageFitHeight( bitmap, bounds );
 			}
 		}
 

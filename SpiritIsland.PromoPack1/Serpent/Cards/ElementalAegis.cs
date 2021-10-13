@@ -9,10 +9,11 @@ namespace SpiritIsland.PromoPack1 {
 		public static Task ActAsync(TargetSpaceCtx ctx ) {
 
 			// defend 2 in target land and all adjacent lands.
-			// For every presence on your Deep Slumber track, Defend 1 in target land and all adjacent lands.
+			int defense = 2; // Defense 2 
 
-			int defense = 2 // Defense 2 
-				+ 0; // + covered Deep Slumber spaces // !!!
+			// For every presence on your Deep Slumber track, Defend 1 in target land and all adjacent lands.
+			if(	ctx.Self.Presence is SerpentPresence sp ) // don't crash if card was gifted to someone else
+				defense += sp.AbsorbedPresences.Count;
 
 			ctx.Defend(defense);
 			foreach(var adj in ctx.Adjacent )

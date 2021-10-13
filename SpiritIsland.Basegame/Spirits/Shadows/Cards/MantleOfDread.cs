@@ -7,7 +7,7 @@ namespace SpiritIsland.Basegame {
 
 		[SpiritCard("Mantle of Dread",1,Element.Moon,Element.Fire,Element.Air)]
 		[Slow]
-		[TargetSpirit]
+		[AnySpirit]
 		static public async Task Act( TargetSpiritCtx ctx ){
 
 			// 2 fear

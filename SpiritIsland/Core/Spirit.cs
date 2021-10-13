@@ -60,7 +60,10 @@ namespace SpiritIsland {
 
 		public List<PowerCard> Hand = new List<PowerCard>();	// in hand
 		public List<PowerCard> PurchasedCards = new List<PowerCard>();		// paid for
-		public List<PowerCard> DiscardPile = new List<PowerCard>();     // discarded
+
+		// Cards are not transferred to discard pile until end of turn because we need to keep track of their elements.
+		public List<PowerCard> DiscardPile = new List<PowerCard>();
+
 		readonly List<IActionFactory> availableActions = new List<IActionFactory>();
 		readonly List<IActionFactory> usedActions = new List<IActionFactory>();
 		readonly List<InnatePower> usedInnates = new List<InnatePower>();

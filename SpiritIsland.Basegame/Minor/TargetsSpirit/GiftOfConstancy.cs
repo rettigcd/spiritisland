@@ -6,7 +6,7 @@ namespace SpiritIsland.Basegame {
 
 		[MinorCard( "Gift of Constancy", 0, Element.Sun, Element.Earth )]
 		[Fast]
-		[TargetSpirit]
+		[AnySpirit]
 		static public Task ActAsync( TargetSpiritCtx ctx ) {
 
 			// target spirit gains 2 energy.  

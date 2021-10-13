@@ -74,6 +74,7 @@ namespace SpiritIsland {
 
 		public Task<PowerCard> Draw( Func<List<PowerCard>, Task> handleNotUsed ) => Self.Draw( GameState, handleNotUsed );
 		public Task<PowerCard> DrawMinor() => Self.DrawMinor( GameState );
+		public Task<PowerCard> DrawMajor() => Self.DrawMajor( GameState );
 		public Task<PowerCard> DrawMajor( int numberToDraw = 4 ) => Self.CardDrawer.DrawMajor( Self, GameState, null, numberToDraw );
 
 
@@ -147,6 +148,11 @@ namespace SpiritIsland {
 		public async Task<IOption> SelectPresenceSource() {
 			return (IOption)await Self.Action.Decision( new Decision.Presence.SourceFromTrack( Self ) )
 				?? (IOption)await Self.Action.Decision( new Decision.Presence.DeployedAsSource( Self ) );
+		}
+
+		/// <summary> Tries Presence Tracks first, then fails over to placed-presence on Island </summary>
+		public async Task<Space> SelectDeployedPresence(string prompt) {
+			return await Self.Action.Decision( new Decision.Presence.Deployed(prompt, Self ) );
 		}
 
 		/// <summary>

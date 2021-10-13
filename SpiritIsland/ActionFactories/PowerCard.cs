@@ -59,7 +59,7 @@ namespace SpiritIsland {
 
 		static public PowerCard For( MethodInfo method ) {
 			// check if targets spirit
-			if(method.GetCustomAttributes<TargetSpiritAttribute>().Any())
+			if(method.GetCustomAttributes<AnySpiritAttribute>().Any())
 				return new PowerCard_TargetSpirit( method );
 
 			//TargetSpaceAttribute targetSpace = (TargetSpaceAttribute)method.GetCustomAttributes<FromPresenceAttribute>().FirstOrDefault()

@@ -3,7 +3,7 @@
 namespace SpiritIsland.Basegame {
 
 	[InnatePower("Gift of Strength"),Fast]
-	[TargetSpirit]
+	[AnySpirit]
 	public class GiftOfStrength {
 
 		// * Note * these have a different signature than other Innates, called directly from GiftOfStrength_InnatePower
@@ -27,7 +27,7 @@ namespace SpiritIsland.Basegame {
 		}
 
 		static Task RepeatPowerCard( Spirit spirit, int maxCost ) {
-			spirit.AddActionFactory( new ReplayCard(maxCost) );
+			spirit.AddActionFactory( new ReplayCardForFree(maxCost) );
 			return Task.CompletedTask;
 		}
 

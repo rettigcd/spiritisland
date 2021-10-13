@@ -6,7 +6,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 		[MajorCard( "Unlock the Gates of Deepest Power", 4, Element.Sun,Element.Moon,Element.Fire,Element.Air,Element.Water,Element.Earth,Element.Plant,Element.Animal )]
 		[Fast]
-		[TargetSpirit]
+		[AnySpirit]
 		static public async Task ActAsync( TargetSpiritCtx ctx ) {
 
 			// target Spirit gains a major power by drawing 2 and keeping 1, without having to forget another power card

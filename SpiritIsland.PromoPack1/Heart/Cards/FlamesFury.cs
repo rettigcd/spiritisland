@@ -6,7 +6,7 @@ namespace SpiritIsland.PromoPack1 {
 
 	public class FlamesFury{
 
-		[SpiritCard("Flame's Fury",0,Element.Sun,Element.Fire,Element.Plant),Fast,TargetSpirit]
+		[SpiritCard("Flame's Fury",0,Element.Sun,Element.Fire,Element.Plant),Fast,AnySpirit]
 		static public Task ActAsync( TargetSpiritCtx ctx ) {
 
 			// Target Spirit gains 1 energy.
@@ -26,12 +26,12 @@ namespace SpiritIsland.PromoPack1 {
 	}
 
 	class FlamesFuryDamage : IDamageApplier {
-		Spirit spirit;
+		readonly Spirit spirit;
 		public FlamesFuryDamage(Spirit spirit) {
 			this.spirit = spirit;
 		}
 
-		HashSet<Guid> actionsThatUsedExtraDamage = new HashSet<Guid>();
+		readonly HashSet<Guid> actionsThatUsedExtraDamage = new HashSet<Guid>();
 		public Token ApplyDamage( TokenCountDictionary tokens, int availableDamage, Token invaderToken ) {
 			if( availableDamage<invaderToken.Health
 				&& !actionsThatUsedExtraDamage.Contains(spirit.CurrentActionId)

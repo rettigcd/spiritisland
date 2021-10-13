@@ -14,7 +14,7 @@ namespace SpiritIsland {
 		static public InnatePower For<T>(){ 
 			Type actionType = typeof(T);
 
-			bool targetSpirit = actionType.GetCustomAttributes<TargetSpiritAttribute>().Any();
+			bool targetSpirit = actionType.GetCustomAttributes<AnySpiritAttribute>().Any();
 			return targetSpirit		
 				? new InnatePower_TargetSpirit( actionType ) 
 				: new InnatePower_TargetSpace( actionType );

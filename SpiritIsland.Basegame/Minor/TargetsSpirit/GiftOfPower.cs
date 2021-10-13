@@ -6,7 +6,7 @@ namespace SpiritIsland.Basegame {
 
 		[MinorCard( "Gift of Power", 0, "moon, water, earth, plant")]
 		[Slow]
-		[TargetSpirit]
+		[AnySpirit]
 		static public Task ActAsync( TargetSpiritCtx ctx ) {
 			// gain a minor power card
 			return ctx.OtherCtx.DrawMinor(); 

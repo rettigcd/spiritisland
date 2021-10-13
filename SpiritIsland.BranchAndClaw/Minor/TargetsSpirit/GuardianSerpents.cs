@@ -6,7 +6,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 		[MinorCard( "Guardian Serpents", 1, Element.Sun, Element.Moon, Element.Earth, Element.Animal )]
 		[Fast]
-		[TargetSpirit]
+		[AnySpirit]
 		static public async Task ActAsync( TargetSpiritCtx ctx ) {
 
 			// Add 1 beast in one of target spirits lands

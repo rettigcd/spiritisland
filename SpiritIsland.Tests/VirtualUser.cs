@@ -256,9 +256,10 @@ namespace SpiritIsland.Tests {
 		}
 
 		public void AssertDecision( string prompt, string optionsString, string select ) {
-			string msg = $"{prompt}:{optionsString}:{select}";
-
 			var current = Assert_HasCurrent( prompt );
+
+			string msg = $"{prompt}:{optionsString}:{select} => " + current.Options.Select(x=>x.Text).Join(",");
+
 			current.Prompt.ShouldBe( prompt, msg, StringCompareShould.IgnoreCase );
 			current.Options.Select( x => x.Text ).Join( "," ).ShouldBe( optionsString, msg );
 			IOption match = FindRequiredOptionByText( current, select );

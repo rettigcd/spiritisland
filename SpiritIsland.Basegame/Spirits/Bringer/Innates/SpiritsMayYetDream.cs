@@ -5,7 +5,7 @@ namespace SpiritIsland.Basegame {
 
 	// Innate 1 - Spirits May Yet Dream => fast any spirit
 	[InnatePower( "Spirits May Yet Dream" ),Fast]
-	[TargetSpirit]
+	[AnySpirit]
 	class SpiritsMayYetDream {
 
 		//		[InnateOption( "1 animal" )] // testing

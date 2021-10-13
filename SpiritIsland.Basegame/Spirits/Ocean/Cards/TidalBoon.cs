@@ -4,9 +4,7 @@ namespace SpiritIsland.Basegame {
 
 	public class TidalBoon {
 
-		[SpiritCard("Tidal Boon",1,Element.Moon,Element.Water,Element.Earth)]
-		[Slow]
-		[TargetSpirit]
+		[SpiritCard("Tidal Boon",1,Element.Moon,Element.Water,Element.Earth),Slow,AnotherSpirit]
 		static public async Task Act(TargetSpiritCtx ctx ) {
 
 			// If dahan are pushed to your ocean, you may move them to any costal land instead of drowning them.

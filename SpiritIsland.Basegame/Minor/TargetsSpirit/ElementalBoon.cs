@@ -6,7 +6,7 @@ namespace SpiritIsland.Basegame {
 
 		[MinorCard( "Elemental Boon", 1)]
 		[Fast]
-		[TargetSpirit]
+		[AnySpirit]
 		static public async Task Act( TargetSpiritCtx ctx ) {
 
 			// Target Spirit gains 3 _different_ Elements of their choice
