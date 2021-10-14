@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SpiritIsland.BranchAndClaw {
+namespace SpiritIsland {
 
 	public class StrifedInvader : Token {
 

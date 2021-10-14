@@ -16,7 +16,7 @@ namespace SpiritIsland.BranchAndClaw {
 		[InnateOption( "2 plant,3 animal", "1 Damage per beast." )]
 		static public async Task Option2( TargetSpaceCtx ctx ) {
 			await Gather( ctx );
-			await ctx.DamageInvaders( ctx.Tokens.Beasts().Count );
+			await ctx.DamageInvaders( ctx.Tokens.Beasts.Count );
 			await Push( ctx );
 		}
 
@@ -24,10 +24,10 @@ namespace SpiritIsland.BranchAndClaw {
 		static public void Noop( TargetSpaceCtx _ ) { }
 
 		static Task Gather( TargetSpaceCtx ctx )
-			=> ctx.GatherUpTo( ctx.Space, 1, BacTokens.Beast.Generic );
+			=> ctx.GatherUpTo( ctx.Space, 1, TokenType.Beast.Generic );
 
 		static Task Push( TargetSpaceCtx ctx )
-			=> ctx.PushUpTo( ctx.Space, 2, BacTokens.Beast.Generic );
+			=> ctx.PushUpTo( ctx.Space, 2, TokenType.Beast.Generic );
 
 	}
 

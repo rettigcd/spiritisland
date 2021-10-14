@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Threading.Tasks;
 
-namespace SpiritIsland.BranchAndClaw {
+namespace SpiritIsland {
 
 	static public class IInvaderCountExtensions {
 

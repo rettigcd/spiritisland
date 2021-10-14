@@ -13,7 +13,7 @@ namespace SpiritIsland.BranchAndClaw {
 			// 2 fear
 			ctx.AddFear(2);
 			// if target land has any beasts, 1 fear
-			if( ctx.Tokens.Beasts().Any )
+			if( ctx.Tokens.Beasts.Any )
 				ctx.AddFear(1);
 		}
 

@@ -211,7 +211,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 		}
 
 		void Given_HasWilds( Space space ) {
-			gameState.Tokens[space].Wilds().Count++;
+			gameState.Tokens[space].Wilds.Count++;
 		}
 
 		void User_Activates_A() {

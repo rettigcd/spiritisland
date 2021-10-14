@@ -23,8 +23,15 @@ namespace SpiritIsland.SinglePlayer {
 				var currentOptions = remainingOptions.Where(o=>o.GainEnergy+spirit.Energy>=0).ToArray();
 				GrowthOption option = (GrowthOption)await spirit.Select( "Select Growth Option", currentOptions, Present.Always );
 				remainingOptions.Remove(option);
-				spirit.Grow( gameState, option );
-				await resolveGrowth.ActAsync();
+
+//				if(option.GrowthActions.Length == 1) {
+//					var action = option.GrowthActions[0];
+//					spirit.AddActionFactory( action );
+//					await spirit.TakeAction( action, this.gameState );
+//				} else {
+					spirit.Grow( gameState, option );
+					await resolveGrowth.ActAsync();
+//				}
 			}
 
 			await spirit.TriggerEnergyElementsAndReclaims();

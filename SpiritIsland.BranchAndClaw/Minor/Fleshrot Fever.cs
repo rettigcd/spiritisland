@@ -9,7 +9,7 @@ namespace SpiritIsland.BranchAndClaw {
 		[FromPresence( 1, Target.JungleOrSand )]
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 			ctx.AddFear( 1 );
-			ctx.Tokens.Disease().Count++;
+			ctx.Tokens.Disease.Count++;
 			return Task.CompletedTask;
 		}
 

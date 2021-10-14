@@ -19,7 +19,7 @@ namespace SpiritIsland.Tests.BranchAndClaw {
 			//   And: 1 neighboring town
 			gs.Tokens[ noInvaderSpace.Adjacent.First() ].Adjust(Invader.Town[2],1);
 			//   And: 1 wilds there
-			counts.Wilds().Count++;
+			counts.Wilds.Count++;
 
 			//  When: we explore there
 			_ = gs.InvaderEngine.Explore( new InvaderCard(noInvaderSpace.Terrain) );
@@ -27,7 +27,7 @@ namespace SpiritIsland.Tests.BranchAndClaw {
 			//  Then: still no invaders
 			gs.Tokens[noInvaderSpace].HasInvaders().ShouldBeFalse("there should be no explorers in "+noInvaderSpace.Label);
 			//   And: no wilds here
-			(counts.Wilds()>0).ShouldBeFalse("wilds should be used up");
+			(counts.Wilds>0).ShouldBeFalse("wilds should be used up");
 
 		}
 
@@ -39,7 +39,7 @@ namespace SpiritIsland.Tests.BranchAndClaw {
 			Space space = gs.Island.AllSpaces.First( s => s.Terrain != Terrain.Ocean && !gs.Tokens[s].HasInvaders() ); // 0 invaders
 			gs.Tokens[space].Adjust( Invader.Explorer[1], 1 ); // add explorer
 			//   And: 1 diseases there
-			gs.Tokens[space].Disease().Count++;
+			gs.Tokens[space].Disease.Count++;
 
 			//  When: we build there
 			await gs.InvaderEngine.TestBuild( new InvaderCard( space.Terrain ) );
@@ -47,7 +47,7 @@ namespace SpiritIsland.Tests.BranchAndClaw {
 			//  Then: still no towns (just original explorer)
 			gs.Assert_Invaders(space, "1E@1" ); // "should be no town on "+space.Label
 			//   And: no disease here
-			gs.Tokens[space].Disease().Any.ShouldBeFalse( "disease should be used up" );
+			gs.Tokens[space].Disease.Any.ShouldBeFalse( "disease should be used up" );
 
 
 		}

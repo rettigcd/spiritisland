@@ -6,7 +6,7 @@ namespace SpiritIsland.BranchAndClaw {
 	class Setup_PlacePresenceOnBeastLand : GrowthActionFactory {
 
 		public override async Task ActivateAsync( Spirit spirit, GameState gameState ) {
-			var options = gameState.Island.AllSpaces.Where( space=>gameState.Tokens[space].Beasts().Any );
+			var options = gameState.Island.AllSpaces.Where( space=>gameState.Tokens[space].Beasts.Any );
 			var space = await spirit.Action.Decision(new Decision.TargetSpace("Add presence to",options, Present.Always));
 			spirit.Presence.PlaceOn(space);
 		}

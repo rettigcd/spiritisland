@@ -103,9 +103,9 @@ namespace SpiritIsland.WinForms {
 				[TokenType.Dahan[1]] = images.GetToken( "dahan1" ),
 				[TokenType.Defend] = images.GetToken( "defend1orange" ),
 				[TokenType.Blight] = images.GetToken( "blight" ),
-				[BacTokens.Beast] = images.GetToken( "beast" ),
-				[BacTokens.Wilds] = images.GetToken("wilds"),
-				[BacTokens.Disease] = images.GetToken( "disease" ),
+				[TokenType.Beast] = images.GetToken( "beast" ),
+				[TokenType.Wilds] = images.GetToken("wilds"),
+				[TokenType.Disease] = images.GetToken( "disease" ),
 			};
 
 			this.gameState = gameState;
@@ -304,7 +304,7 @@ namespace SpiritIsland.WinForms {
 			);
 
 			DrawRow( graphics, tokens, x, ref y, iconWidth, xStep, 0, false
-				, BacTokens.Beast, BacTokens.Wilds, BacTokens.Disease
+				, TokenType.Beast, TokenType.Wilds, TokenType.Disease
 			);
 
 		}

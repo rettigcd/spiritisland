@@ -14,11 +14,11 @@ namespace SpiritIsland.BranchAndClaw {
 				ctx.AddBlight( 1 );
 
 				// Add 2 beasts
-				var beasts = ctx.Tokens.Beasts();
+				var beasts = ctx.Tokens.Beasts;
 				beasts.Count += 2;
 
 				// Gather up to 2 beasts
-				await ctx.GatherUpTo( 2, BacTokens.Beast.Generic );
+				await ctx.GatherUpTo( 2, TokenType.Beast.Generic );
 
 				// each beast deals:
 				// 1 fear

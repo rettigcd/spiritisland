@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace SpiritIsland.BranchAndClaw.Minor {
+namespace SpiritIsland {
 
 	// Change Speed - delayed.  They don't have to pick it immediately - similar to Lightning
 	public class ChangeSpeed : IActionFactory {

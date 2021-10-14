@@ -1,18 +1,16 @@
 ﻿
 using System.Linq;
 
-namespace SpiritIsland.BranchAndClaw {
+namespace SpiritIsland {
 
 
 	public class GameState_BranchAndClaw : GameState {
 
-		protected override InvaderEngine BuildInvaderEngine() => new BacInvaderEngine(this);
-
 		static GameState_BranchAndClaw() {
 			// Register new filters needed for Branch and Claw
-			SpaceFilterMap.Register(Target.Beast,            ( ctx ) => ctx.Tokens.Beasts().Any );
-			SpaceFilterMap.Register(Target.BeastOrJungle,    ( ctx ) => ctx.Terrain == Terrain.Jungle || ctx.Tokens.Beasts().Any );
-			SpaceFilterMap.Register(Target.PresenceOrWilds,  ( ctx ) => ctx.IsPresent || ctx.Tokens.Wilds() > 0 );
+			SpaceFilterMap.Register(Target.Beast,            ( ctx ) => ctx.Tokens.Beasts.Any );
+			SpaceFilterMap.Register(Target.BeastOrJungle,    ( ctx ) => ctx.Terrain == Terrain.Jungle || ctx.Tokens.Beasts.Any );
+			SpaceFilterMap.Register(Target.PresenceOrWilds,  ( ctx ) => ctx.IsPresent || ctx.Tokens.Wilds > 0 );
 			SpaceFilterMap.Register(Target.CoastalOrWetlands,( ctx ) => ctx.Terrain == Terrain.Wetland || ctx.IsCoastal );
 			SpaceFilterMap.Register(Target.City, (ctx) => ctx.Tokens.Has(Invader.City) );
 
@@ -25,9 +23,9 @@ namespace SpiritIsland.BranchAndClaw {
 		public override void Initialize() {
 			base.Initialize();
 			foreach(var board in Island.Boards) {
-				Tokens[board[2]].Disease().Count++;
+				Tokens[board[2]].Disease.Count++;
 				var lowest = board.Spaces.Skip(1).First(s=>s.StartUpCounts.Empty);
-				Tokens[lowest][BacTokens.Beast]++;
+				Tokens[lowest][TokenType.Beast]++;
 			}
 		}
 

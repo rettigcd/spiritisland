@@ -19,7 +19,7 @@ namespace SpiritIsland.BranchAndClaw {
 		}
 
 		static async Task AddDiseaseAndStrife( TargetSpaceCtx ctx ) {
-			ctx.Tokens.Disease().Count++;
+			ctx.Tokens.Disease.Count++;
 			await ctx.AddStrife();
 		}
 
@@ -72,7 +72,7 @@ namespace SpiritIsland.BranchAndClaw {
 		}
 
 		static Token[] GetRemovableTokens( TargetSpaceCtx ctx ) {
-			var options = ctx.Tokens.OfAnyType( BacTokens.Beast.Generic, BacTokens.Disease.Generic, BacTokens.Wilds.Generic ).ToList();
+			var options = ctx.Tokens.OfAnyType( TokenType.Beast.Generic, TokenType.Disease.Generic, TokenType.Wilds.Generic ).ToList();
 			options.AddRange( ctx.Tokens.Keys.OfType<StrifedInvader>() );
 			return options.ToArray();
 		}

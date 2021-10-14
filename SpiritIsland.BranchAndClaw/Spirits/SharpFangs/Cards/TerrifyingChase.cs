@@ -11,7 +11,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			// push 2 exploeres / towns / dahan
 			// push another 2 explorers / towns / dahan pers beast in target land
-			int pushCount = 2 + 2 * ctx.Tokens.Beasts().Count;
+			int pushCount = 2 + 2 * ctx.Tokens.Beasts.Count;
 
 			int startingInvaderCount = ctx.Tokens.InvaderTotal();
 

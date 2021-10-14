@@ -9,7 +9,7 @@ namespace SpiritIsland.BranchAndClaw {
 		[FromSacredSite(1)]
 		static public async Task ActAsync(TargetSpaceCtx ctx ) {
 			// add 2 disease
-			var disease = ctx.Tokens.Disease();
+			var disease = ctx.Tokens.Disease;
 			disease.Count+=2;
 
 			// for each disease in target land, defend 1 in target and all adjacent lands

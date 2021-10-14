@@ -48,9 +48,17 @@ namespace SpiritIsland {
 
 		#region Explore
 
-		public virtual async Task ExploresSpace( Space space ) {
-			gs.Log(space+":gains explorer");
-			await gs.Tokens.Add( Invader.Explorer, space );
+		public async Task ExploresSpace( Space space ) {
+			// only gets called when explorer is actually going to explore
+			var wilds = gs.Tokens[space].Wilds;
+			if(wilds == 0) { 
+				gs.Log(space+":gains explorer");
+				await gs.Tokens.Add( Invader.Explorer, space );
+			}
+			else
+				wilds.Count--;
+
+
 		}
 
 		public async Task Explore( params InvaderCard[] invaderCards ) {
@@ -82,10 +90,16 @@ namespace SpiritIsland {
 
 		#region Build
 
-		public virtual async Task<string> Build( TokenCountDictionary counts, BuildingEventArgs.BuildType buildType ) {
+		public async Task<string> Build( TokenCountDictionary tokens, BuildingEventArgs.BuildType buildType ) {
+			var disease = tokens.Disease;
+			if(disease.Any) {
+				disease.Count--;
+				return tokens.Space.Label +" build stopped by disease";
+			}
+
 			// Determine type to build
-			int townCount = counts.Sum( Invader.Town );
-			int cityCount = counts.Sum( Invader.City );
+			int townCount = tokens.Sum( Invader.Town );
+			int cityCount = tokens.Sum( Invader.City );
 			TokenGroup invaderToAdd = townCount > cityCount ? Invader.City : Invader.Town;
 
 			// check if we should
@@ -96,7 +110,7 @@ namespace SpiritIsland {
 			};
 			// build it
 			if(shouldBuild)
-				await gs.Tokens.Add( invaderToAdd, counts.Space, 1 );
+				await gs.Tokens.Add( invaderToAdd, tokens.Space, 1 );
 
 			return invaderToAdd.Label;
 		}
@@ -172,9 +186,9 @@ namespace SpiritIsland {
 			}
 		}
 
-		public virtual async Task<string> RavageSpace( InvaderGroup grp ) {
+		public async Task<string> RavageSpace( InvaderGroup grp ) {
 			var cfg = gs.GetRavageConfiguration( grp.Space );
-			var eng = new RavageEngine( gs, grp, cfg );
+			var eng = new RavageEngineWithStrife( gs, grp, cfg );
 			await eng.Exec();
 			return grp.Space.Label + ": " + eng.log.Join( "  " );
 		}

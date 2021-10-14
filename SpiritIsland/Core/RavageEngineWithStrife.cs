@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace SpiritIsland.BranchAndClaw {
+namespace SpiritIsland {
 
 	public class RavageEngineWithStrife : RavageEngine {
 

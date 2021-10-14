@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace SpiritIsland.BranchAndClaw {
+namespace SpiritIsland {
 
 	// end of round action
 	public class ForgetCard {

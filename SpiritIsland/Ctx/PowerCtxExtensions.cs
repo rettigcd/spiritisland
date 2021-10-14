@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace SpiritIsland.BranchAndClaw {
+namespace SpiritIsland {
 
 	public static class PowerCtxExtensions {
 		
@@ -9,7 +9,7 @@ namespace SpiritIsland.BranchAndClaw {
 		static public Task AddStrife( this TargetSpaceCtx ctx, params TokenGroup[] groups ) => ctx.Self.SelectInvader_ToStrife( ctx.Tokens, groups );
 
 		static public async Task SelectInvader_ToStrife( this Spirit spirit, TokenCountDictionary tokens, params TokenGroup[] groups ) {
-			var invader = await spirit.Action.Decision( new AddStrifeDecision( tokens, groups ) );
+			var invader = await spirit.Action.Decision( new Decision.AddStrifeDecision( tokens, groups ) );
 			if(invader != null)
 				tokens.AddStrifeTo( invader );
 		}

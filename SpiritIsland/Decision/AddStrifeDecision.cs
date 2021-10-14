@@ -1,5 +1,5 @@
 ﻿
-namespace SpiritIsland.BranchAndClaw {
+namespace SpiritIsland.Decision {
 	public class AddStrifeDecision : Decision.TokenOnSpace {
 
 		public AddStrifeDecision( TokenCountDictionary tokens, params TokenGroup[] groups )

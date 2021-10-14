@@ -39,8 +39,8 @@ namespace SpiritIsland.BranchAndClaw {
 			return ctx.GameState.Island.AllSpaces
 				.Where( s => {
 					var tokens = ctx.GameState.Tokens[s];
-					return tokens.Beasts().Count>0
-						|| tokens.Disease().Count>0
+					return tokens.Beasts.Count>0
+						|| tokens.Disease.Count>0
 						|| 2 <= tokens.Sum(TokenType.Dahan);
 				} )
 				.ToArray();

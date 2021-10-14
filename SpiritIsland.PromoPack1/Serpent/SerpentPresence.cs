@@ -6,7 +6,7 @@ namespace SpiritIsland.PromoPack1 {
 	class SerpentPresence : SpiritPresence {
 
 
-		static Track fakeEarth = new Track("earth energy");
+		readonly static Track fakeEarth = new Track("earth energy");
 
 		public SerpentPresence():base(
 			new Track[]{ Track.Energy1, Track.FireEnergy, Track.AnyEnergy,    Track.Reclaim1Energy, Track.EarthEnergy, Track.Energy6, Track.AnyEnergy, Track.MkEnergy(12) },

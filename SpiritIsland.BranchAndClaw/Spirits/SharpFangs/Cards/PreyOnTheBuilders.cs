@@ -9,9 +9,9 @@ namespace SpiritIsland.BranchAndClaw {
 		[FromPresence(0)]
 		public static async Task ActAsync(TargetSpaceCtx ctx ) {
 			// you may gather 1 beast
-			await ctx.GatherUpTo(1, BacTokens.Beast.Generic);
+			await ctx.GatherUpTo(1, TokenType.Beast.Generic);
 
-			if( ctx.Tokens.Beasts().Any )
+			if( ctx.Tokens.Beasts.Any )
 				ctx.Skip1Build();
 
 		}

@@ -16,7 +16,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			// add wilds
 			var tokens = ctx.Target(to).Tokens;
-			var wilds = tokens.Wilds();
+			var wilds = tokens.Wilds;
 			wilds.Count++;
 
 			// Add presence

@@ -16,9 +16,9 @@ namespace SpiritIsland.Tests.Core {
 				TokenType.Dahan[1],TokenType.Dahan[2],
 				TokenType.Blight, // conflict with Beast
 				TokenType.Defend,
-				BacTokens.Beast,
-				BacTokens.Disease,
-				BacTokens.Wilds
+				TokenType.Beast,
+				TokenType.Disease,
+				TokenType.Wilds
 			};
 
 			var conflicts = tokens
