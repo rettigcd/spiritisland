@@ -69,8 +69,8 @@ namespace SpiritIsland.Basegame {
 			};
 
 			this.InnatePowers = new InnatePower[]{
-				new FastIf4Air<GatherTheWarriors>(),
-				new FastIf4Air<LeadTheFuriousAssult>(),
+				InnatePower.For<GatherTheWarriors>(),
+				InnatePower.For<LeadTheFuriousAssult>(),
 			};
 
 		}

@@ -5,12 +5,13 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
-	public abstract class PowerCard : IFlexibleSpeedActionFactory, IOption {
+	public class PowerCard : IFlexibleSpeedActionFactory, IOption {
 
 		#region constructor
 
-		protected PowerCard( MethodBase methodBase ) {
+		protected PowerCard( MethodBase methodBase, GeneratesContextAttribute targetAttr ) {
 			this.methodBase = methodBase;
+			this.targetAttr = targetAttr;
 			cardAttr = methodBase.GetCustomAttributes<CardAttribute>().VerboseSingle( "Couldn't find CardAttribute on PowerCard targeting a space" );
 			speedAttr = methodBase.GetCustomAttribute<SpeedAttribute>(false) ?? throw new InvalidOperationException("Missing Speed attribute for "+methodBase.DeclaringType.Name);
 		}
@@ -34,7 +35,11 @@ namespace SpiritIsland {
 				: speedAttr.IsActiveFor(requestSpeed,elements);
 		}
 
-		abstract public Task ActivateAsync( Spirit spirit, GameState gameState );
+		public async Task ActivateAsync( Spirit spirit, GameState gameState ) {
+			var ctx = await targetAttr.GetTargetCtx( spirit, gameState );
+			if(ctx == null) return;
+			await (Task)methodBase.Invoke( null, new object[] { ctx } );
+		}
 
 		#region private
 
@@ -59,14 +64,15 @@ namespace SpiritIsland {
 
 		static public PowerCard For( MethodInfo method ) {
 			// check if targets spirit
-			if(method.GetCustomAttributes<AnySpiritAttribute>().Any())
-				return new PowerCard_TargetSpirit( method );
+			var targetSpiritAttribute = method.GetCustomAttributes<AnySpiritAttribute>().FirstOrDefault();
+			if( targetSpiritAttribute != null )
+				return new PowerCard( method, targetSpiritAttribute );
 
 			//TargetSpaceAttribute targetSpace = (TargetSpaceAttribute)method.GetCustomAttributes<FromPresenceAttribute>().FirstOrDefault()
 			//	?? (TargetSpaceAttribute)method.GetCustomAttributes<FromSacredSiteAttribute>().FirstOrDefault();
 			TargetSpaceAttribute targetSpace = method.GetCustomAttributes<TargetSpaceAttribute>().FirstOrDefault();
 
-			return new PowerCard_TargetSpace( method, targetSpace );
+			return new PowerCard( method, targetSpace );
 		}
 
 		static public PowerCard[] GetMajors(Type assemblyRefType) {
@@ -82,7 +88,10 @@ namespace SpiritIsland {
 
 		#endregion
 
+		readonly protected GeneratesContextAttribute targetAttr;
+
 	}
+
 
 	public enum PowerType { Minor, Major, Spirit }
 

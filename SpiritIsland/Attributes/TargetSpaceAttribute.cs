@@ -3,12 +3,12 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
-	public abstract class TargetSpaceAttribute : Attribute {
+	public abstract class TargetSpaceAttribute : GeneratesContextAttribute {
 
 		readonly From fromSourceEnum;
 		readonly protected Terrain? sourceTerrain;
 		readonly protected int range;
-		public string TargetFilter { get; }
+		public override string TargetFilter { get; }
 
 		public TargetSpaceAttribute(From source, Terrain? sourceTerrain, int range, string targetFilter){
 			this.fromSourceEnum = source;
@@ -17,13 +17,16 @@ namespace SpiritIsland {
 			this.TargetFilter = targetFilter;
 		}
 
-		public Task<Space> GetTarget( Spirit spirit, GameState gameState ){
-			return spirit.PowerApi.TargetsSpace( spirit, gameState, fromSourceEnum, sourceTerrain, range, TargetFilter );
+		public override async Task<object> GetTargetCtx( Spirit spirit, GameState gameState ){
+			// !!! replace null with prompt indicating what card we are targetting
+			var space = await spirit.PowerApi.TargetsSpace( spirit, gameState, null, fromSourceEnum, sourceTerrain, range, TargetFilter );
+			return space == null ? null 
+				: new TargetSpaceCtx( spirit, gameState, space, Cause.Power);
 		}
 
-		public abstract string RangeText { get; }
-
 		protected virtual int CalcRange( SpiritGameStateCtx ctx ) => range;
+
+		public override LandOrSpirit LandOrSpirit => LandOrSpirit.Land;
 
 	}
 

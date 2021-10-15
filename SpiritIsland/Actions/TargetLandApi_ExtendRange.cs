@@ -15,12 +15,13 @@ namespace SpiritIsland {
 		public override Task<Space> TargetsSpace( 
 			Spirit self, 
 			GameState gameState, 
+			string prompt,
 			From from, 
 			Terrain? sourceTerrain, 
 			int range, 
 			string target
 		)
-			=> originalApi.TargetsSpace( self, gameState, from, sourceTerrain, range + extension, target );
+			=> originalApi.TargetsSpace( self, gameState, prompt, from, sourceTerrain, range + extension, target );
 
 	}
 

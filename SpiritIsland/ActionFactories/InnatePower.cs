@@ -7,26 +7,30 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
-	public abstract class InnatePower : IFlexibleSpeedActionFactory {
+	public class InnatePower : IFlexibleSpeedActionFactory {
+
+		readonly protected GeneratesContextAttribute targetAttr;
+
+		public string TargetFilter => this.targetAttr.TargetFilter;
+
+		public string RangeText => this.targetAttr.RangeText;
 
 		#region Constructors and factories
 
 		static public InnatePower For<T>(){ 
 			Type actionType = typeof(T);
-
-			bool targetSpirit = actionType.GetCustomAttributes<AnySpiritAttribute>().Any();
-			return targetSpirit		
-				? new InnatePower_TargetSpirit( actionType ) 
-				: new InnatePower_TargetSpace( actionType );
+			var contextAttr = actionType.GetCustomAttributes<GeneratesContextAttribute>().Single();
+			return new InnatePower( actionType, contextAttr );
 		}
 
-		internal InnatePower(Type actionType,LandOrSpirit landOrSpirit){
+		internal InnatePower(Type actionType,GeneratesContextAttribute targetAttr){
+
 			innatePowerAttr = actionType.GetCustomAttribute<InnatePowerAttribute>();
 			speedAttr = actionType.GetCustomAttribute<SpeedAttribute>(false) 
 				?? throw new InvalidOperationException("Missing Speed attribute for "+actionType.Name);
+			this.targetAttr = targetAttr;
 
 			Name = innatePowerAttr.Name;
-			LandOrSpirit = landOrSpirit;
 
 			// try static method (spirit / major / minor)
 			this.elementListByMethod = actionType
@@ -75,17 +79,19 @@ namespace SpiritIsland {
 
 		public string Text => Name;
 
-		public LandOrSpirit LandOrSpirit { get; }
+		public LandOrSpirit LandOrSpirit => targetAttr.LandOrSpirit;
 
-		public abstract Task ActivateAsync( Spirit spirit, GameState gameState );
-
-		public abstract string RangeText { get; }
-
-		public abstract string TargetFilter { get; }
+		public async Task ActivateAsync( Spirit self, GameState gameState ) {
+			var ctx = await targetAttr.GetTargetCtx( self, gameState );
+			if(ctx == null) return;
+			var methods = HighestMethodOfEachGroup( self );
+			foreach(var method in methods)
+				await (Task)method.Invoke( null, new object[] { ctx } );
+		}
 
 		public Element[][] GetTriggerThresholds() => elementListByMethod.Select(a=>a.Attr.Elements).ToArray();
 
-		protected MethodInfo[] HighestMethod( Spirit spirit ) {
+		protected MethodInfo[] HighestMethodOfEachGroup( Spirit spirit ) {
 			var activatedElements = spirit.Elements;
 			var bestMatch = elementListByMethod
 				// filter first - so we only have groups that have matches

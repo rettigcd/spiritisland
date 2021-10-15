@@ -25,7 +25,7 @@ namespace SpiritIsland.BranchAndClaw {
 				// Destory all invaders.
 				await ctx.Invaders.DestroyAny( int.MaxValue, Invader.City, Invader.Town, Invader.Explorer );
 				// Add 1 wilds.
-				ctx.Tokens.Wilds.Count++;
+				ctx.Wilds.Count++;
 				// In  each adjacent land:
 				foreach(var adj in ctx.Adjacent.Select( ctx.Target ))
 					await EffectAdjacentLand( adj );
@@ -39,13 +39,13 @@ namespace SpiritIsland.BranchAndClaw {
 			// destory all dahan and beast.
 			await DestroyDahanAndBeasts( adj );
 			// IF there are no blight, add 1 blight
-			if(adj.Tokens.Blight.Count == 0)
+			if(adj.Blight.Count == 0)
 				adj.AddBlight();
 		}
 
 		static async Task DestroyDahanAndBeasts( TargetSpaceCtx ctx ) {
 			await ctx.DestroyDahan( int.MaxValue );
-			ctx.Tokens.Beasts.Count = 0;
+			ctx.Beasts.Count = 0;
 		}
 	}
 

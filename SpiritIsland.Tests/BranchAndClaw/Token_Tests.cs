@@ -15,11 +15,11 @@ namespace SpiritIsland.Tests.BranchAndClaw {
 
 			// Given: a space with no invaders
 			Space noInvaderSpace = gs.Island.AllSpaces.First(s=>s.Terrain!=Terrain.Ocean && !gs.Tokens[s].HasInvaders());
-			var counts = gs.Tokens[noInvaderSpace];
+			var tokens = gs.Tokens[noInvaderSpace];
 			//   And: 1 neighboring town
 			gs.Tokens[ noInvaderSpace.Adjacent.First() ].Adjust(Invader.Town[2],1);
 			//   And: 1 wilds there
-			counts.Wilds.Count++;
+			tokens.Wilds.Count++;
 
 			//  When: we explore there
 			_ = gs.InvaderEngine.Explore( new InvaderCard(noInvaderSpace.Terrain) );
@@ -27,7 +27,7 @@ namespace SpiritIsland.Tests.BranchAndClaw {
 			//  Then: still no invaders
 			gs.Tokens[noInvaderSpace].HasInvaders().ShouldBeFalse("there should be no explorers in "+noInvaderSpace.Label);
 			//   And: no wilds here
-			(counts.Wilds>0).ShouldBeFalse("wilds should be used up");
+			(tokens.Wilds>0).ShouldBeFalse("wilds should be used up");
 
 		}
 

@@ -1,25 +1,31 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
-== Clean-up ==
+== Road Map to Awesomeness ==
+* MED	Signalling => Events
+* HARD	Multi Player 
+* MED	Multi Platform (Linux / Android)
+* MED	Internet Play
+* MED	AI Player
+* EASY	Convert individual images to Drawn Images for: Cards, Boards, Fear
+* ????	Broken Earth + Promo Pack 2
 
-* BUG - ANY elements not working
+
+== Clean-up ==
 
 4 Blight Tests
 4 Show log of User actions, Invader Actions
 * Visual indicator of Phase
 * Log Ravage / Build / Explore / Fear / Blight
 
-
 == Bonus - Fun ==
 
-3 Create a target-space preview, when hovering over cards
 2 Click on Fear card to close it.
 3 Draw cards from metadata
 2 Visual indication of phase
+3 Create a target-space preview, when hovering over cards
 
 2 When presenting options, Icon-draw them.
 3 draw innates - range icons, Target icons, clean tokens, +1 range
-2 hovering over cards, show what lands they target
 1 Cards ui - scrolling, decks & discard pile, 
 
 == Tests: Ravage Engine =====
@@ -31,6 +37,16 @@
 * A Year of Perfect Stillness - skips invader actions
 * Bringer
 * the +1 from Fires Fury (Heart of Wildfire)
+
+== Tests: Card Speed ==
+
+Lightning makes cards fast for each air.
+Thunderspeaker innate fast if 4 air
+BAC Minor card fast if element threshold
+Wildfire card fast if element threshold
+Power that allows speeds to be switched.
+	- does coard speed switch reset at end of round?
+Innates that may be fast.
 
 == Tests: Repeat Card / Change Speed =====
 

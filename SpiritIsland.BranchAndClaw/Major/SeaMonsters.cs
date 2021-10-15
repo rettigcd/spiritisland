@@ -17,7 +17,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 		static async Task DoPowerAction( TargetSpaceCtx ctx ) {
 			// add 1 beast.
-			var beasts = ctx.Tokens.Beasts;
+			var beasts = ctx.Beasts;
 			beasts.Count++;
 
 			// IF invaders are present,
@@ -26,7 +26,7 @@ namespace SpiritIsland.BranchAndClaw {
 				ctx.AddFear( System.Math.Min( 8, beasts.Count * 2 ) );
 
 			int damage = 3 * beasts.Count // 3 damage per beast
-				+ ctx.Tokens.Blight.Count; // 1 damage per blight
+				+ ctx.Blight.Count; // 1 damage per blight
 			await ctx.DamageInvaders( damage );
 		}
 	}

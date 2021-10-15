@@ -19,7 +19,7 @@ namespace SpiritIsland.BranchAndClaw {
 		}
 
 		static async Task AddDiseaseAndStrife( TargetSpaceCtx ctx ) {
-			ctx.Tokens.Disease.Count++;
+			ctx.Disease.Count++;
 			await ctx.AddStrife();
 		}
 

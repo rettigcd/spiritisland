@@ -8,7 +8,7 @@ namespace SpiritIsland.BranchAndClaw {
 		[FromPresenceIn(1,Terrain.Jungle,Target.NoBlight)]
 		static public async Task ActAsync(TargetSpaceCtx ctx ) {
 
-			var beasts = ctx.Tokens.Beasts;
+			var beasts = ctx.Beasts;
 			await ctx.SelectActionOption(
 				new ActionOption("1 fear, add 1 beast", ()=>{ ctx.AddFear(1); beasts.Count++; } ),
 				new ActionOption("3 fear", ()=> ctx.AddFear(3), ctx.Tokens.HasInvaders() && beasts > 0 )

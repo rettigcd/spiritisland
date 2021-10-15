@@ -11,7 +11,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			// Add 1 beast in one of target spirits lands
 			var spaceCtx = await ctx.OtherCtx.TargetLandWithPresence("Select land to add beast (+defend 4 for SS)");
-			spaceCtx.Tokens.Beasts.Count++;
+			spaceCtx.Beasts.Count++;
 
 			// if target spirit has a SS in that land, defend 4 there
 			if( spaceCtx.IsSelfSacredSite )

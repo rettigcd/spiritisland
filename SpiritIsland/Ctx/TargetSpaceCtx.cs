@@ -39,6 +39,16 @@ namespace SpiritIsland {
 		public TokenCountDictionary Tokens => _tokens ??= GameState.Tokens[Space];
 		TokenCountDictionary _tokens;
 
+		#region Token Shortcuts
+		public void Defend(int defend) => Tokens.Defend.Count += defend;
+		public TokenBinding Blight => Tokens.Blight;
+		public TokenBinding Beasts => Tokens.Beasts;
+		public TokenBinding Disease => Tokens.Disease;
+		public TokenBinding Wilds => Tokens.Wilds;
+		public TokenBinding Badlands => Tokens.Badlands;
+
+		#endregion
+
 		#region Push
 
 		public Task<Space[]> PushUpToNDahan( int countToPush ) => PushUpTo( countToPush, TokenType.Dahan );
@@ -92,8 +102,6 @@ namespace SpiritIsland {
 		public int DahanCount => Tokens[TokenType.Dahan[2]] + Tokens[TokenType.Dahan[1]];
 
 		public bool HasDahan => DahanCount>0;
-
-		public void Defend(int defend) => Tokens.Defend.Count += defend;
 
 		// !!! this might be a bug.  By default, it does not destory damaged dahan, only healthy dahan
 		public Task DestroyDahan(int countToDestroy, Token dahanToken = null)
@@ -162,6 +170,10 @@ namespace SpiritIsland {
 		}
 
 		#endregion
+
+		public IEnumerable<Space> FindSpacesWithinRangeOf( int range, string filterEnum ) {
+			return Self.PowerApi.GetTargetOptions( Self, GameState, new Space[]{ Space }, range, filterEnum );
+		}
 
 		public async Task<TargetSpaceCtx> SelectAdjacentLand( string prompt, System.Func<TargetSpaceCtx, bool> filter = null ) {
 			var options = Adjacent;

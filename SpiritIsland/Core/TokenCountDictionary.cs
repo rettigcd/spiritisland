@@ -48,14 +48,11 @@ namespace SpiritIsland {
 		public override string ToString() => Space.Label + ":" + Summary;
 
 		public TokenBinding Blight => new TokenBinding( this, TokenType.Blight);
-
 		public TokenBinding Defend => new TokenBinding( this, TokenType.Defend );
-
 		public TokenBinding Beasts => new ( this, TokenType.Beast );
-
 		public TokenBinding Disease => new ( this, TokenType.Disease );
-
 		public TokenBinding Wilds => new ( this, TokenType.Wilds );
+		public TokenBinding Badlands => new ( this, TokenType.Badlands );
 
 		#region private
 

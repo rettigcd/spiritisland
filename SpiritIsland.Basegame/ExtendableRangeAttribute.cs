@@ -2,6 +2,7 @@
 
 namespace SpiritIsland.Basegame {
 
+	// !!! review the usaage of this class.  Should it inherit from  TargetSpace???
 	[AttributeUsage( AttributeTargets.Class | AttributeTargets.Method )]
 	public class ExtendableRangeAttribute : TargetSpaceAttribute {
 		readonly string triggeringElements;
@@ -15,6 +16,9 @@ namespace SpiritIsland.Basegame {
 
 		protected override int CalcRange( SpiritGameStateCtx ctx ) => range
 			+ (ctx.YouHave( triggeringElements ) ? extension : 0);
+
+		public override LandOrSpirit LandOrSpirit => LandOrSpirit.Land;
+
 	}
 
 }

@@ -3,6 +3,7 @@
 namespace SpiritIsland {
 
 	public class MinDistanceCalculator {
+
 		readonly Queue<Space> spacesLessThanLimit = new();
 		readonly Dictionary<Space, int> shortestDistances = new();
 			
@@ -17,7 +18,7 @@ namespace SpiritIsland {
 		public MinDistanceCalculator Calculate() {
 			while(spacesLessThanLimit.Count > 0) {
 				// get next
-				var cur = spacesLessThanLimit.Dequeue();
+				var cur = spacesLessThanLimit.Dequeue(); // Instead of just getting next, we could select the lowest value first
 				int neighborDist = shortestDistances[cur] + 1;
 				// add neighbors to dictionary and evaluated its neighbors
 				foreach(var a in cur.Adjacent) {

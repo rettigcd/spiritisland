@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 
-	[InnatePower( GatherTheWarriors.Name ),Slow]
+	[InnatePower( GatherTheWarriors.Name ),SlowButFastIf("4 air")]
 	[FromPresence(1)]
 	public class GatherTheWarriors {
 

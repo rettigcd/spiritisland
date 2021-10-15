@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.BranchAndClaw {
 
@@ -13,7 +12,7 @@ namespace SpiritIsland.BranchAndClaw {
 			ctx.AddFear(2);
 
 			// add 1 beast.
-			var beasts = ctx.Tokens.Beasts;
+			var beasts = ctx.Beasts;
 			beasts.Count++;
 
 			// Gather up to 1 beast.
@@ -31,7 +30,7 @@ namespace SpiritIsland.BranchAndClaw {
 				//   and +1 damage per beast there
 				var noBlight = await ctx.SelectAdjacentLand( "1 Damage in land w/o blight", ctx=>!ctx.HasBlight);
 				if(noBlight != null)
-					await noBlight.DamageInvaders(1 + noBlight.Tokens.Beasts.Count );
+					await noBlight.DamageInvaders(1 + noBlight.Beasts.Count );
 			}
 
         }

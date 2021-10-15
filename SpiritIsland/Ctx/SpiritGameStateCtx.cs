@@ -51,8 +51,8 @@ namespace SpiritIsland {
 		/// <summary>
 		/// Used for Power-targetting, where range sympols appear.
 		/// </summary>
-		public async Task<TargetSpaceCtx> SelectTargetSpace( From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum ) {
-			var space = await Self.PowerApi.TargetsSpace( Self, GameState, sourceEnum, sourceTerrain, range, filterEnum );
+		public async Task<TargetSpaceCtx> SelectTargetSpace( string prompt, From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum ) {
+			var space = await Self.PowerApi.TargetsSpace( Self, GameState, prompt, sourceEnum, sourceTerrain, range, filterEnum );
 			return new TargetSpaceCtx( this, space );
 		}
 
@@ -68,7 +68,6 @@ namespace SpiritIsland {
 			var space = await Self.Action.Decision( new Decision.TargetSpace(prompt,Self.Presence.Spaces, Present.Always ) );
 			return new TargetSpaceCtx( this, space );
 		}
-
 
 		#region Draw Cards
 

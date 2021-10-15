@@ -8,9 +8,9 @@ namespace SpiritIsland {
 
 		static GameState_BranchAndClaw() {
 			// Register new filters needed for Branch and Claw
-			SpaceFilterMap.Register(Target.Beast,            ( ctx ) => ctx.Tokens.Beasts.Any );
-			SpaceFilterMap.Register(Target.BeastOrJungle,    ( ctx ) => ctx.Terrain == Terrain.Jungle || ctx.Tokens.Beasts.Any );
-			SpaceFilterMap.Register(Target.PresenceOrWilds,  ( ctx ) => ctx.IsPresent || ctx.Tokens.Wilds > 0 );
+			SpaceFilterMap.Register(Target.Beast,            ( ctx ) => ctx.Beasts.Any );
+			SpaceFilterMap.Register(Target.BeastOrJungle,    ( ctx ) => ctx.Terrain == Terrain.Jungle || ctx.Beasts.Any );
+			SpaceFilterMap.Register(Target.PresenceOrWilds,  ( ctx ) => ctx.IsPresent || ctx.Wilds > 0 );
 			SpaceFilterMap.Register(Target.CoastalOrWetlands,( ctx ) => ctx.Terrain == Terrain.Wetland || ctx.IsCoastal );
 			SpaceFilterMap.Register(Target.City, (ctx) => ctx.Tokens.Has(Invader.City) );
 

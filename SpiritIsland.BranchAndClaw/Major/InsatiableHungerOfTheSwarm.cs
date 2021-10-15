@@ -14,7 +14,7 @@ namespace SpiritIsland.BranchAndClaw {
 				ctx.AddBlight( 1 );
 
 				// Add 2 beasts
-				var beasts = ctx.Tokens.Beasts;
+				var beasts = ctx.Beasts;
 				beasts.Count += 2;
 
 				// Gather up to 2 beasts

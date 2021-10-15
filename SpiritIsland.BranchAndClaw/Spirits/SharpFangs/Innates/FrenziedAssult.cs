@@ -22,7 +22,7 @@ namespace SpiritIsland.BranchAndClaw {
 			ctx.AddFear( fear );
 			await ctx.Invaders.SmartDamageToTypes( damage );
 			// remove 1 beast
-			ctx.Tokens.Beasts.Count--;
+			ctx.Beasts.Count--;
 		}
 
 	}

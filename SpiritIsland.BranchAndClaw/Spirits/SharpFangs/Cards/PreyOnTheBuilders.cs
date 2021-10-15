@@ -11,7 +11,7 @@ namespace SpiritIsland.BranchAndClaw {
 			// you may gather 1 beast
 			await ctx.GatherUpTo(1, TokenType.Beast.Generic);
 
-			if( ctx.Tokens.Beasts.Any )
+			if( ctx.Beasts.Any )
 				ctx.Skip1Build();
 
 		}
