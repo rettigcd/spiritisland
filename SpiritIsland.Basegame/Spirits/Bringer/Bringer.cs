@@ -53,7 +53,7 @@ namespace SpiritIsland.Basegame {
 			PowerCard.For<PredatoryNightmares>()
 		) {
 
-			GrowthOptions = new GrowthOption[]{
+			growthOptionGroup = new(
 				// reclaim, +1 power card
 				new GrowthOption(new ReclaimAll(),new DrawPowerCard(1)),
 				// reclaim 1, add presence range 0
@@ -62,7 +62,7 @@ namespace SpiritIsland.Basegame {
 				new GrowthOption(new DrawPowerCard(1), new PlacePresence(1) ),
 				// add presense range Dahan or Invadors, +2 energy
 				new GrowthOption(new GainEnergy(2), new PlacePresence(4,Target.DahanOrInvaders))
-			};
+			);
 
 			this.InnatePowers = new InnatePower[]{
 				InnatePower.For<SpiritsMayYetDream>(),

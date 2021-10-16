@@ -2,6 +2,7 @@
 using SpiritIsland.SinglePlayer;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace SpiritIsland.Tests {
@@ -70,8 +71,8 @@ namespace SpiritIsland.Tests {
 
 		#endregion
 
-		protected void When_Growing( int option) {
-			spirit.Grow(gameState, option);
+		protected Task When_Growing( int option) {
+			return spirit.GrowAndResolve(option,gameState);
 		}
 
 		#region Asserts
@@ -126,7 +127,7 @@ namespace SpiritIsland.Tests {
 		}
 
 		protected void When_StartingGrowth() {
-			_ = new SelectGrowth( spirit, gameState ).ActAsync();
+			_ = spirit.DoGrowth( gameState );
 		}
 
 		#endregion

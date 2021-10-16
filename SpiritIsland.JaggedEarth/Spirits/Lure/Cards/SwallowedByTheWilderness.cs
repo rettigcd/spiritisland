@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace SpiritIsland.JaggedEarth.Spirits.Lure {
+namespace SpiritIsland.JaggedEarth {
 
 	public class SwallowedByTheWilderness {
 		[SpiritCard("Swallowed by the Wilderness",1,Element.Fire,Element.Air,Element.Plant,Element.Animal),Fast,FromPresence(0,Target.Inland)]

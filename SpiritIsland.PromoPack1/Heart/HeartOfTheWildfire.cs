@@ -30,7 +30,7 @@ namespace SpiritIsland.PromoPack1 {
 			};
 
 
-			GrowthOptions = new GrowthOption[] {
+			growthOptionGroup = new(
 				new GrowthOption(
 					new ReclaimAll(),
 					new DrawPowerCard(1),
@@ -44,8 +44,8 @@ namespace SpiritIsland.PromoPack1 {
 					new PlacePresence(1),
 					new GainEnergy(2),
 					new EnergyForFire()
-				),
-			};
+				)
+			);
 
 
 		}

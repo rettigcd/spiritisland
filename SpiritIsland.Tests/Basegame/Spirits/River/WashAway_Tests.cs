@@ -15,7 +15,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// no explorers
 
 			//  When: activating card
-			card.ActivateAsync( spirit, gameState );
+			_ = card.ActivateAsync( spirit, gameState );
 
 			User.Assert_Done();
 
@@ -37,7 +37,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			grp.Adjust( Invader.City.Default, cityCount );
 
 			//  When: activating card
-			card.ActivateAsync( spirit, gameState );
+			_ = card.ActivateAsync( spirit, gameState );
 
 			User.TargetsLand( targetSpace.Label );
 
@@ -63,7 +63,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			gameState.Tokens[targetSpace].Adjust(Invader.Explorer.Default, 1);
 
 			//  When: activating card
-			card.ActivateAsync( spirit, gameState );
+			_ = card.ActivateAsync( spirit, gameState );
 
 			User.TargetsLand( targetSpace.Label );
 			User.OptionallyPushesInvaderTo("E@1","A1,(A3),A4");
@@ -84,7 +84,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			var townDestination = board[3];
 
 			//  When: activating card
-			card.ActivateAsync( spirit, gameState );
+			_ = card.ActivateAsync( spirit, gameState );
 
 			User.TargetsLand( targetSpace.Label );
 			User.OptionallyPushesInvaderTo("(E@1),T@2","A1,(A2),A3,A5", 2);
@@ -110,7 +110,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			var invaderDestination = board[2];
 
 			//  When: activating card
-			card.ActivateAsync( spirit, gameState );
+			_ = card.ActivateAsync( spirit, gameState );
 			System.Threading.Thread.Sleep(50);
 
 			User.TargetsLand( targetSpace.Label );

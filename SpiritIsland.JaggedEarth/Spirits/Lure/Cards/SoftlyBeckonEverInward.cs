@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 
-namespace SpiritIsland.JaggedEarth.Spirits.Lure {
+namespace SpiritIsland.JaggedEarth {
+
 	public class SoftlyBeckonEverInward {
 
 		[SpiritCard("Softly Beckon Ever Inward",2,Element.Moon,Element.Air),Slow,FromPresence(0,Target.Inland)]

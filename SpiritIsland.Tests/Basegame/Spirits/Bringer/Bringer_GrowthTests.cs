@@ -25,8 +25,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			// reclaim, +1 power card
 			Given_HalfOfPowercardsPlayed();
 
-			When_Growing( 0 );
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			_ = When_Growing( 0 );
 
 			User.DrawsPowerCard();
 			User.ReclaimsAll();
@@ -43,8 +42,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			Given_HalfOfPowercardsPlayed();
 			Given_HasPresence( board[4] );
 
-			When_Growing( 1 );
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			_ = When_Growing( 1 );
 
 			User.Reclaims1FromGrowth("Predatory Nightmares $2 (Slow),{Dreams of the Dahan $0 (Fast)}");
 			User.PlacesPresence( "energy>A4" );
@@ -57,8 +55,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			// +1 power card, +1 pressence range 1
 			Given_HasPresence( board[1] );
 
-			When_Growing( 2 );
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			_ = When_Growing( 2 );
 
 			User.DrawsPowerCard();
 			User.PlacesEnergyPresence( "A1;A2;A4;A5;A6" );

@@ -9,7 +9,9 @@ namespace SpiritIsland.Tests {
 			new SpiritPresence(new PresenceTrack(Track.Energy5,Track.Energy9),new PresenceTrack(Track.Card1,Track.Card2))
 			,powerCard
 		) {
-			GrowthOptions = new GrowthOption[] { new GrowthOption( new ReclaimAll() ) };
+			growthOptionGroup = new(
+				new GrowthOption( new ReclaimAll() ) 
+			);
 		}
 
 		public override string Text => "CardPlayTestSpirit";

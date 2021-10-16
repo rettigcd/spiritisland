@@ -9,7 +9,8 @@ namespace SpiritIsland {
 
 	public class InnatePower : IFlexibleSpeedActionFactory {
 
-		readonly protected GeneratesContextAttribute targetAttr;
+		readonly GeneratesContextAttribute targetAttr;
+		readonly RepeatIfAttribute repeatAttr;
 
 		public string TargetFilter => this.targetAttr.TargetFilter;
 
@@ -29,6 +30,7 @@ namespace SpiritIsland {
 			speedAttr = actionType.GetCustomAttribute<SpeedAttribute>(false) 
 				?? throw new InvalidOperationException("Missing Speed attribute for "+actionType.Name);
 			this.targetAttr = targetAttr;
+			this.repeatAttr = actionType.GetCustomAttribute<RepeatIfAttribute>();
 
 			Name = innatePowerAttr.Name;
 
@@ -81,7 +83,15 @@ namespace SpiritIsland {
 
 		public LandOrSpirit LandOrSpirit => targetAttr.LandOrSpirit;
 
+		bool ShouldRepeat(CountDictionary<Element> elements) => repeatAttr != null && repeatAttr.Repeat( elements );
+
 		public async Task ActivateAsync( Spirit self, GameState gameState ) {
+			await ActivateInnerAsync(self,gameState);
+			if( ShouldRepeat(self.Elements) )
+				await ActivateInnerAsync(self,gameState);
+		}
+
+		async Task ActivateInnerAsync( Spirit self, GameState gameState ) {
 			var ctx = await targetAttr.GetTargetCtx( self, gameState );
 			if(ctx == null) return;
 			var methods = HighestMethodOfEachGroup( self );

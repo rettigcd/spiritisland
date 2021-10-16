@@ -20,8 +20,16 @@ namespace SpiritIsland.WinForms {
 		public readonly PrivateFontCollection Fonts;
 
 		public Bitmap GetPresenceIcon( string presenceColor ) => GetResourceImage( $"presence.{presenceColor}.png" );
+
+		#region Tokens
+
 		public Bitmap GetToken( string fileName )         => GetResourceImage( $"tokens.{fileName}.png" );
+		public Bitmap GetToken( Element element )         => GetResourceImage( $"tokens.Simple_{element.ToString().ToLower()}.png" );
+
+		#endregion Tokens
+
 		public Bitmap GetIcon( string fileName )         => GetResourceImage( $"icons.{fileName}.png" );
+
 		public Bitmap GetInvaderCard( string filename ) => GetResourceImage( $"invaders.{filename}.jpg" );
 
 		#region private

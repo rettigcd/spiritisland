@@ -1,5 +1,9 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
+* Lure - Enthrall the Foreign Explorers
+* Lure - energy track (3-plant,4-air,5-reclaim)
+
+
 == Road Map to Awesomeness ==
 * MED	Signalling => Events
 * HARD	Multi Player 
@@ -8,7 +12,6 @@
 * MED	AI Player
 * EASY	Convert individual images to Drawn Images for: Cards, Boards, Fear
 * ????	Broken Earth + Promo Pack 2
-
 
 == Clean-up ==
 

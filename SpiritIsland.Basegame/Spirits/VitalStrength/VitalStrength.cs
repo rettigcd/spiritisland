@@ -56,11 +56,11 @@ Power Progression:
 			PowerCard.For<RitualsOfDestruction>(),
 			PowerCard.For<DrawOfTheFruitfulEarth>()
 		){
-			GrowthOptions = new GrowthOption[]{
+			growthOptionGroup = new(
 				new GrowthOption( new ReclaimAll(), new PlacePresence(2) ),
 				new GrowthOption( new DrawPowerCard(), new PlacePresence(0) ),
-				new GrowthOption( new GainEnergy(2), new PlacePresence(1) ),
-			};
+				new GrowthOption( new GainEnergy(2), new PlacePresence(1) )
+			);
 
 			this.InnatePowers = new InnatePower[]{ 
 				InnatePower.For<GiftOfStrength>()

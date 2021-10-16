@@ -21,8 +21,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
 			Given_HalfOfPowercardsPlayed();
 			Given_HasPresence( board[2] );
 
-			When_Growing( 0 );
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			_ = When_Growing( 0 );
 
 			User.ReclaimsAll();
 			User.DrawsPowerCard();
@@ -41,8 +40,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
 
 			Assert.Equal( 1, spirit.NumberOfCardsPlayablePerTurn ); // ,"Rampant Green should start with 1 card.");
 
-			When_Growing( 1 );
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			_ = When_Growing( 1 );
 
 			User.PlacesEnergyPresence( "A2;A3;A5" );
 			User.PlacesEnergyPresence( "A2;A3;A5" );

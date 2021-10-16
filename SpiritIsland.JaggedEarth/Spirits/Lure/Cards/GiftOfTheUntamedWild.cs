@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 
-namespace SpiritIsland.JaggedEarth.Spirits.Lure {
+namespace SpiritIsland.JaggedEarth {
+
 	public class GiftOfTheUntamedWild {
 
 		[SpiritCard("Gift of the Untamed Wild",0,Element.Moon,Element.Fire,Element.Air,Element.Plant),Slow,AnySpirit]

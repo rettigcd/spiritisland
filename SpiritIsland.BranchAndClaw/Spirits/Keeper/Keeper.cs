@@ -57,13 +57,12 @@ namespace SpiritIsland.BranchAndClaw {
 		) {
 			(this.Presence as KeeperPresence).keeper = this;
 
-			GrowthOptions = new GrowthOption[]{
+			growthOptionGroup = new GrowthOptionGroup(
 				new GrowthOption( new ReclaimAll() ,new GainEnergy(1) ){ GainEnergy = 1 },
 				new GrowthOption( new DrawPowerCard(1) ),
 				new GrowthOption( new GainEnergy(1) ,new PlacePresence(3,Target.PresenceOrWilds) ){ GainEnergy = 1 },
-				new GrowthOption( new GainEnergy(-3),new DrawPowerCard(1) ,new PlacePresence(3,Target.NoBlight) ){ GainEnergy = -3 },
-			};
-			growthOptionSelectionCount = 2;
+				new GrowthOption( new GainEnergy(-3),new DrawPowerCard(1) ,new PlacePresence(3,Target.NoBlight) ){ GainEnergy = -3 }
+			).Pick(2);
 
 			InnatePowers = new InnatePower[] {
 				InnatePower.For<PunishThoseWhoTrespass>(),

@@ -36,7 +36,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			Given_IslandIsABC();
 			Given_HasPresence( starting );
 
-			When_Growing( 0 );
+			spirit.Grow( 0 );
 
 			// since options are move source, key on that
 			var moveBySrc = select.Split(',')
@@ -76,8 +76,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			// reclaim, +1 power, gather 1 presense into EACH ocean, +2 energy
 
 			Given_HalfOfPowercardsPlayed();
-			When_Growing( 0 );
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			_ = When_Growing( 0 );
 
 			User.ReclaimsAll();
 			User.DrawsPowerCard();
@@ -96,8 +95,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			// Given: island has 2 boards, hence 2 oceans
 			gameState.Island = new Island( BoardA, BoardB );
 
-			When_Growing( 1 );
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			_ = When_Growing( 1 );
 
 			User.GainsEnergy();
 			User.PlacesPresenceInOcean( "PlaceInOcean,(PlaceInOcean)", "(moon energy),2 cardplay,Take Presence from Board", "(A0),B0" );
@@ -115,8 +113,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			gameState.Island = new Island( BoardA, BoardB, BoardC );
 			Given_HasPresence( starting );
 
-			When_Growing( 2 );
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			_ = When_Growing( 2 );
 
 			User.PlacesEnergyPresence( placeOptions );
 			User.DrawsPowerCard();

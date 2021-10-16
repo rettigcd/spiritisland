@@ -115,6 +115,7 @@ namespace SpiritIsland {
 			string edition = ns.Contains( "Basegame" ) ? "basegame"
 				: ns.Contains( "BranchAndClaw" ) ? "bac"
 				: ns.Contains( "PromoPack1" ) ? "bac"  // !!! temporary
+				: ns.Contains( "JaggedEarth" ) ? "je"
 				: ns;
 			return $".\\images\\{edition}\\{cardType}\\{filename}.jpg";
 		}

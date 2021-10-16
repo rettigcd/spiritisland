@@ -1,14 +1,16 @@
-﻿using Elem = SpiritIsland.Element;
+﻿using System.Linq;
+using Elem = SpiritIsland.Element;
 
 namespace SpiritIsland {
 
 	public class Track : IOption {
 
-		static public readonly Track Destroyed = new Track("destroyed"); 
+		public static Track MkEnergy( int energy, Element el ) => new Track( energy+","+ el.ToString().ToLower() + " energy" ) { Energy = energy };
+		public static Track MkEnergy( int energy ) => new Track( energy + " energy" ) { Energy = energy };
+		public static Track MkEnergy(params Element[] els ) => new Track( els.Select(x=>x.ToString()).Join(",").ToLower() + " energy", els );
 
-		public static Track MkEnergy( int energy ) { return new Track( energy + " energy" ) { Energy = energy }; }
-		public static Track MkEnergy( Element el ) { return new Track( el.ToString().ToLower() + " energy" ) { Element = el }; }
-		public static Track MkElement(Element el) { return new Track( el.ToString().ToLower() ) { Element = el }; }
+		public static Track MkCard(int plays) => new Track($"{plays} cardplay" ) { CardPlay = plays };
+		public static Track MkElement(params Element[] els) => new Track( els.Select(x=>x.ToString()).Join(",").ToLower(), els );
 
 		// ! Instead of enumerating this here, we could generate them when needed in the spirit
 		public static readonly Track Energy0     = MkEnergy( 0 );
@@ -27,11 +29,10 @@ namespace SpiritIsland {
 		public static readonly Track SunEnergy   = MkEnergy( Elem.Sun );
 		public static readonly Track AirEnergy   = MkEnergy( Elem.Air );
 		public static readonly Track AnyEnergy   = MkEnergy( Elem.Any );
-		public static readonly Track AnimalEnergy = MkEnergy( Elem.Animal );
+		public static readonly Track AnimalEnergy= MkEnergy( Elem.Animal );
 		public static readonly Track EarthEnergy = MkEnergy( Elem.Earth );
 		public static readonly Track WaterEnergy = MkEnergy( Elem.Water );
 
-		public static Track MkCard(int plays) => new Track($"{plays} cardplay" ) { CardPlay = plays };
 		public static readonly Track Card1 = MkCard(1);
 		public static readonly Track Card2 = MkCard(2);
 		public static readonly Track Card3 = MkCard(3);
@@ -41,22 +42,26 @@ namespace SpiritIsland {
 
 		public static readonly Track Reclaim1 = new Track( "reclaim 1" ){ ReclaimOne=true };
 		public static readonly Track Reclaim1Energy = new Track( "reclaim 1 energy" ){ ReclaimOne=true };
+		public static readonly Track Energy5Reclaim1 = new Track( "5,reclaim1 energy" ){ Energy=5, ReclaimOne=true };
 		public static readonly Track Card5Reclaim1 = new Track( "Fivereclaimone" ){ CardPlay=5, ReclaimOne=true };
+		public static readonly Track Destroyed = new Track("destroyed"); 
 
-		public Track( string text ){ this.Text = text; }
+		public Track( string text, params Element[] els ){ this.Text = text; Elements = els; }
 
-		public string Text {get; }
+		public string Text {get;}
+
 		public int? Energy { get; private set; }
 
-		Element? Element;
-
-		public virtual void AddElement( CountDictionary<Element> elements ) {
-			if(Element.HasValue)
-				elements[Element.Value]++;
-		}
+		public Element[] Elements { get; }
 
 		public int? CardPlay { get; set; }
 		public bool ReclaimOne { get; set; }
+
+		public virtual void AddElement( CountDictionary<Element> elements ) {
+			foreach(var el in Elements)
+				elements[el]++;
+		}
+
 	}
 
 

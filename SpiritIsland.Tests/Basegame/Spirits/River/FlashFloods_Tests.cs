@@ -39,7 +39,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Assert.Contains( card, spirit.GetAvailableActions( card.Speed ).OfType<PowerCard>().ToList() ); // is fast
 
 			//  When: activating flash flood
-			card.ActivateAsync( spirit, gameState );
+			_ = card.ActivateAsync( spirit, gameState );
 
 			User.TargetsLand( "A4" );
 			User.SelectsDamageRecipient( 1, "C@3,T@2,(E@1)" ); // select damage option
@@ -72,7 +72,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Assert.Contains(card,spirit.GetAvailableActions(card.Speed).OfType<PowerCard>().ToList()); // is fast
 
 			//  When: activating flash flood
-			card.ActivateAsync( spirit, gameState );
+			_ = card.ActivateAsync( spirit, gameState );
 
 			//  Select: A2
 			User.TargetsLand("A2");

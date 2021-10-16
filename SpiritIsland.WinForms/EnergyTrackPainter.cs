@@ -159,20 +159,39 @@ namespace SpiritIsland.WinForms {
 		public void DrawCoin( RectangleF bounds, Track track ) {
 			string txt = track.Text;
 
-			graphics.DrawImage( coin, bounds );
-
 			if(txt.EndsWith(" energy" )) {
 				txt = txt[..^7];
 
+				var smallBounds = new RectangleF(bounds.X,bounds.Y,bounds.Width*0.8f,bounds.Height*0.8f);
+				var sideBounds = new RectangleF(bounds.Right-bounds.Width*0.6f,bounds.Bottom-bounds.Width*0.6f,bounds.Width*0.6f,bounds.Height*0.6f);
+
 				if("sun|moon|fire|air|water|earth|plant|animal|any|FirePlant".Contains( txt )) {
 					// Draw Image
+					graphics.DrawImage( coin, bounds );
 					DrawElement( bounds, txt );
 				} else if(txt == "reclaim 1") {
 					// Draw Reclaim
+					graphics.DrawImage( coin, bounds );
 					using Image image = ResourceImages.Singleton.GetIcon("reclaim 1");
 					var elementBounds = bounds.InflateBy(-bounds.Height/6);
 					graphics.DrawImageFitHeight(image,elementBounds);
+				} else if(txt == "3,plant") {
+					graphics.DrawImage( coin, smallBounds );
+					DrawTextOnCoin(smallBounds,"3");
+					DrawElement(sideBounds,"plant");
+				} else if(txt=="4,air") {
+					graphics.DrawImage( coin, smallBounds );
+					DrawTextOnCoin(smallBounds,"4");
+					DrawElement(sideBounds,"air");
+				} else if(txt == "5,reclaim1") {
+					graphics.DrawImage( coin, smallBounds );
+					DrawTextOnCoin(smallBounds,"5");
+					// Draw Reclaim
+					using Image image = ResourceImages.Singleton.GetIcon("reclaim 1");
+					var elementBounds = bounds.InflateBy(-bounds.Height/6);
+					graphics.DrawImageFitHeight(image,sideBounds);
 				} else {
+					graphics.DrawImage( coin, bounds );
 					DrawTextOnCoin(bounds,txt);
 				}
 			} else {

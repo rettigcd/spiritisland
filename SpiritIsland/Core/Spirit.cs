@@ -33,26 +33,77 @@ namespace SpiritIsland {
 
 		#region Growth
 
-		public GrowthOption[] GrowthOptions { get; protected set; }
+		public GrowthOption[] GrowthOptions => growthOptionGroup.Options;
+		protected GrowthOptionGroup growthOptionGroup;
 
+		// Called from unit tests:  Bringer, Lightning, Ocean, Rampant Green, Shadows, Thunderspeaker
+		public void Grow( int optionIndex ) {
+			Grow( GrowthOptions[optionIndex] );
+		}
 
-		public virtual void Grow( GameState gameState, int optionIndex ) { // overrident by Keeper and Sharp Fangs
+		// !!! TESTING
+		public Task GrowAndResolve( int optionIndex, GameState gameState ) {
+			return GrowAndResolve( GrowthOptions[optionIndex], gameState );
+		}
 
-			var (growthOptions,_) = this.GetGrowthOptions();
+		public Task GrowAndResolve( GrowthOption option, GameState gameState ) {
+			Grow( option );
+			return ResolveActions( gameState, Speed.Growth, Present.Always );
+		}
 
-			GrowthOption option = growthOptions[optionIndex];
+		public void Grow( GrowthOption option ) {
 			foreach(GrowthActionFactory action in option.GrowthActions)
 				AddActionFactory( action );
+		}
+
+		/// <remarks>override in a test.  Could be refactored to not need to be virtual</remarks>
+		public virtual GrowthOptionGroup GetGrowthOptions() => growthOptionGroup;
+
+
+		public virtual async Task DoGrowth(GameState gameState) {
+
+			int count = growthOptionGroup.SelectionCount;
+			List<GrowthOption> remainingOptions = growthOptionGroup.Options.ToList();
+
+			while(count-- > 0) {
+				var currentOptions = remainingOptions.Where( o => o.GainEnergy + Energy >= 0 ).ToArray();
+				GrowthOption option = (GrowthOption)await this.Select( "Select Growth Option", currentOptions, Present.Always );
+
+				remainingOptions.Remove( option );
+
+				await GrowAndResolve( option, gameState );
+			}
+
+			await TriggerEnergyElementsAndReclaims();
 
 		}
 
-		public virtual void Grow( GameState gameState, GrowthOption option ) { // overrident by Keeper and Sharp Fangs
-			foreach(GrowthActionFactory action in option.GrowthActions)
-				AddActionFactory( action );
-		}
+		public async Task ResolveActions( GameState gameState, Speed speed, Present present ) {
 
-		public virtual (GrowthOption[],int) GetGrowthOptions() => (GrowthOptions, growthOptionSelectionCount);
-		protected int growthOptionSelectionCount = 1;
+			IActionFactory[] factoryOptions;
+
+			while((factoryOptions = this.GetAvailableActions( speed ).ToArray()).Length> 0) {
+
+				// -------------
+				// Select Actions to resolve
+				// -------------
+				IActionFactory option = await this.SelectFactory( "Select " + speed + " to resolve:", factoryOptions, present );
+				if(option == null)
+					break;
+
+				// if user clicked a slow card that was made fast, // slow card won't be in the options
+				if(!factoryOptions.Contains( option ))
+					// find the fast version of the slow card that was clicked
+					option = factoryOptions.Cast<IActionFactory>()
+						.First( factory => factory == option );
+
+				if(!factoryOptions.Contains( option ))
+					throw new Exception( "Dude! - You selected something that wasn't an option" );
+
+				await TakeAction( (IActionFactory)option, gameState );
+			}
+
+		}
 
 		#endregion
 

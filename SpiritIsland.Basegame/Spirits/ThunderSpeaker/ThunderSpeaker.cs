@@ -52,7 +52,7 @@ namespace SpiritIsland.Basegame {
 			PowerCard.For<VoiceOfThunder>(),
 			PowerCard.For<WordsOfWarning>()
 		) {
-			GrowthOptions = new GrowthOption[]{
+			growthOptionGroup = new(
 				new GrowthOption( 
 					new ReclaimAll(), 
 					new DrawPowerCard(1),
@@ -66,7 +66,7 @@ namespace SpiritIsland.Basegame {
 					new PlacePresence(1), 
 					new GainEnergy(4)
 				)
-			};
+			);
 
 			this.InnatePowers = new InnatePower[]{
 				InnatePower.For<GatherTheWarriors>(),

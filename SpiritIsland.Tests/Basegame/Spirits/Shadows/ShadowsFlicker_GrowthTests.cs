@@ -14,8 +14,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.ShadowsNS {
 			// reclaim, gain power Card
 			Given_HalfOfPowercardsPlayed();
 
-			When_Growing( 0 );
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			_ = When_Growing( 0 );
 
 			User.DrawsPowerCard();
 			User.ReclaimsAll();
@@ -28,8 +27,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.ShadowsNS {
 			// gain power card, add a presense range 1
 			Given_HasPresence( board[1] );
 
-			When_Growing(1);
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			_ = When_Growing(1);
 
 			User.DrawsPowerCard();
 			User.PlacesEnergyPresence( "A1;A2;A4;A5;A6" );

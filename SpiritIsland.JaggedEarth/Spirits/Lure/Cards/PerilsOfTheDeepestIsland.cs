@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 
-namespace SpiritIsland.JaggedEarth.Spirits.Lure {
+namespace SpiritIsland.JaggedEarth {
+
 	public class PerilsOfTheDeepestIsland {
 
 		[SpiritCard("Perils of the Deepest Island",1,Element.Moon,Element.Plant,Element.Animal),Slow,FromPresence(0,Target.Inland)]

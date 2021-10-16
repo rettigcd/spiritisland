@@ -1,5 +1,6 @@
 ﻿using SpiritIsland.Basegame;
 using SpiritIsland.BranchAndClaw;
+using SpiritIsland.JaggedEarth;
 using SpiritIsland.PromoPack1;
 using SpiritIsland.SinglePlayer;
 using System;
@@ -58,8 +59,11 @@ namespace SpiritIsland.WinForms {
 			if(branchAndClawCheckBox.Checked) {
 				spiritListBox.Items.Add( typeof( Keeper ) );
 				spiritListBox.Items.Add( typeof( SharpFangs ) );
+				// Promo Pack 1
 				spiritListBox.Items.Add( typeof( HeartOfTheWildfire ) );
 				spiritListBox.Items.Add( typeof( SerpentSlumbering ) );
+				// Jagged Earth
+				spiritListBox.Items.Add( typeof( LureOfTheDeepWilderness ) );
 			}
 			spiritListBox.SelectedIndex = 0;
 		}
@@ -98,6 +102,7 @@ namespace SpiritIsland.WinForms {
 				SharpFangs.Name            => "red",
 				HeartOfTheWildfire.Name    => "green",
 				SerpentSlumbering.Name     => "orange",
+				LureOfTheDeepWilderness.Name => "green",
 				_                          => "blue"
 			};
 		}

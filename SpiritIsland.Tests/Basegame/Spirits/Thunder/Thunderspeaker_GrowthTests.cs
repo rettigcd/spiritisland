@@ -49,8 +49,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			foreach(string s in initialDahanSquares.Split( ',' ))
 				gameState.DahanAdjust( board[int.Parse( s )] );
 
-			When_Growing( 1 );
-			_ = new ResolveActions( spirit, gameState, Speed.Growth ).ActAsync();
+			_ = When_Growing( 1 );
 
 			User.PlacesEnergyPresence( expectedPresenseOptions );
 

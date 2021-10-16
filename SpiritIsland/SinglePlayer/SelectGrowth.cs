@@ -6,37 +6,12 @@ namespace SpiritIsland.SinglePlayer {
 
 	public class SelectGrowth {
 
-		readonly ResolveActions resolveGrowth;
-
 		public SelectGrowth( Spirit spirit, GameState gameState ) {
 			this.spirit = spirit;
 			this.gameState = gameState;
-			resolveGrowth = new ResolveActions( spirit, gameState, Speed.Growth, false );
 		}
 
-		public async Task ActAsync() {
-			var (allGrowthOptions,count) = spirit.GetGrowthOptions();
-
-			List<GrowthOption> remainingOptions = allGrowthOptions.ToList();
-
-			while(count-->0) {
-				var currentOptions = remainingOptions.Where(o=>o.GainEnergy+spirit.Energy>=0).ToArray();
-				GrowthOption option = (GrowthOption)await spirit.Select( "Select Growth Option", currentOptions, Present.Always );
-				remainingOptions.Remove(option);
-
-//				if(option.GrowthActions.Length == 1) {
-//					var action = option.GrowthActions[0];
-//					spirit.AddActionFactory( action );
-//					await spirit.TakeAction( action, this.gameState );
-//				} else {
-					spirit.Grow( gameState, option );
-					await resolveGrowth.ActAsync();
-//				}
-			}
-
-			await spirit.TriggerEnergyElementsAndReclaims();
-
-		}
+		public Task ActAsync() => spirit.DoGrowth(gameState);
 
 		#region private
 		readonly Spirit spirit;

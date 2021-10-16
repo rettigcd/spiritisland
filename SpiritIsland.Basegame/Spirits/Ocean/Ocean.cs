@@ -32,7 +32,7 @@ namespace SpiritIsland.Basegame {
 			PowerCard.For<TidalBoon>()
 		) {
 
-			GrowthOptions = new GrowthOption[]{ 
+			growthOptionGroup = new(
 				// Option 1 - reclaim, +1 power, gather 1 presense into EACH ocean, +2 energy
 				new GrowthOption(
 					new GatherPresenceIntoOcean(),
@@ -52,7 +52,7 @@ namespace SpiritIsland.Basegame {
 					new DrawPowerCard(),
 					new PlacePresence(1, Target.Coastal )
 				)
-			};
+			);
 
 			InnatePowers = new InnatePower[]{
 				InnatePower.For<OceanBreaksTheShore>(),

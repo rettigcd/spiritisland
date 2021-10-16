@@ -16,7 +16,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Assert_CardIsReady( card, Speed.Fast );
 
 			// When: targetting self
-			card.ActivateAsync( spirit, gameState );
+			_ = card.ActivateAsync( spirit, gameState );
 
 			User.Assert_Done();
 
@@ -42,7 +42,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Assert_CardIsReady(card,Speed.Fast);
 
 			// When: targetting other spirit
-			card.ActivateAsync( spirit, gameState );
+			_ = card.ActivateAsync( spirit, gameState );
 			
 			User.TargetsSpirit("River Surges in Sunlight,(Lightning's Swift Strike)");
 

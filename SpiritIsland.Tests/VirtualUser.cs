@@ -90,7 +90,8 @@ namespace SpiritIsland.Tests {
 		}
 
 		public void SelectsGrowthOption( string growthOption ) {
-			Assert.Equal( "Select Growth Option", userPortal.GetCurrent().Prompt );
+			var current = userPortal.GetCurrent();
+			Assert.Equal( "Select Growth Option", current.Prompt );
 			Choose( growthOption );
 		}
 
@@ -105,6 +106,21 @@ namespace SpiritIsland.Tests {
 			var selection = current.Options.First(x=>x.Text.StartsWith("GainEnergy"));
 			Choose( selection );
 		}
+
+		public void SkipsPresenceReplacementWithBeasts() {
+
+			//// !!! pop this out and put in Sharp Fangs
+			//var current = userPortal.GetCurrent();
+			//var selection = current.Options.First(x=>x.Text.StartsWith("ReplacePresenceWithBeast"));
+			//Choose( selection );
+
+			//System.Threading.Thread.Sleep(5);
+			//current = userPortal.GetCurrent();
+			//selection = current.Options.First(x=>x.Text.StartsWith("Done"));
+			//Choose( selection );
+
+		}
+
 
 		public void GathersPresenceIntoOcean() {
 			AssertDecisionX( "Select Growth to resolve:", "GatherPresenceIntoOcean" );

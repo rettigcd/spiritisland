@@ -58,11 +58,11 @@ Shadows Flicker like Flame:
 			PowerCard.For<CropsWitherAndFade>(),
 			PowerCard.For<ConcealingShadows>()
 		) {
-			GrowthOptions = new GrowthOption[]{
+			growthOptionGroup = new(
 				new GrowthOption( new ReclaimAll(), new DrawPowerCard(1) ),
 				new GrowthOption( new DrawPowerCard(1), new PlacePresence(1) ),
 				new GrowthOption( new PlacePresence(3), new GainEnergy(3) )
-			};
+			);
 			this.InnatePowers = new InnatePower[]{
 				InnatePower.For<DarknessSwallowsTheUnwary>()
 			};

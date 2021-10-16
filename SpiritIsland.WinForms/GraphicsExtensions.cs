@@ -98,6 +98,21 @@ namespace SpiritIsland.WinForms {
 			graphics.DrawImage(image,bounds.X + (bounds.Width-width)/2,bounds.Y,width,bounds.Height);
 		}
 
+		static public void DrawImageFitWidth( this Graphics graphics, Image image, RectangleF bounds ) {
+			float height = bounds.Width * image.Height / image.Width;
+			// Centered Horizontally
+			graphics.DrawImage(image,bounds.X, bounds.Y+ (bounds.Height-height)/2,bounds.Width,height);
+		}
+
+		static public void DrawImageFitBoth( this Graphics graphics, Image image, RectangleF bounds ) {
+			// if normalized image height is greater than bounds, then fit height
+			if(image.Height*bounds.Width > bounds.Height*image.Width)
+				graphics.DrawImageFitHeight(image,bounds);
+			else
+				graphics.DrawImageFitWidth(image,bounds);
+		}
+
+
 		static public RectangleF InflateBy(this RectangleF rect, float delta ) {
 			float d2 = delta*2;
 			return new RectangleF( rect.X-delta, rect.Y-delta, rect.Width+d2, rect.Height+d2);

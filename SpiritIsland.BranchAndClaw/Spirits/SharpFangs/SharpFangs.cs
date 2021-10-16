@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 
 namespace SpiritIsland.BranchAndClaw {
 
@@ -56,14 +57,12 @@ namespace SpiritIsland.BranchAndClaw {
 		
 			var beastOrJungleRange3 = new PlacePresence(3, Target.BeastOrJungle);
 
-
-			GrowthOptions = new GrowthOption[]{
+			growthOptionGroup = new GrowthOptionGroup(
 				new GrowthOption( new ReclaimAll(), new GainEnergy(-1), new DrawPowerCard(1) ){ GainEnergy=-1 },
 				new GrowthOption( beastOrJungleRange3 ),
 				new GrowthOption( new DrawPowerCard(1), new GainEnergy(1) ){ GainEnergy = 1 },
 				new GrowthOption( new GainEnergy(3) ){ GainEnergy = 3 }
-			};
-			this.growthOptionSelectionCount = 2;
+			).Pick(2);
 
 			this.InnatePowers = new InnatePower[] {
 				InnatePower.For<FrenziedAssult>(),
@@ -72,17 +71,10 @@ namespace SpiritIsland.BranchAndClaw {
 
 		}
 
-		public override void Grow( GameState gameState, int optionIndex ) {
-
-			var (growthOptions,_) = this.GetGrowthOptions();
-
-			var actions = growthOptions[optionIndex].GrowthActions;
-			foreach(var action in actions.Take(5))
-				AddActionFactory( action );
-
-			AddActionFactory( new ReplacePresenceWithBeast() );
-
-		}
+		//protected override Task GrowthOptionsComplete( GameState gameState ) {
+		//	AddActionFactory( new ReplacePresenceWithBeast() );
+		//	return ResolveActions( gameState, Speed.Growth, Present.Always );
+		//}
 
 		protected override void InitializeInternal( Board board, GameState gs ) {
 			var highestJungle = board.Spaces.Where(x=>x.Terrain == Terrain.Jungle).Last();

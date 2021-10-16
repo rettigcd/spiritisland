@@ -21,7 +21,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 		}
 
 		protected void When_ActivateCard( string cardName ) {
-			spirit.Hand.Single( x => x.Name == cardName ).ActivateAsync( spirit, gs);
+			_ = spirit.Hand.Single( x => x.Name == cardName ).ActivateAsync( spirit, gs);
 		}
 
 		protected readonly Spirit spirit;

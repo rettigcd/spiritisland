@@ -28,8 +28,8 @@ namespace SpiritIsland {
 			return selection?.Text;
 		}
 
-		// private - switches type to Element
-		static async Task<Element> SelectElement( this Spirit spirit, string prompt, IEnumerable<Element> elements ) {
+		// switches type to Element
+		public static async Task<Element> SelectElement( this Spirit spirit, string prompt, IEnumerable<Element> elements ) {
 			var selection = await spirit.Select( prompt, elements.Select( x => new ItemOption<Element>( x ) ).ToArray(), Present.Always );
 			return ((ItemOption<Element>)selection).Item;
 		}

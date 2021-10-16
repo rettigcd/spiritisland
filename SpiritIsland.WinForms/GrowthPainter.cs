@@ -74,6 +74,9 @@ namespace SpiritIsland.WinForms {
 				case "EnergyForFire": EnergyForFire( rect ); break;
 				// Serpent
 				case "MovePresence": MovePresence( rect, 1 ); break;
+				// Lure of the Deep Wilderness
+				case "PlacePresence(4,Inland)": PlacePresence( rect, 4 ); break;
+				case "GainElement(Moon,Air,Plant)": GainElement( rect, Element.Moon, Element.Air, Element.Plant ); break;
 				default:
 					graphics.FillRectangle( Brushes.Goldenrod, Rectangle.Inflate( rect.ToInts(), -5, -5 ) );
 					break;
@@ -119,6 +122,15 @@ namespace SpiritIsland.WinForms {
 		void PlaceInOcean( RectangleF rect ) {
 			PlacePresence( rect, null, "Ocean" );
 		}
+
+		void GainElement( RectangleF rect, params Element[] elements ) {
+			var parts = rect.SplitHorizontally(elements.Length);
+			for(int i = 0; i < elements.Length; ++i) {
+				using var img = ResourceImages.Singleton.GetToken(elements[i]);
+				graphics.DrawImageFitWidth(img, parts[i]);
+			}
+		}
+
 
 		void PlacePresence( RectangleF rect, int? range, string iconFilename = "" ) {
 

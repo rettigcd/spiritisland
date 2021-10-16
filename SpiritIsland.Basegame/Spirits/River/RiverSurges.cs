@@ -58,7 +58,7 @@ namespace SpiritIsland.Basegame {
 			PowerCard.For<RiversBounty>(),
 			PowerCard.For<WashAway>()
 		){
-			GrowthOptions =  new GrowthOption[]{ 
+			growthOptionGroup = new(
 				new GrowthOption(
 					new ReclaimAll(),
 					new DrawPowerCard(1),
@@ -72,7 +72,7 @@ namespace SpiritIsland.Basegame {
 					new DrawPowerCard( 1 ),
 					new PlacePresence( 2 ) 
 				)
-			};
+			);
 
 			InnatePowers = new InnatePower[]{
 				InnatePower.For<MassiveFlooding>()

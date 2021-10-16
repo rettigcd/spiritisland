@@ -40,7 +40,7 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 			PowerCard.For<RagingStorm>(),
 			PowerCard.For<ShatterHomesteads>()
 		){
-			GrowthOptions = new GrowthOption[]{
+			growthOptionGroup = new(
 				new GrowthOption( 
 					new ReclaimAll(), 
 					new DrawPowerCard(1), 
@@ -52,8 +52,8 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 					new PlacePresence(0) 
 				),
 				// +1 presense range 1, +3 energy
-				new GrowthOption( new GainEnergy(3), new PlacePresence(1) ),
-			};
+				new GrowthOption( new GainEnergy(3), new PlacePresence(1) )
+			);
 
 			this.InnatePowers = new InnatePower[]{
 				InnatePower.For<ThunderingDestruction>()

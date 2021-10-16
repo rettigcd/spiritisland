@@ -106,6 +106,7 @@ namespace SpiritIsland.WinForms {
 				[TokenType.Beast] = images.GetToken( "beast" ),
 				[TokenType.Wilds] = images.GetToken("wilds"),
 				[TokenType.Disease] = images.GetToken( "disease" ),
+				[TokenType.Badlands] = images.GetToken( "badlands" ),
 			};
 
 			this.gameState = gameState;
@@ -304,7 +305,7 @@ namespace SpiritIsland.WinForms {
 			);
 
 			DrawRow( graphics, tokens, x, ref y, iconWidth, xStep, 0, false
-				, TokenType.Beast, TokenType.Wilds, TokenType.Disease
+				, TokenType.Beast, TokenType.Wilds, TokenType.Disease, TokenType.Badlands
 			);
 
 		}

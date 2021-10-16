@@ -234,18 +234,19 @@ namespace SpiritIsland.WinForms {
 
 		void LoadIcon( string token ) {
 			string filename = token switch {
-				"dahan" => "Dahanicon",
-				"city" => "Cityicon",
-				"town" => "Townicon",
+				"dahan"    => "Dahanicon",
+				"city"     => "Cityicon",
+				"town"     => "Townicon",
 				"explorer" => "Explorericon",
-				"blight" => "Blighticon",
-				"beast" => "Beasticon",
-				"fear" => "Fearicon",
-				"wilds" => "Wildsicon",
-				"fast" => "Fasticon",
+				"blight"   => "Blighticon",
+				"beast"    => "Beasticon",
+				"fear"     => "Fearicon",
+				"wilds"    => "Wildsicon",
+				"fast"     => "Fasticon",
 				"presence" => "Presenceicon",
-				"slow" => "Slowicon",
-				_ => "Simple_" + token // elements
+				"slow"     => "Slowicon",
+				"disease"  => "Diseaseicon",
+				_          => "Simple_" + token // elements
 			};
 			images.Add( token, ResourceImages.Singleton.GetIcon(filename) );
 		}

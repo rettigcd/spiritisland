@@ -20,13 +20,12 @@
 				InnatePower.For<SerpentRousesInAnger>()
 			};
 
-			GrowthOptions = new GrowthOption[] {
+			growthOptionGroup = new GrowthOptionGroup(
 				new GrowthOption( new ReclaimAll(), new MovePresence() ),
 				new GrowthOption( new DrawPowerCard(), new GainEnergy(1) ),
 				new GrowthOption( new GainEnergy(4) ),
-				new GrowthOption( new PlacePresence(3,Target.NoBlight) ),
-			};
-			growthOptionSelectionCount = 2;
+				new GrowthOption( new PlacePresence(3,Target.NoBlight) )
+			).Pick(2);
 
 		}
 

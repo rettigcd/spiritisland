@@ -61,7 +61,7 @@ namespace SpiritIsland.SinglePlayer {
 						savedGameStates.Push( GameState.SaveToMemento() );
 						DateTime lastSaveTimeStamp= DateTime.Now;
 						try {
-							await selectGrowth.ActAsync();
+							await Spirit.DoGrowth(GameState);
 							await Spirit.BuyPowerCardsAsync();
 							await fastActions.ActAsync();
 							await invaders.ActAsync();

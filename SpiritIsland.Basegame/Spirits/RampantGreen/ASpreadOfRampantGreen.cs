@@ -62,7 +62,7 @@ namespace SpiritIsland.Basegame {
 
 			static PlacePresence placeOnWetlandOrJungle() => new ( 2, Target.JungleOrWetland );
 
-			GrowthOptions = new GrowthOption[]{
+			growthOptionGroup = new(
 				// reclaim, +1 power card
 				new GrowthOption(
 					placeOnWetlandOrJungle(),
@@ -80,8 +80,8 @@ namespace SpiritIsland.Basegame {
 					placeOnWetlandOrJungle(),
 					new GainEnergy(3), 
 					new DrawPowerCard()
-				),
-			};
+				)
+			);
 
 			this.InnatePowers = new InnatePower[] {
 				InnatePower.For<CreepersTearIntoMortar>(),

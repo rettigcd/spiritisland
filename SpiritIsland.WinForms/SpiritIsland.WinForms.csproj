@@ -16,6 +16,7 @@
     <None Remove="images\icons\4 cardplay.png" />
     <None Remove="images\icons\5 cardplay.png" />
     <None Remove="images\icons\6 cardplay.png" />
+    <None Remove="images\icons\Badlands.png" />
     <None Remove="images\icons\Beasticon.png" />
     <None Remove="images\icons\Blighticon.png" />
     <None Remove="images\icons\Cardplayplusone.png" />
@@ -92,6 +93,7 @@
     <None Remove="images\tokens\4 cardplay.png" />
     <None Remove="images\tokens\5 cardplay.png" />
     <None Remove="images\tokens\6 cardplay.png" />
+    <None Remove="images\tokens\badlands.png" />
     <None Remove="images\tokens\Beast.png" />
     <None Remove="images\tokens\Beasticon.png" />
     <None Remove="images\tokens\blight.png" />
@@ -161,6 +163,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SpiritIsland.Basegame\SpiritIsland.Basegame.csproj" />
     <ProjectReference Include="..\SpiritIsland.BranchAndClaw\SpiritIsland.BranchAndClaw.csproj" />
+    <ProjectReference Include="..\SpiritIsland.JaggedEarth\SpiritIsland.JaggedEarth.csproj" />
     <ProjectReference Include="..\SpiritIsland.PromoPack1\SpiritIsland.PromoPack1.csproj" />
     <ProjectReference Include="..\SpiritIsland\SpiritIsland.csproj" />
   </ItemGroup>
@@ -172,6 +175,7 @@
     <EmbeddedResource Include="images\icons\4 cardplay.png" />
     <EmbeddedResource Include="images\icons\5 cardplay.png" />
     <EmbeddedResource Include="images\icons\6 cardplay.png" />
+    <EmbeddedResource Include="images\icons\Badlands.png" />
     <EmbeddedResource Include="images\icons\Beasticon.png" />
     <EmbeddedResource Include="images\icons\Blighticon.png" />
     <EmbeddedResource Include="images\icons\Cardplayplusone.png" />
@@ -240,6 +244,7 @@
     <EmbeddedResource Include="images\presence\purple.png" />
     <EmbeddedResource Include="images\presence\red.png" />
     <EmbeddedResource Include="images\presence\yellow.png" />
+    <EmbeddedResource Include="images\tokens\badlands.png" />
     <EmbeddedResource Include="images\tokens\beast.png" />
     <EmbeddedResource Include="images\tokens\blight.png" />
     <EmbeddedResource Include="images\tokens\city.png" />
@@ -1486,6 +1491,18 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\harbingers_of_the_lightning.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\spirit\gift_of_the_untamed_wild.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\spirit\perils_of_the_deepest_island.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\spirit\softly_beckon_ever_inward.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\spirit\swallowed_by_the_wilderness.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\land_of_haunts_and_embers.jpg">
