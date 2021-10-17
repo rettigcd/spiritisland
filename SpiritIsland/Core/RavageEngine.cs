@@ -102,7 +102,7 @@ namespace SpiritIsland {
 		}
 
 		/// <returns># of dahan killed/destroyed</returns>
-		public async Task<int> DamageDahan(int damageInflictedFromInvaders ) {
+		public async Task<int> DamageDahan( int damageInflictedFromInvaders ) {
 			if(damageInflictedFromInvaders == 0 || !cfg.ShouldDamageDahan) return 0;
 
 			// destroy dahan
@@ -125,8 +125,38 @@ namespace SpiritIsland {
 
 		/// <returns>(city-dead,town-dead,explorer-dead)</returns>
 		public async Task DamageInvaders( int damageFromDahan ) {
-			await grp.SmartRavageDamage( damageFromDahan, log );
+			int damagetoinvaders = damageFromDahan;
+
+			var participatingInvaders = CalcParticipatingInvaders();
+			while(damagetoinvaders > 0 && participatingInvaders.Any()) {
+				Token invadertodamage = PickSmartInvaderToDamage( participatingInvaders, damagetoinvaders );
+				damagetoinvaders -= await grp.ApplyDamageTo1( damagetoinvaders, invadertodamage );
+				// update participants
+				participatingInvaders = CalcParticipatingInvaders();
+			}
+			if(log != null) log.Add( $"{damageFromDahan} damage to invaders leaving {grp.Tokens.InvaderSummary}." );
 		}
+
+		static Token PickSmartInvaderToDamage( CountDictionary<Token> participatingInvaders, int availableDamage) {
+			return PickItemToKill( participatingInvaders.Keys, availableDamage )
+				?? PickItemToDamage( participatingInvaders.Keys );
+		}
+
+		static Token PickItemToKill(IEnumerable<Token> candidates, int availableDamage) {
+			return candidates
+				.Where( specific => specific.Health <= availableDamage ) // can be killed
+				.OrderByDescending( k => k.FullHealth ) // pick items with most Full Health
+				.ThenBy( k => k.Health ) // and most damaged.
+				.FirstOrDefault();
+		}
+
+		static Token PickItemToDamage( IEnumerable<Token> candidates ) {
+			return candidates
+				.OrderBy(i=>i.Health) // closest to dead
+				.ThenByDescending(i=>i.FullHealth) // biggest impact
+				.First();
+		}
+
 	}
 
 
