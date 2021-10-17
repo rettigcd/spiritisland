@@ -9,32 +9,23 @@ namespace SpiritIsland.Basegame {
 
 		[FearLevel( 1, "Each player removes 1 Explorer / Town from a land with SacredSite." )]
 		public async Task Level1( FearCtx ctx ) {
-			var gs = ctx.GameState;
-			foreach(var spirit in gs.Spirits)
-				await Remove1ExplorerOrTownFromLandWithSacredSite(spirit,gs);
+			foreach(SpiritGameStateCtx spiritCtx in ctx.Spirits)
+				await Remove1ExplorerOrTownFromLandWithSacredSite(spiritCtx);
 		}
 
-		static async Task Remove1ExplorerOrTownFromLandWithSacredSite(Spirit spirit,GameState gs ) {
-			var options = spirit.SacredSites.Where( s => gs.Tokens[ s ].HasAny( Invader.Explorer, Invader.Town ) ).ToArray();
-			if(options.Length == 0) return;
-			var target = await spirit.Action.Decision( new Decision.TargetSpace( "Select SS land to remove 1 explorer/town.", options, Present.Always ));
-			var grp = gs.Tokens[target];
-			var invaderToRemove = grp.PickBestInvaderToRemove( Invader.Town, Invader.Explorer );
-			grp.Adjust( invaderToRemove, -1 );
+		static async Task Remove1ExplorerOrTownFromLandWithSacredSite( SpiritGameStateCtx ctx ) {
+			var options = ctx.Self.SacredSites.Where( s => ctx.GameState.Tokens[ s ].HasAny( Invader.Explorer, Invader.Town ) ).ToArray();
+			await ctx.RemoveTokenFromOneSpace(options,1,Invader.Town, Invader.Explorer);
 		}
 
 		[FearLevel( 2, "Each player removes 1 Explorer / Town from a land with Presence." )]
 		public async Task Level2( FearCtx ctx ) {
 			var gs = ctx.GameState;
-			foreach(var spirit in gs.Spirits) {
-				var options = spirit.Presence.Spaces.Where( s => gs.Tokens[s].HasAny( Invader.Explorer, Invader.Town ) )
-					.Union(spirit.SacredSites.Where(s=>gs.Tokens[s].Has(Invader.City)))
+			foreach(var spirit in ctx.Spirits) {
+				var options = spirit.Self.Presence.Spaces.Where( s => gs.Tokens[s].HasAny( Invader.Explorer, Invader.Town ) )
+					.Union(spirit.Self.SacredSites.Where(s=>gs.Tokens[s].Has(Invader.City)))
 					.ToArray();
-				if(options.Length == 0) return;
-				var target = await spirit.Action.Decision( new Decision.TargetSpace( "Select land to remove 1 explorer/town/city.", options, Present.Always ));
-				var grp = gs.Tokens[ target ];
-				var invaderToRemove = grp.PickBestInvaderToRemove(Invader.Town,Invader.Explorer);
-				grp.Adjust( invaderToRemove, -1 );
+				await spirit.RemoveTokenFromOneSpace( options, 1, Invader.Town, Invader.Explorer );
 			}
 		}
 
@@ -45,28 +36,22 @@ namespace SpiritIsland.Basegame {
 
 			foreach(var spiritCtx in ctx.Spirits) {
 
-				var cityOptions = sacredSites.Where(s=>spiritCtx.Target(s).Tokens.Has(Invader.City)).ToArray();
-				var townOptions = presences.Where( s => spiritCtx.Target(s).Tokens.Has( Invader.Town) ).ToArray();
-				var explorerOptions = presences.Where( s => spiritCtx.Target(s).Tokens.Has( Invader.Explorer ) ).ToArray();
-
-				async Task Remove(Space[] options, TokenGroup removeType ) {
-					var space = await spiritCtx.Self.Action.Decision(new Decision.TargetSpace("Select land to remove "+removeType.Label, options, Present.Always ));
-					spiritCtx.Target(space).Tokens.Remove(removeType);
-				}
+				var cityOptions         = sacredSites.Where( s=> spiritCtx.Target(s).Tokens.Has(Invader.City)).ToArray();
+				var townExplorerOptions = presences.Where( s => spiritCtx.Target(s).Tokens.HasAny( Invader.Town, Invader.Explorer) ).ToArray();
 
 				await spiritCtx.SelectActionOption(
 					"Select invader to remove",
-					new ActionOption( "remove 1 explorer from land with presence", ()=>Remove(explorerOptions,Invader.Explorer), explorerOptions.Length>0 ),
-					new ActionOption( "remove 1 town from land with presence",     () => Remove( townOptions, Invader.Town ), townOptions.Length > 0 ),
-					new ActionOption( "remove 1 city from land with sacred site",  () => Remove( cityOptions, Invader.City ), cityOptions.Length > 0 )
+					new ActionOption( 
+						"remove 1 explorer/town from land with presence", 
+						() => spiritCtx.RemoveTokenFromOneSpace( townExplorerOptions, 1, Invader.Town,Invader.Explorer ),
+						townExplorerOptions.Length>0
+					),
+					new ActionOption( 
+						"remove 1 city from land with sacred site",  
+						() => spiritCtx.RemoveTokenFromOneSpace( cityOptions, 1, Invader.City ),
+						cityOptions.Length > 0
+					)
 				);
-
-				var options = sacredSites.Where( s => spiritCtx.Target(s).Tokens.HasAny( Invader.Explorer, Invader.Town ) ).ToArray();
-				if(options.Length == 0) return;
-				var target = await spiritCtx.Self.Action.Decision( new Decision.TargetSpace( "Select SS land to remove 1 explorer/town.", options, Present.Always ));
-				var tokens = spiritCtx.Target(target).Tokens;
-				var invaderToRemove = tokens.PickBestInvaderToRemove( Invader.Town, Invader.Explorer );
-				tokens.Adjust( invaderToRemove, -1 );
 
 			}
 

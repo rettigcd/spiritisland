@@ -31,33 +31,31 @@ namespace SpiritIsland.Basegame {
 		[FearLevel( 3, "Each player chooses a different land and removes up to 2 Health worth of Invaders per Presence there." )]
 		public async Task Level3( FearCtx ctx ) {
 			var used = new HashSet<Space>();
-			foreach(var spirit in ctx.GameState.Spirits)
-				await X( spirit, used, ctx.GameState );
+			foreach(var spiritCtx in ctx.Spirits)
+				await RemoveInvadersFromLand( spiritCtx, used );
 
 		}
 
-		static async Task X(Spirit spirit, HashSet<Space> used, GameState gs) {
+		static async Task RemoveInvadersFromLand( SpiritGameStateCtx ctx, HashSet<Space> used ) {
+			var gs = ctx.GameState;
 			// pick land
-			var targetOptions = spirit.Presence.Spaces
+			var targetOptions = ctx.Self.Presence.Spaces
 				.Where( s => gs.Tokens[s].HasAny( Invader.Town, Invader.Explorer ) )
 				.Except( used )
 				.ToArray();
-			if(targetOptions.Length==0) return;
-			var target = await spirit.Action.Decision( new Decision.TargetSpace( "Select land to remove 2 health worth of invaders/presence.", targetOptions, Present.Always ) );
+			if(targetOptions.Length == 0) return;
+			var targetSpace = await ctx.Self.Action.Decision( new Decision.TargetSpace( "Select land to remove 2 health worth of invaders/presence.", targetOptions, Present.Always ) );
+			var sCtx = ctx.Target( targetSpace );
+
 			// mark used
-			used.Add(target);
+			used.Add( targetSpace );
 
-			int damage = 2 * spirit.Presence.Placed.Count(x=>x==target);
+			int damage = 2 * sCtx.Self.Presence.Placed.Count( x => x == sCtx.Space );
 
-			var counts = gs.Tokens[target];
-			Token pick;
-			while(damage > 0 
-				&& (pick = SmartInvaderDamageExtensions.PickSmartInvaderToDamage( counts, damage ))!=null
-			) {
-				--counts[pick];
-				damage -= pick.Health;
-			}
+			damage = await sCtx.RemoveHealthWorthOfInvaders( damage );
 		}
+
 	}
+
 }
 

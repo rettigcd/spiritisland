@@ -11,6 +11,9 @@ namespace SpiritIsland {
 		public bool ShouldDamageDahan { get; set; } = true;
 
 		public int DahanHitpoints { get; set; } = 2;
+
+		public CountDictionary<Token> NotParticipating {  get; set; } = new CountDictionary<Token>();
+
 		public Func<RavageEngine, Task> RavageSequence = null; // null triggers default
 	}
 
@@ -51,16 +54,44 @@ namespace SpiritIsland {
 
 		public int GetDamageInflictedByDahan() => gs.DahanGetCount( grp.Space ) * 2;
 
-		public virtual int GetDamageInflictedByInvaders() {
-			int damageFromInvaders = grp.DamageInflictedByInvaders;
+		public CountDictionary<Token> CalcParticipatingInvaders() { 
+			var participants = new CountDictionary<Token>();
+			foreach(var token in Counts.Invaders()) {
+				participants[token] = Math.Max(0,Counts[token] - cfg.NotParticipating[token]);
+			}
+			return participants;
+		}
+
+		public int GetDamageInflictedByInvaders() {
+
+			var participatingInvaders = CalcParticipatingInvaders();
+
+			int damageFromInvaders = RawDamageFromParticipatingInvaders( participatingInvaders );
+
+			FromEachStrifed_RemoveOneStrife( participatingInvaders );
+
+			// Defend
 			int damageInflictedFromInvaders = Math.Max( damageFromInvaders - Defend, 0 );
 
-			if(damageInflictedFromInvaders == 0)
-				log.Add( "no damage from invaders" );
-			else
-				log.Add( $"{grp} inflicts {damageFromInvaders}-{Defend}={damageInflictedFromInvaders} damage." );
-
 			return damageInflictedFromInvaders;
+		}
+
+		int RawDamageFromParticipatingInvaders( CountDictionary<Token> participatingInvaders ) {
+
+			return participatingInvaders.Keys
+				.Where( x => !(x is StrifedInvader) )
+				.Select( invader => invader.FullHealth * Counts[invader] ).Sum();
+		}
+
+		void FromEachStrifed_RemoveOneStrife( CountDictionary<Token> participatingInvaders ) {
+			var strifed = participatingInvaders.Keys.OfType<StrifedInvader>()
+				.OrderBy( x => x.StrifeCount ) // smallest first
+				.ToArray();
+			foreach(var orig in strifed) {
+				var lessStrifed = orig.AddStrife( -1 );
+				Counts[lessStrifed] += Counts[orig];
+				Counts[orig] = 0;
+			}
 		}
 
 		public async Task DamageLand( int damageInflictedFromInvaders ) {
@@ -94,7 +125,7 @@ namespace SpiritIsland {
 
 		/// <returns>(city-dead,town-dead,explorer-dead)</returns>
 		public async Task DamageInvaders( int damageFromDahan ) {
-			await grp.SmartDamageToGroup( damageFromDahan, log );
+			await grp.SmartRavageDamage( damageFromDahan, log );
 		}
 	}
 

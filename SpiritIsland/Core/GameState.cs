@@ -211,11 +211,6 @@ namespace SpiritIsland {
 
 		public Invaders Invaders { get; } // creates ravage/damage objects - Obsolete - just make Tokens do this.
 
-		public async Task SpiritFree_FearCard_DamageInvaders( Space space, int damage ) {
-			if(damage == 0) return;
-			await Invaders.On( space, Cause.Fear ).SmartDamageToGroup( damage );
-		}
-
 		#endregion
 
 		#region Dahan Helpers

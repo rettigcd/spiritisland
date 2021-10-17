@@ -2,8 +2,7 @@
 
 namespace SpiritIsland.BranchAndClaw {
 
-	[InnatePower( "Frenzied Assult" ),Slow]
-	[FromPresence( 1, Target.Beast )]
+	[InnatePower( "Frenzied Assult" ), Slow, FromPresence( 1, Target.Beast )]
 	class FrenziedAssult {
 
 		[InnateOption( "1 moon,1 fire,4 animal","1 fear and 2 Damage. Remove 1 beast." )]
@@ -20,7 +19,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 		static async Task Execute( TargetSpaceCtx ctx, int fear, int damage ) {
 			ctx.AddFear( fear );
-			await ctx.Invaders.SmartDamageToTypes( damage );
+			await ctx.DamageInvaders( damage );
 			// remove 1 beast
 			ctx.Beasts.Count--;
 		}

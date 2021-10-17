@@ -11,29 +11,32 @@ namespace SpiritIsland.Basegame {
 
 		[FearLevel(1, "Each player chooses a different land with Dahan. 1 Damage there.")]
 		public Task Level1( FearCtx ctx ) {
-			return ForEachPlayerChosenLandWithDahan( ctx.GameState, ( s ) => ctx.GameState.SpiritFree_FearCard_DamageInvaders( s, 1 ) );
+			return ForEachPlayerChosenLandWithDahan( ctx, sCtx=>sCtx.DamageInvaders( 1 ) );
 		}
-
 
 		[FearLevel( 2, "Each player chooses a different land with Dahan. 1 Damage per Dahan there." )]
 		public Task Level2( FearCtx ctx ) {
-			var gs = ctx.GameState;
-			return ForEachPlayerChosenLandWithDahan( gs, ( s ) => gs.SpiritFree_FearCard_DamageInvaders( s, gs.DahanGetCount(s) ) );
+			return ForEachPlayerChosenLandWithDahan( ctx, sCtx => sCtx.DamageInvaders( sCtx.DahanCount ) );
 		}
 
 		[FearLevel( 3, "Each player chooses a different land with Dahan. 2 Damage per Dahan there." )]
 		public Task Level3( FearCtx ctx ) {
-			var gs = ctx.GameState;
-			return ForEachPlayerChosenLandWithDahan( gs, ( s ) => gs.SpiritFree_FearCard_DamageInvaders( s, 2*gs.DahanGetCount( s ) ) );
+			return ForEachPlayerChosenLandWithDahan( ctx, sCtx => sCtx.DamageInvaders( sCtx.DahanCount * 2 ) );
 		}
 
-		static async Task ForEachPlayerChosenLandWithDahan( GameState gs, Func<Space,Task> action ) {
+		static async Task ForEachPlayerChosenLandWithDahan( FearCtx ctx, Func<TargetSpaceCtx,Task> action ) {
+
+			const string prompt = "Fear:select land with dahan";
+
 			HashSet<Space> used = new ();
-			foreach(var spirit in gs.Spirits) {
-				var options = gs.Island.AllSpaces.Where( gs.DahanIsOn ).Except( used ).ToArray();
-				var target = await spirit.Action.Decision( new Decision.TargetSpace( "Fear:select land with dahan", options, Present.Always ));
+			foreach(var spiritCtx in ctx.Spirits) {
+				// Select un-used space
+				var options = spiritCtx.AllSpaces.Where( s=>spiritCtx.Target(s).HasDahan ).Except( used ).ToArray();
+				var target = await spiritCtx.Self.Action.Decision( new Decision.TargetSpace( prompt, options, Present.Always ));
 				used.Add( target );
-				await action( target );
+				TargetSpaceCtx spactCtx = spiritCtx.Target(target);
+
+				await action(spactCtx);
 			}
 		}
 	}

@@ -188,7 +188,7 @@ namespace SpiritIsland {
 
 		public async Task<string> RavageSpace( InvaderGroup grp ) {
 			var cfg = gs.GetRavageConfiguration( grp.Space );
-			var eng = new RavageEngineWithStrife( gs, grp, cfg );
+			var eng = new RavageEngine( gs, grp, cfg );
 			await eng.Exec();
 			return grp.Space.Label + ": " + eng.log.Join( "  " );
 		}

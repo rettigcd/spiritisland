@@ -18,9 +18,9 @@ namespace SpiritIsland.BranchAndClaw {
 			ctx.AddFear(fearCount);
 
 			// Remove 1 city, 1 town and 1 explorer.
-			var tokenToRemove = ctx.Tokens.PickBestInvaderToRemove(Invader.City);    	ctx.Tokens.Adjust( tokenToRemove, -1 );
-			tokenToRemove     = ctx.Tokens.PickBestInvaderToRemove( Invader.Town );     ctx.Tokens.Adjust( tokenToRemove, -1 );
-			tokenToRemove     = ctx.Tokens.PickBestInvaderToRemove( Invader.Explorer ); ctx.Tokens.Adjust( tokenToRemove, -1 );
+			ctx.RemoveInvader(Invader.City);
+			ctx.RemoveInvader(Invader.Town);
+			ctx.RemoveInvader(Invader.Explorer);
 
 			// if you have 3 sun and 3 moon, invaders do -6 damage on their ravage.
 			if(ctx.YouHave( "3 sun,3 moon" ))

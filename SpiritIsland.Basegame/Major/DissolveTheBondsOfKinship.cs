@@ -22,8 +22,8 @@ namespace SpiritIsland.Basegame {
 				// before pushing, explorers and city/town do damage to each other
 				int damageFromExplorers = ctx.Invaders[Invader.Explorer[1]];
 				int damageToExplorers = ctx.Invaders.Tokens.Sum(Invader.City)*3 + ctx.Invaders.Tokens.Sum(Invader.Town)*2;
-				await ctx.Invaders.SmartDamageToTypes(damageFromExplorers,Invader.City,Invader.Town);
-				await ctx.Invaders.SmartDamageToTypes( damageToExplorers, Invader.Explorer );
+				await ctx.DamageInvaders(damageFromExplorers,Invader.City,Invader.Town);
+				await ctx.DamageInvaders( damageToExplorers, Invader.Explorer );
 			}
 
 			// Push all explorers from target land to as many different lands as possible

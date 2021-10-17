@@ -8,21 +8,21 @@ namespace SpiritIsland.Basegame {
 
 		[InnateOption( "1 moon,2 plant", "1 Damage to 1 town/city." )]
 		static public Task Option1Async( TargetSpaceCtx ctx ) {
-			return DoDamage( ctx, 1 );
+			return ctx.DamageInvaders(1,Invader.City, Invader.Town);
 		}
 
+		// !!! replace repeat with the Attribute so user can target different lands
 		[InnateOption( "2 moon,3 plant","Repeat this Power." )]
 		static public Task Option2Async( TargetSpaceCtx ctx ) {
-			return DoDamage( ctx, 2 );
+			return ctx.DamageInvaders(2,Invader.City, Invader.Town);
 		}
 
+		// !!! replace repeat with the Attribute so user can target different lands
 		[InnateOption( "3 moon,4 plant","Repeat this Power again." )]
 		static public Task Option3Async( TargetSpaceCtx ctx ) {
-			return DoDamage(ctx,3);
+			return ctx.DamageInvaders(3,Invader.City, Invader.Town);
 		}
 
-		static Task DoDamage(TargetSpaceCtx ctx, int damage ) {
-			return ctx.Invaders.SmartDamageToTypes( damage, Invader.City, Invader.Town );
-		}
 	}
+
 }

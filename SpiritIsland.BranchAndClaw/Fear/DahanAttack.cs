@@ -12,7 +12,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			// Each player removes 1 eplorer from a land with dahan
 			foreach(var spirit in ctx.Spirits)
-				await spirit.RemoveTokenFromOne(ctx.Lands(ctx.WithDahanAndExplorers),1,Invader.Explorer);
+				await spirit.RemoveTokenFromOneSpace(ctx.Lands(ctx.WithDahanAndExplorers),1,Invader.Explorer);
 
 		}
 

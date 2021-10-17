@@ -11,7 +11,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			// each player removes 1 explorer/town from a land with disease
 			foreach(var spiritCtx in ctx.Spirits)
-				await spiritCtx.RemoveTokenFromOne( ctx.LandsWithDisease(), 1, Invader.Explorer, Invader.Town );
+				await spiritCtx.RemoveTokenFromOneSpace( ctx.LandsWithDisease(), 1, Invader.Explorer, Invader.Town );
 		}
 
 		[FearLevel( 2, "Each player removes up to 3 health of invaders from a land with disease or 1 explorer from an inland land" )]
@@ -31,7 +31,7 @@ namespace SpiritIsland.BranchAndClaw {
 		static Task RemoveHealthFromDiseaseOrExplorerInland( SpiritGameStateCtx spiritCtx, int healthToRemove, IEnumerable<Space> landsWithDisease, IEnumerable<Space> inlandSpaces ) {
 			return spiritCtx.SelectActionOption(
 				new ActionOption( $"Remove up to {healthToRemove} health of invaders from land with disease", () => spiritCtx.RemoveHealthFromOne( healthToRemove, landsWithDisease ) ),
-				new ActionOption( "Remove 1 explorer from inland", () => spiritCtx.RemoveTokenFromOne( inlandSpaces, healthToRemove, Invader.Explorer) )
+				new ActionOption( "Remove 1 explorer from inland", () => spiritCtx.RemoveTokenFromOneSpace( inlandSpaces, healthToRemove, Invader.Explorer) )
 			);
 		}
 

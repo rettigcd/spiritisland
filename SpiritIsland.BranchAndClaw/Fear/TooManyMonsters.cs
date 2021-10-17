@@ -10,7 +10,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			// Each player removes 1 explorer / town from a land with beast.
 			foreach(var spiritCtx in ctx.Spirits)
-				await spiritCtx.RemoveTokenFromOne( ctx.LandsWithBeasts(), 1, Invader.Explorer );
+				await spiritCtx.RemoveTokenFromOneSpace( ctx.LandsWithBeasts(), 1, Invader.Explorer );
 
 		}
 
@@ -34,10 +34,10 @@ namespace SpiritIsland.BranchAndClaw {
 		static Task RemoveTokenChoice( FearCtx ctx, SpiritGameStateCtx spiritCtx, int count, params TokenGroup[] interiorGroup ) {
 			return spiritCtx.SelectActionOption(
 				new ActionOption("Remove 1 explorer & 1 town from a land with beast", () => { 
-					return spiritCtx.RemoveTokenFromOne( ctx.LandsWithBeasts(), count, Invader.Explorer, Invader.Town );
+					return spiritCtx.RemoveTokenFromOneSpace( ctx.LandsWithBeasts(), count, Invader.Explorer, Invader.Town );
 				}),
 				new ActionOption("Remove 1 explorer from a land adjacent to beast", () => { 
-					return spiritCtx.RemoveTokenFromOne( ctx.LandsAdjacentToBeasts(), 1, interiorGroup );
+					return spiritCtx.RemoveTokenFromOneSpace( ctx.LandsAdjacentToBeasts(), 1, interiorGroup );
 				})
 			);
 		}

@@ -204,16 +204,16 @@ namespace SpiritIsland {
 		#region High level fear-specific decisions
 
 		public async Task RemoveHealthFromOne( int healthToRemove, IEnumerable<Space> options ) {
-			var space = await SelectSpace( $"remove {healthToRemove} invader health from", options );
-			space.Invaders.SmartRemovalOfHealth( healthToRemove );
+			var spaceCtx = await SelectSpace( $"remove {healthToRemove} invader health from", options );
+			await spaceCtx.RemoveHealthWorthOfInvaders( healthToRemove );
 		}
 
-		public async Task<Space> RemoveTokenFromOne( IEnumerable<Space> spaceOptions, int count, params TokenGroup[] removable ) {
-			var space = await SelectSpace( "Remove invader from", spaceOptions );
-			if(space != null)
+		public async Task<Space> RemoveTokenFromOneSpace( IEnumerable<Space> spaceOptions, int count, params TokenGroup[] removables ) {
+			var spaceCtx = await SelectSpace( "Remove invader from", spaceOptions );
+			if(spaceCtx != null)
 				while(count-->0)
-					space.Tokens.RemoveInvader( removable );
-			return space?.Space;
+					spaceCtx.Invaders.Remove( removables );
+			return spaceCtx?.Space;
 		}
 
 		public async Task GatherExplorerToOne( IEnumerable<Space> spaceOptions, int count, params TokenGroup[] typeToGather ) {

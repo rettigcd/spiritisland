@@ -13,7 +13,7 @@ namespace SpiritIsland.BranchAndClaw {
 			// each player removes 1 explorer from a land with beast, disease or at least 2 dahan
 			var spaceOptions = LandsWithBeastDiseaseOr2Dahan( ctx );
 			foreach(var spiritCtx in ctx.Spirits)
-				await spiritCtx.RemoveTokenFromOne( spaceOptions, 1, Invader.Explorer );
+				await spiritCtx.RemoveTokenFromOneSpace( spaceOptions, 1, Invader.Explorer );
 		}
 
 		[FearLevel( 2, "Each player removes 1 explorer/town from a land with beast, disease or at least 2 dahan" )]
@@ -22,7 +22,7 @@ namespace SpiritIsland.BranchAndClaw {
 			// Each player removes 1 explorer/town from a land with beast, disease or at least 2 dahan
 			var spaceOptions = LandsWithBeastDiseaseOr2Dahan( ctx );
 			foreach(var spiritCtx in ctx.Spirits)
-				await spiritCtx.RemoveTokenFromOne( spaceOptions, 1, Invader.Explorer, Invader.Town );
+				await spiritCtx.RemoveTokenFromOneSpace( spaceOptions, 1, Invader.Explorer, Invader.Town );
 
 		}
 

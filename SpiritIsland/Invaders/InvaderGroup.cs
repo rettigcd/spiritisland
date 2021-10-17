@@ -106,6 +106,40 @@ namespace SpiritIsland {
 
 		#endregion Destroy
 
+		#region Remove
+
+		//public void Remove( TokenGroup group ) {
+		//	// there is no need to order by .Generic.Health because there is only 1 TokenGroup
+		//	var invaderToRemove = Tokens.OfType( group )
+		//		.OrderBy( k => k.Strife() )  // un-strifed first
+		//		.ThenByDescending( x=>x.Health ) // secondary, worry about current health
+		//		.FirstOrDefault();
+		//	if(invaderToRemove != null)
+		//		--Tokens[invaderToRemove];
+		//}
+
+		/// <remarks>
+		/// This is neither damage nor destory.
+		/// It is Game-Aware in that it understands non-strifed invaders are more dangerous than non-strifed, so it doesn't belong in the generic TokenDictionary class.
+		/// However, it also does not require any input from a user, so it should not be on a TargetSpaceCtx.
+		/// Sticking on InvaderGroup is the only place I can think to put it.
+		/// Also, shouldn't be affected by Bringer overwriting 'Destroy' and 'Damage'
+		/// </remarks>
+		public void Remove( params TokenGroup[] removables ) {
+			if(Tokens.SumAny(removables) == 0) return;
+
+			var invaderToRemove = Tokens.OfAnyType( removables )
+				.OrderByDescending( g => g.FullHealth )
+				.ThenBy( k => k.Strife() )  // un-strifed first
+				.ThenByDescending( g => g.Health )
+				.FirstOrDefault();
+
+			if(invaderToRemove != null)
+				Tokens.Adjust( invaderToRemove, -1 );
+		}
+
+		#endregion
+
 		static public void HealTokens( TokenCountDictionary counts ) {
 			void Heal( Token damaged ) {
 				int num = counts[damaged];

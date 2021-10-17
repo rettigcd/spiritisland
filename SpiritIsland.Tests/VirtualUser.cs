@@ -107,7 +107,9 @@ namespace SpiritIsland.Tests {
 			Choose( selection );
 		}
 
+#pragma warning disable CA1822 // Mark members as static
 		public void SkipsPresenceReplacementWithBeasts() {
+#pragma warning restore CA1822 // Mark members as static
 
 			//// !!! pop this out and put in Sharp Fangs
 			//var current = userPortal.GetCurrent();

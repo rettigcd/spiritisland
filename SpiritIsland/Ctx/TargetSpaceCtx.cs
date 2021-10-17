@@ -96,9 +96,6 @@ namespace SpiritIsland {
 		public void AdjustDahan( int delta )
 			=> Tokens.Adjust(TokenType.Dahan.Default, delta );
 
-		//public InvaderGroup Invaders
-		//	=> this.Self.BuildInvaderGroup( GameState, Target );
-
 		public int DahanCount => Tokens[TokenType.Dahan[2]] + Tokens[TokenType.Dahan[1]];
 
 		public bool HasDahan => DahanCount>0;
@@ -143,9 +140,24 @@ namespace SpiritIsland {
 
 		// Damage invaders in the current target space
 		public Task DamageInvaders( int damage, params TokenGroup[] allowedTypes ) {
+			if( damage == 0 ) return Task.CompletedTask; // not necessary, just saves some cycles
 			if(allowedTypes==null || allowedTypes.Length==0)
 				allowedTypes = new TokenGroup[] { Invader.City, Invader.Town, Invader.Explorer };
 			return Invaders.UserSelectedDamage( damage, Self, allowedTypes );
+		}
+
+		public void RemoveInvader( TokenGroup group ) => Invaders.Remove( group );
+
+		public async Task<int> RemoveHealthWorthOfInvaders( int damage ) {
+			Token pick;
+			while(damage > 0
+				&& (pick = await Self.Action.Decision( new Decision.TokenOnSpace( $"Remove up to {damage} health of invaders.", Space, Tokens.Invaders().Where( x => x.Health <= damage ), Present.Done ) )) != null
+			) {
+				--Tokens[pick];
+				damage -= pick.Health;
+			}
+
+			return damage;
 		}
 
 		/// <summary> adds Target to Fear context </summary>
