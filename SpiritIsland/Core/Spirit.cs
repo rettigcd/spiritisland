@@ -47,8 +47,12 @@ namespace SpiritIsland {
 		}
 
 		public Task GrowAndResolve( GrowthOption option, GameState gameState ) {
-			Grow( option );
-			return ResolveActions( gameState, Speed.Growth, Present.Always );
+			if( option.AutoSelectSingle && option.GrowthActions.Length == 1 )
+				return option.GrowthActions[0].ActivateAsync( this, gameState );
+			else {
+				Grow( option );
+				return ResolveActions( gameState, Speed.Growth, Present.Always );
+			}
 		}
 
 		public void Grow( GrowthOption option ) {
@@ -68,7 +72,6 @@ namespace SpiritIsland {
 			while(count-- > 0) {
 				var currentOptions = remainingOptions.Where( o => o.GainEnergy + Energy >= 0 ).ToArray();
 				GrowthOption option = (GrowthOption)await this.Select( "Select Growth Option", currentOptions, Present.Always );
-
 				remainingOptions.Remove( option );
 
 				await GrowAndResolve( option, gameState );
@@ -286,6 +289,7 @@ namespace SpiritIsland {
 			// reset cards / powers
 			DiscardPile.AddRange( PurchasedCards );
 			PurchasedCards.Clear();
+			availableActions.Clear();
 			usedActions.Clear();
 			usedInnates.Clear();
 

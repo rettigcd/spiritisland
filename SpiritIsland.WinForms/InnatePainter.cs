@@ -19,7 +19,6 @@ namespace SpiritIsland.WinForms {
 		public InnatePainter( Graphics graphics, float width ) {
 			this.graphics = graphics;
 			this.width = width;
-			//			this.font =  new Font( ResourceImages.Singleton.Fonts.Families[0], 20 );
 			textEmSize = width * .033f;
 			this.font = new Font( FontFamily.GenericSansSerif, textEmSize, GraphicsUnit.Pixel );
 			this.boldFont = new Font( FontFamily.GenericSansSerif, textEmSize, FontStyle.Bold, GraphicsUnit.Pixel );
@@ -246,6 +245,7 @@ namespace SpiritIsland.WinForms {
 				"presence" => "Presenceicon",
 				"slow"     => "Slowicon",
 				"disease"  => "Diseaseicon",
+				"badlands" => "Badlands",
 				_          => "Simple_" + token // elements
 			};
 			images.Add( token, ResourceImages.Singleton.GetIcon(filename) );

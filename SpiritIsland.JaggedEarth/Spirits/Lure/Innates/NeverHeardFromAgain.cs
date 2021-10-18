@@ -24,7 +24,7 @@ namespace SpiritIsland.JaggedEarth {
 			return Task.CompletedTask;
 		}
 
-		[InnateOption("2 plant","Destroy up to 2 explorer per badland/beast/disease/wilds.",1)]
+		[InnateOption("2 plant","Destroy up to 2 explorer per badlands/beast/disease/wilds.",1)]
 		static public async Task Option2( TargetSpaceCtx ctx ) {
 			// 2 plant - destroy up to 2 explorer per badland/beast/disease/wilds
 			int destroyCount = await DestroyFromBadlandsBeastDiseaseWilds( ctx );

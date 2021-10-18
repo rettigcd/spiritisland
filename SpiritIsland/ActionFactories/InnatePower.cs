@@ -122,7 +122,7 @@ namespace SpiritIsland {
 			var tokens = new Regex( "sacred site|presence|fast|slow"
 				+ "|dahan|blight|fear|city|town|explorer"
 				+ "|sun|moon|air|fire|water|plant|animal|earth"
-				+ "|beast|disease|strife|wilds"
+				+ "|beast|disease|strife|wilds|badlands"
 				+ "|\\+1range" 
 			).Matches( s ).Cast<Match>().ToList();
 

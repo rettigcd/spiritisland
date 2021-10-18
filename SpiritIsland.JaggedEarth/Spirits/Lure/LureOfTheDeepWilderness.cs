@@ -24,10 +24,10 @@ namespace SpiritIsland.JaggedEarth {
 			,PowerCard.For<SwallowedByTheWilderness>()
 		) {
 			growthOptionGroup = new GrowthOptionGroup(
-				new GrowthOption(new ReclaimAll(),new GainEnergy(1)),
-				new GrowthOption(new PlacePresence(4,Target.Inland)),
+				new GrowthOption(new ReclaimAll(),new GainEnergy(1)){ AutoSelectSingle = true },
+				new GrowthOption(new PlacePresence(4,Target.Inland)){ AutoSelectSingle = true },
 				new GrowthOption(new GainElement(Element.Moon,Element.Air,Element.Plant), new GainEnergy(2)),
-				new GrowthOption(new DrawPowerCard())
+				new GrowthOption(new DrawPowerCard()){ AutoSelectSingle = true }
 			).Pick(2);
 
 

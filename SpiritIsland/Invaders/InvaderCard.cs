@@ -14,7 +14,10 @@ namespace SpiritIsland {
 		public InvaderCard(Terrain terrain, bool escalation=false){
 			if(terrain==Terrain.Ocean) throw new ArgumentException("Can't invade oceans");
 			Matches = (s) => s.Terrain == terrain;
-			Text = terrain.ToString().Substring(0,1);
+			if(escalation)
+				Text = "2"+terrain.ToString().Substring(0,1).ToLower();
+			else
+				Text = terrain.ToString().Substring(0,1);
 			Escalation = escalation;
 		}
 
