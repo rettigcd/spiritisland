@@ -50,24 +50,6 @@ namespace SpiritIsland {
 
 	public static class FearCtxExtensionForBac {
 
-		public static void StrifedInvadersLoseHealthPerStrife( this FearCtx ctx ) {
-			// !!! We need a reset other than end-of-round when Silent Shroud is in play
-			foreach(var space in ctx.GameState.Island.AllSpaces) {
-				var tokens = ctx.InvadersOn( space ).Tokens;
-				var strifedInvaders = tokens.Invaders()
-					.OfType<StrifedInvader>()
-					.Where( x => x.Health > 1 )
-					.OrderBy( x => x.Health ); // get the lowest ones first so we can reduce without them cascading
-				foreach(StrifedInvader strifedInvader in strifedInvaders) {
-					var newInvader = strifedInvader.ResultingDamagedInvader( strifedInvader.StrifeCount );
-					if(newInvader.Health > 0) {
-						tokens[newInvader] = tokens[strifedInvader];
-						tokens[strifedInvader] = 0;
-					}
-				}
-			}
-		}
-
 		// Extension to SpiritGameStateCtx
 		public static async Task<Space> AddStrifeToOne( this SpiritGameStateCtx spirit, IEnumerable<Space> options, params TokenGroup[] groups ) {
 			bool HasInvaders( Space s ) => spirit.Target(s).HasInvaders;

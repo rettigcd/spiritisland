@@ -27,7 +27,7 @@ namespace SpiritIsland.BranchAndClaw {
 				options.Remove( await spirit.AddStrifeToOne( options ) );
 
 			// Then each invader takes 1 damage per strife it has.
-			ctx.StrifedInvadersLoseHealthPerStrife();
+			StrifedRavage.StrifedInvadersLoseHealthPerStrife( ctx );
 		}
 
 		[FearLevel( 3, "each player adds 1 strife in a different land with at least 2 invaders. Then, each invader with strife deals damage to other invaders in that land." )]
@@ -42,8 +42,8 @@ namespace SpiritIsland.BranchAndClaw {
 					options.Remove( spaceCtx.Space );
 
 					// Then, each invader with strife deals damage to other invaders in that land.
-					int damage = InstrumentsOfTheirOwnRuin.DamageFromStrifedInvaders( spaceCtx.Tokens );
-					await InstrumentsOfTheirOwnRuin.DamageUnStriffed( spaceCtx, damage );
+					int damage = StrifedRavage.DamageFromStrifedInvaders( spaceCtx.Tokens );
+					await StrifedRavage.DamageUnStriffed( spaceCtx, damage );
 				}
 			}
 		}

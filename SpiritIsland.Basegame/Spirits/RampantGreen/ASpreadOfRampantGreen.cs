@@ -101,7 +101,7 @@ namespace SpiritIsland.Basegame {
 			);
 
 
-		public override int NumberOfCardsPlayablePerTurn => base.NumberOfCardsPlayablePerTurn + tempCardBoost;
+		public override int NumberOfCardsPlayablePerTurn => base.NumberOfCardsPlayablePerTurn + tempCardBoost; // !!! roll this into base spirit.
 
 		public override void PurchaseAvailableCards( params PowerCard[] cards ) {
 			base.PurchaseAvailableCards( cards );

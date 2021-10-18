@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using Elem = SpiritIsland.Element;
 
 namespace SpiritIsland {
@@ -40,7 +41,7 @@ namespace SpiritIsland {
 		public static readonly Track Card5 = MkCard(5);
 		public static readonly Track Card6 = MkCard(6);
 
-		public static readonly Track PushDahan = new Track( "push dahan" );
+		public static readonly Track Push1Dahan = new Track( "Push1dahan" ){ Action = new Push1DahanFromLands() };
 		public static readonly Track Reclaim1 = new Track( "reclaim 1" ){ Action=new Reclaim1() };
 		public static readonly Track Reclaim1Energy = new Track( "reclaim 1 energy" ){ Action=new Reclaim1() };
 		public static readonly Track Energy5Reclaim1 = new Track( "5,reclaim1 energy" ){ Energy=5, Action=new Reclaim1() };
@@ -66,5 +67,15 @@ namespace SpiritIsland {
 
 	}
 
+	/// <summary> Pushes 1 dahan from 1 of your lands. </summary>
+	public class Push1DahanFromLands : GrowthActionFactory {
+		public override async Task ActivateAsync( SpiritGameStateCtx ctx ) {
+			var dahanOptions = ctx.Self.Presence.Spaces
+				.SelectMany(space=>ctx.Target(space).Tokens.OfType(TokenType.Dahan).Select(t=>new SpaceToken(space,t)));
+			var source = await ctx.Self.Action.Decision(new Decision.SpaceTokens("Select dahan to push from land",dahanOptions,Present.Done));
+			if(source == null) return;
+			await ctx.Target(source.Space).PushDahan(1);
+		}
+	}
 
 }

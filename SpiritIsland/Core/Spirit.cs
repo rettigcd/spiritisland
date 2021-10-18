@@ -267,7 +267,8 @@ namespace SpiritIsland {
 		/// <summary> Energy gain per turn </summary>
 		public int EnergyPerTurn => Presence.Energy.Revealed.Where( x => x.Energy.HasValue ).Last().Energy.Value;
 
-		public virtual int NumberOfCardsPlayablePerTurn => Presence.CardPlays.Revealed.Where(x=>x.CardPlay.HasValue).Last().CardPlay.Value;
+
+		public virtual int NumberOfCardsPlayablePerTurn => Presence.CardPlayCount;
 
 		public abstract string Text { get; }
 

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SpiritIsland.JaggedEarth {
 
-	class GrinningTricksterStirsUpTrouble : Spirit {
+	public class GrinningTricksterStirsUpTrouble : Spirit {
 
 		public const string Name = "Grinning Trickster Stirs Up Trouble";
 		public override string Text => Name;
@@ -16,7 +16,7 @@ namespace SpiritIsland.JaggedEarth {
 			:base(
 				new SpiritPresence(
 					new PresenceTrack(Track.Energy1,Track.MoonEnergy,Track.Energy2,Track.AnyEnergy,Track.FireEnergy,Track.Energy3),
-					new PresenceTrack(Track.Card2,Track.PushDahan,Track.Card3,Track.Card3,Track.Card4,Track.AirEnergy,Track.Card5) // !!!
+					new PresenceTrack(Track.Card2,Track.Push1Dahan,Track.Card3,Track.Card3,Track.Card4,Track.AirEnergy,Track.Card5)
 				)
 				,PowerCard.For<ImpersonateAuthority>()
 				,PowerCard.For<InciteTheMob>()
@@ -25,7 +25,18 @@ namespace SpiritIsland.JaggedEarth {
 			)
 		{
 			// Growth
+			this.growthOptionGroup = new GrowthOptionGroup(
+				new GrowthOption(new GainEnergy(-1),new ReclaimAll(), new MovePresence() ),
+				new GrowthOption(new PlacePresence(2)),
+				new GrowthOption(new DrawPowerCard()),
+				new GrowthOption(new GainEnergyEqualToCardPlays() )
+			).Pick(2);
+
 			// Innates
+			InnatePowers = new InnatePower[] {
+				InnatePower.For<LetsSeeWhatHappens>(),
+				InnatePower.For<WhyDontYouAndThemFight>()
+			};
 		}
 
 		protected override void InitializeInternal( Board board, GameState gameState ) {
@@ -37,4 +48,5 @@ namespace SpiritIsland.JaggedEarth {
 		}
 
 	}
+
 }

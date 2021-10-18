@@ -245,6 +245,7 @@ namespace SpiritIsland.WinForms {
 				"presence" => "Presenceicon",
 				"slow"     => "Slowicon",
 				"disease"  => "Diseaseicon",
+				"strife"   => "Strifeicon",
 				"badlands" => "Badlands",
 				_          => "Simple_" + token // elements
 			};

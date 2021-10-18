@@ -146,6 +146,14 @@ namespace SpiritIsland {
 			return Invaders.UserSelectedDamage( damage, Self, allowedTypes );
 		}
 
+		#region Add Strife
+
+		/// <param name="groups">Option: if null/empty, no filtering</param>
+		public Task AddStrife( params TokenGroup[] groups ) 
+			=> Self.SelectInvader_ToStrife( Tokens, groups );
+
+		#endregion
+
 		public void RemoveInvader( TokenGroup group ) => Invaders.Remove( group );
 
 		public async Task<int> RemoveHealthWorthOfInvaders( int damage ) {

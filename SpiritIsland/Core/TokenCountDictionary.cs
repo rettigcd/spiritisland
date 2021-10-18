@@ -38,6 +38,13 @@ namespace SpiritIsland {
 				.Join( "," );
 		} }
 
+		public Token RemoveStrife( StrifedInvader orig, int tokenCount ) {
+			Token lessStrifed = orig.AddStrife( -1 );
+			this[lessStrifed] += tokenCount;
+			this[orig] -= tokenCount;
+			return lessStrifed;
+		}
+
 		public string Summary { get {
 			return this.Keys
 				.OrderBy( k=>k.Summary )

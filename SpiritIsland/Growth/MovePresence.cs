@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 
-namespace SpiritIsland.PromoPack1 {
+namespace SpiritIsland {
+
 	public class MovePresence : GrowthActionFactory {
 
 		public override async Task ActivateAsync( SpiritGameStateCtx ctx) {

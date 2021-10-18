@@ -87,11 +87,8 @@ namespace SpiritIsland {
 			var strifed = participatingInvaders.Keys.OfType<StrifedInvader>()
 				.OrderBy( x => x.StrifeCount ) // smallest first
 				.ToArray();
-			foreach(var orig in strifed) {
-				var lessStrifed = orig.AddStrife( -1 );
-				Counts[lessStrifed] += Counts[orig];
-				Counts[orig] = 0;
-			}
+			foreach(var orig in strifed)
+				Counts.RemoveStrife( orig, Counts[orig] );
 		}
 
 		public async Task DamageLand( int damageInflictedFromInvaders ) {

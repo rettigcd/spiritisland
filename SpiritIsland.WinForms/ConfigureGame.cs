@@ -64,6 +64,7 @@ namespace SpiritIsland.WinForms {
 				spiritListBox.Items.Add( typeof( SerpentSlumbering ) );
 				// Jagged Earth
 				spiritListBox.Items.Add( typeof( LureOfTheDeepWilderness ) );
+				spiritListBox.Items.Add( typeof( GrinningTricksterStirsUpTrouble ) );
 			}
 			spiritListBox.SelectedIndex = 0;
 		}

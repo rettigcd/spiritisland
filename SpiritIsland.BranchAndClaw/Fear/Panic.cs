@@ -22,7 +22,7 @@ namespace SpiritIsland.BranchAndClaw {
 				await spirit.AddStrifeToOne( ctx.LandsWithBeastDiseaseDahan() );
 
 			// For the rest of this turn, invaders have -1 health per strife to a minimum of 1
-			ctx.StrifedInvadersLoseHealthPerStrife();
+			StrifedRavage.StrifedInvadersLoseHealthPerStrife( ctx );
 		}
 
 		[FearLevel( 3, "Each player adds 1 strife to an invader.  For the rest of this turn, invaders have -1 health per strife to a minimum of 1." )]
@@ -33,7 +33,7 @@ namespace SpiritIsland.BranchAndClaw {
 				await spirit.AddStrifeToOne( ctx.GameState.Island.AllSpaces );
 
 			// For the rest of this turn, invaders have -1 health per strife to a minimum of 1.
-			ctx.StrifedInvadersLoseHealthPerStrife();
+			StrifedRavage.StrifedInvadersLoseHealthPerStrife( ctx );
 		}
 
 	}

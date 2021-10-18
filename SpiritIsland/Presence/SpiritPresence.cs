@@ -17,7 +17,6 @@ namespace SpiritIsland {
 			CardPlays = cardPlays;
 		}
 
-
 		#region Tracks / Board
 
 		public virtual IEnumerable<Track> GetPlaceableTrackOptions() {
@@ -93,6 +92,11 @@ namespace SpiritIsland {
 
 		/// <remarks>public so we can remove it for Replacing with Beast and advanced spirit strangness</remarks>
 		public virtual void RemoveFrom( Space space ) => placed.Remove( space );
+
+		#endregion
+
+		#region Per Turn stuff
+		public int CardPlayCount => CardPlays.Revealed.Where(x=>x.CardPlay.HasValue).Last().CardPlay.Value;
 
 		#endregion
 

@@ -20,7 +20,7 @@ namespace SpiritIsland {
 
 		static public InnatePower For<T>(){ 
 			Type actionType = typeof(T);
-			var contextAttr = actionType.GetCustomAttributes<GeneratesContextAttribute>().Single();
+			var contextAttr = actionType.GetCustomAttributes<GeneratesContextAttribute>().VerboseSingle(actionType.Name+" must have Single Target space or Target spirit attribute");
 			return new InnatePower( actionType, contextAttr );
 		}
 

@@ -22,7 +22,7 @@ namespace SpiritIsland.BranchAndClaw {
 				await spirit.AddStrifeToOne( ctx.Lands(ctx.WithDahan) );
 
 			// For the rest of this turn, invaders have -1 health per strife to a minimum of 1
-			ctx.StrifedInvadersLoseHealthPerStrife();
+			StrifedRavage.StrifedInvadersLoseHealthPerStrife( ctx );
 
 		}
 
