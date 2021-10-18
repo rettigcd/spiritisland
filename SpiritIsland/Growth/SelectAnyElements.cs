@@ -2,6 +2,7 @@
 
 namespace SpiritIsland {
 
+	// !!! if this is used from the presence tracks, could place this directly on the Track.Action property
 	public class SelectAnyElements : IActionFactory {
 
 		readonly int count;
@@ -23,6 +24,7 @@ namespace SpiritIsland {
 				++self.Elements[newEl];
 			
 		}
+		public Task ActivateAsync(SpiritGameStateCtx ctx) => ActivateAsync( ctx.Self, ctx.GameState);
 
 		public bool IsActiveDuring( Speed _, CountDictionary<Element> _1 ) => true;
 

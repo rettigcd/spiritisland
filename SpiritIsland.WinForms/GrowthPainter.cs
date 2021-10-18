@@ -34,7 +34,7 @@ namespace SpiritIsland.WinForms {
 
 		private void DrawAction( GrowthActionFactory action, RectangleF rect ) {
 
-			switch(action.Text) {
+			switch(action.Name) {
 				case "ReclaimAll": ReclaimAll( rect ); break;
 				case "Reclaim(1)": Reclaim1( rect ); break;
 

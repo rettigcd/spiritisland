@@ -35,10 +35,10 @@ namespace SpiritIsland {
 				: speedAttr.IsActiveFor(requestSpeed,elements);
 		}
 
-		public async Task ActivateAsync( Spirit spirit, GameState gameState ) {
-			var ctx = await targetAttr.GetTargetCtx( spirit, gameState );
-			if(ctx == null) return;
-			await (Task)methodBase.Invoke( null, new object[] { ctx } );
+		public async Task ActivateAsync(SpiritGameStateCtx ctx) {
+			var ctx2 = await targetAttr.GetTargetCtx( ctx );
+			if(ctx2 == null) return;
+			await (Task)methodBase.Invoke( null, new object[] { ctx2 } );
 		}
 
 		#region private

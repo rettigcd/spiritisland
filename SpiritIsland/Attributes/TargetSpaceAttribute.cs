@@ -17,11 +17,10 @@ namespace SpiritIsland {
 			this.TargetFilter = targetFilter;
 		}
 
-		public override async Task<object> GetTargetCtx( Spirit spirit, GameState gameState ){
+		public override async Task<object> GetTargetCtx( SpiritGameStateCtx ctx ){
 			// !!! replace null with prompt indicating what card we are targetting
-			var space = await spirit.PowerApi.TargetsSpace( spirit, gameState, null, fromSourceEnum, sourceTerrain, range, TargetFilter );
-			return space == null ? null 
-				: new TargetSpaceCtx( spirit, gameState, space, Cause.Power);
+			var space = await ctx.Self.PowerApi.TargetsSpace( ctx.Self, ctx.GameState, null, fromSourceEnum, sourceTerrain, range, TargetFilter );
+			return space == null ? null : ctx.Target(space);
 		}
 
 		protected virtual int CalcRange( SpiritGameStateCtx ctx ) => range;

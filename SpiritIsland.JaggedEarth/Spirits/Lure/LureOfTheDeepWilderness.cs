@@ -58,7 +58,7 @@ namespace SpiritIsland.JaggedEarth {
 				await GrowAndResolve( option, gameState );
 			}
 
-			await TriggerEnergyElementsAndReclaims();
+			await TriggerEnergyElementsAndReclaims(gameState);
 
 		}
 

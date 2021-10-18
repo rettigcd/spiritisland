@@ -7,14 +7,14 @@ namespace SpiritIsland {
 		readonly protected int range;
 		readonly protected string filterEnum;
 
-		public override string ShortDescription {get;}
+		public override string Name {get;}
 
 		#region constructors
 
 		public PlacePresence( int range ){
 			this.range = range;
 			filterEnum = Target.Any;
-			ShortDescription = $"PlacePresence({range})";
+			Name = $"PlacePresence({range})";
 		}
 
 		public PlacePresence(
@@ -23,14 +23,12 @@ namespace SpiritIsland {
 		) {
 			this.range = range;
 			this.filterEnum = filterEnum;
-			ShortDescription = $"PlacePresence({range},{filterEnum})";
+			Name = $"PlacePresence({range},{filterEnum})";
 		}
 
 		#endregion
 
-		public override Task ActivateAsync( Spirit spirit, GameState gameState ) {
-			return new SpiritGameStateCtx(spirit,gameState,Cause.Growth).PlacePresence( range, filterEnum );
-		}
+		public override Task ActivateAsync( SpiritGameStateCtx ctx ) => ctx.PlacePresence( range, filterEnum );
 
 	}
 

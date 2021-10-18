@@ -12,9 +12,8 @@ namespace SpiritIsland {
 
 		public string Text => Name;
 
-		public Task ActivateAsync( Spirit spirit, GameState gameState ) {
-			return new SpeedChanger( spirit, gameState, Speed.Fast, 2 ).Exec();
-		}
+		public Task ActivateAsync(SpiritGameStateCtx ctx) => new SpeedChanger( ctx.Self, ctx.GameState, Speed.Fast, 2 ).Exec();
+
 
 	}
 

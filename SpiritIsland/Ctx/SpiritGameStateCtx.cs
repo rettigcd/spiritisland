@@ -17,14 +17,13 @@ namespace SpiritIsland {
 			Self = self;
 			GameState = gameState;
 			Cause = cause;
-			TerrainMapper = gameState.Island.TerrainMapFor(cause); // !! could make TerrainMapper a property on Cause so we don't have to look it up.
 		}
 
 		protected SpiritGameStateCtx(SpiritGameStateCtx src) {
 			Self = src.Self;
 			GameState = src.GameState;
 			Cause = src.Cause;
-			TerrainMapper = src.TerrainMapper;
+			_terrainMapper = src._terrainMapper;
 		}
 
 		#endregion constructor
@@ -199,7 +198,10 @@ namespace SpiritIsland {
 
 		#endregion
 
-		protected readonly TerrainMapper TerrainMapper;
+		// Defer initializing this because some tests don't initialize nor depend on the GameState
+		protected TerrainMapper TerrainMapper => _terrainMapper ??= GameState.Island.TerrainMapFor(Cause);
+		protected TerrainMapper _terrainMapper;
+
 
 		#region High level fear-specific decisions
 

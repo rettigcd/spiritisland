@@ -52,7 +52,7 @@ namespace SpiritIsland.Tests {
 		}
 
 		protected void When_PlayingCard() {
-			_ = card.ActivateAsync( spirit, gameState );
+			_ = card.ActivateAsync( new SpiritGameStateCtx( spirit, gameState, Cause.Power ) );
 		}
 
 	}

@@ -10,12 +10,12 @@ namespace SpiritIsland {
 			this.ElementOptions = elementOptions;
 		}
 
-		public override async Task ActivateAsync( Spirit spirit, GameState gameState ) {
-			var element = await spirit.SelectElement( "Gain element", ElementOptions );
-			spirit.Elements[element]++;
+		public override async Task ActivateAsync( SpiritGameStateCtx ctx ) {
+			var element = await ctx.Self.SelectElement( "Gain element", ElementOptions );
+			ctx.Self.Elements[element]++;
 		}
 
-		public override string ShortDescription => "GainElement("+ElementOptions.Select(x=>x.ToString()).Join(",")+")";
+		public override string Name => "GainElement("+ElementOptions.Select(x=>x.ToString()).Join(",")+")";
 	}
 
 }

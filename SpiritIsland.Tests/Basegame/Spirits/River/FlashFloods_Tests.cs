@@ -33,13 +33,12 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			gameState.Assert_Invaders( targetSpace, "1C@3,1T@2,1E@1" );
 
 			//   And: Purchased FlashFloods
-			var card = spirit.Hand.Single( c => c.Name == FlashFloods.Name );
+			card = spirit.Hand.Single( c => c.Name == FlashFloods.Name );
 			spirit.Energy = card.Cost;
 			spirit.PurchaseAvailableCards( card );
 			Assert.Contains( card, spirit.GetAvailableActions( card.Speed ).OfType<PowerCard>().ToList() ); // is fast
 
-			//  When: activating flash flood
-			_ = card.ActivateAsync( spirit, gameState );
+			When_PlayingCard();
 
 			User.TargetsLand( "A4" );
 			User.SelectsDamageRecipient( 1, "C@3,T@2,(E@1)" ); // select damage option
@@ -53,7 +52,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// Given: River
 			//   And: a game on Board-A
 			var board = Board.BuildBoardA();
-			var gameState = new GameState(spirit,board);
+			gameState = new GameState(spirit,board);
 			//   And: Presence on A2 (city/costal)
 			var presenceSpace = board[2];
 			spirit.Presence.PlaceOn(presenceSpace);
@@ -66,13 +65,12 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			gameState.Assert_Invaders(targetSpace, "1C@3,1T@2,1E@1" );
 
 			//   And: Purchased FlashFloods
-			var card = spirit.Hand.Single(c=>c.Name == FlashFloods.Name);
+			card = spirit.Hand.Single(c=>c.Name == FlashFloods.Name);
 			spirit.Energy = card.Cost;
 			spirit.PurchaseAvailableCards(card);
 			Assert.Contains(card,spirit.GetAvailableActions(card.Speed).OfType<PowerCard>().ToList()); // is fast
 
-			//  When: activating flash flood
-			_ = card.ActivateAsync( spirit, gameState );
+			When_PlayingCard();
 
 			//  Select: A2
 			User.TargetsLand("A2");

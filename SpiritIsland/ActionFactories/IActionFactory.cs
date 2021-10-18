@@ -4,7 +4,7 @@ namespace SpiritIsland {
 
 	public interface IActionFactory : IOption {
 
-		Task ActivateAsync(Spirit spirit, GameState gameState);
+		Task ActivateAsync( SpiritGameStateCtx ctx );
 
 		bool IsActiveDuring( Speed speed, CountDictionary<Element> elements );
 

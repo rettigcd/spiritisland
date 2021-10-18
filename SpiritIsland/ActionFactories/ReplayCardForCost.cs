@@ -27,19 +27,19 @@ namespace SpiritIsland {
 
 		public string Text => Name;
 
-		public async Task ActivateAsync( Spirit self, GameState _ ) {
+		public async Task ActivateAsync( SpiritGameStateCtx ctx ) {
 
-			int maxCardCost = System.Math.Min( this.maxCost, self.Energy );
-			var options = self.UsedActions.OfType<PowerCard>() // can't use Discard pile because those cards are from prior rounds.  // !!! needs tests
+			int maxCardCost = System.Math.Min( this.maxCost, ctx.Self.Energy );
+			var options = ctx.Self.UsedActions.OfType<PowerCard>() // can't use Discard pile because those cards are from prior rounds.  // !!! needs tests
 				.Where(card=>card.Cost<=maxCardCost)
 				.ToArray();
 			if(options.Length == 0) return;
 
-			PowerCard factory = await self.SelectPowerCard( "Select card to replay", options.Where( x => x.Cost <= maxCardCost ), CardUse.Replay, Present.Always );
+			PowerCard factory = await ctx.Self.SelectPowerCard( "Select card to replay", options.Where( x => x.Cost <= maxCardCost ), CardUse.Replay, Present.Always );
 			if(factory == null) return;
 
-			self.Energy -= factory.Cost;
-			self.AddActionFactory( factory );
+			ctx.Self.Energy -= factory.Cost;
+			ctx.Self.AddActionFactory( factory );
 
 		}
 

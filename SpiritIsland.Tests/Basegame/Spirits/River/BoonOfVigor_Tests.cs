@@ -12,11 +12,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			Given_GameWithSpirits( spirit );
 
-			var card = Given_PurchasedCard( BoonOfVigor.Name );
+			card = Given_PurchasedCard( BoonOfVigor.Name );
 			Assert_CardIsReady( card, Speed.Fast );
 
-			// When: targetting self
-			_ = card.ActivateAsync( spirit, gameState );
+			When_PlayingCard();
 
 			User.Assert_Done();
 
@@ -38,11 +37,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Given_PurchasedFakePowercards(otherSpirit, expectedEnergyBonus);
 
 			//   And: Purchased Boon of Vigor
-			PowerCard card = Given_PurchasedCard(BoonOfVigor.Name);
+			card = Given_PurchasedCard(BoonOfVigor.Name);
 			Assert_CardIsReady(card,Speed.Fast);
 
-			// When: targetting other spirit
-			_ = card.ActivateAsync( spirit, gameState );
+			When_PlayingCard();
 			
 			User.TargetsSpirit("River Surges in Sunlight,(Lightning's Swift Strike)");
 

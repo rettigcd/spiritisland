@@ -85,16 +85,16 @@ namespace SpiritIsland {
 
 		bool ShouldRepeat(CountDictionary<Element> elements) => repeatAttr != null && repeatAttr.Repeat( elements );
 
-		public async Task ActivateAsync( Spirit self, GameState gameState ) {
-			await ActivateInnerAsync(self,gameState);
-			if( ShouldRepeat(self.Elements) )
-				await ActivateInnerAsync(self,gameState);
+		public async Task ActivateAsync( SpiritGameStateCtx ctx ) {
+			await ActivateInnerAsync( ctx );
+			if( ShouldRepeat(ctx.Self.Elements) )
+				await ActivateInnerAsync( ctx );
 		}
 
-		async Task ActivateInnerAsync( Spirit self, GameState gameState ) {
-			var ctx = await targetAttr.GetTargetCtx( self, gameState );
+		async Task ActivateInnerAsync( SpiritGameStateCtx ctx0 ) {
+			var ctx = await targetAttr.GetTargetCtx( ctx0 );
 			if(ctx == null) return;
-			var methods = HighestMethodOfEachGroup( self );
+			var methods = HighestMethodOfEachGroup( ctx0.Self );
 			foreach(var method in methods)
 				await (Task)method.Invoke( null, new object[] { ctx } );
 		}

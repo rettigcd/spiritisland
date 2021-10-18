@@ -47,11 +47,12 @@ namespace SpiritIsland {
 		}
 
 		public Task GrowAndResolve( GrowthOption option, GameState gameState ) {
+			var ctx = new SpiritGameStateCtx(this,gameState,Cause.Growth);
 			if( option.AutoSelectSingle && option.GrowthActions.Length == 1 )
-				return option.GrowthActions[0].ActivateAsync( this, gameState );
+				return option.GrowthActions[0].ActivateAsync( ctx );
 			else {
 				Grow( option );
-				return ResolveActions( gameState, Speed.Growth, Present.Always );
+				return ResolveActions( Speed.Growth, Present.Always, ctx );
 			}
 		}
 
@@ -81,7 +82,8 @@ namespace SpiritIsland {
 
 		}
 
-		public async Task ResolveActions( GameState gameState, Speed speed, Present present ) {
+		// !!! Seems like this should be private / protected and not called from outside.
+		public async Task ResolveActions( Speed speed, Present present, SpiritGameStateCtx ctx ) {
 
 			IActionFactory[] factoryOptions;
 
@@ -103,7 +105,7 @@ namespace SpiritIsland {
 				if(!factoryOptions.Contains( option ))
 					throw new Exception( "Dude! - You selected something that wasn't an option" );
 
-				await TakeAction( (IActionFactory)option, gameState );
+				await TakeAction( (IActionFactory)option, ctx );
 			}
 
 		}
@@ -183,8 +185,10 @@ namespace SpiritIsland {
 
 		public async Task TriggerEnergyElementsAndReclaims(GameState gs) {
 
+			var ctx = new SpiritGameStateCtx(this,gs,Cause.Growth);
+
 			foreach(var actions in Presence.RevealedActions)
-				await actions.ActivateAsync( this, gs );
+				await actions.ActivateAsync( ctx );
 
 			// Energy
 			Energy += EnergyPerTurn;
@@ -214,11 +218,11 @@ namespace SpiritIsland {
 
 		}
 
-		public virtual async Task TakeAction(IActionFactory factory, GameState gameState) {
+		protected virtual async Task TakeAction(IActionFactory factory, SpiritGameStateCtx ctx) {
 			var oldActionGuid = CurrentActionId; // capture old
 			CurrentActionId = Guid.NewGuid(); // set new
 			try {
-				await factory.ActivateAsync( this, gameState );
+				await factory.ActivateAsync( ctx );
 				RemoveFromUnresolvedActions( factory );
 			} finally {
 				CurrentActionId = oldActionGuid; // restore

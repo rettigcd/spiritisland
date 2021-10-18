@@ -10,11 +10,11 @@ namespace SpiritIsland {
 			this.delta = delta; 
 		}
 
-		public override string ShortDescription => $"GainEnergy({delta})";
+		public override string Name => $"GainEnergy({delta})";
 
 
-		public override Task ActivateAsync( Spirit spirit, GameState _) {
-			spirit.Energy += delta;
+		public override Task ActivateAsync( SpiritGameStateCtx ctx ) {
+			ctx.Self.Energy += delta;
 			return Task.CompletedTask;
 		}
 

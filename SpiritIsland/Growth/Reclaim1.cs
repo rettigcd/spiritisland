@@ -5,7 +5,8 @@ namespace SpiritIsland {
 
 	public class Reclaim1 : GrowthActionFactory {
 
-		public override async Task ActivateAsync( Spirit self, GameState _ ) {
+		public override async Task ActivateAsync( SpiritGameStateCtx ctx ) {
+			var self = ctx.Self;
 			if(self.DiscardPile.Count == 0) return;
 
 			var dict = self.DiscardPile.ToDictionary(c=>$"{c.Text} ${c.Cost} ({c.Speed})",c=>(PowerCard)c);
@@ -19,7 +20,7 @@ namespace SpiritIsland {
 			}
 		}
 
-		public override string ShortDescription => "Reclaim(1)";
+		public override string Name => "Reclaim(1)";
 
 	}
 

@@ -15,7 +15,7 @@ namespace SpiritIsland.PromoPack1 {
 					"Play it immediately by paying its cost", 
 					() => { 
 						ctx.Other.Energy -= powerCard.Cost;
-						return powerCard.ActivateAsync( ctx.Other, ctx.GameState );
+						return powerCard.ActivateAsync( ctx.OtherCtx );
 					},
 					powerCard.Cost <= ctx.Other.Energy
 				),

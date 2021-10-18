@@ -4,7 +4,7 @@ namespace SpiritIsland {
 
 	public class GrowthOption : IOption {
 
-		public int GainEnergy = 0; // indicator to limit option availability
+		public int GainEnergy = 0; // When negative, prevents growth option unless user has sufficient energy to satisfy
 
 		public GrowthOption(params GrowthActionFactory[] actions){ 
 			this.GrowthActions = actions; 
@@ -15,7 +15,7 @@ namespace SpiritIsland {
 		public string Text => ToString();
 
 		public override string ToString() {
-			return GrowthActions.Select(a=>a.ShortDescription).Join(" / ");
+			return GrowthActions.Select(a=>a.Name).Join(" / ");
 		}
 
 		public bool AutoSelectSingle { get;set; } = false;
