@@ -100,7 +100,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			spirit.Presence.Energy.RevealedCount = revealedSpaces;
 			Assert_EnergyTrackIs( expectedEnergyGrowth );
 
-			_ = spirit.TriggerEnergyElementsAndReclaims();
+			_ = spirit.TriggerEnergyElementsAndReclaims(null);
 
 			if(elements.Contains( '*' ))
 				spirit.GetAvailableActions(Speed.Growth).Single().Name.ShouldBe("Select elements (1)");
@@ -120,7 +120,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			spirit.Presence.CardPlays.RevealedCount = revealedSpaces;
 			Assert_CardTrackIs(expectedCardPlayCount);
 
-			_ = spirit.TriggerEnergyElementsAndReclaims();
+			_ = spirit.TriggerEnergyElementsAndReclaims(null);
 
 			if(elements.Contains( '*' ))
 				spirit.GetAvailableActions( Speed.Growth ).Single().Name.ShouldBe( "Select elements (1)" );

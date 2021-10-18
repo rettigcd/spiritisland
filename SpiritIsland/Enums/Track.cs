@@ -40,10 +40,11 @@ namespace SpiritIsland {
 		public static readonly Track Card5 = MkCard(5);
 		public static readonly Track Card6 = MkCard(6);
 
-		public static readonly Track Reclaim1 = new Track( "reclaim 1" ){ ReclaimOne=true };
-		public static readonly Track Reclaim1Energy = new Track( "reclaim 1 energy" ){ ReclaimOne=true };
-		public static readonly Track Energy5Reclaim1 = new Track( "5,reclaim1 energy" ){ Energy=5, ReclaimOne=true };
-		public static readonly Track Card5Reclaim1 = new Track( "Fivereclaimone" ){ CardPlay=5, ReclaimOne=true };
+		public static readonly Track PushDahan = new Track( "push dahan" );
+		public static readonly Track Reclaim1 = new Track( "reclaim 1" ){ Action=new Reclaim1() };
+		public static readonly Track Reclaim1Energy = new Track( "reclaim 1 energy" ){ Action=new Reclaim1() };
+		public static readonly Track Energy5Reclaim1 = new Track( "5,reclaim1 energy" ){ Energy=5, Action=new Reclaim1() };
+		public static readonly Track Card5Reclaim1 = new Track( "Fivereclaimone" ){ CardPlay=5, Action=new Reclaim1() };
 		public static readonly Track Destroyed = new Track("destroyed"); 
 
 		public Track( string text, params Element[] els ){ this.Text = text; Elements = els; }
@@ -55,7 +56,8 @@ namespace SpiritIsland {
 		public Element[] Elements { get; }
 
 		public int? CardPlay { get; set; }
-		public bool ReclaimOne { get; set; }
+
+		public IActionFactory Action { get; set; }
 
 		public virtual void AddElement( CountDictionary<Element> elements ) {
 			foreach(var el in Elements)

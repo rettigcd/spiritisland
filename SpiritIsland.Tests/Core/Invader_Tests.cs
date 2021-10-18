@@ -89,10 +89,10 @@ namespace SpiritIsland.Tests.Core {
 		}
 
 		[Theory]
-		[InlineDataAttribute("M","A1,A6")]
-		[InlineDataAttribute("J","A3,A8")]
-		[InlineDataAttribute("W","A2,A5")]
-		[InlineDataAttribute("S","A4,A7")]
+		[InlineDataAttribute("2m","A1,A6")]
+		[InlineDataAttribute("2j","A3,A8")]
+		[InlineDataAttribute("2w","A2,A5")]
+		[InlineDataAttribute("2s","A4,A7")]
 		[InlineDataAttribute("Costal","A1,A2,A3")]
 		public void Level2CardTargets(string cardText,string expectedTargets){
 			var cards = InvaderDeck.Level2Cards.Where(c=>c.Text==cardText);

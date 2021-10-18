@@ -46,7 +46,7 @@ namespace SpiritIslandCmd {
 					description = FormatFactory( factory, pad );
 				} else {
 					key = (++labelIndex).ToString();
-					description = FormatOption( option );
+					description = option.Text;
 				}
 				dict.Add(key,option);
 				tempList.Add(new string[]{key,description});
@@ -64,21 +64,6 @@ namespace SpiritIslandCmd {
 			return dict.ContainsKey(cmd) ? dict[cmd] : null;
 		}
 		public string ToPrompt() => Prompt + descList.Select( d => "\r\n\t" + d ).Join( "" );
-
-		public string FormatOption(IOption option){
-			return option is Track track
-					? FormatTrack( track )
-				: option is Space space 
-					? FormatSpace( space )
-				: option.Text;
-		}
-
-		public string FormatTrack( Track track ) {
-			string details = track == Track.Energy1
-				? "$/turn = " + game.Spirit.EnergyPerTurn
-				: "Card/turn = " + game.Spirit.NumberOfCardsPlayablePerTurn; 
-			return $"{track.Text} {details}";
-		}
 
 		public string FormatSpace( Space space ) {
 			var gameState = game.GameState;

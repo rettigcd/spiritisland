@@ -70,6 +70,12 @@ namespace SpiritIsland {
 				throw new ArgumentException( "Can't pull from track:" + track.ToString() );
 		}
 
+		public IEnumerable<IActionFactory> RevealedActions 
+			=> CardPlays.Revealed
+				.Union(Energy.Revealed)
+				.Select(x => x.Action)
+				.Where(x => x != null);
+
 		public void Move( Space from, Space to ) {
 			RemoveFrom( from );
 			PlaceOn( to );

@@ -139,7 +139,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			// energy: 0 moon water 1 earth water 2
 			spirit.Presence.Energy.RevealedCount = revealedSpaces;
 			Assert_EnergyTrackIs( expectedEnergyGrowth );
-			await spirit.TriggerEnergyElementsAndReclaims();
+			await spirit.TriggerEnergyElementsAndReclaims(null);
 			Assert_BonusElements( elements );
 		}
 

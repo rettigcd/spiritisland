@@ -77,7 +77,7 @@ namespace SpiritIsland {
 				await GrowAndResolve( option, gameState );
 			}
 
-			await TriggerEnergyElementsAndReclaims();
+			await TriggerEnergyElementsAndReclaims( gameState );
 
 		}
 
@@ -181,7 +181,10 @@ namespace SpiritIsland {
 
 		}
 
-		public async Task TriggerEnergyElementsAndReclaims() {
+		public async Task TriggerEnergyElementsAndReclaims(GameState gs) {
+
+			foreach(var actions in Presence.RevealedActions)
+				await actions.ActivateAsync( this, gs );
 
 			// Energy
 			Energy += EnergyPerTurn;
@@ -192,14 +195,6 @@ namespace SpiritIsland {
 			Elements[Element.Any] = 0; // we can't draw these in our activated element list
 			if(anyCount > 0)
 				AddActionFactory( new SelectAnyElements( anyCount ) );
-
-			// Reclaims-1
-			int reclaim1Count = Math.Min(
-				DiscardPile.Count,  // Reclaim-all will make this 0, disabling any reclaim-1
-				Presence.CardPlays.Revealed.Count( x => x.ReclaimOne )
-			);
-			while(reclaim1Count-- > 0)
-				await new Reclaim1().ActivateAsync( this, null );
 
 		}
 

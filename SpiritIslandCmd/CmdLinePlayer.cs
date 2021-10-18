@@ -80,7 +80,7 @@ namespace SpiritIslandCmd {
 		void ShowSpirit() {
 			Console.WriteLine( $"Spirit: {game.Spirit.Text}" );
 			// Growth Options
-			Console.WriteLine( $"\tEnergy: {game.Spirit.EnergyPerTurn}/turn   Total:{game.Spirit.Energy}");
+			Console.WriteLine( $"\tEnergy: {game.Spirit.Energy}");
 			Console.WriteLine( $"\tCards:  {game.Spirit.NumberOfCardsPlayablePerTurn}/turn" );
 			// Special Rules
 			Console.WriteLine();
