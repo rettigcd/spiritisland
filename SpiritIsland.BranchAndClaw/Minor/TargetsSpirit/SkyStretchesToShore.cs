@@ -26,8 +26,8 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 
 	class SkyStretchesToShoreApi : TargetLandApi {
 		public SkyStretchesToShoreApi( Spirit spirit ) {
-			this.orig = spirit.PowerApi;
-			spirit.PowerApi = this;
+			this.orig = spirit.TargetLandApi;
+			spirit.TargetLandApi = this;
 		}
 
 		public override IEnumerable<Space> GetTargetOptions( Spirit self, GameState gameState, From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum ) {

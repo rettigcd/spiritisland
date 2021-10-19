@@ -114,6 +114,7 @@ namespace SpiritIsland {
 				var tokens = Tokens[blightSpace];
 				bool isFirstBlight = tokens.Blight.Count == 0;
 
+				// Each spirit with presence on blight space destorys preseence
 				foreach(var spirit in Spirits)
 					if(spirit.Presence.IsOn( blightSpace ))
 						spirit.Presence.Destroy( blightSpace );

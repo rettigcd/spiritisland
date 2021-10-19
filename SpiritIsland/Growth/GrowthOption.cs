@@ -4,7 +4,8 @@ namespace SpiritIsland {
 
 	public class GrowthOption : IOption {
 
-		public int GainEnergy = 0; // When negative, prevents growth option unless user has sufficient energy to satisfy
+		/// <summary> When negative, prevents growth option unless user has sufficient energy to satisfy </summary>
+		public int GainEnergy = 0;
 
 		public GrowthOption(params GrowthActionFactory[] actions){ 
 			this.GrowthActions = actions; 

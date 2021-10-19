@@ -14,7 +14,7 @@ namespace SpiritIsland.Basegame {
 			if( 0 < explorerCount )
 				await ctx.Push( explorerCount, Invader.Explorer);
 			else 
-				ctx.RemoveBlight();
+				await ctx.RemoveBlight();
 		}
 
 	}

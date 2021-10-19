@@ -4,7 +4,7 @@ namespace SpiritIsland.JaggedEarth {
 
 	public class InciteTheMob {
 
-		[SpiritCard("Incite the Mob",1, Element.Moon,Element.Fire,Element.Air ), Slow, FromPresence(1,Target.Invaders)]
+		[SpiritCard("Incite the Mob",1, Element.Moon,Element.Fire,Element.Air,Element.Animal ), Slow, FromPresence(1,Target.Invaders)]
 		static public async Task ActAsymc(TargetSpaceCtx ctx ) { 
 
 			int startingInvaderCount = ctx.Tokens.InvaderTotal();

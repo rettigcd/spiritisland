@@ -55,8 +55,8 @@ namespace SpiritIsland {
 
 		public Task<Space[]> PushDahan( int countToPush ) => Push( countToPush, TokenType.Dahan );
 
-		// Binds Target
-		public Task<Space[]> PushUpTo( int countToPush, params TokenGroup[] groups )
+		// overriden by Grinning Tricksters Let's See what happens
+		public virtual Task<Space[]> PushUpTo( int countToPush, params TokenGroup[] groups )
 			=> new TokenPusher( this, this.Space )
 				.AddGroup( countToPush, groups )
 				.MoveUpToN();
@@ -76,8 +76,8 @@ namespace SpiritIsland {
 		public Task GatherUpToNDahan( int dahanToGather )
 			=> this.GatherUpTo( dahanToGather, TokenType.Dahan );
 
-		// Binds to .Target
-		public Task GatherUpTo( int countToGather, params TokenGroup[] ofType )
+		// overriden by Grinning Tricketsrs 'Let's see what happens'
+		public virtual Task GatherUpTo( int countToGather, params TokenGroup[] ofType )
 			=> this.GatherUpTo( Space, countToGather, ofType );
 
 		public Task Gather( int countToGather, params TokenGroup[] groups )
@@ -121,7 +121,7 @@ namespace SpiritIsland {
 		public bool HasBlight => GameState.HasBlight(Space);
 		public void AddBlight(int delta=1) => GameState.AddBlight(Space,delta); // This is for adjusting, NOT blighting land
 		/// <summary> Returns blight from the board to the blight card. </summary>
-		public void RemoveBlight() => GameState.AddBlight( Space, -1 );
+		public Task RemoveBlight() => Self.RemoveBlight( this );
 
 		public int BlightOnSpace => GameState.GetBlightOnSpace(Space);
 
@@ -149,8 +149,14 @@ namespace SpiritIsland {
 		#region Add Strife
 
 		/// <param name="groups">Option: if null/empty, no filtering</param>
-		public Task AddStrife( params TokenGroup[] groups ) 
-			=> Self.SelectInvader_ToStrife( Tokens, groups );
+		public async Task AddStrife( params TokenGroup[] groups ) {
+			var invader = await Self.Action.Decision( new Decision.AddStrifeDecision( Tokens, groups ) );
+			if(invader == null) return;
+			if(Cause == Cause.Power)
+				await Self.AddStrife( this, invader );
+			else
+				Tokens.AddStrifeTo( invader );
+		} 
 
 		#endregion
 
@@ -192,7 +198,7 @@ namespace SpiritIsland {
 		#endregion
 
 		public IEnumerable<Space> FindSpacesWithinRangeOf( int range, string filterEnum ) {
-			return Self.PowerApi.GetTargetOptions( Self, GameState, new Space[]{ Space }, range, filterEnum );
+			return Self.TargetLandApi.GetTargetOptions( Self, GameState, new Space[]{ Space }, range, filterEnum );
 		}
 
 		public async Task<TargetSpaceCtx> SelectAdjacentLand( string prompt, System.Func<TargetSpaceCtx, bool> filter = null ) {

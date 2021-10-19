@@ -24,7 +24,7 @@ namespace SpiritIsland.BranchAndClaw {
 		static public void Noop( TargetSpaceCtx _ ) { }
 
 		static Task Gather( TargetSpaceCtx ctx )
-			=> ctx.GatherUpTo( ctx.Space, 1, TokenType.Beast.Generic );
+			=> ctx.GatherUpTo( 1, TokenType.Beast.Generic );
 
 		static Task Push( TargetSpaceCtx ctx )
 			=> ctx.PushUpTo( ctx.Space, 2, TokenType.Beast.Generic );

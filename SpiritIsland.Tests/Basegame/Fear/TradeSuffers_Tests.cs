@@ -76,7 +76,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			foreach(var space in ctx.AllSpaces) {
 				var tmpCtx = ctx.Target(space);
 				while(tmpCtx.HasBlight)
-					tmpCtx.RemoveBlight();
+					tmpCtx.RemoveBlight().Wait();
 			}
 
 			user.DoesNothingForARound();

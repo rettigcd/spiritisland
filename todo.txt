@@ -1,8 +1,5 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
-* Lure - Enthrall the Foreign Explorers
-* Lure - energy track (3-plant,4-air,5-reclaim)
-
 
 == Road Map to Awesomeness ==
 * MED	Signalling => Events

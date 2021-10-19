@@ -28,8 +28,7 @@ namespace SpiritIsland.Basegame {
 		static public Task Option3Async( TargetSpaceCtx ctx ) {
 			Option2Async(ctx);
 			// also remove 1 blight
-			ctx.RemoveBlight();
-			return Task.CompletedTask;
+			return ctx.RemoveBlight();
 		}
 
 	}

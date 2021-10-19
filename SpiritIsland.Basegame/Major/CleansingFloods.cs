@@ -6,19 +6,19 @@ namespace SpiritIsland.Basegame {
 		[MajorCard("Cleansing Floods",5, Element.Sun, Element.Water)]
 		[Slow]
 		[FromPresenceIn(1,Terrain.Wetland)]
-		static public Task ActAsync(TargetSpaceCtx ctx) {
+		static public async Task ActAsync(TargetSpaceCtx ctx) {
 
 			// 4 damage
 			int damage = 4;
 
 			// remove 1 blight
-			ctx.RemoveBlight();
+			await ctx.RemoveBlight();
 
 			// if you have 4 water, +10 damage
 			if(ctx.YouHave("4 water"))
 				damage += 10;
 
-			return ctx.DamageInvaders(damage);
+			await ctx.DamageInvaders(damage);
 		}
 
 	}

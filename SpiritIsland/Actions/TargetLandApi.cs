@@ -57,7 +57,7 @@ namespace SpiritIsland {
 		}
 
 		static public void ExtendRange( Spirit spirit, int rangeExtension ) {
-			spirit.PowerApi = new TargetLandApi_ExtendRange( rangeExtension, spirit.PowerApi );
+			spirit.TargetLandApi = new TargetLandApi_ExtendRange( rangeExtension, spirit.TargetLandApi );
 		}
 
 		#endregion

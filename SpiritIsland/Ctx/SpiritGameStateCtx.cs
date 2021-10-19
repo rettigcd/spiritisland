@@ -51,7 +51,7 @@ namespace SpiritIsland {
 		/// Used for Power-targetting, where range sympols appear.
 		/// </summary>
 		public async Task<TargetSpaceCtx> SelectTargetSpace( string prompt, From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum ) {
-			var space = await Self.PowerApi.TargetsSpace( Self, GameState, prompt, sourceEnum, sourceTerrain, range, filterEnum );
+			var space = await Self.TargetLandApi.TargetsSpace( Self, GameState, prompt, sourceEnum, sourceTerrain, range, filterEnum );
 			return new TargetSpaceCtx( this, space );
 		}
 
@@ -89,7 +89,8 @@ namespace SpiritIsland {
 
 		#region Gather
 
-		public async Task GatherUpTo( Space target, int countToGather, params TokenGroup[] groups ) {
+		protected async Task GatherUpTo( Space target, int countToGather, params TokenGroup[] groups ) {
+			// This method acts similary to the Pusher class
 			SpaceToken[] GetOptions() => target.Adjacent
 				.SelectMany(a=>GameState.Tokens[a].OfAnyType(groups).Select(t=>new SpaceToken(a,t)))
 				.ToArray();
@@ -105,7 +106,7 @@ namespace SpiritIsland {
 			}
 		}
 
-		public async Task Gather( Space target, int countToGather, params TokenGroup[] groups ) {
+		protected async Task Gather( Space target, int countToGather, params TokenGroup[] groups ) {
 			SpaceToken[] GetOptions() => target.Adjacent
 				.SelectMany(a=>GameState.Tokens[a].OfAnyType(groups).Select(t=>new SpaceToken(a,t)))
 				.ToArray();
@@ -160,7 +161,7 @@ namespace SpiritIsland {
 		}
 
 		public IEnumerable<Space> FindSpacesWithinRangeOf( IEnumerable<Space> source, int range, string filterEnum ) {
-			return Self.PowerApi.GetTargetOptions( Self, GameState, source, range, filterEnum );
+			return Self.TargetLandApi.GetTargetOptions( Self, GameState, source, range, filterEnum );
 		}
 
 		#endregion Place Presence
@@ -174,11 +175,11 @@ namespace SpiritIsland {
 				: null;
 		}
 
-		// convenience for ctx so we don't have to do ctx.Self.SelectPowerOption(...)
 		public Task SelectActionOption( params ActionOption[] options )
 			=> SelectActionOption( "Select Power Option", options );
 
-		public async Task SelectActionOption( string prompt, params ActionOption[] options ) {
+		// overriden by Grinning Trickster's Lets See What Happens
+		public virtual async Task SelectActionOption( string prompt, params ActionOption[] options ) {
 			ActionOption[] applicable = options.Where( opt => opt.IsApplicable ).ToArray();
 			string text = await Self.SelectText( prompt, applicable.Select( a => a.Description ).ToArray(), Present.AutoSelectSingle );
 			if(text != null) {

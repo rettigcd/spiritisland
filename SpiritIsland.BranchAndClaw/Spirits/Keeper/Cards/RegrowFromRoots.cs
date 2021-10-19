@@ -7,13 +7,11 @@ namespace SpiritIsland.BranchAndClaw {
 		[SpiritCard("Regrow from Roots",1,Element.Water,Element.Plant)]
 		[Slow]
 		[FromPresence(1,Target.JungleOrWetland)]
-		static public Task ActAsync( TargetSpaceCtx ctx ) {
+		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 			// if ther are 2 blight or fewer in target land, remove 1 blight
 			if( ctx.Blight <= 2)
-				ctx.RemoveBlight();
-
-			return Task.CompletedTask;
+				await ctx.RemoveBlight();
 
 		}
 

@@ -9,10 +9,10 @@ namespace SpiritIsland.Basegame {
 
 		public SharedPresenceTargeting( params Spirit[] spirits ) {
 			this.spirits = spirits;
-			this.origApis = spirits.Select(x=>x.PowerApi).ToArray();
+			this.origApis = spirits.Select(x=>x.TargetLandApi).ToArray();
 			
 			foreach(var spirit in spirits)
-				spirit.PowerApi = this;
+				spirit.TargetLandApi = this;
 		}
 
 		public override IEnumerable<Space> GetTargetOptions( Spirit self, GameState gameState, From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum ) {

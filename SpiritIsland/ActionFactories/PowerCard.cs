@@ -19,7 +19,6 @@ namespace SpiritIsland {
 		#endregion
 
 		public string Text => Name;
-
 		public string Name         => cardAttr.Name;
 		public Speed Speed         => speedAttr.DisplaySpeed;
 		public SpeedOverride OverrideSpeed { get; set; }
@@ -28,6 +27,8 @@ namespace SpiritIsland {
 		public Element[] Elements  => cardAttr.Elements;
 		public PowerType PowerType => cardAttr.PowerType;
 		public Type MethodType     => methodBase.DeclaringType; // for determining card namespace and Basegame, BranchAndClaw, etc
+
+		public LandOrSpirit LandOrSpirit => targetAttr.LandOrSpirit;
 
 		public bool IsActiveDuring( Speed requestSpeed, CountDictionary<Element> elements ){
 			return OverrideSpeed != null
@@ -38,8 +39,16 @@ namespace SpiritIsland {
 		public async Task ActivateAsync(SpiritGameStateCtx ctx) {
 			var ctx2 = await targetAttr.GetTargetCtx( ctx );
 			if(ctx2 == null) return;
-			await (Task)methodBase.Invoke( null, new object[] { ctx2 } );
+			await InvokeOnObjectCtx(ctx2);
 		}
+
+		public Task InvokeOn( TargetSpaceCtx ctx ) {
+			return targetAttr.LandOrSpirit != LandOrSpirit.Land
+				? throw new InvalidOperationException("Cannot invoke spirit-based PowerCard using TargetSpaceCtx")
+				: InvokeOnObjectCtx(ctx);
+		}
+
+		Task InvokeOnObjectCtx(object ctx) => (Task)methodBase.Invoke( null, new object[] { ctx } );
 
 		#region private
 

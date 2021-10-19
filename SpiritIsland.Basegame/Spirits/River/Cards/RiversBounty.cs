@@ -11,7 +11,7 @@ namespace SpiritIsland.Basegame {
 		static public async Task ActionAsync(TargetSpaceCtx ctx) {
 
 			// Gather up to 2 Dahan
-			await ctx.GatherUpTo( ctx.Space, 2, TokenType.Dahan );
+			await ctx.GatherUpTo( 2, TokenType.Dahan );
 
 			// If there are now at least 2 dahan, then add 1 dahan and gain 1 energy
 			if(2 <= ctx.DahanCount) {

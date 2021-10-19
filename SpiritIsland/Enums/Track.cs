@@ -74,7 +74,8 @@ namespace SpiritIsland {
 				.SelectMany(space=>ctx.Target(space).Tokens.OfType(TokenType.Dahan).Select(t=>new SpaceToken(space,t)));
 			var source = await ctx.Self.Action.Decision(new Decision.SpaceTokens("Select dahan to push from land",dahanOptions,Present.Done));
 			if(source == null) return;
-			await ctx.Target(source.Space).PushDahan(1);
+
+			await new TokenPusher( ctx, source.Space ).PushToken( source.Token );
 		}
 	}
 

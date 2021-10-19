@@ -7,7 +7,7 @@ namespace SpiritIsland.BranchAndClaw {
 		[MinorCard( "Teeming Rivers", 1, Element.Sun, Element.Water, Element.Plant, Element.Animal )]
 		[Slow]
 		[FromSacredSite( 2, Target.MountainOrWetland )]
-		static public Task ActAsync( TargetSpaceCtx ctx ) {
+		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 			int blightCount = ctx.Blight;
 
@@ -17,9 +17,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 			// if target land has exactly 1 blight, remove it
 			if( blightCount == 1 )
-				ctx.RemoveBlight();
+				await ctx.RemoveBlight();
 
-			return Task.CompletedTask;
 		}
 
 	}

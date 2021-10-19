@@ -70,6 +70,8 @@ namespace SpiritIsland {
 			int count = growthOptionGroup.SelectionCount;
 			List<GrowthOption> remainingOptions = growthOptionGroup.Options.ToList();
 
+			// !!! there is a bug here.  Somehow, count exceeds the # of options
+
 			while(count-- > 0) {
 				var currentOptions = remainingOptions.Where( o => o.GainEnergy + Energy >= 0 ).ToArray();
 				GrowthOption option = (GrowthOption)await this.Select( "Select Growth Option", currentOptions, Present.Always );
@@ -255,10 +257,6 @@ namespace SpiritIsland {
 			.Where(grp=>grp.Count()>1)
 			.Select(grp=>grp.Key);
 
-		#endregion
-
-		#region Presence Tracks
-
 		/// <summary> # of coins in the bank. </summary>
 		public int Energy { get; set; }
 
@@ -266,15 +264,11 @@ namespace SpiritIsland {
 
 		/// <summary> Energy gain per turn </summary>
 		public int EnergyPerTurn => Presence.Energy.Revealed.Where( x => x.Energy.HasValue ).Last().Energy.Value;
-
-
 		public virtual int NumberOfCardsPlayablePerTurn => Presence.CardPlayCount;
-
-		public abstract string Text { get; }
 
 		#endregion
 
-		#region abstract
+		public abstract string Text { get; }
 
 		public virtual InnatePower[] InnatePowers { get; set; } = Array.Empty<InnatePower>();
 
@@ -296,43 +290,26 @@ namespace SpiritIsland {
 			Elements.Clear();
 		}
 
-		#endregion
-
 		abstract public string SpecialRules { get; }
 
 		// pluggable, draw power card, or powerprogression
 		#region Draw Card
+
 		static readonly IPowerCardDrawer DefaultCardDrawer = new DrawFromDeck();
-		public IPowerCardDrawer CardDrawer = DefaultCardDrawer;
+		public IPowerCardDrawer CardDrawer { get; set; } = DefaultCardDrawer; // !!! public so tests can set it - find another way to set so we can make the set private
 
 		public Task<PowerCard> Draw( GameState gameState, Func<List<PowerCard>, Task> handleNotUsed ) => CardDrawer.Draw(this,gameState,handleNotUsed);
 
 		/// <summary> short cut to CardDrawer.DrawMinor </summary>
-		public Task<PowerCard> DrawMinor( GameState gameState ) 
-			=> CardDrawer.DrawMinor( this, gameState, null );
+		public Task<PowerCard> DrawMinor( GameState gameState ) => CardDrawer.DrawMinor( this, gameState, null );
 		/// <summary> short cut to CardDrawer.DrawMajor </summary>
 		public Task<PowerCard> DrawMajor( GameState gameState, int numberToDraw=4, bool forgetCard=true ) 
 			=> CardDrawer.DrawMajor( this, gameState, null, forgetCard, numberToDraw ); // Instead of passing in null, could return Tupple with discard cards in it()
 
 		#endregion
 
-		public TargetLandApi PowerApi = new TargetLandApi(); // Replace by: Reaching Grasp, Entwined Power, Shadows
-
 		public Guid CurrentActionId; // Used by Flame's Fury to detect new actions
-		public IDamageApplier CustomDamageStrategy = null;
 
-		public virtual InvaderGroup BuildInvaderGroupForPowers( GameState gs, Space space ) {
-			var invaderCounts = gs.Tokens[ space ];
-			return new InvaderGroup( 
-				invaderCounts,
-				new DestroyInvaderStrategy( gs.Fear.AddDirect, Cause.Power ),
-				CustomDamageStrategy
-			);
-		}
-
-		public virtual Task DestroyTokenForPowers( GameState gs, Space space, int count, Token token ) { // overriden by Bringer
-			return gs.DestroyToken(space,count,token, Cause.Power);
-		}
 
 		public Task BuyPowerCardsAsync() => PurchaseCards( NumberOfCardsPlayablePerTurn );
 
@@ -395,6 +372,40 @@ namespace SpiritIsland {
 			readonly InnatePower[] usedInnates;
 		}
 		#endregion
+
+		#region Power Plug-ins
+
+		public TargetLandApi TargetLandApi = new TargetLandApi(); // Replace by: Reaching Grasp, Entwined Power, Shadows
+
+		public IDamageApplier CustomDamageStrategy = null; // Fires Fury Plugs in a custom +1 bonus damage
+
+		public virtual InvaderGroup BuildInvaderGroupForPowers( GameState gs, Space space ) {
+			var invaderCounts = gs.Tokens[ space ];
+			return new InvaderGroup( 
+				invaderCounts,
+				new DestroyInvaderStrategy( gs.Fear.AddDirect, Cause.Power ),
+				CustomDamageStrategy
+			);
+		}
+
+		// overriden by Bringer, Bringer's BuildInvaderGroupForPower uses this.
+		public virtual Task DestroyTokenForPowers( GameState gs, Space space, int count, Token token ) {
+			return gs.DestroyToken(space,count,token, Cause.Power);
+		}
+
+		/// <summary>Hook for Grinning Trickster to add additional strife for power</summary>
+		public virtual Task AddStrife( TargetSpaceCtx ctx, Token invader ) {
+			ctx.Tokens.AddStrifeTo( invader );
+			return Task.CompletedTask;
+		}
+
+		public virtual Task RemoveBlight( TargetSpaceCtx ctx ) {
+			ctx.GameState.AddBlight( ctx.Space, -1 );
+			return Task.CompletedTask;
+		}
+
+		#endregion
+
 
 	}
 

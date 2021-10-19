@@ -30,6 +30,7 @@
     <None Remove="images\icons\Fearicon.png" />
     <None Remove="images\icons\Fivereclaimone.png" />
     <None Remove="images\icons\GainCard.png" />
+    <None Remove="images\icons\GainEnergyEqualToCardPlays.png" />
     <None Remove="images\icons\Gathertoocean.png" />
     <None Remove="images\icons\Jungle.png" />
     <None Remove="images\icons\JungleOrBeast.png" />
@@ -190,6 +191,7 @@
     <EmbeddedResource Include="images\icons\Fearicon.png" />
     <EmbeddedResource Include="images\icons\Fivereclaimone.png" />
     <EmbeddedResource Include="images\icons\GainCard.png" />
+    <EmbeddedResource Include="images\icons\GainEnergyEqualToCardPlays.png" />
     <EmbeddedResource Include="images\icons\Gathertoocean.png" />
     <EmbeddedResource Include="images\icons\Jungle.png" />
     <EmbeddedResource Include="images\icons\JungleOrBeast.png" />

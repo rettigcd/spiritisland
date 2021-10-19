@@ -10,7 +10,7 @@ namespace SpiritIsland.BranchAndClaw {
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 			// Add 1 strife
-			await ctx.Self.SelectInvader_ToStrife( ctx.Tokens );
+			await ctx.AddStrife();
 
 			// Push 1 dahan
 			await ctx.PushDahan( 1 );

@@ -38,13 +38,6 @@ namespace SpiritIsland {
 				.Join( "," );
 		} }
 
-		public Token RemoveStrife( StrifedInvader orig, int tokenCount ) {
-			Token lessStrifed = orig.AddStrife( -1 );
-			this[lessStrifed] += tokenCount;
-			this[orig] -= tokenCount;
-			return lessStrifed;
-		}
-
 		public string Summary { get {
 			return this.Keys
 				.OrderBy( k=>k.Summary )
@@ -71,6 +64,28 @@ namespace SpiritIsland {
 		readonly CountDictionary<Token> counts;
 
 		#endregion
+
+		public void AddStrifeTo( Token invader, int count = 1 ) {
+
+			// Remove old type from 
+			if(this[invader]<count)
+				throw new ArgumentOutOfRangeException($"collection does not contain {count} {invader.Summary}");
+			this[invader] -= count;
+
+			// Add new strifed
+			int curStrifeCount = invader is StrifedInvader si ? si.StrifeCount : 0;
+			var strifed = StrifedInvader.Generator.WithStrife(invader, curStrifeCount +1 );
+
+			this[strifed] += count;
+		}
+
+		public Token RemoveStrife( StrifedInvader orig, int tokenCount ) {
+			Token lessStrifed = orig.AddStrife( -1 );
+			this[lessStrifed] += tokenCount;
+			this[orig] -= tokenCount;
+			return lessStrifed;
+		}
+
 
 	}
 

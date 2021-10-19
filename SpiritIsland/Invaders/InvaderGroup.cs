@@ -172,22 +172,9 @@ namespace SpiritIsland {
 		public readonly DestroyInvaderStrategy DestroyStrategy;
 		public readonly TokenCountDictionary Tokens;
 
-		static readonly DamageApplier DefaultDamageApplicationStrategy = new DamageApplier();
-		class DamageApplier : IDamageApplier {
-			Token IDamageApplier.ApplyDamage( TokenCountDictionary tokens, int availableDamage, Token invaderToken ) {
-				var damagedInvader = invaderToken.ResultingDamagedInvader( availableDamage );
-				tokens.Adjust( invaderToken, -1 );
-				if(0 < damagedInvader.Health) // only track alive invaders
-					tokens.Adjust( damagedInvader, 1 );
-				return damagedInvader;
-			}
-		}
+		static readonly DefaultDamageApplier DefaultDamageApplicationStrategy = new DefaultDamageApplier();
 
 	}
 
-	// Allows to intercept applying specific damage (Flame's Fury)
-	public interface IDamageApplier {
-		Token ApplyDamage( TokenCountDictionary tokens, int availableDamage, Token invaderToken );
-	}
 
 }

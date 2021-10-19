@@ -66,7 +66,7 @@ Shadows Flicker like Flame:
 			this.InnatePowers = new InnatePower[]{
 				InnatePower.For<DarknessSwallowsTheUnwary>()
 			};
-			this.PowerApi = new ShadowApi();
+			this.TargetLandApi = new ShadowApi();
 
 
 		}

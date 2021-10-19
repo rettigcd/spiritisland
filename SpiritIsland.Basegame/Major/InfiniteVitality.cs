@@ -34,7 +34,7 @@ namespace SpiritIsland.Basegame {
 			var blightedLands = ctx.Space.Range( 1 ).Where( s=>ctx.Target(s).HasBlight ).ToArray();
 			var unblightLand = await ctx.Self.Action.Decision( new Decision.TargetSpace( "Remove 1 blight from", blightedLands, Present.Always ));
 			if(unblightLand != null)
-				ctx.Target( unblightLand ).RemoveBlight();
+				await ctx.Target( unblightLand ).RemoveBlight();
 		}
 	}
 

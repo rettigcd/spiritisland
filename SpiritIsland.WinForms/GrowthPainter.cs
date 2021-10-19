@@ -77,6 +77,8 @@ namespace SpiritIsland.WinForms {
 				// Lure of the Deep Wilderness
 				case "PlacePresence(4,Inland)": PlacePresence( rect, 4 ); break;
 				case "GainElement(Moon,Air,Plant)": GainElement( rect, Element.Moon, Element.Air, Element.Plant ); break;
+				// Grinning Trickster
+				case "GainEnergyEqualToCardPlays": DrawIconInCenter( rect, "GainEnergyEqualToCardPlays"); break;
 				default:
 					graphics.FillRectangle( Brushes.Goldenrod, Rectangle.Inflate( rect.ToInts(), -5, -5 ) );
 					break;
@@ -84,14 +86,14 @@ namespace SpiritIsland.WinForms {
 
 		}
 
-		void PushFromOcean( RectangleF rect )          => DrawTokenInCenter(rect, "Pushfromocean");
+		void PushFromOcean( RectangleF rect )          => DrawIconInCenter(rect, "Pushfromocean");
 
-		void AdditionalPlay( RectangleF rect )         => DrawTokenInCenter( rect, "Cardplayplusone");
-		void Reclaim1( RectangleF rect )               => DrawTokenInCenter( rect, "reclaim 1");
-		void DrawPowerCard( RectangleF rect )          => DrawTokenInCenter( rect, "GainCard" );
-		void GatherToOcean( RectangleF rect )          => DrawTokenInCenter( rect, "Gathertoocean" );
-		void ReclaimAll( RectangleF rect )             => DrawTokenInCenter( rect, "ReclaimAll" );
-		void EnergyForFire( RectangleF rect )          => DrawTokenInCenter( rect, "Oneenergyfire");
+		void AdditionalPlay( RectangleF rect )         => DrawIconInCenter( rect, "Cardplayplusone");
+		void Reclaim1( RectangleF rect )               => DrawIconInCenter( rect, "reclaim 1");
+		void DrawPowerCard( RectangleF rect )          => DrawIconInCenter( rect, "GainCard" );
+		void GatherToOcean( RectangleF rect )          => DrawIconInCenter( rect, "Gathertoocean" );
+		void ReclaimAll( RectangleF rect )             => DrawIconInCenter( rect, "ReclaimAll" );
+		void EnergyForFire( RectangleF rect )          => DrawIconInCenter( rect, "Oneenergyfire");
 
 		void GainEnergy( RectangleF bounds, int delta ){
 			// DrawTokenInCenter( rect, "Energy_Plus_"+delta);
@@ -113,7 +115,7 @@ namespace SpiritIsland.WinForms {
 
 		}
 
-		void DrawTokenInCenter( RectangleF rect, string file ) {
+		void DrawIconInCenter( RectangleF rect, string file ) {
 			var img = ResourceImages.Singleton.GetIcon( file );
 			float imgWidth = rect.Width, imgHeight = img.Height * imgWidth / img.Width;
 			graphics.DrawImage( img, rect.X, rect.Y + (rect.Height - imgHeight) / 2, imgWidth, imgHeight );
