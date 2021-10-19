@@ -101,16 +101,6 @@ namespace SpiritIsland.Basegame {
 			);
 
 
-		public override int NumberOfCardsPlayablePerTurn => base.NumberOfCardsPlayablePerTurn + tempCardBoost; // !!! roll this into base spirit.
-
-		public override void PurchaseAvailableCards( params PowerCard[] cards ) {
-			base.PurchaseAvailableCards( cards );
-			tempCardBoost = 0;
-		}
-		public int tempCardBoost = 0;
-
-
-
 		protected override void InitializeInternal( Board board, GameState gs ) {
 
 			// Setup: 1 in the highest numbered wetland and 1 in the jungle without any dahan

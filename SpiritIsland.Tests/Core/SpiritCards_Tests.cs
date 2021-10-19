@@ -17,7 +17,7 @@ namespace SpiritIsland.Tests {
 
 		protected PowerCard Given_PurchasedCard(string cardName) {
 			var card = spirit.Hand.Single(c => c.Name == cardName);
-			spirit.PurchaseAvailableCards(card);
+			spirit.PurchaseAvailableCards_Test(card);
 			return card;
 		}
 

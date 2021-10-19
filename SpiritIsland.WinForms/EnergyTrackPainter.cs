@@ -194,6 +194,9 @@ namespace SpiritIsland.WinForms {
 					graphics.DrawImage( coin, bounds );
 					DrawTextOnCoin(bounds,txt);
 				}
+			} else if( txt == "PlayExtraCardThisTurn" ) {
+				using Image image = ResourceImages.Singleton.GetIcon("Cardplayplusone");
+				graphics.DrawImageFitHeight(image,bounds);
 			} else {
 				throw new Exception(txt);
 			}
@@ -215,7 +218,11 @@ namespace SpiritIsland.WinForms {
 			if(txt.EndsWith( " energy" )) txt = txt[..^7];
 			if("sun|moon|fire|air|water|earth|plant|animal|any".Contains( txt ))
 				DrawElement( bounds, txt );
-			else {
+			else if(track.Text=="earth,any"
+				|| track.Text=="2 cardplay,earth"
+			) {
+				// leave blank
+			} else {
 				// draw icon
 				using var bitmap = ResourceImages.Singleton.GetIcon( track.Text );
 				graphics.DrawImageFitHeight( bitmap, bounds );

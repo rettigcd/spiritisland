@@ -27,6 +27,9 @@
 		public const string Inland           = "Inland";
 		public const string CoastalOrWetlands= "CostalOrWetlands";
 		public const string City             = "Cities";
+
+		// JE
+		public const string MountainOrPresence = "mountain or presence";
 	}
 
 }

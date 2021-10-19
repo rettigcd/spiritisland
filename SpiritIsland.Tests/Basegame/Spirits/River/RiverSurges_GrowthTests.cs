@@ -154,7 +154,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			spirit.Energy = card.Cost;
 
 			// When:
-			spirit.PurchaseAvailableCards(card);
+			spirit.PurchaseAvailableCards_Test(card);
 
 			// Then: card is in Active/play list
 			Assert.Contains(spirit.PurchasedCards, c => c == card);
@@ -189,7 +189,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			spirit.Energy = card.Cost - 1;
 
 			// When:
-			void Purchase() => spirit.PurchaseAvailableCards( card );
+			void Purchase() => spirit.PurchaseAvailableCards_Test( card );
 
 			Assert.Throws<InsufficientEnergyException>( Purchase );
 		}
@@ -208,7 +208,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Assert.Equal(1,spirit.NumberOfCardsPlayablePerTurn);
 
 			// When:
-			void Purchase() => spirit.PurchaseAvailableCards( card1, card2 );
+			void Purchase() => spirit.PurchaseAvailableCards_Test( card1, card2 );
 
 			Assert.Throws<InsufficientCardPlaysException>(Purchase);
 		}
@@ -220,7 +220,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Discard(card);
 
 			// When
-			void Purchase() => spirit.PurchaseAvailableCards( card );
+			void Purchase() => spirit.PurchaseAvailableCards_Test( card );
 
 			Assert.Throws<CardNotAvailableException>( Purchase );
 		}

@@ -15,7 +15,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			// target spirit may immediately play another power Card by paying its cost.
 			// if it is slow, it does not resolve until later
-			await ctx.Other.PurchaseCards(1);
+			await ctx.Other.PurchaseCardsFromHand(1);
 
 		}
 

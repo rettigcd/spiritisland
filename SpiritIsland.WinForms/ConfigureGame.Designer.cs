@@ -31,7 +31,6 @@ namespace SpiritIsland.WinForms {
             this.cancelButton = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.colorListBox = new System.Windows.Forms.ListBox();
-            this.branchAndClawCheckBox = new System.Windows.Forms.CheckBox();
             this.powerProgressionCheckBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
@@ -45,14 +44,14 @@ namespace SpiritIsland.WinForms {
             this.spiritListBox.Location = new System.Drawing.Point(8, 65);
             this.spiritListBox.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.spiritListBox.Name = "spiritListBox";
-            this.spiritListBox.Size = new System.Drawing.Size(136, 199);
+            this.spiritListBox.Size = new System.Drawing.Size(282, 199);
             this.spiritListBox.TabIndex = 1;
             this.spiritListBox.SelectedIndexChanged += new System.EventHandler(this.CheckOkStatus);
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(166, 47);
+            this.label2.Location = new System.Drawing.Point(310, 47);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(72, 15);
@@ -65,7 +64,7 @@ namespace SpiritIsland.WinForms {
             | System.Windows.Forms.AnchorStyles.Left)));
             this.boardListBox.FormattingEnabled = true;
             this.boardListBox.ItemHeight = 15;
-            this.boardListBox.Location = new System.Drawing.Point(166, 65);
+            this.boardListBox.Location = new System.Drawing.Point(310, 65);
             this.boardListBox.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.boardListBox.Name = "boardListBox";
             this.boardListBox.Size = new System.Drawing.Size(132, 199);
@@ -100,7 +99,7 @@ namespace SpiritIsland.WinForms {
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(322, 47);
+            this.label3.Location = new System.Drawing.Point(472, 47);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(86, 15);
             this.label3.TabIndex = 6;
@@ -112,23 +111,10 @@ namespace SpiritIsland.WinForms {
             | System.Windows.Forms.AnchorStyles.Left)));
             this.colorListBox.FormattingEnabled = true;
             this.colorListBox.ItemHeight = 15;
-            this.colorListBox.Location = new System.Drawing.Point(322, 65);
+            this.colorListBox.Location = new System.Drawing.Point(472, 65);
             this.colorListBox.Name = "colorListBox";
             this.colorListBox.Size = new System.Drawing.Size(100, 199);
             this.colorListBox.TabIndex = 7;
-            // 
-            // branchAndClawCheckBox
-            // 
-            this.branchAndClawCheckBox.AutoSize = true;
-            this.branchAndClawCheckBox.Checked = true;
-            this.branchAndClawCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.branchAndClawCheckBox.Location = new System.Drawing.Point(11, 11);
-            this.branchAndClawCheckBox.Name = "branchAndClawCheckBox";
-            this.branchAndClawCheckBox.Size = new System.Drawing.Size(117, 19);
-            this.branchAndClawCheckBox.TabIndex = 8;
-            this.branchAndClawCheckBox.Text = "Branch And Claw";
-            this.branchAndClawCheckBox.UseVisualStyleBackColor = true;
-            this.branchAndClawCheckBox.CheckedChanged += new System.EventHandler(this.CheckBox1_CheckedChanged);
             // 
             // powerProgressionCheckBox
             // 
@@ -140,15 +126,14 @@ namespace SpiritIsland.WinForms {
             this.powerProgressionCheckBox.Text = "Use Power Progression";
             this.powerProgressionCheckBox.UseVisualStyleBackColor = true;
             // 
-            // ConfigureGame
+            // ConfigureGameDialog
             // 
             this.AcceptButton = this.okButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size(440, 345);
+            this.ClientSize = new System.Drawing.Size(584, 345);
             this.Controls.Add(this.powerProgressionCheckBox);
-            this.Controls.Add(this.branchAndClawCheckBox);
             this.Controls.Add(this.colorListBox);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.cancelButton);
@@ -159,7 +144,7 @@ namespace SpiritIsland.WinForms {
             this.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "ConfigureGame";
+            this.Name = "ConfigureGameDialog";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "Configure New Game";
             this.TopMost = true;
@@ -177,7 +162,6 @@ namespace SpiritIsland.WinForms {
         private System.Windows.Forms.Button cancelButton;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.ListBox colorListBox;
-		private System.Windows.Forms.CheckBox branchAndClawCheckBox;
 		private System.Windows.Forms.CheckBox powerProgressionCheckBox;
 	}
 }

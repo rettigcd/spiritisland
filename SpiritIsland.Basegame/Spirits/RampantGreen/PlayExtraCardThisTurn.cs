@@ -8,7 +8,7 @@ namespace SpiritIsland.Basegame {
 	class PlayExtraCardThisTurn : GrowthActionFactory {
 
 		public override Task ActivateAsync( SpiritGameStateCtx ctx ) {
-			(ctx.Self as ASpreadOfRampantGreen).tempCardBoost++; // !!! move this into Spirit so other spirits can do it
+			(ctx.Self as ASpreadOfRampantGreen).tempCardPlayBoost++; // !!! move this into Spirit so other spirits can do it
 			return Task.CompletedTask;
 		}
 

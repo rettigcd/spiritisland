@@ -35,6 +35,7 @@
     <None Remove="images\icons\Jungle.png" />
     <None Remove="images\icons\JungleOrBeast.png" />
     <None Remove="images\icons\Junglewetland.png" />
+    <None Remove="images\icons\mountainorpresence.png" />
     <None Remove="images\icons\Moveicon.png" />
     <None Remove="images\icons\Noblight.png" />
     <None Remove="images\icons\Ocean.png" />
@@ -196,6 +197,7 @@
     <EmbeddedResource Include="images\icons\Jungle.png" />
     <EmbeddedResource Include="images\icons\JungleOrBeast.png" />
     <EmbeddedResource Include="images\icons\Junglewetland.png" />
+    <EmbeddedResource Include="images\icons\mountainorpresence.png" />
     <EmbeddedResource Include="images\icons\Moveicon.png" />
     <EmbeddedResource Include="images\icons\Noblight.png" />
     <EmbeddedResource Include="images\icons\Ocean.png" />
@@ -1506,13 +1508,25 @@
     <None Update="images\je\spirit\incite_the_mob.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="images\je\spirit\jagged_shards_push_from_the_earth.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="images\je\spirit\overenthusiastic_arson.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\je\spirit\perils_of_the_deepest_island.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="images\je\spirit\plows_shatter_on_rocky_ground.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\spirit\scarred_and_stony_land.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="images\je\spirit\softly_beckon_ever_inward.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\spirit\stubborn_solidity.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\je\spirit\swallowed_by_the_wilderness.jpg">

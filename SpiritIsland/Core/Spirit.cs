@@ -208,18 +208,6 @@ namespace SpiritIsland {
 			availableActions.Add( factory );
 		}
 
-		public virtual void PurchaseAvailableCards( params PowerCard[] cards ) {
-			if(cards.Length > NumberOfCardsPlayablePerTurn)
-				throw new InsufficientCardPlaysException();
-
-			foreach(var card in cards)
-				PurchaseCard( card );
-
-			foreach(var card in cards)
-				AddActionFactory( card );
-
-		}
-
 		protected virtual async Task TakeAction(IActionFactory factory, SpiritGameStateCtx ctx) {
 			var oldActionGuid = CurrentActionId; // capture old
 			CurrentActionId = Guid.NewGuid(); // set new
@@ -229,16 +217,6 @@ namespace SpiritIsland {
 			} finally {
 				CurrentActionId = oldActionGuid; // restore
 			}
-		}
-
-		void PurchaseCard( PowerCard card ) {
-			if(!Hand.Contains( card )) throw new CardNotAvailableException();
-			if(card.Cost > Energy) throw new InsufficientEnergyException();
-
-			Hand.Remove( card );
-			PurchasedCards.Add( card );
-			Energy -= card.Cost;
-			Elements.AddRange( card.Elements );
 		}
 
 		public Spirit UsePowerProgression() {
@@ -264,7 +242,10 @@ namespace SpiritIsland {
 
 		/// <summary> Energy gain per turn </summary>
 		public int EnergyPerTurn => Presence.Energy.Revealed.Where( x => x.Energy.HasValue ).Last().Energy.Value;
-		public virtual int NumberOfCardsPlayablePerTurn => Presence.CardPlayCount;
+		public virtual int NumberOfCardsPlayablePerTurn => Presence.CardPlayCount + tempCardPlayBoost;
+
+		public int tempCardPlayBoost = 0;
+
 
 		#endregion
 
@@ -310,11 +291,15 @@ namespace SpiritIsland {
 
 		public Guid CurrentActionId; // Used by Flame's Fury to detect new actions
 
+		// Purchase 1: select full # of cards from hand
+		public async Task PurchasePlayableCards() {
+			await PurchaseCardsFromHand( NumberOfCardsPlayablePerTurn );
+			tempCardPlayBoost = 0;
+		}
 
-		public Task BuyPowerCardsAsync() => PurchaseCards( NumberOfCardsPlayablePerTurn );
-
+		// Purchase 2: select specified # of cards from hand
 		// Called for both normal buy-cards & from select Power cards that allow puchasing additional
-		public async Task PurchaseCards( int canPurchase ) {
+		public async Task PurchaseCardsFromHand( int canPurchase ) {
 			PowerCard[] getPowerCardOptions() => Hand
 				.Where( c => c.Cost <= Energy )
 				.ToArray();
@@ -326,12 +311,36 @@ namespace SpiritIsland {
 				string prompt = $"Buy power cards: (${Energy} / {canPurchase})";
 				var card = await this.SelectPowerCard( prompt, powerCardOptions, CardUse.Buy, Present.Done );
 				if(card != null) {
-					PurchaseAvailableCards( card );
+					PurchaseCard( card );
 					--canPurchase;
 				} else
 					canPurchase = 0;
 
 			}
+		}
+
+		// Purchase 3: purchase specified cards from hand  (from Test)
+		// !!! this Purchase is only called from Test - replace it with Call PurchasePlayableCards();
+		public virtual void PurchaseAvailableCards_Test( params PowerCard[] cards ) {
+			if(cards.Length > NumberOfCardsPlayablePerTurn)
+				throw new InsufficientCardPlaysException();
+
+			foreach(var card in cards)
+				PurchaseCard( card );
+
+			tempCardPlayBoost = 0; // makes test pass, but Rampant Green test is testing wrong thing
+		}
+
+		void PurchaseCard( PowerCard card ) {
+			if(!Hand.Contains( card )) throw new CardNotAvailableException();
+			if(card.Cost > Energy) throw new InsufficientEnergyException();
+
+			Hand.Remove( card );
+			PurchasedCards.Add( card );
+			Energy -= card.Cost;
+			Elements.AddRange( card.Elements );
+
+			AddActionFactory( card );
 		}
 
 		#region Save/Load Memento

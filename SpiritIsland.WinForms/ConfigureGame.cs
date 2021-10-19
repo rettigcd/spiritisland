@@ -5,6 +5,7 @@ using SpiritIsland.PromoPack1;
 using SpiritIsland.SinglePlayer;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -42,31 +43,55 @@ namespace SpiritIsland.WinForms {
 			CheckOkStatus( null, null );
 		}
 
-		private void Init_SpiritList() {
+		class SpiritBox {
+			public Type SpiritType;
+			public string Name => (string)SpiritType.GetField("Name").GetValue(null);
+		}
+
+		static readonly SpiritBox[] spiritTypes;
+		static ConfigureGameDialog() {
+			var items = new List<SpiritBox>();
+			foreach(string assemblyPath in Directory.GetFiles(System.AppDomain.CurrentDomain.BaseDirectory, "*.dll", SearchOption.AllDirectories)) {
+				var assembly = System.Runtime.Loader.AssemblyLoadContext.Default.LoadFromAssemblyPath(assemblyPath);
+				foreach(var type in assembly.GetTypes())
+					if(type.IsSubclassOf(typeof(Spirit)))
+						items.Add( new SpiritBox{SpiritType = type } );
+			}
+			spiritTypes = items.OrderBy( t=>t.Name ).ToArray();
+		}
+
+		void Init_SpiritList() {
+
 			spiritListBox.Items.Clear();
 			spiritListBox.Items.Add( "[Random]" );
-			// Base Game
-			spiritListBox.Items.Add( typeof( RiverSurges ) );
-			spiritListBox.Items.Add( typeof( LightningsSwiftStrike ) );
-			spiritListBox.Items.Add( typeof( Shadows ) );
-			spiritListBox.Items.Add( typeof( VitalStrength ) );
-			spiritListBox.Items.Add( typeof( Thunderspeaker ) );
-			spiritListBox.Items.Add( typeof( ASpreadOfRampantGreen ) );
-			spiritListBox.Items.Add( typeof( Bringer ) );
-			spiritListBox.Items.Add( typeof( Ocean ) );
 
-			// Branch And Claw
-			if(branchAndClawCheckBox.Checked) {
-				spiritListBox.Items.Add( typeof( Keeper ) );
-				spiritListBox.Items.Add( typeof( SharpFangs ) );
-				// Promo Pack 1
-				spiritListBox.Items.Add( typeof( HeartOfTheWildfire ) );
-				spiritListBox.Items.Add( typeof( SerpentSlumbering ) );
-				// Jagged Earth
-				spiritListBox.Items.Add( typeof( LureOfTheDeepWilderness ) );
-				spiritListBox.Items.Add( typeof( GrinningTricksterStirsUpTrouble ) );
-			}
+			foreach(var spirit in spiritTypes)
+				spiritListBox.Items.Add( spirit );
+
 			spiritListBox.SelectedIndex = 0;
+
+			//// Base Game
+			//spiritListBox.Items.Add( typeof( RiverSurges ) );
+			//spiritListBox.Items.Add( typeof( LightningsSwiftStrike ) );
+			//spiritListBox.Items.Add( typeof( Shadows ) );
+			//spiritListBox.Items.Add( typeof( VitalStrength ) );
+			//spiritListBox.Items.Add( typeof( Thunderspeaker ) );
+			//spiritListBox.Items.Add( typeof( ASpreadOfRampantGreen ) );
+			//spiritListBox.Items.Add( typeof( Bringer ) );
+			//spiritListBox.Items.Add( typeof( Ocean ) );
+
+			//// Branch And Claw
+			//spiritListBox.Items.Add( typeof( Keeper ) );
+			//spiritListBox.Items.Add( typeof( SharpFangs ) );
+
+			//// Promo Pack 1
+			//spiritListBox.Items.Add( typeof( HeartOfTheWildfire ) );
+			//spiritListBox.Items.Add( typeof( SerpentSlumbering ) );
+
+			//// Jagged Earth
+			//spiritListBox.Items.Add( typeof( LureOfTheDeepWilderness ) );
+			//spiritListBox.Items.Add( typeof( GrinningTricksterStirsUpTrouble ) );
+			//spiritListBox.SelectedIndex = 0;
 		}
 
 		private void CheckOkStatus( object sender, EventArgs e ) {
@@ -76,7 +101,7 @@ namespace SpiritIsland.WinForms {
 		private void OkButton_Click( object sender, EventArgs e ) {
 			var gameSettings = new GameConfiguration {
 				GameNumber = new Random().Next( 0, 999_999_999 ),
-				UseBranchAndClaw = branchAndClawCheckBox.Checked,
+				UseBranchAndClaw = true,
 				SpiritType = SelectedSpiritType(),
 				UsePowerProgression = powerProgressionCheckBox.Checked,
 				Board = SelectedBoard()
@@ -104,6 +129,7 @@ namespace SpiritIsland.WinForms {
 				HeartOfTheWildfire.Name    => "green",
 				SerpentSlumbering.Name     => "orange",
 				LureOfTheDeepWilderness.Name => "green",
+				StonesUnyieldingDefiance.Name => "orange",
 				_                          => "blue"
 			};
 		}
@@ -117,9 +143,10 @@ namespace SpiritIsland.WinForms {
 		Type SelectedSpiritType() {
 			int numberOfSpirits = spiritListBox.Items.Count-1;
 
-			return (spiritListBox.SelectedIndex == 0)
-				? spiritListBox.Items[1 + (int)(DateTime.Now.Ticks % numberOfSpirits)] as Type
-				: spiritListBox.SelectedItem as Type;
+			var box = (spiritListBox.SelectedIndex == 0)
+				? spiritListBox.Items[1 + (int)(DateTime.Now.Ticks % numberOfSpirits)] as SpiritBox
+				: spiritListBox.SelectedItem as SpiritBox;
+			return box.SpiritType;
 		}
 
 		public GameConfiguration GameConfiguration { get; private set; }
