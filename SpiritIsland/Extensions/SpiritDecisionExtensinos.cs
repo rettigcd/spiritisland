@@ -58,7 +58,9 @@ namespace SpiritIsland {
 			List<string> numToMove = new List<string>();
 			int cur = max;
 			while(min <= cur ) numToMove.Add( (cur--).ToString() );
-			return int.Parse( await spirit.SelectText( prompt, numToMove.ToArray(), Present.Always ) );
+			if(numToMove.Count==0) return 0; // if there are no options, auto-return 0
+			var x = await spirit.SelectText( prompt, numToMove.ToArray(), Present.Always );
+			return int.Parse( x );
 		}
 
 		#endregion

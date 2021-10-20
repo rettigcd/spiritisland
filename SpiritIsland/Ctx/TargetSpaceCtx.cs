@@ -81,41 +81,11 @@ namespace SpiritIsland {
 			=> this.Gather( countToGather, TokenType.Dahan);
 
 		// overriden by Grinning Tricketsrs 'Let's see what happens'
-		public virtual async Task GatherUpTo( int countToGather, params TokenGroup[] groups ) {
+		public virtual Task GatherUpTo( int countToGather, params TokenGroup[] groups )
+			=> new TokenGatherer(this).MoveUpTo(countToGather, groups);
 
-			// This method acts similary to the Pusher class
-			SpaceToken[] GetOptions() => Adjacent
-				.SelectMany(a=>GameState.Tokens[a].OfAnyType(groups).Select(t=>new SpaceToken(a,t)))
-				.ToArray();
-
-			SpaceToken[] options;
-			while( 0 < countToGather
-				&& (options=GetOptions()).Length>0
-			) {
-				var source = await Self.Action.Decision( new Decision.SpaceTokens_ToGather(countToGather, Space, options, Present.Done ));
-				if(source == null) break;
-				await Move( source.Token, source.Space, Space );
-				--countToGather;
-			}
-		}
-
-		public async Task Gather( int countToGather, params TokenGroup[] groups ) {
-
-			SpaceToken[] GetOptions() => Adjacent
-				.SelectMany(a=>GameState.Tokens[a].OfAnyType(groups).Select(t=>new SpaceToken(a,t)))
-				.ToArray();
-
-			SpaceToken[] options;
-			while( 0 < countToGather
-				&& (options=GetOptions()).Length>0
-			) {
-				var source = await Self.Action.Decision( new Decision.SpaceTokens_ToGather(countToGather, Space, options, Present.Always ));
-				if(source == null) break;
-				await Move( source.Token, source.Space, Space );
-				--countToGather;
-			}
-		}
-
+		public Task Gather( int countToGather, params TokenGroup[] groups )
+			=> new TokenGatherer(this).Move(countToGather,groups);
 
 		#endregion Gather
 

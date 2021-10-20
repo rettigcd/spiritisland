@@ -6,9 +6,7 @@ namespace SpiritIsland.Basegame {
 
 	public class WrapInWingsOfSunlight {
 
-		[MajorCard( "Wrap in Wings of Sunlight", 3, Element.Sun, Element.Air, Element.Animal )]
-		[Fast]
-		[FromPresence(0)]
+		[MajorCard( "Wrap in Wings of Sunlight", 3, Element.Sun, Element.Air, Element.Animal ), Fast, FromPresence(0)]
 		static public async Task ActAsync(TargetSpaceCtx ctx) {
 
 			// if you have 2 sun, 2 air, 2 animal, // First Gather up to 3 dahan
@@ -32,6 +30,7 @@ namespace SpiritIsland.Basegame {
 			ctx.Target(destination).Defend(5);
 
 		}
+
 	}
 
 }

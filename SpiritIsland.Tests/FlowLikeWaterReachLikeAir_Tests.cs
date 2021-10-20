@@ -8,7 +8,7 @@ namespace SpiritIsland.Tests {
 
 	public class FlowLikeWaterReachLikeAir_Tests {
 
-		[Trait("Feature","Move")]
+		[Trait("Feature","Push")]
 		[Fact]
 		public void CanBring_2TownDahanExplorer() {
 			// Setup
@@ -54,7 +54,8 @@ namespace SpiritIsland.Tests {
 			dst[Invader.Explorer.Default].ShouldBe(2);
 			dst[Invader.Town.Default].ShouldBe(2);
 		}
-
+		
 	}
+
 
 }

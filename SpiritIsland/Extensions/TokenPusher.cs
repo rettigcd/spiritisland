@@ -19,7 +19,7 @@ namespace SpiritIsland {
 			int index = countArray.Count;
 			countArray.Add( count );
 			foreach(var group in groups) 
-				indexLookup.Add( group, index );
+				indexLookupByGroup.Add( group, index );
 
 			return this; // chain together
 		}
@@ -31,11 +31,11 @@ namespace SpiritIsland {
 
 			var counts = ctx.Target(source).Tokens;
 			Token[] GetTokens() {
-				var groupsWithRemainingCounts = indexLookup
+				var groupsWithRemainingCounts = indexLookupByGroup
 					.Where( pair => countArray[pair.Value] > 0 )
 					.Select( p => p.Key )
 					.ToArray();
-				return counts.OfAnyType( groupsWithRemainingCounts );
+				return counts.OfAnyType( groupsWithRemainingCounts ); // !!! Make Dahan Freezable
 			}
 
 			var pushedToSpaces = new List<Space>();
@@ -51,14 +51,14 @@ namespace SpiritIsland {
 				Space destination = await PushToken( token );
 
 				pushedToSpaces.Add( destination ); // record push
-				--countArray[indexLookup[token.Generic]]; // decrement count
+				--countArray[indexLookupByGroup[token.Generic]]; // decrement count
 			}
 			return pushedToSpaces.ToArray();
 		}
 
 		public async Task<Space> PushToken( Token token ) {
 			Space destination = await SelectDestination( token );
-			await ctx.Move( token, source, destination );
+			await ctx.Move( token, source, destination );	// !!! if moving into frozen land, freeze Dahan
 			return destination;
 		}
 
@@ -82,7 +82,7 @@ namespace SpiritIsland {
 
 		readonly List<Func<Space,bool>> destinationFilters = new List<Func<Space, bool>>();
 		readonly List<int> countArray = new(); // the # we push from each group
-		readonly Dictionary<TokenGroup, int> indexLookup = new(); // map from group back to its count
+		readonly Dictionary<TokenGroup, int> indexLookupByGroup = new(); // map from group back to its count
 
 		#endregion
 
@@ -91,9 +91,9 @@ namespace SpiritIsland {
 	/// <summary>
 	/// Overrides Selecting destination with a fixed destination
 	/// </summary>
-	public class TokenMover : TokenPusher {
+	public class TokenPusher_FixedDestination : TokenPusher {
 		readonly Space destination;
-		public TokenMover( SpiritGameStateCtx ctx, Space source, Space destination ) : base( ctx, source ) { 
+		public TokenPusher_FixedDestination( SpiritGameStateCtx ctx, Space source, Space destination ) : base( ctx, source ) { 
 			this.destination = destination;
 		}
 

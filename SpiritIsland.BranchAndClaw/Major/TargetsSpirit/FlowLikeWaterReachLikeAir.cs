@@ -25,7 +25,7 @@ namespace SpiritIsland.BranchAndClaw {
 			// move presence
 			ctx.Other.Presence.Move( sourceCtx.Space, destination);
 
-			var mover = new TokenMover(ctx.OtherCtx, sourceCtx.Space, destination);
+			var mover = new TokenPusher_FixedDestination(ctx.OtherCtx, sourceCtx.Space, destination);
 			// bringing up to 2 explorers, 2 towns and 2 dahan along with it.
 			mover.AddGroup(2,Invader.Explorer);
 			mover.AddGroup(2,Invader.Town);
