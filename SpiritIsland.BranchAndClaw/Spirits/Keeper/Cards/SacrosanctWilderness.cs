@@ -16,7 +16,7 @@ namespace SpiritIsland.BranchAndClaw {
 			await ctx.PushDahan( 2 );
 
 			await ctx.SelectActionOption(
-				new ActionOption("2 Damage per wilds", () => ctx.DamageInvaders( 2 * ctx.Wilds ), ctx.Tokens.Has(TokenType.Wilds) ),
+				new ActionOption("2 Damage per wilds", () => ctx.DamageInvaders( 2 * ctx.Wilds ), ctx.Tokens.Wilds.Any ),
 				new ActionOption("Add 1 wilds", () => ctx.Wilds.Count++)
 			);
 

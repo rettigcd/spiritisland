@@ -41,16 +41,18 @@ namespace SpiritIsland.BranchAndClaw {
 		}
 
 		static async Task ApplyDamageToDahan( TargetSpaceCtx ctx, int damageToDahan ) {
-			while(damageToDahan > 0 && ctx.HasDahan) {
-				if(ctx.Tokens[TokenType.Dahan[1]] > 0) {
-					await ctx.DestroyDahan( 1, TokenType.Dahan[1] );
+			// !!! this whole Damage-Dahan method could be wrapped and used in multiple palces
+			var dahan = ctx.Dahan;
+			while(damageToDahan > 0 && dahan.Any) {
+				if(dahan[1] > 0) {
+					await ctx.DestroyDahan( 1 ); // DestroyDahan always destroys damaged first
 					damageToDahan--;
 				} else if(damageToDahan > 1) {
-					await ctx.DestroyDahan( 1, TokenType.Dahan[2] );
+					await ctx.DestroyDahan( 1 );
 					damageToDahan -= 2;
 				} else {
-					ctx.Tokens[TokenType.Dahan[1]]++;
-					ctx.Tokens[TokenType.Dahan[2]]--;
+					dahan[1]++; // !!! this might need wrapped for Stones Difiance
+					dahan[2]--;
 				}
 			}
 

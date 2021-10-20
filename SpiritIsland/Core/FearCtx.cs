@@ -34,10 +34,12 @@ namespace SpiritIsland {
 
 		public bool WithExplorers( Space space ) => GameState.Tokens[space].Has( Invader.Explorer );
 		public bool WithInvaders( Space space ) => GameState.Tokens[space].HasInvaders();
-		public bool WithDahan( Space space ) => GameState.Tokens[space].Has( TokenType.Dahan );
-		public bool WithDahanOrAdjacentTo5( Space space ) => GameState.DahanIsOn(space) || space.Adjacent.Any( a => GameState.Tokens[a].Sum(TokenType.Dahan)>5 );
-		public bool WithDahanOrAdjacentTo3( Space space ) => GameState.DahanIsOn( space ) || space.Adjacent.Any( a => GameState.Tokens[a].Sum( TokenType.Dahan ) > 5 );
-		public bool WithDahanOrAdjacentTo1( Space space ) => GameState.DahanIsOn( space ) || space.Adjacent.Any( a => GameState.Tokens[a].Sum( TokenType.Dahan ) > 5 );
+		public bool WithDahan( Space space ) => GameState.Tokens[space].Dahan.Any;
+
+		// !!! not sure these 3 are correct.
+		public bool WithDahanOrAdjacentTo5( Space space ) => GameState.DahanIsOn(space) || space.Adjacent.Any( a => GameState.Tokens[a].Dahan.Count>5 );
+		public bool WithDahanOrAdjacentTo3( Space space ) => GameState.DahanIsOn( space ) || space.Adjacent.Any( a => GameState.Tokens[a].Dahan.Count > 5 );
+		public bool WithDahanOrAdjacentTo1( Space space ) => GameState.DahanIsOn( space ) || space.Adjacent.Any( a => GameState.Tokens[a].Dahan.Count > 5 );
 
 		#endregion Lands
 
@@ -59,10 +61,13 @@ namespace SpiritIsland {
 			return space?.Space;
 		}
 
-		static public IEnumerable<Space> LandsWithStrife(this FearCtx ctx)             => ctx.GameState.Island.AllSpaces.Where( s => ctx.GameState.Tokens[s].Keys.OfType<StrifedInvader>().Any() );
+		static public IEnumerable<Space> LandsWithStrife(this FearCtx ctx) => ctx.GameState.Island.AllSpaces
+			.Where( s => ctx.GameState.Tokens[s].Keys.OfType<StrifedInvader>().Any() );
 
-		static public IEnumerable<Space> LandsWithDisease( this FearCtx ctx ) => ctx.GameState.Island.AllSpaces.Where( s => ctx.GameState.Tokens[s].Has( TokenType.Disease ) );
-		static public IEnumerable<Space> LandsWithBeastDiseaseDahan( this FearCtx ctx ) => ctx.GameState.Island.AllSpaces.Where( s => ctx.GameState.Tokens[s].HasAny( TokenType.Beast.Generic, TokenType.Disease.Generic, TokenType.Dahan ) );
+		static public IEnumerable<Space> LandsWithDisease( this FearCtx ctx ) => ctx.GameState.Island.AllSpaces
+			.Where( s => ctx.GameState.Tokens[s].Disease.Any);
+		static public IEnumerable<Space> LandsWithBeastDiseaseDahan( this FearCtx ctx ) => ctx.GameState.Island.AllSpaces
+			.Where( s => {var tokens = ctx.GameState.Tokens[s]; return tokens.Dahan.Any || tokens.Beasts.Any || tokens.Disease.Any; } );
 
 		static public bool HasBeastOrIsAdjacentToBeast( this FearCtx ctx, Space space ) => space.Range( 1 ).Any( x => ctx.HasBeast(x) );
 		static public bool HasBeast( this FearCtx ctx, Space space ) => ctx.GameState.Tokens[space].Beasts.Any;

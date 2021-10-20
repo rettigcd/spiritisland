@@ -24,11 +24,11 @@ namespace SpiritIsland.Basegame {
 
 		static async Task ForEachSpiritPushUpToNTokesnsFromInland( FearCtx ctx, int max, params TokenGroup[] pushableInvaders ) {
 			var gs = ctx.GameState;
-			foreach(var spirit in ctx.Spirits) {
+			foreach(var spiritCtx in ctx.Spirits) {
 				var options = gs.Island.AllSpaces.Where( s => !s.IsCoastal && gs.Tokens[s].Has(Invader.Explorer) ).ToArray();
 				if(options.Length == 0) break;
-				var target = await spirit.Self.Action.Decision( new Decision.TargetSpace( $"Fear:select land to push up to {max} invaders", options, Present.Always ));
-				await spirit.PushUpTo( target, max, pushableInvaders );
+				var target = await spiritCtx.Self.Action.Decision( new Decision.TargetSpace( $"Fear:select land to push up to {max} invaders", options, Present.Always ));
+				await spiritCtx.Target(target).PushUpTo( max, pushableInvaders );
 			}
 		}
 

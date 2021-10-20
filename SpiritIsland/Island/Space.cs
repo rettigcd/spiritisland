@@ -107,7 +107,7 @@ namespace SpiritIsland {
 			counts[ Invader.City[3] ]         = initialCounts.Cities;
 			counts[ Invader.Town[2] ]         = initialCounts.Towns;
 			counts[ Invader.Explorer[1] ]     = initialCounts.Explorers;
-			counts[ TokenType.Dahan.Default ] = initialCounts.Dahan;
+			counts.Dahan[2]                   = initialCounts.Dahan;
 			counts.Blight.Count               = initialCounts.Blight; // don't use AddBlight because that pulls it from the card and triggers blighted island
 		}
 

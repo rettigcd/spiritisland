@@ -279,13 +279,11 @@ namespace SpiritIsland.Tests.Core {
 
 			var tokens = gameState.Tokens[space];
 
-			if(tokens[TokenType.Dahan[2]] > 0)
-				items.Add( $"{tokens[TokenType.Dahan[2]]}D@2" );
-			if(tokens[TokenType.Dahan[1]]>0)
-				items.Add($"{tokens[TokenType.Dahan[1]]}D@1");
+			var dahan = tokens.Dahan;
+			if( dahan[2]>0 ) items.Add( $"{dahan[2]}D@2" );
+			if( dahan[1]>0 ) items.Add( $"{dahan[1]}D@1");
 
 			string actualInvaders = tokens.InvaderSummary;
-
 			if(actualInvaders.Length>0)
 				items.Add(actualInvaders);
 

@@ -84,7 +84,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		}
 
 		void Assert_DahanCount( Space target, int endingCount ) {
-			gameState.Tokens[target].Sum(TokenType.Dahan).ShouldBe( endingCount ); // same as original
+			gameState.Tokens[target].Dahan.Count.ShouldBe( endingCount ); // same as original
 		}
 
 		[Fact]
@@ -120,7 +120,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			var neighbors = ctx.Adjacent.ToArray();
 			for(int i = 0; i<dahanToGather;++i)
 			foreach(var n in neighbors)
-				ctx.Target(neighbors[i]).Tokens[TokenType.Dahan[1]] = 1;
+				ctx.Target(neighbors[i]).Dahan[1] = 1;
 
 			When_PlayingCard();
 
@@ -181,8 +181,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// This is a nice test, but it is too close to the implementation.  Refactoring might not use ctx.DahanCount
 			var space = gameState.Island.Boards[0][4];
 			var ctx = new TargetSpaceCtx(spirit,gameState,space, Cause.None);
-			ctx.Tokens[TokenType.Dahan[1]] = 5;
-			ctx.Tokens[TokenType.Dahan[2]] = 7;
+			var dahan = ctx.Tokens.Dahan;
+			dahan[1] = 5;
+			dahan[2] = 7;
 			ctx.DahanCount.ShouldBe(12);
 		}
 

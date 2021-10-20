@@ -78,9 +78,9 @@ namespace SpiritIsland.Basegame {
 
 		void RemoveDrownedDahan( GameState gs ) {
 			foreach(var board in gs.Island.Boards) {
-				var oceanTokens = gs.Tokens[board[0]];
-				oceanTokens[TokenType.Dahan[1]] = 0;
-				oceanTokens[TokenType.Dahan[2]] = 0;
+				var dahan = gs.Tokens[board[0]].Dahan;
+				dahan[1] = 0;
+				dahan[2] = 0;
 			}
 		}
 

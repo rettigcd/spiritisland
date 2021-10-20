@@ -24,9 +24,10 @@ namespace SpiritIsland.BranchAndClaw {
 
 			// This is applying 1 damage to each dahan. (and reports dahan destroyed)
 
+			// !!! There should be a common Destroy-Dahan that could be invoked (I think)
 			int dahanDestroyed = ctx.Tokens[TokenType.Dahan[1]];
-			ctx.Tokens[TokenType.Dahan[1]] = ctx.Tokens[TokenType.Dahan[2]];
-			ctx.Tokens[TokenType.Dahan[2]] = 0;
+			ctx.Dahan[1] = ctx.Tokens[TokenType.Dahan[2]];
+			ctx.Dahan[2] = 0;
 			await ctx.GameState.Tokens.TokenDestroyed.InvokeAsync( ctx.GameState, new TokenDestroyedArgs {
 				Token = TokenType.Dahan,
 				space = ctx.Space,

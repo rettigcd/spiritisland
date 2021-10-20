@@ -10,7 +10,7 @@ namespace SpiritIsland.Basegame.Spirits.VitalStrength {
 		[FromPresence(1)]
 		static public async Task Act(TargetSpaceCtx ctx){
 			await ctx.GatherUpTo( 2, Invader.Explorer );
-			await ctx.GatherUpTo( 2, TokenType.Dahan );
+			await ctx.GatherUpToNDahan( 2 );
 		}
 	}
 }

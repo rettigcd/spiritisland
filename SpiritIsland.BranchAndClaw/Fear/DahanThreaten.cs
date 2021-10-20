@@ -38,7 +38,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			foreach(var space in ctx.LandsWithStrife()) {
 				var spaceCtx = decidingSpirit.Target(space);
-				await spaceCtx.DamageInvaders( spaceCtx.Tokens.Sum(TokenType.Dahan) );
+				await spaceCtx.DamageInvaders( spaceCtx.Dahan.Count );
 			}
 		}
 

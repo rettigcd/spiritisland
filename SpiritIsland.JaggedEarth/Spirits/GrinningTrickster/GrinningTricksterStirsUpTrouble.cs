@@ -39,7 +39,7 @@ namespace SpiritIsland.JaggedEarth {
 
 		protected override void InitializeInternal( Board board, GameState gameState ) {
 			// Place presence on highest numbered land with dahan
-			Presence.PlaceOn(board.Spaces.Where(s=>gameState.Tokens[s][TokenType.Dahan.Default]>0).Last());
+			Presence.PlaceOn(board.Spaces.Where(s=>gameState.Tokens[s].Dahan.Any).Last());
 			// and in land #4
 			Presence.PlaceOn(board[4]);
 

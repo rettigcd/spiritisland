@@ -73,7 +73,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 		public async Task DahanDamage_Generates0() {
 			// has 1 city and lots of dahan
 			ctx.Tokens.Adjust( Invader.City.Default, 1 ); // don't use ctx.Invaders because it has a fake/dream invader count
-			ctx.AdjustDahan(10);
+			ctx.Dahan.Add(10);
 
 			// Given: using Dread Apparitions
 			await DreadApparitions.ActAsync( ctx );
@@ -92,7 +92,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 		public void FearInOtherLand_Generates0() {
 			// has 1 city and lots of dahan
 			ctx.Tokens.Adjust( Invader.City.Default, 1 );
-			ctx.AdjustDahan( 10 );
+			ctx.Dahan.Add( 10 );
 
 			async Task When() {
 				// Given: using Dread Apparitions

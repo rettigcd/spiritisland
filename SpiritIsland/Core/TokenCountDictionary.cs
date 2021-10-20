@@ -53,6 +53,7 @@ namespace SpiritIsland {
 		public TokenBinding Disease => new ( this, TokenType.Disease );
 		public TokenBinding Wilds => new ( this, TokenType.Wilds );
 		public TokenBinding Badlands => new ( this, TokenType.Badlands );
+		public TokenGroupBinding Dahan => new ( this, TokenType.Dahan );
 
 		#region private
 
@@ -64,6 +65,11 @@ namespace SpiritIsland {
 		readonly CountDictionary<Token> counts;
 
 		#endregion
+
+		public void Adjust( Token specific, int delta ) {
+			if(specific.Health == 0) throw new System.ArgumentException( "Don't try to track dead tokens." );
+			counts[specific] += delta;
+		}
 
 		public void AddStrifeTo( Token invader, int count = 1 ) {
 

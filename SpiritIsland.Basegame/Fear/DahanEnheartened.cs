@@ -17,8 +17,8 @@ namespace SpiritIsland.Basegame {
 
 				var spaceCtx = spirit.Target(target);
 				await spirit.SelectActionOption(
-					new ActionOption("Push",    () => spaceCtx.PushUpTo( 1, TokenType.Dahan) ),
-					new ActionOption( "Gather", () => spaceCtx.GatherUpTo( 1, TokenType.Dahan ) )
+					new ActionOption("Push",    () => spaceCtx.PushUpToNDahan( 1 ) ),
+					new ActionOption( "Gather", () => spaceCtx.GatherUpToNDahan( 1 ) )
 				);
 			}
 		}

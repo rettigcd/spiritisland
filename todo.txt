@@ -1,5 +1,13 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
+== Stone ==
+Draw Growth: Gain Multiple Elements
+Draw Growth: Mountain or presence
+Draw Card Track: element + Action
+Draw Card Track: 2 elements
+Draw Card Track: card + element
+Draw Energy Track: Play 1 extra card is drawing "Gain Power Card"
+
 
 == Road Map to Awesomeness ==
 * MED	Signalling => Events

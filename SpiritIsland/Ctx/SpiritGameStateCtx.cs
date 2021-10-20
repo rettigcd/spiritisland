@@ -79,9 +79,6 @@ namespace SpiritIsland {
 
 		#region Push
 
-		public Task<Space[]> Push( Space source, int countToPush, params TokenGroup[] groups )
-			=> new TokenPusher( this, source ).AddGroup( countToPush, groups ).MoveN();
-
 		public Task<Space[]> PushUpTo( Space source, int countToPush, params TokenGroup[] groups )
 			=> new TokenPusher( this, source ).AddGroup( countToPush, groups ).MoveUpToN();
 

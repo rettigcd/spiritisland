@@ -139,12 +139,12 @@ namespace SpiritIsland.Tests.BranchAndClaw.Minor {
 		static void Given_NoSuroundingDahan( TargetSpaceCtx spaceCtx ) {
 			// Simplifies power card because it has a Gather-dahan we don't want to deal with.
 			foreach(var adj in spaceCtx.Adjacent)
-				spaceCtx.Target( adj ).Tokens[TokenType.Dahan.Default] = 0;
+				spaceCtx.Target( adj ).Tokens.Dahan[2] = 0;
 		}
 
 		static void Given_Has2Dahan( TargetSpaceCtx spaceCtx ) {
 			//  And: it has 1 dahan (so we can target it per the card)
-			spaceCtx.Tokens[TokenType.Dahan.Default] = 2;
+			spaceCtx.Tokens.Dahan[2] = 2;
 		}
 
 		static void Given_HasOnly3Explorers( TargetSpaceCtx spaceCtx ) {

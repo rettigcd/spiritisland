@@ -10,7 +10,7 @@ namespace SpiritIsland.BranchAndClaw {
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 			if(ctx.HasDahan)
-				ctx.Tokens[TokenType.Dahan.Default]++;
+				ctx.Dahan.Add(1);
 			else
 				await ctx.RemoveBlight();
 

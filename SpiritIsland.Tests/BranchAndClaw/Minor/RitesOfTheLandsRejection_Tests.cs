@@ -19,7 +19,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Minor {
 				.First( sc => sc.Tokens.InvaderSummary == "1E@1" );
 
 			//   And: add Dahan (because card requires it)
-			spaceCtx.Tokens[TokenType.Dahan[2]] = 1;
+			spaceCtx.Dahan.Add(1);
 
 			// When: growing
 			user.Grows();

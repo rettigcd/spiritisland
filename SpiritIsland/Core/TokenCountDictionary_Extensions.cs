@@ -28,8 +28,6 @@ namespace SpiritIsland {
 		static public bool Has( this TokenCountDictionary counts, TokenGroup inv )
 			=> counts.OfType( inv ).Any();
 
-		static public bool Has( this TokenCountDictionary counts, Token token )	=> counts[token]>0;
-
 		static public int Sum( this TokenCountDictionary counts, TokenGroup generic )
 			=> counts.OfType( generic ).Sum( k => counts[k] );
 
@@ -48,12 +46,6 @@ namespace SpiritIsland {
 
 
 		#endregion
-
-
-		static public void Adjust( this TokenCountDictionary counts, Token specific, int delta ) {
-			if(specific.Health == 0) throw new System.ArgumentException( "Don't try to track dead invaders." );
-			counts[specific] += delta;
-		}
 
 	}
 

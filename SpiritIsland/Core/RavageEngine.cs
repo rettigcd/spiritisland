@@ -105,15 +105,14 @@ namespace SpiritIsland {
 			// destroy dahan
 			int dahanOnSpace = gs.DahanGetCount( grp.Space );
 			int dahanDestroyed = Math.Min( damageInflictedFromInvaders / cfg.DahanHitpoints, dahanOnSpace ); // rounding down
-			if(dahanDestroyed != 0) {
+			if(dahanDestroyed != 0)
 				await gs.DestroyToken( grp.Space, dahanDestroyed, TokenType.Dahan.Default, Cause.Invaders );
-			}
 
 			int leftOverDamage = damageInflictedFromInvaders - dahanDestroyed * cfg.DahanHitpoints;
 			bool convert1To1HitPoint = leftOverDamage == cfg.DahanHitpoints - 1;
 			if(convert1To1HitPoint && gs.DahanGetCount( grp.Space )>0) {
-				Counts[TokenType.Dahan[2]]--;
-				Counts[TokenType.Dahan[1]]++;
+				Counts.Dahan[2]--; // !!! For stone, this probably needs to be re-thought
+				Counts.Dahan[1]++;
 			}
 
 			log.Add( $"Kills {dahanDestroyed} of {dahanOnSpace} Dahan leaving {dahanOnSpace - dahanDestroyed} Dahan." );

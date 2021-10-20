@@ -46,6 +46,7 @@ namespace SpiritIsland {
 		public TokenBinding Disease => Tokens.Disease;
 		public TokenBinding Wilds => Tokens.Wilds;
 		public TokenBinding Badlands => Tokens.Badlands;
+		public TokenGroupBinding Dahan => Tokens.Dahan;
 
 		#endregion
 
@@ -83,6 +84,9 @@ namespace SpiritIsland {
 		public Task Gather( int countToGather, params TokenGroup[] groups )
 			=> this.Gather( Space, countToGather, groups);
 
+		public Task GatherDahan( int countToGather )
+			=> this.Gather( Space, countToGather, TokenType.Dahan);
+
 		#endregion Gather
 
 		/// <summary> Use this for Power-Pushing, since Powers can push invaders into the ocean. </summary>
@@ -93,20 +97,23 @@ namespace SpiritIsland {
 		public void Adjust( Token invader, int delta )
 			=> Tokens.Adjust( invader, delta );
 
-		public void AdjustDahan( int delta )
-			=> Tokens.Adjust(TokenType.Dahan.Default, delta );
-
-		public int DahanCount => Tokens[TokenType.Dahan[2]] + Tokens[TokenType.Dahan[1]];
+		public int DahanCount => Tokens.Dahan.Count;
 
 		public bool HasDahan => DahanCount>0;
 
-		// !!! this might be a bug.  By default, it does not destory damaged dahan, only healthy dahan
-		public Task DestroyDahan(int countToDestroy, Token dahanToken = null)
-			=> Destroy(countToDestroy, dahanToken ?? TokenType.Dahan.Default );
+		public async Task DestroyDahan(int countToDestroy ) {
+			int damagedToDestroy = Math.Min(countToDestroy,Dahan[1]);
+			await Destroy(countToDestroy, TokenType.Dahan[1] );
+			await Destroy(countToDestroy - damagedToDestroy, TokenType.Dahan[2] );
+		}
 
-		// !!! this method assumes we are destroying for powers.  make sure nothing else is calling it.
-		public Task Destroy(int countToDestroy, Token token) 
-			=> Self.DestroyTokenForPowers( GameState, Space, countToDestroy, token );
+		public async Task Destroy(int countToDestroy, Token token ) {
+			if(countToDestroy<=0) return;
+			if(Cause == Cause.Power)
+				await Self.DestroyTokenForPowers( GameState, Space, countToDestroy, token );
+			else
+				await GameState.DestroyToken(Space,countToDestroy, token, Cause);
+		}
 
 		public Terrain Terrain => TerrainMapper.GetTerrain( Space );
 		public bool IsCoastal   => TerrainMapper.IsCoastal( Space );

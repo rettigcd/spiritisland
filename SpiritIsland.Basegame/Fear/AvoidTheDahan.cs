@@ -25,7 +25,7 @@ namespace SpiritIsland.Basegame {
 			ctx.GameState.PreBuilding.ForThisRound( ( gs, args ) => {
 				foreach(var space in args.SpaceCounts.Keys.ToArray()) {
 					var tokens = gs.Tokens[space];
-					if(tokens.SumAny(Invader.City,Invader.Town) < tokens.Sum(TokenType.Dahan))
+					if(tokens.SumAny(Invader.City,Invader.Town) < tokens.Dahan.Count)
 						args.SpaceCounts[space] = 0;
 				}
 			} );
@@ -37,7 +37,7 @@ namespace SpiritIsland.Basegame {
 		public Task Level3( FearCtx ctx ) {
 			ctx.GameState.PreBuilding.ForThisRound( ( gs, args ) => {
 				foreach(var space in args.SpaceCounts.Keys.ToArray()) {
-					if(0 < gs.Tokens[space].Sum(TokenType.Dahan))
+					if(0 < gs.Tokens[space].Dahan.Count)
 						args.SpaceCounts[space] = 0;
 				}
 			} );

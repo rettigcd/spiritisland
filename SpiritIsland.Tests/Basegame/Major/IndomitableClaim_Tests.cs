@@ -40,7 +40,7 @@ namespace SpiritIsland.Tests.Basegame {
 			spaceCtx.Tokens[Invader.City.Default] = 0; // if we had to advance cards, might have buit a city
 			spaceCtx.Tokens.InvaderSummary.ShouldBe( "3E@1", "Unable to init to 3 exploreres." );
 			//  And 2 dahan
-			spaceCtx.Tokens[TokenType.Dahan.Default ] = 2;
+			spaceCtx.Tokens.Dahan[2] = 2;
 
 			// When: grows and purchases card
 			user.Grows();

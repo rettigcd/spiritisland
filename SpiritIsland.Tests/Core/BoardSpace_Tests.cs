@@ -219,16 +219,16 @@ namespace SpiritIsland.Tests.Core {
 			gameState.Initialize();
 			// Then:
 			var space = board.Spaces.Single(x=>x.Label==spaceLabel);
-			var counts = gameState.Tokens[space];
+			var tokens = gameState.Tokens[space];
 
 			int ee = items.Count(c=>c=='E');
-			int aa = counts[Invader.Explorer[1]];
-			Assert.True(ee==aa,counts.InvaderSummary+" ex:"+ee+" act:"+aa);
+			int aa = tokens[Invader.Explorer[1]];
+			Assert.True(ee==aa,tokens.InvaderSummary+" ex:"+ee+" act:"+aa);
 
-			Assert.Equal(items.Count(c=>c=='C'), counts[Invader.City[3]]);
-			Assert.Equal(items.Count(c=>c=='T'), counts[Invader.Town[2]]);
-			Assert.Equal(items.Count(c=>c=='E'), counts[Invader.Explorer[1]]);
-			Assert.Equal(items.Count(c=>c=='D'), counts[TokenType.Dahan.Default]);
+			Assert.Equal(items.Count(c=>c=='C'), tokens[Invader.City[3]]);
+			Assert.Equal(items.Count(c=>c=='T'), tokens[Invader.Town[2]]);
+			Assert.Equal(items.Count(c=>c=='E'), tokens[Invader.Explorer[1]]);
+			Assert.Equal(items.Count(c=>c=='D'), tokens.Dahan.Count);
 			Assert.Equal(items.Count(c=>c=='B'), gameState.HasBlight(space)?1:0);
 		}
 

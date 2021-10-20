@@ -93,20 +93,20 @@ namespace SpiritIsland.WinForms {
 			grayFear = images.GetToken( "fear_gray");
 
 			tokenImages = new Dictionary<Token, Image> {
-				[Invader.City[3]] = images.GetToken( "city" ),
-				[Invader.City[2]] = images.GetToken( "city2" ),
-				[Invader.City[1]] = images.GetToken( "city1" ),
-				[Invader.Town[2]] = images.GetToken( "town" ),
-				[Invader.Town[1]] = images.GetToken( "town1" ),
+				[Invader.City[3]]     = images.GetToken( "city" ),
+				[Invader.City[2]]     = images.GetToken( "city2" ),
+				[Invader.City[1]]     = images.GetToken( "city1" ),
+				[Invader.Town[2]]     = images.GetToken( "town" ),
+				[Invader.Town[1]]     = images.GetToken( "town1" ),
 				[Invader.Explorer[1]] = images.GetToken( "explorer" ),
-				[TokenType.Dahan[2]] = images.GetToken( "dahan" ),
-				[TokenType.Dahan[1]] = images.GetToken( "dahan1" ),
-				[TokenType.Defend] = images.GetToken( "defend1orange" ),
-				[TokenType.Blight] = images.GetToken( "blight" ),
-				[TokenType.Beast] = images.GetToken( "beast" ),
-				[TokenType.Wilds] = images.GetToken("wilds"),
-				[TokenType.Disease] = images.GetToken( "disease" ),
-				[TokenType.Badlands] = images.GetToken( "badlands" ),
+				[TokenType.Dahan[2]]  = images.GetToken( "dahan" ),
+				[TokenType.Dahan[1]]  = images.GetToken( "dahan1" ),
+				[TokenType.Defend]    = images.GetToken( "defend1orange" ),
+				[TokenType.Blight]    = images.GetToken( "blight" ),
+				[TokenType.Beast]     = images.GetToken( "beast" ),
+				[TokenType.Wilds]     = images.GetToken("wilds"),
+				[TokenType.Disease]   = images.GetToken( "disease" ),
+				[TokenType.Badlands]  = images.GetToken( "badlands" ),
 			};
 
 			this.gameState = gameState;
