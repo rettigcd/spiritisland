@@ -13,7 +13,7 @@ namespace SpiritIsland.Basegame {
 			// for each dahan in target land, 1 damage and defend 2
 
 			// -- damage --
-			await ctx.DamageInvaders( ctx.DahanCount );
+			await ctx.DamageInvaders( ctx.Dahan.Count );
 
 			// if you have 2 sun, 2 earth, 2 plant
 			if( ctx.YouHave( "2 sun, 2 earth, 2 plant" )) {
@@ -25,7 +25,7 @@ namespace SpiritIsland.Basegame {
 			}
 
 			// -- defend remaining --
-			ctx.Defend( ctx.DahanCount * 2 );
+			ctx.Defend( ctx.Dahan.Count * 2 );
 
 		}
 

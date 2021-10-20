@@ -4,9 +4,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class FlowLikeWaterReachLikeAir {
 
-		[MajorCard("Flow Like Water, Reach Like Air",2,Element.Air,Element.Water)]
-		[Fast]
-		[AnySpirit]
+		[MajorCard("Flow Like Water, Reach Like Air",2,Element.Air,Element.Water), Fast, AnySpirit]
 		static public async Task ActAsync( TargetSpiritCtx ctx ) {
 
 			// target spirit gets +2 range with all Powers.
@@ -34,7 +32,7 @@ namespace SpiritIsland.BranchAndClaw {
 			mover.AddGroup(2,TokenType.Dahan);
 
 			// if you hvae 2 air, 2 water, the moved presence may also bring along up to 2 cities and up to 2 blight.
-			if(ctx.Other.Elements.Contains( "" )) {
+			if(ctx.Other.Elements.Contains( "2 air,2 water" )) {
 				mover.AddGroup(2,Invader.City);
 				mover.AddGroup(2,TokenType.Blight.Generic);
 			}

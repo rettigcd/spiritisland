@@ -75,6 +75,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
 			spirit.Hand.Count.ShouldBe(5);
 		}
 
+		[Trait("Presence","EnergyTrack")]
 		[Theory]
 		[InlineDataAttribute( 1,0,"")]
 		[InlineDataAttribute( 2,1,"")]
@@ -95,6 +96,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
 			Assert_BonusElements( elements );
 		}
 
+		[Trait("Presence","CardTrack")]
 		[Theory]
 		[InlineDataAttribute(1,1)]
 		[InlineDataAttribute(2,1)]

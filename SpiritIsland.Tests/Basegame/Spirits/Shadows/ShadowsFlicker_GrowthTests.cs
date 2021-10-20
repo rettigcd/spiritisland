@@ -49,6 +49,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.ShadowsNS {
 			Assert_HasEnergy(3+1); // 1 from energy track
 		}
 
+		[Trait("Presence","EnergyTrack")]
 		[Theory]
 		[InlineDataAttribute(1,0)]
 		[InlineDataAttribute(2,1)]
@@ -62,6 +63,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.ShadowsNS {
 			Assert_PresenceTracksAre(expectedEnergyGrowth,1);
 		}
 
+		[Trait("Presence","CardTrack")]
 		[Theory]
 		[InlineDataAttribute(1,1)]
 		[InlineDataAttribute(2,2)]

@@ -51,6 +51,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			gs.Assert_Invaders( a[1], "2E@1" );
 		}
 
+		[Trait("Feature","Gather")]
 		[Fact]
 		public void DoesntKillTown() {
 			// Given: 1 dahan on a2 & 2 dahan on a1

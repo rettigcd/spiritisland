@@ -86,6 +86,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			Assert_BoardPresenceIs("T5T6");
 		}
 
+		[Trait("Presence","EnergyTrack")]
 		[Theory]
 		[InlineDataAttribute(1,2,"")]
 		[InlineDataAttribute(2,2,"A")]
@@ -108,6 +109,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			Assert_BonusElements( elements );
 		}
 
+		[Trait("Presence","CardTrack")]
 		[Theory]
 		[InlineDataAttribute(1,2,"")]
 		[InlineDataAttribute(2,2,"")]

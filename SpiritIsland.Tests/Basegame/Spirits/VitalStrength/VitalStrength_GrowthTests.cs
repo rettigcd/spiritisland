@@ -51,6 +51,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.VitalStrengthNS {
 			Assert_HasEnergy( 3 + 2 );
 		}
 
+		[Trait("Presence","EnergyTrack")]
 		[Theory]
 		[InlineDataAttribute(1,2)]
 		[InlineDataAttribute(2,3)]
@@ -64,6 +65,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.VitalStrengthNS {
 			Assert_EnergyTrackIs( expectedEnergyGrowth );
 		}
 
+		[Trait("Presence","CardTrack")]
 		[Theory]
 		[InlineDataAttribute(1,1)]
 		[InlineDataAttribute(2,1)]

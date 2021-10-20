@@ -77,6 +77,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 		#region presence tracks
 
+		[Trait("Presence","EnergyTrack")]
 		[Theory]
 		[InlineDataAttribute(1,1)]
 		[InlineDataAttribute(2,2)]
@@ -92,6 +93,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Assert_PresenceTracksAre(expectedEnergyGrowth,1);
 		}
 
+		[Trait("Presence","CardTrack")]
 		[Theory]
 		[InlineDataAttribute(1,1,false)]
 		[InlineDataAttribute(2,2,false)]

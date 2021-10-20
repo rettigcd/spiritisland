@@ -18,7 +18,7 @@ namespace SpiritIsland.JaggedEarth {
 		[InnateOption("3 fire","1 Invader and 1 dahan deal Damage to each other.",3)]
 		static public async Task Option3b(TargetSpaceCtx ctx ) {
 			var invaders = ctx.Tokens.Invaders().ToArray();
-			if(invaders.Length == 0 || !ctx.HasDahan) return;
+			if(invaders.Length == 0 || !ctx.Dahan.Any) return;
 			var invader = await ctx.Self.Action.Decision(new Decision.TokenOnSpace("Select invader to fight 1 dahan",ctx.Space,invaders,Present.Always));
 
 			// Calc Invader Damage

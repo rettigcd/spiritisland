@@ -10,7 +10,7 @@ namespace SpiritIsland.Basegame {
 		static public Task Act( TargetSpaceCtx ctx ) {
 
 			return ctx.SelectActionOption(
-				new ActionOption( $"Each dahan deals 1 damage to a different invader", () => DamageDifferentInvaders(ctx, 1, ctx.DahanCount, Invader.City,Invader.Town,Invader.Explorer ) ),
+				new ActionOption( $"Each dahan deals 1 damage to a different invader", () => DamageDifferentInvaders(ctx, 1, ctx.Dahan.Count, Invader.City,Invader.Town,Invader.Explorer ) ),
 				new ActionOption( "push up to 3 dahan", () => ctx.PushUpToNDahan( 3 ) )
 			);
 

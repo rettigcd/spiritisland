@@ -73,6 +73,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 
 		}
 
+		[Trait("Presence","EnergyTrack")]
 		[Theory]
 		[InlineDataAttribute(1,1,"")]
 		[InlineDataAttribute(2,1,"A")]
@@ -91,6 +92,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			Assert_BonusElements( elements );
 		}
 
+		[Trait("Presence","CardTrack")]
 		[Theory]
 		[InlineDataAttribute(1,1,false)]
 		[InlineDataAttribute(2,2,false)]

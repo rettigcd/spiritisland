@@ -38,6 +38,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 		}
 
+		[Trait("Feature","Push")]
 		[Fact]
 		public void Level1_Pushes1TownOrExplorer() { // 1-Sun, 2-Water
 
@@ -53,6 +54,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			User.PushesTokensTo( "(T@2),E@1", "(A5),A6,A7" );
 		}
 
+		[Trait("Feature","Push")]
 		[Fact]
 		public void Level2_2DamagePush3TownOrExplorers() { // 2-Sun, 3-Water
 

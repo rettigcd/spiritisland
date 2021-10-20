@@ -10,7 +10,7 @@ namespace SpiritIsland.Basegame {
 		public static async Task ActAsync(TargetSpaceCtx ctx){
 
 			// 2 damage per dahan in target land
-			await ctx.DamageInvaders(2*ctx.DahanCount);
+			await ctx.DamageInvaders(2*ctx.Dahan.Count);
 
 			if( ctx.YouHave("3 sun,2 animal") ){
 
@@ -25,7 +25,7 @@ namespace SpiritIsland.Basegame {
 		}
 
 		static Task DahanDeal2DamageEach( TargetSpaceCtx ctx ) {
-			return ctx.DamageInvaders( ctx.DahanCount * 2 );
+			return ctx.DamageInvaders( ctx.Dahan.Count * 2 );
 		}
 	}
 

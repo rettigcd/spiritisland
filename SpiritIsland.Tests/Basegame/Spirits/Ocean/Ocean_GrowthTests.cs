@@ -127,6 +127,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			Assert_HasCardAvailable( "Veil the Night's Hunt" );
 		}
 
+		[Trait("Presence","EnergyTrack")]
 		[Theory]
 		[InlineDataAttribute(1,0,"")]
 		[InlineDataAttribute(2,0,"M")]
@@ -143,6 +144,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			Assert_BonusElements( elements );
 		}
 
+		[Trait("Presence","CardTrack")]
 		[Theory]
 		[InlineDataAttribute(1,1)]
 		[InlineDataAttribute(2,2)]

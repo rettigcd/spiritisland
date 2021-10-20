@@ -20,6 +20,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 		}
 
+		[Trait("Feature","Push")]
 		[Theory]
 		[InlineData(1,0,0,"","1E@1")]
 		[InlineData(0,1,0,"","1T@2")]
@@ -51,6 +52,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		// WashAway: Multiple target lands
 
 		// WashAway: into ocean?
+		[Trait("Feature","Push")]
 		[Fact]
 		public void DoesntPushIntoOcean(){
 			Given_RiverPlayingWashAway("A4");
@@ -66,6 +68,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			User.OptionallyPushesInvaderTo("E@1","A1,(A3),A4");
 		}
 
+		[Trait("Feature","Push")]
 		[Fact]
 		public void One1Target2PushableTypes() {
 			Given_RiverPlayingWashAway();
@@ -94,6 +97,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			gameState.Assert_Invaders(townDestination, "1T@2" );
 		}
 
+		[Trait("Feature","Push")]
 		[Fact]
 		public void DamagedTown() {
 			Given_RiverPlayingWashAway();
@@ -120,6 +124,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 		// WashAway: push 3 different invaders to 3 different lands
 		// WashAway: multiple invader types
+		[Trait("Feature","Push")]
 		[Fact]
 		public void Push3InvadersToDifferentLands() {
 			Given_RiverPlayingWashAway();

@@ -18,7 +18,7 @@ namespace SpiritIsland.Basegame {
 			ctx.AddBlight(1);
 
 			// destroy all dahan
-			await ctx.DestroyDahan( ctx.DahanCount );
+			await ctx.DestroyDahan( ctx.Dahan.Count );
 
 			if(ctx.YouHave( "3 earth,2 plant,2 animal" )) {
 				int blightCount = ctx.BlightOnSpace;

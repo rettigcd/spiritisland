@@ -13,7 +13,7 @@ namespace SpiritIsland.Basegame {
 			ctx.AddFear(1);
 
 			// each dahan deals damange equal to the number of your presense in the target land
-			return ctx.DamageInvaders( ctx.DahanCount * ctx.PresenceCount );
+			return ctx.DamageInvaders( ctx.Dahan.Count * ctx.PresenceCount );
 
 		}
 	}

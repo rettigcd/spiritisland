@@ -17,7 +17,7 @@ namespace SpiritIsland.Basegame {
 				),
 				new ActionOption(
 					"1 fear/dahan, max 3",
-					() => ctx.AddFear(Math.Min(3,ctx.DahanCount)), 
+					() => ctx.AddFear(Math.Min(3,ctx.Dahan.Count)), 
 					ctx.Tokens.HasAny( Invader.City, Invader.Town ) 
 				)
 			);

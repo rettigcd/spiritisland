@@ -7,6 +7,7 @@ namespace SpiritIsland.Tests {
 
 	static public class ExtendGameState {
 
+		/// <summary> Replaces all Invader Cards with null-cards that don't ravage/build/explore</summary>
 		static public void DisableInvaderDeck(this GameState gs ) {
 			var nullCard = new InvaderCard( Terrain.None );
 			gs.InvaderDeck = InvaderDeck.BuildTestDeck( new byte[12].Select( _ => nullCard ).ToArray() );

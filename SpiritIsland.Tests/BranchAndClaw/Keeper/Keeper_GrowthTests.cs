@@ -145,6 +145,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 
 		}
 
+		[Trait("Feature","Push")]
 		[Fact]
 		public void SacredSitesPushDahan() {
 			// Given: space with 2 dahan

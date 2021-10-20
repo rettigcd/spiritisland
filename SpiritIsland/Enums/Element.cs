@@ -37,9 +37,17 @@ namespace SpiritIsland {
 				: (int.Parse( parts[0] ), ParseEl(parts[1]));
 		}
 
-		static Element ParseEl( string text) => (Element)Enum.Parse( typeof( Element ), text, true );
+		static Element ParseEl( string text ) {
+//			try {
+				return (Element)Enum.Parse( typeof( Element ), text, true );
+			//} catch( Exception ex) {
+			//	throw new FormatException($"Unable to parse '{text}' into Element", ex);
+			//}
+
+		}
 		
 		static public bool Contains(this CountDictionary<Element> dict, string subsetElementString) {
+			if(string.IsNullOrEmpty(subsetElementString)) throw new ArgumentException("criteria elements cannot be null or empty.");
 			var subset = new CountDictionary<Element>( Parse(subsetElementString) );
 			return dict.Contains(subset);
 		}

@@ -1,8 +1,21 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
+== Test Categories ==
+* Ravage Engine (damage / destroy) 
+* Movement - Push / Gather / Move
+* Freezing
+* Invader Cards / Invader Deck
+* Spirit overrides (anything non-abstract method a dirived spirit overrides)
+* Presence Tracks & Deployment
+* Cause - things that behave differently for Powers than they do for non-Powers
+* Range
+* Speed (fast/slow)
+* Elementals trigger dependant
+
+
+
 == Stone ==
 Draw Growth: Gain Multiple Elements
-Draw Growth: Mountain or presence
 Draw Card Track: element + Action
 Draw Card Track: 2 elements
 Draw Card Track: card + element

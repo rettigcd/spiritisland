@@ -17,9 +17,9 @@ namespace SpiritIsland {
 			[Target.MountainOrWetland ] = ctx => ctx.Terrain.IsOneOf( Terrain.Mountain, Terrain.Wetland ),
 			[Target.Coastal           ] = ctx => ctx.IsCoastal,
 			[Target.Blight            ] = ctx => ctx.HasBlight,
-			[Target.Dahan             ] = ctx => ctx.HasDahan,
+			[Target.Dahan             ] = ctx => ctx.Dahan.Any,
 			[Target.Invaders          ] = ctx => ctx.HasInvaders,
-			[Target.DahanOrInvaders   ] = ctx => ctx.HasDahan || ctx.HasInvaders,
+			[Target.DahanOrInvaders   ] = ctx => ctx.Dahan.Any || ctx.HasInvaders,
 			[Target.NoInvader         ] = ctx => !ctx.HasInvaders,
 			[Target.NoBlight          ] = ctx => !ctx.HasBlight,
 			[Target.TownOrExplorer    ] = ctx => ctx.Tokens.HasAny( Invader.Explorer, Invader.Town ),  // Wash Away helper

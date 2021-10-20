@@ -41,7 +41,7 @@ namespace SpiritIsland.BranchAndClaw {
 					// Gather 1 dahan into that land.
 					await spaceCtx.GatherDahan( 1 );
 					// Then 2 damage per dahan there
-					await spaceCtx.DamageInvaders( 2*spaceCtx.DahanCount );
+					await spaceCtx.DamageInvaders( 2*spaceCtx.Dahan.Count );
 				}
 			}
 		}

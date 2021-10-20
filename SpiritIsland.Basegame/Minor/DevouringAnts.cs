@@ -16,7 +16,7 @@ namespace SpiritIsland.Basegame {
 			int damage = 1;
 
 			// destroy 1 dahan
-			if(ctx.DahanCount>0)
+			if(ctx.Dahan.Any)
 				await ctx.DestroyDahan(1);
 
 			// if target is J / S, +1 damage

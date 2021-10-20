@@ -25,7 +25,7 @@ namespace SpiritIsland.Basegame {
 			}
 
 			if(destroyAllDahan)
-				await ctx.DestroyDahan( ctx.DahanCount );
+				await ctx.DestroyDahan( ctx.Dahan.Count );
 
 		}
 

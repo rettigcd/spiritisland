@@ -32,6 +32,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Minor {
 
 		}
 
+		[Trait("Feature","Gather")]
 		[Fact]
 		public void OneRavage_ReplacedWithBuild() {
 			var (user, ctx) = TestSpirit.SetupGame( PowerCard.For<CallToTrade>() );
@@ -59,6 +60,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Minor {
 
 		}
 
+		[Trait("Feature","Gather")]
 		[Fact]
 		public void TerrorLevel3_RavageRemainsRavage() {
 			var (user, ctx) = TestSpirit.SetupGame( PowerCard.For<CallToTrade>() );
@@ -85,6 +87,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Minor {
 			spaceCtx.Tokens.InvaderSummary.ShouldBe( "1E@1" );
 		}
 
+		[Trait("Feature","Gather")]
 		[Fact]
 		public void BuildAndRavage_BecomesTwoBuilds() {
 

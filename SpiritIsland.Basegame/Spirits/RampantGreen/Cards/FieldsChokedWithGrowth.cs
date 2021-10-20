@@ -13,7 +13,7 @@ namespace SpiritIsland.Basegame {
 
 			return ctx.SelectActionOption(
 				new ActionOption("Push 1 town", () => ctx.Push(1,Invader.Town),ctx.Tokens.Has(Invader.Town)),
-				new ActionOption("Push 3 dahan", () => ctx.PushDahan(3),ctx.HasDahan)
+				new ActionOption("Push 3 dahan", () => ctx.PushDahan(3),ctx.Dahan.Any)
 			);
 
 		}

@@ -17,7 +17,7 @@ namespace SpiritIsland.JaggedEarth {
 				.MoveN();
 
 		public override Task GatherUpTo( int countToGather, params TokenGroup[] ofType )
-			=> this.Gather( Space, countToGather, ofType );
+			=> this.Gather( countToGather, ofType );
 
 	}
 

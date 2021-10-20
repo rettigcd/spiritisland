@@ -77,50 +77,6 @@ namespace SpiritIsland {
 
 		#endregion
 
-		#region Push
-
-		public Task<Space[]> PushUpTo( Space source, int countToPush, params TokenGroup[] groups )
-			=> new TokenPusher( this, source ).AddGroup( countToPush, groups ).MoveUpToN();
-
-		#endregion Push
-
-		#region Gather
-
-		protected async Task GatherUpTo( Space target, int countToGather, params TokenGroup[] groups ) {
-			// This method acts similary to the Pusher class
-			SpaceToken[] GetOptions() => target.Adjacent
-				.SelectMany(a=>GameState.Tokens[a].OfAnyType(groups).Select(t=>new SpaceToken(a,t)))
-				.ToArray();
-
-			SpaceToken[] options;
-			while( 0 < countToGather
-				&& (options=GetOptions()).Length>0
-			) {
-				var source = await Self.Action.Decision( new Decision.SpaceTokens_ToGather(countToGather, target, options, Present.Done ));
-				if(source == null) break;
-				await Move( source.Token, source.Space, target );
-				--countToGather;
-			}
-		}
-
-		protected async Task Gather( Space target, int countToGather, params TokenGroup[] groups ) {
-			SpaceToken[] GetOptions() => target.Adjacent
-				.SelectMany(a=>GameState.Tokens[a].OfAnyType(groups).Select(t=>new SpaceToken(a,t)))
-				.ToArray();
-
-			SpaceToken[] options;
-			while( 0 < countToGather
-				&& (options=GetOptions()).Length>0
-			) {
-				var source = await Self.Action.Decision( new Decision.SpaceTokens_ToGather(countToGather, target, options, Present.Always ));
-				if(source == null) break;
-				await Move( source.Token, source.Space, target );
-				--countToGather;
-			}
-		}
-
-		#endregion Gather
-
 		#region Place Presence
 
 		/// <summary> Selects: (Source then Destination) for placing presence </summary>

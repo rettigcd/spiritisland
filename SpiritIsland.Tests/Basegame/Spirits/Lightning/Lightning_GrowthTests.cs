@@ -56,6 +56,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Lightning {
 
 		}
 
+		[Trait("Presence","EnergyTrack")]
 		[Theory]
 		[InlineDataAttribute(1,1)]
 		[InlineDataAttribute(2,1)]
@@ -71,6 +72,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Lightning {
 			Assert_EnergyTrackIs( expectedEnergyGrowth );
 		}
 
+		[Trait("Presence","CardTrack")]
 		[Theory]
 		[InlineDataAttribute(1,2)]
 		[InlineDataAttribute(2,3)]

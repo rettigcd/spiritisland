@@ -10,7 +10,7 @@ namespace SpiritIsland.BranchAndClaw {
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 			return ctx.SelectActionOption(
 				new ActionOption( "Gather up to 3 dahan", () => ctx.GatherUpToNDahan( 3 ) ),
-				new ActionOption( "1 fear and push 1 explorer and 1 town", ()=>FearAndPushExplorerAndTown(ctx), ctx.HasDahan )
+				new ActionOption( "1 fear and push 1 explorer and 1 town", ()=>FearAndPushExplorerAndTown(ctx), ctx.Dahan.Any )
 			);
 		}
 

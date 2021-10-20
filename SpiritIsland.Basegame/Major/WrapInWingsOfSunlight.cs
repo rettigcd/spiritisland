@@ -23,7 +23,7 @@ namespace SpiritIsland.Basegame {
 			// technically could move to ocean while Ocean on board, but no reason to.
 
 			// move dahan
-			int max = Math.Min( ctx.DahanCount, 5 );
+			int max = Math.Min( ctx.Dahan.Count, 5 );
 			int countToMove = await ctx.Self.SelectNumber( "# of dahan to move", max );
 			while(countToMove-->0)
 				await ctx.Move( TokenType.Dahan.Default, ctx.Space, destination );

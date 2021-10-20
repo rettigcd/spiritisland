@@ -11,7 +11,7 @@ namespace SpiritIsland.Basegame {
 		static public Task ActAsync(TargetSpaceCtx ctx) {
 
 			return ctx.SelectActionOption(
-				new ActionOption("Draw Major Power", ()=>DrawMajorOrGetEnergy(ctx), ctx.HasDahan ),
+				new ActionOption("Draw Major Power", ()=>DrawMajorOrGetEnergy(ctx), ctx.Dahan.Any ),
 				new ActionOption("2 fear", () => ctx.AddFear(2), ctx.HasInvaders )
 			);
 
@@ -22,7 +22,7 @@ namespace SpiritIsland.Basegame {
 			var major = await ctx.DrawMajor();
 			// If you Forget this Power, gain energy equal to dahan and you may play the major power immediately paying its cost
 			if(!ctx.Self.Hand.Contains( major )) // because you discarded it
-				ctx.Self.Energy += ctx.DahanCount;
+				ctx.Self.Energy += ctx.Dahan.Count;
 		}
 	}
 }

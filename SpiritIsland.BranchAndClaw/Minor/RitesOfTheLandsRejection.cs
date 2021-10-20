@@ -18,12 +18,12 @@ namespace SpiritIsland.BranchAndClaw {
 
 				// 1 fear per town/city OR 1 fear per dahan, whichever is less
 				int cityTownCount = ctx.Tokens.SumAny( Invader.Town, Invader.City );
-				ctx.AddFear( Math.Min( ctx.DahanCount, cityTownCount ) );
+				ctx.AddFear( Math.Min( ctx.Dahan.Count, cityTownCount ) );
 			}
 
 			return ctx.SelectActionOption(
 				new ActionOption( "Stop build - 1 fear / (Dahan or T/C)", StopBuild_FearForCitiesTownsAndDahan ),
-				new ActionOption( "Push up to 3 dahan", () => ctx.PushUpToNDahan(3), ctx.HasDahan )
+				new ActionOption( "Push up to 3 dahan", () => ctx.PushUpToNDahan(3), ctx.Dahan.Any )
 			);
 		}
 

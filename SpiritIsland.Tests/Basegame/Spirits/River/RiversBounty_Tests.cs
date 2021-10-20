@@ -174,8 +174,6 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 		}
 
-
-
 		[Fact]
 		public void DahanCountIncludesDamaged() {
 			// This is a nice test, but it is too close to the implementation.  Refactoring might not use ctx.DahanCount
@@ -184,7 +182,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			var dahan = ctx.Tokens.Dahan;
 			dahan[1] = 5;
 			dahan[2] = 7;
-			ctx.DahanCount.ShouldBe(12);
+			ctx.Dahan.Count.ShouldBe(12);
 		}
 
 		void Given_AddDahan( int startingCount, Space target ) {

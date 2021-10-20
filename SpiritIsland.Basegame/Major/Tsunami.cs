@@ -37,7 +37,7 @@ namespace SpiritIsland.Basegame {
 			// 4 damage
 			await otherCtx.DamageInvaders( 4 );
 			// destroy 1 dahan
-			if(otherCtx.HasDahan)
+			if(otherCtx.Dahan.Any)
 				await otherCtx.DestroyDahan( 1 );
 		}
 	}

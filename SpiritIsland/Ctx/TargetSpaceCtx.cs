@@ -77,15 +77,45 @@ namespace SpiritIsland {
 		public Task GatherUpToNDahan( int dahanToGather )
 			=> this.GatherUpTo( dahanToGather, TokenType.Dahan );
 
-		// overriden by Grinning Tricketsrs 'Let's see what happens'
-		public virtual Task GatherUpTo( int countToGather, params TokenGroup[] ofType )
-			=> this.GatherUpTo( Space, countToGather, ofType );
-
-		public Task Gather( int countToGather, params TokenGroup[] groups )
-			=> this.Gather( Space, countToGather, groups);
-
 		public Task GatherDahan( int countToGather )
-			=> this.Gather( Space, countToGather, TokenType.Dahan);
+			=> this.Gather( countToGather, TokenType.Dahan);
+
+		// overriden by Grinning Tricketsrs 'Let's see what happens'
+		public virtual async Task GatherUpTo( int countToGather, params TokenGroup[] groups ) {
+
+			// This method acts similary to the Pusher class
+			SpaceToken[] GetOptions() => Adjacent
+				.SelectMany(a=>GameState.Tokens[a].OfAnyType(groups).Select(t=>new SpaceToken(a,t)))
+				.ToArray();
+
+			SpaceToken[] options;
+			while( 0 < countToGather
+				&& (options=GetOptions()).Length>0
+			) {
+				var source = await Self.Action.Decision( new Decision.SpaceTokens_ToGather(countToGather, Space, options, Present.Done ));
+				if(source == null) break;
+				await Move( source.Token, source.Space, Space );
+				--countToGather;
+			}
+		}
+
+		public async Task Gather( int countToGather, params TokenGroup[] groups ) {
+
+			SpaceToken[] GetOptions() => Adjacent
+				.SelectMany(a=>GameState.Tokens[a].OfAnyType(groups).Select(t=>new SpaceToken(a,t)))
+				.ToArray();
+
+			SpaceToken[] options;
+			while( 0 < countToGather
+				&& (options=GetOptions()).Length>0
+			) {
+				var source = await Self.Action.Decision( new Decision.SpaceTokens_ToGather(countToGather, Space, options, Present.Always ));
+				if(source == null) break;
+				await Move( source.Token, source.Space, Space );
+				--countToGather;
+			}
+		}
+
 
 		#endregion Gather
 
@@ -96,10 +126,6 @@ namespace SpiritIsland {
 		// could be Extension Methods
 		public void Adjust( Token invader, int delta )
 			=> Tokens.Adjust( invader, delta );
-
-		public int DahanCount => Tokens.Dahan.Count;
-
-		public bool HasDahan => DahanCount>0;
 
 		public async Task DestroyDahan(int countToDestroy ) {
 			int damagedToDestroy = Math.Min(countToDestroy,Dahan[1]);
