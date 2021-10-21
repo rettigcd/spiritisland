@@ -13,7 +13,7 @@ namespace SpiritIsland.PromoPack1 {
 			ctx.AddFear(1);
 
 			// destory 1 town
-			await ctx.Destroy(1,Invader.Town[2]); // !!! should allow user to choose if they want to destroy a damaged town
+			await ctx.Invaders.Destroy(1,Invader.Town);
 
 			// push 1 dahan
 			await ctx.PushDahan(1);

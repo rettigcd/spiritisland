@@ -150,7 +150,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 		public void SacredSitesPushDahan() {
 			// Given: space with 2 dahan
 			var space = board[5];
-			gameState.DahanAdjust(space,2);
+			gameState.DahanOn(space).Add(2);
 			//   and presence on that space
 			spirit.Presence.PlaceOn( space );
 

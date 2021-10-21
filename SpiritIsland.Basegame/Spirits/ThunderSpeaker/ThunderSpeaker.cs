@@ -78,7 +78,7 @@ namespace SpiritIsland.Basegame {
 		protected override void InitializeInternal( Board board, GameState gs ) {
 
 			// Put 2 Presence on your starting board: 1 in each of the 2 lands with the most Dahan
-			var spots = board.Spaces.OrderByDescending( gs.DahanGetCount ).Take( 2 ).ToArray();
+			var spots = board.Spaces.OrderByDescending( s => gs.DahanOn(s).Count ).Take( 2 ).ToArray();
 			Presence.PlaceOn( spots[0] );
 			Presence.PlaceOn( spots[1] );
 

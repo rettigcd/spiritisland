@@ -12,7 +12,7 @@ namespace SpiritIsland.Basegame {
 			ctx.GameState.PreExplore.ForThisRound( ( gs, args ) => {
 				for(int i = 0; i < args.SpacesMatchingCards.Count; ++i) {
 					var space = args.SpacesMatchingCards[i];
-					if( 2<=gs.DahanGetCount(space))
+					if( 2<=gs.DahanOn(space).Count)
 						args.SpacesMatchingCards.RemoveAt(i--);
 				}
 			} );

@@ -77,11 +77,8 @@ namespace SpiritIsland.Basegame {
 		}
 
 		void RemoveDrownedDahan( GameState gs ) {
-			foreach(var board in gs.Island.Boards) {
-				var dahan = gs.Tokens[board[0]].Dahan;
-				dahan[1] = 0;
-				dahan[2] = 0;
-			}
+			foreach(var board in gs.Island.Boards)
+				gs.Tokens[board[0]].Dahan.RemoveAll();
 		}
 
 		async Task InvadersMoved(GameState gs, TokenMovedArgs args ) {

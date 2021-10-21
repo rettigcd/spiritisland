@@ -31,8 +31,8 @@ namespace SpiritIsland.Tests {
 			gameState.Tokens[dst][TokenType.Dahan.Default] = 0;
 
 			// When: playing Card
-			async Task PlayCard(TargetSpaceCtx ctx) { try { await WrapInWingsOfSunlight.ActAsync( ctx ); } catch(Exception ex) { 
-				int i = 0; 
+			static async Task PlayCard(TargetSpaceCtx ctx) { try { await WrapInWingsOfSunlight.ActAsync( ctx ); } catch(Exception ex) { 
+				_ = ex.ToString(); 
 			} } 
 			_ = PlayCard( new TargetSpaceCtx(spirit,gameState,src,Cause.Power) );
 
@@ -70,8 +70,8 @@ namespace SpiritIsland.Tests {
 			var dst = board[8];
 
 			// When: playing Card
-			async Task PlayCard(TargetSpaceCtx ctx) { try { await TerrifyingChase.ActAsync( ctx ); } catch(Exception ex) { 
-				int i = 0; 
+			static async Task PlayCard(TargetSpaceCtx ctx) { try { await TerrifyingChase.ActAsync( ctx ); } catch(Exception ex) { 
+				_ = ex.ToString(); 
 			} } 
 			_ = PlayCard( new TargetSpaceCtx(spirit,gameState,src,Cause.Power) );
 

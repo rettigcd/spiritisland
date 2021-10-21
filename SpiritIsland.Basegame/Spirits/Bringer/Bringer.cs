@@ -83,12 +83,8 @@ namespace SpiritIsland.Basegame {
 		/// Swaps out what happens when invaders get 'destroyed'
 		/// </summary>
 		public override InvaderGroup BuildInvaderGroupForPowers( GameState gs, Space space ) {
-			var src = gs.Tokens[space];
-
-			var copy = new CountDictionary<Token>();
-			foreach(var invader in src.Invaders())
-				copy[invader] = src[invader];
-			var detached = new TokenCountDictionary( space, copy );
+			var normalTokens = gs.Tokens[space];
+			var detached = new TokenCountDictionary( normalTokens );
 
 			return new InvaderGroup( 
 				detached,
@@ -101,7 +97,7 @@ namespace SpiritIsland.Basegame {
 			);
 		}
 
-		public override Task DestroyTokenForPowers( GameState gs, Space space, int count, Token dahanToken ) {
+		public override Task DestroyInvaderForPowers( GameState gs, Space space, int count, Token dahanToken ) {
 			return Task.CompletedTask;
 		}
 

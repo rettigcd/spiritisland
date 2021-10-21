@@ -37,9 +37,9 @@ namespace SpiritIsland {
 		public bool WithDahan( Space space ) => GameState.Tokens[space].Dahan.Any;
 
 		// !!! not sure these 3 are correct.
-		public bool WithDahanOrAdjacentTo5( Space space ) => GameState.DahanIsOn(space) || space.Adjacent.Any( a => GameState.Tokens[a].Dahan.Count>5 );
-		public bool WithDahanOrAdjacentTo3( Space space ) => GameState.DahanIsOn( space ) || space.Adjacent.Any( a => GameState.Tokens[a].Dahan.Count > 5 );
-		public bool WithDahanOrAdjacentTo1( Space space ) => GameState.DahanIsOn( space ) || space.Adjacent.Any( a => GameState.Tokens[a].Dahan.Count > 5 );
+		public bool WithDahanOrAdjacentTo5( Space space ) => GameState.DahanOn(space).Any || space.Adjacent.Any( a => GameState.DahanOn(a).Count>5 );
+		public bool WithDahanOrAdjacentTo3( Space space ) => GameState.DahanOn( space ).Any || space.Adjacent.Any( a => GameState.DahanOn(a).Count > 5 );
+		public bool WithDahanOrAdjacentTo1( Space space ) => GameState.DahanOn( space ).Any || space.Adjacent.Any( a => GameState.DahanOn(a).Count > 5 );
 
 		#endregion Lands
 

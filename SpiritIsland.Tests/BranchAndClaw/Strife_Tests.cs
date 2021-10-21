@@ -88,7 +88,7 @@ namespace SpiritIsland.Tests.BranchAndClaw {
 
 			// When: move
 			var destination = space.Adjacent.First( x => x.Terrain != Terrain.Ocean );
-			gs.Move( strifedTown, space, destination );
+			gs.Tokens.Move( strifedTown, space, destination );
 
 			// Then:
 			counts.InvaderSummary.ShouldBe( "1T@2" );
@@ -152,13 +152,13 @@ namespace SpiritIsland.Tests.BranchAndClaw {
 			counts.InvaderSummary.ShouldBe( "1C@3^", "strife should be used up" );
 
 			//   and: 1 dahan
-			gs.DahanAdjust( space, 1 );
+			gs.DahanOn( space ).Add( 1 );
 
 			//  When: we ravage there
 			await gs.InvaderEngine.TestRavage( new InvaderCard( space.Terrain ) );
 
 			//  Then: dahan survives
-			gs.DahanGetCount( space ).ShouldBe( 1, "dahan should survive due to strife on town" );
+			gs.DahanOn( space ).Count.ShouldBe( 1, "dahan should survive due to strife on town" );
 
 			//   and so does city, but strife is gone
 			counts.InvaderSummary.ShouldBe( "1C@1", "strife should be used up" );

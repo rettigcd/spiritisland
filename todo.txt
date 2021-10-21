@@ -12,7 +12,12 @@
 * Speed (fast/slow)
 * Elementals trigger dependant
 
-
+== Freezing Dahan - TESTS !!! ==
+OK - Twilight Fog Brings Madness - shouldn't destroy Damage dahan if the Indexers don't report any there.
+OK - Dissolve the Bonds of Kinship - Make sure Dahan don't get replaced (should be ok.)
+OK - Insatiable Hunger of the Swarm - Will get caught in a loop if it can't find dahan to damage. - ALSO!!! - if dahan have been given 4-health, this will treat them as still having 2 health
+?? - Ravage
+Moving Dahan into frozen land freezes them.
 
 == Stone ==
 Draw Growth: Gain Multiple Elements

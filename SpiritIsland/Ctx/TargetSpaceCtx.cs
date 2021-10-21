@@ -46,7 +46,7 @@ namespace SpiritIsland {
 		public TokenBinding Disease => Tokens.Disease;
 		public TokenBinding Wilds => Tokens.Wilds;
 		public TokenBinding Badlands => Tokens.Badlands;
-		public TokenGroupBinding Dahan => Tokens.Dahan;
+		public DahanGroupBinding Dahan => Tokens.Dahan;
 
 		#endregion
 
@@ -97,18 +97,10 @@ namespace SpiritIsland {
 		public void Adjust( Token invader, int delta )
 			=> Tokens.Adjust( invader, delta );
 
-		public async Task DestroyDahan(int countToDestroy ) {
-			int damagedToDestroy = Math.Min(countToDestroy,Dahan[1]);
-			await Destroy(countToDestroy, TokenType.Dahan[1] );
-			await Destroy(countToDestroy - damagedToDestroy, TokenType.Dahan[2] );
-		}
+		public Task DestroyDahan( int countToDestroy ) => Dahan.Destroy( countToDestroy, Cause );
 
-		public async Task Destroy(int countToDestroy, Token token ) {
-			if(countToDestroy<=0) return;
-			if(Cause == Cause.Power)
-				await Self.DestroyTokenForPowers( GameState, Space, countToDestroy, token );
-			else
-				await GameState.DestroyToken(Space,countToDestroy, token, Cause);
+		public async Task DestroyBeast(int countToDestroy ) {
+			await GameState.Tokens.DestroyToken(Space,countToDestroy, TokenType.Beast, Cause);
 		}
 
 		public Terrain Terrain => TerrainMapper.GetTerrain( Space );

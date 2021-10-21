@@ -4,11 +4,12 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
-	public class Tokens_ForIsland {
+	public class Tokens_ForIsland : IDestroyIslandTokens {
 
-		readonly GameState gs;
+		readonly GameState gameStateForEventArgs; // !!! this is only captured so it can be supplied with the events.
+
 		public Tokens_ForIsland( GameState gs ) {
-			this.gs = gs;
+			this.gameStateForEventArgs = gs;
 
 			gs.TimePassed += TokenAdded.OnEndOfRound;
 			gs.TimePassed += TokenMoved.OnEndOfRound;
@@ -17,10 +18,10 @@ namespace SpiritIsland {
 
 		public TokenCountDictionary this[Space space] {
 			get {
-				var countArray = tokenCounts.ContainsKey( space )
+				var countsForSpace = tokenCounts.ContainsKey( space )
 					? tokenCounts[space]
 					: tokenCounts[space] = new CountDictionary<Token>();
-				return new TokenCountDictionary( space, countArray );
+				return new TokenCountDictionary( space, countsForSpace, this );
 			}
 		}
 
@@ -31,7 +32,7 @@ namespace SpiritIsland {
 		public Task Move( Token token, Space from, Space to, int count = 1 ) {
 			this[ from ].Adjust( token, -count );
 			this[ to ].Adjust( token, count );
-			return TokenMoved.InvokeAsync( gs, new TokenMovedArgs {
+			return TokenMoved.InvokeAsync( gameStateForEventArgs, new TokenMovedArgs {
 				Token = token,
 				from = from,
 				to = to,
@@ -46,7 +47,7 @@ namespace SpiritIsland {
 			var token = group.Default;
 			this[space][token] += delta;
 
-			await TokenAdded.InvokeAsync( gs, new TokenAddedArgs{ 
+			await TokenAdded.InvokeAsync( gameStateForEventArgs, new TokenAddedArgs{ 
 				count = delta,
 				Space = space,
 				Token = token
@@ -63,6 +64,20 @@ namespace SpiritIsland {
 		public AsyncEvent<TokenAddedArgs> TokenAdded = new AsyncEvent<TokenAddedArgs>();
 		public AsyncEvent<TokenMovedArgs> TokenMoved = new AsyncEvent<TokenMovedArgs>();
 		public AsyncEvent<TokenDestroyedArgs> TokenDestroyed = new AsyncEvent<TokenDestroyedArgs>();
+
+		public Task DestroyToken( Space space, int countToDestroy, Token token, Cause source ) {
+			if(countToDestroy==0) return Task.CompletedTask;
+			var tokens = this[space];
+			countToDestroy = System.Math.Min( countToDestroy, tokens[token] );
+			if(countToDestroy==0) return Task.CompletedTask;
+			tokens[token] -= countToDestroy;
+			return TokenDestroyed.InvokeAsync( gameStateForEventArgs, new TokenDestroyedArgs {
+				Token = token.Generic,
+				space = space,
+				count = countToDestroy,
+				Source = source
+			} );
+		}
 
 		#region Memento
 
@@ -88,5 +103,10 @@ namespace SpiritIsland {
 		#endregion Memento
 
 	}
+
+	public interface IDestroyIslandTokens {
+		Task DestroyToken( Space space, int countToDestroy, Token token, Cause source );
+	}
+
 
 }

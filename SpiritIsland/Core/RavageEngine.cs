@@ -52,7 +52,7 @@ namespace SpiritIsland {
 
 		bool HasInvaders => grp.Tokens.HasInvaders();
 
-		public int GetDamageInflictedByDahan() => gs.DahanGetCount( grp.Space ) * 2;
+		public int GetDamageInflictedByDahan() => gs.DahanOn( grp.Space ).Count * 2;
 
 		public CountDictionary<Token> CalcParticipatingInvaders() { 
 			var participants = new CountDictionary<Token>();
@@ -99,24 +99,24 @@ namespace SpiritIsland {
 		}
 
 		/// <returns># of dahan killed/destroyed</returns>
-		public async Task<int> DamageDahan( int damageInflictedFromInvaders ) {
-			if(damageInflictedFromInvaders == 0 || !cfg.ShouldDamageDahan) return 0;
+		public async Task DamageDahan( int damageInflictedFromInvaders ) {
+			if(damageInflictedFromInvaders == 0 || !cfg.ShouldDamageDahan) return;
+
+			// ! This special DamageDahan, uses the config to change dahan health points.
 
 			// destroy dahan
-			int dahanOnSpace = gs.DahanGetCount( grp.Space );
+			var dahan = grp.Tokens.Dahan;
+			int dahanOnSpace = dahan.Count;
 			int dahanDestroyed = Math.Min( damageInflictedFromInvaders / cfg.DahanHitpoints, dahanOnSpace ); // rounding down
 			if(dahanDestroyed != 0)
-				await gs.DestroyToken( grp.Space, dahanDestroyed, TokenType.Dahan.Default, Cause.Invaders );
+				await dahan.Destroy( dahanDestroyed,2, Cause.Invaders );
 
 			int leftOverDamage = damageInflictedFromInvaders - dahanDestroyed * cfg.DahanHitpoints;
 			bool convert1To1HitPoint = leftOverDamage == cfg.DahanHitpoints - 1;
-			if(convert1To1HitPoint && gs.DahanGetCount( grp.Space )>0) {
-				Counts.Dahan[2]--; // !!! For stone, this probably needs to be re-thought
-				Counts.Dahan[1]++;
-			}
+			if(convert1To1HitPoint && dahan.Any)
+				await dahan.ApplyDamage(1,Cause.Invaders);
 
 			log.Add( $"Kills {dahanDestroyed} of {dahanOnSpace} Dahan leaving {dahanOnSpace - dahanDestroyed} Dahan." );
-			return dahanDestroyed;
 		}
 
 		/// <returns>(city-dead,town-dead,explorer-dead)</returns>

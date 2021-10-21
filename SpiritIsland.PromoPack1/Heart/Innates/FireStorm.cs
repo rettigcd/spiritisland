@@ -62,7 +62,7 @@ namespace SpiritIsland.PromoPack1 {
 			await spaceCtx.PushDahan( int.MaxValue );
 
 			// Destory all invaders and Beasts
-			await spaceCtx.Destroy(int.MaxValue,TokenType.Beast);
+			await spaceCtx.DestroyBeast(int.MaxValue);
 			await spaceCtx.Invaders.DestroyAny(int.MaxValue,Invader.Explorer,Invader.Town,Invader.City);
 
 			// Add 1 blight

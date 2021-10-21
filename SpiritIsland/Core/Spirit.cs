@@ -398,8 +398,8 @@ namespace SpiritIsland {
 		}
 
 		// overriden by Bringer, Bringer's BuildInvaderGroupForPower uses this.
-		public virtual Task DestroyTokenForPowers( GameState gs, Space space, int count, Token token ) {
-			return gs.DestroyToken(space,count,token, Cause.Power);
+		public virtual Task DestroyInvaderForPowers( GameState gs, Space space, int count, Token token ) {
+			return gs.Tokens.DestroyToken(space,count,token, Cause.Power);
 		}
 
 		/// <summary>Hook for Grinning Trickster to add additional strife for power</summary>

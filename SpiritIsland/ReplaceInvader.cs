@@ -62,21 +62,6 @@ namespace SpiritIsland {
 				inv.Tokens.Adjust( town, 1 );
 		}
 
-		public static Task DahanWithExplorer( TargetSpaceCtx ctx ) {
-			var dahan = ctx.Tokens.Dahan;
-			if(dahan[1]>0) {
-				dahan[1]--;
-				ctx.Tokens.Adjust( Invader.Explorer.Default, 1 );
-				return ctx.Invaders.Destroy( 1, Invader.Explorer.Default );
-			}
-
-			if( dahan[2]>0 ) {
-				dahan[2]--;
-				ctx.Tokens.Adjust( Invader.Explorer.Default, 1 );
-			}
-			return Task.CompletedTask;
-		}
-
 	}
 
 }

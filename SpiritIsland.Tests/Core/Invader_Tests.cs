@@ -295,7 +295,7 @@ namespace SpiritIsland.Tests.Core {
 				int count = unit[0] - '0';
 				string itemSummary = unit[1..];
 				if(itemSummary=="D@2"){
-					gameState.DahanAdjust(space,count);
+					gameState.DahanOn(space).Add(count);
 				} else {
 					var invader = Parse(itemSummary);
 					gameState.Tokens[space].Adjust(invader,count);

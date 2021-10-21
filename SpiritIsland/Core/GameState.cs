@@ -214,29 +214,7 @@ namespace SpiritIsland {
 
 		#endregion
 
-		#region Dahan Helpers
-
-		public bool DahanIsOn( Space space ) => Tokens[space].Dahan.Any;
-		public int DahanGetCount( Space space ) =>Tokens[space].Dahan.Count;
-		public void DahanAdjust( Space space, int delta = 1 ) => Tokens[space].Dahan[2] += delta;
-
-		/// <remarks>Called from (1) Ravage Engine and (2) Spirit-de</remarks>
-		public Task DestroyToken( Space space, int countToDestroy, Token token, Cause source ) {
-			if(countToDestroy==0) return Task.CompletedTask;
-			var tokens = Tokens[space];
-			countToDestroy = Math.Min( countToDestroy, tokens[token] );
-			tokens[token] -= countToDestroy;
-			return Tokens.TokenDestroyed.InvokeAsync( this, new TokenDestroyedArgs {
-				Token = token.Generic,
-				space = space,
-				count = countToDestroy,
-				Source = source
-			} );
-		}
-
-		#endregion
-
-		public Task Move( Token invader, Space from, Space to ) => Tokens.Move( invader, from, to );
+		public DahanGroupBinding DahanOn( Space space ) => Tokens[space].Dahan;
 
 		#region Memento
 

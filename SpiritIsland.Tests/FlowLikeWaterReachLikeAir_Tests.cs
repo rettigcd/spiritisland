@@ -33,8 +33,8 @@ namespace SpiritIsland.Tests {
 			var a1 = board[1];
 
 			// When: playing Card
-			async Task PlayCard(TargetSpiritCtx ctx) { try { await FlowLikeWaterReachLikeAir.ActAsync( ctx ); } catch(Exception ex) { 
-				int i = 0; 
+			static async Task PlayCard(TargetSpiritCtx ctx) { try { await FlowLikeWaterReachLikeAir.ActAsync( ctx ); } catch(Exception ex) { 
+				_ = ex.ToString(); 
 			} } 
 			_ = PlayCard( new TargetSpiritCtx(spirit,gameState,spirit,Cause.Power) );
 

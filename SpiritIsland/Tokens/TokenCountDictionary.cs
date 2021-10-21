@@ -1,16 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
-	public class TokenCountDictionary {
+	public class TokenCountDictionary : IDestroySpaceTokens {
 
 		#region constructor
 
-		public TokenCountDictionary( Space space, CountDictionary<Token> counts ) {
+		public TokenCountDictionary( Space space, CountDictionary<Token> counts, IDestroyIslandTokens tokenDestroyer ) {
 			this.Space = space;
 			this.counts = counts;
+			this.tokenDestroyer = tokenDestroyer;
+		}
+
+		/// <summary> Clone / copy constructor </summary>
+		public TokenCountDictionary( TokenCountDictionary src ) {
+			this.Space = src.Space;
+			counts = new CountDictionary<Token>();
+			foreach(var invader in src.Invaders())
+				counts[invader] = src.counts[invader];
+			this.tokenDestroyer = src.tokenDestroyer;
 		}
 
 		#endregion
@@ -53,7 +64,11 @@ namespace SpiritIsland {
 		public TokenBinding Disease => new ( this, TokenType.Disease );
 		public TokenBinding Wilds => new ( this, TokenType.Wilds );
 		public TokenBinding Badlands => new ( this, TokenType.Badlands );
-		public TokenGroupBinding Dahan => new ( this, TokenType.Dahan );
+		public DahanGroupBinding Dahan{
+			get => _dahan ??= new ( this, TokenType.Dahan, this ); // ! change the ??= to ?? and we would not need to hang on to the binding.
+			set => _dahan = value; // Allows Dahan behavior to be overridden
+		}
+		DahanGroupBinding _dahan;
 
 		#region private
 
@@ -63,6 +78,7 @@ namespace SpiritIsland {
 		}
 
 		readonly CountDictionary<Token> counts;
+		readonly IDestroyIslandTokens tokenDestroyer;
 
 		#endregion
 
@@ -92,8 +108,16 @@ namespace SpiritIsland {
 			return lessStrifed;
 		}
 
-
+		/// <summary> Adds .Space to context and calls Parent
+		public Task DestroyToken( int countToDestroy, Token token, Cause cause ) 
+			=> tokenDestroyer.DestroyToken( Space, countToDestroy, token, cause);
+		
 	}
+
+	public interface IDestroySpaceTokens {
+		Task DestroyToken( int countToDestroy, Token token, Cause cause );
+	}
+
 
 
 }
