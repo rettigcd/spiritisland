@@ -23,8 +23,9 @@ namespace SpiritIsland.WinForms {
 
 		#region Tokens
 
-		public Bitmap GetToken( string fileName )         => GetResourceImage( $"tokens.{fileName}.png" );
-		public Bitmap GetToken( Element element )         => GetResourceImage( $"tokens.Simple_{element.ToString().ToLower()}.png" );
+		
+		public Bitmap GetToken( string fileName )       => GetResourceImage( $"tokens.{fileName}.png" );
+		public Bitmap GetToken( Element element )       => GetResourceImage( $"tokens.Simple_{element.ToString().ToLower()}.png" );
 
 		#endregion Tokens
 

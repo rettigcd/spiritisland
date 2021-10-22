@@ -6,7 +6,7 @@ namespace SpiritIsland {
 
 	public class Track : IOption {
 
-		public static Track MkEnergy( int energy, Element el ) => new Track( energy+","+ el.ToString().ToLower() + " energy" ) { Energy = energy };
+		public static Track MkEnergy( int energy, Element el ) => new Track( energy+","+ el.ToString().ToLower() + " energy", el ) { Energy = energy };
 		public static Track MkEnergy( int energy ) => new Track( energy + " energy" ) { Energy = energy };
 		public static Track MkEnergy(params Element[] els ) => new Track( els.Select(x=>x.ToString()).Join(",").ToLower() + " energy", els );
 

@@ -3,10 +3,6 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland.JaggedEarth {
 
-	// This isn't really an Action, it is more of a special ability.
-	// User shouldn't have to click-on-it to activate it.
-
-
 	[InnatePower( "Hold the Island Fast with Bulwark of Will" ), Fast, Yourself]
 	class HoldTheIslandFastWithABulwarkOfWill {
 
@@ -24,16 +20,17 @@ namespace SpiritIsland.JaggedEarth {
 
 		[InnateOption("6 earth,1 plant","When an Event or Blight card directly destroys presence (yours or others'), you may prevent any number of presence from being destroyed by paying 1 Energy each.",1)]
 		static public Task Option3( TargetSpiritCtx ctx ) {
-			_ = new StopPresenceDestructionFromBlight( ctx );
+			_ = new StopPresenceDestructionFromBlightOrEvents( ctx );
 			return Task.CompletedTask;
 		}
 
 	}
 
 	class PayEnergyToTakeFromCard {
+
 		readonly Spirit spirit;
 		readonly int cost;
-		readonly Func<TokenBinding, int, Task<int>> oldBehavior;
+		readonly Func<TokenCountDictionary, int, Task<int>> oldBehavior;
 		public PayEnergyToTakeFromCard( TargetSpiritCtx ctx, int cost ) {
 			this.spirit = ctx.Self;
 			this.cost = cost;
@@ -48,12 +45,13 @@ namespace SpiritIsland.JaggedEarth {
 		}
 
 		/// <returns># of blight to remove from card</returns>
-		async Task<int> AddBlight( TokenBinding blight, int delta ) {
-			blight.Count = blight + delta;
+		async Task<int> AddBlight( TokenCountDictionary tokens, int delta ) {
+			tokens.Blight.Count += delta;
 			
 			if(delta > 0 
+				&& spirit.Presence.IsOn( tokens.Space )
 				&& cost <= spirit.Energy
-				&& await spirit.UserSelectsFirstText( $"Take Blight From:", "Bag (for ${cost})", "card" )
+				&& await spirit.UserSelectsFirstText( $"New Blight on {tokens.Space.Label}, take from:", $"Bag (for {cost})", "card" )
 			) {
 				spirit.Energy -= cost;
 				return 0;
@@ -63,23 +61,23 @@ namespace SpiritIsland.JaggedEarth {
 
 	}
 
-	class StopPresenceDestructionFromBlight {
+	class StopPresenceDestructionFromBlightOrEvents {
 		readonly Spirit spirit;
 		readonly Func<Spirit, Task> oldBehavior;
-		public StopPresenceDestructionFromBlight( TargetSpiritCtx ctx ) {
+		public StopPresenceDestructionFromBlightOrEvents( TargetSpiritCtx ctx ) {
 			this.spirit = ctx.Self;
-			this.oldBehavior = ctx.GameState.Destroy1PresenceFromBlight;
-			ctx.GameState.Destroy1PresenceFromBlight = this.AddBlight;
+			this.oldBehavior = ctx.GameState.Destroy1PresenceFromBlightCard;
+			ctx.GameState.Destroy1PresenceFromBlightCard = this.DestroyPresenceDirectlyFromBlight;
 			ctx.GameState.TimePasses_ThisRound.Push( Restore );
 		}
 
 		Task Restore( GameState gs ) {
-			gs.Destroy1PresenceFromBlight = oldBehavior;
+			gs.Destroy1PresenceFromBlightCard = oldBehavior;
 			return Task.CompletedTask;
 		}
 
 		/// <returns># of blight to remove from card</returns>
-		async Task AddBlight( Spirit other ) {
+		async Task DestroyPresenceDirectlyFromBlight( Spirit other ) {
 
 			if( 1 <= spirit.Energy
 				&& await spirit.UserSelectsFirstText( "Blight Destroying Presence","Pay 1 energy to save","Pass")

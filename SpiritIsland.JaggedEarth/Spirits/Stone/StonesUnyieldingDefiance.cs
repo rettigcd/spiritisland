@@ -9,7 +9,7 @@ namespace SpiritIsland.JaggedEarth {
 		public const string Name = "Stone's Unyielding Defiance";
 		public override string Text => Name;
 
-		public override string SpecialRules => "Bestorw the Undurance of BedRock - When blight is added to one of your lands, unless the blight then outnumbers your presence, it does not cascade or destory presence (yours or others')."
+		public override string SpecialRules => "Bestow the Endurance of BedRock - When blight is added to one of your lands, unless the blight then outnumbers your presence, it does not cascade or destory presence (yours or others')."
 			+ "   Deep Layers Expposed to the Surface - The first time you uncover each of your +1 Card Play presence spaces, gain a Minor Power.";
 
 
@@ -46,8 +46,21 @@ namespace SpiritIsland.JaggedEarth {
 				?? space.Adjacent.First(s=>s.Terrain==Terrain.Sand);
 			Presence.PlaceOn(space2);
 
-
+			// Bestow the Endurance of Bedrock
+			oldBlightEffect = gameState.DetermineAddBlightEffect;
+			gameState.DetermineAddBlightEffect = this.BestorTheEnduranceOfBedrock;
 		}
+
+		AddBlightEffect BestorTheEnduranceOfBedrock(GameState gs,Space space ) {
+			// When blight is added to one of your lands,
+			// if the blight is less than or equal to your presence, 
+			return gs.Tokens[space].Blight <= Presence.CountOn(space)
+				// it does not cascade or destory presence (yours or others')."
+				? new AddBlightEffect { Cascade = false, DestroyPresence = false }
+				// otherwide, normal action
+				: oldBlightEffect(gs,space);
+		}
+		Func<GameState, Space, AddBlightEffect> oldBlightEffect;
 
 	}
 

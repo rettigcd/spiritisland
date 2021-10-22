@@ -60,7 +60,8 @@ namespace SpiritIsland.WinForms {
 				slotWidth * (1 + scaleCoin), 
 				slotWidth * (1 + scaleCoin)
 			);
-			DrawCoin( energyRect, spirit.Energy );
+			graphics.DrawImage( coin, energyRect );
+			DrawTextOnCoin( ref energyRect, spirit.Energy.ToString() );
 
 			return new Size(
 				x - startingX,
@@ -143,90 +144,79 @@ namespace SpiritIsland.WinForms {
 
 		}
 
-		public void DrawCoin( RectangleF bounds, int energy ) {
-			graphics.DrawImage( coin, bounds );
-			DrawTextOnCoin( bounds, energy.ToString() );
+		public void DrawCoin( RectangleF bounds, Track track ) {
+			string txt = track.Text;
+
+			var smallBounds = new RectangleF(bounds.X,bounds.Y,bounds.Width*0.8f,bounds.Height*0.8f);
+			var sideBounds = new RectangleF(bounds.Right-bounds.Width*0.6f,bounds.Bottom-bounds.Width*0.6f,bounds.Width*0.6f,bounds.Height*0.6f);
+
+			if( track.Energy.HasValue) {
+				graphics.DrawImage( coin, bounds );
+				DrawTextOnCoin(ref bounds, track.Energy.Value.ToString() );
+			}
+
+			// Element
+			var innerBounds = bounds.InflateBy( -bounds.Height / 5 );
+			if(track.Elements.Any())
+				DrawElement( ref innerBounds, track.Elements );
+
+			// Action
+			if(track.Action != null)
+				DrawAction( bounds, track );
+
 		}
 
-		void DrawTextOnCoin( RectangleF bounds, string txt ) {
+		void DrawCard( Track track, RectangleF bounds ) {
+			var innerBounds = bounds.InflateBy( -bounds.Height / 5 );
+
+			// Card PLays
+			if( track.CardPlay.HasValue) {
+				using var bitmap = ResourceImages.Singleton.GetIcon( track.CardPlay + " cardplay" );
+				graphics.DrawImageFitHeight( bitmap, bounds );
+				innerBounds.X += innerBounds.Width * 0.5f;
+				innerBounds.Y += innerBounds.Height * 0.5f;
+			}
+
+			// Elements
+			if(track.Elements.Any())
+				DrawElement( ref innerBounds, track.Elements );
+
+			// Action
+			if(track.Action != null)
+				DrawAction( innerBounds, track );
+
+		}
+
+		void DrawTextOnCoin( ref RectangleF bounds, string txt ) {
 			// Draw Text
 			bounds.Y += bounds.Height * .05f; // it looks too high
 			Font coinFont = new Font( ResourceImages.Singleton.Fonts.Families[0], bounds.Height * .6f, GraphicsUnit.Pixel );
 			StringFormat center = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
 			graphics.DrawString( txt, coinFont, Brushes.Black, bounds, center );
+
+			bounds.X += bounds.Width*.3f;
+			bounds.Y += bounds.Height*.3f;
 		}
 
-		public void DrawCoin( RectangleF bounds, Track track ) {
-			string txt = track.Text;
-
-			if(txt.EndsWith(" energy" )) {
-				txt = txt[..^7];
-
-				var smallBounds = new RectangleF(bounds.X,bounds.Y,bounds.Width*0.8f,bounds.Height*0.8f);
-				var sideBounds = new RectangleF(bounds.Right-bounds.Width*0.6f,bounds.Bottom-bounds.Width*0.6f,bounds.Width*0.6f,bounds.Height*0.6f);
-
-				if("sun|moon|fire|air|water|earth|plant|animal|any|FirePlant".Contains( txt )) {
-					// Draw Image
-					graphics.DrawImage( coin, bounds );
-					DrawElement( bounds, txt );
-				} else if(txt == "reclaim 1") {
-					// Draw Reclaim
-					graphics.DrawImage( coin, bounds );
-					using Image image = ResourceImages.Singleton.GetIcon("reclaim 1");
-					var elementBounds = bounds.InflateBy(-bounds.Height/6);
-					graphics.DrawImageFitHeight(image,elementBounds);
-				} else if(txt == "3,plant") {
-					graphics.DrawImage( coin, smallBounds );
-					DrawTextOnCoin(smallBounds,"3");
-					DrawElement(sideBounds,"plant");
-				} else if(txt=="4,air") {
-					graphics.DrawImage( coin, smallBounds );
-					DrawTextOnCoin(smallBounds,"4");
-					DrawElement(sideBounds,"air");
-				} else if(txt == "5,reclaim1") {
-					graphics.DrawImage( coin, smallBounds );
-					DrawTextOnCoin(smallBounds,"5");
-					// Draw Reclaim
-					using Image image = ResourceImages.Singleton.GetIcon("reclaim 1");
-					var elementBounds = bounds.InflateBy(-bounds.Height/6);
-					graphics.DrawImageFitHeight(image,sideBounds);
-				} else {
-					graphics.DrawImage( coin, bounds );
-					DrawTextOnCoin(bounds,txt);
-				}
-			} else if( txt == "PlayExtraCardThisTurn" ) {
-				using Image image = ResourceImages.Singleton.GetIcon("Cardplayplusone");
-				graphics.DrawImageFitHeight(image,bounds);
-			} else {
-				throw new Exception(txt);
+		void DrawElement( ref RectangleF innerBounds, params Element[] elements ) {
+			foreach(var element in elements) {
+				using Image image = ResourceImages.Singleton.GetToken( element );
+				graphics.DrawImageFitHeight( image, innerBounds );
+				innerBounds.X += innerBounds.Width * 0.3f;
+				innerBounds.Y += innerBounds.Height * 0.3f;
 			}
-
 		}
 
-		void DrawElement( RectangleF bounds, string txt ) {
-			string filename = "Simple_" + txt.ToString().ToLower();
-			Image image = ResourceImages.Singleton.GetToken( filename );
-			var elementBounds = bounds.InflateBy( -bounds.Height / 5 );
-			graphics.DrawImageFitHeight( image, elementBounds );
-		}
-
-		void DrawCard( Track track, RectangleF bounds ) {
-			// card plays amount
-			string txt = track.Text;
-
-			// Elements appearing in the Card-Play track still have the 'energy' suffix
-			if(txt.EndsWith( " energy" )) txt = txt[..^7];
-			if("sun|moon|fire|air|water|earth|plant|animal|any".Contains( txt ))
-				DrawElement( bounds, txt );
-			else if(track.Text=="earth,any"
-				|| track.Text=="2 cardplay,earth"
-			) {
-				// leave blank
-			} else {
-				// draw icon
-				using var bitmap = ResourceImages.Singleton.GetIcon( track.Text );
-				graphics.DrawImageFitHeight( bitmap, bounds );
-			}
+		void DrawAction( RectangleF bounds, Track track ) {
+			// draw icon
+			string iconName = track.Action.Name switch {
+				"Reclaim(1)" => "reclaim 1",
+				"Push1DahanFromLands" => "Push1dahan",
+				"DrawMinorOnceAndPlayExtraCardThisTurn" => "Cardplayplusone",
+				_ => track.Action.Name
+			};
+			var bitmap = ResourceImages.Singleton.GetIcon( iconName );
+			graphics.DrawImageFitHeight( bitmap, bounds );
 		}
 
 	}

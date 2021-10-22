@@ -15,7 +15,7 @@ namespace SpiritIsland.PromoPack1 {
 
 		public HeartOfTheWildfire() : base( 
 			new HeartPresence(
-				new PresenceTrack( Track.Energy0, Track.FireEnergy, Track.Energy1, Track.Energy2, new DualElements( Element.Fire, Element.Plant ), Track.Energy3 ),
+				new PresenceTrack( Track.Energy0, Track.FireEnergy, Track.Energy1, Track.Energy2, new Track("", Element.Fire, Element.Plant ), Track.Energy3 ),
 				new PresenceTrack( Track.Card1, FirePresence, Track.Card2, Track.Card3, FirePresence, Track.Card4 )
 			)
 			,PowerCard.For<AsphyxiatingSmoke>()

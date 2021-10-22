@@ -109,50 +109,61 @@ namespace SpiritIsland {
 			await LandDamaged.InvokeAsync(this,new LandDamagedArgs { Space = space, Damage = damageInflictedFromInvaders} );
 
 			if( damageInflictedFromInvaders > 1)
-				await BlightLand( space );
+				await BlightLandWithCascade( space );
 		}
 		public AsyncEvent<LandDamagedArgs> LandDamaged = new AsyncEvent<LandDamagedArgs>();
 
 		/// <summary>Causes cascading</summary>
-		public async Task BlightLand( Space blightSpace ){
+		public async Task BlightLandWithCascade( Space blightSpace ){
 
 			var terrainMapper = Island.TerrainMapFor(Cause.Blight);
 
 			while(blightSpace != null) {
-
-				var tokens = Tokens[blightSpace];
-				bool isFirstBlight = tokens.Blight.Count == 0;
+				var effect = DetermineAddBlightEffect( this, blightSpace );
 
 				// Each spirit with presence on blight space destorys preseence
-				foreach(var spirit in Spirits)
-					if(spirit.Presence.IsOn( blightSpace ))
-						spirit.Presence.Destroy( blightSpace );
+				if(effect.DestroyPresence)
+					foreach(var spirit in Spirits)
+						if(spirit.Presence.IsOn( blightSpace ))
+							spirit.Presence.Destroy( blightSpace );
 
-				tokens.Blight.Count++;
-				--blightOnCard;
+				await AddBlight( blightSpace );
 
 				if(BlightCard != null && blightOnCard <= 0)
 					BlightCard.OnBlightDepleated( this );
 
-				blightSpace = isFirstBlight ? null
-					: await Spirits[0].Action.Decision(new Decision.AdjacentSpace(
-						$"Cascade blight from {blightSpace.Label} to", 
-						blightSpace, 
+				blightSpace = effect.DestroyPresence
+					? await Spirits[0].Action.Decision( new Decision.AdjacentSpace(
+						$"Cascade blight from {blightSpace.Label} to",
+						blightSpace,
 						Decision.AdjacentDirection.Outgoing,
 						blightSpace.Adjacent.Where( x => terrainMapper.GetTerrain( x ) != Terrain.Ocean ),
 						Present.Always
-					));
+					) )
+					: null;
 			}
 
 		}
 
+		static private AddBlightEffect DefaultDetermineAddBlightEffect( GameState gs, Space blightSpace ) {
+			bool isFirstBlight = gs.Tokens[blightSpace].Blight.Any;
+			var effect = new AddBlightEffect {
+				DestroyPresence = true,
+				Cascade = !isFirstBlight,
+			};
+			return effect;
+		}
+
+		public Func<GameState,Space,AddBlightEffect> DetermineAddBlightEffect = DefaultDetermineAddBlightEffect;
+
 		/// <summary> Adds blight from the blight card to a space on the board. </summary>
 		public async Task AddBlight( Space space, int delta=1 ){ // also used for removing blight
-			blightOnCard -= await AddBlightBehavior( Tokens[space].Blight, delta );
+			blightOnCard -= await AddBlightBehavior( Tokens[space], delta );
 		}
 
 		/// <returns># of blight to remove from card</returns>
-		static Task<int> DefaultAddBlight( TokenBinding blight, int delta = 1 ) {
+		static Task<int> DefaultAddBlight( TokenCountDictionary tokens, int delta = 1 ) {
+			var blight = tokens.Blight;
 			int newCount = blight + delta;
 			if(newCount < 0) throw new Exception( "Can't remove blight that isn't there" );
 
@@ -160,14 +171,14 @@ namespace SpiritIsland {
 			return Task.FromResult(delta);
 		}
 
-		static async Task DefaultDestroy1PresenceFromBlight( Spirit spirit ) {
+		static async Task DefaultDestroy1PresenceFromBlightCard( Spirit spirit ) {
 			var presence = await spirit.Action.Decision( new Decision.Presence.Deployed( "BLIGHT: Select presence to destroy.", spirit ) );
 			spirit.Presence.Destroy( presence );
 		}
 
-		public Func<TokenBinding,int,Task<int>> AddBlightBehavior = DefaultAddBlight; // hook fro Stone's Defiance
+		public Func<TokenCountDictionary,int,Task<int>> AddBlightBehavior = DefaultAddBlight; // hook fro Stone's Defiance
 
-		public Func<Spirit,Task> Destroy1PresenceFromBlight = DefaultDestroy1PresenceFromBlight;
+		public Func<Spirit,Task> Destroy1PresenceFromBlightCard = DefaultDestroy1PresenceFromBlightCard; // Direct distruction from Blight Card, not cascading
 
 		public bool HasBlight( Space s ) => GetBlightOnSpace(s) > 0;
 
@@ -286,6 +297,11 @@ namespace SpiritIsland {
 	public class LandDamagedArgs {
 		public Space Space;
 		public int Damage;
+	}
+
+	public class AddBlightEffect {
+		public bool Cascade;
+		public bool DestroyPresence;
 	}
 
 
