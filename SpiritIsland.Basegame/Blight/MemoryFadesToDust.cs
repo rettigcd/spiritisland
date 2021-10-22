@@ -17,18 +17,20 @@ namespace SpiritIsland.Basegame {
 		public async Task OnStartOfInvaders( GameState gs ) {
 			if(!IslandIsBlighted) return;
 			// Forgets a Power or destorys a presence
-			foreach(var spirit in gs.Spirits) {
-				IOption[] options = spirit.Presence.Spaces.Cast<IOption>()
-					.Union( spirit.Hand.Union( spirit.DiscardPile ).Cast<IOption>() )
-					.ToArray();
-				IOption option = await spirit.Select("Select Power card to forget or presence to destroy.",options, Present.Always);
-				if(option is Space space)
-					spirit.Presence.Destroy(space);
-				else if(option is PowerCard card)
-					spirit.Forget(card);
-				else
-					throw new ArgumentException("WTH? "+option.ToString()) ;
-			}
+			foreach(var spirit in gs.Spirits)
+				await new SpiritGameStateCtx( spirit, gs, Cause.Blight ).SelectActionOption(
+					"BLIGHT: Memory Fades to Dust",
+					new ActionOption("Destroy Presence",()=>gs.Destroy1PresenceFromBlight(spirit)),
+					new ActionOption("Forget Power card", async () => {
+						var card = await spirit.Select<PowerCard>( 
+							"Select card to forget.",
+							spirit.Hand.Union( spirit.DiscardPile ).ToArray(),
+							Present.Always
+						);
+						spirit.Forget( card );
+					} )
+				);
+
 		}
 
 		public void OnGameStart( GameState gs ) {

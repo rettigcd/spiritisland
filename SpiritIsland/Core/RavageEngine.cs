@@ -44,10 +44,11 @@ namespace SpiritIsland {
 
 		static async Task DefaultRavageSequence( RavageEngine eng ) {
 			int damageInflictedFromInvaders = eng.GetDamageInflictedByInvaders();
-			await eng.DamageLand( damageInflictedFromInvaders );
 			await eng.DamageDahan( damageInflictedFromInvaders );
 			int damageFromDahan = eng.GetDamageInflictedByDahan();
 			await eng.DamageInvaders( damageFromDahan );
+			// worry about this last - why?, just because
+			await eng.DamageLand( damageInflictedFromInvaders );
 		}
 
 		bool HasInvaders => grp.Tokens.HasInvaders();
@@ -92,10 +93,8 @@ namespace SpiritIsland {
 		}
 
 		public async Task DamageLand( int damageInflictedFromInvaders ) {
-			if( cfg.ShouldDamageLand && damageInflictedFromInvaders > 1) {
-				await gs.BlightLand( grp.Space );
-				log.Add( "Blights land." );
-			}
+			if( cfg.ShouldDamageLand )
+				await gs.DamageLand(grp.Space,damageInflictedFromInvaders);
 		}
 
 		/// <returns># of dahan killed/destroyed</returns>

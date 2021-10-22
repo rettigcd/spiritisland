@@ -5,9 +5,12 @@ namespace SpiritIsland {
 
 	public class DahanGroupBinding {
 
+		public bool Frozen { get; set; }
+
 		readonly TokenCountDictionary counts;
 		readonly TokenGroup tokenGroup;
 		readonly IDestroySpaceTokens tokenDestroyer;
+
 		public DahanGroupBinding( TokenCountDictionary tokens, TokenGroup tokenGroup, IDestroySpaceTokens tokenDestroyer ) {
 			this.counts = tokens;
 			this.tokenGroup = tokenGroup;
@@ -27,17 +30,20 @@ namespace SpiritIsland {
 		public static implicit operator int( DahanGroupBinding b ) => b.Count;
 
 		/// <summary> Adds a Dahan from the bag, or out of thin air. </summary>
+		public void Add( Token token ) => counts[token]++;
 		public void Add(int count) => counts[tokenGroup[2]] += count;
 		/// <summary> Adds a damaged Dahan from the bag, or out of thin air. </summary>
 		public void AddDamaged(int count) => counts[tokenGroup[1]] += count;
 
 		/// <summary> Returns the Token removed </summary>
-		public Token Remove1() {
-			var t1 = tokenGroup[1];
-			if(counts[t1]>0){ counts[t1]--; return t1; }
+		public Token Remove1( Token desiredToken = null ) {
+			if(Frozen) return null;
 
-			var t2 = tokenGroup[2];
-			if(counts[t2]>0){ counts[t2]--; return t2; }
+			var t1 = tokenGroup[1];
+			if( t1 == (desiredToken ?? t1) && counts[t1]>0 ){ counts[t1]--;  return t1; }
+
+			var t2 = tokenGroup[1];
+			if(t2 == (desiredToken ?? t2) && counts[t2] > 0) { counts[t1]--; return t2; }
 
 			return null;
 		}
@@ -45,6 +51,8 @@ namespace SpiritIsland {
 		#region Damage
 
 		public async Task Apply1DamageToAll( Cause cause ) {
+			if(Frozen) return;
+
 			// Destroy all 1-health dahan
 			await Destroy( this[1], 1, cause );
 
@@ -54,6 +62,7 @@ namespace SpiritIsland {
 		}
 
 		public async Task ApplyDamage( int damageToDahan, Cause cause ) {
+			if(Frozen) return;
 
 			while(damageToDahan--> 0 && Any) {
 				// destroy damaged
@@ -73,22 +82,27 @@ namespace SpiritIsland {
 		#region Destory
 
 		public async Task Destroy( int countToDestroy, Cause cause ) {
+			if(Frozen) return;
+
 			int damagedToDestroy = System.Math.Min(countToDestroy,this[1]);
 			await Destroy(damagedToDestroy, 1, cause);
 			await Destroy(countToDestroy - damagedToDestroy, 2, cause);
 		}
 
 		public async Task Destroy( int count, int originalHealth, Cause cause ) {
+			if(Frozen) return;
+
 			await tokenDestroyer.DestroyToken(count, tokenGroup[originalHealth], cause);
 		}
 
 		public void RemoveAll() {
+			if(Frozen) return;
+
 			this[1] = 0;
 			this[2] = 0;
 		}
 
 		#endregion
 	}
-
 
 }

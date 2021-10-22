@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace SpiritIsland.JaggedEarth {
 
@@ -46,6 +45,7 @@ namespace SpiritIsland.JaggedEarth {
 			var space2 = space.Adjacent.FirstOrDefault(s=>gameState.Tokens[s][TokenType.Blight]>0)
 				?? space.Adjacent.First(s=>s.Terrain==Terrain.Sand);
 			Presence.PlaceOn(space2);
+
 
 		}
 

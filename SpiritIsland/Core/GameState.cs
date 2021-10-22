@@ -6,7 +6,6 @@ using SpiritIsland;
 
 namespace SpiritIsland {
 
-
 	public class GameState {
 
 		// base-1,  game starts in round-1
@@ -104,6 +103,16 @@ namespace SpiritIsland {
 		public int blightOnCard; // 2 per player
 		public IBlightCard BlightCard = new NullBlightCard();
 
+		public async Task DamageLand( Space space, int damageInflictedFromInvaders ) {
+			if(damageInflictedFromInvaders==0) return;
+
+			await LandDamaged.InvokeAsync(this,new LandDamagedArgs { Space = space, Damage = damageInflictedFromInvaders} );
+
+			if( damageInflictedFromInvaders > 1)
+				await BlightLand( space );
+		}
+		public AsyncEvent<LandDamagedArgs> LandDamaged = new AsyncEvent<LandDamagedArgs>();
+
 		/// <summary>Causes cascading</summary>
 		public async Task BlightLand( Space blightSpace ){
 
@@ -139,12 +148,26 @@ namespace SpiritIsland {
 
 		/// <summary> Adds blight from the blight card to a space on the board. </summary>
 		public void AddBlight( Space space, int delta=1 ){ // also used for removing blight
-			var counts = Tokens[space];
-			int newCount = counts.Blight + delta;
-			if(newCount<0) return;
-			counts.Blight.Count = newCount;
-			blightOnCard -= delta;
+			blightOnCard -= AddBlightBehavior( Tokens[space].Blight, delta ).Result;
 		}
+
+		/// <returns># of blight to remove from card</returns>
+		static Task<int> DefaultAddBlight( TokenBinding blight, int delta = 1 ) {
+			int newCount = blight + delta;
+			if(newCount < 0) throw new Exception( "Can't remove blight that isn't there" );
+
+			blight.Count = newCount;
+			return Task.FromResult(delta);
+		}
+
+		static async Task DefaultDestroy1PresenceFromBlight( Spirit spirit ) {
+			var presence = await spirit.Action.Decision( new Decision.Presence.Deployed( "BLIGHT: Select presence to destroy.", spirit ) );
+			spirit.Presence.Destroy( presence );
+		}
+
+		public Func<TokenBinding,int,Task<int>> AddBlightBehavior = DefaultAddBlight; // hook fro Stone's Defiance
+
+		public Func<Spirit,Task> Destroy1PresenceFromBlight = DefaultDestroy1PresenceFromBlight;
 
 		public bool HasBlight( Space s ) => GetBlightOnSpace(s) > 0;
 
@@ -259,5 +282,11 @@ namespace SpiritIsland {
 
 
 	}
+
+	public class LandDamagedArgs {
+		public Space Space;
+		public int Damage;
+	}
+
 
 }

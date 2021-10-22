@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -29,14 +30,31 @@ namespace SpiritIsland {
 
 		readonly Dictionary<Space, CountDictionary<Token>> tokenCounts = new Dictionary<Space, CountDictionary<Token>>();
 
-		public Task Move( Token token, Space from, Space to, int count = 1 ) {
-			this[ from ].Adjust( token, -count );
-			this[ to ].Adjust( token, count );
+		public Task Move( Token token, Space from, Space to ) {
+			if( token.Generic == TokenType.Dahan )
+				return MoveDahan( token, from, to );
+			else {
+				this[ from ].Adjust( token, -1 );
+				this[ to ].Adjust( token, 1 );
+				return TokenMoved.InvokeAsync( gameStateForEventArgs, new TokenMovedArgs {
+					Token = token,
+					from = from,
+					to = to,
+					count = 1
+				} );
+			}
+		}
+
+		Task MoveDahan( Token token, Space from, Space to ) {
+			Token removedToken = this[from].Dahan.Remove1(token);
+			if(removedToken == null) return Task.CompletedTask;
+
+			this[to].Dahan.Add( removedToken );
 			return TokenMoved.InvokeAsync( gameStateForEventArgs, new TokenMovedArgs {
 				Token = token,
 				from = from,
 				to = to,
-				count = count
+				count = 1
 			} );
 		}
 

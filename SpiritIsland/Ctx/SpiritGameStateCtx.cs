@@ -32,8 +32,8 @@ namespace SpiritIsland {
 
 		public IEnumerable<Space> AllSpaces => GameState.Island.AllSpaces;
 
-		public Task Move(Token token, Space from, Space to, int count = 1 )
-			=> GameState.Tokens.Move( token, from, to, count );
+		public Task Move(Token token, Space from, Space to )
+			=> GameState.Tokens.Move( token, from, to );
 
 		public bool YouHave( string elementString ) => Self.Elements.Contains( elementString );
 

@@ -14,10 +14,8 @@ namespace SpiritIsland.Basegame {
 		public async Task OnStartOfInvaders( GameState gs ) {
 			if(!IslandIsBlighted) return;
 			// Spirit destorys a presence.
-			foreach(var spirit in gs.Spirits) {
-				var presence = await spirit.Action.Decision( new Decision.Presence.Deployed( "BLIGHT: Select presence to destroy.", spirit ));
-				spirit.Presence.Destroy( presence );
-			}
+			foreach(var spirit in gs.Spirits)
+				await gs.Destroy1PresenceFromBlight( spirit );
 		}
 
 		public void OnGameStart( GameState gs ) {
