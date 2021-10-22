@@ -31,9 +31,9 @@ namespace SpiritIsland.JaggedEarth {
 	}
 
 	class PayEnergyToTakeFromCard {
-		Spirit spirit;
-		int cost;
-		Func<TokenBinding, int, Task<int>> oldBehavior;
+		readonly Spirit spirit;
+		readonly int cost;
+		readonly Func<TokenBinding, int, Task<int>> oldBehavior;
 		public PayEnergyToTakeFromCard( TargetSpiritCtx ctx, int cost ) {
 			this.spirit = ctx.Self;
 			this.cost = cost;
@@ -64,8 +64,8 @@ namespace SpiritIsland.JaggedEarth {
 	}
 
 	class StopPresenceDestructionFromBlight {
-		Spirit spirit;
-		Func<Spirit, Task> oldBehavior;
+		readonly Spirit spirit;
+		readonly Func<Spirit, Task> oldBehavior;
 		public StopPresenceDestructionFromBlight( TargetSpiritCtx ctx ) {
 			this.spirit = ctx.Self;
 			this.oldBehavior = ctx.GameState.Destroy1PresenceFromBlight;

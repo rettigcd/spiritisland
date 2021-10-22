@@ -66,7 +66,7 @@ namespace SpiritIsland.PromoPack1 {
 			await spaceCtx.Invaders.DestroyAny(int.MaxValue,Invader.Explorer,Invader.Town,Invader.City);
 
 			// Add 1 blight
-			ctx.AddBlight();
+			await ctx.AddBlight();
 			
 		}
 

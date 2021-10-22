@@ -25,7 +25,7 @@ namespace SpiritIsland.Basegame {
 			}
 
 			// add 1 blight
-			ctx.AddBlight();
+			await ctx.AddBlight();
 
 			await ctx.PushUpTo(pushCount,Invader.Explorer,Invader.Town);
 		}

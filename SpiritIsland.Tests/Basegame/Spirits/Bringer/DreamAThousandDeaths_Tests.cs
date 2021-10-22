@@ -132,7 +132,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			ctx.Adjust( Invader.City[1], 1 );
 
 			// When: doing 4 points of damage
-			_= FourDamage( MakeFreshCtx() );
+			async Task PlayCard() { try { await FourDamage( MakeFreshCtx() ); } catch( Exception ex) {
+				_ = ex.ToString();
+			} }
+			_ = PlayCard();
 
 			User.SelectsDamageRecipient(4,"C@1");
 

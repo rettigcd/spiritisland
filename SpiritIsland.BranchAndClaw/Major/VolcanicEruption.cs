@@ -18,7 +18,7 @@ namespace SpiritIsland.BranchAndClaw {
 			await DestroyDahanAndBeasts( ctx );
 
 			// Add 1 blight
-			ctx.AddBlight();
+			await ctx.AddBlight();
 
 			// if you have 4 fire, 3 earth:
 			if(ctx.YouHave( "4 fire,3 earth" )) {
@@ -40,7 +40,7 @@ namespace SpiritIsland.BranchAndClaw {
 			await DestroyDahanAndBeasts( adj );
 			// IF there are no blight, add 1 blight
 			if(adj.Blight.Count == 0)
-				adj.AddBlight();
+				await adj.AddBlight();
 		}
 
 		static async Task DestroyDahanAndBeasts( TargetSpaceCtx ctx ) {

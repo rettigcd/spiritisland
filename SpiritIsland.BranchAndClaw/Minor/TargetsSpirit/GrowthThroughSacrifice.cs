@@ -22,7 +22,7 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 			} else {
 				// If 2 sun, do both in the same land
 				var spaceCtx = await other.TargetLandWithPresence( "Select location to remove blight and add presence" );
-				spaceCtx.AddBlight( -1 );
+				await spaceCtx.AddBlight( -1 );
 				await other.PlacePresence( spaceCtx.Space );
 			}
 

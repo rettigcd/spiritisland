@@ -199,15 +199,18 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			Assert_CardTrackIs( expectedCardPlayCount );
 		}
 
+		void AddBlight( Space space ) {
+			gameState.AddBlight( space ).Wait();
+		}
 
 		void Given_BlightEverywhereExcept7() {
-			gameState.AddBlight( board[1] );
-			gameState.AddBlight( board[2] );
-			gameState.AddBlight( board[3] );
-			gameState.AddBlight( board[4] );
-			gameState.AddBlight( board[5] );
-			gameState.AddBlight( board[6] );
-			gameState.AddBlight( board[8] );
+			AddBlight( board[1] );
+			AddBlight( board[2] );
+			AddBlight( board[3] );
+			AddBlight( board[4] );
+			AddBlight( board[5] );
+			AddBlight( board[6] );
+			AddBlight( board[8] );
 			gameState.GetBlightOnSpace( board[7] ).ShouldBe( 0 );
 		}
 

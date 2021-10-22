@@ -42,8 +42,8 @@ namespace SpiritIsland {
 			var t1 = tokenGroup[1];
 			if( t1 == (desiredToken ?? t1) && counts[t1]>0 ){ counts[t1]--;  return t1; }
 
-			var t2 = tokenGroup[1];
-			if(t2 == (desiredToken ?? t2) && counts[t2] > 0) { counts[t1]--; return t2; }
+			var t2 = tokenGroup[2];
+			if(t2 == (desiredToken ?? t2) && counts[t2] > 0) { counts[t2]--; return t2; }
 
 			return null;
 		}

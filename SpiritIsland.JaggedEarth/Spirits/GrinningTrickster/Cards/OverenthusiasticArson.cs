@@ -22,7 +22,7 @@ namespace SpiritIsland.JaggedEarth {
 				await ctx.DamageInvaders(2);
 
 				// add 1 blight
-				ctx.AddBlight(); // !!! should this cascade?
+				await ctx.AddBlight(); // !!! should this cascade?
 			}
 		}
 	}

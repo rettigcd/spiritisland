@@ -17,7 +17,7 @@ namespace SpiritIsland.Basegame {
 			await invaders.ApplyDamageToEach( 1, Invader.Town, Invader.City );
 
 			// add 1 blight
-			ctx.AddBlight();
+			await ctx.AddBlight();
 
 			// if you have 3 sun, destory 1 city
 			if( ctx.YouHave("3 sun") )

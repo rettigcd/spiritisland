@@ -15,7 +15,7 @@ namespace SpiritIsland.Basegame {
 			int damage = 7;
 
 			// add 1 blight
-			ctx.AddBlight(1);
+			await ctx.AddBlight(1);
 
 			// destroy all dahan
 			await ctx.DestroyDahan( ctx.Dahan.Count );

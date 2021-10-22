@@ -408,9 +408,10 @@ namespace SpiritIsland {
 			return Task.CompletedTask;
 		}
 
-		public virtual Task RemoveBlight( TargetSpaceCtx ctx ) {
-			ctx.GameState.AddBlight( ctx.Space, -1 );
-			return Task.CompletedTask;
+		// Overriden by Trickster because it costs them presence
+		public virtual async Task RemoveBlight( TargetSpaceCtx ctx ) {
+			if(ctx.Blight.Any)
+				ctx.GameState.AddBlight( ctx.Space, -1 );
 		}
 
 		#endregion

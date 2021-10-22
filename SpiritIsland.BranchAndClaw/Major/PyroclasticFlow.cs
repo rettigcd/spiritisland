@@ -14,7 +14,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			// if target land is J/W, add 1 blight
 			if(ctx.Terrain.IsOneOf(Terrain.Jungle,Terrain.Mountain))
-				ctx.AddBlight(1);
+				await ctx .AddBlight(1);
 
 			// if you have 2 fire, 3 air, 2 earth: +4 damage. Add 1 wilds
 			if(ctx.YouHave("2 fire,3 air, 2 earth" )) {

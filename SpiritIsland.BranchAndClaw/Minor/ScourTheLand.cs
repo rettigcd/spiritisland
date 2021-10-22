@@ -12,7 +12,7 @@ namespace SpiritIsland.BranchAndClaw {
 			await ctx.Invaders.Destroy(3,Invader.Town);
 			await ctx.Invaders.Destroy(int.MaxValue,Invader.Explorer);
 
-			ctx.AddBlight(1);
+			await ctx.AddBlight(1);
 
 		}
 

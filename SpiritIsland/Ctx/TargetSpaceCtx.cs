@@ -114,7 +114,7 @@ namespace SpiritIsland {
 		public bool IsOneOf(params Terrain[] terrain) => Terrain.IsOneOf(terrain);
 
 		public bool HasBlight => GameState.HasBlight(Space);
-		public void AddBlight(int delta=1) => GameState.AddBlight(Space,delta); // This is for adjusting, NOT blighting land
+		public Task AddBlight(int delta=1) => GameState.AddBlight(Space,delta);
 		/// <summary> Returns blight from the board to the blight card. </summary>
 		public Task RemoveBlight() => Self.RemoveBlight( this );
 

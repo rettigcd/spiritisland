@@ -9,7 +9,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			static async Task ApplyPowerOnTarget( TargetSpaceCtx ctx ) {
 				// add 1 blight.
-				ctx.AddBlight( 1 );
+				await ctx.AddBlight(1 );
 
 				// Add 2 beasts
 				var beasts = ctx.Beasts;

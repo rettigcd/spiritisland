@@ -147,8 +147,8 @@ namespace SpiritIsland {
 		}
 
 		/// <summary> Adds blight from the blight card to a space on the board. </summary>
-		public void AddBlight( Space space, int delta=1 ){ // also used for removing blight
-			blightOnCard -= AddBlightBehavior( Tokens[space].Blight, delta ).Result;
+		public async Task AddBlight( Space space, int delta=1 ){ // also used for removing blight
+			blightOnCard -= await AddBlightBehavior( Tokens[space].Blight, delta );
 		}
 
 		/// <returns># of blight to remove from card</returns>

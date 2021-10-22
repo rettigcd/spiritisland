@@ -25,7 +25,7 @@ namespace SpiritIsland.PromoPack1 {
 			await ctx.DamageInvaders(fireCount);
 			// if 2 fire or more are showing, add 1 blight
 			if(2<=fireCount)
-				ctx.AddBlight(1);
+				await ctx.AddBlight(1);
 		}
 
 		// !!! Blight added due to Spirit Effects (Powers, Special Rules, Scenario-based Rituals, etc) does not destroy your presence. (including cascades)
