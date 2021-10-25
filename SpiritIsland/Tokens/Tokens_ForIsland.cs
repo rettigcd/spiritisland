@@ -19,16 +19,17 @@ namespace SpiritIsland {
 
 		public TokenCountDictionary this[Space space] {
 			get {
-				var countsForSpace = tokenCounts.ContainsKey( space )
-					? tokenCounts[space]
-					: tokenCounts[space] = new CountDictionary<Token>();
-				return new TokenCountDictionary( space, countsForSpace, this );
+				if(!tokenCounts.ContainsKey( space )) {
+					tokenCounts[space] = new TokenCountDictionary( space, new CountDictionary<Token>(), this );
+				}
+				return tokenCounts[space];
 			}
 		}
 
-		public IEnumerable<Space> Keys => tokenCounts.Keys;
+//		readonly Dictionary<Space, CountDictionary<Token>> countDict = new Dictionary<Space, CountDictionary<Token>>();
+		readonly Dictionary<Space, TokenCountDictionary> tokenCounts = new Dictionary<Space, TokenCountDictionary>();
 
-		readonly Dictionary<Space, CountDictionary<Token>> tokenCounts = new Dictionary<Space, CountDictionary<Token>>();
+		public IEnumerable<Space> Keys => tokenCounts.Keys;
 
 		public Task Move( Token token, Space from, Space to ) {
 			if( token.Generic == TokenType.Dahan )
@@ -105,7 +106,7 @@ namespace SpiritIsland {
 		protected class Memento : IMemento<Tokens_ForIsland> {
 			public Memento(Tokens_ForIsland src) {
 				foreach(var pair in src.tokenCounts)
-					tc[pair.Key] = pair.Value.ToDictionary(p=>p.Key,p=>p.Value);
+					tc[pair.Key] = pair.Value.counts.ToDictionary(p=>p.Key,p=>p.Value);
 			}
 			public void Restore(Tokens_ForIsland src ) {
 				src.tokenCounts.Clear();

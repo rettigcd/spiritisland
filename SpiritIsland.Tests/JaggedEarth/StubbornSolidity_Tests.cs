@@ -71,8 +71,8 @@ namespace SpiritIsland.Tests.JaggedEarth {
 			const int startingDahanCount = 10;
 			tokens[TokenType.Dahan.Default] = startingDahanCount;
 
-			//   And: 9 points of damage worth of invaders - would normally destroy 4 dahan and damage 1
-			tokens[Invader.City.Default] = 3;
+			//   And: will cause 9 points of damage
+			tokens[Invader.Explorer.Default] = 19; // 19 = 10 defend from dahan + 9 points of damage
 
 			//  When: Card Played  (grow,select card,play card)
 			//   And: Invader actions proceed
@@ -82,11 +82,7 @@ namespace SpiritIsland.Tests.JaggedEarth {
 			//  Then: all dahan still there
 			tokens.Dahan[2].ShouldBe( startingDahanCount );
 
-
 		}
-		// Ravage should damage dahan, no change
-		// Ravage should kill 1 dahahn, no change to dahan
-		// Ravage should kill 2 dahan, dahan live and strike back.
 
 
 		static void BuysAndUses( GameFixture fxt, string cardName ) {

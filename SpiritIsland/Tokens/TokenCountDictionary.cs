@@ -75,7 +75,7 @@ namespace SpiritIsland {
 				throw new ArgumentException( "We don't store dead counts" );
 		}
 
-		readonly CountDictionary<Token> counts;
+		public readonly CountDictionary<Token> counts; // !!!
 		readonly IDestroyIslandTokens tokenDestroyer;
 
 		#endregion
