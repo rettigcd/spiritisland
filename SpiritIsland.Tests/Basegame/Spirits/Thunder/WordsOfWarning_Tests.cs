@@ -9,6 +9,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 		[Fact]
 		public async Task DeadDahanDoDamage() {
 
+			// Disable destroying presence
+			gs.DetermineAddBlightEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
+
 			// Given: 2 dahan on a2
 			gs.DahanOn( a[2] ).Add(2);
 			// and: dahan on a4 so it doesn't auto-select the only target available

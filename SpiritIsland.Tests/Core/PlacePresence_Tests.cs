@@ -39,7 +39,7 @@ namespace SpiritIsland.Tests.Core {
 			// Given: spirit has one place presence action
 			_ = When_Growing(0);
 
-			User.PlacesEnergyPresence( "A1;A2" );
+			User.Growth_PlacesEnergyPresence( "A1;A2" );
 
 			spirit.Presence.Energy.RevealedCount.ShouldBe(2);
 		}

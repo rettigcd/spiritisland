@@ -8,6 +8,8 @@ namespace SpiritIsland {
 
 	public class GameState {
 
+		public TokenCountDictionary AAA => this.Tokens[ this.Island.Boards[0][5] ];
+
 		// base-1,  game starts in round-1
 		public int RoundNumber { get; private set; }
 
@@ -36,16 +38,13 @@ namespace SpiritIsland {
 
 		public virtual void Initialize() {
 
-			// Custom Deck not supplied, use default deck
-			if(InvaderDeck == null)
-				InvaderDeck = new InvaderDeck(new Random());
-
 			foreach(var board in Island.Boards)
 				foreach(var space in board.Spaces)
 					space.InitTokens( Tokens[space] );
 
 			// Explore
 			Task.WaitAll( InvaderEngine.Explore( InvaderDeck.Explore[0] ) );
+
 			InvaderDeck.Advance();
 
 			InitSpirits();
@@ -69,7 +68,11 @@ namespace SpiritIsland {
 		public Tokens_ForIsland Tokens { get; }
 		public PowerCardDeck MajorCards {get; set; }
 		public PowerCardDeck MinorCards { get; set; }
-		public InvaderDeck InvaderDeck { get; set; }
+		public InvaderDeck InvaderDeck { 
+			get { return _invaderDeck ??= new InvaderDeck(new Random()); }
+			set { _invaderDeck = value; }
+		}
+		InvaderDeck _invaderDeck;
 
 		#region Time Passes
 
@@ -215,9 +218,11 @@ namespace SpiritIsland {
 			} );
 		}
 
-		public AsyncEvent<RavagingEventArgs> PreRavaging = new AsyncEvent<RavagingEventArgs>();				// A Spread of Rampant Green - stop ravage
+		public AsyncEvent<RavagingEventArgs> PreRavaging = new AsyncEvent<RavagingEventArgs>();	// A Spread of Rampant Green - stop ravage
 		public AsyncEvent<BuildingEventArgs> PreBuilding = new AsyncEvent<BuildingEventArgs>();	// A Spread of Rampant Green - stop build
 		public AsyncEvent<ExploreEventArgs> PreExplore = new AsyncEvent<ExploreEventArgs>();
+
+		public AsyncEvent<InvadersRavaged> InvadersRavaged = new AsyncEvent<InvadersRavaged>();
 
 		public InvaderEngine InvaderEngine => _invaderEngine ??= BuildInvaderEngine();
 		protected virtual InvaderEngine BuildInvaderEngine() => new InvaderEngine(this);

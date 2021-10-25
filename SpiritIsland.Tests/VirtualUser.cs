@@ -16,11 +16,48 @@ namespace SpiritIsland.Tests {
 
 		#endregion
 
-		public void AcknowledgesFearCard( string fearCard ) {
-			AssertDecision( "Activating Fear", fearCard, fearCard ); // some of the fear cards have commas in them
+		#region Growth
+
+		public void Growth_SelectsOption( string growthOption ) {
+			var current = userPortal.GetCurrent();
+			Assert.Equal( "Select Growth Option", current.Prompt );
+			Choose( growthOption );
 		}
 
-		public void PlacesPresence( string placeOptions ) {
+		public void Growth_SelectsOption(int growthOptionIndex) {
+			var current = userPortal.GetCurrent();
+			Assert.Equal( "Select Growth Option", current.Prompt );
+			Choose( current.Options[growthOptionIndex] );
+		}
+
+		public void Growth_DrawsPowerCard() {
+			Choose( "DrawPowerCard" );
+		}
+
+		public void Growth_ReclaimsAll() {
+			Choose( "ReclaimAll" );
+		}
+
+		public void Growth_Reclaims1(string cards) {
+			Choose( "Reclaim(1)" );
+			AssertDecisionX( "Select card to reclaim.",  cards, "{}" );
+		}
+
+		public void Growth_GainsEnergy() {
+			var current = userPortal.GetCurrent();
+			var selection = current.Options.First(x=>x.Text.StartsWith("GainEnergy"));
+			Choose( selection );
+		}
+
+		public void Growth_PlacesEnergyPresence( string placeOptions ) => PlacesPresence( spirit.Presence.Energy.Next, placeOptions );
+
+		public void Growth_ActivatesExtraCardPlay() { // Rampant Green
+			var current = userPortal.GetCurrent();
+			var selection = current.Options.First( x => x.Text.StartsWith( "PlayExtra" ) );
+			Choose( selection );
+		}
+
+		public void Growth_PlacesPresence( string placeOptions ) {
 			string[] parts = placeOptions.Split('>');
 			Track source = parts[0].ToLower() switch {
 				"energy" => spirit.Presence.Energy.Next,
@@ -31,7 +68,6 @@ namespace SpiritIsland.Tests {
 			PlacesPresence( source, parts[1] );
 		}
 
-		public void PlacesEnergyPresence( string placeOptions ) => PlacesPresence( spirit.Presence.Energy.Next, placeOptions );
 		public void PlacesCardPlayPresence( string placeOptions ) => PlacesPresence( spirit.Presence.CardPlays.Next, placeOptions );
 
 		public void PlacesPresence( Track source, string placeOptions ) {
@@ -60,23 +96,52 @@ namespace SpiritIsland.Tests {
 			Choose( source );
 		}
 
-		public void DrawsPowerCard() {
-			Choose( "DrawPowerCard" );
-		}
-
-		public void ReclaimsAll() {
-			Choose( "ReclaimAll" );
-		}
-
 		public void Reclaims1FromTrackBonus(string cards) {
 			AssertDecisionX( "Select card to reclaim.",  cards, "{}" );
 		}
 
-		public void Reclaims1FromGrowth(string cards) {
-			Choose( "Reclaim(1)" );
-			AssertDecisionX( "Select card to reclaim.",  cards, "{}" );
+		public void Reclaims1CardIfAny() {
+			var current = userPortal.GetCurrent();
+			if(current.Options.Length>0)
+				userPortal.Choose( current.Options[0] );
 		}
-		
+
+		#endregion
+
+		public void BuysPowerCard( string powerCardName ) {
+			SelectOption( "Buy power cards:", powerCardName );
+		}
+
+		#region Fast / Slow Actions
+
+		public void SelectsSlowAction(string actions) {
+			var (options,choice) = SplitOptionsAndChoice( actions );
+			AssertDecision( "Select Slow to resolve:", options+",Done", choice );
+		}
+
+		public void SelectsFastAction(string actions) {
+			var (options,choice) = SplitOptionsAndChoice( actions );
+			AssertDecision( "Select Fast to resolve:", options+",Done", choice );
+		}
+
+		#endregion
+
+		#region IsDone / Skip
+
+		public void IsDoneBuyingCards() {
+			SelectOption( "Buy power cards:", "Done" );
+		}
+
+		public void IsDoneWith( Speed speed ) {
+			SelectOption( $"Select {speed} to resolve", "Done" );
+		}
+
+		#endregion
+
+		public void AcknowledgesFearCard( string fearCard ) {
+			AssertDecision( "Activating Fear", fearCard, fearCard ); // some of the fear cards have commas in them
+		}
+
 		public void PushesTokensTo( string invaders, string destinations, int numToPush=1 ) {
 			var (_,tokenToPush) = SplitOptionsAndChoice( invaders );
 			AssertDecisionX( "Push ("+numToPush+")", invaders );
@@ -87,24 +152,6 @@ namespace SpiritIsland.Tests {
 			var (invaderOptions,invaderChoice) = SplitOptionsAndChoice( invaders );
 			AssertDecision( $"Push up to ({countToPush})", invaderOptions+",Done", invaderChoice );
 			AssertDecisionX( "Push "+invaderChoice+" to", destinations );
-		}
-
-		public void SelectsGrowthOption( string growthOption ) {
-			var current = userPortal.GetCurrent();
-			Assert.Equal( "Select Growth Option", current.Prompt );
-			Choose( growthOption );
-		}
-
-		public void SelectsGrowthOption(int growthOptionIndex) {
-			var current = userPortal.GetCurrent();
-			Assert.Equal( "Select Growth Option", current.Prompt );
-			Choose( current.Options[growthOptionIndex] );
-		}
-
-		public void GainsEnergy() {
-			var current = userPortal.GetCurrent();
-			var selection = current.Options.First(x=>x.Text.StartsWith("GainEnergy"));
-			Choose( selection );
 		}
 
 #pragma warning disable CA1822 // Mark members as static
@@ -122,7 +169,6 @@ namespace SpiritIsland.Tests {
 			//Choose( selection );
 
 		}
-
 
 		public void GathersPresenceIntoOcean() {
 			AssertDecisionX( "Select Growth to resolve:", "GatherPresenceIntoOcean" );
@@ -145,12 +191,6 @@ namespace SpiritIsland.Tests {
 			SelectOption( "Where would you like", destination );
 		}
 
-		public void ActivatesExtraCardPlay() {
-			var current = userPortal.GetCurrent();
-			var selection = current.Options.First( x => x.Text.StartsWith( "PlayExtra" ) );
-			Choose( selection );
-		}
-
 		public void TargetsSpirit( string spirits ) {
 			AssertDecisionX( "Select Spirit to target", spirits );
 		}
@@ -167,28 +207,6 @@ namespace SpiritIsland.Tests {
 
 		public void SelectsDamageRecipient( int damageAvailable, string tokens ) {
 			AssertDecisionX( "Damage ("+damageAvailable+" remaining)", tokens );
-		}
-
-		public void BuysPowerCard( string powerCardName ) {
-			SelectOption( "Buy power cards:", powerCardName );
-		}
-
-		public void IsDoneBuyingCards() {
-			SelectOption( "Buy power cards:", "Done" );
-		}
-
-		public void IsDoneWith( Speed speed ) {
-			SelectOption( $"Select {speed} to resolve", "Done" );
-		}
-
-		public void SelectsSlowAction(string actions) {
-			var (options,choice) = SplitOptionsAndChoice( actions );
-			AssertDecision( "Select Slow to resolve:", options+",Done", choice );
-		}
-
-		public void SelectsFastAction(string actions) {
-			var (options,choice) = SplitOptionsAndChoice( actions );
-			AssertDecision( "Select Fast to resolve:", options+",Done", choice );
 		}
 
 		public void GathersOptionalToken( string token ) {
@@ -219,12 +237,6 @@ namespace SpiritIsland.Tests {
 			IOption choice = current.Options[0];
 			userPortal.Choose( choice );
 
-		}
-
-		public void Reclaims1CardIfAny() {
-			var current = userPortal.GetCurrent();
-			if(current.Options.Length>0)
-				userPortal.Choose( current.Options[0] );
 		}
 
 		public void Assert_Done() {

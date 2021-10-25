@@ -49,6 +49,13 @@ namespace SpiritIsland {
 
 		public void AddRange(IEnumerable<K> items) { foreach(var item in items) ++this[item]; }
 
+		public CountDictionary<K> Clone() {
+			var clone = new CountDictionary<K>();
+			foreach(var invader in Keys)
+				clone[invader] = this[invader];
+			return clone;
+		}
+
 		#region IDictionary<Key,int> implementation
 		public void Clear() => _inner.Clear();
 		public Dictionary<K, int>.KeyCollection Keys => _inner.Keys;

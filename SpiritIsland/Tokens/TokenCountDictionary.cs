@@ -18,9 +18,7 @@ namespace SpiritIsland {
 		/// <summary> Clone / copy constructor </summary>
 		public TokenCountDictionary( TokenCountDictionary src ) {
 			this.Space = src.Space;
-			counts = new CountDictionary<Token>();
-			foreach(var invader in src.Invaders())
-				counts[invader] = src.counts[invader];
+			counts = src.counts.Clone();
 			this.tokenDestroyer = src.tokenDestroyer;
 		}
 

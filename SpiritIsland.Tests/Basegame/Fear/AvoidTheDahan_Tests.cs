@@ -23,6 +23,10 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			} );
 			this.user = user;
 			this.ctx = ctx;
+
+			// Disable destroying presence
+			ctx.GameState.DetermineAddBlightEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
+
 		}
 
 		#endregion

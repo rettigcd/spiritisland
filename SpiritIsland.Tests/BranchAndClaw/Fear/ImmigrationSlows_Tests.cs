@@ -2,6 +2,7 @@
 using Xunit;
 
 namespace SpiritIsland.Tests.BranchAndClaw.Fear {
+
 	public class ImmigrationSlows_Tests : TestInvaderDeckSequence_Base {
 
 		const string FearAck1 = "Immigration Slows:1:During the next normal build, skip the lowest numbered land matching the invader card on each board.";

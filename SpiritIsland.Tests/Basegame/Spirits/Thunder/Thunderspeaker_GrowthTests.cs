@@ -27,10 +27,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 
 			When_StartingGrowth();
 
-			User.SelectsGrowthOption("ReclaimAll / DrawPowerCard / DrawPowerCard");
-			User.ReclaimsAll();
-			User.DrawsPowerCard();
-			User.DrawsPowerCard();
+			User.Growth_SelectsOption("ReclaimAll / DrawPowerCard / DrawPowerCard");
+			User.Growth_ReclaimsAll();
+			User.Growth_DrawsPowerCard();
+			User.Growth_DrawsPowerCard();
 
 			Assert_AllCardsAvailableToPlay( 6);
 			Assert_HasEnergy(1);
@@ -51,7 +51,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 
 			_ = When_Growing( 1 );
 
-			User.PlacesEnergyPresence( expectedPresenseOptions );
+			User.Growth_PlacesEnergyPresence( expectedPresenseOptions );
 
 			Assert_HasEnergy( 0 );
 
@@ -64,9 +64,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 
 			When_StartingGrowth();
 
-			User.SelectsGrowthOption( "PlacePresence(1) / GainEnergy(4)" );
-			User.GainsEnergy();
-			User.PlacesEnergyPresence( "A1;A2;A4;A5;A6" );
+			User.Growth_SelectsOption( "PlacePresence(1) / GainEnergy(4)" );
+			User.Growth_GainsEnergy();
+			User.Growth_PlacesEnergyPresence( "A1;A2;A4;A5;A6" );
 
 			Assert.Equal(1,spirit.EnergyPerTurn);
 			Assert_HasEnergy( 4+1 );
@@ -113,9 +113,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 
 			When_StartingGrowth();
 
-			User.SelectsGrowthOption( "PlacePresence(1) / GainEnergy(4)" );
-			User.GainsEnergy();
-			User.PlacesEnergyPresence( "A2;A3;A4" );
+			User.Growth_SelectsOption( "PlacePresence(1) / GainEnergy(4)" );
+			User.Growth_GainsEnergy();
+			User.Growth_PlacesEnergyPresence( "A2;A3;A4" );
 
 			if( canReclaim1 )
 				User.Reclaims1CardIfAny();

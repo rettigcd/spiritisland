@@ -7,7 +7,9 @@ namespace SpiritIsland {
 
 	public class TargetSpaceCtx : SpiritGameStateCtx {
 
-		public TargetSpaceCtx( Spirit self, GameState gameState, Space target, Cause cause ):base( self, gameState, cause ) {
+		public TargetSpaceCtx( Spirit self, GameState gameState, Space target, Cause cause )
+			:base( self, gameState, cause )
+		{
 			Space = target;
 		}
 

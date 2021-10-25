@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace SpiritIsland {
+
 	public class InvaderEngine {
 
 		protected readonly GameState gs;
@@ -17,6 +18,8 @@ namespace SpiritIsland {
 		#endregion
 
 		public async Task DoInvaderPhase() {
+
+			var debug = gs.Tokens[ gs.Island.Boards[0][5] ];
 
 			// Duplicate of InvaderPhase.ActAsync without the logging
 
@@ -170,7 +173,7 @@ namespace SpiritIsland {
 			await RavageTheseSpaces( ravageSpaces );
 		}
 
-		private async Task RavageTheseSpaces( List<Space> myRavageSpaces ) {
+		async Task RavageTheseSpaces( List<Space> myRavageSpaces ) {
 			await gs.PreRavaging?.InvokeAsync( gs, new RavagingEventArgs{ Spaces = myRavageSpaces } );
 
 			if(myRavageSpaces == null) throw new InvalidOperationException( "dude! you forgot to schedule the ravages." );
@@ -187,10 +190,17 @@ namespace SpiritIsland {
 		}
 
 		public async Task<string> RavageSpace( InvaderGroup grp ) {
+
+			// Do Ravage
 			var cfg = gs.GetRavageConfiguration( grp.Space );
 			var eng = new RavageEngine( gs, grp, cfg );
-			await eng.Exec();
-			return grp.Space.Label + ": " + eng.log.Join( "  " );
+			var @event = await eng.Exec();
+
+			if(@event != null) 
+				await gs.InvadersRavaged.InvokeAsync(gs, @event);
+
+			// Return Result / event
+			return @event.ToString();
 		}
 
 		#endregion

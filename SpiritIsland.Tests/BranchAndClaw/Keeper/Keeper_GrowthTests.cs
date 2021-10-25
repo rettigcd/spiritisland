@@ -219,26 +219,26 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 		}
 
 		void User_Activates_A() {
-			User.SelectsGrowthOption( "ReclaimAll / GainEnergy(1)" );
-			User.ReclaimsAll();
-			User.GainsEnergy();
+			User.Growth_SelectsOption( "ReclaimAll / GainEnergy(1)" );
+			User.Growth_ReclaimsAll();
+			User.Growth_GainsEnergy();
 		}
 
 		void User_Activates_B() {
-			User.SelectsGrowthOption( "DrawPowerCard" );
-			User.DrawsPowerCard();
+			User.Growth_SelectsOption( "DrawPowerCard" );
+			User.Growth_DrawsPowerCard();
 		}
 
 		void User_Activates_C() {
-			User.SelectsGrowthOption( "GainEnergy(1) / PlacePresence(3,presence or wilds)" );
-			User.GainsEnergy();
-			User.PlacesEnergyPresence( "A3;A8" );
+			User.Growth_SelectsOption( "GainEnergy(1) / PlacePresence(3,presence or wilds)" );
+			User.Growth_GainsEnergy();
+			User.Growth_PlacesEnergyPresence( "A3;A8" );
 		}
 
 		void User_Activates_D() {
-			User.SelectsGrowthOption( "GainEnergy(-3) / DrawPowerCard / PlacePresence(3,no blight)" );
-			User.GainsEnergy();
-			User.DrawsPowerCard();
+			User.Growth_SelectsOption( "GainEnergy(-3) / DrawPowerCard / PlacePresence(3,no blight)" );
+			User.Growth_GainsEnergy();
+			User.Growth_DrawsPowerCard();
 			User.PlacesCardPlayPresence( "A7" );
 		}
 

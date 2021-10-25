@@ -243,6 +243,9 @@ namespace SpiritIsland.Tests.Core {
 		public async Task Ravage(string startingUnits,string endingUnits) {
 			gameState = new GameState(new RiverSurges(), board);
 
+			// Disable destroying presence
+			gameState.DetermineAddBlightEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
+
 			// Given: Invaders on a Mountain space
 			var space = board[1];
 			Assert.Equal(Terrain.Mountain,space.Terrain);

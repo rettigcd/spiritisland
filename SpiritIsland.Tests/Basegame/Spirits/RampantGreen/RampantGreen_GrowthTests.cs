@@ -23,9 +23,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
 
 			_ = When_Growing( 0 );
 
-			User.ReclaimsAll();
-			User.DrawsPowerCard();
-			User.PlacesEnergyPresence( "A2;A3;A5" );
+			User.Growth_ReclaimsAll();
+			User.Growth_DrawsPowerCard();
+			User.Growth_PlacesEnergyPresence( "A2;A3;A5" );
 
 			Assert_AllCardsAvailableToPlay(5);
 		}
@@ -42,9 +42,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
 
 			_ = When_Growing( 1 );
 
-			User.PlacesEnergyPresence( "A2;A3;A5" );
-			User.PlacesEnergyPresence( "A2;A3;A5" );
-			User.ActivatesExtraCardPlay();
+			User.Growth_PlacesEnergyPresence( "A2;A3;A5" );
+			User.Growth_PlacesEnergyPresence( "A2;A3;A5" );
+			User.Growth_ActivatesExtraCardPlay();
 
 			// Player Gains +1 card to play this round
 			Assert.Equal( 2, spirit.NumberOfCardsPlayablePerTurn ); // , "Should gain 1 card to play this turn.");
@@ -65,10 +65,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
 
 			When_StartingGrowth();
 
-			User.SelectsGrowthOption( "PlacePresence(2,W / J) / GainEnergy(3) / DrawPowerCard" );
-			User.PlacesEnergyPresence( "A2;A3;A5" ); // +1 from energy track
-			User.DrawsPowerCard();
-			User.GainsEnergy();
+			User.Growth_SelectsOption( "PlacePresence(2,W / J) / GainEnergy(3) / DrawPowerCard" );
+			User.Growth_PlacesEnergyPresence( "A2;A3;A5" ); // +1 from energy track
+			User.Growth_DrawsPowerCard();
+			User.Growth_GainsEnergy();
 
 			Assert.Equal(1,spirit.EnergyPerTurn);
 			Assert_HasEnergy(3+1);

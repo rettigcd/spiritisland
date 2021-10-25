@@ -28,6 +28,9 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		[Fact]
 		public async Task NoFearCard_NormalRavage() {
 
+			// Disable destroying presence
+			gameState.DetermineAddBlightEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
+
 			Given_DahanAndTowns( 2, 2 );
 
 			// When: Doing Invader phase (fear+ragage)

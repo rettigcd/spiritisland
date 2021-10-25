@@ -78,9 +78,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			Given_HalfOfPowercardsPlayed();
 			_ = When_Growing( 0 );
 
-			User.ReclaimsAll();
-			User.DrawsPowerCard();
-			User.GainsEnergy();
+			User.Growth_ReclaimsAll();
+			User.Growth_DrawsPowerCard();
+			User.Growth_GainsEnergy();
 			User.GathersPresenceIntoOcean();
 
 			Assert_AllCardsAvailableToPlay( 4 + 1 );
@@ -97,7 +97,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 
 			_ = When_Growing( 1 );
 
-			User.GainsEnergy();
+			User.Growth_GainsEnergy();
 			User.PlacesPresenceInOcean( "PlaceInOcean,(PlaceInOcean)", "(moon energy),2 cardplay,Take Presence from Board", "(A0),B0" );
 			User.PlacesPresenceInOcean( "PlaceInOcean", "(water energy),2 cardplay,Take Presence from Board", "A0,(B0)" );
 
@@ -115,8 +115,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 
 			_ = When_Growing( 2 );
 
-			User.PlacesEnergyPresence( placeOptions );
-			User.DrawsPowerCard();
+			User.Growth_PlacesEnergyPresence( placeOptions );
+			User.Growth_DrawsPowerCard();
 			User.PushesPresenceFromOcean("A1,(A2),A3");
 
 			Assert_GainsFirstPowerProgressionCard();

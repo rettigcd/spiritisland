@@ -21,9 +21,15 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			board = Board.BuildBoardA();
 			gs = new GameState( spirit, board );
 			ctx = MakeFreshCtx();
+
+			// Disable destroying presence
+			ctx.GameState.DetermineAddBlightEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
+
 		}
 
-		TargetSpaceCtx MakeFreshCtx() => new TargetSpaceCtx( spirit, gs, board[5], Cause.Power );
+		TargetSpaceCtx MakeFreshCtx() {
+			return new TargetSpaceCtx( spirit, gs, board[5], Cause.Power );
+		}
 
 		// 1: Raging Storm - 1 damage to each invader (slow)
 		static readonly Func<TargetSpaceCtx,Task> OneDamageToEachAsync = RagingStorm.ActAsync;

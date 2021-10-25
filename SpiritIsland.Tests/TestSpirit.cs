@@ -33,10 +33,15 @@ namespace SpiritIsland.Tests {
 				InvaderDeck = new InvaderDeck( null ) // Same order every time
 			};
 			modGameState?.Invoke( gs );
+
 			_ = new SinglePlayer.SinglePlayerGame( gs );
 
 			var user = new VirtualTestUser( spirit );
 			var starterCtx = new SpiritGameStateCtx( spirit, gs, Cause.None );
+
+			// Disable destroying presence
+			starterCtx.GameState.DetermineAddBlightEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
+
 			return (user,starterCtx);
 		}
 
@@ -47,8 +52,8 @@ namespace SpiritIsland.Tests {
 		public VirtualTestUser(Spirit spirit ) : base( spirit ) { }
 
 		public void Grows() {
-			SelectsGrowthOption( "ReclaimAll" );
-			ReclaimsAll();
+			Growth_SelectsOption( "ReclaimAll" );
+			Growth_ReclaimsAll();
 		}
 
 		public void DoesNothingForARound() {

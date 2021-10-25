@@ -187,26 +187,26 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 		}
 
 		void User_Activates_A() {
-			User.SelectsGrowthOption( "ReclaimAll / GainEnergy(-1) / DrawPowerCard" );
-			User.GainsEnergy();
-			User.ReclaimsAll();
-			User.DrawsPowerCard();
+			User.Growth_SelectsOption( "ReclaimAll / GainEnergy(-1) / DrawPowerCard" );
+			User.Growth_GainsEnergy();
+			User.Growth_ReclaimsAll();
+			User.Growth_DrawsPowerCard();
 		}
 
 		void User_Activates_B() {
-			User.SelectsGrowthOption( "PlacePresence(3,beast or jungle)" );
-			User.PlacesEnergyPresence( "A3;A7;A8" );
+			User.Growth_SelectsOption( "PlacePresence(3,beast or jungle)" );
+			User.Growth_PlacesEnergyPresence( "A3;A7;A8" );
 		}
 
 		void User_Activates_C() {
-			User.SelectsGrowthOption( "DrawPowerCard / GainEnergy(1)" );
-			User.GainsEnergy();
-			User.DrawsPowerCard();
+			User.Growth_SelectsOption( "DrawPowerCard / GainEnergy(1)" );
+			User.Growth_GainsEnergy();
+			User.Growth_DrawsPowerCard();
 		}
 
 		void User_Activate_D() {
-			User.SelectsGrowthOption( "GainEnergy(3)" );
-			User.GainsEnergy();
+			User.Growth_SelectsOption( "GainEnergy(3)" );
+			User.Growth_GainsEnergy();
 		}
 
 

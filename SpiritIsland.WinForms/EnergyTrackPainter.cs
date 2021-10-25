@@ -145,10 +145,6 @@ namespace SpiritIsland.WinForms {
 		}
 
 		public void DrawCoin( RectangleF bounds, Track track ) {
-			string txt = track.Text;
-
-			var smallBounds = new RectangleF(bounds.X,bounds.Y,bounds.Width*0.8f,bounds.Height*0.8f);
-			var sideBounds = new RectangleF(bounds.Right-bounds.Width*0.6f,bounds.Bottom-bounds.Width*0.6f,bounds.Width*0.6f,bounds.Height*0.6f);
 
 			if( track.Energy.HasValue) {
 				graphics.DrawImage( coin, bounds );
