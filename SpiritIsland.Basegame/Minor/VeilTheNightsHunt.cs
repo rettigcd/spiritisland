@@ -21,7 +21,7 @@ namespace SpiritIsland.Basegame {
 
 			int damageableInvaderCount = ctx.Tokens.SumAny(groups);
 			if( damageableInvaderCount <= numberToDamage) {
-				await ctx.Invaders.ApplyDamageToEach(damagePerInvader,groups);
+				await ctx.DamageEachInvader(damagePerInvader,groups);
 				return;
 			}
 

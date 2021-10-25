@@ -241,10 +241,11 @@ namespace SpiritIsland.Tests.Core {
 		[Theory]
 		[InlineData("3D@2,1T@2,1E@1","1D@2,1D@1")]
 		public async Task Ravage(string startingUnits,string endingUnits) {
-			gameState = new GameState(new RiverSurges(), board);
+			gameState = new GameState( new RiverSurges(), board ) {
 
-			// Disable destroying presence
-			gameState.DetermineAddBlightEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
+				// Disable destroying presence
+				DetermineAddBlightEffect = ( gs, space ) => new AddBlightEffect { Cascade = false, DestroyPresence = false }
+			};
 
 			// Given: Invaders on a Mountain space
 			var space = board[1];

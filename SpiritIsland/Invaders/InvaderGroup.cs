@@ -29,20 +29,19 @@ namespace SpiritIsland {
 		#region Damage
 
 		public async Task ApplyDamageToEach( int individualDamage, params TokenGroup[] generic ) {
-			foreach(var invader in Tokens.Invaders())
-				if(generic.Contains(invader.Generic))
-					await ApplyDamageToAllTokensOfType( individualDamage, invader );
-		}
 
-		public async Task ApplyDamageToAllTokensOfType( int individualDamage, IEnumerable<Token> part ) {
-			var ordered = part.OrderByDescending( x => x.Health );// MUST damage healthy first so we don't double damage 
-			foreach(var specific in ordered)
-				await ApplyDamageToAllTokensOfType(individualDamage,specific);
-		}
+			var invaders = Tokens.Invaders()
+				.OrderBy(x=>x.Health) // do damaged first to clear them out
+				.ToArray();
 
-		async public Task ApplyDamageToAllTokensOfType( int individualDamage, Token token ) {
-			while(this[token] > 0)
-				await ApplyDamageTo1( individualDamage, token );
+			// Filter if appropriate
+			if(generic != null && generic.Length>0)
+				invaders = invaders.Where(t=>generic.Contains(t.Generic)).ToArray();
+
+			foreach(var invader in invaders)
+				while(this[invader] > 0)
+					await ApplyDamageTo1( individualDamage, invader );
+
 		}
 
 		/// <returns>damage inflicted to invaders</returns>
@@ -158,6 +157,7 @@ namespace SpiritIsland {
 		}
 
 		public async Task UserSelectedDamage( int damage, Spirit damagePicker, params TokenGroup[] allowedTypes ) {
+			if(damage == 0) return;
 			if(allowedTypes == null || allowedTypes.Length == 0)
 				allowedTypes = new TokenGroup[] { Invader.Explorer, Invader.Town, Invader.City };
 

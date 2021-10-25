@@ -14,7 +14,7 @@ namespace SpiritIsland.Basegame {
 		static public async Task ActAsync(TargetSpaceCtx ctx){
 
 			// 1 damange to each invader.
-			await ctx.Invaders.ApplyDamageToAllTokensOfType(1, ctx.Tokens.Invaders());
+			await ctx.DamageEachInvader(1);
 		}
 
 	}

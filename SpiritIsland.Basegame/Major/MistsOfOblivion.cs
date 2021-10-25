@@ -11,7 +11,7 @@ namespace SpiritIsland.Basegame {
 			int startingTownsAndCities = ctx.Tokens.TownsAndCitiesCount();
 
 			// 1 damage to each invader
-			await ctx.Invaders.ApplyDamageToAllTokensOfType(1,ctx.Tokens.Invaders());
+			await ctx.DamageEachInvader(1);
 
 			// if you have 2 moon 3 air 2 water
 			if(ctx.YouHave("2 moon,3 air,2 water"))

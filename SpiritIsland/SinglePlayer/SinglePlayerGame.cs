@@ -37,10 +37,6 @@ namespace SpiritIsland.SinglePlayer {
 
 		#region private
 
-		void OnNewLogEntry( string msg ) {
-			NewLogEntry?.Invoke( msg );
-		}
-
 		void StartLoop() {
 
 			var fastActions = new ResolveActions( Spirit, GameState, Speed.Fast, true );

@@ -11,17 +11,17 @@ namespace SpiritIsland.Basegame {
 			var invaders = ctx.Invaders;
 
 			// Destory 3 towns.
-			await invaders.Destroy( 3, Invader.Town );
+			await ctx.Invaders.Destroy( 3, Invader.Town );
 
 			// 1 damage to each town/city
-			await invaders.ApplyDamageToEach( 1, Invader.Town, Invader.City );
+			await ctx.DamageEachInvader( 1, Invader.Town, Invader.City );
 
 			// add 1 blight
 			await ctx.AddBlight();
 
 			// if you have 3 sun, destory 1 city
 			if( ctx.YouHave("3 sun") )
-				await invaders.Destroy( 1, Invader.City );
+				await ctx.Invaders.Destroy( 1, Invader.City );
 		}
 
 	}

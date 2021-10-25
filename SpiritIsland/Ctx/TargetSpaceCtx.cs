@@ -146,6 +146,12 @@ namespace SpiritIsland {
 			return Invaders.UserSelectedDamage( damage, Self, allowedTypes );
 		}
 
+		public async Task DamageEachInvader( int individualDamage, params TokenGroup[] generic ) {
+			await Invaders.ApplyDamageToEach( individualDamage, generic );
+			await Invaders.UserSelectedDamage( Badlands.Count, Self,generic );
+		}
+
+
 		public async Task DamageDahan( int damage ) {
 			if( damage == 0 ) return;
 
@@ -156,8 +162,13 @@ namespace SpiritIsland {
 			await Dahan.ApplyDamage( damage, Cause );
 		}
 
-		public Task Apply1DamageToAllDahan() {
-			return Dahan.Apply1DamageToAll( Cause );
+		public async Task Apply1DamageToAllDahan() {
+			// !!! some-power gives Dahan 4-health, this is ignoring that, - need to fix
+
+			// Assuming any Dahan have only 2 health, any badland will destroy a dahan
+			await Dahan.Destroy(Badlands.Count,Cause);
+
+			await Dahan.Apply1DamageToAll( Cause );
 		}
 
 		#region Add Strife
