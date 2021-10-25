@@ -24,7 +24,7 @@ namespace SpiritIsland.BranchAndClaw {
 				// 2 damage to invaders
 				await ctx.DamageInvaders( beasts.Count * 2 );
 				// and 2 damage to dahan.
-				await ctx.Dahan.ApplyDamage( beasts.Count, ctx.Cause );
+				await ctx.DamageDahan( beasts.Count );
 
 				// Destroy 1 beast.
 				beasts.Count--;

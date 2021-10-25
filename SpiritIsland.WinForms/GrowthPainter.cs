@@ -76,12 +76,12 @@ namespace SpiritIsland.WinForms {
 				case "MovePresence": MovePresence( rect, 1 ); break;
 				// Lure of the Deep Wilderness
 				case "PlacePresence(4,Inland)": PlacePresence( rect, 4 ); break;
-				case "GainElement(Moon,Air,Plant)": GainElement( rect, Element.Moon, Element.Air, Element.Plant ); break;
+				case "Gain1Element(Moon,Air,Plant)": GainElement( rect, Element.Moon, Element.Air, Element.Plant ); break;
 				// Grinning Trickster
 				case "GainEnergyEqualToCardPlays": DrawIconInCenter( rect, "GainEnergyEqualToCardPlays"); break;
 				// Stones Unyielding Defiance
 				case "PlacePresence(3,mountain or presence)": PlacePresence( rect, 3, "mountainorpresence"); break;
-				case "GainElement(Earth,Earth)": GainElement( rect, Element.Earth, Element.Earth ); break; // !!! this is drawn as an OR, layer them and make them an AND
+				case "GainElements(Earth,Earth)": GainElement( rect, Element.Earth, Element.Earth ); break; // !!! this is drawn as an OR, layer them and make them an AND
 				default:
 					graphics.FillRectangle( Brushes.Goldenrod, Rectangle.Inflate( rect.ToInts(), -5, -5 ) );
 					break;

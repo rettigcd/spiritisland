@@ -14,7 +14,7 @@ namespace SpiritIsland.BranchAndClaw {
 			await ctx.PushDahan( 1 );
 
 			// Each remaining Dahan take 1 damage
-			await ctx.Dahan.Apply1DamageToAll(ctx.Cause);
+			await ctx.Apply1DamageToAllDahan();
 
 		}
 

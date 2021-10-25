@@ -37,7 +37,6 @@ namespace SpiritIsland {
 		public bool MatchesRavageCard => GameState.InvaderDeck.Ravage.Any(c=>c.Matches(Space));
 		public bool MatchesBuildCard => GameState.InvaderDeck.Build.Any(c=>c.Matches(Space));
 
-
 		public TokenCountDictionary Tokens => _tokens ??= GameState.Tokens[Space];
 		TokenCountDictionary _tokens;
 
@@ -95,7 +94,6 @@ namespace SpiritIsland {
 		public IEnumerable<Space> Adjacent => Space.Adjacent.Where( adj => Target(adj).IsInPlay );
 
 		// Convenience Methods - That bind to .Target
-		// could be Extension Methods
 		public void Adjust( Token invader, int delta )
 			=> Tokens.Adjust( invader, delta );
 
@@ -136,11 +134,30 @@ namespace SpiritIsland {
 		public void Skip1Build() => GameState.Skip1Build(Space);
 
 		// Damage invaders in the current target space
+		// This called both from powers and from Fear
 		public Task DamageInvaders( int damage, params TokenGroup[] allowedTypes ) {
 			if( damage == 0 ) return Task.CompletedTask; // not necessary, just saves some cycles
+
+			// !!! This is not correct, if card has multiple Damages, adds badland multiple times.
+			damage += Tokens.Badlands.Count;
+
 			if(allowedTypes==null || allowedTypes.Length==0)
 				allowedTypes = new TokenGroup[] { Invader.City, Invader.Town, Invader.Explorer };
 			return Invaders.UserSelectedDamage( damage, Self, allowedTypes );
+		}
+
+		public async Task DamageDahan( int damage ) {
+			if( damage == 0 ) return;
+
+			// !!! This is not correct, if card has multiple Damage-Dahans, adds badland multiple times.
+			damage += Tokens.Badlands.Count;
+
+			// and 2 damage to dahan.
+			await Dahan.ApplyDamage( damage, Cause );
+		}
+
+		public Task Apply1DamageToAllDahan() {
+			return Dahan.Apply1DamageToAll( Cause );
 		}
 
 		#region Add Strife

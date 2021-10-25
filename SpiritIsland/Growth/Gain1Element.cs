@@ -2,11 +2,12 @@
 using System.Threading.Tasks;
 
 namespace SpiritIsland {
-	public class GainElement : GrowthActionFactory {
+
+	public class Gain1Element : GrowthActionFactory {
 
 		public Element[] ElementOptions { get; } // public for drawing
 
-		public GainElement(params Element[] elementOptions ) {
+		public Gain1Element(params Element[] elementOptions ) {
 			this.ElementOptions = elementOptions;
 		}
 
@@ -17,5 +18,6 @@ namespace SpiritIsland {
 
 		public override string Name => "GainElement("+ElementOptions.Select(x=>x.ToString()).Join(",")+")";
 	}
+
 
 }

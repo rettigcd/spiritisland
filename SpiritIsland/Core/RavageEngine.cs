@@ -77,20 +77,23 @@ namespace SpiritIsland {
 		}
 
 		/// <returns># of dahan killed/destroyed</returns>
-		public async Task DamageDahan( int damageInflictedFromInvaders ) {
-			tracking.dahanDamageFromInvaders = damageInflictedFromInvaders;
-			if(damageInflictedFromInvaders == 0 || !cfg.ShouldDamageDahan) return;
+		public async Task DamageDahan( int dahanDamageFromInvaders ) {
+			tracking.dahanDamageFromInvaders = dahanDamageFromInvaders;
+			if(dahanDamageFromInvaders == 0 || !cfg.ShouldDamageDahan) return;
+
+			int dahanDamageTotal = dahanDamageFromInvaders
+				+ Tokens.Badlands.Count;
 
 			// ! This special DamageDahan, uses the config to change dahan health points.
 
 			// destroy dahan
 			var dahan = grp.Tokens.Dahan;
 			tracking.dahanOnSpace = dahan.Count;
-			tracking.dahanDestroyed = Math.Min( damageInflictedFromInvaders / cfg.DahanHitpoints, tracking.dahanOnSpace ); // rounding down
+			tracking.dahanDestroyed = Math.Min( dahanDamageTotal / cfg.DahanHitpoints, tracking.dahanOnSpace ); // rounding down
 			if(tracking.dahanDestroyed != 0)
 				await dahan.Destroy( tracking.dahanDestroyed, 2, Cause.Invaders );
 
-			int leftOverDamage = damageInflictedFromInvaders - tracking.dahanDestroyed * cfg.DahanHitpoints;
+			int leftOverDamage = dahanDamageTotal - tracking.dahanDestroyed * cfg.DahanHitpoints;
 			bool convert1To1HitPoint = leftOverDamage == cfg.DahanHitpoints - 1;
 			if(convert1To1HitPoint && dahan.Any)
 				await dahan.ApplyDamage(1,Cause.Invaders);
@@ -100,7 +103,10 @@ namespace SpiritIsland {
 		/// <returns>(city-dead,town-dead,explorer-dead)</returns>
 		public async Task DamageInvaders( int damageFromDahan ) {
 			tracking.damageFromDahan = damageFromDahan;
-			int remainingDamageToApply = damageFromDahan;
+			if(damageFromDahan == 0) return;
+
+			int remainingDamageToApply = damageFromDahan
+				+ Tokens.Badlands.Count;
 
 			var participatingInvaders = CalcParticipatingInvaders();
 			while(remainingDamageToApply > 0 && participatingInvaders.Any()) {
