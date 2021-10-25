@@ -43,8 +43,6 @@ namespace SpiritIsland.SinglePlayer {
 
 		void StartLoop() {
 
-			var selectGrowth = new SelectGrowth( Spirit, GameState );
-
 			var fastActions = new ResolveActions( Spirit, GameState, Speed.Fast, true );
 			var slowActions = new ResolveActions( Spirit, GameState, Speed.Slow, true );
 
@@ -61,7 +59,6 @@ namespace SpiritIsland.SinglePlayer {
 							await Spirit.DoGrowth(GameState);
 							await Spirit.PurchasePlayableCards();
 							await fastActions.ActAsync();
-							//await invaders.ActAsync();
 							await GameState.InvaderEngine.DoInvaderPhase();
 							await slowActions.ActAsync();
 							await GameState.TimePasses();
