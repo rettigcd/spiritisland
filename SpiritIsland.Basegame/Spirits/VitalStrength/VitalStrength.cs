@@ -44,7 +44,10 @@ Power Progression:
 		public const string Name = "Vital Strength of the Earth";
 		public override string Text => Name;
 
-		public override string SpecialRules => "Earth's Vitality - Defend 3 in every land where you have sacred site.";
+		public override SpecialRule[] SpecialRules => new SpecialRule[] {
+			new SpecialRule("Earth's Vitality","Defend 3 in every land where you have sacred site.")
+		} ;
+
 
 		public VitalStrength():base(
 			new SpiritPresence(

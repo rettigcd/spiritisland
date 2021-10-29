@@ -31,6 +31,7 @@ namespace SpiritIsland {
 			tracking = new InvadersRavaged{ 
 				Space = grp.Space,
 				startingInvaders = grp.Tokens.InvaderSummary,
+				startingDahan = grp.Tokens.Dahan.Count,
 			};
 
 			await (cfg.RavageSequence ?? DefaultRavageSequence)(this);
@@ -88,8 +89,8 @@ namespace SpiritIsland {
 
 			// destroy dahan
 			var dahan = grp.Tokens.Dahan;
-			tracking.dahanOnSpace = dahan.Count;
-			tracking.dahanDestroyed = Math.Min( dahanDamageTotal / cfg.DahanHitpoints, tracking.dahanOnSpace ); // rounding down
+			tracking.startingDahan = dahan.Count;
+			tracking.dahanDestroyed = Math.Min( dahanDamageTotal / cfg.DahanHitpoints, tracking.startingDahan ); // rounding down
 			if(tracking.dahanDestroyed != 0)
 				await dahan.Destroy( tracking.dahanDestroyed, 2, Cause.Invaders );
 

@@ -271,7 +271,7 @@ namespace SpiritIsland {
 			Elements.Clear();
 		}
 
-		abstract public string SpecialRules { get; }
+		abstract public SpecialRule[] SpecialRules { get; }
 
 		// pluggable, draw power card, or powerprogression
 		#region Draw Card
@@ -411,12 +411,26 @@ namespace SpiritIsland {
 		// Overriden by Trickster because it costs them presence
 		public virtual async Task RemoveBlight( TargetSpaceCtx ctx ) {
 			if(ctx.Blight.Any)
-				ctx.GameState.AddBlight( ctx.Space, -1 );
+				await ctx.GameState.AddBlight( ctx.Space, -1 );
 		}
 
 		#endregion
 
 
 	}
+
+
+	public class SpecialRule {
+
+		readonly string title;
+		readonly string description;
+
+		public SpecialRule(string title, string description) {
+			this.title = title;
+			this.description = description;
+		}
+		public override string ToString() => title + " - " + description;
+
+	} 
 
 }

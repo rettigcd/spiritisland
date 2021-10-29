@@ -244,8 +244,10 @@ namespace SpiritIsland.WinForms {
 			if(option != null)
 				OptionSelected?.Invoke(option);
 
-			if(SpiritLocation.Contains(clientCoord))
-				MessageBox.Show(this.spirit.SpecialRules);
+			if(SpiritLocation.Contains( clientCoord )) {
+				string msg = this.spirit.SpecialRules.Select(r=>r.ToString()).Join("\r\n");
+				MessageBox.Show( msg );
+			}
 		}
 
 		IOption HitTest( Point clientCoord ) {

@@ -3,15 +3,18 @@ using SpiritIsland.JaggedEarth;
 using Xunit;
 
 namespace SpiritIsland.Tests.JaggedEarth {
+
 	public class StubbornSolidity_Tests {
 
 		[Trait("Feature","Ravage")]
 		[Fact]
 		public void NoDahan_NoDefend() {
-			var fxt = new GameFixture();
+			var fxt = new GameFixture()
+				.WithSpirit(new StonesUnyieldingDefiance())
+				.Start();
 
 			// Given: a space to ravage on.
-			var space = fxt.boardA[5];
+			var space = fxt.board[5];
 			var tokens = fxt.gameState.Tokens[space];
 			fxt.gameState.InvaderDeck.Ravage.Add( new InvaderCard( space.Terrain ) );
 
@@ -35,10 +38,12 @@ namespace SpiritIsland.Tests.JaggedEarth {
 		[InlineData(1)]
 		[InlineData(2)]
 		public void Dahan_Defends1Each_NoBlight(int dahanCount) {
-			var fxt = new GameFixture();
+			var fxt = new GameFixture()
+				.WithSpirit(new StonesUnyieldingDefiance())
+				.Start();
 
 			// Given: a space to ravage on.
-			var space = fxt.boardA[5]; // a5
+			var space = fxt.board[5]; // a5
 			var tokens = fxt.gameState.Tokens[space];
 			fxt.gameState.InvaderDeck.Ravage.Add( new InvaderCard( space.Terrain ) );
 
@@ -60,10 +65,12 @@ namespace SpiritIsland.Tests.JaggedEarth {
 		[Trait("Feature","Ravage")]
 		[Fact]
 		public void LotsOfInvaders_DahanUnchanged() {
-			var fxt = new GameFixture();
+			var fxt = new GameFixture()
+				.WithSpirit(new StonesUnyieldingDefiance())
+				.Start();
 
 			// Given: a space to ravage on.
-			var space = fxt.boardA[5]; // a5
+			var space = fxt.board[5]; // a5
 			var tokens = fxt.gameState.Tokens[space];
 			fxt.gameState.InvaderDeck.Ravage.Add( new InvaderCard( space.Terrain ) );
 

@@ -28,7 +28,7 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 	public class LightningsSwiftStrike : Spirit {
 		public const string Name = "Lightning's Swift Strike";
 
-		public override string SpecialRules => "SWIFTNESS OF LIGHTNING - For every Simple air you have, you may use 1 Slow Power as if it were fast";
+		public override SpecialRule[] SpecialRules => new SpecialRule[] { new SpecialRule("SWIFTNESS OF LIGHTNING", "For every Simple air you have, you may use 1 Slow Power as if it were fast") };
 
 		public LightningsSwiftStrike():base(
 			new SpiritPresence(
@@ -111,8 +111,6 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 
 
 		int usedAirForFastCount = 0;
-
-	//	static readonly SwiftnessOfLightning swiftness = new SwiftnessOfLightning();
 
 	}
 

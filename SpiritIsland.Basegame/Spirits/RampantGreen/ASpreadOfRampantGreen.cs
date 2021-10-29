@@ -49,7 +49,9 @@ namespace SpiritIsland.Basegame {
 
 		public override string Text => Name;
 
-		public override string SpecialRules => "Choke the land with green - whenever invaders would ravage or build in a land with your sacred site, you may prevent it by destroying one of your presense in that land";
+		public override SpecialRule[] SpecialRules => new SpecialRule[] {
+			new SpecialRule("Choke the land with green","Whenever invaders would ravage or build in a land with your sacred site, you may prevent it by destroying one of your presense in that land.")
+		} ;
 
 		public ASpreadOfRampantGreen():base(
 			new RampantGreenPresence(),

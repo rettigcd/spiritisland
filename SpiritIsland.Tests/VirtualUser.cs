@@ -112,6 +112,15 @@ namespace SpiritIsland.Tests {
 			SelectOption( "Buy power cards:", powerCardName );
 		}
 
+		#region Fear 
+
+		public void AcknowledgesFearCard( string fearCard ) {
+			AssertDecision( "Activating Fear", fearCard, fearCard ); // some of the fear cards have commas in them
+		}
+
+
+		#endregion
+
 		#region Fast / Slow Actions
 
 		public void SelectsSlowAction(string actions) {
@@ -138,10 +147,6 @@ namespace SpiritIsland.Tests {
 
 		#endregion
 
-		public void AcknowledgesFearCard( string fearCard ) {
-			AssertDecision( "Activating Fear", fearCard, fearCard ); // some of the fear cards have commas in them
-		}
-
 		public void PushesTokensTo( string invaders, string destinations, int numToPush=1 ) {
 			var (_,tokenToPush) = SplitOptionsAndChoice( invaders );
 			AssertDecisionX( "Push ("+numToPush+")", invaders );
@@ -154,7 +159,10 @@ namespace SpiritIsland.Tests {
 			AssertDecisionX( "Push "+invaderChoice+" to", destinations );
 		}
 
+		#region SharpFangs-spirit Specific
+
 #pragma warning disable CA1822 // Mark members as static
+		/// <summary> for Sharp Fangs </summary>
 		public void SkipsPresenceReplacementWithBeasts() {
 #pragma warning restore CA1822 // Mark members as static
 
@@ -169,6 +177,10 @@ namespace SpiritIsland.Tests {
 			//Choose( selection );
 
 		}
+
+		#endregion
+
+		#region Ocean-Spirit Specific
 
 		public void GathersPresenceIntoOcean() {
 			AssertDecisionX( "Select Growth to resolve:", "GatherPresenceIntoOcean" );
@@ -185,11 +197,7 @@ namespace SpiritIsland.Tests {
 			AssertDecisionX( "Where would you like to place your presence?", destination );
 		}
 
-		public void PlacesPresence( string source, string destination ) {
-			SelectOption( "Select Growth to resolve", "PlacePresence(1)" );
-			AssertDecision( "Select Presence to place.", source );
-			SelectOption( "Where would you like", destination );
-		}
+		#endregion
 
 		public void TargetsSpirit( string spirits ) {
 			AssertDecisionX( "Select Spirit to target", spirits );

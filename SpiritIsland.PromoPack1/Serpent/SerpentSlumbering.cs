@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.PromoPack1 {
+﻿using System.Linq;
+
+namespace SpiritIsland.PromoPack1 {
 
 	// Presence Tracks
 	// Innates
@@ -33,7 +35,9 @@
 
 		public override string Text => Name;
 
-		public override string SpecialRules => "Deep Slumber - You start off limited to 5 presence on the tisland.  Raise this with your 'Absorb Essence' Power Card.  Each use covers the lowest revealed number; your presence limit is the lowest uncovered number.";
+		public override SpecialRule[] SpecialRules => new SpecialRule[] {
+			new SpecialRule("Deep Slumber","You start off limited to 5 presence on the tisland.  Raise this with your 'Absorb Essence' Power Card.  Each use covers the lowest revealed number; your presence limit is the lowest uncovered number.")
+		} ;
 
 		protected override void InitializeInternal( Board board, GameState gameState ) {
 			// Setup: put 1 presence on #5

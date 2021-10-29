@@ -135,7 +135,7 @@ namespace SpiritIsland {
 				if(BlightCard != null && blightOnCard <= 0)
 					BlightCard.OnBlightDepleated( this );
 
-				blightSpace = effect.DestroyPresence
+				blightSpace = effect.Cascade
 					? await Spirits[0].Action.Decision( new Decision.AdjacentSpace(
 						$"Cascade blight from {blightSpace.Label} to",
 						blightSpace,
@@ -149,7 +149,7 @@ namespace SpiritIsland {
 		}
 
 		static private AddBlightEffect DefaultDetermineAddBlightEffect( GameState gs, Space blightSpace ) {
-			bool isFirstBlight = gs.Tokens[blightSpace].Blight.Any;
+			bool isFirstBlight = !gs.Tokens[blightSpace].Blight.Any;
 			var effect = new AddBlightEffect {
 				DestroyPresence = true,
 				Cascade = !isFirstBlight,

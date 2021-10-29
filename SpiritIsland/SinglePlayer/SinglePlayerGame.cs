@@ -33,8 +33,6 @@ namespace SpiritIsland.SinglePlayer {
 
 		#endregion
 
-		public event Action<string> NewLogEntry;
-
 		#region private
 
 		void StartLoop() {

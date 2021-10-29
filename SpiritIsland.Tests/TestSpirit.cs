@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SpiritIsland.Tests {
 
@@ -15,7 +16,8 @@ namespace SpiritIsland.Tests {
 		}
 
 		public override string Text => "CardPlayTestSpirit";
-		public override string SpecialRules => "none";
+
+		public override SpecialRule[] SpecialRules => throw new NotImplementedException();
 
 		protected override void InitializeInternal( Board board, GameState _ ) {
 			// Has sacred site on space 5
@@ -51,6 +53,7 @@ namespace SpiritIsland.Tests {
 
 		public VirtualTestUser(Spirit spirit ) : base( spirit ) { }
 
+		/// <summary> Growth for Test Spirit </summary>
 		public void Grows() {
 			Growth_SelectsOption( "ReclaimAll" );
 			Growth_ReclaimsAll();

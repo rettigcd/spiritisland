@@ -8,7 +8,6 @@ namespace SpiritIsland.Basegame {
 		[Slow]
 		[FromPresence(1)]
 		static public async Task Act( TargetSpaceCtx ctx ) {
-			var invaders = ctx.Invaders;
 
 			// Destory 3 towns.
 			await ctx.Invaders.Destroy( 3, Invader.Town );

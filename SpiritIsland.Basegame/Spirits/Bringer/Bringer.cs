@@ -40,7 +40,9 @@ namespace SpiritIsland.Basegame {
 
 		public override string Text => Name;
 
-		public override string SpecialRules => "TO DREAM A THOUSAND DEATHS -  Your Powers never cause Damage, nor can they Destroy anything other than your own Presence. When your Powers would Destroy Invaders, instead generate 0/2/5 Fear and Pushes Invaders";
+		public override SpecialRule[] SpecialRules => new SpecialRule[] {
+			new SpecialRule("TO DREAM A THOUSAND DEATHS","Your Powers never cause Damage, nor can they Destroy anything other than your own Presence. When your Powers would Destroy Invaders, instead generate 0/2/5 Fear and Pushes Invaders")
+		} ;
 
 		public Bringer():base(
 			new SpiritPresence(

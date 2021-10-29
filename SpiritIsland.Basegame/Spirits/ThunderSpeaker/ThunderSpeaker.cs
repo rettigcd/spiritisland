@@ -37,8 +37,10 @@ namespace SpiritIsland.Basegame {
 
 		public const string Name = "Thunderspeaker";
 
-		public override string SpecialRules => "ALLY OF THE DAHAN - Your Presence may move with Dahan. (Whenever a Dahan moves from 1 of your lands to another land, you may move 1 Presence along with it.)"
-			+ "SWORN TO VICTORY - After a Ravage Action destroys 1 or more Dahan, for each Dahan Destroyed, Destroy 1 of your Presence within 1";
+		public override SpecialRule[] SpecialRules => new SpecialRule[] {
+			new SpecialRule("ALLY OF THE DAHAN","Your Presence may move with Dahan. (Whenever a Dahan moves from 1 of your lands to another land, you may move 1 Presence along with it.)"),
+			new SpecialRule("SWORN TO VICTORY","After a Ravage Action destroys 1 or more Dahan, for each Dahan Destroyed, Destroy 1 of your Presence within 1.")
+		} ;
 
 		public override string Text => Name;
 

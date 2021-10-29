@@ -8,7 +8,6 @@ namespace SpiritIsland.PromoPack1 {
 			SpaceFilterMap.Register(ThreateningFlames.BlightAndInvaders,ctx=>ctx.HasBlight && ctx.HasInvaders);
 		}
 
-
 		public const string Name = "Heart of the Wildfire";
 
 		readonly static Track FirePresence = Track.MkElement(Element.Fire); // same as FireEnergy but we need separate object so user can distingquish top/bottom.
@@ -52,7 +51,9 @@ namespace SpiritIsland.PromoPack1 {
 
 		public override string Text => Name;
 
-		public override string SpecialRules => "BLAZING PRESENCE - After you add or move presence after Setup, in the land it foes to: For each fire showingo n your presence Tracks, do 1 Damage.  If 2 fire or more are showing on your presence Tracks, add 1 blight.  Push al beasts and any number of dahan.  Added blight does not destory your presence.";
+		public override SpecialRule[] SpecialRules => new SpecialRule[] {
+			new SpecialRule("BLAZING PRESENCE","After you add or move presence after Setup, in the land it foes to: For each fire showingo n your presence Tracks, do 1 Damage.  If 2 fire or more are showing on your presence Tracks, add 1 blight.  Push al beasts and any number of dahan.  Added blight does not destory your presence.")
+		} ;
 
 		protected override void InitializeInternal( Board board, GameState gameState ) {
 			// Put 3 presence and 2 blight on your starting board in the hightest-numbered Sands. 

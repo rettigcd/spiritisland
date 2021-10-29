@@ -14,7 +14,6 @@ namespace SpiritIslandCmd {
 			};
 
 			var game = new SinglePlayerGame(gs);
-			game.NewLogEntry += Console.WriteLine;
 
 			new CmdLinePlayer(game).Play();
 		}

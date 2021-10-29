@@ -10,7 +10,7 @@ namespace SpiritIsland.Tests.Core {
 
 		class TestSpirit : Spirit {
 
-			public override string SpecialRules => throw new NotImplementedException();
+			public override SpecialRule[] SpecialRules => throw new NotImplementedException();
 
 			public TestSpirit():base(
 				new SpiritPresence(

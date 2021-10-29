@@ -7,8 +7,8 @@ namespace SpiritIsland.JaggedEarth {
 
 		public const string Name = "Grinning Trickster Stirs Up Trouble";
 		public override string Text => Name;
-		public override string SpecialRules => "A Real Flair for Discord - After one of your Powers adds strife in a land, you may pay 1 Energy to add 1 strife within Range-1 of that land."
-			+ " Cleaning up Messes is a Drag - AFter one of your Powers Removes blight, Destory 1 of your presence.  Ignore this rule for Let's See What Happens";
+
+		public override SpecialRule[] SpecialRules => new SpecialRule[] { new SpecialRule("A Real Flair for Discord", "After one of your Powers adds strife in a land, you may pay 1 Energy to add 1 strife within Range-1 of that land."), new SpecialRule("Cleaning up Messes is a Drag", "After one of your Powers Removes blight, Destory 1 of your presence.  Ignore this rule for Let's See What Happens.") };
 
 		public GrinningTricksterStirsUpTrouble()
 			:base(
