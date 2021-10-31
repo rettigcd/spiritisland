@@ -35,7 +35,22 @@ namespace SpiritIsland {
 		public Task Move(Token token, Space from, Space to )
 			=> GameState.Tokens.Move( token, from, to );
 
-		public bool YouHave( string elementString ) => Self.Elements.Contains( elementString );
+		public async Task<bool> YouHave( string elementString ) {
+			var subset = new CountDictionary<Element>( ElementList.Parse(elementString) );
+			if( Self.Elements.Contains( subset ) ) return true;
+
+			// Check if we have prepared element markers to fill the missing elements
+			if(Self.PreparedElements.Any()) {
+				var missing = subset.Except(Self.Elements);
+				if(Self.PreparedElements.Contains(missing) && await Self.UserSelectsFirstText($"Meet elemental threshold:"+elementString, "Yes, use prepared elements", "No, I'll pass.")) {
+					foreach(var pair in missing)
+						Self.PreparedElements[pair.Key] -= pair.Value;
+					return true;
+				}
+			}
+
+			return false;
+		}
 
 		#endregion
 

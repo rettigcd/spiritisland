@@ -25,7 +25,7 @@ namespace SpiritIsland.Basegame {
 			await selfPickLandCtx.DamageEachInvader(2,Invader.Town,Invader.City);
 
 			// if you have 3 fire, 3 earth , 2 plant, 4 damage in that land
-			if(ctx.YouHave( "3 fire,3 earth,2 plant"))
+			if(await ctx.YouHave("3 fire,3 earth,2 plant"))
 				await selfPickLandCtx.DamageInvaders(4);
 
 

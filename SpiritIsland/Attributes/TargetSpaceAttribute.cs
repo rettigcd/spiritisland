@@ -19,11 +19,11 @@ namespace SpiritIsland {
 
 		public override async Task<object> GetTargetCtx( SpiritGameStateCtx ctx ){
 			// !!! replace null with prompt indicating what card we are targetting
-			var space = await ctx.Self.TargetLandApi.TargetsSpace( ctx.Self, ctx.GameState, null, fromSourceEnum, sourceTerrain, range, TargetFilter );
+			var space = await ctx.Self.TargetLandApi.TargetsSpace( ctx.Self, ctx.GameState, null, fromSourceEnum, sourceTerrain, await CalcRange(ctx), TargetFilter );
 			return space == null ? null : ctx.Target(space);
 		}
 
-		protected virtual int CalcRange( SpiritGameStateCtx ctx ) => range;
+		protected virtual Task<int> CalcRange( SpiritGameStateCtx ctx ) => Task.FromResult(range);
 
 		public override LandOrSpirit LandOrSpirit => LandOrSpirit.Land;
 

@@ -14,7 +14,7 @@ namespace SpiritIsland.Basegame {
 			await ctx.DamageEachInvader(1);
 
 			// if you have 2 moon 3 air 2 water
-			if(ctx.YouHave("2 moon,3 air,2 water"))
+			if(await ctx .YouHave("2 moon,3 air,2 water"))
 				// 3 damage
 				await ctx.DamageInvaders(3);
 

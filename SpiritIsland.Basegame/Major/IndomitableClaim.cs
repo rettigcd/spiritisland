@@ -18,7 +18,7 @@ namespace SpiritIsland.Basegame {
 			ctx.Defend(20);
 
 			// if you have 2 sun, 3 earth,
-			if(ctx.YouHave("2 sun,3 earth" )) {
+			if(await ctx.YouHave("2 sun,3 earth" )) {
 
 				// 3 fear if invaders are present,
 				if(ctx.HasInvaders)

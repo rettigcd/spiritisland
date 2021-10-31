@@ -10,7 +10,7 @@ namespace SpiritIsland.Basegame {
 		[FromSacredSite( 1 )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
-			bool bonus = ctx.YouHave( "4 earth" );
+			bool bonus = await ctx.YouHave( "4 earth" );
 
 			ctx.ModifyRavage( cfg => {
 				// dahan have +4 health while in target land.

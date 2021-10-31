@@ -59,7 +59,6 @@ namespace SpiritIsland.WinForms {
 				DrawSpirit( pe.Graphics );
 		}
 
-
 		void DrawSpirit( Graphics graphics ) {
 
 			hotSpots.Clear();
@@ -120,7 +119,6 @@ namespace SpiritIsland.WinForms {
 			y += margin;
 			y += margin;
 
-
 			// Innates
 			float x = margin;
 			int maxHeight = 0;
@@ -133,8 +131,8 @@ namespace SpiritIsland.WinForms {
 			y += (maxHeight + margin);
 
 			// activated elements
-			DrawActivatedElements( graphics, y );
-
+			DrawActivatedElements( graphics, spirit.Elements, ref y );
+			DrawActivatedElements( graphics, spirit.PreparedElements, ref y );
 		}
 
 		void DrawDestroyed( Graphics graphics, Pen highlightPen, Bitmap presence, float slotWidth, SizeF presenceSize, float x, float cardY ) {
@@ -176,10 +174,9 @@ namespace SpiritIsland.WinForms {
 			return bounds.Size;
 		}
 
-		void DrawActivatedElements( Graphics graphics, float y ) {
+		void DrawActivatedElements( Graphics graphics, CountDictionary<Element> elements, ref int y ) {
 			y += 20;
 			const float elementSize = 40f;
-			var elements = spirit.Elements; // cache, don't recalculate
 			float x = margin;
 
 			var orderedElements = elements.Keys.OrderBy( el => elementOrder[el] );
@@ -190,6 +187,7 @@ namespace SpiritIsland.WinForms {
 				x += elementSize;
 				x += 15;
 			}
+			y += (int)elementSize;
 		}
 
 		Image LoadSpiritImage() {
@@ -201,8 +199,8 @@ namespace SpiritIsland.WinForms {
 		Image GetElementImage( Element element ) {
 
 			if(!elementImages.ContainsKey( element )) {
-				string filename = "Simple_" + element.ToString().ToLower();
-				Image image = ResourceImages.Singleton.GetIcon(filename); //  Image.FromFile( $".\\images\\tokens\\{filename}.png" );
+//				string filename = "Simple_" + element.ToString().ToLower();
+				Image image = ResourceImages.Singleton.GetToken( element );
 				elementImages.Add( element, image );
 			}
 			return elementImages[element];

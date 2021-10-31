@@ -15,7 +15,7 @@ namespace SpiritIsland.BranchAndClaw {
 			await ctx.Invaders.DestroyAny(int.MaxValue,Invader.City,Invader.Town,Invader.Explorer);
 
 			// if you have (2 sun, 2 moon, 4 water, 4 earth):
-			if(ctx.YouHave( "2 sun,2 moon,4 water,4 earth" ))
+			if(await ctx.YouHave("2 sun,2 moon,4 water,4 earth"))
 				await DestroyBoard( ctx );
 		}
 

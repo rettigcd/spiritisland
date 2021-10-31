@@ -26,7 +26,7 @@ namespace SpiritIsland.BranchAndClaw {
 			int wildsDamage = ctx.Space.Range(1).Sum(s=>ctx.Target(s).Wilds.Count);
 
 			// if you have 2 fire, 3 plant: // +1 damage per wilds in / adjacent to target land.
-			if(ctx.YouHave( "2 fire,3 plant" ))
+			if(await ctx.YouHave("2 fire,3 plant"))
 				wildsDamage += wildsDamage;
 
 			await ctx.DamageInvaders( wildsDamage );

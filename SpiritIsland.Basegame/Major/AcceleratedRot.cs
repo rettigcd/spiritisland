@@ -15,7 +15,7 @@ namespace SpiritIsland.Basegame {
 			int damageToInvaders = 4;
 			ctx.AddFear(2);
 
-			if(ctx.YouHave("3 sun,2 water,3 plant")){
+			if(await ctx.YouHave("3 sun,2 water,3 plant")){
 				// +5 damage, remove 1 blight
 				damageToInvaders += 5;
 				await ctx.RemoveBlight();

@@ -11,7 +11,7 @@ namespace SpiritIsland.BranchAndClaw {
 			await DoPowerAction( ctx );
 
 			// if you have 3 water and 3 animal: repeat this power
-			if(ctx.YouHave("3 water,3 animal"))
+			if(await ctx.YouHave("3 water,3 animal"))
 				await DoPowerAction( ctx );
 		}
 

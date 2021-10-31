@@ -19,7 +19,7 @@ namespace SpiritIsland.Basegame {
 			await ctx.AddBlight();
 
 			// if you have 3 sun, destory 1 city
-			if( ctx.YouHave("3 sun") )
+			if( await ctx.YouHave("3 sun") )
 				await ctx.Invaders.Destroy( 1, Invader.City );
 		}
 

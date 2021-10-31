@@ -23,6 +23,7 @@ namespace SpiritIsland {
 			[Target.NoInvader         ] = ctx => !ctx.HasInvaders,
 			[Target.NoBlight          ] = ctx => !ctx.HasBlight,
 			[Target.TownOrExplorer    ] = ctx => ctx.Tokens.HasAny( Invader.Explorer, Invader.Town ),  // Wash Away helper
+			[Target.TownOrCity        ] = ctx => ctx.Tokens.HasAny( Invader.City, Invader.Town ),  // Study the Invaders' Fears
 		};
 
 		/// <remarks>Can NOT call this from Cards Static constructor because it is not invoked until AFTER the attribute is evaluated</remarks>

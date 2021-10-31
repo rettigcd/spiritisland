@@ -15,7 +15,7 @@ namespace SpiritIsland.BranchAndClaw {
 			await ctx.AddStrife();
 
 			// if you have 3moon, 2 air, 3 plant (before the terror level check)
-			if(ctx.YouHave( "3 moon,2 air,3 plant" )) {
+			if(await ctx.YouHave( "3 moon,2 air,3 plant" )) {
 				ctx.AddFear( 3 );
 				await ctx.DamageInvaders( 3 );
 			}

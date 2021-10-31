@@ -47,6 +47,19 @@ namespace SpiritIsland {
 			return needed.All( pair => pair.Value <= this[pair.Key] );
 		}
 
+		/// <summary>
+		/// Set-like operation.  Returns a new CountDictionary containing current items less other items
+		/// </summary>
+		public CountDictionary<K> Except( IDictionary<K, int> other ) {
+			var result = new CountDictionary<K>();
+			foreach(var key in this.Keys) {
+				int missing = this[key] - other[key];
+				if(missing > 0)
+					result[key] = missing;
+			}
+			return result;
+		}
+
 		public void AddRange(IEnumerable<K> items) { foreach(var item in items) ++this[item]; }
 
 		public CountDictionary<K> Clone() {

@@ -19,7 +19,7 @@ namespace SpiritIsland.Basegame {
 				ctx.Tokens.Adjust( Invader.Explorer.Default, 1 );
 
 			// if you have 2 fire 2 water 3 animal
-			if(ctx.YouHave("2 fire,2 water,3 animal" )) {
+			if(await ctx.YouHave("2 fire,2 water,3 animal" )) {
 				// before pushing, explorers and city/town do damage to each other
 				int damageFromExplorers = ctx.Invaders[Invader.Explorer[1]];
 				int damageToExplorers = ctx.Invaders.Tokens.Sum(Invader.City)*3 + ctx.Invaders.Tokens.Sum(Invader.Town)*2;

@@ -18,7 +18,7 @@ namespace SpiritIsland.BranchAndClaw {
 				ctx.Target(adjacent).Defend( disease.Count );
 
 			// if you have 2 earthn 4 animal:
-			if(ctx.YouHave("2 earth,4 animal")) { 
+			if(await ctx.YouHave("2 earth,4 animal")) { 
 				// 2 fear.
 				ctx.AddFear(2);
 				// For each disease in target land, do 1 damage in target or adjacent land

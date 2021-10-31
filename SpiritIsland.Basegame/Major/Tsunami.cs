@@ -20,7 +20,7 @@ namespace SpiritIsland.Basegame {
 			// destroy 2 dahan
 			await ctx.DestroyDahan( 2 );
 
-			if(ctx.YouHave("3 water,2 earth")){
+			if(await ctx.YouHave("3 water,2 earth")){
 				var otherCoastalsOnSameBoard = ctx.Space.Board
 					.Spaces.Where( s=> s != ctx.Space && ctx.Target(s).IsCoastal )
 					.ToArray();

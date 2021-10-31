@@ -10,7 +10,7 @@ namespace SpiritIsland.BranchAndClaw {
 		[FromPresence( 2 )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 			await DoPower( ctx );
-			if(ctx.YouHave("3 sun,2 water"))
+			if(await ctx.YouHave("3 sun,2 water"))
 				await DoPower( await ctx.SelectAdjacentLand("Repeat power") );
 		}
 

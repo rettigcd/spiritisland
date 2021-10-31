@@ -13,7 +13,7 @@ namespace SpiritIsland.Basegame {
 			int damage = 5;
 
 			// if you have 4 fire
-			if( ctx.YouHave( "4 fire" )) {
+			if( await ctx.YouHave("4 fire" )) {
 				fear += 2;
 				damage += 5;
 			}

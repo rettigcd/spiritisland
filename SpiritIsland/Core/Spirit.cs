@@ -16,6 +16,7 @@ namespace SpiritIsland {
 				AddCardToHand(card);
 
 			Action = new ActionGateway();
+
 		}
 		public ActionGateway Action { get; }
 
@@ -28,6 +29,8 @@ namespace SpiritIsland {
 		#region Elements
 
 		public readonly CountDictionary<Element> Elements = new CountDictionary<Element>();
+
+		public readonly CountDictionary<Element> PreparedElements = new CountDictionary<Element>();
 
 		#endregion
 
@@ -351,6 +354,7 @@ namespace SpiritIsland {
 			public Memento(Spirit spirit) {
 				energy = spirit.Energy;
 				elements = spirit.Elements.ToArray();
+				preparedElements = spirit.PreparedElements.ToArray();
 				presence = spirit.Presence.SaveToMemento();
 				hand      = spirit.Hand.ToArray();
 				purchased = spirit.PurchasedCards.ToArray();
@@ -361,7 +365,8 @@ namespace SpiritIsland {
 			}
 			public void Restore(Spirit spirit) {
 				spirit.Energy = energy;
-				spirit.Elements.Clear(); foreach(var p in elements) spirit.Elements[p.Key]=p.Value;
+				InitFromArray( spirit.Elements, elements);
+				InitFromArray( spirit.PreparedElements, preparedElements);
 				spirit.Presence.LoadFrom(presence);
 				spirit.Hand.SetItems( hand );
 				spirit.PurchasedCards.SetItems( purchased );
@@ -370,8 +375,13 @@ namespace SpiritIsland {
 				spirit.usedActions.SetItems( usedActions );
 				spirit.usedInnates.SetItems( usedInnates );
 			}
+			static void InitFromArray(CountDictionary<Element> dict, KeyValuePair<Element,int>[] array ) {
+				dict.Clear(); 
+				foreach(var p in array) dict[p.Key]=p.Value;
+			}
 			readonly int energy;
 			readonly KeyValuePair<Element,int>[] elements;
+			readonly KeyValuePair<Element,int>[] preparedElements;
 			readonly IMemento<SpiritPresence> presence;
 			readonly PowerCard[] hand;
 			readonly PowerCard[] purchased;

@@ -9,11 +9,11 @@ namespace SpiritIsland.Basegame {
 		[MinorCard(NaturesResilience.Name,1,Element.Earth,Element.Plant,Element.Animal)]
 		[Fast]
 		[FromSacredSite(1)]
-		static public Task Act(TargetSpaceCtx ctx){
+		static public async Task Act(TargetSpaceCtx ctx){
 
-			return ctx.SelectActionOption(
+			await ctx.SelectActionOption(
 				new ActionOption("Defend 6", ()=>ctx.Defend(6)),
-				new ActionOption("Remove 1 blight", ()=>ctx.RemoveBlight(), ctx.YouHave("2 water") && ctx.HasBlight )
+				new ActionOption("Remove 1 blight", ()=>ctx.RemoveBlight(), await ctx.YouHave("2 water") && ctx.HasBlight )
 			);
 
 		}

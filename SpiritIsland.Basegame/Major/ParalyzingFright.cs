@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 		[MajorCard(ParalyzingFright.Name,4,Element.Air,Element.Earth)]
 		[Fast]
 		[FromSacredSite(1)]
-		static public Task ActAsync(TargetSpaceCtx ctx ) {
+		static public async Task ActAsync(TargetSpaceCtx ctx ) {
 			// 4 fear
 			ctx.AddFear(4);
 
@@ -17,10 +17,9 @@ namespace SpiritIsland.Basegame {
 			ctx.SkipAllInvaderActions();
 
 			// if you have 2 air 3 earth, +4 fear
-			if(ctx.YouHave("2 air,3 earth"))
+			if(await ctx.YouHave("2 air,3 earth"))
 				ctx.AddFear(4);
 
-			return Task.CompletedTask;
 		}
 
 

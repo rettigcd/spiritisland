@@ -13,7 +13,7 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 			await DestoryOnePresence( ctx.Self );
 
 			var other = ctx.OtherCtx;
-			if( !ctx.YouHave("2 sun")) {
+			if( !await ctx.YouHave("2 sun")) {
 				// Target Spirit chooses to either 
 				await ctx.SelectActionOption(
 					new ActionOption( "Remove 1 blight from one of your lands", () => RemoveBlightFromOwnLand( other ) ),

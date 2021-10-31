@@ -23,11 +23,11 @@ namespace SpiritIsland.BranchAndClaw {
 			await ctx.Target(secondTarget).DamageInvaders(4);
 			
 			// if 3 fire
-			if(ctx.YouHave("3 fire" ))
+			if(await ctx.YouHave("3 fire"))
 				await Apply3DamageInOneOfThese( ctx, secondTarget, "fire" );
 
 			// if 3 water
-			if(ctx.YouHave( "3 water" ))
+			if(await ctx.YouHave("3 water"))
 				await Apply3DamageInOneOfThese( ctx, secondTarget, "water" );
 
 		}

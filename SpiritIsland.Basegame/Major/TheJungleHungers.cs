@@ -17,7 +17,7 @@ namespace SpiritIsland.Basegame {
 			bool destroyAllDahan = true;
 
 			// if you have 2 moon, 3 plant
-			if(ctx.YouHave( "2 moon,3 plant" )) {
+			if(await ctx.YouHave( "2 moon,3 plant" )) {
 				// Destroy 1 city
 				await ctx.Invaders.Destroy( 1, Invader.City );
 				// do not destroy dahan

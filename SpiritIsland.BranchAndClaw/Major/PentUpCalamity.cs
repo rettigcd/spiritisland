@@ -29,7 +29,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			// if you have 2 moon, 3 fire: if you have remvoed tokens, return up to 2 of them.  Otherwise, add 2 strife
 			// Instead of having Bonus return 2 tokens (like strife...), we will just not remove them
-			bool hasBonus = ctx.YouHave( "2 moon,3 fire" );
+			bool hasBonus = await ctx.YouHave( "2 moon,3 fire" );
 			int returnCount = hasBonus ? System.Math.Min(2,options.Length) : 0;
 
 			while(options.Length > 0) {

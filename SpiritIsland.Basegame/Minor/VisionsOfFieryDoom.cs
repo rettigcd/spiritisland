@@ -14,7 +14,7 @@ namespace SpiritIsland.Basegame {
 			// Push 1 explorer/town
 			await ctx.Push( 1, Invader.Explorer, Invader.Town );
 
-			if(ctx.YouHave("2 fire"))
+			if(await ctx.YouHave("2 fire"))
 				ctx.AddFear( 1 );
 		}
 

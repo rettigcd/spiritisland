@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
+	/// <remarks>Lure of the Deep Wilderness - Air/Plant/Moon</remarks>
 	public class Gain1Element : GrowthActionFactory {
 
 		public Element[] ElementOptions { get; } // public for drawing

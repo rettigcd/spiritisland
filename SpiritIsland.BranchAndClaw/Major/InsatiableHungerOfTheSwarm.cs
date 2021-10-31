@@ -32,7 +32,7 @@ namespace SpiritIsland.BranchAndClaw {
 			await ApplyPowerOnTarget( ctx );
 
 			// if you have 2 air, 4 animal, repeat power on adjacent land.
-			if(ctx.YouHave( "2 air,4 animal" )) {
+			if(await ctx.YouHave("2 air,4 animal")) {
 				var adjCtx = await ctx.SelectAdjacentLand("Apply power to adjacent land");
 				await ApplyPowerOnTarget( adjCtx );
 			}

@@ -19,10 +19,12 @@ namespace SpiritIsland.PromoPack1 {
 			return DoFireDamage( ctx, fireDamage );
 		}
 
-		private static Task DoFireDamage( TargetSpaceCtx ctx, int fireDamage ) {
-			return fireDamage == 0		? Task.CompletedTask
-				: CanSplitDamage(ctx)	? DoFireDamageToMultipleTargets( ctx, fireDamage )
-				: ctx.DamageInvaders( fireDamage );
+		static async Task DoFireDamage( TargetSpaceCtx ctx, int fireDamage ) {
+			if( fireDamage == 0) return;
+			if( await CanSplitDamage(ctx) ) 
+				await DoFireDamageToMultipleTargets( ctx, fireDamage );
+			else
+				await ctx.DamageInvaders( fireDamage );
 		}
 
 		private static async Task DoFireDamageToMultipleTargets( TargetSpaceCtx ctx, int fireDamage ) {
@@ -46,7 +48,7 @@ namespace SpiritIsland.PromoPack1 {
 
 
 		[InnateOption( MultiTargetThreshold, "You may split this Power's damage among any number of lands with blight where you have presence.", AttributePurpose.DisplayOnly, 0 )]
-		static bool CanSplitDamage(TargetSpaceCtx ctx) => ctx.YouHave( MultiTargetThreshold );
+		static Task<bool> CanSplitDamage(TargetSpaceCtx ctx) => ctx.YouHave( MultiTargetThreshold );
 		const string MultiTargetThreshold = "4 fire,2 air";
 
 		// Group 1

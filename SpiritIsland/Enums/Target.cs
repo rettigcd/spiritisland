@@ -18,6 +18,7 @@
 		public const string Coastal          = "coastal";
 
 		public const string TownOrExplorer   = "town or explorer"; // wash away helper
+		public const string TownOrCity       = "town or city"; // Study the Invaders' Fears
 
 
 		// BAC

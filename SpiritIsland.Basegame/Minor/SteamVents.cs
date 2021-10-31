@@ -18,7 +18,7 @@ namespace SpiritIsland.Basegame {
 				new ActionOption(
 					"Destory 1 town", 
 					() => ctx.Invaders.Destroy( 1, Invader.Town ), 
-					ctx.Tokens.Has(Invader.Town) && ctx.YouHave("3 earth")
+					ctx.Tokens.Has(Invader.Town) && await ctx.YouHave("3 earth")
 				)
 			);
 		}

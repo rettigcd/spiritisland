@@ -21,7 +21,7 @@ namespace SpiritIsland.BranchAndClaw {
 			await ctx.AddBlight();
 
 			// if you have 4 fire, 3 earth:
-			if(ctx.YouHave( "4 fire,3 earth" )) {
+			if(await ctx.YouHave( "4 fire,3 earth" )) {
 				// Destory all invaders.
 				await ctx.Invaders.DestroyAny( int.MaxValue, Invader.City, Invader.Town, Invader.Explorer );
 				// Add 1 wilds.

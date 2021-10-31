@@ -12,7 +12,7 @@ namespace SpiritIsland.BranchAndClaw {
 			if(ctx.Space.Terrain.IsOneOf(Terrain.Jungle,Terrain.Sand)) // ??? should we be using Power Filters here?
 				await ctx.RemoveBlight();
 
-			if(ctx.YouHave("3 plant"))
+			if(await ctx.YouHave("3 plant"))
 				ctx.Wilds.Count++;
 
 		}

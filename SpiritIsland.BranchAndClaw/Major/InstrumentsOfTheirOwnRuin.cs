@@ -8,9 +8,9 @@ namespace SpiritIsland.BranchAndClaw {
 		[MajorCard( "Instruments of Their Own Ruin", 4, Element.Sun, Element.Fire, Element.Air, Element.Animal )]
 		[Fast]
 		[FromSacredSite( 1 )]
-		static public Task ActAsync( TargetSpaceCtx ctx ) {
+		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
-			return ctx.SelectActionOption( 
+			await ctx.SelectActionOption( 
 				new ActionOption(
 					"Add strife. Invaders with strife deal Damage to other Invaders in target land.", 
 					() => AddStrifeThenStrifedInvadersDamageUnstrifed( ctx )
@@ -18,7 +18,7 @@ namespace SpiritIsland.BranchAndClaw {
 				, new ActionOption(
 					"Instead, if Invaders Ravage in target land, damage invaders in adjacent lands instead of dahan"
 					, () => DuringRavage_InvadersDamageInvadersInAdjacentLandsInsteadOfDahan( ctx )
-					,ctx.YouHave("4 sun,2 fire,2 animal" )
+					, await ctx.YouHave("4 sun,2 fire,2 animal" )
 				)
 			);
 

@@ -19,6 +19,9 @@ namespace SpiritIsland {
 	};
 
 	public static class ElementList {
+
+		public static readonly Element[] AllElements = new Element[] { Element.Sun, Element.Moon, Element.Air, Element.Fire, Element.Water, Element.Earth, Element.Plant, Element.Animal };
+
 		public static Element[] Parse( string elementFormat ) {
 			var items = new List<Element>();
 			foreach(var singleElementType in elementFormat.Split( ',' )) {

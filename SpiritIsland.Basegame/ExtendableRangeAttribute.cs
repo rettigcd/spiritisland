@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 
@@ -14,8 +15,8 @@ namespace SpiritIsland.Basegame {
 
 		public override string RangeText => "+"+extension;
 
-		protected override int CalcRange( SpiritGameStateCtx ctx ) => range
-			+ (ctx.YouHave( triggeringElements ) ? extension : 0);
+		protected override async Task<int> CalcRange( SpiritGameStateCtx ctx ) => range
+			+ (await ctx.YouHave( triggeringElements ) ? extension : 0);
 
 		public override LandOrSpirit LandOrSpirit => LandOrSpirit.Land;
 

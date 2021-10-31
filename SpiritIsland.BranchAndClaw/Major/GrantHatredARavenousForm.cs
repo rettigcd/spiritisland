@@ -26,7 +26,7 @@ namespace SpiritIsland.BranchAndClaw {
 				ctx.Beasts.Count++;
 
 			// if you have 4 moon, 2 fire
-			if(ctx.YouHave("4 moon,2 fire" )) {
+			if(await ctx.YouHave("4 moon,2 fire")) {
 				// add 1 strife in up to 3 adjacent lands.
 				var tokenSpaces = ctx.Adjacent
 					.Where(s => ctx.Target(s).HasInvaders)

@@ -2,12 +2,14 @@
 
 namespace SpiritIsland {
 
-	// !!! if this is used from the presence tracks, could place this directly on the Track.Action property
+	/// <summary>
+	/// Used to replace 'Any' element with a specific element.
+	/// </summary>
 	public class SelectAnyElements : IActionFactory {
 
 		readonly int count;
 
-		public SelectAnyElements(int count ) {
+		public SelectAnyElements( int count ) {
 			this.count = count;
 		}
 
@@ -17,9 +19,7 @@ namespace SpiritIsland {
 
 		public async Task ActivateAsync( Spirit self, GameState _ ) {
 
-			var elements = new Element[] { Element.Sun, Element.Moon, Element.Air, Element.Fire, Element.Water, Element.Earth, Element.Plant, Element.Animal };
-
-			var newElements = await self.SelectElements( count, elements );
+			var newElements = await self.SelectElements( count, ElementList.AllElements );
 			foreach(var newEl in newElements)
 				++self.Elements[newEl];
 			

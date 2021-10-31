@@ -14,7 +14,7 @@ namespace SpiritIsland.BranchAndClaw {
 			ctx.Other.AddCardToHand( card );
 
 			// if 2 of each element,
-			if(ctx.YouHave( "2 sun,2 moon,2 fire,2 air,2 water,2 earth,2 plant,2 animal" )) {
+			if(await ctx.YouHave("2 sun,2 moon,2 fire,2 air,2 water,2 earth,2 plant,2 animal" )) {
 				// target spirit may now play the major power they keep by:
 				//    * paying half its cost (round up) OR
 				int cost = (card.Cost + card.Cost%2)/2;

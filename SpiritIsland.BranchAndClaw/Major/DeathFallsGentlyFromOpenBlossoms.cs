@@ -17,7 +17,7 @@ namespace SpiritIsland.BranchAndClaw {
 				ctx.Disease.Count++;
 
 			// if 3 air and 3 plant:  
-			if( ctx.YouHave("3 air,3 plant" )) {
+			if( await ctx.YouHave("3 air,3 plant")) {
 				// 3 fear.
 				ctx.AddFear(3);
 				// Add 1 disease to 2 adjacent lands with invaders.

@@ -25,7 +25,7 @@ namespace SpiritIsland.BranchAndClaw {
 			await ctx.PushUpTo(2, TokenType.Beast.Generic);
 
 			// if you have 2 sun 2 moon 3 animal
-			if(ctx.YouHave("2 sun,2moon,3 animal" )) {
+			if(await ctx.YouHave("2 sun,2moon,3 animal")) {
 				//   1 damage in adjacent land without blight,
 				//   and +1 damage per beast there
 				var noBlight = await ctx.SelectAdjacentLand( "1 Damage in land w/o blight", ctx=>!ctx.HasBlight);

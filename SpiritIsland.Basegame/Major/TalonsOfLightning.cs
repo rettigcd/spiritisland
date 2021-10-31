@@ -15,7 +15,7 @@ namespace SpiritIsland.Basegame {
 			// 5 damage
 			await ctx.DamageInvaders(5);
 
-			if( ctx.YouHave( "3 fire,3 air" )){
+			if( await ctx.YouHave("3 fire,3 air" )){
 				// destory 1 town in each adjacent land
 				foreach(var neighbor in ctx.Space.Adjacent)
 					await ctx.Target(neighbor).Invaders.Destroy( 1,Invader.Town);

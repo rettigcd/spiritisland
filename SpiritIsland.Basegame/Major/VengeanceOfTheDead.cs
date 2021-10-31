@@ -8,7 +8,7 @@ namespace SpiritIsland.Basegame {
 	class VengeanceOfTheDead {
 
 		[MajorCard("Vengeance of the Dead",3,Element.Moon,Element.Fire,Element.Animal), Fast, FromPresence(3)]
-		static public Task ActAsync(TargetSpaceCtx ctx) {
+		static public async Task ActAsync(TargetSpaceCtx ctx) {
 			// 3 fear
 			ctx.AddFear(3);
 
@@ -24,11 +24,10 @@ namespace SpiritIsland.Basegame {
 			ctx.GameState.Tokens.TokenDestroyed.ForThisRound( DealVengenceDamage );
 
 			// if you have 3 animal
-			if(ctx.YouHave( "3 animal" ))
+			if(await ctx.YouHave( "3 animal" ))
 				// damage may be dealt into adjacent lands
 				landsWeCanApplyTheDamageTo.AddRange( ctx.Adjacent );
 
-			return Task.CompletedTask;
 		}
 
 		static async Task DistributeDamageToLands( TargetSpaceCtx ctx, List<Space> newDamageLands, int additionalDamage ) {

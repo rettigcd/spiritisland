@@ -11,7 +11,7 @@ namespace SpiritIsland.Basegame {
 			await ApplyEffect( ctx );
 
 			// if you have 3 air 3 water 2 animal, repeat this power
-			if(ctx.YouHave( "3 air,2 water,2 animal" )) {
+			if(await ctx.YouHave("3 air,2 water,2 animal")) {
 				var secondTarget = await ctx.SelectTargetSpace(null, From.SacredSite, null, 3,Target.Any);
 				await ApplyEffect( secondTarget );
 			}

@@ -12,7 +12,7 @@ namespace SpiritIsland.Basegame {
 			// 2 damage per dahan in target land
 			await ctx.DamageInvaders(2*ctx.Dahan.Count);
 
-			if( ctx.YouHave("3 sun,2 animal") ){
+			if( await ctx.YouHave("3 sun,2 animal") ){
 
 				// you may push up to 2 dahan.
 				var pushedToLands = await ctx.PushUpToNDahan(2);

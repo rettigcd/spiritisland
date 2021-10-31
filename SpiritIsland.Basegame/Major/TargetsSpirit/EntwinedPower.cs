@@ -22,7 +22,7 @@ namespace SpiritIsland.Basegame {
 			} );
 
 			// if you have 2 water, 4 plant, 
-			if(ctx.YouHave( "2 water,4 plant" )) {
+			if(await ctx.YouHave("2 water,4 plant")) {
 				// you and target spirit each gain 3 energy
 				ctx.Self.Energy += 3;
 				ctx.Other.Energy += 3;

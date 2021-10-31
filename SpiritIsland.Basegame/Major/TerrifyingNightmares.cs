@@ -16,7 +16,7 @@ namespace SpiritIsland.Basegame {
 			await ctx.PushUpTo(4, Invader.Explorer,Invader.Town);
 
 			// if you have 4 moon, +4 fear
-			if( ctx.YouHave("4 moon") )
+			if( await ctx.YouHave("4 moon") )
 				ctx.AddFear(4);
 
 		}

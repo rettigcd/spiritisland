@@ -23,7 +23,7 @@ namespace SpiritIsland.BranchAndClaw {
 			ctx.RemoveInvader(Invader.Explorer);
 
 			// if you have 3 sun and 3 moon, invaders do -6 damage on their ravage.
-			if(ctx.YouHave( "3 sun,3 moon" ))
+			if(await ctx.YouHave("3 sun,3 moon"))
 				ctx.Defend( 6 ); // !! not exactly correct but close
 
 			// Then, Invaders in target land ravage.
