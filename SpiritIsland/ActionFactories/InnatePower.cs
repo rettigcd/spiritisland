@@ -72,18 +72,20 @@ namespace SpiritIsland {
 
 		public async Task ActivateAsync( SpiritGameStateCtx ctx ) {
 
-			CountDictionary<Element> actionElements = ctx.Self.Elements.Clone();;
-
-			await ActivateInnerAsync( ctx, actionElements );
-			if( ShouldRepeat(actionElements) )
-				await ActivateInnerAsync( ctx, actionElements );
+			await ActivateInnerAsync( ctx );
+			if( await ShouldRepeat(ctx.Self) )
+				await ActivateInnerAsync( ctx );
 		}
 
 		public CountDictionary<Element>[] GetTriggerThresholds() => elementListByMethod.Select(a=>a.Attr.Elements).ToArray();
 
 		public IEnumerable<InnateOptionAttribute> Options => elementListByMethod.Select(x=>x.Attr);
 
-		async Task ActivateInnerAsync( SpiritGameStateCtx spiritCtx, CountDictionary<Element> actionElements ) {
+		async Task ActivateInnerAsync( SpiritGameStateCtx spiritCtx ) {
+
+			// !!! Targetting a space first, then declining all of the elemental upgrades
+			// !!! we should resolve elemental upgrades first, then pick the target.
+
 			// if we are using prepared, verify
 			if(! await speedAttr.IsActiveFor(spiritCtx.GameState.Phase,spiritCtx.Self)) return;
 
@@ -97,11 +99,11 @@ namespace SpiritIsland {
 				.Select(x=>x.ToArray() );
 
 			foreach(MethodTuple[] grp in groups)
-				await ActivateGroup( spiritCtx.Self, actionElements, targetCtx, grp );
+				await ActivateGroup( spiritCtx.Self, targetCtx, grp );
 
 		}
 
-		static async Task ActivateGroup( Spirit self, CountDictionary<Element> actionElements, object ctx, MethodTuple[] grp ) {
+		static async Task ActivateGroup( Spirit self, object ctx, MethodTuple[] grp ) {
 
 			MethodInfo method = null;
 
@@ -113,7 +115,7 @@ namespace SpiritIsland {
 				await (Task)method.Invoke( null, new object[] { ctx } );
 		}
 
-		bool ShouldRepeat( CountDictionary<Element> elements ) => repeatAttr != null && repeatAttr.Repeat( elements );
+		async Task<bool> ShouldRepeat( Spirit spirit ) => repeatAttr != null && await repeatAttr.CanRepeat( spirit );
 
 		public static string[] Tokenize( string s ) {
 

@@ -1,12 +1,16 @@
 ﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.JaggedEarth.Spirits.ShiftingMemory {
+
 	public class StudyTheInvadersFears {
-		[SpiritCard("Study the Invaders' Fears",0,Element.Moon,Element.Air,Element.Animal),FromPresence(0,Target.TownOrExplorer)]
-		static public Task ActAsync(TargetSpaceCtx _ ) { 
+		[SpiritCard("Study the Invaders' Fears",0,Element.Moon,Element.Air,Element.Animal), Fast, FromPresence(0,Target.TownOrCity)]
+		static public async Task ActAsync(TargetSpaceCtx ctx ) { 
 			// 2 fear.
+			ctx.AddFear(2);
+
 			// Turn the top card of the Fear Deck face-up.
-			return Task.CompletedTask;
+			var cardToShow = ctx.GameState.Fear.Deck.Peek();
+			await ctx.Self.ShowFearCardToUser( "Done", cardToShow );
 		}
 
 	}

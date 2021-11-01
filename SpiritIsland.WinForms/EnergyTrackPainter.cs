@@ -209,6 +209,7 @@ namespace SpiritIsland.WinForms {
 				"Reclaim(1)" => "reclaim 1",
 				"Push1DahanFromLands" => "Push1dahan",
 				"DrawMinorOnceAndPlayExtraCardThisTurn" => "Cardplayplusone",
+				"DiscardElementsForCardPlay" => "DiscardElementsForCardPlay",
 				_ => track.Action.Name
 			};
 			var bitmap = ResourceImages.Singleton.GetIcon( iconName );

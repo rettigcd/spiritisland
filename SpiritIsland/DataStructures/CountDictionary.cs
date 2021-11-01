@@ -67,7 +67,7 @@ namespace SpiritIsland {
 		public CountDictionary<K> Union( IDictionary<K, int> other ) {
 			var result = this.Clone();
 			foreach(var key in other.Keys)
-				this[key] += other[key];
+				result[key] += other[key];
 			return result;
 		}
 

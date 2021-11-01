@@ -34,8 +34,28 @@ namespace SpiritIsland {
 
 		CountDictionary<Element> actionElements; // null unless we are in the middle of an action
 
+		public async Task PrepareElement() {
+			// This is only used by Shifting Memories
+			var el = await this.SelectElement("Prepare Element", ElementList.AllElements);
+			PreparedElements[el]++;
+		}
+
+		public async Task<CountDictionary<Element>> DiscardElements(int totalNumToRemove ) {
+			var discarded = new CountDictionary<Element>();
+
+			int index = totalNumToRemove;
+			while(index++ < totalNumToRemove) {
+				Element el = await this.SelectElement($"Select element to discard for card play ({index} of {totalNumToRemove})",PreparedElements.Keys, Present.Done);
+				if( el == default ) break;
+				PreparedElements[el]--;
+				discarded[el]++;
+			}
+			return discarded;
+		}
+
 		public async Task<bool> HasElements( CountDictionary<Element> subset ) {
-			if( actionElements == null ) actionElements = Elements.Clone();
+			if( actionElements == null ) 
+				actionElements = Elements.Clone();
 			if( actionElements.Contains( subset ) ) return true;
 
 			// Check if we have prepared element markers to fill the missing elements
@@ -55,7 +75,6 @@ namespace SpiritIsland {
 			var els = PreparedElements.Any() ? Elements.Union(PreparedElements): Elements;
 			return els.Contains(subset);
 		}
-
 
 		#endregion
 
@@ -194,11 +213,19 @@ namespace SpiritIsland {
 			}
 		}
 
-		public void Forget( PowerCard cardToRemove ) {
+		public async Task ForgetPowerCard() {
+			var options = PurchasedCards.Union( Hand ).Union( DiscardPile )
+				.ToArray();
+			PowerCard cardToForget = await this.SelectPowerCard( "Select power card to forget", options, CardUse.Forget, Present.Always );
+			Forget( (PowerCard)cardToForget );
+		}
+
+		public virtual void Forget( PowerCard cardToRemove ) {
 			// A card can be in one of 3 places
 			// (1) Purchased / Active
 			if(PurchasedCards.Contains( cardToRemove )) {
-				foreach(var el in cardToRemove.Elements) Elements[el.Key]-=el.Value;// lose elements from forgotten card
+				foreach(var el in cardToRemove.Elements) 
+					Elements[el.Key]-=el.Value;// lose elements from forgotten card
 				PurchasedCards.Remove( cardToRemove );
 			}
 			// (2) Unpurchased, still in hand
@@ -237,6 +264,7 @@ namespace SpiritIsland {
 		}
 
 		protected virtual async Task TakeAction(IActionFactory factory, SpiritGameStateCtx ctx) {
+			actionElements = null; // make sure these are cleared out for every action
 			var oldActionGuid = CurrentActionId; // capture old
 			CurrentActionId = Guid.NewGuid(); // set new
 			try {
@@ -244,6 +272,7 @@ namespace SpiritIsland {
 				RemoveFromUnresolvedActions( factory );
 			} finally {
 				CurrentActionId = oldActionGuid; // restore
+				actionElements = null;
 			}
 		}
 
@@ -302,17 +331,20 @@ namespace SpiritIsland {
 		static readonly IPowerCardDrawer DefaultCardDrawer = new DrawFromDeck();
 		public IPowerCardDrawer CardDrawer { get; set; } = DefaultCardDrawer; // !!! public so tests can set it - find another way to set so we can make the set private
 
-		public Task<PowerCard> Draw( GameState gameState, Func<List<PowerCard>, Task> handleNotUsed ) => CardDrawer.Draw(this,gameState,handleNotUsed);
+		public Task<PowerCard> Draw( GameState gameState, Func<List<PowerCard>, Task> handleNotUsed ) 
+			=> CardDrawer.Draw(this,gameState,handleNotUsed);
 
-		/// <summary> short cut to CardDrawer.DrawMinor </summary>
-		public Task<PowerCard> DrawMinor( GameState gameState ) => CardDrawer.DrawMinor( this, gameState, null );
-		/// <summary> short cut to CardDrawer.DrawMajor </summary>
+		public Task<PowerCard> DrawMinor( GameState gameState ) 
+			=> CardDrawer.DrawMinor( this, gameState, null );
+
 		public Task<PowerCard> DrawMajor( GameState gameState, int numberToDraw=4, bool forgetCard=true ) 
 			=> CardDrawer.DrawMajor( this, gameState, null, forgetCard, numberToDraw ); // Instead of passing in null, could return Tupple with discard cards in it()
 
 		#endregion
 
-		public Guid CurrentActionId; // Used by Flame's Fury to detect new actions
+		// Used by Flame's Fury to detect new actions
+		// Used by Observe The Ever-Changing World to distinguish between actions
+		public Guid CurrentActionId; // !!! this might not work when we go to multi-player
 
 		#region Purchase Cards
 

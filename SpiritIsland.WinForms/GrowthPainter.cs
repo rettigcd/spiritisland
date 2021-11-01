@@ -33,6 +33,7 @@ namespace SpiritIsland.WinForms {
 		}
 
 		private void DrawAction( GrowthActionFactory action, RectangleF rect ) {
+			// !!! make this generic
 
 			switch(action.Name) {
 				case "ReclaimAll": ReclaimAll( rect ); break;
@@ -43,6 +44,8 @@ namespace SpiritIsland.WinForms {
 				case "GainEnergy(2)": GainEnergy( rect, 2 ); break;
 				case "GainEnergy(3)": GainEnergy( rect, 3 ); break;
 				case "GainEnergy(4)": GainEnergy( rect, 4 ); break;
+				case "GainEnergy(9)": GainEnergy( rect, 9 ); break;
+
 				case "GainEnergy(-3)": GainEnergy( rect, -3 ); break;
 				case "GainEnergy(-1)": GainEnergy( rect, -1 ); break;
 

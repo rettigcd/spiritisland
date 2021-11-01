@@ -21,14 +21,7 @@ namespace SpiritIsland.Basegame {
 				await new SpiritGameStateCtx( spirit, gs, Cause.Blight ).SelectActionOption(
 					"BLIGHT: Memory Fades to Dust",
 					new ActionOption("Destroy Presence",()=>gs.Destroy1PresenceFromBlightCard(spirit)),
-					new ActionOption("Forget Power card", async () => {
-						var card = await spirit.Select<PowerCard>( 
-							"Select card to forget.",
-							spirit.Hand.Union( spirit.DiscardPile ).ToArray(),
-							Present.Always
-						);
-						spirit.Forget( card );
-					} )
+					new ActionOption("Forget Power card", () => spirit.ForgetPowerCard() )
 				);
 
 		}

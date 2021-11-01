@@ -243,7 +243,7 @@ namespace SpiritIsland.WinForms {
 				OptionSelected?.Invoke(option);
 
 			if(SpiritLocation.Contains( clientCoord )) {
-				string msg = this.spirit.SpecialRules.Select(r=>r.ToString()).Join("\r\n");
+				string msg = this.spirit.SpecialRules.Select(r=>r.ToString()).Join("\r\n\r\n");
 				MessageBox.Show( msg );
 			}
 		}

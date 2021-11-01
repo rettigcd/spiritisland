@@ -12,6 +12,14 @@ namespace SpiritIsland {
 		public CountDictionary<Token> NotParticipating {  get; set; } = new CountDictionary<Token>();
 
 		public Func<RavageEngine, Task> RavageSequence = null; // null triggers default
+
+		public Func<DahanGroupBinding,int,int,Task> DestroyDahan = DefaultDestroyDahan;
+
+		static async Task DefaultDestroyDahan( DahanGroupBinding dahan, int count, int health ) {
+			if(count<=0) return;
+			await dahan.Destroy( count, health, Cause.Invaders );
+		}
+
 	}
 
 

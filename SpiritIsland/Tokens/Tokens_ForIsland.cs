@@ -39,8 +39,8 @@ namespace SpiritIsland {
 				this[ to ].Adjust( token, 1 );
 				return TokenMoved.InvokeAsync( gameStateForEventArgs, new TokenMovedArgs {
 					Token = token,
-					from = from,
-					to = to,
+					From = from,
+					To = to,
 					count = 1
 				} );
 			}
@@ -53,8 +53,8 @@ namespace SpiritIsland {
 			this[to].Dahan.Add( removedToken );
 			return TokenMoved.InvokeAsync( gameStateForEventArgs, new TokenMovedArgs {
 				Token = token,
-				from = from,
-				to = to,
+				From = from,
+				To = to,
 				count = 1
 			} );
 		}
@@ -92,7 +92,7 @@ namespace SpiritIsland {
 			tokens[token] -= countToDestroy;
 			return TokenDestroyed.InvokeAsync( gameStateForEventArgs, new TokenDestroyedArgs {
 				Token = token.Generic,
-				space = space,
+				Space = space,
 				count = countToDestroy,
 				Source = source
 			} );

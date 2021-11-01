@@ -3,6 +3,7 @@
 namespace SpiritIsland {
 
 	// end of round action
+	// used by: Unlock the Gates of Deepest power
 	public class ForgetCard {
 
 		readonly Spirit spirit;

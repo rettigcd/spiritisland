@@ -2,8 +2,8 @@
 
 	public class TokenMovedArgs {
 		public Token Token;
-		public Space from;
-		public Space to;
+		public Space From;
+		public Space To;
 		public int count;
 	};
 }

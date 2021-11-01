@@ -11,8 +11,8 @@ namespace SpiritIsland.Basegame {
 			ctx.GameState.Tokens.TokenMoved.ForThisRound( PushDahanOutOfOcean );
 			async Task PushDahanOutOfOcean( GameState gs, TokenMovedArgs args ) {
 				if(args.Token.Generic != TokenType.Dahan) return;
-				if(args.to.Terrain != Terrain.Ocean) return;
-				await ctx.Target(args.to).PushUpToNDahan( args.count );
+				if(args.To.Terrain != Terrain.Ocean) return;
+				await ctx.Target(args.To).PushUpToNDahan( args.count );
 			}
 
 			// target spirit gains 2 energy 

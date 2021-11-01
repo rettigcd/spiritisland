@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.JaggedEarth {
+
 	public class DrawMinorOnceAndPlayExtraCardThisTurn : GrowthActionFactory {
 
 		bool drewMinor = false;

@@ -87,12 +87,14 @@ namespace SpiritIsland {
 
 			// ! This special DamageDahan, uses the config to change dahan health points.
 
+			// !!! replace this dahan-hitpoint-hack with different tokens
+
 			// destroy dahan
 			var dahan = grp.Tokens.Dahan;
 			tracking.startingDahan = dahan.Count;
-			tracking.dahanDestroyed = Math.Min( dahanDamageTotal / cfg.DahanHitpoints, tracking.startingDahan ); // rounding down
+			tracking.dahanDestroyed = Math.Min( dahanDamageTotal / cfg.DahanHitpoints, tracking.startingDahan ); // rounding down, !!! if some of the dahan have previously taken damage, this # will be wrong
 			if(tracking.dahanDestroyed != 0)
-				await dahan.Destroy( tracking.dahanDestroyed, 2, Cause.Invaders );
+				await cfg.DestroyDahan( dahan, tracking.dahanDestroyed, 2 );
 
 			int leftOverDamage = dahanDamageTotal - tracking.dahanDestroyed * cfg.DahanHitpoints;
 			bool convert1To1HitPoint = leftOverDamage == cfg.DahanHitpoints - 1;

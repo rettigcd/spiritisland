@@ -14,7 +14,7 @@ namespace SpiritIsland.BranchAndClaw {
 			// The next time an invader is destroyed in target land this turn, 1 fear
 			bool addFear = true;
 			Task Add1MoreFearForFirstDestoryedInvader(GameState gs,TokenDestroyedArgs args ) {
-				if(addFear && args.space == ctx.Space && args.Token.IsOneOf(Invader.Town,Invader.City,Invader.Explorer) ){ // !! create an override .IsInvader()
+				if(addFear && args.Space == ctx.Space && args.Token.IsOneOf(Invader.Town,Invader.City,Invader.Explorer) ){ // !! create an override .IsInvader()
 					ctx.AddFear(1);
 					addFear = false;
 				}

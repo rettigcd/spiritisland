@@ -24,6 +24,7 @@
     <None Remove="images\icons\Coastal.png" />
     <None Remove="images\icons\Dahanicon.png" />
     <None Remove="images\icons\DahanOrInvaders.png" />
+    <None Remove="images\icons\DiscardElementsForCardPlay.png" />
     <None Remove="images\icons\Diseaseicon.png" />
     <None Remove="images\icons\Explorericon.png" />
     <None Remove="images\icons\Fasticon.png" />
@@ -40,6 +41,7 @@
     <None Remove="images\icons\Noblight.png" />
     <None Remove="images\icons\Ocean.png" />
     <None Remove="images\icons\Oneenergyfire.png" />
+    <None Remove="images\icons\PrepareElement.png" />
     <None Remove="images\icons\Presenceicon.png" />
     <None Remove="images\icons\Push1dahan.png" />
     <None Remove="images\icons\Pushfromocean.png" />
@@ -186,6 +188,7 @@
     <EmbeddedResource Include="images\icons\Coastal.png" />
     <EmbeddedResource Include="images\icons\Dahanicon.png" />
     <EmbeddedResource Include="images\icons\DahanOrInvaders.png" />
+    <EmbeddedResource Include="images\icons\DiscardElementsForCardPlay.png" />
     <EmbeddedResource Include="images\icons\Diseaseicon.png" />
     <EmbeddedResource Include="images\icons\Explorericon.png" />
     <EmbeddedResource Include="images\icons\Fasticon.png" />
@@ -202,6 +205,7 @@
     <EmbeddedResource Include="images\icons\Noblight.png" />
     <EmbeddedResource Include="images\icons\Ocean.png" />
     <EmbeddedResource Include="images\icons\Oneenergyfire.png" />
+    <EmbeddedResource Include="images\icons\PrepareElement.png" />
     <EmbeddedResource Include="images\icons\Presenceicon.png" />
     <EmbeddedResource Include="images\icons\Push1dahan.png" />
     <EmbeddedResource Include="images\icons\Pushfromocean.png" />
@@ -1499,6 +1503,12 @@
     <None Update="images\harbingers_of_the_lightning.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="images\je\spirit\boon_of_ancient_memories.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\spirit\elemental_teachings.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="images\je\spirit\gift_of_the_untamed_wild.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -1523,10 +1533,16 @@
     <None Update="images\je\spirit\scarred_and_stony_land.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="images\je\spirit\share_secrets_of_survival.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="images\je\spirit\softly_beckon_ever_inward.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\je\spirit\stubborn_solidity.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\spirit\study_the_invaders_fears.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\je\spirit\swallowed_by_the_wilderness.jpg">

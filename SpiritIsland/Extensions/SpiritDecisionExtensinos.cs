@@ -29,9 +29,9 @@ namespace SpiritIsland {
 		}
 
 		// switches type to Element
-		public static async Task<Element> SelectElement( this Spirit spirit, string prompt, IEnumerable<Element> elements ) {
-			var selection = await spirit.Select( prompt, elements.Select( x => new ItemOption<Element>( x ) ).ToArray(), Present.Always );
-			return ((ItemOption<Element>)selection).Item;
+		public static async Task<Element> SelectElement( this Spirit spirit, string prompt, IEnumerable<Element> elements, Present present = Present.Always ) {
+			var selection = await spirit.Select( prompt, elements.Select( x => new ItemOption<Element>( x ) ).ToArray(), present );
+			return selection is ItemOption<Element> el ? el.Item : Element.None;
 		}
 
 		/// <remarks>Elemental Boon, Spirits May Yet Dream, Select AnyElement</remarks>
@@ -61,17 +61,6 @@ namespace SpiritIsland {
 			if(numToMove.Count==0) return 0; // if there are no options, auto-return 0
 			var x = await spirit.SelectText( prompt, numToMove.ToArray(), Present.Always );
 			return int.Parse( x );
-		}
-
-		#endregion
-
-		#region Higher Level of abstraction / uses Spirit State
-
-		static public async Task ForgetPowerCard( this Spirit spirit ) {
-			var options = spirit.PurchasedCards.Union( spirit.Hand ).Union( spirit.DiscardPile )
-				.ToArray();
-			PowerCard cardToForget = await spirit.SelectPowerCard( "Select power card to forget", options, CardUse.Forget, Present.Always );
-			spirit.Forget( (PowerCard)cardToForget );
 		}
 
 		#endregion

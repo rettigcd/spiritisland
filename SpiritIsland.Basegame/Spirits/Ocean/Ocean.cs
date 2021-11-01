@@ -82,13 +82,13 @@ namespace SpiritIsland.Basegame {
 		}
 
 		async Task InvadersMoved(GameState gs, TokenMovedArgs args ) {
-			if(args.to.Terrain!=Terrain.Ocean) return;
+			if(args.To.Terrain!=Terrain.Ocean) return;
 			var grp = args.Token.Generic;
 
 			if( grp == Invader.City || grp == Invader.Town || grp == Invader.Explorer ) { // Could created an Invader subclass that is easier to test.
 				// Drown Invaders for points
 				drownedCount += args.Token.FullHealth;
-				await gs.Invaders.On( args.to, Cause.Ocean ).Destroy( 1,args.Token );
+				await gs.Invaders.On( args.To, Cause.Ocean ).Destroy( 1,args.Token );
 
 				int spiritCount = gs.Spirits.Length;
 				while(spiritCount <= drownedCount) {
