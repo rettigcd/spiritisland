@@ -32,7 +32,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Minor {
 				user.AssertDecisionX( "Select Power Option", "{Stop build - 1 fear / (Dahan or T/C)},Push up to 3 dahan", "{}" );
 			} else
 				//  And: done with fast (no more cards..)
-				user.IsDoneWith( Speed.Fast );
+				user.IsDoneWith( Phase.Fast );
 
 			// Then: space should have a building
 			spaceCtx.Tokens.InvaderSummary.ShouldBe( result );

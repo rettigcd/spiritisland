@@ -5,15 +5,17 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 	public class BoonOfVigor_Tests : SpiritCards_Tests {
 
-		public BoonOfVigor_Tests():base( new RiverSurges() ) { }
+		public BoonOfVigor_Tests():base( new RiverSurges() ) {
+		}
 
 		[Fact]
 		public void BoonOfVigor_TargetSelf() {
 
 			Given_GameWithSpirits( spirit );
+			gameState.Phase = Phase.Fast;
 
 			card = Given_PurchasedCard( BoonOfVigor.Name );
-			Assert_CardIsReady( card, Speed.Fast );
+			Assert_CardIsReady( card, Phase.Fast );
 
 			When_PlayingCard();
 
@@ -31,6 +33,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		public void BoonOfVigor_TargetOther( int expectedEnergyBonus ) {
 
 			Given_GameWithSpirits(spirit, new LightningsSwiftStrike());
+			gameState.Phase = Phase.Fast;
 
 			//  That: purchase N cards
 			var otherSpirit = gameState.Spirits[1];
@@ -38,7 +41,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			//   And: Purchased Boon of Vigor
 			card = Given_PurchasedCard(BoonOfVigor.Name);
-			Assert_CardIsReady(card,Speed.Fast);
+			Assert_CardIsReady(card,Phase.Fast);
 
 			When_PlayingCard();
 			
@@ -53,7 +56,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 		[Fact]
 		public void BoonOfVigor_Stats() {
-			Assert_CardStatus( PowerCard.For<BoonOfVigor>(), 0, Speed.Fast, "SWP" );
+			Assert_CardStatus( PowerCard.For<BoonOfVigor>(), 0, Phase.Fast, "SWP" );
 		}
 
 	}

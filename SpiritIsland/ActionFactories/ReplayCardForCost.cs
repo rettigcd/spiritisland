@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
+	/// <summary> Created during fast action.  Could be used during Fast or Slow </summary>
 	public class ReplayCardForCost : IActionFactory {
 
 		#region constructors
@@ -19,8 +20,8 @@ namespace SpiritIsland {
 
 		#endregion
 
-		public bool IsActiveDuring( Speed speed, CountDictionary<Element> _ ) 
-			=> speed == Speed.Fast || speed == Speed.Slow;
+		public bool CouldActivateDuring( Phase speed, Spirit _ ) 
+			=> speed == Phase.Fast || speed == Phase.Slow;
 
 		public string Name => "Replay Card for Cost" + Suffix;
 		string Suffix => maxCost == int.MaxValue ? "" : $" [max cost:{maxCost}]";
@@ -31,6 +32,7 @@ namespace SpiritIsland {
 
 			int maxCardCost = System.Math.Min( this.maxCost, ctx.Self.Energy );
 			var options = ctx.Self.UsedActions.OfType<PowerCard>() // can't use Discard pile because those cards are from prior rounds.  // !!! needs tests
+				.Where(card=>ctx.Self.IsActiveDuring(ctx.GameState.Phase,card)) 
 				.Where(card=>card.Cost<=maxCardCost)
 				.ToArray();
 			if(options.Length == 0) return;

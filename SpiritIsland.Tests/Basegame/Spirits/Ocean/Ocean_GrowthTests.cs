@@ -44,7 +44,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 				.Select(s=>s.Split('>'))
 				.ToDictionary(a=>a[0],a=>a[1]);
 
-			GatherPresenceIntoOcean gather = spirit.GetAvailableActions(Speed.Growth).OfType<GatherPresenceIntoOcean>().SingleOrDefault();
+			GatherPresenceIntoOcean gather = spirit.GetAvailableActions(Phase.Growth).OfType<GatherPresenceIntoOcean>().SingleOrDefault();
 
 			if(gather != null){
 				_ = gather.ActivateAsync( new SpiritGameStateCtx( spirit, gameState, Cause.Growth ) );
@@ -140,7 +140,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			// energy: 0 moon water 1 earth water 2
 			spirit.Presence.Energy.RevealedCount = revealedSpaces;
 			Assert_EnergyTrackIs( expectedEnergyGrowth );
-			await spirit.TriggerEnergyElementsAndReclaims(null);
+			await spirit.ApplyRevealedPresenceTracks(null);
 			Assert_BonusElements( elements );
 		}
 

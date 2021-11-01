@@ -151,7 +151,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			// energy:	1 animal plant 2 animal 3 4
 			spirit.Presence.Energy.RevealedCount = revealedSpaces;
 
-			await spirit.TriggerEnergyElementsAndReclaims(null);
+			await spirit.ApplyRevealedPresenceTracks(null);
 
 			Assert_PresenceTracksAre( expectedEnergyGrowth, 2 );
 			Assert_BonusElements( elements );

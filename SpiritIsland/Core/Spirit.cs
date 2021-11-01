@@ -32,6 +32,31 @@ namespace SpiritIsland {
 
 		public readonly CountDictionary<Element> PreparedElements = new CountDictionary<Element>();
 
+		CountDictionary<Element> actionElements; // null unless we are in the middle of an action
+
+		public async Task<bool> HasElements( CountDictionary<Element> subset ) {
+			if( actionElements == null ) actionElements = Elements.Clone();
+			if( actionElements.Contains( subset ) ) return true;
+
+			// Check if we have prepared element markers to fill the missing elements
+			if(PreparedElements.Any()) {
+				var missing = subset.Except(Elements);
+				if(PreparedElements.Contains(missing) && await this.UserSelectsFirstText($"Meet elemental threshold:"+subset.ToString(), "Yes, use prepared elements", "No, I'll pass.")) {
+					foreach(var pair in missing)
+						PreparedElements[pair.Key] -= pair.Value;
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		public bool CouldHaveElements( CountDictionary<Element> subset ) {
+			var els = PreparedElements.Any() ? Elements.Union(PreparedElements): Elements;
+			return els.Contains(subset);
+		}
+
+
 		#endregion
 
 		#region Growth
@@ -55,7 +80,7 @@ namespace SpiritIsland {
 				return option.GrowthActions[0].ActivateAsync( ctx );
 			else {
 				Grow( option );
-				return ResolveActions( Speed.Growth, Present.Always, ctx );
+				return ResolveActions( Phase.Growth, Present.Always, ctx );
 			}
 		}
 
@@ -83,12 +108,31 @@ namespace SpiritIsland {
 				await GrowAndResolve( option, gameState );
 			}
 
-			await TriggerEnergyElementsAndReclaims( gameState );
+			await ApplyRevealedPresenceTracks( gameState );
+
+		}
+
+		public async Task ApplyRevealedPresenceTracks(GameState gs) {
+
+			var ctx = new SpiritGameStateCtx(this,gs,Cause.Growth);
+
+			foreach(var actions in Presence.RevealedActions)
+				await actions.ActivateAsync( ctx );
+
+			// Energy
+			Energy += EnergyPerTurn;
+			// Elements
+			Presence.AddElements( Elements );
+
+			int anyCount = Elements[Element.Any];
+			Elements[Element.Any] = 0; // we can't draw these in our activated element list
+			if(anyCount > 0)
+				AddActionFactory( new SelectAnyElements( anyCount ) );
 
 		}
 
 		// !!! Seems like this should be private / protected and not called from outside.
-		public async Task ResolveActions( Speed speed, Present present, SpiritGameStateCtx ctx ) {
+		public async Task ResolveActions( Phase speed, Present present, SpiritGameStateCtx ctx ) {
 
 			IActionFactory[] factoryOptions;
 
@@ -121,25 +165,20 @@ namespace SpiritIsland {
 
 		public List<PowerCard> Hand = new List<PowerCard>();	// in hand
 		public List<PowerCard> PurchasedCards = new List<PowerCard>();		// paid for
-
-		// Cards are not transferred to discard pile until end of turn because we need to keep track of their elements.
-		public List<PowerCard> DiscardPile = new List<PowerCard>();
+		public List<PowerCard> DiscardPile = new List<PowerCard>(); // Cards are not transferred to discard pile until end of turn because we need to keep track of their elements.
 
 		readonly List<IActionFactory> availableActions = new List<IActionFactory>();
-		readonly List<IActionFactory> usedActions = new List<IActionFactory>();
-		readonly List<InnatePower> usedInnates = new List<InnatePower>();
+		readonly HashSet<IActionFactory> usedActions = new HashSet<IActionFactory>();
+		readonly List<InnatePower>       usedInnates = new List<InnatePower>();
 
-		public void Forget( PowerCard cardToRemove ) {
-			// A card can be in one of 3 places
-			// (1) Purchased / Active
-			if(PurchasedCards.Contains( cardToRemove )) {
-				foreach(var el in cardToRemove.Elements) --Elements[el];// lose elements from forgotten card
-				PurchasedCards.Remove( cardToRemove );
+		// so spirits can replay used cards or collect them instead of discard
+		public IEnumerable<IActionFactory> UsedActions => usedActions;
+
+		public virtual IEnumerable<IActionFactory> GetAvailableActions(Phase speed) {
+			foreach(var action in AvailableActions) {
+				if( IsActiveDuring( speed, action ) )
+					yield return action;
 			}
-			// (2) Unpurchased, still in hand
-			Hand.Remove( cardToRemove );
-			// (3) used, discarded
-			DiscardPile.Remove( cardToRemove );
 		}
 
 		// Holds Fast and Slow actions,
@@ -155,21 +194,20 @@ namespace SpiritIsland {
 			}
 		}
 
-		// so spirits can replay used cards or collect them instead of discard
-		public IEnumerable<IActionFactory> UsedActions => usedActions.Distinct();  // distinct incase played twice
-
-		public Speed LastSpeedRequested; // trying to capture what phase spirit is in.
-
-		public virtual IEnumerable<IActionFactory> GetAvailableActions(Speed speed) {
-			LastSpeedRequested = speed;
-			foreach(var action in AvailableActions) {
-				if(IsActiveDuring( speed, action ))
-					yield return action;
+		public void Forget( PowerCard cardToRemove ) {
+			// A card can be in one of 3 places
+			// (1) Purchased / Active
+			if(PurchasedCards.Contains( cardToRemove )) {
+				foreach(var el in cardToRemove.Elements) Elements[el.Key]-=el.Value;// lose elements from forgotten card
+				PurchasedCards.Remove( cardToRemove );
 			}
+			// (2) Unpurchased, still in hand
+			Hand.Remove( cardToRemove );
+			// (3) used, discarded
+			DiscardPile.Remove( cardToRemove );
 		}
 
-		public bool IsActiveDuring(Speed speed, IActionFactory card) => card.IsActiveDuring(speed,Elements);
-
+		public bool IsActiveDuring(Phase speed, IActionFactory actionFactory) => actionFactory.CouldActivateDuring( speed, this );
 
 		/// <summary>
 		/// Removes it from the Unresolved-list
@@ -188,27 +226,14 @@ namespace SpiritIsland {
 
 		}
 
-		public async Task TriggerEnergyElementsAndReclaims(GameState gs) {
-
-			var ctx = new SpiritGameStateCtx(this,gs,Cause.Growth);
-
-			foreach(var actions in Presence.RevealedActions)
-				await actions.ActivateAsync( ctx );
-
-			// Energy
-			Energy += EnergyPerTurn;
-			// Elements
-			Presence.AddElements( Elements );
-
-			int anyCount = Elements[Element.Any];
-			Elements[Element.Any] = 0; // we can't draw these in our activated element list
-			if(anyCount > 0)
-				AddActionFactory( new SelectAnyElements( anyCount ) );
-
-		}
 
 		public void AddActionFactory( IActionFactory factory ) {
 			availableActions.Add( factory );
+		}
+
+		public Spirit UsePowerProgression() {
+			CardDrawer = GetPowerProgression();
+			return this;
 		}
 
 		protected virtual async Task TakeAction(IActionFactory factory, SpiritGameStateCtx ctx) {
@@ -220,11 +245,6 @@ namespace SpiritIsland {
 			} finally {
 				CurrentActionId = oldActionGuid; // restore
 			}
-		}
-
-		public Spirit UsePowerProgression() {
-			CardDrawer = GetPowerProgression();
-			return this;
 		}
 
 		protected virtual PowerProgression GetPowerProgression() => throw new NotImplementedException();
@@ -254,6 +274,8 @@ namespace SpiritIsland {
 
 		public abstract string Text { get; }
 
+		abstract public SpecialRule[] SpecialRules { get; }
+
 		public virtual InnatePower[] InnatePowers { get; set; } = Array.Empty<InnatePower>();
 
 		public void Initialize( Board board, GameState gameState ){
@@ -274,8 +296,6 @@ namespace SpiritIsland {
 			Elements.Clear();
 		}
 
-		abstract public SpecialRule[] SpecialRules { get; }
-
 		// pluggable, draw power card, or powerprogression
 		#region Draw Card
 
@@ -293,6 +313,8 @@ namespace SpiritIsland {
 		#endregion
 
 		public Guid CurrentActionId; // Used by Flame's Fury to detect new actions
+
+		#region Purchase Cards
 
 		// Purchase 1: select full # of cards from hand
 		public async Task PurchasePlayableCards() {
@@ -341,10 +363,13 @@ namespace SpiritIsland {
 			Hand.Remove( card );
 			PurchasedCards.Add( card );
 			Energy -= card.Cost;
-			Elements.AddRange( card.Elements );
+			foreach(var el in card.Elements )
+				Elements[el.Key] += el.Value;
 
 			AddActionFactory( card );
 		}
+
+		#endregion
 
 		#region Save/Load Memento
 		public virtual IMemento<Spirit> SaveToMemento() => new Memento(this);
@@ -426,21 +451,6 @@ namespace SpiritIsland {
 
 		#endregion
 
-
 	}
-
-
-	public class SpecialRule {
-
-		readonly string title;
-		readonly string description;
-
-		public SpecialRule(string title, string description) {
-			this.title = title;
-			this.description = description;
-		}
-		public override string ToString() => title + " - " + description;
-
-	} 
 
 }

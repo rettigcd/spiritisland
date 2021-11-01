@@ -22,8 +22,8 @@ namespace SpiritIsland {
 
 		#endregion
 
-		public bool IsActiveDuring( Speed speed, CountDictionary<Element> _ ) 
-			=> speed == Speed.Fast || speed == Speed.Slow;
+		public bool CouldActivateDuring( Phase speed, Spirit _ ) 
+			=> speed == Phase.Fast || speed == Phase.Slow;
 
 		public string Name => "Replay Card" + Suffix;
 		string Suffix => maxCost == int.MaxValue ? "" : $" [max cost:{maxCost}]";
@@ -33,7 +33,7 @@ namespace SpiritIsland {
 
 			var options = ctx.Self.UsedActions.OfType<PowerCard>() // not using Discard Pile because those cards are from previous rounds
 				.Where(card=>card.Cost <= maxCost)
-				.Where(card=>ctx.Self.IsActiveDuring(ctx.Self.LastSpeedRequested,card)) 
+				.Where(card=>ctx.Self.IsActiveDuring(ctx.GameState.Phase,card)) 
 				.ToArray(); 
 			if(options.Length == 0) return;
 

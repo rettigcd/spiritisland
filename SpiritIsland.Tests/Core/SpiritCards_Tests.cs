@@ -37,17 +37,17 @@ namespace SpiritIsland.Tests {
 			}
 		}
 
-		static protected void Assert_CardStatus( PowerCard card, int expectedCost, Speed expectedSpeed, string expectedElements ) {
+		static protected void Assert_CardStatus( PowerCard card, int expectedCost, Phase expectedSpeed, string expectedElements ) {
 			Assert.Equal( expectedCost, card.Cost );
 			Assert.Equal( expectedSpeed, card.Speed );
 
 			var cardElements = card.Elements
-				.Select(x=> GrowthTests.ElementChars[x]);
+				.Select(x=> GrowthTests.ElementChars[x.Key]);
 			Assert.Equal( expectedElements, string.Join("",cardElements));
 
 		}
 
-		protected void Assert_CardIsReady( PowerCard card, Speed speed ) {
+		protected void Assert_CardIsReady( PowerCard card, Phase speed ) {
 			Assert.Contains(card, spirit.GetAvailableActions(speed).OfType<PowerCard>().ToList());
 		}
 

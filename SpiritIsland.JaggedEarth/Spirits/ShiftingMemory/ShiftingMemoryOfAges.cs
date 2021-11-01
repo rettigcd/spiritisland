@@ -48,13 +48,12 @@ namespace SpiritIsland.JaggedEarth.Spirits.ShiftingMemory {
 
 	// Challenges / Tasks
 
-	// 3: When showing Fast / Slow Actions, check if spending a marker would allow triggering an innate.
-		// If there is an innate that runs this speed, and if there is a tier we can reach by spending markers.
+	// 1: When showing Fast / Slow Actions, check if spending a marker would allow triggering an innate.
+	// If there is an innate that runs this speed, and if there is a tier we can reach by spending markers.
 
-	// 4: create Discard 2 elements for +1 card play action.
+	// 2: create Discard 2 elements for +1 card play action.
 
-	// 5: Convert Any-Element to use this Ask-When-You-Need-It instead of force choosing.
+	// 3a: Draw Prepare (energy) track
+	// 3b: Draw Discard 2 element markers for +1 card play
 
-	// 6: Draw Prepare (energy) track
-	// 7: Draw Discard 2 element markers for +1 card play
 }

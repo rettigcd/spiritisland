@@ -35,6 +35,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 		[InlineData( true, "A0,A1,A2" )]
 		public void TargettingOceanAsWetLand(bool hasOcean,string expectedOptions ) {
 			var gs = GetGame( hasOcean );
+			gs.Phase = Phase.Fast;
+
 			river.Presence.Move( board[5], board[2] ); // move it to A2
 			Assert_Options( "A2", river.Presence.Spaces, "river starting presence" );
 

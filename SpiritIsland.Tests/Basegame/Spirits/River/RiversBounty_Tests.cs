@@ -18,6 +18,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			//   And: a game on Board-A
 			board = Board.BuildBoardA();
 			gameState.Island = new Island( board );
+			gameState.Phase = Phase.Slow;
 
 			//   And: Presence on A4
 			spirit.Presence.PlaceOn( board[4] );
@@ -28,14 +29,14 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			spirit.PurchaseAvailableCards_Test( card );
 
 			// Jump to slow
-			Assert_CardIsReady( card, Speed.Slow );
+			Assert_CardIsReady( card, Phase.Slow );
 
 		}
 
 		[Fact]
 		public void Stats() {
 			var card = PowerCard.For<RiversBounty>();
-			Assert_CardStatus( card, 0, Speed.Slow, "SWB" );
+			Assert_CardStatus( card, 0, Phase.Slow, "SWB" );
 		}
 
 

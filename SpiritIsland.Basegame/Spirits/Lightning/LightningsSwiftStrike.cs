@@ -88,13 +88,13 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 			usedAirForFastCount = 0;
 		}
 
-		public override IEnumerable<IActionFactory> GetAvailableActions( Speed speed ) {
+		public override IEnumerable<IActionFactory> GetAvailableActions( Phase speed ) {
 
-			bool canMakeSlowFast = speed == Speed.Fast 
+			bool canMakeSlowFast = speed == Phase.Fast 
 				&& Elements[Element.Air] > usedAirForFastCount;
 
 			foreach(var h in AvailableActions)
-				if(IsActiveDuring( speed, h ) || canMakeSlowFast && IsActiveDuring( Speed.Slow, h ) )
+				if(IsActiveDuring( speed, h ) || canMakeSlowFast && IsActiveDuring( Phase.Slow, h ) )
 					yield return h;
 
 		}
@@ -103,7 +103,7 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 
 			// we can decrement any time a slow card is used,
 			// even during slow because we no longer care about this
-			if(factory.IsActiveDuring(Speed.Slow, Elements))
+			if(factory.CouldActivateDuring(Phase.Slow, this))
 				++usedAirForFastCount;
 
 			return base.TakeAction(factory,ctx);

@@ -9,6 +9,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 		[Fact]
 		public async Task DeadDahanDoDamage() {
 
+			gs.Phase = Phase.Fast;
+
 			// Disable destroying presence
 			gs.DetermineAddBlightEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
 

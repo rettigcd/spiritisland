@@ -28,7 +28,7 @@ namespace SpiritIsland {
 
 		public string Description { get; }
 
-		public Element[] Elements { get; }
+		public CountDictionary<Element> Elements { get; }
 
 		public AttributePurpose Purpose { get; }
 

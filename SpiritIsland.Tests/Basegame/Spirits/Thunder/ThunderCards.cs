@@ -1,5 +1,7 @@
 ﻿using SpiritIsland.Basegame;
+using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 
@@ -21,7 +23,18 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 		}
 
 		protected void When_ActivateCard( string cardName ) {
-			_ = spirit.Hand.Single( x => x.Name == cardName ).ActivateAsync( new SpiritGameStateCtx( spirit, gs, Cause.Power ));
+
+			async Task Run() {
+				try {
+					await spirit.Hand.Single( x => x.Name == cardName ).ActivateAsync( new SpiritGameStateCtx( spirit, gs, Cause.Power ));
+				}
+				catch(Exception ex) {
+					_ = ex.ToString();
+				}
+			}
+
+
+			_ = Run();
 		}
 
 		protected readonly Spirit spirit;

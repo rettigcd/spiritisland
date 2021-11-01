@@ -16,6 +16,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		public void FlashFloods_Inland() {
 
 			Given_GameWithSpirits( spirit );
+			gameState.Phase = Phase.Fast;
+
 
 			//   And: a game on Board-A
 			var board = Board.BuildBoardA();
@@ -52,7 +54,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// Given: River
 			//   And: a game on Board-A
 			var board = Board.BuildBoardA();
-			gameState = new GameState(spirit,board);
+			gameState = new GameState( spirit, board ) {
+				Phase = Phase.Fast
+			};
 			//   And: Presence on A2 (city/costal)
 			var presenceSpace = board[2];
 			spirit.Presence.PlaceOn(presenceSpace);
@@ -84,16 +88,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			gameState.Assert_Invaders(targetSpace, "1C@1,1T@2,1E@1" );
 		}
 
-		//[Fact(Skip = "not implemented")]
-		//public void OnCoast_Damage2DifferntInvaders(){}
-
-		//[Fact(Skip = "not implemented")]
-		//public void CanDamage_AlreadyDamagedCities(){}
-
-
 		[Fact]
 		public void FlashFloods_Stats() {
-			Assert_CardStatus( flashFloodsCard, 2, Speed.Fast, "SW" );
+			Assert_CardStatus( flashFloodsCard, 2, Phase.Fast, "SW" );
 		}
 
 	}

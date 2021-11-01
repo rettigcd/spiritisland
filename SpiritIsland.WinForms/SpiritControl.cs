@@ -35,13 +35,13 @@ namespace SpiritIsland.WinForms {
 		}
 
 		void InitElementDisplayOrder( Spirit spirit ) {
-			static Element[] Highest( InnatePower power ) => power.GetTriggerThresholds()
-				.OrderByDescending( list => list.Length )
+			static CountDictionary<Element> Highest( InnatePower power ) => power.GetTriggerThresholds()
+				.OrderByDescending( list => list.Total )
 				.First();
 
 			int i = 0;
 			foreach(var innate in spirit.InnatePowers)
-				foreach(var el in Highest( innate ))
+				foreach(var el in Highest( innate ).Keys)
 					if(!elementOrder.ContainsKey( el )) elementOrder[el] = i++;
 			foreach(Element el in Enum.GetValues( typeof( Element ) ))
 				if(!elementOrder.ContainsKey( el )) elementOrder[el] = i++;

@@ -6,23 +6,23 @@ namespace SpiritIsland {
 
 		Task ActivateAsync( SpiritGameStateCtx ctx );
 
-		bool IsActiveDuring( Speed speed, CountDictionary<Element> elements );
+		bool CouldActivateDuring( Phase speed, Spirit spirit );
 
 		string Name { get; }
 			
 	}
 
 	public interface IFlexibleSpeedActionFactory : IActionFactory {
-		Speed Speed { get; }
+		Phase Speed { get; }
 		SpeedOverride OverrideSpeed { get; set; }
 	}
 
 	public class SpeedOverride {
-		public SpeedOverride(Speed speed, string source ) {
+		public SpeedOverride(Phase speed, string source ) {
 			Speed = speed;
 			Source = source;
 		}
-		public Speed Speed { get; }
+		public Phase Speed { get; }
 		public string Source { get; }
 	}
 

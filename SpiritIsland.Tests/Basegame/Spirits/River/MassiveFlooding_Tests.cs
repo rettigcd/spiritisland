@@ -15,6 +15,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			gs = new GameState( spirit, Board.BuildBoardA() ) {
 				InvaderDeck = InvaderDeck.Unshuffled()
 			};
+			gs.Phase = Phase.Slow;
+
 			game = new SinglePlayerGame( gs );
 
 		}
@@ -34,7 +36,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			//   And: in slow phase
 
 			//  Then: no massive flooding in Unresolved list
-			Assert.Empty( game.Spirit.GetAvailableActions(Speed.Slow) );
+			Assert.Empty( game.Spirit.GetAvailableActions(Phase.Slow) );
 
 		}
 
@@ -47,7 +49,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			User.BuysPowerCard( FlashFloods.Name ); // fast
 			User.BuysPowerCard( RiversBounty.Name );// slow
 
-			User.IsDoneWith( Speed.Fast );
+			User.IsDoneWith( Phase.Fast );
 
 			User.SelectsSlowAction("River's Bounty,(Massive Flooding)");
 			User.TargetsLand( "A2,A3,A5,(A8)" );
@@ -67,7 +69,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			User.BuysPowerCard( RiversBounty.Name ); // slow - sun, water, animal
 			User.BuysPowerCard( BoonOfVigor.Name ); // fast - sun, water, plant
 
-			User.IsDoneWith( Speed.Fast );
+			User.IsDoneWith( Phase.Fast );
 
 			User.SelectsSlowAction("River's Bounty,(Massive Flooding)" );
 			User.TargetsLand("A5,(A8)");
@@ -99,7 +101,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			User.BuysPowerCard( BoonOfVigor.Name );  // fast - sun, water, plant
 			User.BuysPowerCard( WashAway.Name );     // slow -      water, earth
 
-			User.IsDoneWith( Speed.Fast );
+			User.IsDoneWith( Phase.Fast );
 
 			User.SelectsSlowAction("River's Bounty,Wash Away,(Massive Flooding)" );
 			User.TargetsLand( "(A1),A5,A8" );

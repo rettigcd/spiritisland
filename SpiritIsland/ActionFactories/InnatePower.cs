@@ -9,13 +9,6 @@ namespace SpiritIsland {
 
 	public class InnatePower : IFlexibleSpeedActionFactory {
 
-		readonly GeneratesContextAttribute targetAttr;
-		readonly RepeatIfAttribute repeatAttr;
-
-		public string TargetFilter => this.targetAttr.TargetFilter;
-
-		public string RangeText => this.targetAttr.RangeText;
-
 		#region Constructors and factories
 
 		static public InnatePower For<T>(){ 
@@ -44,35 +37,25 @@ namespace SpiritIsland {
 
 		#endregion
 
-		readonly InnatePowerAttribute innatePowerAttr;
-		readonly protected SpeedAttribute speedAttr;
-
-		readonly List<MethodTuple> elementListByMethod;
-		class MethodTuple {
-			public MethodTuple(MethodInfo m ) {
-				Method = m;
-				Attr = m.GetCustomAttributes<InnateOptionAttribute>().FirstOrDefault();
-			}
-			public MethodInfo Method { get; }
-			public InnateOptionAttribute Attr { get; }
-			public Element[] Elements => Attr.Elements;
-			public int Group => Attr.Group;
-		}
-
 		#region Speed
 
-		public Speed Speed => speedAttr.DisplaySpeed;
+		public Phase Speed => speedAttr.DisplaySpeed;
 		public SpeedOverride OverrideSpeed { get; set; }
 
-		public virtual bool IsActiveDuring( Speed requestSpeed, CountDictionary<Element> elements ){
-			this.IsTriggered = elementListByMethod
-				.OrderByDescending( x => x.Elements.Length )
-				.Any( x => elements.Contains( x.Elements ) );
-			return IsTriggered && 
-				(OverrideSpeed != null
-					? OverrideSpeed.Speed.IsOneOf( requestSpeed, Speed.FastOrSlow)
-					: speedAttr.IsActiveFor(requestSpeed,elements)
-				);
+		public bool CouldActivateDuring( Phase phase, Spirit spirit ) {	// !!! Can we do this somehow without asking them every time if they want to use an element?
+			return CouldBeTriggered( spirit )
+				&& CouldMatchPhase( phase, spirit );
+		}
+
+		bool CouldBeTriggered( Spirit spirit ) {
+			return elementListByMethod
+				.Any(x=>spirit.CouldHaveElements(x.Elements));
+		}
+
+		bool CouldMatchPhase( Phase requestSpeed, Spirit spirit ) {
+			return OverrideSpeed != null
+				? OverrideSpeed.Speed.IsOneOf( requestSpeed, Phase.FastOrSlow )
+				: speedAttr.CouldBeActiveFor( requestSpeed, spirit );
 		}
 
 		#endregion
@@ -81,43 +64,58 @@ namespace SpiritIsland {
 
 		public string Text => Name;
 
+		public string TargetFilter => this.targetAttr.TargetFilter;
+
+		public string RangeText => this.targetAttr.RangeText;
+
 		public LandOrSpirit LandOrSpirit => targetAttr.LandOrSpirit;
 
-		bool ShouldRepeat(CountDictionary<Element> elements) => repeatAttr != null && repeatAttr.Repeat( elements );
-
 		public async Task ActivateAsync( SpiritGameStateCtx ctx ) {
-			await ActivateInnerAsync( ctx );
-			if( ShouldRepeat(ctx.Self.Elements) )
-				await ActivateInnerAsync( ctx );
+
+			CountDictionary<Element> actionElements = ctx.Self.Elements.Clone();;
+
+			await ActivateInnerAsync( ctx, actionElements );
+			if( ShouldRepeat(actionElements) )
+				await ActivateInnerAsync( ctx, actionElements );
 		}
 
-		async Task ActivateInnerAsync( SpiritGameStateCtx ctx0 ) {
-			var ctx = await targetAttr.GetTargetCtx( ctx0 );
-			if(ctx == null) return;
-			var methods = HighestMethodOfEachGroup( ctx0.Self );
-			foreach(var method in methods)
-				await (Task)method.Invoke( null, new object[] { ctx } );
-		}
-
-		public Element[][] GetTriggerThresholds() => elementListByMethod.Select(a=>a.Attr.Elements).ToArray();
-
-		protected MethodInfo[] HighestMethodOfEachGroup( Spirit spirit ) {
-			var activatedElements = spirit.Elements;
-			var bestMatch = elementListByMethod
-				// filter first - so we only have groups that have matches
-				.Where( pair => activatedElements.Contains( pair.Elements ) && pair.Attr.Purpose != AttributePurpose.DisplayOnly )
-				.GroupBy(x=>x.Group)
-				// from each group, select method with most elements
-				.Select( grp => grp.OrderByDescending( pair => pair.Elements.Length ).First().Method )
-				.ToArray();
-			return bestMatch;
-		}
-
-		protected bool IsTriggered;
+		public CountDictionary<Element>[] GetTriggerThresholds() => elementListByMethod.Select(a=>a.Attr.Elements).ToArray();
 
 		public IEnumerable<InnateOptionAttribute> Options => elementListByMethod.Select(x=>x.Attr);
 
-		static public string[] Tokenize( string s ) {
+		async Task ActivateInnerAsync( SpiritGameStateCtx spiritCtx, CountDictionary<Element> actionElements ) {
+			// if we are using prepared, verify
+			if(! await speedAttr.IsActiveFor(spiritCtx.GameState.Phase,spiritCtx.Self)) return;
+
+			var targetCtx = await targetAttr.GetTargetCtx( spiritCtx );
+			if(targetCtx == null) return;
+
+			IEnumerable<MethodTuple[]> groups = elementListByMethod
+				// filter first - so we only have groups that have matches
+				.Where( pair => pair.Attr.Purpose != AttributePurpose.DisplayOnly )
+				.GroupBy(x=>x.Group)
+				.Select(x=>x.ToArray() );
+
+			foreach(MethodTuple[] grp in groups)
+				await ActivateGroup( spiritCtx.Self, actionElements, targetCtx, grp );
+
+		}
+
+		static async Task ActivateGroup( Spirit self, CountDictionary<Element> actionElements, object ctx, MethodTuple[] grp ) {
+
+			MethodInfo method = null;
+
+			foreach(MethodTuple x in grp.OrderBy( pair => pair.Elements.Total ) )
+				if( await self.HasElements(x.Elements))
+					method = x.Method;
+
+			if( method != null )
+				await (Task)method.Invoke( null, new object[] { ctx } );
+		}
+
+		bool ShouldRepeat( CountDictionary<Element> elements ) => repeatAttr != null && repeatAttr.Repeat( elements );
+
+		public static string[] Tokenize( string s ) {
 
 			var tokens = new Regex( "sacred site|presence|fast|slow"
 				+ "|dahan|blight|fear|city|town|explorer"
@@ -146,6 +144,24 @@ namespace SpiritIsland {
 				}
 			}
 			return results.ToArray();
+		}
+
+		readonly InnatePowerAttribute innatePowerAttr;
+		readonly protected SpeedAttribute speedAttr;
+		readonly GeneratesContextAttribute targetAttr;
+		readonly RepeatIfAttribute repeatAttr;
+		readonly List<MethodTuple> elementListByMethod;
+
+
+		class MethodTuple {
+			public MethodTuple(MethodInfo m ) {
+				Method = m;
+				Attr = m.GetCustomAttributes<InnateOptionAttribute>().FirstOrDefault();
+			}
+			public MethodInfo Method { get; }
+			public InnateOptionAttribute Attr { get; }
+			public CountDictionary<Element>  Elements => Attr.Elements;
+			public int Group => Attr.Group;
 		}
 
 	}

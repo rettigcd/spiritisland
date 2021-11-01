@@ -11,6 +11,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		[Fact]
 		public void Nothing() {
 			Given_RiverPlayingWashAway();
+			gameState.Phase = Phase.Slow;
 
 			// no explorers
 
@@ -27,6 +28,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		[InlineData(1,0,1,"1C@3","1E@1")]
 		public void OneTarget1PushableType(int explorerCount, int townCount, int cityCount, string expectedTargetResult, string expectedDestinationResult) {
 			Given_RiverPlayingWashAway();
+			gameState.Phase = Phase.Slow;
 
 			// 1 explorer on A4
 			var board = gameState.Island.Boards[0];
@@ -56,6 +58,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		[Fact]
 		public void DoesntPushIntoOcean(){
 			Given_RiverPlayingWashAway("A4");
+			gameState.Phase = Phase.Slow;
 
 			// 1 explorer on A4
 			var board = gameState.Island.Boards[0];
@@ -72,6 +75,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		[Fact]
 		public void One1Target2PushableTypes() {
 			Given_RiverPlayingWashAway();
+			gameState.Phase = Phase.Slow;
 
 			// 1 explorer + 1 Town on A4
 			var board = gameState.Island.Boards[0];
@@ -101,6 +105,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		[Fact]
 		public void DamagedTown() {
 			Given_RiverPlayingWashAway();
+			gameState.Phase = Phase.Slow;
 
 			// 1 damaged town on A4
 			var board = gameState.Island.Boards[0];
@@ -128,6 +133,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		[Fact]
 		public void Push3InvadersToDifferentLands() {
 			Given_RiverPlayingWashAway();
+			gameState.Phase = Phase.Slow;
 
 			// 31 explorers on A4
 			var board = gameState.Island.Boards[0];
@@ -167,7 +173,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			spirit.PurchaseAvailableCards_Test(card);
 
 			// Jump to slow
-			Assert_CardIsReady(card,Speed.Slow);
+			Assert_CardIsReady(card,Phase.Slow);
 
 		}
 

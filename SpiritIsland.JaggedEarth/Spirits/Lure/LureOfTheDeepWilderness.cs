@@ -38,11 +38,11 @@ namespace SpiritIsland.JaggedEarth {
 
 		public override async Task DoGrowth(GameState gameState) {
 
-			int count = growthOptionGroup.SelectionCount;
+			int remainingGrowths = growthOptionGroup.SelectionCount;
 			List<GrowthOption> remainingOptions = growthOptionGroup.Options.ToList();
 			var allOptions = growthOptionGroup.Options;
 
-			while(count-- > 0) {
+			while(remainingGrowths-- > 0) {
 				var currentOptions = remainingOptions.Where( o => o.GainEnergy + Energy >= 0 ).ToArray();
 				GrowthOption option = (GrowthOption)await this.Select( "Select Growth Option", currentOptions, Present.Always );
 
@@ -57,7 +57,7 @@ namespace SpiritIsland.JaggedEarth {
 				await GrowAndResolve( option, gameState );
 			}
 
-			await TriggerEnergyElementsAndReclaims(gameState);
+			await ApplyRevealedPresenceTracks(gameState);
 
 		}
 

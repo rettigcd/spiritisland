@@ -26,7 +26,7 @@ namespace SpiritIsland {
 		}
 		public Task ActivateAsync(SpiritGameStateCtx ctx) => ActivateAsync( ctx.Self, ctx.GameState);
 
-		public bool IsActiveDuring( Speed _, CountDictionary<Element> _1 ) => true;
+		public bool CouldActivateDuring( Phase _, Spirit _1 ) => true;
 
 	}
 

@@ -8,10 +8,9 @@ namespace SpiritIsland {
 
 	public class GameState {
 
-		public TokenCountDictionary AAA => this.Tokens[ this.Island.Boards[0][5] ];
-
 		// base-1,  game starts in round-1
 		public int RoundNumber { get; private set; }
+		public Phase Phase { get; set; }
 
 		#region constructors
 

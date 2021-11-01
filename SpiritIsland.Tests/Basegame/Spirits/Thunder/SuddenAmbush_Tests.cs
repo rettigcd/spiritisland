@@ -6,10 +6,14 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 
 	public class SuddenAmbush_Tests : ThunderCards {
 
+		public SuddenAmbush_Tests() {
+			gs.Phase = Phase.Fast;
+		}
+
 		[Fact]
 		public void IsFastAndCost1() {
 			var suddenAmbush = PowerCard.For<SuddenAmbush>();
-			suddenAmbush.Speed.ShouldBe(Speed.Fast);
+			suddenAmbush.Speed.ShouldBe(Phase.Fast);
 			suddenAmbush.Cost.ShouldBe( 2 );
 		}
 

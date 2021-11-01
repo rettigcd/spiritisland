@@ -141,7 +141,7 @@ namespace SpiritIsland.Tests {
 			SelectOption( "Buy power cards:", "Done" );
 		}
 
-		public void IsDoneWith( Speed speed ) {
+		public void IsDoneWith( Phase speed ) {
 			SelectOption( $"Select {speed} to resolve", "Done" );
 		}
 

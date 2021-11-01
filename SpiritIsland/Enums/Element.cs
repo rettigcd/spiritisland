@@ -22,7 +22,7 @@ namespace SpiritIsland {
 
 		public static readonly Element[] AllElements = new Element[] { Element.Sun, Element.Moon, Element.Air, Element.Fire, Element.Water, Element.Earth, Element.Plant, Element.Animal };
 
-		public static Element[] Parse( string elementFormat ) {
+		public static CountDictionary<Element> Parse( string elementFormat ) {
 			var items = new List<Element>();
 			foreach(var singleElementType in elementFormat.Split( ',' )) {
 				var (count,el) = GetElementCounts(singleElementType);
@@ -30,7 +30,7 @@ namespace SpiritIsland {
 					items.Add( el );
 			}
 
-			return items.ToArray();
+			return new CountDictionary<Element>( items.ToArray() );
 		}
 
 		static (int,Element) GetElementCounts(string single ) {
@@ -48,11 +48,11 @@ namespace SpiritIsland {
 			//}
 
 		}
-		
+
 		static public bool Contains(this CountDictionary<Element> dict, string subsetElementString) {
-			if(string.IsNullOrEmpty(subsetElementString)) throw new ArgumentException("criteria elements cannot be null or empty.");
-			var subset = new CountDictionary<Element>( Parse(subsetElementString) );
-			return dict.Contains(subset);
+			return string.IsNullOrEmpty(subsetElementString)
+				? throw new ArgumentException("criteria elements cannot be null or empty.")
+				: dict.Contains( Parse(subsetElementString) );
 		}
 
 	}

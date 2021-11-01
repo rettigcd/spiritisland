@@ -8,31 +8,31 @@ namespace SpiritIsland {
 		readonly Spirit spirit;
 		readonly GameState gameState;
 		readonly string prompt;
-		readonly Speed toChangeFrom;
-		readonly Speed resultingSpeed;
+		readonly Phase toChangeFrom;
+		readonly Phase resultingSpeed;
 		int countToChange;
 
-		public SpeedChanger( SpiritGameStateCtx ctx, Speed resultingSpeed, int maxCountToChange )
+		public SpeedChanger( SpiritGameStateCtx ctx, Phase resultingSpeed, int maxCountToChange )
 			:this(ctx.Self,ctx.GameState,resultingSpeed,maxCountToChange) 
 		{}
 
-		public SpeedChanger( Spirit spirit, GameState gs, Speed resultingSpeed, int maxCountToChange ) {
+		public SpeedChanger( Spirit spirit, GameState gs, Phase resultingSpeed, int maxCountToChange ) {
 			this.spirit = spirit;
 			this.gameState = gs; // for Time-Passes Hook, to reset
 			this.countToChange = maxCountToChange;
 			this.resultingSpeed = resultingSpeed;
 
 			prompt = resultingSpeed switch {
-				Speed.Fast => "Select action to make fast.",
-				Speed.Slow => "Select action to make slow.",
-				Speed.FastOrSlow => "Select action to toggle fast/slow.",
+				Phase.Fast => "Select action to make fast.",
+				Phase.Slow => "Select action to make slow.",
+				Phase.FastOrSlow => "Select action to toggle fast/slow.",
 				_ => throw new System.ArgumentException( "can't toggle " + resultingSpeed, nameof( resultingSpeed ) )
 			};
 
 			toChangeFrom = resultingSpeed switch {
-				Speed.Fast => Speed.Slow,
-				Speed.Slow => Speed.Fast,
-				Speed.FastOrSlow => Speed.FastOrSlow,
+				Phase.Fast => Phase.Slow,
+				Phase.Slow => Phase.Fast,
+				Phase.FastOrSlow => Phase.FastOrSlow,
 				_ => throw new System.ArgumentException( "can't toggle " + resultingSpeed, nameof( resultingSpeed ) )
 			};
 

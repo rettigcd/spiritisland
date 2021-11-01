@@ -67,7 +67,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.VitalStrengthNS {
 			User_PlaysGiftOfStrengthOnSelf();
 			//  And: Played fast card
 			User.SelectsFastAction( "(Fast-0),Replay Card [max cost:1]" );
-			User.IsDoneWith( Speed.Fast );
+			User.IsDoneWith( Phase.Fast );
 
 			// (now in slow...)
 

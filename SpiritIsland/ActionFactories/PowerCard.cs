@@ -20,28 +20,35 @@ namespace SpiritIsland {
 
 		public string Text => Name;
 		public string Name         => cardAttr.Name;
-		public Speed Speed         => speedAttr.DisplaySpeed;
+		public Phase Speed         => speedAttr.DisplaySpeed;
 		public SpeedOverride OverrideSpeed { get; set; }
 
 		public int Cost            => cardAttr.Cost;
-		public Element[] Elements  => cardAttr.Elements;
+		public CountDictionary<Element> Elements  => cardAttr.Elements;
 		public PowerType PowerType => cardAttr.PowerType;
 		public Type MethodType     => methodBase.DeclaringType; // for determining card namespace and Basegame, BranchAndClaw, etc
 
 		public LandOrSpirit LandOrSpirit => targetAttr.LandOrSpirit;
 
-		public bool IsActiveDuring( Speed requestSpeed, CountDictionary<Element> elements ){
+		public bool CouldActivateDuring( Phase requestSpeed, Spirit spirit ){
 			return OverrideSpeed != null
-				? OverrideSpeed.Speed.IsOneOf( requestSpeed, Speed.FastOrSlow)
-				: speedAttr.IsActiveFor(requestSpeed,elements);
+				? OverrideSpeed.Speed.IsOneOf( requestSpeed, Phase.FastOrSlow)
+				: speedAttr.CouldBeActiveFor(requestSpeed,spirit);
 		}
 
-		public async Task ActivateAsync(SpiritGameStateCtx ctx) {
-			var ctx2 = await targetAttr.GetTargetCtx( ctx );
-			if(ctx2 == null) return;
-			await InvokeOnObjectCtx(ctx2);
+		public async Task ActivateAsync(SpiritGameStateCtx spiritCtx) {
+			// if we are using prepared, verify
+			if(! await speedAttr.IsActiveFor(spiritCtx.GameState.Phase,spiritCtx.Self)) 
+				return;
+
+			var targetCtx = await targetAttr.GetTargetCtx( spiritCtx );
+			if(targetCtx == null) 
+				return;
+
+			await InvokeOnObjectCtx(targetCtx);
 		}
 
+		/// <remarks>Called directly from Let's See What Happens with special ContextBehavior</remarks>
 		public Task InvokeOn( TargetSpaceCtx ctx ) {
 			return targetAttr.LandOrSpirit != LandOrSpirit.Land
 				? throw new InvalidOperationException("Cannot invoke spirit-based PowerCard using TargetSpaceCtx")

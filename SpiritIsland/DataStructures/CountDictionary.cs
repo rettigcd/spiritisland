@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Text;
 
 namespace SpiritIsland {
 
@@ -60,6 +61,16 @@ namespace SpiritIsland {
 			return result;
 		}
 
+		/// <summary>
+		/// Set-like operation.  Adds the 2 together
+		/// </summary>
+		public CountDictionary<K> Union( IDictionary<K, int> other ) {
+			var result = this.Clone();
+			foreach(var key in other.Keys)
+				this[key] += other[key];
+			return result;
+		}
+
 		public void AddRange(IEnumerable<K> items) { foreach(var item in items) ++this[item]; }
 
 		public CountDictionary<K> Clone() {
@@ -67,6 +78,20 @@ namespace SpiritIsland {
 			foreach(var invader in Keys)
 				clone[invader] = this[invader];
 			return clone;
+		}
+
+		public int Total => _inner.Values.Sum();
+
+		public override string ToString() {
+			var buf = new StringBuilder();
+			bool first = true;
+			foreach(var pair in _inner) {
+				if(first) first = false; else buf.Append(',');
+				buf.Append(pair.Value);
+				buf.Append(' ');
+				buf.Append(pair.Key.ToString().ToLower());
+			}
+			return buf.ToString();
 		}
 
 		#region IDictionary<Key,int> implementation
