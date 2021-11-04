@@ -7,9 +7,9 @@ namespace SpiritIsland {
 
 	public class TokenPusher {
 
-		public TokenPusher( SpiritGameStateCtx ctx, Space source ) {
+		public TokenPusher( TargetSpaceCtx ctx ) {
 			this.ctx = ctx;
-			this.source = source;
+			this.source = ctx.Space;
 		}
 
 		public TokenPusher AddGroup(int count,params TokenGroup[] groups ) {
@@ -77,10 +77,10 @@ namespace SpiritIsland {
 
 		#region private
 
-		readonly SpiritGameStateCtx ctx;
+		protected readonly SpiritGameStateCtx ctx;
 		protected readonly Space source;
+		protected readonly List<Func<Space,bool>> destinationFilters = new List<Func<Space, bool>>();
 
-		readonly List<Func<Space,bool>> destinationFilters = new List<Func<Space, bool>>();
 		readonly List<int> countArray = new(); // the # we push from each group
 		readonly Dictionary<TokenGroup, int> indexLookupByGroup = new(); // map from group back to its count
 
@@ -93,7 +93,7 @@ namespace SpiritIsland {
 	/// </summary>
 	public class TokenPusher_FixedDestination : TokenPusher {
 		readonly Space destination;
-		public TokenPusher_FixedDestination( SpiritGameStateCtx ctx, Space source, Space destination ) : base( ctx, source ) { 
+		public TokenPusher_FixedDestination( TargetSpaceCtx ctx, Space destination ) : base( ctx ) { 
 			this.destination = destination;
 		}
 

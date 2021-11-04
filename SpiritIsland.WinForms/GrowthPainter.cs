@@ -85,6 +85,12 @@ namespace SpiritIsland.WinForms {
 				// Stones Unyielding Defiance
 				case "PlacePresence(3,mountain or presence)": PlacePresence( rect, 3, "mountainorpresence"); break;
 				case "GainElements(Earth,Earth)": GainElement( rect, Element.Earth, Element.Earth ); break; // !!! this is drawn as an OR, layer them and make them an AND
+				// Many Minds
+				case "Gather1Beast": LandGatherBeasts( rect ); break;
+				case "PlacePresenceAndBeast": 
+					PlacePresence( rect, 3 );
+					DrawIconInCenter( rect.InflateBy(-rect.Width*.2f), "Beasticon");
+					break;
 				default:
 					graphics.FillRectangle( Brushes.Goldenrod, Rectangle.Inflate( rect.ToInts(), -5, -5 ) );
 					break;
@@ -100,6 +106,8 @@ namespace SpiritIsland.WinForms {
 		void GatherToOcean( RectangleF rect )          => DrawIconInCenter( rect, "Gathertoocean" );
 		void ReclaimAll( RectangleF rect )             => DrawIconInCenter( rect, "ReclaimAll" );
 		void EnergyForFire( RectangleF rect )          => DrawIconInCenter( rect, "Oneenergyfire");
+
+		void LandGatherBeasts( RectangleF rect)						=> DrawIconInCenter( rect, "Land_Gather_Beasts");
 
 		void GainEnergy( RectangleF bounds, int delta ){
 			// DrawTokenInCenter( rect, "Energy_Plus_"+delta);

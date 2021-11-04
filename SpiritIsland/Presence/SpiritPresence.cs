@@ -7,6 +7,8 @@ namespace SpiritIsland {
 
 	public class SpiritPresence {
 
+		#region constructors
+
 		public SpiritPresence( Track[] energy, Track[] cardPlays ){
 			Energy = new PresenceTrack(energy);
 			CardPlays = new PresenceTrack(cardPlays);
@@ -16,6 +18,8 @@ namespace SpiritIsland {
 			Energy = energy;
 			CardPlays = cardPlays;
 		}
+
+		#endregion
 
 		#region Tracks / Board
 
@@ -30,13 +34,19 @@ namespace SpiritIsland {
 
 		#endregion
 
-		#region Board (readonly)
+		#region Readonly 
 
 		public IEnumerable<Space> Spaces => placed.Distinct();
 
 		public int CountOn( Space space ) => placed.Count( p => p == space );
 
 		public bool IsOn( Space space ) => placed.Contains( space );
+
+		public IEnumerable<IActionFactory> RevealedActions 
+			=> CardPlays.Revealed
+				.Union(Energy.Revealed)
+				.Select(x => x.Action)
+				.Where(x => x != null);
 
 		#endregion
 
@@ -68,12 +78,6 @@ namespace SpiritIsland {
 			else
 				throw new ArgumentException( "Can't pull from track:" + track.ToString() );
 		}
-
-		public IEnumerable<IActionFactory> RevealedActions 
-			=> CardPlays.Revealed
-				.Union(Energy.Revealed)
-				.Select(x => x.Action)
-				.Where(x => x != null);
 
 		public void Move( Space from, Space to ) {
 			RemoveFrom( from );

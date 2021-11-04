@@ -72,11 +72,10 @@ namespace SpiritIsland {
 		public override async Task ActivateAsync( SpiritGameStateCtx ctx ) {
 			var dahanOptions = ctx.Self.Presence.Spaces
 				.SelectMany(space=>ctx.Target(space).Dahan.Keys.Select(t=>new SpaceToken(space,t)));
-//				.SelectMany(space=>ctx.Target(space).Tokens.OfType(TokenType.Dahan).Select(t=>new SpaceToken(space,t)));
 			var source = await ctx.Self.Action.Decision(new Decision.SpaceTokens("Select dahan to push from land",dahanOptions,Present.Done));
 			if(source == null) return;
 
-			await new TokenPusher( ctx, source.Space ).PushToken( source.Token );
+			await new TokenPusher( ctx.Target(source.Space) ).PushToken( source.Token );
 		}
 	}
 

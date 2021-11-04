@@ -6,35 +6,18 @@ namespace SpiritIsland.Decision.Presence {
 	// Base class for selecting from deployed presence
 	public class Deployed : TypedDecision<Space> {
 
+		public static Deployed SourceForPlacing( Spirit spirit ) => new Deployed("Select Presence to place.", spirit);
+
 		/// <summary> Target ALL spaces containing deployed presence </summary>
-		public Deployed(string prompt, Spirit spirit)
+		public Deployed( string prompt, Spirit spirit )
 			:base(prompt, spirit.Presence.Spaces, Present.Always ) 
 		{ }
 
 		/// <summary> Target SPECIFIC spaces containing deployed presence </summary>
-		public Deployed( string prompt, IEnumerable<Space> spaces, Present present )
-			:base( prompt, spaces, present )
+		public Deployed( string prompt, IEnumerable<Space> fromSpaces, Present present )
+			:base( prompt, fromSpaces, present )
 		{}
 
-	}
-
-	/// <summary>
-	/// Presence follows another token
-	/// </summary>
-	public class DeployedFollow : Deployed, IAdjacentDecision {
-
-		public DeployedFollow(string prompt, Space from, Space to ) 
-			:base(prompt,new Space[]{ from }, Present.Done)
-		{
-			this.Original = from;
-			this.Adjacent = new Space[] { to };
-		}
-
-		public AdjacentDirection Direction => AdjacentDirection.Outgoing;
-
-		public Space Original { get; }
-
-		public Space[] Adjacent { get; }
 	}
 
 

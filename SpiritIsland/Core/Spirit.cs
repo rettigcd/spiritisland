@@ -481,6 +481,9 @@ namespace SpiritIsland {
 				await ctx.GameState.AddBlight( ctx.Space, -1 );
 		}
 
+		public virtual TokenPusher PushFactory( TargetSpaceCtx ctx ) => new TokenPusher( ctx );
+		public virtual TokenGatherer GatherFactory( TargetSpaceCtx ctx ) => new TokenGatherer( ctx );
+
 		#endregion
 
 	}

@@ -14,18 +14,17 @@ namespace SpiritIsland.BranchAndClaw {
 			// Target spirit may push 1 of their presence to an adjacent land
 			var sourceCtx = await ctx.OtherCtx.TargetDeployedPresence("Push Presence (bringing up to 2 explorers, 2 towns, 2 dahan)");
 
-			var destination = await sourceCtx.Self.Action.Decision( new Decision.AdjacentSpace(
+			// #pushpresence
+			var destination = await sourceCtx.Self.Action.Decision( new Decision.Presence.Push(
 				"Move Presence + up to 2 explorers,towns,dahan to",
 				sourceCtx.Space,
-				Decision.AdjacentDirection.Outgoing,
-				sourceCtx.Adjacent,
-				Present.Always
+				sourceCtx.Adjacent
 			));
 
 			// move presence
 			ctx.Other.Presence.Move( sourceCtx.Space, destination);
 
-			var mover = new TokenPusher_FixedDestination(ctx.OtherCtx, sourceCtx.Space, destination);
+			var mover = new TokenPusher_FixedDestination(ctx.OtherCtx.Target(sourceCtx.Space), destination);
 			// bringing up to 2 explorers, 2 towns and 2 dahan along with it.
 			mover.AddGroup(2,Invader.Explorer);
 			mover.AddGroup(2,Invader.Town);

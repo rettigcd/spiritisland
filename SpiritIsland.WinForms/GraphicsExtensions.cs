@@ -113,6 +113,9 @@ namespace SpiritIsland.WinForms {
 		}
 
 
+		/// <summary>
+		/// Returns a new rectangle inflated by # of pixels on each side
+		/// </summary>
 		static public RectangleF InflateBy(this RectangleF rect, float delta ) {
 			float d2 = delta*2;
 			return new RectangleF( rect.X-delta, rect.Y-delta, rect.Width+d2, rect.Height+d2);

@@ -174,7 +174,7 @@ namespace SpiritIsland {
 		}
 
 		static async Task DefaultDestroy1PresenceFromBlightCard( Spirit spirit ) {
-			var presence = await spirit.Action.Decision( new Decision.Presence.Deployed( "BLIGHT: Select presence to destroy.", spirit ) );
+			var presence = await spirit.Action.Decision( new Decision.Presence.DeployedToDestory( "Blighted Island: Select presence to destroy.", spirit ) );
 			spirit.Presence.Destroy( presence );
 		}
 

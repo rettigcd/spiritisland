@@ -12,7 +12,7 @@ namespace SpiritIsland.JaggedEarth {
 		}
 
 		public override Task<Space[]> PushUpTo( int countToPush, params TokenGroup[] groups ) 
-			=> new TokenPusher( this, this.Space )
+			=> new TokenPusher( this )
 				.AddGroup( countToPush, groups )
 				.MoveN();
 

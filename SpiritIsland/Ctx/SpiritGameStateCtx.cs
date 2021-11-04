@@ -98,7 +98,7 @@ namespace SpiritIsland {
 		/// <summary> Tries Presence Tracks first, then fails over to placed-presence on Island </summary>
 		public async Task<IOption> SelectPresenceSource() {
 			return (IOption)await Self.Action.Decision( new Decision.Presence.SourceFromTrack( Self ) )
-				?? (IOption)await Self.Action.Decision( new Decision.Presence.DeployedAsSource( Self ) );
+				?? (IOption)await Self.Action.Decision( Decision.Presence.Deployed.SourceForPlacing( Self ) );
 		}
 
 		/// <summary> Tries Presence Tracks first, then fails over to placed-presence on Island </summary>

@@ -59,16 +59,12 @@ namespace SpiritIsland {
 
 		// overriden by Grinning Tricksters Let's See what happens
 		public virtual Task<Space[]> PushUpTo( int countToPush, params TokenGroup[] groups )
-			=> new TokenPusher( this, this.Space )
-				.AddGroup( countToPush, groups )
-				.MoveUpToN();
-
-		public TokenPusher Pusher => new TokenPusher( this, this.Space );
+			=> Pusher.AddGroup( countToPush, groups ).MoveUpToN();
 
 		public Task<Space[]> Push( int countToPush, params TokenGroup[] groups )
-			=> new TokenPusher( this, Space )
-				.AddGroup( countToPush, groups )
-				.MoveN();
+			=> Pusher.AddGroup( countToPush, groups ).MoveN();
+
+		public TokenPusher Pusher => Self.PushFactory( this );
 
 		#endregion Push
 
@@ -83,10 +79,12 @@ namespace SpiritIsland {
 
 		// overriden by Grinning Tricketsrs 'Let's see what happens'
 		public virtual Task GatherUpTo( int countToGather, params TokenGroup[] groups )
-			=> new TokenGatherer(this).MoveUpTo(countToGather, groups);
+			=> Gatherer.MoveUpTo(countToGather, groups);
 
 		public Task Gather( int countToGather, params TokenGroup[] groups )
-			=> new TokenGatherer(this).Move(countToGather,groups);
+			=> Gatherer.Move(countToGather,groups);
+
+		public TokenGatherer Gatherer => Self.GatherFactory( this );
 
 		#endregion Gather
 

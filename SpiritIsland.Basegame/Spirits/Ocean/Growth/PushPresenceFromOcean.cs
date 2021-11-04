@@ -15,11 +15,9 @@ namespace SpiritIsland.Basegame {
 
 			while(0 < pushSpaces.Count){
 				var currentSource = pushSpaces[0];
-				var destination = await ctx.Self.Action.Decision( new Decision.TargetSpace(
-					$"Select target of Presence to Push from {currentSource}",
-					currentSource.Adjacent
-					, Present.Always
-				));
+				string prompt = $"Select target of Presence to Push from {currentSource}";
+				// #pushpresence
+				var destination = await ctx.Self.Action.Decision( new Decision.Presence.Push( prompt, currentSource, currentSource.Adjacent ));
 
 				// apply...
 				ctx.Self.Presence.Move( currentSource, destination );

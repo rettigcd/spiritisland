@@ -9,6 +9,7 @@ namespace SpiritIsland {
 		static GameState_BranchAndClaw() {
 			// Register new filters needed for Branch and Claw
 			SpaceFilterMap.Register(Target.Beast,            ( ctx ) => ctx.Beasts.Any );
+			SpaceFilterMap.Register(Target.TwoBeasts,        ( ctx ) => ctx.Beasts.Count>=2 ); // Jagged Earth !!
 			SpaceFilterMap.Register(Target.BeastOrJungle,    ( ctx ) => ctx.Terrain == Terrain.Jungle || ctx.Beasts.Any );
 			SpaceFilterMap.Register(Target.PresenceOrWilds,  ( ctx ) => ctx.IsPresent || ctx.Wilds > 0 );
 			SpaceFilterMap.Register(Target.CoastalOrWetlands,( ctx ) => ctx.Terrain == Terrain.Wetland || ctx.IsCoastal );
@@ -24,12 +25,13 @@ namespace SpiritIsland {
 		public GameState_BranchAndClaw(Spirit spirit,Board board ) : base( spirit, board ) {}
 
 		public override void Initialize() {
-			base.Initialize();
+			// ! this has to go first since ManyMinds requires the beast to be in place
 			foreach(var board in Island.Boards) {
 				Tokens[board[2]].Disease.Count++;
 				var lowest = board.Spaces.Skip(1).First(s=>s.StartUpCounts.Empty);
 				Tokens[lowest][TokenType.Beast]++;
 			}
+			base.Initialize();
 		}
 
 	}
