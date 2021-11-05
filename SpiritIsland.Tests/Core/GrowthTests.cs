@@ -72,7 +72,8 @@ namespace SpiritIsland.Tests {
 		#endregion
 
 		protected Task When_Growing( int option) {
-			return spirit.GrowAndResolve(option,gameState);
+			gameState.Phase = Phase.Growth;
+			return spirit.GrowAndResolve( spirit.GrowthOptions[option],gameState);
 		}
 
 		#region Asserts
@@ -127,6 +128,7 @@ namespace SpiritIsland.Tests {
 		}
 
 		protected void When_StartingGrowth() {
+			gameState.Phase = Phase.Growth;
 			_ = spirit.DoGrowth( gameState );
 		}
 

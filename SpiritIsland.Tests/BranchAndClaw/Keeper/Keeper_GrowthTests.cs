@@ -52,6 +52,8 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			Given_HalfOfPowercardsPlayed();
 			Given_HasWilds( board[8] ); // 3 spaces away
 
+			gameState.Phase = Phase.Growth;
+
 			When_StartingGrowth();
 			User_Activates_A();
 			User_Activates_C();
@@ -113,6 +115,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			Given_BlightEverywhereExcept7();
 			spirit.Energy = 10; // so we can do this option
 
+			gameState.Phase = Phase.Growth;
 			When_StartingGrowth();
 			User_Activates_B();
 			User_Activates_D();
@@ -178,6 +181,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			// energy:	2 sun 4 5 plant 7 8 9
 			spirit.Presence.Energy.RevealedCount = revealedSpaces;
 
+			gameState.Phase = Phase.Growth;
 			When_StartingGrowth();
 			User_Activates_A();
 			User_Activates_B();

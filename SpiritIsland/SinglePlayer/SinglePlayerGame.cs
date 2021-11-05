@@ -37,13 +37,10 @@ namespace SpiritIsland.SinglePlayer {
 
 		void StartLoop() {
 
-			var fastActions = new ResolveActions( Spirit, GameState, Phase.Fast, true );
-			var slowActions = new ResolveActions( Spirit, GameState, Phase.Slow, true );
-
 			async Task LoopAsync() {
 				try {
 					// Handle any unresolved Initialization action - (ocean/beast)
-					await new ResolveActions( Spirit, GameState, Phase.Growth, false ).ActAsync();
+					await Spirit.ResolveActions( new SpiritGameStateCtx( Spirit, GameState, Cause.Growth ) );
 
 					Stack<IMemento<GameState>> savedGameStates = new Stack<IMemento<GameState>>();
 					while(true) {
@@ -55,13 +52,13 @@ namespace SpiritIsland.SinglePlayer {
 							await Spirit.PurchasePlayableCards();
 
 							GameState.Phase = Phase.Fast;
-							await fastActions.ActAsync();
+							await Spirit.ResolveActions( new SpiritGameStateCtx( Spirit, GameState, Cause.Power ) );
 
 							GameState.Phase = Phase.Invaders;
 							await GameState.InvaderEngine.DoInvaderPhase();
 
 							GameState.Phase = Phase.Slow;
-							await slowActions.ActAsync();
+							await Spirit.ResolveActions( new SpiritGameStateCtx( Spirit, GameState, Cause.Power ) );
 
 							await GameState.TimePasses();
 						} catch( GameStateCommandException ) {

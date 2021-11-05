@@ -79,7 +79,7 @@ namespace SpiritIsland.WinForms {
 				case "MovePresence": MovePresence( rect, 1 ); break;
 				// Lure of the Deep Wilderness
 				case "PlacePresence(4,Inland)": PlacePresence( rect, 4 ); break;
-				case "Gain1Element(Moon,Air,Plant)": GainElement( rect, Element.Moon, Element.Air, Element.Plant ); break;
+				case "GainElement(Moon,Air,Plant)": GainElement( rect, Element.Moon, Element.Air, Element.Plant ); break;
 				// Grinning Trickster
 				case "GainEnergyEqualToCardPlays": DrawIconInCenter( rect, "GainEnergyEqualToCardPlays"); break;
 				// Stones Unyielding Defiance

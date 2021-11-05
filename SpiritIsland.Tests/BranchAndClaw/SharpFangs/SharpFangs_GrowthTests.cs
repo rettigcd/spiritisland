@@ -173,6 +173,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			// Test the reclaim bit
 			Given_HasPresence( board[3] ); // added extra presence, need to 
 
+			gameState.Phase = Phase.Growth;
 			When_SharpFangsGrow();
 
 			User_Activates_C();
@@ -183,6 +184,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 		}
 
 		void When_SharpFangsGrow() {
+			gameState.Phase = Phase.Growth;
 			When_StartingGrowth();
 		}
 

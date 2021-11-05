@@ -83,41 +83,12 @@ namespace SpiritIsland {
 		public GrowthOption[] GrowthOptions => growthOptionGroup.Options;
 		protected GrowthOptionGroup growthOptionGroup;
 
-		// Called from unit tests:  Bringer, Lightning, Ocean, Rampant Green, Shadows, Thunderspeaker
-		public void Grow( int optionIndex ) {
-			Grow( GrowthOptions[optionIndex] );
-		}
-
-		// !!! TESTING
-		public Task GrowAndResolve( int optionIndex, GameState gameState ) {
-			return GrowAndResolve( GrowthOptions[optionIndex], gameState );
-		}
-
-		public Task GrowAndResolve( GrowthOption option, GameState gameState ) {
-			var ctx = new SpiritGameStateCtx(this,gameState,Cause.Growth);
-			if( option.AutoSelectSingle && option.GrowthActions.Length == 1 )
-				return option.GrowthActions[0].ActivateAsync( ctx );
-			else {
-				Grow( option );
-				return ResolveActions( Phase.Growth, Present.Always, ctx );
-			}
-		}
-
-		public void Grow( GrowthOption option ) {
-			foreach(GrowthActionFactory action in option.GrowthActions)
-				AddActionFactory( action );
-		}
-
-		/// <remarks>override in a test.  Could be refactored to not need to be virtual</remarks>
-		public virtual GrowthOptionGroup GetGrowthOptions() => growthOptionGroup;
-
-
 		public virtual async Task DoGrowth(GameState gameState) {
 
 			int count = growthOptionGroup.SelectionCount;
 			List<GrowthOption> remainingOptions = growthOptionGroup.Options.ToList();
 
-			// !!! there is a bug here.  Somehow, count exceeds the # of options
+			// !!! there is a bug here.  Somehow, count can exceed the # of options
 
 			while(count-- > 0) {
 				var currentOptions = remainingOptions.Where( o => o.GainEnergy + Energy >= 0 ).ToArray();
@@ -130,6 +101,25 @@ namespace SpiritIsland {
 			await ApplyRevealedPresenceTracks( gameState );
 
 		}
+
+		public Task GrowAndResolve( GrowthOption option, GameState gameState ) {
+			var ctx = new SpiritGameStateCtx(this,gameState,Cause.Growth);
+
+			if( option.AutoSelectSingle && option.GrowthActions.Length == 1 )
+				return option.GrowthActions[0].ActivateAsync( ctx );
+			
+			Grow( option );
+			return ResolveActions( ctx );
+
+		}
+
+		public void Grow( GrowthOption option ) {
+			foreach(GrowthActionFactory action in option.GrowthActions)
+				AddActionFactory( action );
+		}
+
+		/// <remarks>override in a test.  Could be refactored to not need to be virtual</remarks>
+		public virtual GrowthOptionGroup GetGrowthOptions() => growthOptionGroup;
 
 		public async Task ApplyRevealedPresenceTracks(GameState gs) {
 
@@ -151,7 +141,9 @@ namespace SpiritIsland {
 		}
 
 		// !!! Seems like this should be private / protected and not called from outside.
-		public async Task ResolveActions( Phase speed, Present present, SpiritGameStateCtx ctx ) {
+		public async Task ResolveActions( SpiritGameStateCtx ctx ) {
+			Phase speed = ctx.GameState.Phase;
+			Present present = ctx.GameState.Phase == Phase.Growth ? Present.Always : Present.Done;
 
 			IActionFactory[] factoryOptions;
 

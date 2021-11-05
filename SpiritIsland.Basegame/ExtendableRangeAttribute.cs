@@ -3,7 +3,9 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 
-	// !!! review the usaage of this class.  Should it inherit from  TargetSpace???
+	/// <summary>
+	/// Targets a space, but conditionally has an extended reange if certain Elemental thresholds are reached
+	/// </summary>
 	[AttributeUsage( AttributeTargets.Class | AttributeTargets.Method )]
 	public class ExtendableRangeAttribute : TargetSpaceAttribute {
 		readonly string triggeringElements;

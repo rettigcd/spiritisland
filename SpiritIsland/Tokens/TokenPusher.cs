@@ -49,16 +49,18 @@ namespace SpiritIsland {
 					break;
 
 				Space destination = await PushToken( token );
-
-				pushedToSpaces.Add( destination ); // record push
-				--countArray[indexLookupByGroup[token.Generic]]; // decrement count
+				if(destination != null) {
+					pushedToSpaces.Add( destination ); // record push
+					--countArray[indexLookupByGroup[token.Generic]]; // decrement count
+				}
 			}
 			return pushedToSpaces.ToArray();
 		}
 
 		public async Task<Space> PushToken( Token token ) {
 			Space destination = await SelectDestination( token );
-			await ctx.Move( token, source, destination );	// !!! if moving into frozen land, freeze Dahan
+			if(destination != null)
+				await ctx.Move( token, source, destination );	// !!! if moving into frozen land, freeze Dahan
 			return destination;
 		}
 

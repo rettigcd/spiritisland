@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 
 namespace SpiritIsland.JaggedEarth {
+
 	public class OverenthusiasticArson {
 
 		[SpiritCard("Overenthusiastic Arson",1,Element.Fire,Element.Air), Fast, FromPresence(1)]
@@ -22,8 +23,9 @@ namespace SpiritIsland.JaggedEarth {
 				await ctx.DamageInvaders(2);
 
 				// add 1 blight
-				await ctx.AddBlight(); // !!! should this cascade?
+				await ctx.AddBlight(); // !!! this should cascade
 			}
 		}
 	}
+
 }

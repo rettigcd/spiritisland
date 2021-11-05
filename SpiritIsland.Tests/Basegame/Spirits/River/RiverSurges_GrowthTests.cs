@@ -111,6 +111,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			spirit.Presence.CardPlays.RevealedCount = revealedSpaces;
 			Assert_PresenceTracksAre(1,expectedCardPlayCount);
 
+			gameState.Phase = Phase.Growth;
 			When_StartingGrowth();
 
 			User.SelectsGrowthC_Draw_Energy( "energy>A1;A2;A3;A4;A5" );

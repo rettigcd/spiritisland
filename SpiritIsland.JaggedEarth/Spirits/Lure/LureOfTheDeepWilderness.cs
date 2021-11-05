@@ -36,6 +36,7 @@ namespace SpiritIsland.JaggedEarth {
 			};
 		}
 
+		/// <remarks> Overridden so that we can disable 2nd of pair being selected.</remarks>
 		public override async Task DoGrowth(GameState gameState) {
 
 			int remainingGrowths = growthOptionGroup.SelectionCount;

@@ -111,6 +111,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			spirit.Presence.CardPlays.RevealedCount = revealedSpaces;
 			Assert_PresenceTracksAre(1,expectedCardPlayCount);
 
+			gameState.Phase = Phase.Growth;
 			When_StartingGrowth();
 
 			User.Growth_SelectsOption( "PlacePresence(1) / GainEnergy(4)" );

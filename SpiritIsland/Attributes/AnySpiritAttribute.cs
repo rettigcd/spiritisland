@@ -15,7 +15,7 @@ namespace SpiritIsland {
 
 		public override string RangeText => "-";
 
-		public override string TargetFilter => "Any Spirit"; // !!! Any Spirit
+		public override string TargetFilter => "Any Spirit";
 
 		public override LandOrSpirit LandOrSpirit => LandOrSpirit.Spirit;
 

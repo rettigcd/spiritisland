@@ -36,10 +36,10 @@ namespace SpiritIsland {
 		public bool WithInvaders( Space space ) => GameState.Tokens[space].HasInvaders();
 		public bool WithDahan( Space space ) => GameState.Tokens[space].Dahan.Any;
 
-		// !!! not sure these 3 are correct.
-		public bool WithDahanOrAdjacentTo5( Space space ) => GameState.DahanOn(space).Any || space.Adjacent.Any( a => GameState.DahanOn(a).Count>5 );
-		public bool WithDahanOrAdjacentTo3( Space space ) => GameState.DahanOn( space ).Any || space.Adjacent.Any( a => GameState.DahanOn(a).Count > 5 );
-		public bool WithDahanOrAdjacentTo1( Space space ) => GameState.DahanOn( space ).Any || space.Adjacent.Any( a => GameState.DahanOn(a).Count > 5 );
+		public bool WithDahanOrAdjacentTo5( Space space ) => WithDahanOrAdjacentTo(space,5);
+		public bool WithDahanOrAdjacentTo3( Space space ) => WithDahanOrAdjacentTo(space,3);
+		public bool WithDahanOrAdjacentTo1( Space space ) =>  WithDahanOrAdjacentTo(space,1);
+		public bool WithDahanOrAdjacentTo( Space space, int count ) => GameState.DahanOn(space).Any || count <= space.Adjacent.Sum( a => GameState.DahanOn(a).Count );
 
 		#endregion Lands
 

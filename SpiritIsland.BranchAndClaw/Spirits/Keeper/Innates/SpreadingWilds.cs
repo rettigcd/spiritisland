@@ -21,7 +21,7 @@ namespace SpiritIsland.BranchAndClaw {
 			return Task.CompletedTask;
 		}
 
-		[InnateOption( "1 plant,2 sun","!!! Combo", AttributePurpose.ExecuteOnly )]
+		[InnateOption( "1 plant,2 sun","", AttributePurpose.ExecuteOnly )]
 		static public async Task Option1And2( TargetSpaceCtx ctx ) {
 			await Option1(ctx);
 			await Option2(ctx);

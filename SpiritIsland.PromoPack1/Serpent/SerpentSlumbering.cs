@@ -2,12 +2,6 @@
 
 namespace SpiritIsland.PromoPack1 {
 
-	// Presence Tracks
-	// Innates
-	// Power CArds
-
-	// !!! Card 5 needs Reclaim One
-
 	public class SerpentSlumbering : Spirit {
 
 		public SerpentSlumbering() :base (

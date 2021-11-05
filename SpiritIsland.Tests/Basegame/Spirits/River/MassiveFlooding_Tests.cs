@@ -43,7 +43,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		[Trait("Feature","Push")]
 		[Fact]
 		public void Level1_Pushes1TownOrExplorer() { // 1-Sun, 2-Water
-
+			gs.Phase = Phase.Growth;
 			User.SelectsGrowthB_2PP("energy>A4","cardplays>A2");
 
 			User.BuysPowerCard( FlashFloods.Name ); // fast
