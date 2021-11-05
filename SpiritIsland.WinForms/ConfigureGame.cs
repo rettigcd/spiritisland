@@ -70,28 +70,6 @@ namespace SpiritIsland.WinForms {
 
 			spiritListBox.SelectedIndex = 0;
 
-			//// Base Game
-			//spiritListBox.Items.Add( typeof( RiverSurges ) );
-			//spiritListBox.Items.Add( typeof( LightningsSwiftStrike ) );
-			//spiritListBox.Items.Add( typeof( Shadows ) );
-			//spiritListBox.Items.Add( typeof( VitalStrength ) );
-			//spiritListBox.Items.Add( typeof( Thunderspeaker ) );
-			//spiritListBox.Items.Add( typeof( ASpreadOfRampantGreen ) );
-			//spiritListBox.Items.Add( typeof( Bringer ) );
-			//spiritListBox.Items.Add( typeof( Ocean ) );
-
-			//// Branch And Claw
-			//spiritListBox.Items.Add( typeof( Keeper ) );
-			//spiritListBox.Items.Add( typeof( SharpFangs ) );
-
-			//// Promo Pack 1
-			//spiritListBox.Items.Add( typeof( HeartOfTheWildfire ) );
-			//spiritListBox.Items.Add( typeof( SerpentSlumbering ) );
-
-			//// Jagged Earth
-			//spiritListBox.Items.Add( typeof( LureOfTheDeepWilderness ) );
-			//spiritListBox.Items.Add( typeof( GrinningTricksterStirsUpTrouble ) );
-			//spiritListBox.SelectedIndex = 0;
 		}
 
 		private void CheckOkStatus( object sender, EventArgs e ) {

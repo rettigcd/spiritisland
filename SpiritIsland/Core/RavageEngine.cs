@@ -66,9 +66,8 @@ namespace SpiritIsland {
 
 		public CountDictionary<Token> CalcParticipatingInvaders() { 
 			var participants = new CountDictionary<Token>();
-			foreach(var token in Tokens.Invaders()) {
+			foreach(var token in Tokens.Invaders())
 				participants[token] = Math.Max(0,Tokens[token] - cfg.NotParticipating[token]);
-			}
 			return participants;
 		}
 
@@ -123,11 +122,11 @@ namespace SpiritIsland {
 
 		#region private
 
-		int RawDamageFromParticipatingInvaders( CountDictionary<Token> participatingInvaders ) {
+		static int RawDamageFromParticipatingInvaders( CountDictionary<Token> participatingInvaders ) {
 
 			return participatingInvaders.Keys
 				.Where( x => !(x is StrifedInvader) )
-				.Select( invader => invader.FullHealth * Tokens[invader] ).Sum();
+				.Select( invader => invader.FullHealth * participatingInvaders[invader] ).Sum();
 		}
 
 
