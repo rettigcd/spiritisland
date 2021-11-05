@@ -87,32 +87,40 @@ namespace SpiritIsland {
 			// !!! we should resolve elemental upgrades first, then pick the target.
 
 			// if we are using prepared, verify
-			if(! await speedAttr.IsActiveFor(spiritCtx.GameState.Phase,spiritCtx.Self)) return;
+			if(!await speedAttr.IsActiveFor( spiritCtx.GameState.Phase, spiritCtx.Self )) return;
 
-			var targetCtx = await targetAttr.GetTargetCtx( spiritCtx );
+			List<MethodInfo> lastMethods = await GetLastActivatedMethodsOfEachGroup( spiritCtx );
+			if( lastMethods.Count == 0 ) return;
+
+			object targetCtx = await targetAttr.GetTargetCtx( spiritCtx );
 			if(targetCtx == null) return;
 
-			IEnumerable<MethodTuple[]> groups = elementListByMethod
-				// filter first - so we only have groups that have matches
-				.Where( pair => pair.Attr.Purpose != AttributePurpose.DisplayOnly )
-				.GroupBy(x=>x.Group)
-				.Select(x=>x.ToArray() );
-
-			foreach(MethodTuple[] grp in groups)
-				await ActivateGroup( spiritCtx.Self, targetCtx, grp );
+			foreach(var method in lastMethods)
+				await (Task)method.Invoke( null, new object[] { targetCtx } );
 
 		}
 
-		static async Task ActivateGroup( Spirit self, object ctx, MethodTuple[] grp ) {
+		async Task<List<MethodInfo>> GetLastActivatedMethodsOfEachGroup( SpiritGameStateCtx spiritCtx ) {
+			IEnumerable<MethodTuple[]> groups = elementListByMethod
+				// filter first - so we only have groups that have matches
+				.Where( pair => pair.Attr.Purpose != AttributePurpose.DisplayOnly )
+				.GroupBy( x => x.Group )
+				.Select( x => x.ToArray() );
+			List<MethodInfo> lastMethods = new List<MethodInfo>();
+			foreach(MethodTuple[] grp in groups) {
+				MethodInfo method = await GetLastMethodThatHasElements( spiritCtx.Self, grp );
+				if(method != null)
+					lastMethods.Add( method );
+			}
+			return lastMethods;
+		}
 
+		private static async Task<MethodInfo> GetLastMethodThatHasElements( Spirit self, MethodTuple[] grp ) {
 			MethodInfo method = null;
-
-			foreach(MethodTuple x in grp.OrderBy( pair => pair.Elements.Total ) )
-				if( await self.HasElements(x.Elements))
+			foreach(MethodTuple x in grp.OrderBy( pair => pair.Elements.Total ))
+				if(await self.HasElements( x.Elements ))
 					method = x.Method;
-
-			if( method != null )
-				await (Task)method.Invoke( null, new object[] { ctx } );
+			return method;
 		}
 
 		async Task<bool> ShouldRepeat( Spirit spirit ) => repeatAttr != null && await repeatAttr.CanRepeat( spirit );
