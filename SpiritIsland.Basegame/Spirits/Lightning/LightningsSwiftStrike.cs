@@ -81,7 +81,7 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 			Presence.PlaceOn(space);
 			Presence.PlaceOn(space);
 
-			gs.TimePassed += Gs_TimePassed;
+			gs.TimePasses_WholeGame += Gs_TimePassed;
 		}
 
 		private void Gs_TimePassed( GameState obj ) {

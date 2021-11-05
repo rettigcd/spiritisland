@@ -427,7 +427,10 @@ namespace SpiritIsland.WinForms {
 			foreach(var token in tokenTypes) {
 				int count = tokens[token];
 				if(count == 0) continue;
-				var img = tokenImages[token];
+
+				var tokenForImage = token;
+				if( token.Generic == TokenType.Dahan && token.Health > token.FullHealth ) tokenForImage = TokenType.Dahan.Default;
+				var img = tokenImages[tokenForImage];
 
 				// calc rect
 				float height = width / img.Width * img.Height;

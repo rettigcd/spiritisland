@@ -1,5 +1,35 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
+1) Add Card Action (buy / forget / discard) to IOption when presenting cards.
+1) Use Events to Signal decision is available.
+
+2) DrawGrowthActions should be Generic instead of big Case Statement.
+
+3) Ravage Engine
+
+Remove Prepared Elements from Spirit and put only in Shifting Memory
+
+Strifed Invaders damaging themselves
+Detect end of game at end of each action, Don't Lock-up when it happens.
+TargetSpaceCtx.DamageInvaders - limit badland damage to once / action
+Many Minds - Presence as Beasts
+Cascading Bight - all blight should cascade
+Moving Dahan into Frozen land should freeze them.
+Tigers Hunting - Exception in land with no invaders.
+Growth Through Sacrifice - Add Presence (when doing both - 2 suns) asks for positioning tiwce
+
+Repeat Power
+	Creepers Tear into Mortar - Rampant Green
+	Let Them Break Themselves Against the Stone - Stone
+	Never Hear d From Again - Lure
+	Forsake Society to Chase After Dreams - Lure
+	Lay PAths they cannot help but walk - Path Finder
+
+
+Test new Infinite Vitality - Dahan with +4 health
+
+
+
 == Test Formats ==
 Game-Runner
 Call Single Card

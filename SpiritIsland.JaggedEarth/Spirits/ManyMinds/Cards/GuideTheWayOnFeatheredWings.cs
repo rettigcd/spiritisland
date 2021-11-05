@@ -28,7 +28,7 @@ namespace SpiritIsland.JaggedEarth {
 
 
 		class GatherDahanFromSingle : TokenGatherer {
-			Space source;
+			readonly Space source;
 			public GatherDahanFromSingle( TargetSpaceCtx ctx, Space singleSource ) : base( ctx ) { this.source = singleSource; }
 			protected override SpaceToken[] GetOptions( TokenGroup[] groups ) {
 				return ctx.Target(source).Tokens.OfType(TokenType.Dahan)

@@ -13,7 +13,7 @@ namespace SpiritIsland {
 		public Fear(GameState gs ) {
 			this.gs = gs;
 			this.ActivationThreshold = gs.Spirits.Length * 4;
-			gs.TimePassed += FearAdded.EndOfRound;
+			gs.TimePasses_WholeGame += FearAdded.EndOfRound;
 			Init();
 		}
 

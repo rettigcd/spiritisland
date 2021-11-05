@@ -4,8 +4,8 @@ namespace SpiritIsland.Decision {
 
 	class TargetSpirit : TypedDecision<Spirit> {
 
-		public TargetSpirit( IEnumerable<Spirit> spirits )
-			: base( "Select Spirit to target", spirits, Present.Always ) {
+		public TargetSpirit( string powerName, IEnumerable<Spirit> spirits )
+			: base( powerName+": Target Spirit", spirits, Present.Always ) {
 		}
 
 	}

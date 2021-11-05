@@ -30,9 +30,9 @@ namespace SpiritIsland {
 			Invaders = new Invaders( this );
 			Tokens = new Tokens_ForIsland( this );
 
-			TimePassed += PreRavaging.OnEndOfRound;
-			TimePassed += PreBuilding.OnEndOfRound;
-			TimePassed += PreExplore.OnEndOfRound;
+			TimePasses_WholeGame += PreRavaging.OnEndOfRound;
+			TimePasses_WholeGame += PreBuilding.OnEndOfRound;
+			TimePasses_WholeGame += PreExplore.OnEndOfRound;
 		}
 
 		public virtual void Initialize() {
@@ -75,10 +75,10 @@ namespace SpiritIsland {
 
 		#region Time Passes
 
-		public event Action<GameState> TimePassed;												// Spirit cleanup
-		public Stack<Func<GameState, Task>> TimePasses_ThisRound = new Stack<Func<GameState, Task>>();        // Gift of Power
+		public event Action<GameState> TimePasses_WholeGame;												// Spirit cleanup
+		public Stack<Func<GameState, Task>> TimePasses_ThisRound = new Stack<Func<GameState, Task>>();      // Gift of Power
 
-		public async Task TimePasses() {
+		public async Task TriggerTimePasses() {
 
 			await ExecuteAndClear_OneRoundEvents(); // this is async because of Gift of Contancy has user action 'at end of turn'
 
@@ -86,7 +86,7 @@ namespace SpiritIsland {
 			foreach(var s in Island.AllSpaces)
 				Tokens[s][TokenType.Defend] = 0;
 
-			TimePassed?.Invoke( this );
+			TimePasses_WholeGame?.Invoke( this );
 			++RoundNumber;
 		}
 

@@ -92,7 +92,7 @@ namespace SpiritIsland {
 			List<MethodInfo> lastMethods = await GetLastActivatedMethodsOfEachGroup( spiritCtx );
 			if( lastMethods.Count == 0 ) return;
 
-			object targetCtx = await targetAttr.GetTargetCtx( spiritCtx );
+			object targetCtx = await targetAttr.GetTargetCtx( Name, spiritCtx );
 			if(targetCtx == null) return;
 
 			foreach(var method in lastMethods)

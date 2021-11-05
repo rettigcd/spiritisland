@@ -73,7 +73,7 @@ namespace SpiritIsland.Basegame {
 			this.AddActionFactory( new Setup_PlacePresenceInCostal() ); // let user pick initial ocean
 
 			gameState.Tokens.TokenMoved.ForEntireGame(InvadersMoved);
-			gameState.TimePassed += RemoveDrownedDahan;
+			gameState.TimePasses_WholeGame += RemoveDrownedDahan;
 		}
 
 		void RemoveDrownedDahan( GameState gs ) {

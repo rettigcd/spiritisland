@@ -139,16 +139,20 @@ namespace SpiritIsland {
 
 		#endregion
 
+		/// <summary>
+		/// Restores all of the tokens to their default / healthy state.
+		/// </summary>
 		static public void HealTokens( TokenCountDictionary counts ) {
-			void Heal( Token damaged ) {
-				int num = counts[damaged];
-				counts.Adjust( damaged.Healthy, num );
-				counts.Adjust( damaged, -num );
+			void RestoreAllToDefault( Token token ) {
+				if(token == token.Healthy) return; // already at default/healthy
+				int num = counts[token];
+				counts.Adjust( token.Healthy, num );
+				counts.Adjust( token, -num );
 			}
 
 			void HealGroup( TokenGroup group ) {
-				for(int health = group.Default.Health - 1; health > 0; --health)
-					Heal( group[health] );
+				foreach(var token in counts.OfType(group).ToArray())
+					RestoreAllToDefault(token);
 			}
 
 			HealGroup( Invader.City );

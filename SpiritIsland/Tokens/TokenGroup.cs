@@ -13,20 +13,22 @@ namespace SpiritIsland {
 			return seq;
 		}
 
-		public Token this[int i] => seq[i];
-		readonly Token[] seq;
-
-		public TokenGroup(string label, int fullHealth) {
-			Label = label;
-			Initial = label[0];
-
-			// Build different health level Sequence
-			seq = BuildHealthSequence(this, fullHealth);
-
-			// Capture default cast (????_
-			Default = seq[^1];
-
+		public void ExtendHealthRange(int newMaxHealth ) {
+			if(newMaxHealth < seq.Length) return; // all good
+			// replace old Seq with new extended seq
+			var newSeq = new Token[newMaxHealth + 1];
+			int h = 0;
+			for(; h < seq.Length; ++h) newSeq[h] = seq[h];
+			seq = newSeq;
+			// Fill in the missing slots
+			for(; h <= newMaxHealth; ++h)
+				seq[h] = new Token( this, seq, h );
 		}
+
+		public Token this[int i] => seq[i];
+		Token[] seq;
+
+		public TokenGroup(string label, int fullHealth):this(label,fullHealth,label[0]) {}
 
 		public TokenGroup( string label, int fullHealth, char initial ) {
 			Label = label;
@@ -35,11 +37,10 @@ namespace SpiritIsland {
 			// Build different health level Sequence
 			seq = BuildHealthSequence( this, fullHealth );
 
-			// Capture default cast (????_
-			Default = seq[^1];
+			// Capture default
+			Default = seq[fullHealth];
 
 		}
-
 
 		public char Initial { get; }
 

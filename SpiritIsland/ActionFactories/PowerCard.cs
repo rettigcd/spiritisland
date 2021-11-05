@@ -41,7 +41,7 @@ namespace SpiritIsland {
 			if(! await speedAttr.IsActiveFor(spiritCtx.GameState.Phase,spiritCtx.Self)) 
 				return;
 
-			var targetCtx = await targetAttr.GetTargetCtx( spiritCtx );
+			var targetCtx = await targetAttr.GetTargetCtx( Name, spiritCtx );
 			if(targetCtx == null) 
 				return;
 

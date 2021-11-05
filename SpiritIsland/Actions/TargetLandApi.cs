@@ -8,7 +8,7 @@ namespace SpiritIsland {
 	public class TargetLandApi {
 
 		public async virtual Task<Space> TargetsSpace( Spirit self, GameState gameState, string prompt, From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum ) {
-			if(prompt == null) prompt = "Select space to target.";
+			if(prompt == null) prompt = "Target Space.";
 			IEnumerable<Space> spaces = GetTargetOptions( self, gameState, sourceEnum, sourceTerrain, range, filterEnum );
 			return await self.Action.Decision( new Decision.TargetSpace( prompt, spaces, Present.Always ));
 		}

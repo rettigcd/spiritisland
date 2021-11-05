@@ -49,9 +49,9 @@ namespace SpiritIsland {
 					break;
 
 				Space destination = await PushToken( token );
+				--countArray[indexLookupByGroup[token.Generic]]; // decrement count
 				if(destination != null) {
 					pushedToSpaces.Add( destination ); // record push
-					--countArray[indexLookupByGroup[token.Generic]]; // decrement count
 				}
 			}
 			return pushedToSpaces.ToArray();

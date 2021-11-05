@@ -7,9 +7,9 @@ namespace SpiritIsland {
 	[AttributeUsage(AttributeTargets.Class|AttributeTargets.Method)]
 	public class AnySpiritAttribute : GeneratesContextAttribute {
 
-		public override async Task<object> GetTargetCtx( SpiritGameStateCtx ctx ) {
+		public override async Task<object> GetTargetCtx( string powerName, SpiritGameStateCtx ctx ) {
 			Spirit target = ctx.GameState.Spirits.Length == 1 ? ctx.Self
-				: await ctx.Self.Action.Decision( new Decision.TargetSpirit( ctx.GameState.Spirits ) );
+				: await ctx.Self.Action.Decision( new Decision.TargetSpirit( powerName, ctx.GameState.Spirits ) );
 			return new TargetSpiritCtx( ctx.Self, ctx.GameState, target, Cause.Power ); // !! there isn't a ctx.TargetSpirit( spirit ) ???
 		}
 
@@ -23,9 +23,9 @@ namespace SpiritIsland {
 
 	[AttributeUsage(AttributeTargets.Class|AttributeTargets.Method)]
 	public class AnotherSpiritAttribute : AnySpiritAttribute {
-		public override async Task<object> GetTargetCtx( SpiritGameStateCtx ctx ) {
+		public override async Task<object> GetTargetCtx( string powerName, SpiritGameStateCtx ctx ) {
 			Spirit target = ctx.GameState.Spirits.Length == 1 ? ctx.Self
-				: await ctx.Self.Action.Decision( new Decision.TargetSpirit( ctx.GameState.Spirits.Where(s=>s!=ctx.Self) ) );
+				: await ctx.Self.Action.Decision( new Decision.TargetSpirit( powerName, ctx.GameState.Spirits.Where(s=>s!=ctx.Self) ) );
 			return new TargetSpiritCtx( ctx.Self, ctx.GameState, target, Cause.Power );
 		}
 		public override string TargetFilter => "Another";
@@ -34,7 +34,7 @@ namespace SpiritIsland {
 
 	[AttributeUsage(AttributeTargets.Class|AttributeTargets.Method)]
 	public class YourselfAttribute : AnySpiritAttribute {
-		public override Task<object> GetTargetCtx( SpiritGameStateCtx ctx ) {
+		public override Task<object> GetTargetCtx( string powerName, SpiritGameStateCtx ctx ) {
 			return Task.FromResult( (object)new TargetSpiritCtx( ctx.Self, ctx.GameState, ctx.Self, Cause.Power ) );
 		}
 		public override string TargetFilter => "Yourself";

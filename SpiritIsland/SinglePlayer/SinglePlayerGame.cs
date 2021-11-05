@@ -60,7 +60,7 @@ namespace SpiritIsland.SinglePlayer {
 							GameState.Phase = Phase.Slow;
 							await Spirit.ResolveActions( new SpiritGameStateCtx( Spirit, GameState, Cause.Power ) );
 
-							await GameState.TimePasses();
+							await GameState.TriggerTimePasses();
 						} catch( GameStateCommandException ) {
 							// if they want to go back withing 5 seconds of a save, throw away the save and go back one more slot
 							if(DateTime.Now < lastSaveTimeStamp.Add(TimeSpan.FromSeconds(5)) && savedGameStates.Count>1)

@@ -9,7 +9,7 @@ namespace SpiritIsland {
 
 		public Invaders( GameState gs ) {
 			this.gs = gs;
-			this.gs.TimePassed += Heal;
+			this.gs.TimePasses_WholeGame += Heal;
 		}
 
 		#endregion

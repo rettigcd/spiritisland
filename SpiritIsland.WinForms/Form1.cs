@@ -119,8 +119,9 @@ namespace SpiritIsland.WinForms {
 		}
 
 		void InitGameFromConfiguration() {
-			this.game = new SinglePlayerGame( gameConfiguration.BuildGame() );
-			this.game.LogExceptions = true;
+			this.game = new SinglePlayerGame( gameConfiguration.BuildGame() ) {
+				LogExceptions = true
+			};
 
 			this.islandControl.Init( game.GameState, this, gameConfiguration.Color );
 			this.cardControl.Init( game.Spirit, this );

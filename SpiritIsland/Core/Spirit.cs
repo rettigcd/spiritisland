@@ -300,7 +300,7 @@ namespace SpiritIsland {
 		public virtual InnatePower[] InnatePowers { get; set; } = Array.Empty<InnatePower>();
 
 		public void Initialize( Board board, GameState gameState ){
-			gameState.TimePassed += On_TimePassed;
+			gameState.TimePasses_WholeGame += On_TimePassed;
 			InitializeInternal(board,gameState);
 		}
 

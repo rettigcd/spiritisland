@@ -12,9 +12,9 @@ namespace SpiritIsland {
 		public Tokens_ForIsland( GameState gs ) {
 			this.gameStateForEventArgs = gs;
 
-			gs.TimePassed += TokenAdded.OnEndOfRound;
-			gs.TimePassed += TokenMoved.OnEndOfRound;
-			gs.TimePassed += TokenDestroyed.OnEndOfRound;
+			gs.TimePasses_WholeGame += TokenAdded.OnEndOfRound;
+			gs.TimePasses_WholeGame += TokenMoved.OnEndOfRound;
+			gs.TimePasses_WholeGame += TokenDestroyed.OnEndOfRound;
 		}
 
 		public TokenCountDictionary this[Space space] {
