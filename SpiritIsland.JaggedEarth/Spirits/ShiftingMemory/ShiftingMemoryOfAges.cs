@@ -47,6 +47,16 @@ namespace SpiritIsland.JaggedEarth.Spirits.ShiftingMemory {
 			};
 		}
 
+		public override async Task ForgetPowerCard() {
+			var decision = new Decision.PickPowerCard( "Select card to forget or discard", CardUse.Discard, PurchasedCards.Union( Hand ).ToArray(), Present.Always );
+			decision.AddCards(CardUse.Forget,DiscardPile);
+			PowerCard cardToForgetOrDiscard = await this.Action.Decision( decision );
+			Forget( cardToForgetOrDiscard );
+		}
+
+		/// <summary>
+		/// If in hand, allows discarding instead of forgetting.
+		/// </summary>
 		public override void Forget( PowerCard card ) {
 
 			// (Source-1) Purchased / Active

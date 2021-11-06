@@ -78,7 +78,7 @@ namespace SpiritIsland.WinForms {
 			bool isOption = options.Contains( card );
 
 			if(!purchased && pickPowerCard != null && isOption)
-				graphics.DrawString(pickPowerCard.Use.ToString(),SystemFonts.MessageBoxFont, Brushes.White, x, margin );
+				graphics.DrawString(pickPowerCard.Use(card).ToString(),SystemFonts.MessageBoxFont, Brushes.White, x, margin );
 
 			var rect = new Rectangle( x, margin + (purchased ? 0 : topSpacer), cardWidth, cardHeight );
 			if(!locations.ContainsKey( card )) // only the first is clickable

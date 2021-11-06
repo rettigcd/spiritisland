@@ -205,7 +205,7 @@ namespace SpiritIsland {
 			}
 		}
 
-		public async Task ForgetPowerCard() {
+		public virtual async Task ForgetPowerCard() {
 			var options = PurchasedCards.Union( Hand ).Union( DiscardPile )
 				.ToArray();
 			PowerCard cardToForget = await this.SelectPowerCard( "Select power card to forget", options, CardUse.Forget, Present.Always );

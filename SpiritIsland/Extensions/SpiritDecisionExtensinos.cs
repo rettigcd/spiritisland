@@ -14,7 +14,7 @@ namespace SpiritIsland {
 		#region Simple Wrappers
 
 		static public Task<PowerCard> SelectPowerCard( this Spirit spirit, string prompt, IEnumerable<PowerCard> options, CardUse cardUse, Present present ) {
-			return spirit.Action.Decision( new Decision.PickPowerCard( prompt, options.ToArray(), cardUse, present ) );
+			return spirit.Action.Decision( new Decision.PickPowerCard( prompt, cardUse, options.ToArray(), present ) );
 		}
 
 		static public Task<IActionFactory> SelectFactory( this Spirit spirit, string prompt, IActionFactory[] options, Present present = Present.Always ) {
