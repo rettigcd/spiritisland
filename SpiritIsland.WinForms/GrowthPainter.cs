@@ -33,57 +33,48 @@ namespace SpiritIsland.WinForms {
 		}
 
 		private void DrawAction( GrowthActionFactory action, RectangleF rect ) {
-			// !!! make this generic
+			if(action is GainEnergy ge) { GainEnergy( rect, ge.Delta ); return; }
+
+			if(action is ReclaimAll) { ReclaimAll( rect ); return; }
+
+			if(action is Reclaim1) { Reclaim1( rect ); return; }
+
+			if(action is DrawPowerCard) { DrawPowerCard( rect ); return; }
+
+//			if(action is PlacePresence pp ) {
+//		}
 
 			switch(action.Name) {
-				case "ReclaimAll": ReclaimAll( rect ); break;
-				case "Reclaim(1)": Reclaim1( rect ); break;
-
-				case "DrawPowerCard": DrawPowerCard( rect ); break;
-				case "GainEnergy(1)": GainEnergy( rect, 1 ); break;
-				case "GainEnergy(2)": GainEnergy( rect, 2 ); break;
-				case "GainEnergy(3)": GainEnergy( rect, 3 ); break;
-				case "GainEnergy(4)": GainEnergy( rect, 4 ); break;
-				case "GainEnergy(9)": GainEnergy( rect, 9 ); break;
-
-				case "GainEnergy(-3)": GainEnergy( rect, -3 ); break;
-				case "GainEnergy(-1)": GainEnergy( rect, -1 ); break;
 
 				case "PlacePresence(0)": PlacePresence( rect, 0 ); break;
 				case "PlacePresence(1)": PlacePresence( rect, 1 ); break;
 				case "PlacePresence(2)": PlacePresence( rect, 2 ); break;
 				case "PlacePresence(3)": PlacePresence( rect, 3 ); break;
-				// thunderspeaker
 				case "PlacePresence(1,dahan)": PlacePresence( rect, 1, "Dahanicon" ); break;
 				case "PlacePresence(2,dahan)": PlacePresence( rect, 2, "Dahanicon" ); break;
-				// rampant green
 				case "PlacePresence(2,W / J)": PlacePresence( rect, 2, "Junglewetland" ); break;
 				case "PlayExtraCardThisTurn": AdditionalPlay( rect ); break;
-
-				// bringger
 				case "PlacePresence(4,dahan or invaders)": PlacePresence( rect, 4, "DahanOrInvaders" ); break;
-
-				// ocean
 				case "PlacePresence(1,coastal)": PlacePresence( rect, 1, "Coastal" ); break;
-				case "GatherPresenceIntoOcean": GatherToOcean(rect); break;
 				case "PlaceInOcean": PlaceInOcean( rect ); break;
-				case "PushPresenceFromOcean": PushFromOcean( rect ); break;
-				// Keeper
 				case "PlacePresence(3,presence or wilds)": PlacePresence( rect, 3, "wildsorpresence"); break;
 				case "PlacePresence(3,no blight)": PlacePresence( rect, 3, "Noblight" ); break;
-				// Sharp Fangs
 				case "PlacePresence(3,beast or jungle)": PlacePresence( rect, 3, "JungleOrBeast" ); break;
+				case "PlacePresence(4,Inland)": PlacePresence( rect, 4 ); break; // Lure
+				case "PlacePresence(3,mountain or presence)": PlacePresence( rect, 3, "mountainorpresence"); break;
+
+				// Ocean
+				case "GatherPresenceIntoOcean": GatherToOcean(rect); break;
+				case "PushPresenceFromOcean": PushFromOcean( rect ); break;
 				// Heart of the WildFire
 				case "EnergyForFire": EnergyForFire( rect ); break;
 				// Serpent
 				case "MovePresence": MovePresence( rect, 1 ); break;
 				// Lure of the Deep Wilderness
-				case "PlacePresence(4,Inland)": PlacePresence( rect, 4 ); break;
 				case "GainElement(Moon,Air,Plant)": GainElement( rect, Element.Moon, Element.Air, Element.Plant ); break;
 				// Grinning Trickster
 				case "GainEnergyEqualToCardPlays": DrawIconInCenter( rect, "GainEnergyEqualToCardPlays"); break;
 				// Stones Unyielding Defiance
-				case "PlacePresence(3,mountain or presence)": PlacePresence( rect, 3, "mountainorpresence"); break;
 				case "GainElements(Earth,Earth)": GainElement( rect, Element.Earth, Element.Earth ); break; // !!! this is drawn as an OR, layer them and make them an AND
 				// Many Minds
 				case "Gather1Beast": LandGatherBeasts( rect ); break;

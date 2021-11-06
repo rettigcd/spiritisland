@@ -1,5 +1,15 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
+
+Resolve AnyElement
+Single Growth Action - AutoSelectSingle
+	- Sharp Fangs
+	- Keeper
+	- Starlight
+
+Draw Elements in same(card) order all the time 
+
+
 1) DrawGrowthActions should be Generic instead of big Case Statement.
 
 2) Ravage Engine

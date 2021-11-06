@@ -40,7 +40,7 @@ namespace SpiritIsland.Tests {
 
 		public void Growth_Reclaims1(string cards) {
 			Choose( "Reclaim(1)" );
-			AssertDecisionX( "Select card to reclaim.",  cards, "{}" );
+			AssertDecisionX( Reclaim1.Prompt,  cards, "{}" );
 		}
 
 		public void Growth_GainsEnergy() {
@@ -108,8 +108,13 @@ namespace SpiritIsland.Tests {
 
 		#endregion
 
-		public void BuysPowerCard( string powerCardName ) {
-			SelectOption( "Buy power cards:", powerCardName );
+		public void BuysPowerCard( string cardName ) {
+			var card = this.spirit.Hand.First(c=>c.Name == cardName);
+			BuysPowerCard( card );
+		}
+
+		public void BuysPowerCard( PowerCard card ) {
+			SelectOption( "Buy power cards:", card.Text );
 		}
 
 		#region Fear 
@@ -125,12 +130,23 @@ namespace SpiritIsland.Tests {
 
 		public void SelectsSlowAction(string actions) {
 			var (options,choice) = SplitOptionsAndChoice( actions );
+			choice = PowerNameToText( choice );
+			options = options.Split(',').Select( PowerNameToText ).Join(",");
 			AssertDecision( "Select Slow to resolve:", options+",Done", choice );
 		}
 
 		public void SelectsFastAction(string actions) {
-			var (options,choice) = SplitOptionsAndChoice( actions );
-			AssertDecision( "Select Fast to resolve:", options+",Done", choice );
+			var (options, choice) = SplitOptionsAndChoice( actions );
+
+			choice = PowerNameToText( choice );
+			options = options.Split(',').Select( PowerNameToText ).Join(",");
+
+			AssertDecision( "Select Fast to resolve:", options + ",Done", choice );
+		}
+
+		string PowerNameToText( string choice ) {
+			return this.spirit.PurchasedCards.FirstOrDefault( c => c.Name == choice )?.Text 
+				?? choice; // it is an Innate Power and not in the purchased card list.
 		}
 
 		#endregion
@@ -199,12 +215,12 @@ namespace SpiritIsland.Tests {
 
 		#endregion
 
-		public void TargetsSpirit( string spirits ) {
-			AssertDecisionX( "Select Spirit to target", spirits );
+		public void TargetsSpirit( string actionName, string spirits ) {
+			AssertDecisionX( actionName + ": Target Spirit", spirits );
 		}
 
-		public void TargetsLand( string space ) {
-			AssertDecisionX( "Select space to target.", space );
+		public void TargetsLand( string powerName, string space ) {
+			AssertDecisionX( powerName + ": Target Space", space );
 		}
 
 		public void TargetsLand_IgnoreOptions( string space ) {

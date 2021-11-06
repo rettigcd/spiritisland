@@ -45,7 +45,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			When_PlayingCard();
 			
-			User.TargetsSpirit("River Surges in Sunlight,(Lightning's Swift Strike)");
+			User.TargetsSpirit(BoonOfVigor.Name, "River Surges in Sunlight,(Lightning's Swift Strike)");
 
 			User.Assert_Done();
 

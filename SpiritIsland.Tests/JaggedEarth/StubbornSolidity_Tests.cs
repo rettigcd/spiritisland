@@ -95,7 +95,7 @@ namespace SpiritIsland.Tests.JaggedEarth {
 		static void BuysAndUses( GameFixture fxt, string cardName ) {
 			fxt.user.BuysPowerCard( cardName );
 			fxt.user.SelectsFastAction( cardName );
-			fxt.user.TargetsLand( "A1,A2,A3,A4,(A5),A6" );
+			fxt.user.TargetsLand( cardName, "A1,A2,A3,A4,(A5),A6" );
 		}
 
 		static void Stone_Grows( GameFixture fxt ) {

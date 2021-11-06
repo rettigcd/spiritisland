@@ -26,7 +26,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			// and activate card
 			When_ActivateCard( WordsOfWarning.Name );
 			
-			User.TargetsLand("(A2),A4");
+			User.TargetsLand(WordsOfWarning.Name,"(A2),A4");
 
 			// When: ravaging on A2
 			await gs.InvaderEngine.TestRavage(new InvaderCard(a[2].Terrain));

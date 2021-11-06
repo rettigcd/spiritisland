@@ -68,7 +68,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			When_PlayingCard();
 
 			//  Select: A4
-			User.TargetsLand( "A4" );
+			User.TargetsLand( RiversBounty.Name, "A4" );
 
 			string token = "D@2 on " + neighbor.Label;
 
@@ -101,7 +101,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			When_PlayingCard();
 
-			User.TargetsLand( "A4" );
+			User.TargetsLand( RiversBounty.Name, "A4" );
 			User.GathersOptionalToken("(D@2 on A1),D@2 on A2");
 			User.GathersOptionalToken("D@2 on A2");
 
@@ -124,7 +124,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			When_PlayingCard();
 
-			User.TargetsLand( "A4" );
+			User.TargetsLand( RiversBounty.Name, "A4" );
 			User.GathersOptionalToken("(D@1 on A1),D@1 on A2");
 			User.GathersOptionalToken("D@1 on A2");
 
@@ -146,7 +146,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			When_PlayingCard();
 
-			User.TargetsLand("(A4),A8");
+			User.TargetsLand( RiversBounty.Name,"(A4),A8");
 			User.GathersOptionalToken( "D@2 on A5" );
 			User.GathersOptionalToken( "D@2 on A5" );
 
@@ -168,7 +168,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			When_PlayingCard();
 
 			// Select 1st land
-			User.TargetsLand( "A4" );
+			User.TargetsLand( RiversBounty.Name,"A4" );
 
 			User.Assert_Done();
 

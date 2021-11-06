@@ -52,7 +52,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			User.IsDoneWith( Phase.Fast );
 
 			User.SelectsSlowAction("River's Bounty,(Massive Flooding)");
-			User.TargetsLand( "A2,A3,A5,(A8)" );
+			User.TargetsLand( "Massive Flooding", "A2,A3,A5,(A8)" );
 			User.PushesTokensTo( "(T@2),E@1", "(A5),A6,A7" );
 		}
 
@@ -72,7 +72,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			User.IsDoneWith( Phase.Fast );
 
 			User.SelectsSlowAction("River's Bounty,(Massive Flooding)" );
-			User.TargetsLand("A5,(A8)");
+			User.TargetsLand("Massive Flooding","A5,(A8)");
 
 			User.AssertDecision("Damage (2 remaining)","T@2,E@1,C@3","T@2");
 			User.AssertDecision("Damage (1 remaining)","T@1,E@1,C@3","T@1");
@@ -104,7 +104,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			User.IsDoneWith( Phase.Fast );
 
 			User.SelectsSlowAction("River's Bounty,Wash Away,(Massive Flooding)" );
-			User.TargetsLand( "(A1),A5,A8" );
+			User.TargetsLand( "Massive Flooding", "(A1),A5,A8" );
 			
 			game.GameState.Assert_Invaders(space, "1C@1" );
 		}

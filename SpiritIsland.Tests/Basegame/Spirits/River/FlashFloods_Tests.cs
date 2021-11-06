@@ -42,7 +42,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			When_PlayingCard();
 
-			User.TargetsLand( "A4" );
+			User.TargetsLand( FlashFloods.Name, "A4" );
 			User.SelectsDamageRecipient( 1, "C@3,T@2,(E@1)" ); // select damage option
 
 			User.Assert_Done();
@@ -77,7 +77,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			When_PlayingCard();
 
 			//  Select: A2
-			User.TargetsLand("A2");
+			User.TargetsLand(FlashFloods.Name,"A2");
 
 			// Then: can apply 2 points of damage
 			User.SelectsDamageRecipient( 2, "(C@3),T@2,E@1" );

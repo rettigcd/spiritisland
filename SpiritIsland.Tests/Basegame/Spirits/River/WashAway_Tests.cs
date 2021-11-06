@@ -40,7 +40,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			When_PlayingCard();
 
-			User.TargetsLand( targetSpace.Label );
+			User.TargetsLand( WashAway.Name, targetSpace.Label );
 
 			var invader = spirit.Action.GetCurrent().Options[0] as Token;
 
@@ -67,7 +67,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			When_PlayingCard();
 
-			User.TargetsLand( targetSpace.Label );
+			User.TargetsLand( WashAway.Name, targetSpace.Label );
 			User.OptionallyPushesInvaderTo("E@1","A1,(A3),A4");
 		}
 
@@ -89,7 +89,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			When_PlayingCard();
 
-			User.TargetsLand( targetSpace.Label );
+			User.TargetsLand( WashAway.Name, targetSpace.Label );
 			User.OptionallyPushesInvaderTo("(E@1),T@2","A1,(A2),A3,A5", 2);
 			User.OptionallyPushesInvaderTo("T@2","A1,A2,(A3),A5");
 
@@ -117,7 +117,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			When_PlayingCard();
 			System.Threading.Thread.Sleep(50); // !!! is this necessary?
 
-			User.TargetsLand( targetSpace.Label );
+			User.TargetsLand( WashAway.Name, targetSpace.Label );
 			User.OptionallyPushesInvaderTo("T@1","A1,(A2),A3,A5");
 
 			User.Assert_Done();
@@ -143,7 +143,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			//  When: activating card
 			When_PlayingCard();
 
-			User.TargetsLand( targetSpace.Label );
+			User.TargetsLand( WashAway.Name, targetSpace.Label );
 			User.OptionallyPushesInvaderTo("E@1","A1,(A2),A3,A5", 3);
 			User.OptionallyPushesInvaderTo("E@1","A1,A2,(A3),A5", 2);
 			User.OptionallyPushesInvaderTo("E@1","A1,A2,A3,(A5)");

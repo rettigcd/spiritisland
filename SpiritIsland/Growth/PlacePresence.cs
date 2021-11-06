@@ -4,16 +4,16 @@ namespace SpiritIsland {
 
 	public class PlacePresence : GrowthActionFactory {
 
-		readonly protected int range;
-		readonly protected string filterEnum;
+		public int Range { get; }
+		public string FilterEnum { get; }
 
 		public override string Name {get;}
 
 		#region constructors
 
 		public PlacePresence( int range ){
-			this.range = range;
-			filterEnum = Target.Any;
+			this.Range = range;
+			FilterEnum = Target.Any;
 			Name = $"PlacePresence({range})";
 		}
 
@@ -21,14 +21,14 @@ namespace SpiritIsland {
 			int range,
 			string filterEnum
 		) {
-			this.range = range;
-			this.filterEnum = filterEnum;
+			this.Range = range;
+			this.FilterEnum = filterEnum;
 			Name = $"PlacePresence({range},{filterEnum})";
 		}
 
 		#endregion
 
-		public override Task ActivateAsync( SpiritGameStateCtx ctx ) => ctx.PlacePresence( range, filterEnum );
+		public override Task ActivateAsync( SpiritGameStateCtx ctx ) => ctx.PlacePresence( Range, FilterEnum );
 
 	}
 

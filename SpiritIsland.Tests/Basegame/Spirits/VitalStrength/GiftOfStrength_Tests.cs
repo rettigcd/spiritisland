@@ -29,10 +29,15 @@ namespace SpiritIsland.Tests.Basegame.Spirits.VitalStrengthNS {
 			spirit.Elements[Element.Plant] = 2;
 
 			//  And: Earth has 4 cards
-			spirit.AddActionFactory( MakePowerCard( Slow0 ) ); // not played
-			spirit.AddActionFactory( MakePowerCard( Fast0 ) ); // not played
-			spirit.AddActionFactory( MakePowerCard( Fast1 ) ); // played - should appear
-			spirit.AddActionFactory( MakePowerCard( Fast2 ) ); // played - no - too expensive
+			var cards = new PowerCard[] {
+				MakePowerCard( Slow0 ), // not played
+				MakePowerCard( Fast0 ), // not played
+				MakePowerCard( Fast1 ), // played - should appear
+				MakePowerCard( Fast2 )  // played - no - too expensive
+			};
+			spirit.tempCardPlayBoost = cards.Length;
+			spirit.Hand.AddRange(cards);
+			spirit.PurchaseAvailableCards_Test( cards );
 			User.IsDoneBuyingCards();
 
 			//  And: already played 2 fast cards (cost 1 & 2)
@@ -43,7 +48,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.VitalStrengthNS {
 
 			// Then: user can replay ONLY the played: Fast-1 card.
 			User.SelectsFastAction( "Fast-0,(Replay Card [max cost:1])" );
-			User.AssertDecision( "Select card to replay", "Fast-1", "Fast-1" ); // !!! should there be a ,Done here?
+			User.AssertDecision( "Select card to replay", "Fast-1 $1 (Fast)", "Fast-1 $1 (Fast)" ); // !!! should there be a ,Done here?
 
 		}
 
@@ -57,10 +62,20 @@ namespace SpiritIsland.Tests.Basegame.Spirits.VitalStrengthNS {
 			spirit.Elements[Element.Plant] = 2;
 
 			//  And: Earth has 4 cards
-			spirit.AddActionFactory( MakePowerCard( Fast0 ) ); // played - no - its fast!
-			spirit.AddActionFactory( MakePowerCard( Slow0 ) ); // not played
-			spirit.AddActionFactory( MakePowerCard( Slow1 ) ); // played - should appear
-			spirit.AddActionFactory( MakePowerCard( Slow2 ) ); // played - no - too expensive
+			var cards = new PowerCard[] {
+				MakePowerCard( Fast0 ), // played - no - its fast!
+				MakePowerCard( Slow0 ), // not played
+				MakePowerCard( Slow1 ), // played - should appear
+				MakePowerCard( Slow2 )  // played - no - too expensive
+			};
+			spirit.tempCardPlayBoost = cards.Length;
+			spirit.Hand.AddRange(cards);
+			spirit.PurchaseAvailableCards_Test( cards );
+
+			//spirit.AddActionFactory( MakePowerCard( Fast0 ) ); // played - no - its fast!
+			//spirit.AddActionFactory( MakePowerCard( Slow0 ) ); // not played
+			//spirit.AddActionFactory( MakePowerCard( Slow1 ) ); // played - should appear
+			//spirit.AddActionFactory( MakePowerCard( Slow2 ) ); // played - no - too expensive
 			User.IsDoneBuyingCards();
 
 			//  And: played GOS on self
@@ -76,7 +91,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.VitalStrengthNS {
 
 			// When: Replaying card
 			User.SelectsSlowAction( "Slow-0,Slow-2,(Replay Card [max cost:1])" );
-			User.AssertDecision( "Select card to replay", "Slow-1", "Slow-1" ); // !!! should there be a ,Done here?
+			User.AssertDecision( "Select card to replay", "Slow-1 $1 (Slow)", "Slow-1 $1 (Slow)" ); // !!! should there be a ,Done here?
 		}
 
 		void User_PlaysGiftOfStrengthOnSelf() {

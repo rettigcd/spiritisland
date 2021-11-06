@@ -5,16 +5,17 @@ namespace SpiritIsland {
 
 	public class GainEnergy : GrowthActionFactory {
 
-		readonly int delta;
+		public int Delta { get; }
+
 		public GainEnergy(int delta){
-			this.delta = delta; 
+			this.Delta = delta; 
 		}
 
-		public override string Name => $"GainEnergy({delta})";
+		public override string Name => $"GainEnergy({Delta})";
 
 
 		public override Task ActivateAsync( SpiritGameStateCtx ctx ) {
-			ctx.Self.Energy += delta;
+			ctx.Self.Energy += Delta;
 			return Task.CompletedTask;
 		}
 
