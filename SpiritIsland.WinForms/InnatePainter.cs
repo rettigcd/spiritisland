@@ -102,7 +102,7 @@ namespace SpiritIsland.WinForms {
 			// Options
 			foreach(WrappingTextInfo o in options) {
 				o.Draw( graphics );
-				if( spirit.Elements.Contains( o.Attribute.ElementText ))
+				if( spirit.Elements.Contains( o.Attribute.Elements ))
 					graphics.DrawRectangle(Pens.Red, o.Bounds.ToInts());
 			}
 

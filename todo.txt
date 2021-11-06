@@ -1,7 +1,4 @@
-﻿https://spiritislandwiki.com/index.php?title=Main_Page
-
-Resolve AnyElement
-
+﻿
 1) DrawGrowthActions should be Generic instead of big Case Statement.
 
 2) Ravage Engine
@@ -147,3 +144,4 @@ Select neigher / done to not play card
 == Steam updates - What's New (provide insight as to what they have trouble with) ==
 https://store.steampowered.com/news/app/1236720
 
+https://spiritislandwiki.com/index.php?title=Main_Page

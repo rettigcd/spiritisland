@@ -36,7 +36,7 @@ namespace SpiritIsland {
 		}
 
 		/// <summary> Reorders elements into 'Standard' order </summary>
-		public static string BuildElementString(this CountDictionary<Element> elements, string delimiter ) {
+		public static string BuildElementString(this CountDictionary<Element> elements, string delimiter = " " ) {
 			return elements
 				.OrderBy(p=>(int)p.Key)
 				.Select(p=>p.Value+" "+p.Key.ToString().ToLower())
@@ -52,12 +52,6 @@ namespace SpiritIsland {
 
 		static Element ParseEl( string text ) {
 			return (Element)Enum.Parse( typeof( Element ), text, true );
-		}
-
-		static public bool Contains(this CountDictionary<Element> dict, string subsetElementString) {
-			return string.IsNullOrEmpty(subsetElementString)
-				? throw new ArgumentException("criteria elements cannot be null or empty.")
-				: dict.Contains( Parse(subsetElementString) );
 		}
 
 	}
