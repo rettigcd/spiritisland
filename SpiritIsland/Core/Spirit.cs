@@ -30,50 +30,20 @@ namespace SpiritIsland {
 
 		public readonly CountDictionary<Element> Elements = new CountDictionary<Element>();
 
-		public readonly CountDictionary<Element> PreparedElements = new CountDictionary<Element>();
-
-		CountDictionary<Element> actionElements; // null unless we are in the middle of an action
-
-		public async Task PrepareElement() {
-			// This is only used by Shifting Memories
-			var el = await this.SelectElement("Prepare Element", ElementList.AllElements);
-			PreparedElements[el]++;
+		/// <summary>
+		/// Checks all elements that are available to spirit.
+		/// </summary>
+		public virtual bool CouldHaveElements( CountDictionary<Element> subset ) {
+			// For normal spirits without Prepared Elements, this is only the normal Elements
+			return Elements.Contains(subset);
 		}
 
-		public async Task<CountDictionary<Element>> DiscardElements(int totalNumToRemove ) {
-			var discarded = new CountDictionary<Element>();
-
-			int index = totalNumToRemove;
-			while(index++ < totalNumToRemove) {
-				Element el = await this.SelectElement($"Select element to discard for card play ({index} of {totalNumToRemove})",PreparedElements.Keys, Present.Done);
-				if( el == default ) break;
-				PreparedElements[el]--;
-				discarded[el]++;
-			}
-			return discarded;
-		}
-
-		public async Task<bool> HasElements( CountDictionary<Element> subset ) {
-			if( actionElements == null ) 
-				actionElements = Elements.Clone();
-			if( actionElements.Contains( subset ) ) return true;
-
-			// Check if we have prepared element markers to fill the missing elements
-			if(PreparedElements.Any()) {
-				var missing = subset.Except(Elements);
-				if(PreparedElements.Contains(missing) && await this.UserSelectsFirstText($"Meet elemental threshold:"+subset.ToString(), "Yes, use prepared elements", "No, I'll pass.")) {
-					foreach(var pair in missing)
-						PreparedElements[pair.Key] -= pair.Value;
-					return true;
-				}
-			}
-
-			return false;
-		}
-
-		public bool CouldHaveElements( CountDictionary<Element> subset ) {
-			var els = PreparedElements.Any() ? Elements.Union(PreparedElements): Elements;
-			return els.Contains(subset);
+		/// <summary>
+		/// Checks elements available, and commits them (like the 'Any' element)
+		/// </summary>
+		public virtual Task<bool> HasElements( CountDictionary<Element> subset ) {
+			// For normal spirits without Prepared Elements, this is the same as Could Have Elements
+			return Task.FromResult( CouldHaveElements( subset ) ); 
 		}
 
 		#endregion
@@ -256,7 +226,6 @@ namespace SpiritIsland {
 		}
 
 		protected virtual async Task TakeAction(IActionFactory factory, SpiritGameStateCtx ctx) {
-			actionElements = null; // make sure these are cleared out for every action
 			var oldActionGuid = CurrentActionId; // capture old
 			CurrentActionId = Guid.NewGuid(); // set new
 			try {
@@ -264,7 +233,6 @@ namespace SpiritIsland {
 				RemoveFromUnresolvedActions( factory );
 			} finally {
 				CurrentActionId = oldActionGuid; // restore
-				actionElements = null;
 			}
 		}
 
@@ -403,7 +371,7 @@ namespace SpiritIsland {
 			public Memento(Spirit spirit) {
 				energy = spirit.Energy;
 				elements = spirit.Elements.ToArray();
-				preparedElements = spirit.PreparedElements.ToArray();
+				// preparedElements = spirit.PreparedElements.ToArray();
 				presence = spirit.Presence.SaveToMemento();
 				hand      = spirit.Hand.ToArray();
 				purchased = spirit.PurchasedCards.ToArray();
@@ -415,7 +383,7 @@ namespace SpiritIsland {
 			public void Restore(Spirit spirit) {
 				spirit.Energy = energy;
 				InitFromArray( spirit.Elements, elements);
-				InitFromArray( spirit.PreparedElements, preparedElements);
+				// InitFromArray( spirit.PreparedElements, preparedElements); // !!! 
 				spirit.Presence.LoadFrom(presence);
 				spirit.Hand.SetItems( hand );
 				spirit.PurchasedCards.SetItems( purchased );
@@ -430,7 +398,7 @@ namespace SpiritIsland {
 			}
 			readonly int energy;
 			readonly KeyValuePair<Element,int>[] elements;
-			readonly KeyValuePair<Element,int>[] preparedElements;
+			// readonly KeyValuePair<Element,int>[] preparedElements;
 			readonly IMemento<SpiritPresence> presence;
 			readonly PowerCard[] hand;
 			readonly PowerCard[] purchased;

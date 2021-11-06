@@ -1,7 +1,10 @@
 ﻿using System.Threading.Tasks;
 
-namespace SpiritIsland {
+namespace SpiritIsland.JaggedEarth {
 
+	/// <summary>
+	/// Shifting Memories Track-Action
+	/// </summary>
 	public class DiscardElementsForCardPlay : GrowthActionFactory {
 
 		readonly int totalNumToRemove;
@@ -10,11 +13,10 @@ namespace SpiritIsland {
 		}
 
 		public override async Task ActivateAsync( SpiritGameStateCtx ctx ) {
-			if( ctx.Self.PreparedElements.Total < totalNumToRemove ) return;
-
-			var discarded = await ctx.Self.DiscardElements(totalNumToRemove);
-			if(discarded.Total==totalNumToRemove)
-				ctx.Self.tempCardPlayBoost++;
+			if( ctx.Self is ShiftingMemoryOfAges smoa
+				&& totalNumToRemove <= smoa.PreparedElements.Total
+				&& (await smoa.DiscardElements(totalNumToRemove)).Count == totalNumToRemove
+			) smoa.tempCardPlayBoost++;
 		}
 
 	}

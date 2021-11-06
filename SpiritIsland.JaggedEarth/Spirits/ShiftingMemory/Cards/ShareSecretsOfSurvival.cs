@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace SpiritIsland.JaggedEarth.Spirits.ShiftingMemory {
+namespace SpiritIsland.JaggedEarth {
 	public class ShareSecretsOfSurvival {
 
 		[SpiritCard("Share Secrets of Survival",0,Element.Sun,Element.Air,Element.Earth),Fast,FromSacredSite(1)]

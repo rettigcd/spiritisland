@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace SpiritIsland.JaggedEarth.Spirits.ShiftingMemory {
+namespace SpiritIsland.JaggedEarth {
 
 	public class StudyTheInvadersFears {
 		[SpiritCard("Study the Invaders' Fears",0,Element.Moon,Element.Air,Element.Animal), Fast, FromPresence(0,Target.TownOrCity)]

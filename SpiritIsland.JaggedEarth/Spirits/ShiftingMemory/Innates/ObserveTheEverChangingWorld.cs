@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace SpiritIsland.JaggedEarth.Spirits.ShiftingMemory {
+namespace SpiritIsland.JaggedEarth {
+
 	[InnatePower("Observe the Ever-Changing World"), Fast, FromPresence(1)]
 	public class ObserveTheEverChangingWorld {
 
 		[InnateOption("1 moon","Prepare 1 Element Marker")]
 		static public Task Option1(TargetSpaceCtx ctx ) {
-			return ctx.Self.PrepareElement();
+			var smoa = (ShiftingMemoryOfAges)ctx.Self;
+			return smoa.PrepareElement();
 		}
 
 		[InnateOption("2 moon,1 air","Instead, after each of the next three Actions that change which pieces are in atarget land, Prepare 1 Element Marker.")]
@@ -52,7 +54,8 @@ namespace SpiritIsland.JaggedEarth.Spirits.ShiftingMemory {
 				actionId = ctx.Self.CurrentActionId; // limit to 1 change per action
 				tokenSummary = ctx.Tokens.Summary;
 
-				await ctx.Self.PrepareElement();
+				var smoa = (ShiftingMemoryOfAges)ctx.Self;
+				await smoa.PrepareElement();
 				if(--remaining <= 0)
 					ctx.GameState.TimePasses_ThisRound.Push( StopWatchingSpace );
 			}

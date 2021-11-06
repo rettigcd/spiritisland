@@ -1,4 +1,5 @@
 ﻿using SpiritIsland;
+using SpiritIsland.JaggedEarth;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -132,7 +133,8 @@ namespace SpiritIsland.WinForms {
 
 			// activated elements
 			DrawActivatedElements( graphics, spirit.Elements, ref y );
-			DrawActivatedElements( graphics, spirit.PreparedElements, ref y );
+			if(spirit is ShiftingMemoryOfAges smoa)
+				DrawActivatedElements( graphics, smoa.PreparedElements, ref y );
 		}
 
 		void DrawDestroyed( Graphics graphics, Pen highlightPen, Bitmap presence, float slotWidth, SizeF presenceSize, float x, float cardY ) {

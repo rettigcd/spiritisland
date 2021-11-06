@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 
-namespace SpiritIsland.JaggedEarth.Spirits.ShiftingMemory {
+namespace SpiritIsland.JaggedEarth {
+
 	[InnatePower("Learn the Invaders' Tactics"), Fast, FromPresence(1,Target.Invaders)]
 	public class LearnTheInvadersActions {
 

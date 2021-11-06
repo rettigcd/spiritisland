@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 
-namespace SpiritIsland.JaggedEarth.Spirits.ShiftingMemory {
+namespace SpiritIsland.JaggedEarth {
+
 	public class BoonOfAncientMemories {
 
 		[SpiritCard("Boon of Ancient Memories",1,Element.Moon,Element.Water,Element.Earth,Element.Plant), Slow, AnySpirit]

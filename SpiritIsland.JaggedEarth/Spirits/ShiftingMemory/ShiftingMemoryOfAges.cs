@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 
-namespace SpiritIsland.JaggedEarth.Spirits.ShiftingMemory {
+namespace SpiritIsland.JaggedEarth {
 
 	public class ShiftingMemoryOfAges : Spirit {
 
@@ -91,6 +91,62 @@ namespace SpiritIsland.JaggedEarth.Spirits.ShiftingMemory {
 			PreparedElements[Element.Moon] = 1;
 			PreparedElements[Element.Air] = 1;
 			PreparedElements[Element.Earth] = 1;
+		}
+
+		public async Task PrepareElement() {
+			// This is only used by Shifting Memories
+			var el = await this.SelectElement("Prepare Element", ElementList.AllElements);
+			PreparedElements[el]++;
+		}
+
+		public async Task<CountDictionary<Element>> DiscardElements(int totalNumToRemove ) {
+			var discarded = new CountDictionary<Element>();
+
+			int index = totalNumToRemove;
+			while(index++ < totalNumToRemove) {
+				Element el = await this.SelectElement($"Select element to discard for card play ({index} of {totalNumToRemove})",PreparedElements.Keys, Present.Done);
+				if( el == default ) break;
+				PreparedElements[el]--;
+				discarded[el]++;
+			}
+			return discarded;
+		}
+
+		public override bool CouldHaveElements( CountDictionary<Element> subset ) {
+			var els = PreparedElements.Any() ? Elements.Union(PreparedElements): Elements;
+			return els.Contains(subset);
+		}
+
+		public readonly CountDictionary<Element> PreparedElements = new CountDictionary<Element>();
+
+		protected CountDictionary<Element> actionElements; // null unless we are in the middle of an action
+
+		public override async Task<bool> HasElements( CountDictionary<Element> subset ) {
+			if( actionElements == null ) 
+				actionElements = Elements.Clone();
+			if( actionElements.Contains( subset ) ) return true;
+
+			// Check if we have prepared element markers to fill the missing elements
+			if(PreparedElements.Any()) {
+				var missing = subset.Except(Elements);
+				if(PreparedElements.Contains(missing) && await this.UserSelectsFirstText($"Meet elemental threshold:"+subset.ToString(), "Yes, use prepared elements", "No, I'll pass.")) {
+					foreach(var pair in missing)
+						PreparedElements[pair.Key] -= pair.Value;
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+
+		protected override async Task TakeAction(IActionFactory factory, SpiritGameStateCtx ctx) {
+			actionElements = null; // make sure these are cleared out for every action
+			try {
+				await base.TakeAction(factory,ctx);
+			} finally {
+				actionElements = null;
+			}
 		}
 
 	}
