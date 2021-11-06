@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
@@ -9,15 +8,12 @@ namespace SpiritIsland {
 			var self = ctx.Self;
 			if(self.DiscardPile.Count == 0) return;
 
-			var dict = self.DiscardPile.ToDictionary(c=>$"{c.Text} ${c.Cost} ({c.Speed})",c=>(PowerCard)c);
-			var txt = await self.SelectText( "Select card to reclaim.", dict.Keys.ToArray(),Present.Always );
-			if(txt != null) {
-				PowerCard card = dict[txt];
-				if(self.DiscardPile.Contains( card )) {
-					self.DiscardPile.Remove( card );
-					self.Hand.Add( card );
-				}
+			PowerCard cardToReclaim = await ctx.Self.SelectPowerCard( "Select power card to forget", self.DiscardPile, CardUse.Reclaim, Present.Always );
+			if(cardToReclaim != null && self.DiscardPile.Contains( cardToReclaim )) {
+				self.DiscardPile.Remove( cardToReclaim );
+				self.Hand.Add( cardToReclaim );
 			}
+
 		}
 
 		public override string Name => "Reclaim(1)";

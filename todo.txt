@@ -1,6 +1,5 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
-1) Add Card Action (buy / forget / discard) to IOption when presenting cards.
 1) Use Events to Signal decision is available.
 
 2) DrawGrowthActions should be Generic instead of big Case Statement.

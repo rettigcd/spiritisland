@@ -18,7 +18,7 @@ namespace SpiritIsland {
 
 		#endregion
 
-		public string Text => Name;
+		public string Text => $"{Name} ${Cost} ({Speed})";
 		public string Name         => cardAttr.Name;
 		public Phase Speed         => speedAttr.DisplaySpeed;
 		public SpeedOverride OverrideSpeed { get; set; }
