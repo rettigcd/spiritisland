@@ -48,23 +48,25 @@ namespace SpiritIsland.WinForms {
 
 			float margin = width * .02f; // 2% of width
 			float workingWidth = width - margin*2;
+
 			// "All-Enveloping Green"
 			var titleRect = new RectangleF( x+margin, y+margin,workingWidth,workingWidth * .1f ); // 10%;
+
 			// brown box
 			var brownBox = new RectangleF( x+margin, titleRect.Bottom, workingWidth, workingWidth * .16f);
 			var brownBoxRows = brownBox.SplitVertically(0.40f);
 			var headingHeaderRects = brownBoxRows[0].SplitHorizontally(3);
 			var headingValueRects = brownBoxRows[1].SplitHorizontally(3);
+
 			// Options
 			List<WrappingTextInfo> options = new List<WrappingTextInfo>();
 			var optionY = brownBox.Bottom + rowHeight*0.25f;
 			foreach(var innatePowerOption in power.Options.Where(o=>o.Purpose != AttributePurpose.ExecuteOnly )) {
-				var wrapInfo = CalcInnateOption( innatePowerOption, brownBox.Left, optionY, workingWidth );
+				var wrapInfo = CalcInnateOptionLayout( innatePowerOption, brownBox.Left, optionY, workingWidth );
 				options.Add( wrapInfo );
 				optionY=wrapInfo.Bounds.Bottom;
 			}
 			var totalOptionBounds = new RectangleF(x,y,width,optionY-y);
-
 
 			// === Draw ===
 
@@ -98,7 +100,7 @@ namespace SpiritIsland.WinForms {
 				graphics.DrawRectangle(thickPen,brownBox.ToInts());
 
 			// Options
-			foreach(var o in options) {
+			foreach(WrappingTextInfo o in options) {
 				o.Draw( graphics );
 				if( spirit.Elements.Contains( o.Attribute.ElementText ))
 					graphics.DrawRectangle(Pens.Red, o.Bounds.ToInts());
@@ -108,13 +110,16 @@ namespace SpiritIsland.WinForms {
 		}
 
 
-		public WrappingTextInfo CalcInnateOption( InnateOptionAttribute option, float originalX, float originalY, float width ) {
+		public WrappingTextInfo CalcInnateOptionLayout( InnateOptionAttribute option, float originalX, float originalY, float width ) {
 			float x = originalX;
 			float y = originalY;
 
 			var wrappingText = new WrappingTextInfo { Attribute = option };
 
-			CalcWrappingString( wrappingText, option.ElementText.Replace( ",", "" ), boldFont, ref x, ref y, originalX, width );
+			// Elements
+			string elementStr = option.Elements.OrderBy(p=>(int)p.Key).Select(p=>p.Value+" "+p.Key.ToString().ToLower()).Join(" ");
+			CalcWrappingString( wrappingText, elementStr, boldFont, ref x, ref y, originalX, width );
+			// Text
 			CalcWrappingString( wrappingText, option.Description, font, ref x, ref y, originalX, width );
 			y += rowHeight;
 			wrappingText.Bounds = new RectangleF( originalX, originalY, width, y - originalY );

@@ -1,9 +1,6 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
-
 Resolve AnyElement
-Draw Elements in same(card) order all the time 
-
 
 1) DrawGrowthActions should be Generic instead of big Case Statement.
 
@@ -39,8 +36,6 @@ Growth / Presence Tracks
 Where do Methods Go?
 	- Test Fixture?
 	- Extension methods?
-	- 
-
 
 
 == Test Badlands ==

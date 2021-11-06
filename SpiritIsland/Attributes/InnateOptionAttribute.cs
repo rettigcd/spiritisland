@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace SpiritIsland {
 
@@ -6,8 +7,8 @@ namespace SpiritIsland {
 	public class InnateOptionAttribute : Attribute {
 
 		public InnateOptionAttribute( string elementText, string description, int group=0 ) {
-			ElementText = elementText;
 			Elements = ElementList.Parse( elementText );
+			ElementText = Elements.BuildElementString( " " );
 			Description = description;
 			Purpose = AttributePurpose.DisplayAndExecute;
 			Group = group;
@@ -17,8 +18,8 @@ namespace SpiritIsland {
 		/// Use this to not trigger the method call. Just display the power to the user
 		/// </summary>
 		public InnateOptionAttribute( string elementText, string description, AttributePurpose purpose, int group=0 ) {
-			ElementText = elementText;
 			Elements = ElementList.Parse( elementText );
+			ElementText = Elements.BuildElementString( " " );
 			Description = description;
 			Purpose = purpose;
 			Group = group;

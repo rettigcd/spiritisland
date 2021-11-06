@@ -30,23 +30,9 @@ namespace SpiritIsland.WinForms {
 
 			this.presenceColor = presenceColor ?? throw new ArgumentNullException( nameof( presenceColor ) );
 
-			InitElementDisplayOrder( spirit );
-
 			optionProvider.NewDecision += OptionProvider_OptionsChanged;
 		}
 
-		void InitElementDisplayOrder( Spirit spirit ) {
-			static CountDictionary<Element> Highest( InnatePower power ) => power.GetTriggerThresholds()
-				.OrderByDescending( list => list.Total )
-				.First();
-
-			int i = 0;
-			foreach(var innate in spirit.InnatePowers)
-				foreach(var el in Highest( innate ).Keys)
-					if(!elementOrder.ContainsKey( el )) elementOrder[el] = i++;
-			foreach(Element el in Enum.GetValues( typeof( Element ) ))
-				if(!elementOrder.ContainsKey( el )) elementOrder[el] = i++;
-		}
 
 		#endregion
 
@@ -181,7 +167,7 @@ namespace SpiritIsland.WinForms {
 			const float elementSize = 40f;
 			float x = margin;
 
-			var orderedElements = elements.Keys.OrderBy( el => elementOrder[el] );
+			var orderedElements = elements.Keys.OrderBy( el => (int)el );
 			foreach(var element in orderedElements) {
 				var rect = new RectangleF(x,y,elementSize,elementSize);
 				graphics.DrawImage( GetElementImage( element ), rect );
@@ -269,7 +255,6 @@ namespace SpiritIsland.WinForms {
 		Spirit spirit;
 
 		readonly Dictionary<Element, Image> elementImages = new();
-		readonly Dictionary<Element, int> elementOrder = new();
 
 		readonly Dictionary<IOption, RectangleF> hotSpots = new();
 
