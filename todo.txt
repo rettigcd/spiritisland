@@ -2,11 +2,6 @@
 
 
 Resolve AnyElement
-Single Growth Action - AutoSelectSingle
-	- Sharp Fangs
-	- Keeper
-	- Starlight
-
 Draw Elements in same(card) order all the time 
 
 

@@ -73,10 +73,13 @@ namespace SpiritIsland.Tests {
 		public void PlacesPresence( Track source, string placeOptions ) {
 
 			var current = userPortal.GetCurrent();
-
 			var op = current.Options.First( o => o.Text.StartsWith( "PlacePre" ) );
 			Choose( op );
 
+			PlacePresenceLocations( source, placeOptions );
+		}
+
+		public void PlacePresenceLocations( Track source, string placeOptions ) {
 			// Source
 			PullsPresenceFromTrack( source );
 

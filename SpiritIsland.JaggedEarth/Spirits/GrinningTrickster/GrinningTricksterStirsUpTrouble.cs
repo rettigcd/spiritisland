@@ -28,9 +28,9 @@ namespace SpiritIsland.JaggedEarth {
 			// Growth
 			this.growthOptionGroup = new GrowthOptionGroup(
 				new GrowthOption(new GainEnergy(-1),new ReclaimAll(), new MovePresence() ){ GainEnergy = -1 },
-				new GrowthOption(new PlacePresence(2)){ AutoSelectSingle=true },
-				new GrowthOption(new DrawPowerCard()){ AutoSelectSingle=true },
-				new GrowthOption(new GainEnergyEqualToCardPlays() ){ AutoSelectSingle=true }
+				new GrowthOption(new PlacePresence(2)),
+				new GrowthOption(new DrawPowerCard()),
+				new GrowthOption(new GainEnergyEqualToCardPlays() )
 			).Pick(2);
 
 			// Innates

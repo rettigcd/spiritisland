@@ -230,7 +230,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 
 		void User_Activates_B() {
 			User.Growth_SelectsOption( "DrawPowerCard" );
-			User.Growth_DrawsPowerCard();
+			// User.Growth_DrawsPowerCard(); - not needed due to AutoSelectSingle
 		}
 
 		void User_Activates_C() {

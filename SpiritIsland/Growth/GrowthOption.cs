@@ -19,8 +19,6 @@ namespace SpiritIsland {
 			return GrowthActions.Select(a=>a.Name).Join(" / ");
 		}
 
-		public bool AutoSelectSingle { get;set; } = false;
-
 	}
 
 }

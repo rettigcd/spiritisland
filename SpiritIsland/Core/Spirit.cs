@@ -75,7 +75,7 @@ namespace SpiritIsland {
 		public Task GrowAndResolve( GrowthOption option, GameState gameState ) {
 			var ctx = new SpiritGameStateCtx(this,gameState,Cause.Growth);
 
-			if( option.AutoSelectSingle && option.GrowthActions.Length == 1 )
+			if( option.GrowthActions.Length == 1 )
 				return option.GrowthActions[0].ActivateAsync( ctx );
 			
 			Grow( option );

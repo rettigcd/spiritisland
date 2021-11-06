@@ -27,7 +27,6 @@ namespace SpiritIsland.Tests {
 
 			// When: Grow, Skip Buy, then Ravage
 			fxt.user.Growth_SelectsOption( "ReclaimAll" );
-			fxt.user.Growth_ReclaimsAll();
 			fxt.user.IsDoneBuyingCards();
 
 			//  Then: ravage happened
@@ -66,7 +65,6 @@ namespace SpiritIsland.Tests {
 
 			// When: Grow, Skip Buy, then Ravage
 			fxt.user.Growth_SelectsOption( "ReclaimAll" );
-			fxt.user.Growth_ReclaimsAll();
 			fxt.user.IsDoneBuyingCards();
 
 			//  Then: ravage happened

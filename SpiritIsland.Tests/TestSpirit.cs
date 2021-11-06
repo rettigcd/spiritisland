@@ -56,7 +56,7 @@ namespace SpiritIsland.Tests {
 		/// <summary> Growth for Test Spirit </summary>
 		public void Grows() {
 			Growth_SelectsOption( "ReclaimAll" );
-			Growth_ReclaimsAll();
+//			Growth_ReclaimsAll();
 		}
 
 		public void DoesNothingForARound() {
