@@ -1,13 +1,11 @@
 ﻿https://spiritislandwiki.com/index.php?title=Main_Page
 
-1) Use Events to Signal decision is available.
+1) DrawGrowthActions should be Generic instead of big Case Statement.
 
-2) DrawGrowthActions should be Generic instead of big Case Statement.
+2) Ravage Engine
 
-3) Ravage Engine
+3) Cascading Bight - all blight should cascade
 
-4) Cascading Bight - all blight should cascade
-4) Remove Prepared Elements from Spirit and put only in Shifting Memory
 4) TargetSpaceCtx.DamageInvaders - limit badland damage to once / action
 
 Strifed Invaders damaging themselves
@@ -25,9 +23,7 @@ Repeat Power
 	Forsake Society to Chase After Dreams - Lure
 	Lay PAths they cannot help but walk - Path Finder
 
-
 Test new Infinite Vitality - Dahan with +4 health
-
 
 
 == Test Formats ==

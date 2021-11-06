@@ -5,7 +5,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class FireAndFlood {
 
-		[MajorCard( "Fire and Flood", 9, Element.Sun, Element.Fire, Element.Water )]
+		[MajorCard( "Fire and Flood", 7, Element.Sun, Element.Fire, Element.Water )]
 		[Slow]
 		[FromSacredSite( 1 )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {

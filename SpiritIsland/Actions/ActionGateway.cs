@@ -16,6 +16,8 @@ namespace SpiritIsland {
 		/// </summary>
 		public IDecision GetCurrent() => WaitForNextDecisionAndCacheIt().Decision;
 
+		public event Action<IDecision> NewWaitingDecision;
+
 		IDecisionMaker WaitForNextDecisionAndCacheIt() {
 			if(userAccessedDecision == null) {
 				signal.WaitOne(); // !!! When we get too much blight, this will lock up the UI - replace with a timed signal
@@ -77,17 +79,18 @@ namespace SpiritIsland {
 			var decision = decisionMaker.Decision;
 
 			if(decision.Options.Length == 0)
-
+				// Auto-Select NULL
 				promise.TrySetResult( null );
 
 			else if(decision.Options.Length == 1 && decision.AllowAutoSelect) {
-
-				decisionMaker.Select( decision.Options[0] ); // ####
+				// Auto-Select Single
+				decisionMaker.Select( decision.Options[0] );
 				Log( decision.Options[0], decision, true );
 
 			} else {
 				activeDecisionMaker = decisionMaker;
 				signal.Set();
+				NewWaitingDecision?.Invoke(decision);
 			}
 			return promise.Task;
 		}

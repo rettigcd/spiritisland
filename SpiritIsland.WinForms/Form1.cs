@@ -27,18 +27,14 @@ namespace SpiritIsland.WinForms {
 		void Select( IOption option ) {
 			this.game.UserPortal.Choose( option );
 			
-			if(this.game.WinLoseStatus == WinLoseStatus.Playing) {
-				this.ShowOptions();
-				return;
-			}
+			if(this.game.WinLoseStatus == WinLoseStatus.Playing) return;
 
 			this.Text = this.game.WinLoseStatus.ToString();
 			// ! clear out all options
 
 		}
 
-		void ShowOptions() {
-			IDecision decision = game.UserPortal.GetCurrent();
+		void Action_NewWaitingDecision( IDecision decision ) {
 			this.promptLabel.Text = decision.Prompt;
 			islandControl.Invalidate();
 			NewDecision?.Invoke( decision );
@@ -119,16 +115,20 @@ namespace SpiritIsland.WinForms {
 		}
 
 		void InitGameFromConfiguration() {
-			this.game = new SinglePlayerGame( gameConfiguration.BuildGame() ) {
-				LogExceptions = true
-			};
+			GameState gameState = gameConfiguration.BuildGame();
+			game = new SinglePlayerGame( gameState, false ) { LogExceptions = true };
+			game.Spirit.Action.NewWaitingDecision += Action_NewWaitingDecision;
 
 			this.islandControl.Init( game.GameState, this, gameConfiguration.Color );
 			this.cardControl.Init( game.Spirit, this );
 			this.spiritControl.Init( game.Spirit, gameConfiguration.Color, this );
 			this.statusControl1.Init( game.GameState, this );
 			this.Text = "Spirit Island - Single Player Game #"+gameConfiguration.GameNumber;
-			ShowOptions();
+
+			// start the game
+			this.game.Start();
+
+//			ShowOptions();
 		}
 
 		void ExitToolStripMenuItem_Click( object sender, EventArgs e ) {
@@ -144,7 +144,7 @@ namespace SpiritIsland.WinForms {
 
 		void ReplayRoundToolStripMenuItem_Click( object sender, EventArgs e ) {
 			this.game.UserPortal.GoBackToBeginningOfRound();
-			this.ShowOptions();
+//			this.ShowOptions();
 		}
 
 	}

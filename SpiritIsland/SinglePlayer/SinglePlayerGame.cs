@@ -22,20 +22,19 @@ namespace SpiritIsland.SinglePlayer {
 
 		#region constructor 
 
-		public SinglePlayerGame(GameState gameState){
+		public SinglePlayerGame(GameState gameState,bool start=true){
 			this.GameState = gameState;
 			gameState.Initialize();
 			Spirit = gameState.Spirits.Single(); // this player only handles single-player.
 			this.UserPortal = Spirit.Action;
-			StartLoop();
+			if(start)
+				Start();
 		}
 
 
 		#endregion
 
-		#region private
-
-		void StartLoop() {
+		public void Start() {
 
 			async Task LoopAsync() {
 				try {
@@ -86,8 +85,6 @@ namespace SpiritIsland.SinglePlayer {
 			_ = LoopAsync();
 
 		}
-
-		#endregion
 
 	}
 
