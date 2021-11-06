@@ -35,15 +35,30 @@ namespace SpiritIsland {
 		/// </summary>
 		public virtual bool CouldHaveElements( CountDictionary<Element> subset ) {
 			// For normal spirits without Prepared Elements, this is only the normal Elements
-			return Elements.Contains(subset);
+			int wildCount = Elements[Element.Any];
+			return wildCount == 0 ? Elements.Contains(subset)  // no 'wild-card' elements, Elements must contain subset
+				: subset.Except(Elements).Count <= wildCount; // Find missing elements and count if they are less than our 'wild-card' elements
 		}
 
 		/// <summary>
 		/// Checks elements available, and commits them (like the 'Any' element)
 		/// </summary>
-		public virtual Task<bool> HasElements( CountDictionary<Element> subset ) {
+		public virtual async Task<bool> HasElements( CountDictionary<Element> subset ) {
 			// For normal spirits without Prepared Elements, this is the same as Could Have Elements
-			return Task.FromResult( CouldHaveElements( subset ) ); 
+			if( Elements.Contains(subset) ) return true;
+			int wildCount = Elements[Element.Any];
+			if(wildCount == 0) return false;
+
+			// We have some wild cards
+			var missing = subset.Except( Elements );
+			if(missing.Count > wildCount) return false;
+
+			if( await this.UserSelectsFirstText("Activate: "+subset.BuildElementString()+"?", $"Yes, use {missing.Count} 'Any' elments", "No thanks" )) {
+				foreach(var p in missing) Elements[p.Key] += p.Value;
+				Elements[Element.Any] -= missing.Count;
+				return true;
+			}
+			return false;
 		}
 
 		#endregion
@@ -103,10 +118,10 @@ namespace SpiritIsland {
 			// Elements
 			Presence.AddElements( Elements );
 
-			int anyCount = Elements[Element.Any];
-			Elements[Element.Any] = 0; // we can't draw these in our activated element list
-			if(anyCount > 0)
-				AddActionFactory( new SelectAnyElements( anyCount ) );
+			//int anyCount = Elements[Element.Any];
+			//Elements[Element.Any] = 0; // we can't draw these in our activated element list
+			//if(anyCount > 0)
+			//	AddActionFactory( new SelectAnyElements( anyCount ) );
 
 		}
 

@@ -36,7 +36,7 @@ namespace SpiritIsland {
 		}
 
 		/// <summary> Reorders elements into 'Standard' order </summary>
-		public static string BuildElementString(this CountDictionary<Element> elements, string delimiter ) {
+		public static string BuildElementString(this CountDictionary<Element> elements, string delimiter = " " ) {
 			return elements
 				.OrderBy(p=>(int)p.Key)
 				.Select(p=>p.Value+" "+p.Key.ToString().ToLower())
