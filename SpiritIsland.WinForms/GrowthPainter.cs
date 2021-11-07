@@ -41,29 +41,16 @@ namespace SpiritIsland.WinForms {
 
 			if(action is DrawPowerCard) { DrawPowerCard( rect ); return; }
 
-//			if(action is PlacePresence pp ) {
-//		}
+			if(action is PlacePresence pp ) {
+				PlacePresence( rect, pp.Range, pp.FilterEnum );
+				return;
+			}
 
 			switch(action.Name) {
 
-				case "PlacePresence(0)": PlacePresence( rect, 0 ); break;
-				case "PlacePresence(1)": PlacePresence( rect, 1 ); break;
-				case "PlacePresence(2)": PlacePresence( rect, 2 ); break;
-				case "PlacePresence(3)": PlacePresence( rect, 3 ); break;
-				case "PlacePresence(1,dahan)": PlacePresence( rect, 1, "Dahanicon" ); break;
-				case "PlacePresence(2,dahan)": PlacePresence( rect, 2, "Dahanicon" ); break;
-				case "PlacePresence(2,W / J)": PlacePresence( rect, 2, "Junglewetland" ); break;
 				case "PlayExtraCardThisTurn": AdditionalPlay( rect ); break;
-				case "PlacePresence(4,dahan or invaders)": PlacePresence( rect, 4, "DahanOrInvaders" ); break;
-				case "PlacePresence(1,coastal)": PlacePresence( rect, 1, "Coastal" ); break;
-				case "PlaceInOcean": PlaceInOcean( rect ); break;
-				case "PlacePresence(3,presence or wilds)": PlacePresence( rect, 3, "wildsorpresence"); break;
-				case "PlacePresence(3,no blight)": PlacePresence( rect, 3, "Noblight" ); break;
-				case "PlacePresence(3,beast or jungle)": PlacePresence( rect, 3, "JungleOrBeast" ); break;
-				case "PlacePresence(4,Inland)": PlacePresence( rect, 4 ); break; // Lure
-				case "PlacePresence(3,mountain or presence)": PlacePresence( rect, 3, "mountainorpresence"); break;
-
 				// Ocean
+				case "PlaceInOcean":          PlacePresence( rect, null, Target.Ocean ); break;
 				case "GatherPresenceIntoOcean": GatherToOcean(rect); break;
 				case "PushPresenceFromOcean": PushFromOcean( rect ); break;
 				// Heart of the WildFire
@@ -79,7 +66,6 @@ namespace SpiritIsland.WinForms {
 				// Many Minds
 				case "Gather1Beast": LandGatherBeasts( rect ); break;
 				case "PlacePresenceAndBeast": 
-					PlacePresence( rect, 3 );
 					DrawIconInCenter( rect.InflateBy(-rect.Width*.2f), "Beasticon");
 					break;
 				default:
@@ -126,10 +112,6 @@ namespace SpiritIsland.WinForms {
 			graphics.DrawImage( img, rect.X, rect.Y + (rect.Height - imgHeight) / 2, imgWidth, imgHeight );
 		}
 
-		void PlaceInOcean( RectangleF rect ) {
-			PlacePresence( rect, null, "Ocean" );
-		}
-
 		void GainElement( RectangleF rect, params Element[] elements ) {
 			var parts = rect.SplitHorizontally(elements.Length);
 			for(int i = 0; i < elements.Length; ++i) {
@@ -139,22 +121,21 @@ namespace SpiritIsland.WinForms {
 		}
 
 
-		void PlacePresence( RectangleF rect, int? range, string iconFilename = "" ) {
+		void PlacePresence( RectangleF rect, int? range, string filterEnum ) {
+			using var image = ResourceImages.Singleton.GetTargetFilterIcon( filterEnum );
 
 			using Font font = new Font( ResourceImages.Singleton.Fonts.Families[0], rect.Height * .15f, GraphicsUnit.Pixel  );
-			// var font = SystemFonts.IconTitleFont;
 
 			// + presence
-			float presencePercent = iconFilename == "" ? .3f : .2f;
+			float presencePercent = image == null ? .3f : .2f;
 			float plusY = rect.Y + rect.Height * presencePercent; // top of presence
 			graphics.DrawString("+",font,Brushes.Black,rect.X+rect.Width*0.25f,plusY);
 			using var presenceIcon = ResourceImages.Singleton.GetIcon( "Presenceicon" );
 			graphics.DrawImage(presenceIcon, rect.X + rect.Width * 0.4f, plusY-rect.Height*.1f, rect.Width*.5f, rect.Height*.2f );
 
 			// icon
-			if(iconFilename != "") {
+			if(image != null) {
 				// using var image = Image.FromFile( ".\\images\\" + iconFilename + ".png" );
-				using var image = ResourceImages.Singleton.GetIcon( iconFilename );
 				float iconPercentage = .4f;
 				float iconHeight = rect.Height * .3f;
 				float iconWidth = iconHeight * image.Width / image.Height;
@@ -172,7 +153,7 @@ namespace SpiritIsland.WinForms {
 				);
 			}
 
-			if(range.HasValue) {
+			if(range.HasValue) { // no range for ocean
 				// range # text
 				float rangeTextTop = rect.Y + rect.Height * .65f;
 				string txt = range.Value.ToString();

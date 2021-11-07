@@ -16,6 +16,7 @@
 		public const string NoInvader        = "no invader";
 		public const string DahanOrInvaders  = "dahan or invaders";
 		public const string Coastal          = "coastal";
+		public const string Ocean            = "Ocean";
 
 		public const string TownOrExplorer   = "town or explorer"; // wash away helper
 		public const string TownOrCity       = "town or city"; // Study the Invaders' Fears

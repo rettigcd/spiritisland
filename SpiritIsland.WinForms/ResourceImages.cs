@@ -29,6 +29,23 @@ namespace SpiritIsland.WinForms {
 
 		#endregion Tokens
 
+		public Bitmap GetTargetFilterIcon( string filterEnum ) {
+			string iconFilename = filterEnum switch {
+				Target.Dahan => "Dahanicon",
+				Target.JungleOrWetland => "Junglewetland",
+				Target.DahanOrInvaders => "DahanOrInvaders",
+				Target.Coastal => "Coastal",
+				Target.PresenceOrWilds => "wildsorpresence",
+				Target.NoBlight => "Noblight",
+				Target.BeastOrJungle => "JungleOrBeast",
+				Target.Ocean => "Ocean",
+				Target.MountainOrPresence => "mountainorpresence",
+				_ => null, // Inland, Any
+			};
+			return iconFilename != null ? GetIcon( iconFilename ) : null;
+		}
+
+
 		public Bitmap GetIcon( string fileName )         => GetResourceImage( $"icons.{fileName}.png" );
 
 		public Bitmap GetInvaderCard( string filename ) => GetResourceImage( $"invaders.{filename}.jpg" );
