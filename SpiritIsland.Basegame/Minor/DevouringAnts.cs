@@ -2,7 +2,7 @@
 
 namespace SpiritIsland.Basegame {
 
-	class DevouringAnts {
+	public class DevouringAnts {
 
 		[MinorCard("Devouring Ants",1,Element.Sun,Element.Earth,Element.Animal)]
 		[Slow]

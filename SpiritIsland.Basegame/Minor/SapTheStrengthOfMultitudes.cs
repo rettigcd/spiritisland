@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 
-	class SapTheStrengthOfMultitudes {
+	public class SapTheStrengthOfMultitudes {
 
 		[MinorCard( "Sap the Strength of Multitudes", 0, "water, animal" )]
 		[Fast]

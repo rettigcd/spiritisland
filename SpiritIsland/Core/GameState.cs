@@ -276,8 +276,8 @@ namespace SpiritIsland {
 				src.blightOnCard = blightOnCard;
 				src.BlightCard.IslandIsBlighted = isBlighted;
 				for(int i=0;i<spirits.Length;++i) src.Spirits[i].LoadFrom( spirits[i] );
-				if(src.MajorCards != null ) src.MajorCards.LoadFrom( major );
-				if(src.MinorCards != null ) src.MinorCards.LoadFrom( minor );
+				if(src.MajorCards != null ) src.MajorCards.RestoreFrom( major );
+				if(src.MinorCards != null ) src.MinorCards.RestoreFrom( minor );
 				src.InvaderDeck.LoadFrom( invaderDeck );
 				src.Fear.LoadFrom( fear );
 				src.Tokens.LoadFrom( tokens );

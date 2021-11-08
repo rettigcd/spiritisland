@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
-	class QuickenTheEarthsStruggles {
+	public class QuickenTheEarthsStruggles {
 
 		[MinorCard( "Quicken the Earths Struggles", 1, "moon, fire, earth, animal" )]
 		[Fast]

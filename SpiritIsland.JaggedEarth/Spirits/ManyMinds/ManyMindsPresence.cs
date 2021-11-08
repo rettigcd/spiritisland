@@ -27,32 +27,42 @@ namespace SpiritIsland.JaggedEarth {
 				gs.Tokens[space].Beasts.Count--;
 		}
 
-		async Task TokenMoved(GameState gs, TokenMovedArgs args){
+		async Task TokenMoved(GameState gs, TokenMovedArgs args) {
 			if(args.Token != TokenType.Beast) return; // not a beast
-			if(this.CountOn(args.From)<2) return; // not our Sacred Site
+			if(this.CountOn( args.From ) < 2) return; // not our Sacred Site
 
 
 			var srcBeasts = gs.Tokens[args.From].Beasts;
-			if(srcBeasts.Count == 0 // force moved our virtual beast
-				|| await spirit.Action.Decision( new Decision.Presence.Gather("Move 2 presence with Beast?", args.To, args.From ) ) != null
-			) {
-				Move2Presence( gs, args );
-				// If source still has a SS, need to re-create the virtual - beast there
-				if(2 <= CountOn( args.From ))
-					srcBeasts.Count++; // Beast token is virtual so maybe we don't want to trigger TokenAdded
-			}
-			// If destination/to now has 4 or more presence, then there was already a virtual beast there and we need to remove 1 of the virtual beasts
-			if(4<=CountOn(args.To))
-				gs.Tokens[args.To].Beasts.Count--;
+			if(srcBeasts.Count > 0 // force moved our virtual beast
+				&& await spirit.Action.Decision( new Decision.Presence.Gather( "Move 2 presence with Beast?", args.To, args.From ) ) == null
+			) return; // not moving presence
+
+			Move2Presence( gs, args );
+
+			SacredSiteAtSouce_RestoreVirtualBeast( args, srcBeasts );
+
+			AddedVirtualBeastAtDestination_LimitTo1( gs, args );
 
 		}
 
-		private void Move2Presence( GameState gs, TokenMovedArgs args ) {
+		void Move2Presence( GameState gs, TokenMovedArgs args ) {
 			// Move 2 of our presence
 			for(int i = 0; i < 2; ++i) {
 				base.RemoveFrom( args.From, gs ); // using base because we don't want to trigger anything
 				base.PlaceOn( args.To, gs );
 			}
+		}
+
+		void SacredSiteAtSouce_RestoreVirtualBeast( TokenMovedArgs args, TokenBinding srcBeasts ) {
+			if(2 <= CountOn( args.From ))
+				srcBeasts.Count++; // Beast token is virtual so maybe we don't want to trigger TokenAdded
+		}
+
+		void AddedVirtualBeastAtDestination_LimitTo1( GameState gs, TokenMovedArgs args ) {
+			// if destination/to now has 4 or more presence,
+			// then there was already a virtual beast there and we need to remove 1 of the virtual beasts
+			if(4 <= CountOn( args.To ))
+				gs.Tokens[args.To].Beasts.Count--;
 		}
 
 		Task TokenDestroyed(GameState gs, TokenDestroyedArgs args) {

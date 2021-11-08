@@ -2,7 +2,7 @@
 
 namespace SpiritIsland.Basegame {
 
-	class ShadowsOfTheBurningForest {
+	public class ShadowsOfTheBurningForest {
 
 		[MinorCard("Shadows of the Burning Forest",0,Element.Moon,Element.Fire,Element.Plant)]
 		[Slow]

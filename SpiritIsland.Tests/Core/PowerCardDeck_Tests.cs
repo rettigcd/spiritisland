@@ -23,7 +23,40 @@ namespace SpiritIsland.Tests.Core {
 			majorCards.Length.ShouldBeGreaterThanOrEqualTo( 22 );
 		}
 
-		#region target-Space
+		[Fact]
+		public void MementoRestoresDeck() {
+			PowerCardDeck deck = new PowerCardDeck(new PowerCard[] {
+				PowerCard.For<Drought>(),
+				PowerCard.For<DevouringAnts>(),
+				PowerCard.For<DriftDownIntoSlumber>(),
+				PowerCard.For<EnticingSplendor>(),
+				PowerCard.For<LureOfTheUnknown>(),
+				PowerCard.For<NaturesResilience>(),
+				PowerCard.For<PullBeneathTheHungryEarth>(),
+				PowerCard.For<QuickenTheEarthsStruggles>(),
+				PowerCard.For<RainOfBlood>(),
+				PowerCard.For<SapTheStrengthOfMultitudes>(),
+				PowerCard.For<SongOfSanctity>(),
+				PowerCard.For<SteamVents>(),
+				PowerCard.For<UncannyMelting>(),
+			}, new Random() );
+
+			// Given: saving state
+			var memento = deck.SaveToMemento();
+
+			//   And: draw first 4 cards
+			string originalFirstFourCards = deck.Flip(4).Select(c=>c.Name).Join(",");
+			//   And: draw some more we don't care about
+			deck.Flip(4);
+
+			//  When: restore state using memento
+			deck.RestoreFrom(memento);
+
+			//  Then: first 4 cards should be the same
+			deck.Flip(4).Select(c=>c.Name).Join(",").ShouldBe(originalFirstFourCards);
+		}
+
+		#region Target-Space
 
 		[Fact]
 		public void PowerCard_Targets_Space_CorrectParameters() {
@@ -131,8 +164,6 @@ namespace SpiritIsland.Tests.Core {
 
 			problems.Length.ShouldBe( 0, problems.Take( 5 ).Join( "\r\n" ) );
 		}
-
-
 
 		[Theory]
 		[InlineData(true)]
