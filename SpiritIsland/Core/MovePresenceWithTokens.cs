@@ -14,7 +14,7 @@ namespace SpiritIsland {
 			this.tokenGroup = group;
 		}
 
-		public async Task CheckForMove( GameState _, TokenMovedArgs args ) {
+		public async Task CheckForMove( GameState gs, TokenMovedArgs args ) {
 			if( args.Token.Generic != tokenGroup) return;
 
 			int maxThatCanMove = Math.Min( args.count, spirit.Presence.CountOn( args.From ) );
@@ -29,7 +29,7 @@ namespace SpiritIsland {
 			// If we used 'Push', user would click on Destination instead of Source
 			var source = await spirit.Action.Decision( new Decision.Presence.Gather("Move presence with "+args.Token.Generic.Label+"?", args.To, args.From ) );
 			if( source != null )
-				spirit.Presence.Move( args.From, args.To );
+				spirit.Presence.Move( args.From, args.To, gs );
 		}
 
 	}

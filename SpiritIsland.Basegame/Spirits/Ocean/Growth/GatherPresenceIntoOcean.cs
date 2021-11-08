@@ -27,7 +27,7 @@ namespace SpiritIsland.Basegame {
 				));
 
 				// apply...
-				ctx.Self.Presence.Move( source, currentTarget );
+				ctx.Presence.Move( source, currentTarget );
 
 				// next
 				gatherSpaces.RemoveAt( 0 );

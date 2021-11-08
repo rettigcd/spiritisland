@@ -35,7 +35,7 @@ namespace SpiritIsland.PromoPack1 {
 
 		protected override void InitializeInternal( Board board, GameState gameState ) {
 			// Setup: put 1 presence on #5
-			Presence.PlaceOn(board[5]);
+			Presence.PlaceOn(board[5], gameState);
 		}
 
 	}

@@ -18,7 +18,7 @@ namespace SpiritIsland.PromoPack1 {
 			// move 1 of target spirit's presence from the board to your 'Deep Slumber' track.
 			// Absorbed presence cannot be returned to play.
 			var space = await ctx.OtherCtx.SelectDeployedPresence("Select presence to be absorbed");
-			ctx.Other.Presence.RemoveFrom(space);
+			ctx.OtherCtx.Presence.RemoveFrom(space);
 			serpentPresence.AbsorbedPresences.Add(ctx.Other);
 
 			// Target spirit gains 1 ANY and 1 energy

@@ -52,19 +52,19 @@ namespace SpiritIsland {
 
 		#region Game-Play things you can do with presence
 
-		public virtual Task PlaceFromBoard( IOption from, Space to, GameState _ ) {
+		public virtual Task PlaceFromBoard( IOption from, Space to, GameState gs ) {
 			// from
 			if(from is Track track) {
 				RemoveFromTrack( track );
 			} else if(from is Space space) {
 				if( Spaces.Contains(space) )
-					RemoveFrom( space );
+					RemoveFrom( space, gs );
 				else
 					throw new ArgumentException( "Can't pull from island space:" + from.ToString() );
 			}
 
 			// To
-			PlaceOn( to );
+			PlaceOn( to, gs );
 			return Task.CompletedTask;
 		}
 
@@ -79,39 +79,43 @@ namespace SpiritIsland {
 				throw new ArgumentException( "Can't pull from track:" + track.ToString() );
 		}
 
-		public void Move( Space from, Space to ) {
-			RemoveFrom( from );
-			PlaceOn( to );
+		public void Move( Space from, Space to, GameState gs ) {
+			RemoveFrom( from, gs );
+			PlaceOn( to, gs );
 		}
 
-		public void Destroy( Space space ) {
-			RemoveFrom( space );
+		public void Destroy( Space space, GameState gs ) {
+			RemoveFrom( space, gs );
 			++Destroyed;
 		}
 
 		#endregion
 
 		#region Setup / Adjust
-		public virtual void PlaceOn(Space space) => placed.Add(space);
+
+		public virtual void PlaceOn(Space space, GameState _) => placed.Add(space);
 
 		/// <remarks>public so we can remove it for Replacing with Beast and advanced spirit strangness</remarks>
-		public virtual void RemoveFrom( Space space ) => placed.Remove( space );
+		public virtual void RemoveFrom( Space space, GameState _ ) => placed.Remove( space );
 
 		#endregion
 
 		#region Per Turn stuff
+
 		public int CardPlayCount => CardPlays.Revealed.Where(x=>x.CardPlay.HasValue).Last().CardPlay.Value;
-
-		#endregion
-
-		public IReadOnlyCollection<Space> Placed => placed.AsReadOnly();
 
 		public void AddElements( CountDictionary<Element> elements ) {
 			Energy.AddElements( elements );
 			CardPlays.AddElements( elements);
 		}
 
+		#endregion
+
+		public IReadOnlyCollection<Space> Placed => placed.AsReadOnly();
+
 		readonly List<Space> placed = new List<Space>();
+
+		#region Memento
 
 		// Revealed Count + Placed.
 		public virtual IMemento<SpiritPresence> SaveToMemento() => new Memento(this);
@@ -135,6 +139,8 @@ namespace SpiritIsland {
 			readonly int revealedCardPlays;
 			readonly int destroyed;
 		}
+
+		#endregion
 	}
 
 }

@@ -85,7 +85,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
 		[InlineDataAttribute( 6, 2, "PP" )]
 		[InlineDataAttribute( 7, 3, "PP" )]
 		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
-			spirit.Presence.PlaceOn( gameState.Island.Boards[0][5] );
+			spirit.Presence.PlaceOn( gameState.Island.Boards[0][5], gameState );
 
 			// energy: 0 1 plant 2 2 plant 3
 			spirit.Presence.Energy.RevealedCount = revealedSpaces;

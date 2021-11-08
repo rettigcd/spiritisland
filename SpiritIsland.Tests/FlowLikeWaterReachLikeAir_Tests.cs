@@ -27,7 +27,7 @@ namespace SpiritIsland.Tests {
 			tokens[Invader.Town.Default] = 3;
 
 			//  And: spirit has presence on A5
-			spirit.Presence.PlaceOn(a5);
+			spirit.Presence.PlaceOn(a5,gameState);
 
 			//  And: A1 has nothing on it
 			var a1 = board[1];

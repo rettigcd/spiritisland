@@ -25,7 +25,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			gs.Initialize();
 
 			if(oceanIsPlaying)
-				ocean.Presence.PlaceOn( gs.Island.Boards[0][8] ); // put ocean presence on river's board, but not in the ocean
+				ocean.Presence.PlaceOn( gs.Island.Boards[0][8], gs ); // put ocean presence on river's board, but not in the ocean
 
 			return gs;
 		}
@@ -37,7 +37,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			var gs = GetGame( hasOcean );
 			gs.Phase = Phase.Fast;
 
-			river.Presence.Move( board[5], board[2] ); // move it to A2
+			river.Presence.Move( board[5], board[2], gs ); // move it to A2
 			Assert_Options( "A2", river.Presence.Spaces, "river starting presence" );
 
 			// Talons ofLightning - Range 1

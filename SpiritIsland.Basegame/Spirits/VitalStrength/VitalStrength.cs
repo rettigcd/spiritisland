@@ -83,16 +83,16 @@ Power Progression:
 			);
 
 		protected override void InitializeInternal( Board board, GameState gs ) {
-			InitPresence( board );
+			InitPresence( board, gs );
 			gs.PreRavaging.ForEntireGame( Defend3InSacredSites );
 		}
 
-		void InitPresence( Board board ){
+		void InitPresence( Board board, GameState gameState ){
 			var higestJungle = board.Spaces.OrderByDescending( s => s.Label ).First( s => s.Terrain == Terrain.Jungle );
 			var higestMountain = board.Spaces.OrderByDescending( s => s.Label ).First( s => s.Terrain == Terrain.Mountain );
-			Presence.PlaceOn( higestMountain );
-			Presence.PlaceOn( higestMountain );
-			Presence.PlaceOn( higestJungle );
+			Presence.PlaceOn( higestMountain, gameState );
+			Presence.PlaceOn( higestMountain, gameState );
+			Presence.PlaceOn( higestJungle, gameState );
 		}
 
 		Task Defend3InSacredSites( GameState gs, RavagingEventArgs args ) {

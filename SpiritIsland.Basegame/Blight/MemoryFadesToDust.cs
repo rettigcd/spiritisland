@@ -1,7 +1,4 @@
-﻿using SpiritIsland;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 
@@ -20,7 +17,7 @@ namespace SpiritIsland.Basegame {
 			foreach(var spirit in gs.Spirits)
 				await new SpiritGameStateCtx( spirit, gs, Cause.Blight ).SelectActionOption(
 					"BLIGHT: Memory Fades to Dust",
-					new ActionOption("Destroy Presence",()=>gs.Destroy1PresenceFromBlightCard(spirit)),
+					new ActionOption("Destroy Presence",()=>gs.Destroy1PresenceFromBlightCard(spirit,gs)),
 					new ActionOption("Forget Power card", () => spirit.ForgetPowerCard() )
 				);
 

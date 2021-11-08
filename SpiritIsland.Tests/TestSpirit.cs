@@ -19,11 +19,11 @@ namespace SpiritIsland.Tests {
 
 		public override SpecialRule[] SpecialRules => throw new NotImplementedException();
 
-		protected override void InitializeInternal( Board board, GameState _ ) {
+		protected override void InitializeInternal( Board board, GameState gameState ) {
 			// Has sacred site on space 5
 			var space = board[5];
-			Presence.PlaceOn(space);
-			Presence.PlaceOn(space);
+			Presence.PlaceOn(space,gameState);
+			Presence.PlaceOn(space,gameState);
 		}
 
 		static public (VirtualTestUser, SpiritGameStateCtx) SetupGame( 

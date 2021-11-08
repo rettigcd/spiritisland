@@ -20,7 +20,7 @@ namespace SpiritIsland.Basegame {
 				var destination = await ctx.Self.Action.Decision( new Decision.Presence.Push( prompt, currentSource, currentSource.Adjacent ));
 
 				// apply...
-				ctx.Self.Presence.Move( currentSource, destination );
+				ctx.Presence.Move( currentSource, destination );
 
 				// next
 				pushSpaces.RemoveAt( 0 );

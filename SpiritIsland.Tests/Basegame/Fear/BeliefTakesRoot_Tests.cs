@@ -82,7 +82,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 
 			//   And: Presence
 			while(presenceCount-->0)
-				spirit.Presence.PlaceOn( ravageSpace );
+				spirit.Presence.PlaceOn( ravageSpace, gameState );
 		}
 
 		async Task When_AddFearApplyFearAndRavage() {

@@ -84,8 +84,8 @@ namespace SpiritIsland.JaggedEarth {
 		protected override void InitializeInternal( Board board, GameState gameState ) {
 			// Put 2 presence on your starting board in the highest-number land that is Sands or Mountain.
 			var space = board.Spaces.Last(x=>x.Terrain.IsOneOf(Terrain.Sand,Terrain.Mountain));
-			Presence.PlaceOn( space );
-			Presence.PlaceOn( space );
+			Presence.PlaceOn( space, gameState );
+			Presence.PlaceOn( space, gameState );
 
 			// Prepare 1 moon, 1 air, and 1 earth marker.
 			PreparedElements[Element.Moon] = 1;

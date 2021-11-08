@@ -47,7 +47,7 @@ namespace SpiritIsland.Tests {
 
 		protected void Given_HasPresence( params Space[] spaces ) {
 			foreach(var x in spaces)
-				spirit.Presence.PlaceOn( x );
+				spirit.Presence.PlaceOn( x, gameState );
 		}
 
 		protected void Given_HasPresence( string presenceString ) {

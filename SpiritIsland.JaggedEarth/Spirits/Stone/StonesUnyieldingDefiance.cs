@@ -39,10 +39,10 @@ namespace SpiritIsland.JaggedEarth {
 		protected override void InitializeInternal( Board board, GameState gameState ) {
 			// place presence in lowest-numbered Mountain without dahan
 			var space = board.Spaces.Skip(1).Where(s=>gameState.Tokens[s].Dahan.Count==0).First();
-			Presence.PlaceOn(space);
+			Presence.PlaceOn(space, gameState);
 			var space2 = space.Adjacent.FirstOrDefault(s=>gameState.Tokens[s][TokenType.Blight]>0)
 				?? space.Adjacent.First(s=>s.Terrain==Terrain.Sand);
-			Presence.PlaceOn(space2);
+			Presence.PlaceOn(space2, gameState);
 
 			// Bestow the Endurance of Bedrock
 			oldBlightEffect = gameState.DetermineAddBlightEffect;

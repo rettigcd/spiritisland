@@ -63,7 +63,7 @@ namespace SpiritIsland.JaggedEarth {
 
 	class StopPresenceDestructionFromBlightOrEvents {
 		readonly Spirit spirit;
-		readonly Func<Spirit, Task> oldBehavior;
+		readonly Func<Spirit,GameState, Task> oldBehavior;
 		public StopPresenceDestructionFromBlightOrEvents( TargetSpiritCtx ctx ) {
 			this.spirit = ctx.Self;
 			this.oldBehavior = ctx.GameState.Destroy1PresenceFromBlightCard;
@@ -77,14 +77,14 @@ namespace SpiritIsland.JaggedEarth {
 		}
 
 		/// <returns># of blight to remove from card</returns>
-		async Task DestroyPresenceDirectlyFromBlight( Spirit other ) {
+		async Task DestroyPresenceDirectlyFromBlight( Spirit other, GameState gs ) {
 
 			if( 1 <= spirit.Energy
 				&& await spirit.UserSelectsFirstText( "Blight Destroying Presence","Pay 1 energy to save","Pass")
 			)
 				spirit.Energy --;
 			else 
-				await oldBehavior(other);
+				await oldBehavior(other,gs);
 		}
 
 	}

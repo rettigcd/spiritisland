@@ -25,7 +25,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			//   And: Presence on A2 (city/costal)
 			var presenceSpace = board[2];
-			spirit.Presence.PlaceOn( presenceSpace );
+			spirit.Presence.PlaceOn( presenceSpace, gameState );
 			//   And: 1 of each type of Invaders in Inland space (A4)
 			Space targetSpace = board[4];
 			var counts = gameState.Tokens[targetSpace];
@@ -59,7 +59,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			};
 			//   And: Presence on A2 (city/costal)
 			var presenceSpace = board[2];
-			spirit.Presence.PlaceOn(presenceSpace);
+			spirit.Presence.PlaceOn(presenceSpace, gameState);
 			//   And: 1 of each type of Invaders in Costal space (A2)
 			Space targetSpace = board[2];
 			var grp = gameState.Tokens[targetSpace];

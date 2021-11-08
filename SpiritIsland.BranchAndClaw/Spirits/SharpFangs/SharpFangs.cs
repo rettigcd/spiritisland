@@ -79,7 +79,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 		protected override void InitializeInternal( Board board, GameState gs ) {
 			var highestJungle = board.Spaces.Where(x=>x.Terrain == Terrain.Jungle).Last();
-			Presence.PlaceOn(highestJungle);
+			Presence.PlaceOn(highestJungle, gs);
 			gs.Tokens[highestJungle].Beasts.Count++;
 
 			// init special growth (note - we don't want this growth in Unit tests, so only add it if we call InitializeInternal())

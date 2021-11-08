@@ -42,9 +42,9 @@ namespace SpiritIsland.JaggedEarth {
 
 		protected override void InitializeInternal( Board board, GameState gameState ) {
 			// Place presence on highest numbered land with dahan
-			Presence.PlaceOn(board.Spaces.Where(s=>gameState.Tokens[s].Dahan.Any).Last());
+			Presence.PlaceOn(board.Spaces.Where(s=>gameState.Tokens[s].Dahan.Any).Last(), gameState);
 			// and in land #4
-			Presence.PlaceOn(board[4]);
+			Presence.PlaceOn(board[4], gameState);
 
 		}
 
@@ -65,7 +65,8 @@ namespace SpiritIsland.JaggedEarth {
 		// Cleanup Up Messes is such a drag
 		public override async Task RemoveBlight( TargetSpaceCtx ctx ) {
 			await base.RemoveBlight( ctx );
-			Presence.Destroy( await this.Action.Decision( new Decision.Presence.DeployedToDestory( $"{CleaningUpMessesIsADrag.Title} Destroy presence for blight cleanup", this ) ));
+			var space = await this.Action.Decision( new Decision.Presence.DeployedToDestory( $"{CleaningUpMessesIsADrag.Title} Destroy presence for blight cleanup", this ) );
+			ctx.Presence.Destroy( space );
 		}
 
 	}

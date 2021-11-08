@@ -59,7 +59,7 @@ namespace SpiritIsland.PromoPack1 {
 			// Put 3 presence and 2 blight on your starting board in the hightest-numbered Sands. 
 			var space = board.Spaces.Where(x=>x.Terrain==Terrain.Sand).Last();
 			for(int i=0;i<3;++i)
-				Presence.PlaceOn(space);
+				Presence.PlaceOn(space,gameState);
 
 			gameState.Tokens[space][TokenType.Blight] += 2; // Blight goes from the box, not the blight card
 		}

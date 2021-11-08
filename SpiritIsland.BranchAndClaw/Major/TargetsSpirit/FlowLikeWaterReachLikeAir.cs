@@ -22,7 +22,7 @@ namespace SpiritIsland.BranchAndClaw {
 			));
 
 			// move presence
-			ctx.Other.Presence.Move( sourceCtx.Space, destination);
+			ctx.OtherCtx.Presence.Move( sourceCtx.Space, destination);
 
 			var mover = new TokenPusher_FixedDestination(ctx.OtherCtx.Target(sourceCtx.Space), destination);
 			// bringing up to 2 explorers, 2 towns and 2 dahan along with it.

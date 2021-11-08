@@ -68,7 +68,7 @@ namespace SpiritIsland.Basegame {
 			gameState.Island.Terrain_ForPowerAndBlight = new OceanTerrainForPower(this);
 
 			// Place in Ocean
-			Presence.PlaceOn(board[0]);
+			Presence.PlaceOn(board[0], gameState);
 
 			this.AddActionFactory( new Setup_PlacePresenceInCostal() ); // let user pick initial ocean
 

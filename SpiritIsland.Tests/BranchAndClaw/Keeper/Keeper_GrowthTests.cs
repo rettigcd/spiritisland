@@ -155,7 +155,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			var space = board[5];
 			gameState.DahanOn(space).Add(2);
 			//   and presence on that space
-			spirit.Presence.PlaceOn( space );
+			spirit.Presence.PlaceOn( space, gameState );
 
 			// When: we place a presence on that space
 			_ = spirit.Presence.PlaceFromBoard( spirit.Presence.Energy.Next, space, gameState );

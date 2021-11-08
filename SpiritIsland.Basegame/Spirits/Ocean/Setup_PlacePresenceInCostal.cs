@@ -10,7 +10,7 @@ namespace SpiritIsland.Basegame {
 		public override async Task ActivateAsync( SpiritGameStateCtx ctx ) {
 			var options = ctx.Self.Presence.Spaces.First().Adjacent;
 			var space = await ctx.Self.Action.Decision( new Decision.TargetSpace( "Add presence to", options, Present.Always ) );
-			ctx.Self.Presence.PlaceOn( space );
+			ctx.Presence.PlaceOn( space );
 		}
 
 	}

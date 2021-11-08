@@ -127,7 +127,7 @@ namespace SpiritIsland {
 				if(effect.DestroyPresence)
 					foreach(var spirit in Spirits)
 						if(spirit.Presence.IsOn( blightSpace ))
-							spirit.Presence.Destroy( blightSpace );
+							spirit.Presence.Destroy( blightSpace, this );
 
 				await AddBlight( blightSpace );
 
@@ -173,14 +173,14 @@ namespace SpiritIsland {
 			return Task.FromResult(delta);
 		}
 
-		static async Task DefaultDestroy1PresenceFromBlightCard( Spirit spirit ) {
+		static async Task DefaultDestroy1PresenceFromBlightCard( Spirit spirit, GameState gs ) {
 			var presence = await spirit.Action.Decision( new Decision.Presence.DeployedToDestory( "Blighted Island: Select presence to destroy.", spirit ) );
-			spirit.Presence.Destroy( presence );
+			spirit.Presence.Destroy( presence, gs );
 		}
 
 		public Func<TokenCountDictionary,int,Task<int>> AddBlightBehavior = DefaultAddBlight; // hook fro Stone's Defiance
 
-		public Func<Spirit,Task> Destroy1PresenceFromBlightCard = DefaultDestroy1PresenceFromBlightCard; // Direct distruction from Blight Card, not cascading
+		public Func<Spirit,GameState,Task> Destroy1PresenceFromBlightCard = DefaultDestroy1PresenceFromBlightCard; // Direct distruction from Blight Card, not cascading
 
 		public bool HasBlight( Space s ) => GetBlightOnSpace(s) > 0;
 

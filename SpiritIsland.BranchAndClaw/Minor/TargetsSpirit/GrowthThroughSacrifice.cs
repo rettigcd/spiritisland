@@ -10,7 +10,7 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 		[AnySpirit]
 		static public async Task ActAsync( TargetSpiritCtx ctx ) {
 			// destroy one of your presence
-			await DestoryOnePresence( ctx.Self );
+			await DestoryOnePresence( ctx );
 
 			var other = ctx.OtherCtx;
 			if( !await ctx.YouHave("2 sun")) {
@@ -35,9 +35,9 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 			=> await (await ctx.TargetLandWithPresence( "Select location to remove blight" )).RemoveBlight();
 
 
-		static async Task DestoryOnePresence( Spirit spirit ) {
-			var space = await spirit.Action.Decision( new Decision.Presence.DeployedToDestory("Select presence to destroy",spirit) );
-			spirit.Presence.Destroy(space);
+		static async Task DestoryOnePresence( SpiritGameStateCtx spiritCtx ) {
+			var space = await spiritCtx.Self.Action.Decision( new Decision.Presence.DeployedToDestory("Select presence to destroy",spiritCtx.Self) );
+			spiritCtx.Presence.Destroy( space );
 		}
 
 	}

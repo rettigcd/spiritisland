@@ -127,9 +127,9 @@ Shadows Flicker like Flame:
 
 			var higestJungle = board.Spaces.Last(s=>s.Terrain==Terrain.Jungle);
 
-			this.Presence.PlaceOn( higestJungle );
-			this.Presence.PlaceOn( higestJungle );
-			this.Presence.PlaceOn( board[5] );
+			this.Presence.PlaceOn( higestJungle, gs );
+			this.Presence.PlaceOn( higestJungle, gs );
+			this.Presence.PlaceOn( board[5], gs );
 		}
 
 	}

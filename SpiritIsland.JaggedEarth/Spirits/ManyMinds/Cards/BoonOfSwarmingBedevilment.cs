@@ -23,7 +23,7 @@ namespace SpiritIsland.JaggedEarth {
 			var sourceCtx = ctx.Target( source );
 			// Select destination
             var destination = await sourceCtx.Self.Action.Decision( new Decision.Presence.Push( "Push Presence to", sourceCtx.Space, sourceCtx.Adjacent ));
-			sourceCtx.Self.Presence.Move(source,destination);
+			sourceCtx.Presence.Move( source, destination );
 		}
 	}
 

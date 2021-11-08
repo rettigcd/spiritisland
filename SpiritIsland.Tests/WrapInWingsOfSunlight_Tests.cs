@@ -24,7 +24,7 @@ namespace SpiritIsland.Tests {
 			gameState.Tokens[src][TokenType.Dahan.Default] = 10;
 
 			//  And: spirit has presence on A3
-			spirit.Presence.PlaceOn(src);
+			spirit.Presence.PlaceOn(src,gameState);
 
 			//  And: Destination has no Dahan on it
 			var dst = board[1];
@@ -64,7 +64,7 @@ namespace SpiritIsland.Tests {
 			tokens[Invader.Town.Default] = 3;
 
 			//  And: spirit has presence on A5
-			spirit.Presence.PlaceOn(src);
+			spirit.Presence.PlaceOn(src,gameState);
 
 			//  And: dst has nothing on it
 			var dst = board[8];

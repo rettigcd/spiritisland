@@ -64,9 +64,9 @@ namespace SpiritIsland.JaggedEarth {
 
 		protected override void InitializeInternal( Board board, GameState gameState ) {
 			// Put 3 presence on your starting board: 2 in land #8, and 1 in land #7.
-			Presence.PlaceOn(board[8]);
-			Presence.PlaceOn(board[8]);
-			Presence.PlaceOn(board[7]);
+			Presence.PlaceOn(board[8], gameState);
+			Presence.PlaceOn(board[8], gameState);
+			Presence.PlaceOn(board[7], gameState);
 
 			// Add 1 beast to land #8
 			gameState.Tokens[board[8]].Beasts.Count++;

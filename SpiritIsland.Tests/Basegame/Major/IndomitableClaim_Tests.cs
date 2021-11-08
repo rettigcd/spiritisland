@@ -32,7 +32,7 @@ namespace SpiritIsland.Tests.Basegame {
 			invaderLog.Add("Selected target:"+spaceCtx.Space.Label );
 
 			// And: we have a presence in that land
-			ctx.Self.Presence.PlaceOn(spaceCtx.Space);
+			ctx.Self.Presence.PlaceOn(spaceCtx.Space, spaceCtx.GameState);
 
 			//  And: it has 3 explorers
 			spaceCtx.Tokens[Invader.Explorer.Default] = 3;

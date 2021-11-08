@@ -21,7 +21,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			gameState.Phase = Phase.Slow;
 
 			//   And: Presence on A4
-			spirit.Presence.PlaceOn( board[4] );
+			spirit.Presence.PlaceOn( board[4], gameState );
 
 			//   And: Purchased WashAway
 			card = spirit.Hand.Single( c => c.Name == RiversBounty.Name );
@@ -137,7 +137,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		[Fact]
 		public void TwoPresenceSpaces(){
 			// Given: spirit has presence on A4 && A8
-			spirit.Presence.PlaceOn(board[8]);
+			spirit.Presence.PlaceOn(board[8], gameState);
 			var targetOptions = spirit.Presence.Spaces.ToArray();
 			Assert.Equal(2,targetOptions.Length);
 

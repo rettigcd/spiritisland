@@ -19,7 +19,7 @@ namespace SpiritIsland.JaggedEarth {
 			// Put 1 presence and 1 beast on yoru starting borad, in a land with beast.
 			var land = board.Spaces.First(x=>gameState.Tokens[x].Beasts.Any);
 
-			Presence.PlaceOn(land);
+			Presence.PlaceOn(land, gameState);
 			gameState.Tokens[land].Beasts.Count++;
 		}
 
@@ -62,12 +62,12 @@ namespace SpiritIsland.JaggedEarth {
 	class ManyMindsPresence : SpiritPresence {
 		public ManyMindsPresence(PresenceTrack energy, PresenceTrack cards ) : base( energy, cards ) {}
 
-		public override void PlaceOn( Space space ) {
-			base.PlaceOn( space );
+		public override void PlaceOn( Space space, GameState gs ) {
+			base.PlaceOn( space, gs );
 		}
 
-		public override void RemoveFrom( Space space ) {
-			base.RemoveFrom( space );
+		public override void RemoveFrom( Space space, GameState gs ) {
+			base.RemoveFrom( space, gs );
 		}
 
 	}

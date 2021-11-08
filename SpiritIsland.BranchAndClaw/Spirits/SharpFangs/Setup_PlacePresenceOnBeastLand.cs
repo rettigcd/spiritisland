@@ -9,7 +9,7 @@ namespace SpiritIsland.BranchAndClaw {
 			var gameState = ctx.GameState;
 			var options = gameState.Island.AllSpaces.Where( space=>gameState.Tokens[space].Beasts.Any );
 			var space = await ctx.Self.Action.Decision(new Decision.TargetSpace("Add presence to",options, Present.Always));
-			ctx.Self.Presence.PlaceOn(space);
+			ctx.Presence.PlaceOn(space);
 		}
 
 	}

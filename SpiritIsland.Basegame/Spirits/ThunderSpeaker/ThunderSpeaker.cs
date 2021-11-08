@@ -81,8 +81,8 @@ namespace SpiritIsland.Basegame {
 
 			// Put 2 Presence on your starting board: 1 in each of the 2 lands with the most Dahan
 			var spots = board.Spaces.OrderByDescending( s => gs.DahanOn(s).Count ).Take( 2 ).ToArray();
-			Presence.PlaceOn( spots[0] );
-			Presence.PlaceOn( spots[1] );
+			Presence.PlaceOn( spots[0], gs );
+			Presence.PlaceOn( spots[1], gs );
 
 			// Special Rules -Ally of the Dahan - Your presense may move with dahan
 			gs.Tokens.TokenMoved.ForEntireGame( new MovePresenceWithTokens( this, TokenType.Dahan ).CheckForMove );
@@ -91,7 +91,7 @@ namespace SpiritIsland.Basegame {
 			gs.Tokens.TokenDestroyed.ForEntireGame( DestroyNearbyPresence );
 		}
 
-		async Task DestroyNearbyPresence( GameState _, TokenDestroyedArgs args ) {
+		async Task DestroyNearbyPresence( GameState gs, TokenDestroyedArgs args ) {
 			if(args.Source != Cause.Invaders) return;
 			if(args.Token != TokenType.Dahan) return;
 
@@ -101,8 +101,10 @@ namespace SpiritIsland.Basegame {
 			Space[] options;
 			Space[] Calc() => args.Space.Range( 1 ).Intersect( Presence.Spaces ).ToArray();
 
-			while(numToDestroy-->0 && (options=Calc()).Length > 0)
-				Presence.Destroy( await this.Action.Decision( new Decision.Presence.DeployedToDestory( prompt, options, Present.Always ) ));
+			while(numToDestroy-->0 && (options=Calc()).Length > 0) {
+				var space = await this.Action.Decision( new Decision.Presence.DeployedToDestory( prompt, options, Present.Always ) );
+				Presence.Destroy( space, gs );
+			}
 
 		}
 

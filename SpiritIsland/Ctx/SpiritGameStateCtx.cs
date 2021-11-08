@@ -28,6 +28,23 @@ namespace SpiritIsland {
 
 		#endregion constructor
 
+		#region Presence
+
+		public BoundPresence Presence => _presence ??= new BoundPresence(this);
+		BoundPresence _presence;
+
+		public class BoundPresence { // Bound to the GameState
+			readonly SpiritGameStateCtx ctx;
+			public BoundPresence(SpiritGameStateCtx ctx ) { this.ctx = ctx; }
+			public void Move( Space from, Space to ) => ctx.Self.Presence.Move(from,to,ctx.GameState);
+			public void Destroy( Space space ) => ctx.Self.Presence.Destroy( space, ctx.GameState );
+			public void RemoveFrom( Space space ) => ctx.Self.Presence.RemoveFrom( space, ctx.GameState ); // Generally used for Replacing
+			public void PlaceOn(Space space) => ctx.Self.Presence.PlaceOn( space, ctx.GameState );
+
+		}
+
+		#endregion
+
 		#region convenience Read-Only methods
 
 		public IEnumerable<Space> AllSpaces => GameState.Island.AllSpaces;

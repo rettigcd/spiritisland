@@ -1,17 +1,22 @@
 ﻿
-1) DrawGrowthActions should be Generic instead of big Case Statement.
+1) Ravage Engine
 
-2) Ravage Engine
+2) Cascading Bight - all blight should cascade
 
-3) Cascading Bight - all blight should cascade
+3) Many Minds - Presence as Beasts
+	- Presence.PlaceOn
+	- Presence.Destory
+	- Presence.Remove
+	- Presence.Move
 
 4) TargetSpaceCtx.DamageInvaders - limit badland damage to once / action
 
-Strifed Invaders damaging themselves
-Detect end of game at end of each action, Don't Lock-up when it happens.
-Many Minds - Presence as Beasts
-Moving Dahan into Frozen land should freeze them.
+5) Detect end of game at end of each action, Don't Lock-up when it happens.
 
+
+Strifed Invaders damaging themselves
+
+Moving Dahan into Frozen land should freeze them.
 Tigers Hunting - Exception in land with no invaders.
 Growth Through Sacrifice - Add Presence (when doing both - 2 suns) asks for positioning tiwce
 

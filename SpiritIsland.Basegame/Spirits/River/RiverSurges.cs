@@ -100,7 +100,7 @@ namespace SpiritIsland.Basegame {
 		}}
 
 		protected override void InitializeInternal( Board board, GameState gs ) {
-			Presence.PlaceOn( board.Spaces.Reverse().First( s => s.Terrain == Terrain.Wetland ) );
+			Presence.PlaceOn( board.Spaces.Reverse().First( s => s.Terrain == Terrain.Wetland ), gs );
 		}
 
 	}

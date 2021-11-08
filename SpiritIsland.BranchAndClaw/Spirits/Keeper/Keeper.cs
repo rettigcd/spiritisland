@@ -76,7 +76,7 @@ namespace SpiritIsland.BranchAndClaw {
 			// In the highest-numbered Jungle.
 			var space = board.Spaces.OrderByDescending( x => x.Terrain == Terrain.Jungle ).First();
 			// Put 1 Presence
-			Presence.PlaceOn( space );
+			Presence.PlaceOn( space, gs );
 			// 1 Wild 
 			gs.Tokens[space].Wilds.Count++;
 		}
