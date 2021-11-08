@@ -8,9 +8,12 @@ namespace SpiritIsland.Decision.Presence {
 
 		public static Deployed SourceForPlacing( Spirit spirit ) => new Deployed("Select Presence to place.", spirit);
 
+		public static Deployed SourceForPushing( Spirit spirit, Present present=Present.Done ) => new Deployed("Select Presence to push.", spirit, present);
+
+
 		/// <summary> Target ALL spaces containing deployed presence </summary>
-		public Deployed( string prompt, Spirit spirit )
-			:base(prompt, spirit.Presence.Spaces, Present.Always ) 
+		public Deployed( string prompt, Spirit spirit, Present present = Present.Always )
+			:base(prompt, spirit.Presence.Spaces, present ) 
 		{ }
 
 		/// <summary> Target SPECIFIC spaces containing deployed presence </summary>

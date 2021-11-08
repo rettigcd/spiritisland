@@ -1,17 +1,11 @@
 ﻿
-1) Ravage Engine
+1) Cascading Bight - all blight should cascade
 
-2) Cascading Bight - all blight should cascade
+2) Ravage Engine
 
-3) Many Minds - Presence as Beasts
-	- Presence.PlaceOn
-	- Presence.Destory
-	- Presence.Remove
-	- Presence.Move
+3) TargetSpaceCtx.DamageInvaders - limit badland damage to once / action
 
-4) TargetSpaceCtx.DamageInvaders - limit badland damage to once / action
-
-5) Detect end of game at end of each action, Don't Lock-up when it happens.
+4) Detect end of game at end of each action, Don't Lock-up when it happens.
 
 
 Strifed Invaders damaging themselves
@@ -150,3 +144,5 @@ Select neigher / done to not play card
 https://store.steampowered.com/news/app/1236720
 
 https://spiritislandwiki.com/index.php?title=Main_Page
+
+http://nerdroomsoftware.com/apps/SpiritGuide/spirits.php

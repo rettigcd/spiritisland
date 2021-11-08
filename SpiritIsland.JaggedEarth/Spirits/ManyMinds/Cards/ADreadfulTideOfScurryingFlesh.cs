@@ -4,7 +4,7 @@ namespace SpiritIsland.JaggedEarth {
 
 	public class ADreadfulTideOfScurryingFlesh {
 
-		[SpiritCard("A Dreadful Tide of Scurrying Flesh",0, Element.Moon, Element.Air,Element.Water), Fast, FromSacredSite(1,Target.TwoBeasts)]
+		[SpiritCard("A Dreadful Tide of Scurrying Flesh",0, Element.Moon, Element.Air,Element.Water, Element.Animal), Fast, FromSacredSite(1,Target.TwoBeasts)]
 		static public async Task ActAsync(TargetSpaceCtx ctx ) {
 			// Remove up to half (round down) of beast in target land.
 			int removable = ctx.Beasts.Count / 2;
