@@ -51,6 +51,27 @@ namespace SpiritIsland {
 
 		#endregion
 
+		// This is different than Push / Gather which ManyMinds adjusts, this is straight 'Move' that is not adjusted.
+		public async Task<Space> MoveTokens( int max, TokenGroup tokenGroup, int range) {
+
+			Token[] tokenOptions = Tokens.OfType(tokenGroup).ToArray();
+			if(tokenOptions.Length == 0) return null;
+			
+			if(tokenOptions.Length>1) throw new Exception("I didn't implement Move for different health tokens");
+//			var destination = await Self.Action.Decision( Decision.TokenOnSpace.TokenToPush(Space, 1, tokenOptions, /* Space.Range( range ), */ Present.Done ) );
+			// TokenOnSpace()
+
+			var destination = await Self.Action.Decision( new Decision.AdjacentSpace_TokenDestination(tokenOptions[0], Space, Space.Range( range ), Present.Done ) );
+//			var destination = await Self.Action.Decision( new Decision.TargetSpace( $"Move {tokenGroup.Label} to", Space.Range( range ), Present.Done ) );
+			if(destination != null) {
+				int clippedMax = Math.Min( Tokens.Sum( tokenGroup ), max );
+				int countToMove = clippedMax == 1 ? 1 : await Self.SelectNumber( $"# of {tokenGroup.Label} to move", clippedMax );
+				while(countToMove-- > 0)
+					await Move( tokenGroup.Default, Space, destination ); // doesn't moved damaged dahan nor invaders
+			}
+			return destination;
+		}
+
 		#region Push
 
 		public Task<Space[]> PushUpToNDahan( int countToPush ) => PushUpTo( countToPush, TokenType.Dahan );

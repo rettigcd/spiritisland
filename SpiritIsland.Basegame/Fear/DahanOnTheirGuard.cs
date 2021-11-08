@@ -14,16 +14,14 @@ namespace SpiritIsland.Basegame {
 			return DefendIt( gs, defend );
 		}
 
-		// "In each land with Dahan, Defend 1, plus an additional Defend 1 per Dahan.", 
-		[FearLevel( 2, "" )]
+		[FearLevel( 2, "In each land with Dahan, Defend 1, plus an additional Defend 1 per Dahan." )]
 		public Task Level2( FearCtx ctx ) {
 			var gs = ctx.GameState;
 			int defend(Space space) => 1 + gs.DahanOn( space ).Count;
 			return DefendIt( gs, defend );
 		}
 
-		// "In each land, Defend 2 per Dahan."),
-		[FearLevel( 3, "" )]
+		[FearLevel( 3, "In each land, Defend 2 per Dahan." )]
 		public Task Level3( FearCtx ctx ) {
 			var gs = ctx.GameState;
 			int defend( Space space ) => 2* gs.DahanOn( space ).Count;

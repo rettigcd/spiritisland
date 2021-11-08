@@ -108,21 +108,15 @@ namespace SpiritIsland {
 
 		public async Task ApplyRevealedPresenceTracks(GameState gs) {
 
-			var ctx = new SpiritGameStateCtx(this,gs,Cause.Growth);
-
-			foreach(var actions in Presence.RevealedActions)
-				await actions.ActivateAsync( ctx );
-
 			// Energy
 			Energy += EnergyPerTurn;
 			// Elements
 			Presence.AddElements( Elements );
 
-			//int anyCount = Elements[Element.Any];
-			//Elements[Element.Any] = 0; // we can't draw these in our activated element list
-			//if(anyCount > 0)
-			//	AddActionFactory( new SelectAnyElements( anyCount ) );
-
+			// Do actions AFTER energy and elements have been added - in case playing ManyMindsMoveAsOne - Pay 2 for power card.
+			var ctx = new SpiritGameStateCtx(this,gs,Cause.Growth);
+			foreach(var actions in Presence.RevealedActions)
+				await actions.ActivateAsync( ctx );
 		}
 
 		// !!! Seems like this should be private / protected and not called from outside.

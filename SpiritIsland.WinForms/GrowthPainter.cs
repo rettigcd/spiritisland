@@ -66,6 +66,7 @@ namespace SpiritIsland.WinForms {
 				// Many Minds
 				case "Gather1Beast": LandGatherBeasts( rect ); break;
 				case "PlacePresenceAndBeast": 
+					PlacePresence( rect, 3, Target.Any );
 					DrawIconInCenter( rect.InflateBy(-rect.Width*.2f), "Beasticon");
 					break;
 				default:

@@ -6,6 +6,9 @@ namespace SpiritIsland.Decision {
 	// !! This could be merged into SpaceTokens
 	public class TokenOnSpace : TypedDecision<Token> {
 
+		public static TokenOnSpace TokenToPush( Space space, int count, Token[] options, Present present )
+			=> new TokenOnSpace( present != Present.Done ? $"Push ({count})" : $"Push up to ({count})", space, options, present );
+
 		public TokenOnSpace( 
 			string prompt, 
 			Space space, IEnumerable<Token> options, 

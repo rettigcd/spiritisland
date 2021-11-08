@@ -42,7 +42,7 @@ namespace SpiritIsland {
 
 			Token[] tokens;
 			while(0 < (tokens = GetTokens()).Length) {
-				var decision = new Decision.TokenToPush( source, countArray.Sum(), tokens, present );
+				var decision = Decision.TokenOnSpace.TokenToPush( source, countArray.Sum(), tokens, present );
 				var token = await ctx.Self.Action.Decision( decision );
 
 				if(token == null)
