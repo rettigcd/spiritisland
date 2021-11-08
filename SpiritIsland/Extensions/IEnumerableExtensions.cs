@@ -54,6 +54,7 @@ namespace SpiritIsland {
 		static public void SetItems<T>(this Stack<T> stack, params T[] saved ) { 
 			stack.Clear(); 				
 			for(int i=saved.Length;i-->0;) 
+//			for(int i=0;i<saved.Length;++i) 
 				stack.Push(saved[i]);
 		}
 

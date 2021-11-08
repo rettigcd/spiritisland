@@ -9,8 +9,13 @@ namespace SpiritIsland {
 		readonly Random randomizer;
 
 		public PowerCardDeck(IList<PowerCard> cards, Random randomizer) {
-			discards = cards.ToList();
-			this.randomizer = randomizer;
+ 			this.randomizer = randomizer;
+			
+			var temp = cards.ToArray();
+			randomizer.Shuffle(temp);
+
+			this.cards = new Stack<PowerCard>(temp);
+			discards = new List<PowerCard>();
 		}
 
 		public PowerCard FlipNext() {
