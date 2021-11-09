@@ -15,7 +15,7 @@ namespace SpiritIsland.JaggedEarth {
 		}
 
 		// 2 air 3 animal 3 beast - Instead, 3 fear and defend 4
-		[InnateOption("2 air,3 animal","3 beast Instead, 3 fear and Defend 2")]
+		[InnateOption("2 air,3 animal","3 beast Instead, 3 fear and Defend 4")]
 		static public Task Option2(TargetSpaceCtx ctx ) {
 			if(3 <= ctx.Beasts.Count) {
 				ctx.AddFear(3);
