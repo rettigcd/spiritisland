@@ -30,9 +30,8 @@ namespace SpiritIsland.WinForms {
 			coin = ResourceImages.Singleton.GetToken( "coin" );
 		}
 
-		public Size DrawEnergyRow(float slotWidth, int x, int y, float width ) {
+		public void DrawEnergyRow(float slotWidth, int x, int y, int width, int height ) {
 			int startingX = x; // capture so we calc differene at end.
-			int startingY = y; // capture so we calc differene at end.
 
 			// Title
 			graphics.DrawString( "Energy", simpleFont, SystemBrushes.ControlDarkDark, x, y );
@@ -43,19 +42,19 @@ namespace SpiritIsland.WinForms {
 			float maxY = y; // inc 
 
 			foreach(var energy in spirit.Presence.Energy.slots) {
-				float height = DrawEnergySlot( x, y, (int)slotWidth, highlightPen, energy,
+				float energyHeight = DrawEnergySlot( x, y, (int)slotWidth, highlightPen, energy,
 					revealedEnergySpaces == idx && trackOptions.Contains( energy ),
 					revealedEnergySpaces <= idx
 				);
 
 				++idx;
 				x += (int)slotWidth;
-				maxY = Math.Max( maxY, y + height );
+				maxY = Math.Max( maxY, y + energyHeight );
 			}
 
 			const float scaleCoin = 0.7f;
 			var energyRect = new RectangleF( 
-				startingX + (int)width - slotWidth * (1 + scaleCoin), 
+				startingX + width - slotWidth * (1 + scaleCoin), 
 				y, 
 				slotWidth * (1 + scaleCoin), 
 				slotWidth * (1 + scaleCoin)
@@ -63,10 +62,6 @@ namespace SpiritIsland.WinForms {
 			graphics.DrawImage( coin, energyRect );
 			DrawTextOnCoin( ref energyRect, spirit.Energy.ToString() );
 
-			return new Size(
-				x - startingX,
-				(int)maxY - startingY // 
-			);
 		}
 
 
@@ -103,8 +98,7 @@ namespace SpiritIsland.WinForms {
 			return energyIconRect.Bottom - y;
 		}
 
-		public float DrawCardPlayTrack( float slotWidth, int x, int y ) {
-			int startingY = y; // capture so we can calc Height
+		public void DrawCardPlayTrack( float slotWidth, int x, int y ) {
 
 			// draw title
 			graphics.DrawString( "Cards", simpleFont, SystemBrushes.ControlDarkDark, x, y );
@@ -139,8 +133,6 @@ namespace SpiritIsland.WinForms {
 				x += (int)slotWidth;
 				++idx;
 			}
-
-			return maxY - startingY;
 
 		}
 

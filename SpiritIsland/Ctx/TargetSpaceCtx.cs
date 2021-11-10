@@ -232,11 +232,11 @@ namespace SpiritIsland {
 
 		public int PresenceCount => Self.Presence.CountOn(Space);
 
-		public Task PlaceDestroyedPresenceOnTarget() => Self.Presence.PlaceFromBoard( Track.Destroyed, Space, GameState );
+		public Task PlaceDestroyedPresenceOnTarget() => Self.Presence.PlaceFromTracks( Track.Destroyed, Space, GameState );
 
 		public async Task PlacePresenceHere() {
 			var from = await SelectPresenceSource();
-			await Self.Presence.PlaceFromBoard( from, Space, GameState );
+			await Self.Presence.PlaceFromTracks( from, Space, GameState );
 		}
 
 		#endregion

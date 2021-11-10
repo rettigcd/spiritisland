@@ -13,26 +13,23 @@ namespace SpiritIsland.WinForms {
 
 		public GrowthLayout layout;
 
-		public float Paint(GrowthOption[] options, float x, float y, float width ) {
+		public void Paint(GrowthOption[] options, Rectangle bounds ) {
 			layout = new GrowthLayout(options);
-			layout.ScaleToWidth(width);
-			layout.Translate(x,y);
+			layout.ScaleToFit(bounds.Width,bounds.Height);
+			layout.Translate(bounds.X,bounds.Y);
 
 			using var optionPen = new Pen( Color.Blue, 6f );
 
 			// Growth Options
-			foreach(var (_, rect) in layout.EachGrowth().Skip(1)) {
+			foreach(var (_, rect) in layout.EachGrowth().Skip(1))
 				graphics.DrawLine(optionPen,rect.Left,rect.Top,rect.Left,rect.Bottom);
-			}
 
 			// Actions
 			foreach(var (action,rect) in layout.EachAction())
 				DrawAction( action, rect );
-
-			return layout.Size.Height;
 		}
 
-		private void DrawAction( GrowthActionFactory action, RectangleF rect ) {
+		void DrawAction( GrowthActionFactory action, RectangleF rect ) {
 			if(action is GainEnergy ge) { GainEnergy( rect, ge.Delta ); return; }
 
 			if(action is ReclaimAll) { ReclaimAll( rect ); return; }

@@ -52,7 +52,7 @@ namespace SpiritIsland {
 
 		#region Game-Play things you can do with presence
 
-		public virtual Task PlaceFromBoard( IOption from, Space to, GameState gs ) {
+		public virtual Task PlaceFromTracks( IOption from, Space to, GameState gs ) {
 			// from
 			if(from is Track track) {
 				RemoveFromTrack( track );

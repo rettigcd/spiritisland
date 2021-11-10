@@ -19,7 +19,7 @@ namespace SpiritIsland.WinForms {
 			Actions = new GrowthActionFactory[actionCount];
 
 			float actionWidth = 1.0f / actionCount;
-			float actionHeight = actionWidth * 1.5f;
+			float actionHeight = 1.5f / actionCount;
 
 			float x = 0f;
 			int actionIndex = 0;
@@ -40,6 +40,14 @@ namespace SpiritIsland.WinForms {
 		public void ScaleToWidth(float width) => ScaleInternal( width / Size.Width );
 
 		public void ScaleToHeight( float height ) => ScaleInternal( height / Size.Height );
+
+		public void ScaleToFit(float width,float height) {
+			if(Size.Height*width < Size.Width*height)
+				ScaleToWidth( width );
+			else
+				ScaleToHeight( height );
+		}
+
 
 		void ScaleInternal( float scale ) {
 			GrowthRects = GrowthRects.Select( r => r.Scale( scale ) ).ToArray();

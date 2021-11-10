@@ -1,4 +1,7 @@
-﻿namespace SpiritIsland.JaggedEarth {
+﻿using System.Linq;
+using System.Threading.Tasks;
+
+namespace SpiritIsland.JaggedEarth {
 
 	public class VolcanoLoomingHigh : Spirit {
 
@@ -23,8 +26,8 @@
 		) {
 			growthOptionGroup = new GrowthOptionGroup(
 				new GrowthOption(new ReclaimAll(), new DrawPowerCard(), new GainEnergy(3)),
-				new GrowthOption(new PlacePresence(0), new PlacePresence(0)),
-				new GrowthOption(new DrawPowerCard(), new PlacePresence(4), new PlayExtraCardThisTurn(), new GainEnergy(2))
+				new GrowthOption(new PlacePresence(0,Target.Mountain), new PlacePresence(0,Target.Mountain)),
+				new GrowthOption(new DrawPowerCard(), new PlacePresence(4,Target.Mountain), new PlayExtraCardThisTurn(), new GainEnergy(2))
 			);
 
 			InnatePowers = new InnatePower[] {
@@ -35,19 +38,26 @@
 
 		protected override void InitializeInternal( Board board, GameState gameState ) {
 			// Put 1 presence on your starting board in a bountain of your choice.
-			// !!!
+			// init special growth (note - we don't want this growth in Unit tests, so only add it if we call InitializeInternal())
+			this.AddActionFactory(new Setup_PlacePresenceOnMountain());
 			// Push all dahan from that land.
 
 		}
 
 	}
 
-	// !!! Mountain Home - can only move presence in Mountains
+	class Setup_PlacePresenceOnMountain : GrowthActionFactory { // Similar to SharpFang initialization
+
+		public override async Task ActivateAsync( SpiritGameStateCtx ctx ) {
+			var gameState = ctx.GameState;
+			var options = gameState.Island.AllSpaces.Where( space=>space.Terrain == Terrain.Mountain );
+			var space = await ctx.Self.Action.Decision(new Decision.TargetSpace("Add presence to",options, Present.Always));
+			ctx.Presence.PlaceOn(space);
+		}
+
+	}
 
 	// !!! collapse in a blast of lava and steam - when presence is destroyed, 1 damage to both invaders and dahan
-
 	// !!! Power Cards gain +1 range if you ahve 3 or more presence in the original land.
-
-	// !!! Many Minds - Move allows Targetting ocean.
 
 }

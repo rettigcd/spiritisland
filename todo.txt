@@ -1,4 +1,25 @@
 ﻿
+-- Helpful --
+
+Refactor Testing to make it easier to test.
+
+Refactor UI - to make cleaner and ready to port to Android
+	- Put Build / Ravage / fear in strip along the top
+	- Make cards shrink to fit in window
+	- Make Spirit shrink to fit in window
+	- Separate cards into: Hand, Activated, Discarded
+
+Sort Cards by: speed, element, cost, (HAND,PURCHASED,DISCARDED)
+
+
+If not in Growth Phase, Add Elements immedately whenever presence is revealed (Growth through sacrifice)
+When Gaining / Playing a new power card mid action, gain its elements immediately
+
+
+0 - Test that Move does not allow moving into Ocean
+0 - Testing Place-Presence - Lure / Ocean / Volcano
+
+
 1) Cascading Bight - all blight should cascade
 
 2) Ravage Engine
@@ -22,6 +43,13 @@ Repeat Power
 	Lay PAths they cannot help but walk - Path Finder
 
 Test new Infinite Vitality - Dahan with +4 health
+
+
+== Adding Presence ==
+These cards should not allow Ocean, Lure, and Volcano to be in dis-allowed lands:
+	Blazing Renewal
+	Flow like Water, Reach Like Air
+	Unrelenting Growth
 
 
 == Test Formats ==

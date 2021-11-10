@@ -56,71 +56,110 @@ namespace SpiritIsland.WinForms {
 			Brush currentBrush = Brushes.Yellow;
 			using Pen highlightPen = new( Color.Red, 8f );
 
-			// Load Presence image
+			//=============
+			// == Growth ==
+			//=============
+			int growthHeight = Width / 6;
+			int usableWidth = Width - margin * 2;
+
+			var x = ClientRectangle.InflateBy(-margin).SplitVertically( margin, 0.16f, 0.5f, .84f );
+			var growthBounds = x[0];
+			var presenceBounds = x[1];
+			var innateBounds = x[2];
+			var elementBounds = x[3];
+
+			graphics.DrawRectangle(Pens.Red,x[0]);
+			graphics.DrawRectangle(Pens.Green,x[1]);
+			graphics.DrawRectangle(Pens.Blue,x[2]);
+			graphics.DrawRectangle(Pens.Black,x[3]);
+
+			//var growthBounds = new Rectangle( margin, margin, usableWidth, growthHeight );
+			//var presenceBounds = new Rectangle( margin, growthBounds.Bottom + margin, usableWidth, growthHeight * 2 );
+			//var innateBounds = new Rectangle( margin, presenceBounds.Bottom + margin * 2, usableWidth, growthHeight * 2 );
+			//var elementBounds = new Rectangle( margin, innateBounds.Bottom + margin, usableWidth, growthHeight );
+
+			Draw_GrowthRow( graphics, growthBounds );
+			Draw_PresenceTracks( graphics, simpleFont, highlightPen, presenceBounds );
+			Draw_Innates( graphics, innateBounds );
+			Draw_Elements( graphics, elementBounds );
+
+
+
+
+		}
+
+		private void Draw_Elements( Graphics graphics, Rectangle elementBounds ) {
+			int yy = elementBounds.Y;
+			// activated elements
+			DrawActivatedElements( graphics, spirit.Elements, ref yy );
+			if(spirit is ShiftingMemoryOfAges smoa)
+				DrawActivatedElements( graphics, smoa.PreparedElements, ref yy );
+		}
+
+		private void Draw_Innates( Graphics graphics, Rectangle innateBounds ) {
+			// Innates
+			float x = innateBounds.Left;
+			int maxHeight = 0;
+			int innateWidth = (innateBounds.Width - margin) / 2; // 3 margins => left, center, right
+			int y = innateBounds.Y;
+			foreach(InnatePower power in spirit.InnatePowers) {
+				var sz = DrawSingleInnate( graphics, power, x, y, innateWidth );
+				x += (sz.Width + margin);
+				maxHeight = Math.Max( maxHeight, (int)sz.Height );
+			}
+		}
+
+		void Draw_PresenceTracks( Graphics graphics, Font simpleFont, Pen highlightPen, Rectangle bounds ) {
 			using Bitmap presence = images.GetPresenceIcon( presenceColor );
 
 			// calc slot width and presence height
 			int maxLength = Math.Max( spirit.Presence.CardPlays.TotalCount, spirit.Presence.Energy.TotalCount ) + 2; // +2 for energy & Destroyed
 
-			// Calc Presence and coin widths
-			float usableWidth = (Width - 2 * margin);
-			float slotWidth = usableWidth / maxLength;
+			// Energy
+			int energyRowHeight = bounds.Height / 2;
+			float slotWidth = bounds.Width / maxLength;
 			float presenceWidth = slotWidth * 0.9f;
 			SizeF presenceSize = new SizeF( presenceWidth, presenceWidth * presence.Height / presence.Width );
 
-			int y = margin;
-			// Image
-			var imageSz = DrawSpiritImage( graphics, margin, y );
+			var trackPainter = new EnergyTrackPainter( graphics, spirit, presence, presenceSize, simpleFont, highlightPen, trackOptions, hotSpots );
 
-			var painter = new GrowthPainter( graphics );
-			var growthHeight = painter.Paint( spirit.GrowthOptions, margin + imageSz.Width, y, Width - imageSz.Width - margin * 2 );
+			// Energy / Turn
+			trackPainter.DrawEnergyRow( slotWidth, bounds.X, bounds.Y, bounds.Width, energyRowHeight );
+
+			// Destroyed
+			int y = bounds.Y + energyRowHeight + margin;
+			DrawDestroyed( graphics, highlightPen, presence, slotWidth, presenceSize, ClientRectangle.Width - 2.5f * slotWidth, y + slotWidth * .5f );
+
+			// Card Plays / Turn
+			trackPainter.DrawCardPlayTrack( slotWidth, margin, y );
+		}
+
+		void Draw_GrowthRow( Graphics graphics, Rectangle bounds ) {
+			var imgBounds = new Rectangle( bounds.X, bounds.Y, bounds.Height * 3 / 2, bounds.Height );
+			var growthBounds = new Rectangle( bounds.X + imgBounds.Width + margin, bounds.Y, bounds.Width - imgBounds.Width - margin, bounds.Height );
+
+			// Draw
+			DrawSpiritImage( graphics, imgBounds );
+			var growthPainter = new GrowthPainter( graphics );
+			growthPainter.Paint( spirit.GrowthOptions, growthBounds );
+
 			// highlight growth
-			foreach(var (opt, rect) in painter.layout.EachGrowth()) {
+			using Pen highlightPen = new( Color.Red, 8f );
+			foreach(var (opt, rect) in growthPainter.layout.EachGrowth()) {
 				if(growthOptions.Contains( opt )) {
 					hotSpots.Add( opt, rect );
 					graphics.DrawRectangle( highlightPen, rect.ToInts() );
 				}
 			}
+
 			// highlight growth - action
-			foreach(var (opt, rect) in painter.layout.EachAction()) {
+			foreach(var (opt, rect) in growthPainter.layout.EachAction()) {
 				if(growthActions.Contains( opt )) {
 					if(!hotSpots.ContainsKey( opt ))
 						hotSpots.Add( opt, rect ); // sometimes growth reuses object, only show highlight the first 1 - for now.
 					graphics.DrawRectangle( highlightPen, rect.ToInts() );
 				}
 			}
-
-
-			y += Math.Max( imageSz.Height, (int)growthHeight );
-			y += margin;
-
-			// Energy
-			var trackPainter = new EnergyTrackPainter( graphics, spirit, presence, presenceSize, simpleFont, highlightPen, trackOptions, hotSpots );
-			y += trackPainter.DrawEnergyRow( slotWidth, margin, y, usableWidth ).Height;
-			y += margin;
-
-			DrawDestroyed( graphics, highlightPen, presence, slotWidth, presenceSize, ClientRectangle.Width-2.5f*slotWidth, y + slotWidth*.5f );
-
-			// Cards
-			y += (int)trackPainter.DrawCardPlayTrack( slotWidth, margin, y );
-			y += margin;
-			y += margin;
-
-			// Innates
-			float x = margin;
-			int maxHeight = 0;
-			int innateWidth = (Width - 3 * margin) / 2; // 3 margins => left, center, right
-			foreach(InnatePower power in spirit.InnatePowers) {
-				var sz = DrawInnates( graphics, power, highlightPen, x, y, innateWidth );
-				x += (sz.Width + margin);
-				maxHeight = Math.Max( maxHeight, (int)sz.Height );
-			}
-			y += (maxHeight + margin);
-
-			// activated elements
-			DrawActivatedElements( graphics, spirit.Elements, ref y );
-			if(spirit is ShiftingMemoryOfAges smoa)
-				DrawActivatedElements( graphics, smoa.PreparedElements, ref y );
 		}
 
 		void DrawDestroyed( Graphics graphics, Pen highlightPen, Bitmap presence, float slotWidth, SizeF presenceSize, float x, float cardY ) {
@@ -142,24 +181,27 @@ namespace SpiritIsland.WinForms {
 			graphics.DrawCount( rect, spirit.Presence.Destroyed );
 		}
 
-		Size DrawSpiritImage( Graphics graphics, int x, int y ) {
+		void DrawSpiritImage( Graphics graphics, Rectangle bounds ) {
 			var image = spiritImage ??= LoadSpiritImage();
-			SpiritLocation = new Rectangle(x,y,180,120);
+			SpiritLocation = bounds.FitBoth(image.Size);
 			graphics.DrawImage(image, SpiritLocation );
-			return SpiritLocation.Size;
 		}
 		Rectangle SpiritLocation;
 
-		SizeF DrawInnates( Graphics graphics, InnatePower power, Pen highlightPen, float x, float y, float width ) {
+		SizeF DrawSingleInnate( Graphics graphics, InnatePower power, float x, float y, float width ) {
+			bool isActive = innateOptions.Any( x => x.Name == power.Name );
 
-			// Draw Dynamic Inates
+			// Draw Dynamic Innates
 			using var innatePainter = new InnatePainter( graphics, width );
-			RectangleF bounds = innatePainter.Paint( spirit, power, x, y ); // Calcs Metrics and paints
-			if(innateOptions.Any( x => x.Name == power.Name )) {
-				graphics.DrawRectangle( highlightPen, bounds.ToInts() );
-				hotSpots.Add( innateOptions.Single( x => x.Name == power.Name ), bounds.ToInts() );
-			}
-			return bounds.Size;
+
+			InnateMetrics metrics = innatePainter.CalcMetrics( power, x, y );
+
+			innatePainter.DrawFromMetrics( power, metrics, spirit.Elements, isActive );
+
+			if(isActive)
+				hotSpots.Add( innateOptions.Single( x => x.Name == power.Name ), metrics.TotalInnatePowerBounds.ToInts() );
+
+			return metrics.TotalInnatePowerBounds.Size;
 		}
 
 		void DrawActivatedElements( Graphics graphics, CountDictionary<Element> elements, ref int y ) {

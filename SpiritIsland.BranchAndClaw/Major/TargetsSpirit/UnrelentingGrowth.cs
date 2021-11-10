@@ -21,7 +21,7 @@ namespace SpiritIsland.BranchAndClaw {
 			// Add presence
 			for(int i = 0; i < 2; ++i) {
 				var from = await ctx.OtherCtx.SelectPresenceSource();
-				await ctx.Other.Presence.PlaceFromBoard( from, to, ctx.GameState );
+				await ctx.Other.Presence.PlaceFromTracks( from, to, ctx.GameState );
 			}
 
 			// if you have 3 sun, 3 plant

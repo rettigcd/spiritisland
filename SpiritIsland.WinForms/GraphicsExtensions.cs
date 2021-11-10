@@ -55,6 +55,101 @@ namespace SpiritIsland.WinForms {
 		static public SizeF Scale( this SizeF src, float scale ) => new SizeF( src.Width * scale, src.Height * scale );
 		static public RectangleF Translate( this RectangleF src, float deltaX, float deltaY ) => new RectangleF( src.X +deltaX, src.Y +deltaY, src.Width, src.Height );
 
+		static public RectangleF[] SplitVertically( this RectangleF rect, params float[] splitPercentages) {
+			var ys = new List<float>() { rect.Y };
+			ys.AddRange(splitPercentages.Select(p=>rect.Y+rect.Height*p));
+			ys.Add( rect.Bottom );
+			var result = new RectangleF[ splitPercentages.Length+1 ];
+			for(int i=0;i<ys.Count-1;++i)
+				result[i] = new RectangleF( rect.X ,ys[i], rect.Width, ys[i+1]-ys[i]);
+			return result;
+		}
+
+		static public void DrawImageFitHeight( this Graphics graphics, Image image, RectangleF bounds ) {
+			graphics.DrawImage( image, bounds.FitHeight( image.Size ).ToInts() );
+		}
+
+		static public void DrawImageFitWidth( this Graphics graphics, Image image, RectangleF bounds ) {
+			graphics.DrawImage( image, bounds.FitWidth( image.Size ).ToInts() );
+		}
+
+		static public void DrawImageFitBoth( this Graphics graphics, Image image, RectangleF bounds ) {
+			graphics.DrawImage( image, bounds.FitBoth( image.Size ).ToInts() );
+		}
+
+		#region Integers
+
+		/// <summary>
+		/// Returns a new rectangle inflated by # of pixels on each side
+		/// </summary>
+		static public Rectangle InflateBy(this Rectangle rect, int delta ) {
+			int d2 = delta*2;
+			return new Rectangle( rect.X-delta, rect.Y-delta, rect.Width+d2, rect.Height+d2);
+		}
+
+
+		static public Rectangle[] SplitVertically( this Rectangle rect, params float[] divisions) {
+			int lastY = rect.Y;
+			var result = new Rectangle[ divisions.Length+1 ];
+			for(int i = 0; i <= divisions.Length; ++i) {
+				int nextY = (i < divisions.Length)
+					? rect.Y + (int)(divisions[i] * rect.Height)
+					: rect.Bottom;
+				result[i] = new Rectangle( rect.X, lastY, rect.Width, nextY-lastY );
+				lastY = nextY;
+			}
+			return result;
+		}
+
+		static public Rectangle[] SplitVertically( this Rectangle rect, int rowMargin, params float[] divisions) {
+			int workingHeight = rect.Height - divisions.Length * rowMargin;
+			int lastY = rect.Y;
+			var result = new Rectangle[ divisions.Length+1 ];
+			for(int i = 0; i <= divisions.Length; ++i) {
+				int nextY = (i < divisions.Length)
+					? rect.Y + (int)(divisions[i] * workingHeight)
+					: rect.Bottom;
+				result[i] = new Rectangle( rect.X, lastY + i*rowMargin, rect.Width, nextY-lastY );
+				lastY = nextY;
+			}
+			return result;
+		}
+
+
+		/// <param name="bounds">Rectangle we are trying to fit inside</param>
+		/// <param name="size">aspect ratio of final rectangle</param>
+		/// <returns>a rectangle center on bounds, with the same height as bounds, with a same width/hieght ratio as size</returns>
+		static public Rectangle FitHeight( this Rectangle bounds, Size size ) {
+			// Centered Horizontally
+			int width = bounds.Height * size.Width / size.Height;
+			return new Rectangle( bounds.X + (bounds.Width - width) / 2, bounds.Y, width, bounds.Height );
+		}
+
+		public static Rectangle FitWidth( this Rectangle bounds, Size size ) {
+			int height = bounds.Width * size.Height / size.Width;
+			// Centered Horizontally
+			return new Rectangle( bounds.X, bounds.Y + (bounds.Height - height) / 2, bounds.Width, height );
+		}
+
+		static public Rectangle FitBoth( this Rectangle bounds, int width, int height ) => bounds.FitBoth(new Size(width,height));
+		static public Rectangle FitBoth( this Rectangle bounds, Size size ) {
+			// if normalized image height is greater than bounds, then fit height
+			return size.Height*bounds.Width > bounds.Height*size.Width 
+				? bounds.FitHeight(size) 
+				: bounds.FitWidth(size);
+		}
+
+		#endregion
+
+		#region Float
+
+		/// <summary>
+		/// Returns a new rectangle inflated by # of pixels on each side
+		/// </summary>
+		static public RectangleF InflateBy(this RectangleF rect, float delta ) {
+			float d2 = delta*2;
+			return new RectangleF( rect.X-delta, rect.Y-delta, rect.Width+d2, rect.Height+d2);
+		}
 
 		static public RectangleF[] SplitHorizontally( this RectangleF rect, params float[] splitPercentages) {
 			var xs = new List<float>() { rect.X };
@@ -82,49 +177,31 @@ namespace SpiritIsland.WinForms {
 			return result;
 		}
 
-		static public RectangleF[] SplitVertically( this RectangleF rect, params float[] splitPercentages) {
-			var ys = new List<float>() { rect.Y };
-			ys.AddRange(splitPercentages.Select(p=>rect.Y+rect.Height*p));
-			ys.Add( rect.Bottom );
-			var result = new RectangleF[ splitPercentages.Length+1 ];
-			for(int i=0;i<ys.Count-1;++i)
-				result[i] = new RectangleF( rect.X ,ys[i], rect.Width, ys[i+1]-ys[i]);
-			return result;
-		}
 
-		static public void DrawImageFitHeight( this Graphics graphics, Image image, RectangleF bounds ) {
-			float width = bounds.Height * image.Width / image.Height;
+		/// <param name="bounds">Rectangle we are trying to fit inside</param>
+		/// <param name="size">aspect ratio of final rectangle</param>
+		/// <returns>a rectangle center on bounds, with the same height as bounds, with a same width/hieght ratio as size</returns>
+		static public RectangleF FitHeight( this RectangleF bounds, SizeF size ) {
 			// Centered Horizontally
-			graphics.DrawImage(image,bounds.X + (bounds.Width-width)/2,bounds.Y,width,bounds.Height);
+			float width = bounds.Height * size.Width / size.Height;
+			return new RectangleF( bounds.X + (bounds.Width - width) / 2, bounds.Y, width, bounds.Height );
 		}
 
-		static public void DrawImageFitWidth( this Graphics graphics, Image image, RectangleF bounds ) {
-			float height = bounds.Width * image.Height / image.Width;
+		public static RectangleF FitWidth( this RectangleF bounds, SizeF size ) {
+			float height = bounds.Width * size.Height / size.Width;
 			// Centered Horizontally
-			graphics.DrawImage(image,bounds.X, bounds.Y+ (bounds.Height-height)/2,bounds.Width,height);
+			return new RectangleF( bounds.X, bounds.Y + (bounds.Height - height) / 2, bounds.Width, height );
 		}
 
-		static public void DrawImageFitBoth( this Graphics graphics, Image image, RectangleF bounds ) {
+		static public RectangleF FitBoth( this RectangleF bounds, float width, float height ) => bounds.FitBoth(new SizeF(width,height));
+		static public RectangleF FitBoth( this RectangleF bounds, SizeF size ) {
 			// if normalized image height is greater than bounds, then fit height
-			if(image.Height*bounds.Width > bounds.Height*image.Width)
-				graphics.DrawImageFitHeight(image,bounds);
-			else
-				graphics.DrawImageFitWidth(image,bounds);
+			return size.Height*bounds.Width > bounds.Height*size.Width 
+				? bounds.FitHeight(size) 
+				: bounds.FitWidth(size);
 		}
 
-
-		/// <summary>
-		/// Returns a new rectangle inflated by # of pixels on each side
-		/// </summary>
-		static public RectangleF InflateBy(this RectangleF rect, float delta ) {
-			float d2 = delta*2;
-			return new RectangleF( rect.X-delta, rect.Y-delta, rect.Width+d2, rect.Height+d2);
-		}
-
-		//static public void DrawString(this Graphics graphics, string text, Font font, Brush brush,  ) {
-		//				graphics.DrawString("some string", font, Brushes.Black, PositionInside(boundingRect,Left,Middle)
-
-		//}
+		#endregion
 
 	}
 

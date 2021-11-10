@@ -158,7 +158,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			spirit.Presence.PlaceOn( space, gameState );
 
 			// When: we place a presence on that space
-			_ = spirit.Presence.PlaceFromBoard( spirit.Presence.Energy.Next, space, gameState );
+			_ = spirit.Presence.PlaceFromTracks( spirit.Presence.Energy.Next, space, gameState );
 
 			User.PushesTokensTo("D@2","A1,(A4),A6,A7,A8",2);
 			User.PushesTokensTo("D@2","A1,A4,A6,(A7),A8");

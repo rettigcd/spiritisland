@@ -101,7 +101,7 @@ namespace SpiritIsland {
 		public async Task PlacePresence( int range, string filterEnum ) {
 			var from = await SelectPresenceSource();
 			Space to = await SelectSpaceWithinRangeOfCurrentPresence( range, filterEnum );
-			await Self.Presence.PlaceFromBoard( from, to, GameState );
+			await Self.Presence.PlaceFromTracks( from, to, GameState );
 		}
 
 		/// <summary> Selects: Source then Destination(predetermined) for placing presence.</summary>
@@ -109,7 +109,7 @@ namespace SpiritIsland {
 		public async Task PlacePresence( params Space[] destinationOptions ) {
 			var from = await SelectPresenceSource();
 			var to = await Self.Action.Decision( new Decision.Presence.PlaceOn( Self, destinationOptions, Present.Always ) );
-			await Self.Presence.PlaceFromBoard( from, to, GameState );
+			await Self.Presence.PlaceFromTracks( from, to, GameState );
 		}
 
 		/// <summary> Tries Presence Tracks first, then fails over to placed-presence on Island </summary>

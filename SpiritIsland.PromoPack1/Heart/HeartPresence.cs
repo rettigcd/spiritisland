@@ -16,8 +16,8 @@ namespace SpiritIsland.PromoPack1 {
 			return dict[Element.Fire];
 		}
 
-		public override async Task PlaceFromBoard( IOption from, Space to, GameState gs ) {
-			await base.PlaceFromBoard( from, to, gs );
+		public override async Task PlaceFromTracks( IOption from, Space to, GameState gs ) {
+			await base.PlaceFromTracks( from, to, gs );
 
 			int fireCount = FireShowing();
 			var ctx = new SpiritGameStateCtx(spirit,gs,Cause.Growth).Target(to);

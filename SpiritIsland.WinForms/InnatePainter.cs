@@ -17,14 +17,16 @@ namespace SpiritIsland.WinForms {
 		Font boldFont;
 
 		public InnatePainter( Graphics graphics, float width ) {
-			this.graphics = graphics;
 			this.width = width;
 			textEmSize = width * .033f;
+			iconHeight = textEmSize * 1.9f;
+			elementHeight = iconHeight * 1.2f;
+			rowHeight = elementHeight * 1.1f;
+
+			// Resources
+			this.graphics = graphics;
 			this.font = new Font( FontFamily.GenericSansSerif, textEmSize, GraphicsUnit.Pixel );
 			this.boldFont = new Font( FontFamily.GenericSansSerif, textEmSize, FontStyle.Bold, GraphicsUnit.Pixel );
-			this.iconHeight = textEmSize * 1.9f;
-			this.elementHeight = iconHeight * 1.2f;
-			this.rowHeight = elementHeight * 1.1f;
 		}
 
 		public void Dispose() {
@@ -42,73 +44,85 @@ namespace SpiritIsland.WinForms {
 			images.Clear();
 		}
 
-		public RectangleF Paint( Spirit spirit, InnatePower power, float x, float y ) {
-
-			// === Calc Metrics ===
-
-			float margin = width * .02f; // 2% of width
-			float workingWidth = width - margin*2;
-
-			// "All-Enveloping Green"
-			var titleRect = new RectangleF( x+margin, y+margin,workingWidth,workingWidth * .1f ); // 10%;
-
-			// brown box
-			var brownBox = new RectangleF( x+margin, titleRect.Bottom, workingWidth, workingWidth * .16f);
-			var brownBoxRows = brownBox.SplitVertically(0.40f);
-			var headingHeaderRects = brownBoxRows[0].SplitHorizontally(3);
-			var headingValueRects = brownBoxRows[1].SplitHorizontally(3);
-
-			// Options
-			List<WrappingTextInfo> options = new List<WrappingTextInfo>();
-			var optionY = brownBox.Bottom + rowHeight*0.25f;
-			foreach(var innatePowerOption in power.Options.Where(o=>o.Purpose != AttributePurpose.ExecuteOnly )) {
-				var wrapInfo = CalcInnateOptionLayout( innatePowerOption, brownBox.Left, optionY, workingWidth );
-				options.Add( wrapInfo );
-				optionY=wrapInfo.Bounds.Bottom;
-			}
-			var totalOptionBounds = new RectangleF(x,y,width,optionY-y);
-
-			// === Draw ===
+		public void DrawFromMetrics( InnatePower power, InnateMetrics metrics, CountDictionary<Element> activatedElements, bool isActive ) {
+			// graphics, Fonts, Images
 
 			// Background
-			graphics.FillRectangle(Brushes.AliceBlue,totalOptionBounds);
+			graphics.FillRectangle( Brushes.AliceBlue, metrics.TotalInnatePowerBounds );
 
 			// Title
-			using(var titleFont = new Font("Arial",textEmSize,FontStyle.Bold|FontStyle.Italic, GraphicsUnit.Pixel ) )
-				graphics.DrawString(power.Name.ToUpper(),titleFont,Brushes.Black,titleRect,new StringFormat{ Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Center });
+			using(var titleFont = new Font( "Arial", textEmSize, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Pixel ))
+				graphics.DrawString( power.Name.ToUpper(), titleFont, Brushes.Black, metrics.TitleBounds, new StringFormat { Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Center } );
 
+			DrawAttributeTable( power, metrics );
+
+			// Options
+			foreach(WrappingTextInfo wrappintText in metrics.Options) {
+				if(activatedElements.Contains( wrappintText.Attribute.Elements ))
+					graphics.FillRectangle( Brushes.PeachPuff, wrappintText.Bounds.ToInts() );
+				wrappintText.Draw( graphics );
+				//if(activatedElements.Contains( wrappintText.Attribute.Elements ))
+				//	graphics.DrawRectangle( Pens.Red, wrappintText.Bounds.ToInts() );
+			}
+
+			if(isActive) {
+				using Pen highlightPen = new( Color.Red, 2f );
+				graphics.DrawRectangle( highlightPen, metrics.TotalInnatePowerBounds.ToInts() );
+			}
+
+		}
+
+		void DrawAttributeTable( InnatePower power, InnateMetrics metrics ) {
 			// Attribute Headers
 			using(var titleBg = new SolidBrush( Color.FromArgb( 0xae, 0x98, 0x69 ) )) // ae9869
-				graphics.FillRectangle(titleBg,brownBoxRows[0]);
-			var centerBoth = new StringFormat{ Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-			using( Font titleFont = new Font("Arial",textEmSize*0.8f,FontStyle.Bold, GraphicsUnit.Pixel)) {
-				graphics.DrawString("SPEED"      ,titleFont,Brushes.White,headingHeaderRects[0],centerBoth);
-				graphics.DrawString("RANGE"      ,titleFont,Brushes.White,headingHeaderRects[1],centerBoth);
-				graphics.DrawString(power.LandOrSpirit==LandOrSpirit.Land?"TARGET LAND":"TARGET",titleFont,Brushes.White,headingHeaderRects[2],centerBoth);
+				graphics.FillRectangle( titleBg, metrics.AttributeRows[0] );
+			var centerBoth = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+			using(Font titleFont = new Font( "Arial", textEmSize * 0.8f, FontStyle.Bold, GraphicsUnit.Pixel )) {
+				graphics.DrawString( "SPEED", titleFont, Brushes.White, metrics.AttributeLabelCells[0], centerBoth );
+				graphics.DrawString( "RANGE", titleFont, Brushes.White, metrics.AttributeLabelCells[1], centerBoth );
+				graphics.DrawString( power.LandOrSpirit == LandOrSpirit.Land ? "TARGET LAND" : "TARGET", titleFont, Brushes.White, metrics.AttributeLabelCells[2], centerBoth );
 			}
 
 			// Attribute Values
-			graphics.FillRectangle( Brushes.BlanchedAlmond, brownBoxRows[1] );
-			foreach(var valueRect in headingValueRects)
+			graphics.FillRectangle( Brushes.BlanchedAlmond, metrics.AttributeRows[1] );
+			foreach(var valueRect in metrics.AttributeValueCells)
 				graphics.DrawRectangle( Pens.Black, valueRect.ToInts() );
-			graphics.DrawImageFitHeight( GetImage(power.Speed == Phase.Slow ? "slow" : "fast"), headingValueRects[0].InflateBy( -headingValueRects[0].Height*.2f ) );
-			graphics.DrawString( power.RangeText, boldFont, Brushes.Black, headingValueRects[1], centerBoth );
-			graphics.DrawString( power.TargetFilter.ToUpper(), boldFont, Brushes.Black, headingValueRects[2], centerBoth );
+			graphics.DrawImageFitHeight( GetImage( power.Speed == Phase.Slow ? "slow" : "fast" ), metrics.AttributeValueCells[0].InflateBy( -metrics.AttributeValueCells[0].Height * .2f ) );
+			graphics.DrawString( power.RangeText, boldFont, Brushes.Black, metrics.AttributeValueCells[1], centerBoth );
+			graphics.DrawString( power.TargetFilter.ToUpper(), boldFont, Brushes.Black, metrics.AttributeValueCells[2], centerBoth );
 
-			// outter box
-			using(var thickPen = new Pen(Brushes.Black,2f))
-				graphics.DrawRectangle(thickPen,brownBox.ToInts());
-
-			// Options
-			foreach(WrappingTextInfo o in options) {
-				o.Draw( graphics );
-				if( spirit.Elements.Contains( o.Attribute.Elements ))
-					graphics.DrawRectangle(Pens.Red, o.Bounds.ToInts());
-			}
-
-			return totalOptionBounds;
+			// Attribute Outter box
+			using var thickPen = new Pen( Brushes.Black, 2f );
+			graphics.DrawRectangle( thickPen, metrics.AttributeBounds.ToInts() );
 		}
 
+		public InnateMetrics CalcMetrics( InnatePower power, float x, float y ) {
+			var metrics = new InnateMetrics();
+
+			float margin = width * .02f; // 2% of width
+			float workingWidth = width - margin * 2;
+
+			// "All-Enveloping Green"
+			metrics.TitleBounds = new RectangleF( x + margin, y + margin, workingWidth, workingWidth * .1f ); // 10%;				// output - titleRect
+
+			// brown box
+			metrics.AttributeBounds = new RectangleF( x + margin, metrics.TitleBounds.Bottom, workingWidth, workingWidth * .16f );
+			metrics.AttributeRows = metrics.AttributeBounds.SplitVertically( 0.40f );
+			metrics.AttributeLabelCells = metrics.AttributeRows[0].SplitHorizontally( 3 );
+			metrics.AttributeValueCells = metrics.AttributeRows[1].SplitHorizontally( 3 );
+
+			// Options
+			var options = new List<WrappingTextInfo>();
+			var optionY = metrics.AttributeBounds.Bottom + rowHeight * 0.25f;
+			foreach(var innatePowerOption in power.Options.Where( o => o.Purpose != AttributePurpose.ExecuteOnly )) {
+				var wrapInfo = CalcInnateOptionLayout( innatePowerOption, metrics.AttributeBounds.Left, optionY, workingWidth );
+				options.Add( wrapInfo );
+				optionY = wrapInfo.Bounds.Bottom;
+			}
+			metrics.Options = options.ToArray();
+			metrics.TotalInnatePowerBounds = new RectangleF( x, y, width, optionY - y );
+			return metrics;
+		}
 
 		public WrappingTextInfo CalcInnateOptionLayout( InnateOptionAttribute option, float originalX, float originalY, float width ) {
 			float x = originalX;
@@ -164,35 +178,6 @@ namespace SpiritIsland.WinForms {
 			}
 
 		}
-
-		public class TokenPosition {
-			//public string token;
-			public Image image;
-			public RectangleF Rect;
-		}
-
-		public class TextPosition {
-			public string Text;
-			public Font Font;
-			public RectangleF Bounds;
-		}
-		public class WrappingTextInfo {
-			public InnateOptionAttribute Attribute;
-			public List<TokenPosition> tokens = new List<TokenPosition>();
-			public List<TextPosition> texts = new List<TextPosition>();
-			public RectangleF Bounds;
-
-			public void Draw( Graphics graphics ) {
-				foreach(var tp in this.tokens)
-					graphics.DrawImage( tp.image, tp.Rect  );
-				var stringFormat = new StringFormat{ LineAlignment = StringAlignment.Center };
-				foreach(var sp in this.texts)
-					graphics.DrawString( sp.Text, sp.Font, Brushes.Black, sp.Bounds, stringFormat );
-			}
-
-
-		}
-
 
 		int GetCharcterLengthThatFitsInWidth(string text, Font font, float width ) {
 			float textWidth = graphics.MeasureString(text,font).Width;
@@ -260,5 +245,47 @@ namespace SpiritIsland.WinForms {
 		readonly Dictionary<string,Image> images = new Dictionary<string, Image>();
 
 	}
+
+	public class TokenPosition {
+		//public string token;
+		public Image image;
+		public RectangleF Rect;
+	}
+
+	public class TextPosition {
+		public string Text;
+		public Font Font;
+		public RectangleF Bounds;
+	}
+	public class WrappingTextInfo {
+		public InnateOptionAttribute Attribute;
+		public List<TokenPosition> tokens = new List<TokenPosition>();
+		public List<TextPosition> texts = new List<TextPosition>();
+		public RectangleF Bounds;
+
+		public void Draw( Graphics graphics ) {
+			foreach(var tp in this.tokens)
+				graphics.DrawImage( tp.image, tp.Rect  );
+			var stringFormat = new StringFormat{ LineAlignment = StringAlignment.Center };
+			foreach(var sp in this.texts)
+				graphics.DrawString( sp.Text, sp.Font, Brushes.Black, sp.Bounds, stringFormat );
+		}
+
+
+	}
+
+	public class InnateMetrics {
+		public RectangleF TotalInnatePowerBounds;
+
+		public RectangleF TitleBounds; // holds the name of the innate power
+
+		public RectangleF AttributeBounds;  // Draws Attributes box
+		public RectangleF[] AttributeRows;
+		public RectangleF[] AttributeLabelCells;
+		public RectangleF[] AttributeValueCells;
+
+		public WrappingTextInfo[] Options;
+	}
+
 
 }
