@@ -57,12 +57,11 @@ namespace SpiritIsland.WinForms {
 			DrawAttributeTable( power, metrics );
 
 			// Options
-			foreach(WrappingTextInfo wrappintText in metrics.Options) {
-				if(activatedElements.Contains( wrappintText.Attribute.Elements ))
+			foreach(WrappingText_InnateOptions wrappintText in metrics.Options) {
+				if(activatedElements.Contains( wrappintText.Elements ))
 					graphics.FillRectangle( Brushes.PeachPuff, wrappintText.Bounds.ToInts() );
-				wrappintText.Draw( graphics );
-				//if(activatedElements.Contains( wrappintText.Attribute.Elements ))
 				//	graphics.DrawRectangle( Pens.Red, wrappintText.Bounds.ToInts() );
+				wrappintText.Draw( graphics );
 			}
 
 			if(isActive) {
@@ -112,9 +111,9 @@ namespace SpiritIsland.WinForms {
 			metrics.AttributeValueCells = metrics.AttributeRows[1].SplitHorizontally( 3 );
 
 			// Options
-			var options = new List<WrappingTextInfo>();
+			var options = new List<WrappingText_InnateOptions>();
 			var optionY = metrics.AttributeBounds.Bottom + rowHeight * 0.25f;
-			foreach(var innatePowerOption in power.Options.Where( o => o.Purpose != AttributePurpose.ExecuteOnly )) {
+			foreach( var innatePowerOption in power.DrawableOptions ) {
 				var wrapInfo = CalcInnateOptionLayout( innatePowerOption, metrics.AttributeBounds.Left, optionY, workingWidth );
 				options.Add( wrapInfo );
 				optionY = wrapInfo.Bounds.Bottom;
@@ -124,24 +123,25 @@ namespace SpiritIsland.WinForms {
 			return metrics;
 		}
 
-		public WrappingTextInfo CalcInnateOptionLayout( InnateOptionAttribute option, float originalX, float originalY, float width ) {
+		public WrappingText_InnateOptions CalcInnateOptionLayout( IDrawableInnateOption option, float originalX, float originalY, float width ) {
 			float x = originalX;
 			float y = originalY;
 
-			var wrappingText = new WrappingTextInfo { Attribute = option };
+			var wrappingText = new WrappingText_InnateOptions { Elements = option.Elements };
+			string elementString = option.Elements.BuildElementString();
+			string description = option.Description;
 
 			// Elements
-			string elementStr = option.Elements.OrderBy(p=>(int)p.Key).Select(p=>p.Value+" "+p.Key.ToString().ToLower()).Join(" ");
-			CalcWrappingString( wrappingText, elementStr, boldFont, ref x, ref y, originalX, width );
+			CalcWrappingString( wrappingText, elementString, boldFont, ref x, ref y, originalX, width );
 			// Text
-			CalcWrappingString( wrappingText, option.Description, font, ref x, ref y, originalX, width );
+			CalcWrappingString( wrappingText, description, font, ref x, ref y, originalX, width );
 			y += rowHeight;
 			wrappingText.Bounds = new RectangleF( originalX, originalY, width, y - originalY );
 
 			return wrappingText;
 		}
 
-		void CalcWrappingString( WrappingTextInfo wrappingText, string description, Font font, ref float x, ref float y, float left, float width ) {
+		void CalcWrappingString( WrappingText_InnateOptions wrappingText, string description, Font font, ref float x, ref float y, float left, float width ) {
 			var descriptionParts = InnatePower.Tokenize( description );
 
 			var tokens = wrappingText.tokens;
@@ -257,8 +257,8 @@ namespace SpiritIsland.WinForms {
 		public Font Font;
 		public RectangleF Bounds;
 	}
-	public class WrappingTextInfo {
-		public InnateOptionAttribute Attribute;
+
+	public class WrappingText {
 		public List<TokenPosition> tokens = new List<TokenPosition>();
 		public List<TextPosition> texts = new List<TextPosition>();
 		public RectangleF Bounds;
@@ -270,8 +270,10 @@ namespace SpiritIsland.WinForms {
 			foreach(var sp in this.texts)
 				graphics.DrawString( sp.Text, sp.Font, Brushes.Black, sp.Bounds, stringFormat );
 		}
+	}
 
-
+	public class WrappingText_InnateOptions : WrappingText {
+		public CountDictionary<Element> Elements;
 	}
 
 	public class InnateMetrics {
@@ -284,7 +286,7 @@ namespace SpiritIsland.WinForms {
 		public RectangleF[] AttributeLabelCells;
 		public RectangleF[] AttributeValueCells;
 
-		public WrappingTextInfo[] Options;
+		public WrappingText_InnateOptions[] Options;
 	}
 
 

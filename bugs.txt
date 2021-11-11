@@ -1,0 +1,15 @@
+Heart of the Wildfire's 1st innate is confusing when it triggers on multiple lands.  Also, it is highlighting presence, dahan and blight.
+Heart if the Wildfire - , got down to 0 blights on card but did not trigger blighted island.
+Trickster plays a card that removes blight. But no blight on the space.  Should not destroy a presence
+
+Elements - If not in Growth Phase, Add Elements immedately whenever presence is revealed - Growth through sacrifice
+Elements - "Playing" a card (ie activating it), adds elements immediately
+
+Strifed Invaders damaging themselves
+
+Growth Through Sacrifice - Add Presence (when doing both - 2 suns) asks for positioning tiwce
+
+Cascading Bight - all blight should cascade
+
+Drawing Innates - Presence icon is too wide.
+

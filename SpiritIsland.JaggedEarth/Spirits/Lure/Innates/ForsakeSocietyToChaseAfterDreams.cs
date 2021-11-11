@@ -38,12 +38,6 @@ namespace SpiritIsland.JaggedEarth {
 				.MoveUpToN();
 		}
 
-		// 4 Repeat this Power
-		[InnateOption("4 air","Repeat this Power.",AttributePurpose.DisplayOnly)]
-#pragma warning disable IDE0051 // Remove unused private members
-		static void RepeatPower(TargetSpaceCtx _) { }
-#pragma warning restore IDE0051 // Remove unused private members
-
 	}
 
 

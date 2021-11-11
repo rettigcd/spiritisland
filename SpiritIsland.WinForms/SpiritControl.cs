@@ -62,26 +62,18 @@ namespace SpiritIsland.WinForms {
 			int growthHeight = Width / 6;
 			int usableWidth = Width - margin * 2;
 
-			var x = ClientRectangle.InflateBy(-margin).SplitVertically( margin, 0.16f, 0.5f, .84f );
-			var growthBounds = x[0];
-			var presenceBounds = x[1];
-			var innateBounds = x[2];
-			var elementBounds = x[3];
+//			var x = ClientRectangle.InflateBy(-margin).SplitVertically( margin, 0.16f, 0.5f, .84f );
+			var x = ClientRectangle.InflateBy(-margin).SplitByWeight( margin, 1f, 1.8f, 2.2f, 1f );
 
-			graphics.DrawRectangle(Pens.Red,x[0]);
+			graphics.DrawRectangle(Pens.Red,  x[0]);
 			graphics.DrawRectangle(Pens.Green,x[1]);
-			graphics.DrawRectangle(Pens.Blue,x[2]);
+			graphics.DrawRectangle(Pens.Blue, x[2]);
 			graphics.DrawRectangle(Pens.Black,x[3]);
 
-			//var growthBounds = new Rectangle( margin, margin, usableWidth, growthHeight );
-			//var presenceBounds = new Rectangle( margin, growthBounds.Bottom + margin, usableWidth, growthHeight * 2 );
-			//var innateBounds = new Rectangle( margin, presenceBounds.Bottom + margin * 2, usableWidth, growthHeight * 2 );
-			//var elementBounds = new Rectangle( margin, innateBounds.Bottom + margin, usableWidth, growthHeight );
-
-			Draw_GrowthRow( graphics, growthBounds );
-			Draw_PresenceTracks( graphics, simpleFont, highlightPen, presenceBounds );
-			Draw_Innates( graphics, innateBounds );
-			Draw_Elements( graphics, elementBounds );
+			Draw_GrowthRow( graphics,      x[0] );
+			Draw_PresenceTracks( graphics, x[1], simpleFont, highlightPen );
+			Draw_Innates( graphics,        x[2] );
+			Draw_Elements( graphics,       x[3] );
 
 
 
@@ -109,7 +101,7 @@ namespace SpiritIsland.WinForms {
 			}
 		}
 
-		void Draw_PresenceTracks( Graphics graphics, Font simpleFont, Pen highlightPen, Rectangle bounds ) {
+		void Draw_PresenceTracks( Graphics graphics, Rectangle bounds, Font simpleFont, Pen highlightPen ) {
 			using Bitmap presence = images.GetPresenceIcon( presenceColor );
 
 			// calc slot width and presence height

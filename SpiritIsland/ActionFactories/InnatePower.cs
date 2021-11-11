@@ -23,7 +23,7 @@ namespace SpiritIsland {
 			speedAttr = actionType.GetCustomAttribute<SpeedAttribute>(false) 
 				?? throw new InvalidOperationException("Missing Speed attribute for "+actionType.Name);
 			this.targetAttr = targetAttr;
-			this.repeatAttr = actionType.GetCustomAttribute<RepeatIfAttribute>();
+			this.repeatAttr = actionType.GetCustomAttribute<RepeatIfAttribute>(); // !! What about more than 1 repeat?
 
 			Name = innatePowerAttr.Name;
 
@@ -33,6 +33,14 @@ namespace SpiritIsland {
 				.Select( m => new MethodTuple(m) )
 				.Where( x => x.Attr != null )
 				.ToList();
+
+			this._drawableOptions = elementListByMethod
+				.Select(x=>x.Attr)
+				.Where( o => o.Purpose != AttributePurpose.ExecuteOnly )
+				.Cast<IDrawableInnateOption>()
+				.ToList();
+			if(this.repeatAttr!=null)
+				_drawableOptions.AddRange( repeatAttr.Repeats );
 		}
 
 		#endregion
@@ -81,6 +89,10 @@ namespace SpiritIsland {
 
 		public IEnumerable<InnateOptionAttribute> Options => elementListByMethod.Select(x=>x.Attr);
 
+		public IEnumerable<IDrawableInnateOption> DrawableOptions => _drawableOptions;
+		readonly List<IDrawableInnateOption> _drawableOptions;
+
+
 		async Task ActivateInnerAsync( SpiritGameStateCtx spiritCtx ) {
 
 			// !!! Targetting a space first, then declining all of the elemental upgrades
@@ -123,7 +135,8 @@ namespace SpiritIsland {
 			return method;
 		}
 
-		async Task<bool> ShouldRepeat( Spirit spirit ) => repeatAttr != null && await repeatAttr.CanRepeat( spirit );
+		async Task<bool> ShouldRepeat( Spirit spirit ) => repeatAttr != null 
+			&& await repeatAttr.GetRepeatCount( spirit ) > 0; // !!! change ShouldRepeat to RepeatCount
 
 		public static string[] Tokenize( string s ) {
 

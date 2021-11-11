@@ -4,11 +4,10 @@ using System.Linq;
 namespace SpiritIsland {
 
 	[AttributeUsage(AttributeTargets.Class|AttributeTargets.Method)]
-	public class InnateOptionAttribute : Attribute {
+	public class InnateOptionAttribute : Attribute, IDrawableInnateOption {
 
 		public InnateOptionAttribute( string elementText, string description, int group=0 ) {
 			Elements = ElementList.Parse( elementText );
-			ElementText = Elements.BuildElementString( " " );
 			Description = description;
 			Purpose = AttributePurpose.DisplayAndExecute;
 			Group = group;
@@ -19,17 +18,14 @@ namespace SpiritIsland {
 		/// </summary>
 		public InnateOptionAttribute( string elementText, string description, AttributePurpose purpose, int group=0 ) {
 			Elements = ElementList.Parse( elementText );
-			ElementText = Elements.BuildElementString( " " );
 			Description = description;
 			Purpose = purpose;
 			Group = group;
 		}
 
-		public string ElementText { get; }
+		public CountDictionary<Element> Elements { get; }
 
 		public string Description { get; }
-
-		public CountDictionary<Element> Elements { get; }
 
 		public AttributePurpose Purpose { get; }
 
@@ -39,5 +35,10 @@ namespace SpiritIsland {
 	}
 
 	public enum AttributePurpose { DisplayAndExecute, ExecuteOnly, DisplayOnly }
+
+	public interface IDrawableInnateOption {
+		CountDictionary<Element> Elements { get; }
+		string Description { get; }
+	}
 
 }

@@ -24,9 +24,6 @@ namespace SpiritIsland.JaggedEarth {
 			return Task.CompletedTask;
 		}
 
-		[InnateOption("7 earth,2 sun","Repeat this power",AttributePurpose.DisplayOnly)]
-		static public Task Option2(TargetSpaceCtx _ ) { return Task.CompletedTask; }
-
 	}
 
 }

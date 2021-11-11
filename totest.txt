@@ -1,0 +1,81 @@
+Move - does not allow moving into Ocean
+	- MMMA1 - Move beast and pull 2 dahan with it.
+
+Adding Presence - These cards should not allow: Ocean, Lure, and Volcano to be in dis-allowed lands:
+	Blazing Renewal
+	Flow like Water, Reach Like Air
+	Unrelenting Growth
+
+Moving Dahan into Frozen land should freeze them.
+
+Blight Tests
+
+Tigers Hunting - Exception in land with no invaders.
+
+Badlands
+	Ravage - Invaders
+	Ravage - Dahan
+	Power - 1 damage to all Towns/Cities
+	Power - damage to 1
+	Power - multiple damages
+
+Ravage Engine
+	* Dissolve the Bonds of Kinship
+	* Infinite Vitality
+	* Instruments of Their Own Ruin
+	* Manifest Incarnation
+	* A Year of Perfect Stillness - skips invader actions
+	* Infinite Vitality - Dahan with +4 health
+	* Bringer
+	* the +1 from Fires Fury (Heart of Wildfire)
+	* Conceiling Shadows - no damage to dahan
+	* Destroying Town or Town1 creates 1 fear
+	* Destroying City, City1, City 2, creates 2 fear
+
+Card Speed
+	Lightning makes cards fast for each air.
+	Thunderspeaker innate fast if 4 air
+	BAC Minor card fast if element threshold
+	Wildfire card fast if element threshold
+	Power that allows speeds to be switched.
+		- does card speed switch reset at end of round?
+	Innates that may be fast.
+
+Repeat Card
+	* PowerStorm
+	* Spur on With words of Fire
+
+Ocean in Play - With and Without Ocean, PowerTarget, Push & Blight Include/Don't include ocean spaces.
+
+Modifications to Range
+	Talons of Lightning - extended / conditional range 
+	Sap the Strength of Multitudes - range changes
+
+Blight causes spirit to lose 1 presence on space
+
+
+
+
+
+===== Test Formats =====
+Game-Runner
+Call Single Card
+Growth / Presence Tracks
+
+Where do Methods Go?
+	- Test Fixture?
+	- Extension methods?
+
+
+
+===== Test Categories =====
+* Ravage Engine (damage / destroy) 
+* Movement - Push / Gather / Move
+* Freezing
+* Invader Cards / Invader Deck
+* Spirit overrides (anything non-abstract method a dirived spirit overrides)
+* Presence Tracks & Deployment
+* Cause - things that behave differently for Powers than they do for non-Powers
+* Range
+* Speed (fast/slow)
+* Elementals trigger dependant

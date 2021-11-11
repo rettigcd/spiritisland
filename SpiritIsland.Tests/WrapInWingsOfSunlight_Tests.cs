@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Xunit;
 
 namespace SpiritIsland.Tests {
+
 	public class WrapInWingsOfSunlight_Tests {
 
 		[Trait("Feature","Move")]

@@ -8,8 +8,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{30BE8395-3ABB-4DE6-BE5B-97E914AD2AB7}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		bugs.txt = bugs.txt
 		cards.txt = cards.txt
 		todo.txt = todo.txt
+		totest.txt = totest.txt
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritIslandCmd", "SpiritIslandCmd\SpiritIslandCmd.csproj", "{1728A953-E107-43E6-93AE-336E221D2747}"
@@ -24,7 +26,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritIsland.Basegame", "Sp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritIsland.PromoPack1", "SpiritIsland.PromoPack1\SpiritIsland.PromoPack1.csproj", "{F31F1A40-876A-4BD1-943B-D0149B8E9F05}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpiritIsland.JaggedEarth", "SpiritIsland.JaggedEarth\SpiritIsland.JaggedEarth.csproj", "{59D84763-67EA-4BE2-B8AF-F95A2D3D67EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritIsland.JaggedEarth", "SpiritIsland.JaggedEarth\SpiritIsland.JaggedEarth.csproj", "{59D84763-67EA-4BE2-B8AF-F95A2D3D67EB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

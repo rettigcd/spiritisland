@@ -8,95 +8,23 @@ Refactor UI - to make cleaner and ready to port to Android
 	- Make cards shrink to fit in window
 	- Make Spirit shrink to fit in window
 	- Separate cards into: Hand, Activated, Discarded
+	UI - Sort Cards by: speed, element, cost, (HAND,PURCHASED,DISCARDED)
 
-Sort Cards by: speed, element, cost, (HAND,PURCHASED,DISCARDED)
-
-
-If not in Growth Phase, Add Elements immedately whenever presence is revealed (Growth through sacrifice)
-When Gaining / Playing a new power card mid action, gain its elements immediately
-
-
-0 - Test that Move does not allow moving into Ocean
-0 - Testing Place-Presence - Lure / Ocean / Volcano
-
-
-1) Cascading Bight - all blight should cascade
-
-2) Ravage Engine
-
-3) TargetSpaceCtx.DamageInvaders - limit badland damage to once / action
-
-4) Detect end of game at end of each action, Don't Lock-up when it happens.
-
-
-Strifed Invaders damaging themselves
-
-Moving Dahan into Frozen land should freeze them.
-Tigers Hunting - Exception in land with no invaders.
-Growth Through Sacrifice - Add Presence (when doing both - 2 suns) asks for positioning tiwce
-
-Repeat Power
-	Creepers Tear into Mortar - Rampant Green
-	Let Them Break Themselves Against the Stone - Stone
-	Never Hear d From Again - Lure
-	Forsake Society to Chase After Dreams - Lure
-	Lay PAths they cannot help but walk - Path Finder
-
-Test new Infinite Vitality - Dahan with +4 health
-
-
-== Adding Presence ==
-These cards should not allow Ocean, Lure, and Volcano to be in dis-allowed lands:
-	Blazing Renewal
-	Flow like Water, Reach Like Air
-	Unrelenting Growth
-
-
-== Test Formats ==
-Game-Runner
-Call Single Card
-Growth / Presence Tracks
-
-Where do Methods Go?
-	- Test Fixture?
-	- Extension methods?
-
-
-== Test Badlands ==
-Ravage - Invaders
-Ravage - Dahan
-Power - 1 damage to all Towns/Cities
-Power - damage to 1
-Power - multiple damages
-
-
-== Test Categories ==
-* Ravage Engine (damage / destroy) 
-* Movement - Push / Gather / Move
-* Freezing
-* Invader Cards / Invader Deck
-* Spirit overrides (anything non-abstract method a dirived spirit overrides)
-* Presence Tracks & Deployment
-* Cause - things that behave differently for Powers than they do for non-Powers
-* Range
-* Speed (fast/slow)
-* Elementals trigger dependant
+1) Ravage Engine - Log
+2) TargetSpaceCtx.DamageInvaders - limit badland damage to once / action
+3) Detect end of game at end of each action, Don't Lock-up when it happens.
+UI Show log of User actions, Invader Actions
+UI Visual indicator of Phase
+UI - Display Trickster innate-drawn cards to user.
+UI - Show fear cards while they are being resolved.
+UI - Fear text needs some spaces in it.
 
 == Road Map to Awesomeness ==
-* MED	Signalling => Events
 * HARD	Multi Player 
 * MED	Multi Platform (Linux / Android)
 * MED	Internet Play
 * MED	AI Player
 * EASY	Convert individual images to Drawn Images for: Cards, Boards, Fear
-* ????	Broken Earth + Promo Pack 2
-
-== Clean-up ==
-
-4 Blight Tests
-4 Show log of User actions, Invader Actions
-* Visual indicator of Phase
-* Log Ravage / Build / Explore / Fear / Blight
 
 == Bonus - Fun ==
 
@@ -109,63 +37,11 @@ Power - multiple damages
 3 draw innates - range icons, Target icons, clean tokens, +1 range
 1 Cards ui - scrolling, decks & discard pile, 
 
-== Tests: Ravage Engine =====
-
-* Dissolve the Bonds of Kinship
-* Infinite Vitality
-* Instruments of Their Own Ruin
-* Manifest Incarnation
-* A Year of Perfect Stillness - skips invader actions
-* Bringer
-* the +1 from Fires Fury (Heart of Wildfire)
-
-== Tests: Card Speed ==
-
-Lightning makes cards fast for each air.
-Thunderspeaker innate fast if 4 air
-BAC Minor card fast if element threshold
-Wildfire card fast if element threshold
-Power that allows speeds to be switched.
-	- does coard speed switch reset at end of round?
-Innates that may be fast.
-
-== Tests: Repeat Card / Change Speed =====
-
-* PowerStorm
-* Spur on With words of Fire
-
 ===================
 
 REFACTOR	InvaderGroup Damage/Destory methods.  Create a virtual 'included tokens' group that combines single-token and token Group actions
 
-Engine			Check Game Win/Loss
-
-====================================
-===== Testing =====
-
-With and Without Ocean, PowerTarget, Push & Blight Include/Don't include ocean spaces.
-Modifications to Range
-	Talons of Lightning - extended / conditional range 
-	Sap the Strength of Multitudes - range changes
-Modifications to Speed
-Modifications to Ravage
-	Conceiling Shadows - no damage to dahan
-
-Thunderspeakers - move-with-the-dahan
-Harbinger of the Lightning
-
-Destroying Town or Town1 creates 1 fear
-Destroying City, City1, City 2, creates 2 fear
-Spirit.SacredSites
-River.SacredSites
-Fear
-Blight causes spirit to lose 1 presence on space
-
-
-Destroy Space / Board API
-Use it for Bringer
-Select neigher / done to not play card
-
+Engine	Check Game Win/Loss
 
 ====================================================================================
 == Steam updates - What's New (provide insight as to what they have trouble with) ==

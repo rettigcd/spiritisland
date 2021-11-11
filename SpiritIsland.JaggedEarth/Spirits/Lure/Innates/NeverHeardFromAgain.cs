@@ -47,9 +47,6 @@ namespace SpiritIsland.JaggedEarth {
 			return destroyCount;
 		}
 
-		[InnateOption("6 plant","Repeat this Power.",AttributePurpose.DisplayOnly)]
-		static public void Nothing() { }
-
 	}
 
 }

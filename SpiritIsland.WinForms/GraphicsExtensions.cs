@@ -115,6 +115,20 @@ namespace SpiritIsland.WinForms {
 			return result;
 		}
 
+		static public Rectangle[] SplitByWeight( this Rectangle rect, int rowMargin, params float[] weights) {
+			float total = weights.Sum();
+			int workingHeight = rect.Height - (weights.Length-1) * rowMargin;
+			int lastY = rect.Y;
+			var result = new Rectangle[ weights.Length ];
+			float current = 0.0f;
+			for(int i = 0; i < weights.Length; ++i) {
+				current += weights[i]/total;
+				int nextY = rect.Y + (int)(current * workingHeight);
+				result[i] = new Rectangle( rect.X, lastY + i*rowMargin, rect.Width, nextY-lastY );
+				lastY = nextY;
+			}
+			return result;
+		}
 
 		/// <param name="bounds">Rectangle we are trying to fit inside</param>
 		/// <param name="size">aspect ratio of final rectangle</param>
