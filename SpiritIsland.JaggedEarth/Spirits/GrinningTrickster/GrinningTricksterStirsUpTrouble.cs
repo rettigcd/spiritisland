@@ -64,11 +64,19 @@ namespace SpiritIsland.JaggedEarth {
 
 		// Cleanup Up Messes is such a drag
 		public override async Task RemoveBlight( TargetSpaceCtx ctx ) {
+			await CleaningUpMessesIsSuckADrag( ctx );
 			await base.RemoveBlight( ctx );
+		}
+
+		async Task CleaningUpMessesIsSuckADrag( TargetSpaceCtx ctx ) {
+			if(ctx.Blight.Any)
+				await PickPresenceToDestroy( ctx );
+		}
+
+		async Task PickPresenceToDestroy( TargetSpaceCtx ctx ) {
 			var space = await this.Action.Decision( new Decision.Presence.DeployedToDestory( $"{CleaningUpMessesIsADrag.Title} Destroy presence for blight cleanup", this ) );
 			ctx.Presence.Destroy( space );
 		}
-
 	}
 
 }

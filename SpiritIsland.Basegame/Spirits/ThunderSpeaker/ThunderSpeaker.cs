@@ -95,7 +95,7 @@ namespace SpiritIsland.Basegame {
 			if(args.Source != Cause.Invaders) return;
 			if(args.Token != TokenType.Dahan) return;
 
-			string prompt = $"{SwarnToVictory.Title}: {args.count} dahan destroyed. Select presence to remove.";
+			string prompt = $"{SwarnToVictory.Title}: {args.count} dahan destroyed. Select presence to destory.";
 
 			int numToDestroy = args.count;
 			Space[] options;
