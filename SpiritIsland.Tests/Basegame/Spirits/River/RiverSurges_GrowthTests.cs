@@ -160,7 +160,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			spirit.PurchaseAvailableCards_Test(card);
 
 			// Then: card is in Active/play list
-			Assert.Contains(spirit.PurchasedCards, c => c == card);
+			Assert.Contains(spirit.InPlay, c => c == card);
 
 			//  And: card is not in Available list
 			Assert.DoesNotContain(spirit.Hand, c => c == card);

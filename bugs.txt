@@ -1,14 +1,18 @@
-Heart of the Wildfire's 1st innate is confusing when it triggers on multiple lands.  Also, it is highlighting presence, dahan and blight.
-Heart if the Wildfire - , got down to 0 blights on card but did not trigger blighted island.
+1	Heart of the Wildfire's 1st innate is confusing when it triggers on multiple lands.  Also, it is highlighting presence, dahan and blight.
 
-Elements - If not in Growth Phase, Add Elements immedately whenever presence is revealed - Growth through sacrifice
-Elements - "Playing" a card (ie activating it), adds elements immediately
+2	Heart if the Wildfire - , got down to 0 blights on card but did not trigger blighted island.
 
-Strifed Invaders damaging themselves
+3	Elements - If not in Growth Phase, Add Elements immedately whenever presence is revealed - Growth through sacrifice
 
-Growth Through Sacrifice - Add Presence (when doing both - 2 suns) asks for positioning tiwce
+4	Elements - "Playing" a card (ie activating it), adds elements immediately
 
-Cascading Bight - all blight should cascade
+5	Seek Safety - Doesn't have 'push' ui when pushing invaders.
 
-Drawing Innates - Presence icon is too wide.
+6	Strifed Invaders damaging themselves
+
+7	Growth Through Sacrifice - Add Presence (when doing both - 2 suns) asks for positioning tiwce
+
+8	Cascading Bight - all blight should cascade
+
+9	Drawing Innates - Presence icon is too wide.
 

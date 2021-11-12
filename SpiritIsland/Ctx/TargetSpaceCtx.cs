@@ -14,7 +14,7 @@ namespace SpiritIsland {
 		}
 
 		public TargetSpaceCtx( SpiritGameStateCtx ctx, Space target ):base( ctx ) {
-			Space = target;
+			Space = target ?? throw new ArgumentNullException(nameof(target));
 		}
 
 		public Space Space { get; }

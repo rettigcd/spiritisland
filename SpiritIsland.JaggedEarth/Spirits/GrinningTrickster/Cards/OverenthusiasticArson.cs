@@ -5,7 +5,9 @@ namespace SpiritIsland.JaggedEarth {
 
 	public class OverenthusiasticArson {
 
-		[SpiritCard("Overenthusiastic Arson",1,Element.Fire,Element.Air), Fast, FromPresence(1)]
+		public const string Name = "Overenthusiastic Arson";
+
+		[SpiritCard(OverenthusiasticArson.Name,1,Element.Fire,Element.Air), Fast, FromPresence(1)]
 		static public async Task ActAsymc(TargetSpaceCtx ctx ) { 
 
 			// Destory 1 town
@@ -13,6 +15,9 @@ namespace SpiritIsland.JaggedEarth {
 
 			// discard the top card of the minor power deck.
 			var card = ctx.GameState.MinorCards.FlipNext();
+
+			// Show the card to the user
+			_ = await ctx.Self.SelectPowerCard(OverenthusiasticArson.Name + " turned up:",new PowerCard[] { card }, CardUse.Other, Present.Always );
 
 			// IF it provides fire:
 			if(card.Elements.Contains( Element.Fire )) {

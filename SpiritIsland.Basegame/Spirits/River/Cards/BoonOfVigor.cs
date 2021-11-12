@@ -10,7 +10,7 @@ namespace SpiritIsland.Basegame {
 			if(ctx.Self == ctx.Other)
 				ctx.Self.Energy++;
 			else
-				ctx.Other.Energy += ctx.Other.PurchasedCards.Count;
+				ctx.Other.Energy += ctx.Other.InPlay.Count;
 			return Task.CompletedTask;
 		}
 

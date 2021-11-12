@@ -30,10 +30,10 @@ namespace SpiritIsland {
 
 	public enum CardUse { 
 		AddToHand, 
-		Buy, 
 		Discard, // This is for Events
 		Forget, 
 		Gift, 
+		Play, 
 		Reclaim, 
 		Replay, 
 		Other

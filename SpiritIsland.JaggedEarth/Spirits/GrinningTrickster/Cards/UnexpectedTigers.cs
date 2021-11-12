@@ -5,7 +5,7 @@ namespace SpiritIsland.JaggedEarth {
 
 	public class UnexpectedTigers {
 
-		[SpiritCard("Unexpected Tigers",0,Element.Moon,Element.Fire,Element.Animal), Slow, FromPresence(0) ]
+		[SpiritCard("Unexpected Tigers",0,Element.Moon,Element.Fire,Element.Animal), Slow, FromPresence(1) ]
 		static public async Task ActAsymc(TargetSpaceCtx ctx ) { 
 			// 1 fear if invaders are present.
 			if( ctx.HasInvaders )

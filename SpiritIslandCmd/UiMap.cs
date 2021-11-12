@@ -110,7 +110,7 @@ namespace SpiritIslandCmd {
 			string text = $"{name}  ({speedChar}/{cost}) {unresolved}";
 
 			if(factory is PowerCard pc){
-				char isActive = spirit.PurchasedCards.Contains(factory) ? 'A' : ' ';
+				char isActive = spirit.InPlay.Contains(factory) ? 'A' : ' ';
 				char isDiscarded = spirit.DiscardPile.Contains(factory) ? 'D' : ' ';
 				char isinHand = spirit.Hand.Contains(factory) ? 'H' : ' ';
 

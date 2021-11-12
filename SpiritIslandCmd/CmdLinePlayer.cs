@@ -60,7 +60,7 @@ namespace SpiritIslandCmd {
 
 		void ShowCards() {
 			var cards = game.Spirit.Hand
-				.Union( game.Spirit.PurchasedCards )
+				.Union( game.Spirit.InPlay )
 				.Union( game.Spirit.DiscardPile )
 				.Cast<PowerCard>()
 //				.Union( game.Spirit.GetAvailableActions(Speed.Growth) )

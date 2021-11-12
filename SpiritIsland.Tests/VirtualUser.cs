@@ -148,7 +148,7 @@ namespace SpiritIsland.Tests {
 		}
 
 		string PowerNameToText( string choice ) {
-			return this.spirit.PurchasedCards.FirstOrDefault( c => c.Name == choice )?.Text 
+			return this.spirit.InPlay.FirstOrDefault( c => c.Name == choice )?.Text 
 				?? choice; // it is an Innate Power and not in the purchased card list.
 		}
 

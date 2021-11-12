@@ -10,7 +10,7 @@ namespace SpiritIsland {
 
 		public Reclaim1InsteadOfDiscard(Spirit spirit ) {
 			this.spirit = spirit;
-			this.purchased = spirit.PurchasedCards.ToArray(); // make copy in case spirit is cleaned up before this is called
+			this.purchased = spirit.InPlay.ToArray(); // make copy in case spirit is cleaned up before this is called
 		}
 
 		public async Task Reclaim( GameState _ ) {
@@ -19,7 +19,7 @@ namespace SpiritIsland {
 
 			spirit.Hand.Add( reclaimCard );
 			spirit.DiscardPile.Remove( reclaimCard );
-			spirit.PurchasedCards.Remove( reclaimCard );
+			spirit.InPlay.Remove( reclaimCard );
 		}
 
 	}

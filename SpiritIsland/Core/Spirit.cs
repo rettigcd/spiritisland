@@ -153,8 +153,8 @@ namespace SpiritIsland {
 
 		#region Cards
 
-		public List<PowerCard> Hand = new List<PowerCard>();	// in hand
-		public List<PowerCard> PurchasedCards = new List<PowerCard>();		// paid for
+		public List<PowerCard> Hand = new List<PowerCard>();	    // in hand
+		public List<PowerCard> InPlay = new List<PowerCard>();		// paid for / played
 		public List<PowerCard> DiscardPile = new List<PowerCard>(); // Cards are not transferred to discard pile until end of turn because we need to keep track of their elements.
 
 		readonly List<IActionFactory> availableActions = new List<IActionFactory>();
@@ -185,7 +185,7 @@ namespace SpiritIsland {
 		}
 
 		public virtual async Task ForgetPowerCard() {
-			var options = PurchasedCards.Union( Hand ).Union( DiscardPile )
+			var options = InPlay.Union( Hand ).Union( DiscardPile )
 				.ToArray();
 			PowerCard cardToForget = await this.SelectPowerCard( "Select power card to forget", options, CardUse.Forget, Present.Always );
 			Forget( (PowerCard)cardToForget );
@@ -194,10 +194,10 @@ namespace SpiritIsland {
 		public virtual void Forget( PowerCard cardToRemove ) {
 			// A card can be in one of 3 places
 			// (1) Purchased / Active
-			if(PurchasedCards.Contains( cardToRemove )) {
+			if(InPlay.Contains( cardToRemove )) {
 				foreach(var el in cardToRemove.Elements) 
 					Elements[el.Key]-=el.Value;// lose elements from forgotten card
-				PurchasedCards.Remove( cardToRemove );
+				InPlay.Remove( cardToRemove );
 			}
 			// (2) Unpurchased, still in hand
 			Hand.Remove( cardToRemove );
@@ -205,7 +205,7 @@ namespace SpiritIsland {
 			DiscardPile.Remove( cardToRemove );
 		}
 
-		public bool IsActiveDuring(Phase speed, IActionFactory actionFactory) => actionFactory.CouldActivateDuring( speed, this );
+		public bool IsActiveDuring(Phase phase, IActionFactory actionFactory) => actionFactory.CouldActivateDuring( phase, this );
 
 		/// <summary>
 		/// Removes it from the Unresolved-list
@@ -223,7 +223,6 @@ namespace SpiritIsland {
 			availableActions.RemoveAt( index );
 
 		}
-
 
 		public void AddActionFactory( IActionFactory factory ) {
 			availableActions.Add( factory );
@@ -285,8 +284,8 @@ namespace SpiritIsland {
 
 		void On_TimePassed(GameState _ ) {
 			// reset cards / powers
-			DiscardPile.AddRange( PurchasedCards );
-			PurchasedCards.Clear();
+			DiscardPile.AddRange( InPlay );
+			InPlay.Clear();
 			availableActions.Clear();
 			usedActions.Clear();
 			usedInnates.Clear();
@@ -318,14 +317,14 @@ namespace SpiritIsland {
 		#region Purchase Cards
 
 		// Purchase 1: select full # of cards from hand
-		public async Task PurchasePlayableCards() {
-			await PurchaseCardsFromHand( NumberOfCardsPlayablePerTurn );
+		public async Task PlayCardsFromHand() {
+			await PlayCardsFromHand( NumberOfCardsPlayablePerTurn );
 			tempCardPlayBoost = 0;
 		}
 
 		// Purchase 2: select specified # of cards from hand
 		// Called for both normal buy-cards & from select Power cards that allow puchasing additional
-		public async Task PurchaseCardsFromHand( int canPurchase ) {
+		public async Task PlayCardsFromHand( int canPurchase ) {
 			PowerCard[] getPowerCardOptions() => Hand
 				.Where( c => c.Cost <= Energy )
 				.ToArray();
@@ -335,7 +334,7 @@ namespace SpiritIsland {
 				&& 0 < (powerCardOptions = getPowerCardOptions()).Length
 			) {
 				string prompt = $"Buy power cards: (${Energy} / {canPurchase})";
-				var card = await this.SelectPowerCard( prompt, powerCardOptions, CardUse.Buy, Present.Done );
+				var card = await this.SelectPowerCard( prompt, powerCardOptions, CardUse.Play, Present.Done );
 				if(card != null) {
 					PurchaseCard( card );
 					--canPurchase;
@@ -362,7 +361,7 @@ namespace SpiritIsland {
 			if(card.Cost > Energy) throw new InsufficientEnergyException();
 
 			Hand.Remove( card );
-			PurchasedCards.Add( card );
+			InPlay.Add( card );
 			Energy -= card.Cost;
 			foreach(var el in card.Elements )
 				Elements[el.Key] += el.Value;
@@ -383,7 +382,7 @@ namespace SpiritIsland {
 				// preparedElements = spirit.PreparedElements.ToArray();
 				presence = spirit.Presence.SaveToMemento();
 				hand      = spirit.Hand.ToArray();
-				purchased = spirit.PurchasedCards.ToArray();
+				purchased = spirit.InPlay.ToArray();
 				discarded = spirit.DiscardPile.ToArray();
 				available = spirit.availableActions.ToArray();
 				usedActions = spirit.usedActions.ToArray();
@@ -395,7 +394,7 @@ namespace SpiritIsland {
 				// InitFromArray( spirit.PreparedElements, preparedElements); // !!! 
 				spirit.Presence.LoadFrom(presence);
 				spirit.Hand.SetItems( hand );
-				spirit.PurchasedCards.SetItems( purchased );
+				spirit.InPlay.SetItems( purchased );
 				spirit.DiscardPile.SetItems( discarded );
 				spirit.availableActions.SetItems( available );
 				spirit.usedActions.SetItems( usedActions );

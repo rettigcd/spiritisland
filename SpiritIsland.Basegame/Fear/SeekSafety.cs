@@ -46,6 +46,7 @@ namespace SpiritIsland.Basegame {
 				var options = gs.Island.AllSpaces
 					.Where( s => gs.Tokens[ s ].HasAny(Invader.Town,Invader.City) )
 					.ToArray();
+				if(options.Length == 0) break;
 				var dest = await spiritCtx.Self.Action.Decision( new Decision.TargetSpace( "Select space to gather town to city OR explorer to town", options, Present.Always));
 				var destCtx = spiritCtx.Target(dest);
 				var grp = destCtx.Tokens;

@@ -54,13 +54,13 @@ namespace SpiritIsland.WinForms {
 			if(spirit != null){
 
 				// Cards that are not in our hand - new cards from the deck
-				var missingCards = options.Except( spirit.PurchasedCards ).Except(spirit.Hand).ToArray();
+				var missingCards = options.Except( spirit.InPlay ).Except(spirit.Hand).ToArray();
 				if(missingCards.Length>0)
 					foreach(var card in missingCards)
 						DrawCard( pe.Graphics, card, false );
 
 				// Draw Purchased
-				foreach(var card in spirit.PurchasedCards)
+				foreach(var card in spirit.InPlay)
 					DrawCard( pe.Graphics, card, true );
 
 				x += 20;

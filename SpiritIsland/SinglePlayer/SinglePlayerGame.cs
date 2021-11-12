@@ -48,7 +48,7 @@ namespace SpiritIsland.SinglePlayer {
 						try {
 							GameState.Phase = Phase.Growth;
 							await Spirit.DoGrowth(GameState);
-							await Spirit.PurchasePlayableCards();
+							await Spirit.PlayCardsFromHand();
 
 							GameState.Phase = Phase.Fast;
 							await Spirit.ResolveActions( new SpiritGameStateCtx( Spirit, GameState, Cause.Power ) );
