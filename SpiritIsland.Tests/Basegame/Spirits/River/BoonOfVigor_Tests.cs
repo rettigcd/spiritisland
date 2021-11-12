@@ -14,7 +14,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Given_GameWithSpirits( spirit );
 			gameState.Phase = Phase.Fast;
 
-			card = Given_PurchasedCard( BoonOfVigor.Name );
+			Given_PurchasedCard( BoonOfVigor.Name );
 			Assert_CardIsReady( card, Phase.Fast );
 
 			When_PlayingCard();
@@ -40,7 +40,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Given_PurchasedFakePowercards(otherSpirit, expectedEnergyBonus);
 
 			//   And: Purchased Boon of Vigor
-			card = Given_PurchasedCard(BoonOfVigor.Name);
+			Given_PurchasedCard(BoonOfVigor.Name);
 			Assert_CardIsReady(card,Phase.Fast);
 
 			When_PlayingCard();

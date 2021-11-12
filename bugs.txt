@@ -4,15 +4,13 @@
 
 3	Elements - If not in Growth Phase, Add Elements immedately whenever presence is revealed - Growth through sacrifice
 
-4	Elements - "Playing" a card (ie activating it), adds elements immediately
+4	Seek Safety - Doesn't have 'push' ui when pushing invaders.
 
-5	Seek Safety - Doesn't have 'push' ui when pushing invaders.
+5	Strifed Invaders damaging themselves
 
-6	Strifed Invaders damaging themselves
+6	Growth Through Sacrifice - Add Presence (when doing both - 2 suns) asks for positioning tiwce
 
-7	Growth Through Sacrifice - Add Presence (when doing both - 2 suns) asks for positioning tiwce
+7	Cascading Bight - all blight should cascade
 
-8	Cascading Bight - all blight should cascade
-
-9	Drawing Innates - Presence icon is too wide.
+8	Drawing Innates - Presence icon is too wide.
 

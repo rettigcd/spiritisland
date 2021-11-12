@@ -289,8 +289,8 @@ namespace SpiritIsland {
 			availableActions.Clear();
 			usedActions.Clear();
 			usedInnates.Clear();
-
 			Elements.Clear();
+			tempCardPlayBoost = 0;
 		}
 
 		// pluggable, draw power card, or powerprogression
@@ -316,53 +316,38 @@ namespace SpiritIsland {
 
 		#region Purchase Cards
 
-		// Purchase 1: select full # of cards from hand
-		public async Task PlayCardsFromHand() {
-			await PlayCardsFromHand( NumberOfCardsPlayablePerTurn );
-			tempCardPlayBoost = 0;
-		}
+		// Plays cards from hand for cost
+		public async Task PlayCardsFromHand( int? numberToPlay = null ) {
+			int remainingToPlay = numberToPlay ?? NumberOfCardsPlayablePerTurn;
 
-		// Purchase 2: select specified # of cards from hand
-		// Called for both normal buy-cards & from select Power cards that allow puchasing additional
-		public async Task PlayCardsFromHand( int canPurchase ) {
 			PowerCard[] getPowerCardOptions() => Hand
 				.Where( c => c.Cost <= Energy )
 				.ToArray();
 
 			PowerCard[] powerCardOptions;
-			while(0 < canPurchase
+			while(0 < remainingToPlay
 				&& 0 < (powerCardOptions = getPowerCardOptions()).Length
 			) {
-				string prompt = $"Buy power cards: (${Energy} / {canPurchase})";
+				string prompt = $"Buy power cards: (${Energy} / {remainingToPlay})";
 				var card = await this.SelectPowerCard( prompt, powerCardOptions, CardUse.Play, Present.Done );
 				if(card != null) {
-					PurchaseCard( card );
-					--canPurchase;
+					PlayCard( card );
+					--remainingToPlay;
 				} else
-					canPurchase = 0;
+					remainingToPlay = 0;
 
 			}
 		}
 
-		// Purchase 3: purchase specified cards from hand  (from Test)
-		// !!! this Purchase is only called from Test - replace it with Call PurchasePlayableCards();
-		public virtual void PurchaseAvailableCards_Test( params PowerCard[] cards ) {
-			if(cards.Length > NumberOfCardsPlayablePerTurn)
-				throw new InsufficientCardPlaysException();
+		public void PlayCard( PowerCard card, int? cost = null ) {
+			if(!cost.HasValue) cost = card.Cost;
 
-			foreach(var card in cards)
-				PurchaseCard( card );
-
-			tempCardPlayBoost = 0; // makes test pass, but Rampant Green test is testing wrong thing
-		}
-
-		void PurchaseCard( PowerCard card ) {
 			if(!Hand.Contains( card )) throw new CardNotAvailableException();
-			if(card.Cost > Energy) throw new InsufficientEnergyException();
+			if(Energy < cost) throw new InsufficientEnergyException();
 
 			Hand.Remove( card );
 			InPlay.Add( card );
-			Energy -= card.Cost;
+			Energy -= cost.Value;
 			foreach(var el in card.Elements )
 				Elements[el.Key] += el.Value;
 

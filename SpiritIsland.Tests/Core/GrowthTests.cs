@@ -132,6 +132,11 @@ namespace SpiritIsland.Tests {
 			_ = spirit.DoGrowth( gameState );
 		}
 
+		protected void PlayCard(params PowerCard[] cards ) {
+			foreach(var card in cards)
+				spirit.PlayCard( card );
+		}
+
 		#endregion
 
 	}

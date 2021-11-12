@@ -14,36 +14,40 @@ namespace SpiritIsland.BranchAndClaw {
 			ctx.Other.AddCardToHand( card );
 
 			// if 2 of each element,
-			if(await ctx.YouHave("2 sun,2 moon,2 fire,2 air,2 water,2 earth,2 plant,2 animal" )) {
-				// target spirit may now play the major power they keep by:
-				//    * paying half its cost (round up) OR
-				int cost = (card.Cost + card.Cost%2)/2;
-				var payingHalfCostOption = new ActionOption(
-					$"paying {cost}", 
-					()=> { 
-						ctx.Other.AddActionFactory(card); 
-						ctx.Other.Energy -= cost;
-					},
-					cost <= ctx.Other.Energy
-				);
-				//    * forgetting it at the end of turn.
-				var forgettingCardOption = new ActionOption( 
-					$"forgetting at end of turn", 
-					() => {
-						ctx.Other.AddActionFactory( card );
-						ctx.GameState.TimePasses_ThisRound.Push(new ForgetCard(ctx.Other,card).Forget);
-					}
-				);
-				// It gains all elmemental thresholds.
-
-				await ctx.OtherCtx.SelectOptionalAction( $"Play {card.Name} now by:",
-					payingHalfCostOption, 
-					forgettingCardOption
-				);
-			}
+			if(await ctx.YouHave("2 sun,2 moon,2 fire,2 air,2 water,2 earth,2 plant,2 animal" ))
+				await PlayCardByPayingHalfCostOrForgetting( card, ctx.OtherCtx );
 
 		}
 
+		private static async Task PlayCardByPayingHalfCostOrForgetting( PowerCard card, SpiritGameStateCtx ctx ) {
+
+			// target spirit may now play the major power they keep by:
+			//    * paying half its cost (round up) OR
+			int cost = (card.Cost + card.Cost % 2) / 2;
+			var payingHalfCostOption = new ActionOption(
+				$"paying {cost}",
+				() => {
+					ctx.Self.PlayCard(card, cost);
+				},
+				cost <= ctx.Self.Energy
+			);
+
+			//    * forgetting it at the end of turn.
+			var forgettingCardOption = new ActionOption(
+				$"forgetting at end of turn",
+				() => {
+					ctx.Self.PlayCard(card, 0); 
+					ctx.GameState.TimePasses_ThisRound.Push( new ForgetCard( ctx.Self, card ).Forget );
+				}
+			);
+
+			// It gains all elmemental thresholds.
+
+			await ctx.SelectOptionalAction( $"Play {card.Name} now by:",
+				payingHalfCostOption,
+				forgettingCardOption
+			);
+		}
 	}
 
 }

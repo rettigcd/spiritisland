@@ -153,24 +153,24 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		[InlineData("Flash Floods")]
 		public void SufficientEnergyToBuy(string cardName) {
 
-			var card = FindSpiritsAvailableCard(cardName);
+			var card = FindSpiritsAvailableCard( cardName );
 			spirit.Energy = card.Cost;
 
 			// When:
-			spirit.PurchaseAvailableCards_Test(card);
+			PlayCard( card );
 
 			// Then: card is in Active/play list
-			Assert.Contains(spirit.InPlay, c => c == card);
+			Assert.Contains( spirit.InPlay, c => c == card );
 
 			//  And: card is not in Available list
-			Assert.DoesNotContain(spirit.Hand, c => c == card);
+			Assert.DoesNotContain( spirit.Hand, c => c == card );
 
-			Assert_CardInActionListIf(card);
+			Assert_CardInActionListIf( card );
 
 			// Assert_InnateInActionListIf(Speed.Fast); // we now put all actions in the list at the same time
 
 			// Money is spent
-			Assert.Equal(0, spirit.Energy);
+			Assert.Equal( 0, spirit.Energy );
 
 		}
 
@@ -192,28 +192,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			spirit.Energy = card.Cost - 1;
 
 			// When:
-			void Purchase() => spirit.PurchaseAvailableCards_Test( card );
+			void Purchase() => PlayCard( card );
 
 			Assert.Throws<InsufficientEnergyException>( Purchase );
-		}
-
-		[Fact]
-		public void InsufficientCardCountToBuy(){
-			
-			// Given: has 2 cards they want to play
-			var card1 = spirit.Hand[0];
-			var card2 = spirit.Hand[1];
-
-			//  And: lots of energy
-			spirit.Energy = 200;
-
-			//  But: can only play 1 card
-			Assert.Equal(1,spirit.NumberOfCardsPlayablePerTurn);
-
-			// When:
-			void Purchase() => spirit.PurchaseAvailableCards_Test( card1, card2 );
-
-			Assert.Throws<InsufficientCardPlaysException>(Purchase);
 		}
 
 		[Fact]
@@ -223,7 +204,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Discard(card);
 
 			// When
-			void Purchase() => spirit.PurchaseAvailableCards_Test( card );
+			void Purchase() => PlayCard( card );
 
 			Assert.Throws<CardNotAvailableException>( Purchase );
 		}

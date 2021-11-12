@@ -37,7 +37,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			//   And: Purchased FlashFloods
 			card = spirit.Hand.Single( c => c.Name == FlashFloods.Name );
 			spirit.Energy = card.Cost;
-			spirit.PurchaseAvailableCards_Test( card );
+			PlayCard();
 			Assert.Contains( card, spirit.GetAvailableActions( card.Speed ).OfType<PowerCard>().ToList() ); // is fast
 
 			When_PlayingCard();
@@ -71,7 +71,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			//   And: Purchased FlashFloods
 			card = spirit.Hand.Single(c=>c.Name == FlashFloods.Name);
 			spirit.Energy = card.Cost;
-			spirit.PurchaseAvailableCards_Test(card);
+			PlayCard();
 			Assert.Contains(card,spirit.GetAvailableActions(card.Speed).OfType<PowerCard>().ToList()); // is fast
 
 			When_PlayingCard();

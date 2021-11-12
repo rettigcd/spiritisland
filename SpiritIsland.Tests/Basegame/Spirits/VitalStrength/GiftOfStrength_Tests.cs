@@ -36,8 +36,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.VitalStrengthNS {
 				MakePowerCard( Fast2 )  // played - no - too expensive
 			};
 			spirit.tempCardPlayBoost = cards.Length;
-			spirit.Hand.AddRange(cards);
-			spirit.PurchaseAvailableCards_Test( cards );
+			spirit.Hand.AddRange( cards );
+			PlayCards( cards );
 			User.IsDoneBuyingCards();
 
 			//  And: already played 2 fast cards (cost 1 & 2)
@@ -50,6 +50,11 @@ namespace SpiritIsland.Tests.Basegame.Spirits.VitalStrengthNS {
 			User.SelectsFastAction( "Fast-0,(Replay Card [max cost:1])" );
 			User.AssertDecision( "Select card to replay", "Fast-1 $1 (Fast)", "Fast-1 $1 (Fast)" ); // !!! should there be a ,Done here?
 
+		}
+
+		private void PlayCards( PowerCard[] cards ) {
+			foreach(var card in cards)
+				spirit.PlayCard( card );
 		}
 
 		[Fact]
@@ -70,7 +75,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.VitalStrengthNS {
 			};
 			spirit.tempCardPlayBoost = cards.Length;
 			spirit.Hand.AddRange(cards);
-			spirit.PurchaseAvailableCards_Test( cards );
+			PlayCards( cards );
 
 			//spirit.AddActionFactory( MakePowerCard( Fast0 ) ); // played - no - its fast!
 			//spirit.AddActionFactory( MakePowerCard( Slow0 ) ); // not played

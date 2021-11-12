@@ -15,11 +15,15 @@ namespace SpiritIsland.Tests {
 		protected Spirit spirit;
 		protected VirtualUser User { get; }
 
-		protected PowerCard Given_PurchasedCard(string cardName) {
-			var card = spirit.Hand.Single(c => c.Name == cardName);
-			spirit.PurchaseAvailableCards_Test(card);
-			return card;
+		protected void Given_PurchasedCard(string cardName) {
+			card = spirit.Hand.Single( c => c.Name == cardName );
+			PlayCard();
 		}
+
+		protected void PlayCard() {
+			spirit.PlayCard( card );
+		}
+
 
 		protected void Given_GameWithSpirits(params Spirit[] spirits) {
 			gameState = new GameState( spirits ) {

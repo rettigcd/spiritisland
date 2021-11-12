@@ -26,7 +26,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			//   And: Purchased WashAway
 			card = spirit.Hand.Single( c => c.Name == RiversBounty.Name );
 			spirit.Energy = card.Cost;
-			spirit.PurchaseAvailableCards_Test( card );
+			PlayCard();
 
 			// Jump to slow
 			Assert_CardIsReady( card, Phase.Slow );
