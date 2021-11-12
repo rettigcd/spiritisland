@@ -14,16 +14,29 @@ namespace SpiritIsland {
 			public PickPowerCard(string prompt, CardUse cardUse, PowerCard[] cardOptions, Present present ) 
 				: base( prompt, cardOptions, present
 			) {
-				AddCards(cardUse, cardOptions);
+				foreach(var option in cardOptions)
+					cardUses.Add(option,cardUse);
 			}
 
-			public void AddCards(CardUse cardUse, IEnumerable<PowerCard> cardOptions ) {
-				foreach(var card in cardOptions)
-					cardUses.Add(card,cardUse);
+			public PickPowerCard(string prompt, IEnumerable<SingleCardUse> cardOptions, Present present ) 
+				: base( prompt, cardOptions.Select(x=>x.Card), present
+			) {
+				foreach(var option in cardOptions)
+					cardUses.Add(option.Card,option.Use);
 			}
 
 			public PowerCard[] CardOptions => cardUses.Keys.ToArray();
 
+		}
+
+	}
+
+	public class SingleCardUse {
+		public CardUse Use { get; set; }
+		public PowerCard Card { get; set; }
+		static public IEnumerable<SingleCardUse> GenerateUses(CardUse use, IEnumerable<PowerCard> cards ) {
+			foreach(var card in cards)
+				yield return new SingleCardUse {  Card = card, Use = use };
 		}
 
 	}

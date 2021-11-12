@@ -48,8 +48,9 @@ namespace SpiritIsland.JaggedEarth {
 		}
 
 		public override async Task ForgetPowerCard() {
-			var decision = new Decision.PickPowerCard( "Select card to forget or discard", CardUse.Discard, InPlay.Union( Hand ).ToArray(), Present.Always );
-			decision.AddCards(CardUse.Forget,DiscardPile);
+			var options = SingleCardUse.GenerateUses(CardUse.Discard,InPlay.Union( Hand ))
+				.Union( SingleCardUse.GenerateUses(CardUse.Forget,DiscardPile) );
+			var decision = new Decision.PickPowerCard( "Select card to forget or discard", options, Present.Always );
 			PowerCard cardToForgetOrDiscard = await this.Action.Decision( decision );
 			Forget( cardToForgetOrDiscard );
 		}
