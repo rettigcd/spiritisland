@@ -9,7 +9,7 @@ namespace SpiritIsland.WinForms {
 
 		readonly Graphics graphics;
 		readonly float width;
-		readonly float iconHeight;
+		readonly float iconDimension;
 		readonly float elementHeight;
 		readonly float rowHeight;
 		readonly float textEmSize;
@@ -19,8 +19,8 @@ namespace SpiritIsland.WinForms {
 		public InnatePainter( Graphics graphics, float width ) {
 			this.width = width;
 			textEmSize = width * .033f;
-			iconHeight = textEmSize * 1.9f;
-			elementHeight = iconHeight * 1.2f;
+			iconDimension = textEmSize * 1.9f;
+			elementHeight = iconDimension * 1.2f;
 			rowHeight = elementHeight * 1.1f;
 
 			// Resources
@@ -196,11 +196,13 @@ namespace SpiritIsland.WinForms {
 		}
 
 		TokenPosition CalcTokenPosition( string token, ref float x, ref float y, float left ) {
-			float height = "sun|moon|air|fire|water|plant|animal|earth".Contains( token )
-				? elementHeight
-				: iconHeight;
 
 			Image img = GetImage( token );
+
+			float height = (img.Width<img.Height)
+				? "sun|moon|air|fire|water|plant|animal|earth".Contains( token ) ? elementHeight : iconDimension
+				: iconDimension * img.Height / img.Width;  // use iconHeight as width
+
 			float width = height * img.Width / img.Height;
 
 			// Wrap?
@@ -208,7 +210,7 @@ namespace SpiritIsland.WinForms {
 
 			var tp = new TokenPosition {
 				image = img,
-				Rect = new RectangleF(x, y, width, height ),
+				Rect = new RectangleF(x, y+(iconDimension-height)/2, width, height ),
 			};
 			x += width;
 

@@ -10,7 +10,7 @@ namespace SpiritIsland.Basegame {
 		static public Task Act(TargetSpaceCtx ctx){
 			return ctx.SelectActionOption(
 				new ActionOption( "push 1 dahan", () => ctx.PushDahan( 1 ) ),
-				new ActionOption( "push {pushCount} explorer or towns", () => ctx.Push( ctx.Dahan.Count, Invader.Town, Invader.Explorer ) )
+				new ActionOption( $"push {ctx.Dahan.Count} explorer or towns", () => ctx.Push( ctx.Dahan.Count, Invader.Town, Invader.Explorer ) )
 			);
 		}
 

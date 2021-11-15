@@ -1,16 +1,15 @@
-1	Heart of the Wildfire's 1st innate is confusing when it triggers on multiple lands.  Also, it is highlighting presence, dahan and blight.
+5  Shifting Memory innate allows preparing 3 elements.  When (2nd) token change occurs during ravage, game locks up.
 
-2	Heart if the Wildfire - , got down to 0 blights on card but did not trigger blighted island.
-
-3	Elements - If not in Growth Phase, Add Elements immedately whenever presence is revealed - Growth through sacrifice
+4	Elements - If not in Growth Phase, Add Elements immedately whenever presence is revealed - Growth through sacrifice
+4   Unrelenting Growth - check if adding presence grants the elements
 
 4	Seek Safety - Doesn't have 'push' ui when pushing invaders.
+4	Sky Stretches to Shore - Slow card was made fast.  Didn't do anything when activated.
 
-5	Strifed Invaders damaging themselves
+3	Growth Through Sacrifice - Add Presence (when doing both - 2 suns) asks for positioning tiwce - check if elements get added
+3	Strifed Invaders damaging themselves
+3	Cascading Bight - all blight should cascade
 
-6	Growth Through Sacrifice - Add Presence (when doing both - 2 suns) asks for positioning tiwce
-
-7	Cascading Bight - all blight should cascade
-
-8	Drawing Innates - Presence icon is too wide.
+2	Heart of the Wildfire's 1st innate is confusing when it triggers on multiple lands.  Also, it is highlighting presence, dahan and blight.
+2	Heart if the Wildfire - , got down to 0 blights on card but did not trigger blighted island.
 

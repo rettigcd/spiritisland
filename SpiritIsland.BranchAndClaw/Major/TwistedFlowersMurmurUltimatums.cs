@@ -1,11 +1,12 @@
 ﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.BranchAndClaw {
+
 	public class TwistedFlowersMurmurUltimatums {
 
-        [MajorCard("Twisted Flowers Murmur Ultimatums", 4, Element.Sun, Element.Moon, Element.Fire, Element.Air, Element.Water, Element.Earth, Element.Plant, Element.Animal)]
+        [MajorCard("Twisted Flowers Murmur Ultimatums", 4, Element.Sun, Element.Moon, Element.Air, Element.Earth, Element.Plant)]
 		[Slow]
-        [FromPresence(0)]
+        [FromSacredSite(1,Target.Invaders)]
         static public async Task ActAsync(TargetSpaceCtx ctx) {
 
 			// 4 fear

@@ -1,6 +1,8 @@
 ﻿
 -- Helpful --
 
+Make Spirit & Board part of game # -> Enter Game # to replay
+
 Refactor Testing to make it easier to test.
 
 Refactor UI - to make cleaner and ready to port to Android
