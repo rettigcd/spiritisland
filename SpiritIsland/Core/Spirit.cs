@@ -11,6 +11,7 @@ namespace SpiritIsland {
 
 		public Spirit( SpiritPresence presence, params PowerCard[] initialCards ){
 			Presence = presence;
+			Presence.TrackRevealed += Presence_TrackRevealed;
 
 			foreach(var card in initialCards)
 				AddCardToHand(card);
@@ -18,6 +19,12 @@ namespace SpiritIsland {
 			Action = new ActionGateway();
 
 		}
+
+		void Presence_TrackRevealed( Track track ) {
+			Elements.AddRange( track.Elements );
+			// !! should we also execute attached actions?
+		}
+
 		public ActionGateway Action { get; }
 
 		public void AddCardToHand( PowerCard card ){
@@ -111,6 +118,7 @@ namespace SpiritIsland {
 			// Energy
 			Energy += EnergyPerTurn;
 			// Elements
+			Elements.Clear(); // don't double-add elements revealed this turn
 			Presence.AddElements( Elements );
 
 			// Do actions AFTER energy and elements have been added - in case playing ManyMindsMoveAsOne - Pay 2 for power card.

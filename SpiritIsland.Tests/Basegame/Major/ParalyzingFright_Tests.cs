@@ -19,7 +19,7 @@ namespace SpiritIsland.Tests.Basegame {
 				gs.NewInvaderLogEntry += (s) => invaderLog.Add(s);
 			} );
 
-			// Given: there a ravage card
+			// Given: there is a ravage card
 			user.Grows();
 			user.IsDoneBuyingCards();
 			invaderLog.Clear();
@@ -44,7 +44,7 @@ namespace SpiritIsland.Tests.Basegame {
 
 			// When: grows and purchases card
 			user.Grows();
-			user.BuysPowerCard( ParalyzingFright.Name );
+			user.PlaysCard( ParalyzingFright.Name );
 
 			//  When: Activates Card
 			user.SelectsFastAction( ParalyzingFright.Name );

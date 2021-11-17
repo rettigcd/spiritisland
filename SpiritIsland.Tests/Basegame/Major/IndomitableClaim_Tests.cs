@@ -25,7 +25,7 @@ namespace SpiritIsland.Tests.Basegame {
 			user.IsDoneBuyingCards();
 			invaderLog.Clear();
 
-			// and: there is a space a space that IS-RAVAGE AND BUILD (aka: Jungle - see above)
+			// and: there is a space that IS-RAVAGE AND BUILD (aka: Jungle - see above)
 			var spaceCtx = ctx.AllSpaces
 				.Select( ctx.Target )
 				.Last( s => s.MatchesRavageCard && s.MatchesBuildCard ); // last stays away from city and ocean
@@ -44,7 +44,7 @@ namespace SpiritIsland.Tests.Basegame {
 
 			// When: grows and purchases card
 			user.Grows();
-			user.BuysPowerCard( IndomitableClaim.Name );
+			user.PlaysCard( IndomitableClaim.Name );
 
 			//  And: has enough elements to trigger the bonus
 			ctx.Self.Elements[Element.Sun] = 2;

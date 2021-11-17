@@ -259,8 +259,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			User.SelectsGrowthB_2PP( "cardplays>A5", "cardplays>A5" );
 
-			User.BuysPowerCard( WashAway.Name );
-			User.BuysPowerCard( RiversBounty.Name );
+			User.PlaysCard( WashAway.Name );
+			User.PlaysCard( RiversBounty.Name );
 
 			game.Spirit.Energy++; // pretend we played Rivers Bounty and gained 1 energy
 			User.IsDoneWith(Phase.Slow);
@@ -273,9 +273,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// Can buy all 3 of River's cards including Bounty
 			game.Spirit.Energy.ShouldBe(2,"need 2 energy to purcahse 0+0+2 cards");
 
-			User.BuysPowerCard( RiversBounty.Name ); // 0
-			User.BuysPowerCard( BoonOfVigor.Name );  // 0
-			User.BuysPowerCard( FlashFloods.Name );  // 2
+			User.PlaysCard( RiversBounty.Name ); // 0
+			User.PlaysCard( BoonOfVigor.Name );  // 0
+			User.PlaysCard( FlashFloods.Name );  // 2
 			User.IsDoneWith( Phase.Fast );
 
 		}

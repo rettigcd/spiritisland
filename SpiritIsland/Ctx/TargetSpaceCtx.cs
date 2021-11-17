@@ -61,7 +61,10 @@ namespace SpiritIsland {
 //			var destination = await Self.Action.Decision( Decision.TokenOnSpace.TokenToPush(Space, 1, tokenOptions, /* Space.Range( range ), */ Present.Done ) );
 			// TokenOnSpace()
 
-			var destination = await Self.Action.Decision( new Decision.AdjacentSpace_TokenDestination(tokenOptions[0], Space, Space.Range( range ), Present.Done ) );
+			var destination = await Self.Action.Decision( new Decision.AdjacentSpace_TokenDestination(tokenOptions[0], Space, 
+				Space.Range( range ).Where(s=>Target(s).IsInPlay), 
+				Present.Done ) 
+			);
 //			var destination = await Self.Action.Decision( new Decision.TargetSpace( $"Move {tokenGroup.Label} to", Space.Range( range ), Present.Done ) );
 			if(destination != null) {
 				int clippedMax = Math.Min( Tokens.Sum( tokenGroup ), max );

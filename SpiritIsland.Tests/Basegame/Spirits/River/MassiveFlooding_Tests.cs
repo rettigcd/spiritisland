@@ -46,8 +46,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			gs.Phase = Phase.Growth;
 			User.SelectsGrowthB_2PP("energy>A4","cardplays>A2");
 
-			User.BuysPowerCard( FlashFloods.Name ); // fast
-			User.BuysPowerCard( RiversBounty.Name );// slow
+			User.PlaysCard( FlashFloods.Name ); // fast
+			User.PlaysCard( RiversBounty.Name );// slow
 
 			User.IsDoneWith( Phase.Fast );
 
@@ -65,9 +65,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			User.SelectsGrowthA_Reclaim();
 
-			User.BuysPowerCard( FlashFloods.Name ); // fast - sun, water
-			User.BuysPowerCard( RiversBounty.Name ); // slow - sun, water, animal
-			User.BuysPowerCard( BoonOfVigor.Name ); // fast - sun, water, plant
+			User.PlaysCard( FlashFloods.Name ); // fast - sun, water
+			User.PlaysCard( RiversBounty.Name ); // slow - sun, water, animal
+			User.PlaysCard( BoonOfVigor.Name ); // fast - sun, water, plant
 
 			User.IsDoneWith( Phase.Fast );
 
@@ -96,10 +96,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			User.SelectsGrowthA_Reclaim();
 
-			User.BuysPowerCard( FlashFloods.Name );  // fast - sun, water
-			User.BuysPowerCard( RiversBounty.Name ); // slow - sun, water, animal
-			User.BuysPowerCard( BoonOfVigor.Name );  // fast - sun, water, plant
-			User.BuysPowerCard( WashAway.Name );     // slow -      water, earth
+			User.PlaysCard( FlashFloods.Name );  // fast - sun, water
+			User.PlaysCard( RiversBounty.Name ); // slow - sun, water, animal
+			User.PlaysCard( BoonOfVigor.Name );  // fast - sun, water, plant
+			User.PlaysCard( WashAway.Name );     // slow -      water, earth
 
 			User.IsDoneWith( Phase.Fast );
 

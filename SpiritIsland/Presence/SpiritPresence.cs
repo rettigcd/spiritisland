@@ -77,6 +77,7 @@ namespace SpiritIsland {
 				CardPlays.RevealedCount++;
 			else
 				throw new ArgumentException( "Can't pull from track:" + track.ToString() );
+			TrackRevealed?.Invoke(track);
 		}
 
 		public void Move( Space from, Space to, GameState gs ) {
@@ -112,6 +113,8 @@ namespace SpiritIsland {
 		#endregion
 
 		public IReadOnlyCollection<Space> Placed => placed.AsReadOnly();
+
+		public event Action<Track> TrackRevealed;
 
 		readonly List<Space> placed = new List<Space>();
 

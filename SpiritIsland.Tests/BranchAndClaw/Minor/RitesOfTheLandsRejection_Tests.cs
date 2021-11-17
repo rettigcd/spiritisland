@@ -25,7 +25,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Minor {
 			user.Grows();
 
 			//  And: purchase test card
-			user.BuysPowerCard( RitesOfTheLandsRejection.Name );
+			user.PlaysCard( RitesOfTheLandsRejection.Name );
 			if(playsCard) {
 				user.SelectsFastAction( RitesOfTheLandsRejection.Name );
 				user.TargetsLand_IgnoreOptions( spaceCtx.Space.Label );

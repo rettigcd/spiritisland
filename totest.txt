@@ -59,7 +59,9 @@ Blight causes spirit to lose 1 presence on space
 
 ===== Test Formats =====
 Game-Runner
+
 Call Single Card
+
 Growth / Presence Tracks
 
 Where do Methods Go?

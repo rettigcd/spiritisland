@@ -161,7 +161,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Minor {
 		static void When_GrowsBuysAndActivatesCard( VirtualTestUser user, TargetSpaceCtx spaceCtx ) {
 			// When: grows and purchases card
 			user.Grows();
-			user.BuysPowerCard( CallToTrade.Name );
+			user.PlaysCard( CallToTrade.Name );
 			//  And: Activates Card
 			user.SelectsFastAction( CallToTrade.Name );
 			user.TargetsLand_IgnoreOptions( spaceCtx.Space.Label );

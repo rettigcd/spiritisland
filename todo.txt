@@ -21,6 +21,12 @@ UI - Display Trickster innate-drawn cards to user.
 UI - Show fear cards while they are being resolved.
 UI - Fear text needs some spaces in it.
 
+Make Push a 1-step commmand
+	- for custom destinations, add them to Push API
+	- Embed guaranteed next decision in selecting source token
+	- UI selects entire move before sequentially submitting: source token, destination
+
+
 == Road Map to Awesomeness ==
 * HARD	Multi Player 
 * MED	Multi Platform (Linux / Android)

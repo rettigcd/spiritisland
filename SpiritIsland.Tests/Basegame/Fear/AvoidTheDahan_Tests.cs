@@ -39,7 +39,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 
 			ActivateFearCard(new NullFearCard());
 
-			ClearBlightAndDoNothing();
+			ClearBlightAndDoNothingForARound();
 			user.AcknowledgesFearCard( "Null Fear Card:1:x" );
 
 			spaceCtx.Tokens.InvaderSummary.ShouldBe( "1E@1" );
@@ -53,7 +53,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 
 			ActivateFearCard(new AvoidTheDahan());
 
-			ClearBlightAndDoNothing();
+			ClearBlightAndDoNothingForARound();
 			user.AcknowledgesFearCard( "Avoid the Dahan:1:Invaders do not Explore into lands with at least 2 Dahan." );
 
 			spaceCtx.Tokens.InvaderSummary.ShouldBe("");
@@ -66,16 +66,16 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			var spaceCtx = ctx.TargetSpace( "A7" );
 			spaceCtx.Tokens.Summary.ShouldBe( "2D@2" );
 
-			ClearBlightAndDoNothing();
+			ClearBlightAndDoNothingForARound();
 			spaceCtx.Tokens.Summary.ShouldBe( "2D@2,1E@1" );
 
-			ClearBlightAndDoNothing();
+			ClearBlightAndDoNothingForARound();
 			spaceCtx.Tokens.Summary.ShouldBe( "2D@2,2E@1,1T@2" );
 
 			// When: activating: 'Avoid the Dahan'
 			ActivateFearCard( new AvoidTheDahan() );
 
-			ClearBlightAndDoNothing();
+			ClearBlightAndDoNothingForARound();
 			user.AcknowledgesFearCard( "Avoid the Dahan:1:Invaders do not Explore into lands with at least 2 Dahan." );
 
 			// Ravage should kill both dahan                   => 2 explorers and 1 town
@@ -90,8 +90,8 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		public void Level2_3DahanAtFear_1DahanAtBuild_DoBuild() {
 
 			// Fill all Invaders spaces with the A7 card
-			ClearBlightAndDoNothing();
-			ClearBlightAndDoNothing();
+			ClearBlightAndDoNothingForARound();
+			ClearBlightAndDoNothingForARound();
 
 			ActivateFearCard( new AvoidTheDahan() );
 			ElevateTerrorLevelTo(2);
@@ -101,7 +101,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			spaceCtx.Tokens.Init( "3D@2,2T@2" );
 
 			// When: activating fear
-			ClearBlightAndDoNothing();
+			ClearBlightAndDoNothingForARound();
 			user.AcknowledgesFearCard( "Avoid the Dahan:2:Invaders do not Build in lands where Dahan outnumber Town / City." );
 
 			// Ravage: 2 towns kill 2 dahan leaving 1, 1 dahan kills 1 town leaving 1:  1B@1,1D@2,1T@2
@@ -119,8 +119,8 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			// "Invaders do not Build in lands where Dahan outnumber Town / City."
 
 			// Fill all Invaders spaces with the A7 card
-			ClearBlightAndDoNothing();
-			ClearBlightAndDoNothing();
+			ClearBlightAndDoNothingForARound();
+			ClearBlightAndDoNothingForARound();
 
 			ActivateFearCard( new AvoidTheDahan() );
 			ElevateTerrorLevelTo(2);
@@ -130,7 +130,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			spaceCtx.Tokens.Init("2D@2,3E@1");
 
 			// When: activating fear
-			ClearBlightAndDoNothing();
+			ClearBlightAndDoNothingForARound();
 			user.AcknowledgesFearCard( "Avoid the Dahan:2:Invaders do not Build in lands where Dahan outnumber Town / City." );
 
 			// Then: no build
@@ -144,8 +144,8 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		public void Level3_3DahanAtFear_1DahanAtBuild_NoBuild() {
 
 			// Fill all Invaders spaces with the A7 card
-			ClearBlightAndDoNothing();
-			ClearBlightAndDoNothing();
+			ClearBlightAndDoNothingForARound();
+			ClearBlightAndDoNothingForARound();
 
 			ActivateFearCard( new AvoidTheDahan() );
 			ElevateTerrorLevelTo( 3 );
@@ -155,7 +155,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			spaceCtx.Tokens.Init( "3D@2,2T@2" );
 
 			// When: activating fear
-			ClearBlightAndDoNothing();
+			ClearBlightAndDoNothingForARound();
 			user.AcknowledgesFearCard( "Avoid the Dahan:3:Invaders do not Build in lands with Dahan." );
 
 			// Ravage: 2 towns kill 2 dahan leaving 1, 1 dahan kills 1 town leaving 1:  1B@1,1D@2,1T@2
@@ -172,8 +172,8 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		public void Level3_1DahanAtFear_0DahanAtBuild_Build() {
 
 			// Fill all Invaders spaces with the A7 card
-			ClearBlightAndDoNothing();
-			ClearBlightAndDoNothing();
+			ClearBlightAndDoNothingForARound();
+			ClearBlightAndDoNothingForARound();
 
 			ActivateFearCard( new AvoidTheDahan() );
 			ElevateTerrorLevelTo(3);
@@ -183,7 +183,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			spaceCtx.Tokens.Init("1D@2,1T@2");
 
 			// When: activating fear
-			ClearBlightAndDoNothing();
+			ClearBlightAndDoNothingForARound();
 			user.AcknowledgesFearCard( "Avoid the Dahan:3:Invaders do not Build in lands with Dahan." );
 
 			// Ravage: 1 towns kill 1 dahan leaving 0:  1B@1,1T@2
@@ -217,7 +217,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		}
 
 
-		void ClearBlightAndDoNothing() {
+		void ClearBlightAndDoNothingForARound() {
 			ctx.ClearAllBlight();
 			user.DoesNothingForARound();
 		}

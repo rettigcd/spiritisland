@@ -14,28 +14,29 @@ namespace SpiritIsland.Basegame {
 		public async Task Level1( FearCtx ctx ) {
 			var gs = ctx.GameState;
 
-			// !!! Refactor this - not sure it is correct.
-			// Seemed liked it was doing a gather when it should be doing a push
-			// ??? were we in Level 2 when I thought we were in level 1?
-
 			var buildingCounts = gs.Island.AllSpaces.ToDictionary(s=>s,s=>gs.Tokens[s].TownsAndCitiesCount());
 			Space[] GetNeighborWithMoreBuildings( Space s ) => s.Adjacent.Where( n => buildingCounts[n] > buildingCounts[s] ).ToArray();
 			bool HasNeighborWithMoreBuildings(Space s) => GetNeighborWithMoreBuildings(s).Any();
+
 			// Each player may
 			foreach(var spiritCtx in ctx.Spirits) {
 
 				// Push 1 Explorer into a land with more Town / City than the land it came from.
-				var options = gs.Island.AllSpaces
+
+				// Select Source
+				var sourceOptions = gs.Island.AllSpaces
 					.Where(s=>gs.Tokens[s].Has(Invader.Explorer) && HasNeighborWithMoreBuildings(s))
 					.ToArray();
-				if(options.Length==0) return;
-				var target = await spiritCtx.Self.Action.Decision( new Decision.TargetSpace( "Fear: Select land to push explorer from into more towns/cities", options,Present.Done));
-				if(target==null) continue; // continue => next spirit, break/return => no more spirits
+				if(sourceOptions.Length==0) return;
+				var source = await spiritCtx.Self.Action.Decision( new Decision.TargetSpace( "Fear: Select land to push explorer from into more towns/cities", sourceOptions,Present.Done));
+				if(source==null) continue; // continue => next spirit, break/return => no more spirits
 
-				var destinations = GetNeighborWithMoreBuildings(target);
-				var dest = await spiritCtx.Self.Action.Decision( new Decision.TargetSpace( "Fear: select destination with more towns/cities", destinations, Present.Always));
+				// Select Destination
+				var destinationOptions = GetNeighborWithMoreBuildings(source);
+				var dest = await spiritCtx.Self.Action.Decision( new Decision.AdjacentSpace( "Fear: select destination with more towns/cities", source,Decision.AdjacentDirection.Outgoing, destinationOptions, Present.Always));
+
 				// push
-				await spiritCtx.Move(Invader.Explorer[1],target,dest);
+				await spiritCtx.Move(Invader.Explorer[1],source,dest);
 			}
 		}
 

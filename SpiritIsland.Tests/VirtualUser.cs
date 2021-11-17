@@ -111,7 +111,7 @@ namespace SpiritIsland.Tests {
 
 		#endregion
 
-		public void BuysPowerCard( string cardName ) {
+		public void PlaysCard( string cardName ) {
 			var card = this.spirit.Hand.First(c=>c.Name == cardName);
 			BuysPowerCard( card );
 		}

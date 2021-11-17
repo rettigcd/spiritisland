@@ -1,9 +1,5 @@
 5  Shifting Memory innate allows preparing 3 elements.  When (2nd) token change occurs during ravage, game locks up.
 
-4	Elements - If not in Growth Phase, Add Elements immedately whenever presence is revealed - Growth through sacrifice
-4   Unrelenting Growth - check if adding presence grants the elements
-
-4	Seek Safety - Doesn't have 'push' ui when pushing invaders.
 4	Sky Stretches to Shore - Slow card was made fast.  Didn't do anything when activated.
 
 3	Growth Through Sacrifice - Add Presence (when doing both - 2 suns) asks for positioning tiwce - check if elements get added

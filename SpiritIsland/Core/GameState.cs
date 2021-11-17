@@ -149,13 +149,13 @@ namespace SpiritIsland {
 
 		static private AddBlightEffect DefaultDetermineAddBlightEffect( GameState gs, Space blightSpace ) {
 			bool isFirstBlight = !gs.Tokens[blightSpace].Blight.Any;
-			var effect = new AddBlightEffect {
+			return new AddBlightEffect {
 				DestroyPresence = true,
 				Cascade = !isFirstBlight,
 			};
-			return effect;
 		}
 
+		/// <summary> Hook so Stone's presence can stop the cascade / Destroy effects of blight. </summary>
 		public Func<GameState,Space,AddBlightEffect> DetermineAddBlightEffect = DefaultDetermineAddBlightEffect;
 
 		/// <summary> Adds blight from the blight card to a space on the board. </summary>

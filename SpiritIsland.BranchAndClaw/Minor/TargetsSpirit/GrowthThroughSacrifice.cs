@@ -5,7 +5,9 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 
 	public class GrowthThroughSacrifice {
 
-		[MinorCard("Growth Through Sacrifice",0,Element.Moon,Element.Fire,Element.Water,Element.Plant)]
+		public const string Name = "Growth Through Sacrifice";
+
+		[MinorCard(GrowthThroughSacrifice.Name,0,Element.Moon,Element.Fire,Element.Water,Element.Plant)]
 		[Fast]
 		[AnySpirit]
 		static public async Task ActAsync( TargetSpiritCtx ctx ) {

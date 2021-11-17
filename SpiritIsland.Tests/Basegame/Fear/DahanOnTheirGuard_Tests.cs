@@ -29,7 +29,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		public async Task NoFearCard_NormalRavage() {
 
 			// Disable destroying presence
-			gameState.DetermineAddBlightEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
+			gameState.DetermineAddBlightEffect = (gs,space) => new AddBlightEffect { Cascade=false, DestroyPresence=false };
 
 			Given_DahanAndTowns( 2, 2 );
 

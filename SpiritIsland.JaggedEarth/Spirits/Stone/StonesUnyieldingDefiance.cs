@@ -46,10 +46,10 @@ namespace SpiritIsland.JaggedEarth {
 
 			// Bestow the Endurance of Bedrock
 			oldBlightEffect = gameState.DetermineAddBlightEffect;
-			gameState.DetermineAddBlightEffect = this.BestorTheEnduranceOfBedrock;
+			gameState.DetermineAddBlightEffect = this.BestowTheEnduranceOfBedrock;
 		}
 
-		AddBlightEffect BestorTheEnduranceOfBedrock(GameState gs,Space space ) {
+		AddBlightEffect BestowTheEnduranceOfBedrock(GameState gs,Space space ) {
 			// When blight is added to one of your lands,
 			// if the blight is less than or equal to your presence, 
 			return gs.Tokens[space].Blight <= Presence.CountOn(space)
