@@ -117,14 +117,14 @@ namespace SpiritIsland {
 
 			// Energy
 			Energy += EnergyPerTurn;
-			// Elements
-			Elements.Clear(); // don't double-add elements revealed this turn
-			Presence.AddElements( Elements );
+			// Elements were added when the round started.
+
 
 			// Do actions AFTER energy and elements have been added - in case playing ManyMindsMoveAsOne - Pay 2 for power card.
 			var ctx = new SpiritGameStateCtx(this,gs,Cause.Growth);
 			foreach(var actions in Presence.RevealedActions)
 				await actions.ActivateAsync( ctx );
+
 		}
 
 		// !!! Seems like this should be private / protected and not called from outside.
@@ -297,9 +297,15 @@ namespace SpiritIsland {
 			availableActions.Clear();
 			usedActions.Clear();
 			usedInnates.Clear();
-			Elements.Clear();
+
+			// Card plays
 			tempCardPlayBoost = 0;
+
+			// Elements
+			Elements.Clear();
+			Presence.AddElements( Elements );
 		}
+
 
 		// pluggable, draw power card, or powerprogression
 		#region Draw Card
