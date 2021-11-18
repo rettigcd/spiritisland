@@ -23,13 +23,12 @@ namespace SpiritIsland.BranchAndClaw {
 
 		}
 
-		[FearLevel( 2, "Skip the next normal explore.  During the next invader phase, draw an adidtional explore card." )]
+		[FearLevel( 2, "Skip the next normal explore. During the next invader phase, draw an adidtional explore card." )]
 		public Task Level2( FearCtx ctx ) {
-			var gs = ctx.GameState;
+			var deck = ctx.GameState.InvaderDeck;
 
-			gs.InvaderDeck.drawCount[0] = 0;
-			if(gs.InvaderDeck.drawCount.Count>1)
-				gs.InvaderDeck.drawCount[1]++;
+			while(deck.Explore.Count > 0)
+				deck.DelayLastExploreCard();
 
 			return Task.CompletedTask;
 		}

@@ -13,7 +13,7 @@
 		public override string ToString() {
 			string s = $"{Space.Label}: Invaders dealt {dahanDamageFromInvaders} damage to {startingDahan} dahan destroying {dahanDestroyed} of them.";
 			if(damageFromDahan>0)
-				s += "  Dahan fight back dealing {damageFromDahan} damage, leaving {endingInvaders}";
+				s += $"  Dahan fight back dealing {damageFromDahan} damage, leaving {endingInvaders}";
 			return s;
 		}
 

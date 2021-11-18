@@ -87,7 +87,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			spirit.Presence.Energy.RevealedCount = revealedSpaces;
 			Assert_PresenceTracksAre( expectedEnergyGrowth, 1 );
 
-			_ = spirit.ApplyRevealedPresenceTracks(null);
+			spirit.InitElementsFromPresence();
 
 			Assert_BonusElements( elements );
 		}

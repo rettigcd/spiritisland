@@ -9,7 +9,10 @@ namespace SpiritIsland.WinForms {
 
 		public Form1() {
 			InitializeComponent();
+			logForm = new LogForm();
 		}
+
+		LogForm logForm;
 
 		public event Action<IDecision> NewDecision;
 
@@ -30,8 +33,6 @@ namespace SpiritIsland.WinForms {
 			if(this.game.WinLoseStatus == WinLoseStatus.Playing) return;
 
 			this.Text = this.game.WinLoseStatus.ToString();
-			// ! clear out all options
-
 		}
 
 		void Action_NewWaitingDecision( IDecision decision ) {
@@ -115,9 +116,12 @@ namespace SpiritIsland.WinForms {
 		}
 
 		void InitGameFromConfiguration() {
+			logForm.Clear();
+
 			GameState gameState = gameConfiguration.BuildGame();
 			game = new SinglePlayerGame( gameState, false ) { LogExceptions = true };
 			game.Spirit.Action.NewWaitingDecision += Action_NewWaitingDecision;
+			gameState.NewLogEntry += GameState_NewLogEntry;
 
 			this.islandControl.Init( game.GameState, this, gameConfiguration.Color );
 			this.cardControl.Init( game.Spirit, this );
@@ -128,7 +132,11 @@ namespace SpiritIsland.WinForms {
 			// start the game
 			this.game.Start();
 
-//			ShowOptions();
+		}
+
+		void GameState_NewLogEntry( ILogEntry obj ) {
+//			System.IO.File.AppendAllText(@"C:\users\rettigcd\Desktop\si_log.txt", obj.Msg+"\r\n");
+			logForm.AppendLine(obj.Msg);
 		}
 
 		void ExitToolStripMenuItem_Click( object sender, EventArgs e ) {
@@ -144,9 +152,11 @@ namespace SpiritIsland.WinForms {
 
 		void ReplayRoundToolStripMenuItem_Click( object sender, EventArgs e ) {
 			this.game.UserPortal.GoBackToBeginningOfRound();
-//			this.ShowOptions();
 		}
 
+		private void gameLogToolStripMenuItem_Click( object sender, EventArgs e ) {
+			logForm.Show();
+		}
 	}
 
 	public interface IHaveOptions {

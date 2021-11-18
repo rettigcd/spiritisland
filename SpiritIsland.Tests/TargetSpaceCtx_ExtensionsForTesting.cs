@@ -57,7 +57,8 @@ namespace SpiritIsland.Tests {
 
 		public static void Assert_Ravaged( this Queue<string> log, params string[] spaces ) {
 
-			log.Dequeue().ShouldStartWith( "Ravaging" );
+			var action = log.Dequeue();
+			action.ShouldStartWith( "Ravaging" );
 			foreach(var s in spaces)
 				log.Dequeue().ShouldStartWith( s );
 		}

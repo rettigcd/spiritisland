@@ -69,17 +69,10 @@ namespace SpiritIsland.SinglePlayer {
 					}
 				}
 				catch(GameOverException gameOver) {
-					this.WinLoseStatus = gameOver.Status;
+					this.WinLoseStatus = gameOver.Status; // Put this on GameState
 				}
 				catch(Exception ex) {
-					if(LogExceptions) {
-						const string filename = @"C:\users\rettigcd\desktop\si_log.txt";
-						System.IO.File.AppendAllText(filename, $"\r\n===={DateTime.Now}=====\r\n"+ex.ToString() );
-						await Spirit.UserSelectsFirstText("Exception - Check Log File!", filename, "program is going to lock up");
-					} else {
-						await Spirit.UserSelectsFirstText( "Exception!", "-", "-" );
-						// !!! need to detect if all presence is destroyed
-					}
+					GameState.Log(new LogEntry(ex.ToString()) );
 				}
 			}
 			_ = LoopAsync();

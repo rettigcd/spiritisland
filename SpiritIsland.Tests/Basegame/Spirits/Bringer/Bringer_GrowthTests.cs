@@ -100,6 +100,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			// energy:	2 air 3 moon 4 any 5
 			spirit.Presence.Energy.RevealedCount = revealedSpaces;
 			Assert_EnergyTrackIs( expectedEnergyGrowth );
+			spirit.InitElementsFromPresence();
 
 			_ = spirit.ApplyRevealedPresenceTracks(null);
 

@@ -517,6 +517,7 @@ namespace SpiritIsland.WinForms {
 		}
 
 		IOption FindSpaces( Point clientCoords ) {
+			if(activeSpaces==null) return null;
 			return activeSpaces
 				.Select( s => {
 					PointF center = SpaceCenter( s );

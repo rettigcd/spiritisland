@@ -139,6 +139,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 		public async Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 			// energy: 0 moon water 1 earth water 2
 			spirit.Presence.Energy.RevealedCount = revealedSpaces;
+			spirit.InitElementsFromPresence();
 			Assert_EnergyTrackIs( expectedEnergyGrowth );
 			await spirit.ApplyRevealedPresenceTracks(null);
 			Assert_BonusElements( elements );

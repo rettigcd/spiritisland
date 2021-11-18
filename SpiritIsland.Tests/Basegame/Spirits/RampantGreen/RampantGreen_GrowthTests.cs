@@ -92,6 +92,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
 			spirit.Presence.Energy.RevealedCount = revealedSpaces;
 			Assert_PresenceTracksAre( expectedEnergyGrowth, 1 );
 
+			spirit.InitElementsFromPresence();
 			_ = spirit.ApplyRevealedPresenceTracks(null);
 
 			Assert_BonusElements( elements );

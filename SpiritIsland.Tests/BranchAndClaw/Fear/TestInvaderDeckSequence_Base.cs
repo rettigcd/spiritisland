@@ -10,11 +10,16 @@ namespace SpiritIsland.Tests.BranchAndClaw.Fear {
 		protected TestInvaderDeckSequence_Base() {
 			var powerCard = PowerCard.For<CallToTend>();
 			var (userLocal,ctxLocal) = TestSpirit.SetupGame(powerCard,gs=>{ 
-				gs.NewInvaderLogEntry += (s) => log.Enqueue(s);
+				gs.NewLogEntry += RecordLogItem; // (s) => log.Enqueue(s.Msg);
 			} );
 			user = userLocal;
 			ctx = ctxLocal;
 			log.Clear(); // skip over initial Explorer setup
+		}
+
+		void RecordLogItem( ILogEntry s ) {
+			if(s is not DecisionLogEntry)
+				log.Enqueue(s.Msg);
 		}
 
 		protected VirtualTestUser user;

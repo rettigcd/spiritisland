@@ -8,10 +8,6 @@ namespace SpiritIsland {
 
 	public class GameState {
 
-		// base-1,  game starts in round-1
-		public int RoundNumber { get; private set; }
-		public Phase Phase { get; set; }
-
 		#region constructors
 
 		/// <summary>
@@ -60,6 +56,10 @@ namespace SpiritIsland {
 
 		#endregion
 
+		// base-1,  game starts in round-1
+		public int RoundNumber { get; private set; }
+		public Phase Phase { get; set; }
+
 		// == Components ==
 		public Fear Fear { get; }
 		public Island Island { get; set; }
@@ -72,38 +72,11 @@ namespace SpiritIsland {
 			set { _invaderDeck = value; }
 		}
 		InvaderDeck _invaderDeck;
-
-		#region Time Passes
-
-		public event Action<GameState> TimePasses_WholeGame;												// Spirit cleanup
-		public Stack<Func<GameState, Task>> TimePasses_ThisRound = new Stack<Func<GameState, Task>>();      // Gift of Power
-
-		public async Task TriggerTimePasses() {
-
-			await ExecuteAndClear_OneRoundEvents(); // this is async because of Gift of Contancy has user action 'at end of turn'
-
-			// Clear Defend
-			foreach(var s in Island.AllSpaces)
-				Tokens[s][TokenType.Defend] = 0;
-
-			TimePasses_WholeGame?.Invoke( this );
-			++RoundNumber;
-		}
-
-		async Task ExecuteAndClear_OneRoundEvents() {
-			_ravageConfig.Clear();
-
-			// stack allows us to unwind items in reverse order from when we set them up
-			while(TimePasses_ThisRound.Count > 0) 
-				await TimePasses_ThisRound.Pop()( this );
-		}
-
-		#endregion
+		public Invaders Invaders { get; } // creates ravage/damage objects - Obsolete - just make Tokens do this.
+		public int blightOnCard; // 2 per player + 1
+		public IBlightCard BlightCard = new NullBlightCard();
 
 		#region Blight
-
-		public int blightOnCard; // 2 per player
-		public IBlightCard BlightCard = new NullBlightCard();
 
 		public async Task DamageLand( Space space, int damageInflictedFromInvaders ) {
 			if(damageInflictedFromInvaders==0) return;
@@ -113,7 +86,6 @@ namespace SpiritIsland {
 			if( damageInflictedFromInvaders > 1)
 				await BlightLandWithCascade( space );
 		}
-		public AsyncEvent<LandDamagedArgs> LandDamaged = new AsyncEvent<LandDamagedArgs>();
 
 		/// <summary>Causes cascading</summary>
 		public async Task BlightLandWithCascade( Space blightSpace ){
@@ -147,40 +119,10 @@ namespace SpiritIsland {
 
 		}
 
-		static private AddBlightEffect DefaultDetermineAddBlightEffect( GameState gs, Space blightSpace ) {
-			bool isFirstBlight = !gs.Tokens[blightSpace].Blight.Any;
-			return new AddBlightEffect {
-				DestroyPresence = true,
-				Cascade = !isFirstBlight,
-			};
-		}
-
-		/// <summary> Hook so Stone's presence can stop the cascade / Destroy effects of blight. </summary>
-		public Func<GameState,Space,AddBlightEffect> DetermineAddBlightEffect = DefaultDetermineAddBlightEffect;
-
 		/// <summary> Adds blight from the blight card to a space on the board. </summary>
 		public async Task AddBlight( Space space, int delta=1 ){ // also used for removing blight
 			blightOnCard -= await AddBlightBehavior( Tokens[space], delta );
 		}
-
-		/// <returns># of blight to remove from card</returns>
-		static Task<int> DefaultAddBlight( TokenCountDictionary tokens, int delta = 1 ) {
-			var blight = tokens.Blight;
-			int newCount = blight + delta;
-			if(newCount < 0) throw new Exception( "Can't remove blight that isn't there" );
-
-			blight.Count = newCount;
-			return Task.FromResult(delta);
-		}
-
-		static async Task DefaultDestroy1PresenceFromBlightCard( Spirit spirit, GameState gs ) {
-			var presence = await spirit.Action.Decision( new Decision.Presence.DeployedToDestory( "Blighted Island: Select presence to destroy.", spirit ) );
-			spirit.Presence.Destroy( presence, gs );
-		}
-
-		public Func<TokenCountDictionary,int,Task<int>> AddBlightBehavior = DefaultAddBlight; // hook fro Stone's Defiance
-
-		public Func<Spirit,GameState,Task> Destroy1PresenceFromBlightCard = DefaultDestroy1PresenceFromBlightCard; // Direct distruction from Blight Card, not cascading
 
 		public bool HasBlight( Space s ) => GetBlightOnSpace(s) > 0;
 
@@ -217,18 +159,9 @@ namespace SpiritIsland {
 			} );
 		}
 
-		public AsyncEvent<RavagingEventArgs> PreRavaging = new AsyncEvent<RavagingEventArgs>();	// A Spread of Rampant Green - stop ravage
-		public AsyncEvent<BuildingEventArgs> PreBuilding = new AsyncEvent<BuildingEventArgs>();	// A Spread of Rampant Green - stop build
-		public AsyncEvent<ExploreEventArgs> PreExplore = new AsyncEvent<ExploreEventArgs>();
-
-		public AsyncEvent<InvadersRavaged> InvadersRavaged = new AsyncEvent<InvadersRavaged>();
-
 		public InvaderEngine InvaderEngine => _invaderEngine ??= BuildInvaderEngine();
 		protected virtual InvaderEngine BuildInvaderEngine() => new InvaderEngine(this);
 		InvaderEngine _invaderEngine;
-
-		public event Action<string> NewInvaderLogEntry;
-		public void Log(string msg ) =>	NewInvaderLogEntry?.Invoke(msg);
 
 		#endregion
 
@@ -246,13 +179,80 @@ namespace SpiritIsland {
 
 		#endregion
 
-		#region Invader Helpers - cleanup!
+		public DahanGroupBinding DahanOn( Space space ) => Tokens[space].Dahan; // Obsolete - use TargetSpaceCtx
 
-		public Invaders Invaders { get; } // creates ravage/damage objects - Obsolete - just make Tokens do this.
+		#region API - overridable
+
+		public Func<GameState,Space,AddBlightEffect> DetermineAddBlightEffect = DefaultDetermineAddBlightEffect; /// <summary> Hook so Stone's presence can stop the cascade / Destroy effects of blight. </summary>
+
+		public Func<TokenCountDictionary,int,Task<int>> AddBlightBehavior = DefaultAddBlight; // hook for Stone's Defiance
+
+		public Func<Spirit,GameState,Task> Destroy1PresenceFromBlightCard = DefaultDestroy1PresenceFromBlightCard; // Direct distruction from Blight Card, not cascading
 
 		#endregion
 
-		public DahanGroupBinding DahanOn( Space space ) => Tokens[space].Dahan;
+		#region Default API methods
+
+		static private AddBlightEffect DefaultDetermineAddBlightEffect( GameState gs, Space blightSpace ) {
+			bool isFirstBlight = !gs.Tokens[blightSpace].Blight.Any;
+			return new AddBlightEffect {
+				DestroyPresence = true,
+				Cascade = !isFirstBlight,
+			};
+		}
+
+		/// <returns># of blight to remove from card</returns>
+		static Task<int> DefaultAddBlight( TokenCountDictionary tokens, int delta = 1 ) {
+			var blight = tokens.Blight;
+			int newCount = blight + delta;
+			if(newCount < 0) throw new Exception( "Can't remove blight that isn't there" );
+
+			blight.Count = newCount;
+			return Task.FromResult(delta);
+		}
+
+		static async Task DefaultDestroy1PresenceFromBlightCard( Spirit spirit, GameState gs ) {
+			var presence = await spirit.Action.Decision( new Decision.Presence.DeployedToDestory( "Blighted Island: Select presence to destroy.", spirit ) );
+			spirit.Presence.Destroy( presence, gs );
+		}
+
+		#endregion
+
+		#region API
+
+		public void Log( ILogEntry entry ) => NewLogEntry?.Invoke( entry );
+
+		public async Task TriggerTimePasses() {
+
+			// stack allows us to unwind items in reverse order from when we set them up
+			while(TimePasses_ThisRound.Count > 0) 
+				await TimePasses_ThisRound.Pop()( this );
+
+			_ravageConfig.Clear();
+
+			// Clear Defend
+			foreach(var s in Island.AllSpaces)
+				Tokens[s][TokenType.Defend] = 0;
+
+			TimePasses_WholeGame?.Invoke( this );
+			++RoundNumber;
+		}
+
+		#endregion
+
+		#region Events
+
+		// - Events -
+		public event Action<ILogEntry> NewLogEntry;
+		public AsyncEvent<RavagingEventArgs> PreRavaging   = new AsyncEvent<RavagingEventArgs>();	// A Spread of Rampant Green - stop ravage
+		public AsyncEvent<BuildingEventArgs> PreBuilding   = new AsyncEvent<BuildingEventArgs>();	// A Spread of Rampant Green - stop build
+		public AsyncEvent<ExploreEventArgs> PreExplore     = new AsyncEvent<ExploreEventArgs>();
+		public AsyncEvent<InvadersRavaged> InvadersRavaged = new AsyncEvent<InvadersRavaged>();
+		public event Action<GameState> TimePasses_WholeGame;												// Spirit cleanup
+		public Stack<Func<GameState, Task>> TimePasses_ThisRound = new Stack<Func<GameState, Task>>();      // Gift of Power
+		public AsyncEvent<LandDamagedArgs> LandDamaged = new AsyncEvent<LandDamagedArgs>();
+
+		#endregion
 
 		#region Memento
 
@@ -295,7 +295,22 @@ namespace SpiritIsland {
 
 		#endregion Memento
 
+	}
 
+	public interface ILogEntry {
+		string Msg {  get; }
+		LogLevel Level { get; }
+	}
+	public enum LogLevel { None, Fatal, Error, Warning, Info, Debug, All }
+
+	public class LogEntry : ILogEntry {
+		public string msg;
+		public LogEntry( string msg, LogLevel level = LogLevel.Info ) { 
+			this.msg = msg;
+			this.Level = level;
+		}
+		public LogLevel Level { get; }
+		public string Msg => msg;
 	}
 
 	public class LandDamagedArgs {

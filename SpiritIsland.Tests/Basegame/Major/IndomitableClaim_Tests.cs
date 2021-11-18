@@ -17,7 +17,7 @@ namespace SpiritIsland.Tests.Basegame {
 			var (user, ctx) = TestSpirit.SetupGame( PowerCard.For<IndomitableClaim>(), (gs)=>{ 
 				var jungleCard = new InvaderCard(Terrain.Jungle);
 				gs.InvaderDeck = InvaderDeck.BuildTestDeck( jungleCard, jungleCard, jungleCard, jungleCard );
-				gs.NewInvaderLogEntry += (s) => invaderLog.Add(s);
+				gs.NewLogEntry += (s) => invaderLog.Add(s.Msg);
 			} );
 
 			// Given: there a ravage card

@@ -33,7 +33,7 @@ namespace SpiritIsland.BranchAndClaw {
 			SkipNextNormalBuild( ctx );
 
 			// The build card remains in place instead of shifting left
-			ctx.GameState.InvaderDeck.KeepBuildCards = true;
+			ctx.GameState.InvaderDeck.KeepBuildCards = true; // !! should really only keep 1
 
 			return Task.CompletedTask;
 		}

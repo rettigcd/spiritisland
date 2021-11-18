@@ -150,6 +150,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 		public async Task EnergyTrack( int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 			// energy:	1 animal plant 2 animal 3 4
 			spirit.Presence.Energy.RevealedCount = revealedSpaces;
+			spirit.InitElementsFromPresence();
 
 			await spirit.ApplyRevealedPresenceTracks(null);
 

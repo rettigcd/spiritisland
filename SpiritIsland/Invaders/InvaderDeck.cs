@@ -81,14 +81,14 @@ namespace SpiritIsland {
 			for(int i = 0; i < cards.Count; ++i) 
 				drawCount.Add( 1 );
 
-			TurnOverExploreCards(); // initialize the first explorer card up
+			InitExplorers(); // initialize the first explorer card up
 		}
 
 		#endregion
 
 		#endregion
 
-		readonly List<InvaderCard> cards;
+		public readonly List<InvaderCard> cards;
 		public readonly List<int> drawCount = new List<int>(); // tracks how many cards to draw each turn
 
 		public List<InvaderCard> Explore {get;} = new List<InvaderCard>();
@@ -120,9 +120,10 @@ namespace SpiritIsland {
 			Build.AddRange( Explore );
 			Explore.Clear();
 
+			InitExplorers();
 		}
 
-		public void TurnOverExploreCards() {
+		void InitExplorers() {
 			if(cards.Count > 0) {
 				int count = drawCount[0]; drawCount.RemoveAt( 0 );
 				while(count-- > 0) {
@@ -130,6 +131,16 @@ namespace SpiritIsland {
 					cards.RemoveAt( 0 );
 				}
 			}
+		}
+
+		public void DelayLastExploreCard() {
+			if(drawCount.Count==0) drawCount.Add(0);
+
+			var idx = Explore.Count - 1;
+			var card = Explore[idx];
+			Explore.RemoveAt( idx );
+			cards.Insert( 0, card );
+			drawCount[0]++;
 		}
 
 		#region Memento

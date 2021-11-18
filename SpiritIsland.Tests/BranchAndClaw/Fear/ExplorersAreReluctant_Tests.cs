@@ -88,13 +88,13 @@ namespace SpiritIsland.Tests.BranchAndClaw.Fear {
 			ctx.ElevateTerrorLevelTo( 2 );
 
 			AdvanceToInvaderPhase();
-			user.AcknowledgesFearCard( "Explorers are Reluctant:2:Skip the next normal explore.  During the next invader phase, draw an adidtional explore card." );
+			user.AcknowledgesFearCard( "Explorers are Reluctant:2:Skip the next normal explore. During the next invader phase, draw an adidtional explore card." );
 
 			// Card Advance #4 - End of 2st round
 
 			log.Assert_Ravaged( "A3", "A8" );
 			log.Assert_Built( "A2", "A5" );
-			log.Assert_Explored(); // Skipped A4 & A7
+			log.Assert_Explored(); // Should have skipped both: A4 & A7
 
 			AdvanceToInvaderPhase();
 

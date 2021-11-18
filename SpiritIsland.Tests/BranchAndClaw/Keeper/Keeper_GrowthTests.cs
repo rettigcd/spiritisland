@@ -180,6 +180,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 		public void EnergyTrack( int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 			// energy:	2 sun 4 5 plant 7 8 9
 			spirit.Presence.Energy.RevealedCount = revealedSpaces;
+			spirit.InitElementsFromPresence();
 
 			gameState.Phase = Phase.Growth;
 			When_StartingGrowth();

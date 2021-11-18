@@ -12,10 +12,8 @@ Refactor UI - to make cleaner and ready to port to Android
 	- Separate cards into: Hand, Activated, Discarded
 	UI - Sort Cards by: speed, element, cost, (HAND,PURCHASED,DISCARDED)
 
-1) Ravage Engine - Log
 2) TargetSpaceCtx.DamageInvaders - limit badland damage to once / action
 3) Detect end of game at end of each action, Don't Lock-up when it happens.
-UI Show log of User actions, Invader Actions
 UI Visual indicator of Phase
 UI - Display Trickster innate-drawn cards to user.
 UI - Show fear cards while they are being resolved.

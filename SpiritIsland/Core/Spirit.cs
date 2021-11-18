@@ -25,11 +25,11 @@ namespace SpiritIsland {
 			// !! should we also execute attached actions?
 		}
 
-		public ActionGateway Action { get; }
-
 		public void AddCardToHand( PowerCard card ){
 			Hand.Add(card);
 		}
+
+		public ActionGateway Action { get; }
 
 		#endregion
 
@@ -285,6 +285,7 @@ namespace SpiritIsland {
 
 		public void Initialize( Board board, GameState gameState ){
 			gameState.TimePasses_WholeGame += On_TimePassed;
+			Action.DecisionMade += (d) => gameState.Log(d);
 			InitializeInternal(board,gameState);
 		}
 
@@ -302,10 +303,13 @@ namespace SpiritIsland {
 			tempCardPlayBoost = 0;
 
 			// Elements
+			InitElementsFromPresence();
+		}
+
+		public void InitElementsFromPresence() {
 			Elements.Clear();
 			Presence.AddElements( Elements );
 		}
-
 
 		// pluggable, draw power card, or powerprogression
 		#region Draw Card

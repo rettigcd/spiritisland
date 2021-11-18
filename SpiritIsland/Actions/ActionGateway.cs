@@ -53,11 +53,12 @@ namespace SpiritIsland {
 			if(!poppedDecision.Options.Contains( selection ))
 				throw new ArgumentException( selection.Text + " not found in options("+ poppedDecision.Options.Select(x=>x.Text).Join(",") + ")" );
 
-			Log( selection, poppedDecision, false );
+			Log( new DecisionLogEntry(selection,poppedDecision,false)  );
 
 			poppedDecisionMaker.Select( selection ); // ####
 		}
 
+		/// <summary> Generates an exception in the engine that resets it back to beginning. </summary>
 		public void GoBackToBeginningOfRound() {
 			var poppedDecisionMaker = WaitForNextDecisionAndCacheIt();
 			this.activeDecisionMaker = null;
@@ -85,7 +86,7 @@ namespace SpiritIsland {
 			else if(decision.Options.Length == 1 && decision.AllowAutoSelect) {
 				// Auto-Select Single
 				decisionMaker.Select( decision.Options[0] );
-				Log( decision.Options[0], decision, true );
+				Log( new DecisionLogEntry( decision.Options[0], decision, true ) );
 
 			} else {
 				activeDecisionMaker = decisionMaker;
@@ -97,12 +98,12 @@ namespace SpiritIsland {
 
 		#region selection log / private
 
-		void Log( IOption selection, IDecision decision, bool auto ) {
-			string msg = decision.Prompt + "(" + decision.Options.Select( o => o.Text ).Join( "," ) + "):" + selection.Text;
-			if(auto) msg += " AUTO";
-			selections.Add( msg );
+		void Log( DecisionLogEntry entry ) {
+			DecisionMade?.Invoke(entry);
+			selections.Add( entry.Msg );
 		}
 
+		public event Action<DecisionLogEntry> DecisionMade;
 		public readonly List<string> selections = new List<string>();
 
 		readonly AutoResetEvent signal = new AutoResetEvent( false );
@@ -110,6 +111,8 @@ namespace SpiritIsland {
 		IDecisionMaker userAccessedDecision;
 
 		#endregion
+
+		#region internal DecisionMaker
 
 		interface IDecisionMaker {
 			public IDecisionPlus Decision { get; }
@@ -143,6 +146,21 @@ namespace SpiritIsland {
 
 		}
 
+		#endregion
+
+	}
+
+	public class DecisionLogEntry : ILogEntry {
+
+		public DecisionLogEntry(IOption selection, IDecision decision, bool auto ) {
+			string msg = decision.Prompt + "(" + decision.Options.Select( o => o.Text ).Join( "," ) + "):" + selection.Text;
+			if(auto) msg += " AUTO";
+			Msg = msg;
+		}
+
+		public string Msg { get; }
+
+		public LogLevel Level => LogLevel.Info;
 	}
 
 }

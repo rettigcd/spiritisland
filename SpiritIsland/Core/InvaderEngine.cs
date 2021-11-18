@@ -25,7 +25,7 @@ namespace SpiritIsland {
 
 			// Blight
 			if(gs.BlightCard.IslandIsBlighted) {
-				gs.Log( "Island is blighted" );
+				gs.Log( new LogEntry( "Island is blighted" ) );
 				await gs.BlightCard.OnStartOfInvaders( gs );
 			}
 
@@ -34,16 +34,16 @@ namespace SpiritIsland {
 
 			// Ravage
 			var deck = gs.InvaderDeck;
-			gs.Log( "Ravaging:" + deck.Ravage.Select(x=>x.Text).Join("/") );
+			gs.Log( new LogEntry( "Ravaging:" + deck.Ravage.Select(x=>x.Text).Join("/") ) );
 			await Ravage();
 
 			// Building
-			gs.Log( "Building:" + deck.Build.Select(x=>x.Text).Join("/") );
+			gs.Log( new LogEntry( "Building:" + deck.Build.Select(x=>x.Text).Join("/") ) );
 			await Build();
 
 			// Exploring
-			deck.TurnOverExploreCards();
-			gs.Log( "Exploring:" + (deck.Explore.Count > 0 ? deck.Explore[0].Text : "-") );
+//			deck.InitExplorers();
+			gs.Log( new LogEntry( "Exploring:" + (deck.Explore.Count > 0 ? deck.Explore[0].Text : "-") ) );
 			await Explore( deck.Explore.ToArray() );
 
 			deck.Advance();
@@ -55,7 +55,7 @@ namespace SpiritIsland {
 			// only gets called when explorer is actually going to explore
 			var wilds = gs.Tokens[space].Wilds;
 			if(wilds == 0) { 
-				gs.Log(space+":gains explorer");
+				gs.Log( new LogEntry(space+":gains explorer") );
 				await gs.Tokens.Add( Invader.Explorer, space );
 			}
 			else
@@ -147,9 +147,9 @@ namespace SpiritIsland {
 							? args.BuildTypes[space]
 							: BuildingEventArgs.BuildType.TownsAndCities;
 						var buildResult = await Build( gs.Tokens[space], buildType );
-						gs.Log( space.Label + ": gets " + buildResult );
+						gs.Log( new LogEntry( space.Label + ": gets " + buildResult ) );
 					} else {
-						gs.Log( space.Label + ": no invaders " );
+						gs.Log( new LogEntry( space.Label + ": no invaders " ) );
 					}
 
 				}
@@ -185,7 +185,7 @@ namespace SpiritIsland {
 
 			foreach(var grp in ravageGroups) {
 				string ravageSpaceResults = await RavageSpace( grp );
-				gs.Log( ravageSpaceResults );
+				gs.Log( new LogEntry( ravageSpaceResults ) );
 			}
 		}
 
