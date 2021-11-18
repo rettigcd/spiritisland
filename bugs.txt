@@ -1,5 +1,3 @@
-5  Shifting Memory innate allows preparing 3 elements.  When (2nd) token change occurs during ravage, game locks up.
-
 4	Sky Stretches to Shore - Slow card was made fast.  Didn't do anything when activated.
 
 3	Growth Through Sacrifice - Add Presence (when doing both - 2 suns) asks for positioning tiwce

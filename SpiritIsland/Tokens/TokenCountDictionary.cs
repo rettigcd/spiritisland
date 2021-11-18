@@ -107,8 +107,8 @@ namespace SpiritIsland {
 		}
 
 		/// <summary> Adds .Space to context and calls Parent
-		public Task DestroyToken( int countToDestroy, Token token, Cause cause ) 
-			=> tokenDestroyer.DestroyToken( Space, countToDestroy, token, cause);
+		public Task DestroyToken( int countToDestroy, Token token, Cause cause )
+			=> tokenDestroyer.DestroyIslandToken( Space, countToDestroy, token, cause);
 		
 	}
 

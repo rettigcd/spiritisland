@@ -17,7 +17,7 @@ namespace SpiritIsland {
 		public InvaderGroup On( Space targetSpace, Cause cause ) {
 			return new InvaderGroup( 
 				gs.Tokens[targetSpace], 
-				new DestroyInvaderStrategy( gs.Fear.AddDirect, cause )
+				new DestroyInvaderStrategy( gs, gs.Fear.AddDirect, cause )
 			);
 		}
 

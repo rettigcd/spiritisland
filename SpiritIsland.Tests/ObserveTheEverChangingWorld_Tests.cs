@@ -4,6 +4,7 @@ using System.Linq;
 using Xunit;
 
 namespace SpiritIsland.Tests {
+
 	public class ObserveTheEverChangingWorld_Tests {
 
 		[Fact]

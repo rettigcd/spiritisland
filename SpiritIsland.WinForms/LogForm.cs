@@ -19,7 +19,7 @@ namespace SpiritIsland.WinForms {
 			e.Cancel = true;    // Do not close the form.
 		}
 
-		private void checkBox1_Click( object sender, System.EventArgs e ) {
+		private void CheckBox1_Click( object sender, System.EventArgs e ) {
 			this.textBox.WordWrap = checkBox1.Checked;
 		}
 	}

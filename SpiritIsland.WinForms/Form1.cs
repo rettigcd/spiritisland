@@ -12,7 +12,7 @@ namespace SpiritIsland.WinForms {
 			logForm = new LogForm();
 		}
 
-		LogForm logForm;
+		readonly LogForm logForm;
 
 		public event Action<IDecision> NewDecision;
 
@@ -154,7 +154,7 @@ namespace SpiritIsland.WinForms {
 			this.game.UserPortal.GoBackToBeginningOfRound();
 		}
 
-		private void gameLogToolStripMenuItem_Click( object sender, EventArgs e ) {
+		private void GameLogToolStripMenuItem_Click( object sender, EventArgs e ) {
 			logForm.Show();
 		}
 	}

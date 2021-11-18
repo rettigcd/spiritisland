@@ -122,7 +122,7 @@ namespace SpiritIsland {
 		public Task DestroyDahan( int countToDestroy ) => Dahan.Destroy( countToDestroy, Cause );
 
 		public async Task DestroyBeast(int countToDestroy ) {
-			await GameState.Tokens.DestroyToken(Space,countToDestroy, TokenType.Beast, Cause);
+			await GameState.Tokens.DestroyIslandToken(Space,countToDestroy, TokenType.Beast, Cause);
 		}
 
 		public Terrain Terrain => TerrainMapper.GetTerrain( Space );

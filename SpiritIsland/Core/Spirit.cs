@@ -427,17 +427,16 @@ namespace SpiritIsland {
 		public IDamageApplier CustomDamageStrategy = null; // Fires Fury Plugs in a custom +1 bonus damage
 
 		public virtual InvaderGroup BuildInvaderGroupForPowers( GameState gs, Space space ) {
-			var invaderCounts = gs.Tokens[ space ];
 			return new InvaderGroup( 
-				invaderCounts,
-				new DestroyInvaderStrategy( gs.Fear.AddDirect, Cause.Power ),
+				gs.Tokens[ space ],
+				new DestroyInvaderStrategy( gs, gs.Fear.AddDirect, Cause.Power ),
 				CustomDamageStrategy
 			);
 		}
 
 		// overriden by Bringer, Bringer's BuildInvaderGroupForPower uses this.
 		public virtual Task DestroyInvaderForPowers( GameState gs, Space space, int count, Token token ) {
-			return gs.Tokens.DestroyToken(space,count,token, Cause.Power);
+			return gs.Tokens.DestroyIslandToken(space,count,token, Cause.Power);
 		}
 
 		/// <summary>Hook for Grinning Trickster to add additional strife for power</summary>

@@ -86,8 +86,6 @@ namespace SpiritIsland {
 
 			// ! This special DamageDahan, uses the config to change dahan health points.
 
-			// !!! replace this dahan-hitpoint-hack with different tokens
-
 			// destroy dahan
 			var dahan = grp.Tokens.Dahan;
 			tracking.startingDahan = dahan.Count;

@@ -219,7 +219,7 @@ namespace SpiritIsland.WinForms {
             this.gameLogToolStripMenuItem.Name = "gameLogToolStripMenuItem";
             this.gameLogToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.gameLogToolStripMenuItem.Text = "Game &Log";
-            this.gameLogToolStripMenuItem.Click += new System.EventHandler(this.gameLogToolStripMenuItem_Click);
+            this.gameLogToolStripMenuItem.Click += new System.EventHandler(this.GameLogToolStripMenuItem_Click);
             // 
             // Form1
             // 

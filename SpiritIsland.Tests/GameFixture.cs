@@ -12,6 +12,9 @@ namespace SpiritIsland.Tests {
 		public GameState gameState;
 		public VirtualUser user;
 		public List<InvadersRavaged> ravages;
+		public List<string> Log;
+		public string LogAsString => string.Join("\r\n",Log);
+
 
 		public GameFixture WithSpirit(Spirit spirit ) {
 			this.spirit = spirit;
@@ -26,8 +29,11 @@ namespace SpiritIsland.Tests {
 
 			gameState = new GameState(spirit,board);
 
+			// Logging
 			ravages = new List<InvadersRavaged>();
 			gameState.InvadersRavaged.ForEntireGame( (gs,args) => { ravages.Add(args); return Task.CompletedTask; } );
+			Log = new List<string>();
+			gameState.NewLogEntry += (e) => Log.Add(e.Msg);
 
 
 			user = new VirtualUser(spirit);

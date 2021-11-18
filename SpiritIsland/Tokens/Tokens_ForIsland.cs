@@ -84,12 +84,14 @@ namespace SpiritIsland {
 		public AsyncEvent<TokenMovedArgs> TokenMoved = new AsyncEvent<TokenMovedArgs>();
 		public AsyncEvent<TokenDestroyedArgs> TokenDestroyed = new AsyncEvent<TokenDestroyedArgs>();
 
-		public Task DestroyToken( Space space, int countToDestroy, Token token, Cause source ) {
+		public Task DestroyIslandToken( Space space, int countToDestroy, Token token, Cause source ) {
+
 			if(countToDestroy==0) return Task.CompletedTask;
 			var tokens = this[space];
 			countToDestroy = System.Math.Min( countToDestroy, tokens[token] );
 			if(countToDestroy==0) return Task.CompletedTask;
 			tokens[token] -= countToDestroy;
+
 			return TokenDestroyed.InvokeAsync( gameStateForEventArgs, new TokenDestroyedArgs {
 				Token = token.Generic,
 				Space = space,
@@ -124,7 +126,7 @@ namespace SpiritIsland {
 	}
 
 	public interface IDestroyIslandTokens {
-		Task DestroyToken( Space space, int countToDestroy, Token token, Cause source );
+		Task DestroyIslandToken( Space space, int countToDestroy, Token token, Cause source );
 	}
 
 

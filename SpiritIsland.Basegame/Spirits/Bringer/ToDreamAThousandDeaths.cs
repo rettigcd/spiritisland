@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 		readonly SpiritGameStateCtx ctx;
 
 		public ToDreamAThousandDeaths_DestroyStrategy( Action<FearArgs> addFear, Cause destructionSource, SpiritGameStateCtx ctx )
-			:base(addFear,destructionSource) {
+			:base(ctx.GameState, addFear,destructionSource) {
 			this.ctx = ctx;
 		}
 

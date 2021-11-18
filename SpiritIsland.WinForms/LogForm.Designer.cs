@@ -52,7 +52,7 @@ namespace SpiritIsland.WinForms {
             this.checkBox1.TabIndex = 1;
             this.checkBox1.Text = "Wrap";
             this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.Click += new System.EventHandler(this.checkBox1_Click);
+            this.checkBox1.Click += new System.EventHandler(this.CheckBox1_Click);
             // 
             // LogForm
             // 
