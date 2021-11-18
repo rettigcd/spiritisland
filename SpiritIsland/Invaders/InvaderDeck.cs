@@ -33,13 +33,16 @@ namespace SpiritIsland {
 			new InvaderCard(Terrain.Sand,Terrain.Wetland)
 		);
 
+		public static InvaderDeck BuildTestDeck( params InvaderCard[] cards ) => new InvaderDeck( cards );
+
+
 		public static InvaderDeck Unshuffled() => new InvaderDeck((Random)null);
 
 		#endregion
 
 		#region constructors
 
-		static public InvaderDeck BuildTestDeck( params InvaderCard[] cards ) => new InvaderDeck( cards );
+		#region constructors
 
 		private InvaderDeck( params InvaderCard[] cards ) {
 			this.cards = cards.ToList();
@@ -74,12 +77,19 @@ namespace SpiritIsland {
 		}
 
 		void Init() {
+			// Setup draw: 1 card at a time.
 			for(int i = 0; i < cards.Count; ++i) 
 				drawCount.Add( 1 );
-			TurnOverExploreCards(); // Advance(); // initialize the first explorer card up
+
+			TurnOverExploreCards(); // initialize the first explorer card up
 		}
 
 		#endregion
+
+		#endregion
+
+		readonly List<InvaderCard> cards;
+		public readonly List<int> drawCount = new List<int>(); // tracks how many cards to draw each turn
 
 		public List<InvaderCard> Explore {get;} = new List<InvaderCard>();
 
@@ -90,6 +100,7 @@ namespace SpiritIsland {
 		public int CountInDiscard {get; private set; }
 
 		public bool KeepBuildCards = false;
+
 
 		/// <summary>
 		/// Triggers Ravage / 
@@ -121,8 +132,7 @@ namespace SpiritIsland {
 			}
 		}
 
-		readonly List<InvaderCard> cards;
-		public readonly List<int> drawCount = new List<int>(); // tracks how many cards to draw each turn
+		#region Memento
 
 		public virtual IMemento<InvaderDeck> SaveToMemento() => new Memento(this);
 		public virtual void LoadFrom( IMemento<InvaderDeck> memento ) => ((Memento)memento).Restore(this);
@@ -139,6 +149,8 @@ namespace SpiritIsland {
 			readonly InvaderCard[] cards;
 			readonly int[] drawCount;
 		}
+
+		#endregion
 
 	}
 

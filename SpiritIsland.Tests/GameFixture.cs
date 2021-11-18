@@ -1,5 +1,6 @@
 ﻿using SpiritIsland.Basegame;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SpiritIsland.Tests {
@@ -34,7 +35,7 @@ namespace SpiritIsland.Tests {
 			return this;
 		}
 
-
+		public TargetSpaceCtx TargetSpace(string spaceLabel) => new TargetSpaceCtx(this.spirit,this.gameState,gameState.Island.AllSpaces.Single(x=>x.Label==spaceLabel), Cause.None);
 
 	}
 

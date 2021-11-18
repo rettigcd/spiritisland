@@ -138,6 +138,7 @@ namespace SpiritIsland.Tests {
 			AssertDecision( "Select Slow to resolve:", options+",Done", choice );
 		}
 
+		/// <example>Fast-0,(Fast-1),Fast-2,Gift of Strength</example>
 		public void SelectsFastAction(string actions) {
 			var (options, choice) = SplitOptionsAndChoice( actions );
 

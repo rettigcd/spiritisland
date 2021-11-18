@@ -2,7 +2,7 @@
 
 4	Sky Stretches to Shore - Slow card was made fast.  Didn't do anything when activated.
 
-3	Growth Through Sacrifice - Add Presence (when doing both - 2 suns) asks for positioning tiwce - check if elements get added
+3	Growth Through Sacrifice - Add Presence (when doing both - 2 suns) asks for positioning tiwce
 3	Strifed Invaders damaging themselves
 3	Cascading Bight - all blight should cascade
 

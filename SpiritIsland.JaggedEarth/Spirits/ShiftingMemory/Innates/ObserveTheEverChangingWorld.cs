@@ -3,8 +3,10 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland.JaggedEarth {
 
-	[InnatePower("Observe the Ever-Changing World"), Fast, FromPresence(1)]
+	[InnatePower(ObserveTheEverChangingWorld.Name), Fast, FromPresence(1)]
 	public class ObserveTheEverChangingWorld {
+
+		public const string Name = "Observe the Ever-Changing World";
 
 		[InnateOption("1 moon","Prepare 1 Element Marker")]
 		static public Task Option1(TargetSpaceCtx ctx ) {

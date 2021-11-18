@@ -4,7 +4,9 @@ namespace SpiritIsland.JaggedEarth {
 
 	public class BoonOfAncientMemories {
 
-		[SpiritCard("Boon of Ancient Memories",1,Element.Moon,Element.Water,Element.Earth,Element.Plant), Slow, AnySpirit]
+		public const string Name = "Boon of Ancient Memories";
+
+		[SpiritCard(BoonOfAncientMemories.Name,1,Element.Moon,Element.Water,Element.Earth,Element.Plant), Slow, AnySpirit]
 		static public async Task ActAsync(TargetSpiritCtx ctx ) { 
 
 			// if you target yourself
