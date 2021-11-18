@@ -56,36 +56,35 @@ namespace SpiritIsland.WinForms {
 			Brush currentBrush = Brushes.Yellow;
 			using Pen highlightPen = new( Color.Red, 8f );
 
-			//=============
-			// == Growth ==
-			//=============
-			int growthHeight = Width / 6;
-			int usableWidth = Width - margin * 2;
+			const float windowRatio = 1.05f;
+			var bounds = ClientRectangle;
+			if(bounds.Width > bounds.Height / windowRatio) {
+				int widthClip = bounds.Width - (int)(bounds.Height / windowRatio);
+				bounds.X += widthClip;
+				bounds.Width -= widthClip;
+			}
+			else
+				bounds.Height = (int)(bounds.Width * windowRatio);
 
-//			var x = ClientRectangle.InflateBy(-margin).SplitVertically( margin, 0.16f, 0.5f, .84f );
-			var x = ClientRectangle.InflateBy(-margin).SplitByWeight( margin, 1f, 1.8f, 2.2f, 1f );
+			var rects = bounds.InflateBy(-margin).SplitByWeight( margin, 2f, 3.6f, 4.2f, 1f );
 
-			graphics.DrawRectangle(Pens.Red,  x[0]);
-			graphics.DrawRectangle(Pens.Green,x[1]);
-			graphics.DrawRectangle(Pens.Blue, x[2]);
-			graphics.DrawRectangle(Pens.Black,x[3]);
+//			graphics.DrawRectangle(Pens.Red,  rects[0]);graphics.DrawRectangle(Pens.Green,rects[1]);graphics.DrawRectangle(Pens.Blue, rects[2]);graphics.DrawRectangle(Pens.Black,rects[3]);
 
-			Draw_GrowthRow( graphics,      x[0] );
-			Draw_PresenceTracks( graphics, x[1], simpleFont, highlightPen );
-			Draw_Innates( graphics,        x[2] );
-			Draw_Elements( graphics,       x[3] );
+			Draw_GrowthRow( graphics,      rects[0] );
+			Draw_PresenceTracks( graphics, rects[1], simpleFont, highlightPen );
+			Draw_Innates( graphics,        rects[2] );
+			Draw_Elements( graphics,       rects[3] );
 
 
 
 
 		}
 
-		private void Draw_Elements( Graphics graphics, Rectangle elementBounds ) {
-			int yy = elementBounds.Y;
+		private void Draw_Elements( Graphics graphics, Rectangle bounds ) {
 			// activated elements
-			DrawActivatedElements( graphics, spirit.Elements, ref yy );
+			DrawActivatedElements( graphics, spirit.Elements, bounds.X, bounds.Y );
 			if(spirit is ShiftingMemoryOfAges smoa)
-				DrawActivatedElements( graphics, smoa.PreparedElements, ref yy );
+				DrawActivatedElements( graphics, smoa.PreparedElements, bounds.X + bounds.Width/2, bounds.Y );
 		}
 
 		private void Draw_Innates( Graphics graphics, Rectangle innateBounds ) {
@@ -123,7 +122,7 @@ namespace SpiritIsland.WinForms {
 			DrawDestroyed( graphics, highlightPen, presence, slotWidth, presenceSize, ClientRectangle.Width - 2.5f * slotWidth, y + slotWidth * .5f );
 
 			// Card Plays / Turn
-			trackPainter.DrawCardPlayTrack( slotWidth, margin, y );
+			trackPainter.DrawCardPlayTrack( slotWidth, bounds.X, y );
 		}
 
 		void Draw_GrowthRow( Graphics graphics, Rectangle bounds ) {
@@ -196,10 +195,9 @@ namespace SpiritIsland.WinForms {
 			return metrics.TotalInnatePowerBounds.Size;
 		}
 
-		void DrawActivatedElements( Graphics graphics, CountDictionary<Element> elements, ref int y ) {
+		void DrawActivatedElements( Graphics graphics, CountDictionary<Element> elements, int x, int y ) {
 			y += 20;
-			const float elementSize = 40f;
-			float x = margin;
+			const int elementSize = 40;
 
 			var orderedElements = elements.Keys.OrderBy( el => (int)el );
 			foreach(var element in orderedElements) {
@@ -209,7 +207,6 @@ namespace SpiritIsland.WinForms {
 				x += elementSize;
 				x += 15;
 			}
-			y += (int)elementSize;
 		}
 
 		Image LoadSpiritImage() {

@@ -1,13 +1,24 @@
-﻿
+﻿!!!!!!!!!!! don't lock up when we win / lose / exception 
+	- split User-Gateway into 2 parts, one that blocks (for tests), and one that doesn't (for UI thread)
+
+* Detect Win/Lose and don't lock up
+	* Fear victory - End of deck
+	* Fear victory - Destroyed enough of Cities / Town to meat terror level condition
+	* Invader Deck loss
+	* Blighted Island Loss
+	* no presence Loss
+
 -- Helpful --
 
 Make Spirit & Board part of game # -> Enter Game # to replay
+In log, show == Round ==,  -- Growth -- -- Fast -- -- Invader --  --- Slow -- (debug)
+
+** Create a Token API  (MoveFrom,MoveTo,Destroy,Replace,Setup)
 
 Refactor Testing to make it easier to test.
 
 Refactor UI - to make cleaner and ready to port to Android
 	- Put Build / Ravage / fear in strip along the top
-	- Make cards shrink to fit in window
 	- Make Spirit shrink to fit in window
 	- Separate cards into: Hand, Activated, Discarded
 	UI - Sort Cards by: speed, element, cost, (HAND,PURCHASED,DISCARDED)
@@ -38,6 +49,9 @@ Make Push a 1-step commmand
 3 Draw cards from metadata
 2 Visual indication of phase
 3 Create a target-space preview, when hovering over cards
+3 Select elements by clicking on them
+3 Select deck by clicking on it
+3 Show # of cards remaining in fear deck until next threshold
 
 2 When presenting options, Icon-draw them.
 3 draw innates - range icons, Target icons, clean tokens, +1 range

@@ -1,8 +1,13 @@
 4	Sky Stretches to Shore - Slow card was made fast.  Didn't do anything when activated.
 
+4   When winning via apparent Fear victory, UI locks up.
+	* Possibly engine-thread crashes, then we accidentally click an old option that hasn't been removed yet, then we hang, waiting to be presented with a decision
+	* solution - when we submit a choice, disable the existing options.
+
 3	Growth Through Sacrifice - Add Presence (when doing both - 2 suns) asks for positioning tiwce
 3	Strifed Invaders damaging themselves
 3	Cascading Bight - all blight should cascade
+4	Absorb Corruption - If I have 2 plants, it forces me to do both, but text says you *may* do both.
 
 2	Heart of the Wildfire's 1st innate is confusing when it triggers on multiple lands.  Also, it is highlighting presence, dahan and blight.
 2	Heart if the Wildfire - , got down to 0 blights on card but did not trigger blighted island.
