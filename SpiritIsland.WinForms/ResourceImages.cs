@@ -48,6 +48,27 @@ namespace SpiritIsland.WinForms {
 
 		public Bitmap GetIcon( string fileName )         => GetResourceImage( $"icons.{fileName}.png" );
 
+		public Image LoadIconBySimpleName( string token ) {
+			string filename = token switch {
+				"dahan"    => "Dahanicon",
+				"city"     => "Cityicon",
+				"town"     => "Townicon",
+				"explorer" => "Explorericon",
+				"blight"   => "Blighticon",
+				"beast"    => "Beasticon",
+				"fear"     => "Fearicon",
+				"wilds"    => "Wildsicon",
+				"fast"     => "Fasticon",
+				"presence" => "Presenceicon",
+				"slow"     => "Slowicon",
+				"disease"  => "Diseaseicon",
+				"strife"   => "Strifeicon",
+				"badlands" => "Badlands",
+				_          => "Simple_" + token // elements
+			};
+			return GetIcon(filename);
+		}
+
 		public Bitmap GetInvaderCard( string filename ) => GetResourceImage( $"invaders.{filename}.jpg" );
 
 		#region private

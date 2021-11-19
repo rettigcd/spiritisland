@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace SpiritIsland.WinForms {
@@ -7,26 +8,33 @@ namespace SpiritIsland.WinForms {
 
 		readonly Graphics graphics;
 
-		public GrowthPainter(Graphics graphics) {
+		public GrowthPainter( Graphics graphics ) {
 			this.graphics = graphics;
 		}
 
-		public GrowthLayout layout;
-
-		public void Paint(GrowthOption[] options, Rectangle bounds ) {
-			layout = new GrowthLayout(options);
-			layout.ScaleToFit(bounds.Width,bounds.Height);
-			layout.Translate(bounds.X,bounds.Y);
+		public void Paint(GrowthLayout layout, IList<GrowthOption> clickableGrowthOptions, IList<GrowthActionFactory> clickableGrowthActions ) {
 
 			using var optionPen = new Pen( Color.Blue, 6f );
+			using var highlightPen = new Pen( Color.Red, 4f );
 
 			// Growth Options
-			foreach(var (_, rect) in layout.EachGrowth().Skip(1))
-				graphics.DrawLine(optionPen,rect.Left,rect.Top,rect.Left,rect.Bottom);
+			bool first = true;
+			foreach(var (opt, rect) in layout.EachGrowth()) {
+				// Divider
+				if(first) first = false; else graphics.DrawLine(optionPen,rect.Left,rect.Top,rect.Left,rect.Bottom);
+				// Active / Clickable
+				if(clickableGrowthOptions.Contains( opt ))
+					graphics.DrawRectangle( highlightPen, rect.ToInts() );
+			}
 
-			// Actions
-			foreach(var (action,rect) in layout.EachAction())
+			// Growth Actions
+			foreach(var (action,rect) in layout.EachAction()) {
 				DrawAction( action, rect );
+				// Active / Clickable
+				if(clickableGrowthActions.Contains( action ))
+					graphics.DrawRectangle( highlightPen, rect.ToInts() );
+			}
+
 		}
 
 		void DrawAction( GrowthActionFactory action, RectangleF rect ) {
@@ -100,7 +108,6 @@ namespace SpiritIsland.WinForms {
 				bounds.Y + (bounds.Height - textSize.Height) * .60f
 			);
 			graphics.DrawString( txt, coinFont, Brushes.Black, textTopLeft );
-			// graphics.DrawRectangle( Pens.Red, textTopLeft.X, textTopLeft.Y, textSize.Width, textSize.Height );
 
 		}
 
@@ -117,7 +124,6 @@ namespace SpiritIsland.WinForms {
 				graphics.DrawImageFitWidth(img, parts[i]);
 			}
 		}
-
 
 		void PlacePresence( RectangleF rect, int? range, string filterEnum ) {
 			using var image = ResourceImages.Singleton.GetTargetFilterIcon( filterEnum );

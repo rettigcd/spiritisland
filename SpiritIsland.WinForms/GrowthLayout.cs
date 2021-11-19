@@ -7,74 +7,79 @@ namespace SpiritIsland.WinForms {
 	/// <summary>
 	/// Calculates a normalized layout for the Growth Options
 	/// </summary>
-	class GrowthLayout {
+	public class GrowthLayout {
 
-		public GrowthLayout(GrowthOption[] growthOptions){
+		public GrowthLayout(GrowthOption[] growthOptions, Rectangle bounds){
 			int actionCount = growthOptions.Sum(op=>op.GrowthActions.Length);
 
 			GrowthOptions = growthOptions;
-			GrowthRects = new RectangleF[growthOptions.Length];
+			optionRects = new Dictionary<GrowthOption, RectangleF>();
 
-			ActionRects = new RectangleF[actionCount];
 			Actions = new GrowthActionFactory[actionCount];
+			actionRects = new Dictionary<GrowthActionFactory, RectangleF>();
 
 			float actionWidth = 1.0f / actionCount;
 			float actionHeight = 1.5f / actionCount;
 
 			float x = 0f;
 			int actionIndex = 0;
-			int growthIndex = 0;
 			foreach(var g in growthOptions) {
 				float gx = x;
 				foreach(var a in g.GrowthActions) {
-					Actions[actionIndex] = a;
-					ActionRects[actionIndex++] = RectangleF.Inflate( new RectangleF(x,0,actionWidth,actionHeight), -.1f* actionWidth, -.1f*actionHeight);
+					Actions[actionIndex++] = a;
+					actionRects.Add(a,RectangleF.Inflate( new RectangleF(x,0,actionWidth,actionHeight), -.1f* actionWidth, -.1f*actionHeight));
 					x += actionWidth;
 				}
-				GrowthRects[growthIndex++] = new RectangleF(gx,0,x-gx,actionHeight);
+				optionRects.Add( g, new RectangleF(gx,0,x-gx,actionHeight) );
 			}
 
-			Size = new SizeF(1f,actionHeight);
+			size = new SizeF(1f,actionHeight);
+
+			// Fit to Bounds
+			ScaleToFit(bounds.Width,bounds.Height);
+			Translate(bounds.X,bounds.Y);
 		}
 
-		public void ScaleToWidth(float width) => ScaleInternal( width / Size.Width );
-
-		public void ScaleToHeight( float height ) => ScaleInternal( height / Size.Height );
-
-		public void ScaleToFit(float width,float height) {
-			if(Size.Height*width < Size.Width*height)
-				ScaleToWidth( width );
+		void ScaleToFit(float width,float height) {
+			if(size.Height*width < size.Width*height)
+				ScaleInternal( width / size.Width ); // scale to width
 			else
-				ScaleToHeight( height );
+				ScaleInternal( height / size.Height ); // scale to height
 		}
 
 
 		void ScaleInternal( float scale ) {
-			GrowthRects = GrowthRects.Select( r => r.Scale( scale ) ).ToArray();
-			ActionRects = ActionRects.Select( r => r.Scale( scale ) ).ToArray();
-			Size = Size.Scale( scale );
+			foreach(var opt in GrowthOptions) optionRects[opt] = optionRects[opt].Scale( scale );
+			foreach(var act in Actions) actionRects[act] = actionRects[act].Scale( scale );
+			size = size.Scale( scale );
 		}
 
 		public void Translate(float x, float y ) {
-			GrowthRects = GrowthRects.Select( r => r.Translate( x, y ) ).ToArray();
-			ActionRects = ActionRects.Select( r => r.Translate( x, y ) ).ToArray();
+			foreach(var opt in GrowthOptions) 
+				optionRects[opt] = optionRects[opt].Translate( x, y );
+			foreach(var act in Actions) 
+				actionRects[act] = actionRects[act].Translate( x, y );
 		}
 
 		public IEnumerable<(GrowthOption,RectangleF)> EachGrowth() {
-			for(int i=0;i<GrowthOptions.Length;++i) yield return (GrowthOptions[i],GrowthRects[i]);
+			foreach(var opt in GrowthOptions)
+				yield return (opt,optionRects[opt]);
 		}
 
 		public IEnumerable<(GrowthActionFactory, RectangleF)> EachAction() {
-			for(int i = 0; i < ActionRects.Length; ++i) yield return (Actions[i], ActionRects[i]);
+			foreach(var act in Actions)
+				yield return (act,actionRects[act]);
 		}
 
-		public SizeF Size;
+		public RectangleF this[GrowthOption opt] => optionRects[opt];
+		public RectangleF this[GrowthActionFactory act] => actionRects[act];
 
-		public readonly GrowthOption[] GrowthOptions;
-		public RectangleF[] GrowthRects;
+		readonly GrowthOption[] GrowthOptions;
+		readonly GrowthActionFactory[] Actions;
 
-		public readonly GrowthActionFactory[] Actions;
-		public RectangleF[] ActionRects;
+		SizeF size;
+		readonly Dictionary<GrowthOption,RectangleF> optionRects;
+		readonly Dictionary<GrowthActionFactory,RectangleF> actionRects;
 
 	}
 

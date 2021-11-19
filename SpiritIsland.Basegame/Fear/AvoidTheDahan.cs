@@ -15,7 +15,7 @@ namespace SpiritIsland.Basegame {
 				for(int i = 0; i < args.SpacesMatchingCards.Count; ++i) {
 					var space = args.SpacesMatchingCards[i];
 					if( 2<=gs.DahanOn(space).Count)
-						args.SpacesMatchingCards.RemoveAt(i--);
+						args.SpacesMatchingCards.RemoveAt(i--); // !!! SpacesMatchingCards is immutable so RemoveAt doesn't do anything, gets locked in loop
 				}
 			} );
 

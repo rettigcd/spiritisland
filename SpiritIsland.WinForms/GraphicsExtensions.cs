@@ -6,7 +6,6 @@ namespace SpiritIsland.WinForms {
 
 	static public class GraphicsExtensions {
 
-
 		static public void DrawCount( this Graphics graphics, RectangleF rect, int count )
 			=> DrawSubscript(graphics, ToInts(rect),count);
 
@@ -55,16 +54,6 @@ namespace SpiritIsland.WinForms {
 		static public SizeF Scale( this SizeF src, float scale ) => new SizeF( src.Width * scale, src.Height * scale );
 		static public RectangleF Translate( this RectangleF src, float deltaX, float deltaY ) => new RectangleF( src.X +deltaX, src.Y +deltaY, src.Width, src.Height );
 
-		static public RectangleF[] SplitVertically( this RectangleF rect, params float[] splitPercentages) {
-			var ys = new List<float>() { rect.Y };
-			ys.AddRange(splitPercentages.Select(p=>rect.Y+rect.Height*p));
-			ys.Add( rect.Bottom );
-			var result = new RectangleF[ splitPercentages.Length+1 ];
-			for(int i=0;i<ys.Count-1;++i)
-				result[i] = new RectangleF( rect.X ,ys[i], rect.Width, ys[i+1]-ys[i]);
-			return result;
-		}
-
 		static public void DrawImageFitHeight( this Graphics graphics, Image image, RectangleF bounds ) {
 			graphics.DrawImage( image, bounds.FitHeight( image.Size ).ToInts() );
 		}
@@ -77,6 +66,7 @@ namespace SpiritIsland.WinForms {
 			graphics.DrawImage( image, bounds.FitBoth( image.Size ).ToInts() );
 		}
 
+
 		#region Integers
 
 		/// <summary>
@@ -87,8 +77,7 @@ namespace SpiritIsland.WinForms {
 			return new Rectangle( rect.X-delta, rect.Y-delta, rect.Width+d2, rect.Height+d2);
 		}
 
-
-		static public Rectangle[] SplitVertically( this Rectangle rect, params float[] divisions) {
+		static public Rectangle[] SplitVerticallyAt( this Rectangle rect, params float[] divisions) {
 			int lastY = rect.Y;
 			var result = new Rectangle[ divisions.Length+1 ];
 			for(int i = 0; i <= divisions.Length; ++i) {
@@ -101,7 +90,7 @@ namespace SpiritIsland.WinForms {
 			return result;
 		}
 
-		static public Rectangle[] SplitVertically( this Rectangle rect, int rowMargin, params float[] divisions) {
+		static public Rectangle[] SplitVerticallyAt( this Rectangle rect, int rowMargin, params float[] divisions) {
 			int workingHeight = rect.Height - divisions.Length * rowMargin;
 			int lastY = rect.Y;
 			var result = new Rectangle[ divisions.Length+1 ];
@@ -115,7 +104,7 @@ namespace SpiritIsland.WinForms {
 			return result;
 		}
 
-		static public Rectangle[] SplitByWeight( this Rectangle rect, int rowMargin, params float[] weights) {
+		static public Rectangle[] SplitVerticallyByWeight( this Rectangle rect, int rowMargin, params float[] weights) {
 			float total = weights.Sum();
 			int workingHeight = rect.Height - (weights.Length-1) * rowMargin;
 			int lastY = rect.Y;
@@ -126,6 +115,21 @@ namespace SpiritIsland.WinForms {
 				int nextY = rect.Y + (int)(current * workingHeight);
 				result[i] = new Rectangle( rect.X, lastY + i*rowMargin, rect.Width, nextY-lastY );
 				lastY = nextY;
+			}
+			return result;
+		}
+
+		static public Rectangle[] SplitHorizontallyByWeight( this Rectangle rect, int rowMargin, params float[] weights) {
+			float total = weights.Sum();
+			int workingWidth = rect.Width - (weights.Length-1) * rowMargin;
+			int lastX = rect.X;
+			var result = new Rectangle[ weights.Length ];
+			float current = 0.0f;
+			for(int i = 0; i < weights.Length; ++i) {
+				current += weights[i]/total;
+				int nextX = rect.X + (int)(current * workingWidth);
+				result[i] = new Rectangle( lastX + i*rowMargin, rect.Y, nextX-lastX, rect.Height );
+				lastX = nextX;
 			}
 			return result;
 		}
@@ -153,9 +157,30 @@ namespace SpiritIsland.WinForms {
 				: bounds.FitWidth(size);
 		}
 
+		static public Rectangle[] SplitHorizontally( this Rectangle rect, int divisions) {
+			var result = new Rectangle[ divisions ];
+			int lastX = 0;
+			for(int i = 0; i < divisions; ++i) {
+				int nextX = rect.Width*(i+1)/divisions;
+				result[i] = new Rectangle( rect.X+lastX, rect.Y, nextX-lastX, rect.Height);
+				lastX = nextX;
+			}
+			return result;
+		}
+
 		#endregion
 
 		#region Float
+
+		static public RectangleF[] SplitVerticallyAt( this RectangleF rect, params float[] splitPercentages) {
+			var ys = new List<float>() { rect.Y };
+			ys.AddRange(splitPercentages.Select(p=>rect.Y+rect.Height*p));
+			ys.Add( rect.Bottom );
+			var result = new RectangleF[ splitPercentages.Length+1 ];
+			for(int i=0;i<ys.Count-1;++i)
+				result[i] = new RectangleF( rect.X ,ys[i], rect.Width, ys[i+1]-ys[i]);
+			return result;
+		}
 
 		/// <summary>
 		/// Returns a new rectangle inflated by # of pixels on each side
