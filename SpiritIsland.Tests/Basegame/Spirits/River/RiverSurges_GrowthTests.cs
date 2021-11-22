@@ -176,7 +176,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 		protected void Assert_CardInActionListIf(PowerCard card) {
 
-			var unresolvedCards = spirit.GetAvailableActions(card.Speed)
+			var unresolvedCards = spirit.GetAvailableActions(card.DisplaySpeed)
 				.OfType<PowerCard>()
 				.ToArray();
 

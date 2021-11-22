@@ -59,7 +59,7 @@ namespace SpiritIsland.WinForms {
 			graphics.FillRectangle( Brushes.BlanchedAlmond, layout.AttributeRows[1] );
 			foreach(var valueRect in layout.AttributeValueCells)
 				graphics.DrawRectangle( Pens.Black, valueRect );
-			graphics.DrawImageFitHeight( GetIcon( power.Speed == Phase.Slow ? "slow" : "fast" ), layout.AttributeValueCells[0].InflateBy( (int)(-layout.AttributeValueCells[0].Height * .2f) ) );
+			graphics.DrawImageFitHeight( GetIcon( power.DisplaySpeed == Phase.Slow ? "slow" : "fast" ), layout.AttributeValueCells[0].InflateBy( (int)(-layout.AttributeValueCells[0].Height * .2f) ) );
 			graphics.DrawString( power.RangeText, boldFont, Brushes.Black, layout.AttributeValueCells[1], centerBoth );
 			graphics.DrawString( power.TargetFilter.ToUpper(), boldFont, Brushes.Black, layout.AttributeValueCells[2], centerBoth );
 

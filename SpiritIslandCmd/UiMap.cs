@@ -101,7 +101,7 @@ namespace SpiritIslandCmd {
 
 		public string FormatFactory(IActionFactory factory, int nameWidth=1){
 			var spirit = game.Spirit;
-			var speed = factory is IFlexibleSpeedActionFactory flex ? flex.Speed : Phase.None;
+			var speed = factory is IFlexibleSpeedActionFactory flex ? flex.DisplaySpeed : Phase.None;
 			char speedChar = speed.ToString()[0];
 			char unresolved = spirit.GetAvailableActions(speed).Contains(factory) ? '*' : ' ';
 			string cost = factory is PowerCard card ? card.Cost.ToString() : "-";

@@ -47,8 +47,9 @@ namespace SpiritIsland {
 
 		#region Speed
 
-		public Phase Speed => speedAttr.DisplaySpeed;
-		public SpeedOverride OverrideSpeed { get; set; }
+		public Phase DisplaySpeed => speedAttr.DisplaySpeed;
+		/// <summary> When set, overrides the speed attribute for everything except Display Speed </summary>
+		public ISpeedBehavior OverrideSpeedBehavior { get; set; }
 
 		public bool CouldActivateDuring( Phase phase, Spirit spirit ) {	// !!! Can we do this somehow without asking them every time if they want to use an element?
 			return CouldBeTriggered( spirit )
@@ -61,10 +62,10 @@ namespace SpiritIsland {
 		}
 
 		bool CouldMatchPhase( Phase requestSpeed, Spirit spirit ) {
-			return OverrideSpeed != null
-				? OverrideSpeed.Speed.IsOneOf( requestSpeed, Phase.FastOrSlow )
-				: speedAttr.CouldBeActiveFor( requestSpeed, spirit );
+			return SpeedBehavior.CouldBeActiveFor( requestSpeed, spirit );
 		}
+
+		ISpeedBehavior SpeedBehavior => OverrideSpeedBehavior ?? speedAttr;
 
 		#endregion
 
@@ -90,6 +91,7 @@ namespace SpiritIsland {
 		public IEnumerable<InnateOptionAttribute> Options => elementListByMethod.Select(x=>x.Attr);
 
 		public IEnumerable<IDrawableInnateOption> DrawableOptions => _drawableOptions;
+
 		readonly List<IDrawableInnateOption> _drawableOptions;
 
 
@@ -98,8 +100,8 @@ namespace SpiritIsland {
 			// !!! Targetting a space first, then declining all of the elemental upgrades
 			// !!! we should resolve elemental upgrades first, then pick the target.
 
-			// if we are using prepared, verify
-			if(!await speedAttr.IsActiveFor( spiritCtx.GameState.Phase, spiritCtx.Self )) return;
+			if( !await SpeedBehavior.IsActiveFor(spiritCtx.GameState.Phase,spiritCtx.Self) )
+				return; 
 
 			List<MethodInfo> lastMethods = await GetLastActivatedMethodsOfEachGroup( spiritCtx );
 			if( lastMethods.Count == 0 ) return;

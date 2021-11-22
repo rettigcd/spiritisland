@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
-	public class PowerCard : IFlexibleSpeedActionFactory, IOption {
+	public sealed class PowerCard : IFlexibleSpeedActionFactory, IOption {
 
 		#region constructor
 
-		protected PowerCard( MethodBase methodBase, GeneratesContextAttribute targetAttr ) {
+		PowerCard( MethodBase methodBase, GeneratesContextAttribute targetAttr ) {
 			this.methodBase = methodBase;
 			this.targetAttr = targetAttr;
 			cardAttr = methodBase.GetCustomAttributes<CardAttribute>().VerboseSingle( "Couldn't find CardAttribute on PowerCard targeting a space" );
@@ -18,10 +18,11 @@ namespace SpiritIsland {
 
 		#endregion
 
-		public string Text => $"{Name} ${Cost} ({Speed})";
+		public string Text => $"{Name} ${Cost} ({DisplaySpeed})";
 		public string Name         => cardAttr.Name;
-		public Phase Speed         => speedAttr.DisplaySpeed;
-		public SpeedOverride OverrideSpeed { get; set; }
+		public Phase DisplaySpeed         => speedAttr.DisplaySpeed;
+		public ISpeedBehavior OverrideSpeedBehavior { get; set; }
+
 
 		public int Cost            => cardAttr.Cost;
 		public ElementCounts Elements  => cardAttr.Elements;
@@ -31,21 +32,20 @@ namespace SpiritIsland {
 		public LandOrSpirit LandOrSpirit => targetAttr.LandOrSpirit;
 
 		public bool CouldActivateDuring( Phase requestSpeed, Spirit spirit ){
-			return OverrideSpeed != null
-				? OverrideSpeed.Speed.IsOneOf( requestSpeed, Phase.FastOrSlow)
-				: speedAttr.CouldBeActiveFor(requestSpeed,spirit);
+			return SpeedBehavior.CouldBeActiveFor(requestSpeed,spirit);
 		}
 
 		public async Task ActivateAsync(SpiritGameStateCtx spiritCtx) {
-			// if we are using prepared, verify
-			if(! await speedAttr.IsActiveFor(spiritCtx.GameState.Phase,spiritCtx.Self)) 
-				return;
+
+			if( !await SpeedBehavior.IsActiveFor(spiritCtx.GameState.Phase,spiritCtx.Self) )
+				return; 
 
 			var targetCtx = await targetAttr.GetTargetCtx( Name, spiritCtx );
 			if(targetCtx == null) 
 				return;
 
 			await InvokeOnObjectCtx(targetCtx);
+
 		}
 
 		/// <remarks>Called directly from Let's See What Happens with special ContextBehavior</remarks>
@@ -59,9 +59,11 @@ namespace SpiritIsland {
 
 		#region private
 
-		readonly protected SpeedAttribute speedAttr;
-		readonly protected CardAttribute cardAttr;
-		readonly protected MethodBase methodBase;
+		ISpeedBehavior SpeedBehavior => OverrideSpeedBehavior ?? speedAttr;
+
+		readonly SpeedAttribute speedAttr;
+		readonly CardAttribute cardAttr;
+		readonly MethodBase methodBase;
 
 		#endregion
 
@@ -104,7 +106,7 @@ namespace SpiritIsland {
 
 		#endregion
 
-		readonly protected GeneratesContextAttribute targetAttr;
+		readonly GeneratesContextAttribute targetAttr;
 
 	}
 

@@ -19,9 +19,7 @@ Refactor Testing to make it easier to test.
 
 Refactor UI - to make cleaner and ready to port to Android
 	- Put Build / Ravage / fear in strip along the top
-	- Make Spirit shrink to fit in window
-	- Separate cards into: Hand, Activated, Discarded
-	UI - Sort Cards by: speed, element, cost, (HAND,PURCHASED,DISCARDED)
+	UI - Sort Cards by: speed, element, cost
 
 2) TargetSpaceCtx.DamageInvaders - limit badland damage to once / action
 3) Detect end of game at end of each action, Don't Lock-up when it happens.

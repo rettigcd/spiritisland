@@ -52,6 +52,7 @@ namespace SpiritIsland.BranchAndClaw {
 				new PresenceTrack( Track.Energy2, Track.SunEnergy, Track.Energy4, Track.Energy5, Track.PlantEnergy, Track.Energy7, Track.Energy8, Track.Energy9 ),
 				new PresenceTrack( Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4, Track.Card5Reclaim1 )
 			),
+			// PowerCard.For<SkyStretchesToShore>(),
 			PowerCard.For<BoonOfGrowingPower>(),
 			PowerCard.For<RegrowFromRoots>(),
 			PowerCard.For<SacrosanctWilderness>(),

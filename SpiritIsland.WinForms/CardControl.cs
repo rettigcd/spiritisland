@@ -107,12 +107,12 @@ namespace SpiritIsland.WinForms {
 		}
 
 		Rectangle GetButtonRect(CardLocation location){
-			switch( location ) {
-				case CardLocation.Hand: return handRect;
-				case CardLocation.InPlay: return inPlayRect;
-				case CardLocation.Discarded: return discardRect;
-			}
-			throw new ArgumentException("invalid card location");
+			return location switch {
+				CardLocation.Hand => handRect,
+				CardLocation.InPlay => inPlayRect,
+				CardLocation.Discarded => discardRect,
+				_ => throw new ArgumentException( "invalid card location" ),
+			};
 		}
 
 
@@ -179,11 +179,11 @@ namespace SpiritIsland.WinForms {
 		}
 
 		CardLocation GetLocationButton(Point coords ) {
-			if(handRect.Contains( coords )) return CardLocation.Hand;
-			if(inPlayRect.Contains( coords )) return CardLocation.InPlay;
-			if(discardRect.Contains( coords )) return CardLocation.Discarded;
-			return CardLocation.None;
- 		}
+			return handRect.Contains( coords )   ? CardLocation.Hand
+				: inPlayRect.Contains( coords )  ? CardLocation.InPlay
+				: discardRect.Contains( coords ) ? CardLocation.Discarded 
+				: CardLocation.None;
+		}
 
 
 		protected override void OnMouseMove( MouseEventArgs e ) {
@@ -248,7 +248,7 @@ namespace SpiritIsland.WinForms {
 
 		#endregion
 
-		HashSet<CardLocation> choiceLocations = new HashSet<CardLocation>();
+		readonly HashSet<CardLocation> choiceLocations = new HashSet<CardLocation>();
 
 		enum CardLocation { None, Hand, InPlay, Discarded };
 		CardLocation CurrentLocation;
@@ -256,9 +256,9 @@ namespace SpiritIsland.WinForms {
 		Rectangle inPlayRect;
 		Rectangle discardRect;
 
-		Image handImage;
-		Image discardImage;
-		Image inPlayImage;
+		readonly Image handImage;
+		readonly Image discardImage;
+		readonly Image inPlayImage;
 
 	}
 

@@ -5,9 +5,9 @@ namespace SpiritIsland {
 
 	[AttributeUsage(AttributeTargets.Method|AttributeTargets.Class)]
 
-	public class SpeedAttribute : Attribute {
-		public Phase DisplaySpeed { get; }
+	public class SpeedAttribute : Attribute, ISpeedBehavior {
 		public SpeedAttribute(Phase speed ) { DisplaySpeed = speed; }
+		public Phase DisplaySpeed { get; }
 
 		public virtual Task<bool> IsActiveFor( Phase requestSpeed, Spirit _ ) {
 			return Task.FromResult( DisplaySpeed.IsOneOf( requestSpeed, Phase.FastOrSlow ) );
@@ -18,5 +18,12 @@ namespace SpiritIsland {
 
 	}
 
+	public interface ISpeedBehavior {
+
+		public Task<bool> IsActiveFor( Phase requestSpeed, Spirit spirit );
+
+		public bool CouldBeActiveFor( Phase requestSpeed, Spirit spirit );
+
+	}
 
 }

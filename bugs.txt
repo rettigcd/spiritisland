@@ -1,5 +1,3 @@
-4	Sky Stretches to Shore - Slow card was made fast.  Didn't do anything when activated.
-
 4   When winning via apparent Fear victory, UI locks up.
 	* Possibly engine-thread crashes, then we accidentally click an old option that hasn't been removed yet, then we hang, waiting to be presented with a decision
 	* solution - when we submit a choice, disable the existing options.

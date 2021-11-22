@@ -43,7 +43,7 @@ namespace SpiritIsland.Tests {
 
 		static protected void Assert_CardStatus( PowerCard card, int expectedCost, Phase expectedSpeed, string expectedElements ) {
 			Assert.Equal( expectedCost, card.Cost );
-			Assert.Equal( expectedSpeed, card.Speed );
+			Assert.Equal( expectedSpeed, card.DisplaySpeed );
 
 			var cardElements = card.Elements
 				.Select(x=> GrowthTests.ElementChars[x.Key]);

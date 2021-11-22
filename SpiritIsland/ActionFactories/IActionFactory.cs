@@ -13,17 +13,9 @@ namespace SpiritIsland {
 	}
 
 	public interface IFlexibleSpeedActionFactory : IActionFactory {
-		Phase Speed { get; }
-		SpeedOverride OverrideSpeed { get; set; }
-	}
-
-	public class SpeedOverride {
-		public SpeedOverride(Phase speed, string source ) {
-			Speed = speed;
-			Source = source;
-		}
-		public Phase Speed { get; }
-		public string Source { get; }
+		Phase DisplaySpeed { get; }
+		/// <summary> When set, overrides the speed attribute for everything except Display Speed </summary>
+		ISpeedBehavior OverrideSpeedBehavior { get; set; }
 	}
 
 }

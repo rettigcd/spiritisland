@@ -12,10 +12,6 @@ namespace SpiritIsland {
 		readonly Phase resultingSpeed;
 		int countToChange;
 
-		public SpeedChanger( SpiritGameStateCtx ctx, Phase resultingSpeed, int maxCountToChange )
-			:this(ctx.Self,ctx.GameState,resultingSpeed,maxCountToChange) 
-		{}
-
 		public SpeedChanger( Spirit spirit, GameState gs, Phase resultingSpeed, int maxCountToChange ) {
 			this.spirit = spirit;
 			this.gameState = gs; // for Time-Passes Hook, to reset
@@ -65,10 +61,28 @@ namespace SpiritIsland {
 				countToChange = 0;
 		}
 
+		class SpeedOVerrideBehavior : ISpeedBehavior {
+			readonly Phase newSpeed;
+			public SpeedOVerrideBehavior(Phase newSpeed ) { this.newSpeed = newSpeed; }
+
+			public bool CouldBeActiveFor( Phase requestSpeed, Spirit spirit )
+				=> requestSpeed == newSpeed;
+			
+			public Task<bool> IsActiveFor( Phase requestSpeed, Spirit spirit ) 
+				=> Task.FromResult(requestSpeed == newSpeed);
+		}
+
 		void Change( IFlexibleSpeedActionFactory factory ) {
-			Task Restore(GameState _) { factory.OverrideSpeed = null; return Task.CompletedTask; }
+//			factory.OverrideSpeed = new SpeedOverride( resultingSpeed, "SpeedChanger" );
+			factory.OverrideSpeedBehavior = new SpeedOVerrideBehavior( resultingSpeed );
+
+			Task Restore(GameState _) { 
+//				factory.OverrideSpeed = null; 
+				factory.OverrideSpeedBehavior = null;
+				return Task.CompletedTask;
+			}
 			gameState.TimePasses_ThisRound.Push( Restore );
-			factory.OverrideSpeed = new SpeedOverride( resultingSpeed, "SpeedChanger" );
+
 		}
 
 	}
