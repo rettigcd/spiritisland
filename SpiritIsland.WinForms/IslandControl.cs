@@ -21,7 +21,9 @@ namespace SpiritIsland.WinForms {
 
 		}
 
-		public void Init( GameState gameState, IHaveOptions optionProvider, string tokenColor ) {
+		public void Init( GameState gameState, IHaveOptions optionProvider, string presenceColor ) {
+
+			spiritLayout = null;
 
 			optionProvider.NewDecision += OptionProvider_OptionsChanged;
 
@@ -87,7 +89,8 @@ namespace SpiritIsland.WinForms {
 			//			boardA = Image.FromFile(".\\images\\board a.png");
 
 			var images = ResourceImages.Singleton;
-			presence = images.GetPresenceIcon( tokenColor );
+			presence = images.GetPresenceIcon( presenceColor );
+			this.presenceColor = presenceColor;
 			strife   = images.GetToken( "strife" );
 			fear     = images.GetToken( "fear" );
 			grayFear = images.GetToken( "fear_gray");
@@ -120,6 +123,10 @@ namespace SpiritIsland.WinForms {
 			deployedPresence  = decision as Decision.Presence.Deployed;
 			this.activeSpaces = decision.Options.OfType<Space>().ToArray();
 			fearCard          = decision.Options.OfType<DisplayFearCard>().FirstOrDefault();
+			clickableTrackOptions   = decision.Options.OfType<Track>().ToArray();
+			selectableInnateOptions = decision.Options.OfType<InnatePower>().ToArray();
+			selectableGrowthOptions = decision.Options.OfType<GrowthOption>().ToArray();
+			selectableGrowthActions = decision.Options.OfType<GrowthActionFactory>().ToArray();
 		}
 
 		#region Paint
@@ -144,32 +151,87 @@ namespace SpiritIsland.WinForms {
 			if(gameState != null) {
 				foreach(var space in gameState.Island.Boards[0].Spaces)
 					DecorateSpace(pe.Graphics,space);
-				DrawFearPool( pe.Graphics, new RectangleF(Width*.75f,0f,Width*.25f,Width*.05f ) );
-				DrawBlight  ( pe.Graphics, new RectangleF(Width*.80f,Width*.05f,Width*.20f,Width*.03f ) );
-				DrawRound( pe.Graphics );
-				DrawInvaderCards( pe.Graphics ); // other than highlights, do this last since it contains the Fear Card that we want to be on top of everything.
 
+				DrawFearPool( pe.Graphics, new RectangleF(Width*.50f, 0f, Width*.20f, Width*.04f ) );
+				DrawBlight  ( pe.Graphics, new RectangleF(Width*.55f,Width*.05f,Width*.15f,Width*.03f ) );
+				DrawRound( pe.Graphics );
+				DrawInvaderCards( pe.Graphics, new Rectangle(0,0,(int)(Width*.65f),Height) ); // other than highlights, do this last since it contains the Fear Card that we want to be on top of everything.
 				DrawHighlights( pe );
+
+				const float spiritShare = .35f;
+				DrawSpirit( pe.Graphics, new Rectangle( Width - (int)(spiritShare*Width), 0, (int)(spiritShare*Width), Height) );
+
+
 			}
 
 		}
+
+		static Rectangle FitClientBounds(Rectangle bounds) {
+			const float windowRatio = 1.05f;
+			if(bounds.Width > bounds.Height / windowRatio) {
+				int widthClip = bounds.Width - (int)(bounds.Height / windowRatio);
+				bounds.X += widthClip;
+				bounds.Width -= widthClip;
+			} else
+				bounds.Height = (int)(bounds.Width * windowRatio);
+			return bounds;
+		}
+
+		SpiritLayout spiritLayout;
+		Track[] clickableTrackOptions;
+		InnatePower[] selectableInnateOptions;
+		GrowthOption[] selectableGrowthOptions;
+		GrowthActionFactory[] selectableGrowthActions;
+
+		void DrawSpirit( Graphics graphics, Rectangle bounds ) {
+
+			 bounds = FitClientBounds(bounds);
+
+			// Layout
+			if(spiritLayout == null)
+				spiritLayout = new SpiritLayout( graphics, spirit, bounds, 10 );
+
+			// == Record Hotspots ==
+			hotSpots.Clear();
+			// Growth Options/Actions
+			foreach(var opt in selectableGrowthOptions)
+				hotSpots.Add( opt, spiritLayout.growthLayout[opt] );
+			foreach(var act in selectableGrowthActions)
+				hotSpots.Add( act, spiritLayout.growthLayout[act] );
+			// Presence
+			foreach(var track in clickableTrackOptions)
+				hotSpots.Add( track, spiritLayout.trackLayout.ClickRectFor( track ) );
+			// Innates
+			foreach(var power in selectableInnateOptions)
+				hotSpots.Add( power, spiritLayout.innateLayouts[power].TotalInnatePowerBounds );
+
+			graphics.FillRectangle(Brushes.LightYellow,bounds);
+			new SpiritPainter(spirit).Paint( graphics, spiritLayout, 
+				selectableInnateOptions, 
+				selectableGrowthOptions, 
+				selectableGrowthActions,
+				clickableTrackOptions,
+				presenceColor
+			);
+		}
+
 
 		void DrawRound( Graphics graphics ) {
 			using var font = new Font( ResourceImages.Singleton.Fonts.Families[0], Height*.065f, GraphicsUnit.Pixel );
 			graphics.DrawString("round: "+gameState.RoundNumber, font, Brushes.SteelBlue, 0, 0);
 		}
 
-		void DrawInvaderCards( Graphics graphics ) {
+		void DrawInvaderCards( Graphics graphics, Rectangle bounds ) {
 
 			// Invaders
 			const float margin = 15;
 			const float textHeight = 20f;
-			float height = this.Height *.33f;
+			float height = bounds.Height *.33f;
 			float width = height * .66f;
 			using var buildRavageFont = new Font( ResourceImages.Singleton.Fonts.Families[0], textHeight, GraphicsUnit.Pixel );
 
-			float x = ClientRectangle.Width-width-margin-margin;
-			float y = ClientRectangle.Height-height-margin*2 - textHeight;
+			float x = bounds.Width-width-margin-margin;
+			float y = bounds.Height-height-margin*2 - textHeight;
 
 			// Build Metrics
 			int buildCount = gameState.InvaderDeck.Build.Count;
@@ -178,7 +240,7 @@ namespace SpiritIsland.WinForms {
 			for(int i=0;i<buildCount;++i)
 				buildRect[i] = new RectangleF( x+i*buildWidth, y+i*buildHeight, buildWidth, buildHeight );
 			float buildTextWidth = graphics.MeasureString( "Build", buildRavageFont ).Width;
-			PointF buildTextTopLeft = new PointF( x + (width - buildTextWidth) / 2, ClientRectangle.Bottom - textHeight - margin );
+			PointF buildTextTopLeft = new PointF( x + (width - buildTextWidth) / 2, bounds.Bottom - textHeight - margin );
 
 			// Ravage Metrics
 			float ravageX = x - (width + margin);
@@ -188,12 +250,12 @@ namespace SpiritIsland.WinForms {
 			for(int i=0;i<ravageCounts;++i)
 				ravageRects[i] = new RectangleF( ravageX+i*ravageWidth, y+i*ravageHeight, ravageWidth, ravageHeight );
 			float textWidth = graphics.MeasureString( "Ravage", buildRavageFont ).Width;
-			PointF ravageTextTopLeft = new PointF( ravageX + (width - textWidth) / 2, ClientRectangle.Bottom - textHeight - margin );
+			PointF ravageTextTopLeft = new PointF( ravageX + (width - textWidth) / 2, bounds.Bottom - textHeight - margin );
 
 			// Fear Metrics
-			var fearHeight = this.Height * .8f;
+			var fearHeight = bounds.Height * .8f;
 			var fearWidth = fearHeight * .66f;
-			var fearRect = new RectangleF( Width - fearWidth - this.Height * .1f, (Height - fearHeight) / 2, fearWidth, fearHeight );
+			var fearRect = new RectangleF( bounds.Width - fearWidth - bounds.Height * .1f, (bounds.Height - fearHeight) / 2, fearWidth, fearHeight );
 
 			// Build
 			for(int i=0;i<buildRect.Length;++i) 
@@ -484,21 +546,35 @@ namespace SpiritIsland.WinForms {
 			return new PointF( norm.X * boardScreenSize.Width, norm.Y * boardScreenSize.Height );
 		}
 
+		protected override void OnSizeChanged( EventArgs e ) {
+			base.OnSizeChanged( e );
+			spiritLayout = null;
+			this.Invalidate();
+		}
+
 		#endregion
 
 		protected override void OnClick( EventArgs e ) {
 
-			Point clientCoords = this.PointToClient(Control.MousePosition);
-
-			IOption match = FindOption();
-			if(match is Space space)
+			IOption option = FindOption();
+			if(option is Space space)
 				SpaceClicked?.Invoke(space);
-			else if(match is Token invader)
+			else if(option is Token invader)
 				TokenClicked?.Invoke( invader );
-			else if(match is SpaceToken st)
+			else if(option is SpaceToken st)
 				SpaceTokenClicked?.Invoke( st );
+			else if( option != null )
+				OptionSelected?.Invoke(option);
+
+			Point clientCoords = this.PointToClient( Control.MousePosition );
+			if(spiritLayout.imgBounds.Contains( clientCoords )) {
+				string msg = this.spirit.SpecialRules.Select(r=>r.ToString()).Join("\r\n\r\n");
+				MessageBox.Show( msg );
+			}
 
 		}
+
+		public event Action<IOption> OptionSelected;
 
 		protected override void OnMouseMove( MouseEventArgs e ) {
 			base.OnMouseMove( e );
@@ -513,7 +589,8 @@ namespace SpiritIsland.WinForms {
 		IOption FindOption() {
 			Point clientCoords = this.PointToClient( Control.MousePosition );
 			return FindInvader( clientCoords )
-				?? FindSpaces( clientCoords );
+				?? FindSpaces( clientCoords )
+				?? FindHotSpot( clientCoords );
 		}
 
 		IOption FindSpaces( Point clientCoords ) {
@@ -535,6 +612,12 @@ namespace SpiritIsland.WinForms {
 				.Select(t=>t.Item2)
 				.FirstOrDefault();
 		}
+
+		IOption FindHotSpot( Point clientCoords ) {
+			return hotSpots.Keys.FirstOrDefault(key=>hotSpots[key].Contains(clientCoords));
+		}
+
+		readonly Dictionary<IOption, RectangleF> hotSpots = new();
 
 		public event Action<Space> SpaceClicked;
 		public event Action<Token> TokenClicked;
@@ -562,6 +645,7 @@ namespace SpiritIsland.WinForms {
 
 		Image board;
 		Image presence;
+		string presenceColor;
 		Image strife;
 		Image fear;
 		Image grayFear;

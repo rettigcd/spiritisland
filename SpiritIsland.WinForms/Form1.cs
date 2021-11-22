@@ -22,8 +22,8 @@ namespace SpiritIsland.WinForms {
 			this.islandControl.SpaceClicked += Select;
 			this.islandControl.TokenClicked += Select;
 			this.islandControl.SpaceTokenClicked += Select;
+			this.islandControl.OptionSelected += Select;
 			this.cardControl.CardSelected += Select;
-			this.spiritControl.OptionSelected += Select;
 
 		}
 
@@ -125,7 +125,6 @@ namespace SpiritIsland.WinForms {
 
 			this.islandControl.Init( game.GameState, this, gameConfiguration.Color );
 			this.cardControl.Init( game.Spirit, this );
-			this.spiritControl.Init( game.Spirit, gameConfiguration.Color, this );
 			this.statusControl1.Init( game.GameState, this );
 			this.Text = "Spirit Island - Single Player Game #"+gameConfiguration.GameNumber;
 

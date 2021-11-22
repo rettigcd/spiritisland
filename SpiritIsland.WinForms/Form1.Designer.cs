@@ -29,9 +29,7 @@ namespace SpiritIsland.WinForms {
             this.promptLabel = new System.Windows.Forms.Label();
             this.islandControl = new SpiritIsland.WinForms.IslandControl();
             this.cardControl = new SpiritIsland.WinForms.CardControl();
-            this.spiritControl = new SpiritIsland.WinForms.SpiritControl();
             this.splitContainer = new System.Windows.Forms.SplitContainer();
-            this.islandSpiritSplitter = new System.Windows.Forms.Splitter();
             this.textIslandSplitter = new System.Windows.Forms.Splitter();
             this.textPanel = new System.Windows.Forms.Panel();
             this.statusControl1 = new SpiritIsland.WinForms.StatusControl();
@@ -68,7 +66,7 @@ namespace SpiritIsland.WinForms {
             this.islandControl.Location = new System.Drawing.Point(10, 35);
             this.islandControl.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.islandControl.Name = "islandControl";
-            this.islandControl.Size = new System.Drawing.Size(658, 383);
+            this.islandControl.Size = new System.Drawing.Size(1154, 383);
             this.islandControl.TabIndex = 2;
             this.islandControl.Text = "islandControl1";
             // 
@@ -84,18 +82,6 @@ namespace SpiritIsland.WinForms {
             this.cardControl.TabIndex = 3;
             this.cardControl.Text = "cardControl1";
             // 
-            // spiritControl
-            // 
-            this.spiritControl.BackColor = System.Drawing.Color.LightYellow;
-            this.spiritControl.Cursor = System.Windows.Forms.Cursors.Default;
-            this.spiritControl.Dock = System.Windows.Forms.DockStyle.Right;
-            this.spiritControl.Location = new System.Drawing.Point(668, 35);
-            this.spiritControl.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
-            this.spiritControl.Name = "spiritControl";
-            this.spiritControl.Size = new System.Drawing.Size(496, 383);
-            this.spiritControl.TabIndex = 8;
-            this.spiritControl.Text = "spiritControl1";
-            // 
             // splitContainer
             // 
             this.splitContainer.Cursor = System.Windows.Forms.Cursors.HSplit;
@@ -106,10 +92,8 @@ namespace SpiritIsland.WinForms {
             // 
             // splitContainer.Panel1
             // 
-            this.splitContainer.Panel1.Controls.Add(this.islandSpiritSplitter);
             this.splitContainer.Panel1.Controls.Add(this.islandControl);
             this.splitContainer.Panel1.Controls.Add(this.textIslandSplitter);
-            this.splitContainer.Panel1.Controls.Add(this.spiritControl);
             this.splitContainer.Panel1.Controls.Add(this.textPanel);
             // 
             // splitContainer.Panel2
@@ -118,16 +102,6 @@ namespace SpiritIsland.WinForms {
             this.splitContainer.Size = new System.Drawing.Size(1164, 676);
             this.splitContainer.SplitterDistance = 418;
             this.splitContainer.TabIndex = 10;
-            // 
-            // islandSpiritSplitter
-            // 
-            this.islandSpiritSplitter.Dock = System.Windows.Forms.DockStyle.Right;
-            this.islandSpiritSplitter.Location = new System.Drawing.Point(651, 35);
-            this.islandSpiritSplitter.Name = "islandSpiritSplitter";
-            this.islandSpiritSplitter.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.islandSpiritSplitter.Size = new System.Drawing.Size(17, 383);
-            this.islandSpiritSplitter.TabIndex = 9;
-            this.islandSpiritSplitter.TabStop = false;
             // 
             // textIslandSplitter
             // 
@@ -217,7 +191,7 @@ namespace SpiritIsland.WinForms {
             // gameLogToolStripMenuItem
             // 
             this.gameLogToolStripMenuItem.Name = "gameLogToolStripMenuItem";
-            this.gameLogToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.gameLogToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
             this.gameLogToolStripMenuItem.Text = "Game &Log";
             this.gameLogToolStripMenuItem.Click += new System.EventHandler(this.GameLogToolStripMenuItem_Click);
             // 
@@ -252,11 +226,9 @@ namespace SpiritIsland.WinForms {
 		private System.Windows.Forms.Label promptLabel;
 		private IslandControl islandControl;
 		private CardControl cardControl;
-        private SpiritControl spiritControl;
 		private System.Windows.Forms.SplitContainer splitContainer;
 		private System.Windows.Forms.Splitter textIslandSplitter;
 		private System.Windows.Forms.Panel textPanel;
-		private System.Windows.Forms.Splitter islandSpiritSplitter;
 		private StatusControl statusControl1;
 		private System.Windows.Forms.MenuStrip menuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem gameToolStripMenuItem;

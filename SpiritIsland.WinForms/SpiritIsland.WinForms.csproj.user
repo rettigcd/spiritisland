@@ -20,9 +20,6 @@
     <Compile Update="LogForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="SpiritControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Update="StatusControl.cs">
       <SubType>Component</SubType>
     </Compile>
