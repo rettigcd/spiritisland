@@ -20,6 +20,8 @@ namespace SpiritIsland {
 		Any		// used by Bringer
 	};
 
+	public class ElementCounts : CountDictionary<Element> { }
+
 	public static class ElementList {
 
 		public static readonly Element[] AllElements = new Element[] { Element.Sun, Element.Moon, Element.Air, Element.Fire, Element.Water, Element.Earth, Element.Plant, Element.Animal };

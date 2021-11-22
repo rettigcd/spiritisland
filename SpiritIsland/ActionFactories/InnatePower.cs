@@ -127,12 +127,9 @@ namespace SpiritIsland {
 			return lastMethods;
 		}
 
-		private static async Task<MethodInfo> GetLastMethodThatHasElements( Spirit self, MethodTuple[] grp ) {
-			MethodInfo method = null;
-			foreach(MethodTuple x in grp.OrderBy( pair => pair.Elements.Total ))
-				if(await self.HasElements( x.Elements ))
-					method = x.Method;
-			return method;
+		static async Task<MethodInfo> GetLastMethodThatHasElements( Spirit self, MethodTuple[] grp ) {
+			CountDictionary<Element> match = await self.GetHighestMatchingElements( grp.Select(g=>g.Elements) );
+			return grp.FirstOrDefault(g=>g.Elements==match)?.Method;
 		}
 
 		async Task<bool> ShouldRepeat( Spirit spirit ) => repeatAttr != null 

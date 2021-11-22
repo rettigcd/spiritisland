@@ -68,6 +68,14 @@ namespace SpiritIsland {
 			return false;
 		}
 
+		public virtual async Task<CountDictionary<Element>> GetHighestMatchingElements( IEnumerable<CountDictionary<Element>> elementOptions ) {
+			CountDictionary<Element> match = null;
+			foreach(CountDictionary<Element> elements in elementOptions.OrderBy( els => els.Total ))
+				if(await HasElements( elements ))
+					match = elements;
+			return match;
+		}
+
 		#endregion
 
 		#region Growth
