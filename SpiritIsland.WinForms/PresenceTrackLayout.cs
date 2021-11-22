@@ -19,7 +19,7 @@ namespace SpiritIsland.WinForms {
 			CalcTrackMetrics( spirit, bounds, (int)slotWidth, presenceSize );
 
 			Destroyed = new Rectangle( 
-				(int)(bounds.Width - 2.5f * slotWidth + slotWidth / 2), 
+				(int)(bounds.Right - 2.5f * slotWidth + slotWidth / 2), 
 				(int)(bounds.Y + energyRowHeight + margin + slotWidth * .5f), 
 				(int)presenceSize.Width, 
 				(int)presenceSize.Height

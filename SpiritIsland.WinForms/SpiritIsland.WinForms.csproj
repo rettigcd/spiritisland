@@ -1396,6 +1396,9 @@
     <None Update="images\devouring_ants.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="images\discard.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="images\draw_of_the_fruitful_earth.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -1504,8 +1507,14 @@
     <None Update="images\guard_the_healing_land.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="images\hand.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="images\harbingers_of_the_lightning.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\inplay.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="images\je\spirit\a_dreadful_tide_of_scurrying_flesh.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
