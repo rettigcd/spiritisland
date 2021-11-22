@@ -32,7 +32,7 @@ namespace SpiritIsland {
 				Elements = ElementList.Parse(thresholds);
 				Description = description;
 			}
-			public CountDictionary<Element> Elements { get; }
+			public ElementCounts Elements { get; }
 
 			public string Description { get; }
 		}

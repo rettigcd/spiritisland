@@ -16,7 +16,7 @@ namespace SpiritIsland {
 		public int TotalCount => slots.Length;
 		public int RevealedCount { get; set; } = 1;
 
-		public void AddElements( CountDictionary<Element> elements){
+		public void AddElements( ElementCounts elements){
 			foreach(var r in Revealed )
 				r.AddElement( elements );
 		}

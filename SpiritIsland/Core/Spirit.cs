@@ -35,12 +35,12 @@ namespace SpiritIsland {
 
 		#region Elements
 
-		public readonly CountDictionary<Element> Elements = new CountDictionary<Element>();
+		public readonly ElementCounts Elements = new ElementCounts();
 
 		/// <summary>
 		/// Checks all elements that are available to spirit.
 		/// </summary>
-		public virtual bool CouldHaveElements( CountDictionary<Element> subset ) {
+		public virtual bool CouldHaveElements( ElementCounts subset ) {
 			// For normal spirits without Prepared Elements, this is only the normal Elements
 			int wildCount = Elements[Element.Any];
 			return wildCount == 0 ? Elements.Contains(subset)  // no 'wild-card' elements, Elements must contain subset
@@ -50,7 +50,7 @@ namespace SpiritIsland {
 		/// <summary>
 		/// Checks elements available, and commits them (like the 'Any' element)
 		/// </summary>
-		public virtual async Task<bool> HasElements( CountDictionary<Element> subset ) {
+		public virtual async Task<bool> HasElements( ElementCounts subset ) {
 			// For normal spirits without Prepared Elements, this is the same as Could Have Elements
 			if( Elements.Contains(subset) ) return true;
 			int wildCount = Elements[Element.Any];
@@ -68,9 +68,9 @@ namespace SpiritIsland {
 			return false;
 		}
 
-		public virtual async Task<CountDictionary<Element>> GetHighestMatchingElements( IEnumerable<CountDictionary<Element>> elementOptions ) {
-			CountDictionary<Element> match = null;
-			foreach(CountDictionary<Element> elements in elementOptions.OrderBy( els => els.Total ))
+		public virtual async Task<ElementCounts> GetHighestMatchingElements( IEnumerable<ElementCounts> elementOptions ) {
+			ElementCounts match = null;
+			foreach(ElementCounts elements in elementOptions.OrderBy( els => els.Total ))
 				if(await HasElements( elements ))
 					match = elements;
 			return match;
@@ -411,7 +411,7 @@ namespace SpiritIsland {
 				spirit.usedActions.SetItems( usedActions );
 				spirit.usedInnates.SetItems( usedInnates );
 			}
-			static void InitFromArray(CountDictionary<Element> dict, KeyValuePair<Element,int>[] array ) {
+			static void InitFromArray(ElementCounts dict, KeyValuePair<Element,int>[] array ) {
 				dict.Clear(); 
 				foreach(var p in array) dict[p.Key]=p.Value;
 			}

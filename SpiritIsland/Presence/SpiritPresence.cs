@@ -105,7 +105,7 @@ namespace SpiritIsland {
 
 		public int CardPlayCount => CardPlays.Revealed.Where(x=>x.CardPlay.HasValue).Last().CardPlay.Value;
 
-		public void AddElements( CountDictionary<Element> elements ) {
+		public void AddElements( ElementCounts elements ) {
 			Energy.AddElements( elements );
 			CardPlays.AddElements( elements);
 		}

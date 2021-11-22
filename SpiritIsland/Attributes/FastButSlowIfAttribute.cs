@@ -5,7 +5,7 @@ namespace SpiritIsland {
 
 	public class FastButSlowIfAttribute : SpeedAttribute {
 
-		readonly CountDictionary<Element> triggerElements;
+		readonly ElementCounts triggerElements;
 		public FastButSlowIfAttribute(string triggerElements) : base( Phase.Fast ) { this.triggerElements = ElementList.Parse(triggerElements); }
 		public override async Task<bool> IsActiveFor( Phase requestSpeed, Spirit spirit ) {
 			return await base.IsActiveFor( requestSpeed, spirit )

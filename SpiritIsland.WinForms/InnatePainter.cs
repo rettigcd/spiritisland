@@ -14,7 +14,7 @@ namespace SpiritIsland.WinForms {
 			this.graphics = graphics;
 		}
 
-		public void DrawFromMetrics( InnatePower power, InnateLayout layout, CountDictionary<Element> activatedElements, bool isActive ) {
+		public void DrawFromMetrics( InnatePower power, InnateLayout layout, ElementCounts activatedElements, bool isActive ) {
 			// graphics, Fonts, Images
 
 			// Background

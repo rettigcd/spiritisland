@@ -20,13 +20,38 @@ namespace SpiritIsland {
 		Any		// used by Bringer
 	};
 
-	public class ElementCounts : CountDictionary<Element> { }
+	public class ElementCounts : CountDictionary<Element> {
+		#region constructors
+		public ElementCounts(){ }
+
+		public ElementCounts(IEnumerable<Element> items):base(items){ }
+
+		public ElementCounts(Dictionary<Element,int> inner):base(inner){ }
+
+		#endregion
+
+		public new ElementCounts Clone() {
+			var clone = new ElementCounts();
+			foreach(var invader in Keys)
+				clone[invader] = this[invader];
+			return clone;
+		}
+
+		/// <summary> Reorders elements into 'Standard' order </summary>
+		public string BuildElementString(string delimiter = " " ) {
+			return this
+				.OrderBy(p=>(int)p.Key)
+				.Select(p=>p.Value+" "+p.Key.ToString().ToLower())
+				.Join( delimiter ); // comma or space
+		}
+
+	}
 
 	public static class ElementList {
 
 		public static readonly Element[] AllElements = new Element[] { Element.Sun, Element.Moon, Element.Air, Element.Fire, Element.Water, Element.Earth, Element.Plant, Element.Animal };
 
-		public static CountDictionary<Element> Parse( string elementFormat ) {
+		public static ElementCounts Parse( string elementFormat ) {
 			var items = new List<Element>();
 			foreach(var singleElementType in elementFormat.Split( ',' )) {
 				var (count,el) = GetElementCounts(singleElementType);
@@ -34,15 +59,7 @@ namespace SpiritIsland {
 					items.Add( el );
 			}
 
-			return new CountDictionary<Element>( items.ToArray() );
-		}
-
-		/// <summary> Reorders elements into 'Standard' order </summary>
-		public static string BuildElementString(this CountDictionary<Element> elements, string delimiter = " " ) {
-			return elements
-				.OrderBy(p=>(int)p.Key)
-				.Select(p=>p.Value+" "+p.Key.ToString().ToLower())
-				.Join( delimiter ); // comma or space
+			return new ElementCounts( items.ToArray() );
 		}
 
 		static (int,Element) GetElementCounts(string single ) {

@@ -24,7 +24,7 @@ namespace SpiritIsland {
 		public SpeedOverride OverrideSpeed { get; set; }
 
 		public int Cost            => cardAttr.Cost;
-		public CountDictionary<Element> Elements  => cardAttr.Elements;
+		public ElementCounts Elements  => cardAttr.Elements;
 		public PowerType PowerType => cardAttr.PowerType;
 		public Type MethodType     => methodBase.DeclaringType; // for determining card namespace and Basegame, BranchAndClaw, etc
 

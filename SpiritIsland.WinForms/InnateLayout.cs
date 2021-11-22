@@ -200,7 +200,7 @@ namespace SpiritIsland.WinForms {
 	}
 
 	public class WrappingText_InnateOptions : WrappingText {
-		public CountDictionary<Element> Elements;
+		public ElementCounts Elements;
 	}
 
 

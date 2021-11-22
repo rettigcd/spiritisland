@@ -61,7 +61,7 @@ namespace SpiritIsland {
 
 		public IActionFactory Action { get; set; }
 
-		public virtual void AddElement( CountDictionary<Element> elements ) {
+		public virtual void AddElement( ElementCounts elements ) {
 			foreach(var el in Elements)
 				elements[el]++;
 		}

@@ -23,7 +23,7 @@ namespace SpiritIsland {
 			Group = group;
 		}
 
-		public CountDictionary<Element> Elements { get; }
+		public ElementCounts Elements { get; }
 
 		public string Description { get; }
 
@@ -37,7 +37,7 @@ namespace SpiritIsland {
 	public enum AttributePurpose { DisplayAndExecute, ExecuteOnly, DisplayOnly }
 
 	public interface IDrawableInnateOption {
-		CountDictionary<Element> Elements { get; }
+		ElementCounts Elements { get; }
 		string Description { get; }
 	}
 

@@ -85,7 +85,7 @@ namespace SpiritIsland {
 				await ActivateInnerAsync( ctx );
 		}
 
-		public CountDictionary<Element>[] GetTriggerThresholds() => elementListByMethod.Select(a=>a.Attr.Elements).ToArray();
+		public ElementCounts[] GetTriggerThresholds() => elementListByMethod.Select(a=>a.Attr.Elements).ToArray();
 
 		public IEnumerable<InnateOptionAttribute> Options => elementListByMethod.Select(x=>x.Attr);
 
@@ -128,7 +128,7 @@ namespace SpiritIsland {
 		}
 
 		static async Task<MethodInfo> GetLastMethodThatHasElements( Spirit self, MethodTuple[] grp ) {
-			CountDictionary<Element> match = await self.GetHighestMatchingElements( grp.Select(g=>g.Elements) );
+			ElementCounts match = await self.GetHighestMatchingElements( grp.Select(g=>g.Elements) );
 			return grp.FirstOrDefault(g=>g.Elements==match)?.Method;
 		}
 
@@ -180,7 +180,7 @@ namespace SpiritIsland {
 			}
 			public MethodInfo Method { get; }
 			public InnateOptionAttribute Attr { get; }
-			public CountDictionary<Element>  Elements => Attr.Elements;
+			public ElementCounts  Elements => Attr.Elements;
 			public int Group => Attr.Group;
 		}
 

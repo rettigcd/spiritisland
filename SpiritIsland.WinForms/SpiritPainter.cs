@@ -55,7 +55,7 @@ namespace SpiritIsland.WinForms {
 		}
 
 
-		void DrawActivatedElements( Graphics graphics, CountDictionary<Element> elements, ElementLayout elLayout, int skip=0 ) {
+		void DrawActivatedElements( Graphics graphics, ElementCounts elements, ElementLayout elLayout, int skip=0 ) {
 
 			var orderedElements = elements.Keys.OrderBy( el => (int)el );
 			int idx = skip;

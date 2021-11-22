@@ -10,7 +10,7 @@ namespace SpiritIsland.PromoPack1 {
 		{ }
 
 		public int FireShowing() {
-			var dict = new CountDictionary<Element>();
+			var dict = new ElementCounts();
 			Energy.AddElements(dict);
 			CardPlays.AddElements(dict);
 			return dict[Element.Fire];

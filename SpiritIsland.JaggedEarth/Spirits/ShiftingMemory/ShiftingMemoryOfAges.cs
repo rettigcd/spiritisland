@@ -100,8 +100,8 @@ namespace SpiritIsland.JaggedEarth {
 			PreparedElements[el]++;
 		}
 
-		public async Task<CountDictionary<Element>> DiscardElements(int totalNumToRemove ) {
-			var discarded = new CountDictionary<Element>();
+		public async Task<ElementCounts> DiscardElements(int totalNumToRemove ) {
+			var discarded = new ElementCounts();
 
 			int index = totalNumToRemove;
 			while(index++ < totalNumToRemove) {
@@ -113,16 +113,16 @@ namespace SpiritIsland.JaggedEarth {
 			return discarded;
 		}
 
-		public override bool CouldHaveElements( CountDictionary<Element> subset ) {
+		public override bool CouldHaveElements( ElementCounts subset ) {
 			var els = PreparedElements.Any() ? Elements.Union(PreparedElements): Elements;
 			return els.Contains(subset);
 		}
 
-		public readonly CountDictionary<Element> PreparedElements = new CountDictionary<Element>();
+		public readonly ElementCounts PreparedElements = new ElementCounts();
 
-		protected CountDictionary<Element> actionElements; // null unless we are in the middle of an action
+		protected ElementCounts actionElements; // null unless we are in the middle of an action
 
-		public override async Task<bool> HasElements( CountDictionary<Element> subset ) {
+		public override async Task<bool> HasElements( ElementCounts subset ) {
 			if( actionElements == null ) 
 				actionElements = Elements.Clone();
 			if( actionElements.Contains( subset ) ) return true;
