@@ -37,11 +37,8 @@ namespace SpiritIsland.JaggedEarth {
 		}
 
 		protected override void InitializeInternal( Board board, GameState gameState ) {
-			// Put 1 presence on your starting board in a bountain of your choice.
 			// init special growth (note - we don't want this growth in Unit tests, so only add it if we call InitializeInternal())
 			this.AddActionFactory(new Setup_PlacePresenceOnMountain());
-			// Push all dahan from that land.
-
 		}
 
 	}
@@ -49,10 +46,15 @@ namespace SpiritIsland.JaggedEarth {
 	class Setup_PlacePresenceOnMountain : GrowthActionFactory { // Similar to SharpFang initialization
 
 		public override async Task ActivateAsync( SpiritGameStateCtx ctx ) {
-			var gameState = ctx.GameState;
-			var options = gameState.Island.AllSpaces.Where( space=>space.Terrain == Terrain.Mountain );
+			// Put 1 presence on your starting board in a mountain of your choice.
+			var options = ctx.AllSpaces.Where( space=>space.Terrain == Terrain.Mountain );
 			var space = await ctx.Self.Action.Decision(new Decision.TargetSpace("Add presence to",options, Present.Always));
 			ctx.Presence.PlaceOn(space);
+
+			// Push all dahan from that land.
+			var targetCtx = ctx.Target(space);
+			if(targetCtx.Dahan.Any)
+				await targetCtx.PushDahan(targetCtx.Dahan.Count);
 		}
 
 	}

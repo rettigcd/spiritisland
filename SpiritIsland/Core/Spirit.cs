@@ -85,6 +85,10 @@ namespace SpiritIsland {
 
 		public virtual async Task DoGrowth(GameState gameState) {
 
+			// Resolve Initialization
+			if(availableActions.Any())
+				await ResolveActions(new SpiritGameStateCtx(this,gameState,Cause.Growth));
+
 			int count = growthOptionGroup.SelectionCount;
 			List<GrowthOption> remainingOptions = growthOptionGroup.Options.ToList();
 

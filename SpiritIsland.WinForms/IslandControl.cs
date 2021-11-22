@@ -197,7 +197,8 @@ namespace SpiritIsland.WinForms {
 			foreach(var opt in selectableGrowthOptions)
 				hotSpots.Add( opt, spiritLayout.growthLayout[opt] );
 			foreach(var act in selectableGrowthActions)
-				hotSpots.Add( act, spiritLayout.growthLayout[act] );
+				if(spiritLayout.growthLayout.HasAction(act)) // there might be delayed setup actions here that don't have a rect
+					hotSpots.Add( act, spiritLayout.growthLayout[act] );
 			// Presence
 			foreach(var track in clickableTrackOptions)
 				hotSpots.Add( track, spiritLayout.trackLayout.ClickRectFor( track ) );
