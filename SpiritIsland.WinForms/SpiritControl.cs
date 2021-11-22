@@ -123,7 +123,7 @@ namespace SpiritIsland.WinForms {
 			int skip = spirit.Elements.Keys.Count; 
 			if(skip>1) skip++; // add a space
 			if(spirit is ShiftingMemoryOfAges smoa)
-				DrawActivatedElements( graphics, smoa.PreparedElements, spiritLayout.Elements, spirit.Elements.Keys.Count+1 );
+				DrawActivatedElements( graphics, smoa.PreparedElements, spiritLayout.Elements, skip );
 		}
 
 
