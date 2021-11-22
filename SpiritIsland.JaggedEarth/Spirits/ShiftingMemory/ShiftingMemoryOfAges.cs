@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SpiritIsland.JaggedEarth {
@@ -129,7 +130,7 @@ namespace SpiritIsland.JaggedEarth {
 
 			// Check if we have prepared element markers to fill the missing elements
 			if(PreparedElements.Any()) {
-				var missing = subset.Except(Elements);
+				var missing = subset.Except(actionElements);
 				if(PreparedElements.Contains(missing) && await this.UserSelectsFirstText($"Meet elemental threshold:"+subset.ToString(), "Yes, use prepared elements", "No, I'll pass.")) {
 					foreach(var pair in missing)
 						PreparedElements[pair.Key] -= pair.Value;
@@ -140,6 +141,36 @@ namespace SpiritIsland.JaggedEarth {
 			return false;
 		}
 
+		public override async Task<ElementCounts> GetHighestMatchingElements( IEnumerable<ElementCounts> elementOptions ) {
+			if( actionElements == null ) 
+				actionElements = Elements.Clone();
+
+			var highestNaturalMatch = elementOptions
+				.OrderByDescending(e=>e.Total)
+				.FirstOrDefault( els => actionElements.Contains(els) );
+
+			var canMeet = elementOptions
+				.OrderBy(e=>e.Total)
+				.Where( els => !actionElements.Contains(els) && PreparedElements.Contains(els.Except(actionElements)) )
+				.ToArray();
+
+			// If we can't extend with prepared, just return what we can
+			if(canMeet.Length == 0)
+				return highestNaturalMatch;
+
+			// if we CAN meet something with Prepared, return 
+			string prompt = highestNaturalMatch!=null 
+				? "Extend element threshold? (current: "+highestNaturalMatch.BuildElementString()+")"
+				: "Meet element threshold?";
+			var choice = await this.SelectText(prompt,canMeet.Select(e=>e.BuildElementString()).ToArray(),Present.Done);
+			var extended = canMeet.FirstOrDefault(e=>choice == e.BuildElementString());
+			if(extended != null) {
+				foreach(var pair in extended.Except(actionElements))
+					PreparedElements[pair.Key] -= pair.Value;
+				return extended;
+			}
+			return highestNaturalMatch;
+		}
 
 		protected override async Task TakeAction(IActionFactory factory, SpiritGameStateCtx ctx) {
 			actionElements = null; // make sure these are cleared out for every action
