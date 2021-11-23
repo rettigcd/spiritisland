@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
@@ -12,16 +13,9 @@ namespace SpiritIsland {
 			this.originalApi = originalApi;
 		}
 
-		public override Task<Space> TargetsSpace( 
-			Spirit self, 
-			GameState gameState, 
-			string prompt,
-			From from, 
-			Terrain? sourceTerrain, 
-			int range, 
-			string target
-		)
-			=> originalApi.TargetsSpace( self, gameState, prompt, from, sourceTerrain, range + extension, target );
+		public override IEnumerable<Space> GetTargetOptions( Spirit self, GameState gameState, From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum ) {
+			return originalApi.GetTargetOptions( self, gameState, sourceEnum, sourceTerrain, range + extension, filterEnum );
+		}
 
 	}
 

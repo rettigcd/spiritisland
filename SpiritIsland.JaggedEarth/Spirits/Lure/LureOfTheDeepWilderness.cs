@@ -32,6 +32,7 @@ namespace SpiritIsland.JaggedEarth {
 				new GrowthOption(new DrawPowerCard())
 			).Pick(2);
 
+			Presence.IsValid = (s) => s.Terrain != Terrain.Ocean && !s.IsCoastal;
 
 			InnatePowers = new InnatePower[] {
 				InnatePower.For<ForsakeSocietyToChaseAfterDreams>(),

@@ -141,6 +141,9 @@ namespace SpiritIsland {
 
 		#endregion
 
+		public Func<Space,bool> IsValid = DefaultIsValid; // override for Lure, Ocean, Volcano
+		static bool DefaultIsValid(Space space) => space.Terrain != Terrain.Ocean;
+
 		public IReadOnlyCollection<Space> Placed => placed.AsReadOnly();
 
 		public event Action<Track> TrackRevealed;

@@ -29,7 +29,7 @@ namespace SpiritIsland.BranchAndClaw {
 			// target spirit adds 2 presence and 1 wilds to a land at range 1
 
 			// Select destination
-			var to = await ctx.SelectSpaceWithinRangeOfCurrentPresence( 1, Target.Any ); // !!! this does not follow Lure / Volcano / Ocean special rules
+			var to = await ctx.Presence.SelectDestinationWithinRange( 1, Target.Any );
 
 			// add wilds
 			var toCtx = ctx.Target( to );

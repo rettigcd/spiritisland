@@ -6,7 +6,9 @@ namespace SpiritIsland.Basegame {
 
 	public class OceanPresence : SpiritPresence {
 
-		public OceanPresence( PresenceTrack energy, PresenceTrack cardPlays ) : base( energy, cardPlays ) { }
+		public OceanPresence( PresenceTrack energy, PresenceTrack cardPlays ) : base( energy, cardPlays ) {
+			IsValid = (s) => s.Terrain == Terrain.Ocean || s.IsCoastal;
+		}
 
 		public override void PlaceOn( Space space, GameState gs ) {
 			base.PlaceOn( space, gs );

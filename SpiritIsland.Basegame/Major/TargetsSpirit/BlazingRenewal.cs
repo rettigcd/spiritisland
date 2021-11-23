@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 	class BlazingRenewal {
@@ -10,13 +11,17 @@ namespace SpiritIsland.Basegame {
 
 			// into a single land, up to range 2 from your presence.
 			// Note - Jonah says it is the originators power and range and decision, not the targets
-			TargetSpaceCtx selfPickLandCtx = await ctx.SelectTargetSpace(null, From.Presence, null, 2, Target.Any );
+			var spaceOptions = ctx.Self.TargetLandApi.GetTargetOptions(ctx.Self,ctx.GameState,From.Presence,null,2,Target.Any)
+				.Where(ctx.Other.Presence.IsValid)
+				.ToArray();
+			TargetSpaceCtx selfPickLandCtx = await ctx.SelectSpace("Select location for target spirit to add presence", spaceOptions);
 
 			var otherCtx = ctx.OtherCtx;
 			bool additionalDamage = await ctx.YouHave("3 fire,3 earth,2 plant");
 
+
 			// target spirit adds 2 of their destroyed presence
-			int max = await otherCtx.Self.SelectNumber("Select # of destroyed presence to return to board", otherCtx.Self.Presence.Destroyed );
+			int max = await otherCtx.Self.SelectNumber("Select # of destroyed presence to place on " + selfPickLandCtx.Space.Label, otherCtx.Self.Presence.Destroyed );
 			if(max==0) return;
 
 			// Add it!

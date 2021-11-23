@@ -7,7 +7,8 @@ namespace SpiritIsland {
 
 	public class TargetLandApi {
 
-		public async virtual Task<Space> TargetsSpace( Spirit self, GameState gameState, string prompt, From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum ) {
+		// This is virtual so that Shadow can override it. - !! ?? Should this be a method on the Spirit??
+		public virtual async Task<Space> TargetsSpace( Spirit self, GameState gameState, string prompt, From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum ) {
 			if(prompt == null) prompt = "Target Space.";
 			IEnumerable<Space> spaces = GetTargetOptions( self, gameState, sourceEnum, sourceTerrain, range, filterEnum );
 			return await self.Action.Decision( new Decision.TargetSpace( prompt, spaces, Present.Always ));
@@ -15,7 +16,7 @@ namespace SpiritIsland {
 
 		public virtual IEnumerable<Space> GetTargetOptions( Spirit self, GameState gameState, From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum ) {
 			IEnumerable<Space> source = FindSources( self, sourceEnum, sourceTerrain );
-			return GetTargetOptions( self, gameState, source, range, filterEnum );
+			return GetTargetOptionsFromKnownSource( self, gameState, source, range, filterEnum );
 		}
 
 		static protected IEnumerable<Space> FindSources( Spirit self, From sourceEnum, Terrain? sourceTerrain ) {
@@ -27,7 +28,7 @@ namespace SpiritIsland {
 		}
 
 #pragma warning disable CA1822 // Mark members as static
-		public IEnumerable<Space> GetTargetOptions( 
+		public IEnumerable<Space> GetTargetOptionsFromKnownSource( 
 #pragma warning restore CA1822 // Mark members as static
 			Spirit self, 
 			GameState gameState, 

@@ -54,14 +54,6 @@ namespace SpiritIsland {
 			} );
 		}
 
-		/// <summary>
-		/// Used for Power-targetting, where range sympols appear.
-		/// </summary>
-		public async Task<TargetSpaceCtx> SelectTargetSpace( string prompt, From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum ) {
-			var space = await Self.TargetLandApi.TargetsSpace( Self, GameState, prompt, sourceEnum, sourceTerrain, range, filterEnum );
-			return new TargetSpaceCtx( this, space );
-		}
-
 		public TargetSpaceCtx Target( Space space ) => new TargetSpaceCtx( this, space );
 		public TargetSpaceCtx TargetSpace( string spaceLabel ) => new TargetSpaceCtx( this, GameState.Island.AllSpaces.First(s=>s.Label==spaceLabel) );
 
@@ -86,20 +78,11 @@ namespace SpiritIsland {
 
 		#endregion
 
-		#region Place Presence
-
-		/// <summary>
-		/// Selects a space within [range] of current presence
-		/// </summary>
-		public async Task<Space> SelectSpaceWithinRangeOfCurrentPresence( int range, string filterEnum ) {
-			return await Self.Action.Decision( new Decision.Presence.PlaceOn( this, range, filterEnum ) );
+		/// <summary> Used for Power-targetting, where range sympols appear. </summary>
+		public async Task<TargetSpaceCtx> SelectTargetSpace( From sourceEnum, int range ) {
+			var space = await Self.TargetLandApi.TargetsSpace( Self, GameState, null, sourceEnum, null, range, SpiritIsland.Target.Any );
+			return new TargetSpaceCtx( this, space );
 		}
-
-		public IEnumerable<Space> FindSpacesWithinRangeOf( IEnumerable<Space> source, int range, string filterEnum ) {
-			return Self.TargetLandApi.GetTargetOptions( Self, GameState, source, range, filterEnum );
-		}
-
-		#endregion Place Presence
 
 		#region Generic Select space / option
 

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SpiritIsland {
@@ -36,7 +38,7 @@ namespace SpiritIsland {
 		/// <remarks> Called from normal PlacePresence Growth + Gift of Proliferation. </remarks>
 		public async Task PlaceWithin( int range, string filterEnum ) {
 			var from = await SelectSource();
-			Space to = await ctx.SelectSpaceWithinRangeOfCurrentPresence( range, filterEnum );
+			Space to = await ctx.Presence.SelectDestinationWithinRange( range, filterEnum );
 			await ctx.Self.Presence.PlaceFromTracks( from, to, ctx.GameState );
 		}
 
@@ -91,7 +93,21 @@ namespace SpiritIsland {
 			return await ctx.Self.Action.Decision( new Decision.Presence.Deployed(prompt, ctx.Self ) );
 		}
 
+		#endregion
 
+		#region select Destination
+
+		/// <summary> Selects a space within [range] of current presence </summary>
+		public async Task<Space> SelectDestinationWithinRange( int range, string filterEnum ) {
+			var options = GetValidDestinationOptionsFromPresence(range,filterEnum, ctx.Self.Presence.Spaces );
+			return await ctx.Self.Action.Decision( new Decision.Presence.PlaceOn( ctx.Self, options, Present.Always ) );
+		}
+
+		/// <summary> Select a space withing [range] of specified spaces </summary>
+		public IEnumerable<Space> GetValidDestinationOptionsFromPresence( int range, string filterEnum, IEnumerable<Space> source ) {
+			return ctx.Self.TargetLandApi.GetTargetOptionsFromKnownSource( ctx.Self, ctx.GameState, source, range, filterEnum )
+				.Where(ctx.Self.Presence.IsValid);
+		}
 
 		#endregion
 

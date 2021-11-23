@@ -40,7 +40,7 @@ namespace SpiritIsland.JaggedEarth {
 
 				// Target Spirit gains +1 range with their Powers that originate from a Mountain
 				if(sourceTerrain==null || sourceTerrain == Terrain.Mountain)
-					spaces.AddRange(originalApi.GetTargetOptions( self, gameState, from, Terrain.Mountain, range+1, filterEnum ));
+					spaces.AddRange( originalApi.GetTargetOptions( self, gameState, from, Terrain.Mountain, range+1, filterEnum ));
 				return spaces.Distinct();
 			}
 

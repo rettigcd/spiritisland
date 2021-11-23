@@ -10,9 +10,9 @@ namespace SpiritIsland.Basegame {
 		static public async Task ActAsync(TargetSpaceCtx ctx) {
 			await ApplyEffect( ctx );
 
-			// if you have 3 air 3 water 2 animal, repeat this power
+			// if you have 3 air 3 water 2 animal, repeat this power - !!! instead, use Repeat Attribute
 			if(await ctx.YouHave("3 air,2 water,2 animal")) {
-				var secondTarget = await ctx.SelectTargetSpace(null, From.SacredSite, null, 3,Target.Any);
+				var secondTarget = await ctx.SelectTargetSpace(From.SacredSite, 3);
 				await ApplyEffect( secondTarget );
 			}
 		}

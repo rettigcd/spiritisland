@@ -245,7 +245,7 @@ namespace SpiritIsland {
 		#endregion
 
 		public IEnumerable<Space> FindSpacesWithinRangeOf( int range, string filterEnum ) {
-			return Self.TargetLandApi.GetTargetOptions( Self, GameState, new Space[]{ Space }, range, filterEnum );
+			return Self.TargetLandApi.GetTargetOptionsFromKnownSource( Self, GameState, new Space[]{ Space }, range, filterEnum );
 		}
 
 		public async Task<TargetSpaceCtx> SelectAdjacentLand( string prompt, System.Func<TargetSpaceCtx, bool> filter = null ) {

@@ -50,7 +50,9 @@ namespace SpiritIsland.JaggedEarth {
 
 	class VolcanoPresence : SpiritPresence {
 		public Spirit spirit;
-		public VolcanoPresence(PresenceTrack t1, PresenceTrack t2 ) : base( t1, t2 ) {}
+		public VolcanoPresence(PresenceTrack t1, PresenceTrack t2 ) : base( t1, t2 ) {
+			IsValid = (s) => s.Terrain == Terrain.Mountain;
+		}
 
 		public override async Task Destroy( Space space, GameState gs ) {
 			// collapse in a blast of lava and steam -

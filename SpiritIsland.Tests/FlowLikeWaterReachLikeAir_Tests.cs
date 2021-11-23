@@ -39,8 +39,8 @@ namespace SpiritIsland.Tests {
 			_ = PlayCard( new TargetSpiritCtx(spirit,gameState,spirit,Cause.Power) );
 
 			//  And: Can bring 2 of each
-			user.AssertDecisionX( "Push Presence (bringing up to 2 explorers, 2 towns, 2 dahan)", "A5" );
-			user.AssertDecisionX( "Move Presence + up to 2 explorers,towns,dahan to", "(A1),A4,A6,A7,A8" );
+			user.AssertDecisionX( "Select Presence to push.", "(A5),Done" );
+			user.AssertDecisionX( "Push Presence to", "(A1),A4,A6,A7,A8" );
 			user.AssertDecisionX( "Push up to (6)", "(D@2),E@1,T@2,Done" );
 			user.AssertDecisionX( "Push up to (5)", "(D@2),E@1,T@2,Done" );
 			user.AssertDecisionX( "Push up to (4)", "(E@1),T@2,Done" );

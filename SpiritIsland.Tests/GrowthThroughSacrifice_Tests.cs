@@ -36,9 +36,9 @@ namespace SpiritIsland.Tests {
 			fxt.user.SelectsFastAction(GrowthThroughSacrifice.Name);
 			fxt.user.AssertDecisionX("Select presence to destroy","A5");
 
+			fxt.user.AssertDecisionX("Select location to Remove Blight OR Add Presence","A5");
 			fxt.user.AssertDecisionX("Select Power Option","Remove 1 blight from one of your lands,(Add 1 presence to one of your lands)");
 			fxt.user.AssertDecisionX("Select Presence to place.","(fire energy),2 cardplay,Take Presence from Board");
-			fxt.user.AssertDecisionX("Where would you like to place your presence?","A5");
 
 			// Should be waiting on slow action
 			fxt.spirit.Elements[Element.Fire].ShouldBe(2); // 1 from Growth Through Sacrifice card, 1 from Energy track

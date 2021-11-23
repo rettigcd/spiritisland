@@ -13,7 +13,7 @@ namespace SpiritIsland.BranchAndClaw {
 			// == Pick 2nd target - range 2 from same SS ==
 			var spiritSS = ctx.Self.SacredSites.ToArray();
 			var possibleSacredSiteSourcesForThisSpace = ctx.Space.Range(1).Where(s=>spiritSS.Contains(s)).ToArray();
-			var secondTargetOptions = ctx.FindSpacesWithinRangeOf( possibleSacredSiteSourcesForThisSpace, 2, Target.Any );
+			var secondTargetOptions = ctx.Presence.GetValidDestinationOptionsFromPresence( 2, Target.Any, possibleSacredSiteSourcesForThisSpace );
 
 			var secondTarget = await ctx.Self.Action.Decision( new Decision.TargetSpace( "Select space to target.", secondTargetOptions, Present.Always ) );
 

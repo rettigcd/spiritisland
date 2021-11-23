@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
+
 	class SharedPresenceTargeting : TargetLandApi {
 
 		readonly Spirit[] spirits;
