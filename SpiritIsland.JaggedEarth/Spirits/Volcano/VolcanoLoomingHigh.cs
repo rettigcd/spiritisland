@@ -2,11 +2,7 @@
 
 namespace SpiritIsland.JaggedEarth {
 
-	// TODO
-	// Innates
-
 	// !!! Mechanism for keeping presence in Mountain not in place for Power Card use
-
 
 	public class VolcanoLoomingHigh : Spirit {
 

@@ -47,6 +47,8 @@ namespace SpiritIsland.WinForms {
 			// If there are cards to display but we aren't on them
 			if( choiceLocations.Any() && !choiceLocations.Contains(CurrentLocation) )
 				CurrentLocation = choiceLocations.First(); // switch
+			else if( GetCardsForLocation(CurrentLocation).Count == 0 )
+				CurrentLocation = CardLocation.Hand;
 
 			this.Invalidate();
 		}
@@ -72,7 +74,7 @@ namespace SpiritIsland.WinForms {
 			foreach(var loc in choiceLocations)
 				pe.Graphics.DrawRectangle(Pens.Red, GetButtonRect(loc) );
 
-			// Draw AFTER choiceLocations so # is on top
+			// Draw Counts choiceLocations so # is on top
 			pe.Graphics.DrawCount(handRect,spirit.Hand.Count);
 			pe.Graphics.DrawCount(inPlayRect,spirit.InPlay.Count);
 			pe.Graphics.DrawCount(discardRect,spirit.DiscardPile.Count);
@@ -89,22 +91,21 @@ namespace SpiritIsland.WinForms {
 				foreach(var card in missingCards)
 					DrawCard( pe.Graphics, card, false );
 
-			// Hand
-			if(CurrentLocation == CardLocation.Hand)
-				foreach(var card in spirit.Hand)
-					DrawCard( pe.Graphics, card, false );
-
-			// Played
-			if(CurrentLocation == CardLocation.InPlay)
-				foreach(var card in spirit.InPlay)
-					DrawCard( pe.Graphics, card, false );
-
-			// Discarded
-			if(CurrentLocation == CardLocation.Discarded)
-				foreach(var card in spirit.DiscardPile)
-					DrawCard( pe.Graphics, card, false );
+			// Draw Cards
+			foreach(var card in GetCardsForLocation(CurrentLocation))
+				DrawCard( pe.Graphics, card, false );
 
 		}
+
+		List<PowerCard> GetCardsForLocation(CardLocation location ) {
+			return location switch {
+				CardLocation.Hand => spirit.Hand,
+				CardLocation.InPlay => spirit.InPlay,
+				CardLocation.Discarded => spirit.DiscardPile,
+				_ => throw new ArgumentException("invalid card location"),
+			};
+		}
+
 
 		Rectangle GetButtonRect(CardLocation location){
 			return location switch {

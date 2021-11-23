@@ -75,7 +75,7 @@ namespace SpiritIsland.JaggedEarth {
 
 		async Task PickPresenceToDestroy( TargetSpaceCtx ctx ) {
 			var space = await this.Action.Decision( new Decision.Presence.DeployedToDestory( $"{CleaningUpMessesIsADrag.Title} Destroy presence for blight cleanup", this ) );
-			ctx.Presence.Destroy( space );
+			await ctx.Presence.Destroy( space );
 		}
 	}
 
