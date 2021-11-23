@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.BranchAndClaw {
+
 	class ReplacePresenceWithBeast : GrowthActionFactory {
 
 		public override async Task ActivateAsync( SpiritGameStateCtx ctx ) {

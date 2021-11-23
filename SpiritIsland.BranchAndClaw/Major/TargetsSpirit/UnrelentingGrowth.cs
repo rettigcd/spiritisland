@@ -37,7 +37,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			// Add presence
 			for(int i = 0; i < 2; ++i) {
-				var from = await ctx.SelectPresenceSource();
+				var from = await ctx.Presence.SelectSource();
 				await ctx.Self.Presence.PlaceFromTracks( from, to, ctx.GameState );
 			}
 

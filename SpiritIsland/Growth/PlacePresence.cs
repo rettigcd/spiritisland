@@ -28,7 +28,7 @@ namespace SpiritIsland {
 
 		#endregion
 
-		public override Task ActivateAsync( SpiritGameStateCtx ctx ) => ctx.PlacePresence( Range, FilterEnum );
+		public override Task ActivateAsync( SpiritGameStateCtx ctx ) => ctx.Presence.PlaceWithin( Range, FilterEnum );
 
 	}
 

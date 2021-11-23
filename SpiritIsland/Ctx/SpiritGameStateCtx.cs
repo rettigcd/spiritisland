@@ -30,18 +30,8 @@ namespace SpiritIsland {
 
 		#region Presence
 
-		public BoundPresence Presence => _presence ??= new BoundPresence(this);
+		public virtual BoundPresence Presence => _presence ??= new BoundPresence(this);
 		BoundPresence _presence;
-
-		public class BoundPresence { // Bound to the GameState
-			readonly SpiritGameStateCtx ctx;
-			public BoundPresence(SpiritGameStateCtx ctx ) { this.ctx = ctx; }
-			public void Move( Space from, Space to ) => ctx.Self.Presence.Move(from,to,ctx.GameState);
-			public Task Destroy( Space space ) => ctx.Self.Presence.Destroy( space, ctx.GameState );
-			public void RemoveFrom( Space space ) => ctx.Self.Presence.RemoveFrom( space, ctx.GameState ); // Generally used for Replacing
-			public void PlaceOn(Space space) => ctx.Self.Presence.PlaceOn( space, ctx.GameState );
-
-		}
 
 		#endregion
 
@@ -75,11 +65,13 @@ namespace SpiritIsland {
 		public TargetSpaceCtx Target( Space space ) => new TargetSpaceCtx( this, space );
 		public TargetSpaceCtx TargetSpace( string spaceLabel ) => new TargetSpaceCtx( this, GameState.Island.AllSpaces.First(s=>s.Label==spaceLabel) );
 
+		// Visually, selects the [presence] icon
 		public async Task<TargetSpaceCtx> TargetDeployedPresence( string prompt ) {
 			var space = await Self.Action.Decision( new Decision.Presence.Deployed( prompt, Self ) );
 			return new TargetSpaceCtx( this, space );
 		}
 
+		// Visually, selects the [space] which has presence.
 		public async Task<TargetSpaceCtx> TargetLandWithPresence( string prompt ) {
 			var space = await Self.Action.Decision( new Decision.TargetSpace(prompt,Self.Presence.Spaces, Present.Always ) );
 			return new TargetSpaceCtx( this, space );
@@ -87,7 +79,7 @@ namespace SpiritIsland {
 
 		#region Draw Cards
 
-		public Task<PowerCard> Draw( Func<List<PowerCard>, Task> handleNotUsed ) => Self.Draw( GameState, handleNotUsed );
+		public Task<PowerCard> Draw( Func<List<PowerCard>, Task> handleNotUsed = null ) => Self.Draw( GameState, handleNotUsed );
 		public Task<PowerCard> DrawMinor() => Self.DrawMinor( GameState );
 		public Task<PowerCard> DrawMajor( int numberToDraw = 4, bool forgetCard=true ) => Self.DrawMajor( GameState, numberToDraw, forgetCard );
 
@@ -95,33 +87,6 @@ namespace SpiritIsland {
 		#endregion
 
 		#region Place Presence
-
-		/// <summary> Selects: (Source then Destination) for placing presence </summary>
-		/// <remarks> Called from normal PlacePresence Growth + Gift of Proliferation. </remarks>
-		public async Task PlacePresence( int range, string filterEnum ) {
-			var from = await SelectPresenceSource();
-			Space to = await SelectSpaceWithinRangeOfCurrentPresence( range, filterEnum );
-			await Self.Presence.PlaceFromTracks( from, to, GameState );
-		}
-
-		/// <summary> Selects: Source then Destination(predetermined) for placing presence.</summary>
-		/// <returns>Place in Ocean, Growth through sacrifice</returns>
-		public async Task PlacePresence( params Space[] destinationOptions ) {
-			var from = await SelectPresenceSource();
-			var to = await Self.Action.Decision( new Decision.Presence.PlaceOn( Self, destinationOptions, Present.Always ) );
-			await Self.Presence.PlaceFromTracks( from, to, GameState );
-		}
-
-		/// <summary> Tries Presence Tracks first, then fails over to placed-presence on Island </summary>
-		public async Task<IOption> SelectPresenceSource() {
-			return (IOption)await Self.Action.Decision( new Decision.Presence.SourceFromTrack( Self ) )
-				?? (IOption)await Self.Action.Decision( Decision.Presence.Deployed.SourceForPlacing( Self ) );
-		}
-
-		/// <summary> Tries Presence Tracks first, then fails over to placed-presence on Island </summary>
-		public async Task<Space> SelectDeployedPresence(string prompt) {
-			return await Self.Action.Decision( new Decision.Presence.Deployed(prompt, Self ) );
-		}
 
 		/// <summary>
 		/// Selects a space within [range] of current presence
@@ -199,5 +164,6 @@ namespace SpiritIsland {
 		#endregion
 
 	}
+
 
 }

@@ -28,6 +28,11 @@ namespace SpiritIsland {
 			if(CardPlays.HasMore) yield return CardPlays.Next;
 		}
 
+		public virtual IEnumerable<Track> GetReturnableTrackOptions() {
+			if(Energy.RevealedCount>1) yield return Energy.Revealed.Last();
+			if(CardPlays.RevealedCount>1) yield return CardPlays.Revealed.Last();
+		}
+
 		public PresenceTrack Energy { get; }
 		public PresenceTrack CardPlays { get; }
 		public int Destroyed { get; private set; }
@@ -67,6 +72,29 @@ namespace SpiritIsland {
 			PlaceOn( to, gs );
 			return Task.CompletedTask;
 		}
+
+		public virtual Task ReturnToTrack( IOption src, Track dst, GameState gs ) {
+
+			// src / from
+			if(src is Track track) {
+				RemoveFromTrack( track );
+			} else if(src is Space space) {
+				if( Spaces.Contains(space) )
+					RemoveFrom( space, gs );
+				else
+					throw new ArgumentException( "Can't pull from :" + src.Text );
+			}
+
+			// To
+			if(Energy.Revealed.Last().Equals(dst))
+				Energy.RevealedCount--;
+			else if(CardPlays.Revealed.Last().Equals(dst))
+				CardPlays.RevealedCount--;
+			else 
+				throw new ArgumentException("Unable to find location to restore presence");
+			return Task.CompletedTask;
+		}
+
 
 		protected virtual void RemoveFromTrack( Track track ) {
 			if(track == Track.Destroyed && Destroyed > 0)

@@ -26,13 +26,13 @@ namespace SpiritIsland.PromoPack1 {
 			await Option1Async( ctx );
 
 			// Add 1 presence, range-1.
-			await ctx.PlacePresence(1,Target.Any);
+			await ctx.Presence.PlaceWithin(1,Target.Any);
 
-			// Other spirits with 2 or more Absobred Presence may do likewise.
+			// Other spirits with 2 or more Absorbed Presence may do likewise.
 			var presence = (SerpentPresence)ctx.Self.Presence;
 			var qualifyingSpirits = presence.AbsorbedPresences.GroupBy(x=>x).Where(grp=>2<=grp.Count()).Select(grp=>grp.Key);
 			foreach(var spirit in presence.AbsorbedPresences.Distinct())
-				await new SpiritGameStateCtx(spirit,ctx.GameState,Cause.Power).PlacePresence(1,Target.Any);
+				await new SpiritGameStateCtx(spirit,ctx.GameState,Cause.Power).Presence.PlaceWithin(1,Target.Any);
 
 		}
 

@@ -11,7 +11,7 @@ namespace SpiritIsland.Basegame {
 
 			return ctx.SelectActionOption(
 				new ActionOption("Add 1 presence", async () => {
-					var from = await ctx.SelectPresenceSource();
+					var from = await ctx.Presence.SelectSource();
 					await ctx.Self.Presence.PlaceFromTracks( from, ctx.Space, ctx.GameState );
 				} ),
 				new ActionOption(

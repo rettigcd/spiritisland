@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.BranchAndClaw.Minor {
 
@@ -7,39 +6,31 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 
 		public const string Name = "Growth Through Sacrifice";
 
-		[MinorCard(GrowthThroughSacrifice.Name,0,Element.Moon,Element.Fire,Element.Water,Element.Plant)]
-		[Fast]
-		[AnySpirit]
+		[MinorCard(GrowthThroughSacrifice.Name,0,Element.Moon,Element.Fire,Element.Water,Element.Plant), Fast, AnySpirit]
 		static public async Task ActAsync( TargetSpiritCtx ctx ) {
-			// destroy one of your presence
-			await DestoryOnePresence( ctx );
 
-			var other = ctx.OtherCtx;
-			if( !await ctx.YouHave("2 sun")) {
-				// Target Spirit chooses to either 
-				await ctx.SelectActionOption(
-					new ActionOption( "Remove 1 blight from one of your lands", () => RemoveBlightFromOwnLand( other ) ),
-					new ActionOption( "Add 1 presence to one of your lands", () => AddPresenceToTargetsLand( other ) )
-				);
-			} else {
-				// If 2 sun, do both in the same land
-				var spaceCtx = await other.TargetLandWithPresence( "Select location to remove blight and add presence" );
-				await spaceCtx.AddBlight( -1 );
-				await other.PlacePresence( spaceCtx.Space );
-			}
+			// destroy one of your presence
+			await ctx.Presence.DestoryOne();
+
+			// If 2 sun, do both in the same land
+			await TargetSpiritAction( ctx.OtherCtx, await ctx.YouHave( "2 sun" ) );
 
 		}
 
-		static Task AddPresenceToTargetsLand(SpiritGameStateCtx ctx) 
-			=> ctx.PlacePresence( ctx.Self.Presence.Spaces.ToArray() );
+		static async Task TargetSpiritAction( SpiritGameStateCtx ctx, bool doBoth ) {
+			string joinStr = doBoth ? "AND" : "OR";
+			var spaceCtx = await ctx.TargetLandWithPresence( $"Select location to Remove Blight {joinStr} Add Presence" );
 
-		static async Task RemoveBlightFromOwnLand(SpiritGameStateCtx ctx)
-			=> await (await ctx.TargetLandWithPresence( "Select location to remove blight" )).RemoveBlight();
+			var removeBlight = new ActionOption( "Remove 1 blight from one of your lands", () => spaceCtx.RemoveBlight() );
+			var addPresence = new ActionOption( "Add 1 presence to one of your lands", () => spaceCtx.Presence.PlaceHere() );
 
+			if(!doBoth)
+				await ctx.SelectActionOption( removeBlight, addPresence );
+			else {
+				await removeBlight.Action();
+				await addPresence.Action();
+			}
 
-		static async Task DestoryOnePresence( SpiritGameStateCtx spiritCtx ) {
-			var space = await spiritCtx.Self.Action.Decision( new Decision.Presence.DeployedToDestory("Select presence to destroy",spiritCtx.Self) );
-			await spiritCtx.Presence.Destroy( space );
 		}
 
 	}

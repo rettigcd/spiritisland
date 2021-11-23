@@ -130,8 +130,6 @@ namespace SpiritIsland {
 		public bool IsInPlay   => Terrain != Terrain.Ocean;
 		public bool Matches( string filterEnum ) => Terrain != Terrain.Ocean && SpaceFilterMap.Get(filterEnum)(this);
 
-		public bool IsPresent => Self.Presence.IsOn( Space );
-
 		/// <summary> The effective Terrain for powers. Will be Wetland for Ocean when Oceans-Hungry-Grasp is on board </summary>
 		public bool IsOneOf(params Terrain[] terrain) => Terrain.IsOneOf(terrain);
 
@@ -225,17 +223,22 @@ namespace SpiritIsland {
 
 		#region presence
 
+		public new BoundPresence_ForSpace Presence => _presence ??= new BoundPresence_ForSpace(this);
+		BoundPresence_ForSpace _presence;
+
+
 		// ! See base class for more Presence options
 
 		public bool IsSelfSacredSite => Self.SacredSites.Contains(Space);
+
 		public bool HasSelfPresence => Self.Presence.Spaces.Contains(Space);
 
 		public int PresenceCount => Self.Presence.CountOn(Space);
 
-		public Task PlaceDestroyedPresenceOnTarget() => Self.Presence.PlaceFromTracks( Track.Destroyed, Space, GameState );
+		public bool IsPresent => Self.Presence.IsOn( Space );
 
 		public async Task PlacePresenceHere() {
-			var from = await SelectPresenceSource();
+			var from = await Presence.SelectSource();
 			await Self.Presence.PlaceFromTracks( from, Space, GameState );
 		}
 

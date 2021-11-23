@@ -15,18 +15,9 @@ namespace SpiritIsland.JaggedEarth {
 			} );
 
 			// Target Spirit may Push up to 1 of their presence.
-			await PushPresence( ctx.OtherCtx );
+			await ctx.OtherCtx.Presence.PushUpTo1();
 		}
 
-		static async Task PushPresence( SpiritGameStateCtx ctx ) {
-			// Select source
-			var source = await ctx.Self.Action.Decision( Decision.Presence.Deployed.SourceForPushing( ctx.Self ) );
-			if(source == null) return;
-			var sourceCtx = ctx.Target( source );
-			// Select destination
-            var destination = await sourceCtx.Self.Action.Decision( new Decision.Presence.Push( "Push Presence to", sourceCtx.Space, sourceCtx.Adjacent ));
-			sourceCtx.Presence.Move( source, destination );
-		}
 	}
 
 

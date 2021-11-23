@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 			var oceanSpaces = ctx.GameState.Island.Boards
 				.Select( b=>b.Spaces.Single(s=>s.Terrain == Terrain.Ocean ) )
 				.ToArray();
-			return ctx.PlacePresence( oceanSpaces );
+			return ctx.Presence.Place( oceanSpaces );
 		}
 
 	}
