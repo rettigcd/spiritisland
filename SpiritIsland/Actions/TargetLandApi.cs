@@ -56,6 +56,7 @@ namespace SpiritIsland {
 			ctx.GameState.TimePasses_ThisRound.Push( new PowerApiRestorer( ctx.Self ).Restore );
 		}
 
+		/// <remarks>Pair this with ScheduleResotre</remarks>
 		static public void ExtendRange( Spirit spirit, int rangeExtension ) {
 			spirit.TargetLandApi = new TargetLandApi_ExtendRange( rangeExtension, spirit.TargetLandApi );
 		}

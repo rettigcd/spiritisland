@@ -184,13 +184,10 @@ namespace SpiritIsland {
 			await Dahan.ApplyDamage( damage, Cause );
 		}
 
+		/// <summary> Incomporates bad lands </summary>
 		public async Task Apply1DamageToAllDahan() {
-			// !!! some-power gives Dahan 4-health, this is ignoring that, - need to fix
-
-			// Assuming any Dahan have only 2 health, any badland will destroy a dahan
-			await Dahan.Destroy(Badlands.Count,Cause);
-
 			await Dahan.Apply1DamageToAll( Cause );
+			await Dahan.ApplyDamage(Badlands.Count, Cause);
 		}
 
 		#region Add Strife

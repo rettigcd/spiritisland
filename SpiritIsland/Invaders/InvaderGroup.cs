@@ -28,6 +28,8 @@ namespace SpiritIsland {
 
 		#region Damage
 
+		// !!! The caller of these methods need to encorporate BadLands damage
+
 		public async Task ApplyDamageToEach( int individualDamage, params TokenGroup[] generic ) {
 
 			var invaders = Tokens.Invaders()

@@ -2,6 +2,7 @@
 	* Possibly engine-thread crashes, then we accidentally click an old option that hasn't been removed yet, then we hang, waiting to be presented with a decision
 	* solution - when we submit a choice, disable the existing options.
 
+3   Heart of Wildfire - Adding blight during Place-Presence does not seem to trigger Blighted island.
 3	Growth Through Sacrifice - Add Presence (when doing both - 2 suns) asks for positioning tiwce
 3	Strifed Invaders damaging themselves
 3	Cascading Bight - all blight should cascade

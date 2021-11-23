@@ -10,7 +10,7 @@ namespace SpiritIsland.PromoPack1 {
 
 		public const string Name = "Heart of the Wildfire";
 
-		readonly static Track FirePresence = Track.MkElement(Element.Fire); // same as FireEnergy but we need separate object so user can distingquish top/bottom.
+		static Track FirePresence => Track.MkElement(Element.Fire); // same as FireEnergy but we need separate object so user can distingquish top/bottom.
 
 		public HeartOfTheWildfire() : base( 
 			new HeartPresence(

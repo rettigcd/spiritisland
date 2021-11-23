@@ -9,13 +9,11 @@ namespace SpiritIsland.Basegame {
 		[FearLevel(1, "Invaders do not Explore into lands with at least 2 Dahan." )]
 		public Task Level1( FearCtx ctx ) {
 
-			// !!! There is a Bug here that causes a lock-up
-
 			ctx.GameState.PreExplore.ForThisRound( ( gs, args ) => {
 				for(int i = 0; i < args.SpacesMatchingCards.Count; ++i) {
 					var space = args.SpacesMatchingCards[i];
 					if( 2<=gs.DahanOn(space).Count)
-						args.SpacesMatchingCards.RemoveAt(i--); // !!! SpacesMatchingCards is immutable so RemoveAt doesn't do anything, gets locked in loop
+						args.Skip(space);
 				}
 			} );
 

@@ -3,6 +3,12 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland.JaggedEarth {
 
+	// TODO
+		// Innates
+		// Cards
+		// Special Rules
+		// Innate text too long
+
 	public class VolcanoLoomingHigh : Spirit {
 
 		public const string Name = "Volcano Looming High";
