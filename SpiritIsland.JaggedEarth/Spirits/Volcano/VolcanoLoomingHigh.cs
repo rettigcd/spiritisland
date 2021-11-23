@@ -1,13 +1,12 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.JaggedEarth {
 
 	// TODO
-		// Innates
-		// Cards
-		// Special Rules
-		// Innate text too long
+	// Innates
+
+	// !!! Mechanism for keeping presence in Mountain not in place for Power Card use
+
 
 	public class VolcanoLoomingHigh : Spirit {
 
@@ -21,7 +20,7 @@ namespace SpiritIsland.JaggedEarth {
 		static readonly SpecialRule VolcanicPeaksTowerOverTheLandscape = new SpecialRule("Volcanic Peaks Tower Over the Landscape","Your Power Cards gain +1 range if you have 3 or more presence in the origin land.");
 
 		public VolcanoLoomingHigh():base(
-			new SpiritPresence(
+			new VolcanoPresence(
 				new PresenceTrack(Track.Energy1,Track.Energy2,Track.EarthEnergy,Track.Energy3,Track.Energy4,Track.Energy5),
 				new PresenceTrack(Track.Card1,Track.FireEnergy,Track.MkElement(Element.Fire),Track.Card2,Track.AirEnergy,Track.Card3,Track.FireEnergy,Track.Card4)
 			)
@@ -40,6 +39,10 @@ namespace SpiritIsland.JaggedEarth {
 				InnatePower.For<ExplosiveEruption>(),
 				InnatePower.For<PoweredByTheFurnaceOfTheEarth>()
 			};
+
+			((VolcanoPresence)(Presence)).spirit = this;
+
+			TargetLandApi = new VolcanoTargetLandApi();
 		}
 
 		protected override void InitializeInternal( Board board, GameState gameState ) {
@@ -49,23 +52,19 @@ namespace SpiritIsland.JaggedEarth {
 
 	}
 
-	class Setup_PlacePresenceOnMountain : GrowthActionFactory { // Similar to SharpFang initialization
+	class VolcanoPresence : SpiritPresence {
+		public Spirit spirit;
+		public VolcanoPresence(PresenceTrack t1, PresenceTrack t2 ) : base( t1, t2 ) {}
 
-		public override async Task ActivateAsync( SpiritGameStateCtx ctx ) {
-			// Put 1 presence on your starting board in a mountain of your choice.
-			var options = ctx.AllSpaces.Where( space=>space.Terrain == Terrain.Mountain );
-			var space = await ctx.Self.Action.Decision(new Decision.TargetSpace("Add presence to",options, Present.Always));
-			ctx.Presence.PlaceOn(space);
-
-			// Push all dahan from that land.
-			var targetCtx = ctx.Target(space);
-			if(targetCtx.Dahan.Any)
-				await targetCtx.PushDahan(targetCtx.Dahan.Count);
+		public override async Task Destroy( Space space, GameState gs ) {
+			// collapse in a blast of lava and steam -
+			// when presence is destroyed, 1 damage to both invaders and dahan
+			await base.Destroy( space, gs );
+			Cause cause = Cause.None; // !!! None isn't correct, we would need to pass it in.
+			await gs.DahanOn(space).ApplyDamage(1,cause); 
+			await gs.Invaders.On(space,cause).UserSelectedDamage(1,spirit);
+			
 		}
-
 	}
-
-	// !!! collapse in a blast of lava and steam - when presence is destroyed, 1 damage to both invaders and dahan
-	// !!! Power Cards gain +1 range if you ahve 3 or more presence in the original land.
 
 }

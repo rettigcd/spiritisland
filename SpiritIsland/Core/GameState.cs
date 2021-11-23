@@ -99,7 +99,7 @@ namespace SpiritIsland {
 				if(effect.DestroyPresence)
 					foreach(var spirit in Spirits)
 						if(spirit.Presence.IsOn( blightSpace ))
-							spirit.Presence.Destroy( blightSpace, this );
+							await spirit.Presence.Destroy( blightSpace, this );
 
 				await AddBlight( blightSpace );
 
@@ -213,7 +213,7 @@ namespace SpiritIsland {
 
 		static async Task DefaultDestroy1PresenceFromBlightCard( Spirit spirit, GameState gs ) {
 			var presence = await spirit.Action.Decision( new Decision.Presence.DeployedToDestory( "Blighted Island: Select presence to destroy.", spirit ) );
-			spirit.Presence.Destroy( presence, gs );
+			await spirit.Presence.Destroy( presence, gs );
 		}
 
 		#endregion

@@ -65,14 +65,13 @@ namespace SpiritIsland.JaggedEarth {
 				gs.Tokens[args.To].Beasts.Count--;
 		}
 
-		Task TokenDestroyed(GameState gs, TokenDestroyedArgs args) {
-			if(args.Token != TokenType.Beast.Generic) return Task.CompletedTask; // not a beast
-			if(this.CountOn(args.Space)<2) return Task.CompletedTask; // not our Sacred Site
+		async Task TokenDestroyed(GameState gs, TokenDestroyedArgs args) {
+			if(args.Token != TokenType.Beast.Generic) return; // not a beast
+			if(this.CountOn(args.Space)<2) return; // not our Sacred Site
 			if(gs.Tokens[args.Space].Beasts.Count == 0){ // no more beasts
-				base.Destroy(args.Space,gs);
-				base.Destroy(args.Space,gs);
+				await base.Destroy(args.Space,gs);
+				await base.Destroy(args.Space,gs);
 			}
-			return Task.CompletedTask;
 		}
 
 	}

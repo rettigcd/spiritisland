@@ -29,7 +29,7 @@ namespace SpiritIsland.BranchAndClaw {
 				// destory presence
 				foreach(var spirit in ctx.GameState.Spirits)
 					foreach(var p in spirit.Presence.Placed.Where(p=>p.Board==ctx.Space.Board).ToArray() )
-						spirit.Presence.Destroy(p,ctx.GameState);
+						await spirit.Presence.Destroy(p, ctx.GameState);
 
 				// destroy board - spaces
 				foreach(var space in ctx.Space.Board.Spaces)

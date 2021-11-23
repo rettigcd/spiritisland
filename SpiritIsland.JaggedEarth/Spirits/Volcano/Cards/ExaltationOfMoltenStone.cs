@@ -34,27 +34,37 @@ namespace SpiritIsland.JaggedEarth {
 				this.originalApi = originalApi;
 			}
 
-			public override Task<Space> TargetsSpace( 
-				Spirit self, 
-				GameState gameState, 
-				string prompt,
-				From from, 
-				Terrain? sourceTerrain, 
-				int range, 
-				string target
-			) {
-				if(prompt == null) prompt = "Target Space.";
-
+			public override IEnumerable<Space> GetTargetOptions( Spirit self, GameState gameState, From from, Terrain? sourceTerrain, int range, string filterEnum ) {
 				// original options
-				List<Space> spaces = GetTargetOptions( self, gameState, from, sourceTerrain, range, target ).ToList();;
+				List<Space> spaces = GetTargetOptions( self, gameState, from, sourceTerrain, range, filterEnum ).ToList();;
 
 				// Target Spirit gains +1 range with their Powers that originate from a Mountain
 				if(sourceTerrain==null || sourceTerrain == Terrain.Mountain)
-					spaces.AddRange(GetTargetOptions( self, gameState, from, Terrain.Mountain, range+1, target ));
-
-				return self.Action.Decision( new Decision.TargetSpace( prompt, spaces.Distinct(), Present.Always ));
-
+					spaces.AddRange(GetTargetOptions( self, gameState, from, Terrain.Mountain, range+1, filterEnum ));
+				return spaces.Distinct();
 			}
+
+			//public override Task<Space> TargetsSpace( 
+			//	Spirit self, 
+			//	GameState gameState, 
+			//	string prompt,
+			//	From from, 
+			//	Terrain? sourceTerrain, 
+			//	int range, 
+			//	string target
+			//) {
+			//	if(prompt == null) prompt = "Target Space.";
+
+			//	// original options
+			//	List<Space> spaces = GetTargetOptions( self, gameState, from, sourceTerrain, range, target ).ToList();;
+
+			//	// Target Spirit gains +1 range with their Powers that originate from a Mountain
+			//	if(sourceTerrain==null || sourceTerrain == Terrain.Mountain)
+			//		spaces.AddRange(GetTargetOptions( self, gameState, from, Terrain.Mountain, range+1, target ));
+
+			//	return self.Action.Decision( new Decision.TargetSpace( prompt, spaces.Distinct(), Present.Always ));
+
+			//}
 
 		}
 

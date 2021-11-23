@@ -85,9 +85,10 @@ namespace SpiritIsland {
 			PlaceOn( to, gs );
 		}
 
-		public void Destroy( Space space, GameState gs ) {
+		public virtual Task Destroy( Space space, GameState gs ) {
 			RemoveFrom( space, gs );
 			++Destroyed;
+			return Task.CompletedTask;
 		}
 
 		#endregion

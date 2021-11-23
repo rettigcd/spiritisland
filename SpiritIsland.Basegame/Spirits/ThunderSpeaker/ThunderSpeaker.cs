@@ -103,7 +103,7 @@ namespace SpiritIsland.Basegame {
 
 			while(numToDestroy-->0 && (options=Calc()).Length > 0) {
 				var space = await this.Action.Decision( new Decision.Presence.DeployedToDestory( prompt, options, Present.Always ) );
-				Presence.Destroy( space, gs );
+				await Presence.Destroy(space, gs );
 			}
 
 		}

@@ -12,7 +12,7 @@ namespace SpiritIsland.JaggedEarth {
 
 		public override SpecialRule[] SpecialRules => new SpecialRule[] { HomeOfTheIslandsHeart, EnthrallTheForeignExplorersRule };
 
-		static readonly SpecialRule HomeOfTheIslandsHeart = new SpecialRule("Home of the Island's Heart", "Your presence may only be added/moved to lands that are inlind.");
+		static readonly SpecialRule HomeOfTheIslandsHeart = new SpecialRule("Home of the Island's Heart", "Your presence may only be added/moved to lands that are inland.");
 		static readonly SpecialRule EnthrallTheForeignExplorersRule = new SpecialRule("Enthrall the Foreign Explorers", "For each of your presence in a land, ignore up to 2 explorer during the Ravage Step and any Ravage Action.");
 
 		public LureOfTheDeepWilderness():base(
