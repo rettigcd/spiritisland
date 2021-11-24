@@ -3,7 +3,7 @@
 		public TokenGroup Token;
 		public Space Space;
 		public int count;
-		public Cause Source;
+		public Cause Cause;
 	};
 
 

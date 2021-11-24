@@ -99,7 +99,7 @@ namespace SpiritIsland {
 				if(effect.DestroyPresence)
 					foreach(var spirit in Spirits)
 						if(spirit.Presence.IsOn( blightSpace ))
-							await spirit.Presence.Destroy( blightSpace, this );
+							await spirit.Presence.Destroy( blightSpace, this, Cause.Blight ); // ??? is this correct?  should it be whatever is causing the blight???
 
 				await AddBlight( blightSpace );
 
@@ -187,7 +187,7 @@ namespace SpiritIsland {
 
 		public Func<TokenCountDictionary,int,Task<int>> AddBlightBehavior = DefaultAddBlight; // hook for Stone's Defiance
 
-		public Func<Spirit,GameState,Task> Destroy1PresenceFromBlightCard = DefaultDestroy1PresenceFromBlightCard; // Direct distruction from Blight Card, not cascading
+		public Func<Spirit,GameState,Cause,Task> Destroy1PresenceFromBlightCard = DefaultDestroy1PresenceFromBlightCard; // Direct distruction from Blight Card, not cascading
 
 		#endregion
 
@@ -211,9 +211,9 @@ namespace SpiritIsland {
 			return Task.FromResult(delta);
 		}
 
-		static async Task DefaultDestroy1PresenceFromBlightCard( Spirit spirit, GameState gs ) {
+		static async Task DefaultDestroy1PresenceFromBlightCard( Spirit spirit, GameState gs, Cause cause ) {
 			var presence = await spirit.Action.Decision( new Decision.Presence.DeployedToDestory( "Blighted Island: Select presence to destroy.", spirit ) );
-			await spirit.Presence.Destroy( presence, gs );
+			await spirit.Presence.Destroy( presence, gs, cause );
 		}
 
 		#endregion

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace SpiritIsland.WinForms {
@@ -28,6 +29,15 @@ namespace SpiritIsland.WinForms {
 		}
 
 		void Select( IOption option ) {
+			if(currentDecision == null) return;
+
+			// !! we could verify
+			if(!currentDecision.Options.Contains( option )) {
+				MessageBox.Show(option.Text + " not found in option list");
+				return;
+			}
+
+			currentDecision = null;
 			this.game.UserPortal.Choose( option );
 			
 			if(this.game.WinLoseStatus == WinLoseStatus.Playing) return;
@@ -35,7 +45,10 @@ namespace SpiritIsland.WinForms {
 			this.Text = this.game.WinLoseStatus.ToString();
 		}
 
+		IDecision currentDecision;
+
 		void Action_NewWaitingDecision( IDecision decision ) {
+			currentDecision = decision;
 			this.promptLabel.Text = decision.Prompt;
 			islandControl.Invalidate();
 			NewDecision?.Invoke( decision );

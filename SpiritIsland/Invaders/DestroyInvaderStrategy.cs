@@ -20,7 +20,7 @@ namespace SpiritIsland {
 				Token = token.Generic,
 				Space = space,
 				count = 1,
-				Source = destructionSource
+				Cause = destructionSource
 			} );
 
 			if(token == Invader.City[0])

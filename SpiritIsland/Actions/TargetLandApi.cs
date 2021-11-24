@@ -5,16 +5,29 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
+//	public enum PowerType { Innate, Card }
+
 	public class TargetLandApi {
 
+		// Only Called from TargetSpaceAttribute
 		// This is virtual so that Shadow can override it. - !! ?? Should this be a method on the Spirit??
-		public virtual async Task<Space> TargetsSpace( Spirit self, GameState gameState, string prompt, From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum ) {
+		// !!! Also, some things may be calling GetTargetOptions directly and skipping over this bit - preventing Shadow from paying their energy
+		public virtual async Task<Space> TargetsSpace( 
+			Spirit self, 
+			GameState gameState, 
+			string prompt, 
+			From sourceEnum, 
+			Terrain? sourceTerrain, 
+			int range, 
+			string filterEnum,
+			PowerType powerType
+		) {
 			if(prompt == null) prompt = "Target Space.";
-			IEnumerable<Space> spaces = GetTargetOptions( self, gameState, sourceEnum, sourceTerrain, range, filterEnum );
+			IEnumerable<Space> spaces = GetTargetOptions( self, gameState, sourceEnum, sourceTerrain, range, filterEnum, powerType );
 			return await self.Action.Decision( new Decision.TargetSpace( prompt, spaces, Present.Always ));
 		}
 
-		public virtual IEnumerable<Space> GetTargetOptions( Spirit self, GameState gameState, From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum ) {
+		public virtual IEnumerable<Space> GetTargetOptions( Spirit self, GameState gameState, From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum, PowerType powerType ) {
 			IEnumerable<Space> source = FindSources( self, sourceEnum, sourceTerrain );
 			return GetTargetOptionsFromKnownSource( self, gameState, source, range, filterEnum );
 		}

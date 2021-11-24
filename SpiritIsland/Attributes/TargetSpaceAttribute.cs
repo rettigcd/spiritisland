@@ -17,8 +17,8 @@ namespace SpiritIsland {
 			this.TargetFilter = targetFilter;
 		}
 
-		public override async Task<object> GetTargetCtx( string powerName, SpiritGameStateCtx ctx ){
-			var space = await ctx.Self.TargetLandApi.TargetsSpace( ctx.Self, ctx.GameState, powerName+": Target Space", fromSourceEnum, sourceTerrain, await CalcRange(ctx), TargetFilter );
+		public override async Task<object> GetTargetCtx( string powerName, SpiritGameStateCtx ctx, PowerType powerType ){
+			var space = await ctx.Self.TargetLandApi.TargetsSpace( ctx.Self, ctx.GameState, powerName+": Target Space", fromSourceEnum, sourceTerrain, await CalcRange(ctx), TargetFilter, powerType );
 			return space == null ? null : ctx.Target(space);
 		}
 

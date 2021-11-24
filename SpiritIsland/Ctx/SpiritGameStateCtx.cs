@@ -78,12 +78,6 @@ namespace SpiritIsland {
 
 		#endregion
 
-		/// <summary> Used for Power-targetting, where range sympols appear. </summary>
-		public async Task<TargetSpaceCtx> SelectTargetSpace( From sourceEnum, int range ) {
-			var space = await Self.TargetLandApi.TargetsSpace( Self, GameState, null, sourceEnum, null, range, SpiritIsland.Target.Any );
-			return new TargetSpaceCtx( this, space );
-		}
-
 		#region Generic Select space / option
 
 		public async Task<TargetSpaceCtx> SelectSpace( string prompt, IEnumerable<Space> options ) {

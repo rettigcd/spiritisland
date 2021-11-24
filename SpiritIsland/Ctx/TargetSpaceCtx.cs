@@ -115,6 +115,9 @@ namespace SpiritIsland {
 		/// <summary> Use this for Power-Pushing, since Powers can push invaders into the ocean. </summary>
 		public IEnumerable<Space> Adjacent => Space.Adjacent.Where( adj => Target(adj).IsInPlay );
 
+		/// <summary> Use this for Power-Pushing, since Powers can push invaders into the ocean. </summary>
+		public IEnumerable<Space> Range( int range ) => Space.Range( range ).Where( adj => Target(adj).IsInPlay );
+
 		// Convenience Methods - That bind to .Target
 		public void Adjust( Token invader, int delta )
 			=> Tokens.Adjust( invader, delta );

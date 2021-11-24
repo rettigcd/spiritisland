@@ -13,8 +13,8 @@ namespace SpiritIsland {
 			this.originalApi = originalApi;
 		}
 
-		public override IEnumerable<Space> GetTargetOptions( Spirit self, GameState gameState, From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum ) {
-			return originalApi.GetTargetOptions( self, gameState, sourceEnum, sourceTerrain, range + extension, filterEnum );
+		public override IEnumerable<Space> GetTargetOptions( Spirit self, GameState gameState, From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum, PowerType powerType ) {
+			return originalApi.GetTargetOptions( self, gameState, sourceEnum, sourceTerrain, range + extension, filterEnum, powerType );
 		}
 
 	}

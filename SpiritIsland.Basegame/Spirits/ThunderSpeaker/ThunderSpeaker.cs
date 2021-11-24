@@ -92,7 +92,7 @@ namespace SpiritIsland.Basegame {
 		}
 
 		async Task DestroyNearbyPresence( GameState gs, TokenDestroyedArgs args ) {
-			if(args.Source != Cause.Invaders) return;
+			if(args.Cause != Cause.Invaders) return;
 			if(args.Token != TokenType.Dahan) return;
 
 			string prompt = $"{SwarnToVictory.Title}: {args.count} dahan destroyed. Select presence to destory.";
@@ -103,7 +103,7 @@ namespace SpiritIsland.Basegame {
 
 			while(numToDestroy-->0 && (options=Calc()).Length > 0) {
 				var space = await this.Action.Decision( new Decision.Presence.DeployedToDestory( prompt, options, Present.Always ) );
-				await Presence.Destroy(space, gs );
+				await Presence.Destroy(space, gs, Cause.Invaders );
 			}
 
 		}

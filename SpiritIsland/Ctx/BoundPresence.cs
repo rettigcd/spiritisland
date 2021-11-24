@@ -54,7 +54,7 @@ namespace SpiritIsland {
 
 		#region Destroy 
 
-		public Task Destroy( Space space ) => ctx.Self.Presence.Destroy( space, ctx.GameState );
+		public Task Destroy( Space space ) => ctx.Self.Presence.Destroy( space, ctx.GameState, ctx.Cause );
 
 		public async Task DestoryOne() {
 			var space = await ctx.Self.Action.Decision( new Decision.Presence.DeployedToDestory("Select presence to destroy",ctx.Self) );

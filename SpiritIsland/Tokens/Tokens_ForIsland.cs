@@ -96,7 +96,7 @@ namespace SpiritIsland {
 				Token = token.Generic,
 				Space = space,
 				count = countToDestroy,
-				Source = source
+				Cause = source
 			} );
 		}
 

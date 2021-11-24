@@ -259,6 +259,8 @@ namespace SpiritIsland {
 			try {
 				await factory.ActivateAsync( ctx );
 				RemoveFromUnresolvedActions( factory );
+			} catch( Exception ex) {
+				ctx.GameState.Log(new LogEntry(ex.ToString()) );
 			} finally {
 				CurrentActionId = oldActionGuid; // restore
 			}

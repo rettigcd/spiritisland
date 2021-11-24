@@ -40,7 +40,7 @@ namespace SpiritIsland {
 			if( !await SpeedBehavior.IsActiveFor(spiritCtx.GameState.Phase,spiritCtx.Self) )
 				return; 
 
-			var targetCtx = await targetAttr.GetTargetCtx( Name, spiritCtx );
+			var targetCtx = await targetAttr.GetTargetCtx( Name, spiritCtx, PowerType );
 			if(targetCtx == null) 
 				return;
 
@@ -110,8 +110,7 @@ namespace SpiritIsland {
 
 	}
 
-
-	public enum PowerType { Minor, Major, Spirit }
+	public enum PowerType { Minor, Major, Spirit, Innate }
 
 	static public class PowerCardExtensions_ForWinForms {
 

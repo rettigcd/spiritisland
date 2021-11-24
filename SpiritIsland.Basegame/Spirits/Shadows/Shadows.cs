@@ -85,13 +85,13 @@ Shadows Flicker like Flame:
 
 		class ShadowApi : TargetLandApi {
 
-			public override async Task<Space> TargetsSpace( Spirit self, GameState gameState, string prompt, From from, Terrain? sourceTerrain, int range, string filter ) {
+			public override async Task<Space> TargetsSpace( Spirit self, GameState gameState, string prompt, From from, Terrain? sourceTerrain, int range, string filter, PowerType powerType ) {
 				// no money, do normal
 				if(self.Energy == 0)
-					return await base.TargetsSpace( self, gameState, prompt, from, sourceTerrain, range, filter );
+					return await base.TargetsSpace( self, gameState, prompt, from, sourceTerrain, range, filter, powerType );
 
 				// find normal Targetable spaces
-				var normalSpaces = base.GetTargetOptions(self, gameState, from, sourceTerrain, range, filter );
+				var normalSpaces = base.GetTargetOptions(self, gameState, from, sourceTerrain, range, filter, powerType );
 
 				// find dahan-only spaces that are not in targetable spaces
 				var dahanOnlySpaces = gameState.Island.Boards
@@ -101,7 +101,7 @@ Shadows Flicker like Flame:
 					.ToArray();
 				// no dahan-only spaces, do normal
 				if(dahanOnlySpaces.Length == 0)
-					return await base.TargetsSpace( self, gameState, prompt, from, sourceTerrain, range, filter );
+					return await base.TargetsSpace( self, gameState, prompt, from, sourceTerrain, range, filter, powerType );
 
 				// append Target-Dahan option to end of list
 				List<IOption> options = normalSpaces.Cast<IOption>().ToList();

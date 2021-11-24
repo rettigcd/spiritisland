@@ -18,7 +18,7 @@ namespace SpiritIsland.JaggedEarth {
 		public VolcanoLoomingHigh():base(
 			new VolcanoPresence(
 				new PresenceTrack(Track.Energy1,Track.Energy2,Track.EarthEnergy,Track.Energy3,Track.Energy4,Track.Energy5),
-				new PresenceTrack(Track.Card1,Track.FireEnergy,Track.MkElement(Element.Fire),Track.Card2,Track.AirEnergy,Track.Card3,Track.FireEnergy,Track.Card4)
+				new PresenceTrack(Track.Card1,Track.FireEnergy,Track.MkElement(Element.Earth),Track.Card2,Track.AirEnergy,Track.Card3,Track.FireEnergy,Track.Card4)
 			)
 			,PowerCard.For<ExaltationOfMoltenStone>()
 			,PowerCard.For<LavaFlows>()
@@ -54,11 +54,10 @@ namespace SpiritIsland.JaggedEarth {
 			IsValid = (s) => s.Terrain == Terrain.Mountain;
 		}
 
-		public override async Task Destroy( Space space, GameState gs ) {
+		public override async Task Destroy( Space space, GameState gs, Cause cause ) {
 			// collapse in a blast of lava and steam -
 			// when presence is destroyed, 1 damage to both invaders and dahan
-			await base.Destroy( space, gs );
-			Cause cause = Cause.None; // !!! None isn't correct, we would need to pass it in.
+			await base.Destroy( space, gs, cause );
 			await gs.DahanOn(space).ApplyDamage(1,cause); 
 			await gs.Invaders.On(space,cause).UserSelectedDamage(1,spirit);
 			

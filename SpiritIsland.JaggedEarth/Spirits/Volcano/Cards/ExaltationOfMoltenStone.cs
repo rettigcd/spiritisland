@@ -34,13 +34,13 @@ namespace SpiritIsland.JaggedEarth {
 				this.originalApi = originalApi;
 			}
 
-			public override IEnumerable<Space> GetTargetOptions( Spirit self, GameState gameState, From from, Terrain? sourceTerrain, int range, string filterEnum ) {
+			public override IEnumerable<Space> GetTargetOptions( Spirit self, GameState gameState, From from, Terrain? sourceTerrain, int range, string filterEnum, PowerType powerType ) {
 				// original options
-				List<Space> spaces = originalApi.GetTargetOptions( self, gameState, from, sourceTerrain, range, filterEnum ).ToList();;
+				List<Space> spaces = originalApi.GetTargetOptions( self, gameState, from, sourceTerrain, range, filterEnum, powerType ).ToList();
 
 				// Target Spirit gains +1 range with their Powers that originate from a Mountain
 				if(sourceTerrain==null || sourceTerrain == Terrain.Mountain)
-					spaces.AddRange( originalApi.GetTargetOptions( self, gameState, from, Terrain.Mountain, range+1, filterEnum ));
+					spaces.AddRange( originalApi.GetTargetOptions( self, gameState, from, Terrain.Mountain, range+1, filterEnum, powerType ));
 				return spaces.Distinct();
 			}
 
