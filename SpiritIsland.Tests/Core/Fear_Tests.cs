@@ -35,12 +35,12 @@ namespace SpiritIsland.Tests.Core {
 		}
 
 		void Assert_PresentsFearToUser() {
-			user.AcknowledgesFearCard("Null Fear Card:1:x");
+			user.AcknowledgesFearCard("Null Fear Card : 1 : x");
 		}
 
 		[Fact]
 		public void GetName() {
-			new DisplayFearCard( new AvoidTheDahan() )
+			new ActivatedFearCard( new AvoidTheDahan() )
 				.Text.ShouldBe( "Avoid the Dahan" );
 		}
 

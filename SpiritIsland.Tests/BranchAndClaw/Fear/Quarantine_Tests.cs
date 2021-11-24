@@ -8,9 +8,9 @@ namespace SpiritIsland.Tests.BranchAndClaw.Fear {
 
 	public class Quarantine_Tests {
 
-		const string FearAck1 = "Quarantine:1:Explore does not affect coastal lands.";
-		const string FearAck2 = "Quarantine:2:Explore does not affect coastal lands. Lands with disease are not a source of invaders when exploring.";
-		const string FearAck3 = "Quarantine:3:Explore does not affect coastal lands.  Invaders do not act in lands with disease.";
+		const string FearAck1 = "Quarantine : 1 : Explore does not affect coastal lands.";
+		const string FearAck2 = "Quarantine : 2 : Explore does not affect coastal lands. Lands with disease are not a source of invaders when exploring.";
+		const string FearAck3 = "Quarantine : 3 : Explore does not affect coastal lands.  Invaders do not act in lands with disease.";
 		readonly IFearOptions card = new Quarantine();
 
 		public Quarantine_Tests() {

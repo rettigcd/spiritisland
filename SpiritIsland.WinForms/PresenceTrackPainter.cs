@@ -187,7 +187,7 @@ namespace SpiritIsland.WinForms {
 			graphics.DrawImage( redX, rect.X, rect.Y, rect.Width * 2 / 3, rect.Height * 2 / 3 );
 
 			// count
-			graphics.DrawCount( rect, destroyedCount );
+			graphics.DrawCountIfHigherThan( rect, destroyedCount );
 
 		}
 

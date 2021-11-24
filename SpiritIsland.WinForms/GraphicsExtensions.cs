@@ -6,33 +6,32 @@ namespace SpiritIsland.WinForms {
 
 	static public class GraphicsExtensions {
 
-		static public void DrawCount( this Graphics graphics, RectangleF rect, int count )
-			=> DrawSubscript(graphics, ToInts(rect),count);
+		#region Super-script - Subscript text
 
-		static public void DrawSubscript(this Graphics graphics, Rectangle rect, int count ) {
-			if(count > 1) {
-				string txt = "x" + count;
-				SizeF sz = graphics.MeasureString( txt, countFont );
-				var numRect = new RectangleF( rect.Right - sz.Width+2, rect.Bottom - sz.Height, sz.Width + 3, sz.Height + 2 );
-				graphics.FillEllipse( Brushes.White, numRect );
-				graphics.DrawEllipse( Pens.Black, numRect );
-				graphics.DrawString( txt, countFont, Brushes.Black, numRect.X + 2, numRect.Y + 2 );
-			}
+		readonly static Font superSubScriptFont = new( "Arial", 7, FontStyle.Bold, GraphicsUnit.Point );
+
+		static public void DrawCountIfHigherThan( this Graphics graphics, RectangleF rect, int count, int highestHidden = 1 ) {
+			if(count > highestHidden)
+				DrawSubscript(graphics, ToInts(rect), "x" + count);
 		}
 
-		static public void DrawSuperscript( this Graphics graphics, Rectangle rect, int count ) {
-			if(count > 1) {
-				string txt = "x" + count;
-				SizeF sz = graphics.MeasureString( txt, countFont );
-				var numRect = new RectangleF( rect.Right - sz.Width + 2, rect.Top - sz.Height, sz.Width + 3, sz.Height + 2 );
-				graphics.FillEllipse( Brushes.White, numRect );
-				graphics.DrawEllipse( Pens.Black, numRect );
-				graphics.DrawString( txt, countFont, Brushes.Black, numRect.X + 2, numRect.Y + 2 );
-			}
+		static public void DrawSubscript(this Graphics graphics, Rectangle rect, string txt ) {
+			SizeF sz = graphics.MeasureString( txt, superSubScriptFont );
+			var numRect = new RectangleF( rect.Right - sz.Width+2, rect.Bottom - sz.Height, sz.Width + 3, sz.Height + 2 );
+			graphics.FillEllipse( Brushes.White, numRect );
+			graphics.DrawEllipse( Pens.Black, numRect );
+			graphics.DrawString( txt, superSubScriptFont, Brushes.Black, numRect.X + 2, numRect.Y + 2 );
 		}
 
+		static public void DrawSuperscript( this Graphics graphics, Rectangle rect, string txt ) {
+			SizeF sz = graphics.MeasureString( txt, superSubScriptFont );
+			var numRect = new RectangleF( rect.Right - sz.Width + 2, rect.Top - sz.Height, sz.Width + 3, sz.Height + 2 );
+			graphics.FillEllipse( Brushes.White, numRect );
+			graphics.DrawEllipse( Pens.Black, numRect );
+			graphics.DrawString( txt, superSubScriptFont, Brushes.Black, numRect.X + 2, numRect.Y + 2 );
+		}
 
-		readonly static Font countFont = new( "Arial", 7, FontStyle.Bold, GraphicsUnit.Point );
+		#endregion
 
 		static public void DrawInvaderCard( this Graphics graphics, RectangleF rect, InvaderCard card ) {
 			if(card==null) return;
@@ -40,7 +39,7 @@ namespace SpiritIsland.WinForms {
 			graphics.DrawImage(img,rect);
 		}
 
-		static public void DrawFearCard( this Graphics graphics, RectangleF rect, DisplayFearCard displayFearCard ) {
+		static public void DrawFearCard( this Graphics graphics, RectangleF rect, ActivatedFearCard displayFearCard ) {
 			if(displayFearCard==null) return;
 			using var img = new FearCardImageManager().GetImage( displayFearCard );
 			graphics.DrawImage( img, rect );

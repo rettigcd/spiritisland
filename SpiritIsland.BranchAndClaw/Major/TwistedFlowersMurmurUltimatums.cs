@@ -24,7 +24,7 @@ namespace SpiritIsland.BranchAndClaw {
 			// if terror level is 2 or higher, remove 2 invaders
 			if(2 <= ctx.GameState.Fear.TerrorLevel)
 				for(int i = 0; i < 2; ++i) {
-					var invader = await ctx.Self.Action.Decision(new Decision.InvaderToDowngrade(ctx.Space,ctx.Tokens.Invaders(),Present.Always));
+					var invader = await ctx.Self.Action.Decision( Decision.TokenOnSpace.InvaderToRemove(ctx.Space,ctx.Tokens.Invaders(),Present.Always));
 					ctx.Tokens[invader]--;
 				}
 

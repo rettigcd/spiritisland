@@ -67,8 +67,8 @@ namespace SpiritIsland {
 
 		static public Task ShowFearCardToUser( this Spirit spirit, string prompt, PositionFearCard cardToShow, int? activationLevel = null ) {
 			var display = activationLevel != null 
-				? new DisplayFearCard( cardToShow.FearOptions, activationLevel.Value )
-				: new DisplayFearCard( cardToShow.FearOptions );
+				? new ActivatedFearCard( cardToShow.FearOptions, activationLevel.Value )
+				: new ActivatedFearCard( cardToShow.FearOptions );
 			return spirit.Select( prompt, new IOption[] { display }, Present.Always );
 		}
 

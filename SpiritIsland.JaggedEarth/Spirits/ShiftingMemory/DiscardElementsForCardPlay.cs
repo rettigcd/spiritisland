@@ -15,7 +15,7 @@ namespace SpiritIsland.JaggedEarth {
 		public override async Task ActivateAsync( SpiritGameStateCtx ctx ) {
 			if( ctx.Self is ShiftingMemoryOfAges smoa
 				&& totalNumToRemove <= smoa.PreparedElements.Total
-				&& (await smoa.DiscardElements(totalNumToRemove)).Count == totalNumToRemove
+				&& (await smoa.DiscardElements(totalNumToRemove,"additional card-play")).Count == totalNumToRemove
 			) smoa.tempCardPlayBoost++;
 		}
 

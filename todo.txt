@@ -1,5 +1,26 @@
-﻿!!!!!!!!!!! don't lock up when we win / lose / exception 
-	- split User-Gateway into 2 parts, one that blocks (for tests), and one that doesn't (for UI thread)
+﻿
+Bonus
+	- Images for Selecting Spirits / Boards / Tokens
+	* Click on / Draw Element pop-up when Selecting Elements
+	* Click on / Draw Major / Minor Deck
+	* Click on Fear Card
+	* Log: == Round ==,  -- Growth -- -- Fast -- -- Invader --  --- Slow -- (debug)
+	* Log: Spirit, Board, Shuffle # 
+	* Let user enter shuffle #
+
+	- Put Build / Ravage / fear in strip along the top 
+	- display # of cards remaining in fear deck before next terror level
+	- Sort Cards by: speed, element, cost
+
+Fix 
+	- Detect Win / Lose 
+	- don't lock up when we win / lose / exception 
+	- layout of Fear / Blight items
+	- Volcano Innate Size
+	* Auto-Select single (init) growths
+	* UI - After making selection, clear Options and invalidate
+	* split User-Gateway into 2 parts, one that blocks (for tests), and one that doesn't (for UI thread)
+	- Invader Cards Memento
 
 * Detect Win/Lose and don't lock up
 	* Fear victory - End of deck
@@ -10,16 +31,16 @@
 
 -- Helpful --
 
-Make Spirit & Board part of game # -> Enter Game # to replay
-In log, show == Round ==,  -- Growth -- -- Fast -- -- Invader --  --- Slow -- (debug)
+Tests - ChooseOption, ChooseFromOptions, (move prompt to last)
+
+** Bind each Spirit Action to a CTX, so we can:
+	- detect distinct actions
+	- commit actions like transactions
+	- Check win/lose state at the end of each action.
 
 ** Create a Token API  (MoveFrom,MoveTo,Destroy,Replace,Setup)
 
 Refactor Testing to make it easier to test.
-
-Refactor UI - to make cleaner and ready to port to Android
-	- Put Build / Ravage / fear in strip along the top
-	UI - Sort Cards by: speed, element, cost
 
 2) TargetSpaceCtx.DamageInvaders - limit badland damage to once / action
 3) Detect end of game at end of each action, Don't Lock-up when it happens.

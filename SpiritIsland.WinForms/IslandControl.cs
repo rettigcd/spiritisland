@@ -122,7 +122,7 @@ namespace SpiritIsland.WinForms {
 			spaceTokens       = decision as Decision.TypedDecision<SpaceToken>;
 			deployedPresence  = decision as Decision.Presence.Deployed;
 			this.activeSpaces = decision.Options.OfType<Space>().ToArray();
-			fearCard          = decision.Options.OfType<DisplayFearCard>().FirstOrDefault();
+			fearCard          = decision.Options.OfType<ActivatedFearCard>().FirstOrDefault();
 			clickableTrackOptions   = decision.Options.OfType<Track>().ToArray();
 			selectableInnateOptions = decision.Options.OfType<InnatePower>().ToArray();
 			selectableGrowthOptions = decision.Options.OfType<GrowthOption>().ToArray();
@@ -395,7 +395,8 @@ namespace SpiritIsland.WinForms {
 
 					Rectangle strifeRect = FitWidth( x, y, width, strife.Size );
 					graphics.DrawImage( strife, strifeRect );
-					graphics.DrawSuperscript( strifeRect, tokens[token] );
+					if(tokens[token]>1)
+						graphics.DrawSuperscript( strifeRect, "x"+tokens[token] );
 				} else {
 					imageToken = token;
 				}
@@ -410,7 +411,7 @@ namespace SpiritIsland.WinForms {
 				tokenLocations.Add(space.Label+":"+token.Summary,rect);
 
 				// Count
-				graphics.DrawSubscript( rect, tokens[token] );
+				graphics.DrawCountIfHigherThan( rect, tokens[token] );
 
 				maxHeight = Math.Max( maxHeight, rect.Height );
 				x += step;
@@ -452,7 +453,7 @@ namespace SpiritIsland.WinForms {
 				var rect = new RectangleF(bounds.Right-margin-slotWidth,bounds.Y+margin,tokenWidth,tokenHeight);
 				graphics.DrawImageFitHeight(card,rect);
 				rect.X -= rect.Width * .25f; // shift x2 left onto the card
-				graphics.DrawSubscript( rect.ToInts(), activated );
+				graphics.DrawCountIfHigherThan( rect.ToInts(), activated );
 			}
 
 		}
@@ -506,7 +507,7 @@ namespace SpiritIsland.WinForms {
 
 				// Draw Tokens
 				graphics.DrawImage( img, rect );
-				graphics.DrawSubscript( rect, count );
+				graphics.DrawCountIfHigherThan( rect, count );
 			}
 
 			if(presenceCount > 0) { 
@@ -529,7 +530,7 @@ namespace SpiritIsland.WinForms {
 
 				// Draw Presence
 				graphics.DrawImage( presence, presenceRect );
-				graphics.DrawSubscript( presenceRect, presenceCount );
+				graphics.DrawCountIfHigherThan( presenceRect, presenceCount );
 
 			}
 
@@ -626,7 +627,7 @@ namespace SpiritIsland.WinForms {
 
 		#region private fields
 
-		DisplayFearCard fearCard;
+		ActivatedFearCard fearCard;
 		Decision.TokenOnSpace tokenOnSpace;
 		Decision.IAdjacentDecision adjacentDecision;
 		Decision.TypedDecision<SpaceToken> spaceTokens;

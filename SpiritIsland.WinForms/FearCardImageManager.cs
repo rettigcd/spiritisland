@@ -9,7 +9,7 @@ namespace SpiritIsland.WinForms {
 		public FearCardImageManager() {
 		}
 
-		public Image GetImage( DisplayFearCard card ) {
+		public Image GetImage( ActivatedFearCard card ) {
 
 			string name = card.Name;
 

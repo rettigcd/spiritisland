@@ -49,7 +49,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Fear {
 			ctx.ActivateFearCard(new ExplorersAreReluctant());
 
 			AdvanceToInvaderPhase();
-			user.AcknowledgesFearCard("Explorers are Reluctant:1:During the next normal explore, skip the lowest-numbered land matching the invader card on each board.");
+			user.AcknowledgesFearCard("Explorers are Reluctant : 1 : During the next normal explore, skip the lowest-numbered land matching the invader card on each board.");
 
 			log.Assert_Ravaged( "A3", "A8" );
 			log.Assert_Built( "A2", "A5" );
@@ -88,7 +88,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Fear {
 			ctx.ElevateTerrorLevelTo( 2 );
 
 			AdvanceToInvaderPhase();
-			user.AcknowledgesFearCard( "Explorers are Reluctant:2:Skip the next normal explore. During the next invader phase, draw an adidtional explore card." );
+			user.AcknowledgesFearCard( "Explorers are Reluctant : 2 : Skip the next normal explore. During the next invader phase, draw an adidtional explore card." );
 
 			// Card Advance #4 - End of 2st round
 
@@ -123,7 +123,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Fear {
 			ctx.ElevateTerrorLevelTo( 3 );
 
 			AdvanceToInvaderPhase();
-			user.AcknowledgesFearCard("Explorers are Reluctant:3:Skip the next normal explore, but still reveal a card. Perform the flag if relavant. Cards shift left as usual.");
+			user.AcknowledgesFearCard("Explorers are Reluctant : 3 : Skip the next normal explore, but still reveal a card. Perform the flag if relavant. Cards shift left as usual.");
 
 			log.Assert_Ravaged( "A3", "A8" );
 			log.Assert_Built( "A2", "A5" );

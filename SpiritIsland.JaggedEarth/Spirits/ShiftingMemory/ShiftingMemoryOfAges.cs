@@ -101,12 +101,12 @@ namespace SpiritIsland.JaggedEarth {
 			PreparedElements[el]++;
 		}
 
-		public async Task<ElementCounts> DiscardElements(int totalNumToRemove ) {
+		public async Task<ElementCounts> DiscardElements(int totalNumToRemove, string effect ) {
 			var discarded = new ElementCounts();
 
-			int index = totalNumToRemove;
+			int index = 0;
 			while(index++ < totalNumToRemove) {
-				Element el = await this.SelectElement($"Select element to discard for card play ({index} of {totalNumToRemove})",PreparedElements.Keys, Present.Done);
+				Element el = await this.SelectElement($"Select element to discard for {effect} ({index} of {totalNumToRemove})",PreparedElements.Keys, Present.Done);
 				if( el == default ) break;
 				PreparedElements[el]--;
 				discarded[el]++;

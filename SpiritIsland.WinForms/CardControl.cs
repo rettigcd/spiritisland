@@ -75,9 +75,9 @@ namespace SpiritIsland.WinForms {
 				pe.Graphics.DrawRectangle(Pens.Red, GetButtonRect(loc) );
 
 			// Draw Counts choiceLocations so # is on top
-			pe.Graphics.DrawCount(handRect,spirit.Hand.Count);
-			pe.Graphics.DrawCount(inPlayRect,spirit.InPlay.Count);
-			pe.Graphics.DrawCount(discardRect,spirit.DiscardPile.Count);
+			pe.Graphics.DrawCountIfHigherThan(handRect,   spirit.Hand.Count,       0);
+			pe.Graphics.DrawCountIfHigherThan(inPlayRect, spirit.InPlay.Count,     0);
+			pe.Graphics.DrawCountIfHigherThan(discardRect,spirit.DiscardPile.Count,0);
 
 			this.x = 60; // give room to draw H / P / D
 

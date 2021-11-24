@@ -62,7 +62,7 @@ namespace SpiritIsland.WinForms {
 			foreach(var element in orderedElements) {
 				var rect = elLayout.Rect(idx++);
 				graphics.DrawImage( GetElementImage( element ), rect );
-				graphics.DrawCount( rect, elements[element]);
+				graphics.DrawCountIfHigherThan( rect, elements[element]);
 			}
 		}
 

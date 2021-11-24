@@ -17,7 +17,7 @@ namespace SpiritIsland.Tests {
 
 			foreach(var c in fearCards) {
 				// string fearCard = c.GetType().Name; // capture which card it is before the exception
-				_ = new DisplayFearCard(c,terrorLevel);
+				_ = new ActivatedFearCard(c,terrorLevel);
 			}
 
 		}

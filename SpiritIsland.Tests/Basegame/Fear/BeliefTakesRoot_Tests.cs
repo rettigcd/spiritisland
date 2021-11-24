@@ -34,7 +34,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			Given_DahanAndTownsInSpaceWithPresence(10,1);
 
 			_ = When_AddFearApplyFearAndRavage();
-			User.AcknowledgesFearCard("Null Fear Card:1:x");
+			User.AcknowledgesFearCard("Null Fear Card : 1 : x");
 
 			// Then: all dahan killed
 			gameState.DahanOn( ravageSpace ).Count.ShouldBe(0);
@@ -91,7 +91,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			await gameState.InvaderEngine.TestRavage( invaderCard );
 		}
 
-		const string FearCardAction = "Belief takes Root:1:Defend 2 in all lands with Presence.";
+		const string FearCardAction = "Belief takes Root : 1 : Defend 2 in all lands with Presence.";
 		readonly GameState gameState;
 		readonly InvaderCard invaderCard;
 		readonly Space ravageSpace;

@@ -13,16 +13,16 @@ namespace SpiritIsland {
 
 	}
 
-	/// <summary> Text is name of fear card </summary>
-	public class DisplayFearCard : IOption {
+	/// <summary> Text is Name : Terror Level : Instructions </summary>
+	public class ActivatedFearCard : IOption {
 
-		public DisplayFearCard( IFearOptions options ) {
+		public ActivatedFearCard( IFearOptions options ) {
 			FearOptions = options;
 			Name = GetFearCardName( options );
 			Text = Name;
 		}
 
-		public DisplayFearCard(IFearOptions options, int activation ) {
+		public ActivatedFearCard(IFearOptions options, int activation ) {
 			FearOptions = options ?? throw new ArgumentNullException(nameof(options));
 			Name = GetFearCardName( options );
 
@@ -34,7 +34,7 @@ namespace SpiritIsland {
 
 			var attr = (FearLevelAttribute)member.GetCustomAttributes(typeof( FearLevelAttribute )).Single();
 
-			Text = $"{Name}:{activation}:{attr.Description}";
+			Text = $"{Name} : {activation} : {attr.Description}";
 		}
 
 		public string Name { get; }
