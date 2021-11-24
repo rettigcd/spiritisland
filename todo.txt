@@ -1,16 +1,12 @@
 ﻿
 Bonus
-	* Click on / Draw Element pop-up when Selecting Elements
-
-	- Images for Selecting Spirits / Boards / Tokens
+	- layout of Fear / Blight items
 	- Put Build / Ravage / fear in strip along the top 
 	- display # of cards remaining in fear deck before next terror level
-	- Sort Cards by: speed, element, cost
 
 Fix 
 	- Detect Win / Lose 
 	- don't lock up when we win / lose / exception 
-	- layout of Fear / Blight items
 	- Volcano Innate Size
 	- Invader Cards Memento
 
@@ -20,6 +16,7 @@ Fix
 	* Invader Deck loss
 	* Blighted Island Loss
 	* no presence Loss
+
 
 -- Helpful --
 
@@ -34,6 +31,7 @@ Tests - ChooseOption, ChooseFromOptions, (move prompt to last)
 
 Refactor Testing to make it easier to test.
 
+Images for Selecting Spirits / Boards / Tokens
 2) TargetSpaceCtx.DamageInvaders - limit badland damage to once / action
 3) Detect end of game at end of each action, Don't Lock-up when it happens.
 UI Visual indicator of Phase

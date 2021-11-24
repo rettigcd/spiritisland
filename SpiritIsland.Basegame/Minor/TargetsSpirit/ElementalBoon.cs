@@ -18,7 +18,7 @@ namespace SpiritIsland.Basegame {
 		}
 
 		static async Task<Element[]> Gain3DifferentElements( Spirit spirit ) {
-			var selected = await spirit.SelectElements( 3, Element.Sun, Element.Moon, Element.Air, Element.Fire, Element.Water, Element.Earth, Element.Plant, Element.Animal );
+			var selected = await spirit.SelectElementsEx( 3, ElementList.AllElements );
 			spirit.Elements.AddRange( selected );
 			return selected;
 		}

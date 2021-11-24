@@ -28,19 +28,20 @@ namespace SpiritIsland {
 			return selection?.Text;
 		}
 
+
 		// switches type to Element
-		public static async Task<Element> SelectElement( this Spirit spirit, string prompt, IEnumerable<Element> elements, Present present = Present.Always ) {
-			var selection = await spirit.Select( prompt, elements.Select( x => new ItemOption<Element>( x ) ).ToArray(), present );
+		public static async Task<Element> SelectElementEx( this Spirit spirit, string prompt, IEnumerable<Element> elements, Present present = Present.Always ) {
+			var selection = await spirit.Action.Decision( new Decision.ElementDecision( prompt, elements, present ) );
 			return selection is ItemOption<Element> el ? el.Item : Element.None;
 		}
 
 		/// <remarks>Elemental Boon, Spirits May Yet Dream, Select AnyElement</remarks>
-		static public async Task<Element[]> SelectElements( this Spirit spirit, int totalToGain, params Element[] elements ) {
+		static public async Task<Element[]> SelectElementsEx( this Spirit spirit, int totalToGain, params Element[] elements ) {
 			var selected = new List<Element>();
 			List<Element> available = elements.ToList();
 
 			while(selected.Count < totalToGain) {
-				var el = await spirit.SelectElement( $"Select {selected.Count + 1} of {totalToGain} element to gain", available );
+				var el = await spirit.SelectElementEx( $"Select {selected.Count + 1} of {totalToGain} element to gain", available ); // !!!!
 				selected.Add( el );
 				available.Remove( el );
 			}
@@ -73,12 +74,5 @@ namespace SpiritIsland {
 		}
 
 	}
-
-	class ItemOption<T> : IOption {
-		public T Item { get; }
-		public ItemOption( T item ) { Item = item; }
-		public string Text => Item.ToString();
-	}
-
 
 }

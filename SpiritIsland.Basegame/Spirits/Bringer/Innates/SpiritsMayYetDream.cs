@@ -22,7 +22,7 @@ namespace SpiritIsland.Basegame {
 		[InnateOption( "3 moon","Target Spirit gains an element that they have at least 1 of." )]
 		static public async Task Option2( TargetSpiritCtx ctx ) {
 			// Target spirit gains an element they have at least 1 of
-			Element el = (await ctx.Other.SelectElements(1,ctx.Other.Elements.Keys.ToArray())).FirstOrDefault();
+			Element el = (await ctx.Other.SelectElementsEx(1,ctx.Other.Elements.Keys.ToArray())).FirstOrDefault();
 			if(el != default)
 				++ctx.Other.Elements[el];
 		}

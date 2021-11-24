@@ -97,7 +97,7 @@ namespace SpiritIsland.JaggedEarth {
 
 		public async Task PrepareElement() {
 			// This is only used by Shifting Memories
-			var el = await this.SelectElement("Prepare Element", ElementList.AllElements);
+			var el = await this.SelectElementEx("Prepare Element", ElementList.AllElements);
 			PreparedElements[el]++;
 		}
 
@@ -106,7 +106,7 @@ namespace SpiritIsland.JaggedEarth {
 
 			int index = 0;
 			while(index++ < totalNumToRemove) {
-				Element el = await this.SelectElement($"Select element to discard for {effect} ({index} of {totalNumToRemove})",PreparedElements.Keys, Present.Done);
+				Element el = await this.SelectElementEx($"Select element to discard for {effect} ({index} of {totalNumToRemove})",PreparedElements.Keys, Present.Done);
 				if( el == default ) break;
 				PreparedElements[el]--;
 				discarded[el]++;

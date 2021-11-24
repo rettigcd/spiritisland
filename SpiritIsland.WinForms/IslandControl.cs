@@ -148,6 +148,8 @@ namespace SpiritIsland.WinForms {
 				DrawInvaderCards( pe.Graphics, new Rectangle(0,0,(int)(Width*.65f),Height) ); // other than highlights, do this last since it contains the Fear Card that we want to be on top of everything.
 				DrawDeck(pe.Graphics);
 				DrawHighlights( pe );
+				DrawElements( pe.Graphics );
+
 
 				const float spiritShare = .35f;
 				DrawSpirit( pe.Graphics, new Rectangle( Width - (int)(spiritShare*Width), 0, (int)(spiritShare*Width), Height) );
@@ -159,6 +161,28 @@ namespace SpiritIsland.WinForms {
 
 			}
 
+		}
+
+		void DrawElements(Graphics graphics ) {
+			if(elementDecision == null) return;
+
+			int boundsHeight = Height / 8;
+			int margin = boundsHeight / 16;
+			var elementOptions = elementDecision.Options.OfType<ItemOption<Element>>().ToArray();
+			int count = elementOptions.Length;
+			int boundsWidth = boundsHeight * count + margin * (count-1);
+			Rectangle bounds = new Rectangle( 0 + (Width-boundsWidth)/2, Height - boundsHeight-20, boundsWidth, boundsHeight );
+			var elementLayout = new ElementLayout(bounds.InflateBy(-boundsHeight/8));
+
+			graphics.FillRectangle(Brushes.DarkGray,bounds);
+
+			int i=0;
+			foreach(var opt in elementOptions) {
+				using var img = ResourceImages.Singleton.GetToken( opt.Item );
+				var rect = elementLayout.Rect(i++);
+				graphics.DrawImage(img,rect);
+				hotSpots.Add(opt,rect);
+			}
 		}
 
 		void DrawDeck(Graphics graphics ) {
@@ -656,8 +680,10 @@ namespace SpiritIsland.WinForms {
 			spaceTokens       = decision as Decision.TypedDecision<SpaceToken>;
 			deployedPresence  = decision as Decision.Presence.Deployed;
 			deckDecision      = decision as Decision.DeckToDrawFrom;
-			this.activeSpaces = decision.Options.OfType<Space>().ToArray();
-			fearCard          = decision.Options.OfType<ActivatedFearCard>().FirstOrDefault();
+			elementDecision   = decision as Decision.ElementDecision;
+
+			activeSpaces            = decision.Options.OfType<Space>().ToArray();
+			fearCard                = decision.Options.OfType<ActivatedFearCard>().FirstOrDefault();
 			clickableTrackOptions   = decision.Options.OfType<Track>().ToArray();
 			selectableInnateOptions = decision.Options.OfType<InnatePower>().ToArray();
 			selectableGrowthOptions = decision.Options.OfType<GrowthOption>().ToArray();
@@ -670,6 +696,7 @@ namespace SpiritIsland.WinForms {
 		Decision.TypedDecision<SpaceToken> spaceTokens;
 		Decision.Presence.Deployed deployedPresence;
 		Decision.DeckToDrawFrom deckDecision;
+		Decision.ElementDecision elementDecision;
 		Track[] clickableTrackOptions;
 		InnatePower[] selectableInnateOptions;
 		GrowthOption[] selectableGrowthOptions;

@@ -19,7 +19,7 @@ namespace SpiritIsland {
 
 		public async Task ActivateAsync( Spirit self, GameState _ ) {
 
-			var newElements = await self.SelectElements( count, ElementList.AllElements );
+			var newElements = await self.SelectElementsEx( count, ElementList.AllElements );
 			foreach(var newEl in newElements)
 				++self.Elements[newEl];
 			
