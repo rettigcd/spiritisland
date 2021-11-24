@@ -10,20 +10,21 @@ namespace SpiritIsland {
 
 		#region IUserPortal
 
-		/// <summary>
-		/// Blocks and waits for there to be a decision. 
-		/// Don't call unless you are willing to block.
-		/// </summary>
-		public IDecision GetCurrent() => WaitForNextDecisionAndCacheIt().Decision;
-
 		public event Action<IDecision> NewWaitingDecision;
 
-		IDecisionMaker WaitForNextDecisionAndCacheIt() {
+		IDecisionMaker CacheNextDecision( bool block ) {
 			if(userAccessedDecision == null) {
-				signal.WaitOne(); // !!! When we get too much blight, this will lock up the UI - replace with a timed signal
+				WaitForSignal(block);
 				userAccessedDecision = activeDecisionMaker;
 			}
 			return userAccessedDecision;
+		}
+
+		void WaitForSignal(bool block ) {
+			if(block)
+				signal.WaitOne();
+			else
+				signal.WaitOne(0);
 		}
 
 		public bool WaitForNextDecision( int milliseconds ) {
@@ -34,33 +35,36 @@ namespace SpiritIsland {
 			return false;
 		}
 
+		#region Blocking
+
+		/// <summary>
+		/// Blocks and waits for there to be a decision. 
+		/// Don't call unless you are willing to block.
+		/// </summary>
+		public IDecision GetCurrent(bool block=true) => CacheNextDecision(block).Decision;
+
 		public bool IsResolved => activeDecisionMaker == null;
 
-		public void Choose( string text ) {
-			var current = GetCurrent();
-			var choice = current.Options.FirstOrDefault( o => o.Text == text );
-			if(choice == null)
-				throw new ArgumentOutOfRangeException(nameof(text),"sequence ["+current.Options.Select(x=>x.Text).Join(",")+"]does not contain option: "+text);
-			Choose( choice ); // not single because some options appear twice
-		}
-
-		public void Choose(IOption selection) {
-			var poppedDecisionMaker = WaitForNextDecisionAndCacheIt();
-			var poppedDecision = poppedDecisionMaker.Decision;
+		public void Choose(IOption selection,bool block=true) {
+			var currentDecisionMaker = CacheNextDecision(block);
+			if(currentDecisionMaker == null) return;
+			var currentDecision = currentDecisionMaker.Decision;
 			this.activeDecisionMaker = null;
 			this.userAccessedDecision = null;
 
-			if(!poppedDecision.Options.Contains( selection ))
-				throw new ArgumentException( selection.Text + " not found in options("+ poppedDecision.Options.Select(x=>x.Text).Join(",") + ")" );
+			if(!currentDecision.Options.Contains( selection ))
+				throw new ArgumentException( selection.Text + " not found in options("+ currentDecision.Options.Select(x=>x.Text).Join(",") + ")" );
 
-			Log( new DecisionLogEntry(selection,poppedDecision,false)  );
+			Log( new DecisionLogEntry(selection,currentDecision,false)  );
 
-			poppedDecisionMaker.Select( selection ); // ####
+			currentDecisionMaker.Select( selection ); // ####
 		}
+
+		#endregion
 
 		/// <summary> Generates an exception in the engine that resets it back to beginning. </summary>
 		public void GoBackToBeginningOfRound() {
-			var poppedDecisionMaker = WaitForNextDecisionAndCacheIt();
+			var poppedDecisionMaker = CacheNextDecision(true);
 			this.activeDecisionMaker = null;
 			this.userAccessedDecision = null;
 			poppedDecisionMaker.IssueCommand( GameStateCommand.ReturnToBeginningOfRound );

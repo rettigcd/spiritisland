@@ -9,10 +9,9 @@ namespace SpiritIsland {
 
 		public bool IsResolved { get; }
 		bool WaitForNextDecision( int milliseconds );
-		IDecision GetCurrent();
+		IDecision GetCurrent(bool block=true);
 
-		void Choose( IOption option );
-		void Choose( string text );
+		void Choose( IOption option, bool block=true );
 
 		void GoBackToBeginningOfRound();
 	}

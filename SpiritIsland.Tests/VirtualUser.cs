@@ -240,16 +240,23 @@ namespace SpiritIsland.Tests {
 		public void GathersOptionalToken( string token ) {
 			var (options,choice) = SplitOptionsAndChoice( token );
 
+			IDecision current = userPortal.GetCurrent();
 			void Assert_Options( params string[] expected ) {
 				// This is kind of crappy
-				var current = userPortal.GetCurrent();
 				Assert.Equal(
 					expected.OrderBy(x=>x).Join(",")
 					,current.Options.Select(s=>s.Text).OrderBy(x=>x).Join(",")
 				);
 			}
 			Assert_Options( options, "Done" );
-			userPortal.Choose( choice );
+			ChooseUsingText( choice, current );
+		}
+
+		void ChooseUsingText( string text, IDecision current ) {
+			var choice = current.Options.FirstOrDefault( o => o.Text == text );
+			if(choice == null)
+				throw new ArgumentOutOfRangeException(nameof(text),"sequence ["+current.Options.Select(x=>x.Text).Join(",")+"]does not contain option: "+text);
+			userPortal.Choose( choice ); // not single because some options appear twice
 		}
 
 		public void SelectsMajorPowerCard() {
@@ -339,7 +346,7 @@ namespace SpiritIsland.Tests {
 			WaitForSignal();
 		}
 		protected void Choose( string option ) {
-			userPortal.Choose( option );
+			ChooseUsingText( option, userPortal.GetCurrent() );
 			WaitForSignal();
 		}
 

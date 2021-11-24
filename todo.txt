@@ -1,8 +1,5 @@
 ﻿
 Bonus
-	* UI - After making selection, clear Options and invalidate
-	* split User-Gateway into 2 parts, one that blocks (for tests), and one that doesn't (for UI thread)
-
 	* Click on / Draw Element pop-up when Selecting Elements
 	* Click on / Draw Major / Minor Deck
 	* Click on Fear Card

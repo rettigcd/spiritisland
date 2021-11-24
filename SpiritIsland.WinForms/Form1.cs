@@ -38,7 +38,7 @@ namespace SpiritIsland.WinForms {
 			}
 
 			currentDecision = null;
-			this.game.UserPortal.Choose( option );
+			this.game.UserPortal.Choose( option, false ); // If there is no decision to be made, just return
 			
 			if(this.game.WinLoseStatus == WinLoseStatus.Playing) return;
 
