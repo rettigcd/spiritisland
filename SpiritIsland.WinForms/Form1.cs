@@ -124,12 +124,16 @@ namespace SpiritIsland.WinForms {
 		void GameNewStripMenuItem_Click( object sender, EventArgs e ) {
 			var gameConfigDialog = new ConfigureGameDialog();
 			if(gameConfigDialog.ShowDialog() != DialogResult.OK) { return; }
-			this.gameConfiguration = gameConfigDialog.GameConfiguration;
+			this.gameConfiguration = gameConfigDialog.GameConfig;
 			InitGameFromConfiguration();
 		}
 
 		void InitGameFromConfiguration() {
 			logForm.Clear();
+
+			var gc = gameConfiguration;
+			logForm.AppendLine($"=== Game: {gc.SpiritType.Name} - {gc.Board} - {gc.ShuffleNumber} ===");
+
 
 			GameState gameState = gameConfiguration.BuildGame();
 			game = new SinglePlayerGame( gameState, false ) { LogExceptions = true };
@@ -139,7 +143,7 @@ namespace SpiritIsland.WinForms {
 			this.islandControl.Init( game.GameState, this, gameConfiguration.Color );
 			this.cardControl.Init( game.Spirit, this );
 			this.statusControl1.Init( game.GameState, this );
-			this.Text = "Spirit Island - Single Player Game #"+gameConfiguration.GameNumber;
+			this.Text = "Spirit Island - Single Player Game #"+gameConfiguration.ShuffleNumber;
 
 			// start the game
 			this.game.Start();
@@ -147,7 +151,6 @@ namespace SpiritIsland.WinForms {
 		}
 
 		void GameState_NewLogEntry( ILogEntry obj ) {
-//			System.IO.File.AppendAllText(@"C:\users\rettigcd\Desktop\si_log.txt", obj.Msg+"\r\n");
 			logForm.AppendLine(obj.Msg);
 		}
 

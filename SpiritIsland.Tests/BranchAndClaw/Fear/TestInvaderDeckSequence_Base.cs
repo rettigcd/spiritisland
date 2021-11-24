@@ -1,7 +1,5 @@
-﻿using Shouldly;
-using SpiritIsland.Basegame;
+﻿using SpiritIsland.Basegame;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SpiritIsland.Tests.BranchAndClaw.Fear {
 
@@ -18,7 +16,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Fear {
 		}
 
 		void RecordLogItem( ILogEntry s ) {
-			if(s is not DecisionLogEntry)
+			if(s is InvaderActionEntry)
 				log.Enqueue(s.Msg);
 		}
 

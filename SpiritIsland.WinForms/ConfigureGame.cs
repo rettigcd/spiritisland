@@ -78,17 +78,23 @@ namespace SpiritIsland.WinForms {
 
 		private void OkButton_Click( object sender, EventArgs e ) {
 			var gameSettings = new GameConfiguration {
-				GameNumber = new Random().Next( 0, 999_999_999 ),
-				UseBranchAndClaw = true,
 				SpiritType = SelectedSpiritType(),
 				UsePowerProgression = powerProgressionCheckBox.Checked,
-				Board = SelectedBoard()
+				Board = SelectedBoard(),
+				ShuffleNumber = ShuffleNumber(),
+				UseBranchAndClaw = true
 			};
 			gameSettings.Color = (colorListBox.SelectedIndex == 0)
 				? GetColorForSpirit( gameSettings.SpiritType )
 				: colorListBox.SelectedItem as string;
-			GameConfiguration = gameSettings;
+			GameConfig = gameSettings;
 
+		}
+
+		int ShuffleNumber() {
+			string txt = shuffleNumberTextBox.Text.Trim();
+			return int.TryParse(txt, out int shuffleNumber) ? shuffleNumber
+				: new Random().Next( 0, 999_999_999 );
 		}
 
 		static string GetColorForSpirit( Type spiritType ) {
@@ -127,7 +133,7 @@ namespace SpiritIsland.WinForms {
 			return box.SpiritType;
 		}
 
-		public GameConfiguration GameConfiguration { get; private set; }
+		public GameConfiguration GameConfig { get; private set; }
 
 		private void CheckBox1_CheckedChanged( object sender, EventArgs e ) {
 			Init_SpiritList();

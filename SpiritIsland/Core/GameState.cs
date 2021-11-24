@@ -297,22 +297,6 @@ namespace SpiritIsland {
 
 	}
 
-	public interface ILogEntry {
-		string Msg {  get; }
-		LogLevel Level { get; }
-	}
-	public enum LogLevel { None, Fatal, Error, Warning, Info, Debug, All }
-
-	public class LogEntry : ILogEntry {
-		public string msg;
-		public LogEntry( string msg, LogLevel level = LogLevel.Info ) { 
-			this.msg = msg;
-			this.Level = level;
-		}
-		public LogLevel Level { get; }
-		public string Msg => msg;
-	}
-
 	public class LandDamagedArgs {
 		public Space Space;
 		public int Damage;

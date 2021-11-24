@@ -259,8 +259,6 @@ namespace SpiritIsland {
 			try {
 				await factory.ActivateAsync( ctx );
 				RemoveFromUnresolvedActions( factory );
-			} catch( Exception ex) {
-				ctx.GameState.Log(new LogEntry(ex.ToString()) );
 			} finally {
 				CurrentActionId = oldActionGuid; // restore
 			}
@@ -360,7 +358,7 @@ namespace SpiritIsland {
 			while(0 < remainingToPlay
 				&& 0 < (powerCardOptions = getPowerCardOptions()).Length
 			) {
-				string prompt = $"Buy power cards: (${Energy} / {remainingToPlay})";
+				string prompt = $"Play power card (${Energy} / {remainingToPlay}):";
 				var card = await this.SelectPowerCard( prompt, powerCardOptions, CardUse.Play, Present.Done );
 				if(card != null) {
 					PlayCard( card );

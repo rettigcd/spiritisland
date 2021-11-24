@@ -1,13 +1,14 @@
 ﻿
 Bonus
-	- Images for Selecting Spirits / Boards / Tokens
+	* Auto-Select single (init) growths
+	* UI - After making selection, clear Options and invalidate
+	* split User-Gateway into 2 parts, one that blocks (for tests), and one that doesn't (for UI thread)
+
 	* Click on / Draw Element pop-up when Selecting Elements
 	* Click on / Draw Major / Minor Deck
 	* Click on Fear Card
-	* Log: == Round ==,  -- Growth -- -- Fast -- -- Invader --  --- Slow -- (debug)
-	* Log: Spirit, Board, Shuffle # 
-	* Let user enter shuffle #
 
+	- Images for Selecting Spirits / Boards / Tokens
 	- Put Build / Ravage / fear in strip along the top 
 	- display # of cards remaining in fear deck before next terror level
 	- Sort Cards by: speed, element, cost
@@ -17,9 +18,6 @@ Fix
 	- don't lock up when we win / lose / exception 
 	- layout of Fear / Blight items
 	- Volcano Innate Size
-	* Auto-Select single (init) growths
-	* UI - After making selection, clear Options and invalidate
-	* split User-Gateway into 2 parts, one that blocks (for tests), and one that doesn't (for UI thread)
 	- Invader Cards Memento
 
 * Detect Win/Lose and don't lock up

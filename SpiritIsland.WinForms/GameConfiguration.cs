@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace SpiritIsland.WinForms {
 	public class GameConfiguration {
-		public int GameNumber;
+		public int ShuffleNumber;
 		public bool UseBranchAndClaw;
 		public Type SpiritType;
 		public bool UsePowerProgression;
@@ -47,7 +47,7 @@ namespace SpiritIsland.WinForms {
 				: new GameState_BranchAndClaw( spirit, board );
 
 			// Game # - Randomizers
-			var randomizer = new Random( gameSettings.GameNumber );
+			var randomizer = new Random( gameSettings.ShuffleNumber );
 
 			gameState.InvaderDeck = new InvaderDeck( randomizer );
 

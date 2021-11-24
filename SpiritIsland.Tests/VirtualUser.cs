@@ -117,7 +117,7 @@ namespace SpiritIsland.Tests {
 		}
 
 		public void BuysPowerCard( PowerCard card ) {
-			SelectOption( "Buy power cards:", card.Text );
+			SelectOption( "Play power card", card.Text );
 		}
 
 		#region Fear 
@@ -158,7 +158,7 @@ namespace SpiritIsland.Tests {
 		#region IsDone / Skip
 
 		public void IsDoneBuyingCards() {
-			SelectOption( "Buy power cards:", "Done" );
+			SelectOption( "Play power card", "Done" );
 		}
 
 		public void IsDoneWith( Phase speed ) {

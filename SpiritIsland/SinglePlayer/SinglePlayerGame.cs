@@ -46,17 +46,23 @@ namespace SpiritIsland.SinglePlayer {
 						savedGameStates.Push( GameState.SaveToMemento() );
 						DateTime lastSaveTimeStamp= DateTime.Now;
 						try {
+							LogRound();
+
 							GameState.Phase = Phase.Growth;
-							await Spirit.DoGrowth(GameState);
+							LogPhase();
+							await Spirit.DoGrowth( GameState );
 							await Spirit.PlayCardsFromHand();
 
 							GameState.Phase = Phase.Fast;
+							LogPhase();
 							await Spirit.ResolveActions( new SpiritGameStateCtx( Spirit, GameState, Cause.Power ) );
 
 							GameState.Phase = Phase.Invaders;
+							LogPhase();
 							await GameState.InvaderEngine.DoInvaderPhase();
 
 							GameState.Phase = Phase.Slow;
+							LogPhase();
 							await Spirit.ResolveActions( new SpiritGameStateCtx( Spirit, GameState, Cause.Power ) );
 
 							await GameState.TriggerTimePasses();
@@ -72,13 +78,16 @@ namespace SpiritIsland.SinglePlayer {
 					this.WinLoseStatus = gameOver.Status; // Put this on GameState
 				}
 				catch(Exception ex) {
-					GameState.Log(new LogEntry(ex.ToString()) );
+					GameState.Log(new LogException( ex ) );
 				}
 			}
 			_ = LoopAsync();
 
 		}
 
+		void LogPhase() => GameState.Log( new LogPhase( GameState.Phase ) );
+		void LogRound() => GameState.Log( new LogRound( GameState.RoundNumber ) );
+ 		
 	}
 
 

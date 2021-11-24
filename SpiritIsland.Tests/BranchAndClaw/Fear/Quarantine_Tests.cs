@@ -1,6 +1,5 @@
 ﻿using SpiritIsland.Basegame;
 using SpiritIsland.BranchAndClaw;
-using System;
 using System.Collections.Generic;
 using Xunit;
 
@@ -16,7 +15,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Fear {
 		public Quarantine_Tests() {
 			var powerCard = PowerCard.For<CallToTend>();
 			var (userLocal,ctxLocal) = TestSpirit.SetupGame(powerCard,gs=>{ 
-				gs.NewLogEntry += (s) => { if(s is not DecisionLogEntry) log.Enqueue(s.Msg); };
+				gs.NewLogEntry += (s) => { if(s is InvaderActionEntry) log.Enqueue(s.Msg); };
 				gs.InvaderDeck = InvaderDeck.BuildTestDeck(
 					new InvaderCard(Terrain.Sand), // not on coast
 					InvaderCard.Costal,
