@@ -39,13 +39,6 @@ namespace SpiritIsland.WinForms {
 			graphics.DrawImage(img,rect);
 		}
 
-		static public void DrawFearCard( this Graphics graphics, RectangleF rect, ActivatedFearCard displayFearCard ) {
-			if(displayFearCard==null) return;
-			using var img = new FearCardImageManager().GetImage( displayFearCard );
-			graphics.DrawImage( img, rect );
-		}
-
-
 		static public Rectangle ToInts(this RectangleF r) => new Rectangle((int)r.X,(int)r.Y,(int)r.Width,(int)r.Height);
 		static public RectangleF ToRectF( this Rectangle r ) => new RectangleF( r.X, r.Y, r.Width, r.Height );
 

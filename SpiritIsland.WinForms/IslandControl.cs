@@ -161,6 +161,11 @@ namespace SpiritIsland.WinForms {
 				const float spiritShare = .35f;
 				DrawSpirit( pe.Graphics, new Rectangle( Width - (int)(spiritShare*Width), 0, (int)(spiritShare*Width), Height) );
 
+				// Hot spots
+				hotSpots.Clear();
+				RecordSpiritHotspots();
+				if(fearCard!= null) 
+					hotSpots.Add(fearCard,activeFearRect);
 
 			}
 
@@ -185,19 +190,28 @@ namespace SpiritIsland.WinForms {
 
 		void DrawSpirit( Graphics graphics, Rectangle bounds ) {
 
-			 bounds = FitClientBounds(bounds);
+			bounds = FitClientBounds( bounds );
 
 			// Layout
 			if(spiritLayout == null)
 				spiritLayout = new SpiritLayout( graphics, spirit, bounds, 10 );
 
-			// == Record Hotspots ==
-			hotSpots.Clear();
+			graphics.FillRectangle( Brushes.LightYellow, bounds );
+			new SpiritPainter( spirit ).Paint( graphics, spiritLayout,
+				selectableInnateOptions,
+				selectableGrowthOptions,
+				selectableGrowthActions,
+				clickableTrackOptions,
+				presenceColor
+			);
+		}
+
+		void RecordSpiritHotspots() {
 			// Growth Options/Actions
 			foreach(var opt in selectableGrowthOptions)
 				hotSpots.Add( opt, spiritLayout.growthLayout[opt] );
 			foreach(var act in selectableGrowthActions)
-				if(spiritLayout.growthLayout.HasAction(act)) // there might be delayed setup actions here that don't have a rect
+				if(spiritLayout.growthLayout.HasAction( act )) // there might be delayed setup actions here that don't have a rect
 					hotSpots.Add( act, spiritLayout.growthLayout[act] );
 			// Presence
 			foreach(var track in clickableTrackOptions)
@@ -205,24 +219,21 @@ namespace SpiritIsland.WinForms {
 			// Innates
 			foreach(var power in selectableInnateOptions)
 				hotSpots.Add( power, spiritLayout.innateLayouts[power].TotalInnatePowerBounds );
-
-			graphics.FillRectangle(Brushes.LightYellow,bounds);
-			new SpiritPainter(spirit).Paint( graphics, spiritLayout, 
-				selectableInnateOptions, 
-				selectableGrowthOptions, 
-				selectableGrowthActions,
-				clickableTrackOptions,
-				presenceColor
-			);
 		}
-
 
 		void DrawRound( Graphics graphics ) {
 			using var font = new Font( ResourceImages.Singleton.Fonts.Families[0], Height*.065f, GraphicsUnit.Pixel );
 			graphics.DrawString("round: "+gameState.RoundNumber, font, Brushes.SteelBlue, 0, 0);
 		}
 
+		Rectangle activeFearRect;
+
 		void DrawInvaderCards( Graphics graphics, Rectangle bounds ) {
+
+			// Active Fear Layout
+			int fearHeight = (int)(bounds.Height * .8f);
+			var fearWidth = fearHeight * 2/3;
+			activeFearRect = new Rectangle( bounds.Width - fearWidth - (int)(bounds.Height * .1f), (bounds.Height - fearHeight) / 2, fearWidth, fearHeight );
 
 			// Invaders
 			const float margin = 15;
@@ -253,11 +264,6 @@ namespace SpiritIsland.WinForms {
 			float textWidth = graphics.MeasureString( "Ravage", buildRavageFont ).Width;
 			PointF ravageTextTopLeft = new PointF( ravageX + (width - textWidth) / 2, bounds.Bottom - textHeight - margin );
 
-			// Fear Metrics
-			var fearHeight = bounds.Height * .8f;
-			var fearWidth = fearHeight * .66f;
-			var fearRect = new RectangleF( bounds.Width - fearWidth - bounds.Height * .1f, (bounds.Height - fearHeight) / 2, fearWidth, fearHeight );
-
 			// Build
 			for(int i=0;i<buildRect.Length;++i) 
 				graphics.DrawInvaderCard( buildRect[i], gameState.InvaderDeck.Build[i] );
@@ -269,7 +275,10 @@ namespace SpiritIsland.WinForms {
 			graphics.DrawString( "Ravage", buildRavageFont, Brushes.Black, ravageTextTopLeft );
 
 			// Fear
-			graphics.DrawFearCard( fearRect, fearCard );
+			if(fearCard!= null) {
+				using var img = new FearCardImageManager().GetImage( fearCard );
+				graphics.DrawImage( img, activeFearRect );
+			}
 
 		}
 
