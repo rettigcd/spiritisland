@@ -17,7 +17,9 @@ namespace SpiritIsland.JaggedEarth {
 			}
 
 			// Otherwise: Target Spirit gains a Power Card.
-			if(await ctx.Self.UserSelectsFirstText( "Which type do you wish to draw", "minor", "major" ))
+			var powerType = await DrawFromDeck.SelectPowerCardType( ctx.Self );
+
+			if( powerType == PowerType.Minor )
 				await ctx.OtherCtx.DrawMinor();
 			else {
 				await ctx.OtherCtx.DrawMajor(4, false);

@@ -116,19 +116,6 @@ namespace SpiritIsland.WinForms {
 			this.spirit = gameState.Spirits.Single();
 		}
 
-		void OptionProvider_OptionsChanged( IDecision decision ) {
-			tokenOnSpace      = decision as Decision.TokenOnSpace; // 
-			adjacentDecision  = decision as Decision.IAdjacentDecision;
-			spaceTokens       = decision as Decision.TypedDecision<SpaceToken>;
-			deployedPresence  = decision as Decision.Presence.Deployed;
-			this.activeSpaces = decision.Options.OfType<Space>().ToArray();
-			fearCard          = decision.Options.OfType<ActivatedFearCard>().FirstOrDefault();
-			clickableTrackOptions   = decision.Options.OfType<Track>().ToArray();
-			selectableInnateOptions = decision.Options.OfType<InnatePower>().ToArray();
-			selectableGrowthOptions = decision.Options.OfType<GrowthOption>().ToArray();
-			selectableGrowthActions = decision.Options.OfType<GrowthActionFactory>().ToArray();
-		}
-
 		#region Paint
 
 		protected override void OnPaint( PaintEventArgs pe ) {
@@ -149,6 +136,9 @@ namespace SpiritIsland.WinForms {
 			tokenLocations.Clear();
 
 			if(gameState != null) {
+
+				hotSpots.Clear(); // Clear this at beginning so any of the DrawX methods can add to it
+
 				foreach(var space in gameState.Island.Boards[0].Spaces)
 					DecorateSpace(pe.Graphics,space);
 
@@ -156,19 +146,44 @@ namespace SpiritIsland.WinForms {
 				DrawBlight  ( pe.Graphics, new RectangleF(Width*.55f,Width*.05f,Width*.15f,Width*.03f ) );
 				DrawRound( pe.Graphics );
 				DrawInvaderCards( pe.Graphics, new Rectangle(0,0,(int)(Width*.65f),Height) ); // other than highlights, do this last since it contains the Fear Card that we want to be on top of everything.
+				DrawDeck(pe.Graphics);
 				DrawHighlights( pe );
 
 				const float spiritShare = .35f;
 				DrawSpirit( pe.Graphics, new Rectangle( Width - (int)(spiritShare*Width), 0, (int)(spiritShare*Width), Height) );
 
 				// Hot spots
-				hotSpots.Clear();
 				RecordSpiritHotspots();
 				if(fearCard!= null) 
 					hotSpots.Add(fearCard,activeFearRect);
 
 			}
 
+		}
+
+		void DrawDeck(Graphics graphics ) {
+			if(deckDecision==null) return;
+
+			// calc layout
+			int boundsHeight = Height / 3; // cards take up 1/3 of window vertically
+			int boundsWidth = boundsHeight * 16 / 10;
+			Rectangle bounds = new Rectangle( 0 + (Width-boundsWidth)/2, Height - boundsHeight-20, boundsWidth, boundsHeight );
+
+			Rectangle innerDeckBounds = bounds.InflateBy(-boundsHeight/20);
+			var cardWidth = innerDeckBounds.Height * 3 / 4;
+			var minorRect = new Rectangle(innerDeckBounds.X,innerDeckBounds.Y,cardWidth,innerDeckBounds.Height);
+			var majorRect = new Rectangle(innerDeckBounds.Right-cardWidth,innerDeckBounds.Y,cardWidth,innerDeckBounds.Height);
+
+			// Hotspots
+			// !! we are assuming minor is first...
+			hotSpots.Add(deckDecision.Options[0],minorRect);
+			hotSpots.Add(deckDecision.Options[1],majorRect);
+
+			graphics.FillRectangle(Brushes.DarkGray,bounds);
+			using var minorImage = Image.FromFile( ".\\images\\minor.png" );
+			using var majorImage = Image.FromFile( ".\\images\\major.png" );
+			graphics.DrawImage(minorImage,minorRect);
+			graphics.DrawImage(majorImage,majorRect);
 		}
 
 		static Rectangle FitClientBounds(Rectangle bounds) {
@@ -182,11 +197,12 @@ namespace SpiritIsland.WinForms {
 			return bounds;
 		}
 
+		#region Layout
+
 		SpiritLayout spiritLayout;
-		Track[] clickableTrackOptions;
-		InnatePower[] selectableInnateOptions;
-		GrowthOption[] selectableGrowthOptions;
-		GrowthActionFactory[] selectableGrowthActions;
+		Rectangle activeFearRect;
+
+		#endregion
 
 		void DrawSpirit( Graphics graphics, Rectangle bounds ) {
 
@@ -225,8 +241,6 @@ namespace SpiritIsland.WinForms {
 			using var font = new Font( ResourceImages.Singleton.Fonts.Families[0], Height*.065f, GraphicsUnit.Pixel );
 			graphics.DrawString("round: "+gameState.RoundNumber, font, Brushes.SteelBlue, 0, 0);
 		}
-
-		Rectangle activeFearRect;
 
 		void DrawInvaderCards( Graphics graphics, Rectangle bounds ) {
 
@@ -636,11 +650,31 @@ namespace SpiritIsland.WinForms {
 
 		#region private fields
 
+		void OptionProvider_OptionsChanged( IDecision decision ) {
+			tokenOnSpace      = decision as Decision.TokenOnSpace; // 
+			adjacentDecision  = decision as Decision.IAdjacentDecision;
+			spaceTokens       = decision as Decision.TypedDecision<SpaceToken>;
+			deployedPresence  = decision as Decision.Presence.Deployed;
+			deckDecision      = decision as Decision.DeckToDrawFrom;
+			this.activeSpaces = decision.Options.OfType<Space>().ToArray();
+			fearCard          = decision.Options.OfType<ActivatedFearCard>().FirstOrDefault();
+			clickableTrackOptions   = decision.Options.OfType<Track>().ToArray();
+			selectableInnateOptions = decision.Options.OfType<InnatePower>().ToArray();
+			selectableGrowthOptions = decision.Options.OfType<GrowthOption>().ToArray();
+			selectableGrowthActions = decision.Options.OfType<GrowthActionFactory>().ToArray();
+		}
+
 		ActivatedFearCard fearCard;
 		Decision.TokenOnSpace tokenOnSpace;
 		Decision.IAdjacentDecision adjacentDecision;
 		Decision.TypedDecision<SpaceToken> spaceTokens;
 		Decision.Presence.Deployed deployedPresence;
+		Decision.DeckToDrawFrom deckDecision;
+		Track[] clickableTrackOptions;
+		InnatePower[] selectableInnateOptions;
+		GrowthOption[] selectableGrowthOptions;
+		GrowthActionFactory[] selectableGrowthActions;
+
 		
 		readonly List<(Rectangle,IOption)> optionRects = new List<(Rectangle, IOption)>();
 

@@ -1,7 +1,6 @@
 ﻿
 Bonus
 	* Click on / Draw Element pop-up when Selecting Elements
-	* Click on / Draw Major / Minor Deck
 
 	- Images for Selecting Spirits / Boards / Tokens
 	- Put Build / Ravage / fear in strip along the top 

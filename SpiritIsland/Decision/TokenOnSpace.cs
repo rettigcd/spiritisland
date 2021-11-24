@@ -27,4 +27,5 @@ namespace SpiritIsland.Decision {
 		public Space Space { get; }
 	}
 
+
 }

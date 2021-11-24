@@ -8,9 +8,14 @@ namespace SpiritIsland {
 	public class DrawFromDeck : IPowerCardDrawer {
 
 		public async Task<PowerCard> Draw( Spirit spirit, GameState gs, Func<List<PowerCard>, Task> handleNotUsed ) {
-			return await spirit.UserSelectsFirstText( "Which type do you wish to draw", "minor", "major" )
+			PowerType powerType = await SelectPowerCardType( spirit );
+			return powerType == PowerType.Minor
 				? await DrawMinor( spirit, gs, handleNotUsed )
 				: await DrawMajor( spirit, gs, handleNotUsed );
+		}
+
+		public static async Task<PowerType> SelectPowerCardType( Spirit spirit ) {
+			return await spirit.Action.Decision( new Decision.DeckToDrawFrom( PowerType.Minor, PowerType.Major ) );
 		}
 
 		public async Task<PowerCard> DrawMajor( Spirit spirit, GameState gameState, Func<List<PowerCard>, Task> handleNotUsed, bool forgetCard = true, int numberToDraw = 4 ) {
