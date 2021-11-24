@@ -86,8 +86,13 @@ namespace SpiritIsland {
 		public virtual async Task DoGrowth(GameState gameState) {
 
 			// Resolve Initialization
-			if(availableActions.Any())
-				await ResolveActions(new SpiritGameStateCtx(this,gameState,Cause.Growth));
+			if(availableActions.Any()) {
+				var ctx = new SpiritGameStateCtx(this,gameState,Cause.Growth);
+				if(availableActions.Count == 1) 
+					await TakeAction( availableActions[0], ctx );
+				else
+					await ResolveActions(ctx);
+			}
 
 			int count = growthOptionGroup.SelectionCount;
 			List<GrowthOption> remainingOptions = growthOptionGroup.Options.ToList();
@@ -164,7 +169,7 @@ namespace SpiritIsland {
 				if(!factoryOptions.Contains( option ))
 					throw new Exception( "Dude! - You selected something that wasn't an option" );
 
-				await TakeAction( (IActionFactory)option, ctx );
+				await TakeAction( option, ctx );
 			}
 
 		}

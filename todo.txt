@@ -1,6 +1,5 @@
 ﻿
 Bonus
-	* Auto-Select single (init) growths
 	* UI - After making selection, clear Options and invalidate
 	* split User-Gateway into 2 parts, one that blocks (for tests), and one that doesn't (for UI thread)
 
