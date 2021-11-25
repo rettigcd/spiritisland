@@ -10,8 +10,8 @@ namespace SpiritIsland.Basegame {
 		static public Task Act( TargetSpiritCtx ctx ) {
 
 			// target spirit gets +2 range with all their Powers
-			TargetLandApi.ScheduleRestore( ctx.OtherCtx );
-			TargetLandApi.ExtendRange( ctx.Other, 2 );
+			ctx.GameState.TimePasses_ThisRound.Push( new PowerApiRestorer( ctx.Other ).Restore );
+			ctx.Other.RangeCalc = new TargetLandApi_ExtendRange( 2, ctx.Other.RangeCalc );
 
 			return Task.CompletedTask;
 		}

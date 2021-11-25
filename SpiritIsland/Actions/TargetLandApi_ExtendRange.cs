@@ -3,18 +3,18 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
-	class TargetLandApi_ExtendRange : TargetLandApi {
+	public class TargetLandApi_ExtendRange : ICalcRange {
 
 		readonly int extension;
-		readonly TargetLandApi originalApi;
+		readonly ICalcRange originalApi;
 
-		public TargetLandApi_ExtendRange( int extension, TargetLandApi originalApi ) {
+		public TargetLandApi_ExtendRange( int extension, ICalcRange originalApi ) {
 			this.extension = extension;
 			this.originalApi = originalApi;
 		}
 
-		public override IEnumerable<Space> GetTargetOptions( Spirit self, GameState gameState, From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum, PowerType powerType ) {
-			return originalApi.GetTargetOptions( self, gameState, sourceEnum, sourceTerrain, range + extension, filterEnum, powerType );
+		public IEnumerable<Space> GetTargetOptionsFromKnownSource( Spirit self, GameState gameState, int range, string filterEnum, TargettingFrom powerType, IEnumerable<Space> source ) {
+			return originalApi.GetTargetOptionsFromKnownSource( self, gameState, range + extension, filterEnum, powerType, source );
 		}
 
 	}

@@ -105,7 +105,7 @@ namespace SpiritIsland {
 
 		/// <summary> Select a space withing [range] of specified spaces </summary>
 		public IEnumerable<Space> GetValidDestinationOptionsFromPresence( int range, string filterEnum, IEnumerable<Space> source ) {
-			return ctx.Self.TargetLandApi.GetTargetOptionsFromKnownSource( ctx.Self, ctx.GameState, source, range, filterEnum )
+			return ctx.Self.RangeCalc.GetTargetOptionsFromKnownSource( ctx.Self, ctx.GameState, range, filterEnum, TargettingFrom.None, source )
 				.Where(ctx.Self.Presence.IsValid);
 		}
 

@@ -66,9 +66,6 @@ Shadows Flicker like Flame:
 			this.InnatePowers = new InnatePower[]{
 				InnatePower.For<DarknessSwallowsTheUnwary>()
 			};
-			this.TargetLandApi = new ShadowApi();
-
-
 		}
 
 		protected override PowerProgression GetPowerProgression() =>
@@ -83,44 +80,40 @@ Shadows Flicker like Flame:
 			);
 
 
-		class ShadowApi : TargetLandApi {
+		public override async Task<Space> TargetsSpace( GameState gameState, string prompt, From from, Terrain? sourceTerrain, int range, string filterEnum, TargettingFrom powerType ) {
+			// no money, do normal
+			if(Energy == 0)
+				return await base.TargetsSpace( gameState, prompt, from, sourceTerrain, range, filterEnum, powerType );
 
-			public override async Task<Space> TargetsSpace( Spirit self, GameState gameState, string prompt, From from, Terrain? sourceTerrain, int range, string filter, PowerType powerType ) {
-				// no money, do normal
-				if(self.Energy == 0)
-					return await base.TargetsSpace( self, gameState, prompt, from, sourceTerrain, range, filter, powerType );
+			// find normal Targetable spaces
+			var normalSpaces = GetTargetOptions( gameState, range, filterEnum, powerType, from, sourceTerrain );
 
-				// find normal Targetable spaces
-				var normalSpaces = base.GetTargetOptions(self, gameState, from, sourceTerrain, range, filter, powerType );
+			// find dahan-only spaces that are not in targetable spaces
+			var dahanOnlySpaces = gameState.Island.Boards
+				.SelectMany(board=>board.Spaces)
+				.Where( s=>gameState.DahanOn(s).Any )
+				.Except(normalSpaces)
+				.ToArray();
+			// no dahan-only spaces, do normal
+			if(dahanOnlySpaces.Length == 0)
+				return await base.TargetsSpace( gameState, prompt, from, sourceTerrain, range, filterEnum, powerType );
 
-				// find dahan-only spaces that are not in targetable spaces
-				var dahanOnlySpaces = gameState.Island.Boards
-					.SelectMany(board=>board.Spaces)
-					.Where( s=>gameState.DahanOn(s).Any )
-					.Except(normalSpaces)
-					.ToArray();
-				// no dahan-only spaces, do normal
-				if(dahanOnlySpaces.Length == 0)
-					return await base.TargetsSpace( self, gameState, prompt, from, sourceTerrain, range, filter, powerType );
+			// append Target-Dahan option to end of list
+			List<IOption> options = normalSpaces.Cast<IOption>().ToList();
+			options.Add(new TextOption("Pay 1 energy to target land with dahan"));
 
-				// append Target-Dahan option to end of list
-				List<IOption> options = normalSpaces.Cast<IOption>().ToList();
-				options.Add(new TextOption("Pay 1 energy to target land with dahan"));
+			// let them select normal, or choose to pay
+			IOption option = await this.Select("Select land to target.",options.ToArray(), Present.Always);
 
-				// let them select normal, or choose to pay
-				IOption option = await self.Select("Select land to target.",options.ToArray(), Present.Always);
+			// if they select regular space, use it
+			if(option is Space space)
+				return space;
 
-				// if they select regular space, use it
-				if(option is Space space)
-					return space;
+			// pay 1 energy
+			--Energy;
 
-				// pay 1 energy
-				--self.Energy;
-
-				// pick from dahan-only spaces
-				return await self.Action.Decision( new Decision.TargetSpace( "Target land with dahan", dahanOnlySpaces, Present.Always));
-			}
-
+			// pick from dahan-only spaces
+			return await this.Action.Decision( new Decision.TargetSpace( "Target land with dahan", dahanOnlySpaces, Present.Always));
 		}
 
 		protected override void InitializeInternal( Board board, GameState gs ) {

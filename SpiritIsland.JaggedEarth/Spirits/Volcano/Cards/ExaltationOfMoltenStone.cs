@@ -21,27 +21,29 @@ namespace SpiritIsland.JaggedEarth {
 			return Task.CompletedTask;
 		}
 
-		private static void ExtendRangeFromMountains( SpiritGameStateCtx x ) {
-			TargetLandApi.ScheduleRestore( x );
-			x.Self.TargetLandApi = new ExtendRange1FromMountain( x.Self.TargetLandApi );
+		private static void ExtendRangeFromMountains( SpiritGameStateCtx ctx ) {
+			ctx.GameState.TimePasses_ThisRound.Push( new PowerApiRestorer( ctx.Self ).Restore );
+			ctx.Self.RangeCalc = new ExtendRange1FromMountain( ctx.Self.RangeCalc );
 		}
 
-		class ExtendRange1FromMountain : TargetLandApi {
+		class ExtendRange1FromMountain : DefaultCalcRange {
 
-			readonly TargetLandApi originalApi;
+			readonly ICalcRange originalApi;
 
-			public ExtendRange1FromMountain( TargetLandApi originalApi ) {
+			public ExtendRange1FromMountain( ICalcRange originalApi ) {
 				this.originalApi = originalApi;
 			}
 
-			public override IEnumerable<Space> GetTargetOptions( Spirit self, GameState gameState, From from, Terrain? sourceTerrain, int range, string filterEnum, PowerType powerType ) {
+			public override IEnumerable<Space> GetTargetOptionsFromKnownSource( Spirit self, GameState gameState, int range, string filterEnum, TargettingFrom powerType, IEnumerable<Space> source ) {
 				// original options
-				List<Space> spaces = originalApi.GetTargetOptions( self, gameState, from, sourceTerrain, range, filterEnum, powerType ).ToList();
+				List<Space> spaces = originalApi.GetTargetOptionsFromKnownSource( self, gameState, range, filterEnum, powerType, source ).ToList();
 
 				// Target Spirit gains +1 range with their Powers that originate from a Mountain
-				if(sourceTerrain==null || sourceTerrain == Terrain.Mountain)
-					spaces.AddRange( originalApi.GetTargetOptions( self, gameState, from, Terrain.Mountain, range+1, filterEnum, powerType ));
-				return spaces.Distinct();
+				var mountainSource = source.Where(x=>x.Terrain == Terrain.Mountain).ToArray();
+				return mountainSource.Length == 0 ? spaces
+					: spaces
+					.Union( originalApi.GetTargetOptionsFromKnownSource( self, gameState, range+1, filterEnum, powerType, mountainSource ) )
+					.Distinct();
 			}
 
 		}

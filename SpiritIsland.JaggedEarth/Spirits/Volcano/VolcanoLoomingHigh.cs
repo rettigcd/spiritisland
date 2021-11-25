@@ -38,7 +38,7 @@ namespace SpiritIsland.JaggedEarth {
 
 			((VolcanoPresence)(Presence)).spirit = this;
 
-			TargetLandApi = new VolcanoTargetLandApi();
+			RangeCalc = new VolcanoTargetLandApi();
 		}
 
 		protected override void InitializeInternal( Board board, GameState gameState ) {

@@ -40,7 +40,7 @@ namespace SpiritIsland {
 			if( !await SpeedBehavior.IsActiveFor(spiritCtx.GameState.Phase,spiritCtx.Self) )
 				return; 
 
-			var targetCtx = await targetAttr.GetTargetCtx( Name, spiritCtx, PowerType );
+			var targetCtx = await targetAttr.GetTargetCtx( Name, spiritCtx, TargettingFrom.PowerCard );
 			if(targetCtx == null) 
 				return;
 
@@ -110,6 +110,9 @@ namespace SpiritIsland {
 
 	}
 
+	// Volcano targets differently for Innates vs cards
+	public enum TargettingFrom { None, Innate, PowerCard } // Can't think up a good name for this
+
 	public class PowerType : IOption {
 		public static readonly PowerType Minor  = new PowerType("minor");
 		public static readonly PowerType Major  = new PowerType("major");
@@ -118,8 +121,7 @@ namespace SpiritIsland {
 
 		public string Text { get; }
 
-		PowerType(string text ) { Text = text; }
-
+		PowerType(string text) { Text = text; }
 	}
 
 	static public class PowerCardExtensions_ForWinForms {

@@ -11,7 +11,7 @@ namespace SpiritIsland.Basegame {
 
 			// into a single land, up to range 2 from your presence.
 			// Note - Jonah says it is the originators power and range and decision, not the targets
-			var spaceOptions = ctx.Self.TargetLandApi.GetTargetOptions(ctx.Self,ctx.GameState,From.Presence,null,2,Target.Any,PowerType.Major)
+			var spaceOptions = ctx.Self.GetTargetOptions(ctx.GameState,2,Target.Any,TargettingFrom.None,From.Presence,null)
 				.Where(ctx.Other.Presence.IsValid)
 				.ToArray();
 			TargetSpaceCtx selfPickLandCtx = await ctx.SelectSpace("Select location for target spirit to add presence", spaceOptions);

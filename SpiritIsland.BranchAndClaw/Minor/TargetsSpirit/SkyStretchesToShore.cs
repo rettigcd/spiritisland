@@ -16,7 +16,7 @@ namespace SpiritIsland.BranchAndClaw {
 			ctx.Other.AddActionFactory( new ChangeSpeed() );
 
 			// Target Spirit gains +3 range for targeting costal lands only
-			TargetLandApi.ScheduleRestore( ctx.OtherCtx );
+			ctx.GameState.TimePasses_ThisRound.Push( new PowerApiRestorer( ctx.Other ).Restore );
 			_ = new SkyStretchesToShoreApi( ctx.Other ); // Auto-binds to spirit
 
 			return Task.CompletedTask;
@@ -24,19 +24,19 @@ namespace SpiritIsland.BranchAndClaw {
 
 	}
 
-	class SkyStretchesToShoreApi : TargetLandApi {
+	class SkyStretchesToShoreApi : DefaultCalcRange {
 		public SkyStretchesToShoreApi( Spirit spirit ) {
-			this.orig = spirit.TargetLandApi;
-			spirit.TargetLandApi = this;
+			this.orig = spirit.RangeCalc;
+			spirit.RangeCalc = this;
 		}
 
-		public override IEnumerable<Space> GetTargetOptions( Spirit self, GameState gameState, From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum, PowerType powerType ) {
-			var normal = orig.GetTargetOptions( self, gameState, sourceEnum, sourceTerrain, range, filterEnum, powerType );
-			var shore = orig.GetTargetOptions( self, gameState, sourceEnum, sourceTerrain, range+3, filterEnum, powerType ).Where(x => x.IsCoastal);
+		public override IEnumerable<Space> GetTargetOptionsFromKnownSource( Spirit self, GameState gameState, int range, string filterEnum, TargettingFrom powerType, IEnumerable<Space> source ) {
+			var normal = orig.GetTargetOptionsFromKnownSource( self, gameState, range, filterEnum, powerType, source );
+			var shore = orig.GetTargetOptionsFromKnownSource( self, gameState, range+3, filterEnum, powerType, source ).Where(x => x.IsCoastal);
 			return normal.Union(shore);
 		}
 
-		readonly TargetLandApi orig;
+		readonly ICalcRange orig;
 	}
 
 }

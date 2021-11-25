@@ -17,7 +17,6 @@ namespace SpiritIsland {
 				AddCardToHand(card);
 
 			Action = new ActionGateway();
-
 		}
 
 		void Presence_TrackRevealed( Track track ) {
@@ -439,8 +438,6 @@ namespace SpiritIsland {
 
 		#region Power Plug-ins
 
-		public TargetLandApi TargetLandApi = new TargetLandApi(); // Replace by: Reaching Grasp, Entwined Power, Shadows
-
 		public IDamageApplier CustomDamageStrategy = null; // Fires Fury Plugs in a custom +1 bonus damage
 
 		public virtual InvaderGroup BuildInvaderGroupForPowers( GameState gs, Space space ) {
@@ -470,6 +467,42 @@ namespace SpiritIsland {
 
 		public virtual TokenPusher PushFactory( TargetSpaceCtx ctx ) => new TokenPusher( ctx );
 		public virtual TokenGatherer GatherFactory( TargetSpaceCtx ctx ) => new TokenGatherer( ctx );
+
+		#endregion
+
+		#region Tarteting / Range
+
+		public ICalcSource SourceCalc = new DefaultSourceCalc();
+		public ICalcRange RangeCalc = new DefaultCalcRange();
+
+		// Only Called from TargetSpaceAttribute
+		// !!! Also, some things may be calling GetTargetOptions directly and skipping over this bit - preventing Shadow from paying their energy
+		public virtual Task<Space> TargetsSpace( 
+			GameState gameState, 
+			string prompt, 
+			From sourceEnum, 
+			Terrain? sourceTerrain, 
+			int range, 
+			string filterEnum,
+			TargettingFrom powerType
+		) {
+			if(prompt == null) prompt = "Target Space.";
+			IEnumerable<Space> spaces = GetTargetOptions( gameState, range, filterEnum, powerType, sourceEnum, sourceTerrain );
+			return this.Action.Decision( new Decision.TargetSpace( prompt, spaces, Present.Always ));
+		}
+
+		public IEnumerable<Space> GetTargetOptions( 
+			GameState gameState, 
+			int range, 
+			string filterEnum, 
+			TargettingFrom powerType,
+
+			From sourceEnum, 
+			Terrain? sourceTerrain
+		) {
+			IEnumerable<Space> source = SourceCalc.FindSources( this, sourceEnum, sourceTerrain );
+			return RangeCalc.GetTargetOptionsFromKnownSource( this, gameState, range, filterEnum, powerType, source );
+		}
 
 		#endregion
 

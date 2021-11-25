@@ -10,9 +10,9 @@ namespace SpiritIsland.Basegame {
 
 			// You and other spirit share presence for targeting
 			if( ctx.Self != ctx.Other) {
-				TargetLandApi.ScheduleRestore( ctx );
-				TargetLandApi.ScheduleRestore( ctx.OtherCtx );
-				_ = new SharedPresenceTargeting( ctx.Self, ctx.Other ); // auto-binds to spirits
+				ctx.GameState.TimePasses_ThisRound.Push( new SourceCalcRestorer( ctx.Self ).Restore );
+				ctx.GameState.TimePasses_ThisRound.Push( new SourceCalcRestorer( ctx.Other ).Restore );
+				_ = new EntwinedPresenceSource( ctx.Self, ctx.Other ); // auto-binds to spirits
 			}
 
 			// Target spirit gains a power Card.

@@ -12,8 +12,9 @@ namespace SpiritIsland.BranchAndClaw {
 		static async Task TargetActions( SpiritGameStateCtx ctx, bool bringCityAndBlight ) {
 
 			// target spirit gets +2 range with all Powers.
-			TargetLandApi.ScheduleRestore( ctx );
-			TargetLandApi.ExtendRange( ctx.Self, 2 );
+			ctx.GameState.TimePasses_ThisRound.Push( new PowerApiRestorer( ctx.Self ).Restore );
+			ctx.Self.RangeCalc = new TargetLandApi_ExtendRange( 2, ctx.Self.RangeCalc );
+
 
 			// Target spirit may push 1 of their presence to an adjacent land
 			var (src,destination) = await ctx.Presence.PushUpTo1();

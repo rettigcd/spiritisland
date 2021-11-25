@@ -3,18 +3,17 @@ using System.Linq;
 
 namespace SpiritIsland.JaggedEarth {
 
-	class VolcanoTargetLandApi : TargetLandApi {
+	class VolcanoTargetLandApi : DefaultCalcRange {
 
-		public override IEnumerable<Space> GetTargetOptions( Spirit self, GameState gameState, From sourceEnum, Terrain? sourceTerrain, int range, string filterEnum, PowerType powerType ) {
-
-			List<Space> spaces = base.GetTargetOptions( self, gameState, sourceEnum, sourceTerrain, range, filterEnum, powerType )
+		public override IEnumerable<Space> GetTargetOptionsFromKnownSource( Spirit self, GameState gameState, int range, string filterEnum, TargettingFrom powerType, IEnumerable<Space> source ) {
+			List<Space> spaces = base.GetTargetOptionsFromKnownSource( self, gameState, range, filterEnum, powerType, source )
 				.ToList();
 
 			// Add towers
-			if(powerType != PowerType.Innate) {
+			if(powerType != TargettingFrom.Innate) {
 				var towers = self.Presence.Placed.Where(s=>3 <= self.Presence.CountOn(s)).ToArray();
 				if(towers.Length>0)
-					spaces.AddRange( base.GetTargetOptionsFromKnownSource(self,gameState,towers,range+1,filterEnum) );
+					spaces.AddRange( base.GetTargetOptionsFromKnownSource(self,gameState,range+1,filterEnum,powerType,towers) );
 			}
 
 			return spaces.Distinct();
