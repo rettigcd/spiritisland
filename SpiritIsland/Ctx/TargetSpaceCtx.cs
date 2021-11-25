@@ -174,6 +174,29 @@ namespace SpiritIsland {
 			await Invaders.UserSelectedDamage( Badlands.Count, Self,generic );
 		}
 
+		public async Task Apply1DamageToDifferentInvaders( int count ) {
+			const int damagePerInvader = 1;
+
+			// Find Damaged Invaders
+			var invaders = new List<Token>();
+			foreach(var token in Tokens.Invaders())
+				for(int i = 0; i < Tokens[token]; ++i)
+					invaders.Add( token );
+
+			// Select up to 3 to put in the skip-list
+			count = System.Math.Min(count,invaders.Count);
+			while(count-->0 ) {
+				var invader = await Self.Action.Decision( new Decision.TokenOnSpace(
+					$"Select invader to apply {damagePerInvader} damage", Space,
+					invaders.Distinct(),
+					Present.Done
+				) );
+				if(invader == null) break;
+				invaders.Remove( invader );
+				await Invaders.ApplyDamageTo1(damagePerInvader,invader);
+			}
+
+		}
 
 		public async Task DamageDahan( int damage ) {
 			if( damage == 0 ) return;
@@ -186,7 +209,7 @@ namespace SpiritIsland {
 		}
 
 		/// <summary> Incomporates bad lands </summary>
-		public async Task Apply1DamageToAllDahan() {
+		public async Task Apply1DamageToEachDahan() {
 			await Dahan.Apply1DamageToAll( Cause );
 			await Dahan.ApplyDamage(Badlands.Count, Cause);
 		}

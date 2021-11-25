@@ -14,7 +14,6 @@ namespace SpiritIsland {
 	}
 
 	public class DefaultSourceCalc : ICalcSource {
-		// !! ??? does this need to be virtual?  is anything overriding it and calling base.FindSources() ???
 		public virtual IEnumerable<Space> FindSources( IKnowSpiritLocations presence, From sourceEnum, Terrain? sourceTerrain ) {
 			var sources = sourceEnum switch {
 				From.Presence => presence.Spaces,

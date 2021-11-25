@@ -5,8 +5,8 @@ Bonus
 	- display # of cards remaining in fear deck before next terror level
 
 Fix 
+	- When doing something to individual invaders - use method found in Pall to target individual invaders.
 	- Detect Win / Lose 
-	- don't lock up when we win / lose / exception 
 	- Volcano Innate Size
 	- Invader Cards Memento
 

@@ -328,13 +328,13 @@ namespace SpiritIsland {
 		static readonly IPowerCardDrawer DefaultCardDrawer = new DrawFromDeck();
 		public IPowerCardDrawer CardDrawer { get; set; } = DefaultCardDrawer; // !!! public so tests can set it - find another way to set so we can make the set private
 
-		public Task<PowerCard> Draw( GameState gameState, Func<List<PowerCard>, Task> handleNotUsed ) 
+		public virtual Task<PowerCard> Draw( GameState gameState, Func<List<PowerCard>, Task> handleNotUsed ) 
 			=> CardDrawer.Draw(this,gameState,handleNotUsed);
 
-		public Task<PowerCard> DrawMinor( GameState gameState ) 
+		public virtual Task<PowerCard> DrawMinor( GameState gameState ) 
 			=> CardDrawer.DrawMinor( this, gameState, null );
 
-		public Task<PowerCard> DrawMajor( GameState gameState, int numberToDraw=4, bool forgetCard=true ) 
+		public virtual Task<PowerCard> DrawMajor( GameState gameState, int numberToDraw=4, bool forgetCard=true ) 
 			=> CardDrawer.DrawMajor( this, gameState, null, forgetCard, numberToDraw ); // Instead of passing in null, could return Tupple with discard cards in it()
 
 		#endregion
@@ -475,14 +475,14 @@ namespace SpiritIsland {
 		public virtual Task<Space> TargetsSpace( 
 			GameState gameState, 
 			string prompt, 
-			From sourceEnum, 
+			From from, 
 			Terrain? sourceTerrain, 
 			int range, 
 			string filterEnum,
 			TargettingFrom powerType
 		) {
 			if(prompt == null) prompt = "Target Space.";
-			IEnumerable<Space> spaces = GetTargetOptions( gameState, range, filterEnum, powerType, sourceEnum, sourceTerrain );
+			IEnumerable<Space> spaces = GetTargetOptions( gameState, range, filterEnum, powerType, from, sourceTerrain );
 			return this.Action.Decision( new Decision.TargetSpace( prompt, spaces, Present.Always ));
 		}
 

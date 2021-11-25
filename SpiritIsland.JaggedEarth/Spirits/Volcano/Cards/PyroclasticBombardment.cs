@@ -7,7 +7,7 @@ namespace SpiritIsland.JaggedEarth {
 		public static async Task ActAsync(TargetSpaceCtx ctx ) {
 			// 1 Damage to each town / city / dahan.
 			await ctx.DamageEachInvader(1,Invader.Town, Invader.City);
-			await ctx.Apply1DamageToAllDahan();
+			await ctx.Apply1DamageToEachDahan();
 
 			// 1 Damage
 			await ctx.Invaders.UserSelectedDamage( 1, ctx.Self ); // skipping over badlands

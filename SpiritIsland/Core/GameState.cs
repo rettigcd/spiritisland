@@ -299,10 +299,12 @@ namespace SpiritIsland {
 	}
 
 	public class Healer {
+
 		public virtual void Heal( GameState gs ) {
 			foreach(var space in gs.Tokens.Keys)
 				InvaderGroup.HealTokens( gs.Tokens[space] );
 		}
+
 	}
 
 	public class LandDamagedArgs {

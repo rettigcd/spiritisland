@@ -39,6 +39,8 @@
     <None Remove="images\icons\Land_Gather_Beasts.png" />
     <None Remove="images\icons\mountainorpresence.png" />
     <None Remove="images\icons\Moveicon.png" />
+    <None Remove="images\icons\Moveonepresence.png" />
+    <None Remove="images\icons\Movepresence.png" />
     <None Remove="images\icons\Noblight.png" />
     <None Remove="images\icons\Ocean.png" />
     <None Remove="images\icons\Oneenergyfire.png" />
@@ -205,6 +207,7 @@
     <EmbeddedResource Include="images\icons\Land_Gather_Beasts.png" />
     <EmbeddedResource Include="images\icons\mountainorpresence.png" />
     <EmbeddedResource Include="images\icons\Moveicon.png" />
+    <EmbeddedResource Include="images\icons\MovePresence.png" />
     <EmbeddedResource Include="images\icons\Noblight.png" />
     <EmbeddedResource Include="images\icons\Ocean.png" />
     <EmbeddedResource Include="images\icons\Oneenergyfire.png" />
@@ -1525,6 +1528,9 @@
     <None Update="images\je\spirit\boon_of_swarming_bedevilment.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="images\je\spirit\dissolving_vapors.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="images\je\spirit\elemental_teachings.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -1532,6 +1538,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\je\spirit\exaltation_of_molten_stone.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\spirit\flowing_and_silent_forms_dart_by.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\je\spirit\gift_of_the_untamed_wild.jpg">
@@ -1588,7 +1597,13 @@
     <None Update="images\je\spirit\swallowed_by_the_wilderness.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="images\je\spirit\the_fog_closes_in.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="images\je\spirit\unexpected_tigers.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\spirit\unnerving_pall.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\land_of_haunts_and_embers.jpg">
