@@ -84,7 +84,7 @@ namespace SpiritIsland.JaggedEarth {
 			)
 				spirit.Energy --;
 			else 
-				await oldBehavior(other,gs, cause);
+				await oldBehavior(other, gs, cause);
 		}
 
 	}

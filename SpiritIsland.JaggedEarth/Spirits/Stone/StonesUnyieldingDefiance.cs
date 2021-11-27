@@ -9,7 +9,10 @@ namespace SpiritIsland.JaggedEarth {
 		public const string Name = "Stone's Unyielding Defiance";
 		public override string Text => Name;
 
-		public override SpecialRule[] SpecialRules => new SpecialRule[] { new SpecialRule("Bestow the Endurance of BedRock", "When blight is added to one of your lands, unless the blight then outnumbers your presence, it does not cascade or destory presence (yours or others')."), new SpecialRule("Deep Layers Expposed to the Surface", "The first time you uncover each of your +1 Card Play presence spaces, gain a Minor Power.") };
+		public override SpecialRule[] SpecialRules => new SpecialRule[] { 
+			new SpecialRule("Bestow the Endurance of BedRock", "When blight is added to one of your lands, unless the blight then outnumbers your presence, it does not cascade or destory presence (yours or others')."), 
+			new SpecialRule("Deep Layers Expposed to the Surface", "The first time you uncover each of your +1 Card Play presence spaces, gain a Minor Power.") 
+		};
 
 		static Track AddCardPlay => new Track( "PlayExtraCardThisTurn" ) { Action = new DrawMinorOnceAndPlayExtraCardThisTurn() }; // ! Must create separate instances so the draw Minor card works
 		static Track EarthReclaim => new Track( "earth energy", Element.Earth ) { Action = new Reclaim1() };

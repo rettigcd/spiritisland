@@ -36,7 +36,7 @@ namespace SpiritIsland.JaggedEarth {
 				InnatePower.For<PoweredByTheFurnaceOfTheEarth>()
 			};
 
-			((VolcanoPresence)(Presence)).spirit = this;
+			((VolcanoPresence)(Presence)).SetSpirit( this );
 
 			RangeCalc = new VolcanoTargetLandApi();
 		}
@@ -49,19 +49,23 @@ namespace SpiritIsland.JaggedEarth {
 	}
 
 	class VolcanoPresence : SpiritPresence {
-		public Spirit spirit;
 		public VolcanoPresence(PresenceTrack t1, PresenceTrack t2 ) : base( t1, t2 ) {
 			IsValid = (s) => s.Terrain == Terrain.Mountain;
 		}
 
-		public override async Task Destroy( Space space, GameState gs, Cause cause ) {
-			// collapse in a blast of lava and steam -
-			// when presence is destroyed, 1 damage to both invaders and dahan
-			await base.Destroy( space, gs, cause );
-			await gs.DahanOn(space).ApplyDamage(1,cause); 
-			await gs.Invaders.On(space,cause).UserSelectedDamage(1,spirit);
-			
+		public void SetSpirit(Spirit spirit) => DestroyBehavior = new DestroyPresence(spirit);
+
+		class DestroyPresence : SpiritPresence.DefaultDestroyBehavior {
+			Spirit spirit;
+			public DestroyPresence(Spirit spirit ) { this.spirit = spirit;}
+
+			public override async Task DestroyPresenceApi( SpiritPresence presence, Space space, GameState gs, Cause cause ) {
+				await base.DestroyPresenceApi( presence, space, gs, cause );
+				await gs.DahanOn(space).ApplyDamage(1,cause); 
+				await gs.Invaders.On(space,cause).UserSelectedDamage(1,spirit);
+			}
 		}
+
 	}
 
 }

@@ -124,10 +124,19 @@ namespace SpiritIsland {
 			PlaceOn( to, gs );
 		}
 
-		public virtual Task Destroy( Space space, GameState gs, Cause cause ) {
-			RemoveFrom( space, gs );
-			++Destroyed;
-			return Task.CompletedTask;
+		public Task Destroy( Space space, GameState gs, Cause cause ) {
+			return DestroyBehavior.DestroyPresenceApi(this,space,gs,cause);
+		}
+
+		public IDestroyPresenceBehavour DestroyBehavior = new DefaultDestroyBehavior(); // replaceable / plugable
+
+		public class DefaultDestroyBehavior : IDestroyPresenceBehavour {
+			public virtual Task DestroyPresenceApi(SpiritPresence presence, Space space, GameState gs, Cause cause ) {
+				presence.RemoveFrom( space, gs );
+				++presence.Destroyed;
+				return Task.CompletedTask;
+			}
+
 		}
 
 		#endregion
@@ -187,6 +196,10 @@ namespace SpiritIsland {
 		}
 
 		#endregion
+	}
+
+	public interface IDestroyPresenceBehavour {
+		public Task DestroyPresenceApi(SpiritPresence presence, Space space, GameState gs, Cause cause );
 	}
 
 }
