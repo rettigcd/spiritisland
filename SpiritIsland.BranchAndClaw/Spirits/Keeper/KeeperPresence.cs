@@ -14,7 +14,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 		public override async Task PlaceFromTracks( IOption from, Space to, GameState gs ) {
 			await base.PlaceFromTracks( from, to, gs );
-			if(gs.DahanOn(to).Any && keeper.SacredSites.Contains(to))
+			if(gs.DahanOn(to).Any && keeper.Presence.SacredSites.Contains(to))
 				await new SpiritGameStateCtx(keeper,gs, Cause.Growth).Target(to).PushDahan( int.MaxValue );
 				
 		}

@@ -409,7 +409,7 @@ namespace SpiritIsland.WinForms {
 
 			// dahan & presence & blight
 			int presenceCount = spirit.Presence.CountOn( space );
-			bool isSS = spirit.SacredSites.Contains( space );
+			bool isSS = spirit.Presence.SacredSites.Contains( space );
 			DrawRow( graphics, tokens, x, ref y, iconWidth, xStep, presenceCount, isSS
 				, TokenType.Dahan[2], TokenType.Dahan[1], TokenType.Defend, TokenType.Blight
 			);

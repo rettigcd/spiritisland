@@ -274,11 +274,6 @@ namespace SpiritIsland {
 
 		#region presence
 
-		public virtual IEnumerable<Space> SacredSites => Presence.Placed
-			.GroupBy(x=>x)
-			.Where(grp=>grp.Count()>1)
-			.Select(grp=>grp.Key);
-
 		/// <summary> # of coins in the bank. </summary>
 		public int Energy { get; set; }
 
@@ -500,7 +495,7 @@ namespace SpiritIsland {
 			From sourceEnum, 
 			Terrain? sourceTerrain
 		) {
-			IEnumerable<Space> source = SourceCalc.FindSources( this, sourceEnum, sourceTerrain );
+			IEnumerable<Space> source = SourceCalc.FindSources( this.Presence, sourceEnum, sourceTerrain );
 			return RangeCalc.GetTargetOptionsFromKnownSource( this, gameState, range, filterEnum, powerType, source );
 		}
 

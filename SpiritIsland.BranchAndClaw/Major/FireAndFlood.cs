@@ -11,7 +11,7 @@ namespace SpiritIsland.BranchAndClaw {
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 			// == Pick 2nd target - range 2 from same SS ==
-			var spiritSS = ctx.Self.SacredSites.ToArray();
+			var spiritSS = ctx.Self.Presence.SacredSites.ToArray();
 			var possibleSacredSiteSourcesForThisSpace = ctx.Space.Range(1).Where(s=>spiritSS.Contains(s)).ToArray();
 			var secondTargetOptions = ctx.Presence.GetValidDestinationOptionsFromPresence( 2, Target.Any, possibleSacredSiteSourcesForThisSpace );
 

@@ -50,7 +50,7 @@ namespace SpiritIsland.Basegame {
 		public override string Text => Name;
 
 		public RiverSurges():base(
-			new SpiritPresence(
+			new RiverPresence(
 				new Track[] { Track.Energy1, Track.Energy2, Track.Energy2, Track.Energy3, Track.Energy4, Track.Energy4, Track.Energy5, },
 				new Track[] { Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Reclaim1, Track.Card4, Track.Card5 }
 			),
@@ -92,18 +92,19 @@ namespace SpiritIsland.Basegame {
 				PowerCard.For<EncompassingWard>()
 			);
 
-		public override IEnumerable<Space> SacredSites {get{
-			return Presence.Spaces
-				.Where(s=>s.Terrain==Terrain.Wetland)
-				.Union( base.SacredSites )
-				.Distinct();
-		}}
-
 		protected override void InitializeInternal( Board board, GameState gs ) {
 			Presence.PlaceOn( board.Spaces.Reverse().First( s => s.Terrain == Terrain.Wetland ), gs );
 		}
 
 	}
 
+	public class RiverPresence : SpiritPresence {
+		public RiverPresence(Track[] t1, Track[] t2 ) : base( t1, t2 ) { }
+
+		public override IEnumerable<Space> SacredSites => Spaces
+			.Where(s=>s.Terrain==Terrain.Wetland)
+			.Union( base.SacredSites )
+			.Distinct();
+	}
 
 }

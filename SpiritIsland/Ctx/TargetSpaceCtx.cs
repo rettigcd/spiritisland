@@ -232,7 +232,7 @@ namespace SpiritIsland {
 
 		// ! See base class for more Presence options
 
-		public bool IsSelfSacredSite => Self.SacredSites.Contains(Space);
+		public bool IsSelfSacredSite => Self.Presence.SacredSites.Contains(Space);
 
 		public bool HasSelfPresence => Self.Presence.Spaces.Contains(Space);
 

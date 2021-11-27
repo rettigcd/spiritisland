@@ -96,7 +96,7 @@ Power Progression:
 		}
 
 		Task Defend3InSacredSites( GameState gs, RavagingEventArgs args ) {
-			foreach(var space in SacredSites.Where(args.Spaces.Contains))
+			foreach(var space in Presence.SacredSites.Where(args.Spaces.Contains))
 				gs.Tokens[space].Defend.Count += 3;
 			return Task.CompletedTask;
 		}

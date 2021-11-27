@@ -16,7 +16,7 @@ namespace SpiritIsland {
 
 		#endregion
 
-		public bool IsSelfSacredSite => ctx.Self.SacredSites.Contains(ctx.Space);
+		public bool IsSelfSacredSite => ctx.Self.Presence.SacredSites.Contains(ctx.Space);
 
 		public bool IsHere       => ctx.Self.Presence.IsOn( ctx.Space );
 

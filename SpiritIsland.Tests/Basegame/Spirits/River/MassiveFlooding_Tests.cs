@@ -88,7 +88,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Given_SpiritGetMoney( 5 );
 
 			// 1 city, 5 towns, 5 invaders on A4 (range 1 from SS)
-			var space = game.Spirit.SacredSites.First().Adjacent.First();
+			var space = game.Spirit.Presence.SacredSites.First().Adjacent.First();
 			var grp = game.GameState.Tokens[space];
 			grp.Adjust( Invader.City.Default, 1);
 			grp.Adjust( Invader.Town.Default, 5 );

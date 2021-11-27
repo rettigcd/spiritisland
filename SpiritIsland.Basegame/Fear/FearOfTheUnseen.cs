@@ -14,7 +14,7 @@ namespace SpiritIsland.Basegame {
 		}
 
 		static async Task Remove1ExplorerOrTownFromLandWithSacredSite( SpiritGameStateCtx ctx ) {
-			var options = ctx.Self.SacredSites.Where( s => ctx.GameState.Tokens[ s ].HasAny( Invader.Explorer, Invader.Town ) ).ToArray();
+			var options = ctx.Self.Presence.SacredSites.Where( s => ctx.GameState.Tokens[ s ].HasAny( Invader.Explorer, Invader.Town ) ).ToArray();
 			await ctx.RemoveTokenFromOneSpace(options,1,Invader.Town, Invader.Explorer);
 		}
 
@@ -23,7 +23,7 @@ namespace SpiritIsland.Basegame {
 			var gs = ctx.GameState;
 			foreach(var spirit in ctx.Spirits) {
 				var options = spirit.Self.Presence.Spaces.Where( s => gs.Tokens[s].HasAny( Invader.Explorer, Invader.Town ) )
-					.Union(spirit.Self.SacredSites.Where(s=>gs.Tokens[s].Has(Invader.City)))
+					.Union(spirit.Self.Presence.SacredSites.Where(s=>gs.Tokens[s].Has(Invader.City)))
 					.ToArray();
 				await spirit.RemoveTokenFromOneSpace( options, 1, Invader.Town, Invader.Explorer );
 			}
@@ -31,7 +31,7 @@ namespace SpiritIsland.Basegame {
 
 		[FearLevel( 3, "Each player removes 1 Explorer / Town from a land with Presence, or 1 City from a land with SacredSite." )]
 		public async Task Level3( FearCtx ctx ) {
-			Space[] sacredSites = ctx.Spirits.SelectMany( spirit => spirit.Self.SacredSites ).Distinct().ToArray();
+			Space[] sacredSites = ctx.Spirits.SelectMany( spirit => spirit.Self.Presence.SacredSites ).Distinct().ToArray();
 			Space[] presences = ctx.Spirits.SelectMany( spirit => spirit.Self.Presence.Spaces ).Distinct().ToArray();
 
 			foreach(var spiritCtx in ctx.Spirits) {

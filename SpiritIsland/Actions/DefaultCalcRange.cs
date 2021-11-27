@@ -9,16 +9,16 @@ namespace SpiritIsland {
 	public enum From { None, Presence, SacredSite };
 
 	public interface ICalcSource {
-		IEnumerable<Space> FindSources( Spirit self, From sourceEnum, Terrain? sourceTerrain );
+		IEnumerable<Space> FindSources( IKnowSpiritLocations presence, From sourceEnum, Terrain? sourceTerrain );
 
 	}
 
 	public class DefaultSourceCalc : ICalcSource {
 		// !! ??? does this need to be virtual?  is anything overriding it and calling base.FindSources() ???
-		public virtual IEnumerable<Space> FindSources( Spirit self, From sourceEnum, Terrain? sourceTerrain ) {
+		public virtual IEnumerable<Space> FindSources( IKnowSpiritLocations presence, From sourceEnum, Terrain? sourceTerrain ) {
 			var sources = sourceEnum switch {
-				From.Presence => self.Presence.Spaces,
-				From.SacredSite => self.SacredSites,
+				From.Presence => presence.Spaces,
+				From.SacredSite => presence.SacredSites,
 				_ => throw new ArgumentException( "Invalid presence source " + sourceEnum ),
 			};
 			return sources.Where( x => !sourceTerrain.HasValue || sourceTerrain.Value == x.Terrain );

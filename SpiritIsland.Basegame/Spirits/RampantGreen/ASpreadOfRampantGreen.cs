@@ -129,7 +129,7 @@ namespace SpiritIsland.Basegame {
 
 		async Task<Space[]> ChokeTheLandWithGreen( GameState gs, Space[] spaces, string actionText ) {
 
-			var stoppable = spaces.Intersect( SacredSites ).ToList();
+			var stoppable = spaces.Intersect( Presence.SacredSites ).ToList();
 			bool costs1 = gs.BlightCard.IslandIsBlighted;
 			int maxStoppable = costs1 ? Energy : int.MaxValue;
 

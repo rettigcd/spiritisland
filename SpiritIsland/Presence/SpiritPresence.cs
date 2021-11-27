@@ -5,7 +5,13 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
-	public class SpiritPresence {
+	// For the Sources Calculator
+	public interface IKnowSpiritLocations {
+		IEnumerable<Space> Spaces { get; }
+		IEnumerable<Space> SacredSites { get; }
+	}
+
+	public class SpiritPresence : IKnowSpiritLocations {
 
 		#region constructors
 
@@ -52,6 +58,11 @@ namespace SpiritIsland {
 				.Union(Energy.Revealed)
 				.Select(x => x.Action)
 				.Where(x => x != null);
+
+		public virtual IEnumerable<Space> SacredSites => Placed
+			.GroupBy(x=>x)
+			.Where(grp=>grp.Count()>1)
+			.Select(grp=>grp.Key);
 
 		#endregion
 
