@@ -26,10 +26,12 @@ namespace SpiritIsland {
 			Invaders = new Invaders( this );
 			Tokens = new Tokens_ForIsland( this );
 
+			TimePasses_WholeGame += Heal;
 			TimePasses_WholeGame += PreRavaging.OnEndOfRound;
 			TimePasses_WholeGame += PreBuilding.OnEndOfRound;
 			TimePasses_WholeGame += PreExplore.OnEndOfRound;
 		}
+
 
 		public virtual void Initialize() {
 
@@ -189,6 +191,9 @@ namespace SpiritIsland {
 
 		public Func<Spirit,GameState,Cause,Task> Destroy1PresenceFromBlightCard = DefaultDestroy1PresenceFromBlightCard; // Direct distruction from Blight Card, not cascading
 
+		void Heal( GameState obj ) => Healer.Heal( obj ); // called at end of round.
+		public Healer Healer = new Healer(); // replacable Behavior
+
 		#endregion
 
 		#region Default API methods
@@ -218,8 +223,6 @@ namespace SpiritIsland {
 
 		#endregion
 
-		#region API
-
 		public void Log( ILogEntry entry ) => NewLogEntry?.Invoke( entry );
 
 		public async Task TriggerTimePasses() {
@@ -237,8 +240,6 @@ namespace SpiritIsland {
 			TimePasses_WholeGame?.Invoke( this );
 			++RoundNumber;
 		}
-
-		#endregion
 
 		#region Events
 
@@ -295,6 +296,13 @@ namespace SpiritIsland {
 
 		#endregion Memento
 
+	}
+
+	public class Healer {
+		public virtual void Heal( GameState gs ) {
+			foreach(var space in gs.Tokens.Keys)
+				InvaderGroup.HealTokens( gs.Tokens[space] );
+		}
 	}
 
 	public class LandDamagedArgs {
