@@ -4,7 +4,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class TwistedFlowersMurmurUltimatums {
 
-        [MajorCard("Twisted Flowers Murmur Ultimatums", 4, Element.Sun, Element.Moon, Element.Air, Element.Earth, Element.Plant)]
+        [MajorCard("Twisted Flowers Murmur Ultimatums", 5, Element.Sun, Element.Moon, Element.Air, Element.Earth, Element.Plant)]
 		[Slow]
         [FromSacredSite(1,Target.Invaders)]
         static public async Task ActAsync(TargetSpaceCtx ctx) {
