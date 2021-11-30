@@ -1,65 +1,56 @@
 ﻿
-Bonus
+GUI
 	- layout of Fear / Blight items
 	- Put Build / Ravage / fear in strip along the top 
 	- display # of cards remaining in fear deck before next terror level
-
-Fix 
-	- When doing something to individual invaders - use method found in Pall to target individual invaders.
-	- Detect Win / Lose 
 	- Volcano Innate Size
+	- Configure Game - Images for Selecting Spirits / Boards / Token colors
+	- Visual indicator of Phase
+	- Show fear cards while they are being resolved.
+	- Create a target-space preview, when hovering over cards
+	- Custom Tokens
+
+Game Engine 
+	- Detect Win / Lose 
+		* Fear victory - End of deck
+		* Fear victory - Destroyed enough of Cities / Town to meat terror level condition
+		* Invader Deck - loss
+		* Blighted Island - Loss
+		* no presence - Loss
 	- Invader Cards Memento
+	- Bind each Spirit Action to a CTX, so we can:
+		- detect distinct actions
+		- commit actions like transactions
+		- Check win/lose state at the end of each action.
 
-* Detect Win/Lose and don't lock up
-	* Fear victory - End of deck
-	* Fear victory - Destroyed enough of Cities / Town to meat terror level condition
-	* Invader Deck loss
-	* Blighted Island Loss
-	* no presence Loss
-
+AI - Search
+	- Create a search tree algorythm that can play the game
+	- Heuristic to measure end-of-round goodness.
 
 -- Helpful --
-
-Tests - ChooseOption, ChooseFromOptions, (move prompt to last)
-
-** Bind each Spirit Action to a CTX, so we can:
-	- detect distinct actions
-	- commit actions like transactions
-	- Check win/lose state at the end of each action.
 
 ** Create a Token API  (MoveFrom,MoveTo,Destroy,Replace,Setup)
 
 Refactor Testing to make it easier to test.
 
-Images for Selecting Spirits / Boards / Tokens
 2) TargetSpaceCtx.DamageInvaders - limit badland damage to once / action
-3) Detect end of game at end of each action, Don't Lock-up when it happens.
-UI Visual indicator of Phase
-UI - Display Trickster innate-drawn cards to user.
-UI - Show fear cards while they are being resolved.
-UI - Fear text needs some spaces in it.
-
-UI - If all clickable options are highlighted the same, maybe draw them off of the HotSpots list instead of in each control.
 
 Make Push a 1-step commmand
 	- for custom destinations, add them to Push API
 	- Embed guaranteed next decision in selecting source token
 	- UI selects entire move before sequentially submitting: source token, destination
 
-
 == Road Map to Awesomeness ==
 * HARD	Multi Player 
 * MED	Multi Platform (Linux / Android)
 * MED	Internet Play
 * MED	AI Player
-* EASY	Convert individual images to Drawn Images for: Cards, Boards, Fear
+* EASY	Draw Power Cards
+* EASY  DRAW Boards
+* EASY  Draw Fear Cards
 
 == Bonus - Fun ==
 
-2 Click on Fear card to close it.
-3 Draw cards from metadata
-2 Visual indication of phase
-3 Create a target-space preview, when hovering over cards
 3 Select elements by clicking on them
 3 Select deck by clicking on it
 3 Show # of cards remaining in fear deck until next threshold

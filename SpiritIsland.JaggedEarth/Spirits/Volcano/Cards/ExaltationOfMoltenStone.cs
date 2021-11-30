@@ -26,7 +26,7 @@ namespace SpiritIsland.JaggedEarth {
 			ctx.Self.RangeCalc = new ExtendRange1FromMountain( ctx.Self.RangeCalc );
 		}
 
-		class ExtendRange1FromMountain : DefaultCalcRange {
+		class ExtendRange1FromMountain : DefaultRangeCalculator {
 
 			readonly ICalcRange originalApi;
 

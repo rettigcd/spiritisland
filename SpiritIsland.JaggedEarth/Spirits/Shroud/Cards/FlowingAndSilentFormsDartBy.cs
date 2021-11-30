@@ -25,9 +25,9 @@ namespace SpiritIsland.JaggedEarth {
 
 		class PushInsteadOfDestroy : IDestroyPresenceBehavour {
 
-			Spirit spirit;
-			IDestroyPresenceBehavour originalBehavior;
-			Space protectedSpace;
+			readonly Spirit spirit;
+			readonly IDestroyPresenceBehavour originalBehavior;
+			readonly Space protectedSpace;
 
 			public PushInsteadOfDestroy(Spirit spirit, Space protectedSpace) {
 				this.spirit = spirit;
@@ -48,7 +48,7 @@ namespace SpiritIsland.JaggedEarth {
 				await originalBehavior.DestroyPresenceApi(presence, space, gs, cause );
 			}
 
-			public Task Restore( GameState gs ) {
+			public Task Restore( GameState _ ) {
 				spirit.Presence.DestroyBehavior = originalBehavior;
 				return Task.CompletedTask;
 			}

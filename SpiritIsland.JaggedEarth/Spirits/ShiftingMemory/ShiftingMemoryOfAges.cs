@@ -17,7 +17,7 @@ namespace SpiritIsland.JaggedEarth {
 
 		static Track Prepare(int energy){
 			var t = Track.MkEnergy( energy );
-			t.Action = new PrepareElement();
+			t.Action = new PrepareElement($"{energy} energy");
 			return t;
 		}
 
@@ -46,6 +46,7 @@ namespace SpiritIsland.JaggedEarth {
 				InnatePower.For<LearnTheInvadersActions>(),
 				InnatePower.For<ObserveTheEverChangingWorld>()
 			};
+
 		}
 
 		public override async Task ForgetPowerCard() {
@@ -95,9 +96,9 @@ namespace SpiritIsland.JaggedEarth {
 			PreparedElements[Element.Earth] = 1;
 		}
 
-		public async Task PrepareElement() {
+		public async Task PrepareElement(string context) {
 			// This is only used by Shifting Memories
-			var el = await this.SelectElementEx("Prepare Element", ElementList.AllElements);
+			var el = await this.SelectElementEx($"Prepare Element ({context})", ElementList.AllElements);
 			PreparedElements[el]++;
 		}
 

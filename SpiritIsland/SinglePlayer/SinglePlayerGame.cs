@@ -39,7 +39,7 @@ namespace SpiritIsland.SinglePlayer {
 			async Task LoopAsync() {
 				try {
 					// Handle any unresolved Initialization action - (ocean/beast)
-					await Spirit.ResolveActions( new SpiritGameStateCtx( Spirit, GameState, Cause.Growth ) );
+					await Spirit.ResolveActions( new SpiritGameStateCtx( Spirit, GameState, Cause.Growth ) ); // !!! if this is here, why do we need to put it in the Spirit.Growth() method?
 
 					Stack<IMemento<GameState>> savedGameStates = new Stack<IMemento<GameState>>();
 					while(true) {

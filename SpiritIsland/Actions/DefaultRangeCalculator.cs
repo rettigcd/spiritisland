@@ -40,7 +40,7 @@ namespace SpiritIsland {
 
 	}
 
-	public class DefaultCalcRange : ICalcRange {
+	public class DefaultRangeCalculator : ICalcRange {
 
 		// Find Range
 		// This is virtual so Volcano Targetting can call base()

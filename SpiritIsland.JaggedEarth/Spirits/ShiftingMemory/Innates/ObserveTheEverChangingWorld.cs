@@ -11,7 +11,7 @@ namespace SpiritIsland.JaggedEarth {
 		[InnateOption("1 moon","Prepare 1 Element Marker")]
 		static public Task Option1(TargetSpaceCtx ctx ) {
 			var smoa = (ShiftingMemoryOfAges)ctx.Self;
-			return smoa.PrepareElement();
+			return smoa.PrepareElement(ObserveTheEverChangingWorld.Name);
 		}
 
 		[InnateOption("2 moon,1 air","Instead, after each of the next three Actions that change which pieces are in atarget land, Prepare 1 Element Marker.")]
@@ -57,7 +57,7 @@ namespace SpiritIsland.JaggedEarth {
 				tokenSummary = ctx.Tokens.Summary;
 
 				var smoa = (ShiftingMemoryOfAges)ctx.Self;
-				await smoa.PrepareElement();
+				await smoa.PrepareElement(space.Label);
 				if(--remaining <= 0)
 					ctx.GameState.TimePasses_ThisRound.Push( StopWatchingSpace );
 			}

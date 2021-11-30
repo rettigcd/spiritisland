@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace SpiritIsland.JaggedEarth {
 
-	class VolcanoTargetLandApi : DefaultCalcRange {
+	class VolcanoTargetLandApi : DefaultRangeCalculator {
 
 		public override IEnumerable<Space> GetTargetOptionsFromKnownSource( Spirit self, GameState gameState, int range, string filterEnum, TargettingFrom powerType, IEnumerable<Space> source ) {
 			List<Space> spaces = base.GetTargetOptionsFromKnownSource( self, gameState, range, filterEnum, powerType, source )

@@ -116,7 +116,8 @@ namespace SpiritIsland.JaggedEarth {
 	}
 
 	class SlowAndSilentDeathHealer : Healer {
-		ShroudOfSilentMist spirit;
+
+		readonly ShroudOfSilentMist spirit;
 
 		public SlowAndSilentDeathHealer(ShroudOfSilentMist spirit ) { this.spirit = spirit; }
 

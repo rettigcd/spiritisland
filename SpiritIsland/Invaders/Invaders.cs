@@ -5,7 +5,7 @@ namespace SpiritIsland {
 
 		// !! This wrapper class (around TokenCountDictionary) acts more like an Extension Method Class
 
-		GameState gs;
+		readonly GameState gs;
 
 		#region constructor
 

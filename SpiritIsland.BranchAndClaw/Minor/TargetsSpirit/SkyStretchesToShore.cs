@@ -24,7 +24,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 	}
 
-	class SkyStretchesToShoreApi : DefaultCalcRange {
+	class SkyStretchesToShoreApi : DefaultRangeCalculator {
 		public SkyStretchesToShoreApi( Spirit spirit ) {
 			this.orig = spirit.RangeCalc;
 			spirit.RangeCalc = this;

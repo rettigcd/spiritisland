@@ -468,7 +468,7 @@ namespace SpiritIsland {
 		#region Tarteting / Range
 
 		public ICalcSource SourceCalc = new DefaultSourceCalc();
-		public ICalcRange RangeCalc = new DefaultCalcRange();
+		public ICalcRange RangeCalc = new DefaultRangeCalculator();
 
 		// Only Called from TargetSpaceAttribute
 		// !!! Also, some things may be calling GetTargetOptions directly and skipping over this bit - preventing Shadow from paying their energy
