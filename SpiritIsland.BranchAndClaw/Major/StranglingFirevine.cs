@@ -17,8 +17,11 @@ namespace SpiritIsland.BranchAndClaw {
 
 			// Add 1 wilds in the originating Sands.
 			var original = ctx.Adjacent
-				.Where( a=> ctx.Self.Presence.SacredSites.Contains(a) && a.Terrain==Terrain.Sand )
+				.Where( a=> ctx.Self.Presence.Spaces.Contains(a) && a.Terrain==Terrain.Sand )
 				.FirstOrDefault(); // !! won't find original if this was picked using a range-extender - would need to capture that info during the targetting process
+
+			// !!! let user pick which space was the originating sands
+
 			if(original!=null)
 				ctx.Target(original).Wilds.Count++;
 
