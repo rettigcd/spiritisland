@@ -7,7 +7,7 @@ namespace SpiritIsland {
 		public bool IslandIsBlighted {get; set; }
 
 		public void OnBlightDepleated( GameState gs ) {
-			if(IslandIsBlighted) GameOverException.Lose();
+			if(IslandIsBlighted) return;
 			IslandIsBlighted = true;
 			gs.blightOnCard += 4 * gs.Spirits.Length;
 		}

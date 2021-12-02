@@ -35,6 +35,15 @@ namespace SpiritIsland {
 			return false;
 		}
 
+
+		/// <summary> Generates an exception in the engine that resets it back to beginning. </summary>
+		public void GoBackToBeginningOfRound( int targetRound ) {
+			var poppedDecisionMaker = CacheNextDecision(true);
+			this.activeDecisionMaker = null;
+			this.userAccessedDecision = null;
+			poppedDecisionMaker.IssueCommand( new Rewind( targetRound ) );
+		}
+
 		#region Blocking
 
 		/// <summary>
@@ -61,14 +70,6 @@ namespace SpiritIsland {
 		}
 
 		#endregion
-
-		/// <summary> Generates an exception in the engine that resets it back to beginning. </summary>
-		public void GoBackToBeginningOfRound() {
-			var poppedDecisionMaker = CacheNextDecision(true);
-			this.activeDecisionMaker = null;
-			this.userAccessedDecision = null;
-			poppedDecisionMaker.IssueCommand( GameStateCommand.ReturnToBeginningOfRound );
-		}
 
 		#endregion
 
@@ -121,7 +122,7 @@ namespace SpiritIsland {
 		interface IDecisionMaker {
 			public IDecisionPlus Decision { get; }
 			public void Select(IOption option);
-			public void IssueCommand( GameStateCommand cmd );
+			public void IssueCommand( IGameStateCommand cmd );
 		}
 
 		class ActionHelper<T> : IDecisionMaker where T : class, IOption {
@@ -142,7 +143,7 @@ namespace SpiritIsland {
 					promise.TrySetException( new Exception( $"{selection.Text} not found in options" ) );
 			}
 
-			public void IssueCommand( GameStateCommand cmd ) {
+			public void IssueCommand( IGameStateCommand cmd ) {
 				promise.TrySetException( new GameStateCommandException(cmd) );
 			}
 

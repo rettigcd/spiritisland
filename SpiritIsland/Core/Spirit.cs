@@ -266,6 +266,7 @@ namespace SpiritIsland {
 			} finally {
 				CurrentActionId = oldActionGuid; // restore
 			}
+			ctx.GameState.CheckWinLoss(); // @@@
 		}
 
 		protected virtual PowerProgression GetPowerProgression() => throw new NotImplementedException();

@@ -1,14 +1,18 @@
 ﻿using System;
 
 namespace SpiritIsland {
-	public class GameOverException : Exception {
-		static public void Win() => throw new GameOverException(WinLoseStatus.Won);
-		static public void Lose() => throw new GameOverException( WinLoseStatus.Lost );
 
-		public GameOverException(WinLoseStatus status):base("The game has been " + status ) {
+	public class GameOverException : Exception {
+
+		static public void Win(string cause) => throw new GameOverException( new GameOver( GameOverResult.Victory, cause ) );
+
+		static public void Lost(string cause) => throw new GameOverException( new GameOver( GameOverResult.Defeat, cause ) );
+
+
+		public GameOverException( GameOver status ):base( status.Msg ) {
 			Status = status;
 		}
-		public WinLoseStatus Status {get;}
+		public GameOver Status {get;}
 	}
 
 }

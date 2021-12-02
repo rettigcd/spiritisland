@@ -5,12 +5,6 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
-	// For the Sources Calculator
-	public interface IKnowSpiritLocations {
-		IEnumerable<Space> Spaces { get; }
-		IEnumerable<Space> SacredSites { get; }
-	}
-
 	public class SpiritPresence : IKnowSpiritLocations {
 
 		#region constructors
@@ -106,7 +100,6 @@ namespace SpiritIsland {
 			return Task.CompletedTask;
 		}
 
-
 		protected virtual void RemoveFromTrack( Track track ) {
 			if(track == Track.Destroyed && Destroyed > 0)
 				--Destroyed;
@@ -124,8 +117,11 @@ namespace SpiritIsland {
 			PlaceOn( to, gs );
 		}
 
-		public Task Destroy( Space space, GameState gs, Cause cause ) {
-			return DestroyBehavior.DestroyPresenceApi(this,space,gs,cause);
+		public async Task Destroy( Space space, GameState gs, Cause cause ) {
+			await DestroyBehavior.DestroyPresenceApi(this,space,gs,cause);
+			// check if spirit destroyed
+			if(Placed.Count==0)
+				GameOverException.Lost("Spirit is Destroyed"); // !! if we had access to the Spirit here, we could say who it was.
 		}
 
 		public IDestroyPresenceBehavour DestroyBehavior = new DefaultDestroyBehavior(); // replaceable / plugable
@@ -196,10 +192,6 @@ namespace SpiritIsland {
 		}
 
 		#endregion
-	}
-
-	public interface IDestroyPresenceBehavour {
-		public Task DestroyPresenceApi(SpiritPresence presence, Space space, GameState gs, Cause cause );
 	}
 
 }

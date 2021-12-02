@@ -1,13 +1,12 @@
-4   When winning via apparent Fear victory, UI locks up.
-	* Possibly engine-thread crashes, then we accidentally click an old option that hasn't been removed yet, then we hang, waiting to be presented with a decision
-	* solution - when we submit a choice, disable the existing options.
+4   Removing a disease to stop a build did not trigger new Element Prep. (Shiftin Memories)
+4	Absorb Corruption - If I have 2 plants, it forces me to do both, but text says you *may* do both.
+4	Trade Suffers - Level 3 - *May* replace a city or town - Don't force.  IF it is defended, don't want to downgrade because we lose the fear points from downgrading
+4	Indomitable Claim - Did not gain Prepare-Element ability when placing presence.
+4	Bloodwrack Plague - When damaging adjacent land - need to exclude Ocean that is not in play.
 
 3   Heart of Wildfire - Adding blight during Place-Presence does not seem to trigger Blighted island.
-3	Growth Through Sacrifice - Add Presence (when doing both - 2 suns) asks for positioning tiwce
 3	Strifed Invaders damaging themselves
 3	Cascading Bight - all blight should cascade
-4	Absorb Corruption - If I have 2 plants, it forces me to do both, but text says you *may* do both.
 
 2	Heart of the Wildfire's 1st innate is confusing when it triggers on multiple lands.  Also, it is highlighting presence, dahan and blight.
 2	Heart if the Wildfire - , got down to 0 blights on card but did not trigger blighted island.
-

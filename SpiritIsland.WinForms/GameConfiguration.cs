@@ -72,6 +72,10 @@ namespace SpiritIsland.WinForms {
 			gameState.BlightCard = (randomizer.Next(1) == 0)
 				? new DownwardSpiral()
 				: new MemoryFadesToDust();
+
+			// Enable Win / Loss Check
+			gameState.ShouldCheckWinLoss = true; // !!! instead of this, load win/loss states into the check-list for real games
+
 			return gameState;
 		}
 

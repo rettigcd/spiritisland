@@ -48,7 +48,7 @@ namespace SpiritIsland {
 				ActivatedCards.Peek().Text = "Active " + ActivatedCards.Count;
 			}
 			if(Deck.Count == 0)
-				GameOverException.Win();
+				GameOverException.Win("Terror Level VICTORY");
 			FearAdded?.Invoke( gs, args );
 		}
 

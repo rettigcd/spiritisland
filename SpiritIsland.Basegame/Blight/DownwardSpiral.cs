@@ -2,26 +2,17 @@
 
 namespace SpiritIsland.Basegame {
 
-	public class DownwardSpiral : IBlightCard {
+	public class DownwardSpiral : BlightCardBase {
 
-		public void OnBlightDepleated( GameState gs ) {
-			if(IslandIsBlighted) GameOverException.Lose();
-			IslandIsBlighted = true;
-			// +5 blight
-			gs.blightOnCard += 5 * gs.Spirits.Length;
-		}
+		public DownwardSpiral():base("Downward Spiral",2,5) {}
 
-		public async Task OnStartOfInvaders( GameState gs ) {
-			if(!IslandIsBlighted) return;
+		protected override async Task BlightAction( GameState gs ) {
 			// Spirit destorys a presence.
 			foreach(var spirit in gs.Spirits)
 				await gs.Destroy1PresenceFromBlightCard( spirit, gs, Cause.Blight );
 		}
 
-		public void OnGameStart( GameState gs ) {
-			gs.blightOnCard = 2 * gs.Spirits.Length + 1; // +1 from Jan 2021 errata
-		}
-		public bool IslandIsBlighted { get; set; }
 	}
+
 
 }

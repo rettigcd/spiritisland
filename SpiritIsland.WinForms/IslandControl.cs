@@ -262,8 +262,20 @@ namespace SpiritIsland.WinForms {
 		}
 
 		void DrawRound( Graphics graphics ) {
-			using var font = new Font( ResourceImages.Singleton.Fonts.Families[0], Height*.065f, GraphicsUnit.Pixel );
-			graphics.DrawString("round: "+gameState.RoundNumber, font, Brushes.SteelBlue, 0, 0);
+			float fontHeight = Height*.05f;
+			using var font = new Font( ResourceImages.Singleton.Fonts.Families[0], fontHeight, GraphicsUnit.Pixel );
+
+			// Default - black, Fight
+			Brush brush = Brushes.Black; 
+			string snippet = "Fight!";
+
+			// If game is over, update
+			if( gameState.Result != null) { 
+				brush = gameState.Result.Result == GameOverResult.Victory ? Brushes.DarkGreen : Brushes.DarkRed;
+				snippet = gameState.Result.Msg;
+			}
+			graphics.DrawString($"Round {gameState.RoundNumber} - {snippet}", font, brush, 0, 0);
+		
 		}
 
 		void DrawInvaderCards( Graphics graphics, Rectangle bounds ) {

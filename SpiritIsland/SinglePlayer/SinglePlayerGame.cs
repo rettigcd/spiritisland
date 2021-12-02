@@ -7,8 +7,6 @@ namespace SpiritIsland.SinglePlayer {
 
 	public class SinglePlayerGame {
 
-		public WinLoseStatus WinLoseStatus = WinLoseStatus.Playing;
-
 		/// <summary> The main interface that drives the UI</summary>
 		public IUserPortal UserPortal {get; set;}
 
@@ -41,9 +39,9 @@ namespace SpiritIsland.SinglePlayer {
 					// Handle any unresolved Initialization action - (ocean/beast)
 					await Spirit.ResolveActions( new SpiritGameStateCtx( Spirit, GameState, Cause.Growth ) ); // !!! if this is here, why do we need to put it in the Spirit.Growth() method?
 
-					Stack<IMemento<GameState>> savedGameStates = new Stack<IMemento<GameState>>();
+					Dictionary<int,IMemento<GameState>> savedGameStates = new Dictionary<int, IMemento<GameState>>();
 					while(true) {
-						savedGameStates.Push( GameState.SaveToMemento() );
+						savedGameStates[GameState.RoundNumber] = GameState.SaveToMemento();
 						DateTime lastSaveTimeStamp= DateTime.Now;
 						try {
 							LogRound();
@@ -66,16 +64,18 @@ namespace SpiritIsland.SinglePlayer {
 							await Spirit.ResolveActions( new SpiritGameStateCtx( Spirit, GameState, Cause.Power ) );
 
 							await GameState.TriggerTimePasses();
-						} catch( GameStateCommandException ) {
-							// if they want to go back withing 5 seconds of a save, throw away the save and go back one more slot
-							if(DateTime.Now < lastSaveTimeStamp.Add(TimeSpan.FromSeconds(5)) && savedGameStates.Count>1)
-								savedGameStates.Pop();
-							GameState.LoadFrom( savedGameStates.Pop() );
+						} catch( GameStateCommandException cmdEx ) {
+							if(cmdEx.Cmd is Rewind rewind && savedGameStates.ContainsKey(rewind.TargetRound)) {
+								GameState.LoadFrom( savedGameStates[rewind.TargetRound] );
+								foreach(int laterRounds in savedGameStates.Keys.Where(k=>k>rewind.TargetRound).ToArray())
+									savedGameStates.Remove(laterRounds);
+							}
 						}
 					}
 				}
 				catch(GameOverException gameOver) {
-					this.WinLoseStatus = gameOver.Status; // Put this on GameState
+					this.GameState.Result = gameOver.Status;
+					GameState.Log( gameOver.Status );
 				}
 				catch(Exception ex) {
 					GameState.Log(new LogException( ex ) );
@@ -89,6 +89,5 @@ namespace SpiritIsland.SinglePlayer {
 		void LogRound() => GameState.Log( new LogRound( GameState.RoundNumber ) );
  		
 	}
-
 
 }

@@ -33,7 +33,6 @@ namespace SpiritIsland.WinForms {
 			foreach(WrappingText_InnateOptions wrappintText in layout.Options) {
 				if(activatedElements.Contains( wrappintText.Elements ))
 					graphics.FillRectangle( Brushes.PeachPuff, wrappintText.Bounds );
-				//	graphics.DrawRectangle( Pens.Red, wrappintText.Bounds.ToInts() );
 				DrawOption( wrappintText, graphics, font, boldFont );
 			}
 

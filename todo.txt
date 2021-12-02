@@ -11,13 +11,6 @@ GUI
 	- Custom Tokens
 
 Game Engine 
-	- Detect Win / Lose 
-		* Fear victory - End of deck
-		* Fear victory - Destroyed enough of Cities / Town to meat terror level condition
-		* Invader Deck - loss
-		* Blighted Island - Loss
-		* no presence - Loss
-	- Invader Cards Memento
 	- Bind each Spirit Action to a CTX, so we can:
 		- detect distinct actions
 		- commit actions like transactions
@@ -51,8 +44,6 @@ Make Push a 1-step commmand
 
 == Bonus - Fun ==
 
-3 Select elements by clicking on them
-3 Select deck by clicking on it
 3 Show # of cards remaining in fear deck until next threshold
 
 2 When presenting options, Icon-draw them.

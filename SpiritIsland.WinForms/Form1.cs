@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 namespace SpiritIsland.WinForms {
+
 	public partial class Form1 : Form, IHaveOptions {
 
 		public Form1() {
@@ -39,19 +40,29 @@ namespace SpiritIsland.WinForms {
 
 			currentDecision = null;
 			this.game.UserPortal.Choose( option, false ); // If there is no decision to be made, just return
-			
-			if(this.game.WinLoseStatus == WinLoseStatus.Playing) return;
-
-			this.Text = this.game.WinLoseStatus.ToString();
+		
 		}
 
 		IDecision currentDecision;
 
 		void Action_NewWaitingDecision( IDecision decision ) {
+
+			// Decision
 			currentDecision = decision;
 			this.promptLabel.Text = decision.Prompt;
 			islandControl.Invalidate();
 			NewDecision?.Invoke( decision );
+			
+			UpdateRewindMenu();
+		}
+
+		void UpdateRewindMenu() {
+			int rounds = game.GameState.RoundNumber;
+			var items = rewindMenuItem.DropDownItems;
+			if(items.Count == rounds) return; // no change
+			items.Clear();
+			for(int i = 1; i <= rounds; ++i)
+				items.Add( "Round " + i, null, RewindClicked );
 		}
 
 		#region Buttons
@@ -138,7 +149,7 @@ namespace SpiritIsland.WinForms {
 			GameState gameState = gameConfiguration.BuildGame();
 			game = new SinglePlayerGame( gameState, false ) { LogExceptions = true };
 			game.Spirit.Action.NewWaitingDecision += Action_NewWaitingDecision;
-			gameState.NewLogEntry += GameState_NewLogEntry;
+			gameState.NewLogEntry += GameState_NewLogEntry; // !!! this should probably come through the user portal/gateway, not directly off of the gamestate.
 
 			this.islandControl.Init( game.GameState, this, gameConfiguration.Color );
 			this.cardControl.Init( game.Spirit, this );
@@ -152,26 +163,42 @@ namespace SpiritIsland.WinForms {
 
 		void GameState_NewLogEntry( ILogEntry obj ) {
 			logForm.AppendLine(obj.Msg);
+
+			if(obj is GameOver wle)
+				Action_NewWaitingDecision( new Decision.TypedDecision<TextOption>(wle.Msg, Array.Empty<TextOption>() ) ); // clear options
 		}
 
 		void ExitToolStripMenuItem_Click( object sender, EventArgs e ) {
 			Close();
 		}
 
-		private void ReplaySameGameToolStripMenuItem_Click( object sender, EventArgs e ) {
+		#region Rewind
+
+		void RewindClicked(object x, EventArgs y ) {
+			int targetRound = rewindMenuItem.DropDownItems.IndexOf((ToolStripItem)x) + 1;
+
+			// This block is not necessary, but if something is wrong with the Memento, a hard-reset might be nice.
+			if(targetRound == 1) {
+				ReplaySameGameToolStripMenuItem_Click(null,null);
+				return;
+			}
+
+			this.game.UserPortal.GoBackToBeginningOfRound(targetRound);
+		}
+
+		void ReplaySameGameToolStripMenuItem_Click( object _, EventArgs _1 ) {
 			if(gameConfiguration!=null)
 				InitGameFromConfiguration();
 			else
 				MessageBox.Show("No game configured.");
 		}
 
-		void ReplayRoundToolStripMenuItem_Click( object sender, EventArgs e ) {
-			this.game.UserPortal.GoBackToBeginningOfRound();
-		}
+		#endregion
 
-		private void GameLogToolStripMenuItem_Click( object sender, EventArgs e ) {
+		void GameLogToolStripMenuItem_Click( object sender, EventArgs e ) {
 			logForm.Show();
 		}
+
 	}
 
 	public interface IHaveOptions {

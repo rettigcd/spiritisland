@@ -45,7 +45,7 @@ namespace SpiritIsland {
 		#region constructors
 
 		private InvaderDeck( params InvaderCard[] cards ) {
-			this.cards = cards.ToList();
+			this.unrevealedCards = cards.ToList();
 			Init();
 		}
 
@@ -71,14 +71,14 @@ namespace SpiritIsland {
 			all.AddRange( level1 );
 			all.AddRange( level2 );
 			all.AddRange( level3 );
-			cards = all.ToList();
+			unrevealedCards = all.ToList();
 
 			Init();
 		}
 
 		void Init() {
 			// Setup draw: 1 card at a time.
-			for(int i = 0; i < cards.Count; ++i) 
+			for(int i = 0; i < unrevealedCards.Count; ++i) 
 				drawCount.Add( 1 );
 
 			InitExplorers(); // initialize the first explorer card up
@@ -88,7 +88,7 @@ namespace SpiritIsland {
 
 		#endregion
 
-		public readonly List<InvaderCard> cards;
+		public readonly List<InvaderCard> unrevealedCards;
 		public readonly List<int> drawCount = new List<int>(); // tracks how many cards to draw each turn
 
 		public List<InvaderCard> Explore {get;} = new List<InvaderCard>();
@@ -99,16 +99,19 @@ namespace SpiritIsland {
 
 		public int CountInDiscard {get; private set; }
 
-		public bool KeepBuildCards = false;
+
+		public bool KeepBuildCards = false; // !!! is there a way to make this go away?
 
 
 		/// <summary>
 		/// Triggers Ravage / 
 		/// </summary>
 		public void Advance() {
+
 			// Move Ravage to Discard
 			CountInDiscard += Ravage.Count;
 			Ravage.Clear();
+
 			// Move Build to Ravage
 			if(KeepBuildCards)
 				KeepBuildCards = false;
@@ -116,19 +119,26 @@ namespace SpiritIsland {
 				Ravage.AddRange( Build );
 				Build.Clear();
 			}
-			// move Explore to BUid
+
+			// move Explore to Build
+			CheckIfTimeRunsOut();
 			Build.AddRange( Explore );
 			Explore.Clear();
 
 			InitExplorers();
 		}
 
+		void CheckIfTimeRunsOut() {
+			if( Explore.Count==0 && unrevealedCards.Count==0 )
+				GameOverException.Lost("Time runs out");
+		}
+
 		void InitExplorers() {
-			if(cards.Count > 0) {
+			if(unrevealedCards.Count > 0) {
 				int count = drawCount[0]; drawCount.RemoveAt( 0 );
 				while(count-- > 0) {
-					Explore.Add( cards[0] );
-					cards.RemoveAt( 0 );
+					Explore.Add( unrevealedCards[0] );
+					unrevealedCards.RemoveAt( 0 );
 				}
 			}
 		}
@@ -139,7 +149,7 @@ namespace SpiritIsland {
 			var idx = Explore.Count - 1;
 			var card = Explore[idx];
 			Explore.RemoveAt( idx );
-			cards.Insert( 0, card );
+			unrevealedCards.Insert( 0, card );
 			drawCount[0]++;
 		}
 
@@ -150,15 +160,30 @@ namespace SpiritIsland {
 
 		protected class Memento : IMemento<InvaderDeck> {
 			public Memento(InvaderDeck src) {
-				cards = src.cards.ToArray();
+				unrevealedCards = src.unrevealedCards.ToArray();
 				drawCount = src.drawCount.ToArray();
+
+				explore = src.Explore.ToArray();
+				build = src.Build.ToArray();
+				ravage = src.Ravage.ToArray();
+				this.discardCount = src.CountInDiscard;
+
 			}
 			public void Restore(InvaderDeck src ) {
-				src.cards.SetItems(cards);
+				src.unrevealedCards.SetItems(unrevealedCards);
 				src.drawCount.SetItems(drawCount);
+				src.Explore.SetItems(explore);
+				src.Build.SetItems(build);
+				src.Ravage.SetItems(ravage);
+				src.CountInDiscard = discardCount;
 			}
-			readonly InvaderCard[] cards;
+			readonly InvaderCard[] unrevealedCards;
 			readonly int[] drawCount;
+			readonly InvaderCard[] explore;
+			readonly InvaderCard[] build;
+			readonly InvaderCard[] ravage;
+			readonly int discardCount;
+
 		}
 
 		#endregion

@@ -36,15 +36,17 @@ namespace SpiritIsland {
 			var deck = gs.InvaderDeck;
 			gs.Log( new InvaderActionEntry( "Ravaging:" + deck.Ravage.Select(x=>x.Text).Join("/") ) );
 			await Ravage();
+			this.gs.CheckWinLoss();
 
 			// Building
 			gs.Log( new InvaderActionEntry( "Building:" + deck.Build.Select(x=>x.Text).Join("/") ) );
 			await Build();
+			// ? Do we need to Check WinLoss here?
 
 			// Exploring
-//			deck.InitExplorers();
 			gs.Log( new InvaderActionEntry( "Exploring:" + (deck.Explore.Count > 0 ? deck.Explore[0].Text : "-") ) );
 			await Explore( deck.Explore.ToArray() );
+			// ? Do we need to Check WinLoss here?
 
 			deck.Advance();
 		}

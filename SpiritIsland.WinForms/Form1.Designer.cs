@@ -36,15 +36,14 @@ namespace SpiritIsland.WinForms {
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.gameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.replaySameGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.replayRoundToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rewindMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gameLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
-            this.splitContainer.SuspendLayout();
+			this.splitContainer.SuspendLayout();
             this.textPanel.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -145,8 +144,7 @@ namespace SpiritIsland.WinForms {
             // 
             this.gameToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newToolStripMenuItem,
-            this.replaySameGameToolStripMenuItem,
-            this.replayRoundToolStripMenuItem,
+            this.rewindMenuItem,
             this.exitToolStripMenuItem});
             this.gameToolStripMenuItem.Name = "gameToolStripMenuItem";
             this.gameToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
@@ -155,30 +153,22 @@ namespace SpiritIsland.WinForms {
             // newToolStripMenuItem
             // 
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.newToolStripMenuItem.Text = "&New";
             this.newToolStripMenuItem.Click += new System.EventHandler(this.GameNewStripMenuItem_Click);
-            // 
-            // replaySameGameToolStripMenuItem
-            // 
-            this.replaySameGameToolStripMenuItem.Name = "replaySameGameToolStripMenuItem";
-            this.replaySameGameToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
-            this.replaySameGameToolStripMenuItem.Text = "Replay Same &Game";
-            this.replaySameGameToolStripMenuItem.Click += new System.EventHandler(this.ReplaySameGameToolStripMenuItem_Click);
-            // 
-            // replayRoundToolStripMenuItem
-            // 
-            this.replayRoundToolStripMenuItem.Name = "replayRoundToolStripMenuItem";
-            this.replayRoundToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
-            this.replayRoundToolStripMenuItem.Text = "Replay &Round";
-            this.replayRoundToolStripMenuItem.Click += new System.EventHandler(this.ReplayRoundToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exitToolStripMenuItem.Text = "E&xit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
+            // 
+            // rewindMenuItem
+            // 
+            this.rewindMenuItem.Name = "rewindMenuItem";
+            this.rewindMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.rewindMenuItem.Text = "&Rewind To";
             // 
             // viewToolStripMenuItem
             // 
@@ -210,7 +200,7 @@ namespace SpiritIsland.WinForms {
             this.Text = "Spirit Island - Single Player";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.splitContainer.Panel1.ResumeLayout(false);
-            this.splitContainer.Panel2.ResumeLayout(false);
+			this.splitContainer.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
             this.splitContainer.ResumeLayout(false);
             this.textPanel.ResumeLayout(false);
@@ -234,10 +224,9 @@ namespace SpiritIsland.WinForms {
 		private System.Windows.Forms.ToolStripMenuItem gameToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem replaySameGameToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem replayRoundToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem gameLogToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem rewindMenuItem;
 	}
 }
 

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
@@ -13,7 +14,10 @@ namespace SpiritIsland {
 
 		void Choose( IOption option, bool block=true );
 
-		void GoBackToBeginningOfRound();
+		void GoBackToBeginningOfRound( int targetRound );
+
+		event Action<IDecision> NewWaitingDecision;
+
 	}
 
 	/// <summary>

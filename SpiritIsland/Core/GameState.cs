@@ -77,6 +77,7 @@ namespace SpiritIsland {
 		public Invaders Invaders { get; } // creates ravage/damage objects - Obsolete - just make Tokens do this.
 		public int blightOnCard; // 2 per player + 1
 		public IBlightCard BlightCard = new NullBlightCard();
+		public GameOver Result = null;
 
 		#region Blight
 
@@ -193,6 +194,36 @@ namespace SpiritIsland {
 
 		void Heal( GameState obj ) => Healer.Heal( obj ); // called at end of round.
 		public Healer Healer = new Healer(); // replacable Behavior
+
+		#endregion
+
+		#region Win / Loss
+
+		// !!! Replace this with an End-Of-Action Event
+		public void CheckWinLoss() {
+			if( ShouldCheckWinLoss)
+				CheckTerrorLevelVictory();
+		}
+		public bool ShouldCheckWinLoss { private get; set; } 
+
+		// Win Loss Predicates
+		static (Func<Space,bool>,string) InvaderCriteria(GameState gs) {
+			bool NoCity(Space space) => gs.Tokens[space].Sum(Invader.City)==0;
+			bool NoCityOrTown(Space space) => gs.Tokens[space].SumAny(Invader.City,Invader.Town)==0;
+			bool NoInvader(Space space) => !gs.Tokens[space].HasInvaders();
+			return gs.Fear.TerrorLevel switch {
+				3 => (NoCity,"no cities"),
+				2 => (NoCityOrTown,"no towns or cities"),
+				_ => (NoInvader,"no invaders")
+			};
+		}
+
+		// ! This is the only thing that needs checked after every action.
+		void CheckTerrorLevelVictory(){
+			var (filter,description) = InvaderCriteria(this);
+			if( Island.AllSpaces.All( filter ) )
+				GameOverException.Win($"Terror Level {Fear.TerrorLevel} - {description}");
+		}
 
 		#endregion
 

@@ -52,4 +52,5 @@ namespace SpiritIsland.Tests.Core {
 		}
 
 	}
+
 }

@@ -3,13 +3,18 @@
 namespace SpiritIsland {
 
 	public class GameStateCommandException : Exception {
-		public GameStateCommandException(GameStateCommand cmd) : base() {
+		public GameStateCommandException(IGameStateCommand cmd) : base() {
 			Cmd = cmd;
 		}
-		public GameStateCommand Cmd { get; }
+		public IGameStateCommand Cmd { get; }
 
 	}
 
-	public enum GameStateCommand { ReturnToBeginningOfRound }
+	public interface IGameStateCommand {}
 	
+	public class Rewind : IGameStateCommand {
+		public int TargetRound { get; }
+		public Rewind(int toRound ) { TargetRound = toRound; }
+	}
+
 }
