@@ -40,6 +40,7 @@ namespace SpiritIsland.WinForms {
 				Target.BeastOrJungle => "JungleOrBeast",
 				Target.Ocean => "Ocean",
 				Target.MountainOrPresence => "mountainorpresence",
+				Target.TownCityOrBlight => "TownCityOrBlight",
 				_ => null, // Inland, Any
 			};
 			return iconFilename != null ? GetIcon( iconFilename ) : null;

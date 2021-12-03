@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SpiritIsland.JaggedEarth;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
@@ -47,7 +48,7 @@ namespace SpiritIsland.WinForms {
 			if(action is DrawPowerCard) { DrawPowerCard( rect ); return; }
 
 			if(action is PlacePresence pp ) {
-				PlacePresence( rect, pp.Range, pp.FilterEnum );
+				PlacePresence( rect, pp );
 				return;
 			}
 
@@ -125,17 +126,35 @@ namespace SpiritIsland.WinForms {
 			}
 		}
 
-		void PlacePresence( RectangleF rect, int? range, string filterEnum ) {
+		void PlacePresence( RectangleF rect, PlacePresence pp ) {
+			PlacePresence(rect, pp.Range,pp.FilterEnum, pp is PlacePresenceOrDisease);
+		}
+
+		void PlacePresence( RectangleF rect, int? range, string filterEnum, bool orDisease = false ) {
+			
 			using var image = ResourceImages.Singleton.GetTargetFilterIcon( filterEnum );
 
 			using Font font = new Font( ResourceImages.Singleton.Fonts.Families[0], rect.Height * .15f, GraphicsUnit.Pixel  );
 
 			// + presence
-			float presencePercent = image == null ? .3f : .2f;
-			float plusY = rect.Y + rect.Height * presencePercent; // top of presence
-			graphics.DrawString("+",font,Brushes.Black,rect.X+rect.Width*0.25f,plusY);
-			using var presenceIcon = ResourceImages.Singleton.GetIcon( "Presenceicon" );
-			graphics.DrawImage(presenceIcon, rect.X + rect.Width * 0.4f, plusY-rect.Height*.1f, rect.Width*.5f, rect.Height*.2f );
+			if( orDisease ) {
+				float presencePercent = image == null ? .3f : .2f;
+				float plusY = rect.Y + rect.Height * presencePercent; // top of presence
+				graphics.DrawString("+",font,Brushes.Black,rect.X+rect.Width*0.25f,plusY);
+
+				using var presenceIcon = ResourceImages.Singleton.GetIcon( "Presenceicon" );
+				graphics.DrawImage(presenceIcon, rect.X + rect.Width * 0.1f, plusY-rect.Height*.1f, rect.Width*.5f, rect.Height*.2f );
+
+				using var diseaseIcon = ResourceImages.Singleton.GetIcon( "Diseaseicon" );
+				graphics.DrawImage(diseaseIcon, rect.X + rect.Width * 0.6f, plusY-rect.Height*.1f, rect.Width*.5f, rect.Height*.2f );
+
+			} else {
+				float presencePercent = image == null ? .3f : .2f;
+				float plusY = rect.Y + rect.Height * presencePercent; // top of presence
+				graphics.DrawString("+",font,Brushes.Black,rect.X+rect.Width*0.25f,plusY);
+				using var presenceIcon = ResourceImages.Singleton.GetIcon( "Presenceicon" );
+				graphics.DrawImage(presenceIcon, rect.X + rect.Width * 0.4f, plusY-rect.Height*.1f, rect.Width*.5f, rect.Height*.2f );
+			}
 
 			// icon
 			if(image != null) {

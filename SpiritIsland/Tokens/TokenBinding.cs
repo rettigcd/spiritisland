@@ -2,7 +2,7 @@
 
 	public class TokenBinding {
 
-		readonly TokenCountDictionary counts;
+		readonly protected TokenCountDictionary counts;
 		readonly Token token;
 
 		public TokenBinding( TokenCountDictionary tokens, Token token ) {

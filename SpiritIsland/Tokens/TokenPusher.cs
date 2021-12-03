@@ -42,27 +42,38 @@ namespace SpiritIsland {
 
 			Token[] tokens;
 			while(0 < (tokens = GetTokens()).Length) {
+				// Select Token
 				var decision = Decision.TokenOnSpace.TokenToPush( source, countArray.Sum(), tokens, present );
 				var token = await ctx.Self.Action.Decision( decision );
+				if(token == null) break;
 
-				if(token == null)
-					break;
-
+				// Push to Destination
 				Space destination = await PushToken( token );
+
+				// Book keeping
 				--countArray[indexLookupByGroup[token.Generic]]; // decrement count
-				if(destination != null) {
+				if(destination != null)
 					pushedToSpaces.Add( destination ); // record push
-				}
 			}
 			return pushedToSpaces.ToArray();
 		}
 
 		public async Task<Space> PushToken( Token token ) {
 			Space destination = await SelectDestination( token );
-			if(destination != null)
-				await ctx.Move( token, source, destination );	// !!! if moving into frozen land, freeze Dahan
+			if(destination == null) return null;
+
+			await ctx.Move( token, source, destination );	// !!! if moving into frozen land, freeze Dahan
+
+			customeAction?.Invoke( token, source, destination);
+
 			return destination;
 		}
+
+		public TokenPusher AddCustomMoveAction( Func<Token,Space,Space,Task> customeAction ) {
+			this.customeAction = customeAction;
+			return this;
+		}
+		Func<Token,Space,Space,Task> customeAction;
 
 		protected virtual async Task<Space> SelectDestination( Token token ) {
 			IEnumerable<Space> destinationOptions = source.Adjacent.Where( s => ctx.Target(s).IsInPlay );

@@ -47,7 +47,7 @@ namespace SpiritIsland {
 		public TokenBinding Disease => Tokens.Disease;
 		public TokenBinding Wilds => Tokens.Wilds;
 		public DahanGroupBinding Dahan => Tokens.Dahan;
-		public TokenBinding Badlands => Tokens.Badlands;
+		public TokenBinding Badlands => Originator.ConstructBadlands( this ); // allow Originator to override
 
 		#endregion
 
@@ -156,6 +156,7 @@ namespace SpiritIsland {
 
 		public void SkipAllInvaderActions() => GameState.SkipAllInvaderActions(Space);
 		public void Skip1Build() => GameState.Skip1Build(Space);
+		public void SkipRavage() => GameState.SkipRavage(Space);
 
 		// Damage invaders in the current target space
 		// This called both from powers and from Fear

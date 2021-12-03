@@ -93,12 +93,19 @@ namespace SpiritIsland {
 
 		#region Build
 
-		public async Task<string> Build( TokenCountDictionary tokens, BuildingEventArgs.BuildType buildType ) {
+		static Task<bool> StopBuildWithDiseaseBehavior_Default( TokenCountDictionary tokens, GameState _ ) {
 			var disease = tokens.Disease;
-			if(disease.Any) {
+			bool stoppedByDisease = disease.Any;
+			if(stoppedByDisease)
 				disease.Remove(1);
+			return Task.FromResult(stoppedByDisease);
+		}
+
+		public Func<TokenCountDictionary,GameState,Task<bool>> StopBuildWithDiseaseBehavior = StopBuildWithDiseaseBehavior_Default; // !!! move this to the GameState API
+
+		public async Task<string> Build( TokenCountDictionary tokens, BuildingEventArgs.BuildType buildType ) {
+			if( await StopBuildWithDiseaseBehavior( tokens, gs ) )
 				return tokens.Space.Label +" build stopped by disease";
-			}
 
 			// Determine type to build
 			int townCount = tokens.Sum( Invader.Town );
@@ -129,7 +136,7 @@ namespace SpiritIsland {
 			await BuildTheseSpaces( buildSpaces );
 		}
 
-		private async Task BuildTheseSpaces( CountDictionary<Space> myBuildSpaces ) {
+		async Task BuildTheseSpaces( CountDictionary<Space> myBuildSpaces ) {
 			var args = new BuildingEventArgs {
 				BuildTypes = new Dictionary<Space, BuildingEventArgs.BuildType>(),
 				SpaceCounts = myBuildSpaces,

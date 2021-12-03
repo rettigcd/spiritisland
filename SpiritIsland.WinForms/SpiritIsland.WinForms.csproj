@@ -63,6 +63,7 @@
     <None Remove="images\icons\TerrorLevel1.png" />
     <None Remove="images\icons\TerrorLevel2.png" />
     <None Remove="images\icons\TerrorLevel3.png" />
+    <None Remove="images\icons\TownCityOrBlight.png" />
     <None Remove="images\icons\Townicon.png" />
     <None Remove="images\icons\Wildsicon.png" />
     <None Remove="images\icons\wildsorpresence.png" />
@@ -299,6 +300,10 @@
     <EmbeddedResource Include="images\tokens\town1.png" />
     <EmbeddedResource Include="images\tokens\wilds.png" />
     <EmbeddedResource Include="leaguegothic-regular-webfont.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="images\icons\TownCityOrBlight.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -1532,6 +1537,12 @@
     <None Update="images\je\spirit\exaltation_of_molten_stone.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="images\je\spirit\fetid_breath_spreads_infection.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\spirit\fiery_vengeance.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="images\je\spirit\flowing_and_silent_forms_dart_by.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -1559,6 +1570,9 @@
     <None Update="images\je\spirit\perils_of_the_deepest_island.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="images\je\spirit\plaguebearers.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="images\je\spirit\plows_shatter_on_rocky_ground.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -1578,6 +1592,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\je\spirit\softly_beckon_ever_inward.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\spirit\strike_low_with_sudden_fevers.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\je\spirit\stubborn_solidity.jpg">

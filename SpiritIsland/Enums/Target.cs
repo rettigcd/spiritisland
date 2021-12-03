@@ -2,6 +2,7 @@
 	public static class Target {
 		public const string Any              = "Any";
 		public const string Dahan            = "dahan";
+		public const string Disease          = "disease";
 		public const string Invaders         = "Invaders";
 		public const string Jungle           = "J";
 		public const string JungleOrMountain = "J / M";
@@ -12,6 +13,7 @@
 		public const string SandOrWetland    = "SandOrWetland";
 		public const string Wetland          = "Wetland";
 		public const string Blight           = "Blight";
+		public const string TownCityOrBlight = "TownCityOrBlight";
 		public const string NoBlight         = "no blight";
 		public const string NoInvader        = "no invader";
 		public const string DahanOrInvaders  = "dahan or invaders";

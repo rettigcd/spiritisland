@@ -41,6 +41,7 @@ namespace SpiritIsland {
 
 		public IEnumerable<Space> AllSpaces => GameState.Island.AllSpaces;
 
+		/// <summary> Simple wrapper around GameState.Tokens.Move </summary>
 		public Task Move(Token token, Space from, Space to )
 			=> GameState.Tokens.Move( token, from, to );
 

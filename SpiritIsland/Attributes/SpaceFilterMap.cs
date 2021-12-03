@@ -18,10 +18,12 @@ namespace SpiritIsland {
 			[Target.Coastal           ] = ctx => ctx.IsCoastal,
 			[Target.Blight            ] = ctx => ctx.HasBlight,
 			[Target.Dahan             ] = ctx => ctx.Dahan.Any,
+			[Target.Disease           ] = ctx => ctx.Disease.Any,
 			[Target.Invaders          ] = ctx => ctx.HasInvaders,
 			[Target.DahanOrInvaders   ] = ctx => ctx.Dahan.Any || ctx.HasInvaders,
 			[Target.NoInvader         ] = ctx => !ctx.HasInvaders,
 			[Target.NoBlight          ] = ctx => !ctx.HasBlight,
+			[Target.TownCityOrBlight  ] = ctx => ctx.HasBlight || ctx.Tokens.HasAny( Invader.City, Invader.Town ),
 			[Target.TownOrExplorer    ] = ctx => ctx.Tokens.HasAny( Invader.Explorer, Invader.Town ),  // Wash Away helper
 			[Target.TownOrCity        ] = ctx => ctx.Tokens.HasAny( Invader.City, Invader.Town ),  // Study the Invaders' Fears
 		};
