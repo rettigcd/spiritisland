@@ -28,8 +28,7 @@ namespace SpiritIsland {
 
 		#region Damage
 
-		// !!! The caller of these methods need to encorporate BadLands damage
-
+		/// <summary> Not Badland-aware </summary>
 		public async Task ApplyDamageToEach( int individualDamage, params TokenGroup[] generic ) {
 
 			var invaders = Tokens.Invaders()
@@ -46,15 +45,17 @@ namespace SpiritIsland {
 
 		}
 
-		/// <returns>damage inflicted to invaders</returns>
-		public async Task<int> ApplyDamageTo1( int availableDamage, Token invaderToken ) {
+		/// <summary> Not Badland-aware </summary>
+		/// <returns>(damage inflicted,damagedInvader)</returns>
+		public async Task<(int,Token)> ApplyDamageTo1( int availableDamage, Token invaderToken ) {
 
 			Token damagedInvader = damageApplicationStrategy.ApplyDamage( Tokens, availableDamage, invaderToken );
 
 			if(0 == damagedInvader.Health)
 				await DestroyStrategy.OnInvaderDestroyed( Space, damagedInvader );
 
-			return invaderToken.Health - damagedInvader.Health; // damage inflicted
+			int damageInflicted = invaderToken.Health - damagedInvader.Health;
+			return (damageInflicted,damagedInvader); // damage inflicted
 		}
 
 		readonly IDamageApplier damageApplicationStrategy;
@@ -178,7 +179,7 @@ namespace SpiritIsland {
 		public readonly DestroyInvaderStrategy DestroyStrategy;
 		public readonly TokenCountDictionary Tokens;
 
-		static readonly DefaultDamageApplier DefaultDamageApplicationStrategy = new DefaultDamageApplier();
+		static readonly DefaultDamageApplier DefaultDamageApplicationStrategy = new DefaultDamageApplier(); // changed By Flames Fury
 
 	}
 

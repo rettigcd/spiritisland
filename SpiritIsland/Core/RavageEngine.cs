@@ -82,7 +82,7 @@ namespace SpiritIsland {
 			if(dahanDamageFromInvaders == 0 || !cfg.ShouldDamageDahan) return;
 
 			int dahanDamageTotal = dahanDamageFromInvaders
-				+ Tokens.Badlands.Count;
+				+ BadLandsCount;
 
 			// ! This special DamageDahan, uses the config to change dahan health points.
 
@@ -106,12 +106,13 @@ namespace SpiritIsland {
 			if(damageFromDahan == 0) return;
 
 			int remainingDamageToApply = damageFromDahan
-				+ Tokens.Badlands.Count;
+				+ BadLandsCount;
 
 			var participatingInvaders = CalcParticipatingInvaders();
 			while(remainingDamageToApply > 0 && participatingInvaders.Any()) {
 				Token invadertodamage = PickSmartInvaderToDamage( participatingInvaders, remainingDamageToApply );
-				remainingDamageToApply -= await grp.ApplyDamageTo1( remainingDamageToApply, invadertodamage );
+				var (damageInflicted,_) = await grp.ApplyDamageTo1( remainingDamageToApply, invadertodamage );
+				remainingDamageToApply -= damageInflicted;
 				// update participants
 				participatingInvaders = CalcParticipatingInvaders();
 			}
@@ -135,6 +136,8 @@ namespace SpiritIsland {
 			foreach(var orig in strifed)
 				Tokens.RemoveStrife( orig, Tokens[orig] );
 		}
+
+		int BadLandsCount => Tokens.Badlands.Count;
 
 		TokenCountDictionary Tokens => grp.Tokens;
 

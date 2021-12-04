@@ -61,7 +61,7 @@ namespace SpiritIsland {
 		public TokenBinding Beasts => new ( this, TokenType.Beast );
 		public TokenBinding Disease => new ( this, TokenType.Disease );
 		public TokenBinding Wilds => new ( this, TokenType.Wilds );
-		public TokenBinding Badlands => new ( this, TokenType.Badlands );
+		public TokenBinding Badlands => new ( this, TokenType.Badlands ); // This should not be used directly from inside Actions
 		public DahanGroupBinding Dahan{
 			get => _dahan ??= new ( this, TokenType.Dahan, this ); // ! change the ??= to ?? and we would not need to hang on to the binding.
 			set => _dahan = value; // Allows Dahan behavior to be overridden

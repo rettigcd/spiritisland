@@ -162,7 +162,7 @@ namespace SpiritIsland {
 			if( damage == 0 ) return Task.CompletedTask; // not necessary, just saves some cycles
 
 			// !!! This is not correct, if card has multiple Damages, adds badland multiple times.
-			damage += Tokens.Badlands.Count;
+			damage += Badlands.Count; 
 
 			if(allowedTypes==null || allowedTypes.Length==0)
 				allowedTypes = new TokenGroup[] { Invader.City, Invader.Town, Invader.Explorer };
@@ -177,15 +177,16 @@ namespace SpiritIsland {
 		public async Task Apply1DamageToDifferentInvaders( int count ) {
 			const int damagePerInvader = 1;
 
-			// Find Damaged Invaders
+			// Find All Invaders
 			var invaders = new List<Token>();
 			foreach(var token in Tokens.Invaders())
 				for(int i = 0; i < Tokens[token]; ++i)
 					invaders.Add( token );
 
-			// Select up to 3 to put in the skip-list
-			count = System.Math.Min(count,invaders.Count);
-			while(count-->0 ) {
+			// Limit # to select
+			var damagedInvaders = new List<Token>();
+			count = System.Math.Min( count, invaders.Count );
+			while(count-- > 0) {
 				var invader = await Self.Action.Decision( new Decision.TokenOnSpace(
 					$"Select invader to apply {damagePerInvader} damage", Space,
 					invaders.Distinct(),
@@ -193,16 +194,37 @@ namespace SpiritIsland {
 				) );
 				if(invader == null) break;
 				invaders.Remove( invader );
-				await Invaders.ApplyDamageTo1(damagePerInvader,invader);
+				var (_, damaged) = await Invaders.ApplyDamageTo1( damagePerInvader, invader );
+				if(damaged.Health > 0)
+					damagedInvaders.Add( damaged );
 			}
 
+			await ApplyDamageToSpecificTokens( damagedInvaders, Badlands.Count );
 		}
+
+		async Task ApplyDamageToSpecificTokens( List<Token> invaders, int additionalTotalDamage ) {
+			while(additionalTotalDamage > 0) {
+				var invader = await Self.Action.Decision( new Decision.TokenOnSpace(
+					$"Select invader to apply badland damage", Space,
+					invaders,
+					Present.Done
+				) );
+				if(invader == null) break;
+				int index = invaders.IndexOf( invader );
+				var (_, moreDamaged) = await Invaders.ApplyDamageTo1( 1, invader );
+				if(moreDamaged.Health > 0)
+					invaders[index] = moreDamaged;
+				else
+					invaders.RemoveAt( index );
+			}
+		}
+
 
 		public async Task DamageDahan( int damage ) {
 			if( damage == 0 ) return;
 
 			// !!! This is not correct, if card has multiple Damage-Dahans, adds badland multiple times.
-			damage += Tokens.Badlands.Count;
+			damage += Badlands.Count;  
 
 			// and 2 damage to dahan.
 			await Dahan.ApplyDamage( damage, Cause );

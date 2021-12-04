@@ -11,7 +11,7 @@ namespace SpiritIsland.JaggedEarth {
 			ctx.AddFear(1);
 
 			// add 1 badlands.
-			ctx.Badlands.Count++;
+			ctx.Badlands.Count++;  
 
 			// Add 1 beast within 1 range.
 			var spaceCtx = await ctx.SelectSpace("Add beast", ctx.FindSpacesWithinRangeOf(1,Target.Any));
