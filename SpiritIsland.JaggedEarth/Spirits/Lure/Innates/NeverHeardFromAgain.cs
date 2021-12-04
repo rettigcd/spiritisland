@@ -20,7 +20,7 @@ namespace SpiritIsland.JaggedEarth {
 		[InnateOption("1 fire,3 air","Add 1 badland",0)]
 		static public Task Option1(TargetSpaceCtx ctx ) {
 			// add 1 badland
-			ctx.Badlands.Count++;
+			ctx.Badlands.Add(1);
 			return Task.CompletedTask;
 		}
 

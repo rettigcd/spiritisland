@@ -8,9 +8,9 @@ namespace SpiritIsland.JaggedEarth {
 			// 2 damage
 			await ctx.DamageInvaders( 2 );
 			// Add 1 badlands
-			ctx.Badlands.Count++;
+			ctx.Badlands.Add(1);
 			// Remove 1 blight in target land from the game. (It goes to the box, not the blight card)
-			ctx.Blight.Count--;
+			ctx.Blight.Remove(1);
 		}
 
 	}

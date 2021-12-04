@@ -13,7 +13,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			// add 1 beast.
 			var beasts = ctx.Beasts;
-			beasts.Count++;
+			beasts.Add(1);
 
 			// Gather up to 1 beast.
 			await ctx.GatherUpTo(1,TokenType.Beast.Generic);

@@ -32,7 +32,7 @@ namespace SpiritIsland.Basegame {
 
 		static void DefendCostal( GameState gs, int defense ) {
 			foreach(var space in gs.Island.AllSpaces.Where( s => s.IsCoastal ))
-				gs.Tokens[space].Defend.Count += defense;
+				gs.Tokens[space].Defend.Add( defense );
 		}
 
 		static void SkipCostalBuild( GameState gs ) {

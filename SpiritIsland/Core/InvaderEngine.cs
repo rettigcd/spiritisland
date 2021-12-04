@@ -61,7 +61,7 @@ namespace SpiritIsland {
 				await gs.Tokens.Add( Invader.Explorer, space );
 			}
 			else
-				wilds.Count--;
+				wilds.Remove(1);
 
 
 		}
@@ -98,7 +98,7 @@ namespace SpiritIsland {
 		public async Task<string> Build( TokenCountDictionary tokens, BuildingEventArgs.BuildType buildType ) {
 			var disease = tokens.Disease;
 			if(disease.Any) {
-				disease.Count--;
+				disease.Remove(1);
 				return tokens.Space.Label +" build stopped by disease";
 			}
 

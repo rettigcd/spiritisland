@@ -14,7 +14,7 @@ namespace SpiritIsland.BranchAndClaw {
 			// and 1 dahan
 			await ctx.DestroyDahan( 1 );
 			// add 1 wilds
-			ctx.Wilds.Count++;
+			ctx.Wilds.Add(1);
 			// defend 2
 			ctx.Defend(2);
 

@@ -29,7 +29,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 		static void DefendAllLands( FearCtx ctx, int defense ) {
 			foreach(var space in ctx.GameState.Island.AllSpaces)
-				ctx.GameState.Tokens[space].Defend.Count += defense;
+				ctx.GameState.Tokens[space].Defend.Add( defense );
 		}
 
 	}

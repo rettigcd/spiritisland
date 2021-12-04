@@ -17,7 +17,7 @@ namespace SpiritIsland.Basegame {
 			// Fear from destroying town/cities does not.)
 			void FearAdded( GameState gs, FearArgs args ) {
 				if(args.cause == Cause.Power && args.space==ctx.Space)
-					gs.Tokens[args.space].Defend.Count += args.count;
+					gs.Tokens[args.space].Defend.Add( args.count );
 			}
 
 			ctx.GameState.Fear.FearAdded.ForRound.Add(FearAdded);

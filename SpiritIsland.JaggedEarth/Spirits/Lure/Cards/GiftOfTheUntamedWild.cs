@@ -18,13 +18,13 @@ namespace SpiritIsland.JaggedEarth {
 
 		static async Task Add1WildsToOneOfYourLands(SpiritGameStateCtx ctx) {
 			var spaceCtx = await ctx.SelectSpace("Add 1 Wilds",ctx.Self.Presence.Spaces);
-			spaceCtx.Wilds.Count++;
+			spaceCtx.Wilds.Add(1);
 		}
 
 		static async Task Replace1PresenceWith1Disease(SpiritGameStateCtx ctx) {
 			var space = await ctx.Presence.SelectDeployed("Replace Presence with 1 disease");
 			ctx.Presence.RemoveFrom( space );
-			ctx.Target(space).Disease.Count++;
+			ctx.Target(space).Disease.Add(1);
 		}
 
 

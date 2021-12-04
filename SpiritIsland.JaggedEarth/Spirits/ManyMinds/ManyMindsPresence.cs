@@ -17,14 +17,14 @@ namespace SpiritIsland.JaggedEarth {
 			base.PlaceOn( space, gs );
 			// if created sacred site, create virtual beast
 			if(CountOn( space ) == 2)
-				gs.Tokens[space].Beasts.Count++; // Beast token is virtual so maybe we don't want to trigger TokenAdded
+				gs.Tokens[space].Beasts.Add(1); // Beast token is virtual so maybe we don't want to trigger TokenAdded
 		}
 
 		public override void RemoveFrom( Space space, GameState gs ) {
 			base.RemoveFrom( space, gs );
 			// if destroyed sacred site, remove virtual beast
 			if( CountOn( space ) == 1 )
-				gs.Tokens[space].Beasts.Count--;
+				gs.Tokens[space].Beasts.Remove(1);
 		}
 
 		async Task TokenMoved(GameState gs, TokenMovedArgs args) {
@@ -55,14 +55,14 @@ namespace SpiritIsland.JaggedEarth {
 
 		void SacredSiteAtSouce_RestoreVirtualBeast( TokenMovedArgs args, TokenBinding srcBeasts ) {
 			if(2 <= CountOn( args.From ))
-				srcBeasts.Count++; // Beast token is virtual so maybe we don't want to trigger TokenAdded
+				srcBeasts.Add(1); // Beast token is virtual so maybe we don't want to trigger TokenAdded
 		}
 
 		void AddedVirtualBeastAtDestination_LimitTo1( GameState gs, TokenMovedArgs args ) {
 			// if destination/to now has 4 or more presence,
 			// then there was already a virtual beast there and we need to remove 1 of the virtual beasts
 			if(4 <= CountOn( args.To ))
-				gs.Tokens[args.To].Beasts.Count--;
+				gs.Tokens[args.To].Beasts.Remove(1);
 		}
 
 		async Task TokenDestroyed(GameState gs, TokenDestroyedArgs args) {

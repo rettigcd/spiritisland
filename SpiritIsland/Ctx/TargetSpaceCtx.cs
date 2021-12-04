@@ -41,7 +41,7 @@ namespace SpiritIsland {
 		TokenCountDictionary _tokens;
 
 		#region Token Shortcuts
-		public void Defend(int defend) => Tokens.Defend.Count += defend;
+		public void Defend(int defend) => Tokens.Defend.Add(defend);
 		public TokenBinding Blight => Tokens.Blight;
 		public TokenBinding Beasts => Tokens.Beasts;
 		public TokenBinding Disease => Tokens.Disease;
@@ -138,8 +138,9 @@ namespace SpiritIsland {
 
 		public bool HasBlight => GameState.HasBlight(Space);
 		public Task AddBlight(int delta=1) => GameState.AddBlight(Space,delta);
+
 		/// <summary> Returns blight from the board to the blight card. </summary>
-		public Task RemoveBlight() => Self.RemoveBlight( this );
+		public Task RemoveBlight() => Self.RemoveBlight( this );// !!! replace with a method on the .Blight property called .ReturnToCard(1), then call that directly instead of this
 
 		public int BlightOnSpace => GameState.GetBlightOnSpace(Space);
 

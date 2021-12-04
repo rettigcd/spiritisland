@@ -26,7 +26,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			// Defend 2 in all costal lands.
 			foreach(var land in coastal)
-				ctx.GameState.Tokens[land].Defend.Count += 2;
+				ctx.GameState.Tokens[land].Defend.Add( 2 );
 		}
 
 		[FearLevel( 3, "Each player may gather 2 explorer / town into a costal land.  Defend 4 in all costal lands" )]
@@ -39,7 +39,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			// Defend 4 in all costal lands
 			foreach(var land in coastal)
-				ctx.GameState.Tokens[land].Defend.Count += 4;
+				ctx.GameState.Tokens[land].Defend.Add( 4 );
 		}
 
 	}

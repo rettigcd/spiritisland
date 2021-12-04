@@ -10,7 +10,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			var beasts = ctx.Beasts;
 			await ctx.SelectActionOption(
-				new ActionOption("1 fear, add 1 beast", ()=>{ ctx.AddFear(1); beasts.Count++; } ),
+				new ActionOption("1 fear, add 1 beast", ()=>{ ctx.AddFear(1); beasts.Add(1); } ),
 				new ActionOption("3 fear", ()=> ctx.AddFear(3), ctx.Tokens.HasInvaders() && beasts > 0 )
 			);
 

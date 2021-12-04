@@ -30,7 +30,7 @@ namespace SpiritIsland.Basegame {
 
 		static Task DefendIt( GameState gs, Func<Space, int> d ) {
 			foreach(var space in gs.Island.AllSpaces.Where( s=>gs.DahanOn(s).Any ))
-				gs.Tokens[space].Defend.Count += d( space );
+				gs.Tokens[space].Defend.Add( d( space ) );
 			return Task.CompletedTask;
 		}
 	}

@@ -52,7 +52,7 @@ namespace SpiritIsland.JaggedEarth {
 			(Presence as ManyMindsPresence).Watch(gameState,this);
 
 			Presence.PlaceOn(land, gameState);
-			gameState.Tokens[land].Beasts.Count++;
+			gameState.Tokens[land].Beasts.Add(1);
 
 
 		}

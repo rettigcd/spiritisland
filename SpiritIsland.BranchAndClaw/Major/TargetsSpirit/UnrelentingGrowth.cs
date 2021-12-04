@@ -14,10 +14,10 @@ namespace SpiritIsland.BranchAndClaw {
 			// if you have 3 sun, 3 plant
 			if(await ctx.YouHave( "3 sun,3 plant" )) {
 				// in that land add 1 additional wilds 
-				toCtx.Wilds.Count++;
+				toCtx.Wilds.Add(1);
 				// and remove 1 blight.
 				var blight = toCtx.Blight;
-				if(blight.Any) blight.Count--;
+				if(blight.Any) await toCtx.RemoveBlight();
 				// Target Spirit gains a power card.
 
 			}
@@ -33,7 +33,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			// add wilds
 			var toCtx = ctx.Target( to );
-			toCtx.Wilds.Count++;
+			toCtx.Wilds.Add(1);
 
 			// Add presence
 			for(int i = 0; i < 2; ++i) {

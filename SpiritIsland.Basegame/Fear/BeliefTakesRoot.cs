@@ -17,7 +17,7 @@ namespace SpiritIsland.Basegame {
 		static void Defend2WherePresence( FearCtx ctx ) {
 			GameState gs = ctx.GameState;
 			foreach(var space in gs.Spirits.SelectMany( s => s.Presence.Spaces ).Distinct())
-				gs.Tokens[space].Defend.Count += 2;
+				gs.Tokens[space].Defend.Add(2);
 		}
 
 		[FearLevel( 2, "Defend 2 in all lands with Presence. Each Spirit gains 1 Energy per SacredSite they have in lands with Invaders." )]

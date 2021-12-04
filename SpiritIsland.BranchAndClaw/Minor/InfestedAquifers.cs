@@ -15,7 +15,7 @@ namespace SpiritIsland.BranchAndClaw {
 					, ctx.Disease.Any
 				),
 				new ActionOption( "1 fear and 1 disease"
-					, () => { ctx.AddFear(1); ctx.Disease.Count++; return Task.CompletedTask; }
+					, () => { ctx.AddFear(1); ctx.Disease.Add(1); return Task.CompletedTask; }
 					, ctx.IsOneOf(Terrain.Mountain,Terrain.Wetland)
 				)
 			);

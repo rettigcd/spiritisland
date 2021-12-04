@@ -19,10 +19,10 @@ namespace SpiritIsland.Tests {
 			fxt.gameState.SkipRavage(fxt.board[2]);
 
 			//  And: 1 bad lands, 1 explorer, 1 dahan, 1 defend
-			tokens.Badlands.Count = 1;
+			tokens.Badlands.Init(1);
 			tokens[Invader.Explorer.Default] = 1;
 			tokens[TokenType.Dahan.Default] = 1;
-			tokens.Defend.Count = 1;
+			tokens.Defend.Init(1);
 			tokens.Summary.ShouldBe("1D@2,1E@1,1G@1,1M@1");
 
 			// When: Grow, Skip Buy, then Ravage
@@ -58,7 +58,7 @@ namespace SpiritIsland.Tests {
 			fxt.gameState.SkipRavage(fxt.board[2]);
 
 			//  And: 1 bad lands, 1 explorer, 1 dahan
-			tokens.Badlands.Count = 1;
+			tokens.Badlands.Init(1);
 			tokens[Invader.Explorer.Default] = 1;
 			tokens[TokenType.Dahan.Default] = 1;
 			tokens.Summary.ShouldBe("1D@2,1E@1,1M@1");

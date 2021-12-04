@@ -13,7 +13,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 				// Add 2 beasts
 				var beasts = ctx.Beasts;
-				beasts.Count += 2;
+				beasts.Add(2);
 
 				// Gather up to 2 beasts
 				await ctx.GatherUpTo( 2, TokenType.Beast.Generic );
@@ -27,7 +27,7 @@ namespace SpiritIsland.BranchAndClaw {
 				await ctx.DamageDahan( beasts.Count );
 
 				// Destroy 1 beast.
-				beasts.Count--;
+				beasts.Remove(1);
 			}
 			await ApplyPowerOnTarget( ctx );
 

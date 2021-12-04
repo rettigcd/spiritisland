@@ -14,7 +14,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 		static void FearAndBeast( TargetSpaceCtx ctx ) {
 			ctx.AddFear( 1 );
-			ctx.Beasts.Count++;
+			ctx.Beasts.Add(1);
 		}
 
 		static Task DestroyExplorerTown( TargetSpaceCtx ctx ) {

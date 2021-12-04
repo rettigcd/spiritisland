@@ -240,10 +240,9 @@ namespace SpiritIsland {
 		/// <returns># of blight to remove from card</returns>
 		static Task<int> DefaultAddBlight( TokenCountDictionary tokens, int delta = 1 ) {
 			var blight = tokens.Blight;
-			int newCount = blight + delta;
-			if(newCount < 0) throw new Exception( "Can't remove blight that isn't there" );
+			if(blight + delta < 0) throw new Exception( "Can't remove blight that isn't there" );
 
-			blight.Count = newCount;
+			blight.Add(delta);
 			return Task.FromResult(delta);
 		}
 

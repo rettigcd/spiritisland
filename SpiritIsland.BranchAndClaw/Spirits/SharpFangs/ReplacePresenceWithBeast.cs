@@ -11,7 +11,7 @@ namespace SpiritIsland.BranchAndClaw {
 			if(space == null) return;
 
 			ctx.Presence.RemoveFrom(space);
-			ctx.GameState.Tokens[space].Beasts.Count++;
+			ctx.GameState.Tokens[space].Beasts.Add(1);
 
 		}
 

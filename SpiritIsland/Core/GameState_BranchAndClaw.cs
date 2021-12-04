@@ -27,7 +27,7 @@ namespace SpiritIsland {
 		public override void Initialize() {
 			// ! this has to go first since ManyMinds requires the beast to be in place
 			foreach(var board in Island.Boards) {
-				Tokens[board[2]].Disease.Count++;
+				Tokens[board[2]].Disease.Add(1);
 				var lowest = board.Spaces.Skip(1).First(s=>s.StartUpCounts.Empty);
 				Tokens[lowest][TokenType.Beast]++;
 			}

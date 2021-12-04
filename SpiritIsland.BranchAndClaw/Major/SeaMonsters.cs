@@ -18,7 +18,7 @@ namespace SpiritIsland.BranchAndClaw {
 		static async Task DoPowerAction( TargetSpaceCtx ctx ) {
 			// add 1 beast.
 			var beasts = ctx.Beasts;
-			beasts.Count++;
+			beasts.Add(1);
 
 			// IF invaders are present,
 			if(ctx.HasInvaders)
