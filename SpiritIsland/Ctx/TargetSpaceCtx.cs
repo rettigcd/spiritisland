@@ -46,8 +46,8 @@ namespace SpiritIsland {
 		public TokenBinding Beasts => Tokens.Beasts;
 		public TokenBinding Disease => Tokens.Disease;
 		public TokenBinding Wilds => Tokens.Wilds;
-		public TokenBinding Badlands => Tokens.Badlands;
 		public DahanGroupBinding Dahan => Tokens.Dahan;
+		public TokenBinding Badlands => Tokens.Badlands;
 
 		#endregion
 

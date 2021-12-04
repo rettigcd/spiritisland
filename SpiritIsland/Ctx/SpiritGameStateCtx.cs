@@ -10,19 +10,21 @@ namespace SpiritIsland {
 		public Spirit Self { get; }
 		public GameState GameState { get; }
 		public Cause Cause { get; }
-
+		public Spirit Originator { get; }
 		#region constructor
 
-		public SpiritGameStateCtx(Spirit self,GameState gameState, Cause cause) {
+		public SpiritGameStateCtx(Spirit self,GameState gameState, Cause cause, Spirit originator=null) {
 			Self = self;
 			GameState = gameState;
 			Cause = cause;
+			Originator = originator ?? self;
 		}
 
 		protected SpiritGameStateCtx(SpiritGameStateCtx src) {
 			Self = src.Self;
 			GameState = src.GameState;
 			Cause = src.Cause;
+			Originator = src.Originator;
 			_terrainMapper = src._terrainMapper;
 		}
 
@@ -55,7 +57,8 @@ namespace SpiritIsland {
 		}
 
 		public TargetSpaceCtx Target( Space space ) => new TargetSpaceCtx( this, space );
-		public TargetSpaceCtx TargetSpace( string spaceLabel ) => new TargetSpaceCtx( this, GameState.Island.AllSpaces.First(s=>s.Label==spaceLabel) );
+
+		public TargetSpaceCtx TargetSpace( string spaceLabel ) => Target( GameState.Island.AllSpaces.First(s=>s.Label==spaceLabel) ); // !!! Testing extension - move to testing project
 
 		// Visually, selects the [presence] icon
 		public async Task<TargetSpaceCtx> TargetDeployedPresence( string prompt ) {

@@ -10,7 +10,7 @@ namespace SpiritIsland {
 
 		public Spirit Other { get; }
 
-		public SpiritGameStateCtx OtherCtx => new SpiritGameStateCtx( Other, GameState, Cause );
+		public SpiritGameStateCtx OtherCtx => new SpiritGameStateCtx( Other, GameState, Cause, Originator );
 
 	}
 
