@@ -19,7 +19,7 @@ namespace SpiritIsland.JaggedEarth {
 		);
 
 		public static Track MovePresence => new Track( "Moveonepresence.png" ){ 
-			Action=new MovePresence(),
+			Action=new MovePresence(1),
 			Icon = new IconDescriptor { BackgroundImg = ImageNames.Movepresence }
 		};
 
@@ -31,8 +31,8 @@ namespace SpiritIsland.JaggedEarth {
 		};
 
 		public ShroudOfSilentMist():base(new SpiritPresence(
-				new PresenceTrack(Track.Energy0,Track.Energy1,Track.WaterEnergy,Track.Energy2,Track.AirEnergy),
-				new PresenceTrack(Track.Card1,Track.Card2,MovePresence,Track.MkCard(Element.Moon),Track.Card3,Track.Card4,Track.CardReclaim1,Track.Card5)
+				new PresenceTrack(1, Track.Energy0,Track.Energy1,Track.WaterEnergy,Track.Energy2,Track.AirEnergy),
+				new PresenceTrack(1, Track.Card1,Track.Card2,MovePresence,Track.MoonEnergy,Track.Card3,Track.Card4,Track.CardReclaim1,Track.Card5)
 			)
 			,PowerCard.For<FlowingAndSilentFormsDartBy>()
 			,PowerCard.For<UnnervingPall>()

@@ -61,9 +61,9 @@ namespace SpiritIsland {
 				countToChange = 0;
 		}
 
-		class SpeedOVerrideBehavior : ISpeedBehavior {
+		class SpeedOverrideBehavior : ISpeedBehavior {
 			readonly Phase newSpeed;
-			public SpeedOVerrideBehavior(Phase newSpeed ) { this.newSpeed = newSpeed; }
+			public SpeedOverrideBehavior(Phase newSpeed ) { this.newSpeed = newSpeed; }
 
 			public bool CouldBeActiveFor( Phase requestSpeed, Spirit spirit )
 				=> requestSpeed == newSpeed;
@@ -73,10 +73,9 @@ namespace SpiritIsland {
 		}
 
 		void Change( IFlexibleSpeedActionFactory factory ) {
+			factory.OverrideSpeedBehavior = new SpeedOverrideBehavior( resultingSpeed );
 
-			factory.OverrideSpeedBehavior = new SpeedOVerrideBehavior( resultingSpeed );
-
-			Task Restore( GameState _ ) { 
+			Task Restore(GameState _) { 
 				factory.OverrideSpeedBehavior = null;
 				return Task.CompletedTask;
 			}

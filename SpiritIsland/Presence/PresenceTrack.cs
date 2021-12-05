@@ -9,9 +9,12 @@ namespace SpiritIsland {
 
 		#region constructor
 
-		public PresenceTrack( params Track[] slots ) {
+		public PresenceTrack( int revealedCount, params Track[] slots ) {
 			this.slots = slots;
+			this.revealedCount = revealedCount;
 		}
+
+		public PresenceTrack( params Track[] slots ):this(1,slots) { }
 
 		#endregion
 
@@ -68,7 +71,7 @@ namespace SpiritIsland {
 		#endregion
 
 		protected Track[] slots;
-		int revealedCount = 1;
+		int revealedCount;
 
 	}
 

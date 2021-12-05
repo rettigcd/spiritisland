@@ -94,12 +94,12 @@ namespace SpiritIsland {
 
 			// (c) Growth
 			int count = Growth.SelectionCount;
-			List<GrowthOption> remainingOptions = Growth.Options.ToList();
+			var usedOptions = new List<GrowthOption>(); // done this way so Starlight can add growth mid-growth.
 
 			while(count-- > 0) {
-				var currentOptions = remainingOptions.Where( o => o.GainEnergy + Energy >= 0 ).ToArray();
+				var currentOptions = Growth.Options.Except(usedOptions).Where( o => o.GainEnergy + Energy >= 0 ).ToArray();
 				GrowthOption option = (GrowthOption)await this.Select( "Select Growth Option", currentOptions, Present.Always );
-				remainingOptions.Remove( option );
+				usedOptions.Add( option );
 
 				await GrowAndResolve( option, gameState );
 			}
@@ -216,11 +216,26 @@ namespace SpiritIsland {
 			}
 		}
 
-		public virtual async Task ForgetPowerCard() {
-			var options = InPlay.Union( Hand ).Union( DiscardPile )
+		public void Reclaim( PowerCard reclaimCard ) {
+			DiscardPile.Remove( reclaimCard );
+			InPlay.Remove( reclaimCard );
+			Hand.Add( reclaimCard );
+		}
+		public async Task Reclaim1FromDiscard() {
+			PowerCard cardToReclaim = await this.SelectPowerCard( "Select card to reclaim.", DiscardPile, CardUse.Reclaim, Present.Always );
+			Reclaim( cardToReclaim );
+		}
+
+
+		public virtual async Task<PowerCard> ForgetPowerCard( Present present = Present.Always ) {
+			var options = InPlay		// in play
+				.Union( Hand )			// in Hand
+				.Union( DiscardPile )	// in Discard
 				.ToArray();
-			PowerCard cardToForget = await this.SelectPowerCard( "Select power card to forget", options, CardUse.Forget, Present.Always );
-			Forget( (PowerCard)cardToForget );
+			PowerCard cardToForget = await this.SelectPowerCard( "Select power card to forget", options, CardUse.Forget, present );
+			if( cardToForget != null )
+				Forget( cardToForget );
+			return cardToForget;
 		}
 
 		public virtual void Forget( PowerCard cardToRemove ) {

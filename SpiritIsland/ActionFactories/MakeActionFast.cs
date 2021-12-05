@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 namespace SpiritIsland {
 
 	// Change Speed - delayed.  They don't have to pick it immediately - similar to Lightning
-	public class ChangeSpeed : IActionFactory {
+	public class MakeActionFast : IActionFactory {
 
-		public bool CouldActivateDuring( Phase speed, Spirit _ ) => speed == Phase.Fast || speed == Phase.Slow;
+		public bool CouldActivateDuring( Phase speed, Spirit _ ) => speed == Phase.Fast; // why would ever use this during slow???    || speed == Phase.Slow;
 
 		public string Name => "Change Speed";
 

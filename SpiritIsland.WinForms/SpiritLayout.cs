@@ -9,7 +9,13 @@ namespace SpiritIsland.WinForms {
 			var rects = bounds.InflateBy(-margin).SplitVerticallyByWeight( margin, 200f, 360f, 420f, 60f );
 			Calc_GrowthRow(spirit,rects[0],margin);
 			trackLayout = new PresenceTrackLayout(rects[1],spirit,margin);
-			Calc_Innates( spirit, graphics, rects[2],margin );
+			int height = Calc_Innates( spirit, graphics, rects[2], margin );
+			// If Innates are too tall, shrink them down.
+			if(height > rects[2].Height) {
+				var r = rects[2];
+				var scaledRect = new Rectangle(r.X,r.Y,r.Width * r.Height / height, r.Height);
+				Calc_Innates( spirit, graphics, scaledRect, margin );
+			}
 			Elements = new ElementLayout(rects[3]);
 		}
 
@@ -29,18 +35,29 @@ namespace SpiritIsland.WinForms {
 
 		int Calc_Innates( Spirit spirit, Graphics graphics, Rectangle bounds, int margin ) {
 
+			int columnCount = spirit.InnatePowers.Length <= 4 ? 2 : 3;
+			float textHeightMultiplier = spirit.InnatePowers.Length <= 4 ? 0.033f : 0.042f; // if we go to 3 columns, text needs to be larger.
+
 			// Calc: Layout
-			int maxHeight = 0;
-			var innateBounds = bounds.SplitHorizontallyByWeight(margin,1f,1f); // split equally
+			int maxBottom = bounds.Top;
+			var innateBounds = bounds.SplitHorizontallyIntoColumns( margin, columnCount );
 			for(int i=0;i<spirit.InnatePowers.Length;++i) {
-				var singleBounds = innateBounds[i];
 				var power = spirit.InnatePowers[i];
-				var layout = new InnateLayout( power, singleBounds.X, singleBounds.Y, singleBounds.Width, graphics );
+				Rectangle singleBounds = innateBounds[i % columnCount];
+
+				var layout = new InnateLayout( power, singleBounds.X, singleBounds.Y, singleBounds.Width, textHeightMultiplier, graphics );
 				innateLayouts[power] = layout;
-				maxHeight = Math.Max( layout.TotalInnatePowerBounds.Height, maxHeight );
+
+				// Scooch this box down so we can put next one there
+				int shift = layout.TotalInnatePowerBounds.Height + 5;
+				innateBounds[i % columnCount].Height -= shift;
+				innateBounds[i % columnCount].Y += shift;
+
+				// Track bottom of both columns
+				maxBottom = Math.Max( maxBottom, layout.TotalInnatePowerBounds.Bottom );
 			}
 
-			return maxHeight;
+			return maxBottom - bounds.Top;
 		}
 
 

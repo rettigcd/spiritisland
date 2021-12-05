@@ -233,8 +233,8 @@ namespace SpiritIsland.WinForms {
 			bounds = FitClientBounds( bounds );
 
 			// Layout
-			if(spiritLayout == null)
-				spiritLayout = new SpiritLayout( graphics, spirit, bounds, 10 );
+			if( spiritLayout == null || growthOptionCount != spirit.Growth.Options.Length )
+				CalcSpiritLayout( graphics, bounds );
 
 			graphics.FillRectangle( Brushes.LightYellow, bounds );
 			new SpiritPainter( spirit ).Paint( graphics, spiritLayout,
@@ -246,10 +246,17 @@ namespace SpiritIsland.WinForms {
 			);
 		}
 
+		void CalcSpiritLayout( Graphics graphics, Rectangle bounds ) {
+			spiritLayout = new SpiritLayout( graphics, spirit, bounds, 10 );
+			growthOptionCount = spirit.Growth.Options.Length;
+		}
+		int growthOptionCount = -1; // auto-update when Starlight adds option
+
 		void RecordSpiritHotspots() {
 			// Growth Options/Actions
 			foreach(var opt in selectableGrowthOptions)
-				hotSpots.Add( opt, spiritLayout.growthLayout[opt] );
+				if(spiritLayout.growthLayout.HasOption(opt))
+					hotSpots.Add( opt, spiritLayout.growthLayout[opt] );
 			foreach(var act in selectableGrowthActions)
 				if(spiritLayout.growthLayout.HasAction( act )) // there might be delayed setup actions here that don't have a rect
 					hotSpots.Add( act, spiritLayout.growthLayout[act] );

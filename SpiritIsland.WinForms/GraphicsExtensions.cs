@@ -126,6 +126,33 @@ namespace SpiritIsland.WinForms {
 			return result;
 		}
 
+		static public Rectangle[] SplitHorizontallyIntoColumns( this Rectangle rect, int rowMargin, int columns ) {
+			float columnWidth = 1.0f/columns;
+			int workingWidth = rect.Width - (columns - 1) * rowMargin;
+			int lastX = rect.X;
+			var result = new Rectangle[columns];
+			float current = 0.0f;
+			for(int i = 0; i < columns; ++i) {
+				current += columnWidth;
+				int nextX = rect.X + (int)(current * workingWidth);
+				result[i] = new Rectangle( lastX + i * rowMargin, rect.Y, nextX - lastX, rect.Height );
+				lastX = nextX;
+			}
+			return result;
+		}
+
+		static public Rectangle[] SplitHorizontally( this Rectangle rect, int divisions ) {
+			var result = new Rectangle[divisions];
+			int lastX = 0;
+			for(int i = 0; i < divisions; ++i) {
+				int nextX = rect.Width * (i + 1) / divisions;
+				result[i] = new Rectangle( rect.X + lastX, rect.Y, nextX - lastX, rect.Height );
+				lastX = nextX;
+			}
+			return result;
+		}
+
+
 		/// <param name="bounds">Rectangle we are trying to fit inside</param>
 		/// <param name="size">aspect ratio of final rectangle</param>
 		/// <returns>a rectangle center on bounds, with the same height as bounds, with a same width/hieght ratio as size</returns>
@@ -147,17 +174,6 @@ namespace SpiritIsland.WinForms {
 			return size.Height*bounds.Width > bounds.Height*size.Width 
 				? bounds.FitHeight(size) 
 				: bounds.FitWidth(size);
-		}
-
-		static public Rectangle[] SplitHorizontally( this Rectangle rect, int divisions) {
-			var result = new Rectangle[ divisions ];
-			int lastX = 0;
-			for(int i = 0; i < divisions; ++i) {
-				int nextX = rect.Width*(i+1)/divisions;
-				result[i] = new Rectangle( rect.X+lastX, rect.Y, nextX-lastX, rect.Height);
-				lastX = nextX;
-			}
-			return result;
 		}
 
 		#endregion

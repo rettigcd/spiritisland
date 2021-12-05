@@ -75,6 +75,7 @@ namespace SpiritIsland.WinForms {
 		public RectangleF this[GrowthActionFactory act] => actionRects[act];
 
 		public bool HasAction(GrowthActionFactory act) => actionRects.ContainsKey(act);
+		public bool HasOption(GrowthOption opt) => optionRects.ContainsKey(opt);
 
 		readonly GrowthOption[] GrowthOptions;
 		readonly GrowthActionFactory[] Actions;

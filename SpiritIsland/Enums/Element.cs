@@ -17,7 +17,7 @@ namespace SpiritIsland {
 		Earth,  // gray 
 		Plant,	// green
 		Animal,	// red
-		Any		// used by Bringer
+		Any,	// used by Bringer
 	};
 
 	public class ElementCounts : CountDictionary<Element> {

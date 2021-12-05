@@ -41,7 +41,12 @@ namespace SpiritIsland {
 		public IPresenceTrack Energy { get; }
 		public IPresenceTrack CardPlays { get; }
 
-		public int Destroyed { get; private set; }
+		public int Destroyed { get; set; }
+
+		public void RemoveDestroyed(int count ) {
+			if(count>Destroyed) throw new ArgumentOutOfRangeException(nameof(count));
+			Destroyed -= count;
+		}
 
 		#endregion
 
@@ -171,7 +176,7 @@ namespace SpiritIsland {
 				PlaceOn(space, gs);
 			}
 		}
-		List<Space> stasis = new List<Space>();
+		readonly List<Space> stasis = new List<Space>();
 
 		#endregion
 

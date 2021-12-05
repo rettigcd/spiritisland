@@ -13,14 +13,27 @@ namespace SpiritIsland {
 			if(self.DiscardPile.Count == 0) return;
 
 			PowerCard cardToReclaim = await ctx.Self.SelectPowerCard( Prompt, self.DiscardPile, CardUse.Reclaim, Present.Always );
-			if(cardToReclaim != null && self.DiscardPile.Contains( cardToReclaim )) {
-				self.DiscardPile.Remove( cardToReclaim );
-				self.Hand.Add( cardToReclaim );
-			}
+			if(cardToReclaim != null)
+				self.Reclaim( cardToReclaim );
 
 		}
 
 		public override string Name => "Reclaim(1)";
+
+	}
+
+	public class ReclaimHalf : GrowthActionFactory {
+
+		public override async Task ActivateAsync( SpiritGameStateCtx ctx ) {
+			int reclaimCount = (ctx.Self.DiscardPile.Count + 1) / 2; // round up
+			if(reclaimCount == 0) return;
+
+			while(reclaimCount-- > 0)
+				await ctx.Self.Reclaim1FromDiscard();
+
+		}
+
+		public override string Name => "Reclaim(1/2)";
 
 	}
 

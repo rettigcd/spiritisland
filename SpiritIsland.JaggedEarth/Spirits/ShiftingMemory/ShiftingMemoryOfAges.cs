@@ -29,7 +29,7 @@ namespace SpiritIsland.JaggedEarth {
 
 		static Track DiscardElementsForCardPlay => new Track("discard 2 elements for card play" ) { 
 			Action = new DiscardElementsForCardPlay(2),
-			Icon = new IconDescriptor { BackgroundImg = ImageNames.Discard2PrepForCardPlay },
+			Icon = new IconDescriptor { BackgroundImg = ImageNames.Discard2Prep },
 		};
 
 		public ShiftingMemoryOfAges() 
@@ -58,12 +58,16 @@ namespace SpiritIsland.JaggedEarth {
 
 		}
 
-		public override async Task ForgetPowerCard() {
+		public override async Task<PowerCard> ForgetPowerCard( Present present = Present.Always ) {
 			var options = SingleCardUse.GenerateUses(CardUse.Discard,InPlay.Union( Hand ))
 				.Union( SingleCardUse.GenerateUses(CardUse.Forget,DiscardPile) );
-			var decision = new Decision.PickPowerCard( "Select card to forget or discard", options, Present.Always );
+			var decision = new Decision.PickPowerCard( "Select card to forget or discard", options, present );
 			PowerCard cardToForgetOrDiscard = await this.Action.Decision( decision );
-			Forget( cardToForgetOrDiscard );
+			if(cardToForgetOrDiscard != null)
+				Forget( cardToForgetOrDiscard );
+			return cardToForgetOrDiscard != null && !DiscardPile.Contains(cardToForgetOrDiscard) 
+				? cardToForgetOrDiscard	// card not in discard pile, must have been forgotten
+				: null; 
 		}
 
 		/// <summary>

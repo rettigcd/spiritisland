@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
 	<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
 	<ApplicationIcon>app.ico</ApplicationIcon>
@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="images\icons\6 cardplay.png" />
     <None Remove="images\icons\Badlands.png" />
     <None Remove="images\icons\Beasticon.png" />
     <None Remove="images\icons\Blighticon.png" />
@@ -19,11 +20,14 @@
     <None Remove="images\icons\Coastal.png" />
     <None Remove="images\icons\Dahanicon.png" />
     <None Remove="images\icons\DahanOrInvaders.png" />
+    <None Remove="images\icons\Damage_2.png" />
+    <None Remove="images\icons\Destroyedpresence.png" />
     <None Remove="images\icons\DiscardElementsForCardPlay.png" />
     <None Remove="images\icons\Diseaseicon.png" />
     <None Remove="images\icons\Explorericon.png" />
     <None Remove="images\icons\Fasticon.png" />
     <None Remove="images\icons\Fearicon.png" />
+    <None Remove="images\icons\FearSwoopInverted.png" />
     <None Remove="images\icons\Fivereclaimone.png" />
     <None Remove="images\icons\GainCard.png" />
     <None Remove="images\icons\GainEnergyEqualToCardPlays.png" />
@@ -33,6 +37,7 @@
     <None Remove="images\icons\Junglewetland.png" />
     <None Remove="images\icons\Land_Gather_Beasts.png" />
     <None Remove="images\icons\minor.png" />
+    <None Remove="images\icons\Mountainland.png" />
     <None Remove="images\icons\mountainorpresence.png" />
     <None Remove="images\icons\Moveicon.png" />
     <None Remove="images\icons\Moveonepresence.png" />
@@ -49,16 +54,23 @@
     <None Remove="images\icons\reclaim 1.png" />
     <None Remove="images\icons\ReclaimAll.png" />
     <None Remove="images\icons\Reclaimone.png" />
+    <None Remove="images\icons\Reclaim_Half.png" />
     <None Remove="images\icons\red-x.png" />
     <None Remove="images\icons\Simple_air.png" />
     <None Remove="images\icons\Simple_animal.png" />
     <None Remove="images\icons\Simple_earth.png" />
+    <None Remove="images\icons\Simple_element.png" />
     <None Remove="images\icons\Simple_fire.png" />
     <None Remove="images\icons\Simple_moon.png" />
     <None Remove="images\icons\Simple_plant.png" />
     <None Remove="images\icons\Simple_sun.png" />
     <None Remove="images\icons\Simple_water.png" />
     <None Remove="images\icons\Slowicon.png" />
+    <None Remove="images\icons\so1.png" />
+    <None Remove="images\icons\so2.png" />
+    <None Remove="images\icons\so3.png" />
+    <None Remove="images\icons\so4.png" />
+    <None Remove="images\icons\Speed_Fast_Black.png" />
     <None Remove="images\icons\Strifeicon.png" />
     <None Remove="images\icons\TerrorLevel1.png" />
     <None Remove="images\icons\TerrorLevel2.png" />
@@ -99,6 +111,7 @@
     <None Remove="images\tokens\4 cardplay.png" />
     <None Remove="images\tokens\5 cardplay.png" />
     <None Remove="images\tokens\6 cardplay.png" />
+    <None Remove="images\tokens\AssignElement.png" />
     <None Remove="images\tokens\badlands.png" />
     <None Remove="images\tokens\Beast.png" />
     <None Remove="images\tokens\Beasticon.png" />
@@ -184,11 +197,14 @@
     <EmbeddedResource Include="images\icons\Coastal.png" />
     <EmbeddedResource Include="images\icons\Dahanicon.png" />
     <EmbeddedResource Include="images\icons\DahanOrInvaders.png" />
+    <EmbeddedResource Include="images\icons\Damage_2.png" />
+    <EmbeddedResource Include="images\icons\Destroyedpresence.png" />
     <EmbeddedResource Include="images\icons\DiscardElementsForCardPlay.png" />
     <EmbeddedResource Include="images\icons\Diseaseicon.png" />
     <EmbeddedResource Include="images\icons\Explorericon.png" />
     <EmbeddedResource Include="images\icons\Fasticon.png" />
     <EmbeddedResource Include="images\icons\Fearicon.png" />
+    <EmbeddedResource Include="images\icons\FearSwoopInverted.png" />
     <EmbeddedResource Include="images\icons\Fivereclaimone.png" />
     <EmbeddedResource Include="images\icons\GainCard.png" />
     <EmbeddedResource Include="images\icons\GainEnergyEqualToCardPlays.png" />
@@ -198,6 +214,7 @@
     <EmbeddedResource Include="images\icons\Junglewetland.png" />
     <EmbeddedResource Include="images\icons\Land_Gather_Beasts.png" />
     <EmbeddedResource Include="images\icons\minor.png" />
+    <EmbeddedResource Include="images\icons\Mountainland.png" />
     <EmbeddedResource Include="images\icons\mountainorpresence.png" />
     <EmbeddedResource Include="images\icons\Moveicon.png" />
     <EmbeddedResource Include="images\icons\MovePresence.png" />
@@ -213,6 +230,7 @@
     <EmbeddedResource Include="images\icons\reclaim 1.png" />
     <EmbeddedResource Include="images\icons\ReclaimAll.png" />
     <EmbeddedResource Include="images\icons\Reclaimone.png" />
+    <EmbeddedResource Include="images\icons\Reclaim_Half.png" />
     <EmbeddedResource Include="images\icons\red-x.png" />
     <EmbeddedResource Include="images\icons\Simple_air.png" />
     <EmbeddedResource Include="images\icons\Simple_animal.png" />
@@ -223,6 +241,11 @@
     <EmbeddedResource Include="images\icons\Simple_sun.png" />
     <EmbeddedResource Include="images\icons\Simple_water.png" />
     <EmbeddedResource Include="images\icons\Slowicon.png" />
+    <EmbeddedResource Include="images\icons\so1.png" />
+    <EmbeddedResource Include="images\icons\so2.png" />
+    <EmbeddedResource Include="images\icons\so3.png" />
+    <EmbeddedResource Include="images\icons\so4.png" />
+    <EmbeddedResource Include="images\icons\Speed_Fast_Black.png" />
     <EmbeddedResource Include="images\icons\Strifeicon.png" />
     <EmbeddedResource Include="images\icons\TerrorLevel1.png" />
     <EmbeddedResource Include="images\icons\TerrorLevel2.png" />
@@ -279,6 +302,7 @@
     <EmbeddedResource Include="images\tokens\Simple_earth.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="images\icons\AssignElement.png" />
     <EmbeddedResource Include="images\tokens\Simple_fire.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -1522,6 +1546,9 @@
     <None Update="images\je\spirit\boon_of_ancient_memories.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="images\je\spirit\boon_of_reimagining.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="images\je\spirit\boon_of_swarming_bedevilment.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -1546,6 +1573,9 @@
     <None Update="images\je\spirit\flowing_and_silent_forms_dart_by.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="images\je\spirit\gather_the_scattered_light_of_stars.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="images\je\spirit\gift_of_the_untamed_wild.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -1567,6 +1597,9 @@
     <None Update="images\je\spirit\overenthusiastic_arson.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="images\je\spirit\peace_of_the_nighttime_sky.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="images\je\spirit\perils_of_the_deepest_island.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -1586,6 +1619,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\je\spirit\scarred_and_stony_land.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\spirit\shape_the_self_anew.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\je\spirit\share_secrets_of_survival.jpg">

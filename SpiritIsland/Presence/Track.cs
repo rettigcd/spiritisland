@@ -102,7 +102,7 @@ namespace SpiritIsland {
 
 		public int? Energy { get; set; }
 
-		public Element[] Elements { get; }
+		public Element[] Elements { get; set; }
 
 		public int? CardPlay { get; set; }
 

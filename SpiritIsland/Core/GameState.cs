@@ -257,10 +257,6 @@ namespace SpiritIsland {
 
 		public async Task TriggerTimePasses() {
 
-			// stack allows us to unwind items in reverse order from when we set them up
-			while(TimePasses_ThisRound.Count > 0) 
-				await TimePasses_ThisRound.Pop()( this );
-
 			_ravageConfig.Clear();
 
 			// Clear Defend
@@ -268,6 +264,10 @@ namespace SpiritIsland {
 				Tokens[s][TokenType.Defend] = 0;
 
 			TimePasses_WholeGame?.Invoke( this );
+
+			while(TimePasses_ThisRound.Count > 0)
+				await TimePasses_ThisRound.Pop()( this );
+
 			++RoundNumber;
 		}
 

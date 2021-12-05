@@ -15,8 +15,9 @@ namespace SpiritIsland.WinForms {
 
 		#region constructor
 
-		public InnateLayout(InnatePower power, int x, int y, int width, Graphics graphics ) {
-			textEmSize = width * .033f;
+		public InnateLayout(InnatePower power, int x, int y, int width, float textHeightMultiplier, Graphics graphics ) {
+			textEmSize = width * textHeightMultiplier;
+
 			iconDimension = (int)(textEmSize * 1.9f);
 			elementHeight = (int)(textEmSize * 2.3f);
 			rowHeight     = (int)(textEmSize * 2.5f);
@@ -25,10 +26,10 @@ namespace SpiritIsland.WinForms {
 			int workingWidth = width - margin * 2;
 
 			// "All-Enveloping Green"
-			TitleBounds = new Rectangle( x + margin, y + margin, workingWidth, (int)(workingWidth * .1f) ); // 10%;				// output - titleRect
+			TitleBounds = new Rectangle( x + margin, y + margin, workingWidth, (int)(workingWidth * .12f) ); // Height is 10% of width;				// output - titleRect
 
 			// brown box
-			AttributeBounds = new Rectangle( x + margin, TitleBounds.Bottom, workingWidth, (int)(workingWidth * .16f) );
+			AttributeBounds = new Rectangle( x + margin, TitleBounds.Bottom, workingWidth, (int)(workingWidth * .15f) );
 			AttributeRows       = AttributeBounds.SplitVerticallyAt( 0.40f );
 			AttributeLabelCells = AttributeRows[0].SplitHorizontally( 3 );
 			AttributeValueCells = AttributeRows[1].SplitHorizontally( 3 );

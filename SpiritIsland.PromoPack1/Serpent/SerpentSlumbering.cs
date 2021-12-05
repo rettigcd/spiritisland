@@ -17,7 +17,7 @@ namespace SpiritIsland.PromoPack1 {
 			};
 
 			Growth = new GrowthOptionGroup(
-				new GrowthOption( new ReclaimAll(), new MovePresence() ),
+				new GrowthOption( new ReclaimAll(), new MovePresence(1) ),
 				new GrowthOption( new DrawPowerCard(), new GainEnergy(1) ),
 				new GrowthOption( new GainEnergy(4) ),
 				new GrowthOption( new PlacePresence(3,Target.NoBlight) )

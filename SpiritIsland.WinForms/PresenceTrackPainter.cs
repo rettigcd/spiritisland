@@ -158,6 +158,13 @@ namespace SpiritIsland.WinForms {
 				var subRect = new RectangleF( bounds.Right - subDim, bounds.Bottom - subDim, subDim, subDim );
 				DrawTheIcon( icon.Sub, subRect );
 			}
+			// -- Big Sub --
+			if(icon.BigSub != null) {
+				// put the subRect in the bottom right corner
+				float subDim = bounds.Width;
+				var subRect = new RectangleF( bounds.Right - subDim/2, bounds.Bottom - subDim*3/4, subDim, subDim );
+				DrawTheIcon( icon.BigSub, subRect );
+			}
 		}
 
 		void PaintCurrentEnergy() {

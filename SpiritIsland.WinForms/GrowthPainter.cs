@@ -1,5 +1,4 @@
-﻿using SpiritIsland.JaggedEarth;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
@@ -45,12 +44,13 @@ namespace SpiritIsland.WinForms {
 
 			if(action is Reclaim1) { Reclaim1( rect ); return; }
 
+			if(action is ReclaimHalf) {  ReclaimHalf( rect ); return; }
+
 			if(action is DrawPowerCard) { DrawPowerCard( rect ); return; }
 
-			if(action is PlacePresence pp ) {
-				PlacePresence( rect, pp );
-				return;
-			}
+			if(action is PlacePresence pp ) { PlacePresence( rect, pp.Range, pp.FilterEnum ); return; }
+
+			if(action is MovePresence mp) { MovePresence( rect, mp.Range ); return; }
 
 			switch(action.Name) {
 
@@ -61,8 +61,6 @@ namespace SpiritIsland.WinForms {
 				case "PushPresenceFromOcean": PushFromOcean( rect ); break;
 				// Heart of the WildFire
 				case "EnergyForFire": EnergyForFire( rect ); break;
-				// Serpent
-				case "MovePresence": MovePresence( rect, 1 ); break;
 				// Lure of the Deep Wilderness
 				case "GainElement(Moon,Air,Plant)": GainElement( rect, Element.Moon, Element.Air, Element.Plant ); break;
 				// Grinning Trickster
@@ -75,6 +73,7 @@ namespace SpiritIsland.WinForms {
 					PlacePresence( rect, 3, Target.Any );
 					DrawIconInCenter( rect.InflateBy(-rect.Width*.2f), "Beasticon");
 					break;
+				case "ApplyDamage": ApplyDamage( rect ); break;
 				default:
 					graphics.FillRectangle( Brushes.Goldenrod, Rectangle.Inflate( rect.ToInts(), -5, -5 ) );
 					break;
@@ -82,16 +81,18 @@ namespace SpiritIsland.WinForms {
 
 		}
 
-		void PushFromOcean( RectangleF rect )          => DrawIconInCenter(rect, "Pushfromocean");
+		void PushFromOcean( RectangleF rect )       => DrawIconInCenter(rect, "Pushfromocean");
 
-		void AdditionalPlay( RectangleF rect )         => DrawIconInCenter( rect, "Cardplayplusone");
-		void Reclaim1( RectangleF rect )               => DrawIconInCenter( rect, "reclaim 1");
-		void DrawPowerCard( RectangleF rect )          => DrawIconInCenter( rect, "GainCard" );
-		void GatherToOcean( RectangleF rect )          => DrawIconInCenter( rect, "Gathertoocean" );
-		void ReclaimAll( RectangleF rect )             => DrawIconInCenter( rect, "ReclaimAll" );
-		void EnergyForFire( RectangleF rect )          => DrawIconInCenter( rect, "Oneenergyfire");
+		void AdditionalPlay( RectangleF rect )      => DrawIconInCenter( rect, "Cardplayplusone");
+		void Reclaim1( RectangleF rect )            => DrawIconInCenter( rect, "reclaim 1");
+		void ReclaimHalf( RectangleF rect )         => DrawIconInCenter( rect, "Reclaim_Half");
+		void DrawPowerCard( RectangleF rect )       => DrawIconInCenter( rect, "GainCard" );
+		void ApplyDamage( RectangleF rect )			=> DrawIconInCenter( rect, "Damage_2" );
+		void GatherToOcean( RectangleF rect )       => DrawIconInCenter( rect, "Gathertoocean" );
+		void ReclaimAll( RectangleF rect )          => DrawIconInCenter( rect, "ReclaimAll" );
+		void EnergyForFire( RectangleF rect )       => DrawIconInCenter( rect, "Oneenergyfire");
 
-		void LandGatherBeasts( RectangleF rect)						=> DrawIconInCenter( rect, "Land_Gather_Beasts");
+		void LandGatherBeasts( RectangleF rect)		=> DrawIconInCenter( rect, "Land_Gather_Beasts");
 
 		void GainEnergy( RectangleF bounds, int delta ){
 			// DrawTokenInCenter( rect, "Energy_Plus_"+delta);
@@ -126,35 +127,17 @@ namespace SpiritIsland.WinForms {
 			}
 		}
 
-		void PlacePresence( RectangleF rect, PlacePresence pp ) {
-			PlacePresence(rect, pp.Range,pp.FilterEnum, pp is PlacePresenceOrDisease);
-		}
-
-		void PlacePresence( RectangleF rect, int? range, string filterEnum, bool orDisease = false ) {
-			
+		void PlacePresence( RectangleF rect, int? range, string filterEnum ) {
 			using var image = ResourceImages.Singleton.GetTargetFilterIcon( filterEnum );
 
 			using Font font = new Font( ResourceImages.Singleton.Fonts.Families[0], rect.Height * .15f, GraphicsUnit.Pixel  );
 
 			// + presence
-			if( orDisease ) {
-				float presencePercent = image == null ? .3f : .2f;
-				float plusY = rect.Y + rect.Height * presencePercent; // top of presence
-				graphics.DrawString("+",font,Brushes.Black,rect.X+rect.Width*0.25f,plusY);
-
-				using var presenceIcon = ResourceImages.Singleton.GetIcon( "Presenceicon" );
-				graphics.DrawImage(presenceIcon, rect.X + rect.Width * 0.1f, plusY-rect.Height*.1f, rect.Width*.5f, rect.Height*.2f );
-
-				using var diseaseIcon = ResourceImages.Singleton.GetIcon( "Diseaseicon" );
-				graphics.DrawImage(diseaseIcon, rect.X + rect.Width * 0.6f, plusY-rect.Height*.1f, rect.Width*.5f, rect.Height*.2f );
-
-			} else {
-				float presencePercent = image == null ? .3f : .2f;
-				float plusY = rect.Y + rect.Height * presencePercent; // top of presence
-				graphics.DrawString("+",font,Brushes.Black,rect.X+rect.Width*0.25f,plusY);
-				using var presenceIcon = ResourceImages.Singleton.GetIcon( "Presenceicon" );
-				graphics.DrawImage(presenceIcon, rect.X + rect.Width * 0.4f, plusY-rect.Height*.1f, rect.Width*.5f, rect.Height*.2f );
-			}
+			float presencePercent = image == null ? .3f : .2f;
+			float plusY = rect.Y + rect.Height * presencePercent; // top of presence
+			graphics.DrawString("+",font,Brushes.Black,rect.X+rect.Width*0.25f,plusY);
+			using var presenceIcon = ResourceImages.Singleton.GetIcon( "Presenceicon" );
+			graphics.DrawImage(presenceIcon, rect.X + rect.Width * 0.4f, plusY-rect.Height*.1f, rect.Width*.5f, rect.Height*.2f );
 
 			// icon
 			if(image != null) {
