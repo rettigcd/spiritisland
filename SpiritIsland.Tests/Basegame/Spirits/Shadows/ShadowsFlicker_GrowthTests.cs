@@ -59,7 +59,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.ShadowsNS {
 		[InlineDataAttribute(6,6)]
 		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth ){
 			// energy:	0 1 3 4 5 6
-			spirit.Presence.Energy.RevealedCount = revealedSpaces;
+			spirit.Presence.Energy.SetRevealedCount( revealedSpaces );
 			Assert_PresenceTracksAre(expectedEnergyGrowth,1);
 		}
 
@@ -73,7 +73,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.ShadowsNS {
 		[InlineDataAttribute(6,5)]
 		public void CardTrack(int revealedSpaces, int expectedCardPlayCount){
 			// cards:	1 2 3 3 4 5
-			spirit.Presence.CardPlays.RevealedCount = revealedSpaces;
+			spirit.Presence.CardPlays.SetRevealedCount( revealedSpaces );
 			Assert_PresenceTracksAre(0,expectedCardPlayCount);
 
 		}

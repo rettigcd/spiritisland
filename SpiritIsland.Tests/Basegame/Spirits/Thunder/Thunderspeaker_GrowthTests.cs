@@ -84,7 +84,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 
 			// energy:	1 air 2 fire sun 3
-			spirit.Presence.Energy.RevealedCount = revealedSpaces;
+			spirit.Presence.Energy.SetRevealedCount( revealedSpaces );
 			Assert_PresenceTracksAre( expectedEnergyGrowth, 1 );
 
 			spirit.InitElementsFromPresence();
@@ -108,7 +108,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 
 			Given_HasPresence( board[3] );
 
-			spirit.Presence.CardPlays.RevealedCount = revealedSpaces;
+			spirit.Presence.CardPlays.SetRevealedCount( revealedSpaces );
 			Assert_PresenceTracksAre(1,expectedCardPlayCount);
 
 			gameState.Phase = Phase.Growth;

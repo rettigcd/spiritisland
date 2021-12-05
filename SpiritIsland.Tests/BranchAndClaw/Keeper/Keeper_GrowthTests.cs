@@ -1,6 +1,7 @@
 ﻿using Shouldly;
 using SpiritIsland.Basegame;
 using SpiritIsland.BranchAndClaw;
+using System.Linq;
 using Xunit;
 
 namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
@@ -158,7 +159,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			spirit.Presence.PlaceOn( space, gameState );
 
 			// When: we place a presence on that space
-			_ = spirit.Presence.PlaceFromTracks( spirit.Presence.Energy.Next, space, gameState );
+			_ = spirit.PlacePresence( spirit.Presence.Energy.RemovableOptions.Single(), space, gameState );
 
 			User.PushesTokensTo("D@2","A1,(A4),A6,A7,A8",2);
 			User.PushesTokensTo("D@2","A1,A4,A6,(A7),A8");
@@ -179,7 +180,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 		[InlineDataAttribute( 8, 9, "SP" )]
 		public void EnergyTrack( int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 			// energy:	2 sun 4 5 plant 7 8 9
-			spirit.Presence.Energy.RevealedCount = revealedSpaces;
+			spirit.Presence.Energy.SetRevealedCount( revealedSpaces );
 			spirit.InitElementsFromPresence();
 
 			gameState.Phase = Phase.Growth;
@@ -200,7 +201,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 		[InlineDataAttribute( 6, 5 )]
 		public void CardTrack( int revealedSpaces, int expectedCardPlayCount ) {
 			// card:	1 2 2 3 4 5
-			spirit.Presence.CardPlays.RevealedCount = revealedSpaces;
+			spirit.Presence.CardPlays.SetRevealedCount( revealedSpaces );
 			Assert_CardTrackIs( expectedCardPlayCount );
 		}
 

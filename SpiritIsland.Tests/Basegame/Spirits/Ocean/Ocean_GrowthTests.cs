@@ -138,7 +138,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 		[InlineDataAttribute(7,2,"MWEW")]
 		public async Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 			// energy: 0 moon water 1 earth water 2
-			spirit.Presence.Energy.RevealedCount = revealedSpaces;
+			spirit.Presence.Energy.SetRevealedCount( revealedSpaces );
 			spirit.InitElementsFromPresence();
 			Assert_EnergyTrackIs( expectedEnergyGrowth );
 			await spirit.ApplyRevealedPresenceTracks(null);
@@ -155,7 +155,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 		[InlineDataAttribute(6,5)]
 		public void CardTrack(int revealedSpaces, int expectedCardPlayCount ){
 			// card:	1 2 2 3 4 5
-			spirit.Presence.CardPlays.RevealedCount = revealedSpaces;
+			spirit.Presence.CardPlays.SetRevealedCount( revealedSpaces );
 			Assert_CardTrackIs( expectedCardPlayCount );
 		}
 

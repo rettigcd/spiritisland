@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace SpiritIsland.WinForms {
@@ -9,8 +10,15 @@ namespace SpiritIsland.WinForms {
 	class PresenceTrackPainter {
 
 		readonly Graphics graphics;
-		readonly Spirit spirit;
 		Bitmap coin; // transient, only exists for lifetime of Paint()
+
+		readonly Track[] energyTrackStatii;
+		readonly Track[] cardTrackStatii;
+		readonly Track[] energyRevealed;
+		readonly Track[] cardRevealed;
+
+		readonly int energy;
+		readonly int destroyed;
 
 		readonly Track[] clickableTrackOptions;
 		readonly PresenceTrackLayout metrics;
@@ -21,10 +29,18 @@ namespace SpiritIsland.WinForms {
 			Track[] clickableTrackOptions,
 			Graphics graphics
 		) {
-			this.spirit = spirit;
 			this.metrics = metrics;
 			this.clickableTrackOptions = clickableTrackOptions;
 			this.graphics = graphics;
+
+			var presence = spirit.Presence;
+			this.energy = spirit.Energy;
+			this.destroyed = spirit.Presence.Destroyed;
+
+			energyTrackStatii = presence.GetEnergyTrackStatus().ToArray();
+			energyRevealed = presence.Energy.Revealed.ToArray();
+			cardTrackStatii = presence.GetCardPlayTrackStatus().ToArray();
+			cardRevealed = presence.CardPlays.Revealed.ToArray();
 
 		}
 
@@ -49,7 +65,7 @@ namespace SpiritIsland.WinForms {
 		void PaintHighlights() {
 			using Pen highlightPen = new( Color.Red, 8f );
 			foreach(var track in clickableTrackOptions)
-				graphics.DrawEllipse( highlightPen, metrics.SlotLookup[track].Presence );
+				graphics.DrawEllipse( highlightPen, metrics.SlotLookup[track].PresenceRect );
 		}
 
 		void PaintLabels() {
@@ -59,34 +75,28 @@ namespace SpiritIsland.WinForms {
 		}
 
 		void PaintPresence(string presenceColor) {
-			using Bitmap presence = ResourceImages.Singleton.GetPresenceIcon( presenceColor );
+			using Bitmap presenceImg = ResourceImages.Singleton.GetPresenceIcon( presenceColor );
 
-			// Energy
-			int idx = 0;
-			int revealedSpaces = spirit.Presence.Energy.RevealedCount;
-			foreach(Track track in spirit.Presence.Energy.slots)
-				if( revealedSpaces <= idx++ )
-					graphics.DrawImage( presence, metrics.SlotLookup[track].Presence );
+			foreach(var track in energyTrackStatii)
+				if(!energyRevealed.Contains(track))
+					graphics.DrawImage( presenceImg, metrics.SlotLookup[track].PresenceRect );
 
-			// Card-Play
-			int revealedCardSpaces = spirit.Presence.CardPlays.RevealedCount;
-			idx = 0;
-			foreach(var track in spirit.Presence.CardPlays.slots)
-				if(revealedCardSpaces <= idx++)
-					graphics.DrawImage( presence, metrics.SlotLookup[track].Presence );
+			foreach(var track in cardTrackStatii)
+				if(!cardRevealed.Contains(track))
+					graphics.DrawImage( presenceImg, metrics.SlotLookup[track].PresenceRect );
 
-			PaintDestroyed(presence);
+			PaintDestroyed( presenceImg );
 		}
 
 		void PaintEnergyPerTurnRow() {
-			foreach(Track track in spirit.Presence.Energy.slots)
-				DrawCoin( metrics.SlotLookup[track].Track, track );
+			foreach(var track in energyTrackStatii)
+				DrawCoin( metrics.SlotLookup[track].TrackRect, track );
 
 		}
 
 		void PaintCardPlayTrack() {
-			foreach(var track in spirit.Presence.CardPlays.slots)
-				DrawCard( track, metrics.SlotLookup[track].Track );
+			foreach(var track in this.cardTrackStatii)
+				DrawCard( track, metrics.SlotLookup[track].TrackRect );
 		}
 
 		void DrawCoin( RectangleF bounds, Track track ) {
@@ -150,7 +160,7 @@ namespace SpiritIsland.WinForms {
 				bigCoinWidth
 			);
 			graphics.DrawImage( coin, energyRect );
-			DrawTextOnCoin( ref energyRect, spirit.Energy.ToString() );
+			DrawTextOnCoin( ref energyRect, energy.ToString() );
 		}
 
 		void DrawElement( ref RectangleF innerBounds, params Element[] elements ) {
@@ -176,13 +186,13 @@ namespace SpiritIsland.WinForms {
 		}
 
 
-		void PaintDestroyed(Bitmap presence) {
+		void PaintDestroyed(Bitmap presenceImg) {
 			Rectangle rect = metrics.Destroyed;
-			int destroyedCount = spirit.Presence.Destroyed;
+			int destroyedCount = destroyed;
 			if(destroyedCount == 0) return;
 
 			// Presence & Red X
-			graphics.DrawImage( presence, rect );
+			graphics.DrawImage( presenceImg, rect );
 			using var redX = ResourceImages.Singleton.GetIcon( "red-x" );
 			graphics.DrawImage( redX, rect.X, rect.Y, rect.Width * 2 / 3, rect.Height * 2 / 3 );
 
@@ -194,8 +204,8 @@ namespace SpiritIsland.WinForms {
 	}
 
 	public struct SlotMetrics {
-		public Rectangle Presence;
-		public RectangleF Track;
+		public Rectangle PresenceRect;
+		public RectangleF TrackRect;
 	}
 
 }

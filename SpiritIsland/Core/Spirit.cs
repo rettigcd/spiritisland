@@ -280,8 +280,12 @@ namespace SpiritIsland {
 
 		public SpiritPresence Presence {get; }
 
+		public virtual Task PlacePresence( IOption from, Space to, GameState gs ) {
+			return Presence.Place(from, to, gs);
+		}
+
 		/// <summary> Energy gain per turn </summary>
-		public int EnergyPerTurn => Presence.Energy.Revealed.Where( x => x.Energy.HasValue ).Last().Energy.Value;
+		public int EnergyPerTurn => Presence.EnergyPerTurn;
 		public virtual int NumberOfCardsPlayablePerTurn => Presence.CardPlayCount + tempCardPlayBoost;
 
 		public int tempCardPlayBoost = 0;

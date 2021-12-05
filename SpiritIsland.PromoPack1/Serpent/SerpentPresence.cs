@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SpiritIsland.PromoPack1 {
@@ -9,21 +10,23 @@ namespace SpiritIsland.PromoPack1 {
 		readonly static Track fakeEarth = new Track("earth energy");
 
 		public SerpentPresence():base(
-			new Track[]{ Track.Energy1, Track.FireEnergy, Track.AnyEnergy,    Track.Reclaim1Energy, Track.EarthEnergy, Track.Energy6, Track.AnyEnergy, Track.MkEnergy(12) },
-			new Track[]{ Track.Card1,   Track.MoonEnergy, Track.Card2,        Track.WaterEnergy,    fakeEarth, Track.Card4,   Track.Card5Reclaim1 }
+			new PresenceTrack( Track.Energy1, Track.FireEnergy, Track.AnyEnergy,    Track.Reclaim1Energy, Track.EarthEnergy, Track.Energy6, Track.AnyEnergy, Track.MkEnergy(12) ),
+			new PresenceTrack( Track.Card1,   Track.MoonEnergy, Track.Card2,        Track.WaterEnergy,    fakeEarth, Track.Card4,   Track.Card5Reclaim1 )
 		){
 		}
 
-		public override IEnumerable<Track> GetPlaceableTrackOptions() {
+		public override IEnumerable<Track> PlaceableOptions { get {
 			if(MaxPresenceOnBoard == Placed.Count ) yield break;
 
-			if( Energy.HasMore && (Energy.Next != Track.EarthEnergy || CardPlays.RevealedCount == 4 ) )
-				yield return Energy.Next;
+			var energyNext = Energy.RemovableOptions.FirstOrDefault();
+			if( energyNext != null && (energyNext != Track.EarthEnergy || CardPlays.Revealed.Count() == 4 ) )
+				yield return energyNext;
 
-			if( CardPlays.HasMore && CardPlays.Next != fakeEarth )  // don't let them select the fake earth
-				yield return CardPlays.Next;
+			var cardNext = CardPlays.RemovableOptions.FirstOrDefault();
+			if( cardNext != null && cardNext != fakeEarth )  // don't let them select the fake earth
+				yield return cardNext;
 
-		}
+		} }
 
 		public List<Spirit> AbsorbedPresences = new List<Spirit>(); // don't let it grow pas 6 elements
 

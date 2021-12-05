@@ -89,7 +89,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
 			spirit.Presence.PlaceOn( gameState.Island.Boards[0][5], gameState );
 
 			// energy: 0 1 plant 2 2 plant 3
-			spirit.Presence.Energy.RevealedCount = revealedSpaces;
+			spirit.Presence.Energy.SetRevealedCount( revealedSpaces );
 			Assert_PresenceTracksAre( expectedEnergyGrowth, 1 );
 
 			spirit.InitElementsFromPresence();
@@ -109,7 +109,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
 		public void CardTrack(int revealedSpaces, int expectedCardPlayCount){
 			// card:   1 1 2 2 3 4
 
-			spirit.Presence.CardPlays.RevealedCount = revealedSpaces;
+			spirit.Presence.CardPlays.SetRevealedCount( revealedSpaces );
 			Assert_PresenceTracksAre(0,expectedCardPlayCount);
 
 		}

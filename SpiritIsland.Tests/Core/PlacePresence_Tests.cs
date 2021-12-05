@@ -2,6 +2,7 @@
 using SpiritIsland.SinglePlayer;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace SpiritIsland.Tests.Core {
@@ -39,16 +40,16 @@ namespace SpiritIsland.Tests.Core {
 			// Given: spirit has one place presence action
 			_ = When_Growing(0);
 
-			User.PlacePresenceLocations( spirit.Presence.Energy.Next, "A1;A2" );
+			User.PlacePresenceLocations( spirit.Presence.Energy.RemovableOptions.Single(), "A1;A2" );
 
-			spirit.Presence.Energy.RevealedCount.ShouldBe(2);
+			spirit.Presence.Energy.Revealed.Count().ShouldBe(2);
 		}
 
 		[Fact]
 		public void PullsFrom_CardTrack(){
 			_ = When_Growing( 0 );
-			User.PlacePresenceLocations( spirit.Presence.CardPlays.Next, "A1;A2" );
-			spirit.Presence.CardPlays.RevealedCount.ShouldBe(2);
+			User.PlacePresenceLocations( spirit.Presence.CardPlays.RemovableOptions.Single(), "A1;A2" );
+			spirit.Presence.CardPlays.Revealed.Count().ShouldBe(2);
 		}
 
 	}

@@ -7,7 +7,10 @@ namespace SpiritIsland.Tests {
 	class TestSpirit : Spirit {
 
 		public TestSpirit(PowerCard powerCard):base(
-			new SpiritPresence(new PresenceTrack(Track.Energy5,Track.Energy9),new PresenceTrack(Track.Card1,Track.Card2))
+			new SpiritPresence(
+				new TestPresenceTrack(Track.Energy5,Track.Energy9),
+				new TestPresenceTrack(Track.Card1,Track.Card2,Track.Card3)
+			)
 			,powerCard
 		) {
 			growthOptionGroup = new(
@@ -49,6 +52,13 @@ namespace SpiritIsland.Tests {
 
 	}
 
+	public class TestPresenceTrack : PresenceTrack {
+		public TestPresenceTrack(params Track[] t ) : base( t ) { }
+		public void OverrideTrack(int index, Track t) { slots[index]=t;}
+
+	}
+
+
 	public class VirtualTestUser : VirtualUser {
 
 		public VirtualTestUser(Spirit spirit ) : base( spirit ) { }
@@ -56,7 +66,6 @@ namespace SpiritIsland.Tests {
 		/// <summary> Growth for Test Spirit </summary>
 		public void Grows() {
 			Growth_SelectsOption( "ReclaimAll" );
-//			Growth_ReclaimsAll();
 		}
 
 		public void DoesNothingForARound() {

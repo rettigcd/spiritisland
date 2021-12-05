@@ -111,13 +111,15 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 
 		void Given_SpiritCardPlayCount( int target ) {
+			var cardPlays = game.Spirit.Presence.CardPlays;
 			while(game.Spirit.NumberOfCardsPlayablePerTurn < target)
-				game.Spirit.Presence.CardPlays.RevealedCount++;
+				cardPlays.Remove( cardPlays.RemovableOptions.Single() );
 		}
 
 		void Given_SpiritGetMoney( int target ) {
+			var energy = game.Spirit.Presence.Energy;
 			while(game.Spirit.EnergyPerTurn < target)
-				game.Spirit.Presence.Energy.RevealedCount++;
+				energy.Remove( energy.RemovableOptions.Single() );
 		}
 
 	}

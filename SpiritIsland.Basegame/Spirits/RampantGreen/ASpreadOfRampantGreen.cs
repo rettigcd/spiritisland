@@ -155,15 +155,15 @@ namespace SpiritIsland.Basegame {
 
 		public RampantGreenPresence() 
 			: base(
-				new Track[] { Track.Energy0, Track.Energy1, Track.PlantEnergy, Track.Energy2, Track.Energy2, Track.PlantEnergy, Track.Energy3 },
-				new Track[] { Track.Card1, Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4 }
+				new PresenceTrack( Track.Energy0, Track.Energy1, Track.PlantEnergy, Track.Energy2, Track.Energy2, Track.PlantEnergy, Track.Energy3 ),
+				new PresenceTrack( Track.Card1, Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4 )
 			) { }
 
-		public override IEnumerable<Track> GetPlaceableTrackOptions() {
-			var options = base.GetPlaceableTrackOptions().ToList();
+		public override IEnumerable<Track> PlaceableOptions { get { 
+			var options = base.PlaceableOptions.ToList();
 			if( Destroyed>0 ) options.Add(Track.Destroyed);
 			return options;
-		}
+		} }
 
 	}
 

@@ -45,14 +45,14 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// +1 power card, +1 presense range 2
 
 			Given_HasPresence( board[3] );
-			Assert.Equal(1,spirit.Presence.Energy.RevealedCount);
+			spirit.Presence.Energy.Revealed.ShouldHaveSingleItem();
 
 			When_StartingGrowth();
 			User.SelectsGrowthB_2PP();
 
 			Assert.Equal(2,spirit.EnergyPerTurn);
 			Assert_HasEnergy( 2 ); // 2 from energy track
-			Assert.Equal(3,spirit.Presence.Energy.RevealedCount); // # of spaces revealed, not energy per turn
+			spirit.Presence.Energy.Revealed.Count().ShouldBe(3); // # of spaces revealed, not energy per turn
 		}
 
 		[Fact]
@@ -60,7 +60,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// +1 power card, 
 			// +1 presense range 2
 
-			Assert.Equal(1,spirit.Presence.Energy.RevealedCount);
+			spirit.Presence.Energy.Revealed.ShouldHaveSingleItem();
 			Given_HasPresence( board[3] );
 
 			When_StartingGrowth();
@@ -69,8 +69,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			Assert_HasCardAvailable( "Uncanny Melting" ); // gains 1st card in power progression
 			Assert_HasEnergy( 1 ); // didn't increase energy track.
-			Assert.Equal(1,spirit.Presence.Energy.RevealedCount);
-			Assert.Equal(2,spirit.Presence.CardPlays.RevealedCount);
+			spirit.Presence.Energy.Revealed.Count().ShouldBe(1);
+			spirit.Presence.CardPlays.Revealed.Count().ShouldBe(2);
 		}
 
 		#endregion
@@ -89,7 +89,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth ){
 			// energy:	1 2 2 3 4 4 5
 
-			spirit.Presence.Energy.RevealedCount = revealedSpaces;
+			spirit.Presence.Energy.SetRevealedCount( revealedSpaces );
 			Assert_PresenceTracksAre(expectedEnergyGrowth,1);
 		}
 
@@ -108,7 +108,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			Given_HasPresence( board[3] );
 			Given_HalfOfPowercardsPlayed();
 
-			spirit.Presence.CardPlays.RevealedCount = revealedSpaces;
+			spirit.Presence.CardPlays.SetRevealedCount( revealedSpaces );
 			Assert_PresenceTracksAre(1,expectedCardPlayCount);
 
 			gameState.Phase = Phase.Growth;

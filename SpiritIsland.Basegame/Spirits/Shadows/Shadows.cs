@@ -50,8 +50,8 @@ Shadows Flicker like Flame:
 
 		public Shadows():base(
 			new SpiritPresence(
-				new Track[] { Track.Energy0, Track.Energy1, Track.Energy3, Track.Energy4, Track.Energy5, Track.Energy6 }, 
-				new Track[] { Track.Card1, Track.Card2, Track.Card3, Track.Card3, Track.Card4, Track.Card5 }
+				new PresenceTrack( Track.Energy0, Track.Energy1, Track.Energy3, Track.Energy4, Track.Energy5, Track.Energy6 ), 
+				new PresenceTrack( Track.Card1, Track.Card2, Track.Card3, Track.Card3, Track.Card4, Track.Card5 )
 			),
 			PowerCard.For<MantleOfDread>(),
 			PowerCard.For<FavorsCalledDue>(),

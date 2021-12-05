@@ -39,7 +39,7 @@ namespace SpiritIsland {
 		public async Task PlaceWithin( int range, string filterEnum ) {
 			var from = await SelectSource();
 			Space to = await ctx.Presence.SelectDestinationWithinRange( range, filterEnum );
-			await ctx.Self.Presence.PlaceFromTracks( from, to, ctx.GameState );
+			await ctx.Self.PlacePresence( from, to, ctx.GameState );
 		}
 
 		/// <summary> Selects: Source then Destination(predetermined) for placing presence.</summary>
@@ -47,7 +47,7 @@ namespace SpiritIsland {
 		public async Task Place( params Space[] destinationOptions ) {
 			var from = await SelectSource();
 			var to = await ctx.Self.Action.Decision( new Decision.Presence.PlaceOn( ctx.Self, destinationOptions, Present.Always ) );
-			await ctx.Self.Presence.PlaceFromTracks( from, to, ctx.GameState );
+			await ctx.Self.PlacePresence( from, to, ctx.GameState );
 		}
 
 		#endregion
@@ -70,7 +70,7 @@ namespace SpiritIsland {
 			while(count > 0) {
 				var dst = await ctx.Self.Action.Decision( new Decision.Presence.ReturnToTrackDestination( ctx.Self ) );
 				if(dst == null) break;
-				await ctx.Self.Presence.ReturnToTrack(Track.Destroyed,dst,ctx.GameState);
+				await ctx.Self.Presence.ReturnDestroyedToTrack(dst,ctx.GameState);
 				--count;
 			}
 		}

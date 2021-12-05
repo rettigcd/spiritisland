@@ -9,12 +9,7 @@ namespace SpiritIsland {
 
 		#region constructors
 
-		public SpiritPresence( Track[] energy, Track[] cardPlays ){
-			Energy = new PresenceTrack(energy);
-			CardPlays = new PresenceTrack(cardPlays);
-		}
-
-		public SpiritPresence( PresenceTrack energy, PresenceTrack cardPlays ) {
+		public SpiritPresence( IPresenceTrack energy, IPresenceTrack cardPlays ) {
 			Energy = energy;
 			CardPlays = cardPlays;
 		}
@@ -23,18 +18,23 @@ namespace SpiritIsland {
 
 		#region Tracks / Board
 
-		public virtual IEnumerable<Track> GetPlaceableTrackOptions() {
-			if(Energy.HasMore) yield return Energy.Next;
-			if(CardPlays.HasMore) yield return CardPlays.Next;
-		}
+		public virtual IEnumerable<Track> PlaceableOptions 
+			=> Energy.RemovableOptions.Union( CardPlays.RemovableOptions );
 
-		public virtual IEnumerable<Track> GetReturnableTrackOptions() {
-			if(Energy.RevealedCount>1) yield return Energy.Revealed.Last();
-			if(CardPlays.RevealedCount>1) yield return CardPlays.Revealed.Last();
-		}
+		public IEnumerable<Track> GetReturnableTrackOptions()
+			=> Energy.ReturnableOptions.Union( CardPlays.ReturnableOptions );
 
-		public PresenceTrack Energy { get; }
-		public PresenceTrack CardPlays { get; }
+		public IReadOnlyCollection<Track> GetEnergyTrackStatus() => Energy.Slots;
+
+		public IReadOnlyCollection<Track> GetCardPlayTrackStatus() => CardPlays.Slots;
+
+		public int EnergyPerTurn => Energy.Revealed.Where( x => x.Energy.HasValue ).Last().Energy.Value;
+
+		// ! These 2 tracks are only public so they can be accessed from Tests.
+		// ! Not accessed from production code
+		public IPresenceTrack Energy { get; }
+		public IPresenceTrack CardPlays { get; }
+
 		public int Destroyed { get; private set; }
 
 		#endregion
@@ -62,7 +62,7 @@ namespace SpiritIsland {
 
 		#region Game-Play things you can do with presence
 
-		public virtual Task PlaceFromTracks( IOption from, Space to, GameState gs ) {
+		public virtual Task Place( IOption from, Space to, GameState gs ) {
 			// from
 			if(from is Track track) {
 				RemoveFromTrack( track );
@@ -78,38 +78,25 @@ namespace SpiritIsland {
 			return Task.CompletedTask;
 		}
 
-		public virtual Task ReturnToTrack( IOption src, Track dst, GameState gs ) {
-
-			// src / from
-			if(src is Track track) {
-				RemoveFromTrack( track );
-			} else if(src is Space space) {
-				if( Spaces.Contains(space) )
-					RemoveFrom( space, gs );
-				else
-					throw new ArgumentException( "Can't pull from :" + src.Text );
-			}
-
-			// To
-			if(Energy.Revealed.Last().Equals(dst))
-				Energy.RevealedCount--;
-			else if(CardPlays.Revealed.Last().Equals(dst))
-				CardPlays.RevealedCount--;
-			else 
-				throw new ArgumentException("Unable to find location to restore presence");
-			return Task.CompletedTask;
-		}
-
 		protected virtual void RemoveFromTrack( Track track ) {
 			if(track == Track.Destroyed && Destroyed > 0)
 				--Destroyed;
-			else if(Energy.HasMore && track == Energy.Next)
-				Energy.RevealedCount++;
-			else if(CardPlays.HasMore && track == CardPlays.Next)
-				CardPlays.RevealedCount++;
-			else
+			else if( !( Energy.Remove(track) || CardPlays.Remove(track) ) )
 				throw new ArgumentException( "Can't pull from track:" + track.ToString() );
 			TrackRevealed?.Invoke(track);
+		}
+
+
+		public virtual Task ReturnDestroyedToTrack( Track dst, GameState gs ) {
+
+			// src / from
+			if(Destroyed <=0 ) throw new InvalidOperationException("There is no Destoryed presence to return.");
+			--Destroyed;
+
+			// To
+			return (Energy.Return(dst) || CardPlays.Return(dst))
+				? Task.CompletedTask
+				: throw new ArgumentException("Unable to find location to restore presence");
 		}
 
 		public void Move( Space from, Space to, GameState gs ) {
@@ -150,14 +137,20 @@ namespace SpiritIsland {
 
 		public int CardPlayCount => CardPlays.Revealed.Where(x=>x.CardPlay.HasValue).Last().CardPlay.Value;
 
-		public void AddElements( ElementCounts elements ) {
+		public ElementCounts AddElements( ElementCounts elements=null ) {
+			if(elements==null) elements = new ElementCounts();
 			Energy.AddElements( elements );
 			CardPlays.AddElements( elements);
+			return elements;
 		}
 
 		#endregion
 
+		/// <summary>
+		/// Specifies if the the given space is valid.
+		/// </summary>
 		public Func<Space,bool> IsValid = DefaultIsValid; // override for Lure, Ocean, Volcano
+
 		static bool DefaultIsValid(Space space) => space.Terrain != Terrain.Ocean;
 
 		public IReadOnlyCollection<Space> Placed => placed.AsReadOnly();
@@ -175,19 +168,19 @@ namespace SpiritIsland {
 		protected class Memento : IMemento<SpiritPresence> {
 			public Memento(SpiritPresence src) {
 				placed = src.placed.ToArray();
-				revealedEnergy = src.Energy.RevealedCount;
-				revealedCardPlays = src.CardPlays.RevealedCount;
+				energy = src.Energy.SaveToMemento();
+				cardPlays = src.CardPlays.SaveToMemento();
 				destroyed = src.Destroyed;
 			}
 			public void Restore(SpiritPresence src ) {
 				src.placed.Clear(); src.placed.AddRange( placed );
-				src.Energy.RevealedCount = revealedEnergy;
-				src.CardPlays.RevealedCount = revealedCardPlays;
+				src.Energy.LoadFrom(energy);
+				src.CardPlays.LoadFrom(cardPlays);
 				src.Destroyed = destroyed;
 			}
 			readonly Space[] placed;
-			readonly int revealedEnergy;
-			readonly int revealedCardPlays;
+			readonly IMemento<IPresenceTrack> energy;
+			readonly IMemento<IPresenceTrack> cardPlays;
 			readonly int destroyed;
 		}
 

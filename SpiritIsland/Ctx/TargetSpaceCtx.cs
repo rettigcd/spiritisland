@@ -288,7 +288,7 @@ namespace SpiritIsland {
 
 		public async Task PlacePresenceHere() {
 			var from = await Presence.SelectSource();
-			await Self.Presence.PlaceFromTracks( from, Space, GameState );
+			await Self.PlacePresence( from, Space, GameState );
 		}
 
 		#endregion

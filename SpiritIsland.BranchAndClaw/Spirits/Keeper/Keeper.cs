@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 
 namespace SpiritIsland.BranchAndClaw {
 
@@ -48,7 +49,7 @@ namespace SpiritIsland.BranchAndClaw {
 		} ;
 
 		public Keeper():base(
-			new KeeperPresence(
+			new SpiritPresence(
 				new PresenceTrack( Track.Energy2, Track.SunEnergy, Track.Energy4, Track.Energy5, Track.PlantEnergy, Track.Energy7, Track.Energy8, Track.Energy9 ),
 				new PresenceTrack( Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4, Track.Card5Reclaim1 )
 			),
@@ -58,7 +59,6 @@ namespace SpiritIsland.BranchAndClaw {
 			PowerCard.For<SacrosanctWilderness>(),
 			PowerCard.For<TowingWrath>()
 		) {
-			(this.Presence as KeeperPresence).keeper = this;
 
 			growthOptionGroup = new GrowthOptionGroup(
 				new GrowthOption( new ReclaimAll() ,new GainEnergy(1) ){ GainEnergy = 1 },
@@ -72,6 +72,13 @@ namespace SpiritIsland.BranchAndClaw {
 				InnatePower.For<SpreadingWilds>(),
 			};
 		}
+
+		public override async Task PlacePresence( IOption from, Space to, GameState gs ) {
+			await base.PlacePresence( from, to, gs );
+			if(gs.DahanOn(to).Any && Presence.SacredSites.Contains(to))
+				await new SpiritGameStateCtx(this,gs, Cause.Growth).Target(to).PushDahan( int.MaxValue );
+		}
+
 
 		protected override void InitializeInternal( Board board, GameState gs ){
 			// In the highest-numbered Jungle.

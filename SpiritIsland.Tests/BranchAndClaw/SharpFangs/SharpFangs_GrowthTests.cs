@@ -1,6 +1,7 @@
 ﻿using SpiritIsland.Basegame;
 using SpiritIsland.BranchAndClaw;
 using SpiritIsland.SinglePlayer;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -149,7 +150,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 		[InlineDataAttribute( 7, 4, "BPB" )]
 		public async Task EnergyTrack( int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 			// energy:	1 animal plant 2 animal 3 4
-			spirit.Presence.Energy.RevealedCount = revealedSpaces;
+			spirit.Presence.Energy.SetRevealedCount( revealedSpaces );
 			spirit.InitElementsFromPresence();
 
 			await spirit.ApplyRevealedPresenceTracks(null);
@@ -167,7 +168,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 		[InlineDataAttribute( 6, 5, 2 )]
 		public void CardTrack( int revealedSpaces, int expectedCardPlayCount, int reclaimCount ) {
 			// cards:	2 2 3 reclaim-1 4 5&reclaim-1
-			spirit.Presence.CardPlays.RevealedCount = revealedSpaces;
+			spirit.Presence.CardPlays.SetRevealedCount( revealedSpaces );
 			Assert_PresenceTracksAre( 1, expectedCardPlayCount );
 			Given_HalfOfPowercardsPlayed();
 
@@ -199,7 +200,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 		void User_GrowthB_PlacePresence() {
 			User.Growth_SelectsOption( "PlacePresence(3,beast or jungle)" );
 			// Skip Selecting the Action due to AutoSelectSingle
-			User.PlacePresenceLocations( spirit.Presence.Energy.Next, "A3;A7;A8" );
+			User.PlacePresenceLocations( spirit.Presence.Energy.RemovableOptions.Single(), "A3;A7;A8" );
 		}
 
 		void User_GrowthC_DrawCard_GainEnergy() {

@@ -98,7 +98,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 
 			// energy:	2 air 3 moon 4 any 5
-			spirit.Presence.Energy.RevealedCount = revealedSpaces;
+			spirit.Presence.Energy.SetRevealedCount( revealedSpaces );
 			Assert_EnergyTrackIs( expectedEnergyGrowth );
 			spirit.InitElementsFromPresence();
 
@@ -120,7 +120,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 		[InlineDataAttribute(6,3,"*")]
 		public void CardTrack(int revealedSpaces, int expectedCardPlayCount, string elements){
 			// card:	2 2 2 3 3 any
-			spirit.Presence.CardPlays.RevealedCount = revealedSpaces;
+			spirit.Presence.CardPlays.SetRevealedCount( revealedSpaces );
 			Assert_CardTrackIs(expectedCardPlayCount);
 
 			_ = spirit.ApplyRevealedPresenceTracks(null);

@@ -51,8 +51,8 @@ namespace SpiritIsland.Basegame {
 
 		public RiverSurges():base(
 			new RiverPresence(
-				new Track[] { Track.Energy1, Track.Energy2, Track.Energy2, Track.Energy3, Track.Energy4, Track.Energy4, Track.Energy5, },
-				new Track[] { Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Reclaim1, Track.Card4, Track.Card5 }
+				new PresenceTrack( Track.Energy1, Track.Energy2, Track.Energy2, Track.Energy3, Track.Energy4, Track.Energy4, Track.Energy5 ),
+				new PresenceTrack( Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Reclaim1, Track.Card4, Track.Card5 )
 			),
 			PowerCard.For<BoonOfVigor>(),
 			PowerCard.For<FlashFloods>(),
@@ -99,7 +99,7 @@ namespace SpiritIsland.Basegame {
 	}
 
 	public class RiverPresence : SpiritPresence {
-		public RiverPresence(Track[] t1, Track[] t2 ) : base( t1, t2 ) { }
+		public RiverPresence( PresenceTrack t1, PresenceTrack t2 ) : base( t1, t2 ) { }
 
 		public override IEnumerable<Space> SacredSites => Spaces
 			.Where(s=>s.Terrain==Terrain.Wetland)

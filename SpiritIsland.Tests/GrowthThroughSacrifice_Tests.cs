@@ -1,6 +1,7 @@
 ﻿using Shouldly;
 using SpiritIsland.Basegame;
 using SpiritIsland.BranchAndClaw.Minor;
+using System.Linq;
 using Xunit;
 
 namespace SpiritIsland.Tests {
@@ -16,10 +17,12 @@ namespace SpiritIsland.Tests {
 
 			fxt.spirit.AddCardToHand(PowerCard.For<GnawingRootbiters>());
 
-			// Given: Spirits first energy track has 1-fire
-			fxt.spirit.Presence.Energy.slots[1] = Track.FireEnergy;
+			// Given: Next energy track has 1 element (fire)
+			((TestPresenceTrack)fxt.spirit.Presence.Energy).OverrideTrack(1, Track.FireEnergy);
+
 			// Given: Spirits can play 2 cards
-			fxt.spirit.Presence.CardPlays.slots[0] = Track.Card2;
+			fxt.spirit.Presence.CardPlays.Remove( fxt.spirit.Presence.CardPlays.RemovableOptions.Single() );
+
 			// Given: Spirit has 2 presence on A5
 			fxt.spirit.Presence.PlaceOn(fxt.gameState.Island.Boards[0][5],fxt.gameState);
 
@@ -38,9 +41,9 @@ namespace SpiritIsland.Tests {
 
 			fxt.user.AssertDecisionX("Select location to Remove Blight OR Add Presence","A5");
 			fxt.user.AssertDecisionX("Select Power Option","Remove 1 blight from one of your lands,(Add 1 presence to one of your lands)");
-			fxt.user.AssertDecisionX("Select Presence to place.","(fire energy),2 cardplay,Take Presence from Board");
+			fxt.user.AssertDecisionX("Select Presence to place.","(fire energy),3 cardplay,Take Presence from Board");
 
-			// Should be waiting on slow action
+			// Should have gained 1 fire element
 			fxt.spirit.Elements[Element.Fire].ShouldBe(2); // 1 from Growth Through Sacrifice card, 1 from Energy track
 		}
 

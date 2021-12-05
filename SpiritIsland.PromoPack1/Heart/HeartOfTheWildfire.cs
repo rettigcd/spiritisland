@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 
 namespace SpiritIsland.PromoPack1 {
 
@@ -13,7 +14,7 @@ namespace SpiritIsland.PromoPack1 {
 		static Track FirePresence => Track.MkElement(Element.Fire); // same as FireEnergy but we need separate object so user can distingquish top/bottom.
 
 		public HeartOfTheWildfire() : base( 
-			new HeartPresence(
+			new SpiritPresence(
 				new PresenceTrack( Track.Energy0, Track.FireEnergy, Track.Energy1, Track.Energy2, new Track("", Element.Fire, Element.Plant ), Track.Energy3 ),
 				new PresenceTrack( Track.Card1, FirePresence, Track.Card2, Track.Card3, FirePresence, Track.Card4 )
 			)
@@ -22,7 +23,6 @@ namespace SpiritIsland.PromoPack1 {
 			,PowerCard.For<ThreateningFlames>()
 			,PowerCard.For<FlamesFury>()
 		) {
-			((HeartPresence)Presence).spirit = this;
 			InnatePowers = new InnatePower[] {
 				InnatePower.For<FireStorm>(),
 				InnatePower.For<TheBurnedLandRegrows>()
@@ -54,6 +54,20 @@ namespace SpiritIsland.PromoPack1 {
 		public override SpecialRule[] SpecialRules => new SpecialRule[] {
 			new SpecialRule("BLAZING PRESENCE","After you add or move presence after Setup, in the land it foes to: For each fire showingo n your presence Tracks, do 1 Damage.  If 2 fire or more are showing on your presence Tracks, add 1 blight.  Push al beasts and any number of dahan.  Added blight does not destory your presence.")
 		} ;
+
+		public override async Task PlacePresence( IOption from, Space to, GameState gs ) {
+			await base.PlacePresence( from, to, gs );
+
+			int fireCount = Presence.AddElements()[Element.Fire];
+			var ctx = new SpiritGameStateCtx(this,gs,Cause.Growth).Target(to);
+			// For each fire showing, do 1 damage
+			await ctx.DamageInvaders(fireCount);
+			// if 2 fire or more are showing, add 1 blight
+			if(2<=fireCount)
+				await ctx.AddBlight(1);
+		}
+		// !!! Blight added due to Spirit Effects (Powers, Special Rules, Scenario-based Rituals, etc) does not destroy your presence. (including cascades)
+		// When Destroying presence from blight, need Cause so we can tell if destoryoing it due to Ravage or something else.
 
 		protected override void InitializeInternal( Board board, GameState gameState ) {
 			// Put 3 presence and 2 blight on your starting board in the hightest-numbered Sands. 
