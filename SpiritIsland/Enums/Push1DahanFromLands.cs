@@ -3,7 +3,10 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 	/// <summary> Pushes 1 dahan from 1 of your lands. </summary>
-	public class Push1DahanFromLands : GrowthActionFactory {
+	public class Push1DahanFromLands : GrowthActionFactory, ITrackActionFactory {
+
+		public bool RunAfterGrowthResult => true; // depends on Presence location which might change during growth
+
 		public override async Task ActivateAsync( SpiritGameStateCtx ctx ) {
 			var dahanOptions = ctx.Self.Presence.Spaces
 				.SelectMany(space=>ctx.Target(space).Dahan.Keys.Select(t=>new SpaceToken(space,t)));

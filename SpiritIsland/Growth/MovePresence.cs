@@ -2,7 +2,9 @@
 
 namespace SpiritIsland {
 
-	public class MovePresence : GrowthActionFactory {
+	public class MovePresence : GrowthActionFactory, ITrackActionFactory {
+
+		public bool RunAfterGrowthResult => true; // might receive additional presence
 
 		public override async Task ActivateAsync( SpiritGameStateCtx ctx) {
 			var from = await ctx.Self.Action.Decision( new Decision.Presence.Deployed("Move presence from:", ctx.Self ) );

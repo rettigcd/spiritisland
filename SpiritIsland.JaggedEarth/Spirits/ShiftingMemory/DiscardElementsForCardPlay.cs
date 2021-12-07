@@ -5,12 +5,14 @@ namespace SpiritIsland.JaggedEarth {
 	/// <summary>
 	/// Shifting Memories Track-Action
 	/// </summary>
-	public class DiscardElementsForCardPlay : GrowthActionFactory {
+	public class DiscardElementsForCardPlay : GrowthActionFactory, ITrackActionFactory {
 
 		readonly int totalNumToRemove;
 		public DiscardElementsForCardPlay(int elementDiscardCount ) {
 			this.totalNumToRemove = elementDiscardCount;
 		}
+
+		public bool RunAfterGrowthResult => true; // delay for gained prepared elements.
 
 		public override async Task ActivateAsync( SpiritGameStateCtx ctx ) {
 			if( ctx.Self is ShiftingMemoryOfAges smoa

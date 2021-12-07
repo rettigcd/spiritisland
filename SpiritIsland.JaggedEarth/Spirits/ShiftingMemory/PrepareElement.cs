@@ -2,9 +2,12 @@
 
 namespace SpiritIsland.JaggedEarth {
 
-	public class PrepareElement : GrowthActionFactory {
+	public class PrepareElement : GrowthActionFactory, ITrackActionFactory {
+
 		readonly string context;
 		public PrepareElement(string context ) { this.context = context; }
+
+		public bool RunAfterGrowthResult => false; // no dependencies
 
 		public override async Task ActivateAsync( SpiritGameStateCtx ctx ) {
 			if(ctx.Self is ShiftingMemoryOfAges smoa) 

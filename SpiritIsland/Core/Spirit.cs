@@ -19,11 +19,6 @@ namespace SpiritIsland {
 			Action = new ActionGateway();
 		}
 
-		void Presence_TrackRevealed( Track track ) {
-			Elements.AddRange( track.Elements );
-			// !! should we also execute attached actions?
-		}
-
 		public void AddCardToHand( PowerCard card ){
 			Hand.Add(card);
 		}
@@ -125,8 +120,12 @@ namespace SpiritIsland {
 				AddActionFactory( action );
 		}
 
-		/// <remarks>override in a test.  Could be refactored to not need to be virtual</remarks>
-		public virtual GrowthOptionGroup GetGrowthOptions() => Growth;
+		void Presence_TrackRevealed( Track track ) {
+
+			Elements.AddRange( track.Elements );
+			// !! should we also execute attached actions?
+
+		}
 
 		public async Task ApplyRevealedPresenceTracks(GameState gs) {
 

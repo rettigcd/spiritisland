@@ -2,9 +2,11 @@
 
 namespace SpiritIsland {
 
-	public class Reclaim1 : GrowthActionFactory {
+	public class Reclaim1 : GrowthActionFactory, ITrackActionFactory {
 
 		public const string Prompt = "Select card to reclaim.";
+
+		public bool RunAfterGrowthResult => true; // If user Reclaims All during growth, no need to reclaim single
 
 		public override async Task ActivateAsync( SpiritGameStateCtx ctx ) {
 			var self = ctx.Self;
