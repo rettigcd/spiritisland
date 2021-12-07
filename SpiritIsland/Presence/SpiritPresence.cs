@@ -12,6 +12,9 @@ namespace SpiritIsland {
 		public SpiritPresence( IPresenceTrack energy, IPresenceTrack cardPlays ) {
 			Energy = energy;
 			CardPlays = cardPlays;
+
+			Energy.TrackRevealed += OnRevealed;
+			CardPlays.TrackRevealed += OnRevealed;
 		}
 
 		#endregion
@@ -83,9 +86,9 @@ namespace SpiritIsland {
 				--Destroyed;
 			else if( !( Energy.Remove(track) || CardPlays.Remove(track) ) )
 				throw new ArgumentException( "Can't pull from track:" + track.ToString() );
-			TrackRevealed?.Invoke(track);
 		}
 
+		void OnRevealed(Track track) => TrackRevealed?.Invoke(track);
 
 		public virtual Task ReturnDestroyedToTrack( Track dst, GameState gs ) {
 

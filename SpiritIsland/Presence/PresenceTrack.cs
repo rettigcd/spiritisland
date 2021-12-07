@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SpiritIsland {
@@ -34,8 +35,11 @@ namespace SpiritIsland {
 		public virtual bool Remove( Track track ) {
 			if(revealedCount == slots.Length || slots[revealedCount] != track) return false;
 			++revealedCount;
+			TrackRevealed?.Invoke(track);
 			return true;
 		}
+
+		public event Action<Track> TrackRevealed;
 
 		public virtual bool Return( Track track ) {
 			if(slots[revealedCount - 1] != track) return false;

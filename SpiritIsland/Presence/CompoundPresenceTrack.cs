@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SpiritIsland {
@@ -24,8 +25,13 @@ namespace SpiritIsland {
 		}
 
 		public bool Remove( Track track ) {
-			return parts.Any(part=>part.Remove(track));
+			bool revealed = parts.Any(part=>part.Remove(track));
+			if(revealed)
+				TrackRevealed?.Invoke(track);
+			return revealed;
 		}
+		public event Action<Track> TrackRevealed;
+
 
 		public bool Return( Track track ) {
 			return parts.Any(part=>part.Return(track));

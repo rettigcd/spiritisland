@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SpiritIsland {
 
@@ -14,6 +15,7 @@ namespace SpiritIsland {
 		void AddElements( ElementCounts elements );
 		bool Remove( Track track );
 		bool Return( Track track );
+		event Action<Track> TrackRevealed;
 
 		// Save/Load
 		void LoadFrom( IMemento<IPresenceTrack> memento );
