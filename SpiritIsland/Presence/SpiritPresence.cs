@@ -15,13 +15,16 @@ namespace SpiritIsland {
 
 			Energy.TrackRevealed += OnRevealed;
 			CardPlays.TrackRevealed += OnRevealed;
+
+			foreach(var r in Energy.Revealed) OnRevealed(r);
+			foreach(var r in CardPlays.Revealed) OnRevealed(r);
 		}
 
 		#endregion
 
 		#region Tracks / Board
 
-		public virtual IEnumerable<Track> PlaceableOptions 
+		public virtual IEnumerable<Track> RevealOptions 
 			=> Energy.RevealOptions.Union( CardPlays.RevealOptions );
 
 		public IEnumerable<Track> GetReturnableTrackOptions()
@@ -31,7 +34,7 @@ namespace SpiritIsland {
 
 		public IReadOnlyCollection<Track> GetCardPlayTrackStatus() => CardPlays.Slots;
 
-		public int EnergyPerTurn => Energy.Revealed.Where( x => x.Energy.HasValue ).Last().Energy.Value;
+		public int EnergyPerTurn { get; private set; }
 
 		// ! These 2 tracks are only public so they can be accessed from Tests.
 		// ! Not accessed from production code
@@ -88,7 +91,13 @@ namespace SpiritIsland {
 				throw new ArgumentException( "Can't pull from track:" + track.ToString() );
 		}
 
-		void OnRevealed(Track track) => TrackRevealed?.Invoke(track);
+		void OnRevealed(Track track) {
+			if( track.Energy.HasValue && EnergyPerTurn < track.Energy.Value)
+				EnergyPerTurn = track.Energy.Value;
+			if( track.CardPlay.HasValue && CardPlayCount < track.CardPlay.Value)
+				CardPlayCount = track.CardPlay.Value;
+			TrackRevealed?.Invoke( track );
+		}
 
 		public virtual Task ReturnDestroyedToTrack( Track dst, GameState gs ) {
 
@@ -138,7 +147,7 @@ namespace SpiritIsland {
 
 		#region Per Turn stuff
 
-		public int CardPlayCount => CardPlays.Revealed.Where(x=>x.CardPlay.HasValue).Last().CardPlay.Value;
+		public int CardPlayCount { get; private set; }
 
 		public ElementCounts AddElements( ElementCounts elements=null ) {
 			if(elements==null) elements = new ElementCounts();

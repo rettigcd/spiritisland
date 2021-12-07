@@ -159,8 +159,8 @@ namespace SpiritIsland.Basegame {
 				new PresenceTrack( Track.Card1, Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4 )
 			) { }
 
-		public override IEnumerable<Track> PlaceableOptions { get { 
-			var options = base.PlaceableOptions.ToList();
+		public override IEnumerable<Track> RevealOptions { get { 
+			var options = base.RevealOptions.ToList();
 			if( Destroyed>0 ) options.Add(Track.Destroyed);
 			return options;
 		} }

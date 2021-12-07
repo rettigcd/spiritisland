@@ -15,7 +15,7 @@ namespace SpiritIsland.PromoPack1 {
 		){
 		}
 
-		public override IEnumerable<Track> PlaceableOptions { get {
+		public override IEnumerable<Track> RevealOptions { get {
 			if(MaxPresenceOnBoard == Placed.Count ) yield break;
 
 			var energyNext = Energy.RevealOptions.FirstOrDefault();
