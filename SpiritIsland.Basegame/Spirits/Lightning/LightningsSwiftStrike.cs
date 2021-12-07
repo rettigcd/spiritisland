@@ -40,7 +40,7 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 			PowerCard.For<RagingStorm>(),
 			PowerCard.For<ShatterHomesteads>()
 		){
-			growthOptionGroup = new(
+			Growth = new(
 				new GrowthOption( 
 					new ReclaimAll(), 
 					new DrawPowerCard(1), 

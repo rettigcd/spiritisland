@@ -13,7 +13,7 @@ namespace SpiritIsland.Tests {
 			)
 			,powerCard
 		) {
-			growthOptionGroup = new(
+			Growth = new(
 				new GrowthOption( new ReclaimAll() ) 
 			);
 		}

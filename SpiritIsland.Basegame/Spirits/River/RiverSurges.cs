@@ -59,7 +59,7 @@ namespace SpiritIsland.Basegame {
 			PowerCard.For<RiversBounty>(),
 			PowerCard.For<WashAway>()
 		){
-			growthOptionGroup = new(
+			Growth = new(
 				new GrowthOption(
 					new ReclaimAll(),
 					new DrawPowerCard(1),

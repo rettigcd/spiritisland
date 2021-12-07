@@ -26,7 +26,7 @@ namespace SpiritIsland.JaggedEarth {
 			)
 		{
 			// Growth
-			this.growthOptionGroup = new GrowthOptionGroup(
+			this.Growth = new GrowthOptionGroup(
 				new GrowthOption(new GainEnergy(-1),new ReclaimAll(), new MovePresence() ){ GainEnergy = -1 },
 				new GrowthOption(new PlacePresence(2)),
 				new GrowthOption(new DrawPowerCard()),

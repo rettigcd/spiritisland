@@ -31,7 +31,7 @@ namespace SpiritIsland.JaggedEarth {
 				 ,PowerCard.For<PursueWithScratchesPecksAndStings>()
 			) {
 			// Growth
-			growthOptionGroup = new GrowthOptionGroup(
+			Growth = new GrowthOptionGroup(
 				new GrowthOption(new ReclaimAll(),new DrawPowerCard()),
 				new GrowthOption(new PlacePresence(1), new PlacePresence(0)),
 				new GrowthOption(new PlacePresenceAndBeast(),new GainEnergy(1), new Gather1Beast())

@@ -35,7 +35,7 @@ namespace SpiritIsland.JaggedEarth {
 				PowerCard.For<StudyTheInvadersFears>()
 			) 
 		{
-			growthOptionGroup = new GrowthOptionGroup(
+			Growth = new GrowthOptionGroup(
 				new GrowthOption(new ReclaimAll(), new PlacePresence(0)),
 				new GrowthOption(new DrawPowerCard(), new PlacePresence(2)),
 				new GrowthOption(new PlacePresence(1),new GainEnergy(2)),

@@ -24,7 +24,7 @@ namespace SpiritIsland.WinForms {
 			// Calc: Layout (image & growth)
 			imgBounds = new Rectangle( bounds.X, bounds.Y, bounds.Height * 3 / 2, bounds.Height );
 			var growthBounds = new Rectangle( bounds.X + imgBounds.Width + margin, bounds.Y, bounds.Width - imgBounds.Width - margin, bounds.Height );
-			growthLayout = new GrowthLayout(spirit.GrowthOptions, growthBounds);
+			growthLayout = new GrowthLayout(spirit.Growth.Options, growthBounds);
 		}
 
 		int Calc_Innates( Spirit spirit, Graphics graphics, Rectangle bounds, int margin ) {

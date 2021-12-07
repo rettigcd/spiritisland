@@ -55,7 +55,7 @@ namespace SpiritIsland.Basegame {
 			PowerCard.For<PredatoryNightmares>()
 		) {
 
-			growthOptionGroup = new(
+			Growth = new(
 				// reclaim, +1 power card
 				new GrowthOption(new ReclaimAll(),new DrawPowerCard(1)),
 				// reclaim 1, add presence range 0

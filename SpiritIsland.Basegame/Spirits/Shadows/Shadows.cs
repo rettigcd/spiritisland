@@ -58,7 +58,7 @@ Shadows Flicker like Flame:
 			PowerCard.For<CropsWitherAndFade>(),
 			PowerCard.For<ConcealingShadows>()
 		) {
-			growthOptionGroup = new(
+			Growth = new(
 				new GrowthOption( new ReclaimAll(), new DrawPowerCard(1) ),
 				new GrowthOption( new DrawPowerCard(1), new PlacePresence(1) ),
 				new GrowthOption( new PlacePresence(3), new GainEnergy(3) )

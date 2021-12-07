@@ -79,8 +79,7 @@ namespace SpiritIsland {
 
 		#region Growth
 
-		public GrowthOption[] GrowthOptions => growthOptionGroup.Options;
-		protected GrowthOptionGroup growthOptionGroup;
+		public GrowthOptionGroup Growth { get; protected set; }
 
 		public virtual async Task DoGrowth(GameState gameState) {
 
@@ -93,8 +92,8 @@ namespace SpiritIsland {
 					await ResolveActions(ctx);
 			}
 
-			int count = growthOptionGroup.SelectionCount;
-			List<GrowthOption> remainingOptions = growthOptionGroup.Options.ToList();
+			int count = Growth.SelectionCount;
+			List<GrowthOption> remainingOptions = Growth.Options.ToList();
 
 			// !!! there is a bug here.  Somehow, count can exceed the # of options
 
@@ -127,7 +126,7 @@ namespace SpiritIsland {
 		}
 
 		/// <remarks>override in a test.  Could be refactored to not need to be virtual</remarks>
-		public virtual GrowthOptionGroup GetGrowthOptions() => growthOptionGroup;
+		public virtual GrowthOptionGroup GetGrowthOptions() => Growth;
 
 		public async Task ApplyRevealedPresenceTracks(GameState gs) {
 

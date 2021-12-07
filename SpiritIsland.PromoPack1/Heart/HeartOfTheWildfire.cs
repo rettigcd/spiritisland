@@ -29,7 +29,7 @@ namespace SpiritIsland.PromoPack1 {
 			};
 
 
-			growthOptionGroup = new(
+			Growth = new(
 				new GrowthOption(
 					new ReclaimAll(),
 					new DrawPowerCard(1),

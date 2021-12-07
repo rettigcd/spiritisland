@@ -25,7 +25,7 @@ namespace SpiritIsland.JaggedEarth {
 			,PowerCard.For<PyroclasticBombardment>()
 			,PowerCard.For<RainOfAsh>()
 		) {
-			growthOptionGroup = new GrowthOptionGroup(
+			Growth = new GrowthOptionGroup(
 				new GrowthOption(new ReclaimAll(), new DrawPowerCard(), new GainEnergy(3)),
 				new GrowthOption(new PlacePresence(0,Target.Mountain), new PlacePresence(0,Target.Mountain)),
 				new GrowthOption(new DrawPowerCard(), new PlacePresence(4,Target.Mountain), new PlayExtraCardThisTurn(), new GainEnergy(2))

@@ -19,7 +19,7 @@ namespace SpiritIsland.Tests.Core {
 					new PresenceTrack( Track.Card1, Track.Card2, Track.Card3, Track.Card4, Track.Card5 )
 				)
 			) {
-				growthOptionGroup = new GrowthOptionGroup( new GrowthOption( new PlacePresence( 1, Target.Any ) ) );
+				Growth = new GrowthOptionGroup( new GrowthOption( new PlacePresence( 1, Target.Any ) ) );
 			}
 
 			public override string Text => "Test Spirit";

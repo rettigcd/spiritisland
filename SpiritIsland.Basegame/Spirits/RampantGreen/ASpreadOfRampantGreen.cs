@@ -64,7 +64,7 @@ namespace SpiritIsland.Basegame {
 
 			static PlacePresence placeOnWetlandOrJungle() => new ( 2, Target.JungleOrWetland );
 
-			growthOptionGroup = new(
+			Growth = new(
 				// reclaim, +1 power card
 				new GrowthOption(
 					placeOnWetlandOrJungle(),

@@ -25,7 +25,7 @@ namespace SpiritIsland.JaggedEarth {
 			,PowerCard.For<SoftlyBeckonEverInward>()
 			,PowerCard.For<SwallowedByTheWilderness>()
 		) {
-			growthOptionGroup = new GrowthOptionGroup(
+			Growth = new GrowthOptionGroup(
 				new GrowthOption(new ReclaimAll(),new GainEnergy(1)),
 				new GrowthOption(new PlacePresence(4,Target.Inland)),
 				new GrowthOption(new Gain1Element(Element.Moon,Element.Air,Element.Plant), new GainEnergy(2)),
@@ -43,9 +43,9 @@ namespace SpiritIsland.JaggedEarth {
 		/// <remarks> Overridden so that we can disable 2nd of pair being selected.</remarks>
 		public override async Task DoGrowth(GameState gameState) {
 
-			int remainingGrowths = growthOptionGroup.SelectionCount;
-			List<GrowthOption> remainingOptions = growthOptionGroup.Options.ToList();
-			var allOptions = growthOptionGroup.Options;
+			int remainingGrowths = Growth.SelectionCount;
+			List<GrowthOption> remainingOptions = Growth.Options.ToList();
+			var allOptions = Growth.Options;
 
 			while(remainingGrowths-- > 0) {
 				var currentOptions = remainingOptions.Where( o => o.GainEnergy + Energy >= 0 ).ToArray();

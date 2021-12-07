@@ -58,7 +58,7 @@ namespace SpiritIsland.BranchAndClaw {
 		
 			var beastOrJungleRange3 = new PlacePresence(3, Target.BeastOrJungle);
 
-			growthOptionGroup = new GrowthOptionGroup(
+			Growth = new GrowthOptionGroup(
 				new GrowthOption( new ReclaimAll(), new GainEnergy(-1), new DrawPowerCard(1) ){ GainEnergy=-1 },
 				new GrowthOption( beastOrJungleRange3 ),
 				new GrowthOption( new DrawPowerCard(1), new GainEnergy(1) ){ GainEnergy = 1 },
