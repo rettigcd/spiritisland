@@ -77,20 +77,24 @@ namespace SpiritIsland {
 		public GrowthOptionGroup Growth { get; protected set; }
 
 		public virtual async Task DoGrowth(GameState gameState) {
+			var ctx = new SpiritGameStateCtx( this, gameState, Cause.Growth );
 
-			// Resolve Initialization
+			// (a) Resolve Initialization
 			if(availableActions.Any()) {
-				var ctx = new SpiritGameStateCtx(this,gameState,Cause.Growth);
 				if(availableActions.Count == 1) 
 					await TakeAction( availableActions[0], ctx );
 				else
 					await ResolveActions(ctx);
 			}
 
+			// (b) Pre Growth Track options
+			foreach(ITrackActionFactory action in Presence.RevealedActions)
+				if( !action.RunAfterGrowthResult )
+					await action.ActivateAsync( ctx );
+
+			// (c) Growth
 			int count = Growth.SelectionCount;
 			List<GrowthOption> remainingOptions = Growth.Options.ToList();
-
-			// !!! there is a bug here.  Somehow, count can exceed the # of options
 
 			while(count-- > 0) {
 				var currentOptions = remainingOptions.Where( o => o.GainEnergy + Energy >= 0 ).ToArray();
@@ -100,7 +104,8 @@ namespace SpiritIsland {
 				await GrowAndResolve( option, gameState );
 			}
 
-			await ApplyRevealedPresenceTracks( gameState );
+			// (d) Post Growth Track options
+			await ApplyRevealedPresenceTracks( ctx );
 
 		}
 
@@ -127,7 +132,11 @@ namespace SpiritIsland {
 
 		}
 
-		public async Task ApplyRevealedPresenceTracks(GameState gs) {
+		public Task ApplyRevealedPresenceTracks(GameState gs) {
+			var ctx = new SpiritGameStateCtx( this, gs, Cause.Growth );
+			return this.ApplyRevealedPresenceTracks(ctx);
+		}
+		protected async Task ApplyRevealedPresenceTracks( SpiritGameStateCtx ctx ) {
 
 			// Energy
 			Energy += EnergyPerTurn;
@@ -135,9 +144,9 @@ namespace SpiritIsland {
 
 
 			// Do actions AFTER energy and elements have been added - in case playing ManyMindsMoveAsOne - Pay 2 for power card.
-			var ctx = new SpiritGameStateCtx(this,gs,Cause.Growth);
-			foreach(var actions in Presence.RevealedActions)
-				await actions.ActivateAsync( ctx );
+			foreach(ITrackActionFactory action in Presence.RevealedActions)
+				if(action.RunAfterGrowthResult)
+					await action.ActivateAsync( ctx );
 
 		}
 
