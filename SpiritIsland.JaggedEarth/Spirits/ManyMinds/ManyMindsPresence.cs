@@ -9,8 +9,8 @@ namespace SpiritIsland.JaggedEarth {
 
 		public void Watch(GameState gs,ManyMindsMoveAsOne spirit) {
 			this.spirit = spirit; 
-			gs.Tokens.TokenMoved.ForEntireGame( TokenMoved );
-			gs.Tokens.TokenDestroyed.ForEntireGame( TokenDestroyed );
+			gs.Tokens.TokenMoved.ForGame.Add( TokenMoved );
+			gs.Tokens.TokenDestroyed.ForGame.Add( TokenDestroyed );
 		}
 
 		public override void PlaceOn( Space space, GameState gs ) {

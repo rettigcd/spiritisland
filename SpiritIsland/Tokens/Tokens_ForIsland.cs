@@ -12,9 +12,9 @@ namespace SpiritIsland {
 		public Tokens_ForIsland( GameState gs ) {
 			this.gameStateForEventArgs = gs;
 
-			gs.TimePasses_WholeGame += TokenAdded.OnEndOfRound;
-			gs.TimePasses_WholeGame += TokenMoved.OnEndOfRound;
-			gs.TimePasses_WholeGame += TokenDestroyed.OnEndOfRound;
+			gs.TimePasses_WholeGame += TokenAdded.ForRound.Clear;
+			gs.TimePasses_WholeGame += TokenMoved.ForRound.Clear;
+			gs.TimePasses_WholeGame += TokenDestroyed.ForRound.Clear;
 		}
 
 		public TokenCountDictionary this[Space space] {
@@ -80,9 +80,9 @@ namespace SpiritIsland {
 				.Join("\r\n");
 		}
 
-		public AsyncEvent<TokenAddedArgs> TokenAdded = new AsyncEvent<TokenAddedArgs>();
-		public AsyncEvent<TokenMovedArgs> TokenMoved = new AsyncEvent<TokenMovedArgs>();
-		public AsyncEvent<TokenDestroyedArgs> TokenDestroyed = new AsyncEvent<TokenDestroyedArgs>();
+		public DualAsyncEvent<TokenAddedArgs> TokenAdded = new DualAsyncEvent<TokenAddedArgs>();
+		public DualAsyncEvent<TokenMovedArgs> TokenMoved = new DualAsyncEvent<TokenMovedArgs>();
+		public DualAsyncEvent<TokenDestroyedArgs> TokenDestroyed = new DualAsyncEvent<TokenDestroyedArgs>();
 
 		public Task DestroyIslandToken( Space space, int countToDestroy, Token token, Cause source ) {
 

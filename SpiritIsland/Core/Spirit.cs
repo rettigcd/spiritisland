@@ -11,7 +11,7 @@ namespace SpiritIsland {
 
 		public Spirit( SpiritPresence presence, params PowerCard[] initialCards ){
 			Presence = presence;
-			Presence.TrackRevealed.ForEntireGame( Presence_TrackRevealed );
+			Presence.TrackRevealed.ForGame.Add( Presence_TrackRevealed );
 
 			foreach(var card in initialCards)
 				AddCardToHand(card);

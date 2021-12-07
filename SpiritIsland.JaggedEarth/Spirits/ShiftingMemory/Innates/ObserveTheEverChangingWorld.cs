@@ -32,9 +32,9 @@ namespace SpiritIsland.JaggedEarth {
 				tokenSummary = ctx.Tokens.Summary;
 
 				handlerKeys = new Guid[3];
-				handlerKeys[0] = ctx.GameState.Tokens.TokenAdded.ForEntireGame( Track );
-				handlerKeys[1] = ctx.GameState.Tokens.TokenDestroyed.ForEntireGame( Track );
-				handlerKeys[2] = ctx.GameState.Tokens.TokenMoved.ForEntireGame( Track );
+				handlerKeys[0] = ctx.GameState.Tokens.TokenAdded.ForGame.Add( Track );
+				handlerKeys[1] = ctx.GameState.Tokens.TokenDestroyed.ForGame.Add( Track );
+				handlerKeys[2] = ctx.GameState.Tokens.TokenMoved.ForGame.Add( Track );
 			}
 
 			Task Track( GameState gs, TokenAddedArgs x ) => Check(x.Space);
@@ -63,9 +63,9 @@ namespace SpiritIsland.JaggedEarth {
 			}
 
 			Task StopWatchingSpace( GameState gs ) {
-				gs.Tokens.TokenAdded.Remove( handlerKeys[0] );
-				gs.Tokens.TokenDestroyed.Remove( handlerKeys[1] );
-				gs.Tokens.TokenMoved.Remove( handlerKeys[2] );
+				gs.Tokens.TokenAdded.ForGame.Remove( handlerKeys[0] );
+				gs.Tokens.TokenDestroyed.ForGame.Remove( handlerKeys[1] );
+				gs.Tokens.TokenMoved.ForGame.Remove( handlerKeys[2] );
 				return Task.CompletedTask;
 			}
 		}

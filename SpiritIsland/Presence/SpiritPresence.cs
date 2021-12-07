@@ -13,8 +13,8 @@ namespace SpiritIsland {
 			Energy = energy;
 			CardPlays = cardPlays;
 
-			Energy.TrackRevealed.ForEntireGame( OnRevealed );
-			CardPlays.TrackRevealed.ForEntireGame( OnRevealed );
+			Energy.TrackRevealed.ForGame.Add( OnRevealed );
+			CardPlays.TrackRevealed.ForGame.Add( OnRevealed );
 
 			foreach(var r in Energy.Revealed) CheckEnergyAndCardPlays( r);
 			foreach(var r in CardPlays.Revealed) CheckEnergyAndCardPlays( r);
@@ -170,7 +170,7 @@ namespace SpiritIsland {
 
 		public IReadOnlyCollection<Space> Placed => placed.AsReadOnly();
 
-		public AsyncEvent<Track> TrackRevealed { get; } = new AsyncEvent<Track>();
+		public DualAsyncEvent<Track> TrackRevealed { get; } = new DualAsyncEvent<Track>();
 
 		readonly List<Space> placed = new List<Space>();
 

@@ -27,9 +27,9 @@ namespace SpiritIsland {
 			Tokens = new Tokens_ForIsland( this );
 
 			TimePasses_WholeGame += Heal;
-			TimePasses_WholeGame += PreRavaging.OnEndOfRound;
-			TimePasses_WholeGame += PreBuilding.OnEndOfRound;
-			TimePasses_WholeGame += PreExplore.OnEndOfRound;
+			TimePasses_WholeGame += PreRavaging.ForRound.Clear;
+			TimePasses_WholeGame += PreBuilding.ForRound.Clear;
+			TimePasses_WholeGame += PreExplore.ForRound.Clear;
 		}
 
 
@@ -142,21 +142,21 @@ namespace SpiritIsland {
 		}
 
 		public void SkipRavage( params Space[] spacesToSkip ) {
-			PreRavaging.ForThisRound( ( gs, args ) => {
+			PreRavaging.ForRound.Add( ( gs, args ) => {
 				foreach(var skip in spacesToSkip)
 					args.Skip1(skip);
 			} );
 		}
 
 		public void Skip1Build( params Space[] target ) {
-			PreBuilding.ForThisRound( (GameState gs, BuildingEventArgs args) => {
+			PreBuilding.ForRound.Add( (GameState gs, BuildingEventArgs args) => {
 				foreach(var skip in target)
 					args.Skip1(skip);
 			});
 		}
 
 		public void SkipExplore( params Space[] target ) {
-			PreExplore.ForThisRound( ( gs, args ) => {
+			PreExplore.ForRound.Add( ( gs, args ) => {
 				foreach(var space in target)
 					args.Skip(space);
 			} );
@@ -275,13 +275,13 @@ namespace SpiritIsland {
 
 		// - Events -
 		public event Action<ILogEntry> NewLogEntry;
-		public AsyncEvent<RavagingEventArgs> PreRavaging   = new AsyncEvent<RavagingEventArgs>();	// A Spread of Rampant Green - stop ravage
-		public AsyncEvent<BuildingEventArgs> PreBuilding   = new AsyncEvent<BuildingEventArgs>();	// A Spread of Rampant Green - stop build
-		public AsyncEvent<ExploreEventArgs> PreExplore     = new AsyncEvent<ExploreEventArgs>();
-		public AsyncEvent<InvadersRavaged> InvadersRavaged = new AsyncEvent<InvadersRavaged>();
+		public DualAsyncEvent<RavagingEventArgs> PreRavaging   = new DualAsyncEvent<RavagingEventArgs>();	// A Spread of Rampant Green - stop ravage
+		public DualAsyncEvent<BuildingEventArgs> PreBuilding   = new DualAsyncEvent<BuildingEventArgs>();	// A Spread of Rampant Green - stop build
+		public DualAsyncEvent<ExploreEventArgs> PreExplore     = new DualAsyncEvent<ExploreEventArgs>();
+		public DualAsyncEvent<InvadersRavaged> InvadersRavaged = new DualAsyncEvent<InvadersRavaged>();
 		public event Action<GameState> TimePasses_WholeGame;												// Spirit cleanup
 		public Stack<Func<GameState, Task>> TimePasses_ThisRound = new Stack<Func<GameState, Task>>();      // Gift of Power
-		public AsyncEvent<LandDamagedArgs> LandDamaged = new AsyncEvent<LandDamagedArgs>();
+		public DualAsyncEvent<LandDamagedArgs> LandDamaged = new DualAsyncEvent<LandDamagedArgs>();
 
 		#endregion
 

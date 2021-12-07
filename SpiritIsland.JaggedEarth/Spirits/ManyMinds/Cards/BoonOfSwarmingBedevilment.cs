@@ -9,7 +9,7 @@ namespace SpiritIsland.JaggedEarth {
 			// for the rest of this turn,
 			// each of target Spirit's presence grants Defend 1 in its land.
 			// !!! re write this to add the defence now, then drag it around if/when the presence is moved
-			ctx.GameState.PreRavaging.ForThisRound( ( gs, args ) => {
+			ctx.GameState.PreRavaging.ForRound.Add( ( gs, args ) => {
 				foreach(var space in ctx.Other.Presence.Placed)
 					ctx.OtherCtx.Target( space ).Defend( 1 );
 			} );

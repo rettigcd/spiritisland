@@ -31,7 +31,7 @@ namespace SpiritIsland.Tests {
 
 			// Logging
 			ravages = new List<InvadersRavaged>();
-			gameState.InvadersRavaged.ForEntireGame( (gs,args) => { ravages.Add(args); return Task.CompletedTask; } );
+			gameState.InvadersRavaged.ForGame.Add( (gs,args) => { ravages.Add(args); return Task.CompletedTask; } );
 			Log = new List<string>();
 			gameState.NewLogEntry += (e) => Log.Add(e.Msg);
 

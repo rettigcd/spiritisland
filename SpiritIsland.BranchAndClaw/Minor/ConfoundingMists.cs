@@ -17,7 +17,7 @@ namespace SpiritIsland.BranchAndClaw {
 		static void PushFutureInvadersFromLands( TargetSpaceCtx ctx ) {
 
 			// each invader added to target land this turn may be immediatley pushed to any adjacent land
-			ctx.GameState.Tokens.TokenAdded.ForThisRound( PushAddedInvader );
+			ctx.GameState.Tokens.TokenAdded.ForRound.Add( PushAddedInvader );
 
 			async Task PushAddedInvader( GameState gs, TokenAddedArgs args ) {
 				if(args.Space == ctx.Space && args.Token.Generic.IsOneOf( Invader.Explorer, Invader.Town, Invader.City )) {

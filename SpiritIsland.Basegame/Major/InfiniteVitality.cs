@@ -32,7 +32,7 @@ namespace SpiritIsland.Basegame {
 				BoostDahanHealth( ctx, 4 );
 
 				// if dahan is moved out of land, reduce to Healthy
-				ctx.GameState.Tokens.TokenMoved.ForThisRound( ( gs, args ) => {
+				ctx.GameState.Tokens.TokenMoved.ForRound.Add( ( gs, args ) => {
 					if(args.Token.Generic == TokenType.Dahan && args.From == ctx.Space)
 						ReduceDahanToMax( ctx, gs, args );
 				} );

@@ -9,7 +9,7 @@ namespace SpiritIsland.BranchAndClaw {
 		[FearLevel( 1, "During the next normal build, skip the lowest numbered land matching the invader card on each board." )]
 		public Task Level1( FearCtx ctx ) {
 
-			ctx.GameState.PreBuilding.ForThisRound( ( gs, args ) => {
+			ctx.GameState.PreBuilding.ForRound.Add( ( gs, args ) => {
 
 				// During the next normal build, skip the lowest numbered land matching the invader card on each board
 
@@ -48,7 +48,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 		static void SkipNextNormalBuild( FearCtx ctx ) {
 			// !! ?? are we supposed to skip just 1 card or ALL Build cards?  This just skips 1
-			ctx.GameState.PreBuilding.ForThisRound( ( gs, args ) => {
+			ctx.GameState.PreBuilding.ForRound.Add( ( gs, args ) => {
 				foreach(var space in args.SpaceCounts.Keys.ToArray())
 					args.Skip1( space );
 			} );
