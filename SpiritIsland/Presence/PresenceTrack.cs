@@ -40,7 +40,7 @@ namespace SpiritIsland {
 			return true;
 		}
 
-		public DualAsyncEvent<Track> TrackRevealed { get; } = new DualAsyncEvent<Track>();
+		public AsyncEvent<Track> TrackRevealed { get; } = new AsyncEvent<Track>();
 
 		public virtual bool Return( Track track ) {
 			if(slots[revealedCount - 1] != track) return false;

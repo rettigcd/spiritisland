@@ -87,7 +87,7 @@ namespace SpiritIsland {
 					await ResolveActions(ctx);
 			}
 
-			// (b) Pre Growth Track options
+			// (b) Pre-Growth Track options
 			foreach(ITrackActionFactory action in Presence.RevealedActions)
 				if( !action.RunAfterGrowthResult )
 					await action.ActivateAsync( ctx );
@@ -104,7 +104,7 @@ namespace SpiritIsland {
 				await GrowAndResolve( option, gameState );
 			}
 
-			// (d) Post Growth Track options
+			// (d) Post-Growth Track options
 			await ApplyRevealedPresenceTracks( ctx );
 
 		}
@@ -128,8 +128,9 @@ namespace SpiritIsland {
 		async Task Presence_TrackRevealed( GameState gs, Track track ) {
 			Elements.AddRange( track.Elements );
 
-			if( track.Action != null && (gs.Phase != Phase.Growth || !track.Action.RunAfterGrowthResult) )
-				await track.Action.ActivateAsync(new SpiritGameStateCtx(this,gs,Cause.Power));
+			if( track.Action != null)
+				if( gs.Phase != Phase.Growth || !track.Action.RunAfterGrowthResult )
+					await track.Action.ActivateAsync(new SpiritGameStateCtx(this,gs,Cause.Power));
 		}
 
 		public Task ApplyRevealedPresenceTracks(GameState gs) {

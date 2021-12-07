@@ -35,7 +35,7 @@ namespace SpiritIsland {
 			return false;
 		}
 
-		public DualAsyncEvent<Track> TrackRevealed { get; } = new DualAsyncEvent<Track>();
+		public AsyncEvent<Track> TrackRevealed { get; } = new AsyncEvent<Track>();
 
 		public bool Return( Track track ) {
 			return parts.Any(part=>part.Return(track));

@@ -16,7 +16,7 @@ namespace SpiritIsland {
 		void AddElements( ElementCounts elements );
 		Task<bool> Reveal( Track track, GameState gameState );
 		bool Return( Track track );
-		DualAsyncEvent<Track> TrackRevealed { get; }
+		AsyncEvent<Track> TrackRevealed { get; }
 
 
 		// Save/Load

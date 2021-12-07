@@ -13,8 +13,8 @@ namespace SpiritIsland {
 			Energy = energy;
 			CardPlays = cardPlays;
 
-			Energy.TrackRevealed.ForGame.Add( OnRevealed );
-			CardPlays.TrackRevealed.ForGame.Add( OnRevealed );
+			Energy.TrackRevealed.Add( OnRevealed );
+			CardPlays.TrackRevealed.Add( OnRevealed );
 
 			foreach(var r in Energy.Revealed) CheckEnergyAndCardPlays( r);
 			foreach(var r in CardPlays.Revealed) CheckEnergyAndCardPlays( r);
