@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
@@ -13,9 +14,10 @@ namespace SpiritIsland {
 
 		// Modify/Act
 		void AddElements( ElementCounts elements );
-		bool Reveal( Track track );
+		Task<bool> Reveal( Track track, GameState gameState );
 		bool Return( Track track );
-		event Action<Track> TrackRevealed;
+		AsyncEvent<Track> TrackRevealed { get; }
+
 
 		// Save/Load
 		void LoadFrom( IMemento<IPresenceTrack> memento );

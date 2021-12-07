@@ -11,7 +11,7 @@ namespace SpiritIsland {
 
 		public Spirit( SpiritPresence presence, params PowerCard[] initialCards ){
 			Presence = presence;
-			Presence.TrackRevealed += Presence_TrackRevealed;
+			Presence.TrackRevealed.ForEntireGame( Presence_TrackRevealed );
 
 			foreach(var card in initialCards)
 				AddCardToHand(card);
@@ -125,11 +125,11 @@ namespace SpiritIsland {
 				AddActionFactory( action );
 		}
 
-		void Presence_TrackRevealed( Track track ) {
-
+		async Task Presence_TrackRevealed( GameState gs, Track track ) {
 			Elements.AddRange( track.Elements );
-			// !! should we also execute attached actions?
 
+			if( track.Action != null && (gs.Phase != Phase.Growth || !track.Action.RunAfterGrowthResult) )
+				await track.Action.ActivateAsync(new SpiritGameStateCtx(this,gs,Cause.Power));
 		}
 
 		public Task ApplyRevealedPresenceTracks(GameState gs) {

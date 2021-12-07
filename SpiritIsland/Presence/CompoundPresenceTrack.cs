@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SpiritIsland {
 	public class CompoundPresenceTrack : IPresenceTrack {
@@ -24,14 +25,17 @@ namespace SpiritIsland {
 				part.AddElements( elements );
 		}
 
-		public bool Reveal( Track track ) {
-			bool revealed = parts.Any(part=>part.Reveal(track));
-			if(revealed)
-				TrackRevealed?.Invoke(track);
-			return revealed;
+		public async Task<bool> Reveal( Track track, GameState gs ) {
+			foreach(var part in parts) {
+				if(await part.Reveal( track, gs )) {
+					await TrackRevealed.InvokeAsync( gs, track );
+					return true;
+				}
+			}
+			return false;
 		}
-		public event Action<Track> TrackRevealed;
 
+		public AsyncEvent<Track> TrackRevealed { get; } = new AsyncEvent<Track>();
 
 		public bool Return( Track track ) {
 			return parts.Any(part=>part.Return(track));

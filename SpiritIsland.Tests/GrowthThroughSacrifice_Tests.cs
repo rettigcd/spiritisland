@@ -21,7 +21,7 @@ namespace SpiritIsland.Tests {
 			((TestPresenceTrack)fxt.spirit.Presence.Energy).OverrideTrack(1, Track.FireEnergy);
 
 			// Given: Spirits can play 2 cards
-			fxt.spirit.Presence.CardPlays.Reveal( fxt.spirit.Presence.CardPlays.RevealOptions.Single() );
+			fxt.spirit.Presence.CardPlays.Reveal( fxt.spirit.Presence.CardPlays.RevealOptions.Single(), null );
 
 			// Given: Spirit has 2 presence on A5
 			fxt.spirit.Presence.PlaceOn(fxt.gameState.Island.Boards[0][5],fxt.gameState);

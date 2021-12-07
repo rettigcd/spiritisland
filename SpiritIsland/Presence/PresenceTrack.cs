@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
@@ -32,14 +33,14 @@ namespace SpiritIsland {
 
 		public IEnumerable<Track> Revealed => slots.Take( revealedCount );
 
-		public virtual bool Reveal( Track track ) {
+		public virtual async Task<bool> Reveal( Track track, GameState gameState ) {
 			if(revealedCount == slots.Length || slots[revealedCount] != track) return false;
 			++revealedCount;
-			TrackRevealed?.Invoke(track);
+			await TrackRevealed.InvokeAsync( gameState, track );
 			return true;
 		}
 
-		public event Action<Track> TrackRevealed;
+		public AsyncEvent<Track> TrackRevealed { get; } = new AsyncEvent<Track>();
 
 		public virtual bool Return( Track track ) {
 			if(slots[revealedCount - 1] != track) return false;

@@ -13,11 +13,11 @@ namespace SpiritIsland {
 			Energy = energy;
 			CardPlays = cardPlays;
 
-			Energy.TrackRevealed += OnRevealed;
-			CardPlays.TrackRevealed += OnRevealed;
+			Energy.TrackRevealed.ForEntireGame( OnRevealed );
+			CardPlays.TrackRevealed.ForEntireGame( OnRevealed );
 
-			foreach(var r in Energy.Revealed) OnRevealed(r);
-			foreach(var r in CardPlays.Revealed) OnRevealed(r);
+			foreach(var r in Energy.Revealed) CheckEnergyAndCardPlays( r);
+			foreach(var r in CardPlays.Revealed) CheckEnergyAndCardPlays( r);
 		}
 
 		#endregion
@@ -68,10 +68,10 @@ namespace SpiritIsland {
 
 		#region Game-Play things you can do with presence
 
-		public virtual Task Place( IOption from, Space to, GameState gs ) {
+		public virtual async Task Place( IOption from, Space to, GameState gs ) {
 			// from
 			if(from is Track track) {
-				RevealTrack( track );
+				await RevealTrack( track, gs );
 			} else if(from is Space space) {
 				if( Spaces.Contains(space) )
 					RemoveFrom( space, gs );
@@ -81,22 +81,25 @@ namespace SpiritIsland {
 
 			// To
 			PlaceOn( to, gs );
-			return Task.CompletedTask;
 		}
 
-		protected virtual void RevealTrack( Track track ) {
+		protected virtual async Task RevealTrack( Track track, GameState gs ) {
 			if(track == Track.Destroyed && Destroyed > 0)
 				--Destroyed;
-			else if( !( Energy.Reveal(track) || CardPlays.Reveal(track) ) )
+			else if( !( await Energy.Reveal(track,gs) || await CardPlays.Reveal(track,gs) ) )
 				throw new ArgumentException( "Can't pull from track:" + track.ToString() );
 		}
 
-		void OnRevealed(Track track) {
-			if( track.Energy.HasValue && EnergyPerTurn < track.Energy.Value)
+		Task OnRevealed(GameState gs, Track track) {
+			CheckEnergyAndCardPlays( track );
+			return TrackRevealed.InvokeAsync( gs, track );
+		}
+
+		private void CheckEnergyAndCardPlays( Track track ) {
+			if(track.Energy.HasValue && EnergyPerTurn < track.Energy.Value)
 				EnergyPerTurn = track.Energy.Value;
-			if( track.CardPlay.HasValue && CardPlayCount < track.CardPlay.Value)
+			if(track.CardPlay.HasValue && CardPlayCount < track.CardPlay.Value)
 				CardPlayCount = track.CardPlay.Value;
-			TrackRevealed?.Invoke( track );
 		}
 
 		public virtual Task ReturnDestroyedToTrack( Track dst, GameState gs ) {
@@ -167,7 +170,7 @@ namespace SpiritIsland {
 
 		public IReadOnlyCollection<Space> Placed => placed.AsReadOnly();
 
-		public event Action<Track> TrackRevealed;
+		public AsyncEvent<Track> TrackRevealed { get; } = new AsyncEvent<Track>();
 
 		readonly List<Space> placed = new List<Space>();
 

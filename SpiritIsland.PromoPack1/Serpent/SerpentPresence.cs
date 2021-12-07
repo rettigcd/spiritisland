@@ -32,11 +32,11 @@ namespace SpiritIsland.PromoPack1 {
 
 		public int MaxPresenceOnBoard => new int[]{5,7,8,10,11,12,13 }[AbsorbedPresences.Count];
 
-		protected override void RevealTrack( Track track ) {
-			base.RevealTrack( track );
+		protected override async Task RevealTrack( Track track, GameState gs ) {
+			await base.RevealTrack( track, gs );
 			// When top row clears earth energy, clear the lower one too
 			if( track == Track.EarthEnergy )
-				base.RevealTrack( fakeEarth );
+				await base.RevealTrack( fakeEarth, gs );
 		}
 	}
 
