@@ -40,7 +40,7 @@ namespace SpiritIsland.Tests.Core {
 			// Given: spirit has one place presence action
 			_ = When_Growing(0);
 
-			User.PlacePresenceLocations( spirit.Presence.Energy.RemovableOptions.Single(), "A1;A2" );
+			User.PlacePresenceLocations( spirit.Presence.Energy.RevealOptions.Single(), "A1;A2" );
 
 			spirit.Presence.Energy.Revealed.Count().ShouldBe(2);
 		}
@@ -48,7 +48,7 @@ namespace SpiritIsland.Tests.Core {
 		[Fact]
 		public void PullsFrom_CardTrack(){
 			_ = When_Growing( 0 );
-			User.PlacePresenceLocations( spirit.Presence.CardPlays.RemovableOptions.Single(), "A1;A2" );
+			User.PlacePresenceLocations( spirit.Presence.CardPlays.RevealOptions.Single(), "A1;A2" );
 			spirit.Presence.CardPlays.Revealed.Count().ShouldBe(2);
 		}
 

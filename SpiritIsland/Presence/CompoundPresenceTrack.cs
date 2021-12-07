@@ -11,7 +11,7 @@ namespace SpiritIsland {
 
 		readonly IPresenceTrack[] parts;
 
-		public IEnumerable<Track> RemovableOptions => parts.SelectMany(p=>p.RemovableOptions);
+		public IEnumerable<Track> RevealOptions => parts.SelectMany(p=>p.RevealOptions);
 
 		public IEnumerable<Track> ReturnableOptions => parts.SelectMany(p=>p.ReturnableOptions);
 
@@ -24,8 +24,8 @@ namespace SpiritIsland {
 				part.AddElements( elements );
 		}
 
-		public bool Remove( Track track ) {
-			bool revealed = parts.Any(part=>part.Remove(track));
+		public bool Reveal( Track track ) {
+			bool revealed = parts.Any(part=>part.Reveal(track));
 			if(revealed)
 				TrackRevealed?.Invoke(track);
 			return revealed;

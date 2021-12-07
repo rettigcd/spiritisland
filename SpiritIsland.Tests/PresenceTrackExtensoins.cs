@@ -6,7 +6,7 @@ namespace SpiritIsland.Tests {
 
 		static public void SetRevealedCount( this IPresenceTrack sut, int value ) {
 			while(sut.Revealed.Count()<value)
-				sut.Remove(sut.RemovableOptions.Single());
+				sut.Reveal(sut.RevealOptions.Single());
 		}
 
 

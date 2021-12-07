@@ -53,7 +53,7 @@ namespace SpiritIsland.Tests.Basegame {
 			//  When: Activates Card
 			user.SelectsFastAction( IndomitableClaim.Name );
 			user.TargetsLand_IgnoreOptions( spaceCtx.Space.Label );
-			user.PullsPresenceFromTrack(ctx.Self.Presence.Energy.RemovableOptions.Single());
+			user.PullsPresenceFromTrack(ctx.Self.Presence.Energy.RevealOptions.Single());
 
 			// Then: nothing changed
 			spaceCtx.Tokens.InvaderSummary.ShouldBe( "3E@1", "should be same that we started with" );

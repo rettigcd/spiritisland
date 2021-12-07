@@ -22,7 +22,7 @@ namespace SpiritIsland {
 		#region Tracks / Board
 
 		public virtual IEnumerable<Track> PlaceableOptions 
-			=> Energy.RemovableOptions.Union( CardPlays.RemovableOptions );
+			=> Energy.RevealOptions.Union( CardPlays.RevealOptions );
 
 		public IEnumerable<Track> GetReturnableTrackOptions()
 			=> Energy.ReturnableOptions.Union( CardPlays.ReturnableOptions );
@@ -68,7 +68,7 @@ namespace SpiritIsland {
 		public virtual Task Place( IOption from, Space to, GameState gs ) {
 			// from
 			if(from is Track track) {
-				RemoveFromTrack( track );
+				RevealTrack( track );
 			} else if(from is Space space) {
 				if( Spaces.Contains(space) )
 					RemoveFrom( space, gs );
@@ -81,10 +81,10 @@ namespace SpiritIsland {
 			return Task.CompletedTask;
 		}
 
-		protected virtual void RemoveFromTrack( Track track ) {
+		protected virtual void RevealTrack( Track track ) {
 			if(track == Track.Destroyed && Destroyed > 0)
 				--Destroyed;
-			else if( !( Energy.Remove(track) || CardPlays.Remove(track) ) )
+			else if( !( Energy.Reveal(track) || CardPlays.Reveal(track) ) )
 				throw new ArgumentException( "Can't pull from track:" + track.ToString() );
 		}
 

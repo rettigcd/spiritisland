@@ -18,11 +18,11 @@ namespace SpiritIsland.PromoPack1 {
 		public override IEnumerable<Track> PlaceableOptions { get {
 			if(MaxPresenceOnBoard == Placed.Count ) yield break;
 
-			var energyNext = Energy.RemovableOptions.FirstOrDefault();
+			var energyNext = Energy.RevealOptions.FirstOrDefault();
 			if( energyNext != null && (energyNext != Track.EarthEnergy || CardPlays.Revealed.Count() == 4 ) )
 				yield return energyNext;
 
-			var cardNext = CardPlays.RemovableOptions.FirstOrDefault();
+			var cardNext = CardPlays.RevealOptions.FirstOrDefault();
 			if( cardNext != null && cardNext != fakeEarth )  // don't let them select the fake earth
 				yield return cardNext;
 
@@ -32,11 +32,11 @@ namespace SpiritIsland.PromoPack1 {
 
 		public int MaxPresenceOnBoard => new int[]{5,7,8,10,11,12,13 }[AbsorbedPresences.Count];
 
-		protected override void RemoveFromTrack( Track track ) {
-			base.RemoveFromTrack( track );
+		protected override void RevealTrack( Track track ) {
+			base.RevealTrack( track );
 			// When top row clears earth energy, clear the lower one too
 			if( track == Track.EarthEnergy )
-				base.RemoveFromTrack( fakeEarth );
+				base.RevealTrack( fakeEarth );
 		}
 	}
 

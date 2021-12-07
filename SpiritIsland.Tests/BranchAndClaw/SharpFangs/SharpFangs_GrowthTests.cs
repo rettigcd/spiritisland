@@ -200,7 +200,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 		void User_GrowthB_PlacePresence() {
 			User.Growth_SelectsOption( "PlacePresence(3,beast or jungle)" );
 			// Skip Selecting the Action due to AutoSelectSingle
-			User.PlacePresenceLocations( spirit.Presence.Energy.RemovableOptions.Single(), "A3;A7;A8" );
+			User.PlacePresenceLocations( spirit.Presence.Energy.RevealOptions.Single(), "A3;A7;A8" );
 		}
 
 		void User_GrowthC_DrawCard_GainEnergy() {

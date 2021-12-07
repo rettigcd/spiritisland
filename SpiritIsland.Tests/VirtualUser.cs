@@ -49,7 +49,7 @@ namespace SpiritIsland.Tests {
 			Choose( selection );
 		}
 
-		public void Growth_PlacesEnergyPresence( string placeOptions ) => PlacesPresence( spirit.Presence.Energy.RemovableOptions.Single(), placeOptions );
+		public void Growth_PlacesEnergyPresence( string placeOptions ) => PlacesPresence( spirit.Presence.Energy.RevealOptions.Single(), placeOptions );
 
 		public void Growth_ActivatesExtraCardPlay() { // Rampant Green
 			var current = userPortal.GetCurrent();
@@ -60,15 +60,15 @@ namespace SpiritIsland.Tests {
 		public void Growth_PlacesPresence( string placeOptions ) {
 			string[] parts = placeOptions.Split('>');
 			Track source = parts[0].ToLower() switch {
-				"energy" => spirit.Presence.Energy.RemovableOptions.Single(),
-				"cardplay" => spirit.Presence.CardPlays.RemovableOptions.Single(),
-				"cardplays" => spirit.Presence.CardPlays.RemovableOptions.Single(),
+				"energy" => spirit.Presence.Energy.RevealOptions.Single(),
+				"cardplay" => spirit.Presence.CardPlays.RevealOptions.Single(),
+				"cardplays" => spirit.Presence.CardPlays.RevealOptions.Single(),
 				_ => throw new ArgumentOutOfRangeException(nameof(placeOptions)),
 			};
 			PlacesPresence( source, parts[1] );
 		}
 
-		public void PlacesCardPlayPresence( string placeOptions ) => PlacesPresence( spirit.Presence.CardPlays.RemovableOptions.Single(), placeOptions );
+		public void PlacesCardPlayPresence( string placeOptions ) => PlacesPresence( spirit.Presence.CardPlays.RevealOptions.Single(), placeOptions );
 
 		public void PlacesPresence( Track source, string placeOptions ) {
 

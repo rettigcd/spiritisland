@@ -14,7 +14,7 @@ namespace SpiritIsland {
 
 		#endregion
 
-		public virtual IEnumerable<Track> RemovableOptions {
+		public virtual IEnumerable<Track> RevealOptions {
 			get {
 				if(revealedCount < slots.Length)
 					yield return slots[revealedCount];
@@ -32,7 +32,7 @@ namespace SpiritIsland {
 
 		public IEnumerable<Track> Revealed => slots.Take( revealedCount );
 
-		public virtual bool Remove( Track track ) {
+		public virtual bool Reveal( Track track ) {
 			if(revealedCount == slots.Length || slots[revealedCount] != track) return false;
 			++revealedCount;
 			TrackRevealed?.Invoke(track);
