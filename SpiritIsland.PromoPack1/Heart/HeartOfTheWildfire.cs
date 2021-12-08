@@ -11,12 +11,18 @@ namespace SpiritIsland.PromoPack1 {
 
 		public const string Name = "Heart of the Wildfire";
 
-		static Track FirePresence => Track.MkElement(Element.Fire); // same as FireEnergy but we need separate object so user can distingquish top/bottom.
-
+		static Track FireCard => Track.MkCard(Element.Fire);
+		static Track FirePlantEnergy => new Track( "fire,plant", Element.Fire, Element.Plant ) {
+			Icon = new IconDescriptor {
+				 BackgroundImg = ImageNames.Coin,
+				 ContentImg = ImageNames.For(Element.Fire),
+				 ContentImg2 = ImageNames.For(Element.Plant)
+			}
+		};
 		public HeartOfTheWildfire() : base( 
 			new SpiritPresence(
-				new PresenceTrack( Track.Energy0, Track.FireEnergy, Track.Energy1, Track.Energy2, new Track("", Element.Fire, Element.Plant ), Track.Energy3 ),
-				new PresenceTrack( Track.Card1, FirePresence, Track.Card2, Track.Card3, FirePresence, Track.Card4 )
+				new PresenceTrack( Track.Energy0, Track.FireEnergy, Track.Energy1, Track.Energy2, FirePlantEnergy, Track.Energy3 ),
+				new PresenceTrack( Track.Card1, FireCard, Track.Card2, Track.Card3, FireCard, Track.Card4 )
 			)
 			,PowerCard.For<AsphyxiatingSmoke>()
 			,PowerCard.For<FlashFires>()

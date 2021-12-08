@@ -16,12 +16,21 @@ namespace SpiritIsland.JaggedEarth {
 		};
 
 		static Track Prepare(int energy){
-			var t = Track.MkEnergy( energy );
-			t.Action = new PrepareElement($"{energy} energy");
-			return t;
+			return new Track(energy.ToString()+" energy" ){ 
+				Energy = energy,
+				Action = new PrepareElement( $"{energy} energy" ),
+				Icon = new IconDescriptor {
+					BackgroundImg = ImageNames.Coin,
+					Text = energy.ToString(),
+					Sub = new IconDescriptor { BackgroundImg = ImageNames.PrepareEl }
+				},
+			};
 		}
 
-		static Track DiscardElementsForCardPlay => new Track("discard 2 elements for card play" ) { Action = new DiscardElementsForCardPlay(2) };
+		static Track DiscardElementsForCardPlay => new Track("discard 2 elements for card play" ) { 
+			Action = new DiscardElementsForCardPlay(2),
+			Icon = new IconDescriptor { BackgroundImg = ImageNames.Discard2PrepForCardPlay },
+		};
 
 		public ShiftingMemoryOfAges() 
 			:base(

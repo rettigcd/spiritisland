@@ -73,7 +73,7 @@ namespace SpiritIsland.WinForms {
 
 		#region private
 
-		Bitmap GetResourceImage( string filename ) {
+		public Bitmap GetResourceImage( string filename ) {
 			var imgStream = assembly.GetManifestResourceStream( "SpiritIsland.WinForms.images."+filename );
 			return new Bitmap( imgStream );
 		}

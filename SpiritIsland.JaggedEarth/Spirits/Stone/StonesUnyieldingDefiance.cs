@@ -13,13 +13,41 @@ namespace SpiritIsland.JaggedEarth {
 			new SpecialRule("Deep Layers Expposed to the Surface", "The first time you uncover each of your +1 Card Play presence spaces, gain a Minor Power.") 
 		};
 
-		static Track AddCardPlay => new Track( "PlayExtraCardThisTurn" ) { Action = new DrawMinorOnceAndPlayExtraCardThisTurn() }; // ! Must create separate instances so the draw Minor card works
-		static Track EarthReclaim => new Track( "earth energy", Element.Earth ) { Action = new Reclaim1() };
+		static Track AddCardPlay => new Track( "PlayExtraCardThisTurn" ) { 
+			Action = new DrawMinorOnceAndPlayExtraCardThisTurn(),
+			Icon = new IconDescriptor {
+				ContentImg = ImageNames.Plus1CardPlay,
+				Super = new IconDescriptor { BackgroundImg = ImageNames.Minor }
+			}
+		};
 
-		public StonesUnyieldingDefiance() : base(
+		static Track EarthReclaim => new Track( "earth card", Element.Earth ) { 
+			Action = new Reclaim1(),
+			Icon = new IconDescriptor {
+				BackgroundImg = ImageNames.For( Element.Earth ),
+				Sub = new IconDescriptor { BackgroundImg = ImageNames.Reclaim1 }
+			}
+		};
+
+		static Track EarthAndAny => new Track( "earth any", Element.Earth, Element.Any ) {
+			Icon = new IconDescriptor {
+				BackgroundImg = ImageNames.For( Element.Earth ),
+				Sub = new IconDescriptor { BackgroundImg = ImageNames.For( Element.Any )}
+			}
+		};
+
+		static Track Card2Earth => new Track( "2 cardplay,earth", Element.Earth ) { 
+			CardPlay = 2,
+			Icon = new IconDescriptor {
+				BackgroundImg = ImageNames.CardPlay, Text = "2",
+				Sub = new IconDescriptor { BackgroundImg = ImageNames.For( Element.Earth ) }
+			}
+		};
+
+	public StonesUnyieldingDefiance() : base(
 			new SpiritPresence(
 				new PresenceTrack( Track.Energy2, Track.Energy3, AddCardPlay, Track.Energy4, AddCardPlay, Track.Energy6, AddCardPlay ),
-				new PresenceTrack( Track.Card1, Track.EarthEnergy, Track.EarthEnergy, EarthReclaim, Track.MkElement(Element.Earth,Element.Any), new Track("2 cardplay,earth", Element.Earth){ CardPlay=2 } )
+				new PresenceTrack( Track.Card1, Track.MkCard( Element.Earth ), Track.MkCard( Element.Earth ), EarthReclaim, EarthAndAny, Card2Earth )
 			)
 			,PowerCard.For<JaggedShardsPushFromTheEarth>()
 			,PowerCard.For<PlowsShatterOnRockyGround>()

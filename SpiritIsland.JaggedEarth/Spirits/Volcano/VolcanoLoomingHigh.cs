@@ -18,7 +18,7 @@ namespace SpiritIsland.JaggedEarth {
 		public VolcanoLoomingHigh():base(
 			new VolcanoPresence(
 				new PresenceTrack(Track.Energy1,Track.Energy2,Track.EarthEnergy,Track.Energy3,Track.Energy4,Track.Energy5),
-				new PresenceTrack(Track.Card1,Track.FireEnergy,Track.MkElement(Element.Earth),Track.Card2,Track.AirEnergy,Track.Card3,Track.FireEnergy,Track.Card4)
+				new PresenceTrack(Track.Card1,Track.MkCard(Element.Fire),Track.MkCard(Element.Earth),Track.Card2, Track.MkCard( Element.Air ), Track.Card3, Track.MkCard( Element.Fire ), Track.Card4)
 			)
 			,PowerCard.For<ExaltationOfMoltenStone>()
 			,PowerCard.For<LavaFlows>()

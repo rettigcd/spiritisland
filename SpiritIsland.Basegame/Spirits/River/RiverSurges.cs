@@ -52,7 +52,7 @@ namespace SpiritIsland.Basegame {
 		public RiverSurges():base(
 			new RiverPresence(
 				new PresenceTrack( Track.Energy1, Track.Energy2, Track.Energy2, Track.Energy3, Track.Energy4, Track.Energy4, Track.Energy5 ),
-				new PresenceTrack( Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Reclaim1, Track.Card4, Track.Card5 )
+				new PresenceTrack( Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.CardReclaim1, Track.Card4, Track.Card5 )
 			),
 			PowerCard.For<BoonOfVigor>(),
 			PowerCard.For<FlashFloods>(),

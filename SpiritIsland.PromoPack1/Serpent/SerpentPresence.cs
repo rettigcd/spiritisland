@@ -7,11 +7,13 @@ namespace SpiritIsland.PromoPack1 {
 	class SerpentPresence : SpiritPresence {
 
 
-		readonly static Track fakeEarth = new Track("earth energy");
+		readonly static Track fakeEarth = new Track("earth energy" ) {
+			Icon = new IconDescriptor { Text = "><" }
+		};
 
 		public SerpentPresence():base(
-			new PresenceTrack( Track.Energy1, Track.FireEnergy, Track.AnyEnergy,    Track.Reclaim1Energy, Track.EarthEnergy, Track.Energy6, Track.AnyEnergy, Track.MkEnergy(12) ),
-			new PresenceTrack( Track.Card1,   Track.MoonEnergy, Track.Card2,        Track.WaterEnergy,    fakeEarth, Track.Card4,   Track.Card5Reclaim1 )
+			new PresenceTrack( Track.Energy1, Track.FireEnergy, Track.AnyEnergy, Track.Reclaim1Energy, Track.EarthEnergy, Track.Energy6, Track.AnyEnergy, Track.MkEnergy(12) ),
+			new PresenceTrack( Track.Card1,   Track.MkCard(Element.Moon), Track.Card2, Track.MkCard( Element.Water ), fakeEarth, Track.Card4,   Track.Card5Reclaim1 )
 		){
 		}
 

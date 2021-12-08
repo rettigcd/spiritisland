@@ -18,7 +18,10 @@ namespace SpiritIsland.JaggedEarth {
 			"Once a turn, when you Gain a Power Card without fire, gain 1 Energy"
 		);
 
-		public static Track MovePresence => new Track( "Moveonepresence.png" ){ Action=new MovePresence() };
+		public static Track MovePresence => new Track( "Moveonepresence.png" ){ 
+			Action=new MovePresence(),
+			Icon = new IconDescriptor { BackgroundImg = ImageNames.Movepresence }
+		};
 
 
 		public override SpecialRule[] SpecialRules => new SpecialRule[]{ 
@@ -29,7 +32,7 @@ namespace SpiritIsland.JaggedEarth {
 
 		public ShroudOfSilentMist():base(new SpiritPresence(
 				new PresenceTrack(Track.Energy0,Track.Energy1,Track.WaterEnergy,Track.Energy2,Track.AirEnergy),
-				new PresenceTrack(Track.Card1,Track.Card2,MovePresence,Track.MoonEnergy,Track.Card3,Track.Card4,Track.Reclaim1,Track.Card5)
+				new PresenceTrack(Track.Card1,Track.Card2,MovePresence,Track.MkCard(Element.Moon),Track.Card3,Track.Card4,Track.CardReclaim1,Track.Card5)
 			)
 			,PowerCard.For<FlowingAndSilentFormsDartBy>()
 			,PowerCard.For<UnnervingPall>()

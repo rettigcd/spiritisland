@@ -5,12 +5,35 @@ namespace SpiritIsland {
 
 	public class Track : IOption {
 
-		public static Track MkEnergy( int energy, Element el ) => new Track( energy+","+ el.ToString().ToLower() + " energy", el ) { Energy = energy };
-		public static Track MkEnergy( int energy ) => new Track( energy + " energy" ) { Energy = energy };
-		public static Track MkEnergy(params Element[] els ) => new Track( els.Select(x=>x.ToString()).Join(",").ToLower() + " energy", els );
+		public static Track MkEnergy( int energy, Element el ) => new Track( energy+","+ el.ToString().ToLower() + " energy", el ) { 
+			Energy = energy,
+			Icon = new IconDescriptor { 
+				BackgroundImg = ImageNames.Coin, Text = energy.ToString(), 
+				Sub = new IconDescriptor{ BackgroundImg = ImageNames.For(el) } 
+			}
+		};
 
-		public static Track MkCard(int plays) => new Track($"{plays} cardplay" ) { CardPlay = plays };
-		public static Track MkElement(params Element[] els) => new Track( els.Select(x=>x.ToString()).Join(",").ToLower(), els );
+		public static Track MkEnergy( int energy ) => new Track( energy + " energy" ) { 
+			Energy = energy, 
+			Icon = new IconDescriptor{ BackgroundImg = ImageNames.Coin, Text = energy.ToString() }
+		};
+
+		public static Track MkEnergy(params Element[] els ) {
+			var track = new Track( els.Select(x=>x.ToString()).Join(",").ToLower() + " energy", els );
+			track.Icon = new IconDescriptor { BackgroundImg = ImageNames.Coin, ContentImg = ImageNames.For(els[0]) };
+			if(els.Length==2)
+				track.Icon.ContentImg2 = ImageNames.For(els[1]);
+			return track;
+		}
+
+		public static Track MkCard(int plays) => new Track($"{plays} cardplay" ) { 
+			CardPlay = plays,
+			Icon = new IconDescriptor { BackgroundImg = ImageNames.CardPlay, Text = plays.ToString() }
+		};
+
+		public static Track MkCard( Element el ) => new Track( el.ToString().ToLower(), el ) {
+			Icon = new IconDescriptor { ContentImg = ImageNames.For( el ) }
+		};
 
 		// ! Instead of enumerating this here, we could generate them when needed in the spirit
 		public static Track Energy0     => MkEnergy( 0 );
@@ -40,11 +63,35 @@ namespace SpiritIsland {
 		public static Track Card5 => MkCard(5);
 		public static Track Card6 => MkCard(6);
 
-		public static Track Push1Dahan => new Track( "Push1dahan" ){ Action = new Push1DahanFromLands() };
-		public static Track Reclaim1 => new Track( "reclaim 1" ){ Action=new Reclaim1() };
-		public static Track Reclaim1Energy => new Track( "reclaim 1 energy" ){ Action=new Reclaim1() };
-		public static Track Energy5Reclaim1 => new Track( "5,reclaim1 energy" ){ Energy=5, Action=new Reclaim1() };
-		public static Track Card5Reclaim1 => new Track( "Fivereclaimone" ){ CardPlay=5, Action=new Reclaim1() };
+		public static Track Push1Dahan => new Track( "Push1dahan" ){ 
+			Action = new Push1DahanFromLands(),
+			Icon = new IconDescriptor { BackgroundImg = ImageNames.Push1dahan }
+		};
+
+		public static Track CardReclaim1 => new Track( "reclaim 1" ){ 
+			Action=new Reclaim1(),
+			Icon = new IconDescriptor { BackgroundImg = ImageNames.Reclaim1 }
+		};
+
+		public static Track Energy5Reclaim1 => new Track( "5,reclaim1 energy" ) { 
+			Energy = 5, Action = new Reclaim1(),
+			Icon = new IconDescriptor { 
+				BackgroundImg = ImageNames.Coin, Text = "5",
+				Sub = new IconDescriptor { BackgroundImg = ImageNames.Reclaim1},
+			}
+		};
+
+
+		public static Track Reclaim1Energy => new Track( "reclaim 1 energy" ){ 
+			Action=new Reclaim1(),
+			Icon = new IconDescriptor { BackgroundImg = ImageNames.Coin, ContentImg = ImageNames.Reclaim1 }
+		};
+
+		public static Track Card5Reclaim1 => new Track( "Fivereclaimone" ){ 
+			CardPlay=5, 
+			Action=new Reclaim1(),
+			Icon=new IconDescriptor { BackgroundImg = ImageNames.CardPlay, Text="5", Sub = new IconDescriptor{ BackgroundImg = ImageNames.Reclaim1 } },
+		};
 
 		public static readonly Track Destroyed = new Track("destroyed"); // only 1 of these
 
@@ -52,7 +99,7 @@ namespace SpiritIsland {
 
 		public string Text {get;}
 
-		public int? Energy { get; private set; }
+		public int? Energy { get; set; }
 
 		public Element[] Elements { get; }
 
@@ -64,6 +111,8 @@ namespace SpiritIsland {
 			foreach(var el in Elements)
 				elements[el]++;
 		}
+
+		public IconDescriptor Icon { get; set; }
 
 	}
 

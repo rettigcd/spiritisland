@@ -14,15 +14,18 @@ namespace SpiritIsland.JaggedEarth {
 		static readonly SpecialRule AJoiningOfSwarmsAndFlocks = new SpecialRule("A Joining of Swarms and Flocks","Your presence may also count as beast. If something change a beast that is your presence, it affects 2 of your presence there.");
 		static readonly SpecialRule FlyFastAsThought = new SpecialRule("Fly Fast as Thought","When you Gather or Push Beast, they may come from or go to lands up to 2 distant.");
 
-		static Track CardBoost() {
-			return new Track( "Pay2ForExtraPlay" ) { Action = new Pay2EnergyToGainAPowerCard() };
-		}
+		static Track CardBoost => new Track( "Pay2ForExtraPlay" ) { 
+			Action = new Pay2EnergyToGainAPowerCard(),
+			Icon = new IconDescriptor { ContentImg = ImageNames.GainCard,
+				Super = new IconDescriptor { BackgroundImg = ImageNames.Coin, Text= "—2" }
+			}
+		};
 
 		public ManyMindsMoveAsOne()
 			:base(
 				new ManyMindsPresence(
-					new PresenceTrack(Track.Energy0,Track.Energy1,Track.MkElement(Element.Air),Track.Energy2,Track.MkElement(Element.Animal),Track.Energy3,Track.Energy4),
-					new PresenceTrack(Track.Card1,Track.Card2,CardBoost(),Track.Card3,Track.Card3,Track.Card4,Track.Card5)
+					new PresenceTrack(Track.Energy0,Track.Energy1,Track.MkEnergy(Element.Air),Track.Energy2,Track.MkEnergy(Element.Animal),Track.Energy3,Track.Energy4),
+					new PresenceTrack(Track.Card1,Track.Card2,CardBoost,Track.Card3,Track.Card3,Track.Card4,Track.Card5)
 				)
 				 ,PowerCard.For<ADreadfulTideOfScurryingFlesh>()
 				 ,PowerCard.For<BoonOfSwarmingBedevilment>()

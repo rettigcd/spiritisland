@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
@@ -10,7 +11,6 @@ namespace SpiritIsland.WinForms {
 	class PresenceTrackPainter {
 
 		readonly Graphics graphics;
-		Bitmap coin; // transient, only exists for lifetime of Paint()
 
 		readonly Track[] energyTrackStatii;
 		readonly Track[] cardTrackStatii;
@@ -46,13 +46,17 @@ namespace SpiritIsland.WinForms {
 
 		public void Paint(string presenceColor) {
 
+			// !!! Cached all of the loaded images for the duration of the paint, then release them at the end.
+
 			// Bottom Layer
 			PaintLabels();
-			using(this.coin = ResourceImages.Singleton.GetToken( "coin" )) {
-				PaintCurrentEnergy();
-				PaintEnergyPerTurnRow();
-			}
-			PaintCardPlayTrack();
+			PaintCurrentEnergy();
+
+			foreach(var track in energyTrackStatii)
+				DrawTheIcon( track.Icon, metrics.SlotLookup[track].TrackRect );
+
+			foreach(var track in this.cardTrackStatii)
+				DrawTheIcon( track.Icon, metrics.SlotLookup[track].TrackRect );
 
 			// Middle Layer
 			PaintHighlights();
@@ -88,65 +92,72 @@ namespace SpiritIsland.WinForms {
 			PaintDestroyed( presenceImg );
 		}
 
-		void PaintEnergyPerTurnRow() {
-			foreach(var track in energyTrackStatii)
-				DrawCoin( metrics.SlotLookup[track].TrackRect, track );
+		void DrawTheIcon( IconDescriptor icon, RectangleF bounds ) {
 
-		}
-
-		void PaintCardPlayTrack() {
-			foreach(var track in this.cardTrackStatii)
-				DrawCard( track, metrics.SlotLookup[track].TrackRect );
-		}
-
-		void DrawCoin( RectangleF bounds, Track track ) {
-
-			if( track.Energy.HasValue) {
-				graphics.DrawImage( coin, bounds );
-				DrawTextOnCoin(ref bounds, track.Energy.Value.ToString() );
+			if(icon == null) {
+				graphics.FillRectangle( Brushes.Black, bounds );
+				return;
 			}
 
-			// Element
-			var innerBounds = bounds.InflateBy( -bounds.Height / 5 );
-			if(track.Elements.Any())
-				DrawElement( ref innerBounds, track.Elements );
+			// if we have a sub-image, reduce the main bounds to accommodate it
+			const float subImageReduction = .8f;
+			RectangleF mainBounds = (icon.Sub == null) ? bounds
+				: new RectangleF(bounds.X,bounds.Y,bounds.Width* subImageReduction, bounds.Height* subImageReduction );
 
-			// Action
-			if(track.Action != null)
-				DrawAction( bounds, track );
-
-		}
-
-		void DrawCard( Track track, RectangleF bounds ) {
-			var innerBounds = bounds.InflateBy( -bounds.Height / 5 );
-
-			// Card PLays
-			if( track.CardPlay.HasValue) {
-				using var bitmap = ResourceImages.Singleton.GetIcon( track.CardPlay + " cardplay" );
-				graphics.DrawImageFitHeight( bitmap, bounds );
-				innerBounds.X += innerBounds.Width * 0.5f;
-				innerBounds.Y += innerBounds.Height * 0.5f;
+			// -- Main - Background
+			if(icon.BackgroundImg != null) {
+				using var img = ResourceImages.Singleton.GetResourceImage(icon.BackgroundImg);
+				graphics.DrawImageFitBoth(img,mainBounds);
 			}
 
-			// Elements
-			if(track.Elements.Any())
-				DrawElement( ref innerBounds, track.Elements );
+			// -- Main - Content --
+			if(icon.Text != null || icon.ContentImg != null) {
 
-			// Action
-			if(track.Action != null)
-				DrawAction( innerBounds, track );
+				var contentBounds = new RectangleF(
+					mainBounds.X, 
+					mainBounds.Y + mainBounds.Height * 0.22f,  // should be 20% but it looks a little high
+					mainBounds.Width, 
+					mainBounds.Height*.6f // 60%
+				);
+				// Content - Text
+				if(icon.Text != null) {
+					Font font = new Font( ResourceImages.Singleton.Fonts.Families[0], contentBounds.Height, GraphicsUnit.Pixel );
+					StringFormat center = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+					graphics.DrawString( icon.Text, font, Brushes.Black, contentBounds, center );
+				}
 
-		}
+				// Content - Images
+				if(icon.ContentImg != null) {
+					using var img = ResourceImages.Singleton.GetResourceImage( icon.ContentImg );
+					if(icon.ContentImg2 != null) {
+						const float scale = .75f;
+						float w = contentBounds.Width * scale, h = contentBounds.Height * scale;
+						var cb1 = new RectangleF(contentBounds.X,contentBounds.Y,w,h);
+						var cb2 = new RectangleF( contentBounds.X+ contentBounds.Width*(1f - scale), contentBounds.Y+contentBounds.Height* (1f - scale), w, h );
+						using var img2 = ResourceImages.Singleton.GetResourceImage( icon.ContentImg2 );
+						graphics.DrawImageFitBoth( img2, cb2 );
+						graphics.DrawImageFitBoth( img, cb1 );
+					} else
+						graphics.DrawImageFitBoth( img, contentBounds );
+				}
 
-		void DrawTextOnCoin( ref RectangleF bounds, string txt ) {
-			// Draw Text
-			bounds.Y += bounds.Height * .05f; // it looks too high
-			Font coinFont = new Font( ResourceImages.Singleton.Fonts.Families[0], bounds.Height * .6f, GraphicsUnit.Pixel );
-			StringFormat center = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-			graphics.DrawString( txt, coinFont, Brushes.Black, bounds, center );
+			}
 
-			bounds.X += bounds.Width*.3f;
-			bounds.Y += bounds.Height*.3f;
+			// -- Super --
+			if(icon.Super != null) {
+				float dim = bounds.Width * .4f;
+				// drawing this at the bottom instead of the top because presence is covering top
+				var superRect = new RectangleF(bounds.X,bounds.Bottom-dim, dim, dim );
+				DrawTheIcon( icon.Super, superRect );
+			}
+
+			// -- Sub - (additional action) --
+			if(icon.Sub != null) {
+				// put the subRect in the bottom right corner
+				float subDim = bounds.Width * .5f;
+				var subRect = new RectangleF( bounds.Right - subDim, bounds.Bottom - subDim, subDim, subDim );
+				DrawTheIcon( icon.Sub, subRect );
+			}
 		}
 
 		void PaintCurrentEnergy() {
@@ -159,32 +170,8 @@ namespace SpiritIsland.WinForms {
 				bigCoinWidth,
 				bigCoinWidth
 			);
-			graphics.DrawImage( coin, energyRect );
-			DrawTextOnCoin( ref energyRect, energy.ToString() );
+			DrawTheIcon(new IconDescriptor { BackgroundImg = ImageNames.Coin, Text = energy.ToString() }, energyRect );
 		}
-
-		void DrawElement( ref RectangleF innerBounds, params Element[] elements ) {
-			foreach(var element in elements) {
-				using Image image = ResourceImages.Singleton.GetToken( element );
-				graphics.DrawImageFitHeight( image, innerBounds );
-				innerBounds.X += innerBounds.Width * 0.3f;
-				innerBounds.Y += innerBounds.Height * 0.3f;
-			}
-		}
-
-		void DrawAction( RectangleF bounds, Track track ) {
-			// draw icon
-			string iconName = track.Action.Name switch {
-				"Reclaim(1)" => "reclaim 1",
-				"Push1DahanFromLands" => "Push1dahan",
-				"DrawMinorOnceAndPlayExtraCardThisTurn" => "Cardplayplusone",
-				"DiscardElementsForCardPlay" => "DiscardElementsForCardPlay",
-				_ => track.Action.Name
-			};
-			var bitmap = ResourceImages.Singleton.GetIcon( iconName );
-			graphics.DrawImageFitHeight( bitmap, bounds );
-		}
-
 
 		void PaintDestroyed(Bitmap presenceImg) {
 			Rectangle rect = metrics.Destroyed;

@@ -10,15 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="images\icons\1 cardplay.png" />
-    <None Remove="images\icons\2 cardplay.png" />
-    <None Remove="images\icons\3 cardplay.png" />
-    <None Remove="images\icons\4 cardplay.png" />
-    <None Remove="images\icons\5 cardplay.png" />
-    <None Remove="images\icons\6 cardplay.png" />
     <None Remove="images\icons\Badlands.png" />
     <None Remove="images\icons\Beasticon.png" />
     <None Remove="images\icons\Blighticon.png" />
+    <None Remove="images\icons\cardplay.png" />
     <None Remove="images\icons\Cardplayplusone.png" />
     <None Remove="images\icons\Cityicon.png" />
     <None Remove="images\icons\Coastal.png" />
@@ -37,6 +32,7 @@
     <None Remove="images\icons\JungleOrBeast.png" />
     <None Remove="images\icons\Junglewetland.png" />
     <None Remove="images\icons\Land_Gather_Beasts.png" />
+    <None Remove="images\icons\minor.png" />
     <None Remove="images\icons\mountainorpresence.png" />
     <None Remove="images\icons\Moveicon.png" />
     <None Remove="images\icons\Moveonepresence.png" />
@@ -178,15 +174,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="images\icons\1 cardplay.png" />
-    <EmbeddedResource Include="images\icons\2 cardplay.png" />
-    <EmbeddedResource Include="images\icons\3 cardplay.png" />
-    <EmbeddedResource Include="images\icons\4 cardplay.png" />
-    <EmbeddedResource Include="images\icons\5 cardplay.png" />
-    <EmbeddedResource Include="images\icons\6 cardplay.png" />
     <EmbeddedResource Include="images\icons\Badlands.png" />
     <EmbeddedResource Include="images\icons\Beasticon.png" />
     <EmbeddedResource Include="images\icons\Blighticon.png" />
+    <EmbeddedResource Include="images\icons\cardplay.png" />
     <EmbeddedResource Include="images\icons\Cardplayplusone.png" />
     <EmbeddedResource Include="images\icons\Cityicon.png" />
     <EmbeddedResource Include="images\icons\Coastal.png" />
@@ -205,6 +196,7 @@
     <EmbeddedResource Include="images\icons\JungleOrBeast.png" />
     <EmbeddedResource Include="images\icons\Junglewetland.png" />
     <EmbeddedResource Include="images\icons\Land_Gather_Beasts.png" />
+    <EmbeddedResource Include="images\icons\minor.png" />
     <EmbeddedResource Include="images\icons\mountainorpresence.png" />
     <EmbeddedResource Include="images\icons\Moveicon.png" />
     <EmbeddedResource Include="images\icons\MovePresence.png" />

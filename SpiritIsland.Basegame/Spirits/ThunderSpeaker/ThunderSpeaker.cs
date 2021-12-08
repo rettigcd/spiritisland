@@ -47,7 +47,7 @@ namespace SpiritIsland.Basegame {
 		public Thunderspeaker():base(
 			new SpiritPresence(
 				new PresenceTrack( Track.Energy1, Track.AirEnergy, Track.Energy2, Track.FireEnergy, Track.SunEnergy, Track.Energy3 ),
-				new PresenceTrack( Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Reclaim1, Track.Card3, Track.Card4 )
+				new PresenceTrack( Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.CardReclaim1, Track.Card3, Track.Card4 )
 			),
 			PowerCard.For<ManifestationOfPowerAndGlory>(),
 			PowerCard.For<SuddenAmbush>(),
