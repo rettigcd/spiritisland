@@ -15,14 +15,14 @@ namespace SpiritIsland {
 			if(terrain==Terrain.Ocean) throw new ArgumentException("Can't invade oceans");
 			Matches = (s) => s.Terrain == terrain;
 			Text = escalation 
-				? "2" +terrain.ToString().Substring(0,1).ToLower() 
-				: terrain.ToString().Substring(0,1);
+				? "2" +terrain.ToString()[..1].ToLower() 
+				: terrain.ToString()[..1];
 			Escalation = escalation;
 		}
 
 		public InvaderCard(Terrain t1, Terrain t2){
 			Matches = (s) => s.Terrain == t1 || s.Terrain == t2;
-			Text = t1.ToString().Substring(0,1)+"+"+t2.ToString().Substring(0,1);
+			Text = t1.ToString()[..1] + "+" + t2.ToString()[..1];
 		}
 
 		InvaderCard(){ Matches = s=>s.IsCoastal; Text="Costal"; } // costal constructor

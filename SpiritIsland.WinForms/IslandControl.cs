@@ -28,7 +28,7 @@ namespace SpiritIsland.WinForms {
 			optionProvider.NewDecision += OptionProvider_OptionsChanged;
 
 			var board = gameState.Island.Boards.VerboseSingle("Multiple Island boards not supported.");
-            switch(board[0].Label.Substring( 0, 1 )) {
+            switch(board[0].Label[..1]) {
 				case "A":
 					this.board = Image.FromFile( ".\\images\\board a.png" );
 					spaceLookup = new Dictionary<string, PointF> {

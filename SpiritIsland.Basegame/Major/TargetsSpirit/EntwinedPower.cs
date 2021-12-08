@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 
 namespace SpiritIsland.Basegame {
 
@@ -16,10 +17,9 @@ namespace SpiritIsland.Basegame {
 			}
 
 			// Target spirit gains a power Card.
-			await ctx.OtherCtx.Draw( cards => {
-				// You gain one of the power Cards they did not keep.
-				return DrawFromDeck.TakeCard( ctx.Self, cards );
-			} );
+			var result = await ctx.OtherCtx.Draw();
+			// You gain one of the power Cards they did not keep.
+			await DrawFromDeck.TakeCard( ctx.Self, result.Rejected.ToList() );
 
 			// if you have 2 water, 4 plant, 
 			if(await ctx.YouHave("2 water,4 plant")) {

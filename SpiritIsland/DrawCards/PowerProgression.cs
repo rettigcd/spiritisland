@@ -14,25 +14,28 @@ namespace SpiritIsland {
 			this.remainingCards = cards.ToList();
 		}
 
-		public Task<PowerCard> Draw( Spirit self, GameState _, Func<List<PowerCard>, Task> _1 ) {
+		public Task<DrawCardResult> Draw( Spirit self, GameState _ ) {
 			return Take( self, remainingCards.First() );
 		}
 
-		public Task<PowerCard> DrawMajor( Spirit self, GameState _, Func<List<PowerCard>, Task> _1, bool _2, int _3 ) {
+		public Task<DrawCardResult> DrawMajor( Spirit self, GameState _, int _2, int _3 ) {
 			return Take( self, remainingCards.First( c => c.PowerType == PowerType.Major ) );
 		}
 
-		public Task<PowerCard> DrawMinor( Spirit self, GameState _, Func<List<PowerCard>, Task> _1, int _2 ) {
+		public Task<DrawCardResult> DrawMinor( Spirit self, GameState _, int _1, int _3 ) {
 			return Take( self, remainingCards.First( c => c.PowerType == PowerType.Minor ) );
 		}
 
-		async Task<PowerCard> Take( Spirit self, PowerCard newCard ) {
+		async Task<DrawCardResult> Take( Spirit self, PowerCard newCard ) {
 			remainingCards.Remove( newCard );
 
 			self.AddCardToHand( newCard );
 			if(newCard.PowerType == PowerType.Major)
 				await self.ForgetPowerCard();
-			return newCard;
+			return new DrawCardResult( newCard.PowerType ) {
+				SelectedCards = new PowerCard[]{ newCard },
+				Rejected = Array.Empty<PowerCard>(),
+			};
 		}
 
 	}

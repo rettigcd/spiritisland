@@ -11,7 +11,7 @@ namespace SpiritIsland {
 
 		public override async Task ActivateAsync( SpiritGameStateCtx ctx ) {
 			for(int i=0;i<count;++i)
-				await ctx.Self.Draw(ctx.GameState,null);
+				await ctx.Self.Draw(ctx.GameState);
 		}
 
 	}

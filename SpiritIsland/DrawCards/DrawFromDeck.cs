@@ -7,37 +7,38 @@ namespace SpiritIsland {
 
 	public class DrawFromDeck : IPowerCardDrawer {
 
-		public async Task<PowerCard> Draw( Spirit spirit, GameState gs, Func<List<PowerCard>, Task> handleNotUsed ) {
+		public async Task<DrawCardResult> Draw( Spirit spirit, GameState gs ) {
 			PowerType powerType = await SelectPowerCardType( spirit );
 			return powerType == PowerType.Minor
-				? await DrawMinor( spirit, gs, handleNotUsed )
-				: await DrawMajor( spirit, gs, handleNotUsed );
+				? await DrawMinor( spirit, gs, 4, 1 )
+				: await DrawMajor( spirit, gs, 4, 1 );
 		}
 
 		public static async Task<PowerType> SelectPowerCardType( Spirit spirit ) {
 			return await spirit.Action.Decision( new Decision.DeckToDrawFrom( PowerType.Minor, PowerType.Major ) );
 		}
 
-		public async Task<PowerCard> DrawMajor( Spirit spirit, GameState gameState, Func<List<PowerCard>, Task> handleNotUsed, bool forgetCard = true, int numberToDraw = 4 ) {
-			var card = await DrawInner(spirit, gameState.MajorCards, numberToDraw, handleNotUsed );
-			if(forgetCard)
-				await spirit.ForgetPowerCard();
-			return card;
+		public Task<DrawCardResult> DrawMajor( Spirit spirit, GameState gameState, int numberToDraw, int numberToKeep ) {
+			return DrawInner(spirit, gameState.MajorCards, numberToDraw, numberToKeep );
 		}
 
-		public Task<PowerCard> DrawMinor( Spirit spirit, GameState gameState, Func<List<PowerCard>, Task> handleNotUsed, int numberToDraw = 4 )
-			=> DrawInner( spirit, gameState.MinorCards, numberToDraw, handleNotUsed );
+		public Task<DrawCardResult> DrawMinor( Spirit spirit, GameState gameState, int numberToDraw, int numberToKeep )
+			=> DrawInner( spirit, gameState.MinorCards, numberToDraw, numberToKeep );
 
-		static async Task<PowerCard> DrawInner( Spirit spirit, PowerCardDeck deck, int numberToDraw, Func<List<PowerCard>, Task> handleNotUsed ) {
-			List<PowerCard> flipped = deck.Flip(numberToDraw);
+		static async Task<DrawCardResult> DrawInner( Spirit spirit, PowerCardDeck deck, int numberToDraw, int numberToKeep ) {
+			List<PowerCard> candidates = deck.Flip(numberToDraw);
 
-			var selected = await TakeCard( spirit, flipped );
+			var selectedCards = new List<PowerCard>();
+			while(numberToKeep-- > 0) {
+				var selected = await TakeCard( spirit, candidates );
+				selectedCards.Add( selected );
+			}
 
-			if(handleNotUsed != null)
-				await handleNotUsed( flipped );
-
-			deck.Discard( flipped );
-			return selected;
+			deck.Discard( candidates );
+			return new DrawCardResult( selectedCards[0].PowerType ){
+				 SelectedCards = selectedCards.ToArray(),
+				 Rejected = candidates.ToArray()
+			};
 		}
 
 		public static async Task<PowerCard> TakeCard( Spirit spirit, List<PowerCard> flipped ) {

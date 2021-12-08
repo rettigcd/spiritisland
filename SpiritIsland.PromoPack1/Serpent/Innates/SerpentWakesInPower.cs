@@ -41,13 +41,13 @@ namespace SpiritIsland.PromoPack1 {
 			await Option2Async( ctx );
 
 			// Gain a Major Power without Forgetting.
-			await ctx.DrawMajor(4,false);
+			await ctx.DrawMajor(false, 4);
 
 			// Other Spirits with 3 or more Absorbed Presence may do likewise."
 			var presence = (SerpentPresence)ctx.Self.Presence;
 			var qualifyingSpirits = presence.AbsorbedPresences.GroupBy(x=>x).Where(grp=>3<=grp.Count()).Select(grp=>grp.Key);
 			foreach(var spirit in presence.AbsorbedPresences.Distinct())
-				await new SpiritGameStateCtx(spirit,ctx.GameState,Cause.Power).DrawMajor(4,false);
+				await new SpiritGameStateCtx(spirit,ctx.GameState,Cause.Power).DrawMajor( false, 4 );
 		}
 
 	}

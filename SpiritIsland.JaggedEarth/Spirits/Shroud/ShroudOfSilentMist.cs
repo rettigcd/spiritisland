@@ -82,22 +82,22 @@ namespace SpiritIsland.JaggedEarth {
 
 		#region Draw Cards (Gather from the Cool And Dark)
 
-		public override async Task<PowerCard> Draw( GameState gameState, Func<List<PowerCard>, Task> handleNotUsed ) {
-			var card = await base.Draw( gameState, handleNotUsed );
-			CheckForCoolEnergy( card );
-			return card;
+		public override async Task<DrawCardResult> Draw( GameState gameState ) {
+			var result = await base.Draw( gameState );
+			CheckForCoolEnergy( result.Selected );
+			return result;
 		}
 
-		public override async Task<PowerCard> DrawMajor( GameState gameState, int numberToDraw = 4, bool forgetCard = true ) {
-			var card = await base.DrawMajor( gameState, numberToDraw, forgetCard );
-			CheckForCoolEnergy( card );
-			return card;
+		public override async Task<DrawCardResult> DrawMajor( GameState gameState, bool forgetCard = true, int numberToDraw = 4, int numberToKeep=1 ) {
+			var result = await base.DrawMajor( gameState, forgetCard, numberToDraw, numberToKeep );
+			CheckForCoolEnergy( result.Selected );
+			return result;
 		}
 
-		public override async Task<PowerCard> DrawMinor( GameState gameState ) {
-			var card = await base.DrawMinor( gameState );
-			CheckForCoolEnergy( card );
-			return card;
+		public override async Task<DrawCardResult> DrawMinor( GameState gameState, int numberToDraw = 4, int numberToKeep = 1 ) {
+			var result = await base.DrawMinor( gameState, numberToDraw, numberToKeep );
+			CheckForCoolEnergy( result.Selected );
+			return result;
 		}
 		void CheckForCoolEnergy(PowerCard card ) {
 			if(gainedCoolEnergyThisTurn) return;

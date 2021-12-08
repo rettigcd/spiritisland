@@ -206,7 +206,7 @@ namespace SpiritIsland.Tests.Core {
 		[InlineData("D7","TDD")]
 		[InlineData("D8","")]
 		public void StartingItems(string spaceLabel,string items){
-			var board = spaceLabel.Substring(0,1) switch{
+			var board = spaceLabel[..1] switch{
 				"A" => Board.BuildBoardA(),
 				"B" => Board.BuildBoardB(),
 				"C" => Board.BuildBoardC(),

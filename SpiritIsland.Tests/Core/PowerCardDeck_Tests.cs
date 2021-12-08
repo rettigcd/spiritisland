@@ -179,9 +179,9 @@ namespace SpiritIsland.Tests.Core {
 			gs.Initialize();
 
 			if(drawDirect)
-				_= spirit.DrawMajor(gs,4);
+				_= spirit.DrawMajor(gs,true);
 			else { 
-				_= spirit.Draw(gs,null);
+				_= spirit.Draw(gs);
 				user.SelectsMajorPowerCard();
 			}
 

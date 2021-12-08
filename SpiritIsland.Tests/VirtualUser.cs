@@ -289,7 +289,7 @@ namespace SpiritIsland.Tests {
 			int close = options.IndexOf(markers[1],open);
 			if(close==-1) throw new FormatException("No '"+markers[1]+"' found for indicating choice");
 			string choice = options.Substring(open+1,close-open-1);
-			options = options.Substring(0,open)+options.Substring(open+1,close-open-1)+options[(close + 1)..];
+			options = options[..open] +options.Substring(open+1,close-open-1)+options[(close + 1)..];
 			return (options,choice);
 		}
 

@@ -33,7 +33,7 @@ namespace SpiritIslandCmd {
 				string key;
 				string description;
 				if(TextOption.Done.Matches(option)){
-					key = option.Text.Substring(0,1).ToLower();
+					key = option.Text[..1].ToLower();
 					description = option.Text;
 				} else if(option is Space space) {
 					key = space.Label.ToLower();
@@ -42,7 +42,7 @@ namespace SpiritIslandCmd {
 					key = (++labelIndex).ToString();
 					description = FormatFactory( gaf, pad );
 				} else if(option is IActionFactory factory) {
-					key = option.Text.Split(' ').Select(word=>word.Substring(0,1)).Join("").ToLower();
+					key = option.Text.Split(' ').Select(word=>word[..1] ).Join("").ToLower();
 					description = FormatFactory( factory, pad );
 				} else {
 					key = (++labelIndex).ToString();

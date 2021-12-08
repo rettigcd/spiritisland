@@ -104,7 +104,7 @@ namespace SpiritIsland.WinForms {
 							current = "";
 						} else {
 							// only part fits
-							string subString = current.Substring(0,lengthThatFits);
+							string subString = current[..lengthThatFits];
 							var textSize = graphics.MeasureString(current,font);
 							texts.Add( new TextPosition { Text = subString, Bounds = new RectangleF(x,y,textSize.Width,rowHeight) } );
 							x = left;
@@ -126,7 +126,7 @@ namespace SpiritIsland.WinForms {
 			int bestLength = 0;
 			int spaceIndex = text.IndexOf(' ');
 			while(spaceIndex != -1
-				&& graphics.MeasureString(text.Substring(0,spaceIndex),font).Width<=width
+				&& graphics.MeasureString(text[..spaceIndex],font).Width<=width
 			) {
 				bestLength = spaceIndex;
 				spaceIndex = text.IndexOf(' ',spaceIndex+1);

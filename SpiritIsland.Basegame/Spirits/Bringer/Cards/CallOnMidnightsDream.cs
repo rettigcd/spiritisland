@@ -19,7 +19,7 @@ namespace SpiritIsland.Basegame {
 
 		static async Task DrawMajorOrGetEnergy( TargetSpaceCtx ctx ) {
 			// if target land has dahan, gain a major power.
-			var major = await ctx.DrawMajor();
+			var major = (await ctx.DrawMajor(true)).Selected;
 			// If you Forget this Power, gain energy equal to dahan and you may play the major power immediately paying its cost
 			if(!ctx.Self.Hand.Contains( major )) // because you discarded it
 				ctx.Self.Energy += ctx.Dahan.Count;

@@ -21,7 +21,7 @@ namespace SpiritIsland.Tests {
 						"Z@1" => TokenType.Disease,
 						_ => throw new ArgumentException("invalide tokentype found in "+expectedInvaderSummary)
 					};
-					desiredTokens.Add(token, int.Parse(part.Substring(0,1)) );
+					desiredTokens.Add(token, int.Parse(part[..1] ) );
 				}
 			}
 

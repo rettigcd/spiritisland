@@ -12,7 +12,7 @@ namespace SpiritIsland.JaggedEarth {
 			// if you target yourself
 			if(ctx.Other == ctx.Self) { 
 				// Draw minor
-				await ctx.Self.DrawMinor(ctx.GameState);
+				await ctx.DrawMinor();
 				return;
 			}
 
@@ -22,7 +22,7 @@ namespace SpiritIsland.JaggedEarth {
 			if( powerType == PowerType.Minor )
 				await ctx.OtherCtx.DrawMinor();
 			else {
-				await ctx.OtherCtx.DrawMajor(4, false);
+				await ctx.OtherCtx.DrawMajor(false, 4);
 				// If it's a Major Power, they may pay 2 Energy instead of Forgetting a Power Card.
 				if( ctx.Other.Energy>=2 && await ctx.Other.UserSelectsFirstText( "Pay for Major Card", "2 energy", "forget a card" ))
 					ctx.Other.Energy -= 2;

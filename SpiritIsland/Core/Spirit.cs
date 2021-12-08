@@ -341,14 +341,23 @@ namespace SpiritIsland {
 		static readonly IPowerCardDrawer DefaultCardDrawer = new DrawFromDeck();
 		public IPowerCardDrawer CardDrawer { get; set; } = DefaultCardDrawer; // !!! public so tests can set it - find another way to set so we can make the set private
 
-		public virtual Task<PowerCard> Draw( GameState gameState, Func<List<PowerCard>, Task> handleNotUsed ) 
-			=> CardDrawer.Draw(this,gameState,handleNotUsed);
+		public virtual async Task<DrawCardResult> Draw( GameState gameState ) {
+			// !! Get rid of Power Progression and we can move  the CardDrawer.Draw() method 
+			DrawCardResult result = await CardDrawer.Draw(this,gameState);
+			if (result.PowerType == PowerType.Major )
+				await this.ForgetPowerCard();
+			return result;
+		}
 
-		public virtual Task<PowerCard> DrawMinor( GameState gameState ) 
-			=> CardDrawer.DrawMinor( this, gameState, null );
+		public virtual Task<DrawCardResult> DrawMinor( GameState gameState, int numberToDraw=4, int numberToKeep=1 ) 
+			=> CardDrawer.DrawMinor( this, gameState, numberToDraw, numberToKeep );
 
-		public virtual Task<PowerCard> DrawMajor( GameState gameState, int numberToDraw=4, bool forgetCard=true ) 
-			=> CardDrawer.DrawMajor( this, gameState, null, forgetCard, numberToDraw ); // Instead of passing in null, could return Tupple with discard cards in it()
+		public virtual async Task<DrawCardResult> DrawMajor( GameState gameState, bool forgetCard = true, int numberToDraw=4, int numberToKeep=1 ) {
+			var result = await CardDrawer.DrawMajor( this, gameState, numberToDraw, numberToKeep );
+			if(forgetCard)
+				await this.ForgetPowerCard();
+			return result;
+		}
 
 		#endregion
 

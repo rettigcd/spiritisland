@@ -8,7 +8,7 @@ namespace SpiritIsland.PromoPack1 {
 		public static async Task ActAsync( TargetSpiritCtx ctx ) {
 			var otherCtx = ctx.OtherCtx;
 			// target spirit gains a minor power.
-			var powerCard = await otherCtx.DrawMinor();
+			var powerCard = (await otherCtx.DrawMinor()).Selected;
 
 			// Target spirit chooses to either:
 			var playImmediately = new ActionOption( "Play it immediately by paying its cost",  () => otherCtx.Self.PlayCard(powerCard), powerCard.Cost <= otherCtx.Self.Energy );

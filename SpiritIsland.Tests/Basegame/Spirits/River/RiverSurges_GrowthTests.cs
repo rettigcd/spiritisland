@@ -227,7 +227,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		[InlineData("D3")]
 		public void StartsOnHighestNumberedWetlands(string expectedStartingSpaces){
 			var river = new RiverSurges();
-			var board = expectedStartingSpaces.Substring(0,1) switch {
+			var board = expectedStartingSpaces[..1] switch {
 				"A" => BoardA,
 				"B" => BoardB,
 				"C" => BoardC,
