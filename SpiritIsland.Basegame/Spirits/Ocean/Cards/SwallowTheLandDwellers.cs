@@ -16,7 +16,7 @@ namespace SpiritIsland.Basegame {
 			// find place to drown then
 			var drowningOcean = ocean.Presence
 				.Spaces.First() // find any space the ocean has presnece
-				.Board[0]; // find the Ocean space on that board
+				.Board.Ocean; // find the Ocean space on that board
 
 			// drown 1 explorer, 1 town, and 1 dahan
 

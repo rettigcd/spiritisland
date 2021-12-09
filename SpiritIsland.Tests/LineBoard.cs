@@ -1,4 +1,6 @@
 ﻿
+using System.Linq;
+
 namespace SpiritIsland.Tests {
 
 	/// <summary> Test board with simplified connectivity </summary>
@@ -18,7 +20,8 @@ namespace SpiritIsland.Tests {
 				,new Space(Terrain.Jungle,"T8")
 				,new Space(Terrain.Jungle,"T9")
 			);
-			for(int i=0;i<board.SpaceCount-1;++i)
+			int count = 10; // board.Spaces.Count();
+			for(int i=0;i< count - 1;++i)
 				board.SetNeighbors(i, i+1);
 			return board;
 

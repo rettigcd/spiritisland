@@ -19,8 +19,6 @@ namespace SpiritIsland {
 
 		public async Task DoInvaderPhase() {
 
-			var debug = gs.Tokens[ gs.Island.Boards[0][5] ];
-
 			// Duplicate of InvaderPhase.ActAsync without the logging
 
 			// Blight

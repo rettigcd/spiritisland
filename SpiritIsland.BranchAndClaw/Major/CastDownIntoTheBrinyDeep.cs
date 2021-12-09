@@ -33,7 +33,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 				// destroy board - spaces
 				foreach(var space in ctx.Space.Board.Spaces)
-					space.Destroy();
+					space.Disconnect();
 
 				ctx.GameState.Island.RemoveBoard( ctx.Space.Board );
 

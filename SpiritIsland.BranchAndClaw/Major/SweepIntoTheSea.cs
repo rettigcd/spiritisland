@@ -28,7 +28,7 @@ namespace SpiritIsland.BranchAndClaw {
 		}
 
 		static async Task<TargetSpaceCtx> SelectSpaceCloserToTheOcean( TargetSpaceCtx ctx ) {
-			var oceans = ctx.GameState.Island.Boards.Select( b => b[0] );
+			var oceans = ctx.GameState.Island.Boards.Select( b => b.Ocean );
 			var distanceFromOceans = new MinDistanceCalculator()
 				.SetTargets( oceans )
 				.Calculate();

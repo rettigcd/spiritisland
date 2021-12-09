@@ -133,38 +133,47 @@ namespace SpiritIsland {
 
 		#endregion
 
-		public Space[] Spaces {get;}
+		/// <summary>
+		/// These Spaces start out in numeric order at beginning of game but are not guaranteed to stay in numeric order. (Absolute Statis removes spaces from board and restores them.)
+		/// </summary>
+		public IEnumerable<Space> Spaces => spaces;
 
-		public Space this[int index]{ get => Spaces[index]; }
+		#region Add / Remove spaces from board
+		public void Add( Space space ) {
+			spaces = spaces.Union( new[] {space}).ToArray();
+		} // Absolute Stasis
+		public void Remove( Space space ) { 
+			spaces = spaces.Where(s => s != space ).ToArray();
+		} // Absolute Stasis
+		#endregion
 
-		public int SpaceCount => Spaces.Length;
+		public Space Ocean => Spaces.Single( space => space.Terrain == Terrain.Ocean );
 
-		public ITileSide[] Sides => this.sides.ToArray();
+		public Space this[int index]{ get => spaces[index]; }
 
 		#region constructor
+
 		public Board(params Space[] spaces){
-			this.Spaces = spaces;
+			this.spaces = spaces;
 			foreach(var space in spaces) space.Board = this;
 		}
 
 		#endregion
 
-		TileSide DefineSide(params int[] spaceIndexes){
-			var side = new TileSide(spaceIndexes.Select(i=>this.Spaces[i]).ToArray());
-			this.sides.Add(side);
-			return side;
-		}
-
 		/// <summary>
 		/// public so we can build a test board.
 		/// </summary>
 		public void SetNeighbors(int srcIndex, params int[] neighborIndex){
-			Spaces[srcIndex].SetAdjacentToSpaces(neighborIndex.Select(i=>Spaces[i]).ToArray());
+			spaces[srcIndex].SetAdjacentToSpaces( neighborIndex.Select(i=>spaces[i] ).ToArray());
 		}
 
-		readonly List<ITileSide> sides = new List<ITileSide>();
+		public ITileSide[] Sides => this.sides.ToArray();
 
-		public Space Ocean => Spaces.Single(space => space.Terrain == Terrain.Ocean );
+		TileSide DefineSide( params int[] spaceIndexes ) {
+			var side = new TileSide( spaceIndexes.Select( i => spaces[i] ).ToArray() );
+			this.sides.Add( side );
+			return side;
+		}
 
 		#region TileSide
 
@@ -214,6 +223,10 @@ namespace SpiritIsland {
 		}
 
 		#endregion
+
+		Space[] spaces;
+
+		readonly List<ITileSide> sides = new List<ITileSide>();
 
 	}
 

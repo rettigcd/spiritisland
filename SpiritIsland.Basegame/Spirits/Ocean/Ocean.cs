@@ -68,7 +68,7 @@ namespace SpiritIsland.Basegame {
 			gameState.Island.Terrain_ForPowerAndBlight = new OceanTerrainForPower(this);
 
 			// Place in Ocean
-			Presence.PlaceOn(board[0], gameState);
+			Presence.PlaceOn(board.Ocean, gameState);
 
 			this.AddActionFactory( new Setup_PlacePresenceInCostal() ); // let user pick initial ocean
 
@@ -78,7 +78,7 @@ namespace SpiritIsland.Basegame {
 
 		void RemoveDrownedDahan( GameState gs ) {
 			foreach(var board in gs.Island.Boards)
-				gs.Tokens[board[0]].Dahan.RemoveAll();
+				gs.Tokens[board.Ocean].Dahan.RemoveAll();
 		}
 
 		async Task InvadersMoved(GameState gs, TokenMovedArgs args ) {

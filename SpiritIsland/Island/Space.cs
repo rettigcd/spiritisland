@@ -11,22 +11,22 @@ namespace SpiritIsland {
 		/// <summary> If adjacent to ocean, sets is-costal </summary>
 		public void SetAdjacentToSpaces( params Space[] spaces ) {
 			foreach(var land in spaces) {
-				AddAdjacent( land );
-				land.AddAdjacent( this );
+				Connect( land );
+				land.Connect( this );
 			}
 		}
 
-		void AddAdjacent( Space adjacent ) {
+		void Connect( Space adjacent ) {
 			adjacents.Add(adjacent);
 			if(adjacent.Terrain == Terrain.Ocean)
 				this.IsCoastal = true;
 		}
 
-		public void Destroy() {
-			// Disconnect us from neighbors
+		public void Disconnect() {
+			// Remove us from neighbors adjacent list
 			foreach(var a in adjacents)
 				a.adjacents.Remove(this);
-			// Disconnect neighbors from us
+			// Remove neighbors from our list.
 			adjacents.Clear();
 		}
 
