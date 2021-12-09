@@ -414,6 +414,7 @@ namespace SpiritIsland {
 		protected class Memento : IMemento<Spirit> {
 			public Memento(Spirit spirit) {
 				energy = spirit.Energy;
+				bonusCardPlay = spirit.tempCardPlayBoost;
 				elements = spirit.Elements.ToArray();
 				// preparedElements = spirit.PreparedElements.ToArray();
 				presence = spirit.Presence.SaveToMemento();
@@ -426,6 +427,7 @@ namespace SpiritIsland {
 			}
 			public void Restore(Spirit spirit) {
 				spirit.Energy = energy;
+				spirit.tempCardPlayBoost = bonusCardPlay;
 				InitFromArray( spirit.Elements, elements);
 				// InitFromArray( spirit.PreparedElements, preparedElements); // !!! 
 				spirit.Presence.LoadFrom(presence);
@@ -441,6 +443,7 @@ namespace SpiritIsland {
 				foreach(var p in array) dict[p.Key]=p.Value;
 			}
 			readonly int energy;
+			readonly int bonusCardPlay;
 			readonly KeyValuePair<Element,int>[] elements;
 			// readonly KeyValuePair<Element,int>[] preparedElements;
 			readonly IMemento<SpiritPresence> presence;
