@@ -15,8 +15,8 @@ namespace SpiritIsland.Basegame {
 			currentBoards.Add( space.Board );
 		}
 
-		public override void RemoveFrom( Space space, GameState gs ) {
-			base.RemoveFrom( space, gs );
+		protected override void RemoveFrom_NoCheck( Space space, GameState gs ) {
+			base.RemoveFrom_NoCheck( space, gs );
 			var board = space.Board;
 			if(!Spaces.Any(s=>s.Board == board ))
 				currentBoards.Remove( board );

@@ -20,8 +20,8 @@ namespace SpiritIsland.JaggedEarth {
 				gs.Tokens[space].Beasts.Add(1); // Beast token is virtual so maybe we don't want to trigger TokenAdded
 		}
 
-		public override void RemoveFrom( Space space, GameState gs ) {
-			base.RemoveFrom( space, gs );
+		protected override void RemoveFrom_NoCheck( Space space, GameState gs ) {
+			base.RemoveFrom_NoCheck( space, gs );
 			// if destroyed sacred site, remove virtual beast
 			if( CountOn( space ) == 1 )
 				gs.Tokens[space].Beasts.Remove(1);
@@ -48,7 +48,7 @@ namespace SpiritIsland.JaggedEarth {
 		void Move2Presence( GameState gs, TokenMovedArgs args ) {
 			// Move 2 of our presence
 			for(int i = 0; i < 2; ++i) {
-				base.RemoveFrom( args.From, gs ); // using base because we don't want to trigger anything
+				base.RemoveFrom_NoCheck( args.From, gs ); // using base because we don't want to trigger anything
 				base.PlaceOn( args.To, gs );
 			}
 		}

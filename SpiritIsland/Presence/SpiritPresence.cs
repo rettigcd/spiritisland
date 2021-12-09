@@ -74,7 +74,7 @@ namespace SpiritIsland {
 				await RevealTrack( track, gs );
 			} else if(from is Space space) {
 				if( Spaces.Contains(space) )
-					RemoveFrom( space, gs );
+					RemoveFrom_NoCheck( space, gs );
 				else
 					throw new ArgumentException( "Can't pull from island space:" + from.ToString() );
 			}
@@ -115,22 +115,25 @@ namespace SpiritIsland {
 		}
 
 		public void Move( Space from, Space to, GameState gs ) {
-			RemoveFrom( from, gs );
+			RemoveFrom_NoCheck( from, gs );
 			PlaceOn( to, gs );
 		}
 
 		public async Task Destroy( Space space, GameState gs, Cause cause ) {
 			await DestroyBehavior.DestroyPresenceApi(this,space,gs,cause);
-			// check if spirit destroyed
-			if(Placed.Count==0)
-				GameOverException.Lost("Spirit is Destroyed"); // !! if we had access to the Spirit here, we could say who it was.
+			CheckIfSpiritIsDestroyted();
+		}
+
+		void CheckIfSpiritIsDestroyted() {
+			if(Placed.Count == 0 && stasis.Count == 0 )
+				GameOverException.Lost( "Spirit is Destroyed" ); // !! if we had access to the Spirit here, we could say who it was.
 		}
 
 		public IDestroyPresenceBehavour DestroyBehavior = new DefaultDestroyBehavior(); // replaceable / plugable
 
 		public class DefaultDestroyBehavior : IDestroyPresenceBehavour {
 			public virtual Task DestroyPresenceApi(SpiritPresence presence, Space space, GameState gs, Cause cause ) {
-				presence.RemoveFrom( space, gs );
+				presence.RemoveFrom_NoCheck( space, gs );
 				++presence.Destroyed;
 				return Task.CompletedTask;
 			}
@@ -144,7 +147,31 @@ namespace SpiritIsland {
 		public virtual void PlaceOn(Space space, GameState _) => placed.Add(space);
 
 		/// <remarks>public so we can remove it for Replacing with Beast and advanced spirit strangness</remarks>
-		public virtual void RemoveFrom( Space space, GameState _ ) => placed.Remove( space );
+		// !!! This is called for 2 different reasons...
+		// (1) To move presence to another location on the board - no End-of-Game check is necessary
+		// (2) Presence is replaced with something else. End-of-Game check IS necessary.
+		// Also - if we have presence in Stasis, then removing 2nd to last presence will INCORRECTLY trigger loss.
+		protected virtual void RemoveFrom_NoCheck( Space space, GameState _ ) => placed.Remove( space );
+
+		public void RemoveFrom( Space space, GameState gs ) {
+			RemoveFrom_NoCheck( space, gs );
+			CheckIfSpiritIsDestroyted();
+		}
+
+		public void PutInStasis( Space space, GameState gs ) {
+			while( IsOn(space)) {
+				RemoveFrom_NoCheck( space, gs );
+				stasis.Add(space);
+			}
+		}
+
+		public void ReleaseFromStasis( Space space, GameState gs ) {
+			while( stasis.Contains(space)) {
+				stasis.Remove(space);
+				PlaceOn(space, gs);
+			}
+		}
+		List<Space> stasis = new List<Space>();
 
 		#endregion
 
