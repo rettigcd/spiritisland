@@ -19,8 +19,9 @@ namespace SpiritIsland {
 		};
 
 		public static Track MkEnergy(params Element[] els ) {
-			var track = new Track( els.Select(x=>x.ToString()).Join(",").ToLower() + " energy", els );
-			track.Icon = new IconDescriptor { BackgroundImg = ImageNames.Coin, ContentImg = ImageNames.For(els[0]) };
+			var track = new Track( els.Select( x => x.ToString() ).Join( "," ).ToLower() + " energy", els ) {
+				Icon = new IconDescriptor { BackgroundImg = ImageNames.Coin, ContentImg = ImageNames.For( els[0] ) }
+			};
 			if(els.Length==2)
 				track.Icon.ContentImg2 = ImageNames.For(els[1]);
 			return track;

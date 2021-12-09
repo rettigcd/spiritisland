@@ -61,11 +61,8 @@ namespace SpiritIsland.WinForms {
 			var items = rewindMenuItem.DropDownItems;
 			if(items.Count == rounds) return; // no change
 			items.Clear();
-			for(int i = rounds; 0 < i; --i) {
-				var menuItem = new ToolStripMenuItem( "Round " + i, null, RewindClicked );
-				menuItem.Tag = i;
-				items.Add( menuItem );
-			}
+			for(int i = rounds; 0 < i; --i)
+				items.Add( new ToolStripMenuItem( "Round " + i, null, RewindClicked ) { Tag = i } );
 		}
 
 		#region Buttons

@@ -73,11 +73,10 @@ namespace SpiritIsland {
 		}
 
 		void Change( IFlexibleSpeedActionFactory factory ) {
-//			factory.OverrideSpeed = new SpeedOverride( resultingSpeed, "SpeedChanger" );
+
 			factory.OverrideSpeedBehavior = new SpeedOVerrideBehavior( resultingSpeed );
 
-			Task Restore(GameState _) { 
-//				factory.OverrideSpeed = null; 
+			Task Restore( GameState _ ) { 
 				factory.OverrideSpeedBehavior = null;
 				return Task.CompletedTask;
 			}
