@@ -61,8 +61,11 @@ namespace SpiritIsland.WinForms {
 			var items = rewindMenuItem.DropDownItems;
 			if(items.Count == rounds) return; // no change
 			items.Clear();
-			for(int i = 1; i <= rounds; ++i)
-				items.Add( "Round " + i, null, RewindClicked );
+			for(int i = rounds; 0 < i; --i) {
+				var menuItem = new ToolStripMenuItem( "Round " + i, null, RewindClicked );
+				menuItem.Tag = i;
+				items.Add( menuItem );
+			}
 		}
 
 		#region Buttons
@@ -175,7 +178,7 @@ namespace SpiritIsland.WinForms {
 		#region Rewind
 
 		void RewindClicked(object x, EventArgs y ) {
-			int targetRound = rewindMenuItem.DropDownItems.IndexOf((ToolStripItem)x) + 1;
+			int targetRound = (int)((ToolStripMenuItem)x).Tag;
 
 			// This block is not necessary, but if something is wrong with the Memento, a hard-reset might be nice.
 			if(targetRound == 1) {
