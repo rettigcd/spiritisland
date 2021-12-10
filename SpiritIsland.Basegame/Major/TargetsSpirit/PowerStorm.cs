@@ -20,7 +20,7 @@ namespace SpiritIsland.Basegame {
 				repeats += 2;
 
 			while(repeats-->0)
-				ctx.Other.AddActionFactory( new ReplayCardForCost() );
+				ctx.Other.AddActionFactory( new RepeatCardForCost() );
 		}
 
 	}

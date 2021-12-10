@@ -75,7 +75,7 @@ namespace SpiritIsland.Basegame {
 				new GrowthOption(
 					placeOnWetlandOrJungle(),
 					new PlacePresence(1),
-					new PlayExtraCardThisTurn()
+					new PlayExtraCardThisTurn(1)
 				),
 				// +1 power card, +3 energy
 				new GrowthOption(

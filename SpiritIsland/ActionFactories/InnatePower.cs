@@ -23,7 +23,7 @@ namespace SpiritIsland {
 			speedAttr = actionType.GetCustomAttribute<SpeedAttribute>(false) 
 				?? throw new InvalidOperationException("Missing Speed attribute for "+actionType.Name);
 			this.targetAttr = targetAttr;
-			this.repeatAttr = actionType.GetCustomAttribute<RepeatIfAttribute>(); // !! What about more than 1 repeat?
+			this.repeatAttr = actionType.GetCustomAttribute<RepeatAttribute>();
 
 			Name = innatePowerAttr.Name;
 
@@ -40,7 +40,7 @@ namespace SpiritIsland {
 				.Cast<IDrawableInnateOption>()
 				.ToList();
 			if(this.repeatAttr!=null)
-				_drawableOptions.AddRange( repeatAttr.Repeats );
+				_drawableOptions.AddRange( repeatAttr.Thresholds );
 		}
 
 		#endregion
@@ -80,10 +80,15 @@ namespace SpiritIsland {
 		public LandOrSpirit LandOrSpirit => targetAttr.LandOrSpirit;
 
 		public async Task ActivateAsync( SpiritGameStateCtx ctx ) {
+			if(!await SpeedBehavior.IsActiveFor( ctx.GameState.Phase, ctx.Self ))
+				return; // this is here for Shifting Memory to Activate Innates
 
 			await ActivateInnerAsync( ctx );
-			if( await ShouldRepeat(ctx.Self) )
-				await ActivateInnerAsync( ctx );
+			if( repeatAttr != null) {
+				var repeater = repeatAttr.GetRepeater();
+				while( await repeater.ShouldRepeat(ctx.Self) )
+					await ActivateInnerAsync( ctx );
+			}
 		}
 
 		public ElementCounts[] GetTriggerThresholds() => elementListByMethod.Select(a=>a.Attr.Elements).ToArray();
@@ -99,9 +104,6 @@ namespace SpiritIsland {
 
 			// !!! Targetting a space first, then declining all of the elemental upgrades
 			// !!! we should resolve elemental upgrades first, then pick the target.
-
-			if( !await SpeedBehavior.IsActiveFor(spiritCtx.GameState.Phase,spiritCtx.Self) )
-				return; 
 
 			List<MethodInfo> lastMethods = await GetLastActivatedMethodsOfEachGroup( spiritCtx );
 			if( lastMethods.Count == 0 ) return;
@@ -133,9 +135,6 @@ namespace SpiritIsland {
 			ElementCounts match = await self.GetHighestMatchingElements( grp.Select(g=>g.Elements) );
 			return grp.FirstOrDefault(g=>g.Elements==match)?.Method;
 		}
-
-		async Task<bool> ShouldRepeat( Spirit spirit ) => repeatAttr != null 
-			&& await repeatAttr.GetRepeatCount( spirit ) > 0; // !!! change ShouldRepeat to RepeatCount
 
 		public static string[] Tokenize( string s ) {
 
@@ -171,7 +170,7 @@ namespace SpiritIsland {
 		readonly InnatePowerAttribute innatePowerAttr;
 		readonly protected SpeedAttribute speedAttr;
 		readonly GeneratesContextAttribute targetAttr;
-		readonly RepeatIfAttribute repeatAttr;
+		readonly RepeatAttribute repeatAttr;
 		readonly List<MethodTuple> elementListByMethod;
 
 

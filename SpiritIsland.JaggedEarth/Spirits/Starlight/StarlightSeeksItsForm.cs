@@ -43,7 +43,7 @@ namespace SpiritIsland.JaggedEarth {
 		static Track NewGrowth2 => new Track( "so2" ) {  
 			Action = new PickNewGrowthOption( false
 				,new GrowthOption(new GainEnergy(3))
-				,new GrowthOption(new PlayExtraCardThisTurn(),new MovePresence(2))
+				,new GrowthOption(new PlayExtraCardThisTurn(1),new MovePresence(2))
 			),
 			Icon = new IconDescriptor { BackgroundImg = Img.Starlight_GrowthOption2 },
 		};
@@ -61,7 +61,7 @@ namespace SpiritIsland.JaggedEarth {
 		static Track NewGrowth4 => new Track( "so4" ) {  
 			Action = new PickNewGrowthOption( true
 				,new GrowthOption(new ApplyDamage())
-				,new GrowthOption(new PlayExtraCardThisTurn(), new MakePowerFast() )
+				,new GrowthOption(new PlayExtraCardThisTurn(1), new MakePowerFast() )
 			),
 			Icon = new IconDescriptor { 
 				BigSub = new IconDescriptor{ BackgroundImg = Img.Starlight_GrowthOption4 },

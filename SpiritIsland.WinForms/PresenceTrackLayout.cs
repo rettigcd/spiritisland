@@ -8,8 +8,8 @@ namespace SpiritIsland.WinForms {
 
 		public PresenceTrackLayout(Rectangle bounds, Spirit spirit, int margin ) {
 
-			var energySlots = spirit.Presence.GetEnergyTrackStatus();
-			var cardSlots = spirit.Presence.GetCardPlayTrackStatus();
+			var energySlots = spirit.Presence.GetEnergyTrack();
+			var cardSlots = spirit.Presence.GetCardPlayTrack();
 
 			// calc slot width and presence height
 			float slotWidth = bounds.Width 
@@ -23,11 +23,19 @@ namespace SpiritIsland.WinForms {
 			CalcEnergyTrackMetrics( spirit, bounds, (int)slotWidth, presenceSize );
 
 			Destroyed = new Rectangle( 
-				(int)(bounds.Right - 2.5f * slotWidth + slotWidth / 2), 
+				(int)(bounds.Right - 2 * slotWidth ), 
 				(int)(bounds.Y + energyRowHeight + margin + slotWidth * .5f), 
-				(int)presenceSize.Width, 
-				(int)presenceSize.Height
+				presenceSize.Width, 
+				presenceSize.Height
 			);
+
+			Time = new Rectangle( 
+				(int)(bounds.Right - 1 * slotWidth ), 
+				Destroyed.Y,
+				presenceSize.Width, 
+				presenceSize.Height
+			);
+
 			SlotLookup.Add(Track.Destroyed,new SlotMetrics { PresenceRect = Destroyed } );
 			BigCoin = new RectangleF(  bounds.Right-slotWidth * 2, bounds.Y, slotWidth * 2, bounds.Height );
 			CalculateCardPlaySlots( spirit, slotWidth, bounds.X, bounds.Y + energyRowHeight + margin, presenceSize );
@@ -39,6 +47,7 @@ namespace SpiritIsland.WinForms {
 		public Point CardPlayTitleLocation;
 		public Dictionary<Track,SlotMetrics> SlotLookup = new Dictionary<Track, SlotMetrics>();
 		public Rectangle Destroyed;
+		public Rectangle Time;
 		public RectangleF BigCoin; // Why is this float?
 
 		public Rectangle ClickRectFor(Track track) => SlotLookup[track].PresenceRect;
@@ -54,7 +63,7 @@ namespace SpiritIsland.WinForms {
 			float coinWidth = slotWidth * 0.8f;
 			int presenceOffset = (int)presenceSize.Height*3/4;
 			float coinLeftOffset = (slotWidth - coinWidth) / 2;
-			foreach(var energySlot in spirit.Presence.GetEnergyTrackStatus()) {
+			foreach(var energySlot in spirit.Presence.GetEnergyTrack()) {
 				SlotLookup.Add( energySlot, new SlotMetrics {
 					PresenceRect = new Rectangle( x + (slotWidth - presenceSize.Width) / 2, y, presenceSize.Width, presenceSize.Height ),
 					TrackRect = new RectangleF( x + coinLeftOffset, y + presenceOffset, coinWidth, coinWidth )
@@ -73,7 +82,7 @@ namespace SpiritIsland.WinForms {
 			int presenceYOffset = (int)presenceSize.Height * 3 / 4;
 			int cardY = y + presenceYOffset;
 
-			foreach(var status in spirit.Presence.GetCardPlayTrackStatus()) {
+			foreach(var status in spirit.Presence.GetCardPlayTrack()) {
 				SlotLookup.Add( status, new SlotMetrics {
 					PresenceRect = new Rectangle( x + (int)((slotWidth - presenceSize.Width) / 2), y, presenceSize.Width, presenceSize.Height ),
 					TrackRect = new RectangleF( x + slotWidth * .1f, cardY, usableWidth, usableWidth )

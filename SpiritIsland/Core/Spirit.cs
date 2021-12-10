@@ -112,6 +112,7 @@ namespace SpiritIsland {
 		public Task GrowAndResolve( GrowthOption option, GameState gameState ) {
 			var ctx = new SpiritGameStateCtx(this,gameState,Cause.Growth);
 
+			// If Option has only 1 Action, auto trigger it.
 			if( option.GrowthActions.Length == 1 )
 				return option.GrowthActions[0].ActivateAsync( ctx );
 			
@@ -217,12 +218,22 @@ namespace SpiritIsland {
 		}
 
 		public void Reclaim( PowerCard reclaimCard ) {
-			DiscardPile.Remove( reclaimCard );
-			InPlay.Remove( reclaimCard );
+			if( DiscardPile.Contains( reclaimCard ) ) {
+				DiscardPile.Remove( reclaimCard );
+			} else if( InPlay.Contains( reclaimCard ) ) {
+				RemoveCardFromPlay( reclaimCard );
+			} else
+				throw new InvalidOperationException("Can't find the card to reclaim. Not in dicard nor in play");
 			Hand.Add( reclaimCard );
 		}
+
 		public async Task Reclaim1FromDiscard() {
 			PowerCard cardToReclaim = await this.SelectPowerCard( "Select card to reclaim.", DiscardPile, CardUse.Reclaim, Present.Always );
+			Reclaim( cardToReclaim );
+		}
+
+		public async Task Reclaim1FromDiscardOrPlayed() {
+			PowerCard cardToReclaim = await this.SelectPowerCard( "Select card to reclaim.", DiscardPile.Union(InPlay), CardUse.Reclaim, Present.Always );
 			Reclaim( cardToReclaim );
 		}
 
@@ -241,15 +252,18 @@ namespace SpiritIsland {
 		public virtual void Forget( PowerCard cardToRemove ) {
 			// A card can be in one of 3 places
 			// (1) Purchased / Active
-			if(InPlay.Contains( cardToRemove )) {
-				foreach(var el in cardToRemove.Elements) 
-					Elements[el.Key]-=el.Value;// lose elements from forgotten card
-				InPlay.Remove( cardToRemove );
-			}
+			if(InPlay.Contains( cardToRemove ))
+				RemoveCardFromPlay( cardToRemove );
 			// (2) Unpurchased, still in hand
 			Hand.Remove( cardToRemove );
 			// (3) used, discarded
 			DiscardPile.Remove( cardToRemove );
+		}
+
+		private void RemoveCardFromPlay( PowerCard cardToRemove ) {
+			foreach(var el in cardToRemove.Elements)
+				Elements[el.Key] -= el.Value;// lose elements from forgotten card
+			InPlay.Remove( cardToRemove );
 		}
 
 		public bool IsActiveDuring(Phase phase, IActionFactory actionFactory) => actionFactory.CouldActivateDuring( phase, this );
@@ -280,12 +294,12 @@ namespace SpiritIsland {
 			return this;
 		}
 
-		protected virtual async Task TakeAction(IActionFactory factory, SpiritGameStateCtx ctx) {
+		public virtual async Task TakeAction(IActionFactory factory, SpiritGameStateCtx ctx) {
 			var oldActionGuid = CurrentActionId; // capture old
 			CurrentActionId = Guid.NewGuid(); // set new
 			try {
+				RemoveFromUnresolvedActions( factory ); // removing first, so action can restore it if desired
 				await factory.ActivateAsync( ctx );
-				RemoveFromUnresolvedActions( factory );
 			} finally {
 				CurrentActionId = oldActionGuid; // restore
 			}
@@ -380,10 +394,10 @@ namespace SpiritIsland {
 		// Used by Observe The Ever-Changing World to distinguish between actions
 		public Guid CurrentActionId; // !!! this might not work when we go to multi-player
 
-		#region Purchase Cards
+		#region Play Cards
 
 		// Plays cards from hand for cost
-		public async Task PlayCardsFromHand( int? numberToPlay = null ) {
+		public async Task SelectAndPlayCardsFromHand( int? numberToPlay = null ) {
 			int remainingToPlay = numberToPlay ?? NumberOfCardsPlayablePerTurn;
 
 			PowerCard[] getPowerCardOptions() => Hand

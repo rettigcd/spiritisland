@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
-	/// <remarks>Lure of the Deep Wilderness - Air/Plant/Moon</remarks>
+	/// <remarks>Lure of the Deep Wilderness - Air/Plant/Moon, Fractured Days</remarks>
 	public class Gain1Element : GrowthActionFactory {
 
 		public Element[] ElementOptions { get; } // public for drawing
@@ -13,7 +13,8 @@ namespace SpiritIsland {
 		}
 
 		public override async Task ActivateAsync( SpiritGameStateCtx ctx ) {
-			var element = await ctx.Self.SelectElementEx( "Gain element", ElementOptions );
+			var element = ElementOptions.Length == 1 ? ElementOptions[0]
+				: await ctx.Self.SelectElementEx( "Gain element", ElementOptions );
 			ctx.Self.Elements[element]++;
 		}
 

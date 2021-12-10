@@ -148,6 +148,11 @@ namespace SpiritIsland {
 			} );
 		}
 
+		public void AddRavage( Space spacesToAdd ) {
+			throw new System.NotImplementedException("!!! should only add to cards that match space");
+		}
+
+
 		public void Skip1Build( params Space[] target ) {
 			PreBuilding.ForRound.Add( (GameState gs, BuildingEventArgs args) => {
 				foreach(var skip in target)
@@ -155,10 +160,27 @@ namespace SpiritIsland {
 			});
 		}
 
+		public void Add1Build( params Space[] target ) {
+			// !!! This should only add to spaces that match invader card
+			PreBuilding.ForRound.Add( ( GameState gs, BuildingEventArgs args ) => {
+				foreach(var skip in target)
+					args.Add( skip );
+			} );
+		}
+
+
 		public void SkipExplore( params Space[] target ) {
 			PreExplore.ForRound.Add( ( gs, args ) => {
 				foreach(var space in target)
 					args.Skip(space);
+			} );
+		}
+
+		public void AddExplore( params Space[] target ) {
+			// !!! This should only add to spaces that match invader card
+			PreExplore.ForRound.Add( ( gs, args ) => {
+				foreach(var space in target)
+					args.Add( space );
 			} );
 		}
 

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace SpiritIsland {
 	public class DrawCardResult {
@@ -8,7 +9,7 @@ namespace SpiritIsland {
 		public PowerType PowerType { get; }
 		public PowerCard[] SelectedCards;
 		public PowerCard Selected => SelectedCards.Single();
-		public PowerCard[] Rejected;
+		public List<PowerCard> Rejected;
 	}
 
 }

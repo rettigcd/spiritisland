@@ -49,7 +49,7 @@ namespace SpiritIsland.SinglePlayer {
 							GameState.Phase = Phase.Growth;
 							LogPhase();
 							await Spirit.DoGrowth( GameState );
-							await Spirit.PlayCardsFromHand();
+							await Spirit.SelectAndPlayCardsFromHand();
 
 							GameState.Phase = Phase.Fast;
 							LogPhase();

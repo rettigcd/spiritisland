@@ -38,6 +38,10 @@ namespace SpiritIsland.WinForms {
 		}
 
 		void DrawAction( GrowthActionFactory action, RectangleF rect ) {
+
+			if(action is JaggedEarth.RepeatableActionFactory raf && raf.Inner is not JaggedEarth.GainTime )
+				action = raf.Inner;
+
 			if(action is GainEnergy ge) { GainEnergy( rect, ge.Delta ); return; }
 
 			if(action is ReclaimAll) { ReclaimAll( rect ); return; }
@@ -54,7 +58,9 @@ namespace SpiritIsland.WinForms {
 
 			switch(action.Name) {
 
-				case "PlayExtraCardThisTurn": AdditionalPlay( rect ); break;
+				case "PlayExtraCardThisTurn(2)":
+				case "PlayExtraCardThisTurn(1)":
+													AdditionalPlay( rect ); break;
 				// Ocean
 				case "PlaceInOcean":          PlacePresence( rect, null, Target.Ocean ); break;
 				case "GatherPresenceIntoOcean": GatherToOcean(rect); break;
@@ -63,6 +69,14 @@ namespace SpiritIsland.WinForms {
 				case "EnergyForFire": EnergyForFire( rect ); break;
 				// Lure of the Deep Wilderness
 				case "GainElement(Moon,Air,Plant)": GainElement( rect, Element.Moon, Element.Air, Element.Plant ); break;
+				// Fractured Dates
+				case "GainElement(Air)": GainElement( rect, Element.Air ); break;
+				case "GainElement(Moon)": GainElement( rect, Element.Moon ); break;
+				case "GainElement(Sun)": GainElement( rect, Element.Sun ); break;
+				case "GainTime(2)":    GainTime( rect ); break;
+				case "GainTime(1)x2":  Gain1TimeOr2CardPlaysX2( rect ); break; // !!! show card plays
+				case "GainTime(1)x3":  Gain1TimeOr2EnergyX3( rect ); break;
+				case "DrawPowerCardFromDaysThatNeverWere": DrawImage( rect, Img.FracturedDays_DrawDtnw ); break; 
 				// Grinning Trickster
 				case "GainEnergyEqualToCardPlays": DrawIconInCenter( rect, Img.GainEnergyEqualToCardPlays ); break;
 				// Stones Unyielding Defiance
@@ -81,7 +95,7 @@ namespace SpiritIsland.WinForms {
 
 		}
 
-		void AdditionalPlay( RectangleF rect )      => DrawIconInCenter( rect, Img.Plus1CardPlay );
+		void AdditionalPlay( RectangleF rect )      => DrawIconInCenter( rect, Img.Plus1CardPlay ); // !!!!!!!! show the correct # of plays (Fractured Day...)
 		void Reclaim1( RectangleF rect )            => DrawIconInCenter( rect, Img.Reclaim1 );
 		void ReclaimHalf( RectangleF rect )         => DrawIconInCenter( rect, Img.ReclaimHalf );
 		void ReclaimAll( RectangleF rect )          => DrawIconInCenter( rect, Img.ReclaimAll );
@@ -95,8 +109,10 @@ namespace SpiritIsland.WinForms {
 		void GainEnergy( RectangleF bounds, int delta ){
 			// DrawTokenInCenter( rect, "Energy_Plus_"+delta);
 			using var img = ResourceImages.Singleton.GetImage( Img.Coin );
+
 			float imgWidth = bounds.Width, imgHeight = img.Height * imgWidth / img.Width; // assuming width limited
-			graphics.DrawImage( img, bounds.X, bounds.Y + (bounds.Height - imgHeight) / 2, imgWidth, imgHeight );
+
+			graphics.DrawImageFitBoth( img, bounds );
 
 			using Font coinFont = new Font( ResourceImages.Singleton.Fonts.Families[0], imgHeight * .5f, GraphicsUnit.Pixel );
 			string txt = delta > 0 
@@ -123,6 +139,25 @@ namespace SpiritIsland.WinForms {
 				using var img = ResourceImages.Singleton.GetImage( elements[i].GetTokenImg() );
 				graphics.DrawImageFitWidth(img, parts[i]);
 			}
+		}
+
+		void GainTime( RectangleF rect ) {
+			using var img = ResourceImages.Singleton.GetImage( Img.FracturedDays_Gain2Time );
+			graphics.DrawImageFitWidth(img, rect );
+		}
+
+		void Gain1TimeOr2CardPlaysX2( RectangleF rect ) {
+			DrawImage( rect, Img.FracturedDays_Gain1Timex2 );
+		}
+
+		void Gain1TimeOr2EnergyX3( RectangleF rect ) {
+			DrawImage(rect, Img.FracturedDays_Gain1Timex3 );
+		}
+
+
+		void DrawImage( RectangleF rect, Img img ) {
+			using var image = ResourceImages.Singleton.GetImage( img );
+			graphics.DrawImageFitBoth(image, rect );
 		}
 
 

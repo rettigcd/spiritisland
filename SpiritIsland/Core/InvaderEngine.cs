@@ -103,7 +103,7 @@ namespace SpiritIsland {
 
 		public Func<TokenCountDictionary,GameState,Task<bool>> StopBuildWithDiseaseBehavior = StopBuildWithDiseaseBehavior_Default; // !!! move this to the GameState API
 
-		public async Task<string> Build( TokenCountDictionary tokens, BuildingEventArgs.BuildType buildType ) {
+		public async Task<string> BuildSpace( TokenCountDictionary tokens, BuildingEventArgs.BuildType buildType ) {
 			if( await StopBuildWithDiseaseBehavior( tokens, gs ) )
 				return tokens.Space.Label +" build stopped by disease";
 
@@ -153,7 +153,7 @@ namespace SpiritIsland {
 						var buildType = args.BuildTypes.ContainsKey( space )
 							? args.BuildTypes[space]
 							: BuildingEventArgs.BuildType.TownsAndCities;
-						var buildResult = await Build( gs.Tokens[space], buildType );
+						var buildResult = await BuildSpace( gs.Tokens[space], buildType );
 						gs.Log( new InvaderActionEntry( space.Label + ": gets " + buildResult ) );
 					} else {
 						gs.Log( new InvaderActionEntry( space.Label + ": no invaders " ) );

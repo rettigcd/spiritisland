@@ -7,7 +7,6 @@ namespace SpiritIsland.JaggedEarth {
 	[RepeatIf("6 plant")]
 	public class NeverHeardFromAgain {
 
-
 		// If this Power destroys any explorer, 1 Fear
 		// if this Power destroys 5 or more explorer, +1 fear
 		static int CalcFearFromExplorerDeath( int destroyCount ) {

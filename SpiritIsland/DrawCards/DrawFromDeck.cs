@@ -37,7 +37,7 @@ namespace SpiritIsland {
 			deck.Discard( candidates );
 			return new DrawCardResult( selectedCards[0].PowerType ){
 				 SelectedCards = selectedCards.ToArray(),
-				 Rejected = candidates.ToArray()
+				 Rejected = candidates
 			};
 		}
 

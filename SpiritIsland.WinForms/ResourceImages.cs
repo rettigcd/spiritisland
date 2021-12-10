@@ -53,6 +53,7 @@ namespace SpiritIsland.WinForms {
 		public Bitmap FearGray() => GetResourceImage("tokens.fear_gray.png");
 		public Bitmap FearCard() => GetResourceImage("tokens.fearcard.png");
 		public Bitmap RedX()     => GetResourceImage( "icons.red-x.png" );
+		public Bitmap Hourglass()     => GetResourceImage( "icons.hourglass.png" );
 		public Bitmap TerrorLevel( int terrorLevel )     => GetResourceImage( $"icons.TerrorLevel{terrorLevel}.png" );
 
 		// Growth / Terror Level / Destoryed Presence
@@ -98,6 +99,12 @@ namespace SpiritIsland.WinForms {
 			Img.Starlight_GrowthOption2      => "icons.so2.png",
 			Img.Starlight_GrowthOption3      => "icons.so3.png",
 			Img.Starlight_GrowthOption4      => "icons.so4.png",
+			Img.FracturedDays_Gain2Time      => "icons.Gain2time.png",
+			Img.FracturedDays_Gain1Timex2    => "icons.Gain1timex2.png",
+			Img.FracturedDays_Gain1Timex3    => "icons.Gain1timex3.png",
+			Img.FracturedDays_DrawDtnw       => "icons.Daysthatneverweregrowthicon.png",
+
+
 			Img.Coin                         => "tokens.coin.png",
 
 			Img.Token_Sun                    => "tokens.Simple_sun.png",

@@ -30,9 +30,9 @@ namespace SpiritIsland {
 		public IEnumerable<Track> GetReturnableTrackOptions()
 			=> Energy.ReturnableOptions.Union( CardPlays.ReturnableOptions );
 
-		public IReadOnlyCollection<Track> GetEnergyTrackStatus() => Energy.Slots;
+		public IReadOnlyCollection<Track> GetEnergyTrack() => Energy.Slots;
 
-		public IReadOnlyCollection<Track> GetCardPlayTrackStatus() => CardPlays.Slots;
+		public IReadOnlyCollection<Track> GetCardPlayTrack() => CardPlays.Slots;
 
 		public int EnergyPerTurn { get; private set; }
 
@@ -74,18 +74,19 @@ namespace SpiritIsland {
 		#region Game-Play things you can do with presence
 
 		public virtual async Task Place( IOption from, Space to, GameState gs ) {
-			// from
+			await TakeFrom( from, gs );
+			PlaceOn( to, gs );
+		}
+
+		public async Task TakeFrom( IOption from, GameState gs ) {
 			if(from is Track track) {
 				await RevealTrack( track, gs );
 			} else if(from is Space space) {
-				if( Spaces.Contains(space) )
+				if(Spaces.Contains( space ))
 					RemoveFrom_NoCheck( space, gs );
 				else
 					throw new ArgumentException( "Can't pull from island space:" + from.ToString() );
 			}
-
-			// To
-			PlaceOn( to, gs );
 		}
 
 		protected virtual async Task RevealTrack( Track track, GameState gs ) {

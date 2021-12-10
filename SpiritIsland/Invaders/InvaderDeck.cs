@@ -10,17 +10,17 @@ namespace SpiritIsland {
 		#region public static
 
 		public static readonly ImmutableList<InvaderCard> Level1Cards = ImmutableList.Create(
-			new InvaderCard(Terrain.Jungle),
-			new InvaderCard(Terrain.Wetland),
-			new InvaderCard(Terrain.Sand),
-			new InvaderCard(Terrain.Mountain)
+			new InvaderCard( Terrain.Jungle ),
+			new InvaderCard( Terrain.Wetland ),
+			new InvaderCard( Terrain.Sand ),
+			new InvaderCard( Terrain.Mountain )
 		);
 
 		public static readonly ImmutableList<InvaderCard> Level2Cards = ImmutableList.Create(
-			new InvaderCard(Terrain.Jungle, true),
-			new InvaderCard(Terrain.Wetland, true),
-			new InvaderCard(Terrain.Sand, true),
-			new InvaderCard(Terrain.Mountain, true),
+			new InvaderCard( Terrain.Jungle, true),
+			new InvaderCard( Terrain.Wetland, true),
+			new InvaderCard( Terrain.Sand, true),
+			new InvaderCard( Terrain.Mountain, true),
 			InvaderCard.Costal
 		);
 
@@ -97,7 +97,8 @@ namespace SpiritIsland {
 
 		public List<InvaderCard> Ravage { get; } = new List<InvaderCard>();
 
-		public int CountInDiscard {get; private set; }
+		public int CountInDiscard => Discards.Count;
+		public List<InvaderCard> Discards {get;} = new List<InvaderCard>();
 
 
 		public bool KeepBuildCards = false; // !!! is there a way to make this go away?
@@ -109,7 +110,7 @@ namespace SpiritIsland {
 		public void Advance() {
 
 			// Move Ravage to Discard
-			CountInDiscard += Ravage.Count;
+			Discards.AddRange( Ravage );
 			Ravage.Clear();
 
 			// Move Build to Ravage
@@ -166,7 +167,7 @@ namespace SpiritIsland {
 				explore = src.Explore.ToArray();
 				build = src.Build.ToArray();
 				ravage = src.Ravage.ToArray();
-				this.discardCount = src.CountInDiscard;
+				discards = src.Discards.ToArray();
 
 			}
 			public void Restore(InvaderDeck src ) {
@@ -175,14 +176,14 @@ namespace SpiritIsland {
 				src.Explore.SetItems(explore);
 				src.Build.SetItems(build);
 				src.Ravage.SetItems(ravage);
-				src.CountInDiscard = discardCount;
+				src.Discards.SetItems(discards);
 			}
 			readonly InvaderCard[] unrevealedCards;
 			readonly int[] drawCount;
 			readonly InvaderCard[] explore;
 			readonly InvaderCard[] build;
 			readonly InvaderCard[] ravage;
-			readonly int discardCount;
+			readonly InvaderCard[] discards;
 
 		}
 

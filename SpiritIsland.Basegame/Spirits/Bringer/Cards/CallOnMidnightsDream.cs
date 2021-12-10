@@ -1,28 +1,37 @@
 ﻿using System.Threading.Tasks;
+using System.Linq;
 
 namespace SpiritIsland.Basegame {
 
 	public class CallOnMidnightsDream {
 
+		public const string Name = "Call on Midnight's Dream";
 
-		[SpiritCard("Call on Midnight's Dream",0, Element.Moon,Element.Animal)]
-		[Fast]
-		[FromPresence(0,Target.DahanOrInvaders)] // adding dahan or invaders so that card does something.
+
+		[SpiritCard(CallOnMidnightsDream.Name,0, Element.Moon,Element.Animal), Fast, FromPresence(0,Target.DahanOrInvaders)]
 		static public Task ActAsync(TargetSpaceCtx ctx) {
 
 			return ctx.SelectActionOption(
-				new ActionOption("Draw Major Power", ()=>DrawMajorOrGetEnergy(ctx), ctx.Dahan.Any ),
+				new ActionOption("Draw Major Power", ()=>DrawMajorOrGetEnergy(ctx), ctx.Dahan.Any ), // if target land has dahan
 				new ActionOption("2 fear", () => ctx.AddFear(2), ctx.HasInvaders )
 			);
 
 		}
 
 		static async Task DrawMajorOrGetEnergy( TargetSpaceCtx ctx ) {
-			// if target land has dahan, gain a major power.
+			// Gain a major power. (and forget a card)
 			var major = (await ctx.DrawMajor(true)).Selected;
-			// If you Forget this Power, gain energy equal to dahan and you may play the major power immediately paying its cost
-			if(!ctx.Self.Hand.Contains( major )) // because you discarded it
+
+			// If you Forget this (Call on Midnights Dream) Power,
+			if( !ctx.Self.Hand.Any(c=>c.Name ==CallOnMidnightsDream.Name ) ) {
+				// gain energy equal to dahan
 				ctx.Self.Energy += ctx.Dahan.Count;
+				// you may play the major power immediately by paying its cost
+				if( major.Cost <= ctx.Self.Energy 
+					&& await ctx.Self.UserSelectsFirstText("Play card immediately by paying its cost?", "Yes, play now.", "No thank you")
+				)
+					ctx.Self.PlayCard( major );
+			}
 		}
 	}
 }

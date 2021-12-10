@@ -19,7 +19,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 		}
 
-		private static async Task PlayCardByPayingHalfCostOrForgetting( PowerCard card, SpiritGameStateCtx ctx ) {
+		static async Task PlayCardByPayingHalfCostOrForgetting( PowerCard card, SpiritGameStateCtx ctx ) {
 
 			// target spirit may now play the major power they keep by:
 			//    * paying half its cost (round up) OR

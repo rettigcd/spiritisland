@@ -35,6 +35,10 @@ namespace SpiritIsland {
 		Starlight_GrowthOption2,
 		Starlight_GrowthOption3,
 		Starlight_GrowthOption4,
+		FracturedDays_Gain2Time,
+		FracturedDays_Gain1Timex2,
+		FracturedDays_Gain1Timex3,
+		FracturedDays_DrawDtnw,
 		Stone_Minor,
 
 		// Elements as tokens

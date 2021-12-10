@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpiritIsland.JaggedEarth;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -12,16 +13,17 @@ namespace SpiritIsland.WinForms {
 
 		readonly Graphics graphics;
 
-		readonly Track[] energyTrackStatii;
-		readonly Track[] cardTrackStatii;
-		readonly Track[] energyRevealed;
-		readonly Track[] cardRevealed;
+		// ? What does all of this really accomplish?
+		Track[] EnergyTrack => spirit.Presence.GetEnergyTrack().ToArray();
+		Track[] EnergyRevealed => spirit.Presence.Energy.Revealed.ToArray();
 
-		readonly int energy;
-		readonly int destroyed;
+		Track[] CardTrack => spirit.Presence.GetCardPlayTrack().ToArray();
+		Track[] CardRevealed => spirit.Presence.CardPlays.Revealed.ToArray();
 
 		readonly Track[] clickableTrackOptions;
 		readonly PresenceTrackLayout metrics;
+
+		readonly Spirit spirit;
 
 		public PresenceTrackPainter( 
 			Spirit spirit, 
@@ -32,16 +34,7 @@ namespace SpiritIsland.WinForms {
 			this.metrics = metrics;
 			this.clickableTrackOptions = clickableTrackOptions;
 			this.graphics = graphics;
-
-			var presence = spirit.Presence;
-			this.energy = spirit.Energy;
-			this.destroyed = spirit.Presence.Destroyed;
-
-			energyTrackStatii = presence.GetEnergyTrackStatus().ToArray();
-			energyRevealed = presence.Energy.Revealed.ToArray();
-			cardTrackStatii = presence.GetCardPlayTrackStatus().ToArray();
-			cardRevealed = presence.CardPlays.Revealed.ToArray();
-
+			this.spirit = spirit;
 		}
 
 		public void Paint(string presenceColor) {
@@ -52,10 +45,10 @@ namespace SpiritIsland.WinForms {
 			PaintLabels();
 			PaintCurrentEnergy();
 
-			foreach(var track in energyTrackStatii)
+			foreach(var track in EnergyTrack)
 				DrawTheIcon( track.Icon, metrics.SlotLookup[track].TrackRect );
 
-			foreach(var track in this.cardTrackStatii)
+			foreach(var track in this.CardTrack)
 				DrawTheIcon( track.Icon, metrics.SlotLookup[track].TrackRect );
 
 			// Middle Layer
@@ -81,15 +74,18 @@ namespace SpiritIsland.WinForms {
 		void PaintPresence(string presenceColor) {
 			using Bitmap presenceImg = ResourceImages.Singleton.GetPresenceIcon( presenceColor );
 
-			foreach(var track in energyTrackStatii)
-				if(!energyRevealed.Contains(track))
+			foreach(var track in EnergyTrack)
+				if(!EnergyRevealed.Contains(track))
 					graphics.DrawImage( presenceImg, metrics.SlotLookup[track].PresenceRect );
 
-			foreach(var track in cardTrackStatii)
-				if(!cardRevealed.Contains(track))
+			foreach(var track in CardTrack)
+				if(!CardRevealed.Contains(track))
 					graphics.DrawImage( presenceImg, metrics.SlotLookup[track].PresenceRect );
 
 			PaintDestroyed( presenceImg );
+
+			if(spirit is FracturedDaysSplitTheSky days)
+				PaintTime( presenceImg, days.Time );
 		}
 
 		void DrawTheIcon( IconDescriptor icon, RectangleF bounds ) {
@@ -177,12 +173,12 @@ namespace SpiritIsland.WinForms {
 				bigCoinWidth,
 				bigCoinWidth
 			);
-			DrawTheIcon(new IconDescriptor { BackgroundImg = Img.Coin, Text = energy.ToString() }, energyRect );
+			DrawTheIcon(new IconDescriptor { BackgroundImg = Img.Coin, Text = spirit.Energy.ToString() }, energyRect );
 		}
 
 		void PaintDestroyed(Bitmap presenceImg) {
 			Rectangle rect = metrics.Destroyed;
-			int destroyedCount = destroyed;
+			int destroyedCount = spirit.Presence.Destroyed;
 			if(destroyedCount == 0) return;
 
 			// Presence & Red X
@@ -193,6 +189,22 @@ namespace SpiritIsland.WinForms {
 			// count
 			graphics.DrawCountIfHigherThan( rect, destroyedCount );
 
+		}
+
+		void PaintTime(Bitmap presenceImg, int timeCount) {
+			Rectangle rect = metrics.Time;
+			if(timeCount== 0) return;
+
+			// Presence
+			graphics.DrawImage( presenceImg, rect );
+
+			// Hour glass
+			var hgRect = new Rectangle( rect.X, rect.Y, rect.Width * 2 / 3, rect.Height * 2 / 3 );
+			using var hourglass = ResourceImages.Singleton.Hourglass();
+			graphics.DrawImageFitBoth( hourglass, hgRect );
+
+			// count
+			graphics.DrawCountIfHigherThan( rect, timeCount );
 		}
 
 	}

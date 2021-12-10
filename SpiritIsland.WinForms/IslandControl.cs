@@ -120,6 +120,8 @@ namespace SpiritIsland.WinForms {
 		protected override void OnPaint( PaintEventArgs pe ) {
 			base.OnPaint( pe );
 
+			DateTime start = DateTime.Now;
+
 			if(board != null) {
 				// Assume limit is height
 				boardScreenSize = (board.Width * Height > Width * board.Height)
@@ -159,6 +161,9 @@ namespace SpiritIsland.WinForms {
 					hotSpots.Add(fearCard,activeFearRect);
 
 			}
+
+			TimeSpan duration = DateTime.Now - start;
+			pe.Graphics.DrawString(((int)duration.TotalMilliseconds).ToString(),SystemFonts.DefaultFont, Brushes.Black,10f,60f);
 
 		}
 

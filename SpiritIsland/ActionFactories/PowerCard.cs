@@ -14,6 +14,7 @@ namespace SpiritIsland {
 			this.targetAttr = targetAttr;
 			cardAttr = methodBase.GetCustomAttributes<CardAttribute>().VerboseSingle( "Couldn't find CardAttribute on PowerCard targeting a space" );
 			speedAttr = methodBase.GetCustomAttribute<SpeedAttribute>(false) ?? throw new InvalidOperationException("Missing Speed attribute for "+methodBase.DeclaringType.Name);
+			this.repeatAttr = methodBase.GetCustomAttribute<RepeatAttribute>();
 		}
 
 		#endregion
@@ -22,7 +23,6 @@ namespace SpiritIsland {
 		public string Name         => cardAttr.Name;
 		public Phase DisplaySpeed         => speedAttr.DisplaySpeed;
 		public ISpeedBehavior OverrideSpeedBehavior { get; set; }
-
 
 		public int Cost            => cardAttr.Cost;
 		public ElementCounts Elements  => cardAttr.Elements;
@@ -35,17 +35,24 @@ namespace SpiritIsland {
 			return SpeedBehavior.CouldBeActiveFor(requestSpeed,spirit);
 		}
 
-		public async Task ActivateAsync(SpiritGameStateCtx spiritCtx) {
+		public async Task ActivateAsync(SpiritGameStateCtx ctx) {
 
-			if( !await SpeedBehavior.IsActiveFor(spiritCtx.GameState.Phase,spiritCtx.Self) )
-				return; 
+			if(!await SpeedBehavior.IsActiveFor( ctx.GameState.Phase, ctx.Self ))
+				throw new InvalidOperationException( "can't run PowerCard at this speeed" );
 
+			await ActivateInnerAsync( ctx );
+			if(repeatAttr != null) {
+				var repeater = repeatAttr.GetRepeater();
+				while(await repeater.ShouldRepeat( ctx.Self ))
+					await ActivateInnerAsync( ctx );
+			}
+
+		}
+
+		async Task ActivateInnerAsync( SpiritGameStateCtx spiritCtx ) {
 			var targetCtx = await targetAttr.GetTargetCtx( Name, spiritCtx, TargettingFrom.PowerCard );
-			if(targetCtx == null) 
-				return;
-
-			await InvokeOnObjectCtx(targetCtx);
-
+			if(targetCtx != null) // Can't find a tar
+				await InvokeOnObjectCtx( targetCtx );
 		}
 
 		/// <remarks>Called directly from Let's See What Happens with special ContextBehavior</remarks>
@@ -64,6 +71,7 @@ namespace SpiritIsland {
 		readonly SpeedAttribute speedAttr;
 		readonly CardAttribute cardAttr;
 		readonly MethodBase methodBase;
+		readonly RepeatAttribute repeatAttr;
 
 		#endregion
 
@@ -107,42 +115,6 @@ namespace SpiritIsland {
 		#endregion
 
 		readonly GeneratesContextAttribute targetAttr;
-
-	}
-
-	// Volcano targets differently for Innates vs cards
-	public enum TargettingFrom { None, Innate, PowerCard } // Can't think up a good name for this
-
-	public class PowerType : IOption {
-		public static readonly PowerType Minor  = new PowerType("minor");
-		public static readonly PowerType Major  = new PowerType("major");
-		public static readonly PowerType Spirit = new PowerType("spirit");
-		public static readonly PowerType Innate = new PowerType("innate");
-
-		public string Text { get; }
-
-		PowerType(string text) { Text = text; }
-	}
-
-	static public class PowerCardExtensions_ForWinForms {
-
-		public static string GetImageFilename( this PowerCard card ) {
-			string filename = card.Name
-				.Replace( ',', '_' )
-				.Replace( ' ', '_' )
-				.Replace( "__", "_" )
-				.Replace( "'", "" )
-				.Replace( "-", "" )
-				.ToLower();
-			string cardType = card.PowerType.Text;
-			string ns = card.MethodType.Namespace;
-			string edition = ns.Contains( "Basegame" ) ? "basegame"
-				: ns.Contains( "BranchAndClaw" ) ? "bac"
-				: ns.Contains( "PromoPack1" ) ? "bac"  // !!! temporary
-				: ns.Contains( "JaggedEarth" ) ? "je"
-				: ns;
-			return $".\\images\\{edition}\\{cardType}\\{filename}.jpg";
-		}
 
 	}
 

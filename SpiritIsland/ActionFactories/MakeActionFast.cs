@@ -12,7 +12,7 @@ namespace SpiritIsland {
 
 		public string Text => Name;
 
-		public Task ActivateAsync(SpiritGameStateCtx ctx) => new SpeedChanger( ctx.Self, ctx.GameState, Phase.Fast, 2 ).Exec();
+		public Task ActivateAsync(SpiritGameStateCtx ctx) => new SpeedChanger( ctx, Phase.Fast, 2 ).FindAndChange();
 
 
 	}

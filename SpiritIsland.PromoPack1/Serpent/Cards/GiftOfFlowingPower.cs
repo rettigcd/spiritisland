@@ -13,7 +13,7 @@ namespace SpiritIsland.PromoPack1 {
 			// Target spirit chooses to either:
 			return ctx.OtherCtx.SelectActionOption(
 				// Play another Power Card by paying its cost
-				new ActionOption("Play another Power Card by paying its cost", () => { ctx.Other.AddActionFactory( new ReplayCardForCost() ); } ),
+				new ActionOption("Play another Power Card by paying its cost", () => { ctx.Other.AddActionFactory( new PlayCardForCost() ); } ),
 				// OR Gains 1 fire and 1 water.
 				new ActionOption("Gain 1 fire and 1 water", () => { var els = ctx.Other.Elements; els[Element.Fire]++; els[Element.Water]++; } )
 			);

@@ -1,42 +1,57 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
-	[AttributeUsage(AttributeTargets.Method|AttributeTargets.Class)]
-	public class RepeatIfAttribute : System.Attribute {
+	/// <summary>
+	/// Repeats an Innate Power if the elemental thresholds are met.
+	/// </summary>
+	public class RepeatIfAttribute : RepeatAttribute {
 
-		public IDrawableInnateOption[] Repeats {get; }
+		public override IDrawableInnateOption[] Thresholds { get; }
 
 		public RepeatIfAttribute(string elementThreshold, params string[] additionalThresholds) {
 			var repeats = new List<IDrawableInnateOption> {
-				new Drawable( elementThreshold, "Repeat this Power." )
+				new DrawableInnateOption( elementThreshold, "Repeat this Power." )
 			};
 			if(additionalThresholds != null && additionalThresholds.Length>0)
-				repeats.AddRange( additionalThresholds.Select( t => new Drawable(t,"Repeat this Power again.") ) );
-			this.Repeats = repeats.ToArray();
+				repeats.AddRange( additionalThresholds.Select( t => new DrawableInnateOption(t,"Repeat this Power again.") ) );
+			this.Thresholds = repeats.ToArray();
 		}
 
-		public async Task<int> GetRepeatCount( Spirit spirit ) {
-			int sum = 0;
-			foreach(var repeat in Repeats)
-				if( await spirit.HasElements( repeat.Elements ) )
-					++sum;
-			return sum;
-		}
+		public override InnateRepeater GetRepeater() => new Repeater( Thresholds );
 
-		class Drawable : IDrawableInnateOption {
-			public Drawable( string thresholds, string description ) {
-				Elements = ElementList.Parse(thresholds);
-				Description = description;
+		class Repeater : InnateRepeater {
+
+			readonly List<IDrawableInnateOption> thresholds;
+
+			public Repeater( IDrawableInnateOption[] thresholds ) {
+				this.thresholds = thresholds.ToList();
 			}
-			public ElementCounts Elements { get; }
 
-			public string Description { get; }
+			public async Task<bool> ShouldRepeat( Spirit spirit ) {
+				foreach(var threshold in thresholds) {
+					if( await spirit.HasElements(threshold.Elements) ) {
+						thresholds.Remove(threshold);
+						return true;
+					}
+				}
+				return false;
+			}
 		}
 
 	}
+
+	public class DrawableInnateOption : IDrawableInnateOption {
+		public DrawableInnateOption( string thresholds, string description ) {
+			Elements = ElementList.Parse(thresholds);
+			Description = description;
+		}
+		public ElementCounts Elements { get; }
+
+		public string Description { get; }
+	}
+
 
 }

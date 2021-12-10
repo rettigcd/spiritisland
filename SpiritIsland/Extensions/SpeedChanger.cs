@@ -5,16 +5,16 @@ namespace SpiritIsland {
 
 	public class SpeedChanger {
 
-		readonly Spirit spirit;
-		readonly GameState gameState;
+		readonly SpiritGameStateCtx ctx;
+		Spirit Spirit => ctx.Self;
+		GameState GameState => ctx.GameState;
 		readonly string prompt;
 		readonly Phase toChangeFrom;
 		readonly Phase resultingSpeed;
 		int countToChange;
 
-		public SpeedChanger( Spirit spirit, GameState gs, Phase resultingSpeed, int maxCountToChange ) {
-			this.spirit = spirit;
-			this.gameState = gs; // for Time-Passes Hook, to reset
+		public SpeedChanger( SpiritGameStateCtx ctx, Phase resultingSpeed, int maxCountToChange ) {
+			this.ctx = ctx;
 			this.countToChange = maxCountToChange;
 			this.resultingSpeed = resultingSpeed;
 
@@ -34,31 +34,66 @@ namespace SpiritIsland {
 
 		}
 
-		public async Task Exec() {
+		public async Task FindAndChange() {
 
 			// clip count to available slow stuff
 			countToChange = System.Math.Min( countToChange, FindSouceFactories().Length );
 
 			while(countToChange > 0)
-				await FindAndChange();
+				await FindAndChange1();
+
+		}
+
+		public async Task FindAndExecute() {
+
+			// clip count to available slow stuff
+			countToChange = System.Math.Min( countToChange, FindSouceFactories().Length );
+
+			while(countToChange > 0)
+				await FindAndExecute1();
 
 		}
 
 		protected IFlexibleSpeedActionFactory[] FindSouceFactories()
-			=> spirit.GetAvailableActions( toChangeFrom ).OfType<IFlexibleSpeedActionFactory>().ToArray();
+			=> Spirit.GetAvailableActions( toChangeFrom ).OfType<IFlexibleSpeedActionFactory>().ToArray();
 
-		async Task FindAndChange( ) {
+		async Task FindAndChange1( ) {
 			var changeableFactories = FindSouceFactories();
-			IFlexibleSpeedActionFactory factory = (IFlexibleSpeedActionFactory)await spirit.SelectFactory( prompt + $" (remaining: {countToChange})",
+			IFlexibleSpeedActionFactory factory = (IFlexibleSpeedActionFactory)await Spirit.SelectFactory( prompt + $" (remaining: {countToChange})",
 				changeableFactories,
 				Present.Done
 			);
 
 			if(factory != null) {
-				Change( factory );
+				ChangeSpeed( factory );
 				--countToChange;
 			} else
 				countToChange = 0;
+		}
+
+		async Task FindAndExecute1( ) {
+			var changeableFactories = FindSouceFactories();
+			var factory = await Spirit.SelectFactory( prompt + $" (remaining: {countToChange})",
+				changeableFactories,
+				Present.Done
+			);
+
+			if(factory != null) {
+				await Spirit.TakeAction( factory, ctx );
+				--countToChange;
+			} else
+				countToChange = 0;
+		}
+
+		void ChangeSpeed( IFlexibleSpeedActionFactory factory ) {
+			factory.OverrideSpeedBehavior = new SpeedOverrideBehavior( resultingSpeed );
+
+			Task Restore(GameState _) { 
+				factory.OverrideSpeedBehavior = null;
+				return Task.CompletedTask;
+			}
+			GameState.TimePasses_ThisRound.Push( Restore );
+
 		}
 
 		class SpeedOverrideBehavior : ISpeedBehavior {
@@ -70,17 +105,6 @@ namespace SpiritIsland {
 			
 			public Task<bool> IsActiveFor( Phase requestSpeed, Spirit spirit ) 
 				=> Task.FromResult(requestSpeed == newSpeed);
-		}
-
-		void Change( IFlexibleSpeedActionFactory factory ) {
-			factory.OverrideSpeedBehavior = new SpeedOverrideBehavior( resultingSpeed );
-
-			Task Restore(GameState _) { 
-				factory.OverrideSpeedBehavior = null;
-				return Task.CompletedTask;
-			}
-			gameState.TimePasses_ThisRound.Push( Restore );
-
 		}
 
 	}

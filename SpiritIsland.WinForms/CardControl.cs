@@ -170,10 +170,11 @@ namespace SpiritIsland.WinForms {
 		}
 
 		Img GetLocationButton(Point coords ) {
-			return iconPositions[0].Contains( coords ) ? Img.Deck_Hand
-				: iconPositions[1].Contains( coords )  ? Img.Deck_Played
-				: iconPositions[2].Contains( coords ) ? Img.Deck_Discarded
-				: Img.None;
+			if(iconPositions == null) return default; 
+			for(int i=0;i<iconPositions.Length;++i)
+				if(iconPositions[i].Contains( coords ))
+					return decks[i].Icon;
+			return default;
 		}
 
 
@@ -242,7 +243,7 @@ namespace SpiritIsland.WinForms {
 		void InitIconPositions(int count) {
 			iconPositions = new Rectangle[count];
 			for(int i = 0;i<count;++i)
-				iconPositions[i] = new Rectangle(5,40*i,40,40);
+				iconPositions[i] = new Rectangle(5,50 * i,40,40); // 50 spreads them out a little.
 		}
 
 		readonly HashSet<Img> choiceLocations = new HashSet<Img>();

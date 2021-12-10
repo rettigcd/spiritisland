@@ -34,7 +34,7 @@ namespace SpiritIsland {
 				await self.ForgetPowerCard();
 			return new DrawCardResult( newCard.PowerType ) {
 				SelectedCards = new PowerCard[]{ newCard },
-				Rejected = Array.Empty<PowerCard>(),
+				Rejected = new List<PowerCard>(),
 			};
 		}
 

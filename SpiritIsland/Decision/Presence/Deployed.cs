@@ -6,8 +6,6 @@ namespace SpiritIsland.Decision.Presence {
 	// Base class for selecting from deployed presence
 	public class Deployed : TypedDecision<Space> {
 
-		public static Deployed SourceForPlacing( Spirit spirit ) => new Deployed("Select Presence to place.", spirit);
-
 		public static Deployed SourceForPushing( Spirit spirit, Present present=Present.Done ) => new Deployed("Select Presence to push.", spirit, present);
 
 

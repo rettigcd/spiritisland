@@ -24,7 +24,7 @@ namespace SpiritIsland {
 			if(source == null) return (null,null);
 			var sourceCtx = ctx.Target( source );
 			// Select destination
-            var destination = await sourceCtx.Self.Action.Decision( new Decision.Presence.Push( "Push Presence to", sourceCtx.Space, sourceCtx.Adjacent ));
+			var destination = await sourceCtx.Self.Action.Decision( new Decision.Presence.Push( "Push Presence to", sourceCtx.Space, sourceCtx.Adjacent ));
 			Move( source, destination );
 			return (source, destination);
 		}
@@ -38,7 +38,7 @@ namespace SpiritIsland {
 		/// <remarks> Called from normal PlacePresence Growth + Gift of Proliferation. </remarks>
 		public async Task PlaceWithin( int range, string filterEnum ) {
 			var from = await SelectSource();
-			Space to = await ctx.Presence.SelectDestinationWithinRange( range, filterEnum );
+			Space to = await SelectDestinationWithinRange( range, filterEnum );
 			await ctx.Self.PlacePresence( from, to, ctx.GameState );
 		}
 
@@ -84,11 +84,10 @@ namespace SpiritIsland {
 
 		/// <summary> Tries Presence Tracks first, then fails over to placed-presence on Island </summary>
 		public async Task<IOption> SelectSource() {
-			return (IOption)await ctx.Self.Action.Decision( new Decision.Presence.SourceFromTrack( ctx.Self ) )
-				?? (IOption)await ctx.Self.Action.Decision( Decision.Presence.Deployed.SourceForPlacing( ctx.Self ) );
+			return (IOption)await ctx.Self.Action.Decision( new Decision.Presence.SourceFromTrack( "Select Presence to place.", ctx.Self ) )
+				?? (IOption)await ctx.Self.Action.Decision( new Decision.Presence.Deployed("Select Presence to place.", ctx.Self) );
 		}
 
-		/// <summary> Tries Presence Tracks first, then fails over to placed-presence on Island </summary>
 		public async Task<Space> SelectDeployed(string prompt) {
 			return await ctx.Self.Action.Decision( new Decision.Presence.Deployed(prompt, ctx.Self ) );
 		}

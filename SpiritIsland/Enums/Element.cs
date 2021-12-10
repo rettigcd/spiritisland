@@ -53,11 +53,12 @@ namespace SpiritIsland {
 
 		public static ElementCounts Parse( string elementFormat ) {
 			var items = new List<Element>();
-			foreach(var singleElementType in elementFormat.Split( ',' )) {
-				var (count,el) = GetElementCounts(singleElementType);
-				while(count-- > 0)
-					items.Add( el );
-			}
+			if(!string.IsNullOrEmpty(elementFormat))
+				foreach(var singleElementType in elementFormat.Split( ',' )) {
+					var (count,el) = GetElementCounts(singleElementType);
+					while(count-- > 0)
+						items.Add( el );
+				}
 
 			return new ElementCounts( items.ToArray() );
 		}

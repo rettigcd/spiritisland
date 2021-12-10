@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 
@@ -17,6 +18,10 @@ namespace SpiritIsland {
 		public ImmutableList<Space> SpacesMatchingCards;
 
 		public IEnumerable<Space> Skipped => _skipped;
+
+		public void Add( Space space ) { // Pour time sideways
+			throw new NotImplementedException();  // !!! 
+		}
 
 		public void Skip( Space space ) {
 			_skipped.Add( space );

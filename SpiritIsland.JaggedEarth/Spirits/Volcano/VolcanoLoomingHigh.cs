@@ -28,7 +28,7 @@ namespace SpiritIsland.JaggedEarth {
 			Growth = new GrowthOptionGroup(
 				new GrowthOption(new ReclaimAll(), new DrawPowerCard(), new GainEnergy(3)),
 				new GrowthOption(new PlacePresence(0,Target.Mountain), new PlacePresence(0,Target.Mountain)),
-				new GrowthOption(new DrawPowerCard(), new PlacePresence(4,Target.Mountain), new PlayExtraCardThisTurn(), new GainEnergy(2))
+				new GrowthOption(new DrawPowerCard(), new PlacePresence(4,Target.Mountain), new PlayExtraCardThisTurn(1), new GainEnergy(2))
 			);
 
 			InnatePowers = new InnatePower[] {

@@ -31,6 +31,7 @@ namespace SpiritIsland {
 			return flipped;
 		}
 
+		/// <summary> Puts cards in the Deck's discard pile </summary>
 		public void Discard(IEnumerable<PowerCard> discards) => this.discards.AddRange(discards);
 
 		void ReshuffleDiscardDeck() {
