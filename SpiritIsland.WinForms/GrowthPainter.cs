@@ -64,14 +64,14 @@ namespace SpiritIsland.WinForms {
 				// Lure of the Deep Wilderness
 				case "GainElement(Moon,Air,Plant)": GainElement( rect, Element.Moon, Element.Air, Element.Plant ); break;
 				// Grinning Trickster
-				case "GainEnergyEqualToCardPlays": DrawIconInCenter( rect, "GainEnergyEqualToCardPlays"); break;
+				case "GainEnergyEqualToCardPlays": DrawIconInCenter( rect, Img.GainEnergyEqualToCardPlays ); break;
 				// Stones Unyielding Defiance
 				case "GainElements(Earth,Earth)": GainElement( rect, Element.Earth, Element.Earth ); break; // !!! this is drawn as an OR, layer them and make them an AND
 				// Many Minds
 				case "Gather1Beast": LandGatherBeasts( rect ); break;
 				case "PlacePresenceAndBeast": 
 					PlacePresence( rect, 3, Target.Any );
-					DrawIconInCenter( rect.InflateBy(-rect.Width*.2f), "Beasticon");
+					DrawIconInCenter( rect.InflateBy(-rect.Width*.2f), Img.Icon_Beast );
 					break;
 				case "ApplyDamage": ApplyDamage( rect ); break;
 				default:
@@ -81,22 +81,20 @@ namespace SpiritIsland.WinForms {
 
 		}
 
-		void PushFromOcean( RectangleF rect )       => DrawIconInCenter(rect, "Pushfromocean");
-
-		void AdditionalPlay( RectangleF rect )      => DrawIconInCenter( rect, "Cardplayplusone");
-		void Reclaim1( RectangleF rect )            => DrawIconInCenter( rect, "reclaim 1");
-		void ReclaimHalf( RectangleF rect )         => DrawIconInCenter( rect, "Reclaim_Half");
-		void DrawPowerCard( RectangleF rect )       => DrawIconInCenter( rect, "GainCard" );
-		void ApplyDamage( RectangleF rect )			=> DrawIconInCenter( rect, "Damage_2" );
-		void GatherToOcean( RectangleF rect )       => DrawIconInCenter( rect, "Gathertoocean" );
-		void ReclaimAll( RectangleF rect )          => DrawIconInCenter( rect, "ReclaimAll" );
-		void EnergyForFire( RectangleF rect )       => DrawIconInCenter( rect, "Oneenergyfire");
-
-		void LandGatherBeasts( RectangleF rect)		=> DrawIconInCenter( rect, "Land_Gather_Beasts");
+		void AdditionalPlay( RectangleF rect )      => DrawIconInCenter( rect, Img.Plus1CardPlay );
+		void Reclaim1( RectangleF rect )            => DrawIconInCenter( rect, Img.Reclaim1 );
+		void ReclaimHalf( RectangleF rect )         => DrawIconInCenter( rect, Img.ReclaimHalf );
+		void ReclaimAll( RectangleF rect )          => DrawIconInCenter( rect, Img.ReclaimAll );
+		void DrawPowerCard( RectangleF rect )       => DrawIconInCenter( rect, Img.GainCard );
+		void PushFromOcean( RectangleF rect )       => DrawIconInCenter(rect, Img.Pushfromocean );
+		void ApplyDamage( RectangleF rect )			=> DrawIconInCenter( rect, Img.Damage_2 );
+		void GatherToOcean( RectangleF rect )       => DrawIconInCenter( rect, Img.Gathertoocean );
+		void EnergyForFire( RectangleF rect )       => DrawIconInCenter( rect, Img.Oneenergyfire );
+		void LandGatherBeasts( RectangleF rect)		=> DrawIconInCenter( rect, Img.Land_Gather_Beasts );
 
 		void GainEnergy( RectangleF bounds, int delta ){
 			// DrawTokenInCenter( rect, "Energy_Plus_"+delta);
-			using var img = ResourceImages.Singleton.GetToken( "coin" );
+			using var img = ResourceImages.Singleton.GetImage( Img.Coin );
 			float imgWidth = bounds.Width, imgHeight = img.Height * imgWidth / img.Width; // assuming width limited
 			graphics.DrawImage( img, bounds.X, bounds.Y + (bounds.Height - imgHeight) / 2, imgWidth, imgHeight );
 
@@ -113,31 +111,84 @@ namespace SpiritIsland.WinForms {
 
 		}
 
-		void DrawIconInCenter( RectangleF rect, string file ) {
-			var img = ResourceImages.Singleton.GetIcon( file );
-			float imgWidth = rect.Width, imgHeight = img.Height * imgWidth / img.Width;
-			graphics.DrawImage( img, rect.X, rect.Y + (rect.Height - imgHeight) / 2, imgWidth, imgHeight );
+		void DrawIconInCenter( RectangleF rect, Img img ) {
+			var image = ResourceImages.Singleton.GetImage( img );
+			float imgWidth = rect.Width, imgHeight = image.Height * imgWidth / image.Width;
+			graphics.DrawImage( image, rect.X, rect.Y + (rect.Height - imgHeight) / 2, imgWidth, imgHeight );
 		}
 
 		void GainElement( RectangleF rect, params Element[] elements ) {
 			var parts = rect.SplitHorizontally(elements.Length);
 			for(int i = 0; i < elements.Length; ++i) {
-				using var img = ResourceImages.Singleton.GetToken(elements[i]);
+				using var img = ResourceImages.Singleton.GetImage( elements[i].GetTokenImg() );
 				graphics.DrawImageFitWidth(img, parts[i]);
 			}
 		}
 
-		void PlacePresence( RectangleF rect, int? range, string filterEnum ) {
-			using var image = ResourceImages.Singleton.GetTargetFilterIcon( filterEnum );
 
-			using Font font = new Font( ResourceImages.Singleton.Fonts.Families[0], rect.Height * .15f, GraphicsUnit.Pixel  );
+		static Bitmap GetTargetFilterIcon( string filterEnum ) {
+			// !!! Move the filterEnum closer to where the filter is defined, not here.
+			Img img = filterEnum switch {
+				Target.Dahan              => Img.Icon_Dahan,
+				Target.JungleOrWetland    => Img.Icon_JungleOrWetland,
+				Target.DahanOrInvaders    => Img.Icon_DahanOrInvaders,
+				Target.Coastal            => Img.Icon_Coastal,
+				Target.PresenceOrWilds    => Img.Icon_PresenceOrWilds,
+				Target.NoBlight           => Img.Icon_NoBlight,
+				Target.BeastOrJungle      => Img.Icon_BeastOrJungle,
+				Target.Ocean              => Img.Icon_Ocean,
+				Target.MountainOrPresence => Img.Icon_MountainOrPresence,
+				Target.TownCityOrBlight   => Img.Icon_TownCityOrBlight,
+				_                         => Img.None, // Inland, Any
+			};
+			return img != default ? ResourceImages.Singleton.GetImage(img) : null;
+		}
+
+
+		void MovePresence( RectangleF rect, int range ) {
+
+			using Font font = new Font( ResourceImages.Singleton.Fonts.Families[0], rect.Height * .25f, GraphicsUnit.Pixel  );
+			using var presenceIcon = ResourceImages.Singleton.GetImage( Img.Icon_Presence );
 
 			// + presence
-			float presencePercent = image == null ? .3f : .2f;
-			float plusY = rect.Y + rect.Height * presencePercent; // top of presence
-			graphics.DrawString("+",font,Brushes.Black,rect.X+rect.Width*0.25f,plusY);
-			using var presenceIcon = ResourceImages.Singleton.GetIcon( "Presenceicon" );
-			graphics.DrawImage(presenceIcon, rect.X + rect.Width * 0.4f, plusY-rect.Height*.1f, rect.Width*.5f, rect.Height*.2f );
+			float iconCenterY = rect.Y + rect.Height *.3f; // top of presence
+			float presenceWidth = rect.Width*.6f;
+			float presenceHeight = presenceIcon.Height * presenceWidth / presenceIcon.Width;
+			graphics.DrawImage(presenceIcon, rect.X + (rect.Width-presenceWidth)/2, iconCenterY-presenceHeight*.5f, presenceWidth, presenceHeight );
+
+			// range # text
+			float rangeTextTop = rect.Y + rect.Height * .55f;
+			string txt = range.ToString();
+			SizeF rangeTextSize = graphics.MeasureString(txt,font);
+			graphics.DrawString(txt,font,Brushes.Black,rect.X+(rect.Width-rangeTextSize.Width)/2,rangeTextTop);
+
+			// range arrow
+			float rangeArrowTop = rect.Y + rect.Height * .85f;
+			using var rangeIcon = ResourceImages.Singleton.GetImage( Img.MoveArrow );
+			float arrowWidth = rect.Width * .8f, arrowHeight = arrowWidth * rangeIcon.Height / rangeIcon.Width;
+			graphics.DrawImage( rangeIcon, rect.X + (rect.Width-arrowWidth)/2, rangeArrowTop, arrowWidth, arrowHeight );
+
+		}
+
+		void PlacePresence( RectangleF rect, int? range, string filterEnum ) {
+			using var presenceIcon = ResourceImages.Singleton.GetImage( Img.Icon_Presence );
+			using var image = GetTargetFilterIcon( filterEnum );
+
+			float fontScale       = image == null ? .25f : .15f;
+			float presenceYPercent = image == null ? .3f  : .2f;
+			float textTopScale    = image == null ? .55f : .7f;
+
+			using Font font = new Font( ResourceImages.Singleton.Fonts.Families[0], rect.Height * fontScale, GraphicsUnit.Pixel  );
+
+			// + presence
+			float iconCenterY = rect.Y + rect.Height * presenceYPercent; // top of presence
+			float presenceWidth = rect.Width*.6f;
+			float presenceHeight = presenceIcon.Height * presenceWidth / presenceIcon.Width;
+			float presenceX = rect.X + (rect.Width-presenceWidth)/2 + rect.Width*.1f;
+
+			graphics.DrawString( "+", font, Brushes.Black, presenceX - rect.Width*.3f, iconCenterY-rect.Height*fontScale*.5f );
+			graphics.DrawImage(presenceIcon, presenceX, iconCenterY-presenceHeight*.5f, presenceWidth, presenceHeight );
+
 
 			// icon
 			if(image != null) {
@@ -161,67 +212,20 @@ namespace SpiritIsland.WinForms {
 
 			if(range.HasValue) { // no range for ocean
 				// range # text
-				float rangeTextTop = rect.Y + rect.Height * .65f;
+				float rangeTextTop = rect.Y + rect.Height * textTopScale;
 				string txt = range.Value.ToString();
 				SizeF rangeTextSize = graphics.MeasureString(txt,font);
-				graphics.DrawString(txt,font,Brushes.Black,rect.X+(rect.Width-rangeTextSize.Width)/2,rangeTextTop);
+				graphics.DrawString(txt,font,Brushes.Black, rect.X+(rect.Width-rangeTextSize.Width)/2, rangeTextTop);
 
 				// range arrow
 				float rangeArrowTop = rect.Y + rect.Height * .85f;
-				using var rangeIcon = ResourceImages.Singleton.GetIcon( "Range" );
+				using var rangeIcon = ResourceImages.Singleton.GetImage( Img.RangeArrow );
 				float arrowWidth = rect.Width * .8f, arrowHeight = arrowWidth * rangeIcon.Height / rangeIcon.Width;
 				graphics.DrawImage( rangeIcon, rect.X + (rect.Width-arrowWidth)/2, rangeArrowTop, arrowWidth, arrowHeight );
 			}
 
 		}
 
-		void MovePresence( RectangleF rect, int range, string iconFilename = "" ) {
-
-			using Font font = new Font( ResourceImages.Singleton.Fonts.Families[0], rect.Height * .15f, GraphicsUnit.Pixel  );
-			// var font = SystemFonts.IconTitleFont;
-
-			// + presence
-			float presencePercent = iconFilename == "" ? .3f : .2f;
-			float plusY = rect.Y + rect.Height * presencePercent; // top of presence
-			graphics.DrawString("+",font,Brushes.Black,rect.X+rect.Width*0.25f,plusY);
-			using var presenceIcon = ResourceImages.Singleton.GetIcon( "Presenceicon" );
-			graphics.DrawImage(presenceIcon, rect.X + rect.Width * 0.4f, plusY-rect.Height*.1f, rect.Width*.5f, rect.Height*.2f );
-
-			// icon
-			if(iconFilename != "") {
-				// using var image = Image.FromFile( ".\\images\\" + iconFilename + ".png" );
-				using var image = ResourceImages.Singleton.GetIcon( iconFilename );
-				float iconPercentage = .4f;
-				float iconHeight = rect.Height * .3f;
-				float iconWidth = iconHeight * image.Width / image.Height;
-
-				if(iconWidth > rect.Width) { // too wide, switch scaling to width limited
-					iconWidth = rect.Width;
-					iconHeight = iconWidth * image.Height / image.Width;
-				}
-
-				graphics.DrawImage( image, 
-					rect.X + (rect.Width - iconWidth)/2, 
-					rect.Y + rect.Height * iconPercentage,
-					iconWidth,
-					iconHeight
-				);
-			}
-
-			// range # text
-			float rangeTextTop = rect.Y + rect.Height * .65f;
-			string txt = range.ToString();
-			SizeF rangeTextSize = graphics.MeasureString(txt,font);
-			graphics.DrawString(txt,font,Brushes.Black,rect.X+(rect.Width-rangeTextSize.Width)/2,rangeTextTop);
-
-			// range arrow
-			float rangeArrowTop = rect.Y + rect.Height * .85f;
-			using var rangeIcon = ResourceImages.Singleton.GetIcon( "Moveicon" );
-			float arrowWidth = rect.Width * .8f, arrowHeight = arrowWidth * rangeIcon.Height / rangeIcon.Width;
-			graphics.DrawImage( rangeIcon, rect.X + (rect.Width-arrowWidth)/2, rangeArrowTop, arrowWidth, arrowHeight );
-
-		}
-
-
 	}
+
 }

@@ -136,13 +136,16 @@ namespace SpiritIsland.WinForms {
 		}
 
 		TokenPosition CalcTokenPosition( string tokenName, ref int x, ref int y, int left, int width ) {
-			var sz = InnateLayout.CalcImageSize( tokenName, iconDimension, elementHeight );
+			var img = SimpleWordToIcon( tokenName );
+			var sz = IsElement( tokenName ) 
+				? new Size( elementHeight, elementHeight )
+				: InnateLayout.CalcImageSize( img, iconDimension );
 
 			// Wrap?
 			if(left + width < x + sz.Width) { x = left; y += elementHeight; }
 
 			var tp = new TokenPosition {
-				TokenName = tokenName,
+				TokenImg = img,
 				Rect = new RectangleF( x, y + (iconDimension - sz.Height) / 2, sz.Width, sz.Height ),
 			};
 			x += sz.Width;
@@ -150,22 +153,44 @@ namespace SpiritIsland.WinForms {
 			return tp;
 		}
 
-		static Size CalcImageSize( string iconName, int iconDimension, int elementHeight ) {
-			bool isElement = "sun|moon|air|fire|water|plant|animal|earth".Contains( iconName );
-			if(isElement) return new Size( elementHeight, elementHeight );
-
-			if(!iconSizes.ContainsKey( iconName )) {
-				using Image img = ResourceImages.Singleton.LoadIconBySimpleName(iconName);
-				iconSizes.Add(iconName,img.Size);
+		static Size CalcImageSize( Img img, int iconDimension ) {
+			if(!iconSizes.ContainsKey( img )) {
+				using Image image = ResourceImages.Singleton.GetImage( img );
+				iconSizes.Add( img, image.Size );
 			}
-			var sz = iconSizes[iconName];
+			var sz = iconSizes[img];
 
 			return sz.Width < sz.Height
 				? new Size( iconDimension * sz.Width / sz.Height, iconDimension )
 				: new Size( iconDimension, iconDimension * sz.Height / sz.Width );
 		}
 
+		private static bool IsElement( string iconName ) {
+			return "sun|moon|air|fire|water|plant|animal|earth".Contains( iconName );
+		}
+
 		#endregion
+
+		public static Img SimpleWordToIcon( string token ) {
+			return token switch {
+				"dahan" => Img.Icon_Dahan,
+				"city" => Img.Icon_City,
+				"town" => Img.Icon_Town,
+				"explorer" => Img.Icon_Explorer,
+				"blight" => Img.Icon_Blight,
+				"beast" => Img.Icon_Beast,
+				"fear" => Img.Icon_Fear,
+				"wilds" => Img.Icon_Wilds,
+				"fast" => Img.Icon_Fast,
+				"presence" => Img.Icon_Presence,
+				"slow" => Img.Icon_Slow,
+				"disease" => Img.Icon_Disease,
+				"strife" => Img.Icon_Strife,
+				"badlands" => Img.Icon_Badlands,
+				_ => ElementList.ParseEl( token ).GetIconImg(),
+			};
+		}
+
 
 		#region temp / private fields
 
@@ -173,14 +198,14 @@ namespace SpiritIsland.WinForms {
 		readonly int iconDimension;
 		readonly int elementHeight;
 		readonly int rowHeight;
-		static readonly Dictionary<string,Size> iconSizes = new Dictionary<string, Size>();
+		static readonly Dictionary<Img,Size> iconSizes = new Dictionary<Img, Size>();
 
 		#endregion
 
 	}
 
 	public class TokenPosition {
-		public string TokenName;
+		public Img TokenImg;
 		public RectangleF Rect;
 	}
 

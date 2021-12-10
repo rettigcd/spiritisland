@@ -3,17 +3,16 @@ namespace SpiritIsland {
 
 	public class Token : IOption {
 
-		#region private
-
-		public Token(TokenGroup generic, Token[] seq, int health){
+		public Token(TokenGroup generic, Token[] seq, int health, Img img){
 			this.Generic = generic;
 			Health = health;
 			this.seq = seq;
+			this.Img = img;
 		}
 
 		public readonly TokenGroup Generic;
 
-		#endregion
+		public Img Img { get; }
 
 		public virtual string Summary => Initial+"@"+Health; // C@3, T@2
 

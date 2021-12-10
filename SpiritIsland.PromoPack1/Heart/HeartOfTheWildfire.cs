@@ -14,9 +14,9 @@ namespace SpiritIsland.PromoPack1 {
 		static Track FireCard => Track.MkCard(Element.Fire);
 		static Track FirePlantEnergy => new Track( "fire,plant", Element.Fire, Element.Plant ) {
 			Icon = new IconDescriptor {
-				 BackgroundImg = ImageNames.Coin,
-				 ContentImg = ImageNames.For(Element.Fire),
-				 ContentImg2 = ImageNames.For(Element.Plant)
+				 BackgroundImg = Img.Coin,
+				 ContentImg = Img.Token_Fire,
+				 ContentImg2 = Img.Token_Plant
 			}
 		};
 		public HeartOfTheWildfire() : base( 

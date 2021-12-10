@@ -6,10 +6,10 @@ namespace SpiritIsland {
 		/// <summary>
 		/// Create a set of Spefic invaders that have different health values
 		/// </summary>
-		static public Token[] BuildHealthSequence(TokenGroup generic, int fullHealth ) {
+		static public Token[] BuildHealthSequence(TokenGroup generic, int fullHealth, Img[] imgs ) {
 			var seq = new Token[fullHealth + 1];
 			for(int h = 0; h <= fullHealth; ++h)
-				seq[h] = new Token( generic, seq, h );
+				seq[h] = new Token( generic, seq, h, h==0 ? Img.None : imgs[h-1] );
 			return seq;
 		}
 
@@ -22,20 +22,21 @@ namespace SpiritIsland {
 			seq = newSeq;
 			// Fill in the missing slots
 			for(; h <= newMaxHealth; ++h)
-				seq[h] = new Token( this, seq, h );
+				seq[h] = new Token( this, seq, h, Default.Img );
 		}
 
 		public Token this[int i] => seq[i];
 		Token[] seq;
 
-		public TokenGroup(string label, int fullHealth):this(label,fullHealth,label[0]) {}
+		public TokenGroup(string label, int fullHealth, params Img[] imgs)
+			:this(label,fullHealth,label[0], imgs) {}
 
-		public TokenGroup( string label, int fullHealth, char initial ) {
+		public TokenGroup( string label, int fullHealth, char initial, params Img[] imgs ) {
 			Label = label;
 			Initial = initial;
 
 			// Build different health level Sequence
-			seq = BuildHealthSequence( this, fullHealth );
+			seq = BuildHealthSequence( this, fullHealth, imgs );
 
 			// Capture default
 			Default = seq[fullHealth];

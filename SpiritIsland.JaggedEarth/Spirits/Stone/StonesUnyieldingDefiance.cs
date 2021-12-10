@@ -16,31 +16,31 @@ namespace SpiritIsland.JaggedEarth {
 		static Track AddCardPlay => new Track( "PlayExtraCardThisTurn" ) { 
 			Action = new DrawMinorOnceAndPlayExtraCardThisTurn(),
 			Icon = new IconDescriptor {
-				ContentImg = ImageNames.Plus1CardPlay,
-				Super = new IconDescriptor { BackgroundImg = ImageNames.Minor }
+				ContentImg = Img.Plus1CardPlay,
+				Super = new IconDescriptor { BackgroundImg = Img.Stone_Minor }
 			}
 		};
 
 		static Track EarthReclaim => new Track( "earth card", Element.Earth ) { 
 			Action = new Reclaim1(),
 			Icon = new IconDescriptor {
-				BackgroundImg = ImageNames.For( Element.Earth ),
-				Sub = new IconDescriptor { BackgroundImg = ImageNames.Reclaim1 }
+				BackgroundImg = Img.Token_Earth,
+				Sub = new IconDescriptor { BackgroundImg = Img.Reclaim1 }
 			}
 		};
 
 		static Track EarthAndAny => new Track( "earth any", Element.Earth, Element.Any ) {
 			Icon = new IconDescriptor {
-				BackgroundImg = ImageNames.For( Element.Earth ),
-				Sub = new IconDescriptor { BackgroundImg = ImageNames.For( Element.Any )}
+				BackgroundImg = Img.Token_Earth,
+				Sub = new IconDescriptor { BackgroundImg = Img.Token_Any }
 			}
 		};
 
 		static Track Card2Earth => new Track( "2 cardplay,earth", Element.Earth ) { 
 			CardPlay = 2,
 			Icon = new IconDescriptor {
-				BackgroundImg = ImageNames.CardPlay, Text = "2",
-				Sub = new IconDescriptor { BackgroundImg = ImageNames.For( Element.Earth ) }
+				BackgroundImg = Img.CardPlay, Text = "2",
+				Sub = new IconDescriptor { BackgroundImg = Img.Token_Earth }
 			}
 		};
 

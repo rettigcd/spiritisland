@@ -105,13 +105,13 @@ namespace SpiritIsland.WinForms {
 				: new RectangleF(bounds.X,bounds.Y,bounds.Width* subImageReduction, bounds.Height* subImageReduction );
 
 			// -- Main - Background
-			if(icon.BackgroundImg != null) {
-				using var img = ResourceImages.Singleton.GetResourceImage(icon.BackgroundImg);
+			if(icon.BackgroundImg != default) {
+				using var img = ResourceImages.Singleton.GetImage(icon.BackgroundImg);
 				graphics.DrawImageFitBoth(img,mainBounds);
 			}
 
 			// -- Main - Content --
-			if(icon.Text != null || icon.ContentImg != null) {
+			if(icon.Text != null || icon.ContentImg != default) {
 
 				var contentBounds = new RectangleF(
 					mainBounds.X, 
@@ -127,14 +127,14 @@ namespace SpiritIsland.WinForms {
 				}
 
 				// Content - Images
-				if(icon.ContentImg != null) {
-					using var img = ResourceImages.Singleton.GetResourceImage( icon.ContentImg );
-					if(icon.ContentImg2 != null) {
+				if(icon.ContentImg != default) {
+					using var img = ResourceImages.Singleton.GetImage( icon.ContentImg );
+					if(icon.ContentImg2 != default) {
 						const float scale = .75f;
 						float w = contentBounds.Width * scale, h = contentBounds.Height * scale;
 						var cb1 = new RectangleF(contentBounds.X,contentBounds.Y,w,h);
 						var cb2 = new RectangleF( contentBounds.X+ contentBounds.Width*(1f - scale), contentBounds.Y+contentBounds.Height* (1f - scale), w, h );
-						using var img2 = ResourceImages.Singleton.GetResourceImage( icon.ContentImg2 );
+						using var img2 = ResourceImages.Singleton.GetImage( icon.ContentImg2 );
 						graphics.DrawImageFitBoth( img2, cb2 );
 						graphics.DrawImageFitBoth( img, cb1 );
 					} else
@@ -177,7 +177,7 @@ namespace SpiritIsland.WinForms {
 				bigCoinWidth,
 				bigCoinWidth
 			);
-			DrawTheIcon(new IconDescriptor { BackgroundImg = ImageNames.Coin, Text = energy.ToString() }, energyRect );
+			DrawTheIcon(new IconDescriptor { BackgroundImg = Img.Coin, Text = energy.ToString() }, energyRect );
 		}
 
 		void PaintDestroyed(Bitmap presenceImg) {
@@ -187,7 +187,7 @@ namespace SpiritIsland.WinForms {
 
 			// Presence & Red X
 			graphics.DrawImage( presenceImg, rect );
-			using var redX = ResourceImages.Singleton.GetIcon( "red-x" );
+			using var redX = ResourceImages.Singleton.RedX();
 			graphics.DrawImage( redX, rect.X, rect.Y, rect.Width * 2 / 3, rect.Height * 2 / 3 );
 
 			// count

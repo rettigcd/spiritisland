@@ -543,6 +543,18 @@ namespace SpiritIsland {
 
 		#endregion
 
+		public virtual SpiritDeck[] Decks => new SpiritDeck[] {
+			new SpiritDeck{ Icon = Img.Deck_Hand, PowerCards = Hand },
+			new SpiritDeck{ Icon = Img.Deck_Played, PowerCards = InPlay },
+			new SpiritDeck{ Icon = Img.Deck_Discarded, PowerCards = DiscardPile },
+		};
+
+	}
+
+
+	public class SpiritDeck {
+		public Img Icon;
+		public List<PowerCard> PowerCards;
 	}
 
 }

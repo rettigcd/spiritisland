@@ -12,7 +12,7 @@ namespace SpiritIsland.JaggedEarth {
 		#region Presence Track Slot Generators
 
 		static readonly IconDescriptor Plus1Coin = new IconDescriptor {
-			BackgroundImg = ImageNames.Coin,
+			BackgroundImg = Img.Coin,
 			Text = "+1"
 		};
 
@@ -26,8 +26,8 @@ namespace SpiritIsland.JaggedEarth {
 				var t = new Track("Pick element");
 				t.Action = new AssignElement(t);	
 				t.Icon = new IconDescriptor {
-					BackgroundImg = ImageNames.Coin,
-					ContentImg = ImageNames.AssignElement
+					BackgroundImg = Img.Coin,
+					ContentImg = Img.Starlight_AssignElement
 				};
 				return t;
 			}
@@ -38,23 +38,23 @@ namespace SpiritIsland.JaggedEarth {
 				,new GrowthOption(new ReclaimHalf())
 				,new GrowthOption(new DrawPowerCard(), new MovePresence(1))
 			),
-			Icon = new IconDescriptor { BackgroundImg = ImageNames.Starlight.GrowthOption1 },
+			Icon = new IconDescriptor { BackgroundImg = Img.Starlight_GrowthOption1 },
 		};
 		static Track NewGrowth2 => new Track( "so2" ) {  
 			Action = new PickNewGrowthOption( false
 				,new GrowthOption(new GainEnergy(3))
 				,new GrowthOption(new PlayExtraCardThisTurn(),new MovePresence(2))
 			),
-			Icon = new IconDescriptor { BackgroundImg = ImageNames.Starlight.GrowthOption2 },
+			Icon = new IconDescriptor { BackgroundImg = Img.Starlight_GrowthOption2 },
 		};
 		static Track NewGrowth3 => new PickNewGrowthOption( true
 				, new GrowthOption( new ReclaimAll() )
 				, new GrowthOption( new DrawPowerCard(), new GainEnergy( 1 ) )
 			).AssignElementFor( new Track( "so3" ) {
 				Icon = new IconDescriptor { 
-					ContentImg = ImageNames.AssignElement,
+					ContentImg = Img.Starlight_AssignElement,
 					Super = Plus1Coin,
-					BigSub = new IconDescriptor{ BackgroundImg = ImageNames.Starlight.GrowthOption3 },
+					BigSub = new IconDescriptor{ BackgroundImg = Img.Starlight_GrowthOption3 },
 				},
 			} );
 
@@ -64,7 +64,7 @@ namespace SpiritIsland.JaggedEarth {
 				,new GrowthOption(new PlayExtraCardThisTurn(), new MakePowerFast() )
 			),
 			Icon = new IconDescriptor { 
-				BigSub = new IconDescriptor{ BackgroundImg = ImageNames.Starlight.GrowthOption4 },
+				BigSub = new IconDescriptor{ BackgroundImg = Img.Starlight_GrowthOption4 },
 				Super = Plus1Coin,
 			},
 		};
@@ -176,7 +176,7 @@ namespace SpiritIsland.JaggedEarth {
 			var el = await ctx.Self.SelectElementEx( "Select permanent element for this slot.", ElementList.AllElements );
 			track.Elements = new Element[] { el };
 			ctx.Self.Elements[el]++; // !!! this needs unit tests to ensure that they get 1 element (not 0, not more)
-			track.Icon.ContentImg = ImageNames.For(el);
+			track.Icon.ContentImg = el.GetTokenImg();
 		}
 	}
 

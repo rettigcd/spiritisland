@@ -40,7 +40,7 @@ namespace SpiritIsland {
 					space.InitTokens( Tokens[space] );
 
 			// Explore
-			Task.WaitAll( InvaderEngine.Explore( InvaderDeck.Explore[0] ) );
+			InvaderEngine.Explore( InvaderDeck.Explore[0] ).Wait();
 
 			InvaderDeck.Advance();
 

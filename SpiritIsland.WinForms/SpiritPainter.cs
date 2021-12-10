@@ -69,7 +69,7 @@ namespace SpiritIsland.WinForms {
 		Image GetElementImage( Element element ) {
 
 			if(!elementImages.ContainsKey( element )) {
-				Image image = ResourceImages.Singleton.GetToken( element );
+				Image image = ResourceImages.Singleton.GetImage( element.GetTokenImg() );
 				elementImages.Add( element, image );
 			}
 			return elementImages[element];

@@ -8,32 +8,32 @@ namespace SpiritIsland {
 		public static Track MkEnergy( int energy, Element el ) => new Track( energy+","+ el.ToString().ToLower() + " energy", el ) { 
 			Energy = energy,
 			Icon = new IconDescriptor { 
-				BackgroundImg = ImageNames.Coin, Text = energy.ToString(), 
-				Sub = new IconDescriptor{ BackgroundImg = ImageNames.For(el) } 
+				BackgroundImg = Img.Coin, Text = energy.ToString(), 
+				Sub = new IconDescriptor{ BackgroundImg = el.GetTokenImg() } 
 			}
 		};
 
 		public static Track MkEnergy( int energy ) => new Track( energy + " energy" ) { 
 			Energy = energy, 
-			Icon = new IconDescriptor{ BackgroundImg = ImageNames.Coin, Text = energy.ToString() }
+			Icon = new IconDescriptor{ BackgroundImg = Img.Coin, Text = energy.ToString() }
 		};
 
 		public static Track MkEnergy(params Element[] els ) {
 			var track = new Track( els.Select( x => x.ToString() ).Join( "," ).ToLower() + " energy", els ) {
-				Icon = new IconDescriptor { BackgroundImg = ImageNames.Coin, ContentImg = ImageNames.For( els[0] ) }
+				Icon = new IconDescriptor { BackgroundImg = Img.Coin, ContentImg = els[0].GetTokenImg() }
 			};
 			if(els.Length==2)
-				track.Icon.ContentImg2 = ImageNames.For(els[1]);
+				track.Icon.ContentImg2 = els[1].GetTokenImg();
 			return track;
 		}
 
 		public static Track MkCard(int plays) => new Track($"{plays} cardplay" ) { 
 			CardPlay = plays,
-			Icon = new IconDescriptor { BackgroundImg = ImageNames.CardPlay, Text = plays.ToString() }
+			Icon = new IconDescriptor { BackgroundImg = Img.CardPlay, Text = plays.ToString() }
 		};
 
 		public static Track MkCard( Element el ) => new Track( el.ToString().ToLower(), el ) {
-			Icon = new IconDescriptor { ContentImg = ImageNames.For( el ) }
+			Icon = new IconDescriptor { ContentImg = el.GetTokenImg() }
 		};
 
 		// ! Instead of enumerating this here, we could generate them when needed in the spirit
@@ -66,32 +66,32 @@ namespace SpiritIsland {
 
 		public static Track Push1Dahan => new Track( "Push1dahan" ){ 
 			Action = new Push1DahanFromLands(),
-			Icon = new IconDescriptor { BackgroundImg = ImageNames.Push1dahan }
+			Icon = new IconDescriptor { BackgroundImg = Img.Push1dahan }
 		};
 
 		public static Track CardReclaim1 => new Track( "reclaim 1" ){ 
 			Action=new Reclaim1(),
-			Icon = new IconDescriptor { BackgroundImg = ImageNames.Reclaim1 }
+			Icon = new IconDescriptor { BackgroundImg = Img.Reclaim1 }
 		};
 
 		public static Track Energy5Reclaim1 => new Track( "5,reclaim1 energy" ) { 
 			Energy = 5, Action = new Reclaim1(),
 			Icon = new IconDescriptor { 
-				BackgroundImg = ImageNames.Coin, Text = "5",
-				Sub = new IconDescriptor { BackgroundImg = ImageNames.Reclaim1},
+				BackgroundImg = Img.Coin, Text = "5",
+				Sub = new IconDescriptor { BackgroundImg = Img.Reclaim1},
 			}
 		};
 
 
 		public static Track Reclaim1Energy => new Track( "reclaim 1 energy" ){ 
 			Action=new Reclaim1(),
-			Icon = new IconDescriptor { BackgroundImg = ImageNames.Coin, ContentImg = ImageNames.Reclaim1 }
+			Icon = new IconDescriptor { BackgroundImg = Img.Coin, ContentImg = Img.Reclaim1 }
 		};
 
 		public static Track Card5Reclaim1 => new Track( "Fivereclaimone" ){ 
 			CardPlay=5, 
 			Action=new Reclaim1(),
-			Icon=new IconDescriptor { BackgroundImg = ImageNames.CardPlay, Text="5", Sub = new IconDescriptor{ BackgroundImg = ImageNames.Reclaim1 } },
+			Icon=new IconDescriptor { BackgroundImg = Img.CardPlay, Text="5", Sub = new IconDescriptor{ BackgroundImg = Img.Reclaim1 } },
 		};
 
 		public static readonly Track Destroyed = new Track("destroyed"); // only 1 of these

@@ -20,7 +20,7 @@ namespace SpiritIsland.JaggedEarth {
 
 		public static Track MovePresence => new Track( "Moveonepresence.png" ){ 
 			Action=new MovePresence(1),
-			Icon = new IconDescriptor { BackgroundImg = ImageNames.Movepresence }
+			Icon = new IconDescriptor { BackgroundImg = Img.MovePresence }
 		};
 
 

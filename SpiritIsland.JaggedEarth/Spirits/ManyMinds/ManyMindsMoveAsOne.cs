@@ -16,8 +16,8 @@ namespace SpiritIsland.JaggedEarth {
 
 		static Track CardBoost => new Track( "Pay2ForExtraPlay" ) { 
 			Action = new Pay2EnergyToGainAPowerCard(),
-			Icon = new IconDescriptor { ContentImg = ImageNames.GainCard,
-				Super = new IconDescriptor { BackgroundImg = ImageNames.Coin, Text= "—2" }
+			Icon = new IconDescriptor { ContentImg = Img.GainCard,
+				Super = new IconDescriptor { BackgroundImg = Img.Coin, Text= "—2" }
 			}
 		};
 

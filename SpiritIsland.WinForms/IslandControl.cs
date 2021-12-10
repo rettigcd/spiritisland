@@ -1,5 +1,4 @@
-﻿using SpiritIsland.BranchAndClaw;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
@@ -28,7 +27,7 @@ namespace SpiritIsland.WinForms {
 			optionProvider.NewDecision += OptionProvider_OptionsChanged;
 
 			var board = gameState.Island.Boards.VerboseSingle("Multiple Island boards not supported.");
-            switch(board[0].Label[..1]) {
+			switch(board[0].Label[..1]) {
 				case "A":
 					this.board = Image.FromFile( ".\\images\\board a.png" );
 					spaceLookup = new Dictionary<string, PointF> {
@@ -43,7 +42,7 @@ namespace SpiritIsland.WinForms {
 						["A8"] = new PointF( 0.814f, 0.189f ),
 					};
 					break;
-                case "B":
+				case "B":
 					this.board = Image.FromFile( ".\\images\\board b.png" );
 					spaceLookup = new Dictionary<string, PointF> {
 						["B0"] = new PointF( 0.19f, 0.39f ),
@@ -57,7 +56,7 @@ namespace SpiritIsland.WinForms {
 						["B8"] = new PointF( 0.81f, 0.18f ),
 					};
 					break;
-                case "C":
+				case "C":
 					this.board = Image.FromFile( ".\\images\\board c.png" );
 					spaceLookup = new Dictionary<string, PointF> {
 						["C0"] = new PointF( 0.106f, 0.610f ),
@@ -71,7 +70,7 @@ namespace SpiritIsland.WinForms {
 						["C8"] = new PointF( 0.789f, 0.193f ),
 					};
 					break;
-                case "D":
+				case "D":
 					this.board = Image.FromFile( ".\\images\\board d.png" );
 					spaceLookup = new Dictionary<string, PointF> {
 						["D0"] = new PointF( 0.099f, 0.559f ),
@@ -91,25 +90,25 @@ namespace SpiritIsland.WinForms {
 			var images = ResourceImages.Singleton;
 			presence = images.GetPresenceIcon( presenceColor );
 			this.presenceColor = presenceColor;
-			strife   = images.GetToken( "strife" );
-			fear     = images.GetToken( "fear" );
-			grayFear = images.GetToken( "fear_gray");
+			strife   = images.Strife();
+			fear     = images.Fear();
+			grayFear = images.FearGray();
 
 			tokenImages = new Dictionary<Token, Image> {
-				[Invader.City[3]]     = images.GetToken( "city" ),
-				[Invader.City[2]]     = images.GetToken( "city2" ),
-				[Invader.City[1]]     = images.GetToken( "city1" ),
-				[Invader.Town[2]]     = images.GetToken( "town" ),
-				[Invader.Town[1]]     = images.GetToken( "town1" ),
-				[Invader.Explorer[1]] = images.GetToken( "explorer" ),
-				[TokenType.Dahan[2]]  = images.GetToken( "dahan" ),
-				[TokenType.Dahan[1]]  = images.GetToken( "dahan1" ),
-				[TokenType.Defend]    = images.GetToken( "defend1orange" ),
-				[TokenType.Blight]    = images.GetToken( "blight" ),
-				[TokenType.Beast]     = images.GetToken( "beast" ),
-				[TokenType.Wilds]     = images.GetToken("wilds"),
-				[TokenType.Disease]   = images.GetToken( "disease" ),
-				[TokenType.Badlands]  = images.GetToken( "badlands" ),
+				[Invader.City[3]]     = images.GetImage( Invader.City[3].Img ),
+				[Invader.City[2]]     = images.GetImage( Invader.City[2].Img ),
+				[Invader.City[1]]     = images.GetImage( Invader.City[1].Img ),
+				[Invader.Town[2]]     = images.GetImage( Invader.Town[2].Img ),
+				[Invader.Town[1]]     = images.GetImage( Invader.Town[1].Img ),
+				[Invader.Explorer[1]] = images.GetImage( Invader.Explorer[1].Img ),
+				[TokenType.Dahan[2]]  = images.GetImage( TokenType.Dahan[2].Img ),
+				[TokenType.Dahan[1]]  = images.GetImage( TokenType.Dahan[1].Img ),
+				[TokenType.Defend]    = images.GetImage( TokenType.Defend.Img ),
+				[TokenType.Blight]    = images.GetImage( TokenType.Blight.Img ),
+				[TokenType.Beast]     = images.GetImage( TokenType.Beast.Img ),
+				[TokenType.Wilds]     = images.GetImage( TokenType.Wilds.Img ),
+				[TokenType.Disease]   = images.GetImage( TokenType.Disease.Img ),
+				[TokenType.Badlands]  = images.GetImage( TokenType.Badlands.Img ),
 			};
 
 			this.gameState = gameState;
@@ -178,7 +177,7 @@ namespace SpiritIsland.WinForms {
 
 			int i=0;
 			foreach(var opt in elementOptions) {
-				using var img = ResourceImages.Singleton.GetToken( opt.Item );
+				using var img = ResourceImages.Singleton.GetImage( opt.Item.GetTokenImg() );
 				var rect = elementLayout.Rect(i++);
 				graphics.DrawImage(img,rect);
 				hotSpots.Add(opt,rect);
@@ -502,7 +501,7 @@ namespace SpiritIsland.WinForms {
 			RectangleF CalcBounds(int i) => new RectangleF( bounds.X+slotWidth+margin+step*i, bounds.Y+margin, tokenWidth, tokenHeight );
 
 			// Terror Level
-			using var terror = ResourceImages.Singleton.GetIcon( "TerrorLevel"+gameState.Fear.TerrorLevel );
+			using var terror = ResourceImages.Singleton.TerrorLevel( gameState.Fear.TerrorLevel );
 			graphics.DrawImage(terror,new RectangleF(bounds.X+margin,bounds.Y+margin,tokenWidth,tokenHeight));
 
 			// draw gray underneath
@@ -515,7 +514,7 @@ namespace SpiritIsland.WinForms {
 			// Activated Cards
 			int activated = gameState.Fear.ActivatedCards.Count;
 			if(activated > 0) {
-				using var card = ResourceImages.Singleton.GetToken( "fearcard" );
+				using var card = ResourceImages.Singleton.FearCard();
 				var rect = new RectangleF(bounds.Right-margin-slotWidth,bounds.Y+margin,tokenWidth,tokenHeight);
 				graphics.DrawImageFitHeight(card,rect);
 				rect.X -= rect.Width * .25f; // shift x2 left onto the card

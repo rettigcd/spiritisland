@@ -20,16 +20,16 @@ namespace SpiritIsland.JaggedEarth {
 				Energy = energy,
 				Action = new PrepareElement( $"{energy} energy" ),
 				Icon = new IconDescriptor {
-					BackgroundImg = ImageNames.Coin,
+					BackgroundImg = Img.Coin,
 					Text = energy.ToString(),
-					Sub = new IconDescriptor { BackgroundImg = ImageNames.PrepareEl }
+					Sub = new IconDescriptor { BackgroundImg = Img.ShiftingMemory_PrepareEl }
 				},
 			};
 		}
 
 		static Track DiscardElementsForCardPlay => new Track("discard 2 elements for card play" ) { 
 			Action = new DiscardElementsForCardPlay(2),
-			Icon = new IconDescriptor { BackgroundImg = ImageNames.Discard2Prep },
+			Icon = new IconDescriptor { BackgroundImg = Img.ShiftingMemory_Discard2Prep },
 		};
 
 		public ShiftingMemoryOfAges() 

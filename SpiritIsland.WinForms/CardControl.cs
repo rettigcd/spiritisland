@@ -1,5 +1,4 @@
-﻿using SpiritIsland;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
@@ -20,16 +19,20 @@ namespace SpiritIsland.WinForms {
 			);
 			this.Cursor = Cursors.Default;
 			this.options = Array.Empty<PowerCard>();
-			InitIconPositions();
-			handImage    = Image.FromFile( ".\\images\\hand.png" );
-			inPlayImage  = Image.FromFile( ".\\images\\inplay.png" );
-			discardImage = Image.FromFile( ".\\images\\discard.png" );
 		}
 
 		public void Init(Spirit spirit,IHaveOptions iHaveOptions){
-			CurrentLocation = CardLocation.Hand;
-			this.spirit = spirit;
+			CurrentLocation = Img.Deck_Hand;
+			// this.spirit = spirit;
 			iHaveOptions.NewDecision += Options_NewDecision;
+
+			decks = spirit.Decks;
+			InitIconPositions(decks.Length);
+
+			iconImages = new Image[decks.Length];
+			for(int i = 0; i < decks.Length; ++i)
+				iconImages[i] = ResourceImages.Singleton.GetImage( decks[i].Icon );
+			
 		}
 
 		void Options_NewDecision( IDecision decision ) {
@@ -40,18 +43,20 @@ namespace SpiritIsland.WinForms {
 				: decision.Options.OfType<PowerCard>().ToArray();
 
 			choiceLocations.Clear();
-			if( spirit.Hand.Intersect(options).Any() ) choiceLocations.Add( CardLocation.Hand );
-			if( spirit.InPlay.Intersect(options).Any() ) choiceLocations.Add( CardLocation.InPlay );
-			if( spirit.DiscardPile.Intersect(options).Any() ) choiceLocations.Add( CardLocation.Discarded );
+
+			foreach(var deck in decks)
+				if( deck.PowerCards.Intersect(options).Any() )
+					choiceLocations.Add( deck.Icon );
 
 			// If there are cards to display but we aren't on them
 			if( choiceLocations.Any() && !choiceLocations.Contains(CurrentLocation) )
 				CurrentLocation = choiceLocations.First(); // switch
 			else if( GetCardsForLocation(CurrentLocation).Count == 0 )
-				CurrentLocation = CardLocation.Hand;
-
+				CurrentLocation = Img.Deck_Hand;
+			
 			this.Invalidate();
 		}
+		
 
 		public event Action<PowerCard> CardSelected;
 
@@ -59,73 +64,58 @@ namespace SpiritIsland.WinForms {
 
 		protected override void OnPaint( PaintEventArgs pe ) {
 			base.OnPaint( pe );
-			if(spirit == null) return;
+			if(decks == null) return;
 
 			this.locations.Clear();
+
+			InitIconPositions(decks.Length);
 
 			// == Draw Hand / Played / Discarded
 
 			pe.Graphics.FillRectangle( Brushes.Yellow, GetButtonRect(CurrentLocation) );
 
-			pe.Graphics.DrawImageFitBoth(handImage,handRect);			
-			pe.Graphics.DrawImageFitBoth(inPlayImage,inPlayRect);		
-			pe.Graphics.DrawImageFitBoth(discardImage,discardRect);		
+			for(int i = 0; i< decks.Length; i++)
+				pe.Graphics.DrawImageFitBoth(iconImages[i],iconPositions[i]);
 
 			foreach(var loc in choiceLocations)
 				pe.Graphics.DrawRectangle(Pens.Red, GetButtonRect(loc) );
 
 			// Draw Counts choiceLocations so # is on top
-			pe.Graphics.DrawCountIfHigherThan(handRect,   spirit.Hand.Count,       0);
-			pe.Graphics.DrawCountIfHigherThan(inPlayRect, spirit.InPlay.Count,     0);
-			pe.Graphics.DrawCountIfHigherThan(discardRect,spirit.DiscardPile.Count,0);
+			for(int i = 0;i<decks.Length;i++)
+				pe.Graphics.DrawCountIfHigherThan(iconPositions[i],   decks[i].PowerCards.Count,0);
 
 			this.x = 60; // give room to draw H / P / D
 
-			// Cards that are not in our hand - new cards from the deck
-			var missingCards = options
-				.Except( spirit.InPlay )
-				.Except(spirit.Hand)
-				.Except(spirit.DiscardPile)
-				.ToArray();
+			// Missing Cards
+			var cardsWeHave = new HashSet<PowerCard>();
+			foreach(var deck in decks) cardsWeHave.UnionWith( deck.PowerCards );
+			var missingCards = options.Except(cardsWeHave).ToArray();
 			if(missingCards.Length>0)
 				foreach(var card in missingCards)
 					DrawCard( pe.Graphics, card, false );
 
-			// Draw Cards
+			// Current Deck Cards
 			foreach(var card in GetCardsForLocation(CurrentLocation))
 				DrawCard( pe.Graphics, card, false );
 
 		}
 
-		List<PowerCard> GetCardsForLocation(CardLocation location ) {
-			return location switch {
-				CardLocation.Hand => spirit.Hand,
-				CardLocation.InPlay => spirit.InPlay,
-				CardLocation.Discarded => spirit.DiscardPile,
-				_ => throw new ArgumentException("invalid card location"),
-			};
+		List<PowerCard> GetCardsForLocation( Img location ) {
+			foreach(var deck in decks)
+				if(deck.Icon == location)
+					return deck.PowerCards;
+			throw new ArgumentException("invalid card location");
 		}
 
 
-		Rectangle GetButtonRect(CardLocation location){
-			return location switch {
-				CardLocation.Hand => handRect,
-				CardLocation.InPlay => inPlayRect,
-				CardLocation.Discarded => discardRect,
-				_ => throw new ArgumentException( "invalid card location" ),
-			};
-		}
-
-
-		void InitIconPositions() {
-			handRect = new Rectangle(5,0,40,40);
-			inPlayRect = new Rectangle(5,40,40,40);
-			discardRect = new Rectangle(5,80,40,40);
+		Rectangle GetButtonRect(Img location){
+			for(int i=0;i<decks.Length;i++)
+				if(decks[i].Icon == location)
+					return iconPositions[i];
+			throw new ArgumentException( "invalid card location" );
 		}
 
 		void DrawCard( Graphics graphics, PowerCard card, bool purchased ) {
-
-			InitIconPositions();
 
 			bool isOption = options.Contains( card );
 
@@ -165,7 +155,7 @@ namespace SpiritIsland.WinForms {
 			var coords = PointToClient( Control.MousePosition );
 
 			var switchLocation = GetLocationButton( coords );
-			if(switchLocation != CardLocation.None) {
+			if(switchLocation != default) {
 				CurrentLocation = switchLocation;
 				Invalidate();
 				return;
@@ -179,18 +169,18 @@ namespace SpiritIsland.WinForms {
 
 		}
 
-		CardLocation GetLocationButton(Point coords ) {
-			return handRect.Contains( coords )   ? CardLocation.Hand
-				: inPlayRect.Contains( coords )  ? CardLocation.InPlay
-				: discardRect.Contains( coords ) ? CardLocation.Discarded 
-				: CardLocation.None;
+		Img GetLocationButton(Point coords ) {
+			return iconPositions[0].Contains( coords ) ? Img.Deck_Hand
+				: iconPositions[1].Contains( coords )  ? Img.Deck_Played
+				: iconPositions[2].Contains( coords ) ? Img.Deck_Discarded
+				: Img.None;
 		}
 
 
 		protected override void OnMouseMove( MouseEventArgs e ) {
 			base.OnMouseMove( e );
 			var coords = PointToClient( Control.MousePosition );
-			this.Cursor = (GetCardAt( coords ) == null && GetLocationButton( coords ) == CardLocation.None )
+			this.Cursor = (GetCardAt( coords ) == null && GetLocationButton( coords ) == default )
 				? Cursors.Default
 				: Cursors.Hand;
 		}
@@ -231,7 +221,7 @@ namespace SpiritIsland.WinForms {
 				GraphicsUnit.Pixel, attributes
 			);
 
-		   return newBitmap;
+			return newBitmap;
 		}
 
 		#endregion
@@ -245,21 +235,22 @@ namespace SpiritIsland.WinForms {
 		PowerCard[] options;
 
 		readonly Dictionary<PowerCard, RectangleF> locations = new();
-		Spirit spirit;
+		SpiritDeck[] decks;
 
 		#endregion
 
-		readonly HashSet<CardLocation> choiceLocations = new HashSet<CardLocation>();
+		void InitIconPositions(int count) {
+			iconPositions = new Rectangle[count];
+			for(int i = 0;i<count;++i)
+				iconPositions[i] = new Rectangle(5,40*i,40,40);
+		}
 
-		enum CardLocation { None, Hand, InPlay, Discarded };
-		CardLocation CurrentLocation;
-		Rectangle handRect;
-		Rectangle inPlayRect;
-		Rectangle discardRect;
+		readonly HashSet<Img> choiceLocations = new HashSet<Img>();
 
-		readonly Image handImage;
-		readonly Image discardImage;
-		readonly Image inPlayImage;
+		Img CurrentLocation;
+
+		Rectangle[] iconPositions;
+		Image[] iconImages;
 
 	}
 

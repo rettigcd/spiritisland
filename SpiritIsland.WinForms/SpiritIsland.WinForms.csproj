@@ -10,6 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="images\discard.png" />
+    <None Remove="images\hand.png" />
     <None Remove="images\icons\6 cardplay.png" />
     <None Remove="images\icons\Badlands.png" />
     <None Remove="images\icons\Beasticon.png" />
@@ -79,6 +81,7 @@
     <None Remove="images\icons\Townicon.png" />
     <None Remove="images\icons\Wildsicon.png" />
     <None Remove="images\icons\wildsorpresence.png" />
+    <None Remove="images\inplay.png" />
     <None Remove="images\invaders\2j.jpg" />
     <None Remove="images\invaders\2m.jpg" />
     <None Remove="images\invaders\2s.jpg" />
@@ -94,6 +97,8 @@
     <None Remove="images\invaders\s+w.jpg" />
     <None Remove="images\invaders\s.jpg" />
     <None Remove="images\invaders\w.jpg" />
+    <None Remove="images\major_inverted.png" />
+    <None Remove="images\minor_inverted.png" />
     <None Remove="images\Presenceicon.png" />
     <None Remove="images\presence\blue.png" />
     <None Remove="images\presence\dkblue.png" />
@@ -188,6 +193,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="images\discard.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="images\hand.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="images\icons\Badlands.png" />
     <EmbeddedResource Include="images\icons\Beasticon.png" />
     <EmbeddedResource Include="images\icons\Blighticon.png" />
@@ -253,6 +264,9 @@
     <EmbeddedResource Include="images\icons\Townicon.png" />
     <EmbeddedResource Include="images\icons\Wildsicon.png" />
     <EmbeddedResource Include="images\icons\wildsorpresence.png" />
+    <EmbeddedResource Include="images\inplay.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="images\invaders\J.jpg" />
     <EmbeddedResource Include="images\invaders\M.jpg" />
     <EmbeddedResource Include="images\invaders\S.jpg" />
@@ -268,6 +282,8 @@
     <EmbeddedResource Include="images\invaders\M+W.jpg" />
     <EmbeddedResource Include="images\invaders\S+W.jpg" />
     <EmbeddedResource Include="images\invaders\J+W.jpg" />
+    <EmbeddedResource Include="images\major_inverted.png" />
+    <EmbeddedResource Include="images\minor_inverted.png" />
     <EmbeddedResource Include="images\presence\blue.png" />
     <EmbeddedResource Include="images\presence\dkblue.png" />
     <EmbeddedResource Include="images\presence\green.png" />
@@ -1420,9 +1436,6 @@
     <None Update="images\devouring_ants.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="images\discard.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="images\draw_of_the_fruitful_earth.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -1531,14 +1544,8 @@
     <None Update="images\guard_the_healing_land.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="images\hand.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="images\harbingers_of_the_lightning.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\inplay.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="images\je\spirit\a_dreadful_tide_of_scurrying_flesh.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

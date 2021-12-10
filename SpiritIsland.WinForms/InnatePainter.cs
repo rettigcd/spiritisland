@@ -58,7 +58,7 @@ namespace SpiritIsland.WinForms {
 			graphics.FillRectangle( Brushes.BlanchedAlmond, layout.AttributeRows[1] );
 			foreach(var valueRect in layout.AttributeValueCells)
 				graphics.DrawRectangle( Pens.Black, valueRect );
-			graphics.DrawImageFitHeight( GetIcon( power.DisplaySpeed == Phase.Slow ? "slow" : "fast" ), layout.AttributeValueCells[0].InflateBy( (int)(-layout.AttributeValueCells[0].Height * .2f) ) );
+			graphics.DrawImageFitHeight( GetIcon( power.DisplaySpeed == Phase.Slow ? Img.Icon_Slow : Img.Icon_Fast ), layout.AttributeValueCells[0].InflateBy( (int)(-layout.AttributeValueCells[0].Height * .2f) ) );
 			graphics.DrawString( power.RangeText, boldFont, Brushes.Black, layout.AttributeValueCells[1], centerBoth );
 			graphics.DrawString( power.TargetFilter.ToUpper(), boldFont, Brushes.Black, layout.AttributeValueCells[2], centerBoth );
 
@@ -70,7 +70,7 @@ namespace SpiritIsland.WinForms {
 		void DrawOption(WrappingText_InnateOptions data, Graphics graphics, Font regFont, Font boldFont ) {
 
 			foreach(var tp in data.tokens)
-				graphics.DrawImage( GetIcon( tp.TokenName ), tp.Rect  );
+				graphics.DrawImage( GetIcon( tp.TokenImg ), tp.Rect  );
 
 			var verticalAlignCenter = new StringFormat{ LineAlignment = StringAlignment.Center };
 			foreach(var sp in data.regularTexts)
@@ -81,12 +81,12 @@ namespace SpiritIsland.WinForms {
 
 		}
 
-		Image GetIcon( string iconName ) {
-			if(!icons.ContainsKey( iconName ))
-				icons.Add( iconName, ResourceImages.Singleton.LoadIconBySimpleName(iconName) );
-			return icons[iconName];
+		Image GetIcon( Img img ) {
+			if(!icons.ContainsKey( img ))
+				icons.Add( img, ResourceImages.Singleton.GetImage( img ) );
+			return icons[img];
 		}
-		readonly Dictionary<string,Image> icons = new Dictionary<string, Image>();
+		readonly Dictionary<Img,Image> icons = new Dictionary<Img, Image>();
 
 		public void Dispose() {
 			foreach(var img in icons.Values)
