@@ -1,6 +1,5 @@
 ﻿using SpiritIsland.JaggedEarth;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
@@ -9,69 +8,67 @@ namespace SpiritIsland.WinForms {
 	/// <summary>
 	/// Binds together for a single painting: Graphics, Spirit(info), Layout, Clickable-Options
 	/// </summary>
-	class PresenceTrackPainter {
-
-		readonly Graphics graphics;
-
-		// ? What does all of this really accomplish?
-		Track[] EnergyTrack => spirit.Presence.GetEnergyTrack().ToArray();
-		Track[] EnergyRevealed => spirit.Presence.Energy.Revealed.ToArray();
-
-		Track[] CardTrack => spirit.Presence.GetCardPlayTrack().ToArray();
-		Track[] CardRevealed => spirit.Presence.CardPlays.Revealed.ToArray();
-
-		readonly Track[] clickableTrackOptions;
-		readonly PresenceTrackLayout metrics;
-
-		readonly Spirit spirit;
+	class PresenceTrackPainter : IDisposable {
 
 		public PresenceTrackPainter( 
 			Spirit spirit, 
-			PresenceTrackLayout metrics, 
-			Track[] clickableTrackOptions,
-			Graphics graphics
+			PresenceTrackLayout metrics,
+			string presenceColor
 		) {
-			this.metrics = metrics;
-			this.clickableTrackOptions = clickableTrackOptions;
-			this.graphics = graphics;
 			this.spirit = spirit;
+			this.metrics = metrics;
+			this.presenceColor = presenceColor;
 		}
 
-		public void Paint(string presenceColor) {
+		public void Paint( Graphics graphics, Track[] clickableTrackOptions, CachedImageDrawer imageDrawer ) {
+			// Set single-thread variables
+			this.clickableTrackOptions = clickableTrackOptions;
+			this.imageDrawer = imageDrawer;
 
-			// !!! Cached all of the loaded images for the duration of the paint, then release them at the end.
+			// Bottom Layer - cache it
+			if(cachedBackgroundImage == null)
+				CalculateBackgroundImage();
+			graphics.DrawImage(cachedBackgroundImage,metrics.OutterBounds);
 
-			// Bottom Layer
-			PaintLabels();
-			PaintCurrentEnergy();
+			// Middle Layer - Hotspots
+			PaintHighlights( graphics );
+
+			// Top Layer - Presence
+			PaintPresence( graphics, presenceColor);
+			// Draw current energy
+			DrawTheIcon(graphics, new IconDescriptor { Text = spirit.Energy.ToString() }, metrics.BigCoin );
+
+		}
+
+		void CalculateBackgroundImage() {
+			cachedBackgroundImage = new Bitmap( this.metrics.OutterBounds.Width, this.metrics.OutterBounds.Height );
+
+			using Graphics g = Graphics.FromImage( cachedBackgroundImage );
+			g.TranslateTransform( -metrics.OutterBounds.X, -metrics.OutterBounds.Y );
+
+			PaintLabels(g);
+			DrawTheIcon(g, new IconDescriptor { BackgroundImg = Img.Coin }, metrics.BigCoin );
 
 			foreach(var track in EnergyTrack)
-				DrawTheIcon( track.Icon, metrics.SlotLookup[track].TrackRect );
+				DrawTheIcon( g, track.Icon, metrics.SlotLookup[track].TrackRect );
 
 			foreach(var track in this.CardTrack)
-				DrawTheIcon( track.Icon, metrics.SlotLookup[track].TrackRect );
-
-			// Middle Layer
-			PaintHighlights();
-
-			// Top Layer
-			PaintPresence(presenceColor);
-
+				DrawTheIcon( g, track.Icon, metrics.SlotLookup[track].TrackRect );
 		}
 
-		void PaintHighlights() {
+		void PaintHighlights(Graphics graphics) {
 			using Pen highlightPen = new( Color.Red, 8f );
 			foreach(var track in clickableTrackOptions)
 				graphics.DrawEllipse( highlightPen, metrics.SlotLookup[track].PresenceRect );
 		}
 
-		void PaintLabels() {
+		void PaintLabels(Graphics graphics) {
 			using Font simpleFont = new( "Arial", 8, FontStyle.Bold, GraphicsUnit.Point );
 			graphics.DrawString( "Energy", simpleFont, SystemBrushes.ControlDarkDark, metrics.EnergyTitleLocation );
 			graphics.DrawString( "Cards", simpleFont, SystemBrushes.ControlDarkDark, metrics.CardPlayTitleLocation );
 		}
 
-		void PaintPresence(string presenceColor) {
+		void PaintPresence(Graphics graphics, string presenceColor) {
 			using Bitmap presenceImg = ResourceImages.Singleton.GetPresenceIcon( presenceColor );
 
 			foreach(var track in EnergyTrack)
@@ -82,13 +79,13 @@ namespace SpiritIsland.WinForms {
 				if(!CardRevealed.Contains(track))
 					graphics.DrawImage( presenceImg, metrics.SlotLookup[track].PresenceRect );
 
-			PaintDestroyed( presenceImg );
+			PaintDestroyed( graphics, presenceImg );
 
 			if(spirit is FracturedDaysSplitTheSky days)
-				PaintTime( presenceImg, days.Time );
+				PaintTime( graphics, presenceImg, days.Time );
 		}
 
-		void DrawTheIcon( IconDescriptor icon, RectangleF bounds ) {
+		void DrawTheIcon( Graphics graphics, IconDescriptor icon, RectangleF bounds ) {
 
 			if(icon == null) {
 				graphics.FillRectangle( Brushes.Black, bounds );
@@ -102,8 +99,7 @@ namespace SpiritIsland.WinForms {
 
 			// -- Main - Background
 			if(icon.BackgroundImg != default) {
-				using var img = ResourceImages.Singleton.GetImage(icon.BackgroundImg);
-				graphics.DrawImageFitBoth(img,mainBounds);
+				graphics.DrawImageFitBoth( imageDrawer.GetImage(icon.BackgroundImg), mainBounds );
 			}
 
 			// -- Main - Content --
@@ -124,17 +120,15 @@ namespace SpiritIsland.WinForms {
 
 				// Content - Images
 				if(icon.ContentImg != default) {
-					using var img = ResourceImages.Singleton.GetImage( icon.ContentImg );
 					if(icon.ContentImg2 != default) {
 						const float scale = .75f;
 						float w = contentBounds.Width * scale, h = contentBounds.Height * scale;
 						var cb1 = new RectangleF(contentBounds.X,contentBounds.Y,w,h);
 						var cb2 = new RectangleF( contentBounds.X+ contentBounds.Width*(1f - scale), contentBounds.Y+contentBounds.Height* (1f - scale), w, h );
-						using var img2 = ResourceImages.Singleton.GetImage( icon.ContentImg2 );
-						graphics.DrawImageFitBoth( img2, cb2 );
-						graphics.DrawImageFitBoth( img, cb1 );
+						graphics.DrawImageFitBoth( imageDrawer.GetImage( icon.ContentImg ), cb1 );
+						graphics.DrawImageFitBoth( imageDrawer.GetImage( icon.ContentImg2 ), cb2 );
 					} else
-						graphics.DrawImageFitBoth( img, contentBounds );
+						graphics.DrawImageFitBoth( imageDrawer.GetImage( icon.ContentImg ), contentBounds );
 				}
 
 			}
@@ -144,7 +138,7 @@ namespace SpiritIsland.WinForms {
 				float dim = bounds.Width * .4f;
 				// drawing this at the bottom instead of the top because presence is covering top
 				var superRect = new RectangleF(bounds.X,bounds.Bottom-dim, dim, dim );
-				DrawTheIcon( icon.Super, superRect );
+				DrawTheIcon( graphics, icon.Super, superRect );
 			}
 
 			// -- Sub - (additional action) --
@@ -152,31 +146,18 @@ namespace SpiritIsland.WinForms {
 				// put the subRect in the bottom right corner
 				float subDim = bounds.Width * .5f;
 				var subRect = new RectangleF( bounds.Right - subDim, bounds.Bottom - subDim, subDim, subDim );
-				DrawTheIcon( icon.Sub, subRect );
+				DrawTheIcon( graphics, icon.Sub, subRect );
 			}
 			// -- Big Sub --
 			if(icon.BigSub != null) {
 				// put the subRect in the bottom right corner
 				float subDim = bounds.Width;
 				var subRect = new RectangleF( bounds.Right - subDim/2, bounds.Bottom - subDim*3/4, subDim, subDim );
-				DrawTheIcon( icon.BigSub, subRect );
+				DrawTheIcon( graphics, icon.BigSub, subRect );
 			}
 		}
 
-		void PaintCurrentEnergy() {
-			RectangleF bigCoinBounds = metrics.BigCoin;
-			float slotWidth = bigCoinBounds.Width/2;
-			float bigCoinWidth = slotWidth * 1.7f;
-			var energyRect = new RectangleF(
-				bigCoinBounds.Right - bigCoinWidth,
-				bigCoinBounds.Y,
-				bigCoinWidth,
-				bigCoinWidth
-			);
-			DrawTheIcon(new IconDescriptor { BackgroundImg = Img.Coin, Text = spirit.Energy.ToString() }, energyRect );
-		}
-
-		void PaintDestroyed(Bitmap presenceImg) {
+		void PaintDestroyed(Graphics graphics, Bitmap presenceImg) {
 			Rectangle rect = metrics.Destroyed;
 			int destroyedCount = spirit.Presence.Destroyed;
 			if(destroyedCount == 0) return;
@@ -191,7 +172,7 @@ namespace SpiritIsland.WinForms {
 
 		}
 
-		void PaintTime(Bitmap presenceImg, int timeCount) {
+		void PaintTime(Graphics graphics, Bitmap presenceImg, int timeCount) {
 			Rectangle rect = metrics.Time;
 			if(timeCount== 0) return;
 
@@ -207,6 +188,32 @@ namespace SpiritIsland.WinForms {
 			graphics.DrawCountIfHigherThan( rect, timeCount );
 		}
 
+		public void Dispose() {
+			if(cachedBackgroundImage != null) {
+				cachedBackgroundImage.Dispose();
+				cachedBackgroundImage = null;
+			}
+		}
+
+		#region private 
+
+		Track[] EnergyTrack => spirit.Presence.GetEnergyTrack().ToArray();
+		Track[] EnergyRevealed => spirit.Presence.Energy.Revealed.ToArray();
+
+		Track[] CardTrack => spirit.Presence.GetCardPlayTrack().ToArray();
+		Track[] CardRevealed => spirit.Presence.CardPlays.Revealed.ToArray();
+
+		readonly Spirit spirit;
+		readonly PresenceTrackLayout metrics;
+		readonly string presenceColor;
+
+		// Single threaded / instance methods
+		CachedImageDrawer imageDrawer;
+		Track[] clickableTrackOptions;
+
+		Bitmap cachedBackgroundImage;
+
+		#endregion
 	}
 
 	public struct SlotMetrics {

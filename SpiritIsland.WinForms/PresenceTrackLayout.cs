@@ -6,7 +6,10 @@ namespace SpiritIsland.WinForms {
 
 	public class PresenceTrackLayout {
 
+		public Rectangle OutterBounds { get; }
+
 		public PresenceTrackLayout(Rectangle bounds, Spirit spirit, int margin ) {
+			this.OutterBounds = bounds;
 
 			var energySlots = spirit.Presence.GetEnergyTrack();
 			var cardSlots = spirit.Presence.GetCardPlayTrack();
@@ -17,7 +20,7 @@ namespace SpiritIsland.WinForms {
 
 			// Energy
 			int energyRowHeight = bounds.Height / 2;
-			int presenceWidth = (int)(slotWidth * 0.9f);
+			int presenceWidth = (int)(slotWidth * 0.8f);
 			Size presenceSize = new Size( presenceWidth, presenceWidth * 112 / 126 ); // presence icons are 126W x 112H
 
 			CalcEnergyTrackMetrics( spirit, bounds, (int)slotWidth, presenceSize );
@@ -37,7 +40,10 @@ namespace SpiritIsland.WinForms {
 			);
 
 			SlotLookup.Add(Track.Destroyed,new SlotMetrics { PresenceRect = Destroyed } );
-			BigCoin = new RectangleF(  bounds.Right-slotWidth * 2, bounds.Y, slotWidth * 2, bounds.Height );
+			var temp = new RectangleF(  bounds.Right-slotWidth * 2, bounds.Y, slotWidth * 2, bounds.Height );
+			float bigCoinWidth = slotWidth * 1.7f;
+			BigCoin = new RectangleF( temp.Right - bigCoinWidth, temp.Y, bigCoinWidth, bigCoinWidth );
+
 			CalculateCardPlaySlots( spirit, slotWidth, bounds.X, bounds.Y + energyRowHeight + margin, presenceSize );
 
 			EnergyTitleLocation = bounds.Location;
@@ -79,13 +85,13 @@ namespace SpiritIsland.WinForms {
 
 			// Add Card-Play slots
 			float usableWidth = slotWidth * 0.8f;
-			int presenceYOffset = (int)presenceSize.Height * 3 / 4;
+			int presenceYOffset = (int)(presenceSize.Height * .6f);
 			int cardY = y + presenceYOffset;
 
 			foreach(var status in spirit.Presence.GetCardPlayTrack()) {
 				SlotLookup.Add( status, new SlotMetrics {
 					PresenceRect = new Rectangle( x + (int)((slotWidth - presenceSize.Width) / 2), y, presenceSize.Width, presenceSize.Height ),
-					TrackRect = new RectangleF( x + slotWidth * .1f, cardY, usableWidth, usableWidth )
+					TrackRect    = new RectangleF( x + slotWidth * .1f, cardY, usableWidth, usableWidth )
 				} );
 				x += (int)slotWidth;
 			}

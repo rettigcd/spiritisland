@@ -9,7 +9,11 @@ namespace SpiritIsland.WinForms {
 	/// </summary>
 	public class GrowthLayout {
 
+		public Rectangle Bounds { get; }
+
 		public GrowthLayout(GrowthOption[] growthOptions, Rectangle bounds){
+			this.Bounds = bounds;
+
 			int actionCount = growthOptions.Sum(op=>op.GrowthActions.Length);
 
 			GrowthOptions = growthOptions;

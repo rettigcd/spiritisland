@@ -1,40 +1,65 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 
 namespace SpiritIsland.WinForms {
 
-	class GrowthPainter {
+	class GrowthPainter : IDisposable{
 
-		readonly Graphics graphics;
+		readonly GrowthLayout layout;
 
-		public GrowthPainter( Graphics graphics ) {
-			this.graphics = graphics;
+		Graphics graphics; // single-threaded variables
+		Bitmap cachedImageLayer;
+
+		public GrowthPainter( GrowthLayout layout ) {
+			this.layout = layout;
 		}
 
-		public void Paint(GrowthLayout layout, IList<GrowthOption> clickableGrowthOptions, IList<GrowthActionFactory> clickableGrowthActions ) {
+		public void Paint( Graphics graphics, IList<GrowthOption> clickableGrowthOptions, IList<GrowthActionFactory> clickableGrowthActions ) {
+			this.graphics = graphics;
 
 			using var optionPen = new Pen( Color.Blue, 6f );
 			using var highlightPen = new Pen( Color.Red, 4f );
 
+			if(cachedImageLayer == null) {
+
+				cachedImageLayer = new Bitmap( layout.Bounds.Width, layout.Bounds.Height );
+				using var g = Graphics.FromImage( cachedImageLayer );
+				g.TranslateTransform( -layout.Bounds.X, -layout.Bounds.Y );
+				g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+
+				// Growth - Dividers
+				bool first = true;
+				foreach(var (opt, rect) in layout.EachGrowth())
+					if(first)
+						first = false;
+					else
+						g.DrawLine( optionPen, rect.Left, rect.Top, rect.Left, rect.Bottom );
+
+				this.graphics = g;
+
+				// Growth Actions
+				foreach(var (action, rect) in layout.EachAction())
+					DrawAction( action, rect );
+
+			}
+			graphics.DrawImage( cachedImageLayer, layout.Bounds );
+
+
+			DrawHotspots( graphics, clickableGrowthOptions, clickableGrowthActions, highlightPen );
+
+		}
+
+		private void DrawHotspots( Graphics graphics, IList<GrowthOption> clickableGrowthOptions, IList<GrowthActionFactory> clickableGrowthActions, Pen highlightPen ) {
 			// Growth Options
-			bool first = true;
-			foreach(var (opt, rect) in layout.EachGrowth()) {
-				// Divider
-				if(first) first = false; else graphics.DrawLine(optionPen,rect.Left,rect.Top,rect.Left,rect.Bottom);
-				// Active / Clickable
+			foreach(var (opt, rect) in layout.EachGrowth())
 				if(clickableGrowthOptions.Contains( opt ))
 					graphics.DrawRectangle( highlightPen, rect.ToInts() );
-			}
 
 			// Growth Actions
-			foreach(var (action,rect) in layout.EachAction()) {
-				DrawAction( action, rect );
-				// Active / Clickable
+			foreach(var (action, rect) in layout.EachAction())
 				if(clickableGrowthActions.Contains( action ))
 					graphics.DrawRectangle( highlightPen, rect.ToInts() );
-			}
-
 		}
 
 		void DrawAction( GrowthActionFactory action, RectangleF rect ) {
@@ -261,6 +286,10 @@ namespace SpiritIsland.WinForms {
 
 		}
 
+		public void Dispose() {
+			if(cachedImageLayer != null)
+				cachedImageLayer.Dispose();
+		}
 	}
 
 }

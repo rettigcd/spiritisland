@@ -6,36 +6,59 @@ using System.Linq;
 
 namespace SpiritIsland.WinForms {
 
-	class SpiritPainter {
+	// new spirit Painter each time layout / size changes
+	class SpiritPainter : IDisposable {
 
 		readonly Spirit spirit;
+		readonly SpiritLayout spiritLayout;
 
-		public SpiritPainter(Spirit spirit ) {
+		readonly InnatePainter[] innatePainters;
+		readonly PresenceTrackPainter presencePainter;
+		readonly GrowthPainter growthPainter;
+
+		public SpiritPainter(Spirit spirit, SpiritLayout spiritLayout, string presenceColor ) {
 			this.spirit = spirit;
+			this.spiritLayout = spiritLayout;
+
+			growthPainter = new GrowthPainter( spiritLayout.growthLayout );
+
+			presencePainter = new PresenceTrackPainter( spirit, spiritLayout.trackLayout, presenceColor );
+
+			innatePainters = spirit.InnatePowers
+				.Select( power => new InnatePainter( power, spiritLayout.innateLayouts[power] ) )
+				.ToArray();
 		}
 
-		public void Paint( Graphics graphics, SpiritLayout spiritLayout, 
-			InnatePower[] innateOptions, 
+		public void Paint( 
+			Graphics graphics,
+			InnatePower[] innateOptions,
 			GrowthOption[] selectableGrowthOptions,
 			GrowthActionFactory[] selectableGrowthActions,
-			Track[] clickableTrackOptions,
-			string presenceColor
+			Track[] clickableTrackOptions
 		) {
-			DrawSpiritImage( graphics, spiritLayout.imgBounds );
+			using var imageDrawer = new CachedImageDrawer();
 
-			new GrowthPainter( graphics ).Paint( spiritLayout.growthLayout, selectableGrowthOptions, selectableGrowthActions );
-			new PresenceTrackPainter( spirit, spiritLayout.trackLayout, clickableTrackOptions, graphics ).Paint( presenceColor );
-			Draw_Innates( graphics, spiritLayout, innateOptions );
-			Draw_Elements( graphics, spiritLayout );
+			DrawSpiritImage( graphics );
+
+			using(new StopWatch("Growth"))
+				growthPainter.Paint( graphics, selectableGrowthOptions, selectableGrowthActions );
+
+			using(new StopWatch("Presence"))
+				presencePainter.Paint( graphics, clickableTrackOptions, imageDrawer );
+
+			using(new StopWatch( "Innates" ))
+				Draw_Innates( graphics, innateOptions, imageDrawer );
+
+			Draw_Elements( graphics );
 		}
 
-		void Draw_Innates( Graphics graphics, SpiritLayout spiritLayout, InnatePower[] innateOptions ) {
-			using var innatePainter = new InnatePainter( graphics );
-			foreach(var power in spirit.InnatePowers)
-				innatePainter.DrawFromMetrics( power, spiritLayout.innateLayouts[power], spirit.Elements, innateOptions.Contains(power));
+		void Draw_Innates( Graphics graphics, InnatePower[] innateOptions, CachedImageDrawer imageDrawer ) {
+			foreach(var painter in innatePainters)
+				painter.DrawFromMetrics( graphics, imageDrawer, spirit.Elements, innateOptions );
 		}
 
-		void DrawSpiritImage( Graphics graphics, Rectangle bounds ) {
+		void DrawSpiritImage( Graphics graphics ) {
+			Rectangle bounds = spiritLayout.imgBounds;
 			var image = spiritImage ??= LoadSpiritImage();
 			graphics.DrawImageFitBoth(image,bounds);
 		}
@@ -45,7 +68,7 @@ namespace SpiritIsland.WinForms {
 			return Image.FromFile( $".\\images\\spirits\\{filename}.jpg" );
 		}
 
-		void Draw_Elements( Graphics graphics, SpiritLayout spiritLayout ) {
+		void Draw_Elements( Graphics graphics ) {
 			// activated elements
 			DrawActivatedElements( graphics, spirit.Elements, spiritLayout.Elements );
 			int skip = spirit.Elements.Keys.Count; 
@@ -53,7 +76,6 @@ namespace SpiritIsland.WinForms {
 			if(spirit is ShiftingMemoryOfAges smoa)
 				DrawActivatedElements( graphics, smoa.PreparedElements, spiritLayout.Elements, skip );
 		}
-
 
 		void DrawActivatedElements( Graphics graphics, ElementCounts elements, ElementLayout elLayout, int skip=0 ) {
 
@@ -73,6 +95,17 @@ namespace SpiritIsland.WinForms {
 				elementImages.Add( element, image );
 			}
 			return elementImages[element];
+		}
+
+		public void Dispose() {
+			if(growthPainter != null)
+				growthPainter.Dispose();
+
+			if(presencePainter != null)
+				presencePainter.Dispose();
+
+			foreach(var ip in innatePainters)
+				ip.Dispose();
 		}
 
 		Image spiritImage;

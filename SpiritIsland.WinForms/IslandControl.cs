@@ -27,23 +27,24 @@ namespace SpiritIsland.WinForms {
 			optionProvider.NewDecision += OptionProvider_OptionsChanged;
 
 			var board = gameState.Island.Boards.VerboseSingle("Multiple Island boards not supported.");
+			ClearCachedImage();
 			switch(board[0].Label[..1]) {
 				case "A":
-					this.board = Image.FromFile( ".\\images\\board a.png" );
+					boardImageFile = ".\\images\\board a.png";
 					spaceLookup = new Dictionary<string, PointF> {
-						["A0"] = new PointF( 0.119f, 0.526f ),
-						["A1"] = new PointF( 0.417f, 0.304f ),
-						["A2"] = new PointF( 0.252f, 0.524f ),
-						["A3"] = new PointF( 0.165f, 0.815f ),
-						["A4"] = new PointF( 0.419f, 0.711f ),
-						["A5"] = new PointF( 0.608f, 0.543f ),
-						["A6"] = new PointF( 0.585f, 0.269f ),
-						["A7"] = new PointF( 0.752f, 0.611f ),
-						["A8"] = new PointF( 0.814f, 0.189f ),
+						["A0"] = new PointF( 0.12f, 0.53f ),
+						["A1"] = new PointF( 0.42f, 0.30f ),
+						["A2"] = new PointF( 0.25f, 0.52f ),
+						["A3"] = new PointF( 0.17f, 0.82f ),
+						["A4"] = new PointF( 0.42f, 0.71f ),
+						["A5"] = new PointF( 0.61f, 0.54f ),
+						["A6"] = new PointF( 0.59f, 0.27f ),
+						["A7"] = new PointF( 0.75f, 0.61f ),
+						["A8"] = new PointF( 0.81f, 0.19f ),
 					};
 					break;
 				case "B":
-					this.board = Image.FromFile( ".\\images\\board b.png" );
+					boardImageFile = ".\\images\\board b.png";
 					spaceLookup = new Dictionary<string, PointF> {
 						["B0"] = new PointF( 0.19f, 0.39f ),
 						["B1"] = new PointF( 0.40f, 0.25f ),
@@ -57,7 +58,7 @@ namespace SpiritIsland.WinForms {
 					};
 					break;
 				case "C":
-					this.board = Image.FromFile( ".\\images\\board c.png" );
+					boardImageFile = ".\\images\\board c.png";
 					spaceLookup = new Dictionary<string, PointF> {
 						["C0"] = new PointF( 0.106f, 0.610f ),
 						["C1"] = new PointF( 0.352f, 0.287f ),
@@ -71,7 +72,7 @@ namespace SpiritIsland.WinForms {
 					};
 					break;
 				case "D":
-					this.board = Image.FromFile( ".\\images\\board d.png" );
+					boardImageFile = ".\\images\\board d.png";
 					spaceLookup = new Dictionary<string, PointF> {
 						["D0"] = new PointF( 0.099f, 0.559f ),
 						["D1"] = new PointF( 0.363f, 0.178f ),
@@ -85,7 +86,6 @@ namespace SpiritIsland.WinForms {
 					};
 					break;
 			}
-			//			boardA = Image.FromFile(".\\images\\board a.png");
 
 			var images = ResourceImages.Singleton;
 			presence = images.GetPresenceIcon( presenceColor );
@@ -120,51 +120,77 @@ namespace SpiritIsland.WinForms {
 		protected override void OnPaint( PaintEventArgs pe ) {
 			base.OnPaint( pe );
 
-			DateTime start = DateTime.Now;
+			optionRects.Clear();
+			tokenLocations.Clear();
+			hotSpots.Clear(); // Clear this at beginning so any of the DrawX methods can add to it
 
-			if(board != null) {
+			if(gameState == null) return;
+
+			StopWatch.timeLog.Clear();
+
+			using(new StopWatch( "Total" )) {
+
+				DrawBoard_Static( pe );
+				using(new StopWatch( "Island-Tokens" ))
+					foreach(Space space in gameState.Island.Boards[0].Spaces)
+						DecorateSpace(pe.Graphics,space);
+
+				using(new StopWatch( "fear" ))
+					DrawFearPool( pe.Graphics, new RectangleF(Width*.50f, 0f, Width*.20f, Width*.04f ) );
+
+				using(new StopWatch( "blight" ))
+					DrawBlight  ( pe.Graphics, new RectangleF(Width*.55f,Width*.05f,Width*.15f,Width*.03f ) );
+
+				using(new StopWatch( "round" ))
+					DrawRound( pe.Graphics );
+
+				using(new StopWatch( "invader cards" ))
+					DrawInvaderCards( pe.Graphics, new Rectangle(0,0,(int)(Width*.65f),Height) ); // other than highlights, do this last since it contains the Fear Card that we want to be on top of everything.
+
+				using(new StopWatch( "misc" )) {
+					DrawDeck(pe.Graphics);
+					DrawElements( pe.Graphics );
+				}
+
+				using(new StopWatch( "HotSpots" ))
+					DrawHotspots( pe );
+
+				const float spiritShare = .35f;
+				DrawSpirit( pe.Graphics, new Rectangle( Width - (int)(spiritShare*Width), 0, (int)(spiritShare*Width), Height) );
+			}
+
+			// non drawing - record Hot spots
+			RecordSpiritHotspots();
+			if(fearCard!= null) 
+				hotSpots.Add(fearCard,activeFearRect);
+
+
+			float y = 60f;
+			foreach(var log in StopWatch.timeLog.OrderByDescending(m=>m.ms) ) {
+				pe.Graphics.DrawString(log.ToString() ,SystemFonts.DefaultFont, Brushes.Black,10f,y);
+				y += 20f;
+			}
+		}
+
+		void DrawBoard_Static( PaintEventArgs pe ) {
+			using var stopwatch = new StopWatch( "Island-static" );
+
+			if(cachedBackground == null) {
+
+				using var board = Image.FromFile( boardImageFile );
+
 				// Assume limit is height
 				boardScreenSize = (board.Width * Height > Width * board.Height)
 					? new Size( Width, board.Height * Width / board.Width )
 					: new Size( board.Width * Height / board.Height, Height );
-				int boardHeight = boardScreenSize.Height;
-				int boardWidth = boardScreenSize.Width;
 
-				pe.Graphics.DrawImage( board, 0, 0, boardWidth, boardHeight );
+				cachedBackground = new Bitmap( boardScreenSize.Width, boardScreenSize.Height );
+
+				var graphics = Graphics.FromImage(cachedBackground);
+				graphics.DrawImage( board, 0, 0, boardScreenSize.Width, boardScreenSize.Height );
 			}
 
-			optionRects.Clear();
-			tokenLocations.Clear();
-
-			if(gameState != null) {
-
-				hotSpots.Clear(); // Clear this at beginning so any of the DrawX methods can add to it
-
-				foreach(var space in gameState.Island.Boards[0].Spaces)
-					DecorateSpace(pe.Graphics,space);
-
-				DrawFearPool( pe.Graphics, new RectangleF(Width*.50f, 0f, Width*.20f, Width*.04f ) );
-				DrawBlight  ( pe.Graphics, new RectangleF(Width*.55f,Width*.05f,Width*.15f,Width*.03f ) );
-				DrawRound( pe.Graphics );
-				DrawInvaderCards( pe.Graphics, new Rectangle(0,0,(int)(Width*.65f),Height) ); // other than highlights, do this last since it contains the Fear Card that we want to be on top of everything.
-				DrawDeck(pe.Graphics);
-				DrawHighlights( pe );
-				DrawElements( pe.Graphics );
-
-
-				const float spiritShare = .35f;
-				DrawSpirit( pe.Graphics, new Rectangle( Width - (int)(spiritShare*Width), 0, (int)(spiritShare*Width), Height) );
-
-				// Hot spots
-				RecordSpiritHotspots();
-				if(fearCard!= null) 
-					hotSpots.Add(fearCard,activeFearRect);
-
-			}
-
-			TimeSpan duration = DateTime.Now - start;
-			pe.Graphics.DrawString(((int)duration.TotalMilliseconds).ToString(),SystemFonts.DefaultFont, Brushes.Black,10f,60f);
-
+			pe.Graphics.DrawImage( cachedBackground, 0, 0, cachedBackground.Width, cachedBackground.Height );
 		}
 
 		void DrawElements(Graphics graphics ) {
@@ -232,21 +258,24 @@ namespace SpiritIsland.WinForms {
 
 		#endregion
 
+		SpiritPainter spiritPainter;
 		void DrawSpirit( Graphics graphics, Rectangle bounds ) {
 
 			bounds = FitClientBounds( bounds );
 
 			// Layout
-			if( spiritLayout == null || growthOptionCount != spirit.Growth.Options.Length )
+			if( spiritLayout == null || growthOptionCount != spirit.Growth.Options.Length) {
 				CalcSpiritLayout( graphics, bounds );
+				if(spiritPainter != null) spiritPainter.Dispose(); // release old
+				spiritPainter = new SpiritPainter( spirit, spiritLayout, presenceColor );
+			}
 
 			graphics.FillRectangle( Brushes.LightYellow, bounds );
-			new SpiritPainter( spirit ).Paint( graphics, spiritLayout,
+			spiritPainter.Paint( graphics,
 				selectableInnateOptions,
 				selectableGrowthOptions,
 				selectableGrowthActions,
-				clickableTrackOptions,
-				presenceColor
+				clickableTrackOptions
 			);
 		}
 
@@ -269,7 +298,7 @@ namespace SpiritIsland.WinForms {
 				hotSpots.Add( track, spiritLayout.trackLayout.ClickRectFor( track ) );
 			// Innates
 			foreach(var power in selectableInnateOptions)
-				hotSpots.Add( power, spiritLayout.innateLayouts[power].TotalInnatePowerBounds );
+				hotSpots.Add( power, spiritLayout.innateLayouts[power].Bounds );
 		}
 
 		void DrawRound( Graphics graphics ) {
@@ -343,7 +372,7 @@ namespace SpiritIsland.WinForms {
 
 		}
 
-		void DrawHighlights( PaintEventArgs pe ) {
+		void DrawHotspots( PaintEventArgs pe ) {
 			using var pen = new Pen(Brushes.Aquamarine,5);
 
 			// adjacent
@@ -421,6 +450,7 @@ namespace SpiritIsland.WinForms {
 
 			PointF normalized = spaceLookup[space.Label];
 			PointF xy = new PointF(normalized.X * boardScreenSize.Width, normalized.Y * boardScreenSize.Height);
+
 			float iconWidth = boardScreenSize.Width * .045f; 
 			float xStep = iconWidth + 10f;
 
@@ -621,7 +651,15 @@ namespace SpiritIsland.WinForms {
 		protected override void OnSizeChanged( EventArgs e ) {
 			base.OnSizeChanged( e );
 			spiritLayout = null;
+			ClearCachedImage();
 			this.Invalidate();
+		}
+
+		void ClearCachedImage() {
+			if(cachedBackground != null) {
+				cachedBackground.Dispose();
+				cachedBackground = null;
+			}
 		}
 
 		#endregion
@@ -733,12 +771,14 @@ namespace SpiritIsland.WinForms {
 		GameState gameState;
 		Spirit spirit;
 
-		Size boardScreenSize;
 		const float radius = 40f;
 		Space[] activeSpaces;
 		Dictionary<string,PointF> spaceLookup;
 
-		Image board;
+		Size boardScreenSize;
+		Bitmap cachedBackground;
+		string boardImageFile;
+
 		Image presence;
 		string presenceColor;
 		Image strife;
@@ -777,5 +817,23 @@ namespace SpiritIsland.WinForms {
 		}
 	}
 
+	class StopWatch : IDisposable {
+		readonly string label;
+		readonly DateTime start;
+		public StopWatch(string label ) { this.label = label; start = DateTime.Now; }
+		public void Dispose() {
+			var dur = DateTime.Now - start;
+			var duration = new RecordedDuration(label,(int)dur.TotalMilliseconds);
+			timeLog.Add( duration );
+		}
+		static public List<RecordedDuration> timeLog = new List<RecordedDuration>();
+	}
+
+	class RecordedDuration {
+		public int ms;
+		public string label;
+		public RecordedDuration(string label,int ms) { this.label=label; this.ms = ms; }
+		public override string ToString() => $"{label}: {ms}ms";
+	}
 
 }

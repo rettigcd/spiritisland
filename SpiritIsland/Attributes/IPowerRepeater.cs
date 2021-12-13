@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 
 namespace SpiritIsland {
-	public interface InnateRepeater {
+	public interface IPowerRepeater {
 		Task<bool> ShouldRepeat( Spirit spirit );
 	}
 

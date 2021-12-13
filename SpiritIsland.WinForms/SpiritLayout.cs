@@ -49,12 +49,12 @@ namespace SpiritIsland.WinForms {
 				innateLayouts[power] = layout;
 
 				// Scooch this box down so we can put next one there
-				int shift = layout.TotalInnatePowerBounds.Height + 5;
+				int shift = layout.Bounds.Height + 5;
 				innateBounds[i % columnCount].Height -= shift;
 				innateBounds[i % columnCount].Y += shift;
 
 				// Track bottom of both columns
-				maxBottom = Math.Max( maxBottom, layout.TotalInnatePowerBounds.Bottom );
+				maxBottom = Math.Max( maxBottom, layout.Bounds.Bottom );
 			}
 
 			return maxBottom - bounds.Top;

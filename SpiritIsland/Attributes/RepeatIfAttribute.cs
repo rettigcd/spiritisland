@@ -20,9 +20,9 @@ namespace SpiritIsland {
 			this.Thresholds = repeats.ToArray();
 		}
 
-		public override InnateRepeater GetRepeater() => new Repeater( Thresholds );
+		public override IPowerRepeater GetRepeater() => new Repeater( Thresholds );
 
-		class Repeater : InnateRepeater {
+		class Repeater : IPowerRepeater {
 
 			readonly List<IDrawableInnateOption> thresholds;
 

@@ -1,49 +1,87 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Linq;
 
 namespace SpiritIsland.WinForms {
 
 	class InnatePainter : IDisposable {
 
-		readonly Graphics graphics;
+		#region constructor
 
-
-		public InnatePainter( Graphics graphics ) {
-			// Resources
-			this.graphics = graphics;
+		public InnatePainter( InnatePower power, InnateLayout layout ) {
+			this.power = power;
+			this.layout = layout;
 		}
 
-		public void DrawFromMetrics( InnatePower power, InnateLayout layout, ElementCounts activatedElements, bool isActive ) {
-			// graphics, Fonts, Images
+		#endregion
 
-			// Background
-			graphics.FillRectangle( Brushes.AliceBlue, layout.TotalInnatePowerBounds );
+		void InitOverlayCache(Font boldFont) {
+			var bounds = layout.Bounds;
+			overlayCache = new Bitmap( bounds.Width, bounds.Height );
+			using var g = Graphics.FromImage( overlayCache );
+			g.TranslateTransform(-bounds.X,-bounds.Y);
+
+			g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias; // !!! add this to growth painter.
+
+			this.graphics = g;
+
+			// Overlay areay
+			using var font = layout.BuildFont();
+			foreach(WrappingText_InnateOptions wrappintText in layout.Options)
+				DrawOption( wrappintText, graphics, font, boldFont );
+		}
+
+		public void DrawFromMetrics( Graphics graphics, CachedImageDrawer imageDrawer, ElementCounts activatedElements, InnatePower[] innateOptions ) {
+
+			if(backgroundCache == null) {
+				this.imageDrawer = imageDrawer;
+				using var boldFont = layout.BuildBoldFont();
+				DrawBackgroundImage( boldFont );
+				InitOverlayCache( boldFont );
+			}
+
+			// Background Layer 
+			graphics.DrawImage( backgroundCache, layout.Bounds );
+
+			this.graphics = graphics;
+			// Middle Layer - Available
+			foreach(WrappingText_InnateOptions wrappintText in layout.Options)
+				if(activatedElements.Contains( wrappintText.Elements ))
+					graphics.FillRectangle( Brushes.PeachPuff, wrappintText.Bounds );
+
+			// Overlay text / images
+			graphics.DrawImage( overlayCache, layout.Bounds );
+
+			// Selected
+			if(innateOptions.Contains( power )) {
+				using Pen highlightPen = new( Color.Red, 2f );
+				graphics.DrawRectangle( highlightPen, layout.Bounds );
+			}
+
+		}
+
+		void DrawBackgroundImage( Font boldFont ) {
+			var bounds = layout.Bounds;
+			backgroundCache = new Bitmap( bounds.Width, bounds.Height );
+			using var g = Graphics.FromImage( backgroundCache );
+			g.TranslateTransform(-bounds.X,-bounds.Y);
+
+			// set single-thread instance
+			this.graphics = g;
+
+			g.FillRectangle( Brushes.AliceBlue, layout.Bounds );
 
 			// Title
 			using(var titleFont = new Font( "Arial", layout.textEmSize, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Pixel ))
-				graphics.DrawString( power.Name.ToUpper(), titleFont, Brushes.Black, layout.TitleBounds, new StringFormat { Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Center } );
+				g.DrawString( power.Name.ToUpper(), titleFont, Brushes.Black, layout.TitleBounds, new StringFormat { Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Center } );
 
-			using var boldFont = layout.BuildBoldFont();
-			DrawAttributeTable( power, layout, boldFont );
-
-			// Options
-
-			using var font = layout.BuildFont();
-			foreach(WrappingText_InnateOptions wrappintText in layout.Options) {
-				if(activatedElements.Contains( wrappintText.Elements ))
-					graphics.FillRectangle( Brushes.PeachPuff, wrappintText.Bounds );
-				DrawOption( wrappintText, graphics, font, boldFont );
-			}
-
-			if(isActive) {
-				using Pen highlightPen = new( Color.Red, 2f );
-				graphics.DrawRectangle( highlightPen, layout.TotalInnatePowerBounds );
-			}
-
+			DrawAttributeTable( g, boldFont );
 		}
 
-		void DrawAttributeTable( InnatePower power, InnateLayout layout, Font boldFont ) {
+		#region private
+
+		void DrawAttributeTable( Graphics graphics, Font boldFont ) {
 			// Attribute Headers
 			using(var titleBg = new SolidBrush( Color.FromArgb( 0xae, 0x98, 0x69 ) )) // ae9869
 				graphics.FillRectangle( titleBg, layout.AttributeRows[0] );
@@ -58,7 +96,13 @@ namespace SpiritIsland.WinForms {
 			graphics.FillRectangle( Brushes.BlanchedAlmond, layout.AttributeRows[1] );
 			foreach(var valueRect in layout.AttributeValueCells)
 				graphics.DrawRectangle( Pens.Black, valueRect );
-			graphics.DrawImageFitHeight( GetIcon( power.DisplaySpeed == Phase.Slow ? Img.Icon_Slow : Img.Icon_Fast ), layout.AttributeValueCells[0].InflateBy( (int)(-layout.AttributeValueCells[0].Height * .2f) ) );
+
+			imageDrawer.DrawFitHeight(
+				graphics,
+				power.DisplaySpeed == Phase.Slow ? Img.Icon_Slow : Img.Icon_Fast,
+				layout.AttributeValueCells[0].InflateBy( (int)(-layout.AttributeValueCells[0].Height * .2f) )
+			);
+
 			graphics.DrawString( power.RangeText, boldFont, Brushes.Black, layout.AttributeValueCells[1], centerBoth );
 			graphics.DrawString( power.TargetFilter.ToUpper(), boldFont, Brushes.Black, layout.AttributeValueCells[2], centerBoth );
 
@@ -70,7 +114,7 @@ namespace SpiritIsland.WinForms {
 		void DrawOption(WrappingText_InnateOptions data, Graphics graphics, Font regFont, Font boldFont ) {
 
 			foreach(var tp in data.tokens)
-				graphics.DrawImage( GetIcon( tp.TokenImg ), tp.Rect  );
+				imageDrawer.Draw( graphics, tp.TokenImg, tp.Rect );
 
 			var verticalAlignCenter = new StringFormat{ LineAlignment = StringAlignment.Center };
 			foreach(var sp in data.regularTexts)
@@ -81,19 +125,28 @@ namespace SpiritIsland.WinForms {
 
 		}
 
-		Image GetIcon( Img img ) {
-			if(!icons.ContainsKey( img ))
-				icons.Add( img, ResourceImages.Singleton.GetImage( img ) );
-			return icons[img];
-		}
-		readonly Dictionary<Img,Image> icons = new Dictionary<Img, Image>();
-
 		public void Dispose() {
-			foreach(var img in icons.Values)
-				img.Dispose();
-			icons.Clear();
+			if(backgroundCache != null) {
+				backgroundCache.Dispose();
+				backgroundCache = null;
+			}
+			if(overlayCache != null) {
+				overlayCache.Dispose();
+				overlayCache = null;
+			}
 		}
 
+		readonly InnatePower power;
+		readonly InnateLayout layout;
+
+		// single threaded variables...
+		CachedImageDrawer imageDrawer;
+		Graphics graphics;
+
+		Bitmap backgroundCache;
+		Bitmap overlayCache;
+
+		#endregion
 
 	}
 

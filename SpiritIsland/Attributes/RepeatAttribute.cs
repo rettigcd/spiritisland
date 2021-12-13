@@ -5,7 +5,7 @@ namespace SpiritIsland {
 	public abstract class RepeatAttribute : Attribute {
 		public abstract IDrawableInnateOption[] Thresholds { get; }
 
-		public abstract InnateRepeater GetRepeater();
+		public abstract IPowerRepeater GetRepeater();
 	}
 
 }

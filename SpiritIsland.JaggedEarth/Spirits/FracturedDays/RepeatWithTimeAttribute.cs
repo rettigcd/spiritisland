@@ -17,10 +17,10 @@ namespace SpiritIsland.JaggedEarth {
 			// Shows up as active, new DrawableInnateOption("","You may use this Power any number of times. Cost to Use: 1 Time per previous use this turn.")
 		};
 
-		public override InnateRepeater GetRepeater() => new Repeater(UpTo);
+		public override IPowerRepeater GetRepeater() => new Repeater(UpTo);
 
-		class Repeater : InnateRepeater {
-			int max;
+		class Repeater : IPowerRepeater {
+			readonly int max;
 			int previousUse = 1; // assume when we repeat, we've already used it once.
 			public Repeater(int max ) { this.max = max; }
 			public async Task<bool> ShouldRepeat( Spirit spirit ) {

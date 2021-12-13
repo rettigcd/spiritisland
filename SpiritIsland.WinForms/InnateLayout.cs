@@ -5,7 +5,7 @@ namespace SpiritIsland.WinForms {
 
 	public class InnateLayout {
 
-		public Rectangle TotalInnatePowerBounds;
+		public Rectangle Bounds;
 		public Rectangle TitleBounds;			// holds the name of the innate power
 		public Rectangle AttributeBounds;		// Draws Attributes box
 		public Rectangle[] AttributeRows;
@@ -43,13 +43,13 @@ namespace SpiritIsland.WinForms {
 				optionY = wrapInfo.Bounds.Bottom;
 			}
 			Options = options.ToArray();
-			TotalInnatePowerBounds = new Rectangle( x, y, width, optionY - y );
+			Bounds = new Rectangle( x, y, width, optionY - y );
 
 		}
 
 		#endregion
 
-		public Font BuildFont()     => new Font( FontFamily.GenericSansSerif, textEmSize, GraphicsUnit.Pixel );
+		public Font BuildFont()     => new Font( FontFamily.GenericSansSerif, textEmSize, FontStyle.Regular, GraphicsUnit.Pixel );
 		public Font BuildBoldFont() => new Font( FontFamily.GenericSansSerif, textEmSize, FontStyle.Bold, GraphicsUnit.Pixel );
 
 		#region private methods
@@ -146,7 +146,7 @@ namespace SpiritIsland.WinForms {
 
 			var tp = new TokenPosition {
 				TokenImg = img,
-				Rect = new RectangleF( x, y + (iconDimension - sz.Height) / 2, sz.Width, sz.Height ),
+				Rect = new Rectangle( x, y + (iconDimension - sz.Height) / 2, sz.Width, sz.Height ),
 			};
 			x += sz.Width;
 
@@ -206,7 +206,7 @@ namespace SpiritIsland.WinForms {
 
 	public class TokenPosition {
 		public Img TokenImg;
-		public RectangleF Rect;
+		public Rectangle Rect;
 	}
 
 	public class TextPosition {

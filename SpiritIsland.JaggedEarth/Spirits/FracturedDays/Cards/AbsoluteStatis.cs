@@ -5,11 +5,11 @@ namespace SpiritIsland.JaggedEarth {
 	class AbsoluteStatis {
 
 		[SpiritCard("Absolute Stasis",1,Element.Sun,Element.Air,Element.Earth), Fast, FromSacredSite(2)] // !!! not ocean
-		static public async Task ActAsync(TargetSpaceCtx ctx ) {
-			if(ctx.Self is not FracturedDaysSplitTheSky frac) return;
+		static public Task ActAsync(TargetSpaceCtx ctx ) {
+			if(ctx.Self is not FracturedDaysSplitTheSky frac) return Task.CompletedTask;
 
 			// Cost to use: 1
-			if(frac.Time == 0) return;
+			if(frac.Time == 0) return Task.CompletedTask;
 			--frac.Time;
 
 			// Until the end of the slow phase, target land and everything in it cease to exist for all purposes except checking victory/defeat.
@@ -38,6 +38,7 @@ namespace SpiritIsland.JaggedEarth {
 				return Task.CompletedTask;
 			} );
 
+			return Task.CompletedTask;
 		}
 
 	}
