@@ -30,9 +30,9 @@ namespace SpiritIsland.BranchAndClaw {
 			spirit.RangeCalc = this;
 		}
 
-		public override IEnumerable<Space> GetTargetOptionsFromKnownSource( Spirit self, GameState gameState, int range, string filterEnum, TargettingFrom powerType, IEnumerable<Space> source ) {
-			var normal = orig.GetTargetOptionsFromKnownSource( self, gameState, range, filterEnum, powerType, source );
-			var shore = orig.GetTargetOptionsFromKnownSource( self, gameState, range+3, filterEnum, powerType, source ).Where(x => x.IsCoastal);
+		public override IEnumerable<Space> GetTargetOptionsFromKnownSource( Spirit self, GameState gameState, TargettingFrom powerType, IEnumerable<Space> source, TargetCriteria tc ) {
+			var normal = orig.GetTargetOptionsFromKnownSource( self, gameState, powerType, source, tc );
+			var shore = orig.GetTargetOptionsFromKnownSource( self, gameState, powerType, source, new TargetCriteria(tc.Range+3, tc.Filter) ).Where(x => x.IsCoastal);
 			return normal.Union(shore);
 		}
 

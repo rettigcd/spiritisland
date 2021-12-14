@@ -19,7 +19,7 @@ namespace SpiritIsland.JaggedEarth {
 			// Defend 1 per presence you have in target land (when this Power is used).
 			var defend = new ActionOption(
 				"Defend 1 per presence you have in target land", // (when power is used)
-				() => ctx.Defend( ctx.Presence.Count )
+				ctx => ctx.Defend( ctx.Presence.Count )
 			);
 
 			await ctx.SelectActionOption( doNotParticipate, defend );

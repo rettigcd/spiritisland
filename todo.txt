@@ -1,4 +1,12 @@
-﻿
+﻿Scream Disease Into The Wind
+
+// !!! When blight is added to target land, it doesn't cascade. - (Entrap the Forces of Corruption)
+
+
+Cleanup..
+	Merge Config Ravage and Ravage Engine
+	Beast, Wilds, Disease should implement both Token and TokenGroup
+
 GUI
 	- layout of Fear / Blight items
 	- Put Build / Ravage / fear in strip along the top 

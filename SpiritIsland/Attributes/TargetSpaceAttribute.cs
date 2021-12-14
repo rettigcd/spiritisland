@@ -5,24 +5,29 @@ namespace SpiritIsland {
 
 	public abstract class TargetSpaceAttribute : GeneratesContextAttribute {
 
-		readonly From fromSourceEnum;
-		readonly protected Terrain? sourceTerrain;
-		readonly protected int range;
+		//readonly protected From fromSourceEnum;
+		//readonly protected Terrain? sourceTerrain;
+		readonly protected TargetSourceCriteria sourceCriteria;
+
+		protected readonly int range;
 		public override string TargetFilter { get; }
 
-		public TargetSpaceAttribute(From source, Terrain? sourceTerrain, int range, string targetFilter){
-			this.fromSourceEnum = source;
-			this.sourceTerrain = sourceTerrain;
+		public TargetSpaceAttribute(TargetSourceCriteria sourceCriteria, int range, string targetFilter ){
+			this.sourceCriteria = sourceCriteria;
 			this.range = range;
 			this.TargetFilter = targetFilter;
 		}
 
 		public override async Task<object> GetTargetCtx( string powerName, SpiritGameStateCtx ctx, TargettingFrom powerType ){
-			var space = await ctx.Self.TargetsSpace( ctx.GameState, powerName+": Target Space", fromSourceEnum, sourceTerrain, await CalcRange(ctx), TargetFilter, powerType );
+			var space = await ctx.Self.TargetsSpace( powerType, ctx.GameState, powerName+": Target Space", 
+				sourceCriteria,
+				new TargetCriteria( await CalcRange(ctx), TargetFilter )
+			);
 			return space == null ? null : ctx.Target(space);
 		}
 
-		protected virtual Task<int> CalcRange( SpiritGameStateCtx ctx ) => Task.FromResult(range);
+		/// <remarks>Hook so ExtendableRangeAttribute can increase range.</remarks>
+		protected virtual Task<int> CalcRange( SpiritGameStateCtx ctx ) => Task.FromResult( range );
 
 		public override LandOrSpirit LandOrSpirit => LandOrSpirit.Land;
 
@@ -31,22 +36,21 @@ namespace SpiritIsland {
 	[AttributeUsage( AttributeTargets.Class | AttributeTargets.Method )]
 	public class FromPresenceAttribute : TargetSpaceAttribute {
 		public FromPresenceAttribute( int range, string filter = Target.Any )
-			: base( From.Presence, null, range, filter ) {
-		}
+			: base( new TargetSourceCriteria( From.Presence ), range, filter ) {}
 		public override string RangeText => range.ToString();
 	}
 
 	[AttributeUsage( AttributeTargets.Class | AttributeTargets.Method )]
 	public class FromPresenceInAttribute : TargetSpaceAttribute {
 		public FromPresenceInAttribute( int range, Terrain sourceTerrain, string filter = Target.Any )
-			: base( From.Presence, sourceTerrain, range, filter ) {}
-		public override string RangeText => $"{range}({sourceTerrain})";
+			: base( new TargetSourceCriteria( From.Presence, sourceTerrain), range, filter ) {}
+		public override string RangeText => $"{range}({sourceCriteria.Terrain})";
 	}
 
 	[AttributeUsage( AttributeTargets.Class | AttributeTargets.Method )]
 	public class FromSacredSiteAttribute : TargetSpaceAttribute {
 		public FromSacredSiteAttribute( int range, string filter = Target.Any )
-			: base( From.SacredSite, null, range, filter ) { }
+			: base( new TargetSourceCriteria( From.SacredSite ), range, filter ) { }
 		public override string RangeText => $"ss:{range}";
 	}
 

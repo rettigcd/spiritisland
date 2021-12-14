@@ -16,20 +16,16 @@ namespace SpiritIsland {
 		public bool CouldActivateDuring( Phase speed, Spirit _ ) 
 			=> speed == Phase.Fast || speed == Phase.Slow;
 
-		public string Name => "Replay Card for Cost";
+		public string Name => "Repeat Card for Cost";
 
 		public string Text => Name;
 
 		public async Task ActivateAsync( SpiritGameStateCtx ctx ) {
 
-			int maxCardCost = ctx.Self.Energy;
-			var options = ctx.Self.UsedActions.OfType<PowerCard>() // can't use Discard pile because those cards are from prior rounds.  // !!! needs tests
-				.Where(card=>ctx.Self.IsActiveDuring(ctx.GameState.Phase,card)) 
-				.Where(card=>card.Cost<=maxCardCost)
-				.ToArray();
+			PowerCard[] options = GetCardOptions( ctx );
 			if(options.Length == 0) return;
 
-			PowerCard powerCard = await ctx.Self.SelectPowerCard( "Select card to replay", options.Where( x => x.Cost <= maxCardCost ), CardUse.Replay, Present.Always );
+			PowerCard powerCard = await ctx.Self.SelectPowerCard( "Select card to repeat", options, CardUse.Repeat, Present.Always );
 			if(powerCard == null) return;
 
 			ctx.Self.Energy -= powerCard.Cost;
@@ -37,7 +33,25 @@ namespace SpiritIsland {
 
 		}
 
+		protected virtual PowerCard[] GetCardOptions( SpiritGameStateCtx ctx ) {
+			int maxCardCost = ctx.Self.Energy;
+			PowerCard[] options = ctx.Self.UsedActions.OfType<PowerCard>() // can't use Discard pile because those cards are from prior rounds.  // !!! needs tests
+				.Where( card => ctx.Self.IsActiveDuring( ctx.GameState.Phase, card ) )
+				.Where( card => card.Cost <= maxCardCost )
+				.ToArray();
+			return options;
+		}
 	}
 
+	public class RepeatCheapestCardForCost : RepeatCardForCost {
+		protected override PowerCard[] GetCardOptions( SpiritGameStateCtx ctx ) {
+			return ctx.Self.UsedActions.OfType<PowerCard>()
+				.GroupBy( pc => pc.Cost )
+				.OrderBy( grp => grp )
+				.First() // group with lowest cost
+				.ToArray(); // all cards in group
+		}
+
+	}
 
 }

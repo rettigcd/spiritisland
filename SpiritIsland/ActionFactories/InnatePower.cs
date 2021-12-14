@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
-	public class InnatePower : IFlexibleSpeedActionFactory {
+	public class InnatePower : IFlexibleSpeedActionFactory, IRecordLastTarget {
 
 		#region Constructors and factories
 
@@ -80,8 +80,10 @@ namespace SpiritIsland {
 		public LandOrSpirit LandOrSpirit => targetAttr.LandOrSpirit;
 
 		public async Task ActivateAsync( SpiritGameStateCtx ctx ) {
-			if(!await SpeedBehavior.IsActiveFor( ctx.GameState.Phase, ctx.Self ))
+			if(!await SpeedBehavior.IsActiveFor( ctx.GameState.Phase, ctx.Self )) {
+				LastTarget = null;
 				return; // this is here for Shifting Memory to Activate Innates
+			}
 
 			await ActivateInnerAsync( ctx );
 			if( repeatAttr != null) {
@@ -99,20 +101,20 @@ namespace SpiritIsland {
 
 		readonly List<IDrawableInnateOption> _drawableOptions;
 
-
 		async Task ActivateInnerAsync( SpiritGameStateCtx spiritCtx ) {
 
-			// !!! Targetting a space first, then declining all of the elemental upgrades
-			// !!! we should resolve elemental upgrades first, then pick the target.
-
 			List<MethodInfo> lastMethods = await GetLastActivatedMethodsOfEachGroup( spiritCtx );
-			if( lastMethods.Count == 0 ) return;
+			if( lastMethods.Count == 0 ) {
+				LastTarget = null;
+				return;
+			}
 
-			object targetCtx = await targetAttr.GetTargetCtx( Name, spiritCtx, TargettingFrom.Innate );
-			if(targetCtx == null) return;
+			LastTarget = await targetAttr.GetTargetCtx( Name, spiritCtx, TargettingFrom.Innate );
+			if(LastTarget == null) return;
 
+			var objList = new object[] { LastTarget };
 			foreach(var method in lastMethods)
-				await (Task)method.Invoke( null, new object[] { targetCtx } );
+				await (Task)method.Invoke( null, objList );
 
 		}
 
@@ -167,11 +169,14 @@ namespace SpiritIsland {
 			return results.ToArray();
 		}
 
+		public object LastTarget { get; private set; }
+
 		readonly InnatePowerAttribute innatePowerAttr;
 		readonly protected SpeedAttribute speedAttr;
 		readonly GeneratesContextAttribute targetAttr;
 		readonly RepeatAttribute repeatAttr;
 		readonly List<MethodTuple> elementListByMethod;
+		readonly List<object> targets;
 
 
 		class MethodTuple {

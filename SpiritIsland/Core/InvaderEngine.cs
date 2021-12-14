@@ -81,7 +81,7 @@ namespace SpiritIsland {
 			await gs.PreExplore.InvokeAsync( gs, args );
 
 			// Add new spaces
-			var spacesToExplore = args.WillExplore.ToArray();
+			var spacesToExplore = args.WillExplore(gs).ToArray();
 
 			// Explore
 			foreach(var b in spacesToExplore)

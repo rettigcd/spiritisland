@@ -78,7 +78,7 @@ namespace SpiritIsland {
 		/// </summary>
 		public Task<T> Decision<T>( Decision.TypedDecision<T> originalDecision ) where T : class, IOption {
 			if(originalDecision == null) throw new ArgumentNullException( nameof( originalDecision ) );
-			if(activeDecisionMaker != null) throw new InvalidOperationException( "decision already pending" );
+			if(activeDecisionMaker != null) throw new InvalidOperationException( "Pending decision was not properly awaited. "+activeDecisionMaker.Decision.Prompt );
 
 			var promise = new TaskCompletionSource<T>();
 			var decisionMaker = new ActionHelper<T>( originalDecision, promise );

@@ -80,13 +80,13 @@ Shadows Flicker like Flame:
 			);
 
 
-		public override async Task<Space> TargetsSpace( GameState gameState, string prompt, From from, Terrain? sourceTerrain, int range, string filterEnum, TargettingFrom powerType ) {
+		public override async Task<Space> TargetsSpace( TargettingFrom powerType, GameState gameState, string prompt, TargetSourceCriteria sourceCriteria, params TargetCriteria[] targetCriteria ) {
 			// no money, do normal
 			if(Energy == 0)
-				return await base.TargetsSpace( gameState, prompt, from, sourceTerrain, range, filterEnum, powerType );
+				return await base.TargetsSpace( powerType, gameState, prompt, sourceCriteria, targetCriteria );
 
 			// find normal Targetable spaces
-			var normalSpaces = GetTargetOptions( gameState, range, filterEnum, powerType, from, sourceTerrain );
+			var normalSpaces = GetTargetOptions( powerType, gameState, sourceCriteria, targetCriteria );
 
 			// find dahan-only spaces that are not in targetable spaces
 			var dahanOnlySpaces = gameState.Island.Boards
@@ -96,7 +96,7 @@ Shadows Flicker like Flame:
 				.ToArray();
 			// no dahan-only spaces, do normal
 			if(dahanOnlySpaces.Length == 0)
-				return await base.TargetsSpace( gameState, prompt, from, sourceTerrain, range, filterEnum, powerType );
+				return await base.TargetsSpace( powerType , gameState, prompt, sourceCriteria, targetCriteria);
 
 			// append Target-Dahan option to end of list
 			List<IOption> options = normalSpaces.Cast<IOption>().ToList();

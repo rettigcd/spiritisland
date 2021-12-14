@@ -12,10 +12,10 @@ namespace SpiritIsland.JaggedEarth {
 		readonly ShroudOfSilentMist spirit;
 		readonly GameState gameState;
 		readonly string prompt;
-		readonly From from;
-		readonly Terrain? sourceTerrain;
-		readonly int range;
-		readonly string filterEnum;
+		readonly TargetSourceCriteria sourceCriteria;
+
+		readonly TargetCriteria[] targetCriteria;
+
 		readonly TargettingFrom powerType;
 
 		Space[] nonFlowTargets; // targets we can hit without flowing
@@ -29,14 +29,12 @@ namespace SpiritIsland.JaggedEarth {
 			"When targeting a land with a Power, you may Gather 1 of your presence into the target or an adjacent land.  This can enable you to meet Range and targeting requirements."
 		);
 
-		public MistsShiftAndFlow(ShroudOfSilentMist spirit, GameState gameState, string prompt, From from, Terrain? sourceTerrain, int range, string filterEnum, TargettingFrom powerType) {
+		public MistsShiftAndFlow(ShroudOfSilentMist spirit, GameState gameState, string prompt, TargetSourceCriteria sourceCriteria, TargetCriteria[] targetCriteria, TargettingFrom powerType) {
 			this.spirit = spirit;
 			this.gameState = gameState;
 			this.prompt = prompt ?? "Target Space.";
-			this.from = from;
-			this.sourceTerrain = sourceTerrain;
-			this.range = range;
-			this.filterEnum = filterEnum;
+			this.sourceCriteria = sourceCriteria;
+			this.targetCriteria = targetCriteria;
 			this.powerType = powerType;
 
 			CalculateSpaceGroups();
@@ -105,8 +103,8 @@ namespace SpiritIsland.JaggedEarth {
 		}
 
 		bool PresenceMeetsTargettingRequirements( IKnowSpiritLocations presence, Space target ) {
-			var targetSource = spirit.SourceCalc.FindSources( presence, from, sourceTerrain );
-			var targetOptionsFromTheseSources = spirit.RangeCalc.GetTargetOptionsFromKnownSource( spirit, gameState, range, filterEnum, powerType, targetSource );
+			var targetSource = spirit.SourceCalc.FindSources( presence, sourceCriteria );
+			var targetOptionsFromTheseSources = GetTargetOptionsFromKnownSources( targetSource );
 			bool hitsTarget = targetOptionsFromTheseSources.Contains( target );
 			return hitsTarget;
 		}
@@ -126,24 +124,34 @@ namespace SpiritIsland.JaggedEarth {
 		}
 
 		void CalculateSpaceGroups() {
-			var sources = spirit.SourceCalc.FindSources( spirit.Presence, from, sourceTerrain );
-			this.nonFlowTargets = spirit.RangeCalc.GetTargetOptionsFromKnownSource( spirit, gameState, range, filterEnum, powerType, sources ).ToArray();
+			var sources = spirit.SourceCalc.FindSources( spirit.Presence, sourceCriteria );
+			this.nonFlowTargets = GetTargetOptionsFromKnownSources( sources );
 			this.flowRange = sources.SelectMany( s => s.Range( 2 ) ).Distinct().ToArray();
 
 			// Calculate new sources we could find
-			var flowedSources = spirit.Presence.Placed.SelectMany(p=>p.Adjacent).Distinct()
-				.Where(s=>s.Terrain!=Terrain.Ocean) // Don't allow flow into ocean.
-				.Except(sources); // exclude previously found sources
-			if(sourceTerrain.HasValue)
-				flowedSources = flowedSources.Where(s=>s.Terrain==sourceTerrain.Value);
-			if(from == From.SacredSite )
-				flowedSources = flowedSources.Where(spirit.Presence.IsOn); // the only way the new space is a SS, is if already had a presence here.
+			var flowedSources = spirit.Presence.Placed.SelectMany( p => p.Adjacent ).Distinct()
+				.Where( s => s.Terrain != Terrain.Ocean ) // Don't allow flow into ocean.
+				.Except( sources ); // exclude previously found sources
+			if(sourceCriteria.Terrain.HasValue)
+				flowedSources = flowedSources.Where( s => s.Terrain == sourceCriteria.Terrain.Value );
+			if(sourceCriteria.From == From.SacredSite)
+				flowedSources = flowedSources.Where( spirit.Presence.IsOn ); // the only way the new space is a SS, is if already had a presence here.
 
-			this.flowOnlyTargets = spirit.RangeCalc.GetTargetOptionsFromKnownSource( spirit, gameState, range, filterEnum, powerType, flowedSources )
+			this.flowOnlyTargets = GetTargetOptionsFromKnownSources( flowedSources )
 				.Intersect( flowRange ) // must be within range-2 in order to Gather into land adjacent to target land.
 				.Except( nonFlowTargets )
 				.ToArray();
 		}
+
+		Space[] GetTargetOptionsFromKnownSources( IEnumerable<Space> sources ) {
+			return targetCriteria
+				.SelectMany( tc => GetTargetOptionsFromKnownSources( sources, tc ) )
+				.Distinct()
+				.ToArray();
+		}
+
+		IEnumerable<Space> GetTargetOptionsFromKnownSources( IEnumerable<Space> sources, TargetCriteria tc )
+			=> spirit.RangeCalc.GetTargetOptionsFromKnownSource( spirit, gameState, powerType, sources, tc );
 
 		// Shroud Helper - for easier testing Targetting
 		class SpaceCounts : CountDictionary<Space>, IKnowSpiritLocations {

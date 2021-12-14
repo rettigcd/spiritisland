@@ -1,5 +1,6 @@
 ﻿using SpiritIsland.Basegame;
 using SpiritIsland.BranchAndClaw;
+using SpiritIsland.JaggedEarth;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace SpiritIsland.WinForms {
 	public class GameConfiguration {
 		public int ShuffleNumber;
 		public bool UseBranchAndClaw;
+		public bool UseJaggedEarth;
 		public Type SpiritType;
 		public bool UsePowerProgression;
 		public string Board;
@@ -33,13 +35,21 @@ namespace SpiritIsland.WinForms {
 				_ => null,
 			};
 
-			var majorCards = PowerCard.GetMajors( typeof( AcceleratedRot ) ).ToList();
-			var minorCards = PowerCard.GetMinors( typeof( AcceleratedRot ) ).ToList();
+			var majorCards = new List<PowerCard>();
+			var minorCards = new List<PowerCard>();
+
+			minorCards.AddRange( PowerCard.GetMinors( typeof( AcceleratedRot ) ) );
+			majorCards.AddRange( PowerCard.GetMajors( typeof( AcceleratedRot ) ) );
 
 			if(gameSettings.UseBranchAndClaw) {
-				majorCards.AddRange( PowerCard.GetMajors( typeof( CastDownIntoTheBrinyDeep ) ) );
 				minorCards.AddRange( PowerCard.GetMinors( typeof( CastDownIntoTheBrinyDeep ) ) );
+				majorCards.AddRange( PowerCard.GetMajors( typeof( CastDownIntoTheBrinyDeep ) ) );
 			}
+			if(gameSettings.UseJaggedEarth) {
+				minorCards.AddRange( PowerCard.GetMinors( typeof( BatsScoutForRaidsByDarkness ) ) );
+//				majorCards.AddRange( PowerCard.GetMajors( typeof( BatsScoutForRaidsByDarkness ) ) );
+			}
+
 
 			// GameState
 			var gameState = !gameSettings.UseBranchAndClaw

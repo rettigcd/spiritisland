@@ -82,7 +82,8 @@ namespace SpiritIsland.WinForms {
 				UsePowerProgression = powerProgressionCheckBox.Checked,
 				Board = SelectedBoard(),
 				ShuffleNumber = ShuffleNumber(),
-				UseBranchAndClaw = true
+				UseBranchAndClaw = true,
+				UseJaggedEarth = true,
 			};
 			gameSettings.Color = (colorListBox.SelectedIndex == 0)
 				? GetColorForSpirit( gameSettings.SpiritType )

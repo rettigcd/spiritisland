@@ -17,9 +17,9 @@ namespace SpiritIsland.JaggedEarth {
 			// and skip one Invader Action
 			for(int i = 0; i < removed; ++i) {
 				await ctx.SelectActionOption( "Skip Invader Action",
-					new ActionOption("Ravage", () => ctx.GameState.SkipRavage(ctx.Space)),
-					new ActionOption("Build", () => ctx.GameState.Skip1Build(ctx.Space)),
-					new ActionOption("Explore", () => ctx.GameState.SkipExplore(ctx.Space))
+					new ActionOption("Ravage",  ctx => ctx.GameState.SkipRavage(ctx.Space)),
+					new ActionOption("Build",   ctx => ctx.GameState.Skip1Build(ctx.Space)),
+					new ActionOption("Explore", ctx => ctx.GameState.SkipExplore(ctx.Space))
 				);
 			}
 		}

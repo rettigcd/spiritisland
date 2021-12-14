@@ -300,11 +300,15 @@ namespace SpiritIsland {
 			try {
 				RemoveFromUnresolvedActions( factory ); // removing first, so action can restore it if desired
 				await factory.ActivateAsync( ctx );
+				if(factory is IRecordLastTarget lastTargetRecorder )
+					await ActionTaken_ThisRound.InvokeAsync(ctx.GameState, new ActionTaken(factory,lastTargetRecorder.LastTarget) );
 			} finally {
 				CurrentActionId = oldActionGuid; // restore
 			}
 			ctx.GameState.CheckWinLoss(); // @@@
 		}
+
+		public AsyncEvent<ActionTaken> ActionTaken_ThisRound = new AsyncEvent<ActionTaken>();
 
 		protected virtual PowerProgression GetPowerProgression() => throw new NotImplementedException();
 
@@ -357,6 +361,8 @@ namespace SpiritIsland {
 
 			// Elements
 			InitElementsFromPresence();
+
+			ActionTaken_ThisRound.Clear();
 		}
 
 		public void InitElementsFromPresence() {
@@ -529,30 +535,27 @@ namespace SpiritIsland {
 		// Only Called from TargetSpaceAttribute
 		// !!! Also, some things may be calling GetTargetOptions directly and skipping over this bit - preventing Shadow from paying their energy
 		public virtual Task<Space> TargetsSpace( 
+			TargettingFrom powerType,
 			GameState gameState, 
 			string prompt, 
-			From from, 
-			Terrain? sourceTerrain, 
-			int range, 
-			string filterEnum,
-			TargettingFrom powerType
+			TargetSourceCriteria sourceCriteria,
+			params TargetCriteria[] targetCriteria
 		) {
 			if(prompt == null) prompt = "Target Space.";
-			IEnumerable<Space> spaces = GetTargetOptions( gameState, range, filterEnum, powerType, from, sourceTerrain );
+			IEnumerable<Space> spaces = GetTargetOptions( powerType, gameState, sourceCriteria, targetCriteria );
 			return this.Action.Decision( new Decision.TargetSpace( prompt, spaces, Present.Always ));
 		}
 
-		public IEnumerable<Space> GetTargetOptions( 
-			GameState gameState, 
-			int range, 
-			string filterEnum, 
+		public IEnumerable<Space> GetTargetOptions(
 			TargettingFrom powerType,
-
-			From sourceEnum, 
-			Terrain? sourceTerrain
+			GameState gameState,
+			TargetSourceCriteria sourceCriteria,
+			params TargetCriteria[] targetCriteria // allows different criteria at different ranges
 		) {
-			IEnumerable<Space> source = SourceCalc.FindSources( this.Presence, sourceEnum, sourceTerrain );
-			return RangeCalc.GetTargetOptionsFromKnownSource( this, gameState, range, filterEnum, powerType, source );
+			IEnumerable<Space> sources = SourceCalc.FindSources( this.Presence, sourceCriteria );
+			return targetCriteria
+				.SelectMany(tc => RangeCalc.GetTargetOptionsFromKnownSource( this, gameState, powerType, sources, tc ))
+				.Distinct();
 		}
 
 		#endregion
@@ -564,6 +567,9 @@ namespace SpiritIsland {
 		};
 
 	}
+
+	public record TargetSourceCriteria( From From, Terrain? Terrain = null );
+	public record TargetCriteria( int Range, string Filter );
 
 
 	public class SpiritDeck {

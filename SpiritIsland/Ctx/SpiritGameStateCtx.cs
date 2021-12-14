@@ -95,23 +95,22 @@ namespace SpiritIsland {
 			=> SelectActionOption( "Select Power Option", options );
 
 		// overriden by Grinning Trickster's Lets See What Happens
-		public virtual async Task SelectActionOption( string prompt, params ActionOption[] options ) {
-			ActionOption[] applicable = options.Where( opt => opt.IsApplicable ).ToArray();
-			string text = await Self.SelectText( prompt, applicable.Select( a => a.Description ).ToArray(), Present.AutoSelectSingle );
-			if(text != null) {
+		public virtual Task SelectActionOption( string prompt, params ActionOption[] options )
+			=> SelectAction_Inner( prompt, options, Present.AutoSelectSingle );
+
+		public Task SelectOptionalAction( string prompt, params ActionOption[] options )
+			=> SelectAction_Inner( prompt, options, Present.Done );
+
+		async Task SelectAction_Inner( string prompt, ActionOption[] options, Present present ) {
+			ActionOption[] applicable = options.Where( opt => opt != null && opt.IsApplicable ).ToArray();
+			string text = await Self.SelectText( prompt, applicable.Select( a => a.Description ).ToArray(), present );
+			if(text != null && text != TextOption.Done.Text) {
 				var selectedOption = applicable.Single( a => a.Description == text );
-				await selectedOption.Action();
+				await Execute( selectedOption );
 			}
 		}
 
-		public async Task SelectOptionalAction( string prompt, params ActionOption[] options ) {
-			var applicable = options.Where( opt => opt.IsApplicable ).ToArray();
-			string text = await Self.SelectText( prompt, applicable.Select( a => a.Description ).ToArray(), Present.Done );
-			if( text != null && text != TextOption.Done.Text ) {
-				var selectedOption = applicable.Single( a => a.Description == text );
-				await selectedOption.Action();
-			}
-		}
+		public virtual Task Execute( ActionOption actionOption ) => actionOption.Execute();
 
 		#endregion
 

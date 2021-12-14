@@ -7,8 +7,8 @@ namespace SpiritIsland.BranchAndClaw {
 		[MinorCard( "Prowling Panthers", 1, Element.Moon, Element.Fire, Element.Animal ), Slow, FromPresence( 1, Target.JungleOrMountain )]
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 			return ctx.SelectActionOption(
-				new ActionOption( "1 fear, add beast", ()=>FearAndBeast(ctx) ),
-				new ActionOption( "destroy 1 explorer/town", ()=>DestroyExplorerTown(ctx), ctx.Beasts.Any )
+				new ActionOption( "1 fear, add beast", FearAndBeast ),
+				new ActionOption( "destroy 1 explorer/town", DestroyExplorerTown, ctx.Beasts.Any )
 			);
 		}
 

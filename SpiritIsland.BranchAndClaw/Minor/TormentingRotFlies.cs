@@ -9,7 +9,7 @@ namespace SpiritIsland.BranchAndClaw {
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 
 			return ctx.SelectActionOption(
-				new ActionOption( "Add 1 disease", () => ctx.Disease.Add(1) ),
+				new ActionOption( "Add 1 disease", ctx => ctx.Disease.Add(1) ),
 				new ActionOption( "2 fear, +1(if disease) +1(if blight)", ()=>AddFear(ctx), ctx.Tokens.HasInvaders() )
 			);
 

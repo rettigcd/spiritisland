@@ -17,11 +17,11 @@ namespace SpiritIsland.Basegame {
 				spirit.SourceCalc = this;
 		}
 
-		public IEnumerable<Space> FindSources( IKnowSpiritLocations _, From sourceEnum, Terrain? sourceTerrain ) {
+		public IEnumerable<Space> FindSources( IKnowSpiritLocations _, TargetSourceCriteria sourceCriteria ) {
 			List<Space> sources = new ();
 			// Find source of original
 			for(int i = 0; i < spirits.Length; ++i)
-				sources.AddRange( origApis[i].FindSources( spirits[i].Presence, sourceEnum, sourceTerrain ) );
+				sources.AddRange( origApis[i].FindSources( spirits[i].Presence, sourceCriteria ) );
 			return sources.Distinct();
 		}
 

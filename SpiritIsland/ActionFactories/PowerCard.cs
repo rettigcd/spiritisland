@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
-	public sealed class PowerCard : IFlexibleSpeedActionFactory, IOption {
+	public sealed class PowerCard : IFlexibleSpeedActionFactory, IRecordLastTarget {
 
 		#region constructor
 
@@ -50,9 +50,9 @@ namespace SpiritIsland {
 		}
 
 		async Task ActivateInnerAsync( SpiritGameStateCtx spiritCtx ) {
-			var targetCtx = await targetAttr.GetTargetCtx( Name, spiritCtx, TargettingFrom.PowerCard );
-			if(targetCtx != null) // Can't find a tar
-				await InvokeOnObjectCtx( targetCtx );
+			LastTarget = await targetAttr.GetTargetCtx( Name, spiritCtx, TargettingFrom.PowerCard );
+			if(LastTarget != null) // Can't find a tar
+				await InvokeOnObjectCtx( LastTarget );
 		}
 
 		/// <remarks>Called directly from Let's See What Happens with special ContextBehavior</remarks>
@@ -67,6 +67,8 @@ namespace SpiritIsland {
 		#region private
 
 		ISpeedBehavior SpeedBehavior => OverrideSpeedBehavior ?? speedAttr;
+
+		public object LastTarget { get; private set; }
 
 		readonly SpeedAttribute speedAttr;
 		readonly CardAttribute cardAttr;

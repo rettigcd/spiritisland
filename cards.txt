@@ -632,3 +632,30 @@ Events.HeavyFarming = new EventDesc("Heavy Farming", "During the next normal Rav
 Events.OvercrowdedCities = new EventDesc("Overcrowded Cities", "On Each Board with City: Add 1 Blight to a land with City. Spirits may prevent this on any / all boards by destroying 2 Presence from each board to be protected.");
 Events.PromisingFarmland = new EventDesc("Promising Farmland", "When Exploring, once per board, place 1 Town instead of 1 Explorer.");
 Events.NewCashCropsTakeHold = new EventDesc("New Cash Crops Take Hold", "Invaders immediately Ravage in 1 terrain type not showing under any Invader Action. Spirits may prevent this Ravage on any / all boards by destroying 2 Presence from each board to be protected.");
+
+
+
+// Major  (23)
+Forests of Living Obsidian
+Infestation of Venomous Spiders
+Dream of the Untouched Land
+Angry Bears
+Focus the Land's Anguish
+Vanish Softly Away, Forgotten by All
+Unleash a Torrent of the Self's Own Essence
+Bargains of Power and Protection
+Transform to a Murderous Darkness
+Settle Into Hunting-Grounds
+Walls of Rock and Thorn
+Voice of Command
+Irresistible Call
+The Wounded Wild Turns on its Assailants
+Draw Towards a Consuming Void
+Storm-Swath
+Spill Bitterness into the Earth
+Utter a Curse of Dread and Bone
+Sleep and Never Waken
+Weave Together the Fabric of Place
+Trees Radiate Celestial Brilliance
+Thickets Erupt with Every Touch of Breeze
+Melt Earth into Quicksand

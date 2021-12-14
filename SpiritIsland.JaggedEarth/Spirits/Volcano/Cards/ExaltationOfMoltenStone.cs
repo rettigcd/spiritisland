@@ -21,7 +21,7 @@ namespace SpiritIsland.JaggedEarth {
 			return Task.CompletedTask;
 		}
 
-		private static void ExtendRangeFromMountains( SpiritGameStateCtx ctx ) {
+		static void ExtendRangeFromMountains( SpiritGameStateCtx ctx ) {
 			ctx.GameState.TimePasses_ThisRound.Push( new PowerApiRestorer( ctx.Self ).Restore );
 			ctx.Self.RangeCalc = new ExtendRange1FromMountain( ctx.Self.RangeCalc );
 		}
@@ -34,15 +34,15 @@ namespace SpiritIsland.JaggedEarth {
 				this.originalApi = originalApi;
 			}
 
-			public override IEnumerable<Space> GetTargetOptionsFromKnownSource( Spirit self, GameState gameState, int range, string filterEnum, TargettingFrom powerType, IEnumerable<Space> source ) {
+			public override IEnumerable<Space> GetTargetOptionsFromKnownSource( Spirit self, GameState gameState, TargettingFrom powerType, IEnumerable<Space> source, TargetCriteria tc ) {
 				// original options
-				List<Space> spaces = originalApi.GetTargetOptionsFromKnownSource( self, gameState, range, filterEnum, powerType, source ).ToList();
+				List<Space> spaces = originalApi.GetTargetOptionsFromKnownSource( self, gameState, powerType, source, tc ).ToList();
 
 				// Target Spirit gains +1 range with their Powers that originate from a Mountain
 				var mountainSource = source.Where(x=>x.Terrain == Terrain.Mountain).ToArray();
 				return mountainSource.Length == 0 ? spaces
 					: spaces
-					.Union( originalApi.GetTargetOptionsFromKnownSource( self, gameState, range+1, filterEnum, powerType, mountainSource ) )
+					.Union( originalApi.GetTargetOptionsFromKnownSource( self, gameState, powerType, mountainSource, new TargetCriteria(tc.Range+1, tc.Filter) ) )
 					.Distinct();
 			}
 

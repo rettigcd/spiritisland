@@ -37,7 +37,7 @@ namespace SpiritIsland {
 				.ToArray(); 
 			if(options.Length == 0) return;
 
-			PowerCard factory = await ctx.Self.SelectPowerCard( "Select card to replay", options, CardUse.Replay, Present.Always );
+			PowerCard factory = await ctx.Self.SelectPowerCard( "Select card to replay", options, CardUse.Repeat, Present.Always );
 			if(factory == null) return;
 
 			ctx.Self.AddActionFactory( factory );

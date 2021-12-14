@@ -1,7 +1,9 @@
 ﻿using Shouldly;
 using SpiritIsland.Basegame;
 using SpiritIsland.BranchAndClaw;
+using SpiritIsland.JaggedEarth;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Xunit;
@@ -10,17 +12,23 @@ namespace SpiritIsland.Tests.Core {
 
 	public class PowerCardDeck_Tests {
 
-		[Fact]
-		public void Minor36Count() {
-			var minorCards = PowerCard.GetMinors(typeof(RiversBounty));
+		[Theory]
+		[InlineData(BaseGame,36)]
+		[InlineData(BranchAndClaw,31)]
+		[InlineData(JaggedEarth,33)]
+		public void MinorCount(string edition, int expectedCount) {
+			var minorCards = PowerCard.GetMinors( GetEditionType(edition) );
 			// minorCards.Length.ShouldBe( 36 ); // Basegame
-			minorCards.Length.ShouldBeGreaterThanOrEqualTo( 36 );
+			minorCards.Length.ShouldBeGreaterThanOrEqualTo( expectedCount );
 		}
 
-		[Fact]
-		public void Major22Count() {
-			var majorCards = PowerCard.GetMajors(typeof(RiversBounty));
-			majorCards.Length.ShouldBeGreaterThanOrEqualTo( 22 );
+		[Theory]
+		[InlineData(BaseGame,22)]
+		[InlineData(BranchAndClaw,21)]
+		// [InlineData(JaggedEarth,0)]
+		public void MajorCount(string edition, int expectedCount) {
+			var majorCards = PowerCard.GetMajors( GetEditionType( edition ) );
+			majorCards.Length.ShouldBeGreaterThanOrEqualTo( expectedCount );
 		}
 
 		[Fact]
@@ -190,18 +198,31 @@ namespace SpiritIsland.Tests.Core {
 		}
 
 		[Theory]
-		[InlineData("basegame")]
-		[InlineData("bac")]
+		[InlineData(BaseGame)]
+		[InlineData(BranchAndClaw)]
+		[InlineData(JaggedEarth)]
 		public void PowerCards_HaveNames(string edition) {
+			Type refObject = GetEditionType( edition );
+			List<PowerCard> cards = PowerCard.GetMajors( refObject ).ToList();
+			cards.AddRange( PowerCard.GetMinors( refObject ) );
 
-			 var refObject = edition=="bac" ? typeof( SharpFangs  ) : typeof( RiverSurges );
-			var x = PowerCard.GetMajors( refObject ).ToList();
-			x.AddRange( PowerCard.GetMinors( refObject ) );
-
-			foreach(var card in x)
+			foreach(var card in cards)
 				card.Name.ShouldNotBeNullOrEmpty();
 
 		}
+
+		static Type GetEditionType( string edition ) {
+			return edition switch {
+				BaseGame => typeof( RiverSurges ),
+				BranchAndClaw => typeof( SharpFangs ),
+				JaggedEarth => typeof( ShiftingMemoryOfAges ),
+				_ => throw new ArgumentException( nameof( edition ) ),
+			};
+		}
+
+		const string BaseGame = "Basegame";
+		const string BranchAndClaw = "Branch and Claw";
+		const string JaggedEarth = "Jagged Earth";
 
 	}
 

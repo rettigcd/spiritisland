@@ -30,8 +30,8 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 			if(!doBoth)
 				await ctx.SelectActionOption( removeBlight, addPresence );
 			else {
-				await removeBlight.Action();
-				await addPresence.Action();
+				await removeBlight.Execute();
+				await addPresence.Execute();
 			}
 
 		}

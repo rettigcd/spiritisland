@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SpiritIsland {
+
 	public class AsyncEvent<T> {
 
 		public Guid Add( Func<GameState, T, Task> action ) {
@@ -22,7 +23,9 @@ namespace SpiritIsland {
 				await TryHandle( handler, gameState, t );
 		}
 
-		public void Clear(GameState _) => handlers.Clear();
+		public void Clear(GameState _) => Clear(); // convenience for adding to TimePasses_WholeGame
+
+		public void Clear() => handlers.Clear();
 
 		static async Task TryHandle( Func<GameState, T, Task> handler, GameState gameState, T t ) {
 			try {

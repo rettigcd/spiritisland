@@ -7,6 +7,8 @@ namespace SpiritIsland {
 
 	public class TargetSpaceCtx : SpiritGameStateCtx {
 
+		#region constructors
+
 		public TargetSpaceCtx( Spirit self, GameState gameState, Space target, Cause cause )
 			:base( self, gameState, cause )
 		{
@@ -17,22 +19,19 @@ namespace SpiritIsland {
 			Space = target ?? throw new ArgumentNullException(nameof(target));
 		}
 
-		public Space Space { get; }
-
-		#region Deconstruct
-
-		public void Deconstruct(out Spirit self, out GameState gameState) {
-	        self = Self;
-			gameState = GameState;
-		}
-
-		public void Deconstruct( out Spirit self, out GameState gameState, out Space target ) {
-			self = Self;
-			gameState = GameState;
-			target = Space;
+		public TargetSpaceCtx( TargetSpaceCtx orig, Spirit newSelf ):base( newSelf, orig.GameState, orig.Cause, orig.Self) {
+			Space = orig.Space;
 		}
 
 		#endregion
+
+		public Space Space { get; }
+
+		public TargetSpaceCtx Target(Spirit spirit) => new TargetSpaceCtx( this, spirit );
+
+		public override Task Execute( ActionOption actionOption ) {
+			return actionOption.Execute(this);
+		}
 
 		public bool MatchesRavageCard => GameState.InvaderDeck.Ravage.Any(c=>c.Matches(Space));
 		public bool MatchesBuildCard => GameState.InvaderDeck.Build.Any(c=>c.Matches(Space));
@@ -42,6 +41,10 @@ namespace SpiritIsland {
 
 		#region Token Shortcuts
 		public void Defend(int defend) => Tokens.Defend.Add(defend);
+		public void Isolate() {
+			Tokens[TokenType.Isolate] = 1;
+			GameState.TimePasses_ThisRound.Push( (gs)=>{ Tokens[TokenType.Isolate] = 0; return Task.CompletedTask; } ); // !! could just sweep entire board instead...
+		}
 		public TokenBinding Blight => Tokens.Blight;
 		public TokenBinding Beasts => Tokens.Beasts;
 		public TokenBinding Disease => Tokens.Disease;
@@ -52,20 +55,18 @@ namespace SpiritIsland {
 		#endregion
 
 		// This is different than Push / Gather which ManyMinds adjusts, this is straight 'Move' that is not adjusted.
-		public async Task<Space> MoveTokens( int max, TokenGroup tokenGroup, int range) {
+		public async Task<Space> MoveTokensOut( int max, TokenGroup tokenGroup, int range, string dstFilter = SpiritIsland.Target.Any ) {
 
 			Token[] tokenOptions = Tokens.OfType(tokenGroup).ToArray();
 			if(tokenOptions.Length == 0) return null;
 			
 			if(tokenOptions.Length>1) throw new Exception("I didn't implement Move for different health tokens");
-//			var destination = await Self.Action.Decision( Decision.TokenOnSpace.TokenToPush(Space, 1, tokenOptions, /* Space.Range( range ), */ Present.Done ) );
-			// TokenOnSpace()
 
 			var destination = await Self.Action.Decision( new Decision.AdjacentSpace_TokenDestination(tokenOptions[0], Space, 
-				Space.Range( range ).Where(s=>Target(s).IsInPlay), 
+				Space.Range( range ).Where(s=>{ var x = Target(s); return x.IsInPlay && x.Matches(dstFilter); } ), 
 				Present.Done ) 
 			);
-//			var destination = await Self.Action.Decision( new Decision.TargetSpace( $"Move {tokenGroup.Label} to", Space.Range( range ), Present.Done ) );
+
 			if(destination != null) {
 				int clippedMax = Math.Min( Tokens.Sum( tokenGroup ), max );
 				int countToMove = clippedMax == 1 ? 1 : await Self.SelectNumber( $"# of {tokenGroup.Label} to move", clippedMax );
@@ -74,6 +75,24 @@ namespace SpiritIsland {
 			}
 			return destination;
 		}
+
+		// This is different than Push / Gather which ManyMinds adjusts, this is straight 'Move' that is not adjusted.
+		public async Task<Space> MoveTokenIn( TokenGroup tokenGroup, int range, string srcFilter = SpiritIsland.Target.Any ) {
+
+			var sources = Space.Range( range )
+				.Select( Target )
+				.Where( x => x.IsInPlay && x.Matches(srcFilter) && x.Tokens.HasAny(tokenGroup) )
+				.SelectMany( x => x.Tokens.OfType(tokenGroup).Select(t => new SpaceToken(x.Space, t)) )
+				.ToArray();
+
+			var spaceToken = await Self.Action.Decision( new Decision.SpaceTokens("Move Tokens into " + Space.Label, sources, Present.Done ) );
+			if(spaceToken == null) return default;
+
+			await Move( spaceToken.Token, spaceToken.Space, Space );
+
+			return spaceToken.Space;
+		}
+
 
 		#region Push
 
@@ -295,7 +314,7 @@ namespace SpiritIsland {
 		#endregion
 
 		public IEnumerable<Space> FindSpacesWithinRangeOf( int range, string filterEnum ) {
-			return Self.RangeCalc.GetTargetOptionsFromKnownSource( Self, GameState, range, filterEnum, TargettingFrom.None, new Space[]{ Space } );
+			return Self.RangeCalc.GetTargetOptionsFromKnownSource( Self, GameState, TargettingFrom.None, new Space[]{ Space }, new TargetCriteria( range, filterEnum ) );
 		}
 
 		public async Task<TargetSpaceCtx> SelectAdjacentLand( string prompt, System.Func<TargetSpaceCtx, bool> filter = null ) {

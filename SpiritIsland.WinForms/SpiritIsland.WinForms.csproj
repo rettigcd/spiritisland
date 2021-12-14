@@ -153,6 +153,7 @@
     <None Remove="images\tokens\fear_gray.png" />
     <None Remove="images\tokens\GainCard.png" />
     <None Remove="images\tokens\Gathertoocean.png" />
+    <None Remove="images\tokens\isolateorange.png" />
     <None Remove="images\tokens\Jungle.png" />
     <None Remove="images\tokens\JungleOrBeast.png" />
     <None Remove="images\tokens\Junglewetland.png" />
@@ -318,6 +319,7 @@
     <EmbeddedResource Include="images\tokens\fear.png" />
     <EmbeddedResource Include="images\tokens\fearcard.png" />
     <EmbeddedResource Include="images\tokens\fear_gray.png" />
+    <EmbeddedResource Include="images\tokens\isolateorange.png" />
     <EmbeddedResource Include="images\tokens\Simple_air.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -1555,6 +1557,105 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\harbingers_of_the_lightning.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\minor\bats_scout_for_raids_by_darkness.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\minor\birds_cry_warning.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\minor\blood_draws_predators.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\minor\call_to_guard.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\minor\carapaced_land.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\minor\desiccating_winds.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\minor\dire_metamorphosis.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\minor\domesticated_animals_go_berserk.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\minor\dry_wood_explodes_in_smoldering_splinters.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\minor\entrap_the_forces_of_corruption.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\minor\favor_of_the_sun_and_starlit_dark.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\minor\flow_downriver_blow_downwind.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\minor\gift_of_natures_connection.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\minor\gift_of_twinned_days.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\minor\haunted_by_primal_memories.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\minor\hazards_spread_across_the_island.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\minor\like_calls_to_like.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\minor\mesmerized_tranquility.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\minor\renewing_boon.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\minor\scream_disease_into_the_wind.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\minor\sear_anger_into_the_wild_lands.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\minor\set_them_on_an_evertwisting_trail.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\minor\skies_herald_the_season_of_return.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\minor\strong_and_constant_currents.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\minor\sucking_ooze.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\minor\sunsets_fire_flows_across_the_land.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\minor\territorial_strife.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\minor\terror_turns_to_madness.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\minor\the_shore_seethes_with_hatred.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\minor\thriving_chokefungus.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\minor\treacherous_waterways.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\minor\unquenchable_flames.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\je\minor\weep_for_what_is_lost.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\je\spirit\absolute_stasis.jpg">

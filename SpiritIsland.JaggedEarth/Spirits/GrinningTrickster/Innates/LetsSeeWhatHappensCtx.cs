@@ -8,7 +8,7 @@ namespace SpiritIsland.JaggedEarth {
 
 		public override async Task SelectActionOption( string prompt, params ActionOption[] options ) {
 			foreach(var opt in options)
-				await opt.Action();
+				await opt.Execute();
 		}
 
 		public override Task<Space[]> PushUpTo( int countToPush, params TokenGroup[] groups ) 

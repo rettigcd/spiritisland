@@ -9,18 +9,18 @@ namespace SpiritIsland {
 	public enum From { None, Presence, SacredSite };
 
 	public interface ICalcSource {
-		IEnumerable<Space> FindSources( IKnowSpiritLocations presence, From sourceEnum, Terrain? sourceTerrain );
+		IEnumerable<Space> FindSources( IKnowSpiritLocations presence, TargetSourceCriteria source );
 
 	}
 
 	public class DefaultSourceCalc : ICalcSource {
-		public virtual IEnumerable<Space> FindSources( IKnowSpiritLocations presence, From sourceEnum, Terrain? sourceTerrain ) {
-			var sources = sourceEnum switch {
+		public virtual IEnumerable<Space> FindSources( IKnowSpiritLocations presence, TargetSourceCriteria source ) {
+			var sources = source.From switch {
 				From.Presence => presence.Spaces,
 				From.SacredSite => presence.SacredSites,
-				_ => throw new ArgumentException( "Invalid presence source " + sourceEnum ),
+				_ => throw new ArgumentException( "Invalid presence source " + source.From ),
 			};
-			return sources.Where( x => !sourceTerrain.HasValue || sourceTerrain.Value == x.Terrain );
+			return sources.Where( x => !source.Terrain.HasValue || source.Terrain.Value == x.Terrain );
 		}
 	}
 
@@ -32,10 +32,9 @@ namespace SpiritIsland {
 		IEnumerable<Space> GetTargetOptionsFromKnownSource( 
 			Spirit self, 
 			GameState gameState, 
-			int range, 
-			string filterEnum,
 			TargettingFrom powerType,
-			IEnumerable<Space> source
+			IEnumerable<Space> source,
+			TargetCriteria targetCriteria
 		);
 
 	}
@@ -47,16 +46,15 @@ namespace SpiritIsland {
 		public virtual IEnumerable<Space> GetTargetOptionsFromKnownSource( 
 			Spirit self, 
 			GameState gameState, 
-			int range, 
-			string filterEnum,
 			TargettingFrom powerType,
-			IEnumerable<Space> source
+			IEnumerable<Space> source,
+			TargetCriteria targetCriteria
 		) {
 			var ctx = new SpiritGameStateCtx( self, gameState, Cause.Power );
 			return source       // starting here
-				.SelectMany( x => x.Range( range ) )
+				.SelectMany( x => x.Range( targetCriteria.Range ) )
 				.Distinct()
-				.Where( s => ctx.Target(s).Matches( filterEnum ) ); // matching this destination
+				.Where( s => ctx.Target(s).Matches( targetCriteria.Filter ) ); // matching this destination
 		}
 
 	}

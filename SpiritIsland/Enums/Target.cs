@@ -10,7 +10,9 @@
 		public const string JungleOrWetland  = "W / J";
 		public const string Mountain         = "Mountain";
 		public const string MountainOrWetland= "MountainOrWetland";
+		public const string MountainOrSand   = "MountainOrSand";
 		public const string SandOrWetland    = "SandOrWetland";
+		public const string NotWetland       = "Not Wetland";
 		public const string Wetland          = "Wetland";
 		public const string Blight           = "Blight";
 		public const string TownCityOrBlight = "TownCityOrBlight";

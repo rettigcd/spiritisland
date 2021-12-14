@@ -26,16 +26,14 @@ namespace SpiritIsland.BranchAndClaw {
 			int cost = (card.Cost + card.Cost % 2) / 2;
 			var payingHalfCostOption = new ActionOption(
 				$"paying {cost}",
-				() => {
-					ctx.Self.PlayCard(card, cost);
-				},
+				ctx => ctx.Self.PlayCard(card, cost),
 				cost <= ctx.Self.Energy
 			);
 
 			//    * forgetting it at the end of turn.
 			var forgettingCardOption = new ActionOption(
 				$"forgetting at end of turn",
-				() => {
+				ctx => {
 					ctx.Self.PlayCard(card, 0); 
 					ctx.GameState.TimePasses_ThisRound.Push( new ForgetCard( ctx.Self, card ).Forget );
 				}

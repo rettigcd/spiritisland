@@ -12,7 +12,9 @@ namespace SpiritIsland {
 		readonly string triggeringElements;
 		readonly int extension;
 
-		public ExtendableRangeAttribute( From from, int range, string targetType, string triggeringElements, int extention ) : base( from, null, range, targetType ) {
+		public ExtendableRangeAttribute( From from, int range, string targetType, string triggeringElements, int extention ) 
+			: base( new TargetSourceCriteria(from), range, targetType ) 
+		{
 			this.triggeringElements = triggeringElements;
 			this.extension = extention;
 		}

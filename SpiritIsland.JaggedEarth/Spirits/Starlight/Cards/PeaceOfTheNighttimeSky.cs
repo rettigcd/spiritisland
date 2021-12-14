@@ -24,7 +24,10 @@ namespace SpiritIsland.JaggedEarth {
 				//  Gain 1 Moon.
 				ctx.Self.Elements[Element.Moon]++;
 
-				var secondSpace = await ctx.Self.TargetsSpace(ctx.GameState,"Stop Ravage",From.SacredSite,null,1,Target.Any,TargettingFrom.PowerCard);
+				var secondSpace = await ctx.Self.TargetsSpace(TargettingFrom.PowerCard, ctx.GameState,"Stop Ravage"
+					,new TargetSourceCriteria( From.SacredSite )
+					,new TargetCriteria(1,Target.Any)
+				);
 				if( canStopRavage )
 					// Invaders do not Ravage in target land this turn.
 					ctx.GameState.SkipRavage( secondSpace );

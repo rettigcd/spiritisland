@@ -15,12 +15,15 @@ namespace SpiritIsland {
 
 		public Func<DahanGroupBinding,int,int,Task> DestroyDahan = DefaultDestroyDahan;
 
+		public Func<Token,int> DamageFromInvader = DefaultDamageFromInvader;
+
 		static async Task DefaultDestroyDahan( DahanGroupBinding dahan, int count, int health ) {
 			if(count<=0) return;
 			await dahan.Destroy( count, health, Cause.Invaders );
 		}
 
-	}
+		static int DefaultDamageFromInvader( Token invader ) => invader.FullHealth;
 
+	}
 
 }

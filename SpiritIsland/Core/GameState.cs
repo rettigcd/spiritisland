@@ -354,9 +354,14 @@ namespace SpiritIsland {
 	public class Healer {
 
 		public virtual void Heal( GameState gs ) {
-			foreach(var space in gs.Tokens.Keys)
+			foreach(var space in gs.Tokens.Keys.Except(skipHealSpaces))
 				InvaderGroup.HealTokens( gs.Tokens[space] );
+			skipHealSpaces.Clear();
 		}
+
+		public void Skip( Space space ) => skipHealSpaces.Add( space );
+
+		protected List<Space> skipHealSpaces = new List<Space>();
 
 	}
 

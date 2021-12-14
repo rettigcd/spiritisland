@@ -72,12 +72,12 @@ namespace SpiritIsland {
 		Dahan2,
 		Dahan1,
 		Defend,
+		Isolate,
 		Blight,
 		Beast,
 		Wilds,
 		Disease,
 		Badlands,
-		Isolate,
 
 		Icon_Dahan,
 		Icon_City,

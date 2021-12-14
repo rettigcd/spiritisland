@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Linq;
 
 namespace SpiritIsland {
+
 	public class ExploreEventArgs {
 
 		public ExploreEventArgs(HashSet<Space> sources,List<Space> spacesMatchingCards ) {
@@ -19,6 +20,7 @@ namespace SpiritIsland {
 
 		public IEnumerable<Space> Skipped => _skipped;
 
+		// Add new spaces
 		public void Add( Space space ) { // Pour time sideways
 			throw new NotImplementedException();  // !!! 
 		}
@@ -30,15 +32,41 @@ namespace SpiritIsland {
 			_skipped.AddRange(SpacesMatchingCards);
 		}
 
-			// Add new spaces
-		public IEnumerable<Space> WillExplore => SpacesMatchingCards.Except(Skipped)
-			.OrderBy(x=>x.Label)
-			.Where( space => space.Range( 1 ).Any( Sources.Contains ) )
-			.ToArray();
+		public IEnumerable<Space> WillExplore( GameState gs ) {
+			return ExploreRoutes
+				.Where( rt => rt.IsValid( gs ) )
+				.Select( rt => rt.Destination )
+				.Distinct()
+				.OrderBy( x => x.Label )
+				.ToArray();
+		}
 
+		public IEnumerable<ExploreRoute> ExploreRoutes {
+			get {
+				return SpacesMatchingCards.Except(Skipped)
+				.SelectMany( dst => dst.Range(1)
+					.Where( Sources.Contains )
+					.Select(src=>new ExploreRoute { Source = src, Destination = dst } )
+				)
+				.OrderBy(route => route.Destination.Label)
+				.ThenBy(route => route.Source.Label)
+				.ToArray();
+
+			}
+		}
 
 		readonly List<Space> _skipped = new List<Space>();
 
+	}
+
+	public class ExploreRoute {
+		public Space Source;
+		public Space Destination;
+		public bool IsValid( GameState gs ) {
+			return Source == Destination
+				|| gs.Tokens[Source][TokenType.Isolate] == 0
+				&& gs.Tokens[Destination][TokenType.Isolate] == 0;
+		}
 	}
 
 }

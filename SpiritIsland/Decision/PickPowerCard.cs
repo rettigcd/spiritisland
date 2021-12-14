@@ -48,7 +48,7 @@ namespace SpiritIsland {
 		Gift, 
 		Play, 
 		Reclaim, 
-		Replay, 
+		Repeat, 
 		Other
 	};
 

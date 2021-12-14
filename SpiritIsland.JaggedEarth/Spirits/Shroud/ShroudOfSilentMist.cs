@@ -111,8 +111,8 @@ namespace SpiritIsland.JaggedEarth {
 
 		#endregion
 
-		public override Task<Space> TargetsSpace( GameState gameState, string prompt, From from, Terrain? sourceTerrain, int range, string filterEnum, TargettingFrom powerType ) {
-			return new MistsShiftAndFlow(this,gameState,prompt,from,sourceTerrain,range,filterEnum,powerType)
+		public override Task<Space> TargetsSpace( TargettingFrom powerType, GameState gameState, string prompt, TargetSourceCriteria sourceCriteria, params TargetCriteria[] targetCriteria) {
+			return new MistsShiftAndFlow(this,gameState,prompt,sourceCriteria,targetCriteria,powerType)
 				.TargetAndFlow();
 		}
 
@@ -129,14 +129,10 @@ namespace SpiritIsland.JaggedEarth {
 			"Invaders and dahan in your lands don't heal Damage.  During Time PAsses: 1 fear (max 5) per land of yours with Damaged Invaders.  Gain 1 Energy per 3 lands of yours with Damaged Invaders."
 		);
 
-
 		public override void Heal( GameState gs ) {
-			foreach(var space in gs.Tokens.Keys) {
-				// Invaders and dahan in your lands don't heal Damage.
-				if(!spirit.Presence.IsOn(space))
-					InvaderGroup.HealTokens( gs.Tokens[space] );
-			}
-
+			// Invaders and dahan in your lands don't heal Damage.
+			skipHealSpaces.AddRange( spirit.Presence.Spaces );
+			base.Heal( gs );
 		}
 
 	}

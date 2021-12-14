@@ -13,8 +13,8 @@ namespace SpiritIsland {
 			this.originalApi = originalApi;
 		}
 
-		public IEnumerable<Space> GetTargetOptionsFromKnownSource( Spirit self, GameState gameState, int range, string filterEnum, TargettingFrom powerType, IEnumerable<Space> source ) {
-			return originalApi.GetTargetOptionsFromKnownSource( self, gameState, range + extension, filterEnum, powerType, source );
+		public IEnumerable<Space> GetTargetOptionsFromKnownSource( Spirit self, GameState gameState, TargettingFrom powerType, IEnumerable<Space> source, TargetCriteria tc ) {
+			return originalApi.GetTargetOptionsFromKnownSource( self, gameState, powerType, source, new TargetCriteria( tc.Range + extension, tc.Filter) );
 		}
 
 	}

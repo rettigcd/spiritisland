@@ -121,11 +121,11 @@ namespace SpiritIsland {
 
 		#region private
 
-		static int RawDamageFromParticipatingInvaders( CountDictionary<Token> participatingInvaders ) {
+		int RawDamageFromParticipatingInvaders( CountDictionary<Token> participatingInvaders ) {
 
 			return participatingInvaders.Keys
 				.Where( x => x is not StrifedInvader )
-				.Select( invader => invader.FullHealth * participatingInvaders[invader] ).Sum();
+				.Select( invader => cfg.DamageFromInvader( invader ) * participatingInvaders[invader] ).Sum();
 		}
 
 

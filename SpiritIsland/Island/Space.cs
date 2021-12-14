@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace SpiritIsland {
 
-	public class Space : IOption{
+	public class Space : IOption {
 
 		#region SetUp
 

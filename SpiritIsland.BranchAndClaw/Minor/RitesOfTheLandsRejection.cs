@@ -12,7 +12,7 @@ namespace SpiritIsland.BranchAndClaw {
 		[FromSacredSite( 2, Target.Dahan )]
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 
-			void StopBuild_FearForCitiesTownsAndDahan() {
+			static void StopBuild_FearForCitiesTownsAndDahan(TargetSpaceCtx ctx) {
 				// Invaders Do not build in target land this turn
 				ctx.Skip1Build();
 
@@ -23,7 +23,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			return ctx.SelectActionOption(
 				new ActionOption( "Stop build - 1 fear / (Dahan or T/C)", StopBuild_FearForCitiesTownsAndDahan ),
-				new ActionOption( "Push up to 3 dahan", () => ctx.PushUpToNDahan(3), ctx.Dahan.Any )
+				new ActionOption( "Push up to 3 dahan", ctx => ctx.PushUpToNDahan(3), ctx.Dahan.Any )
 			);
 		}
 

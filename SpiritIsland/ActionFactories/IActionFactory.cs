@@ -1,10 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
+	public record ActionTaken ( IActionFactory ActionFactory, object Context );
+
 	public interface IActionFactory : IOption {
 
-		Task ActivateAsync( SpiritGameStateCtx ctx );
+		Task ActivateAsync( SpiritGameStateCtx ctx ); // returns Target if any
 
 		bool CouldActivateDuring( Phase speed, Spirit spirit );
 
@@ -16,6 +19,10 @@ namespace SpiritIsland {
 		Phase DisplaySpeed { get; }
 		/// <summary> When set, overrides the speed attribute for everything except Display Speed </summary>
 		ISpeedBehavior OverrideSpeedBehavior { get; set; }
+	}
+
+	public interface IRecordLastTarget {
+		public object LastTarget { get; }
 	}
 
 }

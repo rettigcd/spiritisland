@@ -23,7 +23,7 @@ namespace SpiritIsland {
 				.ToArray();
 			if(options.Length == 0) return;
 
-			PowerCard powerCard = await ctx.Self.SelectPowerCard( "Select card to replay", options.Where( x => x.Cost <= maxCardCost ), CardUse.Replay, Present.Always );
+			PowerCard powerCard = await ctx.Self.SelectPowerCard( "Select card to replay", options.Where( x => x.Cost <= maxCardCost ), CardUse.Repeat, Present.Always );
 			if(powerCard != null)
 				ctx.Self.PlayCard( powerCard );
 		}

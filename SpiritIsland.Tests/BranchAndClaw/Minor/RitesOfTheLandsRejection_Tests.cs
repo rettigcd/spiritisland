@@ -4,6 +4,7 @@ using System.Linq;
 using Xunit;
 
 namespace SpiritIsland.Tests.BranchAndClaw.Minor {
+
 	public class RitesOfTheLandsRejection_Tests {
 
 		[Theory]
@@ -35,6 +36,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Minor {
 				user.IsDoneWith( Phase.Fast );
 
 			// Then: space should have a building
+			System.Threading.Thread.Sleep(10);
 			spaceCtx.Tokens.InvaderSummary.ShouldBe( result );
 
 		}
