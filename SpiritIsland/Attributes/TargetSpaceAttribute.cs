@@ -18,7 +18,7 @@ namespace SpiritIsland {
 			this.TargetFilter = targetFilter;
 		}
 
-		public override async Task<object> GetTargetCtx( string powerName, SpiritGameStateCtx ctx, TargettingFrom powerType ){
+		public override async Task<object> GetTargetCtx( string powerName, SelfCtx ctx, TargettingFrom powerType ){
 			var space = await ctx.Self.TargetsSpace( powerType, ctx.GameState, powerName+": Target Space", 
 				sourceCriteria,
 				new TargetCriteria( await CalcRange(ctx), TargetFilter )
@@ -27,7 +27,7 @@ namespace SpiritIsland {
 		}
 
 		/// <remarks>Hook so ExtendableRangeAttribute can increase range.</remarks>
-		protected virtual Task<int> CalcRange( SpiritGameStateCtx ctx ) => Task.FromResult( range );
+		protected virtual Task<int> CalcRange( SelfCtx ctx ) => Task.FromResult( range );
 
 		public override LandOrSpirit LandOrSpirit => LandOrSpirit.Land;
 

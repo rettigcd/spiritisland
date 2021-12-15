@@ -20,7 +20,7 @@ namespace SpiritIsland {
 
 		public string Text => Name;
 
-		public async Task ActivateAsync( SpiritGameStateCtx ctx ) {
+		public async Task ActivateAsync( SelfCtx ctx ) {
 
 			PowerCard[] options = GetCardOptions( ctx );
 			if(options.Length == 0) return;
@@ -33,7 +33,7 @@ namespace SpiritIsland {
 
 		}
 
-		protected virtual PowerCard[] GetCardOptions( SpiritGameStateCtx ctx ) {
+		protected virtual PowerCard[] GetCardOptions( SelfCtx ctx ) {
 			int maxCardCost = ctx.Self.Energy;
 			PowerCard[] options = ctx.Self.UsedActions.OfType<PowerCard>() // can't use Discard pile because those cards are from prior rounds.  // !!! needs tests
 				.Where( card => ctx.Self.IsActiveDuring( ctx.GameState.Phase, card ) )
@@ -44,10 +44,13 @@ namespace SpiritIsland {
 	}
 
 	public class RepeatCheapestCardForCost : RepeatCardForCost {
-		protected override PowerCard[] GetCardOptions( SpiritGameStateCtx ctx ) {
+		string[] exclude;
+		public RepeatCheapestCardForCost(params string[] exclude ) { this.exclude = exclude; }
+		protected override PowerCard[] GetCardOptions( SelfCtx ctx ) {
 			return ctx.Self.UsedActions.OfType<PowerCard>()
+				.Where( card => !exclude.Contains(card.Name) )
 				.GroupBy( pc => pc.Cost )
-				.OrderBy( grp => grp )
+				.OrderBy( grp => grp.Key )
 				.First() // group with lowest cost
 				.ToArray(); // all cards in group
 		}

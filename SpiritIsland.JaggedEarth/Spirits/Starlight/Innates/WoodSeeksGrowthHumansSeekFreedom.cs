@@ -12,15 +12,18 @@ namespace SpiritIsland.JaggedEarth {
 			if(spiritOptions.Length > 0) return;
 			var spirit = await ctx.Self.Action.Decision(new Decision.TargetSpirit("Select spirit to gain a power card", spiritOptions));
 			
-			await new SpiritGameStateCtx( spirit, ctx.GameState,ctx.Cause).Draw();
+			await new SelfCtx( spirit, ctx.GameState,ctx.Cause).Draw();
 		}
 
 		[InnateOption("3 animal","1 Damage per dahan OR Push up to 3 dahan.",1)]
 		static public Task Option2(TargetSpaceCtx ctx ) {
-			var dahanDamage = new ActionOption("1 damage / dahan", () => ctx.DamageInvaders(ctx.Dahan.Count) );
-			var pushDahan = new ActionOption("push up to 3 dahan", () => ctx.PushUpToNDahan(3) );
-			return ctx.SelectActionOption( dahanDamage, pushDahan );
+			return ctx.SelectActionOption( 
+				DahanDamage, 
+				Cmd.PushUpToNDahan(3)
+			);
 		}
+
+		static SpaceAction DahanDamage => new SpaceAction("1 damage / dahan", ctx => ctx.DamageInvaders(ctx.Dahan.Count) );
 
 	}
 

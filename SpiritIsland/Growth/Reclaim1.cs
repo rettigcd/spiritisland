@@ -8,7 +8,7 @@ namespace SpiritIsland {
 
 		public bool RunAfterGrowthResult => true; // If user Reclaims All during growth, no need to reclaim single
 
-		public override async Task ActivateAsync( SpiritGameStateCtx ctx ) {
+		public override async Task ActivateAsync( SelfCtx ctx ) {
 			var self = ctx.Self;
 			if(self.DiscardPile.Count == 0) return;
 
@@ -24,7 +24,7 @@ namespace SpiritIsland {
 
 	public class ReclaimHalf : GrowthActionFactory {
 
-		public override async Task ActivateAsync( SpiritGameStateCtx ctx ) {
+		public override async Task ActivateAsync( SelfCtx ctx ) {
 			int reclaimCount = (ctx.Self.DiscardPile.Count + 1) / 2; // round up
 			if(reclaimCount == 0) return;
 

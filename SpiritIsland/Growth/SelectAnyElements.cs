@@ -24,7 +24,7 @@ namespace SpiritIsland {
 				++self.Elements[newEl];
 			
 		}
-		public Task ActivateAsync(SpiritGameStateCtx ctx) => ActivateAsync( ctx.Self, ctx.GameState);
+		public Task ActivateAsync(SelfCtx ctx) => ActivateAsync( ctx.Self, ctx.GameState);
 
 		public bool CouldActivateDuring( Phase _, Spirit _1 ) => true;
 

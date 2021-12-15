@@ -99,7 +99,7 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 
 		}
 
-		public override Task TakeAction( IActionFactory factory, SpiritGameStateCtx ctx ) {
+		public override Task TakeAction( IActionFactory factory, SelfCtx ctx ) {
 
 			// we can decrement any time a slow card is used,
 			// even during slow because we no longer care about this

@@ -8,7 +8,7 @@ namespace SpiritIsland.JaggedEarth {
 
 		public GainTime(int delta) { this.delta = delta; }
 
-		public override async Task ActivateAsync( SpiritGameStateCtx ctx ) {
+		public override async Task ActivateAsync( SelfCtx ctx ) {
 			if(ctx.Self is FracturedDaysSplitTheSky fracturedDays)
 				await fracturedDays.GainTime( delta, ctx.GameState );
 		}

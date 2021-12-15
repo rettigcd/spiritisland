@@ -10,8 +10,8 @@ namespace SpiritIsland.BranchAndClaw {
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 
 			return ctx.SelectActionOption(
-				new ActionOption( "Add 1 beast", ctx => ctx.Beasts.Add(1) ),
-				new ActionOption( "Push up to 2 explorers", () => ctx.PushUpTo( 2, Invader.Explorer ), ctx.Beasts.Any )
+				new SpaceAction( "Add 1 beast", ctx => ctx.Beasts.Add(1) ),
+				new SpaceAction( "Push up to 2 explorers", ctx => ctx.PushUpTo( 2, Invader.Explorer ), ctx.Beasts.Any )
 			);
 
 		}

@@ -5,7 +5,7 @@ namespace SpiritIsland.Basegame {
 
 	public class PlaceInOcean : GrowthActionFactory {
 
-		public override Task ActivateAsync( SpiritGameStateCtx ctx ) {
+		public override Task ActivateAsync( SelfCtx ctx ) {
 			var oceanSpaces = ctx.GameState.Island.Boards
 				.Select( b=>b.Spaces.Single(s=>s.Terrain == Terrain.Ocean ) )
 				.ToArray();

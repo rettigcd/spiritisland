@@ -9,7 +9,7 @@ namespace SpiritIsland.BranchAndClaw {
 			await TargetActions( ctx.OtherCtx, await ctx.YouHave( "2 air,2 water" ) );
 		}
 
-		static async Task TargetActions( SpiritGameStateCtx ctx, bool bringCityAndBlight ) {
+		static async Task TargetActions( SelfCtx ctx, bool bringCityAndBlight ) {
 
 			// target spirit gets +2 range with all Powers.
 			ctx.GameState.TimePasses_ThisRound.Push( new PowerApiRestorer( ctx.Self ).Restore );

@@ -11,8 +11,8 @@ namespace SpiritIsland.Basegame {
 
 			int blightCount = ctx.BlightOnSpace;
 			return ctx.SelectActionOption(
-				new ActionOption($"{blightCount} damage", ()=>ctx.DamageInvaders(blightCount), blightCount>0 ),
-				new ActionOption("Remove 1 blight", ()=>ctx.RemoveBlight(), blightCount>0 && ctx.IsOneOf( Terrain.Mountain, Terrain.Sand ) )
+				new SpaceAction($"{blightCount} damage", ctx=>ctx.DamageInvaders(blightCount), blightCount>0 ),
+				new SpaceAction("Remove 1 blight", ctx=>ctx.RemoveBlight(), blightCount>0 && ctx.IsOneOf( Terrain.Mountain, Terrain.Sand ) )
 			);
 
 		}

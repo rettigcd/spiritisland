@@ -7,19 +7,19 @@ namespace SpiritIsland.JaggedEarth {
 	class HoldTheIslandFastWithABulwarkOfWill {
 
 		[InnateOption("2 earth","When blight is added to one of your lands, you may pay 2 Energy per blight to take it from the box instead of the Blight Card.")]
-		static public Task Option1(TargetSpiritCtx ctx ) {
+		static public Task Option1( SelfCtx ctx ) {
 			_ = new PayEnergyToTakeFromCard(ctx,2);
 			return Task.CompletedTask;
 		}
 
 		[InnateOption("4 earth","The cost is 1 Energy instead of 2")]
-		static public Task Option2( TargetSpiritCtx ctx ) {
+		static public Task Option2( SelfCtx ctx ) {
 			_ = new PayEnergyToTakeFromCard( ctx, 1 );
 			return Task.CompletedTask;
 		}
 
 		[InnateOption("6 earth,1 plant","When an Event or Blight card directly destroys presence (yours or others'), you may prevent any number of presence from being destroyed by paying 1 Energy each.",1)]
-		static public Task Option3( TargetSpiritCtx ctx ) {
+		static public Task Option3( SelfCtx ctx ) {
 			_ = new StopPresenceDestructionFromBlightOrEvents( ctx );
 			return Task.CompletedTask;
 		}
@@ -31,7 +31,7 @@ namespace SpiritIsland.JaggedEarth {
 		readonly Spirit spirit;
 		readonly int cost;
 		readonly Func<TokenCountDictionary, int, Task<int>> oldBehavior;
-		public PayEnergyToTakeFromCard( TargetSpiritCtx ctx, int cost ) {
+		public PayEnergyToTakeFromCard( SelfCtx ctx, int cost ) {
 			this.spirit = ctx.Self;
 			this.cost = cost;
 			this.oldBehavior = ctx.GameState.AddBlightBehavior;
@@ -64,7 +64,7 @@ namespace SpiritIsland.JaggedEarth {
 	class StopPresenceDestructionFromBlightOrEvents {
 		readonly Spirit spirit;
 		readonly Func<Spirit,GameState,Cause, Task> oldBehavior;
-		public StopPresenceDestructionFromBlightOrEvents( TargetSpiritCtx ctx ) {
+		public StopPresenceDestructionFromBlightOrEvents( SelfCtx ctx ) {
 			this.spirit = ctx.Self;
 			this.oldBehavior = ctx.GameState.Destroy1PresenceFromBlightCard;
 			ctx.GameState.Destroy1PresenceFromBlightCard = this.DestroyPresenceDirectlyFromBlight;

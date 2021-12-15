@@ -186,7 +186,7 @@ namespace SpiritIsland.JaggedEarth {
 			return highestNaturalMatch;
 		}
 
-		public override async Task TakeAction(IActionFactory factory, SpiritGameStateCtx ctx) {
+		public override async Task TakeAction(IActionFactory factory, SelfCtx ctx) {
 			actionElements = null; // make sure these are cleared out for every action
 			try {
 				await base.TakeAction(factory,ctx);

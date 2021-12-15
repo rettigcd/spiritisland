@@ -79,7 +79,7 @@ namespace SpiritIsland {
 
 		public LandOrSpirit LandOrSpirit => targetAttr.LandOrSpirit;
 
-		public async Task ActivateAsync( SpiritGameStateCtx ctx ) {
+		public async Task ActivateAsync( SelfCtx ctx ) {
 			if(!await SpeedBehavior.IsActiveFor( ctx.GameState.Phase, ctx.Self )) {
 				LastTarget = null;
 				return; // this is here for Shifting Memory to Activate Innates
@@ -101,7 +101,7 @@ namespace SpiritIsland {
 
 		readonly List<IDrawableInnateOption> _drawableOptions;
 
-		async Task ActivateInnerAsync( SpiritGameStateCtx spiritCtx ) {
+		async Task ActivateInnerAsync( SelfCtx spiritCtx ) {
 
 			List<MethodInfo> lastMethods = await GetLastActivatedMethodsOfEachGroup( spiritCtx );
 			if( lastMethods.Count == 0 ) {
@@ -118,7 +118,7 @@ namespace SpiritIsland {
 
 		}
 
-		async Task<List<MethodInfo>> GetLastActivatedMethodsOfEachGroup( SpiritGameStateCtx spiritCtx ) {
+		async Task<List<MethodInfo>> GetLastActivatedMethodsOfEachGroup( SelfCtx spiritCtx ) {
 			IEnumerable<MethodTuple[]> groups = elementListByMethod
 				// filter first - so we only have groups that have matches
 				.Where( pair => pair.Attr.Purpose != AttributePurpose.DisplayOnly )
@@ -176,8 +176,6 @@ namespace SpiritIsland {
 		readonly GeneratesContextAttribute targetAttr;
 		readonly RepeatAttribute repeatAttr;
 		readonly List<MethodTuple> elementListByMethod;
-		readonly List<object> targets;
-
 
 		class MethodTuple {
 			public MethodTuple(MethodInfo m ) {

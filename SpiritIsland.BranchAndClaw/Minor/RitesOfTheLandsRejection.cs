@@ -22,8 +22,8 @@ namespace SpiritIsland.BranchAndClaw {
 			}
 
 			return ctx.SelectActionOption(
-				new ActionOption( "Stop build - 1 fear / (Dahan or T/C)", StopBuild_FearForCitiesTownsAndDahan ),
-				new ActionOption( "Push up to 3 dahan", ctx => ctx.PushUpToNDahan(3), ctx.Dahan.Any )
+				new SpaceAction( "Stop build - 1 fear / (Dahan or T/C)", StopBuild_FearForCitiesTownsAndDahan ),
+				new SpaceAction( "Push up to 3 dahan", ctx => ctx.PushUpToNDahan(3), ctx.Dahan.Any )
 			);
 		}
 

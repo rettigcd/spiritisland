@@ -46,7 +46,7 @@ namespace SpiritIsland.BranchAndClaw {
 			}
 		}
 
-		static async Task<Space> DamagePerDahanOnOne( List<Space> options, SpiritGameStateCtx spirit ) {
+		static async Task<Space> DamagePerDahanOnOne( List<Space> options, SelfCtx spirit ) {
 			var spaceCtx = await spirit.SelectSpace( "1 damage per dahan", options );
 			if(spaceCtx != null) {
 				await spaceCtx.DamageInvaders( spaceCtx.Dahan.Count );

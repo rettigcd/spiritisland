@@ -65,7 +65,7 @@ namespace SpiritIsland.PromoPack1 {
 			await base.PlacePresence( from, to, gs );
 
 			int fireCount = Presence.AddElements()[Element.Fire];
-			var ctx = new SpiritGameStateCtx(this,gs,Cause.Growth).Target(to);
+			var ctx = new SelfCtx(this,gs,Cause.Growth).Target(to);
 			// For each fire showing, do 1 damage
 			await ctx.DamageInvaders(fireCount);
 			// if 2 fire or more are showing, add 1 blight

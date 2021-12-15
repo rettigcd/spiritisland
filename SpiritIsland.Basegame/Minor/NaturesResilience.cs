@@ -12,8 +12,8 @@ namespace SpiritIsland.Basegame {
 		static public async Task Act(TargetSpaceCtx ctx){
 
 			await ctx.SelectActionOption(
-				new ActionOption("Defend 6", ctx=>ctx.Defend(6)),
-				new ActionOption("Remove 1 blight", ctx=>ctx.RemoveBlight(), await ctx.YouHave("2 water") && ctx.HasBlight )
+				new SpaceAction("Defend 6", ctx=>ctx.Defend(6)),
+				new SpaceAction("Remove 1 blight", ctx=>ctx.RemoveBlight(), await ctx.YouHave("2 water") && ctx.HasBlight )
 			);
 
 		}

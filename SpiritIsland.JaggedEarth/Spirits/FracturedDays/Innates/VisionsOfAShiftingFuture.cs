@@ -9,7 +9,7 @@ namespace SpiritIsland.JaggedEarth {
 	class VisionsOfAShiftingFuture {
 
 		[InnateOption("1 sun,2 moon,2 air","Look at the top card of either the Invader Deck or the Event Deck.  Return it, then shuffle that deck's top 2 cards.")]
-		static public async Task Option1( TargetSpiritCtx ctx ) {
+		static public async Task Option1( SelfCtx ctx ) {
 			var deck = ctx.GameState.InvaderDeck.unrevealedCards;
 			InvaderCard topCard = deck[0];
 			await ctx.Self.SelectText(topCard.Text,new string[] {"Shuffle with next top card." },Present.Always);
@@ -18,7 +18,7 @@ namespace SpiritIsland.JaggedEarth {
 		}
 
 		[InnateOption("2 sun,3 moon,2 air","Instead of returning-and-shuffling, you may put the card you looked at on the bottom of its deck.  You may not do this for cards specially placed during Setup.")]
-		static public async Task Option2( TargetSpiritCtx ctx ) {
+		static public async Task Option2( SelfCtx ctx ) {
 			var deck = ctx.GameState.InvaderDeck.unrevealedCards;
 			InvaderCard topCard = deck[0];
 			deck.RemoveAt(0);

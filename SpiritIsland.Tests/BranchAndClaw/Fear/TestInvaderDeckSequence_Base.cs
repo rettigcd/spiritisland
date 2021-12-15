@@ -21,7 +21,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Fear {
 		}
 
 		protected VirtualTestUser user;
-		protected SpiritGameStateCtx ctx;
+		protected SelfCtx ctx;
 		protected Queue<string> log = new();
 
 		protected void AdvanceToInvaderPhase() {

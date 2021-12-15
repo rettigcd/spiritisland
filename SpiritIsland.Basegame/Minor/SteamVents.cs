@@ -11,13 +11,13 @@ namespace SpiritIsland.Basegame {
 		static public async Task ActAsync(TargetSpaceCtx ctx ) {
 
 			await ctx.SelectActionOption(
-				new ActionOption(
+				new SpaceAction(
 					"Destory 1 explorer", 
-					() => ctx.Invaders.Destroy( 1, Invader.Explorer ) 
+					ctx => ctx.Invaders.Destroy( 1, Invader.Explorer ) 
 				),
-				new ActionOption(
+				new SpaceAction(
 					"Destory 1 town", 
-					() => ctx.Invaders.Destroy( 1, Invader.Town ), 
+					ctx => ctx.Invaders.Destroy( 1, Invader.Town ), 
 					ctx.Tokens.Has(Invader.Town) && await ctx.YouHave("3 earth")
 				)
 			);

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
-	public class TargetSpaceCtx : SpiritGameStateCtx {
+	public class TargetSpaceCtx : SelfCtx {
 
 		#region constructors
 
@@ -15,7 +15,7 @@ namespace SpiritIsland {
 			Space = target;
 		}
 
-		public TargetSpaceCtx( SpiritGameStateCtx ctx, Space target ):base( ctx ) {
+		public TargetSpaceCtx( SelfCtx ctx, Space target ):base( ctx ) {
 			Space = target ?? throw new ArgumentNullException(nameof(target));
 		}
 
@@ -29,9 +29,14 @@ namespace SpiritIsland {
 
 		public TargetSpaceCtx Target(Spirit spirit) => new TargetSpaceCtx( this, spirit );
 
-		public override Task Execute( ActionOption actionOption ) {
-			return actionOption.Execute(this);
-		}
+		//public override Task Execute( ActionOption actionOption ) {
+		//	return actionOption.Execute(this);
+		//}
+
+		public Task SelectActionOption( params IExecuteOn<TargetSpaceCtx>[] options ) => SelectActionOption( "Select Power Option", options );
+		public Task SelectActionOption( string prompt, params IExecuteOn<TargetSpaceCtx>[] options )=> SelectAction_Inner( prompt, options, Present.AutoSelectSingle, this );
+		public Task SelectAction_Optional( string prompt, params IExecuteOn<TargetSpaceCtx>[] options )=> SelectAction_Inner( prompt, options, Present.Done, this );
+
 
 		public bool MatchesRavageCard => GameState.InvaderDeck.Ravage.Any(c=>c.Matches(Space));
 		public bool MatchesBuildCard => GameState.InvaderDeck.Build.Any(c=>c.Matches(Space));

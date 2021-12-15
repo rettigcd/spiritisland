@@ -2,7 +2,7 @@
 
 namespace SpiritIsland {
 
-	public class TargetSpiritCtx : SpiritGameStateCtx {
+	public class TargetSpiritCtx : SelfCtx {
 
 		public TargetSpiritCtx( Spirit self, GameState gs, Spirit target, Cause cause ) : base(self,gs,cause) {
 			Other = target;
@@ -10,7 +10,7 @@ namespace SpiritIsland {
 
 		public Spirit Other { get; }
 
-		public SpiritGameStateCtx OtherCtx => new SpiritGameStateCtx( Other, GameState, Cause, Originator );
+		public SelfCtx OtherCtx => new SelfCtx( Other, GameState, Cause, Originator );
 
 	}
 

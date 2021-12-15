@@ -8,7 +8,7 @@ namespace SpiritIsland.JaggedEarth {
 
 		public bool RunAfterGrowthResult => false; // no growth dependencies
 
-		public override async Task ActivateAsync( SpiritGameStateCtx ctx ) {
+		public override async Task ActivateAsync( SelfCtx ctx ) {
 
 			if(!drewMinor)
 				await ctx.DrawMinor();

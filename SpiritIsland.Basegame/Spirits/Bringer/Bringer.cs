@@ -62,7 +62,7 @@ namespace SpiritIsland.Basegame {
 				new ToDreamAThousandDeaths_DestroyStrategy( 
 					gs.Fear.AddDirect, 
 					Cause.Power,  
-					new SpiritGameStateCtx(this,gs,Cause.Power)
+					new SelfCtx(this,gs,Cause.Power)
 				),
 				CustomDamageStrategy
 			);

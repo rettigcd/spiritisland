@@ -6,7 +6,7 @@ namespace SpiritIsland.JaggedEarth {
 
 		public PlacePresenceOrDisease() : base( 1 ) { }
 
-		public override async Task ActivateAsync( SpiritGameStateCtx ctx ) {
+		public override async Task ActivateAsync( SelfCtx ctx ) {
 			if(await ctx.Self.UserSelectsFirstText("Place presence or disease?", "Presence", "Disease" )) {
 				await base.ActivateAsync(ctx);
 				return;

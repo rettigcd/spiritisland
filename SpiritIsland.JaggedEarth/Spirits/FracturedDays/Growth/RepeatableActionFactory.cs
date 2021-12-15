@@ -17,7 +17,7 @@ namespace SpiritIsland.JaggedEarth {
 			repeater.Register(this);
 		}
 
-		public override async Task ActivateAsync( SpiritGameStateCtx ctx ) {
+		public override async Task ActivateAsync( SelfCtx ctx ) {
 			repeater.BeginAction();
 			await Inner.ActivateAsync(ctx);
 			repeater.EndAction( ctx.Self );

@@ -90,7 +90,7 @@ namespace SpiritIsland {
 
 		#region private
 
-		protected readonly SpiritGameStateCtx ctx;
+		protected readonly SelfCtx ctx;
 		protected readonly Space source;
 		protected readonly List<Func<Space,bool>> destinationFilters = new List<Func<Space, bool>>();
 

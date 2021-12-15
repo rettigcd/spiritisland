@@ -14,7 +14,7 @@ namespace SpiritIsland.JaggedEarth {
 				await ctx.SelectActionOption( Cmd.Defend1PerDahan, DamageAddedOrMovedInvaders );
 		}
 
-		static ActionOption DamageAddedOrMovedInvaders => new ActionOption("After Invaders are added or moved to target land, 1 Damage to each added or moved Invader"
+		static SpaceAction DamageAddedOrMovedInvaders => new SpaceAction("After Invaders are added or moved to target land, 1 Damage to each added or moved Invader"
 			, (ctx) => {
 				ctx.GameState.Tokens.TokenAdded.ForRound.Add( async (gs,args)=> {
 					if(args.Space == ctx.Space)

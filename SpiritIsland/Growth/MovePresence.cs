@@ -13,7 +13,7 @@ namespace SpiritIsland {
 
 		public bool RunAfterGrowthResult => true; // might receive additional presence
 
-		public override async Task ActivateAsync( SpiritGameStateCtx ctx) {
+		public override async Task ActivateAsync( SelfCtx ctx) {
 			var src = await ctx.Self.Action.Decision( new Decision.Presence.Deployed("Move presence from:", ctx.Self ) );
 			var dstOptions = src.Range(Range).Where(s=>s.Terrain!=Terrain.Ocean);
 			var dst = await ctx.Self.Action.Decision( new Decision.AdjacentSpace("Move preseence to:", src, Decision.AdjacentDirection.Outgoing, dstOptions));

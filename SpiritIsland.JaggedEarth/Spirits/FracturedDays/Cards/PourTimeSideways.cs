@@ -5,7 +5,7 @@ namespace SpiritIsland.JaggedEarth {
 	class PourTimeSideways {
 
 		[SpiritCard( "Pour Time Sideways", 1, Element.Moon, Element.Air, Element.Water ), Fast, Yourself]
-		static public async Task ActAsync( TargetSpiritCtx ctx ) {
+		static public async Task ActAsync( SelfCtx ctx ) {
 			if(ctx.Self is not FracturedDaysSplitTheSky frac) return;
 			// Cost to Use: 3 Time
 			if(frac.Time <3) return;

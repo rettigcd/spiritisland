@@ -29,7 +29,7 @@ namespace SpiritIsland.Tests {
 			Presence.PlaceOn(space,gameState);
 		}
 
-		static public (VirtualTestUser, SpiritGameStateCtx) SetupGame( 
+		static public (VirtualTestUser, SelfCtx) SetupGame( 
 			PowerCard powerCard, 
 			Action<GameState> modGameState = null 
 		) {
@@ -42,7 +42,7 @@ namespace SpiritIsland.Tests {
 			_ = new SinglePlayer.SinglePlayerGame( gs );
 
 			var user = new VirtualTestUser( spirit );
-			var starterCtx = new SpiritGameStateCtx( spirit, gs, Cause.None );
+			var starterCtx = new SelfCtx( spirit, gs, Cause.None );
 
 			// Disable destroying presence
 			starterCtx.GameState.DetermineAddBlightEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };

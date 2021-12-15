@@ -63,7 +63,7 @@ namespace SpiritIsland.Basegame {
 		[FearLevel( 3, "Each player may remove up to 3 Health worth of Invaders from a land without Town." )]
 		public async Task Level3( FearCtx ctx ) {
 			var gs = ctx.GameState;
-			foreach(SpiritGameStateCtx spirit in ctx.Spirits) {
+			foreach(SelfCtx spirit in ctx.Spirits) {
 
 				var options = gs.Island.AllSpaces
 					.Where( s => {var counts = gs.Tokens[ s ]; return counts.HasInvaders() && !counts.Has(Invader.Town); } )

@@ -38,7 +38,7 @@ namespace SpiritIsland.BranchAndClaw {
 		public class FromPresenceAttribute : SpiritIsland.FromPresenceAttribute {
 			public FromPresenceAttribute() : base(1, Target.NoBlight ) { }
 
-			protected override async Task<int> CalcRange( SpiritGameStateCtx ctx ) => range
+			protected override async Task<int> CalcRange( SelfCtx ctx ) => range
 				// 3 plant    this power has +1 range
 				+ (await ctx.YouHave( "3 plant" ) ? 1 : 0)
 				// 1 air      this power has +1 range

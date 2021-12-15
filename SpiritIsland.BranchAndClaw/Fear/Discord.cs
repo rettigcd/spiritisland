@@ -13,7 +13,7 @@ namespace SpiritIsland.BranchAndClaw {
 			var options = LandsWith2Invaders( ctx );
 
 			// each player adds 1 strife in a different land with at least 2 invaders
-			foreach(SpiritGameStateCtx spirit in ctx.Spirits)
+			foreach(SelfCtx spirit in ctx.Spirits)
 				options.Remove( await spirit.AddStrifeToOne(options) );
 
 		}
@@ -23,7 +23,7 @@ namespace SpiritIsland.BranchAndClaw {
 			var options = LandsWith2Invaders( ctx );
 
 			// each player adds 1 strife in a different land with at least 2 invaders
-			foreach(SpiritGameStateCtx spirit in ctx.Spirits)
+			foreach(SelfCtx spirit in ctx.Spirits)
 				options.Remove( await spirit.AddStrifeToOne( options ) );
 
 			// Then each invader takes 1 damage per strife it has.
@@ -35,7 +35,7 @@ namespace SpiritIsland.BranchAndClaw {
 			var options = LandsWith2Invaders( ctx );
 
 			// each player adds 1 strife in a different land with at least 2 invaders.
-			foreach(SpiritGameStateCtx spirit in ctx.Spirits) {
+			foreach(SelfCtx spirit in ctx.Spirits) {
 				var spaceCtx = await spirit.SelectSpace( "Add strife", options );
 				if(spaceCtx != null) {
 					await spaceCtx.AddStrife();

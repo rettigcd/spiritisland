@@ -7,7 +7,7 @@ namespace SpiritIsland {
 
 		public bool RunAfterGrowthResult => true; // depends on Presence location which might change during growth
 
-		public override async Task ActivateAsync( SpiritGameStateCtx ctx ) {
+		public override async Task ActivateAsync( SelfCtx ctx ) {
 			var dahanOptions = ctx.Self.Presence.Spaces
 				.SelectMany(space=>ctx.Target(space).Dahan.Keys.Select(t=>new SpaceToken(space,t)));
 			var source = await ctx.Self.Action.Decision(new Decision.SpaceTokens("Select dahan to push from land",dahanOptions,Present.Done));

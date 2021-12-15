@@ -7,7 +7,7 @@ namespace SpiritIsland.JaggedEarth {
 		public const string Name = "Shape the Self Anew";
 
 		[SpiritCard( ShapeTheSelfAnew.Name, 0, Element.Moon), Slow, Yourself]
-		public static async Task ActAsync(TargetSpiritCtx ctx ) {
+		public static async Task ActAsync( SelfCtx ctx ) {
 			// Gain a Minor Power.
 			// If you have 4 moon, You may gain a Major Power instead of a Minor Power.
 			if(await ctx.YouHave("4 moon"))

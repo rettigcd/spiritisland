@@ -9,7 +9,7 @@ namespace SpiritIsland {
 		public virtual string Name => ToString().Split('.').Last();
 		string IOption.Text => Name;
 
-		public abstract Task ActivateAsync(SpiritGameStateCtx ctx);
+		public abstract Task ActivateAsync(SelfCtx ctx);
 
 		public bool CouldActivateDuring( Phase speed, Spirit _ ) => speed == Phase.Growth;
 

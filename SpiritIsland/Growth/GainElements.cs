@@ -10,7 +10,7 @@ namespace SpiritIsland {
 			this.ElementsToGain = elementsToGain;
 		}
 
-		public override Task ActivateAsync( SpiritGameStateCtx ctx ) {
+		public override Task ActivateAsync( SelfCtx ctx ) {
 			ctx.Self.Elements.AddRange(ElementsToGain);
 			return Task.CompletedTask;
 		}

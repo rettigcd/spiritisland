@@ -29,7 +29,7 @@ namespace SpiritIsland {
 		string Suffix => maxCost == int.MaxValue ? "" : $" [max cost:{maxCost}]";
 		public string Text => Name;
 
-		public async Task ActivateAsync(SpiritGameStateCtx ctx) {
+		public async Task ActivateAsync(SelfCtx ctx) {
 
 			var options = ctx.Self.UsedActions.OfType<PowerCard>() // not using Discard Pile because those cards are from previous rounds
 				.Where(card=>card.Cost <= maxCost)

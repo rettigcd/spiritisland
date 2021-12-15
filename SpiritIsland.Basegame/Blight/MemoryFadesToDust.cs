@@ -8,10 +8,10 @@ namespace SpiritIsland.Basegame {
 
 		protected override async Task BlightAction( GameState gs ) {
 			foreach(var spirit in gs.Spirits)
-				await new SpiritGameStateCtx( spirit, gs, Cause.Blight ).SelectActionOption(
+				await new SelfCtx( spirit, gs, Cause.Blight ).SelectActionOption(
 					"BLIGHT: Memory Fades to Dust",
-					new ActionOption("Destroy Presence",()=>gs.Destroy1PresenceFromBlightCard(spirit,gs,Cause.Blight)),
-					new ActionOption("Forget Power card", () => spirit.ForgetPowerCard() )
+					new SelfAction("Destroy Presence",ctx=>ctx.GameState.Destroy1PresenceFromBlightCard(spirit,gs,Cause.Blight)),
+					new SelfAction("Forget Power card", ctx => ctx.Self.ForgetPowerCard() )
 				);
 		}
 

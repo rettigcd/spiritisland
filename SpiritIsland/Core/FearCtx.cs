@@ -17,7 +17,7 @@ namespace SpiritIsland {
 
 		#endregion constructor
 
-		public IEnumerable<SpiritGameStateCtx> Spirits => this.GameState.Spirits.Select(s=>new SpiritGameStateCtx(s,GameState,Cause.Fear));
+		public IEnumerable<SelfCtx> Spirits => this.GameState.Spirits.Select(s=>new SelfCtx(s,GameState,Cause.Fear));
 
 		public InvaderGroup InvadersOn(Space space) => GameState.Invaders.On(space,Cause.Fear);
 
@@ -53,7 +53,7 @@ namespace SpiritIsland {
 	public static class FearCtxExtensionForBac {
 
 		// Extension to SpiritGameStateCtx
-		public static async Task<Space> AddStrifeToOne( this SpiritGameStateCtx spirit, IEnumerable<Space> options, params TokenGroup[] groups ) {
+		public static async Task<Space> AddStrifeToOne( this SelfCtx spirit, IEnumerable<Space> options, params TokenGroup[] groups ) {
 			bool HasInvaders( Space s ) => spirit.Target(s).HasInvaders;
 			var space = await spirit.SelectSpace( "Add strife", options.Where( HasInvaders ) );
 			if(space != null)

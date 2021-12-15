@@ -13,9 +13,7 @@ namespace SpiritIsland.JaggedEarth {
 			this.UpTo = int.MaxValue;
 		}
 
-		public override IDrawableInnateOption[] Thresholds => new IDrawableInnateOption[] {
-			// Shows up as active, new DrawableInnateOption("","You may use this Power any number of times. Cost to Use: 1 Time per previous use this turn.")
-		};
+		public override IDrawableInnateOption[] Thresholds => System.Array.Empty<IDrawableInnateOption>(); // !!!
 
 		public override IPowerRepeater GetRepeater() => new Repeater(UpTo);
 

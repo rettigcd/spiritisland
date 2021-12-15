@@ -11,13 +11,13 @@ namespace SpiritIsland.BranchAndClaw {
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 			await ctx.SelectActionOption( 
-				new ActionOption(
+				new SpaceAction(
 					"Add strife. Invaders with strife deal Damage to other Invaders in target land.", 
-					() => AddStrifeThenStrifedInvadersDamageUnstrifed( ctx )
+					AddStrifeThenStrifedInvadersDamageUnstrifed
 				)
-				, new ActionOption(
+				, new SpaceAction(
 					"Instead, if Invaders Ravage in target land, damage invaders in adjacent lands instead of dahan"
-					, () => DuringRavage_InvadersDamageInvadersInAdjacentLandsInsteadOfDahan( ctx )
+					, DuringRavage_InvadersDamageInvadersInAdjacentLandsInsteadOfDahan
 					, await ctx.YouHave("4 sun,2 fire,2 animal" )
 				)
 			);

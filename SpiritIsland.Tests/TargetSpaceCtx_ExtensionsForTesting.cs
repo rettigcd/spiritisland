@@ -34,7 +34,7 @@ namespace SpiritIsland.Tests {
 			currentTokens.Summary.ShouldBe( expectedInvaderSummary );
 		}
 
-		public static void ClearAllBlight( this SpiritGameStateCtx ctx ) {
+		public static void ClearAllBlight( this SelfCtx ctx ) {
 			// So it doesn't cascade and require extra interactions...
 			foreach(var space in ctx.AllSpaces) {
 				var tmpCtx = ctx.Target(space);
@@ -43,12 +43,12 @@ namespace SpiritIsland.Tests {
 			}
 		}
 
-		public static void ActivateFearCard( this SpiritGameStateCtx ctx, IFearOptions fearCard ) {
+		public static void ActivateFearCard( this SelfCtx ctx, IFearOptions fearCard ) {
 			ctx.GameState.Fear.Deck.Pop();
 			ctx.GameState.Fear.ActivatedCards.Push( new PositionFearCard{ FearOptions=fearCard, Text="FearCard" } );
 		}
 
-		public static void ElevateTerrorLevelTo( this SpiritGameStateCtx ctx, int desiredFearLevel ) {
+		public static void ElevateTerrorLevelTo( this SelfCtx ctx, int desiredFearLevel ) {
 			while(ctx.GameState.Fear.TerrorLevel < desiredFearLevel)
 				ctx.GameState.Fear.Deck.Pop();
 		}

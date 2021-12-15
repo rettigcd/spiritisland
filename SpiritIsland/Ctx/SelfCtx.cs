@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
-	public class SpiritGameStateCtx {
+	public class SelfCtx {
 
 		public Spirit Self { get; }
 		public GameState GameState { get; }
@@ -13,14 +13,14 @@ namespace SpiritIsland {
 		public Spirit Originator { get; }
 		#region constructor
 
-		public SpiritGameStateCtx(Spirit self,GameState gameState, Cause cause, Spirit originator=null) {
+		public SelfCtx(Spirit self,GameState gameState, Cause cause, Spirit originator=null) {
 			Self = self;
 			GameState = gameState;
 			Cause = cause;
 			Originator = originator ?? self;
 		}
 
-		protected SpiritGameStateCtx(SpiritGameStateCtx src) {
+		protected SelfCtx(SelfCtx src) {
 			Self = src.Self;
 			GameState = src.GameState;
 			Cause = src.Cause;
@@ -91,26 +91,22 @@ namespace SpiritIsland {
 				: null;
 		}
 
-		public Task SelectActionOption( params ActionOption[] options )
-			=> SelectActionOption( "Select Power Option", options );
-
 		// overriden by Grinning Trickster's Lets See What Happens
-		public virtual Task SelectActionOption( string prompt, params ActionOption[] options )
-			=> SelectAction_Inner( prompt, options, Present.AutoSelectSingle );
 
-		public Task SelectOptionalAction( string prompt, params ActionOption[] options )
-			=> SelectAction_Inner( prompt, options, Present.Done );
+		public Task SelectActionOption( params IExecuteOn<SelfCtx>[] options ) => SelectActionOption( "Select Power Option", options );
+		public Task SelectActionOption( string prompt, params IExecuteOn<SelfCtx>[] options )=> SelectAction_Inner( prompt, options, Present.AutoSelectSingle, this );
+		public Task SelectAction_Optional( string prompt, params IExecuteOn<SelfCtx>[] options )=> SelectAction_Inner( prompt, options, Present.Done, this );
 
-		async Task SelectAction_Inner( string prompt, ActionOption[] options, Present present ) {
-			ActionOption[] applicable = options.Where( opt => opt != null && opt.IsApplicable ).ToArray();
+		virtual protected async Task SelectAction_Inner<T>( string prompt, IExecuteOn<T>[] options, Present present, T ctx ) {
+			IExecuteOn<T>[] applicable = options.Where( opt => opt != null && opt.IsApplicable ).ToArray();
 			string text = await Self.SelectText( prompt, applicable.Select( a => a.Description ).ToArray(), present );
 			if(text != null && text != TextOption.Done.Text) {
 				var selectedOption = applicable.Single( a => a.Description == text );
-				await Execute( selectedOption );
+				await selectedOption.Execute( ctx );
 			}
 		}
 
-		public virtual Task Execute( ActionOption actionOption ) => actionOption.Execute();
+		public virtual Task Execute( IExecuteOn<SelfCtx> actionOption ) => actionOption.Execute(this);
 
 		#endregion
 

@@ -6,7 +6,7 @@ namespace SpiritIsland.Basegame {
 
 	public class PushPresenceFromOcean : GrowthActionFactory {
 
-		public override async Task ActivateAsync( SpiritGameStateCtx ctx ) {
+		public override async Task ActivateAsync( SelfCtx ctx ) {
 
 			List<Space> pushSpaces = ctx.Self.Presence.Spaces
 				.Where( p => p.Terrain == Terrain.Ocean )

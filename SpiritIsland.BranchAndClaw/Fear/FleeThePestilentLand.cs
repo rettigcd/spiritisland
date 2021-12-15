@@ -28,10 +28,10 @@ namespace SpiritIsland.BranchAndClaw {
 				await RemoveHealthFromDiseaseOrExplorerInland( spiritCtx, 5, ctx.LandsWithDisease(), ctx.InlandLands );
 		}
 
-		static Task RemoveHealthFromDiseaseOrExplorerInland( SpiritGameStateCtx spiritCtx, int healthToRemove, IEnumerable<Space> landsWithDisease, IEnumerable<Space> inlandSpaces ) {
+		static Task RemoveHealthFromDiseaseOrExplorerInland( SelfCtx spiritCtx, int healthToRemove, IEnumerable<Space> landsWithDisease, IEnumerable<Space> inlandSpaces ) {
 			return spiritCtx.SelectActionOption(
-				new ActionOption( $"Remove up to {healthToRemove} health of invaders from land with disease", () => spiritCtx.RemoveHealthFromOne( healthToRemove, landsWithDisease ) ),
-				new ActionOption( "Remove 1 explorer from inland", () => spiritCtx.RemoveTokenFromOneSpace( inlandSpaces, healthToRemove, Invader.Explorer) )
+				new SelfAction( $"Remove up to {healthToRemove} health of invaders from land with disease", spiritCtx => spiritCtx.RemoveHealthFromOne( healthToRemove, landsWithDisease ) ),
+				new SelfAction( "Remove 1 explorer from inland", spiritCtx => spiritCtx.RemoveTokenFromOneSpace( inlandSpaces, healthToRemove, Invader.Explorer) )
 			);
 		}
 

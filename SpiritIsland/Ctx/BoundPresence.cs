@@ -10,8 +10,8 @@ namespace SpiritIsland {
 
 		#region constructor
 
-		public BoundPresence(SpiritGameStateCtx ctx ) { this.ctx = ctx; }
-		readonly SpiritGameStateCtx ctx;
+		public BoundPresence(SelfCtx ctx ) { this.ctx = ctx; }
+		readonly SelfCtx ctx;
 
 		#endregion
 

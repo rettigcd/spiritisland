@@ -7,7 +7,7 @@ namespace SpiritIsland {
 
 	public interface IActionFactory : IOption {
 
-		Task ActivateAsync( SpiritGameStateCtx ctx ); // returns Target if any
+		Task ActivateAsync( SelfCtx ctx ); // returns Target if any
 
 		bool CouldActivateDuring( Phase speed, Spirit spirit );
 

@@ -10,8 +10,8 @@ namespace SpiritIsland.Basegame {
 		static public Task ActionAsync(TargetSpaceCtx ctx){
 
 			return ctx.SelectActionOption(
-				new ActionOption( "Push 1 Explorer", ctx => ctx.Push( 1, Invader.Explorer ) ),
-				new ActionOption( "2 fear", ctx => ctx.AddFear( 2 ) )
+				new SpaceAction( "Push 1 Explorer", ctx => ctx.Push( 1, Invader.Explorer ) ),
+				new SpaceAction( "2 fear", ctx => ctx.AddFear( 2 ) )
 			);
 
 		}

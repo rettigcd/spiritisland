@@ -14,7 +14,7 @@ namespace SpiritIsland {
 		public override string Name => $"GainEnergy({Delta})";
 
 
-		public override Task ActivateAsync( SpiritGameStateCtx ctx ) {
+		public override Task ActivateAsync( SelfCtx ctx ) {
 			ctx.Self.Energy += Delta;
 			return Task.CompletedTask;
 		}

@@ -35,7 +35,7 @@ namespace SpiritIsland {
 			return SpeedBehavior.CouldBeActiveFor(requestSpeed,spirit);
 		}
 
-		public async Task ActivateAsync(SpiritGameStateCtx ctx) {
+		public async Task ActivateAsync(SelfCtx ctx) {
 
 			if(!await SpeedBehavior.IsActiveFor( ctx.GameState.Phase, ctx.Self ))
 				throw new InvalidOperationException( "can't run PowerCard at this speeed" );
@@ -49,7 +49,7 @@ namespace SpiritIsland {
 
 		}
 
-		async Task ActivateInnerAsync( SpiritGameStateCtx spiritCtx ) {
+		async Task ActivateInnerAsync( SelfCtx spiritCtx ) {
 			LastTarget = await targetAttr.GetTargetCtx( Name, spiritCtx, TargettingFrom.PowerCard );
 			if(LastTarget != null) // Can't find a tar
 				await InvokeOnObjectCtx( LastTarget );

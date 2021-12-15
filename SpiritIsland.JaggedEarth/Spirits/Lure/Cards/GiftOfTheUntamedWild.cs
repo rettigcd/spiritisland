@@ -10,18 +10,18 @@ namespace SpiritIsland.JaggedEarth {
 			// target spirit chooses to either: 
 			return ctx.OtherCtx.SelectActionOption(
 				// Add 1 wilds to one of their lands
-				new ActionOption("Add 1 wilds to one of your lands", () => Add1WildsToOneOfYourLands(ctx.OtherCtx)),
+				new SelfAction("Add 1 wilds to one of your lands", Add1WildsToOneOfYourLands ),
 				// Replace 1 of their presence with 1 disease.
-				new ActionOption("Replace 1 of your presence with 1 disease", () => Replace1PresenceWith1Disease(ctx.OtherCtx))
+				new SelfAction("Replace 1 of your presence with 1 disease", Replace1PresenceWith1Disease)
 			);
 		}
 
-		static async Task Add1WildsToOneOfYourLands(SpiritGameStateCtx ctx) {
+		static async Task Add1WildsToOneOfYourLands( SelfCtx ctx ) {
 			var spaceCtx = await ctx.SelectSpace("Add 1 Wilds",ctx.Self.Presence.Spaces);
 			spaceCtx.Wilds.Add(1);
 		}
 
-		static async Task Replace1PresenceWith1Disease(SpiritGameStateCtx ctx) {
+		static async Task Replace1PresenceWith1Disease( SelfCtx ctx ) {
 			var space = await ctx.Presence.SelectDeployed("Replace Presence with 1 disease");
 			ctx.Presence.RemoveFrom( space );
 			ctx.Target(space).Disease.Add(1);

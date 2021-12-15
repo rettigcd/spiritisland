@@ -12,7 +12,7 @@ namespace SpiritIsland {
 			this.ElementOptions = elementOptions;
 		}
 
-		public override async Task ActivateAsync( SpiritGameStateCtx ctx ) {
+		public override async Task ActivateAsync( SelfCtx ctx ) {
 			var element = ElementOptions.Length == 1 ? ElementOptions[0]
 				: await ctx.Self.SelectElementEx( "Gain element", ElementOptions );
 			ctx.Self.Elements[element]++;

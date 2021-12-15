@@ -77,7 +77,7 @@ namespace SpiritIsland {
 		public GrowthOptionGroup Growth { get; protected set; }
 
 		public virtual async Task DoGrowth(GameState gameState) {
-			var ctx = new SpiritGameStateCtx( this, gameState, Cause.Growth );
+			var ctx = new SelfCtx( this, gameState, Cause.Growth );
 
 			// (a) Resolve Initialization
 			if(availableActions.Any()) {
@@ -98,6 +98,7 @@ namespace SpiritIsland {
 
 			while(count-- > 0) {
 				var currentOptions = Growth.Options.Except(usedOptions).Where( o => o.GainEnergy + Energy >= 0 ).ToArray();
+				if(currentOptions.Length == 0) break; // maybe required energy prevents using growth option so nothing to choose.
 				GrowthOption option = (GrowthOption)await this.Select( "Select Growth Option", currentOptions, Present.Always );
 				usedOptions.Add( option );
 
@@ -110,7 +111,7 @@ namespace SpiritIsland {
 		}
 
 		public Task GrowAndResolve( GrowthOption option, GameState gameState ) {
-			var ctx = new SpiritGameStateCtx(this,gameState,Cause.Growth);
+			var ctx = new SelfCtx(this,gameState,Cause.Growth);
 
 			// If Option has only 1 Action, auto trigger it.
 			if( option.GrowthActions.Length == 1 )
@@ -131,14 +132,14 @@ namespace SpiritIsland {
 
 			if( track.Action != null)
 				if( gs.Phase != Phase.Growth || !track.Action.RunAfterGrowthResult )
-					await track.Action.ActivateAsync(new SpiritGameStateCtx(this,gs,Cause.Power));
+					await track.Action.ActivateAsync(new SelfCtx(this,gs,Cause.Power));
 		}
 
 		public Task ApplyRevealedPresenceTracks(GameState gs) {
-			var ctx = new SpiritGameStateCtx( this, gs, Cause.Growth );
+			var ctx = new SelfCtx( this, gs, Cause.Growth );
 			return this.ApplyRevealedPresenceTracks(ctx);
 		}
-		protected async Task ApplyRevealedPresenceTracks( SpiritGameStateCtx ctx ) {
+		protected async Task ApplyRevealedPresenceTracks( SelfCtx ctx ) {
 
 			// Energy
 			Energy += EnergyPerTurn;
@@ -153,7 +154,7 @@ namespace SpiritIsland {
 		}
 
 		// !!! Seems like this should be private / protected and not called from outside.
-		public async Task ResolveActions( SpiritGameStateCtx ctx ) {
+		public async Task ResolveActions( SelfCtx ctx ) {
 			Phase speed = ctx.GameState.Phase;
 			Present present = ctx.GameState.Phase == Phase.Growth ? Present.Always : Present.Done;
 
@@ -294,7 +295,7 @@ namespace SpiritIsland {
 			return this;
 		}
 
-		public virtual async Task TakeAction(IActionFactory factory, SpiritGameStateCtx ctx) {
+		public virtual async Task TakeAction(IActionFactory factory, SelfCtx ctx) {
 			var oldActionGuid = CurrentActionId; // capture old
 			CurrentActionId = Guid.NewGuid(); // set new
 			try {

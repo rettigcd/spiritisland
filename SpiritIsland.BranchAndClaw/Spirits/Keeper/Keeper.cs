@@ -76,7 +76,7 @@ namespace SpiritIsland.BranchAndClaw {
 		public override async Task PlacePresence( IOption from, Space to, GameState gs ) {
 			await base.PlacePresence( from, to, gs );
 			if(gs.DahanOn(to).Any && Presence.SacredSites.Contains(to))
-				await new SpiritGameStateCtx(this,gs, Cause.Growth).Target(to).PushDahan( int.MaxValue );
+				await new SelfCtx(this,gs, Cause.Growth).Target(to).PushDahan( int.MaxValue );
 		}
 
 

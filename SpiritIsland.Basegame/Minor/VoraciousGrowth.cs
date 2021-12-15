@@ -9,8 +9,8 @@ namespace SpiritIsland.Basegame {
 		static public Task ActAsync(TargetSpaceCtx ctx){
 
 			return ctx.SelectActionOption(
-				new ActionOption( "2 Damage", () => ctx.DamageInvaders( 2 ), ctx.HasInvaders ),
-				new ActionOption( "Remove 1 Blight", () => ctx.RemoveBlight(), ctx.HasBlight )
+				new SpaceAction( "2 Damage", ctx => ctx.DamageInvaders( 2 ), ctx.HasInvaders ),
+				new SpaceAction( "Remove 1 Blight", ctx => ctx.RemoveBlight(), ctx.HasBlight )
 			);
 
 		}

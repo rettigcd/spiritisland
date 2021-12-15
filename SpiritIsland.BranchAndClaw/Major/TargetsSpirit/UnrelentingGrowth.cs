@@ -24,7 +24,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 		}
 
-		static async Task<TargetSpaceCtx> AddPresenceAndWilds( SpiritGameStateCtx ctx ) {
+		static async Task<TargetSpaceCtx> AddPresenceAndWilds( SelfCtx ctx ) {
 
 			// target spirit adds 2 presence and 1 wilds to a land at range 1
 

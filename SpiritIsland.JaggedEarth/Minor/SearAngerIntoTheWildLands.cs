@@ -12,7 +12,7 @@ namespace SpiritIsland.JaggedEarth {
 			);
 		}
 
-		static ActionOption FearAndDamage => new ActionOption("1 fear and 1 Damage", async ctx => { ctx.AddFear(1); await ctx.DamageInvaders(1); } );
+		static SpaceAction FearAndDamage => new SpaceAction("1 fear and 1 Damage", async ctx => { ctx.AddFear(1); await ctx.DamageInvaders(1); } );
 		
 	}
 

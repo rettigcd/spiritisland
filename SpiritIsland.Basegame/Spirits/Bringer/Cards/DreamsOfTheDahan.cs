@@ -11,11 +11,11 @@ namespace SpiritIsland.Basegame {
 		static public Task ActAsync(TargetSpaceCtx ctx ) {
 
 			return ctx.SelectActionOption(
-				new ActionOption(
+				new SpaceAction(
 					"Gather up to 2 dahan",
 					ctx => ctx.GatherUpToNDahan( 2 )
 				),
-				new ActionOption(
+				new SpaceAction(
 					"1 fear/dahan, max 3",
 					ctx => ctx.AddFear(Math.Min(3,ctx.Dahan.Count)), 
 					ctx.Tokens.HasAny( Invader.City, Invader.Town ) 

@@ -227,7 +227,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		}
 
 		readonly VirtualTestUser user;
-		readonly SpiritGameStateCtx ctx;
+		readonly SelfCtx ctx;
 		readonly List<string> log = new();
 
 		#endregion

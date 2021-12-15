@@ -12,8 +12,8 @@ namespace SpiritIsland.BranchAndClaw {
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 			await ctx.SelectActionOption(
-				new ActionOption("Add 1 disease and 1 strife", () => AddDiseaseAndStrife( ctx ) ),
-				new ActionOption("Remove any # of beast/disease/strife/wilds for 1 fear + 3 damage each", () => RemoveTokensForFearAndDamage( ctx ) )
+				new SpaceAction("Add 1 disease and 1 strife", AddDiseaseAndStrife ),
+				new SpaceAction("Remove any # of beast/disease/strife/wilds for 1 fear + 3 damage each", RemoveTokensForFearAndDamage )
 			);
 
 		}

@@ -9,8 +9,8 @@ namespace SpiritIsland.BranchAndClaw {
 		static public async Task ActAsync(TargetSpaceCtx ctx ) {
 
 			await ctx.SelectActionOption(
-				new ActionOption("1 fear, add 1 beast", ctx => { ctx.AddFear(1); ctx.Beasts.Add(1); } ),
-				new ActionOption("3 fear", ctx => ctx.AddFear(3), ctx.Tokens.HasInvaders() && ctx.Beasts.Any )
+				new SpaceAction("1 fear, add 1 beast", ctx => { ctx.AddFear(1); ctx.Beasts.Add(1); } ),
+				new SpaceAction("3 fear", ctx => ctx.AddFear(3), ctx.Tokens.HasInvaders() && ctx.Beasts.Any )
 			);
 
 		}

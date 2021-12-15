@@ -9,7 +9,7 @@ namespace SpiritIsland {
 			this.count = count;
 		}
 
-		public override async Task ActivateAsync( SpiritGameStateCtx ctx ) {
+		public override async Task ActivateAsync( SelfCtx ctx ) {
 			for(int i=0;i<count;++i)
 				await ctx.Self.Draw(ctx.GameState);
 		}

@@ -6,9 +6,9 @@ namespace SpiritIsland.JaggedEarth {
 
 		public LetsSeeWhatHappensCtx(TargetSpaceCtx ctx ) : base( ctx, ctx.Space ) {}
 
-		public override async Task SelectActionOption( string prompt, params ActionOption[] options ) {
+		override protected async Task SelectAction_Inner<T>( string prompt, IExecuteOn<T>[] options, Present present, T ctx ) {
 			foreach(var opt in options)
-				await opt.Execute();
+				await opt.Execute( ctx );
 		}
 
 		public override Task<Space[]> PushUpTo( int countToPush, params TokenGroup[] groups ) 

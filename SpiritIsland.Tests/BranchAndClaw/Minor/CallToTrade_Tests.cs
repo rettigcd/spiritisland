@@ -126,7 +126,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Minor {
 
 		#region Given / When
 
-		static void Given_TerrorLevelIs3( SpiritGameStateCtx ctx ) {
+		static void Given_TerrorLevelIs3( SelfCtx ctx ) {
 			var fear = ctx.GameState.Fear;
 			for(int i = 0; i < 7; ++i)
 				fear.Deck.Pop();

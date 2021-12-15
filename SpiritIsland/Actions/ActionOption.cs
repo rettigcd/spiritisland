@@ -1,94 +1,59 @@
 ﻿using System;
 using System.Threading.Tasks;
 
+
 namespace SpiritIsland {
 
-	public class ActionOption {
+	public interface IExecuteOn<CTX> {
+		bool IsApplicable { get; }
+		string Description { get; }
+		Task Execute(CTX ctx);
+	}
+
+	public class ActionOption<T> : IExecuteOn<T> {
 
 		#region constructors
 
-		/// <summary> Used for TargetSpiritCtx </summary>
-		public ActionOption( string description, Action action ) {
+		public ActionOption( string description, Func<T,Task> action, bool applicable = true ) {
 			Description = description;
-			this.action = action;
-			IsApplicable = true;
-		}
-
-		public ActionOption( string description, Func<Task> action ) {
-			Description = description;
-			func = action;
-			IsApplicable = true;
-		}
-
-		public ActionOption( string description, Func<TargetSpaceCtx,Task> action ) {
-			Description = description;
-			targetSpaceFunc = action;
-			IsApplicable = true;
-		}
-
-		public ActionOption( string description, Action<TargetSpaceCtx> action ) {
-			Description = description;
-			targetSpaceAction = action;
-			IsApplicable = true;
-		}
-
-		public ActionOption( string description, Action action, bool applicable ) {
-			Description = description;
-			this.action = action;
 			IsApplicable = applicable;
+			asyncFunc = action;
 		}
 
-		public ActionOption( string description, Func<Task> action, bool applicable ) {
+		public ActionOption( string description, Action<T> syncAction, bool applicable = true ) {
 			Description = description;
-			func = action;
 			IsApplicable = applicable;
+			asyncFunc = ctx => { syncAction(ctx); return Task.CompletedTask; };
 		}
-
-		public ActionOption( string description, Func<TargetSpaceCtx,Task> action, bool applicable ) {
-			Description = description;
-			targetSpaceFunc = action;
-			IsApplicable = applicable;
-		}
-
-		public ActionOption( string description, Action<TargetSpaceCtx> action, bool applicable ) {
-			Description = description;
-			targetSpaceAction = action;
-			IsApplicable = applicable;
-		}
-
-
 
 		#endregion
 
 		public string Description { get; }
 		public bool IsApplicable { get; }
-
-		public Task Execute(){
-			if(targetSpaceFunc != null) throw new InvalidOperationException();
-			if( func!=null )
-				return func();
-			action();
-			return Task.CompletedTask;
-		}
-
-		public Task Execute(TargetSpaceCtx ctx){
-			if( targetSpaceFunc!=null )
-				return targetSpaceFunc(ctx);
-			if(targetSpaceAction != null) {
-				targetSpaceAction(ctx);
-				return Task.CompletedTask;
-			}
-
-			return Execute();
-		}
-
-		readonly Func<TargetSpaceCtx,Task> targetSpaceFunc;
-		readonly Func<Task> func;
-
-		readonly Action<TargetSpaceCtx> targetSpaceAction;
-		readonly Action action;
-
+		public Task Execute( T ctx ) => asyncFunc(ctx);
+		readonly Func<T,Task> asyncFunc;
 	}
 
+	public class SelfAction
+		: ActionOption<SelfCtx> 
+		, IExecuteOn<TargetSpiritCtx>
+		, IExecuteOn<TargetSpaceCtx>
+	{
+		public SelfAction( string description, Func<SelfCtx, Task> action, bool applicable = true ) : base( description, action, applicable ) { }
+		public SelfAction( string description, Action<SelfCtx> action, bool applicable = true ) : base( description, action, applicable ) { }
+
+		Task IExecuteOn<TargetSpiritCtx>.Execute( TargetSpiritCtx ctx ) => this.Execute( ctx );
+		Task IExecuteOn<TargetSpaceCtx>.Execute( TargetSpaceCtx ctx ) => this.Execute( ctx );
+	}
+
+	public class SpaceAction : ActionOption<TargetSpaceCtx> {
+		public SpaceAction( string description, Func<TargetSpaceCtx, Task> action, bool applicable = true ) : base( description, action, applicable ) { }
+		public SpaceAction( string description, Action<TargetSpaceCtx> action, bool applicable = true ) : base( description, action, applicable ) { }
+	}
+
+	public class OtherAction : ActionOption<TargetSpiritCtx> {
+		public OtherAction( string description, Func<TargetSpiritCtx, Task> action, bool applicable = true ) : base( description, action, applicable ) { }
+		public OtherAction( string description, Action<TargetSpiritCtx> action, bool applicable = true ) : base( description, action, applicable ) { }
+	}
 
 }

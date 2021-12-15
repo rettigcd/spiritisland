@@ -22,7 +22,7 @@ namespace SpiritIsland.JaggedEarth {
 		public bool RunAfterGrowthResult => 
 			false;
 
-		public override async Task ActivateAsync( SpiritGameStateCtx ctx ) {
+		public override async Task ActivateAsync( SelfCtx ctx ) {
 			if(used) 
 				return;
 

@@ -9,7 +9,7 @@ namespace SpiritIsland.JaggedEarth {
 
 		public bool RunAfterGrowthResult => false; // no dependencies
 
-		public override async Task ActivateAsync( SpiritGameStateCtx ctx ) {
+		public override async Task ActivateAsync( SelfCtx ctx ) {
 			if(ctx.Self is ShiftingMemoryOfAges smoa) 
 				await smoa.PrepareElement(context);
 		}

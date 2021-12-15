@@ -20,7 +20,7 @@ namespace SpiritIsland.JaggedEarth {
 	public class Extend1ForBeast : FromPresenceAttribute {
 		public Extend1ForBeast(int range, string filter = Target.Any) : base( range, filter) {}
 
-		public override async Task<object> GetTargetCtx( string powerName, SpiritGameStateCtx ctx, TargettingFrom powerType ) {
+		public override async Task<object> GetTargetCtx( string powerName, SelfCtx ctx, TargettingFrom powerType ) {
 
 			var space = await ctx.Self.TargetsSpace( powerType, ctx.GameState, powerName+": Target Space"
 				, sourceCriteria

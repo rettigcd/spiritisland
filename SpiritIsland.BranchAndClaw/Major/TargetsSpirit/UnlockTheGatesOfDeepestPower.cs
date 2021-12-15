@@ -19,19 +19,19 @@ namespace SpiritIsland.BranchAndClaw {
 
 		}
 
-		static async Task PlayCardByPayingHalfCostOrForgetting( PowerCard card, SpiritGameStateCtx ctx ) {
+		static async Task PlayCardByPayingHalfCostOrForgetting( PowerCard card, SelfCtx ctx ) {
 
 			// target spirit may now play the major power they keep by:
 			//    * paying half its cost (round up) OR
 			int cost = (card.Cost + card.Cost % 2) / 2;
-			var payingHalfCostOption = new ActionOption(
+			var payingHalfCostOption = new SelfAction(
 				$"paying {cost}",
 				ctx => ctx.Self.PlayCard(card, cost),
 				cost <= ctx.Self.Energy
 			);
 
 			//    * forgetting it at the end of turn.
-			var forgettingCardOption = new ActionOption(
+			var forgettingCardOption = new SelfAction(
 				$"forgetting at end of turn",
 				ctx => {
 					ctx.Self.PlayCard(card, 0); 
@@ -41,7 +41,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			// It gains all elmemental thresholds.
 
-			await ctx.SelectOptionalAction( $"Play {card.Name} now by:",
+			await ctx.SelectAction_Optional( $"Play {card.Name} now by:",
 				payingHalfCostOption,
 				forgettingCardOption
 			);

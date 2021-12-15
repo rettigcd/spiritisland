@@ -50,7 +50,7 @@ namespace SpiritIsland {
 			IEnumerable<Space> source,
 			TargetCriteria targetCriteria
 		) {
-			var ctx = new SpiritGameStateCtx( self, gameState, Cause.Power );
+			var ctx = new SelfCtx( self, gameState, Cause.Power );
 			return source       // starting here
 				.SelectMany( x => x.Range( targetCriteria.Range ) )
 				.Distinct()

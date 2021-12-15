@@ -14,7 +14,7 @@ namespace SpiritIsland {
 
 		public string Text => Name;
 
-		public async Task ActivateAsync( SpiritGameStateCtx ctx ) {
+		public async Task ActivateAsync( SelfCtx ctx ) {
 
 			int maxCardCost = ctx.Self.Energy;
 			var options = ctx.Self.UsedActions.OfType<PowerCard>() // can't use Discard pile because those cards are from prior rounds.  // !!! needs tests

@@ -5,7 +5,7 @@ namespace SpiritIsland {
 
 	public class SpeedChanger {
 
-		readonly SpiritGameStateCtx ctx;
+		readonly SelfCtx ctx;
 		Spirit Spirit => ctx.Self;
 		GameState GameState => ctx.GameState;
 		readonly string prompt;
@@ -13,7 +13,7 @@ namespace SpiritIsland {
 		readonly Phase resultingSpeed;
 		int countToChange;
 
-		public SpeedChanger( SpiritGameStateCtx ctx, Phase resultingSpeed, int maxCountToChange ) {
+		public SpeedChanger( SelfCtx ctx, Phase resultingSpeed, int maxCountToChange ) {
 			this.ctx = ctx;
 			this.countToChange = maxCountToChange;
 			this.resultingSpeed = resultingSpeed;

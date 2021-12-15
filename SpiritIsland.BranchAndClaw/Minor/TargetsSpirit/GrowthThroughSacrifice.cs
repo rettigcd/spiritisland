@@ -17,21 +17,21 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 
 		}
 
-		static async Task TargetSpiritAction( SpiritGameStateCtx ctx, bool doBoth ) {
+		static async Task TargetSpiritAction( SelfCtx ctx, bool doBoth ) {
 
 			// Note - not strictly following rules - altering to allow presence in any spot that has presence.
 			// Presence placed in an illegal land will allow adding more there, although it technically shouldn't.
 			string joinStr = doBoth ? "AND" : "OR";
 			var spaceCtx = await ctx.TargetLandWithPresence( $"Select location to Remove Blight {joinStr} Add Presence" );
 
-			var removeBlight = new ActionOption( "Remove 1 blight from one of your lands", () => spaceCtx.RemoveBlight() );
-			var addPresence = new ActionOption( "Add 1 presence to one of your lands", () => spaceCtx.Presence.PlaceHere() );
+			var removeBlight = new SpaceAction( "Remove 1 blight from one of your lands", spaceCtx => spaceCtx.RemoveBlight() );
+			var addPresence = new SpaceAction( "Add 1 presence to one of your lands", spaceCtx => spaceCtx.Presence.PlaceHere() );
 
 			if(!doBoth)
-				await ctx.SelectActionOption( removeBlight, addPresence );
+				await spaceCtx.SelectActionOption( removeBlight, addPresence );
 			else {
-				await removeBlight.Execute();
-				await addPresence.Execute();
+				await removeBlight.Execute(spaceCtx);
+				await addPresence.Execute(spaceCtx);
 			}
 
 		}

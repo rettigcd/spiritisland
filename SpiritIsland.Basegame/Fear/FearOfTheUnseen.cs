@@ -9,11 +9,11 @@ namespace SpiritIsland.Basegame {
 
 		[FearLevel( 1, "Each player removes 1 Explorer / Town from a land with SacredSite." )]
 		public async Task Level1( FearCtx ctx ) {
-			foreach(SpiritGameStateCtx spiritCtx in ctx.Spirits)
+			foreach(SelfCtx spiritCtx in ctx.Spirits)
 				await Remove1ExplorerOrTownFromLandWithSacredSite(spiritCtx);
 		}
 
-		static async Task Remove1ExplorerOrTownFromLandWithSacredSite( SpiritGameStateCtx ctx ) {
+		static async Task Remove1ExplorerOrTownFromLandWithSacredSite( SelfCtx ctx ) {
 			var options = ctx.Self.Presence.SacredSites.Where( s => ctx.GameState.Tokens[ s ].HasAny( Invader.Explorer, Invader.Town ) ).ToArray();
 			await ctx.RemoveTokenFromOneSpace(options,1,Invader.Town, Invader.Explorer);
 		}
@@ -34,21 +34,21 @@ namespace SpiritIsland.Basegame {
 			Space[] sacredSites = ctx.Spirits.SelectMany( spirit => spirit.Self.Presence.SacredSites ).Distinct().ToArray();
 			Space[] presences = ctx.Spirits.SelectMany( spirit => spirit.Self.Presence.Spaces ).Distinct().ToArray();
 
-			foreach(var spiritCtx in ctx.Spirits) {
+			foreach(SelfCtx spiritCtx in ctx.Spirits) {
 
 				var cityOptions         = sacredSites.Where( s=> spiritCtx.Target(s).Tokens.Has(Invader.City)).ToArray();
 				var townExplorerOptions = presences.Where( s => spiritCtx.Target(s).Tokens.HasAny( Invader.Town, Invader.Explorer) ).ToArray();
 
 				await spiritCtx.SelectActionOption(
 					"Select invader to remove",
-					new ActionOption( 
+					new SelfAction( 
 						"remove 1 explorer/town from land with presence", 
-						() => spiritCtx.RemoveTokenFromOneSpace( townExplorerOptions, 1, Invader.Town,Invader.Explorer ),
+						ctx => ctx.RemoveTokenFromOneSpace( townExplorerOptions, 1, Invader.Town,Invader.Explorer ),
 						townExplorerOptions.Length>0
 					),
-					new ActionOption( 
+					new SelfAction( 
 						"remove 1 city from land with sacred site",  
-						() => spiritCtx.RemoveTokenFromOneSpace( cityOptions, 1, Invader.City ),
+						ctx => ctx.RemoveTokenFromOneSpace( cityOptions, 1, Invader.City ),
 						cityOptions.Length > 0
 					)
 				);

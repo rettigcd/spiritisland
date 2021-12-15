@@ -10,7 +10,7 @@ namespace SpiritIsland.BranchAndClaw {
 		public async Task Level1( FearCtx ctx ) {
 
 			// each player adds 1 strife in a land with dahan
-			foreach(SpiritGameStateCtx spirit in ctx.Spirits)
+			foreach(SelfCtx spirit in ctx.Spirits)
 				await spirit.AddStrifeToOne( ctx.Lands(ctx.WithDahan) );
 		}
 
@@ -18,7 +18,7 @@ namespace SpiritIsland.BranchAndClaw {
 		public async Task Level2( FearCtx ctx ) {
 
 			// each player adds 1 strife in a land with dahan
-			foreach(SpiritGameStateCtx spirit in ctx.Spirits)
+			foreach(SelfCtx spirit in ctx.Spirits)
 				await spirit.AddStrifeToOne( ctx.Lands(ctx.WithDahan) );
 
 			// For the rest of this turn, invaders have -1 health per strife to a minimum of 1
@@ -30,7 +30,7 @@ namespace SpiritIsland.BranchAndClaw {
 		public async Task Level3( FearCtx ctx ) {
 
 			// each player adds 1 strife in a land with dahan
-			foreach(SpiritGameStateCtx spirit in ctx.Spirits)
+			foreach(SelfCtx spirit in ctx.Spirits)
 				await spirit.AddStrifeToOne( ctx.Lands(ctx.WithDahan) );
 
 			var decidingSpirit = ctx.Spirits.First();

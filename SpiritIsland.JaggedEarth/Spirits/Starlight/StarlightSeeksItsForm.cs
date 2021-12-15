@@ -131,7 +131,7 @@ namespace SpiritIsland.JaggedEarth {
 
 	class ApplyDamage : GrowthActionFactory {
 
-		public override async Task ActivateAsync( SpiritGameStateCtx ctx ) {
+		public override async Task ActivateAsync( SelfCtx ctx ) {
 			var space = await ctx.Self.Action.Decision(new Decision.TargetSpace("Select land to apply 2 Damage.", ctx.Self.Presence.Spaces,Present.Always));
 			await ctx.Target(space).DamageInvaders(2);
 		}
@@ -140,7 +140,7 @@ namespace SpiritIsland.JaggedEarth {
 
 	class MakePowerFast : GrowthActionFactory {
 
-		public override Task ActivateAsync( SpiritGameStateCtx ctx ) {
+		public override Task ActivateAsync( SelfCtx ctx ) {
 			ctx.Self.AddActionFactory( new MakeActionFast() );
 			return Task.CompletedTask;
 		}
@@ -151,7 +151,7 @@ namespace SpiritIsland.JaggedEarth {
 		bool ran;
 		public bool RunAfterGrowthResult => false;
 
-		public override Task ActivateAsync( SpiritGameStateCtx ctx ) {
+		public override Task ActivateAsync( SelfCtx ctx ) {
 			if(!ran) { 
 				ctx.Self.Energy++;
 				ran = true;
@@ -167,12 +167,12 @@ namespace SpiritIsland.JaggedEarth {
 
 		public bool RunAfterGrowthResult => false;
 
-		public override async Task ActivateAsync( SpiritGameStateCtx ctx ) {
+		public override async Task ActivateAsync( SelfCtx ctx ) {
 			await AssignNewElementToTrack( ctx, track );
 			track.Action = null;
 		}
 
-		public static async Task AssignNewElementToTrack( SpiritGameStateCtx ctx, Track track ) {
+		public static async Task AssignNewElementToTrack( SelfCtx ctx, Track track ) {
 			var el = await ctx.Self.SelectElementEx( "Select permanent element for this slot.", ElementList.AllElements );
 			track.Elements = new Element[] { el };
 			ctx.Self.Elements[el]++; // !!! this needs unit tests to ensure that they get 1 element (not 0, not more)

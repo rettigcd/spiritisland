@@ -216,7 +216,7 @@ namespace SpiritIsland.Tests.Core {
 				BaseGame => typeof( RiverSurges ),
 				BranchAndClaw => typeof( SharpFangs ),
 				JaggedEarth => typeof( ShiftingMemoryOfAges ),
-				_ => throw new ArgumentException( nameof( edition ) ),
+				_ => throw new ArgumentException( "Edition not found", nameof( edition ) ),
 			};
 		}
 

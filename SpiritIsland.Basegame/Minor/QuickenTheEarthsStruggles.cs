@@ -9,8 +9,8 @@ namespace SpiritIsland.Basegame {
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 
 			return ctx.SelectActionOption(
-				new ActionOption( "1 damage to each town/city", ctx => ctx.DamageEachInvader( 1, Invader.City, Invader.Town ) ),
-				new ActionOption( "defend 10", ctx => ctx.Defend( 10 ) )
+				new SpaceAction( "1 damage to each town/city", ctx => ctx.DamageEachInvader( 1, Invader.City, Invader.Town ) ),
+				new SpaceAction( "defend 10", ctx => ctx.Defend( 10 ) )
 			);
 
 		}

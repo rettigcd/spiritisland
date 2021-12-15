@@ -7,13 +7,13 @@ namespace SpiritIsland.JaggedEarth {
 	class StarsBlazeInTheDaytimeSky{
 
 		[InnateOption("4 sun","3 Fear. Gain 1 Energy. Reclaim up to 1 Power Card from play or your discard pile.")]
-		static public async Task Option1( TargetSpiritCtx ctx ) {
+		static public async Task Option1( SelfCtx ctx ) {
 
 			// 3 fear
 			ctx.AddFear(3);
 
 			// Gain 1 energy
-			var spirit = ctx.Other; // or .Self
+			var spirit = ctx.Self;
 			spirit.Energy++;
 
 			// Reclaim up to 1 power card from play or your discard pile

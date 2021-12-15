@@ -21,7 +21,7 @@ namespace SpiritIsland.JaggedEarth {
 			return Task.CompletedTask;
 		}
 
-		static void ExtendRangeFromMountains( SpiritGameStateCtx ctx ) {
+		static void ExtendRangeFromMountains( SelfCtx ctx ) {
 			ctx.GameState.TimePasses_ThisRound.Push( new PowerApiRestorer( ctx.Self ).Restore );
 			ctx.Self.RangeCalc = new ExtendRange1FromMountain( ctx.Self.RangeCalc );
 		}

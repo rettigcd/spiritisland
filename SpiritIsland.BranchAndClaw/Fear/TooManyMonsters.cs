@@ -31,12 +31,12 @@ namespace SpiritIsland.BranchAndClaw {
 				await RemoveTokenChoice( ctx, spirit, 2, Invader.Explorer, Invader.Town );
 		}
 
-		static Task RemoveTokenChoice( FearCtx ctx, SpiritGameStateCtx spiritCtx, int count, params TokenGroup[] interiorGroup ) {
+		static Task RemoveTokenChoice( FearCtx ctx, SelfCtx spiritCtx, int count, params TokenGroup[] interiorGroup ) {
 			return spiritCtx.SelectActionOption(
-				new ActionOption("Remove 1 explorer & 1 town from a land with beast", () => { 
+				new SelfAction("Remove 1 explorer & 1 town from a land with beast", spiritCtx => { 
 					return spiritCtx.RemoveTokenFromOneSpace( ctx.LandsWithBeasts(), count, Invader.Explorer, Invader.Town );
 				}),
-				new ActionOption("Remove 1 explorer from a land adjacent to beast", () => { 
+				new SelfAction("Remove 1 explorer from a land adjacent to beast", spiritCtx => { 
 					return spiritCtx.RemoveTokenFromOneSpace( ctx.LandsAdjacentToBeasts(), 1, interiorGroup );
 				})
 			);

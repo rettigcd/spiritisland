@@ -20,7 +20,7 @@ namespace SpiritIsland.JaggedEarth {
 
 		#region Push Explorer / Town Option
 
-		static public ActionOption PushExporerTownToAdjacenCoastland => new ActionOption( $"Push explorer/town to an adjacent Coastal land", PushToAdjacenCostalAction );
+		static public SpaceAction PushExporerTownToAdjacenCoastland => new SpaceAction( $"Push explorer/town to an adjacent Coastal land", PushToAdjacenCostalAction );
 
 		static Task PushToAdjacenCostalAction( TargetSpaceCtx ctx ) {
 			return ctx.Pusher
@@ -33,7 +33,7 @@ namespace SpiritIsland.JaggedEarth {
 
 		#region Move Dahan
 
-		static public ActionOption MoveUpTo2DahanToAnotherCostal => new ActionOption("Move up to 2 Dahan between target land and one other Costal land.", MoveDahanAction );
+		static public SpaceAction MoveUpTo2DahanToAnotherCostal => new SpaceAction("Move up to 2 Dahan between target land and one other Costal land.", MoveDahanAction );
 
 		static async Task MoveDahanAction( TargetSpaceCtx ctx ) {
 			int count = 2;
@@ -43,8 +43,8 @@ namespace SpiritIsland.JaggedEarth {
 				var costal = costalCtxs.Select(x=>x.Space).ToArray();
 
 				await ctx.SelectActionOption(
-					new ActionOption($"Move Dahan IN TO "+ ctx.Space.Label, ctx => ctx.MoveTokenIn( TokenType.Dahan, 100, Target.Coastal), costalWithDahan.Length>0),
-					new ActionOption($"Move Dahan OUT OF "+ ctx.Space.Label, ctx => ctx.MoveTokensOut(1, TokenType.Dahan, 100, Target.Coastal), ctx.Dahan.Any )
+					new SpaceAction($"Move Dahan IN TO "+ ctx.Space.Label, ctx => ctx.MoveTokenIn( TokenType.Dahan, 100, Target.Coastal), costalWithDahan.Length>0),
+					new SpaceAction($"Move Dahan OUT OF "+ ctx.Space.Label, ctx => ctx.MoveTokensOut(1, TokenType.Dahan, 100, Target.Coastal), ctx.Dahan.Any )
 				);
 
 				count--;

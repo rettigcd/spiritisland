@@ -9,7 +9,7 @@ namespace SpiritIsland.BranchAndClaw {
 		public async Task Level1( FearCtx ctx ) {
 
 			// Each player adds 1 strife in a land with beast/disease/dahan.
-			foreach(SpiritGameStateCtx spirit in ctx.Spirits)
+			foreach(SelfCtx spirit in ctx.Spirits)
 				await spirit.AddStrifeToOne( ctx.LandsWithBeastDiseaseDahan() );
 
 		}
@@ -18,7 +18,7 @@ namespace SpiritIsland.BranchAndClaw {
 		public async Task Level2( FearCtx ctx ) {
 
 			// Each player adds 1 strife in a land with beast/disease/dahan.
-			foreach(SpiritGameStateCtx spirit in ctx.Spirits)
+			foreach(SelfCtx spirit in ctx.Spirits)
 				await spirit.AddStrifeToOne( ctx.LandsWithBeastDiseaseDahan() );
 
 			// For the rest of this turn, invaders have -1 health per strife to a minimum of 1
@@ -29,7 +29,7 @@ namespace SpiritIsland.BranchAndClaw {
 		public async Task Level3( FearCtx ctx ) {
 
 			// Each player adds 1 strife to an invader.
-			foreach(SpiritGameStateCtx spirit in ctx.Spirits)
+			foreach(SelfCtx spirit in ctx.Spirits)
 				await spirit.AddStrifeToOne( ctx.GameState.Island.AllSpaces );
 
 			// For the rest of this turn, invaders have -1 health per strife to a minimum of 1.

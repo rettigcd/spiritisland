@@ -9,7 +9,7 @@ namespace SpiritIsland {
 			this.count = count;
 		}
 
-		public override Task ActivateAsync( SpiritGameStateCtx ctx ) {
+		public override Task ActivateAsync( SelfCtx ctx ) {
 			ctx.Self.tempCardPlayBoost++;
 			return Task.CompletedTask;
 		}

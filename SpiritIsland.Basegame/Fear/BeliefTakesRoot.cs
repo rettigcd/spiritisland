@@ -36,7 +36,7 @@ namespace SpiritIsland.Basegame {
 
 		}
 
-		static async Task RemoveInvadersFromLand( SpiritGameStateCtx ctx, HashSet<Space> used ) {
+		static async Task RemoveInvadersFromLand( SelfCtx ctx, HashSet<Space> used ) {
 			var gs = ctx.GameState;
 			// pick land
 			var targetOptions = ctx.Self.Presence.Spaces

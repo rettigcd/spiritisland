@@ -5,7 +5,7 @@ namespace SpiritIsland.JaggedEarth {
 	class ThePastReturnsAgain {
 
 		[SpiritCard( "The Past Returns Again", 0, Element.Sun, Element.Moon ), Fast, Yourself]
-		static public async Task ActAsync( TargetSpiritCtx ctx ) {
+		static public async Task ActAsync( SelfCtx ctx ) {
 
 			if( ctx.Self is not FracturedDaysSplitTheSky frac) return;
 

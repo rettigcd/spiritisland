@@ -9,8 +9,8 @@ namespace SpiritIsland.BranchAndClaw {
 		[FromPresence( 1 )]
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 			return ctx.SelectActionOption(
-				new ActionOption("Defend 4", ctx => ctx.Defend(4) ),
-				new ActionOption("Invaders added to target are immediately pushed", PushFutureInvadersFromLands )
+				new SpaceAction("Defend 4", ctx => ctx.Defend(4) ),
+				new SpaceAction("Invaders added to target are immediately pushed", PushFutureInvadersFromLands )
 			);
 		}
 
