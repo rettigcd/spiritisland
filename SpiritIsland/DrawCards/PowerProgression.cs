@@ -31,7 +31,7 @@ namespace SpiritIsland {
 
 			self.AddCardToHand( newCard );
 			if(newCard.PowerType == PowerType.Major)
-				await self.ForgetPowerCard();
+				await self.ForgetPowerCard_UserChoice();
 			return new DrawCardResult( newCard.PowerType ) {
 				SelectedCards = new PowerCard[]{ newCard },
 				Rejected = new List<PowerCard>(),

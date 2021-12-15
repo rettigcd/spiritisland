@@ -27,9 +27,11 @@ namespace SpiritIsland {
 
 		public int this[Token specific] {
 			get {
-				if( specific == TokenType.Defend ) return Defend.Count;
 				ValidateIsAlive( specific );
-				return counts[specific];
+				int count = counts[specific];
+				if( specific is UniqueToken ut )
+					count += tokenApi.GetDynamicTokenFor(Space, ut);
+				return count;
 			}
 			private set {
 				ValidateIsAlive( specific );
@@ -78,13 +80,9 @@ namespace SpiritIsland {
 		}
 
 		public readonly CountDictionary<Token> counts; // !!! public for Tokens_ForIsland Memento, create own momento.
+		readonly IIslandTokenApi tokenApi;
 
 		#endregion
-
-
-
-
-		readonly IIslandTokenApi tokenApi;
 
 		/// <summary> Non-event-triggering setup </summary>
 		public void Adjust( Token specific, int delta ) {
@@ -97,7 +95,7 @@ namespace SpiritIsland {
 			counts[specific] = value;
 		}
 
-		public Task Add( Token token, int count, AddReason addReason ) {
+		public Task Add( Token token, int count, AddReason addReason = AddReason.Added ) {
 			if(count < 0) throw new System.ArgumentOutOfRangeException( nameof( count ) );
 			this[token] += count;
 			return tokenApi.Publish_Added( Space, token, count, addReason );
@@ -114,7 +112,8 @@ namespace SpiritIsland {
 			return tokenApi.Publish_Removed( Space, token, count, reason );
 		}
 
-		public Task Destroy( Token token, int count ) => Remove(token,count, RemoveReason.Destroyed);
+		// Convenience only
+		public Task Destroy( Token token, int count ) => Remove(token, count, RemoveReason.Destroyed );
 
 		public async Task MoveTo(Token token, Space destination ) {
 
@@ -131,8 +130,6 @@ namespace SpiritIsland {
 			await tokenApi.Publish_Moved( token, Space, destination );
 
 		}
-
-		public int GetDynamicDefend() => tokenApi.GetDynamicDefendFor( Space );
 
 		public void AddStrifeTo( Token invader, int count = 1 ) {
 

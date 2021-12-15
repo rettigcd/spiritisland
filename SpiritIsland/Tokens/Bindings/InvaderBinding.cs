@@ -64,10 +64,10 @@ namespace SpiritIsland {
 
 		#region Destroy
 
-		public async Task<int> Destroy( int countToDestory, TokenClass generic ) {
+		public async Task<int> Destroy( int countToDestory, TokenClass tokenClass ) {
 			if(countToDestory == 0) return 0;
 			Token[] invaderTypesToDestory = Tokens.Invaders()
-				.Where( x=> x.Class==generic )
+				.Where( x=> x.Class == tokenClass )
 				.OrderByDescending( x => x.Health ) // kill healthiest first
 				.ToArray();
 
@@ -117,7 +117,7 @@ namespace SpiritIsland {
 		/// Sticking on InvaderGroup is the only place I can think to put it.
 		/// Also, shouldn't be affected by Bringer overwriting 'Destroy' and 'Damage'
 		/// </remarks>
-		public void Remove( params TokenClass[] removables ) {
+		public async Task Remove( params TokenClass[] removables ) {
 			if(Tokens.SumAny(removables) == 0) return;
 
 			var invaderToRemove = Tokens.OfAnyType( removables )
@@ -127,12 +127,11 @@ namespace SpiritIsland {
 				.FirstOrDefault();
 
 			if(invaderToRemove != null)
-				Tokens.Adjust( invaderToRemove, -1 );
+				await Tokens.Remove( invaderToRemove, 1 );
 		}
 
-		public Task Remove( Token token, int count, RemoveReason reason ) {
-			return Tokens.Remove( token, count, reason );
-		}
+		public Task Remove( Token token, int count, RemoveReason reason = RemoveReason.Removed )
+			=> Tokens.Remove( token, count, reason );
 
 		#endregion
 

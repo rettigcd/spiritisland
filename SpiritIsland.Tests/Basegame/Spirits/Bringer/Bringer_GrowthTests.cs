@@ -102,7 +102,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			Assert_EnergyTrackIs( expectedEnergyGrowth );
 			spirit.InitElementsFromPresence();
 
-			_ = spirit.ApplyRevealedPresenceTracks(null);
+			_ = spirit.ApplyRevealedPresenceTracks_CalledOnlyFromTests(null);
 
 			//if(elements.Contains( '*' ))
 			//	spirit.GetAvailableActions(Phase.Growth).Single().Name.ShouldBe("Select elements (1)");  !!! Test the Any Element somehow
@@ -123,7 +123,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			spirit.Presence.CardPlays.SetRevealedCount( revealedSpaces );
 			Assert_CardTrackIs(expectedCardPlayCount);
 
-			_ = spirit.ApplyRevealedPresenceTracks(null);
+			_ = spirit.ApplyRevealedPresenceTracks_CalledOnlyFromTests(null);
 
 			//if(elements.Contains( '*' ))
 			//	spirit.GetAvailableActions( Phase.Growth ).Single().Name.ShouldBe( "Select elements (1)" ); !!! Test the Any Element somehow

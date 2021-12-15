@@ -131,7 +131,7 @@ namespace SpiritIsland {
 
 		/// <summary> Adds blight from the blight card to a space on the board. </summary>
 		public async Task AddBlight( Space space, int delta=1 ){ // also used for removing blight
-			blightOnCard -= await AddBlightBehavior( Tokens[space], delta );
+			blightOnCard -= await AddRemoveBlightBehavior( Tokens[space], delta );
 		}
 
 		public bool HasBlight( Space s ) => GetBlightOnSpace(s) > 0;
@@ -143,15 +143,17 @@ namespace SpiritIsland {
 		#region Invader Phase / Deck Modifications
 
 		public void SkipAllInvaderActions( params Space[] targets ) {
-			SkipRavage( targets );
-			Skip1Build( targets );
-			SkipExplore( targets );
+			foreach(var target in targets){
+				SkipRavage( target );
+				Skip1Build( target );
+				SkipExplore( target );
+			}
 		}
 
-		public void SkipRavage( params Space[] spacesToSkip ) {
+		public void SkipRavage( Space space, Func<GameState,Space,Task> altAction = null ) {
 			PreRavaging.ForRound.Add( ( gs, args ) => {
-				foreach(var skip in spacesToSkip)
-					args.Skip1(skip);
+				args.Skip1(space);
+				altAction?.Invoke( this, space );
 			} );
 		}
 
@@ -160,26 +162,26 @@ namespace SpiritIsland {
 		}
 
 
-		public void Skip1Build( params Space[] target ) {
+		public void Skip1Build( Space space, Func<GameState,Space,Task> altAction = null ) {
 			PreBuilding.ForRound.Add( (GameState gs, BuildingEventArgs args) => {
-				foreach(var skip in target)
-					args.Skip1(skip);
-			});
+				args.Skip1(space);
+				altAction?.Invoke( this, space );
+			} );
 		}
 
 		public void Add1Build( params Space[] target ) {
 			// !!! This should only add to spaces that match invader card
 			PreBuilding.ForRound.Add( ( GameState gs, BuildingEventArgs args ) => {
-				foreach(var skip in target)
-					args.Add( skip );
+				foreach(var space in target)
+					args.Add( space );
 			} );
 		}
 
 
-		public void SkipExplore( params Space[] target ) {
+		public void SkipExplore( Space space, Func<GameState,Space,Task> altAction = null  ) {
 			PreExplore.ForRound.Add( ( gs, args ) => {
-				foreach(var space in target)
-					args.Skip(space);
+				args.Skip(space);
+				altAction?.Invoke( this, space );
 			} );
 		}
 
@@ -217,7 +219,7 @@ namespace SpiritIsland {
 
 		public Func<GameState,Space,AddBlightEffect> DetermineAddBlightEffect = DefaultDetermineAddBlightEffect; /// <summary> Hook so Stone's presence can stop the cascade / Destroy effects of blight. </summary>
 
-		public Func<TokenCountDictionary,int,Task<int>> AddBlightBehavior = DefaultAddBlight; // hook for Stone's Defiance
+		public Func<TokenCountDictionary,int,Task<int>> AddRemoveBlightBehavior = DefaultAddRemoveBlight; // hook for Stone's Defiance
 
 		public Func<Spirit,GameState,Cause,Task> Destroy1PresenceFromBlightCard = DefaultDestroy1PresenceFromBlightCard; // Direct distruction from Blight Card, not cascading
 
@@ -267,11 +269,15 @@ namespace SpiritIsland {
 		}
 
 		/// <returns># of blight to remove from card</returns>
-		static async Task<int> DefaultAddBlight( TokenCountDictionary tokens, int delta = 1 ) {
+		static async Task<int> DefaultAddRemoveBlight( TokenCountDictionary tokens, int delta = 1 ) {
 			var blight = tokens.Blight;
-			if(blight + delta < 0) throw new Exception( "Can't remove blight that isn't there" );
+			if(blight.Count + delta < 0) throw new Exception( "Can't remove blight that isn't there" );
 
-			await blight.Add(delta,AddReason.TakenFromCard);
+			if( 0 < delta )
+				await blight.Add(delta,AddReason.TakenFromCard);
+			else if( delta < 0 )
+				await blight.Remove(-delta,RemoveReason.ReturnedToCard);
+
 			return delta;
 		}
 

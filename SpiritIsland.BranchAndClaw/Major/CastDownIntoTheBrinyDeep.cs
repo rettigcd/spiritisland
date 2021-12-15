@@ -16,33 +16,33 @@ namespace SpiritIsland.BranchAndClaw {
 
 			// if you have (2 sun, 2 moon, 4 water, 4 earth):
 			if(await ctx.YouHave("2 sun,2 moon,4 water,4 earth"))
-				await DestroyBoard( ctx );
+				await DestroyBoard( ctx, ctx.Space.Board );
 		}
 
-		static async Task DestroyBoard( TargetSpaceCtx ctx ) {
+		static async Task DestroyBoard( SelfCtx ctx, Board board ) {
 			// destory the board containing target land and everything on that board.
 			// All destroyed blight is removed from the game instead of being returned to the blight card.
-			await DestoryTokens( ctx );
+			await DestoryTokens( ctx, board );
 
 			if(!ctx.Self.Text.StartsWith( "Bringer" )) { // !!! Maybe Api should have method called "Destroy Space" or "DestoryBoard"
 
 				// destory presence
 				foreach(var spirit in ctx.GameState.Spirits)
-					foreach(var p in spirit.Presence.Placed.Where(p=>p.Board==ctx.Space.Board).ToArray() )
+					foreach(var p in spirit.Presence.Placed.Where(p=>p.Board==board).ToArray() )
 						await spirit.Presence.Destroy(p, ctx.GameState, ActionType.SpiritPower);
 
 				// destroy board - spaces
-				foreach(var space in ctx.Space.Board.Spaces)
-					space.Disconnect();
+				foreach(var space in board.Spaces.ToArray())
+					board.Remove( space );
 
-				ctx.GameState.Island.RemoveBoard( ctx.Space.Board );
+				ctx.GameState.Island.RemoveBoard( board );
 
 			}
 		}
 
-		static async Task DestoryTokens( TargetSpaceCtx ctx ) {
+		static async Task DestoryTokens( SelfCtx ctx, Board board ) {
 
-			foreach(var space in ctx.Space.Board.Spaces) {
+			foreach(var space in board.Spaces) {
 
 				var spaceCtx = ctx.Target( space );
 

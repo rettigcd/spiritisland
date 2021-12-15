@@ -13,6 +13,9 @@ namespace SpiritIsland {
 	/// </summary>
 	public class RepeatCardForCost : IActionFactory {
 
+		readonly protected string[] exclude;
+		public RepeatCardForCost(params string[] exclude ) { this.exclude = exclude; }
+
 		public bool CouldActivateDuring( Phase speed, Spirit _ ) 
 			=> speed == Phase.Fast || speed == Phase.Slow;
 
@@ -36,6 +39,7 @@ namespace SpiritIsland {
 		protected virtual PowerCard[] GetCardOptions( SelfCtx ctx ) {
 			int maxCardCost = ctx.Self.Energy;
 			PowerCard[] options = ctx.Self.UsedActions.OfType<PowerCard>() // can't use Discard pile because those cards are from prior rounds.  // !!! needs tests
+				.Where( card => !exclude.Contains(card.Name) )
 				.Where( card => ctx.Self.IsActiveDuring( ctx.GameState.Phase, card ) )
 				.Where( card => card.Cost <= maxCardCost )
 				.ToArray();
@@ -44,11 +48,9 @@ namespace SpiritIsland {
 	}
 
 	public class RepeatCheapestCardForCost : RepeatCardForCost {
-		readonly string[] exclude;
-		public RepeatCheapestCardForCost(params string[] exclude ) { this.exclude = exclude; }
+		public RepeatCheapestCardForCost(params string[] exclude ):base(exclude) {}
 		protected override PowerCard[] GetCardOptions( SelfCtx ctx ) {
-			return ctx.Self.UsedActions.OfType<PowerCard>()
-				.Where( card => !exclude.Contains(card.Name) )
+			return base.GetCardOptions(ctx)
 				.GroupBy( pc => pc.Cost )
 				.OrderBy( grp => grp.Key )
 				.First() // group with lowest cost

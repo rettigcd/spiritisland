@@ -23,7 +23,7 @@ namespace SpiritIsland.BranchAndClaw {
 			// Invaders skip their normal explore and build in lands ith beast
 			foreach(var land in ctx.GameState.Island.AllSpaces)
 				if(ctx.GameState.Tokens[land].Beasts.Any) {
-					ctx.GameState.SkipExplore(land);
+					ctx.GameState.SkipExplore( land );
 					ctx.GameState.Skip1Build( land );
 				}
 		}

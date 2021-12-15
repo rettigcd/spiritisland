@@ -25,8 +25,12 @@ namespace SpiritIsland {
 		static public SpaceAction PushExplorersOrTowns( int count ) => new SpaceAction( $"Push {count} explorers or towns", ctx => ctx.Push( count, Invader.Town, Invader.Explorer ) ).Cond( ctx=>ctx.Tokens.HasAny( Invader.Explorer, Invader.Town ) );
 
 		// - Adjust Tokens Counts -
-		static public SpaceAction Add1Wilds => new SpaceAction("Add 1 Wilds.", ctx => ctx.Wilds.Add(1) );
-		static public SpaceAction Add1Badlands => new SpaceAction("Add 1 Badland.", ctx => ctx.Badlands.Add(1) );
+		static public SpaceAction RemoveBlight => new SpaceAction("Remove 1 blight", ctx => ctx.RemoveBlight() );
+
+		static public SpaceAction AddWilds( int count ) => new SpaceAction($"Add {count} Wilds.", ctx => ctx.Wilds.Add(count) );
+
+		static public SpaceAction AddBadlands( int badLandCount ) => new SpaceAction( $"Add {badLandCount} badlands", ctx => ctx.Badlands.Add( badLandCount ) );
+
 		static public SpaceAction Add1Strife => new SpaceAction("Add 1 Strife.", ctx => ctx.AddStrife() );
 		static public SpaceAction Defend1PerDahan => new SpaceAction("Defend 1 per Dahan.", ctx => ctx.Defend(ctx.Dahan.Count));
 

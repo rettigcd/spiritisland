@@ -4,9 +4,9 @@ namespace SpiritIsland.Basegame {
 
 	public class PowerStorm {
 
-		[MajorCard("Powerstorm",3,Element.Sun,Element.Fire,Element.Air)]
-		[Fast]
-		[AnySpirit]
+		const string Name = "Powerstorm";
+
+		[MajorCard(Name,3,Element.Sun,Element.Fire,Element.Air), Fast, AnySpirit]
 		static public async Task ActionAsync( TargetSpiritCtx ctx ) {
 			
 			// target spirit gains 3 energy
@@ -20,7 +20,7 @@ namespace SpiritIsland.Basegame {
 				repeats += 2;
 
 			while(repeats-->0)
-				ctx.Other.AddActionFactory( new RepeatCardForCost() );
+				ctx.Other.AddActionFactory( new RepeatCardForCost(Name) );
 		}
 
 	}

@@ -83,14 +83,18 @@ namespace SpiritIsland {
 		#region select Source
 
 		/// <summary> Tries Presence Tracks first, then fails over to placed-presence on Island </summary>
-		public async Task<IOption> SelectSource() {
-			return (IOption)await ctx.Decision( Select.TrackSlot.ToReveal( "Select Presence to place.", ctx.Self ) )
-				?? (IOption)await ctx.Decision( Select.DeployedPresence.All("Select Presence to place.", ctx.Self,Present.Always) );
+		public async Task<IOption> SelectSource(string actionPhrase = "place") {
+			string prompt = $"Select Presence to {actionPhrase}.";
+			return (IOption)await ctx.Decision( Select.TrackSlot.ToReveal( prompt, ctx.Self ) )
+				?? (IOption)await ctx.Decision( Select.DeployedPresence.All( prompt, ctx.Self,Present.Always) );
 		}
 
-		public async Task<Space> SelectDeployed(string prompt) {
-			return await ctx.Decision( Select.DeployedPresence.All(prompt, ctx.Self,Present.Always ) );
-		}
+		public Task<Space> SelectDeployed(string prompt)
+			=> ctx.Decision( Select.DeployedPresence.All(prompt, ctx.Self,Present.Always ) );
+
+		public Task<Space> SelectSacredSite(string prompt)
+			=> ctx.Decision( Select.DeployedPresence.SacredSites(prompt, ctx.Self,Present.Always ) );
+		
 
 		#endregion
 

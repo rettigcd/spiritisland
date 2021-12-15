@@ -11,7 +11,7 @@ namespace SpiritIsland.Basegame {
 				await new SelfCtx( spirit, gs, Cause.Blight ).SelectActionOption(
 					"BLIGHT: Memory Fades to Dust",
 					new SelfAction("Destroy Presence",ctx=>ctx.GameState.Destroy1PresenceFromBlightCard(spirit,gs,Cause.Blight)),
-					new SelfAction("Forget Power card", ctx => ctx.Self.ForgetPowerCard() )
+					new SelfAction("Forget Power card", ctx => ctx.Self.ForgetPowerCard_UserChoice() )
 				);
 		}
 

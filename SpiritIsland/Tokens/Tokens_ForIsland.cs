@@ -12,9 +12,14 @@ namespace SpiritIsland {
 		public Tokens_ForIsland( GameState gs ) {
 			this.gameStateForEventArgs = gs;
 
-			gs.TimePasses_WholeGame += TokenAdded.ForRound.Clear;
-			gs.TimePasses_WholeGame += TokenMoved.ForRound.Clear;
-			gs.TimePasses_WholeGame += TokenRemoved.ForRound.Clear;
+			gs.TimePasses_WholeGame += TimePasses;
+		}
+
+		void TimePasses( GameState _ ) {
+			TokenAdded.ForRound.Clear();
+			TokenMoved.ForRound.Clear();
+			TokenRemoved.ForRound.Clear();
+			dynamicTokens_ForRound.Clear();
 		}
 
 		public TokenCountDictionary this[Space space] {
@@ -27,9 +32,24 @@ namespace SpiritIsland {
 		}
 
 		readonly Dictionary<Space, TokenCountDictionary> tokenCounts = new Dictionary<Space, TokenCountDictionary>();
-		public List<Func<Space, int>> VirtualDefend_ForGame { get; } = new List<Func<Space, int>>(); // !!! save to Memento???
 
-		public int GetDynamicDefendFor( Space space ) => VirtualDefend_ForGame.Sum(x=> x( space ) );
+		readonly Dictionary<UniqueToken, List<Func<GameState, Space, int>>> dynamicTokens_ForGame = new Dictionary<UniqueToken, List<Func<GameState, Space, int>>>(); // !!! save to memento???
+		readonly Dictionary<UniqueToken, List<Func<GameState, Space, int>>> dynamicTokens_ForRound = new Dictionary<UniqueToken, List<Func<GameState, Space, int>>>(); // !!! save to memento???
+
+		public void RegisterDynamic( System.Func<GameState,Space,int> inner, UniqueToken targetToken, bool entireGame ) {
+			var dict = entireGame ? dynamicTokens_ForGame : dynamicTokens_ForRound;
+			if( !dict.ContainsKey( targetToken ) )
+				dict.Add( targetToken, new List<Func<GameState,Space,int>>() );
+			dict[targetToken].Add( inner );
+		}
+
+		public int GetDynamicTokenFor( Space space, UniqueToken token ) 
+			=> GetDynamicDefendFor( dynamicTokens_ForGame, space, token )
+			+ GetDynamicDefendFor( dynamicTokens_ForRound, space, token );
+
+		int GetDynamicDefendFor( Dictionary<UniqueToken, List<Func<GameState, Space, int>>> dict, Space space, UniqueToken token ) 
+			=> dict.ContainsKey(token) ? dict[token].Sum(x => x( gameStateForEventArgs, space ) ) : 0;
+
 
 		public IEnumerable<Space> Keys => tokenCounts.Keys;
 

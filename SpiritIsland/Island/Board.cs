@@ -139,12 +139,18 @@ namespace SpiritIsland {
 		public IEnumerable<Space> Spaces => spaces;
 
 		#region Add / Remove spaces from board
-		public void Add( Space space ) {
+		public void Add( Space space, Space[] adjacents ) {
 			spaces = spaces.Union( new[] {space}).ToArray();
-		} // Absolute Stasis
-		public void Remove( Space space ) { 
+			space.SetAdjacentToSpaces(adjacents);
+		} // Absolute Stasis / Weave togehter
+
+		/// <returns>Old adjacents</returns>
+		public Space[] Remove( Space space ) {
+			var oldAdj = space.Adjacent.ToArray();
+			space.Disconnect();
 			spaces = spaces.Where(s => s != space ).ToArray();
-		} // Absolute Stasis
+			return oldAdj;
+		} // Absolute Stasis / Weave together
 		#endregion
 
 		public Space Ocean => Spaces.Single( space => space.IsOcean );

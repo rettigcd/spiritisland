@@ -34,13 +34,13 @@ namespace SpiritIsland.JaggedEarth {
 		public PayEnergyToTakeFromCard( SelfCtx ctx, int cost ) {
 			this.spirit = ctx.Self;
 			this.cost = cost;
-			this.oldBehavior = ctx.GameState.AddBlightBehavior;
-			ctx.GameState.AddBlightBehavior = this.AddBlight;
+			this.oldBehavior = ctx.GameState.AddRemoveBlightBehavior;
+			ctx.GameState.AddRemoveBlightBehavior = this.AddBlight;
 			ctx.GameState.TimePasses_ThisRound.Push( Restore );
 		}
 
 		Task Restore(GameState gs ) {
-			gs.AddBlightBehavior = oldBehavior; 
+			gs.AddRemoveBlightBehavior = oldBehavior; 
 			return Task.CompletedTask;
 		}
 

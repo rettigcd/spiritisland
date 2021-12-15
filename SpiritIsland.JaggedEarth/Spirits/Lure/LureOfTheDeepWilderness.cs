@@ -62,7 +62,8 @@ namespace SpiritIsland.JaggedEarth {
 				await GrowAndResolve( option, gameState );
 			}
 
-			await ApplyRevealedPresenceTracks(gameState);
+			var ctx = new SelfCtx( this, gameState, Cause.Growth );
+			await ApplyRevealedPresenceTracks( ctx );
 
 		}
 

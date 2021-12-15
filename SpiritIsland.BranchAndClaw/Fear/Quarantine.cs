@@ -45,7 +45,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 		static void ExploreDoesNotAffectCoastalLands( FearCtx ctx ) {
 			var gs = ctx.GameState;
-			gs.SkipExplore( gs.Island.AllSpaces.Where( x => x.IsCoastal ).ToArray() );
+			foreach(var costal in gs.Island.AllSpaces.Where( x => x.IsCoastal ))
+				gs.SkipExplore( costal );
 		}
 	}
 

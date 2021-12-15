@@ -153,7 +153,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			spirit.Presence.Energy.SetRevealedCount( revealedSpaces );
 			spirit.InitElementsFromPresence();
 
-			await spirit.ApplyRevealedPresenceTracks(null);
+			await spirit.ApplyRevealedPresenceTracks_CalledOnlyFromTests(null);
 
 			Assert_PresenceTracksAre( expectedEnergyGrowth, 2 );
 			Assert_BonusElements( elements );

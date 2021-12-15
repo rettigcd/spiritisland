@@ -10,9 +10,11 @@ namespace SpiritIsland.JaggedEarth {
 		[MinorCard(Name, 1, Element.Sun,Element.Moon,Element.Plant,Element.Animal),Fast,FromPresence(1)]
 		static public async Task ActAsync(TargetSpaceCtx ctx){
 			// A Spirit with presence on target board may add 1 of their Destoryed presence.
-			var spiritOptions = ctx.GameState.Spirits.Where( s=>s.Presence.IsOn(ctx.Space) && s.Presence.Destroyed>0 ).ToArray();
+			var spiritOptions = ctx.GameState.Spirits.Where( s=>s.Presence.Spaces.Any(s=>s.Board==ctx.Space.Board) && 0 < s.Presence.Destroyed ).ToArray();
+
 			var other = await ctx.Decision(new Select.Spirit(Name,spiritOptions,Present.AutoSelectSingle) );
-			await ctx.Target(other).Presence.PlaceDestroyedHere();
+			if(other != null)
+				await ctx.Target(other).Presence.PlaceDestroyedHere();
 
 			// Gather up to 2 dahan.
 			await ctx.GatherUpToNDahan(2);

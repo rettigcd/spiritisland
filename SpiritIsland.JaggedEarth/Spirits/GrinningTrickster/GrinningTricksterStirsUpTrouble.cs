@@ -63,9 +63,9 @@ namespace SpiritIsland.JaggedEarth {
 		}
 
 		// Cleanup Up Messes is such a drag
-		public override async Task RemoveBlight( TargetSpaceCtx ctx ) {
+		public override async Task RemoveBlight( TargetSpaceCtx ctx, int count=1 ) {
 			await CleaningUpMessesIsSuckADrag( ctx );
-			await base.RemoveBlight( ctx );
+			await base.RemoveBlight( ctx,count );
 		}
 
 		async Task CleaningUpMessesIsSuckADrag( TargetSpaceCtx ctx ) {

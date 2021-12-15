@@ -143,7 +143,7 @@ namespace SpiritIsland.WinForms {
 			logForm.Clear();
 
 			var gc = gameConfiguration;
-			logForm.AppendLine($"=== Game: {gc.SpiritType.Name} - {gc.Board} - {gc.ShuffleNumber} ===");
+			logForm.AppendLine($"=== Game: {gc.SpiritType.Name} : {gc.Board} : {gc.ShuffleNumber} ===");
 
 
 			GameState gameState = gameConfiguration.BuildGame();

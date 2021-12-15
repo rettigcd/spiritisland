@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace SpiritIsland {
@@ -34,23 +33,6 @@ namespace SpiritIsland {
 
 		readonly Terrain terrain;
 
-	}
-
-	public class SpaceMulti : Space {
-		public SpaceMulti(params Space[] spaces):base(string.Join(":", spaces.Select(s=>s.Label)) ){
-			var parts = new List<Space1>();
-			foreach(var space in spaces)
-				if(space is Space1 one)
-					parts.Add(one);
-				else if(space is SpaceMulti many)
-					parts.AddRange(many.parts);
-			this.parts = parts.ToArray();
-		}
-
-		public override bool Is( Terrain terrain ) => parts.Any(part => part.Is(terrain));
-		public override bool IsOneOf( params Terrain[] options ) => parts.Any(part => part.IsOneOf(options));
-
-		readonly Space1[] parts;
 	}
 
 }

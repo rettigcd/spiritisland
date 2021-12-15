@@ -128,7 +128,7 @@ namespace SpiritIsland {
 			var spaceCtx = await SelectSpace( "Remove invader from", spaceOptions );
 			if(spaceCtx != null)
 				while(count-->0)
-					spaceCtx.Invaders.Remove( removables );
+					await spaceCtx.Invaders.Remove( removables );
 			return spaceCtx?.Space;
 		}
 

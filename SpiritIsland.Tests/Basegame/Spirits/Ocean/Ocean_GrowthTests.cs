@@ -141,7 +141,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			spirit.Presence.Energy.SetRevealedCount( revealedSpaces );
 			spirit.InitElementsFromPresence();
 			Assert_EnergyTrackIs( expectedEnergyGrowth );
-			await spirit.ApplyRevealedPresenceTracks(null);
+			await spirit.ApplyRevealedPresenceTracks_CalledOnlyFromTests(null);
 			Assert_BonusElements( elements );
 		}
 

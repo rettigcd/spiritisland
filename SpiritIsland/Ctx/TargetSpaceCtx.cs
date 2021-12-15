@@ -153,19 +153,19 @@ namespace SpiritIsland {
 
 		public Task DestroyDahan( int countToDestroy ) => Dahan.Destroy( countToDestroy, Cause );
 
+		/// <summary> The effective Terrain for powers. Will be Wetland for Ocean when Oceans-Hungry-Grasp is on board </summary>
+		public bool IsOneOf(params Terrain[] terrain) => TerrainMapper.IsOneOf(Space, terrain); // !!!!!!!!!!!!!!!!!
 		public bool IsCoastal   => TerrainMapper.IsCoastal( Space );
-		public bool IsInPlay   => !TerrainMapper.IsOneOf( Space, Terrain.Ocean );
+
+		public bool IsInPlay => TerrainMapper.IsInPlay( Space );
+
 		public bool Matches( string filterEnum ) => IsInPlay && SpaceFilterMap.Get(filterEnum)(this);
 
-		/// <summary> The effective Terrain for powers. Will be Wetland for Ocean when Oceans-Hungry-Grasp is on board </summary>
-		//		public Terrain Terrain => TerrainMapper.GetTerrain( Space );
-		public bool IsOneOf(params Terrain[] options) => TerrainMapper.IsOneOf( Space, options );
-
-		public bool HasBlight => GameState.HasBlight(Space);
-		public Task AddBlight(int delta=1) => GameState.AddBlight(Space,delta);
+		public bool HasBlight => GameState.HasBlight(Space); // !!! route this through tokens
+		public Task AddBlight(int delta=1) => GameState.AddBlight(Space,delta); // !!! route this through tokens
 
 		/// <summary> Returns blight from the board to the blight card. </summary>
-		public Task RemoveBlight() => Self.RemoveBlight( this );// !!! replace with a method on the .Blight property called .ReturnToCard(1), then call that directly instead of this
+		public Task RemoveBlight(int count=1) => Self.RemoveBlight( this, count );// !!! replace with a method on the .Blight property called .ReturnToCard(1), then call that directly instead of this
 
 		public int BlightOnSpace => GameState.GetBlightOnSpace(Space);
 
@@ -180,8 +180,9 @@ namespace SpiritIsland {
 			};
 
 		public void SkipAllInvaderActions() => GameState.SkipAllInvaderActions(Space);
-		public void Skip1Build() => GameState.Skip1Build(Space);
-		public void SkipRavage() => GameState.SkipRavage(Space);
+		public void Skip1Build(Func<GameState,Space,Task> altAction = null) => GameState.Skip1Build( Space, altAction);
+		public void SkipExplore(Func<GameState,Space,Task> altAction = null) => GameState.SkipExplore( Space, altAction );
+		public void SkipRavage(Func<GameState,Space,Task> altAction = null) => GameState.SkipRavage(Space, altAction );
 
 		// Damage invaders in the current target space
 		// This called both from powers and from Fear
@@ -269,7 +270,7 @@ namespace SpiritIsland {
 
 		#endregion
 
-		public void RemoveInvader( TokenClass group ) => Invaders.Remove( group );
+		public Task RemoveInvader( TokenClass group ) => Invaders.Remove( group );
 
 		public async Task<int> RemoveHealthWorthOfInvaders( int damage ) {
 			Token pick;

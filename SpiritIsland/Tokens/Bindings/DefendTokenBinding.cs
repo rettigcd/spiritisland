@@ -6,8 +6,7 @@
 			this.tokens = tokens;
 		}
 
-		public int Count => tokens.counts[TokenType.Defend] // *******  Don't try to index off TokenCountDictionary directly - causes stack overflow ********
-			+ tokens.GetDynamicDefend();
+		public int Count => tokens[TokenType.Defend];
 
 		public void Add( int count ) {
 			tokens.Adjust( TokenType.Defend, count ); // this should NOT trigger token-added event, Defend are not real tokens.

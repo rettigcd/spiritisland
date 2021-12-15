@@ -77,9 +77,11 @@ namespace SpiritIsland.Basegame {
 				var sCtx = spirit.Target(target);
 
 				if(sCtx.Tokens.Has(Invader.City))
-					sCtx.RemoveInvader(Invader.City);
+					await sCtx.RemoveInvader(Invader.City);
 				else
-					sCtx.Tokens.Adjust(Invader.Explorer[1],-3);
+					await sCtx.RemoveInvader(Invader.Explorer);
+					await sCtx.RemoveInvader(Invader.Explorer);
+					await sCtx.RemoveInvader(Invader.Explorer);
 			}
 		}
 

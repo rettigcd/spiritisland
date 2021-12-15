@@ -65,6 +65,8 @@ namespace SpiritIsland {
 			.Where(grp=>grp.Count()>1)
 			.Select(grp=>grp.Key);
 
+		public bool IsSacredSite( Space space ) => SacredSites.Contains( space );
+
 		#endregion
 
 		#region Game-Play things you can do with presence
@@ -212,6 +214,17 @@ namespace SpiritIsland {
 			placed.Remove( space );
 			return Task.CompletedTask;
 //			return gameState.Tokens[space].Remove(Token,1); // !!! Do we event want to generate an event?
+		}
+
+		public void Adjust( Space space, int count ) {
+			while( 0 < count) {
+				placed.Add( space );
+				--count;
+			}
+			while( count < 0 ) {
+				placed.Remove( space );
+				++count;
+			}
 		}
 
 		readonly List<Space> placed = new List<Space>();

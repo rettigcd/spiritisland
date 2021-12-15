@@ -47,7 +47,7 @@ namespace SpiritIsland.WinForms {
 			}
 			if(gameSettings.UseJaggedEarth) {
 				minorCards.AddRange( PowerCard.GetMinors( typeof( BatsScoutForRaidsByDarkness ) ) );
-//				majorCards.AddRange( PowerCard.GetMajors( typeof( BatsScoutForRaidsByDarkness ) ) );
+				majorCards.AddRange( PowerCard.GetMajors( typeof( BatsScoutForRaidsByDarkness ) ) );
 			}
 
 

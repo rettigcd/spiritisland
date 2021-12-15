@@ -644,7 +644,11 @@ namespace SpiritIsland.WinForms {
 
 		/// <returns>the center of a Game Space</returns>
 		PointF SpaceCenter( Space s ) {
-			var norm = this.spaceLookup[s.Label];
+			var norm = spaceLookup.ContainsKey(s.Label)
+					? spaceLookup[s.Label]
+				: s is MultiSpace ms
+					? spaceLookup[ ms.Parts[0].Label ]
+				: throw new ArgumentException($"Space {s.Label} does not have a screen location");
 			return new PointF( norm.X * boardScreenSize.Width, norm.Y * boardScreenSize.Height );
 		}
 

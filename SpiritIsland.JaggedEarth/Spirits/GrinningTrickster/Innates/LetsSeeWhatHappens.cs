@@ -31,7 +31,7 @@ namespace SpiritIsland.JaggedEarth {
 
 			// You may Forget a Power Card to gain the just-used Power Card and 1 energy.
 			ctx.Self.AddCardToHand(card);
-			await ctx.Self.ForgetPowerCard();
+			await ctx.Self.ForgetPowerCard_UserChoice();
 
 			if(ctx.Self.Hand.Contains(card))
 				ctx.Self.Energy++;

@@ -25,7 +25,8 @@ namespace SpiritIsland.BranchAndClaw {
 			if(2 <= ctx.GameState.Fear.TerrorLevel)
 				for(int i = 0; i < 2; ++i) {
 					var invader = await ctx.Decision( Select.Invader.ToRemove( ctx.Space, ctx.Tokens.Invaders() ) );
-					await ctx.Invaders.Remove(invader,1,RemoveReason.Removed);
+					if(invader == null) break;
+					await ctx.Invaders.Remove( invader, 1 );
 				}
 
 		}

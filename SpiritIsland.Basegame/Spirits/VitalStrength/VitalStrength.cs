@@ -65,14 +65,15 @@ namespace SpiritIsland.Basegame {
 
 		protected override void InitializeInternal( Board board, GameState gs ) {
 			InitPresence( board, gs );
-			gs.Tokens.VirtualDefend_ForGame.Add( new EarthsVitality(this).DefendOnSpace );
+			gs.Tokens.RegisterDynamic( new EarthsVitality(this).DefendOnSpace, TokenType.Defend, true );
 		}
 
 		class EarthsVitality {
 			static public SpecialRule Rule => new SpecialRule("Earth's Vitality","Defend 3 in every land where you have sacred site.");
 			readonly SpiritPresence presence;
 			public EarthsVitality( Spirit spirit ) { presence = spirit.Presence; }
-			public int DefendOnSpace( Space space ) => presence.SacredSites.Contains( space ) ? 3 : 0;
+			public int DefendOnSpace( GameState _, Space space ) 
+				=> presence.SacredSites.Contains( space ) ? 3 : 0;
 		}
 
 

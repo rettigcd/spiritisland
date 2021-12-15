@@ -27,7 +27,7 @@ namespace SpiritIsland.JaggedEarth {
 				if( ctx.Other.Energy>=2 && await ctx.Other.UserSelectsFirstText( "Pay for Major Card", "2 energy", "forget a card" ))
 					ctx.Other.Energy -= 2;
 				else
-					await ctx.Other.ForgetPowerCard();
+					await ctx.Other.ForgetPowerCard_UserChoice();
 			}
 		}
 

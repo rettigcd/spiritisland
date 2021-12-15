@@ -19,7 +19,7 @@ namespace SpiritIsland.JaggedEarth {
 				minor.Remove( card );
 			else {
 				major.Remove( card );
-				await fracturedDays.ForgetPowerCard(Present.Always);
+				await fracturedDays.ForgetPowerCard_UserChoice(Present.Always);
 			}
 
 		}

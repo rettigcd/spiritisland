@@ -8,7 +8,7 @@ namespace SpiritIsland.JaggedEarth {
 			var otherCtx = ctx.OtherCtx;
 
 			// Target Spirit may Forget a Power Card from hand or discard.
-			var powerCard = await otherCtx.Self.ForgetPowerCard( Present.Done );
+			var powerCard = await otherCtx.Self.ForgetPowerCard_UserChoice( Present.Done );
 
 			// If they do, they draw 6 minor Power Cards and gain 2 of them.
 			if( powerCard != null )

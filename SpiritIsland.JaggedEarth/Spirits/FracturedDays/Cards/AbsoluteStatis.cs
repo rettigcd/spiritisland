@@ -32,8 +32,7 @@ namespace SpiritIsland.JaggedEarth {
 				foreach(var spirit in ctx.GameState.Spirits)
 					spirit.Presence.ReleaseFromStasis( ctx.Space, ctx.GameState );
 
-				ctx.Space.Board.Add(ctx.Space);
-				ctx.Space.SetAdjacentToSpaces(adjacents);
+				ctx.Space.Board.Add(ctx.Space, adjacents);
 
 				return Task.CompletedTask;
 			} );

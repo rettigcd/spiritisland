@@ -6,6 +6,13 @@
 Cleanup..
 	Merge Config Ravage and Ravage Engine
 	Beast, Wilds, Disease should implement both Token and TokenGroup
+	* Simplify syntax for selecting TokensFromManySpaces
+	* Consolidate => Single TokensOnBoardChanged event
+	* Consolidate => Single PresenceOnBoardChanged event
+	* rollback virtual defence, hook from Presence / Tokens changed event.
+	* ForgetCard
+		- rename ForgetCard to ForgetCard_UserChoice
+		- Consolidate the 2 ForgetCard methods into 1
 
 GUI
 	- layout of Fear / Blight items
@@ -15,6 +22,7 @@ GUI
 	- Visual indicator of Phase
 	- Show fear cards while they are being resolved.
 	- Create a target-space preview, when hovering over cards
+	- Show back side of explore card (so they no what stage it is)
 
 Game Engine 
 	- Bind each Spirit Action to a CTX, so we can:

@@ -135,7 +135,7 @@ namespace SpiritIsland {
 					await track.Action.ActivateAsync(new SelfCtx(this,gs,Cause.Power));
 		}
 
-		public Task ApplyRevealedPresenceTracks(GameState gs) {
+		public Task ApplyRevealedPresenceTracks_CalledOnlyFromTests(GameState gs) {
 			var ctx = new SelfCtx( this, gs, Cause.Growth );
 			return this.ApplyRevealedPresenceTracks(ctx);
 		}
@@ -143,8 +143,8 @@ namespace SpiritIsland {
 
 			// Energy
 			Energy += EnergyPerTurn;
-			// Elements were added when the round started.
-
+			EnergyCollected?.Invoke(this);
+			// ! Elements were added when the round started.
 
 			// Do actions AFTER energy and elements have been added - in case playing ManyMindsMoveAsOne - Pay 2 for power card.
 			foreach(ITrackActionFactory action in Presence.RevealedActions)
@@ -152,6 +152,7 @@ namespace SpiritIsland {
 					await action.ActivateAsync( ctx );
 
 		}
+		public event Action<Spirit> EnergyCollected;
 
 		// !!! Seems like this should be private / protected and not called from outside.
 		public async Task ResolveActions( SelfCtx ctx ) {
@@ -238,12 +239,15 @@ namespace SpiritIsland {
 			Reclaim( cardToReclaim );
 		}
 
-
-		public virtual async Task<PowerCard> ForgetPowerCard( Present present = Present.Always ) {
+		public virtual Task<PowerCard> ForgetPowerCard_UserChoice( Present present = Present.Always ) {
 			var options = InPlay		// in play
 				.Union( Hand )			// in Hand
 				.Union( DiscardPile )	// in Discard
 				.ToArray();
+			return ForgetPowerCard_UserChoice(options,present);
+		}
+
+		public virtual async Task<PowerCard> ForgetPowerCard_UserChoice( IEnumerable<PowerCard> options, Present present = Present.Always ) {
 			PowerCard cardToForget = await this.SelectPowerCard( "Select power card to forget", options, CardUse.Forget, present );
 			if( cardToForget != null )
 				Forget( cardToForget );
@@ -381,7 +385,7 @@ namespace SpiritIsland {
 			// !! Get rid of Power Progression and we can move  the CardDrawer.Draw() method 
 			DrawCardResult result = await CardDrawer.Draw(this,gameState);
 			if (result.PowerType == PowerType.Major )
-				await this.ForgetPowerCard();
+				await this.ForgetPowerCard_UserChoice();
 			return result;
 		}
 
@@ -391,7 +395,7 @@ namespace SpiritIsland {
 		public virtual async Task<DrawCardResult> DrawMajor( GameState gameState, bool forgetCard = true, int numberToDraw=4, int numberToKeep=1 ) {
 			var result = await CardDrawer.DrawMajor( this, gameState, numberToDraw, numberToKeep );
 			if(forgetCard)
-				await this.ForgetPowerCard();
+				await this.ForgetPowerCard_UserChoice();
 			return result;
 		}
 
@@ -473,6 +477,7 @@ namespace SpiritIsland {
 				spirit.availableActions.SetItems( available );
 				spirit.usedActions.SetItems( usedActions );
 				spirit.usedInnates.SetItems( usedInnates );
+				spirit.InitElementsFromPresence();
 			}
 			static void InitFromArray(ElementCounts dict, KeyValuePair<Element,int>[] array ) {
 				dict.Clear(); 
@@ -516,9 +521,9 @@ namespace SpiritIsland {
 		}
 
 		// Overriden by Trickster because it costs them presence
-		public virtual async Task RemoveBlight( TargetSpaceCtx ctx ) {
+		public virtual async Task RemoveBlight( TargetSpaceCtx ctx, int count=1 ) {
 			if(ctx.Blight.Any)
-				await ctx.GameState.AddBlight( ctx.Space, -1 );
+				await ctx.GameState.AddBlight( ctx.Space, -count );
 		}
 
 		public virtual TokenPusher PushFactory( TargetSpaceCtx ctx ) => new TokenPusher( ctx );
@@ -570,7 +575,7 @@ namespace SpiritIsland {
 	}
 
 	public record TargetSourceCriteria( From From, Terrain? Terrain = null );
-	public record TargetCriteria( int Range, string Filter );
+	public record TargetCriteria( int Range, string Filter = Target.Any );
 
 
 	public class SpiritDeck {

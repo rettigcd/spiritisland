@@ -51,6 +51,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			}
 
 		}
+
 		// (1) cannot cascade blight into ocean
 
 		// (2) drown any invaders / dahan pushed into these areas

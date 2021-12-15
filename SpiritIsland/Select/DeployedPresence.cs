@@ -22,6 +22,11 @@ namespace SpiritIsland.Select {
 		static public DeployedPresence All(string prompt, SpiritIsland.Spirit spirit, Present present )
 			=> new DeployedPresence( prompt, spirit.Presence.Spaces, present);
 
+		/// <summary> Targets Sacred Sites </summary>
+		static public DeployedPresence SacredSites(string prompt, SpiritIsland.Spirit spirit, Present present )
+			=> new DeployedPresence( prompt, spirit.Presence.SacredSites, present);
+
+
 		static public DeployedPresence Gather(string prompt, SpiritIsland.Space to, IEnumerable<SpiritIsland.Space> from ) 
 			=> new DeployedPresence(prompt, from, Present.Done ) {
 				AdjacentInfo = new AdjacentInfo {

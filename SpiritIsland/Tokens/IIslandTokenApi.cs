@@ -10,7 +10,7 @@ namespace SpiritIsland {
 
 		Task Publish_Moved( Token token, Space source, Space destination );
 
-		int GetDynamicDefendFor( Space space );
+		int GetDynamicTokenFor( Space space, UniqueToken token );
 
 		TokenCountDictionary GetTokensFor( Space space );
 
