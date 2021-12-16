@@ -20,11 +20,11 @@ namespace SpiritIsland {
 
 		public async Task<(Space,Space)> PushUpTo1() {
 			// Select source
-			var source = await ctx.Self.Action.Decision( Decision.Presence.Deployed.SourceForPushing( ctx.Self ) );
+			var source = await ctx.Decision( Select.DeployedPresence.ToPush( ctx.Self ) );
 			if(source == null) return (null,null);
 			var sourceCtx = ctx.Target( source );
 			// Select destination
-			var destination = await sourceCtx.Self.Action.Decision( new Decision.Presence.Push( "Push Presence to", sourceCtx.Space, sourceCtx.Adjacent ));
+			var destination = await sourceCtx.Decision( Select.Space.PushPresence( sourceCtx.Space, sourceCtx.Adjacent, Present.Always ));
 			Move( source, destination );
 			return (source, destination);
 		}
@@ -46,7 +46,7 @@ namespace SpiritIsland {
 		/// <returns>Place in Ocean, Growth through sacrifice</returns>
 		public async Task Place( params Space[] destinationOptions ) {
 			var from = await SelectSource();
-			var to = await ctx.Self.Action.Decision( new Decision.Presence.PlaceOn( ctx.Self, destinationOptions, Present.Always ) );
+			var to = await ctx.Decision( Select.Space.ToPlacePresence( destinationOptions, Present.Always ) );
 			await ctx.Self.PlacePresence( from, to, ctx.GameState );
 		}
 
@@ -57,7 +57,7 @@ namespace SpiritIsland {
 		public Task Destroy( Space space ) => ctx.Self.Presence.Destroy( space, ctx.GameState, ctx.Cause );
 
 		public async Task DestoryOne() {
-			var space = await ctx.Self.Action.Decision( new Decision.Presence.DeployedToDestory("Select presence to destroy",ctx.Self) );
+			var space = await ctx.Decision( Select.DeployedPresence.ToDestroy("Select presence to destroy",ctx.Self) );
 			await Destroy( space );
 		}
 
@@ -68,7 +68,7 @@ namespace SpiritIsland {
 		public async Task RestoreUpToNDestroyed( int count ) {
 			count = Math.Max(count,ctx.Self.Presence.Destroyed);
 			while(count > 0) {
-				var dst = await ctx.Self.Action.Decision( new Decision.Presence.ReturnToTrackDestination( ctx.Self ) );
+				var dst = await ctx.Decision( Select.TrackSlot.ToCover( ctx.Self ) );
 				if(dst == null) break;
 				await ctx.Self.Presence.ReturnDestroyedToTrack(dst,ctx.GameState);
 				--count;
@@ -84,12 +84,12 @@ namespace SpiritIsland {
 
 		/// <summary> Tries Presence Tracks first, then fails over to placed-presence on Island </summary>
 		public async Task<IOption> SelectSource() {
-			return (IOption)await ctx.Self.Action.Decision( new Decision.Presence.SourceFromTrack( "Select Presence to place.", ctx.Self ) )
-				?? (IOption)await ctx.Self.Action.Decision( new Decision.Presence.Deployed("Select Presence to place.", ctx.Self) );
+			return (IOption)await ctx.Decision( Select.TrackSlot.ToReveal( "Select Presence to place.", ctx.Self ) )
+				?? (IOption)await ctx.Decision( Select.DeployedPresence.All("Select Presence to place.", ctx.Self,Present.Always) );
 		}
 
 		public async Task<Space> SelectDeployed(string prompt) {
-			return await ctx.Self.Action.Decision( new Decision.Presence.Deployed(prompt, ctx.Self ) );
+			return await ctx.Decision( Select.DeployedPresence.All(prompt, ctx.Self,Present.Always ) );
 		}
 
 		#endregion
@@ -99,7 +99,7 @@ namespace SpiritIsland {
 		/// <summary> Selects a space within [range] of current presence </summary>
 		public async Task<Space> SelectDestinationWithinRange( int range, string filterEnum ) {
 			var options = GetValidDestinationOptionsFromPresence(range,filterEnum, ctx.Self.Presence.Spaces );
-			return await ctx.Self.Action.Decision( new Decision.Presence.PlaceOn( ctx.Self, options, Present.Always ) );
+			return await ctx.Decision( Select.Space.ToPlacePresence( options, Present.Always ) );
 		}
 
 		/// <summary> Select a space withing [range] of specified spaces </summary>

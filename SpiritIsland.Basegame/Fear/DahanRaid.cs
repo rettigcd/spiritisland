@@ -32,7 +32,7 @@ namespace SpiritIsland.Basegame {
 			foreach(var spiritCtx in ctx.Spirits) {
 				// Select un-used space
 				var options = spiritCtx.AllSpaces.Where( s=>spiritCtx.Target(s).Dahan.Any ).Except( used ).ToArray();
-				var target = await spiritCtx.Self.Action.Decision( new Decision.TargetSpace( prompt, options, Present.Always ));
+				var target = await spiritCtx.Decision( new Select.Space( prompt, options, Present.Always ));
 				used.Add( target );
 				TargetSpaceCtx spactCtx = spiritCtx.Target(target);
 

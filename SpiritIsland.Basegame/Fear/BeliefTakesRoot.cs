@@ -44,7 +44,7 @@ namespace SpiritIsland.Basegame {
 				.Except( used )
 				.ToArray();
 			if(targetOptions.Length == 0) return;
-			var targetSpace = await ctx.Self.Action.Decision( new Decision.TargetSpace( "Select land to remove 2 health worth of invaders/presence.", targetOptions, Present.Always ) );
+			var targetSpace = await ctx.Decision( new Select.Space( "Select land to remove 2 health worth of invaders/presence.", targetOptions, Present.Always ) );
 			var sCtx = ctx.Target( targetSpace );
 
 			// mark used

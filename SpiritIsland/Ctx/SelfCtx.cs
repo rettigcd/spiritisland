@@ -57,19 +57,22 @@ namespace SpiritIsland {
 			} );
 		}
 
+		public Task<T> Decision<T>( Select.TypedDecision<T> originalDecision ) where T : class, IOption => Self.Action.Decision( originalDecision );
+
+
 		public TargetSpaceCtx Target( Space space ) => new TargetSpaceCtx( this, space );
 
 		public TargetSpaceCtx TargetSpace( string spaceLabel ) => Target( GameState.Island.AllSpaces.First(s=>s.Label==spaceLabel) ); // !!! Testing extension - move to testing project
 
 		// Visually, selects the [presence] icon
 		public async Task<TargetSpaceCtx> TargetDeployedPresence( string prompt ) {
-			var space = await Self.Action.Decision( new Decision.Presence.Deployed( prompt, Self ) );
+			var space = await Decision( Select.DeployedPresence.All( prompt, Self,Present.Always ) );
 			return new TargetSpaceCtx( this, space );
 		}
 
 		// Visually, selects the [space] which has presence.
 		public async Task<TargetSpaceCtx> TargetLandWithPresence( string prompt ) {
-			var space = await Self.Action.Decision( new Decision.TargetSpace(prompt,Self.Presence.Spaces, Present.Always ) );
+			var space = await Decision( new Select.Space(prompt,Self.Presence.Spaces, Present.Always ) );
 			return new TargetSpaceCtx( this, space );
 		}
 
@@ -85,7 +88,7 @@ namespace SpiritIsland {
 		#region Generic Select space / option
 
 		public async Task<TargetSpaceCtx> SelectSpace( string prompt, IEnumerable<Space> options ) {
-			var space = await Self.Action.Decision( new Decision.TargetSpace( prompt, options, Present.Always ) );
+			var space = await Decision( new Select.Space( prompt, options, Present.Always ) );
 			return space != null
 				? new TargetSpaceCtx( this, space )
 				: null;

@@ -165,7 +165,7 @@ namespace SpiritIsland.WinForms {
 			logForm.AppendLine(obj.Msg);
 
 			if(obj is GameOver wle)
-				Action_NewWaitingDecision( new Decision.TypedDecision<TextOption>(wle.Msg, Array.Empty<TextOption>() ) ); // clear options
+				Action_NewWaitingDecision( new Select.TypedDecision<TextOption>(wle.Msg, Array.Empty<TextOption>() ) ); // clear options
 		}
 
 		void ExitToolStripMenuItem_Click( object sender, EventArgs e ) {

@@ -41,7 +41,7 @@ namespace SpiritIsland.JaggedEarth {
 			// Select up to 3 to put in the skip-list
 			int remaining = 3;
 			while(remaining-- > 0 && damagedInvaders.Count > 0) {
-				var skip = await ctx.Self.Action.Decision( new Decision.TokenOnSpace(
+				var skip = await ctx.Decision( new Select.TokenFrom1Space(
 					"Select invader to not participate in ravage", ctx.Space,
 					damagedInvaders.Distinct(),
 					Present.Done

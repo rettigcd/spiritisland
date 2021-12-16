@@ -135,7 +135,7 @@ namespace SpiritIsland.Basegame {
 
 			var skipped = new List<Space>();
 			while(maxStoppable > 0 && stoppable.Count > 0) {
-				var stop = await this.Action.Decision( new Decision.TargetSpace( $"Stop {actionText} by destroying 1 presence", stoppable.ToArray(), Present.Done ) );
+				var stop = await this.Action.Decision( new Select.Space( $"Stop {actionText} by destroying 1 presence", stoppable.ToArray(), Present.Done ) );
 				if(stop == null) break;
 
 				await Presence.Destroy( stop, gs, Cause.Power );

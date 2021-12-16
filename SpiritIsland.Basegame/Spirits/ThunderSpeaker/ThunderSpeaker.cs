@@ -102,7 +102,7 @@ namespace SpiritIsland.Basegame {
 			Space[] Calc() => args.Space.Range( 1 ).Intersect( Presence.Spaces ).ToArray();
 
 			while(numToDestroy-->0 && (options=Calc()).Length > 0) {
-				var space = await this.Action.Decision( new Decision.Presence.DeployedToDestory( prompt, options, Present.Always ) );
+				var space = await this.Action.Decision( Select.DeployedPresence.ToDestroy( prompt, options, Present.Always ) );
 				await Presence.Destroy(space, gs, Cause.Invaders );
 			}
 

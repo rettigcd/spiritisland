@@ -13,7 +13,7 @@ namespace SpiritIsland.Basegame {
 			var gs = ctx.GameState;
 			foreach( var spiritCtx in ctx.Spirits ) {
 				var spacesWithInvaders = gs.Island.AllSpaces.Where( s=>spiritCtx.Target(s).HasInvaders ).ToArray();
-				var target = await spiritCtx.Self.Action.Decision( new Decision.TargetSpace( "Select Space to Gather or push 1 dahan", spacesWithInvaders, Present.Always));
+				var target = await spiritCtx.Decision( new Select.Space( "Select Space to Gather or push 1 dahan", spacesWithInvaders, Present.Always));
 
 				var spaceCtx = spiritCtx.Target(target);
 				await spaceCtx.SelectActionOption(
@@ -28,7 +28,7 @@ namespace SpiritIsland.Basegame {
 			HashSet<Space> used = new ();
 			foreach(var spiritCtx in ctx.Spirits) {
 				var options = spiritCtx.AllSpaces.Where( s=>spiritCtx.Target(s).Dahan.Any ).Except( used ).ToArray();
-				var target = await spiritCtx.Self.Action.Decision( new Decision.TargetSpace( "Fear:select land with dahan for 1 damage", options, Present.Always ));
+				var target = await spiritCtx.Decision( new Select.Space( "Fear:select land with dahan for 1 damage", options, Present.Always ));
 				used.Add( target );
 				var sCtx = spiritCtx.Target(target);
 
@@ -43,7 +43,7 @@ namespace SpiritIsland.Basegame {
 			HashSet<Space> used = new ();
 			foreach(var spiritCtx in ctx.Spirits) {
 				var options = spiritCtx.AllSpaces.Where( s => spiritCtx.Target(s).Dahan.Any ).Except( used ).ToArray();
-				var target = await spiritCtx.Self.Action.Decision( new Decision.TargetSpace( "Fear:select land with dahan for 1 damage", options, Present.Always ));
+				var target = await spiritCtx.Decision( new Select.Space( "Fear:select land with dahan for 1 damage", options, Present.Always ));
 				used.Add( target );
 				var sCtx = spiritCtx.Target(target);
 

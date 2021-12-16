@@ -9,10 +9,10 @@ namespace SpiritIsland.Basegame {
 		static public async Task ActAsync(TargetSpaceCtx ctx) {
 
 			// replace 1 city with 2 exploreres.
-			await ReplaceInvader.InvaderWithExplorer( ctx.Self, ctx.Invaders, Invader.City, 2 );
+			await ReplaceInvader.SingleInvaderWithExplorers( ctx.Self, ctx.Invaders, Invader.City, 2 );
 
 			// replace 1 town with 1 explorer
-			await ReplaceInvader.InvaderWithExplorer( ctx.Self, ctx.Invaders, Invader.Town, 1 );
+			await ReplaceInvader.SingleInvaderWithExplorers( ctx.Self, ctx.Invaders, Invader.Town, 1 );
 
 			// replace 1 dahan with 1 explorer.
 			if( ctx.Tokens.Dahan.Remove1() != null )

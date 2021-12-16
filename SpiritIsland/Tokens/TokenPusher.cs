@@ -43,7 +43,7 @@ namespace SpiritIsland {
 			Token[] tokens;
 			while(0 < (tokens = GetTokens()).Length) {
 				// Select Token
-				var decision = Decision.TokenOnSpace.TokenToPush( source, countArray.Sum(), tokens, present );
+				var decision = Select.TokenFrom1Space.TokenToPush( source, countArray.Sum(), tokens, present );
 				var token = await ctx.Self.Action.Decision( decision );
 				if(token == null) break;
 
@@ -80,7 +80,7 @@ namespace SpiritIsland {
 			foreach(var filter in destinationFilters)
 				destinationOptions = destinationOptions.Where(filter);
 
-			return await ctx.Self.Action.Decision( (Decision.TypedDecision<Space>)new Decision.AdjacentSpace_TokenDestination( token, source, destinationOptions, Present.Always ) );
+			return await ctx.Decision( Select.Space.PushToken( token, source, destinationOptions, Present.Always ) );
 		}
 
 		public TokenPusher FilterDestinations(Func<Space,bool> destinationFilter ) {

@@ -33,12 +33,12 @@ namespace SpiritIsland.Basegame {
 
 			var invaders = CalcInvaderTypes();
 			while(0 < countToPush && 0 < invaders.Length) {
-				var invader = await ctx.Self.Action.Decision( Decision.TokenOnSpace.TokenToPush( source, countToPush, invaders, Present.Always ) );
+				var invader = await ctx.Decision( Select.TokenFrom1Space.TokenToPush( source, countToPush, invaders, Present.Always ) );
 
 				if(invader == null)
 					break;
 
-				var destination = await ctx.Self.Action.Decision( new Decision.TargetSpace(
+				var destination = await ctx.Decision( new Select.Space(
 					"Push " + invader.Summary + " to",
 					source.Adjacent.Where( s=>ctx.Target(s).IsInPlay )
 					, Present.Always

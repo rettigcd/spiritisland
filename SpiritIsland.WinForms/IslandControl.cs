@@ -376,19 +376,19 @@ namespace SpiritIsland.WinForms {
 			using var pen = new Pen(Brushes.Aquamarine,5);
 
 			// adjacent
-			if(adjacentDecision != null) {
+			if(adjacentInfo != null) {
 
-				var center = SpaceCenter(adjacentDecision.Original);
-				var others = adjacentDecision.Adjacent.Select(x=> SpaceCenter(x) ).ToArray();
+				var center = SpaceCenter(adjacentInfo.Original);
+				var others = adjacentInfo.Adjacent.Select(x=> SpaceCenter(x) ).ToArray();
 
 				using Pen p = new Pen( Color.DeepSkyBlue, 7 );
 				var drawer = new ArrowDrawer(pe.Graphics,p);
-				switch(adjacentDecision.Direction) {
-					case Decision.AdjacentDirection.Incoming:
+				switch(adjacentInfo.Direction) {
+					case SpiritIsland.Select.AdjacentDirection.Incoming:
 						foreach(var other in others)
 							drawer.Draw( other, center );
 						break;
-					case Decision.AdjacentDirection.Outgoing:
+					case SpiritIsland.Select.AdjacentDirection.Outgoing:
 						foreach(var other in others)
 							drawer.Draw( center, other );
 						break;
@@ -736,12 +736,15 @@ namespace SpiritIsland.WinForms {
 		#region private fields
 
 		void OptionProvider_OptionsChanged( IDecision decision ) {
-			tokenOnSpace      = decision as Decision.TokenOnSpace; // 
-			adjacentDecision  = decision as Decision.IAdjacentDecision;
-			spaceTokens       = decision as Decision.TypedDecision<SpaceToken>;
-			deployedPresence  = decision as Decision.Presence.Deployed;
-			deckDecision      = decision as Decision.DeckToDrawFrom;
-			elementDecision   = decision as Decision.ElementDecision;
+			tokenOnSpace      = decision as Select.TokenFrom1Space;
+			spaceTokens       = decision as Select.TypedDecision<SpaceToken>;
+			deployedPresence  = decision as Select.DeployedPresence;
+			deckDecision      = decision as Select.DeckToDrawFrom;
+			elementDecision   = decision as Select.Element;
+
+			adjacentInfo = decision is Select.IHaveAdjacentInfo adjacenInfoProvider
+				? adjacenInfoProvider.AdjacentInfo
+				: null;
 
 			activeSpaces            = decision.Options.OfType<Space>().ToArray();
 			fearCard                = decision.Options.OfType<ActivatedFearCard>().FirstOrDefault();
@@ -752,12 +755,12 @@ namespace SpiritIsland.WinForms {
 		}
 
 		ActivatedFearCard fearCard;
-		Decision.TokenOnSpace tokenOnSpace;
-		Decision.IAdjacentDecision adjacentDecision;
-		Decision.TypedDecision<SpaceToken> spaceTokens;
-		Decision.Presence.Deployed deployedPresence;
-		Decision.DeckToDrawFrom deckDecision;
-		Decision.ElementDecision elementDecision;
+		Select.TokenFrom1Space tokenOnSpace;
+		Select.AdjacentInfo adjacentInfo;
+		Select.TypedDecision<SpaceToken> spaceTokens;
+		Select.DeployedPresence deployedPresence;
+		Select.DeckToDrawFrom deckDecision;
+		Select.Element elementDecision;
 		Track[] clickableTrackOptions;
 		InnatePower[] selectableInnateOptions;
 		GrowthOption[] selectableGrowthOptions;

@@ -67,7 +67,7 @@ namespace SpiritIsland {
 			
 			if(tokenOptions.Length>1) throw new Exception("I didn't implement Move for different health tokens");
 
-			var destination = await Self.Action.Decision( new Decision.AdjacentSpace_TokenDestination(tokenOptions[0], Space, 
+			var destination = await Decision( Select.Space.PushToken(tokenOptions[0], Space, 
 				Space.Range( range ).Where(s=>{ var x = Target(s); return x.IsInPlay && x.Matches(dstFilter); } ), 
 				Present.Done ) 
 			);
@@ -90,7 +90,7 @@ namespace SpiritIsland {
 				.SelectMany( x => x.Tokens.OfType(tokenGroup).Select(t => new SpaceToken(x.Space, t)) )
 				.ToArray();
 
-			var spaceToken = await Self.Action.Decision( new Decision.SpaceTokens("Move Tokens into " + Space.Label, sources, Present.Done ) );
+			var spaceToken = await Decision( new Select.TokenFromManySpaces("Move Tokens into " + Space.Label, sources, Present.Done ) );
 			if(spaceToken == null) return default;
 
 			await Move( spaceToken.Token, spaceToken.Space, Space );
@@ -213,11 +213,7 @@ namespace SpiritIsland {
 			var damagedInvaders = new List<Token>();
 			count = System.Math.Min( count, invaders.Count );
 			while(count-- > 0) {
-				var invader = await Self.Action.Decision( new Decision.TokenOnSpace(
-					$"Select invader to apply {damagePerInvader} damage", Space,
-					invaders.Distinct(),
-					Present.Done
-				) );
+				var invader = await Decision( Select.Invader.ForIndividualDamage( damagePerInvader, Space, invaders ) );
 				if(invader == null) break;
 				invaders.Remove( invader );
 				var (_, damaged) = await Invaders.ApplyDamageTo1( damagePerInvader, invader );
@@ -230,11 +226,7 @@ namespace SpiritIsland {
 
 		async Task ApplyDamageToSpecificTokens( List<Token> invaders, int additionalTotalDamage ) {
 			while(additionalTotalDamage > 0) {
-				var invader = await Self.Action.Decision( new Decision.TokenOnSpace(
-					$"Select invader to apply badland damage", Space,
-					invaders,
-					Present.Done
-				) );
+				var invader = await Decision( Select.Invader.ForBadlandDamage(additionalTotalDamage,Space,invaders) );
 				if(invader == null) break;
 				int index = invaders.IndexOf( invader );
 				var (_, moreDamaged) = await Invaders.ApplyDamageTo1( 1, invader );
@@ -266,7 +258,7 @@ namespace SpiritIsland {
 
 		/// <param name="groups">Option: if null/empty, no filtering</param>
 		public async Task AddStrife( params TokenGroup[] groups ) {
-			var invader = await Self.Action.Decision( new Decision.AddStrifeDecision( Tokens, groups ) );
+			var invader = await Decision( Select.Invader.ForStrife( Tokens, groups ) );
 			if(invader == null) return;
 			if(Cause == Cause.Power)
 				await Self.AddStrife( this, invader );
@@ -281,7 +273,7 @@ namespace SpiritIsland {
 		public async Task<int> RemoveHealthWorthOfInvaders( int damage ) {
 			Token pick;
 			while(damage > 0
-				&& (pick = await Self.Action.Decision( new Decision.TokenOnSpace( $"Remove up to {damage} health of invaders.", Space, Tokens.Invaders().Where( x => x.Health <= damage ), Present.Done ) )) != null
+				&& (pick = await Decision( Select.Invader.ToRemoveByHealth( Space, Tokens.Invaders(), damage ) ) ) != null
 			) {
 				--Tokens[pick];
 				damage -= pick.Health;
@@ -326,7 +318,7 @@ namespace SpiritIsland {
 			var options = Adjacent;
 			if(filter != null)
 				options = options.Where( s => filter( Target( s ) ) );
-			var space = await Self.Action.Decision( new Decision.AdjacentSpace( prompt, Space, Decision.AdjacentDirection.None, options, Present.Always ) ); // !! could let caller pass in direction if appropriate
+			var space = await Decision( Select.Space.ForAdjacent( prompt, Space, Select.AdjacentDirection.None, options, Present.Always ) ); // !! could let caller pass in direction if appropriate
 			return space != null ? Target( space )
 				: null;
 		}
@@ -336,7 +328,7 @@ namespace SpiritIsland {
 			options.Add(Space);
 			if(filter != null)
 				options = options.Where( s => filter( Target( s ) ) ).ToList();
-			var space = await Self.Action.Decision( new Decision.AdjacentSpace( prompt, Space, Decision.AdjacentDirection.None, options, Present.Always ) );
+			var space = await Decision( Select.Space.ForAdjacent( prompt, Space, Select.AdjacentDirection.None, options, Present.Always ) );
 			return space != null ? Target( space )
 				: null;
 		}

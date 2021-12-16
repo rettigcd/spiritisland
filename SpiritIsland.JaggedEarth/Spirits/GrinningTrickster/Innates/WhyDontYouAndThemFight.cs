@@ -19,7 +19,7 @@ namespace SpiritIsland.JaggedEarth {
 		static public async Task Option3b(TargetSpaceCtx ctx ) {
 			var invaders = ctx.Tokens.Invaders().ToArray();
 			if(invaders.Length == 0 || !ctx.Dahan.Any) return;
-			var invader = await ctx.Self.Action.Decision(new Decision.TokenOnSpace("Select invader to fight 1 dahan",ctx.Space,invaders,Present.Always));
+			var invader = await ctx.Decision(new Select.TokenFrom1Space("Select invader to fight 1 dahan",ctx.Space,invaders,Present.Always));
 
 			// Calc Invader Damage
 			var (damageFromInvader,newInvaderToken) = GetDamageFromInvader( ctx.Tokens, invader );

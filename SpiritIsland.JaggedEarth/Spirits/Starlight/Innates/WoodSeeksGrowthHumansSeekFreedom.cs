@@ -10,7 +10,7 @@ namespace SpiritIsland.JaggedEarth {
 		static public async Task Option1(TargetSpaceCtx ctx ) {
 			var spiritOptions = ctx.GameState.Spirits.Where(s=>s.Presence.IsOn(ctx.Space)).ToArray();
 			if(spiritOptions.Length > 0) return;
-			var spirit = await ctx.Self.Action.Decision(new Decision.TargetSpirit("Select spirit to gain a power card", spiritOptions));
+			var spirit = await ctx.Decision(new Select.Spirit("Select spirit to gain a power card", spiritOptions));
 			
 			await new SelfCtx( spirit, ctx.GameState,ctx.Cause).Draw();
 		}

@@ -9,7 +9,7 @@ namespace SpiritIsland {
 
 		public override async Task<object> GetTargetCtx( string powerName, SelfCtx ctx, TargettingFrom _ ) {
 			Spirit target = ctx.GameState.Spirits.Length == 1 ? ctx.Self
-				: await ctx.Self.Action.Decision( new Decision.TargetSpirit( powerName, ctx.GameState.Spirits ) );
+				: await ctx.Decision( new Select.Spirit( powerName, ctx.GameState.Spirits ) );
 			return new TargetSpiritCtx( ctx.Self, ctx.GameState, target, Cause.Power ); // !! there isn't a ctx.TargetSpirit( spirit ) ???
 		}
 
@@ -25,7 +25,7 @@ namespace SpiritIsland {
 	public class AnotherSpiritAttribute : AnySpiritAttribute {
 		public override async Task<object> GetTargetCtx( string powerName, SelfCtx ctx, TargettingFrom _ ) {
 			Spirit target = ctx.GameState.Spirits.Length == 1 ? ctx.Self
-				: await ctx.Self.Action.Decision( new Decision.TargetSpirit( powerName, ctx.GameState.Spirits.Where(s=>s!=ctx.Self) ) );
+				: await ctx.Decision( new Select.Spirit( powerName, ctx.GameState.Spirits.Where(s=>s!=ctx.Self) ) );
 			return new TargetSpiritCtx( ctx.Self, ctx.GameState, target, Cause.Power );
 		}
 		public override string TargetFilter => "Another";

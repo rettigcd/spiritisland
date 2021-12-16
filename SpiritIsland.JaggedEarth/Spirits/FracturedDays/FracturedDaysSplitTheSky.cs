@@ -107,8 +107,8 @@ namespace SpiritIsland.JaggedEarth {
 			while(count > 0) {
 
 				string selectPrompt = $"Select presence to convert to Time ({count} remaining).";
-				var from = (IOption)await Action.Decision( new Decision.Presence.SourceFromTrack( selectPrompt, this ) )
-						?? (IOption)await Action.Decision( new Decision.Presence.Deployed( selectPrompt, this, Present.Done ) ); // Cancel
+				var from = (IOption)await Action.Decision( Select.TrackSlot.ToReveal( selectPrompt, this ) )
+						?? (IOption)await Action.Decision( Select.DeployedPresence.All( selectPrompt, this, Present.Done ) ); // Cancel
 
 				await Presence.TakeFrom( from, gameState );
 				Time++;

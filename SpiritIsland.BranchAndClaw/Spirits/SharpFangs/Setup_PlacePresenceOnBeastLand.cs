@@ -8,7 +8,7 @@ namespace SpiritIsland.BranchAndClaw {
 		public override async Task ActivateAsync( SelfCtx ctx ) {
 			var gameState = ctx.GameState;
 			var options = gameState.Island.AllSpaces.Where( space=>gameState.Tokens[space].Beasts.Any );
-			var space = await ctx.Self.Action.Decision(new Decision.TargetSpace("Add presence to",options, Present.Always));
+			var space = await ctx.Decision(new Select.Space("Add presence to",options, Present.Always));
 			ctx.Presence.PlaceOn(space);
 		}
 

@@ -12,9 +12,9 @@ namespace SpiritIsland.JaggedEarth {
 			frac.Time -= 3;
 
 			// Move 1 of your presence to a different land with your presence.
-			var src = await ctx.Self.Action.Decision( new Decision.Presence.Deployed( "Move presence from:", ctx.Self ) );
+			var src = await ctx.Decision( Select.DeployedPresence.All( "Move presence from:", ctx.Self,Present.Always ) );
 			var dstOptions = ctx.Self.Presence.Spaces.Where(s=>s!=src);
-			var dst = await ctx.Self.Action.Decision( new Decision.AdjacentSpace( "Move preseence to:", src, Decision.AdjacentDirection.Outgoing, dstOptions ) );
+			var dst = await ctx.Decision( Select.Space.ForAdjacent( "Move preseence to:", src, Select.AdjacentDirection.Outgoing, dstOptions,Present.Always ) );
 			ctx.Presence.Move( src, dst );
 
 			if(src.Board == dst.Board) return;

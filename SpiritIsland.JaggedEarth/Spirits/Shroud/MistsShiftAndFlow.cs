@@ -62,7 +62,7 @@ namespace SpiritIsland.JaggedEarth {
 			List<TokenMovedArgs> allowed = FindFlowsThatAllowUsToHitTarget( target );
 
 			// Flow (Gather) - Destination (To)
-			var gatherDst = await spirit.Action.Decision( new Decision.TargetSpace(
+			var gatherDst = await spirit.Action.Decision( new Select.Space(
 				"Flow (gather) presence to:",
 				allowed.Select( a => a.To ).Distinct(),
 				MustFlowToReach( target ) ? Present.Always : Present.Done
@@ -71,7 +71,7 @@ namespace SpiritIsland.JaggedEarth {
 
 			// Flow (Gather) - Source
 			var souceOptions = allowed.Where( a => a.To == gatherDst ).Select( a => a.From ).ToArray();
-			var gatherSource = await spirit.Action.Decision( new Decision.Presence.Gather( $"Flow (gather) presence (to {gatherDst.Label}) from:", gatherDst, souceOptions ) );
+			var gatherSource = await spirit.Action.Decision( Select.DeployedPresence.Gather( $"Flow (gather) presence (to {gatherDst.Label}) from:", gatherDst, souceOptions ) );
 			if(gatherSource == null) return;
 
 			spirit.Presence.Move( gatherSource, gatherDst, gameState );
@@ -119,7 +119,7 @@ namespace SpiritIsland.JaggedEarth {
 			// For large ranges, normal targetting will prevail becaue mists can only extend range if they flow adjacent
 			// For small ranges, flow-targets will be larger.
 
-			var target = await spirit.Action.Decision( new Decision.TargetSpace( prompt, nonFlowTargets.Union( flowOnlyTargets ), Present.Always ) );
+			var target = await spirit.Action.Decision( new Select.Space( prompt, nonFlowTargets.Union( flowOnlyTargets ), Present.Always ) );
 			return target;
 		}
 

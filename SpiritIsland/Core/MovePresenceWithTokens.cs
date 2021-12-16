@@ -27,7 +27,7 @@ namespace SpiritIsland {
 
 			// Using 'Gather' here so user can click on existing Presence in Source
 			// If we used 'Push', user would click on Destination instead of Source
-			var source = await spirit.Action.Decision( new Decision.Presence.Gather("Move presence with "+args.Token.Generic.Label+"?", args.To, args.From ) );
+			var source = await spirit.Action.Decision( Select.DeployedPresence.Gather("Move presence with "+ args.Token.Generic.Label+"?", args.To, new Space[]{ args.From } ) );
 			if( source != null )
 				spirit.Presence.Move( args.From, args.To, gs );
 		}

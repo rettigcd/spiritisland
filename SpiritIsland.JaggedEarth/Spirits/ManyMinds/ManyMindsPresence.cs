@@ -34,7 +34,7 @@ namespace SpiritIsland.JaggedEarth {
 
 			var srcBeasts = gs.Tokens[args.From].Beasts;
 			if(srcBeasts.Count > 0 // force moved our virtual beast
-				&& await spirit.Action.Decision( new Decision.Presence.Gather( "Move 2 presence with Beast?", args.To, args.From ) ) == null
+				&& await spirit.Action.Decision( Select.DeployedPresence.Gather( "Move 2 presence with Beast?", args.To, new []{ args.From } ) ) == null
 			) return; // not moving presence
 
 			Move2Presence( gs, args );

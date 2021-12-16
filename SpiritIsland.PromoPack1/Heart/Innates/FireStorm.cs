@@ -40,7 +40,7 @@ namespace SpiritIsland.PromoPack1 {
 				.SelectMany( ctx => ctx.Tokens.Keys.Select(t=>new SpaceToken(ctx.Space,t)));
 
 			while(fireDamage > 0 && tokens.Any()) {
-				var token = await ctx.Self.Action.Decision( new Decision.SpaceTokens($"Apply fire damage. ({fireDamage} remaining)",tokens,Present.Always));
+				var token = await ctx.Decision( new Select.TokenFromManySpaces($"Apply fire damage. ({fireDamage} remaining)",tokens,Present.Always));
 				await ctx.Target(token.Space).Invaders.ApplyDamageTo1(1,token.Token);
 				--fireDamage;
 			}
@@ -57,7 +57,7 @@ namespace SpiritIsland.PromoPack1 {
 			// In a land with blight and presence  (Select a space, not necessarily the one you targetted with power (I guess...)
 			var spacesWithPresenceAndBlight = ctx.Self.Presence.Spaces
 				.Where( s=>ctx.Target(s).HasBlight );
-			var space = await ctx.Self.Action.Decision( new Decision.TargetSpace($"Push all dahan, destroy invaders and beast, 1 blight",spacesWithPresenceAndBlight,Present.Always));
+			var space = await ctx.Decision( new Select.Space($"Push all dahan, destroy invaders and beast, 1 blight",spacesWithPresenceAndBlight,Present.Always));
 			var spaceCtx = ctx.Target( space );
 
 			// Push all Dahan

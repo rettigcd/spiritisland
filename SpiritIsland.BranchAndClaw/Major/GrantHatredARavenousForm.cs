@@ -32,7 +32,7 @@ namespace SpiritIsland.BranchAndClaw {
 					.Where(s => ctx.Target(s).HasInvaders)
 					.ToList();
 				for(int i = 0; tokenSpaces.Count >0 && i < 3; ++i) {
-					var space = await ctx.Self.Action.Decision(new Decision.TargetSpace("Add Strife", tokenSpaces, Present.Done));
+					var space = await ctx.Decision(new Select.Space("Add Strife", tokenSpaces, Present.Done));
 					await ctx.AddStrife();
 					tokenSpaces.Remove(space);
 				}

@@ -44,7 +44,7 @@ namespace SpiritIsland {
 	}
 
 	public class RepeatCheapestCardForCost : RepeatCardForCost {
-		string[] exclude;
+		readonly string[] exclude;
 		public RepeatCheapestCardForCost(params string[] exclude ) { this.exclude = exclude; }
 		protected override PowerCard[] GetCardOptions( SelfCtx ctx ) {
 			return ctx.Self.UsedActions.OfType<PowerCard>()

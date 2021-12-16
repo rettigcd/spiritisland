@@ -27,7 +27,7 @@ namespace SpiritIsland.Basegame {
 			foreach(var spiritCtx in ctx.Spirits) {
 				var options = gs.Island.AllSpaces.Where( s => !s.IsCoastal && gs.Tokens[s].Has(Invader.Explorer) ).ToArray();
 				if(options.Length == 0) break;
-				var target = await spiritCtx.Self.Action.Decision( new Decision.TargetSpace( $"Fear:select land to push up to {max} invaders", options, Present.Always ));
+				var target = await spiritCtx.Decision( new Select.Space( $"Fear:select land to push up to {max} invaders", options, Present.Always ));
 				await spiritCtx.Target(target).PushUpTo( max, pushableInvaders );
 			}
 		}

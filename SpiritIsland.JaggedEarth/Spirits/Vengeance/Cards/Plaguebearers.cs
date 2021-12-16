@@ -17,7 +17,7 @@ namespace SpiritIsland.JaggedEarth {
 				.AddCustomMoveAction( async ( _, from, to ) => {
 					// 1 disease may move with each Pushed piece.
 					var option = new SpaceToken(from, TokenType.Disease);
-					var diseaseToken = await ctx.Self.Action.Decision( new Decision.SpaceTokens_ToGather(1,to,new[]{ option }, Present.Done) );
+					var diseaseToken = await ctx.Decision( Select.TokenFromManySpaces.ToGather(1,to,new[]{ option }, Present.Done) );
 					if( diseaseToken != null )
 						await ctx.Move(option.Token,option.Space,to);
 				} )

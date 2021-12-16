@@ -110,10 +110,10 @@ namespace SpiritIsland {
 					BlightCard.OnBlightDepleated( this );
 
 				blightSpace = effect.Cascade
-					? await Spirits[0].Action.Decision( new Decision.AdjacentSpace(
+					? await Spirits[0].Action.Decision( Select.Space.ForAdjacent(
 						$"Cascade blight from {blightSpace.Label} to",
 						blightSpace,
-						Decision.AdjacentDirection.Outgoing,
+						Select.AdjacentDirection.Outgoing,
 						blightSpace.Adjacent.Where( x => terrainMapper.GetTerrain( x ) != Terrain.Ocean ),
 						Present.Always
 					) )
@@ -269,7 +269,7 @@ namespace SpiritIsland {
 		}
 
 		static async Task DefaultDestroy1PresenceFromBlightCard( Spirit spirit, GameState gs, Cause cause ) {
-			var presence = await spirit.Action.Decision( new Decision.Presence.DeployedToDestory( "Blighted Island: Select presence to destroy.", spirit ) );
+			var presence = await spirit.Action.Decision( Select.DeployedPresence.ToDestroy( "Blighted Island: Select presence to destroy.", spirit ) );
 			await spirit.Presence.Destroy( presence, gs, cause );
 		}
 

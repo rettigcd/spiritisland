@@ -8,17 +8,17 @@ namespace SpiritIsland {
 
 		// used for Fear / Growth / Generic / options that combine different types
 		static public Task<T> Select<T>( this Spirit spirit, string prompt, T[] options, Present present ) where T : class, IOption {
-			return spirit.Action.Decision( new Decision.TypedDecision<T>( prompt, options, present ) );
+			return spirit.Action.Decision( new Select.TypedDecision<T>( prompt, options, present ) );
 		}
 
 		#region Simple Wrappers
 
 		static public Task<PowerCard> SelectPowerCard( this Spirit spirit, string prompt, IEnumerable<PowerCard> options, CardUse cardUse, Present present ) {
-			return spirit.Action.Decision( new Decision.PickPowerCard( prompt, cardUse, options.ToArray(), present ) );
+			return spirit.Action.Decision( new Select.PowerCard( prompt, cardUse, options.ToArray(), present ) );
 		}
 
 		static public Task<IActionFactory> SelectFactory( this Spirit spirit, string prompt, IActionFactory[] options, Present present = Present.Always ) {
-			return spirit.Action.Decision( new Decision.TypedDecision<IActionFactory>( prompt, options, present ) );
+			return spirit.Action.Decision( new Select.TypedDecision<IActionFactory>( prompt, options, present ) );
 		}
 
 		// wrapper - switches type to String
@@ -31,7 +31,7 @@ namespace SpiritIsland {
 
 		// switches type to Element
 		public static async Task<Element> SelectElementEx( this Spirit spirit, string prompt, IEnumerable<Element> elements, Present present = Present.Always ) {
-			var selection = await spirit.Action.Decision( new Decision.ElementDecision( prompt, elements, present ) );
+			var selection = await spirit.Action.Decision( new Select.Element( prompt, elements, present ) );
 			return selection is ItemOption<Element> el ? el.Item : Element.None;
 		}
 

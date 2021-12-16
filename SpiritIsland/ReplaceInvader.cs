@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
@@ -11,7 +10,7 @@ namespace SpiritIsland {
 		public static async Task Downgrade( Spirit spirit, InvaderGroup group, params TokenGroup[] groups ) {
 
 			var options = group.Tokens.OfAnyType( groups );
-			Token oldInvader = await spirit.Action.Decision( Decision.TokenOnSpace.InvaderToDowngrade( group.Space, options, Present.Always ) );
+			Token oldInvader = await spirit.Action.Decision( Select.Invader.ToDowngrade( "down-grade (C=>T or T=>E)", group.Space, options ) );
 			if(oldInvader == null) return;
 
 			if(oldInvader.Generic == Invader.City) {
@@ -21,14 +20,14 @@ namespace SpiritIsland {
 			}
 		}
 
-		public static async Task InvaderWithExplorer( Spirit spirit, InvaderGroup grp, TokenGroup oldInvader, int replaceCount ) {
+		public static async Task SingleInvaderWithExplorers( Spirit spirit, InvaderGroup grp, TokenGroup oldInvader, int replaceCount ) {
 
-			var counts = grp.Tokens;
-			var specific = await spirit.Action.Decision( new Decision.TokenOnSpace("Select "+oldInvader.Label+" to disolve", grp.Space, counts.OfType( oldInvader ), Present.Always));
+			var tokens = grp.Tokens;
+			var specific = await spirit.Action.Decision( Select.Invader.ToDowngrade("disolve", grp.Space, tokens.OfType( oldInvader )) );
 			if(specific == null) return;
 
-			counts.Adjust( specific, -1 );
-			counts.Adjust( Invader.Explorer[1], replaceCount );
+			tokens.Adjust( specific, -1 );
+			tokens.Adjust( Invader.Explorer[1], replaceCount );
 
 			// apply pre-existing damage
 			int damage = System.Math.Min(replaceCount,specific.FullHealth-specific.Health);

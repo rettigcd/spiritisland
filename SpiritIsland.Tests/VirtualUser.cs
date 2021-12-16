@@ -208,7 +208,7 @@ namespace SpiritIsland.Tests {
 
 		public void PushesPresenceFromOcean(string destination) {
 			AssertDecisionX( "Select Growth to resolve:", "PushPresenceFromOcean" );
-			AssertDecisionX( "Select target of Presence to Push from A0", destination );
+			AssertDecisionX( "Push Presence to", destination );
 		}
 
 		public void PlacesPresenceInOcean( string growth, string source, string destination ) {

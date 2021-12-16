@@ -76,7 +76,7 @@ namespace SpiritIsland {
 		/// <summary>
 		/// Caller presents a decision to the Gateway and waits for the gateway to return an choice.
 		/// </summary>
-		public Task<T> Decision<T>( Decision.TypedDecision<T> originalDecision ) where T : class, IOption {
+		public Task<T> Decision<T>( Select.TypedDecision<T> originalDecision ) where T : class, IOption {
 			if(originalDecision == null) throw new ArgumentNullException( nameof( originalDecision ) );
 			if(activeDecisionMaker != null) throw new InvalidOperationException( "Pending decision was not properly awaited. "+activeDecisionMaker.Decision.Prompt );
 

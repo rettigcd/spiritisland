@@ -7,7 +7,7 @@ namespace SpiritIsland.JaggedEarth {
 		public override async Task ActivateAsync( SelfCtx ctx ) {
 			// Put 1 presence on your starting board in a mountain of your choice.
 			var options = ctx.AllSpaces.Where( space=>space.Terrain == Terrain.Mountain );
-			var space = await ctx.Self.Action.Decision(new Decision.TargetSpace("Add presence to",options, Present.Always));
+			var space = await ctx.Decision(new Select.Space("Add presence to",options, Present.Always));
 			ctx.Presence.PlaceOn(space);
 
 			// Push all dahan from that land.

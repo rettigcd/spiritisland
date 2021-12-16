@@ -56,7 +56,7 @@ namespace SpiritIsland.JaggedEarth {
 			var nearbyInvaders = ctx.Space.Range(1)
 				.SelectMany(s=>ctx.Target(s).Tokens.Invaders().Select(t=>new SpaceToken(s,t)))
 				.ToArray();
-			var invader2 = await Action.Decision(new Decision.SpaceTokens("Add additional strife for 1 energy",nearbyInvaders,Present.Done));
+			var invader2 = await Action.Decision(new Select.TokenFromManySpaces("Add additional strife for 1 energy",nearbyInvaders,Present.Done));
 			if(invader2 == null) return;
 			Energy--;
 			await base.AddStrife( ctx.Target(invader2.Space), invader2.Token);
@@ -74,7 +74,7 @@ namespace SpiritIsland.JaggedEarth {
 		}
 
 		async Task PickPresenceToDestroy( TargetSpaceCtx ctx ) {
-			var space = await this.Action.Decision( new Decision.Presence.DeployedToDestory( $"{CleaningUpMessesIsADrag.Title} Destroy presence for blight cleanup", this ) );
+			var space = await this.Action.Decision( Select.DeployedPresence.ToDestroy( $"{CleaningUpMessesIsADrag.Title} Destroy presence for blight cleanup", this ) );
 			await ctx.Presence.Destroy( space );
 		}
 	}

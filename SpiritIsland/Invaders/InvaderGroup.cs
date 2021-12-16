@@ -160,7 +160,7 @@ namespace SpiritIsland {
 
 			Token[] invaderTokens;
 			while(damage>0 && (invaderTokens=Tokens.OfAnyType(allowedTypes).ToArray()).Length > 0) {
-				var invaderToDamage = await damagePicker.Action.Decision(new Decision.TokenOnSpace($"Damage ({damage} remaining)",Space,invaderTokens,Present.Always ));
+				var invaderToDamage = await damagePicker.Action.Decision( Select.Invader.ForAggregateDamage(Space, invaderTokens, damage ) );
 				await ApplyDamageTo1(1,invaderToDamage);
 				damage--;
 			}

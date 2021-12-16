@@ -37,7 +37,7 @@ namespace SpiritIsland.WinForms {
 
 		void Options_NewDecision( IDecision decision ) {
 
-			pickPowerCard = decision as Decision.PickPowerCard; // capture so we can display card-action
+			pickPowerCard = decision as Select.PowerCard; // capture so we can display card-action
 			this.options = pickPowerCard != null
 				? pickPowerCard.CardOptions 
 				: decision.Options.OfType<PowerCard>().ToArray();
@@ -232,7 +232,7 @@ namespace SpiritIsland.WinForms {
 		int x;
 		readonly CardImageManager images = new CardImageManager();
 
-		Decision.PickPowerCard pickPowerCard;
+		Select.PowerCard pickPowerCard;
 		PowerCard[] options;
 
 		readonly Dictionary<PowerCard, RectangleF> locations = new();

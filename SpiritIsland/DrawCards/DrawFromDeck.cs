@@ -15,7 +15,7 @@ namespace SpiritIsland {
 		}
 
 		public static async Task<PowerType> SelectPowerCardType( Spirit spirit ) {
-			return await spirit.Action.Decision( new Decision.DeckToDrawFrom( PowerType.Minor, PowerType.Major ) );
+			return await spirit.Action.Decision( new Select.DeckToDrawFrom( PowerType.Minor, PowerType.Major ) );
 		}
 
 		public Task<DrawCardResult> DrawMajor( Spirit spirit, GameState gameState, int numberToDraw, int numberToKeep ) {

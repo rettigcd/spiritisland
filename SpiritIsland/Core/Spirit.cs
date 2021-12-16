@@ -544,7 +544,7 @@ namespace SpiritIsland {
 		) {
 			if(prompt == null) prompt = "Target Space.";
 			IEnumerable<Space> spaces = GetTargetOptions( powerType, gameState, sourceCriteria, targetCriteria );
-			return this.Action.Decision( new Decision.TargetSpace( prompt, spaces, Present.Always ));
+			return this.Action.Decision( new Select.Space( prompt, spaces, Present.Always ));
 		}
 
 		public IEnumerable<Space> GetTargetOptions(

@@ -4,10 +4,10 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class TwistedFlowersMurmurUltimatums {
 
-        [MajorCard("Twisted Flowers Murmur Ultimatums", 5, Element.Sun, Element.Moon, Element.Air, Element.Earth, Element.Plant)]
+		[MajorCard("Twisted Flowers Murmur Ultimatums", 5, Element.Sun, Element.Moon, Element.Air, Element.Earth, Element.Plant)]
 		[Slow]
-        [FromSacredSite(1,Target.Invaders)]
-        static public async Task ActAsync(TargetSpaceCtx ctx) {
+		[FromSacredSite(1,Target.Invaders)]
+		static public async Task ActAsync(TargetSpaceCtx ctx) {
 
 			// 4 fear
 			ctx.AddFear(4);
@@ -24,11 +24,11 @@ namespace SpiritIsland.BranchAndClaw {
 			// if terror level is 2 or higher, remove 2 invaders
 			if(2 <= ctx.GameState.Fear.TerrorLevel)
 				for(int i = 0; i < 2; ++i) {
-					var invader = await ctx.Self.Action.Decision( Decision.TokenOnSpace.InvaderToRemove(ctx.Space,ctx.Tokens.Invaders(),Present.Always));
+					var invader = await ctx.Decision( Select.Invader.ToRemove( ctx.Space, ctx.Tokens.Invaders() ) );
 					ctx.Tokens[invader]--;
 				}
 
-        }
+		}
 
-    }
+	}
 }

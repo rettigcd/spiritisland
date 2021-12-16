@@ -28,12 +28,12 @@ namespace SpiritIsland.Basegame {
 					.Where(s=>gs.Tokens[s].Has(Invader.Explorer) && HasNeighborWithMoreBuildings(s))
 					.ToArray();
 				if(sourceOptions.Length==0) return;
-				var source = await spiritCtx.Self.Action.Decision( new Decision.TargetSpace( "Fear: Select land to push explorer from into more towns/cities", sourceOptions,Present.Done));
+				var source = await spiritCtx.Decision( new Select.Space( "Fear: Select land to push explorer from into more towns/cities", sourceOptions,Present.Done));
 				if(source==null) continue; // continue => next spirit, break/return => no more spirits
 
 				// Select Destination
 				var destinationOptions = GetNeighborWithMoreBuildings(source);
-				var dest = await spiritCtx.Self.Action.Decision( new Decision.AdjacentSpace( "Fear: select destination with more towns/cities", source,Decision.AdjacentDirection.Outgoing, destinationOptions, Present.Always));
+				var dest = await spiritCtx.Decision( Select.Space.ForAdjacent( "Fear: select destination with more towns/cities", source,Select.AdjacentDirection.Outgoing, destinationOptions, Present.Always));
 
 				// push
 				await spiritCtx.Move(Invader.Explorer[1],source,dest);
@@ -48,7 +48,7 @@ namespace SpiritIsland.Basegame {
 					.Where( s => gs.Tokens[ s ].HasAny(Invader.Town,Invader.City) )
 					.ToArray();
 				if(options.Length == 0) break;
-				var dest = await spiritCtx.Self.Action.Decision( new Decision.TargetSpace( "Select space to gather town to city OR explorer to town", options, Present.Always));
+				var dest = await spiritCtx.Decision( new Select.Space( "Select space to gather town to city OR explorer to town", options, Present.Always));
 				var destCtx = spiritCtx.Target(dest);
 				var grp = destCtx.Tokens;
 				var invadersToGather = new List<TokenGroup>();
@@ -69,7 +69,7 @@ namespace SpiritIsland.Basegame {
 					.Where( s => {var counts = gs.Tokens[ s ]; return counts.HasInvaders() && !counts.Has(Invader.Town); } )
 					.ToArray();
 				if(options.Length==0) return;
-				var target = await spirit.Self.Action.Decision( new Decision.TargetSpace( "Select space to remove 3 health of invaders", options, Present.Always));
+				var target = await spirit.Decision( new Select.Space( "Select space to remove 3 health of invaders", options, Present.Always));
 				var sCtx = spirit.Target(target);
 
 				if(sCtx.Tokens.Has(Invader.City))

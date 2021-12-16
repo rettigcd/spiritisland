@@ -9,7 +9,7 @@ namespace SpiritIsland.JaggedEarth {
 		static public async Task ActAsync( TargetSpiritCtx ctx ){
 			// Choose a land where you and target Spirit both have presence.
 			var spaceOptions = ctx.Self.Presence.Spaces.Intersect( ctx.Other.Presence.Spaces );
-			var space = await ctx.Self.Action.Decision(new Decision.TargetSpace("",spaceOptions,Present.Always));
+			var space = await ctx.Decision(new Select.Space("",spaceOptions,Present.Always));
 			if( space == null) return;
 
 			// In that land: Remove 1 blight

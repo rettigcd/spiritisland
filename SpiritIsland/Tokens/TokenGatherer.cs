@@ -27,7 +27,7 @@ namespace SpiritIsland {
 			while(0 < countToGather
 				&& (options = GetOptions(groups)).Length > 0
 			) {
-				var source = await ctx.Self.Action.Decision( new Decision.SpaceTokens_ToGather( countToGather, ctx.Space, options, present ) );
+				var source = await ctx.Decision( Select.TokenFromManySpaces.ToGather( countToGather, ctx.Space, options, present ) );
 				if(source == null) break;
 				await ctx.Move( source.Token, source.Space, ctx.Space ); // !!! if moving dahan into frozen land, freeze them
 				--countToGather;

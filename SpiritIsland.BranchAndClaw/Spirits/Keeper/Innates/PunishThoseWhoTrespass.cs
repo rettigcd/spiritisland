@@ -35,7 +35,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			int remainingDamage = damage - damageToTarget;
 			if(remainingDamage > 0) {
-				var secondaryTarget = await ctx.Self.Action.Decision(new Decision.TargetSpace(
+				var secondaryTarget = await ctx.Decision(new Select.Space(
 					$"Apply {remainingDamage} reamaining damage"
 					,ctx.Self.Presence.Spaces
 					, Present.Always

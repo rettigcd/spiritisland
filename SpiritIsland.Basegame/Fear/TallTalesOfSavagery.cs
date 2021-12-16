@@ -18,7 +18,7 @@ namespace SpiritIsland.Basegame {
 		}
 
 		static async Task RemoveExplorerFromOneOfThese( GameState gs, Spirit spirit, Space[] options ) {
-			var target = await spirit.Action.Decision( new Decision.TargetSpace( "Select land to remove explorer", options, Present.Always ) );
+			var target = await spirit.Action.Decision( new Select.Space( "Select land to remove explorer", options, Present.Always ) );
 			gs.Tokens[target].Adjust( Invader.Explorer[1], -1 );
 		}
 
@@ -28,7 +28,7 @@ namespace SpiritIsland.Basegame {
 			foreach(var spirit in gs.Spirits) {
 				var options = gs.Island.AllSpaces.Where( s => gs.DahanOn( s ).Any && gs.Tokens[ s ].Has(Invader.Explorer) ).ToArray();
 				if(options.Length == 0) return;
-				var space = await spirit.Action.Decision( new Decision.TargetSpace( "Fear:select land with dahan to remove explorer", options, Present.Always ));
+				var space = await spirit.Action.Decision( new Select.Space( "Fear:select land with dahan to remove explorer", options, Present.Always ));
 				RemoveTownOr2Explorers( gs.Invaders.On( space, Cause.Fear ) );
 			}
 		}

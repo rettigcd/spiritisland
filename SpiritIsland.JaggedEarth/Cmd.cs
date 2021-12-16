@@ -31,7 +31,7 @@ namespace SpiritIsland.JaggedEarth {
 		static Task ExplorerTownsTakeDamage(TargetSpaceCtx ctx, int damage) => ctx.DamageInvaders(damage,Invader.Explorer,Invader.Town);
 		// -- Destory --
 
-		static public SpaceAction DestoryTown( int count ) => new SpaceAction($"Destroy {count} Towns", ctx=>ctx.Invaders.Destroy(count,Invader.Town))
+		static public SpaceAction DestoryTown( int count ) => new SpaceAction($"Destroy {count} Towns", ctx=>ctx.Invaders.Destroy(count,Invader.Town));
 
 
 		// -- Fear --

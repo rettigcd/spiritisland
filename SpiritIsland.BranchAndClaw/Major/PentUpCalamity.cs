@@ -33,10 +33,12 @@ namespace SpiritIsland.BranchAndClaw {
 			int returnCount = hasBonus ? System.Math.Min(2,options.Length) : 0;
 
 			while(options.Length > 0) {
-				var tokenToRemove = await ctx.Self.Action.Decision( new Decision.TokenOnSpace(
+				// This is kind of special purpose
+				var removeTokenDecision = new Select.TokenFrom1Space(
 					$"Remove token for (1 fear,3 damage) total({removed.Count},{removed.Count * 3})"
 					, ctx.Space, options , Present.Done
-				) );
+				);
+				var tokenToRemove = await ctx.Decision( removeTokenDecision );
 				if(tokenToRemove == null) break;
 
 				// If bonus allowed us to return some

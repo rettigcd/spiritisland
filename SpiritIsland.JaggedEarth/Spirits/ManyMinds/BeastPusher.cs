@@ -14,7 +14,7 @@ namespace SpiritIsland.JaggedEarth {
 			foreach(var filter in destinationFilters)
 				destinationOptions = destinationOptions.Where(filter);
 
-			return await ctx.Self.Action.Decision( (Decision.TypedDecision<Space>)new Decision.AdjacentSpace_TokenDestination( token, source, destinationOptions, Present.Always ) );
+			return await ctx.Decision( Select.Space.PushToken( token, source, destinationOptions, Present.Always ) );
 		}
 
 	}

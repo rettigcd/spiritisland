@@ -27,8 +27,8 @@ namespace SpiritIsland.JaggedEarth {
 		}
 
 		static async Task Dissolve(TargetSpaceCtx ctx, params TokenGroup[] groups) {
-			var decision = new Decision.TokenOnSpace( "Select invader to dissolve.", ctx.Space, ctx.Tokens.OfAnyType( groups ), Present.Always );
-			var token = await ctx.Self.Action.Decision( decision );
+			var decision = Select.Invader.ToDowngrade("dissolve", ctx.Space, ctx.Tokens.OfAnyType( groups ) );
+			var token = await ctx.Decision( decision );
 			if(token == null) return;
 			ctx.Tokens[token]--;
 			ctx.Tokens[Invader.Explorer.Default] += token.Health;

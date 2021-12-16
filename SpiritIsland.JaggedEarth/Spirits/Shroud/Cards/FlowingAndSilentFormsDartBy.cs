@@ -39,7 +39,7 @@ namespace SpiritIsland.JaggedEarth {
 
 			public async Task DestroyPresenceApi( SpiritPresence presence, Space space, GameState gs, Cause cause ) {
 				if( space == this.protectedSpace) {
-					var dst = await spirit.Action.Decision(new Decision.TargetSpace("Instead of destroying, push presence to:", space.Adjacent,Present.Done));
+					var dst = await spirit.Action.Decision(new Select.Space("Instead of destroying, push presence to:", space.Adjacent,Present.Done));
 					if(dst != null) {
 						presence.Move(space,dst,gs);
 						return;
@@ -61,9 +61,9 @@ namespace SpiritIsland.JaggedEarth {
 			// Pick Spirit
 			var nearbySpirits = ctx.GameState.Spirits.Where( s => s.Presence.Spaces.Intersect( adj ).Any() ).ToArray();
 			Spirit other = ctx.GameState.Spirits.Length == 1 ? ctx.Self
-				: await ctx.Self.Action.Decision( new Decision.TargetSpirit( "Flowin and Silent Forms Dard By", nearbySpirits ) );
+				: await ctx.Decision( new Select.Spirit( "Flowin and Silent Forms Dard By", nearbySpirits ) );
 			// Pick spot
-			var source = await ctx.Self.Action.Decision( new Decision.Presence.Gather("Gather presence", ctx.Space, adj.Intersect(other.Presence.Spaces)) );
+			var source = await ctx.Decision( Select.DeployedPresence.Gather("Gather presence", ctx.Space, adj.Intersect(other.Presence.Spaces)) );
 			if(source == null) return;
 			// # to move
 			int numToMove = (other.Presence.CountOn(source) > 1 && await ctx.Self.UserSelectsFirstText("# of presence to gather", "2", "1"))

@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace SpiritIsland {
 
-	namespace Decision {
+	namespace Select {
 
 		public class TypedDecision<T> : IDecisionPlus where T:class,IOption {
 
