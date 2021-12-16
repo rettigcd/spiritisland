@@ -11,7 +11,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 			return ctx.SelectActionOption(
 				new SpaceAction( "Add 1 beast", ctx => ctx.Beasts.Add(1) ),
-				new SpaceAction( "Push up to 2 explorers", ctx => ctx.PushUpTo( 2, Invader.Explorer ), ctx.Beasts.Any )
+				new SpaceAction( "Push up to 2 explorers", ctx => ctx.PushUpTo( 2, Invader.Explorer ) )
+					.Cond( ctx.Beasts.Any )
 			);
 
 		}

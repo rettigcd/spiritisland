@@ -43,8 +43,8 @@ namespace SpiritIsland.JaggedEarth {
 				var costal = costalCtxs.Select(x=>x.Space).ToArray();
 
 				await ctx.SelectActionOption(
-					new SpaceAction($"Move Dahan IN TO "+ ctx.Space.Label, ctx => ctx.MoveTokenIn( TokenType.Dahan, 100, Target.Coastal), costalWithDahan.Length>0),
-					new SpaceAction($"Move Dahan OUT OF "+ ctx.Space.Label, ctx => ctx.MoveTokensOut(1, TokenType.Dahan, 100, Target.Coastal), ctx.Dahan.Any )
+					new SpaceAction($"Move Dahan IN TO "+ ctx.Space.Label, ctx => ctx.MoveTokenIn( TokenType.Dahan, 100, Target.Coastal)).Cond( costalWithDahan.Length>0 ),
+					new SpaceAction($"Move Dahan OUT OF "+ ctx.Space.Label, ctx => ctx.MoveTokensOut(1, TokenType.Dahan, 100, Target.Coastal) ).Cond( ctx.Dahan.Any )
 				);
 
 				count--;

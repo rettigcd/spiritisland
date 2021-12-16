@@ -43,14 +43,12 @@ namespace SpiritIsland.Basegame {
 					"Select invader to remove",
 					new SelfAction( 
 						"remove 1 explorer/town from land with presence", 
-						ctx => ctx.RemoveTokenFromOneSpace( townExplorerOptions, 1, Invader.Town,Invader.Explorer ),
-						townExplorerOptions.Length>0
-					),
+						ctx => ctx.RemoveTokenFromOneSpace( townExplorerOptions, 1, Invader.Town,Invader.Explorer )
+					).Cond( townExplorerOptions.Length>0 ),
 					new SelfAction( 
 						"remove 1 city from land with sacred site",  
-						ctx => ctx.RemoveTokenFromOneSpace( cityOptions, 1, Invader.City ),
-						cityOptions.Length > 0
-					)
+						ctx => ctx.RemoveTokenFromOneSpace( cityOptions, 1, Invader.City )
+					).Cond( cityOptions.Length > 0 )
 				);
 
 			}

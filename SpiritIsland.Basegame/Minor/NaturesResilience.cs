@@ -13,7 +13,8 @@ namespace SpiritIsland.Basegame {
 
 			await ctx.SelectActionOption(
 				new SpaceAction("Defend 6", ctx=>ctx.Defend(6)),
-				new SpaceAction("Remove 1 blight", ctx=>ctx.RemoveBlight(), await ctx.YouHave("2 water") && ctx.HasBlight )
+				new SpaceAction("Remove 1 blight", ctx=>ctx.RemoveBlight() )
+					.Cond( await ctx.YouHave("2 water") && ctx.HasBlight )
 			);
 
 		}

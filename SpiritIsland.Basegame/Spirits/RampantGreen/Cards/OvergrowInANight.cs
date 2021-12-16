@@ -14,11 +14,8 @@ namespace SpiritIsland.Basegame {
 					var from = await ctx.Presence.SelectSource();
 					await ctx.Self.PlacePresence( from, ctx.Space, ctx.GameState );
 				} ),
-				new SpaceAction(
-					"3 fear",
-					ctx => ctx.AddFear(3), 
-					ctx.HasSelfPresence && ctx.Tokens.HasInvaders()  // if presence and invaders
-				)
+				new SpaceAction( "3 fear", ctx => ctx.AddFear(3) )
+					.Cond( ctx.HasSelfPresence && ctx.Tokens.HasInvaders() ) // if presence and invaders
 			);
 
 		}

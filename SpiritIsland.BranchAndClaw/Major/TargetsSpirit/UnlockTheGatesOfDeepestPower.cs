@@ -26,9 +26,8 @@ namespace SpiritIsland.BranchAndClaw {
 			int cost = (card.Cost + card.Cost % 2) / 2;
 			var payingHalfCostOption = new SelfAction(
 				$"paying {cost}",
-				ctx => ctx.Self.PlayCard(card, cost),
-				cost <= ctx.Self.Energy
-			);
+				ctx => ctx.Self.PlayCard(card, cost)
+			).Cond( cost <= ctx.Self.Energy );
 
 			//    * forgetting it at the end of turn.
 			var forgettingCardOption = new SelfAction(

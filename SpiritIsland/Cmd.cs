@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace SpiritIsland.JaggedEarth {
+namespace SpiritIsland {
 
-	static class Cmd {
+	public static class Cmd {
 
 		static public SpaceAction Destroy2FewerDahan = new SpaceAction(
 			"Each time Dahan would be Destroyed in target land, Destroy 2 fewer Dahan.", 
@@ -13,12 +13,16 @@ namespace SpiritIsland.JaggedEarth {
 			} ) 
 		);
 
-		// Push / Pull
+		// Gather
 		static public SpaceAction GatherUpToNDahan( int count ) => new SpaceAction( $"Gather up to {count} Dahan", ctx => ctx.GatherUpToNDahan( count ) );
-		static public SpaceAction PushUpToNDahan( int count ) => new SpaceAction( $"Gather up to {count} Dahan", ctx => ctx.PushUpToNDahan( count ) );
 		static public SpaceAction GatherUpToNExplorers( int count ) => new SpaceAction( $"Gather up to {count} Explorers", ctx => ctx.GatherUpTo(count,Invader.Explorer));
+
+		// Push
+		static public SpaceAction PushUpToNDahan( int count ) => new SpaceAction( $"Push up to {count} Dahan", ctx => ctx.PushUpToNDahan( count ) ).Cond(ctx=>ctx.Dahan.Any );
+		static public SpaceAction PushNDahan(int count ) => new SpaceAction( $"Push {count} dahan", ctx => ctx.PushDahan( count ) ).Cond( ctx=>ctx.Dahan.Any );
 		static public SpaceAction PushUpToNExplorers( int count ) => new SpaceAction( $"Push up to {count} Explorers", ctx => ctx.PushUpTo(count,Invader.Explorer));
 		static public SpaceAction PushUpToNTowns( int count ) => new SpaceAction( $"Push up to {count} Towns", ctx=>ctx.PushUpTo(count,Invader.Town));
+		static public SpaceAction PushExplorersOrTowns( int count ) => new SpaceAction( $"Push {count} explorers or towns", ctx => ctx.Push( count, Invader.Town, Invader.Explorer ) ).Cond( ctx=>ctx.Tokens.HasAny( Invader.Explorer, Invader.Town ) );
 
 		// - Adjust Tokens Counts -
 		static public SpaceAction Add1Wilds => new SpaceAction("Add 1 Wilds.", ctx => ctx.Wilds.Add(1) );

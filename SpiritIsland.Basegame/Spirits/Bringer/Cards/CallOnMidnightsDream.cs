@@ -12,8 +12,8 @@ namespace SpiritIsland.Basegame {
 		static public Task ActAsync(TargetSpaceCtx ctx) {
 
 			return ctx.SelectActionOption(
-				new SpaceAction("Draw Major Power", DrawMajorOrGetEnergy, ctx.Dahan.Any ), // if target land has dahan
-				new SpaceAction("2 fear", ctx => ctx.AddFear(2), ctx.HasInvaders )
+				new SpaceAction("Draw Major Power", DrawMajorOrGetEnergy ).Cond(ctx.Dahan.Any), // if target land has dahan
+				new SpaceAction("2 fear", ctx => ctx.AddFear(2) ).Cond( ctx.HasInvaders )
 			);
 
 		}

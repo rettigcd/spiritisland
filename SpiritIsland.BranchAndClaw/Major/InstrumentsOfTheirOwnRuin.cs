@@ -18,8 +18,7 @@ namespace SpiritIsland.BranchAndClaw {
 				, new SpaceAction(
 					"Instead, if Invaders Ravage in target land, damage invaders in adjacent lands instead of dahan"
 					, DuringRavage_InvadersDamageInvadersInAdjacentLandsInsteadOfDahan
-					, await ctx.YouHave("4 sun,2 fire,2 animal" )
-				)
+				).Cond( await ctx.YouHave("4 sun,2 fire,2 animal" ) )
 			);
 
 		}

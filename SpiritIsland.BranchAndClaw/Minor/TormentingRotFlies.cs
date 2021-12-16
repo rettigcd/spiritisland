@@ -10,7 +10,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			return ctx.SelectActionOption(
 				new SpaceAction( "Add 1 disease", ctx => ctx.Disease.Add(1) ),
-				new SpaceAction( "2 fear, +1(if disease) +1(if blight)", AddFear, ctx.Tokens.HasInvaders() )
+				new SpaceAction( "2 fear, +1(if disease) +1(if blight)", AddFear ).Cond( ctx.Tokens.HasInvaders() )
 			);
 
 		}

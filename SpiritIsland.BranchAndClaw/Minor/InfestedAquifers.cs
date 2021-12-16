@@ -12,12 +12,9 @@ namespace SpiritIsland.BranchAndClaw {
 			return ctx.SelectActionOption(
 				new SpaceAction( "1 damage to each invader"
 					, ctx => ctx.DamageEachInvader( 1 )
-					, ctx.Disease.Any
-				),
-				new SpaceAction( "1 fear and 1 disease"
-					, ctx => { ctx.AddFear(1); ctx.Disease.Add(1); return Task.CompletedTask; }
-					, ctx.IsOneOf(Terrain.Mountain,Terrain.Wetland)
-				)
+				).Cond( ctx.Disease.Any ),
+				new SpaceAction( "1 fear and 1 disease", ctx => { ctx.AddFear(1); ctx.Disease.Add(1); return Task.CompletedTask; } )
+					.Cond( ctx.IsOneOf(Terrain.Mountain,Terrain.Wetland) )
 			);
 		}
 

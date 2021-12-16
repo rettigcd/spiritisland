@@ -17,9 +17,8 @@ namespace SpiritIsland.Basegame {
 				),
 				new SpaceAction(
 					"Destory 1 town", 
-					ctx => ctx.Invaders.Destroy( 1, Invader.Town ), 
-					ctx.Tokens.Has(Invader.Town) && await ctx.YouHave("3 earth")
-				)
+					ctx => ctx.Invaders.Destroy( 1, Invader.Town )
+				).Cond( ctx.Tokens.Has(Invader.Town) && await ctx.YouHave("3 earth") )
 			);
 		}
 

@@ -8,7 +8,7 @@ namespace SpiritIsland.BranchAndClaw {
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 			return ctx.SelectActionOption(
 				new SpaceAction( "1 fear, add beast", FearAndBeast ),
-				new SpaceAction( "destroy 1 explorer/town", DestroyExplorerTown, ctx.Beasts.Any )
+				new SpaceAction( "destroy 1 explorer/town", DestroyExplorerTown ).Cond( ctx.Beasts.Any )
 			);
 		}
 

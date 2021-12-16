@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -101,7 +100,7 @@ namespace SpiritIsland {
 		public Task SelectAction_Optional( string prompt, params IExecuteOn<SelfCtx>[] options )=> SelectAction_Inner( prompt, options, Present.Done, this );
 
 		virtual protected async Task SelectAction_Inner<T>( string prompt, IExecuteOn<T>[] options, Present present, T ctx ) {
-			IExecuteOn<T>[] applicable = options.Where( opt => opt != null && opt.IsApplicable ).ToArray();
+			IExecuteOn<T>[] applicable = options.Where( opt => opt != null && opt.IsApplicable(ctx) ).ToArray();
 			string text = await Self.SelectText( prompt, applicable.Select( a => a.Description ).ToArray(), present );
 			if(text != null && text != TextOption.Done.Text) {
 				var selectedOption = applicable.Single( a => a.Description == text );
