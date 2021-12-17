@@ -21,7 +21,9 @@ namespace SpiritIsland.JaggedEarth {
 			// As it moves, up to 2 dahan may move with it, for part or all of the way.
 			// the beast / dahan may move to an adjacent land and then back.
 			var destCtx = ctx.Target(destination);
-			await new GatherDahanFromSingle(destCtx, ctx.Space).MoveUpTo(2);
+			await new GatherDahanFromSingle(destCtx, ctx.Space)
+				.AddGroup(2,TokenType.Dahan)
+				.GatherUpToN();
 
 			await MoveBeastAndFriends(destCtx,steps-1);
 		}

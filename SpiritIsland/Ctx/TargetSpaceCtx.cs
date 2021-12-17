@@ -127,10 +127,11 @@ namespace SpiritIsland {
 
 		// overriden by Grinning Tricketsrs 'Let's see what happens'
 		public virtual Task GatherUpTo( int countToGather, params TokenGroup[] groups )
-			=> Gatherer.MoveUpTo(countToGather, groups);
+			=> Gatherer.AddGroup(countToGather, groups).GatherUpToN();
 
 		public Task Gather( int countToGather, params TokenGroup[] groups )
-			=> Gatherer.Move(countToGather,groups);
+			=> Gatherer.AddGroup(countToGather,groups).GatherN();
+
 
 		public TokenGatherer Gatherer => Self.GatherFactory( this );
 

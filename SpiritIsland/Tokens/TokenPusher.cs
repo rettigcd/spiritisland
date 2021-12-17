@@ -16,8 +16,8 @@ namespace SpiritIsland {
 
 			count = System.Math.Min( count, ctx.GameState.Tokens[source].SumAny(groups) );
 
-			int index = countArray.Count;
-			countArray.Add( count );
+			int index = sharedGroupCounts.Count;
+			sharedGroupCounts.Add( count );
 			foreach(var group in groups) 
 				indexLookupByGroup.Add( group, index );
 
@@ -32,7 +32,7 @@ namespace SpiritIsland {
 			var counts = ctx.Target(source).Tokens;
 			Token[] GetTokens() {
 				var groupsWithRemainingCounts = indexLookupByGroup
-					.Where( pair => countArray[pair.Value] > 0 )
+					.Where( pair => sharedGroupCounts[pair.Value] > 0 )
 					.Select( p => p.Key )
 					.ToArray();
 				return counts.OfAnyType( groupsWithRemainingCounts ); // !!! Make Dahan Freezable
@@ -43,7 +43,7 @@ namespace SpiritIsland {
 			Token[] tokens;
 			while(0 < (tokens = GetTokens()).Length) {
 				// Select Token
-				var decision = Select.TokenFrom1Space.TokenToPush( source, countArray.Sum(), tokens, present );
+				var decision = Select.TokenFrom1Space.TokenToPush( source, sharedGroupCounts.Sum(), tokens, present );
 				var token = await ctx.Self.Action.Decision( decision );
 				if(token == null) break;
 
@@ -51,7 +51,7 @@ namespace SpiritIsland {
 				Space destination = await PushToken( token );
 
 				// Book keeping
-				--countArray[indexLookupByGroup[token.Generic]]; // decrement count
+				--sharedGroupCounts[indexLookupByGroup[token.Generic]]; // decrement count
 				if(destination != null)
 					pushedToSpaces.Add( destination ); // record push
 			}
@@ -64,16 +64,16 @@ namespace SpiritIsland {
 
 			await ctx.Move( token, source, destination );	// !!! if moving into frozen land, freeze Dahan
 
-			customeAction?.Invoke( token, source, destination);
+			customAction?.Invoke( token, source, destination);
 
 			return destination;
 		}
 
 		public TokenPusher AddCustomMoveAction( Func<Token,Space,Space,Task> customeAction ) {
-			this.customeAction = customeAction;
+			this.customAction = customeAction;
 			return this;
 		}
-		Func<Token,Space,Space,Task> customeAction;
+		Func<Token,Space,Space,Task> customAction;
 
 		protected virtual async Task<Space> SelectDestination( Token token ) {
 			IEnumerable<Space> destinationOptions = source.Adjacent.Where( s => ctx.Target(s).IsInPlay );
@@ -94,25 +94,16 @@ namespace SpiritIsland {
 		protected readonly Space source;
 		protected readonly List<Func<Space,bool>> destinationFilters = new List<Func<Space, bool>>();
 
-		readonly List<int> countArray = new(); // the # we push from each group
+		// if we push 3 explorer/town,
+		// sharedGroupCounts[0] = 3
+		// indexLookup[Explorer] = 0 (index)
+		// indexLookup[Town] = 0 (index)
+
+		readonly List<int> sharedGroupCounts = new(); // the # we push from each group
+
 		readonly Dictionary<TokenGroup, int> indexLookupByGroup = new(); // map from group back to its count
 
 		#endregion
-
-	}
-
-	/// <summary>
-	/// Overrides Selecting destination with a fixed destination
-	/// </summary>
-	public class TokenPusher_FixedDestination : TokenPusher {
-		readonly Space destination;
-		public TokenPusher_FixedDestination( TargetSpaceCtx ctx, Space destination ) : base( ctx ) { 
-			this.destination = destination;
-		}
-
-		protected override Task<Space> SelectDestination( Token token ) {
-			return Task.FromResult(destination);
-		}
 
 	}
 
