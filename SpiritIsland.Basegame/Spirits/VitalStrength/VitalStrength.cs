@@ -8,13 +8,6 @@ namespace SpiritIsland.Basegame {
 
 	/*
 	================================================
-	Vital Strngth of the Earth
-	* reclaim, +1 presense range 2
-	* +1 power card, +1 presense range 0
-	* +1 presence range 1, +2 energy
-
-	2 3 4 6 7 8
-	1 1 2 2 3 4
 
 	Innate: Gift of Strength => fast, any spirit
 	1 sun 2 mountain 2 green  once this turn, target spirit may repeat 1 power card with energy cost of 1 or less
@@ -28,15 +21,6 @@ namespace SpiritIsland.Basegame {
 	Rituals of Destruction => 3 => slow, with 1 of sacred => sun, moon, fire, plant => 2 damanage,  if target land has at least 3 dahan, then +3 damange and 2 fear
 	Draw of the Fruitful Earth => 1 => slow, range 1, any => mountain, plant, animal => gather up to 2 explorers, gather up to 2 dahan
 
-Power Progression:
-	1. Rouse the Trees and Stones
-	2. Call To Migrate
-	3. Poisoned Land (Major; forget a Power)
-	4. Devouring Ants
-	5. Vigor Of The Breaking Dawn (Major; forget a Power)
-	6. Voracious Growth
-	7. Savage Mawbeasts
-
 	*/
 
 	public class VitalStrength : Spirit {
@@ -44,10 +28,7 @@ Power Progression:
 		public const string Name = "Vital Strength of the Earth";
 		public override string Text => Name;
 
-		public override SpecialRule[] SpecialRules => new SpecialRule[] {
-			new SpecialRule("Earth's Vitality","Defend 3 in every land where you have sacred site.")
-		} ;
-
+		public override SpecialRule[] SpecialRules => new SpecialRule[] { EarthsVitality.Rule } ;
 
 		public VitalStrength():base(
 			new SpiritPresence(
@@ -84,8 +65,16 @@ Power Progression:
 
 		protected override void InitializeInternal( Board board, GameState gs ) {
 			InitPresence( board, gs );
-			gs.PreRavaging.ForGame.Add( Defend3InSacredSites );
+			gs.Tokens.VirtualDefend_ForGame.Add( new EarthsVitality(this).DefendOnSpace );
 		}
+
+		class EarthsVitality {
+			static public SpecialRule Rule => new SpecialRule("Earth's Vitality","Defend 3 in every land where you have sacred site.");
+			readonly SpiritPresence presence;
+			public EarthsVitality( Spirit spirit ) { presence = spirit.Presence; }
+			public int DefendOnSpace( Space space ) => presence.SacredSites.Contains( space ) ? 3 : 0;
+		}
+
 
 		void InitPresence( Board board, GameState gameState ){
 			var higestJungle = board.Spaces.OrderByDescending( s => s.Label ).First( s => s.Terrain == Terrain.Jungle );
@@ -94,13 +83,6 @@ Power Progression:
 			Presence.PlaceOn( higestMountain, gameState );
 			Presence.PlaceOn( higestJungle, gameState );
 		}
-
-		Task Defend3InSacredSites( GameState gs, RavagingEventArgs args ) {
-			foreach(var space in Presence.SacredSites.Where(args.Spaces.Contains))
-				gs.Tokens[space].Defend.Add( 3 );
-			return Task.CompletedTask;
-		}
-
 
 	}
 

@@ -4,7 +4,7 @@ namespace SpiritIsland {
 
 	public static class Cmd {
 
-		static public SpaceAction Destroy2FewerDahan = new SpaceAction(
+		static public SpaceAction Destroy2FewerDahan => new SpaceAction(
 			"Each time Dahan would be Destroyed in target land, Destroy 2 fewer Dahan.", 
 			// !!! This only stops Ravage destroys, not other. (Are there any other?)
 			ctx=> ctx.GameState.ModifyRavage(ctx.Space, cfg => { 

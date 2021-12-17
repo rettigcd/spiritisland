@@ -59,7 +59,7 @@ namespace SpiritIsland {
 			FromEachStrifed_RemoveOneStrife( participatingInvaders );
 
 			// Defend
-			int damageInflictedFromInvaders = Math.Max( damageFromInvaders - Tokens.Defend, 0 );
+			int damageInflictedFromInvaders = Math.Max( damageFromInvaders - Tokens.Defend.Count, 0 );
 
 			return damageInflictedFromInvaders;
 		}

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
-	public class Tokens_ForIsland : IDestroyIslandTokens {
+	public class Tokens_ForIsland : IIslandTokenApi {
 
 		readonly GameState gameStateForEventArgs; // !!! this is only captured so it can be supplied with the events.
 
@@ -26,8 +26,10 @@ namespace SpiritIsland {
 			}
 		}
 
-//		readonly Dictionary<Space, CountDictionary<Token>> countDict = new Dictionary<Space, CountDictionary<Token>>();
 		readonly Dictionary<Space, TokenCountDictionary> tokenCounts = new Dictionary<Space, TokenCountDictionary>();
+		public List<Func<Space, int>> VirtualDefend_ForGame { get; } = new List<Func<Space, int>>(); // !!! save to Memento???
+
+		public int GetVirtualDefendFor( Space space ) => VirtualDefend_ForGame.Sum(x=> x( space ) );
 
 		public IEnumerable<Space> Keys => tokenCounts.Keys;
 
@@ -125,8 +127,9 @@ namespace SpiritIsland {
 
 	}
 
-	public interface IDestroyIslandTokens {
+	public interface IIslandTokenApi {
 		Task DestroyIslandToken( Space space, int countToDestroy, Token token, Cause source );
+		int GetVirtualDefendFor( Space space );
 	}
 
 

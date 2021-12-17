@@ -9,17 +9,18 @@ namespace SpiritIsland {
 
 		#region constructor
 
-		public TokenCountDictionary( Space space, CountDictionary<Token> counts, IDestroyIslandTokens tokenDestroyer ) {
+		public TokenCountDictionary( Space space, CountDictionary<Token> counts, IIslandTokenApi tokenApi ) {
 			this.Space = space;
 			this.counts = counts;
-			this.tokenDestroyer = tokenDestroyer;
+			this.tokenApi = tokenApi;
 		}
 
 		/// <summary> Clone / copy constructor </summary>
 		public TokenCountDictionary( TokenCountDictionary src ) {
 			this.Space = src.Space;
 			counts = src.counts.Clone();
-			this.tokenDestroyer = src.tokenDestroyer;
+			this.tokenApi = src.tokenApi;
+			this.virtualDefends = src.virtualDefends;
 		}
 
 		#endregion
@@ -27,6 +28,7 @@ namespace SpiritIsland {
 
 		public int this[Token specific] {
 			get {
+				if( specific == TokenType.Defend ) return Defend.Count;
 				ValidateIsAlive( specific );
 				return counts[specific];
 			}
@@ -36,7 +38,7 @@ namespace SpiritIsland {
 			}
 		}
 
-		public IEnumerable<Token> Keys => counts.Keys;
+		public IEnumerable<Token> Keys => counts.Keys; // !! This won't list virtual (defend) tokens
 
 		public string InvaderSummary { get {
 			static int Order_CitiesTownsExplorers( Token invader )
@@ -57,7 +59,7 @@ namespace SpiritIsland {
 		public override string ToString() => Space.Label + ":" + Summary;
 
 		public TokenBinding Blight => new TokenBinding( this, TokenType.Blight);
-		public TokenBinding Defend => new TokenBinding( this, TokenType.Defend );
+		public IDefendTokenBindings Defend => new DefendTokenBinding( Space, counts, tokenApi.GetVirtualDefendFor );
 		public TokenBinding Beasts => new ( this, TokenType.Beast );
 		public TokenBinding Disease => new ( this, TokenType.Disease );
 		public TokenBinding Wilds => new ( this, TokenType.Wilds );
@@ -76,7 +78,8 @@ namespace SpiritIsland {
 		}
 
 		public readonly CountDictionary<Token> counts; // !!! public for Tokens_ForIsland Memento, create own momento.
-		readonly IDestroyIslandTokens tokenDestroyer;
+		readonly IIslandTokenApi tokenApi;
+		readonly List<Func<Space,int>> virtualDefends;
 
 		#endregion
 
@@ -108,7 +111,7 @@ namespace SpiritIsland {
 
 		/// <summary> Adds .Space to context and calls Parent
 		public Task DestroyToken( int countToDestroy, Token token, Cause cause )
-			=> tokenDestroyer.DestroyIslandToken( Space, countToDestroy, token, cause);
+			=> tokenApi.DestroyIslandToken( Space, countToDestroy, token, cause);
 		
 	}
 
