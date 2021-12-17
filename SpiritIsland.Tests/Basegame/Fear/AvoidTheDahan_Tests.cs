@@ -115,7 +115,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 
 			// Build: Build city:	1B@1,1C@3,1D@2,1T@2
 			// Explore: +1			1B@1,1C@3,1D@2,1E@1,1T@2
-			spaceCtx.Tokens.Summary.ShouldBe( "1B@1,1C@3,1D@2,1E@1,1T@2" );
+			spaceCtx.Tokens.Summary.ShouldBe( "1B,1C@3,1D@2,1E@1,1T@2" );
 		}
 
 		[Fact]
@@ -141,7 +141,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			// Ravage: 3 explorers kill 1 dahan, 1 dahan kills 2 explorer:  1B@1,1D@2,1E@1
 			// Build: 1 dahan out numbers town/cities (0), no build:  1B@1,1D@2,1E@1
 			// Explore: +1   1D@2,2E@1
-			spaceCtx.Tokens.Summary.ShouldBe( "1B@1,1D@2,2E@1" );
+			spaceCtx.Tokens.Summary.ShouldBe( "1B,1D@2,2E@1" );
 		}
 
 		[Fact]
@@ -169,7 +169,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 
 			// Build: no build      1B@1,1D@2,1T@2
 			// Explore: +1			1B@1,1D@2,1E@1,1T@2
-			spaceCtx.Tokens.Summary.ShouldBe( "1B@1,1D@2,1E@1,1T@2" );
+			spaceCtx.Tokens.Summary.ShouldBe( "1B,1D@2,1E@1,1T@2" );
 		}
 
 		[Fact]
@@ -196,7 +196,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 
 			// Build: build     1B@1,1C@3,1T@2
 			// Explore: +1		1B@1,1C@3,1E@1,1T@2
-			spaceCtx.Tokens.Summary.ShouldBe( "1B@1,1C@3,1E@1,1T@2" );
+			spaceCtx.Tokens.Summary.ShouldBe( "1B,1C@3,1E@1,1T@2" );
 		}
 
 

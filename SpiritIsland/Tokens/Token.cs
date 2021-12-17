@@ -1,36 +1,24 @@
 ﻿
 namespace SpiritIsland {
 
-	public class Token : IOption {
+	public interface Token : IOption {
 
-		public Token(TokenGroup generic, Token[] seq, int health, Img img){
-			this.Generic = generic;
-			Health = health;
-			this.seq = seq;
-			this.Img = img;
-		}
+		TokenGroup Generic { get; } // originally: readonly
 
-		public readonly TokenGroup Generic;
+		Img Img { get; }
 
-		public Img Img { get; }
+		string Summary { get; }
 
-		public virtual string Summary => Initial+"@"+Health; // C@3, T@2
+		public char Initial { get; }
 
-		public char Initial => Generic.Initial;
+		Token ResultingDamagedInvader(int damage);
 
-		public Token ResultingDamagedInvader(int damage){
-			return seq[ damage > Health ? 0 : Health-damage ];
-		}
+		int Health {get;}
 
-		public int Health {get;}
+		Token Healthy { get; }
 
-		public Token Healthy => seq[^1];
+		int FullHealth {get; }
 
-		public int FullHealth => Healthy.Health;
-
-		string IOption.Text =>  Summary; // + health ?
-
-		readonly Token[] seq;
 	}
 
 }

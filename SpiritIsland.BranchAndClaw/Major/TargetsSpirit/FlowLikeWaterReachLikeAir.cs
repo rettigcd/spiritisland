@@ -28,7 +28,7 @@ namespace SpiritIsland.BranchAndClaw {
 			// if you hvae 2 air, 2 water, the moved presence may also bring along up to 2 cities and up to 2 blight.
 			if(bringCityAndBlight) {
 				mover.AddGroup( 2, Invader.City );
-				mover.AddGroup( 2, TokenType.Blight.Generic );
+				mover.AddGroup( 2, TokenType.Blight );
 			}
 
 			await mover.MoveUpToN();

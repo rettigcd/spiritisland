@@ -74,7 +74,7 @@ namespace SpiritIsland.BranchAndClaw {
 		}
 
 		static Token[] GetRemovableTokens( TargetSpaceCtx ctx ) {
-			var options = ctx.Tokens.OfAnyType( TokenType.Beast.Generic, TokenType.Disease.Generic, TokenType.Wilds.Generic ).ToList();
+			var options = ctx.Tokens.OfAnyType( TokenType.Beast, TokenType.Disease, TokenType.Wilds ).ToList();
 			options.AddRange( ctx.Tokens.Keys.OfType<StrifedInvader>() );
 			return options.ToArray();
 		}

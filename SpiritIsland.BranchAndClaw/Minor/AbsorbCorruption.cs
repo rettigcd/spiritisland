@@ -11,7 +11,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			bool canRemoveBlight = ctx.Blight.Any && 1 <= ctx.Self.Energy;
 
-			var gatherBlight = new SpaceAction( "Gather 1 blight", ctx => ctx.Gather( 1, TokenType.Blight.Generic ) );
+			var gatherBlight = new SpaceAction( "Gather 1 blight", ctx => ctx.Gather( 1, TokenType.Blight ) );
 			var removeBlight = new SpaceAction( "Pay 1 Energy to remove 1 blight",  Pay1EnergyToRemoveBlight ).Cond( canRemoveBlight );
 			var doBoth = new SpaceAction( "Do Both", 
 				async ctx => { await gatherBlight.Execute(ctx); await removeBlight.Execute(ctx); }

@@ -60,7 +60,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Fear {
 			// The only thing around A8 (a jungle) is a diseased town
 			ctx.TargetSpace("A5").Tokens.Init("");
 			ctx.TargetSpace("A6").Tokens.Init("");
-			ctx.TargetSpace("A7").Tokens.Init("1T@2,1Z@1"); // town & diZease
+			ctx.TargetSpace("A7").Tokens.Init("1T@2,1Z"); // town & diZease
 			ctx.TargetSpace("A8").Tokens.Init("");
 
 			// Given: Activate fear card
@@ -94,15 +94,15 @@ namespace SpiritIsland.Tests.BranchAndClaw.Fear {
 
 			// Ravage lands (sand:A4 & A7) have a disease
 			// The only thing around A8 (a jungle) is a diseased town
-			ctx.TargetSpace("A4").Tokens.Init("1E@1,1Z@1"); // diZease
-			ctx.TargetSpace("A7").Tokens.Init("1E@1,1Z@1"); // diZease
+			ctx.TargetSpace("A4").Tokens.Init("1E@1,1Z"); // diZease
+			ctx.TargetSpace("A7").Tokens.Init("1E@1,1Z"); // diZease
 			// Build lands (Costal:A1..3) all have explorers, A1 has a disease too
-			ctx.TargetSpace("A1").Tokens.Init("1E@1,1Z@1");
+			ctx.TargetSpace("A1").Tokens.Init("1E@1,1Z");
 			ctx.TargetSpace("A2").Tokens.Init("1E@1");
 			ctx.TargetSpace("A3").Tokens.Init("1E@1");
 			// Explore lands (jungle:A3 & A8) have a source (A3 is costal, A8 is town in A5)
 			ctx.TargetSpace("A5").Tokens.Init("1T@2");
-			ctx.TargetSpace("A8").Tokens.Init("1Z@1");
+			ctx.TargetSpace("A8").Tokens.Init("1Z");
 
 			// Given: Activate fear card
 			if(activateFearCard) {
@@ -141,7 +141,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Fear {
 			// The only thing around A8 (a jungle) is a diseased town
 			ctx.TargetSpace("A5").Tokens.Init("");
 			ctx.TargetSpace("A6").Tokens.Init("");
-			ctx.TargetSpace("A7").Tokens.Init("1T@2,1Z@1"); // town & diZease
+			ctx.TargetSpace("A7").Tokens.Init("1T@2,1Z"); // town & diZease
 			ctx.TargetSpace("A8").Tokens.Init("");
 
 			if(skipARavage)

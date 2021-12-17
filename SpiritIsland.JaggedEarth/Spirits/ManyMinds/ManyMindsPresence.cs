@@ -66,7 +66,7 @@ namespace SpiritIsland.JaggedEarth {
 		}
 
 		async Task TokenDestroyed(GameState gs, TokenDestroyedArgs args) {
-			if(args.Token != TokenType.Beast.Generic) return; // not a beast
+			if(args.Token != TokenType.Beast) return; // not a beast
 			if(this.CountOn(args.Space)<2) return; // not our Sacred Site
 			if(gs.Tokens[args.Space].Beasts.Count == 0){ // no more beasts
 				await base.Destroy(args.Space,gs, args.Cause);

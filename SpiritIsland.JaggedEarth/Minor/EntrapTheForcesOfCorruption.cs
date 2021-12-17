@@ -6,7 +6,7 @@ namespace SpiritIsland.JaggedEarth {
 		[MinorCard("Entrap the Forces of Corruption",1,Element.Earth,Element.Plant,Element.Animal),Fast,FromPresence(1)]
 		static public async Task ActAsync( TargetSpaceCtx ctx ){
 			// Gather up to 1 Blight
-			await ctx.GatherUpTo(1,TokenType.Blight.Generic);
+			await ctx.GatherUpTo(1,TokenType.Blight);
 
 			// Isolate target land.
 			ctx.Isolate();

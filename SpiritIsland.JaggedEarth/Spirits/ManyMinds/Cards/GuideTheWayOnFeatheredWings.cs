@@ -15,7 +15,7 @@ namespace SpiritIsland.JaggedEarth {
 		static public async Task MoveBeastAndFriends(TargetSpaceCtx ctx, int steps ) {
 			if(steps <= 0 ) return;
 			// move beast
-			Space destination = await ctx.MoveTokensOut(1, TokenType.Beast.Generic,1);
+			Space destination = await ctx.MoveTokensOut(1, TokenType.Beast,1);
 			if(destination == null) return;
 			
 			// As it moves, up to 2 dahan may move with it, for part or all of the way.

@@ -44,7 +44,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			// Ravage: no dahan, no change:			1B@1,1C@3
 			// Build: City present => no build		1B@1,1C@3
 			// Explore: +1							1B@1,1C@3,1E@1
-			spaceCtx.Tokens.Summary.ShouldBe( "1B@1,1C@3,1E@1" );
+			spaceCtx.Tokens.Summary.ShouldBe( "1B,1C@3,1E@1" );
 		}
 
 		private const string FearCard = "Trade Suffers : 1 : Invaders do not Build in lands with City.";
@@ -73,7 +73,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			// Ravage-b: 2 dahan do 4 damage killing city and 1 explorer     1B@1,2D@2,1E@1 
 			// Build: no city present => build		1B@1,2D@2,1E@1,1T@2
 			// Explore: +1							1B@1,2D@2,2E@1,1T@2
-			spaceCtx.Tokens.Summary.ShouldBe( "1B@1,2D@2,2E@1,1T@2" );
+			spaceCtx.Tokens.Summary.ShouldBe( "1B,2D@2,2E@1,1T@2" );
 
 		}
 

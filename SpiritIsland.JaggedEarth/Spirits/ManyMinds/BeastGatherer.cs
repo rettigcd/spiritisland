@@ -8,7 +8,7 @@ namespace SpiritIsland.JaggedEarth {
 		protected override SpaceToken[] GetOptions(TokenGroup[] groups){
 			var items = new List<SpaceToken>();
 			foreach(var group in groups) {
-				int range = group == TokenType.Beast.Generic ? 2 : 1;
+				int range = group == TokenType.Beast ? 2 : 1;
 				foreach(var space in ctx.Space.Range( range ))
 					foreach(var token in ctx.GameState.Tokens[space].OfType(group))
 						items.Add(new SpaceToken(space,token));

@@ -23,7 +23,7 @@ namespace SpiritIsland.Tests {
 			tokens[Invader.Explorer.Default] = 1;
 			tokens[TokenType.Dahan.Default] = 1;
 			tokens.Defend.Add(1);
-			tokens.Summary.ShouldBe("1D@2,1E@1,1G@1,1M@1");
+			tokens.Summary.ShouldBe("1D@2,1E@1,1G,1M");
 
 			// When: Grow, Skip Buy, then Ravage
 			fxt.user.Growth_SelectsOption( "ReclaimAll" );
@@ -61,7 +61,7 @@ namespace SpiritIsland.Tests {
 			tokens.Badlands.Init(1);
 			tokens[Invader.Explorer.Default] = 1;
 			tokens[TokenType.Dahan.Default] = 1;
-			tokens.Summary.ShouldBe("1D@2,1E@1,1M@1");
+			tokens.Summary.ShouldBe("1D@2,1E@1,1M");
 
 			// When: Grow, Skip Buy, then Ravage
 			fxt.user.Growth_SelectsOption( "ReclaimAll" );

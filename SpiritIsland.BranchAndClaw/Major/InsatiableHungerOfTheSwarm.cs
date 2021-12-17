@@ -16,7 +16,7 @@ namespace SpiritIsland.BranchAndClaw {
 				beasts.Add(2);
 
 				// Gather up to 2 beasts
-				await ctx.GatherUpTo( 2, TokenType.Beast.Generic );
+				await ctx.GatherUpTo( 2, TokenType.Beast );
 
 				// each beast deals:
 				// 1 fear

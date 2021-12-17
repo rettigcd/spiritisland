@@ -11,7 +11,7 @@ namespace SpiritIsland.JaggedEarth {
 			// gather up to 2 towns
 			await ctx.GatherUpTo(2,Invader.Town);
 			// gather up to 2 beast
-			await ctx.GatherUpTo(2,TokenType.Beast.Generic);
+			await ctx.GatherUpTo(2,TokenType.Beast);
 			// gather up to 2 dahan
 			await ctx.GatherUpToNDahan(2);
 		}

@@ -1,16 +1,16 @@
 ﻿namespace SpiritIsland {
 
 	public class TokenType {
-		static public readonly TokenGroup Dahan = new TokenGroup( "Dahan",  2, 'D', Img.Dahan1, Img.Dahan2 );
-		static public readonly Token Blight     = new TokenGroup( "Blight", 1, 'B', Img.Blight ).Default; // replace with a non-health type
-		static public readonly Token Defend     = new TokenGroup( "Defend", 1, 'G', Img.Defend ).Default; // G:Guard D is for Dahan
+		static public readonly TokenGroup Dahan = new HealthTokenGroup( "Dahan",  2, 'D', Img.Dahan1, Img.Dahan2 );
+		static public readonly UniqueToken Blight     = new UniqueToken( "Blight", 'B', Img.Blight ); // replace with a non-health type
+		static public readonly UniqueToken Defend     = new UniqueToken( "Defend", 'G', Img.Defend ); // G:Guard D is for Dahan
 
-		static readonly public Token Beast      = new TokenGroup("Beast",   1, 'A', Img.Beast ).Default; // need to use A for animal since B is already taken for blight
-		static readonly public Token Wilds      = new TokenGroup("Wilds",   1, 'W', Img.Wilds ).Default;
-		static readonly public Token Disease    = new TokenGroup("Dizease" ,1, 'Z', Img.Disease ).Default;
+		static readonly public UniqueToken Beast      = new UniqueToken("Beast",   'A', Img.Beast ); // need to use A for animal since B is already taken for blight
+		static readonly public UniqueToken Wilds      = new UniqueToken("Wilds",   'W', Img.Wilds );
+		static readonly public UniqueToken Disease    = new UniqueToken("Dizease" ,'Z', Img.Disease );
 
-		static readonly public Token Isolate    = new TokenGroup("Isolate" ,1, 'I', Img.Isolate ).Default;
-		static readonly public Token Badlands   = new TokenGroup("Badlands",1, 'M', Img.Badlands ).Default; // 'M' looks like the badlands symbol /\/\ 
+		static readonly public UniqueToken Isolate    = new UniqueToken("Isolate" ,'I', Img.Isolate );
+		static readonly public UniqueToken Badlands   = new UniqueToken("Badlands",'M', Img.Badlands ); // 'M' looks like the badlands symbol /\/\ 
 	}
 
 }

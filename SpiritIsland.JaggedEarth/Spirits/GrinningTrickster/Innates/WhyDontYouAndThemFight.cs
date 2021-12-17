@@ -48,7 +48,7 @@ namespace SpiritIsland.JaggedEarth {
 				// 2 damage
 				await ctx.DamageInvaders(2);
 			else // otherwise, you may gather 1 beast
-				await ctx.GatherUpTo(1,TokenType.Beast.Generic);
+				await ctx.GatherUpTo(1,TokenType.Beast);
 		}
 
 

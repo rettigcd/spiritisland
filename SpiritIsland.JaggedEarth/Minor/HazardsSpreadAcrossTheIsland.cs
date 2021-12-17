@@ -24,7 +24,7 @@ namespace SpiritIsland.JaggedEarth {
 		}
 
 		static SpaceToken[] FindHazardTokenInAdjacentLand( TargetSpaceCtx ctx ) {
-			var tokenTypes = new TokenGroup[] { TokenType.Badlands.Generic, TokenType.Beast.Generic, TokenType.Disease.Generic, TokenType.Wilds.Generic, Invader.Explorer, Invader.Town, Invader.City };
+			var tokenTypes = new TokenGroup[] { TokenType.Badlands, TokenType.Beast, TokenType.Disease, TokenType.Wilds, Invader.Explorer, Invader.Town, Invader.City };
 			var candidates = ctx.Adjacent
 				.SelectMany( s =>
 					ctx.GameState.Tokens[s].Keys
@@ -39,7 +39,7 @@ namespace SpiritIsland.JaggedEarth {
 				: candidates;
 		}
 
-		static readonly TokenGroup[] InterestedTokenTypes = new TokenGroup[] { TokenType.Badlands.Generic, TokenType.Beast.Generic, TokenType.Disease.Generic, TokenType.Wilds.Generic };
+		static readonly TokenGroup[] InterestedTokenTypes = new TokenGroup[] { TokenType.Badlands, TokenType.Beast, TokenType.Disease, TokenType.Wilds };
 		static bool IsTokenOfInterest( Token token ) {
 			return InterestedTokenTypes.Contains( token.Generic )
 				|| token.Strife()>0;

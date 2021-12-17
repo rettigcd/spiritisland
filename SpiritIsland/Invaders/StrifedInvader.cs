@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland {
 
-	public partial class StrifedInvader : Token {
+	public partial class StrifedInvader : HealthToken {
 
 		static internal readonly StrifedInvaderGenerator Generator = new();
 

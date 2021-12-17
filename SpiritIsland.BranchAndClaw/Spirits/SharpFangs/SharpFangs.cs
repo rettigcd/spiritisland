@@ -85,7 +85,7 @@ namespace SpiritIsland.BranchAndClaw {
 			// init special growth (note - we don't want this growth in Unit tests, so only add it if we call InitializeInternal())
 			this.AddActionFactory(new Setup_PlacePresenceOnBeastLand());
 
-			var x = new SpiritIsland.MovePresenceWithTokens( this, TokenType.Beast.Generic );
+			var x = new SpiritIsland.MovePresenceWithTokens( this, TokenType.Beast );
 			gs.Tokens.TokenMoved.ForGame.Add( x.CheckForMove );
 		}
 

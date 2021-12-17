@@ -15,7 +15,7 @@ namespace SpiritIsland.JaggedEarth {
 			// If you can gather 1 beast,
 			if( beastSources.Length > 0) {
 				// do so,
-				await ctx.Gather(1,TokenType.Beast.Generic);
+				await ctx.Gather(1,TokenType.Beast);
 				// then push 1 explorer.
 				await ctx.Push(1,Invader.Explorer);
 			} else {

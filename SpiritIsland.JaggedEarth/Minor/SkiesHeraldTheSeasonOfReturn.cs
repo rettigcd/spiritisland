@@ -17,7 +17,7 @@ namespace SpiritIsland.JaggedEarth {
 			// Gather up to 2 dahan.
 			await ctx.GatherUpToNDahan(2);
 			// Push 1 blight.
-			await ctx.Push(1,TokenType.Blight.Generic);
+			await ctx.Push(1,TokenType.Blight);
 		}
 
 	}

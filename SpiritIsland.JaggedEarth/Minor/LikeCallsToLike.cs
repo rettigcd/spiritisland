@@ -11,8 +11,8 @@ namespace SpiritIsland.JaggedEarth {
 			// Do likewise for town, dahan, blight, and beast.
 			await GatherLike( ctx, Invader.Town );
 			await GatherLike( ctx, TokenType.Dahan );
-			await GatherLike( ctx, TokenType.Blight.Generic );
-			await GatherLike( ctx, TokenType.Beast.Generic );
+			await GatherLike( ctx, TokenType.Blight );
+			await GatherLike( ctx, TokenType.Beast );
 		}
 
 		static async Task GatherLike( TargetSpaceCtx ctx, TokenGroup tokenTypeOfInterest ) {

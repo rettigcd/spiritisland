@@ -2,7 +2,13 @@
 
 # IDE0056: Use index operator
 dotnet_diagnostic.IDE0056.severity = silent
+
+# IDE0090: simplify "new" expression
 dotnet_diagnostic.IDE0090.severity = silent
+
+# IDE1006: Interface begins with I
+dotnet_diagnostic.IDE1006.severity = silent
+
 csharp_space_after_keywords_in_control_flow_statements=false
 csharp_space_between_parentheses=false
 csharp_space_between_method_call_parameter_list_parentheses=true
@@ -10,6 +16,10 @@ csharp_space_between_method_declaration_parameter_list_parentheses=true
 csharp_indent_block_contents=true
 csharp_new_line_before_open_brace=none
 csharp_new_line_before_else=false
+csharp_style_expression_bodied_methods=when_on_single_line:silent
+csharp_prefer_braces=when_multiline:silent
+
+
 
 [*.{cs,vb}]
 indent_style=tab

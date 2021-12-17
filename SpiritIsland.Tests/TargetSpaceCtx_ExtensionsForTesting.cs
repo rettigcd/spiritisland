@@ -18,7 +18,7 @@ namespace SpiritIsland.Tests {
 						"T@2" => Invader.Town.Default,
 						"C@3" => Invader.City.Default,
 						"D@2" => TokenType.Dahan.Default,
-						"Z@1" => TokenType.Disease,
+						"Z" => TokenType.Disease,
 						_ => throw new ArgumentException("invalide tokentype found in "+expectedInvaderSummary)
 					};
 					desiredTokens.Add(token, int.Parse(part[..1] ) );
