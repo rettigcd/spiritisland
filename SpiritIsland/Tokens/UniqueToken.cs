@@ -1,6 +1,6 @@
 ﻿
 namespace SpiritIsland {
-	public class UniqueToken : TokenGroup, Token {
+	public class UniqueToken : TokenCategory, Token {
 
 		public UniqueToken(string label, char initial, Img img) {
 			this.Label = label;
@@ -11,7 +11,7 @@ namespace SpiritIsland {
 
 		#region Token
 
-		public TokenGroup Generic => this;
+		public TokenCategory Category => this;
 
 		public Img Img { get; }
 
@@ -24,7 +24,7 @@ namespace SpiritIsland {
 		public Token Healthy => throw new System.NotImplementedException();
 		public int FullHealth => throw new System.NotImplementedException();
 		public int Health => 1; //throw new System.NotImplementedException();
-		Token TokenGroup.this[int i] => throw new System.NotImplementedException();
+		Token TokenCategory.this[int i] => throw new System.NotImplementedException();
 		Token Token.ResultingDamagedInvader( int damage ) => throw new System.NotImplementedException();
 
 		// --------  END HEALTH properties  -------
@@ -38,7 +38,7 @@ namespace SpiritIsland {
 		public string Label { get; }
 
 		// ------  Being TokenGroup HEALTH properties
-		void TokenGroup.ExtendHealthRange( int newMaxHealth ) => throw new System.NotImplementedException();
+		void TokenCategory.ExtendHealthRange( int newMaxHealth ) => throw new System.NotImplementedException();
 		// ------  End TokenGroup HEALTH properties
 
 

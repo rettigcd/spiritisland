@@ -106,7 +106,7 @@ namespace SpiritIsland {
 	public class FearArgs {
 		public int count;
 		public Space space;
-		public Cause cause;
+		public bool FromDestroyedInvaders; // defaults to false, only needs set when generated
 	}
 
 }

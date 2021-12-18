@@ -22,26 +22,26 @@ namespace SpiritIsland {
 
 		#region Generic - Single
 
-		static public Token[] OfType( this TokenCountDictionary counts, TokenGroup healthyType )
-			=> counts.Keys.Where( specific => healthyType == specific.Generic ).ToArray();
+		static public Token[] OfType( this TokenCountDictionary counts, TokenCategory healthyType )
+			=> counts.Keys.Where( specific => healthyType == specific.Category ).ToArray();
 
-		static public bool Has( this TokenCountDictionary counts, TokenGroup inv )
+		static public bool Has( this TokenCountDictionary counts, TokenCategory inv )
 			=> counts.OfType( inv ).Any();
 
-		static public int Sum( this TokenCountDictionary counts, TokenGroup generic )
+		static public int Sum( this TokenCountDictionary counts, TokenCategory generic )
 			=> counts.OfType( generic ).Sum( k => counts[k] );
 
 		#endregion
 
 		#region Generic - Multiple (Any)
 
-		static public Token[] OfAnyType( this TokenCountDictionary counts, params TokenGroup[] healthyTypes )
-			=> counts.Keys.Where( specific => healthyTypes.Contains( specific.Generic ) ).ToArray();
+		static public Token[] OfAnyType( this TokenCountDictionary counts, params TokenCategory[] healthyTypes )
+			=> counts.Keys.Where( specific => healthyTypes.Contains( specific.Category ) ).ToArray();
 
-		static public bool HasAny( this TokenCountDictionary counts, params TokenGroup[] healthyInvaders )
+		static public bool HasAny( this TokenCountDictionary counts, params TokenCategory[] healthyInvaders )
 			=> counts.OfAnyType( healthyInvaders ).Any();
 
-		static public int SumAny( this TokenCountDictionary counts, params TokenGroup[] healthyInvaders )
+		static public int SumAny( this TokenCountDictionary counts, params TokenCategory[] healthyInvaders )
 			=> counts.OfAnyType( healthyInvaders ).Sum( k => counts[k] );
 
 

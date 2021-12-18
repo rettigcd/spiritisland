@@ -15,7 +15,7 @@ namespace SpiritIsland.JaggedEarth {
 
 			// If you have 2 fire: add 1 badlands
 			if(await ctx.YouHave("2 fire"))
-				ctx.Badlands.Add(1);
+				await ctx.Badlands.Add(1);
 		}
 	}
 }

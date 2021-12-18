@@ -7,7 +7,7 @@ namespace SpiritIsland {
 
 	public class RavageEngine {
 
-		readonly protected InvaderGroup grp;
+		readonly protected InvaderBinding grp;
 		readonly Func<Space,int,Task> damageLandCallback;
 		readonly protected ConfigureRavage cfg;
 
@@ -15,10 +15,10 @@ namespace SpiritIsland {
 
 		#region constructor
 
-		public RavageEngine( GameState gs, InvaderGroup grp, ConfigureRavage cfg ) {
+		public RavageEngine( GameState gs, InvaderBinding grp, ConfigureRavage cfg ) {
 			this.grp = grp;
 			this.cfg = cfg;
-			damageLandCallback = gs.DamageLand;
+			damageLandCallback = gs.DamageLandFromRavage;
 		}
 
 		#endregion
@@ -111,7 +111,7 @@ namespace SpiritIsland {
 			var participatingInvaders = CalcParticipatingInvaders();
 			while(remainingDamageToApply > 0 && participatingInvaders.Any()) {
 				Token invadertodamage = PickSmartInvaderToDamage( participatingInvaders, remainingDamageToApply );
-				var (damageInflicted,_) = await grp.ApplyDamageTo1( remainingDamageToApply, invadertodamage );
+				var (damageInflicted,_) = await grp.ApplyDamageTo1( remainingDamageToApply, invadertodamage, true );
 				remainingDamageToApply -= damageInflicted;
 				// update participants
 				participatingInvaders = CalcParticipatingInvaders();

@@ -59,10 +59,14 @@ namespace SpiritIsland.JaggedEarth {
 			readonly Spirit spirit;
 			public DestroyPresence(Spirit spirit ) { this.spirit = spirit;}
 
-			public override async Task DestroyPresenceApi( SpiritPresence presence, Space space, GameState gs, Cause cause ) {
-				await base.DestroyPresenceApi( presence, space, gs, cause );
-				await gs.DahanOn(space).ApplyDamage(1,cause); 
-				await gs.Invaders.On(space,cause).UserSelectedDamage(1,spirit);
+			public override async Task DestroyPresenceApi( SpiritPresence presence, Space space, GameState gs, ActionType actionType ) {
+				await base.DestroyPresenceApi( presence, space, gs, actionType );
+
+				// Destorying Volcano presence, causes damage to Dahan and invaders
+				var volcanosSpecialRule = Cause.None;
+
+				await gs.DahanOn(space).ApplyDamage(1, volcanosSpecialRule);
+				await gs.Invaders.On(space).UserSelectedDamage(1,spirit);
 			}
 		}
 

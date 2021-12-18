@@ -11,11 +11,11 @@ namespace SpiritIsland.JaggedEarth {
 			ctx.AddFear(1);
 
 			// add 1 badlands.
-			ctx.Badlands.Add(1);
+			await ctx.Badlands.Add(1);
 
 			// Add 1 beast within 1 range.
 			var spaceCtx = await ctx.SelectSpace("Add beast", ctx.FindSpacesWithinRangeOf(1,Target.Any));
-			spaceCtx.Beasts.Add(1);
+			await spaceCtx.Beasts.Add(1);
 
 			// Push up to 2 dahan.
 			await ctx.PushUpToNDahan(2);

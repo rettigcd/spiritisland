@@ -10,7 +10,7 @@ namespace SpiritIsland.BranchAndClaw {
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 			if(ctx.Dahan.Any)
-				ctx.Dahan.Add(1);
+				await ctx.Dahan.Add(1);
 			else
 				await ctx.RemoveBlight();
 

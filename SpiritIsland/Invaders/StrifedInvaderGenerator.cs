@@ -10,15 +10,15 @@ namespace SpiritIsland {
 				if( strifeCount<0 )
 					throw new System.ArgumentOutOfRangeException(nameof(strifeCount));
 				if(strifeCount == 0)
-					return orig.Generic[orig.Health];
-				var seq = GetSequence( orig.Generic, strifeCount );
+					return orig.Category[orig.Health];
+				var seq = GetSequence( orig.Category, strifeCount );
 
 				return seq[orig.Health];
 			}
 
 			// Creates an invader health sequence and caches it.
 			// uses Invader *Generic* as the key
-			StrifedInvader[] GetSequence( TokenGroup generic, int strifeCount ) {
+			StrifedInvader[] GetSequence( TokenCategory generic, int strifeCount ) {
 				string key = generic.Label+ strifeCount;
 				if(sequenceCache.ContainsKey( key )) return sequenceCache[key];
 				var seq = BuildHealthSequence( generic, strifeCount );
@@ -26,7 +26,7 @@ namespace SpiritIsland {
 				return seq;
 			}
 
-			static StrifedInvader[] BuildHealthSequence( TokenGroup generic, int strifeCount ) {
+			static StrifedInvader[] BuildHealthSequence( TokenCategory generic, int strifeCount ) {
 				int fullHealth = generic.Default.Health;
 				var seq = new StrifedInvader[fullHealth + 1];
 				for(int h = 0; h <= fullHealth; ++h)

@@ -8,28 +8,30 @@ namespace SpiritIsland.Basegame {
 
 		readonly SelfCtx ctx;
 
-		public ToDreamAThousandDeaths_DestroyStrategy( Action<FearArgs> addFear, Cause destructionSource, SelfCtx ctx )
-			:base(ctx.GameState, addFear,destructionSource) {
+		public ToDreamAThousandDeaths_DestroyStrategy( Action<FearArgs> addFear, SelfCtx ctx )
+			:base(ctx.GameState, addFear) {
 			this.ctx = ctx;
 		}
 
-		public override async Task OnInvaderDestroyed( Space space, Token token ) {
-			if(token.Generic == Invader.City) {
-				AddFear( space, 5 );
+		public override async Task OnInvaderDestroyed( Space space, Token token, bool fromRavage ) {
+			if(token.Category == Invader.City) {
+				AddFear( space, 5, false ); // not actually destroying towns/cities
 			} else {
-				if(token.Generic == Invader.Town)
-					AddFear( space, 2 );
-				await BringerPushNInvaders( space, 1, token.Generic );
+				if(token.Category == Invader.Town)
+					AddFear( space, 2, false ); // not actually destroying towns/cities
+				await BringerPushNInvaders( space, 1, token.Category );
 			}
 		}
 
 		async Task BringerPushNInvaders( Space source, int countToPush
-				, params TokenGroup[] healthyInvaders
+				, params TokenCategory[] healthyInvaders
 			) {
 
 			// We can't track which original invader is was killed, so let the user choose.
 
-			Token[] CalcInvaderTypes() => ctx.Target(source).Tokens.OfAnyType( healthyInvaders );
+			TokenCountDictionary tokens = ctx.Target(source).Tokens;
+
+			Token[] CalcInvaderTypes() => tokens.OfAnyType( healthyInvaders );
 
 			var invaders = CalcInvaderTypes();
 			while(0 < countToPush && 0 < invaders.Length) {
@@ -43,7 +45,8 @@ namespace SpiritIsland.Basegame {
 					source.Adjacent.Where( s=>ctx.Target(s).IsInPlay )
 					, Present.Always
 				) );
-				await ctx.Move( invader, source, destination );
+
+				await tokens.MoveTo( invader, destination );
 
 				--countToPush;
 				invaders = CalcInvaderTypes();

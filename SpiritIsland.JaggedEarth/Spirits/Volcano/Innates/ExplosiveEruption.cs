@@ -67,7 +67,7 @@ namespace SpiritIsland.JaggedEarth {
 
 			// Destroy them now
 			for(int i=0;i<count;++i)
-				await target.Presence.Destroy(target.Space);
+				await target.Presence.Destroy(target.Space, ActionType.SpiritPower);
 
 			return new ErruptionCtx(target,count);
 		}

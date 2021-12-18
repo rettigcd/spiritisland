@@ -22,14 +22,14 @@ namespace SpiritIsland.Tests {
 
 			// Given: A3 has 10 Dahans
 			var src = board[3];
-			gameState.Tokens[src][TokenType.Dahan.Default] = 10;
+			gameState.Tokens[src].Dahan.Init(10);
 
 			//  And: spirit has presence on A3
 			spirit.Presence.PlaceOn(src,gameState);
 
 			//  And: Destination has no Dahan on it
 			var dst = board[1];
-			gameState.Tokens[dst][TokenType.Dahan.Default] = 0;
+			gameState.Tokens[dst].Dahan.Init(0);
 
 			// When: playing Card
 			static async Task PlayCard(TargetSpaceCtx ctx) { try { await WrapInWingsOfSunlight.ActAsync( ctx ); } catch(Exception ex) { 
@@ -60,9 +60,9 @@ namespace SpiritIsland.Tests {
 			// Given: A5 has 3 Towns, Dahans, and Explorers
 			var src = board[5];
 			var tokens = gameState.Tokens[src];
-			tokens[TokenType.Dahan.Default] = 3;
-			tokens[Invader.Explorer.Default] = 3;
-			tokens[Invader.Town.Default] = 3;
+			tokens.Init( TokenType.Dahan.Default , 3);
+			tokens.Init( Invader.Explorer.Default, 3);
+			tokens.Init( Invader.Town.Default    , 3);
 
 			//  And: spirit has presence on A5
 			spirit.Presence.PlaceOn(src,gameState);

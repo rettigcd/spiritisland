@@ -78,17 +78,17 @@ namespace SpiritIsland.Basegame {
 
 		void RemoveDrownedDahan( GameState gs ) {
 			foreach(var board in gs.Island.Boards)
-				gs.Tokens[board.Ocean].Dahan.RemoveAll();
+				gs.Tokens[board.Ocean].Dahan.Drown();
 		}
 
 		async Task InvadersMoved(GameState gs, TokenMovedArgs args ) {
-			if(args.To.Terrain!=Terrain.Ocean) return;
-			var grp = args.Token.Generic;
+			if(args.AddedTo.Terrain!=Terrain.Ocean) return;
+			var grp = args.Token.Category;
 
 			if( grp == Invader.City || grp == Invader.Town || grp == Invader.Explorer ) { // Could created an Invader subclass that is easier to test.
 				// Drown Invaders for points
 				drownedCount += args.Token.FullHealth;
-				await gs.Invaders.On( args.To, Cause.Ocean ).Destroy( 1,args.Token );
+				await gs.Invaders.On( args.AddedTo ).Destroy( 1,args.Token );
 
 				int spiritCount = gs.Spirits.Length;
 				while(spiritCount <= drownedCount) {

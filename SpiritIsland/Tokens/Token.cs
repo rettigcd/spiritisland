@@ -3,7 +3,7 @@ namespace SpiritIsland {
 
 	public interface Token : IOption {
 
-		TokenGroup Generic { get; } // originally: readonly
+		TokenCategory Category { get; } // originally: readonly
 
 		Img Img { get; }
 

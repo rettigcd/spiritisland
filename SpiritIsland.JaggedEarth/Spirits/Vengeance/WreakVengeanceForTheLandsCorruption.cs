@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.JaggedEarth {
+﻿using System.Threading.Tasks;
+
+namespace SpiritIsland.JaggedEarth {
 
 	/// <summary> Overrides Badlands behavior </summary>
 	class WreakVengeanceForTheLandsCorruption : TokenBinding {
@@ -18,21 +20,15 @@
 
 		public override int Count => base.Count + blight.Count;
 
-		public override void Remove( int count ) {
+		public override async Task Remove( int count, RemoveReason reason ) {
 			int realBadlands = base.Count;
 			int realBandlandsToRemove = System.Math.Min(realBadlands,count);
-			base.Remove( realBandlandsToRemove );
+			await base.Remove( realBandlandsToRemove, reason );
 			int blightToRemove = count - realBandlandsToRemove;
-			blight.Remove( blightToRemove ); // !! doesn't go back to the card - should it?
+			await blight.Remove( blightToRemove, reason ); // !! doesn't go back to the card - should it?
 		}
 
-		public override void Destroy( int count ) {
-			int realBadlands = base.Count;
-			int realBandlandsToDestroy = System.Math.Min(realBadlands,count);
-			base.Destroy( realBandlandsToDestroy );
-			int blightToDestory = count - realBandlandsToDestroy;
-			blight.Destroy( blightToDestory ); // !! doesn't go back to the card - should it?
-		}
+		// !!! review this whole class to see if it is generating property Token-api events - particularly around blight
 
 	}
 

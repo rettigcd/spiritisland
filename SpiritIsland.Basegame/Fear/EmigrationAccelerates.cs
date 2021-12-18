@@ -29,7 +29,7 @@ namespace SpiritIsland.Basegame {
 		static async Task ForEachSpiritSelectedLandRemoveInvader( 
 			FearCtx ctx, 
 			Func<Space, bool> landFilter, 
-			params TokenGroup[] removable
+			params TokenCategory[] removable
 		) {
 			foreach(var spirit in ctx.Spirits) {
 

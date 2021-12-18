@@ -4,7 +4,7 @@
 
 		static internal readonly StrifedInvaderGenerator Generator = new();
 
-		public StrifedInvader(TokenGroup generic,Token[] seq,int health, int strifeCount)
+		public StrifedInvader(TokenCategory generic,Token[] seq,int health, int strifeCount)
 			:base( generic, seq, health, generic[health].Img ) {
 			StrifeCount = strifeCount;
 		}

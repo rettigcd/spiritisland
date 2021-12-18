@@ -27,7 +27,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 
 			// Setup for growth option B
 			Given_HasPresence( board[2] ); // wetlands
-			gameState.Tokens[ board[7] ].Beasts.Add(1); // add beast to sand (not jungle)
+			gameState.Tokens[ board[7] ].Beasts.Init(1); // add beast to sand (not jungle)
 
 		}
 

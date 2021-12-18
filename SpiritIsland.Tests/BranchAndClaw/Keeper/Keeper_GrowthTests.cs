@@ -154,7 +154,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 		public void SacredSitesPushDahan() {
 			// Given: space with 2 dahan
 			var space = board[5];
-			gameState.DahanOn(space).Add(2);
+			gameState.DahanOn(space).Init(2);
 			//   and presence on that space
 			spirit.Presence.PlaceOn( space, gameState );
 
@@ -221,7 +221,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 		}
 
 		void Given_HasWilds( Space space ) {
-			gameState.Tokens[space].Wilds.Add(1);
+			gameState.Tokens[space].Wilds.Init(1);
 		}
 
 		void User_Activates_A() {

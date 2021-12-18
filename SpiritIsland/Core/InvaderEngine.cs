@@ -56,10 +56,10 @@ namespace SpiritIsland {
 			var wilds = gs.Tokens[space].Wilds;
 			if(wilds == 0) { 
 				gs.Log( new InvaderActionEntry(space+":gains explorer") );
-				await gs.Tokens.Add( Invader.Explorer, space );
+				await gs.Tokens[space].Add( Invader.Explorer.Default, 1, AddReason.Explore );
 			}
 			else
-				wilds.Remove(1);
+				await wilds.Remove( 1, RemoveReason.UsedUp );
 
 
 		}
@@ -93,12 +93,12 @@ namespace SpiritIsland {
 
 		#region Build
 
-		static Task<bool> StopBuildWithDiseaseBehavior_Default( TokenCountDictionary tokens, GameState _ ) {
+		static async Task<bool> StopBuildWithDiseaseBehavior_Default( TokenCountDictionary tokens, GameState _ ) {
 			var disease = tokens.Disease;
 			bool stoppedByDisease = disease.Any;
 			if(stoppedByDisease)
-				disease.Remove(1);
-			return Task.FromResult(stoppedByDisease);
+				await disease.Remove(1,RemoveReason.UsedUp);
+			return stoppedByDisease;
 		}
 
 		public Func<TokenCountDictionary,GameState,Task<bool>> StopBuildWithDiseaseBehavior = StopBuildWithDiseaseBehavior_Default; // !!! move this to the GameState API
@@ -110,7 +110,7 @@ namespace SpiritIsland {
 			// Determine type to build
 			int townCount = tokens.Sum( Invader.Town );
 			int cityCount = tokens.Sum( Invader.City );
-			TokenGroup invaderToAdd = townCount > cityCount ? Invader.City : Invader.Town;
+			TokenCategory invaderToAdd = townCount > cityCount ? Invader.City : Invader.Town;
 
 			// check if we should
 			bool shouldBuild = buildType switch {
@@ -120,7 +120,7 @@ namespace SpiritIsland {
 			};
 			// build it
 			if(shouldBuild)
-				await gs.Tokens.Add( invaderToAdd, tokens.Space, 1 );
+				await tokens.Add( invaderToAdd.Default, 1, AddReason.Build );
 
 			return invaderToAdd.Label;
 		}
@@ -185,9 +185,9 @@ namespace SpiritIsland {
 
 			if(myRavageSpaces == null) throw new InvalidOperationException( "dude! you forgot to schedule the ravages." );
 			var ravageGroups = myRavageSpaces
-				.Select( x => gs.Invaders.On( x, Cause.Ravage ) )
+				.Select( x => gs.Invaders.On( x ) )
 				.Where( group => group.Tokens.HasInvaders() )
-				.Cast<InvaderGroup>()
+				.Cast<InvaderBinding>()
 				.ToArray();
 
 			foreach(var grp in ravageGroups) {
@@ -196,7 +196,7 @@ namespace SpiritIsland {
 			}
 		}
 
-		public async Task<string> RavageSpace( InvaderGroup grp ) {
+		public async Task<string> RavageSpace( InvaderBinding grp ) {
 
 			// Do Ravage
 			var cfg = gs.GetRavageConfiguration( grp.Space );

@@ -29,7 +29,7 @@ namespace SpiritIsland.Basegame {
 				var options = gs.Island.AllSpaces.Where( s => gs.DahanOn( s ).Any && gs.Tokens[ s ].Has(Invader.Explorer) ).ToArray();
 				if(options.Length == 0) return;
 				var space = await spirit.Action.Decision( new Select.Space( "Fear:select land with dahan to remove explorer", options, Present.Always ));
-				RemoveTownOr2Explorers( gs.Invaders.On( space, Cause.Fear ) );
+				RemoveTownOr2Explorers( gs.Invaders.On( space ) );
 			}
 		}
 
@@ -37,13 +37,13 @@ namespace SpiritIsland.Basegame {
 		public Task Level3( FearCtx ctx ) {
 			var gs = ctx.GameState;
 			foreach(var space in gs.Island.AllSpaces.Where(s => gs.DahanOn(s).Any))
-				RemoveTownOr2Explorers( gs.Invaders.On( space, Cause.Fear ) );
+				RemoveTownOr2Explorers( gs.Invaders.On( space ) );
 			foreach(var space in gs.Island.AllSpaces.Where( s=>gs.DahanOn(s).Count>=2 && gs.Tokens[s].Has(Invader.City) ))
-				gs.Invaders.On(space,Cause.Fear).Remove(Invader.City);
+				gs.Invaders.On(space).Remove(Invader.City);
 			return Task.CompletedTask;
 		}
 
-		static void RemoveTownOr2Explorers( InvaderGroup grp ) {
+		static void RemoveTownOr2Explorers( InvaderBinding grp ) {
 			if(grp.Tokens.Has(Invader.Town))
 				grp.Remove( Invader.Town );
 			else

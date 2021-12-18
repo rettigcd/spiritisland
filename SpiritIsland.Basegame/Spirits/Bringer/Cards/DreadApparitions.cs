@@ -16,7 +16,7 @@ namespace SpiritIsland.Basegame {
 			// When powers generate fear in target land, defend 1 per fear.
 			// Fear from destroying town/cities does not.)
 			void FearAdded( GameState gs, FearArgs args ) {
-				if(args.cause == Cause.Power && args.space==ctx.Space)
+				if(!args.FromDestroyedInvaders && args.space==ctx.Space)
 					gs.Tokens[args.space].Defend.Add( args.count );
 			}
 

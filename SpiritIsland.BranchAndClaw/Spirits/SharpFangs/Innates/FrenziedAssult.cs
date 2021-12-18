@@ -21,7 +21,7 @@ namespace SpiritIsland.BranchAndClaw {
 			ctx.AddFear( fear );
 			await ctx.DamageInvaders( damage );
 			// remove 1 beast
-			ctx.Beasts.Remove(1);
+			await ctx.Beasts.Remove(1,RemoveReason.Destroyed);
 		}
 
 	}

@@ -13,7 +13,7 @@ namespace SpiritIsland.JaggedEarth {
 
 			// If you have 3 moon:  Add 1 Beast
 			if(await ctx.YouHave("3 moon"))
-				ctx.Beasts.Add(1);
+				await ctx.Beasts.Add(1);
 		}
 	}
 

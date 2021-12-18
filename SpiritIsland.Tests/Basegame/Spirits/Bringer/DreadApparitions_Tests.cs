@@ -84,7 +84,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 
 			// has 1 city and lots of dahan
 			ctx.Tokens.Adjust( Invader.City.Default, 1 ); // don't use ctx.Invaders because it has a fake/dream invader count
-			ctx.Dahan.Add(10);
+			ctx.Dahan.Init(10);
 
 			// Given: using Dread Apparitions
 			await DreadApparitions.ActAsync( ctx );
@@ -103,14 +103,14 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 		public void FearInOtherLand_Generates0() {
 			// has 1 city and lots of dahan
 			ctx.Tokens.Adjust( Invader.City.Default, 1 );
-			ctx.Dahan.Add( 10 );
+			ctx.Dahan.Init( 10 );
 
 			async Task When() {
 				// Given: using Dread Apparitions
 				await DreadApparitions.ActAsync( ctx );
 
 				// When: Power causes fear in a different land
-				ctx.GameState.Fear.AddDirect(new FearArgs { space = board[1], cause = Cause.Power, count = 6 } );
+				ctx.GameState.Fear.AddDirect(new FearArgs { space = board[1], FromDestroyedInvaders = false, count = 6 } );
 			}
 			_ = When();
 

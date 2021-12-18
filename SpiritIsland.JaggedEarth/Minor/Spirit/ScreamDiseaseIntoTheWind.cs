@@ -20,7 +20,7 @@ namespace SpiritIsland.JaggedEarth {
 					&& await ctx.Other.UserSelectsFirstText(Name+" ("+spaceCtx.Space.Label+")","Yes, add 1 disease", "No thank you")
 				){
 					used = true;
-					spaceCtx.Disease.Add( 1 );
+					await spaceCtx.Disease.Add( 1 );
 				}
 			} );
 

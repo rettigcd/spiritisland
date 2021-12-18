@@ -26,15 +26,19 @@ namespace SpiritIsland.JaggedEarth {
 			return Dissolve(ctx,Invader.City,Invader.Town,Invader.Explorer);
 		}
 
-		static async Task Dissolve(TargetSpaceCtx ctx, params TokenGroup[] groups) {
+		static async Task Dissolve(TargetSpaceCtx ctx, params TokenCategory[] groups) {
 			var decision = Select.Invader.ToDowngrade("dissolve", ctx.Space, ctx.Tokens.OfAnyType( groups ) );
 			var token = await ctx.Decision( decision );
 			if(token == null) return;
-			ctx.Tokens[token]--;
-			ctx.Tokens[Invader.Explorer.Default] += token.Health;
+
+			if(token != Invader.Explorer.Default) {
+				await ctx.Tokens.Remove(token,1,RemoveReason.Replaced);
+				await ctx.Tokens.Add(Invader.Explorer.Default,token.Health, AddReason.AsReplacement);
+			}
+
 			await ctx.Pusher
 				.AddGroup( token.Health, Invader.Explorer )
-				.FilterDestinations( ctx.Self.Presence.Spaces.Contains )
+				.FilterDestinations( ctx.Self.Presence.IsOn )
 				.MoveUpToN();
 		}
 

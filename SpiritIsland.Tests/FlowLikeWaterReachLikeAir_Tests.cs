@@ -22,9 +22,9 @@ namespace SpiritIsland.Tests {
 			// Given: A5 has 3 Towns, Dahans, and Explorers
 			var a5 = board[5];
 			var tokens = gameState.Tokens[a5];
-			tokens[TokenType.Dahan.Default] = 3;
-			tokens[Invader.Explorer.Default] = 3;
-			tokens[Invader.Town.Default] = 3;
+			tokens.Init(TokenType.Dahan.Default , 3);
+			tokens.Init(Invader.Explorer.Default, 3);
+			tokens.Init(Invader.Town.Default    , 3);
 
 			//  And: spirit has presence on A5
 			spirit.Presence.PlaceOn(a5,gameState);

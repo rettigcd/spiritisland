@@ -10,7 +10,7 @@ namespace SpiritIsland.BranchAndClaw.Minor {
 		static public async Task ActAsync( TargetSpiritCtx ctx ) {
 
 			// destroy one of your presence
-			await ctx.Presence.DestoryOne();
+			await ctx.Presence.DestoryOne( ActionType.SpiritPower );
 
 			// If 2 sun, do both in the same land
 			await TargetSpiritAction( ctx.OtherCtx, await ctx.YouHave( "2 sun" ) );

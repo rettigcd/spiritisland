@@ -26,7 +26,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 		[Fact]
 		public void Gather1_Kill1() {
 			// Given: dahan on a3
-			gs.DahanOn(a[3]).Add(1);
+			gs.DahanOn(a[3]).Init(1);
 			//  and: 2 explorers on a2
 			gs.Tokens[a[2]].Adjust(Invader.Explorer[1],2);
 
@@ -41,8 +41,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 		[Fact]
 		public void Gather1_Kills3() {
 			// Given: 1 dahan on a2 & 2 dahan on a1
-			gs.DahanOn( a[2] ).Add(1);
-			gs.DahanOn( a[1] ).Add(2);
+			gs.DahanOn( a[2] ).Init(1);
+			gs.DahanOn( a[1] ).Init(2);
 			//  and: 5 explorers on a1
 			gs.Tokens[a[1]].Adjust( Invader.Explorer[1], 5 );
 
@@ -59,8 +59,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 		[Fact]
 		public void DoesntKillTown() {
 			// Given: 1 dahan on a2 & 2 dahan on a1
-			gs.DahanOn(a[2]).Add(1);
-			gs.DahanOn(a[1]).Add(2);
+			gs.DahanOn(a[2]).Init(1);
+			gs.DahanOn(a[1]).Init(2);
 			//  and: 1 town on a1
 			gs.Tokens[a[1]].Adjust(Invader.Town.Default, 1);
 

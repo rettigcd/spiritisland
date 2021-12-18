@@ -29,7 +29,7 @@ namespace SpiritIsland.BranchAndClaw {
 				// destory presence
 				foreach(var spirit in ctx.GameState.Spirits)
 					foreach(var p in spirit.Presence.Placed.Where(p=>p.Board==ctx.Space.Board).ToArray() )
-						await spirit.Presence.Destroy(p, ctx.GameState, ctx.Cause);
+						await spirit.Presence.Destroy(p, ctx.GameState, ActionType.SpiritPower);
 
 				// destroy board - spaces
 				foreach(var space in ctx.Space.Board.Spaces)
@@ -54,9 +54,9 @@ namespace SpiritIsland.BranchAndClaw {
 
 				if(!ctx.Self.Text.StartsWith("Bringer")) { // !!!
 					// Destroy all other tokens
-					var counts = spaceCtx.Tokens;
-					foreach(var tokens in counts.Keys.ToArray())
-						counts[tokens] = 0;
+					var tokens = spaceCtx.Tokens;
+					foreach(var token in tokens.Keys.ToArray())
+						await tokens.Remove( token, tokens[token], RemoveReason.Destroyed );
 				}
 			}
 		}

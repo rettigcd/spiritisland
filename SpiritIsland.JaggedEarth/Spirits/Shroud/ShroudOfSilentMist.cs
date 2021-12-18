@@ -77,7 +77,7 @@ namespace SpiritIsland.JaggedEarth {
 			int myLandsWithDamagedInvaders = Presence.Spaces.Count( SpaceHasDamagedInvaders );
 
 			// 1 fear (max 5) per land of yours with Damaged Invaders.
-			gs.Fear.AddDirect(new FearArgs { cause = Cause.None, count = Math.Min(5,myLandsWithDamagedInvaders) } );
+			gs.Fear.AddDirect(new FearArgs { FromDestroyedInvaders = false, count = Math.Min(5,myLandsWithDamagedInvaders) } );
 
 			// Gain 1 Energy per 3 lands of yours with Damaged Invaders."
 			Energy += (myLandsWithDamagedInvaders / 3);

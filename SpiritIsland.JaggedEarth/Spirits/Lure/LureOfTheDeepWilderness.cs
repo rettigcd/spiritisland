@@ -73,7 +73,7 @@ namespace SpiritIsland.JaggedEarth {
 			Presence.PlaceOn(board[7], gameState);
 
 			// Add 1 beast to land #8
-			gameState.Tokens[board[8]].Beasts.Add(1);
+			gameState.Tokens[board[8]].Beasts.Init(1);
 
 			gameState.PreRavaging.ForGame.Add( EnthrallTheForeignExplorers );
 		}

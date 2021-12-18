@@ -13,7 +13,7 @@ namespace SpiritIsland.JaggedEarth {
 			}
 
 			Space to = await ctx.Presence.SelectDestinationWithinRange( 1, Target.Any );
-			ctx.Target(to).Disease.Add(1);
+			await ctx.Target(to).Disease.Add(1);
 
 		}
 

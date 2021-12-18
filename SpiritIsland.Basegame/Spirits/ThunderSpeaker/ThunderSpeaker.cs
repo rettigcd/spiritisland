@@ -88,22 +88,22 @@ namespace SpiritIsland.Basegame {
 			gs.Tokens.TokenMoved.ForGame.Add( new MovePresenceWithTokens( this, TokenType.Dahan ).CheckForMove );
 
 			// Special Rules - Sworn to Victory - For each dahan stroyed by invaders ravaging a land, destroy 1 of your presense withing 1
-			gs.Tokens.TokenDestroyed.ForGame.Add( DestroyNearbyPresence );
+			gs.Tokens.TokenRemoved.ForGame.Add( DestroyNearbyPresence );
 		}
 
-		async Task DestroyNearbyPresence( GameState gs, TokenDestroyedArgs args ) {
-			if(args.Cause != Cause.Invaders) return;
-			if(args.Token != TokenType.Dahan) return;
+		async Task DestroyNearbyPresence( GameState gs, ITokenRemovedArgs args ) {
+			if( args.Reason != RemoveReason.DestroyedInBattle ) return;
+			if(args.Token.Category != TokenType.Dahan) return;
 
-			string prompt = $"{SwarnToVictory.Title}: {args.count} dahan destroyed. Select presence to destory.";
+			string prompt = $"{SwarnToVictory.Title}: {args.Count} dahan destroyed. Select presence to destory.";
 
-			int numToDestroy = args.count;
+			int numToDestroy = args.Count;
 			Space[] options;
 			Space[] Calc() => args.Space.Range( 1 ).Intersect( Presence.Spaces ).ToArray();
 
 			while(numToDestroy-->0 && (options=Calc()).Length > 0) {
 				var space = await this.Action.Decision( Select.DeployedPresence.ToDestroy( prompt, options, Present.Always ) );
-				await Presence.Destroy(space, gs, Cause.Invaders );
+				await Presence.Destroy(space, gs, ActionType.Invader );
 			}
 
 		}

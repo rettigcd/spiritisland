@@ -47,9 +47,13 @@ namespace SpiritIsland {
 		#region Token Shortcuts
 		public void Defend(int defend) => Tokens.Defend.Add(defend);
 		public void Isolate() {
-			Tokens[TokenType.Isolate] = 1;
-			GameState.TimePasses_ThisRound.Push( (gs)=>{ Tokens[TokenType.Isolate] = 0; return Task.CompletedTask; } ); // !! could just sweep entire board instead...
+			Tokens.Init(TokenType.Isolate,1); // not a real token
+			GameState.TimePasses_ThisRound.Push( (gs)=>{ 
+				Tokens.Init(TokenType.Isolate,0);
+				return Task.CompletedTask; 
+			} ); // !! could just sweep entire board instead...
 		}
+
 		public TokenBinding Blight => Tokens.Blight;
 		public TokenBinding Beasts => Tokens.Beasts;
 		public TokenBinding Disease => Tokens.Disease;
@@ -60,7 +64,7 @@ namespace SpiritIsland {
 		#endregion
 
 		// This is different than Push / Gather which ManyMinds adjusts, this is straight 'Move' that is not adjusted.
-		public async Task<Space> MoveTokensOut( int max, TokenGroup tokenGroup, int range, string dstFilter = SpiritIsland.Target.Any ) {
+		public async Task<Space> MoveTokensOut( int max, TokenCategory tokenGroup, int range, string dstFilter = SpiritIsland.Target.Any ) {
 
 			Token[] tokenOptions = Tokens.OfType(tokenGroup).ToArray();
 			if(tokenOptions.Length == 0) return null;
@@ -82,7 +86,7 @@ namespace SpiritIsland {
 		}
 
 		// This is different than Push / Gather which ManyMinds adjusts, this is straight 'Move' that is not adjusted.
-		public async Task<Space> MoveTokenIn( TokenGroup tokenGroup, int range, string srcFilter = SpiritIsland.Target.Any ) {
+		public async Task<Space> MoveTokenIn( TokenCategory tokenGroup, int range, string srcFilter = SpiritIsland.Target.Any ) {
 
 			var sources = Space.Range( range )
 				.Select( Target )
@@ -106,10 +110,10 @@ namespace SpiritIsland {
 		public Task<Space[]> PushDahan( int countToPush ) => Push( countToPush, TokenType.Dahan );
 
 		// overriden by Grinning Tricksters Let's See what happens
-		public virtual Task<Space[]> PushUpTo( int countToPush, params TokenGroup[] groups )
+		public virtual Task<Space[]> PushUpTo( int countToPush, params TokenCategory[] groups )
 			=> Pusher.AddGroup( countToPush, groups ).MoveUpToN();
 
-		public Task<Space[]> Push( int countToPush, params TokenGroup[] groups )
+		public Task<Space[]> Push( int countToPush, params TokenCategory[] groups )
 			=> Pusher.AddGroup( countToPush, groups ).MoveN();
 
 		public TokenPusher Pusher => Self.PushFactory( this );
@@ -126,10 +130,10 @@ namespace SpiritIsland {
 			=> this.Gather( countToGather, TokenType.Dahan);
 
 		// overriden by Grinning Tricketsrs 'Let's see what happens'
-		public virtual Task GatherUpTo( int countToGather, params TokenGroup[] groups )
+		public virtual Task GatherUpTo( int countToGather, params TokenCategory[] groups )
 			=> Gatherer.AddGroup(countToGather, groups).GatherUpToN();
 
-		public Task Gather( int countToGather, params TokenGroup[] groups )
+		public Task Gather( int countToGather, params TokenCategory[] groups )
 			=> Gatherer.AddGroup(countToGather,groups).GatherN();
 
 
@@ -148,10 +152,6 @@ namespace SpiritIsland {
 			=> Tokens.Adjust( invader, delta );
 
 		public Task DestroyDahan( int countToDestroy ) => Dahan.Destroy( countToDestroy, Cause );
-
-		public async Task DestroyBeast(int countToDestroy ) {
-			await GameState.Tokens.DestroyIslandToken(Space,countToDestroy, TokenType.Beast, Cause);
-		}
 
 		public Terrain Terrain => TerrainMapper.GetTerrain( Space );
 		public bool IsCoastal   => TerrainMapper.IsCoastal( Space );
@@ -174,9 +174,9 @@ namespace SpiritIsland {
 		public void ModifyRavage( Action<ConfigureRavage> action ) => GameState.ModifyRavage(Space,action);
 
 		// The current targets power
-		public InvaderGroup Invaders => invadersRO ??= Cause switch {
+		public InvaderBinding Invaders => invadersRO ??= Cause switch {
 				Cause.Power => Self.BuildInvaderGroupForPowers( GameState, Space ),
-				_ => GameState.Invaders.On( Space, Cause )
+				_ => GameState.Invaders.On( Space )
 			};
 
 		public void SkipAllInvaderActions() => GameState.SkipAllInvaderActions(Space);
@@ -185,18 +185,18 @@ namespace SpiritIsland {
 
 		// Damage invaders in the current target space
 		// This called both from powers and from Fear
-		public Task DamageInvaders( int damage, params TokenGroup[] allowedTypes ) {
+		public Task DamageInvaders( int damage, params TokenCategory[] allowedTypes ) {
 			if( damage == 0 ) return Task.CompletedTask; // not necessary, just saves some cycles
 
 			// !!! This is not correct, if card has multiple Damages, adds badland multiple times.
 			damage += Badlands.Count; 
 
 			if(allowedTypes==null || allowedTypes.Length==0)
-				allowedTypes = new TokenGroup[] { Invader.City, Invader.Town, Invader.Explorer };
+				allowedTypes = new TokenCategory[] { Invader.City, Invader.Town, Invader.Explorer };
 			return Invaders.UserSelectedDamage( damage, Self, allowedTypes );
 		}
 
-		public async Task DamageEachInvader( int individualDamage, params TokenGroup[] generic ) {
+		public async Task DamageEachInvader( int individualDamage, params TokenCategory[] generic ) {
 			await Invaders.ApplyDamageToEach( individualDamage, generic );
 			await Invaders.UserSelectedDamage( Badlands.Count, Self,generic );
 		}
@@ -258,7 +258,7 @@ namespace SpiritIsland {
 		#region Add Strife
 
 		/// <param name="groups">Option: if null/empty, no filtering</param>
-		public async Task AddStrife( params TokenGroup[] groups ) {
+		public async Task AddStrife( params TokenCategory[] groups ) {
 			var invader = await Decision( Select.Invader.ForStrife( Tokens, groups ) );
 			if(invader == null) return;
 			if(Cause == Cause.Power)
@@ -269,14 +269,14 @@ namespace SpiritIsland {
 
 		#endregion
 
-		public void RemoveInvader( TokenGroup group ) => Invaders.Remove( group );
+		public void RemoveInvader( TokenCategory group ) => Invaders.Remove( group );
 
 		public async Task<int> RemoveHealthWorthOfInvaders( int damage ) {
 			Token pick;
 			while(damage > 0
 				&& (pick = await Decision( Select.Invader.ToRemoveByHealth( Space, Tokens.Invaders(), damage ) ) ) != null
 			) {
-				--Tokens[pick];
+				await Invaders.Remove(pick,1,RemoveReason.Removed );
 				damage -= pick.Health;
 			}
 
@@ -285,7 +285,7 @@ namespace SpiritIsland {
 
 		/// <summary> adds Target to Fear context </summary>
 		public override void AddFear( int count ) { 
-			GameState.Fear.AddDirect( new FearArgs { count = count, cause = Cause.Power, space = Space } );
+			GameState.Fear.AddDirect( new FearArgs { count = count, FromDestroyedInvaders = false, space = Space } );
 		}
 
 		#region presence
@@ -334,7 +334,7 @@ namespace SpiritIsland {
 				: null;
 		}
 
-		InvaderGroup invadersRO;
+		InvaderBinding invadersRO;
 
 	}
 

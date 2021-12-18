@@ -5,7 +5,7 @@ namespace SpiritIsland.JaggedEarth {
 
 		public BeastGatherer(TargetSpaceCtx ctx ) : base( ctx ) { }
 
-		protected override SpaceToken[] GetOptions(TokenGroup[] groups){
+		protected override SpaceToken[] GetOptions(TokenCategory[] groups){
 			var items = new List<SpaceToken>();
 			foreach(var group in groups) {
 				int range = group == TokenType.Beast ? 2 : 1;

@@ -7,17 +7,17 @@ namespace SpiritIsland {
 	public class MovePresenceWithTokens {
 
 		readonly Spirit spirit;
-		readonly TokenGroup tokenGroup;
+		readonly TokenCategory tokenGroup;
 
-		public MovePresenceWithTokens( Spirit spirit, TokenGroup group ) { 
+		public MovePresenceWithTokens( Spirit spirit, TokenCategory group ) { 
 			this.spirit = spirit; 
 			this.tokenGroup = group;
 		}
 
 		public async Task CheckForMove( GameState gs, TokenMovedArgs args ) {
-			if( args.Token.Generic != tokenGroup) return;
+			if( args.Token.Category != tokenGroup) return;
 
-			int maxThatCanMove = Math.Min( args.count, spirit.Presence.CountOn( args.From ) );
+			int maxThatCanMove = Math.Min( args.Count, spirit.Presence.CountOn( args.RemovedFrom ) );
 			// 0 -> no action
 			if(maxThatCanMove == 0)
 				return;
@@ -27,9 +27,9 @@ namespace SpiritIsland {
 
 			// Using 'Gather' here so user can click on existing Presence in Source
 			// If we used 'Push', user would click on Destination instead of Source
-			var source = await spirit.Action.Decision( Select.DeployedPresence.Gather("Move presence with "+ args.Token.Generic.Label+"?", args.To, new Space[]{ args.From } ) );
+			var source = await spirit.Action.Decision( Select.DeployedPresence.Gather("Move presence with "+ args.Token.Category.Label+"?", args.AddedTo, new Space[]{ args.RemovedFrom } ) );
 			if( source != null )
-				spirit.Presence.Move( args.From, args.To, gs );
+				spirit.Presence.Move( args.RemovedFrom, args.AddedTo, gs );
 		}
 
 	}

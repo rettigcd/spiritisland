@@ -15,13 +15,14 @@ namespace SpiritIsland.Basegame {
 			var landsWeCanApplyTheDamageTo = new List<Space> { ctx.Space };
 
 			// After each effect that destroys...
-			async Task DealVengenceDamage( GameState gs, TokenDestroyedArgs args ) {
+			async Task DealVengenceDamage( GameState gs, ITokenRemovedArgs args ) {
+				if( !args.Reason.IsDestroy() ) return;
 				//  ...a town / city / dahan in target land
-				if( args.Space == ctx.Space && args.Token.IsOneOf( Invader.Town, Invader.City, TokenType.Dahan) )
+				if( args.Space == ctx.Space && args.Token.Category.IsOneOf( Invader.Town, Invader.City, TokenType.Dahan) )
 					// 1 damage per token destoryed
 					await DistributeDamageToLands( ctx, landsWeCanApplyTheDamageTo, 1 );
 			}
-			ctx.GameState.Tokens.TokenDestroyed.ForRound.Add( DealVengenceDamage );
+			ctx.GameState.Tokens.TokenRemoved.ForRound.Add( DealVengenceDamage );
 
 			// if you have 3 animal
 			if(await ctx.YouHave( "3 animal" ))

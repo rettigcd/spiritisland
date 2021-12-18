@@ -19,7 +19,7 @@ namespace SpiritIsland.BranchAndClaw {
 		}
 
 		static async Task AddDiseaseAndStrife( TargetSpaceCtx ctx ) {
-			ctx.Disease.Add(1);
+			await ctx.Disease.Add(1);
 			await ctx.AddStrife();
 		}
 
@@ -70,7 +70,7 @@ namespace SpiritIsland.BranchAndClaw {
 			if(tokenToRemove is StrifedInvader invader)
 				ctx.Tokens.AddStrifeTo( invader, -1 );
 			else
-				ctx.Tokens[tokenToRemove]--;
+				ctx.Tokens.Remove( tokenToRemove, 1, RemoveReason.Removed );
 		}
 
 		static Token[] GetRemovableTokens( TargetSpaceCtx ctx ) {

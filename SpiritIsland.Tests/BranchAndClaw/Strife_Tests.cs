@@ -82,13 +82,13 @@ namespace SpiritIsland.Tests.BranchAndClaw {
 			var counts = gs.Tokens[space];
 
 			// Given: 1 town and 1 strifed town
-			counts[Invader.Town[2]] = 2;
+			counts.Init(Invader.Town[2], 2);
 			counts.AddStrifeTo( Invader.Town[2] );
 			var strifedTown = counts.OfType(Invader.Town).Single( k => k != Invader.Town[2] );
 
 			// When: move
 			var destination = space.Adjacent.First( x => x.Terrain != Terrain.Ocean );
-			gs.Tokens.Move( strifedTown, space, destination );
+			_ = gs.Tokens[space].MoveTo( strifedTown, destination ); // _ = ??
 
 			// Then:
 			counts.InvaderSummary.ShouldBe( "1T@2" );
@@ -112,11 +112,11 @@ namespace SpiritIsland.Tests.BranchAndClaw {
 
 			// Given: staring invaders
 			switch(startingInvaders) {
-				case "2C@2": counts[Invader.City[2]] = 2; break;
-				case "1C@2^": counts[Invader.City[2]] = 1; counts.AddStrifeTo( Invader.City[2] ); break;
+				case "2C@2":  counts.Init(Invader.City[2], 2); break;
+				case "1C@2^": counts.Init(Invader.City[2], 1); counts.AddStrifeTo( Invader.City[2] ); break;
 				case "1C@3,1T@2":
-					counts[Invader.City[3]] = 1;
-					counts[Invader.Town[2]] = 1;
+					counts.Init(Invader.City[3], 1);
+					counts.Init(Invader.Town[2], 1);
 					break;
 				default: throw new Exception( "staring invaders [" + startingInvaders + "] not in list" );
 			}
@@ -148,11 +148,11 @@ namespace SpiritIsland.Tests.BranchAndClaw {
 
 			// Given: 1 strifed city
 			var counts = gs.Tokens[space];
-			counts[Invader.City.Default.WithStrife( 1 )] = 1;
+			counts.Init(Invader.City.Default.WithStrife( 1 ), 1);
 			counts.InvaderSummary.ShouldBe( "1C@3^", "strife should be used up" );
 
 			//   and: 1 dahan
-			gs.DahanOn( space ).Add( 1 );
+			gs.DahanOn( space ).Init( 1 );
 
 			//  When: we ravage there
 			await gs.InvaderEngine.TestRavage( new InvaderCard( space.Terrain ) );

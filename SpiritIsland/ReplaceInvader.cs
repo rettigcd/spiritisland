@@ -4,23 +4,23 @@ namespace SpiritIsland {
 
 	static public class ReplaceInvader {
 
-		public static Task Downgrade( TargetSpaceCtx ctx, params TokenGroup[] groups )
+		public static Task Downgrade( TargetSpaceCtx ctx, params TokenCategory[] groups )
 			=> Downgrade(ctx.Self,ctx.Invaders,groups);
 
-		public static async Task Downgrade( Spirit spirit, InvaderGroup group, params TokenGroup[] groups ) {
+		public static async Task Downgrade( Spirit spirit, InvaderBinding group, params TokenCategory[] groups ) {
 
 			var options = group.Tokens.OfAnyType( groups );
 			Token oldInvader = await spirit.Action.Decision( Select.Invader.ToDowngrade( "down-grade (C=>T or T=>E)", group.Space, options ) );
 			if(oldInvader == null) return;
 
-			if(oldInvader.Generic == Invader.City) {
+			if(oldInvader.Category == Invader.City) {
 				await DowngradeCity( group, oldInvader );
-			} else if(oldInvader.Generic == Invader.Town) {
+			} else if(oldInvader.Category == Invader.Town) {
 				await DowngradeTown( group, oldInvader );
 			}
 		}
 
-		public static async Task SingleInvaderWithExplorers( Spirit spirit, InvaderGroup grp, TokenGroup oldInvader, int replaceCount ) {
+		public static async Task SingleInvaderWithExplorers( Spirit spirit, InvaderBinding grp, TokenCategory oldInvader, int replaceCount ) {
 
 			var tokens = grp.Tokens;
 			var specific = await spirit.Action.Decision( Select.Invader.ToDowngrade("disolve", grp.Space, tokens.OfType( oldInvader )) );
@@ -34,7 +34,7 @@ namespace SpiritIsland {
 			await grp.Destroy(damage,Invader.Explorer[1]);
 		}
 
-		static Task DowngradeTown( InvaderGroup inv, Token town ) {
+		static Task DowngradeTown( InvaderBinding inv, Token town ) {
 
 			// remove town / dahan
 			inv.Tokens.Adjust( town, -1 );
@@ -48,7 +48,7 @@ namespace SpiritIsland {
 				: Task.CompletedTask;
 		}
 
-		static async Task DowngradeCity( InvaderGroup inv, Token city ) {
+		static async Task DowngradeCity( InvaderBinding inv, Token city ) {
 			// remove city
 			inv.Tokens.Adjust( city, -1 );
 

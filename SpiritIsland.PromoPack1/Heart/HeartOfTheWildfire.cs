@@ -81,7 +81,7 @@ namespace SpiritIsland.PromoPack1 {
 			for(int i=0;i<3;++i)
 				Presence.PlaceOn(space,gameState);
 
-			gameState.Tokens[space][TokenType.Blight] += 2; // Blight goes from the box, not the blight card
+			gameState.Tokens[space].Blight.Adjust(2); // Blight goes from the box, not the blight card
 		}
 	}
 

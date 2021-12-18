@@ -37,7 +37,7 @@ namespace SpiritIsland.JaggedEarth {
 
 			}
 
-			public async Task DestroyPresenceApi( SpiritPresence presence, Space space, GameState gs, Cause cause ) {
+			public async Task DestroyPresenceApi( SpiritPresence presence, Space space, GameState gs, ActionType actionType ) {
 				if( space == this.protectedSpace) {
 					var dst = await spirit.Action.Decision(new Select.Space("Instead of destroying, push presence to:", space.Adjacent,Present.Done));
 					if(dst != null) {
@@ -45,7 +45,7 @@ namespace SpiritIsland.JaggedEarth {
 						return;
 					}
 				}
-				await originalBehavior.DestroyPresenceApi(presence, space, gs, cause );
+				await originalBehavior.DestroyPresenceApi(presence, space, gs, actionType );
 			}
 
 			public Task Restore( GameState _ ) {

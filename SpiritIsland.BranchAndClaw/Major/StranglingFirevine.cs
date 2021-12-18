@@ -13,7 +13,7 @@ namespace SpiritIsland.BranchAndClaw {
 			await ctx.Invaders.Destroy(int.MaxValue,Invader.Explorer[1]);
 
 			// Add 1 wilds.
-			ctx.Wilds.Add(1);
+			await ctx.Wilds.Add(1);
 
 			// Add 1 wilds in the originating Sands.
 			var original = ctx.Adjacent
@@ -23,7 +23,7 @@ namespace SpiritIsland.BranchAndClaw {
 			// !!! let user pick which space was the originating sands
 
 			if(original!=null)
-				ctx.Target(original).Wilds.Add(1);
+				await ctx.Target(original).Wilds.Add(1);
 
 			// 1 damage per wilds in / adjacent to target land.
 			int wildsDamage = ctx.Space.Range(1).Sum(s=>ctx.Target(s).Wilds.Count);

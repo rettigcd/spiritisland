@@ -9,7 +9,7 @@ namespace SpiritIsland.JaggedEarth {
 			// Remove up to half (round down) of beast in target land.
 			int removable = ctx.Beasts.Count / 2;
 			int removed = await ctx.Self.SelectNumber("# of Beasts to Remove for 2 fear & skip one invader action", removable,0);
-			ctx.Beasts.Remove( removed );
+			await ctx.Beasts.Remove( removed, RemoveReason.Removed );
 
 			// For each beast Removed,
 			// 2 fear

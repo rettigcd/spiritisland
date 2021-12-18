@@ -20,7 +20,7 @@ namespace SpiritIsland.JaggedEarth {
 				await ctx.Push(1,Invader.Explorer);
 			} else {
 				// othersie, add 1 beast
-				ctx.Beasts.Add(1);
+				await ctx.Beasts.Add(1);
 			}
 
 		}

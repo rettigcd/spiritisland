@@ -8,7 +8,7 @@ namespace SpiritIsland.JaggedEarth {
 			var from = await ctx.Presence.SelectSource();
 			Space to = await ctx.Presence.SelectDestinationWithinRange( 3, Target.Any );
 			await ctx.Self.PlacePresence( from, to, ctx.GameState );
-			ctx.Target(to).Beasts.Add(1);
+			await ctx.Target(to).Beasts.Add(1);
 		}
 
 	}

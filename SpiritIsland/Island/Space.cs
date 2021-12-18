@@ -102,13 +102,13 @@ namespace SpiritIsland {
 
 		public override string ToString() =>Label;
 
-		public void InitTokens( TokenCountDictionary counts ) {
+		public void InitTokens( TokenCountDictionary tokens ) {
 			StartUpCounts initialCounts = StartUpCounts;
-			counts[ Invader.City[3] ]         = initialCounts.Cities;
-			counts[ Invader.Town[2] ]         = initialCounts.Towns;
-			counts[ Invader.Explorer[1] ]     = initialCounts.Explorers;
-			counts[ TokenType.Dahan[2] ]      = initialCounts.Dahan;
-			counts.Blight.Init( initialCounts.Blight ); // don't use AddBlight because that pulls it from the card and triggers blighted island
+			tokens.Init( Invader.City.Default, initialCounts.Cities   );
+			tokens.Init( Invader.Town.Default, initialCounts.Towns    );
+			tokens.Init( Invader.Explorer.Default, initialCounts.Explorers);
+			tokens.Dahan.Init( initialCounts.Dahan );
+			tokens.Blight.Init( initialCounts.Blight )                     ; // don't use AddBlight because that pulls it from the card and triggers blighted island
 		}
 
 	}

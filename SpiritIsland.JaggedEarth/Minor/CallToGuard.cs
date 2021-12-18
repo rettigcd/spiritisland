@@ -22,7 +22,7 @@ namespace SpiritIsland.JaggedEarth {
 				} );
 
 				ctx.GameState.Tokens.TokenMoved.ForRound.Add( async (gs,args)=> {
-					if(args.To == ctx.Space)
+					if(args.AddedTo == ctx.Space)
 						await ctx.Invaders.ApplyDamageTo1(1, args.Token );
 				} );
 			} );

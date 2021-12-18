@@ -15,9 +15,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			gs.DetermineAddBlightEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
 
 			// Given: 2 dahan on a2
-			gs.DahanOn( a[2] ).Add(2);
+			gs.DahanOn( a[2] ).Init(2);
 			// and: dahan on a4 so it doesn't auto-select the only target available
-			gs.DahanOn( a[4] ).Add(1);
+			gs.DahanOn( a[4] ).Init(1);
 
 			//  and: 4 explorers + 1 city
 			var counts = gs.Tokens[ a[2] ];

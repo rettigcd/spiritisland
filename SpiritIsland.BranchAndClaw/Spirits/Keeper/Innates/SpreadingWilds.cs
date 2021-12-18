@@ -14,11 +14,10 @@ namespace SpiritIsland.BranchAndClaw {
 		}
 
 		[InnateOption( "1 plant", "If target land has no explorer, add 1 wilds." )]
-		static public Task Option2( TargetSpaceCtx ctx ) {
+		static public async Task Option2( TargetSpaceCtx ctx ) {
 			// if target land has no explorer, add 1 wilds
 			if( !ctx.Tokens.HasAny(Invader.Explorer) )
-				ctx.Wilds.Add(1);
-			return Task.CompletedTask;
+				await ctx.Wilds.Add(1);
 		}
 
 		[InnateOption( "1 plant,2 sun","", AttributePurpose.ExecuteOnly )]

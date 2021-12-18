@@ -55,8 +55,7 @@ namespace SpiritIsland.JaggedEarth {
 			(Presence as ManyMindsPresence).Watch(gameState,this);
 
 			Presence.PlaceOn(land, gameState);
-			gameState.Tokens[land].Beasts.Add(1);
-
+			gameState.Tokens[land].Beasts.Init(1);
 
 		}
 

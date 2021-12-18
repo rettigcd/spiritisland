@@ -18,7 +18,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			// if you have 2 fire, 3 air, 2 earth: +4 damage. Add 1 wilds
 			if(await ctx.YouHave("2 fire,3 air, 2 earth")) {
-				ctx.Wilds.Add(1);
+				await ctx.Wilds.Add(1);
 				damage += 4;
 			}
 			await ctx.DamageInvaders( damage );

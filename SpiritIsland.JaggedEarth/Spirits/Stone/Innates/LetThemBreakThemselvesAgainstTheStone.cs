@@ -10,7 +10,7 @@ namespace SpiritIsland.JaggedEarth {
 		static public Task Option0(TargetSpaceCtx ctx ) {
 			ctx.GameState.LandDamaged.ForRound.Add( async (gs, args) =>{
 				if(args.Space == ctx.Space)
-					await gs.Invaders.On(args.Space,Cause.Power).UserSelectedDamage(2,ctx.Self);
+					await gs.Invaders.On(args.Space).UserSelectedDamage(2,ctx.Self);
 			});
 			return Task.CompletedTask;
 		}
@@ -19,7 +19,7 @@ namespace SpiritIsland.JaggedEarth {
 		static public Task Option1(TargetSpaceCtx ctx ) {
 			ctx.GameState.LandDamaged.ForRound.Add( async ( gs, args ) => {
 				if(args.Space == ctx.Space)
-					await gs.Invaders.On( args.Space, Cause.Power ).UserSelectedDamage( 2 + args.Damage/2, ctx.Self );
+					await gs.Invaders.On( args.Space ).UserSelectedDamage( 2 + args.Damage/2, ctx.Self );
 			} );
 			return Task.CompletedTask;
 		}

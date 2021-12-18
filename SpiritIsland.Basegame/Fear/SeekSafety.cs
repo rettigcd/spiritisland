@@ -12,32 +12,36 @@ namespace SpiritIsland.Basegame {
 
 		[FearLevel( 1, "Each player may Push 1 Explorer into a land with more Town / City than the land it came from." )]
 		public async Task Level1( FearCtx ctx ) {
-			var gs = ctx.GameState;
 
-			var buildingCounts = gs.Island.AllSpaces.ToDictionary(s=>s,s=>gs.Tokens[s].TownsAndCitiesCount());
+			Dictionary<Space, int> buildingCounts = ctx.GameState.Island.AllSpaces
+				.ToDictionary(
+					s=>s,
+					s=>ctx.GameState.Tokens[s].TownsAndCitiesCount()
+				);
+
+			// Each player may
+			foreach(var spiritCtx in ctx.Spirits)
+				// Push 1 Explorer into a land with more Town / City than the land it came from.
+				await PushExplorerIntoSpaceWithMoreTownsOrCities( spiritCtx, buildingCounts );
+
+		}
+
+		static async Task PushExplorerIntoSpaceWithMoreTownsOrCities( SelfCtx ctx, Dictionary<Space, int> buildingCounts ) {
+
 			Space[] GetNeighborWithMoreBuildings( Space s ) => s.Adjacent.Where( n => buildingCounts[n] > buildingCounts[s] ).ToArray();
 			bool HasNeighborWithMoreBuildings(Space s) => GetNeighborWithMoreBuildings(s).Any();
 
-			// Each player may
-			foreach(var spiritCtx in ctx.Spirits) {
+			// Select Source
+			var sourceOptions = ctx.GameState.Island.AllSpaces
+				.Where(s=>ctx.GameState.Tokens[s].Has(Invader.Explorer) && HasNeighborWithMoreBuildings(s))
+				.ToArray();
+			if(sourceOptions.Length==0) return;
 
-				// Push 1 Explorer into a land with more Town / City than the land it came from.
+			Space source = await ctx.Decision( new Select.Space( "Fear: Select land to push explorer from into more towns/cities", sourceOptions,Present.Done));
+			if(source==null) return; // continue => next spirit, break/return => no more spirits
 
-				// Select Source
-				var sourceOptions = gs.Island.AllSpaces
-					.Where(s=>gs.Tokens[s].Has(Invader.Explorer) && HasNeighborWithMoreBuildings(s))
-					.ToArray();
-				if(sourceOptions.Length==0) return;
-				var source = await spiritCtx.Decision( new Select.Space( "Fear: Select land to push explorer from into more towns/cities", sourceOptions,Present.Done));
-				if(source==null) continue; // continue => next spirit, break/return => no more spirits
-
-				// Select Destination
-				var destinationOptions = GetNeighborWithMoreBuildings(source);
-				var dest = await spiritCtx.Decision( Select.Space.ForAdjacent( "Fear: select destination with more towns/cities", source,Select.AdjacentDirection.Outgoing, destinationOptions, Present.Always));
-
-				// push
-				await spiritCtx.Move(Invader.Explorer[1],source,dest);
-			}
+			// Push
+			await ctx.Target(source).PushUpTo(1,Invader.Explorer);
 		}
 
 		[FearLevel( 2, "Each player may Gather 1 Explorer into a land with Town / City, or Gather 1 Town into a land with City." )]
@@ -51,10 +55,10 @@ namespace SpiritIsland.Basegame {
 				var dest = await spiritCtx.Decision( new Select.Space( "Select space to gather town to city OR explorer to town", options, Present.Always));
 				var destCtx = spiritCtx.Target(dest);
 				var grp = destCtx.Tokens;
-				var invadersToGather = new List<TokenGroup>();
+				var invadersToGather = new List<TokenCategory>();
 				if(grp.Has(Invader.City)) invadersToGather.Add( Invader.Town );
 				if(grp.Has(Invader.Town)) invadersToGather.Add( Invader.Explorer );
-				TokenGroup[] invadersToGatherArray = invadersToGather.ToArray();
+				TokenCategory[] invadersToGatherArray = invadersToGather.ToArray();
 
 				await destCtx.GatherUpTo(1, invadersToGatherArray);
 			}

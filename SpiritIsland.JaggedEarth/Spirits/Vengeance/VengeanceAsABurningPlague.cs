@@ -43,7 +43,7 @@ namespace SpiritIsland.JaggedEarth {
 			// 1 in a Wetland without dahan
 			Presence.PlaceOn(board.Spaces.First(s=>s.Terrain==Terrain.Wetland && !gameState.Tokens[s].Dahan.Any), gameState);
 
-			gameState.InvaderEngine.StopBuildWithDiseaseBehavior = TerrorOfASlolyUnfoldingPlague_PreBuild_DiseaseChecker;
+			gameState.InvaderEngine.StopBuildWithDiseaseBehavior = TerrorOfASlowyUnfoldingPlague_PreBuild_DiseaseChecker;
 
 		}
 
@@ -52,14 +52,15 @@ namespace SpiritIsland.JaggedEarth {
 			"When disease would prevent a Build on a board with your presence, you may let the Build happen (removing no disease).  If you do, 1 fear."
 		);
 
-		async Task<bool> TerrorOfASlolyUnfoldingPlague_PreBuild_DiseaseChecker( TokenCountDictionary tokens, GameState gs ) {
+		async Task<bool> TerrorOfASlowyUnfoldingPlague_PreBuild_DiseaseChecker( TokenCountDictionary tokens, GameState gs ) {
 			var disease = tokens.Disease;
 			bool stoppedByDisease = disease.Any 
 				&& await this.UserSelectsFirstText($"Build pending on {tokens.Space.Label}.", "Stop build, -1 Disease", "+1 Fear, keep Disease ");
-			if(stoppedByDisease)
-				disease.Remove(1);
+
+			if( stoppedByDisease )
+				await disease.Remove(1, RemoveReason.UsedUp);
 			else 
-				gs.Fear.AddDirect(new FearArgs { cause = Cause.Invaders, count=1, space = tokens.Space } );
+				gs.Fear.AddDirect(new FearArgs { FromDestroyedInvaders = false, count=1, space = tokens.Space } );
 			return stoppedByDisease;
 		}
 

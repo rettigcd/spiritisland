@@ -43,7 +43,7 @@ namespace SpiritIsland {
 
 		public int Destroyed { get; set; }
 
-		public void RemoveDestroyed(int count ) {
+		public void RemoveDestroyed( int count ) {
 			if(count>Destroyed) throw new ArgumentOutOfRangeException(nameof(count));
 			Destroyed -= count;
 		}
@@ -125,8 +125,8 @@ namespace SpiritIsland {
 			PlaceOn( to, gs );
 		}
 
-		public async Task Destroy( Space space, GameState gs, Cause cause ) {
-			await DestroyBehavior.DestroyPresenceApi(this,space,gs,cause);
+		public async Task Destroy( Space space, GameState gs, ActionType actionType ) {
+			await DestroyBehavior.DestroyPresenceApi(this,space,gs, actionType); // !!!
 			CheckIfSpiritIsDestroyted();
 		}
 
@@ -138,7 +138,7 @@ namespace SpiritIsland {
 		public IDestroyPresenceBehavour DestroyBehavior = new DefaultDestroyBehavior(); // replaceable / plugable
 
 		public class DefaultDestroyBehavior : IDestroyPresenceBehavour {
-			public virtual Task DestroyPresenceApi(SpiritPresence presence, Space space, GameState gs, Cause cause ) {
+			public virtual Task DestroyPresenceApi(SpiritPresence presence, Space space, GameState gs, ActionType actionType ) {
 				presence.RemoveFrom_NoCheck( space, gs );
 				++presence.Destroyed;
 				return Task.CompletedTask;
@@ -235,4 +235,15 @@ namespace SpiritIsland {
 		#endregion
 	}
 
+	public enum ActionType {
+		None,
+		SpiritPower,    // One use of a Power;
+		SpiritGrowth,   // A single Growth effect (nearly always "one icon");
+
+		Invader,        // A Ravage, Build, or Explore in a single land;
+		FearCard,       // Everything one Fear Card does (†);
+		Event,          // Everything a Main/Token/Dahan Event does (†);
+		BlightedIsland, // The effect of the Blighted Island card (†);
+		Adversary,      //An Adversary's Escalation effect (†);
+	}
 }

@@ -54,11 +54,11 @@ namespace SpiritIsland {
 
 		#region Destroy 
 
-		public Task Destroy( Space space ) => ctx.Self.Presence.Destroy( space, ctx.GameState, ctx.Cause );
+		public Task Destroy( Space space, ActionType actionType ) => ctx.Self.Presence.Destroy( space, ctx.GameState, actionType );
 
-		public async Task DestoryOne() {
+		public async Task DestoryOne(ActionType actionType) {
 			var space = await ctx.Decision( Select.DeployedPresence.ToDestroy("Select presence to destroy",ctx.Self) );
-			await Destroy( space );
+			await Destroy( space, actionType );
 		}
 
 		#endregion

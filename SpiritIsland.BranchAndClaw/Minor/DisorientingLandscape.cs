@@ -10,7 +10,7 @@ namespace SpiritIsland.BranchAndClaw {
 			await ctx.Push(1, Invader.Explorer);
 
 			if(ctx.Space.Terrain.IsOneOf(Terrain.Mountain,Terrain.Jungle))
-				ctx.Wilds.Add(1);
+				await ctx.Wilds.Add(1);
 		}
 
 	}

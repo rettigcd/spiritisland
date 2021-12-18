@@ -14,7 +14,7 @@ namespace SpiritIsland {
 
 			gs.TimePasses_WholeGame += TokenAdded.ForRound.Clear;
 			gs.TimePasses_WholeGame += TokenMoved.ForRound.Clear;
-			gs.TimePasses_WholeGame += TokenDestroyed.ForRound.Clear;
+			gs.TimePasses_WholeGame += TokenRemoved.ForRound.Clear;
 		}
 
 		public TokenCountDictionary this[Space space] {
@@ -29,50 +29,33 @@ namespace SpiritIsland {
 		readonly Dictionary<Space, TokenCountDictionary> tokenCounts = new Dictionary<Space, TokenCountDictionary>();
 		public List<Func<Space, int>> VirtualDefend_ForGame { get; } = new List<Func<Space, int>>(); // !!! save to Memento???
 
-		public int GetVirtualDefendFor( Space space ) => VirtualDefend_ForGame.Sum(x=> x( space ) );
+		public int GetDynamicDefendFor( Space space ) => VirtualDefend_ForGame.Sum(x=> x( space ) );
 
 		public IEnumerable<Space> Keys => tokenCounts.Keys;
 
-		public Task Move( Token token, Space from, Space to ) {
-			if( token.Generic == TokenType.Dahan )
-				return MoveDahan( token, from, to );
-			else {
-				this[ from ].Adjust( token, -1 );
-				this[ to ].Adjust( token, 1 );
-				return TokenMoved.InvokeAsync( gameStateForEventArgs, new TokenMovedArgs {
-					Token = token,
-					From = from,
-					To = to,
-					count = 1
-				} );
-			}
+		public Task Publish_Added( Space space, Token token, int count, AddReason reason ) {
+			return TokenAdded.InvokeAsync( gameStateForEventArgs, new TokenAddedArgs(space,token,reason, count) );
 		}
 
-		Task MoveDahan( Token token, Space from, Space to ) {
-			Token removedToken = this[from].Dahan.Remove1(token);
-			if(removedToken == null) return Task.CompletedTask;
-
-			this[to].Dahan.Add( removedToken );
-			return TokenMoved.InvokeAsync( gameStateForEventArgs, new TokenMovedArgs {
-				Token = token,
-				From = from,
-				To = to,
-				count = 1
-			} );
-		}
-
-		// For Build / Explore.
-		// Not for gather / push / replace
-		public async Task Add( TokenGroup group, Space space, int delta = 1 ) {
-			if(delta < 0) throw new System.ArgumentOutOfRangeException( nameof( delta ) );
-			var token = group.Default;
-			this[space][token] += delta;
-
-			await TokenAdded.InvokeAsync( gameStateForEventArgs, new TokenAddedArgs{ 
-				count = delta,
+		public Task Publish_Removed( Space space, Token token, int count, RemoveReason reason ) {
+			return TokenRemoved.InvokeAsync( gameStateForEventArgs, new TokenRemovedArgs( token, reason ) {
 				Space = space,
-				Token = token
+				Count = count,
 			} );
+		}
+
+		public async Task Publish_Moved( Token token, Space from, Space to ) {
+			var args = new TokenMovedArgs {
+				Token = token,
+				RemovedFrom = from,
+				AddedTo = to,
+				Count = 1
+			};
+
+			await TokenMoved.InvokeAsync( gameStateForEventArgs, args );
+			// Also trigger the Added & Removed events
+			await TokenAdded.InvokeAsync( gameStateForEventArgs, args );
+			await TokenRemoved.InvokeAsync( gameStateForEventArgs, args );
 		}
 
 		public override string ToString() {
@@ -82,30 +65,15 @@ namespace SpiritIsland {
 				.Join("\r\n");
 		}
 
-		public DualAsyncEvent<TokenAddedArgs> TokenAdded = new DualAsyncEvent<TokenAddedArgs>();
+		public DualAsyncEvent<ITokenAddedArgs> TokenAdded = new DualAsyncEvent<ITokenAddedArgs>();
+		public DualAsyncEvent<ITokenRemovedArgs> TokenRemoved = new DualAsyncEvent<ITokenRemovedArgs>();
 		public DualAsyncEvent<TokenMovedArgs> TokenMoved = new DualAsyncEvent<TokenMovedArgs>();
-		public DualAsyncEvent<TokenDestroyedArgs> TokenDestroyed = new DualAsyncEvent<TokenDestroyedArgs>();
-
-		public Task DestroyIslandToken( Space space, int countToDestroy, Token token, Cause source ) {
-
-			if(countToDestroy==0) return Task.CompletedTask;
-			var tokens = this[space];
-			countToDestroy = System.Math.Min( countToDestroy, tokens[token] );
-			if(countToDestroy==0) return Task.CompletedTask;
-			tokens[token] -= countToDestroy;
-
-			return TokenDestroyed.InvokeAsync( gameStateForEventArgs, new TokenDestroyedArgs {
-				Token = token.Generic,
-				Space = space,
-				count = countToDestroy,
-				Cause = source
-			} );
-		}
 
 		#region Memento
 
 		public virtual IMemento<Tokens_ForIsland> SaveToMemento() => new Memento(this);
 		public virtual void LoadFrom( IMemento<Tokens_ForIsland> memento ) => ((Memento)memento).Restore(this);
+		public TokenCountDictionary GetTokensFor( Space space ) => this[space];
 
 		protected class Memento : IMemento<Tokens_ForIsland> {
 			public Memento(Tokens_ForIsland src) {
@@ -117,7 +85,7 @@ namespace SpiritIsland {
 				foreach(var space in tc.Keys) {
 					var tokens = src[space];
 					foreach(var p in tc[space])
-						tokens[p.Key] = p.Value;
+						tokens.Init(p.Key, p.Value);
 				}
 			}
 			readonly Dictionary<Space, Dictionary<Token,int>> tc = new Dictionary<Space, Dictionary<Token,int>>();
@@ -127,10 +95,38 @@ namespace SpiritIsland {
 
 	}
 
-	public interface IIslandTokenApi {
-		Task DestroyIslandToken( Space space, int countToDestroy, Token token, Cause source );
-		int GetVirtualDefendFor( Space space );
+	#region Event Args Impl
+
+	class TokenAddedArgs : ITokenAddedArgs {
+
+		public TokenAddedArgs(Space space, Token token, AddReason addReason, int count) {
+			Space = space;
+			Token = token;
+			Reason = addReason;
+			Count = count;
+		}
+
+		public Space Space { get; }
+		public Token Token { get; } // need specific so we can act on it (push/damage/destroy)
+		public int Count { get; }
+
+		public AddReason Reason { get; }
 	}
+
+	class TokenRemovedArgs : ITokenRemovedArgs {
+		public TokenRemovedArgs(Token token, RemoveReason reason) { 
+			this.Token = token;
+			this.Reason = reason;
+		}
+
+		public Token Token { get; }
+		public int Count { get; set; }
+		public Space Space { get; set;}
+		public RemoveReason Reason { get; }
+	};
+
+
+	#endregion
 
 
 }

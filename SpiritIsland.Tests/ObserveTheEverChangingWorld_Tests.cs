@@ -17,7 +17,7 @@ namespace SpiritIsland.Tests {
 			// Given: a space that will ravage and lose tokens
 			var space = fxt.TargetSpace("A5");
 			space.Tokens.Adjust(Invader.Explorer.Default,1);
-			space.Tokens.Dahan.Add(2);
+			space.Tokens.Dahan.Init(2);
 			fxt.gameState.InvaderDeck.Ravage.Add(new InvaderCard(space.Terrain));
 			//   But: will not build nor explore
 			fxt.gameState.InvaderDeck.Build.Clear();

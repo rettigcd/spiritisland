@@ -81,11 +81,8 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		void ClearBlightAndDoNothing() {
 
 			// So it doesn't cascade during ravage
-			foreach(var space in ctx.AllSpaces) {
-				var tmpCtx = ctx.Target(space);
-				while(tmpCtx.HasBlight)
-					tmpCtx.RemoveBlight().Wait();
-			}
+			foreach(var space in ctx.AllSpaces)
+				ctx.Target(space).Tokens.Init(TokenType.Blight, 0); // Don't trigger events
 
 			user.DoesNothingForARound();
 		}

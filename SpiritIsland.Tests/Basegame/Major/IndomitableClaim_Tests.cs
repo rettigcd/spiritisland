@@ -35,12 +35,12 @@ namespace SpiritIsland.Tests.Basegame {
 			ctx.Self.Presence.PlaceOn(spaceCtx.Space, spaceCtx.GameState);
 
 			//  And: it has 3 explorers
-			spaceCtx.Tokens[Invader.Explorer.Default] = 3;
-			spaceCtx.Tokens[Invader.Town.Default] = 0;
-			spaceCtx.Tokens[Invader.City.Default] = 0; // if we had to advance cards, might have buit a city
+			spaceCtx.Tokens.Init( Invader.Explorer.Default, 3 );
+			spaceCtx.Tokens.Init( Invader.Town.Default, 0 );
+			spaceCtx.Tokens.Init( Invader.City.Default, 0 ); // if we had to advance cards, might have buit a city
 			spaceCtx.Tokens.InvaderSummary.ShouldBe( "3E@1", "Unable to init to 3 exploreres." );
 			//  And 2 dahan
-			spaceCtx.Dahan.Add(2);
+			spaceCtx.Dahan.Init(2);
 
 			// When: grows and purchases card
 			user.Grows();

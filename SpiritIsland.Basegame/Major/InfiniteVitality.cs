@@ -33,7 +33,7 @@ namespace SpiritIsland.Basegame {
 
 				// if dahan is moved out of land, reduce to Healthy
 				ctx.GameState.Tokens.TokenMoved.ForRound.Add( ( gs, args ) => {
-					if(args.Token.Generic == TokenType.Dahan && args.From == ctx.Space)
+					if(args.Token.Category == TokenType.Dahan && args.RemovedFrom == ctx.Space)
 						ReduceDahanToMax( ctx, gs, args );
 				} );
 			}
@@ -41,20 +41,22 @@ namespace SpiritIsland.Basegame {
 		}
 
 		private static void BoostDahanHealth( TargetSpaceCtx ctx, int boost ) {
-			foreach(var token in ctx.Dahan.Keys.ToArray()) {
+			var dahan = ctx.Dahan;
+			foreach(var token in dahan.Keys.ToArray()) {
 				int newHealth = token.Health + boost;
 				TokenType.Dahan.ExtendHealthRange( newHealth );
-				ctx.Tokens[TokenType.Dahan[newHealth]] += ctx.Tokens[token];
-				ctx.Tokens[token] = 0;
+				dahan.Adjust( TokenType.Dahan[newHealth], ctx.Tokens[token] );
+				dahan.Init( token, 0 );
 			}
 		}
 
 		private static void ReduceDahanToMax( TargetSpaceCtx ctx, GameState gs, TokenMovedArgs args ) {
-			var tokens = gs.Tokens[args.To];
+			var tokens = gs.Tokens[args.AddedTo];
+			var dahan = ctx.Dahan;
 			foreach(var token in tokens.OfType( TokenType.Dahan ).ToArray()) {
 				if(token.Health > 2) {
-					ctx.Tokens[TokenType.Dahan.Default] += tokens[token];
-					tokens[token] = 0;
+					dahan.Adjust( TokenType.Dahan.Default, tokens[token] );
+					dahan.Init( token, 0 );
 				}
 			}
 		}

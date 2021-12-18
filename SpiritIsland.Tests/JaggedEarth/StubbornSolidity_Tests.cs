@@ -19,10 +19,10 @@ namespace SpiritIsland.Tests.JaggedEarth {
 			fxt.gameState.InvaderDeck.Ravage.Add( new InvaderCard( space.Terrain ) );
 
 			//   And: no dahan
-			tokens[TokenType.Dahan.Default] = 0;
+			tokens.Init(TokenType.Dahan.Default, 0);
 
 			//   And: enough explorers to cause blight
-			tokens[Invader.Explorer.Default] = 2;
+			tokens.Init(Invader.Explorer.Default, 2);
 
 			//  When: Card Played  (grow,select card,play card)
 			//   And: Invader actions proceed
@@ -48,10 +48,10 @@ namespace SpiritIsland.Tests.JaggedEarth {
 			fxt.gameState.InvaderDeck.Ravage.Add( new InvaderCard( space.Terrain ) );
 
 			//   And: dahan in space
-			tokens[TokenType.Dahan.Default] = dahanCount;
+			tokens.Init(TokenType.Dahan.Default, dahanCount);
 
 			//   And: enough explorers to cause blight
-			tokens[Invader.Explorer.Default] = 2;
+			tokens.Init(Invader.Explorer.Default, 2);
 
 			//  When: Card Played  (grow,select card,play card)
 			//   And: Invader actions proceed
@@ -76,10 +76,10 @@ namespace SpiritIsland.Tests.JaggedEarth {
 
 			//   And: dahan in space
 			const int startingDahanCount = 10;
-			tokens[TokenType.Dahan.Default] = startingDahanCount;
+			tokens.Init(TokenType.Dahan.Default, startingDahanCount );
 
 			//   And: will cause 9 points of damage
-			tokens[Invader.Explorer.Default] = 19; // 19 = 10 defend from dahan + 9 points of damage
+			tokens.Init(Invader.Explorer.Default, 19); // 19 = 10 defend from dahan + 9 points of damage
 
 			//  When: Card Played  (grow,select card,play card)
 			//   And: Invader actions proceed

@@ -42,7 +42,7 @@ namespace SpiritIsland {
 
 		/// <summary> Simple wrapper around GameState.Tokens.Move </summary>
 		public Task Move(Token token, Space from, Space to )
-			=> GameState.Tokens.Move( token, from, to );
+			=> Target(from).Tokens.MoveTo( token, to );
 
 		public Task<bool> YouHave( string elementString ) => Self.HasElements( ElementList.Parse(elementString) );
 
@@ -51,7 +51,7 @@ namespace SpiritIsland {
 		public virtual void AddFear( int count ) { // overriden by TargetSpaceCtx to add the location
 			GameState.Fear.AddDirect( new FearArgs { 
 				count = count, 
-				cause = Cause, 
+				FromDestroyedInvaders = false,
 				space = null 
 			} );
 		}
@@ -124,7 +124,7 @@ namespace SpiritIsland {
 			await spaceCtx.RemoveHealthWorthOfInvaders( healthToRemove );
 		}
 
-		public async Task<Space> RemoveTokenFromOneSpace( IEnumerable<Space> spaceOptions, int count, params TokenGroup[] removables ) {
+		public async Task<Space> RemoveTokenFromOneSpace( IEnumerable<Space> spaceOptions, int count, params TokenCategory[] removables ) {
 			var spaceCtx = await SelectSpace( "Remove invader from", spaceOptions );
 			if(spaceCtx != null)
 				while(count-->0)
@@ -132,7 +132,7 @@ namespace SpiritIsland {
 			return spaceCtx?.Space;
 		}
 
-		public async Task GatherExplorerToOne( IEnumerable<Space> spaceOptions, int count, params TokenGroup[] typeToGather ) {
+		public async Task GatherExplorerToOne( IEnumerable<Space> spaceOptions, int count, params TokenCategory[] typeToGather ) {
 			var spaceCtx = await SelectSpace( "Gather Invader to", spaceOptions );
 			if(spaceCtx != null)
 				await spaceCtx.GatherUpTo(count,typeToGather);

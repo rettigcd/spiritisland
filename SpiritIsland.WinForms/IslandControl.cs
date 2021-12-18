@@ -593,7 +593,7 @@ namespace SpiritIsland.WinForms {
 				if(count == 0) continue;
 
 				var tokenForImage = token;
-				if( token.Generic == TokenType.Dahan && token.Health > token.FullHealth ) tokenForImage = TokenType.Dahan.Default;
+				if( token.Category == TokenType.Dahan && token.Health > token.FullHealth ) tokenForImage = TokenType.Dahan.Default;
 				var img = tokenImages[tokenForImage];
 
 				// calc rect

@@ -53,15 +53,15 @@ namespace SpiritIsland.Basegame {
 		/// Swaps out the effected tokens so real tokens don't get destoryed.
 		/// Swaps out what happens when invaders get 'destroyed'
 		/// </summary>
-		public override InvaderGroup BuildInvaderGroupForPowers( GameState gs, Space space ) {
+		public override InvaderBinding BuildInvaderGroupForPowers( GameState gs, Space space ) {
 			var normalTokens = gs.Tokens[space];
 			var detached = new TokenCountDictionary( normalTokens );
 
-			return new InvaderGroup( 
+			return new InvaderBinding( 
 				detached,
 				new ToDreamAThousandDeaths_DestroyStrategy( 
 					gs.Fear.AddDirect, 
-					Cause.Power,  
+//					Cause.Power,  
 					new SelfCtx(this,gs,Cause.Power)
 				),
 				CustomDamageStrategy

@@ -15,10 +15,10 @@ namespace SpiritIsland.JaggedEarth {
 			await ctx.DamageDahan(1);
 
 			// Add 1 badlands, 1 beast, 1 disease, 1 strife, 1 wilds, and 1 blight.
-			ctx.Badlands.Add(1);
-			ctx.Beasts.Add(1);
+			await ctx.Badlands.Add(1);
+			await ctx.Beasts.Add(1);
 			await ctx.AddStrife();
-			ctx.Wilds.Add(1);
+			await ctx.Wilds.Add(1);
 			await ctx.AddBlight(1);
 		}
 	}

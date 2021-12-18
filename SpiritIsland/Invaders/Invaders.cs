@@ -15,10 +15,10 @@ namespace SpiritIsland {
 
 		#endregion
 
-		public InvaderGroup On( Space targetSpace, Cause cause ) {
-			return new InvaderGroup( 
+		public InvaderBinding On( Space targetSpace ) {
+			return new InvaderBinding( 
 				gs.Tokens[targetSpace], 
-				new DestroyInvaderStrategy( gs, gs.Fear.AddDirect, cause )
+				new DestroyInvaderStrategy( gs, gs.Fear.AddDirect )
 			);
 		}
 

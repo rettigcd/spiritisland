@@ -1,7 +1,7 @@
 ﻿
 namespace SpiritIsland {
 
-	public interface TokenGroup {
+	public interface TokenCategory {
 
 		Token Default { get; }
 

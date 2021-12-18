@@ -7,10 +7,9 @@ namespace SpiritIsland.BranchAndClaw {
 		[MinorCard( "Fleshrot Fever", 1, Element.Fire, Element.Air, Element.Water, Element.Animal )]
 		[Slow]
 		[FromPresence( 1, Target.JungleOrSand )]
-		static public Task ActAsync( TargetSpaceCtx ctx ) {
+		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 			ctx.AddFear( 1 );
-			ctx.Disease.Add(1);
-			return Task.CompletedTask;
+			await ctx.Disease.Add(1);
 		}
 
 	}

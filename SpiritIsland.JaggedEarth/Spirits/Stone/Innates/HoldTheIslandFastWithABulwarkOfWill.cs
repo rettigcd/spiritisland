@@ -46,7 +46,7 @@ namespace SpiritIsland.JaggedEarth {
 
 		/// <returns># of blight to remove from card</returns>
 		async Task<int> AddBlight( TokenCountDictionary tokens, int delta ) {
-			tokens.Blight.Add( delta );
+			await tokens.Blight.Add( delta );
 			
 			if(delta > 0 
 				&& spirit.Presence.IsOn( tokens.Space )

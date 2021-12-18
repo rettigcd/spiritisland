@@ -17,10 +17,9 @@ namespace SpiritIsland.JaggedEarth {
 
 
 		[InnateOption("1 fire,3 air","Add 1 badland",0)]
-		static public Task Option1(TargetSpaceCtx ctx ) {
+		static public async Task Option1(TargetSpaceCtx ctx ) {
 			// add 1 badland
-			ctx.Badlands.Add(1);
-			return Task.CompletedTask;
+			await ctx.Badlands.Add(1);
 		}
 
 		[InnateOption("2 plant","Destroy up to 2 explorer per badlands/beast/disease/wilds.",1)]

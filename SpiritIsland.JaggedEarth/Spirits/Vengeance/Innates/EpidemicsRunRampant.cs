@@ -22,7 +22,7 @@ namespace SpiritIsland.JaggedEarth {
 		static public async Task Damage3( TargetSpaceCtx ctx ) {
 			await DiseaseDamagesInvaders( ctx, 2 );
 			ctx.AddFear( System.Math.Min(5,ctx.Disease.Count) );
-			ctx.Disease.Remove(1); // !!! How are we supposed to remove tokens so shifting-memory can detect them for prepare-element???
+			await ctx.Disease.Remove(1, RemoveReason.Removed);
 		}
 	
 		static Task DiseaseDamagesInvaders( TargetSpaceCtx ctx, int damagePerDisease=1 ) {

@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
-	public class InvaderGroup {
+	public class InvaderBinding {
 
 		#region constructor
 
-		public InvaderGroup( TokenCountDictionary aliveCounts, DestroyInvaderStrategy destoryStrategy, IDamageApplier customeDamageApplicationStrategy = null) {
-			this.Tokens = aliveCounts;
+		public InvaderBinding( TokenCountDictionary tokens, DestroyInvaderStrategy destoryStrategy, IDamageApplier customeDamageApplicationStrategy = null) {
+			this.Tokens = tokens;
 			this.damageApplicationStrategy = customeDamageApplicationStrategy ?? DefaultDamageApplicationStrategy;
 			this.DestroyStrategy = destoryStrategy;
 		}
@@ -29,7 +29,7 @@ namespace SpiritIsland {
 		#region Damage
 
 		/// <summary> Not Badland-aware </summary>
-		public async Task ApplyDamageToEach( int individualDamage, params TokenGroup[] generic ) {
+		public async Task ApplyDamageToEach( int individualDamage, params TokenCategory[] generic ) {
 
 			var invaders = Tokens.Invaders()
 				.OrderBy(x=>x.Health) // do damaged first to clear them out
@@ -37,7 +37,7 @@ namespace SpiritIsland {
 
 			// Filter if appropriate
 			if(generic != null && generic.Length>0)
-				invaders = invaders.Where(t=>generic.Contains(t.Generic)).ToArray();
+				invaders = invaders.Where(t=>generic.Contains(t.Category)).ToArray();
 
 			foreach(var invader in invaders)
 				while(this[invader] > 0)
@@ -47,12 +47,12 @@ namespace SpiritIsland {
 
 		/// <summary> Not Badland-aware </summary>
 		/// <returns>(damage inflicted,damagedInvader)</returns>
-		public async Task<(int,Token)> ApplyDamageTo1( int availableDamage, Token invaderToken ) {
+		public async Task<(int,Token)> ApplyDamageTo1( int availableDamage, Token invaderToken, bool fromRavage = false ) {
 
 			Token damagedInvader = damageApplicationStrategy.ApplyDamage( Tokens, availableDamage, invaderToken );
 
 			if(0 == damagedInvader.Health)
-				await DestroyStrategy.OnInvaderDestroyed( Space, damagedInvader );
+				await DestroyStrategy.OnInvaderDestroyed( Space, damagedInvader, fromRavage );
 
 			int damageInflicted = invaderToken.Health - damagedInvader.Health;
 			return (damageInflicted,damagedInvader); // damage inflicted
@@ -64,10 +64,10 @@ namespace SpiritIsland {
 
 		#region Destroy
 
-		public async Task<int> Destroy( int countToDestory, TokenGroup generic ) {
+		public async Task<int> Destroy( int countToDestory, TokenCategory generic ) {
 			if(countToDestory == 0) return 0;
 			Token[] invaderTypesToDestory = Tokens.Invaders()
-				.Where( x=> x.Generic==generic )
+				.Where( x=> x.Category==generic )
 				.OrderByDescending( x => x.Health ) // kill healthiest first
 				.ToArray();
 
@@ -90,7 +90,7 @@ namespace SpiritIsland {
 			return numToDestory;
 		}
 
-		public async Task DestroyAny( int count, params TokenGroup[] generics ) {
+		public async Task DestroyAny( int count, params TokenCategory[] generics ) {
 			// !! this could be cleaned up
 			Token[] invadersToDestroy = Tokens.OfAnyType( generics );
 			while(count > 0 && invadersToDestroy.Length > 0) {
@@ -98,7 +98,7 @@ namespace SpiritIsland {
 					.OrderByDescending(x=>x.FullHealth)
 					// .ThenByDescending(x=>x.Health) assume this line is in Destroy(...)
 					.First();
-				await Destroy( 1, invader.Generic );
+				await Destroy( 1, invader.Category );
 
 				// next
 				invadersToDestroy = Tokens.OfAnyType( generics );
@@ -117,7 +117,7 @@ namespace SpiritIsland {
 		/// Sticking on InvaderGroup is the only place I can think to put it.
 		/// Also, shouldn't be affected by Bringer overwriting 'Destroy' and 'Damage'
 		/// </remarks>
-		public void Remove( params TokenGroup[] removables ) {
+		public void Remove( params TokenCategory[] removables ) {
 			if(Tokens.SumAny(removables) == 0) return;
 
 			var invaderToRemove = Tokens.OfAnyType( removables )
@@ -128,6 +128,10 @@ namespace SpiritIsland {
 
 			if(invaderToRemove != null)
 				Tokens.Adjust( invaderToRemove, -1 );
+		}
+
+		public Task Remove( Token token, int count, RemoveReason reason ) {
+			return Tokens.Remove( token, count, reason );
 		}
 
 		#endregion
@@ -143,7 +147,7 @@ namespace SpiritIsland {
 				counts.Adjust( token, -num );
 			}
 
-			void HealGroup( TokenGroup group ) {
+			void HealGroup( TokenCategory group ) {
 				foreach(var token in counts.OfType(group).ToArray())
 					RestoreAllToDefault(token);
 			}
@@ -153,10 +157,10 @@ namespace SpiritIsland {
 			HealGroup( TokenType.Dahan );
 		}
 
-		public async Task UserSelectedDamage( int damage, Spirit damagePicker, params TokenGroup[] allowedTypes ) {
+		public async Task UserSelectedDamage( int damage, Spirit damagePicker, params TokenCategory[] allowedTypes ) {
 			if(damage == 0) return;
 			if(allowedTypes == null || allowedTypes.Length == 0)
-				allowedTypes = new TokenGroup[] { Invader.Explorer, Invader.Town, Invader.City };
+				allowedTypes = new TokenCategory[] { Invader.Explorer, Invader.Town, Invader.City };
 
 			Token[] invaderTokens;
 			while(damage>0 && (invaderTokens=Tokens.OfAnyType(allowedTypes).ToArray()).Length > 0) {

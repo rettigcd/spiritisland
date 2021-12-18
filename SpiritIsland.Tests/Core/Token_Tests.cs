@@ -24,7 +24,7 @@ namespace SpiritIsland.Tests.Core {
 			var conflicts = tokens
 				.GroupBy(t=>t.Summary)
 				.Where(grp=>grp.Count()>1)
-				.Select(grp=>grp.Key+" is used for:"+grp.Select(t=>t.Generic.Label+":"+t.Health).Join(", "))
+				.Select(grp=>grp.Key+" is used for:"+grp.Select(t=>t.Category.Label+":"+t.Health).Join(", "))
 				.Join("\r\n");
 
 			conflicts.ShouldBe("");

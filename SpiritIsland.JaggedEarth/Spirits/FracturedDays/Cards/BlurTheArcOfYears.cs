@@ -37,7 +37,7 @@ namespace SpiritIsland.JaggedEarth {
 
 			// If dahan are present: Add 1 dahan. Push up to 2 dahan.
 			if(hasDahan) {
-				ctx.Dahan.Add( 1 );
+				await ctx.Dahan.Add( 1 );
 				await ctx.PushUpToNDahan( 2 );
 			}
 		}

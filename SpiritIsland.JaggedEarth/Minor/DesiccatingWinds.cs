@@ -9,7 +9,7 @@ namespace SpiritIsland.JaggedEarth {
 			if(ctx.Badlands.Any)
 				await ctx.DamageInvaders(1);
 			// Add 1 badlands.
-			ctx.Badlands.Add(1);
+			await ctx.Badlands.Add(1);
 		}
 	}
 

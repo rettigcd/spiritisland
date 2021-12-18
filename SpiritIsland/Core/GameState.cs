@@ -81,17 +81,17 @@ namespace SpiritIsland {
 
 		#region Blight
 
-		public async Task DamageLand( Space space, int damageInflictedFromInvaders ) {
+		public async Task DamageLandFromRavage( Space space, int damageInflictedFromInvaders ) {
 			if(damageInflictedFromInvaders==0) return;
 
 			await LandDamaged.InvokeAsync(this,new LandDamagedArgs { Space = space, Damage = damageInflictedFromInvaders} );
 
 			if( damageInflictedFromInvaders > 1)
-				await BlightLandWithCascade( space );
+				await BlightLandFromRavage_WithCascades( space );
 		}
 
 		/// <summary>Causes cascading</summary>
-		public async Task BlightLandWithCascade( Space blightSpace ){
+		public async Task BlightLandFromRavage_WithCascades( Space blightSpace ){
 
 			var terrainMapper = Island.TerrainMapFor(Cause.Blight);
 
@@ -102,7 +102,7 @@ namespace SpiritIsland {
 				if(effect.DestroyPresence)
 					foreach(var spirit in Spirits)
 						if(spirit.Presence.IsOn( blightSpace ))
-							await spirit.Presence.Destroy( blightSpace, this, Cause.Blight ); // ??? is this correct?  should it be whatever is causing the blight???
+							await spirit.Presence.Destroy( blightSpace, this, ActionType.Invader );
 
 				await AddBlight( blightSpace );
 
@@ -260,17 +260,17 @@ namespace SpiritIsland {
 		}
 
 		/// <returns># of blight to remove from card</returns>
-		static Task<int> DefaultAddBlight( TokenCountDictionary tokens, int delta = 1 ) {
+		static async Task<int> DefaultAddBlight( TokenCountDictionary tokens, int delta = 1 ) {
 			var blight = tokens.Blight;
 			if(blight + delta < 0) throw new Exception( "Can't remove blight that isn't there" );
 
-			blight.Add(delta);
-			return Task.FromResult(delta);
+			await blight.Add(delta,AddReason.TakenFromCard);
+			return delta;
 		}
 
 		static async Task DefaultDestroy1PresenceFromBlightCard( Spirit spirit, GameState gs, Cause cause ) {
 			var presence = await spirit.Action.Decision( Select.DeployedPresence.ToDestroy( "Blighted Island: Select presence to destroy.", spirit ) );
-			await spirit.Presence.Destroy( presence, gs, cause );
+			await spirit.Presence.Destroy( presence, gs, ActionType.BlightedIsland );
 		}
 
 		#endregion
@@ -283,7 +283,7 @@ namespace SpiritIsland {
 
 			// Clear Defend
 			foreach(var s in Island.AllSpaces)
-				Tokens[s][TokenType.Defend] = 0;
+				Tokens[s].Defend.Clear();
 
 			TimePasses_WholeGame?.Invoke( this );
 
@@ -355,7 +355,7 @@ namespace SpiritIsland {
 
 		public virtual void Heal( GameState gs ) {
 			foreach(var space in gs.Tokens.Keys.Except(skipHealSpaces))
-				InvaderGroup.HealTokens( gs.Tokens[space] );
+				InvaderBinding.HealTokens( gs.Tokens[space] );
 			skipHealSpaces.Clear();
 		}
 

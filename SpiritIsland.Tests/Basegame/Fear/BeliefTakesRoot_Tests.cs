@@ -76,7 +76,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 
 		void Given_DahanAndTownsInSpaceWithPresence(int desiredCount,int presenceCount) { 
 			// Add: dahan
-			gameState.DahanOn( ravageSpace ).Add( desiredCount - gameState.DahanOn(ravageSpace).Count );
+			gameState.DahanOn( ravageSpace ).Init( desiredCount );
 			// Add towns
 			gameState.Tokens[ravageSpace].Adjust( Invader.Town.Default, desiredCount );
 

@@ -68,7 +68,8 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		}
 
 		void Given_DahanAndTowns( int desiredDahan, int desiredTown ) {
-			gameState.DahanOn( ravageSpace ).Add( desiredDahan - gameState.DahanOn( ravageSpace ).Count );
+//			gameState.DahanOn( ravageSpace ).Add( desiredDahan - gameState.DahanOn( ravageSpace ).Count );  // !!! make this 
+			gameState.DahanOn( ravageSpace ).Init( desiredDahan );
 			Assert.Equal(desiredDahan,gameState.DahanOn(ravageSpace).Count);
 
 			gameState.Tokens[ravageSpace].Adjust( Invader.Town.Default, desiredTown );

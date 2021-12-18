@@ -10,9 +10,9 @@ namespace SpiritIsland.Basegame {
 			// If dahan are pushed to your ocean, you may move them to any costal land instead of drowning them.
 			ctx.GameState.Tokens.TokenMoved.ForRound.Add( PushDahanOutOfOcean );
 			async Task PushDahanOutOfOcean( GameState gs, TokenMovedArgs args ) {
-				if(args.Token.Generic != TokenType.Dahan) return;
-				if(args.To.Terrain != Terrain.Ocean) return;
-				await ctx.Target(args.To).PushUpToNDahan( args.count );
+				if(args.Token.Category != TokenType.Dahan) return;
+				if(args.AddedTo.Terrain != Terrain.Ocean) return;
+				await ctx.Target(args.AddedTo).PushUpToNDahan( args.Count );
 			}
 
 			// target spirit gains 2 energy 

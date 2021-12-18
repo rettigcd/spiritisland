@@ -15,8 +15,8 @@ namespace SpiritIsland.Basegame {
 			await ReplaceInvader.SingleInvaderWithExplorers( ctx.Self, ctx.Invaders, Invader.Town, 1 );
 
 			// replace 1 dahan with 1 explorer.
-			if( ctx.Tokens.Dahan.Remove1() != null )
-				ctx.Tokens.Adjust( Invader.Explorer.Default, 1 );
+			if( await ctx.Tokens.Dahan.Remove1(RemoveReason.Replaced) != null )
+				await ctx.Tokens.Add( Invader.Explorer.Default, 1, AddReason.AsReplacement );
 
 			// if you have 2 fire 2 water 3 animal
 			if(await ctx.YouHave("2 fire,2 water,3 animal" )) {

@@ -47,7 +47,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			Given_HasPresence( board[3] );
 			//	 And: dahan on initial spot
 			foreach(string s in initialDahanSquares.Split( ',' ))
-				gameState.DahanOn( board[int.Parse( s )] ).Add(1);
+				gameState.DahanOn( board[int.Parse( s )] ).Init(1);
 
 			_ = When_Growing( 1 );
 

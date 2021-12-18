@@ -2,39 +2,39 @@
 using System.Threading.Tasks;
 
 namespace SpiritIsland {
+
 	public class DestroyInvaderStrategy {
 
-		public DestroyInvaderStrategy( GameState gs, Action<FearArgs> addFear, Cause destructionSource ) {
-			if(destructionSource == Cause.None) 
-				throw new ArgumentException("if we are destroying things, there must be a cause");
+		public DestroyInvaderStrategy( GameState gs, Action<FearArgs> addFear ) {
 			this.gs = gs;
 			this.addFear = addFear;
-			this.destructionSource = destructionSource;
 		}
 
-		public virtual async Task OnInvaderDestroyed( Space space, Token token ) {
+		public virtual async Task OnInvaderDestroyed( Space space, Token token, bool fromRavage ) {
 
-//			gs.Tokens.DestroyIslandToken( space, 1, token, destructionSource );
+			var reason = fromRavage ? RemoveReason.DestroyedInBattle : RemoveReason.Destroyed;
 
-			await gs.Tokens.TokenDestroyed.InvokeAsync( gs, new TokenDestroyedArgs {
-				Token = token.Generic,
+			// !!! see if we can invoke this through the Token-Publish API instead - so we can make TokenRemovedArgs internal to Island_Tokens class
+			await gs.Tokens.TokenRemoved.InvokeAsync( gs, new TokenRemovedArgs( token, reason ) {
 				Space = space,
-				count = 1,
-				Cause = destructionSource
+				Count = 1,
 			} );
 
 			if(token == Invader.City[0])
-				AddFear( space, 2 );
+				AddFear( space, 2, true );
 			if(token == Invader.Town[0])
-				AddFear( space, 1 );
+				AddFear( space, 1, true );
 
 		}
 
-		protected void AddFear( Space space, int count ) => addFear( new FearArgs { count = count, cause = this.destructionSource, space = space } );
+		protected void AddFear( Space space, int count, bool fromInvaderDestruction ) => addFear( new FearArgs { 
+			count = count, 
+			FromDestroyedInvaders = fromInvaderDestruction, // this is the destruction that Dread Apparitions ignores.
+			space = space 
+		} );
 
 		readonly GameState gs;
 		readonly Action<FearArgs> addFear;
-		readonly Cause destructionSource;
 
 	}
 

@@ -3,6 +3,7 @@ using SpiritIsland.BranchAndClaw;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SpiritIsland.Tests {
 
@@ -27,9 +28,9 @@ namespace SpiritIsland.Tests {
 
 			var tokensToRemove = currentTokens.Keys.Except(desiredTokens.Keys).ToArray();
 			foreach(var old in tokensToRemove)
-				currentTokens[old] = 0;
+				currentTokens.Init(old,0);
 			foreach(var p in desiredTokens)
-				currentTokens[p.Key] = p.Value;
+				currentTokens.Init(p.Key,p.Value);
 
 			currentTokens.Summary.ShouldBe( expectedInvaderSummary );
 		}
@@ -38,8 +39,7 @@ namespace SpiritIsland.Tests {
 			// So it doesn't cascade and require extra interactions...
 			foreach(var space in ctx.AllSpaces) {
 				var tmpCtx = ctx.Target(space);
-				while(tmpCtx.HasBlight)
-					tmpCtx.RemoveBlight().Wait();
+				tmpCtx.Tokens.Blight.Init(0); // don't trigger events
 			}
 		}
 

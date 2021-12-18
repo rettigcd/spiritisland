@@ -9,11 +9,11 @@ namespace SpiritIsland.JaggedEarth {
 
 			// After the next time Invaders are Desttroyed in target land:
 			bool used = false;
-			ctx.GameState.Tokens.TokenDestroyed.ForRound.Add( async ( gs, args ) => {
+			ctx.GameState.Tokens.TokenRemoved.ForRound.Add( async ( gs, args ) => {
 				if(used || args.Space != ctx.Space ) return;
 				used = true;
 				// Add 1 Beast,
-				ctx.Beasts.Add(1);
+				await ctx.Beasts.Add(1);
 
 				// Then 1 Damage per Beast (max. 3 Damage)
 				await ctx.DamageInvaders( ctx.Beasts.Count);
