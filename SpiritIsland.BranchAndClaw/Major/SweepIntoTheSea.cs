@@ -37,7 +37,7 @@ namespace SpiritIsland.BranchAndClaw {
 			return closerSpace;
 		}
 
-		static async Task PushAllTokensTo( TargetSpaceCtx ctx, TargetSpaceCtx destination, params TokenCategory[] groups ) {
+		static async Task PushAllTokensTo( TargetSpaceCtx ctx, TargetSpaceCtx destination, params TokenClass[] groups ) {
 			while(ctx.Tokens.HasAny( groups ))
 				await ctx.Move( ctx.Tokens.OfAnyType( groups ).First(), ctx.Space, destination.Space );
 		}

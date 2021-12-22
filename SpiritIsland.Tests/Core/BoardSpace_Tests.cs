@@ -17,7 +17,7 @@ namespace SpiritIsland.Tests.Core {
 			Assert.Contains( space, spaces );
 		}
 
-		static Space MakeSpace() => new(Terrain.None,"");
+		static Space1 MakeSpace() => new(Terrain.None,"");
 
 		[Fact]
 		public void Adjacentcy_IsTransitive() {

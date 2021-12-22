@@ -73,7 +73,7 @@ namespace SpiritIslandCmd {
 			string threat = (ravage&&build) ? "Rvg+Bld"
 				: ravage ?"  Rvg  "
 				: build ? "  Bld  "
-				: "       "; 
+				: "       ";
 
 			// invaders
 			var details = gameState.Tokens[ space ].InvaderSummary;
@@ -87,7 +87,7 @@ namespace SpiritIslandCmd {
 
 			// presence
 			string pres = game.Spirit.Presence.Placed.Where(p=>p==space).Select(x=>"P").Join("");
-			return $"{space.Label} {threat} {Pad(space.Terrain)}\t{dahan}\t{details}\t{blight}\t{pres}";
+			return $"{space.Label} {threat}\t{dahan}\t{details}\t{blight}\t{pres}";
 		}
 
 		static string Pad(Terrain terrain) => Pad(terrain.ToString(),8);

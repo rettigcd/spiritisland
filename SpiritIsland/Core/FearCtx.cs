@@ -24,10 +24,10 @@ namespace SpiritIsland {
 		#region Lands
 
 		public IEnumerable<Space> Lands( Func<Space,bool> withCondition ) => GameState.Island.AllSpaces
-			.Where(s=>s.Terrain!=Terrain.Ocean)
+			.Where(s=> !s.IsOcean)
 			.Where(withCondition);
 
-		public IEnumerable<Space> InlandLands                 => GameState.Island.AllSpaces.Where( s => !s.IsCoastal && s.Terrain != Terrain.Ocean );
+		public IEnumerable<Space> InlandLands => GameState.Island.AllSpaces.Where( s => !s.IsCoastal && !s.IsOcean );
 
 		public bool WithDahanAndExplorers( Space space ) => WithDahan(space) && WithExplorers(space);
 		public bool WithDahanAndInvaders( Space space ) => WithDahan( space ) && WithInvaders( space );
@@ -53,7 +53,7 @@ namespace SpiritIsland {
 	public static class FearCtxExtensionForBac {
 
 		// Extension to SpiritGameStateCtx
-		public static async Task<Space> AddStrifeToOne( this SelfCtx spirit, IEnumerable<Space> options, params TokenCategory[] groups ) {
+		public static async Task<Space> AddStrifeToOne( this SelfCtx spirit, IEnumerable<Space> options, params TokenClass[] groups ) {
 			bool HasInvaders( Space s ) => spirit.Target(s).HasInvaders;
 			var space = await spirit.SelectSpace( "Add strife", options.Where( HasInvaders ) );
 			if(space != null)

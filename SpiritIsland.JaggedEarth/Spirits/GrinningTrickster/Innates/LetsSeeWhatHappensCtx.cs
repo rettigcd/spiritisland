@@ -11,12 +11,12 @@ namespace SpiritIsland.JaggedEarth {
 				await opt.Execute( ctx );
 		}
 
-		public override Task<Space[]> PushUpTo( int countToPush, params TokenCategory[] groups ) 
+		public override Task<Space[]> PushUpTo( int countToPush, params TokenClass[] groups ) 
 			=> new TokenPusher( this )
 				.AddGroup( countToPush, groups )
 				.MoveN();
 
-		public override Task GatherUpTo( int countToGather, params TokenCategory[] ofType )
+		public override Task GatherUpTo( int countToGather, params TokenClass[] ofType )
 			=> this.Gather( countToGather, ofType );
 
 	}

@@ -58,8 +58,8 @@ namespace SpiritIsland {
 		CountDictionary<Token> AttackerCounts() => GetParticipantCounts( cfg.IsAttacker ?? IsInvader );
 
 		CountDictionary<Token> DefenderCounts() => GetParticipantCounts( cfg.IsDefender ?? IsDahan );
-		static bool IsInvader(Token token) => token.Category.IsInvader;
-		static bool IsDahan(Token token) => token.Category == TokenType.Dahan;
+		static bool IsInvader(Token token) => token.Class.Category == TokenCategory.Invader;
+		static bool IsDahan(Token token) => token.Class == TokenType.Dahan;
 
 		CountDictionary<Token> GetParticipantCounts( Func<Token,bool> filter ) {
 			var participants = new CountDictionary<Token>();

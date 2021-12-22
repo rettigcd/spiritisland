@@ -9,7 +9,7 @@ namespace SpiritIsland.BranchAndClaw {
 		[FromSacredSite( 1 )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
-			if(ctx.Space.Terrain.IsOneOf(Terrain.Jungle,Terrain.Sand)) // ??? should we be using Power Filters here?
+			if(ctx.IsOneOf(Terrain.Jungle,Terrain.Sand)) // ??? should we be using Power Filters here?
 				await ctx.RemoveBlight();
 
 			if(await ctx.YouHave("3 plant"))

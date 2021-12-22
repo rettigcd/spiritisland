@@ -18,7 +18,7 @@ namespace SpiritIsland.Basegame {
 			async Task DealVengenceDamage( GameState gs, ITokenRemovedArgs args ) {
 				if( !args.Reason.IsDestroy() ) return;
 				//  ...a town / city / dahan in target land
-				if( args.Space == ctx.Space && args.Token.Category.IsOneOf( Invader.Town, Invader.City, TokenType.Dahan) )
+				if( args.Space == ctx.Space && args.Token.Class.IsOneOf( Invader.Town, Invader.City, TokenType.Dahan) )
 					// 1 damage per token destoryed
 					await DistributeDamageToLands( ctx, landsWeCanApplyTheDamageTo, 1 );
 			}

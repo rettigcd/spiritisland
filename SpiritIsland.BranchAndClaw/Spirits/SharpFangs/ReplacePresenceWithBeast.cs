@@ -10,7 +10,7 @@ namespace SpiritIsland.BranchAndClaw {
 			var space = await ctx.Decision(new Select.DeployedPresence("Select presence to replace with beast",options,Present.Done)); // let them change their minds
 			if(space == null) return;
 
-			ctx.Presence.RemoveFrom(space);
+			await ctx.Presence.RemoveFrom(space);
 			await ctx.GameState.Tokens[space].Beasts.Add(1);
 
 		}

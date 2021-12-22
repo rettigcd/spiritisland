@@ -7,6 +7,8 @@ namespace SpiritIsland {
 
 	public class SpiritPresence : IKnowSpiritLocations {
 
+//		readonly UniqueToken Token = new UniqueToken( "Presence",'p', Img.Icon_Presence, TokenCategory.Presence );
+
 		#region constructors
 
 		public SpiritPresence( IPresenceTrack energy, IPresenceTrack cardPlays ) {
@@ -52,12 +54,6 @@ namespace SpiritIsland {
 
 		#region Readonly 
 
-		public IEnumerable<Space> Spaces => placed.Distinct();
-
-		public int CountOn( Space space ) => placed.Count( p => p == space );
-
-		public bool IsOn( Space space ) => placed.Contains( space );
-
 		public IEnumerable<IActionFactory> RevealedActions 
 			=> CardPlays.Revealed
 				.Union(Energy.Revealed)
@@ -75,7 +71,7 @@ namespace SpiritIsland {
 
 		public virtual async Task Place( IOption from, Space to, GameState gs ) {
 			await TakeFrom( from, gs );
-			PlaceOn( to, gs );
+			await PlaceOn( to, gs );
 		}
 
 		public async Task TakeFrom( IOption from, GameState gs ) {
@@ -83,7 +79,7 @@ namespace SpiritIsland {
 				await RevealTrack( track, gs );
 			} else if(from is Space space) {
 				if(Spaces.Contains( space ))
-					RemoveFrom_NoCheck( space, gs );
+					await RemoveFrom_NoCheck( space, gs );
 				else
 					throw new ArgumentException( "Can't pull from island space:" + from.ToString() );
 			}
@@ -150,17 +146,8 @@ namespace SpiritIsland {
 
 		#region Setup / Adjust
 
-		public virtual void PlaceOn(Space space, GameState _) => placed.Add(space);
-
-		/// <remarks>public so we can remove it for Replacing with Beast and advanced spirit strangness</remarks>
-		// !!! This is called for 2 different reasons...
-		// (1) To move presence to another location on the board - no End-of-Game check is necessary
-		// (2) Presence is replaced with something else. End-of-Game check IS necessary.
-		// Also - if we have presence in Stasis, then removing 2nd to last presence will INCORRECTLY trigger loss.
-		protected virtual void RemoveFrom_NoCheck( Space space, GameState _ ) => placed.Remove( space );
-
-		public void RemoveFrom( Space space, GameState gs ) {
-			RemoveFrom_NoCheck( space, gs );
+		public async Task RemoveFrom( Space space, GameState gs ) {
+			await RemoveFrom_NoCheck( space, gs );
 			CheckIfSpiritIsDestroyted();
 		}
 
@@ -177,7 +164,6 @@ namespace SpiritIsland {
 				PlaceOn(space, gs);
 			}
 		}
-		readonly List<Space> stasis = new List<Space>();
 
 		#endregion
 
@@ -199,13 +185,38 @@ namespace SpiritIsland {
 		/// </summary>
 		public Func<Space,bool> IsValid = DefaultIsValid; // override for Lure, Ocean, Volcano
 
-		static bool DefaultIsValid(Space space) => space.Terrain != Terrain.Ocean;
-
-		public IReadOnlyCollection<Space> Placed => placed.AsReadOnly();
+		static bool DefaultIsValid(Space space) => !space.IsOcean;
 
 		public DualAsyncEvent<Track> TrackRevealed { get; } = new DualAsyncEvent<Track>();
 
+		public IReadOnlyCollection<Space> Placed => placed.AsReadOnly();
+
+		public IEnumerable<Space> Spaces => placed.Distinct();
+
+		public int CountOn( Space space ) => placed.Count( p => p == space );
+
+		public bool IsOn( Space space ) => placed.Contains( space );
+
+		public virtual Task PlaceOn(Space space, GameState gameState) { 
+			placed.Add(space);
+			return Task.CompletedTask;
+			// return gameState.Tokens[space].Add(Token,1, AddReason.Added); // !!! this add reason might not be correct
+		}
+
+		/// <remarks>public so we can remove it for Replacing with Beast and advanced spirit strangness</remarks>
+		// !!! This is called for 2 different reasons...
+		// (1) To move presence to another location on the board - no End-of-Game check is necessary
+		// (2) Presence is replaced with something else. End-of-Game check IS necessary.
+		// Also - if we have presence in Stasis, then removing 2nd to last presence will INCORRECTLY trigger loss.
+		protected virtual Task RemoveFrom_NoCheck( Space space, GameState gameState ) { 
+			placed.Remove( space );
+			return Task.CompletedTask;
+//			return gameState.Tokens[space].Remove(Token,1); // !!! Do we event want to generate an event?
+		}
+
 		readonly List<Space> placed = new List<Space>();
+		readonly List<Space> stasis = new List<Space>();
+
 
 		#region Memento
 

@@ -29,7 +29,7 @@ namespace SpiritIsland {
 		#region Damage
 
 		/// <summary> Not Badland-aware </summary>
-		public async Task ApplyDamageToEach( int individualDamage, params TokenCategory[] generic ) {
+		public async Task ApplyDamageToEach( int individualDamage, params TokenClass[] generic ) {
 
 			var invaders = Tokens.Invaders()
 				.OrderBy(x=>x.Health) // do damaged first to clear them out
@@ -37,7 +37,7 @@ namespace SpiritIsland {
 
 			// Filter if appropriate
 			if(generic != null && generic.Length>0)
-				invaders = invaders.Where(t=>generic.Contains(t.Category)).ToArray();
+				invaders = invaders.Where(t=>generic.Contains(t.Class)).ToArray();
 
 			foreach(var invader in invaders)
 				while(this[invader] > 0)
@@ -64,10 +64,10 @@ namespace SpiritIsland {
 
 		#region Destroy
 
-		public async Task<int> Destroy( int countToDestory, TokenCategory generic ) {
+		public async Task<int> Destroy( int countToDestory, TokenClass generic ) {
 			if(countToDestory == 0) return 0;
 			Token[] invaderTypesToDestory = Tokens.Invaders()
-				.Where( x=> x.Category==generic )
+				.Where( x=> x.Class==generic )
 				.OrderByDescending( x => x.Health ) // kill healthiest first
 				.ToArray();
 
@@ -90,7 +90,7 @@ namespace SpiritIsland {
 			return numToDestory;
 		}
 
-		public async Task DestroyAny( int count, params TokenCategory[] generics ) {
+		public async Task DestroyAny( int count, params TokenClass[] generics ) {
 			// !! this could be cleaned up
 			Token[] invadersToDestroy = Tokens.OfAnyType( generics );
 			while(count > 0 && invadersToDestroy.Length > 0) {
@@ -98,7 +98,7 @@ namespace SpiritIsland {
 					.OrderByDescending(x=>x.FullHealth)
 					// .ThenByDescending(x=>x.Health) assume this line is in Destroy(...)
 					.First();
-				await Destroy( 1, invader.Category );
+				await Destroy( 1, invader.Class );
 
 				// next
 				invadersToDestroy = Tokens.OfAnyType( generics );
@@ -117,7 +117,7 @@ namespace SpiritIsland {
 		/// Sticking on InvaderGroup is the only place I can think to put it.
 		/// Also, shouldn't be affected by Bringer overwriting 'Destroy' and 'Damage'
 		/// </remarks>
-		public void Remove( params TokenCategory[] removables ) {
+		public void Remove( params TokenClass[] removables ) {
 			if(Tokens.SumAny(removables) == 0) return;
 
 			var invaderToRemove = Tokens.OfAnyType( removables )
@@ -147,7 +147,7 @@ namespace SpiritIsland {
 				counts.Adjust( token, -num );
 			}
 
-			void HealGroup( TokenCategory group ) {
+			void HealGroup( TokenClass group ) {
 				foreach(var token in counts.OfType(group).ToArray())
 					RestoreAllToDefault(token);
 			}
@@ -157,10 +157,10 @@ namespace SpiritIsland {
 			HealGroup( TokenType.Dahan );
 		}
 
-		public async Task UserSelectedDamage( int damage, Spirit damagePicker, params TokenCategory[] allowedTypes ) {
+		public async Task UserSelectedDamage( int damage, Spirit damagePicker, params TokenClass[] allowedTypes ) {
 			if(damage == 0) return;
 			if(allowedTypes == null || allowedTypes.Length == 0)
-				allowedTypes = new TokenCategory[] { Invader.Explorer, Invader.Town, Invader.City };
+				allowedTypes = new TokenClass[] { Invader.Explorer, Invader.Town, Invader.City };
 
 			Token[] invaderTokens;
 			while(damage>0 && (invaderTokens=Tokens.OfAnyType(allowedTypes).ToArray()).Length > 0) {

@@ -71,7 +71,7 @@ namespace SpiritIsland.JaggedEarth {
 			var space = board.Spaces.Skip(1).Where(s=>gameState.Tokens[s].Dahan.Count==0).First();
 			Presence.PlaceOn(space, gameState);
 			var space2 = space.Adjacent.FirstOrDefault(s=>gameState.Tokens[s][TokenType.Blight]>0)
-				?? space.Adjacent.First(s=>s.Terrain==Terrain.Sand);
+				?? space.Adjacent.First(s=>s.IsSand);
 			Presence.PlaceOn(space2, gameState);
 
 			// Bestow the Endurance of Bedrock

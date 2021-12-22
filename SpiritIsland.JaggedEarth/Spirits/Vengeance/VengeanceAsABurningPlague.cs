@@ -41,7 +41,7 @@ namespace SpiritIsland.JaggedEarth {
 			// 1 in a land with blight.
 			Presence.PlaceOn(board.Spaces.First(s=>gameState.Tokens[s].Blight.Any), gameState);
 			// 1 in a Wetland without dahan
-			Presence.PlaceOn(board.Spaces.First(s=>s.Terrain==Terrain.Wetland && !gameState.Tokens[s].Dahan.Any), gameState);
+			Presence.PlaceOn(board.Spaces.First(s=>s.IsWetland && !gameState.Tokens[s].Dahan.Any), gameState);
 
 			gameState.InvaderEngine.StopBuildWithDiseaseBehavior = TerrorOfASlowyUnfoldingPlague_PreBuild_DiseaseChecker;
 

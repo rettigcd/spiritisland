@@ -44,7 +44,7 @@ namespace SpiritIsland.Basegame {
 
 		protected override void InitializeInternal( Board board, GameState gs ) {
 			// Setup: 2 presense in highest numbered sands
-			var startingIn = board.Spaces.Where(x=>x.Terrain==Terrain.Sand).Last();
+			var startingIn = board.Spaces.Where(x=>x.IsSand).Last();
 			Presence.PlaceOn( startingIn, gs );
 			Presence.PlaceOn( startingIn, gs );
 		}

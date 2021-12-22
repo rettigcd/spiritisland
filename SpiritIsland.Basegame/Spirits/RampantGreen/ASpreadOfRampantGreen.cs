@@ -106,8 +106,8 @@ namespace SpiritIsland.Basegame {
 		protected override void InitializeInternal( Board board, GameState gs ) {
 
 			// Setup: 1 in the highest numbered wetland and 1 in the jungle without any dahan
-			Presence.PlaceOn( board.Spaces.Reverse().First(x=>x.Terrain==Terrain.Wetland), gs );
-			Presence.PlaceOn( board.Spaces.Single(x=>x.Terrain==Terrain.Jungle && gs.DahanOn(x).Count==0), gs );
+			Presence.PlaceOn( board.Spaces.Reverse().First(x=>x.IsWetland), gs );
+			Presence.PlaceOn( board.Spaces.Single(x=>x.IsJungle && gs.DahanOn(x).Count==0), gs );
 
 			gs.PreRavaging.ForGame.Add( ChokeTheLandWithGreen_Ravage );
 			gs.PreBuilding.ForGame.Add( ChokeTheLandWithGreen_Build );

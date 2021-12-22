@@ -55,10 +55,10 @@ namespace SpiritIsland.Basegame {
 				var dest = await spiritCtx.Decision( new Select.Space( "Select space to gather town to city OR explorer to town", options, Present.Always));
 				var destCtx = spiritCtx.Target(dest);
 				var grp = destCtx.Tokens;
-				var invadersToGather = new List<TokenCategory>();
+				var invadersToGather = new List<TokenClass>();
 				if(grp.Has(Invader.City)) invadersToGather.Add( Invader.Town );
 				if(grp.Has(Invader.Town)) invadersToGather.Add( Invader.Explorer );
-				TokenCategory[] invadersToGatherArray = invadersToGather.ToArray();
+				TokenClass[] invadersToGatherArray = invadersToGather.ToArray();
 
 				await destCtx.GatherUpTo(1, invadersToGatherArray);
 			}

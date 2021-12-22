@@ -87,7 +87,7 @@ namespace SpiritIsland.Tests.BranchAndClaw {
 			var strifedTown = counts.OfType(Invader.Town).Single( k => k != Invader.Town[2] );
 
 			// When: move
-			var destination = space.Adjacent.First( x => x.Terrain != Terrain.Ocean );
+			var destination = space.Adjacent.First( x => !x.IsOcean );
 			_ = gs.Tokens[space].MoveTo( strifedTown, destination ); // _ = ??
 
 			// Then:
@@ -142,7 +142,7 @@ namespace SpiritIsland.Tests.BranchAndClaw {
 		public async Task Strife_Stops_Ravage() {
 			var gs = new GameState( new Thunderspeaker(), Board.BuildBoardC() );
 			Space space = gs.Island.AllSpaces
-				.First( s => s.Terrain != Terrain.Ocean
+				.First( s => !s.IsOcean
 					&& !gs.Tokens[s].HasInvaders() // 0 invaders
 				);
 
@@ -155,7 +155,7 @@ namespace SpiritIsland.Tests.BranchAndClaw {
 			gs.DahanOn( space ).Init( 1 );
 
 			//  When: we ravage there
-			await gs.InvaderEngine.TestRavage( new InvaderCard( space.Terrain ) );
+			await gs.InvaderEngine.TestRavage( new InvaderCard( space ) );
 
 			//  Then: dahan survives
 			gs.DahanOn( space ).Count.ShouldBe( 1, "dahan should survive due to strife on town" );

@@ -182,7 +182,7 @@ namespace SpiritIsland.Tests.Core {
 			foreach(var space in board.Spaces){
 				var invaders = gameState.Tokens[space];
 				Assert.Equal(
-					space.Terrain == Terrain.Wetland?1:0
+					space.IsWetland ? 1 : 0
 					,invaders[Invader.Explorer[1]]
 				);
 			}
@@ -249,7 +249,7 @@ namespace SpiritIsland.Tests.Core {
 
 			// Given: Invaders on a Mountain space
 			var space = board[1];
-			Assert.Equal(Terrain.Mountain,space.Terrain);
+			Assert.True(space.IsMountain);
 			Given_InitUnits( startingUnits, space );
 			Assert_UnitsAre( startingUnits, space );
 

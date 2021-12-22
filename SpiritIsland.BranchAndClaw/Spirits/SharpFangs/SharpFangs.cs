@@ -78,7 +78,7 @@ namespace SpiritIsland.BranchAndClaw {
 		//}
 
 		protected override void InitializeInternal( Board board, GameState gs ) {
-			var highestJungle = board.Spaces.Where(x=>x.Terrain == Terrain.Jungle).Last();
+			var highestJungle = board.Spaces.Where(x=>x.IsJungle).Last();
 			Presence.PlaceOn(highestJungle, gs);
 			gs.Tokens[highestJungle].Beasts.Init(1);
 

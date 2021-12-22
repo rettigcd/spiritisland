@@ -26,7 +26,7 @@ namespace SpiritIsland.JaggedEarth {
 			return Dissolve(ctx,Invader.City,Invader.Town,Invader.Explorer);
 		}
 
-		static async Task Dissolve(TargetSpaceCtx ctx, params TokenCategory[] invaderCats) {
+		static async Task Dissolve(TargetSpaceCtx ctx, params TokenClass[] invaderCats) {
 			var decision = Select.Invader.ToDowngrade("dissolve", ctx.Space, ctx.Tokens.OfAnyType( invaderCats ) );
 			var invader = await ctx.Decision( decision );
 			if(invader == null) return;

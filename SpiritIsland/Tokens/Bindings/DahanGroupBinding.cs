@@ -8,7 +8,7 @@ namespace SpiritIsland {
 		public bool Frozen { get; set; }
 
 		readonly TokenCountDictionary tokens;
-		readonly TokenCategory tokenGroup;
+		readonly TokenClass tokenGroup;
 
 		public DahanGroupBinding( TokenCountDictionary tokens ) {
 			this.tokens = tokens;

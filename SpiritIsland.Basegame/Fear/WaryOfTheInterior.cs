@@ -19,7 +19,7 @@ namespace SpiritIsland.Basegame {
 
 		static bool IsInland(Space space) => !space.IsCoastal;
 
-		static async Task EachSpiritRemoves1Invader( FearCtx ctx, Func<Space,bool> spaceCondition, params TokenCategory[] removable ) {
+		static async Task EachSpiritRemoves1Invader( FearCtx ctx, Func<Space,bool> spaceCondition, params TokenClass[] removable ) {
 			foreach(var spiritCtx in ctx.Spirits) {
 				var options = spiritCtx.AllSpaces
 					.Where( spaceCondition )

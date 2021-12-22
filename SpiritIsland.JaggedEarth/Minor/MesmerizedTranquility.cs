@@ -10,7 +10,7 @@ namespace SpiritIsland.JaggedEarth {
 			ctx.Isolate();
 
 			// Each Invader does -1 Damage.
-			ctx.ModifyRavage( cfg => cfg.DamageFromAttacker = (attacker) => attacker.FullHealth + (attacker.Category.IsInvader ? -1 : 0) );
+			ctx.ModifyRavage( cfg => cfg.DamageFromAttacker = (attacker) => attacker.FullHealth + (attacker.Class.Category == TokenCategory.Invader ? -1 : 0) );
 
 			return Task.CompletedTask;
 		}

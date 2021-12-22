@@ -77,7 +77,7 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 
 		protected override void InitializeInternal( Board board, GameState gs ) {
 			// Setup: put 2 pressence in highest numbered sands
-			var space = board.Spaces.Reverse().First(x=>x.Terrain==Terrain.Sand);
+			var space = board.Spaces.Reverse().First(x=>x.IsSand);
 			Presence.PlaceOn(space,gs);
 			Presence.PlaceOn(space,gs);
 

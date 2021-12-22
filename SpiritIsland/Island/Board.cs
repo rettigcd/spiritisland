@@ -13,15 +13,15 @@ namespace SpiritIsland {
 
 		static public Board BuildBoardA() {
 			var board = new Board(
-				new Space(Terrain.Ocean,"A0")
-				,new Space(Terrain.Mountain,"A1") // 
-				,new Space(Terrain.Wetland,"A2","CD")  // city, dahan
-				,new Space(Terrain.Jungle,"A3","DD")   // 2 dahan
-				,new Space(Terrain.Sand,"A4","B")     // blight
-				,new Space(Terrain.Wetland,"A5")
-				,new Space(Terrain.Mountain,"A6","D") // 1 dahan
-				,new Space(Terrain.Sand,"A7","DD")     // 2 dahan
-				,new Space(Terrain.Jungle,"A8","T")   // town
+				new Space1(Terrain.Ocean,"A0")
+				,new Space1(Terrain.Mountain,"A1") // 
+				,new Space1(Terrain.Wetland,"A2","CD")  // city, dahan
+				,new Space1(Terrain.Jungle,"A3","DD")   // 2 dahan
+				,new Space1(Terrain.Sand,"A4","B")     // blight
+				,new Space1(Terrain.Wetland,"A5")
+				,new Space1(Terrain.Mountain,"A6","D") // 1 dahan
+				,new Space1(Terrain.Sand,"A7","DD")     // 2 dahan
+				,new Space1(Terrain.Jungle,"A8","T")   // town
 			);
 
 			board.SetNeighbors(0, 1,2,3);
@@ -43,15 +43,15 @@ namespace SpiritIsland {
 
 		static public Board BuildBoardB() {
 			var tile = new Board(
-				new Space(Terrain.Ocean,"B0")
-				,new Space(Terrain.Wetland,"B1","D")  // 1 dahan
-				,new Space(Terrain.Mountain,"B2", "C") // city
-				,new Space(Terrain.Sand,"B3","DD")     // 2 dahan
-				,new Space(Terrain.Jungle,"B4","B")   // blight
-				,new Space(Terrain.Sand,"B5")
-				,new Space(Terrain.Wetland,"B6", "T")  // 1 town
-				,new Space(Terrain.Mountain,"B7","D") // 1 dahan
-				,new Space(Terrain.Jungle,"B8","DD")   // 2 dahan
+				new Space1(Terrain.Ocean,"B0")
+				,new Space1(Terrain.Wetland,"B1","D")  // 1 dahan
+				,new Space1(Terrain.Mountain,"B2", "C") // city
+				,new Space1(Terrain.Sand,"B3","DD")     // 2 dahan
+				,new Space1(Terrain.Jungle,"B4","B")   // blight
+				,new Space1(Terrain.Sand,"B5")
+				,new Space1(Terrain.Wetland,"B6", "T")  // 1 town
+				,new Space1(Terrain.Mountain,"B7","D") // 1 dahan
+				,new Space1(Terrain.Jungle,"B8","DD")   // 2 dahan
 			);
 
 			tile.SetNeighbors(0, 1,2,3);
@@ -73,15 +73,15 @@ namespace SpiritIsland {
 
 		static public Board BuildBoardC() {
 			var tile = new Board(
-				new Space(Terrain.Ocean,"C0")
-				,new Space(Terrain.Jungle,"C1","D")   // 1 dahan
-				,new Space(Terrain.Sand,"C2","C")     // city
-				,new Space(Terrain.Mountain,"C3","DD") // 2 dahan
-				,new Space(Terrain.Jungle,"C4")   
-				,new Space(Terrain.Wetland,"C5","DDB")  // 2 dahan, blight
-				,new Space(Terrain.Sand,"C6","D")     // 1 dahan
-				,new Space(Terrain.Mountain,"C7","T") // 1 town
-				,new Space(Terrain.Wetland,"C8")
+				new Space1(Terrain.Ocean,"C0")
+				,new Space1(Terrain.Jungle,"C1","D")   // 1 dahan
+				,new Space1(Terrain.Sand,"C2","C")     // city
+				,new Space1(Terrain.Mountain,"C3","DD") // 2 dahan
+				,new Space1(Terrain.Jungle,"C4")   
+				,new Space1(Terrain.Wetland,"C5","DDB")  // 2 dahan, blight
+				,new Space1(Terrain.Sand,"C6","D")     // 1 dahan
+				,new Space1(Terrain.Mountain,"C7","T") // 1 town
+				,new Space1(Terrain.Wetland,"C8")
 			);
 
 			tile.SetNeighbors(0, 1,2,3);
@@ -103,15 +103,15 @@ namespace SpiritIsland {
 
 		static public Board BuildBoardD() {
 			var tile = new Board(
-				new Space(Terrain.Ocean,"D0")
-				,new Space(Terrain.Wetland,"D1","DD")   // 2 dahan
-				,new Space(Terrain.Jungle,"D2","CD")    // city, 1 dahan
-				,new Space(Terrain.Wetland,"D3")   
-				,new Space(Terrain.Sand,"D4")   
-				,new Space(Terrain.Mountain,"D5","DB")  // 1 dahan, blight
-				,new Space(Terrain.Jungle,"D6")    
-				,new Space(Terrain.Sand,"D7","TDD")      // 1 town, 2 dahan
-				,new Space(Terrain.Mountain,"D8")
+				new Space1(Terrain.Ocean,"D0")
+				,new Space1(Terrain.Wetland,"D1","DD")   // 2 dahan
+				,new Space1(Terrain.Jungle,"D2","CD")    // city, 1 dahan
+				,new Space1(Terrain.Wetland,"D3")   
+				,new Space1(Terrain.Sand,"D4")   
+				,new Space1(Terrain.Mountain,"D5","DB")  // 1 dahan, blight
+				,new Space1(Terrain.Jungle,"D6")    
+				,new Space1(Terrain.Sand,"D7","TDD")      // 1 town, 2 dahan
+				,new Space1(Terrain.Mountain,"D8")
 			);
 
 			tile.SetNeighbors(0, 1,2,3);
@@ -147,7 +147,7 @@ namespace SpiritIsland {
 		} // Absolute Stasis
 		#endregion
 
-		public Space Ocean => Spaces.Single( space => space.Terrain == Terrain.Ocean );
+		public Space Ocean => Spaces.Single( space => space.IsOcean );
 
 		public Space this[int index]{ get => spaces[index]; }
 

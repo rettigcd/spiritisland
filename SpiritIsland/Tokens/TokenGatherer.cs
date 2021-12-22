@@ -10,7 +10,7 @@ namespace SpiritIsland {
 
 		public TokenGatherer(TargetSpaceCtx ctx) { this.ctx = ctx; }
 
-		protected virtual SpaceToken[] GetOptions(TokenCategory[] groups) => ctx.Adjacent
+		protected virtual SpaceToken[] GetOptions(TokenClass[] groups) => ctx.Adjacent
 			.SelectMany( a => 
 				ctx.GameState.Tokens[a]
 					.OfAnyType( groups )
@@ -28,16 +28,16 @@ namespace SpiritIsland {
 				var source = await ctx.Decision( Select.TokenFromManySpaces.ToGather( sharedGroupCounts.Sum(), ctx.Space, options, present ) );
 				if(source == null) break;
 				await ctx.Move( source.Token, source.Space, ctx.Space ); // !!! if moving dahan into frozen land, freeze them
-				--sharedGroupCounts[indexLookupByGroup[source.Token.Category]];
+				--sharedGroupCounts[indexLookupByGroup[source.Token.Class]];
 			}
 		}
 
-		TokenCategory[] RemainingTypes => indexLookupByGroup
+		TokenClass[] RemainingTypes => indexLookupByGroup
 			.Where( pair => sharedGroupCounts[pair.Value] > 0)
 			.Select( pair => pair.Key )
 			.ToArray();
 
-		public TokenGatherer AddGroup( int countToGather, params TokenCategory[] groups ) {
+		public TokenGatherer AddGroup( int countToGather, params TokenClass[] groups ) {
 			int countIndex = sharedGroupCounts.Count;
 			sharedGroupCounts.Add( countToGather );
 			foreach(var group in groups)
@@ -47,7 +47,7 @@ namespace SpiritIsland {
 
 		readonly List<int> sharedGroupCounts = new(); // the # we push from each group
 
-		readonly Dictionary<TokenCategory,int> indexLookupByGroup = new(); // map from group back to its count
+		readonly Dictionary<TokenClass,int> indexLookupByGroup = new(); // map from group back to its count
 
 	}
 

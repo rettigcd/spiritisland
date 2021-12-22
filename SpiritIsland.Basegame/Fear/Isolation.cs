@@ -25,7 +25,7 @@ namespace SpiritIsland.Basegame {
 		/// <summary>
 		/// Conditionally Removes an invader based on the Total # of invaders in a space
 		/// </summary>
-		static async Task RemoveInvaderWhenMax( FearCtx ctx, int invaderMax, params TokenCategory[] removeableInvaders ) {
+		static async Task RemoveInvaderWhenMax( FearCtx ctx, int invaderMax, params TokenClass[] removeableInvaders ) {
 			foreach(var spirit in ctx.Spirits) {
 
 				var options = spirit.AllSpaces.Where( s => {

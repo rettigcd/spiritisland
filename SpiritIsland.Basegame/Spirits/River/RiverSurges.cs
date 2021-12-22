@@ -93,7 +93,7 @@ namespace SpiritIsland.Basegame {
 			);
 
 		protected override void InitializeInternal( Board board, GameState gs ) {
-			Presence.PlaceOn( board.Spaces.Reverse().First( s => s.Terrain == Terrain.Wetland ), gs );
+			Presence.PlaceOn( board.Spaces.Reverse().First( s => s.IsWetland ), gs );
 		}
 
 	}
@@ -102,7 +102,7 @@ namespace SpiritIsland.Basegame {
 		public RiverPresence( PresenceTrack t1, PresenceTrack t2 ) : base( t1, t2 ) { }
 
 		public override IEnumerable<Space> SacredSites => Spaces
-			.Where(s=>s.Terrain==Terrain.Wetland)
+			.Where( s=>s.IsWetland )
 			.Union( base.SacredSites )
 			.Distinct();
 	}

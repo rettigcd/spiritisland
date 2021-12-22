@@ -93,7 +93,7 @@ namespace SpiritIsland.Basegame {
 
 		async Task DestroyNearbyPresence( GameState gs, ITokenRemovedArgs args ) {
 			if( args.Reason != RemoveReason.DestroyedInBattle ) return;
-			if(args.Token.Category != TokenType.Dahan) return;
+			if(args.Token.Class != TokenType.Dahan) return;
 
 			string prompt = $"{SwarnToVictory.Title}: {args.Count} dahan destroyed. Select presence to destory.";
 

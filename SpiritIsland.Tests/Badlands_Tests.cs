@@ -13,7 +13,7 @@ namespace SpiritIsland.Tests {
 			// Given: a space to ravage on.
 			var space = fxt.board[5];
 			var tokens = fxt.gameState.Tokens[space];
-			fxt.gameState.InvaderDeck.Ravage.Add( new InvaderCard( space.Terrain ) );
+			fxt.gameState.InvaderDeck.Ravage.Add( new InvaderCard( space ) );
 
 			// And: disable ravage on A2 which has the same space
 			fxt.gameState.SkipRavage(fxt.board[2]);
@@ -52,7 +52,7 @@ namespace SpiritIsland.Tests {
 			// Given: a space to ravage on.
 			var space = fxt.board[5];
 			var tokens = fxt.gameState.Tokens[space];
-			fxt.gameState.InvaderDeck.Ravage.Add( new InvaderCard( space.Terrain ) );
+			fxt.gameState.InvaderDeck.Ravage.Add( new InvaderCard( space ) );
 
 			// And: disable ravage on A2 which has the same space
 			fxt.gameState.SkipRavage(fxt.board[2]);

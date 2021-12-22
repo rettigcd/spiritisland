@@ -82,7 +82,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 		protected override void InitializeInternal( Board board, GameState gs ){
 			// In the highest-numbered Jungle.
-			var space = board.Spaces.OrderByDescending( x => x.Terrain == Terrain.Jungle ).First();
+			var space = board.Spaces.OrderByDescending( x => x.IsJungle ).First();
 			// Put 1 Presence
 			Presence.PlaceOn( space, gs );
 			// 1 Wild 

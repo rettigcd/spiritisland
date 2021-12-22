@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 		public override async Task ActivateAsync( SelfCtx ctx ) {
 
 			List<Space> pushSpaces = ctx.Self.Presence.Spaces
-				.Where( p => p.Terrain == Terrain.Ocean )
+				.Where( p => p.IsOcean )
 				.Distinct()
 				.ToList();
 

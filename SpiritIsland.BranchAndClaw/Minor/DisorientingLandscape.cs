@@ -9,7 +9,7 @@ namespace SpiritIsland.BranchAndClaw {
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 			await ctx.Push(1, Invader.Explorer);
 
-			if(ctx.Space.Terrain.IsOneOf(Terrain.Mountain,Terrain.Jungle))
+			if(ctx.Space.IsOneOf(Terrain.Mountain,Terrain.Jungle))
 				await ctx.Wilds.Add(1);
 		}
 

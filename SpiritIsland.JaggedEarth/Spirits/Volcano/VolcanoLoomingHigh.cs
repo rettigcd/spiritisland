@@ -50,7 +50,7 @@ namespace SpiritIsland.JaggedEarth {
 
 	class VolcanoPresence : SpiritPresence {
 		public VolcanoPresence(PresenceTrack t1, PresenceTrack t2 ) : base( t1, t2 ) {
-			IsValid = (s) => s.Terrain == Terrain.Mountain;
+			IsValid = (s) => s.IsMountain;
 		}
 
 		public void SetSpirit(Spirit spirit) => DestroyBehavior = new DestroyPresence(spirit);

@@ -78,7 +78,7 @@ namespace SpiritIsland {
 		#endregion
 
 		/// <remarks>Used for Absorb Presence and Replacing Presence</remarks>
-		public void RemoveFrom( Space space ) => ctx.Self.Presence.RemoveFrom( space, ctx.GameState ); // Generally used for Replacing
+		public Task RemoveFrom( Space space ) => ctx.Self.Presence.RemoveFrom( space, ctx.GameState ); // Generally used for Replacing
 
 		#region select Source
 

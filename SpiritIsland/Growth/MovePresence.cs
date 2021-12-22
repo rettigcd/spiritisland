@@ -15,7 +15,7 @@ namespace SpiritIsland {
 
 		public override async Task ActivateAsync( SelfCtx ctx) {
 			var src = await ctx.Decision( Select.DeployedPresence.All("Move presence from:", ctx.Self,Present.Always ) );
-			var dstOptions = src.Range(Range).Where(s=>s.Terrain!=Terrain.Ocean);
+			var dstOptions = src.Range(Range).Where(s=>!s.IsOcean );
 			var dst = await ctx.Decision( Select.Space.ForAdjacent("Move preseence to:", src, Select.AdjacentDirection.Outgoing, dstOptions, Present.Always));
 			ctx.Presence.Move( src, dst );
 		}

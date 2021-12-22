@@ -12,7 +12,7 @@ namespace SpiritIsland {
 			this.source = ctx.Space;
 		}
 
-		public TokenPusher AddGroup(int count,params TokenCategory[] groups ) {
+		public TokenPusher AddGroup(int count,params TokenClass[] groups ) {
 
 			count = System.Math.Min( count, ctx.GameState.Tokens[source].SumAny(groups) );
 
@@ -51,7 +51,7 @@ namespace SpiritIsland {
 				Space destination = await PushToken( token );
 
 				// Book keeping
-				--sharedGroupCounts[indexLookupByGroup[token.Category]]; // decrement count
+				--sharedGroupCounts[indexLookupByGroup[token.Class]]; // decrement count
 				if(destination != null)
 					pushedToSpaces.Add( destination ); // record push
 			}
@@ -101,7 +101,7 @@ namespace SpiritIsland {
 
 		readonly List<int> sharedGroupCounts = new(); // the # we push from each group
 
-		readonly Dictionary<TokenCategory, int> indexLookupByGroup = new(); // map from group back to its count
+		readonly Dictionary<TokenClass, int> indexLookupByGroup = new(); // map from group back to its count
 
 		#endregion
 

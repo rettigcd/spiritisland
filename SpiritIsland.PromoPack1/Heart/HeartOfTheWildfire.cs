@@ -77,7 +77,7 @@ namespace SpiritIsland.PromoPack1 {
 
 		protected override void InitializeInternal( Board board, GameState gameState ) {
 			// Put 3 presence and 2 blight on your starting board in the hightest-numbered Sands. 
-			var space = board.Spaces.Where(x=>x.Terrain==Terrain.Sand).Last();
+			var space = board.Spaces.Last(x=>x.IsSand);
 			for(int i=0;i<3;++i)
 				Presence.PlaceOn(space,gameState);
 

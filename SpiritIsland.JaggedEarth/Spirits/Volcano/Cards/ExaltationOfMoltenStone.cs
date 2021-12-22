@@ -39,7 +39,7 @@ namespace SpiritIsland.JaggedEarth {
 				List<Space> spaces = originalApi.GetTargetOptionsFromKnownSource( self, gameState, powerType, source, tc ).ToList();
 
 				// Target Spirit gains +1 range with their Powers that originate from a Mountain
-				var mountainSource = source.Where(x=>x.Terrain == Terrain.Mountain).ToArray();
+				var mountainSource = source.Where(x=>x.IsMountain).ToArray();
 				return mountainSource.Length == 0 ? spaces
 					: spaces
 					.Union( originalApi.GetTargetOptionsFromKnownSource( self, gameState, powerType, mountainSource, new TargetCriteria(tc.Range+1, tc.Filter) ) )

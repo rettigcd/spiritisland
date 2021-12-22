@@ -60,9 +60,9 @@ namespace SpiritIsland.JaggedEarth {
 
 			// Place presence in:
 			// (a) Highest # mountains,
-			Presence.PlaceOn(board.Spaces.Where(s=>s.Terrain==Terrain.Mountain).Last(), gameState);
+			Presence.PlaceOn(board.Spaces.Where(s=>s.IsMountain).Last(), gameState);
 			// (b) highest # wetlands
-			Presence.PlaceOn(board.Spaces.Where(s=>s.Terrain==Terrain.Wetland).Last(), gameState);
+			Presence.PlaceOn(board.Spaces.Where(s=>s.IsWetland).Last(), gameState);
 
 			gameState.TimePasses_WholeGame += GameState_TimePasses_WholeGame;
 		}

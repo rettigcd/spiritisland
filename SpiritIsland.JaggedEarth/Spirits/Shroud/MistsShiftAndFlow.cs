@@ -83,7 +83,7 @@ namespace SpiritIsland.JaggedEarth {
 			var pretendPresence = new SpaceCounts( spirit.Presence.Placed );
 
 			foreach(var dst in target.Range( 1 )) {
-				if(dst.Terrain == Terrain.Ocean) continue; // don't let us flow into the ocean.
+				if(dst.IsOcean) continue; // don't let us flow into the ocean.
 
 				pretendPresence[dst]++; // move  presence ON TO destination
 
@@ -129,11 +129,11 @@ namespace SpiritIsland.JaggedEarth {
 			this.flowRange = sources.SelectMany( s => s.Range( 2 ) ).Distinct().ToArray();
 
 			// Calculate new sources we could find
-			var flowedSources = spirit.Presence.Placed.SelectMany( p => p.Adjacent ).Distinct()
-				.Where( s => s.Terrain != Terrain.Ocean ) // Don't allow flow into ocean.
+			var flowedSources = spirit.Presence.Spaces.SelectMany( p => p.Adjacent ).Distinct()
+				.Where( s => !s.IsOcean ) // Don't allow flow into ocean.
 				.Except( sources ); // exclude previously found sources
 			if(sourceCriteria.Terrain.HasValue)
-				flowedSources = flowedSources.Where( s => s.Terrain == sourceCriteria.Terrain.Value );
+				flowedSources = flowedSources.Where( s => s.Is( sourceCriteria.Terrain.Value ) );
 			if(sourceCriteria.From == From.SacredSite)
 				flowedSources = flowedSources.Where( spirit.Presence.IsOn ); // the only way the new space is a SS, is if already had a presence here.
 

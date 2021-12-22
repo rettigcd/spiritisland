@@ -2,20 +2,20 @@
 namespace SpiritIsland {
 
 	public class HealthToken : Token {
-		public HealthToken( TokenCategory generic, Token[] seq, int health, Img img ) {
-			this.Category = generic;
+		public HealthToken( TokenClass generic, Token[] seq, int health, Img img ) {
+			this.Class = generic;
 			Health = health;
 			this.seq = seq;
 			this.Img = img;
 		}
 
-		public TokenCategory Category { get; } // originally: readonly
+		public TokenClass Class { get; } // originally: readonly
 
 		public Img Img { get; }
 
 		public virtual string Summary => Initial+"@"+Health; // originally: virtual
 
-		public char Initial => Category.Initial;
+		public char Initial => Class.Initial;
 
 		public Token ResultingDamagedInvader(int damage){
 			return seq[ damage > Health ? 0 : Health-damage ];

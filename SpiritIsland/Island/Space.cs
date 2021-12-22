@@ -1,12 +1,52 @@
-﻿using System;
+﻿using SpiritIsland;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace SpiritIsland {
+	public abstract class Space : IOption {
 
-	public class Space : IOption {
+		readonly List<Space> adjacents = new List<Space>();
+		Board board;
 
-		#region SetUp
+		protected Space(string label) {
+			this.Label = label;
+		}
+
+		public Board Board {
+			get { return board; }
+			set { if(board != null) throw new InvalidOperationException( "cannot set board twice" ); board = value; }
+		}
+
+		public string Label { get; }
+		public bool IsOcean => Is( Terrain.Ocean );
+		public bool IsSand => Is( Terrain.Sand );
+		public bool IsMountain => Is( Terrain.Mountain );
+		public bool IsJungle => Is( Terrain.Jungle );
+		public bool IsWetland => Is( Terrain.Wetland );
+
+		public bool IsCoastal { get; set; }
+
+		public IEnumerable<Space> Adjacent => adjacents;
+
+		public string Text => Label;
+
+		public void Disconnect() {
+			// Remove us from neighbors adjacent list
+			foreach(var a in adjacents)
+				a.adjacents.Remove( this );
+			// Remove neighbors from our list.
+			adjacents.Clear();
+		}
+
+		public abstract bool Is( Terrain terrain );
+		public abstract bool IsOneOf( params Terrain[] options );
+
+		public IEnumerable<Space> Range( int distance ) {
+			Dictionary<Space, int> shortestDistances = CalcDistances( distance );
+			return shortestDistances.Keys;
+		}
+
 
 		/// <summary> If adjacent to ocean, sets is-costal </summary>
 		public void SetAdjacentToSpaces( params Space[] spaces ) {
@@ -16,61 +56,15 @@ namespace SpiritIsland {
 			}
 		}
 
-		void Connect( Space adjacent ) {
-			adjacents.Add(adjacent);
-			if(adjacent.Terrain == Terrain.Ocean)
-				this.IsCoastal = true;
-		}
-
-		public void Disconnect() {
-			// Remove us from neighbors adjacent list
-			foreach(var a in adjacents)
-				a.adjacents.Remove(this);
-			// Remove neighbors from our list.
-			adjacents.Clear();
-		}
-
-		readonly List<Space> adjacents = new List<Space>();
-		#endregion
-
-		#region constructor
-
-		public Space(Terrain terrain, string label,string startingItems=""){
-			this.Terrain = terrain;
-			this.Label = label;
-			this.StartUpCounts = new StartUpCounts(startingItems);
-		}
-
-		#endregion
-
-		public Board Board {
-			get{ return board; }
-			set{ if(board != null) throw new InvalidOperationException("cannot set board twice"); board = value; }
-		}
-		Board board;
-
-		public string Label { get; }
-
-		public Terrain Terrain { get; }
-
-		public bool IsCoastal { get; set; }
-
-		string IOption.Text => Label;
-
-		public StartUpCounts StartUpCounts { get; }
-
-		public IEnumerable<Space> Range( int distance ) {
-			Dictionary<Space, int> shortestDistances = CalcDistances( distance );
-			return shortestDistances.Keys;
-		}
-
 		public IEnumerable<Space> SpacesExactly( int distance ) {
 			return distance switch {
-				0 => new Space[] {this},
+				0 => new Space[] { this },
 				1 => adjacents,
 				_ => CalcDistances( distance ).Where( p => p.Value == distance ).Select( p => p.Key ),
 			};
 		}
+
+		public override string ToString() => Label;
 
 		Dictionary<Space, int> CalcDistances( int distance ) {
 
@@ -98,19 +92,10 @@ namespace SpiritIsland {
 			return shortestDistances;
 		}
 
-		public IEnumerable<Space> Adjacent => adjacents;
-
-		public override string ToString() =>Label;
-
-		public void InitTokens( TokenCountDictionary tokens ) {
-			StartUpCounts initialCounts = StartUpCounts;
-			tokens.Init( Invader.City.Default, initialCounts.Cities   );
-			tokens.Init( Invader.Town.Default, initialCounts.Towns    );
-			tokens.Init( Invader.Explorer.Default, initialCounts.Explorers);
-			tokens.Dahan.Init( initialCounts.Dahan );
-			tokens.Blight.Init( initialCounts.Blight )                     ; // don't use AddBlight because that pulls it from the card and triggers blighted island
+		void Connect( Space adjacent ) {
+			adjacents.Add( adjacent );
+			if(adjacent.IsOcean)
+				this.IsCoastal = true;
 		}
-
 	}
-
 }

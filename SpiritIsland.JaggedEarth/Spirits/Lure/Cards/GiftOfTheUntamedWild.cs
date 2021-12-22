@@ -23,7 +23,7 @@ namespace SpiritIsland.JaggedEarth {
 
 		static async Task Replace1PresenceWith1Disease( SelfCtx ctx ) {
 			var space = await ctx.Presence.SelectDeployed("Replace Presence with 1 disease");
-			ctx.Presence.RemoveFrom( space );
+			await ctx.Presence.RemoveFrom( space );
 			await ctx.Target(space).Disease.Add(1);
 		}
 

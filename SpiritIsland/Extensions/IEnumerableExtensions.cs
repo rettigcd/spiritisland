@@ -42,7 +42,7 @@ namespace SpiritIsland {
 		static public bool IsOneOf<T>( this T needle, params T[] haystack ) where T : Enum
 			=> haystack.Contains( needle );
 
-		static public bool IsOneOf( this TokenCategory needle, params TokenCategory[] haystack )
+		static public bool IsOneOf( this TokenClass needle, params TokenClass[] haystack )
 			=> haystack.Contains( needle );
 
 		static public void SetItems<T>(this List<T> list, params T[] items ) { list.Clear(); list.AddRange(items);}

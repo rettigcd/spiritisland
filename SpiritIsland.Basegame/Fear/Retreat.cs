@@ -22,7 +22,7 @@ namespace SpiritIsland.Basegame {
 			return ForEachSpiritPushUpToNTokesnsFromInland( ctx, int.MaxValue, Invader.Town, Invader.Explorer );
 		}
 
-		static async Task ForEachSpiritPushUpToNTokesnsFromInland( FearCtx ctx, int max, params TokenCategory[] pushableInvaders ) {
+		static async Task ForEachSpiritPushUpToNTokesnsFromInland( FearCtx ctx, int max, params TokenClass[] pushableInvaders ) {
 			var gs = ctx.GameState;
 			foreach(var spiritCtx in ctx.Spirits) {
 				var options = gs.Island.AllSpaces.Where( s => !s.IsCoastal && gs.Tokens[s].Has(Invader.Explorer) ).ToArray();

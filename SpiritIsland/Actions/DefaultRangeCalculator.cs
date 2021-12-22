@@ -20,7 +20,7 @@ namespace SpiritIsland {
 				From.SacredSite => presence.SacredSites,
 				_ => throw new ArgumentException( "Invalid presence source " + source.From ),
 			};
-			return sources.Where( x => !source.Terrain.HasValue || source.Terrain.Value == x.Terrain );
+			return sources.Where( x => !source.Terrain.HasValue || x.Is( source.Terrain.Value ) );
 		}
 	}
 

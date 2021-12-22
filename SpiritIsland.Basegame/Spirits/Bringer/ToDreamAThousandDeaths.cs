@@ -14,17 +14,17 @@ namespace SpiritIsland.Basegame {
 		}
 
 		public override async Task OnInvaderDestroyed( Space space, Token token, bool fromRavage ) {
-			if(token.Category == Invader.City) {
+			if(token.Class == Invader.City) {
 				AddFear( space, 5, false ); // not actually destroying towns/cities
 			} else {
-				if(token.Category == Invader.Town)
+				if(token.Class == Invader.Town)
 					AddFear( space, 2, false ); // not actually destroying towns/cities
-				await BringerPushNInvaders( space, 1, token.Category );
+				await BringerPushNInvaders( space, 1, token.Class );
 			}
 		}
 
 		async Task BringerPushNInvaders( Space source, int countToPush
-				, params TokenCategory[] healthyInvaders
+				, params TokenClass[] healthyInvaders
 			) {
 
 			// We can't track which original invader is was killed, so let the user choose.

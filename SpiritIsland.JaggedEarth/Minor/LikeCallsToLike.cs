@@ -15,7 +15,7 @@ namespace SpiritIsland.JaggedEarth {
 			await GatherLike( ctx, TokenType.Beast );
 		}
 
-		static async Task GatherLike( TargetSpaceCtx ctx, TokenCategory tokenTypeOfInterest ) {
+		static async Task GatherLike( TargetSpaceCtx ctx, TokenClass tokenTypeOfInterest ) {
 			if(ctx.Tokens.HasAny( tokenTypeOfInterest ))
 				await ctx.GatherUpTo( 1, tokenTypeOfInterest );
 		}

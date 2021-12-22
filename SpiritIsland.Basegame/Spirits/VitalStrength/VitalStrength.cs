@@ -77,8 +77,8 @@ namespace SpiritIsland.Basegame {
 
 
 		void InitPresence( Board board, GameState gameState ){
-			var higestJungle = board.Spaces.OrderByDescending( s => s.Label ).First( s => s.Terrain == Terrain.Jungle );
-			var higestMountain = board.Spaces.OrderByDescending( s => s.Label ).First( s => s.Terrain == Terrain.Mountain );
+			var higestJungle = board.Spaces.OrderByDescending( s => s.Label ).First( s => s.IsJungle );
+			var higestMountain = board.Spaces.OrderByDescending( s => s.Label ).First( s => s.IsMountain );
 			Presence.PlaceOn( higestMountain, gameState );
 			Presence.PlaceOn( higestMountain, gameState );
 			Presence.PlaceOn( higestJungle, gameState );

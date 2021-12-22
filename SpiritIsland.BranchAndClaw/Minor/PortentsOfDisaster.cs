@@ -15,7 +15,7 @@ namespace SpiritIsland.BranchAndClaw {
 				if( addFear 
 					&& args.Reason.IsDestroy()
 					&& args.Space == ctx.Space 
-					&& args.Token.Category.IsOneOf(Invader.Town,Invader.City,Invader.Explorer) 
+					&& args.Token.Class.IsOneOf(Invader.Town,Invader.City,Invader.Explorer) 
 				){ // !! create an override .IsInvader()
 					ctx.AddFear(1);
 					addFear = false;

@@ -11,7 +11,7 @@ namespace SpiritIsland.Basegame {
 		public override async Task ActivateAsync( SelfCtx ctx ) {
 			List<Space> gatherSpaces = ctx.Self.Presence.Spaces
 				.Where( p => p.IsCoastal )
-				.Select( p => p.Adjacent.Single( o => o.Terrain == Terrain.Ocean ) )
+				.Select( p => p.Adjacent.Single( o => o.IsOcean ) )
 				.Distinct()
 				.ToList();
 

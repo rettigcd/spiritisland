@@ -118,7 +118,7 @@ Shadows Flicker like Flame:
 
 		protected override void InitializeInternal( Board board, GameState gs ) {
 
-			var higestJungle = board.Spaces.Last(s=>s.Terrain==Terrain.Jungle);
+			var higestJungle = board.Spaces.Last( s=>s.IsJungle );
 
 			this.Presence.PlaceOn( higestJungle, gs );
 			this.Presence.PlaceOn( higestJungle, gs );

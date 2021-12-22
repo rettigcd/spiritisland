@@ -38,13 +38,13 @@ namespace SpiritIsland {
 			// ! this has to go first since ManyMinds requires the beast to be in place
 			foreach(var board in Island.Boards) {
 				Tokens[board[2]].Disease.Init(1);
-				var lowest = board.Spaces.Skip(1).First(s=>s.StartUpCounts.Empty);
+				var lowest = board.Spaces.Skip(1).OfType<Space1>().First(s=>s.StartUpCounts.Empty);
 				Tokens[lowest].Beasts.Adjust(1);
 			}
 
 			foreach(var board in Island.Boards)
 				foreach(var space in board.Spaces)
-					space.InitTokens( Tokens[space] );
+					((Space1)space).InitTokens( Tokens[space] );
 
 			// Explore
 			InvaderEngine.Explore( InvaderDeck.Explore[0] ).Wait();
@@ -121,7 +121,7 @@ namespace SpiritIsland {
 						$"Cascade blight from {blightSpace.Label} to",
 						blightSpace,
 						Select.AdjacentDirection.Outgoing,
-						blightSpace.Adjacent.Where( x => terrainMapper.GetTerrain( x ) != Terrain.Ocean ),
+						blightSpace.Adjacent.Where( x => !terrainMapper.IsOneOf( x, Terrain.Ocean ) ),
 						Present.Always
 					) )
 					: null;

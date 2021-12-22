@@ -124,7 +124,7 @@ namespace SpiritIsland {
 			await spaceCtx.RemoveHealthWorthOfInvaders( healthToRemove );
 		}
 
-		public async Task<Space> RemoveTokenFromOneSpace( IEnumerable<Space> spaceOptions, int count, params TokenCategory[] removables ) {
+		public async Task<Space> RemoveTokenFromOneSpace( IEnumerable<Space> spaceOptions, int count, params TokenClass[] removables ) {
 			var spaceCtx = await SelectSpace( "Remove invader from", spaceOptions );
 			if(spaceCtx != null)
 				while(count-->0)
@@ -132,7 +132,7 @@ namespace SpiritIsland {
 			return spaceCtx?.Space;
 		}
 
-		public async Task GatherExplorerToOne( IEnumerable<Space> spaceOptions, int count, params TokenCategory[] typeToGather ) {
+		public async Task GatherExplorerToOne( IEnumerable<Space> spaceOptions, int count, params TokenClass[] typeToGather ) {
 			var spaceCtx = await SelectSpace( "Gather Invader to", spaceOptions );
 			if(spaceCtx != null)
 				await spaceCtx.GatherUpTo(count,typeToGather);

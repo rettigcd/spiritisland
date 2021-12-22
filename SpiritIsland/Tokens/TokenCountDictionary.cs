@@ -50,6 +50,7 @@ namespace SpiritIsland {
 
 		public string Summary { get {
 			return this.Keys
+				.Where(t=>t.Class.Category != TokenCategory.Presence)
 				.OrderBy( k=>k.Summary )
 				.Select( invader => counts[invader] + invader.Summary )
 				.Join( "," );
@@ -118,7 +119,7 @@ namespace SpiritIsland {
 		public async Task MoveTo(Token token, Space destination ) {
 
 			// Remove from source
-			if( token.Category != TokenType.Dahan)
+			if( token.Class != TokenType.Dahan)
 				Adjust( token, -1 );
 			else if( ! (await Dahan.Remove1(token, RemoveReason.MovedFrom)) ) // !!! Moving publishes a Move event, don't publish this Remove event
 				return;

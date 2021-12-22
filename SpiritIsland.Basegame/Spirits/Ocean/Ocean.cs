@@ -82,8 +82,8 @@ namespace SpiritIsland.Basegame {
 		}
 
 		async Task InvadersMoved(GameState gs, TokenMovedArgs args ) {
-			if(args.AddedTo.Terrain!=Terrain.Ocean) return;
-			var grp = args.Token.Category;
+			if( !args.AddedTo.IsOcean ) return;
+			var grp = args.Token.Class;
 
 			if( grp == Invader.City || grp == Invader.Town || grp == Invader.Explorer ) { // Could created an Invader subclass that is easier to test.
 				// Drown Invaders for points

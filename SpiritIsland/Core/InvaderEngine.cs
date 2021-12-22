@@ -69,7 +69,7 @@ namespace SpiritIsland {
 			bool HasTownOrCity( Space space ) { return gs.Tokens[ space ].HasAny(Invader.Town,Invader.City); }
 
 			HashSet<Space> sources = gs.Island.AllSpaces
-				.Where( s => s.Terrain == Terrain.Ocean || HasTownOrCity(s) )
+				.Where( s => s.IsOcean || HasTownOrCity(s) )
 				.ToHashSet();
 
 			List<Space> spacesThatMatchCards = gs.Island.AllSpaces
@@ -110,7 +110,7 @@ namespace SpiritIsland {
 			// Determine type to build
 			int townCount = tokens.Sum( Invader.Town );
 			int cityCount = tokens.Sum( Invader.City );
-			TokenCategory invaderToAdd = townCount > cityCount ? Invader.City : Invader.Town;
+			TokenClass invaderToAdd = townCount > cityCount ? Invader.City : Invader.Town;
 
 			// check if we should
 			bool shouldBuild = buildType switch {
