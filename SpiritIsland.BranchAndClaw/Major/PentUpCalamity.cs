@@ -70,7 +70,7 @@ namespace SpiritIsland.BranchAndClaw {
 			if(tokenToRemove is StrifedInvader invader)
 				ctx.Tokens.AddStrifeTo( invader, -1 );
 			else
-				ctx.Tokens.Remove( tokenToRemove, 1, RemoveReason.Removed );
+				ctx.Tokens.Remove( tokenToRemove, 1 );
 		}
 
 		static Token[] GetRemovableTokens( TargetSpaceCtx ctx ) {

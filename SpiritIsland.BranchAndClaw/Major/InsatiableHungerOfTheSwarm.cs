@@ -27,7 +27,7 @@ namespace SpiritIsland.BranchAndClaw {
 				await ctx.DamageDahan( beasts.Count );
 
 				// Destroy 1 beast.
-				await beasts.Remove(1,RemoveReason.Destroyed);
+				await beasts.Destroy(1);
 			}
 			await ApplyPowerOnTarget( ctx );
 

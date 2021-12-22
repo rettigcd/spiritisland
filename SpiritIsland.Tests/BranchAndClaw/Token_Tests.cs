@@ -11,7 +11,7 @@ namespace SpiritIsland.Tests.BranchAndClaw {
 
 		[Fact]
 		public void Wilds_Stops_Explore() {
-			var gs = new GameState_BranchAndClaw( new Thunderspeaker(), Board.BuildBoardC());
+			var gs = new GameState( new Thunderspeaker(), Board.BuildBoardC());
 
 			// Given: a space with no invaders
 			Space noInvaderSpace = gs.Island.AllSpaces.First(s=>s.Terrain!=Terrain.Ocean && !gs.Tokens[s].HasInvaders());
@@ -33,7 +33,7 @@ namespace SpiritIsland.Tests.BranchAndClaw {
 
 		[Fact]
 		public async Task Disease_Stops_Build() {
-			var gs = new GameState_BranchAndClaw( new Thunderspeaker(), Board.BuildBoardC() );
+			var gs = new GameState( new Thunderspeaker(), Board.BuildBoardC() );
 
 			// Given: a space with ONLY 1 explorer
 			Space space = gs.Island.AllSpaces.First( s => s.Terrain != Terrain.Ocean && !gs.Tokens[s].HasInvaders() ); // 0 invaders

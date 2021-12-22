@@ -15,29 +15,37 @@ namespace SpiritIsland {
 			this.tokenGroup = TokenType.Dahan;
 		}
 
+		// $$$
 		public IEnumerable<Token> Keys => tokens.OfType(tokenGroup);
 
 		public bool Any => Count > 0;
 		public int Count => tokens.Sum(tokenGroup);
 
+		// $$$
 		public int this[int index] => tokens[tokenGroup[index]];
 
 		public static implicit operator int( DahanGroupBinding b ) => b.Count;
 
+		// $$$
 		/// <summary> Adds a Dahan from the bag, or out of thin air. </summary>
 		public Task Add( int count, AddReason reason = AddReason.Added ) {
 			return tokens.Add(TokenType.Dahan.Default,count, reason );
 		}
 
+		// $$$
 		/// <summary> Adds a damaged Dahan from the bag, or out of thin air. </summary>
 		public void InitDamaged( int count ) => tokens.Init( TokenType.Dahan[1], count );
 
+		// $$$
 		public void Init(int count ) => tokens.Init(TokenType.Dahan.Default, count );
 
+		// $$$
 		public void Adjust(Token token, int delta ) => tokens.Adjust(token,delta);
+		// $$$
 		public void Init(Token token, int count ) => tokens.Init(token,count);
 
 
+		// $$$
 		/// <summary> Returns the Token removed </summary>
 		public async Task<Token> Remove1( RemoveReason reason ) {
 			if(Frozen) return null;
@@ -57,6 +65,7 @@ namespace SpiritIsland {
 			return null;
 		}
 
+		// $$$
 		public async Task<bool> Remove1( Token desiredToken, RemoveReason reason ) {
 			if( !Frozen && 0<tokens[desiredToken] ){ 
 				await tokens.Remove(desiredToken,1, reason );

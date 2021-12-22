@@ -56,7 +56,7 @@ namespace SpiritIsland.BranchAndClaw {
 					// Destroy all other tokens
 					var tokens = spaceCtx.Tokens;
 					foreach(var token in tokens.Keys.ToArray())
-						await tokens.Remove( token, tokens[token], RemoveReason.Destroyed );
+						await tokens.Destroy( token, tokens[token] );
 				}
 			}
 		}

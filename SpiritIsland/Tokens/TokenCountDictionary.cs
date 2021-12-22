@@ -102,7 +102,7 @@ namespace SpiritIsland {
 			return tokenApi.Publish_Added( Space, token, count, addReason );
 		}
 
-		public Task Remove( Token token, int count, RemoveReason reason ) {
+		public Task Remove( Token token, int count, RemoveReason reason = RemoveReason.Removed ) {
 			count = System.Math.Min( count, this[token] );
 
 			if(count==0) return Task.CompletedTask;
@@ -112,6 +112,8 @@ namespace SpiritIsland {
 
 			return tokenApi.Publish_Removed( Space, token, count, reason );
 		}
+
+		public Task Destroy( Token token, int count ) => Remove(token,count, RemoveReason.Destroyed);
 
 		public async Task MoveTo(Token token, Space destination ) {
 

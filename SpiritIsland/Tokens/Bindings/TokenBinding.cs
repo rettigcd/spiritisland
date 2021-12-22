@@ -19,7 +19,8 @@ namespace SpiritIsland {
 		public void Adjust( int delta ) => tokens.Adjust(token, delta);
 
 		public Task Add(int count, AddReason reason = AddReason.Added) => tokens.Add(token,count, reason);
-		public virtual Task Remove(int count, RemoveReason reason) => tokens.Remove(token,count,reason);
+		public virtual Task Remove(int count, RemoveReason reason = RemoveReason.Removed) => tokens.Remove(token,count,reason);
+		public Task Destroy(int count) => Remove(count,RemoveReason.Destroyed);
 
 		public static implicit operator int( TokenBinding b ) => b.Count;
 

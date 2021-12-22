@@ -26,7 +26,7 @@ namespace SpiritIsland.BranchAndClaw {
 		}
 
 		private static Task ReplaceExplorerWithBeast( TargetSpaceCtx ctx ) {
-			ctx.Tokens.Remove(Invader.Explorer.Default,1,RemoveReason.Replaced);
+			ctx.Invaders.Remove(Invader.Explorer.Default,1,RemoveReason.Replaced);
 			return ctx.Beasts.Add(1,AddReason.AsReplacement);
 		}
 	}

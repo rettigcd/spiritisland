@@ -33,7 +33,14 @@ namespace SpiritIsland {
 		}
 
 
-		public virtual void Initialize() {
+		public void Initialize() {
+
+			// ! this has to go first since ManyMinds requires the beast to be in place
+			foreach(var board in Island.Boards) {
+				Tokens[board[2]].Disease.Init(1);
+				var lowest = board.Spaces.Skip(1).First(s=>s.StartUpCounts.Empty);
+				Tokens[lowest].Beasts.Adjust(1);
+			}
 
 			foreach(var board in Island.Boards)
 				foreach(var space in board.Spaces)
@@ -301,7 +308,7 @@ namespace SpiritIsland {
 		public DualAsyncEvent<BuildingEventArgs> PreBuilding   = new DualAsyncEvent<BuildingEventArgs>();	// A Spread of Rampant Green - While game - stop build
 		public DualAsyncEvent<ExploreEventArgs>  PreExplore    = new DualAsyncEvent<ExploreEventArgs>();
 		public DualAsyncEvent<InvadersRavaged> InvadersRavaged = new DualAsyncEvent<InvadersRavaged>();
-		public DualAsyncEvent<LandDamagedArgs> LandDamaged = new DualAsyncEvent<LandDamagedArgs>();
+		public DualAsyncEvent<LandDamagedArgs> LandDamaged = new DualAsyncEvent<LandDamagedArgs>();         // Let Them Break Themselves Against the Stone
 
 		public event Action<GameState> TimePasses_WholeGame;                                            // Spirit cleanup
 		public Stack<Func<GameState, Task>> TimePasses_ThisRound = new Stack<Func<GameState, Task>>(); // This must be Push / Pop

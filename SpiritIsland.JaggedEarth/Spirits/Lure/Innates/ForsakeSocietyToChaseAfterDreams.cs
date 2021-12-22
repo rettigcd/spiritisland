@@ -26,18 +26,18 @@ namespace SpiritIsland.JaggedEarth {
 			return Dissolve(ctx,Invader.City,Invader.Town,Invader.Explorer);
 		}
 
-		static async Task Dissolve(TargetSpaceCtx ctx, params TokenCategory[] groups) {
-			var decision = Select.Invader.ToDowngrade("dissolve", ctx.Space, ctx.Tokens.OfAnyType( groups ) );
-			var token = await ctx.Decision( decision );
-			if(token == null) return;
+		static async Task Dissolve(TargetSpaceCtx ctx, params TokenCategory[] invaderCats) {
+			var decision = Select.Invader.ToDowngrade("dissolve", ctx.Space, ctx.Tokens.OfAnyType( invaderCats ) );
+			var invader = await ctx.Decision( decision );
+			if(invader == null) return;
 
-			if(token != Invader.Explorer.Default) {
-				await ctx.Tokens.Remove(token,1,RemoveReason.Replaced);
-				await ctx.Tokens.Add(Invader.Explorer.Default,token.Health, AddReason.AsReplacement);
+			if(invader != Invader.Explorer.Default) {
+				await ctx.Invaders.Remove(invader,1,RemoveReason.Replaced);
+				await ctx.Tokens.Add(Invader.Explorer.Default,invader.Health, AddReason.AsReplacement);
 			}
 
 			await ctx.Pusher
-				.AddGroup( token.Health, Invader.Explorer )
+				.AddGroup( invader.Health, Invader.Explorer )
 				.FilterDestinations( ctx.Self.Presence.IsOn )
 				.MoveUpToN();
 		}

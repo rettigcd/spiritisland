@@ -45,7 +45,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 		static async Task DestroyDahanAndBeasts( TargetSpaceCtx ctx ) {
 			await ctx.DestroyDahan( int.MaxValue );
-			await ctx.Beasts.Remove( ctx.Beasts.Count, RemoveReason.Destroyed );
+			await ctx.Beasts.Destroy( ctx.Beasts.Count );
 		}
 	}
 

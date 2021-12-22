@@ -23,52 +23,70 @@ namespace SpiritIsland {
 
 		#endregion
 
-		InvadersRavaged tracking;
+		InvadersRavaged @event;
 
 		public async Task<InvadersRavaged> Exec() {
 			if(!Tokens.HasInvaders()) return null;
+			RecordStartingState();
+			await RavageSequence();
+			return @event;
+		}
 
-			tracking = new InvadersRavaged{ 
+		void RecordStartingState() {
+			@event = new InvadersRavaged {
 				Space = grp.Space,
 				startingInvaders = grp.Tokens.InvaderSummary,
 				startingDahan = grp.Tokens.Dahan.Count,
 			};
-
-			await (cfg.RavageSequence ?? DefaultRavageSequence)(this);
-
-			return tracking;
 		}
 
-		static async Task DefaultRavageSequence( RavageEngine eng ) {
-			int damageInflictedFromInvaders = eng.GetDamageInflictedByInvaders();
-			await eng.DamageDahan( damageInflictedFromInvaders );
-			int damageFromDahan = eng.GetDamageInflictedByDahan();
-			await eng.DamageInvaders( damageFromDahan );
+		async Task RavageSequence() {
+			if(cfg.RavageSequence != null) { await cfg.RavageSequence(this); return; }
+
+			// Default Ravage Sequence
+			int damageInflictedByAttackers = GetDamageInflictedByAttackers();
+			await DamageDefenders( damageInflictedByAttackers );
+			int damageFromDefenders = GetDamageInflictedByDefenders();
+			await DamageAttackers( damageFromDefenders );
+
 			// worry about this last - why?, just because
-			await eng.DamageLand( damageInflictedFromInvaders );
+			await DamageLand( damageInflictedByAttackers );
 		}
 
-		public int GetDamageInflictedByDahan() => grp.Tokens.Dahan.Count * 2;
+		#region Selecting the Attacker / Defender groups
 
-		public int GetDamageInflictedByInvaders() {
+		CountDictionary<Token> AttackerCounts() => GetParticipantCounts( cfg.IsAttacker ?? IsInvader );
 
-			var participatingInvaders = CalcParticipatingInvaders();
+		CountDictionary<Token> DefenderCounts() => GetParticipantCounts( cfg.IsDefender ?? IsDahan );
+		static bool IsInvader(Token token) => token.Category.IsInvader;
+		static bool IsDahan(Token token) => token.Category == TokenType.Dahan;
 
-			int damageFromInvaders = RawDamageFromParticipatingInvaders( participatingInvaders );
+		CountDictionary<Token> GetParticipantCounts( Func<Token,bool> filter ) {
+			var participants = new CountDictionary<Token>();
+			foreach(var token in Tokens.Keys.Where(filter))
+				participants[token] = Math.Max( 0, Tokens[token] - cfg.NotParticipating[token] );
+			return participants;
+		}
 
-			FromEachStrifed_RemoveOneStrife( participatingInvaders );
+		#endregion
+
+		public int GetDamageInflictedByAttackers() {
+
+			CountDictionary<Token> participatingAttackers = AttackerCounts();
+
+			int rawDamageFromAttackers = RawDamageFromParticipatingAttackers( participatingAttackers );
+
+			FromEachStrifed_RemoveOneStrife( participatingAttackers );
 
 			// Defend
-			int damageInflictedFromInvaders = Math.Max( damageFromInvaders - Tokens.Defend.Count, 0 );
+			int damageInflictedFromAttackers = Math.Max( rawDamageFromAttackers - Tokens.Defend.Count, 0 );
 
-			return damageInflictedFromInvaders;
+			return damageInflictedFromAttackers;
 		}
 
-		public CountDictionary<Token> CalcParticipatingInvaders() { 
-			var participants = new CountDictionary<Token>();
-			foreach(var token in Tokens.Invaders())
-				participants[token] = Math.Max(0,Tokens[token] - cfg.NotParticipating[token]);
-			return participants;
+		public int GetDamageInflictedByDefenders() {
+			CountDictionary<Token> participants = DefenderCounts();
+			return participants.Sum( pair => pair.Key.FullHealth * pair.Value );
 		}
 
 		public async Task DamageLand( int damageInflictedFromInvaders ) {
@@ -77,8 +95,8 @@ namespace SpiritIsland {
 		}
 
 		/// <returns># of dahan killed/destroyed</returns>
-		public async Task DamageDahan( int dahanDamageFromInvaders ) {
-			tracking.dahanDamageFromInvaders = dahanDamageFromInvaders;
+		public async Task DamageDefenders( int dahanDamageFromInvaders ) {
+			@event.dahanDamageFromInvaders = dahanDamageFromInvaders;
 			if(dahanDamageFromInvaders == 0 || !cfg.ShouldDamageDahan) return;
 
 			int dahanDamageTotal = dahanDamageFromInvaders
@@ -88,12 +106,12 @@ namespace SpiritIsland {
 
 			// destroy dahan
 			var dahan = grp.Tokens.Dahan;
-			tracking.startingDahan = dahan.Count;
-			tracking.dahanDestroyed = Math.Min( dahanDamageTotal / cfg.DahanHitpoints, tracking.startingDahan ); // rounding down, !!! if some of the dahan have previously taken damage, this # will be wrong
-			if(tracking.dahanDestroyed != 0)
-				await cfg.DestroyDahan( dahan, tracking.dahanDestroyed, 2 );
+			@event.startingDahan = dahan.Count;
+			@event.dahanDestroyed = Math.Min( dahanDamageTotal / cfg.DahanHitpoints, @event.startingDahan ); // rounding down, !!! if some of the dahan have previously taken damage, this # will be wrong
+			if(@event.dahanDestroyed != 0)
+				await cfg.DestroyDahan( dahan, @event.dahanDestroyed, 2 );
 
-			int leftOverDamage = dahanDamageTotal - tracking.dahanDestroyed * cfg.DahanHitpoints;
+			int leftOverDamage = dahanDamageTotal - @event.dahanDestroyed * cfg.DahanHitpoints;
 			bool convert1To1HitPoint = leftOverDamage == cfg.DahanHitpoints - 1;
 			if(convert1To1HitPoint && dahan.Any)
 				await dahan.ApplyDamage(1,Cause.Invaders);
@@ -101,31 +119,31 @@ namespace SpiritIsland {
 		}
 
 		/// <returns>(city-dead,town-dead,explorer-dead)</returns>
-		public async Task DamageInvaders( int damageFromDahan ) {
-			tracking.damageFromDahan = damageFromDahan;
+		public async Task DamageAttackers( int damageFromDahan ) {
+			@event.damageFromDahan = damageFromDahan;
 			if(damageFromDahan == 0) return;
 
 			int remainingDamageToApply = damageFromDahan
 				+ BadLandsCount;
 
-			var participatingInvaders = CalcParticipatingInvaders();
+			var participatingInvaders = AttackerCounts();
 			while(remainingDamageToApply > 0 && participatingInvaders.Any()) {
 				Token invadertodamage = PickSmartInvaderToDamage( participatingInvaders, remainingDamageToApply );
 				var (damageInflicted,_) = await grp.ApplyDamageTo1( remainingDamageToApply, invadertodamage, true );
 				remainingDamageToApply -= damageInflicted;
 				// update participants
-				participatingInvaders = CalcParticipatingInvaders();
+				participatingInvaders = AttackerCounts();
 			}
-			tracking.endingInvaders = grp.Tokens.InvaderSummary;
+			@event.endingInvaders = grp.Tokens.InvaderSummary;
 		}
 
 		#region private
 
-		int RawDamageFromParticipatingInvaders( CountDictionary<Token> participatingInvaders ) {
+		int RawDamageFromParticipatingAttackers( CountDictionary<Token> participatingAttacker ) {
 
-			return participatingInvaders.Keys
+			return participatingAttacker.Keys
 				.Where( x => x is not StrifedInvader )
-				.Select( invader => cfg.DamageFromInvader( invader ) * participatingInvaders[invader] ).Sum();
+				.Select( attacker => cfg.DamageFromAttacker( attacker ) * participatingAttacker[attacker] ).Sum();
 		}
 
 

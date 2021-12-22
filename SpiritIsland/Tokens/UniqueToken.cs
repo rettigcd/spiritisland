@@ -37,6 +37,8 @@ namespace SpiritIsland {
 
 		public string Label { get; }
 
+		public bool IsInvader => false;
+
 		// ------  Being TokenGroup HEALTH properties
 		void TokenCategory.ExtendHealthRange( int newMaxHealth ) => throw new System.NotImplementedException();
 		// ------  End TokenGroup HEALTH properties

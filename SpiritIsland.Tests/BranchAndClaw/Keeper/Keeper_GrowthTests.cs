@@ -17,10 +17,10 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			};
 		}
 
-		readonly GameState_BranchAndClaw gsbac;
+		readonly GameState gsbac;
 
 		public Keeper_GrowthTests() : base( InitSpirit() ) {
-			gsbac = new GameState_BranchAndClaw( spirit, board );
+			gsbac = new GameState( spirit, board );
 			gameState = gsbac;
 		}
 

@@ -140,7 +140,7 @@ namespace SpiritIsland.Tests.BranchAndClaw {
 
 		[Fact]
 		public async Task Strife_Stops_Ravage() {
-			var gs = new GameState_BranchAndClaw( new Thunderspeaker(), Board.BuildBoardC() );
+			var gs = new GameState( new Thunderspeaker(), Board.BuildBoardC() );
 			Space space = gs.Island.AllSpaces
 				.First( s => s.Terrain != Terrain.Ocean
 					&& !gs.Tokens[s].HasInvaders() // 0 invaders

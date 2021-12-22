@@ -65,7 +65,7 @@ namespace SpiritIsland.PromoPack1 {
 
 			// Destory all invaders and Beasts
 			var beasts = spaceCtx.Beasts;
-			await beasts.Remove(beasts.Count, RemoveReason.Destroyed);
+			await beasts.Destroy( beasts.Count );
 			await spaceCtx.Invaders.DestroyAny(int.MaxValue,Invader.Explorer,Invader.Town,Invader.City);
 
 			// Add 1 blight

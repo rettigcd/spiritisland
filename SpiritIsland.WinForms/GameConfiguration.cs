@@ -52,9 +52,7 @@ namespace SpiritIsland.WinForms {
 
 
 			// GameState
-			var gameState = !gameSettings.UseBranchAndClaw
-				? new GameState( spirit, board )
-				: new GameState_BranchAndClaw( spirit, board );
+			var gameState = new GameState( spirit, board );
 
 			// Game # - Randomizers
 			var randomizer = new Random( gameSettings.ShuffleNumber );

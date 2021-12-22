@@ -28,6 +28,21 @@ namespace SpiritIsland {
 			[Target.TownCityOrBlight  ] = ctx => ctx.HasBlight || ctx.Tokens.HasAny( Invader.City, Invader.Town ),
 			[Target.TownOrExplorer    ] = ctx => ctx.Tokens.HasAny( Invader.Explorer, Invader.Town ),  // Wash Away helper
 			[Target.TownOrCity        ] = ctx => ctx.Tokens.HasAny( Invader.City, Invader.Town ),  // Study the Invaders' Fears
+
+			// Register new filters needed for Branch and Claw
+			[Target.Beast             ] = ctx => ctx.Beasts.Any,
+			[Target.BeastOrJungle     ] = ctx => ctx.Terrain == Terrain.Jungle || ctx.Beasts.Any,
+			[Target.PresenceOrWilds   ] = ctx => ctx.IsPresent || ctx.Wilds > 0,
+			[Target.CoastalOrWetlands ] = ctx => ctx.Terrain == Terrain.Wetland || ctx.IsCoastal,
+			[Target.City              ] = ctx => ctx.Tokens.Has(Invader.City),
+
+			// Jagged Earth
+			[Target.TwoBeasts         ] = ctx => ctx.Beasts.Count>=2,
+			[Target.MountainOrPresence] = ctx => ctx.Terrain == Terrain.Mountain || ctx.HasSelfPresence,
+
+			// Don't use TerrainMapper, Inland should ignore terrain modifications (I think)
+			[Target.Inland            ] = ctx => ctx.Space.Terrain != Terrain.Ocean && !ctx.Space.IsCoastal,
+
 		};
 
 		/// <remarks>Can NOT call this from Cards Static constructor because it is not invoked until AFTER the attribute is evaluated</remarks>

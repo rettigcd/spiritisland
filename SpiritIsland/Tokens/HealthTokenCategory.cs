@@ -27,12 +27,10 @@ namespace SpiritIsland {
 		public Token this[int i] => seq[i];
 		Token[] seq;
 
-		public HealthTokenCategory( string label, int fullHealth, params Img[] imgs )
-			: this( label, fullHealth, label[0], imgs ) { }
-
-		public HealthTokenCategory( string label, int fullHealth, char initial, params Img[] imgs ) {
+		public HealthTokenCategory( string label, int fullHealth, bool isInvader, params Img[] imgs ) {
 			Label = label;
-			Initial = initial;
+			Initial = label[0];
+			IsInvader = isInvader;
 
 			// Build different health level Sequence
 			seq = BuildHealthSequence( this, fullHealth, imgs );
@@ -48,6 +46,7 @@ namespace SpiritIsland {
 
 		public Token Default { get; }
 
+		public bool IsInvader { get; }
 	}
 
 

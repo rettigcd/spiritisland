@@ -13,6 +13,7 @@ namespace SpiritIsland {
 
 		Token this[int i] { get; }
 
+		bool IsInvader {  get; }
 	}
 
 }

@@ -21,12 +21,12 @@ namespace SpiritIsland.Basegame {
 		}
 
 		static async Task SimultaneousDamage( RavageEngine eng ) {
-			int damageFromInvaders = eng.GetDamageInflictedByInvaders();
-			int damageFromDahan = eng.GetDamageInflictedByDahan();
+			int damageFromInvaders = eng.GetDamageInflictedByAttackers();
+			int damageFromDahan = eng.GetDamageInflictedByDefenders();
 
 			await eng.DamageLand( damageFromInvaders );
-			await eng.DamageDahan( damageFromInvaders );
-			await eng.DamageInvaders( damageFromDahan );
+			await eng.DamageDefenders( damageFromInvaders );
+			await eng.DamageAttackers( damageFromDahan );
 		}
 
 	}
