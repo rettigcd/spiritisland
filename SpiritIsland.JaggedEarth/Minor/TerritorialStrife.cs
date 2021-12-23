@@ -6,7 +6,7 @@ namespace SpiritIsland.JaggedEarth {
 		static public Task ActAsync(TargetSpaceCtx ctx){
 			return ctx.SelectActionOption( 
 				Cmd.DamageToTownOrExplorer(3),
-				Cmd.Add1Strife
+				Cmd.AddStrife(1)
 			);
 		}
 	}

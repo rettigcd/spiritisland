@@ -19,6 +19,49 @@ namespace SpiritIsland {
 
 		public IEnumerable<SelfCtx> Spirits => this.GameState.Spirits.Select(s=>new SelfCtx(s,GameState,Cause.Fear));
 
+		public IEnumerable<BoardCtx> BoardCtxs { get {
+			int i = 0;
+			foreach(var spirit in Spirits)
+				yield return new BoardCtx( spirit.Self, GameState, GameState.Island.Boards[i++] );
+		}}
+
+		public async Task OnEachBoard( ActionOption<BoardCtx> action ) {
+			foreach(var boardCtx in BoardCtxs)
+				await action.Execute(boardCtx);
+		}
+
+		public async Task EachPlayerTakesActionInALand( SpaceAction action, Func<TargetSpaceCtx,bool> filter, bool differentLands = false ) {
+			var used = new List<Space>();
+			foreach(var spiritCtx in Spirits) {
+				var spaceOptions = GameState.Island.AllSpaces
+					.Where(s=>filter(spiritCtx.Target(s)))
+					.Except(used)
+					.ToArray();
+				var spaceCtx = await spiritCtx.SelectSpace( action.Description, spaceOptions );
+				if(spaceCtx == null) continue;
+				if(differentLands)
+					used.Add( spaceCtx.Space );
+				await action.Execute(spaceCtx);
+			}
+		}
+
+		public async Task InEachLand( SpaceAction action, Func<Space,bool> filter ) {
+			foreach(var spiritCtx in Spirits) {
+				var spaceOptions = GameState.Island.AllSpaces
+					.Where( filter )
+					.ToArray();
+				var spaceCtx = await spiritCtx.SelectSpace( action.Description, spaceOptions );
+				if(spaceCtx == null) continue;
+				await action.Execute(spaceCtx);
+			}
+		}
+
+
+		public async Task EachSpiritTakesAction( SelfAction action ) {
+			foreach(var spiritCtx in Spirits)
+				await action.Execute( spiritCtx );
+		}
+
 		public InvaderBinding InvadersOn(Space space) => GameState.Invaders.On( space );
 
 		#region Lands

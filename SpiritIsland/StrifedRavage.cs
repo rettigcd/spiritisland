@@ -5,6 +5,8 @@ namespace SpiritIsland {
 
 	public static class StrifedRavage {
 
+		static public SpaceAction Cmd => new SpaceAction("Strifed invaders deal damage to other invaders.", StrifedInvadersDamageUnstrifed);
+
 		public static async Task StrifedInvadersDamageUnstrifed( TargetSpaceCtx ctx ) {
 			// Each invader with strife deals damage to other invaders in target land
 			int damageFromStrifedInvaders = DamageFromStrifedInvaders( ctx.Tokens );

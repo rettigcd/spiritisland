@@ -65,9 +65,11 @@ namespace SpiritIsland.WinForms {
 
 			// --- start FEAR ---
 			List<IFearOptions> fearCards = new List<IFearOptions>();
-			fearCards.AddRange( SpiritIsland.Basegame.FearCards.GetFearCards() );
-			if(gameSettings.UseBranchAndClaw)
-				fearCards.AddRange( SpiritIsland.BranchAndClaw.FearCards.GetFearCards() );
+			fearCards.AddRange( Basegame.FearCards.GetFearCards() );
+			if(gameSettings.UseBranchAndClaw) {
+				fearCards.AddRange( BranchAndClaw.FearCards.GetFearCards() );
+				fearCards.AddRange( JaggedEarth.FearCards.GetFearCards() );
+			}
 
 			// Shuffle Fear cards
 			randomizer.Shuffle( fearCards );

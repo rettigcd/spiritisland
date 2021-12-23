@@ -6,7 +6,7 @@ namespace SpiritIsland.JaggedEarth {
 		static public async Task ActAsync(TargetSpaceCtx ctx){
 			switch(ctx.GameState.Fear.TerrorLevel){
 				case 1: ctx.AddFear(3); break;
-				case 2: await ctx.SelectActionOption(Cmd.AddFear(2),Cmd.Add1Strife); break;
+				case 2: await ctx.SelectActionOption(Cmd.AddFear(2),Cmd.AddStrife(1)); break;
 				case 3: await ctx.AddStrife(); break;
 			}
 		}

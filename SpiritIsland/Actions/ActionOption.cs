@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 
@@ -8,9 +9,6 @@ namespace SpiritIsland {
 		bool IsApplicable(CTX ctx);
 		string Description { get; }
 		Task Execute(CTX ctx);
-
-//		IExecuteOn<CTX> If( bool condition );
-//		IExecuteOn<CTX> If( Predicate<T> predicate );
 	}
 
 	public class ActionOption<T> : IExecuteOn<T> {
@@ -54,15 +52,18 @@ namespace SpiritIsland {
 		: ActionOption<SelfCtx> 
 		, IExecuteOn<TargetSpiritCtx>
 		, IExecuteOn<TargetSpaceCtx>
+		, IExecuteOn<BoardCtx>
 	{
 		public SelfAction( string description, Func<SelfCtx, Task> action ) : base( description, action ) { }
 		public SelfAction( string description, Action<SelfCtx> action ) : base( description, action ) { }
 
 		Task IExecuteOn<TargetSpiritCtx>.Execute( TargetSpiritCtx ctx ) => this.Execute( ctx );
 		Task IExecuteOn<TargetSpaceCtx>.Execute( TargetSpaceCtx ctx ) => this.Execute( ctx );
+		Task IExecuteOn<BoardCtx>.Execute( BoardCtx ctx ) => this.Execute( ctx );
 
 		bool IExecuteOn<TargetSpiritCtx>.IsApplicable( TargetSpiritCtx ctx ) => this.IsApplicable( ctx );
 		bool IExecuteOn<TargetSpaceCtx>.IsApplicable( TargetSpaceCtx ctx ) => this.IsApplicable( ctx );
+		bool IExecuteOn<BoardCtx>.IsApplicable( BoardCtx ctx ) => this.IsApplicable( ctx );
 
 		// - new -
 		public new SelfAction Cond(bool condition ) => (SelfAction)base.Cond( condition );
@@ -76,6 +77,14 @@ namespace SpiritIsland {
 		// - new -
 		public new SpaceAction Cond(bool condition ) => (SpaceAction)base.Cond( condition );
 		public new SpaceAction Cond(Predicate<TargetSpaceCtx> predicate ) => (SpaceAction)base.Cond( predicate );
+	}
+
+	public class PickSpaceAction : ActionOption<TargetSpaceCtx> {
+		public PickSpaceAction( params ActionOption<TargetSpaceCtx>[] actions ) 
+			: base( "Select action:" + actions.Select(a=>a.Description).Join(", "), 
+				  ctx => ctx.SelectActionOption( actions ) 
+			) {
+		}
 	}
 
 	public class OtherAction : ActionOption<TargetSpiritCtx> {

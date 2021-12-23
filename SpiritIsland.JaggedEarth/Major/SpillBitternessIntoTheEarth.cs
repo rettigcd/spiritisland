@@ -46,7 +46,7 @@ namespace SpiritIsland.JaggedEarth {
 		}
 
 		static Task AddStrifeOrBadland( TargetSpaceCtx ctx, int badLandCount )
-			=> ctx.SelectActionOption( Cmd.Add1Strife, Cmd.AddBadlands(badLandCount) );
+			=> ctx.SelectActionOption( Cmd.AddStrife(1), Cmd.AddBadlands(badLandCount) );
 	}
 
 

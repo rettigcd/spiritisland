@@ -14,6 +14,12 @@ namespace SpiritIsland {
 		static public bool HasInvaders( this TokenCountDictionary counts )
 			=> counts.Invaders().Any();
 
+		static public bool HasStrife( this TokenCountDictionary counts )
+			=> counts.Keys.OfType<StrifedInvader>().Any();
+
+		static public int CountStrife( this TokenCountDictionary counts )
+			=> counts.Keys.OfType<StrifedInvader>().Sum(t=>counts[t]);
+
 		static public int TownsAndCitiesCount( this TokenCountDictionary counts ) => counts.SumAny( Invader.Town, Invader.City );
 
 		static public int InvaderTotal( this TokenCountDictionary counts ) => counts.Invaders().Sum(i=>counts[i]);

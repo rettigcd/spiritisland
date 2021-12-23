@@ -1,13 +1,13 @@
 ﻿using System.Linq;
 
-namespace SpiritIsland.BranchAndClaw {
+namespace SpiritIsland.JaggedEarth {
 
 	public class FearCards {
 
 		public static IFearOptions[] GetFearCards() {
 
 			return typeof(FearCards).Assembly.GetTypes()
-				.Where( t => t.IsAssignableTo(typeof(DahanAttack) ) )
+				.Where( t => t.IsAssignableTo(typeof(BesetByManyTroubles) ) )
 				.Select( t => (IFearOptions)System.Activator.CreateInstance(t) )
 				.ToArray();
 

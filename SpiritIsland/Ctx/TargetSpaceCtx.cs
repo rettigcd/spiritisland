@@ -29,10 +29,6 @@ namespace SpiritIsland {
 
 		public TargetSpaceCtx Target(Spirit spirit) => new TargetSpaceCtx( this, spirit );
 
-		//public override Task Execute( ActionOption actionOption ) {
-		//	return actionOption.Execute(this);
-		//}
-
 		public Task SelectActionOption( params IExecuteOn<TargetSpaceCtx>[] options ) => SelectActionOption( "Select Power Option", options );
 		public Task SelectActionOption( string prompt, params IExecuteOn<TargetSpaceCtx>[] options )=> SelectAction_Inner( prompt, options, Present.AutoSelectSingle, this );
 		public Task SelectAction_Optional( string prompt, params IExecuteOn<TargetSpaceCtx>[] options )=> SelectAction_Inner( prompt, options, Present.Done, this );
@@ -135,6 +131,9 @@ namespace SpiritIsland {
 
 		public Task Gather( int countToGather, params TokenClass[] groups )
 			=> Gatherer.AddGroup(countToGather,groups).GatherN();
+
+		public virtual Task RemoveUpTo( int countToGather, params TokenClass[] groups )
+			=> Gatherer.AddGroup(countToGather, groups).GatherUpToN(); // !!!!!!!!!!!!!
 
 
 		public TokenGatherer Gatherer => Self.GatherFactory( this );
