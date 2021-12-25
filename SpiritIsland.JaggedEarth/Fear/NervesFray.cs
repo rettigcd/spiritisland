@@ -10,18 +10,18 @@ namespace SpiritIsland.JaggedEarth {
 
 		[FearLevel(1, "Each player adds 1 Strife in a land not matching a Ravage Card." )]
 		public Task Level1( FearCtx ctx ) {
-			return ctx.EachPlayerTakesActionInALand( Cmd.AddStrife(1), NotMatchingRavageCard(ctx) );
+			return GameCmd.EachPlayerTakesActionInALand( Cmd.AddStrife(1), NotMatchingRavageCard(ctx), Cause.Fear ).Execute( ctx.GameState );
 		}
 
 		[FearLevel(2, "Each player adds 2 Strife in a single land not matching a Ravage Card." )]
 		public Task Level2( FearCtx ctx ) { 
-			return ctx.EachPlayerTakesActionInALand( Cmd.AddStrife(2), NotMatchingRavageCard(ctx) );
+			return GameCmd.EachPlayerTakesActionInALand( Cmd.AddStrife(2), NotMatchingRavageCard(ctx), Cause.Fear ).Execute( ctx.GameState );
 		}
 
 		[FearLevel(3, "Each player adds 2 Strife in a single land not matching a Ravage Card. 1 Fear per player." )]
 		public async Task Level3( FearCtx ctx ) { 
 
-			await ctx.EachPlayerTakesActionInALand( Cmd.AddStrife(2), NotMatchingRavageCard(ctx) );
+			await GameCmd.EachPlayerTakesActionInALand( Cmd.AddStrife(2), NotMatchingRavageCard(ctx), Cause.Fear ).Execute(ctx.GameState);
 
 			// 1 Fear per player.
 			ctx.GameState.Fear.AddDirect(new FearArgs { count = ctx.GameState.Spirits.Length });

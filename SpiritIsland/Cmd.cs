@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -26,21 +26,28 @@ namespace SpiritIsland {
 		static public SpaceAction PushUpToNTowns( int count ) => new SpaceAction( $"Push up to {count} Towns", ctx=>ctx.PushUpTo(count,Invader.Town));
 		static public SpaceAction PushExplorersOrTowns( int count ) => new SpaceAction( $"Push {count} explorers or towns", ctx => ctx.Push( count, Invader.Town, Invader.Explorer ) ).Cond( ctx=>ctx.Tokens.HasAny( Invader.Explorer, Invader.Town ) );
 
-		// - Add / Remove Tokens Counts -
-		static public SpaceAction RemoveBlight => new SpaceAction("Remove 1 blight", ctx => ctx.RemoveBlight() );
-
+		// -- Add ---
+		static public SpaceAction AddTown( int count ) => new SpaceAction( $"Add {count} Towns", ctx => ctx.Tokens.Add(Invader.Town.Default, count ) );
+		static public SpaceAction AddCity( int count ) => new SpaceAction( $"Add {count} Cities", ctx => ctx.Tokens.Add(Invader.City.Default, count ) );
+		static public SpaceAction AddBlight => new SpaceAction("Add 1 blight", ctx => ctx.AddBlight() );
 		static public SpaceAction AddWilds( int count ) => new SpaceAction($"Add {count} Wilds.", ctx => ctx.Wilds.Add(count) );
-
 		static public SpaceAction AddBadlands( int badLandCount ) => new SpaceAction( $"Add {badLandCount} badlands", ctx => ctx.Badlands.Add( badLandCount ) );
-
 		static public SpaceAction AddStrife(int count) => count == 1
 			? new SpaceAction( "Add 1 Strife.",  ctx => ctx.AddStrife() )
 			: new SpaceAction( $"Add {count} Strife.",  async ctx => { for(int i=0;i<count;++i) await ctx.AddStrife(); } );
-		static public SpaceAction Defend1PerDahan => new SpaceAction("Defend 1 per Dahan.", ctx => ctx.Defend(ctx.Dahan.Count));
+
+		// -- Remove --
+		static public SpaceAction RemoveBlight => new SpaceAction("Remove 1 blight", ctx => ctx.RemoveBlight() );
 		static public SpaceAction RemoveExplorers(int count) => new SpaceAction($"Remove {count} Explorers", ctx=>ctx.RemoveUpTo(count,Invader.Explorer));
 		static public SpaceAction RemoveExplorersOrTowns(int count) => new SpaceAction($"Remove {count} Explorers/Towns", ctx=>ctx.RemoveUpTo(count,Invader.Explorer,Invader.Town));
+		static public SpaceAction RemoveTowns(int count) => new SpaceAction($"Remove {count} Towns", ctx=>ctx.RemoveUpTo(count,Invader.Town));
 		static public SpaceAction RemoveCities(int count) => new SpaceAction($"Remove {count} Cities", ctx=>ctx.RemoveUpTo(count,Invader.City));
 		static public SpaceAction RemoveInvaders(int count) => new SpaceAction($"Remove {count} Invaders", ctx=>ctx.RemoveUpTo(count,Invader.Explorer,Invader.Town,Invader.City));
+
+		// -- Destroy --
+		static public SpaceAction DestoryBeast(int count) => new SpaceAction($"Destory {count} Beast", ctx=>ctx.Beasts.Destroy(count));
+
+		static public SpaceAction Defend1PerDahan => new SpaceAction("Defend 1 per Dahan.", ctx => ctx.Defend(ctx.Dahan.Count));
 
 		// -- Damage --
 		static public SpaceAction DamageToTownOrExplorer(int damage) => new SpaceAction($"{damage} damage to Explorer or Town", ctx => ExplorerTownsTakeDamage(ctx,damage) );
@@ -53,15 +60,35 @@ namespace SpiritIsland {
 		// -- Fear --
 		static public SpaceAction AddFear(int count) => new SpaceAction($"Add {count} Fear.", ctx => ctx.AddFear(count) );
 
-		static public ActionOption<BoardCtx> OnBoardPickSpaceThenTakeAction(string description, SpaceAction spaceAction,Func<Space,bool> spaceFilter)
-			=> new ActionOption<BoardCtx>(description, async ctx => {
-				var spaceOptions = ctx.Board.Spaces.Where( spaceFilter ).ToArray();
-				if(spaceOptions.Length == 0 ) return;
+		// AND / OR
+		static public ActionOption<T> Multiple<T>( params ActionOption<T>[] actions) => new ActionOption<T>(
+			actions.Select(a=>a.Description).Join("  "),
+			async ctx => {
+				foreach( var action in actions )
+					await action.Execute(ctx);
+			}
+		);
 
-				var spaceCtx = await ctx.SelectSpace("Select space to " + spaceAction.Description, spaceOptions);
-				await spaceAction.Execute(spaceCtx);
-			});
+		static public ActionOption<T> Pick1<T>( params ActionOption<T>[] actions ) where T : SelfCtx
+			=> new ActionOption<T>(
+				actions.Select(a=>a.Description).Join_WithLast(", ", " OR "),
+				async ctx => {
 
+					IExecuteOn<T>[] applicable = actions.Where( opt => opt != null && opt.IsApplicable(ctx) ).ToArray();
+					string text = await ctx.Self.SelectText( "Select action", applicable.Select( a => a.Description ).ToArray(), Present.Always );
+					if(text != null && text != TextOption.Done.Text) {
+						var selectedOption = applicable.Single( a => a.Description == text );
+						await selectedOption.Execute( ctx );
+					}
+				}
+			);
+
+	}
+
+	// Mix ins we could put in a different namespace that we only get when included
+	static public class GameStateExtensions {
+		static public IEnumerable<SelfCtx> SpiritCtxs(this GameState gs, Cause cause) 
+			=> gs.Spirits.Select(s=>new SelfCtx(s,gs,cause));
 	}
 
 }

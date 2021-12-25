@@ -27,6 +27,8 @@ namespace SpiritIsland {
 
 		public bool IsCoastal { get; set; }
 
+		public bool IsInland => !IsOcean && !IsCoastal;
+
 		public IEnumerable<Space> Adjacent => adjacents;
 
 		public string Text => Label;

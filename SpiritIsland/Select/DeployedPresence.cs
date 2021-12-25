@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,6 +15,9 @@ namespace SpiritIsland.Select {
 		static public DeployedPresence ToDestroy(string prompt, SpiritIsland.Spirit spirit)
 			=> All(prompt, spirit,Present.Always);
 
+		static public DeployedPresence ToDestroy(string prompt, SpiritIsland.Spirit spirit, Func<SpiritIsland.Space,bool> filter)
+			=> Some(prompt, spirit, filter, Present.Always);
+
 		static public DeployedPresence ToDestroy(string prompt, IEnumerable<SpiritIsland.Space> spaces, Present present ) 
 			=> new DeployedPresence( prompt, spaces, present );
 
@@ -21,6 +25,9 @@ namespace SpiritIsland.Select {
 		/// !!! figure out different reasons .All is called and pull some of the generic ones into this class as factory methods
 		static public DeployedPresence All(string prompt, SpiritIsland.Spirit spirit, Present present )
 			=> new DeployedPresence( prompt, spirit.Presence.Spaces, present);
+
+		static public DeployedPresence Some(string prompt, SpiritIsland.Spirit spirit, Func<SpiritIsland.Space,bool> filter, Present present )
+			=> new DeployedPresence( prompt, spirit.Presence.Spaces.Where(filter), present);
 
 		/// <summary> Targets Sacred Sites </summary>
 		static public DeployedPresence SacredSites(string prompt, SpiritIsland.Spirit spirit, Present present )

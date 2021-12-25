@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 
 namespace SpiritIsland.JaggedEarth {
+
 	public class FleeFromDangerousLands : IFearOptions {
 
 		public const string Name = "Flee from Dangerous Lands";
@@ -10,14 +11,14 @@ namespace SpiritIsland.JaggedEarth {
 		public Task Level1( FearCtx ctx ) {
 
 			// On Each Board
-			return ctx.OnEachBoard(
-				Cmd.OnBoardPickSpaceThenTakeAction("Remove 1 Explorere / Town from a land with Badlands / Wilds / Dahan."
+			return GameCmd.OnEachBoard(
+				BoardCmd.PickSpaceThenTakeAction("Remove 1 Explorere / Town from a land with Badlands / Wilds / Dahan."
 					// Remove 1 Explorer / Town
 					, Cmd.RemoveExplorersOrTowns(1)
 					// from a land with Badlands / Wilds / Dahan.
 					,FindBadlandsWildsOrDahanSpaces( ctx )
 				)
-			);
+			).Execute( ctx.GameState );
 
 		}
 
@@ -25,14 +26,14 @@ namespace SpiritIsland.JaggedEarth {
 		public Task Level2( FearCtx ctx ) {
 
 			// On Each Board
-			return ctx.OnEachBoard(
-				Cmd.OnBoardPickSpaceThenTakeAction("Remove 1 Explorere / Town from a land with Badlands / Wilds / Dahan."
+			return GameCmd.OnEachBoard(
+				BoardCmd.PickSpaceThenTakeAction("Remove 1 Explorere / Town from a land with Badlands / Wilds / Dahan."
 					// Remove 2 Explorer / Town
 					, Cmd.RemoveExplorersOrTowns(2)
 					// from a land with Badlands / Wilds / Dahan.
 					,FindBadlandsWildsOrDahanSpaces( ctx )
 				)
-			);
+			).Execute( ctx.GameState );
 
 		}
 
@@ -40,19 +41,19 @@ namespace SpiritIsland.JaggedEarth {
 		public async Task Level3( FearCtx ctx ) {
 
 			// Remove 1 Explorer / Town from any land
-			var removeExplorerOrTownFromAnyLand = Cmd.OnBoardPickSpaceThenTakeAction("Remove 1 Explorere / Town from any land"
+			var removeExplorerOrTownFromAnyLand = BoardCmd.PickSpaceThenTakeAction("Remove 1 Explorere / Town from any land"
 				, Cmd.RemoveExplorersOrTowns(1)
 				, _ => true
 			);
 
 			// Remove 1 City from a land with Badlands / Wilds / Dahan.
-			var removeCity = Cmd.OnBoardPickSpaceThenTakeAction("Remove 1 City from a land with Badlands / Wilds / Dahan."
+			var removeCity = BoardCmd.PickSpaceThenTakeAction("Remove 1 City from a land with Badlands / Wilds / Dahan."
 				,Cmd.RemoveCities(1)
 				,FindBadlandsWildsOrDahanSpaces( ctx )
 			);
 
-			foreach(var boardCtx in ctx.BoardCtxs )
-				await boardCtx.SelectActionOption( removeExplorerOrTownFromAnyLand, removeCity );
+			await GameCmd.OnEachBoard(Cmd.Pick1( removeExplorerOrTownFromAnyLand, removeCity )).Execute( ctx.GameState );
+
 		}
 
 		static Func<Space,bool> FindBadlandsWildsOrDahanSpaces( FearCtx ctx ) {

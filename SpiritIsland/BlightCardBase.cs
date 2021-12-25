@@ -1,12 +1,12 @@
 ﻿using System.Threading.Tasks;
 
-namespace SpiritIsland.Basegame {
+namespace SpiritIsland {
 
 	public abstract class BlightCardBase : IBlightCard {
 
-		protected BlightCardBase(string name, int startingBlightPerPlayer,int side2BlightPerPlayer ) {
+		protected BlightCardBase(string name, int side2BlightPerPlayer ) {
 			this.name = name;
-			this.startingBlightPerPlayer = startingBlightPerPlayer;
+			this.startingBlightPerPlayer = 2;
 			this.side2BlightPerPlayer = side2BlightPerPlayer;
 		}
 

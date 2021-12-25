@@ -1,12 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace SpiritIsland {
 
 	static public class IEnumerableExtensions {
-		public static string Join(this IEnumerable<string> items, string glue ) => string.Join(glue,items);
 		public static string Join(this IEnumerable<string> items) => string.Join(string.Empty,items);
+		public static string Join(this IEnumerable<string> items, string glue ) => string.Join(glue,items);
+		public static string Join_WithLast(this IEnumerable<string> items, string glue, string lastGlue ) {
+			var itemArray = items.ToArray();
+			int last = itemArray.Length-1;
+			var buf = new StringBuilder();
+			for(int i=0;i<itemArray.Length;++i) {
+				if(i > 0)
+					buf.Append( i==last ? lastGlue : glue);
+				buf.Append( itemArray[i] );
+			}
+			return buf.ToString();
+		}
 
 		public static T VerboseSingle<T>(this IEnumerable<T> items, Func<T,bool> predicate){
 			var result = items.Where(predicate).ToList();

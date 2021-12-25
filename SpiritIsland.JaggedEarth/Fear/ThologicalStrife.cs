@@ -8,23 +8,20 @@ namespace SpiritIsland.JaggedEarth {
 
 		[FearLevel(1, "Each player adds 1 Strife in a land with Presence." )]
 		public Task Level1( FearCtx ctx ) {
-			return ctx.EachPlayerTakesActionInALand(
-				Cmd.AddStrife(1)
-				,spaceCtx => spaceCtx.Presence.IsHere
-			);
+			return GameCmd.EachPlayerTakesActionInALand( Cmd.AddStrife(1), spaceCtx => spaceCtx.Presence.IsHere, Cause.Fear ).Execute( ctx.GameState );
 		}
 
 		[FearLevel(2, "Each player adds 1 Strife in a land with Presence. Each Spirit gains 1 Energy per SacredSite they have in lands with Invaders." )]
 		public async Task Level2( FearCtx ctx ) { 
 
 			// Each player adds 1 Strife in a land with Presence
-			await ctx.EachPlayerTakesActionInALand( Cmd.AddStrife(1), spaceCtx => spaceCtx.Presence.IsHere );
+			await GameCmd.EachPlayerTakesActionInALand( Cmd.AddStrife(1), spaceCtx => spaceCtx.Presence.IsHere, Cause.Fear ).Execute( ctx.GameState );
 
 			// Each Spirit gains 1 Energy per SacredSite they have in lands with Invaders.
-			await ctx.EachSpiritTakesAction( new SelfAction(
-				"Gains 1 Energy per SacredSite spirit has in lands with Invaders"
+			await GameCmd.EachSpirit( Cause.Fear, new SelfAction(
+				"Gain 1 Energy per SacredSite Spirit has in lands with Invaders"
 				, spiritCtx => spiritCtx.Self.Energy += spiritCtx.Self.Presence.SacredSites.Count( ss => spiritCtx.Target(ss).HasInvaders )
-			));
+			)).Execute( ctx.GameState );
 
 		}
 
@@ -32,10 +29,10 @@ namespace SpiritIsland.JaggedEarth {
 		public async Task Level3( FearCtx ctx ) {
 
 			// Each player adds 1 Strife in a land with Presence
-			await ctx.EachPlayerTakesActionInALand( Cmd.AddStrife(1), spaceCtx => spaceCtx.Presence.IsHere );
+			await GameCmd.EachPlayerTakesActionInALand( Cmd.AddStrife(1), spaceCtx => spaceCtx.Presence.IsHere, Cause.Fear ).Execute( ctx.GameState );
 
 			// Each Invader with Strife deals Damage to other Invaders in its land.
-			await ctx.InEachLand( StrifedRavage.Cmd, space=>ctx.GameState.Tokens[space].HasStrife() );
+			await GameCmd.InEachLand( StrifedRavage.Cmd, space=>ctx.GameState.Tokens[space].HasStrife(), Cause.Fear ).Execute( ctx.GameState );
 		}
 	}
 

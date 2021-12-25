@@ -1,16 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.BranchAndClaw.Blight {
-	class TippingPoint {
 
+	public class TippingPoint : BlightCardBase {
 
-		// Immediately, destroy 3 presence from each Spirit
+		public TippingPoint():base("Tipping Point", 5 ) { }
 
-		// 5 blight per player
+		protected override Task BlightAction( GameState gs ) 
+			// Immediately, Each spirit
+			=> GameCmd.EachSpirit( Cause.Blight,
+				// destroys 3 presence
+				SelfCmd.DestoryPresence(3,ActionType.BlightedIsland)
+			).Execute( gs );
+
 
 	}
 }

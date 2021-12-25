@@ -4,7 +4,7 @@ namespace SpiritIsland.Basegame {
 
 	public class MemoryFadesToDust : BlightCardBase {
 
-		public MemoryFadesToDust() : base( "Memory Fades to Dust", 2, 4 ) {}
+		public MemoryFadesToDust() : base( "Memory Fades to Dust", 4 ) {}
 
 		protected override async Task BlightAction( GameState gs ) {
 			foreach(var spirit in gs.Spirits)

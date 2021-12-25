@@ -19,17 +19,6 @@ namespace SpiritIsland {
 
 		public IEnumerable<SelfCtx> Spirits => this.GameState.Spirits.Select(s=>new SelfCtx(s,GameState,Cause.Fear));
 
-		public IEnumerable<BoardCtx> BoardCtxs { get {
-			int i = 0;
-			foreach(var spirit in Spirits)
-				yield return new BoardCtx( spirit.Self, GameState, GameState.Island.Boards[i++] );
-		}}
-
-		public async Task OnEachBoard( ActionOption<BoardCtx> action ) {
-			foreach(var boardCtx in BoardCtxs)
-				await action.Execute(boardCtx);
-		}
-
 		public async Task EachPlayerTakesActionInALand( SpaceAction action, Func<TargetSpaceCtx,bool> filter, bool differentLands = false ) {
 			var used = new List<Space>();
 			foreach(var spiritCtx in Spirits) {
@@ -43,23 +32,6 @@ namespace SpiritIsland {
 					used.Add( spaceCtx.Space );
 				await action.Execute(spaceCtx);
 			}
-		}
-
-		public async Task InEachLand( SpaceAction action, Func<Space,bool> filter ) {
-			foreach(var spiritCtx in Spirits) {
-				var spaceOptions = GameState.Island.AllSpaces
-					.Where( filter )
-					.ToArray();
-				var spaceCtx = await spiritCtx.SelectSpace( action.Description, spaceOptions );
-				if(spaceCtx == null) continue;
-				await action.Execute(spaceCtx);
-			}
-		}
-
-
-		public async Task EachSpiritTakesAction( SelfAction action ) {
-			foreach(var spiritCtx in Spirits)
-				await action.Execute( spiritCtx );
 		}
 
 		public InvaderBinding InvadersOn(Space space) => GameState.Invaders.On( space );
@@ -86,10 +58,24 @@ namespace SpiritIsland {
 
 		#endregion Lands
 
-		// This doesn't work because we don't have the spirit yet
-		//public IEnumerable<Space> LandsCtx( Func<Space, bool> withCondition ) => GameState.Island.AllSpaces
-		//	.Where( s => s.Terrain != Terrain.Ocean )
-		//	.Where( withCondition );
+		public IEnumerable<Space> LandsWithStrife() => GameState.Island.AllSpaces
+			.Where( s => GameState.Tokens[s].Keys.OfType<StrifedInvader>().Any() );
+
+		public IEnumerable<Space> LandsWithDisease() => GameState.Island.AllSpaces
+			.Where( s => GameState.Tokens[s].Disease.Any);
+
+		public IEnumerable<Space> LandsWithBeastDiseaseDahan() => GameState.Island.AllSpaces
+			.Where( s => {var tokens = GameState.Tokens[s]; return tokens.Dahan.Any || tokens.Beasts.Any || tokens.Disease.Any; } );
+
+		public bool HasBeastOrIsAdjacentToBeast( Space space ) => space.Range( 1 ).Any( x => HasBeast(x) );
+		public bool HasBeast( Space space ) => GameState.Tokens[space].Beasts.Any;
+		public bool AdjacentToBeast( Space space ) => space.Adjacent.Any( x => HasBeast(x) );
+
+		public IEnumerable<Space> LandsWithBeasts() => GameState.Island.AllSpaces.Where( HasBeast );
+
+		public IEnumerable<Space> LandsAdjacentToBeasts() => GameState.Island.AllSpaces.Where( AdjacentToBeast );
+
+		public IEnumerable<Space> LandsWithOrAdjacentToBeasts() => GameState.Island.AllSpaces.Where( HasBeastOrIsAdjacentToBeast );
 
 	}
 
@@ -103,25 +89,6 @@ namespace SpiritIsland {
 				await space.AddStrife( groups );
 			return space?.Space;
 		}
-
-		static public IEnumerable<Space> LandsWithStrife(this FearCtx ctx) => ctx.GameState.Island.AllSpaces
-			.Where( s => ctx.GameState.Tokens[s].Keys.OfType<StrifedInvader>().Any() );
-
-		static public IEnumerable<Space> LandsWithDisease( this FearCtx ctx ) => ctx.GameState.Island.AllSpaces
-			.Where( s => ctx.GameState.Tokens[s].Disease.Any);
-		static public IEnumerable<Space> LandsWithBeastDiseaseDahan( this FearCtx ctx ) => ctx.GameState.Island.AllSpaces
-			.Where( s => {var tokens = ctx.GameState.Tokens[s]; return tokens.Dahan.Any || tokens.Beasts.Any || tokens.Disease.Any; } );
-
-		static public bool HasBeastOrIsAdjacentToBeast( this FearCtx ctx, Space space ) => space.Range( 1 ).Any( x => ctx.HasBeast(x) );
-		static public bool HasBeast( this FearCtx ctx, Space space ) => ctx.GameState.Tokens[space].Beasts.Any;
-		static public bool AdjacentToBeast( this FearCtx ctx, Space space ) => space.Adjacent.Any( x => ctx.HasBeast(x) );
-
-		public static IEnumerable<Space> LandsWithBeasts( this FearCtx ctx ) => ctx.GameState.Island.AllSpaces.Where( x => HasBeast(ctx,x) );
-
-		public static IEnumerable<Space> LandsAdjacentToBeasts( this FearCtx ctx ) => ctx.GameState.Island.AllSpaces.Where( x => AdjacentToBeast(ctx,x) );
-
-		public static IEnumerable<Space> LandsWithOrAdjacentToBeasts( this FearCtx ctx ) => ctx.GameState.Island.AllSpaces.Where( x => HasBeastOrIsAdjacentToBeast(ctx, x)  );
-
 
 	}
 

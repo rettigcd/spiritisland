@@ -1,16 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
-namespace SpiritIsland.BranchAndClaw.Blight {
-	class AidFromLesserSpirits {
+namespace SpiritIsland.BranchAndClaw {
 
+	class AidFromLesserSpirits : BlightCardBase {
 
-		// Immedieatly, draw 1 minor power card per player plus 1 more.  Give 1 to each spirit.  They may be used every turn as if played, but cost no card plays/energy.  Place unselected cards into the minor powers discard pile.
+		public AidFromLesserSpirits():base("Aid from Lesser Spirits", 2 ) { }
 
-		// 2 blight per player
+		protected override async Task BlightAction( GameState gs ) {
+
+			// Immedieatly, draw 1 minor power card per player plus 1 more.
+			var cards = gs.MinorCards.Flip(gs.Spirits.Length+1);
+
+			foreach(var spirit in gs.Spirits ){
+			// Give 1 to each spirit.
+				var card = await spirit.SelectPowerCard("Pick card to play every turn for free.", cards, CardUse.AddToHand, Present.Always);
+				cards.Remove(card);
+				// They may be used every turn as if played, but cost no card plays/energy.
+				// (don't put card in hand, because we don't want them discarding or forgetting, or playing normally.)
+				// (Just add it and its elements every time.)
+				spirit.EnergyCollected += ( Spirit s ) => {
+					s.AddActionFactory( card );
+					s.Elements.AddRange( card.Elements );
+				};
+
+			}
+
+			// Place unselected cards into the minor powers discard pile.
+			gs.MinorCards.Discard(cards);
+
+		}
 
 	}
+
 }
