@@ -38,7 +38,7 @@ namespace SpiritIsland.JaggedEarth {
 
 		static async Task PerformEffect( TargetSpaceCtx ctx ) {
 			// Gather 1 explorer,town,city,dahan,presence, and beast from each adjacent land.
-			var tokenGroups = new[] { Invader.Explorer, Invader.Town, Invader.City, TokenType.Dahan, TokenType.Beast };
+			var tokenGroups = new TokenClass[] { Invader.Explorer, Invader.Town, Invader.City, TokenType.Dahan, TokenType.Beast };
 			foreach(var adj in ctx.Adjacent) {
 				// move tokens
 				var tokenCounts = ctx.GameState.Tokens[adj];

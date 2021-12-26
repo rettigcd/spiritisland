@@ -27,6 +27,7 @@ namespace SpiritIsland {
 		static public SpaceAction PushExplorersOrTowns( int count ) => new SpaceAction( $"Push {count} explorers or towns", ctx => ctx.Push( count, Invader.Town, Invader.Explorer ) ).Cond( ctx=>ctx.Tokens.HasAny( Invader.Explorer, Invader.Town ) );
 
 		// -- Add ---
+		static public SpaceAction AddDahan( int count ) => new SpaceAction( $"Add {count} Dahan", ctx => ctx.Tokens.Add( TokenType.Dahan.Default, count ) );
 		static public SpaceAction AddTown( int count ) => new SpaceAction( $"Add {count} Towns", ctx => ctx.Tokens.Add(Invader.Town.Default, count ) );
 		static public SpaceAction AddCity( int count ) => new SpaceAction( $"Add {count} Cities", ctx => ctx.Tokens.Add(Invader.City.Default, count ) );
 		static public SpaceAction AddBlight => new SpaceAction("Add 1 blight", ctx => ctx.AddBlight() );
@@ -48,6 +49,7 @@ namespace SpiritIsland {
 		static public SpaceAction DestoryBeast(int count) => new SpaceAction($"Destory {count} Beast", ctx=>ctx.Beasts.Destroy(count));
 
 		static public SpaceAction Defend1PerDahan => new SpaceAction("Defend 1 per Dahan.", ctx => ctx.Defend(ctx.Dahan.Count));
+		static public SpaceAction Defend(int defend) => new SpaceAction( $"Defend {defend}.", ctx => ctx.Defend( defend ) );
 
 		// -- Damage --
 		static public SpaceAction DamageToTownOrExplorer(int damage) => new SpaceAction($"{damage} damage to Explorer or Town", ctx => ExplorerTownsTakeDamage(ctx,damage) );
@@ -69,7 +71,7 @@ namespace SpiritIsland {
 			}
 		);
 
-		static public ActionOption<T> Pick1<T>( params ActionOption<T>[] actions ) where T : SelfCtx
+		static public ActionOption<T> Pick1<T>( params IExecuteOn<T>[] actions ) where T : SelfCtx
 			=> new ActionOption<T>(
 				actions.Select(a=>a.Description).Join_WithLast(", ", " OR "),
 				async ctx => {

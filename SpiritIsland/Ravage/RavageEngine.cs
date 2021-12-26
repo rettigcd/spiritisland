@@ -11,8 +11,6 @@ namespace SpiritIsland {
 		readonly Func<Space,int,Task> damageLandCallback;
 		readonly protected ConfigureRavage cfg;
 
-		public int DahanDestroyed { get; private set; }
-
 		#region constructor
 
 		public RavageEngine( GameState gs, InvaderBinding grp, ConfigureRavage cfg ) {
@@ -95,23 +93,21 @@ namespace SpiritIsland {
 		}
 
 		/// <returns># of dahan killed/destroyed</returns>
-		public async Task DamageDefenders( int dahanDamageFromInvaders ) {
-			@event.dahanDamageFromInvaders = dahanDamageFromInvaders;
-			if(dahanDamageFromInvaders == 0 || !cfg.ShouldDamageDahan) return;
+		public async Task DamageDefenders( int damageFromAttackers ) {
+			@event.damageFromAttackers = damageFromAttackers;
+			if(damageFromAttackers == 0 || !cfg.ShouldDamageDahan) return;
 
-			int dahanDamageTotal = dahanDamageFromInvaders
+			int defendDamageTotal = damageFromAttackers
 				+ BadLandsCount;
-
-			// ! This special DamageDahan, uses the config to change dahan health points.
 
 			// destroy dahan
 			var dahan = grp.Tokens.Dahan;
 			@event.startingDahan = dahan.Count;
-			@event.dahanDestroyed = Math.Min( dahanDamageTotal / cfg.DahanHitpoints, @event.startingDahan ); // rounding down, !!! if some of the dahan have previously taken damage, this # will be wrong
+			@event.dahanDestroyed = Math.Min( defendDamageTotal / cfg.DahanHitpoints, @event.startingDahan ); // rounding down, !!! if some of the dahan have previously taken damage, this # will be wrong
 			if(@event.dahanDestroyed != 0)
 				await cfg.DestroyDahan( dahan, @event.dahanDestroyed, 2 );
 
-			int leftOverDamage = dahanDamageTotal - @event.dahanDestroyed * cfg.DahanHitpoints;
+			int leftOverDamage = defendDamageTotal - @event.dahanDestroyed * cfg.DahanHitpoints;
 			bool convert1To1HitPoint = leftOverDamage == cfg.DahanHitpoints - 1;
 			if(convert1To1HitPoint && dahan.Any)
 				await dahan.ApplyDamage(1,Cause.Invaders);
@@ -119,20 +115,19 @@ namespace SpiritIsland {
 		}
 
 		/// <returns>(city-dead,town-dead,explorer-dead)</returns>
-		public async Task DamageAttackers( int damageFromDahan ) {
-			@event.damageFromDahan = damageFromDahan;
-			if(damageFromDahan == 0) return;
+		public async Task DamageAttackers( int damageFromDefenders ) {
+			@event.damageFromDefenders = damageFromDefenders;
+			if(damageFromDefenders == 0) return;
 
-			int remainingDamageToApply = damageFromDahan
-				+ BadLandsCount;
+			int remainingDamageToApply = damageFromDefenders + BadLandsCount;
 
-			var participatingInvaders = AttackerCounts();
-			while(remainingDamageToApply > 0 && participatingInvaders.Any()) {
-				Token invadertodamage = PickSmartInvaderToDamage( participatingInvaders, remainingDamageToApply );
+			var attackers = AttackerCounts();
+			while(remainingDamageToApply > 0 && attackers.Any()) {
+				Token invadertodamage = PickSmartInvaderToDamage( attackers, remainingDamageToApply );
 				var (damageInflicted,_) = await grp.ApplyDamageTo1( remainingDamageToApply, invadertodamage, true );
 				remainingDamageToApply -= damageInflicted;
 				// update participants
-				participatingInvaders = AttackerCounts();
+				attackers = AttackerCounts();
 			}
 			@event.endingInvaders = grp.Tokens.InvaderSummary;
 		}

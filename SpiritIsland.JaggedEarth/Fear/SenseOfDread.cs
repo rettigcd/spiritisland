@@ -49,9 +49,9 @@ namespace SpiritIsland.JaggedEarth {
 			).Execute( ctx.GameState );
 		}
 
-		static Func<Space,bool> MatchingRavageCard( FearCtx ctx ) {
+		static Func<TokenCountDictionary,bool> MatchingRavageCard( FearCtx ctx ) {
 			List<InvaderCard> ravageCards = ctx.GameState.InvaderDeck.Ravage;
-			return (space) => ravageCards.Any( card => card.Matches(space) );
+			return (tokens) => ravageCards.Any( card => card.Matches(tokens.Space) );
 		}
 	}
 

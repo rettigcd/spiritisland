@@ -72,10 +72,10 @@ namespace SpiritIsland.WinForms {
 			//
 		}
 
-		static IEnumerable<System.Reflection.Assembly> ScanForAssemblies() {
-			foreach(string assemblyPath in Directory.GetFiles(System.AppDomain.CurrentDomain.BaseDirectory, "*.dll", SearchOption.AllDirectories))
-				yield return System.Runtime.Loader.AssemblyLoadContext.Default.LoadFromAssemblyPath(assemblyPath);
-		}
+		//static IEnumerable<System.Reflection.Assembly> ScanForAssemblies() {
+		//	foreach(string assemblyPath in Directory.GetFiles(System.AppDomain.CurrentDomain.BaseDirectory, "*.dll", SearchOption.AllDirectories))
+		//		yield return System.Runtime.Loader.AssemblyLoadContext.Default.LoadFromAssemblyPath(assemblyPath);
+		//}
 
 		void Init_SpiritList() {
 

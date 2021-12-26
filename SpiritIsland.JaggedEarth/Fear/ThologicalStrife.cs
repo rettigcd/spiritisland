@@ -7,7 +7,6 @@ namespace SpiritIsland.JaggedEarth {
 		public const string Name = "Theological Strife";
 		string IFearOptions.Name => Name;
 
-
 		[FearLevel(1, "Each player adds 1 Strife in a land with Presence." )]
 		public Task Level1( FearCtx ctx ) {
 			return GameCmd.EachPlayerTakesActionInALand( Cmd.AddStrife(1), spaceCtx => spaceCtx.Presence.IsHere, Cause.Fear ).Execute( ctx.GameState );
@@ -34,7 +33,7 @@ namespace SpiritIsland.JaggedEarth {
 			await GameCmd.EachPlayerTakesActionInALand( Cmd.AddStrife(1), spaceCtx => spaceCtx.Presence.IsHere, Cause.Fear ).Execute( ctx.GameState );
 
 			// Each Invader with Strife deals Damage to other Invaders in its land.
-			await GameCmd.InEachLand( StrifedRavage.Cmd, space=>ctx.GameState.Tokens[space].HasStrife(), Cause.Fear ).Execute( ctx.GameState );
+			await GameCmd.InEachLand( Cause.Fear, StrifedRavage.Cmd, tokens=>tokens.HasStrife ).Execute( ctx.GameState );
 		}
 	}
 

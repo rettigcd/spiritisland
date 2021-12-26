@@ -131,6 +131,20 @@ namespace SpiritIsland {
 
 		}
 
+		#region Invader Specific
+
+		public IEnumerable<Token> Invaders() => this.OfAnyType( Invader.City, Invader.Town, Invader.Explorer );
+
+		public bool HasInvaders() => Invaders().Any();
+
+		public bool HasStrife => Keys.OfType<StrifedInvader>().Any();
+
+		public int CountStrife() => Keys.OfType<StrifedInvader>().Sum( t => counts[t] );
+
+		public int TownsAndCitiesCount() => this.SumAny( Invader.Town, Invader.City );
+
+		public int InvaderTotal() => Invaders().Sum( i => counts[i] );
+
 		public void AddStrifeTo( Token invader, int count = 1 ) {
 
 			// Remove old type from 
@@ -144,6 +158,8 @@ namespace SpiritIsland {
 
 			this[strifed] += count;
 		}
+
+		#endregion
 
 		public Token RemoveStrife( StrifedInvader orig, int tokenCount ) {
 			Token lessStrifed = orig.AddStrife( -1 );

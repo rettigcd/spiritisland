@@ -96,18 +96,13 @@ namespace SpiritIsland.JaggedEarth {
 		};
 
 		public IBlightCard[] BlightCards => new BlightCardBase[] {
-			// - Easy -
-			// Power Corrodes
-			// Thriving communities
-			// Unnaturual Proliferation
-
-			// - Healthy Island -
-			// Invaders Find The Land
-			// Strong Earth Shatters Slowly
-
-			// - Med / Hard -
-			// Untended Land Crumbles
-			// All Things Weaken
+			new AllThingsWeaken(),
+			new InvadersFindTheLandToTheirLiking(),
+			new PowerCorrodesTheSpirit(),
+			new StrongEarthShattersSlowly(),
+			new ThrivingCommunitites(),
+			new UnnaturalProliferation(),
+			new UntendedLandCrumbles(),
 		};
 
 	}

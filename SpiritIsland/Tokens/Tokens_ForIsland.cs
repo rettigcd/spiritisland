@@ -31,6 +31,8 @@ namespace SpiritIsland {
 			}
 		}
 
+		public IEnumerable<TokenCountDictionary> ForAllSpaces => tokenCounts.Values;
+
 		readonly Dictionary<Space, TokenCountDictionary> tokenCounts = new Dictionary<Space, TokenCountDictionary>();
 
 		readonly Dictionary<UniqueToken, List<Func<GameState, Space, int>>> dynamicTokens_ForGame = new Dictionary<UniqueToken, List<Func<GameState, Space, int>>>(); // !!! save to memento???

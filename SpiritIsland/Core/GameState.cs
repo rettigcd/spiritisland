@@ -84,16 +84,19 @@ namespace SpiritIsland {
 		public Invaders Invaders { get; } // creates ravage/damage objects - Obsolete - just make Tokens do this.
 		public int blightOnCard; // 2 per player + 1
 		public IBlightCard BlightCard = new NullBlightCard();
+		public List<IBlightCard> BlightCards = new List<IBlightCard>();
 		public GameOver Result = null;
 
 		#region Blight
+
+		public int DamageToBlightLand = 2;
 
 		public async Task DamageLandFromRavage( Space space, int damageInflictedFromInvaders ) {
 			if(damageInflictedFromInvaders==0) return;
 
 			await LandDamaged.InvokeAsync(this,new LandDamagedArgs { Space = space, Damage = damageInflictedFromInvaders} );
 
-			if( damageInflictedFromInvaders > 1)
+			if( damageInflictedFromInvaders >= DamageToBlightLand)
 				await BlightLandFromRavage_WithCascades( space );
 		}
 

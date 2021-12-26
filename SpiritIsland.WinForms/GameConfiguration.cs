@@ -41,13 +41,14 @@ namespace SpiritIsland.WinForms {
 
 			var majorCards = new List<PowerCard>();
 			var minorCards = new List<PowerCard>();
-			List<IFearOptions> fearCards = new List<IFearOptions>();
+			var fearCards = new List<IFearOptions>();
+			var blightCards = new List<IBlightCard>();
 
 			foreach(var provider in providers) {
 				minorCards.AddRange( provider.MinorCards );
 				majorCards.AddRange( provider.MajorCards );
 				fearCards.AddRange( provider.FearCards );
-				// !!! Blight....
+				blightCards.AddRange( provider.BlightCards );
 			}
 
 			// GameState
@@ -62,15 +63,16 @@ namespace SpiritIsland.WinForms {
 			gameState.MajorCards = new PowerCardDeck( majorCards.ToArray(), randomizer );
 			gameState.MinorCards = new PowerCardDeck( minorCards.ToArray(), randomizer );
 			randomizer.Shuffle( fearCards );
+			randomizer.Shuffle( blightCards );
 
 			gameState.Fear.Deck.Clear();
 			foreach(var f in fearCards.Take( 9 ))
 				gameState.Fear.AddCard( f );
 			// --- End FEAR
 
-			gameState.BlightCard = (randomizer.Next( 1 ) == 0)
-				? new DownwardSpiral()
-				: new MemoryFadesToDust();
+			gameState.BlightCards = blightCards;
+			gameState.BlightCard = blightCards[0];  
+			blightCards.RemoveAt(0);
 
 			// Enable Win / Loss Check
 			gameState.ShouldCheckWinLoss = true; // !!! instead of this, load win/loss states into the check-list for real games

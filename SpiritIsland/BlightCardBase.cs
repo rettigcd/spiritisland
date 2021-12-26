@@ -11,7 +11,6 @@ namespace SpiritIsland {
 		}
 
 		public string Name { get; }
-
 		public bool IslandIsBlighted { get; set; }
 
 		public void OnGameStart( GameState gs ) {
@@ -25,6 +24,8 @@ namespace SpiritIsland {
 			IslandIsBlighted = true;
 			gs.blightOnCard += side2BlightPerPlayer * gs.Spirits.Length;
 		}
+
+		protected virtual void Side2Depleted(GameState gameState) => GameOverException.Lost( "Blighted Island-" + Name );
 
 		public async Task OnStartOfInvaders( GameState gs ) {
 			if( IslandIsBlighted )

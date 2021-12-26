@@ -8,14 +8,12 @@ namespace SpiritIsland.JaggedEarth {
 		public const string Name = "Beset by Many Troubles";
 		string IFearOptions.Name => Name;
 
-
 		[FearLevel(1, "In each land with Badlands / Beasts / Disease / Wilds / Strife, Defend 3." )]
 		public Task Level1( FearCtx ctx ) {
-
-			foreach(var space in CountTokensOfInterest( ctx ).Keys)
-				ctx.GameState.Tokens[space].Defend.Add(3);
-		
-			return Task.CompletedTask;
+			return GameCmd.InEachLand( Cause.Fear
+				, Cmd.Defend(3)
+				, t=>t.Badlands.Any||t.Beasts.Any||t.Disease.Any||t.Wilds.Any||t.HasStrife // !! make HasStrife a Porperty, not an extension method
+			).Execute( ctx.GameState );
 		}
 
 		[FearLevel(2, "In each land with Badlands / Beasts / Disease / Wilds / Strife, or adjacent to 3 or more such tokens, Defend 5." )]

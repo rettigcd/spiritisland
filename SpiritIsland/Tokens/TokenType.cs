@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland {
 
 	public class TokenType {
-		static public readonly TokenClass Dahan = new HealthTokenClass( "Dahan",  2, TokenCategory.Dahan, Img.Dahan1, Img.Dahan2 );
+		static public readonly HealthTokenClass Dahan = new HealthTokenClass( "Dahan",  2, TokenCategory.Dahan, Img.Dahan1, Img.Dahan2 );
 
 		static public readonly UniqueToken Blight     = new UniqueToken( "Blight", 'B', Img.Blight ); // replace with a non-health type
 		static public readonly UniqueToken Defend     = new UniqueToken( "Defend", 'G', Img.Defend ); // G:Guard D is for Dahan

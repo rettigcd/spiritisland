@@ -415,6 +415,12 @@ namespace SpiritIsland {
 				.Where( c => c.Cost <= Energy )
 				.ToArray();
 
+			// !!! there is a bug somewhere that allows duplicate cards in this list and crashes
+			//  (maybe from Unlock the Gates of Deepest Power)
+			var debug = new HashSet<PowerCard>();
+			foreach(var d in getPowerCardOptions())
+				if(debug.Contains(d)) throw new Exception($"Card {d.Name} found twice"); else debug.Add(d);
+
 			PowerCard[] powerCardOptions;
 			while(0 < remainingToPlay
 				&& 0 < (powerCardOptions = getPowerCardOptions()).Length

@@ -11,9 +11,9 @@ namespace SpiritIsland.BranchAndClaw {
 			return GameCmd.OnEachBoard(
 				Cmd.Multiple<BoardCtx>(
 					// destroy 1 beast,
-					BoardCmd.PickSpaceThenTakeAction("Destory 1 beast", Cmd.DestoryBeast(1), space=>gs.Tokens[space].Beasts.Any),
+					BoardCmd.PickSpaceThenTakeAction("Destory 1 beast", Cmd.DestoryBeast(1), t=>t.Beasts.Any),
 					// then add 1 blight to a land with town/city
-					BoardCmd.PickSpaceThenTakeAction("Add 1 blight to a land with town/city", Cmd.AddBlight, space=>gs.Tokens[space].HasAny(Invader.Town,Invader.City) )
+					BoardCmd.PickSpaceThenTakeAction("Add 1 blight to a land with town/city", Cmd.AddBlight, t=>t.HasAny(Invader.Town,Invader.City) )
 				)
 			).Execute( gs );
 

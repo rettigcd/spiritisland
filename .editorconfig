@@ -9,6 +9,10 @@ dotnet_diagnostic.IDE0090.severity = silent
 # IDE1006: Interface begins with I
 dotnet_diagnostic.IDE1006.severity = silent
 
+# AD0001: Namespace / Folder mismatch
+dotnet_diagnostic.AD0001.severity = silent
+
+
 csharp_space_after_keywords_in_control_flow_statements=false
 csharp_space_between_parentheses=false
 csharp_space_between_method_call_parameter_list_parentheses=true

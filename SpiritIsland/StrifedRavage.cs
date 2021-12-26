@@ -5,7 +5,10 @@ namespace SpiritIsland {
 
 	public static class StrifedRavage {
 
-		static public SpaceAction Cmd => new SpaceAction("Strifed invaders deal damage to other invaders.", StrifedInvadersDamageUnstrifed);
+		static public SpaceAction Cmd => new SpaceAction(
+			"Strifed invaders deal damage to other invaders.", 
+			StrifedInvadersDamageUnstrifed
+		);
 
 		public static async Task StrifedInvadersDamageUnstrifed( TargetSpaceCtx ctx ) {
 			// Each invader with strife deals damage to other invaders in target land
@@ -25,10 +28,10 @@ namespace SpiritIsland {
 		}
 
 
-		static public async Task DamageUnStriffed( TargetSpaceCtx invaderSpaceCtx, int damageFromStrifedInvaders ) {
+		static public Task DamageUnStriffed( TargetSpaceCtx invaderSpaceCtx, int damageFromStrifedInvaders ) {
 			// !!! this isn't 100% correct, the damage will start applying to unstrifed, but will then spill over onto strifed
 			// ! Fix by passing in a predicate
-			await invaderSpaceCtx.DamageInvaders( damageFromStrifedInvaders );
+			return invaderSpaceCtx.DamageInvaders( damageFromStrifedInvaders );
 		}
 
 		public static void StrifedInvadersLoseHealthPerStrife( FearCtx ctx ) {

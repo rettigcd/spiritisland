@@ -1,4 +1,17 @@
-﻿Scream Disease Into The Wind
+﻿- Easy -
+Power Corrodes
+Thriving communities
+Unnaturual Proliferation
+
+- Healthy Island -
+Invaders Find The Land
+Strong Earth Shatters Slowly
+
+- Med / Hard -
+Untended Land Crumbles
+All Things Weaken
+
+
 
 // !!! When blight is added to target land, it doesn't cascade. - (Entrap the Forces of Corruption)
 

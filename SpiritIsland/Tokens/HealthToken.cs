@@ -2,7 +2,7 @@
 namespace SpiritIsland {
 
 	public class HealthToken : Token {
-		public HealthToken( TokenClass generic, Token[] seq, int health, Img img ) {
+		public HealthToken( TokenClass generic, HealthToken[] seq, int health, Img img ) {
 			this.Class = generic;
 			Health = health;
 			this.seq = seq;
@@ -11,7 +11,7 @@ namespace SpiritIsland {
 
 		public TokenClass Class { get; } // originally: readonly
 
-		public Img Img { get; }
+		public Img Img { get; set; }
 
 		public virtual string Summary => Initial+"@"+Health; // originally: virtual
 
@@ -29,7 +29,7 @@ namespace SpiritIsland {
 
 		string IOption.Text =>  Summary;
 
-		readonly Token[] seq;
+		readonly HealthToken[] seq;
 
 
 	}

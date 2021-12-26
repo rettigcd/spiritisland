@@ -6,26 +6,6 @@ namespace SpiritIsland {
 
 	public static class TokenCountDictionary_Extensions {
 
-		#region Invader Specific
-
-		static public IEnumerable<Token> Invaders( this TokenCountDictionary counts )
-			=> counts.OfAnyType(Invader.City,Invader.Town,Invader.Explorer);
-
-		static public bool HasInvaders( this TokenCountDictionary counts )
-			=> counts.Invaders().Any();
-
-		static public bool HasStrife( this TokenCountDictionary counts )
-			=> counts.Keys.OfType<StrifedInvader>().Any();
-
-		static public int CountStrife( this TokenCountDictionary counts )
-			=> counts.Keys.OfType<StrifedInvader>().Sum(t=>counts[t]);
-
-		static public int TownsAndCitiesCount( this TokenCountDictionary counts ) => counts.SumAny( Invader.Town, Invader.City );
-
-		static public int InvaderTotal( this TokenCountDictionary counts ) => counts.Invaders().Sum(i=>counts[i]);
-
-		#endregion
-
 		#region Generic - Single
 
 		static public Token[] OfType( this TokenCountDictionary counts, TokenClass healthyType )

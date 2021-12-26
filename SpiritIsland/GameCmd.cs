@@ -13,16 +13,12 @@ namespace SpiritIsland {
 				}
 			} );
 
-		static public ActionOption<GameState> InEachLand( SpaceAction action, Func<Space,bool> filter, Cause cause )
+		// !!! if this is on a per-space basis, shouldn't need a spirit / cause.
+		static public ActionOption<GameState> InEachLand( Cause cause, SpaceAction action, Func<TokenCountDictionary,bool> filter )
 			=> new ActionOption<GameState>("In each land, " + action.Description, async gs => {
-				foreach(var spiritCtx in gs.SpiritCtxs(cause)) {
-					var spaceOptions = gs.Island.AllSpaces
-						.Where( filter )
-						.ToArray();
-					var spaceCtx = await spiritCtx.SelectSpace( action.Description, spaceOptions );
-					if(spaceCtx == null) continue;
-					await action.Execute(spaceCtx);
-				}
+				var decisionMaker = new SelfCtx(gs.Spirits[0],gs,cause);
+				foreach(var space in gs.Island.AllSpaces)
+					await action.Execute( decisionMaker.Target(space) );
 			} );
 
 		static public ActionOption<GameState> EachSpirit( Cause cause, ActionOption<SelfCtx> action )

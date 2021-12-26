@@ -58,11 +58,8 @@ namespace SpiritIsland.JaggedEarth {
 
 		}
 
-		static Func<Space,bool> FindBadlandsWildsOrDahanSpaces( FearCtx ctx ) {
-			return (space) => {
-				var tokens = ctx.GameState.Tokens[space];
-				return tokens.Badlands.Any || tokens.Wilds.Any || tokens.Dahan.Any;
-			};
+		static Func<TokenCountDictionary,bool> FindBadlandsWildsOrDahanSpaces( FearCtx ctx ) {
+			return (tokens) => tokens.Badlands.Any || tokens.Wilds.Any || tokens.Dahan.Any;
 		}
 
 	}
