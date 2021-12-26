@@ -4,7 +4,9 @@ using System.Threading.Tasks;
 namespace SpiritIsland.BranchAndClaw {
 
 	class FleeThePestilentLand : IFearOptions {
+
 		public const string Name = "Flee the Pestilent Land";
+		string IFearOptions.Name => Name;
 
 		[FearLevel( 1, "Each player removes 1 explorer/town from a land with disease" )]
 		public async Task Level1( FearCtx ctx ) {

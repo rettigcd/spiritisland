@@ -6,6 +6,8 @@ namespace SpiritIsland {
 
 		public bool IslandIsBlighted {get; set; }
 
+		public string Name => "[null]";
+
 		public void OnBlightDepleated( GameState gs ) {
 			if(IslandIsBlighted) return;
 			IslandIsBlighted = true;

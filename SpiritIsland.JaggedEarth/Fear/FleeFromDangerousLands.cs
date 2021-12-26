@@ -6,6 +6,8 @@ namespace SpiritIsland.JaggedEarth {
 	public class FleeFromDangerousLands : IFearOptions {
 
 		public const string Name = "Flee from Dangerous Lands";
+		string IFearOptions.Name => Name;
+
 
 		[FearLevel(1, "On Each Board: Push 1 Explorer / Town from a land with Badlands / Wilds / Dahan." )]
 		public Task Level1( FearCtx ctx ) {

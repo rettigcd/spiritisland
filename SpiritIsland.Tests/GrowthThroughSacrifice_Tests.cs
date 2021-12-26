@@ -1,6 +1,6 @@
 ﻿using Shouldly;
 using SpiritIsland.Basegame;
-using SpiritIsland.BranchAndClaw.Minor;
+using SpiritIsland.BranchAndClaw;
 using System.Linq;
 using Xunit;
 

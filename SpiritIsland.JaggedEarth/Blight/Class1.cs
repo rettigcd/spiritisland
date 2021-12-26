@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland.JaggedEarth {
 
-	public class B1 : BlightCardBase {
+	public class B1 {
 
-		public B1():base("",5) {}
+//		public B1():base("",5) {}
 
-		protected override Task BlightAction( GameState gs ) {
-			return Task.CompletedTask;
-		}
+//		protected override Task BlightAction( GameState gs ) {
+//			return Task.CompletedTask;
+//		}
 
 	}
 

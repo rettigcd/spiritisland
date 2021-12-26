@@ -2,7 +2,7 @@
 
 namespace SpiritIsland.BranchAndClaw {
 
-	public class Fleshrot_Fever {
+	public class FleshrotFever {
 
 		[MinorCard( "Fleshrot Fever", 1, Element.Fire, Element.Air, Element.Water, Element.Animal )]
 		[Slow]

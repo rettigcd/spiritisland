@@ -49,15 +49,32 @@ namespace SpiritIsland.WinForms {
 		}
 
 		static readonly SpiritBox[] spiritTypes;
+
 		static ConfigureGameDialog() {
-			var items = new List<SpiritBox>();
-			foreach(string assemblyPath in Directory.GetFiles(System.AppDomain.CurrentDomain.BaseDirectory, "*.dll", SearchOption.AllDirectories)) {
-				var assembly = System.Runtime.Loader.AssemblyLoadContext.Default.LoadFromAssemblyPath(assemblyPath);
-				foreach(var type in assembly.GetTypes())
-					if(type.IsSubclassOf(typeof(Spirit)))
-						items.Add( new SpiritBox{SpiritType = type } );
-			}
-			spiritTypes = items.OrderBy( t=>t.Name ).ToArray();
+			spiritTypes = GetAllSpiritTypes()
+				.Select( type => new SpiritBox { SpiritType = type } )
+				.OrderBy( t => t.Name )
+				.ToArray();
+
+		}
+
+		static IEnumerable<Type> GetAllSpiritTypes() {
+			return new IGameComponentProvider[]{ 
+				new Basegame.GameComponentProvider(),
+				new BranchAndClaw.GameComponentProvider(),
+				new PromoPack1.GameComponentProvider(),
+				new JaggedEarth.GameComponentProvider()
+			}.SelectMany(p=>p.Spirits);
+
+			//return ScanForAssemblies()
+			//	.SelectMany( assembly => assembly.GetTypes() )
+			//	.Where(type => type.IsSubclassOf( typeof( Spirit ) ));
+			//
+		}
+
+		static IEnumerable<System.Reflection.Assembly> ScanForAssemblies() {
+			foreach(string assemblyPath in Directory.GetFiles(System.AppDomain.CurrentDomain.BaseDirectory, "*.dll", SearchOption.AllDirectories))
+				yield return System.Runtime.Loader.AssemblyLoadContext.Default.LoadFromAssemblyPath(assemblyPath);
 		}
 
 		void Init_SpiritList() {

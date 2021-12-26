@@ -5,6 +5,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class ImmigrationSlows : IFearOptions {
 		public const string Name = "Immigration Slows";
+		string IFearOptions.Name => Name;
 
 		[FearLevel( 1, "During the next normal build, skip the lowest numbered land matching the invader card on each board." )]
 		public Task Level1( FearCtx ctx ) {

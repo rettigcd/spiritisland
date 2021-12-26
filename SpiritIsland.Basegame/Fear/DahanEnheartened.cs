@@ -7,6 +7,8 @@ namespace SpiritIsland.Basegame {
 	public class DahanEnheartened : IFearOptions {
 
 		public const string Name = "Dahan Enheartened";
+		string IFearOptions.Name => Name;
+
 
 		[FearLevel( 1, "Each player may Push 1 Dahan from a land with Invaders or Gather 1 Dahan into a land with Invaders." )]
 		public async Task Level1( FearCtx ctx ) {

@@ -4,6 +4,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	class PanickedByWildBeasts : IFearOptions {
 		public const string Name = "Panicked by Wild Beasts";
+		string IFearOptions.Name => Name;
+
 
 		[FearLevel( 1, "Each player adds 1 strife in a land with or adjacent to beast" )]
 		public async Task Level1( FearCtx ctx ) {

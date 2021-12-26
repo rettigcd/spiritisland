@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 
-namespace SpiritIsland.BranchAndClaw.Blight {
+namespace SpiritIsland.BranchAndClaw {
 
 	public class APallUponTheLand : BlightCardBase {
 

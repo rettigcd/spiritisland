@@ -5,6 +5,7 @@ namespace SpiritIsland.BranchAndClaw {
 	public class Demoralized : IFearOptions {
 
 		public const string Name = "Demoralized";
+		string IFearOptions.Name => Name;
 
 		[FearLevel( 1, "Defend 1 in all lands" )]
 		public Task Level1( FearCtx ctx ) {

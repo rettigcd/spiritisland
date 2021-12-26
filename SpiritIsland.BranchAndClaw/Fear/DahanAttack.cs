@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 namespace SpiritIsland.BranchAndClaw {
 
 	class DahanAttack : IFearOptions {
+
 		public const string Name = "Dahan Attack";
+		string IFearOptions.Name => Name;
 
 		[FearLevel( 1, "Each player removes 1 eplorer from a land with dahan" )]
 		public async Task Level1( FearCtx ctx ) {

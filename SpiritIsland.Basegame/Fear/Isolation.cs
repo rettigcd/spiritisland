@@ -6,6 +6,8 @@ namespace SpiritIsland.Basegame {
 	public class Isolation : IFearOptions {
 
 		public const string Name = "Isolation";
+		string IFearOptions.Name => Name;
+
 
 		[FearLevel( 1, "Each player removes 1 Explorer / Town from a land where it is the only Invader." )]
 		public Task Level1( FearCtx ctx ) {

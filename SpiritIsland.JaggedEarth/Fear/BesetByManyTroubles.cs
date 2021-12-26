@@ -6,6 +6,8 @@ namespace SpiritIsland.JaggedEarth {
 		
 
 		public const string Name = "Beset by Many Troubles";
+		string IFearOptions.Name => Name;
+
 
 		[FearLevel(1, "In each land with Badlands / Beasts / Disease / Wilds / Strife, Defend 3." )]
 		public Task Level1( FearCtx ctx ) {

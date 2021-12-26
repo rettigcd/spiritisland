@@ -6,6 +6,8 @@ namespace SpiritIsland.JaggedEarth {
 	public class DahanReclaimFishingGrounds : IFearOptions {
 		
 		public const string Name = "Dahan Reclaim Fishing Grounds";
+		string IFearOptions.Name => Name;
+
 		[FearLevel(1, "Each player chooses a different Coastal land with Dahan. In each: 1 Damage per Dahan." )]
 		public Task Level1( FearCtx ctx ) {
 

@@ -6,6 +6,8 @@ namespace SpiritIsland.Basegame {
 	public class Retreat : IFearOptions {
 
 		public const string Name = "Retreat";
+		string IFearOptions.Name => Name;
+
 
 		[FearLevel( 1, "Each player may Push up to 2 Explorer from an Inland land." )]
 		public Task Level1( FearCtx ctx ) {

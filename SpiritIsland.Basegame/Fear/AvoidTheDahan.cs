@@ -5,6 +5,7 @@ namespace SpiritIsland.Basegame {
 
 	public class AvoidTheDahan : IFearOptions {
 		public const string Name = "Avoid the Dahan";
+		string IFearOptions.Name => Name;
 
 		[FearLevel(1, "Invaders do not Explore into lands with at least 2 Dahan." )]
 		public Task Level1( FearCtx ctx ) {

@@ -3,6 +3,7 @@
 namespace SpiritIsland.BranchAndClaw {
 	class Unrest : IFearOptions {
 		public const string Name = "Unrest";
+		string IFearOptions.Name => Name;
 
 		[FearLevel( 1, "Each player adds 1 strife to a town." )]
 		public async Task Level1( FearCtx ctx ) {

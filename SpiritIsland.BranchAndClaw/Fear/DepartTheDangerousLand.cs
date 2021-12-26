@@ -6,6 +6,7 @@ namespace SpiritIsland.BranchAndClaw {
 	class DepartTheDangerousLand : IFearOptions {
 
 		public const string Name = "Depart the Dangerous Land";
+		string IFearOptions.Name => Name;
 
 		[FearLevel( 1, "Each player removes 1 explorer from a land with beast, disease or at least 2 dahan" )]
 		public async Task Level1( FearCtx ctx ) {

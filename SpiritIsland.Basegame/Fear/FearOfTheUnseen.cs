@@ -6,6 +6,8 @@ namespace SpiritIsland.Basegame {
 	public class FearOfTheUnseen : IFearOptions {
 
 		public const string Name = "Fear of the Unseen";
+		string IFearOptions.Name => Name;
+
 
 		[FearLevel( 1, "Each player removes 1 Explorer / Town from a land with SacredSite." )]
 		public async Task Level1( FearCtx ctx ) {

@@ -9,6 +9,8 @@ namespace SpiritIsland.Basegame {
 	public class SeekSafety : IFearOptions {
 
 		public const string Name = "Seek Safety";
+		string IFearOptions.Name => Name;
+
 
 		[FearLevel( 1, "Each player may Push 1 Explorer into a land with more Town / City than the land it came from." )]
 		public async Task Level1( FearCtx ctx ) {

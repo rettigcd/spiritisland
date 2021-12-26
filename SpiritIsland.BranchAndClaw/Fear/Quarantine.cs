@@ -5,6 +5,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	public class Quarantine : IFearOptions {
 		public const string Name = "Quarantine";
+		string IFearOptions.Name => Name;
+
 
 		[FearLevel( 1, "Explore does not affect coastal lands." )]
 		public Task Level1( FearCtx ctx ) {

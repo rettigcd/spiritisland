@@ -27,6 +27,7 @@
     <ProjectReference Include="..\SpiritIsland.Basegame\SpiritIsland.Basegame.csproj" />
     <ProjectReference Include="..\SpiritIsland.BranchAndClaw\SpiritIsland.BranchAndClaw.csproj" />
     <ProjectReference Include="..\SpiritIsland.JaggedEarth\SpiritIsland.JaggedEarth.csproj" />
+    <ProjectReference Include="..\SpiritIsland.PromoPack1\SpiritIsland.PromoPack1.csproj" />
     <ProjectReference Include="..\SpiritIsland\SpiritIsland.csproj" />
   </ItemGroup>
 

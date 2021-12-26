@@ -81,7 +81,7 @@ namespace SpiritIsland {
 
 		static public PowerCard For<T>() => For(typeof(T));
 
-		static PowerCard For( Type type ) => For( FindMethod( type ) );
+		static public PowerCard For( Type type ) => For( FindMethod( type ) );
 
 		static MethodInfo FindMethod( Type type ) {
 			// try static method (spirit / major / minor)
@@ -103,6 +103,7 @@ namespace SpiritIsland {
 			return new PowerCard( method, targetSpace );
 		}
 
+		// !!! these methods can be moved to Test project
 		static public PowerCard[] GetMajors(Type assemblyRefType) {
 			static bool HasMajorAttribute( MethodBase m ) => m.GetCustomAttributes<MajorCardAttribute>().Any();
 			static bool HasMajorMethod( Type type ) => type.GetMethods().Any( HasMajorAttribute );

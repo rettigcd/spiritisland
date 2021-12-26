@@ -5,7 +5,10 @@ using System.Threading.Tasks;
 namespace SpiritIsland.Basegame {
 
 	public class DahanOnTheirGuard : IFearOptions {
+
 		public const string Name = "Dahan on their Guard";
+		string IFearOptions.Name => Name;
+
 
 		[FearLevel( 1, "In each land, Defend 1 per Dahan." )]
 		public Task Level1( FearCtx ctx ) {

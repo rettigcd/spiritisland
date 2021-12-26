@@ -7,6 +7,8 @@ namespace SpiritIsland.JaggedEarth {
 	public class NervesFray : IFearOptions {
 
 		public const string Name = "Nerves Fray";
+		string IFearOptions.Name => Name;
+
 
 		[FearLevel(1, "Each player adds 1 Strife in a land not matching a Ravage Card." )]
 		public Task Level1( FearCtx ctx ) {

@@ -6,6 +6,8 @@ namespace SpiritIsland.Basegame {
 	public class TradeSuffers : IFearOptions {
 
 		public const string Name = "Trade Suffers";
+		string IFearOptions.Name => Name;
+
 
 		[FearLevel( 1, "Invaders do not Build in lands with City." )]
 		public Task Level1( FearCtx ctx ) {

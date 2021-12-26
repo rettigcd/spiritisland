@@ -5,6 +5,8 @@ namespace SpiritIsland.Basegame {
 	public class Scapegoats : IFearOptions {
 
 		public const string Name = "Scapegoats";
+		string IFearOptions.Name => Name;
+
 
 		[FearLevel( 1, "Each Town destroys 1 Explorer in its land." )]
 		public Task Level1( FearCtx ctx ) {

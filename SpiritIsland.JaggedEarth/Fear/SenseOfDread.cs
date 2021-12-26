@@ -8,6 +8,7 @@ namespace SpiritIsland.JaggedEarth {
 	public class SenseOfDread : IFearOptions {
 
 		public const string Name = "Sense of Dread";
+		string IFearOptions.Name => Name;
 
 		[FearLevel(1, "On Each Board: Remove 1 Explorer from a land matching a Ravage card." )]
 		public Task Level1( FearCtx ctx ) {

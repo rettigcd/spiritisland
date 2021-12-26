@@ -6,6 +6,7 @@ namespace SpiritIsland.Basegame {
 	public class OverseasTradeSeemSafer : IFearOptions {
 
 		public const string Name = "Overseas Trade Seem Safer";
+		string IFearOptions.Name => Name;
 
 		[FearLevel( 1, "Defend 3 in all Coastal lands." )]
 		public Task Level1( FearCtx ctx ) {

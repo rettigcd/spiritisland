@@ -5,6 +5,8 @@ namespace SpiritIsland.JaggedEarth {
 	public class ThologicalStrife : IFearOptions {
 
 		public const string Name = "Theological Strife";
+		string IFearOptions.Name => Name;
+
 
 		[FearLevel(1, "Each player adds 1 Strife in a land with Presence." )]
 		public Task Level1( FearCtx ctx ) {

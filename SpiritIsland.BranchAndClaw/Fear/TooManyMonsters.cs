@@ -4,6 +4,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	class TooManyMonsters : IFearOptions {
 		public const string Name = "Too Many Monsters";
+		string IFearOptions.Name => Name;
+
 
 		[FearLevel( 1, "Each player removes 1 explorer / town from a land with beast." )]
 		public async Task Level1( FearCtx ctx ) {

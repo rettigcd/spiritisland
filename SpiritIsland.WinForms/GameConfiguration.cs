@@ -1,12 +1,11 @@
 ﻿using SpiritIsland.Basegame;
-using SpiritIsland.BranchAndClaw;
-using SpiritIsland.JaggedEarth;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
 namespace SpiritIsland.WinForms {
+
 	public class GameConfiguration {
 		public int ShuffleNumber;
 		public bool UseBranchAndClaw;
@@ -18,11 +17,16 @@ namespace SpiritIsland.WinForms {
 
 		public GameState BuildGame() {
 			var gameSettings = this;
+
+			// !!! Call this from whereever spirit list is generated
+			List<IGameComponentProvider> providers = GetProviders( gameSettings.UseBranchAndClaw );
+
 			Spirit spirit = (Spirit)Activator.CreateInstance( gameSettings.SpiritType );
 			if(gameSettings.UsePowerProgression) {
 				try {
 					spirit.UsePowerProgression();
-				} catch {
+				}
+				catch {
 					MessageBox.Show( "Unable to use power progression for " + spirit.Text );
 				}
 			}
@@ -37,19 +41,14 @@ namespace SpiritIsland.WinForms {
 
 			var majorCards = new List<PowerCard>();
 			var minorCards = new List<PowerCard>();
+			List<IFearOptions> fearCards = new List<IFearOptions>();
 
-			minorCards.AddRange( PowerCard.GetMinors( typeof( AcceleratedRot ) ) );
-			majorCards.AddRange( PowerCard.GetMajors( typeof( AcceleratedRot ) ) );
-
-			if(gameSettings.UseBranchAndClaw) {
-				minorCards.AddRange( PowerCard.GetMinors( typeof( CastDownIntoTheBrinyDeep ) ) );
-				majorCards.AddRange( PowerCard.GetMajors( typeof( CastDownIntoTheBrinyDeep ) ) );
+			foreach(var provider in providers) {
+				minorCards.AddRange( provider.MinorCards );
+				majorCards.AddRange( provider.MajorCards );
+				fearCards.AddRange( provider.FearCards );
+				// !!! Blight....
 			}
-			if(gameSettings.UseJaggedEarth) {
-				minorCards.AddRange( PowerCard.GetMinors( typeof( BatsScoutForRaidsByDarkness ) ) );
-				majorCards.AddRange( PowerCard.GetMajors( typeof( BatsScoutForRaidsByDarkness ) ) );
-			}
-
 
 			// GameState
 			var gameState = new GameState( spirit, board );
@@ -59,19 +58,9 @@ namespace SpiritIsland.WinForms {
 
 			gameState.InvaderDeck = new InvaderDeck( randomizer );
 
-			// Shuffle Major / Minor Cards
+			// Shuffle
 			gameState.MajorCards = new PowerCardDeck( majorCards.ToArray(), randomizer );
 			gameState.MinorCards = new PowerCardDeck( minorCards.ToArray(), randomizer );
-
-			// --- start FEAR ---
-			List<IFearOptions> fearCards = new List<IFearOptions>();
-			fearCards.AddRange( Basegame.FearCards.GetFearCards() );
-			if(gameSettings.UseBranchAndClaw) {
-				fearCards.AddRange( BranchAndClaw.FearCards.GetFearCards() );
-				fearCards.AddRange( JaggedEarth.FearCards.GetFearCards() );
-			}
-
-			// Shuffle Fear cards
 			randomizer.Shuffle( fearCards );
 
 			gameState.Fear.Deck.Clear();
@@ -79,7 +68,7 @@ namespace SpiritIsland.WinForms {
 				gameState.Fear.AddCard( f );
 			// --- End FEAR
 
-			gameState.BlightCard = (randomizer.Next(1) == 0)
+			gameState.BlightCard = (randomizer.Next( 1 ) == 0)
 				? new DownwardSpiral()
 				: new MemoryFadesToDust();
 
@@ -89,6 +78,18 @@ namespace SpiritIsland.WinForms {
 			return gameState;
 		}
 
+		public static List<IGameComponentProvider> GetProviders( bool useBranchAndClaw ) {
+			List<IGameComponentProvider> providers = new List<IGameComponentProvider> {
+				new GameComponentProvider()
+			};
+			if(useBranchAndClaw) {
+				providers.Add( new BranchAndClaw.GameComponentProvider() );
+				providers.Add( new PromoPack1.GameComponentProvider() );
+				providers.Add( new JaggedEarth.GameComponentProvider() );
+			}
+
+			return providers;
+		}
 	}
 
 }

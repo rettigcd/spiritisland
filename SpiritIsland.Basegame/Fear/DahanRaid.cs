@@ -8,6 +8,7 @@ namespace SpiritIsland.Basegame {
 	public class DahanRaid : IFearOptions {
 
 		public const string Name = "Dahan Raid";
+		string IFearOptions.Name => Name;
 
 		[FearLevel(1, "Each player chooses a different land with Dahan. 1 Damage there.")]
 		public Task Level1( FearCtx ctx ) {

@@ -6,6 +6,8 @@ namespace SpiritIsland.Basegame {
 	public class TallTalesOfSavagery : IFearOptions {
 
 		public const string Name = "Tall Tales of Savagery";
+		string IFearOptions.Name => Name;
+
 
 		[FearLevel( 1, "Each player removes 1 Explorer from a land with Dahan." )]
 		public async Task Level1( FearCtx ctx ) {

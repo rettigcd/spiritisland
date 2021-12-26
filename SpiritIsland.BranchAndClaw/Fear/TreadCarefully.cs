@@ -5,6 +5,8 @@ namespace SpiritIsland.BranchAndClaw {
 
 	class TreadCarefully : IFearOptions {
 		public const string Name = "Tread Carefully";
+		string IFearOptions.Name => Name;
+
 
 		[FearLevel( 1, "Each player may choose a land with dahan or adjacent to at least 5 dahan.  Invaders do not ravage there this turn." )]
 		public async Task Level1( FearCtx ctx ) {

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace SpiritIsland.BranchAndClaw.Blight {
+namespace SpiritIsland.BranchAndClaw {
 
 	public class PromisingFarmlands : BlightCardBase {
 

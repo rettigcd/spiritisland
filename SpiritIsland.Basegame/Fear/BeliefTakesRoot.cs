@@ -7,6 +7,8 @@ namespace SpiritIsland.Basegame {
 	public class BeliefTakesRoot : IFearOptions {
 
 		public const string Name = "Belief takes Root";
+		string IFearOptions.Name => Name;
+
 
 		[FearLevel( 1, "Defend 2 in all lands with Presence." )]
 		public Task Level1( FearCtx ctx ) {

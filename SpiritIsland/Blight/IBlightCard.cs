@@ -3,6 +3,7 @@
 namespace SpiritIsland {
 
 	public interface IBlightCard {
+		string Name { get; }
 		void OnGameStart( GameState gs );
 		void OnBlightDepleated( GameState gs );
 		Task OnStartOfInvaders( GameState gs );
