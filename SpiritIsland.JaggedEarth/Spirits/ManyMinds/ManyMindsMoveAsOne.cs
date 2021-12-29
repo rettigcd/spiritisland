@@ -10,7 +10,6 @@ namespace SpiritIsland.JaggedEarth {
 
 		public override SpecialRule[] SpecialRules => new SpecialRule[]{ FlyFastAsThought, AJoiningOfSwarmsAndFlocks };
 
-		// !!! A Joining of... is not yet implemented
 		static readonly SpecialRule AJoiningOfSwarmsAndFlocks = new SpecialRule("A Joining of Swarms and Flocks","Your presence may also count as beast. If something change a beast that is your presence, it affects 2 of your presence there.");
 		static readonly SpecialRule FlyFastAsThought = new SpecialRule("Fly Fast as Thought","When you Gather or Push Beast, they may come from or go to lands up to 2 distant.");
 

@@ -27,7 +27,7 @@ namespace SpiritIsland {
 			while(0 < (options = GetOptions( RemainingTypes )).Length) {
 				var source = await ctx.Decision( Select.TokenFromManySpaces.ToGather( sharedGroupCounts.Sum(), ctx.Space, options, present ) );
 				if(source == null) break;
-				await ctx.Move( source.Token, source.Space, ctx.Space ); // !!! if moving dahan into frozen land, freeze them
+				await ctx.Move( source.Token, source.Space, ctx.Space );
 				--sharedGroupCounts[indexLookupByGroup[source.Token.Class]];
 			}
 		}

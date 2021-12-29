@@ -36,7 +36,7 @@ namespace SpiritIsland {
 		readonly Dictionary<Space, TokenCountDictionary> tokenCounts = new Dictionary<Space, TokenCountDictionary>();
 
 		readonly Dictionary<UniqueToken, List<Func<GameState, Space, int>>> dynamicTokens_ForGame = new Dictionary<UniqueToken, List<Func<GameState, Space, int>>>(); // !!! save to memento???
-		readonly Dictionary<UniqueToken, List<Func<GameState, Space, int>>> dynamicTokens_ForRound = new Dictionary<UniqueToken, List<Func<GameState, Space, int>>>(); // !!! save to memento???
+		readonly Dictionary<UniqueToken, List<Func<GameState, Space, int>>> dynamicTokens_ForRound = new Dictionary<UniqueToken, List<Func<GameState, Space, int>>>();
 
 		public void RegisterDynamic( System.Func<GameState,Space,int> inner, UniqueToken targetToken, bool entireGame ) {
 			var dict = entireGame ? dynamicTokens_ForGame : dynamicTokens_ForRound;

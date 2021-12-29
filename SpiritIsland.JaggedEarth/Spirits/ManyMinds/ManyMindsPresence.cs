@@ -18,14 +18,14 @@ namespace SpiritIsland.JaggedEarth {
 			await base.PlaceOn( space, gs );
 			// if created sacred site, create virtual beast
 			if(CountOn( space ) == 2)
-				gs.Tokens[space].Adjust(TokenType.Beast,1); // !!! Beast token is virtual so maybe we don't want to trigger TokenAdded
+				gs.Tokens[space].Adjust(TokenType.Beast,1); // virtual so don't trigger an event.
 		}
 
 		protected override async Task RemoveFrom_NoCheck( Space space, GameState gs ) {
 			await base.RemoveFrom_NoCheck( space, gs );
 			// if destroyed sacred site, remove virtual beast
 			if( CountOn( space ) == 1 )
-				gs.Tokens[space].Adjust(TokenType.Beast, 1); // !!! ??? should virtual tokens generate events - use Adjust instead??
+				gs.Tokens[space].Adjust(TokenType.Beast, 1); // !!! virtual tokens generate don't trigger events
 		}
 
 		async Task TokenMoved(GameState gs, TokenMovedArgs args) {
@@ -63,7 +63,7 @@ namespace SpiritIsland.JaggedEarth {
 			// if destination/to now has 4 or more presence,
 			// then there was already a virtual beast there and we need to remove 1 of the virtual beasts
 			if(4 <= CountOn( args.AddedTo ))
-				await gs.Tokens[args.AddedTo].Beasts.Remove(1, RemoveReason.Removed ); // ??? !!! should virtual tokens generate 
+				gs.Tokens[args.AddedTo].Beasts.Adjust(-1); // don't trigger event
 		}
 
 		async Task TokenRemoved(GameState gs, ITokenRemovedArgs args) {

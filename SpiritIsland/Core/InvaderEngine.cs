@@ -101,7 +101,8 @@ namespace SpiritIsland {
 			return stoppedByDisease;
 		}
 
-		public Func<TokenCountDictionary,GameState,Task<bool>> StopBuildWithDiseaseBehavior = StopBuildWithDiseaseBehavior_Default; // !!! move this to the GameState API
+		// !!! move this to the GameState API
+		public Func<TokenCountDictionary,GameState,Task<bool>> StopBuildWithDiseaseBehavior = StopBuildWithDiseaseBehavior_Default; 
 
 		public async Task<string> BuildSpace( TokenCountDictionary tokens, BuildingEventArgs.BuildType buildType ) {
 			if( await StopBuildWithDiseaseBehavior( tokens, gs ) )

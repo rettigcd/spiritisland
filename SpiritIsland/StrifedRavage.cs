@@ -35,10 +35,8 @@ namespace SpiritIsland {
 		}
 
 		public static void StrifedInvadersLoseHealthPerStrife( FearCtx ctx ) {
-			// Fear effect - Strifed invades lose 1 health per strive down to minimun of 1
+			// Fear effect - Strifed invades lose 1 health per strife down to minimun of 1
 
-
-			// !!! We need a reset other than end-of-round when Silent Shroud is in play
 			foreach(var space in ctx.GameState.Island.AllSpaces) {
 				var tokens = ctx.InvadersOn( space ).Tokens;
 				var strifedInvaders = tokens.Invaders()

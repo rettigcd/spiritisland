@@ -22,7 +22,7 @@ namespace SpiritIsland.WinForms {
 			using var g = Graphics.FromImage( overlayCache );
 			g.TranslateTransform(-bounds.X,-bounds.Y);
 
-			g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias; // !!! add this to growth painter.
+			g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 
 			this.graphics = g;
 

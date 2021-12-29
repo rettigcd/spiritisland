@@ -124,7 +124,7 @@ namespace SpiritIsland {
 		}
 
 		public async Task Destroy( Space space, GameState gs, ActionType actionType ) {
-			await DestroyBehavior.DestroyPresenceApi(this,space,gs, actionType); // !!!
+			await DestroyBehavior.DestroyPresenceApi(this,space,gs, actionType);
 			CheckIfSpiritIsDestroyted();
 		}
 

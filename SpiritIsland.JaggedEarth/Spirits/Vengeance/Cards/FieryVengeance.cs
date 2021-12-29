@@ -14,7 +14,7 @@ namespace SpiritIsland.JaggedEarth {
 
 			// 1 fear and 1 damage in one of target Spirit's lands.
 			var space = await ctx.Other.Action.Decision(new Select.Space("1 fear + 1 damage", ctx.Other.Presence.Spaces,Present.Always));
-			var spaceCtx = ctx.OtherCtx.Target(space); // !!! When we call .OtherCtx, always use the Self Spirits adjustments.
+			var spaceCtx = ctx.OtherCtx.Target(space);
 			spaceCtx.AddFear(1);
 			await spaceCtx.DamageInvaders(1);
 			//  (This is your Power, so blight counts as badland, even if target is another Spirit.)

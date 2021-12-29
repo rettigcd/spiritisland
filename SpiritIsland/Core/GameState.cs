@@ -233,7 +233,6 @@ namespace SpiritIsland {
 
 		#region Win / Loss
 
-		// !!! Replace this with an End-Of-Action Event
 		public void CheckWinLoss() {
 			if( ShouldCheckWinLoss)
 				CheckTerrorLevelVictory();

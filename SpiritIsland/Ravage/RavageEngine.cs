@@ -103,7 +103,10 @@ namespace SpiritIsland {
 			// destroy dahan
 			var dahan = grp.Tokens.Dahan;
 			@event.startingDahan = dahan.Count;
-			@event.dahanDestroyed = Math.Min( defendDamageTotal / cfg.DahanHitpoints, @event.startingDahan ); // rounding down, !!! if some of the dahan have previously taken damage, this # will be wrong
+
+			// !!! if some of the dahan have previously taken damage, this # will be wrong
+			@event.dahanDestroyed = Math.Min( defendDamageTotal / cfg.DahanHitpoints, @event.startingDahan ); // rounding down,
+
 			if(@event.dahanDestroyed != 0)
 				await cfg.DestroyDahan( dahan, @event.dahanDestroyed, 2 );
 

@@ -143,7 +143,9 @@ namespace SpiritIsland.JaggedEarth {
 		}
 
 		public override bool CouldHaveElements( ElementCounts subset ) {
-			var els = PreparedElements.Any() ? Elements.Union(PreparedElements): Elements;
+			var els = PreparedElements.Any() 
+				? Elements.Union(PreparedElements) 
+				: Elements;
 			return els.Contains(subset);
 		}
 
@@ -160,8 +162,10 @@ namespace SpiritIsland.JaggedEarth {
 			if(PreparedElements.Any()) {
 				var missing = subset.Except(actionElements);
 				if(PreparedElements.Contains(missing) && await this.UserSelectsFirstText($"Meet elemental threshold:"+subset.ToString(), "Yes, use prepared elements", "No, I'll pass.")) {
-					foreach(var pair in missing)
+					foreach(var pair in missing) {
 						PreparedElements[pair.Key] -= pair.Value;
+						actionElements[pair.Key] += pair.Value; // assign to this action so next check recognizes them
+					}
 					return true;
 				}
 			}
@@ -206,6 +210,20 @@ namespace SpiritIsland.JaggedEarth {
 				await base.TakeAction(factory,ctx);
 			} finally {
 				actionElements = null;
+			}
+		}
+
+		public override IMemento<Spirit> SaveToMemento() => new ShiftingMemento(this);
+		public override void LoadFrom( IMemento<Spirit> memento ) => ((ShiftingMemento)memento).Restore( this );
+
+		class ShiftingMemento : Spirit.Memento {
+			readonly KeyValuePair<Element, int>[] preparedElements;
+			public ShiftingMemento(ShiftingMemoryOfAges spirit):base(spirit) {
+				preparedElements = spirit.PreparedElements.ToArray();
+			}
+			public void Restore( ShiftingMemoryOfAges spirit ) { 
+				base.Restore( spirit );
+				InitFromArray( spirit.PreparedElements, preparedElements);
 			}
 		}
 

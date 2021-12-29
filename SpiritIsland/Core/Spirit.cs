@@ -475,7 +475,6 @@ namespace SpiritIsland {
 				spirit.Energy = energy;
 				spirit.tempCardPlayBoost = bonusCardPlay;
 				InitFromArray( spirit.Elements, elements);
-				// InitFromArray( spirit.PreparedElements, preparedElements); // !!! 
 				spirit.Presence.LoadFrom(presence);
 				spirit.Hand.SetItems( hand );
 				spirit.InPlay.SetItems( purchased );
@@ -485,14 +484,13 @@ namespace SpiritIsland {
 				spirit.usedInnates.SetItems( usedInnates );
 				spirit.InitElementsFromPresence();
 			}
-			static void InitFromArray(ElementCounts dict, KeyValuePair<Element,int>[] array ) {
+			static public void InitFromArray(ElementCounts dict, KeyValuePair<Element,int>[] array ) {
 				dict.Clear(); 
 				foreach(var p in array) dict[p.Key]=p.Value;
 			}
 			readonly int energy;
 			readonly int bonusCardPlay;
 			readonly KeyValuePair<Element,int>[] elements;
-			// readonly KeyValuePair<Element,int>[] preparedElements;
 			readonly IMemento<SpiritPresence> presence;
 			readonly PowerCard[] hand;
 			readonly PowerCard[] purchased;

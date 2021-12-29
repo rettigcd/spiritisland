@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.JaggedEarth {
+
 	public class TheWoundedWildReturnsOnItsAssailants {
 
 		[MajorCard("The Wounded Wild Turns on its Assailants",4,Element.Fire,Element.Plant,Element.Animal), Slow, FromPresence(1,Target.Blight)]

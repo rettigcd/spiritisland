@@ -32,7 +32,7 @@ namespace SpiritIsland {
 			}
 		}
 
-		public IReadOnlyCollection<Track> Slots => slots; // !!! switch to something read-only
+		public IReadOnlyCollection<Track> Slots => slots;
 
 		public IEnumerable<Track> Revealed => slots.Take( revealedCount );
 

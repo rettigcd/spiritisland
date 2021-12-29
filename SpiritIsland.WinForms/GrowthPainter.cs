@@ -99,13 +99,15 @@ namespace SpiritIsland.WinForms {
 				case "GainElement(Moon)": GainElement( rect, Element.Moon ); break;
 				case "GainElement(Sun)": GainElement( rect, Element.Sun ); break;
 				case "GainTime(2)":    GainTime( rect ); break;
-				case "GainTime(1)x2":  Gain1TimeOr2CardPlaysX2( rect ); break; // !!! show card plays
+				case "GainTime(1)x2":  Gain1TimeOr2CardPlaysX2( rect ); break;
 				case "GainTime(1)x3":  Gain1TimeOr2EnergyX3( rect ); break;
 				case "DrawPowerCardFromDaysThatNeverWere": DrawImage( rect, Img.FracturedDays_DrawDtnw ); break; 
 				// Grinning Trickster
 				case "GainEnergyEqualToCardPlays": DrawIconInCenter( rect, Img.GainEnergyEqualToCardPlays ); break;
 				// Stones Unyielding Defiance
-				case "GainElements(Earth,Earth)": GainElement( rect, Element.Earth, Element.Earth ); break; // !!! this is drawn as an OR, layer them and make them an AND
+				case "GainElements(Earth,Earth)": 
+					GainElement( rect, Element.Earth, Element.Earth ); 
+					break; // !!! this is drawn as an OR, layer them and make them an AND
 				// Many Minds
 				case "Gather1Beast": LandGatherBeasts( rect ); break;
 				case "PlacePresenceAndBeast": 

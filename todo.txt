@@ -1,18 +1,152 @@
-﻿- Easy -
-Power Corrodes
-Thriving communities
-Unnaturual Proliferation
+﻿TargetSpaceCtx => RemoveUpToN   needs implemented.
 
-- Healthy Island -
-Invaders Find The Land
-Strong Earth Shatters Slowly
+Entrap the Forces of Corruption
+	- Powers that add blight are supposed to cause cascade
 
-- Med / Hard -
-Untended Land Crumbles
-All Things Weaken
+Each time dahan are destroyed, destroy 2 fewer.
+	- only implemented for Ravage
+
+Unstrife damaged striffed
+ 	- would be nice to use Ravage engeine to accomplish this and not requie spirit input.
+ 	- damage spills over onto unstrifed
+
+RepeatCardForCost - Add test that it pulls from Used actions, NOT discard pile.
+PlayCardForCost - looks like it is repeating card, not playing from HAND
+
+
+Move PowerCard.GetMajors and PowerCard.GetMinors to test project
+Move PowerCardExtensions_ForWinForms to UI project
+
+Move promo pack 1 images to own folder heirarchy
+
+Pour Time Sideways 
+	- Adding Explore on target board is not implemented. 
+	- Adding Ravage on target board not implemented.  (should only add spaces that match card)
+	- Add Build should filter on spaces that match card.
+
+Consilidate GameState API - things that aren't data and have no theoretical state.  Spirits could hand on to them and not have to pass gamestate around.
+
+Make Spirit.ResolveActions private/protected.
+
+CardDrawer - get rid of power progression cards in tests, then make Card Drawer private and clean it up.
+
+Tracking Actions with GUID on spirit will not work for multi-player games.
+
+Check if Gates of Deepest Power has bug that allows duplicate cards. like 1 in discard and one in hand.
+
+Check if anything is calling Spirit.GetTargetOptions directly and skipping over Shadows ability to pay to target.
+
+SelfCtx.TargetSpace(label) can be moved to Test project.
+
+TargetSpaceCtx.IsOneOf needs tests to ensure it uses Terrain Mapper.
+
+TargetSpaceCtx.HasBlight should go throught the Tokens.Blight
+
+Consolidate the Blight API - HasBlight/AddBlight/RemoveBlight.  Etc.
+	- make sure we don't accidentally do an .Adjust when it should really add to/remove from card.
+
+Make Badlands Damage work properly - once per action.
+
+DestroyInvaderStrategy - can this be consolidated into The PublishToken api?  
+DestroyDahan - can this be merged into the TokenCountDictionary?
+
+InvaderDeck.KeepBuildCards - can we make this go away. Make something cleaner?
+
+Presence as Tokens - Need access to GameState when doing Token Things
+
+Can we Set Spirit.GameState property and then not pass it everywhere?
+
+Review SpiritPresence.RemoveFrom_NoCheck( Space space, GameState gameState ) { 
+
+ConfigureRavage.DamageFromInvader - move outside of ravage so it effects other things too?
+
+DamageDefenders calculations are wrong. Doesn't handle pre-damaged dahan nor explorers helping (Power of Command)
+
+Figure out why Setup-Action needs triggered from inside Spirit and at beginning of SinglePlayerGame (ocean/sharp fangs)
+
+TokenCountDictionary.counts -> make private.
+
+TokenCountDictionary.MoveTo (test that correct events are published)
+
+Don't let Pusher/Gatherer move frozen dahan. - add tests!
+
+Save DynamicTokens_ForGame to memento.
+Clear DynamicTokens_ForRound when memento is restored.
+
+DahanGroupBinding.Drown should be async so UI will update.
+
+
+Don't instanciate PowerCards / FearCards that are in the deck until they are drawn.
+
+Cast Down Into the Briny Deep - Implement
+
+Strangling FireVine - let user pick origination sands.
+
+Blight - All Things Weeken - finish implementation
+
+Switch blight actions from Start-of-Ravage to Start-of-invader phase (for when we have fear and events)
+
+Upgrading or downgrading explorers with strife, should maintain strife.
+
+Make sure win/loss is checked after every spirit action / power card
+
+Add Token.MoveFrom method to simplify Draw-Into-Void
+
+Dream of the Untouched Land - implement once we support multiple players / boards
+
+TheWoundedWildReturnsOnItsAssailants - fix once we support multiple players / boards
+
+Review items that are PickSpace then Pick Token into a single pick-space-token step.
+
+Weave together the Fabric... fix once we get multiple players / boards
+
+Settle into hunting grounds - implement presence cannot move.
+
+Test- Bats Scoutt... secondary damage didn't seem to be working.
+
+Blight and cascading (from power might not happen)
+
+HazardsSpreadAcrossTheIsland - should this trigger and AddToken event?
+
+Fractured days - Implement gain a time for single solo mode
+Fractured Days - in spirit - create a deck list instead of overriding
+
+Absolute Stasis - prevent targetting ocean.
+Absolute Stasis - figue out how to not hide cities from Victory check
+The Past Returns again - implement all spirits paying.
+Implement FAce-up / face-down for deck cards so we can see waht stage a card is before revealing it.
+
+Slip the flows of time - use any # of times
+Visions of shifting Future - fix once we support events.
+Visions of shifting future - use Ransomizer so it is repeatable.
+Over enthusiastic arson - blight should cascade.
+BoonOfSwarmingBedevilment - rewrite using virtual defence
+
+Starlight seeks its form - missing +1 energy in growth track.
+
+Test GatherTheScatteredLightOfStars - to see if forgetting a power card creates a null card.
+
+WreakVengeanceForTheLandsCorruption - virtual tokens might not be correct.
+
+SavageREvenge - create a display-only option (with no elements) to show general information. Use for Lure's 2nd innate also.
+
+Volcano Looming High - check if spirit can place presence outside mountain during power card use.
+
+Explosive Erruption should not destroy volcano presence - TEST!
+
+Load Win/Loss checks into a list that is evaluated.  Only load list for real games.  Leave empty for testing.
+
+--  UI  --
+CachedImageDrawer - make it draw the images
+Stones unyealding - Draw GainElments as an AND
+Drawing Fractured Days # of card plays.
+
+move GrowthPainter.GetTargetFilterIcon into SpiritIsland project, closer to Target. class
 
 
 
+
+=========================================================
 // !!! When blight is added to target land, it doesn't cascade. - (Entrap the Forces of Corruption)
 
 

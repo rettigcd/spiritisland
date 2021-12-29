@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 
 namespace SpiritIsland {
+
 	/// <summary>
 	/// A card in spirit's Hand, may be Played (triggering its elements to be added)
 	/// </summary>
@@ -17,7 +18,7 @@ namespace SpiritIsland {
 		public async Task ActivateAsync( SelfCtx ctx ) {
 
 			int maxCardCost = ctx.Self.Energy;
-			var options = ctx.Self.UsedActions.OfType<PowerCard>() // can't use Discard pile because those cards are from prior rounds.  // !!! needs tests
+			var options = ctx.Self.UsedActions.OfType<PowerCard>() // can't use Discard pile because those cards are from prior rounds.
 				.Where(card=>ctx.Self.IsActiveDuring(ctx.GameState.Phase,card)) 
 				.Where(card=>card.Cost<=maxCardCost)
 				.ToArray();

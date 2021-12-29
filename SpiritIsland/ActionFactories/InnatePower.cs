@@ -51,7 +51,7 @@ namespace SpiritIsland {
 		/// <summary> When set, overrides the speed attribute for everything except Display Speed </summary>
 		public ISpeedBehavior OverrideSpeedBehavior { get; set; }
 
-		public bool CouldActivateDuring( Phase phase, Spirit spirit ) {	// !!! Can we do this somehow without asking them every time if they want to use an element?
+		public bool CouldActivateDuring( Phase phase, Spirit spirit ) {
 			return CouldBeTriggered( spirit )
 				&& CouldMatchPhase( phase, spirit );
 		}

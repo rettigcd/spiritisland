@@ -41,7 +41,7 @@ namespace SpiritIsland {
 			List<Element> available = elements.ToList();
 
 			while(selected.Count < totalToGain) {
-				var el = await spirit.SelectElementEx( $"Select {selected.Count + 1} of {totalToGain} element to gain", available ); // !!!!
+				var el = await spirit.SelectElementEx( $"Select {selected.Count + 1} of {totalToGain} element to gain", available ); 
 				selected.Add( el );
 				available.Remove( el );
 			}
