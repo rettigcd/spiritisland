@@ -187,25 +187,10 @@ namespace SpiritIsland.WinForms {
 			graphics.DrawImageFitBoth(image, rect );
 		}
 
-
 		static Bitmap GetTargetFilterIcon( string filterEnum ) {
-			// !!! Move the filterEnum closer to where the filter is defined, not here.
-			Img img = filterEnum switch {
-				Target.Dahan              => Img.Icon_Dahan,
-				Target.JungleOrWetland    => Img.Icon_JungleOrWetland,
-				Target.DahanOrInvaders    => Img.Icon_DahanOrInvaders,
-				Target.Coastal            => Img.Icon_Coastal,
-				Target.PresenceOrWilds    => Img.Icon_PresenceOrWilds,
-				Target.NoBlight           => Img.Icon_NoBlight,
-				Target.BeastOrJungle      => Img.Icon_BeastOrJungle,
-				Target.Ocean              => Img.Icon_Ocean,
-				Target.MountainOrPresence => Img.Icon_MountainOrPresence,
-				Target.TownCityOrBlight   => Img.Icon_TownCityOrBlight,
-				_                         => Img.None, // Inland, Any
-			};
-			return img != default ? ResourceImages.Singleton.GetImage(img) : null;
+			Img img = FilterEnumExtension.GetImgEnum( filterEnum );
+			return img == default ? null : ResourceImages.Singleton.GetImage( img );
 		}
-
 
 		void MovePresence( RectangleF rect, int range ) {
 

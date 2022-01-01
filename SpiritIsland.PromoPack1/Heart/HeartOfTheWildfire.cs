@@ -58,7 +58,11 @@ namespace SpiritIsland.PromoPack1 {
 		public override string Text => Name;
 
 		public override SpecialRule[] SpecialRules => new SpecialRule[] {
-			new SpecialRule("BLAZING PRESENCE","After you add or move presence after Setup, in the land it foes to: For each fire showingo n your presence Tracks, do 1 Damage.  If 2 fire or more are showing on your presence Tracks, add 1 blight.  Push al beasts and any number of dahan.  Added blight does not destory your presence.")
+			new SpecialRule(
+				"Blazing Presence",
+				"After you add or move presence after Setup, in the land it goes to: For each fire showing on your presence Tracks, do 1 Damage."
+				+"  If 2 fire or more are showing on your presence Tracks, add 1 blight."
+				+"  Push all beasts and any number of dahan.  Added blight does not destory your presence.")
 		} ;
 
 		public override async Task PlacePresence( IOption from, Space to, GameState gs ) {

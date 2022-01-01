@@ -59,11 +59,12 @@ namespace SpiritIsland.JaggedEarth {
 				await srcBeasts.Add(1); // Beast token is virtual so maybe we don't want to trigger TokenAdded
 		}
 
-		async Task AddedVirtualBeastAtDestination_LimitTo1( GameState gs, TokenMovedArgs args ) {
+		Task AddedVirtualBeastAtDestination_LimitTo1( GameState gs, TokenMovedArgs args ) {
 			// if destination/to now has 4 or more presence,
 			// then there was already a virtual beast there and we need to remove 1 of the virtual beasts
 			if(4 <= CountOn( args.AddedTo ))
 				gs.Tokens[args.AddedTo].Beasts.Adjust(-1); // don't trigger event
+			return Task.CompletedTask;
 		}
 
 		async Task TokenRemoved(GameState gs, ITokenRemovedArgs args) {

@@ -2,9 +2,10 @@
 using System.Threading.Tasks;
 
 namespace SpiritIsland.JaggedEarth {
-	class AbsoluteStatis {
 
-		[SpiritCard("Absolute Stasis",1,Element.Sun,Element.Air,Element.Earth), Fast, FromSacredSite(2)] // !!! not ocean
+	public class AbsoluteStatis {
+
+		[SpiritCard("Absolute Stasis",1,Element.Sun,Element.Air,Element.Earth), Fast, FromSacredSite(2,Target.NotOcean)]
 		static public Task ActAsync(TargetSpaceCtx ctx ) {
 			if(ctx.Self is not FracturedDaysSplitTheSky frac) return Task.CompletedTask;
 
@@ -23,7 +24,7 @@ namespace SpiritIsland.JaggedEarth {
 			ctx.Space.Board.Remove(ctx.Space); // !!! this will erroneously hide cities and towns from the Terror-Level Victory check
 
 			// you cannot target into, out of, or through where the land was.
-			// This cannot target an Ocean oven if Oceans are in play.
+			// This cannot target an Ocean even if Oceans are in play.
 
 			// --------
 			// Restore 

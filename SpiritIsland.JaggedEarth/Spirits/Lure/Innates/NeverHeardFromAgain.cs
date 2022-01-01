@@ -31,10 +31,10 @@ namespace SpiritIsland.JaggedEarth {
 
 		[InnateOption("4 plant,1 animal","2 Damage",1)]
 		static public async Task Option3( TargetSpaceCtx ctx ) {
-			int preExplorerCount = ctx.Tokens[Invader.Explorer[1]];
+			int preExplorerCount = ctx.Tokens[Invader.Explorer.Default];
 			await DestroyFromBadlandsBeastDiseaseWilds( ctx );
 			await ctx.DamageInvaders(2);
-			int destoryedExplorers = ctx.Tokens[Invader.Explorer[1]] - preExplorerCount;
+			int destoryedExplorers = ctx.Tokens[Invader.Explorer.Default] - preExplorerCount;
 			ctx.AddFear( CalcFearFromExplorerDeath( destoryedExplorers ) );
 		}
 
@@ -46,5 +46,7 @@ namespace SpiritIsland.JaggedEarth {
 		}
 
 	}
+
+	// !!! Do Fear calculation last, once all explorers are destoryed.
 
 }

@@ -15,7 +15,7 @@
 			string ns = card.MethodType.Namespace;
 			string edition = ns.Contains( "Basegame" ) ? "basegame"
 				: ns.Contains( "BranchAndClaw" ) ? "bac"
-				: ns.Contains( "PromoPack1" ) ? "bac"  // !!! temporary
+				: ns.Contains( "PromoPack1" ) ? "pp1"  // !!! temporary
 				: ns.Contains( "JaggedEarth" ) ? "je"
 				: ns;
 			return $".\\images\\{edition}\\{cardType}\\{filename}.jpg";

@@ -1,5 +1,6 @@
 ﻿using Shouldly;
 using SpiritIsland.Basegame;
+using SpiritIsland.Tests.Core;
 using System.Collections.Generic;
 using Xunit;
 namespace SpiritIsland.Tests.Basegame.Fear {

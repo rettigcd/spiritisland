@@ -58,7 +58,7 @@ namespace SpiritIsland.JaggedEarth {
 
 		}
 
-		static Func<TokenCountDictionary,bool> FindBadlandsWildsOrDahanSpaces( FearCtx ctx ) {
+		static Func<TokenCountDictionary,bool> FindBadlandsWildsOrDahanSpaces( FearCtx _ ) {
 			return (tokens) => tokens.Badlands.Any || tokens.Wilds.Any || tokens.Dahan.Any;
 		}
 

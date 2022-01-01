@@ -15,15 +15,14 @@ namespace SpiritIsland.BranchAndClaw {
 			// Add 1 wilds.
 			await ctx.Wilds.Add(1);
 
-			// Add 1 wilds in the originating Sands.
-			var original = ctx.Adjacent
+			// Add 1 wilds in the originating Sands. 
+			// !! won't find original if this was picked using a range-extender - would need to capture that info during the targetting process
+			var originatingOptions = ctx.Adjacent
 				.Where( a=> ctx.Self.Presence.Spaces.Contains(a) && a.IsSand )
-				.FirstOrDefault(); // !! won't find original if this was picked using a range-extender - would need to capture that info during the targetting process
-
-			// !!! let user pick which space was the originating sands
-
-			if(original!=null)
-				await ctx.Target(original).Wilds.Add(1);
+				.ToArray();
+			var originalCtx = await ctx.SelectSpace("Select origination space", originatingOptions);
+			if(originalCtx != null)
+				await originalCtx.Wilds.Add(1);
 
 			// 1 damage per wilds in / adjacent to target land.
 			int wildsDamage = ctx.Space.Range(1).Sum(s=>ctx.Target(s).Wilds.Count);

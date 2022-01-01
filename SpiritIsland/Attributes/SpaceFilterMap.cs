@@ -29,6 +29,7 @@ namespace SpiritIsland {
 			[Target.TownCityOrBlight  ] = ctx => ctx.HasBlight || ctx.Tokens.HasAny( Invader.City, Invader.Town ),
 			[Target.TownOrExplorer    ] = ctx => ctx.Tokens.HasAny( Invader.Explorer, Invader.Town ),  // Wash Away helper
 			[Target.TownOrCity        ] = ctx => ctx.Tokens.HasAny( Invader.City, Invader.Town ),  // Study the Invaders' Fears
+			[Target.NotOcean          ] = ctx => !ctx.Space.Is( Terrain.Ocean ), // even when ocean is is play, not allowed 
 
 			// Register new filters needed for Branch and Claw
 			[Target.Beast             ] = ctx => ctx.Beasts.Any,

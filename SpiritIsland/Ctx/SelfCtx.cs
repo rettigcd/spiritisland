@@ -61,8 +61,6 @@ namespace SpiritIsland {
 
 		public TargetSpaceCtx Target( Space space ) => new TargetSpaceCtx( this, space );
 
-		public TargetSpaceCtx TargetSpace( string spaceLabel ) => Target( GameState.Island.AllSpaces.First(s=>s.Label==spaceLabel) ); // !!! Testing extension - move to testing project
-
 		// Visually, selects the [presence] icon
 		public async Task<TargetSpaceCtx> TargetDeployedPresence( string prompt ) {
 			var space = await Decision( Select.DeployedPresence.All( prompt, Self,Present.Always ) );

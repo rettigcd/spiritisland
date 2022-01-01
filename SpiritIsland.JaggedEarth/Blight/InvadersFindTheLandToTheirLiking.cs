@@ -14,7 +14,7 @@ namespace SpiritIsland.JaggedEarth {
 				1 => pc*1, // 1
 				2 => pc*3/2, // 1.5 round down
 				3 => pc*2, // 2
-				_ => throw new System.ArgumentOutOfRangeException(),
+				_ => throw new System.IndexOutOfRangeException( nameof(gs.Fear.TerrorLevel) ),
 			};
 			gs.Fear.AddDirect(new FearArgs { count = fearCount });
 

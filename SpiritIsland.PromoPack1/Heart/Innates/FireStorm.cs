@@ -35,12 +35,13 @@ namespace SpiritIsland.PromoPack1 {
 				.Select(s=>ctx.Target(s))
 				.Where( x=>x.HasBlight )
 				.ToArray();
-			// ! don't .ToArray() this because we want it to re-execute each time.
-			var tokens = spacesWithPresenceAndBlight
-				.SelectMany( ctx => ctx.Tokens.Keys.Select(t=>new SpaceToken(ctx.Space,t)));
 
-			while(fireDamage > 0 && tokens.Any()) {
-				var token = await ctx.Decision( new Select.TokenFromManySpaces($"Apply fire damage. ({fireDamage} remaining)",tokens,Present.Always));
+			// ! don't .ToArray() this because we want it to re-execute each time.
+			var invaderTokens = spacesWithPresenceAndBlight
+				.SelectMany( ctx => ctx.Tokens.Invaders().Select(t=>new SpaceToken(ctx.Space,t)));
+
+			while(fireDamage > 0 && invaderTokens.Any()) {
+				var token = await ctx.Decision( new Select.TokenFromManySpaces($"Apply fire damage. ({fireDamage} remaining)",invaderTokens,Present.Always));
 				await ctx.Target(token.Space).Invaders.ApplyDamageTo1(1,token.Token);
 				--fireDamage;
 			}

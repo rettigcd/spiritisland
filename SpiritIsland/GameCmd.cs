@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace SpiritIsland {
+
 	public static class GameCmd {
+
 		// GameState actions
 		static public ActionOption<GameState> OnEachBoard( ActionOption<BoardCtx> boardAction ) 
 			=> new ActionOption<GameState>( "On each board, " + boardAction.Description, async gs => {
@@ -17,7 +19,7 @@ namespace SpiritIsland {
 		static public ActionOption<GameState> InEachLand( Cause cause, SpaceAction action, Func<TokenCountDictionary,bool> filter )
 			=> new ActionOption<GameState>("In each land, " + action.Description, async gs => {
 				var decisionMaker = new SelfCtx(gs.Spirits[0],gs,cause);
-				foreach(var space in gs.Island.AllSpaces)
+				foreach(var space in gs.Island.AllSpaces.Where(x=>filter==null || filter(gs.Tokens[x]) ) )
 					await action.Execute( decisionMaker.Target(space) );
 			} );
 

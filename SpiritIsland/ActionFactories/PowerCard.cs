@@ -103,18 +103,6 @@ namespace SpiritIsland {
 			return new PowerCard( method, targetSpace );
 		}
 
-		// !!! these methods can be moved to Test project
-		static public PowerCard[] GetMajors(Type assemblyRefType) {
-			static bool HasMajorAttribute( MethodBase m ) => m.GetCustomAttributes<MajorCardAttribute>().Any();
-			static bool HasMajorMethod( Type type ) => type.GetMethods().Any( HasMajorAttribute );
-			return assemblyRefType.Assembly.GetTypes().Where( HasMajorMethod ).Select( For ).ToArray();
-		}
-		static public PowerCard[] GetMinors( Type assemblyRefType ) {
-			static bool HasMinorAttribute( MethodBase m ) => m.GetCustomAttributes<MinorCardAttribute>().Any();
-			static bool HasMinorMethod( Type type ) => type.GetMethods().Any( HasMinorAttribute );
-			return assemblyRefType.Assembly.GetTypes().Where( HasMinorMethod ).Select( For ).ToArray();
-		}
-
 		#endregion
 
 		readonly GeneratesContextAttribute targetAttr;

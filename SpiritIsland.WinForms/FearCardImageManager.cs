@@ -16,7 +16,12 @@ namespace SpiritIsland.WinForms {
 			string ns = card.FearOptions.GetType().Namespace;
 
 			if(!images.ContainsKey( name )) {
-				string edition = ns.Contains( "Basegame" ) ? "basegame" : ns.Contains( "BranchAndClaw" ) ? "bac" : ns;
+				string edition = ns switch {
+					"SpiritIsland.Basegame" => "basegame",
+					"SpiritIsland.BranchAndClaw" => "bac",
+					"SpiritIsland.JaggedEarth" => "je",
+					_ => throw new ArgumentException($"Namespace {ns} not mapped to a fear folder")
+				};
 				string name2 = GetFileName( name, edition );
 				Image image = Image.FromFile( name2 );
 				images.Add( name, image );

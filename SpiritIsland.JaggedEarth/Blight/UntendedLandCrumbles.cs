@@ -25,7 +25,7 @@ namespace SpiritIsland.JaggedEarth {
 
 		}
 
-		ActionOption<GameState> EachInvaderPhase( ActionOption<GameState> invaderPhaseAction ) => new ActionOption<GameState>(
+		static ActionOption<GameState> EachInvaderPhase( ActionOption<GameState> invaderPhaseAction ) => new ActionOption<GameState>(
 			"Each invader phase, "+ invaderPhaseAction.Description,
 			ctx => {
 				ctx.PreRavaging.ForGame.Add( ( gs, args ) => invaderPhaseAction.Execute( gs ) );

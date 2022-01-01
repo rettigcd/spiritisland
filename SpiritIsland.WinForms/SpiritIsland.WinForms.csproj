@@ -587,28 +587,28 @@
     <None Update="images\bac\minor\twilight_fog_brings_madness.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="images\bac\spirit\absorb_essence.jpg">
+    <None Update="images\pp1\spirit\absorb_essence.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="images\bac\spirit\asphyxiating_smoke.jpg">
+    <None Update="images\pp1\spirit\asphyxiating_smoke.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\bac\spirit\boon_of_growing_power.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="images\bac\spirit\elemental_aegis.jpg">
+    <None Update="images\pp1\spirit\elemental_aegis.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="images\bac\spirit\flames_fury.jpg">
+    <None Update="images\pp1\spirit\flames_fury.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="images\bac\spirit\flashfires.jpg">
+    <None Update="images\pp1\spirit\flashfires.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="images\bac\spirit\gift_of_flowing_power.jpg">
+    <None Update="images\pp1\spirit\gift_of_flowing_power.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="images\bac\spirit\gift_of_the_primordial_deeps.jpg">
+    <None Update="images\pp1\spirit\gift_of_the_primordial_deeps.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\bac\spirit\prey_on_the_builders.jpg">
@@ -626,7 +626,7 @@
     <None Update="images\bac\spirit\terrifying_chase.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="images\bac\spirit\threatening_flames.jpg">
+    <None Update="images\pp1\spirit\threatening_flames.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\bac\spirit\too_near_the_jungle.jpg">

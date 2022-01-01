@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace SpiritIsland.JaggedEarth {
+
 	public class ThrivingCommunitites : BlightCardBase {
 
 		public ThrivingCommunitites():base("Thriving Communitites",4) {}
@@ -22,7 +23,7 @@ namespace SpiritIsland.JaggedEarth {
 			).Execute( gs );
 		}
 
-		SpaceAction UpgradeExplorerOrTown => new SpaceAction( "Replace 1 town with a city or Replace 1 explorer with 1 town", async ctx=>{
+		static SpaceAction UpgradeExplorerOrTown => new SpaceAction( "Replace 1 town with a city or Replace 1 explorer with 1 town", async ctx=>{
 			var invader = await ctx.Decision( Select.Invader.ToDowngrade("upgrade",ctx.Space,ctx.Tokens.OfAnyType(Invader.Explorer,Invader.Town)));
 			await ctx.Tokens.Remove(invader,1,RemoveReason.Replaced);
 			// !!! if select invader with strife, we should keep the strife.

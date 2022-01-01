@@ -17,7 +17,7 @@ namespace SpiritIsland.Tests.Core {
 		[InlineData(BranchAndClaw,31)]
 		[InlineData(JaggedEarth,33)]
 		public void MinorCount(string edition, int expectedCount) {
-			var minorCards = PowerCard.GetMinors( GetEditionType(edition) );
+			var minorCards = GetEditionType(edition).GetMinors();
 			// minorCards.Length.ShouldBe( 36 ); // Basegame
 			minorCards.Length.ShouldBeGreaterThanOrEqualTo( expectedCount );
 		}
@@ -27,7 +27,7 @@ namespace SpiritIsland.Tests.Core {
 		[InlineData(BranchAndClaw,21)]
 		// [InlineData(JaggedEarth,0)]
 		public void MajorCount(string edition, int expectedCount) {
-			var majorCards = PowerCard.GetMajors( GetEditionType( edition ) );
+			var majorCards = GetEditionType( edition ).GetMajors();
 			majorCards.Length.ShouldBeGreaterThanOrEqualTo( expectedCount );
 		}
 
@@ -181,8 +181,8 @@ namespace SpiritIsland.Tests.Core {
 			var user = new VirtualUser(spirit);
 			var randomizer = new Random();
 			var gs = new GameState( spirit, Board.BuildBoardC() ) {
-				MajorCards = new PowerCardDeck( PowerCard.GetMajors(typeof(RiversBounty)), randomizer ),
-				MinorCards = new PowerCardDeck( PowerCard.GetMinors( typeof( RiversBounty ) ), randomizer )
+				MajorCards = new PowerCardDeck( typeof(RiversBounty).GetMajors(), randomizer ),
+				MinorCards = new PowerCardDeck( typeof( RiversBounty ).GetMinors(), randomizer )
 			};
 			gs.Initialize();
 
@@ -203,8 +203,8 @@ namespace SpiritIsland.Tests.Core {
 		[InlineData(JaggedEarth)]
 		public void PowerCards_HaveNames(string edition) {
 			Type refObject = GetEditionType( edition );
-			List<PowerCard> cards = PowerCard.GetMajors( refObject ).ToList();
-			cards.AddRange( PowerCard.GetMinors( refObject ) );
+			List<PowerCard> cards = refObject.GetMajors().ToList();
+			cards.AddRange( refObject.GetMinors() );
 
 			foreach(var card in cards)
 				card.Name.ShouldNotBeNullOrEmpty();
