@@ -26,7 +26,7 @@ namespace SpiritIsland.JaggedEarth {
 			SpaceToken[] CalcOptions() => fromSpaces
 				.SelectMany(
 					space => ctx.GameState.Tokens[space].OfType(Invader.Explorer)
-						.Select( t=>new SpaceToken(ctx.Space,t) )
+						.Select( t=>new SpaceToken(space,t) )
 				)
 				.ToArray();
 

@@ -132,16 +132,13 @@ namespace SpiritIsland {
 		public Task Gather( int countToGather, params TokenClass[] groups )
 			=> Gatherer.AddGroup(countToGather,groups).GatherN();
 
-		public virtual Task RemoveUpTo( int countToGather, params TokenClass[] groups )
-			=> Gatherer.AddGroup(countToGather, groups).GatherUpToN(); // !!!!!!!!!!!!!
-
-
 		public TokenGatherer Gatherer => Self.GatherFactory( this );
 
 		#endregion Gather
 
 		/// <summary> Use this for Power-Pushing, since Powers can push invaders into the ocean. </summary>
 		public IEnumerable<Space> Adjacent => Space.Adjacent.Where( adj => Target(adj).IsInPlay );
+		public IEnumerable<TargetSpaceCtx> AdjacentCtxs => Adjacent.Select(Target);
 
 		/// <summary> Use this for Power-Pushing, since Powers can push invaders into the ocean. </summary>
 		public IEnumerable<Space> Range( int range ) => Space.Range( range ).Where( adj => Target(adj).IsInPlay );
@@ -270,18 +267,6 @@ namespace SpiritIsland {
 		#endregion
 
 		public Task RemoveInvader( TokenClass group ) => Invaders.Remove( group );
-
-		public async Task<int> RemoveHealthWorthOfInvaders( int damage ) {
-			Token pick;
-			while(damage > 0
-				&& (pick = await Decision( Select.Invader.ToRemoveByHealth( Space, Tokens.Invaders(), damage ) ) ) != null
-			) {
-				await Invaders.Remove(pick,1,RemoveReason.Removed );
-				damage -= pick.Health;
-			}
-
-			return damage;
-		}
 
 		/// <summary> adds Target to Fear context </summary>
 		public override void AddFear( int count ) { 

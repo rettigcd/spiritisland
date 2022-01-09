@@ -9,7 +9,7 @@ namespace SpiritIsland.BranchAndClaw {
 		[FromPresence( 0 )]
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 			return ctx.SelectActionOption(
-				new SpaceAction( "1 fear, Destory 1 explorer", FearAndExplorer ),
+				new SpaceAction( "1 fear, Destroy 1 explorer", FearAndExplorer ),
 				new SpaceAction("add 1 wilds", ctx => ctx.Wilds.Add(1) )
 			);
 		}
@@ -17,7 +17,7 @@ namespace SpiritIsland.BranchAndClaw {
 		private static async Task FearAndExplorer( TargetSpaceCtx ctx ) {
 			// 1 fear
 			ctx.AddFear( 1 );
-			// destory 1 explorer
+			// destroy 1 explorer
 			await ctx.Invaders.Destroy( 1, Invader.Explorer[1] );
 		}
 	}

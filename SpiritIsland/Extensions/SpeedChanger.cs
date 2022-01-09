@@ -65,7 +65,7 @@ namespace SpiritIsland {
 			);
 
 			if(factory != null) {
-				ChangeSpeed( factory );
+				TemporarySpeed.Override( factory, resultingSpeed, GameState );
 				--countToChange;
 			} else
 				countToChange = 0;
@@ -73,40 +73,43 @@ namespace SpiritIsland {
 
 		async Task FindAndExecute1( ) {
 			var changeableFactories = FindSouceFactories();
-			var factory = await Spirit.SelectFactory( prompt + $" (remaining: {countToChange})",
+			IFlexibleSpeedActionFactory factory = (IFlexibleSpeedActionFactory)await Spirit.SelectFactory( prompt + $" (remaining: {countToChange})",
 				changeableFactories,
 				Present.Done
 			);
 
 			if(factory != null) {
+				TemporarySpeed.Override( factory, resultingSpeed, GameState );
 				await Spirit.TakeAction( factory, ctx );
 				--countToChange;
 			} else
 				countToChange = 0;
 		}
 
-		void ChangeSpeed( IFlexibleSpeedActionFactory factory ) {
-			factory.OverrideSpeedBehavior = new SpeedOverrideBehavior( resultingSpeed );
+	}
+
+	public class TemporarySpeed : ISpeedBehavior {
+
+		static public void Override( IFlexibleSpeedActionFactory factory, Phase phase, GameState gameState ) {
+			factory.OverrideSpeedBehavior = new TemporarySpeed( phase );
 
 			Task Restore(GameState _) { 
 				factory.OverrideSpeedBehavior = null;
 				return Task.CompletedTask;
 			}
-			GameState.TimePasses_ThisRound.Push( Restore );
-
+			gameState.TimePasses_ThisRound.Push( Restore );
 		}
 
-		class SpeedOverrideBehavior : ISpeedBehavior {
-			readonly Phase newSpeed;
-			public SpeedOverrideBehavior(Phase newSpeed ) { this.newSpeed = newSpeed; }
 
-			public bool CouldBeActiveFor( Phase requestSpeed, Spirit spirit )
-				=> requestSpeed == newSpeed;
+		readonly Phase newSpeed;
+		public TemporarySpeed(Phase newSpeed ) { this.newSpeed = newSpeed; }
+
+		public bool CouldBeActiveFor( Phase requestSpeed, Spirit _ )
+			=> requestSpeed == newSpeed;
 			
-			public Task<bool> IsActiveFor( Phase requestSpeed, Spirit spirit ) 
-				=> Task.FromResult(requestSpeed == newSpeed);
-		}
-
+		public Task<bool> IsActiveFor( Phase requestSpeed, Spirit _ ) 
+			=> Task.FromResult(requestSpeed == newSpeed);
 	}
+
 
 }

@@ -11,14 +11,16 @@ namespace SpiritIsland.JaggedEarth {
 			// Gain a Minor Power.
 			// If you have 4 moon, You may gain a Major Power instead of a Minor Power.
 			if(await ctx.YouHave("4 moon"))
-				await ctx.DrawMajor(true);
+				await ctx.Draw();
 			else
 				await ctx.DrawMinor();
 
 			// You may Forget this Power Card to gain 3 Energy.
-			if(await ctx.Self.UserSelectsFirstText( "Forget this card for +3 energy.", "Yes, forget it.", "no thanks." )) {
+			var thisCard = ctx.Self.InPlay.SingleOrDefault( x => x.Name == ShapeTheSelfAnew.Name );
+			if( thisCard != null // might have already been forgotten when picking a major card.
+				&& await ctx.Self.UserSelectsFirstText( "Forget this card for +3 energy.", "Yes, forget it.", "no thanks." )
+			) {
 				// Forget this Power Card
-				var thisCard = ctx.Self.InPlay.Single( x => x.Name == ShapeTheSelfAnew.Name );
 				ctx.Self.Forget( thisCard );
 
 				// gain 3 energy

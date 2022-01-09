@@ -56,7 +56,7 @@ namespace SpiritIsland {
 
 		public Task Destroy( Space space, ActionType actionType ) => ctx.Self.Presence.Destroy( space, ctx.GameState, actionType );
 
-		public async Task DestoryOne(ActionType actionType, Func<SpiritIsland.Space,bool> filter = null) {
+		public async Task DestroyOne(ActionType actionType, Func<SpiritIsland.Space,bool> filter = null) {
 			var space = filter == null 
 				? await ctx.Decision( Select.DeployedPresence.ToDestroy("Select presence to destroy",ctx.Self) )
 				: await ctx.Decision( Select.DeployedPresence.ToDestroy("Select presence to destroy",ctx.Self, filter) );

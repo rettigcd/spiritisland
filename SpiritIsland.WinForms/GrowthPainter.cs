@@ -9,6 +9,7 @@ namespace SpiritIsland.WinForms {
 		readonly GrowthLayout layout;
 
 		Graphics graphics; // single-threaded variables
+		IconDrawer iconDrawer;
 		Bitmap cachedImageLayer;
 
 		public GrowthPainter( GrowthLayout layout ) {
@@ -17,6 +18,7 @@ namespace SpiritIsland.WinForms {
 
 		public void Paint( Graphics graphics, IList<GrowthOption> clickableGrowthOptions, IList<GrowthActionFactory> clickableGrowthActions ) {
 			this.graphics = graphics;
+			this.iconDrawer = new IconDrawer(graphics, new CachedImageDrawer());
 
 			using var optionPen = new Pen( Color.Blue, 6f );
 			using var highlightPen = new Pen( Color.Red, 4f );
@@ -64,18 +66,20 @@ namespace SpiritIsland.WinForms {
 
 		void DrawAction( GrowthActionFactory action, RectangleF rect ) {
 
-			if(action is JaggedEarth.RepeatableActionFactory raf && raf.Inner is not JaggedEarth.GainTime )
-				action = raf.Inner;
+			if(action is JaggedEarth.RepeatableActionFactory repeatableActionFactory 
+				&& repeatableActionFactory.Inner is not JaggedEarth.GainTime
+			)
+				action = repeatableActionFactory.Inner;
 
 			if(action is GainEnergy ge) { GainEnergy( rect, ge.Delta ); return; }
 
-			if(action is ReclaimAll) { ReclaimAll( rect ); return; }
+			if(action is ReclaimAll) { DrawIconInCenter( rect, Img.ReclaimAll ); return; }
 
-			if(action is Reclaim1) { Reclaim1( rect ); return; }
+			if(action is ReclaimN) { DrawIconInCenter( rect, Img.Reclaim1 ); return; }
 
-			if(action is ReclaimHalf) {  ReclaimHalf( rect ); return; }
+			if(action is ReclaimHalf) {  DrawIconInCenter( rect, Img.ReclaimHalf ); return; }
 
-			if(action is DrawPowerCard) { DrawPowerCard( rect ); return; }
+			if(action is DrawPowerCard) { DrawIconInCenter( rect, Img.GainCard ); return; }
 
 			if(action is PlacePresence pp ) { PlacePresence( rect, pp.Range, pp.FilterEnum ); return; }
 
@@ -83,15 +87,14 @@ namespace SpiritIsland.WinForms {
 
 			switch(action.Name) {
 
-				case "PlayExtraCardThisTurn(2)":
-				case "PlayExtraCardThisTurn(1)":
-													AdditionalPlay( rect ); break;
+				case "PlayExtraCardThisTurn(2)": AdditionalPlay( rect, 2 ); break;
+				case "PlayExtraCardThisTurn(1)": AdditionalPlay( rect, 1 ); break;
 				// Ocean
 				case "PlaceInOcean":          PlacePresence( rect, null, Target.Ocean ); break;
-				case "GatherPresenceIntoOcean": GatherToOcean(rect); break;
-				case "PushPresenceFromOcean": PushFromOcean( rect ); break;
+				case "GatherPresenceIntoOcean": DrawIconInCenter( rect, Img.GatherToOcean ); break;
+				case "PushPresenceFromOcean": DrawIconInCenter(rect, Img.Pushfromocean ); break;
 				// Heart of the WildFire
-				case "EnergyForFire": EnergyForFire( rect ); break;
+				case "EnergyForFire": DrawIconInCenter( rect, Img.Oneenergyfire ); break;
 				// Lure of the Deep Wilderness
 				case "GainElement(Moon,Air,Plant)": GainElement( rect, Element.Moon, Element.Air, Element.Plant ); break;
 				// Fractured Dates
@@ -102,19 +105,26 @@ namespace SpiritIsland.WinForms {
 				case "GainTime(1)x2":  Gain1TimeOr2CardPlaysX2( rect ); break;
 				case "GainTime(1)x3":  Gain1TimeOr2EnergyX3( rect ); break;
 				case "DrawPowerCardFromDaysThatNeverWere": DrawImage( rect, Img.FracturedDays_DrawDtnw ); break; 
+				// Starlight Seeks Its Form
+				case "MakePowerFast": DrawIconInCenter( rect, Img.Icon_Fast ); break;
 				// Grinning Trickster
 				case "GainEnergyEqualToCardPlays": DrawIconInCenter( rect, Img.GainEnergyEqualToCardPlays ); break;
 				// Stones Unyielding Defiance
-				case "GainElements(Earth,Earth)": 
-					GainElement( rect, Element.Earth, Element.Earth ); 
+				case "GainElements(Earth,Earth)":
+					iconDrawer.DrawTheIcon(new IconDescriptor { 
+							ContentImg = Img.Token_Earth,
+							ContentImg2 = Img.Token_Earth,
+						}, 
+						rect
+					);
 					break; // !!! this is drawn as an OR, layer them and make them an AND
 				// Many Minds
-				case "Gather1Beast": LandGatherBeasts( rect ); break;
+				case "Gather1Beast": DrawIconInCenter( rect, Img.Land_Gather_Beasts ); break;
 				case "PlacePresenceAndBeast": 
 					PlacePresence( rect, 3, Target.Any );
 					DrawIconInCenter( rect.InflateBy(-rect.Width*.2f), Img.Icon_Beast );
 					break;
-				case "ApplyDamage": ApplyDamage( rect ); break;
+				case "ApplyDamage": DrawIconInCenter( rect, Img.Damage_2 ); break;
 				default:
 					graphics.FillRectangle( Brushes.Goldenrod, Rectangle.Inflate( rect.ToInts(), -5, -5 ) );
 					break;
@@ -122,16 +132,21 @@ namespace SpiritIsland.WinForms {
 
 		}
 
-		void AdditionalPlay( RectangleF rect )      => DrawIconInCenter( rect, Img.Plus1CardPlay ); // !!!!!!!! show the correct # of plays (Fractured Day...)
-		void Reclaim1( RectangleF rect )            => DrawIconInCenter( rect, Img.Reclaim1 );
-		void ReclaimHalf( RectangleF rect )         => DrawIconInCenter( rect, Img.ReclaimHalf );
-		void ReclaimAll( RectangleF rect )          => DrawIconInCenter( rect, Img.ReclaimAll );
-		void DrawPowerCard( RectangleF rect )       => DrawIconInCenter( rect, Img.GainCard );
-		void PushFromOcean( RectangleF rect )       => DrawIconInCenter(rect, Img.Pushfromocean );
-		void ApplyDamage( RectangleF rect )			=> DrawIconInCenter( rect, Img.Damage_2 );
-		void GatherToOcean( RectangleF rect )       => DrawIconInCenter( rect, Img.Gathertoocean );
-		void EnergyForFire( RectangleF rect )       => DrawIconInCenter( rect, Img.Oneenergyfire );
-		void LandGatherBeasts( RectangleF rect)		=> DrawIconInCenter( rect, Img.Land_Gather_Beasts );
+		void AdditionalPlay( RectangleF bounds, int count ) {
+			DrawIconInCenter( bounds, Img.CardPlayPlusN );
+
+			using Font coinFont = new Font( ResourceImages.Singleton.Fonts.Families[0], bounds.Height * .35f, GraphicsUnit.Pixel );
+			string txt = (count > 0)
+				? ("+" + count.ToString())
+				: ("\u2014" + (-count).ToString());
+			SizeF textSize = graphics.MeasureString( txt, coinFont );
+			PointF textTopLeft = new PointF(
+				bounds.X + (bounds.Width - textSize.Width) * .35f,
+				bounds.Y + (bounds.Height - textSize.Height) * .60f
+			);
+			graphics.DrawString( txt, coinFont, Brushes.Black, textTopLeft );
+
+		}
 
 		void GainEnergy( RectangleF bounds, int delta ){
 			// DrawTokenInCenter( rect, "Energy_Plus_"+delta);

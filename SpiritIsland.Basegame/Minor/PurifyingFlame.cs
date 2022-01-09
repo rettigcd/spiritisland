@@ -12,9 +12,9 @@ namespace SpiritIsland.Basegame {
 			int blightCount = ctx.BlightOnSpace;
 			return ctx.SelectActionOption(
 				new SpaceAction($"{blightCount} damage", ctx=>ctx.DamageInvaders(blightCount) )
-					.Cond( blightCount>0 ),
+					.Matches( x => x.Blight.Any ),
 				new SpaceAction("Remove 1 blight", ctx=>ctx.RemoveBlight() )
-					.Cond( blightCount>0 && ctx.IsOneOf( Terrain.Mountain, Terrain.Sand ) )
+					.Matches( x=>x.Blight.Any && x.IsOneOf( Terrain.Mountain, Terrain.Sand ) )
 			);
 
 		}

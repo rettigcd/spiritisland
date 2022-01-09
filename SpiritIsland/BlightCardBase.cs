@@ -11,28 +11,31 @@ namespace SpiritIsland {
 		}
 
 		public string Name { get; }
-		public bool IslandIsBlighted { get; set; }
+		public bool CardFlipped { get; set; }
 
 		public void OnGameStart( GameState gs ) {
 			gs.blightOnCard = startingBlightPerPlayer * gs.Spirits.Length + 1; // +1 from Jan 2021 errata
 		}
 
-		public void OnBlightDepleated( GameState gs ) {
-			if(IslandIsBlighted)
-				GameOverException.Lost("Blighted Island-"+Name);
+		public async Task OnBlightDepleated( GameState gs ) {
+			if(!CardFlipped) {
+				CardFlipped = true;
+				gs.blightOnCard += side2BlightPerPlayer * gs.Spirits.Length;
 
-			IslandIsBlighted = true;
-			gs.blightOnCard += side2BlightPerPlayer * gs.Spirits.Length;
+				// Execute Immediate command
+				var immediately = Immediately;
+				if(immediately != null)
+					await immediately.Execute( gs );
+
+			} else
+				Side2Depleted(gs);
+
 		}
 
-		protected virtual void Side2Depleted(GameState gameState) => GameOverException.Lost( "Blighted Island-" + Name );
+		public abstract ActionOption<GameState> Immediately { get; }
 
-		public async Task OnStartOfInvaders( GameState gs ) {
-			if( IslandIsBlighted )
-				await BlightAction( gs );
-		}
-
-		protected abstract Task BlightAction( GameState gs );
+		protected virtual void Side2Depleted(GameState gameState) 
+			=> GameOverException.Lost( "Blighted Island-" + Name );
 
 		#region private
 
@@ -41,6 +44,5 @@ namespace SpiritIsland {
 
 		#endregion
 	}
-
 
 }

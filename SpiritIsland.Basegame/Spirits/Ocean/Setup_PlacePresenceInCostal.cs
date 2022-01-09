@@ -12,7 +12,7 @@ namespace SpiritIsland.Basegame {
 			var space = await ctx.Decision( new Select.Space( "Add presence to", options, Present.Always ) );
 			ctx.Presence.PlaceOn( space );
 		}
-
+		public override bool CouldActivateDuring( Phase speed, Spirit _ ) => speed == Phase.Init;
 	}
 
 }

@@ -9,7 +9,7 @@ namespace SpiritIsland.BranchAndClaw {
 		[FromPresenceIn( 1, Terrain.Sand )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
-			// destory all explorers.
+			// destroy all explorers.
 			await ctx.Invaders.Destroy(int.MaxValue,Invader.Explorer[1]);
 
 			// Add 1 wilds.

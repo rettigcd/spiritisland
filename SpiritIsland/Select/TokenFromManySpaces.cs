@@ -25,6 +25,23 @@ namespace SpiritIsland.Select {
 			}
 		};
 
+		static public TokenFromManySpaces ToGather(
+			IEnumerable<GatherGroup> remaining,
+			SpiritIsland.Space to,
+			IEnumerable<SpaceToken> tokens,
+			Present present = Present.Always
+		) => new TokenFromManySpaces(
+			(present == Present.Done ? "Gather up to " : "Gather ") + remaining.Select(x=>x.ToString()).Join(", "),
+			tokens,
+			present
+		) {
+			AdjacentInfo = new AdjacentInfo {
+				Original = to,
+				Adjacent = tokens.Select( s => s.Space ).Distinct().ToArray(),
+				Direction = AdjacentDirection.Incoming
+			}
+		};
+
 		public TokenFromManySpaces(
 			string prompt,
 			IEnumerable<SpaceToken>tokens,

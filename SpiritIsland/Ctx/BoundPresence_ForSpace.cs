@@ -22,7 +22,11 @@ namespace SpiritIsland {
 
 		public int Count => ctx.Self.Presence.CountOn(ctx.Space);
 
-		public Task PlaceDestroyedHere() => ctx.Self.PlacePresence( Track.Destroyed, ctx.Space, ctx.GameState );
+		public async Task PlaceDestroyedHere( int count = 1 ) {
+			count = Math.Min(count, ctx.Self.Presence.Destroyed);
+			while(count-- > 0 )
+				await ctx.Self.PlacePresence( Track.Destroyed, ctx.Space, ctx.GameState );
+		} 
 
 		public async Task PlaceHere() {
 			var from = await SelectSource();

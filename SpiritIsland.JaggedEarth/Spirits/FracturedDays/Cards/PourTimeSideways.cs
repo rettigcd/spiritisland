@@ -9,7 +9,7 @@ namespace SpiritIsland.JaggedEarth {
 			if(ctx.Self is not FracturedDaysSplitTheSky frac) return;
 			// Cost to Use: 3 Time
 			if(frac.Time <3) return;
-			frac.Time -= 3;
+			await frac.SpendTime( 3 );
 
 			// Move 1 of your presence to a different land with your presence.
 			var src = await ctx.Decision( Select.DeployedPresence.All( "Move presence from:", ctx.Self,Present.Always ) );

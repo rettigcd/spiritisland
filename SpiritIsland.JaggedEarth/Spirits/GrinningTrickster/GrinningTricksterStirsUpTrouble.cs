@@ -11,7 +11,7 @@ namespace SpiritIsland.JaggedEarth {
 		public override SpecialRule[] SpecialRules => new SpecialRule[] {  ARealFlairForDiscord,  CleaningUpMessesIsADrag };
 
 		static readonly SpecialRule ARealFlairForDiscord = new SpecialRule("A Real Flair for Discord", "After one of your Powers adds strife in a land, you may pay 1 Energy to add 1 strife within Range-1 of that land.");
-		static readonly SpecialRule CleaningUpMessesIsADrag = new SpecialRule("Cleaning up Messes is a Drag", "After one of your Powers Removes blight, Destory 1 of your presence.  Ignore this rule for Let's See What Happens.");
+		static readonly SpecialRule CleaningUpMessesIsADrag = new SpecialRule("Cleaning up Messes is a Drag", "After one of your Powers Removes blight, Destroy 1 of your presence.  Ignore this rule for Let's See What Happens.");
 
 		public GrinningTricksterStirsUpTrouble()
 			:base(
@@ -26,12 +26,12 @@ namespace SpiritIsland.JaggedEarth {
 			)
 		{
 			// Growth
-			this.Growth = new GrowthOptionGroup(
+			this.Growth = new Growth( 2,
 				new GrowthOption(new GainEnergy(-1),new ReclaimAll(), new MovePresence(1) ){ GainEnergy = -1 },
 				new GrowthOption(new PlacePresence(2)),
 				new GrowthOption(new DrawPowerCard()),
 				new GrowthOption(new GainEnergyEqualToCardPlays() )
-			).Pick(2);
+			);
 
 			// Innates
 			InnatePowers = new InnatePower[] {

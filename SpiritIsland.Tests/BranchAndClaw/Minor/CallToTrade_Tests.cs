@@ -118,7 +118,6 @@ namespace SpiritIsland.Tests.BranchAndClaw.Minor {
 
 			When_GrowsBuysAndActivatesCard( user, spaceCtx );
 
-			// Then: Ravage remains - 3 explorers kill 1 dahan, remaining dahan kills 2 explorers
 			spaceCtx.Tokens.InvaderSummary.ShouldBe( "1C@3,1T@2,4E@1" );
 		}
 

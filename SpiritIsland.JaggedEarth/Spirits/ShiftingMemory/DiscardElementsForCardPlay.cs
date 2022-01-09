@@ -7,6 +7,8 @@ namespace SpiritIsland.JaggedEarth {
 	/// </summary>
 	public class DiscardElementsForCardPlay : GrowthActionFactory, ITrackActionFactory {
 
+		// When revealing Discard-Elements-For-Extra-Card-Plays during non-growth (i.e. Unrelenting Growth), don't activate - it is too late to add card plays.
+
 		readonly int totalNumToRemove;
 		public DiscardElementsForCardPlay(int elementDiscardCount ) {
 			this.totalNumToRemove = elementDiscardCount;

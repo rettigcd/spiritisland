@@ -56,7 +56,7 @@ namespace SpiritIsland.WinForms {
 		public Bitmap Hourglass()     => GetResourceImage( "icons.hourglass.png" );
 		public Bitmap TerrorLevel( int terrorLevel )     => GetResourceImage( $"icons.TerrorLevel{terrorLevel}.png" );
 
-		// Growth / Terror Level / Destoryed Presence
+		// Growth / Terror Level / Destroyed Presence
 
 		public Bitmap GetInvaderCard( string filename ) => GetResourceImage( $"invaders.{filename}.jpg" );
 
@@ -77,13 +77,13 @@ namespace SpiritIsland.WinForms {
 			Img.Reclaim1                     => "icons.reclaim 1.png",
 			Img.ReclaimAll                   => "icons.ReclaimAll.png",
 			Img.ReclaimHalf                  => "icons.Reclaim_Half.png",
-			Img.Plus1CardPlay                => "icons.Cardplayplusone.png",
+			Img.CardPlayPlusN                 => "icons.Cardplayplus.png",
 			Img.Push1dahan                   => "icons.Push1dahan.png",
 			Img.GainCard                     => "icons.GainCard.png",
 			Img.MovePresence                 => "icons.MovePresence.png",
 
 			Img.Pushfromocean                => "icons.Pushfromocean.png",
-			Img.Gathertoocean                => "icons.Gathertoocean.png",
+			Img.GatherToOcean                => "icons.Gathertoocean.png",
 			Img.Damage_2                     => "icons.Damage_2.png",
 			Img.Oneenergyfire                => "icons.Oneenergyfire.png",
 			Img.Land_Gather_Beasts           => "icons.Land_Gather_Beasts.png",

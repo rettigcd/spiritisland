@@ -90,7 +90,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			await DreadApparitions.ActAsync( ctx );
 
 			// When: dahan destroy the city
-			await ctx.GameState.InvaderEngine.TestRavage( new InvaderCard( ctx.Space ) );
+//			await ctx.GameState.InvaderEngine.RavageCard(  );
+			await InvaderEngine1.RavageCard( new InvaderCard( ctx.Space ), ctx.GameState );
 
 			// Then: 2 fear from city
 			Assert_GeneratedFear(2); // normal

@@ -106,12 +106,12 @@ namespace SpiritIsland.JaggedEarth {
 			,PowerCard.For<PeaceOfTheNighttimeSky>()
 			,PowerCard.For<ShapeTheSelfAnew>()
 		) {
-			Growth = new GrowthOptionGroup(
-				new GrowthOption( new Reclaim1() ),
+			Growth = new Growth( 3,
+				new GrowthOption( new ReclaimN() ),
 				new GrowthOption( new PlacePresence(0) ),
 				new GrowthOption( new GainEnergy(1) ),
 				new GrowthOption( new MovePresence(3) )
-			).Pick(3);
+			);
 
 			InnatePowers = new InnatePower[] {
 				InnatePower.For<AirMovesEarthEndures>(),

@@ -165,11 +165,11 @@ namespace SpiritIsland.WinForms {
 				hotSpots.Add(fearCard,activeFearRect);
 
 
-			float y = 60f;
-			foreach(var log in StopWatch.timeLog.OrderByDescending(m=>m.ms) ) {
-				pe.Graphics.DrawString(log.ToString() ,SystemFonts.DefaultFont, Brushes.Black,10f,y);
-				y += 20f;
-			}
+			//float y = 60f;
+			//foreach(var log in StopWatch.timeLog.OrderByDescending(m=>m.ms) ) {
+			//	pe.Graphics.DrawString(log.ToString() ,SystemFonts.DefaultFont, Brushes.Black,10f,y);
+			//	y += 20f;
+			//}
 		}
 
 		void DrawBoard_Static( PaintEventArgs pe ) {
@@ -273,6 +273,7 @@ namespace SpiritIsland.WinForms {
 			graphics.FillRectangle( Brushes.LightYellow, bounds );
 			spiritPainter.Paint( graphics,
 				selectableInnateOptions,
+				selectableInnateGroupOptions,
 				selectableGrowthOptions,
 				selectableGrowthActions,
 				clickableTrackOptions
@@ -296,9 +297,16 @@ namespace SpiritIsland.WinForms {
 			// Presence
 			foreach(var track in clickableTrackOptions)
 				hotSpots.Add( track, spiritLayout.trackLayout.ClickRectFor( track ) );
-			// Innates
+			// Innates - Select Innate Power
 			foreach(var power in selectableInnateOptions)
 				hotSpots.Add( power, spiritLayout.innateLayouts[power].Bounds );
+			// Innates - Select Innate Option (for shifting memory)
+			var grpOptionLayouts = spiritLayout.innateLayouts.Values.SelectMany(x=>x.Options).ToArray();
+			foreach(var grp in selectableInnateGroupOptions) {
+				var bounds = grpOptionLayouts.First(x=>x.GroupOption == grp).Bounds;
+				hotSpots.Add( grp, bounds );
+			}
+
 		}
 
 		void DrawRound( Graphics graphics ) {
@@ -578,7 +586,7 @@ namespace SpiritIsland.WinForms {
 			for(int i = 0; i<count; ++i)
 				graphics.DrawImage(img,CalcBounds(i));
 
-			if(gameState.BlightCard.IslandIsBlighted)
+			if(gameState.BlightCard.CardFlipped)
 				graphics.DrawString("Blighted!",SystemFonts.DialogFont, Brushes.Red, bounds.Right-slotWidth*1.5f,bounds.Top);
 		}
 
@@ -681,7 +689,7 @@ namespace SpiritIsland.WinForms {
 				OptionSelected?.Invoke(option);
 
 			Point clientCoords = this.PointToClient( Control.MousePosition );
-			if(spiritLayout.imgBounds.Contains( clientCoords )) {
+			if(spiritLayout != null && spiritLayout.imgBounds.Contains( clientCoords )) {
 				string msg = this.spirit.SpecialRules.Select(r=>r.ToString()).Join("\r\n\r\n");
 				MessageBox.Show( msg );
 			}
@@ -754,6 +762,7 @@ namespace SpiritIsland.WinForms {
 			fearCard                = decision.Options.OfType<ActivatedFearCard>().FirstOrDefault();
 			clickableTrackOptions   = decision.Options.OfType<Track>().ToArray();
 			selectableInnateOptions = decision.Options.OfType<InnatePower>().ToArray();
+			selectableInnateGroupOptions = decision.Options.OfType<IDrawableInnateOption>().ToArray();
 			selectableGrowthOptions = decision.Options.OfType<GrowthOption>().ToArray();
 			selectableGrowthActions = decision.Options.OfType<GrowthActionFactory>().ToArray();
 		}
@@ -767,6 +776,8 @@ namespace SpiritIsland.WinForms {
 		Select.Element elementDecision;
 		Track[] clickableTrackOptions;
 		InnatePower[] selectableInnateOptions;
+		IDrawableInnateOption[] selectableInnateGroupOptions;
+		
 		GrowthOption[] selectableGrowthOptions;
 		GrowthActionFactory[] selectableGrowthActions;
 

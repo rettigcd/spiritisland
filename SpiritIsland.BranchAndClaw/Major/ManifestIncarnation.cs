@@ -9,6 +9,7 @@ namespace SpiritIsland.BranchAndClaw {
 		[Slow]
 		[FromPresence( 0, "Cities" )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
+
 			// 6 fear
 			ctx.AddFear(6);
 
@@ -27,7 +28,7 @@ namespace SpiritIsland.BranchAndClaw {
 				ctx.Defend( 6 ); // !! not exactly correct but close
 
 			// Then, Invaders in target land ravage.
-			await ctx.GameState.InvaderEngine.RavageSpace( ctx.Invaders );
+			await new RavageAction( ctx.GameState, ctx.Invaders ).Exec();
 		}
 
 	}

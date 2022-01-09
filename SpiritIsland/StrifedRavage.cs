@@ -47,7 +47,7 @@ namespace SpiritIsland {
 					var newInvader = strifedInvader.ResultingDamagedInvader( strifedInvader.StrifeCount );
 					if(newInvader.Health > 0) {
 						tokens.Adjust(newInvader, tokens[strifedInvader]);
-						tokens.Adjust(strifedInvader, 0);
+						tokens.Init(strifedInvader, 0);
 					}
 				}
 			}

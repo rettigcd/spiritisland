@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Linq;
 
 namespace SpiritIsland.WinForms {
@@ -16,23 +15,9 @@ namespace SpiritIsland.WinForms {
 
 		#endregion
 
-		void InitOverlayCache(Font boldFont) {
-			var bounds = layout.Bounds;
-			overlayCache = new Bitmap( bounds.Width, bounds.Height );
-			using var g = Graphics.FromImage( overlayCache );
-			g.TranslateTransform(-bounds.X,-bounds.Y);
-
-			g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
-
-			this.graphics = g;
-
-			// Overlay areay
-			using var font = layout.BuildFont();
-			foreach(WrappingText_InnateOptions wrappintText in layout.Options)
-				DrawOption( wrappintText, graphics, font, boldFont );
-		}
-
-		public void DrawFromMetrics( Graphics graphics, CachedImageDrawer imageDrawer, ElementCounts activatedElements, InnatePower[] innateOptions ) {
+		public void DrawFromLayout( Graphics graphics, CachedImageDrawer imageDrawer, ElementCounts activatedElements, 
+			InnatePower[] innateOptions, IDrawableInnateOption[] innateGroupOptions 
+		) {
 
 			if(backgroundCache == null) {
 				this.imageDrawer = imageDrawer;
@@ -47,18 +32,44 @@ namespace SpiritIsland.WinForms {
 			this.graphics = graphics;
 			// Middle Layer - Available
 			foreach(WrappingText_InnateOptions wrappintText in layout.Options)
-				if(activatedElements.Contains( wrappintText.Elements ))
+				if(activatedElements.Contains( wrappintText.GroupOption.Elements ))
 					graphics.FillRectangle( Brushes.PeachPuff, wrappintText.Bounds );
 
 			// Overlay text / images
 			graphics.DrawImage( overlayCache, layout.Bounds );
 
-			// Selected
+			// Selected Innate Power
 			if(innateOptions.Contains( power )) {
 				using Pen highlightPen = new( Color.Red, 2f );
 				graphics.DrawRectangle( highlightPen, layout.Bounds );
 			}
+			// Selected Innat Option Group
+			foreach(var x in layout.Options) {
+				if( innateGroupOptions.Contains(x.GroupOption)) {
+					using Pen highlightPen = new( Color.Red, 2f );
+					graphics.DrawRectangle( highlightPen, x.Bounds );
+				}
+			}
+		}
 
+		void InitOverlayCache(Font boldFont) {
+			var bounds = layout.Bounds;
+			overlayCache = new Bitmap( bounds.Width, bounds.Height );
+			using var g = Graphics.FromImage( overlayCache );
+			g.TranslateTransform(-bounds.X,-bounds.Y);
+
+			g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+
+			this.graphics = g;
+
+			using var font = layout.BuildFont();
+
+			if(layout.GeneralInstructions != null)
+				DrawOption(layout.GeneralInstructions, graphics, font, boldFont );
+
+			// Overlay area
+			foreach(WrappingText_InnateOptions wrappintText in layout.Options)
+				DrawOption( wrappintText, graphics, font, boldFont );
 		}
 
 		void DrawBackgroundImage( Font boldFont ) {
@@ -111,7 +122,7 @@ namespace SpiritIsland.WinForms {
 			graphics.DrawRectangle( thickPen, layout.AttributeBounds );
 		}
 
-		void DrawOption(WrappingText_InnateOptions data, Graphics graphics, Font regFont, Font boldFont ) {
+		void DrawOption(WrappingText data, Graphics graphics, Font regFont, Font boldFont ) {
 
 			foreach(var tp in data.tokens)
 				imageDrawer.Draw( graphics, tp.TokenImg, tp.Rect );

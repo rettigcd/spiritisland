@@ -26,7 +26,7 @@ namespace SpiritIsland.Tests.Core {
 		[Fact]
 		public void TriggerAsPartofInvaderActions() {
 			Given_EnoughFearToTriggerCard();
-			_ = gs.InvaderEngine.DoInvaderPhase(); //  new InvaderPhase(gs).ActAsync(); // When
+			_ = InvaderPhase.ActAsync( gs ); // When
 			Assert_PresentsFearToUser();
 		}
 

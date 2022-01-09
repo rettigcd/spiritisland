@@ -39,11 +39,11 @@ namespace SpiritIsland {
 		public virtual async Task<bool> Reveal( Track track, GameState gameState ) {
 			if(revealedCount == slots.Length || slots[revealedCount] != track) return false;
 			++revealedCount;
-			await TrackRevealed.InvokeAsync( gameState, track );
+			await TrackRevealed.InvokeAsync( new TrackRevealedArgs( gameState, track ) );
 			return true;
 		}
 
-		public AsyncEvent<Track> TrackRevealed { get; } = new AsyncEvent<Track>();
+		public AsyncEvent<TrackRevealedArgs> TrackRevealed { get; } = new AsyncEvent<TrackRevealedArgs>();
 
 		public virtual bool Return( Track track ) {
 			if(slots[revealedCount - 1] != track) return false;

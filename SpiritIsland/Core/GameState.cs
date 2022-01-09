@@ -47,7 +47,7 @@ namespace SpiritIsland {
 					((Space1)space).InitTokens( Tokens[space] );
 
 			// Explore
-			InvaderEngine.Explore( InvaderDeck.Explore[0] ).Wait();
+			InvaderDeck.Explore[0].Explore( this ).Wait();
 
 			InvaderDeck.Advance();
 
@@ -94,7 +94,7 @@ namespace SpiritIsland {
 		public async Task DamageLandFromRavage( Space space, int damageInflictedFromInvaders ) {
 			if(damageInflictedFromInvaders==0) return;
 
-			await LandDamaged.InvokeAsync(this,new LandDamagedArgs { Space = space, Damage = damageInflictedFromInvaders} );
+			await LandDamaged.InvokeAsync( new LandDamagedArgs { GameState = this, Space = space, Damage = damageInflictedFromInvaders} );
 
 			if( damageInflictedFromInvaders >= DamageToBlightLand)
 				await BlightLandFromRavage_WithCascades( space );
@@ -108,7 +108,7 @@ namespace SpiritIsland {
 			while(blightSpace != null) {
 				var effect = DetermineAddBlightEffect( this, blightSpace );
 
-				// Each spirit with presence on blight space destorys preseence
+				// Each spirit with presence on blight space destroys preseence
 				if(effect.DestroyPresence)
 					foreach(var spirit in Spirits)
 						if(spirit.Presence.IsOn( blightSpace ))
@@ -116,8 +116,10 @@ namespace SpiritIsland {
 
 				await AddBlight( blightSpace );
 
-				if(BlightCard != null && blightOnCard <= 0)
-					BlightCard.OnBlightDepleated( this );
+				if(BlightCard != null && blightOnCard <= 0) {
+					Log(new LogEntry($"Island Blighted => {BlightCard.Name} => {BlightCard.Immediately.Description}") );
+					await BlightCard.OnBlightDepleated( this );
+				}
 
 				blightSpace = effect.Cascade
 					? await Spirits[0].Action.Decision( Select.Space.ForAdjacent(
@@ -154,9 +156,10 @@ namespace SpiritIsland {
 		}
 
 		public void SkipRavage( Space space, Func<GameState,Space,Task> altAction = null ) {
-			PreRavaging.ForRound.Add( ( gs, args ) => {
+			PreRavaging.ForRound.Add( async ( args ) => {
 				args.Skip1(space);
-				altAction?.Invoke( this, space );
+				if(altAction != null)
+					await altAction( this, space );
 			} );
 		}
 
@@ -166,15 +169,16 @@ namespace SpiritIsland {
 
 
 		public void Skip1Build( Space space, Func<GameState,Space,Task> altAction = null ) {
-			PreBuilding.ForRound.Add( (GameState gs, BuildingEventArgs args) => {
+			PreBuilding.ForRound.Add( async (args) => {
 				args.Skip1(space);
-				altAction?.Invoke( this, space );
+				if(altAction != null)
+					await altAction( this, space );
 			} );
 		}
 
 		public void Add1Build( params Space[] target ) {
 			// !!! This should only add to spaces that match invader card
-			PreBuilding.ForRound.Add( ( GameState gs, BuildingEventArgs args ) => {
+			PreBuilding.ForRound.Add( ( BuildingEventArgs args ) => {
 				foreach(var space in target)
 					args.Add( space );
 			} );
@@ -182,23 +186,22 @@ namespace SpiritIsland {
 
 
 		public void SkipExplore( Space space, Func<GameState,Space,Task> altAction = null  ) {
-			PreExplore.ForRound.Add( ( gs, args ) => {
+			PreExplore.ForRound.Add( async ( args ) => {
 				args.Skip(space);
-				altAction?.Invoke( this, space );
+				if(altAction != null)
+					await altAction( this, space );
 			} );
 		}
 
 		public void AddExplore( params Space[] target ) {
 			// !!! This should only add to spaces that match invader card
-			PreExplore.ForRound.Add( ( gs, args ) => {
+			PreExplore.ForRound.Add( ( args ) => {
 				foreach(var space in target)
 					args.Add( space );
 			} );
 		}
 
-		public InvaderEngine InvaderEngine => _invaderEngine ??= BuildInvaderEngine();
-		protected virtual InvaderEngine BuildInvaderEngine() => new InvaderEngine(this);
-		InvaderEngine _invaderEngine;
+		public Func<BuildEngine> GetBuildEngine = () => new BuildEngine(); // !!! instead of overriding this in Vengence, add event hook
 
 		#endregion
 
@@ -222,7 +225,7 @@ namespace SpiritIsland {
 
 		public Func<GameState,Space,AddBlightEffect> DetermineAddBlightEffect = DefaultDetermineAddBlightEffect; /// <summary> Hook so Stone's presence can stop the cascade / Destroy effects of blight. </summary>
 
-		public Func<TokenCountDictionary,int,Task<int>> AddRemoveBlightBehavior = DefaultAddRemoveBlight; // hook for Stone's Defiance
+		public Func<TokenCountDictionary,int,Task<int>> AddRemoveBlightBehavior = DefaultAddOrRemoveBlight; // hook for Stone's Defiance
 
 		public Func<Spirit,GameState,Cause,Task> Destroy1PresenceFromBlightCard = DefaultDestroy1PresenceFromBlightCard; // Direct distruction from Blight Card, not cascading
 
@@ -233,11 +236,19 @@ namespace SpiritIsland {
 
 		#region Win / Loss
 
-		public void CheckWinLoss() {
-			if( ShouldCheckWinLoss)
-				CheckTerrorLevelVictory();
+		readonly List<Action> WinLossChecks = new List<Action>();
+		public bool ShouldCheckWinLoss {
+			set {
+				WinLossChecks.Clear();
+				if(value)
+					WinLossChecks.Add(CheckTerrorLevelVictory);
+			}
 		}
-		public bool ShouldCheckWinLoss { private get; set; } 
+
+		public void CheckWinLoss() {
+			foreach(var check in WinLossChecks)
+				check();
+		}
 
 		// Win Loss Predicates
 		static (Func<Space,bool>,string) InvaderCriteria(GameState gs) {
@@ -271,9 +282,12 @@ namespace SpiritIsland {
 		}
 
 		/// <returns># of blight to remove from card</returns>
-		static async Task<int> DefaultAddRemoveBlight( TokenCountDictionary tokens, int delta = 1 ) {
+		static async Task<int> DefaultAddOrRemoveBlight( TokenCountDictionary tokens, int delta = 1 ) {
 			var blight = tokens.Blight;
-			if(blight.Count + delta < 0) throw new Exception( "Can't remove blight that isn't there" );
+
+			// don't let them remove blight that isn't there
+			if( delta < -blight.Count ) 
+				delta = -blight.Count;
 
 			if( 0 < delta )
 				await blight.Add(delta,AddReason.TakenFromCard);
@@ -300,11 +314,13 @@ namespace SpiritIsland {
 			foreach(var s in Island.AllSpaces)
 				Tokens[s].Defend.Clear();
 
-			TimePasses_WholeGame?.Invoke( this );
-
+			// Do Custom end-of-round cleanup stuff before round switches over
+			// (shifting memory need cards it is going to forget to still be in hand when calling .Forget() on it)
 			while(TimePasses_ThisRound.Count > 0)
 				await TimePasses_ThisRound.Pop()( this );
 
+			// Do the standard round-switch-over stuff.
+			TimePasses_WholeGame?.Invoke( this );
 			++RoundNumber;
 		}
 
@@ -312,6 +328,7 @@ namespace SpiritIsland {
 
 		// - Events -
 		public event Action<ILogEntry> NewLogEntry;
+		public DualAsyncEvent<GameState> StartOfInvaderPhase   = new DualAsyncEvent<GameState>(); // Blight effects
 		public DualAsyncEvent<RavagingEventArgs> PreRavaging   = new DualAsyncEvent<RavagingEventArgs>();	// A Spread of Rampant Green - Whole game - stop ravage
 		public DualAsyncEvent<BuildingEventArgs> PreBuilding   = new DualAsyncEvent<BuildingEventArgs>();	// A Spread of Rampant Green - While game - stop build
 		public DualAsyncEvent<ExploreEventArgs>  PreExplore    = new DualAsyncEvent<ExploreEventArgs>();
@@ -332,7 +349,7 @@ namespace SpiritIsland {
 			public Memento(GameState src) {
 				roundNumber  = src.RoundNumber;
 				blightOnCard = src.blightOnCard;
-				isBlighted   = src.BlightCard.IslandIsBlighted;
+				isBlighted   = src.BlightCard.CardFlipped;
 				spirits      = src.Spirits.Select(s=>s.SaveToMemento()).ToArray();
 				if(src.MajorCards != null) major = src.MajorCards.SaveToMemento();
 				if(src.MinorCards != null) minor = src.MinorCards.SaveToMemento();
@@ -343,7 +360,7 @@ namespace SpiritIsland {
 			public void Restore(GameState src ) {
 				src.RoundNumber = roundNumber;
 				src.blightOnCard = blightOnCard;
-				src.BlightCard.IslandIsBlighted = isBlighted;
+				src.BlightCard.CardFlipped = isBlighted;
 				for(int i=0;i<spirits.Length;++i) src.Spirits[i].LoadFrom( spirits[i] );
 				if(src.MajorCards != null ) src.MajorCards.RestoreFrom( major );
 				if(src.MinorCards != null ) src.MinorCards.RestoreFrom( minor );
@@ -381,6 +398,7 @@ namespace SpiritIsland {
 	}
 
 	public class LandDamagedArgs {
+		public GameState GameState;
 		public Space Space;
 		public int Damage;
 	}

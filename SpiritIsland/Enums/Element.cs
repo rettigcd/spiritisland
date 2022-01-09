@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SpiritIsland {
 
@@ -20,36 +19,9 @@ namespace SpiritIsland {
 		Any,	// used by Bringer
 	};
 
-	public class ElementCounts : CountDictionary<Element> {
-		#region constructors
-		public ElementCounts(){ }
-
-		public ElementCounts(IEnumerable<Element> items):base(items){ }
-
-		public ElementCounts(Dictionary<Element,int> inner):base(inner){ }
-
-		#endregion
-
-		public new ElementCounts Clone() {
-			var clone = new ElementCounts();
-			foreach(var invader in Keys)
-				clone[invader] = this[invader];
-			return clone;
-		}
-
-		/// <summary> Reorders elements into 'Standard' order </summary>
-		public string BuildElementString(string delimiter = " " ) {
-			return this
-				.OrderBy(p=>(int)p.Key)
-				.Select(p=>p.Value+" "+p.Key.ToString().ToLower())
-				.Join( delimiter ); // comma or space
-		}
-
-	}
-
 	public static class ElementList {
 
-		public static readonly Element[] AllElements = new Element[] { Element.Sun, Element.Moon, Element.Air, Element.Fire, Element.Water, Element.Earth, Element.Plant, Element.Animal };
+		public static readonly Element[] AllElements = new Element[] { Element.Sun, Element.Moon, Element.Fire, Element.Air, Element.Water, Element.Earth, Element.Plant, Element.Animal };
 
 		public static ElementCounts Parse( string elementFormat ) {
 			var items = new List<Element>();
@@ -98,7 +70,6 @@ namespace SpiritIsland {
 			Element.Animal => Img.Icon_Animal,
 			_              => throw new ArgumentOutOfRangeException(nameof(element)),
 		};
-
 
 	}
 

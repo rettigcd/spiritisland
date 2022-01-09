@@ -12,7 +12,7 @@ namespace SpiritIsland.PromoPack1 {
 			// 1 fear
 			ctx.AddFear(1);
 
-			// destory 1 town
+			// destroy 1 town
 			await ctx.Invaders.Destroy(1,Invader.Town);
 
 			// push 1 dahan

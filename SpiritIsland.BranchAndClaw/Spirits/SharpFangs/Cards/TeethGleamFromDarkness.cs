@@ -11,7 +11,7 @@ namespace SpiritIsland.BranchAndClaw {
 			await ctx.SelectActionOption(
 				new SpaceAction("1 fear, add 1 beast", ctx => { ctx.AddFear(1); ctx.Beasts.Add(1); } ),
 				new SpaceAction("3 fear", ctx => ctx.AddFear(3) )
-					.Cond( ctx.Tokens.HasInvaders() && ctx.Beasts.Any )
+					.Matches( x => ctx.Tokens.HasInvaders() && x.Beasts.Any )
 			);
 
 		}

@@ -29,7 +29,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			User.TargetsLand(WordsOfWarning.Name,"(A2),A4");
 
 			// When: ravaging on A2
-			await gs.InvaderEngine.TestRavage(new InvaderCard(a[2]));
+//			await gs.InvaderEngine.RavageCard(new InvaderCard(a[2]));
+			await InvaderEngine1.RavageCard( new InvaderCard(a[2]), gs );
 
 			// Then: 1 explorer left
 			// Words of Warning defend 3 cancelling out City attack leaving only 4 damage from explorers

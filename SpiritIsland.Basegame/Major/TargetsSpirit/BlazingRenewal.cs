@@ -9,6 +9,8 @@ namespace SpiritIsland.Basegame {
 		[AnySpirit]
 		static public async Task ActAsync( TargetSpiritCtx ctx ) {
 
+			if( ctx.Other.Presence.Destroyed == 0 ) return;
+
 			// into a single land, up to range 2 from your presence.
 			// Note - Jonah says it is the originators power and range and decision, not the targets
 			var spaceOptions = ctx.Self.GetTargetOptions(TargettingFrom.None,ctx.GameState,new TargetSourceCriteria(From.Presence),new TargetCriteria(2,Target.Any))
@@ -16,24 +18,16 @@ namespace SpiritIsland.Basegame {
 				.ToArray();
 			TargetSpaceCtx selfPickLandCtx = await ctx.SelectSpace("Select location for target spirit to add presence", spaceOptions);
 
-			var otherCtx = ctx.OtherCtx;
-			bool additionalDamage = await ctx.YouHave("3 fire,3 earth,2 plant");
-
-
 			// target spirit adds 2 of their destroyed presence
-			int max = await otherCtx.Self.SelectNumber("Select # of destroyed presence to place on " + selfPickLandCtx.Space.Label, otherCtx.Self.Presence.Destroyed );
-			if(max==0) return;
-
-			// Add it!
-			TargetSpaceCtx targetSpiritOnSpace = otherCtx.Target( selfPickLandCtx.Space );
-			for(int i = 0; i < max; ++i)
-				await targetSpiritOnSpace.Presence.PlaceDestroyedHere();
+			await ctx.OtherCtx
+				.Target( selfPickLandCtx.Space )
+				.Presence.PlaceDestroyedHere(2);
 
 			// if any presene was added, 2 damage to each town/city in that land.
 			await selfPickLandCtx.DamageEachInvader(2,Invader.Town,Invader.City);
 
 			// if you have 3 fire, 3 earth , 2 plant, 4 damage in that land
-			if(additionalDamage)
+			if( await ctx.YouHave("3 fire,3 earth,2 plant") )
 				await selfPickLandCtx.DamageInvaders(4);
 
 		}

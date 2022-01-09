@@ -13,7 +13,7 @@ namespace SpiritIsland.Basegame {
 			return ctx.SelectActionOption(
 				new SpaceAction( "Gather up to 2 dahan", ctx => ctx.GatherUpToNDahan( 2 ) ),
 				new SpaceAction( "1 fear/dahan, max 3", ctx => ctx.AddFear(Math.Min(3,ctx.Dahan.Count)))
-					.Cond( ctx.Tokens.HasAny( Invader.City, Invader.Town ) )
+					.Matches( x => x.Tokens.HasAny( Invader.City, Invader.Town ) )
 			);
 
 		}

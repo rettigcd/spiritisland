@@ -8,6 +8,9 @@ namespace SpiritIsland.Select {
 		public static TokenFrom1Space TokenToPush( SpiritIsland.Space space, int count, Token[] options, Present present )
 			=> new TokenFrom1Space( present != Present.Done ? $"Push ({count})" : $"Push up to ({count})", space, options, present );
 
+		public static TokenFrom1Space TokenToRemove( SpiritIsland.Space space, int count, Token[] options, Present present )
+			=> new TokenFrom1Space( present != Present.Done ? $"Remove ({count})" : $"Remove up to ({count})", space, options, present );
+
 		public TokenFrom1Space( string prompt, SpiritIsland.Space space, IEnumerable<Token> options, Present present  )
 			: base( prompt, options, present ) 
 		{ 

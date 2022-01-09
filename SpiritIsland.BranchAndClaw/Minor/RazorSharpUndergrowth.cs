@@ -9,7 +9,7 @@ namespace SpiritIsland.BranchAndClaw {
 		[FromPresence( 0, Target.NoBlight )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
-			// destory 1 explorer
+			// destroy 1 explorer
 			await ctx.Invaders.Destroy(1,Invader.Explorer);
 			// and 1 dahan
 			await ctx.DestroyDahan( 1 );

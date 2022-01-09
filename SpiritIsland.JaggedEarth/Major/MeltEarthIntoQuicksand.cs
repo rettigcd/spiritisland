@@ -15,11 +15,11 @@ namespace SpiritIsland.JaggedEarth {
 			ctx.Isolate();
 
 			// After invaders / dahan are Moved into target land, Destroy them.
-			ctx.GameState.Tokens.TokenAdded.ForRound.Add( async ( gs, args ) => {
+			ctx.GameState.Tokens.TokenAdded.ForRound.Add( async ( args ) => {
 				if( args.Space == ctx.Space
 					&& args.Token.Class.IsOneOf(Invader.Explorer,Invader.Town,Invader.City,TokenType.Dahan ) 
 				) 
-					await gs.Tokens[args.Space].Destroy(args.Token,args.Count);
+					await args.GameState.Tokens[args.Space].Destroy(args.Token,args.Count);
 			} );
 
 			// if you have 2 moon, 4 water, 2 earth:

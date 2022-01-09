@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 		[FromPresence(1)]
 		static public async Task Act( TargetSpaceCtx ctx ) {
 
-			// Destory 3 towns.
+			// Destroy 3 towns.
 			await ctx.Invaders.Destroy( 3, Invader.Town );
 
 			// 1 damage to each town/city
@@ -18,7 +18,7 @@ namespace SpiritIsland.Basegame {
 			// add 1 blight
 			await ctx.AddBlight();
 
-			// if you have 3 sun, destory 1 city
+			// if you have 3 sun, destroy 1 city
 			if( await ctx.YouHave("3 sun") )
 				await ctx.Invaders.Destroy( 1, Invader.City );
 		}

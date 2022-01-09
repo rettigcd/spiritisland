@@ -37,8 +37,9 @@ namespace SpiritIsland {
 
 		public async Task ActivateAsync(SelfCtx ctx) {
 
-			if(!await SpeedBehavior.IsActiveFor( ctx.GameState.Phase, ctx.Self ))
-				throw new InvalidOperationException( "can't run PowerCard at this speeed" );
+			// Don't check speed here.  Slow card may have been made fast (Lightning's Swift Strike)
+			// if(!await SpeedBehavior.IsActiveFor( ctx.GameState.Phase, ctx.Self ))
+				// throw new InvalidOperationException( $"can't run PowerCard [{Name}] at this speeed" );
 
 			await ActivateInnerAsync( ctx );
 			if(repeatAttr != null) {

@@ -14,7 +14,7 @@ namespace SpiritIsland.JaggedEarth {
 
 			// Once this turn, after target Spirit uses a Power targeting a land, they may add 1 disease to that land.
 			bool used = false;
-			ctx.Other.ActionTaken_ThisRound.Add( async ( gs, args ) => {
+			ctx.Other.ActionTaken_ThisRound.Add( async ( args ) => {
 				if( !used
 					&& args.Context is TargetSpaceCtx spaceCtx 
 					&& await ctx.Other.UserSelectsFirstText(Name+" ("+spaceCtx.Space.Label+")","Yes, add 1 disease", "No thank you")

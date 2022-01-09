@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SpiritIsland;
 
 namespace SpiritIsland.Basegame {
 
@@ -103,8 +102,13 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 
 			// we can decrement any time a slow card is used,
 			// even during slow because we no longer care about this
-			if(factory.CouldActivateDuring(Phase.Slow, this))
+			if(ctx.GameState.Phase == Phase.Fast
+				&& factory.CouldActivateDuring( Phase.Slow, this )
+				&& factory is IFlexibleSpeedActionFactory flexSpeedFactory
+			) {
 				++usedAirForFastCount;
+				TemporarySpeed.Override( flexSpeedFactory, Phase.Fast, ctx.GameState );
+			}
 
 			return base.TakeAction(factory,ctx);
 		}

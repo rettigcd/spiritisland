@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -83,18 +84,6 @@ namespace SpiritIsland {
 
 		public int Total => _inner.Values.Sum();
 
-		public override string ToString() {
-			var buf = new StringBuilder();
-			bool first = true;
-			foreach(var pair in _inner) {
-				if(first) first = false; else buf.Append(',');
-				buf.Append(pair.Value);
-				buf.Append(' ');
-				buf.Append(pair.Key.ToString().ToLower());
-			}
-			return buf.ToString();
-		}
-
 		#region IDictionary<Key,int> implementation
 		public void Clear() => _inner.Clear();
 		public Dictionary<K, int>.KeyCollection Keys => _inner.Keys;
@@ -121,6 +110,16 @@ namespace SpiritIsland {
 	public static class ExtendDictionary {
 		static public CountDictionary<T> ToCountDict<T>(this Dictionary<T,int> inner)
 			=> new CountDictionary<T>(inner);
+
+		// Invader Summary
+		static public string ToTokenSummary(this CountDictionary<Token> tokens )
+			=> tokens.Any()
+				? tokens
+					.OrderBy( p => p.Key.Summary )
+					.Select( p => p.Value + p.Key.Summary )
+					.Join( "," )
+				: "[none]";
+
 	}
 
 }

@@ -9,7 +9,7 @@ namespace SpiritIsland.JaggedEarth {
 
 			// After the next time Invaders are Desttroyed in target land:
 			bool used = false;
-			ctx.GameState.Tokens.TokenRemoved.ForRound.Add( async ( gs, args ) => {
+			ctx.GameState.Tokens.TokenRemoved.ForRound.Add( async ( args ) => {
 				if(used || args.Space != ctx.Space ) return;
 				used = true;
 				// Add 1 Beast,

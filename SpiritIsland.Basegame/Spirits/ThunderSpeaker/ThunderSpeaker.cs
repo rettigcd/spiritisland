@@ -20,7 +20,7 @@ namespace SpiritIsland.Basegame {
 	Innate-2:  Lead the Furious Assult
 	4 air   this power may be fast
 	2 sun 1 fire   Destroy 1 town for every 2 dahan in target land
-	4 sun 3 fire   Destory 1 city for every 3 dahan in target land
+	4 sun 3 fire   Destroy 1 city for every 3 dahan in target land
 
 	Special Rules - Ally of the Dahan - Your presense may move with dahan
 	Special Rules - Swort to Victory - For each dahan stroyed by invaters ravaging a land, destroy 1 of your presense withing 1
@@ -91,11 +91,11 @@ namespace SpiritIsland.Basegame {
 			gs.Tokens.TokenRemoved.ForGame.Add( DestroyNearbyPresence );
 		}
 
-		async Task DestroyNearbyPresence( GameState gs, ITokenRemovedArgs args ) {
+		async Task DestroyNearbyPresence( ITokenRemovedArgs args ) {
 			if( args.Reason != RemoveReason.DestroyedInBattle ) return;
 			if(args.Token.Class != TokenType.Dahan) return;
 
-			string prompt = $"{SwarnToVictory.Title}: {args.Count} dahan destroyed. Select presence to destory.";
+			string prompt = $"{SwarnToVictory.Title}: {args.Count} dahan destroyed. Select presence to destroy.";
 
 			int numToDestroy = args.Count;
 			Space[] options;
@@ -103,7 +103,7 @@ namespace SpiritIsland.Basegame {
 
 			while(numToDestroy-->0 && (options=Calc()).Length > 0) {
 				var space = await this.Action.Decision( Select.DeployedPresence.ToDestroy( prompt, options, Present.Always ) );
-				await Presence.Destroy(space, gs, ActionType.Invader );
+				await Presence.Destroy(space, args.GameState, ActionType.Invader );
 			}
 
 		}

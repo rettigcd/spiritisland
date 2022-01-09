@@ -28,21 +28,21 @@ namespace SpiritIsland.JaggedEarth {
 				gs.Tokens[space].Adjust(TokenType.Beast, 1); // !!! virtual tokens generate don't trigger events
 		}
 
-		async Task TokenMoved(GameState gs, TokenMovedArgs args) {
+		async Task TokenMoved( TokenMovedArgs args ) {
 			if(args.Token != TokenType.Beast) return; // not a beast
 			if(this.CountOn( args.RemovedFrom ) < 2) return; // not our Sacred Site
 
 
-			var srcBeasts = gs.Tokens[args.RemovedFrom].Beasts;
+			var srcBeasts = args.GameState.Tokens[args.RemovedFrom].Beasts;
 			if(srcBeasts.Count > 0 // force moved our virtual beast
 				&& await spirit.Action.Decision( Select.DeployedPresence.Gather( "Move 2 presence with Beast?", args.AddedTo, new []{ args.RemovedFrom } ) ) == null
 			) return; // not moving presence
 
-			Move2Presence( gs, args );
+			Move2Presence( args.GameState, args );
 
 			await SacredSiteAtSouce_RestoreVirtualBeast( args, srcBeasts );
 
-			await AddedVirtualBeastAtDestination_LimitTo1( gs, args );
+			await AddedVirtualBeastAtDestination_LimitTo1( args.GameState, args );
 
 		}
 
@@ -67,15 +67,15 @@ namespace SpiritIsland.JaggedEarth {
 			return Task.CompletedTask;
 		}
 
-		async Task TokenRemoved(GameState gs, ITokenRemovedArgs args) {
+		async Task TokenRemoved( ITokenRemovedArgs args ) {
 			if(args.Reason.IsDestroy())
-				await TokenDestroyed(gs, args);
+				await TokenDestroyed(args);
 		}
 
-		async Task TokenDestroyed(GameState gs, ITokenRemovedArgs args) {
+		async Task TokenDestroyed(ITokenRemovedArgs args) {
 			if(args.Token.Class != TokenType.Beast) return; // not a beast
 			if(this.CountOn(args.Space)<2) return; // not our Sacred Site
-			if(gs.Tokens[args.Space].Beasts.Count == 0){ // no more beasts
+			if(args.GameState.Tokens[args.Space].Beasts.Count == 0){ // no more beasts
 				// Destroying the sacred-site beast, destroyes the sacred site
 
 				// the only time we care about what destroyed the presence is for Vengencence as a burning plague.
@@ -83,8 +83,8 @@ namespace SpiritIsland.JaggedEarth {
 				var dontCareActionType = ActionType.None;
 
 				// destroy saved site
-				await base.Destroy(args.Space,gs, dontCareActionType);
-				await base.Destroy(args.Space,gs, dontCareActionType);
+				await base.Destroy(args.Space, args.GameState, dontCareActionType);
+				await base.Destroy(args.Space, args.GameState, dontCareActionType);
 			}
 		}
 

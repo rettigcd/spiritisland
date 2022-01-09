@@ -1,19 +1,17 @@
-﻿using System.Threading.Tasks;
-
-namespace SpiritIsland.Basegame {
+﻿namespace SpiritIsland.Basegame {
 
 	public class MemoryFadesToDust : BlightCardBase {
 
 		public MemoryFadesToDust() : base( "Memory Fades to Dust", 4 ) {}
 
-		protected override async Task BlightAction( GameState gs ) {
-			foreach(var spirit in gs.Spirits)
-				await new SelfCtx( spirit, gs, Cause.Blight ).SelectActionOption(
-					"BLIGHT: Memory Fades to Dust",
-					new SelfAction("Destroy Presence",ctx=>ctx.GameState.Destroy1PresenceFromBlightCard(spirit,gs,Cause.Blight)),
-					new SelfAction("Forget Power card", ctx => ctx.Self.ForgetPowerCard_UserChoice() )
-				);
-		}
+		public override ActionOption<GameState> Immediately => Cmd.AtTheStartOfEachInvaderPhase(
+			Cmd.EachSpirit(Cause.Blight,
+				Cmd.Pick1<SelfCtx>(
+					Cmd.DestroyPresence(ActionType.BlightedIsland),
+					Cmd.ForgetPowerCard
+				)
+			)
+		);
 
 	}
 

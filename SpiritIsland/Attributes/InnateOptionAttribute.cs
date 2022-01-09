@@ -1,42 +1,52 @@
 ﻿using System;
-using System.Linq;
 
 namespace SpiritIsland {
 
-	[AttributeUsage(AttributeTargets.Class|AttributeTargets.Method)]
+	/// <summary>
+	/// Marks executable Executable options
+	/// </summary>
+	[AttributeUsage( AttributeTargets.Class | AttributeTargets.Method )]
 	public class InnateOptionAttribute : Attribute, IDrawableInnateOption {
 
-		public InnateOptionAttribute( string elementText, string description, int group=0 ) {
+		public InnateOptionAttribute( string elementText, string description, int group = 0 ) {
 			Elements = ElementList.Parse( elementText );
 			Description = description;
-			Purpose = AttributePurpose.DisplayAndExecute;
 			Group = group;
 		}
 
 		/// <summary>
-		/// Use this to not trigger the method call. Just display the power to the user
+		/// Non-executable.  Called from dirived class
 		/// </summary>
-		public InnateOptionAttribute( string elementText, string description, AttributePurpose purpose, int group=0 ) {
+		protected InnateOptionAttribute(string elementText, string description ) {
 			Elements = ElementList.Parse( elementText );
 			Description = description;
-			Purpose = purpose;
-			Group = group;
+			Group = null;
 		}
 
 		public ElementCounts Elements { get; }
 
 		public string Description { get; }
 
-		public AttributePurpose Purpose { get; }
-
 		// Element attributes are evaluated against their group so each group can have 1 method to activate.
-		public int Group { get; }
+		// Null for non-execution groups
+		public int? Group { get; }
+
+		string IOption.Text => Elements.BuildElementString() + " - " + Description;
+	}
+
+	[AttributeUsage(AttributeTargets.Class|AttributeTargets.Method)]
+	public class DisplayOnlyAttribute : InnateOptionAttribute {
+
+		/// <summary>
+		/// Create a Display-only action because execution group is null.
+		/// </summary>
+		public DisplayOnlyAttribute( string elementText, string description )
+			// Call the display-only base constructor
+			:base(elementText,description) { }
 
 	}
 
-	public enum AttributePurpose { DisplayAndExecute, ExecuteOnly, DisplayOnly }
-
-	public interface IDrawableInnateOption {
+	public interface IDrawableInnateOption : IOption {
 		ElementCounts Elements { get; }
 		string Description { get; }
 	}

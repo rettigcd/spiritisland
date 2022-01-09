@@ -9,10 +9,10 @@ namespace SpiritIsland {
 
 		#region constructor
 
-		public InvaderBinding( TokenCountDictionary tokens, DestroyInvaderStrategy destoryStrategy, IDamageApplier customeDamageApplicationStrategy = null) {
+		public InvaderBinding( TokenCountDictionary tokens, DestroyInvaderStrategy destroyStrategy, IDamageApplier customeDamageApplicationStrategy = null) {
 			this.Tokens = tokens;
 			this.damageApplicationStrategy = customeDamageApplicationStrategy ?? DefaultDamageApplicationStrategy;
-			this.DestroyStrategy = destoryStrategy;
+			this.DestroyStrategy = destroyStrategy;
 		}
 
 		#endregion
@@ -64,30 +64,30 @@ namespace SpiritIsland {
 
 		#region Destroy
 
-		public async Task<int> Destroy( int countToDestory, TokenClass tokenClass ) {
-			if(countToDestory == 0) return 0;
-			Token[] invaderTypesToDestory = Tokens.Invaders()
+		public async Task<int> Destroy( int countToDestroy, TokenClass tokenClass ) {
+			if(countToDestroy == 0) return 0;
+			Token[] invaderTypesToDestroy = Tokens.Invaders()
 				.Where( x=> x.Class == tokenClass )
 				.OrderByDescending( x => x.Health ) // kill healthiest first
 				.ToArray();
 
 			int totalDestoyed = 0;
-			foreach(var specificInvader in invaderTypesToDestory) {
-				while(countToDestory > 0 && this[specificInvader] > 0) {
+			foreach(var specificInvader in invaderTypesToDestroy) {
+				while(countToDestroy > 0 && this[specificInvader] > 0) {
 					await ApplyDamageTo1( specificInvader.Health, specificInvader );
 					++totalDestoyed;
-					--countToDestory;
+					--countToDestroy;
 				}
 			}
 			return totalDestoyed;
 		}
 
-		public async Task<int> Destroy( int countToDestory, Token specificInvader ) {
-			if(countToDestory == 0) return 0;
-			int numToDestory = Math.Min(countToDestory, this[specificInvader] );
-			for(int i = 0; i < numToDestory; ++i)
+		public async Task<int> Destroy( int countToDestroy, Token specificInvader ) {
+			if(countToDestroy == 0) return 0;
+			int numToDestroy = Math.Min(countToDestroy, this[specificInvader] );
+			for(int i = 0; i < numToDestroy; ++i)
 				await ApplyDamageTo1( specificInvader.Health, specificInvader );
-			return numToDestory;
+			return numToDestroy;
 		}
 
 		public async Task DestroyAny( int count, params TokenClass[] generics ) {
@@ -111,7 +111,7 @@ namespace SpiritIsland {
 		#region Remove
 
 		/// <remarks>
-		/// This is neither damage nor destory.
+		/// This is neither damage nor destroy.
 		/// It is Game-Aware in that it understands non-strifed invaders are more dangerous than non-strifed, so it doesn't belong in the generic TokenDictionary class.
 		/// However, it also does not require any input from a user, so it should not be on a TargetSpaceCtx.
 		/// Sticking on InvaderGroup is the only place I can think to put it.

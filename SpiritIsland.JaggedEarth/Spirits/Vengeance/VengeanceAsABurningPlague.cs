@@ -17,7 +17,7 @@ namespace SpiritIsland.JaggedEarth {
 			,PowerCard.For<Plaguebearers>()
 			,PowerCard.For<StrikeLowWithSuddenFevers>()
 		) {
-			Growth = new GrowthOptionGroup(
+			Growth = new Growth(
 				new GrowthOption( new ReclaimAll(), new DrawPowerCard(), new GainEnergy(1)),
 				new GrowthOption( new PlacePresence(2,Target.TownCityOrBlight), new PlacePresence(2,Target.TownCityOrBlight)),
 				new GrowthOption( new DrawPowerCard(), new PlacePresenceOrDisease(), new GainEnergy(1))
@@ -31,8 +31,8 @@ namespace SpiritIsland.JaggedEarth {
 		public override string Text => Name;
 
 		public override SpecialRule[] SpecialRules => new SpecialRule[] {  
-			TerrorOfASlowlyUnfoldingPlague, 
-			LingeringPestilence.Rule, 
+			TerrorOfASlowlyUnfoldingPlague.Rule,
+			LingeringPestilence.Rule,
 			WreakVengeanceForTheLandsCorruption.Rule
 		};
 
@@ -43,25 +43,32 @@ namespace SpiritIsland.JaggedEarth {
 			// 1 in a Wetland without dahan
 			Presence.PlaceOn(board.Spaces.First(s=>s.IsWetland && !gameState.Tokens[s].Dahan.Any), gameState);
 
-			gameState.InvaderEngine.StopBuildWithDiseaseBehavior = TerrorOfASlowyUnfoldingPlague_PreBuild_DiseaseChecker;
+			gameState.GetBuildEngine = () => new TerrorOfASlowlyUnfoldingPlague(this);
 
 		}
 
-		static SpecialRule TerrorOfASlowlyUnfoldingPlague => new SpecialRule(
-			"The Terror of a Slowly Unfolding Plague",
-			"When disease would prevent a Build on a board with your presence, you may let the Build happen (removing no disease).  If you do, 1 fear."
-		);
+		// BuildEngine
+		class TerrorOfASlowlyUnfoldingPlague : BuildEngine  {
 
-		async Task<bool> TerrorOfASlowyUnfoldingPlague_PreBuild_DiseaseChecker( TokenCountDictionary tokens, GameState gs ) {
-			var disease = tokens.Disease;
-			bool stoppedByDisease = disease.Any 
-				&& await this.UserSelectsFirstText($"Build pending on {tokens.Space.Label}.", "Stop build, -1 Disease", "+1 Fear, keep Disease ");
+			static public SpecialRule Rule => new SpecialRule(
+				"The Terror of a Slowly Unfolding Plague",
+				"When disease would prevent a Build on a board with your presence, you may let the Build happen (removing no disease).  If you do, 1 fear."
+			);
 
-			if( stoppedByDisease )
-				await disease.Remove(1, RemoveReason.UsedUp);
-			else 
-				gs.Fear.AddDirect(new FearArgs { FromDestroyedInvaders = false, count=1, space = tokens.Space } );
-			return stoppedByDisease;
+			readonly VengeanceAsABurningPlague spirit;
+			public TerrorOfASlowlyUnfoldingPlague(VengeanceAsABurningPlague spirit) { this.spirit = spirit; }
+			protected override async Task<bool> StopBuildWithDiseaseBehavior() {
+				var disease = tokens.Disease;
+				bool stoppedByDisease = disease.Any 
+					&& await spirit.UserSelectsFirstText($"Build pending on {tokens.Space.Label}.", "Stop build, -1 Disease", "+1 Fear, keep Disease ");
+
+				if( stoppedByDisease )
+					await disease.Remove(1, RemoveReason.UsedUp);
+				else 
+					gameState.Fear.AddDirect(new FearArgs { FromDestroyedInvaders = false, count=1, space = tokens.Space } );
+				return stoppedByDisease;
+
+			}
 		}
 
 		public override TokenBinding ConstructBadlands( TargetSpaceCtx ctx ) {

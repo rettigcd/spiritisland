@@ -7,29 +7,23 @@ namespace SpiritIsland.BranchAndClaw {
 	[SpreadingWilds.FromPresence]
 	public class SpreadingWilds {
 
-		[InnateOption( "2 sun", "Push 1 explorer from target land per 2sun you have." )]
+		[InnateOption( "2 sun", "Push 1 explorer from target land per 2sun you have.", 0 )]
 		static public Task Option1( TargetSpaceCtx ctx ) {
 			// push 1 explorer from target land per 2 sun you have
 			return ctx.Push(ctx.Self.Elements[Element.Sun]/2,Invader.Explorer);
 		}
 
-		[InnateOption( "1 plant", "If target land has no explorer, add 1 wilds." )]
+		[InnateOption( "1 plant", "If target land has no explorer, add 1 wilds.", 1 )]
 		static public async Task Option2( TargetSpaceCtx ctx ) {
 			// if target land has no explorer, add 1 wilds
 			if( !ctx.Tokens.HasAny(Invader.Explorer) )
 				await ctx.Wilds.Add(1);
 		}
 
-		[InnateOption( "1 plant,2 sun","", AttributePurpose.ExecuteOnly )]
-		static public async Task Option1And2( TargetSpaceCtx ctx ) {
-			await Option1(ctx);
-			await Option2(ctx);
-		}
-
-		[InnateOption( "3 plant", "This Power has +1 range", AttributePurpose.DisplayOnly )]
+		[DisplayOnly( "3 plant", "This Power has +1 range" )]
 		static public Task NoOp1( TargetSpaceCtx _ ) { return Task.CompletedTask; }
 
-		[InnateOption( "1 air", "This Power has +1 range", AttributePurpose.DisplayOnly )]
+		[DisplayOnly( "1 air", "This Power has +1 range" )]
 		static public Task NoOp2( TargetSpaceCtx _ ) { return Task.CompletedTask; }
 
 

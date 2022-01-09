@@ -12,6 +12,8 @@ namespace SpiritIsland.BranchAndClaw {
 			ctx.Presence.PlaceOn(space);
 		}
 
+		public override bool CouldActivateDuring( Phase speed, Spirit _ ) => speed == Phase.Init;
+
 	}
 
 }

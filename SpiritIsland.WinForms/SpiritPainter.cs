@@ -32,6 +32,7 @@ namespace SpiritIsland.WinForms {
 		public void Paint( 
 			Graphics graphics,
 			InnatePower[] innateOptions,
+			IDrawableInnateOption[] innateGroupOptions,
 			GrowthOption[] selectableGrowthOptions,
 			GrowthActionFactory[] selectableGrowthActions,
 			Track[] clickableTrackOptions
@@ -47,14 +48,14 @@ namespace SpiritIsland.WinForms {
 				presencePainter.Paint( graphics, clickableTrackOptions, imageDrawer );
 
 			using(new StopWatch( "Innates" ))
-				Draw_Innates( graphics, innateOptions, imageDrawer );
+				Draw_Innates( graphics, innateOptions, innateGroupOptions, imageDrawer );
 
 			Draw_Elements( graphics );
 		}
 
-		void Draw_Innates( Graphics graphics, InnatePower[] innateOptions, CachedImageDrawer imageDrawer ) {
+		void Draw_Innates( Graphics graphics, InnatePower[] innateOptions, IDrawableInnateOption[] innateGroupOptions, CachedImageDrawer imageDrawer ) {
 			foreach(var painter in innatePainters)
-				painter.DrawFromMetrics( graphics, imageDrawer, spirit.Elements, innateOptions );
+				painter.DrawFromLayout( graphics, imageDrawer, spirit.Elements, innateOptions, innateGroupOptions );
 		}
 
 		void DrawSpiritImage( Graphics graphics ) {

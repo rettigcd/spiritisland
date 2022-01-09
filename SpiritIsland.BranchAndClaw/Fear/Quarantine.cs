@@ -24,7 +24,7 @@ namespace SpiritIsland.BranchAndClaw {
 			ExploreDoesNotAffectCoastalLands( ctx );
 
 			// Lands with disease are not a source of invaders when exploring
-			ctx.GameState.PreExplore.ForRound.Add( ( laterGs, args ) => { 
+			ctx.GameState.PreExplore.ForRound.Add( ( args ) => { 
 				foreach(var space in ctx.LandsWithDisease())
 					args.Sources.Remove(space);
 				return Task.CompletedTask;

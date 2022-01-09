@@ -13,7 +13,7 @@ namespace SpiritIsland.JaggedEarth {
 			await ctx.PushDahan( ctx.Dahan.Count );
 
 			// 1 damage to each invader.
-			await ctx.Invaders.ApplyDamageToEach(1);
+			await ctx.Invaders.ApplyDamageToEach(1); // !!! Not triggering Badlands Damage
 
 			// if the original land is your sacredsite, +1 Damage to each invader
 			if( ctx.Presence.IsSelfSacredSite ) // !! not exactly correct if they use a range extender

@@ -69,13 +69,13 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 		[Fact]
 		public void KillingTown_GeneratesFear_PushesIt() {
 			int count = 2;
-			// generate 2 fear per town destoryed,
+			// generate 2 fear per town destroyed,
 			// pushes town
 
 			// Given: 2 town
 			ctx.Tokens.Adjust( Invader.Town.Default, count );
 
-			// When: destorying towns
+			// When: destroying towns
 			_ = DestroyAllExplorersAndTownsAsync( ctx );
 
 			// Then: dream-death allows User pushes them

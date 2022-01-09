@@ -9,7 +9,7 @@ namespace SpiritIsland {
 	public class ConfigureRavage {
 
 		// Ravage - Specific
-		public Func<RavageEngine, Task> RavageSequence = null; // null triggers default
+		public Func<RavageAction, Task> RavageSequence = null; // null triggers default
 		public bool ShouldDamageLand { get; set; } = true;
 		public CountDictionary<Token> NotParticipating {  get; set; } = new CountDictionary<Token>();
 		public Func<Token,bool> IsAttacker { get; set; } = null;

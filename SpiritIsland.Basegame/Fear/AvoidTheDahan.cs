@@ -10,10 +10,10 @@ namespace SpiritIsland.Basegame {
 		[FearLevel(1, "Invaders do not Explore into lands with at least 2 Dahan." )]
 		public Task Level1( FearCtx ctx ) {
 
-			ctx.GameState.PreExplore.ForRound.Add( ( gs, args ) => {
+			ctx.GameState.PreExplore.ForRound.Add( ( args ) => {
 				for(int i = 0; i < args.SpacesMatchingCards.Count; ++i) {
 					var space = args.SpacesMatchingCards[i];
-					if( 2<=gs.DahanOn(space).Count)
+					if( 2<=args.GameState.DahanOn(space).Count)
 						args.Skip(space);
 				}
 			} );
@@ -23,9 +23,9 @@ namespace SpiritIsland.Basegame {
 
 		[FearLevel( 2, "Invaders do not Build in lands where Dahan outnumber Town / City." )]
 		public Task Level2( FearCtx ctx ) {
-			ctx.GameState.PreBuilding.ForRound.Add( ( gs, args ) => {
+			ctx.GameState.PreBuilding.ForRound.Add( ( args ) => {
 				foreach(var space in args.SpaceCounts.Keys.ToArray()) {
-					var tokens = gs.Tokens[space];
+					var tokens = args.GameState.Tokens[space];
 					if(tokens.SumAny(Invader.City,Invader.Town) < tokens.Dahan.Count)
 						args.SpaceCounts[space] = 0;
 				}
@@ -36,9 +36,9 @@ namespace SpiritIsland.Basegame {
 
 		[FearLevel( 3, "Invaders do not Build in lands with Dahan." )]
 		public Task Level3( FearCtx ctx ) {
-			ctx.GameState.PreBuilding.ForRound.Add( ( gs, args ) => {
+			ctx.GameState.PreBuilding.ForRound.Add( ( args ) => {
 				foreach(var space in args.SpaceCounts.Keys.ToArray()) {
-					if(0 < gs.Tokens[space].Dahan.Count)
+					if(0 < args.GameState.Tokens[space].Dahan.Count)
 						args.SpaceCounts[space] = 0;
 				}
 			} );

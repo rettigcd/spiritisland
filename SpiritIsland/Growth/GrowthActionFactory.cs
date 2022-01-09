@@ -11,7 +11,7 @@ namespace SpiritIsland {
 
 		public abstract Task ActivateAsync(SelfCtx ctx);
 
-		public bool CouldActivateDuring( Phase speed, Spirit _ ) => speed == Phase.Growth;
+		public virtual bool CouldActivateDuring( Phase speed, Spirit _ ) => speed == Phase.Growth;
 
 	}
 

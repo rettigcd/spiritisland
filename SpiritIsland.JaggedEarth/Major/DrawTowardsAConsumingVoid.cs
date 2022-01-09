@@ -61,7 +61,7 @@ namespace SpiritIsland.JaggedEarth {
 			await ctx.DamageInvaders( 15 );
 			await ctx.DamageDahan( 5 );
 
-			// destory 1 presence from each Spirit.
+			// destroy 1 presence from each Spirit.
 			foreach(var spirit in ctx.GameState.Spirits)
 				if(spirit.Presence.IsOn( ctx.Space ))
 					await spirit.Presence.Destroy( ctx.Space, ctx.GameState, ActionType.SpiritPower );

@@ -45,7 +45,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 		}
 
-		[InnateOption( "4 plant", "Split this Power's Damage however desired between target land and another 1 of your lands.", AttributePurpose.DisplayOnly )]
+		[DisplayOnly( "4 plant", "Split this Power's Damage however desired between target land and another 1 of your lands." )]
 		static public void NoOp() {}
 
 

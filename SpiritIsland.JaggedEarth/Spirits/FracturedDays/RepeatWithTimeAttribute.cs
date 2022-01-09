@@ -28,7 +28,7 @@ namespace SpiritIsland.JaggedEarth {
 					&& previousUse <= fracturedDays.Time
 					&& await spirit.UserSelectsFirstText($"Pay {previousUse} Time to repeat power?", "Yes, repeat", "No, thank you.")
 				) {
-					fracturedDays.Time -= previousUse;
+					await fracturedDays.SpendTime( previousUse );
 					++previousUse;
 					return true;
 				}

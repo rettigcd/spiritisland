@@ -18,7 +18,7 @@ namespace SpiritIsland.JaggedEarth {
 			if(frac.Energy < cost) return;
 
 			frac.Energy -= cost;
-			frac.Time -= cost;
+			await frac.SpendTime( cost );
 
 			// Swap the top card of the Invader Deck with a card in the Invader discard that is withing 1 Invader Stage of it.
 			var deck = ctx.GameState.InvaderDeck;

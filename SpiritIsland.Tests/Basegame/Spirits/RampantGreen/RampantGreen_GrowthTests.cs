@@ -21,11 +21,12 @@ namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
 			Given_HalfOfPowercardsPlayed();
 			Given_HasPresence( board[2] );
 
-			_ = When_Growing( 0 );
+			When_StartingGrowth();
+			User_SelectAlwaysGrowthOption();
 
+			User.Growth_SelectsOption( "ReclaimAll / DrawPowerCard" );
 			User.Growth_ReclaimsAll();
 			User.Growth_DrawsPowerCard();
-			User.Growth_PlacesEnergyPresence( "A2;A3;A5" );
 
 			Assert_AllCardsAvailableToPlay(5);
 		}
@@ -40,9 +41,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
 
 			Assert.Equal( 1, spirit.NumberOfCardsPlayablePerTurn ); // ,"Rampant Green should start with 1 card.");
 
-			_ = When_Growing( 1 );
+			When_StartingGrowth();
+			User_SelectAlwaysGrowthOption();
 
-			User.Growth_PlacesEnergyPresence( "A2;A3;A5" );
+			User.Growth_SelectsOption( "PlacePresence(1) / PlayExtraCardThisTurn(1)" );
 			User.Growth_PlacesEnergyPresence( "A2;A3;A5" );
 			User.Growth_ActivatesExtraCardPlay();
 
@@ -59,21 +61,25 @@ namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
 		}
 
 		[Fact]
-		public void GainEnergy_PowerCard_JWPresence(){
-			// +1 presense to jungle or wetland - range 2
-			// +1 power card, +3 energy
+		public void GainEnergy_PowerCard_JWPresence() {
 			Given_HasPresence( board[2] );
 
 			When_StartingGrowth();
 
-			User.Growth_SelectsOption( "PlacePresence(2,W / J) / GainEnergy(3) / DrawPowerCard" );
-			User.Growth_PlacesEnergyPresence( "A2;A3;A5" ); // +1 from energy track
+			User_SelectAlwaysGrowthOption();
+
+			User.Growth_SelectsOption( "GainEnergy(3) / DrawPowerCard" );
 			User.Growth_DrawsPowerCard();
 			User.Growth_GainsEnergy();
 
-			Assert.Equal(1,spirit.EnergyPerTurn);
-			Assert_HasEnergy(3+1);
-			spirit.Hand.Count.ShouldBe(5);
+			Assert.Equal( 1, spirit.EnergyPerTurn );
+			Assert_HasEnergy( 3 + 1 );
+			spirit.Hand.Count.ShouldBe( 5 );
+		}
+
+		void User_SelectAlwaysGrowthOption() {
+			User.Growth_SelectsOption( "PlacePresence(2,W / J)" );
+			User.Growth_PlacesEnergyPresence( "A2;A3;A5" ); // +1 from energy track
 		}
 
 		[Trait("Presence","EnergyTrack")]

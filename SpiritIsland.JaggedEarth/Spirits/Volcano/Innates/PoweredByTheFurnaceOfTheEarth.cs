@@ -8,8 +8,7 @@ namespace SpiritIsland.JaggedEarth {
 
 		[InnateOption("3 earth","Add 1 of your destroyed presence.",0)]
 		static public async Task Option1(TargetSpaceCtx ctx ) {
-			if(0<ctx.Self.Presence.Destroyed)
-				await ctx.Presence.PlaceDestroyedHere();
+			await ctx.Presence.PlaceDestroyedHere( 1 );
 		}
 
 		[InnateOption("3 fire","-2 cost.  Gain a Power Card",1)]

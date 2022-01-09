@@ -16,12 +16,12 @@ namespace SpiritIsland.JaggedEarth {
 
 		static SpaceAction DamageAddedOrMovedInvaders => new SpaceAction("After Invaders are added or moved to target land, 1 Damage to each added or moved Invader"
 			, (ctx) => {
-				ctx.GameState.Tokens.TokenAdded.ForRound.Add( async (gs,args)=> {
+				ctx.GameState.Tokens.TokenAdded.ForRound.Add( async (args)=> {
 					if(args.Space == ctx.Space)
 						await ctx.Invaders.ApplyDamageTo1(1, args.Token );
 				} );
 
-				ctx.GameState.Tokens.TokenMoved.ForRound.Add( async (gs,args)=> {
+				ctx.GameState.Tokens.TokenMoved.ForRound.Add( async (args)=> {
 					if(args.AddedTo == ctx.Space)
 						await ctx.Invaders.ApplyDamageTo1(1, args.Token );
 				} );

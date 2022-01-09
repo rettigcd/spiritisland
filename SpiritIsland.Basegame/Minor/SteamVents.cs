@@ -12,13 +12,13 @@ namespace SpiritIsland.Basegame {
 
 			await ctx.SelectActionOption(
 				new SpaceAction(
-					"Destory 1 explorer", 
+					"Destroy 1 explorer", 
 					ctx => ctx.Invaders.Destroy( 1, Invader.Explorer ) 
 				),
 				new SpaceAction(
-					"Destory 1 town", 
+					"Destroy 1 town", 
 					ctx => ctx.Invaders.Destroy( 1, Invader.Town )
-				).Cond( ctx.Tokens.Has(Invader.Town) && await ctx.YouHave("3 earth") )
+				).FilterOption( ctx.Tokens.Has(Invader.Town) && await ctx.YouHave("3 earth") )
 			);
 		}
 

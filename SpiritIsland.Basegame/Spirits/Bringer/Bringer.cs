@@ -28,7 +28,7 @@ namespace SpiritIsland.Basegame {
 				// reclaim, +1 power card
 				new GrowthOption(new ReclaimAll(),new DrawPowerCard(1)),
 				// reclaim 1, add presence range 0
-				new GrowthOption(new Reclaim1(), new PlacePresence(0) ),
+				new GrowthOption(new ReclaimN(), new PlacePresence(0) ),
 				// +1 power card, +1 pressence range 1
 				new GrowthOption(new DrawPowerCard(1), new PlacePresence(1) ),
 				// add presense range Dahan or Invadors, +2 energy
@@ -50,7 +50,7 @@ namespace SpiritIsland.Basegame {
 		}
 
 		/// <summary>
-		/// Swaps out the effected tokens so real tokens don't get destoryed.
+		/// Swaps out the effected tokens so real tokens don't get destroyed.
 		/// Swaps out what happens when invaders get 'destroyed'
 		/// </summary>
 		public override InvaderBinding BuildInvaderGroupForPowers( GameState gs, Space space ) {

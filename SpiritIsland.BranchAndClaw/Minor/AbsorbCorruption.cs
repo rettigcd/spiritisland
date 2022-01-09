@@ -9,13 +9,18 @@ namespace SpiritIsland.BranchAndClaw {
 		[FromPresence( 0 )]
 		static public async Task ActAsync(TargetSpaceCtx ctx ) {
 
-			bool canRemoveBlight = ctx.Blight.Any && 1 <= ctx.Self.Energy;
+			static bool CanRemoveBlight(TargetSpaceCtx ctx ) => ctx.Blight.Any && 1 <= ctx.Self.Energy;
 
 			var gatherBlight = new SpaceAction( "Gather 1 blight", ctx => ctx.Gather( 1, TokenType.Blight ) );
-			var removeBlight = new SpaceAction( "Pay 1 Energy to remove 1 blight",  Pay1EnergyToRemoveBlight ).Cond( canRemoveBlight );
+			var removeBlight = new SpaceAction( "Pay 1 Energy to remove 1 blight",  Pay1EnergyToRemoveBlight )
+				.Matches( CanRemoveBlight );
+
 			var doBoth = new SpaceAction( "Do Both", 
-				async ctx => { await gatherBlight.Execute(ctx); await removeBlight.Execute(ctx); }
-			).Cond( canRemoveBlight && await ctx.YouHave("2 plant") );
+				async ctx => { 
+					await gatherBlight.Execute(ctx); 
+					await removeBlight.Execute(ctx);
+				}
+			).FilterOption( await ctx.YouHave("2 plant") );
 
 			await ctx.SelectActionOption( gatherBlight, removeBlight, doBoth );
 

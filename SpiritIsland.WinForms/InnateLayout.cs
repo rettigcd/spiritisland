@@ -11,6 +11,7 @@ namespace SpiritIsland.WinForms {
 		public Rectangle[] AttributeRows;
 		public Rectangle[] AttributeLabelCells;
 		public Rectangle[] AttributeValueCells;
+		public WrappingText GeneralInstructions;
 		public WrappingText_InnateOptions[] Options;
 
 		#region constructor
@@ -37,6 +38,13 @@ namespace SpiritIsland.WinForms {
 			// Options
 			var options = new List<WrappingText_InnateOptions>();
 			int optionY = AttributeBounds.Bottom + (int)(rowHeight * 0.25f);
+
+			// General instructions
+			if(!string.IsNullOrEmpty( power.GeneralInstructions )) {
+				GeneralInstructions = CalcGeneralInstructionsLayout( power.GeneralInstructions, AttributeBounds.Left, optionY, workingWidth, graphics );
+				optionY = GeneralInstructions.Bounds.Bottom;
+			}
+
 			foreach( var innatePowerOption in power.DrawableOptions ) {
 				var wrapInfo = CalcInnateOptionLayout( innatePowerOption, AttributeBounds.Left, optionY, workingWidth, graphics );
 				options.Add( wrapInfo );
@@ -54,11 +62,26 @@ namespace SpiritIsland.WinForms {
 
 		#region private methods
 
+		WrappingText CalcGeneralInstructionsLayout( string description, int originalX, int originalY, int width, Graphics graphics ) {
+			int x = originalX;
+			int y = originalY;
+
+			var wrappingText = new WrappingText();
+
+			// Text
+			using var font = BuildFont(); // !!!
+			CalcWrappingString( wrappingText.tokens, wrappingText.regularTexts, description, font, ref x, ref y, originalX, width, graphics );
+			y += rowHeight;
+			wrappingText.Bounds = new Rectangle( originalX, originalY, width, y - originalY );
+
+			return wrappingText;
+		}
+
 		WrappingText_InnateOptions CalcInnateOptionLayout( IDrawableInnateOption option, int originalX, int originalY, int width, Graphics graphics ) {
 			int x = originalX;
 			int y = originalY;
 
-			var wrappingText = new WrappingText_InnateOptions { Elements = option.Elements };
+			var wrappingText = new WrappingText_InnateOptions { GroupOption = option, };
 			string elementString = option.Elements.BuildElementString();
 			string description = option.Description;
 
@@ -226,7 +249,7 @@ namespace SpiritIsland.WinForms {
 	}
 
 	public class WrappingText_InnateOptions : WrappingText {
-		public ElementCounts Elements;
+		public IDrawableInnateOption GroupOption;
 	}
 
 

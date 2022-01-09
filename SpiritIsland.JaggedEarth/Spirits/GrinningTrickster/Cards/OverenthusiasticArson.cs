@@ -10,7 +10,7 @@ namespace SpiritIsland.JaggedEarth {
 		[SpiritCard(OverenthusiasticArson.Name,1,Element.Fire,Element.Air), Fast, FromPresence(1)]
 		static public async Task ActAsymc(TargetSpaceCtx ctx ) { 
 
-			// Destory 1 town
+			// Destroy 1 town
 			await ctx.Invaders.Destroy(1,Invader.Town);
 
 			// discard the top card of the minor power deck.

@@ -9,17 +9,17 @@ namespace SpiritIsland.JaggedEarth {
 
 		[FearLevel(1, "Each player adds 1 Strife in a land with Presence." )]
 		public Task Level1( FearCtx ctx ) {
-			return GameCmd.EachPlayerTakesActionInALand( Cmd.AddStrife(1), spaceCtx => spaceCtx.Presence.IsHere, Cause.Fear ).Execute( ctx.GameState );
+			return EachPlayerAddsStrifeInALandWithPresence.Execute( ctx.GameState );
 		}
 
 		[FearLevel(2, "Each player adds 1 Strife in a land with Presence. Each Spirit gains 1 Energy per SacredSite they have in lands with Invaders." )]
 		public async Task Level2( FearCtx ctx ) { 
 
 			// Each player adds 1 Strife in a land with Presence
-			await GameCmd.EachPlayerTakesActionInALand( Cmd.AddStrife(1), spaceCtx => spaceCtx.Presence.IsHere, Cause.Fear ).Execute( ctx.GameState );
+			await EachPlayerAddsStrifeInALandWithPresence.Execute( ctx.GameState );
 
 			// Each Spirit gains 1 Energy per SacredSite they have in lands with Invaders.
-			await GameCmd.EachSpirit( Cause.Fear, new SelfAction(
+			await Cmd.EachSpirit( Cause.Fear, new SelfAction(
 				"Gain 1 Energy per SacredSite Spirit has in lands with Invaders"
 				, spiritCtx => spiritCtx.Self.Energy += spiritCtx.Self.Presence.SacredSites.Count( ss => spiritCtx.Target(ss).HasInvaders )
 			)).Execute( ctx.GameState );
@@ -30,11 +30,15 @@ namespace SpiritIsland.JaggedEarth {
 		public async Task Level3( FearCtx ctx ) {
 
 			// Each player adds 1 Strife in a land with Presence
-			await GameCmd.EachPlayerTakesActionInALand( Cmd.AddStrife(1), spaceCtx => spaceCtx.Presence.IsHere, Cause.Fear ).Execute( ctx.GameState );
+			await EachPlayerAddsStrifeInALandWithPresence.Execute( ctx.GameState );
 
 			// Each Invader with Strife deals Damage to other Invaders in its land.
-			await GameCmd.InEachLand( Cause.Fear, StrifedRavage.Cmd, tokens=>tokens.HasStrife ).Execute( ctx.GameState );
+			await Cmd.InEachLand( Cause.Fear, StrifedRavage.Cmd, tokens=>tokens.HasStrife ).Execute( ctx.GameState );
 		}
+
+		static public ActionOption<GameState> EachPlayerAddsStrifeInALandWithPresence
+			=> Cmd.EachSpirit( Cause.Fear, Cmd.AddStrife(1).In( spaceCtx => spaceCtx.Presence.IsHere, "a land with presence") );
+
 	}
 
 }

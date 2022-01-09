@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 
 namespace SpiritIsland.WinForms {
+
 	/// <summary>
 	/// Pulls images from ResoueceImages/Files, and Caches them
 	/// </summary>
@@ -10,8 +11,7 @@ namespace SpiritIsland.WinForms {
 
 		readonly Dictionary<Img,Image> images = new Dictionary<Img,Image>();
 
-		public CachedImageDrawer() {
-		}
+		public CachedImageDrawer() {}
 
 		public void Draw(Graphics graphics, Img img, Rectangle rect) {
 			graphics.DrawImage( GetImage(img), rect );

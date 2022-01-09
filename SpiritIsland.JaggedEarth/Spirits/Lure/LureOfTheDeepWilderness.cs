@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 
 namespace SpiritIsland.JaggedEarth {
@@ -25,12 +24,15 @@ namespace SpiritIsland.JaggedEarth {
 			,PowerCard.For<SoftlyBeckonEverInward>()
 			,PowerCard.For<SwallowedByTheWilderness>()
 		) {
-			Growth = new GrowthOptionGroup(
+			Growth = new Growth(
 				new GrowthOption(new ReclaimAll(),new GainEnergy(1)),
-				new GrowthOption(new PlacePresence(4,Target.Inland)),
-				new GrowthOption(new Gain1Element(Element.Moon,Element.Air,Element.Plant), new GainEnergy(2)),
-				new GrowthOption(new DrawPowerCard())
-			).Pick(2);
+				new GrowthOption(new PlacePresence(4,Target.Inland))
+			).Add( 
+				new GrowthOptionGroup( 1,
+					new GrowthOption(new Gain1Element(Element.Moon,Element.Air,Element.Plant), new GainEnergy(2)),
+					new GrowthOption(new DrawPowerCard())
+				)
+			);
 
 			Presence.IsValid = (s) => !s.IsOcean && !s.IsCoastal;
 
@@ -38,33 +40,6 @@ namespace SpiritIsland.JaggedEarth {
 				InnatePower.For<ForsakeSocietyToChaseAfterDreams>(),
 				InnatePower.For<NeverHeardFromAgain>()
 			};
-		}
-
-		/// <remarks> Overridden so that we can disable 2nd of pair being selected.</remarks>
-		public override async Task DoGrowth(GameState gameState) {
-
-			int remainingGrowths = Growth.SelectionCount;
-			List<GrowthOption> remainingOptions = Growth.Options.ToList();
-			var allOptions = Growth.Options;
-
-			while(remainingGrowths-- > 0) {
-				var currentOptions = remainingOptions.Where( o => o.GainEnergy + Energy >= 0 ).ToArray();
-				GrowthOption option = (GrowthOption)await this.Select( "Select Growth Option", currentOptions, Present.Always );
-
-				if(option == allOptions[0] || option == allOptions[1] ){
-					remainingOptions.Remove( allOptions[0] );
-					remainingOptions.Remove( allOptions[1] );
-				} else {
-					remainingOptions.Remove( allOptions[2] );
-					remainingOptions.Remove( allOptions[3] );
-				}
-
-				await GrowAndResolve( option, gameState );
-			}
-
-			var ctx = new SelfCtx( this, gameState, Cause.Growth );
-			await ApplyRevealedPresenceTracks( ctx );
-
 		}
 
 		protected override void InitializeInternal( Board board, GameState gameState ) {
@@ -79,19 +54,19 @@ namespace SpiritIsland.JaggedEarth {
 			gameState.PreRavaging.ForGame.Add( EnthrallTheForeignExplorers );
 		}
 
-		async Task EnthrallTheForeignExplorers( GameState gs,RavagingEventArgs args ) {
+		async Task EnthrallTheForeignExplorers( RavagingEventArgs args ) {
 			var ravageSpacesWithPresence = args.Spaces.Intersect(this.Presence.Spaces).ToArray();
 			foreach(var space in args.Spaces) {
 				int maxRemovable = this.Presence.CountOn(space) * 2;
 				if( maxRemovable==0 ) continue;
-				int explorerCount = gs.Tokens[space][Invader.Explorer.Default];
+				int explorerCount = args.GameState.Tokens[space][Invader.Explorer.Default];
 				if( explorerCount == 0) continue;
 
 				int removableCount = System.Math.Min( maxRemovable, explorerCount );
 
 				int skipCount = await this.SelectNumber($"Enthrall the Foreign Explorers ({explorerCount} on {space.Label}) Ignore how many?", removableCount,0);
 				if(skipCount>0)
-					gs.ModifyRavage(space,cfg=>cfg.NotParticipating[Invader.Explorer.Default] += skipCount);
+					args.GameState.ModifyRavage(space,cfg=>cfg.NotParticipating[Invader.Explorer.Default] += skipCount);
 
 			}
 		}

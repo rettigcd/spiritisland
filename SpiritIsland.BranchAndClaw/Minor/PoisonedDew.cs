@@ -8,11 +8,11 @@ namespace SpiritIsland.BranchAndClaw {
 		[FromPresence( 1 )]
 		static public Task ActAsync( TargetSpaceCtx ctx ) {
 
-			int countToDestory = ctx.IsOneOf(Terrain.Jungle,Terrain.Wetland)
+			int countToDestroy = ctx.IsOneOf(Terrain.Jungle,Terrain.Wetland)
 				? int.MaxValue
 				: 1;
 
-			return ctx.Invaders.Destroy(countToDestory,Invader.Explorer);
+			return ctx.Invaders.Destroy(countToDestroy,Invader.Explorer);
 		}
 
 	}

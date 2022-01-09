@@ -1,23 +1,20 @@
-﻿using System.Threading.Tasks;
-
-namespace SpiritIsland.BranchAndClaw {
+﻿namespace SpiritIsland.BranchAndClaw {
 
 	public class DisintegratingEcosystem : BlightCardBase {
 
 		public DisintegratingEcosystem():base("Disintegrating Ecosystem", 5 ) { }
 
-		protected override Task BlightAction( GameState gs ) {
+		public override ActionOption<GameState> Immediately => 
 			// Immediately, on each board: 
-			return GameCmd.OnEachBoard(
-				Cmd.Multiple<BoardCtx>(
+			Cmd.OnEachBoard(
+				Cmd.Multiple(
 					// destroy 1 beast,
-					BoardCmd.PickSpaceThenTakeAction("Destory 1 beast", Cmd.DestoryBeast(1), t=>t.Beasts.Any),
+					Cmd.DestroyBeast(1).InAnyLandOnBoard(),
 					// then add 1 blight to a land with town/city
-					BoardCmd.PickSpaceThenTakeAction("Add 1 blight to a land with town/city", Cmd.AddBlight, t=>t.HasAny(Invader.Town,Invader.City) )
+					Cmd.AddBlight.ToLandOnBoard( x => x.Tokens.HasAny(Invader.Town,Invader.City), "a land with town/city" )
 				)
-			).Execute( gs );
+			);
 
-		}
 	}
 
 }

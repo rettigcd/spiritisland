@@ -9,20 +9,21 @@ namespace SpiritIsland.JaggedEarth {
 		public override string Text => Name;
 
 		public override SpecialRule[] SpecialRules => new SpecialRule[] { 
-			new SpecialRule("Bestow the Endurance of BedRock", "When blight is added to one of your lands, unless the blight then outnumbers your presence, it does not cascade or destory presence (yours or others')."), 
+			new SpecialRule("Bestow the Endurance of BedRock", "When blight is added to one of your lands, unless the blight then outnumbers your presence, it does not cascade or destroy presence (yours or others')."), 
 			new SpecialRule("Deep Layers Expposed to the Surface", "The first time you uncover each of your +1 Card Play presence spaces, gain a Minor Power.") 
 		};
 
 		static Track AddCardPlay => new Track( "PlayExtraCardThisTurn" ) { 
 			Action = new DrawMinorOnceAndPlayExtraCardThisTurn(),
 			Icon = new IconDescriptor {
-				ContentImg = Img.Plus1CardPlay,
+				ContentImg = Img.CardPlayPlusN,
+				Text = "+1",
 				Super = new IconDescriptor { BackgroundImg = Img.Stone_Minor }
 			}
 		};
 
 		static Track EarthReclaim => new Track( "earth card", Element.Earth ) { 
-			Action = new Reclaim1(),
+			Action = new ReclaimN(),
 			Icon = new IconDescriptor {
 				BackgroundImg = Img.Token_Earth,
 				Sub = new IconDescriptor { BackgroundImg = Img.Reclaim1 }
@@ -55,7 +56,7 @@ namespace SpiritIsland.JaggedEarth {
 			,PowerCard.For<StubbornSolidity>()
 		) {
 
-			this.Growth = new GrowthOptionGroup(
+			this.Growth = new Growth(
 				new GrowthOption(new ReclaimAll(),new PlacePresence(3,Target.MountainOrPresence),new GainElements(Element.Earth,Element.Earth)),
 				new GrowthOption(new PlacePresence(2), new GainEnergy(3)),
 				new GrowthOption(new DrawPowerCard(), new PlacePresence(1))
@@ -83,7 +84,7 @@ namespace SpiritIsland.JaggedEarth {
 			// When blight is added to one of your lands,
 			// if the blight is less than or equal to your presence, 
 			return gs.Tokens[space].Blight <= Presence.CountOn(space)
-				// it does not cascade or destory presence (yours or others')."
+				// it does not cascade or destroy presence (yours or others')."
 				? new AddBlightEffect { Cascade = false, DestroyPresence = false }
 				// otherwide, normal action
 				: oldBlightEffect(gs,space);

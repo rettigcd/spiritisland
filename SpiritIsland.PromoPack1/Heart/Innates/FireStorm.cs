@@ -48,12 +48,12 @@ namespace SpiritIsland.PromoPack1 {
 		}
 
 
-		[InnateOption( MultiTargetThreshold, "You may split this Power's damage among any number of lands with blight where you have presence.", AttributePurpose.DisplayOnly, 0 )]
+		[DisplayOnly( MultiTargetThreshold, "You may split this Power's damage among any number of lands with blight where you have presence." )]
 		static Task<bool> CanSplitDamage(TargetSpaceCtx ctx) => ctx.YouHave( MultiTargetThreshold );
 		const string MultiTargetThreshold = "4 fire,2 air";
 
 		// Group 1
-		[InnateOption( "7 fire", "In a land with blight where you have presence, Push all dahan.  Destory all Invaders and beast. 1 blight.", 1 )]
+		[InnateOption( "7 fire", "In a land with blight where you have presence, Push all dahan.  Destroy all Invaders and beast. 1 blight.", 1 )]
 		static public async Task Option4( TargetSpaceCtx ctx ) {
 			// In a land with blight and presence  (Select a space, not necessarily the one you targetted with power (I guess...)
 			var spacesWithPresenceAndBlight = ctx.Self.Presence.Spaces
@@ -64,7 +64,7 @@ namespace SpiritIsland.PromoPack1 {
 			// Push all Dahan
 			await spaceCtx.PushDahan( int.MaxValue );
 
-			// Destory all invaders and Beasts
+			// Destroy all invaders and Beasts
 			var beasts = spaceCtx.Beasts;
 			await beasts.Destroy( beasts.Count );
 			await spaceCtx.Invaders.DestroyAny(int.MaxValue,Invader.Explorer,Invader.Town,Invader.City);

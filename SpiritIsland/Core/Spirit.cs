@@ -17,6 +17,10 @@ namespace SpiritIsland {
 				AddCardToHand(card);
 
 			Action = new ActionGateway();
+
+			decks.Add(new SpiritDeck{ Icon = Img.Deck_Hand, PowerCards = Hand });
+			decks.Add(new SpiritDeck{ Icon = Img.Deck_Played, PowerCards = InPlay });
+			decks.Add(new SpiritDeck{ Icon = Img.Deck_Discarded, PowerCards = DiscardPile } );
 		}
 
 		public void AddCardToHand( PowerCard card ){
@@ -62,7 +66,8 @@ namespace SpiritIsland {
 			return false;
 		}
 
-		public virtual async Task<ElementCounts> GetHighestMatchingElements( IEnumerable<ElementCounts> elementOptions ) {
+		public virtual async Task<ElementCounts> SelectInnateToActivate( IEnumerable<IDrawableInnateOption> innateOptions ) {
+			IEnumerable<ElementCounts> elementOptions = innateOptions.Select(x=>x.Elements);
 			ElementCounts match = null;
 			foreach(ElementCounts elements in elementOptions.OrderBy( els => els.Total ))
 				if(await HasElements( elements ))
@@ -74,38 +79,27 @@ namespace SpiritIsland {
 
 		#region Growth
 
-		public GrowthOptionGroup Growth { get; protected set; }
+		public Growth Growth { get; protected set; }
 
 		public virtual async Task DoGrowth(GameState gameState) {
 			var ctx = new SelfCtx( this, gameState, Cause.Growth );
 
-			// (a) Resolve Initialization
-			if(availableActions.Any()) {
-				if(availableActions.Count == 1) 
-					await TakeAction( availableActions[0], ctx );
-				else
-					await ResolveActions(ctx);
-			}
-
-			// (b) Pre-Growth Track options
+			// (1) Pre-Growth Track options
 			foreach(ITrackActionFactory action in Presence.RevealedActions)
 				if( !action.RunAfterGrowthResult )
 					await action.ActivateAsync( ctx );
 
-			// (c) Growth
-			int count = Growth.SelectionCount;
-			var usedOptions = new List<GrowthOption>(); // done this way so Starlight can add growth mid-growth.
+			// (b) Growth
+			var inst = Growth.GetInstance();
 
-			while(count-- > 0) {
-				var currentOptions = Growth.Options.Except(usedOptions).Where( o => o.GainEnergy + Energy >= 0 ).ToArray();
-				if(currentOptions.Length == 0) break; // maybe required energy prevents using growth option so nothing to choose.
-				GrowthOption option = (GrowthOption)await this.Select( "Select Growth Option", currentOptions, Present.Always );
-				usedOptions.Add( option );
-
+			GrowthOption[] options;
+			while( (options = inst.RemainingOptions(Energy)).Length > 0 ) {
+				GrowthOption option = (GrowthOption)await this.Select( "Select Growth Option", options, Present.Always );
+				inst.MarkAsUsed( option );
 				await GrowAndResolve( option, gameState );
 			}
 
-			// (d) Post-Growth Track options
+			// (c) Post-Growth Track options
 			await ApplyRevealedPresenceTracks( ctx );
 
 		}
@@ -127,12 +121,12 @@ namespace SpiritIsland {
 				AddActionFactory( action );
 		}
 
-		async Task Presence_TrackRevealed( GameState gs, Track track ) {
-			Elements.AddRange( track.Elements );
+		async Task Presence_TrackRevealed( TrackRevealedArgs args ) {
+			Elements.AddRange( args.Track.Elements );
 
-			if( track.Action != null)
-				if( gs.Phase != Phase.Growth || !track.Action.RunAfterGrowthResult )
-					await track.Action.ActivateAsync(new SelfCtx(this,gs,Cause.Power));
+			if( args.Track.Action != null)
+				if( args.GameState.Phase != Phase.Growth || !args.Track.Action.RunAfterGrowthResult )
+					await args.Track.Action.ActivateAsync(new SelfCtx(this,args.GameState,Cause.Power));
 		}
 
 		public Task ApplyRevealedPresenceTracks_CalledOnlyFromTests(GameState gs) {
@@ -159,30 +153,35 @@ namespace SpiritIsland {
 			Phase speed = ctx.GameState.Phase;
 			Present present = ctx.GameState.Phase == Phase.Growth ? Present.Always : Present.Done;
 
-			IActionFactory[] factoryOptions;
-
-			while((factoryOptions = this.GetAvailableActions( speed ).ToArray()).Length> 0) {
-
-				// -------------
-				// Select Actions to resolve
-				// -------------
-				IActionFactory option = await this.SelectFactory( "Select " + speed + " to resolve:", factoryOptions, present );
-				if(option == null)
-					break;
-
-				// if user clicked a slow card that was made fast, // slow card won't be in the options
-				if(!factoryOptions.Contains( option ))
-					// find the fast version of the slow card that was clicked
-					option = factoryOptions.Cast<IActionFactory>()
-						.First( factory => factory == option );
-
-				if(!factoryOptions.Contains( option ))
-					throw new Exception( "Dude! - You selected something that wasn't an option" );
-
-				await TakeAction( option, ctx );
-			}
+			while( this.GetAvailableActions( speed ).Any()
+				&& await ResolveAction( ctx.GameState.Phase, present, ctx )
+			) {}
 
 		}
+
+		public async Task<bool> ResolveAction( Phase speed, Present present, SelfCtx ctx ) {
+
+			// -------------
+			// Select Actions to resolve
+			// -------------
+			IActionFactory[] options = this.GetAvailableActions( speed ).ToArray();
+			IActionFactory option = await this.SelectFactory( "Select " + speed + " to resolve:", options, present );
+			if(option == null)
+				return false;
+
+			// if user clicked a slow card that was made fast, // slow card won't be in the options
+			if(!options.Contains( option ))
+				// find the fast version of the slow card that was clicked
+				option = options.Cast<IActionFactory>()
+					.First( factory => factory == option );
+
+			if(!options.Contains( option ))
+				throw new Exception( "Dude! - You selected something that wasn't an option" );
+
+			await TakeAction( option, ctx );
+			return true;
+		}
+
 
 		#endregion
 
@@ -191,6 +190,9 @@ namespace SpiritIsland {
 		public List<PowerCard> Hand = new List<PowerCard>();	    // in hand
 		public List<PowerCard> InPlay = new List<PowerCard>();		// paid for / played
 		public List<PowerCard> DiscardPile = new List<PowerCard>(); // Cards are not transferred to discard pile until end of turn because we need to keep track of their elements.
+		public SpiritDeck[] Decks => decks.ToArray();
+
+		readonly protected List<SpiritDeck> decks = new List<SpiritDeck>();
 
 		readonly List<IActionFactory> availableActions = new List<IActionFactory>();
 		readonly HashSet<IActionFactory> usedActions = new HashSet<IActionFactory>();
@@ -220,6 +222,7 @@ namespace SpiritIsland {
 		}
 
 		public void Reclaim( PowerCard reclaimCard ) {
+			if(reclaimCard == null ) throw new ArgumentNullException(nameof(reclaimCard));
 			if( DiscardPile.Contains( reclaimCard ) ) {
 				DiscardPile.Remove( reclaimCard );
 			} else if( InPlay.Contains( reclaimCard ) ) {
@@ -231,9 +234,13 @@ namespace SpiritIsland {
 
 		public async Task Reclaim1FromDiscard() {
 			PowerCard cardToReclaim = await this.SelectPowerCard( "Select card to reclaim.", DiscardPile, CardUse.Reclaim, Present.Always );
-			Reclaim( cardToReclaim );
+			if( cardToReclaim != null )
+				Reclaim( cardToReclaim );
 		}
 
+		/// <summary>
+		/// Called mid-round.  If reclaiming card from hand, looses elements
+		/// </summary>
 		public async Task Reclaim1FromDiscardOrPlayed() {
 			PowerCard cardToReclaim = await this.SelectPowerCard( "Select card to reclaim.", DiscardPile.Union(InPlay), CardUse.Reclaim, Present.Always );
 			Reclaim( cardToReclaim );
@@ -306,7 +313,7 @@ namespace SpiritIsland {
 				RemoveFromUnresolvedActions( factory ); // removing first, so action can restore it if desired
 				await factory.ActivateAsync( ctx );
 				if(factory is IRecordLastTarget lastTargetRecorder )
-					await ActionTaken_ThisRound.InvokeAsync(ctx.GameState, new ActionTaken(factory,lastTargetRecorder.LastTarget) );
+					await ActionTaken_ThisRound.InvokeAsync( new ActionTaken(factory,lastTargetRecorder.LastTarget) );
 			} finally {
 				CurrentActionId = oldActionGuid; // restore
 			}
@@ -569,12 +576,6 @@ namespace SpiritIsland {
 		}
 
 		#endregion
-
-		public virtual SpiritDeck[] Decks => new SpiritDeck[] {
-			new SpiritDeck{ Icon = Img.Deck_Hand, PowerCards = Hand },
-			new SpiritDeck{ Icon = Img.Deck_Played, PowerCards = InPlay },
-			new SpiritDeck{ Icon = Img.Deck_Discarded, PowerCards = DiscardPile },
-		};
 
 	}
 

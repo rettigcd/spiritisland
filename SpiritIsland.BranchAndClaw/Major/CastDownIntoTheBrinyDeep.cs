@@ -20,13 +20,13 @@ namespace SpiritIsland.BranchAndClaw {
 		}
 
 		static async Task DestroyBoard( SelfCtx ctx, Board board ) {
-			// destory the board containing target land and everything on that board.
+			// destroy the board containing target land and everything on that board.
 			// All destroyed blight is removed from the game instead of being returned to the blight card.
-			await DestoryTokens( ctx, board );
+			await DestroyTokens( ctx, board );
 
-			if(!ctx.Self.Text.StartsWith( "Bringer" )) { // !!! Maybe Api should have method called "Destroy Space" or "DestoryBoard"
+			if(!ctx.Self.Text.StartsWith( "Bringer" )) { // !!! Maybe Api should have method called "Destroy Space" or "DestroyBoard"
 
-				// destory presence
+				// destroy presence
 				foreach(var spirit in ctx.GameState.Spirits)
 					foreach(var p in spirit.Presence.Placed.Where(p=>p.Board==board).ToArray() )
 						await spirit.Presence.Destroy(p, ctx.GameState, ActionType.SpiritPower);
@@ -40,16 +40,16 @@ namespace SpiritIsland.BranchAndClaw {
 			}
 		}
 
-		static async Task DestoryTokens( SelfCtx ctx, Board board ) {
+		static async Task DestroyTokens( SelfCtx ctx, Board board ) {
 
 			foreach(var space in board.Spaces) {
 
 				var spaceCtx = ctx.Target( space );
 
-				// Destory Invaders
+				// Destroy Invaders
 				await spaceCtx.Invaders.DestroyAny( int.MaxValue, Invader.City, Invader.Town, Invader.Explorer );
 
-				// Destory Dahan
+				// Destroy Dahan
 				await spaceCtx.DestroyDahan( int.MaxValue );
 
 				if(!ctx.Self.Text.StartsWith("Bringer")) { // !!!

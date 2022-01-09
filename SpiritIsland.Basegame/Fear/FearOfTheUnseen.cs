@@ -38,19 +38,21 @@ namespace SpiritIsland.Basegame {
 
 			foreach(SelfCtx spiritCtx in ctx.Spirits) {
 
-				var cityOptions         = sacredSites.Where( s=> spiritCtx.Target(s).Tokens.Has(Invader.City)).ToArray();
-				var townExplorerOptions = presences.Where( s => spiritCtx.Target(s).Tokens.HasAny( Invader.Town, Invader.Explorer) ).ToArray();
+				Space[] cityOptions         = sacredSites.Where( s=> spiritCtx.Target(s).Tokens.Has(Invader.City)).ToArray();
+				Space[] townExplorerOptions = presences.Where( s => spiritCtx.Target(s).Tokens.HasAny( Invader.Town, Invader.Explorer) ).ToArray();
 
 				await spiritCtx.SelectActionOption(
 					"Select invader to remove",
+
 					new SelfAction( 
 						"remove 1 explorer/town from land with presence", 
 						ctx => ctx.RemoveTokenFromOneSpace( townExplorerOptions, 1, Invader.Town,Invader.Explorer )
-					).Cond( townExplorerOptions.Length>0 ),
+					).FilterOption( townExplorerOptions.Length>0 ),
+
 					new SelfAction( 
 						"remove 1 city from land with sacred site",  
 						ctx => ctx.RemoveTokenFromOneSpace( cityOptions, 1, Invader.City )
-					).Cond( cityOptions.Length > 0 )
+					).FilterOption( cityOptions.Length > 0 )
 				);
 
 			}

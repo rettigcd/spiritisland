@@ -16,7 +16,7 @@ namespace SpiritIsland.JaggedEarth {
 			var x = ctx.OtherCtx.Target(space);
 			await x.RemoveBlight();
 			// and target Spirit may add 1 of their Destroyed presence.
-			await x.Presence.PlaceDestroyedHere();
+			await x.Presence.PlaceDestroyedHere(); // !!! May Add - let them choose
 		}
 
 	}

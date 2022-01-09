@@ -50,7 +50,7 @@ namespace SpiritIsland.Tests {
 				_ = dec.ToString();
 			} else
 				//  Then: Asks user to prepare element
-				fxt.user.AssertDecisionX("Prepare Element (A5)","Sun,Moon,Air,Fire,Water,(Earth),Plant,Animal");
+				fxt.user.AssertDecisionX("Prepare Element (A5)","Sun,Moon,Fire,Air,Water,(Earth),Plant,Animal");
 
 			fxt.gameState.Phase.ShouldBe(Phase.Slow);
 		}

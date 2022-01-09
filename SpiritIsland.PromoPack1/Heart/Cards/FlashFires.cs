@@ -5,7 +5,7 @@ namespace SpiritIsland.PromoPack1 {
 
 		[SpiritCard("Flash-Fires",2,Element.Fire,Element.Air)]
 		[SlowButFastIf("2 air")]
-		[FromSacredSite(2)] 
+		[FromPresence(1)] 
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 			// 1 fear

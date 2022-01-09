@@ -16,12 +16,12 @@ namespace SpiritIsland.PromoPack1 {
 				InnatePower.For<SerpentRousesInAnger>()
 			};
 
-			Growth = new GrowthOptionGroup(
+			Growth = new Growth( 2,
 				new GrowthOption( new ReclaimAll(), new MovePresence(1) ),
 				new GrowthOption( new DrawPowerCard(), new GainEnergy(1) ),
 				new GrowthOption( new GainEnergy(4) ),
 				new GrowthOption( new PlacePresence(3,Target.NoBlight) )
-			).Pick(2);
+			);
 
 		}
 

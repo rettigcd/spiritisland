@@ -34,6 +34,9 @@ namespace SpiritIsland.BranchAndClaw {
 		}
 
 		static Task RemoveTokenChoice( FearCtx ctx, SelfCtx spiritCtx, int count, params TokenClass[] interiorGroup ) {
+
+			// !! It would be easier on the player if we could 'flatten' this to just the 'remove' step so they don't have to analyze what is on a beast space or adjacent to one.
+
 			return spiritCtx.SelectActionOption(
 				new SelfAction("Remove 1 explorer & 1 town from a land with beast", spiritCtx => { 
 					return spiritCtx.RemoveTokenFromOneSpace( ctx.LandsWithBeasts(), count, Invader.Explorer, Invader.Town );

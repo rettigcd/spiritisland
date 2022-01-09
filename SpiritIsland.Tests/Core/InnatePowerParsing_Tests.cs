@@ -12,14 +12,14 @@ namespace SpiritIsland.Tests.Core {
 		// Thunder Speaker
 		[InlineData( "This Power may be fast.", "This Power may be |{fast}|." )]
 		[InlineData( "Destroy 1 town for every 2 dahan in target land.", "Destroy 1 |{town}| for every 2 |{dahan}| in target land." )]
-		[InlineData( "Destory 1 city for every 3 dahan in target land.", "Destory 1 |{city}| for every 3 |{dahan}| in target land." )]
+		[InlineData( "Destroy 1 city for every 3 dahan in target land.", "Destroy 1 |{city}| for every 3 |{dahan}| in target land." )]
 		[InlineData( "Gather up to 1 dahan per air you have.  Push up to 1 dahan per sun you have.", "Gather up to 1 |{dahan}| per |{air}| you have.  Push up to 1 |{dahan}| per |{sun}| you have." )]
 		// River
 		[InlineData( "Push 1 explorer/town.", "Push 1 |{explorer}|/|{town}|." )]
 		[InlineData( "Instead, 2 Damage. Push up to 3 explorer/town.", "Instead, 2 Damage. Push up to 3 |{explorer}|/|{town}|." )]
 		[InlineData( "Instead, 2 Damage to each Invader.", "Instead, 2 Damage to each Invader." )]
 		// Keeper
-		[InlineData( "2 Damage. Destory 1 dahan.", "2 Damage. Destory 1 |{dahan}|." )]
+		[InlineData( "2 Damage. Destroy 1 dahan.", "2 Damage. Destroy 1 |{dahan}|." )]
 		[InlineData( "+1 Damage per sunplant you have.", "+1 Damage per |{sun}|{plant}| you have." )]
 		[InlineData( "Split this Power's Damage however desired between target land and another 1 of your lands.", "Split this Power's Damage however desired between target land and another 1 of your lands." )]
 		[InlineData( "Push 1 explorer from target land per 2 sun you have.", "Push 1 |{explorer}| from target land per 2 |{sun}| you have." )]

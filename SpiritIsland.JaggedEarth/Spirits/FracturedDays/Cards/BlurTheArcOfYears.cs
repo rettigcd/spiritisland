@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SpiritIsland.JaggedEarth {
 	class BlurTheArcOfYears {
@@ -15,7 +16,7 @@ namespace SpiritIsland.JaggedEarth {
 				&& frac.Time > 0
 				&& await frac.UserSelectsFirstText($"Pay 1 Time to repeat '{BlurTheArcOfYears.Name}' on {ctx.Space.Label}?", "Yes", "No, thank you" )
 			) {
-				--frac.Time;
+				await frac.SpendTime( 1 );
 				await ActInnerAsync( ctx );
 			}
 
@@ -31,8 +32,15 @@ namespace SpiritIsland.JaggedEarth {
 
 			// If invaders are present: they Build, then Ravage
 			if(hasInvaders) {
-				await ctx.GameState.InvaderEngine.BuildSpace( ctx.Tokens, BuildingEventArgs.BuildType.TownsAndCities );
-				await ctx.GameState.InvaderEngine.RavageSpace( ctx.Invaders );
+
+				await ctx.GameState.GetBuildEngine()
+					.Exec( 
+						new BuildingEventArgs( ctx.GameState, new Dictionary<Space, BuildingEventArgs.BuildType>() ),
+						ctx.Tokens, 
+						ctx.GameState
+					);
+
+				await new RavageAction( ctx.GameState, ctx.Invaders ).Exec();
 			}
 
 			// If dahan are present: Add 1 dahan. Push up to 2 dahan.

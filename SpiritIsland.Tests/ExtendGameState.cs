@@ -19,4 +19,13 @@ namespace SpiritIsland.Tests {
 
 	}
 
+	public static class InvaderEngine1 {
+
+		public static async Task RavageCard( InvaderCard invaderCard, GameState gameState ) {
+			if( invaderCard != null )
+				await invaderCard.Ravage( gameState );
+		}
+
+	}
+
 }

@@ -2,23 +2,29 @@
 
 namespace SpiritIsland {
 
-	public class Reclaim1 : GrowthActionFactory, ITrackActionFactory {
+	public class ReclaimN : GrowthActionFactory, ITrackActionFactory {
 
 		public const string Prompt = "Select card to reclaim.";
 
 		public bool RunAfterGrowthResult => true; // If user Reclaims All during growth, no need to reclaim single
 
-		public override async Task ActivateAsync( SelfCtx ctx ) {
-			var self = ctx.Self;
-			if(self.DiscardPile.Count == 0) return;
+		public ReclaimN(int count=1) {
+			this.count = count;
+		}
 
-			PowerCard cardToReclaim = await ctx.Self.SelectPowerCard( Prompt, self.DiscardPile, CardUse.Reclaim, Present.Always );
-			if(cardToReclaim != null)
-				self.Reclaim( cardToReclaim );
+		public override async Task ActivateAsync( SelfCtx ctx ) {
+			if(ctx.Self.DiscardPile.Count == 0) return;
+
+			int reclaimCount = count;
+
+			while(reclaimCount-- > 0)
+				await ctx.Self.Reclaim1FromDiscard();
 
 		}
 
-		public override string Name => "Reclaim(1)";
+		readonly int count;
+
+		public override string Name => $"Reclaim({count})";
 
 	}
 

@@ -11,7 +11,6 @@ namespace SpiritIsland.BranchAndClaw {
 
 			// target Spirit gains a major power by drawing 2 and keeping 1, without having to forget another power card
 			PowerCard card = (await ctx.OtherCtx.DrawMajor( false, 2 )).Selected;
-			ctx.Other.AddCardToHand( card );
 
 			// if 2 of each element,
 			if(await ctx.YouHave("2 sun,2 moon,2 fire,2 air,2 water,2 earth,2 plant,2 animal" ))
@@ -27,18 +26,20 @@ namespace SpiritIsland.BranchAndClaw {
 			var payingHalfCostOption = new SelfAction(
 				$"paying {cost}",
 				ctx => ctx.Self.PlayCard(card, cost)
-			).Cond( cost <= ctx.Self.Energy );
+			).Matches( x => cost <= x.Self.Energy );
 
 			//    * forgetting it at the end of turn.
 			var forgettingCardOption = new SelfAction(
 				$"forgetting at end of turn",
 				ctx => {
 					ctx.Self.PlayCard(card, 0); 
-					ctx.GameState.TimePasses_ThisRound.Push( new ForgetCard( ctx.Self, card ).Forget );
+					ctx.GameState.TimePasses_ThisRound.Push( (gs)=> { 
+						ctx.Self.Forget( card ); return Task.CompletedTask; // !!! this runs after the cards are moved to discard, so it is forgotten for Shifting Memories
+					});
 				}
 			);
 
-			// It gains all elmemental thresholds.
+			// !!! It gains all elmemental thresholds.  - implement!
 
 			await ctx.SelectAction_Optional( $"Play {card.Name} now by:",
 				payingHalfCostOption,

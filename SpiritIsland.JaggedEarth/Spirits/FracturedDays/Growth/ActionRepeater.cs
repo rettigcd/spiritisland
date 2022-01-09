@@ -4,8 +4,9 @@ using System.Linq;
 namespace SpiritIsland.JaggedEarth {
 
 	/// <summary>
-	/// Binds multiple actions together and lets them be repeated as a group.
+	/// Binds to multiple actions, allowing them be repeated as a group.
 	/// </summary>
+	/// <remarks>	Fractured Days Growth Option 2 & 3 </remarks>
 	public class ActionRepeater {
 
 		public readonly int repeats;

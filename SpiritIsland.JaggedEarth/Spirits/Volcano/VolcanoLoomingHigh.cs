@@ -25,7 +25,7 @@ namespace SpiritIsland.JaggedEarth {
 			,PowerCard.For<PyroclasticBombardment>()
 			,PowerCard.For<RainOfAsh>()
 		) {
-			Growth = new GrowthOptionGroup(
+			Growth = new Growth(
 				new GrowthOption(new ReclaimAll(), new DrawPowerCard(), new GainEnergy(3)),
 				new GrowthOption(new PlacePresence(0,Target.Mountain), new PlacePresence(0,Target.Mountain)),
 				new GrowthOption(new DrawPowerCard(), new PlacePresence(4,Target.Mountain), new PlayExtraCardThisTurn(1), new GainEnergy(2))
@@ -62,7 +62,7 @@ namespace SpiritIsland.JaggedEarth {
 			public override async Task DestroyPresenceApi( SpiritPresence presence, Space space, GameState gs, ActionType actionType ) {
 				await base.DestroyPresenceApi( presence, space, gs, actionType );
 
-				// Destorying Volcano presence, causes damage to Dahan and invaders
+				// Destroying Volcano presence, causes damage to Dahan and invaders
 				var volcanosSpecialRule = Cause.None;
 
 				await gs.DahanOn(space).ApplyDamage(1, volcanosSpecialRule);

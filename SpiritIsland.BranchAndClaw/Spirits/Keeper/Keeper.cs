@@ -60,12 +60,12 @@ namespace SpiritIsland.BranchAndClaw {
 			PowerCard.For<TowingWrath>()
 		) {
 
-			Growth = new GrowthOptionGroup(
+			Growth = new Growth( 2,
 				new GrowthOption( new ReclaimAll() ,new GainEnergy(1) ){ GainEnergy = 1 },
 				new GrowthOption( new DrawPowerCard(1) ),
 				new GrowthOption( new GainEnergy(1) ,new PlacePresence(3,Target.PresenceOrWilds) ){ GainEnergy = 1 },
 				new GrowthOption( new GainEnergy(-3),new DrawPowerCard(1) ,new PlacePresence(3,Target.NoBlight) ){ GainEnergy = -3 }
-			).Pick(2);
+			);
 
 			InnatePowers = new InnatePower[] {
 				InnatePower.For<PunishThoseWhoTrespass>(),

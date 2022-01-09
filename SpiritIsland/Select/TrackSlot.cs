@@ -1,17 +1,17 @@
-﻿
+﻿using System.Collections.Generic;
+
 namespace SpiritIsland.Select {
 
 	public class TrackSlot : TypedDecision<Track> {
 
 		static public TrackSlot ToReveal( string prompt, SpiritIsland.Spirit spirit )
-			=> new TrackSlot( prompt, spirit, "Take Presence from Board" );
+			=> new TrackSlot( prompt, spirit.Presence.RevealOptions, "Take Presence from Board" );
 
 		static public TrackSlot ToCover( SpiritIsland.Spirit spirit )
-			=> new TrackSlot( "Select Destination to return presence", spirit );
+			=> new TrackSlot( "Select Destination to return presence", spirit.Presence.CoverOptions );
 
-		public TrackSlot( string prompt, SpiritIsland.Spirit spirit, string cancelPrompt = null ) 
-			: base( prompt, spirit.Presence.RevealOptions, cancelPrompt ) 
-		{
+		TrackSlot( string prompt, IEnumerable<Track> trackOptions, string cancelOption = null )
+			: base( prompt, trackOptions, cancelOption ) {
 		}
 
 	}

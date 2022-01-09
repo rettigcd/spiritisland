@@ -51,6 +51,8 @@ namespace SpiritIsland {
 		public ElementCounts Elements { get; }
 
 		public string Description { get; }
+		string IOption.Text => Elements.BuildElementString();
+
 	}
 
 

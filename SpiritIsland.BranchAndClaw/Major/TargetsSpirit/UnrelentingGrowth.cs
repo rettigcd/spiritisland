@@ -18,8 +18,9 @@ namespace SpiritIsland.BranchAndClaw {
 				// and remove 1 blight.
 				var blight = toCtx.Blight;
 				if(blight.Any) await toCtx.RemoveBlight();
-				// Target Spirit gains a power card.
 
+				// Target Spirit gains a power card.
+				await ctx.Self.Draw(ctx.GameState);
 			}
 
 		}

@@ -62,7 +62,7 @@ namespace SpiritIsland.PromoPack1 {
 				"Blazing Presence",
 				"After you add or move presence after Setup, in the land it goes to: For each fire showing on your presence Tracks, do 1 Damage."
 				+"  If 2 fire or more are showing on your presence Tracks, add 1 blight."
-				+"  Push all beasts and any number of dahan.  Added blight does not destory your presence.")
+				+"  Push all beasts and any number of dahan.  Added blight does not destroy your presence.")
 		} ;
 
 		public override async Task PlacePresence( IOption from, Space to, GameState gs ) {
@@ -77,7 +77,7 @@ namespace SpiritIsland.PromoPack1 {
 				await ctx.AddBlight(1);
 		}
 		// !!! Blight added due to Spirit Effects (Powers, Special Rules, Scenario-based Rituals, etc) does not destroy your presence. (including cascades)
-		// When Destroying presence from blight, need Cause so we can tell if destoryoing it due to Ravage or something else.
+		// When Destroying presence from blight, need Cause so we can tell if destroyoing it due to Ravage or something else.
 
 		protected override void InitializeInternal( Board board, GameState gameState ) {
 			// Put 3 presence and 2 blight on your starting board in the hightest-numbered Sands. 

@@ -5,12 +5,12 @@ namespace SpiritIsland {
 	public class PlayExtraCardThisTurn : GrowthActionFactory {
 
 		readonly int count;
-		public PlayExtraCardThisTurn(int count ) {
+		public PlayExtraCardThisTurn( int count ) {
 			this.count = count;
 		}
 
 		public override Task ActivateAsync( SelfCtx ctx ) {
-			ctx.Self.tempCardPlayBoost++;
+			ctx.Self.tempCardPlayBoost += count;
 			return Task.CompletedTask;
 		}
 

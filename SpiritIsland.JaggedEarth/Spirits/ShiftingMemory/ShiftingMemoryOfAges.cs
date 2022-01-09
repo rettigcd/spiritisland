@@ -44,7 +44,7 @@ namespace SpiritIsland.JaggedEarth {
 				PowerCard.For<StudyTheInvadersFears>()
 			) 
 		{
-			Growth = new GrowthOptionGroup(
+			Growth = new Growth(
 				new GrowthOption(new ReclaimAll(), new PlacePresence(0)),
 				new GrowthOption(new DrawPowerCard(), new PlacePresence(2)),
 				new GrowthOption(new PlacePresence(1),new GainEnergy(2)),
@@ -161,7 +161,7 @@ namespace SpiritIsland.JaggedEarth {
 			// Check if we have prepared element markers to fill the missing elements
 			if(PreparedElements.Any()) {
 				var missing = subset.Except(actionElements);
-				if(PreparedElements.Contains(missing) && await this.UserSelectsFirstText($"Meet elemental threshold:"+subset.ToString(), "Yes, use prepared elements", "No, I'll pass.")) {
+				if(PreparedElements.Contains(missing) && await this.UserSelectsFirstText($"Meet elemental threshold:"+subset.BuildElementString(), "Yes, use prepared elements", "No, I'll pass.")) {
 					foreach(var pair in missing) {
 						PreparedElements[pair.Key] -= pair.Value;
 						actionElements[pair.Key] += pair.Value; // assign to this action so next check recognizes them
@@ -173,35 +173,54 @@ namespace SpiritIsland.JaggedEarth {
 			return false;
 		}
 
-		public override async Task<ElementCounts> GetHighestMatchingElements( IEnumerable<ElementCounts> elementOptions ) {
+		public override async Task<ElementCounts> SelectInnateToActivate( IEnumerable<IDrawableInnateOption> innateOptions ) {
+
+			var elementOptions = innateOptions.Select(x=>x.Elements);
+
+			// Init the elements that are active for this action only.
 			if( actionElements == null ) 
 				actionElements = Elements.Clone();
 
-			var highestNaturalMatch = elementOptions
-				.OrderByDescending(e=>e.Total)
-				.FirstOrDefault( els => actionElements.Contains(els) );
+			var highestAlreadyMatch = innateOptions
+				.OrderByDescending(e=>e.Elements.Total)
+				.FirstOrDefault( x => actionElements.Contains(x.Elements) );
 
-			var canMeet = elementOptions
-				.OrderBy(e=>e.Total)
-				.Where( els => !actionElements.Contains(els) && PreparedElements.Contains(els.Except(actionElements)) )
+			var canMeetWithPrepared = innateOptions // .Elements
+				.Where( x => !actionElements.Contains(x.Elements) && PreparedElements.Contains(x.Elements.Except(actionElements)) )
 				.ToArray();
 
 			// If we can't extend with prepared, just return what we can
-			if(canMeet.Length == 0)
-				return highestNaturalMatch;
+			if(canMeetWithPrepared.Length > 0) {
 
-			// if we CAN meet something with Prepared, return 
-			string prompt = highestNaturalMatch!=null 
-				? "Extend element threshold? (current: "+highestNaturalMatch.BuildElementString()+")"
-				: "Meet element threshold?";
-			var choice = await this.SelectText(prompt,canMeet.Select(e=>e.BuildElementString()).ToArray(),Present.Done);
-			var extended = canMeet.FirstOrDefault(e=>choice == e.BuildElementString());
-			if(extended != null) {
-				foreach(var pair in extended.Except(actionElements))
-					PreparedElements[pair.Key] -= pair.Value;
-				return extended;
+				// if we CAN meet something with Prepared, return 
+				string prompt = highestAlreadyMatch!=null 
+					? "Extend element threshold? (current: "+highestAlreadyMatch.Elements.BuildElementString()+")"
+					: "Meet element threshold?";
+
+				// Select which Extened we want to meet.
+				var options = canMeetWithPrepared
+					.OrderBy(e=>e.Elements.Total) // smallest first
+					.ToList();
+
+				if(highestAlreadyMatch != null)
+					options.Insert(0, highestAlreadyMatch);
+				Present present = highestAlreadyMatch != null ? Present.Always : Present.Done;
+
+				IDrawableInnateOption extendedOption = await this.Select<IDrawableInnateOption>(prompt,options.ToArray(), present);
+
+				if(extendedOption != null) {
+					// Apply necessary prepared elements to the action Elements.
+					var preparedElementsToConsume = extendedOption.Elements.Except(actionElements);
+					foreach(var consumeEl in preparedElementsToConsume) {
+						PreparedElements[consumeEl.Key] -= consumeEl.Value;
+						actionElements[consumeEl.Key] += consumeEl.Value;
+					}
+					return extendedOption.Elements;
+				}
+
 			}
-			return highestNaturalMatch;
+
+			return highestAlreadyMatch?.Elements;
 		}
 
 		public override async Task TakeAction(IActionFactory factory, SelfCtx ctx) {

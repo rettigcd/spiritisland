@@ -28,14 +28,14 @@ namespace SpiritIsland {
 		public async Task<bool> Reveal( Track track, GameState gs ) {
 			foreach(var part in parts) {
 				if(await part.Reveal( track, gs )) {
-					await TrackRevealed.InvokeAsync( gs, track );
+					await TrackRevealed.InvokeAsync( new TrackRevealedArgs( gs, track ) );
 					return true;
 				}
 			}
 			return false;
 		}
 
-		public AsyncEvent<Track> TrackRevealed { get; } = new AsyncEvent<Track>();
+		public AsyncEvent<TrackRevealedArgs> TrackRevealed { get; } = new AsyncEvent<TrackRevealedArgs>();
 
 		public bool Return( Track track ) {
 			return parts.Any(part=>part.Return(track));

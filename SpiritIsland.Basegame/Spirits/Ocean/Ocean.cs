@@ -11,7 +11,7 @@ namespace SpiritIsland.Basegame {
 
 	Special - Ocean in Play - You may add/move presnece into  oceans but may not add/move presense into inland lands.  On
 	On boards with you presense, treat ocieans as coastal wetalnads for powers and blight.  YOu drown any invaters or dahan moved into those ocians
-	Drowning - destorys drawned pieces, placing draowned invaters here.  At any time you may exchange X health of these invatores for 1 energy where x = number of players
+	Drowning - destroys drawned pieces, placing draowned invaters here.  At any time you may exchange X health of these invatores for 1 energy where x = number of players
 	Setup - 1 in ocean and 1 in costal land of your choice.
 	 */
 
@@ -81,8 +81,9 @@ namespace SpiritIsland.Basegame {
 				gs.Tokens[board.Ocean].Dahan.Drown();
 		}
 
-		async Task InvadersMoved(GameState gs, TokenMovedArgs args ) {
+		async Task InvadersMoved(TokenMovedArgs args ) {
 			if( !args.AddedTo.IsOcean ) return;
+			var gs = args.GameState;
 			var grp = args.Token.Class;
 
 			if( grp == Invader.City || grp == Invader.Town || grp == Invader.Explorer ) { // Could created an Invader subclass that is easier to test.

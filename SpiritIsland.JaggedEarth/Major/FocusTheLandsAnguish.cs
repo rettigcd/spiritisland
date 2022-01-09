@@ -5,7 +5,7 @@ namespace SpiritIsland.JaggedEarth {
 
 		[MajorCard("Focus the Land's Anguish",5,Element.Sun), Slow, FromPresence(1)]
 		public static async Task ActAsync(TargetSpaceCtx ctx ) {
-			// If this power Destorys any town/city, 5 fear.
+			// If this power Destroys any town/city, 5 fear.
 			static int calcUnits(TargetSpaceCtx ctx) => ctx.Tokens.SumAny(Invader.Town,Invader.City);
 			int initialCount = calcUnits(ctx);
 
@@ -19,7 +19,7 @@ namespace SpiritIsland.JaggedEarth {
 			if( await ctx.YouHave("3 sun"))
 				await ctx.DamageInvaders( ctx.Blight.Count );
 
-			// If this power Destorys any town/city, 5 fear.
+			// If this power Destroys any town/city, 5 fear.
 			if(calcUnits(ctx) > initialCount)
 				ctx.AddFear(5);
 

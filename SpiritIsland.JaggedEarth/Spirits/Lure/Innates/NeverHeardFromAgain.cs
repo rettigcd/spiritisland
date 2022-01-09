@@ -3,7 +3,8 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland.JaggedEarth {
 
-	[InnatePower("Never Heard from Again"),Slow,FromPresence(0,Target.Inland)]
+	[InnatePower("Never Heard from Again","If this Power destroyes any explorer, 1 fear.  If this Power destroys 5 or more explorer, +1 fear.")]
+	[Slow,FromPresence(0,Target.Inland)]
 	[RepeatIf("6 plant")]
 	public class NeverHeardFromAgain {
 
@@ -34,8 +35,8 @@ namespace SpiritIsland.JaggedEarth {
 			int preExplorerCount = ctx.Tokens[Invader.Explorer.Default];
 			await DestroyFromBadlandsBeastDiseaseWilds( ctx );
 			await ctx.DamageInvaders(2);
-			int destoryedExplorers = ctx.Tokens[Invader.Explorer.Default] - preExplorerCount;
-			ctx.AddFear( CalcFearFromExplorerDeath( destoryedExplorers ) );
+			int destroyedExplorers = ctx.Tokens[Invader.Explorer.Default] - preExplorerCount;
+			ctx.AddFear( CalcFearFromExplorerDeath( destroyedExplorers ) );
 		}
 
 		static async Task<int> DestroyFromBadlandsBeastDiseaseWilds( TargetSpaceCtx ctx ) {
@@ -47,6 +48,6 @@ namespace SpiritIsland.JaggedEarth {
 
 	}
 
-	// !!! Do Fear calculation last, once all explorers are destoryed.
+	// !!! Do Fear calculation last, once all explorers are destroyed.
 
 }

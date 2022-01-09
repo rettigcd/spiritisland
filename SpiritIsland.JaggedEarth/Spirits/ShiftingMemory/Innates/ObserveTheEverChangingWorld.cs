@@ -36,9 +36,9 @@ namespace SpiritIsland.JaggedEarth {
 				handlerKeys[1] = ctx.GameState.Tokens.TokenRemoved.ForGame.Add( Track );
 			}
 
-			Task Track( GameState gs, ITokenAddedArgs x ) => Check(x.Space);
+			Task Track( ITokenAddedArgs x ) => Check(x.Space);
 
-			Task Track( GameState gs, ITokenRemovedArgs x ) => Check(x.Space);
+			Task Track( ITokenRemovedArgs x ) => Check(x.Space);
 
 			async Task Check( Space space ) {
 				if(remaining == 0							// already complete

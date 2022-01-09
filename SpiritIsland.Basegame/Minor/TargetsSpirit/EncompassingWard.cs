@@ -12,8 +12,13 @@ namespace SpiritIsland.Basegame {
 		static public Task Act( TargetSpiritCtx ctx ) {
 
 			// defend 2 in every land where spirit has presence
-			foreach(var space in ctx.Other.Presence.Spaces)
-				ctx.Target(space).Defend(2);
+			// defend should move with presence
+			// https://querki.net/u/darker/spirit-island-faq/#!.7w4ganu
+			ctx.GameState.Tokens.RegisterDynamic(
+				(gs,space) => ctx.Other.Presence.IsOn(space) ? 2 : 0, 
+				TokenType.Defend, 
+				false
+			);
 
 			return Task.CompletedTask;
 		}

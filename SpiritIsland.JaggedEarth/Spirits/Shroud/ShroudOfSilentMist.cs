@@ -39,7 +39,7 @@ namespace SpiritIsland.JaggedEarth {
 			,PowerCard.For<DissolvingVapors>()
 			,PowerCard.For<TheFogClosesIn>()
 		) {
-			this.Growth = new GrowthOptionGroup(
+			this.Growth = new Growth(
 				new GrowthOption( new ReclaimAll(), new DrawPowerCard() ),
 				new GrowthOption( new PlacePresence(0), new PlacePresence(0) ),
 				new GrowthOption( new DrawPowerCard(), new PlacePresence(3,Target.MountainOrWetland) )

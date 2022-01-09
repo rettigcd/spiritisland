@@ -27,13 +27,20 @@ namespace SpiritIsland {
 
 		#endregion
 
-		public IExecuteOn<T> Cond( bool condition ) {
+		/// <summary>
+		/// Criteria is pre-evaluated once (probably for Pick1(...) and passed in.
+		/// </summary>
+		public IExecuteOn<T> FilterOption( bool condition ) {
 			if(!condition)
 				isApplicable = (_)=> false;
 			return this;
 		}
 
-		public IExecuteOn<T> Cond( Predicate<T> predicate ) {
+		/// <summary>
+		/// Checks if Target matches criteria for executing action.
+		/// May be re-evaluated any # of times.
+		/// </summary>
+		public IExecuteOn<T> Matches( Predicate<T> predicate ) {
 			isApplicable = predicate;
 			return this;
 		}
@@ -66,8 +73,8 @@ namespace SpiritIsland {
 		bool IExecuteOn<BoardCtx>.IsApplicable( BoardCtx ctx ) => this.IsApplicable( ctx );
 
 		// - new -
-		public new SelfAction Cond(bool condition ) => (SelfAction)base.Cond( condition );
-		public new SelfAction Cond(Predicate<SelfCtx> predicate ) => (SelfAction)base.Cond( predicate );
+		public new SelfAction FilterOption(bool condition ) => (SelfAction)base.FilterOption( condition );
+		public new SelfAction Matches(Predicate<SelfCtx> predicate ) => (SelfAction)base.Matches( predicate );
 	}
 
 	public class SpaceAction : ActionOption<TargetSpaceCtx> {
@@ -75,8 +82,18 @@ namespace SpiritIsland {
 		public SpaceAction( string description, Action<TargetSpaceCtx> action ) : base( description, action ) { }
 
 		// - new -
-		public new SpaceAction Cond(bool condition ) => (SpaceAction)base.Cond( condition );
-		public new SpaceAction Cond(Predicate<TargetSpaceCtx> predicate ) => (SpaceAction)base.Cond( predicate );
+
+		/// <summary>
+		/// Use this for single-evaluate in Pick1(..) selection criteria.
+		/// Not meant to be evaluated multiple times.
+		/// </summary>
+		public new SpaceAction FilterOption(bool condition ) => (SpaceAction)base.FilterOption( condition );
+
+		/// <summary>
+		/// Used this for checking sutability a Space.
+		/// May be evaluated multiple times.
+		/// </summary>
+		public new SpaceAction Matches(Predicate<TargetSpaceCtx> predicate ) => (SpaceAction)base.Matches( predicate );
 	}
 
 	public class PickSpaceAction : ActionOption<TargetSpaceCtx> {
@@ -92,8 +109,8 @@ namespace SpiritIsland {
 		public OtherAction( string description, Action<TargetSpiritCtx> action ) : base( description, action ) { }
 
 		// - new -
-		public new OtherAction Cond(bool condition ) => (OtherAction)base.Cond( condition );
-		public new OtherAction Cond(Predicate<TargetSpiritCtx> predicate ) => (OtherAction)base.Cond( predicate );
+//		public new OtherAction CondStatic(bool condition ) => (OtherAction)base.CondStatic( condition );
+//		public new OtherAction Cond(Predicate<TargetSpiritCtx> predicate ) => (OtherAction)base.Cond( predicate );
 	}
 
 }

@@ -91,7 +91,7 @@ namespace SpiritIsland.JaggedEarth {
 					pretendPresence[src]--; // move presence OFF of source
 
 					if( PresenceMeetsTargettingRequirements( pretendPresence, target ) )
-						allowed.Add( new TokenMovedArgs { RemovedFrom = src, AddedTo = dst } );
+						allowed.Add( new TokenMovedArgs { RemovedFrom = src, AddedTo = dst, GameState = this.gameState } );
 
 					pretendPresence[src]++; // resore source
 				}

@@ -8,7 +8,7 @@ namespace SpiritIsland.BranchAndClaw {
 		[Fast]
 		[FromPresenceIn( 1, Terrain.Mountain )]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
-			// 2 damage. Destory all explorers
+			// 2 damage. Destroy all explorers
 			await ctx.Invaders.Destroy(int.MaxValue,Invader.Explorer);
 			int damage = 2;
 

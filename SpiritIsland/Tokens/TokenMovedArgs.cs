@@ -8,6 +8,7 @@
 		public int Count { get; }
 		public Space Space { get; }
 		public AddReason Reason { get; }
+		public GameState GameState { get; }
 	}
 
 	public enum AddReason {
@@ -26,6 +27,7 @@
 		public int Count { get; }
 		public Space Space { get;}
 		public RemoveReason Reason { get; }
+		public GameState GameState { get; }
 	};
 
 	public enum RemoveReason {
@@ -46,6 +48,7 @@
 	public class TokenMovedArgs : ITokenAddedArgs, ITokenRemovedArgs {
 		public Token Token { get; set;}
 		public int Count { get; set; }
+		public GameState GameState { get; set; }
 
 		public Space RemovedFrom { get; set; }
 		public Space AddedTo { get; set; }

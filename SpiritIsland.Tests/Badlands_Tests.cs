@@ -37,9 +37,9 @@ namespace SpiritIsland.Tests {
 			tokens.Dahan.Count.ShouldBe(1);
 
 			//   And: no damage applied to dahan
-			ravage.damageFromAttackers.ShouldBe(0);
+			ravage.defenderDamageFromAttackers.ShouldBe(0);
 			ravage.dahanDestroyed.ShouldBe(0);
-			ravage.startingDahan.ShouldBe(1);
+			ravage.startingDefenders.Total.ShouldBe(1);
 
 		}
 
@@ -73,7 +73,7 @@ namespace SpiritIsland.Tests {
 			var ravage = fxt.ravages[0];
 
 			//   And: 1 explorer damage
-			ravage.damageFromAttackers.ShouldBe(1);
+			ravage.defenderDamageFromAttackers.ShouldBe(1);
 
 			//   and: dahan destroyed,  1 explorer + 1 badland damage = 2 damage, destroying 1 dahan
 			tokens.Dahan.Count.ShouldBe(0);

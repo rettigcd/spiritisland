@@ -70,12 +70,12 @@ namespace SpiritIsland {
 		};
 
 		public static Track CardReclaim1 => new Track( "reclaim 1" ){ 
-			Action=new Reclaim1(),
+			Action=new ReclaimN(),
 			Icon = new IconDescriptor { BackgroundImg = Img.Reclaim1 }
 		};
 
 		public static Track Energy5Reclaim1 => new Track( "5,reclaim1 energy" ) { 
-			Energy = 5, Action = new Reclaim1(),
+			Energy = 5, Action = new ReclaimN(),
 			Icon = new IconDescriptor { 
 				BackgroundImg = Img.Coin, Text = "5",
 				Sub = new IconDescriptor { BackgroundImg = Img.Reclaim1},
@@ -84,13 +84,13 @@ namespace SpiritIsland {
 
 
 		public static Track Reclaim1Energy => new Track( "reclaim 1 energy" ){ 
-			Action=new Reclaim1(),
+			Action=new ReclaimN(),
 			Icon = new IconDescriptor { BackgroundImg = Img.Coin, ContentImg = Img.Reclaim1 }
 		};
 
-		public static Track Card5Reclaim1 => new Track( "Fivereclaimone" ){ 
+		public static Track Card5Reclaim1 => new Track( "Five reclaim one" ){ 
 			CardPlay=5, 
-			Action=new Reclaim1(),
+			Action=new ReclaimN(),
 			Icon=new IconDescriptor { BackgroundImg = Img.CardPlay, Text="5", Sub = new IconDescriptor{ BackgroundImg = Img.Reclaim1 } },
 		};
 

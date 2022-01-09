@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SpiritIsland.BranchAndClaw {
@@ -9,42 +10,50 @@ namespace SpiritIsland.BranchAndClaw {
 		string IFearOptions.Name => Name;
 
 		[FearLevel( 1, "Each player removes 1 explorer from a land with beast, disease or at least 2 dahan" )]
-		public async Task Level1( FearCtx ctx ) {
+		public Task Level1( FearCtx ctx ) {
 
-			// each player removes 1 explorer from a land with beast, disease or at least 2 dahan
-			var spaceOptions = LandsWithBeastDiseaseOr2Dahan( ctx );
-			foreach(var spiritCtx in ctx.Spirits)
-				await spiritCtx.RemoveTokenFromOneSpace( spaceOptions, 1, Invader.Explorer );
+			// Each player 
+			return Cmd.EachSpirit(Cause.Fear,
+				// removes 1 explorer
+				Cmd.RemoveExplorers(1)
+					// from a land with beast, disease or at least 2 dahan
+					.From( HasBeastDiseaseOr2Dahan, "land with beast, disease or at last 2 dahan" )
+
+			).Execute( ctx.GameState );
+
 		}
 
 		[FearLevel( 2, "Each player removes 1 explorer/town from a land with beast, disease or at least 2 dahan" )]
-		public async Task Level2( FearCtx ctx ) {
+		public Task Level2( FearCtx ctx ) {
 
-			// Each player removes 1 explorer/town from a land with beast, disease or at least 2 dahan
-			var spaceOptions = LandsWithBeastDiseaseOr2Dahan( ctx );
-			foreach(var spiritCtx in ctx.Spirits)
-				await spiritCtx.RemoveTokenFromOneSpace( spaceOptions, 1, Invader.Explorer, Invader.Town );
+			// Each player 
+			return Cmd.EachSpirit(Cause.Fear,
+				// removes 1 explorer/town 
+				Cmd.RemoveExplorersOrTowns(1)
+					// from a land with beast, disease or at least 2 dahan
+					.From(HasBeastDiseaseOr2Dahan, "land with beast, disease or at last 2 dahan")
+			).Execute( ctx.GameState );
 
 		}
 
 		[FearLevel( 3, "Each player removes up to 4 health worth of invaders from a land with beast, disease or at least 2 dahan" )]
-		public async Task Level3( FearCtx ctx ) {
+		public Task Level3( FearCtx ctx ) {
 
-			// Each player removes up to 4 health worth of invaders from a land with beast, disease or at least 2 dahan
-			var options = LandsWithBeastDiseaseOr2Dahan( ctx );
-			foreach(var spiritCtx in ctx.Spirits)
-				await spiritCtx.RemoveHealthFromOne( 4, options );
+			// Each player 
+			return Cmd.EachSpirit(Cause.Fear,
+				// removes up to 4 health worth of invaders
+				Cmd.RemoveUpToNHealthOfInvaders(4)
+					// from a land with beast, disease or at least 2 dahan
+					.From( HasBeastDiseaseOr2Dahan, "land with beast, disease or at last 2 dahan" )
+			).Execute( ctx.GameState );
+
 		}
 
-		static Space[] LandsWithBeastDiseaseOr2Dahan( FearCtx ctx ) {
-			return ctx.GameState.Island.AllSpaces
-				.Where( s => {
-					var tokens = ctx.GameState.Tokens[s];
-					return tokens.Beasts.Any
-						|| tokens.Disease.Any
-						|| 2 <= tokens.Dahan.Count;
-				} )
-				.ToArray();
+		static bool HasBeastDiseaseOr2Dahan( TargetSpaceCtx spaceCtx ) {
+			var tokens = spaceCtx.Tokens;
+			return tokens.Beasts.Any
+				|| tokens.Disease.Any
+				|| 2 <= tokens.Dahan.Count;
 		}
 
 	}

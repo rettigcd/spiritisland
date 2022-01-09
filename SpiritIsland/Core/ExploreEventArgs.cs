@@ -7,10 +7,13 @@ namespace SpiritIsland {
 
 	public class ExploreEventArgs {
 
-		public ExploreEventArgs(HashSet<Space> sources,List<Space> spacesMatchingCards ) {
-			this.Sources = sources;
+		public ExploreEventArgs( GameState gs, IEnumerable<Space> sources, IEnumerable<Space> spacesMatchingCards ) {
+			this.Sources = new HashSet<Space>( sources );
 			this.SpacesMatchingCards = spacesMatchingCards.ToImmutableList();
+			this.GameState = gs;
 		}
+
+		public GameState GameState { get; }
 
 		/// <summary> Towns, cities, and coasts. </summary>
 		public HashSet<Space> Sources;

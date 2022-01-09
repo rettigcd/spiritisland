@@ -37,6 +37,7 @@ namespace SpiritIsland.SinglePlayer {
 			async Task LoopAsync() {
 				try {
 					// Handle any unresolved Initialization action - (ocean/beast)
+					GameState.Phase = Phase.Init;
 					await Spirit.ResolveActions( new SelfCtx( Spirit, GameState, Cause.Growth ) ); 
 					// !!! if this is here, why do we need to put it in the Spirit.Growth() method?
 
@@ -58,7 +59,7 @@ namespace SpiritIsland.SinglePlayer {
 
 							GameState.Phase = Phase.Invaders;
 							LogPhase();
-							await GameState.InvaderEngine.DoInvaderPhase();
+							await InvaderPhase.ActAsync( GameState );
 
 							GameState.Phase = Phase.Slow;
 							LogPhase();

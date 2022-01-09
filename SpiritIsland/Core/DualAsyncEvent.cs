@@ -4,9 +4,9 @@ namespace SpiritIsland {
 
 	public class DualAsyncEvent<T> {
 
-		public async Task InvokeAsync(GameState gameState,T t) {
-			await ForRound.InvokeAsync(gameState, t);
-			await ForGame.InvokeAsync(gameState, t);
+		public async Task InvokeAsync( T t ) {
+			await ForRound.InvokeAsync(t);
+			await ForGame.InvokeAsync(t);
 		}
 
 		public AsyncEvent<T> ForRound { get; set; } = new SpiritIsland.AsyncEvent<T>();

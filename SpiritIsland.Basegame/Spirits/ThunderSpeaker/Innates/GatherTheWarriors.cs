@@ -9,7 +9,7 @@ namespace SpiritIsland.Basegame {
 
 		public const String Name = "Gather the Warriors";
 
-		[InnateOption( "4 air", "This Power may be fast.", AttributePurpose.DisplayOnly )]
+		[DisplayOnly( "4 air", "This Power may be fast." )]
 		static public Task MayBeFastAsync(TargetSpaceCtx _ ) { return null; }
 
 

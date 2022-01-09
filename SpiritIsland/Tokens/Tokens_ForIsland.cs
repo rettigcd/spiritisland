@@ -38,11 +38,11 @@ namespace SpiritIsland {
 		readonly Dictionary<UniqueToken, List<Func<GameState, Space, int>>> dynamicTokens_ForGame = new Dictionary<UniqueToken, List<Func<GameState, Space, int>>>(); // !!! save to memento???
 		readonly Dictionary<UniqueToken, List<Func<GameState, Space, int>>> dynamicTokens_ForRound = new Dictionary<UniqueToken, List<Func<GameState, Space, int>>>();
 
-		public void RegisterDynamic( System.Func<GameState,Space,int> inner, UniqueToken targetToken, bool entireGame ) {
+		public void RegisterDynamic( System.Func<GameState,Space,int> calcCountOnSpace, UniqueToken targetToken, bool entireGame ) {
 			var dict = entireGame ? dynamicTokens_ForGame : dynamicTokens_ForRound;
 			if( !dict.ContainsKey( targetToken ) )
 				dict.Add( targetToken, new List<Func<GameState,Space,int>>() );
-			dict[targetToken].Add( inner );
+			dict[targetToken].Add( calcCountOnSpace );
 		}
 
 		public int GetDynamicTokenFor( Space space, UniqueToken token ) 
@@ -56,11 +56,11 @@ namespace SpiritIsland {
 		public IEnumerable<Space> Keys => tokenCounts.Keys;
 
 		public Task Publish_Added( Space space, Token token, int count, AddReason reason ) {
-			return TokenAdded.InvokeAsync( gameStateForEventArgs, new TokenAddedArgs(space,token,reason, count) );
+			return TokenAdded.InvokeAsync( new TokenAddedArgs(space,token,reason, count, gameStateForEventArgs) );
 		}
 
 		public Task Publish_Removed( Space space, Token token, int count, RemoveReason reason ) {
-			return TokenRemoved.InvokeAsync( gameStateForEventArgs, new TokenRemovedArgs( token, reason ) {
+			return TokenRemoved.InvokeAsync( new TokenRemovedArgs( gameStateForEventArgs, token, reason ) {
 				Space = space,
 				Count = count,
 			} );
@@ -71,13 +71,14 @@ namespace SpiritIsland {
 				Token = token,
 				RemovedFrom = from,
 				AddedTo = to,
-				Count = 1
+				Count = 1,
+				GameState = this.gameStateForEventArgs
 			};
 
-			await TokenMoved.InvokeAsync( gameStateForEventArgs, args );
+			await TokenMoved.InvokeAsync( args );
 			// Also trigger the Added & Removed events
-			await TokenAdded.InvokeAsync( gameStateForEventArgs, args );
-			await TokenRemoved.InvokeAsync( gameStateForEventArgs, args );
+			await TokenAdded.InvokeAsync( args );
+			await TokenRemoved.InvokeAsync( args );
 		}
 
 		public override string ToString() {
@@ -121,13 +122,15 @@ namespace SpiritIsland {
 
 	class TokenAddedArgs : ITokenAddedArgs {
 
-		public TokenAddedArgs(Space space, Token token, AddReason addReason, int count) {
+		public TokenAddedArgs(Space space, Token token, AddReason addReason, int count, GameState gs) {
 			Space = space;
 			Token = token;
 			Reason = addReason;
 			Count = count;
+			GameState = gs;
 		}
 
+		public GameState GameState { get; }
 		public Space Space { get; }
 		public Token Token { get; } // need specific so we can act on it (push/damage/destroy)
 		public int Count { get; }
@@ -136,15 +139,17 @@ namespace SpiritIsland {
 	}
 
 	class TokenRemovedArgs : ITokenRemovedArgs {
-		public TokenRemovedArgs(Token token, RemoveReason reason) { 
+		public TokenRemovedArgs(GameState gs, Token token, RemoveReason reason) { 
 			this.Token = token;
 			this.Reason = reason;
+			this.GameState = gs;
 		}
 
 		public Token Token { get; }
 		public int Count { get; set; }
 		public Space Space { get; set;}
 		public RemoveReason Reason { get; }
+		public GameState GameState { get; }
 	};
 
 

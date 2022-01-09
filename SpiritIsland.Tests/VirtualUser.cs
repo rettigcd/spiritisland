@@ -40,7 +40,7 @@ namespace SpiritIsland.Tests {
 
 		public void Growth_Reclaims1(string cards) {
 			Choose( "Reclaim(1)" );
-			AssertDecisionX( Reclaim1.Prompt,  cards, "{}" );
+			AssertDecisionX( ReclaimN.Prompt,  cards, "{}" );
 		}
 
 		public void Growth_GainsEnergy() {
@@ -72,9 +72,11 @@ namespace SpiritIsland.Tests {
 
 		public void PlacesPresence( Track source, string placeOptions ) {
 
+			// If Place Presence is the only action in the growth option, it will auto-select and it will skip over this step
 			var current = userPortal.GetCurrent();
-			var op = current.Options.First( o => o.Text.StartsWith( "PlacePre" ) );
-			Choose( op );
+			var op = current.Options.FirstOrDefault( o => o.Text.StartsWith( "PlacePre" ) );
+			if(op != null)
+				Choose( op );
 
 			PlacePresenceLocations( source, placeOptions );
 		}

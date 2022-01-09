@@ -91,6 +91,13 @@ namespace SpiritIsland {
 				: null;
 		}
 
+		public async Task<TargetSpaceCtx> SelectSpace( string prompt, IEnumerable<TargetSpaceCtx> options ) {
+			var lookup = options.ToDictionary(ctx=>ctx.Space,ctx=>ctx);
+			var space = await Decision( new Select.Space( prompt, lookup.Keys, Present.Always ) );
+			return space != null ? lookup[ space ] : null;
+		}
+
+
 		// overriden by Grinning Trickster's Lets See What Happens
 
 		public Task SelectActionOption( params IExecuteOn<SelfCtx>[] options ) => SelectActionOption( "Select Power Option", options );
@@ -98,7 +105,9 @@ namespace SpiritIsland {
 		public Task SelectAction_Optional( string prompt, params IExecuteOn<SelfCtx>[] options )=> SelectAction_Inner( prompt, options, Present.Done, this );
 
 		virtual protected async Task SelectAction_Inner<T>( string prompt, IExecuteOn<T>[] options, Present present, T ctx ) {
-			IExecuteOn<T>[] applicable = options.Where( opt => opt != null && opt.IsApplicable(ctx) ).ToArray();
+			IExecuteOn<T>[] applicable = options
+				.Where( opt => opt != null && opt.IsApplicable(ctx) )
+				.ToArray();
 			string text = await Self.SelectText( prompt, applicable.Select( a => a.Description ).ToArray(), present );
 			if(text != null && text != TextOption.Done.Text) {
 				var selectedOption = applicable.Single( a => a.Description == text );
@@ -116,11 +125,6 @@ namespace SpiritIsland {
 
 
 		#region High level fear-specific decisions
-
-		public async Task RemoveHealthFromOne( int healthToRemove, IEnumerable<Space> options ) {
-			var spaceCtx = await SelectSpace( $"remove {healthToRemove} invader health from", options );
-			await spaceCtx.RemoveHealthWorthOfInvaders( healthToRemove );
-		}
 
 		public async Task<Space> RemoveTokenFromOneSpace( IEnumerable<Space> spaceOptions, int count, params TokenClass[] removables ) {
 			var spaceCtx = await SelectSpace( "Remove invader from", spaceOptions );

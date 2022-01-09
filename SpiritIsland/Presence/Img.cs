@@ -9,10 +9,10 @@ namespace SpiritIsland {
 		// Growth / Presence
 		Coin,
 		CardPlay,
+		CardPlayPlusN,
 		ReclaimAll,
 		ReclaimHalf,
 		Reclaim1,
-		Plus1CardPlay,
 		Push1dahan,
 		GainCard,
 		MovePresence,
@@ -21,7 +21,7 @@ namespace SpiritIsland {
 		MoveArrow,
 
 		Pushfromocean,
-		Gathertoocean,
+		GatherToOcean,
 		Damage_2,
 		Oneenergyfire,
 		Land_Gather_Beasts,

@@ -1,9 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SpiritIsland {
 
-	public record ActionTaken ( IActionFactory ActionFactory, object Context );
+	public class ActionTaken {
+		public IActionFactory ActionFactory { get; }
+		public object Context { get; }
+		public ActionTaken(IActionFactory actionFactory, object context ) {
+			this.ActionFactory = actionFactory;
+			this.Context = context;
+		}
+	}
 
 	public interface IActionFactory : IOption {
 

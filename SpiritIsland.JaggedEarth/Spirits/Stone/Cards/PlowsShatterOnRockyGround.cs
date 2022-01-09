@@ -12,7 +12,7 @@ namespace SpiritIsland.JaggedEarth {
 					// push up to 1 town.
 					await ctx.PushUpTo(1,Invader.Town);
 				}),
-				Cmd.DestoryTown(1)
+				Cmd.DestroyTown(1)
 			);
 		}
 

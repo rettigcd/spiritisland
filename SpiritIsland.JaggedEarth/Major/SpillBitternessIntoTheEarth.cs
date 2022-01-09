@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,7 +11,8 @@ namespace SpiritIsland.JaggedEarth {
 			await ctx.DamageInvaders( 6 );
 
 			// Add 2 badlands/strife
-			await AddStrifeOrBadland( ctx, 2 );
+			var addBadlandsOrStrife = Cmd.Pick1( "Add badlands/strife", Cmd.AddBadlands(1), Cmd.AddStrife(1) );
+			await addBadlandsOrStrife.Repeat(2).Execute( ctx );
 
 			// and 1 blight.
 			await ctx.AddBlight();
@@ -21,7 +21,7 @@ namespace SpiritIsland.JaggedEarth {
 				// In up to 3 adjacent lands with blight
 				, 3, ctx.Adjacent.Where( s => ctx.Target( s ).HasBlight )
 				// add 1 badland/strife.
-				, new SpaceAction("Add 1 badland/strife", ctx => AddStrifeOrBadland( ctx, 1 ) )
+				, addBadlandsOrStrife
 			);
 
 			// if you have 3 fire 3 water:
@@ -35,7 +35,7 @@ namespace SpiritIsland.JaggedEarth {
 
 		}
 
-		static async Task TakeActionInUpToNLands( SelfCtx ctx, int adjCount, IEnumerable<Space> spaces, SpaceAction action ) {
+		static async Task TakeActionInUpToNLands( SelfCtx ctx, int adjCount, IEnumerable<Space> spaces, ActionOption<TargetSpaceCtx> action ) {
 			List<Space> options = spaces.ToList();
 			while(adjCount-- > 0 && options.Count > 0) {
 				var space = await ctx.Decision( new Select.Space( $"{action.Description} ({adjCount + 1} remaining)", options, Present.Done ) );
@@ -45,9 +45,6 @@ namespace SpiritIsland.JaggedEarth {
 			}
 		}
 
-		static Task AddStrifeOrBadland( TargetSpaceCtx ctx, int badLandCount )
-			=> ctx.SelectActionOption( Cmd.AddStrife(1), Cmd.AddBadlands(badLandCount) );
 	}
-
 
 }

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.BranchAndClaw {
 
@@ -9,33 +8,46 @@ namespace SpiritIsland.BranchAndClaw {
 		string IFearOptions.Name => Name;
 
 		[FearLevel( 1, "Each player removes 1 explorer/town from a land with disease" )]
-		public async Task Level1( FearCtx ctx ) {
+		public Task Level1( FearCtx ctx ) {
 
-			// each player removes 1 explorer/town from a land with disease
-			foreach(var spiritCtx in ctx.Spirits)
-				await spiritCtx.RemoveTokenFromOneSpace( ctx.LandsWithDisease(), 1, Invader.Explorer, Invader.Town );
+			// each player 
+			return Cmd.EachSpirit(Cause.Fear,
+				// removes 1 explorer/town 
+				Cmd.RemoveExplorersOrTowns(1)
+					// from a land with disease
+					.From( spaceCtx => spaceCtx.Tokens.Disease.Any && spaceCtx.Tokens.HasInvaders(), "land with disease" )
+			).Execute( ctx.GameState );
+
 		}
 
 		[FearLevel( 2, "Each player removes up to 3 health of invaders from a land with disease or 1 explorer from an inland land" )]
-		public async Task Level2( FearCtx ctx ) {
-			// each player removes up to 3 health of invaders from a land with disease or 1 explorer from an inland land
-			foreach(var spiritCtx in ctx.Spirits)
-				await RemoveHealthFromDiseaseOrExplorerInland( spiritCtx, 3, ctx.LandsWithDisease(), ctx.InlandLands );
+		public Task Level2( FearCtx ctx ) {
+			// each player 
+			return Cmd.EachSpirit(Cause.Fear, 
+				Cmd.Pick1<SelfCtx>(
+					// removes up to 3 health of invaders from a land with disease
+					RemoveNHealthOfInvadersFromDisease(3,ctx.GameState),
+					// or 1 explorer from an inland land
+					Cmd.RemoveExplorers(1).From( ctx => ctx.Space.IsInland, "an inland land" )
+				)
+			).Execute(ctx.GameState);
 		}
 
 		[FearLevel( 3, "each player removes up to 5 health of invaders from a land with disease or 1 explorer/town from an inland land" )]
-		public async Task Level3( FearCtx ctx ) {
-			// each player removes up to 5 health of invaders from a land with disease or 1 explorer/town from an inland land
-			foreach(var spiritCtx in ctx.Spirits)
-				await RemoveHealthFromDiseaseOrExplorerInland( spiritCtx, 5, ctx.LandsWithDisease(), ctx.InlandLands );
+		public Task Level3( FearCtx ctx ) {
+			// each player 
+			return Cmd.EachSpirit(Cause.Fear, 
+				Cmd.Pick1<SelfCtx>(
+					// removes up to 5 health of invaders from a land with disease
+					RemoveNHealthOfInvadersFromDisease(5,ctx.GameState),
+					// or 1 explorer / Town from an inland land
+					Cmd.RemoveExplorersOrTowns(1).From( s=>s.Space.IsInland, "an inland land" )
+				)
+			).Execute(ctx.GameState);
 		}
 
-		static Task RemoveHealthFromDiseaseOrExplorerInland( SelfCtx spiritCtx, int healthToRemove, IEnumerable<Space> landsWithDisease, IEnumerable<Space> inlandSpaces ) {
-			return spiritCtx.SelectActionOption(
-				new SelfAction( $"Remove up to {healthToRemove} health of invaders from land with disease", spiritCtx => spiritCtx.RemoveHealthFromOne( healthToRemove, landsWithDisease ) ),
-				new SelfAction( "Remove 1 explorer from inland", spiritCtx => spiritCtx.RemoveTokenFromOneSpace( inlandSpaces, healthToRemove, Invader.Explorer) )
-			);
-		}
+		static ActionOption<SelfCtx> RemoveNHealthOfInvadersFromDisease( int healthToRemove, GameState _ ) =>
+			Cmd.RemoveUpToNHealthOfInvaders(healthToRemove).From( ctx => ctx.Tokens.Disease.Any && ctx.Tokens.HasInvaders(), "land with disease" );
 
 	}
 

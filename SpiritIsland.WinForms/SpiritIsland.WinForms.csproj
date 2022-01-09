@@ -17,7 +17,7 @@
     <None Remove="images\icons\Beasticon.png" />
     <None Remove="images\icons\Blighticon.png" />
     <None Remove="images\icons\cardplay.png" />
-    <None Remove="images\icons\Cardplayplusone.png" />
+    <None Remove="images\icons\Cardplayplus.png" />
     <None Remove="images\icons\Cityicon.png" />
     <None Remove="images\icons\Coastal.png" />
     <None Remove="images\icons\Dahanicon.png" />
@@ -31,7 +31,6 @@
     <None Remove="images\icons\Fasticon.png" />
     <None Remove="images\icons\Fearicon.png" />
     <None Remove="images\icons\FearSwoopInverted.png" />
-    <None Remove="images\icons\Fivereclaimone.png" />
     <None Remove="images\icons\Gain1timex2.png" />
     <None Remove="images\icons\Gain1timex3.png" />
     <None Remove="images\icons\Gain2time.png" />
@@ -209,7 +208,7 @@
     <EmbeddedResource Include="images\icons\Beasticon.png" />
     <EmbeddedResource Include="images\icons\Blighticon.png" />
     <EmbeddedResource Include="images\icons\cardplay.png" />
-    <EmbeddedResource Include="images\icons\Cardplayplusone.png" />
+    <EmbeddedResource Include="images\icons\Cardplayplus.png" />
     <EmbeddedResource Include="images\icons\Cityicon.png" />
     <EmbeddedResource Include="images\icons\Coastal.png" />
     <EmbeddedResource Include="images\icons\Dahanicon.png" />
@@ -223,7 +222,6 @@
     <EmbeddedResource Include="images\icons\Fasticon.png" />
     <EmbeddedResource Include="images\icons\Fearicon.png" />
     <EmbeddedResource Include="images\icons\FearSwoopInverted.png" />
-    <EmbeddedResource Include="images\icons\Fivereclaimone.png" />
     <EmbeddedResource Include="images\icons\Gain1timex2.png" />
     <EmbeddedResource Include="images\icons\Gain1timex3.png" />
     <EmbeddedResource Include="images\icons\Gain2time.png" />

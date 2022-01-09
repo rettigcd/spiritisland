@@ -7,8 +7,6 @@ namespace SpiritIsland {
 
 	public class SpiritPresence : IKnowSpiritLocations {
 
-//		readonly UniqueToken Token = new UniqueToken( "Presence",'p', Img.Icon_Presence, TokenCategory.Presence );
-
 		#region constructors
 
 		public SpiritPresence( IPresenceTrack energy, IPresenceTrack cardPlays ) {
@@ -29,14 +27,14 @@ namespace SpiritIsland {
 		public virtual IEnumerable<Track> RevealOptions 
 			=> Energy.RevealOptions.Union( CardPlays.RevealOptions );
 
-		public IEnumerable<Track> GetReturnableTrackOptions()
+		public IEnumerable<Track> CoverOptions
 			=> Energy.ReturnableOptions.Union( CardPlays.ReturnableOptions );
 
 		public IReadOnlyCollection<Track> GetEnergyTrack() => Energy.Slots;
 
 		public IReadOnlyCollection<Track> GetCardPlayTrack() => CardPlays.Slots;
 
-		public int EnergyPerTurn { get; private set; }
+		public int EnergyPerTurn { get; private set; } // !!! this needs saved with memento
 
 		// ! These 2 tracks are only public so they can be accessed from Tests.
 		// ! Not accessed from production code
@@ -94,12 +92,12 @@ namespace SpiritIsland {
 				throw new ArgumentException( "Can't pull from track:" + track.ToString() );
 		}
 
-		Task OnRevealed(GameState gs, Track track) {
-			CheckEnergyAndCardPlays( track );
-			return TrackRevealed.InvokeAsync( gs, track );
+		Task OnRevealed( TrackRevealedArgs args ) {
+			CheckEnergyAndCardPlays( args.Track );
+			return TrackRevealed.InvokeAsync( args );
 		}
 
-		private void CheckEnergyAndCardPlays( Track track ) {
+		void CheckEnergyAndCardPlays( Track track ) {
 			if(track.Energy.HasValue && EnergyPerTurn < track.Energy.Value)
 				EnergyPerTurn = track.Energy.Value;
 			if(track.CardPlay.HasValue && CardPlayCount < track.CardPlay.Value)
@@ -109,13 +107,17 @@ namespace SpiritIsland {
 		public virtual Task ReturnDestroyedToTrack( Track dst, GameState gs ) {
 
 			// src / from
-			if(Destroyed <=0 ) throw new InvalidOperationException("There is no Destoryed presence to return.");
+			if(Destroyed <=0 ) throw new InvalidOperationException("There is no Destroyed presence to return.");
 			--Destroyed;
 
 			// To
-			return (Energy.Return(dst) || CardPlays.Return(dst))
+			return Return(dst);
+		}
+
+		public Task Return( Track dst ) {
+			return (Energy.Return( dst ) || CardPlays.Return( dst ))
 				? Task.CompletedTask
-				: throw new ArgumentException("Unable to find location to restore presence");
+				: throw new ArgumentException( "Unable to find location to restore presence" );
 		}
 
 		public void Move( Space from, Space to, GameState gs ) {
@@ -189,7 +191,7 @@ namespace SpiritIsland {
 
 		static bool DefaultIsValid(Space space) => !space.IsOcean;
 
-		public DualAsyncEvent<Track> TrackRevealed { get; } = new DualAsyncEvent<Track>();
+		public DualAsyncEvent<TrackRevealedArgs> TrackRevealed { get; } = new DualAsyncEvent<TrackRevealedArgs>();
 
 		public IReadOnlyCollection<Space> Placed => placed.AsReadOnly();
 
@@ -243,17 +245,20 @@ namespace SpiritIsland {
 				energy = src.Energy.SaveToMemento();
 				cardPlays = src.CardPlays.SaveToMemento();
 				destroyed = src.Destroyed;
+				energyPerTurn = src.EnergyPerTurn;
 			}
 			public void Restore(SpiritPresence src ) {
 				src.placed.Clear(); src.placed.AddRange( placed );
 				src.Energy.LoadFrom(energy);
 				src.CardPlays.LoadFrom(cardPlays);
 				src.Destroyed = destroyed;
+				src.EnergyPerTurn = energyPerTurn;
 			}
 			readonly Space[] placed;
 			readonly IMemento<IPresenceTrack> energy;
 			readonly IMemento<IPresenceTrack> cardPlays;
 			readonly int destroyed;
+			readonly int energyPerTurn;
 		}
 
 		#endregion
@@ -270,4 +275,5 @@ namespace SpiritIsland {
 		BlightedIsland, // The effect of the Blighted Island card (†);
 		Adversary,      //An Adversary's Escalation effect (†);
 	}
+
 }

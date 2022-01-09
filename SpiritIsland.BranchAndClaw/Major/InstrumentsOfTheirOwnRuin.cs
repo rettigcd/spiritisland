@@ -18,7 +18,7 @@ namespace SpiritIsland.BranchAndClaw {
 				, new SpaceAction(
 					"Instead, if Invaders Ravage in target land, damage invaders in adjacent lands instead of dahan"
 					, DuringRavage_InvadersDamageInvadersInAdjacentLandsInsteadOfDahan
-				).Cond( await ctx.YouHave("4 sun,2 fire,2 animal" ) )
+				).FilterOption( await ctx.YouHave("4 sun,2 fire,2 animal" ) )
 			);
 
 		}
@@ -34,7 +34,7 @@ namespace SpiritIsland.BranchAndClaw {
 		static Task DuringRavage_InvadersDamageInvadersInAdjacentLandsInsteadOfDahan( TargetSpaceCtx ctx ) {
 			// Note - this works regardless of them ravaging in target land or not. yay!
 			int damageFromStrifedInvaders = ctx.Tokens.Invaders().OfType<StrifedInvader>().Sum( si => si.FullHealth * ctx.Tokens[si] );
-			async Task Sequence( RavageEngine eng ) {
+			async Task Sequence( RavageAction eng ) {
 				// they damage invaders in adjacent lands instead of dahan and the land.
 				var invaderSpaceCtx = await ctx.SelectAdjacentLand( $"Apply {damageFromStrifedInvaders} damage to", x => x.HasInvaders );
 				if(invaderSpaceCtx != null)

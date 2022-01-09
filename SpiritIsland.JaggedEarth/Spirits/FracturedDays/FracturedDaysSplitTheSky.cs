@@ -4,13 +4,6 @@ using System.Threading.Tasks;
 
 namespace SpiritIsland.JaggedEarth {
 
-	// Add card to Days That Never Were
-
-	// Power Cards
-
-	// Innates
-
-
 	public class FracturedDaysSplitTheSky : Spirit {
 
 		public const string Name = "Fractured Days Split the Sky";
@@ -18,7 +11,7 @@ namespace SpiritIsland.JaggedEarth {
 
 		static readonly SpecialRule FragmentsOfScatteredTime = new SpecialRule(
 			"Fragments of Scattered Time",
-			"Many of your Powers require Time as an additional cost.  Spend it when you Resolve the Power. (Not when you play it.)  When you Gain1 Time, put 1 of your presence here from your presence track (or optinally, the island).  When you Spend 1 Time, return it to a presence track - or if you have to free spaces, Destory it."
+			"Many of your Powers require Time as an additional cost.  Spend it when you Resolve the Power. (Not when you play it.)  When you Gain1 Time, put 1 of your presence here from your presence track (or optinally, the island).  When you Spend 1 Time, return it to a presence track - or if you have to free spaces, Destroy it."
 		);
 
 		static readonly SpecialRule DaysThatNeverWere = new SpecialRule(
@@ -41,7 +34,7 @@ namespace SpiritIsland.JaggedEarth {
 			var g2Repeater = new ActionRepeater(2);
 			var g3Repeater = new ActionRepeater(3);
 
-			Growth = new GrowthOptionGroup(
+			Growth = new Growth(
 				new GrowthOption(
 					new Gain1Element(Element.Air),
 					new ReclaimAll(),
@@ -56,7 +49,8 @@ namespace SpiritIsland.JaggedEarth {
 				),
 				new GrowthOption(
 					new Gain1Element(Element.Sun),
-					new DrawPowerCardFromDaysThatNeverWere(), 
+					new DrawPowerCardFromDaysThatNeverWere(),
+					new MovePresence(4),
 					g3Repeater.Bind( new GainTime(1) ),
 					g3Repeater.Bind( new GainEnergy(2) )
 				)
@@ -66,42 +60,40 @@ namespace SpiritIsland.JaggedEarth {
 				InnatePower.For<SlipTheFlowOfTime>(),
 				InnatePower.For<VisionsOfAShiftingFuture>()
 			};
+
+			DtnwMinor = new List<PowerCard>();
+			DtnwMajor = new List<PowerCard>();
+			decks.Add( new SpiritDeck{ Icon = Img.Deck_DaysThatNeverWere_Minor, PowerCards = DtnwMinor } );
+			decks.Add( new SpiritDeck{ Icon = Img.Deck_DaysThatNeverWere_Major, PowerCards = DtnwMajor } );
+
 		}
 
 		protected override void InitializeInternal( Board board, GameState gameState ) {
+
 			// 1 in lowest numbered land with 1 dahan
 			var space1 = board.Spaces.First(s=>gameState.Tokens[s].Dahan.Count==1);
 			Presence.PlaceOn(space1, gameState);
+
 			// 2 in highst numbered land without dahan
 			var space2 = board.Spaces.Last( s => gameState.Tokens[s].Dahan.Count == 0 );
 			Presence.PlaceOn( space2, gameState );
 			Presence.PlaceOn( space2, gameState );
-
 			
 			// up as your initial Days That Never Were cards;
 			int spiritCount = gameState.Spirits.Length;
 			int cardsToDraw = 2 < spiritCount 
 				? 4  // Deal 4 Minor and Major Powers face -
 				: 6; // in a 1 or 2 - player game, instead deal 6 of each.
-			DtnwMinor = gameState.MinorCards.Flip( cardsToDraw );
-			DtnwMajor = gameState.MajorCards.Flip( cardsToDraw );
+			DtnwMinor.AddRange( gameState.MinorCards.Flip( cardsToDraw ) );
+			DtnwMajor.AddRange( gameState.MajorCards.Flip( cardsToDraw ) );
 
-			// !!! In a 1 - board game, gain 1 Time.
-
+			// In a 1 - board game, gain 1 Time.
+			if( gameState.Spirits.Length == 1 )
+				++Time;
 		}
 
 		public List<PowerCard> DtnwMinor { get; private set; }
 		public List<PowerCard> DtnwMajor { get; private set; }
-
-		// !!! instead create a Decks list and Fractured Days just adds 2 more to it.
-		// get rid of the virtualness...
-		public override SpiritDeck[] Decks => new SpiritDeck[]{
-			new SpiritDeck{ Icon = Img.Deck_Hand, PowerCards = Hand },
-			new SpiritDeck{ Icon = Img.Deck_Played, PowerCards = InPlay },
-			new SpiritDeck{ Icon = Img.Deck_Discarded, PowerCards = DiscardPile },
-			new SpiritDeck{ Icon = Img.Deck_DaysThatNeverWere_Minor, PowerCards = DtnwMinor },
-			new SpiritDeck{ Icon = Img.Deck_DaysThatNeverWere_Major, PowerCards = DtnwMajor },
-		};
 
 		public async Task GainTime( int count, GameState gameState ) {
 			while(count > 0) {
@@ -117,7 +109,16 @@ namespace SpiritIsland.JaggedEarth {
 			}
 		}
 
-		public int Time { get; set; }
+		public async Task SpendTime( int count ) {
+			var hide = await Action.Decision( Select.TrackSlot.ToCover( this ) );
+
+			Time -= count;
+			if(hide != null)
+				await Presence.Return(hide);
+			
+		}
+
+		public int Time { get; private set; }
 
 
 		public override async Task<DrawCardResult> DrawMinor( GameState gameState, int numberToDraw = 4, int numberToKeep = 1 ) {

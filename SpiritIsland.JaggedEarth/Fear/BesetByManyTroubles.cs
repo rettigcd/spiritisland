@@ -10,7 +10,7 @@ namespace SpiritIsland.JaggedEarth {
 
 		[FearLevel(1, "In each land with Badlands / Beasts / Disease / Wilds / Strife, Defend 3." )]
 		public Task Level1( FearCtx ctx ) {
-			return GameCmd.InEachLand( Cause.Fear
+			return Cmd.InEachLand( Cause.Fear
 				, Cmd.Defend(3)
 				, t=>t.Badlands.Any||t.Beasts.Any||t.Disease.Any||t.Wilds.Any||t.HasStrife // !! make HasStrife a Porperty, not an extension method
 			).Execute( ctx.GameState );

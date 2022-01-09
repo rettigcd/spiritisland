@@ -72,11 +72,11 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 
 	// Swallow the Land Dwellers - "Drown" generates energy for ocean
 	// Tidal Boon - If targetted spirit Pushes Dahan into ocean, you can push them into another costal
-	// Pushing Dahan into ocean destorys them - except for Tidal Boon
+	// Pushing Dahan into ocean destroys them - except for Tidal Boon
 
 	// May move presence into oceans.
 	// May not add/move presence into inlands.
-	// Drown Destorys invader pieces, for every (# of players) invaders drowned, gain 1 energy
+	// Drown Destroys invader pieces, for every (# of players) invaders drowned, gain 1 energy
 
 
 }

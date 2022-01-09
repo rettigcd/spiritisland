@@ -42,7 +42,6 @@ namespace SpiritIsland.Tests.BranchAndClaw.Fear {
 			if(activateFearCard)
 				user.AcknowledgesFearCard( FearAck1 );
 
-			log.Assert_Ravaged();
 			log.Assert_Built( "A4", "A7" ); // Sand
 			if( activateFearCard )
 				log.Assert_Explored();

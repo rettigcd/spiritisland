@@ -1,9 +1,9 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SpiritIsland.JaggedEarth {
 
-	[InnatePower("Forsake Society to Chase After Dreams"),Slow,FromPresence(1,Target.Invaders)]
+	[InnatePower("Forsake Society to Chase After Dreams", "After this Power replaces pieces with explorer: Gather any number of those explorer into your lands.  If target land has any town/city remaining, 1 fear.")]
+	[Slow,FromPresence(1,Target.Invaders)]
 	[RepeatIf("4 air")]
 	public class ForsakeSocietyToChaseAfterDreams {
 
@@ -31,15 +31,21 @@ namespace SpiritIsland.JaggedEarth {
 			var invader = await ctx.Decision( decision );
 			if(invader == null) return;
 
+			// Replace
 			if(invader != Invader.Explorer.Default) {
 				await ctx.Invaders.Remove(invader,1,RemoveReason.Replaced);
 				await ctx.Tokens.Add(Invader.Explorer.Default,invader.Health, AddReason.AsReplacement);
 			}
 
+			// Push to new land
 			await ctx.Pusher
 				.AddGroup( invader.Health, Invader.Explorer )
 				.FilterDestinations( ctx.Self.Presence.IsOn )
 				.MoveUpToN();
+
+			// If town/city remain, 1 fear.
+			if( ctx.Tokens.HasAny(Invader.Town,Invader.City) )
+				ctx.AddFear(1);
 		}
 
 	}

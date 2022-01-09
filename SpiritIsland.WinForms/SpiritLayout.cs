@@ -45,16 +45,16 @@ namespace SpiritIsland.WinForms {
 				var power = spirit.InnatePowers[i];
 				Rectangle singleBounds = innateBounds[i % columnCount];
 
-				var layout = new InnateLayout( power, singleBounds.X, singleBounds.Y, singleBounds.Width, textHeightMultiplier, graphics );
-				innateLayouts[power] = layout;
+				var innateLayout = new InnateLayout( power, singleBounds.X, singleBounds.Y, singleBounds.Width, textHeightMultiplier, graphics );
+				innateLayouts[power] = innateLayout;
 
 				// Scooch this box down so we can put next one there
-				int shift = layout.Bounds.Height + 5;
+				int shift = innateLayout.Bounds.Height + 5;
 				innateBounds[i % columnCount].Height -= shift;
 				innateBounds[i % columnCount].Y += shift;
 
 				// Track bottom of both columns
-				maxBottom = Math.Max( maxBottom, layout.Bounds.Bottom );
+				maxBottom = Math.Max( maxBottom, innateLayout.Bounds.Bottom );
 			}
 
 			return maxBottom - bounds.Top;

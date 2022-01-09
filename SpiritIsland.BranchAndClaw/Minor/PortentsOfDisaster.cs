@@ -11,7 +11,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			// The next time an invader is destroyed in target land this turn, 1 fear
 			bool addFear = true;
-			Task Add1MoreFearForFirstDestoryedInvader(GameState gs,ITokenRemovedArgs args ) {
+			Task Add1MoreFearForFirstDestroyedInvader( ITokenRemovedArgs args ) {
 				if( addFear 
 					&& args.Reason.IsDestroy()
 					&& args.Space == ctx.Space 
@@ -22,7 +22,7 @@ namespace SpiritIsland.BranchAndClaw {
 				}
 				return Task.CompletedTask;
 			}
-			ctx.GameState.Tokens.TokenRemoved.ForRound.Add( Add1MoreFearForFirstDestoryedInvader );
+			ctx.GameState.Tokens.TokenRemoved.ForRound.Add( Add1MoreFearForFirstDestroyedInvader );
 
 			return Task.CompletedTask;
 		}

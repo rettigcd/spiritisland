@@ -2,7 +2,8 @@
 
 namespace SpiritIsland.JaggedEarth {
 
-	[InnatePower("Epidemics Run Rampant"), Fast, FromPresence(1,Target.Disease)]
+	[InnatePower("Epidemics Run Rampant", "This Power's Damage is dealt (separately) to both Invaders and Dahan.")]
+	[Fast, FromPresence(1,Target.Disease)]
 	public class EpidemicsRunRampant {
 
 		// !! add a sub-text desrcription option that dispays

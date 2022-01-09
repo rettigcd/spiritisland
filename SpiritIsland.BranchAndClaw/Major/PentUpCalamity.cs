@@ -21,6 +21,12 @@ namespace SpiritIsland.BranchAndClaw {
 		static async Task AddDiseaseAndStrife( TargetSpaceCtx ctx ) {
 			await ctx.Disease.Add(1);
 			await ctx.AddStrife();
+
+			if( await ctx.YouHave( "2 moon,3 fire" ) ) {
+				await ctx.AddStrife();
+				await ctx.AddStrife();
+			}
+
 		}
 
 		static async Task RemoveTokensForFearAndDamage( TargetSpaceCtx ctx ) {

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 
 namespace SpiritIsland.JaggedEarth {
 	class PickNewGrowthOption : GrowthActionFactory, ITrackActionFactory {
@@ -33,7 +34,7 @@ namespace SpiritIsland.JaggedEarth {
 				await AssignElement.AssignNewElementToTrack(ctx, trackToReceiveElementAssignment );
 
 			GrowthOption option = (GrowthOption)await ctx.Self.Select( "Select New Growth Option", options, Present.Always );
-			ctx.Self.Growth.Add( option );
+			ctx.Self.Growth.Groups.Single().Add( option );
 
 			used = true;
 		}

@@ -14,7 +14,9 @@ namespace SpiritIsland.Basegame {
 			await ctx.SelectActionOption(
 				new SpaceAction("Defend 6", ctx=>ctx.Defend(6)),
 				new SpaceAction("Remove 1 blight", ctx=>ctx.RemoveBlight() )
-					.Cond( await ctx.YouHave("2 water") && ctx.HasBlight )
+					// !! This condition changes state for Shifting Memories, only use inside SelectActionOption
+					// Also, make sure there is actually blight there before asking spirit (Shifting Memory) if they want to commit 2 water
+					.FilterOption( ctx.HasBlight && await ctx.YouHave("2 water") )
 			);
 
 		}

@@ -11,7 +11,7 @@ namespace SpiritIsland.JaggedEarth {
 			// Defend 1 per dahan  (protects the land)
 			ctx.Defend( ctx.Dahan.Count );
 
-			// dahan in target land cannot be changed. (when they would be damaged, destoryed, removed, replaced, or moved, instead don't)
+			// dahan in target land cannot be changed. (when they would be damaged, destroyed, removed, replaced, or moved, instead don't)
 			ctx.Tokens.Dahan.Frozen = true;
 
 			ctx.GameState.TimePasses_ThisRound.Push( (gs)=>{

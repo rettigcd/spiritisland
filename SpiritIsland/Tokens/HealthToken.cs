@@ -15,6 +15,8 @@ namespace SpiritIsland {
 
 		public virtual string Summary => Initial+"@"+Health; // originally: virtual
 
+		public override string ToString() => Summary; // for showing keys of CountDictionary<Token>
+
 		public char Initial => Class.Initial;
 
 		public Token ResultingDamagedInvader(int damage){

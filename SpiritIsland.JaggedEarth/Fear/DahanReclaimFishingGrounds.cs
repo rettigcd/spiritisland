@@ -12,7 +12,7 @@ namespace SpiritIsland.JaggedEarth {
 		public Task Level1( FearCtx ctx ) {
 
 			return SpiritsActOnDifferentCostalLands( ctx, 
-				spaceCtx => spaceCtx.DamageInvaders(1)
+				spaceCtx => spaceCtx.DamageInvaders( spaceCtx.Dahan.Count )
 			);
 
 		}
@@ -22,7 +22,7 @@ namespace SpiritIsland.JaggedEarth {
 			return SpiritsActOnDifferentCostalLands( ctx, 
 				async spaceCtx => {
 					await spaceCtx.GatherUpToNDahan( 1 );
-					await spaceCtx.DamageInvaders(1);
+					await spaceCtx.DamageInvaders( spaceCtx.Dahan.Count );
 				}
 			);
 		}
@@ -32,7 +32,7 @@ namespace SpiritIsland.JaggedEarth {
 			return SpiritsActOnDifferentCostalLands( ctx, 
 				async spaceCtx => {
 					await spaceCtx.GatherUpToNDahan( 1 );
-					await spaceCtx.DamageInvaders(2);
+					await spaceCtx.DamageInvaders( spaceCtx.Dahan.Count*2 );
 				}
 			);
 		}

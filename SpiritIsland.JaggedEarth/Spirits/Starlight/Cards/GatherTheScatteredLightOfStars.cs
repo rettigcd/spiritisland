@@ -18,15 +18,12 @@ namespace SpiritIsland.JaggedEarth {
 					.ToList();
 				var unique = await ctx.Self.SelectPowerCard( "Forget unique to reclaim 3 more.", uniques, CardUse.Forget, Present.Done );
 				if(unique != null){
-					ctx.Self.Forget( unique ); // !!! does this create a null?
+					ctx.Self.Forget( unique );
 					reclaimCount += 3;
 				}
 			}
 
-			ctx.GameState.TimePasses_ThisRound.Push( async (gs) => {
-				for(int i=0;i<reclaimCount;++i)
-					await ctx.Self.Reclaim1FromDiscard();
-			} );
+			ctx.Self.AddActionFactory( new ReclaimN( reclaimCount ) );
 
 		}
 

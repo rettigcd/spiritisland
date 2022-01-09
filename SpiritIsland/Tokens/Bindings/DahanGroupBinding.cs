@@ -124,7 +124,7 @@ namespace SpiritIsland {
 
 		#endregion
 
-		#region Destory
+		#region Destroy
 
 		public async Task Destroy( int countToDestroy, Cause cause ) {
 			if(Frozen) return;

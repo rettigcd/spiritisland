@@ -26,27 +26,35 @@ namespace SpiritIsland {
 			this.repeatAttr = actionType.GetCustomAttribute<RepeatAttribute>();
 
 			Name = innatePowerAttr.Name;
+			GeneralInstructions = innatePowerAttr.GeneralInstructions;
 
 			// try static method (spirit / major / minor)
-			this.elementListByMethod = actionType
+			var elementListByMethod = actionType
 				.GetMethods( BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static )
 				.Select( m => new MethodTuple(m) )
 				.Where( x => x.Attr != null )
 				.ToList();
 
-			this._drawableOptions = elementListByMethod
+			executionGroups = elementListByMethod
+				// filter first - so we only have groups that have matches
+				.Where( x => x.Attr.Group.HasValue )
+				.GroupBy( x => x.Attr.Group.Value )
+				.Select( x => x.ToArray() )
+				.ToArray();
+
+			var drawableOptions = elementListByMethod
 				.Select(x=>x.Attr)
-				.Where( o => o.Purpose != AttributePurpose.ExecuteOnly )
 				.Cast<IDrawableInnateOption>()
 				.ToList();
 			if(this.repeatAttr!=null)
-				_drawableOptions.AddRange( repeatAttr.Thresholds );
+				drawableOptions.AddRange( repeatAttr.Thresholds );
+			DrawableOptions = drawableOptions;
+
 		}
 
 		#endregion
 
 		#region Speed
-
 		public Phase DisplaySpeed => speedAttr.DisplaySpeed;
 		/// <summary> When set, overrides the speed attribute for everything except Display Speed </summary>
 		public ISpeedBehavior OverrideSpeedBehavior { get; set; }
@@ -57,7 +65,7 @@ namespace SpiritIsland {
 		}
 
 		bool CouldBeTriggered( Spirit spirit ) {
-			return elementListByMethod
+			return DrawableOptions
 				.Any(x=>spirit.CouldHaveElements(x.Elements));
 		}
 
@@ -69,6 +77,8 @@ namespace SpiritIsland {
 
 		#endregion
 
+		#region Drawing Properties
+
 		public string Name {get;}
 
 		public string Text => Name;
@@ -79,10 +89,17 @@ namespace SpiritIsland {
 
 		public LandOrSpirit LandOrSpirit => targetAttr.LandOrSpirit;
 
+		public string GeneralInstructions { get; }
+
+		public IEnumerable<IDrawableInnateOption> DrawableOptions { get; }
+
+		#endregion
+
 		public async Task ActivateAsync( SelfCtx ctx ) {
+
 			if(!await SpeedBehavior.IsActiveFor( ctx.GameState.Phase, ctx.Self )) {
 				LastTarget = null;
-				return; // this is here for Shifting Memory to Activate Innates
+				return; // this is here so Shifting Memory can decline to Activate Innates at this speed
 			}
 
 			await ActivateInnerAsync( ctx );
@@ -92,14 +109,6 @@ namespace SpiritIsland {
 					await ActivateInnerAsync( ctx );
 			}
 		}
-
-		public ElementCounts[] GetTriggerThresholds() => elementListByMethod.Select(a=>a.Attr.Elements).ToArray();
-
-		public IEnumerable<InnateOptionAttribute> Options => elementListByMethod.Select(x=>x.Attr);
-
-		public IEnumerable<IDrawableInnateOption> DrawableOptions => _drawableOptions;
-
-		readonly List<IDrawableInnateOption> _drawableOptions;
 
 		async Task ActivateInnerAsync( SelfCtx spiritCtx ) {
 
@@ -119,25 +128,50 @@ namespace SpiritIsland {
 		}
 
 		async Task<List<MethodInfo>> GetLastActivatedMethodsOfEachGroup( SelfCtx spiritCtx ) {
-			IEnumerable<MethodTuple[]> groups = elementListByMethod
-				// filter first - so we only have groups that have matches
-				.Where( pair => pair.Attr.Purpose != AttributePurpose.DisplayOnly )
-				.GroupBy( x => x.Group )
-				.Select( x => x.ToArray() );
-			List<MethodInfo> lastMethods = new List<MethodInfo>();
-			foreach(MethodTuple[] grp in groups) {
-				MethodInfo method = await GetLastMethodThatHasElements( spiritCtx.Self, grp );
+
+			// Not using LINQ because of the AWAIT in the loop.
+
+			var lastMethods = new List<MethodInfo>();
+			foreach(MethodTuple[] grp in executionGroups) {
+
+				// Ask spirit which methods they can activate
+				ElementCounts match = await spiritCtx.Self.SelectInnateToActivate( grp.Select(g=>g.Attr) );
+
+				// Find matching method and it to execute-list
+				MethodInfo method = grp.FirstOrDefault(g=>g.Elements==match)?.Method;
 				if(method != null)
 					lastMethods.Add( method );
 			}
 			return lastMethods;
 		}
 
-		static async Task<MethodInfo> GetLastMethodThatHasElements( Spirit self, MethodTuple[] grp ) {
-			ElementCounts match = await self.GetHighestMatchingElements( grp.Select(g=>g.Elements) );
-			return grp.FirstOrDefault(g=>g.Elements==match)?.Method;
+		public object LastTarget { get; private set; } // for use in a power-action event, would be better to have ActAsync just return it.
+
+		readonly InnatePowerAttribute innatePowerAttr;
+		readonly protected SpeedAttribute speedAttr;
+		readonly GeneratesContextAttribute targetAttr;
+		readonly RepeatAttribute repeatAttr;
+		readonly MethodTuple[][] executionGroups;
+
+		class MethodTuple {
+			public MethodTuple(MethodInfo m ) {
+				Method = m;
+				Attr = m.GetCustomAttributes<InnateOptionAttribute>().FirstOrDefault();
+			}
+			public MethodInfo Method { get; }
+			public InnateOptionAttribute Attr { get; }
+			public ElementCounts  Elements => Attr.Elements;
+
+			// Execution
+			// Display Words
+			// Elements
 		}
 
+		public static string[] Tokenize( string s ) => TokenParser.Tokenize( s );
+
+	}
+
+	public static class TokenParser {
 		public static string[] Tokenize( string s ) {
 
 			var tokens = new Regex( "sacred site|presence|fast|slow"
@@ -167,25 +201,6 @@ namespace SpiritIsland {
 				}
 			}
 			return results.ToArray();
-		}
-
-		public object LastTarget { get; private set; }
-
-		readonly InnatePowerAttribute innatePowerAttr;
-		readonly protected SpeedAttribute speedAttr;
-		readonly GeneratesContextAttribute targetAttr;
-		readonly RepeatAttribute repeatAttr;
-		readonly List<MethodTuple> elementListByMethod;
-
-		class MethodTuple {
-			public MethodTuple(MethodInfo m ) {
-				Method = m;
-				Attr = m.GetCustomAttributes<InnateOptionAttribute>().FirstOrDefault();
-			}
-			public MethodInfo Method { get; }
-			public InnateOptionAttribute Attr { get; }
-			public ElementCounts  Elements => Attr.Elements;
-			public int Group => Attr.Group;
 		}
 
 	}

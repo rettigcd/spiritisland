@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 namespace SpiritIsland.BranchAndClaw {
 
 	public class VolcanicEruption {
-        [MajorCard("Volcanic Eruption", 8, Element.Fire, Element.Earth)]
+		[MajorCard("Volcanic Eruption", 8, Element.Fire, Element.Earth)]
 		[Slow]
-        [FromPresenceIn(1,Terrain.Mountain)]
-        static public async Task ActAsync(TargetSpaceCtx ctx) {
+		[FromPresenceIn(1,Terrain.Mountain)]
+		static public async Task ActAsync(TargetSpaceCtx ctx) {
 			// 6 fear
 			ctx.AddFear( 6 );
 
@@ -22,7 +22,7 @@ namespace SpiritIsland.BranchAndClaw {
 
 			// if you have 4 fire, 3 earth:
 			if(await ctx.YouHave( "4 fire,3 earth" )) {
-				// Destory all invaders.
+				// Destroy all invaders.
 				await ctx.Invaders.DestroyAny( int.MaxValue, Invader.City, Invader.Town, Invader.Explorer );
 				// Add 1 wilds.
 				await ctx.Wilds.Add(1);
@@ -36,7 +36,7 @@ namespace SpiritIsland.BranchAndClaw {
 		static async Task EffectAdjacentLand( TargetSpaceCtx adj ) {
 			// 10 damage,
 			await adj.DamageInvaders( 10 );
-			// destory all dahan and beast.
+			// destroy all dahan and beast.
 			await DestroyDahanAndBeasts( adj );
 			// IF there are no blight, add 1 blight
 			if(adj.Blight.Count == 0)

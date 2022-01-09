@@ -41,7 +41,7 @@ namespace SpiritIsland {
 
 		public IEnumerable<Token> Keys => counts.Keys; // !! This won't list virtual (defend) tokens
 
-		public string InvaderSummary { get {
+		public string InvaderSummary { get { // !!! Depreate this.  Use .Invaders (to get just the invaders) then .Summary
 			static int Order_CitiesTownsExplorers( Token invader )
 				=> -(invader.FullHealth * 10 + invader.Health);
 			return this.Invaders()
@@ -154,7 +154,7 @@ namespace SpiritIsland {
 
 			// Add new strifed
 			int curStrifeCount = invader is StrifedInvader si ? si.StrifeCount : 0;
-			var strifed = StrifedInvader.Generator.WithStrife(invader, curStrifeCount +1 );
+			var strifed = StrifedInvader.Generator.WithStrife(invader, curStrifeCount +1 ); // !!! crashed with index out of range while trying to strife an invader with -1 health from Blighted Island effect
 
 			this[strifed] += count;
 		}

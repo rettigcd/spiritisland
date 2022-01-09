@@ -21,7 +21,7 @@ namespace SpiritIsland.BranchAndClaw {
 			// and 2 damage.
 			await ctx.DamageInvaders( count * 2 );
 
-			// if this destorys all invaders in target land, add 1 beast.
+			// if this destroys all invaders in target land, add 1 beast.
 			if(originallyHadInvaders && !ctx.HasInvaders)
 				await ctx.Beasts.Add(1);
 

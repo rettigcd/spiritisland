@@ -18,13 +18,12 @@ namespace SpiritIsland {
 		public async Task ActivateAsync( SelfCtx ctx ) {
 
 			int maxCardCost = ctx.Self.Energy;
-			var options = ctx.Self.UsedActions.OfType<PowerCard>() // can't use Discard pile because those cards are from prior rounds.
-				.Where(card=>ctx.Self.IsActiveDuring(ctx.GameState.Phase,card)) 
+			var options = ctx.Self.Hand.OfType<PowerCard>()
 				.Where(card=>card.Cost<=maxCardCost)
 				.ToArray();
 			if(options.Length == 0) return;
 
-			PowerCard powerCard = await ctx.Self.SelectPowerCard( "Select card to replay", options.Where( x => x.Cost <= maxCardCost ), CardUse.Repeat, Present.Always );
+			PowerCard powerCard = await ctx.Self.SelectPowerCard( "Select card to play", options.Where( x => x.Cost <= maxCardCost ), CardUse.Play, Present.Always );
 			if(powerCard != null)
 				ctx.Self.PlayCard( powerCard );
 		}

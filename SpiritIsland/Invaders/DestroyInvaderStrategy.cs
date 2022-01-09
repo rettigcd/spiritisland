@@ -15,7 +15,7 @@ namespace SpiritIsland {
 			var reason = fromRavage ? RemoveReason.DestroyedInBattle : RemoveReason.Destroyed;
 
 			// !!! see if we can invoke this through the Token-Publish API instead - so we can make TokenRemovedArgs internal to Island_Tokens class
-			await gs.Tokens.TokenRemoved.InvokeAsync( gs, new TokenRemovedArgs( token, reason ) {
+			await gs.Tokens.TokenRemoved.InvokeAsync( new TokenRemovedArgs( gs, token, reason ) {
 				Space = space,
 				Count = 1,
 			} );

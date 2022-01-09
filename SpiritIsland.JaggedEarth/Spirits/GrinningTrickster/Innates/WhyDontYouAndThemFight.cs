@@ -6,7 +6,7 @@ namespace SpiritIsland.JaggedEarth {
 	[InnatePower("Why Don't You and Them Fight"), FastButSlowIf("3 moon"), FromPresence(0,Target.Invaders)]
 	class WhyDontYouAndThemFight {
 
-		[InnateOption("3 moon","This Power may be slow.",AttributePurpose.DisplayOnly,1)]
+		[DisplayOnly("3 moon","This Power may be slow.")]
 		static public Task Option1(TargetSpaceCtx _ ) => Task.CompletedTask;
 
 		[InnateOption("3 air","Add 1 strife.",2)]

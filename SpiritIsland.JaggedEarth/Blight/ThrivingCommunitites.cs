@@ -1,27 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace SpiritIsland.JaggedEarth {
+﻿namespace SpiritIsland.JaggedEarth {
 
 	public class ThrivingCommunitites : BlightCardBase {
 
 		public ThrivingCommunitites():base("Thriving Communitites",4) {}
 
-		protected override Task BlightAction( GameState gs ) {
-			// Immediately,
+		public override ActionOption<GameState> Immediately 
 			// on each board:
-			return GameCmd.OnEachBoard(
-				// In 4 different lands with explorer/town,
-				BoardCmd.PickNDifferentSpacesThen(
-					4,
-					// Replace 1 town with a city or Replace 1 explorer with 1 town
-					UpgradeExplorerOrTown, 
-					tokens => tokens.HasAny(Invader.Explorer,Invader.Town)
-				)
-			).Execute( gs );
-		}
+			=> Cmd.OnEachBoard(
+				// Replace 1 town with a city or Replace 1 explorer with 1 town
+				UpgradeExplorerOrTown
+					// In 4 different lands with explorer/town,
+					.InNDifferentLands( 4, x => x.Tokens.HasAny(Invader.Explorer,Invader.Town) )
+			);
 
 		static SpaceAction UpgradeExplorerOrTown => new SpaceAction( "Replace 1 town with a city or Replace 1 explorer with 1 town", async ctx=>{
 			var invader = await ctx.Decision( Select.Invader.ToDowngrade("upgrade",ctx.Space,ctx.Tokens.OfAnyType(Invader.Explorer,Invader.Town)));
