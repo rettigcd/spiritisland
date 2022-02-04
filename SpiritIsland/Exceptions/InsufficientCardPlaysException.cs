@@ -1,8 +1,3 @@
-﻿using System;
+﻿namespace SpiritIsland;
 
-namespace SpiritIsland {
-
-	public class InsufficientCardPlaysException : Exception {
-	}
-
-}
+public class InsufficientCardPlaysException : Exception {}

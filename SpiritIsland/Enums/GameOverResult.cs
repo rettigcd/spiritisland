@@ -1,11 +1,7 @@
-﻿namespace SpiritIsland {
+﻿namespace SpiritIsland;
 
-	public enum GameOverResult { 
-		None, 
-		Victory,  // noun 
-		Defeat  // noun
-	}
-
-
-
+public enum GameOverResult { 
+	None, 
+	Victory,  // noun 
+	Defeat  // noun
 }

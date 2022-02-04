@@ -1,24 +1,20 @@
-﻿using System.Threading.Tasks;
+﻿namespace SpiritIsland.JaggedEarth;
 
-namespace SpiritIsland.JaggedEarth {
+class LetsSeeWhatHappensCtx : TargetSpaceCtx {
 
-	class LetsSeeWhatHappensCtx : TargetSpaceCtx {
+	public LetsSeeWhatHappensCtx(TargetSpaceCtx ctx ) : base( ctx, ctx.Space ) {}
 
-		public LetsSeeWhatHappensCtx(TargetSpaceCtx ctx ) : base( ctx, ctx.Space ) {}
-
-		override protected async Task SelectAction_Inner<T>( string prompt, IExecuteOn<T>[] options, Present present, T ctx ) {
-			foreach(var opt in options)
-				await opt.Execute( ctx );
-		}
-
-		public override Task<Space[]> PushUpTo( int countToPush, params TokenClass[] groups ) 
-			=> new TokenPusher( this )
-				.AddGroup( countToPush, groups )
-				.MoveN();
-
-		public override Task GatherUpTo( int countToGather, params TokenClass[] ofType )
-			=> this.Gather( countToGather, ofType );
-
+	override protected async Task SelectAction_Inner<T>( string prompt, IExecuteOn<T>[] options, Present present, T ctx ) {
+		foreach(var opt in options)
+			await opt.Execute( ctx );
 	}
+
+	public override Task<Space[]> PushUpTo( int countToPush, params TokenClass[] groups ) 
+		=> new TokenPusher( this )
+			.AddGroup( countToPush, groups )
+			.MoveN();
+
+	public override Task GatherUpTo( int countToGather, params TokenClass[] ofType )
+		=> this.Gather( countToGather, ofType );
 
 }

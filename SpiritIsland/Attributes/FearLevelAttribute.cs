@@ -1,16 +1,11 @@
-﻿using System;
+﻿namespace SpiritIsland;
 
-namespace SpiritIsland {
+[AttributeUsage( AttributeTargets.Class | AttributeTargets.Method )]
+public class FearLevelAttribute : Attribute {
 
-	[AttributeUsage( AttributeTargets.Class | AttributeTargets.Method )]
-	public class FearLevelAttribute : Attribute {
+	public string Description { get; }
 
-		public string Description { get; }
-
-		public FearLevelAttribute(int _, string description ) {
-			this.Description = description;
-		}
+	public FearLevelAttribute(int _, string description ) {
+		this.Description = description;
 	}
-
 }
-

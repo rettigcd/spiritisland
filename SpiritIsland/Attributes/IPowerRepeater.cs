@@ -1,8 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿namespace SpiritIsland;
 
-namespace SpiritIsland {
-	public interface IPowerRepeater {
-		Task<bool> ShouldRepeat( Spirit spirit );
-	}
-
+public interface IPowerRepeater {
+	Task<bool> ShouldRepeat( Spirit spirit );
 }
+

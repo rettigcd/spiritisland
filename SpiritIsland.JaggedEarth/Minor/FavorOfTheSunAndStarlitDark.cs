@@ -1,19 +1,18 @@
-﻿using System.Threading.Tasks;
+﻿namespace SpiritIsland.JaggedEarth;
 
-namespace SpiritIsland.JaggedEarth {
-	public class FavorOfTheSunAndStarlitDark{ 
-		[MinorCard("Favor of the Sun and Starlit Dark",1,Element.Sun,Element.Moon,Element.Plant),Fast,FromSacredSite(1)]
-		static public async Task ActAsync(TargetSpaceCtx ctx){
-			// Defend 4
-			ctx.Defend(4);
+public class FavorOfTheSunAndStarlitDark{
 
-			// Push up to 1 blight.
-			await ctx.PushUpTo(4,TokenType.Blight);
+	[MinorCard("Favor of the Sun and Starlit Dark",1,Element.Sun,Element.Moon,Element.Plant),Fast,FromSacredSite(1)]
+	static public async Task ActAsync(TargetSpaceCtx ctx){
+		// Defend 4
+		ctx.Defend(4);
 
-			// If you have 2 sun: 1 fear
-			if(await ctx.YouHave("2 sun"))
-				ctx.AddFear(1);
-		}
+		// Push up to 1 blight.
+		await ctx.PushUpTo(4,TokenType.Blight);
+
+		// If you have 2 sun: 1 fear
+		if(await ctx.YouHave("2 sun"))
+			ctx.AddFear(1);
 	}
 
 }

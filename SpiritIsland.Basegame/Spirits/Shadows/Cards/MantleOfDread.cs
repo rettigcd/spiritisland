@@ -1,31 +1,26 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using SpiritIsland;
+﻿namespace SpiritIsland.Basegame;
 
-namespace SpiritIsland.Basegame {
-	class MantleOfDread {
+public class MantleOfDread {
 
-		[SpiritCard("Mantle of Dread",1,Element.Moon,Element.Fire,Element.Air)]
-		[Slow]
-		[AnySpirit]
-		static public async Task Act( TargetSpiritCtx ctx ){
+	[SpiritCard("Mantle of Dread",1,Element.Moon,Element.Fire,Element.Air)]
+	[Slow]
+	[AnySpirit]
+	static public async Task Act( TargetSpiritCtx ctx ){
 
-			// 2 fear
-			ctx.AddFear( 2 );
+		// 2 fear
+		ctx.AddFear( 2 );
 
-			// target spirit may push 1 explorer and 1 town from land where it has presence
+		// target spirit may push 1 explorer and 1 town from land where it has presence
 
-			// Select Land
-			var pushLand = await ctx.OtherCtx.TargetLandWithPresence( "Select land to push 1 exploer & 1 town from" );
+		// Select Land
+		var pushLand = await ctx.OtherCtx.TargetLandWithPresence( "Select land to push 1 exploer & 1 town from" );
 
-			// Push Town / Explorer
-			await pushLand.Pusher
-				.AddGroup(1,Invader.Town)
-				.AddGroup(1,Invader.Explorer)
-				.MoveUpToN();
+		// Push Town / Explorer
+		await pushLand.Pusher
+			.AddGroup(1,Invader.Town)
+			.AddGroup(1,Invader.Explorer)
+			.MoveUpToN();
 			
-		}
-
 	}
 
 }

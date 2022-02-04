@@ -1,13 +1,11 @@
-﻿namespace SpiritIsland {
+﻿namespace SpiritIsland;
 
-	public enum Phase { 
-		None, // Default, error, etc.
-		Init, 
-		Growth, 
-		Fast,
-		Invaders,
-		Slow, 
-		FastOrSlow
-	};
-
-}
+public enum Phase { 
+	None, // Default, error, etc.
+	Init, 
+	Growth, 
+	Fast,
+	Invaders,
+	Slow, 
+	FastOrSlow
+};

@@ -1,22 +1,19 @@
-﻿using System.Threading.Tasks;
+﻿namespace SpiritIsland.Basegame;
 
-namespace SpiritIsland.Basegame {
+public class SuddenAmbush {
 
-	public class SuddenAmbush {
+	public const string Name = "Sudden Ambush";
 
-		public const string Name = "Sudden Ambush";
+	[SpiritCard( SuddenAmbush.Name, 2, Element.Fire, Element.Air, Element.Animal )]
+	[Fast]
+	[FromPresence(1)]
+	static public async Task Act( TargetSpaceCtx ctx ) {
 
-		[SpiritCard( SuddenAmbush.Name, 2, Element.Fire, Element.Air, Element.Animal )]
-		[Fast]
-		[FromPresence(1)]
-		static public async Task Act( TargetSpaceCtx ctx ) {
+		// you may gather 1 dahan
+		await ctx.GatherUpToNDahan( 1 );
 
-			// you may gather 1 dahan
-			await ctx.GatherUpToNDahan( 1 );
-
-			// Each dahan destroys 1 explorer
-			await ctx.Invaders.Destroy( ctx.Dahan.Count, Invader.Explorer );
-		}
-
+		// Each dahan destroys 1 explorer
+		await ctx.Invaders.Destroy( ctx.Dahan.Count, Invader.Explorer );
 	}
+
 }

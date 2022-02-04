@@ -1,55 +1,50 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿namespace SpiritIsland.JaggedEarth;
 
-namespace SpiritIsland.JaggedEarth {
+/// <summary>
+/// Binds to multiple actions, allowing them be repeated as a group.
+/// </summary>
+/// <remarks>	Fractured Days Growth Option 2 & 3 </remarks>
+public class ActionRepeater {
 
-	/// <summary>
-	/// Binds to multiple actions, allowing them be repeated as a group.
-	/// </summary>
-	/// <remarks>	Fractured Days Growth Option 2 & 3 </remarks>
-	public class ActionRepeater {
+	public readonly int repeats;
+	readonly List<GrowthActionFactory> factories = new List<GrowthActionFactory>();
 
-		public readonly int repeats;
-		readonly List<GrowthActionFactory> factories = new List<GrowthActionFactory>();
+	public int currentRepeats;
 
-		public int currentRepeats;
+	public ActionRepeater(int repeats) { this.repeats = repeats; }
 
-		public ActionRepeater(int repeats) { this.repeats = repeats; }
-
-		public void Register( GrowthActionFactory factory) {
-			factories.Add(factory);
-		}
-
-		public void BeginAction() {
-			if(currentRepeats == 0) 
-				currentRepeats = repeats;
-		}
-
-		public void EndAction( Spirit spirit ) {
-			--currentRepeats;
-
-			if(currentRepeats > 0)
-				Restore( spirit );
-			else
-				CleanUp( spirit );
-		}
-
-		void Restore(Spirit spirit ) {
-			var remaining = spirit.GetAvailableActions(Phase.Growth).ToArray();
-			foreach(var factory in factories)
-				if( !remaining.Contains(factory) )
-					spirit.AddActionFactory( factory );
-		}
-
-		void CleanUp(Spirit spirit ) {
-			var remaining = spirit.GetAvailableActions(Phase.Growth).ToArray();
-			foreach(var factory in factories)
-				if( remaining.Contains(factory) )
-					spirit.RemoveFromUnresolvedActions( factory );
-		}
-
-		public GrowthActionFactory Bind( GrowthActionFactory inner ) => new RepeatableActionFactory( inner, this );
-
+	public void Register( GrowthActionFactory factory) {
+		factories.Add(factory);
 	}
+
+	public void BeginAction() {
+		if(currentRepeats == 0) 
+			currentRepeats = repeats;
+	}
+
+	public void EndAction( Spirit spirit ) {
+		--currentRepeats;
+
+		if(currentRepeats > 0)
+			Restore( spirit );
+		else
+			CleanUp( spirit );
+	}
+
+	void Restore(Spirit spirit ) {
+		var remaining = spirit.GetAvailableActions(Phase.Growth).ToArray();
+		foreach(var factory in factories)
+			if( !remaining.Contains(factory) )
+				spirit.AddActionFactory( factory );
+	}
+
+	void CleanUp(Spirit spirit ) {
+		var remaining = spirit.GetAvailableActions(Phase.Growth).ToArray();
+		foreach(var factory in factories)
+			if( remaining.Contains(factory) )
+				spirit.RemoveFromUnresolvedActions( factory );
+	}
+
+	public GrowthActionFactory Bind( GrowthActionFactory inner ) => new RepeatableActionFactory( inner, this );
 
 }

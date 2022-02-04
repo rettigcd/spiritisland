@@ -1,28 +1,25 @@
-﻿using System.Threading.Tasks;
+﻿namespace SpiritIsland.BranchAndClaw;
 
-namespace SpiritIsland.BranchAndClaw {
+public class TerrifyingChase {
 
-	public class TerrifyingChase {
+	[SpiritCard( "Terrifying Chase", 1, Element.Sun, Element.Animal )]
+	[Slow]
+	[FromPresence( 0 )]
+	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
-		[SpiritCard( "Terrifying Chase", 1, Element.Sun, Element.Animal )]
-		[Slow]
-		[FromPresence( 0 )]
-		static public async Task ActAsync( TargetSpaceCtx ctx ) {
+		// push 2 exploeres / towns / dahan
+		// push another 2 explorers / towns / dahan pers beast in target land
+		int pushCount = 2 + 2 * ctx.Beasts.Count;
 
-			// push 2 exploeres / towns / dahan
-			// push another 2 explorers / towns / dahan pers beast in target land
-			int pushCount = 2 + 2 * ctx.Beasts.Count;
+		int startingInvaderCount = ctx.Tokens.InvaderTotal();
 
-			int startingInvaderCount = ctx.Tokens.InvaderTotal();
+		// first push invaders
+		await ctx.Push(pushCount,TokenType.Dahan,Invader.Explorer,Invader.Town);
 
-			// first push invaders
-			await ctx.Push(pushCount,TokenType.Dahan,Invader.Explorer,Invader.Town);
-
-			// if you pushed any invaders, 2 fear
-			if( ctx.Tokens.InvaderTotal() < startingInvaderCount )
-				ctx.AddFear(2);
-
-		}
+		// if you pushed any invaders, 2 fear
+		if( ctx.Tokens.InvaderTotal() < startingInvaderCount )
+			ctx.AddFear(2);
 
 	}
+
 }

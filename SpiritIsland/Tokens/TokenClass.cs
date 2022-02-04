@@ -1,19 +1,16 @@
-﻿
-namespace SpiritIsland {
+﻿namespace SpiritIsland;
 
-	public interface TokenClass {
+public interface TokenClass {
 
-		Token Default { get; }
+	Token Default { get; }
 
-		char Initial { get; }
+	char Initial { get; }
 
-		string Label { get; }
+	string Label { get; }
 
-		void ExtendHealthRange( int newMaxHealth );
+	void ExtendHealthRange( int newMaxHealth );
 
-		Token this[int i] { get; }
+	Token this[int i] { get; }
 
-		TokenCategory Category { get; }
-	}
-
+	TokenCategory Category { get; }
 }

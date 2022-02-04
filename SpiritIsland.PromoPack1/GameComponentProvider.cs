@@ -1,22 +1,18 @@
-﻿using System;
+﻿namespace SpiritIsland.PromoPack1;
 
-namespace SpiritIsland.PromoPack1 {
+public class GameComponentProvider : IGameComponentProvider {
 
-	public class GameComponentProvider : IGameComponentProvider {
+	public Type[] Spirits => new Type[] {
+		typeof(HeartOfTheWildfire),
+		typeof(SerpentSlumbering),
+	};
 
-		public Type[] Spirits => new Type[] {
-			typeof(HeartOfTheWildfire),
-			typeof(SerpentSlumbering),
-		};
+	public PowerCard[] MinorCards => Array.Empty<PowerCard>();
 
-		public PowerCard[] MinorCards => Array.Empty<PowerCard>();
+	public PowerCard[] MajorCards => Array.Empty<PowerCard>();
 
-		public PowerCard[] MajorCards => Array.Empty<PowerCard>();
+	public IFearOptions[] FearCards => Array.Empty<IFearOptions>();
 
-		public IFearOptions[] FearCards => Array.Empty<IFearOptions>();
-
-		public IBlightCard[] BlightCards => Array.Empty<BlightCardBase>();
-
-	}
+	public IBlightCard[] BlightCards => Array.Empty<BlightCardBase>();
 
 }

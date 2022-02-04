@@ -1,27 +1,24 @@
-﻿
-namespace SpiritIsland {
+﻿namespace SpiritIsland;
 
-	public class Invaders {
+public class Invaders {
 
-		// !! This wrapper class (around TokenCountDictionary) acts more like an Extension Method Class
+	// !! This wrapper class (around TokenCountDictionary) acts more like an Extension Method Class
 
-		readonly GameState gs;
+	readonly GameState gs;
 
-		#region constructor
+	#region constructor
 
-		public Invaders( GameState gs ) {
-			this.gs = gs;
-		}
+	public Invaders( GameState gs ) {
+		this.gs = gs;
+	}
 
-		#endregion
+	#endregion
 
-		public InvaderBinding On( Space targetSpace ) {
-			return new InvaderBinding( 
-				gs.Tokens[targetSpace], 
-				new DestroyInvaderStrategy( gs, gs.Fear.AddDirect )
-			);
-		}
-
+	public InvaderBinding On( Space targetSpace ) {
+		return new InvaderBinding( 
+			gs.Tokens[targetSpace], 
+			new DestroyInvaderStrategy( gs, gs.Fear.AddDirect )
+		);
 	}
 
 }

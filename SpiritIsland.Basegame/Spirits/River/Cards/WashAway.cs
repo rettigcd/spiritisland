@@ -1,19 +1,15 @@
-﻿using System.Threading.Tasks;
+﻿namespace SpiritIsland.Basegame;
 
-namespace SpiritIsland.Basegame {
+public class WashAway {
 
-	public class WashAway {
+	public const string Name = "Wash Away";
 
-		public const string Name = "Wash Away";
+	[SpiritCard(WashAway.Name, 1, Element.Water, Element.Earth)]
+	[Slow]
+	[FromPresence(1,Target.TownOrExplorer)]
+	static public async Task ActionAsync(TargetSpaceCtx ctx){
 
-		[SpiritCard(WashAway.Name, 1, Element.Water, Element.Earth)]
-		[Slow]
-		[FromPresence(1,Target.TownOrExplorer)]
-		static public async Task ActionAsync(TargetSpaceCtx ctx){
-
-			await ctx.PushUpTo( 3, Invader.Town,Invader.Explorer );
-
-		}
+		await ctx.PushUpTo( 3, Invader.Town,Invader.Explorer );
 
 	}
 

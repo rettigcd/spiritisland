@@ -1,34 +1,30 @@
-﻿using System.Threading.Tasks;
+﻿namespace SpiritIsland;
 
-namespace SpiritIsland {
-
-	public class ActionTaken {
-		public IActionFactory ActionFactory { get; }
-		public object Context { get; }
-		public ActionTaken(IActionFactory actionFactory, object context ) {
-			this.ActionFactory = actionFactory;
-			this.Context = context;
-		}
+public class ActionTaken {
+	public IActionFactory ActionFactory { get; }
+	public object Context { get; }
+	public ActionTaken(IActionFactory actionFactory, object context ) {
+		this.ActionFactory = actionFactory;
+		this.Context = context;
 	}
+}
 
-	public interface IActionFactory : IOption {
+public interface IActionFactory : IOption {
 
-		Task ActivateAsync( SelfCtx ctx ); // returns Target if any
+	Task ActivateAsync( SelfCtx ctx ); // returns Target if any
 
-		bool CouldActivateDuring( Phase speed, Spirit spirit );
+	bool CouldActivateDuring( Phase speed, Spirit spirit );
 
-		string Name { get; }
+	string Name { get; }
 			
-	}
+}
 
-	public interface IFlexibleSpeedActionFactory : IActionFactory {
-		Phase DisplaySpeed { get; }
-		/// <summary> When set, overrides the speed attribute for everything except Display Speed </summary>
-		ISpeedBehavior OverrideSpeedBehavior { get; set; }
-	}
+public interface IFlexibleSpeedActionFactory : IActionFactory {
+	Phase DisplaySpeed { get; }
+	/// <summary> When set, overrides the speed attribute for everything except Display Speed </summary>
+	ISpeedBehavior OverrideSpeedBehavior { get; set; }
+}
 
-	public interface IRecordLastTarget {
-		public object LastTarget { get; }
-	}
-
+public interface IRecordLastTarget {
+	public object LastTarget { get; }
 }

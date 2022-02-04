@@ -1,26 +1,25 @@
-﻿namespace SpiritIsland {
-	static public class PowerCardExtensions_ForWinForms {
+﻿namespace SpiritIsland;
 
-		// !!! move this into the UI / WebForms project
+static public class PowerCardExtensions_ForWinForms {
 
-		public static string GetImageFilename( this PowerCard card ) {
-			string filename = card.Name
-				.Replace( ',', '_' )
-				.Replace( ' ', '_' )
-				.Replace( "__", "_" )
-				.Replace( "'", "" )
-				.Replace( "-", "" )
-				.ToLower();
-			string cardType = card.PowerType.Text;
-			string ns = card.MethodType.Namespace;
-			string edition = ns.Contains( "Basegame" ) ? "basegame"
-				: ns.Contains( "BranchAndClaw" ) ? "bac"
-				: ns.Contains( "PromoPack1" ) ? "pp1"  // !!! temporary
-				: ns.Contains( "JaggedEarth" ) ? "je"
-				: ns;
-			return $".\\images\\{edition}\\{cardType}\\{filename}.jpg";
-		}
+	// !!! move this into the UI / WebForms project
 
+	public static string GetImageFilename( this PowerCard card ) {
+		string filename = card.Name
+			.Replace( ',', '_' )
+			.Replace( ' ', '_' )
+			.Replace( "__", "_" )
+			.Replace( "'", "" )
+			.Replace( "-", "" )
+			.ToLower();
+		string cardType = card.PowerType.Text;
+		string ns = card.MethodType.Namespace;
+		string edition = ns.Contains( "Basegame" ) ? "basegame"
+			: ns.Contains( "BranchAndClaw" ) ? "bac"
+			: ns.Contains( "PromoPack1" ) ? "pp1"  // !!! temporary
+			: ns.Contains( "JaggedEarth" ) ? "je"
+			: ns;
+		return $".\\images\\{edition}\\{cardType}\\{filename}.jpg";
 	}
 
 }

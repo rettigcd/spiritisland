@@ -1,24 +1,21 @@
-﻿
-namespace SpiritIsland {
+﻿namespace SpiritIsland;
 
-	public interface Token : IOption {
+public interface Token : IOption {
 
-		TokenClass Class { get; } // originally: readonly
+	TokenClass Class { get; } // originally: readonly
 
-		Img Img { get; }
+	Img Img { get; }
 
-		string Summary { get; }
+	string Summary { get; }
 
-		public char Initial { get; }
+	public char Initial { get; }
 
-		Token ResultingDamagedInvader(int damage);
+	Token ResultingDamagedInvader(int damage);
 
-		int Health {get;}
+	int Health {get;}
 
-		Token Healthy { get; }
+	Token Healthy { get; }
 
-		int FullHealth {get; }
-
-	}
+	int FullHealth {get; }
 
 }

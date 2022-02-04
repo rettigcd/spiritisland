@@ -1,48 +1,43 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿namespace SpiritIsland.BranchAndClaw;
 
-namespace SpiritIsland.BranchAndClaw {
+public class PlanForDeparture : IFearOptions {
+	public const string Name = "Plan for Departure";
+	string IFearOptions.Name => Name;
 
-	class PlanForDeparture : IFearOptions {
-		public const string Name = "Plan for Departure";
-		string IFearOptions.Name => Name;
+	[FearLevel( 1, "Each player may gather 1 town into a costal land." )]
+	public async Task Level1( FearCtx ctx ) {
 
-		[FearLevel( 1, "Each player may gather 1 town into a costal land." )]
-		public async Task Level1( FearCtx ctx ) {
+		// Each player may gather 1 town into a costal land.
+		var coastal = ctx.GameState.Island.AllSpaces.Where(x=>x.IsCoastal).ToArray();
+		foreach(var spiritCtx in ctx.Spirits )
+			await spiritCtx.GatherExplorerToOne(coastal,1,Invader.Town);
 
-			// Each player may gather 1 town into a costal land.
-			var coastal = ctx.GameState.Island.AllSpaces.Where(x=>x.IsCoastal).ToArray();
-			foreach(var spiritCtx in ctx.Spirits )
-				await spiritCtx.GatherExplorerToOne(coastal,1,Invader.Town);
+	}
 
-		}
+	[FearLevel( 2, "Each player may gather 1 explroer / town into a costal land.  Defend 2 in all costal lands." )]
+	public async Task Level2( FearCtx ctx ) {
 
-		[FearLevel( 2, "Each player may gather 1 explroer / town into a costal land.  Defend 2 in all costal lands." )]
-		public async Task Level2( FearCtx ctx ) {
+		// Each player may gather 1 explroer / town into a costal land.
+		var coastal = ctx.GameState.Island.AllSpaces.Where( x => x.IsCoastal ).ToArray();
+		foreach(var spiritCtx in ctx.Spirits)
+			await spiritCtx.GatherExplorerToOne( coastal, 1, Invader.Town, Invader.Explorer );
 
-			// Each player may gather 1 explroer / town into a costal land.
-			var coastal = ctx.GameState.Island.AllSpaces.Where( x => x.IsCoastal ).ToArray();
-			foreach(var spiritCtx in ctx.Spirits)
-				await spiritCtx.GatherExplorerToOne( coastal, 1, Invader.Town, Invader.Explorer );
+		// Defend 2 in all costal lands.
+		foreach(var land in coastal)
+			ctx.GameState.Tokens[land].Defend.Add( 2 );
+	}
 
-			// Defend 2 in all costal lands.
-			foreach(var land in coastal)
-				ctx.GameState.Tokens[land].Defend.Add( 2 );
-		}
+	[FearLevel( 3, "Each player may gather 2 explorer / town into a costal land.  Defend 4 in all costal lands" )]
+	public async Task Level3( FearCtx ctx ) {
 
-		[FearLevel( 3, "Each player may gather 2 explorer / town into a costal land.  Defend 4 in all costal lands" )]
-		public async Task Level3( FearCtx ctx ) {
+		// Each player may gather 2 explorer / town into a costal land.
+		var coastal = ctx.GameState.Island.AllSpaces.Where( x => x.IsCoastal ).ToArray();
+		foreach(var spiritCtx in ctx.Spirits)
+			await spiritCtx.GatherExplorerToOne( coastal, 1, Invader.Town );
 
-			// Each player may gather 2 explorer / town into a costal land.
-			var coastal = ctx.GameState.Island.AllSpaces.Where( x => x.IsCoastal ).ToArray();
-			foreach(var spiritCtx in ctx.Spirits)
-				await spiritCtx.GatherExplorerToOne( coastal, 1, Invader.Town );
-
-			// Defend 4 in all costal lands
-			foreach(var land in coastal)
-				ctx.GameState.Tokens[land].Defend.Add( 4 );
-		}
-
+		// Defend 4 in all costal lands
+		foreach(var land in coastal)
+			ctx.GameState.Tokens[land].Defend.Add( 4 );
 	}
 
 }

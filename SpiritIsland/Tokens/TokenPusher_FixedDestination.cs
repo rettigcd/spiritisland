@@ -1,19 +1,14 @@
-﻿using System.Threading.Tasks;
+﻿namespace SpiritIsland;
 
-namespace SpiritIsland {
-	/// <summary>
-	/// Overrides Selecting destination with a fixed destination
-	/// </summary>
-	public class TokenPusher_FixedDestination : TokenPusher {
-		readonly Space destination;
-		public TokenPusher_FixedDestination( TargetSpaceCtx ctx, Space destination ) : base( ctx ) { 
-			this.destination = destination;
-		}
+/// <summary> Overrides Selecting destination with a fixed destination </summary>
+public class TokenPusher_FixedDestination : TokenPusher {
+	readonly Space destination;
+	public TokenPusher_FixedDestination( TargetSpaceCtx ctx, Space destination ) : base( ctx ) { 
+		this.destination = destination;
+	}
 
-		protected override Task<Space> SelectDestination( Token token ) {
-			return Task.FromResult(destination);
-		}
-
+	protected override Task<Space> SelectDestination( Token token ) {
+		return Task.FromResult(destination);
 	}
 
 }

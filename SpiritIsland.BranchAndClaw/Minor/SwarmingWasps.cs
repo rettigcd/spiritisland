@@ -1,21 +1,17 @@
-﻿using System.Threading.Tasks;
+﻿namespace SpiritIsland.BranchAndClaw;
 
-namespace SpiritIsland.BranchAndClaw {
+public class SwarmingWasps {
 
-	public class SwarmingWasps {
+	[MinorCard( "Swarming Wasps", 0, Element.Fire, Element.Air, Element.Animal )]
+	[Fast]
+	[FromPresence( 1, Target.NoBlight )]
+	static public Task ActAsync( TargetSpaceCtx ctx ) {
 
-		[MinorCard( "Swarming Wasps", 0, Element.Fire, Element.Air, Element.Animal )]
-		[Fast]
-		[FromPresence( 1, Target.NoBlight )]
-		static public Task ActAsync( TargetSpaceCtx ctx ) {
-
-			return ctx.SelectActionOption(
-				new SpaceAction( "Add 1 beast", ctx => ctx.Beasts.Add(1) ),
-				new SpaceAction( "Push up to 2 explorers", ctx => ctx.PushUpTo( 2, Invader.Explorer ) )
-					.Matches( x=>x.Beasts.Any )
-			);
-
-		}
+		return ctx.SelectActionOption(
+			new SpaceAction( "Add 1 beast", ctx => ctx.Beasts.Add(1) ),
+			new SpaceAction( "Push up to 2 explorers", ctx => ctx.PushUpTo( 2, Invader.Explorer ) )
+				.Matches( x=>x.Beasts.Any )
+		);
 
 	}
 

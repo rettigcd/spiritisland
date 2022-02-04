@@ -1,20 +1,15 @@
-﻿using System.Threading.Tasks;
+﻿namespace SpiritIsland;
 
-namespace SpiritIsland {
+public interface IIslandTokenApi {
 
-	public interface IIslandTokenApi {
+	Task Publish_Added( Space space, Token token, int countToAdd, AddReason reason );
 
-		Task Publish_Added( Space space, Token token, int countToAdd, AddReason reason );
+	Task Publish_Removed( Space space, Token token, int count, RemoveReason reason );
 
-		Task Publish_Removed( Space space, Token token, int count, RemoveReason reason );
+	Task Publish_Moved( Token token, Space source, Space destination );
 
-		Task Publish_Moved( Token token, Space source, Space destination );
+	int GetDynamicTokenFor( Space space, UniqueToken token );
 
-		int GetDynamicTokenFor( Space space, UniqueToken token );
-
-		TokenCountDictionary GetTokensFor( Space space );
-
-	}
-
+	TokenCountDictionary GetTokensFor( Space space );
 
 }

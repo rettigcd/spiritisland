@@ -1,8 +1,3 @@
-﻿using System;
+﻿namespace SpiritIsland;
 
-namespace SpiritIsland {
-
-	public class CardNotAvailableException : Exception {
-	}
-
-}
+public class CardNotAvailableException : Exception {}

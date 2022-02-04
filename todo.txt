@@ -19,17 +19,18 @@ Adjusting Hue for tokens:  RGB > YIQ > YIQ > RGB
 Run on Android
 Multiplayer Network Play
 
+== Features ==
+Event Alternative
+Downpour / Finder of Paths Unseen
+Adversary
+
 == UI improvement ==
 Flatten Growth
 Flatten Move
 Flatten - select land / Select Invader
 Interactive Card-Play selector w/ commit
 Event driven UI updates
-
-== Features ==
-Downpour / Finder of Paths Unseen
-Adversary
-Event Alternative
+Flatten out-of-phase action selection.
 
 == Bugs ==
 Badland Damage

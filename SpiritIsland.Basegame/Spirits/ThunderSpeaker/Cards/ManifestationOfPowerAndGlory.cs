@@ -1,20 +1,18 @@
-﻿using System.Threading.Tasks;
+﻿namespace SpiritIsland.Basegame;
 
-namespace SpiritIsland.Basegame {
+public class ManifestationOfPowerAndGlory {
 
-	class ManifestationOfPowerAndGlory {
+	[SpiritCard( "Manifestation of Power and Glory", 3, Element.Sun, Element.Fire, Element.Air )]
+	[Slow]
+	[FromPresence(0,Target.Dahan)]
+	static public Task Act( TargetSpaceCtx ctx ) {
 
-		[SpiritCard( "Manifestation of Power and Glory", 3, Element.Sun, Element.Fire, Element.Air )]
-		[Slow]
-		[FromPresence(0,Target.Dahan)]
-		static public Task Act( TargetSpaceCtx ctx ) {
+		// 1 fear
+		ctx.AddFear(1);
 
-			// 1 fear
-			ctx.AddFear(1);
+		// each dahan deals damange equal to the number of your presense in the target land
+		return ctx.DamageInvaders( ctx.Dahan.Count * ctx.PresenceCount );
 
-			// each dahan deals damange equal to the number of your presense in the target land
-			return ctx.DamageInvaders( ctx.Dahan.Count * ctx.PresenceCount );
-
-		}
 	}
+
 }

@@ -1,16 +1,14 @@
-﻿namespace SpiritIsland {
+﻿namespace SpiritIsland;
 
-	public partial class StrifedInvader : HealthToken {
+public partial class StrifedInvader : HealthToken {
 
-		static internal readonly StrifedInvaderGenerator Generator = new();
+	static internal readonly StrifedInvaderGenerator Generator = new();
 
-		public StrifedInvader(TokenClass generic, HealthToken[] seq,int health, int strifeCount)
-			:base( generic, seq, health, generic[health].Img ) {
-			StrifeCount = strifeCount;
-		}
-		public override string Summary => base.Summary + new string( '^', StrifeCount);
-		public int StrifeCount { get; }
-
+	public StrifedInvader(TokenClass generic, HealthToken[] seq,int health, int strifeCount)
+		:base( generic, seq, health, generic[health].Img ) {
+		StrifeCount = strifeCount;
 	}
+	public override string Summary => base.Summary + new string( '^', StrifeCount);
+	public int StrifeCount { get; }
 
 }

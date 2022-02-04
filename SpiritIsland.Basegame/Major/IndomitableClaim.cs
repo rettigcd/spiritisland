@@ -1,33 +1,30 @@
-﻿using System.Threading.Tasks;
+﻿namespace SpiritIsland.Basegame;
 
-namespace SpiritIsland.Basegame {
+public class IndomitableClaim {
 
-	public class IndomitableClaim {
+	public const string Name = "Indomitable Claim";
 
-		public const string Name = "Indomitable Claim";
+	[MajorCard( IndomitableClaim.Name, 4, Element.Sun, Element.Earth )]
+	[Fast]
+	[FromPresence( 1 )]
+	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
-		[MajorCard( IndomitableClaim.Name, 4, Element.Sun, Element.Earth )]
-		[Fast]
-		[FromPresence( 1 )]
-		static public async Task ActAsync( TargetSpaceCtx ctx ) {
+		// add 1 presence in target land even if you normally could not due to land type.
+		await ctx.PlacePresenceHere();
 
-			// add 1 presence in target land even if you normally could not due to land type.
-			await ctx.PlacePresenceHere();
+		// Defend 20
+		ctx.Defend(20);
 
-			// Defend 20
-			ctx.Defend(20);
+		// if you have 2 sun, 3 earth,
+		if(await ctx.YouHave("2 sun,3 earth" )) {
 
-			// if you have 2 sun, 3 earth,
-			if(await ctx.YouHave("2 sun,3 earth" )) {
+			// 3 fear if invaders are present,
+			if(ctx.HasInvaders)
+				ctx.AddFear(3);
 
-				// 3 fear if invaders are present,
-				if(ctx.HasInvaders)
-					ctx.AddFear(3);
-
-				// Invaders skip all actions in target land this turn.
-				ctx.SkipAllInvaderActions();
-			}
+			// Invaders skip all actions in target land this turn.
+			ctx.SkipAllInvaderActions();
 		}
-
 	}
+
 }

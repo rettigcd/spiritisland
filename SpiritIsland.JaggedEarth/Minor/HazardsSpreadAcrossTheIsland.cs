@@ -1,53 +1,47 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿namespace SpiritIsland.JaggedEarth;
 
-namespace SpiritIsland.JaggedEarth {
+public class HazardsSpreadAcrossTheIsland{ 
 
-	public class HazardsSpreadAcrossTheIsland{ 
+	[MinorCard("Hazards Spread Across the Island",0,Element.Fire,Element.Air,Element.Earth,Element.Plant),Fast,FromSacredSite(2)]
+	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
-		[MinorCard("Hazards Spread Across the Island",0,Element.Fire,Element.Air,Element.Earth,Element.Plant),Fast,FromSacredSite(2)]
-		static public async Task ActAsync( TargetSpaceCtx ctx ) {
+		// Choose a type of token from badlands / beast / disease / strife / wilds that exists in an adjacent land;
+		var candidates = FindHazardTokenInAdjacentLand( ctx );
+		if(candidates.Length == 0) return;
 
-			// Choose a type of token from badlands / beast / disease / strife / wilds that exists in an adjacent land;
-			var candidates = FindHazardTokenInAdjacentLand( ctx );
-			if(candidates.Length == 0) return;
+		var tokenChoice = (await ctx.Decision(new Select.TokenFromManySpaces("Select hazard to add to "+ctx.Space.Label, candidates, Present.Always))).Token;
 
-			var tokenChoice = (await ctx.Decision(new Select.TokenFromManySpaces("Select hazard to add to "+ctx.Space.Label, candidates, Present.Always))).Token;
+		// choosing disease costs 1 energy.
+		if( tokenChoice == TokenType.Disease )
+			ctx.Self.Energy--;
 
-			// choosing disease costs 1 energy.
-			if( tokenChoice == TokenType.Disease )
-				ctx.Self.Energy--;
-
-			// Add 1 of that type of token to target land.
-			if( 0 < tokenChoice.Strife() )
-				await ctx.AddStrife();
-			else
-				await ctx.Tokens.Add(tokenChoice,1);
-		}
-
-		static SpaceToken[] FindHazardTokenInAdjacentLand( TargetSpaceCtx ctx ) {
-			var tokenTypes = new TokenClass[] { TokenType.Badlands, TokenType.Beast, TokenType.Disease, TokenType.Wilds, Invader.Explorer, Invader.Town, Invader.City };
-			var candidates = ctx.Adjacent
-				.SelectMany( s =>
-					ctx.GameState.Tokens[s].Keys
-						.Where( IsTokenOfInterest )
-						.Select( token => new SpaceToken( s, token ) )
-				)
-				.GroupBy( s => s.Token )
-				.Select( grp => grp.First() )
-				.ToArray();
-			return ctx.Self.Energy == 0
-				? candidates.Where( st => st.Token != TokenType.Disease).ToArray()
-				: candidates;
-		}
-
-		static readonly TokenClass[] InterestedTokenTypes = new TokenClass[] { TokenType.Badlands, TokenType.Beast, TokenType.Disease, TokenType.Wilds };
-		static bool IsTokenOfInterest( Token token ) {
-			return InterestedTokenTypes.Contains( token.Class )
-				|| token.Strife()>0;
-		}
+		// Add 1 of that type of token to target land.
+		if( 0 < tokenChoice.Strife() )
+			await ctx.AddStrife();
+		else
+			await ctx.Tokens.Add(tokenChoice,1);
 	}
 
+	static SpaceToken[] FindHazardTokenInAdjacentLand( TargetSpaceCtx ctx ) {
+		var tokenTypes = new TokenClass[] { TokenType.Badlands, TokenType.Beast, TokenType.Disease, TokenType.Wilds, Invader.Explorer, Invader.Town, Invader.City };
+		var candidates = ctx.Adjacent
+			.SelectMany( s =>
+				ctx.GameState.Tokens[s].Keys
+					.Where( IsTokenOfInterest )
+					.Select( token => new SpaceToken( s, token ) )
+			)
+			.GroupBy( s => s.Token )
+			.Select( grp => grp.First() )
+			.ToArray();
+		return ctx.Self.Energy == 0
+			? candidates.Where( st => st.Token != TokenType.Disease).ToArray()
+			: candidates;
+	}
 
+	static readonly TokenClass[] InterestedTokenTypes = new TokenClass[] { TokenType.Badlands, TokenType.Beast, TokenType.Disease, TokenType.Wilds };
+	static bool IsTokenOfInterest( Token token ) {
+		return InterestedTokenTypes.Contains( token.Class )
+			|| token.Strife()>0;
+	}
 
 }

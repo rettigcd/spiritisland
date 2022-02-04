@@ -1,9 +1,5 @@
-﻿using System;
+﻿namespace SpiritIsland;
 
-namespace SpiritIsland {
-
-	public class InsufficientEnergyException : Exception {
-		public InsufficientEnergyException(){ }
-	}
-
+public class InsufficientEnergyException : Exception {
+	public InsufficientEnergyException(){ }
 }

@@ -1,17 +1,14 @@
-﻿namespace SpiritIsland.Basegame {
+﻿namespace SpiritIsland.Basegame;
 
-	public class DownwardSpiral : BlightCardBase {
+public class DownwardSpiral : BlightCardBase {
 
-		public DownwardSpiral():base("Downward Spiral",5) {}
+	public DownwardSpiral():base("Downward Spiral",5) {}
 
-		public override ActionOption<GameState> Immediately 
-			=> Cmd.AtTheStartOfEachInvaderPhase(
-				Cmd.EachSpirit(Cause.Blight, 
-					Cmd.DestroyPresence(ActionType.BlightedIsland) 
-				) 
-			);
-
-	}
-
+	public override ActionOption<GameState> Immediately 
+		=> Cmd.AtTheStartOfEachInvaderPhase(
+			Cmd.EachSpirit(Cause.Blight, 
+				Cmd.DestroyPresence(ActionType.BlightedIsland) 
+			) 
+		);
 
 }

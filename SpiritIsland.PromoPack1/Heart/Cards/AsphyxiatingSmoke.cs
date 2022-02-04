@@ -1,26 +1,21 @@
-﻿using System.Threading.Tasks;
+﻿namespace SpiritIsland.PromoPack1;
 
-namespace SpiritIsland.PromoPack1 {
+public class AsphyxiatingSmoke {
 
-	public class AsphyxiatingSmoke {
+	[SpiritCard("Asphyxiating Smoke",2,Element.Fire,Element.Air,Element.Plant)]
+	[Slow]
+	[FromSacredSite(2)] 
+	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
-		[SpiritCard("Asphyxiating Smoke",2,Element.Fire,Element.Air,Element.Plant)]
-		[Slow]
-		[FromSacredSite(2)] 
-		static public async Task ActAsync( TargetSpaceCtx ctx ) {
+		// 1 fear
+		ctx.AddFear(1);
 
-			// 1 fear
-			ctx.AddFear(1);
+		// destroy 1 town
+		await ctx.Invaders.Destroy(1,Invader.Town);
 
-			// destroy 1 town
-			await ctx.Invaders.Destroy(1,Invader.Town);
-
-			// push 1 dahan
-			await ctx.PushDahan(1);
-
-		}
+		// push 1 dahan
+		await ctx.PushDahan(1);
 
 	}
-
 
 }

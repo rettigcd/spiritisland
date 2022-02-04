@@ -1,140 +1,133 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿namespace SpiritIsland.JaggedEarth;
 
-namespace SpiritIsland.JaggedEarth {
+// Slow And Silent Death
 
-	// Slow And Silent Death
+public class ShroudOfSilentMist : Spirit {
 
-	public class ShroudOfSilentMist : Spirit {
+	public const string Name = "Shroud of Silent Mist";
 
-		public const string Name = "Shroud of Silent Mist";
+	public override string Text => Name;
 
-		public override string Text => Name;
+	static readonly SpecialRule GatherPowerFromTheCoolAndDark = new SpecialRule(
+		"Gather Power from the Cool and Dark",
+		"Once a turn, when you Gain a Power Card without fire, gain 1 Energy"
+	);
 
-		static readonly SpecialRule GatherPowerFromTheCoolAndDark = new SpecialRule(
-			"Gather Power from the Cool and Dark",
-			"Once a turn, when you Gain a Power Card without fire, gain 1 Energy"
+	public static Track MovePresence => new Track( "Moveonepresence.png" ){ 
+		Action=new MovePresence(1),
+		Icon = new IconDescriptor { BackgroundImg = Img.MovePresence }
+	};
+
+
+	public override SpecialRule[] SpecialRules => new SpecialRule[]{ 
+		GatherPowerFromTheCoolAndDark, 
+		MistsShiftAndFlow.Rule, 
+		SlowAndSilentDeathHealer.Rule,
+	};
+
+	public ShroudOfSilentMist():base(new SpiritPresence(
+			new PresenceTrack(1, Track.Energy0,Track.Energy1,Track.WaterEnergy,Track.Energy2,Track.AirEnergy),
+			new PresenceTrack(1, Track.Card1,Track.Card2,MovePresence,Track.MoonEnergy,Track.Card3,Track.Card4,Track.CardReclaim1,Track.Card5)
+		)
+		,PowerCard.For<FlowingAndSilentFormsDartBy>()
+		,PowerCard.For<UnnervingPall>()
+		,PowerCard.For<DissolvingVapors>()
+		,PowerCard.For<TheFogClosesIn>()
+	) {
+		this.Growth = new Growth(
+			new GrowthOption( new ReclaimAll(), new DrawPowerCard() ),
+			new GrowthOption( new PlacePresence(0), new PlacePresence(0) ),
+			new GrowthOption( new DrawPowerCard(), new PlacePresence(3,Target.MountainOrWetland) )
 		);
 
-		public static Track MovePresence => new Track( "Moveonepresence.png" ){ 
-			Action=new MovePresence(1),
-			Icon = new IconDescriptor { BackgroundImg = Img.MovePresence }
+
+		this.InnatePowers = new InnatePower[] {
+			InnatePower.For<SuffocatingShroud>(),
+			InnatePower.For<LostInTheSwirlingHaze>()
 		};
-
-
-		public override SpecialRule[] SpecialRules => new SpecialRule[]{ 
-			GatherPowerFromTheCoolAndDark, 
-			MistsShiftAndFlow.Rule, 
-			SlowAndSilentDeathHealer.Rule,
-		};
-
-		public ShroudOfSilentMist():base(new SpiritPresence(
-				new PresenceTrack(1, Track.Energy0,Track.Energy1,Track.WaterEnergy,Track.Energy2,Track.AirEnergy),
-				new PresenceTrack(1, Track.Card1,Track.Card2,MovePresence,Track.MoonEnergy,Track.Card3,Track.Card4,Track.CardReclaim1,Track.Card5)
-			)
-			,PowerCard.For<FlowingAndSilentFormsDartBy>()
-			,PowerCard.For<UnnervingPall>()
-			,PowerCard.For<DissolvingVapors>()
-			,PowerCard.For<TheFogClosesIn>()
-		) {
-			this.Growth = new Growth(
-				new GrowthOption( new ReclaimAll(), new DrawPowerCard() ),
-				new GrowthOption( new PlacePresence(0), new PlacePresence(0) ),
-				new GrowthOption( new DrawPowerCard(), new PlacePresence(3,Target.MountainOrWetland) )
-			);
-
-
-			this.InnatePowers = new InnatePower[] {
-				InnatePower.For<SuffocatingShroud>(),
-				InnatePower.For<LostInTheSwirlingHaze>()
-			};
-		}
-
-		bool gainedCoolEnergyThisTurn = false;
-
-		protected override void InitializeInternal( Board board, GameState gameState ) {
-
-			gameState.Healer = new SlowAndSilentDeathHealer(this);
-
-			// Place presence in:
-			// (a) Highest # mountains,
-			Presence.PlaceOn(board.Spaces.Where(s=>s.IsMountain).Last(), gameState);
-			// (b) highest # wetlands
-			Presence.PlaceOn(board.Spaces.Where(s=>s.IsWetland).Last(), gameState);
-
-			gameState.TimePasses_WholeGame += GameState_TimePasses_WholeGame;
-		}
-
-		void GameState_TimePasses_WholeGame( GameState gs ) {
-			gainedCoolEnergyThisTurn = false;
-
-			bool SpaceHasDamagedInvaders( Space s ) => gs.Tokens[s].Invaders()
-				.Any( i=>i.Health<i.FullHealth );
-
-			// During Time Passes:
-			int myLandsWithDamagedInvaders = Presence.Spaces.Count( SpaceHasDamagedInvaders );
-
-			// 1 fear (max 5) per land of yours with Damaged Invaders.
-			gs.Fear.AddDirect(new FearArgs { FromDestroyedInvaders = false, count = Math.Min(5,myLandsWithDamagedInvaders) } );
-
-			// Gain 1 Energy per 3 lands of yours with Damaged Invaders."
-			Energy += (myLandsWithDamagedInvaders / 3);
-		}
-
-		#region Draw Cards (Gather from the Cool And Dark)
-
-		public override async Task<DrawCardResult> Draw( GameState gameState ) {
-			var result = await base.Draw( gameState );
-			CheckForCoolEnergy( result.Selected );
-			return result;
-		}
-
-		public override async Task<DrawCardResult> DrawMajor( GameState gameState, bool forgetCard = true, int numberToDraw = 4, int numberToKeep=1 ) {
-			var result = await base.DrawMajor( gameState, forgetCard, numberToDraw, numberToKeep );
-			CheckForCoolEnergy( result.Selected );
-			return result;
-		}
-
-		public override async Task<DrawCardResult> DrawMinor( GameState gameState, int numberToDraw = 4, int numberToKeep = 1 ) {
-			var result = await base.DrawMinor( gameState, numberToDraw, numberToKeep );
-			CheckForCoolEnergy( result.Selected );
-			return result;
-		}
-		void CheckForCoolEnergy(PowerCard card ) {
-			if(gainedCoolEnergyThisTurn) return;
-			if(card.Elements[Element.Fire]>0) return;
-			Energy++;
-			gainedCoolEnergyThisTurn = true;
-		}
-
-		#endregion
-
-		public override Task<Space> TargetsSpace( TargettingFrom powerType, GameState gameState, string prompt, TargetSourceCriteria sourceCriteria, params TargetCriteria[] targetCriteria) {
-			return new MistsShiftAndFlow(this,gameState,prompt,sourceCriteria,targetCriteria,powerType)
-				.TargetAndFlow();
-		}
-
 	}
 
-	class SlowAndSilentDeathHealer : Healer {
+	bool gainedCoolEnergyThisTurn = false;
 
-		readonly ShroudOfSilentMist spirit;
+	protected override void InitializeInternal( Board board, GameState gameState ) {
 
-		public SlowAndSilentDeathHealer(ShroudOfSilentMist spirit ) { this.spirit = spirit; }
+		gameState.Healer = new SlowAndSilentDeathHealer(this);
 
-		public static readonly SpecialRule Rule = new SpecialRule(
-			"Slow and Silent Death",
-			"Invaders and dahan in your lands don't heal Damage.  During Time PAsses: 1 fear (max 5) per land of yours with Damaged Invaders.  Gain 1 Energy per 3 lands of yours with Damaged Invaders."
-		);
+		// Place presence in:
+		// (a) Highest # mountains,
+		Presence.PlaceOn(board.Spaces.Where(s=>s.IsMountain).Last(), gameState);
+		// (b) highest # wetlands
+		Presence.PlaceOn(board.Spaces.Where(s=>s.IsWetland).Last(), gameState);
 
-		public override void Heal( GameState gs ) {
-			// Invaders and dahan in your lands don't heal Damage.
-			skipHealSpaces.AddRange( spirit.Presence.Spaces );
-			base.Heal( gs );
-		}
+		gameState.TimePasses_WholeGame += GameState_TimePasses_WholeGame;
+	}
 
+	void GameState_TimePasses_WholeGame( GameState gs ) {
+		gainedCoolEnergyThisTurn = false;
+
+		bool SpaceHasDamagedInvaders( Space s ) => gs.Tokens[s].Invaders()
+			.Any( i=>i.Health<i.FullHealth );
+
+		// During Time Passes:
+		int myLandsWithDamagedInvaders = Presence.Spaces.Count( SpaceHasDamagedInvaders );
+
+		// 1 fear (max 5) per land of yours with Damaged Invaders.
+		gs.Fear.AddDirect(new FearArgs { FromDestroyedInvaders = false, count = Math.Min(5,myLandsWithDamagedInvaders) } );
+
+		// Gain 1 Energy per 3 lands of yours with Damaged Invaders."
+		Energy += (myLandsWithDamagedInvaders / 3);
+	}
+
+	#region Draw Cards (Gather from the Cool And Dark)
+
+	public override async Task<DrawCardResult> Draw( GameState gameState ) {
+		var result = await base.Draw( gameState );
+		CheckForCoolEnergy( result.Selected );
+		return result;
+	}
+
+	public override async Task<DrawCardResult> DrawMajor( GameState gameState, bool forgetCard = true, int numberToDraw = 4, int numberToKeep=1 ) {
+		var result = await base.DrawMajor( gameState, forgetCard, numberToDraw, numberToKeep );
+		CheckForCoolEnergy( result.Selected );
+		return result;
+	}
+
+	public override async Task<DrawCardResult> DrawMinor( GameState gameState, int numberToDraw = 4, int numberToKeep = 1 ) {
+		var result = await base.DrawMinor( gameState, numberToDraw, numberToKeep );
+		CheckForCoolEnergy( result.Selected );
+		return result;
+	}
+	void CheckForCoolEnergy(PowerCard card ) {
+		if(gainedCoolEnergyThisTurn) return;
+		if(card.Elements[Element.Fire]>0) return;
+		Energy++;
+		gainedCoolEnergyThisTurn = true;
+	}
+
+	#endregion
+
+	public override Task<Space> TargetsSpace( TargettingFrom powerType, GameState gameState, string prompt, TargetSourceCriteria sourceCriteria, params TargetCriteria[] targetCriteria) {
+		return new MistsShiftAndFlow(this,gameState,prompt,sourceCriteria,targetCriteria,powerType)
+			.TargetAndFlow();
+	}
+
+}
+
+class SlowAndSilentDeathHealer : Healer {
+
+	readonly ShroudOfSilentMist spirit;
+
+	public SlowAndSilentDeathHealer(ShroudOfSilentMist spirit ) { this.spirit = spirit; }
+
+	public static readonly SpecialRule Rule = new SpecialRule(
+		"Slow and Silent Death",
+		"Invaders and dahan in your lands don't heal Damage.  During Time PAsses: 1 fear (max 5) per land of yours with Damaged Invaders.  Gain 1 Energy per 3 lands of yours with Damaged Invaders."
+	);
+
+	public override void Heal( GameState gs ) {
+		// Invaders and dahan in your lands don't heal Damage.
+		skipHealSpaces.AddRange( spirit.Presence.Spaces );
+		base.Heal( gs );
 	}
 
 }

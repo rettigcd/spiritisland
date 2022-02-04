@@ -1,43 +1,39 @@
-﻿using System.Threading.Tasks;
+﻿namespace SpiritIsland.BranchAndClaw;
 
-namespace SpiritIsland.BranchAndClaw {
-
-	class Panic : IFearOptions {
-		public const string Name = "Panic";
-		string IFearOptions.Name => Name;
+public class Panic : IFearOptions {
+	public const string Name = "Panic";
+	string IFearOptions.Name => Name;
 
 
-		[FearLevel( 1, "Each player adds 1 strife in a land with beast/disease/dahan." )]
-		public async Task Level1( FearCtx ctx ) {
+	[FearLevel( 1, "Each player adds 1 strife in a land with beast/disease/dahan." )]
+	public async Task Level1( FearCtx ctx ) {
 
-			// Each player adds 1 strife in a land with beast/disease/dahan.
-			foreach(SelfCtx spirit in ctx.Spirits)
-				await spirit.AddStrifeToOne( ctx.LandsWithBeastDiseaseDahan() );
+		// Each player adds 1 strife in a land with beast/disease/dahan.
+		foreach(SelfCtx spirit in ctx.Spirits)
+			await spirit.AddStrifeToOne( ctx.LandsWithBeastDiseaseDahan() );
 
-		}
+	}
 
-		[FearLevel( 2, "Each player adds 1 strife in a land with beast/disease/dahan.  For the rest of this turn, invaders have -1 health per strife to a minimum of 1" )]
-		public async Task Level2( FearCtx ctx ) {
+	[FearLevel( 2, "Each player adds 1 strife in a land with beast/disease/dahan.  For the rest of this turn, invaders have -1 health per strife to a minimum of 1" )]
+	public async Task Level2( FearCtx ctx ) {
 
-			// Each player adds 1 strife in a land with beast/disease/dahan.
-			foreach(SelfCtx spirit in ctx.Spirits)
-				await spirit.AddStrifeToOne( ctx.LandsWithBeastDiseaseDahan() );
+		// Each player adds 1 strife in a land with beast/disease/dahan.
+		foreach(SelfCtx spirit in ctx.Spirits)
+			await spirit.AddStrifeToOne( ctx.LandsWithBeastDiseaseDahan() );
 
-			// For the rest of this turn, invaders have -1 health per strife to a minimum of 1
-			StrifedRavage.StrifedInvadersLoseHealthPerStrife( ctx );
-		}
+		// For the rest of this turn, invaders have -1 health per strife to a minimum of 1
+		StrifedRavage.StrifedInvadersLoseHealthPerStrife( ctx );
+	}
 
-		[FearLevel( 3, "Each player adds 1 strife to an invader.  For the rest of this turn, invaders have -1 health per strife to a minimum of 1." )]
-		public async Task Level3( FearCtx ctx ) {
+	[FearLevel( 3, "Each player adds 1 strife to an invader.  For the rest of this turn, invaders have -1 health per strife to a minimum of 1." )]
+	public async Task Level3( FearCtx ctx ) {
 
-			// Each player adds 1 strife to an invader.
-			foreach(SelfCtx spirit in ctx.Spirits)
-				await spirit.AddStrifeToOne( ctx.GameState.Island.AllSpaces );
+		// Each player adds 1 strife to an invader.
+		foreach(SelfCtx spirit in ctx.Spirits)
+			await spirit.AddStrifeToOne( ctx.GameState.Island.AllSpaces );
 
-			// For the rest of this turn, invaders have -1 health per strife to a minimum of 1.
-			StrifedRavage.StrifedInvadersLoseHealthPerStrife( ctx );
-		}
-
+		// For the rest of this turn, invaders have -1 health per strife to a minimum of 1.
+		StrifedRavage.StrifedInvadersLoseHealthPerStrife( ctx );
 	}
 
 }

@@ -1,10 +1,8 @@
-﻿
-namespace SpiritIsland {
-	public enum TokenCategory {
-		None,
-		Invader,
-		Dahan,
-		Presence
-	};
+﻿namespace SpiritIsland;
 
+public enum TokenCategory {
+	None,
+	Invader,
+	Dahan,
+	Presence
 }

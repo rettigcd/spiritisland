@@ -1,12 +1,9 @@
-﻿using System.Collections.Generic;
+﻿namespace SpiritIsland.Select;
 
-namespace SpiritIsland.Select {
+public class Spirit : TypedDecision<SpiritIsland.Spirit> {
 
-	public class Spirit : TypedDecision<SpiritIsland.Spirit> {
-
-		public Spirit( string powerName, IEnumerable<SpiritIsland.Spirit> spirits, Present present = Present.Always )
-			: base( powerName+": Target Spirit", spirits, present ) {
-		}
-
+	public Spirit( string powerName, IEnumerable<SpiritIsland.Spirit> spirits, Present present = Present.Always )
+		: base( powerName+": Target Spirit", spirits, present ) {
 	}
+
 }

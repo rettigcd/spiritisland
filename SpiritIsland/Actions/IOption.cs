@@ -1,7 +1,6 @@
-﻿namespace SpiritIsland {
+﻿namespace SpiritIsland;
 
-	public interface IOption{
-		string Text { get; }
-	}
-
+public interface IOption{
+	string Text { get; }
 }
+

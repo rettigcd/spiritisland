@@ -1,18 +1,15 @@
-﻿using System.Threading.Tasks;
+﻿namespace SpiritIsland.Basegame;
 
-namespace SpiritIsland.Basegame {
+public class RouseTheTreesAndStones {
 
-	class RouseTheTreesAndStones {
-
-		[MinorCard("Rouse the Trees and Stones",1,Element.Fire,Element.Earth,Element.Plant)]
-		[Slow]
-		[FromSacredSite(1,Target.NoBlight)]
-		static public async Task ActAsync(TargetSpaceCtx ctx){
-			// 2 damage
-			await ctx.DamageInvaders(2);
-			// push 1 explorer
-			await ctx.Push(1,Invader.Explorer);
-		}
-
+	[MinorCard("Rouse the Trees and Stones",1,Element.Fire,Element.Earth,Element.Plant)]
+	[Slow]
+	[FromSacredSite(1,Target.NoBlight)]
+	static public async Task ActAsync(TargetSpaceCtx ctx){
+		// 2 damage
+		await ctx.DamageInvaders(2);
+		// push 1 explorer
+		await ctx.Push(1,Invader.Explorer);
 	}
+
 }

@@ -1,4 +1,3 @@
-﻿namespace SpiritIsland {
-	public interface IMemento<T> {}
+﻿namespace SpiritIsland;
 
-}
+public interface IMemento<T> {}

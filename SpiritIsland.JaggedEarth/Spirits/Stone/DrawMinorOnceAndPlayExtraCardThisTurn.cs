@@ -1,22 +1,18 @@
-﻿using System.Threading.Tasks;
+﻿namespace SpiritIsland.JaggedEarth;
 
-namespace SpiritIsland.JaggedEarth {
+public class DrawMinorOnceAndPlayExtraCardThisTurn : GrowthActionFactory, ITrackActionFactory {
 
-	public class DrawMinorOnceAndPlayExtraCardThisTurn : GrowthActionFactory, ITrackActionFactory {
+	bool drewMinor = false;
 
-		bool drewMinor = false;
+	public bool RunAfterGrowthResult => false; // no growth dependencies
 
-		public bool RunAfterGrowthResult => false; // no growth dependencies
+	public override async Task ActivateAsync( SelfCtx ctx ) {
 
-		public override async Task ActivateAsync( SelfCtx ctx ) {
+		if(!drewMinor)
+			await ctx.DrawMinor();
+		drewMinor = true;
 
-			if(!drewMinor)
-				await ctx.DrawMinor();
-			drewMinor = true;
-
-			ctx.Self.tempCardPlayBoost++;
-		}
-
+		ctx.Self.tempCardPlayBoost++;
 	}
 
 }
