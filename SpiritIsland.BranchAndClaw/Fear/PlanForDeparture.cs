@@ -23,7 +23,7 @@ namespace SpiritIsland.BranchAndClaw {
 			// Each player may gather 1 explroer / town into a costal land.
 			var coastal = ctx.GameState.Island.AllSpaces.Where( x => x.IsCoastal ).ToArray();
 			foreach(var spiritCtx in ctx.Spirits)
-				await spiritCtx.GatherExplorerToOne( coastal, 1, Invader.Town );
+				await spiritCtx.GatherExplorerToOne( coastal, 1, Invader.Town, Invader.Explorer );
 
 			// Defend 2 in all costal lands.
 			foreach(var land in coastal)
