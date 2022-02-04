@@ -10,9 +10,11 @@ namespace SpiritIsland.Basegame {
 		[AnySpirit]
 		static public Task ActAsync( TargetSpiritCtx ctx ) {
 
-			// Taret spirit may use up to 2 slow powers as if they were fast powers this turn.
-			return new SpeedChanger( ctx.OtherCtx, Phase.Fast, 2 ).FindAndChange();
+			// Target spirit may use up to 2 slow powers as if they were fast powers this turn.
+			ctx.Other.AddActionFactory( new ResolveSlowDuringFast() );
+			ctx.Other.AddActionFactory( new ResolveSlowDuringFast() );
 
+			return Task.CompletedTask;
 		}
 
 	}

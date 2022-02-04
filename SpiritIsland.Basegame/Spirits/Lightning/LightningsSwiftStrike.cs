@@ -93,7 +93,7 @@ Raging Storm => 3 => slow, range 1, any => fire, air, water => 1 damange to each
 				&& Elements[Element.Air] > usedAirForFastCount;
 
 			foreach(var h in AvailableActions)
-				if(IsActiveDuring( speed, h ) || canMakeSlowFast && IsActiveDuring( Phase.Slow, h ) )
+				if( IsActiveDuring( speed, h ) || canMakeSlowFast && IsActiveDuring( Phase.Slow, h ) )
 					yield return h;
 
 		}

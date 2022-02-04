@@ -12,8 +12,8 @@ namespace SpiritIsland.BranchAndClaw {
 		[AnySpirit]
 		static public Task ActAsync( TargetSpiritCtx ctx ) {
 
-			// this turn, target spirit may use 1 slow power as if it wer fast or vice versa
-			ctx.Other.AddActionFactory( new MakeActionFast() );
+			// this turn, target spirit may use 1 slow power as if it were fast or vice versa
+			ctx.Other.AddActionFactory( new ResolveSlowDuringFast_OrViseVersa() );
 
 			// Target Spirit gains +3 range for targeting costal lands only
 			ctx.GameState.TimePasses_ThisRound.Push( new PowerApiRestorer( ctx.Other ).Restore );

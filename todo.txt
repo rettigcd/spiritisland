@@ -1,5 +1,7 @@
 ﻿----- Spirit Island ----
 
+Some Commands need a title like the Power Card Name, other's need detailed description of what they do.
+
 Add Not-using-Events Option. Command Beasts twice
 Remove the bool-hold-back-build-card property by using an end-of-round action to roll it back.
 Display back of explorer card.
