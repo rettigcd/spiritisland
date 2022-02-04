@@ -47,7 +47,5 @@ namespace SpiritIsland.JaggedEarth {
 		}
 
 	}
-
-	// !!! Do Fear calculation last, once all explorers are destroyed.
-
+	
 }

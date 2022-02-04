@@ -127,10 +127,10 @@ namespace SpiritIsland {
 
 		public async Task Destroy( Space space, GameState gs, ActionType actionType ) {
 			await DestroyBehavior.DestroyPresenceApi(this,space,gs, actionType);
-			CheckIfSpiritIsDestroyted();
+			CheckIfSpiritIsDestroyed();
 		}
 
-		void CheckIfSpiritIsDestroyted() {
+		void CheckIfSpiritIsDestroyed() {
 			if(Placed.Count == 0 && stasis.Count == 0 )
 				GameOverException.Lost( "Spirit is Destroyed" ); // !! if we had access to the Spirit here, we could say who it was.
 		}
@@ -152,7 +152,7 @@ namespace SpiritIsland {
 
 		public async Task RemoveFrom( Space space, GameState gs ) {
 			await RemoveFrom_NoCheck( space, gs );
-			CheckIfSpiritIsDestroyted();
+			CheckIfSpiritIsDestroyed();
 		}
 
 		public void PutInStasis( Space space, GameState gs ) {

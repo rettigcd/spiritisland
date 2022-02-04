@@ -46,7 +46,6 @@ namespace SpiritIsland.JaggedEarth {
 					var tokenToGather = tokenCounts.OfType( tokenGroup ).OrderByDescending( x => x.Health ).FirstOrDefault();
 					if(tokenToGather != null)
 						await ctx.GameState.Tokens[adj].MoveTo( tokenToGather, ctx.Space ); 
-						// !!! create MoveFrom() method and simplify this.
 				}
 				// move presense
 				var spiritsInSpace = ctx.GameState.Spirits.Where( s => s.Presence.IsOn( adj ) ).ToArray();

@@ -13,7 +13,7 @@ namespace SpiritIsland.JaggedEarth {
 				await ctx.Self.Presence.TakeFrom( presenceToRemove, ctx.GameState ); // !!! trigger Win/Loss check???
 			} else {
 				var presenceToRemove = await ctx.Decision( Select.DeployedPresence.All("Select presence to remove from game.", ctx.Self, Present.Always));
-				await ctx.Presence.RemoveFrom( presenceToRemove); // !!! trigger Win/Loss check???
+				await ctx.Presence.RemoveFrom( presenceToRemove );
 			}
 
 			// From now on: Each dahan withing range of 1 of your presence provides

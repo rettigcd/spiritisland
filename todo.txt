@@ -13,6 +13,50 @@ Fear Card - convert to Commands
 Create TargetSpaceCtx filter type.
 
 Adjusting Hue for tokens:  RGB > YIQ > YIQ > RGB
+===============================
+
+== Architecture ==
+Run on Android
+Multiplayer Network Play
+
+== UI improvement ==
+Flatten Growth
+Flatten Move
+Flatten - select land / Select Invader
+Interactive Card-Play selector w/ commit
+Event driven UI updates
+
+== Features ==
+Downpour / Finder of Paths Unseen
+Adversary
+Event Alternative
+
+== Bugs ==
+Badland Damage
+Blight
+
+== Missing ==
+Destroy Board
+Add new board.
+Unlock the Games - triggers all element thresholds
+All things weeken - blight action
+Thriving Community - upgrading strifed invader should remain strifed.
+Revamp Skips - only skip actions that happen, select which skip to use, don't need to select skip until it happens.
+Settle into Hunting Grounds - presence can't move.
+Absolute Statis - hides towns/cities from win/loss check
+Display Back side of Invader card
+
+== Verify ==
+Starlights Track has +1 energies
+Vengeance - WreakVengeance for the Lands Corruption
+VolcanoLoomingHigh doesn't allow presence ouside of mountain
+
+== Idea ==
+Defer using reflection for Power Cards as long as possible.
+Defer using reflection for Fear / Blight Cards unless used in the game play.
+
+
+
 
 =====  Simple - Implement  ====
 

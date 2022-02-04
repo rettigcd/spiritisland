@@ -34,7 +34,7 @@ namespace SpiritIsland.BranchAndClaw {
 				ctx => {
 					ctx.Self.PlayCard(card, 0); 
 					ctx.GameState.TimePasses_ThisRound.Push( (gs)=> { 
-						ctx.Self.Forget( card ); return Task.CompletedTask; // !!! this runs after the cards are moved to discard, so it is forgotten for Shifting Memories
+						ctx.Self.Forget( card ); return Task.CompletedTask; // this must run befire cards are moved to discard, or it will be forgotten for Shifting Memories
 					});
 				}
 			);

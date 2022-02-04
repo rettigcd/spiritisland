@@ -12,7 +12,6 @@ namespace SpiritIsland.JaggedEarth {
 			);
 		}
 
-		// !!! test this, I don't think it is working.  Twice it seemed to do nothing.
 		static Task EachDahanDamagesTownOrCity(TargetSpaceCtx ctx ) => ctx.DamageInvaders(ctx.Dahan.Count,Invader.Town,Invader.City);
 
 		static Task OneFearAndGatherUpTo2Dahan(TargetSpaceCtx ctx ) {

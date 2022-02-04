@@ -4,12 +4,9 @@ using System.Linq;
 namespace SpiritIsland.JaggedEarth {
 
 	public class GameComponentProvider : IGameComponentProvider {
-		// !!! Maybe Major and Minor cards should not be instantiated until they are drawn from the deck (speed up game startup time and reduce memory usage).
-		// !! Maybe these should just be types.  Until they are actually selected into the game
 		// Not using reflection because types inside this assembly are static
 		// AND
 		// It make start-up scanning slow
-
 
 		public Type[] Spirits => new Type[] {
 			typeof(FracturedDaysSplitTheSky),

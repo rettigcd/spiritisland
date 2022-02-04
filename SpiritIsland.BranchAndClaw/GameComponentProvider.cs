@@ -7,8 +7,6 @@ namespace SpiritIsland.BranchAndClaw {
 		// Not using reflection because types inside this assembly are static
 		// AND
 		// It make start-up scanning slow
-		// !!! Maybe Major and Minor cards should not be instantiated until they are drawn from the deck (speed up game startup time and reduce memory usage).
-		// !! Maybe fear should just be types.  Until they are actually selected into the game
 
 		public Type[] Spirits => new Type[] {
 			typeof(Keeper),

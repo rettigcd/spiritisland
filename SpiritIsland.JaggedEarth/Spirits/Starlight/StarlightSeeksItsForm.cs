@@ -5,8 +5,6 @@ namespace SpiritIsland.JaggedEarth {
 
 	// UI - draw more than 2 innates 
 
-	// !!! BUG with forgetting card, leaving <null> in Hand.
-
 	public class StarlightSeeksItsForm : Spirit {
 
 		#region Presence Track Slot Generators
@@ -178,7 +176,7 @@ namespace SpiritIsland.JaggedEarth {
 		public static async Task AssignNewElementToTrack( SelfCtx ctx, Track track ) {
 			var el = await ctx.Self.SelectElementEx( "Select permanent element for this slot.", ElementList.AllElements );
 			track.Elements = new Element[] { el };
-			ctx.Self.Elements[el]++; // !!! this needs unit tests to ensure that they get 1 element (not 0, not more)
+			ctx.Self.Elements[el]++;
 			track.Icon.ContentImg = el.GetTokenImg();
 		}
 	}

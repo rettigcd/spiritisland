@@ -25,7 +25,7 @@ namespace SpiritIsland.JaggedEarth {
 			await base.RemoveFrom_NoCheck( space, gs );
 			// if destroyed sacred site, remove virtual beast
 			if( CountOn( space ) == 1 )
-				gs.Tokens[space].Adjust(TokenType.Beast, 1); // !!! virtual tokens generate don't trigger events
+				gs.Tokens[space].Adjust(TokenType.Beast, 1); // !!! virtual tokens don't trigger events
 		}
 
 		async Task TokenMoved( TokenMovedArgs args ) {

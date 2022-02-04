@@ -13,7 +13,7 @@ namespace SpiritIsland.JaggedEarth {
 			this.UpTo = int.MaxValue;
 		}
 
-		public override IDrawableInnateOption[] Thresholds => System.Array.Empty<IDrawableInnateOption>(); // !!!
+		public override IDrawableInnateOption[] Thresholds => System.Array.Empty<IDrawableInnateOption>();
 
 		public override IPowerRepeater GetRepeater() => new Repeater(UpTo);
 

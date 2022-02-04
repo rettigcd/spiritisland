@@ -2,7 +2,9 @@
 using System.Threading.Tasks;
 
 namespace SpiritIsland.JaggedEarth {
+
 	public class HazardsSpreadAcrossTheIsland{ 
+
 		[MinorCard("Hazards Spread Across the Island",0,Element.Fire,Element.Air,Element.Earth,Element.Plant),Fast,FromSacredSite(2)]
 		static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
@@ -20,7 +22,7 @@ namespace SpiritIsland.JaggedEarth {
 			if( 0 < tokenChoice.Strife() )
 				await ctx.AddStrife();
 			else
-				ctx.Tokens.Adjust(tokenChoice,1); // !!! ?? does this trigger an AddToken event?
+				await ctx.Tokens.Add(tokenChoice,1);
 		}
 
 		static SpaceToken[] FindHazardTokenInAdjacentLand( TargetSpaceCtx ctx ) {

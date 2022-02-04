@@ -16,7 +16,6 @@ namespace SpiritIsland.Basegame {
 			SteadyRegeneration
 		};
 
-		// !!! Implement Steady Regeneration special rule
 		static SpecialRule SteadyRegeneration => new SpecialRule(
 			"Steady Regeneration",
 			"When adding Presence to the board via Growth, you may optionally use your destroyed Presence. If the island is Healthy, do so freely. If the island is Blighted, doing so costs 1 Energy per destroyed Presence you add."

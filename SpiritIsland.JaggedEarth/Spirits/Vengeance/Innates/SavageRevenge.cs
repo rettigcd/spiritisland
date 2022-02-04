@@ -6,8 +6,6 @@ namespace SpiritIsland.JaggedEarth {
 	[ExtendableRange( From.Presence, 0, Target.TownOrCity, "3 air", 1 )]
 	public class SavageRevenge {
 
-		// !!! do we need a display-only option to show the extended range???
-
 		[InnateOption("3 fire,1 animal","1 Damage")]
 		static public Task Option1(TargetSpaceCtx ctx ) {
 			return ctx.DamageInvaders(1);
