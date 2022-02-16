@@ -26,7 +26,7 @@ class ThePastReturnsAgain {
 		// You can't swap cards that don't exist.
 		if(options.Length == 0) return;
 
-		var oldCard = await ctx.Decision(new Select.TypedDecision<InvaderCard>(
+		var oldCard = await ctx.Decision(new Select.TypedDecision<IInvaderCard>(
 			"Select card to return to top of Invader deck", options, Present.Always
 		));
 

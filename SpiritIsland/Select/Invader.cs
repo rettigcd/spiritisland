@@ -17,8 +17,8 @@ public static class Invader {
 	public static TokenFrom1Space ForIndividualDamage(int damagePerInvader, SpiritIsland.Space space, IEnumerable<Token> invaders)
 		=> new TokenFrom1Space( $"Select invader to apply {damagePerInvader} damage", space, invaders.Distinct(), Present.Done );
 
-	public static TokenFrom1Space ForAggregateDamage( SpiritIsland.Space space, Token[] invaderTokens, int aggregateDamage ) 
-		=> new TokenFrom1Space($"Damage ({aggregateDamage} remaining)",space,invaderTokens,Present.Always );
+	public static TokenFrom1Space ForAggregateDamage( SpiritIsland.Space space, Token[] invaderTokens, int aggregateDamage, Present present) 
+		=> new TokenFrom1Space($"Damage ({aggregateDamage} remaining)",space,invaderTokens, present );
 
 	public static TokenFrom1Space ForBadlandDamage(int remainingDamage, SpiritIsland.Space space, IEnumerable<Token> invaders)
 		=> new TokenFrom1Space( $"Select invader to apply badland damage ({remainingDamage} remaining)", space, invaders, Present.Done );

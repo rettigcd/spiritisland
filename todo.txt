@@ -1,5 +1,11 @@
 ﻿----- Spirit Island ----
 
+Verify that Wilds are being removed for an explore that doesn't happen
+
+Command-Beast
+	show graphig (so it doesn't get lost in text)
+	test - doesn't seem to be doing anything.
+
 Some Commands need a title like the Power Card Name, other's need detailed description of what they do.
 
 Add Not-using-Events Option. Command Beasts twice

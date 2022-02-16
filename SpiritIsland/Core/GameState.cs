@@ -26,7 +26,9 @@ public class GameState {
 		TimePasses_WholeGame += PreExplore.ForRound.Clear;
 	}
 
-
+	/// <summary>
+	/// Called AFTER everything has been configured. and BEFORE players make first move.
+	/// </summary>
 	public void Initialize() {
 
 		// ! this has to go first since ManyMinds requires the beast to be in place

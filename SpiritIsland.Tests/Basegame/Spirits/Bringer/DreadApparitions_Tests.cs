@@ -91,7 +91,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 
 			// When: dahan destroy the city
 //			await ctx.GameState.InvaderEngine.RavageCard(  );
-			await InvaderEngine1.RavageCard( new InvaderCard( ctx.Space ), ctx.GameState );
+			await InvaderEngine1.RavageCard( InvaderCardEx.For( ctx.Space ), ctx.GameState );
 
 			// Then: 2 fear from city
 			Assert_GeneratedFear(2); // normal

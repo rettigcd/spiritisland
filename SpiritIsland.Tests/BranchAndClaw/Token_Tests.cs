@@ -22,7 +22,7 @@ namespace SpiritIsland.Tests.BranchAndClaw {
 			tokens.Wilds.Init(1);
 
 			//  When: we explore there
-			_ = new InvaderCard( noInvaderSpace ).Explore( gs );
+			_ = InvaderCardEx.For( noInvaderSpace ).Explore( gs );
 
 			//  Then: still no invaders
 			gs.Tokens[noInvaderSpace].HasInvaders().ShouldBeFalse("there should be no explorers in "+noInvaderSpace.Label);
@@ -42,7 +42,7 @@ namespace SpiritIsland.Tests.BranchAndClaw {
 			await gs.Tokens[space].Disease.Add(1);
 
 			//  When: we build there
-			await new InvaderCard( space ).Build( gs );
+			await InvaderCardEx.For( space ).Build( gs );
 
 			//  Then: still no towns (just original explorer)
 			gs.Assert_Invaders(space, "1E@1" ); // "should be no town on "+space.Label

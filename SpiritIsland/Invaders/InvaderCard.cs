@@ -1,62 +1,65 @@
 ﻿namespace SpiritIsland;
 
-public class InvaderCard : IOption {
+public class InvaderCard : IOption, IInvaderCard {
 
-	public static readonly InvaderCard Costal = new InvaderCard( s => s.IsCoastal, "Costal" );
-		
+	public static IInvaderCard Stage1( Terrain t1 ) => new InvaderCard( t1, false );
+	public static IInvaderCard Stage2( Terrain t1 ) => new InvaderCard( t1, true );
+	public static IInvaderCard Stage2Costal() => new CostalInvaderCard();
+	public static IInvaderCard Stage3(Terrain t1,Terrain t2) => new Stage3InvaderCard(t1, t2);
+
+	class CostalInvaderCard : InvaderCard {
+		public CostalInvaderCard() : base( "Costal", 2, false ) { }
+		public override bool Matches( Space space ) => space.IsCoastal;
+	}
+
+	class Stage3InvaderCard : InvaderCard {
+		readonly Terrain t2;
+		public Stage3InvaderCard( Terrain t1, Terrain t2 )
+			: base( t1.ToString()[..1] + "+" + t2.ToString()[..1], 3, false ) {
+			this.t1 = t1;
+			this.t2 = t2;
+		}
+		public override bool Matches( Space space ) => space.IsOneOf( t1, t2 );
+	}
+
 	public int InvaderStage { get; }
+
 	public string Text { get; }
+
 	public bool Escalation { get; }
-	public Func<Space,bool> Matches { get; }
+
+	public virtual bool Matches( Space space ) => space.Is( t1 );
+	protected Terrain t1;
 
 	#region Constructors
 
 	/// <summary>
 	/// Stage 1 or 2 constructor
 	/// </summary>
-	public InvaderCard(Terrain terrain, bool escalation=false){
-		if(terrain==Terrain.Ocean) throw new ArgumentException("Can't invade oceans");
+	public InvaderCard( Terrain terrain, bool escalation = false ) {
+		if(terrain == Terrain.Ocean) throw new ArgumentException( "Can't invade oceans" );
 		InvaderStage = escalation ? 2 : 1;
-		Matches = (s) => s.Is( terrain );
+		this.t1 = terrain;
 		Text = escalation
-			? "2" +terrain.ToString()[..1].ToLower() 
+			? "2" + terrain.ToString()[..1].ToLower()
 			: terrain.ToString()[..1];
 		Escalation = escalation;
 	}
 
-	public InvaderCard(Space space){
-		var terrain = new[] { Terrain.Wetland, Terrain.Sand, Terrain.Jungle, Terrain.Mountain }.First( space.Is );
-		if(terrain==Terrain.Ocean) throw new ArgumentException("Can't invade oceans");
-		InvaderStage = 1;
-		Matches = (s) => s.Is( terrain );
-		Text = terrain.ToString()[..1];
-		Escalation = false;
-	}
-
-	InvaderCard( Func<Space, bool> matches, string text ) { // Costal
-		InvaderStage = 2;
-		Matches = matches;
+	protected InvaderCard( string text, int invaderStage, bool escalation ) {
 		Text = text;
-		Escalation = false;
-	}
-
-
-	public InvaderCard(Terrain t1, Terrain t2){
-		Matches = (s) => s.IsOneOf( t1, t2 );
-		Text = t1.ToString()[..1] + "+" + t2.ToString()[..1];
-		InvaderStage = 3;
+		InvaderStage = invaderStage;
+		Escalation = escalation;
 	}
 
 	#endregion
-
-	#region Ravage
 
 	public async Task Ravage( GameState gs ) {
 		gs.Log( new InvaderActionEntry( "Ravaging:" + Text ) );
 		var ravageSpaces = gs.Island.AllSpaces.Where( Matches ).ToList();
 
 		// Modify / Adjust
-		await gs.PreRavaging?.InvokeAsync( new RavagingEventArgs(gs){ Spaces = ravageSpaces } );
+		await gs.PreRavaging?.InvokeAsync( new RavagingEventArgs( gs ) { Spaces = ravageSpaces } );
 
 		// find ravage spaces that have invaders
 		InvaderBinding[] ravageGroups = ravageSpaces
@@ -72,10 +75,6 @@ public class InvaderCard : IOption {
 
 	}
 
-	#endregion
-
-	#region Build
-
 	public async Task Build( GameState gameState ) {
 		gameState.Log( new InvaderActionEntry( "Building:" + Text ) );
 
@@ -86,7 +85,7 @@ public class InvaderCard : IOption {
 		BuildEngine buildEngine = gameState.GetBuildEngine();
 
 		// Modify
-		var args = new BuildingEventArgs(gameState, new Dictionary<Space, BuildingEventArgs.BuildType>() ) {
+		var args = new BuildingEventArgs( gameState, new Dictionary<Space, BuildingEventArgs.BuildType>() ) {
 			SpaceCounts = buildSpaces,
 		};
 		await gameState.PreBuilding.InvokeAsync( args );
@@ -95,22 +94,18 @@ public class InvaderCard : IOption {
 		var buildGroups = args.SpaceCounts.Keys
 			.OrderBy( x => x.Label )
 			.Select( x => gameState.Tokens[x] )
-//			.Where( x => x.HasInvaders() ) // We want to log these too
+			//			.Where( x => x.HasInvaders() ) // We want to log these too
 			.ToArray();
 
 		foreach(TokenCountDictionary tokens in buildGroups) {
 			int count = args.SpaceCounts[tokens.Space];
-			while(count -- > 0) {
+			while(count-- > 0) {
 				string buildResult = await buildEngine.Exec( args, tokens, gameState );
 				gameState.Log( new InvaderActionEntry( tokens.Space.Label + ": gets " + buildResult ) );
 			}
 		}
 
 	}
-
-	#endregion
-
-	#region Explore
 
 	public async Task Explore( GameState gs ) {
 		InvaderCard card = this;
@@ -137,14 +132,11 @@ public class InvaderCard : IOption {
 	static async Task ExploreSingleSpace( TokenCountDictionary tokens, GameState gs ) {
 		// only gets called when explorer is actually going to explore
 		var wilds = tokens.Wilds;
-		if(wilds == 0) { 
-			gs.Log( new InvaderActionEntry(tokens.Space+":gains explorer") );
+		if(wilds == 0) {
+			gs.Log( new InvaderActionEntry( tokens.Space + ":gains explorer" ) );
 			await tokens.Add( Invader.Explorer.Default, 1, AddReason.Explore );
-		}
-		else
+		} else
 			await wilds.Remove( 1, RemoveReason.UsedUp );
 	}
-
-	#endregion
 
 }

@@ -4,31 +4,31 @@ public class InvaderDeck {
 
 	#region public static
 
-	public static readonly ImmutableList<InvaderCard> Level1Cards = ImmutableList.Create(
+	public static readonly ImmutableList<IInvaderCard> Level1Cards = ImmutableList.Create<IInvaderCard>(
 		new InvaderCard( Terrain.Jungle ),
 		new InvaderCard( Terrain.Wetland ),
 		new InvaderCard( Terrain.Sand ),
 		new InvaderCard( Terrain.Mountain )
 	);
 
-	public static readonly ImmutableList<InvaderCard> Level2Cards = ImmutableList.Create(
-		new InvaderCard( Terrain.Jungle, true),
-		new InvaderCard( Terrain.Wetland, true),
-		new InvaderCard( Terrain.Sand, true),
-		new InvaderCard( Terrain.Mountain, true),
-		InvaderCard.Costal
+	public static readonly ImmutableList<IInvaderCard> Level2Cards = ImmutableList.Create(
+		InvaderCard.Stage2( Terrain.Jungle ),
+		InvaderCard.Stage2( Terrain.Wetland ),
+		InvaderCard.Stage2( Terrain.Sand ),
+		InvaderCard.Stage2( Terrain.Mountain ),
+		InvaderCard.Stage2Costal()
 	);
 
-	public static readonly ImmutableList<InvaderCard> Level3Cards = ImmutableList.Create(
-		new InvaderCard(Terrain.Jungle,Terrain.Sand),
-		new InvaderCard(Terrain.Jungle,Terrain.Mountain),
-		new InvaderCard(Terrain.Jungle,Terrain.Wetland),
-		new InvaderCard(Terrain.Mountain,Terrain.Sand),
-		new InvaderCard(Terrain.Mountain,Terrain.Wetland),
-		new InvaderCard(Terrain.Sand,Terrain.Wetland)
+	public static readonly ImmutableList<IInvaderCard> Level3Cards = ImmutableList.Create(
+		InvaderCard.Stage3(Terrain.Jungle,Terrain.Sand),
+		InvaderCard.Stage3(Terrain.Jungle,Terrain.Mountain),
+		InvaderCard.Stage3(Terrain.Jungle,Terrain.Wetland),
+		InvaderCard.Stage3(Terrain.Mountain,Terrain.Sand),
+		InvaderCard.Stage3(Terrain.Mountain,Terrain.Wetland),
+		InvaderCard.Stage3(Terrain.Sand,Terrain.Wetland)
 	);
 
-	public static InvaderDeck BuildTestDeck( params InvaderCard[] cards ) => new InvaderDeck( cards );
+	public static InvaderDeck BuildTestDeck( params IInvaderCard[] cards ) => new InvaderDeck( cards );
 
 
 	public static InvaderDeck Unshuffled() => new InvaderDeck((Random)null);
@@ -39,7 +39,7 @@ public class InvaderDeck {
 
 	#region constructors
 
-	private InvaderDeck( params InvaderCard[] cards ) {
+	private InvaderDeck( params IInvaderCard[] cards ) {
 		this.unrevealedCards = cards.ToList();
 		Init();
 	}
@@ -56,13 +56,13 @@ public class InvaderDeck {
 			random.Shuffle( level3 );
 		}
 
-		static void DiscardLast( List<InvaderCard> list ) { list.RemoveAt( list.Count - 1 ); }
+		static void DiscardLast( List<IInvaderCard> list ) { list.RemoveAt( list.Count - 1 ); }
 		DiscardLast( level1 );
 		DiscardLast( level2 );
 		DiscardLast( level3 );
 
 		// Merge
-		var all = new List<InvaderCard>();
+		var all = new List<IInvaderCard>();
 		all.AddRange( level1 );
 		all.AddRange( level2 );
 		all.AddRange( level3 );
@@ -83,17 +83,17 @@ public class InvaderDeck {
 
 	#endregion
 
-	public readonly List<InvaderCard> unrevealedCards;
+	public readonly List<IInvaderCard> unrevealedCards;
 	public readonly List<int> drawCount = new List<int>(); // tracks how many cards to draw each turn
 
-	public List<InvaderCard> Explore {get;} = new List<InvaderCard>();
+	public List<IInvaderCard> Explore {get;} = new List<IInvaderCard>();
 
-	public List<InvaderCard> Build { get; } = new List<InvaderCard>();
+	public List<IInvaderCard> Build { get; } = new List<IInvaderCard>();
 
-	public List<InvaderCard> Ravage { get; } = new List<InvaderCard>();
+	public List<IInvaderCard> Ravage { get; } = new List<IInvaderCard>();
 
 	public int CountInDiscard => Discards.Count;
-	public List<InvaderCard> Discards {get;} = new List<InvaderCard>();
+	public List<IInvaderCard> Discards {get;} = new List<IInvaderCard>();
 
 
 	public bool KeepBuildCards = false; // !!! is there a way to make this go away?
@@ -173,12 +173,12 @@ public class InvaderDeck {
 			src.Ravage.SetItems(ravage);
 			src.Discards.SetItems(discards);
 		}
-		readonly InvaderCard[] unrevealedCards;
+		readonly IInvaderCard[] unrevealedCards;
 		readonly int[] drawCount;
-		readonly InvaderCard[] explore;
-		readonly InvaderCard[] build;
-		readonly InvaderCard[] ravage;
-		readonly InvaderCard[] discards;
+		readonly IInvaderCard[] explore;
+		readonly IInvaderCard[] build;
+		readonly IInvaderCard[] ravage;
+		readonly IInvaderCard[] discards;
 
 	}
 

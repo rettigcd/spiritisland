@@ -22,6 +22,7 @@ public class TokenPusher {
 	public Task<Space[]> MoveN() => Exec( Present.Always );
 	public Task<Space[]> MoveUpToN() => Exec( Present.Done );
 
+	/// <returns>Spaces pushed too.</returns>
 	async Task<Space[]> Exec( Present present ) {
 
 		var counts = ctx.Target(source).Tokens;

@@ -260,9 +260,9 @@ namespace SpiritIsland.Tests.Core {
 			Assert_UnitsAre( endingUnits, space );
 		}
 
-		static InvaderCard[] NewDeckCards() {
+		static IInvaderCard[] NewDeckCards() {
 			var deck = new InvaderDeck(new Random());
-			var cards = new InvaderCard[12];
+			var cards = new IInvaderCard[12];
 			for(int i = 0; i < 12; ++i) {
 				cards[i] = deck.Explore[0];
 				deck.Advance();
@@ -270,7 +270,7 @@ namespace SpiritIsland.Tests.Core {
 			return cards;
 		}
 
-		static void Assert_NextNCardsFromDeck( InvaderDeck deck, ImmutableList<InvaderCard> cardSet, int count ) {
+		static void Assert_NextNCardsFromDeck( InvaderDeck deck, ImmutableList<IInvaderCard> cardSet, int count ) {
 			for(int i = 0; i < count; ++i) {
 				Assert.Contains( deck.Explore[0], cardSet );
 				deck.Advance();

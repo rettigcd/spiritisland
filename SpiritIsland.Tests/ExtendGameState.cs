@@ -1,9 +1,19 @@
 ﻿using Shouldly;
 using SpiritIsland;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace SpiritIsland.Tests {
+
+	static public class InvaderCardEx {
+
+		static public InvaderCard For( Space space ) {
+			var terrain = new[] { Terrain.Wetland, Terrain.Sand, Terrain.Jungle, Terrain.Mountain }.First( space.Is );
+			return terrain != Terrain.Ocean ? new InvaderCard( terrain, false ) : throw new ArgumentException( "Can't invade oceans" );
+		}
+
+	}
 
 	static public class ExtendGameState {
 
@@ -21,7 +31,7 @@ namespace SpiritIsland.Tests {
 
 	public static class InvaderEngine1 {
 
-		public static async Task RavageCard( InvaderCard invaderCard, GameState gameState ) {
+		public static async Task RavageCard( IInvaderCard invaderCard, GameState gameState ) {
 			if( invaderCard != null )
 				await invaderCard.Ravage( gameState );
 		}

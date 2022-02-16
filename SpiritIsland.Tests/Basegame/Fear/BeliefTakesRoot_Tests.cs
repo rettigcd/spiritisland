@@ -94,7 +94,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 
 		const string FearCardAction = "Belief takes Root : 1 : Defend 2 in all lands with Presence.";
 		readonly GameState gameState;
-		readonly InvaderCard invaderCard;
+		readonly IInvaderCard invaderCard;
 		readonly Space ravageSpace;
 		readonly Spirit spirit;
 		readonly VirtualUser User;

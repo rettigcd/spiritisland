@@ -101,6 +101,7 @@ public class TargetSpaceCtx : SelfCtx {
 	public Task<Space[]> PushDahan( int countToPush ) => Push( countToPush, TokenType.Dahan );
 
 	// overriden by Grinning Tricksters Let's See what happens
+	/// <returns>Spaces pushed too.</returns>
 	public virtual Task<Space[]> PushUpTo( int countToPush, params TokenClass[] groups )
 		=> Pusher.AddGroup( countToPush, groups ).MoveUpToN();
 
@@ -177,15 +178,15 @@ public class TargetSpaceCtx : SelfCtx {
 
 	// Damage invaders in the current target space
 	// This called both from powers and from Fear
-	public Task DamageInvaders( int damage, params TokenClass[] allowedTypes ) {
-		if( damage == 0 ) return Task.CompletedTask; // not necessary, just saves some cycles
+	public async Task DamageInvaders( int damage, params TokenClass[] allowedTypes ) {
+		if( damage == 0 ) return; // not necessary, just saves some cycles
 
 		// !!! This is not correct, if card has multiple Damages, adds badland multiple times.
 		damage += Badlands.Count; 
 
 		if(allowedTypes==null || allowedTypes.Length==0)
 			allowedTypes = new TokenClass[] { Invader.City, Invader.Town, Invader.Explorer };
-		return Invaders.UserSelectedDamage( damage, Self, allowedTypes );
+		await Invaders.UserSelectedDamage( damage, Self, allowedTypes );
 	}
 
 	public async Task DamageEachInvader( int individualDamage, params TokenClass[] generic ) {

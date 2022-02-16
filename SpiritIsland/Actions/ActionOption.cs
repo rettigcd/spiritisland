@@ -1,8 +1,20 @@
 ﻿namespace SpiritIsland;
 
 public interface IExecuteOn<CTX> {
+
+	/// <summary>
+	/// Dual Purpose: 
+	/// 1) detects if action can be performed on context
+	/// 2) detects if pre-requisite condition has been triggered
+	/// </summary>
 	bool IsApplicable(CTX ctx);
+
+	/// <summary>
+	/// Describes the action that will be taken. (ie. Push 2 Beast)
+	/// </summary>
+	/// <remarks>This is not the Title of a card unless the Title provides a description of the action.</remarks>
 	string Description { get; }
+
 	Task Execute(CTX ctx);
 }
 
@@ -41,8 +53,10 @@ public class ActionOption<T> : IExecuteOn<T> {
 	}
 
 	public string Description { get; }
-	public bool IsApplicable( T ctx ) => isApplicable == null  // not specified
-		|| isApplicable(ctx);
+
+	public bool IsApplicable( T ctx ) 
+		=> isApplicable == null  // not specified
+		|| isApplicable(ctx); // matches
 
 	public Task Execute( T ctx ) => asyncFunc(ctx);
 
@@ -50,22 +64,9 @@ public class ActionOption<T> : IExecuteOn<T> {
 	Predicate<T> isApplicable;
 }
 
-public class SelfAction
-	: ActionOption<SelfCtx> 
-	, IExecuteOn<TargetSpiritCtx>
-	, IExecuteOn<TargetSpaceCtx>
-	, IExecuteOn<BoardCtx>
-{
+public class SelfAction : ActionOption<SelfCtx> {
 	public SelfAction( string description, Func<SelfCtx, Task> action ) : base( description, action ) { }
 	public SelfAction( string description, Action<SelfCtx> action ) : base( description, action ) { }
-
-	Task IExecuteOn<TargetSpiritCtx>.Execute( TargetSpiritCtx ctx ) => this.Execute( ctx );
-	Task IExecuteOn<TargetSpaceCtx>.Execute( TargetSpaceCtx ctx ) => this.Execute( ctx );
-	Task IExecuteOn<BoardCtx>.Execute( BoardCtx ctx ) => this.Execute( ctx );
-
-	bool IExecuteOn<TargetSpiritCtx>.IsApplicable( TargetSpiritCtx ctx ) => this.IsApplicable( ctx );
-	bool IExecuteOn<TargetSpaceCtx>.IsApplicable( TargetSpaceCtx ctx ) => this.IsApplicable( ctx );
-	bool IExecuteOn<BoardCtx>.IsApplicable( BoardCtx ctx ) => this.IsApplicable( ctx );
 
 	// - new -
 	public new SelfAction FilterOption(bool condition ) => (SelfAction)base.FilterOption( condition );

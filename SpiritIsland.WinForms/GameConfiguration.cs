@@ -74,6 +74,18 @@ namespace SpiritIsland.WinForms {
 			gameState.BlightCard = blightCards[0];  
 			blightCards.RemoveAt(0);
 
+			// No Events
+			var invaderCards = gameState.InvaderDeck.unrevealedCards;
+			void InitBeastCommand(int stage) {
+				for(int i = 0; i < invaderCards.Count; ++i) {
+					if(invaderCards[i].InvaderStage != stage) continue;
+					invaderCards[i] = new TriggerCommandBeasts( invaderCards[i] );
+					break;
+				}
+			}
+			InitBeastCommand(2);
+			InitBeastCommand(3);
+
 			// Enable Win / Loss Check
 			gameState.ShouldCheckWinLoss = true; // !!! instead of this, load win/loss states into the check-list for real games
 

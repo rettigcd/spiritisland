@@ -21,20 +21,25 @@ public static partial class Cmd {
 			"On each board, " + boardAction.Description, 
 			async gs => {
 				for(int i = 0; i < gs.Spirits.Length; ++i) {
-					BoardCtx boardCtx = new BoardCtx( gs.Spirits[i], gs, gs.Island.Boards[i] );
+					BoardCtx boardCtx = new BoardCtx( gs.Spirits[i < gs.Spirits.Length ? i : 0], gs, gs.Island.Boards[i] );
 					await boardAction.Execute( boardCtx );
 				}
 			}
 		);
 
-	// !!! if this is on a per-space basis, shouldn't need a spirit / cause.
-	static public GameCmd InEachLand( Cause cause, SpaceAction action, Func<TokenCountDictionary,bool> filter )
+	// Even though this is on a per-space basis, let spirit that started on board be the decision maker.
+	static public GameCmd InEachLand( Cause cause, IExecuteOn<TargetSpaceCtx> action, Func<TokenCountDictionary,bool> filter = null )
 		=> new GameCmd(
 			"In each land, " + action.Description, 
 			async gs => {
-				var decisionMaker = new SelfCtx(gs.Spirits[0],gs,cause);
-				foreach(var space in gs.Island.AllSpaces.Where(x=>filter==null || filter(gs.Tokens[x]) ) )
-					await action.Execute( decisionMaker.Target(space) );
+				for(int i = 0; i < gs.Island.Boards.Length; ++i) {
+					var decisionMaker = new SelfCtx( gs.Spirits[i < gs.Spirits.Length ? i : 0], gs, cause ); // use Head spirit for extra board
+					var board = gs.Island.Boards[i];
+					var spaces = board.Spaces
+						.Where( x => filter == null || filter( gs.Tokens[x] ) );
+					foreach(var space in spaces)
+						await action.Execute( decisionMaker.Target( space ) );
+				}
 			}
 		);
 

@@ -16,7 +16,7 @@ public class VigorOfTheBreakingDawn {
 			var pushedToLands = await ctx.PushUpToNDahan(2);
 
 			// 2 damage per dahan
-			foreach(var neighbor in pushedToLands)
+			foreach( var neighbor in pushedToLands.Distinct() )
 				await DahanDeal2DamageEach( ctx.Target( neighbor ) );
 
 		}

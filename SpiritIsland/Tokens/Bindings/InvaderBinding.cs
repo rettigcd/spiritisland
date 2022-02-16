@@ -151,17 +151,30 @@ public class InvaderBinding {
 		HealGroup( TokenType.Dahan );
 	}
 
-	public async Task UserSelectedDamage( int damage, Spirit damagePicker, params TokenClass[] allowedTypes ) {
-		if(damage == 0) return;
+	public Task<int> UserSelectedDamage( int damage, Spirit damagePicker, params TokenClass[] allowedTypes ) {
+		return UserSelectedDamage( damage, damagePicker, Present.Always, allowedTypes );
+	}
+
+	public Task<int> UserSelectedPartialDamage( int damage, Spirit damagePicker, params TokenClass[] allowedTypes ) {
+		return UserSelectedDamage(damage,damagePicker, Present.Done, allowedTypes );
+	}
+
+
+	async Task<int> UserSelectedDamage( int damage, Spirit damagePicker, Present present, params TokenClass[] allowedTypes ) {
+		if(damage == 0) return 0;
 		if(allowedTypes == null || allowedTypes.Length == 0)
 			allowedTypes = new TokenClass[] { Invader.Explorer, Invader.Town, Invader.City };
 
 		Token[] invaderTokens;
-		while(damage>0 && (invaderTokens=Tokens.OfAnyType(allowedTypes).ToArray()).Length > 0) {
-			var invaderToDamage = await damagePicker.Action.Decision( Select.Invader.ForAggregateDamage(Space, invaderTokens, damage ) );
-			await ApplyDamageTo1(1,invaderToDamage);
-			damage--;
+		int damageInflicted = 0;
+		while(damage > 0 && (invaderTokens = Tokens.OfAnyType( allowedTypes ).ToArray()).Length > 0) {
+			var invaderToDamage = await damagePicker.Action.Decision( Select.Invader.ForAggregateDamage( Space, invaderTokens, damage, present ) );
+			if(invaderToDamage==null) break;
+			await ApplyDamageTo1( 1, invaderToDamage );
+			--damage;
+			++damageInflicted;
 		}
+		return damageInflicted;
 	}
 
 	public readonly DestroyInvaderStrategy DestroyStrategy;

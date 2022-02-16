@@ -155,7 +155,7 @@ namespace SpiritIsland.Tests.BranchAndClaw {
 			gs.DahanOn( space ).Init( 1 );
 
 			//  When: we ravage there
-			await InvaderEngine1.RavageCard( new InvaderCard( space ), gs );
+			await InvaderEngine1.RavageCard( InvaderCardEx.For( space ), gs );
 
 			//  Then: dahan survives
 			gs.DahanOn( space ).Count.ShouldBe( 1, "dahan should survive due to strife on town" );

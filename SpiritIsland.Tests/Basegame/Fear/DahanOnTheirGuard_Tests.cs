@@ -78,7 +78,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		}
 
 		readonly GameState gameState;
-		readonly InvaderCard invaderCard;
+		readonly IInvaderCard invaderCard;
 		readonly Space ravageSpace;
 		readonly Spirit spirit;
 		readonly VirtualUser User;

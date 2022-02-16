@@ -1,8 +1,8 @@
 ﻿namespace SpiritIsland;
 
-public class ResolveOutOfPhaseAction {
+public static class ResolveOutOfPhaseAction {
 
-	public async Task Execute( SelfCtx ctx ) {
+	public static async Task Execute( SelfCtx ctx ) {
 		var resultingSpeed = ctx.GameState.Phase;
 		var originalSpeed = OriginalSpeed( resultingSpeed );
 		var changeableFactories = ctx.Self.GetAvailableActions( originalSpeed ).OfType<IFlexibleSpeedActionFactory>().ToArray();
@@ -30,27 +30,4 @@ public class ResolveOutOfPhaseAction {
 		_ => throw new System.ArgumentException( "can't toggle " + resultingSpeed, nameof( resultingSpeed ) )
 	};
 
-}
-
-public class TemporarySpeed : ISpeedBehavior {
-
-	static public void Override( IFlexibleSpeedActionFactory factory, Phase phase, GameState gameState ) {
-		factory.OverrideSpeedBehavior = new TemporarySpeed( phase );
-
-		Task Restore(GameState _) { 
-			factory.OverrideSpeedBehavior = null;
-			return Task.CompletedTask;
-		}
-		gameState.TimePasses_ThisRound.Push( Restore );
-	}
-
-
-	readonly Phase newSpeed;
-	public TemporarySpeed(Phase newSpeed ) { this.newSpeed = newSpeed; }
-
-	public bool CouldBeActiveFor( Phase requestSpeed, Spirit _ )
-		=> requestSpeed == newSpeed;
-			
-	public Task<bool> IsActiveFor( Phase requestSpeed, Spirit _ ) 
-		=> Task.FromResult(requestSpeed == newSpeed);
 }

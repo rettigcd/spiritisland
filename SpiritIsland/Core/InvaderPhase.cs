@@ -16,7 +16,7 @@ public class InvaderPhase {
 		gs.CheckWinLoss();
 
 		// Building
-		foreach(InvaderCard card in gs.InvaderDeck.Build)
+		foreach( var card in gs.InvaderDeck.Build)
 			await card.Build( gs );
 
 		// Exploring

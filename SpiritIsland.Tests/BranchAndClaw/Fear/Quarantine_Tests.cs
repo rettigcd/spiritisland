@@ -19,7 +19,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Fear {
 				gs.NewLogEntry += (s) => { if(s is InvaderActionEntry) log.Enqueue(s.Msg); };
 				gs.InvaderDeck = InvaderDeck.BuildTestDeck(
 					new InvaderCard(Terrain.Sand), // not on coast
-					InvaderCard.Costal,
+					InvaderCard.Stage2Costal(),
 					new InvaderCard(Terrain.Jungle)
 				);
 			} );
