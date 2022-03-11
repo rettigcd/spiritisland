@@ -80,8 +80,8 @@ public class SelfCtx {
 
 	#region Generic Select space / option
 
-	public async Task<TargetSpaceCtx> SelectSpace( string prompt, IEnumerable<Space> options ) {
-		var space = await Decision( new Select.Space( prompt, options, Present.Always ) );
+	public async Task<TargetSpaceCtx> SelectSpace( string prompt, IEnumerable<Space> options, Present present = Present.Always ) {
+		var space = await Decision( new Select.Space( prompt, options, present ) );
 		return space != null
 			? new TargetSpaceCtx( this, space )
 			: null;

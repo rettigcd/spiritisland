@@ -533,8 +533,8 @@ namespace SpiritIsland.WinForms {
 			float margin = Math.Max(5f, bounds.Height*.05f);
 			float slotWidth = bounds.Height; 
 
-			int fearCount = this.gameState.Fear.Pool;
-			int maxSpaces = this.gameState.Fear.ActivationThreshold;
+			int fearCount = this.gameState.Fear.EarnedFear;
+			int maxSpaces = this.gameState.Fear.PoolMax;
 
 			float step = (bounds.Width-2*margin-3*slotWidth)/(maxSpaces-1); 
 			// -1 slot width for #/# and 

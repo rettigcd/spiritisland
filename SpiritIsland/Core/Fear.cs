@@ -8,7 +8,7 @@ public class Fear {
 
 	public Fear(GameState gs ) {
 		this.gs = gs;
-		this.ActivationThreshold = gs.Spirits.Length * 4;
+		this.PoolMax = gs.Spirits.Length * 4;
 		gs.TimePasses_WholeGame += FearAdded.EndOfRound;
 		Init();
 	}
@@ -37,9 +37,9 @@ public class Fear {
 	}
 
 	public void AddDirect( FearArgs args ) {
-		Pool += args.count;
-		while(ActivationThreshold <= Pool) { // should be while() - need unit test
-			Pool -= ActivationThreshold;
+		EarnedFear += args.count;
+		while(PoolMax <= EarnedFear) { // should be while() - need unit test
+			EarnedFear -= PoolMax;
 			ActivatedCards.Push( Deck.Pop() );
 			ActivatedCards.Peek().Text = "Active " + ActivatedCards.Count;
 		}
@@ -65,8 +65,8 @@ public class Fear {
 	}
 
 	// - ints -
-	public int Pool { get; private set; } = 0;
-	public int ActivationThreshold { get; }
+	public int EarnedFear { get; private set; } = 0;
+	public int PoolMax { get; set; }
 	// - cards -
 	public readonly Stack<PositionFearCard> Deck = new Stack<PositionFearCard>();
 	public readonly Stack<PositionFearCard> ActivatedCards = new Stack<PositionFearCard>();
@@ -81,12 +81,12 @@ public class Fear {
 
 	protected class Memento : IMemento<Fear> {
 		public Memento(Fear src) {
-			pool = src.Pool;
+			pool = src.EarnedFear;
 			deck = src.Deck.ToArray();
 			activatedCards = src.ActivatedCards.ToArray();
 		}
 		public void Restore(Fear src ) {
-			src.Pool = pool;
+			src.EarnedFear = pool;
 			src.Deck.SetItems( deck );
 			src.ActivatedCards.SetItems(activatedCards);
 		}

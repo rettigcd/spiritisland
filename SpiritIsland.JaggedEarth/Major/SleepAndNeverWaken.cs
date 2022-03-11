@@ -5,7 +5,7 @@ public class SleepAndNeverWaken {
 	[MajorCard("Sleep and Never Waken",3,Element.Moon,Element.Air,Element.Earth,Element.Animal), Fast, FromPresenceIn(2,Terrain.Sand)]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 		// invaders skip all actions in target land.
-		ctx.GameState.SkipAllInvaderActions(); // !!! This did not stop a build
+		ctx.GameState.SkipAllInvaderActions( ctx.Space );
 
 		// remove up to 2 explorer.
 		int removed = await RemoveExploreres( ctx, 2, ctx.Space );

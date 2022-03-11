@@ -123,7 +123,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 
 		void Assert_GeneratedFear( int expectedFearCount ) {
 
-			int actualFear = ctx.GameState.Fear.Pool
+			int actualFear = ctx.GameState.Fear.EarnedFear
 				+ 4 * ctx.GameState.Fear.ActivatedCards.Count;
 
 			actualFear.ShouldBe(expectedFearCount,"fear count is wrong");

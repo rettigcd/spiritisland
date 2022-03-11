@@ -11,7 +11,7 @@ public class PyroclasticFlow {
 		int damage = 2;
 
 		// if target land is J/W, add 1 blight
-		if(ctx.IsOneOf(Terrain.Jungle,Terrain.Mountain))
+		if(ctx.IsOneOf(Terrain.Jungle,Terrain.Wetland))
 			await ctx .AddBlight(1);
 
 		// if you have 2 fire, 3 air, 2 earth: +4 damage. Add 1 wilds

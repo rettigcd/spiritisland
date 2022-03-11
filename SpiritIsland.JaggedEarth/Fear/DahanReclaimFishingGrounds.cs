@@ -36,7 +36,7 @@ public class DahanReclaimFishingGrounds : IFearOptions {
 
 	static async Task SpiritsActOnDifferentCostalLands( FearCtx ctx, Func<TargetSpaceCtx, Task> act ) {
 		var options = ctx.GameState.Island.AllSpaces
-			.Where(s=>s.IsCoastal && ctx.GameState.Tokens[s].Dahan.Any)
+			.Where(s=>s.IsCoastal)
 			.ToList();
 
 		foreach( var spirit in ctx.Spirits ) {

@@ -18,7 +18,7 @@ public class StranglingFirevine {
 		var originatingOptions = ctx.Adjacent
 			.Where( a=> ctx.Self.Presence.Spaces.Contains(a) && a.IsSand )
 			.ToArray();
-		var originalCtx = await ctx.SelectSpace("Select origination space", originatingOptions);
+		var originalCtx = await ctx.SelectSpace("Select origination space", originatingOptions, Present.AutoSelectSingle);
 		if(originalCtx != null)
 			await originalCtx.Wilds.Add(1);
 

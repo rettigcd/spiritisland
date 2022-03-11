@@ -144,6 +144,9 @@ public class GameState {
 	#region Invader Phase / Deck Modifications
 
 	public void SkipAllInvaderActions( params Space[] targets ) {
+		if(targets == null || targets.Length == 0)
+			throw new ArgumentException("must provide targets to skip");
+
 		foreach(var target in targets){
 			SkipRavage( target );
 			Skip1Build( target );
