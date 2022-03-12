@@ -1,9 +1,5 @@
-﻿!!! Memory Fades to Dust => Actions added to Start-of-each Invader phase, don't roll back when we Rewind.
-
-! Save Game in Recent Games list so we can replay them.
-
+﻿! Save Game in Recent Games list so we can replay them.
 !!! Command the Beasts - Destorying strifed town might not generate 1 fear.
-
 
 ----- Spirit Island ----
 

@@ -53,6 +53,7 @@ static public class IEnumerableExtensions {
 		=> haystack.Contains( needle );
 
 	static public void SetItems<T>(this List<T> list, params T[] items ) { list.Clear(); list.AddRange(items);}
+
 	static public void SetItems<T>(this HashSet<T> hashSet, params T[] items ) { hashSet.Clear(); foreach(var item in items) hashSet.Add(item);}
 
 	/// <summary>
@@ -61,7 +62,6 @@ static public class IEnumerableExtensions {
 	static public void SetItems<T>(this Stack<T> stack, params T[] saved ) { 
 		stack.Clear(); 				
 		for(int i=saved.Length;i-->0;) 
-//			for(int i=0;i<saved.Length;++i) 
 			stack.Push(saved[i]);
 	}
 

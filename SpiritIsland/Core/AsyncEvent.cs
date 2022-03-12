@@ -33,4 +33,24 @@ public class AsyncEvent<T> {
 	}
 
 	readonly Dictionary<Guid, Func<T, Task>> handlers = new Dictionary<Guid, Func<T, Task>>();
+
+	#region Memento
+
+	public virtual IMemento<AsyncEvent<T>> SaveToMemento() => new Memento( this );
+	public virtual void LoadFrom( IMemento<AsyncEvent<T>> memento ) => ((Memento)memento).Restore( this );
+
+	protected class Memento : IMemento<AsyncEvent<T>> {
+		public Memento( AsyncEvent<T> src ) {
+			handlers = new Dictionary<Guid, Func<T, Task>>(src.handlers);
+		}
+		public void Restore( AsyncEvent<T> src ) {
+			src.handlers.Clear();
+			foreach(var pair in handlers)
+				src.handlers.Add(pair.Key,pair.Value);
+		}
+		readonly Dictionary<Guid, Func<T, Task>> handlers = new Dictionary<Guid, Func<T, Task>>();
+	}
+
+	#endregion
+
 }

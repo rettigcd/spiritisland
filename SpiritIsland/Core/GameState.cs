@@ -355,6 +355,7 @@ public class GameState {
 			invaderDeck  = src.InvaderDeck.SaveToMemento();
 			fear         = src.Fear.SaveToMemento();
 			tokens       = src.Tokens.SaveToMemento();
+			preRavage    = src.PreRavaging.SaveToMemento();
 		}
 		public void Restore(GameState src ) {
 			src.RoundNumber = roundNumber;
@@ -366,6 +367,7 @@ public class GameState {
 			src.InvaderDeck.LoadFrom( invaderDeck );
 			src.Fear.LoadFrom( fear );
 			src.Tokens.LoadFrom( tokens );
+			src.PreRavaging.LoadFrom( preRavage );
 		}
 		readonly int roundNumber;
 		readonly int blightOnCard;
@@ -376,6 +378,7 @@ public class GameState {
 		readonly IMemento<InvaderDeck> invaderDeck;
 		readonly IMemento<Fear> fear;
 		readonly IMemento<Tokens_ForIsland> tokens;
+		readonly IMemento<DualAsyncEvent<RavagingEventArgs>> preRavage;
 	}
 
 	#endregion Memento
