@@ -18,6 +18,17 @@ public class LogEntry : ILogEntry {
 	public string Msg => msg;
 }
 
+public class IslandBlighted : ILogEntry { // event
+	public IslandBlighted( IBlightCard card ) {
+		this.Level = LogLevel.Info;
+		this.card = card;
+	}
+	public LogLevel Level { get; }
+	public IBlightCard card { get; }
+	public string Msg => $"Blighted Island => {card.Name} => {card.Immediately.Description}\r\n  ^^^^^^^^ ^^^^^^\r\n";
+}
+
+
 public class InvaderActionEntry : ILogEntry {
 	public string msg;
 	public InvaderActionEntry( string msg, LogLevel level = LogLevel.Info ) { 

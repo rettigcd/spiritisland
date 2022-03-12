@@ -113,7 +113,7 @@ public class GameState {
 			await AddBlight( blightSpace );
 
 			if(BlightCard != null && blightOnCard <= 0) {
-				Log(new LogEntry($"Island Blighted => {BlightCard.Name} => {BlightCard.Immediately.Description}") );
+				Log(new IslandBlighted( BlightCard ));
 				await BlightCard.OnBlightDepleated( this );
 			}
 
@@ -327,9 +327,9 @@ public class GameState {
 
 	// - Events -
 	public event Action<ILogEntry> NewLogEntry;
-	public DualAsyncEvent<GameState> StartOfInvaderPhase   = new DualAsyncEvent<GameState>(); // Blight effects
-	public DualAsyncEvent<RavagingEventArgs> PreRavaging   = new DualAsyncEvent<RavagingEventArgs>();	// A Spread of Rampant Green - Whole game - stop ravage
-	public DualAsyncEvent<BuildingEventArgs> PreBuilding   = new DualAsyncEvent<BuildingEventArgs>();	// A Spread of Rampant Green - While game - stop build
+	public DualAsyncEvent<GameState> StartOfInvaderPhase   = new DualAsyncEvent<GameState>();         // Blight effects
+	public DualAsyncEvent<RavagingEventArgs> PreRavaging   = new DualAsyncEvent<RavagingEventArgs>(); // A Spread of Rampant Green - Whole game - stop ravage
+	public DualAsyncEvent<BuildingEventArgs> PreBuilding   = new DualAsyncEvent<BuildingEventArgs>(); // A Spread of Rampant Green - While game - stop build
 	public DualAsyncEvent<ExploreEventArgs>  PreExplore    = new DualAsyncEvent<ExploreEventArgs>();
 	public DualAsyncEvent<InvadersRavaged> InvadersRavaged = new DualAsyncEvent<InvadersRavaged>();
 	public DualAsyncEvent<LandDamagedArgs> LandDamaged = new DualAsyncEvent<LandDamagedArgs>();         // Let Them Break Themselves Against the Stone
@@ -355,7 +355,7 @@ public class GameState {
 			invaderDeck  = src.InvaderDeck.SaveToMemento();
 			fear         = src.Fear.SaveToMemento();
 			tokens       = src.Tokens.SaveToMemento();
-			preRavage    = src.PreRavaging.SaveToMemento();
+			startOfInvaderPhase = src.StartOfInvaderPhase.SaveToMemento();
 		}
 		public void Restore(GameState src ) {
 			src.RoundNumber = roundNumber;
@@ -367,7 +367,7 @@ public class GameState {
 			src.InvaderDeck.LoadFrom( invaderDeck );
 			src.Fear.LoadFrom( fear );
 			src.Tokens.LoadFrom( tokens );
-			src.PreRavaging.LoadFrom( preRavage );
+			src.StartOfInvaderPhase.LoadFrom( startOfInvaderPhase );
 		}
 		readonly int roundNumber;
 		readonly int blightOnCard;
@@ -378,7 +378,7 @@ public class GameState {
 		readonly IMemento<InvaderDeck> invaderDeck;
 		readonly IMemento<Fear> fear;
 		readonly IMemento<Tokens_ForIsland> tokens;
-		readonly IMemento<DualAsyncEvent<RavagingEventArgs>> preRavage;
+		readonly IMemento<DualAsyncEvent<GameState>> startOfInvaderPhase;
 	}
 
 	#endregion Memento

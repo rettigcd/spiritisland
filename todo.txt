@@ -1,5 +1,10 @@
 ﻿! Save Game in Recent Games list so we can replay them.
+
 !!! Command the Beasts - Destorying strifed town might not generate 1 fear.
+
+!!! Strong Earth Shatters Slowly - When adding blight to land, it re-triggered Blighted Island message.  Therefore, mark the island as blighted before doing blighted island effect.
+
+
 
 ----- Spirit Island ----
 
