@@ -42,7 +42,7 @@ public class TargetSpaceCtx : SelfCtx {
 	public TokenBinding Disease => Tokens.Disease;
 	public TokenBinding Wilds => Tokens.Wilds;
 	public DahanGroupBinding Dahan => Tokens.Dahan;
-	public TokenBinding Badlands => Self.ConstructBadlands( this ); // allow Originator to override
+	public virtual TokenBinding Badlands => Tokens.Badlands;
 
 	#endregion
 

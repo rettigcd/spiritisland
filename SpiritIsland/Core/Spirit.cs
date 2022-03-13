@@ -537,8 +537,6 @@ public abstract class Spirit : IOption {
 	public virtual TokenPusher PushFactory( TargetSpaceCtx ctx ) => new TokenPusher( ctx );
 	public virtual TokenGatherer GatherFactory( TargetSpaceCtx ctx ) => new TokenGatherer( ctx );
 
-	public virtual TokenBinding ConstructBadlands(TargetSpaceCtx ctx) => ctx.Tokens.Badlands; // use default - overriden by Vengeance
-
 	#endregion
 
 	#region Tarteting / Range

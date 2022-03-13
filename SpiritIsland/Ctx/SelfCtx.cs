@@ -52,7 +52,7 @@ public class SelfCtx {
 	public Task<T> Decision<T>( Select.TypedDecision<T> originalDecision ) where T : class, IOption => Self.Action.Decision( originalDecision );
 
 
-	public TargetSpaceCtx Target( Space space ) => new TargetSpaceCtx( this, space );
+	public virtual TargetSpaceCtx Target( Space space ) => new TargetSpaceCtx( this, space );
 
 	public TargetSpiritCtx TargetSpirit( Spirit spirit ) => new TargetSpiritCtx( this, spirit );
 

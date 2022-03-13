@@ -66,10 +66,19 @@ public class VengeanceAsABurningPlague : Spirit {
 			return stoppedByDisease;
 
 		}
+
 	}
 
-	public override TokenBinding ConstructBadlands( TargetSpaceCtx ctx ) {
-		return new WreakVengeanceForTheLandsCorruption( ctx.Tokens );
-	}
+	public override SelfCtx Bind( GameState gameState, Cause cause ) => new VengenceCtx( this, gameState, cause );
 
+}
+
+public class VengenceCtx : SelfCtx {
+	public VengenceCtx( Spirit spirit, GameState gameState, Cause cause ) : base( spirit, gameState, cause ) { }
+	public override TargetSpaceCtx Target( Space space ) => new VengenceSpaceCtx( this, space );
+}
+
+public class VengenceSpaceCtx : TargetSpaceCtx {
+	public VengenceSpaceCtx( VengenceCtx ctx, Space target):base( ctx, target ) { }
+	public override TokenBinding Badlands => new WreakVengeanceForTheLandsCorruption( Tokens );
 }
