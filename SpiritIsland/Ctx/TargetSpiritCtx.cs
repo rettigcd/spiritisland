@@ -8,6 +8,6 @@ public class TargetSpiritCtx : SelfCtx {
 
 	public Spirit Other { get; }
 
-	public SelfCtx OtherCtx => new SelfCtx( Other, GameState, Cause, Originator );
+	public SelfCtx OtherCtx => new SelfCtx( Other, GameState, Cause );
 
 }

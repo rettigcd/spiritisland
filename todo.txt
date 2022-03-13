@@ -4,6 +4,13 @@
 
 !!! Strong Earth Shatters Slowly - When adding blight to land, it re-triggered Blighted Island message.  Therefore, mark the island as blighted before doing blighted island effect.
 
+BUG - Forests of Living Obsidian 
+	- Badlands check needs to include Space in check so 2nd space gets badlands effect
+
+BUG - Inifinite Vitality 
+	- Dahan Vanash - Can't see them.
+	- Don't return to normal health when round is over.
+	- Also dahan with +4 health (i.e. 6) should not deal 6 damage each.
 
 
 ----- Spirit Island ----

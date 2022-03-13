@@ -22,7 +22,7 @@ public class ConfoundingMists {
 				&& (args.Reason == AddReason.Explore || args.Reason == AddReason.Build)
 			) {
 				// create a new Ctx that targets the new GameState
-				var newCtx = new TargetSpaceCtx( ctx.Self, args.GameState, ctx.Space, ctx.Cause );
+				var newCtx = new SelfCtx( ctx.Self, args.GameState, ctx.Cause ).Target( ctx.Space );
 				await newCtx.Pusher.PushToken( args.Token );
 			}
 		}

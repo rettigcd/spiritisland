@@ -5,21 +5,18 @@ public class SelfCtx {
 	public Spirit Self { get; }
 	public GameState GameState { get; }
 	public Cause Cause { get; }
-	public Spirit Originator { get; }
 	#region constructor
 
-	public SelfCtx(Spirit self,GameState gameState, Cause cause, Spirit originator=null) {
+	public SelfCtx(Spirit self,GameState gameState, Cause cause) {
 		Self = self;
 		GameState = gameState;
 		Cause = cause;
-		Originator = originator ?? self;
 	}
 
 	protected SelfCtx(SelfCtx src) {
 		Self = src.Self;
 		GameState = src.GameState;
 		Cause = src.Cause;
-		Originator = src.Originator;
 		_terrainMapper = src._terrainMapper;
 	}
 
@@ -60,13 +57,13 @@ public class SelfCtx {
 	// Visually, selects the [presence] icon
 	public async Task<TargetSpaceCtx> TargetDeployedPresence( string prompt ) {
 		var space = await Decision( Select.DeployedPresence.All( prompt, Self,Present.Always ) );
-		return new TargetSpaceCtx( this, space );
+		return Target( space );
 	}
 
 	// Visually, selects the [space] which has presence.
 	public async Task<TargetSpaceCtx> TargetLandWithPresence( string prompt ) {
 		var space = await Decision( new Select.Space(prompt,Self.Presence.Spaces, Present.Always ) );
-		return new TargetSpaceCtx( this, space );
+		return Target( space );
 	}
 
 	#region Draw Cards
@@ -83,7 +80,7 @@ public class SelfCtx {
 	public async Task<TargetSpaceCtx> SelectSpace( string prompt, IEnumerable<Space> options, Present present = Present.Always ) {
 		var space = await Decision( new Select.Space( prompt, options, present ) );
 		return space != null
-			? new TargetSpaceCtx( this, space )
+			? Target( space )
 			: null;
 	}
 

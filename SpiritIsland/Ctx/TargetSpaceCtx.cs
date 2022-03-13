@@ -4,25 +4,20 @@ public class TargetSpaceCtx : SelfCtx {
 
 	#region constructors
 
-	public TargetSpaceCtx( Spirit self, GameState gameState, Space target, Cause cause )
-		:base( self, gameState, cause )
+	// Called:
+	//		from SelfCtx (to target a space)
+	//		for derived types
+	public TargetSpaceCtx( SelfCtx ctx, Space target )
+		:base( ctx )
 	{
-		Space = target;
-	}
-
-	public TargetSpaceCtx( SelfCtx ctx, Space target ):base( ctx ) {
 		Space = target ?? throw new ArgumentNullException(nameof(target));
-	}
-
-	public TargetSpaceCtx( TargetSpaceCtx orig, Spirit newSelf ):base( newSelf, orig.GameState, orig.Cause, orig.Self) {
-		Space = orig.Space;
 	}
 
 	#endregion
 
 	public Space Space { get; }
 
-	public TargetSpaceCtx Target(Spirit spirit) => new TargetSpaceCtx( this, spirit );
+	public TargetSpaceCtx Target( Spirit spirit ) => new SelfCtx( spirit, GameState, Cause ).Target( Space );
 
 	public Task SelectActionOption( params IExecuteOn<TargetSpaceCtx>[] options ) => SelectActionOption( "Select Power Option", options );
 	public Task SelectActionOption( string prompt, params IExecuteOn<TargetSpaceCtx>[] options )=> SelectAction_Inner( prompt, options, Present.AutoSelectSingle, this );
@@ -50,7 +45,7 @@ public class TargetSpaceCtx : SelfCtx {
 	public TokenBinding Disease => Tokens.Disease;
 	public TokenBinding Wilds => Tokens.Wilds;
 	public DahanGroupBinding Dahan => Tokens.Dahan;
-	public TokenBinding Badlands => Originator.ConstructBadlands( this ); // allow Originator to override
+	public TokenBinding Badlands => Self.ConstructBadlands( this ); // allow Originator to override
 
 	#endregion
 

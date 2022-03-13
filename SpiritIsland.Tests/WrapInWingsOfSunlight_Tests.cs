@@ -30,7 +30,7 @@ public class WrapInWingsOfSunlight_Tests {
 		static async Task PlayCard(TargetSpaceCtx ctx) { try { await WrapInWingsOfSunlight.ActAsync( ctx ); } catch(Exception ex) { 
 			_ = ex.ToString(); 
 		} } 
-		_ = PlayCard( new TargetSpaceCtx(spirit,gameState,src,Cause.Power) );
+		_ = PlayCard( new SelfCtx(spirit,gameState, Cause.Power).Target(src) );
 
 		//  And: Can bring 2 of each
 		user.AssertDecision( "Push D@2 to", "A1,A2,A3,A4,A5,A6,A7,A8,Done", dst.Label );
@@ -69,7 +69,7 @@ public class WrapInWingsOfSunlight_Tests {
 		static async Task PlayCard(TargetSpaceCtx ctx) { try { await TerrifyingChase.ActAsync( ctx ); } catch(Exception ex) { 
 			_ = ex.ToString(); 
 		} } 
-		_ = PlayCard( new TargetSpaceCtx(spirit,gameState,src,Cause.Power) );
+		_ = PlayCard( new SelfCtx(spirit,gameState, Cause.Power).Target(src) );
 
 		//  And: Can bring 2 of each
 		user.AssertDecisionX( "Push (2)", "(D@2),E@1,T@2" );
