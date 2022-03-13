@@ -11,7 +11,7 @@ public class SkiesHeraldTheSeasonOfReturn{
 
 		var other = await ctx.Decision(new Select.Spirit(Name,spiritOptions,Present.AutoSelectSingle) );
 		if(other != null)
-			await ctx.Target(other).Presence.PlaceDestroyedHere();
+			await other.Bind(ctx.GameState,ctx.Cause).Target(ctx.Space).Presence.PlaceDestroyedHere();
 
 		// Gather up to 2 dahan.
 		await ctx.GatherUpToNDahan(2);

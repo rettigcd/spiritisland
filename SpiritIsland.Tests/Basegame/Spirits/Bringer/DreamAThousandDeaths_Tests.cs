@@ -28,7 +28,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 		}
 
 		TargetSpaceCtx MakeFreshCtx() {
-			return new SelfCtx( spirit, gs, Cause.Power).Target( board[5] );
+			return spirit.Bind( gs, Cause.Power).Target( board[5] );
 		}
 
 		// 1: Raging Storm - 1 damage to each invader (slow)

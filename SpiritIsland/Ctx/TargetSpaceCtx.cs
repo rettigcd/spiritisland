@@ -17,12 +17,9 @@ public class TargetSpaceCtx : SelfCtx {
 
 	public Space Space { get; }
 
-	public TargetSpaceCtx Target( Spirit spirit ) => new SelfCtx( spirit, GameState, Cause ).Target( Space );
-
 	public Task SelectActionOption( params IExecuteOn<TargetSpaceCtx>[] options ) => SelectActionOption( "Select Power Option", options );
 	public Task SelectActionOption( string prompt, params IExecuteOn<TargetSpaceCtx>[] options )=> SelectAction_Inner( prompt, options, Present.AutoSelectSingle, this );
 	public Task SelectAction_Optional( string prompt, params IExecuteOn<TargetSpaceCtx>[] options )=> SelectAction_Inner( prompt, options, Present.Done, this );
-
 
 	public bool MatchesRavageCard => GameState.InvaderDeck.Ravage.Any(c=>c.Matches(Space));
 	public bool MatchesBuildCard => GameState.InvaderDeck.Build.Any(c=>c.Matches(Space));

@@ -2,12 +2,12 @@
 
 public class TargetSpiritCtx : SelfCtx {
 
-	public TargetSpiritCtx( Spirit self, GameState gs, Spirit target, Cause cause ) : base(self,gs,cause) {
+	public TargetSpiritCtx( SelfCtx ctx, Spirit target ) : base( ctx ) {
 		Other = target;
 	}
 
 	public Spirit Other { get; }
 
-	public SelfCtx OtherCtx => new SelfCtx( Other, GameState, Cause );
+	public SelfCtx OtherCtx => Other.Bind( GameState, Cause );
 
 }

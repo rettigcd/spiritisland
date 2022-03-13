@@ -9,7 +9,7 @@ class WoodSeeksGrowthHumansSeekFreedom {
 		if(spiritOptions.Length > 0) return;
 		var spirit = await ctx.Decision(new Select.Spirit("Select spirit to gain a power card", spiritOptions));
 			
-		await new SelfCtx( spirit, ctx.GameState,ctx.Cause).Draw();
+		await spirit.Bind( ctx.GameState,ctx.Cause).Draw();
 	}
 
 	[InnateOption("3 animal","1 Damage per dahan OR Push up to 3 dahan.",1)]

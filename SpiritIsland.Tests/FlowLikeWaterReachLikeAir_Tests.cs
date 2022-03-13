@@ -36,7 +36,7 @@ namespace SpiritIsland.Tests {
 			static async Task PlayCard(TargetSpiritCtx ctx) { try { await FlowLikeWaterReachLikeAir.ActAsync( ctx ); } catch(Exception ex) { 
 				_ = ex.ToString(); 
 			} } 
-			_ = PlayCard( new TargetSpiritCtx(spirit,gameState,spirit,Cause.Power) );
+			_ = PlayCard( spirit.Bind( gameState, Cause.Power ).TargetSpirit(spirit) );
 
 			//  And: Can bring 2 of each
 			user.AssertDecisionX( "Select Presence to push.", "(A5),Done" );

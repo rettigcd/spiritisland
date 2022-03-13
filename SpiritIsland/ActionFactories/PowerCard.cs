@@ -30,7 +30,9 @@ public sealed class PowerCard : IFlexibleSpeedActionFactory, IRecordLastTarget {
 		return SpeedBehavior.CouldBeActiveFor(requestSpeed,spirit);
 	}
 
-	public async Task ActivateAsync(SelfCtx ctx) {
+	public async Task ActivateAsync( SelfCtx ctx ) {
+		if( ctx.Cause != Cause.Power )
+			throw new ArgumentException( "Power Card context must be Cause.Power but is " + ctx.Cause );
 
 		// Don't check speed here.  Slow card may have been made fast (Lightning's Swift Strike)
 		// if(!await SpeedBehavior.IsActiveFor( ctx.GameState.Phase, ctx.Self ))

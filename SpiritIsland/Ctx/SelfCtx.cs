@@ -54,6 +54,8 @@ public class SelfCtx {
 
 	public TargetSpaceCtx Target( Space space ) => new TargetSpaceCtx( this, space );
 
+	public TargetSpiritCtx TargetSpirit( Spirit spirit ) => new TargetSpiritCtx( this, spirit );
+
 	// Visually, selects the [presence] icon
 	public async Task<TargetSpaceCtx> TargetDeployedPresence( string prompt ) {
 		var space = await Decision( Select.DeployedPresence.All( prompt, Self,Present.Always ) );

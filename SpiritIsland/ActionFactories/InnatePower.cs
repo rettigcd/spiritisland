@@ -89,6 +89,8 @@ public class InnatePower : IFlexibleSpeedActionFactory, IRecordLastTarget {
 	#endregion
 
 	public async Task ActivateAsync( SelfCtx ctx ) {
+		if(ctx.Cause != Cause.Power)
+			throw new ArgumentException( "Power Card context must be Cause.Power but is " + ctx.Cause );
 
 		if(!await SpeedBehavior.IsActiveFor( ctx.GameState.Phase, ctx.Self )) {
 			LastTarget = null;

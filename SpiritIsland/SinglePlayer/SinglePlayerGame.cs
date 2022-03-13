@@ -33,7 +33,7 @@ public class SinglePlayerGame {
 			try {
 				// Handle any unresolved Initialization action - (ocean/beast)
 				GameState.Phase = Phase.Init;
-				await Spirit.ResolveActions( new SelfCtx( Spirit, GameState, Cause.Growth ) ); 
+				await Spirit.ResolveActions( Spirit.Bind( GameState, Cause.Growth ) ); 
 				// !!! if this is here, why do we need to put it in the Spirit.Growth() method?
 
 				Dictionary<int,IMemento<GameState>> savedGameStates = new Dictionary<int, IMemento<GameState>>();
@@ -50,7 +50,7 @@ public class SinglePlayerGame {
 
 						GameState.Phase = Phase.Fast;
 						LogPhase();
-						await Spirit.ResolveActions( new SelfCtx( Spirit, GameState, Cause.Power ) );
+						await Spirit.ResolveActions( Spirit.Bind( GameState, Cause.Power ) );
 
 						GameState.Phase = Phase.Invaders;
 						LogPhase();
@@ -58,7 +58,7 @@ public class SinglePlayerGame {
 
 						GameState.Phase = Phase.Slow;
 						LogPhase();
-						await Spirit.ResolveActions( new SelfCtx( Spirit, GameState, Cause.Power ) );
+						await Spirit.ResolveActions( Spirit.Bind( GameState, Cause.Power ) );
 
 						await GameState.TriggerTimePasses();
 					} catch( GameStateCommandException cmdEx ) {

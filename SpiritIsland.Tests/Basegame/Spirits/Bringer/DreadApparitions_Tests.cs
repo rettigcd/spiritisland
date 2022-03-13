@@ -15,7 +15,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			Bringer spirit = new Bringer();
 			board = Board.BuildBoardA();
 			GameState gs = new GameState( spirit, board );
-			ctx = new SelfCtx( spirit, gs, Cause.Power ).Target( board[5] );
+			ctx = spirit.Bind( gs, Cause.Power ).Target( board[5] );
 		}
 
 		[Fact]

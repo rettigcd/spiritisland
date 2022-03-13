@@ -33,7 +33,7 @@ public static partial class Cmd {
 			"In each land, " + action.Description, 
 			async gs => {
 				for(int i = 0; i < gs.Island.Boards.Length; ++i) {
-					var decisionMaker = new SelfCtx( gs.Spirits[i < gs.Spirits.Length ? i : 0], gs, cause ); // use Head spirit for extra board
+					var decisionMaker = gs.Spirits[i < gs.Spirits.Length ? i : 0].Bind( gs, cause ); // use Head spirit for extra board
 					var board = gs.Island.Boards[i];
 					var spaces = board.Spaces
 						.Where( x => filter == null || filter( gs.Tokens[x] ) );

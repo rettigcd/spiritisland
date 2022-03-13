@@ -12,7 +12,7 @@ public class InfestationOfVenomousSpiders {
 
 		// if you have 2 air 2 earth 3 animal: after this power causes invaders to skip an action, 4 damage.
 		Func<GameState,Space,Task> causeAdditionalDamage = await ctx.YouHave("2 air,3 animal")
-			? (GameState gs,Space space) => new SelfCtx(ctx.Self,gs,Cause.Power).Target(space).DamageInvaders(4)
+			? (GameState gs,Space space) => ctx.Self.Bind( gs,Cause.Power).Target(space).DamageInvaders(4)
 			: null;
 
 		// For each beast,

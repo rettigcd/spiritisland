@@ -11,5 +11,5 @@ public static class CmdExtensions {
 // Mix ins we could put in a different namespace that we only get when included
 static public class GameStateExtensions {
 	static public IEnumerable<SelfCtx> SpiritCtxs(this GameState gs, Cause cause) 
-		=> gs.Spirits.Select(s=>new SelfCtx(s,gs,cause));
+		=> gs.Spirits.Select(s=> s.Bind(gs,cause));
 }

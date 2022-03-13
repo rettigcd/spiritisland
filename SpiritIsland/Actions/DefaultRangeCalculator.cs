@@ -45,7 +45,7 @@ public class DefaultRangeCalculator : ICalcRange {
 		IEnumerable<Space> source,
 		TargetCriteria targetCriteria
 	) {
-		var ctx = new SelfCtx( self, gameState, Cause.Power );
+		var ctx = self.Bind( gameState, Cause.Power );
 		return source       // starting here
 			.SelectMany( x => x.Range( targetCriteria.Range ) )
 			.Distinct()

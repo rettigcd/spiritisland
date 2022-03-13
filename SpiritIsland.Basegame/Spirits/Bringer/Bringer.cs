@@ -58,7 +58,7 @@ public class Bringer : Spirit {
 			detached,
 			new ToDreamAThousandDeaths_DestroyStrategy( 
 				gs.Fear.AddDirect, 
-				new SelfCtx(this,gs,Cause.Power)
+				Bind(gs,Cause.Power)
 			),
 			CustomDamageStrategy
 		);

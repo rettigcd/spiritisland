@@ -12,7 +12,7 @@ public class FearCtx {
 
 	#endregion constructor
 
-	public IEnumerable<SelfCtx> Spirits => this.GameState.Spirits.Select(s=>new SelfCtx(s,GameState,Cause.Fear));
+	public IEnumerable<SelfCtx> Spirits => this.GameState.Spirits.Select(s=>s.Bind( GameState,Cause.Fear ));
 
 	public async Task EachPlayerTakesActionInALand( SpaceAction action, Func<TargetSpaceCtx,bool> filter, bool differentLands = false ) {
 		var used = new List<Space>();
