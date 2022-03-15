@@ -57,7 +57,7 @@ class VolcanoPresence : SpiritPresence {
 		readonly Spirit spirit;
 		public DestroyPresence(Spirit spirit ) { this.spirit = spirit;}
 
-		public override async Task DestroyPresenceApi( SpiritPresence presence, Space space, GameState gs, ActionType actionType ) {
+		public override async Task DestroyPresenceApi( SpiritPresence presence, Space space, GameState gs, DestoryPresenceCause actionType ) {
 			await base.DestroyPresenceApi( presence, space, gs, actionType );
 
 			// Destroying Volcano presence, causes damage to Dahan and invaders

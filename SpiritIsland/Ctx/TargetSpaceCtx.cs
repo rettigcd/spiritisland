@@ -146,7 +146,8 @@ public class TargetSpaceCtx : SelfCtx {
 	public bool Matches( string filterEnum ) => IsInPlay && SpaceFilterMap.Get(filterEnum)(this);
 
 	public bool HasBlight => Blight.Any;
-	public Task AddBlight(int delta=1) => Blight.Add( delta );
+
+	public Task AddBlight(int delta, AddReason reason = AddReason.Added ) => Blight.Add( delta, reason );
 
 	/// <summary> Returns blight from the board to the blight card. </summary>
 	public Task RemoveBlight(int count=1) => Blight.Remove( count, RemoveReason.ReturnedToCard );
@@ -279,7 +280,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 	public async Task PlacePresenceHere() {
 		var from = await Presence.SelectSource();
-		await Self.PlacePresence( from, Space, GameState );
+		await Self.Presence.Place( from, Space, GameState );
 	}
 
 	#endregion

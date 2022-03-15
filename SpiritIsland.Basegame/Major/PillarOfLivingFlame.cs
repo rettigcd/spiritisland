@@ -18,7 +18,7 @@ public class PillarOfLivingFlame {
 
 		// if target is Jungle / Wetland, add 1 blight
 		if(ctx.IsOneOf( Terrain.Jungle, Terrain.Wetland ))
-			await ctx .AddBlight();
+			await ctx.AddBlight(1);
 
 		ctx.AddFear( fear );
 		await ctx.DamageInvaders( damage );

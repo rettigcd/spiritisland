@@ -14,7 +14,7 @@ public class Drought {
 		await ctx.DamageEachInvader( 1, Invader.Town, Invader.City );
 
 		// add 1 blight
-		await ctx.AddBlight();
+		await ctx.AddBlight(1);
 
 		// if you have 3 sun, destroy 1 city
 		if( await ctx.YouHave("3 sun") )

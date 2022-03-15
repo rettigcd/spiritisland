@@ -12,7 +12,7 @@ public class SpillBitternessIntoTheEarth {
 		await addBadlandsOrStrife.Repeat(2).Execute( ctx );
 
 		// and 1 blight.
-		await ctx.AddBlight();
+		await ctx.AddBlight(1);
 
 		await TakeActionInUpToNLands( ctx
 			// In up to 3 adjacent lands with blight

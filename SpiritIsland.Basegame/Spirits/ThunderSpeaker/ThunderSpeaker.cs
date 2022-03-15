@@ -70,7 +70,7 @@ public class Thunderspeaker : Spirit {
 
 		while(numToDestroy-->0 && (options=Calc()).Length > 0) {
 			var space = await this.Action.Decision( Select.DeployedPresence.ToDestroy( prompt, options, Present.Always ) );
-			await Presence.Destroy(space, args.GameState, ActionType.Invader );
+			await Presence.Destroy(space, args.GameState, DestoryPresenceCause.DahanDestroyed );
 		}
 
 	}

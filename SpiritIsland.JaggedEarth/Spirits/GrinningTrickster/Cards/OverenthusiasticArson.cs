@@ -25,7 +25,7 @@ public class OverenthusiasticArson {
 			await ctx.DamageInvaders(2);
 
 			// add 1 blight
-			await ctx.AddBlight(); // !!! this should cascade
+			await ctx.AddBlight(1);
 		}
 	}
 

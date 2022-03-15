@@ -7,7 +7,7 @@ public class MemoryFadesToDust : BlightCardBase {
 	public override ActionOption<GameState> Immediately => Cmd.AtTheStartOfEachInvaderPhase(
 		Cmd.EachSpirit(Cause.Blight,
 			Cmd.Pick1<SelfCtx>(
-				Cmd.DestroyPresence(ActionType.BlightedIsland),
+				Cmd.DestroyPresence(DestoryPresenceCause.BlightedIsland),
 				Cmd.ForgetPowerCard
 			)
 		)

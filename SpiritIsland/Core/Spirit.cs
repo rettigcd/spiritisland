@@ -328,10 +328,6 @@ public abstract class Spirit : IOption {
 
 	public SpiritPresence Presence {get; }
 
-	public virtual Task PlacePresence( IOption from, Space to, GameState gs ) {
-		return Presence.Place(from, to, gs);
-	}
-
 	/// <summary> Energy gain per turn </summary>
 	public int EnergyPerTurn => Presence.EnergyPerTurn;
 	public virtual int NumberOfCardsPlayablePerTurn => Presence.CardPlayCount + tempCardPlayBoost;

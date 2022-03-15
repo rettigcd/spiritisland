@@ -7,7 +7,7 @@ public class DownwardSpiral : BlightCardBase {
 	public override ActionOption<GameState> Immediately 
 		=> Cmd.AtTheStartOfEachInvaderPhase(
 			Cmd.EachSpirit(Cause.Blight, 
-				Cmd.DestroyPresence(ActionType.BlightedIsland) 
+				Cmd.DestroyPresence(DestoryPresenceCause.BlightedIsland) 
 			) 
 		);
 

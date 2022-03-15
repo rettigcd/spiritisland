@@ -57,10 +57,10 @@ class Wordle_Tests {
 		var results = new List<string>();
 		var results2 = new List<string>();
 
-		var (guess1, bestGrouping) = FindBestGuess( Searcher.AllWords );
+		var (_, bestGrouping) = FindBestGuess( Searcher.AllWords );
 
 		foreach( var pair in bestGrouping ) {
-			var (guess2, subGrouping) = FindBestGuess( pair.Value.ToArray() );
+			var (guess2, _) = FindBestGuess( pair.Value.ToArray() );
 			results.Add( $"{pair.Key} {guess2}" );
 			results2.Add( $"{guess2} {pair.Key}" );
 		}
@@ -73,7 +73,7 @@ class Wordle_Tests {
 	}
 
 
-	(string, Dictionary<GuessResult, List<string>>) FindBestGuess( string[] candidateWords ) {
+	static (string, Dictionary<GuessResult, List<string>>) FindBestGuess( string[] candidateWords ) {
 
 		var allWords = Searcher.AllWords;
 
@@ -105,19 +105,8 @@ class Wordle_Tests {
 		);
 	}
 
-	static CountDictionary<GuessResult> CountWordsResultingInEachGuessResult( string guess, string[] allWords ) {
-		var dict = new CountDictionary<GuessResult>();
-		foreach(var word in allWords) {
-			var key = new GuessResult( guess, word );
-			++dict[key];
-		}
-		return dict;
-	}
-
-
 	// 1st: apply what we know to narrow the list
 	// 2nd: find the word that splits the current list into groups where the largest group is as small as possible.
-
 
 	//string[] FilterWords( string[] startingWords, string known, string present, string missing ) {
 	//	var here = new System.Text.RegularExpressions.Regex( known.Replace( ' ', '.' ) );
@@ -132,7 +121,7 @@ class Wordle_Tests {
 	//		.ToArray();
 	//}
 
-	Dictionary<GuessResult, List<string>> BreakIntoGroups( string guess, string[] allWords ) {
+	static Dictionary<GuessResult, List<string>> BreakIntoGroups( string guess, string[] allWords ) {
 		var dict = new Dictionary<GuessResult, List<string>>();
 		foreach(var word in allWords) {
 			var key = new GuessResult( guess, word );
@@ -177,13 +166,6 @@ class Searcher {
 	}
 
 	public string[] Candidates { get; private set; }
-
-	string[] CalcCandidates() {
-		var regex = BuildRegex();
-		return AllWords
-			.Where( (Func<string, bool>)regex.IsMatch )
-			.ToArray();
-	}
 
 	Regex BuildRegex() {
 		var buf = new StringBuilder();
@@ -245,5 +227,5 @@ class GuessResult : IEquatable<GuessResult> {
 	const int ELSEWHERE = 1;
 	const int HERE = 2;
 
-	int hash;
+	readonly int hash;
 }

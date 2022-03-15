@@ -26,7 +26,7 @@ public static partial class Cmd {
 	static public SpaceAction AddDahan( int count ) => new SpaceAction( $"Add {count} Dahan", ctx => ctx.Tokens.Add( TokenType.Dahan.Default, count ) );
 	static public SpaceAction AddTown( int count ) => new SpaceAction( $"Add {count} Towns", ctx => ctx.Tokens.Add(Invader.Town.Default, count ) );
 	static public SpaceAction AddCity( int count ) => new SpaceAction( $"Add {count} Cities", ctx => ctx.Tokens.Add(Invader.City.Default, count ) );
-	static public SpaceAction AddBlight => new SpaceAction("Add 1 blight", ctx => ctx.AddBlight() );
+	static public SpaceAction AddBlightedIslandBlight => new SpaceAction("Add 1 blight", ctx => ctx.AddBlight(1,AddReason.SpecialRule) );
 	static public SpaceAction AddWilds( int count ) => new SpaceAction($"Add {count} Wilds.", ctx => ctx.Wilds.Add(count) );
 	static public SpaceAction AddBadlands( int badLandCount ) => new SpaceAction( $"Add {badLandCount} badlands", ctx => ctx.Badlands.Add( badLandCount ) );
 	static public SpaceAction AddStrife(int count) => count == 1
@@ -34,7 +34,7 @@ public static partial class Cmd {
 		: new SpaceAction( $"Add {count} Strife.",  async ctx => { for(int i=0;i<count;++i) await ctx.AddStrife(); } );
 
 	// -- Remove --
-	static public SpaceAction RemoveBlight => new SpaceAction("Remove 1 blight", ctx => ctx.RemoveBlight() );
+	static public SpaceAction RemoveBlight => new SpaceAction("Remove 1 blight", ctx => ctx.Blight.Remove(1, RemoveReason.ReturnedToCard );
 
 	static public SpaceAction RemoveExplorers(int count) => RemoveUpToNTokens(count,Invader.Explorer);
 	static public SpaceAction RemoveExplorersOrTowns(int count) => RemoveUpToNTokens(count,Invader.Explorer,Invader.Town);

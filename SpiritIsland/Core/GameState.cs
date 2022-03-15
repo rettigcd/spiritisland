@@ -58,7 +58,7 @@ public class GameState {
 		} );
 		Tokens.TokenAdded.ForGame.Add( async args => {
 			if(args.Token == TokenType.Blight)
-				await BlightAdded( args.Space, args.Count );
+				await BlightAdded( args );
 		} );
 	}
 
@@ -103,13 +103,13 @@ public class GameState {
 		await LandDamaged.InvokeAsync( new LandDamagedArgs { GameState = this, Space = space, Damage = damageInflictedFromInvaders} );
 
 		if( damageInflictedFromInvaders >= DamageToBlightLand)
-			await Tokens[space].Blight.Add(1, AddReason.TakenFromCard); // !!! remove .TakenFromCard 
+			await Tokens[space].Blight.Add(1, AddReason.Ravage);
 	}
 
-	async Task BlightAdded( Space blightSpace, int count ){
+	async Task BlightAdded( ITokenAddedArgs args ){
 
 		// remove from card.
-		TakeFromBlightSouce( count, blightSpace );
+		await TakeFromBlightSouce( args.Count, args.Space );
 
 		if(BlightCard != null && blightOnCard <= 0) {
 			Log( new IslandBlighted( BlightCard ) );
@@ -117,24 +117,24 @@ public class GameState {
 		}
 
 		// Calc side effects
-		var effect = AddBlightSideEffect( this, blightSpace );
+		var effect = AddBlightSideEffect( this, args.Space );
 
 		// Destory presence
 		if(effect.DestroyPresence)
 			foreach(var spirit in Spirits)
-				if(spirit.Presence.IsOn( blightSpace ))
-					await spirit.Presence.Destroy( blightSpace, this, ActionType.Invader );
+				if(spirit.Presence.IsOn( args.Space ))
+					await spirit.Presence.Destroy( args.Space, this, DestoryPresenceCause.Blight, args.Reason );
 
 		// Cascade blight
 		if(effect.Cascade) {
 			Space cascadeTo = await Spirits[0].Action.Decision( Select.Space.ForAdjacent(
-				$"Cascade blight from {blightSpace.Label} to",
-				blightSpace,
+				$"Cascade blight from {args.Space.Label} to",
+				args.Space,
 				Select.AdjacentDirection.Outgoing,
-				blightSpace.Adjacent.Where( x => !Island.TerrainMapFor( Cause.Blight ).IsOneOf( x, Terrain.Ocean ) ),
+				args.Space.Adjacent.Where( x => !Island.TerrainMapFor( Cause.Blight ).IsOneOf( x, Terrain.Ocean ) ),
 				Present.Always
 			));
-			await Tokens[ cascadeTo ].Blight.Add(1,AddReason.TakenFromCard);
+			await Tokens[ cascadeTo ].Blight.Add(1, args.Reason); // Cascading blight shares original blights reason.
 		}
 
 	}
@@ -286,14 +286,14 @@ public class GameState {
 
 	/// <returns># of blight to remove from card</returns>
 	Task Default_TakeBlightFromSource( int count, Space _ ) {
-		if( count < 0 ) throw new ArgumentOutOfRangeException();
+		if( count < 0 ) throw new ArgumentOutOfRangeException(nameof(count));
 		this.blightOnCard -= count;
 		return Task.CompletedTask;
 	}
 
 	static async Task DefaultDestroy1PresenceFromBlightCard( Spirit spirit, GameState gs, Cause cause ) {
 		var presence = await spirit.Action.Decision( Select.DeployedPresence.ToDestroy( "Blighted Island: Select presence to destroy.", spirit ) );
-		await spirit.Presence.Destroy( presence, gs, ActionType.BlightedIsland );
+		await spirit.Presence.Destroy( presence, gs, DestoryPresenceCause.BlightedIsland );
 	}
 
 	#endregion

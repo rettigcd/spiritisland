@@ -120,7 +120,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 		PlaceOn( to, gs );
 	}
 
-	public async Task Destroy( Space space, GameState gs, ActionType actionType ) {
+	public virtual async Task Destroy( Space space, GameState gs, DestoryPresenceCause actionType, AddReason blightAddedReason = AddReason.None ) {
 		await DestroyBehavior.DestroyPresenceApi(this,space,gs, actionType);
 		CheckIfSpiritIsDestroyed();
 	}
@@ -133,7 +133,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 	public IDestroyPresenceBehavour DestroyBehavior = new DefaultDestroyBehavior(); // replaceable / plugable
 
 	public class DefaultDestroyBehavior : IDestroyPresenceBehavour {
-		public virtual Task DestroyPresenceApi(SpiritPresence presence, Space space, GameState gs, ActionType actionType ) {
+		public virtual Task DestroyPresenceApi(SpiritPresence presence, Space space, GameState gs, DestoryPresenceCause actionType ) {
 			presence.RemoveFrom_NoCheck( space, gs );
 			++presence.Destroyed;
 			return Task.CompletedTask;
@@ -259,14 +259,17 @@ public class SpiritPresence : IKnowSpiritLocations {
 	#endregion
 }
 
-public enum ActionType {
+public enum DestoryPresenceCause {
 	None,
 	SpiritPower,    // One use of a Power;
-	SpiritGrowth,   // A single Growth effect (nearly always "one icon");
+	DahanDestroyed, // Thunderspeaker
 
-	Invader,        // A Ravage, Build, or Explore in a single land;
-	FearCard,       // Everything one Fear Card does (†);
-	Event,          // Everything a Main/Token/Dahan Event does (†);
-	BlightedIsland, // The effect of the Blighted Island card (†);
-	Adversary,      //An Adversary's Escalation effect (†);
+	Blight,          // blight added to land
+	BlightedIsland,  // Direct effect of the Blighted Island card
+
+
+	// Not used
+	Adversary,      //An Adversary's Escalation effect
+	Event,          // Everything a Main/Token/Dahan Event does
+	FearCard,       // Everything one Fear Card does
 }

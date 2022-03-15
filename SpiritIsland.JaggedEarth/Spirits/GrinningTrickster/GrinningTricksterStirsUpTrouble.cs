@@ -72,7 +72,7 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 
 	async Task PickPresenceToDestroy( TargetSpaceCtx ctx ) {
 		var space = await this.Action.Decision( Select.DeployedPresence.ToDestroy( $"{CleaningUpMessesIsADrag.Title} Destroy presence for blight cleanup", this ) );
-		await ctx.Presence.Destroy( space, ActionType.SpiritPower );
+		await ctx.Presence.Destroy( space, DestoryPresenceCause.SpiritPower );
 	}
 
 }
@@ -92,8 +92,8 @@ public class TricksterSpaceCtx : TargetSpaceCtx {
 
 public class TricksterBlight : TokenBinding {
 
-	TricksterSpaceCtx ctx;
-	GrinningTricksterStirsUpTrouble trickster;
+	readonly TricksterSpaceCtx ctx;
+	readonly GrinningTricksterStirsUpTrouble trickster;  // !!!!
 
 	public TricksterBlight( TricksterSpaceCtx ctx ) :base( ctx.Tokens, TokenType.Blight ) {
 		this.ctx = ctx;

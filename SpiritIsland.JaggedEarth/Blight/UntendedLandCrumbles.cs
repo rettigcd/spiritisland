@@ -16,8 +16,7 @@ public class UntendedLandCrumbles : BlightCardBase {
 		);
 
 	static ActionOption<BoardCtx> AddBlightAdjacentToBligtht =>
-		Cmd.AddBlight
-			.ToLandOnBoard( ctx => ctx.Space.Adjacent.Any( adj => ctx.GameState.Tokens[adj].Blight.Any ), "land adjacent to blight" );
+		Cmd.AddBlightedIslandBlight.ToLandOnBoard( ctx => ctx.Space.Adjacent.Any( adj => ctx.GameState.Tokens[adj].Blight.Any ), "land adjacent to blight" );
 
 	static IExecuteOn<BoardCtx> JointlyPayEnergy( int requiredEnergy ) => new ActionOption<BoardCtx>(
 		$"Joinly pay {requiredEnergy} energy",
@@ -48,7 +47,7 @@ public class UntendedLandCrumbles : BlightCardBase {
 			var spirit = await ctx.Decision(new Select.Spirit("Destroy 1 presence",spiritOptions));
 			await spirit.Bind(ctx.GameState,Cause.Blight)
 				.Presence
-				.DestroyOne(ActionType.BlightedIsland);
+				.DestroyOne(DestoryPresenceCause.BlightedIsland);
 		}
 	).Matches(ctx => ctx.GameState.Spirits.SelectMany(s=>s.Presence.Spaces).Any(s=>s.Board == ctx.Board));
 

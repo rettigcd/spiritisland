@@ -78,7 +78,7 @@ class ManyMindsPresence : SpiritPresence {
 
 			// the only time we care about what destroyed the presence is for Vengencence as a burning plague.
 			// since this is Many Minds, we don't care about that value.
-			var dontCareActionType = ActionType.None;
+			var dontCareActionType = DestoryPresenceCause.None;
 
 			// destroy saved site
 			await base.Destroy(args.Space, args.GameState, dontCareActionType);

@@ -12,15 +12,16 @@ public interface ITokenAddedArgs {
 }
 
 public enum AddReason {
-	None, // default / unspecified
-	Added, // Generic add
-	Explore, // invaders
-	Build, // invaders
-	AsReplacement, //
-	TakenFromCard, // blight only
+	None,          // default / unspecified
+	Added,         // Generic add
+	Explore,       // invaders
+	Build,         // invaders
+	Ravage,        // blight from ravage
+	BlightedIsland,// blight from blighted island card
+	AsReplacement, // 
+	SpecialRule,   // Heart of wildfire - Blight from add presence
 	MovedTo,
 }
-
 
 public interface ITokenRemovedArgs {
 	public Token Token { get; }

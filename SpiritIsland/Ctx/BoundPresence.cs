@@ -34,7 +34,7 @@ public class BoundPresence {
 	public async Task PlaceWithin( int range, string filterEnum ) {
 		var from = await SelectSource();
 		Space to = await SelectDestinationWithinRange( range, filterEnum );
-		await ctx.Self.PlacePresence( from, to, ctx.GameState );
+		await ctx.Self.Presence.Place( from, to, ctx.GameState );
 	}
 
 	/// <summary> Selects: Source then Destination(predetermined) for placing presence.</summary>
@@ -42,16 +42,16 @@ public class BoundPresence {
 	public async Task Place( params Space[] destinationOptions ) {
 		var from = await SelectSource();
 		var to = await ctx.Decision( Select.Space.ToPlacePresence( destinationOptions, Present.Always ) );
-		await ctx.Self.PlacePresence( from, to, ctx.GameState );
+		await ctx.Self.Presence.Place( from, to, ctx.GameState );
 	}
 
 	#endregion
 
 	#region Destroy 
 
-	public Task Destroy( Space space, ActionType actionType ) => ctx.Self.Presence.Destroy( space, ctx.GameState, actionType );
+	public Task Destroy( Space space, DestoryPresenceCause actionType ) => ctx.Self.Presence.Destroy( space, ctx.GameState, actionType );
 
-	public async Task DestroyOne(ActionType actionType, Func<SpiritIsland.Space,bool> filter = null) {
+	public async Task DestroyOne(DestoryPresenceCause actionType, Func<SpiritIsland.Space,bool> filter = null) {
 		var space = filter == null 
 			? await ctx.Decision( Select.DeployedPresence.ToDestroy("Select presence to destroy",ctx.Self) )
 			: await ctx.Decision( Select.DeployedPresence.ToDestroy("Select presence to destroy",ctx.Self, filter) );

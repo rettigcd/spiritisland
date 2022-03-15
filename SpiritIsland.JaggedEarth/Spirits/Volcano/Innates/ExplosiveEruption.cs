@@ -20,16 +20,15 @@ public class ExplosiveEruption {
 	}
 
 	[InnateOption("4 fire, 2 air, 4 earth","6 destroyedpresence In each land within range 1, 4 Damage.  Add 1 blight to target land; doing so does not Destroy your presence.",2)]
-	static public Task Option3(ErruptionCtx ctx ) {
+	static public async Task Option3(ErruptionCtx ctx ) {
 		if(6 <= ctx.DestroyedPresence) {
 			// In each land within range 1,4 Damage.
 			foreach(var adj in ctx.Adjacent) 
-				ctx.Target(adj).DamageInvaders(4);
+				await ctx.Target(adj).DamageInvaders(4);
 
 			// Add 1 blight to target land; doing so does not Destroy your presence.
-			ctx.AddBlight(); // !!! when we fix adding blight, we need to make sure this incantation does not destroy presence
+			await ctx.AddBlight(1); // !!! when we fix adding blight, we need to make sure this incantation does not destroy presence
 		}
-		return Task.CompletedTask;
 	}
 
 	[InnateOption("5 fire, 3 air, 5 earth","10 destroyedpresence In each land withing range 2, +4 Damage.  In each land adjacent to the target, add 1 blight if it doesn't have any.",3)]
@@ -46,7 +45,7 @@ public class ExplosiveEruption {
 			foreach(var adj in ctx.Adjacent) {
 				var adjCtx = ctx.Target(adj);
 				if(!adjCtx.Blight.Any)
-					await adjCtx.AddBlight();
+					await adjCtx.AddBlight(1);
 			}
 		}
 	}
@@ -64,7 +63,7 @@ class ErruptionAttribute : FromPresenceAttribute {
 
 		// Destroy them now
 		for(int i=0;i<count;++i)
-			await target.Presence.Destroy(target.Space, ActionType.SpiritPower);
+			await target.Presence.Destroy(target.Space, DestoryPresenceCause.SpiritPower);
 
 		return new ErruptionCtx(target,count);
 	}

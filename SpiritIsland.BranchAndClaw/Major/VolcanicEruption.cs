@@ -15,7 +15,7 @@ public class VolcanicEruption {
 		await DestroyDahanAndBeasts( ctx );
 
 		// Add 1 blight
-		await ctx.AddBlight();
+		await ctx.AddBlight(1);
 
 		// if you have 4 fire, 3 earth:
 		if(await ctx.YouHave( "4 fire,3 earth" )) {
@@ -37,7 +37,7 @@ public class VolcanicEruption {
 		await DestroyDahanAndBeasts( adj );
 		// IF there are no blight, add 1 blight
 		if(adj.Blight.Count == 0)
-			await adj.AddBlight();
+			await adj.AddBlight(1);
 	}
 
 	static async Task DestroyDahanAndBeasts( TargetSpaceCtx ctx ) {

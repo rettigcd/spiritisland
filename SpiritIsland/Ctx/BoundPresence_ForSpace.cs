@@ -21,12 +21,12 @@ public class BoundPresence_ForSpace : BoundPresence {
 	public async Task PlaceDestroyedHere( int count = 1 ) {
 		count = Math.Min(count, ctx.Self.Presence.Destroyed);
 		while(count-- > 0 )
-			await ctx.Self.PlacePresence( Track.Destroyed, ctx.Space, ctx.GameState );
+			await ctx.Self.Presence.Place( Track.Destroyed, ctx.Space, ctx.GameState );
 	} 
 
 	public async Task PlaceHere() {
 		var from = await SelectSource();
-		await ctx.Self.PlacePresence( from, ctx.Space, ctx.GameState );
+		await ctx.Self.Presence.Place( from, ctx.Space, ctx.GameState );
 	}
 
 	public async Task MoveHereFromAnywhere(int count) {

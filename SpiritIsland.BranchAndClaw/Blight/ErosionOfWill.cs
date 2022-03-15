@@ -10,7 +10,7 @@ public class ErosionOfWill : BlightCardBase {
 		// each spirit 
 		Cmd.EachSpirit( Cause.Blight, Cmd.Multiple(
 			// destroys 1 of their presence and
-			Cmd.DestroyPresence( ActionType.BlightedIsland ),
+			Cmd.DestroyPresence( DestoryPresenceCause.BlightedIsland ),
 			// loses 1 energy
 			LoseEnergy(1)
 		))

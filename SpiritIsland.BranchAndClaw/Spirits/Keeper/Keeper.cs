@@ -11,16 +11,14 @@ public class Keeper : Spirit {
 	} ;
 
 	public Keeper():base(
-		new SpiritPresence(
-			new PresenceTrack( Track.Energy2, Track.SunEnergy, Track.Energy4, Track.Energy5, Track.PlantEnergy, Track.Energy7, Track.Energy8, Track.Energy9 ),
-			new PresenceTrack( Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4, Track.Card5Reclaim1 )
-		),
+		new KeeperPresence(),
 		// PowerCard.For<SkyStretchesToShore>(),
 		PowerCard.For<BoonOfGrowingPower>(),
 		PowerCard.For<RegrowFromRoots>(),
 		PowerCard.For<SacrosanctWilderness>(),
 		PowerCard.For<TowingWrath>()
 	) {
+		(Presence as KeeperPresence).spirit = this;
 
 		Growth = new Growth( 2,
 			new GrowthOption( new ReclaimAll() ,new GainEnergy(1) ){ GainEnergy = 1 },
@@ -35,13 +33,6 @@ public class Keeper : Spirit {
 		};
 	}
 
-	public override async Task PlacePresence( IOption from, Space to, GameState gs ) {
-		await base.PlacePresence( from, to, gs );
-		if(gs.DahanOn(to).Any && Presence.SacredSites.Contains(to))
-			await Bind(gs, Cause.Growth).Target(to).PushDahan( int.MaxValue );
-	}
-
-
 	protected override void InitializeInternal( Board board, GameState gs ){
 		// In the highest-numbered Jungle.
 		var space = board.Spaces.OrderByDescending( x => x.IsJungle ).First();
@@ -51,4 +42,20 @@ public class Keeper : Spirit {
 		gs.Tokens[space].Wilds.Init(1);
 	}
 
+	class KeeperPresence : SpiritPresence {
+		public KeeperPresence()
+			: base(
+				new PresenceTrack( Track.Energy2, Track.SunEnergy, Track.Energy4, Track.Energy5, Track.PlantEnergy, Track.Energy7, Track.Energy8, Track.Energy9 ),
+				new PresenceTrack( Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4, Track.Card5Reclaim1 )
+			) { }
+
+		public override async Task Place( IOption from, Space to, GameState gs ) {
+			await base.Place( from, to, gs );
+			if(gs.DahanOn( to ).Any && SacredSites.Contains( to ))
+				await spirit.Bind( gs, Cause.Growth ).Target( to ).PushDahan( int.MaxValue );
+		}
+		public Keeper spirit;
+	}
+
 }
+
