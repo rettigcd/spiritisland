@@ -45,7 +45,7 @@ namespace SpiritIsland.Tests {
 			var starterCtx = spirit.Bind( gs, Cause.None );
 
 			// Disable destroying presence
-			starterCtx.GameState.DetermineAddBlightEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
+			starterCtx.GameState.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
 
 			return (user,starterCtx);
 		}

@@ -29,7 +29,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		public async Task NoFearCard_NormalRavage() {
 
 			// Disable destroying presence
-			gameState.DetermineAddBlightEffect = (gs,space) => new AddBlightEffect { Cascade=false, DestroyPresence=false };
+			gameState.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false, DestroyPresence=false };
 
 			Given_DahanAndTowns( 2, 2 );
 
@@ -40,7 +40,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 
 			// Then: all dahan killed
 			Assert.Equal( 0, gameState.DahanOn( ravageSpace ).Count );
-			Assert.True( gameState.HasBlight( ravageSpace ) );
+			Assert.True( gameState.Tokens[ ravageSpace ].Blight.Any );
 		}
 
 		[Fact]
@@ -65,7 +65,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 
 			//   And: 2 towns
 			gameState.Assert_Invaders(ravageSpace, "2T@2" );
-			gameState.HasBlight( ravageSpace ).ShouldBe( true );
+			gameState.Tokens[ ravageSpace ].Blight.Any.ShouldBe( true );
 
 		}
 

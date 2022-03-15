@@ -12,7 +12,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			gs.Phase = Phase.Fast;
 
 			// Disable destroying presence
-			gs.DetermineAddBlightEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
+			gs.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
 
 			// Given: 2 dahan on a2
 			gs.DahanOn( a[2] ).Init(2);

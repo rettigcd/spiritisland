@@ -40,7 +40,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 		public void TownDamage_Generates2Defend() {
 
 			// Disable destroying presence
-			ctx.GameState.DetermineAddBlightEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
+			ctx.GameState.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
 
 			// has town
 			ctx.Tokens.Adjust(Invader.Town.Default, 1);
@@ -62,7 +62,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 		[Fact]
 		public async Task CityDamage_Generates5Defend() {
 			// Disable destroying presence
-			ctx.GameState.DetermineAddBlightEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
+			ctx.GameState.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
 
 			// has city
 			ctx.Tokens.Adjust( Invader.City.Default, 1 );
@@ -80,7 +80,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 		public async Task DahanDamage_Generates0() {
 
 			// Disable destroying presence
-			ctx.GameState.DetermineAddBlightEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
+			ctx.GameState.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
 
 			// has 1 city and lots of dahan
 			ctx.Tokens.Adjust( Invader.City.Default, 1 ); // don't use ctx.Invaders because it has a fake/dream invader count

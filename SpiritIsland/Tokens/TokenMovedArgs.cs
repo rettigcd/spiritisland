@@ -32,8 +32,8 @@ public interface ITokenRemovedArgs {
 
 public enum RemoveReason {
 	None,
-	Removed, // Generic 'Remove X' command
-	UsedUp, // Wilds, Disease, Strife
+	Removed,           // Generic 'Remove X' command
+	UsedUp,            // Wilds, Disease, Strife
 	Destroyed,
 	DestroyedInBattle, // with invaders - Used by Thunderspeaker's Special Rule
 	Replaced,          // with another token

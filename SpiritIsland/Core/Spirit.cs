@@ -531,7 +531,7 @@ public abstract class Spirit : IOption {
 	// Overriden by Trickster because it costs them presence
 	public virtual async Task RemoveBlight( TargetSpaceCtx ctx, int count=1 ) {
 		if(ctx.Blight.Any)
-			await ctx.GameState.AddBlight( ctx.Space, -count );
+			await ctx.Blight.Remove( count, RemoveReason.ReturnedToCard ); // !!! get rid of this ReturnedToCard bit
 	}
 
 	public virtual TokenPusher PushFactory( TargetSpaceCtx ctx ) => new TokenPusher( ctx );

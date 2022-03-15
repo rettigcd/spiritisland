@@ -27,33 +27,31 @@ class PayEnergyToTakeFromCard {
 
 	readonly Spirit spirit;
 	readonly int cost;
-	readonly Func<TokenCountDictionary, int, Task<int>> oldBehavior;
+	readonly Func<int, Space, Task> oldBehavior;
 	public PayEnergyToTakeFromCard( SelfCtx ctx, int cost ) {
 		this.spirit = ctx.Self;
 		this.cost = cost;
-		this.oldBehavior = ctx.GameState.AddRemoveBlightBehavior;
-		ctx.GameState.AddRemoveBlightBehavior = this.AddBlight;
+		this.oldBehavior = ctx.GameState.TakeFromBlightSouce;
+		ctx.GameState.TakeFromBlightSouce = this.AddBlight;
 		ctx.GameState.TimePasses_ThisRound.Push( Restore );
 	}
 
 	Task Restore(GameState gs ) {
-		gs.AddRemoveBlightBehavior = oldBehavior; 
+		gs.TakeFromBlightSouce = oldBehavior; 
 		return Task.CompletedTask;
 	}
 
 	/// <returns># of blight to remove from card</returns>
-	async Task<int> AddBlight( TokenCountDictionary tokens, int delta ) {
-		await tokens.Blight.Add( delta );
-			
-		if(delta > 0 
-			&& spirit.Presence.IsOn( tokens.Space )
+	async Task AddBlight( int delta, Space space ) {
+		bool takeFromBagInstead = 0 < delta
+			&& spirit.Presence.IsOn( space )
 			&& cost <= spirit.Energy
-			&& await spirit.UserSelectsFirstText( $"New Blight on {tokens.Space.Label}, take from:", $"Bag (for {cost})", "card" )
-		) {
+			&& await spirit.UserSelectsFirstText( $"New Blight on {space.Label}, take from:", $"Bag (for {cost})", "card" );
+
+		if( takeFromBagInstead )
 			spirit.Energy -= cost;
-			return 0;
-		}
-		return delta;
+		else 
+			await oldBehavior( delta, space );
 	}
 
 }

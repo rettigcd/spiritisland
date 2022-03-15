@@ -55,7 +55,7 @@ public class TokenCountDictionary {
 
 	public override string ToString() => Space.Label + ":" + Summary;
 
-	public TokenBinding Blight => new TokenBinding( this, TokenType.Blight);
+	public virtual BlightTokenBinding Blight => new BlightTokenBinding( this );
 	public IDefendTokenBinding Defend => new DefendTokenBinding( this );
 	public TokenBinding Beasts => new ( this, TokenType.Beast );
 	public TokenBinding Disease => new ( this, TokenType.Disease );

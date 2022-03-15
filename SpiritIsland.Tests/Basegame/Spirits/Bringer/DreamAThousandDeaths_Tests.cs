@@ -23,7 +23,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			ctx = MakeFreshCtx();
 
 			// Disable destroying presence
-			ctx.GameState.DetermineAddBlightEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
+			ctx.GameState.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
 
 		}
 

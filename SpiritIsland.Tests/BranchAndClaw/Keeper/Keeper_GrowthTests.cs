@@ -206,7 +206,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 		}
 
 		void AddBlight( Space space ) {
-			gameState.AddBlight( space ).Wait();
+			gameState.Tokens[ space ].Blight.Add( 1 ).Wait(); // if cascading is not desired, try adjust
 		}
 
 		void Given_BlightEverywhereExcept7() {
@@ -217,7 +217,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Spirits {
 			AddBlight( board[5] );
 			AddBlight( board[6] );
 			AddBlight( board[8] );
-			gameState.GetBlightOnSpace( board[7] ).ShouldBe( 0 );
+			gameState.Tokens[ board[7] ].Blight.Count.ShouldBe( 0 );
 		}
 
 		void Given_HasWilds( Space space ) {

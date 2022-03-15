@@ -245,7 +245,7 @@ namespace SpiritIsland.Tests.Core {
 			gameState = new GameState( new RiverSurges(), board ) {
 
 				// Disable destroying presence
-				DetermineAddBlightEffect = ( gs, space ) => new AddBlightEffect { Cascade = false, DestroyPresence = false }
+				AddBlightSideEffect = ( gs, space ) => new AddBlightEffect { Cascade = false, DestroyPresence = false }
 			};
 
 			// Given: Invaders on a Mountain space

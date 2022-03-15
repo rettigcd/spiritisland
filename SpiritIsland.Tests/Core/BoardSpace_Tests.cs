@@ -229,7 +229,7 @@ namespace SpiritIsland.Tests.Core {
 			Assert.Equal(items.Count(c=>c=='T'), tokens[Invader.Town[2]]);
 			Assert.Equal(items.Count(c=>c=='E'), tokens[Invader.Explorer[1]]);
 			Assert.Equal(items.Count(c=>c=='D'), tokens.Dahan.Count);
-			Assert.Equal(items.Count(c=>c=='B'), gameState.HasBlight(space)?1:0);
+			Assert.Equal(items.Count(c=>c=='B'), tokens.Blight.Any?1:0);
 		}
 
 		#region private

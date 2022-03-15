@@ -65,7 +65,7 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 		await base.RemoveBlight( ctx,count );
 	}
 
-	async Task CleaningUpMessesIsSuckADrag( TargetSpaceCtx ctx ) {
+	public async Task CleaningUpMessesIsSuckADrag( TargetSpaceCtx ctx ) {
 		if(ctx.Blight.Any)
 			await PickPresenceToDestroy( ctx );
 	}
@@ -75,4 +75,32 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 		await ctx.Presence.Destroy( space, ActionType.SpiritPower );
 	}
 
+}
+
+class TricksterContext : SelfCtx {
+	public TricksterContext(Spirit spirit, GameState gs, Cause cause ) : base( spirit, gs, cause ) { }
+	public override TargetSpaceCtx Target( Space space ) => new TricksterSpaceCtx( this, space );
+}
+
+public class TricksterSpaceCtx : TargetSpaceCtx {
+
+	public TricksterSpaceCtx(SelfCtx ctx, Space space):base( ctx, space ) { }
+
+	public override TokenBinding Blight => new TricksterBlight( this );
+
+}
+
+public class TricksterBlight : TokenBinding {
+
+	TricksterSpaceCtx ctx;
+	GrinningTricksterStirsUpTrouble trickster;
+
+	public TricksterBlight( TricksterSpaceCtx ctx ) :base( ctx.Tokens, TokenType.Blight ) {
+		this.ctx = ctx;
+	}
+
+	public override async Task Remove( int count, RemoveReason reason = RemoveReason.Removed ) {
+		await trickster.CleaningUpMessesIsSuckADrag( ctx ); // feature envy?
+		await base.Remove( count, reason );
+	}
 }

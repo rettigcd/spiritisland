@@ -73,8 +73,8 @@ public StonesUnyieldingDefiance() : base(
 		Presence.PlaceOn(space2, gameState);
 
 		// Bestow the Endurance of Bedrock
-		oldBlightEffect = gameState.DetermineAddBlightEffect;
-		gameState.DetermineAddBlightEffect = this.BestowTheEnduranceOfBedrock;
+		oldBlightEffect = gameState.AddBlightSideEffect;
+		gameState.AddBlightSideEffect = this.BestowTheEnduranceOfBedrock;
 	}
 
 	AddBlightEffect BestowTheEnduranceOfBedrock(GameState gs,Space space ) {

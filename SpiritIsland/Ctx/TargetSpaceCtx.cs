@@ -37,7 +37,7 @@ public class TargetSpaceCtx : SelfCtx {
 		} ); // !! could just sweep entire board instead...
 	}
 
-	public TokenBinding Blight => Tokens.Blight;
+	public virtual TokenBinding Blight => Tokens.Blight;
 	public TokenBinding Beasts => Tokens.Beasts;
 	public TokenBinding Disease => Tokens.Disease;
 	public TokenBinding Wilds => Tokens.Wilds;
@@ -145,13 +145,13 @@ public class TargetSpaceCtx : SelfCtx {
 
 	public bool Matches( string filterEnum ) => IsInPlay && SpaceFilterMap.Get(filterEnum)(this);
 
-	public bool HasBlight => GameState.HasBlight(Space); // !!! route this through tokens
-	public Task AddBlight(int delta=1) => GameState.AddBlight(Space,delta); // !!! route this through tokens
+	public bool HasBlight => Blight.Any;
+	public Task AddBlight(int delta=1) => Blight.Add( delta );
 
 	/// <summary> Returns blight from the board to the blight card. </summary>
-	public Task RemoveBlight(int count=1) => Self.RemoveBlight( this, count );// !!! replace with a method on the .Blight property called .ReturnToCard(1), then call that directly instead of this
+	public Task RemoveBlight(int count=1) => Blight.Remove( count, RemoveReason.ReturnedToCard );
 
-	public int BlightOnSpace => GameState.GetBlightOnSpace(Space);
+	public int BlightOnSpace => Blight.Count;
 
 	public bool HasInvaders => Tokens.HasInvaders();
 

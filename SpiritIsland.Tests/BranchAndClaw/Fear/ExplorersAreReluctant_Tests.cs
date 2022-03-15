@@ -9,7 +9,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Fear {
 		public void NormalInvaderPhases() {
 
 			// Disable destroying presence
-			ctx.GameState.DetermineAddBlightEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
+			ctx.GameState.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
 
 			AdvanceToInvaderPhase();
 
@@ -34,7 +34,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Fear {
 		public void Level1_SkipExploreInLowestNumberedLand() {
 
 			// Disable destroying presence
-			ctx.GameState.DetermineAddBlightEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
+			ctx.GameState.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
 
 			// 1: "During the next normal explore, skip the lowest-numbered land matching the invader card on each board.
 
@@ -69,7 +69,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Fear {
 		public void Level2_DelayExplore1Round() {
 
 			// Disable destroying presence
-			ctx.GameState.DetermineAddBlightEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
+			ctx.GameState.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
 
 			// 2: Skip the next normal explore.  During the next invader phase, draw an adidtional explore card.
 
@@ -112,7 +112,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Fear {
 		public void Level3_DelayExplore1Round() {
 
 			// Disable destroying presence
-			ctx.GameState.DetermineAddBlightEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
+			ctx.GameState.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
 
 			// 3: Skip the next normal explore, but still reveal a card. Perform the flag if relavant. Cards shift left as usual.
 
