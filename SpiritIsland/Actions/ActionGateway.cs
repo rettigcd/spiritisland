@@ -72,7 +72,11 @@ sealed public class ActionGateway : IUserPortal, IEnginePortal {
 	/// </summary>
 	public Task<T> Decision<T>( Select.TypedDecision<T> originalDecision ) where T : class, IOption {
 		if(originalDecision == null) throw new ArgumentNullException( nameof( originalDecision ) );
-		if(activeDecisionMaker != null) throw new InvalidOperationException( "Pending decision was not properly awaited. "+activeDecisionMaker.Decision.Prompt );
+
+		if(activeDecisionMaker != null) 
+			throw new InvalidOperationException( "Pending decision was not properly awaited. "
+				+activeDecisionMaker.Decision.Prompt + " / " + originalDecision.Prompt
+			);
 
 		var promise = new TaskCompletionSource<T>();
 		var decisionMaker = new ActionHelper<T>( originalDecision, promise );
