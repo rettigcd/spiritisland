@@ -52,13 +52,13 @@ public class GameState {
 
 		// Blight
 		BlightCard.OnGameStart( this );
-		Tokens.TokenRemoved.ForGame.Add( args => {
-			if(args.Token == TokenType.Blight)
-				this.blightOnCard += args.Count;
-		} );
 		Tokens.TokenAdded.ForGame.Add( async args => {
 			if(args.Token == TokenType.Blight)
 				await BlightAdded( args );
+		} );
+		Tokens.TokenRemoved.ForGame.Add( args => {
+			if(args.Token == TokenType.Blight)
+				this.blightOnCard += args.Count;
 		} );
 	}
 
@@ -107,6 +107,17 @@ public class GameState {
 	}
 
 	async Task BlightAdded( ITokenAddedArgs args ){
+
+		bool isCascading = args.Reason switch {
+			AddReason.AsReplacement  => false,
+			AddReason.MovedTo        => false,
+			AddReason.Added          => true, // Generic add
+			AddReason.Ravage         => true, // blight from ravage
+			AddReason.BlightedIsland => true, // blight from blighted island card
+			AddReason.SpecialRule    => true, // Heart of wildfire - Blight from add presence
+			_ => throw new ArgumentException(nameof(args.Reason))
+		};
+		if( !isCascading ) return;
 
 		// remove from card.
 		await TakeFromBlightSouce( args.Count, args.Space );
