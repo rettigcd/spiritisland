@@ -57,7 +57,12 @@ public class GameState {
 				await BlightAdded( args );
 		} );
 		Tokens.TokenRemoved.ForGame.Add( args => {
-			if(args.Token == TokenType.Blight)
+			if(args.Token == TokenType.Blight 
+				&& !args.Reason.IsOneOf( 
+					RemoveReason.MovedFrom, // pushing / gathering blight
+					RemoveReason.Replaced	// just in case...
+				) 
+			)
 				this.blightOnCard += args.Count;
 		} );
 	}
