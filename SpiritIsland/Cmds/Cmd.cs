@@ -14,6 +14,7 @@ public static partial class Cmd {
 	// Gather
 	static public SpaceAction GatherUpToNDahan( int count ) => new SpaceAction( $"Gather up to {count} Dahan", ctx => ctx.GatherUpToNDahan( count ) );
 	static public SpaceAction GatherUpToNExplorers( int count ) => new SpaceAction( $"Gather up to {count} Explorers", ctx => ctx.GatherUpTo(count,Invader.Explorer));
+	static public SpaceAction GatherUpToNInvaders( int count, params TokenClass[] classes ) => new SpaceAction( $"Gather up to {count} " + classes.Select(c=>c.Label).Join("/"), ctx => ctx.GatherUpTo( count, classes ) );
 
 	// Push
 	static public SpaceAction PushUpToNDahan( int count ) => new SpaceAction( $"Push up to {count} Dahan", ctx => ctx.PushUpToNDahan( count ) ).Matches(ctx=>ctx.Dahan.Any );
