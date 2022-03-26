@@ -54,13 +54,12 @@ public class Bringer : Spirit {
 		var normalTokens = gs.Tokens[space];
 		var detached = new TokenCountDictionary( normalTokens );
 
-		return new InvaderBinding( 
+		return new InvaderBinding(
 			detached,
 			new ToDreamAThousandDeaths_DestroyStrategy( 
 				gs.Fear.AddDirect, 
 				Bind(gs,Cause.Power)
-			),
-			CustomDamageStrategy
+			)
 		);
 	}
 

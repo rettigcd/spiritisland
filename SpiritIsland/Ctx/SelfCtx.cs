@@ -88,6 +88,7 @@ public class SelfCtx {
 
 	public async Task<TargetSpaceCtx> SelectSpace( string prompt, IEnumerable<TargetSpaceCtx> options ) {
 		var lookup = options.ToDictionary(ctx=>ctx.Space,ctx=>ctx);
+		if( !lookup.Any() ) return null; // ??? does this solve the Thriving Communities problem?
 		var space = await Decision( new Select.Space( prompt, lookup.Keys, Present.Always ) );
 		return space != null ? lookup[ space ] : null;
 	}
@@ -128,13 +129,6 @@ public class SelfCtx {
 				await spaceCtx.Invaders.Remove( removables );
 		return spaceCtx?.Space;
 	}
-
-	public async Task GatherExplorerToOne( IEnumerable<Space> spaceOptions, int count, params TokenClass[] typeToGather ) {
-		var spaceCtx = await SelectSpace( "Gather Invader to", spaceOptions );
-		if(spaceCtx != null)
-			await spaceCtx.GatherUpTo(count,typeToGather);
-	}
-
 
 	#endregion
 

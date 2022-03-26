@@ -169,22 +169,52 @@ public class TargetSpaceCtx : SelfCtx {
 	public void SkipExplore(Func<GameState,Space,Task> altAction = null) => GameState.SkipExplore( Space, altAction );
 	public void SkipRavage(Func<GameState,Space,Task> altAction = null) => GameState.SkipRavage(Space, altAction );
 
+
 	// Damage invaders in the current target space
 	// This called both from powers and from Fear
-	public async Task DamageInvaders( int damage, params TokenClass[] allowedTypes ) {
-		if( damage == 0 ) return; // not necessary, just saves some cycles
+	public async Task DamageInvaders( int originalDamage, params TokenClass[] allowedTypes ) {
 
-		// !!! This is not correct, if card has multiple Damages, adds badland multiple times.
-		damage += Badlands.Count; 
+		// Calculate Total Damage available
+		int sumAvailableDamage = originalDamage;
+		sumAvailableDamage += BonusDamage.Remaining;
+		if(0 < originalDamage)
+			sumAvailableDamage += BadlandDamage.Remaining;
 
-		if(allowedTypes==null || allowedTypes.Length==0)
-			allowedTypes = new TokenClass[] { Invader.City, Invader.Town, Invader.Explorer };
-		await Invaders.UserSelectedDamage( damage, Self, allowedTypes );
+		// Apply Damage
+		int damageApplied = await Invaders.UserSelectedDamage( sumAvailableDamage, Self, allowedTypes );
+		int poolDamageToAccountFor = damageApplied - originalDamage;
+
+		// Remove bonus damage from damage pools
+		poolDamageToAccountFor -= BadlandDamage.ReducePoolDamage( poolDamageToAccountFor );
+		poolDamageToAccountFor -= BonusDamage.ReducePoolDamage( poolDamageToAccountFor );
+
+		if(poolDamageToAccountFor > 0)
+			throw new Exception( "somehow we did more damage than we have available" );
+	}
+
+	DamagePool BonusDamage => _bonusDamageFromSpirit ??= new DamagePool( Self.BonusDamage );
+	DamagePool _bonusDamageFromSpirit;
+
+	DamagePool BadlandDamage => _badlandDamage ??= new DamagePool( Badlands.Count );
+	DamagePool _badlandDamage;
+
+	class DamagePool {
+
+		public DamagePool( int init ) { remaining = init; }
+
+		public int ReducePoolDamage( int poolDamageToAccountFor ) {
+			int damageFromBadlandPool = Math.Min( remaining, poolDamageToAccountFor );
+			remaining -= damageFromBadlandPool;
+			return damageFromBadlandPool;
+		}
+
+		int remaining;
+		public int Remaining => remaining;
 	}
 
 	public async Task DamageEachInvader( int individualDamage, params TokenClass[] generic ) {
 		await Invaders.ApplyDamageToEach( individualDamage, generic );
-		await Invaders.UserSelectedDamage( Badlands.Count, Self,generic );
+		await Invaders.UserSelectedDamage( Badlands.Count, Self,generic ); // !!! use badland DamagePool
 	}
 
 	public async Task Apply1DamageToDifferentInvaders( int count ) {

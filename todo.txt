@@ -7,10 +7,16 @@
 BUG - Forests of Living Obsidian 
 	- Badlands check needs to include Space in check so 2nd space gets badlands effect
 
+FIX - Promises of protection
+
 BUG - Inifinite Vitality 
 	- Dahan Vanash - Can't see them.
 	- Don't return to normal health when round is over.
 	- Also dahan with +4 health (i.e. 6) should not deal 6 damage each.
+
+Promises of Protection did not give dahan +2 health.  1 city vs 2 dahan, the city killed 1 dahan.
+
+ThrivingCommunitites - there were only 3 lands with explorers.  After upgrading those 3 lands, puked on 4th non-existant space to upgrade.
 
 
 ----- Spirit Island ----

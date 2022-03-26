@@ -7,6 +7,7 @@ static public class IInvaderCountExtensions {
 		return StrifedInvader.Generator.WithStrife( orig, strifeCount );
 	}
 
+	/// <summary> Gets # of strifes on token. </summary>
 	static public int Strife( this Token orig ) {
 		return orig is StrifedInvader si 
 			? si.StrifeCount

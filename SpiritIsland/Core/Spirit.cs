@@ -483,6 +483,7 @@ public abstract class Spirit : IOption {
 			spirit.usedActions.SetItems( usedActions );
 			spirit.usedInnates.SetItems( usedInnates );
 			spirit.InitElementsFromPresence();
+			spirit.BonusDamage = 0; // assuming beginning of round
 		}
 		static public void InitFromArray(ElementCounts dict, KeyValuePair<Element,int>[] array ) {
 			dict.Clear(); 
@@ -503,13 +504,10 @@ public abstract class Spirit : IOption {
 
 	#region Power Plug-ins
 
-	public IDamageApplier CustomDamageStrategy = null; // Fires Fury Plugs in a custom +1 bonus damage
-
 	public virtual InvaderBinding BuildInvaderGroupForPowers( GameState gs, Space space ) {
 		return new InvaderBinding( 
 			gs.Tokens[ space ],
-			new DestroyInvaderStrategy( gs, gs.Fear.AddDirect ),
-			CustomDamageStrategy
+			new DestroyInvaderStrategy( gs, gs.Fear.AddDirect )
 		);
 	}
 
@@ -567,6 +565,9 @@ public abstract class Spirit : IOption {
 	}
 
 	#endregion
+
+	// Works like badlands.
+	public int BonusDamage { get; set; } // This is a hack for Flame's Fury
 
 }
 
