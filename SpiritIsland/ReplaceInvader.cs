@@ -11,11 +11,10 @@ static public class ReplaceInvader {
 		Token oldInvader = await spirit.Action.Decision( Select.Invader.ToDowngrade( "down-grade (C=>T or T=>E)", group.Space, options ) );
 		if(oldInvader == null) return;
 
-		if(oldInvader.Class == Invader.City) {
+		if(oldInvader.Class == Invader.City)
 			await DowngradeCity( group, oldInvader );
-		} else if(oldInvader.Class == Invader.Town) {
+		else if(oldInvader.Class == Invader.Town)
 			await DowngradeTown( group, oldInvader );
-		}
 	}
 
 	public static async Task SingleInvaderWithExplorers( Spirit spirit, InvaderBinding grp, TokenClass oldInvader, int replaceCount ) {
@@ -30,20 +29,22 @@ static public class ReplaceInvader {
 		// apply pre-existing damage
 		int damage = System.Math.Min(replaceCount,specific.FullHealth-specific.Health);
 		await grp.Destroy(damage,Invader.Explorer[1]);
+
+		// ??? pre-existing strife?
 	}
 
-	static Task DowngradeTown( InvaderBinding inv, Token town ) {
+	static async Task DowngradeTown( InvaderBinding inv, Token town ) {
 
-		// remove town / dahan
+		// remove town
 		inv.Tokens.Adjust( town, -1 );
 
 		// add explorer
-		inv.Tokens.Adjust(Invader.Explorer.Default,1);
+		var newExplorer = Invader.Explorer.Default.WithStrife( town.Strife() );
+		inv.Tokens.Adjust( newExplorer, 1 );
 
 		// but if town/dahan only had 1 health, then that destroys resulting explorer
-		return town.Health == 1 
-			? inv.Destroy( 1, Invader.Explorer.Default ) 
-			: Task.CompletedTask;
+		if( town.Health == 1 )
+			await inv.Destroy( 1, Invader.Explorer.Default );
 	}
 
 	static async Task DowngradeCity( InvaderBinding inv, Token city ) {
@@ -51,12 +52,15 @@ static public class ReplaceInvader {
 		inv.Tokens.Adjust( city, -1 );
 
 		// add town
-		Token town = Invader.Town[city.Health - 1]; // maintain pre-existing damage
+		Token town = Invader.Town[city.Health - 1].WithStrife( city.Strife() ); // maintain pre-existing damage
+
 		if( town.Health == 0) {
 			inv.Tokens.Adjust( Invader.Town.Default, 1 ); // add a town so we can destroy it
 			await inv.Destroy( 1, Invader.Town.Default ); // resulting Town is destroyed
-		} else 
-			inv.Tokens.Adjust( town, 1 );
+			return;
+		}
+
+		inv.Tokens.Adjust( town, 1 );
 	}
 
 }

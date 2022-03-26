@@ -4,9 +4,8 @@ public class InvaderBinding {
 
 	#region constructor
 
-	public InvaderBinding( TokenCountDictionary tokens, DestroyInvaderStrategy destroyStrategy, IDamageApplier customeDamageApplicationStrategy = null) {
+	public InvaderBinding( TokenCountDictionary tokens, DestroyInvaderStrategy destroyStrategy) {
 		this.Tokens = tokens;
-		this.damageApplicationStrategy = customeDamageApplicationStrategy ?? DefaultDamageApplicationStrategy;
 		this.DestroyStrategy = destroyStrategy;
 	}
 
@@ -44,7 +43,7 @@ public class InvaderBinding {
 	/// <returns>(damage inflicted,damagedInvader)</returns>
 	public async Task<(int,Token)> ApplyDamageTo1( int availableDamage, Token invaderToken, bool fromRavage = false ) {
 
-		Token damagedInvader = damageApplicationStrategy.ApplyDamage( Tokens, availableDamage, invaderToken );
+		Token damagedInvader = ApplyDamage( Tokens, availableDamage, invaderToken );
 
 		if(0 == damagedInvader.Health)
 			await DestroyStrategy.OnInvaderDestroyed( Space, damagedInvader, fromRavage );
@@ -53,7 +52,13 @@ public class InvaderBinding {
 		return (damageInflicted,damagedInvader); // damage inflicted
 	}
 
-	readonly IDamageApplier damageApplicationStrategy;
+	Token ApplyDamage( TokenCountDictionary tokens, int availableDamage, Token invaderToken ) {
+		var damagedInvader = invaderToken.ResultingDamagedInvader( availableDamage );
+		tokens.Adjust( invaderToken, -1 );
+		if(0 < damagedInvader.Health) // only track living invaders
+			tokens.Adjust( damagedInvader, 1 );
+		return damagedInvader;
+	}
 
 	#endregion
 
@@ -152,6 +157,8 @@ public class InvaderBinding {
 	}
 
 	public Task<int> UserSelectedDamage( int damage, Spirit damagePicker, params TokenClass[] allowedTypes ) {
+		if(allowedTypes == null || allowedTypes.Length == 0)
+			allowedTypes = new TokenClass[] { Invader.City, Invader.Town, Invader.Explorer };
 		return UserSelectedDamage( damage, damagePicker, Present.Always, allowedTypes );
 	}
 
@@ -179,7 +186,5 @@ public class InvaderBinding {
 
 	public readonly DestroyInvaderStrategy DestroyStrategy;
 	public readonly TokenCountDictionary Tokens;
-
-	static readonly DefaultDamageApplier DefaultDamageApplicationStrategy = new DefaultDamageApplier(); // changed By Flames Fury
 
 }
