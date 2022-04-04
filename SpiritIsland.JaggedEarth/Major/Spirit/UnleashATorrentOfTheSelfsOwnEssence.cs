@@ -5,16 +5,13 @@ public class UnleashATorrentOfTheSelfsOwnEssence {
 	[MajorCard("Unleash a Torrent of the Self's Own Essence",2, Element.Sun,Element.Moon,Element.Fire,Element.Water), Fast, Yourself]
 	public static async Task ActAsync(SelfCtx ctx ) {
 
-		// if you have 2 sun,3 fire: You may do both.
-		if( await ctx.YouHave("2 sun,3 fire" )){
-			await GainEnergy.Execute(ctx);
-			await ConvertEnergyToDamage.Execute(ctx);
-		} else {
-			await ctx.SelectActionOption(
-				GainEnergy, 
-				ConvertEnergyToDamage
-			);
-		}
+		await ctx.SelectActionOption(
+			GainEnergy,
+			ConvertEnergyToDamage,
+			// if you have 2 sun,3 fire: You may do both.
+			Cmd.Multiple( "Do Both", GainEnergy, ConvertEnergyToDamage )
+				.FilterOption( await ctx.YouHave( "2 sun,3 fire" ) )
+		);
 
 	}
 

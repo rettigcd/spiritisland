@@ -21,6 +21,7 @@ public static partial class Cmd {
 	static public SpaceAction PushNDahan(int count ) => new SpaceAction( $"Push {count} dahan", ctx => ctx.PushDahan( count ) ).Matches( ctx=>ctx.Dahan.Any );
 	static public SpaceAction PushUpToNExplorers( int count ) => new SpaceAction( $"Push up to {count} Explorers", ctx => ctx.PushUpTo(count,Invader.Explorer)).Matches( ctx=>ctx.Tokens.Has( Invader.Explorer ) );
 	static public SpaceAction PushUpToNTowns( int count ) => new SpaceAction( $"Push up to {count} Towns", ctx=>ctx.PushUpTo(count,Invader.Town)).Matches( ctx=>ctx.Tokens.Has( Invader.Town ) );
+	static public SpaceAction PushUpToNInvaders( int count, params TokenClass[] classes ) => new SpaceAction( $"Push up to {count} "+ classes.Select( c => c.Label ).Join( "/" ), ctx => ctx.PushUpTo( count, classes ) ).Matches( ctx => ctx.Tokens.HasAny( classes ) );
 	static public SpaceAction PushExplorersOrTowns( int count ) => new SpaceAction( $"Push {count} explorers or towns", ctx => ctx.Push( count, Invader.Town, Invader.Explorer ) ).Matches( ctx=>ctx.Tokens.HasAny( Invader.Explorer, Invader.Town ) );
 
 	// -- Add ---
@@ -79,6 +80,13 @@ public static partial class Cmd {
 	static public SpaceAction AddFear(int count) => new SpaceAction($"Add {count} Fear.", ctx => ctx.AddFear(count) );
 
 	// AND / OR
+	static public ActionOption<T> Multiple<T>( string title, params ActionOption<T>[] actions ) => new ActionOption<T>(
+		title,
+		async ctx => {
+			foreach(var action in actions)
+				await action.Execute( ctx );
+		}
+	);
 	static public ActionOption<T> Multiple<T>( params ActionOption<T>[] actions) => new ActionOption<T>(
 		actions.Select(a=>a.Description).Join("  "),
 		async ctx => {

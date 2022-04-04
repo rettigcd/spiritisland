@@ -97,7 +97,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Minor {
 			var (user, ctx) = TestSpirit.SetupGame( PowerCard.For<CallToTrade>(), (gs)=>{ 
 				var jungleCard = new InvaderCard(Terrain.Jungle);
 				gs.InvaderDeck = InvaderDeck.BuildTestDeck( jungleCard, jungleCard, jungleCard, jungleCard );
-				gs.NewLogEntry += (s) => invaderLog.Add(s.Msg);
+				gs.NewLogEntry += (s) => invaderLog.Add(s.Msg());
 			} );
 
 			// Given: advance to 2nd round where we have a ravage

@@ -320,7 +320,7 @@ namespace SpiritIsland.WinForms {
 			// If game is over, update
 			if( gameState.Result != null) { 
 				brush = gameState.Result.Result == GameOverResult.Victory ? Brushes.DarkGreen : Brushes.DarkRed;
-				snippet = gameState.Result.Msg;
+				snippet = gameState.Result.Msg();
 			}
 			graphics.DrawString($"Round {gameState.RoundNumber} - {snippet}", font, brush, 0, 0);
 		

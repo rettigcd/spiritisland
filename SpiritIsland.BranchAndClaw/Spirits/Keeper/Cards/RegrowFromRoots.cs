@@ -2,7 +2,7 @@
 
 public class RegrowFromRoots {
 
-	[SpiritCard("Regrow from Roots",1,Element.Water,Element.Plant)]
+	[SpiritCard("Regrow from Roots",1,Element.Water,Element.Earth,Element.Plant)]
 	[Slow]
 	[FromPresence(1,Target.JungleOrWetland)]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {

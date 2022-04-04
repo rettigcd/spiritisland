@@ -23,7 +23,7 @@ public class PunishThoseWhoTrespass {
 		await ctx.DestroyDahan( 1 );
 
 		// 4 plant  split this power's damage however desired between target land and another 1 of your lands
-		int damageToTarget = ctx.Self.Elements[Element.Air] < 4 && ctx.Self.Presence.Spaces.Count()>1
+		int damageToTarget = ctx.Self.Elements[Element.Plant] < 4 && ctx.Self.Presence.Spaces.Count()>1
 			? damage
 			: await ctx.Self.SelectNumber("Damage to apply to "+ctx.Space.Label, damage );
 

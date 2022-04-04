@@ -17,7 +17,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Fear {
 
 		void RecordLogItem( ILogEntry s ) {
 			if(s is InvaderActionEntry)
-				log.Enqueue(s.Msg);
+				log.Enqueue(s.Msg());
 		}
 
 		protected VirtualTestUser user;

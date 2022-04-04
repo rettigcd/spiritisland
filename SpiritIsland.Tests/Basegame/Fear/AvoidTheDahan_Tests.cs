@@ -23,7 +23,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			var (user, ctx) = TestSpirit.SetupGame( PowerCard.For<RiversBounty>(), gs => {
 				var fear = gs.Fear;
 				gs.InvaderDeck = MountainThenAllSands();
-				gs.NewLogEntry += (s) => log.Add(s.Msg);
+				gs.NewLogEntry += (s) => log.Add(s.Msg());
 			} );
 			this.user = user;
 			this.ctx = ctx;

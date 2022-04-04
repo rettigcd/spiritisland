@@ -11,7 +11,7 @@ public class GameOver : ILogEntry {
 
 	public string Cause { get; }
 
-	public string Msg => $"{Result}!: {Cause}";
+	public string Msg( LogLevel _ ) => $"{Result}!: {Cause}";
 
 	public LogLevel Level => LogLevel.Info;
 }

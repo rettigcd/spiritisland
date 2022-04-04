@@ -91,7 +91,12 @@ public class HeartOfTheWildfire : Spirit {
 		public override async Task Place( IOption from, Space to, GameState gs ) { 
 			await base.Place( from, to, gs );
 
+			// !!! There is a bug here somehow that after placeing the 2nd fire, track, still returned only 1 
+			// !! maybe we need to make Elements smarter so it is easier to calculate, like breaking it into:
+			//	(track elements, prepared elements, card elements)
 			int fireCount = AddElements()[Element.Fire];
+
+
 			var ctx = spirit.Bind( gs, Cause.Growth ).Target( to );
 			// For each fire showing, do 1 damage
 			await ctx.DamageInvaders( fireCount );

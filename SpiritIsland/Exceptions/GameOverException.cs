@@ -7,7 +7,7 @@ public class GameOverException : Exception {
 	static public void Lost(string cause) => throw new GameOverException( new GameOver( GameOverResult.Defeat, cause ) );
 
 
-	public GameOverException( GameOver status ):base( status.Msg ) {
+	public GameOverException( GameOver status ):base( status.Msg() ) {
 		Status = status;
 	}
 	public GameOver Status {get;}

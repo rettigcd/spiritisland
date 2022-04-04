@@ -1,27 +1,7 @@
-﻿! Save Game in Recent Games list so we can replay them.
-
-!!! Command the Beasts - Destorying strifed town might not generate 1 fear.
-
-!!! Strong Earth Shatters Slowly - When adding blight to land, it re-triggered Blighted Island message.  Therefore, mark the island as blighted before doing blighted island effect.
-
-BUG - Forests of Living Obsidian 
-	- Badlands check needs to include Space in check so 2nd space gets badlands effect
-
-FIX - Promises of protection
-
-BUG - Inifinite Vitality 
-	- Dahan Vanash - Can't see them.
-	- Don't return to normal health when round is over.
-	- Also dahan with +4 health (i.e. 6) should not deal 6 damage each.
-
-Promises of Protection did not give dahan +2 health.  1 city vs 2 dahan, the city killed 1 dahan.
-
-ThrivingCommunitites - there were only 3 lands with explorers.  After upgrading those 3 lands, puked on 4th non-existant space to upgrade.
-
+﻿
+! Save Game in Recent Games list so we can replay them.
 
 ----- Spirit Island ----
-
-Verify that Wilds are being removed for an explore that doesn't happen
 
 Command-Beast
 	show graphig (so it doesn't get lost in text)
@@ -29,7 +9,6 @@ Command-Beast
 
 Some Commands need a title like the Power Card Name, other's need detailed description of what they do.
 
-Add Not-using-Events Option. Command Beasts twice
 Remove the bool-hold-back-build-card property by using an end-of-round action to roll it back.
 Display back of explorer card.
 Alias Counts<Tokens>

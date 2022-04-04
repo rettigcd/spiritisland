@@ -1,21 +1,23 @@
 ﻿namespace SpiritIsland;
 
 public interface ILogEntry {
-	string Msg {  get; }
+	string Msg( LogLevel level );
 	LogLevel Level { get; }
 }
 
-public enum LogLevel { None, Fatal, Error, Warning, Info, Debug, All }
+static public class LogEntryExtension {
+	static public string Msg(this ILogEntry logEntry) => logEntry.Msg(LogLevel.Info);
+}
 
-// Generic
-public class LogEntry : ILogEntry {
-	public string msg;
-	public LogEntry( string msg, LogLevel level = LogLevel.Info ) { 
-		this.msg = msg;
-		this.Level = level;
-	}
-	public LogLevel Level { get; }
-	public string Msg => msg;
+
+public enum LogLevel { 
+	None,   // shows least # of messages (0)
+	Fatal,  // shows Fatal (only)
+	Error,  // shows Fatal & Error
+	Warning,// shows Fatal & Error & Warning
+	Info,   // shows Fatal & Error & Warning & Info
+	Debug,  // shows Fatal & Error & Warning & Info & Debug
+	All     // show  all
 }
 
 public class IslandBlighted : ILogEntry { // event
@@ -25,7 +27,7 @@ public class IslandBlighted : ILogEntry { // event
 	}
 	public LogLevel Level { get; }
 	public IBlightCard card { get; }
-	public string Msg => $"Blighted Island => {card.Name} => {card.Immediately.Description}\r\n  ^^^^^^^^ ^^^^^^\r\n";
+	public string Msg( LogLevel _ ) => $"Blighted Island => {card.Name} => {card.Immediately.Description}\r\n  ^^^^^^^^ ^^^^^^\r\n";
 }
 
 
@@ -36,7 +38,7 @@ public class InvaderActionEntry : ILogEntry {
 		this.Level = level;
 	}
 	public LogLevel Level { get; }
-	public string Msg => msg;
+	public string Msg( LogLevel _ ) => msg;
 }
 
 public class LogRound : ILogEntry {
@@ -46,7 +48,7 @@ public class LogRound : ILogEntry {
 		this.Level = LogLevel.Info;
 	}
 	public LogLevel Level { get; }
-	public string Msg => $"=== Round {round} ===";
+	public string Msg( LogLevel _ ) => $"=== Round {round} ===";
 }
 
 public class LogPhase : ILogEntry {
@@ -56,7 +58,7 @@ public class LogPhase : ILogEntry {
 		this.Level = LogLevel.Info;
 	}
 	public LogLevel Level { get; }
-	public string Msg => $"-- {phase} --";
+	public string Msg( LogLevel _ ) => $"-- {phase} --";
 }
 
 public class LogException : ILogEntry {
@@ -66,5 +68,5 @@ public class LogException : ILogEntry {
 		this.Level = LogLevel.Fatal;
 	}
 	public LogLevel Level { get; }
-	public string Msg => ex.ToString();
+	public string Msg( LogLevel _ ) => ex.ToString();
 }

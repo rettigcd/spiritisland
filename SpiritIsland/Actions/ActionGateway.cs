@@ -103,7 +103,7 @@ sealed public class ActionGateway : IUserPortal, IEnginePortal {
 
 	void Log( DecisionLogEntry entry ) {
 		DecisionMade?.Invoke(entry);
-		selections.Add( entry.Msg );
+		selections.Add( entry.Msg() );
 	}
 
 	public event Action<DecisionLogEntry> DecisionMade;
@@ -155,13 +155,26 @@ sealed public class ActionGateway : IUserPortal, IEnginePortal {
 
 public class DecisionLogEntry : ILogEntry {
 
+	IOption selection;
+	IDecision decision;
+	bool auto;
+
 	public DecisionLogEntry(IOption selection, IDecision decision, bool auto ) {
-		string msg = decision.Prompt + "(" + decision.Options.Select( o => o.Text ).Join( "," ) + "):" + selection.Text;
-		if(auto) msg += " AUTO";
-		Msg = msg;
+		this.selection = selection;
+		this.decision = decision;
+		this.auto = auto;
 	}
 
-	public string Msg { get; }
+	public string Msg( LogLevel level ) {
+		// Fatal/Error/Warn/Info
+		if( level <= LogLevel.Info)
+			return decision.Prompt + ": " + selection.Text;
+
+		// Debug/All
+		string msg = decision.Prompt + "(" + decision.Options.Select( o => o.Text ).Join( "," ) + "):" + selection.Text;
+		if(auto) msg += " AUTO";
+		return msg;
+	}
 
 	public LogLevel Level => LogLevel.Info;
 }

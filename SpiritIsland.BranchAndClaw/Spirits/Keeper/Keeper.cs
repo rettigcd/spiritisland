@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.BranchAndClaw;
 
-public class Keeper : Spirit {
+public partial class Keeper : Spirit {
 
 	public const string Name = "Keeper of the Forbidden Wilds";
 
@@ -16,7 +16,7 @@ public class Keeper : Spirit {
 		PowerCard.For<BoonOfGrowingPower>(),
 		PowerCard.For<RegrowFromRoots>(),
 		PowerCard.For<SacrosanctWilderness>(),
-		PowerCard.For<TowingWrath>()
+		PowerCard.For<ToweringWrath>()
 	) {
 		(Presence as KeeperPresence).spirit = this;
 
@@ -35,26 +35,11 @@ public class Keeper : Spirit {
 
 	protected override void InitializeInternal( Board board, GameState gs ){
 		// In the highest-numbered Jungle.
-		var space = board.Spaces.OrderByDescending( x => x.IsJungle ).First();
+		var space = board.Spaces.Where( x => x.IsJungle ).OrderBy( x => x.Label ).Last();
 		// Put 1 Presence
 		Presence.PlaceOn( space, gs );
 		// 1 Wild 
 		gs.Tokens[space].Wilds.Init(1);
-	}
-
-	class KeeperPresence : SpiritPresence {
-		public KeeperPresence()
-			: base(
-				new PresenceTrack( Track.Energy2, Track.SunEnergy, Track.Energy4, Track.Energy5, Track.PlantEnergy, Track.Energy7, Track.Energy8, Track.Energy9 ),
-				new PresenceTrack( Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4, Track.Card5Reclaim1 )
-			) { }
-
-		public override async Task Place( IOption from, Space to, GameState gs ) {
-			await base.Place( from, to, gs );
-			if(gs.DahanOn( to ).Any && SacredSites.Contains( to ))
-				await spirit.Bind( gs, Cause.Growth ).Target( to ).PushDahan( int.MaxValue );
-		}
-		public Keeper spirit;
 	}
 
 }

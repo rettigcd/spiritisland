@@ -220,6 +220,8 @@ public class TargetSpaceCtx : SelfCtx {
 	public async Task Apply1DamageToDifferentInvaders( int count ) {
 		const int damagePerInvader = 1;
 
+		// !!! Add Damage Pool (badlands / Flame's Furry) to this.
+
 		// Find All Invaders
 		var invaders = new List<Token>();
 		foreach(var token in Tokens.Invaders())

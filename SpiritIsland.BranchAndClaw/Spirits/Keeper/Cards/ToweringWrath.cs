@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.BranchAndClaw;
 
-public class TowingWrath {
+public class ToweringWrath {
 
 	[SpiritCard("Towering Wrath",3,Element.Sun,Element.Fire,Element.Plant)]
 	[Slow]
@@ -11,7 +11,7 @@ public class TowingWrath {
 		ctx.AddFear( 2 );
 
 		// for each of your SS in / adjacent to target land, 2 damage
-		int sacredSiteCount = ctx.Space.Adjacent.Intersect( ctx.Self.Presence.SacredSites ).Count() + 1;
+		int sacredSiteCount = ctx.Range(1).Intersect( ctx.Self.Presence.SacredSites ).Count() ;
 		await ctx.DamageInvaders( 2 * sacredSiteCount );
 
 		// destroy all dahan
