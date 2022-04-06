@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30621.155
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32317.152
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritIsland.Tests", "SpiritIsland.Tests\SpiritIsland.Tests.csproj", "{9BE61177-8535-4E7E-AE34-1C9C18D1AAEF}"
 EndProject
@@ -27,6 +27,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritIsland.PromoPack1", "SpiritIsland.PromoPack1\SpiritIsland.PromoPack1.csproj", "{F31F1A40-876A-4BD1-943B-D0149B8E9F05}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritIsland.JaggedEarth", "SpiritIsland.JaggedEarth\SpiritIsland.JaggedEarth.csproj", "{59D84763-67EA-4BE2-B8AF-F95A2D3D67EB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpiritIsland.Mobile", "SpiritIsland.Mobile\SpiritIsland.Mobile.csproj", "{8908830E-A5CF-40FA-B5B7-7C9B0265DC56}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -66,6 +68,12 @@ Global
 		{59D84763-67EA-4BE2-B8AF-F95A2D3D67EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59D84763-67EA-4BE2-B8AF-F95A2D3D67EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59D84763-67EA-4BE2-B8AF-F95A2D3D67EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8908830E-A5CF-40FA-B5B7-7C9B0265DC56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8908830E-A5CF-40FA-B5B7-7C9B0265DC56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8908830E-A5CF-40FA-B5B7-7C9B0265DC56}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{8908830E-A5CF-40FA-B5B7-7C9B0265DC56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8908830E-A5CF-40FA-B5B7-7C9B0265DC56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8908830E-A5CF-40FA-B5B7-7C9B0265DC56}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
