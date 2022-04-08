@@ -1,4 +1,11 @@
-﻿
+﻿--- Simplify Invaders ---
+0) Make all Invaders Strifed invaders with strife = 0
+1) Invader Properties: Health / Damage / Strife - Add these properties to constructor
+2) GetHashCode / Equals
+3) Stop using Sequence
+4) 
+
+
 ! Save Game in Recent Games list so we can replay them.
 
 ----- Spirit Island ----

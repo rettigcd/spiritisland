@@ -2,7 +2,7 @@
 
 public class WindsOfRustAndAtrophy {
 
-	[MajorCard("Winds of Rust and Atrophy",3,Element.Air,Element.Water,Element.Animal), Fast, FromSacredSite(3), RepeatIf("3 air,2 water,2 animal")]
+	[MajorCard("Winds of Rust and Atrophy",3,Element.Air,Element.Water,Element.Animal), Fast, FromSacredSite(3), RepeatIf("3 air,3 water,2 animal")]
 	static public async Task ActAsync(TargetSpaceCtx ctx) {
 		// 1 fear and defend 6
 		ctx.AddFear( 1 );
