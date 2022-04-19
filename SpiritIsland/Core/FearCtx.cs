@@ -54,7 +54,7 @@ public class FearCtx {
 	#endregion Lands
 
 	public IEnumerable<Space> LandsWithStrife() => GameState.Island.AllSpaces
-		.Where( s => GameState.Tokens[s].Keys.OfType<StrifedInvader>().Any() );
+		.Where( s => GameState.Tokens[s].Keys.OfType<HealthToken>().Any( x => x.StrifeCount > 0 ) );
 
 	public IEnumerable<Space> LandsWithDisease() => GameState.Island.AllSpaces
 		.Where( s => GameState.Tokens[s].Disease.Any);
@@ -79,10 +79,10 @@ public static class FearCtxExtensionForBac {
 	// Extension to SpiritGameStateCtx
 	public static async Task<Space> AddStrifeToOne( this SelfCtx spirit, IEnumerable<Space> options, params TokenClass[] groups ) {
 		bool HasInvaders( Space s ) => spirit.Target(s).HasInvaders;
-		var space = await spirit.SelectSpace( "Add strife", options.Where( HasInvaders ) );
-		if(space != null)
-			await space.AddStrife( groups );
-		return space?.Space;
+		TargetSpaceCtx spaceCtx = await spirit.SelectSpace( "Add strife", options.Where( HasInvaders ) );
+		if(spaceCtx != null)
+			await spaceCtx.AddStrife( groups );
+		return spaceCtx?.Space;
 	}
 
 }

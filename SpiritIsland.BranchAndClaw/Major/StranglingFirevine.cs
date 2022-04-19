@@ -8,7 +8,7 @@ public class StranglingFirevine {
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		// destroy all explorers.
-		await ctx.Invaders.Destroy(int.MaxValue,Invader.Explorer[1]);
+		await ctx.Invaders.Destroy(int.MaxValue,Invader.Explorer);
 
 		// Add 1 wilds.
 		await ctx.Wilds.Add(1);

@@ -90,7 +90,7 @@ namespace SpiritIslandCmd {
 			return $"{space.Label} {threat}\t{dahan}\t{details}\t{blight}\t{pres}";
 		}
 
-		static string Pad(Terrain terrain) => Pad(terrain.ToString(),8);
+//		static string Pad(Terrain terrain) => Pad(terrain.ToString(),8);
 
 		static string Pad(string s, int length){
 			int need = length - s.Length;

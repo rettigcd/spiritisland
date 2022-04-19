@@ -24,26 +24,16 @@ public class UniqueToken : TokenClass, Token {
 	// --------  BEGIN Token HEALTH properties
 	public Token Healthy => throw new System.NotImplementedException();
 	public int FullHealth => throw new System.NotImplementedException();
-	public int Health => 1; //throw new System.NotImplementedException();
-	Token TokenClass.this[int i] => throw new System.NotImplementedException();
-	Token Token.ResultingDamagedInvader( int damage ) => throw new System.NotImplementedException();
-
+	public int RemainingHealth => 1; //throw new System.NotImplementedException();
 	// --------  END HEALTH properties  -------
 
 	#endregion
 
 	#region TokenGroup
 
-	public Token Default => this;
-
 	public string Label { get; }
 
 	public TokenCategory Category { get; }
-
-	// ------  Being TokenGroup HEALTH properties
-	void TokenClass.ExtendHealthRange( int newMaxHealth ) => throw new System.NotImplementedException();
-	// ------  End TokenGroup HEALTH properties
-
 
 	#endregion
 

@@ -66,7 +66,7 @@ public class ShroudOfSilentMist : Spirit {
 		gainedCoolEnergyThisTurn = false;
 
 		bool SpaceHasDamagedInvaders( Space s ) => gs.Tokens[s].Invaders()
-			.Any( i=>i.Health<i.FullHealth );
+			.Any( i=>i.RemainingHealth<i.FullHealth );
 
 		// During Time Passes:
 		int myLandsWithDamagedInvaders = Presence.Spaces.Count( SpaceHasDamagedInvaders );
@@ -124,10 +124,15 @@ class SlowAndSilentDeathHealer : Healer {
 		"Invaders and dahan in your lands don't heal Damage.  During Time PAsses: 1 fear (max 5) per land of yours with Damaged Invaders.  Gain 1 Energy per 3 lands of yours with Damaged Invaders."
 	);
 
-	public override void Heal( GameState gs ) {
-		// Invaders and dahan in your lands don't heal Damage.
-		skipHealSpaces.AddRange( spirit.Presence.Spaces );
-		base.Heal( gs );
+	//public override void HealAll( GameState gs ) {
+	//	// Invaders and dahan in your lands don't heal Damage.
+	//	skipHealSpaces.UnionWith( spirit.Presence.Spaces );
+	//	base.HealAll( gs );
+	//}
+
+	public override void HealSpace( TokenCountDictionary tokens ) {
+		if( !spirit.Presence.IsOn(tokens.Space) )
+			base.HealSpace( tokens );
 	}
 
 }

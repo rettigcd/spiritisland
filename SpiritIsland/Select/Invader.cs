@@ -5,14 +5,14 @@
 /// </summary>
 public static class Invader {
 
-	public static TokenFrom1Space ToDowngrade( string actionVerb, SpiritIsland.Space space, IEnumerable<Token> options ) 
-		=> new TokenFrom1Space( $"Select invader to {actionVerb}", space, options, Present.Always );
+	public static HealthTokenFrom1Space ToDowngrade( string actionVerb, SpiritIsland.Space space, IEnumerable<Token> options ) 
+		=> new HealthTokenFrom1Space( $"Select invader to {actionVerb}", space, options.Cast<HealthToken>(), Present.Always );
 
 	public static TokenFrom1Space ToRemove( SpiritIsland.Space space, IEnumerable<Token> options ) 
 		=> new TokenFrom1Space( "Remove invader", space, options, Present.Always );
 
 	public static TokenFrom1Space ToRemoveByHealth( SpiritIsland.Space space, IEnumerable<Token> invaders, int remainingDamage )
-		=> new TokenFrom1Space( $"Remove up to {remainingDamage} health of invaders.", space, invaders.Where( x => x.Health <= remainingDamage ), Present.Done ) ;
+		=> new TokenFrom1Space( $"Remove up to {remainingDamage} health of invaders.", space, invaders.Where( x => x.RemainingHealth <= remainingDamage ), Present.Done ) ;
 
 	public static TokenFrom1Space ForIndividualDamage(int damagePerInvader, SpiritIsland.Space space, IEnumerable<Token> invaders)
 		=> new TokenFrom1Space( $"Select invader to apply {damagePerInvader} damage", space, invaders.Distinct(), Present.Done );
@@ -29,4 +29,5 @@ public static class Invader {
 			(groups!=null && groups.Length>0) ? tokens.OfAnyType(groups) : tokens.Invaders(), 
 			Present.Always 
 		);
+
 }

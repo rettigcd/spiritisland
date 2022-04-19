@@ -27,7 +27,7 @@ public class BuildEngine {
 		// Determine type to build
 		int townCount = tokens.Sum( Invader.Town );
 		int cityCount = tokens.Sum( Invader.City );
-		TokenClass invaderToAdd = townCount > cityCount ? Invader.City : Invader.Town;
+		HealthTokenClass invaderToAdd = townCount > cityCount ? Invader.City : Invader.Town;
 
 		// check if we should
 		bool shouldBuild = buildType switch {
@@ -37,7 +37,7 @@ public class BuildEngine {
 		};
 		// build it
 		if(shouldBuild)
-			await tokens.Add( invaderToAdd.Default, 1, AddReason.Build );
+			await tokens.AddDefault( invaderToAdd, 1, AddReason.Build );
 
 		return invaderToAdd.Label;
 	}

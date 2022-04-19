@@ -24,20 +24,22 @@ public class ForsakeSocietyToChaseAfterDreams {
 		return Dissolve(ctx,Invader.City,Invader.Town,Invader.Explorer);
 	}
 
-	static async Task Dissolve(TargetSpaceCtx ctx, params TokenClass[] invaderCats) {
+	static async Task Dissolve(TargetSpaceCtx ctx, params HealthTokenClass[] invaderCats) {
 		var decision = Select.Invader.ToDowngrade("dissolve", ctx.Space, ctx.Tokens.OfAnyType( invaderCats ) );
 		var invader = await ctx.Decision( decision );
 		if(invader == null) return;
 
 		// Replace
-		if(invader != Invader.Explorer.Default) {
+		if(invader.Class != Invader.Explorer) {
 			await ctx.Invaders.Remove(invader,1,RemoveReason.Replaced);
-			await ctx.Tokens.Add(Invader.Explorer.Default,invader.Health, AddReason.AsReplacement);
+			await ctx.Tokens.AddDefault( Invader.Explorer,invader.RemainingHealth, AddReason.AsReplacement );
 		}
+
+		// !!! If they are damaged, should we distribute that damage and destroy some of the explorers?
 
 		// Push to new land
 		await ctx.Pusher
-			.AddGroup( invader.Health, Invader.Explorer )
+			.AddGroup( invader.RemainingHealth, Invader.Explorer )
 			.FilterDestinations( ctx.Self.Presence.IsOn )
 			.MoveUpToN();
 

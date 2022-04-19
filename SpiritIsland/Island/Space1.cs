@@ -21,9 +21,9 @@ public class Space1 : Space {
 
 	public void InitTokens( TokenCountDictionary tokens ) {
 		StartUpCounts initialCounts = StartUpCounts;
-		tokens.Init( Invader.City.Default, initialCounts.Cities );
-		tokens.Init( Invader.Town.Default, initialCounts.Towns );
-		tokens.Init( Invader.Explorer.Default, initialCounts.Explorers );
+		tokens.InitDefault( Invader.City, initialCounts.Cities );
+		tokens.InitDefault( Invader.Town, initialCounts.Towns );
+		tokens.InitDefault( Invader.Explorer, initialCounts.Explorers );
 		tokens.Dahan.Init( initialCounts.Dahan );
 		tokens.Blight.Init( initialCounts.Blight ); // don't use AddBlight because that pulls it from the card and triggers blighted island
 	}

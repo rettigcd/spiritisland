@@ -8,7 +8,7 @@ public class SongOfSanctity {
 	[Slow]
 	[FromPresence(1,Target.JungleOrMountain)]
 	static public async Task ActionAsync(TargetSpaceCtx ctx){
-		int explorerCount = ctx.Invaders[Invader.Explorer[1]];
+		int explorerCount = ctx.Tokens.Sum( Invader.Explorer );
 		if( 0 < explorerCount )
 			await ctx.Push( explorerCount, Invader.Explorer);
 		else 

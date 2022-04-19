@@ -16,12 +16,12 @@ public class CallToGuard{
 		, (ctx) => {
 			ctx.GameState.Tokens.TokenAdded.ForRound.Add( async (args)=> {
 				if(args.Space == ctx.Space)
-					await ctx.Invaders.ApplyDamageTo1(1, args.Token );
+					await ctx.Invaders.ApplyDamageTo1(1, (HealthToken)args.Token );
 			} );
 
 			ctx.GameState.Tokens.TokenMoved.ForRound.Add( async (args)=> {
 				if(args.AddedTo == ctx.Space)
-					await ctx.Invaders.ApplyDamageTo1(1, args.Token );
+					await ctx.Invaders.ApplyDamageTo1(1, (HealthToken)args.Token );
 			} );
 		} );
 

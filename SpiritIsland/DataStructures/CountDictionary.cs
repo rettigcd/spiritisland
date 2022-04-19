@@ -107,7 +107,7 @@ public static class ExtendDictionary {
 		=> new CountDictionary<T>(inner);
 
 	// Invader Summary
-	static public string ToTokenSummary(this CountDictionary<Token> tokens )
+	static public string ToTokenSummary(this CountDictionary<HealthToken> tokens )
 		=> tokens.Any()
 			? tokens
 				.OrderBy( p => p.Key.Summary )

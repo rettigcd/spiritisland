@@ -25,9 +25,9 @@ public static partial class Cmd {
 	static public SpaceAction PushExplorersOrTowns( int count ) => new SpaceAction( $"Push {count} explorers or towns", ctx => ctx.Push( count, Invader.Town, Invader.Explorer ) ).Matches( ctx=>ctx.Tokens.HasAny( Invader.Explorer, Invader.Town ) );
 
 	// -- Add ---
-	static public SpaceAction AddDahan( int count ) => new SpaceAction( count == 1 ? "Add 1 Dahan" : $"Add {count} Dahan", ctx => ctx.Tokens.Add( TokenType.Dahan.Default, count ) );
-	static public SpaceAction AddTown( int count ) => new SpaceAction( count == 1 ? "Add 1 Town" : $"Add {count} Towns", ctx => ctx.Tokens.Add(Invader.Town.Default, count ) );
-	static public SpaceAction AddCity( int count ) => new SpaceAction( count == 1 ? "Add 1 City" : $"Add {count} Cities", ctx => ctx.Tokens.Add(Invader.City.Default, count ) );
+	static public SpaceAction AddDahan( int count ) => new SpaceAction( count == 1 ? "Add 1 Dahan" : $"Add {count} Dahan", ctx => ctx.Tokens.AddDefault( TokenType.Dahan, count ) );
+	static public SpaceAction AddTown( int count ) => new SpaceAction( count == 1 ? "Add 1 Town" : $"Add {count} Towns", ctx => ctx.Tokens.AddDefault(Invader.Town, count ) );
+	static public SpaceAction AddCity( int count ) => new SpaceAction( count == 1 ? "Add 1 City" : $"Add {count} Cities", ctx => ctx.Tokens.AddDefault(Invader.City, count ) );
 	static public SpaceAction AddBlightedIslandBlight => new SpaceAction("Add 1 blight", ctx => ctx.AddBlight(1,AddReason.SpecialRule) );
 	static public SpaceAction AddWilds( int count ) => new SpaceAction( $"Add {count} Wilds.", ctx => ctx.Wilds.Add(count) );
 	static public SpaceAction AddBadlands( int badLandCount ) => new SpaceAction( $"Add {badLandCount} badlands", ctx => ctx.Badlands.Add( badLandCount ) );
@@ -58,7 +58,7 @@ public static partial class Cmd {
 			&& (pick = await ctx.Decision( Select.Invader.ToRemoveByHealth( ctx.Space, ctx.Tokens.Invaders(), remaining ) ) ) != null
 		) {
 			await ctx.Tokens.Remove( pick, 1 );
-			remaining -= pick.Health;
+			remaining -= pick.RemainingHealth;
 		}
 	} );
 

@@ -135,7 +135,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Minor {
 		static void Given_NoSuroundingTowns( TargetSpaceCtx spaceCtx ) {
 			// Simplifies power card because it has a Gather-Towns we don't want to deal with.
 			foreach(var adj in spaceCtx.Adjacent)
-				spaceCtx.Target( adj ).Tokens.Init(Invader.Town.Default, 0);
+				spaceCtx.Target( adj ).Tokens.InitDefault(Invader.Town, 0);
 		}
 
 		static void Given_NoSuroundingDahan( TargetSpaceCtx spaceCtx ) {
@@ -152,9 +152,9 @@ namespace SpiritIsland.Tests.BranchAndClaw.Minor {
 
 		static void Given_HasOnly3Explorers( TargetSpaceCtx spaceCtx ) {
 			//  And: it has 3 explorers (in case dahan attacks during ravage, would still 1 left over
-			spaceCtx.Tokens.Init( Invader.Explorer.Default, 3 );
-			spaceCtx.Tokens.Init( Invader.Town.Default    , 0 );
-			spaceCtx.Tokens.Init( Invader.City.Default    , 0 ); // if we had to advance cards, might have buit a city
+			spaceCtx.Tokens.InitDefault( Invader.Explorer, 3 );
+			spaceCtx.Tokens.InitDefault( Invader.Town    , 0 );
+			spaceCtx.Tokens.InitDefault( Invader.City    , 0 ); // if we had to advance cards, might have buit a city
 			spaceCtx.Tokens.InvaderSummary.ShouldBe( "3E@1", "Unable to init to 3 exploreres." );
 		}
 

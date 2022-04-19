@@ -83,6 +83,14 @@ public class Tokens_ForIsland : IIslandTokenApi {
 			.Join("\r\n");
 	}
 
+	HealthToken IIslandTokenApi.GetDefault( HealthTokenClass tokenClass ) => TokenDefaults[tokenClass];
+	public Dictionary<HealthTokenClass,HealthToken> TokenDefaults = new Dictionary<HealthTokenClass, HealthToken> {
+		[Invader.City] = new HealthToken( Invader.City, 3 ),
+		[Invader.Town] = new HealthToken( Invader.Town, 2 ),
+		[Invader.Explorer] = new HealthToken( Invader.Explorer, 1 ),
+		[TokenType.Dahan] = new HealthToken( TokenType.Dahan, 2 ),
+	};
+
 	public DualAsyncEvent<ITokenAddedArgs> TokenAdded = new DualAsyncEvent<ITokenAddedArgs>();
 	public DualAsyncEvent<ITokenRemovedArgs> TokenRemoved = new DualAsyncEvent<ITokenRemovedArgs>();
 	public DualAsyncEvent<TokenMovedArgs> TokenMoved = new DualAsyncEvent<TokenMovedArgs>();
@@ -95,19 +103,29 @@ public class Tokens_ForIsland : IIslandTokenApi {
 
 	protected class Memento : IMemento<Tokens_ForIsland> {
 		public Memento(Tokens_ForIsland src) {
+			// Save TokenCounts
 			foreach(var pair in src.tokenCounts)
 				tc[pair.Key] = pair.Value.counts.ToDictionary(p=>p.Key,p=>p.Value);
+			// Save Defaults
+			tokenDefaults = src.TokenDefaults.ToDictionary(p=>p.Key,p=>p.Value);
 		}
 		public void Restore(Tokens_ForIsland src ) {
+			// Resotre TokenCounts
 			src.tokenCounts.Clear();
 			foreach(var space in tc.Keys) {
 				var tokens = src[space];
 				foreach(var p in tc[space])
 					tokens.Init(p.Key, p.Value);
 			}
+			// Restore Defaults
+			src.TokenDefaults.Clear();
+			foreach(var pair in tokenDefaults)
+				src.TokenDefaults.Add(pair.Key,pair.Value);
 		}
 		readonly Dictionary<Space, Dictionary<Token,int>> tc = new Dictionary<Space, Dictionary<Token,int>>();
-	}
+		readonly Dictionary<HealthTokenClass, HealthToken> tokenDefaults = new Dictionary<HealthTokenClass, HealthToken>();
+
+		}
 
 	#endregion Memento
 

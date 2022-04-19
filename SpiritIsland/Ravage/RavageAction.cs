@@ -24,7 +24,7 @@ public class RavageAction {
 	#endregion
 
 	readonly InvadersRavaged @event; // record status here
-	CountDictionary<Token> currentAttackers; // tokens might change if strife is removed
+	CountDictionary<HealthToken> currentAttackers; // tokens might change if strife is removed
 
 	public async Task<InvadersRavaged> Exec() {
 		if(!Tokens.HasInvaders()) return null;
@@ -56,15 +56,15 @@ public class RavageAction {
 
 	#region Selecting the Attacker / Defender groups
 
-	CountDictionary<Token> GetAttackers() => GetParticipantCounts( cfg.IsAttacker ?? IsInvader );
+	CountDictionary<HealthToken> GetAttackers() => GetParticipantCounts( cfg.IsAttacker ?? IsInvader );
 
-	CountDictionary<Token> GetDefenders() => GetParticipantCounts( cfg.IsDefender ?? IsDahan );
+	CountDictionary<HealthToken> GetDefenders() => GetParticipantCounts( cfg.IsDefender ?? IsDahan );
 	static bool IsInvader(Token token) => token.Class.Category == TokenCategory.Invader;
 	static bool IsDahan(Token token) => token.Class == TokenType.Dahan;
 
-	CountDictionary<Token> GetParticipantCounts( Func<Token,bool> filter ) {
-		var participants = new CountDictionary<Token>();
-		foreach(var token in Tokens.Keys.Where(filter))
+	CountDictionary<HealthToken> GetParticipantCounts( Func<HealthToken,bool> filter ) {
+		var participants = new CountDictionary<HealthToken>();
+		foreach(var token in Tokens.Keys.OfType<HealthToken>().Where(filter))
 			participants[token] = Math.Max( 0, Tokens[token] - cfg.NotParticipating[token] );
 		return participants;
 	}
@@ -88,7 +88,7 @@ public class RavageAction {
 	}
 
 	public int GetDamageInflictedByDefenders() {
-		CountDictionary<Token> participants = GetDefenders();
+		CountDictionary<HealthToken> participants = GetDefenders();
 		return participants.Sum( pair => pair.Key.FullHealth * pair.Value );
 	}
 
@@ -111,18 +111,19 @@ public class RavageAction {
 		// When damaging defenders, it is ok to damage the explorers first.
 		// https://querki.net/u/darker/spirit-island-faq/#!Voice+of+Command 
 		var participatingExplorers = defenders.Keys
+			.OfType<HealthToken>()
 			.Where(k=>k.Class.Category == TokenCategory.Invader)
-			.OrderByDescending(x=>x.Health)
-			.ThenBy(x=>x.Strife()) // non strifed first
+			.OrderByDescending(x=>x.RemainingHealth)
+			.ThenBy(x=>x.StrifeCount) // non strifed first
 			.ToArray();
 		if( participatingExplorers.Length > 0) {
 			foreach(var token in participatingExplorers) {
-				int tokensToDestroy = Math.Min(@event.startingDefenders[token], damageToApply / token.Health );
+				int tokensToDestroy = Math.Min(@event.startingDefenders[token], damageToApply / token.RemainingHealth );
 				// destroy real tokens
 				await grp.Destroy(tokensToDestroy,token);
 				// update our defenders count
 				defenders[token] -= tokensToDestroy;
-				damageToApply -= tokensToDestroy * token.Health;
+				damageToApply -= tokensToDestroy * token.RemainingHealth;
 			}
 		}
 
@@ -131,17 +132,18 @@ public class RavageAction {
 		// Dahan
 		if(cfg.ShouldDamageDahan) {
 			var participatingDahan = defenders.Keys
+				.Cast<HealthToken>()
 				.Where(k=>k.Class.Category == TokenCategory.Dahan)
-				.OrderBy(t=>t.Health) // kill damaged dahan first
+				.OrderBy(t=>t.RemainingHealth) // kill damaged dahan first
 				.ToArray();
 			foreach(var token in participatingDahan) {
 				// 1st - Destroy weekest dahan first
-				int tokensToDestroy = Math.Min(@event.startingDefenders[token], damageToApply/token.Health); // rounds down
+				int tokensToDestroy = Math.Min(@event.startingDefenders[token], damageToApply/token.RemainingHealth); // rounds down
 				if(tokensToDestroy > 0) {
-					await cfg.DestroyDahan( Tokens.Dahan, tokensToDestroy, token.Health );
+					await cfg.DestroyDahan( Tokens.Dahan, tokensToDestroy, token );
 					@event.dahanDestroyed += tokensToDestroy;
 					defenders[token] -= tokensToDestroy;
-					damageToApply -= tokensToDestroy * token.Health;
+					damageToApply -= tokensToDestroy * token.RemainingHealth;
 				}
 				// 2nd - if we nolonger have enougth to destroy, apply damage
 				if( defenders[token] > 0 && damageToApply > 0) {
@@ -149,7 +151,7 @@ public class RavageAction {
 					await grp.Tokens.Dahan.ApplyDamage(1,Cause.Invaders);
 
 					// update our defenders count
-					++defenders[token.ResultingDamagedInvader(damageToApply)];
+					++defenders[token.AddDamage(damageToApply)];
 					--defenders[token];
 					damageToApply = 0;
 				}
@@ -170,7 +172,7 @@ public class RavageAction {
 		var remaningAttackers = currentAttackers.Clone();
 
 		while(remainingDamageToApply > 0 && remaningAttackers.Any()) {
-			Token attackerToDamage = PickSmartInvaderToDamage( remaningAttackers, remainingDamageToApply );
+			HealthToken attackerToDamage = PickSmartInvaderToDamage( remaningAttackers, remainingDamageToApply );
 
 			// Apply real damage
 			var (damageInflicted,_) = await grp.ApplyDamageTo1( remainingDamageToApply, attackerToDamage, true );
@@ -178,8 +180,8 @@ public class RavageAction {
 
 			// Apply tracking damage
 			--remaningAttackers[attackerToDamage];
-			var damagedAttacker = attackerToDamage.ResultingDamagedInvader( damageInflicted );
-			if(damagedAttacker.Health>0) ++remaningAttackers[damagedAttacker];
+			var damagedAttacker = attackerToDamage.AddDamage( damageInflicted );
+			if(damagedAttacker.RemainingHealth>0) ++remaningAttackers[damagedAttacker];
 
 		}
 		@event.endingAttackers = remaningAttackers;
@@ -187,20 +189,23 @@ public class RavageAction {
 
 	#region private
 
-	int RawDamageFromParticipatingAttackers( CountDictionary<Token> participatingAttacker ) {
+	int RawDamageFromParticipatingAttackers( CountDictionary<HealthToken> participatingAttacker ) {
 
 		return participatingAttacker.Keys
-			.Where( x => x is not StrifedInvader )
+			.OfType<HealthToken>()
+			.Where( x => x.StrifeCount==0 )
 			.Select( attacker => cfg.DamageFromAttacker( attacker ) * participatingAttacker[attacker] ).Sum();
 	}
 
 
 	/// <returns>New attacker finvaders</returns>
-	CountDictionary<Token> FromEachStrifed_RemoveOneStrife( CountDictionary<Token> participatingInvaders ) {
+	CountDictionary<HealthToken> FromEachStrifed_RemoveOneStrife( CountDictionary<HealthToken> participatingInvaders ) {
 
 		var newAttackers = participatingInvaders.Clone();
 
-		var strifed = participatingInvaders.Keys.OfType<StrifedInvader>()
+		var strifed = participatingInvaders.Keys
+			.OfType<HealthToken>()
+			.Where(x=>x.StrifeCount>0)
 			.OrderBy( x => x.StrifeCount ) // smallest first
 			.ToArray();
 		foreach(var orig in strifed) {
@@ -224,22 +229,22 @@ public class RavageAction {
 
 	#region Static Smart Damage to Invaders
 
-	static Token PickSmartInvaderToDamage( CountDictionary<Token> participatingInvaders, int availableDamage) {
+	static HealthToken PickSmartInvaderToDamage( CountDictionary<HealthToken> participatingInvaders, int availableDamage) {
 		return PickItemToKill( participatingInvaders.Keys, availableDamage )
 			?? PickItemToDamage( participatingInvaders.Keys );
 	}
 
-	static Token PickItemToKill(IEnumerable<Token> candidates, int availableDamage) {
+	static HealthToken PickItemToKill(IEnumerable<HealthToken> candidates, int availableDamage) {
 		return candidates
-			.Where( specific => specific.Health <= availableDamage ) // can be killed
+			.Where( specific => specific.RemainingHealth <= availableDamage ) // can be killed
 			.OrderByDescending( k => k.FullHealth ) // pick items with most Full Health
-			.ThenBy( k => k.Health ) // and most damaged.
+			.ThenBy( k => k.RemainingHealth ) // and most damaged.
 			.FirstOrDefault();
 	}
 
-	static Token PickItemToDamage( IEnumerable<Token> candidates ) {
+	static HealthToken PickItemToDamage( IEnumerable<HealthToken> candidates ) {
 		return candidates
-			.OrderBy(i=>i.Health) // closest to dead
+			.OrderBy(i=>i.RemainingHealth) // closest to dead
 			.ThenByDescending(i=>i.FullHealth) // biggest impact
 			.First();
 	}

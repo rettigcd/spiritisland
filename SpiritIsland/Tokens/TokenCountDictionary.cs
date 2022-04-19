@@ -38,7 +38,7 @@ public class TokenCountDictionary {
 
 	public string InvaderSummary { get { // !!! Depreate this.  Use .Invaders (to get just the invaders) then .Summary
 		static int Order_CitiesTownsExplorers( Token invader )
-			=> -(invader.FullHealth * 10 + invader.Health);
+			=> -(invader.FullHealth * 10 + invader.RemainingHealth);
 		return this.Invaders()
 			.OrderBy( Order_CitiesTownsExplorers )
 			.Select( invader => counts[invader] + invader.Summary )
@@ -70,7 +70,7 @@ public class TokenCountDictionary {
 	#region private
 
 	static void ValidateIsAlive( Token specific ) {
-		if(specific.Health == 0) 
+		if(specific.RemainingHealth == 0) 
 			throw new ArgumentException( "We don't store dead counts" );
 	}
 
@@ -81,11 +81,18 @@ public class TokenCountDictionary {
 
 	/// <summary> Non-event-triggering setup </summary>
 	public void Adjust( Token specific, int delta ) {
-		if(specific.Health == 0) throw new System.ArgumentException( "Don't try to track dead tokens." );
+		if(specific.RemainingHealth == 0) throw new System.ArgumentException( "Don't try to track dead tokens." );
 		counts[specific] += delta;
 	}
 
-	/// <summary> Non-event-triggering setup </summary>
+	public void InitDefault( HealthTokenClass tokenClass, int value )
+		=> Init( GetDefault( tokenClass ), value );
+	public Task AddDefault( HealthTokenClass tokenClass, int count, AddReason addReason = AddReason.Added )
+		=> Add( GetDefault( tokenClass ), count, addReason );
+	public void AdjustDefault( HealthTokenClass tokenClass, int delta ) 
+		=> Adjust( GetDefault( tokenClass ), delta );
+	public HealthToken GetDefault( HealthTokenClass tokenClass ) => this.tokenApi.GetDefault( tokenClass );
+
 	public void Init( Token specific, int value ) {
 		counts[specific] = value;
 	}
@@ -128,13 +135,13 @@ public class TokenCountDictionary {
 
 	#region Invader Specific
 
-	public IEnumerable<Token> Invaders() => this.OfAnyType( Invader.City, Invader.Town, Invader.Explorer );
+	public IEnumerable<HealthToken> Invaders() => this.OfAnyType( Invader.City, Invader.Town, Invader.Explorer ).Cast<HealthToken>();
 
 	public bool HasInvaders() => Invaders().Any();
 
-	public bool HasStrife => Keys.OfType<StrifedInvader>().Any();
+	public bool HasStrife => Keys.OfType<HealthToken>().Any(x=>x.StrifeCount>0);
 
-	public int CountStrife() => Keys.OfType<StrifedInvader>().Sum( t => counts[t] );
+	public int CountStrife() => Keys.OfType<HealthToken>().Where(x=>x.StrifeCount>0).Sum( t => counts[t] );
 
 	public int TownsAndCitiesCount() => this.SumAny( Invader.Town, Invader.City );
 
@@ -147,17 +154,19 @@ public class TokenCountDictionary {
 			throw new ArgumentOutOfRangeException($"collection does not contain {count} {invader.Summary}");
 		this[invader] -= count;
 
+		if( invader is not HealthToken ht )
+			throw new InvalidOperationException("can only add strife to HealthToken");
+
 		// Add new strifed
-		int curStrifeCount = invader is StrifedInvader si ? si.StrifeCount : 0;
-		var strifed = StrifedInvader.Generator.WithStrife(invader, curStrifeCount +1 ); // !!! crashed with index out of range while trying to strife an invader with -1 health from Blighted Island effect
+		var strifed = ht.HavingStrife( ht.StrifeCount + 1 );
 
 		this[strifed] += count;
 	}
 
 	#endregion
 
-	public Token RemoveStrife( StrifedInvader orig, int tokenCount ) {
-		Token lessStrifed = orig.AddStrife( -1 );
+	public HealthToken RemoveStrife( HealthToken orig, int tokenCount ) {
+		HealthToken lessStrifed = orig.AddStrife( -1 );
 		this[lessStrifed] += tokenCount;
 		this[orig] -= tokenCount;
 		return lessStrifed;

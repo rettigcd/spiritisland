@@ -23,7 +23,8 @@ public class SavageTransformation {
 	}
 
 	static Task ReplaceExplorerWithBeast( TargetSpaceCtx ctx ) {
-		ctx.Invaders.Remove(Invader.Explorer.Default,1,RemoveReason.Replaced);
+		var explorerToReplace = ctx.Tokens.OfType( Invader.Explorer ).Cast<HealthToken>().OrderBy(x=>x.StrifeCount).First();
+		ctx.Invaders.Remove( explorerToReplace, 1,RemoveReason.Replaced);
 		return ctx.Beasts.Add(1,AddReason.AsReplacement);
 	}
 

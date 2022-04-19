@@ -16,7 +16,7 @@ class WhyDontYouAndThemFight {
 	static public async Task Option3b(TargetSpaceCtx ctx ) {
 		var invaders = ctx.Tokens.Invaders().ToArray();
 		if(invaders.Length == 0 || !ctx.Dahan.Any) return;
-		var invader = await ctx.Decision(new Select.TokenFrom1Space("Select invader to fight 1 dahan",ctx.Space,invaders,Present.Always));
+		var invader = (HealthToken)await ctx.Decision(new Select.TokenFrom1Space("Select invader to fight 1 dahan",ctx.Space,invaders,Present.Always));
 
 		// Calc Invader Damage
 		var (damageFromInvader,newInvaderToken) = GetDamageFromInvader( ctx.Tokens, invader );
@@ -32,8 +32,8 @@ class WhyDontYouAndThemFight {
 
 	}
 
-	static (int,Token) GetDamageFromInvader( TokenCountDictionary tokens, Token invader ) {
-		return invader is StrifedInvader si 
+	static (int,HealthToken) GetDamageFromInvader( TokenCountDictionary tokens, HealthToken invader ) {
+		return invader is HealthToken si 
 			? (0,tokens.RemoveStrife( si, 1 )) 
 			: (invader.FullHealth,invader);
 	}

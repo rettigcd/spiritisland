@@ -16,7 +16,7 @@ public class AnimatedWrackroot {
 		// 1 fear
 		ctx.AddFear( 1 );
 		// destroy 1 explorer
-		await ctx.Invaders.Destroy( 1, Invader.Explorer[1] );
+		await ctx.Invaders.Destroy( 1, Invader.Explorer );
 	}
 
 }

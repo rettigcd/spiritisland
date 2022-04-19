@@ -1,12 +1,12 @@
-﻿
+﻿/*
 
 using System.Text;
 using System.Text.RegularExpressions;
 
 namespace SpiritIsland.Tests;
 
-public
-class Wordle_Tests {
+
+public class Wordle_Tests {
 
 	[Fact]
 	public void SolveSeries() {
@@ -229,3 +229,5 @@ class GuessResult : IEquatable<GuessResult> {
 
 	readonly int hash;
 }
+
+*/

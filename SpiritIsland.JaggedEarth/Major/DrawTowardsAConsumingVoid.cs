@@ -40,7 +40,7 @@ public class DrawTowardsAConsumingVoid {
 			// move tokens
 			var tokenCounts = ctx.GameState.Tokens[adj];
 			foreach(var tokenGroup in tokenGroups) {
-				var tokenToGather = tokenCounts.OfType( tokenGroup ).OrderByDescending( x => x.Health ).FirstOrDefault();
+				var tokenToGather = tokenCounts.OfType( tokenGroup ).OrderByDescending( x => x.RemainingHealth ).FirstOrDefault();
 				if(tokenToGather != null)
 					await ctx.GameState.Tokens[adj].MoveTo( tokenToGather, ctx.Space ); 
 			}

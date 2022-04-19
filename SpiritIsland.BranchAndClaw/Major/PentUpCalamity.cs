@@ -69,7 +69,7 @@ public class PentUpCalamity {
 	}
 
 	static void RemoveToken( TargetSpaceCtx ctx, Token tokenToRemove ) {
-		if(tokenToRemove is StrifedInvader invader)
+		if(tokenToRemove is HealthToken invader)
 			ctx.Tokens.AddStrifeTo( invader, -1 );
 		else
 			ctx.Tokens.Remove( tokenToRemove, 1 );
@@ -77,7 +77,7 @@ public class PentUpCalamity {
 
 	static Token[] GetRemovableTokens( TargetSpaceCtx ctx ) {
 		var options = ctx.Tokens.OfAnyType( TokenType.Beast, TokenType.Disease, TokenType.Wilds ).ToList();
-		options.AddRange( ctx.Tokens.Keys.OfType<StrifedInvader>() );
+		options.AddRange( ctx.Tokens.Keys.OfType<HealthToken>() );
 		return options.ToArray();
 	}
 

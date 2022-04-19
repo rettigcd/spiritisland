@@ -9,7 +9,7 @@ public class PromisesOfProtection {
 
 		await ctx.GatherUpToNDahan( 2 );
 
-		ctx.GameState.ModifyRavage(ctx.Space, cfg => cfg.DahanHitpoints += 2 );
+		await DahanHelper.BoostDahanHealthForRound( ctx, 2 );
 
 	}
 

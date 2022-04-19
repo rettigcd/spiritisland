@@ -45,7 +45,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			const int count = 2;
 
 			// Given: 2 explorers
-			ctx.Tokens.Adjust(Invader.Explorer.Default, count );
+			ctx.Tokens.AdjustDefault(Invader.Explorer, count );
 
 			// When: causing 1 damage to each invader
 			switch(method) {
@@ -73,7 +73,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			// pushes town
 
 			// Given: 2 town
-			ctx.Tokens.Adjust( Invader.Town.Default, count );
+			ctx.Tokens.AdjustDefault( Invader.Town, count );
 
 			// When: destroying towns
 			_ = DestroyAllExplorersAndTownsAsync( ctx );
@@ -96,7 +96,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 		public void DreamDamageResetsEachPower() {
 
 			// Given: 2 explorers
-			ctx.Tokens.Adjust( Invader.City.Default, 1 );
+			ctx.Tokens.AdjustDefault( Invader.City, 1 );
 
 			// When: 3 separate actinos cause 1 damage
 			async Task Run3Async() {
@@ -116,7 +116,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 		public async Task ConsecutivePowersCanDreamKillMultipletimes() {
 
 			// Given: 1 very-damaged city
-			ctx.Adjust( Invader.City[1], 1 );
+			ctx.Tokens.Adjust( Tokens.City1, 1 );
 
 			// When: 3 separate actinos cause 1 damage
 			// EACH power gets a fresh ctx so INVADERS can reset
@@ -129,13 +129,13 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			// And: 0-fear
 			Assert_GeneratedFear( 3*5 ); // city never destroyed
 			// City still there
-			ctx.Invaders.Tokens[Invader.City[1]].ShouldBe(1);
+			ctx.Invaders.Tokens[Tokens.City1 ].ShouldBe(1);
 		}
 
 		[Fact]
 		public void MaxKillOnce() {
 			// Given: 1 very-damaged city
-			ctx.Adjust( Invader.City[1], 1 );
+			ctx.Tokens.Adjust( Tokens.City1, 1 );
 
 			// When: doing 4 points of damage
 			async Task PlayCard() { try { await FourDamage( MakeFreshCtx() ); } catch( Exception ex) {
@@ -149,7 +149,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			Assert_GeneratedFear( 1 * 5 ); // city only destroyed once
 
 			// City with partial damage still there
-			ctx.Invaders[Invader.City[1]].ShouldBe( 1 );
+			ctx.Invaders[ Tokens.City1 ].ShouldBe( 1 );
 		}
 
 		void Assert_GeneratedFear( int expectedFearCount ) {

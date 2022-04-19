@@ -26,7 +26,7 @@ public class InvaderBinding {
 	public async Task ApplyDamageToEach( int individualDamage, params TokenClass[] generic ) {
 
 		var invaders = Tokens.Invaders()
-			.OrderBy(x=>x.Health) // do damaged first to clear them out
+			.OrderBy(x=>x.RemainingHealth) // do damaged first to clear them out
 			.ToArray();
 
 		// Filter if appropriate
@@ -41,58 +41,50 @@ public class InvaderBinding {
 
 	/// <summary> Not Badland-aware </summary>
 	/// <returns>(damage inflicted,damagedInvader)</returns>
-	public async Task<(int,Token)> ApplyDamageTo1( int availableDamage, Token invaderToken, bool fromRavage = false ) {
+	public async Task<(int,Token)> ApplyDamageTo1( int availableDamage, HealthToken invaderToken, bool fromRavage = false ) { // !! change Token to HealthToken
 
-		Token damagedInvader = ApplyDamage( Tokens, availableDamage, invaderToken );
+		var damagedInvader = invaderToken.AddDamage( availableDamage );
+		if(!damagedInvader.IsDestroyed) {
+			Tokens.Adjust( invaderToken, -1 );
+			Tokens.Adjust( damagedInvader, 1 );
+		} else 
+			await DestroyStrategy.OnInvaderDestroyed( Space, invaderToken, fromRavage );
 
-		if(0 == damagedInvader.Health)
-			await DestroyStrategy.OnInvaderDestroyed( Space, damagedInvader, fromRavage );
-
-		int damageInflicted = invaderToken.Health - damagedInvader.Health;
+		int damageInflicted = invaderToken.RemainingHealth - damagedInvader.RemainingHealth;
 		return (damageInflicted,damagedInvader); // damage inflicted
-	}
-
-	Token ApplyDamage( TokenCountDictionary tokens, int availableDamage, Token invaderToken ) {
-		var damagedInvader = invaderToken.ResultingDamagedInvader( availableDamage );
-		tokens.Adjust( invaderToken, -1 );
-		if(0 < damagedInvader.Health) // only track living invaders
-			tokens.Adjust( damagedInvader, 1 );
-		return damagedInvader;
 	}
 
 	#endregion
 
 	#region Destroy
 
-	public async Task<int> Destroy( int countToDestroy, TokenClass tokenClass ) {
-		if(countToDestroy == 0) return 0;
-		Token[] invaderTypesToDestroy = Tokens.Invaders()
-			.Where( x=> x.Class == tokenClass )
-			.OrderByDescending( x => x.Health ) // kill healthiest first
-			.ToArray();
+	public async Task<int> Destroy( int countToDestroy, HealthTokenClass invaderClass ) {
+		countToDestroy = Math.Min( countToDestroy, Tokens.Sum( invaderClass ) );
+		int remaining = countToDestroy; // capture
 
-		int totalDestoyed = 0;
-		foreach(var specificInvader in invaderTypesToDestroy) {
-			while(countToDestroy > 0 && this[specificInvader] > 0) {
-				await ApplyDamageTo1( specificInvader.Health, specificInvader );
-				++totalDestoyed;
-				--countToDestroy;
-			}
+		while(remaining > 0) {
+			var next = Tokens.OfType( invaderClass ).Cast<HealthToken>()
+				.OrderByDescending( x => x.FullHealth )
+				.ThenBy( x => x.StrifeCount )
+				.ThenBy( x => x.Damage )
+				.First();
+			remaining -= await Destroy( remaining, next );
 		}
-		return totalDestoyed;
+
+		return countToDestroy;
 	}
 
-	public async Task<int> Destroy( int countToDestroy, Token specificInvader ) {
-		if(countToDestroy == 0) return 0;
-		int numToDestroy = Math.Min(countToDestroy, this[specificInvader] );
-		for(int i = 0; i < numToDestroy; ++i)
-			await ApplyDamageTo1( specificInvader.Health, specificInvader );
+	public async Task<int> Destroy( int countToDestroy, HealthToken invaderToDestroy ) {
+		int numToDestroy = Math.Min(countToDestroy, this[invaderToDestroy] );
+		for(int i = 0; i < numToDestroy; ++i) {
+			await DestroyStrategy.OnInvaderDestroyed( Space, invaderToDestroy, false );
+		}
 		return numToDestroy;
 	}
 
-	public async Task DestroyAny( int count, params TokenClass[] generics ) {
+	public async Task DestroyAny( int count, params HealthTokenClass[] generics ) {
 		// !! this could be cleaned up
-		Token[] invadersToDestroy = Tokens.OfAnyType( generics );
+		HealthToken[] invadersToDestroy = Tokens.OfAnyType( generics ).Cast<HealthToken>().ToArray();
 		while(count > 0 && invadersToDestroy.Length > 0) {
 			var invader = invadersToDestroy
 				.OrderByDescending(x=>x.FullHealth)
@@ -101,7 +93,7 @@ public class InvaderBinding {
 			await Destroy( 1, invader.Class );
 
 			// next
-			invadersToDestroy = Tokens.OfAnyType( generics );
+			invadersToDestroy = Tokens.OfAnyType( generics ).Cast<HealthToken>().ToArray();
 			--count;
 		}
 	}
@@ -121,9 +113,10 @@ public class InvaderBinding {
 		if(Tokens.SumAny(removables) == 0) return;
 
 		var invaderToRemove = Tokens.OfAnyType( removables )
+			.Cast<HealthToken>()
 			.OrderByDescending( g => g.FullHealth )
-			.ThenBy( k => k.Strife() )  // un-strifed first
-			.ThenByDescending( g => g.Health )
+			.ThenBy( k => k.StrifeCount )  // un-strifed first
+			.ThenByDescending( g => g.RemainingHealth )
 			.FirstOrDefault();
 
 		if(invaderToRemove != null)
@@ -139,10 +132,11 @@ public class InvaderBinding {
 	/// Restores all of the tokens to their default / healthy state.
 	/// </summary>
 	static public void HealTokens( TokenCountDictionary counts ) {
+
 		void RestoreAllToDefault( Token token ) {
-			if(token == token.Healthy) return; // already at default/healthy
+			if(token is not HealthToken ht || ht.Damage == 0) return;
 			int num = counts[token];
-			counts.Adjust( token.Healthy, num );
+			counts.Adjust( ht.Healthy, num );
 			counts.Adjust( token, -num );
 		}
 
@@ -175,7 +169,7 @@ public class InvaderBinding {
 		Token[] invaderTokens;
 		int damageInflicted = 0;
 		while(damage > 0 && (invaderTokens = Tokens.OfAnyType( allowedTypes ).ToArray()).Length > 0) {
-			var invaderToDamage = await damagePicker.Action.Decision( Select.Invader.ForAggregateDamage( Space, invaderTokens, damage, present ) );
+			var invaderToDamage = (HealthToken)await damagePicker.Action.Decision( Select.Invader.ForAggregateDamage( Space, invaderTokens, damage, present ) );
 			if(invaderToDamage==null) break;
 			await ApplyDamageTo1( 1, invaderToDamage );
 			--damage;

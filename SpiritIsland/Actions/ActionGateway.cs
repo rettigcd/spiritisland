@@ -155,9 +155,9 @@ sealed public class ActionGateway : IUserPortal, IEnginePortal {
 
 public class DecisionLogEntry : ILogEntry {
 
-	IOption selection;
-	IDecision decision;
-	bool auto;
+	readonly IOption selection;
+	readonly IDecision decision;
+	readonly bool auto;
 
 	public DecisionLogEntry(IOption selection, IDecision decision, bool auto ) {
 		this.selection = selection;

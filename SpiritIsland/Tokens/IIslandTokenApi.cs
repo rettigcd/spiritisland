@@ -12,4 +12,6 @@ public interface IIslandTokenApi {
 
 	TokenCountDictionary GetTokensFor( Space space );
 
+	HealthToken GetDefault( HealthTokenClass tokenClass );
+
 }

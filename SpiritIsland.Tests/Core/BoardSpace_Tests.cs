@@ -222,12 +222,12 @@ namespace SpiritIsland.Tests.Core {
 			var tokens = gameState.Tokens[space];
 
 			int ee = items.Count(c=>c=='E');
-			int aa = tokens[Invader.Explorer[1]];
+			int aa = tokens[Tokens.Explorer];
 			Assert.True(ee==aa,tokens.InvaderSummary+" ex:"+ee+" act:"+aa);
 
-			Assert.Equal(items.Count(c=>c=='C'), tokens[Invader.City[3]]);
-			Assert.Equal(items.Count(c=>c=='T'), tokens[Invader.Town[2]]);
-			Assert.Equal(items.Count(c=>c=='E'), tokens[Invader.Explorer[1]]);
+			Assert.Equal(items.Count(c=>c=='C'), tokens[Tokens.City]);
+			Assert.Equal(items.Count(c=>c=='T'), tokens[Tokens.Town] );
+			Assert.Equal(items.Count(c=>c=='E'), tokens[Tokens.Explorer] );
 			Assert.Equal(items.Count(c=>c=='D'), tokens.Dahan.Count);
 			Assert.Equal(items.Count(c=>c=='B'), tokens.Blight.Any?1:0);
 		}

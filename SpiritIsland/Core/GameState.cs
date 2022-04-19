@@ -160,8 +160,7 @@ public class GameState {
 	#region Invader Phase / Deck Modifications
 
 	public void SkipAllInvaderActions( params Space[] targets ) {
-		if(targets == null || targets.Length == 0)
-			throw new ArgumentException("must provide targets to skip");
+		// Sometimes this will be called with nothing to skip, Example: Quarentine level 3
 
 		foreach(var target in targets){
 			SkipRavage( target );
@@ -248,7 +247,7 @@ public class GameState {
 
 	public Func<Spirit,GameState,Cause,Task> Destroy1PresenceFromBlightCard = DefaultDestroy1PresenceFromBlightCard; // Direct distruction from Blight Card, not cascading
 
-	void Heal( GameState obj ) => Healer.Heal( obj ); // called at end of round.
+	void Heal( GameState gs ) => Healer.HealAll( gs ); // called at end of round.
 	public Healer Healer = new Healer(); // replacable Behavior
 
 	#endregion
@@ -398,15 +397,20 @@ public class GameState {
 
 public class Healer {
 
-	public virtual void Heal( GameState gs ) {
-		foreach(var space in gs.Tokens.Keys.Except(skipHealSpaces))
-			InvaderBinding.HealTokens( gs.Tokens[space] );
+	public virtual void HealAll( GameState gs ) {
+		foreach(var space in gs.Tokens.Keys)
+			HealSpace( gs.Tokens[space] );
 		skipHealSpaces.Clear();
+	}
+
+	public virtual void HealSpace( TokenCountDictionary tokens ) {
+		if( !skipHealSpaces.Contains(tokens.Space) )
+			InvaderBinding.HealTokens( tokens );
 	}
 
 	public void Skip( Space space ) => skipHealSpaces.Add( space );
 
-	protected List<Space> skipHealSpaces = new List<Space>();
+	protected HashSet<Space> skipHealSpaces = new HashSet<Space>();
 
 }
 

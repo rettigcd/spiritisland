@@ -74,7 +74,7 @@ public class Ocean : Spirit {
 		if( grp == Invader.City || grp == Invader.Town || grp == Invader.Explorer ) { // Could created an Invader subclass that is easier to test.
 			// Drown Invaders for points
 			drownedCount += args.Token.FullHealth;
-			await gs.Invaders.On( args.AddedTo ).Destroy( 1,args.Token );
+			await gs.Invaders.On( args.AddedTo ).Destroy( 1, (HealthToken)args.Token );
 
 			int spiritCount = gs.Spirits.Length;
 			while(spiritCount <= drownedCount) {

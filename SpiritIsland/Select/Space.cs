@@ -12,6 +12,9 @@ public class Space : TypedDecision<Type>, IHaveAdjacentInfo {
 	static public Space PushToken( Token token, Type source, IEnumerable<Type> destinationOptions, Present present )
 		=> Space.ForAdjacent( "Push " + token.Summary + " to", source, AdjacentDirection.Outgoing, destinationOptions, present );
 
+	static public Space PushToken( TokenClass tokenClass, Type source, IEnumerable<Type> destinationOptions, Present present )
+		=> Space.ForAdjacent( "Push " + tokenClass.Label + " to", source, AdjacentDirection.Outgoing, destinationOptions, present );
+
 	static public Space ForAdjacent( string prompt, Type source, AdjacentDirection gatherPush, IEnumerable<Type> spaces, Present present ) {
 		return new Space( prompt, spaces.OrderBy( x => x.Label ), present ) {
 			AdjacentInfo = new AdjacentInfo {

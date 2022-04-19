@@ -47,25 +47,31 @@ public class TargetSpaceCtx : SelfCtx {
 	#endregion
 
 	// This is different than Push / Gather which ManyMinds adjusts, this is straight 'Move' that is not adjusted.
-	public async Task<Space> MoveTokensOut( int max, TokenClass tokenGroup, int range, string dstFilter = SpiritIsland.Target.Any ) {
+	public async Task<Space> MoveTokensOut( int max, TokenClass tokenClass, int range, string dstFilter = SpiritIsland.Target.Any ) {
 
-		Token[] tokenOptions = Tokens.OfType(tokenGroup).ToArray();
-		if(tokenOptions.Length == 0) return null;
-			
-		if(tokenOptions.Length>1) throw new Exception("I didn't implement Move for different health tokens");
+		if(!Tokens.HasAny( tokenClass )) return null;
 
-		var destination = await Decision( Select.Space.PushToken(tokenOptions[0], Space, 
-			Space.Range( range ).Where(s=>{ var x = Target(s); return x.IsInPlay && x.Matches(dstFilter); } ), 
-			Present.Done ) 
+		// Select Destination
+		Space destination = await Decision( Select.Space.PushToken( tokenClass, Space,
+			Space.Range( range ).Where( s => { var x = Target( s ); return x.IsInPlay && x.Matches( dstFilter ); } ),
+			Present.Done )
 		);
 
-		if(destination != null) {
-			int clippedMax = Math.Min( Tokens.Sum( tokenGroup ), max );
-			int countToMove = clippedMax == 1 ? 1 : await Self.SelectNumber( $"# of {tokenGroup.Label} to move", clippedMax );
-			while(countToMove-- > 0)
-				await Move( tokenGroup.Default, Space, destination ); // doesn't moved damaged dahan nor invaders
+		Token[] tokenOptions = Tokens.OfType(tokenClass);
+		int remaining = Math.Min( Tokens.SumAny(tokenClass), max );
+		while(tokenOptions.Length > 0 && remaining > 0 ) {
+			// Select Token and move
+			var source = await Decision( Select.TokenFrom1Space.TokenToMove( Space, remaining, tokenOptions, Present.Done ) );
+			if(source == null) break;
+			await Move( source, Space, destination );
+
+			// Next
+			--remaining;
+			tokenOptions = Tokens.OfType( tokenClass );
 		}
+
 		return destination;
+
 	}
 
 	// This is different than Push / Gather which ManyMinds adjusts, this is straight 'Move' that is not adjusted.
@@ -130,10 +136,6 @@ public class TargetSpaceCtx : SelfCtx {
 
 	/// <summary> Use this for Power-Pushing, since Powers can push invaders into the ocean. </summary>
 	public IEnumerable<Space> Range( int range ) => Space.Range( range ).Where( adj => Target(adj).IsInPlay );
-
-	// Convenience Methods - That bind to .Target
-	public void Adjust( Token invader, int delta )
-		=> Tokens.Adjust( invader, delta );
 
 	public Task DestroyDahan( int countToDestroy ) => Dahan.Destroy( countToDestroy, Cause );
 
@@ -232,11 +234,11 @@ public class TargetSpaceCtx : SelfCtx {
 		var damagedInvaders = new List<Token>();
 		count = System.Math.Min( count, invaders.Count );
 		while(count-- > 0) {
-			var invader = await Decision( Select.Invader.ForIndividualDamage( damagePerInvader, Space, invaders ) );
+			var invader = (HealthToken)await Decision( Select.Invader.ForIndividualDamage( damagePerInvader, Space, invaders ) );
 			if(invader == null) break;
 			invaders.Remove( invader );
 			var (_, damaged) = await Invaders.ApplyDamageTo1( damagePerInvader, invader );
-			if(damaged.Health > 0)
+			if(damaged.RemainingHealth > 0)
 				damagedInvaders.Add( damaged );
 		}
 
@@ -245,11 +247,11 @@ public class TargetSpaceCtx : SelfCtx {
 
 	async Task ApplyDamageToSpecificTokens( List<Token> invaders, int additionalTotalDamage ) {
 		while(additionalTotalDamage > 0) {
-			var invader = await Decision( Select.Invader.ForBadlandDamage(additionalTotalDamage,Space,invaders) );
+			var invader = (HealthToken)await Decision( Select.Invader.ForBadlandDamage(additionalTotalDamage,Space,invaders) );
 			if(invader == null) break;
 			int index = invaders.IndexOf( invader );
 			var (_, moreDamaged) = await Invaders.ApplyDamageTo1( 1, invader );
-			if(moreDamaged.Health > 0)
+			if(moreDamaged.RemainingHealth > 0)
 				invaders[index] = moreDamaged;
 			else
 				invaders.RemoveAt( index );

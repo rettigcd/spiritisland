@@ -17,7 +17,7 @@ namespace SpiritIsland.Tests.BranchAndClaw {
 			Space noInvaderSpace = gs.Island.AllSpaces.First(s=>!s.IsOcean && !gs.Tokens[s].HasInvaders());
 			var tokens = gs.Tokens[noInvaderSpace];
 			//   And: 1 neighboring town
-			gs.Tokens[ noInvaderSpace.Adjacent.First() ].Adjust(Invader.Town[2],1);
+			gs.Tokens[ noInvaderSpace.Adjacent.First() ].AdjustDefault(Invader.Town,1);
 			//   And: 1 wilds there
 			tokens.Wilds.Init(1);
 
@@ -37,7 +37,7 @@ namespace SpiritIsland.Tests.BranchAndClaw {
 
 			// Given: a space with ONLY 1 explorer
 			Space space = gs.Island.AllSpaces.First( s => !s.IsOcean && !gs.Tokens[s].HasInvaders() ); // 0 invaders
-			gs.Tokens[space].Adjust( Invader.Explorer[1], 1 ); // add explorer
+			gs.Tokens[space].AdjustDefault( Invader.Explorer, 1 ); // add explorer
 			//   And: 1 diseases there
 			await gs.Tokens[space].Disease.Add(1);
 

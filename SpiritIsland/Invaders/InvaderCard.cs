@@ -134,7 +134,7 @@ public class InvaderCard : IOption, IInvaderCard {
 		var wilds = tokens.Wilds;
 		if(wilds == 0) {
 			gs.Log( new InvaderActionEntry( tokens.Space + ":gains explorer" ) );
-			await tokens.Add( Invader.Explorer.Default, 1, AddReason.Explore );
+			await tokens.AddDefault( Invader.Explorer, 1, AddReason.Explore );
 		} else
 			await wilds.Remove( 1, RemoveReason.UsedUp );
 	}

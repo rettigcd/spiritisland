@@ -34,9 +34,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[4];
 			var grp = gameState.Tokens[targetSpace];
-			grp.Adjust( Invader.Explorer.Default, explorerCount );
-			grp.Adjust( Invader.Town.Default, townCount );
-			grp.Adjust( Invader.City.Default, cityCount );
+			grp.AdjustDefault( Invader.Explorer, explorerCount );
+			grp.AdjustDefault( Invader.Town, townCount );
+			grp.AdjustDefault( Invader.City, cityCount );
 
 			When_PlayingCard();
 
@@ -63,7 +63,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// 1 explorer on A4
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[2];
-			gameState.Tokens[targetSpace].Adjust(Invader.Explorer.Default, 1);
+			gameState.Tokens[targetSpace].AdjustDefault(Invader.Explorer, 1);
 
 			When_PlayingCard();
 
@@ -81,8 +81,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[4];
 			var grp =gameState.Tokens[targetSpace];
-			grp.Adjust(Invader.Explorer.Default, 1);
-			grp.Adjust(Invader.Town.Default, 1);
+			grp.AdjustDefault(Invader.Explorer, 1);
+			grp.AdjustDefault(Invader.Town, 1);
 
 			var explorerDestination = board[2];
 			var townDestination = board[3];
@@ -110,7 +110,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// 1 damaged town on A4
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[4];
-			gameState.Tokens[targetSpace].Adjust( Invader.Town[1], 1 );
+			gameState.Tokens[targetSpace].Adjust( Tokens.Town1, 1 );
 
 			var invaderDestination = board[2];
 
@@ -138,7 +138,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// 31 explorers on A4
 			var board = gameState.Island.Boards[0];
 			Space targetSpace = board[4];
-			gameState.Tokens[ targetSpace ].Adjust( Invader.Explorer.Default, 3 );
+			gameState.Tokens[ targetSpace ].AdjustDefault( Invader.Explorer, 3 );
 
 			//  When: activating card
 			When_PlayingCard();

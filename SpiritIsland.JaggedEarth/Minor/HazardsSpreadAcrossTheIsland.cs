@@ -16,7 +16,7 @@ public class HazardsSpreadAcrossTheIsland{
 			ctx.Self.Energy--;
 
 		// Add 1 of that type of token to target land.
-		if( 0 < tokenChoice.Strife() )
+		if( tokenChoice is HealthToken ht && 0 < ht.StrifeCount )
 			await ctx.AddStrife();
 		else
 			await ctx.Tokens.Add(tokenChoice,1);
@@ -41,7 +41,7 @@ public class HazardsSpreadAcrossTheIsland{
 	static readonly TokenClass[] InterestedTokenTypes = new TokenClass[] { TokenType.Badlands, TokenType.Beast, TokenType.Disease, TokenType.Wilds };
 	static bool IsTokenOfInterest( Token token ) {
 		return InterestedTokenTypes.Contains( token.Class )
-			|| token.Strife()>0;
+			|| token is HealthToken ht && 0<ht.StrifeCount;
 	}
 
 }

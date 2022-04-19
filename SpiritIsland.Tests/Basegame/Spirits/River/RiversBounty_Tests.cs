@@ -119,8 +119,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			//   And: neighbors have 1 damaged dahan each 
 			const int dahanToGather = 2;
 			var neighbors = ctx.Adjacent.ToArray();
-			for(int i = 0; i<dahanToGather;++i)
-				ctx.Target(neighbors[i]).Dahan.InitDamaged(1);
+			for(int neighborIndex = 0; neighborIndex<dahanToGather; ++neighborIndex)
+				ctx.Target(neighbors[neighborIndex]).Tokens.Init( Tokens.Dahan1, 1 );
 
 			When_PlayingCard();
 
@@ -180,7 +180,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			var space = gameState.Island.Boards[0][4];
 			var ctx = spirit.Bind( gameState, Cause.None).Target(space);
 			var dahan = ctx.Tokens.Dahan;
-			dahan.InitDamaged(5);
+			ctx.Tokens.Init( Tokens.Dahan1, 5 );
 			dahan.Init(7);
 			ctx.Dahan.Count.ShouldBe(12);
 		}

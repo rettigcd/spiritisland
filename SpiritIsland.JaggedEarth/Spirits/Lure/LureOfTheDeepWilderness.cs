@@ -53,19 +53,36 @@ public class LureOfTheDeepWilderness : Spirit {
 
 	async Task EnthrallTheForeignExplorers( RavagingEventArgs args ) {
 		var ravageSpacesWithPresence = args.Spaces.Intersect(this.Presence.Spaces).ToArray();
-		foreach(var space in args.Spaces) {
-			int maxRemovable = this.Presence.CountOn(space) * 2;
-			if( maxRemovable==0 ) continue;
-			int explorerCount = args.GameState.Tokens[space][Invader.Explorer.Default];
-			if( explorerCount == 0) continue;
+		var selfCtx = this.Bind( args.GameState, Cause.None );
+		foreach(var space in ravageSpacesWithPresence)
+			await EntralExplorersOnSpace( selfCtx.Target(space) );
+	}
 
-			int removableCount = System.Math.Min( maxRemovable, explorerCount );
+	async Task EntralExplorersOnSpace( TargetSpaceCtx ctx ) {
+		int maxRemovable = ctx.PresenceCount * 2;
 
-			int skipCount = await this.SelectNumber($"Enthrall the Foreign Explorers ({explorerCount} on {space.Label}) Ignore how many?", removableCount,0);
-			if(skipCount>0)
-				args.GameState.ModifyRavage(space,cfg=>cfg.NotParticipating[Invader.Explorer.Default] += skipCount);
+		int explorerCount = ctx.Tokens.Sum( Invader.Explorer );
 
+		var explorerTypes = ctx.Tokens.OfType( Invader.Explorer ).ToList();
+
+		int removableCount = System.Math.Min( maxRemovable, explorerCount );
+		int removed = 0;
+		while( removed < removableCount ) {
+			// Select type to not participate (strifed / non-strifed)
+			var explorerTypeToNotParticipate = explorerTypes.Count == 1 ? explorerTypes[0] 
+				: await ctx.Decision(Select.TokenFrom1Space.TokenToRemove(ctx.Space,1,explorerTypes.ToArray(),Present.Done));
+			if( explorerTypeToNotParticipate == null ) break;
+
+			var countToNotParticipate = await ctx.Self.SelectNumber( $"# of {explorerTypeToNotParticipate.Summary} to not participate.", ctx.Tokens[explorerTypeToNotParticipate], 0 );
+
+			if(countToNotParticipate > 0)
+				ctx.GameState.ModifyRavage( ctx.Space, cfg => cfg.NotParticipating[explorerTypeToNotParticipate] += countToNotParticipate );
+
+			explorerTypes.Remove( explorerTypeToNotParticipate ); // don't let them select the same type twice and over-count the # of non-participants of that type.
+
+			removed += countToNotParticipate;
 		}
+
 	}
 
 }

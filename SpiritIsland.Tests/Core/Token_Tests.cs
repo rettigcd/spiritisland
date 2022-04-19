@@ -1,35 +1,28 @@
-﻿using System.Linq;
-using Shouldly;
-using SpiritIsland.BranchAndClaw;
-using Xunit;
+﻿namespace SpiritIsland.Tests.Core;
 
-namespace SpiritIsland.Tests.Core {
+public class Token_Tests {
 
-	public class Token_Tests {
+	[Fact]
+	public void SummariesAreUnique() {
+		var tokens = new Token[] {
+			Tokens.Explorer,
+			Tokens.Town1,Tokens.Town,
+			Tokens.City1,Tokens.City2,Tokens.City,
+			Tokens.Dahan1,Tokens.Dahan,
+			TokenType.Blight, // conflict with Beast
+			TokenType.Defend,
+			TokenType.Beast,
+			TokenType.Disease,
+			TokenType.Wilds
+		};
 
-		[Fact]
-		public void SummariesAreUnique() {
-			var tokens = new Token[] {
-				Invader.Explorer[1],
-				Invader.Town[1],Invader.Town[2],
-				Invader.City[1],Invader.City[2],Invader.City[3],
-				TokenType.Dahan[1],TokenType.Dahan[2],
-				TokenType.Blight, // conflict with Beast
-				TokenType.Defend,
-				TokenType.Beast,
-				TokenType.Disease,
-				TokenType.Wilds
-			};
+		var conflicts = tokens
+			.GroupBy(t=>t.Summary)
+			.Where(grp=>grp.Count()>1)
+			.Select(grp=>grp.Key+" is used for:"+grp.Select(t=>t.Class.Label+":"+t.RemainingHealth).Join(", "))
+			.Join("\r\n");
 
-			var conflicts = tokens
-				.GroupBy(t=>t.Summary)
-				.Where(grp=>grp.Count()>1)
-				.Select(grp=>grp.Key+" is used for:"+grp.Select(t=>t.Class.Label+":"+t.Health).Join(", "))
-				.Join("\r\n");
-
-			conflicts.ShouldBe("");
-		}
-
+		conflicts.ShouldBe("");
 	}
 
 }

@@ -33,12 +33,16 @@ public class WrapInWingsOfSunlight_Tests {
 		_ = PlayCard( spirit.Bind( gameState, Cause.Power).Target(src) );
 
 		//  And: Can bring 2 of each
-		user.AssertDecision( "Push D@2 to", "A1,A2,A3,A4,A5,A6,A7,A8,Done", dst.Label );
-		user.AssertDecisionX( "# of dahan to move", "(5),4,3,2,1" );
+		user.AssertDecision( "Push Dahan to", "A1,A2,A3,A4,A5,A6,A7,A8,Done", dst.Label );
+		user.AssertDecisionX( "Move up to (5)", "(D@2),Done" );
+		user.AssertDecisionX( "Move up to (4)", "(D@2),Done" );
+		user.AssertDecisionX( "Move up to (3)", "(D@2),Done" );
+		user.AssertDecisionX( "Move up to (2)", "(D@2),Done" );
+		user.AssertDecisionX( "Move up to (1)", "(D@2),Done" );
 
 		// Then: target 2 of each
 		var dstTokens = gameState.Tokens[dst];
-		dstTokens[TokenType.Dahan.Default].ShouldBe(5);
+		dstTokens[Tokens.Dahan].ShouldBe(5);
 	}
 
 	[Trait("Feature","Push")]
@@ -55,9 +59,9 @@ public class WrapInWingsOfSunlight_Tests {
 		// Given: A5 has 3 Towns, Dahans, and Explorers
 		var src = board[5];
 		var tokens = gameState.Tokens[src];
-		tokens.Init( TokenType.Dahan.Default , 3);
-		tokens.Init( Invader.Explorer.Default, 3);
-		tokens.Init( Invader.Town.Default    , 3);
+		tokens.InitDefault( TokenType.Dahan , 3);
+		tokens.InitDefault( Invader.Explorer, 3);
+		tokens.InitDefault( Invader.Town    , 3);
 
 		//  And: spirit has presence on A5
 		spirit.Presence.PlaceOn(src,gameState);
@@ -79,7 +83,7 @@ public class WrapInWingsOfSunlight_Tests {
 
 		// Then: target 2 of each
 		var dstTokens = gameState.Tokens[dst];
-		dstTokens[TokenType.Dahan.Default].ShouldBe(2);
+		dstTokens[Tokens.Dahan].ShouldBe(2);
 	}
 
 }

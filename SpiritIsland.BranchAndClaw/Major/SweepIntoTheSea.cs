@@ -34,7 +34,7 @@ public partial class SweepIntoTheSea {
 		return closerSpace;
 	}
 
-	static async Task PushAllTokensTo( TargetSpaceCtx ctx, TargetSpaceCtx destination, params TokenClass[] groups ) {
+	static async Task PushAllTokensTo( TargetSpaceCtx ctx, TargetSpaceCtx destination, params HealthTokenClass[] groups ) {
 		while(ctx.Tokens.HasAny( groups ))
 			await ctx.Move( ctx.Tokens.OfAnyType( groups ).First(), ctx.Space, destination.Space );
 	}

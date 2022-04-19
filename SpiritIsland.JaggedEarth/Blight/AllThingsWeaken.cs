@@ -18,20 +18,28 @@ public class AllThingsWeaken : BlightCardBase {
 	static ActionOption<GameState> ReduceTokenHealthBy1 => 
 
 		// Invaders and Dahan have -1 Health (min, 1).
-		new ActionOption<GameState>("Invaders have -1 Health.", gs => {
-			var replacements = new List<(Token, Token)>();
-			foreach(var invaderClass in new[] { Invader.Town, Invader.City, TokenType.Dahan }) {
-				var oldDefault = invaderClass.Default;
-				if(oldDefault.Health == 1) continue;
-				invaderClass.RemoveTopDefault();
-				var newDefault = invaderClass.Default;
-				replacements.Add( (oldDefault, newDefault) );
+		new ActionOption<GameState>("Invaders have -1 Health.", async gs => {
+
+			// change the defaults
+			var defaults = gs.Tokens.TokenDefaults;
+			foreach(var invaderClass in defaults.Keys.ToArray()){
+				var current = defaults[invaderClass];
+				if(current.FullHealth > 1)
+					defaults[invaderClass] = current.AddHealth(-1);
 			}
+
+			// replace/update existing tokens
 			foreach(var space in gs.Island.AllSpaces) {
 				var tokens = gs.Tokens[space];
-				foreach(var (from, to) in replacements) {
-					tokens.Adjust( to, tokens[from] );
-					tokens.Init( from, 0 );
+				var tokenTypes = tokens.Keys.OfType<HealthToken>()
+					.Where(x=>x.FullHealth > 1)
+					.OrderBy(x=>x.FullHealth)
+					.ToArray(); // least health first
+				foreach(var oldToken in tokenTypes) {
+					var newToken = oldToken.AddHealth(-1);
+					tokens.Adjust( newToken, tokens[oldToken] );
+					tokens.Init( oldToken, 0 );
+					// if (newToken.IsDestroyed) !!! destroy new tokens
 				}
 			}
 		});

@@ -330,7 +330,11 @@ public abstract class Spirit : IOption {
 	#region presence
 
 	/// <summary> # of coins in the bank. </summary>
-	public int Energy { get; set; }
+	public int Energy { 
+		get => _energy;
+		set => _energy = value > 0 ? value : 0; // Be safe - Erosion of Fear tries to make this negative.
+	}
+	int _energy;
 
 	public SpiritPresence Presence {get; }
 

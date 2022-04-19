@@ -30,7 +30,7 @@ public class InstrumentsOfTheirOwnRuin {
 
 	static Task DuringRavage_InvadersDamageInvadersInAdjacentLandsInsteadOfDahan( TargetSpaceCtx ctx ) {
 		// Note - this works regardless of them ravaging in target land or not. yay!
-		int damageFromStrifedInvaders = ctx.Tokens.Invaders().OfType<StrifedInvader>().Sum( si => si.FullHealth * ctx.Tokens[si] );
+		int damageFromStrifedInvaders = ctx.Tokens.Invaders().OfType<HealthToken>().Where(x=>x.StrifeCount>0).Sum( si => si.FullHealth * ctx.Tokens[si] );
 		async Task Sequence( RavageAction eng ) {
 			// they damage invaders in adjacent lands instead of dahan and the land.
 			var invaderSpaceCtx = await ctx.SelectAdjacentLand( $"Apply {damageFromStrifedInvaders} damage to", x => x.HasInvaders );

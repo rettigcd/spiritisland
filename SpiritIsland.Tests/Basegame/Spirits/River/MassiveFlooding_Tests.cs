@@ -13,9 +13,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// Given: River
 			spirit.UsePowerProgression();
 			gs = new GameState( spirit, Board.BuildBoardA() ) {
-				InvaderDeck = InvaderDeck.Unshuffled()
+				InvaderDeck = InvaderDeck.Unshuffled(),
+				Phase = Phase.Slow
 			};
-			gs.Phase = Phase.Slow;
 
 			game = new SinglePlayerGame( gs );
 
@@ -90,9 +90,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 			// 1 city, 5 towns, 5 invaders on A4 (range 1 from SS)
 			var space = game.Spirit.Presence.SacredSites.First().Adjacent.First();
 			var grp = game.GameState.Tokens[space];
-			grp.Adjust( Invader.City.Default, 1);
-			grp.Adjust( Invader.Town.Default, 5 );
-			grp.Adjust( Invader.Explorer.Default, 5 );
+			grp.AdjustDefault( Invader.City, 1);
+			grp.AdjustDefault( Invader.Town, 5 );
+			grp.AdjustDefault( Invader.Explorer, 5 );
 
 			User.SelectsGrowthA_Reclaim();
 

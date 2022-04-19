@@ -7,6 +7,8 @@ public class SwallowTheLandDwellers {
 	[FromPresence(0,Target.Coastal)]
 	static public async Task Act(TargetSpaceCtx ctx ) {
 
+		// "Drown 1 explorer, 1 town, 1 dahan"
+
 		// find Ocean's Hungry Grasp spirit
 		var ocean = ctx.Self as Ocean ?? ctx.GameState.Spirits.Single(x=>x is Ocean);
 
@@ -17,13 +19,18 @@ public class SwallowTheLandDwellers {
 
 		// drown 1 explorer, 1 town, and 1 dahan
 
-		// drop explorer in the ocean to drown
-		if( ctx.Tokens.Has(Invader.Explorer))
-			await ctx.Move( Invader.Explorer[1], ctx.Space, drowningOcean );
+		// drown 1 explorer ( drop 1 explorer in the ocean to drown )
+		var explorerToDrown = ctx.Tokens.OfType(Invader.Explorer).Cast<HealthToken>().OrderBy(x=>x.StrifeCount).FirstOrDefault();
+		if(explorerToDrown != null)
+			await ctx.Move( explorerToDrown, ctx.Space, drowningOcean );
 
 		// drop town in the ocean to drown
-		if(ctx.Invaders.Tokens.Has(Invader.Town))
-			await ctx.Move( ctx.Invaders.Tokens[Invader.Town[2]]>0 ? Invader.Town[2] : Invader.Town[1], ctx.Space, drowningOcean );
+		var townToDrown = ctx.Tokens.OfType(Invader.Town).Cast<HealthToken>()
+			.OrderByDescending(x=>x.FullHealth) // items with most health - usually are all the same
+			.ThenBy(x=>x.Damage) // pick least damaged
+			.FirstOrDefault();
+		if( townToDrown != null )
+			await ctx.Move( townToDrown, ctx.Space, drowningOcean );
 
 		await ctx.DestroyDahan(1); // destroying dahan is the same as drowning them
 	}

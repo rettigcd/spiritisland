@@ -31,7 +31,7 @@ public class AngryBears {
 				.ToArray();
 			var st = await ctx.Decision(new Select.TokenFromManySpaces("Destroy Explorer",tokens, Present.Always));
 			if(st != null)
-				await ctx.Target(st.Space).Invaders.Destroy(1,st.Token);
+				await ctx.Target(st.Space).Invaders.Destroy(1,(HealthToken)st.Token);
 		}
 
 	}

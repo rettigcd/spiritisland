@@ -17,10 +17,10 @@ public class ThrivingCommunitites : BlightCardBase {
 		var invader = await ctx.Decision( Select.Invader.ToDowngrade("upgrade",ctx.Space,ctx.Tokens.OfAnyType(Invader.Explorer,Invader.Town)));
 		await ctx.Tokens.Remove(invader,1,RemoveReason.Replaced);
 		// !!! if select invader with strife, we should keep the strife.
-		var newToken = (invader.Class == Invader.Explorer)
-			? Invader.Town.Default
-			: Invader.City.Default;
-		await ctx.Tokens.Add( newToken, 1, AddReason.AsReplacement );
+		var newTokenClass = (invader.Class == Invader.Explorer)
+			? Invader.Town
+			: Invader.City;
+		await ctx.Tokens.AddDefault( newTokenClass, 1, AddReason.AsReplacement );
 	});
 
 }

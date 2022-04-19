@@ -19,7 +19,7 @@ public class BesetByManyTroubles : IFearOptions {
 		var counts = CountTokensOfInterest( ctx );
 
 		foreach(var space in ctx.GameState.Island.AllSpaces)
-			if( counts.ContainsKey(space) || 3 < space.Adjacent.Sum(adj=>counts[adj]) )
+			if( counts.ContainsKey(space) || 3 <= space.Adjacent.Sum(adj=>counts[adj]) )
 				ctx.GameState.Tokens[space].Defend.Add(5);
 
 		return Task.CompletedTask;

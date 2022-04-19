@@ -18,7 +18,7 @@ public class TallTalesOfSavagery : IFearOptions {
 
 	static async Task RemoveExplorerFromOneOfThese( GameState gs, Spirit spirit, Space[] options ) {
 		var target = await spirit.Action.Decision( new Select.Space( "Select land to remove explorer", options, Present.Always ) );
-		gs.Tokens[target].Adjust( Invader.Explorer[1], -1 );
+		gs.Tokens[target].AdjustDefault( Invader.Explorer, -1 );
 	}
 
 	[FearLevel( 2, "Each player removes 2 Explorer or 1 Town from a land with Dahan." )]

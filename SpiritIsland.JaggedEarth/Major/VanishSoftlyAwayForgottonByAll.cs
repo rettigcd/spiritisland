@@ -22,12 +22,12 @@ public class VanishSoftlyAwayForgottonByAll {
 		if( await ctx.YouHave("3 moon,3 air" )) {
 			// in any 2 lands with 4 or more invaders: remove 1 invader
 			var options = ctx.AllSpaces.Where( s => 4 <= ctx.Target(s).Tokens.InvaderTotal() ).ToArray();
-
+			// !!! implement
 
 		}
 	}
 
-	static Token[] DamagedInvaders( TargetSpaceCtx ctx ) => ctx.Tokens.Invaders().Where(t => t.Health < t.FullHealth).ToArray();
+	static Token[] DamagedInvaders( TargetSpaceCtx ctx ) => ctx.Tokens.Invaders().Where(t => t.RemainingHealth < t.FullHealth).ToArray();
 
 
 	static SpaceAction RemoveInvader => new SpaceAction(

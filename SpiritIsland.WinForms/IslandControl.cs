@@ -95,24 +95,44 @@ namespace SpiritIsland.WinForms {
 			grayFear = images.FearGray();
 
 			tokenImages = new Dictionary<Token, Image> {
-				[Invader.City[3]]     = images.GetImage( Invader.City[3].Img ),
-				[Invader.City[2]]     = images.GetImage( Invader.City[2].Img ),
-				[Invader.City[1]]     = images.GetImage( Invader.City[1].Img ),
-				[Invader.Town[2]]     = images.GetImage( Invader.Town[2].Img ),
-				[Invader.Town[1]]     = images.GetImage( Invader.Town[1].Img ),
-				[Invader.Explorer[1]] = images.GetImage( Invader.Explorer[1].Img ),
-				[TokenType.Dahan[2]]  = images.GetImage( TokenType.Dahan[2].Img ),
-				[TokenType.Dahan[1]]  = images.GetImage( TokenType.Dahan[1].Img ),
-				[TokenType.Defend]    = images.GetImage( TokenType.Defend.Img ),
-				[TokenType.Blight]    = images.GetImage( TokenType.Blight.Img ),
-				[TokenType.Beast]     = images.GetImage( TokenType.Beast.Img ),
-				[TokenType.Wilds]     = images.GetImage( TokenType.Wilds.Img ),
-				[TokenType.Disease]   = images.GetImage( TokenType.Disease.Img ),
-				[TokenType.Badlands]  = images.GetImage( TokenType.Badlands.Img ),
+				[TokenType.Defend]    = images.GetImage( Img.Defend ),
+				[TokenType.Blight]    = images.GetImage( Img.Blight ),
+				[TokenType.Beast]     = images.GetImage( Img.Beast ),
+				[TokenType.Wilds]     = images.GetImage( Img.Wilds ),
+				[TokenType.Disease]   = images.GetImage( Img.Disease ),
+				[TokenType.Badlands]  = images.GetImage( Img.Badlands ),
+//				[TokenType.Isolate]   = images.GetImage( Img.Isolate ),
 			};
 
 			this.gameState = gameState;
 			this.spirit = gameState.Spirits.Single();
+		}
+
+		static Img PickImg( Token token ) {
+			if(token is HealthToken ht) {
+				if(token.Class == TokenType.Dahan)
+					return ht.RemainingHealth switch {
+						1 => Img.Dahan1,
+						_ => Img.Dahan2
+					};
+
+				if(token.Class == Invader.Explorer)
+					return Img.Explorer;
+
+				if(token.Class == Invader.Town)
+					return ht.RemainingHealth switch {
+						1 => Img.Town1,
+						_ => Img.Town2,
+					};
+
+				if(token.Class == Invader.City)
+					return ht.RemainingHealth switch {
+						2 => Img.City2,
+						1 => Img.City1,
+						_ => Img.City3,
+					};
+			};
+			throw new Exception("unknown token "+token);
 		}
 
 		#region Paint
@@ -471,9 +491,9 @@ namespace SpiritIsland.WinForms {
 			// dahan & presence & blight
 			int presenceCount = spirit.Presence.CountOn( space );
 			bool isSS = spirit.Presence.SacredSites.Contains( space );
-			DrawRow( graphics, tokens, x, ref y, iconWidth, xStep, presenceCount, isSS
-				, TokenType.Dahan[2], TokenType.Dahan[1], TokenType.Defend, TokenType.Blight
-			);
+			List<Token> row2Tokens = new List<Token> { TokenType.Defend, TokenType.Blight }; // These don't show up in .OfAnyType if they are dynamic
+			row2Tokens.AddRange( tokens.OfAnyType( TokenType.Dahan ) );
+			DrawRow( graphics, tokens, x, ref y, iconWidth, xStep, presenceCount, isSS, row2Tokens.ToArray() );
 
 			DrawRow( graphics, tokens, x, ref y, iconWidth, xStep, 0, false
 				, TokenType.Beast, TokenType.Wilds, TokenType.Disease, TokenType.Badlands
@@ -492,31 +512,31 @@ namespace SpiritIsland.WinForms {
 
 			var orderedInvaders = tokens.Invaders()
 				.OrderByDescending(i=>i.FullHealth)
-				.ThenBy(i=>i.Health); // show damaged first so when we apply damage, the damaged one replaces the old undamaged one.
+				.ThenBy(i=>i.RemainingHealth); // show damaged first so when we apply damage, the damaged one replaces the old undamaged one.
 
 			foreach(Token token in orderedInvaders) {
 
 				// Strife
 				Token imageToken;
-				if(token is StrifedInvader si) {
-					imageToken = si.WithStrife( 0 );
+				if(token is HealthToken si && si.StrifeCount>0) {
+					imageToken = si.HavingStrife( 0 );
 
 					Rectangle strifeRect = FitWidth( x, y, width, strife.Size );
 					graphics.DrawImage( strife, strifeRect );
-					if(tokens[token]>1)
-						graphics.DrawSuperscript( strifeRect, "x"+tokens[token] );
+					if(tokens[token] > 1)
+						graphics.DrawSuperscript( strifeRect, "x" + tokens[token] );
 				} else {
 					imageToken = token;
 				}
 
 
 				// Draw Token
-				Image img = tokenImages[imageToken];
+				Image img = AccessTokenImage( imageToken );
 				Rectangle rect = FitWidth( x, y, width, img.Size );
 				graphics.DrawImage( img, rect );
 
 				// record token location
-				tokenLocations.Add(space.Label+":"+token.Summary,rect);
+				tokenLocations.Add( space.Label + ":" + token.Summary, rect );
 
 				// Count
 				graphics.DrawCountIfHigherThan( rect, tokens[token] );
@@ -527,6 +547,13 @@ namespace SpiritIsland.WinForms {
 
 			float gap = step - width;
 			y += maxHeight + gap;
+		}
+
+		private Image AccessTokenImage( Token imageToken ) {
+			if(!tokenImages.ContainsKey( imageToken ))
+				tokenImages[imageToken] = ResourceImages.Singleton.GetImage( PickImg( imageToken ) );
+			Image img = tokenImages[imageToken];
+			return img;
 		}
 
 		void DrawFearPool( Graphics graphics, RectangleF bounds ) {
@@ -600,9 +627,7 @@ namespace SpiritIsland.WinForms {
 				int count = tokens[token];
 				if(count == 0) continue;
 
-				var tokenForImage = token;
-				if( token.Class == TokenType.Dahan && token.Health > token.FullHealth ) tokenForImage = TokenType.Dahan.Default;
-				var img = tokenImages[tokenForImage];
+				Image img = AccessTokenImage( token );
 
 				// calc rect
 				float height = width / img.Width * img.Height;

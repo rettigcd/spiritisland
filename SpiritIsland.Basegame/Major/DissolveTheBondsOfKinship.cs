@@ -15,13 +15,13 @@ public class DissolveTheBondsOfKinship {
 
 		// replace 1 dahan with 1 explorer.
 		if( await ctx.Tokens.Dahan.Remove1(RemoveReason.Replaced) != null )
-			await ctx.Tokens.Add( Invader.Explorer.Default, 1, AddReason.AsReplacement );
+			await ctx.Tokens.AddDefault( Invader.Explorer, 1, AddReason.AsReplacement );
 
 		// if you have 2 fire 2 water 3 animal
 		if(await ctx.YouHave("2 fire,2 water,3 animal" )) {
 			// before pushing, explorers and city/town do damage to each other
-			int damageFromExplorers = ctx.Invaders[Invader.Explorer[1]];
-			int damageToExplorers = ctx.Invaders.Tokens.Sum(Invader.City)*3 + ctx.Invaders.Tokens.Sum(Invader.Town)*2;
+			int damageFromExplorers = ctx.Tokens.Sum(Invader.Explorer);
+			int damageToExplorers = ctx.Tokens.Sum(Invader.City)*3 + ctx.Tokens.Sum(Invader.Town)*2;
 			await ctx.DamageInvaders(damageFromExplorers,Invader.City,Invader.Town);
 			await ctx.DamageInvaders( damageToExplorers, Invader.Explorer );
 		}

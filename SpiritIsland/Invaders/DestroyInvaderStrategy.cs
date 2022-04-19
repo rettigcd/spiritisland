@@ -7,9 +7,11 @@ public class DestroyInvaderStrategy {
 		this.addFear = addFear;
 	}
 
-	public virtual async Task OnInvaderDestroyed( Space space, Token token, bool fromRavage ) {
+	public virtual async Task OnInvaderDestroyed( Space space, HealthToken token, bool fromRavage ) {
 
 		var reason = fromRavage ? RemoveReason.DestroyedInBattle : RemoveReason.Destroyed;
+
+		await gs.Tokens[space].Destroy( token, 1 );
 
 		// !!! see if we can invoke this through the Token-Publish API instead - so we can make TokenRemovedArgs internal to Island_Tokens class
 		await gs.Tokens.TokenRemoved.InvokeAsync( new TokenRemovedArgs( gs, token, reason ) {
@@ -17,11 +19,9 @@ public class DestroyInvaderStrategy {
 			Count = 1,
 		} );
 
-		if(token == Invader.City[0])
-			AddFear( space, 2, true );
-		if(token == Invader.Town[0])
-			AddFear( space, 1, true );
+		// Don't assert token is destroyed (from damage) because it is possible to destory healthy tokens
 
+		AddFear( space, token.Class.FearGeneratedWhenDestroyed, true );
 	}
 
 	protected void AddFear( Space space, int count, bool fromInvaderDestruction ) => addFear( new FearArgs { 

@@ -14,11 +14,11 @@ public static class StrifedRavage {
 	}
 
 	public static int DamageFromStrifedInvaders( TokenCountDictionary tokens ) {
-		return tokens.Invaders().OfType<StrifedInvader>().Sum( si => si.FullHealth * tokens[si] );
+		return tokens.Invaders().OfType<HealthToken>().Where(x=>x.StrifeCount>0).Sum( si => si.FullHealth * tokens[si] );
 	}
 
 	public static int DamageFrom1StrifedInvaders( TokenCountDictionary tokens ) {
-		var strifedInvaderWithMostDamage = tokens.Invaders().OfType<StrifedInvader>()
+		var strifedInvaderWithMostDamage = tokens.Invaders().OfType<HealthToken>()
 			.OrderByDescending(x=>x.FullHealth)
 			.FirstOrDefault();
 		return strifedInvaderWithMostDamage != null ? strifedInvaderWithMostDamage.FullHealth : 0;
@@ -37,12 +37,13 @@ public static class StrifedRavage {
 		foreach(var space in ctx.GameState.Island.AllSpaces) {
 			var tokens = ctx.InvadersOn( space ).Tokens;
 			var strifedInvaders = tokens.Invaders()
-				.OfType<StrifedInvader>()
-				.Where( x => x.Health > 1 )
-				.OrderBy( x => x.Health ); // get the lowest ones first so we can reduce without them cascading
-			foreach(StrifedInvader strifedInvader in strifedInvaders) {
-				var newInvader = strifedInvader.ResultingDamagedInvader( strifedInvader.StrifeCount );
-				if(newInvader.Health > 0) {
+				.OfType<HealthToken>()
+				.Where( x=> x.StrifeCount>0)
+				.Where( x => x.RemainingHealth > 1 )
+				.OrderBy( x => x.RemainingHealth ); // get the lowest ones first so we can reduce without them cascading
+			foreach(HealthToken strifedInvader in strifedInvaders) {
+				var newInvader = strifedInvader.AddDamage( strifedInvader.StrifeCount );
+				if(newInvader.RemainingHealth > 0) {
 					tokens.Adjust(newInvader, tokens[strifedInvader]);
 					tokens.Init(strifedInvader, 0);
 				}

@@ -43,7 +43,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			ctx.GameState.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
 
 			// has town
-			ctx.Tokens.Adjust(Invader.Town.Default, 1);
+			ctx.Tokens.AdjustDefault(Invader.Town, 1);
 
 			async Task When() {
 				// Given: using Dread Apparitions
@@ -65,7 +65,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			ctx.GameState.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
 
 			// has city
-			ctx.Tokens.Adjust( Invader.City.Default, 1 );
+			ctx.Tokens.AdjustDefault( Invader.City, 1 );
 
 			await DreadApparitions.ActAsync( ctx );
 			// When: destroying the city
@@ -83,7 +83,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			ctx.GameState.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
 
 			// has 1 city and lots of dahan
-			ctx.Tokens.Adjust( Invader.City.Default, 1 ); // don't use ctx.Invaders because it has a fake/dream invader count
+			ctx.Tokens.AdjustDefault( Invader.City, 1 ); // don't use ctx.Invaders because it has a fake/dream invader count
 			ctx.Dahan.Init(10);
 
 			// Given: using Dread Apparitions
@@ -103,7 +103,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 		[Fact]
 		public void FearInOtherLand_Generates0() {
 			// has 1 city and lots of dahan
-			ctx.Tokens.Adjust( Invader.City.Default, 1 );
+			ctx.Tokens.AdjustDefault( Invader.City, 1 );
 			ctx.Dahan.Init( 10 );
 
 			async Task When() {
