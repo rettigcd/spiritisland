@@ -85,7 +85,7 @@ public abstract class Spirit : IOption {
 				await action.ActivateAsync( ctx );
 
 		// (b) Growth
-		var inst = Growth.GetInstance();
+		IGrowthPhaseInstance inst = Growth.GetInstance();
 
 		GrowthOption[] options;
 		while( (options = inst.RemainingOptions(Energy)).Length > 0 ) {
@@ -99,20 +99,26 @@ public abstract class Spirit : IOption {
 
 	}
 
-	public Task GrowAndResolve( GrowthOption option, GameState gameState ) {
+	public async Task GrowAndResolve( GrowthOption option, GameState gameState ) {
 		var ctx = Bind(gameState,Cause.Growth);
 
+		// Auto run the auto-runs.
+		foreach(var autoAction in option.AutoRuns)
+			await autoAction.ActivateAsync( ctx );
+
 		// If Option has only 1 Action, auto trigger it.
-		if( option.GrowthActions.Length == 1 )
-			return option.GrowthActions[0].ActivateAsync( ctx );
+		if( option.UserRuns.Count() == 1) {
+			await option.UserRuns.First().ActivateAsync( ctx );
+			return;
+		}
 			
 		Grow( option );
-		return ResolveActions( ctx );
+		await ResolveActions( ctx );
 
 	}
 
 	public void Grow( GrowthOption option ) {
-		foreach(GrowthActionFactory action in option.GrowthActions)
+		foreach(GrowthActionFactory action in option.UserRuns)
 			AddActionFactory( action );
 	}
 

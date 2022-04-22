@@ -11,6 +11,10 @@ public class GrowthOption : IOption {
 
 	public GrowthActionFactory[] GrowthActions { get; }
 
+	public IEnumerable<GrowthActionFactory> AutoRuns => GrowthActions.Where(x=>x.AutoRun);
+
+	public IEnumerable<GrowthActionFactory> UserRuns => GrowthActions.Where( x => !x.AutoRun );
+
 	public string Text => ToString();
 
 	public override string ToString() {

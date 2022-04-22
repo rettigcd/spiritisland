@@ -16,4 +16,6 @@ public class GainEnergy : GrowthActionFactory {
 		return Task.CompletedTask;
 	}
 
+	public override bool AutoRun => true;
+
 }

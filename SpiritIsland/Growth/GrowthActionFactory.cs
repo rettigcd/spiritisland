@@ -9,4 +9,6 @@ public abstract class GrowthActionFactory : IActionFactory {
 
 	public virtual bool CouldActivateDuring( Phase speed, Spirit _ ) => speed == Phase.Growth;
 
+	public virtual bool AutoRun => false;
+
 }

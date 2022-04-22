@@ -9,4 +9,6 @@ public class ReclaimAll : GrowthActionFactory {
 		return Task.CompletedTask;
 	}
 
+	public override bool AutoRun => true;
+
 }
