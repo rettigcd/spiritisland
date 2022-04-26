@@ -61,9 +61,7 @@ class VolcanoPresence : SpiritPresence {
 			await base.DestroyPresenceApi( presence, space, gs, actionType );
 
 			// Destroying Volcano presence, causes damage to Dahan and invaders
-			var volcanosSpecialRule = Cause.None;
-
-			await gs.DahanOn(space).ApplyDamage(1, volcanosSpecialRule);
+			await gs.DahanOn(space).ApplyDamage(1);
 			await gs.Invaders.On(space).UserSelectedDamage(1,spirit);
 		}
 	}

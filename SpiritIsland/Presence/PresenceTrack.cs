@@ -32,9 +32,10 @@ public class PresenceTrack : IPresenceTrack {
 	public IEnumerable<Track> Revealed => slots.Take( revealedCount );
 
 	public virtual async Task<bool> Reveal( Track track, GameState gameState ) {
+		if(gameState == null) throw new ArgumentNullException(nameof(gameState));
 		if(revealedCount == slots.Length || slots[revealedCount] != track) return false;
 		++revealedCount;
-		await TrackRevealed.InvokeAsync( new TrackRevealedArgs( gameState, track ) );
+		await TrackRevealed.InvokeAsync( new TrackRevealedArgs( track, gameState ) );
 		return true;
 	}
 

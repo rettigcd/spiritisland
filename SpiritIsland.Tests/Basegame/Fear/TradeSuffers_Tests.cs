@@ -24,7 +24,9 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		public void Level1_CityIsNotDamagedDuringRavage_NoBuild() {
 
 			// Disable destroying presence
-			ctx.GameState.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
+			// ctx.GameState.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
+			ctx.GameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
+
 
 			// Invaders do not Build in lands with City.
 
@@ -54,7 +56,8 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		public void Level1_CityDestroyedDuringRavage_Build() {
 
 			// Disable destroying presence
-			ctx.GameState.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
+			//ctx.GameState.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
+			ctx.GameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
 
 			// Fill all Invaders spaces with the A7 card
 			ClearBlightAndDoNothing();

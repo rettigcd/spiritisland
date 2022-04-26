@@ -31,7 +31,7 @@ public class Strife_Tests {
 
 	[Fact]
 	public void LabelShowsStrife() {
-		strifedCity.Summary.ShouldBe("C@3^");
+		strifedCity.ToString().ShouldBe("C@3^");
 	}
 
 	[Fact]
@@ -83,8 +83,8 @@ public class Strife_Tests {
 		_ = gs.Tokens[space].MoveTo( strifedTown, destination ); // _ = ??
 
 		// Then:
-		counts.InvaderSummary.ShouldBe( "1T@2" );
-		gs.Tokens[destination].InvaderSummary.ShouldBe( "1T@2^" );
+		counts.InvaderSummary().ShouldBe( "1T@2" );
+		gs.Tokens[destination].InvaderSummary().ShouldBe( "1T@2^" );
 
 	}
 
@@ -127,7 +127,7 @@ public class Strife_Tests {
 		}
 
 		// Then:
-		counts.InvaderSummary.ShouldBe( endingInvaders );
+		counts.InvaderSummary().ShouldBe( endingInvaders );
 
 	}
 
@@ -143,7 +143,7 @@ public class Strife_Tests {
 		// Given: 1 strifed city
 		var counts = gs.Tokens[space];
 		counts.Init(Tokens.City.HavingStrife( 1 ), 1);
-		counts.InvaderSummary.ShouldBe( "1C@3^", "strife should be used up" );
+		counts.InvaderSummary().ShouldBe( "1C@3^", "strife should be used up" );
 
 		//   and: 1 dahan
 		gs.DahanOn( space ).Init( 1 );
@@ -155,7 +155,7 @@ public class Strife_Tests {
 		gs.DahanOn( space ).Count.ShouldBe( 1, "dahan should survive due to strife on town" );
 
 		//   and so does city, but strife is gone
-		counts.InvaderSummary.ShouldBe( "1C@1", "strife should be used up" );
+		counts.InvaderSummary().ShouldBe( "1C@1", "strife should be used up" );
 
 	}
 

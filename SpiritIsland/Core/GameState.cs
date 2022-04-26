@@ -21,7 +21,8 @@ public class GameState {
 		Invaders = new Invaders( this );
 		Tokens = new Tokens_ForIsland( this );
 
-		TimePasses_WholeGame += Heal;
+		TimePasses_WholeGame += TokenCleanUp;
+		TimePasses_WholeGame += ModifyBlightAddedEffect.ForRound.Clear;
 		TimePasses_WholeGame += PreRavaging.ForRound.Clear;
 		TimePasses_WholeGame += PreBuilding.ForRound.Clear;
 		TimePasses_WholeGame += PreExplore.ForRound.Clear;
@@ -133,7 +134,9 @@ public class GameState {
 		}
 
 		// Calc side effects
-		var effect = AddBlightSideEffect( this, args.Space );
+		bool isFirstBlight = Tokens[args.Space].Blight.Count == 1;
+		var effect = new AddBlightEffect { DestroyPresence = true, Cascade = !isFirstBlight, GameState = this, Space = args.Space };
+		await ModifyBlightAddedEffect.InvokeAsync(effect);
 
 		// Destory presence
 		if(effect.DestroyPresence)
@@ -147,7 +150,7 @@ public class GameState {
 				$"Cascade blight from {args.Space.Label} to",
 				args.Space,
 				Select.AdjacentDirection.Outgoing,
-				args.Space.Adjacent.Where( x => !Island.TerrainMapFor( Cause.Blight ).IsOneOf( x, Terrain.Ocean ) ),
+				args.Space.Adjacent.Where( x => !Island.Terrain_ForPowerAndBlight.IsOneOf( x, Terrain.Ocean ) ),
 				Present.Always
 			));
 			await Tokens[ cascadeTo ].Blight.Add(1, args.Reason); // Cascading blight shares original blights reason.
@@ -237,7 +240,10 @@ public class GameState {
 
 	#region API - overridable
 
-	public Func<GameState,Space,AddBlightEffect>    AddBlightSideEffect = Default_AddBlightSideEffect; /// <summary> Hook so Stone's presence can stop the cascade / Destroy effects of blight. </summary>
+//	public Func<GameState,Space,AddBlightEffect>    AddBlightSideEffect = Default_AddBlightSideEffect; /// <summary> Hook so Stone's presence can stop the cascade / Destroy effects of blight. </summary>
+
+	public DualAsyncEvent<AddBlightEffect> ModifyBlightAddedEffect = new DualAsyncEvent<AddBlightEffect>();
+
 
 	public Func<int, Space,Task> TakeFromBlightSouce {
 		get { return _takeFromBlightSouce ?? Default_TakeBlightFromSource; }
@@ -247,7 +253,11 @@ public class GameState {
 
 	public Func<Spirit,GameState,Cause,Task> Destroy1PresenceFromBlightCard = DefaultDestroy1PresenceFromBlightCard; // Direct distruction from Blight Card, not cascading
 
-	void Heal( GameState gs ) => Healer.HealAll( gs ); // called at end of round.
+	void TokenCleanUp( GameState gs ) { 
+		Healer.HealAll( gs ); // called at end of round.
+		foreach(var spaceTokens in Tokens.ForAllSpaces)
+			spaceTokens.Blight.Blocked = false;
+	}
 	public Healer Healer = new Healer(); // replacable Behavior
 
 	#endregion
@@ -290,14 +300,6 @@ public class GameState {
 	#endregion
 
 	#region Default API methods
-
-	static private AddBlightEffect Default_AddBlightSideEffect( GameState gs, Space blightSpace ) {
-		bool isFirstBlight = gs.Tokens[blightSpace].Blight.Count == 1;
-		return new AddBlightEffect {
-			DestroyPresence = true,
-			Cascade = !isFirstBlight,
-		};
-	}
 
 	/// <returns># of blight to remove from card</returns>
 	Task Default_TakeBlightFromSource( int count, Space _ ) {
@@ -423,4 +425,7 @@ public class LandDamagedArgs {
 public class AddBlightEffect {
 	public bool Cascade;
 	public bool DestroyPresence;
+
+	public GameState GameState;
+	public Space Space;
 }

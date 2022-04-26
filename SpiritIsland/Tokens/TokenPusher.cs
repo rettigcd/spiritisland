@@ -72,7 +72,7 @@ public class TokenPusher {
 	Func<Token,Space,Space,Task> customAction;
 
 	protected virtual async Task<Space> SelectDestination( Token token ) {
-		IEnumerable<Space> destinationOptions = source.Adjacent.Where( s => ctx.Target(s).IsInPlay );
+		IEnumerable<Space> destinationOptions = source.Adjacent.Where( s => ctx.Target(s).IsInPlay(token.Class) );
 		foreach(var filter in destinationFilters)
 			destinationOptions = destinationOptions.Where(filter);
 

@@ -16,7 +16,7 @@ sealed public class ActionGateway : IUserPortal, IEnginePortal {
 
 	void WaitForSignal(bool block ) {
 		if(block)
-			signal.WaitOne();
+	 		signal.WaitOne(); // normal
 		else
 			signal.WaitOne(0);
 	}
@@ -44,7 +44,7 @@ sealed public class ActionGateway : IUserPortal, IEnginePortal {
 	/// Blocks and waits for there to be a decision. 
 	/// Don't call unless you are willing to block.
 	/// </summary>
-	public IDecision GetCurrent(bool block=true) => CacheNextDecision(block).Decision;
+	public IDecision GetCurrent(bool block=true) => CacheNextDecision(block)?.Decision;
 
 	public bool IsResolved => activeDecisionMaker == null;
 
@@ -74,9 +74,7 @@ sealed public class ActionGateway : IUserPortal, IEnginePortal {
 		if(originalDecision == null) throw new ArgumentNullException( nameof( originalDecision ) );
 
 		if(activeDecisionMaker != null) 
-			throw new InvalidOperationException( "Pending decision was not properly awaited. "
-				+activeDecisionMaker.Decision.Prompt + " / " + originalDecision.Prompt
-			);
+			throw new InvalidOperationException( $"Pending decision was not properly awaited. Current:[{activeDecisionMaker.Decision.Prompt}], Previous:[{originalDecision.Prompt}] ");
 
 		var promise = new TaskCompletionSource<T>();
 		var decisionMaker = new ActionHelper<T>( originalDecision, promise );

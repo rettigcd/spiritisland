@@ -18,7 +18,7 @@ public class AngryBears {
 			await ctx.PushUpTo(1,TokenType.Beast);
 		}
 
-		if(await ctx.YouHave("2 sun,3 animal" )) {
+		if(await ctx.YouHave("2 fire,3 animal" )) {
 			// 1 fear and
 			ctx.AddFear(1);
 			// destroy 1 explorer/town in an adjacent land with beast

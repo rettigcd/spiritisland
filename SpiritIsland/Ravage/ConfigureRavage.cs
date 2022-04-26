@@ -18,12 +18,12 @@ public class ConfigureRavage {
 	public bool ShouldDamageDahan { get; set; } = true;
 	static async Task DefaultDestroyDahan( DahanGroupBinding dahan, int count, HealthToken token ) {
 		if(count<=0) return;
-		await dahan.Destroy( count, token, Cause.Invaders );
+		await dahan.Destroy( count, token );
 	}
 
 	// Invader Behavior
 	// !!! Maybe this should be put on the InvaderBinding object so that it is effective outside ravage.
-	public Func<Token,int> DamageFromAttacker = DefaultDamageFromInvader;
-	static int DefaultDamageFromInvader( Token invader ) => invader.FullHealth;
+	public Func<HealthToken,int> DamageFromAttacker = DefaultDamageFromInvader;
+	static int DefaultDamageFromInvader( HealthToken invader ) => invader.Class.Attack;
 
 }

@@ -18,8 +18,8 @@ public class UniqueToken : TokenClass, Token {
 
 	public char Initial { get; }
 
-	public string Summary => Initial.ToString();
-	string IOption.Text => Summary;
+	public override string ToString() => Initial.ToString();
+	string IOption.Text => Initial.ToString();
 
 	// --------  BEGIN Token HEALTH properties
 	public Token Healthy => throw new System.NotImplementedException();

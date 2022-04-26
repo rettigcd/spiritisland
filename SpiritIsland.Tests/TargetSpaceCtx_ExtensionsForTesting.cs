@@ -25,7 +25,7 @@ internal static class TargetSpaceCtx_ExtensionsForTesting {
 		foreach(var p in desiredTokens)
 			currentTokens.Init(p.Key,p.Value);
 
-		currentTokens.Summary.ShouldBe( expectedInvaderSummary );
+		currentTokens.Summary.ShouldBe( expectedInvaderSummary == "" ? "[none]" : expectedInvaderSummary );
 	}
 
 	public static void ClearAllBlight( this SelfCtx ctx ) {

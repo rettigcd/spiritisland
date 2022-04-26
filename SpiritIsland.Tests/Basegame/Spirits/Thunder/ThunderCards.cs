@@ -26,7 +26,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 
 			async Task Run() {
 				try {
-					await spirit.Hand.Single( x => x.Name == cardName ).ActivateAsync( spirit.Bind( gs, Cause.Power ));
+					await spirit.Hand.Single( x => x.Name == cardName ).ActivateAsync( spirit.BindMyPower( gs ));
 				}
 				catch(Exception ex) {
 					_ = ex.ToString();

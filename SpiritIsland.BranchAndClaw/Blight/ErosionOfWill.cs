@@ -8,7 +8,7 @@ public class ErosionOfWill : BlightCardBase {
 		// 2 fear per player.
 		AddFearPerPlayer(2),
 		// each spirit 
-		Cmd.EachSpirit( Cause.Blight, Cmd.Multiple(
+		Cmd.EachSpirit( Cmd.Multiple(
 			// destroys 1 of their presence and
 			Cmd.DestroyPresence( DestoryPresenceCause.BlightedIsland ),
 			// loses 1 energy

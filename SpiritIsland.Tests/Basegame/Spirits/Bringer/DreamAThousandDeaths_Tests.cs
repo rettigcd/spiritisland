@@ -23,12 +23,13 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			ctx = MakeFreshCtx();
 
 			// Disable destroying presence
-			ctx.GameState.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
+//			ctx.GameState.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
+			ctx.GameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
 
 		}
 
 		TargetSpaceCtx MakeFreshCtx() {
-			return spirit.Bind( gs, Cause.Power).Target( board[5] );
+			return spirit.BindMyPower( gs).Target( board[5] );
 		}
 
 		// 1: Raging Storm - 1 damage to each invader (slow)
@@ -63,7 +64,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			//  and: explorer on destination
 			ctx.GameState.Assert_Invaders( board[7], $"{count}E@1" );
 			//  and: not at origin
-			ctx.Invaders.Tokens.InvaderSummary.ShouldBe( "" );
+			ctx.GameState.Assert_Invaders( board[5], $"" );
 		}
 
 		[Fact]
@@ -88,7 +89,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
 			//  and: town on destination
 			ctx.GameState.Assert_Invaders( board[7], $"{count}T@2" );
 			//  and: not at origin
-			ctx.Invaders.Tokens.InvaderSummary.ShouldBe("");
+			ctx.GameState.Assert_Invaders( board[5], $"" );
 
 		}
 

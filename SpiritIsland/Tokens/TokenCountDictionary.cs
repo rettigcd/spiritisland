@@ -1,5 +1,8 @@
 ﻿namespace SpiritIsland;
 
+/// <summary>
+/// Wraps: Space, Token-Counts on that space, API to publish token-changed events.
+/// </summary>
 public class TokenCountDictionary {
 
 	#region constructor
@@ -36,22 +39,8 @@ public class TokenCountDictionary {
 
 	public IEnumerable<Token> Keys => counts.Keys; // !! This won't list virtual (defend) tokens
 
-	public string InvaderSummary { get { // !!! Depreate this.  Use .Invaders (to get just the invaders) then .Summary
-		static int Order_CitiesTownsExplorers( Token invader )
-			=> -(invader.FullHealth * 10 + invader.RemainingHealth);
-		return this.Invaders()
-			.OrderBy( Order_CitiesTownsExplorers )
-			.Select( invader => counts[invader] + invader.Summary )
-			.Join( "," );
-	} }
-
-	public string Summary { get {
-		return this.Keys
-			.Where(t=>t.Class.Category != TokenCategory.Presence)
-			.OrderBy( k=>k.Summary )
-			.Select( invader => counts[invader] + invader.Summary )
-			.Join( "," );
-	} }
+	/// <summary> Ordered Alphabetically. </summary>
+	public string Summary => counts.TokenSummary();
 
 	public override string ToString() => Space.Label + ":" + Summary;
 
@@ -135,7 +124,7 @@ public class TokenCountDictionary {
 
 	#region Invader Specific
 
-	public IEnumerable<HealthToken> Invaders() => this.OfAnyType( Invader.City, Invader.Town, Invader.Explorer ).Cast<HealthToken>();
+	public IEnumerable<HealthToken> Invaders() => this.OfAnyType( Invader.City, Invader.Town, Invader.Explorer );
 
 	public bool HasInvaders() => Invaders().Any();
 
@@ -151,7 +140,7 @@ public class TokenCountDictionary {
 
 		// Remove old type from 
 		if(this[invader]<count)
-			throw new ArgumentOutOfRangeException($"collection does not contain {count} {invader.Summary}");
+			throw new ArgumentOutOfRangeException($"collection does not contain {count} {invader}");
 		this[invader] -= count;
 
 		if( invader is not HealthToken ht )

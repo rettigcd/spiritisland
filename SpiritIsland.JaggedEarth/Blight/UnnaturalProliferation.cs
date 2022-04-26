@@ -6,7 +6,7 @@ public class UnnaturalProliferation : BlightCardBase {
 
 	public override ActionOption<GameState> Immediately 
 		=> Cmd.Multiple<GameState>(
-			Cmd.EachSpirit(Cause.Blight,
+			Cmd.EachSpirit(
 				// adds 1 presence to a land with their prescense.
 				AddPresenceToOwnLand
 			),

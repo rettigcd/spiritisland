@@ -28,12 +28,16 @@ public static partial class Cmd {
 		);
 
 	// Even though this is on a per-space basis, let spirit that started on board be the decision maker.
-	static public GameCmd InEachLand( Cause cause, IExecuteOn<TargetSpaceCtx> action, Func<TokenCountDictionary,bool> filter = null )
+	/// <summary>
+	/// Used ONLY for Fear Actions. 
+	/// DO NOT use for Spirit Powers or Rituals without setting cause = Cause.Power
+	/// </summary>
+	static public GameCmd InEachLand( IExecuteOn<TargetSpaceCtx> action, Func<TokenCountDictionary,bool> filter = null )
 		=> new GameCmd(
 			"In each land, " + action.Description, 
 			async gs => {
 				for(int i = 0; i < gs.Island.Boards.Length; ++i) {
-					var decisionMaker = gs.Spirits[i < gs.Spirits.Length ? i : 0].Bind( gs, cause ); // use Head spirit for extra board
+					var decisionMaker = gs.Spirits[i < gs.Spirits.Length ? i : 0].Bind( gs ); // use Head spirit for extra board
 					var board = gs.Island.Boards[i];
 					var spaces = board.Spaces
 						.Where( x => filter == null || filter( gs.Tokens[x] ) );
@@ -43,12 +47,16 @@ public static partial class Cmd {
 			}
 		);
 
-	static public ActionOption<GameState> EachSpirit( Cause cause, ActionOption<SelfCtx> action )
+	/// <summary>
+	/// Used ONLY for Fear Actions. 
+	/// DO NOT use for Spirit Powers or Rituals without setting cause = Cause.Power
+	/// </summary>
+	static public ActionOption<GameState> EachSpirit( ActionOption<SelfCtx> action )
 		=> new GameCmd(
 			"For each spirit, " + action.Description, 
 			async gs => {
-				foreach(var spiritCtx in gs.SpiritCtxs(cause) )
-					await action.Execute( spiritCtx );
+				foreach(var spirit in gs.Spirits)
+					await action.Execute( spirit.Bind( gs ) );
 			}
 		);
 

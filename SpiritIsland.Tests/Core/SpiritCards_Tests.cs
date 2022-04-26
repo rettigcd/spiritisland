@@ -56,7 +56,7 @@ namespace SpiritIsland.Tests {
 		}
 
 		protected void When_PlayingCard() {
-			_ = card.ActivateAsync( spirit.Bind( gameState, Cause.Power ) );
+			_ = card.ActivateAsync( spirit.BindMyPower( gameState ) );
 		}
 
 	}

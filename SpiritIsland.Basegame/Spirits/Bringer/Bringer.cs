@@ -46,25 +46,27 @@ public class Bringer : Spirit {
 		Presence.PlaceOn( startingIn, gs );
 	}
 
-	/// <summary>
-	/// Swaps out the effected tokens so real tokens don't get destroyed.
-	/// Swaps out what happens when invaders get 'destroyed'
-	/// </summary>
-	public override InvaderBinding BuildInvaderGroupForPowers( GameState gs, Space space ) {
-		var normalTokens = gs.Tokens[space];
-		var detached = new TokenCountDictionary( normalTokens );
-
-		return new InvaderBinding(
-			detached,
-			new ToDreamAThousandDeaths_DestroyStrategy( 
-				gs.Fear.AddDirect, 
-				Bind(gs,Cause.Power)
-			)
-		);
-	}
-
 	public override Task DestroyInvaderForPowers( GameState gs, Space space, int count, Token dahanToken ) {
 		return Task.CompletedTask;
+	}
+
+	public override SelfCtx BindMyPower( GameState gameState ) => new BringerCtx(this,gameState);
+
+}
+
+class BringerCtx : SelfCtx {
+	public BringerCtx( Bringer bringer, GameState gs ):base( bringer, gs, Cause.MyPowers ) {}
+	public override TargetSpaceCtx Target( Space space ) => new BringerSpaceCtx(this, space);
+}
+
+class BringerSpaceCtx : TargetSpaceCtx {
+	public BringerSpaceCtx(BringerCtx ctx,Space space ) : base( ctx, space ) { }
+
+	protected override InvaderBinding GetInvaders() {
+		return new InvaderBinding(
+			new TokenCountDictionary( Tokens ),
+			new ToDreamAThousandDeaths_DestroyStrategy( GameState.Fear.AddDirect, this )
+		);
 	}
 
 }

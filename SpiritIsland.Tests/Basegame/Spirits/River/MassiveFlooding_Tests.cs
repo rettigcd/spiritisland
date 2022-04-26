@@ -1,127 +1,122 @@
-﻿using SpiritIsland.Basegame;
-using SpiritIsland.SinglePlayer;
-using System.Linq;
-using Xunit;
+﻿using SpiritIsland.SinglePlayer;
 
-namespace SpiritIsland.Tests.Basegame.Spirits.River {
+namespace SpiritIsland.Tests.Basegame.Spirits.River;
 
-	public class MassiveFlooding_Tests : RiverGame {
+public class MassiveFlooding_Tests : RiverGame {
 
-		readonly GameState gs;
+	readonly GameState gs;
 
-		public MassiveFlooding_Tests():base(){
-			// Given: River
-			spirit.UsePowerProgression();
-			gs = new GameState( spirit, Board.BuildBoardA() ) {
-				InvaderDeck = InvaderDeck.Unshuffled(),
-				Phase = Phase.Slow
-			};
+	public MassiveFlooding_Tests():base(){
+		// Given: River
+		spirit.UsePowerProgression();
+		gs = new GameState( spirit, Board.BuildBoardA() ) {
+			InvaderDeck = InvaderDeck.Unshuffled(),
+			Phase = Phase.Slow
+		};
 
-			game = new SinglePlayerGame( gs );
+		game = new SinglePlayerGame( gs );
 
-		}
+	}
 
-		// Not enought elements -> nothing
-		[Fact]
-		public void InsufficientElements() {
+	// Not enought elements -> nothing
+	[Fact]
+	public void InsufficientElements() {
+		var fixture = new ConfigurableTestFixture();
+		var innatePower = InnatePower.For<MassiveFlooding>();
 
-			User.SelectsGrowthA_Reclaim();
-			//User.SelectsGrowthOption( 0 );
-			//User.DrawsPowerCard();
-			//User.GainsEnergy();
-			//User.ReclaimsAll();
+		// Given: spirit does not have enough elements to trigger anything
+		//   And: should not be activatable
+		innatePower.CouldActivateDuring( Phase.Slow, fixture.Spirit ).ShouldBeFalse();
 
-			User.IsDoneBuyingCards();
+		//  When: but if we try anyway
+		var task = innatePower.ActivateAsync( fixture.SelfCtx );
 
-			//   And: in slow phase
+		//  Then: it is complete and nothing happens.
+		task.IsCompleted.ShouldBeTrue();
+	}
 
-			//  Then: no massive flooding in Unresolved list
-			Assert.Empty( game.Spirit.GetAvailableActions(Phase.Slow) );
+	[Trait("Feature","Push")]
+	[Fact]
+	public void Level1_Pushes1TownOrExplorer() { // 1-Sun, 2-Water
+		var fixture = new ConfigurableTestFixture();
+		var space = fixture.Board[5];
+		var tokens = fixture.GameState.Tokens[space];
+		var destination = space.Adjacent.Last();
 
-		}
+		// Given: spirit has a sacred site adjacent to the target space (range-1)
+		fixture.Spirit.Presence.Adjust( space.Adjacent.First(), 2 );
+		//   And: Spirit has enough elements to trigger Level-1 of Massive Flooding
+		fixture.InitElements( "1 sun,2 water" );
+		//   And: target has 1 city, 4 towns, 5 explorers
+		fixture.InitTokens( space, "1C@3,5E@1,4T@2" );
 
-		[Trait("Feature","Push")]
-		[Fact]
-		public void Level1_Pushes1TownOrExplorer() { // 1-Sun, 2-Water
-			gs.Phase = Phase.Growth;
-			User.SelectsGrowthB_2PP("energy>A4","cardplays>A2");
+		//  When: activate innate
+		_ = InnatePower.For<MassiveFlooding>().ActivateAsync( fixture.SelfCtx );
+		fixture.Choose( space ); // target space
 
-			User.PlaysCard( FlashFloods.Name ); // fast
-			User.PlaysCard( RiversBounty.Name );// slow
+		fixture.ChoosePush( Tokens.Town, destination ); // push 1
 
-			User.IsDoneWith( Phase.Fast );
+		// Then: target has remaining invaders
+		tokens.Summary.ShouldBe( "1C@3,5E@1,3T@2" );
 
-			User.SelectsSlowAction("River's Bounty,(Massive Flooding)");
-			User.TargetsLand( "Massive Flooding", "A2,A3,A5,(A8)" );
-			User.PushesTokensTo( "(T@2),E@1", "(A5),A6,A7" );
-		}
+		//  And: destination had pushed invaders
+		fixture.GameState.Tokens[destination].Summary.ShouldBe( "1T@2" );
 
-		[Trait("Feature","Push")]
-		[Fact]
-		public void Level2_2DamagePush3TownOrExplorers() { // 2-Sun, 3-Water
+	}
 
-			Given_SpiritCardPlayCount( 3 );
-			Given_SpiritGetMoney( 5 );
+	[Trait("Feature","Push")]
+	[Fact]
+	public void Level2_2DamagePush3TownOrExplorers() { // 2-Sun, 3-Water
 
-			User.SelectsGrowthA_Reclaim();
+		var fixture = new ConfigurableTestFixture();
+		var space = fixture.Board[5];
+		var tokens = fixture.GameState.Tokens[space];
+		var destination = space.Adjacent.Last();
 
-			User.PlaysCard( FlashFloods.Name ); // fast - sun, water
-			User.PlaysCard( RiversBounty.Name ); // slow - sun, water, animal
-			User.PlaysCard( BoonOfVigor.Name ); // fast - sun, water, plant
+		// Given: spirit has a sacred site adjacent to the target space (range-1)
+		fixture.Spirit.Presence.Adjust( space.Adjacent.First(), 2 );
+		//   And: Spirit has enough elements to trigger Level-2 of Massive Flooding
+		fixture.InitElements("3 water,2 sun");
+		//   And: target has 1 city, 4 towns, 5 explorers - !!! collapse this to 1 line
+		fixture.InitTokens( space, "1C@3,4T@2,5E@1");
 
-			User.IsDoneWith( Phase.Fast );
+		//  When: activate innate
+		_ = InnatePower.For<MassiveFlooding>().ActivateAsync( fixture.SelfCtx );
+		fixture.Choose( space ); // target space
+		fixture.Choose( Tokens.Town ); // 1st damage
+		fixture.Choose( Tokens.Town1 ); // 2nd damage
 
-			User.SelectsSlowAction("River's Bounty,(Massive Flooding)" );
-			User.TargetsLand("Massive Flooding","A5,(A8)");
+		fixture.ChoosePush( Tokens.Town, destination ); // push 1
+		fixture.ChoosePush( Tokens.Town, destination ); // push 2
+		fixture.ChoosePush( Tokens.Explorer, destination ); // push 3
 
-			User.AssertDecision("Damage (2 remaining)","T@2,E@1,C@3","T@2");
-			User.AssertDecision("Damage (1 remaining)","T@1,E@1,C@3","T@1");
+		// Then: target has remaining invaders
+		tokens.Summary.ShouldBe( "1C@3,4E@1,1T@2" );
 
-			User.OptionallyPushesInvaderTo("E@1","(A5),A6,A7");
-		}
+		//  And: destination had pushed invaders
+		fixture.GameState.Tokens[destination].Summary.ShouldBe( "1E@1,2T@2" );
+	}
 
-		[Fact]
-		public void Level3_2DamageToEachInvader() { // 3 sun, 4 water, 1 earth
-			// Instead, 2 damage to each invader
+	[Fact]
+	public void Level3_2DamageToEachInvader() { // 3 sun, 4 water, 1 earth
 
-			Given_SpiritCardPlayCount( 4 );
-			Given_SpiritGetMoney( 5 );
+		var fixture = new ConfigurableTestFixture();
+		var space = fixture.Board[5];
+		var tokens = fixture.GameState.Tokens[space];
 
-			// 1 city, 5 towns, 5 invaders on A4 (range 1 from SS)
-			var space = game.Spirit.Presence.SacredSites.First().Adjacent.First();
-			var grp = game.GameState.Tokens[space];
-			grp.AdjustDefault( Invader.City, 1);
-			grp.AdjustDefault( Invader.Town, 5 );
-			grp.AdjustDefault( Invader.Explorer, 5 );
+		// Given: spirit has a sacred site adjacent to the target space (range-1)
+		fixture.Spirit.Presence.Adjust( space.Adjacent.First(), 2 );
+		//   And: Spirit has enough elements to trigger Level-3 of Massive Flooding
+		fixture.InitElements( "3 sun,4 water,1 earth" );
+		//   And: target has 1 city, 4 towns, 5 explorers - !!! collapse this to 1 line
+		fixture.InitTokens( space, "1C@3,4T@2,5E@1" );
 
-			User.SelectsGrowthA_Reclaim();
+		//  When: activate innate
+		_ = InnatePower.For<MassiveFlooding>().ActivateAsync( fixture.SelfCtx );
+		fixture.Choose( space ); // target space
 
-			User.PlaysCard( FlashFloods.Name );  // fast - sun, water
-			User.PlaysCard( RiversBounty.Name ); // slow - sun, water, animal
-			User.PlaysCard( BoonOfVigor.Name );  // fast - sun, water, plant
-			User.PlaysCard( WashAway.Name );     // slow -      water, earth
-
-			User.IsDoneWith( Phase.Fast );
-
-			User.SelectsSlowAction("River's Bounty,Wash Away,(Massive Flooding)" );
-			User.TargetsLand( "Massive Flooding", "(A1),A5,A8" );
-			
-			game.GameState.Assert_Invaders(space, "1C@1" );
-		}
-
-
-		void Given_SpiritCardPlayCount( int target ) {
-			var cardPlays = game.Spirit.Presence.CardPlays;
-			while(game.Spirit.NumberOfCardsPlayablePerTurn < target)
-				cardPlays.Reveal( cardPlays.RevealOptions.Single(), null );
-		}
-
-		void Given_SpiritGetMoney( int target ) {
-			var energy = game.Spirit.Presence.Energy;
-			while(game.Spirit.EnergyPerTurn < target)
-				energy.Reveal( energy.RevealOptions.Single(), null );
-		}
-
+		// Then: target has remaining invaders
+		tokens.Summary.ShouldBe( "1C@1" );
 	}
 
 }

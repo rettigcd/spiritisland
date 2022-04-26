@@ -4,32 +4,36 @@ public class DahanGroupBinding {
 
 	public bool Frozen { get; set; }
 
-	readonly TokenCountDictionary tokens;
-	readonly HealthTokenClass tokenGroup;
+	readonly TokenCountDictionary _tokens;
+	readonly HealthTokenClass _tokenGroup;
 
-	public DahanGroupBinding( TokenCountDictionary tokens ) {
-		this.tokens = tokens;
-		this.tokenGroup = TokenType.Dahan;
+	public DahanGroupBinding( TokenCountDictionary tokens, RemoveReason destoryReason = RemoveReason.Destroyed ) {
+		_tokens = tokens;
+		_tokenGroup = TokenType.Dahan;
+		_destroyReason = destoryReason;
 	}
 
-	public IEnumerable<HealthToken> Keys => tokens.OfType(tokenGroup).Cast<HealthToken>();
+	readonly RemoveReason _destroyReason;
+
+
+	public IEnumerable<HealthToken> Keys => _tokens.OfType(_tokenGroup).Cast<HealthToken>();
 
 	public bool Any => Count > 0;
 
-	public int Count => tokens.Sum(tokenGroup);
+	public int Count => _tokens.Sum(_tokenGroup);
 
 	public static implicit operator int( DahanGroupBinding b ) => b.Count;
 
 	/// <summary> Adds a Dahan from the bag, or out of thin air. </summary>
 	public Task Add( int count, AddReason reason = AddReason.Added ) {
-		return tokens.AddDefault(TokenType.Dahan,count, reason );
+		return _tokens.AddDefault(TokenType.Dahan,count, reason );
 	}
 
-	public void Init(int count ) => tokens.InitDefault(TokenType.Dahan, count );
+	public void Init(int count ) => _tokens.InitDefault(TokenType.Dahan, count );
 
-	public void Adjust(Token token, int delta ) => tokens.Adjust(token,delta);
+	public void Adjust(Token token, int delta ) => _tokens.Adjust(token,delta);
 
-	public void Init(Token token, int count ) => tokens.Init(token,count);
+	public void Init(Token token, int count ) => _tokens.Init(token,count);
 
 	/// <summary> Returns the Token removed </summary>
 	public async Task<Token> Remove1( RemoveReason reason ) {
@@ -37,13 +41,13 @@ public class DahanGroupBinding {
 
 		var toRemove = Keys.OrderBy( x => x.RemainingHealth ).FirstOrDefault();
 		if( toRemove != null)
-			await tokens.Remove( toRemove, 1, reason );
+			await _tokens.Remove( toRemove, 1, reason );
 		return toRemove;
 	}
 
 	public async Task<bool> Remove1( Token desiredToken, RemoveReason reason ) {
-		if( !Frozen && 0<tokens[desiredToken] ){ 
-			await tokens.Remove(desiredToken,1, reason );
+		if( !Frozen && 0<_tokens[desiredToken] ){ 
+			await _tokens.Remove(desiredToken,1, reason );
 			return true;
 		}
 
@@ -56,19 +60,19 @@ public class DahanGroupBinding {
 
 		if(Frozen) return;
 		foreach( var token in Keys.ToArray() )
-			tokens.Init(token,0);
+			_tokens.Init(token,0);
 	}
 
 	public async Task AdjustHealthOf( HealthToken token, int delta, int count ) {
-		count = Math.Min( tokens[token], count );
+		count = Math.Min( _tokens[token], count );
 		if( count == 0 ) return;
 
 		var newToken = token.AddHealth( delta );
 		if( newToken.IsDestroyed)
-			await this.Destroy( count, token, Cause.None ); // !!! Cause is wrong.
+			await this.Destroy( count, token );
 		else {
-			tokens.Adjust( token,-count);
-			tokens.Adjust(newToken,count);
+			_tokens.Adjust( token,-count);
+			_tokens.Adjust(newToken,count);
 		}
 	}
 
@@ -78,97 +82,79 @@ public class DahanGroupBinding {
 			? Keys.OrderBy( x => x.FullHealth ).ToArray()
 			: Keys.OrderByDescending( x => x.FullHealth ).ToArray();
 		foreach(var t in orderedKeys)
-			await AdjustHealthOf(t, delta, tokens[t] );
+			await AdjustHealthOf(t, delta, _tokens[t] );
 	}
 
 
 	#region Damage
 
-	public async Task Apply1DamageToAll( Cause cause ) { // Called By Power (i.e. not invaders)
+	public async Task Apply1DamageToAll() { // Called By Power (i.e. not invaders)
 		if(Frozen) return;
 
 		var before = Keys.OrderByDescending(x=>x.Damage).ToArray(); // most damaged to least damaged so they don't cascade
 		foreach(var token in before) {
-			int origCount = tokens[token];
+			int origCount = _tokens[token];
 			var newToken = token.AddDamage( 1 );
 			if( newToken.IsDestroyed) {
 				// Apply 1 damage to all
-				tokens.Init( token, 0 );
-				tokens.Adjust( newToken, origCount );
+				_tokens.Init( token, 0 );
+				_tokens.Adjust( newToken, origCount );
 			} else
 				// or destory
-				await Destroy( origCount, token, cause );
+				await Destroy( origCount, token );
 		}
 
 	}
 
-	public async Task ApplyDamage( int damageToDahan, Cause cause ) {
+	public async Task ApplyDamage( int damageToDahan ) {
 		if(Frozen) return;
 
 		var before = Keys.OrderBy(x=>x.RemainingHealth).ToArray(); // least health first.
 		foreach(var token in before) {
-			// Destroy what can be destroyed
-			if(token.RemainingHealth <= damageToDahan ) {
-				int destroyed = damageToDahan / token.RemainingHealth;
-				await Destroy(destroyed,token,cause);
-				damageToDahan -= destroyed * token.RemainingHealth;
-			}
-			// if we can further damage the most damage
-			if( damageToDahan == 0 )
+			damageToDahan = await ApplyDamageToToken( damageToDahan, token );
+			if(damageToDahan == 0)
 				break;
-			else if(0 < tokens[token]) {
-				tokens.Adjust( token, -1 );
-				tokens.Adjust( token.AddDamage( damageToDahan ), 1 );
-				break;
-			}
 		}
 
-		//// Destroy injured first
-		//int damagedToDestroy = System.Math.Min( this[1], damageToDahan );
-		//if( 0 < damagedToDestroy ) {
-		//	await Destroy(damagedToDestroy,1, cause);
-		//	damageToDahan -= damagedToDestroy;
-		//}
+	}
 
-		//// Destroy healthy next
-		//int healthyToDestroy = System.Math.Min( this[2], damagedToDestroy/2 );
-		//if( 0 < healthyToDestroy ) {
-		//	await Destroy(healthyToDestroy,2,cause);
-		//	damageToDahan -= healthyToDestroy * 2;
-		//}
+	public async Task<int> ApplyDamageToToken( int damageToDahan, HealthToken token ) {
+		// Destroy what can be destroyed
+		if(token.RemainingHealth <= damageToDahan) {
+			int destroyed = damageToDahan / token.RemainingHealth;
+			await Destroy( destroyed, token );
+			damageToDahan -= destroyed * token.RemainingHealth;
+		}
+		// if we can apply partial damage
+		if(0 < damageToDahan && 0 < _tokens[token]) {
+			_tokens.Adjust( token, -1 );
+			_tokens.Adjust( token.AddDamage( damageToDahan ), 1 );
+			damageToDahan = 0; // damage should be used up
+		}
 
-		//// Injure remaining
-		//if( damageToDahan == 1 && 0 < this[2]) {
-		//	this.InitDamaged( 1 );
-		//	this.Init( this[2]-1 );
-		//}
-
+		return damageToDahan;
 	}
 
 	#endregion
 
 	#region Destroy
 
-	public async Task Destroy( int countToDestroy, Cause cause ) {
+	public async Task Destroy( int countToDestroy ) {
 		if(Frozen) return;
 
 		var before = Keys.OrderBy( x => x.RemainingHealth ).ToArray(); // least health first.
 		foreach(var token in before) {
 			// Destroy what can be destroyed
-			int destroyed = Math.Min(countToDestroy, tokens[token]);
-			await Destroy( destroyed, token, cause );
+			int destroyed = Math.Min(countToDestroy, _tokens[token]);
+			await Destroy( destroyed, token );
 			countToDestroy -= destroyed;
 		}
 	}
 
-	public async Task Destroy( int count, HealthToken original, Cause cause ) {
+	public async Task Destroy( int count, HealthToken original ) {
 		if(Frozen) return;
 
-		var reason = cause == Cause.Invaders
-			? RemoveReason.DestroyedInBattle
-			: RemoveReason.Destroyed;
-
-		await tokens.Remove( original, count, reason );
+		await _tokens.Remove( original, count, _destroyReason );
 	}
 
 	#endregion

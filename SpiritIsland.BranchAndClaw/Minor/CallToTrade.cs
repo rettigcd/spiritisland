@@ -6,7 +6,7 @@ public class CallToTrade {
 
 	[MinorCard( CallToTrade.Name, 1, Element.Air, Element.Water, Element.Earth, Element.Plant )]
 	[Fast]
-	[FromPresence( 1, Target.Invaders )]
+	[FromPresence( 1, Target.Dahan )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 		// You may Gather 1 dahan
 		await ctx.GatherUpToNDahan(1);

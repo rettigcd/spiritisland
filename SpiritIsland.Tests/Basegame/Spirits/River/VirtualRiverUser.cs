@@ -6,9 +6,9 @@
 
 		public void SelectsGrowthA_Reclaim() {
 			Growth_SelectsOption( "ReclaimAll / DrawPowerCard / GainEnergy(1)" );
-			Growth_ReclaimsAll();
-			Growth_GainsEnergy();
-			Growth_DrawsPowerCard();
+//			Growth_ReclaimsAll();
+//			Growth_GainsEnergy();
+//			Growth_DrawsPowerCard();
 		}
 
 		public void SelectsGrowthB_2PP(string pp1="energy>A2;A3;A4", string pp2="energy>A1;A2;A3;A4") {

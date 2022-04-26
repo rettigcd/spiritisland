@@ -41,7 +41,7 @@ public class RepeatIfAttribute : RepeatAttribute {
 
 public class DrawableInnateOption : IDrawableInnateOption {
 	public DrawableInnateOption( string thresholds, string description ) {
-		Elements = ElementList.Parse(thresholds);
+		Elements = ElementCounts.Parse(thresholds);
 		Description = description;
 	}
 	public ElementCounts Elements { get; }

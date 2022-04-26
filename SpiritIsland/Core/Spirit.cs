@@ -77,7 +77,7 @@ public abstract class Spirit : IOption {
 	public Growth Growth { get; protected set; }
 
 	public virtual async Task DoGrowth(GameState gameState) {
-		var ctx = Bind( gameState, Cause.Growth );
+		var ctx = Bind( gameState );
 
 		// (1) Pre-Growth Track options
 		foreach(ITrackActionFactory action in Presence.RevealedActions)
@@ -100,7 +100,7 @@ public abstract class Spirit : IOption {
 	}
 
 	public async Task GrowAndResolve( GrowthOption option, GameState gameState ) {
-		var ctx = Bind(gameState,Cause.Growth);
+		var ctx = Bind( gameState );
 
 		// Auto run the auto-runs.
 		foreach(var autoAction in option.AutoRuns)
@@ -127,11 +127,11 @@ public abstract class Spirit : IOption {
 
 		if( args.Track.Action != null)
 			if( args.GameState.Phase != Phase.Growth || !args.Track.Action.RunAfterGrowthResult )
-				await args.Track.Action.ActivateAsync(Bind(args.GameState,Cause.Power));
+				await args.Track.Action.ActivateAsync( Bind( args.GameState ) );
 	}
 
 	public Task ApplyRevealedPresenceTracks_CalledOnlyFromTests(GameState gs) {
-		var ctx = Bind( gs, Cause.Growth );
+		var ctx = Bind( gs );
 		return this.ApplyRevealedPresenceTracks(ctx);
 	}
 	protected async Task ApplyRevealedPresenceTracks( SelfCtx ctx ) {
@@ -361,7 +361,9 @@ public abstract class Spirit : IOption {
 
 	protected abstract void InitializeInternal( Board board, GameState gameState );
 
-	public virtual SelfCtx Bind( GameState gameState, Cause cause ) => new SelfCtx( this, gameState, cause );
+	public virtual SelfCtx Bind( GameState gameState ) => new SelfCtx( this, gameState, default );
+
+	public virtual SelfCtx BindMyPower( GameState gameState ) => new SelfCtx( this, gameState, Cause.MyPowers );
 
 	void On_TimePassed(GameState _ ) {
 		// reset cards / powers
@@ -513,13 +515,6 @@ public abstract class Spirit : IOption {
 	#endregion
 
 	#region Power Plug-ins
-
-	public virtual InvaderBinding BuildInvaderGroupForPowers( GameState gs, Space space ) {
-		return new InvaderBinding( 
-			gs.Tokens[ space ],
-			new DestroyInvaderStrategy( gs, gs.Fear.AddDirect )
-		);
-	}
 
 	// overriden by Bringer, Bringer's BuildInvaderGroupForPower uses this.
 	public virtual Task DestroyInvaderForPowers( GameState gs, Space space, int count, Token token ) {

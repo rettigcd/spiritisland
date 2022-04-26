@@ -59,10 +59,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.VitalStrengthNS {
 		[InlineDataAttribute(4,6)]
 		[InlineDataAttribute(5,7)]
 		[InlineDataAttribute(6,8)]
-		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth) {
-			// energy:	2 3 4 6 7 8
-			spirit.Presence.Energy.SetRevealedCount( revealedSpaces );
-			Assert_EnergyTrackIs( expectedEnergyGrowth );
+		public Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth) {
+			var fix = new ConfigurableTestFixture { Spirit = new VitalStrength() };
+			return fix.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, "" );
 		}
 
 		[Trait("Presence","CardTrack")]
@@ -73,10 +72,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.VitalStrengthNS {
 		[InlineDataAttribute(4,2)]
 		[InlineDataAttribute(5,3)]
 		[InlineDataAttribute(6,4)]
-		public void CardTrack(int revealedSpaces, int expectedCardPlayCount){
-			//	card:  1 1 2 2 3 4
-			spirit.Presence.CardPlays.SetRevealedCount ( revealedSpaces );
-			Assert_CardTrackIs( expectedCardPlayCount );
+		public Task CardTrack(int revealedSpaces, int expectedCardPlayCount){
+			var fix = new ConfigurableTestFixture { Spirit = new VitalStrength() };
+			return fix.VerifyCardTrack(revealedSpaces,expectedCardPlayCount,"");
 		}
 
 	}

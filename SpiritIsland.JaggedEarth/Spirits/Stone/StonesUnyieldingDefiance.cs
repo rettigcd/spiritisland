@@ -73,19 +73,17 @@ public StonesUnyieldingDefiance() : base(
 		Presence.PlaceOn(space2, gameState);
 
 		// Bestow the Endurance of Bedrock
-		oldBlightEffect = gameState.AddBlightSideEffect;
-		gameState.AddBlightSideEffect = this.BestowTheEnduranceOfBedrock;
+		gameState.ModifyBlightAddedEffect.ForGame.Add(BestowTheEnduranceOfBedrock);
 	}
 
-	AddBlightEffect BestowTheEnduranceOfBedrock(GameState gs,Space space ) {
+	void BestowTheEnduranceOfBedrock( AddBlightEffect effect ) {
 		// When blight is added to one of your lands,
 		// if the blight is less than or equal to your presence, 
-		return gs.Tokens[space].Blight <= Presence.CountOn(space)
+		if( effect.GameState.Tokens[effect.Space].Blight <= Presence.CountOn( effect.Space ) ){
 			// it does not cascade or destroy presence (yours or others')."
-			? new AddBlightEffect { Cascade = false, DestroyPresence = false }
-			// otherwide, normal action
-			: oldBlightEffect(gs,space);
+			effect.Cascade = false;
+			effect.DestroyPresence = false;
+		}
 	}
-	Func<GameState, Space, AddBlightEffect> oldBlightEffect;
 
 }

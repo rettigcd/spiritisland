@@ -18,4 +18,3 @@ internal class Tokens {
 	static public readonly HealthToken Dahan1 = new HealthToken( TokenType.Dahan, 2, 1 );
 
 }
-

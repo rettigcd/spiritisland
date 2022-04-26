@@ -18,7 +18,7 @@ public class AllThingsWeaken : BlightCardBase {
 	static ActionOption<GameState> ReduceTokenHealthBy1 => 
 
 		// Invaders and Dahan have -1 Health (min, 1).
-		new ActionOption<GameState>("Invaders have -1 Health.", async gs => {
+		new ActionOption<GameState>("Invaders have -1 Health.", gs => {
 
 			// change the defaults
 			var defaults = gs.Tokens.TokenDefaults;

@@ -42,10 +42,12 @@ namespace SpiritIsland.Tests {
 			_ = new SinglePlayer.SinglePlayerGame( gs );
 
 			var user = new VirtualTestUser( spirit );
-			var starterCtx = spirit.Bind( gs, Cause.None );
+			var starterCtx = spirit.Bind( gs );
 
 			// Disable destroying presence
-			starterCtx.GameState.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
+			// starterCtx.GameState.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
+			starterCtx.GameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
+
 
 			return (user,starterCtx);
 		}

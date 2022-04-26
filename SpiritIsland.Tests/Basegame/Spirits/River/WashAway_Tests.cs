@@ -44,7 +44,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 			var invader = spirit.Action.GetCurrent().Options[0] as Token;
 
-			User.OptionallyPushesInvaderTo(invader.Summary,"A1,(A2),A3,A5");
+			User.OptionallyPushesInvaderTo(invader.ToString(),"A1,(A2),A3,A5");
 
 			// check that explore was moved
 			gameState.Assert_Invaders(targetSpace, expectedTargetResult );

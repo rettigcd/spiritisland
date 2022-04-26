@@ -10,11 +10,11 @@ public class WrapInWingsOfSunlight {
 			await ctx.GatherUpToNDahan( 3 );
 
 		// move up to 5 dahan from target land to any land.
-		Space destination = await ctx.MoveTokensOut( max:5, TokenType.Dahan, range:100 )
-			?? ctx.Space; // If user doesn't select destination, use targetted space.
+		Space destination = await ctx.MoveTokensOut( max:5, TokenType.Dahan, range:100 );
 
 		// defend 5 in that land
-		ctx.Target( destination ?? ctx.Space ).Defend( 5 );
+		if( destination != null )
+			ctx.Target( destination ).Defend( 5 );
 
 	}
 

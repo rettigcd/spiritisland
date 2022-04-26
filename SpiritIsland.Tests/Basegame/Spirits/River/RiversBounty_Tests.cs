@@ -114,7 +114,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		public void DamagedDahanComingDifferentLands() {
 			// Given: spirit has 1 presence
 			Space target = spirit.Presence.Placed.Single();
-			var ctx = spirit.Bind( gameState, Cause.Power).Target(target);
+			var ctx = spirit.BindMyPower( gameState ).Target(target);
 
 			//   And: neighbors have 1 damaged dahan each 
 			const int dahanToGather = 2;
@@ -178,7 +178,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		public void DahanCountIncludesDamaged() {
 			// This is a nice test, but it is too close to the implementation.  Refactoring might not use ctx.DahanCount
 			var space = gameState.Island.Boards[0][4];
-			var ctx = spirit.Bind( gameState, Cause.None).Target(space);
+			var ctx = spirit.Bind( gameState ).Target(space);
 			var dahan = ctx.Tokens.Dahan;
 			ctx.Tokens.Init( Tokens.Dahan1, 5 );
 			dahan.Init(7);

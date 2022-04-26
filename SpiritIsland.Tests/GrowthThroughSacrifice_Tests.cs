@@ -1,52 +1,53 @@
-﻿using Shouldly;
-using SpiritIsland.Basegame;
-using SpiritIsland.BranchAndClaw;
-using System.Linq;
-using Xunit;
+﻿namespace SpiritIsland.Tests;
 
-namespace SpiritIsland.Tests {
+public class GrowthThroughSacrifice_Tests {
 
-	public class GrowthThroughSacrifice_Tests {
+	[Fact]
+	public void RevealedTokens_GainElements() {
+		var fixture = new ConfigurableTestFixture();
+		var elementTrack = Track.AirEnergy;
+		var space = fixture.Board[3];
 
-		[Fact]
-		public void RevealedTokens_GainElements() {
+		// Given: Spirit's next cardplay has an element on it
+		fixture.CardPlayTrack = new PresenceTrack( Track.Card1, elementTrack );
+		//   And: has no air elements
+		fixture.Spirit.Elements[elementTrack.Elements[0]].ShouldBe(0);
+		//   And: 2 presence on board
+		fixture.Spirit.Presence.Adjust( space, 2);
 
-			var fxt = new GameFixture()
-				.WithSpirit(new TestSpirit(PowerCard.For<GrowthThroughSacrifice>()))
-				.Start();
+		//  When: Card played
+		_ = GrowthThroughSacrifice.ActAsync( fixture.TargetSelf );
+		fixture.Choose( space ); // select presence to destroy
+		fixture.Choose( space ); // select location to add presence / remove blight
+		fixture.Choose( "add 1 presence" );
+		fixture.Choose( elementTrack ); // take presence from cardplay track
 
-			fxt.spirit.AddCardToHand(PowerCard.For<GnawingRootbiters>());
-
-			// Given: Next energy track has 1 element (fire)
-			((TestPresenceTrack)fxt.spirit.Presence.Energy).OverrideTrack(1, Track.FireEnergy);
-
-			// Given: Spirits can play 2 cards
-			fxt.spirit.Presence.CardPlays.Reveal( fxt.spirit.Presence.CardPlays.RevealOptions.Single(), null );
-
-			// Given: Spirit has 2 presence on A5
-			fxt.spirit.Presence.PlaceOn(fxt.gameState.Island.Boards[0][5],fxt.gameState);
-
-			// When: user grows
-			fxt.user.Growth_SelectsOption(0);
-			//  And: plays card SUT
-			fxt.user.PlaysCard(GrowthThroughSacrifice.Name);
-			//  And: plays slow card (to keep round from ending)
-			fxt.user.PlaysCard(GnawingRootbiters.Name);
-
-			fxt.spirit.Elements[Element.Fire].ShouldBe(1); // from Growth Through Sacrifice card
-
-			//  And: Resolves SUT
-			fxt.user.SelectsFastAction(GrowthThroughSacrifice.Name);
-			fxt.user.AssertDecisionX("Select presence to destroy","A5");
-
-			fxt.user.AssertDecisionX("Select location to Remove Blight OR Add Presence","A5");
-			fxt.user.AssertDecisionX("Select Power Option","Remove 1 blight from one of your lands,(Add 1 presence to one of your lands)");
-			fxt.user.AssertDecisionX("Select Presence to place.","(fire energy),3 cardplay,Take Presence from Board");
-
-			// Should have gained 1 fire element
-			fxt.spirit.Elements[Element.Fire].ShouldBe(2); // 1 from Growth Through Sacrifice card, 1 from Energy track
-		}
+		//  Then: Spirit gains element
+		fixture.Spirit.Elements[ elementTrack.Elements[0] ].ShouldBe( 1 );
 
 	}
+
+	[Fact]
+	public void RemovesBlight() {
+		var setup = new ConfigurableTestFixture();
+		var space = setup.Board[3];
+		var tokens = setup.GameState.Tokens[space];
+
+		// Given: 1 blight on board where presence is
+		setup.Spirit.Presence.Adjust( space, 2 );
+		tokens.Init(TokenType.Blight,1);
+		tokens.Blight.Count.ShouldBe( 1 );
+
+		//  When: Card played
+		_ = GrowthThroughSacrifice.ActAsync( setup.TargetSelf );
+		setup.Choose( space ); // select presence to destroy
+		setup.Choose( space ); // select location to add presence / remove blight
+		setup.Choose( "blight" );
+
+		//  Then: Spirit gains element
+		tokens.Blight.Count.ShouldBe(0);
+
+	}
+
 
 }

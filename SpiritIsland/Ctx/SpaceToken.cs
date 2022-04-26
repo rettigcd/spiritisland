@@ -6,5 +6,5 @@ public class SpaceToken : IOption {
 	public Space Space { get; }
 	public Token Token { get; }
 
-	public string Text => Token.Summary + " on " + Space.Label;
+	public string Text => Token.ToString() + " on " + Space.Label;
 }

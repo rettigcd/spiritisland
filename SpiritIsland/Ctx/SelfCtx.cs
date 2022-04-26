@@ -4,19 +4,20 @@ public class SelfCtx {
 
 	public Spirit Self { get; }
 	public GameState GameState { get; }
-	public Cause Cause { get; }
 	#region constructor
 
 	public SelfCtx(Spirit self,GameState gameState, Cause cause) {
 		Self = self;
 		GameState = gameState;
-		Cause = cause;
+		_terrainMapper = cause == Cause.MyPowers
+			? GameState.Island.Terrain_ForPowerAndBlight
+			: Island.Terrain;
+
 	}
 
 	protected SelfCtx(SelfCtx src) {
 		Self = src.Self;
 		GameState = src.GameState;
-		Cause = src.Cause;
 		_terrainMapper = src._terrainMapper;
 	}
 
@@ -37,7 +38,7 @@ public class SelfCtx {
 	public Task Move(Token token, Space from, Space to )
 		=> Target(from).Tokens.MoveTo( token, to );
 
-	public Task<bool> YouHave( string elementString ) => Self.HasElements( ElementList.Parse(elementString) );
+	public Task<bool> YouHave( string elementString ) => Self.HasElements( ElementCounts.Parse(elementString) );
 
 	#endregion
 
@@ -116,9 +117,11 @@ public class SelfCtx {
 	#endregion
 
 	// Defer initializing this because some tests don't initialize nor depend on the GameState
-	protected TerrainMapper TerrainMapper => _terrainMapper ??= GameState.Island.TerrainMapFor(Cause);
-	protected TerrainMapper _terrainMapper;
+	protected TerrainMapper TerrainMapper( TokenClass token ) => token == TokenType.Blight 
+		? GameState.Island.Terrain_ForPowerAndBlight
+		: _terrainMapper;
 
+	readonly TerrainMapper _terrainMapper;
 
 	#region High level fear-specific decisions
 

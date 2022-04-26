@@ -89,7 +89,7 @@ public class RavageAction {
 
 	public int GetDamageInflictedByDefenders() {
 		CountDictionary<HealthToken> participants = GetDefenders();
-		return participants.Sum( pair => pair.Key.FullHealth * pair.Value );
+		return participants.Sum( pair => pair.Key.Class.Attack * pair.Value );
 	}
 
 	public async Task DamageLand( int damageInflictedFromInvaders ) {
@@ -98,10 +98,14 @@ public class RavageAction {
 	}
 
 	/// <returns># of dahan killed/destroyed</returns>
-	public async Task DamageDefenders( int damageInflictedFromAttackers ) { // Defend point have already been applied!
+	public async Task DamageDefenders( int damageInflictedFromAttackers ) { 
+		// Defend point have already been applied!
+
+		// Start with Damage from attackers
 		@event.defenderDamageFromAttackers = damageInflictedFromAttackers;
 		if(damageInflictedFromAttackers == 0 || !cfg.ShouldDamageDahan) return;
 
+		// Add Badlands damage
 		@event.defenderDamageFromBadlands = BadLandsCount;
 		int damageToApply = damageInflictedFromAttackers + BadLandsCount; // to defenders
 
@@ -136,26 +140,36 @@ public class RavageAction {
 				.Where(k=>k.Class.Category == TokenCategory.Dahan)
 				.OrderBy(t=>t.RemainingHealth) // kill damaged dahan first
 				.ToArray();
+
+			var dahan = new DahanGroupBinding( Tokens, RemoveReason.DestroyedInBattle ) { Frozen = Tokens.Dahan.Frozen };
+
 			foreach(var token in participatingDahan) {
+
 				// 1st - Destroy weekest dahan first
 				int tokensToDestroy = Math.Min(@event.startingDefenders[token], damageToApply/token.RemainingHealth); // rounds down
 				if(tokensToDestroy > 0) {
-					await cfg.DestroyDahan( Tokens.Dahan, tokensToDestroy, token );
+
+					await cfg.DestroyDahan( dahan, tokensToDestroy, token );
+
 					@event.dahanDestroyed += tokensToDestroy;
 					defenders[token] -= tokensToDestroy;
 					damageToApply -= tokensToDestroy * token.RemainingHealth;
 				}
-				// 2nd - if we nolonger have enougth to destroy, apply damage
-				if( defenders[token] > 0 && damageToApply > 0) {
-					// damage real tokens
-					await grp.Tokens.Dahan.ApplyDamage(1,Cause.Invaders);
+				// damage real tokens
+
+				// 2nd - if we no longer have enougth to destroy this token, apply damage all the damage that remains
+				if(0 < defenders[token] && 0 < damageToApply) {
+
+					await dahan.ApplyDamageToToken( damageToApply, token );
 
 					// update our defenders count
-					++defenders[token.AddDamage(damageToApply)];
+					++defenders[token.AddDamage( damageToApply )];
 					--defenders[token];
 					damageToApply = 0;
 				}
+
 			}
+
 		}
 
 	}

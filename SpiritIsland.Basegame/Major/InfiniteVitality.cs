@@ -7,30 +7,17 @@ public class InfiniteVitality {
 	[FromSacredSite( 1 )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
+		// Dahan have +4 health while in target land.
+		await DahanHelper.BoostDahanHealthForRound( ctx, 4 );
+
+		// whenever blight would be added to target land, instead leave it on the card
+		ctx.Blight.Blocked = true;
+
 		if( await ctx.YouHave( "4 earth" )) {
-
-			// !!! This should stop ALL blight added to this land, not just RAVAGE blight.
-
-			// !!! also - this only stops dahan destruction during RAVAGE.  Needs to protect from power cards too.
-
-			ctx.ModifyRavage( cfg => {
-				// whenever blight would be added to target land, instead leave it on the card
-				cfg.ShouldDamageLand = false;
-				// dahan ignore damage and destruction effects, 
-				cfg.ShouldDamageDahan = false;
-			} );
-
+			// Dahan ignore damage and destruction effects.
+			ctx.ModifyRavage( cfg => { cfg.ShouldDamageDahan = false; } ); // !!! this only stops dahan destruction during RAVAGE.  Needs to protect from power cards too.
+			// Remove 1 blight from target or adjacent
 			await RemoveBlightFromLandOrAdjacent( ctx );
-
-		} else {
-
-			ctx.ModifyRavage( cfg => {
-				// whenever blight would be added to target land, instead leave it on the card
-				cfg.ShouldDamageLand = false;
-			} );
-
-			// dahan have +4 health while in target land. (If played twice, would increase dahan health to +8)
-			await DahanHelper.BoostDahanHealthForRound( ctx, 4 );
 		}
 
 	}

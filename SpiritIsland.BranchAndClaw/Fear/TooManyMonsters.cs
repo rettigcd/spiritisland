@@ -14,12 +14,12 @@ public class TooManyMonsters : IFearOptions {
 
 	}
 
-	[FearLevel( 2, "Each player removes 1 explorer and 1 town from a land with beast or 1 explorer from a and adjacent to beast" )]
+	[FearLevel( 2, "Each player removes 1 explorer and 1 town from a land with beast or 1 explorer from a land adjacent to beast" )]
 	public async Task Level2( FearCtx ctx ) {
 
 		// Each player removes 1 explorer and 1 town from a land with beast or 1 explorer from a land adjacent to beast
 		foreach(var spirit in ctx.Spirits)
-			await RemoveTokenChoice( ctx,spirit, 1, Invader.Explorer );
+			await RemoveTokenChoice( spirit, 1, Invader.Explorer );
 
 	}
 
@@ -28,19 +28,30 @@ public class TooManyMonsters : IFearOptions {
 
 		// Each player removes 2 explorers and 2 towns from a land with beast or 1 explorer/town from a land adjacent to beast
 		foreach(var spirit in ctx.Spirits)
-			await RemoveTokenChoice( ctx, spirit, 2, Invader.Explorer, Invader.Town );
+			await RemoveTokenChoice( spirit, 2, Invader.Explorer, Invader.Town );
 	}
 
-	static Task RemoveTokenChoice( FearCtx ctx, SelfCtx spiritCtx, int count, params TokenClass[] interiorGroup ) {
+	static Task RemoveTokenChoice( SelfCtx ctx, int count, params TokenClass[] interiorGroup ) {
 
 		// !! It would be easier on the player if we could 'flatten' this to just the 'remove' step so they don't have to analyze what is on a beast space or adjacent to one.
 
-		return spiritCtx.SelectActionOption(
+		var landsWithBeasts = ctx.GameState.Island.AllSpaces
+			.Where( s => ctx.GameState.Tokens[s].Beasts.Any )
+			.ToArray();
+
+		return ctx.SelectActionOption(
+
 			new SelfAction("Remove 1 explorer & 1 town from a land with beast", spiritCtx => { 
-				return spiritCtx.RemoveTokenFromOneSpace( ctx.LandsWithBeasts(), count, Invader.Explorer, Invader.Town );
+				return spiritCtx.RemoveTokenFromOneSpace( landsWithBeasts, count, Invader.Explorer, Invader.Town );
 			}),
-			new SelfAction("Remove 1 explorer from a land adjacent to beast", spiritCtx => { 
-				return spiritCtx.RemoveTokenFromOneSpace( ctx.LandsAdjacentToBeasts(), 1, interiorGroup );
+
+			new SelfAction("Remove 1 "+ interiorGroup.Select(x=>x.Label).Join("/") +" from a land adjacent to beast", spiritCtx => {
+				var spaceOptions = landsWithBeasts
+					.SelectMany( s=>s.Adjacent )
+					.Distinct()
+					.Where( s => spiritCtx.GameState.Tokens[s].HasAny( interiorGroup ) );
+
+				return spiritCtx.RemoveTokenFromOneSpace( spaceOptions, 1, interiorGroup );
 			})
 		);
 	}

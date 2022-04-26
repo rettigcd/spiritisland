@@ -1,38 +1,21 @@
-* Unit Tests Failing *
 
-!!! Command the Beasts - Destorying strifed town might not generate 1 fear.
-!!! Strong Earth Shatters Slowly - When adding blight to land, it re-triggered Blighted Island message.  Therefore, mark the island as blighted before doing blighted island effect.
-!!! Skies Herald the Season of Return - returning 1 Keeper presence creates a sacred site, should push dahan but didn't
-!!! Sense of Dread: 1 (remove 1 explorer) - ADDED 1 explorer instead.
+==== Fear Card ====
 
-Discord : 2 : Each player adds 1 strife in a different land with at least 2 invaders. Then each invader takes 1 damage per strife it has.
-	Town already had strife, when adding strife, didn't get 2 strife, then didn't do 2 damage.
+Sense of Dread: 1 (remove 1 explorer) - ADDED 1 explorer instead.
 
-Auto-Defends not displaying.  
-	(Bargains of Power and Protection)
-	Defends that travel with Dahan
+Trade Suffers - Level 3 - *May* replace a city or town - Don't force.  IF it is defended, don't want to downgrade because we lose the fear points from downgrading
 
-After Growth, rewinding to beginning of turn, doesn't reset # of card plays to 0
+==== Blighted Island ====
 
-Forests of Living Obsidian 
-	- Badlands check needs to include Space in check so 2nd space gets badlands effect
-
-Inifinite Vitality 
-	- Dahan Vanash - Can't see them.
-	- Don't return to normal health when round is over.
-	- Also dahan with +4 health (i.e. 6) should not deal 6 damage each.
-
-Promises of Protection did not give dahan +2 health.  1 city vs 2 dahan, the city killed 1 dahan.
+Strong Earth Shatters Slowly - When adding blight to land, it re-triggered Blighted Island message.  Therefore, mark the island as blighted before doing blighted island effect.
 
 ThrivingCommunitites - there were only 3 lands with explorers.  After upgrading those 3 lands, puked on 4th non-existant space to upgrade.
 
-4	Absorb Corruption - If I have 2 plants, it forces me to do both, but text says you *may* do both.
-4	Trade Suffers - Level 3 - *May* replace a city or town - Don't force.  IF it is defended, don't want to downgrade because we lose the fear points from downgrading
-4	Indomitable Claim - Did not gain Prepare-Element ability when placing presence.
-4	Bloodwrack Plague - When damaging adjacent land - need to exclude Ocean that is not in play.
+==== Misc ====
 
-3	Strifed Invaders damaging themselves
+After Growth, rewinding to beginning of turn, doesn't reset # of card plays to 0
 
-Fear Card that adds strife to a land adjacent to beast doesn't add a strife if the unit already has a strife. 
+Shifting Memories 2-elements for card play - doesn't always work
 
-Forest of Living Obsideon - Should Badlands allow us to kill a town with the "1 point of damage" to each invader wording?
+Strifed Invaders damaging themselves
+

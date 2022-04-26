@@ -28,7 +28,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			When_StartingGrowth();
 
 			User.Growth_SelectsOption("ReclaimAll / DrawPowerCard / DrawPowerCard");
-			User.Growth_ReclaimsAll();
+//			User.Growth_ReclaimsAll();
 			User.Growth_DrawsPowerCard();
 			User.Growth_DrawsPowerCard();
 
@@ -65,7 +65,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			When_StartingGrowth();
 
 			User.Growth_SelectsOption( "PlacePresence(1) / GainEnergy(4)" );
-			User.Growth_GainsEnergy();
+//			User.Growth_GainsEnergy();
 			User.Growth_PlacesEnergyPresence( "A1;A2;A4;A5;A6" );
 
 			Assert.Equal(1,spirit.EnergyPerTurn);
@@ -76,50 +76,29 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 		[Trait("Presence","EnergyTrack")]
 		[Theory]
 		[InlineDataAttribute(1,1,"")]
-		[InlineDataAttribute(2,1,"A")]
-		[InlineDataAttribute(3,2,"A")]
-		[InlineDataAttribute(4,2,"AF")]
-		[InlineDataAttribute(5,2,"AFS")]
-		[InlineDataAttribute(6,3,"AFS")]
-		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
-
-			// energy:	1 air 2 fire sun 3
-			spirit.Presence.Energy.SetRevealedCount( revealedSpaces );
-			Assert_PresenceTracksAre( expectedEnergyGrowth, 1 );
-
-			spirit.InitElementsFromPresence();
-
-			Assert_BonusElements( elements );
+		[InlineDataAttribute(2,1,"1 air")]
+		[InlineDataAttribute(3,2,"1 air")]
+		[InlineDataAttribute(4,2, "1 fire,1 air" )]
+		[InlineDataAttribute(5,2, "1 sun,1 fire,1 air" )]
+		[InlineDataAttribute(6,3, "1 sun,1 fire,1 air" )]
+		public Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
+			var fix = new ConfigurableTestFixture { Spirit = new Thunderspeaker() };
+			return fix.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, elements );
 		}
 
 		[Trait("Presence","CardTrack")]
 		[Theory]
-		[InlineDataAttribute(1,1,false)]
-		[InlineDataAttribute(2,2,false)]
-		[InlineDataAttribute(3,2,false)]
-		[InlineDataAttribute(4,3,false)]
-		[InlineDataAttribute(5,3,true)]
-		[InlineDataAttribute(6,3,true)]
-		[InlineDataAttribute(7,4,true)]
-		public void CardTrack(int revealedSpaces, int expectedCardPlayCount, bool canReclaim1 ){
-
-			// card:	1 2 2 3 reclaim-1 3 4
-			Given_HalfOfPowercardsPlayed();
-
-			Given_HasPresence( board[3] );
-
-			spirit.Presence.CardPlays.SetRevealedCount( revealedSpaces );
-			Assert_PresenceTracksAre(1,expectedCardPlayCount);
-
-			gameState.Phase = Phase.Growth;
-			When_StartingGrowth();
-
-			User.Growth_SelectsOption( "PlacePresence(1) / GainEnergy(4)" );
-			User.Growth_GainsEnergy();
-			User.Growth_PlacesEnergyPresence( "A2;A3;A4" );
-
-			if( canReclaim1 )
-				User.Reclaims1CardIfAny();
+		[InlineDataAttribute(1,1,0)]
+		[InlineDataAttribute(2,2,0)]
+		[InlineDataAttribute(3,2,0)]
+		[InlineDataAttribute(4,3,0)]
+		[InlineDataAttribute(5,3,1)]
+		[InlineDataAttribute(6,3,1)]
+		[InlineDataAttribute(7,4,1)]
+		public async Task CardTrack(int revealedSpaces, int expectedCardPlayCount, int reclaimCount ){
+			var fix = new ConfigurableTestFixture { Spirit = new Thunderspeaker() };
+			await fix.VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
+			fix.VerifyReclaim1Count( reclaimCount );
 		}
 
 	}

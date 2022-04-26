@@ -37,7 +37,7 @@ public class TargetSpaceCtx : SelfCtx {
 		} ); // !! could just sweep entire board instead...
 	}
 
-	public virtual TokenBinding Blight => Tokens.Blight;
+	public virtual BlightTokenBinding Blight => Tokens.Blight;
 	public TokenBinding Beasts => Tokens.Beasts;
 	public TokenBinding Disease => Tokens.Disease;
 	public TokenBinding Wilds => Tokens.Wilds;
@@ -47,13 +47,14 @@ public class TargetSpaceCtx : SelfCtx {
 	#endregion
 
 	// This is different than Push / Gather which ManyMinds adjusts, this is straight 'Move' that is not adjusted.
+	/// <returns>Destination</returns>
 	public async Task<Space> MoveTokensOut( int max, TokenClass tokenClass, int range, string dstFilter = SpiritIsland.Target.Any ) {
 
 		if(!Tokens.HasAny( tokenClass )) return null;
 
 		// Select Destination
 		Space destination = await Decision( Select.Space.PushToken( tokenClass, Space,
-			Space.Range( range ).Where( s => { var x = Target( s ); return x.IsInPlay && x.Matches( dstFilter ); } ),
+			Space.Range( range ).Where( s => { var x = Target( s ); return x.IsInPlay(default) && x.Matches( dstFilter ); } ), // !!! Might not be correct if moving Blight.
 			Present.Done )
 		);
 
@@ -79,7 +80,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 		var sources = Space.Range( range )
 			.Select( Target )
-			.Where( x => x.IsInPlay && x.Matches(srcFilter) && x.Tokens.HasAny(tokenGroup) )
+			.Where( x => x.IsInPlay(default) && x.Matches(srcFilter) && x.Tokens.HasAny(tokenGroup) ) // !!! Not correct if moving Blight on an Ocean-Board
 			.SelectMany( x => x.Tokens.OfType(tokenGroup).Select(t => new SpaceToken(x.Space, t)) )
 			.ToArray();
 
@@ -131,21 +132,26 @@ public class TargetSpaceCtx : SelfCtx {
 	#endregion Gather
 
 	/// <summary> Use this for Power-Pushing, since Powers can push invaders into the ocean. </summary>
-	public IEnumerable<Space> Adjacent => Space.Adjacent.Where( adj => Target(adj).IsInPlay );
+	public IEnumerable<Space> Adjacent => Space.Adjacent.Where( adj => Target(adj).IsInPlay(default) ); // !!! might not be correct if used for Blight
 	public IEnumerable<TargetSpaceCtx> AdjacentCtxs => Adjacent.Select(Target);
 
 	/// <summary> Use this for Power-Pushing, since Powers can push invaders into the ocean. </summary>
-	public IEnumerable<Space> Range( int range ) => Space.Range( range ).Where( adj => Target(adj).IsInPlay );
+	public IEnumerable<Space> Range( int range ) => Space.Range( range ).Where( adj => Target(adj).IsInPlay(default) ); // !!! might not be correct if used for Blight
 
-	public Task DestroyDahan( int countToDestroy ) => Dahan.Destroy( countToDestroy, Cause );
+	public async Task DestroyDahan( int countToDestroy ) { 
+		await Dahan.Destroy( countToDestroy );
+	}
+
+	#region Terrain
 
 	/// <summary> The effective Terrain for powers. Will be Wetland for Ocean when Oceans-Hungry-Grasp is on board </summary>
-	public bool IsOneOf(params Terrain[] terrain) => TerrainMapper.IsOneOf(Space, terrain); // !!!!!!!!!!!!!!!!!
-	public bool IsCoastal   => TerrainMapper.IsCoastal( Space );
+	public bool IsOneOf(params Terrain[] terrain) => TerrainMapper(default).IsOneOf(Space, terrain); // !!! Might not be correct if used for Blight
+	public bool IsCoastal => TerrainMapper(default).IsCoastal( Space ); // !!! night not be correct if used for Blight
+	public bool IsInPlay(TokenClass forToken) => TerrainMapper(forToken).IsInPlay( Space );
+	public bool Matches( string filterEnum ) => IsInPlay(default) && SpaceFilterMap.Get(filterEnum)(this);
 
-	public bool IsInPlay => TerrainMapper.IsInPlay( Space );
+	#endregion
 
-	public bool Matches( string filterEnum ) => IsInPlay && SpaceFilterMap.Get(filterEnum)(this);
 
 	public bool HasBlight => Blight.Any;
 
@@ -161,10 +167,9 @@ public class TargetSpaceCtx : SelfCtx {
 	public void ModifyRavage( Action<ConfigureRavage> action ) => GameState.ModifyRavage(Space,action);
 
 	// The current targets power
-	public InvaderBinding Invaders => invadersRO ??= Cause switch {
-			Cause.Power => Self.BuildInvaderGroupForPowers( GameState, Space ),
-			_ => GameState.Invaders.On( Space )
-		};
+	public InvaderBinding Invaders => invadersRO ??= GetInvaders();
+
+	protected virtual InvaderBinding GetInvaders() => new InvaderBinding( Tokens, new DestroyInvaderStrategy( GameState, GameState.Fear.AddDirect ) );
 
 	public void SkipAllInvaderActions() => GameState.SkipAllInvaderActions(Space);
 	public void Skip1Build(Func<GameState,Space,Task> altAction = null) => GameState.Skip1Build( Space, altAction);
@@ -266,26 +271,23 @@ public class TargetSpaceCtx : SelfCtx {
 		damage += Badlands.Count;  
 
 		// and 2 damage to dahan.
-		await Dahan.ApplyDamage( damage, Cause );
+		await Dahan.ApplyDamage( damage );
 	}
 
 	/// <summary> Incomporates bad lands </summary>
 	public async Task Apply1DamageToEachDahan() {
-		await Dahan.Apply1DamageToAll( Cause );
-		await Dahan.ApplyDamage(Badlands.Count, Cause);
+		await Dahan.Apply1DamageToAll();
+		await Dahan.ApplyDamage(Badlands.Count);
 	}
 
 	#region Add Strife
 
 	/// <param name="groups">Option: if null/empty, no filtering</param>
-	public async Task AddStrife( params TokenClass[] groups ) {
+	public virtual async Task AddStrife( params TokenClass[] groups ) {
 		var invader = await Decision( Select.Invader.ForStrife( Tokens, groups ) );
 		if(invader == null) return;
-		if(Cause == Cause.Power)
-			await Self.AddStrife( this, invader );
-		else
-			Tokens.AddStrifeTo( invader );
-	} 
+		Tokens.AddStrifeTo( invader );
+	}
 
 	#endregion
 
@@ -323,7 +325,7 @@ public class TargetSpaceCtx : SelfCtx {
 		return Self.RangeCalc.GetTargetOptionsFromKnownSource( Self, GameState, TargettingFrom.None, new Space[]{ Space }, new TargetCriteria( range, filterEnum ) );
 	}
 
-	public async Task<TargetSpaceCtx> SelectAdjacentLand( string prompt, System.Func<TargetSpaceCtx, bool> filter = null ) {
+	public async Task<TargetSpaceCtx> SelectAdjacentLand( string prompt, Func<TargetSpaceCtx, bool> filter = null ) {
 		var options = Adjacent;
 		if(filter != null)
 			options = options.Where( s => filter( Target( s ) ) );

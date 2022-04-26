@@ -83,8 +83,14 @@ public class SpiritPresence : IKnowSpiritLocations {
 	protected virtual async Task RevealTrack( Track track, GameState gs ) {
 		if(track == Track.Destroyed && Destroyed > 0)
 			--Destroyed;
-		else if( !( await Energy.Reveal(track,gs) || await CardPlays.Reveal(track,gs) ) )
-			throw new ArgumentException( "Can't pull from track:" + track.ToString() );
+		else{
+			bool energyRevealed = await Energy.Reveal( track, gs );
+			if(!energyRevealed) {
+				bool cardRevealed = await CardPlays.Reveal( track, gs );
+				if( !cardRevealed )
+					throw new ArgumentException( "Can't pull from track:" + track.ToString() );
+			}
+		}
 	}
 
 	Task OnRevealed( TrackRevealedArgs args ) {

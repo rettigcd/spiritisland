@@ -8,40 +8,38 @@ public class TallTalesOfSavagery : IFearOptions {
 
 	[FearLevel( 1, "Each player removes 1 Explorer from a land with Dahan." )]
 	public async Task Level1( FearCtx ctx ) {
-		var gs = ctx.GameState;
-		foreach(var spirit in gs.Spirits) {
-			var options = gs.Island.AllSpaces.Where( s => gs.DahanOn( s ).Any && gs.Tokens[s].Has( Invader.Explorer ) ).ToArray();
-			if(options.Length == 0) return;
-			await RemoveExplorerFromOneOfThese( gs, spirit, options );
-		}
-	}
-
-	static async Task RemoveExplorerFromOneOfThese( GameState gs, Spirit spirit, Space[] options ) {
-		var target = await spirit.Action.Decision( new Select.Space( "Select land to remove explorer", options, Present.Always ) );
-		gs.Tokens[target].AdjustDefault( Invader.Explorer, -1 );
+		// Each player
+		await Cmd.EachSpirit(
+			// removes 1 explorere
+			Cmd.RemoveExplorers(1)
+				// from a land with Dahan
+				.From(x=>x.Dahan.Any && x.Tokens.Has( Invader.Explorer ),"land with Dahan")
+		).Execute( ctx.GameState );
 	}
 
 	[FearLevel( 2, "Each player removes 2 Explorer or 1 Town from a land with Dahan." )]
 	public async Task Level2( FearCtx ctx ) {
-		var gs = ctx.GameState;
-		foreach(var spirit in gs.Spirits) {
-			var options = gs.Island.AllSpaces.Where( s => gs.DahanOn( s ).Any && gs.Tokens[ s ].Has(Invader.Explorer) ).ToArray();
-			if(options.Length == 0) return;
-			var space = await spirit.Action.Decision( new Select.Space( "Fear:select land with dahan to remove explorer", options, Present.Always ));
-			await RemoveTownOr2Explorers( gs.Invaders.On( space ) );
-		}
+		// Each player
+		await Cmd.EachSpirit(
+			// removes 2 explorere or 1 Town
+			Cmd.Pick1(Cmd.RemoveExplorers( 2 ), Cmd.RemoveTowns(1))
+				// from a land with Dahan
+				.From( x => x.Dahan.Any && x.Tokens.HasAny( Invader.Explorer, Invader.Town ), "land with Dahan" )
+		).Execute( ctx.GameState );
 	}
 
 	[FearLevel( 3, "Remove 2 Explorer or 1 Town from each land with Dahan. Then, remove 1 City from each land with at least 2 Dahan." )]
 	public async Task Level3( FearCtx ctx ) {
 		var gs = ctx.GameState;
+		// Remove 2 explorers or 1 Town from each land with Dahan
 		foreach(var space in gs.Island.AllSpaces.Where(s => gs.DahanOn(s).Any))
 			await RemoveTownOr2Explorers( gs.Invaders.On( space ) );
+		// Then, remove 1 City from each land with at least 2 Dahan
 		foreach(var space in gs.Island.AllSpaces.Where( s=>gs.DahanOn(s).Count>=2 && gs.Tokens[s].Has(Invader.City) ))
 			await gs.Invaders.On(space).Remove(Invader.City);
 	}
 
-	static async Task RemoveTownOr2Explorers( InvaderBinding grp ) {
+	static async Task RemoveTownOr2Explorers( InvaderBinding grp ) { // !! maybe we should let the player choose in case town was strifed
 		if(grp.Tokens.Has(Invader.Town))
 			await grp.Remove( Invader.Town );
 		else

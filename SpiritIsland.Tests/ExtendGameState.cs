@@ -24,7 +24,7 @@ namespace SpiritIsland.Tests {
 		}
 
 		static public void Assert_Invaders( this GameState gameState, Space space, string expectedString ) {
-			gameState.Tokens[ space ].InvaderSummary.ShouldBe( expectedString );
+			gameState.Tokens[ space ].InvaderSummary().ShouldBe( expectedString );
 		}
 
 	}

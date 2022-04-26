@@ -6,11 +6,11 @@ public class SearAngerIntoTheWildLands{
 	static public Task ActAsync( TargetSpaceCtx ctx ){
 		return ctx.SelectActionOption(
 			Cmd.AddBadlands(1),
+
 			// If wilds and Invaders are present, 1 fear and 1 Damage.
-			(ctx.Wilds.Any && ctx.HasInvaders) ? FearAndDamage : null
+			new SpaceAction( "1 fear and 1 Damage", async ctx => { ctx.AddFear( 1 ); await ctx.DamageInvaders( 1 ); } )
+				.Matches( x => x.Wilds.Any && x.HasInvaders )
 		);
 	}
-
-	static SpaceAction FearAndDamage => new SpaceAction("1 fear and 1 Damage", async ctx => { ctx.AddFear(1); await ctx.DamageInvaders(1); } );
 
 }

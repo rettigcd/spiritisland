@@ -69,7 +69,7 @@ public class VengeanceAsABurningPlague : Spirit {
 
 	}
 
-	public override SelfCtx Bind( GameState gameState, Cause cause ) => new VengenceCtx( this, gameState, cause );
+	public override SelfCtx Bind( GameState gameState ) => new VengenceCtx( this, gameState, Cause.MyPowers );
 
 }
 

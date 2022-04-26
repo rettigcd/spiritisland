@@ -86,11 +86,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		[InlineDataAttribute(5,4)]
 		[InlineDataAttribute(6,4)]
 		[InlineDataAttribute(7,5)]
-		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth ){
-			// energy:	1 2 2 3 4 4 5
-
-			spirit.Presence.Energy.SetRevealedCount( revealedSpaces );
-			Assert_PresenceTracksAre(expectedEnergyGrowth,1);
+		public async Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth ){
+			var fix = new ConfigurableTestFixture { Spirit = new RiverSurges() };
+			await fix.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, "" );
 		}
 
 		[Trait("Presence","CardTrack")]
@@ -102,22 +100,10 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		[InlineDataAttribute(5,3,true)]
 		[InlineDataAttribute(6,4,true)]
 		[InlineDataAttribute(7,5,true)]
-		public void CardTrack(int revealedSpaces, int expectedCardPlayCount, bool canReclaim1 ){
-			// cards:	1 2 2 3 reclaim-1 4 5
-
-			Given_HasPresence( board[3] );
-			Given_HalfOfPowercardsPlayed();
-
-			spirit.Presence.CardPlays.SetRevealedCount( revealedSpaces );
-			Assert_PresenceTracksAre(1,expectedCardPlayCount);
-
-			gameState.Phase = Phase.Growth;
-			When_StartingGrowth();
-
-			User.SelectsGrowthC_Draw_Energy( "energy>A1;A2;A3;A4;A5" );
-
-			if(canReclaim1)
-				User.Reclaims1CardIfAny();
+		public async Task CardTrack(int revealedSpaces, int expectedCardPlayCount, bool canReclaim1 ) {
+			var fix = new ConfigurableTestFixture { Spirit = new RiverSurges() };
+			await fix.VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
+			fix.VerifyReclaim1Count( canReclaim1? 1 : 0 );
 		}
 
 		#endregion
@@ -132,7 +118,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		[InlineData(7,"Encompassing Ward")]
 		public void PowerProgressionCards( int count, string lastPowerCard ){
 			var drawPowerCard = new DrawPowerCard();
-			var ctx = spirit.Bind( gameState, Cause.Growth );
+			var ctx = spirit.Bind( gameState );
 			while(count-- > 0)
 				_ = drawPowerCard.ActivateAsync( ctx );
 

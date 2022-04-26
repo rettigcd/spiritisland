@@ -7,7 +7,7 @@
 public class InnateOptionAttribute : Attribute, IDrawableInnateOption {
 
 	public InnateOptionAttribute( string elementText, string description, int group = 0 ) {
-		Elements = ElementList.Parse( elementText );
+		Elements = ElementCounts.Parse( elementText );
 		Description = description;
 		Group = group;
 	}
@@ -16,7 +16,7 @@ public class InnateOptionAttribute : Attribute, IDrawableInnateOption {
 	/// Non-executable.  Called from dirived class
 	/// </summary>
 	protected InnateOptionAttribute(string elementText, string description ) {
-		Elements = ElementList.Parse( elementText );
+		Elements = ElementCounts.Parse( elementText );
 		Description = description;
 		Group = null;
 	}

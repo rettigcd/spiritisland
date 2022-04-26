@@ -1,5 +1,6 @@
 ﻿namespace SpiritIsland;
 
+// !!! rethink this class.  Are things calling gameState.Invaders.On(space) when they should really be calling gameState.Tokens[space].Invaders ???
 public class Invaders {
 
 	// !! This wrapper class (around TokenCountDictionary) acts more like an Extension Method Class

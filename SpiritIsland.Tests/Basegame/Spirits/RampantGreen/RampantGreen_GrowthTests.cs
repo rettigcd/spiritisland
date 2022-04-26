@@ -25,8 +25,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
 			User_SelectAlwaysGrowthOption();
 
 			User.Growth_SelectsOption( "ReclaimAll / DrawPowerCard" );
-			User.Growth_ReclaimsAll();
-			User.Growth_DrawsPowerCard();
+//			User.Growth_ReclaimsAll();
+//			User.Growth_DrawsPowerCard();
 
 			Assert_AllCardsAvailableToPlay(5);
 		}
@@ -69,8 +69,8 @@ namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
 			User_SelectAlwaysGrowthOption();
 
 			User.Growth_SelectsOption( "GainEnergy(3) / DrawPowerCard" );
-			User.Growth_DrawsPowerCard();
-			User.Growth_GainsEnergy();
+//			User.Growth_DrawsPowerCard();
+//			User.Growth_GainsEnergy();
 
 			Assert.Equal( 1, spirit.EnergyPerTurn );
 			Assert_HasEnergy( 3 + 1 );
@@ -86,22 +86,14 @@ namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
 		[Theory]
 		[InlineDataAttribute( 1,0,"")]
 		[InlineDataAttribute( 2,1,"")]
-		[InlineDataAttribute( 3,1,"P")]
-		[InlineDataAttribute( 4, 2, "P" )]
-		[InlineDataAttribute( 5, 2, "P" )]
-		[InlineDataAttribute( 6, 2, "PP" )]
-		[InlineDataAttribute( 7, 3, "PP" )]
-		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
-			spirit.Presence.PlaceOn( gameState.Island.Boards[0][5], gameState );
-
-			// energy: 0 1 plant 2 2 plant 3
-			spirit.Presence.Energy.SetRevealedCount( revealedSpaces );
-			Assert_PresenceTracksAre( expectedEnergyGrowth, 1 );
-
-			spirit.InitElementsFromPresence();
-			_ = spirit.ApplyRevealedPresenceTracks_CalledOnlyFromTests(null);
-
-			Assert_BonusElements( elements );
+		[InlineDataAttribute( 3,1,"1 plant")]
+		[InlineDataAttribute( 4, 2, "1 plant" )]
+		[InlineDataAttribute( 5, 2, "1 plant" )]
+		[InlineDataAttribute( 6, 2, "2 plant" )]
+		[InlineDataAttribute( 7, 3, "2 plant" )]
+		public async Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
+			var fixture = new ConfigurableTestFixture { Spirit = new ASpreadOfRampantGreen() };
+			await fixture.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, elements );
 		}
 
 		[Trait("Presence","CardTrack")]
@@ -112,14 +104,11 @@ namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
 		[InlineDataAttribute(4,2)]
 		[InlineDataAttribute(5,3)]
 		[InlineDataAttribute(6,4)]
-		public void CardTrack(int revealedSpaces, int expectedCardPlayCount){
-			// card:   1 1 2 2 3 4
-
-			spirit.Presence.CardPlays.SetRevealedCount( revealedSpaces );
-			Assert_PresenceTracksAre(0,expectedCardPlayCount);
-
+		public async Task CardTrack(int revealedSpaces, int expectedCardPlayCount){
+			var fixture = new ConfigurableTestFixture { Spirit = new ASpreadOfRampantGreen() };
+			await fixture.VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
 		}
-		
+
 	}
 
 }

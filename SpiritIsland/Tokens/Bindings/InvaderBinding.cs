@@ -34,7 +34,7 @@ public class InvaderBinding {
 			invaders = invaders.Where(t=>generic.Contains(t.Class)).ToArray();
 
 		foreach(var invader in invaders)
-			while(this[invader] > 0)
+			for(int num = this[invader]; num>0; --num) // can't use while this[invader]>0 because BoD doesn't actually destroy them.
 				await ApplyDamageTo1( individualDamage, invader );
 
 	}
@@ -84,7 +84,7 @@ public class InvaderBinding {
 
 	public async Task DestroyAny( int count, params HealthTokenClass[] generics ) {
 		// !! this could be cleaned up
-		HealthToken[] invadersToDestroy = Tokens.OfAnyType( generics ).Cast<HealthToken>().ToArray();
+		HealthToken[] invadersToDestroy = Tokens.OfAnyType( generics ).ToArray();
 		while(count > 0 && invadersToDestroy.Length > 0) {
 			var invader = invadersToDestroy
 				.OrderByDescending(x=>x.FullHealth)
@@ -93,7 +93,7 @@ public class InvaderBinding {
 			await Destroy( 1, invader.Class );
 
 			// next
-			invadersToDestroy = Tokens.OfAnyType( generics ).Cast<HealthToken>().ToArray();
+			invadersToDestroy = Tokens.OfAnyType( generics ).ToArray();
 			--count;
 		}
 	}

@@ -38,7 +38,7 @@ namespace SpiritIsland.Tests.Basegame {
 			spaceCtx.Tokens.InitDefault( Invader.Explorer, 3 );
 			spaceCtx.Tokens.InitDefault( Invader.Town    , 0 );
 			spaceCtx.Tokens.InitDefault( Invader.City    , 0 ); // if we had to advance cards, might have buit a city
-			spaceCtx.Tokens.InvaderSummary.ShouldBe( "3E@1", "Unable to init to 3 exploreres." );
+			spaceCtx.Tokens.InvaderSummary().ShouldBe( "3E@1", "Unable to init to 3 exploreres." );
 			//  And 2 dahan
 			spaceCtx.Dahan.Init(2);
 
@@ -54,7 +54,7 @@ namespace SpiritIsland.Tests.Basegame {
 			user.SelectsFirstOption("Activating Fear");
 
 			// Then: nothing changed
-			spaceCtx.Tokens.InvaderSummary.ShouldBe( "3E@1", "should be same that we started with" );
+			spaceCtx.Tokens.InvaderSummary().ShouldBe( "3E@1", "should be same that we started with" );
 
 			// Make sure that we actually executed the Ravage Build / Explore Bit
 			invaderLog.Count(s=>s.Contains("Exploring")).ShouldBeGreaterThan(0);

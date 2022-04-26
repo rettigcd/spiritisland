@@ -29,13 +29,13 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		public async Task NoFearCard_NormalRavage() {
 
 			// Disable destroying presence
-			gameState.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false, DestroyPresence=false };
+//			gameState.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false, DestroyPresence=false };
+			gameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
 
 			Given_DahanAndTowns( 2, 2 );
 
 			// When: Doing Invader phase (fear+ragage)
 			await gameState.Fear.Apply();
-//			await gameState.InvaderEngine.RavageCard(invaderCard );
 			await InvaderEngine1.RavageCard( invaderCard, gameState );
 
 			// Then: all dahan killed

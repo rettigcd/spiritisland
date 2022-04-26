@@ -27,19 +27,19 @@ public class InvadersRavaged {
 			buf.Append( $"Defend {defend}. " );
 
 		// Attacker Effect
-		buf.Append( $"Attackers ({startingAttackers.ToTokenSummary()}) dealt {defenderDamageFromAttackers} damage" );
+		buf.Append( $"Attackers ({startingAttackers.TokenSummary()}) dealt {defenderDamageFromAttackers} damage" );
 
 		if(defenderDamageFromBadlands > 0)
 			buf.Append($" plus {defenderDamageFromBadlands} badland damage");
 
-		buf.Append( $" to defenders ({startingDefenders.ToTokenSummary()}) destroying {dahanDestroyed} of them." );
+		buf.Append( $" to defenders ({startingDefenders.TokenSummary()}) destroying {dahanDestroyed} of them." );
 
 		// Defend Effect
 		if(attackerDamageFromDefenders > 0) {
 			buf.Append( $"  Defenders fight back dealing {attackerDamageFromDefenders} damage" );
 			if(attackerDamageFromBadlands > 0)
 				buf.Append($" plus {attackerDamageFromBadlands} badland damage");
-			buf.Append( $", leaving {endingAttackers.ToTokenSummary()}." );
+			buf.Append( $", leaving {endingAttackers.TokenSummary()}." );
 		}
 
 		return buf.ToString();

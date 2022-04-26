@@ -6,7 +6,7 @@
 
 		public void SelectsGrowthA_Reclaim_PP2() {
 			Growth_SelectsOption( "ReclaimAll / PlacePresence(2)" );
-			Growth_ReclaimsAll();
+//			Growth_ReclaimsAll();
 			Growth_PlacesEnergyPresence( "A1;A2;A3;A4;A5" );
 		}
 
@@ -18,7 +18,7 @@
 
 		public void SelectsGrowthC_Energy_PP1() {
 			Growth_SelectsOption( "GainEnergy(2) / PlacePresence(1)" );
-			Growth_GainsEnergy();
+//			Growth_GainsEnergy();
 			Growth_PlacesEnergyPresence( "A1;A2;A4;A5;A6" );
 		}
 

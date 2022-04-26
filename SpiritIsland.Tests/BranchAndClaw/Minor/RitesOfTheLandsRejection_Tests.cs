@@ -17,7 +17,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Minor {
 			// Given: find a space with 1 explorer
 			var spaceCtx = ctx.AllSpaces
 				.Select( ctx.Target )
-				.First( sc => sc.Tokens.InvaderSummary == "1E@1" );
+				.First( sc => sc.Tokens.InvaderSummary() == "1E@1" );
 
 			//   And: add Dahan (because card requires it)
 			spaceCtx.Dahan.Init(1);
@@ -37,7 +37,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Minor {
 
 			// Then: space should have a building
 			System.Threading.Thread.Sleep(10);
-			spaceCtx.Tokens.InvaderSummary.ShouldBe( result );
+			spaceCtx.Tokens.InvaderSummary().ShouldBe( result );
 
 		}
 

@@ -47,7 +47,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			GatherPresenceIntoOcean gather = spirit.GetAvailableActions(Phase.Growth).OfType<GatherPresenceIntoOcean>().SingleOrDefault();
 
 			if(gather != null){
-				_ = gather.ActivateAsync( spirit.Bind( gameState, Cause.Growth ) );
+				_ = gather.ActivateAsync( spirit.Bind( gameState ) );
 				while(!spirit.Action.IsResolved){
 					var source = spirit.Action.GetCurrent().Options.Single(x=>moveBySrc.ContainsKey(x.Text));
 					spirit.Action.Choose(source);
@@ -78,9 +78,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			Given_HalfOfPowercardsPlayed();
 			_ = When_Growing( 0 );
 
-			User.Growth_ReclaimsAll();
 			User.Growth_DrawsPowerCard();
-			User.Growth_GainsEnergy();
 			User.GathersPresenceIntoOcean();
 
 			Assert_AllCardsAvailableToPlay( 4 + 1 );
@@ -97,7 +95,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 
 			_ = When_Growing( 1 );
 
-			User.Growth_GainsEnergy();
+//			User.Growth_GainsEnergy();
 			User.PlacesPresenceInOcean( "PlaceInOcean,(PlaceInOcean)", "(moon energy),2 cardplay,Take Presence from Board", "(A0),B0" );
 			User.PlacesPresenceInOcean( "PlaceInOcean", "(water energy),2 cardplay,Take Presence from Board", "A0,(B0)" );
 
@@ -130,19 +128,15 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 		[Trait("Presence","EnergyTrack")]
 		[Theory]
 		[InlineDataAttribute(1,0,"")]
-		[InlineDataAttribute(2,0,"M")]
-		[InlineDataAttribute(3,0,"MW")]
-		[InlineDataAttribute(4,1,"MW")]
-		[InlineDataAttribute(5,1,"MWE")]
-		[InlineDataAttribute(6,1,"MWEW")]
-		[InlineDataAttribute(7,2,"MWEW")]
+		[InlineDataAttribute(2,0,"1 moon")]
+		[InlineDataAttribute(3,0,"1 moon,1 water")]
+		[InlineDataAttribute(4,1,"1 moon,1 water")]
+		[InlineDataAttribute(5,1,"1 moon,1 water,1 earth")]
+		[InlineDataAttribute(6,1,"1 moon,2 water,1 earth")]
+		[InlineDataAttribute(7,2, "1 moon,2 water,1 earth" )]
 		public async Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
-			// energy: 0 moon water 1 earth water 2
-			spirit.Presence.Energy.SetRevealedCount( revealedSpaces );
-			spirit.InitElementsFromPresence();
-			Assert_EnergyTrackIs( expectedEnergyGrowth );
-			await spirit.ApplyRevealedPresenceTracks_CalledOnlyFromTests(null);
-			Assert_BonusElements( elements );
+			var fixture = new ConfigurableTestFixture { Spirit = new Ocean() };
+			await fixture.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, elements );
 		}
 
 		[Trait("Presence","CardTrack")]
@@ -153,10 +147,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 		[InlineDataAttribute(4,3)]
 		[InlineDataAttribute(5,4)]
 		[InlineDataAttribute(6,5)]
-		public void CardTrack(int revealedSpaces, int expectedCardPlayCount ){
-			// card:	1 2 2 3 4 5
-			spirit.Presence.CardPlays.SetRevealedCount( revealedSpaces );
-			Assert_CardTrackIs( expectedCardPlayCount );
+		public async Task CardTrack( int revealedSpaces, int expectedCardPlayCount ) {
+			var fixture = new ConfigurableTestFixture { Spirit = new Ocean() };
+			await fixture.VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
 		}
 
 		void Given_IslandIsABC() {

@@ -74,7 +74,7 @@ public class WeaveTogetherTheFabricOfPlace {
 		foreach(var spirit in gs.Spirits) {
 			int count = spirit.Presence.CountOn( space );
 			while(count > 0) {
-				var spiritCtx = spirit.Bind( gs, Cause.Power );
+				var spiritCtx = spirit.BindMyPower( gs );
 				var dst = await spiritCtx.Decision( Select.Space.ForAdjacent( "Distribute preseence to:", space, Select.AdjacentDirection.Outgoing, dstOptions, Present.Done ) );
 				if(dst == null) break;
 				spiritCtx.Presence.Move( space, other );

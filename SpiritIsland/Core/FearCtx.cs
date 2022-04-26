@@ -12,7 +12,7 @@ public class FearCtx {
 
 	#endregion constructor
 
-	public IEnumerable<SelfCtx> Spirits => this.GameState.Spirits.Select(s=>s.Bind( GameState,Cause.Fear ));
+	public IEnumerable<SelfCtx> Spirits => this.GameState.Spirits.Select(s=>s.Bind( GameState ));
 
 	public async Task EachPlayerTakesActionInALand( SpaceAction action, Func<TargetSpaceCtx,bool> filter, bool differentLands = false ) {
 		var used = new List<Space>();
@@ -64,11 +64,7 @@ public class FearCtx {
 
 	public bool HasBeastOrIsAdjacentToBeast( Space space ) => space.Range( 1 ).Any( x => HasBeast(x) );
 	public bool HasBeast( Space space ) => GameState.Tokens[space].Beasts.Any;
-	public bool AdjacentToBeast( Space space ) => space.Adjacent.Any( x => HasBeast(x) );
-
 	public IEnumerable<Space> LandsWithBeasts() => GameState.Island.AllSpaces.Where( HasBeast );
-
-	public IEnumerable<Space> LandsAdjacentToBeasts() => GameState.Island.AllSpaces.Where( AdjacentToBeast );
 
 	public IEnumerable<Space> LandsWithOrAdjacentToBeasts() => GameState.Island.AllSpaces.Where( HasBeastOrIsAdjacentToBeast );
 

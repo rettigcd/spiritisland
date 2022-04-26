@@ -10,10 +10,7 @@ public class CropsWitherAndFade {
 		// 2 fear
 		ctx.AddFear( 2 );
 
-		return ctx.SelectActionOption(
-			new SpaceAction("replace town with explorer", ctx => ReplaceInvader.Downgrade(ctx,Invader.Town)),
-			new SpaceAction("replace city with town", ctx => ReplaceInvader.Downgrade(ctx,Invader.City))
-		);
+		return ReplaceInvader.Downgrade( ctx, Invader.City, Invader.Town );
 
 	}
 

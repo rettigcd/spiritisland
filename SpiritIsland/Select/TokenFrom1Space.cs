@@ -24,20 +24,3 @@ public class TokenFrom1Space : TypedDecision<Token> {
 	// but nothing seems to need it.
 
 }
-
-public class HealthTokenFrom1Space : TypedDecision<HealthToken> {
-
-	//public static HealthTokenFrom1Space TokenToPush( SpiritIsland.Space space, int count, HealthToken[] options, Present present )
-	//	=> new HealthTokenFrom1Space( present != Present.Done ? $"Push ({count})" : $"Push up to ({count})", space, options, present );
-
-	//public static HealthTokenFrom1Space TokenToRemove( SpiritIsland.Space space, int count, HealthToken[] options, Present present )
-	//	=> new HealthTokenFrom1Space( present != Present.Done ? $"Remove ({count})" : $"Remove up to ({count})", space, options, present );
-
-	public HealthTokenFrom1Space( string prompt, SpiritIsland.Space space, IEnumerable<HealthToken> options, Present present )
-		: base( prompt, options, present ) {
-		Space = space;
-	}
-
-	public SpiritIsland.Space Space { get; }
-
-}

@@ -21,7 +21,7 @@ public class DahanThreaten : IFearOptions {
 			await spirit.AddStrifeToOne( ctx.Lands(ctx.WithDahan) );
 
 		// For the rest of this turn, invaders have -1 health per strife to a minimum of 1
-		StrifedRavage.StrifedInvadersLoseHealthPerStrife( ctx );
+		await StrifedRavage.InvadersReduceHealthByStrifeCount( ctx.GameState );
 
 	}
 

@@ -29,6 +29,7 @@ public class ObserveTheEverChangingWorld {
 			tokenSummary = ctx.Tokens.Summary;
 
 			handlerKeys = new Guid[3];
+			// !!! It seems like adding / removing presence tokens should trigger this also, but I don't think it triggers the Token Added/Removed event.
 			handlerKeys[0] = ctx.GameState.Tokens.TokenAdded.ForGame.Add( Track );
 			handlerKeys[1] = ctx.GameState.Tokens.TokenRemoved.ForGame.Add( Track );
 		}
@@ -47,6 +48,8 @@ public class ObserveTheEverChangingWorld {
 			actionId = ctx.Self.CurrentActionId; // limit to 1 change per action
 			tokenSummary = ctx.Tokens.Summary;
 
+			// !!! This web page states SMOA shouldn't get the element until after the Action completes.
+			// https://boardgamegeek.com/thread/2399380/shifting-memory-observe-ever-changing-world
 			var smoa = (ShiftingMemoryOfAges)ctx.Self;
 			await smoa.PrepareElement(space.Label);
 			if(--remaining <= 0)

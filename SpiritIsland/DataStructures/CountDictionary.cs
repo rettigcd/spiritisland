@@ -103,16 +103,18 @@ public class CountDictionary<K> : IDictionary<K,int> {
 
 
 public static class ExtendDictionary {
+
 	static public CountDictionary<T> ToCountDict<T>(this Dictionary<T,int> inner)
 		=> new CountDictionary<T>(inner);
 
-	// Invader Summary
-	static public string ToTokenSummary(this CountDictionary<HealthToken> tokens )
-		=> tokens.Any()
-			? tokens
-				.OrderBy( p => p.Key.Summary )
-				.Select( p => p.Value + p.Key.Summary )
-				.Join( "," )
-			: "[none]";
+	/// <returns>([Key][count]) ordered alphabetically or '[none]' if empty</returns>
+	/// <example>1C@3,1E@1,1T@2</example>
+	static public string TokenSummary<T>( this CountDictionary<T> dict ) {
+		return dict.Count == 0 ? "[none]"
+			: dict
+				.OrderBy( p => p.Key.ToString() )
+				.Select( p => p.Value + p.Key.ToString() )
+				.Join( "," );
+	}
 
 }

@@ -10,7 +10,7 @@ public class Space : TypedDecision<Type>, IHaveAdjacentInfo {
 		=> Space.ForAdjacent("Push Presence to", source, AdjacentDirection.Outgoing, destinationOptions, present );
 
 	static public Space PushToken( Token token, Type source, IEnumerable<Type> destinationOptions, Present present )
-		=> Space.ForAdjacent( "Push " + token.Summary + " to", source, AdjacentDirection.Outgoing, destinationOptions, present );
+		=> Space.ForAdjacent( "Push " + token.ToString() + " to", source, AdjacentDirection.Outgoing, destinationOptions, present );
 
 	static public Space PushToken( TokenClass tokenClass, Type source, IEnumerable<Type> destinationOptions, Present present )
 		=> Space.ForAdjacent( "Push " + tokenClass.Label + " to", source, AdjacentDirection.Outgoing, destinationOptions, present );

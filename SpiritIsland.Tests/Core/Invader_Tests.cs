@@ -236,10 +236,10 @@ public class Invader_Tests {
 	[InlineData("3D@2,1T@2,1E@1","1D@2,1D@1")]
 	public async Task Ravage(string startingUnits,string endingUnits) {
 		gameState = new GameState( new RiverSurges(), board ) {
-
-			// Disable destroying presence
-			AddBlightSideEffect = ( gs, space ) => new AddBlightEffect { Cascade = false, DestroyPresence = false }
+			//			AddBlightSideEffect = ( gs, space ) => new AddBlightEffect { Cascade = false, DestroyPresence = false }
 		};
+		// Disable destroying presence
+		gameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
 
 		// Given: Invaders on a Mountain space
 		var space = board[1];
@@ -278,7 +278,7 @@ public class Invader_Tests {
 		foreach(var token in tokens.Dahan.Keys.OrderByDescending( x => x.RemainingHealth ))
 			items.Add( $"{tokens[token]}D@{token.RemainingHealth}" );
 
-		string actualInvaders = tokens.InvaderSummary;
+		string actualInvaders = tokens.InvaderSummary();
 		if(actualInvaders.Length>0)
 			items.Add(actualInvaders);
 

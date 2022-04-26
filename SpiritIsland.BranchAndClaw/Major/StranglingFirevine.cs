@@ -15,7 +15,7 @@ public class StranglingFirevine {
 
 		// Add 1 wilds in the originating Sands. 
 		// !! won't find original if this was picked using a range-extender - would need to capture that info during the targetting process
-		var originatingOptions = ctx.Adjacent
+		var originatingOptions = ctx.Range(1)
 			.Where( a=> ctx.Self.Presence.Spaces.Contains(a) && a.IsSand )
 			.ToArray();
 		var originalCtx = await ctx.SelectSpace("Select origination space", originatingOptions, Present.AutoSelectSingle);

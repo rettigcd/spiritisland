@@ -22,7 +22,7 @@ public class Panic : IFearOptions {
 			await spirit.AddStrifeToOne( ctx.LandsWithBeastDiseaseDahan() );
 
 		// For the rest of this turn, invaders have -1 health per strife to a minimum of 1
-		StrifedRavage.StrifedInvadersLoseHealthPerStrife( ctx );
+		await StrifedRavage.InvadersReduceHealthByStrifeCount( ctx.GameState );
 	}
 
 	[FearLevel( 3, "Each player adds 1 strife to an invader.  For the rest of this turn, invaders have -1 health per strife to a minimum of 1." )]
@@ -33,7 +33,7 @@ public class Panic : IFearOptions {
 			await spirit.AddStrifeToOne( ctx.GameState.Island.AllSpaces );
 
 		// For the rest of this turn, invaders have -1 health per strife to a minimum of 1.
-		StrifedRavage.StrifedInvadersLoseHealthPerStrife( ctx );
+		await StrifedRavage.InvadersReduceHealthByStrifeCount( ctx.GameState );
 	}
 
 }

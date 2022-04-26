@@ -31,13 +31,10 @@ public class Island {
 	}
 	public IEnumerable<Space> AllSpaces => Boards.SelectMany(b=>b.Spaces); // could be extension method
 
-	public TerrainMapper TerrainMapFor(Cause cause) => cause switch {
-		Cause.Power  => Terrain_ForPowerAndBlight,
-		Cause.Blight => Terrain_ForPowerAndBlight,
-		_            => Terrain
-	};
+	// Static-Default Terrain for non-power, non-blight
+	public static readonly TerrainMapper Terrain = new TerrainMapper();
 
-	readonly TerrainMapper Terrain = new TerrainMapper();
+	// Init at beginning of game if we have ocean.
 	public TerrainMapper Terrain_ForPowerAndBlight = new TerrainMapper();
 
 }

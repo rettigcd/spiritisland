@@ -33,9 +33,9 @@ class WhyDontYouAndThemFight {
 	}
 
 	static (int,HealthToken) GetDamageFromInvader( TokenCountDictionary tokens, HealthToken invader ) {
-		return invader is HealthToken si 
-			? (0,tokens.RemoveStrife( si, 1 )) 
-			: (invader.FullHealth,invader);
+		return 0 < invader.StrifeCount
+			? (0,tokens.RemoveStrife( invader, 1 )) 
+			: (invader.Class.Attack,invader);
 	}
 
 	[InnateOption("3 animal","If target land has beast, 2 Damage. Otherwise, you may Gather 1 beast.",4)]

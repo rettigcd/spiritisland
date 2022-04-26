@@ -75,27 +75,46 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 		await ctx.Presence.Destroy( space, DestoryPresenceCause.SpiritPower );
 	}
 
+	public override SelfCtx BindMyPower( GameState gameState ) => new TricksterCtx(this,gameState);
+
 }
 
-class TricksterContext : SelfCtx {
-	public TricksterContext(Spirit spirit, GameState gs, Cause cause ) : base( spirit, gs, cause ) { }
+// Only use this when Trickster is using their own Powers
+class TricksterCtx : SelfCtx {
+	public TricksterCtx(Spirit spirit, GameState gs) : base( spirit, gs, Cause.MyPowers ) { }
 	public override TargetSpaceCtx Target( Space space ) => new TricksterSpaceCtx( this, space );
 }
 
 public class TricksterSpaceCtx : TargetSpaceCtx {
 
-	public TricksterSpaceCtx(SelfCtx ctx, Space space):base( ctx, space ) { }
+	public TricksterSpaceCtx(SelfCtx ctx, Space space):base( ctx, space ) {}
 
-	public override TokenBinding Blight => new TricksterBlight( this );
+	public override BlightTokenBinding Blight => new TricksterBlight( this );
+
+	public override async Task AddStrife( params TokenClass[] groups ) {
+		await base.AddStrife( groups );
+
+		if( Self.Energy == 0 ) return;
+
+		var nearbyInvaders = Space.Range( 1 )
+			.SelectMany( s => Target( s ).Tokens.Invaders().Select( t => new SpaceToken( s, t ) ) )
+			.ToArray();
+		var invader2 = await Self.Action.Decision( new Select.TokenFromManySpaces( "Add additional strife for 1 energy", nearbyInvaders, Present.Done ) );
+		if(invader2 == null) return;
+		--Self.Energy;
+		Target( invader2.Space ).Tokens.AddStrifeTo( invader2.Token );
+
+	}
 
 }
 
-public class TricksterBlight : TokenBinding {
+// !!! merge this into TricksterSpaceCtx
+public class TricksterBlight : BlightTokenBinding {
 
 	readonly TricksterSpaceCtx ctx;
 	readonly GrinningTricksterStirsUpTrouble trickster;  // !!!!
 
-	public TricksterBlight( TricksterSpaceCtx ctx ) :base( ctx.Tokens, TokenType.Blight ) {
+	public TricksterBlight( TricksterSpaceCtx ctx ) :base( ctx.Tokens ) {
 		this.ctx = ctx;
 	}
 

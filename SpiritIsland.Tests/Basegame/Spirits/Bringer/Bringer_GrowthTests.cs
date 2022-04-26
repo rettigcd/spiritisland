@@ -1,140 +1,111 @@
-﻿using Shouldly;
-using SpiritIsland.Basegame;
-using SpiritIsland.SinglePlayer;
-using System.Linq;
-using Xunit;
+﻿
+namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS;
 
-namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS {
+public class Bringer_GrowthTests : GrowthTests {
 
-	public class Bringer_GrowthTests : GrowthTests {
+	static Spirit InitSpirit() {
+		return new Bringer {
+			CardDrawer = new PowerProgression(
+				PowerCard.For<VeilTheNightsHunt>(),
+				PowerCard.For<ReachingGrasp>()
+			),
+		};
+	}
 
-		static Spirit InitSpirit() {
-			return new Bringer {
-				CardDrawer = new PowerProgression(
-					PowerCard.For<VeilTheNightsHunt>(),
-					PowerCard.For<ReachingGrasp>()
-				),
-			};
-		}
+	public Bringer_GrowthTests():base( InitSpirit() ) {}
 
-		public Bringer_GrowthTests():base( InitSpirit() ) {}
+	[Fact] 
+	public void ReclaimAll_PowerCard() {
 
-		[Fact] 
-		public void ReclaimAll_PowerCard() {
+		// reclaim, +1 power card
+		Given_HalfOfPowercardsPlayed();
 
-			// reclaim, +1 power card
-			Given_HalfOfPowercardsPlayed();
+		_ = When_Growing( 0 );
 
-			_ = When_Growing( 0 );
+		// Then:
+		Assert_AllCardsAvailableToPlay( 4 + 1 );
+		Assert_HasCardAvailable( "Veil the Night's Hunt" );
 
-			User.Growth_DrawsPowerCard();
-			User.Growth_ReclaimsAll();
+	}
 
-			// Then:
-			Assert_AllCardsAvailableToPlay( 4 + 1 );
-			Assert_HasCardAvailable( "Veil the Night's Hunt" );
+	[Fact] 
+	public void Reclaim1_Presence() {
+		// reclaim 1, add presense range 0
+		Given_HalfOfPowercardsPlayed();
+		Given_HasPresence( board[4] );
 
-		}
+		_ = When_Growing( 1 );
 
-		[Fact] 
-		public void Reclaim1_Presence() {
-			// reclaim 1, add presense range 0
-			Given_HalfOfPowercardsPlayed();
-			Given_HasPresence( board[4] );
+		User.Growth_Reclaims1("Predatory Nightmares $2 (Slow),{Dreams of the Dahan $0 (Fast)}");
+		User.Growth_PlacesPresence( "energy>A4" );
 
-			_ = When_Growing( 1 );
+		spirit.Hand.Count.ShouldBe( 3 );
+	}
 
-			User.Growth_Reclaims1("Predatory Nightmares $2 (Slow),{Dreams of the Dahan $0 (Fast)}");
-			User.Growth_PlacesPresence( "energy>A4" );
+	[Fact] 
+	public void PowerCard_Presence() {
+		// +1 power card, +1 pressence range 1
+		Given_HasPresence( board[1] );
 
-			spirit.Hand.Count.ShouldBe( 3 );
-		}
+		_ = When_Growing( 2 );
 
-		[Fact] 
-		public void PowerCard_Presence() {
-			// +1 power card, +1 pressence range 1
-			Given_HasPresence( board[1] );
+		User.Growth_DrawsPowerCard();
+		User.Growth_PlacesEnergyPresence( "A1;A2;A4;A5;A6" );
 
-			_ = When_Growing( 2 );
+		Assert_GainsFirstPowerProgressionCard(); // gains 1st card in power progression
+		Assert_BoardPresenceIs( "A1A1" );
+	}
 
-			User.Growth_DrawsPowerCard();
-			User.Growth_PlacesEnergyPresence( "A1;A2;A4;A5;A6" );
+	[Fact] 
+	public void PresenseOnPieces_Energy(){
 
-			Assert_GainsFirstPowerProgressionCard(); // gains 1st card in power progression
-			Assert_BoardPresenceIs( "A1A1" );
-		}
+		board = LineBoard.MakeBoard();
+		Given_HasPresence(board[5]);
+		gameState.DahanOn(board[6]).Init(1);
+		gameState.Tokens[board[7]].AdjustDefault(Invader.Explorer,1);
+		gameState.Tokens[board[8]].AdjustDefault(Invader.Town,1);
+		gameState.Tokens[board[0]].AdjustDefault(Invader.City,1);
 
-		[Fact] 
-		public void PresenseOnPieces_Energy(){
+		// add presense range 4 Dahan or Invadors, +2 energy
+		When_StartingGrowth();
 
-			board = LineBoard.MakeBoard();
-			Given_HasPresence(board[5]);
-			gameState.DahanOn(board[6]).Init(1);
-			gameState.Tokens[board[7]].AdjustDefault(Invader.Explorer,1);
-			gameState.Tokens[board[8]].AdjustDefault(Invader.Town,1);
-			gameState.Tokens[board[0]].AdjustDefault(Invader.City,1);
+		User.Growth_SelectsOption( "GainEnergy(2) / PlacePresence(4,dahan or invaders)" );
+		User.Growth_PlacesEnergyPresence( "T6;T7;T8;T9" );
 
-			// add presense range 4 Dahan or Invadors, +2 energy
-			When_StartingGrowth();
+		Assert.Equal(2,spirit.EnergyPerTurn);
+		Assert_HasEnergy(2+2);
+		Assert_BoardPresenceIs("T5T6");
+	}
 
-			User.Growth_SelectsOption( "GainEnergy(2) / PlacePresence(4,dahan or invaders)" );
-			User.Growth_GainsEnergy();
-			User.Growth_PlacesEnergyPresence( "T6;T7;T8;T9" );
+	[Trait("Presence","EnergyTrack")]
+	[Theory]
+	[InlineDataAttribute(1,2,"")]
+	[InlineDataAttribute(2,2,"1 air")]
+	[InlineDataAttribute(3,3,"1 air")]
+	[InlineDataAttribute(4,3, "1 moon,1 air" )]
+	[InlineDataAttribute(5,4, "1 moon,1 air" )]
+	[InlineDataAttribute(6,4, "1 moon,1 air,1 any" )]
+	[InlineDataAttribute(7,5, "1 moon,1 air,1 any" )]
+	public async Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
+		var fixture = new ConfigurableTestFixture { Spirit = new Bringer() };
+		await fixture.VerifyEnergyTrack(revealedSpaces, expectedEnergyGrowth, elements);
+	}
 
-			Assert.Equal(2,spirit.EnergyPerTurn);
-			Assert_HasEnergy(2+2);
-			Assert_BoardPresenceIs("T5T6");
-		}
+	[Trait("Presence","CardTrack")]
+	[Theory]
+	[InlineDataAttribute(1,2,"")]
+	[InlineDataAttribute(2,2,"")]
+	[InlineDataAttribute(3,2,"")]
+	[InlineDataAttribute(4,3,"")]
+	[InlineDataAttribute(5,3,"")]
+	[InlineDataAttribute(6,3,"1 any")]
+	public async Task CardTrack(int revealedSpaces, int expectedCardPlayCount, string elements){
+		var fixture = new ConfigurableTestFixture { Spirit = new Bringer() };
+		await fixture.VerifyCardTrack(revealedSpaces, expectedCardPlayCount, elements);
+	}
 
-		[Trait("Presence","EnergyTrack")]
-		[Theory]
-		[InlineDataAttribute(1,2,"")]
-		[InlineDataAttribute(2,2,"A")]
-		[InlineDataAttribute(3,3,"A")]
-		[InlineDataAttribute(4,3,"AM")]
-		[InlineDataAttribute(5,4,"AM")]
-		[InlineDataAttribute(6,4,"AM*")]
-		[InlineDataAttribute(7,5,"AM*")]
-		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
-
-			// energy:	2 air 3 moon 4 any 5
-			spirit.Presence.Energy.SetRevealedCount( revealedSpaces );
-			Assert_EnergyTrackIs( expectedEnergyGrowth );
-			spirit.InitElementsFromPresence();
-
-			_ = spirit.ApplyRevealedPresenceTracks_CalledOnlyFromTests(null);
-
-			//if(elements.Contains( '*' ))
-			//	spirit.GetAvailableActions(Phase.Growth).Single().Name.ShouldBe("Select elements (1)");  !!! Test the Any Element somehow
-
-			Assert_BonusElements( elements );
-		}
-
-		[Trait("Presence","CardTrack")]
-		[Theory]
-		[InlineDataAttribute(1,2,"")]
-		[InlineDataAttribute(2,2,"")]
-		[InlineDataAttribute(3,2,"")]
-		[InlineDataAttribute(4,3,"")]
-		[InlineDataAttribute(5,3,"")]
-		[InlineDataAttribute(6,3,"*")]
-		public void CardTrack(int revealedSpaces, int expectedCardPlayCount, string elements){
-			// card:	2 2 2 3 3 any
-			spirit.Presence.CardPlays.SetRevealedCount( revealedSpaces );
-			Assert_CardTrackIs(expectedCardPlayCount);
-
-			_ = spirit.ApplyRevealedPresenceTracks_CalledOnlyFromTests(null);
-
-			//if(elements.Contains( '*' ))
-			//	spirit.GetAvailableActions( Phase.Growth ).Single().Name.ShouldBe( "Select elements (1)" ); !!! Test the Any Element somehow
-
-			Assert_BonusElements( elements );
-		}
-
-		void Assert_GainsFirstPowerProgressionCard() {
-			Assert_HasCardAvailable( "Veil the Night's Hunt" );
-		}
-
+	void Assert_GainsFirstPowerProgressionCard() {
+		Assert_HasCardAvailable( "Veil the Night's Hunt" );
 	}
 
 }

@@ -20,8 +20,8 @@ public static class TokenCountDictionary_Extensions {
 	static public Token[] OfAnyType( this TokenCountDictionary counts, params TokenClass[] healthyTypes )
 		=> counts.Keys.Where( specific => healthyTypes.Contains( specific.Class ) ).ToArray();
 
-	static public Token[] OfAnyType( this TokenCountDictionary counts, params HealthTokenClass[] healthyTypes )
-		=> counts.Keys.Where( specific => healthyTypes.Contains( specific.Class ) ).ToArray();
+	static public HealthToken[] OfAnyType( this TokenCountDictionary counts, params HealthTokenClass[] healthyTypes )
+		=> counts.Keys.Where( specific => healthyTypes.Contains( specific.Class ) ).Cast<HealthToken>().ToArray();
 
 	static public bool HasAny( this TokenCountDictionary counts, params TokenClass[] healthyInvaders )
 		=> counts.OfAnyType( healthyInvaders ).Any();

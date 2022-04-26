@@ -5,8 +5,8 @@
 /// </summary>
 public static class Invader {
 
-	public static HealthTokenFrom1Space ToDowngrade( string actionVerb, SpiritIsland.Space space, IEnumerable<Token> options ) 
-		=> new HealthTokenFrom1Space( $"Select invader to {actionVerb}", space, options.Cast<HealthToken>(), Present.Always );
+	public static TokenFrom1Space ToReplace( string actionVerb, SpiritIsland.Space space, IEnumerable<Token> options ) 
+		=> new TokenFrom1Space( $"Select invader to {actionVerb}", space, options.Cast<HealthToken>(), Present.Always );
 
 	public static TokenFrom1Space ToRemove( SpiritIsland.Space space, IEnumerable<Token> options ) 
 		=> new TokenFrom1Space( "Remove invader", space, options, Present.Always );

@@ -31,24 +31,71 @@ public static class StrifedRavage {
 		return invaderSpaceCtx.DamageInvaders( damageFromStrifedInvaders );
 	}
 
-	public static void StrifedInvadersLoseHealthPerStrife( FearCtx ctx ) {
-		// Fear effect - Strifed invades lose 1 health per strife down to minimun of 1
+	#region Strife reduces Health
 
-		foreach(var space in ctx.GameState.Island.AllSpaces) {
-			var tokens = ctx.InvadersOn( space ).Tokens;
-			var strifedInvaders = tokens.Invaders()
-				.OfType<HealthToken>()
-				.Where( x=> x.StrifeCount>0)
-				.Where( x => x.RemainingHealth > 1 )
-				.OrderBy( x => x.RemainingHealth ); // get the lowest ones first so we can reduce without them cascading
-			foreach(HealthToken strifedInvader in strifedInvaders) {
-				var newInvader = strifedInvader.AddDamage( strifedInvader.StrifeCount );
-				if(newInvader.RemainingHealth > 0) {
-					tokens.Adjust(newInvader, tokens[strifedInvader]);
-					tokens.Init(strifedInvader, 0);
-				}
-			}
+	public static async Task InvadersReduceHealthByStrifeCount( GameState gameState, int minimum = 1 ) {
+		foreach(var space in gameState.Island.AllSpaces)
+			await EachInvaderReduceHealthByStrifeCount( gameState.Tokens[space], minimum );
+	}
+
+	static async Task EachInvaderReduceHealthByStrifeCount( TokenCountDictionary tokens, int minimum ) {
+		var strifedInvaders = tokens.Invaders()
+			.Where( x => 0 < x.StrifeCount )
+			.OrderBy( x => x.RemainingHealth )
+			.ToArray(); // get the lowest ones first so we can reduce without them cascading
+
+		foreach(HealthToken strifedInvader in strifedInvaders)
+			await ReduceInvaderHealthByItsOwnStrife( tokens, strifedInvader, minimum );
+	}
+
+	static async Task ReduceInvaderHealthByItsOwnStrife( TokenCountDictionary tokens, HealthToken originalInvader, int minimum ) {
+		int newHealth = Math.Min( minimum,originalInvader.FullHealth - originalInvader.StrifeCount);
+		var newInvader = new HealthToken( originalInvader.Class, newHealth, originalInvader.Damage, originalInvader.StrifeCount );
+
+		if(newInvader == originalInvader) return;
+
+		if(newInvader.IsDestroyed)
+			await tokens.Destroy( originalInvader, tokens[originalInvader] );
+		else {
+			tokens.Adjust( newInvader, tokens[originalInvader] );
+			tokens.Init( originalInvader, 0 );
+			// !!! Need something at end of turn to restore health.
 		}
 	}
+
+	#endregion
+
+	#region Strife caused Damage to Self
+
+	public static async Task StrifedInvadersTakeDamagePerStrife( FearCtx ctx ) {
+		foreach(var space in ctx.GameState.Island.AllSpaces)
+			await EachInvaderTakesDamageByStrifeCount( ctx.GameState.Tokens[space] );
+	}
+
+	static async Task EachInvaderTakesDamageByStrifeCount( TokenCountDictionary tokens ) {
+		var strifedInvaders = tokens.Invaders()
+			.Where( x => 0 < x.StrifeCount )
+			.OrderBy( x => x.RemainingHealth )
+			.ToArray(); // get the lowest ones first so we can reduce without them cascading
+
+		// !!! ??? Do badlands cause damage here?
+
+		foreach(HealthToken strifedInvader in strifedInvaders)
+			await DamageInvaderHealthByItsOwnStrife( tokens, strifedInvader );
+	}
+
+	static async Task DamageInvaderHealthByItsOwnStrife( TokenCountDictionary tokens, HealthToken originalInvader ) {
+		var newInvader = originalInvader.AddDamage( originalInvader.StrifeCount );
+		if(newInvader == originalInvader) return;
+
+		if(newInvader.IsDestroyed)
+			await tokens.Destroy( originalInvader, tokens[originalInvader] );
+		else {
+			tokens.Adjust( newInvader, tokens[originalInvader] );
+			tokens.Init( originalInvader, 0 );
+		}
+	}
+
+	#endregion
 
 }

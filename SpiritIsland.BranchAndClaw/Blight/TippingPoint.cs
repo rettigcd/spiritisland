@@ -5,7 +5,7 @@ public class TippingPoint : BlightCardBase {
 	public TippingPoint():base("Tipping Point", 5 ) { }
 
 	public override ActionOption<GameState> Immediately 
-		=> Cmd.EachSpirit( Cause.Blight,
+		=> Cmd.EachSpirit( 
 			// destroys 3 presence
 			Cmd.DestroyPresence(3,DestoryPresenceCause.BlightedIsland)
 		);

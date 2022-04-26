@@ -9,7 +9,7 @@ public class PlanForDeparture : IFearOptions {
 	public async Task Level1( FearCtx ctx ) {
 
 		// Each player may gather 1 town into a costal land.
-		await Cmd.EachSpirit( Cause.Fear,
+		await Cmd.EachSpirit( 
 			Cmd.GatherUpToNInvaders( 1, Invader.Town )
 				.To( staceCtx => staceCtx.IsCoastal, "coastal land" )
 		).Execute( ctx.GameState );
@@ -20,7 +20,7 @@ public class PlanForDeparture : IFearOptions {
 	public async Task Level2( FearCtx ctx ) {
 
 		// Each player may gather 1 explorer / town into a costal land.
-		await Cmd.EachSpirit( Cause.Fear,
+		await Cmd.EachSpirit( 
 			Cmd.GatherUpToNInvaders( 1, Invader.Explorer, Invader.Town )
 				.To( staceCtx => staceCtx.IsCoastal, "coastal land" )
 		).Execute( ctx.GameState );
@@ -33,7 +33,7 @@ public class PlanForDeparture : IFearOptions {
 	public async Task Level3( FearCtx ctx ) {
 
 		// Each player may gather 2 explorer / town into a costal land.
-		await Cmd.EachSpirit( Cause.Fear,
+		await Cmd.EachSpirit( 
 			Cmd.GatherUpToNInvaders( 2, Invader.Explorer, Invader.Town )
 				.To( staceCtx => staceCtx.IsCoastal, "coastal land" )
 		).Execute( ctx.GameState );

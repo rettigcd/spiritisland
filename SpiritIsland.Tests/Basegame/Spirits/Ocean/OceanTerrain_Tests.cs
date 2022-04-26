@@ -41,7 +41,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			Assert_Options( "A2", river.Presence.Spaces, "river starting presence" );
 
 			// Talons ofLightning - Range 1
-			_ = PowerCard.For<TalonsOfLightning>().ActivateAsync( river.Bind( gs, Cause.Power ) );
+			_ = PowerCard.For<TalonsOfLightning>().ActivateAsync( river.BindMyPower( gs ) );
 
 			Assert_Options( expectedOptions, river.Action.GetCurrent().Options, hasOcean ? "include ocean" : "exclude ocean" );
 

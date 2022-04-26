@@ -17,7 +17,7 @@ public class ThologicalStrife : IFearOptions {
 		await EachPlayerAddsStrifeInALandWithPresence.Execute( ctx.GameState );
 
 		// Each Spirit gains 1 Energy per SacredSite they have in lands with Invaders.
-		await Cmd.EachSpirit( Cause.Fear, new SelfAction(
+		await Cmd.EachSpirit( new SelfAction(
 			"Gain 1 Energy per SacredSite Spirit has in lands with Invaders"
 			, spiritCtx => spiritCtx.Self.Energy += spiritCtx.Self.Presence.SacredSites.Count( ss => spiritCtx.Target(ss).HasInvaders )
 		)).Execute( ctx.GameState );
@@ -31,10 +31,10 @@ public class ThologicalStrife : IFearOptions {
 		await EachPlayerAddsStrifeInALandWithPresence.Execute( ctx.GameState );
 
 		// Each Invader with Strife deals Damage to other Invaders in its land.
-		await Cmd.InEachLand( Cause.Fear, StrifedRavage.Cmd, tokens=>tokens.HasStrife ).Execute( ctx.GameState );
+		await Cmd.InEachLand( StrifedRavage.Cmd, tokens=>tokens.HasStrife ).Execute( ctx.GameState );
 	}
 
 	static public ActionOption<GameState> EachPlayerAddsStrifeInALandWithPresence
-		=> Cmd.EachSpirit( Cause.Fear, Cmd.AddStrife(1).In( spaceCtx => spaceCtx.Presence.IsHere, "a land with presence") );
+		=> Cmd.EachSpirit( Cmd.AddStrife(1).In( spaceCtx => spaceCtx.Presence.IsHere, "a land with presence") );
 
 }

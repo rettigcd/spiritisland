@@ -9,7 +9,7 @@ class DepartTheDangerousLand : IFearOptions {
 	public Task Level1( FearCtx ctx ) {
 
 		// Each player 
-		return Cmd.EachSpirit(Cause.Fear,
+		return Cmd.EachSpirit(
 			// removes 1 explorer
 			Cmd.RemoveExplorers(1)
 				// from a land with beast, disease or at least 2 dahan
@@ -23,7 +23,7 @@ class DepartTheDangerousLand : IFearOptions {
 	public Task Level2( FearCtx ctx ) {
 
 		// Each player 
-		return Cmd.EachSpirit(Cause.Fear,
+		return Cmd.EachSpirit( 
 			// removes 1 explorer/town 
 			Cmd.RemoveExplorersOrTowns(1)
 				// from a land with beast, disease or at least 2 dahan
@@ -36,7 +36,7 @@ class DepartTheDangerousLand : IFearOptions {
 	public Task Level3( FearCtx ctx ) {
 
 		// Each player 
-		return Cmd.EachSpirit(Cause.Fear,
+		return Cmd.EachSpirit( 
 			// removes up to 4 health worth of invaders
 			Cmd.RemoveUpToNHealthOfInvaders(4)
 				// from a land with beast, disease or at least 2 dahan

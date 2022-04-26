@@ -20,4 +20,13 @@ public interface IPresenceTrack {
 	IMemento<IPresenceTrack> SaveToMemento();
 }
 
-public record TrackRevealedArgs ( GameState GameState, Track Track );
+public class TrackRevealedArgs {
+
+	public TrackRevealedArgs( Track track, GameState gameState ) {
+		Track = track;
+		GameState = gameState ?? throw new ArgumentNullException( nameof( gameState ) );
+	}
+
+	public Track Track { get; }
+	public GameState GameState { get;}
+}

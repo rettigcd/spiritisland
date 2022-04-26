@@ -210,7 +210,7 @@ namespace SpiritIsland.WinForms {
 				"disease" => Img.Icon_Disease,
 				"strife" => Img.Icon_Strife,
 				"badlands" => Img.Icon_Badlands,
-				_ => ElementList.ParseEl( token ).GetIconImg(),
+				_ => ElementCounts.ParseEl( token ).GetIconImg(),
 			};
 		}
 

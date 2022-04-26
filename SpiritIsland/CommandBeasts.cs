@@ -67,7 +67,7 @@ class CommandBeastAction : IActionFactory {
 
 	public Task ActivateAsync( SelfCtx ctx ) {
 		Used = true;
-		return Cmd.InEachLand( Cause.None, new CommandBeasts() ).Execute( ctx.GameState );
+		return Cmd.InEachLand( new CommandBeasts() ).Execute( ctx.GameState );
 	}
 	public bool CouldActivateDuring( Phase speed, Spirit _ ) => speed == Phase.Fast;
 	public bool Used { get; private set; }

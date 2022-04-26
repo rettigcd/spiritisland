@@ -28,7 +28,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Minor {
 			When_GrowsBuysAndActivatesCard( user, spaceCtx );
 
 			// Then: Card did not create a ravage there (nor a build)
-			spaceCtx.Tokens.InvaderSummary.ShouldBe( "3E@1" );
+			spaceCtx.Tokens.InvaderSummary().ShouldBe( "3E@1" );
 
 		}
 
@@ -56,7 +56,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Minor {
 			When_GrowsBuysAndActivatesCard( user, spaceCtx );
 
 			// Then: Card converted ravage to a build
-			spaceCtx.Tokens.InvaderSummary.ShouldBe( "1T@2,3E@1" );
+			spaceCtx.Tokens.InvaderSummary().ShouldBe( "1T@2,3E@1" );
 
 		}
 
@@ -84,7 +84,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Minor {
 			When_GrowsBuysAndActivatesCard( user, spaceCtx );
 
 			// Then: Ravage remains - 3 explorers kill 1 dahan, remaining dahan kills 2 explorers
-			spaceCtx.Tokens.InvaderSummary.ShouldBe( "1E@1" );
+			spaceCtx.Tokens.InvaderSummary().ShouldBe( "1E@1" );
 		}
 
 		[Trait("Feature","Gather")]
@@ -118,7 +118,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Minor {
 
 			When_GrowsBuysAndActivatesCard( user, spaceCtx );
 
-			spaceCtx.Tokens.InvaderSummary.ShouldBe( "1C@3,1T@2,4E@1" );
+			spaceCtx.Tokens.InvaderSummary().ShouldBe( "1C@3,1T@2,4E@1" );
 		}
 
 		// TwoRavages_BecomesBuildAndRavage - !!! how do I construct 2 ravages?
@@ -155,7 +155,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Minor {
 			spaceCtx.Tokens.InitDefault( Invader.Explorer, 3 );
 			spaceCtx.Tokens.InitDefault( Invader.Town    , 0 );
 			spaceCtx.Tokens.InitDefault( Invader.City    , 0 ); // if we had to advance cards, might have buit a city
-			spaceCtx.Tokens.InvaderSummary.ShouldBe( "3E@1", "Unable to init to 3 exploreres." );
+			spaceCtx.Tokens.InvaderSummary().ShouldBe( "3E@1", "Unable to init to 3 exploreres." );
 		}
 
 

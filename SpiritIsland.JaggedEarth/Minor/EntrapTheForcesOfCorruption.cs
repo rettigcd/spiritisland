@@ -10,7 +10,11 @@ public class EntrapTheForcesOfCorruption{
 		// Isolate target land.
 		ctx.Isolate();
 
-		// !!! When blight is added to target land, it doesn't cascade.
+		// When blight is added to target land, it doesn't cascade.
+		ctx.GameState.ModifyBlightAddedEffect.ForRound.Add( x => {
+			if(x.Space == ctx.Space)
+				x.Cascade = false;
+		} );
 	}
 
 }

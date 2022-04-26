@@ -28,7 +28,7 @@ public class BeliefTakesRoot : IFearOptions {
 
 	[FearLevel( 3, "Each player chooses a different land and removes up to 2 Health worth of Invaders per Presence there." )]
 	public Task Level3( FearCtx ctx ) {
-		return Cmd.EachSpirit(Cause.Fear,
+		return Cmd.EachSpirit(
 			Cmd.PickDifferentLandThenTakeAction(
 				"Remove up to 2 Health worth of Invaders per presence.",
 				Cmd.RemoveHealthOfInvaders("Remove 2 Health worth of invaders per Presence there.", ctx => 2 * ctx.Presence.Count ),

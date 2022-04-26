@@ -8,6 +8,6 @@ public class MinorCardAttribute : CardAttribute {
 	{ }
 
 	public MinorCardAttribute( string name, int cost, string elementString )
-		: base( name, cost, PowerType.Minor, ElementList.Parse(elementString) ) { }
+		: base( name, cost, PowerType.Minor, ElementCounts.Parse(elementString) ) { }
 
 }

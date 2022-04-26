@@ -18,9 +18,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Lightning {
 			When_StartingGrowth();
 
 			User.Growth_SelectsOption( "ReclaimAll / DrawPowerCard / GainEnergy(1)" );
-			User.Growth_ReclaimsAll();
-			User.Growth_GainsEnergy();
-			User.Growth_DrawsPowerCard();
+//			User.Growth_ReclaimsAll();
+//			User.Growth_GainsEnergy();
+//			User.Growth_DrawsPowerCard();
 
 			Assert_AllCardsAvailableToPlay( 5 ); // drew a power card
 			Assert_HasEnergy( 1 + 1 ); // 1 from energy track
@@ -36,7 +36,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Lightning {
 			When_StartingGrowth();
 
 			User.Growth_SelectsOption( "GainEnergy(3) / PlacePresence(1)" );
-			User.Growth_GainsEnergy();
+//			User.Growth_GainsEnergy();
 			User.Growth_PlacesEnergyPresence( "A1;A2;A4;A5;A6" );
 
 			Assert.Equal(1,spirit.EnergyPerTurn);
@@ -66,10 +66,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Lightning {
 		[InlineDataAttribute(6,4)]
 		[InlineDataAttribute(7,4)]
 		[InlineDataAttribute(8,5)]
-		public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth) {
-			// energy: 1 1 2 2 3 4 4 5
-			spirit.Presence.Energy.SetRevealedCount( revealedSpaces );
-			Assert_EnergyTrackIs( expectedEnergyGrowth );
+		public async Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth) {
+			var fixture = new ConfigurableTestFixture { Spirit = new LightningsSwiftStrike() };
+			await fixture.VerifyEnergyTrack(revealedSpaces,expectedEnergyGrowth,"");
 		}
 
 		[Trait("Presence","CardTrack")]
@@ -79,10 +78,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Lightning {
 		[InlineDataAttribute(3,4)]
 		[InlineDataAttribute(4,5)]
 		[InlineDataAttribute(5,6)]
-		public void CardTrack(int revealedSpaces, int expectedCardPlayCount){
-			// card:   2 3 4 5 6
-			spirit.Presence.CardPlays.SetRevealedCount( revealedSpaces );
-			Assert_CardTrackIs( expectedCardPlayCount );
+		public async Task CardTrack( int revealedSpaces, int expectedCardPlayCount ) {
+			var fixture = new ConfigurableTestFixture { Spirit = new LightningsSwiftStrike() };
+			await fixture.VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
 		}
 
 

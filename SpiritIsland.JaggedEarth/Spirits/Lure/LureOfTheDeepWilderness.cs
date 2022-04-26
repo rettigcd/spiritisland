@@ -53,7 +53,7 @@ public class LureOfTheDeepWilderness : Spirit {
 
 	async Task EnthrallTheForeignExplorers( RavagingEventArgs args ) {
 		var ravageSpacesWithPresence = args.Spaces.Intersect(this.Presence.Spaces).ToArray();
-		var selfCtx = this.Bind( args.GameState, Cause.None );
+		var selfCtx = this.Bind( args.GameState );
 		foreach(var space in ravageSpacesWithPresence)
 			await EntralExplorersOnSpace( selfCtx.Target(space) );
 	}
@@ -73,7 +73,7 @@ public class LureOfTheDeepWilderness : Spirit {
 				: await ctx.Decision(Select.TokenFrom1Space.TokenToRemove(ctx.Space,1,explorerTypes.ToArray(),Present.Done));
 			if( explorerTypeToNotParticipate == null ) break;
 
-			var countToNotParticipate = await ctx.Self.SelectNumber( $"# of {explorerTypeToNotParticipate.Summary} to not participate.", ctx.Tokens[explorerTypeToNotParticipate], 0 );
+			var countToNotParticipate = await ctx.Self.SelectNumber( $"# of {explorerTypeToNotParticipate} to not participate.", ctx.Tokens[explorerTypeToNotParticipate], 0 );
 
 			if(countToNotParticipate > 0)
 				ctx.GameState.ModifyRavage( ctx.Space, cfg => cfg.NotParticipating[explorerTypeToNotParticipate] += countToNotParticipate );

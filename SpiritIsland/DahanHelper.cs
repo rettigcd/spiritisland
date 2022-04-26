@@ -6,22 +6,23 @@ public static class DahanHelper {
 		// Boost ALL Dahan in land
 		await ctx.Dahan.AdjustHealthOfAll( boost );
 
-		ctx.GameState.Tokens.TokenMoved.ForRound.Add( async args => {
-			// Add handler to Boost dahan added:
-			if(args.Token.Class != TokenType.Dahan) return;
-			HealthToken ht = (HealthToken)args.Token;
-			// ...Boost dahan added
-			if(args.AddedTo == ctx.Space)
-				await ctx.Dahan.AdjustHealthOf( ht, boost, args.Count );
-			// ...restore dahan when moved out
-			else if(args.RemovedFrom == ctx.Space)
-				await ctx.Dahan.AdjustHealthOf( ht, -boost, args.Count );
+		// Move(,) triggers 'Add' and 'Remove' events also
+
+		// This covers simple-add AND move-in
+		ctx.GameState.Tokens.TokenAdded.ForRound.Add( async args => {
+			if(args.Token.Class == TokenType.Dahan && args.Space == ctx.Space)
+				await ctx.Dahan.AdjustHealthOf( (HealthToken)args.Token, boost, args.Count );
 		} );
 
-		ctx.GameState.Tokens.TokenAdded.ForRound.Add( async args => {
-			if(args.Token.Class != TokenType.Dahan) return;
-			HealthToken ht = (HealthToken)args.Token;
-			await ctx.Dahan.AdjustHealthOf( ht, boost, args.Count );
+
+		// Move out
+		ctx.GameState.Tokens.TokenMoved.ForRound.Add( async args => {
+			// if removing dahan from this space
+			if(args.Token.Class == TokenType.Dahan && args.RemovedFrom == ctx.Space)
+				// In the destination space
+				await ctx.Target(args.AddedTo)
+					// reduce the health by boost amount
+					.Dahan.AdjustHealthOf( (HealthToken)args.Token, -boost, args.Count );
 		} );
 
 		// Add handler to restore ALL at end of round.

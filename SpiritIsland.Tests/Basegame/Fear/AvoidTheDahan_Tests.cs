@@ -29,7 +29,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			this.ctx = ctx;
 
 			// Disable destroying presence
-			ctx.GameState.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
+			ctx.GameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade=false;x.DestroyPresence=false; } );
 
 		}
 
@@ -46,7 +46,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			ClearBlightAndDoNothingForARound();
 			user.AcknowledgesFearCard( "Null Fear Card : 1 : x" );
 
-			spaceCtx.Tokens.InvaderSummary.ShouldBe( "1E@1" );
+			spaceCtx.Tokens.InvaderSummary().ShouldBe( "1E@1" );
 		}
 
 		[Fact]
@@ -60,7 +60,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			ClearBlightAndDoNothingForARound();
 			user.AcknowledgesFearCard( Level1Text );
 
-			spaceCtx.Tokens.InvaderSummary.ShouldBe("");
+			spaceCtx.Tokens.InvaderSummary().ShouldBe("");
 
 		}
 
@@ -86,7 +86,7 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 			// Build should make a city                        => 2 explorers, 1 town, 1 city
 			// Explore should add an explorer (dahan are gone) => 3 explorers, 1 town, 1 city
 
-			spaceCtx.Tokens.InvaderSummary.ShouldBe( "1C@3,1T@2,3E@1" );
+			spaceCtx.Tokens.InvaderSummary().ShouldBe( "1C@3,1T@2,3E@1" );
 
 		}
 

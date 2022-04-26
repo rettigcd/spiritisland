@@ -19,13 +19,12 @@ public class ToDreamAThousandDeaths_DestroyStrategy : DestroyInvaderStrategy {
 		}
 	}
 
-	async Task BringerPushNInvaders( Space source, int countToPush
-			, params TokenClass[] healthyInvaders
-		) {
+	async Task BringerPushNInvaders( Space source, int countToPush , params TokenClass[] healthyInvaders ) {
 
 		// We can't track which original invader is was killed, so let the user choose.
 
-		TokenCountDictionary tokens = ctx.Target(source).Tokens;
+//		TokenCountDictionary tokens = ctx.Target(source).Tokens;
+		TokenCountDictionary tokens = ctx.GameState.Tokens[source];
 
 		Token[] CalcInvaderTypes() => tokens.OfAnyType( healthyInvaders );
 
@@ -37,8 +36,8 @@ public class ToDreamAThousandDeaths_DestroyStrategy : DestroyInvaderStrategy {
 				break;
 
 			var destination = await ctx.Decision( new Select.Space(
-				"Push " + invader.Summary + " to",
-				source.Adjacent.Where( s=>ctx.Target(s).IsInPlay )
+				"Push " + invader.ToString() + " to",
+				source.Adjacent.Where( s=>ctx.Target(s).IsInPlay(Invader.Explorer) )
 				, Present.Always
 			) );
 

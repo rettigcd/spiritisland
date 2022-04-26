@@ -9,7 +9,7 @@ class FleeThePestilentLand : IFearOptions {
 	public Task Level1( FearCtx ctx ) {
 
 		// each player 
-		return Cmd.EachSpirit(Cause.Fear,
+		return Cmd.EachSpirit(
 			// removes 1 explorer/town 
 			Cmd.RemoveExplorersOrTowns(1)
 				// from a land with disease
@@ -21,7 +21,7 @@ class FleeThePestilentLand : IFearOptions {
 	[FearLevel( 2, "Each player removes up to 3 health of invaders from a land with disease or 1 explorer from an inland land" )]
 	public Task Level2( FearCtx ctx ) {
 		// each player 
-		return Cmd.EachSpirit(Cause.Fear, 
+		return Cmd.EachSpirit( 
 			Cmd.Pick1<SelfCtx>(
 				// removes up to 3 health of invaders from a land with disease
 				RemoveNHealthOfInvadersFromDisease(3,ctx.GameState),
@@ -34,7 +34,7 @@ class FleeThePestilentLand : IFearOptions {
 	[FearLevel( 3, "each player removes up to 5 health of invaders from a land with disease or 1 explorer/town from an inland land" )]
 	public Task Level3( FearCtx ctx ) {
 		// each player 
-		return Cmd.EachSpirit(Cause.Fear, 
+		return Cmd.EachSpirit( 
 			Cmd.Pick1<SelfCtx>(
 				// removes up to 5 health of invaders from a land with disease
 				RemoveNHealthOfInvadersFromDisease(5,ctx.GameState),
