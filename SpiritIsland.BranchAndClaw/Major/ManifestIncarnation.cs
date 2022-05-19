@@ -22,7 +22,7 @@ public class ManifestIncarnation {
 
 		// if you have 3 sun and 3 moon, invaders do -6 damage on their ravage.
 		if(await ctx.YouHave("3 sun,3 moon"))
-			ctx.Defend( 6 ); // !! not exactly correct but close
+			ctx.Defend( 6 ); // I cannot see any difference between doing -6 damage and defending 6.
 
 		// Then, Invaders in target land ravage.
 		await new RavageAction( ctx.GameState, ctx.Invaders ).Exec();

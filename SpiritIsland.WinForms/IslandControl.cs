@@ -7,6 +7,7 @@ using System.Windows.Forms;
 
 namespace SpiritIsland.WinForms;
 
+
 public partial class IslandControl : Control {
 
 	public IslandControl() {
@@ -157,18 +158,22 @@ public partial class IslandControl : Control {
 		if(fearCard!= null) 
 			hotSpots.Add(fearCard,activeFearRect);
 
-
-		//float y = 60f;
-		//foreach(var log in StopWatch.timeLog.OrderByDescending(m=>m.ms) ) {
-		//	pe.Graphics.DrawString(log.ToString() ,SystemFonts.DefaultFont, Brushes.Black,10f,y);
-		//	y += 20f;
-		//}
 	}
+
+	BoardLayout bl;
 
 	void DrawBoard_Static( PaintEventArgs pe ) {
 		using var stopwatch = new StopWatch( "Island-static" );
 
 		if(cachedBackground == null) {
+
+			bl = gameState.Island.Boards[0][0].Text[0] switch {
+				'A' => BoardLayout.BoardA(),
+				'B' => BoardLayout.BoardB(),
+				'C' => BoardLayout.BoardC(),
+				'D' => BoardLayout.BoardD(),
+				_ => throw new Exception( "unknown board" )
+			};
 
 			using var board = Image.FromFile( boardImageFile );
 
@@ -184,6 +189,35 @@ public partial class IslandControl : Control {
 		}
 
 		pe.Graphics.DrawImage( cachedBackground, 0, 0, cachedBackground.Width, cachedBackground.Height );
+
+		static PointF map(PointF p) => new PointF( p.X * 720 + 24f, 710 * (1f - p.Y) - 20f );
+		using var perimeterPen = new Pen( Brushes.Black, 5f );
+		for(int i = 0; i < bl.spaces.Length; ++i) {
+			var space = gameState.Island.Boards[0][i];
+			Brush brush = space.IsWetland ? Brushes.LightBlue
+				: space.IsSand ? Brushes.PaleGoldenrod
+				: space.IsMountain ? Brushes.Gray
+				: space.IsJungle ? Brushes.ForestGreen
+				: Brushes.Blue;
+			var points = bl.spaces[i].Select( map ).ToArray();
+
+			// Draw blocky
+			//pe.Graphics.FillPolygon( brush, points );
+			//pe.Graphics.DrawPolygon( perimeterPen, points );
+
+			// Draw smooth
+			pe.Graphics.FillClosedCurve( brush, points, System.Drawing.Drawing2D.FillMode.Alternate, .25f );
+			pe.Graphics.DrawClosedCurve( perimeterPen, points,.25f, System.Drawing.Drawing2D.FillMode.Alternate);
+		}
+
+		//var path = new System.Drawing.Drawing2D.GraphicsPath()
+		//pe.Graphics.SetClip(path);
+
+		// Draw foreground image into clipping region
+		// myGraphic.SetClip( clipPath, CombineMode.Replace );
+		// myGraphic.DrawImage( imgF, outRect );
+		// myGraphic.ResetClip();
+
 	}
 
 	void DrawElements(Graphics graphics ) {
