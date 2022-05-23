@@ -33,33 +33,18 @@ public static class StrifedRavage {
 
 	#region Strife reduces Health
 
-	public static async Task InvadersReduceHealthByStrifeCount( GameState gameState, int minimum = 1 ) {
-		foreach(var space in gameState.Island.AllSpaces)
-			await EachInvaderReduceHealthByStrifeCount( gameState.Tokens[space], minimum );
-	}
+	public static async Task InvadersReduceHealthByStrifeCount( GameState gameState ) {
+		// add penalty
+		++HealthToken.healthPenaltyPerStrife;
+		// remove penalty
+		gameState.TimePasses_ThisRound.Push( x => { --HealthToken.healthPenaltyPerStrife; return Task.CompletedTask; } );
 
-	static async Task EachInvaderReduceHealthByStrifeCount( TokenCountDictionary tokens, int minimum ) {
-		var strifedInvaders = tokens.Invaders()
-			.Where( x => 0 < x.StrifeCount )
-			.OrderBy( x => x.RemainingHealth )
-			.ToArray(); // get the lowest ones first so we can reduce without them cascading
-
-		foreach(HealthToken strifedInvader in strifedInvaders)
-			await ReduceInvaderHealthByItsOwnStrife( tokens, strifedInvader, minimum );
-	}
-
-	static async Task ReduceInvaderHealthByItsOwnStrife( TokenCountDictionary tokens, HealthToken originalInvader, int minimum ) {
-		int newHealth = Math.Min( minimum,originalInvader.FullHealth - originalInvader.StrifeCount);
-		var newInvader = new HealthToken( originalInvader.Class, newHealth, originalInvader.Damage, originalInvader.StrifeCount );
-
-		if(newInvader == originalInvader) return;
-
-		if(newInvader.IsDestroyed)
-			await tokens.Destroy( originalInvader, tokens[originalInvader] );
-		else {
-			tokens.Adjust( newInvader, tokens[originalInvader] );
-			tokens.Init( originalInvader, 0 );
-			// !!! Need something at end of turn to restore health.
+		// Check if anything is destroyed
+		foreach(var space in gameState.Island.AllSpaces) {
+			var tokens = gameState.Tokens[space];
+			foreach( var token in tokens.Invaders() )
+				if(token.IsDestroyed)
+					await tokens.Destroy( token, tokens[token] );
 		}
 	}
 

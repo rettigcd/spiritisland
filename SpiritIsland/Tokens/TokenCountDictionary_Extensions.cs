@@ -4,14 +4,14 @@ public static class TokenCountDictionary_Extensions {
 
 	#region Generic - Single
 
-	static public Token[] OfType( this TokenCountDictionary counts, TokenClass healthyType )
-		=> counts.Keys.Where( specific => healthyType == specific.Class ).ToArray();
+	static public Token[] OfType( this TokenCountDictionary counts, TokenClass tokenClass )
+		=> counts.Keys.Where( x => x.Class == tokenClass ).ToArray();
 
 	static public bool Has( this TokenCountDictionary counts, TokenClass inv )
 		=> counts.OfType( inv ).Any();
 
-	static public int Sum( this TokenCountDictionary counts, TokenClass generic )
-		=> counts.OfType( generic ).Sum( k => counts[k] );
+	static public int Sum( this TokenCountDictionary counts, TokenClass tokenClass )
+		=> counts.OfType( tokenClass ).Sum( k => counts[k] );
 
 	#endregion
 

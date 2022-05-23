@@ -47,7 +47,7 @@ public class PentUpCalamity {
 			if(returnCount > 0)
 				returnCount--;
 			else
-				RemoveToken( ctx, tokenToRemove );
+				await RemoveToken( ctx, tokenToRemove );
 
 			// Do fear now
 			ctx.AddFear( 1 );
@@ -68,11 +68,11 @@ public class PentUpCalamity {
 				await ctx.AddStrife();
 	}
 
-	static void RemoveToken( TargetSpaceCtx ctx, Token tokenToRemove ) {
+	static async Task RemoveToken( TargetSpaceCtx ctx, Token tokenToRemove ) {
 		if(tokenToRemove is HealthToken invader)
-			ctx.Tokens.AddStrifeTo( invader, -1 );
+			await ctx.Tokens.AddStrifeTo( invader, -1 );
 		else
-			ctx.Tokens.Remove( tokenToRemove, 1 );
+			await ctx.Tokens.Remove( tokenToRemove, 1 );
 	}
 
 	static Token[] GetRemovableTokens( TargetSpaceCtx ctx ) {

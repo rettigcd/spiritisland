@@ -75,7 +75,7 @@ public class Strife_Tests {
 
 		// Given: 1 town and 1 strifed town
 		counts.Init( Tokens.Town, 2);
-		counts.AddStrifeTo( Tokens.Town );
+		counts.AddStrifeTo( Tokens.Town ).Wait();
 		var strifedTown = counts.OfType(Invader.Town).Single( k => k != Tokens.Town );
 
 		// When: move
@@ -107,7 +107,7 @@ public class Strife_Tests {
 		// Given: staring invaders
 		switch(startingInvaders) {
 			case "2C@2":  counts.Init( city2, 2); break;
-			case "1C@2^": counts.Init( city2, 1); counts.AddStrifeTo( city2 ); break;
+			case "1C@2^": counts.Init( city2, 1); counts.AddStrifeTo( city2 ).Wait(); break;
 			case "1C@3,1T@2":
 				counts.InitDefault(Invader.City, 1);
 				counts.InitDefault(Invader.Town, 1);
@@ -117,11 +117,11 @@ public class Strife_Tests {
 
 		// When: add strife
 		switch(addTo) {
-			case "C@2": counts.AddStrifeTo( city2 ); break;
-			case "C@2^": counts.AddStrifeTo( city2.HavingStrife( 1 ) ); break;
+			case "C@2": counts.AddStrifeTo( city2 ).Wait(); break;
+			case "C@2^": counts.AddStrifeTo( city2.HavingStrife( 1 ) ).Wait(); break;
 			case "1C@3,1T@2":
-				counts.AddStrifeTo( Tokens.City );
-				counts.AddStrifeTo( Tokens.Town );
+				counts.AddStrifeTo( Tokens.City ).Wait();
+				counts.AddStrifeTo( Tokens.Town ).Wait();
 				break;
 			default: throw new Exception( "add to not in list" );
 		}

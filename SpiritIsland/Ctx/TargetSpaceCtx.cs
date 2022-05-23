@@ -286,7 +286,7 @@ public class TargetSpaceCtx : SelfCtx {
 	public virtual async Task AddStrife( params TokenClass[] groups ) {
 		var invader = await Decision( Select.Invader.ForStrife( Tokens, groups ) );
 		if(invader == null) return;
-		Tokens.AddStrifeTo( invader );
+		await Tokens.AddStrifeTo( invader );
 	}
 
 	#endregion

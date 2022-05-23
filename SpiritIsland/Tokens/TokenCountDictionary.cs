@@ -136,7 +136,7 @@ public class TokenCountDictionary {
 
 	public int InvaderTotal() => Invaders().Sum( i => counts[i] );
 
-	public void AddStrifeTo( Token invader, int count = 1 ) {
+	public async Task AddStrifeTo( Token invader, int count = 1 ) {
 
 		// Remove old type from 
 		if(this[invader]<count)
@@ -148,8 +148,10 @@ public class TokenCountDictionary {
 
 		// Add new strifed
 		var strifed = ht.HavingStrife( ht.StrifeCount + 1 );
-
 		this[strifed] += count;
+
+		if( strifed.IsDestroyed ) // due to a strife-health penalty
+			await Destroy( strifed, this[strifed] );
 	}
 
 	#endregion

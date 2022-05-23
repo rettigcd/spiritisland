@@ -5,7 +5,7 @@ public class HealthToken : Token, IEquatable<HealthToken> {
 
 	public HealthToken( HealthTokenClass tokenClass, int fullHealth, int damage = 0, int strifeCount = 0 ) {
 		Class = tokenClass;
-		FullHealth = fullHealth;
+		_fullHealth = fullHealth;
 		Damage = damage;
 		StrifeCount = strifeCount;
 
@@ -16,7 +16,10 @@ public class HealthToken : Token, IEquatable<HealthToken> {
 	public HealthTokenClass Class { get; }
 	TokenClass Token.Class => this.Class;
 
-	public int FullHealth { get; }
+	static public int healthPenaltyPerStrife = 0; // !!! put this in the game state instead of static global
+
+	public int FullHealth => Math.Max(1, _fullHealth - StrifeCount * healthPenaltyPerStrife );
+	readonly int _fullHealth;
 
 	public int Damage { get; }
 
@@ -38,7 +41,14 @@ public class HealthToken : Token, IEquatable<HealthToken> {
 
 	public HealthToken Healthy => new HealthToken( Class, FullHealth, 0, StrifeCount );
 
-	public HealthToken AddHealth( int healthBoost ) => new HealthToken( Class, FullHealth + healthBoost, Damage, StrifeCount );
+	/// <summary>
+	/// Adjusts Health to a minimum of 1.
+	/// </summary>
+	public HealthToken AddHealth( int delta ) {
+		int newHealth = Math.Max(1, FullHealth + delta );
+		return newHealth == FullHealth ? this
+			: new HealthToken( Class, newHealth, Damage, StrifeCount );
+	}
 
 	#endregion
 

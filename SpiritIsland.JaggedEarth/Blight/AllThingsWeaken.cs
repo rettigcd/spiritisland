@@ -24,8 +24,7 @@ public class AllThingsWeaken : BlightCardBase {
 			var defaults = gs.Tokens.TokenDefaults;
 			foreach(var invaderClass in defaults.Keys.ToArray()){
 				var current = defaults[invaderClass];
-				if(current.FullHealth > 1)
-					defaults[invaderClass] = current.AddHealth(-1);
+				defaults[invaderClass] = current.AddHealth(-1);
 			}
 
 			// replace/update existing tokens

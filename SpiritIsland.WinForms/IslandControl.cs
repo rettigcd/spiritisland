@@ -205,7 +205,7 @@ public partial class IslandControl : Control {
 			//pe.Graphics.FillPolygon( brush, points );
 			//pe.Graphics.DrawPolygon( perimeterPen, points );
 
-			// Draw smooth
+			// Draw smoothy
 			pe.Graphics.FillClosedCurve( brush, points, System.Drawing.Drawing2D.FillMode.Alternate, .25f );
 			pe.Graphics.DrawClosedCurve( perimeterPen, points,.25f, System.Drawing.Drawing2D.FillMode.Alternate);
 		}
@@ -501,10 +501,7 @@ public partial class IslandControl : Control {
 		List<Token> row2Tokens = new List<Token> { TokenType.Defend, TokenType.Blight }; // These don't show up in .OfAnyType if they are dynamic
 		row2Tokens.AddRange( tokens.OfAnyType( TokenType.Dahan ) );
 		DrawRow( graphics, tokens, x, ref y, iconWidth, xStep, presenceCount, isSS, row2Tokens.ToArray() );
-
-		DrawRow( graphics, tokens, x, ref y, iconWidth, xStep, 0, false
-			, TokenType.Beast, TokenType.Wilds, TokenType.Disease, TokenType.Badlands
-		);
+		DrawRow( graphics, tokens, x, ref y, iconWidth, xStep, 0,             false, TokenType.Beast, TokenType.Wilds, TokenType.Disease, TokenType.Badlands );
 
 	}
 
@@ -535,7 +532,6 @@ public partial class IslandControl : Control {
 			} else {
 				imageToken = token;
 			}
-
 
 			// Draw Token
 			Image img = AccessTokenImage( imageToken );

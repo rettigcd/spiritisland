@@ -523,8 +523,7 @@ public abstract class Spirit : IOption {
 
 	/// <summary>Hook for Grinning Trickster to add additional strife for power</summary>
 	public virtual Task AddStrife( TargetSpaceCtx ctx, Token invader ) {
-		ctx.Tokens.AddStrifeTo( invader );
-		return Task.CompletedTask;
+		return ctx.Tokens.AddStrifeTo( invader );
 	}
 
 	// Overriden by Trickster because it costs them presence

@@ -102,7 +102,7 @@ public class TricksterSpaceCtx : TargetSpaceCtx {
 		var invader2 = await Self.Action.Decision( new Select.TokenFromManySpaces( "Add additional strife for 1 energy", nearbyInvaders, Present.Done ) );
 		if(invader2 == null) return;
 		--Self.Energy;
-		Target( invader2.Space ).Tokens.AddStrifeTo( invader2.Token );
+		await Target( invader2.Space ).Tokens.AddStrifeTo( invader2.Token );
 
 	}
 
