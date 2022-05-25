@@ -131,7 +131,7 @@ namespace SpiritIsland.WinForms {
 			Img.Disease                      => "tokens.disease.png",
 			Img.Badlands                     => "tokens.badlands.png",
 			Img.Defend                       => "tokens.defend1orange.png",
-			Img.Isolate                      => "tokens.isolateornage.png",
+			Img.Isolate                      => "tokens.isolateorange.png",
 
 			Img.Icon_Sun                    => "icons.Simple_sun.png",
 			Img.Icon_Moon                   => "icons.Simple_moon.png",

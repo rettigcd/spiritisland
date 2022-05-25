@@ -102,7 +102,7 @@ public partial class IslandControl : Control {
 			[TokenType.Wilds]     = images.GetImage( Img.Wilds ),
 			[TokenType.Disease]   = images.GetImage( Img.Disease ),
 			[TokenType.Badlands]  = images.GetImage( Img.Badlands ),
-//				[TokenType.Isolate]   = images.GetImage( Img.Isolate ),
+			[TokenType.Isolate]   = images.GetImage( Img.Isolate ),
 		};
 
 		this.gameState = gameState;
@@ -501,7 +501,7 @@ public partial class IslandControl : Control {
 		List<Token> row2Tokens = new List<Token> { TokenType.Defend, TokenType.Blight }; // These don't show up in .OfAnyType if they are dynamic
 		row2Tokens.AddRange( tokens.OfAnyType( TokenType.Dahan ) );
 		DrawRow( graphics, tokens, x, ref y, iconWidth, xStep, presenceCount, isSS, row2Tokens.ToArray() );
-		DrawRow( graphics, tokens, x, ref y, iconWidth, xStep, 0,             false, TokenType.Beast, TokenType.Wilds, TokenType.Disease, TokenType.Badlands );
+		DrawRow( graphics, tokens, x, ref y, iconWidth, xStep, 0,             false, TokenType.Beast, TokenType.Wilds, TokenType.Disease, TokenType.Badlands, TokenType.Isolate );
 
 	}
 
