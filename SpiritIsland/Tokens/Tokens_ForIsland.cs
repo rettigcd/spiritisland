@@ -17,6 +17,9 @@ public class Tokens_ForIsland : IIslandTokenApi {
 		dynamicTokens_ForRound.Clear();
 	}
 
+
+
+
 	public TokenCountDictionary this[Space space] {
 		get {
 			if(!tokenCounts.ContainsKey( space )) {
@@ -25,6 +28,14 @@ public class Tokens_ForIsland : IIslandTokenApi {
 			return tokenCounts[space];
 		}
 	}
+
+	public TokenCountDictionary For(Space space) {
+		if(!tokenCounts.ContainsKey( space )) {
+			tokenCounts[space] = new TokenCountDictionary( space, new CountDictionary<Token>(), this );
+		}
+		return tokenCounts[space];
+	}
+
 
 	public IEnumerable<TokenCountDictionary> ForAllSpaces => tokenCounts.Values;
 
@@ -50,24 +61,25 @@ public class Tokens_ForIsland : IIslandTokenApi {
 
 	public IEnumerable<Space> Keys => tokenCounts.Keys;
 
-	public Task Publish_Added( Space space, Token token, int count, AddReason reason ) {
-		return TokenAdded.InvokeAsync( new TokenAddedArgs(space,token,reason, count, gameStateForEventArgs) );
+	public Task Publish_Added( Space space, Token token, int count, AddReason reason, Guid actionId ) {
+		return TokenAdded.InvokeAsync( new TokenAddedArgs(space,token,reason, count, gameStateForEventArgs, actionId) );
 	}
 
-	public Task Publish_Removed( Space space, Token token, int count, RemoveReason reason ) {
-		return TokenRemoved.InvokeAsync( new TokenRemovedArgs( gameStateForEventArgs, token, reason ) {
+	public Task Publish_Removed( Space space, Token token, int count, RemoveReason reason, Guid actionId ) {
+		return TokenRemoved.InvokeAsync( new TokenRemovedArgs( gameStateForEventArgs, token, reason, actionId ) {
 			Space = space,
 			Count = count,
 		} );
 	}
 
-	public async Task Publish_Moved( Token token, Space from, Space to ) {
+	public async Task Publish_Moved( Token token, Space from, Space to, Guid actionId ) {
 		var args = new TokenMovedArgs {
 			Token = token,
 			RemovedFrom = from,
 			AddedTo = to,
 			Count = 1,
-			GameState = this.gameStateForEventArgs
+			GameState = this.gameStateForEventArgs,
+			ActionId = actionId
 		};
 
 		await TokenMoved.InvokeAsync( args );
@@ -135,12 +147,13 @@ public class Tokens_ForIsland : IIslandTokenApi {
 
 class TokenAddedArgs : ITokenAddedArgs {
 
-	public TokenAddedArgs(Space space, Token token, AddReason addReason, int count, GameState gs) {
+	public TokenAddedArgs(Space space, Token token, AddReason addReason, int count, GameState gs, Guid actionId ) {
 		Space = space;
 		Token = token;
 		Reason = addReason;
 		Count = count;
 		GameState = gs;
+		ActionId = actionId;
 	}
 
 	public GameState GameState { get; }
@@ -149,13 +162,17 @@ class TokenAddedArgs : ITokenAddedArgs {
 	public int Count { get; }
 
 	public AddReason Reason { get; }
+
+	public Guid ActionId { get; }
+
 }
 
 class TokenRemovedArgs : ITokenRemovedArgs {
-	public TokenRemovedArgs(GameState gs, Token token, RemoveReason reason) { 
-		this.Token = token;
-		this.Reason = reason;
-		this.GameState = gs;
+	public TokenRemovedArgs(GameState gs, Token token, RemoveReason reason, Guid actionId ) {
+		Token = token;
+		Reason = reason;
+		GameState = gs;
+		ActionId = actionId;
 	}
 
 	public Token Token { get; }
@@ -163,6 +180,7 @@ class TokenRemovedArgs : ITokenRemovedArgs {
 	public Space Space { get; set;}
 	public RemoveReason Reason { get; }
 	public GameState GameState { get; }
+	public Guid ActionId { get; }
 };
 
 #endregion

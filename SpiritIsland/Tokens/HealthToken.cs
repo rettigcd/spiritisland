@@ -16,9 +16,9 @@ public class HealthToken : Token, IEquatable<HealthToken> {
 	public HealthTokenClass Class { get; }
 	TokenClass Token.Class => this.Class;
 
-	static public int healthPenaltyPerStrife = 0; // !!! put this in the game state instead of static global
+	static public int HealthPenaltyPerStrife { get; set; } = 0; // !!! put this in the game state instead of static global
 
-	public int FullHealth => Math.Max(1, _fullHealth - StrifeCount * healthPenaltyPerStrife );
+	public int FullHealth => Math.Max(1, _fullHealth - StrifeCount * HealthPenaltyPerStrife );
 	readonly int _fullHealth;
 
 	public int Damage { get; }

@@ -41,7 +41,7 @@ public class TokenRemover {
 			if(token == null) break;
 
 			// Remove
-			await ctx.GameState.Tokens[source].Remove( token, 1, RemoveReason.Removed);
+			await ctx.Target(source).Remove( token, 1, RemoveReason.Removed);
 
 			// Book keeping
 			--sharedGroupCounts[indexLookupByGroup[token.Class]]; // decrement count

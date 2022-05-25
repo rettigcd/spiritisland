@@ -90,7 +90,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 		[Fact]
 		public void FlashFloods_Stats() {
-			Assert_CardStatus( flashFloodsCard, 2, Phase.Fast, "SW" );
+			Assert_CardStatus( flashFloodsCard, 2, Phase.Fast, "sun water" );
 		}
 
 	}

@@ -36,6 +36,7 @@ public static partial class Cmd {
 				if(spaceOptions.Length == 0 ) return;
 
 				var spaceCtx = await ctx.SelectSpace("Select space to " + spaceAction.Description, spaceOptions);
+
 				await spaceAction.Execute(spaceCtx);
 			}
 		);

@@ -62,8 +62,9 @@ public class Ocean : Spirit {
 	}
 
 	void RemoveDrownedDahan( GameState gs ) {
+		var actionId = Guid.NewGuid();
 		foreach(var board in gs.Island.Boards)
-			gs.Tokens[board.Ocean].Dahan.Drown();
+			gs.Tokens[board.Ocean].Dahan.Bind(actionId).Drown();
 	}
 
 	async Task InvadersMoved(TokenMovedArgs args ) {
@@ -72,9 +73,10 @@ public class Ocean : Spirit {
 		var grp = args.Token.Class;
 
 		if( grp == Invader.City || grp == Invader.Town || grp == Invader.Explorer ) { // Could created an Invader subclass that is easier to test.
+			var ht = args.Token as HealthToken;
 			// Drown Invaders for points
-			drownedCount += args.Token.FullHealth;
-			await gs.Invaders.On( args.AddedTo ).Destroy( 1, (HealthToken)args.Token );
+			drownedCount += ht.FullHealth;
+			await gs.Invaders.On( args.AddedTo, args.ActionId ).Destroy( 1, (HealthToken)args.Token );
 
 			int spiritCount = gs.Spirits.Length;
 			while(spiritCount <= drownedCount) {

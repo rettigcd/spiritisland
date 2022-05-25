@@ -1,39 +1,81 @@
 ﻿namespace SpiritIsland;
 
-public class DahanGroupBinding {
+public class DahanGroupBindingNoEvents {
 
 	public bool Frozen { get; set; }
 
-	readonly TokenCountDictionary _tokens;
-	readonly HealthTokenClass _tokenGroup;
+	readonly protected TokenCountDictionary _tokens;
+	readonly protected HealthTokenClass _tokenClass;
 
-	public DahanGroupBinding( TokenCountDictionary tokens, RemoveReason destoryReason = RemoveReason.Destroyed ) {
+	public DahanGroupBindingNoEvents( TokenCountDictionary tokens ) {
 		_tokens = tokens;
-		_tokenGroup = TokenType.Dahan;
-		_destroyReason = destoryReason;
+		_tokenClass = TokenType.Dahan;
 	}
 
-	readonly RemoveReason _destroyReason;
+	public DahanGroupBindingNoEvents( DahanGroupBindingNoEvents src ) {
+		_tokens = src._tokens;
+		_tokenClass = TokenType.Dahan;
+	}
 
-
-	public IEnumerable<HealthToken> Keys => _tokens.OfType(_tokenGroup).Cast<HealthToken>();
+	public IEnumerable<HealthToken> Keys => _tokens.OfType( _tokenClass ).Cast<HealthToken>();
 
 	public bool Any => Count > 0;
 
-	public int Count => _tokens.Sum(_tokenGroup);
+	public int Count => _tokens.Sum( _tokenClass );
 
-	public static implicit operator int( DahanGroupBinding b ) => b.Count;
+	public static implicit operator int( DahanGroupBindingNoEvents b ) => b.Count;
+
+	public void Init( int count ) => _tokens.InitDefault( TokenType.Dahan, count );
+
+	public void Adjust( Token token, int delta ) => _tokens.Adjust( token, delta );
+
+	public void Init( Token token, int count ) => _tokens.Init( token, count );
+
+	public DahanGroupBinding Bind( Guid actionId ) => new DahanGroupBinding(this,actionId); // !!! what about the destroy readon?
+}
+
+public class DahanGroupBinding : DahanGroupBindingNoEvents {
+
+	readonly RemoveReason _destroyReason;
+
+	readonly Guid actionId;
+
+	public DahanGroupBinding( DahanGroupBindingNoEvents src, Guid actionId, RemoveReason destroyReason = RemoveReason.Destroyed ):base(src) {
+		_destroyReason = destroyReason;
+		this.actionId = actionId;
+	}
+
+	public DahanGroupBinding( TokenCountDictionary tokens, Guid actionId, RemoveReason destoryReason = RemoveReason.Destroyed ):base(tokens) {
+		_destroyReason = destoryReason;
+		this.actionId = actionId;
+	}
+
+	public async Task AdjustHealthOf( HealthToken token, int delta, int count ) {
+		count = Math.Min( _tokens[token], count );
+		if(count == 0) return;
+
+		var newToken = token.AddHealth( delta );
+		if(newToken.IsDestroyed)
+			await this.Destroy( count, token );
+		else {
+			_tokens.Adjust( token, -count );
+			_tokens.Adjust( newToken, count );
+		}
+	}
+
+	public async Task AdjustHealthOfAll( int delta ) {
+		if(delta == 0) return;
+		var orderedKeys = delta < 0
+			? Keys.OrderBy( x => x.FullHealth ).ToArray()
+			: Keys.OrderByDescending( x => x.FullHealth ).ToArray();
+		foreach(var t in orderedKeys)
+			await AdjustHealthOf( t, delta, _tokens[t] );
+	}
 
 	/// <summary> Adds a Dahan from the bag, or out of thin air. </summary>
 	public Task Add( int count, AddReason reason = AddReason.Added ) {
-		return _tokens.AddDefault(TokenType.Dahan,count, reason );
+		return _tokens.AddDefault( TokenType.Dahan, count, actionId, reason );
 	}
-
-	public void Init(int count ) => _tokens.InitDefault(TokenType.Dahan, count );
-
-	public void Adjust(Token token, int delta ) => _tokens.Adjust(token,delta);
-
-	public void Init(Token token, int count ) => _tokens.Init(token,count);
 
 	/// <summary> Returns the Token removed </summary>
 	public async Task<Token> Remove1( RemoveReason reason ) {
@@ -41,13 +83,13 @@ public class DahanGroupBinding {
 
 		var toRemove = Keys.OrderBy( x => x.RemainingHealth ).FirstOrDefault();
 		if( toRemove != null)
-			await _tokens.Remove( toRemove, 1, reason );
+			await _tokens.Remove( toRemove, 1, actionId, reason );
 		return toRemove;
 	}
 
 	public async Task<bool> Remove1( Token desiredToken, RemoveReason reason ) {
 		if( !Frozen && 0<_tokens[desiredToken] ){ 
-			await _tokens.Remove(desiredToken,1, reason );
+			await _tokens.Remove(desiredToken,1, actionId, reason );
 			return true;
 		}
 
@@ -62,29 +104,6 @@ public class DahanGroupBinding {
 		foreach( var token in Keys.ToArray() )
 			_tokens.Init(token,0);
 	}
-
-	public async Task AdjustHealthOf( HealthToken token, int delta, int count ) {
-		count = Math.Min( _tokens[token], count );
-		if( count == 0 ) return;
-
-		var newToken = token.AddHealth( delta );
-		if( newToken.IsDestroyed)
-			await this.Destroy( count, token );
-		else {
-			_tokens.Adjust( token,-count);
-			_tokens.Adjust(newToken,count);
-		}
-	}
-
-	public async Task AdjustHealthOfAll( int delta ) {
-		if( delta == 0 ) return;
-		var orderedKeys = delta < 0 
-			? Keys.OrderBy( x => x.FullHealth ).ToArray()
-			: Keys.OrderByDescending( x => x.FullHealth ).ToArray();
-		foreach(var t in orderedKeys)
-			await AdjustHealthOf(t, delta, _tokens[t] );
-	}
-
 
 	#region Damage
 
@@ -154,7 +173,7 @@ public class DahanGroupBinding {
 	public async Task Destroy( int count, HealthToken original ) {
 		if(Frozen) return;
 
-		await _tokens.Remove( original, count, _destroyReason );
+		await _tokens.Remove( original, count, actionId, _destroyReason );
 	}
 
 	#endregion

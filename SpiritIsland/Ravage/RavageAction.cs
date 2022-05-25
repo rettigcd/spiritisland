@@ -3,14 +3,16 @@
 public class RavageAction {
 
 	readonly protected InvaderBinding grp;
-	readonly Func<Space,int,Task> damageLandCallback;
+	readonly Func<Space,int,Guid,Task> damageLandCallback;
 	readonly protected ConfigureRavage cfg;
 
 	readonly GameState gameState;
+	readonly Guid actionId;
 
 	#region constructor
 
 	public RavageAction( GameState gs, InvaderBinding grp ) {
+		actionId = Guid.NewGuid();
 		var cfg = gs.GetRavageConfiguration( grp.Space );
 
 		this.gameState = gs;
@@ -94,7 +96,7 @@ public class RavageAction {
 
 	public async Task DamageLand( int damageInflictedFromInvaders ) {
 		if( cfg.ShouldDamageLand )
-			await damageLandCallback(grp.Space,damageInflictedFromInvaders);
+			await damageLandCallback(grp.Space,damageInflictedFromInvaders, actionId);
 	}
 
 	/// <returns># of dahan killed/destroyed</returns>
@@ -141,7 +143,7 @@ public class RavageAction {
 				.OrderBy(t=>t.RemainingHealth) // kill damaged dahan first
 				.ToArray();
 
-			var dahan = new DahanGroupBinding( Tokens, RemoveReason.DestroyedInBattle ) { Frozen = Tokens.Dahan.Frozen };
+			var dahan = new DahanGroupBinding( Tokens, actionId, RemoveReason.DestroyedInBattle ) { Frozen = Tokens.Dahan.Frozen };
 
 			foreach(var token in participatingDahan) {
 

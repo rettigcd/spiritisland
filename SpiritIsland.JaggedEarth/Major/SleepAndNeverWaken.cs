@@ -7,27 +7,32 @@ public class SleepAndNeverWaken {
 		// invaders skip all actions in target land.
 		ctx.GameState.SkipAllInvaderActions( ctx.Space );
 
+		// Track # of exlorers removed.
+		int removed = 0;
+		ctx.GameState.Tokens.TokenRemoved.ForRound.Add( x => {
+			if(x.Token.Class == Invader.Explorer)
+				removed += x.Count;
+		} );
+
 		// remove up to 2 explorer.
-		int removed = await RemoveExploreres( ctx, 2, ctx.Space );
+		await Cmd.RemoveExplorers(2).Execute(ctx);
 
 		// if you have 3 moon 2 air 2 animal:  Remove up to 6 explorer from among your lands.
 		if( await ctx.YouHave( "3 moon,2 air,2 animal") )
-			removed += await RemoveExploreres( ctx, 6, ctx.Self.Presence.Spaces.ToArray() );
+			await RemoveExploreres( ctx, 6, ctx.Self.Presence.Spaces.ToArray() );
 
 		// 1 fear per 2 explorer this Power Removes.
 		ctx.AddFear( removed / 2 );
 	}
 
-	static async Task<int> RemoveExploreres( TargetSpaceCtx ctx, int count, params Space[] fromSpaces ) {
+	static async Task RemoveExploreres( TargetSpaceCtx ctx, int count, params Space[] fromSpaces ) {
 
 		SpaceToken[] CalcOptions() => fromSpaces
 			.SelectMany(
 				space => ctx.GameState.Tokens[space].OfType(Invader.Explorer)
-					.Select( t=>new SpaceToken(space,t) )
+					.Select( t => new SpaceToken(space,t) )
 			)
 			.ToArray();
-
-		int countRemoved = 0;
 
 		SpaceToken[] options;
 		while( count-- > 0 
@@ -35,11 +40,8 @@ public class SleepAndNeverWaken {
 		) {
 			var token = await ctx.Decision( new Select.TokenFromManySpaces($"Select Explorer to remove. ({count+1} remaining)", options, Present.Done));
 			if(token == null ) break;
-			await ctx.GameState.Tokens[token.Space].Remove(token.Token,1);
-			++countRemoved;
+			await ctx.Target(token.Space).Remove(token.Token,1);
 		}
-
-		return countRemoved;
 
 	}
 

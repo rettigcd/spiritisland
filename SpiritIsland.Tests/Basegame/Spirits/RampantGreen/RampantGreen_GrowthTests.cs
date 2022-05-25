@@ -86,9 +86,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
 		[Theory]
 		[InlineDataAttribute( 1,0,"")]
 		[InlineDataAttribute( 2,1,"")]
-		[InlineDataAttribute( 3,1,"1 plant")]
-		[InlineDataAttribute( 4, 2, "1 plant" )]
-		[InlineDataAttribute( 5, 2, "1 plant" )]
+		[InlineDataAttribute( 3,1,"plant")]
+		[InlineDataAttribute( 4, 2, "plant" )]
+		[InlineDataAttribute( 5, 2, "plant" )]
 		[InlineDataAttribute( 6, 2, "2 plant" )]
 		[InlineDataAttribute( 7, 3, "2 plant" )]
 		public async Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {

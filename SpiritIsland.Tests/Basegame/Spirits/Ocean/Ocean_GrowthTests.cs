@@ -128,12 +128,12 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 		[Trait("Presence","EnergyTrack")]
 		[Theory]
 		[InlineDataAttribute(1,0,"")]
-		[InlineDataAttribute(2,0,"1 moon")]
-		[InlineDataAttribute(3,0,"1 moon,1 water")]
-		[InlineDataAttribute(4,1,"1 moon,1 water")]
-		[InlineDataAttribute(5,1,"1 moon,1 water,1 earth")]
-		[InlineDataAttribute(6,1,"1 moon,2 water,1 earth")]
-		[InlineDataAttribute(7,2, "1 moon,2 water,1 earth" )]
+		[InlineDataAttribute(2,0,"moon")]
+		[InlineDataAttribute(3,0,"moon,water")]
+		[InlineDataAttribute(4,1,"moon,water")]
+		[InlineDataAttribute(5,1,"moon,water,earth")]
+		[InlineDataAttribute(6,1,"moon,2 water,earth")]
+		[InlineDataAttribute(7,2, "moon,2 water,earth" )]
 		public async Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 			var fixture = new ConfigurableTestFixture { Spirit = new Ocean() };
 			await fixture.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, elements );

@@ -9,6 +9,7 @@ public interface ITokenAddedArgs {
 	public Space Space { get; }
 	public AddReason Reason { get; }
 	public GameState GameState { get; }
+	public Guid ActionId { get; }
 }
 
 public enum AddReason {
@@ -29,6 +30,7 @@ public interface ITokenRemovedArgs {
 	public Space Space { get;}
 	public RemoveReason Reason { get; }
 	public GameState GameState { get; }
+	public Guid ActionId { get; }
 };
 
 public enum RemoveReason {
@@ -61,6 +63,8 @@ public class TokenMovedArgs : ITokenAddedArgs, ITokenRemovedArgs {
 	AddReason ITokenAddedArgs.Reason => AddReason.MovedTo;
 
 	Space ITokenAddedArgs.Space => AddedTo;
+
+	public Guid ActionId { get; set; } // !!! Init this!
 
 }
 

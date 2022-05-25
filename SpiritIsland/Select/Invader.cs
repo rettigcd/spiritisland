@@ -11,7 +11,7 @@ public static class Invader {
 	public static TokenFrom1Space ToRemove( SpiritIsland.Space space, IEnumerable<Token> options ) 
 		=> new TokenFrom1Space( "Remove invader", space, options, Present.Always );
 
-	public static TokenFrom1Space ToRemoveByHealth( SpiritIsland.Space space, IEnumerable<Token> invaders, int remainingDamage )
+	public static TokenFrom1Space ToRemoveByHealth( SpiritIsland.Space space, IEnumerable<HealthToken> invaders, int remainingDamage )
 		=> new TokenFrom1Space( $"Remove up to {remainingDamage} health of invaders.", space, invaders.Where( x => x.RemainingHealth <= remainingDamage ), Present.Done ) ;
 
 	public static TokenFrom1Space ForIndividualDamage(int damagePerInvader, SpiritIsland.Space space, IEnumerable<Token> invaders)

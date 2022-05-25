@@ -63,9 +63,9 @@ public class WeaveTogetherTheFabricOfPlace {
 		// !!! not counting unmoved tokens as moved li
 		var srcTokens = gs.Tokens[space];
 		while(srcTokens.Keys.Any()) {
-			var tokenToMove = await ctx.Decision( Select.TokenFrom1Space.TokenToPush( space, 100, srcTokens.Keys.ToArray(), Present.Done ) );
+			Token tokenToMove = await ctx.Decision( Select.TokenFrom1Space.TokenToPush( space, 100, srcTokens.Keys.ToArray(), Present.Done ) );
 			if(tokenToMove == null) break;
-			await srcTokens.MoveTo( tokenToMove, other );
+			await ctx.Move( tokenToMove, space, other );
 		}
 	}
 

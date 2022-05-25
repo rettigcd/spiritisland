@@ -135,12 +135,12 @@ public class SharpFangs_GrowthTests : GrowthTests {
 
 	[Theory]
 	[InlineDataAttribute( 1, 1, "" )]
-	[InlineDataAttribute( 2, 1, "1 animal" )]
-	[InlineDataAttribute( 3, 1, "1 plant,1 animal" )]
-	[InlineDataAttribute( 4, 2, "1 plant,1 animal" )]
-	[InlineDataAttribute( 5, 2, "1 plant,2 animal" )]
-	[InlineDataAttribute( 6, 3, "1 plant,2 animal" )]
-	[InlineDataAttribute( 7, 4, "1 plant,2 animal" )]
+	[InlineDataAttribute( 2, 1, "animal" )]
+	[InlineDataAttribute( 3, 1, "plant,animal" )]
+	[InlineDataAttribute( 4, 2, "plant,animal" )]
+	[InlineDataAttribute( 5, 2, "plant,2 animal" )]
+	[InlineDataAttribute( 6, 3, "plant,2 animal" )]
+	[InlineDataAttribute( 7, 4, "plant,2 animal" )]
 	public async Task EnergyTrack( int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 		var fix = new ConfigurableTestFixture { Spirit = new SharpFangs() };
 		await fix.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, elements);

@@ -5,7 +5,7 @@ namespace SpiritIsland.Tests.JaggedEarth;
 public class ForestsOfLivingObsidian_Tests {
 
 	[Fact]
-	public async Task Repeat_BadlandsWorksOnBothTargets() {
+	public void Repeat_BadlandsWorksOnBothTargets() {
 		var fix = new ConfigurableTestFixture();
 		var space1 = fix.Board[3];
 		var space2 = fix.Board[8];
@@ -35,7 +35,7 @@ public class ForestsOfLivingObsidian_Tests {
 	}
 
 	[Fact]
-	public async Task Repeat_BadlandsWorksOnSameTargetTwice() {
+	public void Repeat_BadlandsWorksOnSameTargetTwice() {
 		var fix = new ConfigurableTestFixture();
 		var space1 = fix.Board[3];
 

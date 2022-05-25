@@ -46,16 +46,16 @@ public class Bringer : Spirit {
 		Presence.PlaceOn( startingIn, gs );
 	}
 
-	public override Task DestroyInvaderForPowers( GameState gs, Space space, int count, Token dahanToken ) {
-		return Task.CompletedTask;
-	}
+	//public override Task DestroyInvaderForPowers( GameState gs, Space space, int count, Token dahanToken ) {
+	//	return Task.CompletedTask;
+	//}
 
-	public override SelfCtx BindMyPower( GameState gameState ) => new BringerCtx(this,gameState);
+	public override SelfCtx BindMyPower( GameState gameState ) => new BringerCtx(this,gameState,Guid.NewGuid());
 
 }
 
 class BringerCtx : SelfCtx {
-	public BringerCtx( Bringer bringer, GameState gs ):base( bringer, gs, Cause.MyPowers ) {}
+	public BringerCtx( Bringer bringer, GameState gs, Guid actionId ):base( bringer, gs, Cause.MyPowers, actionId ) {}
 	public override TargetSpaceCtx Target( Space space ) => new BringerSpaceCtx(this, space);
 }
 
@@ -65,7 +65,8 @@ class BringerSpaceCtx : TargetSpaceCtx {
 	protected override InvaderBinding GetInvaders() {
 		return new InvaderBinding(
 			new TokenCountDictionary( Tokens ),
-			new ToDreamAThousandDeaths_DestroyStrategy( GameState.Fear.AddDirect, this )
+			new ToDreamAThousandDeaths_DestroyStrategy( GameState.Fear.AddDirect, this ),
+			this.CurrentActionId
 		);
 	}
 

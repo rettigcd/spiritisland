@@ -62,8 +62,9 @@ public class InvaderCard : IOption, IInvaderCard {
 		await gs.PreRavaging?.InvokeAsync( new RavagingEventArgs( gs ) { Spaces = ravageSpaces } );
 
 		// find ravage spaces that have invaders
+		var actionId = Guid.NewGuid();
 		InvaderBinding[] ravageGroups = ravageSpaces
-			.Select( gs.Invaders.On )
+			.Select( x=>gs.Invaders.On(x,actionId) )
 			.Where( group => group.Tokens.HasInvaders() )
 			.Cast<InvaderBinding>()
 			.ToArray();
@@ -126,17 +127,18 @@ public class InvaderCard : IOption, IInvaderCard {
 
 		// Explore
 		foreach(var exploreTokens in tokenSpacesToExplore)
-			await ExploreSingleSpace( exploreTokens, gs );
+			await ExploreSingleSpace( exploreTokens, gs, Guid.NewGuid() );
+
 	}
 
-	static async Task ExploreSingleSpace( TokenCountDictionary tokens, GameState gs ) {
+	static async Task ExploreSingleSpace( TokenCountDictionary tokens, GameState gs, Guid actionId ) {
 		// only gets called when explorer is actually going to explore
 		var wilds = tokens.Wilds;
 		if(wilds == 0) {
 			gs.Log( new InvaderActionEntry( tokens.Space + ":gains explorer" ) );
-			await tokens.AddDefault( Invader.Explorer, 1, AddReason.Explore );
+			await tokens.AddDefault( Invader.Explorer, 1, actionId, AddReason.Explore );
 		} else
-			await wilds.Remove( 1, RemoveReason.UsedUp );
+			await wilds.Bind(actionId).Remove( 1, RemoveReason.UsedUp );
 	}
 
 }

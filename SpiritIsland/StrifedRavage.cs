@@ -33,18 +33,18 @@ public static class StrifedRavage {
 
 	#region Strife reduces Health
 
-	public static async Task InvadersReduceHealthByStrifeCount( GameState gameState ) {
+	public static async Task InvadersReduceHealthByStrifeCount( GameState gameState, Guid actionId ) {
 		// add penalty
-		++HealthToken.healthPenaltyPerStrife;
+		++HealthToken.HealthPenaltyPerStrife;
 		// remove penalty
-		gameState.TimePasses_ThisRound.Push( x => { --HealthToken.healthPenaltyPerStrife; return Task.CompletedTask; } );
+		gameState.TimePasses_ThisRound.Push( x => { --HealthToken.HealthPenaltyPerStrife; return Task.CompletedTask; } );
 
 		// Check if anything is destroyed
 		foreach(var space in gameState.Island.AllSpaces) {
 			var tokens = gameState.Tokens[space];
 			foreach( var token in tokens.Invaders() )
 				if(token.IsDestroyed)
-					await tokens.Destroy( token, tokens[token] );
+					await tokens.Destroy( token, tokens[token], actionId );
 		}
 	}
 
@@ -53,11 +53,12 @@ public static class StrifedRavage {
 	#region Strife caused Damage to Self
 
 	public static async Task StrifedInvadersTakeDamagePerStrife( FearCtx ctx ) {
+		Guid actionId = Guid.NewGuid();
 		foreach(var space in ctx.GameState.Island.AllSpaces)
-			await EachInvaderTakesDamageByStrifeCount( ctx.GameState.Tokens[space] );
+			await EachInvaderTakesDamageByStrifeCount( ctx.GameState.Tokens[space], actionId );
 	}
 
-	static async Task EachInvaderTakesDamageByStrifeCount( TokenCountDictionary tokens ) {
+	static async Task EachInvaderTakesDamageByStrifeCount( TokenCountDictionary tokens, Guid actionId ) {
 		var strifedInvaders = tokens.Invaders()
 			.Where( x => 0 < x.StrifeCount )
 			.OrderBy( x => x.RemainingHealth )
@@ -66,15 +67,15 @@ public static class StrifedRavage {
 		// !!! ??? Do badlands cause damage here?
 
 		foreach(HealthToken strifedInvader in strifedInvaders)
-			await DamageInvaderHealthByItsOwnStrife( tokens, strifedInvader );
+			await DamageInvaderHealthByItsOwnStrife( tokens, strifedInvader, actionId );
 	}
 
-	static async Task DamageInvaderHealthByItsOwnStrife( TokenCountDictionary tokens, HealthToken originalInvader ) {
+	static async Task DamageInvaderHealthByItsOwnStrife( TokenCountDictionary tokens, HealthToken originalInvader, Guid actionId ) {
 		var newInvader = originalInvader.AddDamage( originalInvader.StrifeCount );
 		if(newInvader == originalInvader) return;
 
 		if(newInvader.IsDestroyed)
-			await tokens.Destroy( originalInvader, tokens[originalInvader] );
+			await tokens.Destroy( originalInvader, tokens[originalInvader], actionId );
 		else {
 			tokens.Adjust( newInvader, tokens[originalInvader] );
 			tokens.Init( originalInvader, 0 );

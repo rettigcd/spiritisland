@@ -15,10 +15,11 @@ public class Invaders {
 
 	#endregion
 
-	public InvaderBinding On( Space targetSpace ) {
+	public InvaderBinding On( Space targetSpace, Guid actionId ) {
 		return new InvaderBinding( 
 			gs.Tokens[targetSpace], 
-			new DestroyInvaderStrategy( gs, gs.Fear.AddDirect )
+			new DestroyInvaderStrategy( gs, gs.Fear.AddDirect ),
+			actionId
 		);
 	}
 

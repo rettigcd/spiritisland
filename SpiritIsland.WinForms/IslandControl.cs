@@ -500,6 +500,8 @@ public partial class IslandControl : Control {
 		bool isSS = spirit.Presence.SacredSites.Contains( space );
 		List<Token> row2Tokens = new List<Token> { TokenType.Defend, TokenType.Blight }; // These don't show up in .OfAnyType if they are dynamic
 		row2Tokens.AddRange( tokens.OfAnyType( TokenType.Dahan ) );
+		row2Tokens.AddRange( tokens.OfAnyType( TokenType.Element ) );
+
 		DrawRow( graphics, tokens, x, ref y, iconWidth, xStep, presenceCount, isSS, row2Tokens.ToArray() );
 		DrawRow( graphics, tokens, x, ref y, iconWidth, xStep, 0,             false, TokenType.Beast, TokenType.Wilds, TokenType.Disease, TokenType.Badlands, TokenType.Isolate );
 
@@ -559,9 +561,12 @@ public partial class IslandControl : Control {
 	}
 
 	static Bitmap GetImage( Token token ) {
-		return token is not HealthToken ht ? throw new Exception( "unknown token " + token )
-			: token.Class == TokenType.Dahan ? GetDahanImage( ht )
-			: GetInvaderImage( ht );
+		return token is HealthToken ht
+				? token.Class == TokenType.Dahan ? GetDahanImage( ht )
+					: GetInvaderImage( ht )
+			: token.Class is UniqueToken ut
+				? ResourceImages.Singleton.GetImage( ut.Img )
+			: throw new Exception( "unknown token " + token );
 	}
 
 	static Bitmap GetDahanImage( HealthToken ht ) {
@@ -884,7 +889,7 @@ public partial class IslandControl : Control {
 	Image strife;
 	Image fear;
 	Image grayFear;
-	Dictionary<Token, Image> tokenImages;
+	Dictionary<Token, Image> tokenImages; // not token class, because we need different images for different damaged invaders.
 	#endregion
 
 }

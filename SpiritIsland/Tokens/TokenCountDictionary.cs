@@ -21,18 +21,19 @@ public class TokenCountDictionary {
 	}
 
 	#endregion
+
 	public Space Space { get; }
 
 	public int this[Token specific] {
 		get {
-			ValidateIsAlive( specific );
+			ValidateNotDead( specific );
 			int count = counts[specific];
 			if( specific is UniqueToken ut )
 				count += tokenApi.GetDynamicTokenFor(Space, ut);
 			return count;
 		}
 		private set {
-			ValidateIsAlive( specific );
+			ValidateNotDead( specific );
 			counts[specific] = value; 
 		}
 	}
@@ -50,16 +51,16 @@ public class TokenCountDictionary {
 	public TokenBinding Disease => new ( this, TokenType.Disease );
 	public TokenBinding Wilds => new ( this, TokenType.Wilds );
 	public TokenBinding Badlands => new ( this, TokenType.Badlands ); // This should not be used directly from inside Actions
-	public DahanGroupBinding Dahan{
-		get => _dahan ??= new ( this ); // ! change the ??= to ?? and we would not need to hang on to the binding.
+	public DahanGroupBindingNoEvents Dahan{
+		get => _dahan ??= new DahanGroupBindingNoEvents( this ); // ! change the ??= to ?? and we would not need to hang on to the binding.
 		set => _dahan = value; // Allows Dahan behavior to be overridden
 	}
-	DahanGroupBinding _dahan;
+	DahanGroupBindingNoEvents _dahan;
 
 	#region private
 
-	static void ValidateIsAlive( Token specific ) {
-		if(specific.RemainingHealth == 0) 
+	static void ValidateNotDead( Token specific ) {
+		if(specific is HealthToken ht && ht.RemainingHealth == 0) 
 			throw new ArgumentException( "We don't store dead counts" );
 	}
 
@@ -70,29 +71,32 @@ public class TokenCountDictionary {
 
 	/// <summary> Non-event-triggering setup </summary>
 	public void Adjust( Token specific, int delta ) {
-		if(specific.RemainingHealth == 0) throw new System.ArgumentException( "Don't try to track dead tokens." );
+		if(specific is HealthToken ht && ht.RemainingHealth == 0) throw new System.ArgumentException( "Don't try to track dead tokens." );
 		counts[specific] += delta;
 	}
 
 	public void InitDefault( HealthTokenClass tokenClass, int value )
 		=> Init( GetDefault( tokenClass ), value );
-	public Task AddDefault( HealthTokenClass tokenClass, int count, AddReason addReason = AddReason.Added )
-		=> Add( GetDefault( tokenClass ), count, addReason );
+
+	public Task AddDefault( HealthTokenClass tokenClass, int count, Guid actionId, AddReason addReason = AddReason.Added )
+		=> Add( GetDefault( tokenClass ), count, actionId, addReason );
+
 	public void AdjustDefault( HealthTokenClass tokenClass, int delta ) 
 		=> Adjust( GetDefault( tokenClass ), delta );
+
 	public HealthToken GetDefault( HealthTokenClass tokenClass ) => this.tokenApi.GetDefault( tokenClass );
 
 	public void Init( Token specific, int value ) {
 		counts[specific] = value;
 	}
 
-	public Task Add( Token token, int count, AddReason addReason = AddReason.Added ) {
+	public Task Add( Token token, int count, Guid actionId, AddReason addReason = AddReason.Added ) {
 		if(count < 0) throw new System.ArgumentOutOfRangeException( nameof( count ) );
 		this[token] += count;
-		return tokenApi.Publish_Added( Space, token, count, addReason );
+		return tokenApi.Publish_Added( Space, token, count, addReason, actionId );
 	}
 
-	public Task Remove( Token token, int count, RemoveReason reason = RemoveReason.Removed ) {
+	public Task Remove( Token token, int count, Guid actionId, RemoveReason reason = RemoveReason.Removed ) {
 		count = System.Math.Min( count, this[token] );
 
 		if(count==0) return Task.CompletedTask;
@@ -100,25 +104,25 @@ public class TokenCountDictionary {
 
 		this[token] -= count;
 
-		return tokenApi.Publish_Removed( Space, token, count, reason );
+		return tokenApi.Publish_Removed( Space, token, count, reason, actionId );
 	}
 
 	// Convenience only
-	public Task Destroy( Token token, int count ) => Remove(token, count, RemoveReason.Destroyed );
+	public Task Destroy( Token token, int count, Guid actionId ) => Remove(token, count, actionId, RemoveReason.Destroyed );
 
-	public async Task MoveTo(Token token, Space destination ) {
+	public async Task MoveTo(Token token, Space destination, Guid actionId ) {
 
 		// Remove from source
 		if( token.Class != TokenType.Dahan)
 			Adjust( token, -1 );
-		else if( ! (await Dahan.Remove1(token, RemoveReason.MovedFrom)) ) // !!! Moving publishes a Move event, don't publish this Remove event
+		else if( ! (await Dahan.Bind(actionId).Remove1(token, RemoveReason.MovedFrom)) ) // !!! Moving publishes a Move event, don't publish this Remove event
 			return;
 
 		// Add to destination
 		tokenApi.GetTokensFor( destination ).Adjust( token, 1 );
 
 		// Publish
-		await tokenApi.Publish_Moved( token, Space, destination );
+		await tokenApi.Publish_Moved( token, Space, destination, actionId );
 
 	}
 
@@ -136,7 +140,7 @@ public class TokenCountDictionary {
 
 	public int InvaderTotal() => Invaders().Sum( i => counts[i] );
 
-	public async Task AddStrifeTo( Token invader, int count = 1 ) {
+	public async Task AddStrifeTo( Token invader, Guid actionId, int count = 1 ) {
 
 		// Remove old type from 
 		if(this[invader]<count)
@@ -151,7 +155,7 @@ public class TokenCountDictionary {
 		this[strifed] += count;
 
 		if( strifed.IsDestroyed ) // due to a strife-health penalty
-			await Destroy( strifed, this[strifed] );
+			await Destroy( strifed, this[strifed], actionId );
 	}
 
 	#endregion

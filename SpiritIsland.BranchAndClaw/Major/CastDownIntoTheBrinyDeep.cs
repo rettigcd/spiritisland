@@ -53,8 +53,9 @@ public class CastDownIntoTheBrinyDeep {
 				// Destroy all other tokens
 				var tokens = spaceCtx.Tokens;
 				foreach(var token in tokens.Keys.ToArray())
-					await tokens.Destroy( token, tokens[token] );
+					await tokens.Destroy( token, tokens[token], ctx.CurrentActionId );
 			}
+
 		}
 	}
 

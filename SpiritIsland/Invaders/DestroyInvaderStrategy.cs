@@ -7,14 +7,14 @@ public class DestroyInvaderStrategy {
 		this.addFear = addFear;
 	}
 
-	public virtual async Task OnInvaderDestroyed( Space space, HealthToken token, bool fromRavage ) {
+	public virtual async Task OnInvaderDestroyed( Space space, HealthToken token, bool fromRavage, Guid actionId ) {
 
 		var reason = fromRavage ? RemoveReason.DestroyedInBattle : RemoveReason.Destroyed;
 
-		await gs.Tokens[space].Destroy( token, 1 );
+		await gs.Tokens[space].Destroy( token, 1, actionId );
 
 		// !!! see if we can invoke this through the Token-Publish API instead - so we can make TokenRemovedArgs internal to Island_Tokens class
-		await gs.Tokens.TokenRemoved.InvokeAsync( new TokenRemovedArgs( gs, token, reason ) {
+		await gs.Tokens.TokenRemoved.InvokeAsync( new TokenRemovedArgs( gs, token, reason, actionId ) {
 			Space = space,
 			Count = 1,
 		} );

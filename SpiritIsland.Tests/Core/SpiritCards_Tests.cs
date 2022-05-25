@@ -45,8 +45,7 @@ namespace SpiritIsland.Tests {
 			Assert.Equal( expectedCost, card.Cost );
 			Assert.Equal( expectedSpeed, card.DisplaySpeed );
 
-			var cardElements = card.Elements
-				.Select(x=> GrowthTests.ElementChars[x.Key]);
+			var cardElements = card.Elements.BuildElementString();
 			Assert.Equal( expectedElements, string.Join("",cardElements));
 
 		}

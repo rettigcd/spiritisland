@@ -80,7 +80,7 @@ public abstract class Spirit : IOption {
 		var ctx = Bind( gameState );
 
 		// (1) Pre-Growth Track options
-		foreach(ITrackActionFactory action in Presence.RevealedActions)
+		foreach(ITrackActionFactory action in Presence.RevealedActions.OfType<ITrackActionFactory>())
 			if( !action.RunAfterGrowthResult )
 				await action.ActivateAsync( ctx );
 
@@ -142,7 +142,7 @@ public abstract class Spirit : IOption {
 		// ! Elements were added when the round started.
 
 		// Do actions AFTER energy and elements have been added - in case playing ManyMindsMoveAsOne - Pay 2 for power card.
-		foreach(ITrackActionFactory action in Presence.RevealedActions)
+		foreach(ITrackActionFactory action in Presence.RevealedActions.Cast<ITrackActionFactory>())
 			if(action.RunAfterGrowthResult)
 				await action.ActivateAsync( ctx );
 
@@ -308,15 +308,15 @@ public abstract class Spirit : IOption {
 	}
 
 	public virtual async Task TakeAction(IActionFactory factory, SelfCtx ctx) {
-		var oldActionGuid = CurrentActionId; // capture old
-		CurrentActionId = Guid.NewGuid(); // set new
+//		var oldActionGuid = CurrentActionId; // capture old
+//		CurrentActionId = Guid.NewGuid(); // set new
 		try {
 			RemoveFromUnresolvedActions( factory ); // removing first, so action can restore it if desired
 			await factory.ActivateAsync( ctx );
 			if(factory is IRecordLastTarget lastTargetRecorder )
 				await ActionTaken_ThisRound.InvokeAsync( new ActionTaken(factory,lastTargetRecorder.LastTarget) );
 		} finally {
-			CurrentActionId = oldActionGuid; // restore
+//			CurrentActionId = oldActionGuid; // restore
 		}
 		ctx.GameState.CheckWinLoss(); // @@@
 	}
@@ -361,9 +361,9 @@ public abstract class Spirit : IOption {
 
 	protected abstract void InitializeInternal( Board board, GameState gameState );
 
-	public virtual SelfCtx Bind( GameState gameState ) => new SelfCtx( this, gameState, default );
+	public virtual SelfCtx Bind( GameState gameState, Guid actionId = default ) => new SelfCtx( this, gameState, default, actionId != default ? actionId : Guid.NewGuid() );
 
-	public virtual SelfCtx BindMyPower( GameState gameState ) => new SelfCtx( this, gameState, Cause.MyPowers );
+	public virtual SelfCtx BindMyPower( GameState gameState ) => new SelfCtx( this, gameState, Cause.MyPowers, Guid.NewGuid() );
 
 	void On_TimePassed(GameState _ ) {
 		// reset cards / powers
@@ -415,7 +415,7 @@ public abstract class Spirit : IOption {
 
 	// Used by Flame's Fury to detect new actions
 	// Used by Observe The Ever-Changing World to distinguish between actions
-	public Guid CurrentActionId; // !!! this might not work when we go to multi-player
+//	public Guid CurrentActionId; // !!! this might not work when we go to multi-player
 
 	#region Play Cards
 
@@ -517,14 +517,14 @@ public abstract class Spirit : IOption {
 	#region Power Plug-ins
 
 	// overriden by Bringer, Bringer's BuildInvaderGroupForPower uses this.
-	public virtual Task DestroyInvaderForPowers( GameState gs, Space space, int count, Token token ) {
-		return gs.Tokens[space].Destroy(token, count );
-	}
+	//public virtual Task DestroyInvaderForPowers( GameState gs, Space space, int count, Token token ) {
+	//	return gs.Tokens[space].Destroy(token, count );
+	//}
 
-	/// <summary>Hook for Grinning Trickster to add additional strife for power</summary>
-	public virtual Task AddStrife( TargetSpaceCtx ctx, Token invader ) {
-		return ctx.Tokens.AddStrifeTo( invader );
-	}
+	///// <summary>Hook for Grinning Trickster to add additional strife for power</summary>
+	//public virtual Task AddStrife( TargetSpaceCtx ctx, Token invader ) {
+	//	return ctx.Tokens.AddStrifeTo( invader );
+	//}
 
 	// Overriden by Trickster because it costs them presence
 	public virtual async Task RemoveBlight( TargetSpaceCtx ctx, int count=1 ) {

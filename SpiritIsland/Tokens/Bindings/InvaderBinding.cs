@@ -4,12 +4,15 @@ public class InvaderBinding {
 
 	#region constructor
 
-	public InvaderBinding( TokenCountDictionary tokens, DestroyInvaderStrategy destroyStrategy) {
+	public InvaderBinding( TokenCountDictionary tokens, DestroyInvaderStrategy destroyStrategy, Guid actionId) {
 		this.Tokens = tokens;
 		this.DestroyStrategy = destroyStrategy;
+		this.actionId = actionId;
 	}
 
 	#endregion
+
+	public Guid actionId;
 
 	public Space Space => Tokens.Space;
 
@@ -41,14 +44,14 @@ public class InvaderBinding {
 
 	/// <summary> Not Badland-aware </summary>
 	/// <returns>(damage inflicted,damagedInvader)</returns>
-	public async Task<(int,Token)> ApplyDamageTo1( int availableDamage, HealthToken invaderToken, bool fromRavage = false ) { // !! change Token to HealthToken
+	public async Task<(int,HealthToken)> ApplyDamageTo1( int availableDamage, HealthToken invaderToken, bool fromRavage = false ) { // !! change Token to HealthToken
 
 		var damagedInvader = invaderToken.AddDamage( availableDamage );
 		if(!damagedInvader.IsDestroyed) {
 			Tokens.Adjust( invaderToken, -1 );
 			Tokens.Adjust( damagedInvader, 1 );
 		} else 
-			await DestroyStrategy.OnInvaderDestroyed( Space, invaderToken, fromRavage );
+			await DestroyStrategy.OnInvaderDestroyed( Space, invaderToken, fromRavage, actionId );
 
 		int damageInflicted = invaderToken.RemainingHealth - damagedInvader.RemainingHealth;
 		return (damageInflicted,damagedInvader); // damage inflicted
@@ -76,9 +79,8 @@ public class InvaderBinding {
 
 	public async Task<int> Destroy( int countToDestroy, HealthToken invaderToDestroy ) {
 		int numToDestroy = Math.Min(countToDestroy, this[invaderToDestroy] );
-		for(int i = 0; i < numToDestroy; ++i) {
-			await DestroyStrategy.OnInvaderDestroyed( Space, invaderToDestroy, false );
-		}
+		for(int i = 0; i < numToDestroy; ++i)
+			await DestroyStrategy.OnInvaderDestroyed( Space, invaderToDestroy, false, actionId );
 		return numToDestroy;
 	}
 
@@ -120,11 +122,11 @@ public class InvaderBinding {
 			.FirstOrDefault();
 
 		if(invaderToRemove != null)
-			await Tokens.Remove( invaderToRemove, 1 );
+			await Tokens.Remove( invaderToRemove, 1, actionId );
 	}
 
 	public Task Remove( Token token, int count, RemoveReason reason = RemoveReason.Removed )
-		=> Tokens.Remove( token, count, reason );
+		=> Tokens.Remove( token, count, actionId, reason );
 
 	#endregion
 

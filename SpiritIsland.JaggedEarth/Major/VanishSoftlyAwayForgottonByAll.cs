@@ -43,7 +43,7 @@ public class VanishSoftlyAwayForgottonByAll {
 		async ctx => { 
 			var tokens = ctx.Tokens;
 			foreach(var t in DamagedInvaders( ctx ))
-				await tokens.Remove( t, tokens[t] );
+				await ctx.Remove( t, tokens[t] );
 		}
 	);
 

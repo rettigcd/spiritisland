@@ -80,12 +80,12 @@ public class Bringer_GrowthTests : GrowthTests {
 	[Trait("Presence","EnergyTrack")]
 	[Theory]
 	[InlineDataAttribute(1,2,"")]
-	[InlineDataAttribute(2,2,"1 air")]
-	[InlineDataAttribute(3,3,"1 air")]
-	[InlineDataAttribute(4,3, "1 moon,1 air" )]
-	[InlineDataAttribute(5,4, "1 moon,1 air" )]
-	[InlineDataAttribute(6,4, "1 moon,1 air,1 any" )]
-	[InlineDataAttribute(7,5, "1 moon,1 air,1 any" )]
+	[InlineDataAttribute(2,2,"air")]
+	[InlineDataAttribute(3,3,"air")]
+	[InlineDataAttribute(4,3, "moon,air" )]
+	[InlineDataAttribute(5,4, "moon,air" )]
+	[InlineDataAttribute(6,4, "moon,air,any" )]
+	[InlineDataAttribute(7,5, "moon,air,any" )]
 	public async Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 		var fixture = new ConfigurableTestFixture { Spirit = new Bringer() };
 		await fixture.VerifyEnergyTrack(revealedSpaces, expectedEnergyGrowth, elements);
@@ -98,7 +98,7 @@ public class Bringer_GrowthTests : GrowthTests {
 	[InlineDataAttribute(3,2,"")]
 	[InlineDataAttribute(4,3,"")]
 	[InlineDataAttribute(5,3,"")]
-	[InlineDataAttribute(6,3,"1 any")]
+	[InlineDataAttribute(6,3,"any")]
 	public async Task CardTrack(int revealedSpaces, int expectedCardPlayCount, string elements){
 		var fixture = new ConfigurableTestFixture { Spirit = new Bringer() };
 		await fixture.VerifyCardTrack(revealedSpaces, expectedCardPlayCount, elements);

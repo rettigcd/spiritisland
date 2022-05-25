@@ -6,19 +6,20 @@ public class SelfCtx {
 	public GameState GameState { get; }
 	#region constructor
 
-	public SelfCtx(Spirit self,GameState gameState, Cause cause) {
+	public SelfCtx(Spirit self,GameState gameState, Cause cause, Guid actionId) {
 		Self = self;
 		GameState = gameState;
 		_terrainMapper = cause == Cause.MyPowers
 			? GameState.Island.Terrain_ForPowerAndBlight
 			: Island.Terrain;
-
+		CurrentActionId = actionId;
 	}
 
 	protected SelfCtx(SelfCtx src) {
 		Self = src.Self;
 		GameState = src.GameState;
 		_terrainMapper = src._terrainMapper;
+		CurrentActionId = src.CurrentActionId;
 	}
 
 	#endregion constructor
@@ -36,7 +37,7 @@ public class SelfCtx {
 
 	/// <summary> Simple wrapper around GameState.Tokens.Move </summary>
 	public Task Move(Token token, Space from, Space to )
-		=> Target(from).Tokens.MoveTo( token, to );
+		=> Target(from).Tokens.MoveTo( token, to, CurrentActionId );
 
 	public Task<bool> YouHave( string elementString ) => Self.HasElements( ElementCounts.Parse(elementString) );
 
@@ -49,6 +50,8 @@ public class SelfCtx {
 			space = null 
 		} );
 	}
+
+	public Guid CurrentActionId { get; }
 
 	public Task<T> Decision<T>( Select.TypedDecision<T> originalDecision ) where T : class, IOption => Self.Action.Decision( originalDecision );
 
@@ -126,6 +129,10 @@ public class SelfCtx {
 	#region High level fear-specific decisions
 
 	public async Task<Space> RemoveTokenFromOneSpace( IEnumerable<Space> spaceOptions, int count, params TokenClass[] removables ) {
+
+		// !!!!!!!!  need to set action id
+
+
 		var spaceCtx = await SelectSpace( "Remove invader from", spaceOptions );
 		if(spaceCtx != null)
 			while(count-->0)

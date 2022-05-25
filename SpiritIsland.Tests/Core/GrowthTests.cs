@@ -2,18 +2,6 @@
 
 public class GrowthTests {
 
-	[Obsolete()]
-	public static readonly Dictionary<Element,char> ElementChars = new() {
-			[Element.Air] = 'A',
-			[Element.Animal] = 'B',
-			[Element.Earth] = 'E',
-			[Element.Fire] = 'F',
-			[Element.Moon] = 'M',
-			[Element.Plant] = 'P',
-			[Element.Sun] = 'S',
-			[Element.Water] = 'W',
-		};
-
 	protected Spirit spirit;
 	protected VirtualUser User {get; }
 
@@ -69,7 +57,7 @@ public class GrowthTests {
 		try {
 			gameState.Phase = Phase.Growth;
 			return spirit.GrowAndResolve( spirit.Growth.Options[option],gameState);
-		} catch( Exception ex ) {
+		} catch {
 			throw;
 		}
 	}
@@ -115,14 +103,6 @@ public class GrowthTests {
 
 	public void Assert_EnergyTrackIs( int expectedEnergy ) {
 		Assert.Equal( expectedEnergy, spirit.EnergyPerTurn );
-	}
-
-	protected void Assert_BonusElements( string expectedElements ) {
-		var spiritElements = spirit.Elements;
-		foreach(var pair in GrowthTests.ElementChars) {
-			int expected = expectedElements.Count( x => x == pair.Value );
-			spiritElements[pair.Key].ShouldBe( expected, pair.Key.ToString() );
-		}
 	}
 
 	protected void When_StartingGrowth() {

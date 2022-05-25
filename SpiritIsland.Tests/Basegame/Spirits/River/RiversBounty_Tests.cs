@@ -36,7 +36,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		[Fact]
 		public void Stats() {
 			var card = PowerCard.For<RiversBounty>();
-			Assert_CardStatus( card, 0, Phase.Slow, "SWB" );
+			Assert_CardStatus( card, 0, Phase.Slow, "sun water animal" );
 		}
 
 

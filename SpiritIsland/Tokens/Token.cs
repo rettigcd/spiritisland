@@ -6,8 +6,4 @@ public interface Token : IOption {
 
 	public char Initial { get; }
 
-	int RemainingHealth {get;}
-
-	int FullHealth {get; }
-
 }

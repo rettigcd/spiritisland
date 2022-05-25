@@ -103,10 +103,15 @@ public class GameState {
 
 	public int DamageToBlightLand = 2;
 
-	public async Task DamageLandFromRavage( Space space, int damageInflictedFromInvaders ) {
+	public async Task DamageLandFromRavage( Space space, int damageInflictedFromInvaders, Guid actionId ) {
 		if(damageInflictedFromInvaders==0) return;
 
-		await LandDamaged.InvokeAsync( new LandDamagedArgs { GameState = this, Space = space, Damage = damageInflictedFromInvaders} );
+		await LandDamaged.InvokeAsync( new LandDamagedArgs { 
+			GameState = this, 
+			Space = space, 
+			Damage = damageInflictedFromInvaders,
+			ActionId = actionId
+		} );
 
 		if( damageInflictedFromInvaders >= DamageToBlightLand)
 			await Tokens[space].Blight.Add(1, AddReason.Ravage);
@@ -236,7 +241,7 @@ public class GameState {
 
 	#endregion
 
-	public DahanGroupBinding DahanOn( Space space ) => Tokens[space].Dahan; // Obsolete - use TargetSpaceCtx
+	public DahanGroupBindingNoEvents DahanOn( Space space ) => Tokens[space].Dahan; // Obsolete - use TargetSpaceCtx
 
 	#region API - overridable
 
@@ -420,6 +425,7 @@ public class LandDamagedArgs {
 	public GameState GameState;
 	public Space Space;
 	public int Damage;
+	public Guid ActionId;
 }
 
 public class AddBlightEffect {

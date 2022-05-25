@@ -12,4 +12,7 @@ public class TokenType {
 
 	static readonly public UniqueToken Isolate    = new UniqueToken("Isolate" ,'I', Img.Isolate );
 	static readonly public UniqueToken Badlands   = new UniqueToken("Badlands",'M', Img.Badlands ); // 'M' looks like the badlands symbol /\/\ 
+
+	static readonly public TokenClass Element = new UniqueToken( "Element", 'Y', Img.Token_Any ); // use as unique class for stacked elements
+
 }

@@ -58,7 +58,7 @@ public class LureOfTheDeepWilderness : Spirit {
 			await EntralExplorersOnSpace( selfCtx.Target(space) );
 	}
 
-	async Task EntralExplorersOnSpace( TargetSpaceCtx ctx ) {
+	static async Task EntralExplorersOnSpace( TargetSpaceCtx ctx ) {
 		int maxRemovable = ctx.PresenceCount * 2;
 
 		int explorerCount = ctx.Tokens.Sum( Invader.Explorer );

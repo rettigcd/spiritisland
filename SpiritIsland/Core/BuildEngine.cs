@@ -6,6 +6,8 @@ public class BuildEngine {
 	protected BuildingEventArgs.BuildType buildType;
 	protected GameState gameState;
 
+	readonly Guid actionId = Guid.NewGuid();
+
 	public BuildEngine() {}
 
 	public async Task<string> Exec( 
@@ -36,8 +38,9 @@ public class BuildEngine {
 			_ => true,
 		};
 		// build it
-		if(shouldBuild)
-			await tokens.AddDefault( invaderToAdd, 1, AddReason.Build );
+		if(shouldBuild) {
+			await tokens.AddDefault( invaderToAdd, 1, actionId, AddReason.Build );
+		}
 
 		return invaderToAdd.Label;
 	}
@@ -46,7 +49,8 @@ public class BuildEngine {
 		var disease = tokens.Disease;
 		bool stoppedByDisease = disease.Any;
 		if(stoppedByDisease)
-			await disease.Remove(1,RemoveReason.UsedUp);
+			await disease.Bind(actionId).Remove(1, RemoveReason.UsedUp);
+
 		return stoppedByDisease;
 	}
 

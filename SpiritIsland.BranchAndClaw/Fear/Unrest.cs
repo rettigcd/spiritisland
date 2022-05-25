@@ -15,23 +15,28 @@ public class Unrest : IFearOptions {
 	[FearLevel( 2, "Each player adds 1 strife to a town.  For the rest of this turn, invaders have -1 health per strife to a minimum of 1." )]
 	public async Task Level2( FearCtx ctx ) {
 
+		var actionId = Guid.NewGuid();
+
 		// Each player adds 1 strife to a town.
 		foreach(var spiritCtx in ctx.Spirits)
 			await spiritCtx.AddStrifeToOne( ctx.GameState.Island.AllSpaces, Invader.Town );
 
 		// For the rest of this turn, invaders have -1 health per strife to a minimum of 1.
-		await StrifedRavage.InvadersReduceHealthByStrifeCount( ctx.GameState );
+		await StrifedRavage.InvadersReduceHealthByStrifeCount( ctx.GameState, actionId );
 	}
 
 	[FearLevel( 3, "Each player adds 1 strife to an invader.  For the rest of this turn, invaders have -1 health per strife to a minimum of 1." )]
 	public async Task Level3( FearCtx ctx ) {
+
+		var actionId = Guid.NewGuid();
+
 		var gs = ctx.GameState;
 		// Each player adds 1 strife to an invader.
 		foreach(var spiritCtx in ctx.Spirits)
 			await spiritCtx.AddStrifeToOne( gs.Island.AllSpaces );
 
 		// For the rest of this turn, invaders have -1 health per strife to a minimum of 1.
-		await StrifedRavage.InvadersReduceHealthByStrifeCount( ctx.GameState );
+		await StrifedRavage.InvadersReduceHealthByStrifeCount( ctx.GameState, actionId );
 	}
 
 }

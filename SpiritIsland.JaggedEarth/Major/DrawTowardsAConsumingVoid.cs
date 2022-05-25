@@ -40,9 +40,9 @@ public class DrawTowardsAConsumingVoid {
 			// move tokens
 			var tokenCounts = ctx.GameState.Tokens[adj];
 			foreach(var tokenGroup in tokenGroups) {
-				var tokenToGather = tokenCounts.OfType( tokenGroup ).OrderByDescending( x => x.RemainingHealth ).FirstOrDefault();
+				var tokenToGather = tokenCounts.OfType( tokenGroup ).OrderByDescending( x => x is HealthToken ht ? ht.RemainingHealth : 0 ).FirstOrDefault();
 				if(tokenToGather != null)
-					await ctx.GameState.Tokens[adj].MoveTo( tokenToGather, ctx.Space ); 
+					await ctx.Move( tokenToGather, adj, ctx.Space );
 			}
 			// move presense
 			var spiritsInSpace = ctx.GameState.Spirits.Where( s => s.Presence.IsOn( adj ) ).ToArray();

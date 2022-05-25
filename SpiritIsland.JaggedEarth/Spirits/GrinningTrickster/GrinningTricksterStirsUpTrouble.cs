@@ -47,17 +47,19 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 
 	// A Real Flair for Discord
 	// After one of your Powers adds strife in a land, you may pay 1 Energy to add 1 strife within Range-1 of that land."
-	public override async Task AddStrife( TargetSpaceCtx ctx, Token invader ) {
-		await base.AddStrife( ctx, invader );
-		if(Energy==0) return;
-		var nearbyInvaders = ctx.Space.Range(1)
-			.SelectMany(s=>ctx.Target(s).Tokens.Invaders().Select(t=>new SpaceToken(s,t)))
-			.ToArray();
-		var invader2 = await Action.Decision(new Select.TokenFromManySpaces("Add additional strife for 1 energy",nearbyInvaders,Present.Done));
-		if(invader2 == null) return;
-		Energy--;
-		await base.AddStrife( ctx.Target(invader2.Space), invader2.Token);
-	}
+	//public override async Task AddStrife( TargetSpaceCtx ctx, Token invader ) {
+	//	await base.AddStrife( ctx, invader );
+	//	if(Energy==0) return;
+	//	var nearbyInvaders = ctx.Space.Range(1)
+	//		.SelectMany(s=>ctx.Target(s).Tokens.Invaders().Select(t=>new SpaceToken(s,t)))
+	//		.ToArray();
+	//	var invader2 = await Action.Decision(new Select.TokenFromManySpaces("Add additional strife for 1 energy",nearbyInvaders,Present.Done));
+	//	if(invader2 == null) return;
+	//	Energy--;
+	//	await base.AddStrife( ctx.Target(invader2.Space), invader2.Token);
+	//}
+	// !!!!! was this AddStrife.. thing added to derived context ????
+
 
 	// Cleanup Up Messes is such a drag
 	public override async Task RemoveBlight( TargetSpaceCtx ctx, int count=1 ) {
@@ -75,13 +77,13 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 		await ctx.Presence.Destroy( space, DestoryPresenceCause.SpiritPower );
 	}
 
-	public override SelfCtx BindMyPower( GameState gameState ) => new TricksterCtx(this,gameState);
+	public override SelfCtx BindMyPower( GameState gameState ) => new TricksterCtx(this,gameState,Guid.NewGuid());
 
 }
 
 // Only use this when Trickster is using their own Powers
 class TricksterCtx : SelfCtx {
-	public TricksterCtx(Spirit spirit, GameState gs) : base( spirit, gs, Cause.MyPowers ) { }
+	public TricksterCtx(Spirit spirit, GameState gs, Guid actionId) : base( spirit, gs, Cause.MyPowers, actionId ) { }
 	public override TargetSpaceCtx Target( Space space ) => new TricksterSpaceCtx( this, space );
 }
 
@@ -102,7 +104,7 @@ public class TricksterSpaceCtx : TargetSpaceCtx {
 		var invader2 = await Self.Action.Decision( new Select.TokenFromManySpaces( "Add additional strife for 1 energy", nearbyInvaders, Present.Done ) );
 		if(invader2 == null) return;
 		--Self.Energy;
-		await Target( invader2.Space ).Tokens.AddStrifeTo( invader2.Token );
+		await Target( invader2.Space ).AddStrifeTo( invader2.Token );
 
 	}
 

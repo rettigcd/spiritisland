@@ -26,13 +26,13 @@ public class ForsakeSocietyToChaseAfterDreams {
 
 	static async Task Dissolve(TargetSpaceCtx ctx, params HealthTokenClass[] invaderCats) {
 		var decision = Select.Invader.ToReplace("dissolve", ctx.Space, ctx.Tokens.OfAnyType( invaderCats ) );
-		var invader = await ctx.Decision( decision );
+		var invader = (HealthToken)await ctx.Decision( decision );
 		if(invader == null) return;
 
 		// Replace
 		if(invader.Class != Invader.Explorer) {
 			await ctx.Invaders.Remove(invader,1,RemoveReason.Replaced);
-			await ctx.Tokens.AddDefault( Invader.Explorer,invader.RemainingHealth, AddReason.AsReplacement );
+			await ctx.AddDefault( Invader.Explorer,invader.RemainingHealth, AddReason.AsReplacement );
 		}
 
 		// !!! If they are damaged, should we distribute that damage and destroy some of the explorers?

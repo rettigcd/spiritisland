@@ -24,7 +24,13 @@ public class TargetSpaceCtx : SelfCtx {
 	public bool MatchesRavageCard => GameState.InvaderDeck.Ravage.Any(c=>c.Matches(Space));
 	public bool MatchesBuildCard => GameState.InvaderDeck.Build.Any(c=>c.Matches(Space));
 
-	public TokenCountDictionary Tokens => _tokens ??= GameState.Tokens[Space];
+	public TokenCountDictionary Tokens {
+		get {
+			if( _tokens == default)
+				_tokens = GameState.Tokens[Space];
+			return _tokens;
+		}
+	}
 	TokenCountDictionary _tokens;
 
 	#region Token Shortcuts
@@ -37,12 +43,18 @@ public class TargetSpaceCtx : SelfCtx {
 		} ); // !! could just sweep entire board instead...
 	}
 
+	public TokenBinding Beasts               => Tokens.Beasts.Bind( CurrentActionId );
+	public TokenBinding Disease              => Tokens.Disease.Bind( CurrentActionId );
+	public TokenBinding Wilds                => Tokens.Wilds.Bind( CurrentActionId );
+	public virtual TokenBinding Badlands     => Tokens.Badlands.Bind( CurrentActionId );
+	public DahanGroupBinding Dahan => Tokens.Dahan.Bind( CurrentActionId );
 	public virtual BlightTokenBinding Blight => Tokens.Blight;
-	public TokenBinding Beasts => Tokens.Beasts;
-	public TokenBinding Disease => Tokens.Disease;
-	public TokenBinding Wilds => Tokens.Wilds;
-	public DahanGroupBinding Dahan => Tokens.Dahan;
-	public virtual TokenBinding Badlands => Tokens.Badlands;
+	public Task AddDefault( HealthTokenClass tokenClass, int count, AddReason addReason = AddReason.Added )
+		=> Tokens.AddDefault( tokenClass, count, CurrentActionId, addReason );
+	public Task Remove( Token token, int count, RemoveReason reason = RemoveReason.Removed )
+		=> Tokens.Remove( token, count, CurrentActionId, reason );
+	public Task Destroy( Token token, int count) 
+		=> Tokens.Destroy( token, count, CurrentActionId );
 
 	#endregion
 
@@ -169,7 +181,11 @@ public class TargetSpaceCtx : SelfCtx {
 	// The current targets power
 	public InvaderBinding Invaders => invadersRO ??= GetInvaders();
 
-	protected virtual InvaderBinding GetInvaders() => new InvaderBinding( Tokens, new DestroyInvaderStrategy( GameState, GameState.Fear.AddDirect ) );
+	protected virtual InvaderBinding GetInvaders() => new InvaderBinding(
+		Tokens, 
+		new DestroyInvaderStrategy( GameState, GameState.Fear.AddDirect ),
+		CurrentActionId
+	);
 
 	public void SkipAllInvaderActions() => GameState.SkipAllInvaderActions(Space);
 	public void Skip1Build(Func<GameState,Space,Task> altAction = null) => GameState.Skip1Build( Space, altAction);
@@ -286,8 +302,13 @@ public class TargetSpaceCtx : SelfCtx {
 	public virtual async Task AddStrife( params TokenClass[] groups ) {
 		var invader = await Decision( Select.Invader.ForStrife( Tokens, groups ) );
 		if(invader == null) return;
-		await Tokens.AddStrifeTo( invader );
+		await Tokens.AddStrifeTo( invader, CurrentActionId );
 	}
+
+	public Task AddStrifeTo( Token invader, int count = 1 ) {
+		return Tokens.AddStrifeTo( invader, CurrentActionId, count );
+	}
+
 
 	#endregion
 

@@ -19,7 +19,7 @@ public class Token_Tests {
 		var conflicts = tokens
 			.GroupBy(t=>t.ToString())
 			.Where(grp=>grp.Count()>1)
-			.Select(grp=>grp.Key+" is used for:"+grp.Select(t=>t.Class.Label+":"+t.RemainingHealth).Join(", "))
+			.Select(grp=>grp.Key+" is used for:"+grp.Select(t=>t.Class.Label+":"+(t is HealthToken ht ? ht.RemainingHealth: 0)).Join(", "))
 			.Join("\r\n");
 
 		conflicts.ShouldBe("");

@@ -70,9 +70,9 @@ public class PentUpCalamity {
 
 	static async Task RemoveToken( TargetSpaceCtx ctx, Token tokenToRemove ) {
 		if(tokenToRemove is HealthToken invader)
-			await ctx.Tokens.AddStrifeTo( invader, -1 );
+			await ctx.AddStrifeTo( invader, -1 );
 		else
-			await ctx.Tokens.Remove( tokenToRemove, 1 );
+			await ctx.Remove( tokenToRemove, 1 );
 	}
 
 	static Token[] GetRemovableTokens( TargetSpaceCtx ctx ) {

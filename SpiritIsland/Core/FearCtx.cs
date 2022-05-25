@@ -12,7 +12,12 @@ public class FearCtx {
 
 	#endregion constructor
 
-	public IEnumerable<SelfCtx> Spirits => this.GameState.Spirits.Select(s=>s.Bind( GameState ));
+	public IEnumerable<SelfCtx> Spirits {
+		get {
+			var actionId = Guid.NewGuid();
+			return this.GameState.Spirits.Select( s => s.Bind( GameState, actionId ) );
+		}
+	}
 
 	public async Task EachPlayerTakesActionInALand( SpaceAction action, Func<TargetSpaceCtx,bool> filter, bool differentLands = false ) {
 		var used = new List<Space>();
@@ -29,7 +34,7 @@ public class FearCtx {
 		}
 	}
 
-	public InvaderBinding InvadersOn(Space space) => GameState.Invaders.On( space );
+//	public InvaderBinding InvadersOn(Space space) => GameState.Invaders.On( space );
 
 	#region Lands
 

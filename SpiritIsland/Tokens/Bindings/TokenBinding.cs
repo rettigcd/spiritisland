@@ -1,27 +1,55 @@
 ﻿namespace SpiritIsland;
 
-public class TokenBinding {
-
+public class TokenBindingNoEvents {
 	readonly protected TokenCountDictionary tokens;
-	readonly Token token;
+	readonly protected Token token;
 
-	public TokenBinding( TokenCountDictionary tokens, Token token ) {
+	#region constructor
+	public TokenBindingNoEvents( TokenCountDictionary tokens, Token token ) {
 		this.tokens = tokens;
 		this.token = token;
 	}
+	public TokenBindingNoEvents( TokenBindingNoEvents src ) {
+		this.tokens = src.tokens;
+		this.token = src.token;
+	}
+	#endregion
+
 	public bool Any => Count > 0;
 
 	public virtual int Count => tokens[token];
 
-	public void Init(int count ) => tokens.Init(token,count);
-	public void Adjust( int delta ) => tokens.Adjust(token, delta);
+	public void Init( int count ) => tokens.Init( token, count );
 
-	public virtual Task Add(int count, AddReason reason = AddReason.Added) => tokens.Add(token,count, reason);
+	public void Adjust( int delta ) => tokens.Adjust( token, delta );
 
-	public virtual Task Remove(int count, RemoveReason reason = RemoveReason.Removed) => tokens.Remove(token,count,reason);
+	public TokenBinding Bind(Guid actionId) => new TokenBinding(this,actionId);
+}
 
-	public Task Destroy(int count) => Remove(count,RemoveReason.Destroyed);
+public class TokenBinding : TokenBindingNoEvents {
+
+	#region constructor
+
+	public TokenBinding( TokenBindingNoEvents src, Guid actionId ) : base( src ) {
+		this._actionId = actionId;
+	}
+
+	public TokenBinding( TokenCountDictionary tokens, Token token ):base( tokens, token ) {
+		// !!!!!!!!!!!! deprecate this
+	}
+
+	#endregion
+
+	public virtual Task Add( int count, AddReason reason = AddReason.Added )
+		=> tokens.Add( token, count, _actionId, reason );
+
+	public virtual Task Remove( int count, RemoveReason reason = RemoveReason.Removed ) => tokens.Remove( token, count, _actionId, reason );
+
+	public Task Destroy( int count ) => Remove( count, RemoveReason.Destroyed );
 
 	public static implicit operator int( TokenBinding b ) => b.Count;
 
+	readonly Guid _actionId;
+
 }
+

@@ -31,12 +31,13 @@ public class TallTalesOfSavagery : IFearOptions {
 	[FearLevel( 3, "Remove 2 Explorer or 1 Town from each land with Dahan. Then, remove 1 City from each land with at least 2 Dahan." )]
 	public async Task Level3( FearCtx ctx ) {
 		var gs = ctx.GameState;
+		var actionId = Guid.NewGuid();
 		// Remove 2 explorers or 1 Town from each land with Dahan
 		foreach(var space in gs.Island.AllSpaces.Where(s => gs.DahanOn(s).Any))
-			await RemoveTownOr2Explorers( gs.Invaders.On( space ) );
+			await RemoveTownOr2Explorers( gs.Invaders.On( space, actionId ) );
 		// Then, remove 1 City from each land with at least 2 Dahan
 		foreach(var space in gs.Island.AllSpaces.Where( s=>gs.DahanOn(s).Count>=2 && gs.Tokens[s].Has(Invader.City) ))
-			await gs.Invaders.On(space).Remove(Invader.City);
+			await gs.Invaders.On(space,actionId).Remove(Invader.City);
 	}
 
 	static async Task RemoveTownOr2Explorers( InvaderBinding grp ) { // !! maybe we should let the player choose in case town was strifed

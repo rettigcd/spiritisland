@@ -9,7 +9,7 @@ public class ToDreamAThousandDeaths_DestroyStrategy : DestroyInvaderStrategy {
 		this.ctx = ctx;
 	}
 
-	public override async Task OnInvaderDestroyed( Space space, HealthToken token, bool fromRavage ) {
+	public override async Task OnInvaderDestroyed( Space space, HealthToken token, bool fromRavage, Guid _ ) {
 		if(token.Class == Invader.City) {
 			AddFear( space, 5, false ); // not actually destroying towns/cities
 		} else {
@@ -41,7 +41,7 @@ public class ToDreamAThousandDeaths_DestroyStrategy : DestroyInvaderStrategy {
 				, Present.Always
 			) );
 
-			await tokens.MoveTo( invader, destination );
+			await ctx.Move( invader, source, destination );
 
 			--countToPush;
 			invaders = CalcInvaderTypes();

@@ -8,7 +8,7 @@ class LetThemBreakThemselvesAgainstTheStone {
 	static public Task Option0(TargetSpaceCtx ctx ) {
 		ctx.GameState.LandDamaged.ForRound.Add( async (args) =>{
 			if(args.Space == ctx.Space)
-				await args.GameState.Invaders.On(args.Space).UserSelectedDamage(2,ctx.Self);
+				await args.GameState.Invaders.On(args.Space, args.ActionId).UserSelectedDamage(2,ctx.Self);
 		});
 		return Task.CompletedTask;
 	}
@@ -17,7 +17,7 @@ class LetThemBreakThemselvesAgainstTheStone {
 	static public Task Option1(TargetSpaceCtx ctx ) {
 		ctx.GameState.LandDamaged.ForRound.Add( async args => {
 			if(args.Space == ctx.Space)
-				await args.GameState.Invaders.On( args.Space ).UserSelectedDamage( 2 + args.Damage/2, ctx.Self );
+				await args.GameState.Invaders.On( args.Space, args.ActionId ).UserSelectedDamage( 2 + args.Damage/2, ctx.Self );
 		} );
 		return Task.CompletedTask;
 	}

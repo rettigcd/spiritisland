@@ -127,7 +127,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 	}
 
 	public virtual async Task Destroy( Space space, GameState gs, DestoryPresenceCause actionType, AddReason blightAddedReason = AddReason.None ) {
-		await DestroyBehavior.DestroyPresenceApi(this,space,gs, actionType);
+		await DestroyBehavior.DestroyPresenceApi(this,space,gs, actionType, Guid.NewGuid() ); // !!! pass in the actionID!
 		CheckIfSpiritIsDestroyed();
 	}
 
@@ -139,7 +139,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 	public IDestroyPresenceBehavour DestroyBehavior = new DefaultDestroyBehavior(); // replaceable / plugable
 
 	public class DefaultDestroyBehavior : IDestroyPresenceBehavour {
-		public virtual Task DestroyPresenceApi(SpiritPresence presence, Space space, GameState gs, DestoryPresenceCause actionType ) {
+		public virtual Task DestroyPresenceApi(SpiritPresence presence, Space space, GameState gs, DestoryPresenceCause actionType, Guid actionId ) {
 			presence.RemoveFrom_NoCheck( space, gs );
 			++presence.Destroyed;
 			return Task.CompletedTask;

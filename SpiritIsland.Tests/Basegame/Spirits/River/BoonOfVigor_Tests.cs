@@ -56,7 +56,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 
 		[Fact]
 		public void BoonOfVigor_Stats() {
-			Assert_CardStatus( PowerCard.For<BoonOfVigor>(), 0, Phase.Fast, "SWP" );
+			Assert_CardStatus( PowerCard.For<BoonOfVigor>(), 0, Phase.Fast, "sun water plant" );
 		}
 
 	}

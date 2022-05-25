@@ -18,50 +18,66 @@ public class ObserveTheEverChangingWorld {
 	}
 
 	class PreparedTokensOnSpaceTracker {
-		readonly TargetSpaceCtx ctx;
-		Guid actionId;
-		readonly Guid[] handlerKeys;
-		int remaining = 3;
-		string tokenSummary;
-		public PreparedTokensOnSpaceTracker(TargetSpaceCtx ctx ) { 
+
+		public PreparedTokensOnSpaceTracker(TargetSpaceCtx ctx) { 
 			this.ctx = ctx;
-			actionId = ctx.Self.CurrentActionId;
 			tokenSummary = ctx.Tokens.Summary;
 
-			handlerKeys = new Guid[3];
+			elementToken = new ElementToken();
+			ctx.Tokens.Init(elementToken,3);
+
+			handlerKeys = new Guid[2];
 			// !!! It seems like adding / removing presence tokens should trigger this also, but I don't think it triggers the Token Added/Removed event.
 			handlerKeys[0] = ctx.GameState.Tokens.TokenAdded.ForGame.Add( Track );
 			handlerKeys[1] = ctx.GameState.Tokens.TokenRemoved.ForGame.Add( Track );
 		}
 
-		Task Track( ITokenAddedArgs x ) => Check(x.Space);
+		Task Track( ITokenAddedArgs x ) => Check(x.Space, x.ActionId);
 
-		Task Track( ITokenRemovedArgs x ) => Check(x.Space);
+		Task Track( ITokenRemovedArgs x ) => Check(x.Space, x.ActionId );
 
-		async Task Check( Space space ) {
-			if(remaining == 0							// already complete
+		async Task Check( Space space, Guid currentActionId ) {
+			if(ctx.Tokens[elementToken] == 0			// already complete
 				|| space != ctx.Space					// wrong space
-				|| ctx.Self.CurrentActionId == actionId // already did this action
+				|| appliedActionsIds.Contains( currentActionId ) // already did this action 
 				|| tokenSummary == ctx.Tokens.Summary 	// no change in tokens
 			) return;
 
-			actionId = ctx.Self.CurrentActionId; // limit to 1 change per action
+			appliedActionsIds.Add( currentActionId ); // limit to 1 change per action
 			tokenSummary = ctx.Tokens.Summary;
+
+			ctx.Tokens.Adjust(elementToken,-1);
 
 			// !!! This web page states SMOA shouldn't get the element until after the Action completes.
 			// https://boardgamegeek.com/thread/2399380/shifting-memory-observe-ever-changing-world
 			var smoa = (ShiftingMemoryOfAges)ctx.Self;
 			await smoa.PrepareElement(space.Label);
-			if(--remaining <= 0)
+			if(ctx.Tokens[elementToken] == 0)
 				ctx.GameState.TimePasses_ThisRound.Push( StopWatchingSpace );
 		}
 
 		Task StopWatchingSpace( GameState gs ) {
 			gs.Tokens.TokenAdded.ForGame.Remove( handlerKeys[0] );
 			gs.Tokens.TokenRemoved.ForGame.Remove( handlerKeys[1] );
-			gs.Tokens.TokenMoved.ForGame.Remove( handlerKeys[2] );
 			return Task.CompletedTask;
 		}
+
+		readonly TargetSpaceCtx ctx;
+		readonly Guid[] handlerKeys;
+		readonly ElementToken elementToken;
+		readonly HashSet<Guid> appliedActionsIds = new HashSet<Guid>();
+		string tokenSummary;
+
+	}
+
+	public class ElementToken : Token { // public for testing
+		static int _total = 0;
+		readonly int _index;
+		public ElementToken() { _index = _total++; }
+		public TokenClass Class => TokenType.Element;
+		public char Initial => 'Y';
+		public string Text => "Element";
+		public override string ToString() => $"AnyElement({_index})";
 	}
 
 }

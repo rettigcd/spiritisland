@@ -18,7 +18,7 @@ public class MeltEarthIntoQuicksand {
 			if( args.Space == ctx.Space
 				&& args.Token.Class.IsOneOf(Invader.Explorer,Invader.Town,Invader.City,TokenType.Dahan ) 
 			) 
-				await args.GameState.Tokens[args.Space].Destroy(args.Token,args.Count);
+				await args.GameState.Tokens[args.Space].Destroy(args.Token,args.Count, args.ActionId);
 		} );
 
 		// if you have 2 moon, 4 water, 2 earth:
