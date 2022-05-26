@@ -77,7 +77,7 @@ public abstract class Spirit : IOption {
 	public Growth Growth { get; protected set; }
 
 	public virtual async Task DoGrowth(GameState gameState) {
-		var ctx = Bind( gameState );
+		var ctx = Bind( gameState, Guid.NewGuid() );
 
 		// (1) Pre-Growth Track options
 		foreach(ITrackActionFactory action in Presence.RevealedActions.OfType<ITrackActionFactory>())
@@ -100,7 +100,7 @@ public abstract class Spirit : IOption {
 	}
 
 	public async Task GrowAndResolve( GrowthOption option, GameState gameState ) {
-		var ctx = Bind( gameState );
+		var ctx = Bind( gameState, Guid.NewGuid() );
 
 		// Auto run the auto-runs.
 		foreach(var autoAction in option.AutoRuns)
@@ -127,11 +127,11 @@ public abstract class Spirit : IOption {
 
 		if( args.Track.Action != null)
 			if( args.GameState.Phase != Phase.Growth || !args.Track.Action.RunAfterGrowthResult )
-				await args.Track.Action.ActivateAsync( Bind( args.GameState ) );
+				await args.Track.Action.ActivateAsync( Bind( args.GameState, Guid.NewGuid() ) );
 	}
 
 	public Task ApplyRevealedPresenceTracks_CalledOnlyFromTests(GameState gs) {
-		var ctx = Bind( gs );
+		var ctx = Bind( gs, Guid.NewGuid() );
 		return this.ApplyRevealedPresenceTracks(ctx);
 	}
 	protected async Task ApplyRevealedPresenceTracks( SelfCtx ctx ) {
@@ -361,7 +361,7 @@ public abstract class Spirit : IOption {
 
 	protected abstract void InitializeInternal( Board board, GameState gameState );
 
-	public virtual SelfCtx Bind( GameState gameState, Guid actionId = default ) => new SelfCtx( this, gameState, default, actionId != default ? actionId : Guid.NewGuid() );
+	public virtual SelfCtx Bind( GameState gameState, Guid actionId ) => new SelfCtx( this, gameState, default, actionId != default ? actionId : Guid.NewGuid() );
 
 	public virtual SelfCtx BindMyPower( GameState gameState ) => new SelfCtx( this, gameState, Cause.MyPowers, Guid.NewGuid() );
 

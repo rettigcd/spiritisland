@@ -2,7 +2,7 @@
 
 public class TreesRadiateCelestialBrilliance {
 
-	[MajorCard("Trees Radiate Celestial Brilliance",3,Element.Sun,Element.Moon,Element.Plant), Fast, FromPresence(1,Target.JungleWithNoBlight )]
+	[MajorCard("Trees Radiate Celestial Brilliance",3,Element.Sun,Element.Moon,Element.Plant), Fast, FromPresence(1,Target.JungleOrNoBlight )]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 		// 3 fear.
 		ctx.AddFear(3);

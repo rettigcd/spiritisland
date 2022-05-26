@@ -9,7 +9,7 @@ public static class Target {
 	public const string JungleOrMountain = "J / M";
 	public const string JungleOrSand     = "J / S";
 	public const string JungleOrWetland  = "W / J";
-	public const string JungleWithNoBlight = "J / no blight";
+	public const string JungleOrNoBlight = "J / no blight";
 	public const string Mountain         = "Mountain";
 	public const string MountainOrWetland= "MountainOrWetland";
 	public const string MountainOrSand   = "MountainOrSand";

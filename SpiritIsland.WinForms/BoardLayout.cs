@@ -7,8 +7,9 @@ namespace SpiritIsland.WinForms;
 
 public class BoardLayout {
 
-	public PointF[] perimeter;
-	public PointF[][] spaces;
+	public PointF[] perimeter; // for connecting boards
+	public PointF[][] spaces; // the spaces on each board.
+	public PointF[] centers;
 
 	static BoardLayout() {
 
@@ -71,6 +72,18 @@ public class BoardLayout {
 	static readonly PointF[] top;
 	static readonly PointF[] rig;
 
+	private static PointF FindCenterOfSpacePoints( PointF[] spacePoints ) {
+		float maxX = -1000f, maxY = -1000f, minX = 1000f, minY = 1000f;
+		foreach(var p in spacePoints) {
+			if(p.X < minX) minX = p.X;
+			if(p.Y < minY) minY = p.Y;
+			if(p.X > maxX) maxX = p.X;
+			if(p.Y > maxY) maxY = p.Y;
+		}
+		var center = new PointF( (minX + maxX) * .5f, (minY + maxY) * .5f );
+		return center;
+	}
+
 	static public BoardLayout BoardA() {
 
 		// Edge points with ocean
@@ -101,7 +114,7 @@ public class BoardLayout {
 		var a7Points = new PointF[] { rig[4], rig[5], rig[6], rig[7], rig[8], rig[9], rig[10], rig[11], bottomRightCorner, bot[11], _578, };
 		var a8Points = new PointF[] { top[6], top[7], top[8], top[9], top[10], top[11], topRightCorner, rig[0], rig[1], rig[2], rig[3], rig[4], _578, _568, };
 
-		return new BoardLayout {
+		var layout = new BoardLayout {
 			perimeter = new PointF[] {
 				origin,
 				_03,_0,_01,
@@ -122,8 +135,13 @@ public class BoardLayout {
 				a6Points, 
 				a7Points, 
 				a8Points
-			}
+			},
+			centers = new PointF[9]
 		};
+		for(int i=0;i<=8;++i)
+			layout.centers[i] = FindCenterOfSpacePoints( layout.spaces[i] );
+
+		return layout;
 	}
 
 	static public BoardLayout BoardB() {
@@ -154,7 +172,7 @@ public class BoardLayout {
 		var b7Points = new PointF[] { rig[4], rig[5], rig[6], rig[7], rig[8], rig[9], rig[10], rig[11], bottomRightCorner, bot[11], _457, _567, _678 };
 		var b8Points = new PointF[] { top[6], top[7], top[8], top[9], top[10], top[11], topRightCorner, rig[0], rig[1], rig[2], rig[3], rig[4], _678 };
 
-		return new BoardLayout {
+		var layout = new BoardLayout {
 			perimeter = new PointF[] {
 				origin,
 				_03,_0,_01,
@@ -175,8 +193,13 @@ public class BoardLayout {
 				b6Points,
 				b7Points,
 				b8Points
-			}
+			},
+			centers = new PointF[9]
 		};
+		for(int i = 0; i <= 8; ++i)
+			layout.centers[i] = FindCenterOfSpacePoints( layout.spaces[i] );
+
+		return layout;
 	}
 
 	static public BoardLayout BoardC() {
@@ -208,7 +231,7 @@ public class BoardLayout {
 		var c7Points = new PointF[] { rig[6], rig[7], rig[8], rig[9], rig[10], _457, _567, _678 };
 		var c8Points = new PointF[] { top[6], top[7], top[8], top[9], top[10], top[11], topRightCorner, rig[0], rig[1], rig[2], rig[3], rig[4], rig[5], rig[6], _678 };
 
-		return new BoardLayout {
+		var layout = new BoardLayout {
 			perimeter = new PointF[] {
 				origin,
 				_03,_0,_01,
@@ -229,8 +252,13 @@ public class BoardLayout {
 				c6Points,
 				c7Points,
 				c8Points
-			}
+			},
+			centers = new PointF[9]
 		};
+		for(int i = 0; i <= 8; ++i)
+			layout.centers[i] = FindCenterOfSpacePoints( layout.spaces[i] );
+
+		return layout;
 	}
 
 	static public BoardLayout BoardD() {
@@ -261,7 +289,7 @@ public class BoardLayout {
 		var d7Points = new PointF[] { rig[4], rig[5], rig[6], rig[7], rig[8], rig[9], rig[10], _567, _157, _178 };
 		var d8Points = new PointF[] { top[10], top[11], topRightCorner, rig[0], rig[1], rig[2], rig[3], rig[4], _178 };
 
-		return new BoardLayout {
+		var layout = new BoardLayout {
 			perimeter = new PointF[] {
 				origin,
 				_03,_0,_01,
@@ -282,8 +310,15 @@ public class BoardLayout {
 				d6Points,
 				d7Points,
 				d8Points
-			}
+			},
+			centers = new PointF[9]
 		};
+		for(int i = 0; i <= 8; ++i)
+			layout.centers[i] = FindCenterOfSpacePoints( layout.spaces[i] );
+
+		var p = layout.centers[1]; p = new PointF(p.X,p.Y-0.05f); layout.centers[1] = p;
+
+		return layout;
 	}
 
 

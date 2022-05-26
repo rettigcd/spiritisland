@@ -10,7 +10,7 @@ public class SpaceFilterMap {
 		[Target.JungleOrMountain  ] = ctx => ctx.IsOneOf( Terrain.Jungle, Terrain.Mountain ),
 		[Target.JungleOrSand      ] = ctx => ctx.IsOneOf( Terrain.Jungle, Terrain.Sand ),
 		[Target.JungleOrWetland   ] = ctx => ctx.IsOneOf( Terrain.Jungle, Terrain.Wetland ),
-		[Target.JungleWithNoBlight] = ctx => ctx.Space.IsJungle && !ctx.Blight.Any,
+		[Target.JungleOrNoBlight] = ctx => ctx.Space.IsJungle || !ctx.Blight.Any,
 		[Target.NotWetland        ] = ctx => ctx.IsOneOf( Terrain.Jungle, Terrain.Mountain, Terrain.Sand ),
 		[Target.MountainOrWetland ] = ctx => ctx.IsOneOf( Terrain.Mountain, Terrain.Wetland ),
 		[Target.MountainOrSand    ] = ctx => ctx.IsOneOf( Terrain.Mountain, Terrain.Sand ),

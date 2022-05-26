@@ -41,7 +41,7 @@ namespace SpiritIsland.Tests {
 			return this;
 		}
 
-		public TargetSpaceCtx TargetSpace( string spaceLabel ) => spirit.Bind( this.gameState )
+		public TargetSpaceCtx TargetSpace( string spaceLabel ) => spirit.Bind( this.gameState, Guid.NewGuid() )
 			.Target( gameState.Island.AllSpaces.Single( x => x.Label == spaceLabel ) );
 
 	}

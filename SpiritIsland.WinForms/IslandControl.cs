@@ -29,64 +29,13 @@ public partial class IslandControl : Control {
 
 		var board = gameState.Island.Boards.VerboseSingle("Multiple Island boards not supported.");
 		ClearCachedImage();
-		switch(board[0].Label[..1]) {
-			case "A":
-				boardImageFile = ".\\images\\board a.png";
-				spaceLookup = new Dictionary<string, PointF> {
-					["A0"] = new PointF( 0.12f, 0.53f ),
-					["A1"] = new PointF( 0.42f, 0.30f ),
-					["A2"] = new PointF( 0.25f, 0.52f ),
-					["A3"] = new PointF( 0.17f, 0.82f ),
-					["A4"] = new PointF( 0.42f, 0.71f ),
-					["A5"] = new PointF( 0.61f, 0.54f ),
-					["A6"] = new PointF( 0.59f, 0.27f ),
-					["A7"] = new PointF( 0.75f, 0.61f ),
-					["A8"] = new PointF( 0.81f, 0.19f ),
-				};
-				break;
-			case "B":
-				boardImageFile = ".\\images\\board b.png";
-				spaceLookup = new Dictionary<string, PointF> {
-					["B0"] = new PointF( 0.19f, 0.39f ),
-					["B1"] = new PointF( 0.40f, 0.25f ),
-					["B2"] = new PointF( 0.28f, 0.57f ),
-					["B3"] = new PointF( 0.20f, 0.86f ),
-					["B4"] = new PointF( 0.48f, 0.68f ),
-					["B5"] = new PointF( 0.58f, 0.47f ),
-					["B6"] = new PointF( 0.60f, 0.23f ),
-					["B7"] = new PointF( 0.73f, 0.61f ),
-					["B8"] = new PointF( 0.81f, 0.18f ),
-				};
-				break;
-			case "C":
-				boardImageFile = ".\\images\\board c.png";
-				spaceLookup = new Dictionary<string, PointF> {
-					["C0"] = new PointF( 0.106f, 0.610f ),
-					["C1"] = new PointF( 0.352f, 0.287f ),
-					["C2"] = new PointF( 0.265f, 0.609f ),
-					["C3"] = new PointF( 0.184f, 0.875f ),
-					["C4"] = new PointF( 0.449f, 0.818f ),
-					["C5"] = new PointF( 0.504f, 0.613f ),
-					["C6"] = new PointF( 0.568f, 0.255f ),
-					["C7"] = new PointF( 0.696f, 0.557f ),
-					["C8"] = new PointF( 0.789f, 0.193f ),
-				};
-				break;
-			case "D":
-				boardImageFile = ".\\images\\board d.png";
-				spaceLookup = new Dictionary<string, PointF> {
-					["D0"] = new PointF( 0.099f, 0.559f ),
-					["D1"] = new PointF( 0.363f, 0.178f ),
-					["D2"] = new PointF( 0.274f, 0.507f ),
-					["D3"] = new PointF( 0.150f, 0.800f ),
-					["D4"] = new PointF( 0.382f, 0.776f ),
-					["D5"] = new PointF( 0.493f, 0.446f ),
-					["D6"] = new PointF( 0.592f, 0.713f ),
-					["D7"] = new PointF( 0.694f, 0.446f ),
-					["D8"] = new PointF( 0.797f, 0.191f ),
-				};
-				break;
-		}
+		boardImageFile = board[0].Label[..1] switch {
+			"A" => ".\\images\\board a.png",
+			"B" => ".\\images\\board b.png",
+			"C" => ".\\images\\board c.png",
+			"D" => ".\\images\\board d.png",
+			_ => throw new ArgumentException()
+		};
 
 		var images = ResourceImages.Singleton;
 		presence = images.GetPresenceIcon( presenceColor );
@@ -160,14 +109,19 @@ public partial class IslandControl : Control {
 
 	}
 
-	BoardLayout bl;
+	BoardLayout normalizedBoardLayout;
+
+	// -- transfermation --
+	PointF upperLeft;
+	float scale;
+	PointF map( PointF p ) => new PointF( p.X * scale + upperLeft.X, this.Height - upperLeft.Y - scale * p.Y );
 
 	void DrawBoard_Static( PaintEventArgs pe ) {
 		using var stopwatch = new StopWatch( "Island-static" );
 
 		if(cachedBackground == null) {
 
-			bl = gameState.Island.Boards[0][0].Text[0] switch {
+			normalizedBoardLayout = gameState.Island.Boards[0][0].Text[0] switch {
 				'A' => BoardLayout.BoardA(),
 				'B' => BoardLayout.BoardB(),
 				'C' => BoardLayout.BoardC(),
@@ -175,12 +129,21 @@ public partial class IslandControl : Control {
 				_ => throw new Exception( "unknown board" )
 			};
 
+			spaceLookup = new Dictionary<string, PointF>();
+			for(int i = 0; i <= 8; ++i)
+				spaceLookup.Add( gameState.Island.Boards[0][i].Text, normalizedBoardLayout.centers[i] );
+
 			using var board = Image.FromFile( boardImageFile );
 
 			// Assume limit is height
 			boardScreenSize = (board.Width * Height > Width * board.Height)
 				? new Size( Width, board.Height * Width / board.Width )
 				: new Size( board.Width * Height / board.Height, Height );
+
+			// -- new --
+			this.upperLeft = new PointF( 24f, 50f );
+			float usableHeight = (this.Height - upperLeft.Y * 2);
+			this.scale = usableHeight * 2 / (float)Math.Sqrt( 3 );
 
 			cachedBackground = new Bitmap( boardScreenSize.Width, boardScreenSize.Height );
 
@@ -190,16 +153,15 @@ public partial class IslandControl : Control {
 
 		pe.Graphics.DrawImage( cachedBackground, 0, 0, cachedBackground.Width, cachedBackground.Height );
 
-		static PointF map(PointF p) => new PointF( p.X * 720 + 24f, 710 * (1f - p.Y) - 20f );
 		using var perimeterPen = new Pen( Brushes.Black, 5f );
-		for(int i = 0; i < bl.spaces.Length; ++i) {
+		for(int i = 0; i < normalizedBoardLayout.spaces.Length; ++i) {
 			var space = gameState.Island.Boards[0][i];
 			Brush brush = space.IsWetland ? Brushes.LightBlue
 				: space.IsSand ? Brushes.PaleGoldenrod
 				: space.IsMountain ? Brushes.Gray
 				: space.IsJungle ? Brushes.ForestGreen
 				: Brushes.Blue;
-			var points = bl.spaces[i].Select( map ).ToArray();
+			var points = normalizedBoardLayout.spaces[i].Select( map ).ToArray();
 
 			// Draw blocky
 			//pe.Graphics.FillPolygon( brush, points );
@@ -217,7 +179,6 @@ public partial class IslandControl : Control {
 		// myGraphic.SetClip( clipPath, CombineMode.Replace );
 		// myGraphic.DrawImage( imgF, outRect );
 		// myGraphic.ResetClip();
-
 	}
 
 	void DrawElements(Graphics graphics ) {
@@ -484,7 +445,7 @@ public partial class IslandControl : Control {
 		if(!spaceLookup.ContainsKey(space.Label)) return; // happens during developement
 
 		PointF normalized = spaceLookup[space.Label];
-		PointF xy = new PointF(normalized.X * boardScreenSize.Width, normalized.Y * boardScreenSize.Height);
+		PointF xy = map(normalized); //  new PointF(normalized.X * boardScreenSize.Width, normalized.Y * boardScreenSize.Height);
 
 		float iconWidth = boardScreenSize.Width * .045f; 
 		float xStep = iconWidth + 10f;
@@ -744,7 +705,7 @@ public partial class IslandControl : Control {
 			: s is MultiSpace ms
 				? spaceLookup[ ms.Parts[0].Label ]
 			: throw new ArgumentException($"Space {s.Label} does not have a screen location");
-		return new PointF( norm.X * boardScreenSize.Width, norm.Y * boardScreenSize.Height );
+		return map(norm); //  new PointF( norm.X * boardScreenSize.Width, norm.Y * boardScreenSize.Height );
 	}
 
 	protected override void OnSizeChanged( EventArgs e ) {

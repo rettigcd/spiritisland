@@ -33,7 +33,7 @@ public class SinglePlayerGame {
 			try {
 				// Handle any unresolved Initialization action - (ocean/beast)
 				GameState.Phase = Phase.Init;
-				await Spirit.ResolveActions( Spirit.Bind( GameState ) ); 
+				await Spirit.ResolveActions( Spirit.Bind( GameState, Guid.NewGuid() ) ); 
 				// !!! if this is here, why do we need to put it in the Spirit.Growth() method?
 
 				Dictionary<int,IMemento<GameState>> savedGameStates = new Dictionary<int, IMemento<GameState>>();

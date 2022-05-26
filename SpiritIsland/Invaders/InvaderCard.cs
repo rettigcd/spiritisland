@@ -59,10 +59,10 @@ public class InvaderCard : IOption, IInvaderCard {
 		var ravageSpaces = gs.Island.AllSpaces.Where( Matches ).ToList();
 
 		// Modify / Adjust
-		await gs.PreRavaging?.InvokeAsync( new RavagingEventArgs( gs ) { Spaces = ravageSpaces } );
+		var actionId = Guid.NewGuid();
+		await gs.PreRavaging?.InvokeAsync( new RavagingEventArgs( gs, actionId ) { Spaces = ravageSpaces } );
 
 		// find ravage spaces that have invaders
-		var actionId = Guid.NewGuid();
 		InvaderBinding[] ravageGroups = ravageSpaces
 			.Select( x=>gs.Invaders.On(x,actionId) )
 			.Where( group => group.Tokens.HasInvaders() )

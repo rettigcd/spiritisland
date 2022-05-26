@@ -178,7 +178,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.River {
 		public void DahanCountIncludesDamaged() {
 			// This is a nice test, but it is too close to the implementation.  Refactoring might not use ctx.DahanCount
 			var space = gameState.Island.Boards[0][4];
-			var ctx = spirit.Bind( gameState ).Target(space);
+			var ctx = spirit.Bind( gameState, Guid.NewGuid() ).Target(space);
 			var dahan = ctx.Tokens.Dahan;
 			ctx.Tokens.Init( Tokens.Dahan1, 5 );
 			dahan.Init(7);

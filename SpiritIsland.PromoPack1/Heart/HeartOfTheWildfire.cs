@@ -96,8 +96,7 @@ public class HeartOfTheWildfire : Spirit {
 			//	(track elements, prepared elements, card elements)
 			int fireCount = AddElements()[Element.Fire];
 
-
-			var ctx = spirit.Bind( gs ).Target( to );
+			var ctx = spirit.Bind( gs, Guid.NewGuid() ).Target( to );
 			// For each fire showing, do 1 damage
 			await ctx.DamageInvaders( fireCount );
 			// if 2 fire or more are showing, add 1 blight
