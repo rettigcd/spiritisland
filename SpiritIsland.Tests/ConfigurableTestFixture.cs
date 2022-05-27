@@ -19,7 +19,6 @@ namespace SpiritIsland.Tests;
 //		Move things in and out of a space.
 //		Things that add temporary events handlers.  ( when this happens, then that behaves differently )
 
-
 /// <summary>
 /// Lazy inits all parts, allowing use to pre-configure parts they care about, before they are lazy-inited.
 /// </summary>
@@ -105,6 +104,10 @@ public class ConfigurableTestFixture {
 		return (count, token);
 	}
 
+	public void InitRavageCard( IInvaderCard card ) {
+		GameState.InvaderDeck.Ravage.Add(card);
+	}
+
 	#region Choose
 
 	public void Choose(string choiceText ) {
@@ -185,4 +188,17 @@ public class ConfigurableTestFixture {
 	}
 
 	#endregion
+}
+
+class SpaceSpecificRavage : IInvaderCard {
+	readonly Space _space;
+	public SpaceSpecificRavage(Space space) { _space = space; }
+
+	public int InvaderStage => 1;
+	public bool Escalation => false;
+	public string Text => throw new NotImplementedException();
+	public Task Build( GameState gameState ) => throw new NotImplementedException();
+	public Task Explore( GameState gameState ) => throw new NotImplementedException();
+	public bool Matches( Space space ) => space == _space;
+	public Task Ravage( GameState gameState ) => throw new NotImplementedException();
 }

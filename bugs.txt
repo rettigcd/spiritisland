@@ -1,10 +1,4 @@
 
-==== Fear Card ====
-
-Sense of Dread: 1 (remove 1 explorer) - ADDED 1 explorer instead.
-
-Trade Suffers - Level 3 - *May* replace a city or town - Don't force.  IF it is defended, don't want to downgrade because we lose the fear points from downgrading
-
 ==== Blighted Island ====
 
 Strong Earth Shatters Slowly - When adding blight to land, it re-triggered Blighted Island message.  Therefore, mark the island as blighted before doing blighted island effect.
@@ -18,4 +12,3 @@ After Growth, rewinding to beginning of turn, doesn't reset # of card plays to 0
 Shifting Memories 2-elements for card play - doesn't always work
 
 Strifed Invaders damaging themselves
-

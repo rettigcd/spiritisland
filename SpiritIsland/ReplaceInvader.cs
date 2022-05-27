@@ -2,10 +2,10 @@
 
 static public class ReplaceInvader {
 
-	public static async Task Downgrade( TargetSpaceCtx ctx, params HealthTokenClass[] groups ) {
+	public static async Task Downgrade( TargetSpaceCtx ctx, Present present, params HealthTokenClass[] groups ) {
 
 		var options = ctx.Tokens.OfAnyType( groups );
-		HealthToken oldInvader = (HealthToken) await ctx.Self.Action.Decision( Select.Invader.ToReplace( "downgrade", ctx.Space, options ) );
+		HealthToken oldInvader = (HealthToken) await ctx.Self.Action.Decision( Select.Invader.ToReplace( "downgrade", ctx.Space, options, present ) );
 		if(oldInvader == null) return;
 
 		// remove old invader

@@ -25,7 +25,7 @@ public class TradeSuffers : IFearOptions {
 			var options = gs.Island.AllSpaces.Where( s => s.IsCoastal && gs.Tokens[s].Has( Invader.Town ) ).ToArray();
 			if(options.Length == 0) return;
 			var target = await spirit.Action.Decision( new Select.Space( "Replace town with explorer", options, Present.Always ) );
-			await ReplaceInvader.Downgrade( spirit.Bind( gs, actionId ).Target( target), Invader.Town );
+			await ReplaceInvader.Downgrade( spirit.Bind( gs, actionId ).Target( target), Present.Done, Invader.Town );
 		}
 	}
 
@@ -37,7 +37,7 @@ public class TradeSuffers : IFearOptions {
 			var options = gs.Island.AllSpaces.Where( s => s.IsCoastal && gs.Tokens[ s ].HasAny(Invader.Town,Invader.City) ).ToArray();
 			if(options.Length == 0) return;
 			var target = await spirit.Action.Decision( new Select.Space( "Replace town with explorer or city with town", options, Present.Always ));
-			await ReplaceInvader.Downgrade( spirit.Bind( gs, actionId ).Target( target ), Invader.Town, Invader.City );
+			await ReplaceInvader.Downgrade( spirit.Bind( gs, actionId ).Target( target ), Present.Done, Invader.Town, Invader.City );
 		}
 	}
 
