@@ -477,7 +477,7 @@ public partial class IslandControl : Control {
 
 		float maxHeight = 0;
 
-		var orderedInvaders = tokens.Invaders()
+		var orderedInvaders = tokens.InvaderTokens()
 			.OrderByDescending(i=>i.FullHealth)
 			.ThenBy(i=>i.RemainingHealth); // show damaged first so when we apply damage, the damaged one replaces the old undamaged one.
 

@@ -1,7 +1,64 @@
+Dissolve the Bonds of Kinship
+	City / Town with reduced health generated same normal amount of explorers - is that correct?
+	Do we have to split them evenly, or just to max # of spaces.
+	Improve the Push
+	? does elemental threshold work?
+
+Scape Goats - strifed city/town did not do damage
+
+Strangling Firevine might have triggered more than 1 element.
+
+Land of Haunts and Embers
+	? do we push grouped together into single push command?
+
+Instruments of Their Own Ruin
+	does element escalation work?
+
+Mesmerized Tranquility
+	? How does -1 damage work?
+	? how does it reset?
+
 ==== Misc ====
 
 After Growth, rewinding to beginning of turn, doesn't reset # of card plays to 0
 
 Shifting Memories 2-elements for card play - doesn't always work
 
-Strifed Invaders damaging themselves
+View Absolute Stasis tokens / spaces.
+
+* Cast Down Info the Briny Deep
+	? Element escalation - in single player mode, does this work and end game?
+
+* Dream of the Untouched Land
+	- adding new island board does not not work.
+
+* Weave Together the Fabric of Place
+	- Can't see tokens
+	- Does it even work?
+
+===============================
+
+Gift of Constancy 
+	? check reclaim when targetting another spirit
+
+Vengeance of the Dead
+	? How does this even work?
+
+-- BAC --
+
+Rites of the Land's Rejection
+	? does stop-build work the correct way?
+	? is the fear correct?
+
+Volcanic Eruption
+	? element threshold work?
+
+-- JE --
+
+Birds Cry Warning
+	? does "the next time" stop spirit-powers from destroying dahan
+	? does it only work once?
+
+Settle Into Hunting-Grounds
+	- implement "May" count as badlands and beast.
+	- presence cannot move.

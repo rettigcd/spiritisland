@@ -2,33 +2,30 @@
 
 public static class StrifedRavage {
 
-	static public SpaceAction Cmd => new SpaceAction(
-		"Strifed invaders deal damage to other invaders.", 
-		StrifedInvadersDamageUnstrifed
+	// Theological Strife(3) - Each Invader with Strife deals Damage to other Invaders in its land.
+	// Instruments of their own ruin
+	// Discord
+	static public SpaceAction StrifedInvadersDealsDamageToOtherInvaders => new SpaceAction(
+		"Strifed invaders deal damage to other invaders.",
+		async ctx => {
+
+			// Capture Strifed Counts
+			var strifedCounts = ctx.Tokens.InvaderTokens()
+				.Where( x => x.StrifeCount > 0 )
+				.ToDictionary( x=>x, x=>ctx.Tokens[x] );
+
+			foreach(var p in strifedCounts)
+				await DamageAnyButSelf( ctx, 
+					p.Value * p.Key.Class.Attack, // total damage from this type.
+					p.Key, // the source of the damage
+					p.Value==1 // exclude source if there is only 1 - it can't damage itself.
+				);
+		}
 	);
 
-	public static async Task StrifedInvadersDamageUnstrifed( TargetSpaceCtx ctx ) {
-		// Each invader with strife deals damage to other invaders in target land
-		int damageFromStrifedInvaders = DamageFromStrifedInvaders( ctx.Tokens );
-		await DamageUnStriffed( ctx, damageFromStrifedInvaders );
-	}
-
-	public static int DamageFromStrifedInvaders( TokenCountDictionary tokens ) {
-		return tokens.Invaders().OfType<HealthToken>().Where(x=>x.StrifeCount>0).Sum( si => si.FullHealth * tokens[si] );
-	}
-
-	public static int DamageFrom1StrifedInvaders( TokenCountDictionary tokens ) {
-		var strifedInvaderWithMostDamage = tokens.Invaders().OfType<HealthToken>()
-			.OrderByDescending(x=>x.FullHealth)
-			.FirstOrDefault();
-		return strifedInvaderWithMostDamage != null ? strifedInvaderWithMostDamage.FullHealth : 0;
-	}
-
-
-	static public Task DamageUnStriffed( TargetSpaceCtx invaderSpaceCtx, int damageFromStrifedInvaders ) {
-		// !!! this isn't 100% correct, the damage will start applying to unstrifed, but will then spill over onto strifed
-		// ! Fix by passing in a predicate
-		return invaderSpaceCtx.DamageInvaders( damageFromStrifedInvaders );
+	// Incite the Mob
+	public static Task DamageAnyButSelf( TargetSpaceCtx ctx, int damageFromStrifedInvaders, HealthToken source, bool exclude ) {
+		return ctx.StrifedDamageOtherInvaders( damageFromStrifedInvaders, source, exclude );
 	}
 
 	#region Strife reduces Health
@@ -42,7 +39,7 @@ public static class StrifedRavage {
 		// Check if anything is destroyed
 		foreach(var space in gameState.Island.AllSpaces) {
 			var tokens = gameState.Tokens[space];
-			foreach( var token in tokens.Invaders() )
+			foreach( var token in tokens.InvaderTokens() )
 				if(token.IsDestroyed)
 					await tokens.Destroy( token, tokens[token], actionId );
 		}
@@ -59,7 +56,7 @@ public static class StrifedRavage {
 	}
 
 	static async Task EachInvaderTakesDamageByStrifeCount( TokenCountDictionary tokens, Guid actionId ) {
-		var strifedInvaders = tokens.Invaders()
+		var strifedInvaders = tokens.InvaderTokens()
 			.Where( x => 0 < x.StrifeCount )
 			.OrderBy( x => x.RemainingHealth )
 			.ToArray(); // get the lowest ones first so we can reduce without them cascading

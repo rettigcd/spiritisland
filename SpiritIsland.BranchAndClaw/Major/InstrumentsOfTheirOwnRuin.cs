@@ -24,21 +24,22 @@ public class InstrumentsOfTheirOwnRuin {
 		// add 1 strife
 		await ctx.AddStrife();
 
-		await StrifedRavage.StrifedInvadersDamageUnstrifed( ctx );
+		await StrifedRavage.StrifedInvadersDealsDamageToOtherInvaders.Execute( ctx );
 	}
 
 
 	static Task DuringRavage_InvadersDamageInvadersInAdjacentLandsInsteadOfDahan( TargetSpaceCtx ctx ) {
 		// Note - this works regardless of them ravaging in target land or not. yay!
-		int damageFromStrifedInvaders = ctx.Tokens.Invaders().OfType<HealthToken>().Where(x=>x.StrifeCount>0).Sum( si => si.FullHealth * ctx.Tokens[si] );
+		int damageFromStrifedInvaders = ctx.Tokens.InvaderTokens().OfType<HealthToken>().Where(x=>x.StrifeCount>0).Sum( si => si.FullHealth * ctx.Tokens[si] );
 		async Task Sequence( RavageAction eng ) {
 			// they damage invaders in adjacent lands instead of dahan and the land.
 			var invaderSpaceCtx = await ctx.SelectAdjacentLand( $"Apply {damageFromStrifedInvaders} damage to", x => x.HasInvaders );
 			if(invaderSpaceCtx != null)
-				await StrifedRavage.DamageUnStriffed( invaderSpaceCtx, damageFromStrifedInvaders );
-			// dahan in target land do not fight back.
-		}
-		ctx.ModifyRavage( cfg => cfg.RavageSequence = Sequence );
+				await invaderSpaceCtx.DamageInvaders( damageFromStrifedInvaders );
+
+				// dahan in target land do not fight back.
+			}
+			ctx.ModifyRavage( cfg => cfg.RavageSequence = Sequence );
 		return Task.CompletedTask;
 	}
 

@@ -65,7 +65,7 @@ public class ShroudOfSilentMist : Spirit {
 	void GameState_TimePasses_WholeGame( GameState gs ) {
 		gainedCoolEnergyThisTurn = false;
 
-		bool SpaceHasDamagedInvaders( Space s ) => gs.Tokens[s].Invaders()
+		bool SpaceHasDamagedInvaders( Space s ) => gs.Tokens[s].InvaderTokens()
 			.Any( i=>i.RemainingHealth<i.FullHealth );
 
 		// During Time Passes:

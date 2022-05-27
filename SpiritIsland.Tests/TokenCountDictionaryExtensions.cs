@@ -7,7 +7,7 @@ public static class TokenCountDictionaryExtensions {
 		// !!! Depreate this.  Use .Invaders (to get just the invaders) then .Summary
 		static int Order_CitiesTownsExplorers( HealthToken invader )
 			=> -(invader.FullHealth * 10 + invader.RemainingHealth);
-		return dict.Invaders()
+		return dict.InvaderTokens()
 			.OrderBy( Order_CitiesTownsExplorers )
 			.Select( invader => dict.counts[invader] + invader.ToString() )
 			.Join( "," );

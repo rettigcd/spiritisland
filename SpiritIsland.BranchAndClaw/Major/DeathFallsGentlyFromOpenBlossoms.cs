@@ -10,7 +10,7 @@ public class DeathFallsGentlyFromOpenBlossoms {
 		await ctx.DamageInvaders(4);
 
 		// If any invaders remain, add 1 disease
-		if( ctx.Tokens.Invaders().Any())
+		if( ctx.Tokens.InvaderTokens().Any())
 			await ctx.Disease.Add(1);
 
 		// if 3 air and 3 plant:  

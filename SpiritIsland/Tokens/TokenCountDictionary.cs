@@ -128,9 +128,9 @@ public class TokenCountDictionary {
 
 	#region Invader Specific
 
-	public IEnumerable<HealthToken> Invaders() => this.OfAnyType( Invader.City, Invader.Town, Invader.Explorer );
+	public IEnumerable<HealthToken> InvaderTokens() => this.OfAnyType( Invader.City, Invader.Town, Invader.Explorer );
 
-	public bool HasInvaders() => Invaders().Any();
+	public bool HasInvaders() => InvaderTokens().Any();
 
 	public bool HasStrife => Keys.OfType<HealthToken>().Any(x=>x.StrifeCount>0);
 
@@ -138,7 +138,7 @@ public class TokenCountDictionary {
 
 	public int TownsAndCitiesCount() => this.SumAny( Invader.Town, Invader.City );
 
-	public int InvaderTotal() => Invaders().Sum( i => counts[i] );
+	public int InvaderTotal() => InvaderTokens().Sum( i => counts[i] );
 
 	public async Task AddStrifeTo( Token invader, Guid actionId, int count = 1 ) {
 

@@ -36,7 +36,7 @@ public class FireStorm {
 
 		// ! don't .ToArray() this because we want it to re-execute each time.
 		var invaderTokens = spacesWithPresenceAndBlight
-			.SelectMany( ctx => ctx.Tokens.Invaders().Select(t=>new SpaceToken(ctx.Space,t)));
+			.SelectMany( ctx => ctx.Tokens.InvaderTokens().Select(t=>new SpaceToken(ctx.Space,t)));
 
 		while(fireDamage > 0 && invaderTokens.Any()) {
 			SpaceToken token = await ctx.Decision( new Select.TokenFromManySpaces($"Apply fire damage. ({fireDamage} remaining)",invaderTokens,Present.Always));

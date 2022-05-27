@@ -11,7 +11,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 		Energy.TrackRevealed.Add( OnRevealed );
 		CardPlays.TrackRevealed.Add( OnRevealed );
 
-		foreach(var r in Energy.Revealed) CheckEnergyAndCardPlays( r);
+		foreach(var r in Energy.Revealed) CheckEnergyAndCardPlays( r );
 		foreach(var r in CardPlays.Revealed) CheckEnergyAndCardPlays( r);
 	}
 
@@ -110,6 +110,8 @@ public class SpiritPresence : IKnowSpiritLocations {
 		// src / from
 		if(Destroyed <=0 ) throw new InvalidOperationException("There is no Destroyed presence to return.");
 		--Destroyed;
+
+		// !!! This should reduce card plays or energy but I can't find that anywhere.
 
 		// To
 		return Return(dst);

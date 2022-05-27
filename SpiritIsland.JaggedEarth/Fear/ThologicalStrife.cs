@@ -31,7 +31,7 @@ public class ThologicalStrife : IFearOptions {
 		await EachPlayerAddsStrifeInALandWithPresence.Execute( ctx.GameState );
 
 		// Each Invader with Strife deals Damage to other Invaders in its land.
-		await Cmd.InEachLand( StrifedRavage.Cmd, tokens=>tokens.HasStrife ).Execute( ctx.GameState );
+		await Cmd.InEachLand( StrifedRavage.StrifedInvadersDealsDamageToOtherInvaders, tokens=>tokens.HasStrife ).Execute( ctx.GameState );
 	}
 
 	static public ActionOption<GameState> EachPlayerAddsStrifeInALandWithPresence

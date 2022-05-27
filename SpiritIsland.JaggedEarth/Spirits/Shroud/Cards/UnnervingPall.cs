@@ -26,7 +26,7 @@ public class UnnervingPall {
 
 		// Find Damaged Invaders
 		var damagedInvaders = new List<Token>();
-		foreach(var token in ctx.Tokens.Invaders().Where( t => t.RemainingHealth < t.FullHealth ))
+		foreach(var token in ctx.Tokens.InvaderTokens().Where( t => t.RemainingHealth < t.FullHealth ))
 			for(int i = 0; i < ctx.Tokens[token]; ++i)
 				damagedInvaders.Add( token );
 		if(damagedInvaders.Count == 0)

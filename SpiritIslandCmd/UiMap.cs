@@ -77,7 +77,7 @@ namespace SpiritIslandCmd {
 
 			// invaders
 			var tokens = gameState.Tokens[space];
-			var details = tokens.Invaders()
+			var details = tokens.InvaderTokens()
 				.OrderBy(x=>x.ToString())
 				.Select( invader => tokens[invader] + invader.ToString() )
 				.Join( "," );

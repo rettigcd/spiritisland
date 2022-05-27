@@ -19,7 +19,7 @@ public class InvaderBinding {
 	#region Read-only
 	public int this[Token specific] => Tokens[specific];
 
-	public int DamageInflictedByInvaders => Tokens.Invaders().Select( invader => invader.FullHealth * this[invader] ).Sum();
+	public int DamageInflictedByInvaders => Tokens.InvaderTokens().Select( invader => invader.FullHealth * this[invader] ).Sum();
 
 	#endregion
 
@@ -28,7 +28,7 @@ public class InvaderBinding {
 	/// <summary> Not Badland-aware </summary>
 	public async Task ApplyDamageToEach( int individualDamage, params TokenClass[] generic ) {
 
-		var invaders = Tokens.Invaders()
+		var invaders = Tokens.InvaderTokens()
 			.OrderBy(x=>x.RemainingHealth) // do damaged first to clear them out
 			.ToArray();
 
@@ -162,7 +162,8 @@ public class InvaderBinding {
 		return UserSelectedDamage(damage,damagePicker, Present.Done, allowedTypes );
 	}
 
-
+	// This is the standard way of picking - by TokenClass
+	// ??? !!! can we remove this and use DamageToSpecificTokens instead?
 	async Task<int> UserSelectedDamage( int damage, Spirit damagePicker, Present present, params TokenClass[] allowedTypes ) {
 		if(damage == 0) return 0;
 		if(allowedTypes == null || allowedTypes.Length == 0)
@@ -173,6 +174,23 @@ public class InvaderBinding {
 		while(damage > 0 && (invaderTokens = Tokens.OfAnyType( allowedTypes ).ToArray()).Length > 0) {
 			var invaderToDamage = (HealthToken)await damagePicker.Action.Decision( Select.Invader.ForAggregateDamage( Space, invaderTokens, damage, present ) );
 			if(invaderToDamage==null) break;
+			await ApplyDamageTo1( 1, invaderToDamage );
+			--damage;
+			++damageInflicted;
+		}
+		return damageInflicted;
+	}
+
+	// This is needed when strifed invaders ravage OTHER tokens. Need to be able to exclude specific token
+	// !!! ??? can this be merged with UserSelectedDamage above?
+	public async Task<int> DamageToSpecificTokens( int damage, Spirit damagePicker, HealthToken source, HealthToken[] allowedTypes ) {
+		if(damage == 0) return 0;
+
+		Token[] options;
+		int damageInflicted = 0;
+		while(damage > 0 && (options = Tokens.Keys.OfType<HealthToken>().Intersect(allowedTypes).ToArray()).Length > 0) {
+			var invaderToDamage = (HealthToken)await damagePicker.Action.Decision( Select.Invader.ForAggregateDamageFromSource( Space, source, options, damage, Present.Always ) );
+			if(invaderToDamage == null) break;
 			await ApplyDamageTo1( 1, invaderToDamage );
 			--damage;
 			++damageInflicted;

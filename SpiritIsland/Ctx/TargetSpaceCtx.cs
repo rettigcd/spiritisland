@@ -215,6 +215,34 @@ public class TargetSpaceCtx : SelfCtx {
 			throw new Exception( "somehow we did more damage than we have available" );
 	}
 
+	// For strifed Damage
+	// !!! ??? Can this be combined with DamageInvaders() to remove duplication?
+	public async Task StrifedDamageOtherInvaders( int originalDamage, HealthToken source, bool excludeSource ) {
+
+		HealthToken damageSourceToExclude = excludeSource ? source : null;
+		var invadersToDamage = Tokens.InvaderTokens()
+			.Where( t => t != damageSourceToExclude )
+			.ToArray();
+
+		// Calculate Total Damage available
+		int sumAvailableDamage = originalDamage;
+		sumAvailableDamage += BonusDamage.Remaining;
+		if(0 < originalDamage)
+			sumAvailableDamage += BadlandDamage.Remaining;
+
+		// Apply Damage
+		int damageApplied = await Invaders.DamageToSpecificTokens( sumAvailableDamage, Self, source, invadersToDamage );
+		int poolDamageToAccountFor = damageApplied - originalDamage;
+
+		// Remove bonus damage from damage pools
+		poolDamageToAccountFor -= BadlandDamage.ReducePoolDamage( poolDamageToAccountFor );
+		poolDamageToAccountFor -= BonusDamage.ReducePoolDamage( poolDamageToAccountFor );
+
+		if(poolDamageToAccountFor > 0)
+			throw new Exception( "somehow we did more damage than we have available" );
+	}
+
+
 	DamagePool BonusDamage => _bonusDamageFromSpirit ??= new DamagePool( Self.BonusDamage );
 	DamagePool _bonusDamageFromSpirit;
 
@@ -247,7 +275,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 		// Find All Invaders
 		var invaders = new List<Token>();
-		foreach(var token in Tokens.Invaders())
+		foreach(var token in Tokens.InvaderTokens())
 			for(int i = 0; i < Tokens[token]; ++i)
 				invaders.Add( token );
 
