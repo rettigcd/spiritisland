@@ -29,12 +29,13 @@ public partial class IslandControl : Control {
 
 		var board = gameState.Island.Boards.VerboseSingle("Multiple Island boards not supported.");
 		ClearCachedImage();
-		boardImageFile = board[0].Label[..1] switch {
+		var boardLabel = board[0].Label;
+		boardImageFile = boardLabel[..1] switch {
 			"A" => ".\\images\\board a.png",
 			"B" => ".\\images\\board b.png",
 			"C" => ".\\images\\board c.png",
 			"D" => ".\\images\\board d.png",
-			_ => throw new ArgumentException()
+			_ => throw new ArgumentException("no board image found for board "+ boardLabel ),
 		};
 
 		var images = ResourceImages.Singleton;

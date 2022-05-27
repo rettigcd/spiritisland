@@ -328,12 +328,12 @@ public class TargetSpaceCtx : SelfCtx {
 
 	/// <param name="groups">Option: if null/empty, no filtering</param>
 	public virtual async Task AddStrife( params TokenClass[] groups ) {
-		var invader = await Decision( Select.Invader.ForStrife( Tokens, groups ) );
+		var invader = (HealthToken) await Decision( Select.Invader.ForStrife( Tokens, groups ) );
 		if(invader == null) return;
 		await Tokens.AddStrifeTo( invader, CurrentActionId );
 	}
 
-	public Task AddStrifeTo( Token invader, int count = 1 ) {
+	public Task AddStrifeTo( HealthToken invader, int count = 1 ) {
 		return Tokens.AddStrifeTo( invader, CurrentActionId, count );
 	}
 

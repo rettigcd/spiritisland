@@ -22,10 +22,11 @@ public class LandOfHauntsAndEmbers {
 			pushCount += 2;
 		}
 
-		// add 1 blight
-		await ctx.AddBlight(1);
-
 		await ctx.PushUpTo(pushCount,Invader.Explorer,Invader.Town);
+
+		// add 1 blight
+		await ctx.AddBlight( 1 );
+
 	}
 
 }

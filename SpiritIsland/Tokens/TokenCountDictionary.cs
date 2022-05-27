@@ -71,7 +71,8 @@ public class TokenCountDictionary {
 
 	/// <summary> Non-event-triggering setup </summary>
 	public void Adjust( Token specific, int delta ) {
-		if(specific is HealthToken ht && ht.RemainingHealth == 0) throw new System.ArgumentException( "Don't try to track dead tokens." );
+		if(specific is HealthToken ht && ht.RemainingHealth == 0) 
+			throw new System.ArgumentException( "Don't try to track dead tokens." );
 		counts[specific] += delta;
 	}
 
@@ -140,19 +141,19 @@ public class TokenCountDictionary {
 
 	public int InvaderTotal() => InvaderTokens().Sum( i => counts[i] );
 
-	public async Task AddStrifeTo( Token invader, Guid actionId, int count = 1 ) {
+	public async Task AddStrifeTo( HealthToken invader, Guid actionId, int count = 1 ) {
 
 		// Remove old type from 
 		if(this[invader]<count)
 			throw new ArgumentOutOfRangeException($"collection does not contain {count} {invader}");
 		this[invader] -= count;
 
-		if( invader is not HealthToken ht )
-			throw new InvalidOperationException("can only add strife to HealthToken");
-
 		// Add new strifed
-		var strifed = ht.HavingStrife( ht.StrifeCount + 1 );
+		var strifed = invader.HavingStrife( invader.StrifeCount + 1 );
 		this[strifed] += count;
+
+		// !!! Adding / Removing a strife needs to trigger a token-change event for Observe the Ever Changing World
+		// !!! Test that a ravage that does nothing but removes a strife, triggers Observe the Ever Changing World
 
 		if( strifed.IsDestroyed ) // due to a strife-health penalty
 			await Destroy( strifed, this[strifed], actionId );

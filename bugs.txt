@@ -1,15 +1,6 @@
-Dissolve the Bonds of Kinship
-	City / Town with reduced health generated same normal amount of explorers - is that correct?
-	Do we have to split them evenly, or just to max # of spaces.
-	Improve the Push
-	? does elemental threshold work?
-
 Scape Goats - strifed city/town did not do damage
 
 Strangling Firevine might have triggered more than 1 element.
-
-Land of Haunts and Embers
-	? do we push grouped together into single push command?
 
 Instruments of Their Own Ruin
 	does element escalation work?

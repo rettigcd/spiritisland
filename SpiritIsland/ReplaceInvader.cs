@@ -27,20 +27,23 @@ static public class ReplaceInvader {
 
 	}
 
-	public static async Task SingleInvaderWithExplorers( Spirit spirit, InvaderBinding grp, TokenClass oldInvader, int replaceCount ) {
+	public static async Task SingleInvaderWithExplorers( TargetSpaceCtx ctx, TokenClass oldInvader, int replaceCount ) {
 
-		var tokens = grp.Tokens;
-		var specific = (HealthToken) await spirit.Action.Decision( Select.Invader.ToReplace("disolve", grp.Space, tokens.OfType( oldInvader ) ) );
-		if(specific == null) return;
+		var tokens = ctx.Tokens;
+		var tokenToRemove = (HealthToken) await ctx.Self.Action.Decision( Select.Invader.ToReplace("disolve", ctx.Space, tokens.OfType( oldInvader ) ) );
+		if(tokenToRemove == null) return;
 
-		tokens.Adjust( specific, -1 );
-		tokens.AdjustDefault( Invader.Explorer, replaceCount );
+		// remove
+		tokens.Adjust( tokenToRemove, -1 );
 
-		// apply pre-existing damage
-		int damage = System.Math.Min(replaceCount,specific.FullHealth-specific.RemainingHealth); // !!! cleanup damage calculations
-		await grp.Destroy(damage,Invader.Explorer);
+		// add
+		int explorersToAdd = replaceCount - tokenToRemove.Damage;
+		if( explorersToAdd > 0 )
+			tokens.AdjustDefault( Invader.Explorer, explorersToAdd );
 
-		// !!! ??? pre-existing strife?
+		// distribute pre-existing strife.
+		for(int i=0;i<explorersToAdd;++i)
+			await ctx.AddStrife( Invader.Explorer );
 	}
 
 }
