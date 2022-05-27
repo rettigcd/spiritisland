@@ -1,10 +1,3 @@
-
-==== Blighted Island ====
-
-Strong Earth Shatters Slowly - When adding blight to land, it re-triggered Blighted Island message.  Therefore, mark the island as blighted before doing blighted island effect.
-
-ThrivingCommunitites - there were only 3 lands with explorers.  After upgrading those 3 lands, puked on 4th non-existant space to upgrade.
-
 ==== Misc ====
 
 After Growth, rewinding to beginning of turn, doesn't reset # of card plays to 0
