@@ -1,5 +1,3 @@
-Scape Goats - strifed city/town did not do damage
-
 Strangling Firevine might have triggered more than 1 element.
 
 Instruments of Their Own Ruin

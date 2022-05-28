@@ -75,7 +75,6 @@ public class ConfigurableTestFixture {
 
 	public TargetSpiritCtx TargetSelf => Spirit.BindMyPower( GameState ).TargetSpirit( Spirit );
 
-	static readonly Regex tokenParser = new Regex( @"(\d+)(\w)@(\d+)" );
 	public void InitTokens( Space space, string tokenString ) {
 		var tokens = GameState.Tokens[space];
 		foreach(var part in tokenString.Split( ',' )) {
@@ -89,6 +88,7 @@ public class ConfigurableTestFixture {
 		Presence.Adjust( space, dif );
 	}
 
+	static readonly Regex tokenParser = new Regex( @"(\d+)(\w)@(\d+)(\^*)" );
 	static (int,Token) ParseToken( string part ) {
 		var match = tokenParser.Match( part );
 		if(!match.Success) throw new FormatException( $"Unrecognized token [{part}]." );
@@ -99,7 +99,13 @@ public class ConfigurableTestFixture {
 			"D" => TokenType.Dahan,
 			_ => throw new Exception( $"Invader Initial [{match.Groups[2].Value}]" ),
 		};
-		var token = new HealthToken( tokenClass, tokenClass.Attack, tokenClass.Attack - int.Parse( match.Groups[3].Value ) );// Ignoring strife...
+		int fullHealth = tokenClass.Attack; // hack - class doesn't have full health, so we will cheat and use attack as the full health.
+		var token = new HealthToken( 
+			tokenClass,
+			fullHealth,
+			fullHealth - int.Parse( match.Groups[3].Value ), // damage
+			match.Groups[4].Value.Length // strife
+		);
 		int count = int.Parse( match.Groups[1].Value );
 		return (count, token);
 	}
