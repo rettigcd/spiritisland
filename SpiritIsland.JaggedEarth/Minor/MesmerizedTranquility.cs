@@ -8,7 +8,8 @@ public class MesmerizedTranquility{
 		ctx.Isolate();
 
 		// Each Invader does -1 Damage.
-		ctx.ModifyRavage( cfg => cfg.DamageFromAttacker = (attacker) => attacker.FullHealth + (attacker.Class.Category == TokenCategory.Invader ? -1 : 0) );
+		++ctx.Tokens.DamagePenaltyPerInvader;
+		ctx.GameState.TimePasses_ThisRound.Push(_=>{ ctx.Tokens.DamagePenaltyPerInvader--; return Task.CompletedTask; } );
 
 		return Task.CompletedTask;
 	}

@@ -19,7 +19,7 @@ class WhyDontYouAndThemFight {
 		var invader = (HealthToken)await ctx.Decision(new Select.TokenFrom1Space("Select invader to fight 1 dahan",ctx.Space,invaders,Present.Always));
 
 		// Calc Invader Damage
-		var (damageFromInvader,newInvaderToken) = GetDamageFromInvader( ctx.Tokens, invader );
+		var (damageFromInvader,newInvaderToken) = GetDamageFromInvader( ctx.Invaders, invader );
 		// Calc Dahan Damage
 		int damageFromDahan = 2;
 			
@@ -32,10 +32,10 @@ class WhyDontYouAndThemFight {
 
 	}
 
-	static (int,HealthToken) GetDamageFromInvader( TokenCountDictionary tokens, HealthToken invader ) {
+	static (int,HealthToken) GetDamageFromInvader( InvaderBinding invaderBinding, HealthToken invader ) {
 		return 0 < invader.StrifeCount
-			? (0,tokens.RemoveStrife( invader, 1 )) 
-			: (invader.Class.Attack,invader);
+			? (0,invaderBinding.Tokens.RemoveStrife( invader, 1 )) 
+			: (invaderBinding.Tokens.AttackDamageFrom1( invader ),invader);
 	}
 
 	[InnateOption("3 animal","If target land has beast, 2 Damage. Otherwise, you may Gather 1 beast.",4)]

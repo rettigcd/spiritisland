@@ -1,22 +1,17 @@
-Strangling Firevine might have triggered more than 1 element.
-
 Instruments of Their Own Ruin
 	does element escalation work?
 
-Mesmerized Tranquility
-	? How does -1 damage work?
-	? how does it reset?
+Strangling Firevine might have triggered more than 1 element.
 
-==== Misc ====
+=====  Shifting Memories  ========
 
 After Growth, rewinding to beginning of turn, doesn't reset # of card plays to 0
 
 Shifting Memories 2-elements for card play - doesn't always work
 
-View Absolute Stasis tokens / spaces.
+=====  Space / Board related bugs  ======
 
-* Cast Down Info the Briny Deep
-	? Element escalation - in single player mode, does this work and end game?
+* View Absolute Stasis tokens / spaces.
 
 * Dream of the Untouched Land
 	- adding new island board does not not work.

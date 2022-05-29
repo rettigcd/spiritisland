@@ -198,6 +198,9 @@ public class InvaderBinding {
 		return damageInflicted;
 	}
 
+//	public int AttackDamageFrom1(HealthToken ht) => Math.Max(0,ht.Class.Attack-DamagePenaltyPerInvader);
+//	public int DamagePenaltyPerInvader = 0; // !!! ??? Does the Memento reset this back to 0?
+
 	public readonly DestroyInvaderStrategy DestroyStrategy;
 	public readonly TokenCountDictionary Tokens;
 

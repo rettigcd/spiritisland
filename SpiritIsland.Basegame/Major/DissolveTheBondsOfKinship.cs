@@ -20,10 +20,9 @@ public class DissolveTheBondsOfKinship {
 		// if you have 2 fire 2 water 3 animal
 		if(await ctx.YouHave("2 fire,2 water,3 animal" )) {
 			// before pushing, explorers and city/town do damage to each other
-			int damageFromExplorers = ctx.Tokens.Sum(Invader.Explorer);
-			int damageToExplorers = ctx.Tokens.Sum(Invader.City) * Invader.City.Attack
-				+ ctx.Tokens.Sum(Invader.Town) * Invader.Town.Attack;
-			await ctx.DamageInvaders(damageFromExplorers,Invader.City,Invader.Town);
+			int damageFromExplorers = GetAttackDamageFrom( ctx, Invader.Explorer );
+			int damageToExplorers = GetAttackDamageFrom( ctx, Invader.City ) + GetAttackDamageFrom( ctx, Invader.Town );
+			await ctx.DamageInvaders( damageFromExplorers, Invader.City, Invader.Town );
 			await ctx.DamageInvaders( damageToExplorers, Invader.Explorer );
 		}
 
@@ -53,6 +52,9 @@ public class DissolveTheBondsOfKinship {
 			--explorerCount;
 		}
 
+		static int GetAttackDamageFrom( TargetSpaceCtx ctx, HealthTokenClass cc ) {
+			return ctx.Tokens.OfType( cc ).Sum( t => ctx.Tokens[t] * ctx.Tokens.AttackDamageFrom1( (HealthToken)t ) );
+		}
 	}
 
 }

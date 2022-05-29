@@ -14,9 +14,10 @@ public static class StrifedRavage {
 				.Where( x => x.StrifeCount > 0 )
 				.ToDictionary( x=>x, x=>ctx.Tokens[x] );
 
+			var invaderBinding = ctx.Invaders;
 			foreach(var p in strifedCounts)
 				await DamageAnyButSelf( ctx, 
-					p.Value * p.Key.Class.Attack, // total damage from this type.
+					p.Value * invaderBinding.Tokens.AttackDamageFrom1( p.Key ), // total damage from this type.
 					p.Key, // the source of the damage
 					p.Value==1 // exclude source if there is only 1 - it can't damage itself.
 				);

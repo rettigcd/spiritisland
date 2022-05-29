@@ -52,7 +52,7 @@ namespace SpiritIsland.Tests {
 				//  Then: Asks user to prepare element
 				fxt.user.AssertDecisionX("Prepare Element (A5)","Sun,Moon,Fire,Air,Water,(Earth),Plant,Animal");
 
-			fxt.gameState.Phase.ShouldBe(Phase.Slow);
+			fxt.gameState.Phase.ShouldBe(Phase.Slow); // !! sometime BG thread doesn't get all the way to slow and errors out on Invaders, need to wait on BG thread.
 		}
 	}
 

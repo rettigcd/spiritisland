@@ -168,4 +168,10 @@ public class TokenCountDictionary {
 		return lessStrifed;
 	}
 
+	// !! This is starting to be a Space-State, not just a token Dictionary, starting to store more here than just tokens
+	public int AttackDamageFrom1( HealthToken ht ) => ht.Class.Category == TokenCategory.Dahan ? ht.Class.Attack
+		: Math.Max( 0, ht.Class.Attack - DamagePenaltyPerInvader );
+
+	public int DamagePenaltyPerInvader = 0; // !!! ??? Does the Memento reset this back to 0?
+
 }

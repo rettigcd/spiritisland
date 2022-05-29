@@ -2,13 +2,6 @@
 
 public class RavageAction {
 
-	readonly protected InvaderBinding grp;
-	readonly Func<Space,int,Guid,Task> damageLandCallback;
-	readonly protected ConfigureRavage cfg;
-
-	readonly GameState gameState;
-	readonly Guid actionId;
-
 	#region constructor
 
 	public RavageAction( GameState gs, InvaderBinding grp ) {
@@ -16,7 +9,7 @@ public class RavageAction {
 		var cfg = gs.GetRavageConfiguration( grp.Space );
 
 		this.gameState = gs;
-		this.grp = grp;
+		this.invaderBinding = grp;
 		this.cfg = cfg;
 		damageLandCallback = gs.DamageLandFromRavage;
 
@@ -91,12 +84,12 @@ public class RavageAction {
 
 	public int GetDamageInflictedByDefenders() {
 		CountDictionary<HealthToken> participants = GetDefenders();
-		return participants.Sum( pair => pair.Key.Class.Attack * pair.Value );
+		return participants.Sum( pair => Tokens.AttackDamageFrom1( pair.Key ) * pair.Value );
 	}
 
 	public async Task DamageLand( int damageInflictedFromInvaders ) {
 		if( cfg.ShouldDamageLand )
-			await damageLandCallback(grp.Space,damageInflictedFromInvaders, actionId);
+			await damageLandCallback(invaderBinding.Space,damageInflictedFromInvaders, actionId);
 	}
 
 	/// <returns># of dahan killed/destroyed</returns>
@@ -126,7 +119,7 @@ public class RavageAction {
 			foreach(var token in participatingExplorers) {
 				int tokensToDestroy = Math.Min(@event.startingDefenders[token], damageToApply / token.RemainingHealth );
 				// destroy real tokens
-				await grp.Destroy(tokensToDestroy,token);
+				await invaderBinding.Destroy(tokensToDestroy,token);
 				// update our defenders count
 				defenders[token] -= tokensToDestroy;
 				damageToApply -= tokensToDestroy * token.RemainingHealth;
@@ -191,7 +184,7 @@ public class RavageAction {
 			HealthToken attackerToDamage = PickSmartInvaderToDamage( remaningAttackers, remainingDamageToApply );
 
 			// Apply real damage
-			var (damageInflicted,_) = await grp.ApplyDamageTo1( remainingDamageToApply, attackerToDamage, true );
+			var (damageInflicted,_) = await invaderBinding.ApplyDamageTo1( remainingDamageToApply, attackerToDamage, true );
 			remainingDamageToApply -= damageInflicted;
 
 			// Apply tracking damage
@@ -210,7 +203,7 @@ public class RavageAction {
 		return participatingAttacker.Keys
 			.OfType<HealthToken>()
 			.Where( x => x.StrifeCount==0 )
-			.Select( attacker => cfg.DamageFromAttacker( attacker ) * participatingAttacker[attacker] ).Sum();
+			.Select( attacker => Tokens.AttackDamageFrom1( attacker ) * participatingAttacker[attacker] ).Sum();
 	}
 
 
@@ -239,7 +232,12 @@ public class RavageAction {
 
 	int BadLandsCount => Tokens.Badlands.Count;
 
-	TokenCountDictionary Tokens => grp.Tokens;
+	TokenCountDictionary Tokens => invaderBinding.Tokens;
+	readonly protected InvaderBinding invaderBinding;
+	readonly GameState gameState;
+	readonly Guid actionId;
+	readonly Func<Space, int, Guid, Task> damageLandCallback;
+	readonly protected ConfigureRavage cfg;
 
 	#endregion
 
