@@ -1,7 +1,11 @@
-Instruments of Their Own Ruin
-	does element escalation work?
-
 Strangling Firevine might have triggered more than 1 element.
+
+Rites of the Land's Rejection
+	? does stop-build work the correct way?
+	? is the fear correct?
+
+Volcanic Eruption
+	? element threshold work?
 
 =====  Shifting Memories  ========
 
@@ -27,15 +31,6 @@ Gift of Constancy
 
 Vengeance of the Dead
 	? How does this even work?
-
--- BAC --
-
-Rites of the Land's Rejection
-	? does stop-build work the correct way?
-	? is the fear correct?
-
-Volcanic Eruption
-	? element threshold work?
 
 -- JE --
 
