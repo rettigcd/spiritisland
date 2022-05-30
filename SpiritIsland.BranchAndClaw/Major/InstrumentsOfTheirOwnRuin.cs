@@ -29,11 +29,11 @@ public class InstrumentsOfTheirOwnRuin {
 
 
 	static Task DuringRavage_InvadersDamageInvadersInAdjacentLandsInsteadOfDahan( TargetSpaceCtx ctx ) {
-		ctx.ModifyRavage( cfg => cfg.RavageSequence = eng => RavageSequence_DamageInvadersInAdjacentLand(ctx,eng) );
+		ctx.ModifyRavage( cfg => cfg.RavageSequence = eng => RavageSequence_DamageInvadersInAdjacentLand(ctx, Guid.NewGuid() ) );
 		return Task.CompletedTask;
 	}
 
-	static async Task RavageSequence_DamageInvadersInAdjacentLand( TargetSpaceCtx ctx, RavageAction eng ) {
+	static async Task RavageSequence_DamageInvadersInAdjacentLand( TargetSpaceCtx ctx, Guid actionId ) {
 		// Note - this works regardless of them ravaging in target land or not. yay!
 
 		// This ravage is totally different from any other.
@@ -54,8 +54,6 @@ public class InstrumentsOfTheirOwnRuin {
 		var availableBadlandDamage = ctx.Adjacent.ToDictionary(x=>x,x=>tokens[x].Badlands.Count).ToCountDict(); // captures # of badlands then sets to 0 once space is activated.
 		var activatedBadlandDamage = new CountDictionary<Space>(); // initializes when they do first damage in land, then used until depleated
 		bool HasDamage(Space space) => damageFromCenter > 0 || activatedBadlandDamage[space]>0;
-
-		var actionId = Guid.NewGuid();
 
 		// While any invaders && (damageFromStrifed>0 || )damage && any explorers
 		Space[] spaceOptions;
@@ -81,5 +79,7 @@ public class InstrumentsOfTheirOwnRuin {
 		}
 
 	}
+
+	// Deal
 
 }

@@ -29,9 +29,6 @@ Shifting Memories 2-elements for card play - doesn't always work
 Gift of Constancy 
 	? check reclaim when targetting another spirit
 
-Vengeance of the Dead
-	? How does this even work?
-
 -- JE --
 
 Birds Cry Warning
