@@ -1,5 +1,3 @@
-Strangling Firevine might have triggered more than 1 element.
-
 Rites of the Land's Rejection
 	? does stop-build work the correct way?
 	? is the fear correct?
