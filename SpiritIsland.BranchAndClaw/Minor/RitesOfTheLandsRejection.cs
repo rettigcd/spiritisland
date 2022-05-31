@@ -20,7 +20,7 @@ public class RitesOfTheLandsRejection {
 
 		return ctx.SelectActionOption(
 			new SpaceAction( "Stop build - 1 fear / (Dahan or T/C)", StopBuild_FearForCitiesTownsAndDahan ),
-			new SpaceAction( "Push up to 3 dahan", ctx => ctx.PushUpToNDahan(3) ).Matches( x => x.Dahan.Any )
+			Cmd.PushUpToNDahan(3)
 		);
 	}
 
