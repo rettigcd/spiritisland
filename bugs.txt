@@ -17,15 +17,6 @@ Shifting Memories 2-elements for card play - doesn't always work
 
 ===============================
 
-Gift of Constancy 
-	? check reclaim when targetting another spirit
-
--- JE --
-
-Birds Cry Warning
-	? does "the next time" stop spirit-powers from destroying dahan
-	? does it only work once?
-
 Settle Into Hunting-Grounds
 	- implement "May" count as badlands and beast.
 	- presence cannot move.

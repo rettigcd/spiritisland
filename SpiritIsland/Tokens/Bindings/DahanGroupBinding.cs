@@ -170,10 +170,9 @@ public class DahanGroupBinding : DahanGroupBindingNoEvents {
 		}
 	}
 
-	public async Task Destroy( int count, HealthToken original ) {
-		if(Frozen) return;
-
-		await _tokens.Remove( original, count, actionId, _destroyReason );
+	public async Task<TokenRemovedArgs> Destroy( int count, HealthToken original ) {
+		return Frozen ? null
+			: await _tokens.Remove( original, count, actionId, _destroyReason );
 	}
 
 	#endregion

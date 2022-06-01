@@ -17,9 +17,6 @@ public class Tokens_ForIsland : IIslandTokenApi {
 		dynamicTokens_ForRound.Clear();
 	}
 
-
-
-
 	public TokenCountDictionary this[Space space] {
 		get {
 			if(!tokenCounts.ContainsKey( space )) {
@@ -61,15 +58,17 @@ public class Tokens_ForIsland : IIslandTokenApi {
 
 	public IEnumerable<Space> Keys => tokenCounts.Keys;
 
+	public Task Publish_Removing( RemovingTokenArgs args ) {
+		return RemovingToken.InvokeAsync( args );
+	}
+
 	public Task Publish_Added( Space space, Token token, int count, AddReason reason, Guid actionId ) {
 		return TokenAdded.InvokeAsync( new TokenAddedArgs(space,token,reason, count, gameStateForEventArgs, actionId) );
 	}
 
-	public Task Publish_Removed( Space space, Token token, int count, RemoveReason reason, Guid actionId ) {
-		return TokenRemoved.InvokeAsync( new TokenRemovedArgs( gameStateForEventArgs, token, reason, actionId ) {
-			Space = space,
-			Count = count,
-		} );
+	public Task Publish_Removed( TokenRemovedArgs args ) {
+		args.GameState = gameStateForEventArgs;
+		return TokenRemoved.InvokeAsync( args );
 	}
 
 	public async Task Publish_Moved( Token token, Space from, Space to, Guid actionId ) {
@@ -102,6 +101,10 @@ public class Tokens_ForIsland : IIslandTokenApi {
 		[Invader.Explorer] = new HealthToken( Invader.Explorer, 1 ),
 		[TokenType.Dahan] = new HealthToken( TokenType.Dahan, 2 ),
 	};
+
+	/// <summary> Sent before any token is removed. </summary>
+	/// <remarks> Callers may modify the args to disable the remove if desired. </remarks>
+	public DualAsyncEvent<RemovingTokenArgs> RemovingToken = new DualAsyncEvent<RemovingTokenArgs>();
 
 	public DualAsyncEvent<ITokenAddedArgs> TokenAdded = new DualAsyncEvent<ITokenAddedArgs>();
 	public DualAsyncEvent<ITokenRemovedArgs> TokenRemoved = new DualAsyncEvent<ITokenRemovedArgs>();
@@ -167,19 +170,30 @@ class TokenAddedArgs : ITokenAddedArgs {
 
 }
 
-class TokenRemovedArgs : ITokenRemovedArgs {
-	public TokenRemovedArgs(GameState gs, Token token, RemoveReason reason, Guid actionId ) {
+public class RemovingTokenArgs {
+	public Space Space { get; set; }
+	public Token Token { get; set; }
+	public int Count { get; set; }
+	public RemoveReason Reason { get; set; }
+	public Guid ActionId { get; set; }
+}
+
+public class TokenRemovedArgs : ITokenRemovedArgs {
+
+	public TokenRemovedArgs(Token token, RemoveReason reason, Guid actionId, Space space, int count ) {
 		Token = token;
 		Reason = reason;
-		GameState = gs;
 		ActionId = actionId;
+		Space = space;
+		Count = count;
 	}
+
+	public GameState GameState { get; set; }// set by the token-publisher because TokenCountDictionary doesn't have this info
 
 	public Token Token { get; }
 	public int Count { get; set; }
 	public Space Space { get; set;}
 	public RemoveReason Reason { get; }
-	public GameState GameState { get; }
 	public Guid ActionId { get; }
 };
 

@@ -144,18 +144,22 @@ public class RavageAction {
 				int tokensToDestroy = Math.Min(@event.startingDefenders[token], damageToApply/token.RemainingHealth); // rounds down
 				if(tokensToDestroy > 0) {
 
-					await cfg.DestroyDahan( dahan, tokensToDestroy, token );
+					var removed = await dahan.Destroy( tokensToDestroy, token );
 
-					@event.dahanDestroyed += tokensToDestroy;
-					defenders[token] -= tokensToDestroy;
+					// use up damage
 					damageToApply -= tokensToDestroy * token.RemainingHealth;
+
+					if(removed != null) {
+						@event.dahanDestroyed += removed.Count;
+						defenders[token] -= removed.Count;
+					}
 				}
 				// damage real tokens
 
 				// 2nd - if we no longer have enougth to destroy this token, apply damage all the damage that remains
 				if(0 < defenders[token] && 0 < damageToApply) {
 
-					await dahan.ApplyDamageToToken( damageToApply, token );
+					await dahan.ApplyDamageToToken( damageToApply, token ); // this will never destroy token
 
 					// update our defenders count
 					++defenders[token.AddDamage( damageToApply )];

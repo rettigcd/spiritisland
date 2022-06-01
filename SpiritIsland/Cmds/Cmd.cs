@@ -2,15 +2,6 @@
 
 public static partial class Cmd {
 
-	static public SpaceAction Destroy2FewerDahan => new SpaceAction(
-		"Each time Dahan would be Destroyed in target land, Destroy 2 fewer Dahan.", 
-		// !!! This only stops Ravage destroys, not other. (Are there any other?)
-		ctx=> ctx.GameState.ModifyRavage(ctx.Space, cfg => { 
-			var oldDestroy = cfg.DestroyDahan;
-			cfg.DestroyDahan = (dahan,count,health) => oldDestroy(dahan,count-2,health);
-		} ) 
-	);
-
 	// Gather
 	static public SpaceAction GatherUpToNDahan( int count ) => new SpaceAction( $"Gather up to {count} Dahan", ctx => ctx.GatherUpToNDahan( count ) );
 	static public SpaceAction GatherUpToNExplorers( int count ) => new SpaceAction( $"Gather up to {count} Explorers", ctx => ctx.GatherUpTo(count,Invader.Explorer));

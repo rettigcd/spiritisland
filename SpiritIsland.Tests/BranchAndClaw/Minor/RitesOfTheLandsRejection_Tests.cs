@@ -25,7 +25,7 @@ public class RitesOfTheLandsRejection_Tests {
 		if(playsCard) {
 			user.SelectsFastAction( RitesOfTheLandsRejection.Name );
 			user.TargetsLand_IgnoreOptions( spaceCtx.Space.Label );
-			user.AssertDecisionX( "Select Power Option", "{Stop build - 1 fear / (Dahan or T/C)},Push up to 3 dahan", "{}" );
+			user.AssertDecisionX( "Select Power Option", "{Stop build - 1 fear / (Dahan or T/C)},Push up to 3 Dahan", "{}" );
 		} else
 			//  And: done with fast (no more cards..)
 			user.IsDoneWith( Phase.Fast );

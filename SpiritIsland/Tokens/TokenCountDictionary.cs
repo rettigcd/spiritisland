@@ -97,15 +97,17 @@ public class TokenCountDictionary {
 		return tokenApi.Publish_Added( Space, token, count, addReason, actionId );
 	}
 
-	public Task Remove( Token token, int count, Guid actionId, RemoveReason reason = RemoveReason.Removed ) {
+	/// <summary> returns null if no token removed </summary>
+	public async Task<TokenRemovedArgs> Remove( Token token, int count, Guid actionId, RemoveReason reason = RemoveReason.Removed ) {
 		count = System.Math.Min( count, this[token] );
-
-		if(count==0) return Task.CompletedTask;
-		if(count < 0) throw new System.ArgumentOutOfRangeException( nameof( count ) );
-
-		this[token] -= count;
-
-		return tokenApi.Publish_Removed( Space, token, count, reason, actionId );
+		var args = new RemovingTokenArgs { ActionId = actionId, Count = count, Space = Space, Reason = reason, Token = token };
+		await tokenApi.Publish_Removing( args );
+		if(args.Count == 0) return null;
+		if(args.Count < 0) throw new System.ArgumentOutOfRangeException( nameof( args.Count ) );
+		this[args.Token] -= args.Count;
+		var removedArgs = new TokenRemovedArgs( token, reason, actionId, Space, count );
+		await tokenApi.Publish_Removed( removedArgs );
+		return removedArgs;
 	}
 
 	// Convenience only

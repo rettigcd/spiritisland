@@ -43,6 +43,9 @@ public class ObserveTheEverChangingWorld {
 				|| tokenSummary == ctx.Tokens.Summary 	// no change in tokens
 			) return;
 
+			if(currentActionId == default)
+				throw new InvalidOperationException("Can't use default guids as actionids");
+
 			appliedActionsIds.Add( currentActionId ); // limit to 1 change per action
 			tokenSummary = ctx.Tokens.Summary;
 

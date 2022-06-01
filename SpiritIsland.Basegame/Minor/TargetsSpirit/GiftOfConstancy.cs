@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.Basegame;
 
-public partial class GiftOfConstancy {
+public class GiftOfConstancy {
 
 	[MinorCard( "Gift of Constancy", 0, Element.Sun, Element.Earth )]
 	[Fast]
