@@ -42,7 +42,7 @@ static public class ReplaceInvader {
 			tokens.AdjustDefault( Invader.Explorer, explorersToAdd );
 
 		// distribute pre-existing strife.
-		for(int i=0;i<explorersToAdd;++i)
+		for(int i=0;i< tokenToRemove.StrifeCount; ++i)
 			await ctx.AddStrife( Invader.Explorer );
 	}
 
