@@ -51,12 +51,6 @@ namespace SpiritIsland.Tests {
 
 		public void Growth_PlacesEnergyPresence( string placeOptions ) => PlacesPresence( spirit.Presence.Energy.RevealOptions.Single(), placeOptions );
 
-		public void Growth_ActivatesExtraCardPlay() { // Rampant Green
-			var current = userPortal.GetCurrent();
-			var selection = current.Options.First( x => x.Text.StartsWith( "PlayExtra" ) );
-			Choose( selection );
-		}
-
 		public void Growth_PlacesPresence( string placeOptions ) {
 			string[] parts = placeOptions.Split('>');
 			Track source = parts[0].ToLower() switch {

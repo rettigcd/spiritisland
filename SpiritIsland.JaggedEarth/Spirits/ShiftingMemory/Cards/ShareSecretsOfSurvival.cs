@@ -21,23 +21,35 @@ public class ShareSecretsOfSurvival {
 	// Similar to Birds Cry Warning, but different enough that making a copy is simpler to maintain.
 	static public SpaceAction Destroy2FewerDahan => new SpaceAction(
 		"Each time dahan would be destroyed in target land, Destroy 2 fewer dahan.",
-		ctx => {
-			const int maxActionCount = int.MaxValue;
-			const int maxPerAction = 2;
+		DestroyFewerDahan( 2, int.MaxValue )
+	);
+
+	public static Action<TargetSpaceCtx> DestroyFewerDahan( int maxPerAction, int maxActionCount ) {
+		return ctx => {
 			var byAction = new CountDictionary<Guid>();
 			ctx.GameState.Tokens.RemovingToken.ForRound.Add( cfg => {
 				int previous = byAction[cfg.ActionId];
 				if(cfg.Token.Class == TokenType.Dahan                                                           // Dahan
 					&& (cfg.Reason == RemoveReason.Destroyed || cfg.Reason == RemoveReason.DestroyedInBattle)   // Destroyed
 					&& (byAction.Count < maxActionCount || byAction.ContainsKey( cfg.ActionId ))                // can effect more action OR already added
-					&& previous < maxPerAction                                                                  // remaining adjustments for this action
 				) {
-					int adjustment = Math.Min( maxPerAction - previous, cfg.Count );
-					cfg.Count -= adjustment;
-					byAction[cfg.ActionId] += adjustment;
+					// If we haven't saved our allotment
+					if(previous < maxPerAction) {  // // remaining adjustments for this action
+						// save some dahan
+						int adjustment = Math.Min( maxPerAction - previous, cfg.Count );
+						cfg.Count -= adjustment;
+						byAction[cfg.ActionId] += adjustment;
+						// restore to full health
+						ctx.Tokens.Adjust( cfg.Token, -adjustment );
+						ctx.Tokens.Adjust( ((HealthToken)cfg.Token).Healthy, adjustment );
+					} else {
+						// make sure our already-daved dahan stay saved
+						if(cfg.Count > ctx.Dahan.Count - maxPerAction)
+							cfg.Count = ctx.Dahan.Count - maxPerAction;
+					}
 				}
 			} );
-		}
-	);
+		};
+	}
 
 }

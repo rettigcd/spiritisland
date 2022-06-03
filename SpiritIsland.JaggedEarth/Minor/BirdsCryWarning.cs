@@ -10,26 +10,9 @@ public class BirdsCryWarning {
 		);
 	}
 
-	// Similar to Share Secrets of Survival, but different enough that making a copy is simpler to maintain.
 	static public SpaceAction Destroy2FewerDahan => new SpaceAction(
-		"The next time dahan would be destroyed in target land, Destroy 2 fewer dahan.",
-		ctx => {
-			const int maxActionCount = 1;
-			const int maxPerAction = 2;
-			var byAction = new CountDictionary<Guid>();
-			ctx.GameState.Tokens.RemovingToken.ForRound.Add( cfg => {
-				int previous = byAction[cfg.ActionId];
-				if(cfg.Token.Class == TokenType.Dahan                                                           // Dahan
-					&& (cfg.Reason == RemoveReason.Destroyed || cfg.Reason == RemoveReason.DestroyedInBattle)   // Destroyed
-					&& (byAction.Count < maxActionCount || byAction.ContainsKey( cfg.ActionId ))                // can effect more action OR already added
-					&& previous < maxPerAction                                                                  // remaining adjustments for this action
-				) {
-					int adjustment = Math.Min( maxPerAction - previous, cfg.Count );
-					cfg.Count -= adjustment;
-					byAction[cfg.ActionId] += adjustment;
-				}
-			} );
-		}
+		"Each time dahan would be destroyed in target land, Destroy 2 fewer dahan.",
+		ShareSecretsOfSurvival.DestroyFewerDahan( 2, 1 )
 	);
 
 }

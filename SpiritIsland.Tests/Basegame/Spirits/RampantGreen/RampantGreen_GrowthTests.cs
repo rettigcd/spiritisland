@@ -25,8 +25,6 @@ namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
 			User_SelectAlwaysGrowthOption();
 
 			User.Growth_SelectsOption( "ReclaimAll / DrawPowerCard" );
-//			User.Growth_ReclaimsAll();
-//			User.Growth_DrawsPowerCard();
 
 			Assert_AllCardsAvailableToPlay(5);
 		}
@@ -46,7 +44,6 @@ namespace SpiritIsland.Tests.Basegame.Spirits.RampantGreen {
 
 			User.Growth_SelectsOption( "PlacePresence(1) / PlayExtraCardThisTurn(1)" );
 			User.Growth_PlacesEnergyPresence( "A2;A3;A5" );
-			User.Growth_ActivatesExtraCardPlay();
 
 			// Player Gains +1 card to play this round
 			Assert.Equal( 2, spirit.NumberOfCardsPlayablePerTurn ); // , "Should gain 1 card to play this turn.");
