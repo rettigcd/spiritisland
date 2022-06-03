@@ -2,8 +2,9 @@
 
 public class Board {
 
-	#region factories
+	public BoardLayout Layout { get; set; }
 
+	#region factories
 
 	// These cannot be reused because when they get connected to other boards, 
 	// there neighbor state changes.
@@ -35,11 +36,13 @@ public class Board {
 		board.DefineSide(8,7).BreakAt(5);		// Side 1
 		board.DefineSide(7,5,4,3).BreakAt(1,3,7);// Side 2
 
+		board.Layout = BoardLayout.BoardA();
+
 		return board;
 	}
 
 	static public Board BuildBoardB() {
-		var tile = new Board(
+		var board = new Board(
 			new Space1(Terrain.Ocean,"B0")
 			,new Space1(Terrain.Wetland,"B1","D")  // 1 dahan
 			,new Space1(Terrain.Mountain,"B2", "C") // city
@@ -51,25 +54,27 @@ public class Board {
 			,new Space1(Terrain.Jungle,"B8","DD")   // 2 dahan
 		);
 
-		tile.SetNeighbors(0, 1,2,3);
-		tile.SetNeighbors(1, 2,4,5,6);
-		tile.SetNeighbors(2, 3,4);
-		tile.SetNeighbors(3, 4);
-		tile.SetNeighbors(4, 5,7);
-		tile.SetNeighbors(5, 6,7);
-		tile.SetNeighbors(6, 7,8);
-		tile.SetNeighbors(7, 8);
+		board.SetNeighbors(0, 1,2,3);
+		board.SetNeighbors(1, 2,4,5,6);
+		board.SetNeighbors(2, 3,4);
+		board.SetNeighbors(3, 4);
+		board.SetNeighbors(4, 5,7);
+		board.SetNeighbors(5, 6,7);
+		board.SetNeighbors(6, 7,8);
+		board.SetNeighbors(7, 8);
 
 		// sides of the board are # starting at the ocean and moving around the board clockwise
-		tile.DefineSide(1,6,8).BreakAt(1,7);	// Side 0
-		tile.DefineSide(8,7).BreakAt(5);		// Side 1
-		tile.DefineSide(7,4,3).BreakAt(1,5);	// Side 2
+		board.DefineSide(1,6,8).BreakAt(1,7);	// Side 0
+		board.DefineSide(8,7).BreakAt(5);		// Side 1
+		board.DefineSide(7,4,3).BreakAt(1,5);    // Side 2
 
-		return tile;
+		board.Layout = BoardLayout.BoardB();
+
+		return board;
 	}
 
 	static public Board BuildBoardC() {
-		var tile = new Board(
+		var board = new Board(
 			new Space1(Terrain.Ocean,"C0")
 			,new Space1(Terrain.Jungle,"C1","D")   // 1 dahan
 			,new Space1(Terrain.Sand,"C2","C")     // city
@@ -81,25 +86,27 @@ public class Board {
 			,new Space1(Terrain.Wetland,"C8")
 		);
 
-		tile.SetNeighbors(0, 1,2,3);
-		tile.SetNeighbors(1, 2,5,6);
-		tile.SetNeighbors(2, 3,4,5);
-		tile.SetNeighbors(3, 4);
-		tile.SetNeighbors(4, 5,7);
-		tile.SetNeighbors(5, 6,7);
-		tile.SetNeighbors(6, 7,8);
-		tile.SetNeighbors(7, 8);
+		board.SetNeighbors(0, 1,2,3);
+		board.SetNeighbors(1, 2,5,6);
+		board.SetNeighbors(2, 3,4,5);
+		board.SetNeighbors(3, 4);
+		board.SetNeighbors(4, 5,7);
+		board.SetNeighbors(5, 6,7);
+		board.SetNeighbors(6, 7,8);
+		board.SetNeighbors(7, 8);
 
 		// sides of the board are # starting at the ocean and moving around the board clockwise
-		tile.DefineSide(1,6,8).BreakAt(3,7);	// Side 0
-		tile.DefineSide(8,7,4).BreakAt(7,11);	// Side 1
-		tile.DefineSide(4,3).BreakAt(7);		// Side 2
+		board.DefineSide(1,6,8).BreakAt(3,7);	// Side 0
+		board.DefineSide(8,7,4).BreakAt(7,11);	// Side 1
+		board.DefineSide(4,3).BreakAt(7);       // Side 2
 
-		return tile;
+		board.Layout = BoardLayout.BoardC();
+
+		return board;
 	}
 
 	static public Board BuildBoardD() {
-		var tile = new Board(
+		var board = new Board(
 			new Space1(Terrain.Ocean,"D0")
 			,new Space1(Terrain.Wetland,"D1","DD")   // 2 dahan
 			,new Space1(Terrain.Jungle,"D2","CD")    // city, 1 dahan
@@ -111,21 +118,23 @@ public class Board {
 			,new Space1(Terrain.Mountain,"D8")
 		);
 
-		tile.SetNeighbors(0, 1,2,3);
-		tile.SetNeighbors(1, 2,5,7,8);
-		tile.SetNeighbors(2, 3,4,5);
-		tile.SetNeighbors(3, 4);
-		tile.SetNeighbors(4, 5,6);
-		tile.SetNeighbors(5, 6,7);
-		tile.SetNeighbors(6, 7);
-		tile.SetNeighbors(7, 8);
+		board.SetNeighbors(0, 1,2,3);
+		board.SetNeighbors(1, 2,5,7,8);
+		board.SetNeighbors(2, 3,4,5);
+		board.SetNeighbors(3, 4);
+		board.SetNeighbors(4, 5,6);
+		board.SetNeighbors(5, 6,7);
+		board.SetNeighbors(6, 7);
+		board.SetNeighbors(7, 8);
 
 		// sides of the board are # starting at the ocean and moving around the board clockwise
-		tile.DefineSide(1,8).BreakAt(11);		// Side 0
-		tile.DefineSide(8,7,6).BreakAt(5,11);	// Side 1
-		tile.DefineSide(6,4,3).BreakAt(3,9);	// Side 2
+		board.DefineSide(1,8).BreakAt(11);		// Side 0
+		board.DefineSide(8,7,6).BreakAt(5,11);	// Side 1
+		board.DefineSide(6,4,3).BreakAt(3,9);   // Side 2
 
-		return tile;
+		board.Layout = BoardLayout.BoardD();
+
+		return board;
 	}
 
 	#endregion

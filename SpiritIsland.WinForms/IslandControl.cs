@@ -122,13 +122,7 @@ public partial class IslandControl : Control {
 
 		if(cachedBackground == null) {
 
-			normalizedBoardLayout = gameState.Island.Boards[0][0].Text[0] switch {
-				'A' => BoardLayout.BoardA(),
-				'B' => BoardLayout.BoardB(),
-				'C' => BoardLayout.BoardC(),
-				'D' => BoardLayout.BoardD(),
-				_ => throw new Exception( "unknown board" )
-			};
+			normalizedBoardLayout = gameState.Island.Boards[0].Layout;
 
 			spaceLookup = new Dictionary<string, PointF>();
 			for(int i = 0; i <= 8; ++i)

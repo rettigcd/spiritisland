@@ -12,6 +12,8 @@ public class PlayExtraCardThisTurn : GrowthActionFactory {
 		return Task.CompletedTask;
 	}
 
+	public override bool AutoRun => true;
+
 	public override string Name => $"PlayExtraCardThisTurn({count})";
 
 }

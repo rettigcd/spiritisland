@@ -1,9 +1,7 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using System.Drawing;
-using System.Linq;
 
-namespace SpiritIsland.WinForms;
+namespace SpiritIsland;
 
 public class BoardLayout {
 
@@ -320,7 +318,5 @@ public class BoardLayout {
 
 		return layout;
 	}
-
-
 
 }
