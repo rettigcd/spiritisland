@@ -35,7 +35,7 @@ namespace SpiritIsland.Tests {
 		) {
 			var spirit = new TestSpirit( powerCard );
 			var gs = new GameState( spirit, Board.BuildBoardA() ) {
-				InvaderDeck = new InvaderDeck( null ) // Same order every time
+				InvaderDeck = new InvaderDeck() // Same order every time
 			};
 			modGameState?.Invoke( gs );
 

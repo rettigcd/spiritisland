@@ -1,8 +1,12 @@
 ﻿===== Focus =====
-1) Bugs
-* Adversaries
+* Adversaries / Scenarios
 * Last 2 spirits
 Mobile
+	- Spirit's 3 controls
+	- Island control with tokens
+	- Invader cards
+	- Power Cards
+	- Fear pool / cards
 Later: Events
 Later: 2 player
 Later: Web Hosted
@@ -49,9 +53,7 @@ Flatten out-of-phase action selection.
 == Missing ==
 Destroy Board
 Add new board.
-Unlock the Games - triggers all element thresholds
-All things weeken - blight action
-Thriving Community - upgrading strifed invader should remain strifed.
+Unlock the Gates - triggers all element thresholds
 Revamp Skips - only skip actions that happen, select which skip to use, don't need to select skip until it happens.
 Settle into Hunting Grounds - presence can't move.
 Absolute Statis - hides towns/cities from win/loss check
@@ -67,8 +69,6 @@ Defer using reflection for Power Cards as long as possible.
 Defer using reflection for Fear / Blight Cards unless used in the game play.
 
 
-
-
 =====  Simple - Implement  ====
 
 * Implement Face-up / face-down for deck cards so we can see what stage a card is before revealing it.
@@ -77,21 +77,9 @@ Defer using reflection for Fear / Blight Cards unless used in the game play.
 
 ==== Finish ====
 
-Blight - All Things Weeken - finish implementation - blight triggeres on 1 and does other stuff
 Settle into hunting grounds - implement presence cannot move.
 Absolute Stasis - figue out how to not hide cities from Victory check
 Slip the flows of time - use any # of times
-
-==== Ravage ====
-
-Unstrife damaged striffed
- 	- would be nice to use Ravage engeine to accomplish this and not requie spirit input.
- 	- damage spills over onto unstrifed
-Each time dahan are destroyed, destroy 2 fewer.
-	- only implemented for Ravage
-ConfigureRavage.DamageFromInvader - move outside of ravage so it effects other things too?
-DestroyInvaderStrategy - can this be consolidated into The PublishToken api?  
-DestroyDahan - can this be merged into the TokenCountDictionary?
 
 ==== Refactor / Cleanup ====
 
@@ -121,14 +109,7 @@ Don't let Pusher/Gatherer move frozen dahan. - add tests!
 Test- Bats Scoutt... secondary damage didn't seem to be working.
 TEST - Upgrading or downgrading explorers with strife, should maintain strife.
 
-
-==== Action - Unit of Work =========
-Tracking Actions with GUID on spirit will not work for multi-player games.
-Make Badlands Damage work properly - once per action.
-Never Heard from Again - calculate explorers killed for fear as a whole
-
 ==== Token Management =====
-
 WreakVengeanceForTheLandsCorruption - virtual tokens might not be correct.
 Add Token.MoveFrom method to simplify Draw-Into-Void
 HazardsSpreadAcrossTheIsland - should this trigger and AddToken event?
@@ -139,7 +120,6 @@ Publish token events to the UI so that it can show token changing.
 ====  Not Yet Supported  =====
 
 TheWoundedWildReturnsOnItsAssailants - fix once we support multiple players / boards
-Cast Down Into the Briny Deep - Implement
 Weave together the Fabric... fix once we get multiple players / boards
 Dream of the Untouched Land - implement once we support multiple players / boards
 Visions of shifting Future - fix once we support events.

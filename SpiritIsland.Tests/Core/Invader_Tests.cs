@@ -30,7 +30,7 @@ public class Invader_Tests {
 
 	[Fact]
 	public void StartsWithExplorer(){
-		var sut = new InvaderDeck(null);
+		var sut = new InvaderDeck();
 		Assert.NotNull(sut.Explore);
 		Assert.Empty(sut.Build);
 		Assert.Empty(sut.Ravage);
@@ -39,7 +39,7 @@ public class Invader_Tests {
 	[Fact]
 	public void AdvanceCards(){
 
-		var sut = new InvaderDeck(null);
+		var sut = new InvaderDeck();
 
 		// Advance the cards 12 times
 		for(int i=0;i<11;++i){
@@ -64,7 +64,7 @@ public class Invader_Tests {
 
 	[Fact]
 	public void CardsUsedAre_3L1_4L2_5L3() {
-		var sut = new InvaderDeck(null);
+		var sut = new InvaderDeck();
 		Assert_NextNCardsFromDeck( sut, InvaderDeck.Level1Cards, 3 );
 		Assert_NextNCardsFromDeck( sut, InvaderDeck.Level2Cards, 4 );
 		Assert_NextNCardsFromDeck( sut, InvaderDeck.Level3Cards, 5 );
@@ -110,12 +110,13 @@ public class Invader_Tests {
 
 	[Fact]
 	public void DeckIsShuffled(){
-		var origCards = NewDeckCards();
+		var origCards = NewDeckCards(0);
 		var indxToCheck = new HashSet<int>{ 0,1,2,3,4,5,6,7,8,9,10,11};
 			
 		// try up to 6 different test decks
+		var random = new Random();
 		for(int attempt=0;attempt<6;++attempt){
-			var testDeck = NewDeckCards();
+			var testDeck = NewDeckCards( random.Next() );
 			// if test deck has a different card in the slot, that slot is shuffled
 			for(int idx=0;idx<12;++idx)
 				if(testDeck[idx] != origCards[idx])
@@ -253,8 +254,8 @@ public class Invader_Tests {
 		Assert_UnitsAre( endingUnits, space );
 	}
 
-	static IInvaderCard[] NewDeckCards() {
-		var deck = new InvaderDeck(new Random());
+	static IInvaderCard[] NewDeckCards(int seed) {
+		var deck = new InvaderDeck(null,seed);
 		var cards = new IInvaderCard[12];
 		for(int i = 0; i < 12; ++i) {
 			cards[i] = deck.Explore[0];

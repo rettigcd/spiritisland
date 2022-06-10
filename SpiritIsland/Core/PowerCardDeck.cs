@@ -4,8 +4,8 @@ public class PowerCardDeck {
 
 	readonly Random randomizer;
 
-	public PowerCardDeck(IList<PowerCard> cards, Random randomizer) {
- 		this.randomizer = randomizer;
+	public PowerCardDeck(IList<PowerCard> cards, int seed) {
+ 		this.randomizer = new Random(seed);
 			
 		var temp = cards.ToArray();
 		randomizer.Shuffle(temp);

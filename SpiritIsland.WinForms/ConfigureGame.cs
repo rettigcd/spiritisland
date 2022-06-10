@@ -2,10 +2,8 @@
 using SpiritIsland.BranchAndClaw;
 using SpiritIsland.JaggedEarth;
 using SpiritIsland.PromoPack1;
-using SpiritIsland.SinglePlayer;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -96,11 +94,8 @@ namespace SpiritIsland.WinForms {
 		private void OkButton_Click( object sender, EventArgs e ) {
 			var gameSettings = new GameConfiguration {
 				SpiritType = SelectedSpiritType(),
-				UsePowerProgression = powerProgressionCheckBox.Checked,
 				Board = SelectedBoard(),
 				ShuffleNumber = ShuffleNumber(),
-				UseBranchAndClaw = true,
-				UseJaggedEarth = true,
 			};
 			gameSettings.Color = (colorListBox.SelectedIndex == 0)
 				? GetColorForSpirit( gameSettings.SpiritType )

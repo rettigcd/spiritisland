@@ -56,6 +56,32 @@ public class ConfigurableTestFixture {
 	public GameState GameState => _gameState ??= new GameState( Spirit, Board );
 	GameState _gameState;
 
+	/// <summary>
+	/// Uses Configuration to Init the GameState, Spirit, and Board
+	/// </summary>
+	public void InitConfiguration(Action<GameConfiguration> adjustCfg) {
+		if(_spirit != null) throw new InvalidOperationException( "InitConfiguration must be called before Spirit is initialized." );
+		if(_board != null) throw new InvalidOperationException( "InitConfiguration must be called before Board is initialized." );
+		if(_gameState != null) throw new InvalidOperationException( "InitConfiguration must be called before GameState is initialized." );
+
+		var gameConfig = new GameConfiguration {
+			SpiritType = typeof(RiverSurges),
+			Board = "A",
+			Color = "Red",
+		};
+		adjustCfg(gameConfig);
+
+		var providers = new List<IGameComponentProvider> {
+			new SpiritIsland.Basegame.GameComponentProvider(),
+			new SpiritIsland.BranchAndClaw.GameComponentProvider(),
+			new SpiritIsland.PromoPack1.GameComponentProvider(),
+			new SpiritIsland.JaggedEarth.GameComponentProvider(),
+		};
+		_gameState = gameConfig.BuildGame( providers );
+		_spirit = _gameState.Spirits.Single();
+		_board = _gameState.Island.Boards.Single();
+	}
+
 	#endregion
 
 	/// <summary>

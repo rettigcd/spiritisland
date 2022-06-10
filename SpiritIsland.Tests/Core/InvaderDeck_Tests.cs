@@ -9,7 +9,7 @@ namespace SpiritIsland.Tests.Core {
 		public void Memento_RoundTrip() {
 
 			// Given: a deck in some advanced state
-			var sut = new InvaderDeck( new System.Random() );
+			var sut = new InvaderDeck();
 			Advance( sut );
 
 			//   And: we have saved the desired state

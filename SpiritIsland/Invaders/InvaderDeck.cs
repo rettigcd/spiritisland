@@ -31,7 +31,7 @@ public class InvaderDeck {
 	public static InvaderDeck BuildTestDeck( params IInvaderCard[] cards ) => new InvaderDeck( cards );
 
 
-	public static InvaderDeck Unshuffled() => new InvaderDeck((Random)null);
+	public static InvaderDeck Unshuffled() => new InvaderDeck();
 
 	#endregion
 
@@ -44,28 +44,29 @@ public class InvaderDeck {
 		Init();
 	}
 
-	public InvaderDeck( Random random ) {
+	public InvaderDeck( int[] levelSelection = default, int seed = default ) {
+		levelSelection ??= new int[] { 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3 };
 
-		var level1 = Level1Cards.ToList();
-		var level2 = Level2Cards.ToList();
-		var level3 = Level3Cards.ToList();
+		var levels = new List<IInvaderCard>[] {
+			Level1Cards.ToList(),
+			Level2Cards.ToList(),
+			Level3Cards.ToList()
+		};
 
-		if(random != null) {
-			random.Shuffle( level1 );
-			random.Shuffle( level2 );
-			random.Shuffle( level3 );
+		if(seed != default) {
+			var random = new Random( seed );
+			random.Shuffle( levels[0] );
+			random.Shuffle( levels[1] );
+			random.Shuffle( levels[2] );
 		}
-
-		static void DiscardLast( List<IInvaderCard> list ) { list.RemoveAt( list.Count - 1 ); }
-		DiscardLast( level1 );
-		DiscardLast( level2 );
-		DiscardLast( level3 );
 
 		// Merge
 		var all = new List<IInvaderCard>();
-		all.AddRange( level1 );
-		all.AddRange( level2 );
-		all.AddRange( level3 );
+		foreach(var selectionLevel in levelSelection) {
+			var level = levels[selectionLevel-1];
+			all.Add( level[0] );
+			level.RemoveAt(0);
+		}
 		unrevealedCards = all.ToList();
 
 		Init();

@@ -47,7 +47,7 @@ namespace SpiritIsland.Tests.Core {
 				PowerCard.For<SongOfSanctity>(),
 				PowerCard.For<SteamVents>(),
 				PowerCard.For<UncannyMelting>(),
-			}, new Random() );
+			}, new Random().Next() );
 
 			// Given: saving state
 			var memento = deck.SaveToMemento();
@@ -181,8 +181,8 @@ namespace SpiritIsland.Tests.Core {
 			var user = new VirtualUser(spirit);
 			var randomizer = new Random();
 			var gs = new GameState( spirit, Board.BuildBoardC() ) {
-				MajorCards = new PowerCardDeck( typeof(RiversBounty).GetMajors(), randomizer ),
-				MinorCards = new PowerCardDeck( typeof( RiversBounty ).GetMinors(), randomizer )
+				MajorCards = new PowerCardDeck( typeof(RiversBounty).GetMajors(), randomizer.Next() ),
+				MinorCards = new PowerCardDeck( typeof( RiversBounty ).GetMinors(), randomizer.Next() )
 			};
 			gs.Initialize();
 

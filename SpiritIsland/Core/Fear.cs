@@ -19,20 +19,20 @@ public class Fear {
 	}
 
 	public void AddCard( IFearOptions fearCard ) {
-		if(Deck.Count >= 9) throw new InvalidOperationException( "Fear deck is full." );
-		var labels = new string[] { "1-A", "1-B", "1-C", "2-A", "2-B", "2-C", "3-A", "3-B", "3-C" };
-		int index = 9 - Deck.Count - 1;
-		var td = new PositionFearCard { FearOptions = fearCard, Text = "Lvl " + labels[index] };
+		var td = new PositionFearCard { FearOptions = fearCard, Text = "!!!FixMe" };
 		Deck.Push( td );
 	}
 
+	public int[] cardsPerLevel = new int[] { 3, 3, 3 };
+
 	public int TerrorLevel {
 		get {
+			int level3Count = cardsPerLevel[2];
+			int level2Count = cardsPerLevel[1];
 			int ct = Deck.Count;
-			int terrorLevel = ct > 6 ? 1 
-				: ct > 3 ? 2 
+			return (ct > level2Count + level3Count) ? 1
+				: ct > level3Count ? 2
 				: 3;
-			return terrorLevel;
 		}
 	}
 
