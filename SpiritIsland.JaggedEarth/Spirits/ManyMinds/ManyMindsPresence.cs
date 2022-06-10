@@ -38,7 +38,7 @@ class ManyMindsPresence : SpiritPresence {
 
 		Move2Presence( args.GameState, args );
 
-		await SacredSiteAtSouce_RestoreVirtualBeast( args, srcBeasts );
+		await SacredSiteAtSouce_RestoreVirtualBeast( args, srcBeasts.Bind(args.ActionId) );
 
 		await AddedVirtualBeastAtDestination_LimitTo1( args.GameState, args );
 

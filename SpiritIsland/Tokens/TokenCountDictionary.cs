@@ -45,12 +45,12 @@ public class TokenCountDictionary {
 
 	public override string ToString() => Space.Label + ":" + Summary;
 
-	public virtual BlightTokenBinding Blight => new BlightTokenBinding( this );
+	public virtual BlightTokenBindingNoEvents Blight => new BlightTokenBindingNoEvents( this );
 	public IDefendTokenBinding Defend => new DefendTokenBinding( this );
-	public TokenBinding Beasts => new ( this, TokenType.Beast );
-	public TokenBinding Disease => new ( this, TokenType.Disease );
-	public TokenBinding Wilds => new ( this, TokenType.Wilds );
-	public TokenBinding Badlands => new ( this, TokenType.Badlands ); // This should not be used directly from inside Actions
+	public TokenBindingNoEvents Beasts => new ( this, TokenType.Beast );
+	public TokenBindingNoEvents Disease => new ( this, TokenType.Disease );
+	public TokenBindingNoEvents Wilds => new ( this, TokenType.Wilds );
+	public TokenBindingNoEvents Badlands => new ( this, TokenType.Badlands ); // This should not be used directly from inside Actions
 	public DahanGroupBindingNoEvents Dahan{
 		get => _dahan ??= new DahanGroupBindingNoEvents( this ); // ! change the ??= to ?? and we would not need to hang on to the binding.
 		set => _dahan = value; // Allows Dahan behavior to be overridden

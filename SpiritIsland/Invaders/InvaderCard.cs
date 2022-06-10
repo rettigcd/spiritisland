@@ -134,7 +134,7 @@ public class InvaderCard : IOption, IInvaderCard {
 	static async Task ExploreSingleSpace( TokenCountDictionary tokens, GameState gs, Guid actionId ) {
 		// only gets called when explorer is actually going to explore
 		var wilds = tokens.Wilds;
-		if(wilds == 0) {
+		if(wilds.Count == 0) {
 			gs.Log( new InvaderActionEntry( tokens.Space + ":gains explorer" ) );
 			await tokens.AddDefault( Invader.Explorer, 1, actionId, AddReason.Explore );
 		} else

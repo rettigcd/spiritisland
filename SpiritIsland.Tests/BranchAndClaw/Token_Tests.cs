@@ -27,7 +27,7 @@ namespace SpiritIsland.Tests.BranchAndClaw {
 			//  Then: still no invaders
 			gs.Tokens[noInvaderSpace].HasInvaders().ShouldBeFalse("there should be no explorers in "+noInvaderSpace.Label);
 			//   And: no wilds here
-			(tokens.Wilds>0).ShouldBeFalse("wilds should be used up");
+			(tokens.Wilds.Count>0).ShouldBeFalse("wilds should be used up");
 
 		}
 
@@ -39,7 +39,7 @@ namespace SpiritIsland.Tests.BranchAndClaw {
 			Space space = gs.Island.AllSpaces.First( s => !s.IsOcean && !gs.Tokens[s].HasInvaders() ); // 0 invaders
 			gs.Tokens[space].AdjustDefault( Invader.Explorer, 1 ); // add explorer
 			//   And: 1 diseases there
-			await gs.Tokens[space].Disease.Add(1);
+			await gs.Tokens[space].Disease.Bind(Guid.NewGuid()).Add(1);
 
 			//  When: we build there
 			await InvaderCardEx.For( space ).Build( gs );

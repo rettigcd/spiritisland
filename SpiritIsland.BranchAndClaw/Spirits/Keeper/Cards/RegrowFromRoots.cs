@@ -8,7 +8,7 @@ public class RegrowFromRoots {
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		// if ther are 2 blight or fewer in target land, remove 1 blight
-		if( ctx.Blight <= 2)
+		if( ctx.Blight.Count <= 2)
 			await ctx.RemoveBlight();
 
 	}

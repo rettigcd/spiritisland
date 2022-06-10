@@ -30,12 +30,14 @@ public class TokenBinding : TokenBindingNoEvents {
 
 	#region constructor
 
-	public TokenBinding( TokenBindingNoEvents src, Guid actionId ) : base( src ) {
+	public TokenBinding( TokenCountDictionary tokens, Token token, Guid actionId ) : base( tokens, token ) {
+		if( actionId == default ) throw new ArgumentOutOfRangeException(nameof(actionId),"Action ID cannot be default.");
 		this._actionId = actionId;
 	}
 
-	public TokenBinding( TokenCountDictionary tokens, Token token ):base( tokens, token ) {
-		// !!!!!!!!!!!! deprecate this
+	public TokenBinding( TokenBindingNoEvents src, Guid actionId ) : base( src ) {
+		if(actionId == default) throw new ArgumentOutOfRangeException( nameof( actionId ), "Action ID cannot be default." );
+		this._actionId = actionId;
 	}
 
 	#endregion

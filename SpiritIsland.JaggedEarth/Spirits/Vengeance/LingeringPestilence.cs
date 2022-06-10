@@ -9,7 +9,7 @@ class LingeringPestilence : SpiritPresence.DefaultDestroyBehavior {
 
 	public override async Task DestroyPresenceApi( SpiritPresence presence, Space space, GameState gs, DestoryPresenceCause actionType, Guid actionId ) {
 		if( actionType != DestoryPresenceCause.SpiritPower )
-			await gs.Tokens[space].Disease.Add(1);
+			await gs.Tokens[space].Disease.Bind( actionId ).Add(1);
 		await base.DestroyPresenceApi(presence,space,gs,actionType,actionId);
 	}
 

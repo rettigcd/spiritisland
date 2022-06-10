@@ -6,7 +6,7 @@ public class BuildEngine {
 	protected BuildingEventArgs.BuildType buildType;
 	protected GameState gameState;
 
-	readonly Guid actionId = Guid.NewGuid();
+	protected readonly Guid actionId = Guid.NewGuid();
 
 	public BuildEngine() {}
 

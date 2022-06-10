@@ -114,7 +114,7 @@ public class GameState {
 		} );
 
 		if( damageInflictedFromInvaders >= DamageToBlightLand)
-			await Tokens[space].Blight.Add(1, AddReason.Ravage);
+			await Tokens[space].Blight.Bind(actionId).Add(1, AddReason.Ravage);
 	}
 
 	async Task BlightAdded( ITokenAddedArgs args ){
@@ -158,7 +158,7 @@ public class GameState {
 				args.Space.Adjacent.Where( x => !Island.Terrain_ForPowerAndBlight.IsOneOf( x, Terrain.Ocean ) ),
 				Present.Always
 			));
-			await Tokens[ cascadeTo ].Blight.Add(1, args.Reason); // Cascading blight shares original blights reason.
+			await Tokens[ cascadeTo ].Blight.Bind(args.ActionId).Add(1, args.Reason); // Cascading blight shares original blights reason.
 		}
 
 	}

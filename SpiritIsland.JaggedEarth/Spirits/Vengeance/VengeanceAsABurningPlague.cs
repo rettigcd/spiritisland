@@ -60,7 +60,7 @@ public class VengeanceAsABurningPlague : Spirit {
 				&& await spirit.UserSelectsFirstText($"Build pending on {tokens.Space.Label}.", "Stop build, -1 Disease", "+1 Fear, keep Disease ");
 
 			if( stoppedByDisease )
-				await disease.Remove(1, RemoveReason.UsedUp);
+				await disease.Bind(actionId).Remove(1, RemoveReason.UsedUp);
 			else 
 				gameState.Fear.AddDirect(new FearArgs { FromDestroyedInvaders = false, count=1, space = tokens.Space } );
 			return stoppedByDisease;
@@ -80,5 +80,5 @@ public class VengenceCtx : SelfCtx {
 
 public class VengenceSpaceCtx : TargetSpaceCtx {
 	public VengenceSpaceCtx( VengenceCtx ctx, Space target):base( ctx, target ) { }
-	public override TokenBinding Badlands => new WreakVengeanceForTheLandsCorruption( Tokens );
+	public override TokenBinding Badlands => new WreakVengeanceForTheLandsCorruption( Tokens, CurrentActionId );
 }

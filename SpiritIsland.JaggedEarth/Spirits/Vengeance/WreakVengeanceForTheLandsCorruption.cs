@@ -5,8 +5,10 @@ class WreakVengeanceForTheLandsCorruption : TokenBinding {
 
 	readonly TokenBinding blight;
 
-	public WreakVengeanceForTheLandsCorruption(TokenCountDictionary tokens ) : base( tokens, TokenType.Badlands ) {
-		blight = new TokenBinding(tokens,TokenType.Blight);
+	public WreakVengeanceForTheLandsCorruption(TokenCountDictionary tokens, Guid actionId ) 
+		: base( new TokenBindingNoEvents( tokens, TokenType.Badlands ), actionId )
+	{
+		blight = new TokenBinding( new TokenBindingNoEvents( tokens,TokenType.Blight ), actionId );
 	}
 
 	public static SpecialRule Rule => new SpecialRule(

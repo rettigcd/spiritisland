@@ -91,7 +91,7 @@ public class TricksterSpaceCtx : TargetSpaceCtx {
 
 	public TricksterSpaceCtx(SelfCtx ctx, Space space):base( ctx, space ) {}
 
-	public override BlightTokenBinding Blight => new TricksterBlight( this );
+	public override BlightTokenBinding Blight => new TricksterBlight( this, CurrentActionId );
 
 	public override async Task AddStrife( params TokenClass[] groups ) {
 		await base.AddStrife( groups );
@@ -116,7 +116,7 @@ public class TricksterBlight : BlightTokenBinding {
 	readonly TricksterSpaceCtx ctx;
 	readonly GrinningTricksterStirsUpTrouble trickster;  // !!!!
 
-	public TricksterBlight( TricksterSpaceCtx ctx ) :base( ctx.Tokens ) {
+	public TricksterBlight( TricksterSpaceCtx ctx, Guid actionId ) :base( ctx.Tokens, actionId ) {
 		this.ctx = ctx;
 	}
 
