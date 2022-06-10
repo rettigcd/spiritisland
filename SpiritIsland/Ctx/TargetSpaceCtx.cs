@@ -217,10 +217,10 @@ public class TargetSpaceCtx : SelfCtx {
 
 	// For strifed Damage
 	// !!! ??? Can this be combined with DamageInvaders() to remove duplication?
-	public async Task StrifedDamageOtherInvaders( int originalDamage, HealthToken source, bool excludeSource ) {
+	public async Task StrifedDamageOtherInvaders( int originalDamage, HealthToken damageSource, bool excludeSource ) {
 
-		HealthToken damageSourceToExclude = excludeSource ? source : null;
-		var invadersToDamage = Tokens.InvaderTokens()
+		HealthToken damageSourceToExclude = excludeSource ? damageSource : null;
+		Func<HealthToken[]> invadersToDamage = ()=>Tokens.InvaderTokens()
 			.Where( t => t != damageSourceToExclude )
 			.ToArray();
 
@@ -231,7 +231,7 @@ public class TargetSpaceCtx : SelfCtx {
 			sumAvailableDamage += BadlandDamage.Remaining;
 
 		// Apply Damage
-		int damageApplied = await Invaders.DamageToSpecificTokens( sumAvailableDamage, Self, source, invadersToDamage );
+		int damageApplied = await Invaders.DamageToSpecificTokens( sumAvailableDamage, Self, damageSource, invadersToDamage );
 		int poolDamageToAccountFor = damageApplied - originalDamage;
 
 		// Remove bonus damage from damage pools

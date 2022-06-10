@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.BranchAndClaw;
 
-class Discord : IFearOptions {
+public class Discord : IFearOptions {
 
 	public const string Name = "Discord";
 	string IFearOptions.Name => Name;

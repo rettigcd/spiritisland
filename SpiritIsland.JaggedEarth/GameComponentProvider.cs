@@ -86,7 +86,7 @@ public class GameComponentProvider : IGameComponentProvider {
 		new FleeFromDangerousLands(),
 		new NervesFray(),
 		new SenseOfDread(),
-		new ThologicalStrife()
+		new TheologicalStrife()
 	};
 
 	public IBlightCard[] BlightCards => new BlightCardBase[] {

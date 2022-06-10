@@ -183,12 +183,12 @@ public class InvaderBinding {
 
 	// This is needed when strifed invaders ravage OTHER tokens. Need to be able to exclude specific token
 	// !!! ??? can this be merged with UserSelectedDamage above?
-	public async Task<int> DamageToSpecificTokens( int damage, Spirit damagePicker, HealthToken source, HealthToken[] allowedTypes ) {
+	public async Task<int> DamageToSpecificTokens( int damage, Spirit damagePicker, HealthToken source, Func<HealthToken[]> allowedTypes ) {
 		if(damage == 0) return 0;
 
 		Token[] options;
 		int damageInflicted = 0;
-		while(damage > 0 && (options = Tokens.Keys.OfType<HealthToken>().Intersect(allowedTypes).ToArray()).Length > 0) {
+		while(0 < damage && (options = Tokens.Keys.OfType<HealthToken>().Intersect(allowedTypes()).ToArray()).Length > 0) {
 			var invaderToDamage = (HealthToken)await damagePicker.Action.Decision( Select.Invader.ForAggregateDamageFromSource( Space, source, options, damage, Present.Always ) );
 			if(invaderToDamage == null) break;
 			await ApplyDamageTo1( 1, invaderToDamage );

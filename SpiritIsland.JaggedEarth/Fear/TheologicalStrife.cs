@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-public class ThologicalStrife : IFearOptions {
+public class TheologicalStrife : IFearOptions {
 
 	public const string Name = "Theological Strife";
 	string IFearOptions.Name => Name;
