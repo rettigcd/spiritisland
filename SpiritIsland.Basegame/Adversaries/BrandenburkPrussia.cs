@@ -1,4 +1,4 @@
-﻿namespace SpiritIsland.Basegame.Adversaries;
+﻿namespace SpiritIsland.Basegame;
 
 // The Kingdom of Brandenburk-Prussia
 // 1	(2)		9 (3/3/3)	Fast Start:  During Setup, on each board add 1 town to land #3
@@ -8,7 +8,7 @@
 // 5	(9)		11 (4/4/3)	Ruthlessly Efficent:	(1-3-222-3333)
 // 6	(10)	12 (4/4/4)	Terrifying Efficient:	(3-222-3333)
 
-public class BrandonburgPrussia : IAdversary {
+public class BrandenburkPrussia : IAdversary {
 
 	public int Level { get; }
 
@@ -29,7 +29,7 @@ public class BrandonburgPrussia : IAdversary {
 		_ => null
 	};
 
-	public BrandonburgPrussia(int level) {
+	public BrandenburkPrussia(int level) {
 		Level = level;
 	}
 

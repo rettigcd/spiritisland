@@ -108,7 +108,7 @@ public class BrandonburgPrussia_Tests {
 	}
 
 
-	void SetAdversary(int level) => fxt.InitConfiguration( cfg => { cfg.Adversary = typeof( BrandonburgPrussia ); cfg.AdversaryLevel = level; } );
+	void SetAdversary(int level) => fxt.InitConfiguration( cfg => { cfg.Adversary = typeof( BrandenburkPrussia ); cfg.AdversaryLevel = level; } );
 
 	void Assert_Level1TownAdded( bool added ) => fxt.GameState.Tokens[fxt.Board[3]].Summary.ShouldBe( added ? "1T@2" : "[none]" );
 

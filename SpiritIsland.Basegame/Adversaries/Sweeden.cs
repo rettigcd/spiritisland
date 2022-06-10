@@ -1,4 +1,4 @@
-﻿namespace SpiritIsland.Basegame.Adversaries;
+﻿namespace SpiritIsland.Basegame;
 
 internal class Sweeden {
 }

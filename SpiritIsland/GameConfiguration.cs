@@ -9,7 +9,7 @@ public class GameConfiguration {
 	public Type Adversary;
 	public int AdversaryLevel;
 
-	public GameState BuildGame( List<IGameComponentProvider> providers ) {
+	public GameState BuildGame( IGameComponentProvider[] providers ) {
 
 		Spirit spirit = (Spirit)Activator.CreateInstance( SpiritType );
 

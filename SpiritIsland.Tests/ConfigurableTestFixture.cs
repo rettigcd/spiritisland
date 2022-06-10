@@ -71,7 +71,7 @@ public class ConfigurableTestFixture {
 		};
 		adjustCfg(gameConfig);
 
-		var providers = new List<IGameComponentProvider> {
+		var providers = new IGameComponentProvider[] {
 			new SpiritIsland.Basegame.GameComponentProvider(),
 			new SpiritIsland.BranchAndClaw.GameComponentProvider(),
 			new SpiritIsland.PromoPack1.GameComponentProvider(),

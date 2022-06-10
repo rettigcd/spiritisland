@@ -8,7 +8,16 @@ using System.Linq;
 using System.Windows.Forms;
 
 namespace SpiritIsland.WinForms {
+
 	public partial class ConfigureGameDialog : Form {
+
+		static public readonly IGameComponentProvider[] gameComponentProviders = new IGameComponentProvider[]{
+			new Basegame.GameComponentProvider(),
+			new BranchAndClaw.GameComponentProvider(),
+			new PromoPack1.GameComponentProvider(),
+			new JaggedEarth.GameComponentProvider()
+		};
+
 		public ConfigureGameDialog() {
 			InitializeComponent();
 		}
@@ -37,7 +46,14 @@ namespace SpiritIsland.WinForms {
 			colorListBox.Items.Add( "greenorangeswirl" );
 			colorListBox.SelectedIndex = 0;
 
-
+			// Adversaries
+			_adversaryListBox.Items.Add("[None]");
+			_adversaryListBox.Items.Add( "Brandenburg-Prussia 1" ); // !!! get from providers
+			_adversaryListBox.Items.Add( "Brandenburg-Prussia 2" ); // !!! get from providers
+			_adversaryListBox.Items.Add( "Brandenburg-Prussia 3" ); // !!! get from providers
+			_adversaryListBox.Items.Add( "Brandenburg-Prussia 4" ); // !!! get from providers
+			_adversaryListBox.Items.Add( "Brandenburg-Prussia 5" ); // !!! get from providers
+			_adversaryListBox.Items.Add( "Brandenburg-Prussia 6" ); // !!! get from providers
 			CheckOkStatus( null, null );
 		}
 
@@ -57,23 +73,8 @@ namespace SpiritIsland.WinForms {
 		}
 
 		static IEnumerable<Type> GetAllSpiritTypes() {
-			return new IGameComponentProvider[]{ 
-				new Basegame.GameComponentProvider(),
-				new BranchAndClaw.GameComponentProvider(),
-				new PromoPack1.GameComponentProvider(),
-				new JaggedEarth.GameComponentProvider()
-			}.SelectMany(p=>p.Spirits);
-
-			//return ScanForAssemblies()
-			//	.SelectMany( assembly => assembly.GetTypes() )
-			//	.Where(type => type.IsSubclassOf( typeof( Spirit ) ));
-			//
+			return gameComponentProviders.SelectMany(p=>p.Spirits);
 		}
-
-		//static IEnumerable<System.Reflection.Assembly> ScanForAssemblies() {
-		//	foreach(string assemblyPath in Directory.GetFiles(System.AppDomain.CurrentDomain.BaseDirectory, "*.dll", SearchOption.AllDirectories))
-		//		yield return System.Runtime.Loader.AssemblyLoadContext.Default.LoadFromAssemblyPath(assemblyPath);
-		//}
 
 		void Init_SpiritList() {
 
@@ -97,9 +98,15 @@ namespace SpiritIsland.WinForms {
 				Board = SelectedBoard(),
 				ShuffleNumber = ShuffleNumber(),
 			};
+
 			gameSettings.Color = (colorListBox.SelectedIndex == 0)
 				? GetColorForSpirit( gameSettings.SpiritType )
 				: colorListBox.SelectedItem as string;
+
+			int adversaryIndex = _adversaryListBox.SelectedIndex;
+			gameSettings.Adversary = adversaryIndex > 0 ? typeof( BrandenburkPrussia ) : null;
+			gameSettings.AdversaryLevel = _adversaryListBox.SelectedIndex;
+
 			GameConfig = gameSettings;
 
 		}
@@ -151,6 +158,7 @@ namespace SpiritIsland.WinForms {
 		private void CheckBox1_CheckedChanged( object sender, EventArgs e ) {
 			Init_SpiritList();
 		}
+
 	}
 
 }

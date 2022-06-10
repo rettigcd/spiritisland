@@ -20,3 +20,8 @@ Shifting Memories 2-elements for card play - doesn't always work
 Settle Into Hunting-Grounds
 	- implement "May" count as badlands and beast.
 	- presence cannot move.
+
+
+Fear of the Unseen - 1
+	- did not let me pick town, only option was explorer.
+

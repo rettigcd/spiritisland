@@ -145,13 +145,7 @@ namespace SpiritIsland.WinForms {
 			var gc = gameConfiguration;
 			logForm.AppendLine($"=== Game: {gc.SpiritType.Name} : {gc.Board} : {gc.ShuffleNumber} ===");
 
-			var providers = new List<IGameComponentProvider> {
-				new Basegame.GameComponentProvider(),
-				new BranchAndClaw.GameComponentProvider(),
-				new PromoPack1.GameComponentProvider(),
-				new JaggedEarth.GameComponentProvider(),
-			};
-			GameState gameState = gameConfiguration.BuildGame( providers );
+			GameState gameState = gameConfiguration.BuildGame( ConfigureGameDialog.gameComponentProviders );
 			game = new SinglePlayerGame( gameState, false ) { LogExceptions = true };
 			game.Spirit.Action.NewWaitingDecision += Action_NewWaitingDecision;
 			gameState.NewLogEntry += GameState_NewLogEntry; // !!! this should probably come through the user portal/gateway, not directly off of the gamestate.
