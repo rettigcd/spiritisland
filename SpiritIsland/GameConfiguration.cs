@@ -47,7 +47,8 @@ public class GameConfiguration {
 		int blightSeed = randomizer.Next();  // 5
 
 		if(Adversary != null) {
-			var adversary = (IAdversary)Activator.CreateInstance( Adversary, new object[] { AdversaryLevel } );
+			var adversary = (IAdversary)Activator.CreateInstance( Adversary );
+			adversary.Level = AdversaryLevel;
 			adversary.Adjust( gameState );
 			invaderCardOrder = adversary.InvaderCardOrder ?? invaderCardOrder;
 			fearCardsPerLevel = adversary.FearCardsPerLevel ?? fearCardsPerLevel;

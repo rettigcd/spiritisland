@@ -10,13 +10,14 @@ namespace SpiritIsland.Tests.BranchAndClaw.Fear {
 		const string FearAck3 = "Immigration Slows : 3 : Skip the next normal build.  The build card shifts left as usual.";
 		readonly IFearOptions card = new ImmigrationSlows();
 
+		[Trait( "Feature", "Build" )]
+		[Trait( "Feature", "InvaderCardProgression" )]
 		[Fact]
 		public void Level1_SkipBuildInLowestNumberedLand() {
 			// 1: During the next normal build, skip the lowest numbered land matching the invader card on each board.
 
 			AdvanceToInvaderPhase();
 
-//			log.Assert_Ravaged();
 			log.Assert_Built( "A3", "A8" );
 			log.Assert_Explored( "A2", "A5" );
 
@@ -39,6 +40,8 @@ namespace SpiritIsland.Tests.BranchAndClaw.Fear {
 
 		}
 
+		[Trait( "Feature", "Build" )]
+		[Trait( "Feature", "InvaderCardProgression" )]
 		[Fact]
 		public void Level2_DelayBuild1Round() {
 			// 2: Skip the next normal build. The build card remains in place instead of shifting left.
@@ -78,6 +81,8 @@ namespace SpiritIsland.Tests.BranchAndClaw.Fear {
 
 		}
 
+		[Trait( "Feature", "Build" )]
+		[Trait( "Feature", "InvaderCardProgression" )]
 		[Fact]
 		public void Level3_DelayExplore1Round() {
 			// 3: Skip the next normal explore, but still reveal a card. Perform the flag if relavant. Cards shift left as usual.

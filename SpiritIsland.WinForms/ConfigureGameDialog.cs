@@ -104,7 +104,7 @@ namespace SpiritIsland.WinForms {
 				: colorListBox.SelectedItem as string;
 
 			int adversaryIndex = _adversaryListBox.SelectedIndex;
-			gameSettings.Adversary = adversaryIndex > 0 ? typeof( BrandenburkPrussia ) : null;
+			gameSettings.Adversary = adversaryIndex > 0 ? typeof( BrandenburgPrussia ) : null;
 			gameSettings.AdversaryLevel = _adversaryListBox.SelectedIndex;
 
 			GameConfig = gameSettings;

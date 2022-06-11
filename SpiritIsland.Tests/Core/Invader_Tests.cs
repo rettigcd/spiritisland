@@ -28,6 +28,7 @@ public class Invader_Tests {
 		Assert.Throws<ArgumentException>(()=>new InvaderCard(Terrain.Ocean));
 	}
 
+	[Trait( "Feature", "InvaderCardProgression" )]
 	[Fact]
 	public void StartsWithExplorer(){
 		var sut = new InvaderDeck();
@@ -36,6 +37,7 @@ public class Invader_Tests {
 		Assert.Empty(sut.Ravage);
 	}
 
+	[Trait( "Feature", "InvaderCardProgression" )]
 	[Fact]
 	public void AdvanceCards(){
 
@@ -51,7 +53,6 @@ public class Invader_Tests {
 
 			// When: advance the cards
 			sut.Advance();
-//				sut.InitExplorers();
 
 			// Then cards advance
 			Assert.NotEqual(explore,sut.Explore);
@@ -62,6 +63,7 @@ public class Invader_Tests {
 		}
 	}
 
+	[Trait( "Feature", "InvaderCardProgression" )]
 	[Fact]
 	public void CardsUsedAre_3L1_4L2_5L3() {
 		var sut = new InvaderDeck();
@@ -70,6 +72,7 @@ public class Invader_Tests {
 		Assert_NextNCardsFromDeck( sut, InvaderDeck.Level3Cards, 5 );
 	}
 
+	[Trait( "Feature", "InvaderCardProgression" )]
 	[Theory]
 	[InlineDataAttribute("M","A1,A6")]
 	[InlineDataAttribute("J","A3,A8")]
@@ -81,6 +84,7 @@ public class Invader_Tests {
 		Assert.Equal(expectedTargets,targets.Join(","));
 	}
 
+	[Trait( "Feature", "InvaderCardProgression" )]
 	[Theory]
 	[InlineDataAttribute("2m","A1,A6")]
 	[InlineDataAttribute("2j","A3,A8")]
@@ -108,6 +112,7 @@ public class Invader_Tests {
 		Assert.Equal(expectedTargets,targets.Join(","));
 	}
 
+	[Trait( "Feature", "InvaderCardProgression" )]
 	[Fact]
 	public void DeckIsShuffled(){
 		var origCards = NewDeckCards(0);
@@ -127,7 +132,8 @@ public class Invader_Tests {
 		}
 		Assert.Empty(indxToCheck);
 	}
-		
+
+	[Trait( "Feature", "Explore" )]
 	[Fact]
 	public void NoTownsOrCities_HasStartingExplorer_ExploreCoast() {
 		// Given: game on Board A
@@ -147,6 +153,7 @@ public class Invader_Tests {
 		}
 	}
 
+	[Trait( "Feature", "Explore" )]
 	[Theory]
 	[InlineData("A1","T@2")]
 	[InlineData("A4","T@1")]
@@ -182,6 +189,7 @@ public class Invader_Tests {
 		}
 	}
 
+	[Trait( "Feature", "Build" )]
 	[Theory]
 	[InlineData("E@1","1T@2,1E@1")]
 	[InlineData("T@2","1C@3,1T@2")]
@@ -233,6 +241,7 @@ public class Invader_Tests {
 	// Make sure Invaders Kill Dahan efficiently
 
 	//// 3D@1, 1D@2 1C@3  => 1C@1,1T@2
+	[Trait( "Feature", "Ravage" )]
 	[Theory]
 	[InlineData("3D@2,1T@2,1E@1","1D@2,1D@1")]
 	public async Task Ravage(string startingUnits,string endingUnits) {

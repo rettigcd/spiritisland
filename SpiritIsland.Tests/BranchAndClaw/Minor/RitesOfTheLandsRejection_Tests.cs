@@ -2,6 +2,8 @@
 
 public class RitesOfTheLandsRejection_Tests {
 
+	[Trait( "Feature", "Build" )]
+	[Trait( "Feature", "InvaderCardProgression" )]
 	[Theory]
 	[InlineDataAttribute(false,"1T@2,1E@1")]
 	[InlineDataAttribute(true,"1E@1")]

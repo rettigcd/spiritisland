@@ -51,6 +51,7 @@ public class BrandonburgPrussia_Tests {
 
 	}
 
+	[Trait( "Feature", "Fear" )]
 	[Fact]
 	public void Level3() {
 		// 10 (3/4/3)	Efficient:				(11-3-2222-3333)
@@ -65,6 +66,7 @@ public class BrandonburgPrussia_Tests {
 		Assert_InvaderDeck( "11-3-2222-3333" );
 	}
 
+	[Trait( "Feature", "Fear" )]
 	[Fact]
 	public void Level4() {
 		// 11 (4/4/3)	Agressive Timetable:	(11-3-222-3333)
@@ -79,6 +81,7 @@ public class BrandonburgPrussia_Tests {
 		Assert_InvaderDeck( "11-3-222-3333" );
 	}
 
+	[Trait( "Feature", "Fear" )]
 	[Fact]
 	public void Level5() {
 		// 11 (4/4/3)	Ruthlessly Efficent:	(1-3-222-3333)
@@ -93,6 +96,7 @@ public class BrandonburgPrussia_Tests {
 		Assert_InvaderDeck( "1-3-222-3333" );
 	}
 
+	[Trait( "Feature", "Fear" )]
 	[Fact]
 	public void Level6() {
 		// 12 (4/4/4)	Terrifying Efficient:	(3-222-3333)
@@ -108,7 +112,7 @@ public class BrandonburgPrussia_Tests {
 	}
 
 
-	void SetAdversary(int level) => fxt.InitConfiguration( cfg => { cfg.Adversary = typeof( BrandenburkPrussia ); cfg.AdversaryLevel = level; } );
+	void SetAdversary(int level) => fxt.InitConfiguration( cfg => { cfg.Adversary = typeof( BrandenburgPrussia ); cfg.AdversaryLevel = level; } );
 
 	void Assert_Level1TownAdded( bool added ) => fxt.GameState.Tokens[fxt.Board[3]].Summary.ShouldBe( added ? "1T@2" : "[none]" );
 
