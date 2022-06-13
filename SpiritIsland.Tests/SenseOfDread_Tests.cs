@@ -9,7 +9,7 @@ public class SenseOfDread_Tests {
 	public void Remove1Explorer() {
 		var fix = new ConfigurableTestFixture();
 		var ravageSpace = fix.GameState.Island.Boards[0][5];
-		fix.InitRavageCard(new SpaceSpecificRavage(ravageSpace));
+		fix.InitRavageCard(new SpaceSpecificInvaderCard(ravageSpace));
 
 		// Given: ravage space has 2 explorers
 		fix.InitTokens(ravageSpace, "2E@1");

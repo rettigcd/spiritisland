@@ -34,14 +34,13 @@ public class InvaderDeck {
 
 	#region constructors
 
-	#region constructors
-
 	private InvaderDeck( params IInvaderCard[] cards ) {
 		_unrevealedCards = cards.ToList();
 		InitNumberOfCardsToDraw();
-	}
+		Slots = new List<InvaderSlot> { Ravage, Build, Explore };
+}
 
-	public InvaderDeck( int seed = default, int[] levelSelection = default ) {
+public InvaderDeck( int seed = default, int[] levelSelection = default ) {
 		levelSelection ??= new int[] { 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3 };
 
 		var levels = new List<IInvaderCard>[] {
@@ -66,6 +65,7 @@ public class InvaderDeck {
 		}
 		_unrevealedCards = all.ToList();
 		InitNumberOfCardsToDraw();
+		Slots = new List<InvaderSlot> { Ravage, Build, Explore };
 	}
 
 	void InitNumberOfCardsToDraw() {
@@ -78,22 +78,39 @@ public class InvaderDeck {
 
 	#endregion
 
-	#endregion
-
 	public List<IInvaderCard> UnrevealedCards => _unrevealedCards;
 	readonly List<IInvaderCard> _unrevealedCards;
 	public readonly List<int> drawCount = new List<int>(); // tracks how many cards to draw each turn
 
-	public List<IInvaderCard> Explore {get;} = new List<IInvaderCard>();
+	public ExploreSlot Explore { get; } = new ExploreSlot();
+	public BuildSlot Build { get; } = new BuildSlot();
+	public RavageSlot Ravage { get; } = new RavageSlot();
+	public List<InvaderSlot> Slots;
 
-	public List<IInvaderCard> Build { get; } = new List<IInvaderCard>();
-
-	public List<IInvaderCard> Ravage { get; } = new List<IInvaderCard>();
-
-	public int CountInDiscard => Discards.Count;
 	public List<IInvaderCard> Discards {get;} = new List<IInvaderCard>();
 
-	public bool KeepBuildCards = false; // !!! is there a way to make this go away?
+	public void DelayLastExploreCard() {
+
+		// Make sure our list of DrawCounts has at least 1 slot.
+		if(drawCount.Count == 0) drawCount.Add( 0 );
+
+		// Find card
+		int currentExploreIndex = Explore.Cards.Count - 1;
+		var card = Explore.Cards[currentExploreIndex];
+
+		// Remove card from the explore pile
+		Explore.Cards.RemoveAt( currentExploreIndex );
+
+		// Return card to the Unrevealed Cards
+		UnrevealedCards.Insert( 0, card );
+		drawCount[0]++;
+
+
+		// Alternate
+		card.Skip = true;
+		card.HoldBack = true;
+
+	}
 
 
 	/// <summary>
@@ -101,28 +118,19 @@ public class InvaderDeck {
 	/// </summary>
 	public void Advance() {
 
-		// Move Ravage to Discard
-		Discards.AddRange( Ravage );
-		Ravage.Clear();
-
-		// Move Build to Ravage
-		if(KeepBuildCards)
-			KeepBuildCards = false;
-		else {
-			Ravage.AddRange( Build );
-			Build.Clear();
+		var destination = Discards;
+		foreach(var slot in Slots) {
+			var cardsToMove = slot.GetCardsToAdvance();
+			destination.AddRange( cardsToMove );
+			destination = slot.Cards;
 		}
 
-		// move Explore to Build
 		CheckIfTimeRunsOut();
-		Build.AddRange( Explore );
-		Explore.Clear();
-
 		InitExploreSlot();
 	}
 
 	void CheckIfTimeRunsOut() {
-		if( Explore.Count==0 && UnrevealedCards.Count==0 )
+		if( Explore.Cards.Count==0 && UnrevealedCards.Count==0 )
 			GameOverException.Lost("Time runs out");
 	}
 
@@ -130,19 +138,9 @@ public class InvaderDeck {
 		if(UnrevealedCards.Count == 0) return; // does this ever happen?
 		int count = drawCount[0]; drawCount.RemoveAt( 0 );
 		while(count-- > 0) {
-			Explore.Add( UnrevealedCards[0] );
+			Explore.Cards.Add( UnrevealedCards[0] );
 			UnrevealedCards.RemoveAt( 0 );
 		}
-	}
-
-	public void DelayLastExploreCard() {
-		if(drawCount.Count==0) drawCount.Add(0);
-
-		var idx = Explore.Count - 1;
-		var card = Explore[idx];
-		Explore.RemoveAt( idx );
-		UnrevealedCards.Insert( 0, card );
-		drawCount[0]++;
 	}
 
 	#region Memento
@@ -155,18 +153,18 @@ public class InvaderDeck {
 			unrevealedCards = src.UnrevealedCards.ToArray();
 			drawCount = src.drawCount.ToArray();
 
-			explore = src.Explore.ToArray();
-			build = src.Build.ToArray();
-			ravage = src.Ravage.ToArray();
+			explore = src.Explore.Cards.ToArray();
+			build = src.Build.Cards.ToArray();
+			ravage = src.Ravage.Cards.ToArray();
 			discards = src.Discards.ToArray();
 
 		}
 		public void Restore(InvaderDeck src ) {
 			src.UnrevealedCards.SetItems(unrevealedCards);
 			src.drawCount.SetItems(drawCount);
-			src.Explore.SetItems(explore);
-			src.Build.SetItems(build);
-			src.Ravage.SetItems(ravage);
+			src.Explore.Cards.SetItems(explore);
+			src.Build.Cards.SetItems(build);
+			src.Ravage.Cards.SetItems(ravage);
 			src.Discards.SetItems(discards);
 		}
 		readonly IInvaderCard[] unrevealedCards;
@@ -180,4 +178,49 @@ public class InvaderDeck {
 
 	#endregion
 
+}
+
+public abstract class InvaderSlot {
+	public List<IInvaderCard> Cards { get; } = new List<IInvaderCard>();
+	public void HoldNextBack() { holdBackCount++; }
+	public void SkipNextNormal() { skipCount++; }
+	public async Task Execute( GameState gs ) {
+		foreach(var card in Cards)
+			if(skipCount > 0)
+				skipCount--;
+			else if(card.Skip)
+				card.Skip = false; // !!!! not sure if Card.Skip is ever set to true.
+			else
+				await CardAction(card,gs);
+	}
+
+	public List<IInvaderCard> GetCardsToAdvance() {
+		var result = new List<IInvaderCard>();
+		for(int i=0; i < Cards.Count; ++i)
+			if(holdBackCount > 0)
+				holdBackCount--;
+			else {
+				result.Add(Cards[i]);
+				Cards.RemoveAt(i--);
+			}
+		return result;
+	}
+
+	protected abstract Task CardAction( IInvaderCard card, GameState gameState);
+
+	int skipCount = 0;
+	int holdBackCount = 0;
+}
+
+// ??? Is this the Visitor Pattern ???
+public class RavageSlot : InvaderSlot {
+	protected override Task CardAction( IInvaderCard card, GameState gameState ) => card.Ravage( gameState );
+}
+
+public class BuildSlot : InvaderSlot {
+	protected override Task CardAction( IInvaderCard card, GameState gameState ) => card.Build( gameState );
+}
+
+public class ExploreSlot : InvaderSlot {
+	protected override Task CardAction( IInvaderCard card, GameState gameState ) => card.Explore( gameState );
 }

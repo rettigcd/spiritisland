@@ -39,7 +39,7 @@ public class SenseOfDread : IFearOptions {
 	}
 
 	static bool MatchingRavageCard( TargetSpaceCtx ctx )
-		=> ctx.GameState.InvaderDeck.Ravage
+		=> ctx.GameState.InvaderDeck.Ravage.Cards
 			.Any( card => card.Matches(ctx.Tokens.Space) );
 
 }

@@ -68,7 +68,9 @@ namespace SpiritIsland.Tests.BranchAndClaw.Fear {
 			// Card Advance #4 - End of 2st round
 
 			log.Assert_Ravaged( "A3", "A8" );
+
 			log.Assert_Built(); // Skip A2 & A5
+
 			log.Assert_Explored("A4","A7");
 
 			AdvanceToInvaderPhase();

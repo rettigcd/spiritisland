@@ -16,7 +16,7 @@ namespace SpiritIsland.Tests.JaggedEarth {
 			// Given: a space to ravage on.
 			var space = fxt.board[5];
 			var tokens = fxt.gameState.Tokens[space];
-			fxt.gameState.InvaderDeck.Ravage.Add( InvaderCardEx.For( space ) );
+			fxt.InitRavageCard( space );
 
 			//   And: no dahan
 			tokens.InitDefault(TokenType.Dahan, 0);
@@ -45,7 +45,7 @@ namespace SpiritIsland.Tests.JaggedEarth {
 			// Given: a space to ravage on.
 			var space = fxt.board[5]; // a5
 			var tokens = fxt.gameState.Tokens[space];
-			fxt.gameState.InvaderDeck.Ravage.Add( InvaderCardEx.For( space ) );
+			fxt.InitRavageCard( space );
 
 			//   And: dahan in space
 			tokens.InitDefault(TokenType.Dahan, dahanCount);
@@ -72,7 +72,7 @@ namespace SpiritIsland.Tests.JaggedEarth {
 			// Given: a space to ravage on.
 			var space = fxt.board[5]; // a5
 			var tokens = fxt.gameState.Tokens[space];
-			fxt.gameState.InvaderDeck.Ravage.Add( InvaderCardEx.For( space ) );
+			fxt.InitRavageCard( space );
 
 			//   And: dahan in space
 			const int startingDahanCount = 10;

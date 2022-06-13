@@ -19,10 +19,10 @@ namespace SpiritIsland.Tests {
 			space.Tokens.AdjustDefault(Invader.Explorer,1);
 			space.Tokens.Dahan.Init(2);
 			var terrain = new[] { Terrain.Wetland, Terrain.Sand, Terrain.Jungle, Terrain.Mountain }.First( space.Space.Is );
-			fxt.gameState.InvaderDeck.Ravage.Add( InvaderCard.Stage1( terrain) );
+			fxt.InitRavageCard( terrain);
 			//   But: will not build nor explore
-			fxt.gameState.InvaderDeck.Build.Clear();
-			fxt.gameState.InvaderDeck.Explore.Clear();
+			fxt.gameState.InvaderDeck.Build.Cards.Clear();
+			fxt.gameState.InvaderDeck.Explore.Cards.Clear();
 
 			//  And: user grows (+9 energy)
 			fxt.user.Growth_SelectsOption(3);

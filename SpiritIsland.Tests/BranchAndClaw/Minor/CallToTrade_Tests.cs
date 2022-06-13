@@ -49,7 +49,7 @@ public class CallToTrade_Tests {
 		Given_NoSuroundingTowns( spaceCtx );
 		Given_NoSuroundingDahan( spaceCtx );
 
-		string info = $"{spaceCtx.Space.Label} {ctx.GameState.InvaderDeck.Build.Single()} ";
+		string info = $"{spaceCtx.Space.Label} {ctx.GameState.InvaderDeck.Build.Cards.Single()} ";
 
 
 		When_GrowsBuysAndActivatesCard( user, spaceCtx );

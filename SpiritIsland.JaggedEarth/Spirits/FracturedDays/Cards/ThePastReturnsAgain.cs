@@ -20,7 +20,7 @@ class ThePastReturnsAgain {
 
 		// Swap the top card of the Invader Deck with a card in the Invader discard that is withing 1 Invader Stage of it.
 		var deck = ctx.GameState.InvaderDeck;
-		var newCard = deck.Explore.First();
+		var newCard = deck.Explore.Cards.First();
 		int stageOfTopCard = newCard.InvaderStage;
 		var options = deck.Discards.Where(d=> System.Math.Abs(d.InvaderStage-stageOfTopCard)<=1).ToArray();
 		// You can't swap cards that don't exist.
@@ -31,7 +31,7 @@ class ThePastReturnsAgain {
 		));
 
 		// Replace New with Old
-		deck.Explore[0] = oldCard;
+		deck.Explore.Cards[0] = oldCard;
 		// Replace Old with New
 		deck.Discards.Remove( oldCard );
 		deck.Discards.Add( newCard ); // face down

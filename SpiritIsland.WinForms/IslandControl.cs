@@ -327,7 +327,7 @@ public partial class IslandControl : Control {
 		float y = bounds.Height-height-margin*2 - textHeight;
 
 		// Build Metrics
-		int buildCount = gameState.InvaderDeck.Build.Count;
+		int buildCount = gameState.InvaderDeck.Build.Cards.Count;
 		RectangleF[] buildRect = new RectangleF[ buildCount ];
 		float buildWidth = width / buildCount, buildHeight = height / buildCount;
 		for(int i=0;i<buildCount;++i)
@@ -337,7 +337,7 @@ public partial class IslandControl : Control {
 
 		// Ravage Metrics
 		float ravageX = x - (width + margin);
-		int ravageCounts = gameState.InvaderDeck.Ravage.Count;
+		int ravageCounts = gameState.InvaderDeck.Ravage.Cards.Count;
 		var ravageRects = new RectangleF[ ravageCounts];
 		float ravageWidth = width / ravageCounts, ravageHeight = height / ravageCounts;
 		for(int i=0;i<ravageCounts;++i)
@@ -347,12 +347,12 @@ public partial class IslandControl : Control {
 
 		// Build
 		for(int i=0;i<buildRect.Length;++i) 
-			graphics.DrawInvaderCard( buildRect[i], gameState.InvaderDeck.Build[i] );
+			graphics.DrawInvaderCard( buildRect[i], gameState.InvaderDeck.Build.Cards[i] );
 		graphics.DrawString("Build", buildRavageFont,Brushes.Black, buildTextTopLeft );
 
 		// Ravage
 		for(int i=0; i<ravageRects.Length;++i)
-			graphics.DrawInvaderCard( ravageRects[i], gameState.InvaderDeck.Ravage[i] );
+			graphics.DrawInvaderCard( ravageRects[i], gameState.InvaderDeck.Ravage.Cards[i] );
 		graphics.DrawString( "Ravage", buildRavageFont, Brushes.Black, ravageTextTopLeft );
 
 		// Fear

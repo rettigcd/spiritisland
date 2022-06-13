@@ -21,8 +21,8 @@ public class TargetSpaceCtx : SelfCtx {
 	public Task SelectActionOption( string prompt, params IExecuteOn<TargetSpaceCtx>[] options )=> SelectAction_Inner( prompt, options, Present.AutoSelectSingle, this );
 	public Task SelectAction_Optional( string prompt, params IExecuteOn<TargetSpaceCtx>[] options )=> SelectAction_Inner( prompt, options, Present.Done, this );
 
-	public bool MatchesRavageCard => GameState.InvaderDeck.Ravage.Any(c=>c.Matches(Space));
-	public bool MatchesBuildCard => GameState.InvaderDeck.Build.Any(c=>c.Matches(Space));
+	public bool MatchesRavageCard => GameState.InvaderDeck.Ravage.Cards.Any(c=>c.Matches(Space));
+	public bool MatchesBuildCard => GameState.InvaderDeck.Build.Cards.Any(c=>c.Matches(Space));
 
 	public TokenCountDictionary Tokens {
 		get {

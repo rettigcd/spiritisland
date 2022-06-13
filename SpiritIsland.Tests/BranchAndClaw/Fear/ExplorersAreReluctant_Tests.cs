@@ -74,9 +74,7 @@ public class ExplorersAreReluctant_Tests : TestInvaderDeckSequence_Base {
 	public void Level2_DelayExplore1Round() {
 
 		// Disable destroying presence
-		//ctx.GameState.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
 		ctx.GameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
-
 
 		// 2: Skip the next normal explore.  During the next invader phase, draw an adidtional explore card.
 

@@ -10,7 +10,7 @@ public class Badlands_Tests {
 		// Given: a space to ravage on.
 		var space = fxt.board[5];
 		var tokens = fxt.gameState.Tokens[space];
-		fxt.gameState.InvaderDeck.Ravage.Add( InvaderCardEx.For( space ) );
+		fxt.InitRavageCard( space );
 
 		// And: disable ravage on A2 which has the same space
 		fxt.gameState.SkipRavage(fxt.board[2]);
@@ -49,7 +49,7 @@ public class Badlands_Tests {
 		// Given: a space to ravage on.
 		var space = fxt.board[5];
 		var tokens = fxt.gameState.Tokens[space];
-		fxt.gameState.InvaderDeck.Ravage.Add( InvaderCardEx.For( space ) );
+		fxt.InitRavageCard( space );
 
 		// And: disable ravage on A2 which has the same space
 		fxt.gameState.SkipRavage(fxt.board[2]);

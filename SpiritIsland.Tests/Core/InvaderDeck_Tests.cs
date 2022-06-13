@@ -32,7 +32,7 @@ public class InvaderDeck_Tests {
 
 	static string TakeSnapShot( InvaderDeck sut ) {
 		//   And: record cards
-		return sut.Ravage[0].Text + " : " + sut.Build[0].Text + " : " + sut.Explore[0].Text;
+		return sut.Ravage.Cards[0].Text + " : " + sut.Build.Cards[0].Text + " : " + sut.Explore.Cards[0].Text;
 	}
 
 }

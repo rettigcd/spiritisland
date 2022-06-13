@@ -25,10 +25,8 @@ public class ExplorersAreReluctant : IFearOptions {
 	[FearLevel( 2, "Skip the next normal explore. During the next invader phase, draw an adidtional explore card." )]
 	public Task Level2( FearCtx ctx ) {
 		var deck = ctx.GameState.InvaderDeck;
-
-		while(deck.Explore.Count > 0)
-			deck.DelayLastExploreCard();
-
+		deck.Explore.SkipNextNormal();
+		deck.Explore.HoldNextBack();
 		return Task.CompletedTask;
 	}
 

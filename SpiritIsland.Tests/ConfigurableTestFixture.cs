@@ -137,7 +137,7 @@ public class ConfigurableTestFixture {
 	}
 
 	public void InitRavageCard( IInvaderCard card ) {
-		GameState.InvaderDeck.Ravage.Add(card);
+		GameState.InvaderDeck.Ravage.Cards.Add(card);
 	}
 
 	#region Choose
@@ -222,13 +222,17 @@ public class ConfigurableTestFixture {
 	#endregion
 }
 
-class SpaceSpecificRavage : IInvaderCard {
+class SpaceSpecificInvaderCard : IInvaderCard {
 	readonly Space _space;
-	public SpaceSpecificRavage(Space space) { _space = space; }
+	public SpaceSpecificInvaderCard(Space space) { _space = space; }
 
 	public int InvaderStage => 1;
 	public bool Escalation => false;
 	public string Text => throw new NotImplementedException();
+
+	public bool Skip { get; set; }
+	public bool HoldBack { get; set; }
+
 	public Task Build( GameState gameState ) => throw new NotImplementedException();
 	public Task Explore( GameState gameState ) => throw new NotImplementedException();
 	public bool Matches( Space space ) => space == _space;

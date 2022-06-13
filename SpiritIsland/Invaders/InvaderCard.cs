@@ -7,6 +7,10 @@ public abstract class InvaderCard : IOption, IInvaderCard {
 	public static InvaderCard Stage2Costal() => new CostalInvaderCard();
 	public static InvaderCard Stage3(Terrain t1,Terrain t2) => new DoubleTerrainInvaderCard(t1, t2);
 
+	public bool Flipped { get; set; } = false;
+	public bool HoldBack { get; set; } = false;
+	public bool Skip { get; set; } = false;
+
 	public int InvaderStage { get; }
 
 	public string Text { get; }
@@ -83,15 +87,15 @@ public abstract class InvaderCard : IOption, IInvaderCard {
 	}
 
 	public async Task Explore( GameState gs ) {
-		InvaderCard card = this;
+		Flipped = true;
 
-		gs.Log( new InvaderActionEntry( "Exploring:" + card.Text ) );
+		gs.Log( new InvaderActionEntry( "Exploring:" + Text ) );
 
 		// Modify
 		bool IsExplorerSource( Space space ) { return space.IsOcean || gs.Tokens[space].HasAny( Invader.Town, Invader.City ); }
 		var args = new ExploreEventArgs( gs,
 			gs.Island.AllSpaces.Where( IsExplorerSource ),
-			gs.Island.AllSpaces.Where( card.Matches )
+			gs.Island.AllSpaces.Where( Matches )
 		);
 		await gs.PreExplore.InvokeAsync( args );
 

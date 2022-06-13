@@ -32,9 +32,9 @@ public class Invader_Tests {
 	[Fact]
 	public void StartsWithExplorer(){
 		var sut = new InvaderDeck();
-		Assert.NotNull(sut.Explore);
-		Assert.Empty(sut.Build);
-		Assert.Empty(sut.Ravage);
+		Assert.NotNull(sut.Explore.Cards);
+		Assert.Empty(sut.Build.Cards);
+		Assert.Empty(sut.Ravage.Cards);
 	}
 
 	[Trait( "Feature", "InvaderCardProgression" )]
@@ -46,19 +46,19 @@ public class Invader_Tests {
 		// Advance the cards 12 times
 		for(int i=0;i<11;++i){
 
-			var explore = sut.Explore.ToArray();
-			var build = sut.Build.ToArray();
-			var ravage = sut.Ravage.ToArray();
-			int discardCount = sut.CountInDiscard;
+			var explore = sut.Explore.Cards.ToArray();
+			var build = sut.Build.Cards.ToArray();
+			var ravage = sut.Ravage.Cards.ToArray();
+			int discardCount = sut.Discards.Count;
 
 			// When: advance the cards
 			sut.Advance();
 
 			// Then cards advance
-			Assert.NotEqual(explore,sut.Explore);
-			Assert.Equal(explore,sut.Build);
-			Assert.Equal(build,sut.Ravage);
-			Assert.Equal(discardCount+(ravage.Length==0?0:1),sut.CountInDiscard);
+			Assert.NotEqual(explore,sut.Explore.Cards);
+			Assert.Equal(explore,sut.Build.Cards);
+			Assert.Equal(build,sut.Ravage.Cards);
+			Assert.Equal(discardCount+(ravage.Length==0?0:1),sut.Discards.Count);
 
 		}
 	}
@@ -66,8 +66,7 @@ public class Invader_Tests {
 	[Trait( "Feature", "InvaderCardProgression" )]
 	[Fact]
 	public void CardsUsedAre_3L1_4L2_5L3() {
-		var sut = new InvaderDeck();
-		sut.InitExploreSlot();
+		var sut = new InvaderDeck().UnrevealedCards.ToList();
 		Assert_NextNCardsFromDeck( sut, InvaderDeck.Level1Cards, 3 );
 		Assert_NextNCardsFromDeck( sut, InvaderDeck.Level2Cards, 4 );
 		Assert_NextNCardsFromDeck( sut, InvaderDeck.Level3Cards, 5 );
@@ -265,20 +264,13 @@ public class Invader_Tests {
 	}
 
 	static IInvaderCard[] NewDeckCards(int seed) {
-		var deck = new InvaderDeck( seed );
-		deck.InitExploreSlot();
-		var cards = new IInvaderCard[12];
-		for(int i = 0; i < 12; ++i) {
-			cards[i] = deck.Explore[0];
-			deck.Advance();
-		}
-		return cards;
+		return new InvaderDeck( seed ).UnrevealedCards.ToArray();
 	}
 
-	static void Assert_NextNCardsFromDeck( InvaderDeck deck, ImmutableList<IInvaderCard> cardSet, int count ) {
+	static void Assert_NextNCardsFromDeck( List<IInvaderCard> deck, ImmutableList<IInvaderCard> cardSet, int count ) {
 		for(int i = 0; i < count; ++i) {
-			Assert.Contains( deck.Explore[0], cardSet );
-			deck.Advance();
+			Assert.Contains( deck[0], cardSet );
+			deck.RemoveAt(0);
 		}
 	}
 
