@@ -220,7 +220,7 @@ public class TargetSpaceCtx : SelfCtx {
 	public async Task StrifedDamageOtherInvaders( int originalDamage, HealthToken damageSource, bool excludeSource ) {
 
 		HealthToken damageSourceToExclude = excludeSource ? damageSource : null;
-		Func<HealthToken[]> invadersToDamage = ()=>Tokens.InvaderTokens()
+		HealthToken[] invadersToDamage() => Tokens.InvaderTokens()
 			.Where( t => t != damageSourceToExclude )
 			.ToArray();
 

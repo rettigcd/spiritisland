@@ -207,9 +207,9 @@ public class AvoidTheDahan_Tests {
 	#region private
 
 	static public InvaderDeck MountainThenAllSands() {
-		var sand = new InvaderCard( Terrain.Sand );
+		var sand = InvaderCard.Stage1( Terrain.Sand );
 		return InvaderDeck.BuildTestDeck(
-			new InvaderCard( Terrain.Mountain ), // initial explorer in mountains
+			InvaderCard.Stage1( Terrain.Mountain ), // initial explorer in mountains
 			sand, sand, sand, sand, sand
 		);
 	}

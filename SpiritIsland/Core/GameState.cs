@@ -45,8 +45,8 @@ public class GameState {
 				((Space1)space).InitTokens( Tokens[space] );
 
 		// Explore
+		InvaderDeck.InitExploreSlot();
 		InvaderDeck.Explore[0].Explore( this ).Wait();
-
 		InvaderDeck.Advance();
 
 		InitSpirits();

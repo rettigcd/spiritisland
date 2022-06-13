@@ -11,7 +11,7 @@ public class BlightTokenBindingNoEvents : TokenBindingNoEvents {
 		set => tokens.Init( blockBlightToken, value ? 1 : 0 );
 	}
 
-	public BlightTokenBinding Bind(Guid guid) => new BlightTokenBinding(tokens, guid);
+	public new BlightTokenBinding Bind(Guid guid) => new BlightTokenBinding(tokens, guid);
 
 	static readonly UniqueToken blockBlightToken = new UniqueToken( "block-blight", 'X', Img.None, TokenCategory.None );
 

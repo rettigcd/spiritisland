@@ -45,7 +45,9 @@ public class ImmigrationSlows : IFearOptions {
 	}
 
 	static void SkipNextNormalBuild( FearCtx ctx ) {
-		// !! ?? are we supposed to skip just 1 card or ALL Build cards?  This just skips 1
+		// !!! This should effect all Builds from 1 card
+		// if slot is empty, it can wait until next round to get a card.
+		// https://querki.net/raw/darker/spirit-island-faq/Immigration+Slows
 		ctx.GameState.PreBuilding.ForRound.Add( ( args ) => {
 			foreach(var space in args.SpaceCounts.Keys.ToArray())
 				args.Skip1( space );

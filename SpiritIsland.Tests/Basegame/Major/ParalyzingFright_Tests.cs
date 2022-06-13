@@ -12,7 +12,7 @@ public class ParalyzingFright_Tests {
 		List<string> invaderLog = new List<string>();
 
 		var (user, ctx) = TestSpirit.SetupGame( PowerCard.For<ParalyzingFright>(), (gs)=>{ 
-			var jungleCard = new InvaderCard(Terrain.Jungle);
+			var jungleCard = InvaderCard.Stage1( Terrain.Jungle);
 			gs.InvaderDeck = InvaderDeck.BuildTestDeck( jungleCard, jungleCard, jungleCard, jungleCard );
 			gs.NewLogEntry += (s) => invaderLog.Add(s.Msg());
 		} );

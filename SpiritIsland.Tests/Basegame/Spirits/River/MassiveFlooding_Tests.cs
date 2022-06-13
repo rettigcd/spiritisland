@@ -10,7 +10,7 @@ public class MassiveFlooding_Tests : RiverGame {
 		// Given: River
 		spirit.UsePowerProgression();
 		gs = new GameState( spirit, Board.BuildBoardA() ) {
-			InvaderDeck = InvaderDeck.Unshuffled(),
+//			InvaderDeck = new InvaderDeck(),
 			Phase = Phase.Slow
 		};
 

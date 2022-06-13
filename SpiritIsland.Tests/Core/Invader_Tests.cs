@@ -25,7 +25,7 @@ public class Invader_Tests {
 
 	[Fact]
 	public void CantInvadeOceans() {
-		Assert.Throws<ArgumentException>(()=>new InvaderCard(Terrain.Ocean));
+		Assert.Throws<ArgumentException>(()=> InvaderCard.Stage1( Terrain.Ocean));
 	}
 
 	[Trait( "Feature", "InvaderCardProgression" )]
@@ -67,6 +67,7 @@ public class Invader_Tests {
 	[Fact]
 	public void CardsUsedAre_3L1_4L2_5L3() {
 		var sut = new InvaderDeck();
+		sut.InitExploreSlot();
 		Assert_NextNCardsFromDeck( sut, InvaderDeck.Level1Cards, 3 );
 		Assert_NextNCardsFromDeck( sut, InvaderDeck.Level2Cards, 4 );
 		Assert_NextNCardsFromDeck( sut, InvaderDeck.Level3Cards, 5 );
@@ -258,13 +259,14 @@ public class Invader_Tests {
 		Assert_UnitsAre( startingUnits, space );
 
 		// When: Ravaging in Mountains
-		await InvaderEngine1.RavageCard( new InvaderCard(Terrain.Mountain), gameState );
+		await InvaderEngine1.RavageCard( InvaderCard.Stage1( Terrain.Mountain), gameState );
 
 		Assert_UnitsAre( endingUnits, space );
 	}
 
 	static IInvaderCard[] NewDeckCards(int seed) {
-		var deck = new InvaderDeck(null,seed);
+		var deck = new InvaderDeck( seed );
+		deck.InitExploreSlot();
 		var cards = new IInvaderCard[12];
 		for(int i = 0; i < 12; ++i) {
 			cards[i] = deck.Explore[0];

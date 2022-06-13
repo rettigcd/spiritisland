@@ -100,7 +100,7 @@ public class CallToTrade_Tests {
 
 		// Given: Going to Ravage / Build in Jungle
 		var (user, ctx) = TestSpirit.SetupGame( PowerCard.For<CallToTrade>(), (gs)=>{ 
-			var jungleCard = new InvaderCard(Terrain.Jungle);
+			var jungleCard = InvaderCard.Stage1( Terrain.Jungle);
 			gs.InvaderDeck = InvaderDeck.BuildTestDeck( jungleCard, jungleCard, jungleCard, jungleCard );
 			gs.NewLogEntry += (s) => invaderLog.Add(s.Msg());
 		} );

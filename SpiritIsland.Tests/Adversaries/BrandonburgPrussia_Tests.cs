@@ -4,12 +4,12 @@ namespace SpiritIsland.Tests.Adversaries;
 
 public class BrandonburgPrussia_Tests {
 
-	ConfigurableTestFixture fxt = new ConfigurableTestFixture();
+	readonly ConfigurableTestFixture fxt = new ConfigurableTestFixture();
 
 	[Fact]
 	public void Level0() {
 		// When: game starts
-		var gs = fxt.GameState;
+		_ = fxt.GameState;
 
 		// Then: no town on space 3
 		Assert_Level1TownAdded( false );
@@ -26,7 +26,7 @@ public class BrandonburgPrussia_Tests {
 		SetAdversary( 1 );
 
 		// When: game starts
-		var gs = fxt.GameState;
+		_ = fxt.GameState;
 
 		// Then: 1 town on space 3
 		Assert_Level1TownAdded( true );
@@ -144,12 +144,12 @@ public class BrandonburgPrussia_Tests {
 
 	static string GetActualInvaderLevels( InvaderDeck deck ) { // make extension method??
 		var buf = new System.Text.StringBuilder();
-		char last = deck.Explore.Single().InvaderStage.ToString()[0];
-		buf.Append( last );
+		char last = ' '; // deck.Explore.Single().InvaderStage.ToString()[0];
+//		buf.Append( last );
 
-		foreach(var card in deck.unrevealedCards) {
+		foreach(var card in deck.UnrevealedCards) {
 			var next = card.InvaderStage.ToString()[0];
-			if(next != last) buf.Append( '-' );
+			if(next != last && last != ' ') buf.Append( '-' );
 			last = next;
 			buf.Append( last );
 		}

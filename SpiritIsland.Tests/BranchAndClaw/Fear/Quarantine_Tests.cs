@@ -12,9 +12,9 @@ public class Quarantine_Tests {
 		var (userLocal,ctxLocal) = TestSpirit.SetupGame(powerCard,gs=>{ 
 			gs.NewLogEntry += (s) => { if(s is InvaderActionEntry) log.Enqueue(s.Msg()); };
 			gs.InvaderDeck = InvaderDeck.BuildTestDeck(
-				new InvaderCard(Terrain.Sand), // not on coast
+				InvaderCard.Stage1( Terrain.Sand), // not on coast
 				InvaderCard.Stage2Costal(),
-				new InvaderCard(Terrain.Jungle)
+				InvaderCard.Stage1( Terrain.Jungle)
 			);
 		} );
 		user = userLocal;

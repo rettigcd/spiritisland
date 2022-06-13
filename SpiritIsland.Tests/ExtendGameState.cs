@@ -1,8 +1,4 @@
-﻿using Shouldly;
-using SpiritIsland;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using SpiritIsland;
 
 namespace SpiritIsland.Tests {
 
@@ -10,7 +6,7 @@ namespace SpiritIsland.Tests {
 
 		static public InvaderCard For( Space space ) {
 			var terrain = new[] { Terrain.Wetland, Terrain.Sand, Terrain.Jungle, Terrain.Mountain }.First( space.Is );
-			return terrain != Terrain.Ocean ? new InvaderCard( terrain, false ) : throw new ArgumentException( "Can't invade oceans" );
+			return terrain != Terrain.Ocean ? InvaderCard.Stage1( terrain ) : throw new ArgumentException( "Can't invade oceans" );
 		}
 
 	}
@@ -19,7 +15,7 @@ namespace SpiritIsland.Tests {
 
 		/// <summary> Replaces all Invader Cards with null-cards that don't ravage/build/explore</summary>
 		static public void DisableInvaderDeck(this GameState gs ) {
-			var nullCard = new InvaderCard( Terrain.None );
+			var nullCard = InvaderCard.Stage1( Terrain.None );
 			gs.InvaderDeck = InvaderDeck.BuildTestDeck( new byte[12].Select( _ => nullCard ).ToArray() );
 		}
 

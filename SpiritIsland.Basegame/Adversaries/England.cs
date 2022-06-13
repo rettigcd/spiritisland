@@ -16,9 +16,42 @@ public class England : IAdversary {
 		_ => null,
 	};
 
-	public void Adjust( GameState board ) {
-		// Level 1 ->
+	public void Adjust( GameState gameState ) {
+		if( Level >= 2) {
+			// During Setup, on each board add 1 City to land #1 and 1 Town to land #2.
+			foreach(var board in gameState.Island.Boards) {
+				gameState.Tokens[board[1]].AdjustDefault( Invader.City, 1 );
+				gameState.Tokens[board[2]].AdjustDefault( Invader.Town, 1 );
+			}
+		}
 	}
+
+	public void AdjustInvaderDeck( InvaderDeck deck ) {
+		if(0 < Level)
+			Level1_AdditionalBuildSpaces( deck );
+	}
+
+	static void Level1_AdditionalBuildSpaces( InvaderDeck deck ) {
+		for(int i = 0; i < deck.UnrevealedCards.Count; ++i) {
+			if(deck.UnrevealedCards[i] is InvaderCard normalInvaderCard)
+				deck.UnrevealedCards[i] = new EnglandInvaderCard( normalInvaderCard );
+		}
+	}
+
+	public class EnglandInvaderCard : InvaderCard {
+		readonly InvaderCard card;
+		public EnglandInvaderCard(InvaderCard card):base(card.Text,card.InvaderStage,card.Escalation) {
+			this.card = card;
+		}
+		public override bool Matches( Space space ) => card.Matches( space );
+
+		protected override bool ShouldBuildOnSpace( TokenCountDictionary tokens, GameState gameState ) {
+			int cityTownCounts(Space space) => gameState.Tokens[space].SumAny( Invader.Town, Invader.City );
+			bool adjacentTo2OrMoreCitiesOrTowns(Space space) => 2 <= space.Adjacent.Sum( adj => cityTownCounts( adj ) );
+			return base.ShouldBuildOnSpace( tokens, gameState ) || adjacentTo2OrMoreCitiesOrTowns(tokens.Space);
+		}
+	}
+
 }
 
 
@@ -26,11 +59,9 @@ public class England : IAdversary {
 
 1	(3)	10 (3/4/3)	Indentured Servants Earn Land: 
 	Invader Build Cards affect matching lands without Invaders if they are adjacent to at least 2 Towns/Citys.
-	// Modify the Build Engine
 
 2	(4)	11 (4/4/3)	Criminals and Malcontents: 
-	During Setup, on each board add 1 Cityicon.png to land #1 and 1 Townicon.png to land #2.
-	// Adjust GameState - hook ready...
+	During Setup, on each board add 1 City to land #1 and 1 Town to land #2.
 
 3	(6)	13 (4/5/4)	High Immigration (I): 
 	Put the "High Immigration" tile on the Invader board, to the left of "Ravage".

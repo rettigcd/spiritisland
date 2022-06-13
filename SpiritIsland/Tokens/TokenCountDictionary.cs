@@ -103,7 +103,9 @@ public class TokenCountDictionary {
 		var args = new RemovingTokenArgs { ActionId = actionId, Count = count, Space = Space, Reason = reason, Token = token };
 		await tokenApi.Publish_Removing( args );
 		if(args.Count == 0) return null;
+#pragma warning disable CA2208 // Instantiate argument exceptions correctly
 		if(args.Count < 0) throw new System.ArgumentOutOfRangeException( nameof( args.Count ) );
+#pragma warning restore CA2208 // Instantiate argument exceptions correctly
 		this[args.Token] -= args.Count;
 		var removedArgs = new TokenRemovedArgs( token, reason, actionId, Space, count );
 		await tokenApi.Publish_Removed( removedArgs );

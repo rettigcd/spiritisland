@@ -37,6 +37,7 @@ public class GameConfiguration {
 		var gameState = new GameState( spirit, board );
 		int[] invaderCardOrder = new int[] { 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3 };
 		int[] fearCardsPerLevel = new int[] { 3, 3, 3 };
+		Action<InvaderDeck> adjustInvaderDeck = ( deck ) => { };
 
 		// Game # - Random Seeds (don't change this order or this will change game definition)
 		var randomizer = new Random( ShuffleNumber );
@@ -52,11 +53,13 @@ public class GameConfiguration {
 			adversary.Adjust( gameState );
 			invaderCardOrder = adversary.InvaderCardOrder ?? invaderCardOrder;
 			fearCardsPerLevel = adversary.FearCardsPerLevel ?? fearCardsPerLevel;
+			adjustInvaderDeck = adversary.AdjustInvaderDeck;
 		}
 
 		// (1) Invader Deck
-		gameState.InvaderDeck = new InvaderDeck( invaderCardOrder, invaderSeed );
-
+		gameState.InvaderDeck = new InvaderDeck( invaderSeed, invaderCardOrder );
+		adjustInvaderDeck( gameState.InvaderDeck );
+			
 		// (2) Major Power Cards
 		gameState.MajorCards = new PowerCardDeck( majorCards.ToArray(), majorSeed );
 
@@ -77,7 +80,7 @@ public class GameConfiguration {
 		blightCards.RemoveAt(0);
 
 		// No Events
-		var invaderCards = gameState.InvaderDeck.unrevealedCards;
+		var invaderCards = gameState.InvaderDeck.UnrevealedCards;
 		void InitBeastCommand(int stage) {
 			for(int i = 0; i < invaderCards.Count; ++i) {
 				if(invaderCards[i].InvaderStage != stage) continue;
