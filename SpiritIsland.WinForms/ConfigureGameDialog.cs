@@ -54,6 +54,12 @@ namespace SpiritIsland.WinForms {
 			_adversaryListBox.Items.Add( "Brandenburg-Prussia 4" ); // !!! get from providers
 			_adversaryListBox.Items.Add( "Brandenburg-Prussia 5" ); // !!! get from providers
 			_adversaryListBox.Items.Add( "Brandenburg-Prussia 6" ); // !!! get from providers
+			_adversaryListBox.Items.Add( "England 1" ); // !!! get from providers
+			_adversaryListBox.Items.Add( "England 2" ); // !!! get from providers
+			_adversaryListBox.Items.Add( "England 3" ); // !!! get from providers
+			_adversaryListBox.Items.Add( "England 4" ); // !!! get from providers
+			_adversaryListBox.Items.Add( "England 5" ); // !!! get from providers
+			_adversaryListBox.Items.Add( "England 6" ); // !!! get from providers
 			CheckOkStatus( null, null );
 		}
 
@@ -103,9 +109,11 @@ namespace SpiritIsland.WinForms {
 				? GetColorForSpirit( gameSettings.SpiritType )
 				: colorListBox.SelectedItem as string;
 
-			int adversaryIndex = _adversaryListBox.SelectedIndex;
-			gameSettings.Adversary = adversaryIndex > 0 ? typeof( BrandenburgPrussia ) : null;
-			gameSettings.AdversaryLevel = _adversaryListBox.SelectedIndex;
+			string adversary = _adversaryListBox.SelectedItem.ToString();
+			gameSettings.Adversary = adversary.StartsWith("Brandenburg") ? typeof( BrandenburgPrussia ) 
+				: adversary.StartsWith("England") ? typeof( England )
+				: null;
+			gameSettings.AdversaryLevel = string.IsNullOrEmpty( adversary ) ? 0 : (int)(adversary[^1] - '0');
 
 			GameConfig = gameSettings;
 

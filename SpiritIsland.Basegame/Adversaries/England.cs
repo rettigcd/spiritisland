@@ -24,6 +24,19 @@ public class England : IAdversary {
 				gameState.Tokens[board[2]].AdjustDefault( Invader.Town, 1 );
 			}
 		}
+		if( Level >= 3) {
+			var highBuildSlot = new HighImmegrationSlot( Level );
+			gameState.InvaderDeck.Slots.Insert( 0, highBuildSlot );
+			if( Level == 3)
+				HighImmegrationSlot.RemoveForLevel2Invaders( gameState, highBuildSlot );
+		}
+		if( Level >= 5) {
+			gameState.Tokens.TokenDefaults[Invader.City] = new HealthToken(Invader.City,4);
+			gameState.Tokens.TokenDefaults[Invader.Town] = new HealthToken( Invader.Town, 3 );
+		}
+		if( Level == 6) {
+			gameState.Fear.PoolMax += gameState.Spirits.Length;
+		}
 	}
 
 	public void AdjustInvaderDeck( InvaderDeck deck ) {
@@ -52,6 +65,38 @@ public class England : IAdversary {
 		}
 	}
 
+	public class HighImmegrationSlot : BuildSlot {
+		public HighImmegrationSlot( int level ){
+			this.repeatWhenNoFearResolved = level == 6;
+		}
+		bool repeatWhenNoFearResolved;
+		int lastCountOfFearCardsResolved = 0;
+		public override async Task Execute( GameState gs ) {
+			// Do Normal Build
+			await base.Execute( gs );
+
+			// If no fear cards were Resolved
+			if(repeatWhenNoFearResolved) {
+				int currentFearCardsResolved = gs.Fear.ResolvedCards;
+				if(currentFearCardsResolved == lastCountOfFearCardsResolved)
+					await base.Execute( gs );
+				lastCountOfFearCardsResolved = currentFearCardsResolved;
+			}
+		}
+
+		static public void RemoveForLevel2Invaders( GameState gameState, HighImmegrationSlot highBuildSlot ) {
+			gameState.TimePasses_WholeGame += ( GameState gs ) => {
+				if(highBuildSlot != null && highBuildSlot.Cards.Any( c => c.InvaderStage == 2 )) {
+					var deck = gs.InvaderDeck;
+					deck.Discards.AddRange( highBuildSlot.Cards );
+					deck.Slots.RemoveAt( 0 );
+					highBuildSlot = null;
+				}
+			};
+		}
+
+	}
+
 }
 
 
@@ -74,11 +119,12 @@ public class England : IAdversary {
 	The extra Build tile remains out the entire game.
 
 5	(9)	14 (4/5/5)	Local Autonomy: 
-	Townicon.png/Cityicon.png have +1 Health.
+	Towns/Citys have +1 Health.
 
 6	(11)	13 (4/5/4)	Independent Resolve: 
-	During Setup, add an additional Fearicon.png to the Fear Pool per player in the game. 
-	During any Invader Phase where you resolve no Fear Cards, perform the Build from High Immigration twice. 
+	During Setup, add an additional Fear to the Fear Pool per player in the game. 
+
+	During any Invader Phase where you resolve no Fear Cards, perform the Build from High Immigration twice.
 	(This has no effect if no card is on the extra Build slot.)
 
 */

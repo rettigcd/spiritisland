@@ -184,7 +184,7 @@ public abstract class InvaderSlot {
 	public List<IInvaderCard> Cards { get; } = new List<IInvaderCard>();
 	public void HoldNextBack() { holdBackCount++; }
 	public void SkipNextNormal() { skipCount++; }
-	public async Task Execute( GameState gs ) {
+	public virtual async Task Execute( GameState gs ) {
 		foreach(var card in Cards)
 			if(skipCount > 0)
 				skipCount--;

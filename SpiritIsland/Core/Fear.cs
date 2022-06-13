@@ -61,8 +61,12 @@ public class Fear {
 				case 2: await fearCard.FearOptions.Level2( ctx ); break;
 				case 3: await fearCard.FearOptions.Level3( ctx ); break;
 			}
+
+			++ResolvedCards; // record discard cards (for England-6)
 		}
 	}
+
+	public int ResolvedCards { get; private set; }
 
 	// - ints -
 	public int EarnedFear { get; private set; } = 0;
