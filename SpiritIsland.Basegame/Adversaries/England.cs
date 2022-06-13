@@ -69,7 +69,7 @@ public class England : IAdversary {
 		public HighImmegrationSlot( int level ){
 			this.repeatWhenNoFearResolved = level == 6;
 		}
-		bool repeatWhenNoFearResolved;
+		readonly bool repeatWhenNoFearResolved;
 		int lastCountOfFearCardsResolved = 0;
 		public override async Task Execute( GameState gs ) {
 			// Do Normal Build

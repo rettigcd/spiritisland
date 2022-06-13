@@ -11,7 +11,6 @@ public class RavageAction {
 		this.gameState = gs;
 		this.invaderBinding = grp;
 		this.cfg = cfg;
-		damageLandCallback = gs.DamageLandFromRavage;
 
 		@event = new InvadersRavaged { Space = grp.Space };
 	}
@@ -89,7 +88,7 @@ public class RavageAction {
 
 	public async Task DamageLand( int damageInflictedFromInvaders ) {
 		if( cfg.ShouldDamageLand )
-			await damageLandCallback(invaderBinding.Space,damageInflictedFromInvaders, actionId);
+			await this.gameState.DamageLandFromRavage( invaderBinding.Space, damageInflictedFromInvaders, actionId);
 	}
 
 	/// <returns># of dahan killed/destroyed</returns>
@@ -240,7 +239,7 @@ public class RavageAction {
 	readonly protected InvaderBinding invaderBinding;
 	readonly GameState gameState;
 	readonly Guid actionId;
-	readonly Func<Space, int, Guid, Task> damageLandCallback;
+//	readonly Func<Space, int, Guid, Task> damageLandCallback;
 	readonly protected ConfigureRavage cfg;
 
 	#endregion

@@ -107,8 +107,8 @@ public class GameState {
 		if(damageInflictedFromInvaders==0) return;
 
 		await LandDamaged.InvokeAsync( new LandDamagedArgs { 
-			GameState = this, 
-			Space = space, 
+			GameState = this,
+			Space = space,
 			Damage = damageInflictedFromInvaders,
 			ActionId = actionId
 		} );

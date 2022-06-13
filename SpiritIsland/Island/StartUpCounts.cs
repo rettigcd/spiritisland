@@ -3,7 +3,7 @@
 public class StartUpCounts {
 
 	#region Constructor
-	public StartUpCounts(string config){this.config = config;}
+	public StartUpCounts(string config){ this.config = config; }
 	#endregion
 
 	public bool Empty => string.IsNullOrEmpty( config );
@@ -13,7 +13,19 @@ public class StartUpCounts {
 	public int Dahan => config.Count(c=>c=='D');
 	public int Blight => config.Count(c=>c=='B');
 
+	public void Adjust(char k,int delta ) {
+		var dict= new CountDictionary<char>();
+		for(int i = 0; i < config.Length; ++i)
+			dict[config[i]]++;
+		dict[k] += delta;
+		if(dict[k] < 0) return;
+		var buf = new StringBuilder();
+		foreach(var kk in dict.Keys)
+			buf.Append(kk,dict[kk]);
+		config = buf.ToString();
+	}
+
 	#region private fields
-	readonly string config;
+	string config;
 	#endregion
 }
