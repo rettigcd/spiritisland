@@ -45,17 +45,13 @@ public class BrandenburgPrussia : IAdversary {
 	}
 
 	public void AdjustInvaderDeck( InvaderDeck deck ) {
-		for(int i = 0; i < deck.UnrevealedCards.Count; ++i) {
-			if(deck.UnrevealedCards[i] is not InvaderCard simpleInvaderCard)
-				throw new InvalidOperationException( "We can only apply Brandenburg Prussia modification to original (simple) Invader Cards" );
-			deck.UnrevealedCards[i] = new BrandenburgPrussiaInvaderCard( simpleInvaderCard );
-		}
+		deck.ReplaceCards( card => new BrandenburgPrussiaInvaderCard( card ) );
 	}
 }
 
 // Adds Escalation
 class BrandenburgPrussiaInvaderCard : InvaderCard {
-	public BrandenburgPrussiaInvaderCard( InvaderCard card ):base(card.Filter,card.InvaderStage ) { }
+	public BrandenburgPrussiaInvaderCard( InvaderCard card ):base(card) { }
 	public override async Task Explore( GameState gs ) {
 		await base.Explore( gs );
 		if( HasEscalation )

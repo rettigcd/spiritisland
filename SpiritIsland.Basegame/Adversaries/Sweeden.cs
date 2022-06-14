@@ -16,11 +16,7 @@ public class Sweeden : IAdversary {
 	};
 
 	public void AdjustInvaderDeck( InvaderDeck deck ) {
-		for(int i = 0; i < deck.UnrevealedCards.Count; ++i) {
-			if(deck.UnrevealedCards[i] is not InvaderCard simpleInvaderCard)
-				throw new InvalidOperationException( "We can only apply Sweeden Adversary modification to original (simple) Invader Cards" );
-			deck.UnrevealedCards[i] = new SweedenInvaderCard( simpleInvaderCard );
-		}
+		deck.ReplaceCards( card => new SweedenInvaderCard( card ) );
 	}
 
 	public void Adjust( GameState gameState ) {
@@ -110,7 +106,7 @@ public class Sweeden : IAdversary {
 }
 
 class SweedenInvaderCard : InvaderCard {
-	public SweedenInvaderCard( InvaderCard orig ):base(orig.Filter,orig.InvaderStage) { } // !!! create protected InvaderCard constructor to simplify this.
+	public SweedenInvaderCard( InvaderCard orig ):base(orig) { }
 
 	public override async Task Explore( GameState gs ) {
 		TokenCountDictionary[] tokenSpacesToExplore = await PreExplore( gs );

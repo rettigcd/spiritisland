@@ -21,11 +21,16 @@ public class InvaderCard : IOption, IInvaderCard {
 		Filter = filter;
 		InvaderStage = invaderStage;
 	}
+	protected InvaderCard( InvaderCard orig ) {
+		Filter = orig.Filter;
+		InvaderStage = orig.InvaderStage;
+	}
+
+	#endregion
+
 	protected bool HasEscalation => InvaderStage == 2 && Filter.Text != "Costal";
 	public SpaceFilter Filter { get; }
 	public string Text => (HasEscalation ? "2" : "") + Filter.Text;
-
-	#endregion
 
 	public async Task Ravage( GameState gs ) {
 		gs.Log( new InvaderActionEntry( "Ravaging:" + Text ) );

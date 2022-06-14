@@ -43,13 +43,7 @@ public class England : IAdversary {
 	}
 
 	public void AdjustInvaderDeck( InvaderDeck deck ) {
-		// !!! This code is duplicated in all Adversaries, think of a way to simplify
-		// ! Maybe an extention method on the Deck that replaces the cards using a function delegate
-		for(int i = 0; i < deck.UnrevealedCards.Count; ++i) {
-			if(deck.UnrevealedCards[i] is not InvaderCard simpleInvaderCard)
-				throw new InvalidOperationException( "We can only apply England Adversary modification to original (simple) Invader Cards" );
-			deck.UnrevealedCards[i] = new EnglandInvaderCard( simpleInvaderCard, Level > 0 );
-		}
+		deck.ReplaceCards( card => new EnglandInvaderCard( card, Level > 0 ) );
 	}
 
 	// We are NOT wrapping the source card.
@@ -58,7 +52,7 @@ public class England : IAdversary {
 	// If the input were not an InvaderCard, we would have to wrap the card passed in so as to not drop any functionality.
 	public class EnglandInvaderCard : InvaderCard {
 		readonly bool expandedBuild;
-		public EnglandInvaderCard(InvaderCard card,bool expandedBuild):base(card.Filter,card.InvaderStage) {
+		public EnglandInvaderCard(InvaderCard card,bool expandedBuild):base(card) {
 			this.expandedBuild = expandedBuild;
 		}
 		protected override bool ShouldBuildOnSpace( TokenCountDictionary tokens, GameState gameState ) {
@@ -140,6 +134,16 @@ public class England : IAdversary {
 
 }
 
+static public class InvaderDeckExtensions {
+	public static void ReplaceCards( this InvaderDeck deck, Func<InvaderCard, IInvaderCard> replacer ) {
+		for(int i = 0; i < deck.UnrevealedCards.Count; ++i) {
+			if(deck.UnrevealedCards[i] is not InvaderCard simpleInvaderCard)
+				throw new InvalidOperationException( "We can only apply Adversary modification to original (simple) Invader Cards" );
+			deck.UnrevealedCards[i] = replacer( simpleInvaderCard );
+		}
+	}
+
+}
 
 /*
 
