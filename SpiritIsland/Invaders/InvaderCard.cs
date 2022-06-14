@@ -84,7 +84,14 @@ public class InvaderCard : IOption, IInvaderCard {
 
 	}
 
+	#region Explore methods
+
 	public virtual async Task Explore( GameState gs ) {
+		TokenCountDictionary[] tokenSpacesToExplore = await PreExplore( gs );
+		await DoExplore( gs, tokenSpacesToExplore );
+	}
+
+	protected async Task<TokenCountDictionary[]> PreExplore( GameState gs ) {
 		Flipped = true;
 
 		gs.Log( new InvaderActionEntry( "Exploring:" + Text ) );
@@ -97,11 +104,12 @@ public class InvaderCard : IOption, IInvaderCard {
 		);
 		await gs.PreExplore.InvokeAsync( args );
 
-		var tokenSpacesToExplore = args.WillExplore( gs )
+		return args.WillExplore( gs )
 			.Select( x => gs.Tokens[x] )
 			.ToArray();
+	}
 
-		// Explore
+	protected static async Task DoExplore( GameState gs, TokenCountDictionary[] tokenSpacesToExplore ) {
 		foreach(var exploreTokens in tokenSpacesToExplore)
 			await ExploreSingleSpace( exploreTokens, gs, Guid.NewGuid() );
 	}
@@ -110,11 +118,13 @@ public class InvaderCard : IOption, IInvaderCard {
 		// only gets called when explorer is actually going to explore
 		var wilds = tokens.Wilds;
 		if(wilds.Count == 0) {
-			gs.Log( new InvaderActionEntry( tokens.Space + ":gains explorer" ) );
+			gs.Log( new SpaceExplored( tokens.Space ) );
 			await tokens.AddDefault( Invader.Explorer, 1, actionId, AddReason.Explore );
 		} else
 			await wilds.Bind(actionId).Remove( 1, RemoveReason.UsedUp );
 	}
+
+	#endregion
 
 }
 

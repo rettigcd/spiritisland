@@ -15,7 +15,13 @@ public class Sweeden : IAdversary {
 		_ => null,
 	};
 
-	public void AdjustInvaderDeck( InvaderDeck deck ) { }
+	public void AdjustInvaderDeck( InvaderDeck deck ) {
+		for(int i = 0; i < deck.UnrevealedCards.Count; ++i) {
+			if(deck.UnrevealedCards[i] is not InvaderCard simpleInvaderCard)
+				throw new InvalidOperationException( "We can only apply Sweeden Adversary modification to original (simple) Invader Cards" );
+			deck.UnrevealedCards[i] = new SweedenInvaderCard( simpleInvaderCard );
+		}
+	}
 
 	public void Adjust( GameState gameState ) {
 
@@ -102,3 +108,31 @@ public class Sweeden : IAdversary {
 
 	}
 }
+
+class SweedenInvaderCard : InvaderCard {
+	public SweedenInvaderCard( InvaderCard orig ):base(orig.Filter,orig.InvaderStage) { } // !!! create protected InvaderCard constructor to simplify this.
+
+	public override async Task Explore( GameState gs ) {
+		TokenCountDictionary[] tokenSpacesToExplore = await PreExplore( gs );
+		await DoExplore( gs, tokenSpacesToExplore );
+		if( HasEscalation )
+			Escalation( tokenSpacesToExplore );
+	}
+	static void Escalation( TokenCountDictionary[] exploredTokenSpaces ) {
+		// Swayed by the Invaders:
+		// After Invaders Explore into each land this Phase,
+		// if that land has at least as many Invaders as Dahan,
+		// replace 1 Dahan with 1 Towni.
+		foreach(var tokens in exploredTokenSpaces) {
+			var dahan = tokens.Dahan;
+			if(0 < dahan.Count && dahan.Count <= tokens.InvaderTotal()) {
+				var dahanToConvert = dahan.Keys.OrderBy(x=>x.RemainingHealth).First();
+				dahan.Adjust(dahanToConvert,-1);
+				var townToAdd = tokens.GetDefault(Invader.Town).AddDamage(dahanToConvert.Damage);
+				tokens.Adjust(townToAdd,1);
+			}
+		}
+		// !!! ??? should this trigger an Add/Remove event so Shifting Memories gets new element?
+	}
+}
+

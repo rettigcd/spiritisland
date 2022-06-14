@@ -61,7 +61,7 @@ class BrandenburgPrussiaInvaderCard : InvaderCard {
 		if( HasEscalation )
 			await Escalation( gs );
 	}
-	Task Escalation( GameState gs ) {
+	static Task Escalation( GameState gs ) {
 		// Land Rush: On each board with Townicon / City, add 1 Town to a land without Town
 
 		var counts = gs.Island.AllSpaces.ToDictionary( s=>s, s=> gs.Tokens[s].SumAny(Invader.Town,Invader.City));

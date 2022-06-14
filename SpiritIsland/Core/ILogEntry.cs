@@ -40,8 +40,12 @@ public class InvaderActionEntry : ILogEntry {
 	public LogLevel Level { get; }
 	public string Msg( LogLevel _ ) => msg;
 }
+public class SpaceExplored : InvaderActionEntry {
+	public SpaceExplored( Space space ):base( space + ":gains explorer" ) { Space = space; }
+	public Space Space { get; }
+}
 
-public class LogRound : ILogEntry {
+	public class LogRound : ILogEntry {
 	public int round;
 	public LogRound( int round ) { 
 		this.round = round;

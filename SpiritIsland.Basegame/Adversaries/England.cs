@@ -44,6 +44,7 @@ public class England : IAdversary {
 
 	public void AdjustInvaderDeck( InvaderDeck deck ) {
 		// !!! This code is duplicated in all Adversaries, think of a way to simplify
+		// ! Maybe an extention method on the Deck that replaces the cards using a function delegate
 		for(int i = 0; i < deck.UnrevealedCards.Count; ++i) {
 			if(deck.UnrevealedCards[i] is not InvaderCard simpleInvaderCard)
 				throw new InvalidOperationException( "We can only apply England Adversary modification to original (simple) Invader Cards" );
@@ -56,7 +57,7 @@ public class England : IAdversary {
 	// We can derive from InvaderCard and override the behavior we want to change.
 	// If the input were not an InvaderCard, we would have to wrap the card passed in so as to not drop any functionality.
 	public class EnglandInvaderCard : InvaderCard {
-		bool expandedBuild;
+		readonly bool expandedBuild;
 		public EnglandInvaderCard(InvaderCard card,bool expandedBuild):base(card.Filter,card.InvaderStage) {
 			this.expandedBuild = expandedBuild;
 		}
