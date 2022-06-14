@@ -43,6 +43,7 @@ public class England : IAdversary {
 	}
 
 	public void AdjustInvaderDeck( InvaderDeck deck ) {
+		// !!! This code is duplicated in all Adversaries, think of a way to simplify
 		for(int i = 0; i < deck.UnrevealedCards.Count; ++i) {
 			if(deck.UnrevealedCards[i] is not InvaderCard simpleInvaderCard)
 				throw new InvalidOperationException( "We can only apply England Adversary modification to original (simple) Invader Cards" );
@@ -77,23 +78,15 @@ public class England : IAdversary {
 			// Finds the space on each board with the most town/city.
 			// When multiple town/city have max #, picks the one closests to the coast (for simplicity)
 			Space[] buildSpaces = gs.Island.AllSpaces
-				.Select( s => new { Space = s, Count = gs.Tokens[s].SumAny(Invader.Town,Invader.City)} )
+				.Select( s => new { Space = s, Count = gs.Tokens[s].SumAny( Invader.Town, Invader.City ) } )
 				.Where( x => x.Count > 0 )
 				.GroupBy( x => x.Space.Board )
-				.Select( grp => grp.OrderByDescending( x => x.Count ).ThenBy( x=>x.Space.Text ).First().Space )
+				.Select( grp => grp.OrderByDescending( x => x.Count ).ThenBy( x => x.Space.Text ).First().Space )
 				.ToArray();
 
-			// There are 2 problems with this code
-			// !!! This is mostly a duplicate of Build, and should use the GameState.BuildEngine if it weren't so complicated.
-			// !!! Stop Builds (Paralzying Fright / Infestation of Spiders / etc) should be able to stop these builds as 'Build' is an Invader action.
-			foreach(var space in buildSpaces) {
-				var tokens = gs.Tokens[space];
-				int cityCount = tokens.Sum(Invader.City);
-				int townCount = tokens.Sum( Invader.Town );
-				var newTokenClass = townCount <= cityCount ? Invader.Town : Invader.City;
-				await tokens.AddDefault( newTokenClass, 1, Guid.NewGuid(), AddReason.Build );
-			}
+			await England.SimplifiedBuild( gs, buildSpaces );
 		}
+
 	}
 
 	public class HighImmegrationSlot : BuildSlot {
@@ -126,6 +119,22 @@ public class England : IAdversary {
 			};
 		}
 
+	}
+
+	public static async Task SimplifiedBuild( GameState gs, Space[] buildSpaces ) {
+
+		// This is a HACK.  Simplify the Build Engine and use it instead.
+
+		// There are 2 problems with this code
+		// !!! This is mostly a duplicate of Build, and should use the GameState.BuildEngine if it weren't so complicated.
+		// !!! Stop Builds (Paralzying Fright / Infestation of Spiders / etc) should be able to stop these builds as 'Build' is an Invader action.
+		foreach(var space in buildSpaces) {
+			var tokens = gs.Tokens[space];
+			int cityCount = tokens.Sum( Invader.City );
+			int townCount = tokens.Sum( Invader.Town );
+			var newTokenClass = townCount <= cityCount ? Invader.Town : Invader.City;
+			await tokens.AddDefault( newTokenClass, 1, Guid.NewGuid(), AddReason.Build );
+		}
 	}
 
 }

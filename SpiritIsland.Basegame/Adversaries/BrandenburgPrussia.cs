@@ -44,9 +44,16 @@ public class BrandenburgPrussia : IAdversary {
 			gameState.Tokens[ board[3] ].AdjustDefault( Invader.Town, 1 );
 	}
 
-	public void AdjustInvaderDeck( InvaderDeck _ ) { }
+	public void AdjustInvaderDeck( InvaderDeck deck ) {
+		for(int i = 0; i < deck.UnrevealedCards.Count; ++i) {
+			if(deck.UnrevealedCards[i] is not InvaderCard simpleInvaderCard)
+				throw new InvalidOperationException( "We can only apply Brandenburg Prussia modification to original (simple) Invader Cards" );
+			deck.UnrevealedCards[i] = new BrandenburgPrussiaInvaderCard( simpleInvaderCard );
+		}
+	}
 }
 
+// Adds Escalation
 class BrandenburgPrussiaInvaderCard : InvaderCard {
 	public BrandenburgPrussiaInvaderCard( InvaderCard card ):base(card.Filter,card.InvaderStage ) { }
 	public override async Task Explore( GameState gs ) {
@@ -56,8 +63,20 @@ class BrandenburgPrussiaInvaderCard : InvaderCard {
 	}
 	Task Escalation( GameState gs ) {
 		// Land Rush: On each board with Townicon / City, add 1 Town to a land without Town
-		var townCityCounts = gs.Island.AllSpaces.ToDictionary( s=>s, s=> gs.Tokens[s].SumAny(Invader.Town,Invader.City));
-		var boardsWithTownsOrCities = gs.Island.Boards
-			.Where( b=>b.Spaces.Any(s=>townCityCounts[s]>0) );
+
+		var counts = gs.Island.AllSpaces.ToDictionary( s=>s, s=> gs.Tokens[s].SumAny(Invader.Town,Invader.City));
+
+		var boards = gs.Island.Boards
+			.Where( b=>b.Spaces.Any(s=>counts[s]>0) )
+			.ToHashSet();
+
+		var buildSpaces = counts
+			.Where(pair=>boards.Contains(pair.Key.Board) && pair.Value==0)
+			.Select(pair => pair.Key)
+			.GroupBy(space => space.Board)
+			.Select(grp => grp.OrderBy(space=>space.Text).First()) // (!! simplification) when multiple, select closest to coast.
+			.ToArray();
+
+		return England.SimplifiedBuild( gs, buildSpaces );
 	}
 }
