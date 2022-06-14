@@ -48,18 +48,23 @@ namespace SpiritIsland.WinForms {
 
 			// Adversaries
 			_adversaryListBox.Items.Add("[None]");
+			_adversaryListBox.Items.Add( "Brandenburg-Prussia 0" ); // !!! get from providers
 			_adversaryListBox.Items.Add( "Brandenburg-Prussia 1" ); // !!! get from providers
 			_adversaryListBox.Items.Add( "Brandenburg-Prussia 2" ); // !!! get from providers
 			_adversaryListBox.Items.Add( "Brandenburg-Prussia 3" ); // !!! get from providers
 			_adversaryListBox.Items.Add( "Brandenburg-Prussia 4" ); // !!! get from providers
 			_adversaryListBox.Items.Add( "Brandenburg-Prussia 5" ); // !!! get from providers
 			_adversaryListBox.Items.Add( "Brandenburg-Prussia 6" ); // !!! get from providers
+
+			_adversaryListBox.Items.Add( "England 0" ); // !!! get from providers
 			_adversaryListBox.Items.Add( "England 1" ); // !!! get from providers
 			_adversaryListBox.Items.Add( "England 2" ); // !!! get from providers
 			_adversaryListBox.Items.Add( "England 3" ); // !!! get from providers
 			_adversaryListBox.Items.Add( "England 4" ); // !!! get from providers
 			_adversaryListBox.Items.Add( "England 5" ); // !!! get from providers
 			_adversaryListBox.Items.Add( "England 6" ); // !!! get from providers
+
+			_adversaryListBox.Items.Add( "Sweeden 0" ); // !!! get from providers
 			_adversaryListBox.Items.Add( "Sweeden 1" ); // !!! get from providers
 			_adversaryListBox.Items.Add( "Sweeden 2" ); // !!! get from providers
 			_adversaryListBox.Items.Add( "Sweeden 3" ); // !!! get from providers
