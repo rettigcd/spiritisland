@@ -1,5 +1,8 @@
 ﻿namespace SpiritIsland.Basegame;
 
+// !!! Additional Loss Condition
+// Proud & Mighty Capital: If 7 or more Town/City are ever in a single land, the Invaders win.
+
 public class England : IAdversary {
 
 	public int Level { get; set; }
@@ -40,39 +43,56 @@ public class England : IAdversary {
 	}
 
 	public void AdjustInvaderDeck( InvaderDeck deck ) {
-		if(0 < Level)
-			Level1_AdditionalBuildSpaces( deck );
-	}
-
-	static void Level1_AdditionalBuildSpaces( InvaderDeck deck ) {
 		for(int i = 0; i < deck.UnrevealedCards.Count; ++i) {
 			if(deck.UnrevealedCards[i] is not InvaderCard simpleInvaderCard)
-				throw new InvalidOperationException("We can only apply England Adversary modification to original (simple) Invader Cards");
-			deck.UnrevealedCards[i] = new EnglandInvaderCard( simpleInvaderCard );
+				throw new InvalidOperationException( "We can only apply England Adversary modification to original (simple) Invader Cards" );
+			deck.UnrevealedCards[i] = new EnglandInvaderCard( simpleInvaderCard, Level > 0 );
 		}
 	}
-
 
 	// We are NOT wrapping the source card.
 	// Instead, since we know it is a standard InvaderCard,
 	// We can derive from InvaderCard and override the behavior we want to change.
 	// If the input were not an InvaderCard, we would have to wrap the card passed in so as to not drop any functionality.
 	public class EnglandInvaderCard : InvaderCard {
-		public EnglandInvaderCard(InvaderCard card):base(card.Filter,card.InvaderStage) {}
+		bool expandedBuild;
+		public EnglandInvaderCard(InvaderCard card,bool expandedBuild):base(card.Filter,card.InvaderStage) {
+			this.expandedBuild = expandedBuild;
+		}
 		protected override bool ShouldBuildOnSpace( TokenCountDictionary tokens, GameState gameState ) {
 			int cityTownCounts(Space space) => gameState.Tokens[space].SumAny( Invader.Town, Invader.City );
 			bool adjacentTo2OrMoreCitiesOrTowns(Space space) => 2 <= space.Adjacent.Sum( adj => cityTownCounts( adj ) );
-			return base.ShouldBuildOnSpace( tokens, gameState ) || adjacentTo2OrMoreCitiesOrTowns(tokens.Space);
+			return base.ShouldBuildOnSpace( tokens, gameState ) 
+				|| expandedBuild && adjacentTo2OrMoreCitiesOrTowns(tokens.Space);
 		}
 		public override async Task Explore( GameState gs ) {
 			await base.Explore( gs );
 			if(HasEscalation)
 				await Escalation( gs );
 		}
-		Task Escalation( GameState gs ) {
+		static async Task Escalation( GameState gs ) {
 			// Escalation Stage II
 			// Building Boom: On each board with Towni / City, Build in the land with the most Town / City
-			return Task.CompletedTask;
+
+			// Finds the space on each board with the most town/city.
+			// When multiple town/city have max #, picks the one closests to the coast (for simplicity)
+			Space[] buildSpaces = gs.Island.AllSpaces
+				.Select( s => new { Space = s, Count = gs.Tokens[s].SumAny(Invader.Town,Invader.City)} )
+				.Where( x => x.Count > 0 )
+				.GroupBy( x => x.Space.Board )
+				.Select( grp => grp.OrderByDescending( x => x.Count ).ThenBy( x=>x.Space.Text ).First().Space )
+				.ToArray();
+
+			// There are 2 problems with this code
+			// !!! This is mostly a duplicate of Build, and should use the GameState.BuildEngine if it weren't so complicated.
+			// !!! Stop Builds (Paralzying Fright / Infestation of Spiders / etc) should be able to stop these builds as 'Build' is an Invader action.
+			foreach(var space in buildSpaces) {
+				var tokens = gs.Tokens[space];
+				int cityCount = tokens.Sum(Invader.City);
+				int townCount = tokens.Sum( Invader.Town );
+				var newTokenClass = townCount <= cityCount ? Invader.Town : Invader.City;
+				await tokens.AddDefault( newTokenClass, 1, Guid.NewGuid(), AddReason.Build );
+			}
 		}
 	}
 

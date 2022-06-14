@@ -47,15 +47,17 @@ public class BrandenburgPrussia : IAdversary {
 	public void AdjustInvaderDeck( InvaderDeck _ ) { }
 }
 
-public class ScenarioLevel {
-	public ScenarioLevel(int difficulty,int fear1, int fear2, int fear3, string title, string description) { 
-		Difficulty = difficulty;
-		FearCards = new int[] { fear1, fear2, fear3 };
-		Title = title;
-		Description = description;
+class BrandenburgPrussiaInvaderCard : InvaderCard {
+	public BrandenburgPrussiaInvaderCard( InvaderCard card ):base(card.Filter,card.InvaderStage ) { }
+	public override async Task Explore( GameState gs ) {
+		await base.Explore( gs );
+		if( HasEscalation )
+			await Escalation( gs );
 	}
-	public int Difficulty { get; }
-	public int[] FearCards { get; }
-	public string Title { get; }
-	public string Description { get; }
+	Task Escalation( GameState gs ) {
+		// Land Rush: On each board with Townicon / City, add 1 Town to a land without Town
+		var townCityCounts = gs.Island.AllSpaces.ToDictionary( s=>s, s=> gs.Tokens[s].SumAny(Invader.Town,Invader.City));
+		var boardsWithTownsOrCities = gs.Island.Boards
+			.Where( b=>b.Spaces.Any(s=>townCityCounts[s]>0) );
+	}
 }

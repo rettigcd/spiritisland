@@ -13,8 +13,6 @@ public class InvaderCard : IOption, IInvaderCard {
 
 	public int InvaderStage { get; }
 
-	public Func<GameState, Task> Escalation;
-
 	public bool Matches( Space space ) => Filter.Matches( space );
 
 	#region Constructors
@@ -106,9 +104,6 @@ public class InvaderCard : IOption, IInvaderCard {
 		// Explore
 		foreach(var exploreTokens in tokenSpacesToExplore)
 			await ExploreSingleSpace( exploreTokens, gs, Guid.NewGuid() );
-
-		if(Escalation != null)
-			await Escalation( gs );
 	}
 
 	static async Task ExploreSingleSpace( TokenCountDictionary tokens, GameState gs, Guid actionId ) {
