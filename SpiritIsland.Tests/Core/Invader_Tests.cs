@@ -23,11 +23,6 @@ public class Invader_Tests {
 	readonly Board board;
 	GameState gameState;
 
-	[Fact]
-	public void CantInvadeOceans() {
-		Assert.Throws<ArgumentException>(()=> InvaderCard.Stage1( Terrain.Ocean));
-	}
-
 	[Trait( "Feature", "InvaderCardProgression" )]
 	[Fact]
 	public void StartsWithExplorer(){
@@ -86,10 +81,10 @@ public class Invader_Tests {
 
 	[Trait( "Feature", "InvaderCardProgression" )]
 	[Theory]
-	[InlineDataAttribute("2m","A1,A6")]
-	[InlineDataAttribute("2j","A3,A8")]
-	[InlineDataAttribute("2w","A2,A5")]
-	[InlineDataAttribute("2s","A4,A7")]
+	[InlineDataAttribute("2M","A1,A6")]
+	[InlineDataAttribute("2J","A3,A8")]
+	[InlineDataAttribute("2W","A2,A5")]
+	[InlineDataAttribute("2S","A4,A7")]
 	[InlineDataAttribute("Costal","A1,A2,A3")]
 	public void Level2CardTargets(string cardText,string expectedTargets){
 		var cards = InvaderDeck.Level2Cards.Where(c=>c.Text==cardText);

@@ -46,22 +46,33 @@ public class England : IAdversary {
 
 	static void Level1_AdditionalBuildSpaces( InvaderDeck deck ) {
 		for(int i = 0; i < deck.UnrevealedCards.Count; ++i) {
-			if(deck.UnrevealedCards[i] is InvaderCard normalInvaderCard)
-				deck.UnrevealedCards[i] = new EnglandInvaderCard( normalInvaderCard );
+			if(deck.UnrevealedCards[i] is not InvaderCard simpleInvaderCard)
+				throw new InvalidOperationException("We can only apply England Adversary modification to original (simple) Invader Cards");
+			deck.UnrevealedCards[i] = new EnglandInvaderCard( simpleInvaderCard );
 		}
 	}
 
-	public class EnglandInvaderCard : InvaderCard {
-		readonly InvaderCard card;
-		public EnglandInvaderCard(InvaderCard card):base(card.Text,card.InvaderStage,card.Escalation) {
-			this.card = card;
-		}
-		public override bool Matches( Space space ) => card.Matches( space );
 
+	// We are NOT wrapping the source card.
+	// Instead, since we know it is a standard InvaderCard,
+	// We can derive from InvaderCard and override the behavior we want to change.
+	// If the input were not an InvaderCard, we would have to wrap the card passed in so as to not drop any functionality.
+	public class EnglandInvaderCard : InvaderCard {
+		public EnglandInvaderCard(InvaderCard card):base(card.Filter,card.InvaderStage) {}
 		protected override bool ShouldBuildOnSpace( TokenCountDictionary tokens, GameState gameState ) {
 			int cityTownCounts(Space space) => gameState.Tokens[space].SumAny( Invader.Town, Invader.City );
 			bool adjacentTo2OrMoreCitiesOrTowns(Space space) => 2 <= space.Adjacent.Sum( adj => cityTownCounts( adj ) );
 			return base.ShouldBuildOnSpace( tokens, gameState ) || adjacentTo2OrMoreCitiesOrTowns(tokens.Space);
+		}
+		public override async Task Explore( GameState gs ) {
+			await base.Explore( gs );
+			if(HasEscalation)
+				await Escalation( gs );
+		}
+		Task Escalation( GameState gs ) {
+			// Escalation Stage II
+			// Building Boom: On each board with Towni / City, Build in the land with the most Town / City
+			return Task.CompletedTask;
 		}
 	}
 

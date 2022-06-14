@@ -227,7 +227,6 @@ class SpaceSpecificInvaderCard : IInvaderCard {
 	public SpaceSpecificInvaderCard(Space space) { _space = space; }
 
 	public int InvaderStage => 1;
-	public bool Escalation => false;
 	public string Text => throw new NotImplementedException();
 
 	public bool Skip { get; set; }

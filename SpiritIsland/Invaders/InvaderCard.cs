@@ -1,11 +1,11 @@
 ﻿namespace SpiritIsland;
 
-public abstract class InvaderCard : IOption, IInvaderCard {
+public class InvaderCard : IOption, IInvaderCard {
 
-	public static InvaderCard Stage1( Terrain t1 ) => new SingleTerrainInvaderCard( t1, false );
-	public static InvaderCard Stage2( Terrain t1 ) => new SingleTerrainInvaderCard( t1, true );
-	public static InvaderCard Stage2Costal() => new CostalInvaderCard();
-	public static InvaderCard Stage3(Terrain t1,Terrain t2) => new DoubleTerrainInvaderCard(t1, t2);
+	public static InvaderCard Stage1( Terrain t1 ) => new InvaderCard( new SingleTerrainFilter(t1), 1 );
+	public static InvaderCard Stage2( Terrain t1 ) => new InvaderCard( new SingleTerrainFilter(t1), 2 );
+	public static InvaderCard Stage2Costal() => new InvaderCard( new CostalFilter(), 2 );
+	public static InvaderCard Stage3(Terrain t1,Terrain t2) => new InvaderCard( new DoubleTerrainFilter( t1, t2 ), 3);
 
 	public bool Flipped { get; set; } = false;
 	public bool HoldBack { get; set; } = false;
@@ -13,19 +13,19 @@ public abstract class InvaderCard : IOption, IInvaderCard {
 
 	public int InvaderStage { get; }
 
-	public string Text { get; }
+	public Func<GameState, Task> Escalation;
 
-	public bool Escalation { get; }
-
-	public abstract bool Matches( Space space );
+	public bool Matches( Space space ) => Filter.Matches( space );
 
 	#region Constructors
 
-	protected InvaderCard( string text, int invaderStage, bool escalation ) {
-		Text = text;
+	public InvaderCard( SpaceFilter filter, int invaderStage ) {
+		Filter = filter;
 		InvaderStage = invaderStage;
-		Escalation = escalation;
 	}
+	protected bool HasEscalation => InvaderStage == 2 && Filter.Text != "Costal";
+	public SpaceFilter Filter { get; }
+	public string Text => (HasEscalation ? "2" : "") + Filter.Text;
 
 	#endregion
 
@@ -86,7 +86,7 @@ public abstract class InvaderCard : IOption, IInvaderCard {
 
 	}
 
-	public async Task Explore( GameState gs ) {
+	public virtual async Task Explore( GameState gs ) {
 		Flipped = true;
 
 		gs.Log( new InvaderActionEntry( "Exploring:" + Text ) );
@@ -107,6 +107,8 @@ public abstract class InvaderCard : IOption, IInvaderCard {
 		foreach(var exploreTokens in tokenSpacesToExplore)
 			await ExploreSingleSpace( exploreTokens, gs, Guid.NewGuid() );
 
+		if(Escalation != null)
+			await Escalation( gs );
 	}
 
 	static async Task ExploreSingleSpace( TokenCountDictionary tokens, GameState gs, Guid actionId ) {
@@ -121,33 +123,29 @@ public abstract class InvaderCard : IOption, IInvaderCard {
 
 }
 
-class SingleTerrainInvaderCard : InvaderCard {
-	public SingleTerrainInvaderCard( Terrain terrain, bool escalation )
-		: base(
-			text: escalation ? "2" + terrain.ToString()[..1].ToLower() : terrain.ToString()[..1],
-			invaderStage: escalation ? 2 : 1,
-			escalation
-		) {
-		if(terrain == Terrain.Ocean) throw new ArgumentException( "Can't invade oceans" );
+class SingleTerrainFilter : SpaceFilter {
+	public SingleTerrainFilter( Terrain terrain ) {
 		this.terrain = terrain;
+		this.Text = terrain.ToString()[..1];
 	}
-	public override bool Matches( Space space ) => space.Is( terrain );
-
+	public bool Matches( Space space ) => space.Is( terrain );
+	public string Text { get; }
 	readonly Terrain terrain;
 }
 
-class CostalInvaderCard : InvaderCard {
-	public CostalInvaderCard() : base( "Costal", 2, false ) { }
-	public override bool Matches( Space space ) => space.IsCoastal;
+class DoubleTerrainFilter : SpaceFilter {
+	public DoubleTerrainFilter( Terrain t1, Terrain t2 ) {
+		terrain1 = t1;
+		terrain2 = t2;
+		Text = t1.ToString()[..1] + "+" + t2.ToString()[..1];
+	}
+	public bool Matches( Space space ) => space.IsOneOf( terrain1, terrain2 );
+	public string Text { get; }
+	readonly Terrain terrain1, terrain2;
 }
 
-class DoubleTerrainInvaderCard : InvaderCard {
-	readonly Terrain terrain1;
-	readonly Terrain terrain2;
-	public DoubleTerrainInvaderCard( Terrain t1, Terrain t2 )
-		: base( t1.ToString()[..1] + "+" + t2.ToString()[..1], 3, false ) {
-		this.terrain1 = t1;
-		this.terrain2 = t2;
-	}
-	public override bool Matches( Space space ) => space.IsOneOf( terrain1, terrain2 );
+
+class CostalFilter : SpaceFilter {
+	public bool Matches( Space space ) => space.IsCoastal;
+	public string Text => "Costal";
 }

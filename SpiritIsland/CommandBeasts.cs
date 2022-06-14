@@ -96,7 +96,6 @@ public class TriggerCommandBeasts : IInvaderCard {
 
 	public string Text => inner.Text;
 	public int InvaderStage => inner.InvaderStage;
-	public bool Escalation => inner.Escalation;
 
 	public bool Skip { get => false; set => throw new NotImplementedException(); }
 	public bool HoldBack { get => false; set => throw new NotImplementedException(); }

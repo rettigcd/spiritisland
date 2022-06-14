@@ -281,10 +281,10 @@
     <EmbeddedResource Include="images\invaders\S.jpg" />
     <EmbeddedResource Include="images\invaders\W.jpg" />
     <EmbeddedResource Include="images\invaders\Costal.jpg" />
-    <EmbeddedResource Include="images\invaders\2j.jpg" />
-    <EmbeddedResource Include="images\invaders\2m.jpg" />
-    <EmbeddedResource Include="images\invaders\2s.jpg" />
-    <EmbeddedResource Include="images\invaders\2w.jpg" />
+    <EmbeddedResource Include="images\invaders\2J.jpg" />
+    <EmbeddedResource Include="images\invaders\2M.jpg" />
+    <EmbeddedResource Include="images\invaders\2S.jpg" />
+    <EmbeddedResource Include="images\invaders\2W.jpg" />
     <EmbeddedResource Include="images\invaders\J+M.jpg" />
     <EmbeddedResource Include="images\invaders\J+S.jpg" />
     <EmbeddedResource Include="images\invaders\M+S.jpg" />
