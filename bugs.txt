@@ -25,3 +25,7 @@ Settle Into Hunting-Grounds
 Fear of the Unseen - 1
 	- did not let me pick town, only option was explorer.
 
+
+Retreat : 2 : Each player may Push up to 3 Explorer / Town from an Inland land
+	did not trigger SMOA Element
+

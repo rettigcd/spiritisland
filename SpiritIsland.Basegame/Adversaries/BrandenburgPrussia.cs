@@ -60,19 +60,20 @@ class BrandenburgPrussiaInvaderCard : InvaderCard {
 	static Task Escalation( GameState gs ) {
 		// Land Rush: On each board with Townicon / City, add 1 Town to a land without Town
 
-		var counts = gs.Island.AllSpaces.ToDictionary( s=>s, s=> gs.Tokens[s].SumAny(Invader.Town,Invader.City));
+		var counts = gs.Island.AllSpaces
+			.ToDictionary( s=>s, s=> gs.Tokens[s].SumAny(Invader.Town,Invader.City));
 
 		var boards = gs.Island.Boards
 			.Where( b=>b.Spaces.Any(s=>counts[s]>0) )
 			.ToHashSet();
 
 		var buildSpaces = counts
-			.Where(pair=>boards.Contains(pair.Key.Board) && pair.Value==0)
+			.Where(pair=>boards.Contains(pair.Key.Board) && pair.Value==0 && !pair.Key.IsOcean)
 			.Select(pair => pair.Key)
 			.GroupBy(space => space.Board)
 			.Select(grp => grp.OrderBy(space=>space.Text).First()) // (!! simplification) when multiple, select closest to coast.
 			.ToArray();
 
-		return England.SimplifiedBuild( gs, buildSpaces );
+		return England.EscalationBuild( gs, buildSpaces );
 	}
 }

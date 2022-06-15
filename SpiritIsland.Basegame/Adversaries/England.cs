@@ -79,7 +79,7 @@ public class England : IAdversary {
 				.Select( grp => grp.OrderByDescending( x => x.Count ).ThenBy( x => x.Space.Text ).First().Space )
 				.ToArray();
 
-			await England.SimplifiedBuild( gs, buildSpaces );
+			await England.EscalationBuild( gs, buildSpaces );
 		}
 
 	}
@@ -116,7 +116,7 @@ public class England : IAdversary {
 
 	}
 
-	public static async Task SimplifiedBuild( GameState gs, Space[] buildSpaces ) {
+	public static async Task EscalationBuild( GameState gs, Space[] buildSpaces ) {
 
 		// This is a HACK.  Simplify the Build Engine and use it instead.
 
@@ -128,6 +128,7 @@ public class England : IAdversary {
 			int cityCount = tokens.Sum( Invader.City );
 			int townCount = tokens.Sum( Invader.Town );
 			var newTokenClass = townCount <= cityCount ? Invader.Town : Invader.City;
+			gs.Log( new InvaderActionEntry($"Escalation: Building {newTokenClass.Label} on {space.Text}") );
 			await tokens.AddDefault( newTokenClass, 1, Guid.NewGuid(), AddReason.Build );
 		}
 	}

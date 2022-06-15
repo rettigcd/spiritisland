@@ -1,14 +1,16 @@
 ﻿===== Focus =====
-* Adversaries / Scenarios
-* Last 2 spirits
-Mobile
+* Adversaries
+* Remaining 2 spirits
+* 2 players
+* Mobile
 	- Spirit's 3 controls
 	- Island control with tokens
 	- Invader cards
 	- Power Cards
 	- Fear pool / cards
+
 Later: Events
-Later: 2 player
+Later: Scenarios
 Later: Web Hosted
 
 ! Save Game in Recent Games list so we can replay them.
