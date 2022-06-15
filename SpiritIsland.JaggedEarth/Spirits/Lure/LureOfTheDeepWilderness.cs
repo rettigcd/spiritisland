@@ -73,7 +73,7 @@ public class LureOfTheDeepWilderness : Spirit {
 				: await ctx.Decision(Select.TokenFrom1Space.TokenToRemove(ctx.Space,1,explorerTypes.ToArray(),Present.Done));
 			if( explorerTypeToNotParticipate == null ) break;
 
-			var countToNotParticipate = await ctx.Self.SelectNumber( $"# of {explorerTypeToNotParticipate} to not participate.", ctx.Tokens[explorerTypeToNotParticipate], 0 );
+			var countToNotParticipate = await ctx.Self.SelectNumber( $"{ctx.Space.Text}: # of {explorerTypeToNotParticipate} to not participate in Ravage.", ctx.Tokens[explorerTypeToNotParticipate], 0 );
 
 			if(countToNotParticipate > 0)
 				ctx.GameState.ModifyRavage( ctx.Space, cfg => cfg.NotParticipating[explorerTypeToNotParticipate] += countToNotParticipate );
