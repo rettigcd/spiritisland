@@ -17,15 +17,19 @@ Later: Web Hosted
 
 ----- Spirit Island ----
 
-Command-Beast
+* Adversaries
+	show flag
+	Log setup adjustments
+	Log adversar and level in game-start Log game header
+
+* Command-Beast
 	show graphic (so it doesn't get lost in text)
-	test - doesn't seem to be doing anything.
+
+* Display back of explorer card.
+
+
 
 Some Commands need a title like the Power Card Name, other's need detailed description of what they do.
-
-Remove the bool-hold-back-build-card property by using an end-of-round action to roll it back.
-Display back of explorer card.
-Alias Counts<Tokens>
 
 Idea: Flatten GrowthOption => GrowthAction so user just picks growth actions.
 Fear Card - convert to Commands

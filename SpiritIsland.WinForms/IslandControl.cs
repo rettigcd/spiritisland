@@ -473,7 +473,10 @@ public partial class IslandControl : Control {
 		float maxHeight = 0;
 
 		var orderedInvaders = tokens.InvaderTokens()
-			.OrderByDescending(i=>i.FullHealth)
+			// Major ordering: (Type > Strife)
+			.OrderByDescending( i => i.FullHealth )
+			.ThenBy(x=>x.StrifeCount)
+			// Minor ordering: (remaining health)
 			.ThenBy(i=>i.RemainingHealth); // show damaged first so when we apply damage, the damaged one replaces the old undamaged one.
 
 		foreach(Token token in orderedInvaders) {

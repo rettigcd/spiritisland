@@ -17,15 +17,18 @@ Shifting Memories 2-elements for card play - doesn't always work
 
 ===============================
 
+When 1 strifed and 1 not town, draws Strifed, then unstrifed.
+	when unstrifed is damaged, it switches to first.  (need to keep Strife as the major ording and damage second.)
+
 Settle Into Hunting-Grounds
 	- implement "May" count as badlands and beast.
 	- presence cannot move.
 
-
 Fear of the Unseen - 1
 	- did not let me pick town, only option was explorer.
 
-
 Retreat : 2 : Each player may Push up to 3 Explorer / Town from an Inland land
 	did not trigger SMOA Element
+
+Bargains of Power and Protection - defense does not roll back when Rewinding
 

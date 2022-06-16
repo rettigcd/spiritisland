@@ -15,10 +15,10 @@ public class BargainsOfPowerAndProtection {
 
 		// From now on: Each dahan withing range of 1 of your presence provides
 		// Defend 1 in its land,
-		ctx.GameState.Tokens.RegisterDynamic( new Range1DahanDefend1(ctx.Self).DefendOn, TokenType.Defend, true );
+		ctx.GameState.Tokens.RegisterDynamic( new Range1DahanDefend1(ctx.Self).DefendOn, TokenType.Defend, true ); // !!! needs to be Rewindable.
 
 		// and you gain 1 less Energy each turn.
-		ctx.Self.EnergyCollected += spirit => --spirit.Energy;
+		ctx.Self.EnergyCollected += spirit => --spirit.Energy; // !!! this needs to be Rewindable
 
 		// (this effect stacks if used multiple times.)
 	}
