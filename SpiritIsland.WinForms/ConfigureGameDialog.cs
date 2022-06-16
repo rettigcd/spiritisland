@@ -3,7 +3,6 @@ using SpiritIsland.BranchAndClaw;
 using SpiritIsland.JaggedEarth;
 using SpiritIsland.PromoPack1;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -11,12 +10,26 @@ namespace SpiritIsland.WinForms {
 
 	public partial class ConfigureGameDialog : Form {
 
+		#region static
+
 		static public readonly IGameComponentProvider[] gameComponentProviders = new IGameComponentProvider[]{
 			new Basegame.GameComponentProvider(),
 			new BranchAndClaw.GameComponentProvider(),
 			new PromoPack1.GameComponentProvider(),
 			new JaggedEarth.GameComponentProvider()
 		};
+
+		static readonly SpiritBox[] spiritTypes;
+
+		static ConfigureGameDialog() {
+			spiritTypes = gameComponentProviders
+				.SelectMany( p => p.Spirits )
+				.Select( type => new SpiritBox { SpiritType = type } )
+				.OrderBy( t => t.Name )
+				.ToArray();
+		}
+
+		#endregion
 
 		public ConfigureGameDialog() {
 			InitializeComponent();
@@ -80,20 +93,6 @@ namespace SpiritIsland.WinForms {
 			public string Name => (string)SpiritType.GetField("Name").GetValue(null);
 		}
 
-		static readonly SpiritBox[] spiritTypes;
-
-		static ConfigureGameDialog() {
-			spiritTypes = GetAllSpiritTypes()
-				.Select( type => new SpiritBox { SpiritType = type } )
-				.OrderBy( t => t.Name )
-				.ToArray();
-
-		}
-
-		static IEnumerable<Type> GetAllSpiritTypes() {
-			return gameComponentProviders.SelectMany(p=>p.Spirits);
-		}
-
 		void Init_SpiritList() {
 
 			spiritListBox.Items.Clear();
@@ -106,11 +105,11 @@ namespace SpiritIsland.WinForms {
 
 		}
 
-		private void CheckOkStatus( object sender, EventArgs e ) {
+		void CheckOkStatus( object sender, EventArgs e ) {
 			okButton.Enabled = true;
 		}
 
-		private void OkButton_Click( object sender, EventArgs e ) {
+		void OkButton_Click( object sender, EventArgs e ) {
 			var gameSettings = new GameConfiguration {
 				SpiritType = SelectedSpiritType(),
 				Board = SelectedBoard(),

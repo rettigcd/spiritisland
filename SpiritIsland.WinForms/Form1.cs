@@ -143,17 +143,17 @@ namespace SpiritIsland.WinForms {
 			logForm.Clear();
 
 			var gc = gameConfiguration;
-			logForm.AppendLine($"=== Game: {gc.SpiritType.Name} : {gc.Board} : {gc.ShuffleNumber} ===");
+			logForm.AppendLine($"=== Game: {gc.SpiritType.Name} : {gc.Board} : {gc.ShuffleNumber} : {gc.AdversaryString} ===" );
 
-			GameState gameState = gameConfiguration.BuildGame( ConfigureGameDialog.gameComponentProviders );
+			GameState gameState = gc.BuildGame( ConfigureGameDialog.gameComponentProviders );
 			game = new SinglePlayerGame( gameState, false ) { LogExceptions = true };
 			game.Spirit.Action.NewWaitingDecision += Action_NewWaitingDecision;
 			gameState.NewLogEntry += GameState_NewLogEntry; // !!! this should probably come through the user portal/gateway, not directly off of the gamestate.
 
-			this.islandControl.Init( game.GameState, this, gameConfiguration.Color );
+			this.islandControl.Init( game.GameState, this, gc.Color );
 			this.cardControl.Init( game.Spirit, this );
 			this.statusControl1.Init( game.GameState, this );
-			this.Text = "Spirit Island - Single Player Game #"+gameConfiguration.ShuffleNumber;
+			this.Text = $"Spirit Island - Single Player Game #{gc.ShuffleNumber} - {gc.AdversaryString}";
 
 			// start the game
 			this.game.Start();

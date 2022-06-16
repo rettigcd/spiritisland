@@ -8,6 +8,8 @@ public class GameConfiguration {
 	public string Color;
 	public Type Adversary;
 	public int AdversaryLevel;
+	public string AdversaryString => Adversary == null ? "[none]"
+		: $"{Adversary.Name} {AdversaryLevel}";
 
 	public GameState BuildGame( IGameComponentProvider[] providers ) {
 

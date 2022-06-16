@@ -20,7 +20,6 @@ Later: Web Hosted
 * Adversaries
 	show flag
 	Log setup adjustments
-	Log adversar and level in game-start Log game header
 
 * Command-Beast
 	show graphic (so it doesn't get lost in text)
