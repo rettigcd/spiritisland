@@ -13,4 +13,15 @@ public class BoardCtx : SelfCtx {
 	public Task SelectActionOption( string prompt, params IExecuteOn<BoardCtx>[] options )=> SelectAction_Inner( prompt, options, Present.AutoSelectSingle, this );
 	public Task SelectAction_Optional( string prompt, params IExecuteOn<BoardCtx>[] options )=> SelectAction_Inner( prompt, options, Present.Done, this );
 
+	public SpaceToken[] FindTokens( params TokenClass[] tokenClasses ) {
+		return Board.Spaces
+			.SelectMany(
+				s => GameState.Tokens[s]
+					.OfAnyType( tokenClasses )
+					.Select( t => new SpaceToken( s, t ) )
+			)
+			.ToArray();
+	}
+
+
 }

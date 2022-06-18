@@ -12,13 +12,13 @@ public class ImmigrationSlows : IFearOptions {
 			// During the next normal build, skip the lowest numbered land matching the invader card on each board
 
 			// !! If this goes after something else has already removed the lowest # build, this will remove a higher # land.
-			var spacesToSkip = args.SpaceCounts.Keys
+			var spacesToSkip = args.SpacesWithBuildTokens
 				.GroupBy( s => s.Board )
 				.SelectMany( grp => grp.OrderBy( x => x.Label ).Take( 1 ) )
 				.ToArray();
 
 			foreach(var space in spacesToSkip)
-				args.Skip1(space);
+				args.GameState.Skip1Build(space); // !!! replace event handler with token that does the lowest #d land check
 
 		} );
 

@@ -61,9 +61,9 @@ internal static class TargetSpaceCtx_ExtensionsForTesting {
 		// If we are skipping the entire card, we don't get the -Build header-
 		// if we are skipping individual spaces, then we DO get the header.
 		// This might change depending on implementation of 'Skip'
-		if(spaces.Length == 0) return; // entire card was skipped, won't see the header message
 
 		log.Dequeue().ShouldStartWith( "Building" );
+		if(spaces.Length == 0) return; // entire card was skipped, won't see the header message
 		foreach(var s in spaces)
 			log.Dequeue().ShouldStartWith( s );
 	}

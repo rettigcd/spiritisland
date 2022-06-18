@@ -58,13 +58,13 @@ public class GameState {
 				await BlightAdded( args );
 		} );
 		Tokens.TokenRemoved.ForGame.Add( args => {
-			if(args.Token == TokenType.Blight 
-				&& !args.Reason.IsOneOf( 
+			if(args.Token == TokenType.Blight
+				&& !args.Reason.IsOneOf(
 					RemoveReason.MovedFrom, // pushing / gathering blight
-					RemoveReason.Replaced	// just in case...
-				) 
+					RemoveReason.Replaced   // just in case...
+				)
 			)
-				this.blightOnCard += args.Count;
+				BlightRemoved( args );
 		} );
 	}
 
@@ -117,6 +117,9 @@ public class GameState {
 			await Tokens[space].Blight.Bind(actionId).Add(1, AddReason.Ravage);
 	}
 
+	/// <summary>
+	/// Does all the special actions when blight is added.
+	/// </summary>
 	async Task BlightAdded( ITokenAddedArgs args ){
 
 		bool isCascading = args.Reason switch {
@@ -163,6 +166,8 @@ public class GameState {
 
 	}
 
+	void BlightRemoved( ITokenRemovedArgs args ) => this.blightOnCard += args.Count;
+
 	#endregion
 
 	#region Invader Phase / Deck Modifications
@@ -189,20 +194,30 @@ public class GameState {
 		throw new System.NotImplementedException("!!! should only add to cards that match space");
 	}
 
+	public void SkipAllBuilds( Space space ) {
+		// !!! HACK - This isn't correct, skips just 1 build, needs to skip all.
+		Skip1Build(space);
+	}
 
-	public void Skip1Build( Space space, Func<GameState,Space,Task> altAction = null ) {
-		PreBuilding.ForRound.Add( async (args) => {
-			args.Skip1(space);
-			if(altAction != null)
-				await altAction( this, space );
+	public void Skip1Build( Space space, IBuildStopper stopperToken = null ) {
+		// Create a new instance each time so we can remove token at the end of the turn.
+		stopperToken ??= new BuildStopper( "StopBuild", 'b', Img.None, Invader.Town, Invader.City );
+
+		Tokens[space].Adjust( stopperToken, 1 );
+		TimePasses_ThisRound.Push( gs => {
+			var tokens = gs.Tokens[space];
+			if(tokens[stopperToken] > 0)
+				tokens.Adjust( stopperToken, -1 );
+			return Task.CompletedTask;
 		} );
 	}
 
-	public void Add1Build( params Space[] target ) {
+	public void PourTimeSideways_Add1Build( params Space[] target ) {
 		// !!! This should only add to spaces that match invader card
+		// !!! instead, call the invader Build card again.
 		PreBuilding.ForRound.Add( ( BuildingEventArgs args ) => {
 			foreach(var space in target)
-				args.Add( space );
+				Tokens[space].Adjust(TokenType.DoBuild,1);
 		} );
 	}
 
@@ -248,7 +263,6 @@ public class GameState {
 //	public Func<GameState,Space,AddBlightEffect>    AddBlightSideEffect = Default_AddBlightSideEffect; /// <summary> Hook so Stone's presence can stop the cascade / Destroy effects of blight. </summary>
 
 	public DualAsyncEvent<AddBlightEffect> ModifyBlightAddedEffect = new DualAsyncEvent<AddBlightEffect>();
-
 
 	public Func<int, Space,Task> TakeFromBlightSouce {
 		get { return _takeFromBlightSouce ?? Default_TakeBlightFromSource; }

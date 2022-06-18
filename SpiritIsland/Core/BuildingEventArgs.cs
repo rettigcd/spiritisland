@@ -2,26 +2,14 @@
 
 public class BuildingEventArgs {
 
-	public BuildingEventArgs(GameState gs, Dictionary<Space,BuildType> buildTypes ) {
+	public BuildingEventArgs(GameState gs,Space[] spacesWithBuildTokens) {
 		GameState = gs;
-		BuildTypes = buildTypes;
+		SpacesWithBuildTokens = spacesWithBuildTokens;
 	}
 
 	public GameState GameState { get; }
 
-	public CountDictionary<Space> SpaceCounts;
-	public Dictionary<Space,BuildType> BuildTypes { get; }
-	public enum BuildType { TownsAndCities, TownsOnly, CitiesOnly }
-
-	public void Skip1(Space space ) { SpaceCounts[ space ]--; }
-	public void Add(Space space ) { SpaceCounts[ space ]++; }
-
-	public BuildingEventArgs.BuildType GetBuildType( Space space ) {
-		return BuildTypes.ContainsKey( space )
-			? BuildTypes[ space ]
-			: BuildingEventArgs.BuildType.TownsAndCities;
-	}
-
+	public Space[] SpacesWithBuildTokens { get; }
 
 }
 

@@ -21,10 +21,10 @@ public class AvoidTheDahan : IFearOptions {
 	[FearLevel( 2, "Invaders do not Build in lands where Dahan outnumber Town / City." )]
 	public Task Level2( FearCtx ctx ) {
 		ctx.GameState.PreBuilding.ForRound.Add( ( args ) => {
-			foreach(var space in args.SpaceCounts.Keys.ToArray()) {
+			foreach(var space in args.SpacesWithBuildTokens) {
 				var tokens = args.GameState.Tokens[space];
 				if(tokens.SumAny(Invader.City,Invader.Town) < tokens.Dahan.Count)
-					args.SpaceCounts[space] = 0;
+					args.GameState.SkipAllBuilds( space );
 			}
 		} );
 
@@ -34,9 +34,9 @@ public class AvoidTheDahan : IFearOptions {
 	[FearLevel( 3, "Invaders do not Build in lands with Dahan." )]
 	public Task Level3( FearCtx ctx ) {
 		ctx.GameState.PreBuilding.ForRound.Add( ( args ) => {
-			foreach(var space in args.SpaceCounts.Keys.ToArray()) {
+			foreach(var space in args.SpacesWithBuildTokens) {
 				if(0 < args.GameState.Tokens[space].Dahan.Count)
-					args.SpaceCounts[space] = 0;
+					args.GameState.SkipAllBuilds( space );
 			}
 		} );
 		return Task.CompletedTask;

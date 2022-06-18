@@ -24,7 +24,9 @@ public class InfestationOfVenomousSpiders {
 			string skipPhase = await ctx.Self.SelectText($"Select Invader Phase to skip.({i+1} of {count})", new[] { "Ravage","Build","Explore" },Present.Always);
 			switch(skipPhase) {
 				case "Ravage": ctx.SkipRavage( causeAdditionalDamage ); break;
-				case "Build": ctx.Skip1Build( causeAdditionalDamage ); break;
+				case "Build": 
+					ctx.Skip1Build( new InvaderStopper( causeAdditionalDamage ) );
+					break;
 				case "Explore": ctx.SkipExplore( causeAdditionalDamage ); break;
 			}
 		}
@@ -35,6 +37,29 @@ public class InfestationOfVenomousSpiders {
 		// This will help limit damage to 4 instead of 4 * # of beasts.
 		// !!! If there are multiple 'skips' players should be able to decide which ones to take and in which order.
 
+	}
+
+	class InvaderStopper : IBuildStopper {
+
+		readonly Func<GameState, Space, Task> alternativeAction;
+
+		public InvaderStopper( Func<GameState, Space, Task> alternativeAction ) {
+			this.alternativeAction = alternativeAction;
+		}
+
+		static readonly HealthTokenClass _class = new HealthTokenClass( "SpiderInfestationStopper", 0, TokenCategory.None, 0 );// !!! don't use HealthToken for this
+		public TokenClass Class => _class;
+
+		public char Initial => 'v';
+
+		public string Text => "SpiderInfestationStopper";
+
+		public bool Stops( TokenClass tokenClass ) => true;
+
+		public async Task StopBuild( GameState gameState, Space space ) {
+			if(alternativeAction != null)
+				await alternativeAction( gameState, space );
+		}
 	}
 
 }

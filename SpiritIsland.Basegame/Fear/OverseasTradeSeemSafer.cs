@@ -16,7 +16,7 @@ public class OverseasTradeSeemSafer : IFearOptions {
 	public Task Level2( FearCtx ctx ) {
 		var gs = ctx.GameState;
 		DefendCostal( gs, 6 );
-		SkipCostalBuild( gs );
+		SkipCostalBuild( gs, new BuildStopper("OverseasTradeStopsCoastalCity", 'o', Img.None, Invader.City ));
 		return Task.CompletedTask;
 	}
 
@@ -24,7 +24,7 @@ public class OverseasTradeSeemSafer : IFearOptions {
 	public Task Level3( FearCtx ctx ) {
 		var gs = ctx.GameState;
 		DefendCostal( gs, 9 );
-		SkipCostalBuild( gs );
+		SkipCostalBuild( gs, new BuildStopper( "OverseasTradeStopsCoastalBuilds", 'o', Img.None, Invader.City, Invader.Town ));
 		return Task.CompletedTask;
 	}
 
@@ -33,13 +33,10 @@ public class OverseasTradeSeemSafer : IFearOptions {
 			gs.Tokens[space].Defend.Add( defense );
 	}
 
-	static void SkipCostalBuild( GameState gs ) {
+	static void SkipCostalBuild( GameState gs, IBuildStopper stopper ) {
 		var spaces = gs.Island.AllSpaces.Where( s => s.IsCoastal ).ToArray();
-		gs.PreBuilding.ForRound.Add( args => {
-			foreach(var space in spaces)
-				args.BuildTypes[space] = BuildingEventArgs.BuildType.TownsOnly; // !! This is not Additive, if something had Skip Towns, it might switch this to cities only
-			return Task.CompletedTask;
-		} );
+		foreach(var space in spaces)
+			gs.Skip1Build(space,stopper); // !!! This should stop multiple builds, not just 1.. (Pour time sideways, multiple build cards, etc.)
 	}
 
 }

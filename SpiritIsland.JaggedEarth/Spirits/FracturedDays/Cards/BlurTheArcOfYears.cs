@@ -32,11 +32,7 @@ class BlurTheArcOfYears {
 		if(hasInvaders) {
 
 			await ctx.GameState.GetBuildEngine()
-				.Exec( 
-					new BuildingEventArgs( ctx.GameState, new Dictionary<Space, BuildingEventArgs.BuildType>() ),
-					ctx.Tokens, 
-					ctx.GameState
-				);
+				.Exec( ctx.Tokens, ctx.GameState );
 
 			await new RavageAction( ctx.GameState, ctx.Invaders ).Exec();
 		}

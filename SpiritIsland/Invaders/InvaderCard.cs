@@ -54,40 +54,54 @@ public class InvaderCard : IOption, IInvaderCard {
 
 	}
 
-	protected virtual bool ShouldBuildOnSpace( TokenCountDictionary tokens, GameState _ ) {
-		return tokens.HasInvaders();
-	}
+	#region Build stuff
 
 	public async Task Build( GameState gameState ) {
 		gameState.Log( new InvaderActionEntry( "Building:" + Text ) );
 
 		// Find spaces that match Card's Terrain
-		var args = new BuildingEventArgs( gameState, new Dictionary<Space, BuildingEventArgs.BuildType>() ) {
-			SpaceCounts = gameState.Island.AllSpaces.Where( Matches )
-				.ToDictionary( s => s, grp => 1 )
-				.ToCountDict(),
-		};
+		var spacesGettingBuildTokens = gameState.Tokens.ForAllSpaces
+			.Where( tokens => Matches(tokens.Space) ) // matches 
+			.Where( tokens => ShouldBuildOnSpace( tokens, gameState ) )
+			.ToArray();
+
+		foreach(var tokens in spacesGettingBuildTokens)
+			tokens.Adjust( TokenType.DoBuild, 1 );
+
+		// Find spaces with Build Tokens
+		var spacesWithBuildTokens = gameState.Tokens.ForAllSpaces
+			.Where( tokens => tokens[TokenType.DoBuild] > 0 )
+			.OrderBy( tokens => tokens.Space.Label )
+			.ToArray();
 
 		// Modify
-		await gameState.PreBuilding.InvokeAsync( args );
+		await gameState.PreBuilding.InvokeAsync( new BuildingEventArgs(
+			gameState,
+			spacesWithBuildTokens.Select( x => x.Space ).ToArray()
+		) );
 
-		// Do build in each space
+		// report spaces that did not get built on.
+		var noBuildsSpaceNames = spacesGettingBuildTokens.Except( spacesWithBuildTokens ).Select( x => x.Space.Text ).ToArray();
+		if(noBuildsSpaceNames.Length > 0)
+			gameState.Log( new InvaderActionEntry( "No build due to no invaders on: " + string.Join( ", ", noBuildsSpaceNames ) ) );
+
+		// Do Build on spaces with build tokens
 		BuildEngine buildEngine = gameState.GetBuildEngine();
-		var buildGroups = args.SpaceCounts.Keys
-			.OrderBy( x => x.Label )
-			.Select( x => gameState.Tokens[x] )
-			.ToArray();
-		foreach(TokenCountDictionary tokens in buildGroups) {
-			int count = args.SpaceCounts[tokens.Space];
-			while(count-- > 0) {
-				string buildResult = ShouldBuildOnSpace(tokens,gameState) 
-					? await buildEngine.Exec( args, tokens, gameState )
-					: "No invaders";
-				gameState.Log( new InvaderActionEntry( tokens.Space.Label + ": gets " + buildResult ) );
-			}
-		}
+		foreach(TokenCountDictionary tokens in spacesWithBuildTokens)
+			await BuildIn1Space( gameState, buildEngine, tokens );
 
 	}
+
+	protected virtual bool ShouldBuildOnSpace( TokenCountDictionary tokens, GameState _ ) {
+		return tokens.HasInvaders();
+	}
+
+	protected virtual async Task BuildIn1Space( GameState gameState, BuildEngine buildEngine, TokenCountDictionary tokens ) {
+		string buildResult = await buildEngine.Exec( tokens, gameState );
+		gameState.Log( new InvaderActionEntry( tokens.Space.Label + ": " + buildResult ) );
+	}
+
+	#endregion Build
 
 	#region Explore methods
 
@@ -119,7 +133,7 @@ public class InvaderCard : IOption, IInvaderCard {
 			await ExploreSingleSpace( exploreTokens, gs, Guid.NewGuid() );
 	}
 
-	static async Task ExploreSingleSpace( TokenCountDictionary tokens, GameState gs, Guid actionId ) {
+	static protected async Task ExploreSingleSpace( TokenCountDictionary tokens, GameState gs, Guid actionId ) {
 		// only gets called when explorer is actually going to explore
 		var wilds = tokens.Wilds;
 		if(wilds.Count == 0) {

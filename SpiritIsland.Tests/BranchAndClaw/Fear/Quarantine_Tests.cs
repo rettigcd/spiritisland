@@ -118,7 +118,7 @@ public class Quarantine_Tests {
 
 		if( activateFearCard) {
 			log.Assert_Ravaged();            // Sand (all hvae disease)
-			log.Assert_Built( "A2", "A3" );  // Coastal (A1 has disease)
+			log.Assert_Built( "A1: build stopped by StopBuild", "A2", "A3" );  // Coastal (A1 has disease)
 			log.Assert_Explored();           // A3 is coastland, A8 has a disease
 		} else {
 			log.Assert_Ravaged ("A4", "A7");         // Sand

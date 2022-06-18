@@ -135,17 +135,6 @@ public class England : IAdversary {
 
 }
 
-static public class InvaderDeckExtensions {
-	public static void ReplaceCards( this InvaderDeck deck, Func<InvaderCard, IInvaderCard> replacer ) {
-		for(int i = 0; i < deck.UnrevealedCards.Count; ++i) {
-			if(deck.UnrevealedCards[i] is not InvaderCard simpleInvaderCard)
-				throw new InvalidOperationException( "We can only apply Adversary modification to original (simple) Invader Cards" );
-			deck.UnrevealedCards[i] = replacer( simpleInvaderCard );
-		}
-	}
-
-}
-
 /*
 
 1	(3)	10 (3/4/3)	Indentured Servants Earn Land: 

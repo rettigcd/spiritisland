@@ -18,7 +18,8 @@ public class UniqueToken : TokenClass, Token {
 	public char Initial { get; }
 
 	public override string ToString() => Initial.ToString();
-	string IOption.Text => Initial.ToString();
+//	string IOption.Text => Initial.ToString();
+	string IOption.Text => Label;
 
 	#endregion
 

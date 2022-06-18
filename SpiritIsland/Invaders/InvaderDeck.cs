@@ -89,6 +89,8 @@ public InvaderDeck( int seed = default, int[] levelSelection = default ) {
 
 	public List<IInvaderCard> Discards {get;} = new List<IInvaderCard>();
 
+	public int InvaderStage => (Explore.Cards.FirstOrDefault() ?? UnrevealedCards.First()).InvaderStage;
+
 	public void DelayLastExploreCard() {
 
 		// Make sure our list of DrawCounts has at least 1 slot.
@@ -140,6 +142,15 @@ public InvaderDeck( int seed = default, int[] levelSelection = default ) {
 		while(count-- > 0) {
 			Explore.Cards.Add( UnrevealedCards[0] );
 			UnrevealedCards.RemoveAt( 0 );
+		}
+	}
+
+	public void ReplaceCards( Func<InvaderCard, IInvaderCard> replacer ) {
+		InvaderDeck deck = this;
+		for(int i = 0; i < deck.UnrevealedCards.Count; ++i) {
+			if(deck.UnrevealedCards[i] is not InvaderCard simpleInvaderCard)
+				throw new InvalidOperationException( "We can only apply Adversary modification to original (simple) Invader Cards" );
+			deck.UnrevealedCards[i] = replacer( simpleInvaderCard );
 		}
 	}
 
