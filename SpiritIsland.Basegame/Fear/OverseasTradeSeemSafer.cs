@@ -16,7 +16,7 @@ public class OverseasTradeSeemSafer : IFearOptions {
 	public Task Level2( FearCtx ctx ) {
 		var gs = ctx.GameState;
 		DefendCostal( gs, 6 );
-		SkipCostalBuild( gs, new BuildStopper("OverseasTradeStopsCoastalCity", 'o', Img.None, Invader.City ));
+		SkipCostalBuild( gs, new BuildStopper( "OverseasTradeSeemSafer(city)", Invader.City ));
 		return Task.CompletedTask;
 	}
 
@@ -24,7 +24,7 @@ public class OverseasTradeSeemSafer : IFearOptions {
 	public Task Level3( FearCtx ctx ) {
 		var gs = ctx.GameState;
 		DefendCostal( gs, 9 );
-		SkipCostalBuild( gs, new BuildStopper( "OverseasTradeStopsCoastalBuilds", 'o', Img.None, Invader.City, Invader.Town ));
+		SkipCostalBuild( gs, new BuildStopper( "OverseasTradeSeemSafer", Invader.City, Invader.Town ));
 		return Task.CompletedTask;
 	}
 

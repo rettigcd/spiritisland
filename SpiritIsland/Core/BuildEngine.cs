@@ -51,7 +51,6 @@ public class BuildEngine {
 		if(buildStoppers.Length > 0) {
 			var stopper = buildStoppers[0];
 			await stopper.StopBuild( gameState, tokens.Space );
-			tokens.Adjust( stopper, -1 );
 			return "build stopped by " + stopper.Text;
 		} 
 		

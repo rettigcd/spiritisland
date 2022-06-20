@@ -11,10 +11,22 @@ public interface IBuildStopper : Token {
 
 public class BuildStopper : UniqueToken, IBuildStopper {
 	readonly TokenClass[] stoppedClasses;
-	public BuildStopper( string label, char initial, Img img, params TokenClass[] stoppedTokenClasses ) : base( label, initial, img ) {
+	public BuildStopper( string label, params TokenClass[] stoppedTokenClasses ) : base( label ) {
 		this.stoppedClasses = stoppedTokenClasses;
 	}
 	public bool Stops( TokenClass tokenClass ) => stoppedClasses.Contains( tokenClass );
-	public Task StopBuild( GameState _, Space space ) => Task.CompletedTask;
+	public virtual Task StopBuild( GameState gs, Space space ) {
+		if(Duration == EDuration.OneStopThisTurn )
+			gs.Tokens[space].Adjust( this, -1 ); // remove this token
+		return Task.CompletedTask;
+	}
+
+	public EDuration Duration { get; set; } = EDuration.OneStopThisTurn;
+
+	public enum EDuration { 
+		OneStopThisTurn, // first, default
+		AllStopsThisTurn
+	};
+
 }
 

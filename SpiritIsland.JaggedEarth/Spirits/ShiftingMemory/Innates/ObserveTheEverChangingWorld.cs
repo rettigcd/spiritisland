@@ -78,7 +78,6 @@ public class ObserveTheEverChangingWorld {
 		readonly int _index;
 		public ElementToken() { _index = _total++; }
 		public TokenClass Class => TokenType.Element;
-		public char Initial => 'Y';
 		public string Text => "Element";
 		public override string ToString() => $"AnyElement({_index})";
 	}

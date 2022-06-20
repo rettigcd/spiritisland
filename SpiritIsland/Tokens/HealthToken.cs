@@ -9,7 +9,7 @@ public class HealthToken : Token, IEquatable<HealthToken> {
 		Damage = damage;
 		StrifeCount = strifeCount;
 
-		_summaryString = Initial + "@" + RemainingHealth
+		_summaryString = Class.Initial + "@" + RemainingHealth
 			+ (strifeCount == 0 ? "" : new string( '^', StrifeCount ));
 	}
 
@@ -71,8 +71,6 @@ public class HealthToken : Token, IEquatable<HealthToken> {
 
 	public override string ToString() => _summaryString;
 	readonly string _summaryString;
-
-	public char Initial => Class.Initial;
 
 	string IOption.Text => _summaryString;
 

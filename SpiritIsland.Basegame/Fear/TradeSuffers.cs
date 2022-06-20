@@ -11,7 +11,7 @@ public class TradeSuffers : IFearOptions {
 		ctx.GameState.PreBuilding.ForRound.Add( ( args ) => {
 			foreach(var space in args.SpacesWithBuildTokens) {
 				if(0 < args.GameState.Tokens[space].Sum(Invader.City))
-					args.GameState.SkipAllBuilds( space );
+					args.GameState.SkipAllBuilds( space, Name );
 			}
 		} );
 		return Task.CompletedTask;

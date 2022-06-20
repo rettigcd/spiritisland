@@ -17,6 +17,9 @@ Shifting Memories 2-elements for card play - doesn't always work
 
 ===============================
 
+Trade Suffers: 1 : Invaders do not Build in lands with City.
+	- Was going to have 2 builds, stopped 1, but England escalation built there on the 2nd build anyway
+
 When 1 strifed and 1 not town, draws Strifed, then unstrifed.
 	when unstrifed is damaged, it switches to first.  (need to keep Strife as the major ording and damage second.)
 

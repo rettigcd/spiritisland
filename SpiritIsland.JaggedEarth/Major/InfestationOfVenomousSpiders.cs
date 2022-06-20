@@ -50,13 +50,12 @@ public class InfestationOfVenomousSpiders {
 		static readonly HealthTokenClass _class = new HealthTokenClass( "SpiderInfestationStopper", 0, TokenCategory.None, 0 );// !!! don't use HealthToken for this
 		public TokenClass Class => _class;
 
-		public char Initial => 'v';
-
 		public string Text => "SpiderInfestationStopper";
 
 		public bool Stops( TokenClass tokenClass ) => true;
 
 		public async Task StopBuild( GameState gameState, Space space ) {
+			gameState.Tokens[space].Adjust(this, -1);
 			if(alternativeAction != null)
 				await alternativeAction( gameState, space );
 		}

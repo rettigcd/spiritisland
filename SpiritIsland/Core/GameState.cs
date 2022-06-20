@@ -194,14 +194,16 @@ public class GameState {
 		throw new System.NotImplementedException("!!! should only add to cards that match space");
 	}
 
-	public void SkipAllBuilds( Space space ) {
-		// !!! HACK - This isn't correct, skips just 1 build, needs to skip all.
-		Skip1Build(space);
+	public void SkipAllBuilds( Space space, string stopCause ) {
+		Skip1Build(
+			space,
+			new BuildStopper( stopCause, Invader.Town, Invader.City ) { Duration = BuildStopper.EDuration.AllStopsThisTurn }
+		);
 	}
 
 	public void Skip1Build( Space space, IBuildStopper stopperToken = null ) {
 		// Create a new instance each time so we can remove token at the end of the turn.
-		stopperToken ??= new BuildStopper( "StopBuild", 'b', Img.None, Invader.Town, Invader.City );
+		stopperToken ??= new BuildStopper( "StopBuild", Invader.Town, Invader.City );
 
 		Tokens[space].Adjust( stopperToken, 1 );
 		TimePasses_ThisRound.Push( gs => {
