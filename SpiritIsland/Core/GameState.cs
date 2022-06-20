@@ -172,14 +172,14 @@ public class GameState {
 
 	#region Invader Phase / Deck Modifications
 
-	public void SkipAllInvaderActions( params Space[] targets ) {
+	public void SkipAllInvaderActions( Space target, string label ) {
 		// Sometimes this will be called with nothing to skip, Example: Quarentine level 3
 
-		foreach(var target in targets){
+//		foreach(var target in targets){
 			SkipRavage( target );
-			Skip1Build( target );
+			AdjustTempToken( target, BuildStopper.Default( label ) );
 			SkipExplore( target );
-		}
+//		}
 	}
 
 	public void SkipRavage( Space space, Func<GameState,Space,Task> altAction = null ) {
@@ -194,22 +194,15 @@ public class GameState {
 		throw new System.NotImplementedException("!!! should only add to cards that match space");
 	}
 
-	public void SkipAllBuilds( Space space, string stopCause ) {
-		Skip1Build(
-			space,
-			new BuildStopper( stopCause, Invader.Town, Invader.City ) { Duration = BuildStopper.EDuration.AllStopsThisTurn }
-		);
-	}
-
-	public void Skip1Build( Space space, IBuildStopper stopperToken = null ) {
-		// Create a new instance each time so we can remove token at the end of the turn.
-		stopperToken ??= new BuildStopper( "StopBuild", Invader.Town, Invader.City );
-
-		Tokens[space].Adjust( stopperToken, 1 );
+	/// <summary> For not-real tokens like Explore/Build/Ravage Stoppers. </summary>
+	public void AdjustTempToken( Space space, Token token ) {
+		// Add it
+		Tokens[space].Adjust( token, 1 );
+		// Remove it at end of turn
 		TimePasses_ThisRound.Push( gs => {
 			var tokens = gs.Tokens[space];
-			if(tokens[stopperToken] > 0)
-				tokens.Adjust( stopperToken, -1 );
+			if(tokens[token] > 0)
+				tokens.Adjust( token, -1 );
 			return Task.CompletedTask;
 		} );
 	}

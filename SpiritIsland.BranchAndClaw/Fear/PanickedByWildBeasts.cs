@@ -24,7 +24,7 @@ public class PanickedByWildBeasts : IFearOptions {
 		foreach(var land in ctx.GameState.Island.AllSpaces)
 			if(ctx.GameState.Tokens[land].Beasts.Any) {
 				ctx.GameState.SkipExplore( land );
-				ctx.GameState.Skip1Build( land );
+				ctx.GameState.AdjustTempToken( land, BuildStopper.Default( Name ) );
 			}
 	}
 
@@ -38,7 +38,7 @@ public class PanickedByWildBeasts : IFearOptions {
 		// Invaders skip all normal actions in lands with beast.
 		foreach(var land in ctx.GameState.Island.AllSpaces)
 			if(ctx.GameState.Tokens[land].Beasts.Any)
-				ctx.GameState.SkipAllInvaderActions( land );
+				ctx.GameState.SkipAllInvaderActions( land, Name );
 	}
 
 }

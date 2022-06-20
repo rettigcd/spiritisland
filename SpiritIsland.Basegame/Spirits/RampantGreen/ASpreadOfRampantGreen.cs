@@ -7,9 +7,14 @@ public class ASpreadOfRampantGreen : Spirit {
 	public override string Text => Name;
 
 	public override SpecialRule[] SpecialRules => new SpecialRule[] {
-		new SpecialRule("Choke the land with green","Whenever invaders would ravage or build in a land with your sacred site, you may prevent it by destroying one of your presense in that land."),
+		ChokeTheLandWithGreen,
 		SteadyRegeneration
 	};
+
+	static SpecialRule ChokeTheLandWithGreen => new SpecialRule( 
+		"Choke the land with green", 
+		"Whenever invaders would ravage or build in a land with your sacred site, you may prevent it by destroying one of your presense in that land."
+	);
 
 	static SpecialRule SteadyRegeneration => new SpecialRule(
 		"Steady Regeneration",
@@ -75,7 +80,7 @@ public class ASpreadOfRampantGreen : Spirit {
 	}
 
 	async Task ChokeTheLandWithGreen_Ravage( RavagingEventArgs args ) {
-		var stopped = await ChokeTheLandWithGreen( args.GameState, args.Spaces.ToArray(), "ravage" );
+		var stopped = await ChokeTheLandWithGreenAction( args.GameState, args.Spaces.ToArray(), "ravage" );
 		foreach(var space in stopped)
 			args.Skip1( space );
 	}
@@ -84,12 +89,12 @@ public class ASpreadOfRampantGreen : Spirit {
 		// !!! This is out of order.
 		// Needs to come after Fear-stops and Power-Stops
 		Space[] buildSpaces = args.SpacesWithBuildTokens.Where( k => args.GameState.Tokens[k][TokenType.DoBuild] > 0 ).ToArray();
-		Space[] stopped = await ChokeTheLandWithGreen( args.GameState, buildSpaces, "build" ); 
+		Space[] stopped = await ChokeTheLandWithGreenAction( args.GameState, buildSpaces, "build" ); 
 		foreach(var s in stopped)
-			args.GameState.Skip1Build( s );
+			args.GameState.AdjustTempToken( s, BuildStopper.Default( ChokeTheLandWithGreen.Title ) );
 	}
 
-	async Task<Space[]> ChokeTheLandWithGreen( GameState gs, Space[] spaces, string actionText ) {
+	async Task<Space[]> ChokeTheLandWithGreenAction( GameState gs, Space[] spaces, string actionText ) {
 
 		var stoppable = spaces.Intersect( Presence.SacredSites ).ToList();
 		bool costs1 = gs.BlightCard.CardFlipped;

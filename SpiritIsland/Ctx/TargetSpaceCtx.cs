@@ -187,8 +187,11 @@ public class TargetSpaceCtx : SelfCtx {
 		CurrentActionId
 	);
 
-	public void SkipAllInvaderActions() => GameState.SkipAllInvaderActions(Space);
-	public void Skip1Build(IBuildStopper stopperToken = null) => GameState.Skip1Build( Space, stopperToken );
+	public void SkipAllInvaderActions(string label) => GameState.SkipAllInvaderActions( Space, label );
+
+	public void Skip1Build(IBuildStopper stopperToken) => GameState.AdjustTempToken( Space, stopperToken );
+	public void Skip1Build( string label ) => GameState.AdjustTempToken( Space, BuildStopper.Default( label ) );
+
 	public void SkipExplore(Func<GameState,Space,Task> altAction = null) => GameState.SkipExplore( Space, altAction );
 	public void SkipRavage(Func<GameState,Space,Task> altAction = null) => GameState.SkipRavage(Space, altAction );
 

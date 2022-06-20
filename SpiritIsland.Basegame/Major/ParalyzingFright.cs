@@ -12,7 +12,7 @@ public class ParalyzingFright {
 		ctx.AddFear(4);
 
 		// invaders skip all actions in target land this turn
-		ctx.SkipAllInvaderActions();
+		ctx.SkipAllInvaderActions(Name);
 
 		// if you have 2 air 3 earth, +4 fear
 		if(await ctx.YouHave("2 air,3 earth"))

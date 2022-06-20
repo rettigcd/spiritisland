@@ -11,6 +11,13 @@ public interface IBuildStopper : Token {
 
 public class BuildStopper : UniqueToken, IBuildStopper {
 	readonly TokenClass[] stoppedClasses;
+
+	static public BuildStopper Default( string label ) => new BuildStopper( label, Invader.Town, Invader.City );
+	
+	static public BuildStopper StopAll( string label ) => new BuildStopper( label, Invader.Town, Invader.City ) { 
+		Duration = BuildStopper.EDuration.AllStopsThisTurn
+	};
+
 	public BuildStopper( string label, params TokenClass[] stoppedTokenClasses ) : base( label ) {
 		this.stoppedClasses = stoppedTokenClasses;
 	}

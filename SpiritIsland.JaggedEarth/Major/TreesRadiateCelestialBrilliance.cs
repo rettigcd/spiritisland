@@ -2,7 +2,9 @@
 
 public class TreesRadiateCelestialBrilliance {
 
-	[MajorCard("Trees Radiate Celestial Brilliance",3,Element.Sun,Element.Moon,Element.Plant), Fast, FromPresence(1,Target.JungleOrNoBlight )]
+	const string Name = "Trees Radiate Celestial Brilliance";
+
+	[MajorCard( Name,3,Element.Sun,Element.Moon,Element.Plant), Fast, FromPresence(1,Target.JungleOrNoBlight )]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 		// 3 fear.
 		ctx.AddFear(3);
@@ -10,7 +12,7 @@ public class TreesRadiateCelestialBrilliance {
 		ctx.Defend(6);
 
 		// this turn, Invdaders in target land skip the next Build Action.
-		ctx.Skip1Build();
+		ctx.Skip1Build( Name );
 
 		// if you have 3 sun 2 moon 2 plant
 		if(await ctx.YouHave("3 sun,2 moon,2 plant"))

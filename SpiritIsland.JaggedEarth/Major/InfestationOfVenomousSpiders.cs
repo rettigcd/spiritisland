@@ -2,7 +2,9 @@
 
 public class InfestationOfVenomousSpiders {
 
-	[MajorCard("Infestation of Venomous Spiders",4,Element.Air,Element.Earth,Element.Plant,Element.Animal), Fast, FromSacredSite(2,Target.Invaders)]
+	public const string Name = "Infestation of Venomous Spiders";
+
+	[MajorCard(Name,4,Element.Air,Element.Earth,Element.Plant,Element.Animal), Fast, FromSacredSite(2,Target.Invaders)]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 		// add 1 beast
 		await ctx.Beasts.Add(1);
@@ -36,7 +38,6 @@ public class InfestationOfVenomousSpiders {
 		// !!! Issue 3 - Shouldn't have to pick action until it happens.
 		// This will help limit damage to 4 instead of 4 * # of beasts.
 		// !!! If there are multiple 'skips' players should be able to decide which ones to take and in which order.
-
 	}
 
 	class InvaderStopper : IBuildStopper {
@@ -47,7 +48,7 @@ public class InfestationOfVenomousSpiders {
 			this.alternativeAction = alternativeAction;
 		}
 
-		static readonly HealthTokenClass _class = new HealthTokenClass( "SpiderInfestationStopper", 0, TokenCategory.None, 0 );// !!! don't use HealthToken for this
+		static readonly HealthTokenClass _class = new HealthTokenClass( Name, 0, TokenCategory.None, 0 );// !!! don't use HealthToken for this
 		public TokenClass Class => _class;
 
 		public string Text => "SpiderInfestationStopper";
@@ -55,7 +56,7 @@ public class InfestationOfVenomousSpiders {
 		public bool Stops( TokenClass tokenClass ) => true;
 
 		public async Task StopBuild( GameState gameState, Space space ) {
-			gameState.Tokens[space].Adjust(this, -1);
+			gameState.Tokens[space].Adjust( this, -1 );
 			if(alternativeAction != null)
 				await alternativeAction( gameState, space );
 		}

@@ -36,7 +36,7 @@ public class OverseasTradeSeemSafer : IFearOptions {
 	static void SkipCostalBuild( GameState gs, IBuildStopper stopper ) {
 		var spaces = gs.Island.AllSpaces.Where( s => s.IsCoastal ).ToArray();
 		foreach(var space in spaces)
-			gs.Skip1Build(space,stopper); // !!! This should stop multiple builds, not just 1.. (Pour time sideways, multiple build cards, etc.)
+			gs.AdjustTempToken(space,stopper); // !!! This should stop multiple builds, not just 1.. (Pour time sideways, multiple build cards, etc.)
 	}
 
 }

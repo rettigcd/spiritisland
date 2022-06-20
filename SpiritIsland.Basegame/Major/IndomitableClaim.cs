@@ -23,7 +23,7 @@ public class IndomitableClaim {
 				ctx.AddFear(3);
 
 			// Invaders skip all actions in target land this turn.
-			ctx.SkipAllInvaderActions();
+			ctx.SkipAllInvaderActions(Name);
 		}
 	}
 

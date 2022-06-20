@@ -1,8 +1,9 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
 class PourTimeSideways {
+	const string Name = "Pour Time Sideways";
 
-	[SpiritCard( "Pour Time Sideways", 1, Element.Moon, Element.Air, Element.Water ), Fast, Yourself]
+	[SpiritCard( Name, 1, Element.Moon, Element.Air, Element.Water ), Fast, Yourself]
 	static public async Task ActAsync( SelfCtx ctx ) {
 		if(ctx.Self is not FracturedDaysSplitTheSky frac) return;
 		// Cost to Use: 3 Time
@@ -19,7 +20,7 @@ class PourTimeSideways {
 
 		// On the board moved from: During the Invader Phase, Resolve Invader and "Each board / Each land..." Actions one fewer time.
 		foreach(var space in src.Board.Spaces) {
-			ctx.GameState.Skip1Build(space);
+			ctx.GameState.AdjustTempToken(space, BuildStopper.Default( Name ) );
 			ctx.GameState.SkipExplore(space);
 			ctx.GameState.SkipRavage(space);
 		}

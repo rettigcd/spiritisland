@@ -2,10 +2,12 @@
 
 public class SleepAndNeverWaken {
 
-	[MajorCard("Sleep and Never Waken",3,Element.Moon,Element.Air,Element.Earth,Element.Animal), Fast, FromPresenceIn(2,Terrain.Sand)]
+	const string Name = "Sleep and Never Waken";
+
+	[MajorCard(Name,3,Element.Moon,Element.Air,Element.Earth,Element.Animal), Fast, FromPresenceIn(2,Terrain.Sand)]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 		// invaders skip all actions in target land.
-		ctx.GameState.SkipAllInvaderActions( ctx.Space );
+		ctx.SkipAllInvaderActions( Name );
 
 		// Track # of exlorers removed.
 		int removed = 0;

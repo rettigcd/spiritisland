@@ -2,7 +2,9 @@
 
 public class PreyOnTheBuilders {
 
-	[SpiritCard( "Prey on the Builders", 1, Element.Moon, Element.Fire, Element.Animal )]
+	const string Name = "Prey on the Builders";
+
+	[SpiritCard( Name, 1, Element.Moon, Element.Fire, Element.Animal )]
 	[Fast]
 	[FromPresence(0)]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
@@ -10,7 +12,7 @@ public class PreyOnTheBuilders {
 		await ctx.GatherUpTo(1, TokenType.Beast);
 
 		if( ctx.Beasts.Any )
-			ctx.Skip1Build();
+			ctx.Skip1Build( Name );
 
 	}
 

@@ -2,7 +2,9 @@
 
 public class IrresistibleCall {
 
-	[MajorCard("Irresistible Call",6,Element.Sun,Element.Air,Element.Plant), Fast, FromSacredSite(2,Target.Inland)]
+	const string Name = "Irresistible Call";
+
+	[MajorCard(Name,6,Element.Sun,Element.Air,Element.Plant), Fast, FromSacredSite(2,Target.Inland)]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 
 		// Gather 5 town, 5 dahan, 5 beast, and 15 explorer.
@@ -16,7 +18,7 @@ public class IrresistibleCall {
 		// if you have 2 sun, 3 air, 2 plant:
 		if( await ctx.YouHave("2 sun,3 air,2 plant" )) {
 			// invaders skip all actions in target land.
-			ctx.SkipAllInvaderActions();
+			ctx.SkipAllInvaderActions( Name );
 			// Isolate target land.
 			ctx.Isolate();
 		}
