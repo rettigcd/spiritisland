@@ -10,8 +10,8 @@ public class FearOfTheUnseen : IFearOptions {
 	public Task Level1( FearCtx fearCtx ) {
 		// each player
 		return Cmd.EachSpirit(
-			// removes 1 explorer
-			Cmd.RemoveExplorers(1)
+			// removes 1 explorer / town
+			Cmd.RemoveExplorersOrTowns(1)
 				// from a land with sacred sites
 				.From(x=>x.Presence.IsSelfSacredSite,"with sacred sites")
 		).Execute( fearCtx.GameState );
