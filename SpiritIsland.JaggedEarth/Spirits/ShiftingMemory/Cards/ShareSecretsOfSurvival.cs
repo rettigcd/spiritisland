@@ -27,28 +27,33 @@ public class ShareSecretsOfSurvival {
 	public static Action<TargetSpaceCtx> DestroyFewerDahan( int maxPerAction, int maxActionCount ) {
 		return ctx => {
 			var byAction = new CountDictionary<Guid>();
-			ctx.GameState.Tokens.RemovingToken.ForRound.Add( cfg => {
-				int previous = byAction[cfg.ActionId];
-				if(cfg.Token.Class == TokenType.Dahan                                                           // Dahan
-					&& (cfg.Reason == RemoveReason.Destroyed || cfg.Reason == RemoveReason.DestroyedInBattle)   // Destroyed
-					&& (byAction.Count < maxActionCount || byAction.ContainsKey( cfg.ActionId ))                // can effect more action OR already added
+
+			void ReduceDestroyCount( RemovingTokenArgs args ) {
+				if( args.Space == ctx.Space // this space
+					&& args.Token.Class == TokenType.Dahan                                                        // Dahan
+					&& (args.Reason == RemoveReason.Destroyed || args.Reason == RemoveReason.DestroyedInBattle)   // Destroyed
+					&& (byAction.Count < maxActionCount || byAction.ContainsKey( args.ActionId ))                 // can effect more action OR already added
 				) {
 					// If we haven't saved our allotment
+					int previous = byAction[args.ActionId];
 					if(previous < maxPerAction) {  // // remaining adjustments for this action
-						// save some dahan
-						int adjustment = Math.Min( maxPerAction - previous, cfg.Count );
-						cfg.Count -= adjustment;
-						byAction[cfg.ActionId] += adjustment;
+												   // save some dahan
+						int adjustment = Math.Min( maxPerAction - previous, args.Count );
+						args.Count -= adjustment;
+						byAction[args.ActionId] += adjustment;
 						// restore to full health
-						ctx.Tokens.Adjust( cfg.Token, -adjustment );
-						ctx.Tokens.Adjust( ((HealthToken)cfg.Token).Healthy, adjustment );
+						ctx.Tokens.Adjust( args.Token, -adjustment );
+						ctx.Tokens.Adjust( ((HealthToken)args.Token).Healthy, adjustment );
 					} else {
 						// make sure our already-daved dahan stay saved
-						if(cfg.Count > ctx.Dahan.Count - maxPerAction)
-							cfg.Count = ctx.Dahan.Count - maxPerAction;
+						if(args.Count > ctx.Dahan.Count - maxPerAction)
+							args.Count = ctx.Dahan.Count - maxPerAction;
 					}
 				}
-			} );
+			}
+
+			ctx.GameState.Tokens.RemovingToken.ForRound.Add( ReduceDestroyCount );
+
 		};
 	}
 
