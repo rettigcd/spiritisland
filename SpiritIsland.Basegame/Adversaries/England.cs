@@ -118,19 +118,14 @@ public class England : IAdversary {
 
 	public static async Task EscalationBuild( GameState gs, Space[] buildSpaces ) {
 
-		// This is a HACK.  Simplify the Build Engine and use it instead.
-
-		// There are 2 problems with this code
-		// !!! This is mostly a duplicate of Build, and should use the GameState.BuildEngine if it weren't so complicated.
-		// !!! Stop Builds (Paralzying Fright / Infestation of Spiders / etc) should be able to stop these builds as 'Build' is an Invader action.
+		var buildEngine = gs.GetBuildEngine();
 		foreach(var space in buildSpaces) {
 			var tokens = gs.Tokens[space];
-			int cityCount = tokens.Sum( Invader.City );
-			int townCount = tokens.Sum( Invader.Town );
-			var newTokenClass = townCount <= cityCount ? Invader.Town : Invader.City;
-			gs.Log( new InvaderActionEntry($"Escalation: Building {newTokenClass.Label} on {space.Text}") );
-			await tokens.AddDefault( newTokenClass, 1, Guid.NewGuid(), AddReason.Build );
+			tokens.Adjust( TokenType.DoBuild, 1 );
+			string result = await buildEngine.Exec( tokens, gs );
+			gs.Log( new InvaderActionEntry( $"Escalation: {space.Text}: " + result ) );
 		}
+
 	}
 
 }
