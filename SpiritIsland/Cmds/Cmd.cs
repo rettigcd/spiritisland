@@ -33,7 +33,7 @@ public static partial class Cmd {
 	static public SpaceAction RemoveExplorersOrTowns(int count) => RemoveUpToNTokens(count,Invader.Explorer,Invader.Town);
 	static public SpaceAction RemoveTowns(int count) => RemoveUpToNTokens(count,Invader.Explorer,Invader.Town);
 	static public SpaceAction RemoveCities(int count) => RemoveUpToNTokens(count,Invader.Explorer,Invader.City);
-	static public SpaceAction RemoveInvaders(int count) => RemoveUpToNTokens(count,Invader.Explorer,Invader.Explorer,Invader.Town,Invader.City);
+	static public SpaceAction RemoveInvaders(int count) => RemoveUpToNTokens(count,Invader.Explorer,Invader.Town,Invader.City);
 
 	static public SpaceAction RemoveUpToNTokens(int count,params TokenClass[] tokenClasses) {
 		Func<TokenClass,string> selector = count==1 ? t=>t.Label : t=>t.Label+"s";
