@@ -34,7 +34,7 @@ public class Island {
 	// Static-Default Terrain for non-power, non-blight
 	public static readonly TerrainMapper Terrain = new TerrainMapper();
 
-	// Init at beginning of game if we have ocean.
-	public TerrainMapper Terrain_ForPowerAndBlight = new TerrainMapper();
+	public TerrainMapper Terrain_ForPower = new TerrainMapper();
+	public TerrainMapper Terrain_ForBlight = new TerrainMapper();
 
 }

@@ -158,7 +158,7 @@ public class GameState {
 				$"Cascade blight from {args.Space.Label} to",
 				args.Space,
 				Select.AdjacentDirection.Outgoing,
-				args.Space.Adjacent.Where( x => !Island.Terrain_ForPowerAndBlight.IsOneOf( x, Terrain.Ocean ) ),
+				args.Space.Adjacent.Where( x => !Island.Terrain_ForBlight.MatchesTerrain( x, Terrain.Ocean ) ), // !! Can we funnel this through the 
 				Present.Always
 			));
 			await Tokens[ cascadeTo ].Blight.Bind(args.ActionId).Add(1, args.Reason); // Cascading blight shares original blights reason.

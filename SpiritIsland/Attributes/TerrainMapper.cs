@@ -2,9 +2,8 @@
 
 public class TerrainMapper {
 
-	public virtual bool IsOneOf(Space space, params Terrain[] options) => space.IsOneOf(options);
-	public virtual bool IsCoastal(Space space) => space.IsCoastal;
+	public virtual bool MatchesTerrain(Space space, params Terrain[] options) => space.IsOneOf(options);
 
-	public bool IsInPlay( Space space ) => !IsOneOf(space, Terrain.Ocean );
+	public virtual bool IsCoastal(Space space) => space.IsCoastal;
 
 }

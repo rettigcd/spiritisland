@@ -10,7 +10,7 @@ public class SelfCtx {
 		Self = self;
 		GameState = gameState;
 		_terrainMapper = cause == Cause.MyPowers
-			? GameState.Island.Terrain_ForPowerAndBlight
+			? GameState.Island.Terrain_ForPower
 			: Island.Terrain;
 		CurrentActionId = actionId;
 	}
@@ -121,7 +121,7 @@ public class SelfCtx {
 
 	// Defer initializing this because some tests don't initialize nor depend on the GameState
 	protected TerrainMapper TerrainMapper( TokenClass token ) => token == TokenType.Blight 
-		? GameState.Island.Terrain_ForPowerAndBlight
+		? GameState.Island.Terrain_ForBlight
 		: _terrainMapper;
 
 	readonly TerrainMapper _terrainMapper;

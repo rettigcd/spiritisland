@@ -50,7 +50,8 @@ public class Ocean : Spirit {
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// Swap out Terrain evaluator for power
-		gameState.Island.Terrain_ForPowerAndBlight = new OceanTerrainForPower(this);
+		gameState.Island.Terrain_ForPower = new OceanTerrainForPower( gameState.Island.Terrain_ForPower,this );
+		gameState.Island.Terrain_ForBlight = new OceanTerrainForPower( gameState.Island.Terrain_ForBlight, this );
 
 		// Place in Ocean
 		Presence.PlaceOn(board.Ocean, gameState);
