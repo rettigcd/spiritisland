@@ -67,6 +67,9 @@ public class SinglePlayerGame {
 							foreach(int laterRounds in savedGameStates.Keys.Where(k=>k>rewind.TargetRound).ToArray())
 								savedGameStates.Remove(laterRounds);
 						}
+					} catch(Exception ex) when (ex is not GameOverException) {
+						GameState.Log( new LogException( ex ) );
+						GameState.LoadFrom( savedGameStates[ GameState.RoundNumber ] ); // go back to beginning of round and see if we can debug it.
 					}
 				}
 			}
