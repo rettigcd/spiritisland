@@ -13,7 +13,7 @@ public class ShroudOfSilentMist : Spirit {
 		"Once a turn, when you Gain a Power Card without fire, gain 1 Energy"
 	);
 
-	public static Track MovePresence => new Track( "Moveonepresence.png" ){ 
+	public static Track MovePresence => new Track( "Moveonepresence.png" ){ // Same as Downpour
 		Action=new MovePresence(1),
 		Icon = new IconDescriptor { BackgroundImg = Img.MovePresence }
 	};

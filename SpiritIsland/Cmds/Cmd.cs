@@ -95,7 +95,7 @@ public static partial class Cmd {
 			async ctx => {
 
 				IExecuteOn<T>[] applicable = actions.Where( opt => opt != null && opt.IsApplicable(ctx) ).ToArray();
-				string text = await ctx.Self.SelectText( "Select action", applicable.Select( a => a.Description ).ToArray(), Present.Always );
+				string text = await ctx.Self.SelectText( "Select action", applicable.Select( a => a.Description ).ToArray(), Present.AutoSelectSingle );
 				if(text != null && text != TextOption.Done.Text) {
 					var selectedOption = applicable.Single( a => a.Description == text );
 					await selectedOption.Execute( ctx );

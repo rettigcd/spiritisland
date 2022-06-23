@@ -15,8 +15,9 @@ public interface IActionFactory : IOption {
 
 	bool CouldActivateDuring( Phase speed, Spirit spirit );
 
+	/// <summary> Should be alias for IOption.Text </summary>
 	string Name { get; }
-			
+
 }
 
 public interface IFlexibleSpeedActionFactory : IActionFactory {

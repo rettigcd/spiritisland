@@ -5,6 +5,7 @@ public class GameComponentProvider : IGameComponentProvider {
 	public Type[] Spirits => new Type[] {
 		typeof(HeartOfTheWildfire),
 		typeof(SerpentSlumbering),
+		typeof(DownpourDrenchesTheWorld),
 	};
 
 	public PowerCard[] MinorCards => Array.Empty<PowerCard>();

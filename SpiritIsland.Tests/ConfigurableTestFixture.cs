@@ -43,7 +43,8 @@ public class ConfigurableTestFixture {
 
 	public Spirit Spirit {
 		get => _spirit ??= new ConfigurableSpirit( Presence );
-		set { 
+		set {
+			if(_presence != null) throw new InvalidOperationException("Cannot set the spirit when the Presence has already been initialized.");
 			Init( ref _spirit, value, nameof(_spirit) );
 			_presence = _spirit.Presence;
 		}

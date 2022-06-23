@@ -83,7 +83,8 @@ public class RavageAction {
 
 	public int GetDamageInflictedByDefenders() {
 		CountDictionary<HealthToken> participants = GetDefenders();
-		return participants.Sum( pair => Tokens.AttackDamageFrom1( pair.Key ) * pair.Value );
+		int damageFromDefenders = participants.Sum( pair => Tokens.AttackDamageFrom1( pair.Key ) * pair.Value );
+		return Math.Max( 0, damageFromDefenders-cfg.AttackersDefend);
 	}
 
 	public async Task DamageLand( int damageInflictedFromInvaders ) {
