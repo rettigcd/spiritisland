@@ -2,10 +2,10 @@
 
 public class HealthToken : Token, IEquatable<HealthToken> {
 
-
-	public HealthToken( HealthTokenClass tokenClass, int fullHealth, int damage = 0, int strifeCount = 0 ) {
+	public HealthToken( HealthTokenClass tokenClass, int rawFullHealth, int damage = 0, int strifeCount = 0 ) {
 		Class = tokenClass;
-		_fullHealth = fullHealth;
+		_rawFullHealth = rawFullHealth;
+
 		Damage = damage;
 		StrifeCount = strifeCount;
 
@@ -18,8 +18,9 @@ public class HealthToken : Token, IEquatable<HealthToken> {
 
 	static public int HealthPenaltyPerStrife { get; set; } = 0; // !!! put this in the game state instead of static global
 
-	public int FullHealth => Math.Max(1, _fullHealth - StrifeCount * HealthPenaltyPerStrife );
-	readonly int _fullHealth;
+	/// <summary>The effective FullHealth of a token. Minimum of 1; </summary>
+	public int FullHealth => Math.Max(1, _rawFullHealth - StrifeCount * HealthPenaltyPerStrife );
+	readonly int _rawFullHealth; // the value adjusted by modifications, may be less than 1.
 
 	public int Damage { get; }
 
@@ -32,21 +33,18 @@ public class HealthToken : Token, IEquatable<HealthToken> {
 	public HealthToken HavingStrife(int strifeCount) {
 		return strifeCount <0 ? throw new System.ArgumentOutOfRangeException(nameof(strifeCount),$"strife Count = {strifeCount}")
 			: strifeCount == StrifeCount ? this
-			: new HealthToken( Class, FullHealth, Damage, strifeCount );
+			: new HealthToken( Class, _rawFullHealth, Damage, strifeCount );
 	}
 
 	public HealthToken AddStrife( int deltaStrife ) => HavingStrife( StrifeCount + deltaStrife );
 
-	public HealthToken AddDamage( int damage ) => new HealthToken( Class, FullHealth, Math.Min( Damage + damage, FullHealth), StrifeCount );
+	public HealthToken AddDamage( int damage ) => new HealthToken( Class, _rawFullHealth, Math.Min( Damage + damage, _rawFullHealth ), StrifeCount ); // ??? Is this Math.Min necessary, could we just let it go negative?
 
-	public HealthToken Healthy => new HealthToken( Class, FullHealth, 0, StrifeCount );
+	public HealthToken Healthy => new HealthToken( Class, FullHealth, 0, StrifeCount ); // no damage
 
-	/// <summary>
-	/// Adjusts Health to a minimum of 1.
-	/// </summary>
 	public HealthToken AddHealth( int delta ) {
-		int newHealth = Math.Max(1, FullHealth + delta );
-		return newHealth == FullHealth ? this
+		int newHealth = Math.Max(1, _rawFullHealth + delta );
+		return newHealth == _rawFullHealth ? this
 			: new HealthToken( Class, newHealth, Damage, StrifeCount );
 	}
 
