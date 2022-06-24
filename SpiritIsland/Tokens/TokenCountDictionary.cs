@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland;
+﻿using System.Linq;
+
+namespace SpiritIsland;
 
 /// <summary>
 /// Wraps: Space, Token-Counts on that space, API to publish token-changed events.
@@ -39,6 +41,38 @@ public class TokenCountDictionary {
 	}
 
 	public IEnumerable<Token> Keys => counts.Keys; // !! This won't list virtual (defend) tokens
+
+	#region Generic - Single
+
+	public Token[] OfType( TokenClass tokenClass )
+		=> Keys.Where( x => x.Class == tokenClass ).ToArray();
+
+	public bool Has( TokenClass inv )
+		=> OfType( inv ).Any();
+
+	public int Sum( TokenClass tokenClass )
+		=> OfType( tokenClass ).Sum( k => counts[k] );
+
+	#endregion
+
+	#region Generic - Multiple (Any)
+
+	public Token[] OfAnyType( params TokenClass[] healthyTypes )
+		=> Keys.Where( specific => healthyTypes.Contains( specific.Class ) ).ToArray();
+
+	public HealthToken[] OfAnyType( params HealthTokenClass[] healthyTypes )
+		=> Keys.Where( specific => healthyTypes.Contains( specific.Class ) ).Cast<HealthToken>().ToArray();
+
+	public bool HasAny( params TokenClass[] healthyInvaders )
+		=> OfAnyType( healthyInvaders ).Any();
+
+	public int SumAny( params TokenClass[] healthyInvaders )
+		=> OfAnyType( healthyInvaders ).Sum( k => counts[k] );
+
+
+	#endregion
+
+
 
 	/// <summary> Ordered Alphabetically. </summary>
 	public string Summary => counts.TokenSummary();
@@ -90,6 +124,35 @@ public class TokenCountDictionary {
 	public void Init( Token specific, int value ) {
 		counts[specific] = value;
 	}
+
+	public async Task AdjustHealthOfAll( int delta, Guid actionId, params HealthTokenClass[] tokenClasses ) {
+		if(delta == 0) return;
+		foreach(var tokenClass in tokenClasses) {
+			var tokens = OfType( tokenClass ).Cast<HealthToken>();
+			var orderedTokens = delta < 0
+				? tokens.OrderBy( x => x.FullHealth ).ToArray()
+				: tokens.OrderByDescending( x => x.FullHealth ).ToArray();
+			foreach(var token in orderedTokens)
+				await AdjustHealthOf( token, delta, this[token], actionId );
+		}
+	}
+
+	/// <summary> Replaces (via adjust) HealthToken with new HealthTokens </summary>
+	/// <returns> The adjusted HealthToken (if it exists and is not destroyed)</returns>
+	public async Task AdjustHealthOf( HealthToken token, int delta, int count, Guid actionId ) {
+		count = Math.Min( this[token], count );
+		if(count == 0) return;
+
+		var newToken = token.AddHealth( delta ); // throws exception if health < 1
+
+		if(newToken.IsDestroyed)
+			await this.Destroy(token, count, actionId );
+		else {
+			Adjust( token, -count );
+			Adjust( newToken, count );
+		}
+	}
+
 
 	public Task Add( Token token, int count, Guid actionId, AddReason addReason = AddReason.Added ) {
 		if(count < 0) throw new System.ArgumentOutOfRangeException( nameof( count ) );

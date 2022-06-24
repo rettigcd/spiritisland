@@ -9,7 +9,7 @@ public class PromisesOfProtection {
 
 		await ctx.GatherUpToNDahan( 2 );
 
-		await DahanHelper.BoostDahanHealthForRound( ctx, 2 );
+		await ctx.AdjustTokensHealthForRound( 2, TokenType.Dahan );
 
 	}
 

@@ -50,28 +50,6 @@ public class DahanGroupBinding : DahanGroupBindingNoEvents {
 		this.actionId = actionId;
 	}
 
-	public async Task AdjustHealthOf( HealthToken token, int delta, int count ) {
-		count = Math.Min( _tokens[token], count );
-		if(count == 0) return;
-
-		var newToken = token.AddHealth( delta );
-		if(newToken.IsDestroyed)
-			await this.Destroy( count, token );
-		else {
-			_tokens.Adjust( token, -count );
-			_tokens.Adjust( newToken, count );
-		}
-	}
-
-	public async Task AdjustHealthOfAll( int delta ) {
-		if(delta == 0) return;
-		var orderedKeys = delta < 0
-			? Keys.OrderBy( x => x.FullHealth ).ToArray()
-			: Keys.OrderByDescending( x => x.FullHealth ).ToArray();
-		foreach(var t in orderedKeys)
-			await AdjustHealthOf( t, delta, _tokens[t] );
-	}
-
 	/// <summary> Adds a Dahan from the bag, or out of thin air. </summary>
 	public Task Add( int count, AddReason reason = AddReason.Added ) {
 		return _tokens.AddDefault( TokenType.Dahan, count, actionId, reason );
