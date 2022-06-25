@@ -105,6 +105,7 @@ public enum Img {
 	Deck_Hand,
 	Deck_Played,
 	Deck_Discarded,
+	Discard2,
 	Deck_DaysThatNeverWere_Major,
 	Deck_DaysThatNeverWere_Minor,
 

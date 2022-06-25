@@ -95,6 +95,7 @@ namespace SpiritIsland.WinForms {
 			Img.Stone_Minor                  => "icons.minor.png",
 			Img.ShiftingMemory_PrepareEl     => "icons.PrepareElement.png",
 			Img.ShiftingMemory_Discard2Prep  => "icons.DiscardElementsForCardPlay.png",
+			Img.Discard2                     => "icons.Discard2Cards.png",
 			Img.Starlight_GrowthOption1      => "icons.so1.png",
 			Img.Starlight_GrowthOption2      => "icons.so2.png",
 			Img.Starlight_GrowthOption3      => "icons.so3.png",

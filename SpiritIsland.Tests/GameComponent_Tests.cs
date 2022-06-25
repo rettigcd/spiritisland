@@ -1,8 +1,4 @@
-﻿using Shouldly;
-using System;
-using System.Linq;
-using System.Reflection;
-using Xunit;
+﻿using System.Reflection;
 
 namespace SpiritIsland.Tests {
 

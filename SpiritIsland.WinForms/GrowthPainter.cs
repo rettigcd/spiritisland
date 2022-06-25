@@ -18,7 +18,6 @@ namespace SpiritIsland.WinForms {
 
 		public void Paint( Graphics graphics, IList<GrowthOption> clickableGrowthOptions, IList<GrowthActionFactory> clickableGrowthActions ) {
 			this.graphics = graphics;
-			this.iconDrawer = new IconDrawer(graphics, new CachedImageDrawer());
 
 			using var optionPen = new Pen( Color.Blue, 6f );
 			using var highlightPen = new Pen( Color.Red, 4f );
@@ -27,6 +26,7 @@ namespace SpiritIsland.WinForms {
 
 				cachedImageLayer = new Bitmap( layout.Bounds.Width, layout.Bounds.Height );
 				using var g = Graphics.FromImage( cachedImageLayer );
+				iconDrawer = new IconDrawer( g, new CachedImageDrawer() );
 				g.TranslateTransform( -layout.Bounds.X, -layout.Bounds.Y );
 				g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 
@@ -111,10 +111,14 @@ namespace SpiritIsland.WinForms {
 				case "GainEnergyEqualToCardPlays": DrawIconInCenter( rect, Img.GainEnergyEqualToCardPlays ); break;
 				// Stones Unyielding Defiance
 				case "GainElements(Earth,Earth)":
-					iconDrawer.DrawTheIcon(new IconDescriptor { 
-							ContentImg = Img.Token_Earth,
-							ContentImg2 = Img.Token_Earth,
-						}, 
+					iconDrawer.DrawTheIcon(
+						new IconDescriptor { ContentImg = Img.Token_Earth, ContentImg2 = Img.Token_Earth, }, 
+						rect
+					);
+					break; // !!! this is drawn as an OR, layer them and make them an AND
+				case "GainElements(Water,Water)":
+					iconDrawer.DrawTheIcon(
+						new IconDescriptor { ContentImg = Img.Token_Water, ContentImg2 = Img.Token_Water, },
 						rect
 					);
 					break; // !!! this is drawn as an OR, layer them and make them an AND
@@ -125,6 +129,7 @@ namespace SpiritIsland.WinForms {
 					DrawIconInCenter( rect.InflateBy(-rect.Width*.2f), Img.Icon_Beast );
 					break;
 				case "ApplyDamage": DrawIconInCenter( rect, Img.Damage_2 ); break;
+				case "DiscardPowerCards": DrawIconInCenter( rect, Img.Discard2 ); break;
 				default:
 					graphics.FillRectangle( Brushes.Goldenrod, Rectangle.Inflate( rect.ToInts(), -5, -5 ) );
 					break;
