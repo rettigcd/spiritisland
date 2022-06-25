@@ -284,7 +284,7 @@ public abstract class Spirit : IOption {
 	/// <summary>
 	/// Removes it from the Unresolved-list
 	/// </summary>
-	public void RemoveFromUnresolvedActions(IActionFactory selectedActionFactory ) {
+	public virtual void RemoveFromUnresolvedActions(IActionFactory selectedActionFactory ) {
 		if(selectedActionFactory is InnatePower ip) { // Could reverse this and instead of listing the used, create a not-used list that we remove them from when used
 			usedInnates.Add( ip );
 			return;

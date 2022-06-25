@@ -14,4 +14,5 @@ public class GainElements : GrowthActionFactory {
 	}
 
 	public override string Name => "GainElements("+ElementsToGain.Select(x=>x.ToString()).Join(",")+")";
+	public override bool AutoRun => true;
 }

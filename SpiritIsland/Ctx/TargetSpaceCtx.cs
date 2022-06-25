@@ -245,7 +245,6 @@ public class TargetSpaceCtx : SelfCtx {
 			throw new Exception( "somehow we did more damage than we have available" );
 	}
 
-
 	DamagePool BonusDamage => _bonusDamageFromSpirit ??= new DamagePool( Self.BonusDamage );
 	DamagePool _bonusDamageFromSpirit;
 
