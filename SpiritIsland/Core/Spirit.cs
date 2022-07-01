@@ -583,3 +583,7 @@ public class SpiritDeck {
 	public Img Icon;
 	public List<PowerCard> PowerCards;
 }
+
+public interface IHaveSecondaryElements {
+	ElementCounts SecondaryElements { get; }
+}

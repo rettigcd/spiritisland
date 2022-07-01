@@ -74,8 +74,8 @@ namespace SpiritIsland.WinForms {
 			DrawActivatedElements( graphics, spirit.Elements, spiritLayout.Elements );
 			int skip = spirit.Elements.Keys.Count; 
 			if(skip>1) skip++; // add a space
-			if(spirit is ShiftingMemoryOfAges smoa)
-				DrawActivatedElements( graphics, smoa.PreparedElements, spiritLayout.Elements, skip );
+			if(spirit is IHaveSecondaryElements hasSecondaryElements)
+				DrawActivatedElements( graphics, hasSecondaryElements.SecondaryElements, spiritLayout.Elements, skip );
 		}
 
 		void DrawActivatedElements( Graphics graphics, ElementCounts elements, ElementLayout elLayout, int skip=0 ) {

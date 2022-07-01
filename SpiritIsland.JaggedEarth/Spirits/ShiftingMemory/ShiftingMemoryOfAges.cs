@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-public class ShiftingMemoryOfAges : Spirit {
+public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 
 	public const string Name = "Shifting Memory Of Ages";
 
@@ -27,6 +27,8 @@ public class ShiftingMemoryOfAges : Spirit {
 		Action = new DiscardElementsForCardPlay(2),
 		Icon = new IconDescriptor { BackgroundImg = Img.ShiftingMemory_Discard2Prep },
 	};
+
+	ElementCounts IHaveSecondaryElements.SecondaryElements => PreparedElements;
 
 	public ShiftingMemoryOfAges() 
 		:base(
