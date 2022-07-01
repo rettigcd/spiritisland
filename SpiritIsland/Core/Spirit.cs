@@ -353,7 +353,7 @@ public abstract class Spirit : IOption {
 
 	public virtual InnatePower[] InnatePowers { get; set; } = Array.Empty<InnatePower>();
 
-	public void Initialize( Board board, GameState gameState ){
+	public void InitSpirit( Board board, GameState gameState ){
 		gameState.TimePasses_WholeGame += On_TimePassed;
 		Action.DecisionMade += (d) => gameState.Log(d);
 		InitializeInternal(board,gameState);

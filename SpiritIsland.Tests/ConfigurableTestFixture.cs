@@ -43,7 +43,10 @@ public class ConfigurableTestFixture {
 
 	public Spirit Spirit {
 		get => _spirit ??= new ConfigurableSpirit( Presence );
-		set => Init( ref _spirit, value, nameof(_spirit) );
+		set { 
+			Init( ref _spirit, value, nameof(_spirit) );
+			_presence = _spirit.Presence;
+		}
 	} 
 	Spirit _spirit;
 

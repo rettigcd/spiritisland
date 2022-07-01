@@ -9,13 +9,13 @@ public interface ICalcSource {
 }
 
 public class DefaultSourceCalc : ICalcSource {
-	public virtual IEnumerable<Space> FindSources( IKnowSpiritLocations presence, TargetSourceCriteria source ) {
-		var sources = source.From switch {
+	public virtual IEnumerable<Space> FindSources( IKnowSpiritLocations presence, TargetSourceCriteria sourceCriteria ) {
+		var sources = sourceCriteria.From switch {
 			From.Presence => presence.Spaces,
 			From.SacredSite => presence.SacredSites,
-			_ => throw new ArgumentException( "Invalid presence source " + source.From ),
+			_ => throw new ArgumentException( "Invalid presence source " + sourceCriteria.From ),
 		};
-		return sources.Where( x => !source.Terrain.HasValue || x.Is( source.Terrain.Value ) );
+		return sources.Where( space => !sourceCriteria.Terrain.HasValue || space.Is( sourceCriteria.Terrain.Value ) );
 	}
 }
 

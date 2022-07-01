@@ -72,7 +72,7 @@ public class GameState {
 		if(Spirits.Length != Island.Boards.Length)
 			throw new InvalidOperationException( "# of spirits and islands must match" );
 		for(int i = 0; i < Spirits.Length; ++i)
-			Spirits[i].Initialize( Island.Boards[i], this );
+			Spirits[i].InitSpirit( Island.Boards[i], this );
 	}
 
 	#endregion
