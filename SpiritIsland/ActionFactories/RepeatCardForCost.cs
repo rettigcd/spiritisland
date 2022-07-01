@@ -16,13 +16,13 @@ public class RepeatCardForCost : IActionFactory {
 	public bool CouldActivateDuring( Phase speed, Spirit _ ) 
 		=> speed == Phase.Fast || speed == Phase.Slow;
 
-	public string Name => "Repeat Card for Cost";
+	public virtual string Name => "Repeat Card for Cost";
 
 	public string Text => Name;
 
 	public async Task ActivateAsync( SelfCtx ctx ) {
 
-		PowerCard[] options = GetCardOptions( ctx );
+		PowerCard[] options = GetCardOptions( ctx.Self, ctx.GameState.Phase );
 		if(options.Length == 0) return;
 
 		PowerCard powerCard = await ctx.Self.SelectPowerCard( "Select card to repeat", options, CardUse.Repeat, Present.Always );
@@ -33,11 +33,11 @@ public class RepeatCardForCost : IActionFactory {
 
 	}
 
-	protected virtual PowerCard[] GetCardOptions( SelfCtx ctx ) {
-		int maxCardCost = ctx.Self.Energy;
-		PowerCard[] options = ctx.Self.UsedActions.OfType<PowerCard>() // can't use Discard pile because those cards are from prior rounds.  // !!! needs tests
+	public virtual PowerCard[] GetCardOptions( Spirit self, Phase phase ) {
+		int maxCardCost = self.Energy;
+		PowerCard[] options = self.UsedActions.OfType<PowerCard>() // can't use Discard pile because those cards are from prior rounds.  // !!! needs tests
 			.Where( card => !exclude.Contains(card.Name) )
-			.Where( card => ctx.Self.IsActiveDuring( ctx.GameState.Phase, card ) )
+			.Where( card => self.IsActiveDuring( phase, card ) )
 			.Where( card => card.Cost <= maxCardCost )
 			.ToArray();
 		return options;
@@ -46,12 +46,11 @@ public class RepeatCardForCost : IActionFactory {
 
 public class RepeatCheapestCardForCost : RepeatCardForCost {
 	public RepeatCheapestCardForCost(params string[] exclude ):base(exclude) {}
-	protected override PowerCard[] GetCardOptions( SelfCtx ctx ) {
-		return base.GetCardOptions(ctx)
+	public override PowerCard[] GetCardOptions( Spirit self, Phase phase ) {
+		return base.GetCardOptions(self,phase)
 			.GroupBy( pc => pc.Cost )
 			.OrderBy( grp => grp.Key )
 			.First() // group with lowest cost
 			.ToArray(); // all cards in group
 	}
-
 }
