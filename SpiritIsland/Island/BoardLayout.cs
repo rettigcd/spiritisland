@@ -12,6 +12,21 @@ public class BoardLayout {
 	public PointF[][] spaces; // the spaces on each board.
 	public PointF[] centers;
 
+	public RectangleF CalcExtents() {
+		float minX = float.MaxValue;
+		float minY = float.MaxValue;
+		float maxX = float.MinValue;
+		float maxY = float.MinValue;
+		foreach(var p in perimeter) {
+			if(p.X < minX) minX = p.X;
+			if(p.Y < minY) minY = p.Y;
+			if(p.X > maxX) maxX = p.X;
+			if(p.Y > maxY) maxY = p.Y;
+		}
+		return new RectangleF( minX, minY, maxX - minX, maxY - minY );
+	}
+
+
 	#region private static
 
 	static BoardLayout() {

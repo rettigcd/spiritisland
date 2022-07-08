@@ -30,13 +30,13 @@ public partial class IslandControl : Control {
 		var board = gameState.Island.Boards.VerboseSingle("Multiple Island boards not supported.");
 		ClearCachedImage();
 		var boardLabel = board[0].Label;
-		boardImageFile = boardLabel[..1] switch {
-			"A" => ".\\images\\board a.png",
-			"B" => ".\\images\\board b.png",
-			"C" => ".\\images\\board c.png",
-			"D" => ".\\images\\board d.png",
-			_ => throw new ArgumentException("no board image found for board "+ boardLabel ),
-		};
+		//boardImageFile = boardLabel[..1] switch {
+		//	"A" => ".\\images\\board a.png",
+		//	"B" => ".\\images\\board b.png",
+		//	"C" => ".\\images\\board c.png",
+		//	"D" => ".\\images\\board d.png",
+		//	_ => throw new ArgumentException("no board image found for board "+ boardLabel ),
+		//};
 
 		var images = ResourceImages.Singleton;
 		presence = images.GetPresenceIcon( presenceColor );
@@ -110,6 +110,21 @@ public partial class IslandControl : Control {
 
 	}
 
+	RectangleF IslandExtents() {
+		float left = float.MaxValue;
+		float top = float.MaxValue;
+		float right = float.MinValue;
+		float bottom = float.MinValue;
+		foreach(var board in gameState.Island.Boards) {
+			var e = board.Layout.CalcExtents();
+			if(e.Left<left) left = e.Left;
+			if(e.Top<top) top = e.Top;
+			if(e.Right>right) right = e.Right;
+			if(e.Bottom>bottom) bottom = e.Bottom;
+		}
+		return new RectangleF(left, top, right - left, bottom - top);
+	}
+
 //	BoardLayout normalizedBoardLayout;
 	PointMapper mapper;
 
@@ -135,12 +150,12 @@ public partial class IslandControl : Control {
 			for(int i = 0; i <= 8; ++i)
 				spaceLookup.Add( board[i].Text, board.Layout.centers[i] );
 
-			using var boardImg = Image.FromFile( boardImageFile );
+			var boardSize = IslandExtents().Size;// boardImg.Size;
 
 			// Assume limit is height
-			boardScreenSize = (boardImg.Width * Height > Width * boardImg.Height)
-				? new Size( Width, boardImg.Height * Width / boardImg.Width )
-				: new Size( boardImg.Width * Height / boardImg.Height, Height );
+			boardScreenSize = (boardSize.Width * Height > Width * boardSize.Height)
+				? new Size( Width, (int)(boardSize.Height * Width / boardSize.Width) )
+				: new Size( (int)(boardSize.Width * Height / boardSize.Height), Height );
 
 			// -- new --
 			mapper = SetupSingleIslandTransform();
@@ -149,8 +164,9 @@ public partial class IslandControl : Control {
 
 			cachedBackground = new Bitmap( boardScreenSize.Width, boardScreenSize.Height );
 
-			var graphics = Graphics.FromImage( cachedBackground );
-			graphics.DrawImage( boardImg, 0, 0, boardScreenSize.Width, boardScreenSize.Height );
+//			var graphics = Graphics.FromImage( cachedBackground );
+//			using var boardImg = Image.FromFile( boardImageFile );
+//			graphics.DrawImage( boardImg, 0, 0, boardScreenSize.Width, boardScreenSize.Height );
 		}
 
 		pe.Graphics.DrawImage( cachedBackground, 0, 0, cachedBackground.Width, cachedBackground.Height );
@@ -875,7 +891,7 @@ public partial class IslandControl : Control {
 
 	Size boardScreenSize;
 	Bitmap cachedBackground;
-	string boardImageFile;
+//	string boardImageFile;
 
 	Image presence;
 	string presenceColor;
