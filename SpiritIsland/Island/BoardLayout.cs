@@ -3,11 +3,16 @@ using System.Drawing;
 
 namespace SpiritIsland;
 
+/// <summary>
+/// The normalized 2D layout of 1 board
+/// </summary>
 public class BoardLayout {
 
 	public PointF[] perimeter; // for connecting boards
 	public PointF[][] spaces; // the spaces on each board.
 	public PointF[] centers;
+
+	#region private static
 
 	static BoardLayout() {
 
@@ -70,7 +75,9 @@ public class BoardLayout {
 	static readonly PointF[] top;
 	static readonly PointF[] rig;
 
-	private static PointF FindCenterOfSpacePoints( PointF[] spacePoints ) {
+	#endregion
+
+	static PointF FindCenterOfSpacePoints( PointF[] spacePoints ) {
 		float maxX = -1000f, maxY = -1000f, minX = 1000f, minY = 1000f;
 		foreach(var p in spacePoints) {
 			if(p.X < minX) minX = p.X;
