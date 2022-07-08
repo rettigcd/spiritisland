@@ -110,45 +110,53 @@ public partial class IslandControl : Control {
 
 	}
 
-	BoardLayout normalizedBoardLayout;
+//	BoardLayout normalizedBoardLayout;
+	PointMapper mapper;
 
-	// -- transfermation --
-	PointF upperLeft;
-	float scale;
-	PointF map( PointF p ) => new PointF( p.X * scale + upperLeft.X, this.Height - upperLeft.Y - scale * p.Y );
+	class PointMapper {
+		readonly Matrix3D m;
+		public PointMapper( Matrix3D m ) {
+			this.m = m;
+		}
+		public PointF Map( PointF p ) {
+			var rowVect = new RowVector( p.X, p.Y );
+			var result = rowVect * m;
+			return new PointF( result.X, result.Y );
+		}
+	}
 
 	void DrawBoard_Static( PaintEventArgs pe ) {
 		using var stopwatch = new StopWatch( "Island-static" );
 
 		if(cachedBackground == null) {
 
-			normalizedBoardLayout = gameState.Island.Boards[0].Layout;
-
 			spaceLookup = new Dictionary<string, PointF>();
+			var board = gameState.Island.Boards[0];
 			for(int i = 0; i <= 8; ++i)
-				spaceLookup.Add( gameState.Island.Boards[0][i].Text, normalizedBoardLayout.centers[i] );
+				spaceLookup.Add( board[i].Text, board.Layout.centers[i] );
 
-			using var board = Image.FromFile( boardImageFile );
+			using var boardImg = Image.FromFile( boardImageFile );
 
 			// Assume limit is height
-			boardScreenSize = (board.Width * Height > Width * board.Height)
-				? new Size( Width, board.Height * Width / board.Width )
-				: new Size( board.Width * Height / board.Height, Height );
+			boardScreenSize = (boardImg.Width * Height > Width * boardImg.Height)
+				? new Size( Width, boardImg.Height * Width / boardImg.Width )
+				: new Size( boardImg.Width * Height / boardImg.Height, Height );
 
 			// -- new --
-			this.upperLeft = new PointF( 24f, 50f );
-			float usableHeight = (this.Height - upperLeft.Y * 2);
-			this.scale = usableHeight * 2 / (float)Math.Sqrt( 3 );
+			mapper = SetupSingleIslandTransform();
+			// mapper = SetupIsland1of2();
+			// mapper = SetupIsland2of2();
 
 			cachedBackground = new Bitmap( boardScreenSize.Width, boardScreenSize.Height );
 
-			var graphics = Graphics.FromImage(cachedBackground);
-			graphics.DrawImage( board, 0, 0, boardScreenSize.Width, boardScreenSize.Height );
+			var graphics = Graphics.FromImage( cachedBackground );
+			graphics.DrawImage( boardImg, 0, 0, boardScreenSize.Width, boardScreenSize.Height );
 		}
 
 		pe.Graphics.DrawImage( cachedBackground, 0, 0, cachedBackground.Width, cachedBackground.Height );
 
 		using var perimeterPen = new Pen( Brushes.Black, 5f );
+		var normalizedBoardLayout = gameState.Island.Boards[0].Layout;
 		for(int i = 0; i < normalizedBoardLayout.spaces.Length; ++i) {
 			var space = gameState.Island.Boards[0][i];
 			Brush brush = space.IsWetland ? Brushes.LightBlue
@@ -156,7 +164,7 @@ public partial class IslandControl : Control {
 				: space.IsMountain ? Brushes.Gray
 				: space.IsJungle ? Brushes.ForestGreen
 				: Brushes.Blue;
-			var points = normalizedBoardLayout.spaces[i].Select( map ).ToArray();
+			var points = normalizedBoardLayout.spaces[i].Select( mapper.Map ).ToArray();
 
 			// Draw blocky
 			//pe.Graphics.FillPolygon( brush, points );
@@ -174,6 +182,35 @@ public partial class IslandControl : Control {
 		// myGraphic.SetClip( clipPath, CombineMode.Replace );
 		// myGraphic.DrawImage( imgF, outRect );
 		// myGraphic.ResetClip();
+	}
+
+	PointMapper SetupSingleIslandTransform() {
+		var upperLeft = new PointF( 24f, 75f );
+		float usableHeight = (this.Height - upperLeft.Y * 2);
+		float islandHeight = (float)(0.5 * Math.Sqrt( 3 )); // each board size is 1. Equalateral triangle height is sqrt(3)/2
+		float scale = usableHeight / islandHeight;
+		return new PointMapper ( RowVector.Scale( scale, -scale ) // flip-y 
+			* RowVector.Translate( upperLeft.X, upperLeft.Y + usableHeight )
+		);
+	}
+
+	PointMapper SetupIsland1of2() { // left side, ocean at bottom
+		return new PointMapper( Move2BoardsToScreen() );
+	}
+
+	PointMapper SetupIsland2of2() { // left side, ocean at bottom
+		var alignToIsland1 = RowVector.RotateDegrees( 180 ) * RowVector.Translate( 1, 0 );
+		return new PointMapper( alignToIsland1 * Move2BoardsToScreen() );
+	}
+
+	Matrix3D Move2BoardsToScreen() {
+		var upperLeft = new PointF( 24f, 75f );
+		float usableHeight = (this.Height - upperLeft.Y * 2)*.8f;
+		float islandHeight = (float)(0.5 * Math.Sqrt( 3 )); // each board size is 1. Equalateral triangle height is sqrt(3)/2
+		float scale = usableHeight / islandHeight;
+		return RowVector.RotateDegrees( 120 )
+			* RowVector.Scale( scale, -scale ) // flip-y 
+			* RowVector.Translate( upperLeft.X + (float)(scale * 1.5), upperLeft.Y + usableHeight );
 	}
 
 	void DrawElements(Graphics graphics ) {
@@ -440,7 +477,7 @@ public partial class IslandControl : Control {
 		if(!spaceLookup.ContainsKey(space.Label)) return; // happens during developement
 
 		PointF normalized = spaceLookup[space.Label];
-		PointF xy = map(normalized); //  new PointF(normalized.X * boardScreenSize.Width, normalized.Y * boardScreenSize.Height);
+		PointF xy = mapper.Map(normalized); //  new PointF(normalized.X * boardScreenSize.Width, normalized.Y * boardScreenSize.Height);
 
 		float iconWidth = boardScreenSize.Width * .045f; 
 		float xStep = iconWidth + 10f;
@@ -549,9 +586,6 @@ public partial class IslandControl : Control {
 			}
 
 		return orig;
-//			}
-
-//			return ResourceImages.Singleton.GetImage( Img.Dahan1 );
 	}
 
 	static Bitmap GetInvaderImage( HealthToken ht ) {
@@ -703,7 +737,7 @@ public partial class IslandControl : Control {
 			: s is MultiSpace ms
 				? spaceLookup[ ms.Parts[0].Label ]
 			: throw new ArgumentException($"Space {s.Label} does not have a screen location");
-		return map(norm); //  new PointF( norm.X * boardScreenSize.Width, norm.Y * boardScreenSize.Height );
+		return mapper.Map(norm); //  new PointF( norm.X * boardScreenSize.Width, norm.Y * boardScreenSize.Height );
 	}
 
 	protected override void OnSizeChanged( EventArgs e ) {
