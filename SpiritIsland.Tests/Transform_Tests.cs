@@ -79,5 +79,11 @@ public static class FVector2Extensions {
 		final.X.ShouldBe( x, tollerence );
 		final.Y.ShouldBe( y, tollerence );
 	}
+	public static void ShouldBe( this System.Drawing.PointF final, float x, float y ) {
+		const double tollerence = .0001;
+		final.X.ShouldBe( x, tollerence );
+		final.Y.ShouldBe( y, tollerence );
+	}
 }
+
 

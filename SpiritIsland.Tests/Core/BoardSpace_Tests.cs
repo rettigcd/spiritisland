@@ -1,4 +1,4 @@
-﻿namespace SpiritIsland.Tests.Core;
+﻿namespace SpiritIsland.Tests;
 
 public class BoardSpace_Tests {
 
@@ -72,13 +72,150 @@ public class BoardSpace_Tests {
 		var tileB = BoardB;
 		var tileD = BoardD;
 
-		tileB.Sides[2].AlignTo( tileD.Sides[0] );
+		tileB.Sides[2].IsAdjacentTo( tileD.Sides[0] );
 
 		Assert_BoardSpacesTouch( tileB[3], tileD[1] );
 		Assert_BoardSpacesTouch( tileB[4], tileD[1] ); 
 		Assert_BoardSpacesTouch( tileB[4], tileD[8] ); 
 		Assert_BoardSpacesTouch( tileB[7], tileD[8] ); 
 	}
+
+	// Layout - when we align boards, the new boards move and have the correct corners.
+	[Fact]
+	public void JoiningSides0To0() {
+
+		var boardA = BoardA;
+		var boardB = BoardB;
+		// Side 0 to 0
+		var bCorners = boardB.Layout.corners;
+		boardB.Sides[0].MoveLayoutTo( boardA.Sides[0] );
+		// Then:
+		bCorners[0].ShouldBe( 1.5f, BoardLayout.boardHeight );
+		bCorners[1].ShouldBe( 0.5f, BoardLayout.boardHeight );
+		bCorners[2].ShouldBe( 1f, 2 * BoardLayout.boardHeight );
+		bCorners[3].ShouldBe( 2f, 2 * BoardLayout.boardHeight );
+	}
+
+	[Fact]
+	public void JoiningSides0To1() {
+
+		var boardA = BoardA;
+		var boardB = BoardB;
+		// Side 0 to 0
+		var bCorners = boardB.Layout.corners;
+		boardB.Sides[1].MoveLayoutTo(boardA.Sides[0]);
+		// Then:
+		bCorners[0].ShouldBe( 1f, 2 * BoardLayout.boardHeight );
+		bCorners[1].ShouldBe( 1.5f, BoardLayout.boardHeight );
+		bCorners[2].ShouldBe( 0.5f, BoardLayout.boardHeight );
+		bCorners[3].ShouldBe( 0, 2 * BoardLayout.boardHeight );
+	}
+
+	[Fact]
+	public void JoiningSides0To2() {
+
+		var boardA = BoardA;
+		var boardB = BoardB;
+		// Side 0 to 0
+		var bCorners = boardB.Layout.corners;
+		boardB.Sides[2].MoveLayoutTo(boardA.Sides[0]);
+		// Then:
+		bCorners[0].ShouldBe( 1f, 2 * BoardLayout.boardHeight );
+		bCorners[1].ShouldBe( 2f, 2 * BoardLayout.boardHeight );
+		bCorners[2].ShouldBe( 1.5f, BoardLayout.boardHeight );
+		bCorners[3].ShouldBe( 0.5f, BoardLayout.boardHeight );
+	}
+
+	[Fact]
+	public void JoiningSides1To0() {
+
+		var boardA = BoardA;
+		var boardB = BoardB;
+		// Side 0 to 0
+		var bCorners = boardB.Layout.corners;
+		boardB.Sides[0].MoveLayoutTo(boardA.Sides[1]);
+		// Then:
+		bCorners[0].ShouldBe( 1, 0 );
+		bCorners[1].ShouldBe( 1.5f, BoardLayout.boardHeight );
+		bCorners[2].ShouldBe( 2, 0 );
+		bCorners[3].ShouldBe( 1.5f, -BoardLayout.boardHeight );
+	}
+
+	[Fact]
+	public void JoiningSides1To1() {
+
+		var boardA = BoardA;
+		var boardB = BoardB;
+		// Side 0 to 0
+		var bCorners = boardB.Layout.corners;
+		boardB.Sides[1].MoveLayoutTo(boardA.Sides[1]);
+		// Then:
+		bCorners[0].ShouldBe( 2, 0 );
+		bCorners[1].ShouldBe( 1, 0 );
+		bCorners[2].ShouldBe( 1.5f, BoardLayout.boardHeight );
+		bCorners[3].ShouldBe( 2.5f, BoardLayout.boardHeight );
+	}
+
+	[Fact]
+	public void JoiningSides1To2() {
+
+		var boardA = BoardA;
+		var boardB = BoardB;
+		// Side 0 to 0
+		var bCorners = boardB.Layout.corners;
+		boardB.Sides[2].MoveLayoutTo(boardA.Sides[1]);
+		// Then:
+		bCorners[0].ShouldBe( 2, 0 );
+		bCorners[1].ShouldBe( 1.5f, -BoardLayout.boardHeight );
+		bCorners[2].ShouldBe( 1, 0 );
+		bCorners[3].ShouldBe( 1.5f, BoardLayout.boardHeight );
+	}
+
+	[Fact]
+	public void JoiningSides2To0() {
+
+		var boardA = BoardA;
+		var boardB = BoardB;
+		// Side 0 to 0
+		var bCorners = boardB.Layout.corners;
+		boardB.Sides[0].MoveLayoutTo(boardA.Sides[2]);
+		// Then:
+		bCorners[0].ShouldBe( 0, 0 );
+		bCorners[1].ShouldBe( 1, 0 );
+		bCorners[2].ShouldBe( 0.5f, -BoardLayout.boardHeight );
+		bCorners[3].ShouldBe( -0.5f, -BoardLayout.boardHeight );
+	}
+
+	[Fact]
+	public void JoiningSides2To1() {
+
+		var boardA = BoardA;
+		var boardB = BoardB;
+		// Side 0 to 0
+		var bCorners = boardB.Layout.corners;
+		boardB.Sides[1].MoveLayoutTo( boardA.Sides[2] );
+		// Then:
+		bCorners[0].ShouldBe( 0.5f, -BoardLayout.boardHeight );
+		bCorners[1].ShouldBe( 0, 0 );
+		bCorners[2].ShouldBe( 1, 0 );
+		bCorners[3].ShouldBe( 1.5f, -BoardLayout.boardHeight );
+	}
+
+	[Fact]
+	public void JoiningSides2To2() {
+
+		var boardA = BoardA;
+		var boardB = BoardB;
+		// Side 0 to 0
+		var bCorners = boardB.Layout.corners;
+		boardB.Sides[2].MoveLayoutTo( boardA.Sides[2] );
+		// Then:
+		bCorners[0].ShouldBe( 0.5f, -BoardLayout.boardHeight );
+		bCorners[1].ShouldBe( -0.5f, -BoardLayout.boardHeight );
+		bCorners[2].ShouldBe( 0, 0 );
+		bCorners[3].ShouldBe( 1, 0 );
+	}
+
 
 	[Fact]
 	public void Island_1Board(){
@@ -186,32 +323,32 @@ public class BoardSpace_Tests {
 	[InlineData("B8","DD")]
 	[InlineData("C1","D")]
 	[InlineData("C2","C")]
-	[InlineData("C3","DD")]
-	[InlineData("C4","")]
-	[InlineData("C5","DDB")]
-	[InlineData("C6","D")]
-	[InlineData("C7","T")]
-	[InlineData("C8","")]
-	[InlineData("D1","DD")]
-	[InlineData("D2","CD")]
-	[InlineData("D3","")]
-	[InlineData("D4","")]
-	[InlineData("D5","DB")]
-	[InlineData("D6","")]
-	[InlineData("D7","TDD")]
-	[InlineData("D8","")]
-	public void StartingItems(string spaceLabel,string items){
-		var board = spaceLabel[..1] switch{
-			"A" => Board.BuildBoardA(),
-			"B" => Board.BuildBoardB(),
-			"C" => Board.BuildBoardC(),
-			"D" => Board.BuildBoardD(),
-			_ => null
-		};
-		var gameState = new GameState( new RiverSurges(), board );
-		gameState.DisableInvaderDeck();
-		// When:
-		gameState.Initialize();
+		[InlineData("C3","DD")]
+		[InlineData("C4","")]
+		[InlineData("C5","DDB")]
+		[InlineData("C6","D")]
+		[InlineData("C7","T")]
+		[InlineData("C8","")]
+		[InlineData("D1","DD")]
+		[InlineData("D2","CD")]
+		[InlineData("D3","")]
+		[InlineData("D4","")]
+		[InlineData("D5","DB")]
+		[InlineData("D6","")]
+		[InlineData("D7","TDD")]
+		[InlineData("D8","")]
+		public void StartingItems(string spaceLabel,string items){
+			var board = spaceLabel[..1] switch{
+				"A" => Board.BuildBoardA(),
+				"B" => Board.BuildBoardB(),
+				"C" => Board.BuildBoardC(),
+				"D" => Board.BuildBoardD(),
+				_ => null
+			};
+			var gameState = new GameState( new RiverSurges(), board );
+			gameState.DisableInvaderDeck();
+			// When:
+			gameState.Initialize();
 		// Then:
 		var space = board.Spaces.Single(x=>x.Label==spaceLabel);
 		var tokens = gameState.Tokens[space];
@@ -225,14 +362,16 @@ public class BoardSpace_Tests {
 		Assert.Equal(items.Count(c=>c=='E'), tokens[StdTokens.Explorer] );
 		Assert.Equal(items.Count(c=>c=='D'), tokens.Dahan.Count);
 		Assert.Equal(items.Count(c=>c=='B'), tokens.Blight.Any?1:0);
+		}
+
+		#region private
+
+		static void Assert_CanReachSpaceWithNHops( Space source, int distance, params Space[] needles ) {
+			Assert.Equal( needles, source.SpacesExactly( distance ) );
+		}
+
+		#endregion
+
 	}
-
-	#region private
-
-	static void Assert_CanReachSpaceWithNHops( Space source, int distance, params Space[] needles ) {
-		Assert.Equal( needles, source.SpacesExactly( distance ) );
-	}
-
-	#endregion
 
 }

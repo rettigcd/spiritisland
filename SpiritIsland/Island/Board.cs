@@ -1,8 +1,13 @@
 ﻿namespace SpiritIsland;
 
-public class Board {
+public partial class Board {
 
 	public BoardLayout Layout { get; set; }
+
+	public void ConnectTo( int mySide, Board newBoard, int newSide ) {
+		Sides[mySide].IsAdjacentTo( newBoard.Sides[newSide] );
+	}
+
 
 	#region factories
 
@@ -179,65 +184,16 @@ public class Board {
 		spaces[srcIndex].SetAdjacentToSpaces( neighborIndex.Select(i=>spaces[i] ).ToArray());
 	}
 
-	public ITileSide[] Sides => this.sides.ToArray();
+	public TileSide[] Sides => this.sides.ToArray();
 
 	TileSide DefineSide( params int[] spaceIndexes ) {
-		var side = new TileSide( spaceIndexes.Select( i => spaces[i] ).ToArray() );
+		var side = new TileSide( this, spaceIndexes.Select( i => spaces[i] ).ToArray() );
 		this.sides.Add( side );
 		return side;
 	}
 
-	#region TileSide
-
-	public interface ITileSide {
-		void AlignTo(ITileSide other);
-	}
-
-	class TileSide : ITileSide {
-		public TileSide(params Space[] spaces){
-			this.spaces = spaces;
-		}
-
-		public void BreakAt(params int[] breakPoints){
-			if(breakPoints.Length != spaces.Length-1)
-				throw new System.InvalidOperationException("there must be 1 fewer break point than spaces");
-			this.breakPoints = breakPoints.ToList();
-			this.breakPoints.Insert(0,0);
-			this.breakPoints.Add(13);
-		}
-			
-		public void AlignTo(ITileSide otherSide){
-			TileSide other = (TileSide)otherSide;
-				
-			// reverse other
-			var otherSpaces = other.spaces.Reverse().ToArray();
-			var otherBreakPoints = other.breakPoints.Select(i=>13-i).Reverse().ToList();
-
-			var thisSpaces = this.spaces;
-			var thisBreakPoints = this.breakPoints.ToList();
-
-			int thisIndex = 0;
-			int otherIndex = 0;
-			do{
-				// current territories are adjacent
-				thisSpaces[thisIndex].SetAdjacentToSpaces(otherSpaces[otherIndex]);
-				// advance whichever board is shorter 
-				if(thisBreakPoints[thisIndex+1] < otherBreakPoints[otherIndex+1])
-					thisIndex++;
-				else
-					otherIndex++;
-			} while(thisIndex<thisBreakPoints.Count-2 || otherIndex<otherBreakPoints.Count-2 );
-			thisSpaces[thisIndex].SetAdjacentToSpaces(otherSpaces[otherIndex]);
-		}
-
-		readonly Space[] spaces;
-		List<int> breakPoints;
-	}
-
-	#endregion
-
 	Space[] spaces;
 
-	readonly List<ITileSide> sides = new List<ITileSide>();
+	readonly List<TileSide> sides = new List<TileSide>();
 
 }

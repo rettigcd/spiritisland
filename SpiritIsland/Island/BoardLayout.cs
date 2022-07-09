@@ -12,6 +12,40 @@ public class BoardLayout {
 	public PointF[][] spaces; // the spaces on each board.
 	public PointF[] centers;
 
+	public PointF[] corners = new PointF[] {
+		topLeftCorner,
+		topRightCorner, // Side-0 origin (after 180 rotation)
+		bottomRightCorner, // Side-1 origin after -60 rotation
+		origin, // Side-2 origin (no rotation)
+	};
+
+	public double SideRotationDegrees(int i) {
+		var from = corners[i];
+		var to = corners[i+1];
+		return Math.Atan2(to.Y-from.Y,to.X-from.X) * 180 / Math.PI;
+	}
+
+	public void ReMap( PointMapper mapper ) {
+
+		// perimeter
+		for(int i=0;i<perimeter.Length;++i)
+			perimeter[i] = mapper.Map( perimeter[i] );
+		// spaces
+		foreach(var spacePerim in spaces)
+			for(int i=0;i<spacePerim.Length;++i)
+				spacePerim[i] = mapper.Map( spacePerim[i] );
+		// centers
+		for(int i = 0; i < centers.Length; ++i)
+			centers[i] = mapper.Map( centers[i] );
+		// origin
+		for(int i = 0; i< corners.Length; ++i) {
+			var src = corners[i];
+			var dst = mapper.Map( src );
+			corners[i] = dst;
+//			corners[i] = mapper.Map( corners[i] );
+		}
+	}
+
 	public RectangleF CalcExtents() {
 		float minX = float.MaxValue;
 		float minY = float.MaxValue;
@@ -44,15 +78,15 @@ public class BoardLayout {
 			);
 		}
 
-		float h = (float)(0.5 * Math.Sqrt( 3 ));
+		boardHeight = (float)(0.5 * Math.Sqrt( 3 ));
 		float xDelta = .06f;
 		float yOffset = xDelta; // could be anything..
 		float xOff = 0.09f;
 
 		origin = new PointF( 0f, 0f );
-		topLeftCorner = new PointF( 0.5f, h );
+		topLeftCorner = new PointF( 0.5f, boardHeight );
 		bottomRightCorner = new PointF( 1f, 0f );
-		topRightCorner = new PointF( 1.5f, h );
+		topRightCorner = new PointF( 1.5f, boardHeight );
 
 		// bottom
 		bot = new PointF[12];
@@ -71,17 +105,18 @@ public class BoardLayout {
 
 		// top
 		top = bot
-			.Select( orig => Translate( orig, 0.5f, h ) )
+			.Select( orig => Translate( orig, 0.5f, boardHeight ) )
 			.ToArray();
 
 		// right
 		rig = bot
-			.Select( orig => Translate( RotateAboutOrigin( orig, 240.0 ), 1.5f, h ) )
+			.Select( orig => Translate( RotateAboutOrigin( orig, 240.0 ), 1.5f, boardHeight ) )
 			.ToArray();
 
 	}
 
 	// Corners
+	static public readonly float boardHeight;
 	static readonly PointF origin;
 	static readonly PointF topLeftCorner;
 	static readonly PointF bottomRightCorner;

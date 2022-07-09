@@ -128,18 +128,6 @@ public partial class IslandControl : Control {
 //	BoardLayout normalizedBoardLayout;
 	PointMapper mapper;
 
-	class PointMapper {
-		readonly Matrix3D m;
-		public PointMapper( Matrix3D m ) {
-			this.m = m;
-		}
-		public PointF Map( PointF p ) {
-			var rowVect = new RowVector( p.X, p.Y );
-			var result = rowVect * m;
-			return new PointF( result.X, result.Y );
-		}
-	}
-
 	void DrawBoard_Static( PaintEventArgs pe ) {
 		using var stopwatch = new StopWatch( "Island-static" );
 
