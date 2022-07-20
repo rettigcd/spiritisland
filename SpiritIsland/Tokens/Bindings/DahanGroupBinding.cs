@@ -92,7 +92,7 @@ public class DahanGroupBinding : DahanGroupBindingNoEvents {
 		foreach(var token in before) {
 			int origCount = _tokens[token];
 			var newToken = token.AddDamage( 1 );
-			if( newToken.IsDestroyed) {
+			if( !newToken.IsDestroyed ) {
 				// Apply 1 damage to all
 				_tokens.Init( token, 0 );
 				_tokens.Adjust( newToken, origCount );

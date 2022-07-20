@@ -1,7 +1,7 @@
 ﻿===== Focus =====
-* Adversaries
-* Remaining 2 spirits
-* 2 players
+* 2 spirits
+* 3 Adversaries (Habsburg, Russia, Scotland)
+* Remaining spirit (Finder of Paths)
 * Mobile
 	- Spirit's 3 controls
 	- Island control with tokens
