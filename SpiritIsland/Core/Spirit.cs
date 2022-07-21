@@ -81,7 +81,7 @@ public abstract class Spirit : IOption {
 
 		// (1) Pre-Growth Track options
 		foreach(ITrackActionFactory action in Presence.RevealedActions.OfType<ITrackActionFactory>())
-			if( !action.RunAfterGrowthResult )
+			if( action.RunTime == RunTime.Before )
 				await action.ActivateAsync( ctx );
 
 		// (b) Growth
@@ -126,7 +126,7 @@ public abstract class Spirit : IOption {
 		Elements.AddRange( args.Track.Elements );
 
 		if( args.Track.Action != null)
-			if( args.GameState.Phase != Phase.Growth || !args.Track.Action.RunAfterGrowthResult )
+			if( args.GameState.Phase != Phase.Growth || args.Track.Action.RunTime == RunTime.Before )
 				await args.Track.Action.ActivateAsync( Bind( args.GameState, Guid.NewGuid() ) );
 	}
 
@@ -143,7 +143,7 @@ public abstract class Spirit : IOption {
 
 		// Do actions AFTER energy and elements have been added - in case playing ManyMindsMoveAsOne - Pay 2 for power card.
 		foreach(ITrackActionFactory action in Presence.RevealedActions.Cast<ITrackActionFactory>())
-			if(action.RunAfterGrowthResult)
+			if(action.RunTime == RunTime.After)
 				await action.ActivateAsync( ctx );
 
 	}

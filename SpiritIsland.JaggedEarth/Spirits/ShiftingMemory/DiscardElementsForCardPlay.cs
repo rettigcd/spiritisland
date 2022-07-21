@@ -12,7 +12,7 @@ public class DiscardElementsForCardPlay : GrowthActionFactory, ITrackActionFacto
 		this.totalNumToRemove = elementDiscardCount;
 	}
 
-	public bool RunAfterGrowthResult => true; // delay for gained prepared elements.
+	public RunTime RunTime => RunTime.After;// delay for gained prepared elements.
 
 	public override async Task ActivateAsync( SelfCtx ctx ) {
 		if( ctx.Self is ShiftingMemoryOfAges smoa

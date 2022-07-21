@@ -17,8 +17,8 @@ class PickNewGrowthOption : GrowthActionFactory, ITrackActionFactory {
 		return track;
 	}
 
-	public bool RunAfterGrowthResult => 
-		false;
+	public RunTime RunTime => RunTime.Before;
+
 
 	public override async Task ActivateAsync( SelfCtx ctx ) {
 		if(used) 

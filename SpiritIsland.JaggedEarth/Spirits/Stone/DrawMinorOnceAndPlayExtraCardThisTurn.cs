@@ -4,7 +4,7 @@ public class DrawMinorOnceAndPlayExtraCardThisTurn : GrowthActionFactory, ITrack
 
 	bool drewMinor = false;
 
-	public bool RunAfterGrowthResult => false; // no growth dependencies
+	public RunTime RunTime => RunTime.Before;// no growth dependencies
 
 	public override async Task ActivateAsync( SelfCtx ctx ) {
 

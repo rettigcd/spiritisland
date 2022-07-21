@@ -8,7 +8,7 @@ public class MovePresence : GrowthActionFactory, ITrackActionFactory {
 		this.Range = range;
 	}
 
-	public bool RunAfterGrowthResult => true; // might receive additional presence
+	public RunTime RunTime => RunTime.After; // might receive additional presence
 
 	public override async Task ActivateAsync( SelfCtx ctx) {
 		var src = await ctx.Decision( Select.DeployedPresence.All("Move presence from:", ctx.Self,Present.Always ) );

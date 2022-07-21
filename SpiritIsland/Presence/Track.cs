@@ -119,5 +119,7 @@ public interface ITrackActionFactory : IActionFactory {
 	/// <summary>
 	/// Indicates that Track action should happen AFTER growth is complete.  Either to use earned energy, elements, or skip because no cards left to reclaim.
 	/// </summary>
-	bool RunAfterGrowthResult { get; }
+	RunTime RunTime { get; }
 }
+
+public enum RunTime { Before, After }

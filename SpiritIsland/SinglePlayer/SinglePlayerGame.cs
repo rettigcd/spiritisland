@@ -45,12 +45,12 @@ public class SinglePlayerGame {
 
 						GameState.Phase = Phase.Growth;
 						LogPhase();
-						await Spirit.DoGrowth( GameState );
+						await Spirit.DoGrowth( GameState ); // !
 						await Spirit.SelectAndPlayCardsFromHand();
 
 						GameState.Phase = Phase.Fast;
 						LogPhase();
-						await Spirit.ResolveActions( Spirit.BindMyPower( GameState ) );
+						await Spirit.ResolveActions( Spirit.BindMyPower( GameState ) ); // !
 
 						GameState.Phase = Phase.Invaders;
 						LogPhase();
@@ -58,7 +58,7 @@ public class SinglePlayerGame {
 
 						GameState.Phase = Phase.Slow;
 						LogPhase();
-						await Spirit.ResolveActions( Spirit.BindMyPower( GameState ) );
+						await Spirit.ResolveActions( Spirit.BindMyPower( GameState ) ); // !
 
 						await GameState.TriggerTimePasses();
 					} catch( GameStateCommandException cmdEx ) {

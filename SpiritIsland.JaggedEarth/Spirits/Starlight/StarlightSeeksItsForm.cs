@@ -147,7 +147,8 @@ class MakePowerFast : GrowthActionFactory {
 
 class Gain1EnergyOnReveal : GrowthActionFactory, ITrackActionFactory {
 	bool ran;
-	public bool RunAfterGrowthResult => false;
+
+	public RunTime RunTime => RunTime.Before;
 
 	public override Task ActivateAsync( SelfCtx ctx ) {
 		if(!ran) { 
@@ -163,7 +164,7 @@ class AssignElement : GrowthActionFactory, ITrackActionFactory {
 	readonly Track track;
 	public AssignElement( Track track ) { this.track = track; }
 
-	public bool RunAfterGrowthResult => false;
+	public RunTime RunTime => RunTime.Before;
 
 	public override async Task ActivateAsync( SelfCtx ctx ) {
 		await AssignNewElementToTrack( ctx, track );

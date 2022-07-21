@@ -4,7 +4,7 @@ public class ReclaimN : GrowthActionFactory, ITrackActionFactory {
 
 	public const string Prompt = "Select card to reclaim.";
 
-	public bool RunAfterGrowthResult => true; // If user Reclaims All during growth, no need to reclaim single
+	public RunTime RunTime => RunTime.After; // If user Reclaims All during growth, no need to reclaim single
 
 	public ReclaimN(int count=1) {
 		this.count = count;
