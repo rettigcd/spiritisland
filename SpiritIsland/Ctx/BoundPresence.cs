@@ -62,7 +62,7 @@ public class BoundPresence {
 
 	#region Restore Destroyed
 
-	public async Task RestoreUpToNDestroyed( int count ) {
+	public async Task ReturnUpToNDestroyedToTrack( int count ) {
 		count = Math.Max(count,ctx.Self.Presence.Destroyed);
 		while(count > 0) {
 			var dst = await ctx.Decision( Select.TrackSlot.ToCover( ctx.Self ) );

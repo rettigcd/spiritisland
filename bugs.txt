@@ -30,10 +30,18 @@ Retreat : 2 : Each player may Push up to 3 Explorer / Town from an Inland land
 Bargains of Power and Protection - defense does not roll back when Rewinding
 
 
+=============
+
+When playing multi-player, other spirits should be able to use Downpour's SS as wetlands also, not juest Dounpour.
 
 =============
 
-Twilight Fog Brings madness, dahan not moved is destroyed instead of taking 1 point of damage.
+Promises of Protection
+	Brought in 2 dahan => get 4 health
+	Brought in 2 more dahan => original (4 health) have 8 health, broght in have (4)
+		All should have 6 health.
+	When round over, 2 have health-1, 2 have health=4 
+		All should have 2 health
 
 !!! Tokens_ForIslands.RegisterDynamic actions to not reset when we Rewind.
 !!! Triggering Elements needs to use token in space as count so Rewind works.
