@@ -21,7 +21,7 @@ public class LureOfTheDeepWilderness : Spirit {
 		,PowerCard.For<SoftlyBeckonEverInward>()
 		,PowerCard.For<SwallowedByTheWilderness>()
 	) {
-		Growth = new Growth(
+		GrowthTrack = new GrowthTrack(
 			new GrowthOption(new ReclaimAll(),new GainEnergy(1)),
 			new GrowthOption(new PlacePresence(4,Target.Inland))
 		).Add( 

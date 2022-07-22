@@ -21,7 +21,7 @@ public class Thunderspeaker : Spirit {
 		PowerCard.For<VoiceOfThunder>(),
 		PowerCard.For<WordsOfWarning>()
 	) {
-		Growth = new(
+		GrowthTrack = new(
 			new GrowthOption( 
 				new ReclaimAll(), 
 				new DrawPowerCard(1),

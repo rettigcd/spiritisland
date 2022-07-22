@@ -19,7 +19,7 @@ public class RiverSurges : Spirit {
 		PowerCard.For<RiversBounty>(),
 		PowerCard.For<WashAway>()
 	){
-		Growth = new(
+		GrowthTrack = new(
 			new GrowthOption(
 				new ReclaimAll(),
 				new DrawPowerCard(1),

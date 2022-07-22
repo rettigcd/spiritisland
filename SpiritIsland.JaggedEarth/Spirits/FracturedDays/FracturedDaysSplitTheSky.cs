@@ -30,7 +30,7 @@ public class FracturedDaysSplitTheSky : Spirit {
 		var g2Repeater = new ActionRepeater(2);
 		var g3Repeater = new ActionRepeater(3);
 
-		Growth = new Growth(
+		GrowthTrack = new GrowthTrack(
 			new GrowthOption(
 				new Gain1Element(Element.Air),
 				new ReclaimAll(),

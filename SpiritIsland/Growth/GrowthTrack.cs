@@ -1,18 +1,18 @@
 ﻿namespace SpiritIsland;
 
-public class Growth {
+public class GrowthTrack {
 
 	#region constructors
 
-	public Growth( params GrowthOption[] options ) {
+	public GrowthTrack( params GrowthOption[] options ) {
 		groups.Add( new GrowthOptionGroup(1,options));
 	}
 
-	public Growth( int pick, params GrowthOption[] options ) {
+	public GrowthTrack( int pick, params GrowthOption[] options ) {
 		groups.Add( new GrowthOptionGroup(pick,options));
 	}
 
-	public Growth Add( GrowthOptionGroup grp ) {
+	public GrowthTrack Add( GrowthOptionGroup grp ) {
 		groups.Add(grp);
 		return this;
 	}

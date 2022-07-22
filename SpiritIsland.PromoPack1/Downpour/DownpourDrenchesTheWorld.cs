@@ -41,7 +41,7 @@ public class DownpourDrenchesTheWorld : Spirit, IHaveSecondaryElements {
 		PowerCard.For<UnbearableDeluge>()
 	) {
 
-		Growth = new(
+		GrowthTrack = new(
 			// Reclaim All, Gain Power Card, Move a presence 2 spaces
 			new GrowthOption( new ReclaimAll(), new DrawPowerCard( 1 ), new MovePresence(2) ),
 			// Add a Presence(2), Add a Presence(2), Gain 2 water, Discard 2 Power Cards

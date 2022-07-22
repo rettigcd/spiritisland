@@ -74,13 +74,13 @@ public abstract class Spirit : IOption {
 
 	#region Growth
 
-	public Growth Growth { get; protected set; }
+	public GrowthTrack GrowthTrack { get; protected set; }
 
 	public virtual async Task DoGrowth(GameState gameState) {
 		var ctx = Bind( gameState, Guid.NewGuid() );
 
 		// (b) Growth
-		IGrowthPhaseInstance inst = Growth.GetInstance();
+		IGrowthPhaseInstance inst = GrowthTrack.GetInstance();
 
 		GrowthOption[] options;
 		while( (options = inst.RemainingOptions(Energy)).Length > 0 ) {

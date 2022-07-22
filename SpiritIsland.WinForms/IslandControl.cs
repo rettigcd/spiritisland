@@ -288,7 +288,7 @@ public partial class IslandControl : Control {
 		bounds = FitClientBounds( bounds );
 
 		// Layout
-		if( spiritLayout == null || growthOptionCount != spirit.Growth.Options.Length) {
+		if( spiritLayout == null || growthOptionCount != spirit.GrowthTrack.Options.Length) {
 			CalcSpiritLayout( graphics, bounds );
 			if(spiritPainter != null) spiritPainter.Dispose(); // release old
 			spiritPainter = new SpiritPainter( spirit, spiritLayout, presenceColor );
@@ -306,7 +306,7 @@ public partial class IslandControl : Control {
 
 	void CalcSpiritLayout( Graphics graphics, Rectangle bounds ) {
 		spiritLayout = new SpiritLayout( graphics, spirit, bounds, 10 );
-		growthOptionCount = spirit.Growth.Options.Length;
+		growthOptionCount = spirit.GrowthTrack.Options.Length;
 	}
 	int growthOptionCount = -1; // auto-update when Starlight adds option
 

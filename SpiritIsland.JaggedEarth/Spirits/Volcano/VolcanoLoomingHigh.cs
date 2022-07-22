@@ -23,7 +23,7 @@ public class VolcanoLoomingHigh : Spirit {
 		,PowerCard.For<PyroclasticBombardment>()
 		,PowerCard.For<RainOfAsh>()
 	) {
-		Growth = new Growth(
+		GrowthTrack = new GrowthTrack(
 			new GrowthOption(new ReclaimAll(), new DrawPowerCard(), new GainEnergy(3)),
 			new GrowthOption(new PlacePresence(0,Target.Mountain), new PlacePresence(0,Target.Mountain)),
 			new GrowthOption(new DrawPowerCard(), new PlacePresence(4,Target.Mountain), new PlayExtraCardThisTurn(1), new GainEnergy(2))

@@ -21,7 +21,7 @@ public class Bringer : Spirit {
 		PowerCard.For<PredatoryNightmares>()
 	) {
 
-		Growth = new(
+		GrowthTrack = new(
 			// reclaim, +1 power card
 			new GrowthOption(new ReclaimAll(),new DrawPowerCard(1)),
 			// reclaim 1, add presence range 0

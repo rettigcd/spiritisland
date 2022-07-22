@@ -14,7 +14,7 @@ public class VengeanceAsABurningPlague : Spirit {
 		,PowerCard.For<Plaguebearers>()
 		,PowerCard.For<StrikeLowWithSuddenFevers>()
 	) {
-		Growth = new Growth(
+		GrowthTrack = new GrowthTrack(
 			new GrowthOption( new ReclaimAll(), new DrawPowerCard(), new GainEnergy(1)),
 			new GrowthOption( new PlacePresence(2,Target.TownCityOrBlight), new PlacePresence(2,Target.TownCityOrBlight)),
 			new GrowthOption( new DrawPowerCard(), new PlacePresenceOrDisease(), new GainEnergy(1))

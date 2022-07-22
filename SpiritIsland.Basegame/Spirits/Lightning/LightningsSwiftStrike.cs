@@ -16,7 +16,7 @@ public class LightningsSwiftStrike : Spirit {
 		PowerCard.For<RagingStorm>(),
 		PowerCard.For<ShatterHomesteads>()
 	){
-		Growth = new(
+		GrowthTrack = new(
 			new GrowthOption( 
 				new ReclaimAll(), 
 				new DrawPowerCard(1), 

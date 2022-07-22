@@ -20,7 +20,7 @@ public partial class Keeper : Spirit {
 	) {
 		(Presence as KeeperPresence).spirit = this;
 
-		Growth = new Growth( 2,
+		GrowthTrack = new GrowthTrack( 2,
 			new GrowthOption( new ReclaimAll() ,new GainEnergy(1) ){ GainEnergy = 1 },
 			new GrowthOption( new DrawPowerCard(1) ),
 			new GrowthOption( new GainEnergy(1) ,new PlacePresence(3,Target.PresenceOrWilds) ){ GainEnergy = 1 },

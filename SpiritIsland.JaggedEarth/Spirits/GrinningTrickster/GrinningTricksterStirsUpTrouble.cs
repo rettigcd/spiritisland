@@ -23,7 +23,7 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 		)
 	{
 		// Growth
-		this.Growth = new Growth( 2,
+		this.GrowthTrack = new GrowthTrack( 2,
 			new GrowthOption(new GainEnergy(-1),new ReclaimAll(), new MovePresence(1) ){ GainEnergy = -1 },
 			new GrowthOption(new PlacePresence(2)),
 			new GrowthOption(new DrawPowerCard()),

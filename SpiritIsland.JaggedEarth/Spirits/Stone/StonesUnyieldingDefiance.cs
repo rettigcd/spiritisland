@@ -53,7 +53,7 @@ public StonesUnyieldingDefiance() : base(
 		,PowerCard.For<StubbornSolidity>()
 	) {
 
-		this.Growth = new Growth(
+		this.GrowthTrack = new GrowthTrack(
 			new GrowthOption(new ReclaimAll(),new PlacePresence(3,Target.MountainOrPresence),new GainElements(Element.Earth,Element.Earth)),
 			new GrowthOption(new PlacePresence(2), new GainEnergy(3)),
 			new GrowthOption(new DrawPowerCard(), new PlacePresence(1))

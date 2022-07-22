@@ -56,7 +56,7 @@ public class GrowthTests {
 	protected Task When_Growing( int option) {
 		try {
 			gameState.Phase = Phase.Growth;
-			return spirit.GrowAndResolve( spirit.Growth.Options[option],gameState);
+			return spirit.GrowAndResolve( spirit.GrowthTrack.Options[option],gameState);
 		} catch {
 			throw;
 		}

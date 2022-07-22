@@ -101,7 +101,7 @@ public class StarlightSeeksItsForm : Spirit {
 		,PowerCard.For<PeaceOfTheNighttimeSky>()
 		,PowerCard.For<ShapeTheSelfAnew>()
 	) {
-		Growth = new Growth( 3,
+		GrowthTrack = new GrowthTrack( 3,
 			new GrowthOption( new ReclaimN() ),
 			new GrowthOption( new PlacePresenceAndRunAction(0) ),
 			new GrowthOption( new GainEnergy(1) ),

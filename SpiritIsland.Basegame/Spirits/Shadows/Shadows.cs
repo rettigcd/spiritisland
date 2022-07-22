@@ -17,7 +17,7 @@ public class Shadows : Spirit {
 		PowerCard.For<CropsWitherAndFade>(),
 		PowerCard.For<ConcealingShadows>()
 	) {
-		Growth = new(
+		GrowthTrack = new(
 			new GrowthOption( new ReclaimAll(), new DrawPowerCard(1) ),
 			new GrowthOption( new DrawPowerCard(1), new PlacePresence(1) ),
 			new GrowthOption( new PlacePresence(3), new GainEnergy(3) )

@@ -14,7 +14,7 @@ public class SerpentSlumbering : Spirit {
 			InnatePower.For<SerpentRousesInAnger>()
 		};
 
-		Growth = new Growth( 2,
+		GrowthTrack = new GrowthTrack( 2,
 			new GrowthOption( new ReclaimAll(), new MovePresence(1) ),
 			new GrowthOption( new DrawPowerCard(), new GainEnergy(1) ),
 			new GrowthOption( new GainEnergy(4) ),
