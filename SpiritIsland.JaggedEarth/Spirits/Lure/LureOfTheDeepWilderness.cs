@@ -24,8 +24,8 @@ public class LureOfTheDeepWilderness : Spirit {
 		GrowthTrack = new GrowthTrack(
 			new GrowthOption(new ReclaimAll(),new GainEnergy(1)),
 			new GrowthOption(new PlacePresence(4,Target.Inland))
-		).Add( 
-			new GrowthOptionGroup( 1,
+		).Add(
+			new GrowthPickGroups(
 				new GrowthOption(new Gain1Element(Element.Moon,Element.Air,Element.Plant), new GainEnergy(2)),
 				new GrowthOption(new DrawPowerCard())
 			)

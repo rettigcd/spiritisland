@@ -32,7 +32,7 @@ public class ASpreadOfRampantGreen : Spirit {
 
 		GrowthTrack = new GrowthTrack(
 			new GrowthOption( new PlacePresence( 2, Target.JungleOrWetland ) )
-		).Add( new GrowthOptionGroup( 1,
+		).Add( new GrowthPickGroups( 1,
 			// reclaim, +1 power card
 			new GrowthOption(
 				new ReclaimAll(), 

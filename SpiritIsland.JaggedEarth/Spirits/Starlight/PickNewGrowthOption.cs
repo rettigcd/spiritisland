@@ -30,7 +30,7 @@ class PickNewGrowthOption : GrowthActionFactory, IActionFactory {
 			await AssignElement.AssignNewElementToTrack(ctx, trackToReceiveElementAssignment );
 
 		GrowthOption option = (GrowthOption)await ctx.Self.Select( "Select New Growth Option", options, Present.Always );
-		ctx.Self.GrowthTrack.Groups.Single().Add( option );
+		ctx.Self.GrowthTrack.PickGroups.Single().Add( option ); // only works with spirits with a single pick-group
 
 		used = true;
 	}

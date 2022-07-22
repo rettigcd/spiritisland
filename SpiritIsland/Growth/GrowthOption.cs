@@ -1,5 +1,8 @@
 ﻿namespace SpiritIsland;
 
+/// <summary>
+/// Indivisible group of actions, all of which must be resolved.
+/// </summary>
 public class GrowthOption : IOption {
 
 	/// <summary> When negative, prevents growth option unless user has sufficient energy to satisfy </summary>

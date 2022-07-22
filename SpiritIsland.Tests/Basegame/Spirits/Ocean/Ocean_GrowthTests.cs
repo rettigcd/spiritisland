@@ -36,7 +36,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			Given_IslandIsABC();
 			Given_HasPresence( starting );
 
-			spirit.Grow(spirit.GrowthTrack.Options[0]);
+			spirit.QueueUpGrowth(spirit.GrowthTrack.Options[0]);
 
 			// since options are move source, key on that
 			var moveBySrc = select.Split(',')

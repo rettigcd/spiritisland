@@ -84,8 +84,10 @@ public abstract class Spirit : IOption {
 
 		GrowthOption[] options;
 		while( (options = inst.RemainingOptions(Energy)).Length > 0 ) {
+			// Select Growth Option
 			GrowthOption option = (GrowthOption)await this.Select( "Select Growth Option", options, Present.Always );
 			inst.MarkAsUsed( option );
+			// Resolve Growth Option
 			await GrowAndResolve( option, gameState );
 		}
 
@@ -94,7 +96,7 @@ public abstract class Spirit : IOption {
 
 	}
 
-	public async Task GrowAndResolve( GrowthOption option, GameState gameState ) {
+	public async Task GrowAndResolve( GrowthOption option, GameState gameState ) { // public for Testing
 		var ctx = Bind( gameState, Guid.NewGuid() );
 
 		// Auto run the auto-runs.
@@ -107,12 +109,12 @@ public abstract class Spirit : IOption {
 			return;
 		}
 			
-		Grow( option );
+		QueueUpGrowth( option );
 		await ResolveActions( ctx );
-
 	}
 
-	public void Grow( GrowthOption option ) {
+	/// <summary> Adds UserRun Growth Actions to the Ready-to-resolve list.</summary>
+	public void QueueUpGrowth( GrowthOption option ) { // Public for Testing
 		foreach(GrowthActionFactory action in option.UserRuns)
 			AddActionFactory( action );
 	}
