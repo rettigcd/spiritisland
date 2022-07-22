@@ -1,5 +1,7 @@
 ﻿namespace SpiritIsland.JaggedEarth;
-class PickNewGrowthOption : GrowthActionFactory, ITrackActionFactory {
+
+/// <summary> Starlight's Growth </summary>
+class PickNewGrowthOption : GrowthActionFactory, IActionFactory {
 
 	readonly GrowthOption[] options;
 	readonly bool add1Energy;
@@ -16,9 +18,6 @@ class PickNewGrowthOption : GrowthActionFactory, ITrackActionFactory {
 		track.Action = this;
 		return track;
 	}
-
-	public RunTime RunTime => RunTime.Before;
-
 
 	public override async Task ActivateAsync( SelfCtx ctx ) {
 		if(used) 

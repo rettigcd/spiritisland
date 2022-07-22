@@ -1,10 +1,8 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-public class DrawMinorOnceAndPlayExtraCardThisTurn : GrowthActionFactory, ITrackActionFactory {
+public class DrawMinorOnceAndPlayExtraCardThisTurn : GrowthActionFactory, IActionFactory {
 
 	bool drewMinor = false;
-
-	public RunTime RunTime => RunTime.Before;// no growth dependencies
 
 	public override async Task ActivateAsync( SelfCtx ctx ) {
 

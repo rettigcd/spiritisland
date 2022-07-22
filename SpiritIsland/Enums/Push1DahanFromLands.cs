@@ -1,9 +1,7 @@
 ﻿namespace SpiritIsland;
 
 /// <summary> Pushes 1 dahan from 1 of your lands. </summary>
-public class Push1DahanFromLands : GrowthActionFactory, ITrackActionFactory {
-
-	public RunTime RunTime => RunTime.After; // depends on Presence location which might change during growth
+public class Push1DahanFromLands : GrowthActionFactory, IActionFactory {
 
 	public override async Task ActivateAsync( SelfCtx ctx ) {
 		var dahanOptions = ctx.Self.Presence.Spaces

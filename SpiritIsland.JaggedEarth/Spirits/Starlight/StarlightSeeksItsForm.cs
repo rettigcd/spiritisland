@@ -103,7 +103,7 @@ public class StarlightSeeksItsForm : Spirit {
 	) {
 		Growth = new Growth( 3,
 			new GrowthOption( new ReclaimN() ),
-			new GrowthOption( new PlacePresence(0) ),
+			new GrowthOption( new PlacePresenceAndRunAction(0) ),
 			new GrowthOption( new GainEnergy(1) ),
 			new GrowthOption( new MovePresence(3) )
 		);
@@ -122,59 +122,4 @@ public class StarlightSeeksItsForm : Spirit {
 		Presence.PlaceOn( board.Spaces.First(s=>gameState.Tokens[s].Blight.Any), gameState );
 	}
 
-}
-
-class ApplyDamage : GrowthActionFactory {
-
-	public override async Task ActivateAsync( SelfCtx ctx ) {
-		var space = await ctx.Decision(new Select.Space("Select land to apply 2 Damage.", ctx.Self.Presence.Spaces,Present.Always));
-		await ctx.Target(space).DamageInvaders(2);
-	}
-
-}
-
-/// <summary>
-/// Adds a ResolveSlowAsFast action.
-/// </summary>
-class MakePowerFast : GrowthActionFactory {
-
-	public override Task ActivateAsync( SelfCtx ctx ) {
-		ctx.Self.AddActionFactory( new ResolveSlowDuringFast() );
-		return Task.CompletedTask;
-	}
-
-}
-
-class Gain1EnergyOnReveal : GrowthActionFactory, ITrackActionFactory {
-	bool ran;
-
-	public RunTime RunTime => RunTime.Before;
-
-	public override Task ActivateAsync( SelfCtx ctx ) {
-		if(!ran) { 
-			ctx.Self.Energy++;
-			ran = true;
-		}
-		return Task.CompletedTask;
-	}
-}
-
-
-class AssignElement : GrowthActionFactory, ITrackActionFactory {
-	readonly Track track;
-	public AssignElement( Track track ) { this.track = track; }
-
-	public RunTime RunTime => RunTime.Before;
-
-	public override async Task ActivateAsync( SelfCtx ctx ) {
-		await AssignNewElementToTrack( ctx, track );
-		track.Action = null;
-	}
-
-	public static async Task AssignNewElementToTrack( SelfCtx ctx, Track track ) {
-		var el = await ctx.Self.SelectElementEx( "Select permanent element for this slot.", ElementList.AllElements );
-		track.Elements = new Element[] { el };
-		ctx.Self.Elements[el]++;
-		track.Icon.ContentImg = el.GetTokenImg();
-	}
 }

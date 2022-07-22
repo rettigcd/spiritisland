@@ -104,7 +104,7 @@ public class Track : IOption {
 
 	public int? CardPlay { get; set; }
 
-	public ITrackActionFactory Action { get; set; }
+	public IActionFactory Action { get; set; }
 
 	public virtual void AddElement( ElementCounts elements ) {
 		foreach(var el in Elements)
@@ -114,12 +114,3 @@ public class Track : IOption {
 	public IconDescriptor Icon { get; set; }
 
 }
-
-public interface ITrackActionFactory : IActionFactory {
-	/// <summary>
-	/// Indicates that Track action should happen AFTER growth is complete.  Either to use earned energy, elements, or skip because no cards left to reclaim.
-	/// </summary>
-	RunTime RunTime { get; }
-}
-
-public enum RunTime { Before, After }

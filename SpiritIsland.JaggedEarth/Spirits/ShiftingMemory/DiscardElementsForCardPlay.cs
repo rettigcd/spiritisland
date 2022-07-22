@@ -3,7 +3,7 @@
 /// <summary>
 /// Shifting Memories Track-Action
 /// </summary>
-public class DiscardElementsForCardPlay : GrowthActionFactory, ITrackActionFactory {
+public class DiscardElementsForCardPlay : GrowthActionFactory, IActionFactory {
 
 	// When revealing Discard-Elements-For-Extra-Card-Plays during non-growth (i.e. Unrelenting Growth), don't activate - it is too late to add card plays.
 
@@ -11,8 +11,6 @@ public class DiscardElementsForCardPlay : GrowthActionFactory, ITrackActionFacto
 	public DiscardElementsForCardPlay(int elementDiscardCount ) {
 		this.totalNumToRemove = elementDiscardCount;
 	}
-
-	public RunTime RunTime => RunTime.After;// delay for gained prepared elements.
 
 	public override async Task ActivateAsync( SelfCtx ctx ) {
 		if( ctx.Self is ShiftingMemoryOfAges smoa

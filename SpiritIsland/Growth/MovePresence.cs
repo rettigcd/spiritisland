@@ -1,14 +1,12 @@
 ﻿namespace SpiritIsland;
 
-public class MovePresence : GrowthActionFactory, ITrackActionFactory {
+public class MovePresence : GrowthActionFactory, IActionFactory {
 
 	public int Range { get; }
 
 	public MovePresence(int range) {
 		this.Range = range;
 	}
-
-	public RunTime RunTime => RunTime.After; // might receive additional presence
 
 	public override async Task ActivateAsync( SelfCtx ctx) {
 		var src = await ctx.Decision( Select.DeployedPresence.All("Move presence from:", ctx.Self,Present.Always ) );

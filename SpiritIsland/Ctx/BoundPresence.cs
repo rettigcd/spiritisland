@@ -31,10 +31,11 @@ public class BoundPresence {
 
 	/// <summary> Selects: (Source then Destination) for placing presence </summary>
 	/// <remarks> Called from normal PlacePresence Growth + Gift of Proliferation. </remarks>
-	public async Task PlaceWithin( int range, string filterEnum ) {
-		var from = await SelectSource();
+	public async Task<(IOption,Space)> PlaceWithin( int range, string filterEnum ) {
+		IOption from = await SelectSource();
 		Space to = await SelectDestinationWithinRange( range, filterEnum );
 		await ctx.Self.Presence.Place( from, to, ctx.GameState );
+		return(from, to);
 	}
 
 	/// <summary> Selects: Source then Destination(predetermined) for placing presence.</summary>

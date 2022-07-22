@@ -6,7 +6,7 @@ public abstract class Spirit : IOption {
 
 	public Spirit( SpiritPresence presence, params PowerCard[] initialCards ){
 		Presence = presence;
-		Presence.TrackRevealed.ForGame.Add( Presence_TrackRevealed );
+		Presence.TrackRevealed.ForGame.Add( args => Elements.AddRange(args.Track.Elements) );
 
 		foreach(var card in initialCards)
 			AddCardToHand(card);
@@ -79,11 +79,6 @@ public abstract class Spirit : IOption {
 	public virtual async Task DoGrowth(GameState gameState) {
 		var ctx = Bind( gameState, Guid.NewGuid() );
 
-		// (1) Pre-Growth Track options
-		foreach(ITrackActionFactory action in Presence.RevealedActions.OfType<ITrackActionFactory>())
-			if( action.RunTime == RunTime.Before )
-				await action.ActivateAsync( ctx );
-
 		// (b) Growth
 		IGrowthPhaseInstance inst = Growth.GetInstance();
 
@@ -122,14 +117,6 @@ public abstract class Spirit : IOption {
 			AddActionFactory( action );
 	}
 
-	async Task Presence_TrackRevealed( TrackRevealedArgs args ) {
-		Elements.AddRange( args.Track.Elements );
-
-		if( args.Track.Action != null)
-			if( args.GameState.Phase != Phase.Growth || args.Track.Action.RunTime == RunTime.Before )
-				await args.Track.Action.ActivateAsync( Bind( args.GameState, Guid.NewGuid() ) );
-	}
-
 	public Task ApplyRevealedPresenceTracks_CalledOnlyFromTests(GameState gs) {
 		var ctx = Bind( gs, Guid.NewGuid() );
 		return this.ApplyRevealedPresenceTracks(ctx);
@@ -142,9 +129,8 @@ public abstract class Spirit : IOption {
 		// ! Elements were added when the round started.
 
 		// Do actions AFTER energy and elements have been added - in case playing ManyMindsMoveAsOne - Pay 2 for power card.
-		foreach(ITrackActionFactory action in Presence.RevealedActions.Cast<ITrackActionFactory>())
-			if(action.RunTime == RunTime.After)
-				await action.ActivateAsync( ctx );
+		foreach(IActionFactory action in Presence.RevealedActions.Cast<IActionFactory>())
+			await action.ActivateAsync( ctx );
 
 	}
 	public event Action<Spirit> EnergyCollected;
