@@ -88,35 +88,27 @@ public abstract class Spirit : IOption {
 
 		GrowthOption[] growthOptions;
 		IActionFactory[] actionOptions;
+
+		bool isFirst;
 		#endregion
 
 		public DoGrowthClass(Spirit spirit,GameState gameState) {
 			this.spirit = spirit;
 			this.gameState = gameState;
 			inst = spirit.GrowthTrack.GetInstance();
+			InitActionsForAllAvailableOptions();
 		}
 
 		public async Task Execute() {
 
-			InitActionsForAllAvailableOptions();// $$$ GET OPTIONS
-			bool isFirst = true;
 			while(HasActions) {
-
-				// Select Growth Action
+				// Select
 				IActionFactory selectedAction = await spirit.Select( PROMPT, actionOptions, Present.Always );
-				if(isFirst) {
-					await ExecuteFirstActionOfGrowthOption( selectedAction );
-					isFirst = false;
-				}
-
-				while(HasActions) {
-					selectedAction = await spirit.SelectFactory( PROMPT, actionOptions, Present.Always );
-					await spirit.TakeAction( selectedAction, spirit.Bind( gameState, Guid.NewGuid() ) );
-					InitRemainingActionsFromOption();// $$$ GET OPTIONS
-				}
-
-				InitActionsForAllAvailableOptions();// $$$ GET OPTIONS
-				isFirst = true;
+				// Execute
+				if(isFirst)
+					await ExecuteFirst( selectedAction );
+				else
+					await ExecuteRemaining( selectedAction );
 			}
 
 			// (c) Post-Growth Track options
@@ -124,7 +116,12 @@ public abstract class Spirit : IOption {
 
 		}
 
-		private async Task ExecuteFirstActionOfGrowthOption( IActionFactory selectedAction ) {
+		async Task ExecuteRemaining( IActionFactory selectedAction ) {
+			await spirit.TakeAction( selectedAction, spirit.Bind( gameState, Guid.NewGuid() ) );
+			InitRemainingActionsFromOption();
+		}
+
+		async Task ExecuteFirst( IActionFactory selectedAction ) {
 			// Find Growth Option
 			GrowthOption option = growthOptions.Single( o => o.GrowthActions.Contains( selectedAction ) );
 			inst.MarkAsUsed( option );
@@ -152,18 +149,22 @@ public abstract class Spirit : IOption {
 			}
 
 			// resolve actions
-			InitRemainingActionsFromOption();// $$$ GET OPTIONS
+			InitRemainingActionsFromOption();
 		}
 
 		bool HasActions => actionOptions.Length > 0;
 
+		void InitRemainingActionsFromOption() {
+			actionOptions = spirit.GetAvailableActions( Phase.Growth ).ToArray();
+			isFirst = false;
+			if(!HasActions)
+				InitActionsForAllAvailableOptions();
+		}
+
 		void InitActionsForAllAvailableOptions() {
 			growthOptions = inst.RemainingOptions( spirit.Energy );
 			actionOptions = growthOptions.SelectMany( opt => opt.GrowthActions ).ToArray();
-		}
-
-		void InitRemainingActionsFromOption() {
-			actionOptions = spirit.GetAvailableActions( Phase.Growth ).ToArray();
+			isFirst = true;
 		}
 
 	}
