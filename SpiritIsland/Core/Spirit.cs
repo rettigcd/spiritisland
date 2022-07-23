@@ -104,8 +104,10 @@ public abstract class Spirit : IOption {
 
 				// Select Growth Action
 				IActionFactory selectedAction = await spirit.Select( PROMPT, actionOptions, Present.Always );
-
-				await ExecuteFirstActionOfGrowthOption( selectedAction );
+				if(isFirst) {
+					await ExecuteFirstActionOfGrowthOption( selectedAction );
+					isFirst = false;
+				}
 
 				while(HasActions) {
 					selectedAction = await spirit.SelectFactory( PROMPT, actionOptions, Present.Always );
@@ -114,6 +116,7 @@ public abstract class Spirit : IOption {
 				}
 
 				InitActionsForAllAvailableOptions();// $$$ GET OPTIONS
+				isFirst = true;
 			}
 
 			// (c) Post-Growth Track options
