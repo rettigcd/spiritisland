@@ -82,9 +82,9 @@ public abstract class Spirit : IOption {
 
 		const string PROMPT = "Select Growth";
 
-		Spirit spirit;
-		GameState gameState;
-		IGrowthPhaseInstance inst;
+		readonly Spirit spirit;
+		readonly GameState gameState;
+		readonly IGrowthPhaseInstance inst;
 
 		GrowthOption[] growthOptions;
 		IActionFactory[] actionOptions;
@@ -101,16 +101,12 @@ public abstract class Spirit : IOption {
 
 		public async Task Execute() {
 
-			
 			while(HasActions) {
 				// Select
 				IActionFactory selectedAction = await spirit.Select( PROMPT, actionOptions, Present.Always );
 				// Execute
 				await execute( selectedAction );
 			}
-
-			// (c) Post-Growth Track options
-			await spirit.ApplyRevealedPresenceTracks( spirit.Bind( gameState, Guid.NewGuid() ) );
 
 		}
 
@@ -169,9 +165,10 @@ public abstract class Spirit : IOption {
 			execute = ExecuteFirst;
 		}
 
-		Task X() {
+		async Task X() {
 			InitActionsForAllAvailableOptions();
-			return Task.CompletedTask;
+			if(!HasActions)
+				await spirit.ApplyRevealedPresenceTracks( spirit.Bind( gameState, Guid.NewGuid() ) );
 		}
 
 	}

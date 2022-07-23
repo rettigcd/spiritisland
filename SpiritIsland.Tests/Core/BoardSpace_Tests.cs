@@ -323,55 +323,53 @@ public class BoardSpace_Tests {
 	[InlineData("B8","DD")]
 	[InlineData("C1","D")]
 	[InlineData("C2","C")]
-		[InlineData("C3","DD")]
-		[InlineData("C4","")]
-		[InlineData("C5","DDB")]
-		[InlineData("C6","D")]
-		[InlineData("C7","T")]
-		[InlineData("C8","")]
-		[InlineData("D1","DD")]
-		[InlineData("D2","CD")]
-		[InlineData("D3","")]
-		[InlineData("D4","")]
-		[InlineData("D5","DB")]
-		[InlineData("D6","")]
-		[InlineData("D7","TDD")]
-		[InlineData("D8","")]
-		public void StartingItems(string spaceLabel,string items){
-			var board = spaceLabel[..1] switch{
-				"A" => Board.BuildBoardA(),
-				"B" => Board.BuildBoardB(),
-				"C" => Board.BuildBoardC(),
-				"D" => Board.BuildBoardD(),
-				_ => null
-			};
-			var gameState = new GameState( new RiverSurges(), board );
-			gameState.DisableInvaderDeck();
-			// When:
-			gameState.Initialize();
-		// Then:
-		var space = board.Spaces.Single(x=>x.Label==spaceLabel);
-		var tokens = gameState.Tokens[space];
+	[InlineData("C3","DD")]
+	[InlineData("C4","")]
+	[InlineData("C5","DDB")]
+	[InlineData("C6","D")]
+	[InlineData("C7","T")]
+	[InlineData("C8","")]
+	[InlineData("D1","DD")]
+	[InlineData("D2","CD")]
+	[InlineData("D3","")]
+	[InlineData("D4","")]
+	[InlineData("D5","DB")]
+	[InlineData("D6","")]
+	[InlineData("D7","TDD")]
+	[InlineData("D8","")]
+	public void StartingItems(string spaceLabel,string items){
+		var board = spaceLabel[..1] switch{
+			"A" => Board.BuildBoardA(),
+			"B" => Board.BuildBoardB(),
+			"C" => Board.BuildBoardC(),
+			"D" => Board.BuildBoardD(),
+			_ => null
+		};
+		var gameState = new GameState( new RiverSurges(), board );
+		gameState.DisableInvaderDeck();
+		// When:
+		gameState.Initialize();
+	// Then:
+	var space = board.Spaces.Single(x=>x.Label==spaceLabel);
+	var tokens = gameState.Tokens[space];
 
-		int ee = items.Count(c=>c=='E');
-		int aa = tokens[StdTokens.Explorer];
-		Assert.True(ee==aa,tokens.InvaderSummary()+" ex:"+ee+" act:"+aa);
+	int ee = items.Count(c=>c=='E');
+	int aa = tokens[StdTokens.Explorer];
+	Assert.True(ee==aa,tokens.InvaderSummary()+" ex:"+ee+" act:"+aa);
 
-		Assert.Equal(items.Count(c=>c=='C'), tokens[StdTokens.City]);
-		Assert.Equal(items.Count(c=>c=='T'), tokens[StdTokens.Town] );
-		Assert.Equal(items.Count(c=>c=='E'), tokens[StdTokens.Explorer] );
-		Assert.Equal(items.Count(c=>c=='D'), tokens.Dahan.Count);
-		Assert.Equal(items.Count(c=>c=='B'), tokens.Blight.Any?1:0);
-		}
-
-		#region private
-
-		static void Assert_CanReachSpaceWithNHops( Space source, int distance, params Space[] needles ) {
-			Assert.Equal( needles, source.SpacesExactly( distance ) );
-		}
-
-		#endregion
-
+	Assert.Equal(items.Count(c=>c=='C'), tokens[StdTokens.City]);
+	Assert.Equal(items.Count(c=>c=='T'), tokens[StdTokens.Town] );
+	Assert.Equal(items.Count(c=>c=='E'), tokens[StdTokens.Explorer] );
+	Assert.Equal(items.Count(c=>c=='D'), tokens.Dahan.Count);
+	Assert.Equal(items.Count(c=>c=='B'), tokens.Blight.Any?1:0);
 	}
+
+	#region private
+
+	static void Assert_CanReachSpaceWithNHops( Space source, int distance, params Space[] needles ) {
+		Assert.Equal( needles, source.SpacesExactly( distance ) );
+	}
+
+	#endregion
 
 }
