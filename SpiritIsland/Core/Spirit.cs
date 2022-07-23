@@ -97,8 +97,15 @@ public abstract class Spirit : IOption {
 			if(option.UserRuns.Count() == 1) {
 				await option.UserRuns.First().ActivateAsync( ctx );
 			} else {
-				QueueUpGrowth( option );
-				await ResolveActions( ctx );
+				// queue up growth
+				foreach(GrowthActionFactory action in option.UserRuns)
+					availableActions.Add( action );
+				// resolve actions
+				IActionFactory[] options2;
+				while((options2 = this.GetAvailableActions( Phase.Growth ).ToArray()).Any()) {
+					IActionFactory option2 = await this.SelectFactory( "Select Growth to resolve:", options2, Present.Always );
+					await TakeAction( option2, ctx );
+				}
 			}
 		}
 
