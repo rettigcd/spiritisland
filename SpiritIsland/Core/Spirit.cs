@@ -99,42 +99,17 @@ public abstract class Spirit : IOption {
 		public async Task Execute() {
 
 			InitActionsForAllAvailableOptions();// $$$ GET OPTIONS
+			bool isFirst = true;
 			while(HasActions) {
 
 				// Select Growth Action
 				IActionFactory selectedAction = await spirit.Select( PROMPT, actionOptions, Present.Always );
 
-				// Find Growth Option
-				GrowthOption option = growthOptions.Single( o => o.GrowthActions.Contains( selectedAction ) );
-				inst.MarkAsUsed( option );
+				await ExecuteFirstActionOfGrowthOption( selectedAction );
 
-				// Resolve Growth Option
-				var ctx = spirit.Bind( gameState, Guid.NewGuid() );
-
-				// Auto run the auto-runs.
-				foreach(var autoAction in option.AutoRuns)
-					await autoAction.ActivateAsync( ctx );
-
-				if(option.AutoRuns.Contains( selectedAction ))
-					// selected item was an auto-run
-					// queue up the user runs
-					foreach(GrowthActionFactory action in option.UserRuns)
-						spirit.availableActions.Add( action );
-				else {
-					// selected item was a user-run
-					// run it
-					await selectedAction.ActivateAsync( ctx );
-					// queue up all the others
-					foreach(GrowthActionFactory action in option.UserRuns)
-						if(action != selectedAction)
-							spirit.availableActions.Add( action );
-				}
-
-				// resolve actions
-				InitRemainingActionsFromOption();// $$$ GET OPTIONS
-				while( HasActions ) {
+				while(HasActions) {
 					selectedAction = await spirit.SelectFactory( PROMPT, actionOptions, Present.Always );
-					await spirit.TakeAction( selectedAction, ctx );
+					await spirit.TakeAction( selectedAction, spirit.Bind( gameState, Guid.NewGuid() ) );
 					InitRemainingActionsFromOption();// $$$ GET OPTIONS
 				}
 
@@ -144,6 +119,37 @@ public abstract class Spirit : IOption {
 			// (c) Post-Growth Track options
 			await spirit.ApplyRevealedPresenceTracks( spirit.Bind( gameState, Guid.NewGuid() ) );
 
+		}
+
+		private async Task ExecuteFirstActionOfGrowthOption( IActionFactory selectedAction ) {
+			// Find Growth Option
+			GrowthOption option = growthOptions.Single( o => o.GrowthActions.Contains( selectedAction ) );
+			inst.MarkAsUsed( option );
+
+			// Resolve Growth Option
+			var ctx = spirit.Bind( gameState, Guid.NewGuid() );
+
+			// Auto run the auto-runs.
+			foreach(var autoAction in option.AutoRuns)
+				await autoAction.ActivateAsync( ctx );
+
+			if(option.AutoRuns.Contains( selectedAction ))
+				// selected item was an auto-run
+				// queue up the user runs
+				foreach(GrowthActionFactory action in option.UserRuns)
+					spirit.availableActions.Add( action );
+			else {
+				// selected item was a user-run
+				// run it
+				await selectedAction.ActivateAsync( ctx );
+				// queue up all the others
+				foreach(GrowthActionFactory action in option.UserRuns)
+					if(action != selectedAction)
+						spirit.availableActions.Add( action );
+			}
+
+			// resolve actions
+			InitRemainingActionsFromOption();// $$$ GET OPTIONS
 		}
 
 		bool HasActions => actionOptions.Length > 0;
