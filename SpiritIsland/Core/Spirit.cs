@@ -116,7 +116,7 @@ public abstract class Spirit : IOption {
 
 		async Task ExecuteRemaining( IActionFactory selectedAction ) {
 			await spirit.TakeAction( selectedAction, spirit.Bind( gameState, Guid.NewGuid() ) );
-			InitRemainingActionsFromOption();
+			await InitRemainingActionsFromOption();
 		}
 
 		async Task ExecuteFirst( IActionFactory selectedAction ) {
@@ -147,18 +147,18 @@ public abstract class Spirit : IOption {
 			}
 
 			// resolve actions
-			InitRemainingActionsFromOption();
+			await InitRemainingActionsFromOption();
 		}
 
 		bool HasActions => actionOptions.Length > 0;
 
-		void InitRemainingActionsFromOption() {
+		async Task InitRemainingActionsFromOption() {
 			// Combine these into a Class that executes
 			actionOptions = spirit.GetAvailableActions( Phase.Growth ).ToArray();
 			execute = ExecuteRemaining;
 
 			if(!HasActions)
-				InitActionsForAllAvailableOptions();
+				await X();
 		}
 
 		void InitActionsForAllAvailableOptions() {
@@ -167,6 +167,11 @@ public abstract class Spirit : IOption {
 			// Combine these into a Class that executes
 			actionOptions = growthOptions.SelectMany( opt => opt.GrowthActions ).ToArray();
 			execute = ExecuteFirst;
+		}
+
+		Task X() {
+			InitActionsForAllAvailableOptions();
+			return Task.CompletedTask;
 		}
 
 	}
