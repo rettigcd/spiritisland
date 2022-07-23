@@ -81,11 +81,16 @@ public abstract class Spirit : IOption {
 		// (b) Growth
 		IGrowthPhaseInstance inst = GrowthTrack.GetInstance();
 
-		GrowthOption[] options;
-		while( (options = inst.RemainingOptions(Energy)).Length > 0 ) {
+		GrowthOption[] growthOptions;
+		while( (growthOptions = inst.RemainingOptions(Energy)).Length > 0 ) {
+			// select all actions for each option because nothing in that option has been used yet.
+			IActionFactory[] actionOptions = growthOptions.SelectMany(opt=>opt.GrowthActions).ToArray();
 			// Select Growth Option
-			GrowthOption option = (GrowthOption)await this.Select( "Select Growth Option", options, Present.Always );
+			IActionFactory selectedAction = await this.Select( "Select Growth", actionOptions, Present.Always );
+			// Select Growth Option
+			GrowthOption option = growthOptions.First(o=>o.GrowthActions.Contains(selectedAction));
 			inst.MarkAsUsed( option );
+
 			// Resolve Growth Option
 			var ctx = Bind( gameState, Guid.NewGuid() );
 
@@ -93,19 +98,25 @@ public abstract class Spirit : IOption {
 			foreach(var autoAction in option.AutoRuns)
 				await autoAction.ActivateAsync( ctx );
 
-			// If Option has only 1 Action, auto trigger it.
-			if(option.UserRuns.Count() == 1) {
-				await option.UserRuns.First().ActivateAsync( ctx );
-			} else {
-				// queue up growth
+			if( option.AutoRuns.Contains(selectedAction) )
+				// selected item was an auto-run
+				// queue up the user runs
 				foreach(GrowthActionFactory action in option.UserRuns)
 					availableActions.Add( action );
-				// resolve actions
-				IActionFactory[] options2;
-				while((options2 = this.GetAvailableActions( Phase.Growth ).ToArray()).Any()) {
-					IActionFactory option2 = await this.SelectFactory( "Select Growth to resolve:", options2, Present.Always );
-					await TakeAction( option2, ctx );
-				}
+			else {
+				// selected item was a user-run
+				// run it
+				await selectedAction.ActivateAsync( ctx );
+				// queue up all the others
+				foreach(GrowthActionFactory action in option.UserRuns)
+					if( action != selectedAction )
+						availableActions.Add( action );
+			}
+
+			// resolve actions
+			while((actionOptions = this.GetAvailableActions( Phase.Growth ).ToArray()).Any()) {
+				selectedAction = await this.SelectFactory( "Select Growth to resolve:", actionOptions, Present.Always );
+				await TakeAction( selectedAction, ctx );
 			}
 		}
 
