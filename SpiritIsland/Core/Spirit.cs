@@ -76,55 +76,74 @@ public abstract class Spirit : IOption {
 
 	public GrowthTrack GrowthTrack { get; protected set; }
 
-	public async Task DoGrowth(GameState gameState) {
+	class DoGrowthClass {
+
+		#region private fields
 
 		const string PROMPT = "Select Growth";
 
-		// (b) Growth
-		IGrowthPhaseInstance inst = GrowthTrack.GetInstance();
+		Spirit spirit;
+		GameState gameState;
+		IGrowthPhaseInstance inst;
 
 		GrowthOption[] growthOptions;
-		while( (growthOptions = inst.RemainingOptions(Energy)).Length > 0 ) {
-			// select all actions for each option because nothing in that option has been used yet.
-			IActionFactory[] actionOptions = growthOptions.SelectMany(opt=>opt.GrowthActions).ToArray();
-			// Select Growth Action
-			IActionFactory selectedAction = await this.Select( PROMPT, actionOptions, Present.Always );
-			// Find Growth Option
-			GrowthOption option = growthOptions.Single(o=>o.GrowthActions.Contains(selectedAction));
-			inst.MarkAsUsed( option );
+		IActionFactory[] actionOptions;
+		#endregion
 
-			// Resolve Growth Option
-			var ctx = Bind( gameState, Guid.NewGuid() );
+		public DoGrowthClass(Spirit spirit,GameState gameState) {
+			this.spirit = spirit;
+			this.gameState = gameState;
+			inst = spirit.GrowthTrack.GetInstance();
+		}
+		public async Task Execute() {
 
-			// Auto run the auto-runs.
-			foreach(var autoAction in option.AutoRuns)
-				await autoAction.ActivateAsync( ctx );
+			while((growthOptions = inst.RemainingOptions( spirit.Energy )).Length > 0) {
+				// select all actions for each option because nothing in that option has been used yet.
+				actionOptions = growthOptions.SelectMany( opt => opt.GrowthActions ).ToArray();
+				// Select Growth Action
+				IActionFactory selectedAction = await spirit.Select( PROMPT, actionOptions, Present.Always );
+				// Find Growth Option
+				GrowthOption option = growthOptions.Single( o => o.GrowthActions.Contains( selectedAction ) );
+				inst.MarkAsUsed( option );
 
-			if( option.AutoRuns.Contains(selectedAction) )
-				// selected item was an auto-run
-				// queue up the user runs
-				foreach(GrowthActionFactory action in option.UserRuns)
-					availableActions.Add( action );
-			else {
-				// selected item was a user-run
-				// run it
-				await selectedAction.ActivateAsync( ctx );
-				// queue up all the others
-				foreach(GrowthActionFactory action in option.UserRuns)
-					if( action != selectedAction )
-						availableActions.Add( action );
+				// Resolve Growth Option
+				var ctx = spirit.Bind( gameState, Guid.NewGuid() );
+
+				// Auto run the auto-runs.
+				foreach(var autoAction in option.AutoRuns)
+					await autoAction.ActivateAsync( ctx );
+
+				if(option.AutoRuns.Contains( selectedAction ))
+					// selected item was an auto-run
+					// queue up the user runs
+					foreach(GrowthActionFactory action in option.UserRuns)
+						spirit.availableActions.Add( action );
+				else {
+					// selected item was a user-run
+					// run it
+					await selectedAction.ActivateAsync( ctx );
+					// queue up all the others
+					foreach(GrowthActionFactory action in option.UserRuns)
+						if(action != selectedAction)
+							spirit.availableActions.Add( action );
+				}
+
+				// resolve actions
+				while((actionOptions = spirit.GetAvailableActions( Phase.Growth ).ToArray()).Any()) {
+					selectedAction = await spirit.SelectFactory( PROMPT, actionOptions, Present.Always );
+					await spirit.TakeAction( selectedAction, ctx );
+				}
 			}
 
-			// resolve actions
-			while((actionOptions = this.GetAvailableActions( Phase.Growth ).ToArray()).Any()) {
-				selectedAction = await this.SelectFactory( PROMPT, actionOptions, Present.Always );
-				await TakeAction( selectedAction, ctx );
-			}
+			// (c) Post-Growth Track options
+			await spirit.ApplyRevealedPresenceTracks( spirit.Bind( gameState, Guid.NewGuid() ) );
+
 		}
 
-		// (c) Post-Growth Track options
-		await ApplyRevealedPresenceTracks( Bind( gameState, Guid.NewGuid() ) );
+	}
 
+	public async Task DoGrowth(GameState gameState) {
+		await new DoGrowthClass(this,gameState).Execute();
 	}
 
 	public async Task GrowAndResolve( GrowthOption option, GameState gameState ) { // public for Testing
