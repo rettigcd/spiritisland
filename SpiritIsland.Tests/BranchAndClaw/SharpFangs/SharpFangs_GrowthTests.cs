@@ -182,27 +182,24 @@ public class SharpFangs_GrowthTests : GrowthTests {
 	}
 
 	void User_GrowthA_ReclaimAll_Energy_DrawCard() {
-		User.Growth_SelectsOption( "ReclaimAll / GainEnergy(-1) / DrawPowerCard" );
-//		User.Growth_GainsEnergy();
-//		User.Growth_ReclaimsAll();
-//		User.Growth_DrawsPowerCard();
+		User.Growth_SelectAction( "ReclaimAll" );
+		User.Growth_DrawsPowerCard();
+		//User.Growth_GainsEnergy();
 	}
 
 	void User_GrowthB_PlacePresence() {
-		User.Growth_SelectsOption( "PlacePresence(3,beast or jungle)" );
-		// Skip Selecting the Action due to AutoSelectSingle
+		User.Growth_SelectAction( "PlacePresence(3,beast or jungle)" );
 		User.PlacePresenceLocations( spirit.Presence.Energy.RevealOptions.Single(), "A3;A7;A8" );
 	}
 
 	void User_GrowthC_DrawCard_GainEnergy() {
-		User.Growth_SelectsOption( "DrawPowerCard / GainEnergy(1)" );
+		User.Growth_SelectAction( "DrawPowerCard" );
 //		User.Growth_GainsEnergy();
 //		User.Growth_DrawsPowerCard();
 	}
 
 	void User_GrowthD_GainEnergy() {
-		User.Growth_SelectsOption( "GainEnergy(3)" );
-		// User.Growth_GainsEnergy();
+		User.Growth_SelectAction( "GainEnergy(3)" );
 	}
 
 

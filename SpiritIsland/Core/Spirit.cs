@@ -78,6 +78,8 @@ public abstract class Spirit : IOption {
 
 	public virtual async Task DoGrowth(GameState gameState) {
 
+		const string PROMPT = "Select Growth";
+
 		// (b) Growth
 		IGrowthPhaseInstance inst = GrowthTrack.GetInstance();
 
@@ -85,10 +87,10 @@ public abstract class Spirit : IOption {
 		while( (growthOptions = inst.RemainingOptions(Energy)).Length > 0 ) {
 			// select all actions for each option because nothing in that option has been used yet.
 			IActionFactory[] actionOptions = growthOptions.SelectMany(opt=>opt.GrowthActions).ToArray();
-			// Select Growth Option
-			IActionFactory selectedAction = await this.Select( "Select Growth", actionOptions, Present.Always );
-			// Select Growth Option
-			GrowthOption option = growthOptions.First(o=>o.GrowthActions.Contains(selectedAction));
+			// Select Growth Action
+			IActionFactory selectedAction = await this.Select( PROMPT, actionOptions, Present.Always );
+			// Find Growth Option
+			GrowthOption option = growthOptions.Single(o=>o.GrowthActions.Contains(selectedAction));
 			inst.MarkAsUsed( option );
 
 			// Resolve Growth Option
@@ -115,7 +117,7 @@ public abstract class Spirit : IOption {
 
 			// resolve actions
 			while((actionOptions = this.GetAvailableActions( Phase.Growth ).ToArray()).Any()) {
-				selectedAction = await this.SelectFactory( "Select Growth to resolve:", actionOptions, Present.Always );
+				selectedAction = await this.SelectFactory( PROMPT, actionOptions, Present.Always );
 				await TakeAction( selectedAction, ctx );
 			}
 		}

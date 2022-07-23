@@ -17,7 +17,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Lightning {
 			Given_HalfOfPowercardsPlayed();
 			When_StartingGrowth();
 
-			User.Growth_SelectsOption( "ReclaimAll / DrawPowerCard / GainEnergy(1)" );
+			User.Growth_SelectAction( "DrawPowerCard" );
 //			User.Growth_ReclaimsAll();
 //			User.Growth_GainsEnergy();
 //			User.Growth_DrawsPowerCard();
@@ -35,8 +35,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Lightning {
 
 			When_StartingGrowth();
 
-			User.Growth_SelectsOption( "GainEnergy(3) / PlacePresence(1)" );
-//			User.Growth_GainsEnergy();
+			User.Growth_SelectAction( "PlacePresence(1)" );
 			User.Growth_PlacesEnergyPresence( "A1;A2;A4;A5;A6" );
 
 			Assert.Equal(1,spirit.EnergyPerTurn);

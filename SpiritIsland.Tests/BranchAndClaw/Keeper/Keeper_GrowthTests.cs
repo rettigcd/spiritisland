@@ -209,27 +209,26 @@ public class Keeper_GrowthTests : GrowthTests {
 	}
 
 	void User_Activates_A() {
-		User.Growth_SelectsOption( "ReclaimAll / GainEnergy(1)" );
-//			User.Growth_ReclaimsAll();
-//			User.Growth_GainsEnergy();
+		User.Growth_SelectAction( "ReclaimAll" );
+		// auto-runs: GainEnergy(1)
 	}
 
 	void User_Activates_B() {
-		User.Growth_SelectsOption( "DrawPowerCard" );
+		User.Growth_SelectAction( "DrawPowerCard" );
 		// User.Growth_DrawsPowerCard(); - not needed due to AutoSelectSingle
 	}
 
 	void User_Activates_C() {
-		User.Growth_SelectsOption( "GainEnergy(1) / PlacePresence(3,presence or wilds)" );
-//		User.Growth_GainsEnergy();
+		User.Growth_SelectAction( "PlacePresence(3,presence or wilds)" );
 		User.Growth_PlacesEnergyPresence( "A3;A8" );
+		//		User.Growth_GainsEnergy();
 	}
 
 	void User_Activates_D() {
-		User.Growth_SelectsOption( "GainEnergy(-3) / DrawPowerCard / PlacePresence(3,no blight)" );
-//		User.Growth_GainsEnergy();
-		User.Growth_DrawsPowerCard();
+		User.Growth_SelectAction( "PlacePresence(3,no blight)" );
 		User.PlacesCardPlayPresence( "A7" );
+		User.Growth_DrawsPowerCard();
+		// User.Growth_GainsEnergy();
 	}
 
 }

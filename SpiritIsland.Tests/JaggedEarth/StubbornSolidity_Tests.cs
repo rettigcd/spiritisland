@@ -99,7 +99,7 @@ namespace SpiritIsland.Tests.JaggedEarth {
 		}
 
 		static void Stone_Grows( GameFixture fxt ) {
-			fxt.user.Growth_SelectsOption( "PlacePresence(2) / GainEnergy(3)" );
+			fxt.user.Growth_SelectAction( "PlacePresence(2)" );
 			fxt.user.Growth_PlacesPresence( "energy>A1;A2;A3;A4;(A5);A6;A7;A8" );
 //			fxt.user.Growth_GainsEnergy();
 		}

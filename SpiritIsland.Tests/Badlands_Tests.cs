@@ -23,7 +23,7 @@ public class Badlands_Tests {
 		tokens.Summary.ShouldBe("1D@2,1E@1,1G,1M");
 
 		// When: Grow, Skip Buy, then Ravage
-		fxt.user.Growth_SelectsOption( "ReclaimAll" );
+		fxt.user.Growth_SelectAction( "ReclaimAll" );
 		fxt.user.IsDoneBuyingCards();
 
 		//  Then: ravage happened
@@ -61,7 +61,8 @@ public class Badlands_Tests {
 		tokens.Summary.ShouldBe("1D@2,1E@1,1M");
 
 		// When: Grow, Skip Buy, then Ravage
-		fxt.user.Growth_SelectsOption( "ReclaimAll" );
+//		fxt.user.Growth_SelectsOption( "ReclaimAll" );
+		fxt.user.Growth_SelectAction( "ReclaimAll" );
 		fxt.user.IsDoneBuyingCards();
 
 		//  Then: ravage happened

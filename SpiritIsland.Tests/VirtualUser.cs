@@ -24,6 +24,12 @@ namespace SpiritIsland.Tests {
 			Choose( growthOption );
 		}
 
+		public void Growth_SelectAction( string growthOption, int index = 0 ) {
+			var current = userPortal.GetCurrent();
+			Assert.Equal( "Select Growth", current.Prompt );
+			Choose( growthOption, index );
+		}
+
 		public void Growth_SelectsOption(int growthOptionIndex) {
 			var current = userPortal.GetCurrent();
 			Assert.Equal( "Select Growth Option", current.Prompt );
@@ -248,8 +254,8 @@ namespace SpiritIsland.Tests {
 			ChooseUsingText( choice, current );
 		}
 
-		void ChooseUsingText( string text, IDecision current ) {
-			var choice = current.Options.FirstOrDefault( o => o.Text == text );
+		void ChooseUsingText( string text, IDecision current, int index = 0 ) {
+			var choice = current.Options.Where( o => o.Text == text ).Skip(index).FirstOrDefault();
 			if(choice == null)
 				throw new ArgumentOutOfRangeException(nameof(text),"sequence ["+current.Options.Select(x=>x.Text).Join(",")+"]does not contain option: "+text);
 			userPortal.Choose( choice ); // not single because some options appear twice
@@ -337,12 +343,13 @@ namespace SpiritIsland.Tests {
 				?? throw new Exception( $"option ({select} not found in " + current.Options.Select( x => x.Text ).Join( ", " ) );
 		}
 
-		protected void Choose(IOption option ) {
+		protected void Choose( IOption option ) {
 			userPortal.Choose( option );
 			WaitForSignal();
 		}
-		protected void Choose( string option ) {
-			ChooseUsingText( option, userPortal.GetCurrent() );
+
+		protected void Choose( string option, int index=0 ) {
+			ChooseUsingText( option, userPortal.GetCurrent(), index );
 			WaitForSignal();
 		}
 
