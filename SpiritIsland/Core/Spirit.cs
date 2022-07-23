@@ -95,13 +95,15 @@ public abstract class Spirit : IOption {
 			this.gameState = gameState;
 			inst = spirit.GrowthTrack.GetInstance();
 		}
+
 		public async Task Execute() {
 
-			while((growthOptions = inst.RemainingOptions( spirit.Energy )).Length > 0) {
-				// select all actions for each option because nothing in that option has been used yet.
-				actionOptions = growthOptions.SelectMany( opt => opt.GrowthActions ).ToArray();
+			InitActionsForAllAvailableOptions();// $$$ GET OPTIONS
+			while(HasActions) {
+
 				// Select Growth Action
 				IActionFactory selectedAction = await spirit.Select( PROMPT, actionOptions, Present.Always );
+
 				// Find Growth Option
 				GrowthOption option = growthOptions.Single( o => o.GrowthActions.Contains( selectedAction ) );
 				inst.MarkAsUsed( option );
@@ -129,15 +131,30 @@ public abstract class Spirit : IOption {
 				}
 
 				// resolve actions
-				while((actionOptions = spirit.GetAvailableActions( Phase.Growth ).ToArray()).Any()) {
+				InitRemainingActionsFromOption();// $$$ GET OPTIONS
+				while( HasActions ) {
 					selectedAction = await spirit.SelectFactory( PROMPT, actionOptions, Present.Always );
 					await spirit.TakeAction( selectedAction, ctx );
+					InitRemainingActionsFromOption();// $$$ GET OPTIONS
 				}
+
+				InitActionsForAllAvailableOptions();// $$$ GET OPTIONS
 			}
 
 			// (c) Post-Growth Track options
 			await spirit.ApplyRevealedPresenceTracks( spirit.Bind( gameState, Guid.NewGuid() ) );
 
+		}
+
+		bool HasActions => actionOptions.Length > 0;
+
+		void InitActionsForAllAvailableOptions() {
+			growthOptions = inst.RemainingOptions( spirit.Energy );
+			actionOptions = growthOptions.SelectMany( opt => opt.GrowthActions ).ToArray();
+		}
+
+		void InitRemainingActionsFromOption() {
+			actionOptions = spirit.GetAvailableActions( Phase.Growth ).ToArray();
 		}
 
 	}
