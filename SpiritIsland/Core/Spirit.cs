@@ -77,7 +77,6 @@ public abstract class Spirit : IOption {
 	public GrowthTrack GrowthTrack { get; protected set; }
 
 	public virtual async Task DoGrowth(GameState gameState) {
-		var ctx = Bind( gameState, Guid.NewGuid() );
 
 		// (b) Growth
 		IGrowthPhaseInstance inst = GrowthTrack.GetInstance();
@@ -88,11 +87,23 @@ public abstract class Spirit : IOption {
 			GrowthOption option = (GrowthOption)await this.Select( "Select Growth Option", options, Present.Always );
 			inst.MarkAsUsed( option );
 			// Resolve Growth Option
-			await GrowAndResolve( option, gameState );
+			var ctx = Bind( gameState, Guid.NewGuid() );
+
+			// Auto run the auto-runs.
+			foreach(var autoAction in option.AutoRuns)
+				await autoAction.ActivateAsync( ctx );
+
+			// If Option has only 1 Action, auto trigger it.
+			if(option.UserRuns.Count() == 1) {
+				await option.UserRuns.First().ActivateAsync( ctx );
+			} else {
+				QueueUpGrowth( option );
+				await ResolveActions( ctx );
+			}
 		}
 
 		// (c) Post-Growth Track options
-		await ApplyRevealedPresenceTracks( ctx );
+		await ApplyRevealedPresenceTracks( Bind( gameState, Guid.NewGuid() ) );
 
 	}
 
@@ -106,11 +117,10 @@ public abstract class Spirit : IOption {
 		// If Option has only 1 Action, auto trigger it.
 		if( option.UserRuns.Count() == 1) {
 			await option.UserRuns.First().ActivateAsync( ctx );
-			return;
+		} else {
+			QueueUpGrowth( option );
+			await ResolveActions( ctx );
 		}
-			
-		QueueUpGrowth( option );
-		await ResolveActions( ctx );
 	}
 
 	/// <summary> Adds UserRun Growth Actions to the Ready-to-resolve list.</summary>
