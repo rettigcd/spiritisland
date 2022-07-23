@@ -76,7 +76,7 @@ public abstract class Spirit : IOption {
 
 	public GrowthTrack GrowthTrack { get; protected set; }
 
-	public virtual async Task DoGrowth(GameState gameState) {
+	public async Task DoGrowth(GameState gameState) {
 
 		const string PROMPT = "Select Growth";
 
