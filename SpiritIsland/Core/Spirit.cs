@@ -89,7 +89,7 @@ public abstract class Spirit : IOption {
 		GrowthOption[] growthOptions;
 		IActionFactory[] actionOptions;
 
-		bool isFirst;
+		Func<IActionFactory,Task> execute;
 		#endregion
 
 		public DoGrowthClass(Spirit spirit,GameState gameState) {
@@ -101,14 +101,12 @@ public abstract class Spirit : IOption {
 
 		public async Task Execute() {
 
+			
 			while(HasActions) {
 				// Select
 				IActionFactory selectedAction = await spirit.Select( PROMPT, actionOptions, Present.Always );
 				// Execute
-				if(isFirst)
-					await ExecuteFirst( selectedAction );
-				else
-					await ExecuteRemaining( selectedAction );
+				await execute( selectedAction );
 			}
 
 			// (c) Post-Growth Track options
@@ -155,16 +153,20 @@ public abstract class Spirit : IOption {
 		bool HasActions => actionOptions.Length > 0;
 
 		void InitRemainingActionsFromOption() {
+			// Combine these into a Class that executes
 			actionOptions = spirit.GetAvailableActions( Phase.Growth ).ToArray();
-			isFirst = false;
+			execute = ExecuteRemaining;
+
 			if(!HasActions)
 				InitActionsForAllAvailableOptions();
 		}
 
 		void InitActionsForAllAvailableOptions() {
 			growthOptions = inst.RemainingOptions( spirit.Energy );
+
+			// Combine these into a Class that executes
 			actionOptions = growthOptions.SelectMany( opt => opt.GrowthActions ).ToArray();
-			isFirst = true;
+			execute = ExecuteFirst;
 		}
 
 	}
