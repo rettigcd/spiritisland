@@ -274,6 +274,7 @@ public class TargetSpaceCtx : SelfCtx {
 		const int damagePerInvader = 1;
 
 		// !!! Add Damage Pool (badlands / Flame's Furry) to this.
+		// For Veil the Nights Hunt, badland damage can only be added to invaders already damaged. Might be different for other powers.
 
 		// Find All Invaders
 		var invaders = new List<Token>();
