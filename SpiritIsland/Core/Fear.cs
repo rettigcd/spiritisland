@@ -38,13 +38,15 @@ public class Fear {
 
 	public void AddDirect( FearArgs args ) {
 		EarnedFear += args.count;
-		while(PoolMax <= EarnedFear) { // should be while() - need unit test
+		while(PoolMax <= EarnedFear && Deck.Any() ) {
 			EarnedFear -= PoolMax;
 			ActivatedCards.Push( Deck.Pop() );
 			ActivatedCards.Peek().Text = "Active " + ActivatedCards.Count;
 		}
-		if(Deck.Count == 0)
-			GameOverException.Win("Terror Level VICTORY");
+		// !! Do NOT check for victory here and throw GameOverException(...)
+		// This is called inside PowerCard using Invoke() which converts exception to a TargetInvocationException which we don't want.
+		// Let the post-Action check catch the victory.
+
 		FearAdded?.Invoke( gs, args );
 	}
 
