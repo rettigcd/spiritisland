@@ -3,6 +3,7 @@
 public class HealthToken : Token, IEquatable<HealthToken> {
 
 	public HealthToken( HealthTokenClass tokenClass, int rawFullHealth, int damage = 0, int strifeCount = 0 ) {
+
 		Class = tokenClass;
 		_rawFullHealth = rawFullHealth;
 
@@ -52,13 +53,18 @@ public class HealthToken : Token, IEquatable<HealthToken> {
 
 	#region GetHashCode / Equals
 
-	public override int GetHashCode() => Class.GetHashCode()*7 + FullHealth + Damage * 100 + StrifeCount * 10000;
+	public override int GetHashCode() 
+		=> Class.GetHashCode()
+		+  2 * _rawFullHealth	// Do NOT use FullHealth because that might change based on HealthPenalty
+		+  8 * Damage
+		+ 32 * StrifeCount;
 
 	public override bool Equals( object obj ) => this.Equals( obj as HealthToken );
+
 	public bool Equals( HealthToken other ) {
 		return other != null
 			&& other.Class == Class
-			&& other.FullHealth == FullHealth
+			&& other._rawFullHealth == _rawFullHealth
 			&& other.Damage == Damage	
 			&& other.StrifeCount == StrifeCount;
 	}
@@ -68,6 +74,7 @@ public class HealthToken : Token, IEquatable<HealthToken> {
 	public int RemainingHealth => FullHealth - Damage;
 
 	public override string ToString() => _summaryString;
+
 	readonly string _summaryString;
 
 	string IOption.Text => _summaryString;
