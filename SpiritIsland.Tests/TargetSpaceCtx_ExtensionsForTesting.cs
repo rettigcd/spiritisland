@@ -8,10 +8,10 @@ internal static class TargetSpaceCtx_ExtensionsForTesting {
 		if(!string.IsNullOrEmpty( expectedInvaderSummary )) { 
 			foreach(var part in expectedInvaderSummary.Split( ',' )) {
 				Token token = part[1..] switch {
-					"E@1" => Tokens.Explorer,
-					"T@2" => Tokens.Town,
-					"C@3" => Tokens.City,
-					"D@2" => Tokens.Dahan,
+					"E@1" => StdTokens.Explorer,
+					"T@2" => StdTokens.Town,
+					"C@3" => StdTokens.City,
+					"D@2" => StdTokens.Dahan,
 					"Z" => TokenType.Disease,
 					_ => throw new ArgumentException("invalide tokentype found in "+expectedInvaderSummary)
 				};

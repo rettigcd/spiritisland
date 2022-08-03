@@ -54,7 +54,7 @@ public class MassiveFlooding_Tests : RiverGame {
 		_ = InnatePower.For<MassiveFlooding>().ActivateAsync( fixture.SelfCtx );
 		fixture.Choose( space ); // target space
 
-		fixture.ChoosePush( Tokens.Town, destination ); // push 1
+		fixture.ChoosePush( StdTokens.Town, destination ); // push 1
 
 		// Then: target has remaining invaders
 		tokens.Summary.ShouldBe( "1C@3,5E@1,3T@2" );
@@ -83,12 +83,12 @@ public class MassiveFlooding_Tests : RiverGame {
 		//  When: activate innate
 		_ = InnatePower.For<MassiveFlooding>().ActivateAsync( fixture.SelfCtx );
 		fixture.Choose( space ); // target space
-		fixture.Choose( Tokens.Town ); // 1st damage
-		fixture.Choose( Tokens.Town1 ); // 2nd damage
+		fixture.Choose( StdTokens.Town ); // 1st damage
+		fixture.Choose( StdTokens.Town1 ); // 2nd damage
 
-		fixture.ChoosePush( Tokens.Town, destination ); // push 1
-		fixture.ChoosePush( Tokens.Town, destination ); // push 2
-		fixture.ChoosePush( Tokens.Explorer, destination ); // push 3
+		fixture.ChoosePush( StdTokens.Town, destination ); // push 1
+		fixture.ChoosePush( StdTokens.Town, destination ); // push 2
+		fixture.ChoosePush( StdTokens.Explorer, destination ); // push 3
 
 		// Then: target has remaining invaders
 		tokens.Summary.ShouldBe( "1C@3,4E@1,1T@2" );

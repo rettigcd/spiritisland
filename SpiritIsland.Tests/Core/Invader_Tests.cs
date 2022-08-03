@@ -6,12 +6,12 @@ public class Invader_Tests {
 
 	static Token Parse(string s ) {
 		return s switch {
-			"C@3" => Tokens.City,
-			"C@2" => Tokens.City2,
-			"C@1" => Tokens.City1,
-			"T@2" => Tokens.Town,
-			"T@1" => Tokens.Town1,
-			"E@1" => Tokens.Explorer,
+			"C@3" => StdTokens.City,
+			"C@2" => StdTokens.City2,
+			"C@1" => StdTokens.City1,
+			"T@2" => StdTokens.Town,
+			"T@1" => StdTokens.Town1,
+			"E@1" => StdTokens.Explorer,
 			_=>throw new FormatException("unknown invader format: "+s),
 		};
 	}
@@ -144,7 +144,7 @@ public class Invader_Tests {
 		//  and A5 (original) - proves explorers aren't reference types like towns
 		foreach(var space in board.Spaces){
 			var invaders = gameState.Tokens[space];
-			Assert.Equal(space == board[5] || space == board[2]?1:0,invaders[Tokens.Explorer ] );
+			Assert.Equal(space == board[5] || space == board[2]?1:0,invaders[StdTokens.Explorer ] );
 		}
 	}
 
@@ -179,7 +179,7 @@ public class Invader_Tests {
 			var invaders = gameState.Tokens[space];
 			Assert.Equal(
 				space.IsWetland ? 1 : 0
-				,invaders[ Tokens.Explorer ]
+				,invaders[ StdTokens.Explorer ]
 			);
 		}
 	}

@@ -5,10 +5,10 @@ public class Token_Tests {
 	[Fact]
 	public void SummariesAreUnique() {
 		var tokens = new Token[] {
-			Tokens.Explorer,
-			Tokens.Town1,Tokens.Town,
-			Tokens.City1,Tokens.City2,Tokens.City,
-			Tokens.Dahan1,Tokens.Dahan,
+			StdTokens.Explorer,
+			StdTokens.Town1,StdTokens.Town,
+			StdTokens.City1,StdTokens.City2,StdTokens.City,
+			StdTokens.Dahan1,StdTokens.Dahan,
 			TokenType.Blight, // conflict with Beast
 			TokenType.Defend,
 			TokenType.Beast,

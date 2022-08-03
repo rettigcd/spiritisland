@@ -50,9 +50,9 @@ namespace SpiritIsland.Tests {
 
 			// Then: target 2 of each
 			var dst = gameState.Tokens[a1];
-			dst[Tokens.Dahan].ShouldBe(2);
-			dst[Tokens.Explorer].ShouldBe(2);
-			dst[Tokens.Town].ShouldBe(2);
+			dst[StdTokens.Dahan].ShouldBe(2);
+			dst[StdTokens.Explorer].ShouldBe(2);
+			dst[StdTokens.Town].ShouldBe(2);
 		}
 		
 	}

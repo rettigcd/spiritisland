@@ -22,7 +22,7 @@ namespace SpiritIsland.Tests;
 /// <summary>
 /// Lazy inits all parts, allowing use to pre-configure parts they care about, before they are lazy-inited.
 /// </summary>
-public class ConfigurableTestFixture {
+public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 
 	#region Configurable Parts
 
@@ -119,7 +119,7 @@ public class ConfigurableTestFixture {
 	}
 
 	static readonly Regex tokenParser = new Regex( @"(\d+)(\w)@(\d+)(\^*)" );
-	static (int,Token) ParseToken( string part ) {
+	(int,Token) ParseToken( string part ) {
 		var match = tokenParser.Match( part );
 		if(!match.Success) throw new FormatException( $"Unrecognized token [{part}]." );
 		var tokenClass = match.Groups[2].Value switch {
@@ -132,7 +132,7 @@ public class ConfigurableTestFixture {
 		int fullHealth = tokenClass.Attack; // hack - class doesn't have full health, so we will cheat and use attack as the full health.
 		var token = new HealthToken( 
 			tokenClass,
-			Tokens._penaltyHolder,
+			this,
 			fullHealth,
 			fullHealth - int.Parse( match.Groups[3].Value ), // damage
 			match.Groups[4].Value.Length // strife
@@ -140,6 +140,8 @@ public class ConfigurableTestFixture {
 		int count = int.Parse( match.Groups[1].Value );
 		return (count, token);
 	}
+
+	public int HealthPenaltyPerStrife { get; set; }
 
 	public void InitRavageCard( IInvaderCard card ) {
 		GameState.InvaderDeck.Ravage.Cards.Add(card);

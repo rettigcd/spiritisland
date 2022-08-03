@@ -42,7 +42,7 @@ public class WrapInWingsOfSunlight_Tests {
 
 		// Then: target 2 of each
 		var dstTokens = gameState.Tokens[dst];
-		dstTokens[Tokens.Dahan].ShouldBe(5);
+		dstTokens[StdTokens.Dahan].ShouldBe(5);
 	}
 
 	[Trait("Feature","Push")]
@@ -83,7 +83,7 @@ public class WrapInWingsOfSunlight_Tests {
 
 		// Then: target 2 of each
 		var dstTokens = gameState.Tokens[dst];
-		dstTokens[Tokens.Dahan].ShouldBe(2);
+		dstTokens[StdTokens.Dahan].ShouldBe(2);
 	}
 
 }

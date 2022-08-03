@@ -6,8 +6,8 @@ public class Strife_Tests {
 	readonly HealthToken strifedCity;
 
 	public Strife_Tests() {
-		city = Tokens.City;
-		strifedCity = Tokens.City.HavingStrife( 1 );
+		city = StdTokens.City;
+		strifedCity = StdTokens.City.HavingStrife( 1 );
 	}
 
 	[Fact]
@@ -74,9 +74,9 @@ public class Strife_Tests {
 		var counts = gs.Tokens[space];
 
 		// Given: 1 town and 1 strifed town
-		counts.Init( Tokens.Town, 2);
-		counts.AddStrifeTo( Tokens.Town, default ).Wait();
-		var strifedTown = counts.OfType(Invader.Town).Single( k => k != Tokens.Town );
+		counts.Init( StdTokens.Town, 2);
+		counts.AddStrifeTo( StdTokens.Town, default ).Wait();
+		var strifedTown = counts.OfType(Invader.Town).Single( k => k != StdTokens.Town );
 
 		// When: move
 		var destination = space.Adjacent.First( x => !x.IsOcean );
@@ -102,7 +102,7 @@ public class Strife_Tests {
 		var space = board.Spaces.Skip( 1 ).First( x => !gs.Tokens[x].HasAny() );
 		var counts = gs.Tokens[space];
 
-		var city2 = Tokens.City2;
+		var city2 = StdTokens.City2;
 
 		// Given: staring invaders
 		switch(startingInvaders) {
@@ -120,8 +120,8 @@ public class Strife_Tests {
 			case "C@2": counts.AddStrifeTo( city2 , default).Wait(); break;
 			case "C@2^": counts.AddStrifeTo( city2.HavingStrife( 1 ), default ).Wait(); break;
 			case "1C@3,1T@2":
-				counts.AddStrifeTo( Tokens.City , default).Wait();
-				counts.AddStrifeTo( Tokens.Town , default).Wait();
+				counts.AddStrifeTo( StdTokens.City , default).Wait();
+				counts.AddStrifeTo( StdTokens.Town , default).Wait();
 				break;
 			default: throw new Exception( "add to not in list" );
 		}
@@ -131,21 +131,21 @@ public class Strife_Tests {
 
 	}
 
+	class HealthPenaltyHolder : IHaveHealthPenaltyPerStrife {
+		public int HealthPenaltyPerStrife { get; set; }
+	}
+
 	[Fact]
 	public void StrifedCityStillFoundAfterStrifeBasedHealthChange() {
-		try{
-			// Given: dictionary contains a strifed city
-			var counts = new CountDictionary<Token>();
-			var token = Tokens.City2.AddStrife( 1 );
-			counts[token] = 1;
-			// When: adjust health based on strife
-			Tokens._penaltyHolder.HealthPenaltyPerStrife = 1;			// !!! STOP USING global variables.
-			// Then: can still find token in dictionary
-			counts.ContainsKey(token).ShouldBeTrue();
-		}
-		finally {
-			Tokens._penaltyHolder.HealthPenaltyPerStrife = 0; // this MUST be reset. or other tests break.
-		}
+		// Given: dictionary contains a strifed city
+		var counts = new CountDictionary<Token>();
+		var holder = new HealthPenaltyHolder();
+		var token = new HealthToken(Invader.City,holder,3,0,1);
+		counts[token] = 1;
+		// When: adjust health based on strife
+		holder.HealthPenaltyPerStrife = 1;			// !!! STOP USING global variables.
+		// Then: can still find token in dictionary
+		counts.ContainsKey(token).ShouldBeTrue();
 	}
 
 	[Fact]
@@ -158,7 +158,7 @@ public class Strife_Tests {
 
 		// Given: 1 strifed city
 		var counts = gs.Tokens[space];
-		counts.Init(Tokens.City.HavingStrife( 1 ), 1);
+		counts.Init(StdTokens.City.HavingStrife( 1 ), 1);
 		counts.InvaderSummary().ShouldBe( "1C@3^", "strife should be used up" );
 
 		//   and: 1 dahan

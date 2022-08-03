@@ -87,7 +87,7 @@ namespace SpiritIsland.Tests.JaggedEarth {
 			BuysAndUses( fxt, StubbornSolidity.Name );
 
 			//  Then: all dahan still there
-			tokens[Tokens.Dahan].ShouldBe( startingDahanCount );
+			tokens[StdTokens.Dahan].ShouldBe( startingDahanCount );
 
 		}
 
