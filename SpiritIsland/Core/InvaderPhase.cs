@@ -9,6 +9,7 @@ public class InvaderPhase {
 
 		// Fear
 		await gs.Fear.Apply();
+		gs.CheckWinLoss();
 
 		foreach(var slot in gs.InvaderDeck.Slots) {
 			await slot.Execute(gs);
