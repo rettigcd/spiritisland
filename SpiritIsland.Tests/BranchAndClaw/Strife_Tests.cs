@@ -132,32 +132,20 @@ public class Strife_Tests {
 	}
 
 	[Fact]
-	public void StrifedCityStillFoundAfterStrifeBasedHealthChange(){
-		// Given: dictionary contains a strifed city
-		var counts = new CountDictionary<Token>();
-		var token = new HealthToken( Invader.City, 3, 0, 1 );
-		counts[token] = 1;
-		// When: adjust health based on strife
-		HealthToken.HealthPenaltyPerStrife = 1;
-		// Then: can still find token in dictionary
-		counts.ContainsKey(token).ShouldBeTrue();
-	}
-
-	[Fact]
-	public void ChangingGetHashCode() {
-		var itemHashSet = new HashSet<Item>();
-		var k = new Item();
-
-		for(k.Id = 0; k.Id < 10; k.Id++)
-			itemHashSet.Add(k);
-
-		itemHashSet.Count.ShouldBe(1);
-	}
-
-	class Item {
-		public int Id { get; set; }
-		public override int GetHashCode() => Id;
-		public override bool Equals( object obj ) => obj is Item other && other.Id == Id;
+	public void StrifedCityStillFoundAfterStrifeBasedHealthChange() {
+		try{
+			// Given: dictionary contains a strifed city
+			var counts = new CountDictionary<Token>();
+			var token = Tokens.City2.AddStrife( 1 );
+			counts[token] = 1;
+			// When: adjust health based on strife
+			Tokens._penaltyHolder.HealthPenaltyPerStrife = 1;			// !!! STOP USING global variables.
+			// Then: can still find token in dictionary
+			counts.ContainsKey(token).ShouldBeTrue();
+		}
+		finally {
+			Tokens._penaltyHolder.HealthPenaltyPerStrife = 0; // this MUST be reset. or other tests break.
+		}
 	}
 
 	[Fact]

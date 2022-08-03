@@ -7,6 +7,14 @@ public class Tokens_ForIsland : IIslandTokenApi {
 	public Tokens_ForIsland( GameState gs ) {
 		this.gameStateForEventArgs = gs;
 
+		PenaltyHolder = gs;// new HealthPenaltyPerStrifeHolder();
+		TokenDefaults = new Dictionary<HealthTokenClass, HealthToken> {
+			[Invader.City] = new HealthToken( Invader.City, PenaltyHolder, 3 ),
+			[Invader.Town] = new HealthToken( Invader.Town, PenaltyHolder, 2 ),
+			[Invader.Explorer] = new HealthToken( Invader.Explorer, PenaltyHolder, 1 ),
+			[TokenType.Dahan] = new HealthToken( TokenType.Dahan, PenaltyHolder, 2 ),
+		};
+
 		gs.TimePasses_WholeGame += TimePasses;
 	}
 
@@ -95,13 +103,10 @@ public class Tokens_ForIsland : IIslandTokenApi {
 			.Join("\r\n");
 	}
 
+	readonly public IHaveHealthPenaltyPerStrife PenaltyHolder;
+	readonly public Dictionary<HealthTokenClass, HealthToken> TokenDefaults;
+
 	HealthToken IIslandTokenApi.GetDefault( HealthTokenClass tokenClass ) => TokenDefaults[tokenClass];
-	public Dictionary<HealthTokenClass,HealthToken> TokenDefaults = new Dictionary<HealthTokenClass, HealthToken> {
-		[Invader.City] = new HealthToken( Invader.City, 3 ),
-		[Invader.Town] = new HealthToken( Invader.Town, 2 ),
-		[Invader.Explorer] = new HealthToken( Invader.Explorer, 1 ),
-		[TokenType.Dahan] = new HealthToken( TokenType.Dahan, 2 ),
-	};
 
 	/// <summary> Sent before any token is removed. </summary>
 	/// <remarks> Callers may modify the args to disable the remove if desired. </remarks>

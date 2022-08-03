@@ -2,7 +2,7 @@
 
 public class HealthToken : Token, IEquatable<HealthToken> {
 
-	public HealthToken( HealthTokenClass tokenClass, int rawFullHealth, int damage = 0, int strifeCount = 0 ) {
+	public HealthToken( HealthTokenClass tokenClass, IHaveHealthPenaltyPerStrife penaltyHolder, int rawFullHealth, int damage = 0, int strifeCount = 0 ) {
 
 		Class = tokenClass;
 		_rawFullHealth = rawFullHealth;
@@ -10,17 +10,18 @@ public class HealthToken : Token, IEquatable<HealthToken> {
 		Damage = damage;
 		StrifeCount = strifeCount;
 
+		_healthPenaltyHolder = penaltyHolder;
+
 		_summaryString = Class.Initial + "@" + RemainingHealth
 			+ (strifeCount == 0 ? "" : new string( '^', StrifeCount ));
+
 	}
 
 	public HealthTokenClass Class { get; }
 	TokenClass Token.Class => this.Class;
 
-	static public int HealthPenaltyPerStrife { get; set; } = 0; // !!! put this in the game state instead of static global
-
 	/// <summary>The effective FullHealth of a token. Minimum of 1; </summary>
-	public int FullHealth => Math.Max(1, _rawFullHealth - StrifeCount * HealthPenaltyPerStrife );
+	public int FullHealth => Math.Max(1, _rawFullHealth - StrifeCount * _healthPenaltyHolder.HealthPenaltyPerStrife );
 	readonly int _rawFullHealth; // the value adjusted by modifications, may be less than 1.
 
 	public int Damage { get; }
@@ -34,19 +35,20 @@ public class HealthToken : Token, IEquatable<HealthToken> {
 	public HealthToken HavingStrife(int strifeCount) {
 		return strifeCount <0 ? throw new System.ArgumentOutOfRangeException(nameof(strifeCount),$"strife Count = {strifeCount}")
 			: strifeCount == StrifeCount ? this
-			: new HealthToken( Class, _rawFullHealth, Damage, strifeCount );
+			: new HealthToken( Class, _healthPenaltyHolder, _rawFullHealth, Damage, strifeCount );
 	}
 
+	/// <returns>a new token with the adjusted strife</returns>
 	public HealthToken AddStrife( int deltaStrife ) => HavingStrife( StrifeCount + deltaStrife );
 
-	public HealthToken AddDamage( int damage ) => new HealthToken( Class, _rawFullHealth, Math.Min( Damage + damage, _rawFullHealth ), StrifeCount ); // ??? Is this Math.Min necessary, could we just let it go negative?
+	public HealthToken AddDamage( int damage ) => new HealthToken( Class, _healthPenaltyHolder, _rawFullHealth, Math.Min( Damage + damage, _rawFullHealth ), StrifeCount ); // ??? Is this Math.Min necessary, could we just let it go negative?
 
-	public HealthToken Healthy => new HealthToken( Class, FullHealth, 0, StrifeCount ); // no damage
+	public HealthToken Healthy => new HealthToken( Class, _healthPenaltyHolder, _rawFullHealth, 0, StrifeCount );
 
 	public HealthToken AddHealth( int delta ) {
 		int newHealth = Math.Max(1, _rawFullHealth + delta );
 		return newHealth == _rawFullHealth ? this
-			: new HealthToken( Class, newHealth, Damage, StrifeCount );
+			: new HealthToken( Class, _healthPenaltyHolder, newHealth, Damage, StrifeCount );
 	}
 
 	#endregion
@@ -75,8 +77,13 @@ public class HealthToken : Token, IEquatable<HealthToken> {
 
 	public override string ToString() => _summaryString;
 
-	readonly string _summaryString;
-
 	string IOption.Text => _summaryString;
 
+	readonly string _summaryString;
+
+	readonly IHaveHealthPenaltyPerStrife _healthPenaltyHolder;
+}
+
+public interface IHaveHealthPenaltyPerStrife {
+	int HealthPenaltyPerStrife { get; }
 }

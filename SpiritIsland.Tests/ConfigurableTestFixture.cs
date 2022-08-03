@@ -132,6 +132,7 @@ public class ConfigurableTestFixture {
 		int fullHealth = tokenClass.Attack; // hack - class doesn't have full health, so we will cheat and use attack as the full health.
 		var token = new HealthToken( 
 			tokenClass,
+			Tokens._penaltyHolder,
 			fullHealth,
 			fullHealth - int.Parse( match.Groups[3].Value ), // damage
 			match.Groups[4].Value.Length // strife

@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class GameState {
+public class GameState : IHaveHealthPenaltyPerStrife {
 
 	#region constructors
 
@@ -98,6 +98,7 @@ public class GameState {
 	public IBlightCard BlightCard = new NullBlightCard();
 	public List<IBlightCard> BlightCards = new List<IBlightCard>();
 	public GameOver Result = null;
+	public int HealthPenaltyPerStrife { get; set; } = 0;
 
 	#region Blight
 

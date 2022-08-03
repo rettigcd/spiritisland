@@ -54,8 +54,8 @@ public class Sweeden : IAdversary {
 		// Town deal 3 Damage
 		// City deal 5 Damage
 		if(3 <= Level) {
-			gameState.Tokens.TokenDefaults[Invader.Town] = new HealthToken( Invader.Town, 2, 3 );
-			gameState.Tokens.TokenDefaults[Invader.City] = new HealthToken(Invader.City,3,5);
+			gameState.Tokens.TokenDefaults[Invader.Town] = new HealthToken( Invader.Town, gameState, 2, 3 );
+			gameState.Tokens.TokenDefaults[Invader.City] = new HealthToken(Invader.City, gameState, 3,5);
 		}
 
 		// Level 4

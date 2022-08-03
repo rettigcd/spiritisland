@@ -28,9 +28,9 @@ public static class StrifedRavage {
 
 	public static async Task InvadersReduceHealthByStrifeCount( GameState gameState, Guid actionId ) {
 		// add penalty
-		++HealthToken.HealthPenaltyPerStrife;
+		++gameState.HealthPenaltyPerStrife;
 		// remove penalty
-		gameState.TimePasses_ThisRound.Push( x => { --HealthToken.HealthPenaltyPerStrife; return Task.CompletedTask; } );
+		gameState.TimePasses_ThisRound.Push( x => { --gameState.HealthPenaltyPerStrife; return Task.CompletedTask; } );
 
 		// Check if anything is destroyed
 		foreach(var space in gameState.Island.AllSpaces) {

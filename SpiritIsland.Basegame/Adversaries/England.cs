@@ -34,8 +34,8 @@ public class England : IAdversary {
 				HighImmegrationSlot.RemoveForLevel2Invaders( gameState, highBuildSlot );
 		}
 		if( Level >= 5) {
-			gameState.Tokens.TokenDefaults[Invader.City] = new HealthToken(Invader.City,4);
-			gameState.Tokens.TokenDefaults[Invader.Town] = new HealthToken( Invader.Town, 3 );
+			gameState.Tokens.TokenDefaults[Invader.City] = new HealthToken(Invader.City, gameState, 4);
+			gameState.Tokens.TokenDefaults[Invader.Town] = new HealthToken( Invader.Town, gameState, 3 );
 		}
 		if( Level == 6) {
 			gameState.Fear.PoolMax += gameState.Spirits.Length;
