@@ -15,10 +15,10 @@ public class Tokens_ForIsland : IIslandTokenApi {
 			[TokenType.Dahan] = new HealthToken( TokenType.Dahan, PenaltyHolder, 2 ),
 		};
 
-		gs.TimePasses_WholeGame += TimePasses;
+		gs.TimePasses_WholeGame += (_)=>ClearEventHandlers_ForRound();
 	}
 
-	void TimePasses( GameState _ ) {
+	void ClearEventHandlers_ForRound() {
 		TokenAdded.ForRound.Clear();
 		TokenMoved.ForRound.Clear();
 		TokenRemoved.ForRound.Clear();
@@ -119,7 +119,10 @@ public class Tokens_ForIsland : IIslandTokenApi {
 	#region Memento
 
 	public virtual IMemento<Tokens_ForIsland> SaveToMemento() => new Memento(this);
-	public virtual void LoadFrom( IMemento<Tokens_ForIsland> memento ) => ((Memento)memento).Restore(this);
+	public virtual void LoadFrom( IMemento<Tokens_ForIsland> memento ) { 
+		((Memento)memento).Restore(this);
+		ClearEventHandlers_ForRound();
+	}
 	public TokenCountDictionary GetTokensFor( Space space ) => this[space];
 
 	protected class Memento : IMemento<Tokens_ForIsland> {
@@ -129,6 +132,8 @@ public class Tokens_ForIsland : IIslandTokenApi {
 				tc[pair.Key] = pair.Value.counts.ToDictionary(p=>p.Key,p=>p.Value);
 			// Save Defaults
 			tokenDefaults = src.TokenDefaults.ToDictionary(p=>p.Key,p=>p.Value);
+			// dynamicTokens_ForGame
+
 		}
 		public void Restore(Tokens_ForIsland src ) {
 			// Resotre TokenCounts

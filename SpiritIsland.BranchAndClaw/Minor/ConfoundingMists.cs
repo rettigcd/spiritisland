@@ -2,7 +2,9 @@
 
 public class ConfoundingMists {
 
-	[MinorCard( "Confounding Mists", 1, Element.Air, Element.Water )]
+	public const string Name = "Confounding Mists";
+
+	[MinorCard( Name, 1, Element.Air, Element.Water )]
 	[Fast]
 	[FromPresence( 1 )]
 	static public Task ActAsync( TargetSpaceCtx ctx ) {
@@ -19,7 +21,6 @@ public class ConfoundingMists {
 
 		async Task PushAddedInvader( ITokenAddedArgs args ) {
 			if(args.Space == ctx.Space 	&& (args.Reason == AddReason.Explore || args.Reason == AddReason.Build))  // ??? is there any other way to add invaders?
-
 				await ctx.Pusher.PushToken( args.Token );
 		}
 	}

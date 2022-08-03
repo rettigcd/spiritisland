@@ -4,8 +4,6 @@ Bargains of Power and Protection - defense does not roll back when Rewinding
 	dynamicTokens_ForGame
 	$energy adjustment
 
-! Bug - Confounding Mists, when played for pushing added items, is not Rewindable, AND leaves the added item behind.
-
 Promises of Protection
 	Brought in 2 dahan => get 4 health
 	Brought in 2 more dahan => original (4 health) have 8 health, broght in have (4)
