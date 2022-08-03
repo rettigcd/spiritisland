@@ -1,16 +1,35 @@
-﻿using Shouldly;
-using SpiritIsland.Basegame;
-using SpiritIsland.BranchAndClaw;
-using SpiritIsland.JaggedEarth;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using SpiritIsland.JaggedEarth;
 using System.Reflection;
-using Xunit;
 
 namespace SpiritIsland.Tests.Core {
 
+
 	public class PowerCardDeck_Tests {
+
+		//[Fact]
+		//public void FindShuffleNumber() {
+		//	var providers = new IGameComponentProvider[]{
+		//		new SpiritIsland.Basegame.GameComponentProvider(),
+		//		new SpiritIsland.BranchAndClaw.GameComponentProvider(),
+		//		new SpiritIsland.PromoPack1.GameComponentProvider(),
+		//		new SpiritIsland.JaggedEarth.GameComponentProvider()
+		//	};
+
+		//	const string needle = ConfoundingMists.Name;
+
+		//	for(int shuffleNumber = 0; shuffleNumber < 1000; ++shuffleNumber) {
+		//		var gameSettings = new GameConfiguration {
+		//			SpiritType = typeof( RiverSurges ),
+		//			Board = "A",
+		//			ShuffleNumber = shuffleNumber,
+		//		};
+		//		var gs = gameSettings.BuildGame( providers );
+		//		foreach(var card in gs.MinorCards.Flip( 4 ))
+		//			if(card.Name == needle)
+		//				throw new Exception($"{shuffleNumber} has '{needle}' ");
+		//	}
+
+		//}
 
 		[Theory]
 		[InlineData(BaseGame,36)]
