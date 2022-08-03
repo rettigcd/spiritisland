@@ -1,5 +1,20 @@
 =====  Shifting Memories  ========
 
+Bargains of Power and Protection - defense does not roll back when Rewinding
+	dynamicTokens_ForGame
+	$energy adjustment
+
+! Bug - Confounding Mists, when played for pushing added items, is not Rewindable, AND leaves the added item behind.
+
+Promises of Protection
+	Brought in 2 dahan => get 4 health
+	Brought in 2 more dahan => original (4 health) have 8 health, broght in have (4)
+		All should have 6 health.
+	When round over, 2 have health-1, 2 have health=4 
+		All should have 2 health
+
+---------
+
 After Growth, rewinding to beginning of turn, doesn't reset # of card plays to 0
 
 Shifting Memories 2-elements for card play - doesn't always work
@@ -21,37 +36,14 @@ Settle Into Hunting-Grounds
 	- implement "May" count as badlands and beast.
 	- presence cannot move.
 
-Fear of the Unseen - 1
-	- did not let me pick town, only option was explorer.
-
-Retreat : 2 : Each player may Push up to 3 Explorer / Town from an Inland land
-	did not trigger SMOA Element
-
-Bargains of Power and Protection - defense does not roll back when Rewinding
-
-
 =============
 
 When playing multi-player, other spirits should be able to use Downpour's SS as wetlands also, not juest Dounpour.
 
 =============
 
-Promises of Protection
-	Brought in 2 dahan => get 4 health
-	Brought in 2 more dahan => original (4 health) have 8 health, broght in have (4)
-		All should have 6 health.
-	When round over, 2 have health-1, 2 have health=4 
-		All should have 2 health
-
 !!! Tokens_ForIslands.RegisterDynamic actions to not reset when we Rewind.
 !!! Triggering Elements needs to use token in space as count so Rewind works.
-
-
-Option 1: DefaultSourceCalc could use TargetSpaceCtx directly
-Option 2: Spirits that use modify space terrain, also override Spirit.SourceCalc
-
-Victory: Terror Level 2 - no towns or cities (still have strifed town)
-
 
 == 2 Spirit Thoughts ==
 
@@ -59,15 +51,3 @@ How to make Actions Atomic
 	- Don't Enforce it
 	- Let UI enforce it by only allowing 1 Growth/Fast/Slow action to be selected at a time
 	- Let engine enforce it by only allowing 1 G/F/S action to be selected at a time.
-
-! UI facilitate switching back and forth for multiple spirits.
-
-! Configure Game allow 2 spirits.
-
-
-! Bug - Water Nourishes Life's Growth
-	- allows remove presence from anywhere but should only be on target land.
-
-! Bug - Confounding Mists, when played for pushing added items, is not Rewindable, AND leaves the added item behind.
-
-
