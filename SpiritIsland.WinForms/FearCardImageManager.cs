@@ -13,9 +13,8 @@ namespace SpiritIsland.WinForms {
 
 			string name = card.Name;
 
-			string ns = card.FearOptions.GetType().Namespace;
-
 			if(!images.ContainsKey( name )) {
+				string ns = card.FearOptions.GetType().Namespace;
 				string edition = ns switch {
 					"SpiritIsland.Basegame" => "basegame",
 					"SpiritIsland.BranchAndClaw" => "bac",
@@ -26,6 +25,7 @@ namespace SpiritIsland.WinForms {
 				Image image = Image.FromFile( name2 );
 				images.Add( name, image );
 			}
+
 			return images[name];
 		}
 
