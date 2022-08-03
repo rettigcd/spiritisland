@@ -1,5 +1,3 @@
-=====  Shifting Memories  ========
-
 Bargains of Power and Protection - defense does not roll back when Rewinding
 	dynamicTokens_ForGame
 	$energy adjustment
