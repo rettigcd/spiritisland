@@ -5,7 +5,7 @@ public class BoundPresence {
 
 	#region constructor
 
-	public BoundPresence(SelfCtx ctx ) { this.ctx = ctx; }
+	public BoundPresence(SelfCtx ctx) { this.ctx = ctx; }
 	readonly SelfCtx ctx;
 
 	#endregion
@@ -52,7 +52,7 @@ public class BoundPresence {
 
 	public Task Destroy( Space space, DestoryPresenceCause actionType ) => ctx.Self.Presence.Destroy( space, ctx.GameState, actionType );
 
-	public async Task DestroyOne(DestoryPresenceCause actionType, Func<SpiritIsland.Space,bool> filter = null) {
+	public async Task DestroyOneFromAnywhere(DestoryPresenceCause actionType, Func<SpiritIsland.Space,bool> filter = null) {
 		var space = filter == null 
 			? await ctx.Decision( Select.DeployedPresence.ToDestroy("Select presence to destroy",ctx.Self) )
 			: await ctx.Decision( Select.DeployedPresence.ToDestroy("Select presence to destroy",ctx.Self, filter) );

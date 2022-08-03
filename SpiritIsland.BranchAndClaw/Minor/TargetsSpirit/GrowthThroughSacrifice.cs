@@ -8,7 +8,7 @@ public class GrowthThroughSacrifice {
 	static public async Task ActAsync( TargetSpiritCtx ctx ) {
 
 		// destroy one of your presence
-		await ctx.Presence.DestroyOne( DestoryPresenceCause.SpiritPower );
+		await ctx.Presence.DestroyOneFromAnywhere( DestoryPresenceCause.SpiritPower );
 
 		// If 2 sun, do both in the same land
 		await TargetSpiritAction( ctx.OtherCtx, await ctx.YouHave( "2 sun" ) );

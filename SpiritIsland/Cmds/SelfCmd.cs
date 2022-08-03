@@ -2,13 +2,13 @@
 
 public static partial class Cmd {
 
-	static public SelfAction DestroyPresence( DestoryPresenceCause actionType ) => new SelfAction("Destroy 1 presence.", ctx => ctx.Presence.DestroyOne(actionType));
+	static public SelfAction DestroyPresence( DestoryPresenceCause actionType ) => new SelfAction("Destroy 1 presence.", ctx => ctx.Presence.DestroyOneFromAnywhere(actionType));
 
 	static public SelfAction ForgetPowerCard => new SelfAction("Forget Power card", ctx => ctx.Self.ForgetPowerCard_UserChoice() );
 
 	static public SelfAction DestroyPresence( int count, DestoryPresenceCause actionType ) => new SelfAction($"Destroy {count} presence", async ctx => {
 			for(int i=0;i<count;++i)
-				await ctx.Presence.DestroyOne(actionType);
+				await ctx.Presence.DestroyOneFromAnywhere(actionType);
 		}
 	);
 

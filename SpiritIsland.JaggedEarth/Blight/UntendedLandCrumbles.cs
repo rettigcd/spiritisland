@@ -48,7 +48,7 @@ public class UntendedLandCrumbles : BlightCardBase {
 			var spirit = await ctx.Decision(new Select.Spirit("Destroy 1 presence",spiritOptions));
 			await spirit.Bind( ctx.GameState, ctx.CurrentActionId )
 				.Presence
-				.DestroyOne(DestoryPresenceCause.BlightedIsland);
+				.DestroyOneFromAnywhere(DestoryPresenceCause.BlightedIsland);
 		}
 	).Matches(ctx => ctx.GameState.Spirits.SelectMany(s=>s.Presence.Spaces).Any(s=>s.Board == ctx.Board));
 
