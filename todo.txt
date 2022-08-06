@@ -9,6 +9,8 @@
 	- Power Cards
 	- Fear pool / cards
 
+* replace Frozen dahan with RemovingToken handler (and DamagingToken handler)
+
 Later: Events
 Later: Scenarios
 Later: Web Hosted

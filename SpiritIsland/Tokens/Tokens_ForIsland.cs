@@ -67,12 +67,15 @@ public class Tokens_ForIsland : IIslandTokenApi {
 
 	public IEnumerable<Space> Keys => tokenCounts.Keys;
 
-	public Task Publish_Removing( RemovingTokenArgs args ) {
-		return RemovingToken.InvokeAsync( args );
-	}
+	public Task Publish_Removing( RemovingTokenArgs args ) => RemovingToken.InvokeAsync( args );
 
-	public Task Publish_Added( Space space, Token token, int count, AddReason reason, Guid actionId ) {
-		return TokenAdded.InvokeAsync( new TokenAddedArgs(space,token,reason, count, gameStateForEventArgs, actionId) );
+
+	public Task Publish_Adding( AddingTokenArgs args ) => AddingToken.InvokeAsync( args );
+
+
+	public Task Publish_Added( TokenAddedArgs args ) {
+		args.GameState = gameStateForEventArgs;
+		return TokenAdded.InvokeAsync( args );
 	}
 
 	public Task Publish_Removed( TokenRemovedArgs args ) {
@@ -80,20 +83,9 @@ public class Tokens_ForIsland : IIslandTokenApi {
 		return TokenRemoved.InvokeAsync( args );
 	}
 
-	public async Task Publish_Moved( Token token, Space from, Space to, Guid actionId ) {
-		var args = new TokenMovedArgs {
-			Token = token,
-			RemovedFrom = from,
-			AddedTo = to,
-			Count = 1,
-			GameState = this.gameStateForEventArgs,
-			ActionId = actionId
-		};
-
+	public async Task Publish_Moved( TokenMovedArgs args ) {
+		args.GameState=this.gameStateForEventArgs;
 		await TokenMoved.InvokeAsync( args );
-		// Also trigger the Added & Removed events
-		await TokenAdded.InvokeAsync( args );
-		await TokenRemoved.InvokeAsync( args );
 	}
 
 	public override string ToString() {
@@ -111,10 +103,11 @@ public class Tokens_ForIsland : IIslandTokenApi {
 	/// <summary> Sent before any token is removed. </summary>
 	/// <remarks> Callers may modify the args to disable the remove if desired. </remarks>
 	public DualAsyncEvent<RemovingTokenArgs> RemovingToken = new DualAsyncEvent<RemovingTokenArgs>();
+	public DualAsyncEvent<AddingTokenArgs> AddingToken = new DualAsyncEvent<AddingTokenArgs>();
 
 	public DualAsyncEvent<ITokenAddedArgs> TokenAdded = new DualAsyncEvent<ITokenAddedArgs>();
 	public DualAsyncEvent<ITokenRemovedArgs> TokenRemoved = new DualAsyncEvent<ITokenRemovedArgs>();
-	public DualAsyncEvent<TokenMovedArgs> TokenMoved = new DualAsyncEvent<TokenMovedArgs>();
+	public DualAsyncEvent<ITokenMovedArgs> TokenMoved = new DualAsyncEvent<ITokenMovedArgs>();
 
 	#region Memento
 
@@ -158,62 +151,5 @@ public class Tokens_ForIsland : IIslandTokenApi {
 }
 
 #region Event Args Impl
-
-class TokenAddedArgs : ITokenAddedArgs {
-
-	public TokenAddedArgs(Space space, Token token, AddReason addReason, int count, GameState gs, Guid actionId ) {
-		Space = space;
-		Token = token;
-		Reason = addReason;
-		Count = count;
-		GameState = gs;
-		ActionId = actionId;
-	}
-
-	public GameState GameState { get; }
-	public Space Space { get; }
-	public Token Token { get; } // need specific so we can act on it (push/damage/destroy)
-	public int Count { get; }
-
-	public AddReason Reason { get; }
-
-	public Guid ActionId { get; }
-
-}
-
-public class RemovingTokenArgs {
-	public Space Space { get; set; }
-	public Token Token { get; set; }
-	public int Count {
-		get { return _count; }
-		set { 
-			// !!! something is making this negative
-			if(value<0) throw new ArgumentOutOfRangeException(nameof(value),value,"Removing Token Args cannot be < 0");
-			_count = value;
-		}
-	}
-	int _count;
-	public RemoveReason Reason { get; set; }
-	public Guid ActionId { get; set; }
-}
-
-public class TokenRemovedArgs : ITokenRemovedArgs {
-
-	public TokenRemovedArgs(Token token, RemoveReason reason, Guid actionId, Space space, int count ) {
-		Token = token;
-		Reason = reason;
-		ActionId = actionId;
-		Space = space;
-		Count = count;
-	}
-
-	public GameState GameState { get; set; }// set by the token-publisher because TokenCountDictionary doesn't have this info
-
-	public Token Token { get; }
-	public int Count { get; set; }
-	public Space Space { get; set;}
-	public RemoveReason Reason { get; }
-	public Guid ActionId { get; }
-};
 
 #endregion

@@ -2,13 +2,6 @@ Bargains of Power and Protection - defense does not roll back when Rewinding
 	dynamicTokens_ForGame
 	$energy adjustment
 
-Promises of Protection
-	Brought in 2 dahan => get 4 health
-	Brought in 2 more dahan => original (4 health) have 8 health, broght in have (4)
-		All should have 6 health.
-	When round over, 2 have health-1, 2 have health=4 
-		All should have 2 health
-
 ---------
 
 After Growth, rewinding to beginning of turn, doesn't reset # of card plays to 0

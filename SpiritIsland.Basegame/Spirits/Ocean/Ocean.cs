@@ -58,7 +58,7 @@ public class Ocean : Spirit {
 
 		this.AddActionFactory( new Setup_PlacePresenceInCostal() ); // let user pick initial ocean
 
-		gameState.Tokens.TokenMoved.ForGame.Add(InvadersMoved);
+		gameState.Tokens.TokenAdded.ForGame.Add(InvadersAdded);
 		gameState.TimePasses_WholeGame += RemoveDrownedDahan;
 	}
 
@@ -68,8 +68,8 @@ public class Ocean : Spirit {
 			gs.Tokens[board.Ocean].Dahan.Bind(actionId).Drown();
 	}
 
-	async Task InvadersMoved(TokenMovedArgs args ) {
-		if( !args.AddedTo.IsOcean ) return;
+	async Task InvadersAdded( ITokenAddedArgs args ) {
+		if( !args.Space.IsOcean ) return;
 		var gs = args.GameState;
 		var grp = args.Token.Class;
 
@@ -77,7 +77,7 @@ public class Ocean : Spirit {
 			var ht = args.Token as HealthToken;
 			// Drown Invaders for points
 			drownedCount += ht.FullHealth;
-			await gs.Invaders.On( args.AddedTo, args.ActionId ).Destroy( 1, (HealthToken)args.Token );
+			await gs.Invaders.On( args.Space, args.ActionId ).Destroy( 1, (HealthToken)args.Token );
 
 			int spiritCount = gs.Spirits.Length;
 			while(spiritCount <= drownedCount) {

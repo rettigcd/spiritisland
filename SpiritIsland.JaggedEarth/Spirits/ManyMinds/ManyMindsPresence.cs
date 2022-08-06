@@ -26,8 +26,8 @@ class ManyMindsPresence : SpiritPresence {
 			gs.Tokens[space].Adjust(TokenType.Beast, 1); // !!! virtual tokens don't trigger events
 	}
 
-	async Task TokenMoved( TokenMovedArgs args ) {
-		if(args.Token != TokenType.Beast) return; // not a beast
+	async Task TokenMoved( ITokenMovedArgs args ) {
+		if(args.Class != TokenType.Beast) return; // not a beast
 		if(this.CountOn( args.RemovedFrom ) < 2) return; // not our Sacred Site
 
 
@@ -44,7 +44,7 @@ class ManyMindsPresence : SpiritPresence {
 
 	}
 
-	void Move2Presence( GameState gs, TokenMovedArgs args ) {
+	void Move2Presence( GameState gs, ITokenMovedArgs args ) {
 		// Move 2 of our presence
 		for(int i = 0; i < 2; ++i) {
 			base.RemoveFrom_NoCheck( args.RemovedFrom, gs ); // using base because we don't want to trigger anything
@@ -52,12 +52,12 @@ class ManyMindsPresence : SpiritPresence {
 		}
 	}
 
-	async Task SacredSiteAtSouce_RestoreVirtualBeast( TokenMovedArgs args, TokenBinding srcBeasts ) {
+	async Task SacredSiteAtSouce_RestoreVirtualBeast( ITokenMovedArgs args, TokenBinding srcBeasts ) {
 		if(2 <= CountOn( args.RemovedFrom ))
 			await srcBeasts.Add(1); // Beast token is virtual so maybe we don't want to trigger TokenAdded
 	}
 
-	Task AddedVirtualBeastAtDestination_LimitTo1( GameState gs, TokenMovedArgs args ) {
+	Task AddedVirtualBeastAtDestination_LimitTo1( GameState gs, ITokenMovedArgs args ) {
 		// if destination/to now has 4 or more presence,
 		// then there was already a virtual beast there and we need to remove 1 of the virtual beasts
 		if(4 <= CountOn( args.AddedTo ))
@@ -80,7 +80,7 @@ class ManyMindsPresence : SpiritPresence {
 			// since this is Many Minds, we don't care about that value.
 			var dontCareActionType = DestoryPresenceCause.None;
 
-			// destroy saved site
+			// destroy sacred site
 			await base.Destroy(args.Space, args.GameState, dontCareActionType);
 			await base.Destroy(args.Space, args.GameState, dontCareActionType);
 		}

@@ -55,25 +55,30 @@ public class DahanGroupBinding : DahanGroupBindingNoEvents {
 		return _tokens.AddDefault( TokenType.Dahan, count, actionId, reason );
 	}
 
-	/// <summary> Returns the Token removed </summary>
+	// Called from .Dissolve the Bonds
 	public async Task<Token> Remove1( RemoveReason reason ) {
 		if(Frozen) return null;
 
 		var toRemove = Keys.OrderBy( x => x.RemainingHealth ).FirstOrDefault();
+
 		if( toRemove != null)
 			await _tokens.Remove( toRemove, 1, actionId, reason );
 		return toRemove;
 	}
 
-	public async Task<bool> Remove1( Token desiredToken, RemoveReason reason ) {
-		if( !Frozen && 0<_tokens[desiredToken] ){ 
-			await _tokens.Remove(desiredToken,1, actionId, reason );
-			return true;
-		}
+	// Called from .Move()
+	public async Task<Token> Remove1( RemoveReason reason, Token toRemove ) {
+		if( Frozen ) return null; // unable to remove desired token
 
-		return false; // unable to remove desired token
+		if( _tokens[toRemove] == 0 )
+			toRemove = null; // unable to remove desired token
+
+		if(toRemove != null)
+			await _tokens.Remove( toRemove, 1, actionId, reason );
+		return toRemove;
 	}
 
+	// Called from Ocean-Drown special rule.
 	public void Drown() {
 
 		// !!! need to change this to async so we publish the .Destroy event and UI will update.

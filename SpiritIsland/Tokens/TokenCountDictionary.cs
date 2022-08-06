@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 /// <summary>
 /// Wraps: Space, Token-Counts on that space, API to publish token-changed events.
@@ -138,59 +136,88 @@ public class TokenCountDictionary {
 	}
 
 	/// <summary> Replaces (via adjust) HealthToken with new HealthTokens </summary>
-	/// <returns> The adjusted HealthToken (if it exists and is not destroyed)</returns>
-	public async Task AdjustHealthOf( HealthToken token, int delta, int count, Guid actionId ) {
+	/// <returns> The # of remaining Adjusted tokens. </returns>
+	public async Task<(HealthToken,int)> AdjustHealthOf( HealthToken token, int delta, int count, Guid actionId ) {
 		count = Math.Min( this[token], count );
-		if(count == 0) return;
+		if(count == 0) return (token,0);
 
 		var newToken = token.AddHealth( delta ); // throws exception if health < 1
 
-		if(newToken.IsDestroyed)
-			await this.Destroy(token, count, actionId );
-		else {
-			Adjust( token, -count );
-			Adjust( newToken, count );
+		if(newToken.IsDestroyed) {
+			await this.Destroy(token, count, actionId ); // destroy the old token
+			return (token,0);
 		}
+
+		Adjust( token, -count );
+		Adjust( newToken, count );
+		return (newToken,count);
 	}
 
 
-	public Task Add( Token token, int count, Guid actionId, AddReason addReason = AddReason.Added ) {
+	public async Task Add( Token token, int count, Guid actionId, AddReason addReason = AddReason.Added ) {
 		if(count < 0) throw new System.ArgumentOutOfRangeException( nameof( count ) );
-		this[token] += count;
-		return tokenApi.Publish_Added( Space, token, count, addReason, actionId );
+
+		// Pre-Add check/adjust
+		var addingArgs = new AddingTokenArgs { ActionId = actionId, Count = count, Space = Space, Reason = addReason, Token = token };
+		await tokenApi.Publish_Adding( addingArgs );
+		if(addingArgs.Count < 0) throw new IndexOutOfRangeException( nameof( addingArgs.Count ) );
+		if(addingArgs.Count == 0) return;
+
+		// Do Add
+		this[addingArgs.Token] += addingArgs.Count;
+
+		// Post-Add event
+		await tokenApi.Publish_Added( new TokenAddedArgs( Space, addingArgs.Token, addReason, addingArgs.Count, actionId ) );
 	}
 
 	/// <summary> returns null if no token removed </summary>
 	public async Task<TokenRemovedArgs> Remove( Token token, int count, Guid actionId, RemoveReason reason = RemoveReason.Removed ) {
 		count = System.Math.Min( count, this[token] );
-		var args = new RemovingTokenArgs { ActionId = actionId, Count = count, Space = Space, Reason = reason, Token = token };
-		await tokenApi.Publish_Removing( args );
-		if(args.Count == 0) return null;
-#pragma warning disable CA2208 // Instantiate argument exceptions correctly
-		if(args.Count < 0) throw new System.ArgumentOutOfRangeException( nameof( args.Count ) );
-#pragma warning restore CA2208 // Instantiate argument exceptions correctly
-		this[args.Token] -= args.Count;
-		var removedArgs = new TokenRemovedArgs( token, reason, actionId, Space, count );
+
+		// Pre-Remove check/adjust
+		var removingArgs = new RemovingTokenArgs { ActionId = actionId, Count = count, Space = Space, Reason = reason, Token = token };
+		await tokenApi.Publish_Removing( removingArgs );
+		if(removingArgs.Count < 0) throw new IndexOutOfRangeException( nameof( removingArgs.Count ) );
+		if(removingArgs.Count == 0) return null;
+
+		// Do Remove
+		this[removingArgs.Token] -= removingArgs.Count;
+
+		// Post-Remove event
+		var removedArgs = new TokenRemovedArgs( removingArgs.Token, reason, actionId, Space, removingArgs.Count );
 		await tokenApi.Publish_Removed( removedArgs );
+
 		return removedArgs;
 	}
 
 	// Convenience only
 	public Task Destroy( Token token, int count, Guid actionId ) => Remove(token, count, actionId, RemoveReason.Destroyed );
 
+	/// <summary> Gathering / Pushing + a few others </summary>
 	public async Task MoveTo(Token token, Space destination, Guid actionId ) {
 
 		// Remove from source
-		if( token.Class != TokenType.Dahan)
-			Adjust( token, -1 );
-		else if( ! (await Dahan.Bind(actionId).Remove1(token, RemoveReason.MovedFrom)) ) // !!! Moving publishes a Move event, don't publish this Remove event
-			return;
+		TokenRemovedArgs removedArgs;
+		if( token.Class == TokenType.Dahan) {
+			Token removedToken = await Dahan.Bind( actionId ).Remove1( RemoveReason.MovedFrom, token );
+			if(removedToken == null) return;
+			removedArgs = new TokenRemovedArgs( removedToken, RemoveReason.MovedFrom, actionId, Space, 1); // !!!
+		} else
+			removedArgs = await Remove( token,1,actionId, RemoveReason.MovedFrom );
 
 		// Add to destination
-		tokenApi.GetTokensFor( destination ).Adjust( token, 1 );
+		await tokenApi.GetTokensFor( destination )
+			.Add( removedArgs.Token, removedArgs.Count, actionId, AddReason.MovedTo );
 
 		// Publish
-		await tokenApi.Publish_Moved( token, Space, destination, actionId );
+		await tokenApi.Publish_Moved( new TokenMovedArgs {
+			Token = token,
+			Class = token.Class,
+			RemovedFrom = Space,
+			AddedTo = destination,
+			Count = 1,
+			ActionId = actionId
+		} );
 
 	}
 

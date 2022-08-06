@@ -35,7 +35,10 @@ public class SelfCtx {
 
 	public IEnumerable<Space> AllSpaces => GameState.Island.AllSpaces;
 
-	/// <summary> Simple wrapper around GameState.Tokens.Move </summary>
+	/// <summary> 
+	/// Simple wrapper around GameState.Tokens.Move 
+	/// Used for Gathering / Pushing (and other stuff)
+	/// </summary>
 	public Task Move(Token token, Space from, Space to )
 		=> Target(from).Tokens.MoveTo( token, to, CurrentActionId );
 

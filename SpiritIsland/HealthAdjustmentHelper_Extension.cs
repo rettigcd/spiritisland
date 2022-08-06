@@ -9,21 +9,19 @@ public static class HealthAdjustmentHelper_Extension {
 
 		bool Matches(Space space, TokenClass tokenClass) => space == ctx.Space && tokenClasses.Contains(tokenClass);
 
-		// Move in / Add (,) (Move triggers Add also)
-		// This covers simple-add AND move-in
-		ctx.GameState.Tokens.TokenAdded.ForRound.Add( async args => {
-			if(Matches(args.Space,args.Token.Class ) )
-				await ctx.Tokens.AdjustHealthOf( (HealthToken)args.Token, deltaHealth, args.Count, args.ActionId );
+		// Add (covers simple-add AND move-in)
+		ctx.GameState.Tokens.AddingToken.ForRound.Add( args => {
+			if( args.Token is HealthToken healthToken && Matches( args.Space,args.Token.Class ) )
+				args.Token = healthToken.AddHealth( deltaHealth );
 		} );
 
-		// Move out
-		ctx.GameState.Tokens.TokenMoved.ForRound.Add( async args => {
-			// if removing dahan from this space
-			if(Matches(args.RemovedFrom,args.Token.Class) )
-				// In the destination space
-				await ctx.Target(args.AddedTo)
-					// reduce the health by boost amount
-					.Tokens.AdjustHealthOf( (HealthToken)args.Token, -deltaHealth, args.Count, args.ActionId );
+		// Remove (covers simple-remove AND move-out)
+		ctx.GameState.Tokens.RemovingToken.ForRound.Add( async args => {
+			if( args.Token is HealthToken healthToken && Matches( args.Space, args.Token.Class ) )
+				// Downgrade the existing tokens health
+				// AND change what we are removing to be the downgraded token
+				// tokens being destroyed may reduce the count also.
+				(args.Token,args.Count) = await ctx.Tokens.AdjustHealthOf( healthToken, -deltaHealth, args.Count, args.ActionId );
 		} );
 
 		// Add handler to restore ALL at end of round.
