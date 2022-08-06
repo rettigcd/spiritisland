@@ -32,7 +32,8 @@ public class Fear {
 			int ct = Deck.Count;
 			return (ct > level2Count + level3Count) ? 1
 				: ct > level3Count ? 2
-				: 3;
+				: ct > 0 ? 3
+				: 4; // Victory
 		}
 	}
 

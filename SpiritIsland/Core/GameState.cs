@@ -299,6 +299,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		bool NoCityOrTown(Space space) => gs.Tokens[space].SumAny(Invader.City,Invader.Town)==0;
 		bool NoInvader(Space space) => !gs.Tokens[space].HasInvaders();
 		return gs.Fear.TerrorLevel switch {
+			4 => (_=>true, "Victory"),
 			3 => (NoCity,"no cities"),
 			2 => (NoCityOrTown,"no towns or cities"),
 			_ => (NoInvader,"no invaders")
