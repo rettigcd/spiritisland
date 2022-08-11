@@ -20,20 +20,20 @@ public class England : IAdversary {
 	};
 
 	public void Adjust( GameState gameState ) {
-		if( Level >= 2) {
+		if( 2 <= Level ) {
 			// During Setup, on each board add 1 City to land #1 and 1 Town to land #2.
 			foreach(var board in gameState.Island.Boards) {
 				gameState.Tokens[board[1]].AdjustDefault( Invader.City, 1 );
 				gameState.Tokens[board[2]].AdjustDefault( Invader.Town, 1 );
 			}
 		}
-		if( Level >= 3) {
+		if( 3 <= Level ) {
 			var highBuildSlot = new HighImmegrationSlot( Level );
 			gameState.InvaderDeck.Slots.Insert( 0, highBuildSlot );
 			if( Level == 3)
 				HighImmegrationSlot.RemoveForLevel2Invaders( gameState, highBuildSlot );
 		}
-		if( Level >= 5) {
+		if( 5 <= Level ) {
 			gameState.Tokens.TokenDefaults[Invader.City] = new HealthToken(Invader.City, gameState, 4);
 			gameState.Tokens.TokenDefaults[Invader.Town] = new HealthToken( Invader.Town, gameState, 3 );
 		}
@@ -57,9 +57,16 @@ public class England : IAdversary {
 		}
 		protected override bool ShouldBuildOnSpace( TokenCountDictionary tokens, GameState gameState ) {
 			int cityTownCounts(Space space) => gameState.Tokens[space].SumAny( Invader.Town, Invader.City );
-			bool adjacentTo2OrMoreCitiesOrTowns(Space space) => 2 <= space.Adjacent.Sum( adj => cityTownCounts( adj ) );
-			return base.ShouldBuildOnSpace( tokens, gameState ) 
-				|| expandedBuild && adjacentTo2OrMoreCitiesOrTowns(tokens.Space);
+			bool adjacentTo2OrMoreCitiesOrTowns(TokenCountDictionary tokens) => !tokens.Has(TokenType.Isolate) 
+				&& 2 <= tokens.Space.Adjacent.Sum( adj => cityTownCounts( adj ) );
+
+			bool a = base.ShouldBuildOnSpace( tokens, gameState );
+			bool b = adjacentTo2OrMoreCitiesOrTowns( tokens );
+			bool c = a || expandedBuild && b;
+			return c;
+
+//			return base.ShouldBuildOnSpace( tokens, gameState )
+//				|| expandedBuild && adjacentTo2OrMoreCitiesOrTowns(tokens);
 		}
 		public override async Task Explore( GameState gs ) {
 			await base.Explore( gs );
