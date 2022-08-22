@@ -32,17 +32,32 @@ public class StrongAndConstantCurrents{
 
 	static public SpaceAction MoveUpTo2DahanToAnotherCostal => new SpaceAction("Move up to 2 Dahan between target land and one other Costal land.", MoveDahanAction );
 
+	// Move up to 2 between target land and one other costal Land.
 	static async Task MoveDahanAction( TargetSpaceCtx ctx ) {
 		int count = 2;
-		while(0 < count) {
-			var costalCtxs = ctx.AllSpaces.Select( ctx.Target ).Where( x=>x.IsCoastal ).ToArray();
-			var costalWithDahan = costalCtxs.Where( x=>x.Dahan.Any ).ToArray();
-			var costal = costalCtxs.Select(x=>x.Space).ToArray();
+		var costalCtxs = ctx.AllSpaces.Select( ctx.Target ).Where( x => x.IsCoastal ).ToArray();
 
-			await ctx.SelectActionOption(
-				new SpaceAction($"Move Dahan IN TO "+ ctx.Space.Label, ctx => ctx.MoveTokenIn( TokenType.Dahan, 100, Target.Coastal)).FilterOption( costalWithDahan.Length>0 ),
-				new SpaceAction($"Move Dahan OUT OF "+ ctx.Space.Label, ctx => ctx.MoveTokensOut(1, TokenType.Dahan, 100, Target.Coastal) ).Matches( x => x.Dahan.Any )
-			);
+		while(0 < count) {
+
+			var costalWithDahan = costalCtxs
+				.SelectMany( x => x.Dahan.Keys.Select(k=>new SpaceToken(x.Space,k)))
+				.ToArray();
+
+			// From
+			var selected = await ctx.Decision( 
+				new Select.TokenFromManySpaces( "Select Dahan to move to/from"+ctx.Space, costalWithDahan, Present.Done ) {
+					AdjacentInfo = new Select.AdjacentInfo {
+						Original = ctx.Space,
+						Adjacent = costalWithDahan.Select( s => s.Space ).Distinct().ToArray(),
+						Direction = Select.AdjacentDirection.Incoming
+					}
+				});
+
+			// To:
+			var destination = (selected.Space != ctx.Space) ? ctx.Space
+				: await ctx.Decision( Select.Space.PushToken( selected.Token, selected.Space, costalCtxs.Select( x => x.Space ), Present.Always ) );
+
+			await ctx.Move( selected.Token, selected.Space, destination );
 
 			count--;
 		}
