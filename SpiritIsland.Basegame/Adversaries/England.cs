@@ -27,12 +27,6 @@ public class England : IAdversary {
 				gameState.Tokens[board[2]].AdjustDefault( Invader.Town, 1 );
 			}
 		}
-		if( 3 <= Level ) {
-			var highBuildSlot = new HighImmegrationSlot( Level );
-			gameState.InvaderDeck.Slots.Insert( 0, highBuildSlot );
-			if( Level == 3)
-				HighImmegrationSlot.RemoveForLevel2Invaders( gameState, highBuildSlot );
-		}
 		if( 5 <= Level ) {
 			gameState.Tokens.TokenDefaults[Invader.City] = new HealthToken(Invader.City, gameState, 4);
 			gameState.Tokens.TokenDefaults[Invader.Town] = new HealthToken( Invader.Town, gameState, 3 );
@@ -42,8 +36,14 @@ public class England : IAdversary {
 		}
 	}
 
-	public void AdjustInvaderDeck( InvaderDeck deck ) {
-		deck.ReplaceCards( card => new EnglandInvaderCard( card, Level > 0 ) );
+	public void AdjustInvaderDeck( GameState gs ) {
+		gs.InvaderDeck.ReplaceCards( card => new EnglandInvaderCard( card, Level > 0 ) );
+		if(3 <= Level) {
+			var highBuildSlot = new HighImmegrationSlot( Level );
+			gs.InvaderDeck.Slots.Insert( 0, highBuildSlot );
+			if(Level == 3)
+				HighImmegrationSlot.RemoveForLevel2Invaders( gs, highBuildSlot );
+		}
 	}
 
 	// We are NOT wrapping the source card.
@@ -60,13 +60,8 @@ public class England : IAdversary {
 			bool adjacentTo2OrMoreCitiesOrTowns(TokenCountDictionary tokens) => !tokens.Has(TokenType.Isolate) 
 				&& 2 <= tokens.Space.Adjacent.Sum( adj => cityTownCounts( adj ) );
 
-			bool a = base.ShouldBuildOnSpace( tokens, gameState );
-			bool b = adjacentTo2OrMoreCitiesOrTowns( tokens );
-			bool c = a || expandedBuild && b;
-			return c;
-
-//			return base.ShouldBuildOnSpace( tokens, gameState )
-//				|| expandedBuild && adjacentTo2OrMoreCitiesOrTowns(tokens);
+			return base.ShouldBuildOnSpace( tokens, gameState )
+				|| expandedBuild && adjacentTo2OrMoreCitiesOrTowns(tokens);
 		}
 		public override async Task Explore( GameState gs ) {
 			await base.Explore( gs );
@@ -92,7 +87,7 @@ public class England : IAdversary {
 	}
 
 	public class HighImmegrationSlot : BuildSlot {
-		public HighImmegrationSlot( int level ){
+		public HighImmegrationSlot( int level ):base("High Immigration"){
 			this.repeatWhenNoFearResolved = level == 6;
 		}
 		readonly bool repeatWhenNoFearResolved;

@@ -14,8 +14,8 @@ public class France : IAdversary {
 
 	public int Level { get; set; }
 
-	public void AdjustInvaderDeck( InvaderDeck deck ) {
-		deck.ReplaceCards( card => new FranceInvaderCard( card, Level ) );
+	public void AdjustInvaderDeck( GameState gs ) {
+		gs.InvaderDeck.ReplaceCards( card => new FranceInvaderCard( card, Level ) );
 	}
 
 	public int[] FearCardsPerLevel => Level switch {

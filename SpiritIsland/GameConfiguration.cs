@@ -39,7 +39,7 @@ public class GameConfiguration {
 		var gameState = new GameState( spirit, board );
 		int[] invaderCardOrder = new int[] { 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3 };
 		int[] fearCardsPerLevel = new int[] { 3, 3, 3 };
-		Action<InvaderDeck> adjustInvaderDeck = ( deck ) => { };
+		Action<GameState> adjustInvaderDeck = ( deck ) => { };
 
 		// Game # - Random Seeds (don't change this order or this will change game definition)
 		var randomizer = new Random( ShuffleNumber );
@@ -60,7 +60,7 @@ public class GameConfiguration {
 
 		// (1) Invader Deck
 		gameState.InvaderDeck = new InvaderDeck( invaderSeed, invaderCardOrder );
-		adjustInvaderDeck( gameState.InvaderDeck );
+		adjustInvaderDeck( gameState );
 			
 		// (2) Major Power Cards
 		gameState.MajorCards = new PowerCardDeck( majorCards.ToArray(), majorSeed );

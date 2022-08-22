@@ -15,8 +15,8 @@ public class Sweeden : IAdversary {
 		_ => null,
 	};
 
-	public void AdjustInvaderDeck( InvaderDeck deck ) {
-		deck.ReplaceCards( card => new SweedenInvaderCard( card ) );
+	public void AdjustInvaderDeck( GameState gs ) {
+		gs.InvaderDeck.ReplaceCards( card => new SweedenInvaderCard( card ) );
 	}
 
 	public void Adjust( GameState gameState ) {

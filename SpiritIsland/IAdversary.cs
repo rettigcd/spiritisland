@@ -5,5 +5,5 @@ public interface IAdversary {
 	void Adjust(GameState gameState);
 	int[] InvaderCardOrder { get; }
 	int[] FearCardsPerLevel { get; }
-	void AdjustInvaderDeck( InvaderDeck deck );
+	void AdjustInvaderDeck( GameState gamestate );
 }

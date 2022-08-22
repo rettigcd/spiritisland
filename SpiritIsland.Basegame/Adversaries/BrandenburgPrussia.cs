@@ -44,8 +44,8 @@ public class BrandenburgPrussia : IAdversary {
 			gameState.Tokens[ board[3] ].AdjustDefault( Invader.Town, 1 );
 	}
 
-	public void AdjustInvaderDeck( InvaderDeck deck ) {
-		deck.ReplaceCards( card => new BrandenburgPrussiaInvaderCard( card ) );
+	public void AdjustInvaderDeck( GameState gamestate ) {
+		gamestate.InvaderDeck.ReplaceCards( card => new BrandenburgPrussiaInvaderCard( card ) );
 	}
 }
 

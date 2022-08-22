@@ -38,9 +38,9 @@ public class InvaderDeck {
 		_unrevealedCards = cards.ToList();
 		InitNumberOfCardsToDraw();
 		Slots = new List<InvaderSlot> { Ravage, Build, Explore };
-}
+	}
 
-public InvaderDeck( int seed = default, int[] levelSelection = default ) {
+	public InvaderDeck( int seed = default, int[] levelSelection = default ) {
 		levelSelection ??= new int[] { 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3 };
 
 		var levels = new List<IInvaderCard>[] {
@@ -85,7 +85,12 @@ public InvaderDeck( int seed = default, int[] levelSelection = default ) {
 	public ExploreSlot Explore { get; } = new ExploreSlot();
 	public BuildSlot Build { get; } = new BuildSlot();
 	public RavageSlot Ravage { get; } = new RavageSlot();
-	public List<InvaderSlot> Slots;
+
+	public List<InvaderSlot> Slots {
+		get {  return _slots; }
+		set { _slots = value; }
+	}
+	List<InvaderSlot> _slots;
 
 	public List<IInvaderCard> Discards {get;} = new List<IInvaderCard>();
 
@@ -192,6 +197,8 @@ public InvaderDeck( int seed = default, int[] levelSelection = default ) {
 }
 
 public abstract class InvaderSlot {
+	public InvaderSlot(string label ) { Label = label;}
+	public string Label { get; }
 	public List<IInvaderCard> Cards { get; } = new List<IInvaderCard>();
 	public void HoldNextBack() { holdBackCount++; }
 	public void SkipNextNormal() { skipCount++; }
@@ -225,13 +232,16 @@ public abstract class InvaderSlot {
 
 // ??? Is this the Visitor Pattern ???
 public class RavageSlot : InvaderSlot {
+	public RavageSlot() : base( "Ravage" ) { }
 	protected override Task CardAction( IInvaderCard card, GameState gameState ) => card.Ravage( gameState );
 }
 
 public class BuildSlot : InvaderSlot {
+	public BuildSlot(string label="Build") : base( label ) { }
 	protected override Task CardAction( IInvaderCard card, GameState gameState ) => card.Build( gameState );
 }
 
 public class ExploreSlot : InvaderSlot {
+	public ExploreSlot() : base( "Explore" ) { }
 	protected override Task CardAction( IInvaderCard card, GameState gameState ) => card.Explore( gameState );
 }
