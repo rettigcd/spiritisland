@@ -24,6 +24,7 @@ namespace SpiritIsland.Tests {
 				board = Board.BuildBoardA();
 
 			gameState = new GameState(spirit,board);
+			gameState.Initialize();
 
 			// Logging
 			ravages = new List<InvadersRavaged>();

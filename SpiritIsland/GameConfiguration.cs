@@ -37,9 +37,6 @@ public class GameConfiguration {
 
 		// GameState
 		var gameState = new GameState( spirit, board );
-		int[] invaderCardOrder = new int[] { 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3 };
-		int[] fearCardsPerLevel = new int[] { 3, 3, 3 };
-		Action<GameState> postInitialization = _ => { };
 
 		// Game # - Random Seeds (don't change this order or this will change game definition)
 		var randomizer = new Random( ShuffleNumber );
@@ -49,19 +46,17 @@ public class GameConfiguration {
 		int fearSeed = randomizer.Next();    // 4
 		int blightSeed = randomizer.Next();  // 5
 
-		if(AdversaryType != null) {
-			var adversary = (IAdversary)Activator.CreateInstance( AdversaryType );
-			adversary.Level = AdversaryLevel;
-			invaderCardOrder = adversary.InvaderCardOrder ?? invaderCardOrder;
-			fearCardsPerLevel = adversary.FearCardsPerLevel ?? fearCardsPerLevel;
-			postInitialization = adversary.PostInitialization;
+		// Adversary is an extension of GameConfiguration
+		var adversary = AdversaryType != null
+			? ( IAdversary )Activator.CreateInstance( AdversaryType )
+			: new NullAdversary();
+		adversary.Level = AdversaryLevel;
 
-			adversary.PreInitialization( gameState );
-		}
+		adversary.PreInitialization( gameState );
 
 		// (1) Invader Deck
-		gameState.InvaderDeck = new InvaderDeck( invaderSeed, invaderCardOrder );
-			
+		gameState.InvaderDeck = new InvaderDeck( invaderSeed, adversary.InvaderCardOrder );
+
 		// (2) Major Power Cards
 		gameState.MajorCards = new PowerCardDeck( majorCards.ToArray(), majorSeed );
 
@@ -69,27 +64,42 @@ public class GameConfiguration {
 		gameState.MinorCards = new PowerCardDeck( minorCards.ToArray(), minorSeed );
 
 		// (4) Fear Cards
-		new Random(fearSeed).Shuffle( fearCards );
+		new Random( fearSeed ).Shuffle( fearCards );
 		gameState.Fear.Deck.Clear();
-		gameState.Fear.cardsPerLevel = fearCardsPerLevel;
-		for(int i=0;i<gameState.Fear.cardsPerLevel.Sum();++i)
+		gameState.Fear.cardsPerLevel = adversary.FearCardsPerLevel;
+		for(int i = 0; i < gameState.Fear.cardsPerLevel.Sum(); ++i)
 			gameState.Fear.AddCard( fearCards[i] );
 
 		// (5) Blight Cards
-		new Random(blightSeed).Shuffle( blightCards );
+		new Random( blightSeed ).Shuffle( blightCards );
 		gameState.BlightCards = blightCards;
 		gameState.BlightCard = blightCards[0];
-		blightCards.RemoveAt(0);
-
-		// No Events
-		var invaderCards = gameState.InvaderDeck.UnrevealedCards;
+		blightCards.RemoveAt( 0 );
 
 		// Enable Win / Loss Check
 		gameState.ShouldCheckWinLoss = true; // !!! instead of this, load win/loss states into the check-list for real games
 
 		gameState.Initialize();
-		postInitialization( gameState );
 
+		adversary.PostInitialization( gameState );
+
+		Init_CommandTheBeasts( gameState );
+
+		return gameState;
+	}
+
+	class NullAdversary : IAdversary {
+		public int Level { set { } } // ignore
+		public int[] InvaderCardOrder => new int[] { 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3 };
+		public int[] FearCardsPerLevel => new int[] { 3, 3, 3 };
+		public void PostInitialization( GameState gamestate ) { }
+		public void PreInitialization( GameState gameState ) { }
+	}
+
+	static void Init_CommandTheBeasts( GameState gameState ) {
+		// If there are no Event cards, compensate with Command-the-Beasts
+
+		var invaderCards = gameState.InvaderDeck.UnrevealedCards;
 		void InitBeastCommand( int stage ) {
 			for(int i = 0; i < invaderCards.Count; ++i) {
 				if(invaderCards[i].InvaderStage != stage) continue;
@@ -99,8 +109,5 @@ public class GameConfiguration {
 		}
 		InitBeastCommand( 2 );
 		InitBeastCommand( 3 );
-
-		return gameState;
 	}
-
 }

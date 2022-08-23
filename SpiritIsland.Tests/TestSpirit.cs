@@ -39,6 +39,8 @@ namespace SpiritIsland.Tests {
 			};
 			modGameState?.Invoke( gs );
 
+			gs.Initialize(); 
+
 			_ = new SinglePlayer.SinglePlayerGame( gs );
 
 			var user = new VirtualTestUser( spirit );

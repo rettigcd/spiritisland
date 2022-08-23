@@ -22,6 +22,8 @@ public class BrandenburgPrussia : IAdversary {
 	};
 
 	public int[] FearCardsPerLevel => Level switch {
+		1 => new int[] {3,3,3 },
+		2 => new int[] {3,3,3 },
 		3 => new int[] {3,4,3 },
 		4 => new int[] {4,4,3 },
 		5 => new int[] { 4, 4, 3 },
