@@ -15,11 +15,7 @@ public class Sweeden : IAdversary {
 		_ => null,
 	};
 
-	public void AdjustInvaderDeck( GameState gs ) {
-		gs.InvaderDeck.ReplaceCards( card => new SweedenInvaderCard( card ) );
-	}
-
-	public void Adjust( GameState gameState ) {
+	public void PreInitialization( GameState gameState ) {
 
 		//	Level 1
 		//	( 2 ) 9( 3 / 3 / 3 )   Heavy Mining: 
@@ -31,22 +27,6 @@ public class Sweeden : IAdversary {
 					// !!! how do we take from card but not cascade?
 					await gameState.Tokens[args.Space].Blight.Bind(args.ActionId).Add(1);
 			} );
-		}
-
-		//	Level 2	
-		//	(3)	10 (3/4/3)	Population Pressure at Home: 
-		//	During Setup, on each board add 1 City to land #4.
-		//	On boards where land #4 starts with Blight, put that Blight in land #5 instead.
-		if(2 <= Level) {
-			foreach(var board in gameState.Island.Boards) {
-				var initCountsOn4 = (board[4] as Space1).StartUpCounts;
-				initCountsOn4.Adjust('C',1);
-
-				if(initCountsOn4.Blight>0) {
-					initCountsOn4.Adjust('B',-1);
-					(board[5] as Space1).StartUpCounts.Adjust('B',1);
-				}
-			}
 		}
 
 		// Level 3
@@ -96,13 +76,37 @@ public class Sweeden : IAdversary {
 		// The Blight comes from the box, not the Blight Card.
 		if(6 <= Level) {
 			foreach(var board in gameState.Island.Boards) {
-				var initOn8 = (board[8] as Space1).StartUpCounts;
-				initOn8.Adjust('T',1);
-				initOn8.Adjust( 'B', 1 );
+				var tokens = gameState.Tokens[board[8]];
+				tokens.AdjustDefault( Invader.Town, 1 );
+				tokens.Blight.Adjust(1);
+			}
+		}
+	}
+
+	public void PostInitialization( GameState gameState ) {
+		gameState.InvaderDeck.ReplaceCards( card => new SweedenInvaderCard( card ) );
+
+		//	Level 2	
+		//	(3)	10 (3/4/3)	Population Pressure at Home: 
+		//	During Setup, on each board add 1 City to land #4.
+		//	On boards where land #4 starts with Blight, put that Blight in land #5 instead.
+		if(2 <= Level) {
+			foreach(var board in gameState.Island.Boards) {
+				// Add City to 4
+				var space4 = gameState.Tokens[board[4]];
+				space4.AdjustDefault( Invader.City, 1 );
+
+				// If 4 has blight, 
+				if( space4.Blight.Any ) {
+					// bump it to 5
+					space4.Blight.Adjust(-1);
+					gameState.Tokens[board[5]].Blight.Adjust(1);
+				}
 			}
 		}
 
 	}
+
 }
 
 class SweedenInvaderCard : InvaderCard {

@@ -121,7 +121,7 @@ namespace SpiritIsland.WinForms {
 				: colorListBox.SelectedItem as string;
 
 			string adversary = _adversaryListBox.SelectedItem.ToString();
-			gameSettings.Adversary = adversary.StartsWith("Brandenburg") ? typeof( BrandenburgPrussia ) 
+			gameSettings.AdversaryType = adversary.StartsWith("Brandenburg") ? typeof( BrandenburgPrussia ) 
 				: adversary.StartsWith("England") ? typeof( England )
 				: adversary.StartsWith( "Sweeden" ) ? typeof( Sweeden )
 				: null;

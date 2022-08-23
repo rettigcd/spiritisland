@@ -38,13 +38,13 @@ public class BrandenburgPrussia : IAdversary {
 	//	new ScenarioLevel(10, 4,4,4, "Terrifying Efficient", "(3-222-3333" ),
 	//};
 
-	public void Adjust( GameState gameState ) {
+	public void PreInitialization( GameState gameState ) {
 		if( Level < 1) return;
 		foreach(var board in gameState.Island.Boards)
 			gameState.Tokens[ board[3] ].AdjustDefault( Invader.Town, 1 );
 	}
 
-	public void AdjustInvaderDeck( GameState gamestate ) {
+	public void PostInitialization( GameState gamestate ) {
 		gamestate.InvaderDeck.ReplaceCards( card => new BrandenburgPrussiaInvaderCard( card ) );
 	}
 }

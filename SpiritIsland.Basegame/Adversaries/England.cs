@@ -19,7 +19,7 @@ public class England : IAdversary {
 		_ => null,
 	};
 
-	public void Adjust( GameState gameState ) {
+	public void PreInitialization( GameState gameState ) {
 		if( 2 <= Level ) {
 			// During Setup, on each board add 1 City to land #1 and 1 Town to land #2.
 			foreach(var board in gameState.Island.Boards) {
@@ -36,7 +36,7 @@ public class England : IAdversary {
 		}
 	}
 
-	public void AdjustInvaderDeck( GameState gs ) {
+	public void PostInitialization( GameState gs ) {
 		gs.InvaderDeck.ReplaceCards( card => new EnglandInvaderCard( card, Level > 0 ) );
 		if(3 <= Level) {
 			var highBuildSlot = new HighImmegrationSlot( Level );

@@ -6,10 +6,10 @@ public class GameConfiguration {
 	public Type SpiritType;
 	public string Board;
 	public string Color;
-	public Type Adversary;
+	public Type AdversaryType;
 	public int AdversaryLevel;
-	public string AdversaryString => Adversary == null ? "[none]"
-		: $"{Adversary.Name} {AdversaryLevel}";
+	public string AdversaryString => AdversaryType == null ? "[none]"
+		: $"{AdversaryType.Name} {AdversaryLevel}";
 
 	public GameState BuildGame( IGameComponentProvider[] providers ) {
 
@@ -39,7 +39,7 @@ public class GameConfiguration {
 		var gameState = new GameState( spirit, board );
 		int[] invaderCardOrder = new int[] { 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3 };
 		int[] fearCardsPerLevel = new int[] { 3, 3, 3 };
-		Action<GameState> adjustInvaderDeck = ( deck ) => { };
+		Action<GameState> postInitialization = _ => { };
 
 		// Game # - Random Seeds (don't change this order or this will change game definition)
 		var randomizer = new Random( ShuffleNumber );
@@ -49,18 +49,18 @@ public class GameConfiguration {
 		int fearSeed = randomizer.Next();    // 4
 		int blightSeed = randomizer.Next();  // 5
 
-		if(Adversary != null) {
-			var adversary = (IAdversary)Activator.CreateInstance( Adversary );
+		if(AdversaryType != null) {
+			var adversary = (IAdversary)Activator.CreateInstance( AdversaryType );
 			adversary.Level = AdversaryLevel;
-			adversary.Adjust( gameState );
 			invaderCardOrder = adversary.InvaderCardOrder ?? invaderCardOrder;
 			fearCardsPerLevel = adversary.FearCardsPerLevel ?? fearCardsPerLevel;
-			adjustInvaderDeck = adversary.AdjustInvaderDeck;
+			postInitialization = adversary.PostInitialization;
+
+			adversary.PreInitialization( gameState );
 		}
 
 		// (1) Invader Deck
 		gameState.InvaderDeck = new InvaderDeck( invaderSeed, invaderCardOrder );
-		adjustInvaderDeck( gameState );
 			
 		// (2) Major Power Cards
 		gameState.MajorCards = new PowerCardDeck( majorCards.ToArray(), majorSeed );
@@ -83,18 +83,22 @@ public class GameConfiguration {
 
 		// No Events
 		var invaderCards = gameState.InvaderDeck.UnrevealedCards;
-		void InitBeastCommand(int stage) {
+
+		// Enable Win / Loss Check
+		gameState.ShouldCheckWinLoss = true; // !!! instead of this, load win/loss states into the check-list for real games
+
+		gameState.Initialize();
+		postInitialization( gameState );
+
+		void InitBeastCommand( int stage ) {
 			for(int i = 0; i < invaderCards.Count; ++i) {
 				if(invaderCards[i].InvaderStage != stage) continue;
 				invaderCards[i] = new TriggerCommandBeasts( invaderCards[i] );
 				break;
 			}
 		}
-		InitBeastCommand(2);
-		InitBeastCommand(3);
-
-		// Enable Win / Loss Check
-		gameState.ShouldCheckWinLoss = true; // !!! instead of this, load win/loss states into the check-list for real games
+		InitBeastCommand( 2 );
+		InitBeastCommand( 3 );
 
 		return gameState;
 	}

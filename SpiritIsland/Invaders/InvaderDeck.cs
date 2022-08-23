@@ -153,8 +153,9 @@ public class InvaderDeck {
 	public void ReplaceCards( Func<InvaderCard, IInvaderCard> replacer ) {
 		InvaderDeck deck = this;
 		for(int i = 0; i < deck.UnrevealedCards.Count; ++i) {
-			if(deck.UnrevealedCards[i] is not InvaderCard simpleInvaderCard)
-				throw new InvalidOperationException( "We can only apply Adversary modification to original (simple) Invader Cards" );
+			var existing = deck.UnrevealedCards[i];
+			if(existing is not InvaderCard simpleInvaderCard)
+				throw new InvalidOperationException( existing.GetType().Name + " cannot be replaced/modified." );
 			deck.UnrevealedCards[i] = replacer( simpleInvaderCard );
 		}
 	}

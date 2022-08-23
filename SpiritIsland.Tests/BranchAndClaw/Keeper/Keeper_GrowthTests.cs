@@ -190,7 +190,7 @@ public class Keeper_GrowthTests : GrowthTests {
 	}
 
 	void AddBlight( Space space ) {
-		gameState.Tokens[ space ].Blight.Bind(Guid.NewGuid()).Add( 1 ).Wait(); // if cascading is not desired, try adjust
+		gameState.Tokens[ space ].Blight.Adjust( 1 );
 	}
 
 	void Given_BlightEverywhereExcept7() {

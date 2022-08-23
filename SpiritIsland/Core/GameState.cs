@@ -21,6 +21,9 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		Invaders = new Invaders( this );
 		Tokens = new Tokens_ForIsland( this );
 
+		Tokens.TokenAdded.ForGame.Add( BlightAddedCheck );
+		Tokens.TokenRemoved.ForGame.Add( BlightRemovedCheck );
+
 		TimePasses_WholeGame += TokenCleanUp;
 		TimePasses_WholeGame += ModifyBlightAddedEffect.ForRound.Clear;
 		TimePasses_WholeGame += PreRavaging.ForRound.Clear;
@@ -32,42 +35,31 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	/// Called AFTER everything has been configured. and BEFORE players make first move.
 	/// </summary>
 	public void Initialize() {
+		PlaceStartingTokens(); 
+		InitialExplore();
+		InitSpirits();// ManyMinds requires the beast to be in place, so this goes after tokens are placed.
+		BlightCard.OnGameStart( this );
+	}
 
-		// ! this has to go first since ManyMinds requires the beast to be in place
+	void InitialExplore() {
+		InvaderDeck.InitExploreSlot();
+		InvaderDeck.Explore.Cards[0].Explore( this ).Wait();
+		InvaderDeck.Advance();
+	}
+
+	void PlaceStartingTokens() {
 		foreach(var board in Island.Boards) {
-			Tokens[board[2]].Disease.Init(1);
-			var lowest = board.Spaces.Skip(1).OfType<Space1>().First(s=>s.StartUpCounts.Empty);
-			Tokens[lowest].Beasts.Adjust(1);
+			Tokens[board[2]].Disease.Init( 1 );
+			var lowest = board.Spaces.Skip( 1 ).OfType<Space1>().First( s => s.StartUpCounts.Empty );
+			Tokens[lowest].Beasts.Adjust( 1 );
 		}
 
 		foreach(var board in Island.Boards)
 			foreach(var space in board.Spaces)
 				((Space1)space).InitTokens( Tokens[space] );
-
-		// Explore
-		InvaderDeck.InitExploreSlot();
-		InvaderDeck.Explore.Cards[0].Explore( this ).Wait();
-		InvaderDeck.Advance();
-
-		InitSpirits();
-
-		// Blight
-		BlightCard.OnGameStart( this );
-		Tokens.TokenAdded.ForGame.Add( async args => {
-			if(args.Token == TokenType.Blight)
-				await BlightAdded( args );
-		} );
-		Tokens.TokenRemoved.ForGame.Add( args => {
-			if(args.Token == TokenType.Blight
-				&& !args.Reason.IsOneOf(
-					RemoveReason.MovedFrom, // pushing / gathering blight
-					RemoveReason.Replaced   // just in case...
-				)
-			)
-				BlightRemoved( args );
-		} );
 	}
 
+	/// <summary>  Calls each spirit's InitSpirit(board,gameState) method </summary>
 	void InitSpirits() {
 		if(Spirits.Length != Island.Boards.Length)
 			throw new InvalidOperationException( "# of spirits and islands must match" );
@@ -121,7 +113,8 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	/// <summary>
 	/// Does all the special actions when blight is added.
 	/// </summary>
-	async Task BlightAdded( ITokenAddedArgs args ){
+	async Task BlightAddedCheck( ITokenAddedArgs args ){
+		if(args.Token != TokenType.Blight) return; // token-added event handler for blight only
 
 		bool isCascading = args.Reason switch {
 			AddReason.AsReplacement  => false,
@@ -167,7 +160,18 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	}
 
-	void BlightRemoved( ITokenRemovedArgs args ) => this.blightOnCard += args.Count;
+	/// <summary>
+	/// Event handler for token removed that checks blight-only
+	/// </summary>
+	void BlightRemovedCheck( ITokenRemovedArgs args ) {
+		if(args.Token == TokenType.Blight
+			&& !args.Reason.IsOneOf(
+				RemoveReason.MovedFrom, // pushing / gathering blight
+				RemoveReason.Replaced   // just in case...
+			)
+		)
+			this.blightOnCard += args.Count;
+	}
 
 	#endregion
 

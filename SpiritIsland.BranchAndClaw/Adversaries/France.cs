@@ -14,7 +14,7 @@ public class France : IAdversary {
 
 	public int Level { get; set; }
 
-	public void AdjustInvaderDeck( GameState gs ) {
+	public void PostInitialization( GameState gs ) {
 		gs.InvaderDeck.ReplaceCards( card => new FranceInvaderCard( card, Level ) );
 	}
 
@@ -30,7 +30,7 @@ public class France : IAdversary {
 
 	public int[] InvaderCardOrder => null;
 
-	public void Adjust( GameState gameState ) {
+	public void PreInitialization( GameState gameState ) {
 		if( 2 <= Level)
 			AddSlaveRebellionEvent( gameState );
 		if( 3 <= Level)
@@ -62,9 +62,10 @@ public class France : IAdversary {
 		// During Setup, on each board
 		foreach(var board in gameState.Island.Boards) {
 			// add 1 Town to the highest-numbered land without Town.
-			board.Spaces.Cast<Space1>().Where(s=>s.StartUpCounts.Towns == 0).Last().StartUpCounts.Adjust('T',1);
+			var highLandWithoutTown = board.Spaces.Cast<Space1>().Where( s => s.StartUpCounts.Towns == 0 ).Last();
+			gameState.Tokens[highLandWithoutTown].AdjustDefault( Invader.Town, 1 );
 			// Add 1 Town to land #1.
-			(board[0] as Space1).StartUpCounts.Adjust('T',1);
+			gameState.Tokens[board[1]].AdjustDefault( Invader.Town, 1 );
 		}
 	}
 

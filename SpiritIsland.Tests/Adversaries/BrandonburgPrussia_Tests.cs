@@ -112,9 +112,13 @@ public class BrandonburgPrussia_Tests {
 	}
 
 
-	void SetAdversary(int level) => fxt.InitConfiguration( cfg => { cfg.Adversary = typeof( BrandenburgPrussia ); cfg.AdversaryLevel = level; } );
+	void SetAdversary(int level) => fxt.InitConfiguration( cfg => { 
+		cfg.AdversaryType = typeof( BrandenburgPrussia ); 
+		cfg.AdversaryLevel = level; 
+	} );
 
-	void Assert_Level1TownAdded( bool added ) => fxt.GameState.Tokens[fxt.Board[3]].Summary.ShouldBe( added ? "1T@2" : "[none]" );
+	void Assert_Level1TownAdded( bool added ) 
+		=> fxt.GameState.Tokens[fxt.Board[3]].Summary.ShouldBe( added ? "2D@2,1T@2" : "[none]" );
 
 	void Assert_FearLevels( int v1, int v2, int v3 ) {
 		// level 1
@@ -145,9 +149,10 @@ public class BrandonburgPrussia_Tests {
 	static string GetActualInvaderLevels( InvaderDeck deck ) { // make extension method??
 		var buf = new System.Text.StringBuilder();
 		char last = ' '; // deck.Explore.Single().InvaderStage.ToString()[0];
-//		buf.Append( last );
 
-		foreach(var card in deck.UnrevealedCards) {
+		var cards = deck.Slots.SelectMany(s=>s.Cards).Union( deck.UnrevealedCards );
+
+		foreach(var card in cards) {
 			var next = card.InvaderStage.ToString()[0];
 			if(next != last && last != ' ') buf.Append( '-' );
 			last = next;
