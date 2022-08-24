@@ -52,8 +52,6 @@ public class GameConfiguration {
 			: new NullAdversary();
 		adversary.Level = AdversaryLevel;
 
-		adversary.PreInitialization( gameState );
-
 		// (1) Invader Deck
 		gameState.InvaderDeck = new InvaderDeck( invaderSeed, adversary.InvaderCardOrder );
 
@@ -75,6 +73,8 @@ public class GameConfiguration {
 		gameState.BlightCards = blightCards;
 		gameState.BlightCard = blightCards[0];
 		blightCards.RemoveAt( 0 );
+
+		adversary.PreInitialization( gameState );
 
 		// Enable Win / Loss Check
 		gameState.ShouldCheckWinLoss = true; // !!! instead of this, load win/loss states into the check-list for real games

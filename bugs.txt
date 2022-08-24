@@ -1,42 +1,24 @@
 Bargains of Power and Protection - defense does not roll back when Rewinding
-	dynamicTokens_ForGame
-	$energy adjustment
+	1 of 2 !!! Tokens_ForIslands.RegisterDynamic actions to not reset when we Rewind.
+	2 of 2 $energy adjustment
 
----------
+Absolute Stasis - implement token stopping using cancelling events. (so viewing the tokens works)
 
-After Growth, rewinding to beginning of turn, doesn't reset # of card plays to 0
+When playing multi-player, other spirits should be able to use Downpour's SS as wetlands also, not just Dounpour.
 
-Shifting Memories 2-elements for card play - doesn't always work
-
-=====  Space / Board related bugs  ======
-
-* View Absolute Stasis tokens / spaces.
-
-* Dream of the Untouched Land
-	- adding new island board does not not work.
-
-* Weave Together the Fabric of Place
+Weave Together the Fabric of Place
 	- Can't see tokens
 	- Does it even work?
 
-===============================
+==========================
+
+Dream of the Untouched Land
+	- adding new island board does not not work.
 
 Settle Into Hunting-Grounds
 	- implement "May" count as badlands and beast.
 	- presence cannot move.
 
-=============
+Growth - After Growth, rewinding to beginning of turn, doesn't reset # of card plays to 0
 
-When playing multi-player, other spirits should be able to use Downpour's SS as wetlands also, not juest Dounpour.
-
-=============
-
-!!! Tokens_ForIslands.RegisterDynamic actions to not reset when we Rewind.
-!!! Triggering Elements needs to use token in space as count so Rewind works.
-
-== 2 Spirit Thoughts ==
-
-How to make Actions Atomic
-	- Don't Enforce it
-	- Let UI enforce it by only allowing 1 Growth/Fast/Slow action to be selected at a time
-	- Let engine enforce it by only allowing 1 G/F/S action to be selected at a time.
+Growth - Shifting Memories 2-elements for card play - doesn't always work

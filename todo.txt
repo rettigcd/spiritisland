@@ -11,6 +11,8 @@
 
 * replace Frozen dahan with RemovingToken handler (and DamagingToken handler)
 
+* Display Adversary details
+
 Later: Events
 Later: Scenarios
 Later: Web Hosted
@@ -28,11 +30,10 @@ Later: Web Hosted
 
 * Display back of explorer card.
 
-
+=================================
 
 Some Commands need a title like the Power Card Name, other's need detailed description of what they do.
 
-Idea: Flatten GrowthOption => GrowthAction so user just picks growth actions.
 Fear Card - convert to Commands
 
 Create TargetSpaceCtx filter type.
@@ -50,9 +51,7 @@ Downpour / Finder of Paths Unseen
 Adversary
 
 == UI improvement ==
-Flatten Growth
 Flatten Move
-Flatten - select land / Select Invader
 Interactive Card-Play selector w/ commit
 Event driven UI updates
 Flatten out-of-phase action selection.
@@ -71,15 +70,10 @@ Starlights Track has +1 energies
 Vengeance - WreakVengeance for the Lands Corruption
 VolcanoLoomingHigh doesn't allow presence ouside of mountain
 
-== Idea ==
-Defer using reflection for Power Cards as long as possible.
-Defer using reflection for Fear / Blight Cards unless used in the game play.
-
-
 =====  Simple - Implement  ====
 
 * Implement Face-up / face-down for deck cards so we can see what stage a card is before revealing it.
-* Save DynamicTokens_ForGame to memento. / Clear DynamicTokens_ForRound when memento is restored.
+* Show # of Invader cards left in deck
 * Visions of shifting future - use Randomizer so it is repeatable.
 
 ==== Finish ====
@@ -148,7 +142,6 @@ Cleanup..
 	Merge Config Ravage and Ravage Engine
 	* Simplify syntax for selecting TokensFromManySpaces
 	* Consolidate => Single PresenceOnBoardChanged event
-	* rollback virtual defence, hook from Presence / Tokens changed event.
 	* ForgetCard
 		- rename ForgetCard to ForgetCard_UserChoice
 		- Consolidate the 2 ForgetCard methods into 1
@@ -197,39 +190,18 @@ AI - Search
 
 -- Helpful --
 
-** Create a Token API  (MoveFrom,MoveTo,Destroy,Replace,Setup)
-
 Refactor Testing to make it easier to test.
-
-2) TargetSpaceCtx.DamageInvaders - limit badland damage to once / action
 
 Make Push a 1-step commmand
 	- for custom destinations, add them to Push API
 	- Embed guaranteed next decision in selecting source token
 	- UI selects entire move before sequentially submitting: source token, destination
 
-== Road Map to Awesomeness ==
-* HARD	Multi Player 
-* MED	Multi Platform (Linux / Android)
-* MED	Internet Play
-* MED	AI Player
-* EASY	Draw Power Cards
-* EASY  DRAW Boards
-* EASY  Draw Fear Cards
-
-== Bonus - Fun ==
-
-3 Show # of cards remaining in fear deck until next threshold
-
-2 When presenting options, Icon-draw them.
-3 draw innates - range icons, Target icons, clean tokens, +1 range
-1 Cards ui - scrolling, decks & discard pile, 
+Show # of cards remaining in fear deck until next threshold
 
 ===================
 
 REFACTOR	InvaderGroup Damage/Destroy methods.  Create a virtual 'included tokens' group that combines single-token and token Group actions
-
-Engine	Check Game Win/Loss
 
 ====================================================================================
 == Steam updates - What's New (provide insight as to what they have trouble with) ==
@@ -240,18 +212,12 @@ https://spiritislandwiki.com/index.php?title=Main_Page
 http://nerdroomsoftware.com/apps/SpiritGuide/spirits.php
 
 
-=====  no-events alternative  (page 20) ========
+=====  no-events alternative "Command the Beasts" (page 20) ========
 
 --- Setup ---
 
 Add 1 extra fear card to Terror Level 2 of the Fear Deck.
-	> create Fear Deck Configuration 
-	> modify Fear Deck Configuration
-
 Add the two 'Command Beasts' Reminder Cards to the Invader Deck; one before the first Stage 2 Card, the other before the first Stage 3  card
-	> Change Invader Cards to use GameCmd, 
-	> add the CommandBeast to the deck
-
 Don't use a Blight Card where the Blighted Island side has 2 Blight per player or only immediate effects.  	(Still Healthy are fine though.)
 
 --- Game Play ---
