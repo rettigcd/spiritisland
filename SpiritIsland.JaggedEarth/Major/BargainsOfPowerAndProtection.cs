@@ -18,7 +18,7 @@ public class BargainsOfPowerAndProtection {
 		ctx.GameState.Tokens.Dynamic.ForGame.Register( new Range1DahanDefend1(ctx.Self).DefendOn, TokenType.Defend );
 
 		// and you gain 1 less Energy each turn.
-		ctx.Self.EnergyCollected += spirit => --spirit.Energy; // !!! this needs to be Rewindable
+		ctx.Self.EnergyCollected.ForGame.Add( spirit => --spirit.Energy );
 
 		// (this effect stacks if used multiple times.)
 	}

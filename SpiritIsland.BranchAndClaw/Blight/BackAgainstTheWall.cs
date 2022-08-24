@@ -8,7 +8,7 @@ public class BackAgainstTheWall : BlightCardBase {
 
 	static SelfAction BoostEnergyAndCardPlayEachSpiritPhase => new SelfAction(
 		"Each spirit phase, Gain +1 energy and +1 card play", 
-		ctx => ctx.Self.EnergyCollected += BoostEnergyAndCardPlay
+		ctx => ctx.Self.EnergyCollected.ForGame.Add( BoostEnergyAndCardPlay )
 	);
 
 	static void BoostEnergyAndCardPlay( Spirit spirit ) {

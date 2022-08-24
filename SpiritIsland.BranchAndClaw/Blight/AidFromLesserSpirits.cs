@@ -18,10 +18,10 @@ public class AidFromLesserSpirits : BlightCardBase {
 				// They may be used every turn as if played, but cost no card plays/energy.
 				// (don't put card in hand, because we don't want them discarding or forgetting, or playing normally.)
 				// (Just add it and its elements every time.)
-				spirit.EnergyCollected += ( Spirit s ) => {
+				spirit.EnergyCollected.ForGame.Add( ( Spirit s ) => {
 					s.AddActionFactory( card );
 					s.Elements.AddRange( card.Elements );
-				};
+				});
 
 			}
 

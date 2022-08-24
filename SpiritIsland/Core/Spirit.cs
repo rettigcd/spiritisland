@@ -207,7 +207,7 @@ public abstract class Spirit : IOption {
 
 		// Energy
 		Energy += EnergyPerTurn;
-		EnergyCollected?.Invoke(this);
+		await EnergyCollected.InvokeAsync(this);
 		// ! Elements were added when the round started.
 
 		// Do actions AFTER energy and elements have been added - in case playing ManyMindsMoveAsOne - Pay 2 for power card.
@@ -215,7 +215,7 @@ public abstract class Spirit : IOption {
 			await action.ActivateAsync( ctx );
 
 	}
-	public event Action<Spirit> EnergyCollected;
+	public DualAsyncEvent<Spirit> EnergyCollected = new DualAsyncEvent<Spirit>();
 
 	// !!! Seems like this should be private / protected and not called from outside.
 	public async Task ResolveActions( SelfCtx ctx ) {
@@ -550,6 +550,7 @@ public abstract class Spirit : IOption {
 			available = spirit.availableActions.ToArray();
 			usedActions = spirit.usedActions.ToArray();
 			usedInnates = spirit.usedInnates.ToArray();
+			energyCollected = spirit.EnergyCollected.SaveToMemento();
 		}
 		public void Restore(Spirit spirit) {
 			spirit.Energy = energy;
@@ -564,6 +565,7 @@ public abstract class Spirit : IOption {
 			spirit.usedInnates.SetItems( usedInnates );
 			spirit.InitElementsFromPresence();
 			spirit.BonusDamage = 0; // assuming beginning of round
+			spirit.EnergyCollected.LoadFrom( energyCollected );
 		}
 		static public void InitFromArray(ElementCounts dict, KeyValuePair<Element,int>[] array ) {
 			dict.Clear(); 
@@ -579,6 +581,7 @@ public abstract class Spirit : IOption {
 		readonly IActionFactory[] available;
 		readonly IActionFactory[] usedActions;
 		readonly InnatePower[] usedInnates;
+		readonly IMemento<DualAsyncEvent<Spirit>> energyCollected;
 	}
 	#endregion
 
