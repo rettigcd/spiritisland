@@ -29,7 +29,7 @@ public class TokenCountDictionary {
 			ValidateNotDead( specific );
 			int count = counts[specific];
 			if( specific is UniqueToken ut )
-				count += tokenApi.GetDynamicTokenFor(Space, ut);
+				count += tokenApi.GetDynamicTokensFor(Space, ut);
 			return count;
 		}
 		private set {

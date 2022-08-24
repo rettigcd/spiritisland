@@ -359,15 +359,15 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	// - Events -
 	public event Action<ILogEntry> NewLogEntry;
-	public DualAsyncEvent<GameState> StartOfInvaderPhase   = new DualAsyncEvent<GameState>();         // Blight effects
-	public DualAsyncEvent<RavagingEventArgs> PreRavaging   = new DualAsyncEvent<RavagingEventArgs>(); // A Spread of Rampant Green - Whole game - stop ravage
-	public DualAsyncEvent<BuildingEventArgs> PreBuilding   = new DualAsyncEvent<BuildingEventArgs>(); // A Spread of Rampant Green - While game - stop build
+	public DualAsyncEvent<GameState> StartOfInvaderPhase   = new DualAsyncEvent<GameState>();          // Blight effects
+	public DualAsyncEvent<RavagingEventArgs> PreRavaging   = new DualAsyncEvent<RavagingEventArgs>();  // A Spread of Rampant Green - Whole game - stop ravage
+	public DualAsyncEvent<BuildingEventArgs> PreBuilding   = new DualAsyncEvent<BuildingEventArgs>();  // A Spread of Rampant Green - While game - stop build
 	public DualAsyncEvent<ExploreEventArgs>  PreExplore    = new DualAsyncEvent<ExploreEventArgs>();
 	public DualAsyncEvent<InvadersRavaged> InvadersRavaged = new DualAsyncEvent<InvadersRavaged>();
-	public DualAsyncEvent<LandDamagedArgs> LandDamaged = new DualAsyncEvent<LandDamagedArgs>();         // Let Them Break Themselves Against the Stone
+	public DualAsyncEvent<LandDamagedArgs> LandDamaged = new DualAsyncEvent<LandDamagedArgs>();        // Let Them Break Themselves Against the Stone
 
-	public event Action<GameState> TimePasses_WholeGame;                                            // Spirit cleanup
-	public Stack<Func<GameState, Task>> TimePasses_ThisRound = new Stack<Func<GameState, Task>>(); // This must be Push / Pop
+	public event Action<GameState> TimePasses_WholeGame;                                               // Spirit cleanup
+	public Stack<Func<GameState, Task>> TimePasses_ThisRound = new Stack<Func<GameState, Task>>();     // This must be Push / Pop
 
 	#endregion
 

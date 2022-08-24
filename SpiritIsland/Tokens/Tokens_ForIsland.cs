@@ -23,7 +23,7 @@ public class Tokens_ForIsland : IIslandTokenApi {
 		TokenMoved.ForRound.Clear();
 		TokenRemoved.ForRound.Clear();
 		RemovingToken.ForRound.Clear();
-		dynamicTokens_ForRound.Clear();
+		Dynamic.ForRound.Clear();
 	}
 
 	public TokenCountDictionary this[Space space] {
@@ -47,31 +47,14 @@ public class Tokens_ForIsland : IIslandTokenApi {
 
 	readonly Dictionary<Space, TokenCountDictionary> tokenCounts = new Dictionary<Space, TokenCountDictionary>();
 
-	readonly Dictionary<UniqueToken, List<Func<GameState, Space, int>>> dynamicTokens_ForGame = new Dictionary<UniqueToken, List<Func<GameState, Space, int>>>(); // !!! save to memento???
-	readonly Dictionary<UniqueToken, List<Func<GameState, Space, int>>> dynamicTokens_ForRound = new Dictionary<UniqueToken, List<Func<GameState, Space, int>>>();
-
-	public void RegisterDynamic( System.Func<GameState,Space,int> calcCountOnSpace, UniqueToken targetToken, bool entireGame ) {
-		var dict = entireGame ? dynamicTokens_ForGame : dynamicTokens_ForRound;
-		if( !dict.ContainsKey( targetToken ) )
-			dict.Add( targetToken, new List<Func<GameState,Space,int>>() );
-		dict[targetToken].Add( calcCountOnSpace );
-	}
-
-	public int GetDynamicTokenFor( Space space, UniqueToken token ) 
-		=> GetDynamicDefendFor( dynamicTokens_ForGame, space, token )
-		+ GetDynamicDefendFor( dynamicTokens_ForRound, space, token );
-
-	int GetDynamicDefendFor( Dictionary<UniqueToken, List<Func<GameState, Space, int>>> dict, Space space, UniqueToken token ) 
-		=> dict.ContainsKey(token) ? dict[token].Sum(x => x( gameStateForEventArgs, space ) ) : 0;
-
+	public int GetDynamicTokensFor( Space space, UniqueToken token ) 
+		=> Dynamic.GetTokensFor( gameStateForEventArgs, space, token );
 
 	public IEnumerable<Space> Keys => tokenCounts.Keys;
 
 	public Task Publish_Removing( RemovingTokenArgs args ) => RemovingToken.InvokeAsync( args );
 
-
 	public Task Publish_Adding( AddingTokenArgs args ) => AddingToken.InvokeAsync( args );
-
 
 	public Task Publish_Added( TokenAddedArgs args ) {
 		args.GameState = gameStateForEventArgs;
@@ -102,12 +85,14 @@ public class Tokens_ForIsland : IIslandTokenApi {
 
 	/// <summary> Sent before any token is removed. </summary>
 	/// <remarks> Callers may modify the args to disable the remove if desired. </remarks>
-	public DualAsyncEvent<RemovingTokenArgs> RemovingToken = new DualAsyncEvent<RemovingTokenArgs>();
-	public DualAsyncEvent<AddingTokenArgs> AddingToken = new DualAsyncEvent<AddingTokenArgs>();
+	public readonly DualAsyncEvent<RemovingTokenArgs> RemovingToken = new DualAsyncEvent<RemovingTokenArgs>();
+	public readonly DualAsyncEvent<AddingTokenArgs> AddingToken = new DualAsyncEvent<AddingTokenArgs>();
 
-	public DualAsyncEvent<ITokenAddedArgs> TokenAdded = new DualAsyncEvent<ITokenAddedArgs>();
-	public DualAsyncEvent<ITokenRemovedArgs> TokenRemoved = new DualAsyncEvent<ITokenRemovedArgs>();
-	public DualAsyncEvent<ITokenMovedArgs> TokenMoved = new DualAsyncEvent<ITokenMovedArgs>();
+	public readonly DualAsyncEvent<ITokenAddedArgs> TokenAdded = new DualAsyncEvent<ITokenAddedArgs>();
+	public readonly DualAsyncEvent<ITokenRemovedArgs> TokenRemoved = new DualAsyncEvent<ITokenRemovedArgs>();
+	public readonly DualAsyncEvent<ITokenMovedArgs> TokenMoved = new DualAsyncEvent<ITokenMovedArgs>();
+
+	public readonly DualDynamicTokens Dynamic = new DualDynamicTokens();
 
 	#region Memento
 
@@ -144,10 +129,34 @@ public class Tokens_ForIsland : IIslandTokenApi {
 		readonly Dictionary<Space, Dictionary<Token,int>> tc = new Dictionary<Space, Dictionary<Token,int>>();
 		readonly Dictionary<HealthTokenClass, HealthToken> tokenDefaults = new Dictionary<HealthTokenClass, HealthToken>();
 
-		}
+	}
 
 	#endregion Memento
 
+}
+
+public class DynamicTokens {
+	readonly Dictionary<UniqueToken, List<Func<GameState, Space, int>>> dict = new Dictionary<UniqueToken, List<Func<GameState, Space, int>>>(); // !!! save to memento???
+	public void Register( System.Func<GameState, Space, int> calcCountOnSpace, UniqueToken targetToken ) {
+		if(!dict.ContainsKey( targetToken ))
+			dict.Add( targetToken, new List<Func<GameState, Space, int>>() );
+		dict[targetToken].Add( calcCountOnSpace );
+	}
+	public int GetDynamicTokenFor( GameState gs, Space space, UniqueToken token )
+		=> dict.ContainsKey( token ) ? dict[token].Sum( x => x( gs, space ) ) : 0;
+	public void Clear() => dict.Clear();
+}
+
+public class DualDynamicTokens {
+	readonly public DynamicTokens ForGame = new DynamicTokens(); // !!! save to memento???
+	readonly public DynamicTokens ForRound = new DynamicTokens(); // !!! save to memento???
+	public void RegisterDynamic( System.Func<GameState, Space, int> calcCountOnSpace, UniqueToken targetToken, bool entireGame ) {
+		var dTokens = entireGame ? ForGame : ForRound;
+		dTokens.Register( calcCountOnSpace, targetToken );
+	}
+	public int GetTokensFor( GameState gs, Space space, UniqueToken token )
+		=> ForGame.GetDynamicTokenFor( gs, space, token )
+		+ ForRound.GetDynamicTokenFor( gs, space, token );
 }
 
 #region Event Args Impl
