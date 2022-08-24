@@ -111,10 +111,10 @@ public class Tokens_ForIsland : IIslandTokenApi {
 			// Save Defaults
 			tokenDefaults = src.TokenDefaults.ToDictionary(p=>p.Key,p=>p.Value);
 			// dynamicTokens_ForGame
-
+			dynamicTokens = src.Dynamic.SaveToMemento();
 		}
 		public void Restore(Tokens_ForIsland src ) {
-			// Resotre TokenCounts
+			// Restore TokenCounts
 			src.tokenCounts.Clear();
 			foreach(var space in tc.Keys) {
 				var tokens = src[space];
@@ -125,9 +125,12 @@ public class Tokens_ForIsland : IIslandTokenApi {
 			src.TokenDefaults.Clear();
 			foreach(var pair in tokenDefaults)
 				src.TokenDefaults.Add(pair.Key,pair.Value);
+			// Restore Dynamic tokens
+			src.Dynamic.LoadFrom( dynamicTokens );
 		}
 		readonly Dictionary<Space, Dictionary<Token,int>> tc = new Dictionary<Space, Dictionary<Token,int>>();
 		readonly Dictionary<HealthTokenClass, HealthToken> tokenDefaults = new Dictionary<HealthTokenClass, HealthToken>();
+		readonly IMemento<DualDynamicTokens> dynamicTokens;
 
 	}
 
@@ -145,11 +148,30 @@ public class DynamicTokens {
 	public int GetDynamicTokenFor( GameState gs, Space space, UniqueToken token )
 		=> dict.ContainsKey( token ) ? dict[token].Sum( x => x( gs, space ) ) : 0;
 	public void Clear() => dict.Clear();
+
+	public virtual IMemento<DynamicTokens> SaveToMemento() => new Memento( this );
+	public virtual void LoadFrom( IMemento<DynamicTokens> memento ) {
+		((Memento)memento).Restore( this );
+	}
+
+	protected class Memento : IMemento<DynamicTokens> {
+		public Memento( DynamicTokens src ) {
+			dict = src.dict.ToDictionary(p=>p.Key,p=>p.Value); // make copy
+		}
+		public void Restore( DynamicTokens src ) {
+			src.dict.Clear();
+			foreach(var p in dict)
+				src.dict.Add(p.Key,p.Value);
+		}
+		readonly Dictionary<UniqueToken, List<Func<GameState, Space, int>>> dict = new Dictionary<UniqueToken, List<Func<GameState, Space, int>>>(); // !!! save to memento???
+	}
+
+
 }
 
 public class DualDynamicTokens {
-	readonly public DynamicTokens ForGame = new DynamicTokens(); // !!! save to memento???
-	readonly public DynamicTokens ForRound = new DynamicTokens(); // !!! save to memento???
+	readonly public DynamicTokens ForGame = new DynamicTokens();
+	readonly public DynamicTokens ForRound = new DynamicTokens();
 	public void RegisterDynamic( System.Func<GameState, Space, int> calcCountOnSpace, UniqueToken targetToken, bool entireGame ) {
 		var dTokens = entireGame ? ForGame : ForRound;
 		dTokens.Register( calcCountOnSpace, targetToken );
@@ -157,6 +179,23 @@ public class DualDynamicTokens {
 	public int GetTokensFor( GameState gs, Space space, UniqueToken token )
 		=> ForGame.GetDynamicTokenFor( gs, space, token )
 		+ ForRound.GetDynamicTokenFor( gs, space, token );
+
+	public IMemento<DualDynamicTokens> SaveToMemento() => new Memento( this );
+	public void LoadFrom( IMemento<DualDynamicTokens> memento ) {
+		((Memento)memento).Restore( this );
+	}
+
+	protected class Memento : IMemento<DualDynamicTokens> {
+		public Memento( DualDynamicTokens src ) {
+			forGame = src.ForGame.SaveToMemento();
+		}
+		public void Restore( DualDynamicTokens src ) {
+			src.ForGame.LoadFrom( forGame );
+			src.ForRound.Clear();
+		}
+		readonly IMemento<DynamicTokens> forGame;
+	}
+
 }
 
 #region Event Args Impl
