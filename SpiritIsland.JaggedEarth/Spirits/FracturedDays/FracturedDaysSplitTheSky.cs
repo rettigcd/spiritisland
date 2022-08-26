@@ -22,7 +22,7 @@ public class FracturedDaysSplitTheSky : Spirit {
 			new PresenceTrack(Track.Energy1, Track.Energy1 , Track.Energy2, Track.Energy2, Track.Energy2, Track.Energy2 ),
 			new PresenceTrack( Track.Card1, Track.Card1, Track.Card1, Track.Card2, Track.Card2, Track.Card3 )
 		)
-		,PowerCard.For<AbsoluteStatis>()
+		,PowerCard.For<AbsoluteStasis>()
 		,PowerCard.For<BlurTheArcOfYears>()
 		,PowerCard.For<PourTimeSideways>()
 		,PowerCard.For<ThePastReturnsAgain>()

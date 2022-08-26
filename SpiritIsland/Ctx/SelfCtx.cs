@@ -123,9 +123,7 @@ public class SelfCtx {
 	#endregion
 
 	// Defer initializing this because some tests don't initialize nor depend on the GameState
-	protected TerrainMapper TerrainMapper( TokenClass token ) => token == TokenType.Blight 
-		? GameState.Island.Terrain_ForBlight
-		: _terrainMapper;
+	protected TerrainMapper TerrainMapper => _terrainMapper;
 
 	readonly TerrainMapper _terrainMapper;
 

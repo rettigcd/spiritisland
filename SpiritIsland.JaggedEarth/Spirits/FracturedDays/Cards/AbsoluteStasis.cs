@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-public class AbsoluteStatis {
+public class AbsoluteStasis {
 
 	[SpiritCard("Absolute Stasis",1,Element.Sun,Element.Air,Element.Earth), Fast, FromSacredSite(2,Target.NotOcean)]
 	static public async Task ActAsync(TargetSpaceCtx ctx ) {
