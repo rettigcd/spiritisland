@@ -199,7 +199,8 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		throw new System.NotImplementedException("!!! should only add to cards that match space");
 	}
 
-	/// <summary> For not-real tokens like Explore/Build/Ravage Stoppers. </summary>
+	/// <summary> Adds 1 temporary tokens that remove themselves at Time-Passes. </summary>
+	/// <remarks> For not-real tokens like Explore/Build/Ravage Stoppers. </remarks>
 	public void AdjustTempToken( Space space, Token token ) {
 		// Add it
 		Tokens[space].Adjust( token, 1 );

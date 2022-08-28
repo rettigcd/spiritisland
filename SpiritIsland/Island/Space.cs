@@ -21,6 +21,8 @@ public abstract class Space : IOption {
 	// Presence
 	// Growth
 	// Fear
+		// Fear - Trade Suffers
+		// Fear - Wary of the Interior
 
 	// SpaceFilterMap
 	// RangeExtender

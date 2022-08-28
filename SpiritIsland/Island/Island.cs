@@ -46,8 +46,8 @@ public class Island {
 	public IEnumerable<Space> AllSpaces => Boards.SelectMany(b=>b.Spaces); // could be extension method
 
 	// Static-Default Terrain for non-power, non-blight
-	public static readonly TerrainMapper Terrain = new TerrainMapper();
-
+	public readonly TerrainMapper Terrain = new TerrainMapper(); // Default
+	public readonly TerrainMapper Terrain_ForFear = new TerrainMapper(); // Default
 	public TerrainMapper Terrain_ForPower = new TerrainMapper();
 	public TerrainMapper Terrain_ForBlight = new TerrainMapper();
 

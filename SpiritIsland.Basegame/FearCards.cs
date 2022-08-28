@@ -12,7 +12,7 @@ public class FearCards {
 			new EmigrationAccelerates(),
 			new FearOfTheUnseen(),
 			new Isolation(),
-			new OverseasTradeSeemSafer(),
+			new OverseasTradeSeemsSafer(),
 			new Retreat(),
 			new Scapegoats(),
 			new SeekSafety(),

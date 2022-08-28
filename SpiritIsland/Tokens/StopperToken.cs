@@ -1,21 +1,19 @@
 ﻿namespace SpiritIsland;
 
-//internal class StopperToken : UniqueToken {
-//	public StopperToken(string label, char initial) : base( label, initial, Img.None ) { }
-//}
-
+/// <summary> Stops either 1 or ALL builds. </summary>
 public interface IBuildStopper : Token {
 	bool Stops( TokenClass tokenClass );
 	Task StopBuild( GameState gameState, Space space );
 }
 
+/// <summary> Stops either 1 or ALL builds. </summary>
 public class BuildStopper : UniqueToken, IBuildStopper {
 	readonly TokenClass[] stoppedClasses;
 
 	static public BuildStopper Default( string label ) => new BuildStopper( label, Invader.Town, Invader.City );
 	
 	static public BuildStopper StopAll( string label ) => new BuildStopper( label, Invader.Town, Invader.City ) { 
-		Duration = BuildStopper.EDuration.AllStopsThisTurn
+		Duration = EDuration.AllStopsThisTurn
 	};
 
 	public BuildStopper( string label, params TokenClass[] stoppedTokenClasses ) : base( label ) {

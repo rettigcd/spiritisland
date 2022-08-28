@@ -1,8 +1,8 @@
 ﻿namespace SpiritIsland.Basegame;
 
-public class OverseasTradeSeemSafer : IFearOptions {
+public class OverseasTradeSeemsSafer : IFearOptions {
 
-	public const string Name = "Overseas Trade Seem Safer";
+	public const string Name = "Overseas Trade Seems Safer";
 	string IFearOptions.Name => Name;
 
 	[FearLevel( 1, "Defend 3 in all Coastal lands." )]
@@ -16,7 +16,7 @@ public class OverseasTradeSeemSafer : IFearOptions {
 	public Task Level2( FearCtx ctx ) {
 		var gs = ctx.GameState;
 		DefendCostal( gs, 6 );
-		SkipCostalBuild( gs, new BuildStopper( "OverseasTradeSeemSafer(city)", Invader.City ));
+		SkipCostalBuild( gs, new BuildStopper( "OverseasTradeSeemsSafer(city)", Invader.City ) { Duration = BuildStopper.EDuration.AllStopsThisTurn } );
 		return Task.CompletedTask;
 	}
 
@@ -24,19 +24,22 @@ public class OverseasTradeSeemSafer : IFearOptions {
 	public Task Level3( FearCtx ctx ) {
 		var gs = ctx.GameState;
 		DefendCostal( gs, 9 );
-		SkipCostalBuild( gs, new BuildStopper( "OverseasTradeSeemSafer", Invader.City, Invader.Town ));
+		SkipCostalBuild( gs, BuildStopper.StopAll( "OverseasTradeSeemsSafer" ) );
 		return Task.CompletedTask;
 	}
 
 	static void DefendCostal( GameState gs, int defense ) {
-		foreach(var space in gs.Island.AllSpaces.Where( s => s.IsCoastal ))
+		var tm = gs.Island.Terrain_ForFear;
+		var spaces = gs.Island.AllSpaces.Where( s => tm.IsCoastal( s ) && tm.IsInPlay( s ) ).ToArray();
+		foreach(var space in spaces )
 			gs.Tokens[space].Defend.Add( defense );
 	}
 
 	static void SkipCostalBuild( GameState gs, IBuildStopper stopper ) {
-		var spaces = gs.Island.AllSpaces.Where( s => s.IsCoastal ).ToArray();
+		var tm = gs.Island.Terrain_ForFear;
+		var spaces = gs.Island.AllSpaces.Where( s => tm.IsCoastal( s ) && tm.IsInPlay( s ) ).ToArray();
 		foreach(var space in spaces)
-			gs.AdjustTempToken(space,stopper); // !!! This should stop multiple builds, not just 1.. (Pour time sideways, multiple build cards, etc.)
+			gs.AdjustTempToken(space,stopper);
 	}
 
 }
