@@ -2,14 +2,21 @@
 
 public class SelfCtx {
 
+	#region private fields
+	BoundPresence _presence; // lazy loaded
+	#endregion
+
 	public Spirit Self { get; }
 	public GameState GameState { get; }
+	protected TerrainMapper TerrainMapper { get; }
+	public Guid CurrentActionId { get; }
+
 	#region constructor
 
 	public SelfCtx(Spirit self,GameState gameState, Cause cause, Guid actionId) {
 		Self = self;
 		GameState = gameState;
-		_terrainMapper = cause == Cause.MyPowers
+		TerrainMapper = cause == Cause.MyPowers
 			? GameState.Island.Terrain_ForPower
 			: Island.Terrain;
 		CurrentActionId = actionId;
@@ -18,7 +25,7 @@ public class SelfCtx {
 	protected SelfCtx(SelfCtx src) {
 		Self = src.Self;
 		GameState = src.GameState;
-		_terrainMapper = src._terrainMapper;
+		TerrainMapper = src.TerrainMapper;
 		CurrentActionId = src.CurrentActionId;
 	}
 
@@ -27,7 +34,6 @@ public class SelfCtx {
 	#region Presence
 
 	public virtual BoundPresence Presence => _presence ??= new BoundPresence(this);
-	BoundPresence _presence;
 
 	#endregion
 
@@ -53,8 +59,6 @@ public class SelfCtx {
 			space = null 
 		} );
 	}
-
-	public Guid CurrentActionId { get; }
 
 	public Task<T> Decision<T>( Select.TypedDecision<T> originalDecision ) where T : class, IOption => Self.Action.Decision( originalDecision );
 
@@ -121,11 +125,6 @@ public class SelfCtx {
 	public virtual Task Execute( IExecuteOn<SelfCtx> actionOption ) => actionOption.Execute(this);
 
 	#endregion
-
-	// Defer initializing this because some tests don't initialize nor depend on the GameState
-	protected TerrainMapper TerrainMapper => _terrainMapper;
-
-	readonly TerrainMapper _terrainMapper;
 
 	#region High level fear-specific decisions
 

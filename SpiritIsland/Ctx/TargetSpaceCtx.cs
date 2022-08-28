@@ -2,6 +2,16 @@
 
 public class TargetSpaceCtx : SelfCtx {
 
+	#region private fields
+	DamagePool _badlandDamage;
+	DamagePool _bonusDamageFromSpirit;
+	InvaderBinding _invadersRO;
+	BoundPresence_ForSpace _presence;
+	TokenCountDictionary _tokens;
+	#endregion
+
+	public Space Space { get; }
+
 	#region constructors
 
 	// Called:
@@ -15,7 +25,6 @@ public class TargetSpaceCtx : SelfCtx {
 
 	#endregion
 
-	public Space Space { get; }
 
 	public Task SelectActionOption( params IExecuteOn<TargetSpaceCtx>[] options ) => SelectActionOption( "Select Power Option", options );
 	public Task SelectActionOption( string prompt, params IExecuteOn<TargetSpaceCtx>[] options )=> SelectAction_Inner( prompt, options, Present.AutoSelectSingle, this );
@@ -24,14 +33,7 @@ public class TargetSpaceCtx : SelfCtx {
 	public bool MatchesRavageCard => GameState.InvaderDeck.Ravage.Cards.Any(c=>c.Matches(Space));
 	public bool MatchesBuildCard => GameState.InvaderDeck.Build.Cards.Any(c=>c.Matches(Space));
 
-	public TokenCountDictionary Tokens {
-		get {
-			if( _tokens == default)
-				_tokens = GameState.Tokens[Space];
-			return _tokens;
-		}
-	}
-	TokenCountDictionary _tokens;
+	public TokenCountDictionary Tokens => _tokens ??= GameState.Tokens[Space];
 
 	#region Token Shortcuts
 	public void Defend(int defend) => Tokens.Defend.Add(defend);
@@ -157,8 +159,9 @@ public class TargetSpaceCtx : SelfCtx {
 	#region Terrain
 
 	/// <summary> The effective Terrain for powers. Will be Wetland for Ocean when Oceans-Hungry-Grasp is on board </summary>
-	public bool IsOneOf(params Terrain[] terrain) => TerrainMapper.MatchesTerrain(Space, terrain); // !!! Might not be correct if used for Blight
-	public bool IsCoastal => TerrainMapper.IsCoastal( Space ); // !!! might not be correct if used for Blight
+	public bool IsOneOf(params Terrain[] terrain) => TerrainMapper.MatchesTerrain(Space, terrain);
+	public bool Is(Terrain terrain) => TerrainMapper.MatchesTerrain(Space, terrain);
+	public bool IsCoastal => TerrainMapper.IsCoastal( Space );
 	public bool IsInPlay(TokenClass forToken) => !TerrainMapper.MatchesTerrain( Space, Terrain.Ocean );
 	public bool Matches( string filterEnum ) => IsInPlay(default) && SpaceFilterMap.Get(filterEnum)(this);
 
@@ -179,7 +182,7 @@ public class TargetSpaceCtx : SelfCtx {
 	public void ModifyRavage( Action<ConfigureRavage> action ) => GameState.ModifyRavage(Space,action);
 
 	// The current targets power
-	public InvaderBinding Invaders => invadersRO ??= GetInvaders();
+	public InvaderBinding Invaders => _invadersRO ??= GetInvaders();
 
 	protected virtual InvaderBinding GetInvaders() => new InvaderBinding(
 		Tokens, 
@@ -246,10 +249,8 @@ public class TargetSpaceCtx : SelfCtx {
 	}
 
 	DamagePool BonusDamage => _bonusDamageFromSpirit ??= new DamagePool( Self.BonusDamage );
-	DamagePool _bonusDamageFromSpirit;
 
 	DamagePool BadlandDamage => _badlandDamage ??= new DamagePool( Badlands.Count );
-	DamagePool _badlandDamage;
 
 	class DamagePool {
 
@@ -353,7 +354,6 @@ public class TargetSpaceCtx : SelfCtx {
 	#region presence
 
 	public new BoundPresence_ForSpace Presence => _presence ??= new BoundPresence_ForSpace(this);
-	BoundPresence_ForSpace _presence;
 
 
 	// ! See base class for more Presence options
@@ -395,7 +395,5 @@ public class TargetSpaceCtx : SelfCtx {
 		return space != null ? Target( space )
 			: null;
 	}
-
-	InvaderBinding invadersRO;
 
 }
