@@ -192,7 +192,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 	/// </summary>
 	public Func<Space,bool> IsValid = DefaultIsValid; // override for Lure, Ocean, Volcano
 
-	static bool DefaultIsValid(Space space) => !space.IsOcean;
+	static bool DefaultIsValid(Space space) => space.IsInPlay;
 
 	public DualAsyncEvent<TrackRevealedArgs> TrackRevealed { get; } = new DualAsyncEvent<TrackRevealedArgs>();
 

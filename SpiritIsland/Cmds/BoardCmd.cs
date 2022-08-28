@@ -26,7 +26,7 @@ public static partial class Cmd {
 			// Maybe pass both spaces to UI so UI can determine which options to make available.
 
 			var spaceOptions = ctx.Board.Spaces
-				.Where(s => !s.IsOcean )			// skip Ocean
+				.Where( s => s.IsInPlay )
 				.Select( ctx.Target )
 				.Where( spaceAction.IsApplicable )	// Matches action criteria  (Can't act on items that aren't there)
 				.Where( customFilter )				// Matches custom space - criteria
@@ -45,7 +45,7 @@ public static partial class Cmd {
 	)
 		=> new BoardCmd( $"In {count} different lands, " + action.Description, async ctx => {
 			var spaceOptions = ctx.Board.Spaces
-				.Where(s => !s.IsOcean ) // skip Ocean
+				.Where(s => s.IsInPlay )
 				.Select( ctx.Target )
 				.Where( action.IsApplicable )	// Matches action criteria  (Can't act on items that aren't there)
 				.Where( customFilter )			// Matches custom space - criteria

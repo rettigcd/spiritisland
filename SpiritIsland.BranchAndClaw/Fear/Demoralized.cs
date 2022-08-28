@@ -27,7 +27,7 @@ public class Demoralized : IFearOptions {
 	}
 
 	static void DefendLands( FearCtx ctx, int defense ) {
-		var lands = ctx.GameState.Island.AllSpaces.Where(s=>!s.IsOcean);
+		var lands = ctx.GameState.Island.AllSpaces.Where( s=>s.IsInPlay );
 		foreach(var land in lands)
 			ctx.GameState.Tokens[land].Defend.Add( defense );
 	}

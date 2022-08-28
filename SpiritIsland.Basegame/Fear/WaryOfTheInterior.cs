@@ -15,7 +15,7 @@ public class WaryOfTheInterior : IFearOptions {
 	[FearLevel( 3, "Each player removes 1 Explorer / Town from any land." )]
 	public Task Level3( FearCtx ctx ) => EachSpiritRemoves1Invader( ctx, s=>true, Invader.Explorer, Invader.Town );
 
-	static bool IsInland(Space space) => !space.IsCoastal;
+	static bool IsInland(Space space) => space.IsInland; // !!! don't use this directly.
 
 	static async Task EachSpiritRemoves1Invader( FearCtx ctx, Func<Space,bool> spaceCondition, params TokenClass[] removable ) {
 		foreach(var spiritCtx in ctx.Spirits) {

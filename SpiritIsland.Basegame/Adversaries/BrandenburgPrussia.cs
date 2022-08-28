@@ -70,7 +70,7 @@ class BrandenburgPrussiaInvaderCard : InvaderCard {
 			.ToHashSet();
 
 		var buildSpaces = counts
-			.Where(pair=>boards.Contains(pair.Key.Board) && pair.Value==0 && !pair.Key.IsOcean)
+			.Where(pair=>boards.Contains(pair.Key.Board) && pair.Value==0 && pair.Key.IsInPlay)
 			.Select(pair => pair.Key)
 			.GroupBy(space => space.Board)
 			.Select(grp => grp.OrderBy(space=>space.Text).First()) // (!! simplification) when multiple, select closest to coast.

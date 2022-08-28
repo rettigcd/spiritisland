@@ -39,10 +39,10 @@ public class FearCtx {
 	#region Lands
 
 	public IEnumerable<Space> Lands( Func<Space,bool> withCondition ) => GameState.Island.AllSpaces
-		.Where(s=> !s.IsOcean)
+		.Where(s=> s.IsInPlay)
 		.Where(withCondition);
 
-	public IEnumerable<Space> InlandLands => GameState.Island.AllSpaces.Where( s => !s.IsCoastal && !s.IsOcean );
+	public IEnumerable<Space> InlandLands => GameState.Island.AllSpaces.Where( s => s.IsInland );
 
 	public bool WithDahanAndExplorers( Space space ) => WithDahan(space) && WithExplorers(space);
 	public bool WithDahanAndInvaders( Space space ) => WithDahan( space ) && WithInvaders( space );

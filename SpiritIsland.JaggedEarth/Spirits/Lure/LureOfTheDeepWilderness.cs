@@ -31,7 +31,7 @@ public class LureOfTheDeepWilderness : Spirit {
 			)
 		);
 
-		Presence.IsValid = (s) => !s.IsOcean && !s.IsCoastal;
+		Presence.IsValid = (s) => s.IsInland;
 
 		InnatePowers = new InnatePower[] {
 			InnatePower.For<ForsakeSocietyToChaseAfterDreams>(),
