@@ -18,7 +18,7 @@ public class SelfCtx {
 		GameState = gameState;
 		TerrainMapper = cause == Cause.MyPowers
 			? GameState.Island.Terrain_ForPower
-			: Island.Terrain;
+			: GameState.Island.Terrain;
 		CurrentActionId = actionId;
 	}
 

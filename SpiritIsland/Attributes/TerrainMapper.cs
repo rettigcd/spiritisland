@@ -8,4 +8,6 @@ public class TerrainMapper {
 
 	public virtual bool IsCoastal(Space space) => space.IsCoastal;
 
+	public virtual bool IsInland( Space space ) => space.IsInland;
+
 }

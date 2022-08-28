@@ -6,6 +6,8 @@ Weave Together the Fabric of Place
 	- Can't see tokens
 	- Does it even work?
 
+// !!! double check all fear cards check .IsInPlay before taking action on space.
+
 ==========================
 
 Dream of the Untouched Land
