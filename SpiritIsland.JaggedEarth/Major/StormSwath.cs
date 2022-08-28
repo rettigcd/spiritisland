@@ -38,7 +38,7 @@ public class StormSwath {
 			"Select land for 1 damge to each invader",
 			ctx.Adjacent
 				.Intersect( ctx.Target( origin ).Adjacent )
-				.Where( s => ctx.Target( s ).IsInPlay(default) ),
+				.Where( s => ctx.Target( s ).IsInPlay ),
 			Present.AutoSelectSingle
 		) );
 	}

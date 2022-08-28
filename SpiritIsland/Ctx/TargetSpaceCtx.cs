@@ -68,7 +68,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 		// Select Destination
 		Space destination = await Decision( Select.Space.PushToken( tokenClass, Space,
-			Space.Range( range ).Where( s => { var x = Target( s ); return x.IsInPlay(default) && x.Matches( dstFilter ); } ), // !!! Might not be correct if moving Blight.
+			Space.Range( range ).Where( s => { var x = Target( s ); return x.IsInPlay && x.Matches( dstFilter ); } ), // !!! Might not be correct if moving Blight.
 			Present.Done )
 		);
 
@@ -94,7 +94,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 		var sources = Space.Range( range )
 			.Select( Target )
-			.Where( x => x.IsInPlay(default) && x.Matches(srcFilter) && x.Tokens.HasAny(tokenGroup) ) // !!! Not correct if moving Blight on an Ocean-Board
+			.Where( x => x.IsInPlay && x.Matches(srcFilter) && x.Tokens.HasAny(tokenGroup) ) // !!! Not correct if moving Blight on an Ocean-Board
 			.SelectMany( x => x.Tokens.OfType(tokenGroup).Select(t => new SpaceToken(x.Space, t)) )
 			.ToArray();
 
@@ -146,11 +146,11 @@ public class TargetSpaceCtx : SelfCtx {
 	#endregion Gather
 
 	/// <summary> Use this for Power-Pushing, since Powers can push invaders into the ocean. </summary>
-	public IEnumerable<Space> Adjacent => Space.Adjacent.Where( adj => Target(adj).IsInPlay(default) ); // !!! might not be correct if used for Blight
+	public IEnumerable<Space> Adjacent => Space.Adjacent.Where( adj => Target(adj).IsInPlay );
 	public IEnumerable<TargetSpaceCtx> AdjacentCtxs => Adjacent.Select(Target);
 
 	/// <summary> Use this for Power-Pushing, since Powers can push invaders into the ocean. </summary>
-	public IEnumerable<Space> Range( int range ) => Space.Range( range ).Where( adj => Target(adj).IsInPlay(default) ); // !!! might not be correct if used for Blight
+	public IEnumerable<Space> Range( int range ) => Space.Range( range ).Where( adj => Target(adj).IsInPlay );
 
 	public async Task DestroyDahan( int countToDestroy ) { 
 		await Dahan.Destroy( countToDestroy );
@@ -162,8 +162,8 @@ public class TargetSpaceCtx : SelfCtx {
 	public bool IsOneOf(params Terrain[] terrain) => TerrainMapper.MatchesTerrain(Space, terrain);
 	public bool Is(Terrain terrain) => TerrainMapper.MatchesTerrain(Space, terrain);
 	public bool IsCoastal => TerrainMapper.IsCoastal( Space );
-	public bool IsInPlay(TokenClass forToken) => !TerrainMapper.MatchesTerrain( Space, Terrain.Ocean );
-	public bool Matches( string filterEnum ) => IsInPlay(default) && SpaceFilterMap.Get(filterEnum)(this);
+	public bool IsInPlay => !TerrainMapper.MatchesTerrain( Space, Terrain.Ocean );
+	public bool Matches( string filterEnum ) => IsInPlay && SpaceFilterMap.Get(filterEnum)(this);
 
 	#endregion
 

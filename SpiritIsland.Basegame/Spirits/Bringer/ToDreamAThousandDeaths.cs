@@ -37,7 +37,7 @@ public class ToDreamAThousandDeaths_DestroyStrategy : DestroyInvaderStrategy {
 
 			var destination = await ctx.Decision( new Select.Space(
 				"Push " + invader.ToString() + " to",
-				source.Adjacent.Where( s=>ctx.Target(s).IsInPlay(Invader.Explorer) )
+				source.Adjacent.Where( s=>ctx.Target(s).IsInPlay )
 				, Present.Always
 			) );
 

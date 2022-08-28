@@ -8,13 +8,13 @@ public class Retreat : IFearOptions {
 
 	[FearLevel( 1, "Each player may Push up to 2 Explorer from an Inland land." )]
 	public Task Level1( FearCtx ctx ) {
-		return Cmd.EachSpirit( Cmd.PushUpToNExplorers( 2 ).From( x => !x.IsCoastal && x.IsInPlay(Invader.Explorer), "Inland" ) )
+		return Cmd.EachSpirit( Cmd.PushUpToNExplorers( 2 ).From( x => !x.IsCoastal && x.IsInPlay, "Inland" ) )
 			.Execute( ctx.GameState );
 	}
 
 	[FearLevel( 2, "Each player may Push up to 3 Explorer / Town from an Inland land." )]
 	public Task Level2( FearCtx ctx ) {
-		return Cmd.EachSpirit( Cmd.PushUpToNInvaders( 3, Invader.Explorer, Invader.Town ).From( x => !x.IsCoastal && x.IsInPlay(Invader.Explorer), "Inland" ) ) // !! assuming Explorers and Town are the same.
+		return Cmd.EachSpirit( Cmd.PushUpToNInvaders( 3, Invader.Explorer, Invader.Town ).From( x => !x.IsCoastal && x.IsInPlay, "Inland" ) ) // !! assuming Explorers and Town are the same.
 			.Execute( ctx.GameState );
 	}
 

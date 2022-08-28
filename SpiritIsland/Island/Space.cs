@@ -50,7 +50,6 @@ public abstract class Space : IOption {
 	public bool IsInland => !IsOcean && !IsCoastal;		
 		// SpaceFilterMap
 		// CostalFilter (invader card)
-		// Fear - Emigration Excellerates
 		// Fear - Overseas Trade seem Safer
 		// Fear - Trade Suffers
 		// Fear - Wary of the Interior
