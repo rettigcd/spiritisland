@@ -12,7 +12,7 @@ public class BoundPresence_ForSpace : BoundPresence {
 
 	#endregion
 
-	public bool IsSelfSacredSite => ctx.Self.Presence.SacredSites.Contains(ctx.Space);
+	public bool IsSelfSacredSite => SacredSites.Contains(ctx.Space);
 
 	public bool IsHere       => ctx.Self.Presence.IsOn( ctx.Space );
 

@@ -17,14 +17,16 @@ class DrenchTheLandscape : TerrainMapper, ICalcSource {
 
 	public override bool MatchesTerrain( Space space, params Terrain[] options )
 		=> original.MatchesTerrain( space, options )
-		|| options.Contains( Terrain.Wetland ) && spirit.Presence.SacredSites.Contains( space );
+		|| options.Contains( Terrain.Wetland ) && SacredSites.Contains( space );
 
-	public IEnumerable<Space> FindSources( IKnowSpiritLocations presence, TargetSourceCriteria sourceCriteria ) {
-		// !! If we had access to the GameState or Island here, we could just pull use the TerrainMapper_ForPower that is attached to the island.
+	IEnumerable<Space> SacredSites => spirit.Presence.SacredSites( defaultTerrainMapper ); // Downpours SS are not dependent on special terrain rules.
+	readonly TerrainMapper defaultTerrainMapper = new TerrainMapper();
+
+	public IEnumerable<Space> FindSources( IKnowSpiritLocations presence, TargetSourceCriteria sourceCriteria, TerrainMapper _ ) {
 
 		var sources = sourceCriteria.From switch {
 			From.Presence => presence.Spaces,
-			From.SacredSite => presence.SacredSites,
+			From.SacredSite => SacredSites,
 			_ => throw new ArgumentException( "Invalid presence source " + sourceCriteria.From ),
 		};
 		if(!sourceCriteria.Terrain.HasValue)
@@ -34,7 +36,7 @@ class DrenchTheLandscape : TerrainMapper, ICalcSource {
 		var match = sources.Where( space => space.Is( terrain ) );
 		return terrain != Terrain.Wetland
 			? match
-			: match.Union( presence.SacredSites );
+			: match.Union( SacredSites );
 
 	}
 

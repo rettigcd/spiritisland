@@ -13,11 +13,11 @@ class EntwinedPresenceSource : ICalcSource {
 			spirit.SourceCalc = this;
 	}
 
-	public IEnumerable<Space> FindSources( IKnowSpiritLocations _, TargetSourceCriteria sourceCriteria ) {
+	public IEnumerable<Space> FindSources( IKnowSpiritLocations _, TargetSourceCriteria sourceCriteria, TerrainMapper mapper ) {
 		List<Space> sources = new ();
 		// Find source of original
 		for(int i = 0; i < spirits.Length; ++i)
-			sources.AddRange( origApis[i].FindSources( spirits[i].Presence, sourceCriteria ) );
+			sources.AddRange( origApis[i].FindSources( spirits[i].Presence, sourceCriteria, mapper ) );
 		return sources.Distinct();
 	}
 

@@ -4,15 +4,15 @@
 public enum From { None, Presence, SacredSite };
 
 public interface ICalcSource {
-	IEnumerable<Space> FindSources( IKnowSpiritLocations presence, TargetSourceCriteria source );
+	IEnumerable<Space> FindSources( IKnowSpiritLocations presence, TargetSourceCriteria source, TerrainMapper mapper );
 
 }
 
 public class DefaultSourceCalc : ICalcSource {
-	public virtual IEnumerable<Space> FindSources( IKnowSpiritLocations presence, TargetSourceCriteria sourceCriteria ) {
+	public virtual IEnumerable<Space> FindSources( IKnowSpiritLocations presence, TargetSourceCriteria sourceCriteria, TerrainMapper mapper ) {
 		var sources = sourceCriteria.From switch {
 			From.Presence => presence.Spaces,
-			From.SacredSite => presence.SacredSites,
+			From.SacredSite => presence.SacredSites(mapper),
 			_ => throw new ArgumentException( "Invalid presence source " + sourceCriteria.From ),
 		};
 		return sources.Where( space => !sourceCriteria.Terrain.HasValue || space.Is( sourceCriteria.Terrain.Value ) );

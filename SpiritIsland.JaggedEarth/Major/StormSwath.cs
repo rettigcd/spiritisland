@@ -46,7 +46,7 @@ public class StormSwath {
 	static Task<Space> FindOriginLand_SS( TargetSpaceCtx ctx, int range ) {
 		return ctx.Decision( new Select.Space(
 			"Select Origin land",
-			ctx.Range(range).Where( ctx.Self.Presence.IsSacredSite ),
+			ctx.Range(range).Select( ctx.Target ).Where( s => ctx.Presence.IsSelfSacredSite ).Select(x=>x.Space),
 			Present.AutoSelectSingle
 		));
 	}

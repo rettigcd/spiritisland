@@ -8,7 +8,7 @@ public class SelfCtx {
 
 	public Spirit Self { get; }
 	public GameState GameState { get; }
-	protected TerrainMapper TerrainMapper { get; }
+	public TerrainMapper TerrainMapper { get; }
 	public Guid CurrentActionId { get; }
 
 	#region constructor

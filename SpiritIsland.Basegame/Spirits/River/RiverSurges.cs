@@ -61,8 +61,8 @@ public class RiverSurges : Spirit {
 public class RiverPresence : SpiritPresence {
 	public RiverPresence( PresenceTrack t1, PresenceTrack t2 ) : base( t1, t2 ) { }
 
-	public override IEnumerable<Space> SacredSites => Spaces
-		.Where( s=>s.IsWetland )
-		.Union( base.SacredSites )
+	public override IEnumerable<Space> SacredSites( TerrainMapper mapper ) => Spaces
+		.Where( s=> mapper.MatchesTerrain( s, Terrain.Wetland ) )
+		.Union( base.SacredSites(mapper) )
 		.Distinct();
 }

@@ -50,9 +50,8 @@ public class VitalStrength : Spirit {
 		readonly SpiritPresence presence;
 		public EarthsVitality( Spirit spirit ) { presence = spirit.Presence; }
 		public int DefendOnSpace( GameState _, Space space ) 
-			=> presence.SacredSites.Contains( space ) ? 3 : 0;
+			=> presence.SacredSites( default ).Contains( space ) ? 3 : 0; // !!! is default here correct ???
 	}
-
 
 	void InitPresence( Board board, GameState gameState ){
 		var higestJungle = board.Spaces.OrderByDescending( s => s.Label ).First( s => s.IsJungle );

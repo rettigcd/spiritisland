@@ -10,6 +10,8 @@ public class BoundPresence {
 
 	#endregion
 
+	public IEnumerable<Space> SacredSites => ctx.Self.Presence.SacredSites( ctx.TerrainMapper );
+
 	// Used for Move, Gather, and Push presence
 	public void Move( Space from, Space to ) => ctx.Self.Presence.Move(from,to,ctx.GameState);
 
@@ -91,7 +93,7 @@ public class BoundPresence {
 		=> ctx.Decision( Select.DeployedPresence.All(prompt, ctx.Self,Present.Always ) );
 
 	public Task<Space> SelectSacredSite(string prompt)
-		=> ctx.Decision( Select.DeployedPresence.SacredSites(prompt, ctx.Self,Present.Always ) );
+		=> ctx.Decision( Select.DeployedPresence.SacredSites(prompt, ctx.Self, ctx.TerrainMapper, Present.Always ) );
 		
 
 	#endregion

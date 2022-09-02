@@ -1,4 +1,82 @@
-﻿===== Focus =====
+﻿== Absolute Stasis ==
+
+Until the end of the slow phase, target land and everything in it cease to exist for all purposes except checking victory/defeat
+
+You cannot target into, out of, or through where the land was.
+
+Testing
+	cannot target land with presence/ss inside space.
+	cannot target through with powers
+	cannot target into with powers
+	cannot target out of
+
+	Fear Cards do not allow us to select items in this land nor this land.
+
+	cannot place presence, even if presence is already there
+	cannot destroy presence
+
+
+=== Plan ===
+
+1) Add hook to everything that picks a space.
+	Maybe this Hook is that the space is not "in play "
+	Is there ever a time that we need to use a space that is not "InPlay" like when     Presense is in the ocean, but Ocean is no longer on the board.  The presence still works even though the Ocean is not InPlay?
+		Maybe InPlay means InPlay for tokens only, not for presence.
+		What determines if a space is in play for Presence also?
+
+2) Verify nothing (that matters) uses Space-Terrain directly
+
+3a) Verify nothing uses Space.Adjacent or Space.Range
+	If .IsInPlay changes, then .Range needs to be recalculated.
+
+3b) Pop Range-Dictionary out of Space and store in ...Ctx and recalculate each time the Is-In-Play spaces change.
+
+4) Create .AllSpacesInPlay and use it
+5) Create .RangeInPlay() and use it
+6) Create .AdjacentInPlay() and use it.
+
+===
+
+Check usage of...
+
+	Space
+		.IsOcean
+		.IsSand         1 change
+		.IsMountain
+		.IsJungle
+		.IsWetland
+
+		.IsCostal
+		.IsInland
+
+		.Adjacent
+		.Is
+		.IsOneOf
+		.SpacesExactly
+		.Range
+
+Plan:
+	Create Interface of Space-Properties needed for Predicate
+	Have SpaceCtx implement interface.
+	Have SpaceFilterMap use interface.
+	Replace SpaceFilterMap with a group of Named Space filters, so we can pass them as objects to .From()
+
+Things that might effect Fear-based Spaces
+	IsCoastal or IsInland
+		due to:
+			Hummingbird (temporary adjacencies) - if this is Adjacen, this should be ok.
+			Weave Together (different type of space) - should be in the space and ok
+			Absolute Stasis (.IsInPlay) - needs checked.
+
+Is In Play
+	- based on: Ocean / Absolute Statis
+	- Ocean: InPlay for powers and blight, NOT InPlay for invaders, fear, growth.
+	IsInPlay
+
+
+=================
+===== Focus =====
+=================
 * 2 spirits
 * 3 Adversaries (Habsburg, Russia, Scotland)
 * Remaining spirit (Finder of Paths)

@@ -359,7 +359,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 	// ! See base class for more Presence options
 
-	public bool IsSelfSacredSite => Self.Presence.SacredSites.Contains(Space);
+	public bool IsSelfSacredSite => Presence.SacredSites.Contains(Space);
 
 	public bool HasSelfPresence => Self.Presence.Spaces.Contains(Space);
 

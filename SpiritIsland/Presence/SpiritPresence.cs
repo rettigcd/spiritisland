@@ -53,12 +53,10 @@ public class SpiritPresence : IKnowSpiritLocations {
 			.Select(x => x.Action)
 			.Where(x => x != null);
 
-	public virtual IEnumerable<Space> SacredSites => Placed
-		.GroupBy(x=>x)
-		.Where(grp=>grp.Count()>1)
-		.Select(grp=>grp.Key);
-
-	public bool IsSacredSite( Space space ) => SacredSites.Contains( space );
+	public virtual IEnumerable<Space> SacredSites( TerrainMapper _ ) => Placed
+		.GroupBy( x => x )
+		.Where( grp => grp.Count() > 1 )
+		.Select( grp => grp.Key );
 
 	#endregion
 

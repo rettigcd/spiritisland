@@ -96,7 +96,7 @@ public class ASpreadOfRampantGreen : Spirit {
 
 	async Task<Space[]> ChokeTheLandWithGreenAction( GameState gs, Space[] spaces, string actionText ) {
 
-		var stoppable = spaces.Intersect( Presence.SacredSites ).ToList();
+		var stoppable = spaces.Intersect( Presence.SacredSites( gs.Island.Terrain_ForPower ) ).ToList();
 		bool costs1 = gs.BlightCard.CardFlipped;
 		int maxStoppable = costs1 ? Energy : int.MaxValue;
 

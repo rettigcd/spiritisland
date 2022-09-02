@@ -10,9 +10,9 @@ public partial class Keeper {
 			) { }
 
 		public override async Task Place( IOption from, Space to, GameState gs ) {
-			bool wasSacredSite = SacredSites.Contains( to );
+			bool wasSacredSite = SacredSites( gs.Island.Terrain ).Contains( to );
 			await base.Place( from, to, gs );
-			bool createdSacredSite = !wasSacredSite && SacredSites.Contains( to );
+			bool createdSacredSite = !wasSacredSite && SacredSites( gs.Island.Terrain ).Contains( to );
 
 			if( createdSacredSite && gs.DahanOn( to ).Any )
 				await spirit.Bind( gs , Guid.NewGuid()).Target( to ).PushDahan( int.MaxValue );
