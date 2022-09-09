@@ -44,15 +44,6 @@ public abstract class Space : IOption {
 
 	public bool IsCoastal { get; set; }					// SpaceFilterMap, TerrainMapper
 
-	public bool IsInland => !IsOcean && !IsCoastal;		
-		// SpaceFilterMap
-		// CostalFilter (invader card)
-		// Fear - Overseas Trade seem Safer
-		// Fear - Trade Suffers
-		// Fear - Wary of the Interior
-		// Growth - Ocean's Gather Presence into the Ocean
-		// Presence - Ocean Presence
-
 	public IEnumerable<Space> Adjacent => adjacents;
 
 	public string Text => Label;

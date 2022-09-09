@@ -26,7 +26,7 @@ class FleeThePestilentLand : IFearOptions {
 				// removes up to 3 health of invaders from a land with disease
 				RemoveNHealthOfInvadersFromDisease(3,ctx.GameState),
 				// or 1 explorer from an inland land
-				Cmd.RemoveExplorers(1).From( ctx => ctx.Space.IsInland, "an inland land" )
+				Cmd.RemoveExplorers(1).From( ctx => ctx.IsInland, "an inland land" )
 			)
 		).Execute(ctx.GameState);
 	}
@@ -39,7 +39,7 @@ class FleeThePestilentLand : IFearOptions {
 				// removes up to 5 health of invaders from a land with disease
 				RemoveNHealthOfInvadersFromDisease(5,ctx.GameState),
 				// or 1 explorer / Town from an inland land
-				Cmd.RemoveExplorersOrTowns(1).From( s=>s.Space.IsInland, "an inland land" )
+				Cmd.RemoveExplorersOrTowns(1).From( s=>s.IsInland, "an inland land" )
 			)
 		).Execute(ctx.GameState);
 	}

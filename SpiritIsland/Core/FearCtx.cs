@@ -34,15 +34,11 @@ public class FearCtx {
 		}
 	}
 
-//	public InvaderBinding InvadersOn(Space space) => GameState.Invaders.On( space );
-
 	#region Lands
 
 	public IEnumerable<Space> Lands( Func<Space,bool> withCondition ) => GameState.Island.AllSpaces
 		.Where( GameState.Island.Terrain_ForFear.IsInPlay )
 		.Where( withCondition );
-
-	public IEnumerable<Space> InlandLands => GameState.Island.AllSpaces.Where( s => s.IsInland );
 
 	public bool WithDahanAndExplorers( Space space ) => WithDahan(space) && WithExplorers(space);
 	public bool WithDahanAndInvaders( Space space ) => WithDahan( space ) && WithInvaders( space );
@@ -50,11 +46,6 @@ public class FearCtx {
 	public bool WithExplorers( Space space ) => GameState.Tokens[space].Has( Invader.Explorer );
 	public bool WithInvaders( Space space ) => GameState.Tokens[space].HasInvaders();
 	public bool WithDahan( Space space ) => GameState.Tokens[space].Dahan.Any;
-
-	public bool WithDahanOrAdjacentTo5( Space space ) => WithDahanOrAdjacentTo(space,5);
-	public bool WithDahanOrAdjacentTo3( Space space ) => WithDahanOrAdjacentTo(space,3);
-	public bool WithDahanOrAdjacentTo1( Space space ) =>  WithDahanOrAdjacentTo(space,1);
-	public bool WithDahanOrAdjacentTo( Space space, int count ) => GameState.DahanOn(space).Any || count <= space.Adjacent.Sum( a => GameState.DahanOn(a).Count );
 
 	#endregion Lands
 

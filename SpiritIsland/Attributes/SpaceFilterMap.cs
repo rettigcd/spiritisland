@@ -40,7 +40,7 @@ public class SpaceFilterMap {
 		[Target.MountainOrPresence] = ctx => ctx.Space.IsMountain || ctx.HasSelfPresence,
 
 		// Don't use TerrainMapper, Inland should ignore terrain modifications (I think)
-		[Target.Inland            ] = ctx => ctx.Space.IsInland,
+		[Target.Inland            ] = ctx => ctx.IsInland,
 
 	};
 
