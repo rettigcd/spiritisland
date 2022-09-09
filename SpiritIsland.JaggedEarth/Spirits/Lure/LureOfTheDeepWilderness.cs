@@ -11,11 +11,8 @@ public class LureOfTheDeepWilderness : Spirit {
 	static readonly SpecialRule HomeOfTheIslandsHeart = new SpecialRule("Home of the Island's Heart", "Your presence may only be added/moved to lands that are inland.");
 	static readonly SpecialRule EnthrallTheForeignExplorersRule = new SpecialRule("Enthrall the Foreign Explorers", "For each of your presence in a land, ignore up to 2 explorer during the Ravage Step and any Ravage Action.");
 
-	public LureOfTheDeepWilderness():base(
-		new SpiritPresence(
-			new PresenceTrack(Track.Energy1, Track.Energy2, Track.MoonEnergy, Track.MkEnergy(3,Element.Plant), Track.MkEnergy(4,Element.Air), Track.Energy5Reclaim1 ),
-			new PresenceTrack(Track.Card1, Track.Card2, Track.AnimalEnergy, Track.Card3, Track.Card4, Track.Card5Reclaim1)
-		)
+	public LureOfTheDeepWilderness():base( 
+		new LurePresence()
 		,PowerCard.For<GiftOfTheUntamedWild>()
 		,PowerCard.For<PerilsOfTheDeepestIsland>()
 		,PowerCard.For<SoftlyBeckonEverInward>()
@@ -30,8 +27,6 @@ public class LureOfTheDeepWilderness : Spirit {
 				new GrowthOption(new DrawPowerCard())
 			)
 		);
-
-		Presence.IsValid = (s) => s.IsInland;
 
 		InnatePowers = new InnatePower[] {
 			InnatePower.For<ForsakeSocietyToChaseAfterDreams>(),
@@ -84,5 +79,17 @@ public class LureOfTheDeepWilderness : Spirit {
 		}
 
 	}
+
+}
+
+public class LurePresence : SpiritPresence {
+	public LurePresence()
+		:base(
+			new PresenceTrack( Track.Energy1, Track.Energy2, Track.MoonEnergy, Track.MkEnergy( 3, Element.Plant ), Track.MkEnergy( 4, Element.Air ), Track.Energy5Reclaim1 ),
+			new PresenceTrack( Track.Card1, Track.Card2, Track.AnimalEnergy, Track.Card3, Track.Card4, Track.Card5Reclaim1 )
+		)
+	{ }
+
+	public override bool CanBePlacedOn( TerrainMapper tm, Space space ) => tm.IsInland( space );
 
 }

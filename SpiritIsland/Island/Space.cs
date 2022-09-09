@@ -16,8 +16,6 @@ public abstract class Space : IOption {
 
 	public string Label { get; }
 
-	public bool IsInPlay => !IsOcean;
-
 	// Presence
 	// Growth
 

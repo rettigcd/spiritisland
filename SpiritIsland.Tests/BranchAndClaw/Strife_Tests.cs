@@ -66,6 +66,8 @@ public class Strife_Tests {
 		Should.Throw<Exception>(()=>city.HavingStrife( -1));
 	}
 
+	static bool IsInPlay( Space space ) => !space.IsOcean;
+
 	[Fact]
 	public void MoveStrife() {
 		var board = Board.BuildBoardB();
@@ -79,7 +81,7 @@ public class Strife_Tests {
 		var strifedTown = counts.OfType(Invader.Town).Single( k => k != StdTokens.Town );
 
 		// When: move
-		var destination = space.Adjacent.First( x => x.IsInPlay );
+		var destination = space.Adjacent.First( IsInPlay );
 		_ = gs.Tokens[space].MoveTo( strifedTown, destination, default ); // _ = ??
 
 		// Then:
@@ -152,7 +154,7 @@ public class Strife_Tests {
 	public async Task Strife_Stops_Ravage() {
 		var gs = new GameState( new Thunderspeaker(), Board.BuildBoardC() );
 		Space space = gs.Island.AllSpaces
-			.First( s => s.IsInPlay
+			.First( s => IsInPlay(s)
 				&& !gs.Tokens[s].HasInvaders() // 0 invaders
 			);
 

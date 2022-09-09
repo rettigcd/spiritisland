@@ -31,8 +31,7 @@ public class BeliefTakesRoot : IFearOptions {
 		return Cmd.EachSpirit(
 			Cmd.PickDifferentLandThenTakeAction(
 				"Remove up to 2 Health worth of Invaders per presence.",
-				Cmd.RemoveHealthOfInvaders("Remove 2 Health worth of invaders per Presence there.", ctx => 2 * ctx.Presence.Count ),
-				_=>true
+				Cmd.RemoveHealthOfInvaders("Remove 2 Health worth of invaders per Presence there.", ctx => 2 * ctx.Presence.Count )
 			)
 		).Execute(ctx.GameState);
 

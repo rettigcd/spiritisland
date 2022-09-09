@@ -109,8 +109,10 @@ public class BoundPresence {
 	/// <summary> Select a space withing [range] of specified spaces </summary>
 	IEnumerable<Space> GetValidDestinationOptionsFromPresence( int range, string filterEnum, IEnumerable<Space> source ) {
 		return ctx.Self.RangeCalc.GetTargetOptionsFromKnownSource( ctx.Self, ctx.GameState, TargettingFrom.None, source, new TargetCriteria( range, filterEnum) )
-			.Where(ctx.Self.Presence.IsValid);
+			.Where( CanBePlacedOn );
 	}
+
+	public bool CanBePlacedOn( Space space ) => ctx.Self.Presence.CanBePlacedOn( this.ctx.TerrainMapper, space );
 
 	#endregion
 

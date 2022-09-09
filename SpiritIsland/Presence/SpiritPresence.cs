@@ -188,9 +188,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 	/// <summary>
 	/// Specifies if the the given space is valid.
 	/// </summary>
-	public Func<Space,bool> IsValid = DefaultIsValid; // override for Lure, Ocean, Volcano
-
-	static bool DefaultIsValid(Space space) => space.IsInPlay;
+	public virtual bool CanBePlacedOn( TerrainMapper mapper, Space space ) => mapper.IsInPlay( space );
 
 	public DualAsyncEvent<TrackRevealedArgs> TrackRevealed { get; } = new DualAsyncEvent<TrackRevealedArgs>();
 

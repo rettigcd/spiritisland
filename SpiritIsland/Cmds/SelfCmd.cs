@@ -31,7 +31,8 @@ public static partial class Cmd {
 			async ctx => {
 				var spaceOptions = ctx.AllSpaces
 					.Select(s=>ctx.Target(s))
-					.Where( x => x.Space.IsInPlay && filter(x) )
+					.Where( x => x.IsInPlay )
+					.Where( filter )
 					.ToArray();
 				if(spaceOptions.Length == 0 ) return;
 
@@ -40,22 +41,24 @@ public static partial class Cmd {
 				await spaceAction.Execute(spaceCtx);
 			}
 		);
-	#endregion
 
 	// Excludes Oceans
 	static public ActionOption<SelfCtx> PickDifferentLandThenTakeAction(
-		string description, 
-		ActionOption<TargetSpaceCtx> spaceAction,
-		Func<Space,bool> spaceFilter
+		string description,
+		ActionOption<TargetSpaceCtx> spaceAction
 	) {
 		List<Space> used = new List<Space>();
-		return new ActionOption<SelfCtx>(description, async ctx => {
-			var spaceOptions = ctx.AllSpaces.Where( s => s.IsInPlay && spaceFilter(s) ).Except(used).ToArray();
-			if(spaceOptions.Length == 0 ) return;
+		return new ActionOption<SelfCtx>( description, async ctx => {
+			var spaceOptions = ctx.AllSpaces.Where( ctx.TerrainMapper.IsInPlay ).Except( used ).ToArray();
+			if(spaceOptions.Length == 0) return;
 
-			var spaceCtx = await ctx.SelectSpace("Select space to " + spaceAction.Description, spaceOptions);
+			var spaceCtx = await ctx.SelectSpace( "Select space to " + spaceAction.Description, spaceOptions );
 			used.Add( spaceCtx.Space );
-			await spaceAction.Execute(spaceCtx);
-		});
+			await spaceAction.Execute( spaceCtx );
+		} );
 	}
+
+
+	#endregion
+
 }

@@ -39,8 +39,8 @@ public class FearCtx {
 	#region Lands
 
 	public IEnumerable<Space> Lands( Func<Space,bool> withCondition ) => GameState.Island.AllSpaces
-		.Where(s=> s.IsInPlay)
-		.Where(withCondition);
+		.Where( GameState.Island.Terrain_ForFear.IsInPlay )
+		.Where( withCondition );
 
 	public IEnumerable<Space> InlandLands => GameState.Island.AllSpaces.Where( s => s.IsInland );
 

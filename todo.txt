@@ -24,7 +24,8 @@ Testing
 		Maybe InPlay means InPlay for tokens only, not for presence.
 		What determines if a space is in play for Presence also?
 
-2) Verify nothing (that matters) uses Space-Terrain directly
+2a) Verify nothing (that matters) uses Space-Terrain directly
+2b) Verify nothing (that matters) uses Space.IsInPlay
 
 3a) Verify nothing uses Space.Adjacent or Space.Range
 	If .IsInPlay changes, then .Range needs to be recalculated.

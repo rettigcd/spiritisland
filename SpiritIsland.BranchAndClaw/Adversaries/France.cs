@@ -160,9 +160,10 @@ public class FranceInvaderCard : InvaderCard {
 	static async Task DoTriangleTrade( GameState gs, TokenCountDictionary tokens, int initialCityCount ) {
 		// Whenever Invaders Build a Coastal City
 		if(tokens.Space.IsCoastal && tokens.Sum(Invader.City) > initialCityCount) {
+			var terrainMapper = gs.Island.Terrain;
 			// add 1 Town to the adjacent land with the fewest Town.
 			var buildSpace = tokens.Space.Adjacent
-				.Where( s=>s.IsInPlay )
+				.Where( terrainMapper.IsInPlay )
 				.Select( s=> gs.Tokens[s] )
 				.OrderBy( t=>t.Sum(Invader.Town))
 				.First();
