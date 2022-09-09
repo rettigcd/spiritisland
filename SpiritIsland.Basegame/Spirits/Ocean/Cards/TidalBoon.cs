@@ -3,13 +3,13 @@
 public class TidalBoon {
 
 	[SpiritCard("Tidal Boon",1,Element.Moon,Element.Water,Element.Earth),Slow,AnotherSpirit]
-	static public async Task Act(TargetSpiritCtx ctx ) {
+	static public async Task Act( TargetSpiritCtx ctx ) {
 
 		// If dahan are pushed to your ocean, you may move them to any costal land instead of drowning them.
 		ctx.GameState.Tokens.TokenMoved.ForRound.Add( PushDahanOutOfOcean );
 		async Task PushDahanOutOfOcean( ITokenMovedArgs args ) {
 			if(args.Class != TokenType.Dahan) return;
-			if(!args.AddedTo.IsOcean) return;
+			if(!ctx.TerrainMapper.MatchesTerrain( args.AddedTo, Terrain.Ocean )) return;
 			await ctx.Target(args.AddedTo).PushUpToNDahan( args.Count );
 		}
 

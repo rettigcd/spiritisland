@@ -5,10 +5,14 @@
 // defers other spaces to original Terrain Mapper
 public class OceanTerrainForPower : TerrainMapper {
 
+	#region constructor
+
 	public OceanTerrainForPower( TerrainMapper originalMapper, Ocean ocean ) {
 		oceanPresence = (OceanPresence)ocean.Presence;
 		original = originalMapper;
 	}
+
+	#endregion
 
 	// public override Terrain GetTerrain( Space space ) => IsOceansOcean( space ) ? Terrain.Wetland : space.Terrain;
 	public override bool MatchesTerrain( Space space, params Terrain[] options ) 
@@ -18,6 +22,8 @@ public class OceanTerrainForPower : TerrainMapper {
 
 	public override bool IsCoastal( Space space ) 
 		=> IsOceansOcean( space ) || original.IsCoastal( space );
+
+	public override bool IsInPlay( Space space ) => IsOceansOcean( space ) || original.IsInPlay( space );
 
 	#region private
 

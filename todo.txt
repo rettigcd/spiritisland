@@ -24,17 +24,14 @@ Testing
 		Maybe InPlay means InPlay for tokens only, not for presence.
 		What determines if a space is in play for Presence also?
 
-2a) Verify nothing (that matters) uses Space-Terrain directly
-2b) Verify nothing (that matters) uses Space.IsInPlay
-
-3a) Verify nothing uses Space.Adjacent or Space.Range
+2a) Verify nothing uses Space.Adjacent or Space.Range
 	If .IsInPlay changes, then .Range needs to be recalculated.
 
-3b) Pop Range-Dictionary out of Space and store in ...Ctx and recalculate each time the Is-In-Play spaces change.
+2b) Pop Range-Dictionary out of Space and store in ...Ctx and recalculate each time the Is-In-Play spaces change.
 
-4) Create .AllSpacesInPlay and use it
-5) Create .RangeInPlay() and use it
-6) Create .AdjacentInPlay() and use it.
+3) Create .AllSpacesInPlay and use it
+4) Create .RangeInPlay() and use it
+5) Create .AdjacentInPlay() and use it.
 
 ===
 
