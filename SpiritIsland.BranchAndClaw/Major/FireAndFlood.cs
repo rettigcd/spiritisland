@@ -11,8 +11,12 @@ public class FireAndFlood {
 		var spiritSS = ctx.Presence.SacredSites.ToArray();
 		var possibleSacredSiteSourcesForThisSpace = ctx.Space.Range(1).Where(s=>spiritSS.Contains(s)).ToArray();
 
-		// IEnumerable<Space> secondTargetOptions = ctx.Presence.GetValidDestinationOptionsFromPresence( 2, Target.Any, possibleSacredSiteSourcesForThisSpace );
-		IEnumerable<Space> secondTargetOptions = ctx.Self.RangeCalc.GetTargetOptionsFromKnownSource(ctx.Self,ctx.GameState,TargettingFrom.PowerCard,possibleSacredSiteSourcesForThisSpace, new TargetCriteria(2) );
+		IEnumerable<Space> secondTargetOptions = ctx.Self.RangeCalc.GetTargetOptionsFromKnownSource(
+			ctx,
+			TargettingFrom.PowerCard,
+			possibleSacredSiteSourcesForThisSpace,
+			new TargetCriteria(2)
+		);
 
 		var secondTarget = await ctx.Decision( new Select.Space( "Select space to target.", secondTargetOptions, Present.Always ) );
 

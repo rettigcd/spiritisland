@@ -68,7 +68,10 @@ public StonesUnyieldingDefiance() : base(
 		// place presence in lowest-numbered Mountain without dahan
 		var space = board.Spaces.Skip(1).Where(s=>gameState.Tokens[s].Dahan.Count==0).First();
 		Presence.PlaceOn(space, gameState);
+
+		// 1 in an adjacent land that has Blight(if possible)
 		var space2 = space.Adjacent.FirstOrDefault(s=>gameState.Tokens[s][TokenType.Blight]>0)
+			// or is Sands(if not)
 			?? space.Adjacent.First(s=>s.IsSand);
 		Presence.PlaceOn(space2, gameState);
 

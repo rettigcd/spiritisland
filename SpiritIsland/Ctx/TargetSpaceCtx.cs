@@ -375,7 +375,7 @@ public class TargetSpaceCtx : SelfCtx {
 	#endregion
 
 	public IEnumerable<Space> FindSpacesWithinRangeOf( int range, string filterEnum ) {
-		return Self.RangeCalc.GetTargetOptionsFromKnownSource( Self, GameState, TargettingFrom.None, new Space[]{ Space }, new TargetCriteria( range, filterEnum ) );
+		return Self.RangeCalc.GetTargetOptionsFromKnownSource( this, TargettingFrom.None, new Space[]{ Space }, new TargetCriteria( range, filterEnum ) );
 	}
 
 	public async Task<TargetSpaceCtx> SelectAdjacentLand( string prompt, Func<TargetSpaceCtx, bool> filter = null ) {

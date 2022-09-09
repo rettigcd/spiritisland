@@ -24,9 +24,9 @@ public class DefaultSourceCalc : ICalcSource {
 #region Range
 
 public interface ICalcRange {
+
 	IEnumerable<Space> GetTargetOptionsFromKnownSource( 
-		Spirit self, 
-		GameState gameState, 
+		SelfCtx ctx,
 		TargettingFrom powerType,
 		IEnumerable<Space> source,
 		TargetCriteria targetCriteria
@@ -36,21 +36,32 @@ public interface ICalcRange {
 
 public class DefaultRangeCalculator : ICalcRange {
 
-	// Find Range
-	// This is virtual so Volcano Targetting can call base()
-	public virtual IEnumerable<Space> GetTargetOptionsFromKnownSource( 
-		Spirit self, 
-		GameState gameState, 
+	public virtual IEnumerable<Space> GetTargetOptionsFromKnownSource(
+		SelfCtx ctx,
 		TargettingFrom powerType,
 		IEnumerable<Space> source,
 		TargetCriteria targetCriteria
 	) {
-		var ctx = self.BindMyPower( gameState ); // !!! should this be Power???
-		return source       // starting here
+		return source
 			.SelectMany( x => x.Range( targetCriteria.Range ) )
 			.Distinct()
-			.Where( s => ctx.Target(s).Matches( targetCriteria.Filter ) ); // matching this destination
+			.Where( s => ctx.Target( s ).Matches( targetCriteria.Filter ) ); // matching this destination
 	}
+
+	//// Find Range
+	//// This is virtual so Volcano Targetting can call base()
+	//public virtual IEnumerable<Space> GetTargetOptionsFromKnownSource( 
+	//	Spirit self, 
+	//	GameState gameState, 
+	//	TargettingFrom powerType,
+	//	IEnumerable<Space> source,
+	//	TargetCriteria targetCriteria
+	//) => GetTargetOptionsFromKnownSource(
+	//	self.BindMyPower( gameState ), // !!! should this be Power???
+	//	powerType,
+	//	source,
+	//	targetCriteria
+	//);
 
 }
 

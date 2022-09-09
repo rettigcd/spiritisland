@@ -23,24 +23,25 @@ public abstract class Space : IOption {
 	// RangeExtender
 	// CoastalFilter
 
-	public bool IsOcean => Is( Terrain.Ocean );
-		// Connecting land and determining what is Costal
-		// Presence - Inside SpiritPresence, determines which space is valid for presence
-		// Presence - OceanPresence
-		// Growth - Gather Presence Into Ocean
-		// Growth - PlaceInOcean
-		// Growth - PushPresenceFromOcean
-
 	public bool IsSand => Is( Terrain.Sand );
+
+	public bool IsJungle => Is( Terrain.Jungle );
+
+	public bool IsWetland => Is( Terrain.Wetland );
+
 	public bool IsMountain => Is( Terrain.Mountain );	
 		// SpaceFilterMap,
 		// ExaltationOfMoltenStone range extender,
 		// Presence - Setup_PlacePresenceOnMountain,
 		// Presence - VolcanoPresence
-	public bool IsJungle => Is( Terrain.Jungle );
-		// SpaceFiltermap, 
-	public bool IsWetland => Is( Terrain.Wetland );
-		// Presence - River Presence
+
+	public bool IsOcean => Is( Terrain.Ocean );
+	// Connecting land and determining what is Costal
+	// Presence - Inside SpiritPresence, determines which space is valid for presence
+	// Presence - OceanPresence
+	// Growth - Gather Presence Into Ocean
+	// Growth - PlaceInOcean
+	// Growth - PushPresenceFromOcean
 
 	public bool IsCoastal { get; set; }					// SpaceFilterMap, TerrainMapper
 

@@ -10,8 +10,17 @@ public class TargetLandApi_ExtendRange : ICalcRange {
 		this.originalApi = originalApi;
 	}
 
-	public IEnumerable<Space> GetTargetOptionsFromKnownSource( Spirit self, GameState gameState, TargettingFrom powerType, IEnumerable<Space> source, TargetCriteria tc ) {
-		return originalApi.GetTargetOptionsFromKnownSource( self, gameState, powerType, source, new TargetCriteria( tc.Range + extension, tc.Filter) );
+	public IEnumerable<Space> GetTargetOptionsFromKnownSource(
+		SelfCtx ctx,
+		TargettingFrom powerType,
+		IEnumerable<Space> source,
+		TargetCriteria targetCriteria
+	) {
+		return originalApi.GetTargetOptionsFromKnownSource( ctx, powerType, source, new TargetCriteria( targetCriteria.Range + extension, targetCriteria.Filter ) );
 	}
+
+	//public IEnumerable<Space> GetTargetOptionsFromKnownSource( Spirit self, GameState gameState, TargettingFrom powerType, IEnumerable<Space> source, TargetCriteria tc ) {
+	//	return originalApi.GetTargetOptionsFromKnownSource( self, gameState, powerType, source, new TargetCriteria( tc.Range + extension, tc.Filter) );
+	//}
 
 }

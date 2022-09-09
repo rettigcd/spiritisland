@@ -6,6 +6,7 @@ class MistsShiftAndFlow {
 
 	readonly ShroudOfSilentMist spirit;
 	readonly GameState gameState;
+	readonly SelfCtx ctx;
 	readonly string prompt;
 	readonly TargetSourceCriteria sourceCriteria;
 
@@ -27,6 +28,7 @@ class MistsShiftAndFlow {
 	public MistsShiftAndFlow(ShroudOfSilentMist spirit, GameState gameState, string prompt, TargetSourceCriteria sourceCriteria, TargetCriteria[] targetCriteria, TargettingFrom powerType) {
 		this.spirit = spirit;
 		this.gameState = gameState;
+		this.ctx = spirit.BindMyPower( gameState );
 		this.prompt = prompt ?? "Target Space.";
 		this.sourceCriteria = sourceCriteria;
 		this.targetCriteria = targetCriteria;
@@ -146,7 +148,7 @@ class MistsShiftAndFlow {
 	}
 
 	IEnumerable<Space> GetTargetOptionsFromKnownSources( IEnumerable<Space> sources, TargetCriteria tc )
-		=> spirit.RangeCalc.GetTargetOptionsFromKnownSource( spirit, gameState, powerType, sources, tc );
+		=> spirit.RangeCalc.GetTargetOptionsFromKnownSource( ctx, powerType, sources, tc );
 
 	// Shroud Helper - for easier testing Targetting
 	class SpaceCounts : CountDictionary<Space>, IKnowSpiritLocations {
