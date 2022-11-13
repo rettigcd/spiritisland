@@ -1,8 +1,33 @@
 ﻿== Absolute Stasis ==
 
-Until the end of the slow phase, target land and everything in it cease to exist for all purposes except checking victory/defeat
+"Until the end of the slow phase, target land and everything in it cease to exist for all purposes except checking victory/defeat
+You cannot target into, out of, or through where the land was."
 
-You cannot target into, out of, or through where the land was.
+Problem: Cannot target into / through land.
+Problem: Cannot push/pull/move to/from land.
+Solution Strategy: land is not adjacent to anything. 
+	=> Stop Caching Distance Map / calculate new everytime
+	=> Invalidate Distance Cache when stasis changes
+
+Problem: Foreach Land in fear needs to skip.
+Solution Option 1: Add a Stasis Marker to land and use it for filtering.
+Solution Option 2: Remove stasis land from Board.Spaces
+
+Problem: Cannot target out of
+Problem: Cannot add presence to
+Problem: Cannot destroy presence IN
+AKA: There is no presence in that space.
+Solution: ???
+
+Steps:
+	rename TokenDictionary to SpaceState and 
+		link it to its neighbors
+		use it for Adjacent, RangeFrom, HasTerrain(...)
+    reroute calls to Space.Adjacent to SpaceState
+    rename .IsInPlay to better identify what it is that is in play or not.
+
+
+
 
 Testing
 	cannot target land with presence/ss inside space.
@@ -20,7 +45,7 @@ Testing
 
 1) Add hook to everything that picks a space.
 	Maybe this Hook is that the space is not "in play "
-	Is there ever a time that we need to use a space that is not "InPlay" like when     Presense is in the ocean, but Ocean is no longer on the board.  The presence still works even though the Ocean is not InPlay?
+	Is there ever a time that we need to use a space that is not "InPlay" like when Presense is in the ocean, but Ocean is no longer on the board.  The presence still works even though the Ocean is not InPlay?
 		Maybe InPlay means InPlay for tokens only, not for presence.
 		What determines if a space is in play for Presence also?
 

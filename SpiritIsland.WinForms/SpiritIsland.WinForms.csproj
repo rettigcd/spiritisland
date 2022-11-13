@@ -587,6 +587,9 @@
     <None Update="images\bac\minor\twilight_fog_brings_madness.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="images\basegame\fear\overseas_trade_seems_safer.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="images\pp1\spirit\absorb_essence.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

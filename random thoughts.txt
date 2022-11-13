@@ -1,0 +1,55 @@
+
+Updating Distance counts when we change if a space is in play.
+
+Option 1
+	- never cache it.  Calculate it fresh everytime.
+
+Option 2
+	- Every space that is in the cache, 
+		add watch to .IsInPlayChanged
+		if not in play, remove that space and everything higher from the cache, unsucscribe to event
+		if in play, ??? Do what ??????
+
+Option 3
+	- when .IsInPlay changes, invalidate all the caches.
+	- could store the cache in the island as a dictionary and then just clear it.
+
+
+
+.IsInPlay changes for:
+	- Ocean / Powers / Blight
+	- Absolute Stasis
+	- 
+
+OceanTerrainForPower
+	IsInPlay(  ){
+		Has Ocean On it
+	}
+
+
+Need to update:
+	.IsInPlay
+	.Adjacent (and Range)
+
+
+.IsInPlay varies for:
+	Ocean
+	Absolute Statis.
+
+Option 1
+	- place .IsInPlay property on Space that is settable.
+	- true for everything except ocean
+	- Absolute statis sets to false
+	- Ocean-Power-Blight returns the || of OceansOcean and .IsInPlay
+	- need to invalidate cache each time it is set/unset
+	- Rewind needs to reset .IsInPlay to original values.
+
+Option 2
+	- Bind the Tokens to the Space
+	- store InPlay token in the space
+	- rewind: no special considerations.
+
+Option 3
+	- create a StasisList
+
+
