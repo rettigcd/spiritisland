@@ -280,4 +280,9 @@ public class SpaceState {
 
 	public int DamagePenaltyPerInvader = 0; // !!! ??? Does the Memento reset this back to 0?
 
+	public bool InStasis {
+		get => counts[TokenType.Stasis] > 0;
+		set => counts [TokenType.Stasis] = value ? 1 : 0;
+	}
+
 }

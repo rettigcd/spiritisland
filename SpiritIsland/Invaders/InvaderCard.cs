@@ -93,7 +93,7 @@ public class InvaderCard : IOption, IInvaderCard {
 	}
 
 	protected virtual bool ShouldBuildOnSpace( SpaceState tokens, GameState _ ) {
-		return tokens.HasInvaders();
+		return tokens.HasInvaders() && !tokens.InStasis;
 	}
 
 	protected virtual async Task BuildIn1Space( GameState gameState, BuildEngine buildEngine, SpaceState tokens ) {

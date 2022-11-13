@@ -2,9 +2,12 @@
 
 public class AbsoluteStasis {
 
+	// !!! ??? Is there a check that Fractured Days must have time in order to play this card?  Or can they just have negative time?
+
 	[SpiritCard("Absolute Stasis",1,Element.Sun,Element.Air,Element.Earth), Fast, FromSacredSite(2,Target.NotOcean)]
 	static public async Task ActAsync(TargetSpaceCtx ctx ) {
-		if(ctx.Self is not FracturedDaysSplitTheSky frac) return;
+		if(ctx.Self is not FracturedDaysSplitTheSky frac)
+			return;
 
 		// Cost to use: 1
 		if(frac.Time == 0) return;
@@ -20,6 +23,8 @@ public class AbsoluteStasis {
 		var adjacents = ctx.Space.Adjacent.ToArray();
 		ctx.Space.Board.Remove(ctx.Space); // !!! this will erroneously hide cities and towns from the Terror-Level Victory check
 
+		ctx.Tokens.InStasis = true;
+
 		// you cannot target into, out of, or through where the land was.
 		// This cannot target an Ocean even if Oceans are in play.
 
@@ -31,6 +36,8 @@ public class AbsoluteStasis {
 				spirit.Presence.ReleaseFromStasis( ctx.Space, ctx.GameState );
 
 			ctx.Space.Board.Add(ctx.Space, adjacents);
+
+			ctx.Tokens.InStasis = false;
 
 			return Task.CompletedTask;
 		} );

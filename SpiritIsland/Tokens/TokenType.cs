@@ -15,6 +15,9 @@ public class TokenType {
 
 	static readonly public UniqueToken Isolate = new UniqueToken( "Isolate", 'I', Img.Isolate );
 
-	static readonly public UniqueToken DoBuild = new UniqueToken( "Isolate", '$', Img.None );
+	// Fake Tokens that are not visible.
+	static readonly public UniqueToken DoBuild = new UniqueToken( "Build", '$', Img.None );
+	static readonly public UniqueToken Stasis = new UniqueToken( "Stasis", '#', Img.None );
+
 
 }

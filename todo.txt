@@ -20,9 +20,12 @@ AKA: There is no presence in that space.
 Solution: ???
 
 Steps:
-	rename TokenDictionary to SpaceState and 
-		link it to its neighbors
-		use it for Adjacent, RangeFrom, HasTerrain(...)
+	1) Add Absolute Statis Tests
+	2) use SpaceState for Range calculations. (Adjacent / RangeFrom)
+	3) Create stasis token that 
+		knocks space out of Adjacent enumeration and 
+		causes a range calculation refresh
+	use SpaceState for all Terrain tests
 	reroute calls to Space.Adjacent to SpaceState
 	rename .IsInPlay to better identify what it is that is in play or not.
 
@@ -37,6 +40,9 @@ Testing
 
 	cannot place presence, even if presence is already there
 	cannot destroy presence
+
+	Absolute Statis
+	Weave Together the Fabric of Space
 
 
 === Plan ===

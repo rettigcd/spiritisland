@@ -121,7 +121,7 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 	static readonly Regex tokenParser = new Regex( @"(\d+)(\w)@(\d+)(\^*)" );
 	(int,Token) ParseToken( string part ) {
 		var match = tokenParser.Match( part );
-		if(!match.Success) throw new FormatException( $"Unrecognized token [{part}]." );
+		if(!match.Success) throw new FormatException( $"Unrecognized token [{part}] Example: 1T@2." );
 		var tokenClass = match.Groups[2].Value switch {
 			"C" => Invader.City,
 			"T" => Invader.Town,
@@ -170,6 +170,12 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 		}
 		Spirit.Action.Choose( choice ); return;
 	}
+
+	public IOption[] ChoiceOptions{ get {
+		var decision = Spirit.Action.GetCurrent( true );
+		if(decision == null) throw new Exception( "no Decision presented." );
+		return decision.Options;
+	} }
 
 	public void ChoosePush( Token token, Space destination ) {
 		Choose( token );
