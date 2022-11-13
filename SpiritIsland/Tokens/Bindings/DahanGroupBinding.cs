@@ -4,10 +4,10 @@ public class DahanGroupBindingNoEvents {
 
 	public bool Frozen { get; set; }
 
-	readonly protected TokenCountDictionary _tokens;
+	readonly protected SpaceState _tokens;
 	readonly protected HealthTokenClass _tokenClass;
 
-	public DahanGroupBindingNoEvents( TokenCountDictionary tokens ) {
+	public DahanGroupBindingNoEvents( SpaceState tokens ) {
 		_tokens = tokens;
 		_tokenClass = TokenType.Dahan;
 	}
@@ -45,7 +45,7 @@ public class DahanGroupBinding : DahanGroupBindingNoEvents {
 		this.actionId = actionId;
 	}
 
-	public DahanGroupBinding( TokenCountDictionary tokens, Guid actionId, RemoveReason destoryReason = RemoveReason.Destroyed ):base(tokens) {
+	public DahanGroupBinding( SpaceState tokens, Guid actionId, RemoveReason destoryReason = RemoveReason.Destroyed ):base(tokens) {
 		_destroyReason = destoryReason;
 		this.actionId = actionId;
 	}

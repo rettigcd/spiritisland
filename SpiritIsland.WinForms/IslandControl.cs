@@ -496,7 +496,7 @@ public partial class IslandControl : Control {
 		float x = xy.X - iconWidth;
 		float y = xy.Y - iconWidth;
 
-		TokenCountDictionary tokens = gameState.Tokens[space];
+		SpaceState tokens = gameState.Tokens[space];
 		DrawInvaderRow( graphics, x, ref y, iconWidth, xStep, tokens );
 
 		// dahan & presence & blight
@@ -511,7 +511,7 @@ public partial class IslandControl : Control {
 
 	}
 
-	void DrawInvaderRow( Graphics graphics, float x, ref float y, float width, float step, TokenCountDictionary tokens ) {
+	void DrawInvaderRow( Graphics graphics, float x, ref float y, float width, float step, SpaceState tokens ) {
 
 		Space space = tokens.Space;
 
@@ -684,7 +684,7 @@ public partial class IslandControl : Control {
 	}
 
 
-	void DrawRow( Graphics graphics, TokenCountDictionary tokens, float x, ref float y, float width, float step, int presenceCount, bool isSacredSite, params Token[] tokenTypes ) {
+	void DrawRow( Graphics graphics, SpaceState tokens, float x, ref float y, float width, float step, int presenceCount, bool isSacredSite, params Token[] tokenTypes ) {
 		float maxHeight = 0;
 
 		using Font countFont = new( "Arial", 7, FontStyle.Bold, GraphicsUnit.Point );

@@ -3,7 +3,7 @@
 
 public class BlightTokenBindingNoEvents : TokenBindingNoEvents {
 
-	public BlightTokenBindingNoEvents( TokenCountDictionary tokens ) : base( tokens, TokenType.Blight ) { }
+	public BlightTokenBindingNoEvents( SpaceState tokens ) : base( tokens, TokenType.Blight ) { }
 
 	/// <summary> Allows Power Cards to block blight on this space. </summary>
 	public bool Blocked {
@@ -23,7 +23,7 @@ public class BlightTokenBinding : BlightTokenBindingNoEvents {
 
 	readonly Guid _actionId;
 
-	public BlightTokenBinding( TokenCountDictionary tokens, Guid actionId )
+	public BlightTokenBinding( SpaceState tokens, Guid actionId )
 		:base( tokens ) 
 	{
 		_actionId = actionId;

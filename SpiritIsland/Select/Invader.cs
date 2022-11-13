@@ -26,7 +26,7 @@ public static class Invader {
 	public static TokenFrom1Space ForBadlandDamage(int remainingDamage, SpiritIsland.Space space, IEnumerable<Token> invaders)
 		=> new TokenFrom1Space( $"Select invader to apply badland damage ({remainingDamage} remaining)", space, invaders, Present.Done );
 
-	public static TokenFrom1Space ForStrife( TokenCountDictionary tokens, params TokenClass[] groups )
+	public static TokenFrom1Space ForStrife( SpaceState tokens, params TokenClass[] groups )
 		=> new TokenFrom1Space( "Add Strife", 
 			tokens.Space,
 			(groups!=null && groups.Length>0) ? tokens.OfAnyType(groups) : tokens.InvaderTokens(), 

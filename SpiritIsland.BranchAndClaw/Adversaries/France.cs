@@ -143,7 +143,7 @@ public class FranceInvaderCard : InvaderCard {
 
 	#region Build Stuff
 
-	protected override async Task BuildIn1Space( GameState gameState, BuildEngine buildEngine, TokenCountDictionary tokens ) { 
+	protected override async Task BuildIn1Space( GameState gameState, BuildEngine buildEngine, SpaceState tokens ) { 
 		int initialCityCount = tokens.Sum(Invader.City);
 		await base.BuildIn1Space( gameState, buildEngine, tokens );
 
@@ -157,7 +157,7 @@ public class FranceInvaderCard : InvaderCard {
 
 	}
 
-	static async Task DoTriangleTrade( GameState gs, TokenCountDictionary tokens, int initialCityCount ) {
+	static async Task DoTriangleTrade( GameState gs, SpaceState tokens, int initialCityCount ) {
 		// Whenever Invaders Build a Coastal City
 		if(tokens.Space.IsCoastal && tokens.Sum(Invader.City) > initialCityCount) {
 			var terrainMapper = gs.Island.Terrain;
@@ -171,7 +171,7 @@ public class FranceInvaderCard : InvaderCard {
 		}
 	}
 
-	static void DoSlaveLabor( TokenCountDictionary tokens ) {
+	static void DoSlaveLabor( SpaceState tokens ) {
 		int explorerCount = tokens.Sum( Invader.Explorer );
 		if(explorerCount < 2 ) return;
 
@@ -194,7 +194,7 @@ public class FranceInvaderCard : InvaderCard {
 
 	public override async Task Explore( GameState gs ) {
 		// Original
-		TokenCountDictionary[] tokenSpacesToExplore = await PreExplore( gs );
+		SpaceState[] tokenSpacesToExplore = await PreExplore( gs );
 		await DoExplore( gs, tokenSpacesToExplore );
 
 		if(hasFrontierExploration)
@@ -222,7 +222,7 @@ public class FranceInvaderCard : InvaderCard {
 		}
 	);
 
-	static async Task DoFrontierExploration( GameState gs, TokenCountDictionary[] tokenSpacesToExplore ) {
+	static async Task DoFrontierExploration( GameState gs, SpaceState[] tokenSpacesToExplore ) {
 		// Frontier Explorers: Except during Setup: After Invaders successfully Explore into a land which had no Town / City, add 1 Explorer there.
 		foreach(var exploreTokens in tokenSpacesToExplore)
 			if(!exploreTokens.HasAny( Invader.Town, Invader.City ))

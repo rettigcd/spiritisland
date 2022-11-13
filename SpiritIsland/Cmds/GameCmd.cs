@@ -33,7 +33,7 @@ public static partial class Cmd {
 	/// Used ONLY for Fear Actions. 
 	/// DO NOT use for Spirit Powers or Rituals without setting cause = Cause.Power
 	/// </summary>
-	static public GameCmd InEachLand( IExecuteOn<TargetSpaceCtx> action, Func<TokenCountDictionary,bool> filter = null )
+	static public GameCmd InEachLand( IExecuteOn<TargetSpaceCtx> action, Func<SpaceState,bool> filter = null )
 		=> new GameCmd(
 			"In each land, " + action.Description, 
 			async gs => {

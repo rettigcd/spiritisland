@@ -3,7 +3,7 @@
 public class BuildEngine {
 
 	// Initialized at begining of Exec
-	protected TokenCountDictionary tokens;
+	protected SpaceState tokens;
 	protected GameState gameState;
 
 	// Initialized at beginning of DoSingleBuildOnSpace
@@ -14,7 +14,7 @@ public class BuildEngine {
 	/// Does the remove-disease action instead of the build when necessary.
 	/// </summary>
 	/// <remarks>Not thread-safe / reentrant.  Can only call .Exec 1 at a time.</remarks>
-	public async Task<string> Exec( TokenCountDictionary tokens, GameState gameState  ) {
+	public async Task<string> Exec( SpaceState tokens, GameState gameState  ) {
 		this.tokens = tokens;
 		this.gameState = gameState;
 

@@ -2,7 +2,7 @@
 
 public static class TokenCountDictionaryExtensions {
 
-	static public string InvaderSummary( this TokenCountDictionary dict ) {
+	static public string InvaderSummary( this SpaceState dict ) {
 
 		// !!! Depreate this.  Use .Invaders (to get just the invaders) then .Summary
 		static int Order_CitiesTownsExplorers( HealthToken invader )

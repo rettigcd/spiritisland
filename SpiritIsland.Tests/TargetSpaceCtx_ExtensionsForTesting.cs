@@ -2,7 +2,7 @@
 
 internal static class TargetSpaceCtx_ExtensionsForTesting {
 
-	public static void Init( this TokenCountDictionary currentTokens, string expectedInvaderSummary ) {
+	public static void Init( this SpaceState currentTokens, string expectedInvaderSummary ) {
 
 		CountDictionary<Token> desiredTokens = new();
 		if(!string.IsNullOrEmpty( expectedInvaderSummary )) { 

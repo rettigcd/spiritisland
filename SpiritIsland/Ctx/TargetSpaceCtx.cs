@@ -7,7 +7,7 @@ public class TargetSpaceCtx : SelfCtx {
 	DamagePool _bonusDamageFromSpirit;
 	InvaderBinding _invadersRO;
 	BoundPresence_ForSpace _presence;
-	TokenCountDictionary _tokens;
+	SpaceState _tokens;
 	#endregion
 
 	public Space Space { get; }
@@ -33,7 +33,7 @@ public class TargetSpaceCtx : SelfCtx {
 	public bool MatchesRavageCard => GameState.InvaderDeck.Ravage.Cards.Any(c=>c.Matches(Space));
 	public bool MatchesBuildCard => GameState.InvaderDeck.Build.Cards.Any(c=>c.Matches(Space));
 
-	public TokenCountDictionary Tokens => _tokens ??= GameState.Tokens[Space];
+	public SpaceState Tokens => _tokens ??= GameState.Tokens[Space];
 
 	#region Token Shortcuts
 	public void Defend(int defend) => Tokens.Defend.Add(defend);

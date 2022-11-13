@@ -426,7 +426,7 @@ public class Healer {
 		skipHealSpaces.Clear();
 	}
 
-	public virtual void HealSpace( TokenCountDictionary tokens ) {
+	public virtual void HealSpace( SpaceState tokens ) {
 		if( !skipHealSpaces.Contains(tokens.Space) )
 			InvaderBinding.HealTokens( tokens );
 	}

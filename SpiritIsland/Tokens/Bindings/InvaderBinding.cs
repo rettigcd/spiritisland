@@ -4,7 +4,7 @@ public class InvaderBinding {
 
 	#region constructor
 
-	public InvaderBinding( TokenCountDictionary tokens, DestroyInvaderStrategy destroyStrategy, Guid actionId) {
+	public InvaderBinding( SpaceState tokens, DestroyInvaderStrategy destroyStrategy, Guid actionId) {
 		this.Tokens = tokens;
 		this.DestroyStrategy = destroyStrategy;
 		this.actionId = actionId;
@@ -133,7 +133,7 @@ public class InvaderBinding {
 	/// <summary>
 	/// Restores all of the tokens to their default / healthy state.
 	/// </summary>
-	static public void HealTokens( TokenCountDictionary counts ) {
+	static public void HealTokens( SpaceState counts ) {
 
 		void RestoreAllToDefault( Token token ) {
 			if(token is not HealthToken ht || ht.Damage == 0) return;
@@ -202,6 +202,6 @@ public class InvaderBinding {
 //	public int DamagePenaltyPerInvader = 0; // !!! ??? Does the Memento reset this back to 0?
 
 	public readonly DestroyInvaderStrategy DestroyStrategy;
-	public readonly TokenCountDictionary Tokens;
+	public readonly SpaceState Tokens;
 
 }

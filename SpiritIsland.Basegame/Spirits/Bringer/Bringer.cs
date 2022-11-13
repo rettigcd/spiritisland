@@ -64,7 +64,7 @@ class BringerSpaceCtx : TargetSpaceCtx {
 
 	protected override InvaderBinding GetInvaders() {
 		return new InvaderBinding(
-			new TokenCountDictionary( Tokens ),
+			new SpaceState( Tokens ),
 			new ToDreamAThousandDeaths_DestroyStrategy( GameState.Fear.AddDirect, this ),
 			this.CurrentActionId
 		);

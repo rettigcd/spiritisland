@@ -236,7 +236,7 @@ public class RavageAction {
 
 	int BadLandsCount => Tokens.Badlands.Count;
 
-	TokenCountDictionary Tokens => invaderBinding.Tokens;
+	SpaceState Tokens => invaderBinding.Tokens;
 	readonly protected InvaderBinding invaderBinding;
 	readonly GameState gameState;
 	readonly Guid actionId;

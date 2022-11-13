@@ -51,7 +51,7 @@ public static class StrifedRavage {
 			await EachInvaderTakesDamageByStrifeCount( ctx.GameState.Tokens[space], actionId );
 	}
 
-	static async Task EachInvaderTakesDamageByStrifeCount( TokenCountDictionary tokens, Guid actionId ) {
+	static async Task EachInvaderTakesDamageByStrifeCount( SpaceState tokens, Guid actionId ) {
 		var strifedInvaders = tokens.InvaderTokens()
 			.Where( x => 0 < x.StrifeCount )
 			.OrderBy( x => x.RemainingHealth )
@@ -63,7 +63,7 @@ public static class StrifedRavage {
 			await DamageInvaderHealthByItsOwnStrife( tokens, strifedInvader, actionId );
 	}
 
-	static async Task DamageInvaderHealthByItsOwnStrife( TokenCountDictionary tokens, HealthToken originalInvader, Guid actionId ) {
+	static async Task DamageInvaderHealthByItsOwnStrife( SpaceState tokens, HealthToken originalInvader, Guid actionId ) {
 		var newInvader = originalInvader.AddDamage( originalInvader.StrifeCount );
 		if(newInvader == originalInvader) return;
 

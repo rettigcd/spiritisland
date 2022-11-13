@@ -55,9 +55,9 @@ public class England : IAdversary {
 		public EnglandInvaderCard(InvaderCard card,bool expandedBuild):base(card) {
 			this.expandedBuild = expandedBuild;
 		}
-		protected override bool ShouldBuildOnSpace( TokenCountDictionary tokens, GameState gameState ) {
+		protected override bool ShouldBuildOnSpace( SpaceState tokens, GameState gameState ) {
 			int cityTownCounts(Space space) => gameState.Tokens[space].SumAny( Invader.Town, Invader.City );
-			bool adjacentTo2OrMoreCitiesOrTowns(TokenCountDictionary tokens) => !tokens.Has(TokenType.Isolate) 
+			bool adjacentTo2OrMoreCitiesOrTowns(SpaceState tokens) => !tokens.Has(TokenType.Isolate) 
 				&& 2 <= tokens.Space.Adjacent.Sum( adj => cityTownCounts( adj ) );
 
 			return base.ShouldBuildOnSpace( tokens, gameState )

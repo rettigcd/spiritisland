@@ -113,12 +113,12 @@ class SweedenInvaderCard : InvaderCard {
 	public SweedenInvaderCard( InvaderCard orig ):base(orig) { }
 
 	public override async Task Explore( GameState gs ) {
-		TokenCountDictionary[] tokenSpacesToExplore = await PreExplore( gs );
+		SpaceState[] tokenSpacesToExplore = await PreExplore( gs );
 		await DoExplore( gs, tokenSpacesToExplore );
 		if( HasEscalation )
 			Escalation( gs, tokenSpacesToExplore );
 	}
-	static void Escalation( GameState gs, TokenCountDictionary[] exploredTokenSpaces ) {
+	static void Escalation( GameState gs, SpaceState[] exploredTokenSpaces ) {
 		// Swayed by the Invaders:
 		// After Invaders Explore into each land this Phase,
 		// if that land has at least as many Invaders as Dahan,

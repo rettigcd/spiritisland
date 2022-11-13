@@ -3,18 +3,18 @@
 /// <summary>
 /// Wraps: Space, Token-Counts on that space, API to publish token-changed events.
 /// </summary>
-public class TokenCountDictionary {
+public class SpaceState {
 
 	#region constructor
 
-	public TokenCountDictionary( Space space, CountDictionary<Token> counts, IIslandTokenApi tokenApi ) {
+	public SpaceState( Space space, CountDictionary<Token> counts, IIslandTokenApi tokenApi ) {
 		this.Space = space;
 		this.counts = counts;
 		this.tokenApi = tokenApi;
 	}
 
 	/// <summary> Clone / copy constructor </summary>
-	public TokenCountDictionary( TokenCountDictionary src ) {
+	public SpaceState( SpaceState src ) {
 		this.Space = src.Space;
 		counts = src.counts.Clone();
 		tokenApi = src.tokenApi;
@@ -70,12 +70,15 @@ public class TokenCountDictionary {
 
 	#endregion
 
+	#region To-String methods
 
-
-	/// <summary> Ordered Alphabetically. </summary>
 	public string Summary => counts.TokenSummary();
 
 	public override string ToString() => Space.Label + ":" + Summary;
+
+	#endregion
+
+	#region Token-Type Sub-groups
 
 	public virtual BlightTokenBindingNoEvents Blight => new BlightTokenBindingNoEvents( this );
 	public IDefendTokenBinding Defend => new DefendTokenBinding( this );
@@ -89,6 +92,8 @@ public class TokenCountDictionary {
 	}
 	DahanGroupBindingNoEvents _dahan;
 
+	#endregion
+
 	#region private
 
 	static void ValidateNotDead( Token specific ) {
@@ -100,6 +105,8 @@ public class TokenCountDictionary {
 	readonly IIslandTokenApi tokenApi;
 
 	#endregion
+
+	#region Non-event Generationg Token Changes
 
 	/// <summary> Non-event-triggering setup </summary>
 	public void Adjust( Token specific, int delta ) {
@@ -117,8 +124,6 @@ public class TokenCountDictionary {
 	public void AdjustDefault( HealthTokenClass tokenClass, int delta ) 
 		=> Adjust( GetDefault( tokenClass ), delta );
 
-	public HealthToken GetDefault( HealthTokenClass tokenClass ) => this.tokenApi.GetDefault( tokenClass );
-
 	public void Init( Token specific, int value ) {
 		counts[specific] = value;
 	}
@@ -134,6 +139,10 @@ public class TokenCountDictionary {
 				await AdjustHealthOf( token, delta, this[token], actionId );
 		}
 	}
+
+	public HealthToken GetDefault( HealthTokenClass tokenClass ) => this.tokenApi.GetDefault( tokenClass );
+
+	#endregion
 
 	/// <summary> Replaces (via adjust) HealthToken with new HealthTokens </summary>
 	/// <returns> The # of remaining Adjusted tokens. </returns>
@@ -153,6 +162,7 @@ public class TokenCountDictionary {
 		return (newToken,count);
 	}
 
+	#region Event-Generating Token Changes
 
 	public async Task Add( Token token, int count, Guid actionId, AddReason addReason = AddReason.Added ) {
 		if(count < 0) throw new System.ArgumentOutOfRangeException( nameof( count ) );
@@ -221,6 +231,8 @@ public class TokenCountDictionary {
 
 	}
 
+	#endregion
+
 	#region Invader Specific
 
 	public IEnumerable<HealthToken> InvaderTokens() => this.OfAnyType( Invader.City, Invader.Town, Invader.Explorer );
@@ -262,8 +274,8 @@ public class TokenCountDictionary {
 		return lessStrifed;
 	}
 
-	// !! This is starting to be a Space-State, not just a token Dictionary, starting to store more here than just tokens
-	public int AttackDamageFrom1( HealthToken ht ) => ht.Class.Category == TokenCategory.Dahan ? ht.Class.Attack
+	public int AttackDamageFrom1( HealthToken ht ) => ht.Class.Category == TokenCategory.Dahan 
+		? ht.Class.Attack
 		: Math.Max( 0, ht.Class.Attack - DamagePenaltyPerInvader );
 
 	public int DamagePenaltyPerInvader = 0; // !!! ??? Does the Memento reset this back to 0?

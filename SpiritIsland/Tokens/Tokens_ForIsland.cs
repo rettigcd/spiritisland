@@ -26,26 +26,18 @@ public class Tokens_ForIsland : IIslandTokenApi {
 		Dynamic.ForRound.Clear();
 	}
 
-	public TokenCountDictionary this[Space space] {
+	public SpaceState this[Space space] {
 		get {
 			if(!tokenCounts.ContainsKey( space )) {
-				tokenCounts[space] = new TokenCountDictionary( space, new CountDictionary<Token>(), this );
+				tokenCounts[space] = new SpaceState( space, new CountDictionary<Token>(), this );
 			}
 			return tokenCounts[space];
 		}
 	}
 
-	public TokenCountDictionary For(Space space) {
-		if(!tokenCounts.ContainsKey( space )) {
-			tokenCounts[space] = new TokenCountDictionary( space, new CountDictionary<Token>(), this );
-		}
-		return tokenCounts[space];
-	}
+	public IEnumerable<SpaceState> ForAllSpaces => tokenCounts.Values;
 
-
-	public IEnumerable<TokenCountDictionary> ForAllSpaces => tokenCounts.Values;
-
-	readonly Dictionary<Space, TokenCountDictionary> tokenCounts = new Dictionary<Space, TokenCountDictionary>();
+	readonly Dictionary<Space, SpaceState> tokenCounts = new Dictionary<Space, SpaceState>();
 
 	public int GetDynamicTokensFor( Space space, UniqueToken token ) 
 		=> Dynamic.GetTokensFor( gameStateForEventArgs, space, token );
@@ -101,7 +93,7 @@ public class Tokens_ForIsland : IIslandTokenApi {
 		((Memento)memento).Restore(this);
 		ClearEventHandlers_ForRound();
 	}
-	public TokenCountDictionary GetTokensFor( Space space ) => this[space];
+	public SpaceState GetTokensFor( Space space ) => this[space];
 
 	protected class Memento : IMemento<Tokens_ForIsland> {
 		public Memento(Tokens_ForIsland src) {

@@ -87,16 +87,16 @@ public class InvaderCard : IOption, IInvaderCard {
 
 		// Do Build on spaces with build tokens
 		BuildEngine buildEngine = gameState.GetBuildEngine();
-		foreach(TokenCountDictionary tokens in spacesWithBuildTokens)
+		foreach(SpaceState tokens in spacesWithBuildTokens)
 			await BuildIn1Space( gameState, buildEngine, tokens );
 
 	}
 
-	protected virtual bool ShouldBuildOnSpace( TokenCountDictionary tokens, GameState _ ) {
+	protected virtual bool ShouldBuildOnSpace( SpaceState tokens, GameState _ ) {
 		return tokens.HasInvaders();
 	}
 
-	protected virtual async Task BuildIn1Space( GameState gameState, BuildEngine buildEngine, TokenCountDictionary tokens ) {
+	protected virtual async Task BuildIn1Space( GameState gameState, BuildEngine buildEngine, SpaceState tokens ) {
 		string buildResult = await buildEngine.Exec( tokens, gameState );
 		gameState.Log( new InvaderActionEntry( tokens.Space.Label + ": " + buildResult ) );
 	}
@@ -106,11 +106,11 @@ public class InvaderCard : IOption, IInvaderCard {
 	#region Explore methods
 
 	public virtual async Task Explore( GameState gs ) {
-		TokenCountDictionary[] tokenSpacesToExplore = await PreExplore( gs );
+		SpaceState[] tokenSpacesToExplore = await PreExplore( gs );
 		await DoExplore( gs, tokenSpacesToExplore );
 	}
 
-	protected async Task<TokenCountDictionary[]> PreExplore( GameState gs ) {
+	protected async Task<SpaceState[]> PreExplore( GameState gs ) {
 		Flipped = true;
 
 		gs.Log( new InvaderActionEntry( "Exploring:" + Text ) );
@@ -128,12 +128,12 @@ public class InvaderCard : IOption, IInvaderCard {
 			.ToArray();
 	}
 
-	protected static async Task DoExplore( GameState gs, TokenCountDictionary[] tokenSpacesToExplore ) {
+	protected static async Task DoExplore( GameState gs, SpaceState[] tokenSpacesToExplore ) {
 		foreach(var exploreTokens in tokenSpacesToExplore)
 			await ExploreSingleSpace( exploreTokens, gs, Guid.NewGuid() );
 	}
 
-	static protected async Task ExploreSingleSpace( TokenCountDictionary tokens, GameState gs, Guid actionId ) {
+	static protected async Task ExploreSingleSpace( SpaceState tokens, GameState gs, Guid actionId ) {
 		// only gets called when explorer is actually going to explore
 		var wilds = tokens.Wilds;
 		if(wilds.Count == 0) {

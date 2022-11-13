@@ -23,10 +23,8 @@ Steps:
 	rename TokenDictionary to SpaceState and 
 		link it to its neighbors
 		use it for Adjacent, RangeFrom, HasTerrain(...)
-    reroute calls to Space.Adjacent to SpaceState
-    rename .IsInPlay to better identify what it is that is in play or not.
-
-
+	reroute calls to Space.Adjacent to SpaceState
+	rename .IsInPlay to better identify what it is that is in play or not.
 
 
 Testing

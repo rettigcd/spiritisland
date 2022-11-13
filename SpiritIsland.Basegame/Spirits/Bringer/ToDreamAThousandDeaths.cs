@@ -24,7 +24,7 @@ public class ToDreamAThousandDeaths_DestroyStrategy : DestroyInvaderStrategy {
 		// We can't track which original invader is was killed, so let the user choose.
 
 //		TokenCountDictionary tokens = ctx.Target(source).Tokens;
-		TokenCountDictionary tokens = ctx.GameState.Tokens[source];
+		SpaceState tokens = ctx.GameState.Tokens[source];
 
 		Token[] CalcInvaderTypes() => tokens.OfAnyType( healthyInvaders );
 

@@ -1,11 +1,11 @@
 ﻿namespace SpiritIsland;
 
 public class TokenBindingNoEvents {
-	readonly protected TokenCountDictionary tokens;
+	readonly protected SpaceState tokens;
 	readonly protected Token token;
 
 	#region constructor
-	public TokenBindingNoEvents( TokenCountDictionary tokens, Token token ) {
+	public TokenBindingNoEvents( SpaceState tokens, Token token ) {
 		this.tokens = tokens;
 		this.token = token;
 	}
@@ -30,7 +30,7 @@ public class TokenBinding : TokenBindingNoEvents {
 
 	#region constructor
 
-	public TokenBinding( TokenCountDictionary tokens, Token token, Guid actionId ) : base( tokens, token ) {
+	public TokenBinding( SpaceState tokens, Token token, Guid actionId ) : base( tokens, token ) {
 		if( actionId == default ) throw new ArgumentOutOfRangeException(nameof(actionId),"Action ID cannot be default.");
 		this._actionId = actionId;
 	}

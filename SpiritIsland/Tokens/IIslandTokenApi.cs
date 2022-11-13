@@ -14,8 +14,10 @@ public interface IIslandTokenApi {
 
 	int GetDynamicTokensFor( Space space, UniqueToken token );
 
-	TokenCountDictionary GetTokensFor( Space space );
+	SpaceState GetTokensFor( Space space );
 
 	HealthToken GetDefault( HealthTokenClass tokenClass );
+
+	SpaceState this[Space space] { get; }
 
 }

@@ -19,7 +19,7 @@ public class Space1 : Space {
 
 	public StartUpCounts StartUpCounts { get; }
 
-	public void InitTokens( TokenCountDictionary tokens ) {
+	public void InitTokens( SpaceState tokens ) {
 		// ! Using 'Adjust' so they don't sqush stuff setup by Adversaries
 		StartUpCounts initialCounts = StartUpCounts;
 		tokens.AdjustDefault( Invader.City, initialCounts.Cities );

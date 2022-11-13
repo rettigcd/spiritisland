@@ -2,7 +2,7 @@
 
 public class DefendTokenBinding : IDefendTokenBinding {
 
-	public DefendTokenBinding( TokenCountDictionary tokens ) {
+	public DefendTokenBinding( SpaceState tokens ) {
 		this.tokens = tokens;
 	}
 
@@ -14,6 +14,6 @@ public class DefendTokenBinding : IDefendTokenBinding {
 
 	public void Clear() => tokens.Init( TokenType.Defend, 0 ); // DO NOT Trigger token events, not real token
 
-	readonly TokenCountDictionary tokens;
+	readonly SpaceState tokens;
 
 }

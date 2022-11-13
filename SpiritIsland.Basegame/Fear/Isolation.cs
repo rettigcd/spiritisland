@@ -28,7 +28,7 @@ public class Isolation : IFearOptions {
 		foreach(var spirit in ctx.Spirits) {
 
 			var options = spirit.AllSpaces.Where( s => {
-				TokenCountDictionary counts = ctx.GameState.Tokens[ s ];
+				SpaceState counts = ctx.GameState.Tokens[ s ];
 				return counts.HasAny( removeableInvaders ) && counts.InvaderTotal() <= invaderMax;
 			} ).ToArray();
 			if(options.Length == 0) return;
