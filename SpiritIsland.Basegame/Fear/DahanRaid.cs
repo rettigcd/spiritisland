@@ -27,7 +27,7 @@ public class DahanRaid : IFearOptions {
 		HashSet<Space> used = new ();
 		foreach(var spiritCtx in ctx.Spirits) {
 			// Select un-used space
-			var options = spiritCtx.AllSpaces.Where( s=>spiritCtx.Target(s).Dahan.Any ).Except( used ).ToArray();
+			var options = spiritCtx.GameState.AllActiveSpaces.Where( s=>s.Dahan.Any ).Select(x=>x.Space).Except( used ).ToArray();
 			var target = await spiritCtx.Decision( new Select.Space( prompt, options, Present.Always ));
 			used.Add( target );
 			TargetSpaceCtx spactCtx = spiritCtx.Target(target);

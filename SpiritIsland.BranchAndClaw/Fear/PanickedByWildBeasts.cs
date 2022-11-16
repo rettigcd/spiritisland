@@ -21,10 +21,10 @@ public class PanickedByWildBeasts : IFearOptions {
 			await spiritCtx.AddStrifeToOne( ctx.LandsWithOrAdjacentToBeasts() );
 
 		// Invaders skip their normal explore and build in lands ith beast
-		foreach(var land in ctx.GameState.Island.AllSpaces)
-			if(ctx.GameState.Tokens[land].Beasts.Any) {
-				ctx.GameState.SkipExplore( land );
-				ctx.GameState.AdjustTempToken( land, BuildStopper.Default( Name ) );
+		foreach(var land in ctx.GameState.AllActiveSpaces)
+			if(land.Beasts.Any) {
+				ctx.GameState.SkipExplore( land.Space );
+				ctx.GameState.AdjustTempToken( land.Space, BuildStopper.Default( Name ) );
 			}
 	}
 
@@ -36,9 +36,9 @@ public class PanickedByWildBeasts : IFearOptions {
 			await spiritCtx.AddStrifeToOne( ctx.LandsWithOrAdjacentToBeasts() );
 
 		// Invaders skip all normal actions in lands with beast.
-		foreach(var land in ctx.GameState.Island.AllSpaces)
-			if(ctx.GameState.Tokens[land].Beasts.Any)
-				ctx.GameState.SkipAllInvaderActions( land, Name );
+		foreach(var land in ctx.GameState.AllActiveSpaces)
+			if(land.Beasts.Any)
+				ctx.GameState.SkipAllInvaderActions( land.Space, Name );
 	}
 
 }

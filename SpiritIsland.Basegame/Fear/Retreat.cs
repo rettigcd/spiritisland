@@ -20,7 +20,7 @@ public class Retreat : IFearOptions {
 
 	[FearLevel( 3, "Each player may Push any number of Explorer / Town from one land." )]
 	public Task Level3( FearCtx ctx ) {
-		return Cmd.EachSpirit( Cmd.PushUpToNInvaders( int.MaxValue, Invader.Explorer, Invader.Town ).From( x => true, "" ) )
+		return Cmd.EachSpirit( Cmd.PushUpToNInvaders( int.MaxValue, Invader.Explorer, Invader.Town ).From( _ => true, "" ))
 				.Execute( ctx.GameState );
 	}
 

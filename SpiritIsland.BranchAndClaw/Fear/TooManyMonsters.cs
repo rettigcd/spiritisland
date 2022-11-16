@@ -10,7 +10,7 @@ public class TooManyMonsters : IFearOptions {
 
 		// Each player removes 1 explorer / town from a land with beast.
 		foreach(var spiritCtx in ctx.Spirits)
-			await spiritCtx.RemoveTokenFromOneSpace( ctx.LandsWithBeasts(), 1, Invader.Explorer );
+			await spiritCtx.RemoveTokenFromOneSpace( ctx.LandsWithBeasts().Select(x=>x.Space), 1, Invader.Explorer );
 
 	}
 
@@ -31,27 +31,27 @@ public class TooManyMonsters : IFearOptions {
 			await RemoveTokenChoice( spirit, 2, Invader.Explorer, Invader.Town );
 	}
 
-	static Task RemoveTokenChoice( SelfCtx ctx, int count, params TokenClass[] interiorGroup ) {
+	static Task RemoveTokenChoice( SelfCtx ctx, int countToRemoveFromBeastSpace, params TokenClass[] interiorGroup ) {
 
 		// !! It would be easier on the player if we could 'flatten' this to just the 'remove' step so they don't have to analyze what is on a beast space or adjacent to one.
 
-		var landsWithBeasts = ctx.GameState.Island.AllSpaces
-			.Where( s => ctx.GameState.Tokens[s].Beasts.Any )
+		var landsWithBeasts = ctx.GameState.AllActiveSpaces
+			.Where( s => s.Beasts.Any )
 			.ToArray();
 
 		return ctx.SelectActionOption(
 
-			new SelfAction("Remove 1 explorer & 1 town from a land with beast", spiritCtx => { 
-				return spiritCtx.RemoveTokenFromOneSpace( landsWithBeasts, count, Invader.Explorer, Invader.Town );
+			new SelfAction($"Remove {countToRemoveFromBeastSpace} explorer(s) & {countToRemoveFromBeastSpace} town(s) from a land with beast", spiritCtx => { 
+				return spiritCtx.RemoveTokenFromOneSpace( landsWithBeasts.Select( s => s.Space ), countToRemoveFromBeastSpace, Invader.Explorer, Invader.Town );
 			}),
 
 			new SelfAction("Remove 1 "+ interiorGroup.Select(x=>x.Label).Join("/") +" from a land adjacent to beast", spiritCtx => {
 				var spaceOptions = landsWithBeasts
 					.SelectMany( s=>s.Adjacent )
 					.Distinct()
-					.Where( s => spiritCtx.GameState.Tokens[s].HasAny( interiorGroup ) );
+					.Where( s => s.HasAny( interiorGroup ) );
 
-				return spiritCtx.RemoveTokenFromOneSpace( spaceOptions, 1, interiorGroup );
+				return spiritCtx.RemoveTokenFromOneSpace( spaceOptions.Select(s=>s.Space), 1, interiorGroup );
 			})
 		);
 	}

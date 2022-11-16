@@ -14,6 +14,8 @@ public class InvaderCard : IOption, IInvaderCard {
 	public int InvaderStage { get; }
 
 	public bool Matches( Space space ) => Filter.Matches( space );
+	public bool Matches( SpaceState space ) => Filter.Matches( space.Space );
+
 
 	#region Constructors
 
@@ -34,7 +36,7 @@ public class InvaderCard : IOption, IInvaderCard {
 
 	public async Task Ravage( GameState gs ) {
 		gs.Log( new InvaderActionEntry( "Ravaging:" + Text ) );
-		var ravageSpaces = gs.Island.AllSpaces.Where( Matches ).ToList();
+		var ravageSpaces = gs.AllActiveSpaces.Where( Matches ).Select( x => x.Space ).ToList();
 
 		// Modify / Adjust
 		var actionId = Guid.NewGuid();
@@ -60,7 +62,7 @@ public class InvaderCard : IOption, IInvaderCard {
 		gameState.Log( new InvaderActionEntry( "Building:" + Text ) );
 
 		// Find spaces that match Card's Terrain
-		var spacesGettingBuildTokens = gameState.Tokens.ForAllSpaces
+		var spacesGettingBuildTokens = gameState.AllActiveSpaces
 			.Where( tokens => Matches(tokens.Space) ) // matches 
 			.Where( tokens => ShouldBuildOnSpace( tokens, gameState ) )
 			.ToArray();
@@ -69,7 +71,7 @@ public class InvaderCard : IOption, IInvaderCard {
 			tokens.Adjust( TokenType.DoBuild, 1 );
 
 		// Find spaces with Build Tokens
-		var spacesWithBuildTokens = gameState.Tokens.ForAllSpaces
+		var spacesWithBuildTokens = gameState.AllActiveSpaces
 			.Where( tokens => tokens[TokenType.DoBuild] > 0 )
 			.OrderBy( tokens => tokens.Space.Label )
 			.ToArray();
@@ -93,7 +95,7 @@ public class InvaderCard : IOption, IInvaderCard {
 	}
 
 	protected virtual bool ShouldBuildOnSpace( SpaceState tokens, GameState _ ) {
-		return tokens.HasInvaders() && !tokens.InStasis;
+		return tokens.HasInvaders();
 	}
 
 	protected virtual async Task BuildIn1Space( GameState gameState, BuildEngine buildEngine, SpaceState tokens ) {
@@ -116,10 +118,10 @@ public class InvaderCard : IOption, IInvaderCard {
 		gs.Log( new InvaderActionEntry( "Exploring:" + Text ) );
 
 		// Modify
-		bool IsExplorerSource( Space space ) { return space.IsOcean || gs.Tokens[space].HasAny( Invader.Town, Invader.City ); }
+		static bool IsExplorerSource( SpaceState space ) => space.Space.IsOcean || space.HasAny( Invader.Town, Invader.City );
 		var args = new ExploreEventArgs( gs,
-			gs.Island.AllSpaces.Where( IsExplorerSource ),
-			gs.Island.AllSpaces.Where( Matches )
+			gs.AllActiveSpaces.Where( IsExplorerSource ).Select(x=>x.Space),
+			gs.AllActiveSpaces.Where( Matches ).Select(x=>x.Space)
 		);
 		await gs.PreExplore.InvokeAsync( args );
 

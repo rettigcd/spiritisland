@@ -23,8 +23,8 @@ public class ParalyzingFright_Tests {
 		invaderLog.Clear();
 
 		// and: there is a space a space that IS-RAVAGE AND BUILD (aka: Jungle - see above)
-		var spaceCtx = ctx.AllSpaces
-			.Select( ctx.Target )
+		var spaceCtx = ctx.GameState.AllSpaces
+			.Select( x=>ctx.Target(x.Space) )
 			.Last( s => s.MatchesRavageCard && s.MatchesBuildCard ); // last stays away from city and ocean
 		invaderLog.Add("Selected target:"+spaceCtx.Space.Label );
 

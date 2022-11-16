@@ -153,24 +153,22 @@ public class Strife_Tests {
 	[Fact]
 	public async Task Strife_Stops_Ravage() {
 		var gs = new GameState( new Thunderspeaker(), Board.BuildBoardC() );
-		Space space = gs.Island.AllSpaces
-			.First( s => IsInPlay(s)
-				&& !gs.Tokens[s].HasInvaders() // 0 invaders
-			);
+		var space = gs.AllSpaces
+			.First( s => IsInPlay(s.Space) && !s.HasInvaders() );
 
 		// Given: 1 strifed city
-		var counts = gs.Tokens[space];
+		var counts = space;
 		counts.Init(StdTokens.City.HavingStrife( 1 ), 1);
 		counts.InvaderSummary().ShouldBe( "1C@3^", "strife should be used up" );
 
 		//   and: 1 dahan
-		gs.DahanOn( space ).Init( 1 );
+		space.Dahan.Init( 1 );
 
 		//  When: we ravage there
-		await InvaderEngine1.RavageCard( InvaderCardEx.For( space ), gs );
+		await InvaderEngine1.RavageCard( InvaderCardEx.For( space.Space ), gs );
 
 		//  Then: dahan survives
-		gs.DahanOn( space ).Count.ShouldBe( 1, "dahan should survive due to strife on town" );
+		space.Dahan.Count.ShouldBe( 1, "dahan should survive due to strife on town" );
 
 		//   and so does city, but strife is gone
 		counts.InvaderSummary().ShouldBe( "1C@1", "strife should be used up" );

@@ -39,7 +39,7 @@ namespace SpiritIsland.Tests {
 		}
 
 		public TargetSpaceCtx TargetSpace( string spaceLabel ) => spirit.Bind( this.gameState, Guid.NewGuid() )
-			.Target( gameState.Island.AllSpaces.Single( x => x.Label == spaceLabel ) );
+			.Target( gameState.AllSpaces.Single( x => x.Space.Label == spaceLabel ).Space );
 
 		public void InitRavageCard( Space space ) => gameState.InvaderDeck.Ravage.Cards.Add( InvaderCardEx.For( space ) );
 		public void InitRavageCard( Terrain terrain ) => gameState.InvaderDeck.Ravage.Cards.Add( InvaderCard.Stage1( terrain ) );

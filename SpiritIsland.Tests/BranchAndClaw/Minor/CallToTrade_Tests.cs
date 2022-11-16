@@ -2,6 +2,11 @@
 
 public class CallToTrade_Tests {
 
+	IEnumerable<TargetSpaceCtx> AllTargets( SelfCtx ctx ) {
+		return ctx.GameState.AllSpaces
+			.Select( s => ctx.Target(s.Space) );
+	}
+
 	// for Terror Level 2 or lower => "first Ravage in Target land becomes a build"
 	[Trait( "Feature", "Ravage" )]
 	[Trait( "Feature", "Build" )]
@@ -12,8 +17,7 @@ public class CallToTrade_Tests {
 		var (user, ctx) = TestSpirit.SetupGame( PowerCard.For<CallToTrade>() );
 
 		// Given: a space that is not part of the build nor ravage
-		var spaceCtx = ctx.AllSpaces
-			.Select( ctx.Target )
+		var spaceCtx = AllTargets( ctx )
 			.Last( s => !s.MatchesBuildCard && !s.MatchesRavageCard ); // last stays away from city and ocean
 
 		Given_HasOnly3Explorers( spaceCtx );
@@ -40,8 +44,7 @@ public class CallToTrade_Tests {
 		user.DoesNothingForARound();
 
 		// Given: a space that IS-RAVAGE but NOT-BUILD
-		var spaceCtx = ctx.AllSpaces
-			.Select( ctx.Target )
+		var spaceCtx = AllTargets( ctx )
 			.Last( s => s.MatchesRavageCard && !s.MatchesBuildCard ); // last stays away from city and ocean
 																		//  And: it has 3 explorers (in case dahan attacks during ravage, would still 1 left over
 		Given_HasOnly3Explorers( spaceCtx );
@@ -74,8 +77,7 @@ public class CallToTrade_Tests {
 		user.DoesNothingForARound();
 
 		// Given: a space that IS-RAVAGE but NOT-BUILD
-		var spaceCtx = ctx.AllSpaces
-			.Select( ctx.Target )
+		var spaceCtx = AllTargets( ctx )
 			.Last( s => s.MatchesRavageCard && !s.MatchesBuildCard ); // last stays away from city and ocean
 																		//  And: it has 3 explorers (in case dahan attacks during ravage, would still 1 left over
 		Given_HasOnly3Explorers( spaceCtx );
@@ -110,8 +112,7 @@ public class CallToTrade_Tests {
 		invaderLog.Clear();
 
 		// Given: a space that IS-RAVAGE AND BUILD
-		var spaceCtx = ctx.AllSpaces
-			.Select( ctx.Target )
+		var spaceCtx = AllTargets( ctx )
 			.Last( s => s.MatchesRavageCard && s.MatchesBuildCard ); // last stays away from city and ocean
 		invaderLog.Add("Selected target:"+spaceCtx.Space.Label );
 

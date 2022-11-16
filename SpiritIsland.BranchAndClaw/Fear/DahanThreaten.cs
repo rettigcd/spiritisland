@@ -10,7 +10,7 @@ public class DahanThreaten : IFearOptions {
 
 		// each player adds 1 strife in a land with dahan
 		foreach(SelfCtx spirit in ctx.Spirits)
-			await spirit.AddStrifeToOne( ctx.Lands(ctx.WithDahan) );
+			await spirit.AddStrifeToOne( ctx.Lands( SpaceFilters.WithDahan) );
 	}
 
 	[FearLevel( 2, "each player adds 1 strife in a land with dahan. For the rest of t his turn, invaders have -1 health per strife to a minimum of 1" )]
@@ -20,7 +20,7 @@ public class DahanThreaten : IFearOptions {
 
 		// each player adds 1 strife in a land with dahan
 		foreach(SelfCtx spirit in ctx.Spirits)
-			await spirit.AddStrifeToOne( ctx.Lands(ctx.WithDahan) );
+			await spirit.AddStrifeToOne( ctx.Lands( SpaceFilters.WithDahan) );
 
 		// For the rest of this turn, invaders have -1 health per strife to a minimum of 1
 		await StrifedRavage.InvadersReduceHealthByStrifeCount( ctx.GameState, actionId );
@@ -32,15 +32,17 @@ public class DahanThreaten : IFearOptions {
 
 		// each player adds 1 strife in a land with dahan
 		foreach(SelfCtx spirit in ctx.Spirits)
-			await spirit.AddStrifeToOne( ctx.Lands(ctx.WithDahan) );
+			await spirit.AddStrifeToOne( ctx.Lands( SpaceFilters.WithDahan) );
 
 		var decidingSpirit = ctx.Spirits.First();
-		// in every land with strife, 1 damage per dahan
+		// in every land with strife
+		var landsWithStrife = ctx.GameState.AllActiveSpaces
+			.Where( SpaceFilters.WithStrife );
 
-		foreach(var space in ctx.LandsWithStrife()) {
-			var spaceCtx = decidingSpirit.Target(space);
-			await spaceCtx.DamageInvaders( spaceCtx.Dahan.Count );
-		}
+		foreach(var ss in landsWithStrife)
+			// 1 damage per dahan
+			await decidingSpirit.Target( ss.Space ).DamageInvaders( ss.Dahan.Count );
+
 	}
 
 }

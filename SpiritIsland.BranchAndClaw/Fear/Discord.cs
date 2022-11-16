@@ -34,10 +34,10 @@ public class Discord : IFearOptions {
 
 		// each player adds 1 strife in a different land with at least 2 invaders.
 		foreach(SelfCtx spirit in ctx.Spirits) {
-			var spaceCtx = await spirit.SelectSpace( "Add strife", options );
+			var spaceCtx = await spirit.SelectSpace( "Add strife", options.Select(x=>x.Space) );
 			if(spaceCtx != null) {
 				await spaceCtx.AddStrife();
-				options.Remove( spaceCtx.Space );
+				options.Remove( spaceCtx.Tokens );
 
 				// Then, each invader with strife deals damage to other invaders in that land.
 				await StrifedRavage.StrifedInvadersDealsDamageToOtherInvaders.Execute( spaceCtx );
@@ -45,9 +45,10 @@ public class Discord : IFearOptions {
 		}
 	}
 
-	static List<Space> LandsWith2Invaders( FearCtx ctx ) {
-		return ctx.GameState.Island.AllSpaces
-			.Where( s => 2 <= ctx.GameState.Tokens[s].InvaderTotal() ).ToList();
+	static List<SpaceState> LandsWith2Invaders( FearCtx ctx ) {
+		return ctx.GameState.AllActiveSpaces
+			.Where( s => 2 <= s.InvaderTotal() )
+			.ToList();
 	}
 
 }

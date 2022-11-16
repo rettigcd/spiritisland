@@ -2,6 +2,8 @@
 
 public class TerrainMapper {
 
+	public bool IsInPlay( SpaceState spaceState ) => IsInPlay( spaceState.Space );
+
 	public virtual bool IsInPlay(Space space) => !space.Is(Terrain.Ocean);
 
 	public virtual bool MatchesTerrain(Space space, params Terrain[] options) => space.IsOneOf(options);

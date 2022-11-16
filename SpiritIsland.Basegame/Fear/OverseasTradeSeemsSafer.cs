@@ -30,16 +30,16 @@ public class OverseasTradeSeemsSafer : IFearOptions {
 
 	static void DefendCostal( GameState gs, int defense ) {
 		var tm = gs.Island.Terrain_ForFear;
-		var spaces = gs.Island.AllSpaces.Where( s => tm.IsCoastal( s ) && tm.IsInPlay( s ) ).ToArray();
+		var spaces = gs.AllActiveSpaces.Where( s => tm.IsCoastal( s.Space ) && tm.IsInPlay( s ) ).ToArray();
 		foreach(var space in spaces )
-			gs.Tokens[space].Defend.Add( defense );
+			space.Defend.Add( defense );
 	}
 
 	static void SkipCostalBuild( GameState gs, IBuildStopper stopper ) {
 		var tm = gs.Island.Terrain_ForFear;
-		var spaces = gs.Island.AllSpaces.Where( s => tm.IsCoastal( s ) && tm.IsInPlay( s ) ).ToArray();
+		var spaces = gs.AllActiveSpaces.Where( s => tm.IsCoastal( s.Space ) && tm.IsInPlay( s ) ).ToArray();
 		foreach(var space in spaces)
-			gs.AdjustTempToken(space,stopper);
+			gs.AdjustTempToken(space.Space,stopper);
 	}
 
 }

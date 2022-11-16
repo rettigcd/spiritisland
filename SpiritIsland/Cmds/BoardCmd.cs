@@ -19,7 +19,7 @@ public static partial class Cmd {
 
 	static BoardCmd PickLandOnBoardThenTakeAction(
 		this ActionOption<TargetSpaceCtx> spaceAction,
-		Func<TargetSpaceCtx,bool> customFilter, // !!! change to TargetSpaceCtx
+		Func<TargetSpaceCtx,bool> customFilter,
 		string filterDescription
 	)
 		=> new BoardCmd( spaceAction.Description + " " + filterDescription, async ctx => {
@@ -31,7 +31,8 @@ public static partial class Cmd {
 
 			var spaceOptions = ctx.Board.Spaces
 				.Select( ctx.Target )
-				.Where( x => x.IsInPlay )
+				.Where( x => !x.Tokens.InStasis )	// layer 1 filter
+				.Where( x => x.IsInPlay )			// layer 2 filter
 				.Where( spaceAction.IsApplicable )	// Matches action criteria  (Can't act on items that aren't there)
 				.Where( customFilter )				// Matches custom space - criteria
 				.ToArray();
@@ -51,6 +52,7 @@ public static partial class Cmd {
 			var spaceOptions = ctx.Board.Spaces
 				.Where( ctx.TerrainMapper.IsInPlay )
 				.Select( ctx.Target )
+				.Where( x=> !x.Tokens.InStasis )
 				.Where( action.IsApplicable )	// Matches action criteria  (Can't act on items that aren't there)
 				.Where( customFilter )			// Matches custom space - criteria
 				.ToList();
@@ -77,8 +79,8 @@ public static partial class Cmd {
 	)
 		=> new ActionOption<SelfCtx>( spaceAction.Description + " " + filterDescription, async ctx => {
 
-			var spaceOptions = ctx.GameState.Island.AllSpaces
-				.Select( ctx.Target )
+			var spaceOptions = ctx.GameState.AllActiveSpaces
+				.Select( x=>ctx.Target(x.Space) )
 				.Where( x => x.IsInPlay )
 				.Where( spaceAction.IsApplicable )  // Matches action criteria  (Can't act on items that aren't there)
 				.Where( customFilter )              // Matches custom space - criteria

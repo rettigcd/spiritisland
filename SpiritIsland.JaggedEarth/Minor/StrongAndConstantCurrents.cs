@@ -35,7 +35,7 @@ public class StrongAndConstantCurrents{
 	// Move up to 2 between target land and one other costal Land.
 	static async Task MoveDahanAction( TargetSpaceCtx ctx ) {
 		int count = 2;
-		var costalCtxs = ctx.AllSpaces.Select( ctx.Target ).Where( x => x.IsCoastal ).ToArray();
+		var costalCtxs = ctx.GameState.AllActiveSpaces.Select( s=>ctx.Target(s.Space) ).Where( x => x.IsCoastal ).ToArray();
 
 		while(0 < count) {
 

@@ -44,8 +44,8 @@ public class Quarantine : IFearOptions {
 
 	static void ExploreDoesNotAffectCoastalLands( FearCtx ctx ) {
 		var gs = ctx.GameState;
-		foreach(var costal in gs.Island.AllSpaces.Where( x => x.IsCoastal ))
-			gs.SkipExplore( costal );
+		foreach(var costal in gs.AllActiveSpaces.Where( x => x.Space.IsCoastal ))
+			gs.SkipExplore( costal.Space );
 	}
 
 }

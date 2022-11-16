@@ -34,7 +34,7 @@ public class Panic : IFearOptions {
 
 		// Each player adds 1 strife to an invader.
 		foreach(SelfCtx spirit in ctx.Spirits)
-			await spirit.AddStrifeToOne( ctx.GameState.Island.AllSpaces );
+			await spirit.AddStrifeToOne( ctx.GameState.AllActiveSpaces );
 
 		// For the rest of this turn, invaders have -1 health per strife to a minimum of 1.
 		await StrifedRavage.InvadersReduceHealthByStrifeCount( ctx.GameState, actionId );

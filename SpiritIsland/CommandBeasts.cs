@@ -13,8 +13,8 @@ internal class CommandBeasts : IExecuteOn<TargetSpaceCtx> {
 
 		// The first space/time it is called on, init original Beast positions
 		if( originalBeastCounts == null )
-			originalBeastCounts = ctx.GameState.Island.AllSpaces
-				.ToDictionary( s => s, s => ctx.GameState.Tokens[s].Beasts.Count )
+			originalBeastCounts = ctx.GameState.AllActiveSpaces
+				.ToDictionary( s => s.Space, s => s.Beasts.Count )
 				.ToCountDict();
 
 		// Using this order: Damage / Push / Fear(based on starting invaders)

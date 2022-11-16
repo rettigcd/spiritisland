@@ -21,9 +21,8 @@ public class VanishSoftlyAwayForgottonByAll {
 		// if you have 3 moon, 3 air:
 		if( await ctx.YouHave("3 moon,3 air" )) {
 			// in any 2 lands with 4 or more invaders: remove 1 invader
-			var options = ctx.AllSpaces.Where( s => 4 <= ctx.Target(s).Tokens.InvaderTotal() ).ToArray();
+			var options = ctx.GameState.AllActiveSpaces.Where( s => 4 <= s.InvaderTotal() ).ToArray();
 			// !!! implement
-
 		}
 	}
 

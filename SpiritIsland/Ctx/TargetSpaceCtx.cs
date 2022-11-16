@@ -163,7 +163,7 @@ public class TargetSpaceCtx : SelfCtx {
 	public bool Is(Terrain terrain) => TerrainMapper.MatchesTerrain(Space, terrain);
 	public bool IsCoastal => TerrainMapper.IsCoastal( Space );
 	public bool IsInland => TerrainMapper.IsInland( Space );
-	public bool IsInPlay => !TerrainMapper.MatchesTerrain( Space, Terrain.Ocean );
+	public bool IsInPlay => TerrainMapper.IsInPlay( Space );
 	public bool Matches( string filterEnum ) => IsInPlay && SpaceFilterMap.Get(filterEnum)(this);
 
 	#endregion

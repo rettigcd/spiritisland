@@ -77,7 +77,13 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	public Fear Fear { get; }
 	public Island Island { get; set; }
 	public Spirit[] Spirits { get; }
+
 	public Tokens_ForIsland Tokens { get; }
+	public IEnumerable<SpaceState> AllSpaces => Island.Boards
+		.SelectMany(b=>b.Spaces)
+		.Select(Tokens.GetTokensFor);
+	public IEnumerable<SpaceState> AllActiveSpaces => AllSpaces.Where( t => !t.InStasis );
+
 	public PowerCardDeck MajorCards {get; set; }
 	public PowerCardDeck MinorCards { get; set; }
 	public InvaderDeck InvaderDeck { 
@@ -275,7 +281,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	void TokenCleanUp( GameState gs ) { 
 		Healer.HealAll( gs ); // called at end of round.
-		foreach(var spaceTokens in Tokens.ForAllSpaces)
+		foreach(var spaceTokens in AllSpaces)
 			spaceTokens.Blight.Blocked = false;
 	}
 	public Healer Healer = new Healer(); // replacable Behavior
@@ -299,10 +305,10 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	}
 
 	// Win Loss Predicates
-	static (Func<Space,bool>,string) InvaderCriteria(GameState gs) {
-		bool NoCity(Space space) => gs.Tokens[space].Sum(Invader.City)==0;
-		bool NoCityOrTown(Space space) => gs.Tokens[space].SumAny(Invader.City,Invader.Town)==0;
-		bool NoInvader(Space space) => !gs.Tokens[space].HasInvaders();
+	static (Func<SpaceState,bool>,string) InvaderCriteria(GameState gs) {
+		bool NoCity(SpaceState space) => space.Sum(Invader.City)==0;
+		bool NoCityOrTown(SpaceState space) => space.SumAny(Invader.City,Invader.Town)==0;
+		bool NoInvader(SpaceState space) => !space.HasInvaders();
 		return gs.Fear.TerrorLevel switch {
 			4 => (_=>true, "Victory"),
 			3 => (NoCity,"no cities"),
@@ -314,7 +320,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	// ! This is the only thing that needs checked after every action.
 	void CheckTerrorLevelVictory(){
 		var (filter,description) = InvaderCriteria(this);
-		if( Island.AllSpaces.All( filter ) )
+		if( AllSpaces.All( filter ) )
 			GameOverException.Win($"Terror Level {Fear.TerrorLevel} - {description}");
 	}
 
@@ -343,8 +349,8 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		_ravageConfig.Clear();
 
 		// Clear Defend
-		foreach(var s in Island.AllSpaces)
-			Tokens[s].Defend.Clear();
+		foreach(var s in AllSpaces)
+			s.Defend.Clear();
 
 		// Do Custom end-of-round cleanup stuff before round switches over
 		// (shifting memory need cards it is going to forget to still be in hand when calling .Forget() on it)

@@ -43,9 +43,11 @@ public class PlanForDeparture : IFearOptions {
 	}
 
 	static void DefendCostal( FearCtx ctx, int defense ) {
-		var coastal = ctx.GameState.Island.AllSpaces.Where( x => x.IsCoastal ).ToArray();
+		var coastal = ctx.GameState.AllActiveSpaces
+			.Where( x => x.Space.IsCoastal )
+			.ToArray();
 		foreach(var land in coastal)
-			ctx.GameState.Tokens[land].Defend.Add( defense );
+			land.Defend.Add( defense );
 	}
 
 

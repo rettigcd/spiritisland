@@ -39,8 +39,6 @@ public class SelfCtx {
 
 	#region convenience Read-Only methods
 
-	public IEnumerable<Space> AllSpaces => GameState.Island.AllSpaces;
-
 	/// <summary> 
 	/// Simple wrapper around GameState.Tokens.Move 
 	/// Used for Gathering / Pushing (and other stuff)

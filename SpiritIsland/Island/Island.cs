@@ -43,7 +43,6 @@ public class Island {
 			default: throw new ArgumentOutOfRangeException(nameof(boards.Length),"wrong # of boards");
 		}
 	}
-	public IEnumerable<Space> AllSpaces => Boards.SelectMany(b=>b.Spaces); // could be extension method
 
 	// Static-Default Terrain for non-power, non-blight
 	public readonly TerrainMapper Terrain = new TerrainMapper(); // Default

@@ -33,7 +33,10 @@ public class SerpentRousesInAnger {
 			// -7 Energy.
 			ctx.Self.Energy -= 7;
 			// In every land in the game: X Damage, where X is the number of presence you have in and adjacent to that land.
-			var invaderLands = ctx.AllSpaces.Where(space => ctx.Target(space).HasInvaders).ToArray();
+			var invaderLands = ctx.GameState.AllActiveSpaces
+				.Where(space => space.HasInvaders())
+				.Select(x=>x.Space)
+				.ToArray();
 			foreach(var land in invaderLands) {
 				var landsCreatingDamage = new HashSet<Space>(land.Range(1));
 				int damage = ctx.Self.Presence.Placed.Count(landsCreatingDamage.Contains);

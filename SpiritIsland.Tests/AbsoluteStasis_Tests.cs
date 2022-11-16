@@ -221,9 +221,6 @@ public class AbsoluteStasis_Tests {
 
 	}
 
-	// *** fear cards effecting all spaces skip stasis-space
-
-
 	// E Cannot Pull/Move From nor Push/Cascade/Move Into Stasis Space
 
 	// *** Drawing on screen includes Stasis items

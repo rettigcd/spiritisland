@@ -12,12 +12,11 @@ public class RitesOfTheLandsRejection_Tests {
 		var (user,ctx) = TestSpirit.SetupGame( PowerCard.For<RitesOfTheLandsRejection>() );
 
 		// Given: find a space with 1 explorer
-		var spaceCtx = ctx.AllSpaces
-			.Select( ctx.Target )
-			.First( sc => sc.Tokens.InvaderSummary() == "1E@1" );
+		var space = ctx.GameState.AllSpaces
+			.First( s => s.InvaderSummary() == "1E@1" );
 
 		//   And: add Dahan (because card requires it)
-		spaceCtx.Dahan.Init(1);
+		space.Dahan.Init(1);
 
 		// When: growing
 		user.Grows();
@@ -26,7 +25,7 @@ public class RitesOfTheLandsRejection_Tests {
 		user.PlaysCard( RitesOfTheLandsRejection.Name );
 		if(playsCard) {
 			user.SelectsFastAction( RitesOfTheLandsRejection.Name );
-			user.TargetsLand_IgnoreOptions( spaceCtx.Space.Label );
+			user.TargetsLand_IgnoreOptions( space.Space.Label );
 			user.AssertDecisionX( "Select Power Option", "{Stop build - 1 fear / (Dahan or T/C)},Push up to 3 Dahan", "{}" );
 		} else
 			//  And: done with fast (no more cards..)
@@ -34,7 +33,7 @@ public class RitesOfTheLandsRejection_Tests {
 
 		// Then: space should have a building
 		System.Threading.Thread.Sleep(10);
-		spaceCtx.Tokens.InvaderSummary().ShouldBe( result );
+		space.InvaderSummary().ShouldBe( result );
 
 	}
 

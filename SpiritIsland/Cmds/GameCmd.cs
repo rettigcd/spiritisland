@@ -42,9 +42,11 @@ public static partial class Cmd {
 					var decisionMaker = gs.Spirits[i < gs.Spirits.Length ? i : 0].Bind( gs, actionId ); // use Head spirit for extra board
 					var board = gs.Island.Boards[i];
 					var spaces = board.Spaces
-						.Where( x => filter == null || filter( gs.Tokens[x] ) );
-					foreach(var space in spaces)
-						await action.Execute( decisionMaker.Target( space ) );
+						.Select( s => gs.Tokens[s] )
+						.Where( s => !s.InStasis )
+						.Where( x => filter == null || filter( x ) );
+					foreach(var ss in spaces)
+						await action.Execute( decisionMaker.Target( ss.Space ) );
 				}
 			}
 		);

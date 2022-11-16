@@ -30,10 +30,8 @@ internal static class TargetSpaceCtx_ExtensionsForTesting {
 
 	public static void ClearAllBlight( this SelfCtx ctx ) {
 		// So it doesn't cascade and require extra interactions...
-		foreach(var space in ctx.AllSpaces) {
-			var tmpCtx = ctx.Target(space);
-			tmpCtx.Tokens.Blight.Init(0); // don't trigger events
-		}
+		foreach(var space in ctx.GameState.AllSpaces)
+			space.Blight.Init(0); // don't trigger events
 	}
 
 	public static void ActivateFearCard( this SelfCtx ctx, IFearOptions fearCard ) {

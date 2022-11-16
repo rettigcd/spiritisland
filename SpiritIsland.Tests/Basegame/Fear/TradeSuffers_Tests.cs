@@ -81,12 +81,11 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 
 		}
 
-
 		void ClearBlightAndDoNothing() {
 
 			// So it doesn't cascade during ravage
-			foreach(var space in ctx.AllSpaces)
-				ctx.Target(space).Tokens.Init(TokenType.Blight, 0); // Don't trigger events
+			foreach(var space in ctx.GameState.AllSpaces)
+				space.Init(TokenType.Blight, 0); // Don't trigger events
 
 			user.DoesNothingForARound();
 		}

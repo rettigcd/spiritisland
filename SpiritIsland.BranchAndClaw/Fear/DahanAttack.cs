@@ -10,7 +10,7 @@ public class DahanAttack : IFearOptions {
 
 		// Each player removes 1 eplorer from a land with dahan
 		foreach(var spirit in ctx.Spirits)
-			await spirit.RemoveTokenFromOneSpace(ctx.Lands(ctx.WithDahanAndExplorers),1,Invader.Explorer);
+			await spirit.RemoveTokenFromOneSpace(ctx.Lands( SpaceFilters.WithDahanAndExplorers).Select(x=>x.Space),1,Invader.Explorer);
 
 	}
 
@@ -18,7 +18,7 @@ public class DahanAttack : IFearOptions {
 	public async Task Level2( FearCtx ctx ) {
 
 		// Each player chooses a different land with dahan.  1 damage per dahan there
-		var options = ctx.Lands(ctx.WithDahanAndInvaders).ToList();
+		var options = ctx.Lands( SpaceFilters.WithDahanAndInvaders).Select( x => x.Space ).ToList();
 
 		foreach(var spirit in ctx.Spirits)
 			options.Remove( await DamagePerDahanOnOne( options, spirit ) );
@@ -30,7 +30,10 @@ public class DahanAttack : IFearOptions {
 
 
 		// each player chooses a different land with towns/cities.  
-		var options = ctx.GameState.Island.AllSpaces.Where( s => ctx.GameState.Tokens[s].HasAny(Invader.Town,Invader.City) ).ToList();
+		var options = ctx.GameState.AllActiveSpaces
+			.Where( s => s.HasAny(Invader.Town,Invader.City) )
+			.Select( x => x.Space )
+			.ToList();
 
 		foreach(var spirit in ctx.Spirits) {
 			var spaceCtx = await spirit.SelectSpace( "Remove 1 explorer", options );

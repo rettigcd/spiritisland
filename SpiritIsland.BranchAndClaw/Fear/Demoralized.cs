@@ -28,9 +28,10 @@ public class Demoralized : IFearOptions {
 
 	static void DefendLands( FearCtx ctx, int defense ) {
 		var terrainMapper = ctx.GameState.Island.Terrain_ForFear;
-		var lands = ctx.GameState.Island.AllSpaces.Where( terrainMapper.IsInPlay );
+		var lands = ctx.GameState.AllActiveSpaces
+			.Where( x=> terrainMapper.IsInPlay(x.Space) );
 		foreach(var land in lands)
-			ctx.GameState.Tokens[land].Defend.Add( defense );
+			land.Defend.Add( defense );
 	}
 
 }

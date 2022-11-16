@@ -9,10 +9,10 @@ public class SeekSafety : IFearOptions {
 	[FearLevel( 1, "Each player may Push 1 Explorer into a land with more Town / City than the land it came from." )]
 	public async Task Level1( FearCtx ctx ) {
 
-		Dictionary<Space, int> buildingCounts = ctx.GameState.Island.AllSpaces
+		Dictionary<Space, int> buildingCounts = ctx.GameState.AllActiveSpaces
 			.ToDictionary(
-				s=>s,
-				s=>ctx.GameState.Tokens[s].TownsAndCitiesCount()
+				s=>s.Space,
+				s=>s.TownsAndCitiesCount()
 			);
 
 		// Each player may
@@ -24,12 +24,13 @@ public class SeekSafety : IFearOptions {
 
 	static async Task PushExplorerIntoSpaceWithMoreTownsOrCities( SelfCtx ctx, Dictionary<Space, int> buildingCounts ) {
 
-		Space[] GetNeighborWithMoreBuildings( Space s ) => s.Adjacent.Where( n => buildingCounts[n] > buildingCounts[s] ).ToArray();
-		bool HasNeighborWithMoreBuildings(Space s) => GetNeighborWithMoreBuildings(s).Any();
+		Space[] GetNeighborWithMoreBuildings( SpaceState s ) => s.Adjacent.Select(s=>s.Space).Where( n => buildingCounts[n] > buildingCounts[s.Space] ).ToArray();
+		bool HasNeighborWithMoreBuildings(SpaceState s) => GetNeighborWithMoreBuildings(s).Any();
 
 		// Select Source
-		var sourceOptions = ctx.GameState.Island.AllSpaces
-			.Where(s=>ctx.GameState.Tokens[s].Has(Invader.Explorer) && HasNeighborWithMoreBuildings(s))
+		var sourceOptions = ctx.GameState.AllActiveSpaces
+			.Where(s=>s.Has(Invader.Explorer) && HasNeighborWithMoreBuildings(s))
+			.Select(s=>s.Space)
 			.ToArray();
 		if(sourceOptions.Length==0) return;
 
@@ -44,8 +45,9 @@ public class SeekSafety : IFearOptions {
 	public async Task Level2( FearCtx ctx ) {
 		var gs = ctx.GameState;
 		foreach(var spiritCtx in ctx.Spirits) {
-			var options = gs.Island.AllSpaces
-				.Where( s => gs.Tokens[ s ].HasAny(Invader.Town,Invader.City) )
+			var options = gs.AllActiveSpaces
+				.Where( s => s.HasAny(Invader.Town,Invader.City) )
+				.Select(s=>s.Space)
 				.ToArray();
 			if(options.Length == 0) break;
 			var dest = await spiritCtx.Decision( new Select.Space( "Select space to gather town to city OR explorer to town", options, Present.Always));
@@ -65,8 +67,9 @@ public class SeekSafety : IFearOptions {
 		var gs = ctx.GameState;
 		foreach(SelfCtx spirit in ctx.Spirits) {
 
-			var options = gs.Island.AllSpaces
-				.Where( s => {var counts = gs.Tokens[ s ]; return counts.HasInvaders() && !counts.Has(Invader.City); } )
+			var options = gs.AllActiveSpaces
+				.Where( s => s.HasInvaders() && !s.Has(Invader.City) )
+				.Select( s => s.Space )
 				.ToArray();
 			if(options.Length==0) return;
 			var target = await spirit.Decision( new Select.Space( "Select space to remove 3 health of invaders", options, Present.Always));

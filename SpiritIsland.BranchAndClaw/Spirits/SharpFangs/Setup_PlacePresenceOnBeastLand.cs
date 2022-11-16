@@ -4,8 +4,8 @@ class Setup_PlacePresenceOnBeastLand : GrowthActionFactory {
 
 	public override async Task ActivateAsync( SelfCtx ctx ) {
 		var gameState = ctx.GameState;
-		var options = gameState.Island.AllSpaces.Where( space=>gameState.Tokens[space].Beasts.Any );
-		var space = await ctx.Decision(new Select.Space("Add presence to",options, Present.Always));
+		var options = gameState.AllSpaces.Where( space=>space.Beasts.Any );
+		var space = await ctx.Decision(new Select.Space("Add presence to",options.Select( s => s.Space ), Present.Always));
 		ctx.Presence.PlaceOn(space);
 	}
 

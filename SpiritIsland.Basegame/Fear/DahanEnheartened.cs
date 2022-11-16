@@ -10,8 +10,8 @@ public class DahanEnheartened : IFearOptions {
 	public async Task Level1( FearCtx ctx ) {
 		var gs = ctx.GameState;
 		foreach( var spiritCtx in ctx.Spirits ) {
-			var spacesWithInvaders = gs.Island.AllSpaces.Where( s=>spiritCtx.Target(s).HasInvaders ).ToArray();
-			var target = await spiritCtx.Decision( new Select.Space( "Select Space to Gather or push 1 dahan", spacesWithInvaders, Present.Always));
+			var spacesWithInvaders = gs.AllActiveSpaces.Where( s=>s.HasInvaders() ).ToArray();
+			var target = await spiritCtx.Decision( new Select.Space( "Select Space to Gather or push 1 dahan", spacesWithInvaders.Select(x=>x.Space), Present.Always));
 
 			var spaceCtx = spiritCtx.Target(target);
 			await spaceCtx.SelectActionOption(
@@ -25,7 +25,7 @@ public class DahanEnheartened : IFearOptions {
 	public async Task Level2( FearCtx ctx ) {
 		HashSet<Space> used = new ();
 		foreach(var spiritCtx in ctx.Spirits) {
-			var options = spiritCtx.AllSpaces.Where( s=>spiritCtx.Target(s).Dahan.Any ).Except( used ).ToArray();
+			var options = spiritCtx.GameState.AllActiveSpaces.Where( s=>s.Dahan.Any ).Select(x=>x.Space).Except( used ).ToArray();
 			var target = await spiritCtx.Decision( new Select.Space( "Fear:select land with dahan for 1 damage", options, Present.Always ));
 			used.Add( target );
 			var sCtx = spiritCtx.Target(target);
@@ -40,7 +40,7 @@ public class DahanEnheartened : IFearOptions {
 	public async Task Level3( FearCtx ctx ) {
 		HashSet<Space> used = new ();
 		foreach(var spiritCtx in ctx.Spirits) {
-			var options = spiritCtx.AllSpaces.Where( s => spiritCtx.Target(s).Dahan.Any ).Except( used ).ToArray();
+			var options = spiritCtx.GameState.AllActiveSpaces.Where( s => s.Dahan.Any ).Select(x=>x.Space).Except( used ).ToArray();
 			var target = await spiritCtx.Decision( new Select.Space( "Fear:select land with dahan for 1 damage", options, Present.Always ));
 			used.Add( target );
 			var sCtx = spiritCtx.Target(target);

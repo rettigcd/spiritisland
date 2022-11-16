@@ -27,10 +27,10 @@ public class Isolation : IFearOptions {
 	static async Task RemoveInvaderWhenMax( FearCtx ctx, int invaderMax, params TokenClass[] removeableInvaders ) {
 		foreach(var spirit in ctx.Spirits) {
 
-			var options = spirit.AllSpaces.Where( s => {
-				SpaceState counts = ctx.GameState.Tokens[ s ];
-				return counts.HasAny( removeableInvaders ) && counts.InvaderTotal() <= invaderMax;
-			} ).ToArray();
+			var options = spirit.GameState.AllActiveSpaces
+				.Where( s => s.HasAny( removeableInvaders ) && s.InvaderTotal() <= invaderMax )
+				.Select( s => s.Space )
+				.ToArray();
 			if(options.Length == 0) return;
 
 			await spirit.RemoveTokenFromOneSpace(options,1,removeableInvaders);

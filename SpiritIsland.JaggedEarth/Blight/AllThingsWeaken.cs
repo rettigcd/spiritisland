@@ -28,16 +28,15 @@ public class AllThingsWeaken : BlightCardBase {
 			}
 
 			// replace/update existing tokens
-			foreach(var space in gs.Island.AllSpaces) {
-				var tokens = gs.Tokens[space];
-				var tokenTypes = tokens.Keys.OfType<HealthToken>()
+			foreach(var ss in gs.AllActiveSpaces) {
+				var tokenTypes = ss.Keys.OfType<HealthToken>()
 					.Where(x=>x.FullHealth > 1)
 					.OrderBy(x=>x.FullHealth)
 					.ToArray(); // least health first
 				foreach(var oldToken in tokenTypes) {
 					var newToken = oldToken.AddHealth(-1);
-					tokens.Adjust( newToken, tokens[oldToken] );
-					tokens.Init( oldToken, 0 );
+					ss.Adjust( newToken, ss[oldToken] );
+					ss.Init( oldToken, 0 );
 					// if (newToken.IsDestroyed) !!! destroy new tokens
 				}
 			}

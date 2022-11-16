@@ -17,8 +17,8 @@ public class WaryOfTheInterior : IFearOptions {
 
 	static async Task EachSpiritRemoves1Invader( FearCtx ctx, Func<TargetSpaceCtx,bool> spaceCondition, params TokenClass[] removable ) {
 		foreach(var spiritCtx in ctx.Spirits) {
-			var options = spiritCtx.AllSpaces
-				.Select( spiritCtx.Target )
+			var options = spiritCtx.GameState.AllActiveSpaces
+				.Select( x=>spiritCtx.Target(x.Space) )
 				.Where( x=>x.IsInPlay )
 				.Where( spaceCondition )
 				.Where( ctx => ctx.Tokens.HasAny( removable ) )

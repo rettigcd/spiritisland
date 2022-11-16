@@ -33,12 +33,10 @@ public static class StrifedRavage {
 		gameState.TimePasses_ThisRound.Push( x => { --gameState.HealthPenaltyPerStrife; return Task.CompletedTask; } );
 
 		// Check if anything is destroyed
-		foreach(var space in gameState.Island.AllSpaces) {
-			var tokens = gameState.Tokens[space];
-			foreach( var token in tokens.InvaderTokens() )
+		foreach(var space in gameState.AllActiveSpaces)
+			foreach( var token in space.InvaderTokens() )
 				if(token.IsDestroyed)
-					await tokens.Destroy( token, tokens[token], actionId );
-		}
+					await space.Destroy( token, space[token], actionId );
 	}
 
 	#endregion
@@ -47,8 +45,8 @@ public static class StrifedRavage {
 
 	public static async Task StrifedInvadersTakeDamagePerStrife( FearCtx ctx ) {
 		Guid actionId = Guid.NewGuid();
-		foreach(var space in ctx.GameState.Island.AllSpaces)
-			await EachInvaderTakesDamageByStrifeCount( ctx.GameState.Tokens[space], actionId );
+		foreach(var space in ctx.GameState.AllActiveSpaces)
+			await EachInvaderTakesDamageByStrifeCount( space, actionId );
 	}
 
 	static async Task EachInvaderTakesDamageByStrifeCount( SpaceState tokens, Guid actionId ) {

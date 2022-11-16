@@ -9,20 +9,20 @@ public class Token_Tests {
 		var gs = new GameState( new Thunderspeaker(), Board.BuildBoardC());
 
 		// Given: a space with no invaders
-		Space noInvaderSpace = gs.Island.AllSpaces.First( s=>IsInPlay(s) && !gs.Tokens[s].HasInvaders() );
-		var tokens = gs.Tokens[noInvaderSpace];
+		SpaceState spaceState = gs.AllSpaces.First( s=>IsInPlay(s.Space) && !s.HasInvaders() );
 		//   And: 1 neighboring town
-		gs.Tokens[ noInvaderSpace.Adjacent.First() ].AdjustDefault(Invader.Town,1);
+		var neighbor = spaceState.Adjacent.First();
+		neighbor.AdjustDefault(Invader.Town,1);
 		//   And: 1 wilds there
-		tokens.Wilds.Init(1);
+		spaceState.Wilds.Init(1);
 
 		//  When: we explore there
-		_ = InvaderCardEx.For( noInvaderSpace ).Explore( gs );
+		_ = InvaderCardEx.For( spaceState.Space ).Explore( gs );
 
 		//  Then: still no invaders
-		gs.Tokens[noInvaderSpace].HasInvaders().ShouldBeFalse("there should be no explorers in "+noInvaderSpace.Label);
+		spaceState.HasInvaders().ShouldBeFalse("there should be no explorers in "+spaceState.Space.Label);
 		//   And: no wilds here
-		(tokens.Wilds.Count>0).ShouldBeFalse("wilds should be used up");
+		(spaceState.Wilds.Count>0).ShouldBeFalse("wilds should be used up");
 
 	}
 
@@ -31,19 +31,18 @@ public class Token_Tests {
 		var gs = new GameState( new Thunderspeaker(), Board.BuildBoardC() );
 
 		// Given: a space with ONLY 1 explorer
-		Space space = gs.Island.AllSpaces.First( s => IsInPlay(s) && !gs.Tokens[s].HasInvaders() ); // 0 invaders
-		gs.Tokens[space].AdjustDefault( Invader.Explorer, 1 ); // add explorer
+		SpaceState space = gs.AllSpaces.First( s => IsInPlay(s.Space) && !s.HasInvaders() ); // 0 invaders
+		space.AdjustDefault( Invader.Explorer, 1 ); // add explorer
 		//   And: 1 diseases there
-		await gs.Tokens[space].Disease.Bind(Guid.NewGuid()).Add(1);
+		await space.Disease.Bind(Guid.NewGuid()).Add(1);
 
 		//  When: we build there
-		await InvaderCardEx.For( space ).Build( gs );
+		await InvaderCardEx.For( space.Space ).Build( gs );
 
 		//  Then: still no towns (just original explorer)
-		gs.Assert_Invaders(space, "1E@1" ); // "should be no town on "+space.Label
+		gs.Assert_Invaders(space.Space, "1E@1" ); // "should be no town on "+space.Label
 		//   And: no disease here
-		gs.Tokens[space].Disease.Any.ShouldBeFalse( "disease should be used up" );
-
+		space.Disease.Any.ShouldBeFalse( "disease should be used up" );
 
 	}
 

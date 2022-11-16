@@ -285,4 +285,10 @@ public class SpaceState {
 		set => counts [TokenType.Stasis] = value ? 1 : 0;
 	}
 
+	public IEnumerable<SpaceState> Adjacent => PowerUp( Space.Adjacent );
+	public IEnumerable<SpaceState> Range(int range) => PowerUp(Space.Range(range));
+	IEnumerable<SpaceState> PowerUp(IEnumerable<Space> spaces) => spaces
+		.Select( s => this.tokenApi[s] )
+		.Where( s => !s.InStasis );
+
 }

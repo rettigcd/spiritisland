@@ -23,20 +23,24 @@ public static partial class Cmd {
 		=> PickLandThenTakeAction( spaceAction, filter, filterDescription, "to" );
 
 	// Excludes Oceans
+	// !! We could create a version of this that filters on SpaceState instead of the TargetSpaceCtx,
+	// but would need to use TerrainMapper in SelfCtx
+	// IF, filters depend ONLY on SpaceState
+	// !! Before we make this work, we need to fold .IsCostal into SpaceState
 	static ActionOption<SelfCtx> PickLandThenTakeAction( 
 		ActionOption<TargetSpaceCtx> spaceAction,
 		Func<TargetSpaceCtx,bool> filter, string filterDescription,
 		string landPreposition = "in"  // Depending on Action, "from" or "to" might be better
 	)	=> new ActionOption<SelfCtx>( $"{spaceAction.Description} {landPreposition} {filterDescription}.", 
-			async ctx => {
-				var spaceOptions = ctx.AllSpaces
-					.Select(s=>ctx.Target(s))
+			async selfCtx => {
+				var spaceOptions = selfCtx.GameState.AllActiveSpaces
+					.Select(s=>selfCtx.Target(s.Space))
 					.Where( x => x.IsInPlay )
 					.Where( filter )
 					.ToArray();
 				if(spaceOptions.Length == 0 ) return;
 
-				var spaceCtx = await ctx.SelectSpace("Select space to " + spaceAction.Description, spaceOptions);
+				var spaceCtx = await selfCtx.SelectSpace("Select space to " + spaceAction.Description, spaceOptions);
 
 				await spaceAction.Execute(spaceCtx);
 			}
@@ -49,7 +53,11 @@ public static partial class Cmd {
 	) {
 		List<Space> used = new List<Space>();
 		return new ActionOption<SelfCtx>( description, async ctx => {
-			var spaceOptions = ctx.AllSpaces.Where( ctx.TerrainMapper.IsInPlay ).Except( used ).ToArray();
+			var spaceOptions = ctx.GameState.AllActiveSpaces
+				.Where( ctx.TerrainMapper.IsInPlay )
+				.Select( x => x.Space )
+				.Except( used )
+				.ToArray();
 			if(spaceOptions.Length == 0) return;
 
 			var spaceCtx = await ctx.SelectSpace( "Select space to " + spaceAction.Description, spaceOptions );

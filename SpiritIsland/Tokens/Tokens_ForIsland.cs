@@ -35,8 +35,6 @@ public class Tokens_ForIsland : IIslandTokenApi {
 		}
 	}
 
-	public IEnumerable<SpaceState> ForAllSpaces => tokenCounts.Values;
-
 	readonly Dictionary<Space, SpaceState> tokenCounts = new Dictionary<Space, SpaceState>();
 
 	public int GetDynamicTokensFor( Space space, UniqueToken token ) 
