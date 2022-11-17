@@ -36,7 +36,7 @@ public class FlowingAndSilentFormsDartBy {
 
 		public async Task DestroyPresenceApi( SpiritPresence presence, Space space, GameState gs, DestoryPresenceCause actionType, Guid actionId ) {
 			if( space == this.protectedSpace) {
-				var dst = await spirit.Action.Decision(new Select.Space("Instead of destroying, push presence to:", space.Adjacent,Present.Done));
+				var dst = await spirit.Action.Decision(new Select.Space("Instead of destroying, push presence to:", gs.Tokens.GetTokensFor(space).Adjacent.Select(x=>x.Space),Present.Done));
 				if(dst != null) {
 					presence.Move(space,dst,gs);
 					return;
@@ -53,7 +53,7 @@ public class FlowingAndSilentFormsDartBy {
 	}
 
 	static async Task GatherSomeonesPresence( TargetSpaceCtx ctx ) {
-		var adj = ctx.Space.Adjacent;
+		var adj = ctx.Tokens.Adjacent.Select(x=>x.Space);
 		// Pick Spirit
 		var nearbySpirits = ctx.GameState.Spirits.Where( s => s.Presence.Spaces.Intersect( adj ).Any() ).ToArray();
 		Spirit other = ctx.GameState.Spirits.Length == 1 ? ctx.Self

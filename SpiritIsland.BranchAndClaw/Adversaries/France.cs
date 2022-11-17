@@ -162,9 +162,8 @@ public class FranceInvaderCard : InvaderCard {
 		if(tokens.Space.IsCoastal && tokens.Sum(Invader.City) > initialCityCount) {
 			var terrainMapper = gs.Island.Terrain;
 			// add 1 Town to the adjacent land with the fewest Town.
-			var buildSpace = tokens.Space.Adjacent
+			var buildSpace = tokens.Adjacent
 				.Where( terrainMapper.IsInPlay )
-				.Select( s=> gs.Tokens[s] )
 				.OrderBy( t=>t.Sum(Invader.Town))
 				.First();
 			await buildSpace.AddDefault(Invader.Town,1,Guid.NewGuid());

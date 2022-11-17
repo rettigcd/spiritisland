@@ -20,7 +20,7 @@ public class AbsoluteStasis {
 			spirit.Presence.PutInStasis( ctx.Space, ctx.GameState );
 
 		// Disconnect space
-		var adjacents = ctx.Space.Adjacent.ToArray();
+		var adjacents = ctx.Tokens.Adjacent.Select(x=>x.Space).ToArray();
 		ctx.Space.Board.Remove(ctx.Space); // !!! this will erroneously hide cities and towns from the Terror-Level Victory check
 
 		ctx.Tokens.InStasis = true;

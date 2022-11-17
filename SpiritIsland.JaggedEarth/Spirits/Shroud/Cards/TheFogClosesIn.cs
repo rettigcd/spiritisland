@@ -6,7 +6,7 @@ public class TheFogClosesIn {
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		// For each adjacent land with your presence, 1 Damage to a different Invader.
-		int count = ctx.Space.Adjacent.Count( s=>ctx.Target(s).Presence.IsHere );
+		int count = ctx.Tokens.Adjacent.Count( s=>ctx.Target(s.Space).Presence.IsHere );
 		await ctx.Apply1DamageToDifferentInvaders( count );
 
 		// Push 2 dahan

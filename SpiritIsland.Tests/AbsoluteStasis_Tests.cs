@@ -222,6 +222,8 @@ public class AbsoluteStasis_Tests {
 	}
 
 	// E Cannot Pull/Move From nor Push/Cascade/Move Into Stasis Space
+		// Remove all calls to Space.Adjacent
+		// Remove all calls to Space.Range(.)
 
 	// *** Drawing on screen includes Stasis items
 

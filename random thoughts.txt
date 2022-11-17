@@ -1,3 +1,13 @@
+D	Towering Root
+D	Breath of Darkness
+D	Hearth Vigil
+D	Wounded Water Bleeding
+
+J	Wondering Voice
+J	Ember Eye
+J	Relentless Gaze
+J	Dances up Earthquakes
+
 
 Updating Distance counts when we change if a space is in play.
 
@@ -52,4 +62,26 @@ Option 2
 Option 3
 	- create a StasisList
 
+
+
+Oversees Trade Seems safer
+Dahan on their Guard
+	- in each land.. defend
+
+
+Dahan Enheartened
+Retreat
+Seek Safety
+	- doesn't allow pushing dahan out, nor gathering dahan in)
+
+Dahan Raid
+	- in each land with dahan, 1 damage there
+
+Emigration Accelerates
+Fear of the Unseen
+Isolation
+Scapegoats
+Tall Tailes of Savagery
+Wary of the Interior
+	- cannot see pieces in stasis
 

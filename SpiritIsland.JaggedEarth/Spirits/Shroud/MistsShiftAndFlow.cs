@@ -75,25 +75,28 @@ class MistsShiftAndFlow {
 	}
 
 	bool IsInPlay( Space space ) => gameState.Island.Terrain_ForPower.IsInPlay( space );
+	bool IsInPlay( SpaceState space ) => gameState.Island.Terrain_ForPower.IsInPlay( space.Space );
+
 
 	List<TokenMovedArgs> FindFlowsThatAllowUsToHitTarget( Space target ) {
 		List<TokenMovedArgs> allowed = new List<TokenMovedArgs>();
 
 		var pretendPresence = new SpaceCounts( spirit.Presence.Placed );
 
-		foreach(var dst in target.Range( 1 ).Where( IsInPlay )) {
-			pretendPresence[dst]++; // move  presence ON TO destination
+		var spacesInRange = gameState.Tokens.GetTokensFor(target).Range(1).Where( IsInPlay ).ToArray();
+		foreach(SpaceState dst in spacesInRange) {
+			pretendPresence[dst.Space]++; // move  presence ON TO destination
 
-			foreach(var src in dst.Adjacent.Where( spirit.Presence.IsOn )) {
-				pretendPresence[src]--; // move presence OFF of source
+			foreach(SpaceState src in dst.Adjacent.Where( s=>spirit.Presence.IsOn(s.Space) )) {
+				pretendPresence[src.Space]--; // move presence OFF of source
 
 				if( PresenceMeetsTargettingRequirements( pretendPresence, target ) )
-					allowed.Add( new TokenMovedArgs { RemovedFrom = src, AddedTo = dst, GameState = this.gameState } ); // !!! actionId?  Count?  etc...
+					allowed.Add( new TokenMovedArgs { RemovedFrom = src.Space, AddedTo = dst.Space, GameState = this.gameState } ); // !!! actionId?  Count?  etc...
 
-				pretendPresence[src]++; // resore source
+				pretendPresence[src.Space]++; // resore source
 			}
 
-			pretendPresence[dst]--; // restore destination
+			pretendPresence[dst.Space]--; // restore destination
 		}
 
 		return allowed;
