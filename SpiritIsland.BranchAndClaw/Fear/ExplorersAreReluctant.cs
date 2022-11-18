@@ -11,8 +11,8 @@ public class ExplorersAreReluctant : IFearOptions {
 		// During the next normal explore, skip the lowest - numbered land matching the invader card on each board.
 		gs.PreExplore.ForRound.Add( args => {
 			var spacesToSkip = args.SpacesMatchingCards
-				.GroupBy(s=>s.Board)
-				.Select(grp=>grp.OrderBy(s=>s.Label).First()) // lowest #'d land
+				.GroupBy(s=>s.Space.Board)
+				.Select(grp=>grp.OrderBy(s=>s.Space.Label).First()) // lowest #'d land
 				.ToList();
 			foreach(var s in spacesToSkip)
 				args.Skip(s);

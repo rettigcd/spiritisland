@@ -50,7 +50,7 @@ public class BuildEngine {
 		// !!! user should be able to select which non-disease stopper they want to use (if multiple)
 		if(buildStoppers.Length > 0) {
 			var stopper = buildStoppers[0];
-			await stopper.StopBuild( gameState, tokens.Space );
+			await stopper.StopBuild( gameState, tokens );
 			return "build stopped by " + stopper.Text;
 		} 
 		

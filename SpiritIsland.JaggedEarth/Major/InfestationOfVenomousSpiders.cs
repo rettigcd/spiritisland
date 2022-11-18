@@ -13,8 +13,8 @@ public class InfestationOfVenomousSpiders {
 		await ctx.GatherUpTo(1, TokenType.Beast);
 
 		// if you have 2 air 2 earth 3 animal: after this power causes invaders to skip an action, 4 damage.
-		Func<GameState,Space,Task> causeAdditionalDamage = await ctx.YouHave("2 air,3 animal")
-			? (GameState gs,Space space) => ctx.Self.BindMyPower( gs ).Target(space).DamageInvaders(4)
+		Func<GameState,SpaceState,Task> causeAdditionalDamage = await ctx.YouHave("2 air,3 animal")
+			? (GameState gs,SpaceState space) => ctx.Self.BindMyPower( gs ).Target(space.Space).DamageInvaders(4)
 			: null;
 
 		// For each beast,
@@ -42,9 +42,9 @@ public class InfestationOfVenomousSpiders {
 
 	class InvaderStopper : IBuildStopper {
 
-		readonly Func<GameState, Space, Task> alternativeAction;
+		readonly Func<GameState, SpaceState, Task> alternativeAction;
 
-		public InvaderStopper( Func<GameState, Space, Task> alternativeAction ) {
+		public InvaderStopper( Func<GameState, SpaceState, Task> alternativeAction ) {
 			this.alternativeAction = alternativeAction;
 		}
 
@@ -55,8 +55,8 @@ public class InfestationOfVenomousSpiders {
 
 		public bool Stops( TokenClass tokenClass ) => true;
 
-		public async Task StopBuild( GameState gameState, Space space ) {
-			gameState.Tokens[space].Adjust( this, -1 );
+		public async Task StopBuild( GameState gameState, SpaceState space ) {
+			space.Adjust( this, -1 );
 			if(alternativeAction != null)
 				await alternativeAction( gameState, space );
 		}

@@ -12,7 +12,7 @@ public interface ICalcRange {
 	IEnumerable<Space> GetTargetOptionsFromKnownSource(
 		SelfCtx ctx,
 		TargettingFrom powerType,
-		IEnumerable<Space> source,
+		IEnumerable<SpaceState> source,
 		TargetCriteria targetCriteria
 	);
 
@@ -36,13 +36,14 @@ public class DefaultRangeCalculator : ICalcRange {
 	public virtual IEnumerable<Space> GetTargetOptionsFromKnownSource(
 		SelfCtx ctx,
 		TargettingFrom powerType,
-		IEnumerable<Space> source,
+		IEnumerable<SpaceState> source,
 		TargetCriteria targetCriteria
 	) {
 		return source
 			.SelectMany( x => x.Range( targetCriteria.Range ) )
 			.Distinct()
-			.Where( s => ctx.Target( s ).Matches( targetCriteria.Filter ) ); // matching this destination
+			.Where( s => ctx.Target( s.Space ).Matches( targetCriteria.Filter ) )// matching this destination
+			.Select(x=>x.Space); 
 	}
 
 	//// Find Range

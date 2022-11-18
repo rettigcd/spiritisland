@@ -25,9 +25,8 @@ public class FearCtx {
 		.Where( GameState.Island.Terrain_ForFear.IsInPlay )
 		.Where( withCondition );
 
-	public IEnumerable<Space> LandsWithDisease() => GameState.AllActiveSpaces
-		.Where( s => s.Disease.Any)
-		.Select( s=>s.Space );
+	public IEnumerable<SpaceState> LandsWithDisease() => GameState.AllActiveSpaces
+		.Where( s => s.Disease.Any);
 
 	public IEnumerable<SpaceState> LandsWithBeastDiseaseDahan() => GameState.AllActiveSpaces
 		.Where( s => s.Dahan.Any || s.Beasts.Any || s.Disease.Any );

@@ -23,7 +23,7 @@ public class StranglingFirevine {
 		await originalCtx.Wilds.Add(1);
 
 		// 1 damage per wilds in / adjacent to target land.
-		int wildsDamage = ctx.Space.Range(1).Sum(s=>ctx.Target(s).Wilds.Count);
+		int wildsDamage = ctx.Tokens.Range(1).Sum(s=>s.Wilds.Count);
 
 		// if you have 2 fire, 3 plant: // +1 damage per wilds in / adjacent to target land.
 		if(await ctx.YouHave("2 fire,3 plant"))

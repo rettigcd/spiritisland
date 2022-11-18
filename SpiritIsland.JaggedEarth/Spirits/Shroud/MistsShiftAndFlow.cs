@@ -126,7 +126,10 @@ class MistsShiftAndFlow {
 	void CalculateSpaceGroups() {
 		var sources = spirit.SourceCalc.FindSources( spirit.Presence, sourceCriteria, gameState.Island.Terrain_ForPower );
 		this.nonFlowTargets = GetTargetOptionsFromKnownSources( sources );
-		this.flowRange = sources.SelectMany( s => s.Range( 2 ) ).Distinct().ToArray();
+		this.flowRange = gameState.Tokens.PowerUp(sources)
+			.SelectMany( s => s.Range( 2 ) ).Distinct()
+			.Select(x=>x.Space)
+			.ToArray();
 
 		// Calculate new sources we could find
 		var flowedSources = gameState.Tokens.PowerUp( spirit.Presence.Spaces )
@@ -148,12 +151,12 @@ class MistsShiftAndFlow {
 
 	Space[] GetTargetOptionsFromKnownSources( IEnumerable<Space> sources ) {
 		return targetCriteria
-			.SelectMany( tc => GetTargetOptionsFromKnownSources( sources, tc ) )
+			.SelectMany( tc => GetTargetOptionsFromKnownSources( this.gameState.Tokens.PowerUp(sources), tc ) )
 			.Distinct()
 			.ToArray();
 	}
 
-	IEnumerable<Space> GetTargetOptionsFromKnownSources( IEnumerable<Space> sources, TargetCriteria tc )
+	IEnumerable<Space> GetTargetOptionsFromKnownSources( IEnumerable<SpaceState> sources, TargetCriteria tc )
 		=> spirit.RangeCalc.GetTargetOptionsFromKnownSource( ctx, powerType, sources, tc );
 
 	// Shroud Helper - for easier testing Targetting

@@ -2,8 +2,8 @@
 
 public class ExploreEventArgs {
 
-	public ExploreEventArgs( GameState gs, IEnumerable<Space> sources, IEnumerable<Space> spacesMatchingCards ) {
-		this.Sources = new HashSet<Space>( sources );
+	public ExploreEventArgs( GameState gs, IEnumerable<SpaceState> sources, IEnumerable<SpaceState> spacesMatchingCards ) {
+		this.Sources = new HashSet<SpaceState>( sources );
 		this.SpacesMatchingCards = spacesMatchingCards.ToImmutableList();
 		this.GameState = gs;
 	}
@@ -11,31 +11,31 @@ public class ExploreEventArgs {
 	public GameState GameState { get; }
 
 	/// <summary> Towns, cities, and coasts. </summary>
-	public HashSet<Space> Sources;
+	public HashSet<SpaceState> Sources;
 
 	/// <summary> Should be 2,3 or 4 per board.  (doesn't check sources) </summary>
-	public ImmutableList<Space> SpacesMatchingCards;
+	public ImmutableList<SpaceState> SpacesMatchingCards;
 
-	public IEnumerable<Space> Skipped => _skipped;
+	public IEnumerable<SpaceState> Skipped => _skipped;
 
 	// Add new spaces
 	public void Add( Space space ) { // Pour time sideways
 		throw new NotImplementedException();  // !!! 
 	}
 
-	public void Skip( Space space ) {
+	public void Skip( SpaceState space ) {
 		_skipped.Add( space );
 	}
 	public void SkipAll() {
 		_skipped.AddRange(SpacesMatchingCards);
 	}
 
-	public IEnumerable<Space> WillExplore( GameState gs ) {
+	public IEnumerable<SpaceState> WillExplore( GameState gs ) {
 		return ExploreRoutes
-			.Where( rt => rt.IsValid( gs ) )
+			.Where( rt => rt.IsValid )
 			.Select( rt => rt.Destination )
 			.Distinct()
-			.OrderBy( x => x.Label )
+			.OrderBy( x => x.Space.Label )
 			.ToArray();
 	}
 
@@ -46,23 +46,23 @@ public class ExploreEventArgs {
 				.Where( Sources.Contains )
 				.Select(src=>new ExploreRoute { Source = src, Destination = dst } )
 			)
-			.OrderBy(route => route.Destination.Label)
-			.ThenBy(route => route.Source.Label)
+			.OrderBy(route => route.Destination.Space.Label)
+			.ThenBy(route => route.Source.Space.Label)
 			.ToArray();
 
 		}
 	}
 
-	readonly List<Space> _skipped = new List<Space>();
+	readonly List<SpaceState> _skipped = new List<SpaceState>();
 
 }
 
 public class ExploreRoute {
-	public Space Source;
-	public Space Destination;
-	public bool IsValid( GameState gs ) {
+	public SpaceState Source;
+	public SpaceState Destination;
+	public bool IsValid { get {
 		return Source == Destination
-			|| gs.Tokens[Source][TokenType.Isolate] == 0
-			&& gs.Tokens[Destination][TokenType.Isolate] == 0;
-	}
+			|| Source[TokenType.Isolate] == 0
+			&& Destination[TokenType.Isolate] == 0;
+	} }
 }

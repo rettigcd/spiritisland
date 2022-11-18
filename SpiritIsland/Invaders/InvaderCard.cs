@@ -118,14 +118,12 @@ public class InvaderCard : IOption, IInvaderCard {
 		// Modify
 		static bool IsExplorerSource( SpaceState space ) => space.Space.IsOcean || space.HasAny( Invader.Town, Invader.City );
 		var args = new ExploreEventArgs( gs,
-			gs.AllActiveSpaces.Where( IsExplorerSource ).Select(x=>x.Space),
-			gs.AllActiveSpaces.Where( Matches ).Select(x=>x.Space)
+			gs.AllActiveSpaces.Where( IsExplorerSource ),
+			gs.AllActiveSpaces.Where( Matches )
 		);
 		await gs.PreExplore.InvokeAsync( args );
 
-		return args.WillExplore( gs )
-			.Select( x => gs.Tokens[x] )
-			.ToArray();
+		return args.WillExplore( gs ).ToArray();
 	}
 
 	protected static async Task DoExplore( GameState gs, SpaceState[] tokenSpacesToExplore ) {

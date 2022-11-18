@@ -186,18 +186,16 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	public void SkipAllInvaderActions( Space target, string label ) {
 		// Sometimes this will be called with nothing to skip, Example: Quarentine level 3
 
-//		foreach(var target in targets){
 			SkipRavage( target );
 			AdjustTempToken( target, BuildStopper.Default( label ) );
-			SkipExplore( target );
-//		}
+			SkipExplore( Tokens[target] );
 	}
 
-	public void SkipRavage( Space space, Func<GameState,Space,Task> altAction = null ) {
+	public void SkipRavage( Space space, Func<GameState,SpaceState,Task> altAction = null ) {
 		PreRavaging.ForRound.Add( async ( args ) => {
 			args.Skip1(space);
 			if(altAction != null)
-				await altAction( this, space );
+				await altAction( this, Tokens[space] );
 		} );
 	}
 
@@ -229,7 +227,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	}
 
 
-	public void SkipExplore( Space space, Func<GameState,Space,Task> altAction = null  ) {
+	public void SkipExplore( SpaceState space, Func<GameState,SpaceState,Task> altAction = null  ) {
 		PreExplore.ForRound.Add( async ( args ) => {
 			args.Skip(space);
 			if(altAction != null)

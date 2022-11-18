@@ -49,8 +49,8 @@ public class VitalStrength : Spirit {
 		static public SpecialRule Rule => new SpecialRule("Earth's Vitality","Defend 3 in every land where you have sacred site.");
 		readonly SpiritPresence presence;
 		public EarthsVitality( Spirit spirit ) { presence = spirit.Presence; }
-		public int DefendOnSpace( GameState _, Space space ) 
-			=> presence.SacredSites( default ).Contains( space ) ? 3 : 0; // !!! is default here correct ???
+		public int DefendOnSpace( SpaceState space ) 
+			=> presence.SacredSites( default ).Contains( space.Space ) ? 3 : 0; // !!! is default here correct ???
 	}
 
 	void InitPresence( Board board, GameState gameState ){

@@ -10,7 +10,7 @@ public class AvoidTheDahan : IFearOptions {
 		ctx.GameState.PreExplore.ForRound.Add( ( args ) => {
 			for(int i = 0; i < args.SpacesMatchingCards.Count; ++i) {
 				var space = args.SpacesMatchingCards[i];
-				if( 2<=args.GameState.DahanOn(space).Count)
+				if( 2 <= space.Dahan.Count)
 					args.Skip(space);
 			}
 		} );

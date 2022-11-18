@@ -66,9 +66,10 @@ public class Thunderspeaker : Spirit {
 
 		int numToDestroy = args.Count;
 		Space[] options;
-		Space[] Calc() => args.Space.Range( 1 ).Intersect( Presence.Spaces ).ToArray();
+		Space[] Intersect() => args.GameState.Tokens[args.Space].Range( 1 ).Select(x=>x.Space)
+			.Intersect( Presence.Spaces ).ToArray();
 
-		while(numToDestroy-->0 && (options=Calc()).Length > 0) {
+		while(numToDestroy-->0 && (options=Intersect()).Length > 0) {
 			var space = await this.Action.Decision( Select.DeployedPresence.ToDestroy( prompt, options, Present.Always ) );
 			await Presence.Destroy(space, args.GameState, DestoryPresenceCause.DahanDestroyed );
 		}

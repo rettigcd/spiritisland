@@ -6,7 +6,7 @@ public class SettleIntoHuntingGrounds {
 	public static async Task ActAsync(SelfCtx ctx ) {
 
 		// Your presence may count as badlands and beast.
-		int PresenceAsToken(GameState _,Space space) => ctx.Self.Presence.CountOn(space);
+		int PresenceAsToken(SpaceState space) => ctx.Self.Presence.CountOn(space.Space);
 		ctx.GameState.Tokens.Dynamic.ForRound.Register( PresenceAsToken, TokenType.Badlands );
 		ctx.GameState.Tokens.Dynamic.ForRound.Register( PresenceAsToken, TokenType.Beast );
 		// (Decide per presence, per action) ... Not doing this bit exactly, both are always present, but can't be destroyed.

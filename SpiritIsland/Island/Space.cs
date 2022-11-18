@@ -1,8 +1,11 @@
 ﻿namespace SpiritIsland;
 
-public abstract class Space : IOption {
+public abstract class Space 
+	: IOption 
+	, HasNeighbors<Space>
+{
 
-	readonly List<Space> adjacents = new List<Space>();
+	readonly List<Space> adjacent = new List<Space>();
 	Board board;
 
 	protected Space(string label) {
@@ -30,21 +33,21 @@ public abstract class Space : IOption {
 
 	public bool IsCoastal { get; set; }
 
-	public IEnumerable<Space> Adjacent => adjacents;
+	public IEnumerable<Space> Adjacent => adjacent;
 	public string Text => Label;
 
 	public void Disconnect() {
 		// Remove us from neighbors adjacent list
-		foreach(var a in adjacents)
-			a.adjacents.Remove( this );
+		foreach(var a in adjacent)
+			a.adjacent.Remove( this );
 		// Remove neighbors from our list.
-		adjacents.Clear();
+		adjacent.Clear();
 	}
 
 	public abstract bool Is( Terrain terrain );
 	public abstract bool IsOneOf( params Terrain[] options );
 
-	public IEnumerable<Space> Range( int maxDistance ) => CalcDistances( maxDistance ).Keys;
+	public IEnumerable<Space> Range( int maxDistance ) => this.CalcDistances( maxDistance ).Keys;
 
 	/// <summary> If adjacent to ocean, sets is-costal </summary>
 	public void SetAdjacentToSpaces( params Space[] spaces ) {
@@ -57,42 +60,17 @@ public abstract class Space : IOption {
 	public IEnumerable<Space> SpacesExactly( int distance ) { // !!! this should be deprecated or moved to Test project - only used in tests
 		return distance switch {
 			0 => new Space[] { this },
-			1 => adjacents,
-			_ => CalcDistances( distance ).Where( p => p.Value == distance ).Select( p => p.Key ),
+			1 => adjacent,
+			_ => this.CalcDistances( distance ).Where( p => p.Value == distance ).Select( p => p.Key ),
 		};
 	}
 
 	public override string ToString() => Label;
 
-	Dictionary<Space, int> CalcDistances( int maxDistanceToFind ) {
-
-		Queue<Space> spacesLessThanLimit = new Queue<Space>();
-		// collects distances that are <= distance
-		var shortestDistances = new Dictionary<Space, int> { { this, 0 } };
-
-		if(0 < maxDistanceToFind)
-			spacesLessThanLimit.Enqueue( this );
-
-		while( spacesLessThanLimit.Any() ) {
-			var cur = spacesLessThanLimit.Dequeue();
-			int neighborDist = shortestDistances[cur] + 1;
-			bool neighborIsLessThanLimit = neighborDist < maxDistanceToFind;
-			foreach(var a in cur.adjacents) {
-				if(shortestDistances.ContainsKey( a ) && shortestDistances[a] <= neighborDist)
-					continue;
-				shortestDistances[a] = neighborDist;
-				if(neighborIsLessThanLimit)
-					spacesLessThanLimit.Enqueue( a );
-			}
-
-		}
-
-		return shortestDistances;
-	}
-
 	void Connect( Space adjacent ) {
-		adjacents.Add( adjacent );
+		this.adjacent.Add( adjacent );
 		if(adjacent.IsOcean)
 			this.IsCoastal = true;
 	}
+
 }

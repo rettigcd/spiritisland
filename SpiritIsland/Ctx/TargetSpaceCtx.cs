@@ -68,7 +68,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 		// Select Destination
 		Space destination = await Decision( Select.Space.PushToken( tokenClass, Space,
-			Space.Range( range ).Where( s => { var x = Target( s ); return x.IsInPlay && x.Matches( dstFilter ); } ), // !!! Might not be correct if moving Blight.
+			Tokens.Range( range ).Where( s => { var x = Target( s.Space ); return x.IsInPlay && x.Matches( dstFilter ); } ).Select(x=>x.Space), // !!! Might not be correct if moving Blight.
 			Present.Done )
 		);
 
@@ -92,8 +92,8 @@ public class TargetSpaceCtx : SelfCtx {
 	// This is different than Push / Gather which ManyMinds adjusts, this is straight 'Move' that is not adjusted.
 	public async Task<Space> MoveTokenIn( TokenClass tokenGroup, int range, string srcFilter = SpiritIsland.Target.Any ) {
 
-		var sources = Space.Range( range )
-			.Select( Target )
+		var sources = Tokens.Range( range )
+			.Select( s=>Target(s.Space) )
 			.Where( x => x.IsInPlay && x.Matches(srcFilter) && x.Tokens.HasAny(tokenGroup) ) // !!! Not correct if moving Blight on an Ocean-Board
 			.SelectMany( x => x.Tokens.OfType(tokenGroup).Select(t => new SpaceToken(x.Space, t)) )
 			.ToArray();
@@ -150,7 +150,7 @@ public class TargetSpaceCtx : SelfCtx {
 	public IEnumerable<TargetSpaceCtx> AdjacentCtxs => Adjacent.Select(Target);
 
 	/// <summary> Use this for Power-Pushing, since Powers can push invaders into the ocean. </summary>
-	public IEnumerable<Space> Range( int range ) => Space.Range( range ).Where( adj => Target(adj).IsInPlay );
+	public IEnumerable<Space> Range( int range ) => Tokens.Range( range ).Select(x=>x.Space).Where( adj => Target(adj).IsInPlay );
 
 	public async Task DestroyDahan( int countToDestroy ) { 
 		await Dahan.Destroy( countToDestroy );
@@ -196,8 +196,8 @@ public class TargetSpaceCtx : SelfCtx {
 	public void Skip1Build(IBuildStopper stopperToken) => GameState.AdjustTempToken( Space, stopperToken );
 	public void Skip1Build( string label ) => GameState.AdjustTempToken( Space, BuildStopper.Default( label ) );
 
-	public void SkipExplore(Func<GameState,Space,Task> altAction = null) => GameState.SkipExplore( Space, altAction );
-	public void SkipRavage(Func<GameState,Space,Task> altAction = null) => GameState.SkipRavage(Space, altAction );
+	public void SkipExplore(Func<GameState,SpaceState,Task> altAction = null) => GameState.SkipExplore( Tokens, altAction );
+	public void SkipRavage(Func<GameState,SpaceState,Task> altAction = null) => GameState.SkipRavage( Space, altAction );
 
 
 	// Damage invaders in the current target space
@@ -375,7 +375,7 @@ public class TargetSpaceCtx : SelfCtx {
 	#endregion
 
 	public IEnumerable<Space> FindSpacesWithinRangeOf( int range, string filterEnum ) {
-		return Self.RangeCalc.GetTargetOptionsFromKnownSource( this, TargettingFrom.None, new Space[]{ Space }, new TargetCriteria( range, filterEnum ) );
+		return Self.RangeCalc.GetTargetOptionsFromKnownSource( this, TargettingFrom.None, new SpaceState[]{ this.Tokens }, new TargetCriteria( range, filterEnum ) );
 	}
 
 	public async Task<TargetSpaceCtx> SelectAdjacentLand( string prompt, Func<TargetSpaceCtx, bool> filter = null ) {

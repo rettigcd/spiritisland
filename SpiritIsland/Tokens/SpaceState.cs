@@ -3,7 +3,7 @@
 /// <summary>
 /// Wraps: Space, Token-Counts on that space, API to publish token-changed events.
 /// </summary>
-public class SpaceState {
+public class SpaceState : HasNeighbors<SpaceState> {
 
 	#region constructor
 
@@ -29,7 +29,7 @@ public class SpaceState {
 			ValidateNotDead( specific );
 			int count = counts[specific];
 			if( specific is UniqueToken ut )
-				count += tokenApi.GetDynamicTokensFor(Space, ut);
+				count += tokenApi.GetDynamicTokensFor(this, ut);
 			return count;
 		}
 		private set {
@@ -286,6 +286,8 @@ public class SpaceState {
 	}
 
 	public IEnumerable<SpaceState> Adjacent => PowerUp( Space.Adjacent );
-	public IEnumerable<SpaceState> Range(int range) => this.tokenApi.PowerUp( Space.Range(range) );
+
+	public IEnumerable<SpaceState> Range(int maxDistance) => this.CalcDistances( maxDistance ).Keys;
+		
 	IEnumerable<SpaceState> PowerUp(IEnumerable<Space> spaces) => this.tokenApi.PowerUp( spaces );
 }

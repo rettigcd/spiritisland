@@ -35,11 +35,10 @@ public class SerpentRousesInAnger {
 			// In every land in the game: X Damage, where X is the number of presence you have in and adjacent to that land.
 			var invaderLands = ctx.GameState.AllActiveSpaces
 				.Where(space => space.HasInvaders())
-				.Select(x=>x.Space)
 				.ToArray();
 			foreach(var land in invaderLands) {
-				var landsCreatingDamage = new HashSet<Space>(land.Range(1));
-				int damage = ctx.Self.Presence.Placed.Count(landsCreatingDamage.Contains);
+				var landsCreatingDamage = new HashSet<Space>(land.Range(1).Select(x=>x.Space));
+				int damage = ctx.Self.Presence.Placed.Count( landsCreatingDamage.Contains );
 				await ctx.DamageInvaders(damage);
 			}
 		}

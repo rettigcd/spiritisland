@@ -37,7 +37,7 @@ public class Quarantine : IFearOptions {
 
 		// Invaders do not act in lands with disease.
 		foreach(var target in ctx.LandsWithDisease())
-			ctx.GameState.SkipAllInvaderActions( target, Name );
+			ctx.GameState.SkipAllInvaderActions( target.Space, Name );
 
 		return Task.CompletedTask;
 	}
@@ -45,7 +45,7 @@ public class Quarantine : IFearOptions {
 	static void ExploreDoesNotAffectCoastalLands( FearCtx ctx ) {
 		var gs = ctx.GameState;
 		foreach(var costal in gs.AllActiveSpaces.Where( x => x.Space.IsCoastal ))
-			gs.SkipExplore( costal.Space );
+			gs.SkipExplore( costal );
 	}
 
 }

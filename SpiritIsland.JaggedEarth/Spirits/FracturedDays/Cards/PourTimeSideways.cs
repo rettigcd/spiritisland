@@ -19,10 +19,10 @@ class PourTimeSideways {
 		if(src.Board == dst.Board) return;
 
 		// On the board moved from: During the Invader Phase, Resolve Invader and "Each board / Each land..." Actions one fewer time.
-		foreach(var space in src.Board.Spaces) {
-			ctx.GameState.AdjustTempToken(space, BuildStopper.Default( Name ) );
+		foreach(var space in ctx.GameState.Tokens.PowerUp(src.Board.Spaces)) {
+			ctx.GameState.AdjustTempToken(space.Space, BuildStopper.Default( Name ) );
 			ctx.GameState.SkipExplore(space);
-			ctx.GameState.SkipRavage(space);
+			ctx.GameState.SkipRavage(space.Space);
 		}
 
 		// On the board moved to: During the Invader Phase, Resolve Invader and "Each board / Each Land..." Actions one more time.

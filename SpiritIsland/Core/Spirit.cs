@@ -634,9 +634,10 @@ public abstract class Spirit : IOption {
 		params TargetCriteria[] targetCriteria // allows different criteria at different ranges
 	) {
 		IEnumerable<Space> sources = SourceCalc.FindSources( this.Presence, sourceCriteria, gameState.Island.Terrain_ForPower );
+
 		var ctx = BindMyPower(gameState); // targetting is always for Power (I think)
 		return targetCriteria
-			.SelectMany(tc => RangeCalc.GetTargetOptionsFromKnownSource( ctx, powerType, sources, tc ))
+			.SelectMany(tc => RangeCalc.GetTargetOptionsFromKnownSource( ctx, powerType, gameState.Tokens.PowerUp( sources ), tc ))
 			.Distinct();
 	}
 

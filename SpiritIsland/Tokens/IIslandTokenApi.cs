@@ -12,7 +12,7 @@ public interface IIslandTokenApi {
 
 	Task Publish_Moved( TokenMovedArgs args );
 
-	int GetDynamicTokensFor( Space space, UniqueToken token );
+	int GetDynamicTokensFor( SpaceState space, UniqueToken token );
 
 	SpaceState GetTokensFor( Space space );
 

@@ -28,9 +28,9 @@ public class BargainsOfPowerAndProtection {
 		public Range1DahanDefend1(Spirit spirit) { 
 			this.presence = spirit.Presence;
 		}
-		public int DefendOn( GameState gs, Space space ) {
-			return space.Range(1).Any(presence.IsOn)
-				? gs.Tokens[space].Dahan.Count
+		public int DefendOn( SpaceState space ) {
+			return space.Range(1).Any(ss=>presence.IsOn(ss.Space))
+				? space.Dahan.Count
 				: 0;
 		}
 	}

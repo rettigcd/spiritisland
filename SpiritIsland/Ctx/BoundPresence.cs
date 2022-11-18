@@ -102,12 +102,12 @@ public class BoundPresence {
 
 	/// <summary> Selects a space within [range] of current presence </summary>
 	public async Task<Space> SelectDestinationWithinRange( int range, string filterEnum ) {
-		var options = GetValidDestinationOptionsFromPresence(range,filterEnum, ctx.Self.Presence.Spaces );
+		var options = GetValidDestinationOptionsFromPresence(range,filterEnum, ctx.GameState.Tokens.PowerUp( ctx.Self.Presence.Spaces ) );
 		return await ctx.Decision( Select.Space.ToPlacePresence( options, Present.Always ) );
 	}
 
 	/// <summary> Select a space withing [range] of specified spaces </summary>
-	IEnumerable<Space> GetValidDestinationOptionsFromPresence( int range, string filterEnum, IEnumerable<Space> source ) {
+	IEnumerable<Space> GetValidDestinationOptionsFromPresence( int range, string filterEnum, IEnumerable<SpaceState> source ) {
 		return ctx.Self.RangeCalc.GetTargetOptionsFromKnownSource( ctx, TargettingFrom.None, source, new TargetCriteria( range, filterEnum) )
 			.Where( CanBePlacedOn );
 	}

@@ -38,7 +38,7 @@ public class Tokens_ForIsland : IIslandTokenApi {
 
 	readonly Dictionary<Space, SpaceState> tokenCounts = new Dictionary<Space, SpaceState>();
 
-	public int GetDynamicTokensFor( Space space, UniqueToken token ) 
+	public int GetDynamicTokensFor( SpaceState space, UniqueToken token ) 
 		=> Dynamic.GetTokensFor( gameStateForEventArgs, space, token );
 
 	public IEnumerable<Space> Keys => tokenCounts.Keys;
@@ -133,14 +133,14 @@ public class Tokens_ForIsland : IIslandTokenApi {
 }
 
 public class DynamicTokens {
-	readonly Dictionary<UniqueToken, List<Func<GameState, Space, int>>> dict = new Dictionary<UniqueToken, List<Func<GameState, Space, int>>>(); // !!! save to memento???
-	public void Register( System.Func<GameState, Space, int> calcCountOnSpace, UniqueToken targetToken ) {
+	readonly Dictionary<UniqueToken, List<Func<SpaceState, int>>> dict = new Dictionary<UniqueToken, List<Func<SpaceState, int>>>(); // !!! save to memento???
+	public void Register( System.Func<SpaceState, int> calcCountOnSpace, UniqueToken targetToken ) {
 		if(!dict.ContainsKey( targetToken ))
-			dict.Add( targetToken, new List<Func<GameState, Space, int>>() );
+			dict.Add( targetToken, new List<Func<SpaceState, int>>() );
 		dict[targetToken].Add( calcCountOnSpace );
 	}
-	public int GetDynamicTokenFor( GameState gs, Space space, UniqueToken token )
-		=> dict.ContainsKey( token ) ? dict[token].Sum( x => x( gs, space ) ) : 0;
+	public int GetDynamicTokenFor( GameState gs, SpaceState space, UniqueToken token )
+		=> dict.ContainsKey( token ) ? dict[token].Sum( x => x( space ) ) : 0;
 	public void Clear() => dict.Clear();
 
 	public virtual IMemento<DynamicTokens> SaveToMemento() => new Memento( this );
@@ -157,7 +157,7 @@ public class DynamicTokens {
 			foreach(var p in dict)
 				src.dict.Add(p.Key,p.Value);
 		}
-		readonly Dictionary<UniqueToken, List<Func<GameState, Space, int>>> dict = new Dictionary<UniqueToken, List<Func<GameState, Space, int>>>(); // !!! save to memento???
+		readonly Dictionary<UniqueToken, List<Func<SpaceState, int>>> dict = new Dictionary<UniqueToken, List<Func<SpaceState, int>>>(); // !!! save to memento???
 	}
 
 
@@ -166,11 +166,11 @@ public class DynamicTokens {
 public class DualDynamicTokens {
 	readonly public DynamicTokens ForGame = new DynamicTokens();
 	readonly public DynamicTokens ForRound = new DynamicTokens();
-	public void RegisterDynamic( System.Func<GameState, Space, int> calcCountOnSpace, UniqueToken targetToken, bool entireGame ) {
+	public void RegisterDynamic( System.Func<SpaceState, int> calcCountOnSpace, UniqueToken targetToken, bool entireGame ) {
 		var dTokens = entireGame ? ForGame : ForRound;
 		dTokens.Register( calcCountOnSpace, targetToken );
 	}
-	public int GetTokensFor( GameState gs, Space space, UniqueToken token )
+	public int GetTokensFor( GameState gs, SpaceState space, UniqueToken token )
 		=> ForGame.GetDynamicTokenFor( gs, space, token )
 		+ ForRound.GetDynamicTokenFor( gs, space, token );
 

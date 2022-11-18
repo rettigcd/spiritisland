@@ -48,9 +48,9 @@ public class Shadows : Spirit {
 		var normalSpaces = GetTargetOptions( powerType, gameState, sourceCriteria, targetCriteria );
 
 		// find dahan-only spaces that are not in targetable spaces
-		var dahanOnlySpaces = gameState.Island.Boards
-			.SelectMany(board=>board.Spaces)
-			.Where( s=>gameState.DahanOn(s).Any )
+		var dahanOnlySpaces = gameState.AllActiveSpaces
+			.Where( s=>s.Dahan.Any )
+			.Select( s=>s.Space )
 			.Except(normalSpaces)
 			.ToArray();
 		// no dahan-only spaces, do normal
