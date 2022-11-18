@@ -1,12 +1,23 @@
 ﻿namespace SpiritIsland;
 
-#region Source
 public enum From { None, Presence, SacredSite };
 
 public interface ICalcSource {
 	IEnumerable<Space> FindSources( IKnowSpiritLocations presence, TargetSourceCriteria source, TerrainMapper mapper );
 
 }
+
+public interface ICalcRange {
+
+	IEnumerable<Space> GetTargetOptionsFromKnownSource(
+		SelfCtx ctx,
+		TargettingFrom powerType,
+		IEnumerable<Space> source,
+		TargetCriteria targetCriteria
+	);
+
+}
+
 
 public class DefaultSourceCalc : ICalcSource {
 	public virtual IEnumerable<Space> FindSources( IKnowSpiritLocations presence, TargetSourceCriteria sourceCriteria, TerrainMapper mapper ) {
@@ -19,20 +30,6 @@ public class DefaultSourceCalc : ICalcSource {
 	}
 }
 
-#endregion
-
-#region Range
-
-public interface ICalcRange {
-
-	IEnumerable<Space> GetTargetOptionsFromKnownSource( 
-		SelfCtx ctx,
-		TargettingFrom powerType,
-		IEnumerable<Space> source,
-		TargetCriteria targetCriteria
-	);
-
-}
 
 public class DefaultRangeCalculator : ICalcRange {
 
@@ -65,4 +62,3 @@ public class DefaultRangeCalculator : ICalcRange {
 
 }
 
-#endregion

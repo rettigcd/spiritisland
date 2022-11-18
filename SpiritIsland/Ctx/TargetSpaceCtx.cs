@@ -146,7 +146,7 @@ public class TargetSpaceCtx : SelfCtx {
 	#endregion Gather
 
 	/// <summary> Use this for Power-Pushing, since Powers can push invaders into the ocean. </summary>
-	public IEnumerable<Space> Adjacent => Space.Adjacent.Where( adj => Target(adj).IsInPlay );
+	public IEnumerable<Space> Adjacent => Tokens.Adjacent.Where( TerrainMapper.IsInPlay ).Select(x=>x.Space); 
 	public IEnumerable<TargetSpaceCtx> AdjacentCtxs => Adjacent.Select(Target);
 
 	/// <summary> Use this for Power-Pushing, since Powers can push invaders into the ocean. </summary>

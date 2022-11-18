@@ -31,7 +31,6 @@ public abstract class Space : IOption {
 	public bool IsCoastal { get; set; }
 
 	public IEnumerable<Space> Adjacent => adjacents;
-
 	public string Text => Label;
 
 	public void Disconnect() {
@@ -45,11 +44,7 @@ public abstract class Space : IOption {
 	public abstract bool Is( Terrain terrain );
 	public abstract bool IsOneOf( params Terrain[] options );
 
-	public IEnumerable<Space> Range( int distance ) {
-		Dictionary<Space, int> shortestDistances = CalcDistances( distance );
-		return shortestDistances.Keys;
-	}
-
+	public IEnumerable<Space> Range( int maxDistance ) => CalcDistances( maxDistance ).Keys;
 
 	/// <summary> If adjacent to ocean, sets is-costal </summary>
 	public void SetAdjacentToSpaces( params Space[] spaces ) {
@@ -59,7 +54,7 @@ public abstract class Space : IOption {
 		}
 	}
 
-	public IEnumerable<Space> SpacesExactly( int distance ) {
+	public IEnumerable<Space> SpacesExactly( int distance ) { // !!! this should be deprecated or moved to Test project - only used in tests
 		return distance switch {
 			0 => new Space[] { this },
 			1 => adjacents,
@@ -69,19 +64,19 @@ public abstract class Space : IOption {
 
 	public override string ToString() => Label;
 
-	Dictionary<Space, int> CalcDistances( int distance ) {
+	Dictionary<Space, int> CalcDistances( int maxDistanceToFind ) {
 
 		Queue<Space> spacesLessThanLimit = new Queue<Space>();
 		// collects distances that are <= distance
 		var shortestDistances = new Dictionary<Space, int> { { this, 0 } };
 
-		if(distance > 0)
+		if(0 < maxDistanceToFind)
 			spacesLessThanLimit.Enqueue( this );
 
-		while(spacesLessThanLimit.Count > 0) {
+		while( spacesLessThanLimit.Any() ) {
 			var cur = spacesLessThanLimit.Dequeue();
 			int neighborDist = shortestDistances[cur] + 1;
-			bool neighborIsLessThanLimit = neighborDist < distance;
+			bool neighborIsLessThanLimit = neighborDist < maxDistanceToFind;
 			foreach(var a in cur.adjacents) {
 				if(shortestDistances.ContainsKey( a ) && shortestDistances[a] <= neighborDist)
 					continue;

@@ -20,7 +20,7 @@
 public interface ITokenAddedArgs {
 	public Token Token { get; } // need specific so we can act on it (push/damage/destroy)
 	public int Count { get; }
-	public Space Space { get; }
+	public SpaceState Space { get; }
 	public AddReason Reason { get; }
 	public GameState GameState { get; }
 	public Guid ActionId { get; }

@@ -134,7 +134,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		if( !isCascading ) return;
 
 		// remove from card.
-		await TakeFromBlightSouce( args.Count, args.Space );
+		await TakeFromBlightSouce( args.Count, args.Space.Space );
 
 		if(BlightCard != null && blightOnCard <= 0) {
 			Log( new IslandBlighted( BlightCard ) );
@@ -142,23 +142,23 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		}
 
 		// Calc side effects
-		bool isFirstBlight = Tokens[args.Space].Blight.Count == 1;
-		var effect = new AddBlightEffect { DestroyPresence = true, Cascade = !isFirstBlight, GameState = this, Space = args.Space };
+		bool isFirstBlight = args.Space.Blight.Count == 1;
+		var effect = new AddBlightEffect { DestroyPresence = true, Cascade = !isFirstBlight, GameState = this, Space = args.Space.Space };
 		await ModifyBlightAddedEffect.InvokeAsync(effect);
 
 		// Destory presence
 		if(effect.DestroyPresence)
 			foreach(var spirit in Spirits)
-				if(spirit.Presence.IsOn( args.Space ))
-					await spirit.Presence.Destroy( args.Space, this, DestoryPresenceCause.Blight, args.Reason );
+				if(spirit.Presence.IsOn( args.Space.Space ))
+					await spirit.Presence.Destroy( args.Space.Space, this, DestoryPresenceCause.Blight, args.Reason );
 
 		// Cascade blight
 		if(effect.Cascade) {
 			Space cascadeTo = await Spirits[0].Action.Decision( Select.Space.ForAdjacent(
-				$"Cascade blight from {args.Space.Label} to",
-				args.Space,
+				$"Cascade blight from {args.Space.Space.Label} to",
+				args.Space.Space,
 				Select.AdjacentDirection.Outgoing,
-				args.Space.Adjacent.Where( x => !Island.Terrain_ForBlight.MatchesTerrain( x, Terrain.Ocean ) ), // !! Can we funnel this through the 
+				args.Space.Adjacent.Where( x => !Island.Terrain_ForBlight.MatchesTerrain( x.Space, Terrain.Ocean ) ).Select(x=>x.Space),
 				Present.Always
 			));
 			await Tokens[ cascadeTo ].Blight.Bind(args.ActionId).Add(1, args.Reason); // Cascading blight shares original blights reason.

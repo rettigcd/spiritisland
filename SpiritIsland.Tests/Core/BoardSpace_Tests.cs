@@ -21,8 +21,8 @@ public class BoardSpace_Tests {
 		var land2 = MakeSpace();
 		land1.SetAdjacentToSpaces( land2 );
 		// Then: land2 is adjacent to land 1
-		Assert.Contains( land1, land2.SpacesExactly( 1 ) );
-		Assert.Contains( land2, land1.SpacesExactly( 1 ) );
+		Assert.Contains( land1, land2.Adjacent );
+		Assert.Contains( land2, land1.Adjacent );
 	}
 
 	[Fact]
@@ -243,7 +243,7 @@ public class BoardSpace_Tests {
 	//}
 
 	static void Assert_BoardSpacesTouch( Space startingSpace, Space neighbor ) {
-		Assert.Contains( neighbor, startingSpace.SpacesExactly( 1 ) );// , $"{a.Label} should touch {b.Label}" );
+		Assert.Contains( neighbor, startingSpace.Adjacent );// , $"{a.Label} should touch {b.Label}" );
 	}
 
 	[Fact]

@@ -64,7 +64,7 @@ public class InvaderCard : IOption, IInvaderCard {
 		// Find spaces that match Card's Terrain
 		var spacesGettingBuildTokens = gameState.AllActiveSpaces
 			.Where( tokens => Matches(tokens.Space) ) // matches 
-			.Where( tokens => ShouldBuildOnSpace( tokens, gameState ) )
+			.Where( tokens => ShouldBuildOnSpace( tokens ) )
 			.ToArray();
 
 		foreach(var tokens in spacesGettingBuildTokens)
@@ -94,9 +94,7 @@ public class InvaderCard : IOption, IInvaderCard {
 
 	}
 
-	protected virtual bool ShouldBuildOnSpace( SpaceState tokens, GameState _ ) {
-		return tokens.HasInvaders();
-	}
+	protected virtual bool ShouldBuildOnSpace( SpaceState tokens ) => tokens.HasInvaders();
 
 	protected virtual async Task BuildIn1Space( GameState gameState, BuildEngine buildEngine, SpaceState tokens ) {
 		string buildResult = await buildEngine.Exec( tokens, gameState );

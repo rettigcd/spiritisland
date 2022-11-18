@@ -20,7 +20,7 @@ public class ConfoundingMists {
 		ctx.GameState.Tokens.TokenAdded.ForRound.Add( PushAddedInvader );
 
 		async Task PushAddedInvader( ITokenAddedArgs args ) {
-			if(args.Space == ctx.Space 	&& (args.Reason == AddReason.Explore || args.Reason == AddReason.Build))  // ??? is there any other way to add invaders?
+			if(args.Space == ctx.Tokens && (args.Reason == AddReason.Explore || args.Reason == AddReason.Build))  // ??? is there any other way to add invaders?
 				await ctx.Pusher.PushToken( args.Token );
 		}
 	}

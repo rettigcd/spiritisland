@@ -19,5 +19,6 @@ public interface IIslandTokenApi {
 	HealthToken GetDefault( HealthTokenClass tokenClass );
 
 	SpaceState this[Space space] { get; }
+	IEnumerable<SpaceState> PowerUp( IEnumerable<Space> spaces );
 
 }

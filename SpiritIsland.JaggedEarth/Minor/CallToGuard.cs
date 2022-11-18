@@ -15,7 +15,7 @@ public class CallToGuard{
 	static SpaceAction DamageAddedOrMovedInvaders => new SpaceAction("After Invaders are added or moved to target land, 1 Damage to each added or moved Invader"
 		, (ctx) => {
 			ctx.GameState.Tokens.TokenAdded.ForRound.Add( async (args)=> {
-				if(args.Space == ctx.Space)
+				if(args.Space == ctx.Tokens)
 					await ctx.Invaders.ApplyDamageTo1(1, (HealthToken)args.Token );
 			} );
 		} );

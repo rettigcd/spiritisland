@@ -55,12 +55,12 @@ public class England : IAdversary {
 		public EnglandInvaderCard(InvaderCard card,bool expandedBuild):base(card) {
 			this.expandedBuild = expandedBuild;
 		}
-		protected override bool ShouldBuildOnSpace( SpaceState tokens, GameState gameState ) {
-			int cityTownCounts(Space space) => gameState.Tokens[space].SumAny( Invader.Town, Invader.City );
+		protected override bool ShouldBuildOnSpace( SpaceState tokens ) {
+			int cityTownCounts(SpaceState space) => space.SumAny( Invader.Town, Invader.City );
 			bool adjacentTo2OrMoreCitiesOrTowns(SpaceState tokens) => !tokens.Has(TokenType.Isolate) 
-				&& 2 <= tokens.Space.Adjacent.Sum( adj => cityTownCounts( adj ) );
+				&& 2 <= tokens.Adjacent.Sum( adj => cityTownCounts( adj ) );
 
-			return base.ShouldBuildOnSpace( tokens, gameState )
+			return base.ShouldBuildOnSpace( tokens )
 				|| expandedBuild && adjacentTo2OrMoreCitiesOrTowns(tokens);
 		}
 		public override async Task Explore( GameState gs ) {

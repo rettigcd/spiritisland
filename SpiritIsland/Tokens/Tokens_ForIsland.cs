@@ -26,6 +26,7 @@ public class Tokens_ForIsland : IIslandTokenApi {
 		Dynamic.ForRound.Clear();
 	}
 
+	// !!! every call to this needs checked !.IsInStasis
 	public SpaceState this[Space space] {
 		get {
 			if(!tokenCounts.ContainsKey( space )) {
@@ -92,6 +93,9 @@ public class Tokens_ForIsland : IIslandTokenApi {
 		ClearEventHandlers_ForRound();
 	}
 	public SpaceState GetTokensFor( Space space ) => this[space];
+	public IEnumerable<SpaceState> PowerUp( IEnumerable<Space> spaces ) => spaces
+			.Select( s => this[s] )
+			.Where( s => !s.InStasis );
 
 	protected class Memento : IMemento<Tokens_ForIsland> {
 		public Memento(Tokens_ForIsland src) {

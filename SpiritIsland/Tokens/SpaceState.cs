@@ -177,7 +177,7 @@ public class SpaceState {
 		this[addingArgs.Token] += addingArgs.Count;
 
 		// Post-Add event
-		await tokenApi.Publish_Added( new TokenAddedArgs( Space, addingArgs.Token, addReason, addingArgs.Count, actionId ) );
+		await tokenApi.Publish_Added( new TokenAddedArgs( this, addingArgs.Token, addReason, addingArgs.Count, actionId ) );
 	}
 
 	/// <summary> returns null if no token removed </summary>
@@ -286,9 +286,6 @@ public class SpaceState {
 	}
 
 	public IEnumerable<SpaceState> Adjacent => PowerUp( Space.Adjacent );
-	public IEnumerable<SpaceState> Range(int range) => PowerUp(Space.Range(range));
-	IEnumerable<SpaceState> PowerUp(IEnumerable<Space> spaces) => spaces
-		.Select( s => this.tokenApi[s] )
-		.Where( s => !s.InStasis );
-
+	public IEnumerable<SpaceState> Range(int range) => this.tokenApi.PowerUp( Space.Range(range) );
+	IEnumerable<SpaceState> PowerUp(IEnumerable<Space> spaces) => this.tokenApi.PowerUp( spaces );
 }

@@ -66,14 +66,17 @@ public StonesUnyieldingDefiance() : base(
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// place presence in lowest-numbered Mountain without dahan
-		var space = board.Spaces.Skip(1).Where(s=>gameState.Tokens[s].Dahan.Count==0).First();
-		Presence.PlaceOn(space, gameState);
+		var ss = board.Spaces.Skip(1)
+			.Select( s => gameState.Tokens[s] )
+			.Where(s=>s.Dahan.Count==0)
+			.First();
+		Presence.PlaceOn(ss.Space, gameState);
 
 		// 1 in an adjacent land that has Blight(if possible)
-		var space2 = space.Adjacent.FirstOrDefault(s=>gameState.Tokens[s][TokenType.Blight]>0)
+		var space2 = ss.Adjacent.FirstOrDefault(s=>s[TokenType.Blight]>0)
 			// or is Sands(if not)
-			?? space.Adjacent.First(s=>s.IsSand);
-		Presence.PlaceOn(space2, gameState);
+			?? ss.Adjacent.First(s=>s.Space.IsSand);
+		Presence.PlaceOn(space2.Space, gameState);
 
 		// Bestow the Endurance of Bedrock
 		gameState.ModifyBlightAddedEffect.ForGame.Add(BestowTheEnduranceOfBedrock);

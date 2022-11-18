@@ -15,10 +15,10 @@ public class MeltEarthIntoQuicksand {
 
 		// After invaders / dahan are Moved into target land, Destroy them.
 		ctx.GameState.Tokens.TokenAdded.ForRound.Add( async ( args ) => {
-			if( args.Space == ctx.Space
+			if( args.Space == ctx.Tokens
 				&& args.Token.Class.IsOneOf(Invader.Explorer,Invader.Town,Invader.City,TokenType.Dahan ) 
 			) 
-				await args.GameState.Tokens[args.Space].Destroy(args.Token,args.Count, args.ActionId);
+				await args.Space.Destroy(args.Token,args.Count, args.ActionId);
 		} );
 
 		// if you have 2 moon, 4 water, 2 earth:

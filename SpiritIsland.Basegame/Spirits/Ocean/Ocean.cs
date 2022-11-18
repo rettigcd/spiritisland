@@ -69,7 +69,7 @@ public class Ocean : Spirit {
 	}
 
 	async Task InvadersAdded( ITokenAddedArgs args ) {
-		if( !args.Space.IsOcean ) return;
+		if( !args.Space.Space.IsOcean ) return;
 		var gs = args.GameState;
 		var grp = args.Token.Class;
 
@@ -77,7 +77,7 @@ public class Ocean : Spirit {
 			var ht = args.Token as HealthToken;
 			// Drown Invaders for points
 			drownedCount += ht.FullHealth;
-			await gs.Invaders.On( args.Space, args.ActionId ).Destroy( 1, (HealthToken)args.Token );
+			await gs.Invaders.On( args.Space.Space, args.ActionId ).Destroy( 1, (HealthToken)args.Token );
 
 			int spiritCount = gs.Spirits.Length;
 			while(spiritCount <= drownedCount) {

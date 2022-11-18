@@ -23,10 +23,8 @@ public class ToDreamAThousandDeaths_DestroyStrategy : DestroyInvaderStrategy {
 
 		// We can't track which original invader is was killed, so let the user choose.
 
-//		TokenCountDictionary tokens = ctx.Target(source).Tokens;
-		SpaceState tokens = ctx.GameState.Tokens[source];
-
-		Token[] CalcInvaderTypes() => tokens.OfAnyType( healthyInvaders );
+		SpaceState sourceState = ctx.GameState.Tokens[source];
+		Token[] CalcInvaderTypes() => sourceState.OfAnyType( healthyInvaders );
 
 		var invaders = CalcInvaderTypes();
 		while(0 < countToPush && 0 < invaders.Length) {
@@ -37,7 +35,7 @@ public class ToDreamAThousandDeaths_DestroyStrategy : DestroyInvaderStrategy {
 
 			var destination = await ctx.Decision( new Select.Space(
 				"Push " + invader.ToString() + " to",
-				source.Adjacent.Where( s=>ctx.Target(s).IsInPlay )
+				sourceState.Adjacent.Where( ctx.TerrainMapper.IsInPlay ).Select( s=>s.Space )
 				, Present.Always
 			) );
 

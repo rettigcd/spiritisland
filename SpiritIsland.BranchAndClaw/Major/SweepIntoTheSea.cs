@@ -25,12 +25,12 @@ public partial class SweepIntoTheSea {
 	}
 
 	static async Task<TargetSpaceCtx> SelectSpaceCloserToTheOcean( TargetSpaceCtx ctx ) {
-		var oceans = ctx.GameState.Island.Boards.Select( b => b.Ocean );
-		var distanceFromOceans = new MinDistanceCalculator()
+		var oceans = ctx.GameState.Island.Boards.Select( b => ctx.GameState.Tokens[b.Ocean] );
+		var distanceFromOceans = new DistanceFromOceanCalculator()
 			.SetTargets( oceans )
 			.Calculate();
-		int curDistance = distanceFromOceans[ctx.Space];
-		var closerSpace = await ctx.SelectAdjacentLand( "Push explorer/town towards ocean", a => distanceFromOceans[a.Space] < curDistance );
+		int curDistance = distanceFromOceans[ctx.Tokens];
+		var closerSpace = await ctx.SelectAdjacentLand( "Push explorer/town towards ocean", a => distanceFromOceans[a.Tokens] < curDistance );
 		return closerSpace;
 	}
 
@@ -38,5 +38,42 @@ public partial class SweepIntoTheSea {
 		while(ctx.Tokens.HasAny( groups ))
 			await ctx.Move( ctx.Tokens.OfAnyType( groups ).First(), ctx.Space, destination.Space );
 	}
+
+	#region DistanceFromOceanCalculator
+
+	class DistanceFromOceanCalculator {
+
+		readonly Queue<SpaceState> spacesLessThanLimit = new();
+		readonly Dictionary<SpaceState, int> shortestDistances = new();
+
+		public DistanceFromOceanCalculator SetTargets( IEnumerable<SpaceState> targets ) {
+			foreach(var target in targets) {
+				shortestDistances.Add( target, 0 );
+				spacesLessThanLimit.Enqueue( target );
+			}
+			return this;
+		}
+
+		public DistanceFromOceanCalculator Calculate() {
+			while(spacesLessThanLimit.Count > 0) {
+				// get next
+				var cur = spacesLessThanLimit.Dequeue(); // Instead of just getting next, we could select the lowest value first
+
+				// add neighbors to dictionary and evaluated its neighbors
+				int neighborDist = shortestDistances[cur] + 1;
+				foreach(var a in cur.Adjacent) {
+					if(!shortestDistances.ContainsKey( a ) || neighborDist < shortestDistances[a]) {
+						shortestDistances[a] = neighborDist;
+						spacesLessThanLimit.Enqueue( a );
+					}
+				}
+			}
+			return this;
+		}
+
+		public int this[SpaceState space] => shortestDistances[space];
+
+	}
+	#endregion DistanceFromOceanCalculator
 
 }

@@ -59,13 +59,15 @@ public class Sweeden : IAdversary {
 		if(5 <= Level) {
 			gameState.Tokens.TokenAdded.ForGame.Add( args => { 
 				if(args.Reason == AddReason.Ravage && args.Token == TokenType.Blight) {
-					var noBuildAdjacents = args.Space.Adjacent.Where(adj=>!args.GameState.Tokens[adj].HasAny(Invader.Town,Invader.City)).ToArray();
+					var noBuildAdjacents = args.Space.Adjacent
+						.Where( adj=>!adj.HasAny(Invader.Town,Invader.City) )
+						.ToArray();
 					
 					// !!! user select which space to add it to
 					var selection = noBuildAdjacents.FirstOrDefault();
 
 					if(selection != null)
-						args.GameState.Tokens[selection].AdjustDefault(Invader.Town,1);
+						selection.AdjustDefault(Invader.Town,1);
 				}
 			} );
 		}

@@ -76,7 +76,7 @@ public partial class IslandControl : Control {
 
 			DrawBoard_Static( pe );
 			using(new StopWatch( "Island-Tokens" ))
-				foreach(Space space in gameState.Island.Boards[0].Spaces)
+				foreach(var space in gameState.AllSpaces)
 					DecorateSpace(pe.Graphics,space);
 
 			using(new StopWatch( "fear" ))
@@ -484,10 +484,10 @@ public partial class IslandControl : Control {
 
 	}
 		
-	void DecorateSpace( Graphics graphics, Space space ) {
-		if(!spaceLookup.ContainsKey(space.Label)) return; // happens during developement
+	void DecorateSpace( Graphics graphics, SpaceState spaceState ) {
+		if(!spaceLookup.ContainsKey(spaceState.Space.Label)) return; // happens during developement
 
-		PointF normalized = spaceLookup[space.Label];
+		PointF normalized = spaceLookup[spaceState.Space.Label];
 		PointF xy = mapper.Map(normalized); //  new PointF(normalized.X * boardScreenSize.Width, normalized.Y * boardScreenSize.Height);
 
 		float iconWidth = boardScreenSize.Width * .045f; 
@@ -496,18 +496,17 @@ public partial class IslandControl : Control {
 		float x = xy.X - iconWidth;
 		float y = xy.Y - iconWidth;
 
-		SpaceState tokens = gameState.Tokens[space];
-		DrawInvaderRow( graphics, x, ref y, iconWidth, xStep, tokens );
+		DrawInvaderRow( graphics, x, ref y, iconWidth, xStep, spaceState );
 
 		// dahan & presence & blight
-		int presenceCount = spirit.Presence.CountOn( space );
-		bool isSS = spirit.Presence.SacredSites( this.gameState.Island.Terrain ).Contains( space );
+		int presenceCount = spirit.Presence.CountOn( spaceState.Space );
+		bool isSS = spirit.Presence.SacredSites( this.gameState.Island.Terrain ).Contains( spaceState.Space );
 		List<Token> row2Tokens = new List<Token> { TokenType.Defend, TokenType.Blight }; // These don't show up in .OfAnyType if they are dynamic
-		row2Tokens.AddRange( tokens.OfAnyType( TokenType.Dahan ) );
-		row2Tokens.AddRange( tokens.OfAnyType( TokenType.Element ) );
+		row2Tokens.AddRange( spaceState.OfAnyType( TokenType.Dahan ) );
+		row2Tokens.AddRange( spaceState.OfAnyType( TokenType.Element ) );
 
-		DrawRow( graphics, tokens, x, ref y, iconWidth, xStep, presenceCount, isSS, row2Tokens.ToArray() );
-		DrawRow( graphics, tokens, x, ref y, iconWidth, xStep, 0,             false, TokenType.Beast, TokenType.Wilds, TokenType.Disease, TokenType.Badlands, TokenType.Isolate );
+		DrawRow( graphics, spaceState, x, ref y, iconWidth, xStep, presenceCount, isSS, row2Tokens.ToArray() );
+		DrawRow( graphics, spaceState, x, ref y, iconWidth, xStep, 0,             false, TokenType.Beast, TokenType.Wilds, TokenType.Disease, TokenType.Badlands, TokenType.Isolate );
 
 	}
 

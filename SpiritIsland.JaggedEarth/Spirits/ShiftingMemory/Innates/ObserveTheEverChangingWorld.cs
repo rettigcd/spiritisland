@@ -32,7 +32,7 @@ public class ObserveTheEverChangingWorld {
 			handlerKeys[1] = ctx.GameState.Tokens.TokenRemoved.ForGame.Add( Track );
 		}
 
-		Task Track( ITokenAddedArgs x ) => Check(x.Space, x.ActionId);
+		Task Track( ITokenAddedArgs x ) => Check(x.Space.Space, x.ActionId);
 
 		Task Track( ITokenRemovedArgs x ) => Check(x.Space, x.ActionId );
 

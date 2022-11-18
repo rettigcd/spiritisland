@@ -83,7 +83,7 @@ class MistsShiftAndFlow {
 
 		var pretendPresence = new SpaceCounts( spirit.Presence.Placed );
 
-		var spacesInRange = gameState.Tokens.GetTokensFor(target).Range(1).Where( IsInPlay ).ToArray();
+		var spacesInRange = gameState.Tokens[target].Range(1).Where( IsInPlay ).ToArray();
 		foreach(SpaceState dst in spacesInRange) {
 			pretendPresence[dst.Space]++; // move  presence ON TO destination
 
@@ -129,8 +129,11 @@ class MistsShiftAndFlow {
 		this.flowRange = sources.SelectMany( s => s.Range( 2 ) ).Distinct().ToArray();
 
 		// Calculate new sources we could find
-		var flowedSources = spirit.Presence.Spaces.SelectMany( p => p.Adjacent ).Distinct()
+		var flowedSources = gameState.Tokens.PowerUp( spirit.Presence.Spaces )
+			.SelectMany( p => p.Adjacent )
+			.Distinct()
 			.Where( IsInPlay ) // Don't allow flow into ocean.
+			.Select( s=>s.Space )
 			.Except( sources ); // exclude previously found sources
 		if(sourceCriteria.Terrain.HasValue)
 			flowedSources = flowedSources.Where( s => s.Is( sourceCriteria.Terrain.Value ) );
