@@ -21,15 +21,6 @@ public class AbsoluteStasis {
 		foreach(var spirit in ctx.GameState.Spirits)
 			spirit.Presence.PutInStasis( ctx.Space, ctx.GameState );
 
-		// Disconnect space
-		Space[] adjacents = null;
-		
-		bool disconnect = true;
-
-		if( disconnect) {
-			adjacents = ctx.Tokens.Adjacent.Select( x => x.Space ).ToArray();
-			ctx.Space.Board.Remove( ctx.Space ); // !!! this will erroneously hide cities and towns from the Terror-Level Victory check
-		}
 		ctx.Tokens.InStasis = true;
 
 		// you cannot target into, out of, or through where the land was.
@@ -40,9 +31,6 @@ public class AbsoluteStasis {
 		ctx.GameState.TimePasses_ThisRound.Push( ( gs ) => {
 			foreach(var spirit in ctx.GameState.Spirits)
 				spirit.Presence.ReleaseFromStasis( ctx.Space, ctx.GameState );
-
-			if(disconnect)
-				ctx.Space.Board.Add(ctx.Space, adjacents);
 
 			ctx.Tokens.InStasis = false;
 

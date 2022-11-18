@@ -221,18 +221,20 @@ public class AbsoluteStasis_Tests {
 
 	}
 
-	//[Fact]
-	//public void StillVisibleInAllSpaces() {
-	//	SpiritIs_FacturedDaysSplitTheSky();
-	//	var space = cfg.Board[7];
+	[Fact]
+	public void StillVisibleInAllSpaces() {
+		SpiritIs_FacturedDaysSplitTheSky();
+		var space = cfg.Board[7];
 
-	//	// When: space is put in stasis
-	//	SpacePutInStasis( space.Text );
+		// When: space is put in stasis
+		SpacePutInStasis( space.Text );
 
-	//	// Then: space still apears in list of All Spaces
-	//	cfg.GameState.AllSpaces.ShouldContain( cfg.GameState.Tokens[space] );
+		// Then: space still apears in list of All Spaces
+		cfg.GameState.AllSpaces.ShouldContain( cfg.GameState.Tokens[space] );
 
-	//}
+	}
+
+	// Additional possible tests:
 
 	// E Cannot Pull/Move From nor Push/Cascade/Move Into Stasis Space
 	// Remove all calls to Space.Adjacent
@@ -241,7 +243,6 @@ public class AbsoluteStasis_Tests {
 	// H cannot destroy presence in Stasis space
 	// Grinning Trickster removing blight
 	// Thunderspeaker when Dahan destroyed
-	// Draw toward a consuming void
 
 	// when round is over, space and tokens are restored
 
