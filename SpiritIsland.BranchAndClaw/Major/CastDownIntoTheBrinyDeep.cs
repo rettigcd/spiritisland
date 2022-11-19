@@ -19,7 +19,8 @@ public class CastDownIntoTheBrinyDeep {
 	static async Task DestroyBoard( SelfCtx ctx, Board board ) {
 		// destroy the board containing target land and everything on that board.
 		// All destroyed blight is removed from the game instead of being returned to the blight card.
-		await DestroyTokens( ctx, board );
+		var activeSpaces = ctx.GameState.Tokens.PowerUp( board.Spaces ).ToArray();
+		await DestroyTokens( ctx, activeSpaces );
 
 		if(!ctx.Self.Text.StartsWith( "Bringer" )) { // !!! Maybe Api should have method called "Destroy Space" or "DestroyBoard"
 
@@ -29,31 +30,29 @@ public class CastDownIntoTheBrinyDeep {
 					await spirit.Presence.Destroy(p, ctx.GameState, DestoryPresenceCause.SpiritPower);
 
 			// destroy board - spaces
-			foreach(var space in board.Spaces.ToArray())
-				board.Remove( space );
+			foreach(var space in activeSpaces)
+				board.Remove( space.Space );
 
-			ctx.GameState.Island.RemoveBoard( board );
+			if(!board.Spaces.Any())
+				ctx.GameState.Island.RemoveBoard( board );
 
 		}
 	}
 
-	static async Task DestroyTokens( SelfCtx ctx, Board board ) {
+	static async Task DestroyTokens( SelfCtx ctx, SpaceState[] spaces ) {
 
-		foreach(var space in board.Spaces) {
-
-			var spaceCtx = ctx.Target( space );
+		foreach(SpaceState space in spaces) {
 
 			// Destroy Invaders
-			await spaceCtx.Invaders.DestroyAny( int.MaxValue, Invader.City, Invader.Town, Invader.Explorer );
+			await ctx.Target(space.Space).Invaders.DestroyAny( int.MaxValue, Invader.City, Invader.Town, Invader.Explorer );
 
 			// Destroy Dahan
-			await spaceCtx.DestroyDahan( int.MaxValue );
+			await space.Dahan.Bind(ctx.CurrentActionId).Destroy( int.MaxValue );
 
 			if(!ctx.Self.Text.StartsWith("Bringer")) { // !!!
 				// Destroy all other tokens
-				var tokens = spaceCtx.Tokens;
-				foreach(var token in tokens.Keys.ToArray())
-					await tokens.Destroy( token, tokens[token], ctx.CurrentActionId );
+				foreach(var token in space.Keys.ToArray())
+					await space.Destroy( token, space[token], ctx.CurrentActionId );
 			}
 
 		}
