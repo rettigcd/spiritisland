@@ -9,10 +9,9 @@ namespace SpiritIsland;
 public class BoardLayout {
 
 	public PointF[] perimeter; // for connecting boards
-	public PointF[][] spaces; // the spaces on each board.
-	public PointF[] centers;
+	public SpaceLayout[] Spaces;
 
-	public PointF[] corners = new PointF[] {
+	public PointF[] boardCorners = new PointF[] {
 		topLeftCorner,
 		topRightCorner, // Side-0 origin (after 180 rotation)
 		bottomRightCorner, // Side-1 origin after -60 rotation
@@ -20,8 +19,8 @@ public class BoardLayout {
 	};
 
 	public double SideRotationDegrees(int i) {
-		var from = corners[i];
-		var to = corners[i+1];
+		var from = boardCorners[i];
+		var to = boardCorners[i+1];
 		return Math.Atan2(to.Y-from.Y,to.X-from.X) * 180 / Math.PI;
 	}
 
@@ -30,19 +29,15 @@ public class BoardLayout {
 		// perimeter
 		for(int i=0;i<perimeter.Length;++i)
 			perimeter[i] = mapper.Map( perimeter[i] );
-		// spaces
-		foreach(var spacePerim in spaces)
-			for(int i=0;i<spacePerim.Length;++i)
-				spacePerim[i] = mapper.Map( spacePerim[i] );
-		// centers
-		for(int i = 0; i < centers.Length; ++i)
-			centers[i] = mapper.Map( centers[i] );
+
+		foreach(var space in this.Spaces)
+			space.ReMap(mapper);
+
 		// origin
-		for(int i = 0; i< corners.Length; ++i) {
-			var src = corners[i];
+		for(int i = 0; i< boardCorners.Length; ++i) {
+			var src = boardCorners[i];
 			var dst = mapper.Map( src );
-			corners[i] = dst;
-//			corners[i] = mapper.Map( corners[i] );
+			boardCorners[i] = dst;
 		}
 	}
 
@@ -180,22 +175,18 @@ public class BoardLayout {
 				bottomRightCorner,
 				bot[11], bot[10], bot[ 9 ], bot[8], bot[7], bot[6], bot[5], bot[4], bot[3], bot[2], bot[1], bot[0],
 			},
-			spaces = new PointF[][] { 
-				a0Points, 
-				a1Points, 
-				a2Points, 
-				a3Points, 
-				a4Points, 
-				a5Points, 
-				a6Points, 
-				a7Points, 
-				a8Points
-			},
-			centers = new PointF[9]
+			Spaces = new SpaceLayout[] { 
+				new SpaceLayout(a0Points), 
+				new SpaceLayout(a1Points), 
+				new SpaceLayout(a2Points), 
+				new SpaceLayout(a3Points), 
+				new SpaceLayout(a4Points), 
+				new SpaceLayout(a5Points), 
+				new SpaceLayout(a6Points), 
+				new SpaceLayout(a7Points), 
+				new SpaceLayout(a8Points)
+			}
 		};
-		for(int i=0;i<=8;++i)
-			layout.centers[i] = FindCenterOfSpacePoints( layout.spaces[i] );
-
 		return layout;
 	}
 
@@ -238,22 +229,18 @@ public class BoardLayout {
 				bottomRightCorner,
 				bot[11], bot[10], bot[ 9 ], bot[8], bot[7], bot[6], bot[5], bot[4], bot[3], bot[2], bot[1], bot[0],
 			},
-			spaces = new PointF[][] {
-				b0Points,
-				b1Points,
-				b2Points,
-				b3Points,
-				b4Points,
-				b5Points,
-				b6Points,
-				b7Points,
-				b8Points
-			},
-			centers = new PointF[9]
+			Spaces = new SpaceLayout[] {
+				new SpaceLayout(b0Points),
+				new SpaceLayout(b1Points),
+				new SpaceLayout(b2Points),
+				new SpaceLayout(b3Points),
+				new SpaceLayout(b4Points),
+				new SpaceLayout(b5Points),
+				new SpaceLayout(b6Points),
+				new SpaceLayout(b7Points),
+				new SpaceLayout(b8Points)
+			}
 		};
-		for(int i = 0; i <= 8; ++i)
-			layout.centers[i] = FindCenterOfSpacePoints( layout.spaces[i] );
-
 		return layout;
 	}
 
@@ -297,22 +284,18 @@ public class BoardLayout {
 				bottomRightCorner,
 				bot[11], bot[10], bot[ 9 ], bot[8], bot[7], bot[6], bot[5], bot[4], bot[3], bot[2], bot[1], bot[0],
 			},
-			spaces = new PointF[][] {
-				c0Points,
-				c1Points,
-				c2Points,
-				c3Points,
-				c4Points,
-				c5Points,
-				c6Points,
-				c7Points,
-				c8Points
-			},
-			centers = new PointF[9]
+			Spaces = new SpaceLayout[] {
+				new SpaceLayout(c0Points),
+				new SpaceLayout(c1Points),
+				new SpaceLayout(c2Points),
+				new SpaceLayout(c3Points),
+				new SpaceLayout(c4Points),
+				new SpaceLayout(c5Points),
+				new SpaceLayout(c6Points),
+				new SpaceLayout(c7Points),
+				new SpaceLayout(c8Points)
+			}
 		};
-		for(int i = 0; i <= 8; ++i)
-			layout.centers[i] = FindCenterOfSpacePoints( layout.spaces[i] );
-
 		return layout;
 	}
 
@@ -355,24 +338,19 @@ public class BoardLayout {
 				bottomRightCorner,
 				bot[11], bot[10], bot[ 9 ], bot[8], bot[7], bot[6], bot[5], bot[4], bot[3], bot[2], bot[1], bot[0],
 			},
-			spaces = new PointF[][] {
-				d0Points,
-				d1Points,
-				d2Points,
-				d3Points,
-				d4Points,
-				d5Points,
-				d6Points,
-				d7Points,
-				d8Points
-			},
-			centers = new PointF[9]
+			Spaces = new SpaceLayout[] {
+				new SpaceLayout(d0Points),
+				new SpaceLayout(d1Points),
+				new SpaceLayout(d2Points),
+				new SpaceLayout(d3Points),
+				new SpaceLayout(d4Points),
+				new SpaceLayout(d5Points),
+				new SpaceLayout(d6Points),
+				new SpaceLayout(d7Points),
+				new SpaceLayout(d8Points)
+			}
 		};
-		for(int i = 0; i <= 8; ++i)
-			layout.centers[i] = FindCenterOfSpacePoints( layout.spaces[i] );
-
-		var p = layout.centers[1]; p = new PointF(p.X,p.Y-0.05f); layout.centers[1] = p;
-
+		layout.Spaces[1].AdjustCenter(0f,-.05f);
 		return layout;
 	}
 

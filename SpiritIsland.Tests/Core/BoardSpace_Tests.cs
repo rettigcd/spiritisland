@@ -87,7 +87,7 @@ public class BoardSpace_Tests {
 		var boardA = BoardA;
 		var boardB = BoardB;
 		// Side 0 to 0
-		var bCorners = boardB.Layout.corners;
+		var bCorners = boardB.Layout.boardCorners;
 		boardB.Sides[0].MoveLayoutTo( boardA.Sides[0] );
 		// Then:
 		bCorners[0].ShouldBe( 1.5f, BoardLayout.boardHeight );
@@ -102,7 +102,7 @@ public class BoardSpace_Tests {
 		var boardA = BoardA;
 		var boardB = BoardB;
 		// Side 0 to 0
-		var bCorners = boardB.Layout.corners;
+		var bCorners = boardB.Layout.boardCorners;
 		boardB.Sides[1].MoveLayoutTo(boardA.Sides[0]);
 		// Then:
 		bCorners[0].ShouldBe( 1f, 2 * BoardLayout.boardHeight );
@@ -117,7 +117,7 @@ public class BoardSpace_Tests {
 		var boardA = BoardA;
 		var boardB = BoardB;
 		// Side 0 to 0
-		var bCorners = boardB.Layout.corners;
+		var bCorners = boardB.Layout.boardCorners;
 		boardB.Sides[2].MoveLayoutTo(boardA.Sides[0]);
 		// Then:
 		bCorners[0].ShouldBe( 1f, 2 * BoardLayout.boardHeight );
@@ -132,7 +132,7 @@ public class BoardSpace_Tests {
 		var boardA = BoardA;
 		var boardB = BoardB;
 		// Side 0 to 0
-		var bCorners = boardB.Layout.corners;
+		var bCorners = boardB.Layout.boardCorners;
 		boardB.Sides[0].MoveLayoutTo(boardA.Sides[1]);
 		// Then:
 		bCorners[0].ShouldBe( 1, 0 );
@@ -147,7 +147,7 @@ public class BoardSpace_Tests {
 		var boardA = BoardA;
 		var boardB = BoardB;
 		// Side 0 to 0
-		var bCorners = boardB.Layout.corners;
+		var bCorners = boardB.Layout.boardCorners;
 		boardB.Sides[1].MoveLayoutTo(boardA.Sides[1]);
 		// Then:
 		bCorners[0].ShouldBe( 2, 0 );
@@ -162,7 +162,7 @@ public class BoardSpace_Tests {
 		var boardA = BoardA;
 		var boardB = BoardB;
 		// Side 0 to 0
-		var bCorners = boardB.Layout.corners;
+		var bCorners = boardB.Layout.boardCorners;
 		boardB.Sides[2].MoveLayoutTo(boardA.Sides[1]);
 		// Then:
 		bCorners[0].ShouldBe( 2, 0 );
@@ -177,7 +177,7 @@ public class BoardSpace_Tests {
 		var boardA = BoardA;
 		var boardB = BoardB;
 		// Side 0 to 0
-		var bCorners = boardB.Layout.corners;
+		var bCorners = boardB.Layout.boardCorners;
 		boardB.Sides[0].MoveLayoutTo(boardA.Sides[2]);
 		// Then:
 		bCorners[0].ShouldBe( 0, 0 );
@@ -192,7 +192,7 @@ public class BoardSpace_Tests {
 		var boardA = BoardA;
 		var boardB = BoardB;
 		// Side 0 to 0
-		var bCorners = boardB.Layout.corners;
+		var bCorners = boardB.Layout.boardCorners;
 		boardB.Sides[1].MoveLayoutTo( boardA.Sides[2] );
 		// Then:
 		bCorners[0].ShouldBe( 0.5f, -BoardLayout.boardHeight );
@@ -207,7 +207,7 @@ public class BoardSpace_Tests {
 		var boardA = BoardA;
 		var boardB = BoardB;
 		// Side 0 to 0
-		var bCorners = boardB.Layout.corners;
+		var bCorners = boardB.Layout.boardCorners;
 		boardB.Sides[2].MoveLayoutTo( boardA.Sides[2] );
 		// Then:
 		bCorners[0].ShouldBe( 0.5f, -BoardLayout.boardHeight );

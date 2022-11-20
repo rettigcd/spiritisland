@@ -30,14 +30,6 @@ public partial class IslandControl : Control {
 		var board = gameState.Island.Boards.VerboseSingle("Multiple Island boards not supported.");
 		ClearCachedImage();
 		var boardLabel = board[0].Label;
-		//boardImageFile = boardLabel[..1] switch {
-		//	"A" => ".\\images\\board a.png",
-		//	"B" => ".\\images\\board b.png",
-		//	"C" => ".\\images\\board c.png",
-		//	"D" => ".\\images\\board d.png",
-		//	_ => throw new ArgumentException("no board image found for board "+ boardLabel ),
-		//};
-
 		var images = ResourceImages.Singleton;
 		presence = images.GetPresenceIcon( presenceColor );
 		this.presenceColor = presenceColor;
@@ -76,7 +68,7 @@ public partial class IslandControl : Control {
 
 			DrawBoard_Static( pe );
 			using(new StopWatch( "Island-Tokens" ))
-				foreach(var space in gameState.AllSpaces)
+				foreach(SpaceState space in gameState.AllSpaces)
 					DecorateSpace(pe.Graphics,space);
 
 			using(new StopWatch( "fear" ))
@@ -125,18 +117,18 @@ public partial class IslandControl : Control {
 		return new RectangleF(left, top, right - left, bottom - top);
 	}
 
-//	BoardLayout normalizedBoardLayout;
-	PointMapper mapper;
+	PointMapper _mapper;
 
 	void DrawBoard_Static( PaintEventArgs pe ) {
 		using var stopwatch = new StopWatch( "Island-static" );
 
+		var board = gameState.Island.Boards[0];
+
 		if(cachedBackground == null) {
 
-			spaceLookup = new Dictionary<string, PointF>();
-			var board = gameState.Island.Boards[0];
+			spaceLookup = new Dictionary<Space, SpaceLayout>();
 			for(int i = 0; i <= 8; ++i)
-				spaceLookup.Add( board[i].Text, board.Layout.centers[i] );
+				spaceLookup.Add( board[i], board.Layout.Spaces[i] );
 
 			var boardSize = IslandExtents().Size;// boardImg.Size;
 
@@ -146,46 +138,41 @@ public partial class IslandControl : Control {
 				: new Size( (int)(boardSize.Width * Height / boardSize.Height), Height );
 
 			// -- new --
-			mapper = SetupSingleIslandTransform();
+			_mapper = SetupSingleIslandTransform();
 			// mapper = SetupIsland1of2();
 			// mapper = SetupIsland2of2();
 
 			cachedBackground = new Bitmap( boardScreenSize.Width, boardScreenSize.Height );
 
-//			var graphics = Graphics.FromImage( cachedBackground );
-//			using var boardImg = Image.FromFile( boardImageFile );
-//			graphics.DrawImage( boardImg, 0, 0, boardScreenSize.Width, boardScreenSize.Height );
+			using var graphics = Graphics.FromImage( cachedBackground );
+			DrawBoardSpacesOnly( graphics, board );
+
 		}
 
 		pe.Graphics.DrawImage( cachedBackground, 0, 0, cachedBackground.Width, cachedBackground.Height );
+	}
 
-		using var perimeterPen = new Pen( Brushes.Black, 5f );
-		var normalizedBoardLayout = gameState.Island.Boards[0].Layout;
-		for(int i = 0; i < normalizedBoardLayout.spaces.Length; ++i) {
-			var space = gameState.Island.Boards[0][i];
+	void DrawBoardSpacesOnly( Graphics graphics, Board board ) {
+		var perimeterPen = new Pen( Brushes.Black, 5f );
+		var normalizedBoardLayout = board.Layout;
+		for(int i = 0; i < normalizedBoardLayout.Spaces.Length; ++i) {
+			var space = board[i];
 			Brush brush = space.IsWetland ? Brushes.LightBlue
 				: space.IsSand ? Brushes.PaleGoldenrod
 				: space.IsMountain ? Brushes.Gray
 				: space.IsJungle ? Brushes.ForestGreen
 				: Brushes.Blue;
-			var points = normalizedBoardLayout.spaces[i].Select( mapper.Map ).ToArray();
+			var points = normalizedBoardLayout.Spaces[i].corners.Select( _mapper.Map ).ToArray();
 
 			// Draw blocky
 			//pe.Graphics.FillPolygon( brush, points );
 			//pe.Graphics.DrawPolygon( perimeterPen, points );
 
 			// Draw smoothy
-			pe.Graphics.FillClosedCurve( brush, points, System.Drawing.Drawing2D.FillMode.Alternate, .25f );
-			pe.Graphics.DrawClosedCurve( perimeterPen, points,.25f, System.Drawing.Drawing2D.FillMode.Alternate);
+			graphics.FillClosedCurve( brush, points, System.Drawing.Drawing2D.FillMode.Alternate, .25f );
+			graphics.DrawClosedCurve( perimeterPen, points, .25f, System.Drawing.Drawing2D.FillMode.Alternate );
 		}
 
-		//var path = new System.Drawing.Drawing2D.GraphicsPath()
-		//pe.Graphics.SetClip(path);
-
-		// Draw foreground image into clipping region
-		// myGraphic.SetClip( clipPath, CombineMode.Replace );
-		// myGraphic.DrawImage( imgF, outRect );
-		// myGraphic.ResetClip();
 	}
 
 	PointMapper SetupSingleIslandTransform() {
@@ -485,10 +472,11 @@ public partial class IslandControl : Control {
 	}
 		
 	void DecorateSpace( Graphics graphics, SpaceState spaceState ) {
-		if(!spaceLookup.ContainsKey(spaceState.Space.Label)) return; // happens during developement
+		if(!spaceLookup.ContainsKey(spaceState.Space)) 
+			return; // happens during developement
 
-		PointF normalized = spaceLookup[spaceState.Space.Label];
-		PointF xy = mapper.Map(normalized); //  new PointF(normalized.X * boardScreenSize.Width, normalized.Y * boardScreenSize.Height);
+		PointF normalized = spaceLookup[spaceState.Space].Center;
+		PointF xy = _mapper.Map(normalized); //  new PointF(normalized.X * boardScreenSize.Width, normalized.Y * boardScreenSize.Height);
 
 		float iconWidth = boardScreenSize.Width * .045f; 
 		float xStep = iconWidth + 10f;
@@ -742,12 +730,12 @@ public partial class IslandControl : Control {
 
 	/// <returns>the center of a Game Space</returns>
 	PointF SpaceCenter( Space s ) {
-		var norm = spaceLookup.ContainsKey(s.Label)
-				? spaceLookup[s.Label]
+		var norm = spaceLookup.ContainsKey(s)
+				? spaceLookup[s].Center
 			: s is MultiSpace ms
-				? spaceLookup[ ms.Parts[0].Label ]
+				? spaceLookup[ ms.Parts[0] ].Center
 			: throw new ArgumentException($"Space {s.Label} does not have a screen location");
-		return mapper.Map(norm); //  new PointF( norm.X * boardScreenSize.Width, norm.Y * boardScreenSize.Height );
+		return _mapper.Map(norm); //  new PointF( norm.X * boardScreenSize.Width, norm.Y * boardScreenSize.Height );
 	}
 
 	protected override void OnSizeChanged( EventArgs e ) {
@@ -881,11 +869,10 @@ public partial class IslandControl : Control {
 
 	const float radius = 40f;
 	Space[] activeSpaces;
-	Dictionary<string,PointF> spaceLookup;
+	Dictionary<Space,SpaceLayout> spaceLookup;
 
 	Size boardScreenSize;
 	Bitmap cachedBackground;
-//	string boardImageFile;
 
 	Image presence;
 	string presenceColor;

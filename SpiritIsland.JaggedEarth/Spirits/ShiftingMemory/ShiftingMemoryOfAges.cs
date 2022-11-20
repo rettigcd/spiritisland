@@ -35,13 +35,14 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 			new SpiritPresence(
 				new PresenceTrack(Track.Energy0,Track.Energy1,Track.Energy2,Prepare(3),Track.Energy4,Track.Reclaim1Energy,Track.Energy5,Prepare(6)),
 				new PresenceTrack(Track.Card1,Track.Card2,Track.Card2,DiscardElementsForCardPlay,Track.Card3)
-			),
-			PowerCard.For<BoonOfAncientMemories>(),
-			PowerCard.For<ElementalTeachings>(),
-			PowerCard.For<ShareSecretsOfSurvival>(),
-			PowerCard.For<StudyTheInvadersFears>()
-		) 
-	{
+			)
+			,PowerCard.For<BoonOfAncientMemories>()
+			,PowerCard.For<ElementalTeachings>()
+			,PowerCard.For<ShareSecretsOfSurvival>()
+			,PowerCard.For<StudyTheInvadersFears>()
+			,PowerCard.For<WeaveTogetherTheFabricOfPlace>() // !!! TESTING
+			,PowerCard.For<WeaveTogetherTheFabricOfPlace>() // !!! TESTING
+		) {
 		GrowthTrack = new GrowthTrack(
 			new GrowthOption(new ReclaimAll(), new PlacePresence(0)),
 			new GrowthOption(new DrawPowerCard(), new PlacePresence(2)),
@@ -53,6 +54,8 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 			InnatePower.For<LearnTheInvadersActions>(),
 			InnatePower.For<ObserveTheEverChangingWorld>()
 		};
+
+		Energy = 20; // !!! TESTING
 
 	}
 

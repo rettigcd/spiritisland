@@ -50,8 +50,8 @@ public class TileSide {
 		var stationaryLayout = stationarySide.Board.Layout;
 		var movingLayout = movingSide.Board.Layout;
 
-		var stationaryTarget = stationaryLayout.corners[ stationarySideIndex ]; // 1st point on the side
-		var movingAlignmentPoint = movingLayout.corners[ movingSideIndex + 1 ]; // 2nd point on the side - the point we are going to move to the stationaryTarget
+		var stationaryTarget = stationaryLayout.boardCorners[ stationarySideIndex ]; // 1st point on the side
+		var movingAlignmentPoint = movingLayout.boardCorners[ movingSideIndex + 1 ]; // 2nd point on the side - the point we are going to move to the stationaryTarget
 
 		double rotate = stationaryLayout.SideRotationDegrees( stationarySideIndex ) // target angle
 			- movingLayout.SideRotationDegrees( movingSideIndex ) // less angle already turned

@@ -1,4 +1,5 @@
-﻿Plan:
+﻿
+Plan:
 	Create Interface of Space-Properties needed for Predicate
 	Have SpaceCtx implement interface.
 	Have SpaceFilterMap use interface.
@@ -15,11 +16,34 @@ Is In Play
 	- Ocean: InPlay for powers and blight, NOT InPlay for invaders, fear, growth.
 	IsInPlay
 
+==========================
+====  Clean Up Items  ====
+==========================
+Switch everything that uses Space to use SpaceState
+Move Presence into SpaceState
+Make Virtual / Calculated Tokens work for types other than Defense
+Fold Terrain Mappers into SpaceState
+Switch Explore & Ravage over to use Explore Tokens and Ravage Tokens
+Convert all Fear Cards to Commands
+Consilidate GameState API - things that aren't data and have no theoretical state.  Spirits could hand on to them and not have to pass gamestate around.
+Merge Config Ravage and Ravage Engine
+Simplify syntax for selecting TokensFromManySpaces
+Consolidate => Single PresenceOnBoardChanged event
+ForgetCard - rename ForgetCard to ForgetCard_UserChoice AND/OR Consolidate the 2 ForgetCard methods into 1
+CardDrawer - get rid of power progression cards in tests, then make Card Drawer private and clean it up.
+InvaderDeck.KeepBuildCards - can we make this go away. Make something cleaner?
+Don't instanciate PowerCards / FearCards that are in the deck until they are drawn.
+Make Spirit.ResolveActions private/protected.
+Can we Set Spirit.GameState property and then not pass it everywhere?
+TokenCountDictionary.counts -> make private.
+Review items that are PickSpace then Pick Token into a single pick-space-token step.
+CachedImageDrawer - make it draw the images
+Convert TargetSpaceCtx action Methods to Commands
 
-=================
-===== Focus =====
-=================
-* 2 spirits
+=========================
+===== Feature Focus =====
+=========================
+* 2 spirit game (but still 1 player)
 * 3 Adversaries (Habsburg, Russia, Scotland)
 * Remaining spirit (Finder of Paths)
 * Mobile
@@ -32,10 +56,15 @@ Is In Play
 * replace Frozen dahan with RemovingToken handler (and DamagingToken handler)
 
 * Display Adversary details
+* Display Back side of Invader card
 
 Later: Events
 Later: Scenarios
 Later: Web Hosted
+
+* Implement Face-up / face-down for deck cards so we can see what stage a card is before revealing it.
+* Show # of Invader cards left in deck
+* Visions of shifting future - use Randomizer so it is repeatable.
 
 ! Save Game in Recent Games list so we can replay them.
 
@@ -54,8 +83,6 @@ Later: Web Hosted
 
 Some Commands need a title like the Power Card Name, other's need detailed description of what they do.
 
-Fear Card - convert to Commands
-
 Create TargetSpaceCtx filter type.
 
 Adjusting Hue for tokens:  RGB > YIQ > YIQ > RGB
@@ -64,11 +91,6 @@ Adjusting Hue for tokens:  RGB > YIQ > YIQ > RGB
 == Architecture ==
 Run on Android
 Multiplayer Network Play
-
-== Features ==
-Event Alternative
-Downpour / Finder of Paths Unseen
-Adversary
 
 == UI improvement ==
 Flatten Move
@@ -82,37 +104,16 @@ Add new board.
 Unlock the Gates - triggers all element thresholds
 Revamp Skips - only skip actions that happen, select which skip to use, don't need to select skip until it happens.
 Settle into Hunting Grounds - presence can't move.
-Absolute Statis - hides towns/cities from win/loss check
-Display Back side of Invader card
 
 == Verify ==
 Starlights Track has +1 energies
 Vengeance - WreakVengeance for the Lands Corruption
 VolcanoLoomingHigh doesn't allow presence ouside of mountain
 
-=====  Simple - Implement  ====
-
-* Implement Face-up / face-down for deck cards so we can see what stage a card is before revealing it.
-* Show # of Invader cards left in deck
-* Visions of shifting future - use Randomizer so it is repeatable.
-
 ==== Finish ====
 
 Settle into hunting grounds - implement presence cannot move.
-Absolute Stasis - figue out how to not hide cities from Victory check
 Slip the flows of time - use any # of times
-
-==== Refactor / Cleanup ====
-
-CardDrawer - get rid of power progression cards in tests, then make Card Drawer private and clean it up.
-InvaderDeck.KeepBuildCards - can we make this go away. Make something cleaner?
-Don't instanciate PowerCards / FearCards that are in the deck until they are drawn.
-Make Spirit.ResolveActions private/protected.
-Can we Set Spirit.GameState property and then not pass it everywhere?
-TokenCountDictionary.counts -> make private.
-Review items that are PickSpace then Pick Token into a single pick-space-token step.
-CachedImageDrawer - make it draw the images
-Convert TargetSpaceCtx action Methods to Commands
 
 ====  Test  ====
 
@@ -133,39 +134,18 @@ TEST - Upgrading or downgrading explorers with strife, should maintain strife.
 ==== Token Management =====
 WreakVengeanceForTheLandsCorruption - virtual tokens might not be correct.
 Add Token.MoveFrom method to simplify Draw-Into-Void
-HazardsSpreadAcrossTheIsland - should this trigger and AddToken event?
-Presence as Tokens - Need access to GameState when doing Token Things
 DahanGroupBinding.Drown should be async so UI will update.
 Publish token events to the UI so that it can show token changing.
 
 ====  Not Yet Supported  =====
 
 TheWoundedWildReturnsOnItsAssailants - fix once we support multiple players / boards
-Weave together the Fabric... fix once we get multiple players / boards
+Weave Together the Fabric... fix once we get multiple players / boards
 Dream of the Untouched Land - implement once we support multiple players / boards
 Visions of shifting Future - fix once we support events.
 The Past Returns again - implement all spirits paying.
-Pour Time Sideways 
-	- Adding Explore on target board is not implemented. 
-	- Adding Ravage on target board not implemented.  (should only add spaces that match card)
-	- Add Build should filter on spaces that match card.
-
-====  API  ====
-
-Consilidate GameState API - things that aren't data and have no theoretical state.  Spirits could hand on to them and not have to pass gamestate around.
-
 
 =========================================================
-
-
-Cleanup..
-	Merge Config Ravage and Ravage Engine
-	* Simplify syntax for selecting TokensFromManySpaces
-	* Consolidate => Single PresenceOnBoardChanged event
-	* ForgetCard
-		- rename ForgetCard to ForgetCard_UserChoice
-		- Consolidate the 2 ForgetCard methods into 1
-
 GUI
 	- layout of Fear / Blight items
 	- Put Build / Ravage / fear in strip along the top 
@@ -177,13 +157,6 @@ GUI
 	- Show back side of explore card (so they no what stage it is)
 	- Display Blight Card and/or text
 	- Show backside of next explorer card
-
-Game Engine 
-	- Bind each Spirit Action to a CTX, so we can:
-		- detect distinct actions
-		- commit actions like transactions
-		- Check win/lose state at the end of each action.
-
 
 AI - Search
 	- Create a search tree algorythm that can play the game
@@ -205,12 +178,7 @@ AI - Search
 	  - Movement
 	  - Fear
 
-
-
-
 -- Helpful --
-
-Refactor Testing to make it easier to test.
 
 Make Push a 1-step commmand
 	- for custom destinations, add them to Push API
@@ -219,16 +187,10 @@ Make Push a 1-step commmand
 
 Show # of cards remaining in fear deck until next threshold
 
-===================
-
-REFACTOR	InvaderGroup Damage/Destroy methods.  Create a virtual 'included tokens' group that combines single-token and token Group actions
-
 ====================================================================================
 == Steam updates - What's New (provide insight as to what they have trouble with) ==
 https://store.steampowered.com/news/app/1236720
-
 https://spiritislandwiki.com/index.php?title=Main_Page
-
 http://nerdroomsoftware.com/apps/SpiritGuide/spirits.php
 
 
