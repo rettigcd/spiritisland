@@ -37,7 +37,8 @@ public class WeaveTogetherTheFabricOfPlace {
 		var board = space.Board; // !!! this is not correct when we start having multiple boards.
 
 		// Disconnect space
-		var spaceAdjacents = board.Remove( space );
+		var spaceAdjacents = board.Remove( space ); // !!! is space-to-remove is a multi-space, throws an exception
+
 		var otherAdjacents = board.Remove( other );
 		// it has the terrain and land # of both lands.
 		board.Add( multi, spaceAdjacents.Union( otherAdjacents ).Distinct().ToArray() );

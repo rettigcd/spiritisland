@@ -354,4 +354,38 @@ public class BoardLayout {
 		return layout;
 	}
 
+	static public T[] JoinAdjacentPolgons<T>( T[] region0, T[] region1 ) {
+
+		// find a corner that is not common
+		int i = 0;
+		while(i < region0.Length && region1.Contains( region0[i] )) ++i;
+		if(i == region0.Length) return new T[0]; // all corners are in common 1 space suround the other
+
+		// advance to corner in common, aka find start0 and start1
+		int endOfCommonPointsOnPoly2;
+		while((endOfCommonPointsOnPoly2 = Array.IndexOf( region1, region0[i] )) == -1)
+			i = (i + 1) % region0.Length;
+
+		// find the last point in common
+		int endOfCommonPointsOnPoly1 = 0;
+		int countOfPointsInCommon = 0;
+		while(Array.IndexOf( region1, region0[i] ) != -1) {
+			endOfCommonPointsOnPoly1 = i;
+			++countOfPointsInCommon;
+			i = (i + 1) % region0.Length;
+		}
+
+		var mergedArray = new T[region0.Length + region1.Length - countOfPointsInCommon * 2 + 2];
+
+		int k = 0, numFrom0 = region0.Length - countOfPointsInCommon + 1;
+		for(i = 0; i < numFrom0; ++i)
+			mergedArray[k++] = region0[(endOfCommonPointsOnPoly1 + i) % region0.Length];
+
+		int numFrom1 = region1.Length - countOfPointsInCommon + 1;
+		for(i = 0; i < numFrom1; ++i)
+			mergedArray[k++] = region1[(endOfCommonPointsOnPoly2 + i) % region1.Length];
+
+		return mergedArray;
+	}
+
 }
