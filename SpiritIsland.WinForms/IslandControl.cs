@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -117,6 +118,9 @@ public partial class IslandControl : Control {
 		return new RectangleF(left, top, right - left, bottom - top);
 	}
 
+	/// <summary>
+	/// Maps from normallized space to Client space.
+	/// </summary>
 	PointMapper _mapper;
 
 	void DrawBoard_Static( PaintEventArgs pe ) {
@@ -129,6 +133,7 @@ public partial class IslandControl : Control {
 			spaceLookup = new Dictionary<Space, SpaceLayout>();
 			for(int i = 0; i <= 8; ++i)
 				spaceLookup.Add( board[i], board.Layout.Spaces[i] );
+
 
 			var boardSize = IslandExtents().Size;// boardImg.Size;
 
@@ -146,22 +151,35 @@ public partial class IslandControl : Control {
 
 			using var graphics = Graphics.FromImage( cachedBackground );
 			DrawBoardSpacesOnly( graphics, board );
-
 		}
 
 		pe.Graphics.DrawImage( cachedBackground, 0, 0, cachedBackground.Width, cachedBackground.Height );
 	}
 
+	//static Brush SpaceColor( Space space ) {
+	//	return space.IsWetland ? Brushes.LightBlue
+	//		: space.IsSand ? Brushes.PaleGoldenrod
+	//		: space.IsMountain ? Brushes.Gray
+	//		: space.IsJungle ? Brushes.ForestGreen
+	//		: space.IsOcean ? Brushes.Blue
+	//		: Brushes.Gold;
+	//}
+
+	static Color SpaceColor( Space space ) {
+		return space.IsWetland ? Color.LightBlue
+			: space.IsSand     ? Color.PaleGoldenrod
+			: space.IsMountain ? Color.Gray
+			: space.IsJungle   ? Color.ForestGreen
+			: space.IsOcean    ? Color.Blue
+			: Color.Gold;
+	}
+
+
 	void DrawBoardSpacesOnly( Graphics graphics, Board board ) {
 		var perimeterPen = new Pen( Brushes.Black, 5f );
 		var normalizedBoardLayout = board.Layout;
 		for(int i = 0; i < normalizedBoardLayout.Spaces.Length; ++i) {
-			var space = board[i];
-			Brush brush = space.IsWetland ? Brushes.LightBlue
-				: space.IsSand ? Brushes.PaleGoldenrod
-				: space.IsMountain ? Brushes.Gray
-				: space.IsJungle ? Brushes.ForestGreen
-				: Brushes.Blue;
+			using Brush brush = new SolidBrush( SpaceColor( board[i] ) );
 			var points = normalizedBoardLayout.Spaces[i].corners.Select( _mapper.Map ).ToArray();
 
 			// Draw blocky
@@ -470,13 +488,13 @@ public partial class IslandControl : Control {
 			}
 
 	}
-		
-	void DecorateSpace( Graphics graphics, SpaceState spaceState ) {
-		if(!spaceLookup.ContainsKey(spaceState.Space)) 
-			return; // happens during developement
 
-		PointF normalized = spaceLookup[spaceState.Space].Center;
-		PointF xy = _mapper.Map(normalized); //  new PointF(normalized.X * boardScreenSize.Width, normalized.Y * boardScreenSize.Height);
+	void DecorateSpace( Graphics graphics, SpaceState spaceState ) {
+		MultiSpace ms = spaceState.Space as MultiSpace;
+		Space spaceToShowTokensOn = ms!=null ? ms.Parts[0] : spaceState.Space;
+		if(!spaceLookup.ContainsKey( spaceToShowTokensOn )) return; // happens during developement
+
+		PointF xy = _mapper.Map( spaceLookup[spaceToShowTokensOn].Center );
 
 		float iconWidth = boardScreenSize.Width * .045f; 
 		float xStep = iconWidth + 10f;
@@ -484,17 +502,58 @@ public partial class IslandControl : Control {
 		float x = xy.X - iconWidth;
 		float y = xy.Y - iconWidth;
 
+		if(ms != null)
+			DrawMultiSpace(graphics,ms);
+
 		DrawInvaderRow( graphics, x, ref y, iconWidth, xStep, spaceState );
 
-		// dahan & presence & blight
+		// Presence
 		int presenceCount = spirit.Presence.CountOn( spaceState.Space );
 		bool isSS = spirit.Presence.SacredSites( this.gameState.Island.Terrain ).Contains( spaceState.Space );
+		// dahan & blight
 		List<Token> row2Tokens = new List<Token> { TokenType.Defend, TokenType.Blight }; // These don't show up in .OfAnyType if they are dynamic
 		row2Tokens.AddRange( spaceState.OfAnyType( TokenType.Dahan ) );
 		row2Tokens.AddRange( spaceState.OfAnyType( TokenType.Element ) );
 
 		DrawRow( graphics, spaceState, x, ref y, iconWidth, xStep, presenceCount, isSS, row2Tokens.ToArray() );
 		DrawRow( graphics, spaceState, x, ref y, iconWidth, xStep, 0,             false, TokenType.Beast, TokenType.Wilds, TokenType.Disease, TokenType.Badlands, TokenType.Isolate );
+
+	}
+
+	void DrawMultiSpace( Graphics graphics, MultiSpace multi ) {
+		var merged = spaceLookup[multi.Parts[0]].corners;
+		for(int i=1;i<multi.Parts.Length;++i)
+			merged = BoardLayout.JoinAdjacentPolgons( merged, spaceLookup[multi.Parts[i]].corners );
+
+//		using var pen = new Pen( Brushes.Yellow, 5f );
+		using var pen = new Pen( Brushes.Gold, 3f );
+
+
+		var colors = multi.Parts
+			.Select( x=> Color.FromArgb(92, SpaceColor(x) ))
+			.ToArray();
+
+		using var brush = new LinearGradientBrush( new Rectangle(0, 0, 30, 30 ), Color.Transparent, Color.Transparent, 45F );
+		var blend = new ColorBlend();
+		blend.Positions = new float[colors.Length*2];
+		blend.Colors = new Color[colors.Length*2];
+		float step = 1.0f/colors.Length;
+		for(int i = 0; i < colors.Length; ++i) {
+			blend.Positions[i * 2] = i*step;
+			blend.Positions[i * 2+1] = (i+1) * step;
+			blend.Colors[i*2] = blend.Colors[i*2+1] = colors[i];
+		}
+
+		brush.InterpolationColors = blend;
+
+		var points = merged.Select( _mapper.Map ).ToArray();
+
+		graphics.FillClosedCurve( brush, points, FillMode.Alternate, .25f );
+		graphics.DrawClosedCurve( pen, points, .25f, FillMode.Alternate );
+
+//		graphics.FillPolygon( brush, points );
+//		graphics.DrawPolygon( pen, points );
+
 
 	}
 

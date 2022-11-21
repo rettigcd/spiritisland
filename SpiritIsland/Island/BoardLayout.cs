@@ -268,7 +268,8 @@ public class BoardLayout {
 		var c2Points = new PointF[] { _012, _125, _245, _234, _023 };
 		var c3Points = new PointF[] { _03, _023, _234, bot[5], bot[4], bot[3], bot[2], bot[1], bot[0], origin };
 		var c4Points = new PointF[] { bottomRightCorner, bot[11], bot[10], bot[9], bot[8], bot[7], bot[6], bot[5], _234, _245, _457, rig[10], rig[11] };
-		var c5Points = new PointF[] { _156, _125, _245, _457, _567 };
+		var c5Points = new PointF[] {  _567, _457, _245, _125, _156 };
+//		var c5Points = new PointF[] { _156, _125, _245, _457, _567 };
 		var c6Points = new PointF[] { top[2], top[3], top[4], top[5], top[6], _678, _567, _156, };
 		var c7Points = new PointF[] { rig[6], rig[7], rig[8], rig[9], rig[10], _457, _567, _678 };
 		var c8Points = new PointF[] { top[6], top[7], top[8], top[9], top[10], top[11], topRightCorner, rig[0], rig[1], rig[2], rig[3], rig[4], rig[5], rig[6], _678 };

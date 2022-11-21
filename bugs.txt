@@ -1,9 +1,5 @@
 When playing multi-player, other spirits should be able to use Downpour's SS as wetlands also, not just Dounpour.
 
-Weave Together the Fabric of Place
-	- Can't see tokens
-	- Does it even work?
-
 ==========================
 
 Dream of the Untouched Land

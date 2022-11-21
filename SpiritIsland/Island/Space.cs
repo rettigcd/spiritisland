@@ -1,5 +1,9 @@
 ﻿namespace SpiritIsland;
 
+public interface Restoreable {
+	public void Restore();
+}
+
 public abstract class Space 
 	: IOption 
 	, HasNeighbors<Space>
@@ -71,6 +75,22 @@ public abstract class Space
 		this.adjacent.Add( adjacent );
 		if(adjacent.IsOcean)
 			this.IsCoastal = true;
+	}
+
+	class DisconnectSpaceResults : Restoreable {
+		public Space space { get; set; }
+		public Space[] OldAdjacents { get; set; }
+
+		public void Restore() {
+			space.Board.Add( space, OldAdjacents );
+		}
+	}
+
+	public virtual Restoreable RemoveFromBoard() {
+		return new DisconnectSpaceResults {
+			OldAdjacents = Board.Remove(this),
+			space = this,
+		};
 	}
 
 }

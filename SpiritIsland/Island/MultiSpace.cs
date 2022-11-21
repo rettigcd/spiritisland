@@ -6,6 +6,7 @@ public class MultiSpace : Space {
 		:base( string.Join(":", BuildParts(spaces).Select(p=>p.Label)) ) 
 	{
 		this.Parts = BuildParts( spaces );
+		this.Board = Parts[0].Board; // !!! this isn't right if we join 2 boards.
 	}
 
 	static Space1[] BuildParts( Space[] spaces ) {
@@ -22,4 +23,9 @@ public class MultiSpace : Space {
 	public override bool IsOneOf( params Terrain[] options ) => Parts.Any(part => part.IsOneOf(options));
 
 	public Space1[] Parts { get; }
+
+	public void AddToBoards(IEnumerable<Space> adjacents) {
+		Board.Add( this, adjacents.ToArray() ); // !!! only adding to 1st board.  if joining 2 boards, needs added to both
+	}
+
 }

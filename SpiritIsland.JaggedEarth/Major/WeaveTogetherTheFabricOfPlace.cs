@@ -25,7 +25,7 @@ public class WeaveTogetherTheFabricOfPlace {
 		}
 	}
 
-	private static MultiSpace JoinSpaces( SelfCtx originatorCtx,Space space, Space other ) {
+	private static MultiSpace JoinSpaces( SelfCtx originatorCtx, Space space, Space other ) {
 
 		var gameState = originatorCtx.GameState;
 
@@ -33,23 +33,23 @@ public class WeaveTogetherTheFabricOfPlace {
 		MoveAllItemsOnSpace( gameState, other, multi );
 		MoveAllItemsOnSpace( gameState, space, multi );
 
-		// Pick Board
-		var board = space.Board; // !!! this is not correct when we start having multiple boards.
+		// Calculate Adjacents
+		var adjacents = space.Adjacent.Union( other.Adjacent ).Distinct().Where(s=>s!=space&&s!=other).ToList();
 
 		// Disconnect space
-		var spaceAdjacents = board.Remove( space ); // !!! is space-to-remove is a multi-space, throws an exception
+		var removeSpace = space.RemoveFromBoard();
+		var removeOther = other.RemoveFromBoard();
 
-		var otherAdjacents = board.Remove( other );
-		// it has the terrain and land # of both lands.
-		board.Add( multi, spaceAdjacents.Union( otherAdjacents ).Distinct().ToArray() );
+		// Add Multi
+		multi.AddToBoards( adjacents.Distinct() );
 
 		// When this effect expires
 		gameState.TimePasses_ThisRound.Push( async (gs) => {
 
 			MoveAllItemsOnSpace( gs, multi, space );
-			board.Remove( multi );
-			board.Add( other, otherAdjacents );
-			board.Add( space, spaceAdjacents );
+			multi.RemoveFromBoard();
+			removeOther.Restore();
+			removeSpace.Restore();
 
 			// divide pieces as you wish.
 			await DistributePresence( space, other, gs );
