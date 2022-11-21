@@ -19,25 +19,28 @@ Is In Play
 ==========================
 ====  Clean Up Items  ====
 ==========================
-Switch everything that uses Space to use SpaceState
-Move Presence into SpaceState
-Make Virtual / Calculated Tokens work for types other than Defense
-Fold Terrain Mappers into SpaceState
-Switch Explore & Ravage over to use Explore Tokens and Ravage Tokens
-Convert all Fear Cards to Commands
-Consilidate GameState API - things that aren't data and have no theoretical state.  Spirits could hand on to them and not have to pass gamestate around.
-Merge Config Ravage and Ravage Engine
-Simplify syntax for selecting TokensFromManySpaces
-Consolidate => Single PresenceOnBoardChanged event
-ForgetCard - rename ForgetCard to ForgetCard_UserChoice AND/OR Consolidate the 2 ForgetCard methods into 1
-CardDrawer - get rid of power progression cards in tests, then make Card Drawer private and clean it up.
-InvaderDeck.KeepBuildCards - can we make this go away. Make something cleaner?
-Don't instanciate PowerCards / FearCards that are in the deck until they are drawn.
+4 Switch everything that uses Space to use SpaceState
+4 ForgetCard - rename ForgetCard to ForgetCard_UserChoice AND/OR Consolidate the 2 ForgetCard methods into 1
+4 CardDrawer - get rid of power progression cards in tests, then make Card Drawer private and clean it up.
+4 Draw back side of Invader Cards
+4 Draw Adversary details
+
+3 Move Presence into SpaceState
+3 Make Virtual / Calculated Tokens work for types other than Defense
+3 Fold Terrain Mappers into SpaceState
+3 Switch Explore & Ravage over to use Explore Tokens and Ravage Tokens
+3 Convert all Fear Cards to Commands
+3 Review items that are PickSpace then Pick Token into a single pick-space-token step.
+
+2 Consilidate GameState API - things that aren't data and have no theoretical state.  Spirits could hand on to them and not have to pass gamestate around.
+2 Merge Config Ravage and Ravage Engine
+2 Simplify syntax for selecting TokensFromManySpaces
+2 Consolidate => Single PresenceOnBoardChanged event
+2 CachedImageDrawer - make it draw the images
+
+TokenCountDictionary.counts -> make private.
 Make Spirit.ResolveActions private/protected.
 Can we Set Spirit.GameState property and then not pass it everywhere?
-TokenCountDictionary.counts -> make private.
-Review items that are PickSpace then Pick Token into a single pick-space-token step.
-CachedImageDrawer - make it draw the images
 Convert TargetSpaceCtx action Methods to Commands
 
 =========================
