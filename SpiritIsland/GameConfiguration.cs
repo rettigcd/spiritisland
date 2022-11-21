@@ -15,13 +15,7 @@ public class GameConfiguration {
 
 		Spirit spirit = (Spirit)Activator.CreateInstance( SpiritType );
 
-		Board board = Board switch {
-			"A" => SpiritIsland.Board.BuildBoardA(),
-			"B" => SpiritIsland.Board.BuildBoardB(),
-			"C" => SpiritIsland.Board.BuildBoardC(),
-			"D" => SpiritIsland.Board.BuildBoardD(),
-			_ => null,
-		};
+		Board board = SpiritIsland.Board.BuildBoard(Board);
 
 		var majorCards = new List<PowerCard>();
 		var minorCards = new List<PowerCard>();

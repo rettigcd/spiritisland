@@ -12,15 +12,47 @@ public class DreamOfTheUntouchedLand {
 
 		// if you have 3 moon, 2 water  3 earth 2 plant
 		if(await ctx.YouHave( "3 moon,2 water,3 earth,2 plant" )) {
-			// Not implemented!!!
 
-			// Max. (1x/game) add a random new island board next to target board ignore its setup icons.
-			// add 2 beast, 2 wilds, 2 badlands and up to 2 presence (from any Spirits) anywhere on it.
-			// from now on Build Cards and Each board / Each land" Adversary Actions skip 1 board.
+			// Max. (1x/game) !!! Check only works for solo games
+			if(ctx.GameState.Island.Boards.Length > 1)
+				throw new NotImplementedException( "Adding boards is only implemented for islans with 1 board." );
+
+			// Add a random new island board next to target board ignore its setup icons.
+			Board newBoard = PickNewRandomBoard( ctx );
+
+			// Reconfigure 1-board island to 2-board island - !! only works if starting with 1 board
+			var existingBoard = ctx.GameState.Island.Boards[0];
+
+			existingBoard.Layout.ReMap( new PointMapper( RowVector.RotateDegrees( 120 ) ) ); // reorient for 2-board
+
+			ctx.GameState.Island.AddBoard( newBoard.Sides[2], existingBoard.Sides[2] );
+
+			// add 2 beast, 2 wilds, 2 badlands
+			foreach(var token in new Token[] { TokenType.Beast, TokenType.Wilds, TokenType.Badlands})
+				for(int i = 0; i < 2; ++i)
+					(await ctx.SelectSpace($"Add {token} to:", newBoard.Spaces.Where( x => !x.IsOcean ) )).Tokens.Adjust(token,1);
+			// and up to 2 presence (from any Spirits) anywhere on it.
+			// ??? Can spirits violate their place-presence rules?
+			for(int i = 0; i < 2; ++i) {
+				var spirit = await ctx.Self.Action.Decision(new Select.Spirit("Spirit to add presence.",ctx.GameState.Spirits));
+				await ctx.TargetSpirit(spirit).OtherCtx.Presence.Place(newBoard.Spaces.Where(x=>!x.IsOcean).ToArray());
+			}
+					
+			// !!! from now on Build Cards and "Each board / Each land" Adversary Actions skip 1 board.
+
+			// Notify board changed.
+			foreach(var spirit in ctx.GameState.Spirits)
+				spirit.Action.NotifyBoardChanged();
 		}
 
 
 
 	}
 
+	private static Board PickNewRandomBoard( TargetSpaceCtx ctx ) {
+		var boardsToChooseFrom = Board.AvailableBoards.Except( ctx.GameState.Island.Boards.Select( b => b.Name ) ).ToList();
+		var boardName = boardsToChooseFrom[(int)(DateTime.Now.Ticks % 4)];// !! Could hook into Random-Seed thing.
+		var newBoard = Board.BuildBoard( boardName );
+		return newBoard;
+	}
 }

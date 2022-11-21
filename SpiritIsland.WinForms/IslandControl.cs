@@ -126,31 +126,30 @@ public partial class IslandControl : Control {
 	void DrawBoard_Static( PaintEventArgs pe ) {
 		using var stopwatch = new StopWatch( "Island-static" );
 
-		var board = gameState.Island.Boards[0];
-
 		if(cachedBackground == null) {
 
 			spaceLookup = new Dictionary<Space, SpaceLayout>();
-			for(int i = 0; i <= 8; ++i)
-				spaceLookup.Add( board[i], board.Layout.Spaces[i] );
-
-
-			var boardSize = IslandExtents().Size;// boardImg.Size;
-
+			var boardRect = IslandExtents();
 			// Assume limit is height
-			boardScreenSize = (boardSize.Width * Height > Width * boardSize.Height)
-				? new Size( Width, (int)(boardSize.Height * Width / boardSize.Width) )
-				: new Size( (int)(boardSize.Width * Height / boardSize.Height), Height );
+			bool bb = (boardRect.Width * Height > Width * boardRect.Height);
+			boardScreenSize = (bb)
+				? new Size( Width, (int)(boardRect.Height * Width / boardRect.Width) )
+				: new Size( (int)(boardRect.Width * Height / boardRect.Height), Height );
+			_mapper = SetupSingleBoardTransform(boardRect);
+
+			cachedBackground = new Bitmap( boardScreenSize.Width, boardScreenSize.Height );
+			using var graphics = Graphics.FromImage( cachedBackground );
+
+			foreach(var board in gameState.Island.Boards) {
+				for(int i = 0; i <= 8; ++i)
+					spaceLookup.Add( board[i], board.Layout.Spaces[i] );
+				DrawBoardSpacesOnly( graphics, board );
+			}
 
 			// -- new --
-			_mapper = SetupSingleIslandTransform();
 			// mapper = SetupIsland1of2();
 			// mapper = SetupIsland2of2();
 
-			cachedBackground = new Bitmap( boardScreenSize.Width, boardScreenSize.Height );
-
-			using var graphics = Graphics.FromImage( cachedBackground );
-			DrawBoardSpacesOnly( graphics, board );
 		}
 
 		pe.Graphics.DrawImage( cachedBackground, 0, 0, cachedBackground.Width, cachedBackground.Height );
@@ -193,13 +192,18 @@ public partial class IslandControl : Control {
 
 	}
 
-	PointMapper SetupSingleIslandTransform() {
+	PointMapper SetupSingleBoardTransform(RectangleF boardRect) {
 		var upperLeft = new PointF( 24f, 75f );
 		float usableHeight = (this.Height - upperLeft.Y * 2);
-		float islandHeight = (float)(0.5 * Math.Sqrt( 3 )); // each board size is 1. Equalateral triangle height is sqrt(3)/2
+
+		// calculate scaling Assuming height-limited
+		float islandHeight = boardRect.Height; // (float)(0.5 * Math.Sqrt( 3 )); // each board size is 1. Equalateral triangle height is sqrt(3)/2
 		float scale = usableHeight / islandHeight;
-		return new PointMapper ( RowVector.Scale( scale, -scale ) // flip-y 
-			* RowVector.Translate( upperLeft.X, upperLeft.Y + usableHeight )
+
+		return new PointMapper ( 
+			  RowVector.Translate( -boardRect.X, -boardRect.Y ) // translate to origin
+			* RowVector.Scale( scale, -scale ) // flip-y and scale
+			* RowVector.Translate( upperLeft.X, upperLeft.Y + usableHeight ) // translate to view port
 		);
 	}
 
@@ -496,6 +500,7 @@ public partial class IslandControl : Control {
 
 		PointF xy = _mapper.Map( spaceLookup[spaceToShowTokensOn].Center );
 
+		// !!! scale tokens based on board/space size, NOT widow size (for 2 boards, tokens are too big)
 		float iconWidth = boardScreenSize.Width * .045f; 
 		float xStep = iconWidth + 10f;
 
@@ -799,6 +804,10 @@ public partial class IslandControl : Control {
 
 	protected override void OnSizeChanged( EventArgs e ) {
 		base.OnSizeChanged( e );
+		RefreshLayout();
+	}
+
+	public void RefreshLayout() {
 		spiritLayout = null;
 		ClearCachedImage();
 		this.Invalidate();

@@ -4,19 +4,24 @@ public partial class Board {
 
 	public BoardLayout Layout { get; set; }
 
-	public void ConnectTo( int mySide, Board newBoard, int newSide ) {
-		Sides[mySide].IsAdjacentTo( newBoard.Sides[newSide] );
-	}
-
-
 	#region factories
 
 	// These cannot be reused because when they get connected to other boards, 
 	// there neighbor state changes.
+	static public string[] AvailableBoards = { "A", "B", "C", "D" };
+	static public Board BuildBoard(string boardName) {
+		return boardName switch {
+			"A" => SpiritIsland.Board.BuildBoardA(),
+			"B" => SpiritIsland.Board.BuildBoardB(),
+			"C" => SpiritIsland.Board.BuildBoardC(),
+			"D" => SpiritIsland.Board.BuildBoardD(),
+			_ => null,
+		};
+	}
 
 	static public Board BuildBoardA() {
-		var board = new Board(
-			new Space1(Terrain.Ocean,"A0")
+		var board = new Board("A"
+			,new Space1(Terrain.Ocean,"A0")
 			,new Space1(Terrain.Mountain,"A1") // 
 			,new Space1(Terrain.Wetland,"A2","CD")  // city, dahan
 			,new Space1(Terrain.Jungle,"A3","DD")   // 2 dahan
@@ -47,8 +52,8 @@ public partial class Board {
 	}
 
 	static public Board BuildBoardB() {
-		var board = new Board(
-			new Space1(Terrain.Ocean,"B0")
+		var board = new Board("B"
+			,new Space1(Terrain.Ocean,"B0")
 			,new Space1(Terrain.Wetland,"B1","D")  // 1 dahan
 			,new Space1(Terrain.Mountain,"B2", "C") // city
 			,new Space1(Terrain.Sand,"B3","DD")     // 2 dahan
@@ -79,8 +84,8 @@ public partial class Board {
 	}
 
 	static public Board BuildBoardC() {
-		var board = new Board(
-			new Space1(Terrain.Ocean,"C0")
+		var board = new Board("C"
+			,new Space1(Terrain.Ocean,"C0")
 			,new Space1(Terrain.Jungle,"C1","D")   // 1 dahan
 			,new Space1(Terrain.Sand,"C2","C")     // city
 			,new Space1(Terrain.Mountain,"C3","DD") // 2 dahan
@@ -111,8 +116,8 @@ public partial class Board {
 	}
 
 	static public Board BuildBoardD() {
-		var board = new Board(
-			new Space1(Terrain.Ocean,"D0")
+		var board = new Board("D"
+			,new Space1(Terrain.Ocean,"D0")
 			,new Space1(Terrain.Wetland,"D1","DD")   // 2 dahan
 			,new Space1(Terrain.Jungle,"D2","CD")    // city, 1 dahan
 			,new Space1(Terrain.Wetland,"D3")   
@@ -170,12 +175,15 @@ public partial class Board {
 
 	#region constructor
 
-	public Board(params Space[] spaces){
+	public Board(string name, params Space[] spaces){
+		this.Name = name;
 		this.spaces = spaces;
 		foreach(var space in spaces) space.Board = this;
 	}
 
 	#endregion
+
+	public string Name { get; }
 
 	/// <summary>
 	/// public so we can build a test board.
@@ -184,16 +192,16 @@ public partial class Board {
 		spaces[srcIndex].SetAdjacentToSpaces( neighborIndex.Select(i=>spaces[i] ).ToArray());
 	}
 
-	public TileSide[] Sides => this.sides.ToArray();
+	public BoardSide[] Sides => this.sides.ToArray();
 
-	TileSide DefineSide( params int[] spaceIndexes ) {
-		var side = new TileSide( this, spaceIndexes.Select( i => spaces[i] ).ToArray() );
+	BoardSide DefineSide( params int[] spaceIndexes ) {
+		var side = new BoardSide( this, spaceIndexes.Select( i => spaces[i] ).ToArray() );
 		this.sides.Add( side );
 		return side;
 	}
 
 	Space[] spaces;
 
-	readonly List<TileSide> sides = new List<TileSide>();
+	readonly List<BoardSide> sides = new List<BoardSide>();
 
 }

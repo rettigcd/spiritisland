@@ -8,8 +8,8 @@ namespace SpiritIsland.Tests {
 
 		static public Board MakeBoard(){
 
-			var board = new Board(
-				new Space1(Terrain.Ocean,"T0")
+			var board = new Board("T"
+				,new Space1(Terrain.Ocean,"T0")
 				,new Space1(Terrain.Mountain,"T1")
 				,new Space1(Terrain.Wetland,"T2")
 				,new Space1(Terrain.Jungle,"T3")

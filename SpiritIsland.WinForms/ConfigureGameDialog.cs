@@ -40,10 +40,8 @@ namespace SpiritIsland.WinForms {
 
 			// boards
 			boardListBox.Items.Add( "[Random]" );
-			boardListBox.Items.Add( "A" );
-			boardListBox.Items.Add( "B" );
-			boardListBox.Items.Add( "C" );
-			boardListBox.Items.Add( "D" );
+			foreach(var availableBoard in Board.AvailableBoards )
+				boardListBox.Items.Add( availableBoard );
 			boardListBox.SelectedIndex = 0;
 
 			// color
@@ -138,7 +136,7 @@ namespace SpiritIsland.WinForms {
 		}
 
 		static string GetColorForSpirit( Type spiritType ) {
-			string spiritName = ((Spirit)Activator.CreateInstance( spiritType )).Text;
+			string spiritName = ((Spirit)Activator.CreateInstance( spiritType )).Text;		// !!! don't create a temp spirit and throw it away, just use the real spirit
 			return spiritName switch {
 				RiverSurges.Name           => "blue",
 				LightningsSwiftStrike.Name => "yellow",

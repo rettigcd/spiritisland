@@ -52,7 +52,6 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 			InnatePower.For<LearnTheInvadersActions>(),
 			InnatePower.For<ObserveTheEverChangingWorld>()
 		};
-
 	}
 
 	public override async Task<PowerCard> ForgetPowerCard_UserChoice( Present present = Present.Always ) {
@@ -114,10 +113,10 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 		Presence.PlaceOn( space, gameState );
 		Presence.PlaceOn( space, gameState );
 
-		// Prepare 1 moon, 1 air, and 1 earth marker.
-		PreparedElements[Element.Moon] = 1;
-		PreparedElements[Element.Air] = 1;
-		PreparedElements[Element.Earth] = 1;
+		// Prepare 1 moon, 1 air, and 1 earth marker. (++ allows us to use SMOA for testing, where =1 overwrites testing values)
+		PreparedElements[Element.Moon]++;
+		PreparedElements[Element.Air]++;
+		PreparedElements[Element.Earth]++;
 	}
 
 	public async Task PrepareElement(string context) {

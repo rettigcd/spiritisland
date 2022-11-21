@@ -140,8 +140,6 @@ Publish token events to the UI so that it can show token changing.
 ====  Not Yet Supported  =====
 
 TheWoundedWildReturnsOnItsAssailants - fix once we support multiple players / boards
-Weave Together the Fabric... fix once we get multiple players / boards
-Dream of the Untouched Land - implement once we support multiple players / boards
 Visions of shifting Future - fix once we support events.
 The Past Returns again - implement all spirits paying.
 

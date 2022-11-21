@@ -1,8 +1,10 @@
 ﻿namespace SpiritIsland;
 
-public class TileSide {
+public class BoardSide {
 	public Board Board { get; }
-	public TileSide( Board board, params Space[] spaces){
+	public bool Joined { get; private set; }
+
+	public BoardSide( Board board, params Space[] spaces){
 		this.Board = board;
 		this.spaces = spaces;
 	}
@@ -14,12 +16,16 @@ public class TileSide {
 		this.breakPoints.Insert(0,0);
 		this.breakPoints.Add(13);
 	}
-			
-	public void IsAdjacentTo(TileSide other){
+
+	/// <summary>
+	/// Connects this (new) Board to an existing Placed Board.
+	/// Moves this boards layout to match coordinate system on existingBoard
+	/// </summary>
+	public void ConnectTo(BoardSide existingBoard,bool moveLayoutToMatchOther){
 				
 		// reverse other
-		var otherSpaces = other.spaces.Reverse().ToArray();
-		var otherBreakPoints = other.breakPoints.Select(i=>13-i).Reverse().ToList();
+		var otherSpaces = existingBoard.spaces.Reverse().ToArray();
+		var otherBreakPoints = existingBoard.breakPoints.Select(i=>13-i).Reverse().ToList();
 
 		var thisSpaces = this.spaces;
 		var thisBreakPoints = this.breakPoints.ToList();
@@ -36,10 +42,16 @@ public class TileSide {
 				otherIndex++;
 		} while(thisIndex<thisBreakPoints.Count-2 || otherIndex<otherBreakPoints.Count-2 );
 		thisSpaces[thisIndex].SetAdjacentToSpaces(otherSpaces[otherIndex]);
+
+		if(moveLayoutToMatchOther)
+			this.MoveLayoutTo( existingBoard );
+
+		Joined = true;
+		existingBoard.Joined = true;
 	}
 
 
-	public void MoveLayoutTo( TileSide stationarySide ) {
+	public void MoveLayoutTo( BoardSide stationarySide ) {
 		var movingSide = this;
 		// =================
 		// Remap the layout 

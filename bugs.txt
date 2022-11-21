@@ -2,9 +2,6 @@ When playing multi-player, other spirits should be able to use Downpour's SS as 
 
 ==========================
 
-Dream of the Untouched Land
-	- adding new island board does not not work.
-
 Settle Into Hunting-Grounds
 	- implement "May" count as badlands and beast.
 	- presence cannot move.

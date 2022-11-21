@@ -72,7 +72,7 @@ public class BoardSpace_Tests {
 		var tileB = BoardB;
 		var tileD = BoardD;
 
-		tileB.Sides[2].IsAdjacentTo( tileD.Sides[0] );
+		tileB.Sides[2].ConnectTo( tileD.Sides[0], false );
 
 		Assert_BoardSpacesTouch( tileB[3], tileD[1] );
 		Assert_BoardSpacesTouch( tileB[4], tileD[1] ); 
