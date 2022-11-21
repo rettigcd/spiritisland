@@ -12,7 +12,7 @@ public class TheWoundedWildReturnsOnItsAssailants {
 
 		// (watch for invaders destroyed in this land)
 		int destroyed = 0;
-		// the only way a token will be removed, is if it is destroyed - !!! single player mode only
+		// the only way a token will be removed, is if it is destroyed
 		ctx.GameState.Tokens.TokenRemoved.ForRound.Add( ( args ) => destroyed++ );
 
 		// 1 damamge per blight/beast/wilds.
