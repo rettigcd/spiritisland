@@ -22,7 +22,7 @@ public class BeliefTakesRoot : IFearOptions {
 	public Task Level2( FearCtx ctx ) {
 		Defend2WherePresence( ctx );
 		foreach(var spirit in ctx.Spirits)
-			spirit.Self.Energy += spirit.Self.Presence.SacredSites( ctx.GameState.Island.Terrain_ForFear ).Count( s => spirit.Target(s).HasInvaders );
+			spirit.Self.Energy += spirit.Self.Presence.SacredSites( ctx.GameState, ctx.GameState.Island.Terrain_ForFear ).Count( s => spirit.Target(s).HasInvaders );
 		return Task.CompletedTask;
 	}
 

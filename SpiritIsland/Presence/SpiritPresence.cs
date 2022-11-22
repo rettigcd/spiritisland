@@ -53,11 +53,6 @@ public class SpiritPresence : IKnowSpiritLocations {
 			.Select(x => x.Action)
 			.Where(x => x != null);
 
-	public virtual IEnumerable<Space> SacredSites( TerrainMapper _ ) => Placed
-		.GroupBy( x => x )
-		.Where( grp => grp.Count() > 1 )
-		.Select( grp => grp.Key );
-
 	#endregion
 
 	#region Game-Play things you can do with presence
@@ -193,6 +188,17 @@ public class SpiritPresence : IKnowSpiritLocations {
 	public DualAsyncEvent<TrackRevealedArgs> TrackRevealed { get; } = new DualAsyncEvent<TrackRevealedArgs>();
 
 	public IReadOnlyCollection<Space> Placed => placed.AsReadOnly();
+
+	public virtual IEnumerable<Space> SacredSites( TerrainMapper _ ) => Placed
+		.GroupBy( x => x )
+		.Where( grp => grp.Count() > 1 )
+		.Select( grp => grp.Key );
+
+	public virtual IEnumerable<Space> SacredSites( GameState _, TerrainMapper _1 ) => Placed
+		.GroupBy( x => x )
+		.Where( grp => grp.Count() > 1 )
+		.Select( grp => grp.Key );
+
 
 	public IEnumerable<Space> Spaces => placed.Distinct();
 

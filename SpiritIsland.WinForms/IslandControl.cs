@@ -514,7 +514,7 @@ public partial class IslandControl : Control {
 
 		// Presence
 		int presenceCount = spirit.Presence.CountOn( spaceState.Space );
-		bool isSS = spirit.Presence.SacredSites( this.gameState.Island.Terrain ).Contains( spaceState.Space );
+		bool isSS = spirit.Presence.SacredSites( this.gameState, this.gameState.Island.Terrain ).Contains( spaceState.Space );
 		// dahan & blight
 		List<Token> row2Tokens = new List<Token> { TokenType.Defend, TokenType.Blight }; // These don't show up in .OfAnyType if they are dynamic
 		row2Tokens.AddRange( spaceState.OfAnyType( TokenType.Dahan ) );

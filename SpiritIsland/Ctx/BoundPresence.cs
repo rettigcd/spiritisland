@@ -10,7 +10,7 @@ public class BoundPresence {
 
 	#endregion
 
-	public IEnumerable<Space> SacredSites => ctx.Self.Presence.SacredSites( ctx.TerrainMapper );
+	public IEnumerable<Space> SacredSites => ctx.Self.Presence.SacredSites( ctx.GameState, ctx.TerrainMapper );
 
 	// Used for Move, Gather, and Push presence
 	public void Move( Space from, Space to ) => ctx.Self.Presence.Move(from,to,ctx.GameState);

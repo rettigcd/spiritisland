@@ -40,5 +40,21 @@ class DrenchTheLandscape : TerrainMapper, ICalcSource {
 
 	}
 
+	public IEnumerable<Space> FindSources( GameState gs, IKnowSpiritLocations presence, TargetSourceCriteria sourceCriteria, TerrainMapper mapper ) {
+		var sources = sourceCriteria.From switch {
+			From.Presence => presence.Spaces,
+			From.SacredSite => SacredSites,
+			_ => throw new ArgumentException( "Invalid presence source " + sourceCriteria.From ),
+		};
+		if(!sourceCriteria.Terrain.HasValue)
+			return sources;
+
+		var terrain = sourceCriteria.Terrain.Value;
+		var match = sources.Where( space => space.Is( terrain ) );
+		return terrain != Terrain.Wetland
+			? match
+			: match.Union( SacredSites );
+
+	}
 }
 

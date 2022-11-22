@@ -103,7 +103,7 @@ class MistsShiftAndFlow {
 	}
 
 	bool PresenceMeetsTargettingRequirements( IKnowSpiritLocations presence, Space target ) {
-		var targetSource = spirit.SourceCalc.FindSources( presence, sourceCriteria, gameState.Island.Terrain_ForPower );
+		var targetSource = spirit.SourceCalc.FindSources( gameState, presence, sourceCriteria, gameState.Island.Terrain_ForPower );
 		var targetOptionsFromTheseSources = GetTargetOptionsFromKnownSources( targetSource );
 		bool hitsTarget = targetOptionsFromTheseSources.Contains( target );
 		return hitsTarget;
@@ -124,7 +124,7 @@ class MistsShiftAndFlow {
 	}
 
 	void CalculateSpaceGroups() {
-		var sources = spirit.SourceCalc.FindSources( spirit.Presence, sourceCriteria, gameState.Island.Terrain_ForPower );
+		var sources = spirit.SourceCalc.FindSources( gameState, spirit.Presence, sourceCriteria, gameState.Island.Terrain_ForPower );
 		this.nonFlowTargets = GetTargetOptionsFromKnownSources( sources );
 		this.flowRange = gameState.Tokens.PowerUp(sources)
 			.SelectMany( s => s.Range( 2 ) ).Distinct()
@@ -166,6 +166,7 @@ class MistsShiftAndFlow {
 		public IEnumerable<Space> Spaces => this.Keys;
 
 		public IEnumerable<Space> SacredSites( TerrainMapper _ ) => this.Keys.Where(k=>this[k]>1);
+		public IEnumerable<Space> SacredSites( GameState _, TerrainMapper _1 ) => this.Keys.Where( k => this[k] > 1 );
 	}
 
 }
