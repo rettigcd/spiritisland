@@ -86,8 +86,8 @@ public class WeaveTogetherTheFabricOfPlace {
 	}
 
 	static void MoveAllItemsOnSpace(GameState gs, Space src, Space dst ) {
-		var dstTokens = gs.Tokens[dst];
 		var srcTokens = gs.Tokens[src];
+		var dstTokens = gs.Tokens[dst];
 		foreach(var token in srcTokens.Keys.ToArray()) {
 			int count = srcTokens[token];
 			srcTokens.Adjust(token, -count);
@@ -96,8 +96,8 @@ public class WeaveTogetherTheFabricOfPlace {
 		foreach(var spirit in gs.Spirits) {
 			var presence = spirit.Presence;
 			int count = presence.CountOn( srcTokens );
-			presence.Adjust(src, -count);
-			presence.Adjust(dst, count);
+			presence.Adjust( srcTokens, -count);
+			presence.Adjust( dstTokens, count);
 		}
 	}
 

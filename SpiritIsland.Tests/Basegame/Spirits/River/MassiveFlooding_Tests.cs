@@ -40,11 +40,11 @@ public class MassiveFlooding_Tests : RiverGame {
 	public void Level1_Pushes1TownOrExplorer() { // 1-Sun, 2-Water
 		var fixture = new ConfigurableTestFixture();
 		var space = fixture.Board[5];
-		var tokens = fixture.GameState.Tokens[space];
-		var destination = space.Adjacent.Last();
+		var spaceState = fixture.GameState.Tokens[space];
+		var destination = spaceState.Adjacent.Last();
 
 		// Given: spirit has a sacred site adjacent to the target space (range-1)
-		fixture.Spirit.Presence.Adjust( space.Adjacent.First(), 2 );
+		fixture.Spirit.Presence.Adjust( spaceState.Adjacent.First(), 2 );
 		//   And: Spirit has enough elements to trigger Level-1 of Massive Flooding
 		fixture.InitElements( "1 sun,2 water" );
 		//   And: target has 1 city, 4 towns, 5 explorers
@@ -54,13 +54,13 @@ public class MassiveFlooding_Tests : RiverGame {
 		_ = InnatePower.For<MassiveFlooding>().ActivateAsync( fixture.SelfCtx );
 		fixture.Choose( space ); // target space
 
-		fixture.ChoosePush( StdTokens.Town, destination ); // push 1
+		fixture.ChoosePush( StdTokens.Town, destination.Space ); // push 1
 
 		// Then: target has remaining invaders
-		tokens.Summary.ShouldBe( "1C@3,5E@1,3T@2" );
+		spaceState.Summary.ShouldBe( "1C@3,5E@1,3T@2" );
 
 		//  And: destination had pushed invaders
-		fixture.GameState.Tokens[destination].Summary.ShouldBe( "1T@2" );
+		destination.Summary.ShouldBe( "1T@2" );
 
 	}
 
@@ -70,11 +70,11 @@ public class MassiveFlooding_Tests : RiverGame {
 
 		var fixture = new ConfigurableTestFixture();
 		var space = fixture.Board[5];
-		var tokens = fixture.GameState.Tokens[space];
+		var spaceState = fixture.GameState.Tokens[space];
 		var destination = space.Adjacent.Last();
 
 		// Given: spirit has a sacred site adjacent to the target space (range-1)
-		fixture.Spirit.Presence.Adjust( space.Adjacent.First(), 2 );
+		fixture.Spirit.Presence.Adjust( spaceState.Adjacent.First(), 2 );
 		//   And: Spirit has enough elements to trigger Level-2 of Massive Flooding
 		fixture.InitElements("3 water,2 sun");
 		//   And: target has 1 city, 4 towns, 5 explorers - !!! collapse this to 1 line
@@ -91,7 +91,7 @@ public class MassiveFlooding_Tests : RiverGame {
 		fixture.ChoosePush( StdTokens.Explorer, destination ); // push 3
 
 		// Then: target has remaining invaders
-		tokens.Summary.ShouldBe( "1C@3,4E@1,1T@2" );
+		spaceState.Summary.ShouldBe( "1C@3,4E@1,1T@2" );
 
 		//  And: destination had pushed invaders
 		fixture.GameState.Tokens[destination].Summary.ShouldBe( "1E@1,2T@2" );
@@ -102,10 +102,10 @@ public class MassiveFlooding_Tests : RiverGame {
 
 		var fixture = new ConfigurableTestFixture();
 		var space = fixture.Board[5];
-		var tokens = fixture.GameState.Tokens[space];
+		var spaceState = fixture.GameState.Tokens[space];
 
 		// Given: spirit has a sacred site adjacent to the target space (range-1)
-		fixture.Spirit.Presence.Adjust( space.Adjacent.First(), 2 );
+		fixture.Spirit.Presence.Adjust( spaceState.Adjacent.First(), 2 );
 		//   And: Spirit has enough elements to trigger Level-3 of Massive Flooding
 		fixture.InitElements( "3 sun,4 water,1 earth" );
 		//   And: target has 1 city, 4 towns, 5 explorers - !!! collapse this to 1 line
@@ -116,7 +116,7 @@ public class MassiveFlooding_Tests : RiverGame {
 		fixture.Choose( space ); // target space
 
 		// Then: target has remaining invaders
-		tokens.Summary.ShouldBe( "1C@1" );
+		spaceState.Summary.ShouldBe( "1C@1" );
 	}
 
 }

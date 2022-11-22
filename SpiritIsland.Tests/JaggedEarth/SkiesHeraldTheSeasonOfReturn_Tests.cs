@@ -8,13 +8,14 @@ public class SkiesHeraldTheSeasonOfReturn_Tests {
 	public void ReturningKeeperPresence_PushesDahan() {
 		var fix = new ConfigurableTestFixture { Spirit = new Keeper() };
 		var space = fix.Board[5];
+		var spaceState = fix.GameState.Tokens[space];
 		var dahanDestination = space.Adjacent.First();
 
 		// Given: Keeper has a destroyed presence
 		fix.Spirit.Presence.Destroyed = 1;
 
 		//   And: a presence on target space.
-		fix.Spirit.Presence.Adjust(space,1);
+		fix.Spirit.Presence.Adjust(spaceState,1);
 
 		//   And: Dahan on space
 		fix.InitTokens(space,"1D@2");

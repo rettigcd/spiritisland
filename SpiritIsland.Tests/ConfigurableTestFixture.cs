@@ -114,9 +114,9 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 	}
 
 	public void InitPresence( Space space , int count ) {
-		var tokens = _selfCtx.GameState.Tokens[space];
-		var dif = count - Presence.CountOn(tokens);
-		Presence.Adjust( space, dif );
+		var spaceState = _selfCtx.GameState.Tokens[space];
+		var dif = count - Presence.CountOn(spaceState);
+		Presence.Adjust( spaceState, dif );
 	}
 
 	static readonly Regex tokenParser = new Regex( @"(\d+)(\w)@(\d+)(\^*)" );

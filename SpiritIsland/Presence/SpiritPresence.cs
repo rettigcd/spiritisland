@@ -195,17 +195,6 @@ public class SpiritPresence : IKnowSpiritLocations {
 		placed.Add( space.Space );
 		return Task.CompletedTask;
 	}
-	// !!! UPGRADE TO SPACESTATE !!
-	public void Adjust( Space space, int count ) {
-		while(0 < count) {
-			placed.Add( space );
-			--count;
-		}
-		while(count < 0) {
-			placed.Remove( space );
-			++count;
-		}
-	}
 	public void Adjust( SpaceState space, int count ) {
 		while(0 < count) {
 			placed.Add( space.Space );

@@ -13,7 +13,7 @@ public class GrowthThroughSacrifice_Tests {
 		//   And: has no air elements
 		fixture.Spirit.Elements[elementTrack.Elements[0]].ShouldBe(0);
 		//   And: 2 presence on board
-		fixture.Spirit.Presence.Adjust( space, 2);
+		fixture.Spirit.Presence.Adjust( fixture.GameState.Tokens[space], 2);
 
 		//  When: Card played
 		_ = GrowthThroughSacrifice.ActAsync( fixture.TargetSelf );
@@ -34,7 +34,7 @@ public class GrowthThroughSacrifice_Tests {
 		var tokens = setup.GameState.Tokens[space];
 
 		// Given: 1 blight on board where presence is
-		setup.Spirit.Presence.Adjust( space, 2 );
+		setup.Spirit.Presence.Adjust( tokens, 2 );
 		tokens.Init(TokenType.Blight,1);
 		tokens.Blight.Count.ShouldBe( 1 );
 
