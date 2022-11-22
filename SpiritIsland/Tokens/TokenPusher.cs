@@ -72,16 +72,15 @@ public class TokenPusher {
 	Func<Token,Space,Space,Task> customAction;
 
 	protected virtual async Task<Space> SelectDestination( Token token ) {
-		IEnumerable<Space> destinationOptions = ctx.GameState.Tokens[source].Adjacent
-			.Where( ctx.TerrainMapper.IsInPlay )
-			.Select( x=>x.Space );
+		IEnumerable<SpaceState> destinationOptions = ctx.GameState.Tokens[source].Adjacent
+			.Where( ctx.TerrainMapper.IsInPlay );
 		foreach(var filter in destinationFilters)
 			destinationOptions = destinationOptions.Where(filter);
 
-		return await ctx.Decision( Select.Space.PushToken( token, source, destinationOptions, Present.Always ) );
+		return await ctx.Decision( Select.Space.PushToken( token, source, destinationOptions.Select(x=>x.Space), Present.Always ) );
 	}
 
-	public TokenPusher FilterDestinations(Func<Space,bool> destinationFilter ) {
+	public TokenPusher FilterDestinations(Func<SpaceState,bool> destinationFilter ) {
 		destinationFilters.Add(destinationFilter);
 		return this;
 	}
@@ -90,7 +89,7 @@ public class TokenPusher {
 
 	protected readonly SelfCtx ctx;
 	protected readonly Space source;
-	protected readonly List<Func<Space,bool>> destinationFilters = new List<Func<Space, bool>>();
+	protected readonly List<Func<SpaceState,bool>> destinationFilters = new List<Func<SpaceState, bool>>();
 
 	// if we push 3 explorer/town,
 	// sharedGroupCounts[0] = 3

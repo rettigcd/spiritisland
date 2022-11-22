@@ -45,7 +45,7 @@ public class DrawTowardsAConsumingVoid {
 					await ctx.Move( tokenToGather, adj, ctx.Space );
 			}
 			// move presense
-			var spiritsInSpace = ctx.GameState.Spirits.Where( s => s.Presence.IsOn( adj ) ).ToArray();
+			var spiritsInSpace = ctx.GameState.Spirits.Where( s => s.Presence.IsOn( tokenCounts ) ).ToArray();
 			if(spiritsInSpace.Length > 0) {
 				var spiritToGather = await ctx.Decision( new Select.Spirit( Name, spiritsInSpace, Present.AutoSelectSingle ) ); // !!! switch to Gather Presence when we can support multiple spirits
 				spiritToGather.Presence.Move( adj, ctx.Space, ctx.GameState );
@@ -59,7 +59,7 @@ public class DrawTowardsAConsumingVoid {
 
 		// destroy 1 presence from each Spirit.
 		foreach(var spirit in ctx.GameState.Spirits)
-			if(spirit.Presence.IsOn( ctx.Space ))
+			if(spirit.Presence.IsOn( ctx.Tokens ))
 				await spirit.Presence.Destroy( ctx.Space, ctx.GameState, DestoryPresenceCause.SpiritPower );
 
 		// Remove 2 beast

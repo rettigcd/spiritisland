@@ -152,7 +152,8 @@ public class SpiritPresence : IKnowSpiritLocations {
 	}
 
 	public void PutInStasis( Space space, GameState gs ) {
-		while( IsOn(space)) {
+		var tokens = gs.Tokens[space];
+		while( IsOn(tokens)) {
 			RemoveFrom_NoCheck( space, gs );
 			stasis.Add(space);
 		}
@@ -193,12 +194,12 @@ public class SpiritPresence : IKnowSpiritLocations {
 
 	public DualAsyncEvent<TrackRevealedArgs> TrackRevealed { get; } = new DualAsyncEvent<TrackRevealedArgs>();
 
+	// !!! REMOVE !!!
 	public IReadOnlyCollection<Space> Placed => placed.AsReadOnly();
-
-	public bool IsOn( Space space ) => placed.Contains( space );
-
+	// !!! REMOVE !!!
 	public IEnumerable<Space> Spaces => placed.Distinct();
 
+	// !!! UPGRADE to SpaceState !!!
 	public virtual Task PlaceOn(Space space, GameState gameState) { 
 		placed.Add(space);
 		return Task.CompletedTask;
@@ -216,6 +217,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 //			return gameState.Tokens[space].Remove(Token,1); // !!! Do we event want to generate an event?
 	}
 
+	// !!! UPGRADE TO SPACESTATE !!
 	public void Adjust( Space space, int count ) {
 		while( 0 < count) {
 			placed.Add( space );

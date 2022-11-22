@@ -134,7 +134,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		if( !isCascading ) return;
 
 		// remove from card.
-		await TakeFromBlightSouce( args.Count, args.Space.Space );
+		await TakeFromBlightSouce( args.Count, args.Space );
 
 		if(BlightCard != null && blightOnCard <= 0) {
 			Log( new IslandBlighted( BlightCard ) );
@@ -149,7 +149,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		// Destory presence
 		if(effect.DestroyPresence)
 			foreach(var spirit in Spirits)
-				if(spirit.Presence.IsOn( args.Space.Space ))
+				if(spirit.Presence.IsOn( args.Space ))
 					await spirit.Presence.Destroy( args.Space.Space, this, DestoryPresenceCause.Blight, args.Reason );
 
 		// Cascade blight
@@ -270,11 +270,11 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	public DualAsyncEvent<AddBlightEffect> ModifyBlightAddedEffect = new DualAsyncEvent<AddBlightEffect>();
 
-	public Func<int, Space,Task> TakeFromBlightSouce {
+	public Func<int, SpaceState,Task> TakeFromBlightSouce {
 		get { return _takeFromBlightSouce ?? Default_TakeBlightFromSource; }
 		set { _takeFromBlightSouce = value; }
 	}
-	Func<int, Space, Task> _takeFromBlightSouce;
+	Func<int, SpaceState, Task> _takeFromBlightSouce;
 
 	public Func<Spirit,GameState,Cause,Task> Destroy1PresenceFromBlightCard = DefaultDestroy1PresenceFromBlightCard; // Direct distruction from Blight Card, not cascading
 
@@ -328,7 +328,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	#region Default API methods
 
 	/// <returns># of blight to remove from card</returns>
-	Task Default_TakeBlightFromSource( int count, Space _ ) {
+	Task Default_TakeBlightFromSource( int count, SpaceState _ ) {
 		if( count < 0 ) throw new ArgumentOutOfRangeException(nameof(count));
 		this.blightOnCard -= count;
 		return Task.CompletedTask;

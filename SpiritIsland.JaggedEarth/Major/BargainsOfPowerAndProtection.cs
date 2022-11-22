@@ -29,7 +29,7 @@ public class BargainsOfPowerAndProtection {
 			this.presence = spirit.Presence;
 		}
 		public int DefendOn( SpaceState space ) {
-			return space.Range(1).Any(ss=>presence.IsOn(ss.Space))
+			return space.Range(1).Any( presence.IsOn )
 				? space.Dahan.Count
 				: 0;
 		}

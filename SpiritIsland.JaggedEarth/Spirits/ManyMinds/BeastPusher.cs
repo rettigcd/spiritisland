@@ -7,14 +7,13 @@ class BeastPusher : TokenPusher {
 	protected override async Task<Space> SelectDestination( Token token ) {
 		int range = token == TokenType.Beast ? 2 : 1;
 
-		IEnumerable<Space> destinationOptions = ctx.GameState.Tokens[source].Range( range )
-			.Where( s => ctx.Target(s.Space).IsInPlay )
-			.Select( s => s.Space );
+		IEnumerable<SpaceState> destinationOptions = ctx.GameState.Tokens[source].Range( range )
+			.Where( s => ctx.Target(s.Space).IsInPlay );
 
 		foreach(var filter in destinationFilters)
 			destinationOptions = destinationOptions.Where(filter);
 
-		return await ctx.Decision( Select.Space.PushToken( token, source, destinationOptions, Present.Always ) );
+		return await ctx.Decision( Select.Space.PushToken( token, source, destinationOptions.Select(x=>x.Space), Present.Always ) );
 	}
 
 }

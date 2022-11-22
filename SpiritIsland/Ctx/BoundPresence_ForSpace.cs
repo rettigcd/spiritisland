@@ -14,7 +14,7 @@ public class BoundPresence_ForSpace : BoundPresence {
 
 	public bool IsSelfSacredSite => SacredSites.Contains(ctx.Space);
 
-	public bool IsHere       => ctx.Self.Presence.IsOn( ctx.Space );
+	public bool IsHere       => ctx.Self.Presence.IsOn( ctx.Tokens );
 
 	public int Count => ctx.Self.Presence.CountOn(ctx.Tokens);
 

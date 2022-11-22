@@ -27,7 +27,7 @@ class PayEnergyToTakeFromCard {
 
 	readonly Spirit spirit;
 	readonly int cost;
-	readonly Func<int, Space, Task> oldBehavior;
+	readonly Func<int, SpaceState, Task> oldBehavior;
 	public PayEnergyToTakeFromCard( SelfCtx ctx, int cost ) {
 		this.spirit = ctx.Self;
 		this.cost = cost;
@@ -42,11 +42,11 @@ class PayEnergyToTakeFromCard {
 	}
 
 	/// <returns># of blight to remove from card</returns>
-	async Task AddBlight( int delta, Space space ) {
+	async Task AddBlight( int delta, SpaceState space ) {
 		bool takeFromBagInstead = 0 < delta
 			&& spirit.Presence.IsOn( space )
 			&& cost <= spirit.Energy
-			&& await spirit.UserSelectsFirstText( $"New Blight on {space.Label}, take from:", $"Bag (for {cost})", "card" );
+			&& await spirit.UserSelectsFirstText( $"New Blight on {space.Space.Label}, take from:", $"Bag (for {cost})", "card" );
 
 		if( takeFromBagInstead )
 			spirit.Energy -= cost;

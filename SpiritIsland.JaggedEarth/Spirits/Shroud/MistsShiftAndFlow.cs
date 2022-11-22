@@ -14,9 +14,9 @@ class MistsShiftAndFlow {
 
 	readonly TargettingFrom powerType;
 
-	Space[] nonFlowTargets; // targets we can hit without flowing
-	Space[] flowRange; // where existing Presence can flow to
-	Space[] flowOnlyTargets; // targets that can only be hit by flowing
+	SpaceState[] nonFlowTargets; // targets we can hit without flowing
+	SpaceState[] flowRange; // where existing Presence can flow to
+	SpaceState[] flowOnlyTargets; // targets that can only be hit by flowing
 
 	#endregion
 
@@ -37,7 +37,7 @@ class MistsShiftAndFlow {
 		CalculateSpaceGroups();
 	}
 
-	public async Task<Space> TargetAndFlow() {
+	public async Task<SpaceState> TargetAndFlow() {
 		// When targeting a land with a Power,
 		// You may Gather 1 of your presence into the target or an adjacent land.
 		// This can enable you to meet Range and targeting requirements."
@@ -45,7 +45,7 @@ class MistsShiftAndFlow {
 		// Note! We cannot trust our range parameter for actural range, because spirit may have received a range adjustment modifier.
 		// Instead, we need to test the values that come back from CalcRange and see if they are actually Range(2) or adjacent.
 
-		Space target = await FindTarget();
+		SpaceState target = await FindTarget();
 		if(target == null) return null;
 		if(CantFlowAndStillReach( target )) return target;
 
@@ -55,7 +55,7 @@ class MistsShiftAndFlow {
 
 	}
 
-	async Task FlowPresence( Space target ) {
+	async Task FlowPresence( SpaceState target ) {
 		List<TokenMovedArgs> allowed = FindFlowsThatAllowUsToHitTarget( target );
 
 		// Flow (Gather) - Destination (To)
@@ -78,16 +78,16 @@ class MistsShiftAndFlow {
 	bool IsInPlay( SpaceState space ) => gameState.Island.Terrain_ForPower.IsInPlay( space.Space );
 
 
-	List<TokenMovedArgs> FindFlowsThatAllowUsToHitTarget( Space target ) {
+	List<TokenMovedArgs> FindFlowsThatAllowUsToHitTarget( SpaceState target ) {
 		List<TokenMovedArgs> allowed = new List<TokenMovedArgs>();
 
 		var pretendPresence = new SpaceCounts( spirit.Presence.Placed );
 
-		var spacesInRange = gameState.Tokens[target].Range(1).Where( IsInPlay ).ToArray();
+		var spacesInRange = target.Range(1).Where( IsInPlay ).ToArray();
 		foreach(SpaceState dst in spacesInRange) {
 			pretendPresence[dst.Space]++; // move  presence ON TO destination
 
-			foreach(SpaceState src in dst.Adjacent.Where( s=>spirit.Presence.IsOn(s.Space) )) {
+			foreach(SpaceState src in dst.Adjacent.Where( s=>spirit.Presence.IsOn(s) )) {
 				pretendPresence[src.Space]--; // move presence OFF of source
 
 				if( PresenceMeetsTargettingRequirements( pretendPresence, target ) )
@@ -102,33 +102,34 @@ class MistsShiftAndFlow {
 		return allowed;
 	}
 
-	bool PresenceMeetsTargettingRequirements( IKnowSpiritLocations presence, Space target ) {
-		var targetSource = spirit.SourceCalc.FindSources( gameState, presence, sourceCriteria, gameState.Island.Terrain_ForPower );
+	bool PresenceMeetsTargettingRequirements( IKnowSpiritLocations presence, SpaceState target ) {
+		var targetSource = spirit.SourceCalc.FindSources( gameState, presence, sourceCriteria, gameState.Island.Terrain_ForPower )
+			.Select(x=>gameState.Tokens[x]);
 		var targetOptionsFromTheseSources = GetTargetOptionsFromKnownSources( targetSource );
 		bool hitsTarget = targetOptionsFromTheseSources.Contains( target );
 		return hitsTarget;
 	}
 
-	bool MustFlowToReach( Space target ) => flowOnlyTargets.Contains( target );
+	bool MustFlowToReach( SpaceState target ) => flowOnlyTargets.Contains( target );
 
-	bool CantFlowAndStillReach( Space target ) => nonFlowTargets.Contains( target ) && !flowRange.Contains( target );
+	bool CantFlowAndStillReach( SpaceState target ) => nonFlowTargets.Contains( target ) && !flowRange.Contains( target );
 
-	async Task<Space> FindTarget() {
+	async Task<SpaceState> FindTarget() {
 		// ----------------
 		// -- Targetting --
 		// For large ranges, normal targetting will prevail becaue mists can only extend range if they flow adjacent
 		// For small ranges, flow-targets will be larger.
 
-		var target = await spirit.Action.Decision( new Select.Space( prompt, nonFlowTargets.Union( flowOnlyTargets ), Present.Always ) );
-		return target;
+		var target = await spirit.Action.Decision( new Select.Space( prompt, nonFlowTargets.Union( flowOnlyTargets ).Select(x=>x.Space), Present.Always ) );
+		return this.gameState.Tokens[target];
 	}
 
 	void CalculateSpaceGroups() {
-		var sources = spirit.SourceCalc.FindSources( gameState, spirit.Presence, sourceCriteria, gameState.Island.Terrain_ForPower );
+		var sources = spirit.SourceCalc.FindSources( gameState, spirit.Presence, sourceCriteria, gameState.Island.Terrain_ForPower )
+			.Select(s=>gameState.Tokens[s]);
 		this.nonFlowTargets = GetTargetOptionsFromKnownSources( sources );
-		this.flowRange = gameState.Tokens.PowerUp(sources)
+		this.flowRange = sources
 			.SelectMany( s => s.Range( 2 ) ).Distinct()
-			.Select(x=>x.Space)
 			.ToArray();
 
 		// Calculate new sources we could find
@@ -136,10 +137,9 @@ class MistsShiftAndFlow {
 			.SelectMany( p => p.Adjacent )
 			.Distinct()
 			.Where( IsInPlay ) // Don't allow flow into ocean.
-			.Select( s=>s.Space )
 			.Except( sources ); // exclude previously found sources
 		if(sourceCriteria.Terrain.HasValue)
-			flowedSources = flowedSources.Where( s => s.Is( sourceCriteria.Terrain.Value ) );
+			flowedSources = flowedSources.Where( s => s.Space.Is( sourceCriteria.Terrain.Value ) );
 		if(sourceCriteria.From == From.SacredSite)
 			flowedSources = flowedSources.Where( spirit.Presence.IsOn ); // the only way the new space is a SS, is if already had a presence here.
 
@@ -149,15 +149,16 @@ class MistsShiftAndFlow {
 			.ToArray();
 	}
 
-	Space[] GetTargetOptionsFromKnownSources( IEnumerable<Space> sources ) {
+	SpaceState[] GetTargetOptionsFromKnownSources( IEnumerable<SpaceState> sources ) {
 		return targetCriteria
-			.SelectMany( tc => GetTargetOptionsFromKnownSources( this.gameState.Tokens.PowerUp(sources), tc ) )
+			.SelectMany( tc => GetTargetOptionsFromKnownSources( sources, tc ) )
 			.Distinct()
 			.ToArray();
 	}
 
-	IEnumerable<Space> GetTargetOptionsFromKnownSources( IEnumerable<SpaceState> sources, TargetCriteria tc )
-		=> spirit.RangeCalc.GetTargetOptionsFromKnownSource( ctx, powerType, sources, tc );
+	IEnumerable<SpaceState> GetTargetOptionsFromKnownSources( IEnumerable<SpaceState> sources, TargetCriteria tc )
+		=> spirit.RangeCalc.GetTargetOptionsFromKnownSource( ctx, powerType, sources, tc )
+			.Select(s=>gameState.Tokens[s]);
 
 	// Shroud Helper - for easier testing Targetting
 	class SpaceCounts : CountDictionary<Space>, IKnowSpiritLocations {

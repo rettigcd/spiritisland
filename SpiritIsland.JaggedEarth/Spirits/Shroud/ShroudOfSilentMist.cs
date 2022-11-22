@@ -106,9 +106,9 @@ public class ShroudOfSilentMist : Spirit {
 
 	#endregion
 
-	public override Task<Space> TargetsSpace( TargettingFrom powerType, GameState gameState, string prompt, TargetSourceCriteria sourceCriteria, params TargetCriteria[] targetCriteria) {
-		return new MistsShiftAndFlow(this,gameState,prompt,sourceCriteria,targetCriteria,powerType)
-			.TargetAndFlow();
+	public override async Task<Space> TargetsSpace( TargettingFrom powerType, GameState gameState, string prompt, TargetSourceCriteria sourceCriteria, params TargetCriteria[] targetCriteria) {
+		var x = new MistsShiftAndFlow(this,gameState,prompt,sourceCriteria,targetCriteria,powerType);
+		return (await x.TargetAndFlow()).Space;
 	}
 
 }
@@ -131,7 +131,7 @@ class SlowAndSilentDeathHealer : Healer {
 	//}
 
 	public override void HealSpace( SpaceState tokens ) {
-		if( !spirit.Presence.IsOn(tokens.Space) )
+		if( !spirit.Presence.IsOn(tokens) )
 			base.HealSpace( tokens );
 	}
 

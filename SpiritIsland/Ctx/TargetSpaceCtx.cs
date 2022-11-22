@@ -365,7 +365,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 	public int PresenceCount => Self.Presence.CountOn(Tokens);
 
-	public bool IsPresent => Self.Presence.IsOn( Space );
+	public bool IsPresent => Self.Presence.IsOn( Tokens );
 
 	public async Task PlacePresenceHere() {
 		var from = await Presence.SelectSource();
