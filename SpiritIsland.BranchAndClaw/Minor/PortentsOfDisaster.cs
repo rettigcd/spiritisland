@@ -12,7 +12,7 @@ public class PortentsOfDisaster {
 		Task Add1MoreFearForFirstDestroyedInvader( ITokenRemovedArgs args ) {
 			if( addFear 
 				&& args.Reason.IsDestroy()
-				&& args.Space == ctx.Space 
+				&& args.Space == ctx.Tokens
 				&& args.Token.Class.IsOneOf(Invader.Town,Invader.City,Invader.Explorer) 
 			){ // !! create an override .IsInvader()
 				ctx.AddFear(1);

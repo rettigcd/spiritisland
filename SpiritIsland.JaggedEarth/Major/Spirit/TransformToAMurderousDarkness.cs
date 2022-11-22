@@ -29,7 +29,7 @@ public class TransformToAMurderousDarkness {
 
 	static async Task TargetSpiritActions( TargetSpaceCtx otherCtx ) {
 		// In that land: Replace each of their presence with badlands;  The replaced presence leaves the game.
-		int count = otherCtx.Self.Presence.CountOn( otherCtx.Space );
+		int count = otherCtx.Self.Presence.CountOn( otherCtx.Tokens );
 		for(int i = 0; i < count; ++i)
 			await otherCtx.Presence.RemoveFrom( otherCtx.Space );
 		await otherCtx.Badlands.Add( count, AddReason.AsReplacement );

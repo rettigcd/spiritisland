@@ -8,7 +8,7 @@ public class BloodDrawsPredators{
 		// After the next time Invaders are Desttroyed in target land:
 		bool used = false;
 		ctx.GameState.Tokens.TokenRemoved.ForRound.Add( async ( args ) => {
-			if(used || args.Space != ctx.Space ) return;
+			if(used || args.Space != ctx.Tokens ) return;
 			used = true;
 			// Add 1 Beast,
 			await ctx.Beasts.Add(1);

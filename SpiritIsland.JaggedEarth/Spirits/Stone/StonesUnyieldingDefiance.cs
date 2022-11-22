@@ -85,7 +85,7 @@ public StonesUnyieldingDefiance() : base(
 	void BestowTheEnduranceOfBedrock( AddBlightEffect effect ) {
 		// When blight is added to one of your lands,
 		// if the blight is less than or equal to your presence, 
-		if( effect.GameState.Tokens[effect.Space].Blight.Count <= Presence.CountOn( effect.Space ) ){
+		if( effect.Space.Blight.Count <= Presence.CountOn( effect.Space ) ){
 			// it does not cascade or destroy presence (yours or others')."
 			effect.Cascade = false;
 			effect.DestroyPresence = false;

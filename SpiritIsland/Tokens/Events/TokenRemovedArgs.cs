@@ -2,7 +2,7 @@
 
 public class TokenRemovedArgs : ITokenRemovedArgs {
 
-	public TokenRemovedArgs(Token token, RemoveReason reason, Guid actionId, Space space, int count ) {
+	public TokenRemovedArgs(Token token, RemoveReason reason, Guid actionId, SpaceState space, int count ) {
 		Token = token;
 		Reason = reason;
 		ActionId = actionId;
@@ -11,7 +11,7 @@ public class TokenRemovedArgs : ITokenRemovedArgs {
 	}
 
 	public Token Token { get; }
-	public Space Space { get; set; }
+	public SpaceState Space { get; set; }
 	public int Count { get; set; }
 	public RemoveReason Reason { get; }
 	public Guid ActionId { get; }

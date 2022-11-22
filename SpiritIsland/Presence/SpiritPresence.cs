@@ -184,30 +184,20 @@ public class SpiritPresence : IKnowSpiritLocations {
 	/// Specifies if the the given space is valid.
 	/// </summary>
 	public virtual bool CanBePlacedOn( TerrainMapper mapper, SpaceState ss ) => mapper.IsInPlay( ss.Space );
+	public bool IsOn( SpaceState space ) => space.HasAny( presenceToken );
+	public virtual bool IsSacredSite( SpaceState space ) => 2 <= space[presenceToken];
+	public int CountOn( SpaceState space ) => space[presenceToken];
+	public virtual IEnumerable<Space> SacredSites( GameState gs, TerrainMapper _ ) => gs.AllActiveSpaces
+		.Where( IsSacredSite )
+		.Select( s => s.Space );
 
 	public DualAsyncEvent<TrackRevealedArgs> TrackRevealed { get; } = new DualAsyncEvent<TrackRevealedArgs>();
 
 	public IReadOnlyCollection<Space> Placed => placed.AsReadOnly();
 
-	public virtual bool IsSacredSite( SpaceState space ) => 2 <= space[presenceToken];
 	public bool IsOn( Space space ) => placed.Contains( space );
-	public bool IsOn( SpaceState space ) => space.HasAny(presenceToken);
-
-	public virtual IEnumerable<Space> SacredSites( TerrainMapper _ ) => Placed
-		.GroupBy( x => x )
-		.Where( grp => grp.Count() > 1 )
-		.Select( grp => grp.Key );
-
-	public virtual IEnumerable<Space> SacredSites( GameState _, TerrainMapper _1 ) => Placed
-		.GroupBy( x => x )
-		.Where( grp => grp.Count() > 1 )
-		.Select( grp => grp.Key );
-
 
 	public IEnumerable<Space> Spaces => placed.Distinct();
-
-	public int CountOn( Space space ) => placed.Count( p => p == space );
-
 
 	public virtual Task PlaceOn(Space space, GameState gameState) { 
 		placed.Add(space);

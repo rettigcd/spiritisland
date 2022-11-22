@@ -72,8 +72,9 @@ public class WeaveTogetherTheFabricOfPlace {
 
 	static async Task DistributePresence( Space space, Space other, GameState gs ) {
 		var dstOptions = new[] { other };
+		var srcTokens = gs.Tokens[space];
 		foreach(var spirit in gs.Spirits) {
-			int count = spirit.Presence.CountOn( space );
+			int count = spirit.Presence.CountOn( srcTokens );
 			while(count > 0) {
 				var spiritCtx = spirit.BindMyPower( gs );
 				var dst = await spiritCtx.Decision( Select.Space.ForAdjacent( "Distribute preseence to:", space, Select.AdjacentDirection.Outgoing, dstOptions, Present.Done ) );
@@ -94,7 +95,7 @@ public class WeaveTogetherTheFabricOfPlace {
 		}
 		foreach(var spirit in gs.Spirits) {
 			var presence = spirit.Presence;
-			int count = presence.CountOn(src);
+			int count = presence.CountOn( srcTokens );
 			presence.Adjust(src, -count);
 			presence.Adjust(dst, count);
 		}

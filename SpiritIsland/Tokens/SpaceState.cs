@@ -196,7 +196,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 		this[removingArgs.Token] -= removingArgs.Count;
 
 		// Post-Remove event
-		var removedArgs = new TokenRemovedArgs( removingArgs.Token, reason, actionId, Space, removingArgs.Count );
+		var removedArgs = new TokenRemovedArgs( removingArgs.Token, reason, actionId, this, removingArgs.Count );
 		await tokenApi.Publish_Removed( removedArgs );
 
 		return removedArgs;
@@ -213,7 +213,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 		if( token.Class == TokenType.Dahan) {
 			Token removedToken = await Dahan.Bind( actionId ).Remove1( RemoveReason.MovedFrom, token );
 			if(removedToken == null) return;
-			removedArgs = new TokenRemovedArgs( removedToken, RemoveReason.MovedFrom, actionId, Space, 1); // !!!
+			removedArgs = new TokenRemovedArgs( removedToken, RemoveReason.MovedFrom, actionId, this, 1); // !!!
 		} else
 			removedArgs = await Remove( token,1,actionId, RemoveReason.MovedFrom );
 
@@ -225,7 +225,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 		await tokenApi.Publish_Moved( new TokenMovedArgs {
 			Token = token,
 			Class = token.Class,
-			RemovedFrom = Space,
+			RemovedFrom = this,
 			AddedTo = dstTokens,
 			Count = 1,
 			ActionId = actionId

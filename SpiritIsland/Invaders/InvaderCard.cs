@@ -36,7 +36,7 @@ public class InvaderCard : IOption, IInvaderCard {
 
 	public async Task Ravage( GameState gs ) {
 		gs.Log( new InvaderActionEntry( "Ravaging:" + Text ) );
-		var ravageSpaces = gs.AllActiveSpaces.Where( Matches ).Select( x => x.Space ).ToList();
+		var ravageSpaces = gs.AllActiveSpaces.Where( Matches ).ToList();
 
 		// Modify / Adjust
 		var actionId = Guid.NewGuid();
@@ -44,7 +44,7 @@ public class InvaderCard : IOption, IInvaderCard {
 
 		// find ravage spaces that have invaders
 		InvaderBinding[] ravageGroups = ravageSpaces
-			.Select( x=>gs.Invaders.On(x,actionId) )
+			.Select( x=>gs.Invaders.On(x.Space,actionId) )
 			.Where( group => group.Tokens.HasInvaders() )
 			.Cast<InvaderBinding>()
 			.ToArray();
@@ -79,7 +79,7 @@ public class InvaderCard : IOption, IInvaderCard {
 		// Modify
 		await gameState.PreBuilding.InvokeAsync( new BuildingEventArgs(
 			gameState,
-			spacesWithBuildTokens.Select( x => x.Space ).ToArray()
+			spacesWithBuildTokens.ToArray()
 		) );
 
 		// report spaces that did not get built on.

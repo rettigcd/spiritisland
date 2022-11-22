@@ -47,7 +47,9 @@ public class LureOfTheDeepWilderness : Spirit {
 	}
 
 	async Task EnthrallTheForeignExplorers( RavagingEventArgs args ) {
-		var ravageSpacesWithPresence = args.Spaces.Intersect(this.Presence.Spaces).ToArray();
+		var ravageSpacesWithPresence = args.Spaces.Select(x=>x.Space)
+			.Intersect(this.Presence.Spaces)
+			.ToArray();
 		var selfCtx = this.Bind( args.GameState, args.ActionId );
 		foreach(var space in ravageSpacesWithPresence)
 			await EntralExplorersOnSpace( selfCtx.Target(space) );

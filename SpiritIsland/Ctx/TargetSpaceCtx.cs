@@ -363,7 +363,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 	public bool HasSelfPresence => Self.Presence.Spaces.Contains(Space);
 
-	public int PresenceCount => Self.Presence.CountOn(Space);
+	public int PresenceCount => Self.Presence.CountOn(Tokens);
 
 	public bool IsPresent => Self.Presence.IsOn( Space );
 

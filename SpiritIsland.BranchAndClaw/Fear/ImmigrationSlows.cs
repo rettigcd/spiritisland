@@ -13,12 +13,12 @@ public class ImmigrationSlows : IFearOptions {
 
 			// !! If this goes after something else has already removed the lowest # build, this will remove a higher # land.
 			var spacesToSkip = args.SpacesWithBuildTokens
-				.GroupBy( s => s.Board )
-				.SelectMany( grp => grp.OrderBy( x => x.Label ).Take( 1 ) )
+				.GroupBy( s => s.Space.Board )
+				.SelectMany( grp => grp.OrderBy( x => x.Space.Label ).Take( 1 ) )
 				.ToArray();
 
 			foreach(var space in spacesToSkip)
-				args.GameState.AdjustTempToken(space, BuildStopper.Default( Name ) ); // !!! replace event handler with token that does the lowest #d land check
+				args.GameState.AdjustTempToken(space.Space, BuildStopper.Default( Name ) ); // !!! replace event handler with token that does the lowest #d land check
 
 		} );
 

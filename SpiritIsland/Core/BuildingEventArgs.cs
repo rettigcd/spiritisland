@@ -2,14 +2,14 @@
 
 public class BuildingEventArgs {
 
-	public BuildingEventArgs(GameState gs,Space[] spacesWithBuildTokens) {
+	public BuildingEventArgs(GameState gs,SpaceState[] spacesWithBuildTokens) {
 		GameState = gs;
 		SpacesWithBuildTokens = spacesWithBuildTokens;
 	}
 
 	public GameState GameState { get; }
 
-	public Space[] SpacesWithBuildTokens { get; }
+	public SpaceState[] SpacesWithBuildTokens { get; }
 
 }
 
@@ -19,8 +19,8 @@ public class RavagingEventArgs {
 		ActionId = actionId;
 	}
 	public GameState GameState { get; }
-	public List<Space> Spaces;
-	public void Skip1(Space space) => Spaces.Remove(space);
+	public List<SpaceState> Spaces;
+	public void Skip1(SpaceState space) => Spaces.Remove(space);
 	public Guid ActionId { get; }
 }
 

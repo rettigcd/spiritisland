@@ -88,26 +88,28 @@ public class ASpreadOfRampantGreen : Spirit {
 	async Task ChokeTheLandWithGreen_Build( BuildingEventArgs args ) {
 		// !!! This is out of order.
 		// Needs to come after Fear-stops and Power-Stops
-		Space[] buildSpaces = args.SpacesWithBuildTokens.Where( k => args.GameState.Tokens[k][TokenType.DoBuild] > 0 ).ToArray();
-		Space[] stopped = await ChokeTheLandWithGreenAction( args.GameState, buildSpaces, "build" ); 
+		SpaceState[] buildSpaces = args.SpacesWithBuildTokens.Where( k => k[TokenType.DoBuild] > 0 ).ToArray();
+		SpaceState[] stopped = await ChokeTheLandWithGreenAction( args.GameState, buildSpaces, "build" ); 
 		foreach(var s in stopped)
-			args.GameState.AdjustTempToken( s, BuildStopper.Default( ChokeTheLandWithGreen.Title ) );
+			args.GameState.AdjustTempToken( s.Space, BuildStopper.Default( ChokeTheLandWithGreen.Title ) );
 	}
 
-	async Task<Space[]> ChokeTheLandWithGreenAction( GameState gs, Space[] spaces, string actionText ) {
+	async Task<SpaceState[]> ChokeTheLandWithGreenAction( GameState gs, SpaceState[] spaces, string actionText ) {
 
-		var stoppable = spaces.Intersect( Presence.SacredSites( gs, gs.Island.Terrain_ForPower ) ).ToList();
+		var stoppable = spaces.Select(x=>x.Space)
+			.Intersect( Presence.SacredSites( gs, gs.Island.Terrain_ForPower ) )
+			.ToList();
 		bool costs1 = gs.BlightCard.CardFlipped;
 		int maxStoppable = costs1 ? Energy : int.MaxValue;
 
-		var skipped = new List<Space>();
+		var skipped = new List<SpaceState>();
 		while(maxStoppable > 0 && stoppable.Count > 0) {
 			var stop = await this.Action.Decision( new Select.Space( $"Stop {actionText} by destroying 1 presence", stoppable.ToArray(), Present.Done ) );
 			if(stop == null) break;
 
 			await Presence.Destroy( stop, gs, DestoryPresenceCause.DahanDestroyed ); // it is the invader actions we are stopping
 
-			skipped.Add( stop );
+			skipped.Add( gs.Tokens[stop] );
 			stoppable.Remove( stop );
 			--maxStoppable;
 

@@ -66,7 +66,7 @@ public class Thunderspeaker : Spirit {
 
 		int numToDestroy = args.Count;
 		Space[] options;
-		Space[] Intersect() => args.GameState.Tokens[args.Space].Range( 1 ).Select(x=>x.Space)
+		Space[] Intersect() => args.Space.Range( 1 ).Select(x=>x.Space)
 			.Intersect( Presence.Spaces ).ToArray();
 
 		while(numToDestroy-->0 && (options=Intersect()).Length > 0) {

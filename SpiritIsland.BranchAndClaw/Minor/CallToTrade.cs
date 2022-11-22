@@ -25,10 +25,10 @@ public class CallToTrade {
 	static void FirstRavageBecomesABuild( TargetSpaceCtx ctx ) {
 
 		ctx.GameState.PreRavaging.ForRound.Add( (args)=>{
-			if(!args.Spaces.Contains( ctx.Space )) return;
+			if(!args.Spaces.Contains( ctx.Tokens )) return;
 
 			// Stop Ravage
-			args.Skip1(ctx.Space); // Stop Ravage
+			args.Skip1(ctx.Tokens); // Stop Ravage
 			// Add Build
 			ctx.Tokens.Adjust(TokenType.DoBuild,1);
 

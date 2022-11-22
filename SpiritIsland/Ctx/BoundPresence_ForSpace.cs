@@ -16,7 +16,7 @@ public class BoundPresence_ForSpace : BoundPresence {
 
 	public bool IsHere       => ctx.Self.Presence.IsOn( ctx.Space );
 
-	public int Count => ctx.Self.Presence.CountOn(ctx.Space);
+	public int Count => ctx.Self.Presence.CountOn(ctx.Tokens);
 
 	public async Task PlaceDestroyedHere( int count = 1 ) {
 		count = Math.Min(count, ctx.Self.Presence.Destroyed);

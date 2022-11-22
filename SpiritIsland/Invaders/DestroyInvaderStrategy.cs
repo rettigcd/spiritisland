@@ -11,10 +11,11 @@ public class DestroyInvaderStrategy {
 
 		var reason = fromRavage ? RemoveReason.DestroyedInBattle : RemoveReason.Destroyed;
 
-		await gs.Tokens[space].Destroy( token, 1, actionId );
+		var tokens = gs.Tokens[space];
+		await tokens.Destroy( token, 1, actionId );
 
 		// !!! see if we can invoke this through the Token-Publish API instead - so we can make TokenRemovedArgs internal to Island_Tokens class
-		await gs.Tokens.TokenRemoved.InvokeAsync( new TokenRemovedArgs( token, reason, actionId, space, 1 ) { GameState = gs } );
+		await gs.Tokens.TokenRemoved.InvokeAsync( new TokenRemovedArgs( token, reason, actionId, tokens, 1 ) { GameState = gs } );
 
 		// Don't assert token is destroyed (from damage) because it is possible to destory healthy tokens
 

@@ -10,8 +10,8 @@ public class TradeSuffers : IFearOptions {
 	public Task Level1( FearCtx ctx ) {
 		ctx.GameState.PreBuilding.ForRound.Add( ( args ) => {
 			foreach(var space in args.SpacesWithBuildTokens) {
-				if(0 < args.GameState.Tokens[space].Sum(Invader.City))
-					args.GameState.AdjustTempToken( space, BuildStopper.StopAll( Name ) );
+				if(0 < space.Sum(Invader.City))
+					args.GameState.AdjustTempToken( space.Space, BuildStopper.StopAll( Name ) );
 			}
 		} );
 		return Task.CompletedTask;

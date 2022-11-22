@@ -8,7 +8,7 @@ internal class RainAndMudSupressConflict {
 	[InnateOption( Tier1Elements, "Each of your Presence grants Defend 1 and lowers Dahan counterattack damage by 1. (Total, in its land.)", 0 )]
 	static public Task MakeThingsMuddy( SelfCtx ctx ) {
 		// Each of your Presence grants Defend 1
-		ctx.GameState.Tokens.Dynamic.ForRound.Register( sp => ctx.Self.Presence.CountOn( sp.Space ), TokenType.Defend );
+		ctx.GameState.Tokens.Dynamic.ForRound.Register( sp => ctx.Self.Presence.CountOn( sp ), TokenType.Defend );
 		// lowers Dahan counterattack damage by 1
 		LowerDahanCounterAttackPerPresence( ctx );
 		return Task.CompletedTask;
@@ -49,7 +49,7 @@ internal class RainAndMudSupressConflict {
 		// !! This is suppose to be dynamic as presence is added / removed.
 		ctx.GameState.PreRavaging.ForRound.Add( args => {
 			foreach(var space in args.Spaces)
-				args.GameState.ModifyRavage( space, cfg => cfg.AttackersDefend += ctx.Self.Presence.CountOn( space ) );
+				args.GameState.ModifyRavage( space.Space, cfg => cfg.AttackersDefend += ctx.Self.Presence.CountOn( space ) );
 		} );
 	}
 

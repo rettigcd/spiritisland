@@ -143,7 +143,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 		// Calc side effects
 		bool isFirstBlight = args.Space.Blight.Count == 1;
-		var effect = new AddBlightEffect { DestroyPresence = true, Cascade = !isFirstBlight, GameState = this, Space = args.Space.Space };
+		var effect = new AddBlightEffect { DestroyPresence = true, Cascade = !isFirstBlight, GameState = this, Space = args.Space };
 		await ModifyBlightAddedEffect.InvokeAsync(effect);
 
 		// Destory presence
@@ -193,9 +193,10 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	public void SkipRavage( Space space, Func<GameState,SpaceState,Task> altAction = null ) {
 		PreRavaging.ForRound.Add( async ( args ) => {
-			args.Skip1(space);
+			var spaceState = Tokens[space];
+			args.Skip1(spaceState);
 			if(altAction != null)
-				await altAction( this, Tokens[space] );
+				await altAction( this, spaceState );
 		} );
 	}
 
@@ -453,5 +454,5 @@ public class AddBlightEffect {
 	public bool DestroyPresence;
 
 	public GameState GameState;
-	public Space Space;
+	public SpaceState Space;
 }

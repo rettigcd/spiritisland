@@ -513,7 +513,7 @@ public partial class IslandControl : Control {
 		DrawInvaderRow( graphics, x, ref y, iconWidth, xStep, spaceState );
 
 		// Presence
-		int presenceCount = spirit.Presence.CountOn( spaceState.Space );
+		int presenceCount = spirit.Presence.CountOn( spaceState );
 		bool isSS = spirit.Presence.SacredSites( this.gameState, this.gameState.Island.Terrain ).Contains( spaceState.Space );
 		// dahan & blight
 		List<Token> row2Tokens = new List<Token> { TokenType.Defend, TokenType.Blight }; // These don't show up in .OfAnyType if they are dynamic

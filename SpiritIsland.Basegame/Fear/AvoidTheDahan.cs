@@ -22,9 +22,9 @@ public class AvoidTheDahan : IFearOptions {
 	public Task Level2( FearCtx ctx ) {
 		ctx.GameState.PreBuilding.ForRound.Add( ( args ) => {
 			foreach(var space in args.SpacesWithBuildTokens) {
-				var tokens = args.GameState.Tokens[space];
+				var tokens = space;
 				if(tokens.SumAny(Invader.City,Invader.Town) < tokens.Dahan.Count)
-					args.GameState.AdjustTempToken( space, BuildStopper.StopAll( Name ) );
+					args.GameState.AdjustTempToken( space.Space, BuildStopper.StopAll( Name ) );
 			}
 		} );
 
@@ -35,8 +35,8 @@ public class AvoidTheDahan : IFearOptions {
 	public Task Level3( FearCtx ctx ) {
 		ctx.GameState.PreBuilding.ForRound.Add( ( args ) => {
 			foreach(var space in args.SpacesWithBuildTokens) {
-				if(0 < args.GameState.Tokens[space].Dahan.Count)
-					args.GameState.AdjustTempToken( space, BuildStopper.StopAll( Name ) );
+				if(0 < space.Dahan.Count)
+					args.GameState.AdjustTempToken( space.Space, BuildStopper.StopAll( Name ) );
 			}
 		} );
 		return Task.CompletedTask;

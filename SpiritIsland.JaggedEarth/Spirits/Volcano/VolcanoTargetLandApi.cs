@@ -8,7 +8,9 @@ class VolcanoTargetLandApi : DefaultRangeCalculator {
 
 		// Add towers
 		if(powerType != TargettingFrom.Innate) {
-			var towers = ctx.GameState.Tokens.PowerUp( ctx.Self.Presence.Placed.Where( s => 3 <= ctx.Self.Presence.CountOn( s ) ) ).ToArray();
+			var powerUpSpaces = ctx.GameState.AllActiveSpaces
+				.Where( s => 3 <= ctx.Self.Presence.CountOn( s ) );
+			var towers = ctx.GameState.Tokens.PowerUp( powerUpSpaces.Select(x=>x.Space) ).ToArray();
 			if(towers.Length > 0)
 				spaces.AddRange( base.GetTargetOptionsFromKnownSource( ctx, powerType, towers, new TargetCriteria( targetCriteria.Range + 1, targetCriteria.Filter ) ) );
 		}
