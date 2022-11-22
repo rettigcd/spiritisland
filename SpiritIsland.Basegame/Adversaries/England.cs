@@ -75,7 +75,7 @@ public class England : IAdversary {
 			// Finds the space on each board with the most town/city.
 			// When multiple town/city have max #, picks the one closests to the coast (for simplicity)
 			Space[] buildSpaces = gs.AllActiveSpaces
-				.Select( ss => new { Space = ss.Space, Count = ss.SumAny( Invader.Town, Invader.City ) } )
+				.Select( ss => new { ss.Space, Count = ss.SumAny( Invader.Town, Invader.City ) } )
 				.Where( x => x.Count > 0 )
 				.GroupBy( x => x.Space.Board )
 				.Select( grp => grp.OrderByDescending( x => x.Count ).ThenBy( x => x.Space.Text ).First().Space )

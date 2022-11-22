@@ -4,7 +4,7 @@ namespace SpiritIsland.Tests;
 
 public class AbsoluteStasis_Tests {
 
-	ConfigurableTestFixture cfg = new ConfigurableTestFixture();
+	readonly ConfigurableTestFixture cfg = new ConfigurableTestFixture();
 
 	// Cannot target Oceans, even if they are in play.
 	[Fact]
@@ -130,7 +130,7 @@ public class AbsoluteStasis_Tests {
 		InvaderCardEx.For(destination).Explore(cfg.GameState).Wait(8);
 
 		//  Then: no explorers in Jungle spaces.
-		cfg.GameState.Tokens[destination].OfType(Invader.Explorer).Count().ShouldBe( 0 );
+		cfg.GameState.Tokens[destination].OfType(Invader.Explorer).Length.ShouldBe( 0 );
 	}
 
 	// Invaders Don't Explore Into / out of
@@ -149,7 +149,7 @@ public class AbsoluteStasis_Tests {
 		InvaderCardEx.For( destination ).Explore( cfg.GameState ).Wait( 8 );
 
 		//  Then: no explorers in Jungle spaces.
-		cfg.GameState.Tokens[destination].OfType( Invader.Explorer ).Count().ShouldBe( 0 );
+		cfg.GameState.Tokens[destination].OfType( Invader.Explorer ).Length.ShouldBe( 0 );
 	}
 
 	// Invaders Don't Build
@@ -214,7 +214,7 @@ public class AbsoluteStasis_Tests {
 			cfg.Spirit.Presence.Destroy( destroyPresenceSpace, cfg.GameState, DestoryPresenceCause.SpiritPower ).Wait();
 			//  When: we check win/loss
 			cfg.GameState.CheckWinLoss();
-		} catch( GameOverException ex) {
+		} catch( GameOverException ) {
 			// Then: no game-over exception is thrown and we get here
 			throw new ShouldAssertException( "CheckWinLoss should not have thrown GameOverException." );
 		}
@@ -265,7 +265,7 @@ public class AbsoluteStasis_Tests {
 	}
 
 	void Assert_SpaceHasCountTokens( Space space, TokenClass tokenClass, int expectedCount ) {
-		cfg.GameState.Tokens[space].OfType( tokenClass ).Count().ShouldBe( expectedCount );
+		cfg.GameState.Tokens[space].OfType( tokenClass ).Length.ShouldBe( expectedCount );
 	}
 
 }

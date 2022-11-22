@@ -13,7 +13,6 @@ public class SpaceLayout {
 	public PointF Center { get; private set; } // set is public for manual adjustment
 
 	public void AdjustCenter( float deltaX, float deltaY ) {
-		var p = Center;
 		Center = new PointF( Center.X+deltaX, Center.Y +deltaY );
 	}
 	public void ReMap( PointMapper mapper ) {

@@ -122,18 +122,6 @@ public class BoardLayout {
 
 	#endregion
 
-	static PointF FindCenterOfSpacePoints( PointF[] spacePoints ) {
-		float maxX = -1000f, maxY = -1000f, minX = 1000f, minY = 1000f;
-		foreach(var p in spacePoints) {
-			if(p.X < minX) minX = p.X;
-			if(p.Y < minY) minY = p.Y;
-			if(p.X > maxX) maxX = p.X;
-			if(p.Y > maxY) maxY = p.Y;
-		}
-		var center = new PointF( (minX + maxX) * .5f, (minY + maxY) * .5f );
-		return center;
-	}
-
 	static public BoardLayout BoardA() {
 
 		// Edge points with ocean

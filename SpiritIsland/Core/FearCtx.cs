@@ -42,7 +42,7 @@ public static class FearCtxExtensionForBac {
 
 	// Extension to SpiritGameStateCtx
 	public static async Task<SpaceState> AddStrifeToOne( this SelfCtx spirit, IEnumerable<SpaceState> options, params TokenClass[] groups ) {
-		bool HasInvaders( SpaceState s ) => s.HasInvaders();
+		static bool HasInvaders( SpaceState s ) => s.HasInvaders();
 		TargetSpaceCtx spaceCtx = await spirit.SelectSpace( "Add strife", options.Where( HasInvaders ).Select(x=>x.Space) );
 		if(spaceCtx != null)
 			await spaceCtx.AddStrife( groups );

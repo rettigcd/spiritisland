@@ -173,8 +173,7 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 
 	public IOption[] ChoiceOptions{ get {
 		var decision = Spirit.Action.GetCurrent( true );
-		if(decision == null) throw new Exception( "no Decision presented." );
-		return decision.Options;
+			return decision != null ? decision.Options : throw new Exception( "no Decision presented." );
 	} }
 
 	public void ChoosePush( Token token, Space destination ) {

@@ -8,7 +8,7 @@ public partial class Board {
 
 	// These cannot be reused because when they get connected to other boards, 
 	// there neighbor state changes.
-	static public string[] AvailableBoards = { "A", "B", "C", "D" };
+	static readonly public string[] AvailableBoards = { "A", "B", "C", "D" };
 	static public Board BuildBoard(string boardName) {
 		return boardName switch {
 			"A" => SpiritIsland.Board.BuildBoardA(),
