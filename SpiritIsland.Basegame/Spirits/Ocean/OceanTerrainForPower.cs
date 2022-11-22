@@ -14,7 +14,6 @@ public class OceanTerrainForPower : TerrainMapper {
 
 	#endregion
 
-	// public override Terrain GetTerrain( Space space ) => IsOceansOcean( space ) ? Terrain.Wetland : space.Terrain;
 	public override bool MatchesTerrain( Space space, params Terrain[] options ) 
 		=> IsOceansOcean( space ) 
 			? options.Contains( Terrain.Wetland ) 

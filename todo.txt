@@ -19,15 +19,15 @@ Is In Play
 ==========================
 ====  Clean Up Items  ====
 ==========================
-4 Switch everything that uses Space to use SpaceState
+4a Fold Terrain Mappers into SpaceState
+	4b Move Presence into SpaceState
+	4c Switch everything that uses Space to use SpaceState
 4 ForgetCard - rename ForgetCard to ForgetCard_UserChoice AND/OR Consolidate the 2 ForgetCard methods into 1
 4 CardDrawer - get rid of power progression cards in tests, then make Card Drawer private and clean it up.
 4 Draw back side of Invader Cards
 4 Draw Adversary details
 
-3 Move Presence into SpaceState
 3 Make Virtual / Calculated Tokens work for types other than Defense
-3 Fold Terrain Mappers into SpaceState
 3 Switch Explore & Ravage over to use Explore Tokens and Ravage Tokens
 3 Convert all Fear Cards to Commands
 3 Review items that are PickSpace then Pick Token into a single pick-space-token step.

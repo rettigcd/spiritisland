@@ -30,7 +30,7 @@ public class Tokens_ForIsland : IIslandTokenApi {
 	public SpaceState this[Space space] {
 		get {
 			if(!tokenCounts.ContainsKey( space )) {
-				tokenCounts[space] = new SpaceState( space, new CountDictionary<Token>(), this );
+				tokenCounts[space] = new SpaceState( space, new CountDictionary<Token>(), this, this.gameStateForEventArgs );
 			}
 			return tokenCounts[space];
 		}

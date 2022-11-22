@@ -7,10 +7,11 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	#region constructor
 
-	public SpaceState( Space space, CountDictionary<Token> counts, IIslandTokenApi tokenApi ) {
+	public SpaceState( Space space, CountDictionary<Token> counts, IIslandTokenApi tokenApi, GameState gameState ) {
 		this.Space = space;
 		this.counts = counts;
 		this.tokenApi = tokenApi;
+		this.gameState = gameState;
 	}
 
 	/// <summary> Clone / copy constructor </summary>
@@ -103,6 +104,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	public readonly CountDictionary<Token> counts; // !!! public for Tokens_ForIsland Memento, create own momento.
 	readonly IIslandTokenApi tokenApi;
+	readonly GameState gameState; // !! merge this usage into token api, I guess.  Here for access to island.
 
 	#endregion
 
@@ -286,6 +288,9 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	}
 
 	public IEnumerable<SpaceState> Adjacent => PowerUp( Space.Adjacent );
+
+	public IEnumerable<SpaceState> CascadingBlightOptions => Adjacent
+		 .Where(x => !this.gameState.Island.Terrain_ForBlight.MatchesTerrain(x.Space, Terrain.Ocean) );
 
 	public IEnumerable<SpaceState> Range(int maxDistance) => this.CalcDistances( maxDistance ).Keys;
 		
