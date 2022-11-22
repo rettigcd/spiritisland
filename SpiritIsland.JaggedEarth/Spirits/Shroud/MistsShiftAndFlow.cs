@@ -167,8 +167,8 @@ class MistsShiftAndFlow {
 		public IEnumerable<Space> Spaces(GameState _) => this.Keys;
 		public IEnumerable<SpaceState> SpaceStates( GameState gs ) => this.Keys.Select(x=>gs.Tokens[x]);
 
-		public IEnumerable<Space> SacredSites( TerrainMapper _ ) => this.Keys.Where(k=>this[k]>1);
 		public IEnumerable<Space> SacredSites( GameState _, TerrainMapper _1 ) => this.Keys.Where( k => this[k] > 1 );
+		public IEnumerable<SpaceState> SacredSiteStates( GameState gs, TerrainMapper _1 ) => this.Keys.Where( k => this[k] > 1 ).Select(x=>gs.Tokens[x]);
 	}
 
 }

@@ -9,7 +9,7 @@ public interface IPresenceTrack {
 	IReadOnlyCollection<Track> Slots { get; }
 
 	// Modify/Act
-	void AddElements( ElementCounts elements );
+	void AddElementsTo( ElementCounts elements );
 	Task<bool> Reveal( Track track, GameState gameState );
 	bool Return( Track track );
 	AsyncEvent<TrackRevealedArgs> TrackRevealed { get; }

@@ -452,7 +452,7 @@ public abstract class Spirit : IOption {
 
 	public void InitElementsFromPresence() {
 		Elements.Clear();
-		Presence.AddElements( Elements );
+		Elements.Add( Presence.TrackElements() );
 	}
 
 	// pluggable, draw power card, or powerprogression

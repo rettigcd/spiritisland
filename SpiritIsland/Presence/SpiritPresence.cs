@@ -157,12 +157,12 @@ public class SpiritPresence : IKnowSpiritLocations {
 
 	public int CardPlayCount { get; private set; }
 
-	public ElementCounts AddElements( ElementCounts elements=null ) {
-		if(elements==null) elements = new ElementCounts();
-		Energy.AddElements( elements );
-		CardPlays.AddElements( elements);
+	public ElementCounts TrackElements { get {
+		var elements = new ElementCounts();
+		Energy.AddElementsTo( elements );
+		CardPlays.AddElementsTo( elements);
 		return elements;
-	}
+	} }
 
 	#endregion
 
@@ -173,9 +173,12 @@ public class SpiritPresence : IKnowSpiritLocations {
 	public bool IsOn( SpaceState space ) => space[presenceToken]>0;
 	public virtual bool IsSacredSite( SpaceState space ) => 2 <= space[presenceToken];
 	public int CountOn( SpaceState space ) => space[presenceToken];
-	public virtual IEnumerable<Space> SacredSites( GameState gs, TerrainMapper _ ) => gs.AllActiveSpaces
-		.Where( IsSacredSite )
-		.Select( s => s.Space );
+
+	public IEnumerable<Space> SacredSites( GameState gs, TerrainMapper tm ) 
+		=> SacredSiteStates(gs,tm).Select( s => s.Space );
+	public virtual IEnumerable<SpaceState> SacredSiteStates( GameState gs, TerrainMapper _ ) => gs.AllActiveSpaces
+		.Where( IsSacredSite );
+
 	public virtual Task PlaceOn( SpaceState space ) {
 		space.Adjust(presenceToken,1);
 		return Task.CompletedTask;
@@ -207,7 +210,6 @@ public class SpiritPresence : IKnowSpiritLocations {
 		return ss.Select( x => x.Space );
 	}
 	public IEnumerable<SpaceState> SpaceStates( GameState gs ) => gs.AllActiveSpaces.Where( IsOn );
-
 
 	public DualAsyncEvent<TrackRevealedArgs> TrackRevealed { get; } = new DualAsyncEvent<TrackRevealedArgs>();
 

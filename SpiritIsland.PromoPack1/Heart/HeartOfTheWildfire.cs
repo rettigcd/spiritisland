@@ -94,7 +94,7 @@ public class HeartOfTheWildfire : Spirit {
 			// !!! There is a bug here somehow that after placeing the 2nd fire, track, still returned only 1 
 			// !! maybe we need to make Elements smarter so it is easier to calculate, like breaking it into:
 			//	(track elements, prepared elements, card elements)
-			int fireCount = AddElements()[Element.Fire];
+			int fireCount = TrackElements[Element.Fire];
 
 			var ctx = spirit.Bind( gs, Guid.NewGuid() ).Target( to );
 			// For each fire showing, do 1 damage

@@ -11,6 +11,11 @@ public class ElementCounts : CountDictionary<Element> {
 
 	#endregion
 
+	public void Add(ElementCounts counts ) {
+		foreach(var pair in counts)
+			this[pair.Key] += pair.Value;
+	}
+
 	public new ElementCounts Clone() {
 		var clone = new ElementCounts();
 		foreach(var invader in Keys)

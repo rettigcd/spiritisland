@@ -15,9 +15,9 @@ public class CompoundPresenceTrack : IPresenceTrack {
 
 	public IReadOnlyCollection<Track> Slots => parts.SelectMany(p=>p.Slots).ToArray();
 
-	public void AddElements( ElementCounts elements ) {
+	public void AddElementsTo( ElementCounts elements ) {
 		foreach(var part in parts)
-			part.AddElements( elements );
+			part.AddElementsTo( elements );
 	}
 
 	public async Task<bool> Reveal( Track track, GameState gs ) {
