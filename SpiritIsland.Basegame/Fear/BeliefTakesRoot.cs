@@ -14,7 +14,7 @@ public class BeliefTakesRoot : IFearOptions {
 
 	static void Defend2WherePresence( FearCtx ctx ) {
 		GameState gs = ctx.GameState;
-		foreach(var space in gs.Spirits.SelectMany( s => s.Presence.Spaces(ctx.GameState) ).Distinct())
+		foreach(var space in gs.Spirits.SelectMany( s => s.BindMyPower(ctx.GameState).Presence.Spaces ).Distinct())
 			gs.Tokens[space].Defend.Add(2);
 	}
 

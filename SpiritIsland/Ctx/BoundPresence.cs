@@ -1,35 +1,42 @@
 ﻿namespace SpiritIsland;
 
 /// <summary> High level Presence Methods for API </summary>
-public class BoundPresence {
+public class BoundPresence : IKnowSpiritLocations {
 
 	#region constructor
 
 	public BoundPresence(SelfCtx ctx) { this.ctx = ctx; }
 	readonly SelfCtx ctx;
+	SpiritPresence _inner => ctx.Self.Presence;
+	GameState _gameState => ctx.GameState;
 
 	#endregion
 
-	public IEnumerable<Space> SacredSites => ctx.Self.Presence.SacredSites( ctx.GameState, ctx.TerrainMapper );
+	public IEnumerable<Space> SacredSites => _inner.SacredSites( _gameState, ctx.TerrainMapper );
+	public void Move( Space from, Space to ) => _inner.Move(from,to, _gameState );
+	public void PlaceOn( Space space ) => _inner.PlaceOn( _gameState.Tokens[space] );
+	public Task Destroy( Space space, DestoryPresenceCause actionType ) => _inner.Destroy( space, _gameState, actionType );
+	public Task RemoveFrom( Space space ) => _inner.RemoveFrom( space, _gameState ); // Generally used for Replacing
+	public bool CanBePlacedOn( Space space ) => _inner.CanBePlacedOn( ctx.TerrainMapper, _gameState.Tokens[space] );
+	public IEnumerable<Space> Spaces => _inner.Spaces( _gameState );
 
-	// Used for Move, Gather, and Push presence
-	public void Move( Space from, Space to ) => ctx.Self.Presence.Move(from,to,ctx.GameState);
+	IEnumerable<Space> IKnowSpiritLocations.Spaces => _inner.Spaces(_gameState);
+	public IEnumerable<SpaceState> SpaceStates => _inner.SpaceStates(_gameState);
+	IEnumerable<Space> IKnowSpiritLocations.SacredSites => _inner.SacredSites( _gameState, ctx.TerrainMapper );
+	public IEnumerable<SpaceState> SacredSiteStates => _inner.SacredSiteStates(_gameState, ctx.TerrainMapper);
 
-	public async Task<(Space,Space)> PushUpTo1() {
+	#region Higher Order
+
+	public async Task<(Space, Space)> PushUpTo1() {
 		// Select source
 		var source = await ctx.Decision( Select.DeployedPresence.ToPush( ctx.Self, ctx.GameState ) );
-		if(source == null) return (null,null);
+		if(source == null) return (null, null);
 		var sourceCtx = ctx.Target( source );
 		// Select destination
-		var destination = await sourceCtx.Decision( Select.Space.PushPresence( sourceCtx.Space, sourceCtx.Adjacent, Present.Always ));
+		var destination = await sourceCtx.Decision( Select.Space.PushPresence( sourceCtx.Space, sourceCtx.Adjacent, Present.Always ) );
 		Move( source, destination );
 		return (source, destination);
 	}
-
-	#region Place
-
-	// Used for Spirit-Setup 
-	public void PlaceOn(Space space) => ctx.Self.Presence.PlaceOn( ctx.GameState.Tokens[space] );
 
 	/// <summary> Selects: (Source then Destination) for placing presence </summary>
 	/// <remarks> Called from normal PlacePresence Growth + Gift of Proliferation. </remarks>
@@ -47,12 +54,6 @@ public class BoundPresence {
 		var to = await ctx.Decision( Select.Space.ToPlacePresence( destinationOptions, Present.Always ) );
 		await ctx.Self.Presence.Place( from, to, ctx.GameState );
 	}
-
-	#endregion
-
-	#region Destroy 
-
-	public Task Destroy( Space space, DestoryPresenceCause actionType ) => ctx.Self.Presence.Destroy( space, ctx.GameState, actionType );
 
 	public async Task DestroyOneFromAnywhere( DestoryPresenceCause actionType, Func<SpiritIsland.Space, bool> filter = null ) {
 		var space = filter == null
@@ -78,9 +79,6 @@ public class BoundPresence {
 
 	#endregion
 
-	/// <remarks>Used for Absorb Presence and Replacing Presence</remarks>
-	public Task RemoveFrom( Space space ) => ctx.Self.Presence.RemoveFrom( space, ctx.GameState ); // Generally used for Replacing
-
 	#region select Source
 
 	/// <summary> Tries Presence Tracks first, then fails over to placed-presence on Island </summary>
@@ -95,7 +93,6 @@ public class BoundPresence {
 
 	public Task<Space> SelectSacredSite(string prompt)
 		=> ctx.Decision( Select.DeployedPresence.SacredSites(prompt, ctx.GameState, ctx.Self, ctx.TerrainMapper, Present.Always ) );
-		
 
 	#endregion
 
@@ -112,8 +109,6 @@ public class BoundPresence {
 		return ctx.Self.RangeCalc.GetTargetOptionsFromKnownSource( ctx, TargettingFrom.None, source, new TargetCriteria( range, filterEnum) )
 			.Where( CanBePlacedOn );
 	}
-
-	public bool CanBePlacedOn( Space space ) => ctx.Self.Presence.CanBePlacedOn( this.ctx.TerrainMapper, ctx.GameState.Tokens[space] );
 
 	#endregion
 

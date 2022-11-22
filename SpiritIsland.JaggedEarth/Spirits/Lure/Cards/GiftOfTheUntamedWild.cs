@@ -15,7 +15,7 @@ public class GiftOfTheUntamedWild {
 	}
 
 	static async Task Add1WildsToOneOfYourLands( SelfCtx ctx ) {
-		var spaceCtx = await ctx.SelectSpace("Add 1 Wilds",ctx.Self.Presence.Spaces( ctx.GameState ) );
+		var spaceCtx = await ctx.SelectSpace("Add 1 Wilds",ctx.Presence.Spaces );
 		await spaceCtx.Wilds.Add(1);
 	}
 

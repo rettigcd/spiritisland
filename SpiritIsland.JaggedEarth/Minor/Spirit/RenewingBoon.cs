@@ -5,7 +5,7 @@ public class RenewingBoon{
 	[MinorCard("Renewing Boon",0,Element.Sun,Element.Earth,Element.Plant),Slow,AnotherSpirit]
 	static public async Task ActAsync( TargetSpiritCtx ctx ){
 		// Choose a land where you and target Spirit both have presence.
-		var spaceOptions = ctx.Self.Presence.Spaces(ctx.GameState).Intersect( ctx.Other.Presence.Spaces( ctx.GameState ) );
+		var spaceOptions = ctx.Presence.Spaces.Intersect( ctx.OtherCtx.Presence.Spaces );
 		var space = await ctx.Decision(new Select.Space("",spaceOptions,Present.Always));
 		if( space == null) return;
 

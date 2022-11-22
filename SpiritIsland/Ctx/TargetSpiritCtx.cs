@@ -8,6 +8,6 @@ public class TargetSpiritCtx : SelfCtx {
 
 	public Spirit Other { get; }
 
-	public SelfCtx OtherCtx => Other.Bind( GameState, CurrentActionId );
+	public SelfCtx OtherCtx => Other==Self ? this : Other.Bind( GameState, CurrentActionId );
 
 }

@@ -452,7 +452,7 @@ public abstract class Spirit : IOption {
 
 	public void InitElementsFromPresence() {
 		Elements.Clear();
-		Elements.Add( Presence.TrackElements() );
+		Elements.Add( Presence.TrackElements );
 	}
 
 	// pluggable, draw power card, or powerprogression
@@ -633,7 +633,7 @@ public abstract class Spirit : IOption {
 		TargetSourceCriteria sourceCriteria,
 		params TargetCriteria[] targetCriteria // allows different criteria at different ranges
 	) {
-		IEnumerable<Space> sources = SourceCalc.FindSources( gameState, this.Presence, sourceCriteria, gameState.Island.Terrain_ForPower );
+		IEnumerable<Space> sources = SourceCalc.FindSources( gameState, this.BindMyPower(gameState).Presence, sourceCriteria, gameState.Island.Terrain_ForPower );
 
 		var ctx = BindMyPower(gameState); // targetting is always for Power (I think)
 		return targetCriteria

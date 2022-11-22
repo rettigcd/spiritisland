@@ -17,7 +17,7 @@ class EntwinedPresenceSource : ICalcSource {
 		List<Space> sources = new();
 		// Find source of original
 		for(int i = 0; i<spirits.Length; ++i)
-			sources.AddRange(origApis[i].FindSources( gs, spirits[i].Presence, sourceCriteria, mapper ) );
+			sources.AddRange(origApis[i].FindSources( gs, spirits[i].BindMyPower(gs).Presence, sourceCriteria, mapper ) );
 		return sources.Distinct();
 	}
 }

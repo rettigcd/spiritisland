@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class SpiritPresence : IKnowSpiritLocations {
+public class SpiritPresence {
 
 	#region constructors
 
@@ -55,6 +55,33 @@ public class SpiritPresence : IKnowSpiritLocations {
 
 	#endregion
 
+	#region Read-only properties
+
+	public int CardPlayCount { get; private set; }
+
+	public ElementCounts TrackElements {
+		get {
+			var elements = new ElementCounts();
+			Energy.AddElementsTo( elements );
+			CardPlays.AddElementsTo( elements );
+			return elements;
+		}
+	}
+
+	#endregion
+
+	#region nice Predicate methods 
+
+	/// <summary>
+	/// Specifies if the the given space is valid.
+	/// </summary>
+	public virtual bool CanBePlacedOn( TerrainMapper mapper, SpaceState ss ) => mapper.IsInPlay( ss.Space );
+	public bool IsOn( SpaceState space ) => space[presenceToken] > 0;
+	public virtual bool IsSacredSite( SpaceState space ) => 2 <= space[presenceToken];
+	public int CountOn( SpaceState space ) => space[presenceToken];
+
+	#endregion
+
 	#region Game-Play things you can do with presence
 
 	public virtual async Task Place( IOption from, Space to, GameState gs ) {
@@ -71,6 +98,39 @@ public class SpiritPresence : IKnowSpiritLocations {
 			else
 				throw new ArgumentException( "Can't pull from island space:" + from.ToString() );
 		}
+	}
+
+	public async Task RemoveFrom( Space space, GameState gs ) {
+		await RemoveFrom_NoCheck( space, gs );
+		CheckIfSpiritIsDestroyed( gs );
+	}
+
+	public virtual Task ReturnDestroyedToTrack( Track dst, GameState gs ) {
+
+		// src / from
+		if(Destroyed <= 0) throw new InvalidOperationException( "There is no Destroyed presence to return." );
+		--Destroyed;
+
+		// !!! This should reduce card plays or energy but I can't find that anywhere.
+
+		// To
+		return Return( dst );
+	}
+
+	public Task Return( Track dst ) {
+		return (Energy.Return( dst ) || CardPlays.Return( dst ))
+			? Task.CompletedTask
+			: throw new ArgumentException( "Unable to find location to restore presence" );
+	}
+
+	public void Move( Space from, Space to, GameState gs ) {
+		RemoveFrom_NoCheck( from, gs );
+		PlaceOn( gs.Tokens[to] );
+	}
+
+	public virtual async Task Destroy( Space space, GameState gs, DestoryPresenceCause actionType, AddReason blightAddedReason = AddReason.None ) {
+		await DestroyBehavior.DestroyPresenceApi( this, space, gs, actionType, Guid.NewGuid() ); // !!! pass in the actionID!
+		CheckIfSpiritIsDestroyed( gs );
 	}
 
 	protected virtual async Task RevealTrack( Track track, GameState gs ) {
@@ -98,34 +158,6 @@ public class SpiritPresence : IKnowSpiritLocations {
 			CardPlayCount = track.CardPlay.Value;
 	}
 
-	public virtual Task ReturnDestroyedToTrack( Track dst, GameState gs ) {
-
-		// src / from
-		if(Destroyed <=0 ) throw new InvalidOperationException("There is no Destroyed presence to return.");
-		--Destroyed;
-
-		// !!! This should reduce card plays or energy but I can't find that anywhere.
-
-		// To
-		return Return(dst);
-	}
-
-	public Task Return( Track dst ) {
-		return (Energy.Return( dst ) || CardPlays.Return( dst ))
-			? Task.CompletedTask
-			: throw new ArgumentException( "Unable to find location to restore presence" );
-	}
-
-	public void Move( Space from, Space to, GameState gs ) {
-		RemoveFrom_NoCheck( from, gs );
-		PlaceOn( gs.Tokens[to] );
-	}
-
-	public virtual async Task Destroy( Space space, GameState gs, DestoryPresenceCause actionType, AddReason blightAddedReason = AddReason.None ) {
-		await DestroyBehavior.DestroyPresenceApi(this,space,gs, actionType, Guid.NewGuid() ); // !!! pass in the actionID!
-		CheckIfSpiritIsDestroyed(gs);
-	}
-
 	void CheckIfSpiritIsDestroyed(GameState gs) {
 		if(!gs.AllSpaces.Any(IsOn))
 			GameOverException.Lost( "Spirit is Destroyed" ); // !! if we had access to the Spirit here, we could say who it was.
@@ -144,40 +176,40 @@ public class SpiritPresence : IKnowSpiritLocations {
 
 	#endregion
 
-	#region Setup / Adjust
-
-	public async Task RemoveFrom( Space space, GameState gs ) {
-		await RemoveFrom_NoCheck( space, gs );
-		CheckIfSpiritIsDestroyed( gs );
-	}
-
-	#endregion
-
-	#region Per Turn stuff
-
-	public int CardPlayCount { get; private set; }
-
-	public ElementCounts TrackElements { get {
-		var elements = new ElementCounts();
-		Energy.AddElementsTo( elements );
-		CardPlays.AddElementsTo( elements);
-		return elements;
-	} }
-
-	#endregion
-
-	/// <summary>
-	/// Specifies if the the given space is valid.
-	/// </summary>
-	public virtual bool CanBePlacedOn( TerrainMapper mapper, SpaceState ss ) => mapper.IsInPlay( ss.Space );
-	public bool IsOn( SpaceState space ) => space[presenceToken]>0;
-	public virtual bool IsSacredSite( SpaceState space ) => 2 <= space[presenceToken];
-	public int CountOn( SpaceState space ) => space[presenceToken];
+	#region Exposed Data
 
 	public IEnumerable<Space> SacredSites( GameState gs, TerrainMapper tm ) 
 		=> SacredSiteStates(gs,tm).Select( s => s.Space );
 	public virtual IEnumerable<SpaceState> SacredSiteStates( GameState gs, TerrainMapper _ ) => gs.AllActiveSpaces
 		.Where( IsSacredSite );
+
+	/// <summary>
+	/// One item for each presence
+	/// </summary>
+	/// <param name="gs"></param>
+	/// <returns></returns>
+	public IReadOnlyCollection<SpaceState> Placed( GameState gs ) {
+
+		// !!! this method is an abomination
+		// Encapsulate this data.
+
+		var placed = new List<SpaceState>();
+		foreach(var space in gs.AllActiveSpaces.Where( IsOn ))
+			for(int i = 0; i < CountOn( space ); ++i)
+				placed.Add( space );
+		return placed.AsReadOnly();
+	}
+
+	// one item for each space that has presence
+	public IEnumerable<Space> Spaces( GameState gs ) {
+		var ss = SpaceStates( gs ).ToArray();
+		return ss.Select( x => x.Space );
+	}
+	public IEnumerable<SpaceState> SpaceStates( GameState gs ) => gs.AllActiveSpaces.Where( IsOn );
+
+	#endregion Exposed Data
+
+	#region Is this Setup or Game play?
 
 	public virtual Task PlaceOn( SpaceState space ) {
 		space.Adjust(presenceToken,1);
@@ -187,29 +219,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 		space.Adjust( presenceToken, count );
 	}
 
-	/// <summary>
-	/// One item for each presence
-	/// </summary>
-	/// <param name="gs"></param>
-	/// <returns></returns>
-	public IReadOnlyCollection<SpaceState> Placed(GameState gs) {
-
-		// !!! this method is an abomination
-		// Encapsulate this data.
-
-		var placed = new List<SpaceState>();
-		foreach(var space in gs.AllActiveSpaces.Where( IsOn ))
-			for(int i=0;i<CountOn(space);++i)
-				placed.Add(space);
-		return placed.AsReadOnly();
-	}
-
-	// one item for each space that has presence
-	public IEnumerable<Space> Spaces(GameState gs ) {
-		var ss = SpaceStates( gs ).ToArray();
-		return ss.Select( x => x.Space );
-	}
-	public IEnumerable<SpaceState> SpaceStates( GameState gs ) => gs.AllActiveSpaces.Where( IsOn );
+	#endregion
 
 	public DualAsyncEvent<TrackRevealedArgs> TrackRevealed { get; } = new DualAsyncEvent<TrackRevealedArgs>();
 

@@ -3,9 +3,9 @@
 /// <summary> Feeds the Source Calculator. </summary>
 public interface IKnowSpiritLocations {
 
-	IEnumerable<Space> Spaces( GameState gs );
-	IEnumerable<SpaceState> SpaceStates(GameState gs);
+	IEnumerable<Space> Spaces { get; }
+	IEnumerable<SpaceState> SpaceStates { get; }
 
-	IEnumerable<Space> SacredSites( GameState gs, TerrainMapper mapper ); // And Special Rules
-	IEnumerable<SpaceState> SacredSiteStates( GameState gs, TerrainMapper mapper ); // And Special Rules
+	IEnumerable<Space> SacredSites { get; } // And Special Rules
+	IEnumerable<SpaceState> SacredSiteStates { get;}  // And Special Rules
 }

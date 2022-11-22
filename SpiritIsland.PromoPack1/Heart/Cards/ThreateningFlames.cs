@@ -12,7 +12,7 @@ public class ThreateningFlames {
 		// 2 fear
 		ctx.AddFear(2);
 
-		var destinations = ctx.Adjacent.Except(ctx.Self.Presence.Spaces( ctx.GameState ) ).ToArray();
+		var destinations = ctx.Adjacent.Except(ctx.Presence.Spaces ).ToArray();
 		if(destinations.Length>0)
 			// Push 1 explorer / town per Terror Level from target land to adjacent lands without your presence
 			await ctx.Pusher

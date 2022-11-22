@@ -125,7 +125,7 @@ class MistsShiftAndFlow {
 	}
 
 	void CalculateSpaceGroups() {
-		var sources = spirit.SourceCalc.FindSources( gameState, spirit.Presence, sourceCriteria, gameState.Island.Terrain_ForPower )
+		var sources = spirit.SourceCalc.FindSources( gameState, spirit.BindMyPower(gameState).Presence, sourceCriteria, gameState.Island.Terrain_ForPower )
 			.Select(s=>gameState.Tokens[s]);
 		this.nonFlowTargets = GetTargetOptionsFromKnownSources( sources );
 		this.flowRange = sources
@@ -162,13 +162,19 @@ class MistsShiftAndFlow {
 
 	// Shroud Helper - for easier testing Targetting
 	class SpaceCounts : CountDictionary<Space>, IKnowSpiritLocations {
+
+		public SpaceCounts(GameState gs ) {
+			_gs = gs;
+		}
+		readonly GameState _gs;
+
 		public SpaceCounts(IEnumerable<Space> spaces ) : base( spaces ) { }
 
-		public IEnumerable<Space> Spaces(GameState _) => this.Keys;
-		public IEnumerable<SpaceState> SpaceStates( GameState gs ) => this.Keys.Select(x=>gs.Tokens[x]);
+		public IEnumerable<Space> Spaces => this.Keys;
+		public IEnumerable<SpaceState> SpaceStates => this.Keys.Select(x=>_gs.Tokens[x]);
 
-		public IEnumerable<Space> SacredSites( GameState _, TerrainMapper _1 ) => this.Keys.Where( k => this[k] > 1 );
-		public IEnumerable<SpaceState> SacredSiteStates( GameState gs, TerrainMapper _1 ) => this.Keys.Where( k => this[k] > 1 ).Select(x=>gs.Tokens[x]);
+		public IEnumerable<Space> SacredSites => this.Keys.Where( k => this[k] > 1 );
+		public IEnumerable<SpaceState> SacredSiteStates => this.Keys.Where( k => this[k] > 1 ).Select(x=>_gs.Tokens[x]);
 	}
 
 }

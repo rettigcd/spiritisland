@@ -19,10 +19,10 @@ public class DeployedPresence : TypedDecision<SpiritIsland.Space>, IHaveAdjacent
 	/// <summary> Targets ALL spaces containing deployed presence </summary>
 	/// !!! figure out different reasons .All is called and pull some of the generic ones into this class as factory methods
 	static public DeployedPresence All(string prompt, SpiritIsland.Spirit spirit, GameState gs, Present present )
-		=> new DeployedPresence( prompt, spirit.Presence.Spaces(gs), present);
+		=> new DeployedPresence( prompt, spirit.BindMyPower(gs).Presence.Spaces, present);
 
 	static public DeployedPresence Some(string prompt, SpiritIsland.Spirit spirit, GameState gs, Func<SpiritIsland.Space,bool> filter, Present present )
-		=> new DeployedPresence( prompt, spirit.Presence.Spaces(gs).Where(filter), present);
+		=> new DeployedPresence( prompt, spirit.BindMyPower(gs).Presence.Spaces.Where(filter), present);
 
 	/// <summary> Targets Sacred Sites </summary>
 	static public DeployedPresence SacredSites(string prompt, GameState gs, SpiritIsland.Spirit spirit, TerrainMapper mapper, Present present )

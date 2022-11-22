@@ -73,7 +73,7 @@ public class SelfCtx {
 
 	// Visually, selects the [space] which has presence.
 	public async Task<TargetSpaceCtx> TargetLandWithPresence( string prompt ) {
-		var space = await Decision( new Select.Space(prompt,Self.Presence.Spaces(GameState), Present.Always ) );
+		var space = await Decision( new Select.Space(prompt,Presence.Spaces, Present.Always ) );
 		return Target( space );
 	}
 

@@ -26,7 +26,7 @@ class DrenchTheLandscape : TerrainMapper, ICalcSource {
 
 	public IEnumerable<Space> FindSources( GameState gs, IKnowSpiritLocations presence, TargetSourceCriteria sourceCriteria, TerrainMapper mapper ) {
 		var sources = sourceCriteria.From switch {
-			From.Presence => presence.Spaces(gs),
+			From.Presence => presence.Spaces,
 			From.SacredSite => SacredSites(gs),
 			_ => throw new ArgumentException( "Invalid presence source " + sourceCriteria.From ),
 		};
