@@ -109,9 +109,9 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// Put 2 presence on your starting board in the highest-number land that is Sands or Mountain.
-		var space = board.Spaces.Last(x=>x.IsOneOf(Terrain.Sand,Terrain.Mountain));
-		Presence.PlaceOn( space, gameState );
-		Presence.PlaceOn( space, gameState );
+		var space = gameState.Tokens[ board.Spaces.Last(x=>x.IsOneOf(Terrain.Sand,Terrain.Mountain)) ];
+		Presence.PlaceOn( space );
+		Presence.PlaceOn( space );
 
 		// Prepare 1 moon, 1 air, and 1 earth marker. (++ allows us to use SMOA for testing, where =1 overwrites testing values)
 		PreparedElements[Element.Moon]++;

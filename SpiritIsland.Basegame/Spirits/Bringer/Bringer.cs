@@ -42,8 +42,9 @@ public class Bringer : Spirit {
 	protected override void InitializeInternal( Board board, GameState gs ) {
 		// Setup: 2 presense in highest numbered sands
 		var startingIn = board.Spaces.Where(x=>x.IsSand).Last();
-		Presence.PlaceOn( startingIn, gs );
-		Presence.PlaceOn( startingIn, gs );
+		var space = gs.Tokens[startingIn];
+		Presence.PlaceOn( space );
+		Presence.PlaceOn( space );
 	}
 
 	//public override Task DestroyInvaderForPowers( GameState gs, Space space, int count, Token dahanToken ) {

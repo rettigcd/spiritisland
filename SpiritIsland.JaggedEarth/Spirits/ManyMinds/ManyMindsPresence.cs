@@ -12,12 +12,11 @@ class ManyMindsPresence : SpiritPresence {
 		gs.Tokens.TokenRemoved.ForGame.Add( TokenRemoved );
 	}
 
-	public override async Task PlaceOn( Space space, GameState gs ) {
-		var tokens = gs.Tokens[space];
-		await base.PlaceOn( space, gs );
+	public override async Task PlaceOn( SpaceState space ) {
+		await base.PlaceOn( space );
 		// if created sacred site, create virtual beast
-		if(CountOn( tokens ) == 2)
-			gs.Tokens[space].Adjust(TokenType.Beast,1); // virtual so don't trigger an event.
+		if(CountOn( space ) == 2)
+			space.Adjust(TokenType.Beast,1); // virtual so don't trigger an event.
 	}
 
 	protected override async Task RemoveFrom_NoCheck( Space space, GameState gs ) {
@@ -50,7 +49,7 @@ class ManyMindsPresence : SpiritPresence {
 		// Move 2 of our presence
 		for(int i = 0; i < 2; ++i) {
 			base.RemoveFrom_NoCheck( args.RemovedFrom.Space, gs ); // using base because we don't want to trigger anything
-			base.PlaceOn( args.AddedTo.Space, gs );
+			base.PlaceOn( args.AddedTo );
 		}
 	}
 

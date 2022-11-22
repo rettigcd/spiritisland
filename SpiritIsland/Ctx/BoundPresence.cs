@@ -29,7 +29,7 @@ public class BoundPresence {
 	#region Place
 
 	// Used for Spirit-Setup 
-	public void PlaceOn(Space space) => ctx.Self.Presence.PlaceOn( space, ctx.GameState );
+	public void PlaceOn(Space space) => ctx.Self.Presence.PlaceOn( ctx.GameState.Tokens[space] );
 
 	/// <summary> Selects: (Source then Destination) for placing presence </summary>
 	/// <remarks> Called from normal PlacePresence Growth + Gift of Proliferation. </remarks>

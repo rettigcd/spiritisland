@@ -48,8 +48,8 @@ public class Thunderspeaker : Spirit {
 
 		// Put 2 Presence on your starting board: 1 in each of the 2 lands with the most Dahan
 		var spots = board.Spaces.OrderByDescending( s => gs.DahanOn(s).Count ).Take( 2 ).ToArray();
-		Presence.PlaceOn( spots[0], gs );
-		Presence.PlaceOn( spots[1], gs );
+		Presence.PlaceOn( gs.Tokens[spots[0]] );
+		Presence.PlaceOn( gs.Tokens[spots[1]] );
 
 		// Special Rules -Ally of the Dahan - Your presense may move with dahan
 		gs.Tokens.TokenMoved.ForGame.Add( new MovePresenceWithTokens( this, TokenType.Dahan ).CheckForMove );

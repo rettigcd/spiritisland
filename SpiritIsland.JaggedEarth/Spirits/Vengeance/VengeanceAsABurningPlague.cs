@@ -36,9 +36,9 @@ public class VengeanceAsABurningPlague : Spirit {
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// Put 2 presence ontyour starting board:
 		// 1 in a land with blight.
-		Presence.PlaceOn(board.Spaces.First(s=>gameState.Tokens[s].Blight.Any), gameState);
+		Presence.PlaceOn(gameState.Tokens[board.Spaces.First(s=>gameState.Tokens[s].Blight.Any)]);
 		// 1 in a Wetland without dahan
-		Presence.PlaceOn(board.Spaces.First(s=>s.IsWetland && !gameState.Tokens[s].Dahan.Any), gameState);
+		Presence.PlaceOn(gameState.Tokens[board.Spaces.First(s=>s.IsWetland && !gameState.Tokens[s].Dahan.Any)]);
 
 		gameState.GetBuildEngine = () => new TerrorOfASlowlyUnfoldingPlague(this);
 

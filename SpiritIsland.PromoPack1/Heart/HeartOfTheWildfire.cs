@@ -66,7 +66,7 @@ public class HeartOfTheWildfire : Spirit {
 		// Put 3 presence and 2 blight on your starting board in the hightest-numbered Sands. 
 		var space = board.Spaces.Last(x=>x.IsSand);
 		for(int i=0;i<3;++i)
-			Presence.PlaceOn(space,gameState);
+			Presence.PlaceOn(gameState.Tokens[space]);
 
 		gameState.Tokens[space].Blight.Adjust(2); // Blight comes from the box, not the blight card
 	}

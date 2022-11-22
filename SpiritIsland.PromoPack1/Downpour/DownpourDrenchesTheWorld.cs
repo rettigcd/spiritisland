@@ -62,7 +62,7 @@ public class DownpourDrenchesTheWorld : Spirit, IHaveSecondaryElements {
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// 1 presence on lowest # wetlands
-		Presence.PlaceOn( board.Spaces.First( x => x.IsWetland ), gameState );
+		Presence.PlaceOn( gameState.Tokens[ board.Spaces.First( x => x.IsWetland ) ] );
 
 		var drenchTheLandscape = new DrenchTheLandscape( this, gameState.Island.Terrain_ForPower ); // !!! what about for Special Rules???
 		gameState.Island.Terrain_ForPower = drenchTheLandscape;

@@ -6,9 +6,9 @@ public class OceanPresence : SpiritPresence {
 
 	public override bool CanBePlacedOn( TerrainMapper tm, SpaceState s) => tm.MatchesTerrain( s, Terrain.Ocean ) || tm.IsCoastal( s.Space );
 
-	public override async Task PlaceOn( Space space, GameState gs ) {
-		await base.PlaceOn( space, gs );
-		currentBoards.Add( space.Board );
+	public override async Task PlaceOn( SpaceState space ) {
+		await base.PlaceOn( space );
+		currentBoards.Add( space.Space.Board );
 	}
 
 	protected override async Task RemoveFrom_NoCheck( Space space, GameState gs ) {

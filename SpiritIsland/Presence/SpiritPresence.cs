@@ -59,7 +59,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 
 	public virtual async Task Place( IOption from, Space to, GameState gs ) {
 		await TakeFrom( from, gs );
-		await PlaceOn( to, gs );
+		await PlaceOn( gs.Tokens[to] );
 	}
 
 	public async Task TakeFrom( IOption from, GameState gs ) {
@@ -118,7 +118,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 
 	public void Move( Space from, Space to, GameState gs ) {
 		RemoveFrom_NoCheck( from, gs );
-		PlaceOn( to, gs );
+		PlaceOn( gs.Tokens[to] );
 	}
 
 	public virtual async Task Destroy( Space space, GameState gs, DestoryPresenceCause actionType, AddReason blightAddedReason = AddReason.None ) {
@@ -162,7 +162,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 	public void ReleaseFromStasis( Space space, GameState gs ) {
 		while( stasis.Contains(space)) {
 			stasis.Remove(space);
-			PlaceOn(space, gs);
+			PlaceOn(gs.Tokens[space]);
 		}
 	}
 
@@ -191,20 +191,40 @@ public class SpiritPresence : IKnowSpiritLocations {
 	public virtual IEnumerable<Space> SacredSites( GameState gs, TerrainMapper _ ) => gs.AllActiveSpaces
 		.Where( IsSacredSite )
 		.Select( s => s.Space );
-
-	public DualAsyncEvent<TrackRevealedArgs> TrackRevealed { get; } = new DualAsyncEvent<TrackRevealedArgs>();
+	public virtual Task PlaceOn( SpaceState space ) {
+		placed.Add( space.Space );
+		return Task.CompletedTask;
+	}
+	// !!! UPGRADE TO SPACESTATE !!
+	public void Adjust( Space space, int count ) {
+		while(0 < count) {
+			placed.Add( space );
+			--count;
+		}
+		while(count < 0) {
+			placed.Remove( space );
+			++count;
+		}
+	}
+	public void Adjust( SpaceState space, int count ) {
+		while(0 < count) {
+			placed.Add( space.Space );
+			space.Adjust(presenceToken,1);
+			--count;
+		}
+		while(count < 0) {
+			placed.Remove( space.Space );
+			space.Adjust( presenceToken, -1 );
+			++count;
+		}
+	}
 
 	// !!! REMOVE !!!
 	public IReadOnlyCollection<Space> Placed => placed.AsReadOnly();
 	// !!! REMOVE !!!
 	public IEnumerable<Space> Spaces => placed.Distinct();
 
-	// !!! UPGRADE to SpaceState !!!
-	public virtual Task PlaceOn(Space space, GameState gameState) { 
-		placed.Add(space);
-		return Task.CompletedTask;
-		// return gameState.Tokens[space].Add(Token,1, AddReason.Added); // !!! this add reason might not be correct
-	}
+	public DualAsyncEvent<TrackRevealedArgs> TrackRevealed { get; } = new DualAsyncEvent<TrackRevealedArgs>();
 
 	/// <remarks>public so we can remove it for Replacing with Beast and advanced spirit strangness</remarks>
 	// !!! This is called for 2 different reasons...
@@ -215,18 +235,6 @@ public class SpiritPresence : IKnowSpiritLocations {
 		placed.Remove( space );
 		return Task.CompletedTask;
 //			return gameState.Tokens[space].Remove(Token,1); // !!! Do we event want to generate an event?
-	}
-
-	// !!! UPGRADE TO SPACESTATE !!
-	public void Adjust( Space space, int count ) {
-		while( 0 < count) {
-			placed.Add( space );
-			--count;
-		}
-		while( count < 0 ) {
-			placed.Remove( space );
-			++count;
-		}
 	}
 
 	UniqueToken presenceToken = new UniqueToken("Presence",TokenCategory.Presence);

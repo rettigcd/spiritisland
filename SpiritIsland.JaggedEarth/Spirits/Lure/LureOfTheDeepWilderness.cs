@@ -34,16 +34,16 @@ public class LureOfTheDeepWilderness : Spirit {
 		};
 	}
 
-	protected override void InitializeInternal( Board board, GameState gameState ) {
+	protected override void InitializeInternal( Board board, GameState gs ) {
 		// Put 3 presence on your starting board: 2 in land #8, and 1 in land #7.
-		Presence.PlaceOn(board[8], gameState);
-		Presence.PlaceOn(board[8], gameState);
-		Presence.PlaceOn(board[7], gameState);
+		Presence.PlaceOn(gs.Tokens[board[8]]);
+		Presence.PlaceOn(gs.Tokens[board[8]]);
+		Presence.PlaceOn(gs.Tokens[board[7]]);
 
 		// Add 1 beast to land #8
-		gameState.Tokens[board[8]].Beasts.Init(1);
+		gs.Tokens[board[8]].Beasts.Init(1);
 
-		gameState.PreRavaging.ForGame.Add( EnthrallTheForeignExplorers );
+		gs.PreRavaging.ForGame.Add( EnthrallTheForeignExplorers );
 	}
 
 	async Task EnthrallTheForeignExplorers( RavagingEventArgs args ) {

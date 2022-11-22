@@ -54,8 +54,9 @@ public class LightningsSwiftStrike : Spirit {
 	protected override void InitializeInternal( Board board, GameState gs ) {
 		// Setup: put 2 pressence in highest numbered sands
 		var space = board.Spaces.Reverse().First(x=>x.IsSand);
-		Presence.PlaceOn(space,gs);
-		Presence.PlaceOn(space,gs);
+		var tokens = gs.Tokens[space];
+		Presence.PlaceOn( tokens );
+		Presence.PlaceOn( tokens );
 
 		gs.TimePasses_WholeGame += Gs_TimePassed;
 	}

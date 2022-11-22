@@ -37,11 +37,11 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 		};
 	}
 
-	protected override void InitializeInternal( Board board, GameState gameState ) {
+	protected override void InitializeInternal( Board board, GameState gs ) {
 		// Place presence on highest numbered land with dahan
-		Presence.PlaceOn(board.Spaces.Where(s=>gameState.Tokens[s].Dahan.Any).Last(), gameState);
+		Presence.PlaceOn( gs.Tokens[board.Spaces.Where(s=>gs.Tokens[s].Dahan.Any).Last()] );
 		// and in land #4
-		Presence.PlaceOn(board[4], gameState);
+		Presence.PlaceOn( gs.Tokens[board[4]] );
 
 	}
 

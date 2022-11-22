@@ -47,12 +47,12 @@ public class ManyMindsMoveAsOne : Spirit {
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// Put 1 presence and 1 beast on yoru starting borad, in a land with beast.
-		var land = board.Spaces.First(x=>gameState.Tokens[x].Beasts.Any);
+		var land = gameState.Tokens[ board.Spaces.First(x=>gameState.Tokens[x].Beasts.Any) ];
 
 		(Presence as ManyMindsPresence).Watch(gameState,this);
 
-		Presence.PlaceOn(land, gameState);
-		gameState.Tokens[land].Beasts.Init(1);
+		Presence.PlaceOn(land);
+		land.Beasts.Init(1);
 
 	}
 
