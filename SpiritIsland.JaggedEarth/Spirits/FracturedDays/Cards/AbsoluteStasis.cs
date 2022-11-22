@@ -17,10 +17,6 @@ public class AbsoluteStasis {
 
 		// Until the end of the slow phase, target land and everything in it cease to exist for all purposes except checking victory/defeat.
 			
-		// Put Spirits presence into Stasis
-		foreach(var spirit in ctx.GameState.Spirits)
-			spirit.Presence.PutInStasis( ctx.Space, ctx.GameState );
-
 		ctx.Tokens.InStasis = true;
 
 		// you cannot target into, out of, or through where the land was.
@@ -29,11 +25,7 @@ public class AbsoluteStasis {
 		// Restore 
 		// --------
 		ctx.GameState.TimePasses_ThisRound.Push( ( gs ) => {
-			foreach(var spirit in ctx.GameState.Spirits)
-				spirit.Presence.ReleaseFromStasis( ctx.Space, ctx.GameState );
-
 			ctx.Tokens.InStasis = false;
-
 			return Task.CompletedTask;
 		} );
 

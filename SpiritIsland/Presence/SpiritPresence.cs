@@ -123,11 +123,11 @@ public class SpiritPresence : IKnowSpiritLocations {
 
 	public virtual async Task Destroy( Space space, GameState gs, DestoryPresenceCause actionType, AddReason blightAddedReason = AddReason.None ) {
 		await DestroyBehavior.DestroyPresenceApi(this,space,gs, actionType, Guid.NewGuid() ); // !!! pass in the actionID!
-		CheckIfSpiritIsDestroyed();
+		CheckIfSpiritIsDestroyed(gs);
 	}
 
-	void CheckIfSpiritIsDestroyed() {
-		if(Placed.Count == 0 && stasis.Count == 0 )
+	void CheckIfSpiritIsDestroyed(GameState gs) {
+		if(!gs.AllSpaces.Any(IsOn))
 			GameOverException.Lost( "Spirit is Destroyed" ); // !! if we had access to the Spirit here, we could say who it was.
 	}
 
@@ -148,22 +148,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 
 	public async Task RemoveFrom( Space space, GameState gs ) {
 		await RemoveFrom_NoCheck( space, gs );
-		CheckIfSpiritIsDestroyed();
-	}
-
-	public void PutInStasis( Space space, GameState gs ) {
-		var tokens = gs.Tokens[space];
-		while( IsOn(tokens)) {
-			RemoveFrom_NoCheck( space, gs );
-			stasis.Add(space);
-		}
-	}
-
-	public void ReleaseFromStasis( Space space, GameState gs ) {
-		while( stasis.Contains(space)) {
-			stasis.Remove(space);
-			PlaceOn(gs.Tokens[space]);
-		}
+		CheckIfSpiritIsDestroyed( gs );
 	}
 
 	#endregion
@@ -223,14 +208,11 @@ public class SpiritPresence : IKnowSpiritLocations {
 	protected virtual Task RemoveFrom_NoCheck( Space space, GameState gameState ) { 
 		placed.Remove( space );
 		return Task.CompletedTask;
-//			return gameState.Tokens[space].Remove(Token,1); // !!! Do we event want to generate an event?
 	}
 
 	UniqueToken presenceToken = new UniqueToken("Presence",TokenCategory.Presence);
 
 	readonly List<Space> placed = new List<Space>();
-	readonly List<Space> stasis = new List<Space>();
-
 
 	#region Memento
 
