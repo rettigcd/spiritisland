@@ -19,15 +19,15 @@ public class APallUponTheLand : BlightCardBase {
 		=> new ActionOption<BoardCtx>("Destroy 1 presence.", async ctx => {
 			// !! this could be any spirits presence - Who picks?   When having multiple players, this should be a parallel decision where spirit volunteers
 			// for now, just have the 1st spirit pick (House Rules advantage)
-			bool IsOnBoard(Space space) => space.Board == ctx.Board;
+			bool IsOnBoard(SpaceState space) => space.Space.Board == ctx.Board;
 			var spiritOptions = ctx.GameState.Spirits
-				.Where( s=> s.Presence.Placed.Any(IsOnBoard))
+				.Where( s=> s.Presence.Placed( ctx.GameState ).Any(IsOnBoard))
 				.ToArray();
 			if(spiritOptions.Length == 0) return;
 			var spirit = spiritOptions.Length == 1 ? spiritOptions[0]
 				: await ctx.Decision( new Select.Spirit( "Destroy 1 presence.", spiritOptions ) );
 			await ctx.TargetSpirit( spirit )
-				.Presence.DestroyOneFromAnywhere( DestoryPresenceCause.BlightedIsland, IsOnBoard );
+				.Presence.DestroyOneFromAnywhere( DestoryPresenceCause.BlightedIsland, s=>s.Board == ctx.Board );
 		} );
 
 }

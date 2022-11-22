@@ -19,7 +19,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 
 	#region Tracks / Board
 
-	public virtual IEnumerable<Track> RevealOptions 
+	public virtual IEnumerable<Track> RevealOptions(GameState _) 
 		=> Energy.RevealOptions.Union( CardPlays.RevealOptions );
 
 	public IEnumerable<Track> CoverOptions
@@ -193,8 +193,17 @@ public class SpiritPresence : IKnowSpiritLocations {
 		}
 	}
 
-	// !!! REMOVE !!!
-	public IReadOnlyCollection<Space> Placed => placed.AsReadOnly();
+	public IReadOnlyCollection<SpaceState> Placed(GameState gs) {
+
+		// !!! this method is an abomination
+		// Encapsulate this data.
+
+		var placed = new List<SpaceState>();
+		foreach(var space in gs.AllActiveSpaces.Where( IsOn ))
+			for(int i=0;i<CountOn(space);++i)
+				placed.Add(space);
+		return placed.AsReadOnly();
+	}
 	// !!! REMOVE !!!
 	public IEnumerable<Space> Spaces => placed.Distinct();
 

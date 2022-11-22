@@ -12,7 +12,7 @@ public class ManifestIncarnation {
 
 		// +1 fear for each town/city and for each of your presence in target land.
 		int fearCount = ctx.Tokens.SumAny(Invader.City,Invader.Town)
-			+ ctx.Self.Presence.Placed.Count(x=>x==ctx.Space);
+			+ ctx.Self.Presence.Placed(ctx.GameState).Count(x=>x==ctx.Tokens);
 		ctx.AddFear(fearCount);
 
 		// Remove 1 city, 1 town and 1 explorer.

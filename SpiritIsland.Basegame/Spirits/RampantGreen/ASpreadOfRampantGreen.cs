@@ -128,10 +128,10 @@ public class RampantGreenPresence : SpiritPresence {
 			new PresenceTrack( Track.Card1, Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4 )
 		) { }
 
-	public override IEnumerable<Track> RevealOptions { get { 
-		var options = base.RevealOptions.ToList();
+	public override IEnumerable<Track> RevealOptions(GameState gs) { 
+		var options = base.RevealOptions(gs).ToList();
 		if( Destroyed>0 ) options.Add(Track.Destroyed);
 		return options;
-	} }
+	}
 
 }

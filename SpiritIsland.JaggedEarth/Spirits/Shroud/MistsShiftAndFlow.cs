@@ -81,7 +81,7 @@ class MistsShiftAndFlow {
 	List<TokenMovedArgs> FindFlowsThatAllowUsToHitTarget( SpaceState target ) {
 		List<TokenMovedArgs> allowed = new List<TokenMovedArgs>();
 
-		var pretendPresence = new SpaceCounts( spirit.Presence.Placed );
+		var pretendPresence = new SpaceCounts( spirit.Presence.Placed(this.gameState).Select(x=>x.Space) );
 
 		var spacesInRange = target.Range(1).Where( IsInPlay ).ToArray();
 		foreach(SpaceState dst in spacesInRange) {

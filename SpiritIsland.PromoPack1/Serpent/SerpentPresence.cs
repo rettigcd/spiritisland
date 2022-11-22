@@ -13,8 +13,8 @@ public class SerpentPresence : SpiritPresence {
 	){
 	}
 
-	public override IEnumerable<Track> RevealOptions { get {
-		if(MaxPresenceOnBoard == Placed.Count ) yield break;
+	public override IEnumerable<Track> RevealOptions(GameState gs) {
+		if(MaxPresenceOnBoard == Placed(gs).Count ) yield break;
 
 		var energyNext = Energy.RevealOptions.FirstOrDefault();
 		if( energyNext != null && (energyNext != Track.EarthEnergy || CardPlays.Revealed.Count() == 4 ) )
@@ -24,7 +24,7 @@ public class SerpentPresence : SpiritPresence {
 		if( cardNext != null && cardNext != fakeEarth )  // don't let them select the fake earth
 			yield return cardNext;
 
-	} }
+	}
 
 	public List<Spirit> AbsorbedPresences = new List<Spirit>(); // don't let it grow pas 6 elements
 

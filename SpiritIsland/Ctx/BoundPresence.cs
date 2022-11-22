@@ -54,12 +54,13 @@ public class BoundPresence {
 
 	public Task Destroy( Space space, DestoryPresenceCause actionType ) => ctx.Self.Presence.Destroy( space, ctx.GameState, actionType );
 
-	public async Task DestroyOneFromAnywhere(DestoryPresenceCause actionType, Func<SpiritIsland.Space,bool> filter = null) {
-		var space = filter == null 
-			? await ctx.Decision( Select.DeployedPresence.ToDestroy("Select presence to destroy",ctx.Self) )
-			: await ctx.Decision( Select.DeployedPresence.ToDestroy("Select presence to destroy",ctx.Self, filter) );
+	public async Task DestroyOneFromAnywhere( DestoryPresenceCause actionType, Func<SpiritIsland.Space, bool> filter = null ) {
+		var space = filter == null
+			? await ctx.Decision( Select.DeployedPresence.ToDestroy( "Select presence to destroy", ctx.Self ) )
+			: await ctx.Decision( Select.DeployedPresence.ToDestroy( "Select presence to destroy", ctx.Self, filter ) );
 		await Destroy( space, actionType );
 	}
+
 
 	#endregion
 
@@ -85,7 +86,7 @@ public class BoundPresence {
 	/// <summary> Tries Presence Tracks first, then fails over to placed-presence on Island </summary>
 	public async Task<IOption> SelectSource(string actionPhrase = "place") {
 		string prompt = $"Select Presence to {actionPhrase}.";
-		return (IOption)await ctx.Decision( Select.TrackSlot.ToReveal( prompt, ctx.Self ) )
+		return (IOption)await ctx.Decision( Select.TrackSlot.ToReveal( prompt, ctx.Self, ctx.GameState ) )
 			?? (IOption)await ctx.Decision( Select.DeployedPresence.All( prompt, ctx.Self,Present.Always) );
 	}
 

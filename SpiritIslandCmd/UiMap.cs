@@ -90,7 +90,7 @@ namespace SpiritIslandCmd {
 			string blight = (blightCount > 0) ? ("B" + blightCount) :"  ";
 
 			// presence
-			string pres = game.Spirit.Presence.Placed.Where(p=>p==space).Select(x=>"P").Join("");
+			string pres = game.Spirit.Presence.Placed(this.game.GameState).Where(p=>p.Space==space).Select(x=>"P").Join("");
 			return $"{space.Label} {threat}\t{dahan}\t{details}\t{blight}\t{pres}";
 		}
 
