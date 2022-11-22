@@ -361,7 +361,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 	public bool IsSelfSacredSite => Presence.SacredSites.Contains(Space);
 
-	public bool HasSelfPresence => Self.Presence.Spaces.Contains(Space);
+	public bool HasSelfPresence => Self.Presence.Spaces(GameState).Contains(Space);
 
 	public int PresenceCount => Self.Presence.CountOn(Tokens);
 

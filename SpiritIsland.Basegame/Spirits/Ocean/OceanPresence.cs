@@ -14,7 +14,7 @@ public class OceanPresence : SpiritPresence {
 	protected override async Task RemoveFrom_NoCheck( Space space, GameState gs ) {
 		await base.RemoveFrom_NoCheck( space, gs );
 		var board = space.Board;
-		if(!Spaces.Any(s=>s.Board == board ))
+		if(!Spaces(gs).Any(s=>s.Board == board ))
 			currentBoards.Remove( board );
 	}
 

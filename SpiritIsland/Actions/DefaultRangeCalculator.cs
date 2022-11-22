@@ -21,7 +21,7 @@ public interface ICalcRange {
 public class DefaultSourceCalc : ICalcSource {
 	public IEnumerable<Space> FindSources( GameState gs, IKnowSpiritLocations presence, TargetSourceCriteria sourceCriteria, TerrainMapper mapper ) {
 		var sources = sourceCriteria.From switch {
-			From.Presence => presence.Spaces,
+			From.Presence => presence.Spaces(gs),
 			From.SacredSite => presence.SacredSites( gs, mapper ),
 			_ => throw new ArgumentException( "Invalid presence source " + sourceCriteria.From ),
 		};

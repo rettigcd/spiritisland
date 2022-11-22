@@ -215,8 +215,9 @@ public class RiverSurges_GrowthTests : GrowthTests {
 			"D" => BoardD,
 			_ => null,
 		};
-		river.InitSpirit(board,new GameState(river));
-		Assert.Equal(expectedStartingSpaces,river.Presence.Spaces.Select(s=>s.Label).Join(","));
+		gameState = new GameState( river ) { Island = new Island(board) };
+		river.InitSpirit(board,gameState);
+		Assert.Equal(expectedStartingSpaces,river.Presence.Spaces(gameState).Select(s=>s.Label).Join(","));
 	}
 
 	#endregion

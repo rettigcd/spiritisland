@@ -9,7 +9,7 @@ public class BargainsOfPowerAndProtection {
 			var presenceToRemove = await ctx.Presence.SelectSource("remove from game");
 			await ctx.Self.Presence.TakeFrom( presenceToRemove, ctx.GameState ); // !!! trigger Win/Loss check???
 		} else {
-			var presenceToRemove = await ctx.Decision( Select.DeployedPresence.All("Select presence to remove from game.", ctx.Self, Present.Always));
+			var presenceToRemove = await ctx.Decision( Select.DeployedPresence.All("Select presence to remove from game.", ctx.Self, ctx.GameState, Present.Always));
 			await ctx.Presence.RemoveFrom( presenceToRemove );
 		}
 

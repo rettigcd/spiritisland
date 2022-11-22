@@ -17,7 +17,7 @@ public class BoundPresence {
 
 	public async Task<(Space,Space)> PushUpTo1() {
 		// Select source
-		var source = await ctx.Decision( Select.DeployedPresence.ToPush( ctx.Self ) );
+		var source = await ctx.Decision( Select.DeployedPresence.ToPush( ctx.Self, ctx.GameState ) );
 		if(source == null) return (null,null);
 		var sourceCtx = ctx.Target( source );
 		// Select destination
@@ -56,8 +56,8 @@ public class BoundPresence {
 
 	public async Task DestroyOneFromAnywhere( DestoryPresenceCause actionType, Func<SpiritIsland.Space, bool> filter = null ) {
 		var space = filter == null
-			? await ctx.Decision( Select.DeployedPresence.ToDestroy( "Select presence to destroy", ctx.Self ) )
-			: await ctx.Decision( Select.DeployedPresence.ToDestroy( "Select presence to destroy", ctx.Self, filter ) );
+			? await ctx.Decision( Select.DeployedPresence.ToDestroy( "Select presence to destroy", ctx.Self, ctx.GameState ) )
+			: await ctx.Decision( Select.DeployedPresence.ToDestroy( "Select presence to destroy", ctx.Self, ctx.GameState, filter ) );
 		await Destroy( space, actionType );
 	}
 
@@ -87,11 +87,11 @@ public class BoundPresence {
 	public async Task<IOption> SelectSource(string actionPhrase = "place") {
 		string prompt = $"Select Presence to {actionPhrase}.";
 		return (IOption)await ctx.Decision( Select.TrackSlot.ToReveal( prompt, ctx.Self, ctx.GameState ) )
-			?? (IOption)await ctx.Decision( Select.DeployedPresence.All( prompt, ctx.Self,Present.Always) );
+			?? (IOption)await ctx.Decision( Select.DeployedPresence.All( prompt, ctx.Self, ctx.GameState, Present.Always) );
 	}
 
 	public Task<Space> SelectDeployed(string prompt)
-		=> ctx.Decision( Select.DeployedPresence.All(prompt, ctx.Self,Present.Always ) );
+		=> ctx.Decision( Select.DeployedPresence.All(prompt, ctx.Self, ctx.GameState, Present.Always ) );
 
 	public Task<Space> SelectSacredSite(string prompt)
 		=> ctx.Decision( Select.DeployedPresence.SacredSites(prompt, ctx.GameState, ctx.Self, ctx.TerrainMapper, Present.Always ) );
@@ -103,7 +103,7 @@ public class BoundPresence {
 
 	/// <summary> Selects a space within [range] of current presence </summary>
 	public async Task<Space> SelectDestinationWithinRange( int range, string filterEnum ) {
-		var options = GetValidDestinationOptionsFromPresence(range,filterEnum, ctx.GameState.Tokens.PowerUp( ctx.Self.Presence.Spaces ) );
+		var options = GetValidDestinationOptionsFromPresence(range,filterEnum, ctx.GameState.Tokens.PowerUp( ctx.Self.Presence.Spaces(ctx.GameState) ) );
 		return await ctx.Decision( Select.Space.ToPlacePresence( options, Present.Always ) );
 	}
 

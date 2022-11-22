@@ -112,6 +112,7 @@ public static class ExtendDictionary {
 	static public string TokenSummary<T>( this CountDictionary<T> dict ) {
 		return dict.Count == 0 ? "[none]"
 			: dict
+				.Where( p => p.Key.ToString()!="" )
 				.OrderBy( p => p.Key.ToString() )
 				.Select( p => p.Value + p.Key.ToString() )
 				.Join( "," );

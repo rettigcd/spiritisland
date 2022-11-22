@@ -133,7 +133,7 @@ class MistsShiftAndFlow {
 			.ToArray();
 
 		// Calculate new sources we could find
-		var flowedSources = gameState.Tokens.PowerUp( spirit.Presence.Spaces )
+		var flowedSources = gameState.Tokens.PowerUp( spirit.Presence.Spaces( ctx.GameState ) )
 			.SelectMany( p => p.Adjacent )
 			.Distinct()
 			.Where( IsInPlay ) // Don't allow flow into ocean.
@@ -164,7 +164,8 @@ class MistsShiftAndFlow {
 	class SpaceCounts : CountDictionary<Space>, IKnowSpiritLocations {
 		public SpaceCounts(IEnumerable<Space> spaces ) : base( spaces ) { }
 
-		public IEnumerable<Space> Spaces => this.Keys;
+		public IEnumerable<Space> Spaces(GameState _) => this.Keys;
+		public IEnumerable<SpaceState> SpaceStates( GameState gs ) => this.Keys.Select(x=>gs.Tokens[x]);
 
 		public IEnumerable<Space> SacredSites( TerrainMapper _ ) => this.Keys.Where(k=>this[k]>1);
 		public IEnumerable<Space> SacredSites( GameState _, TerrainMapper _1 ) => this.Keys.Where( k => this[k] > 1 );

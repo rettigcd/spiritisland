@@ -73,7 +73,7 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 	}
 
 	async Task PickPresenceToDestroy( TargetSpaceCtx ctx ) {
-		var space = await this.Action.Decision( Select.DeployedPresence.ToDestroy( $"{CleaningUpMessesIsADrag.Title} Destroy presence for blight cleanup", this ) );
+		var space = await this.Action.Decision( Select.DeployedPresence.ToDestroy( $"{CleaningUpMessesIsADrag.Title} Destroy presence for blight cleanup", this, ctx.GameState ) );
 		await ctx.Presence.Destroy( space, DestoryPresenceCause.SpiritPower );
 	}
 

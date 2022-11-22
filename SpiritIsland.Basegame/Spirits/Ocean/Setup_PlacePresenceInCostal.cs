@@ -4,7 +4,7 @@ public class Setup_PlacePresenceInCostal : GrowthActionFactory {
 
 	// ! Can't used normal PlacePresence, because it must be range-1, range 0 not allowed.
 	public override async Task ActivateAsync( SelfCtx ctx ) {
-		var options = ctx.Self.Presence.Spaces
+		var options = ctx.Self.Presence.Spaces( ctx.GameState )
 			.Select(s=>ctx.GameState.Tokens[s])
 			.First()
 			.Adjacent;

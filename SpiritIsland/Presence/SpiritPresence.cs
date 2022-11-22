@@ -66,7 +66,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 		if(from is Track track) {
 			await RevealTrack( track, gs );
 		} else if(from is Space space) {
-			if(Spaces.Contains( space ))
+			if(Spaces(gs).Contains( space ))
 				await RemoveFrom_NoCheck( space, gs );
 			else
 				throw new ArgumentException( "Can't pull from island space:" + from.ToString() );
@@ -170,29 +170,25 @@ public class SpiritPresence : IKnowSpiritLocations {
 	/// Specifies if the the given space is valid.
 	/// </summary>
 	public virtual bool CanBePlacedOn( TerrainMapper mapper, SpaceState ss ) => mapper.IsInPlay( ss.Space );
-	public bool IsOn( SpaceState space ) => space.HasAny( presenceToken );
+	public bool IsOn( SpaceState space ) => space[presenceToken]>0;
 	public virtual bool IsSacredSite( SpaceState space ) => 2 <= space[presenceToken];
 	public int CountOn( SpaceState space ) => space[presenceToken];
 	public virtual IEnumerable<Space> SacredSites( GameState gs, TerrainMapper _ ) => gs.AllActiveSpaces
 		.Where( IsSacredSite )
 		.Select( s => s.Space );
 	public virtual Task PlaceOn( SpaceState space ) {
-		placed.Add( space.Space );
+		space.Adjust(presenceToken,1);
 		return Task.CompletedTask;
 	}
 	public void Adjust( SpaceState space, int count ) {
-		while(0 < count) {
-			placed.Add( space.Space );
-			space.Adjust(presenceToken,1);
-			--count;
-		}
-		while(count < 0) {
-			placed.Remove( space.Space );
-			space.Adjust( presenceToken, -1 );
-			++count;
-		}
+		space.Adjust( presenceToken, count );
 	}
 
+	/// <summary>
+	/// One item for each presence
+	/// </summary>
+	/// <param name="gs"></param>
+	/// <returns></returns>
 	public IReadOnlyCollection<SpaceState> Placed(GameState gs) {
 
 		// !!! this method is an abomination
@@ -204,8 +200,14 @@ public class SpiritPresence : IKnowSpiritLocations {
 				placed.Add(space);
 		return placed.AsReadOnly();
 	}
-	// !!! REMOVE !!!
-	public IEnumerable<Space> Spaces => placed.Distinct();
+
+	// one item for each space that has presence
+	public IEnumerable<Space> Spaces(GameState gs ) {
+		var ss = SpaceStates( gs ).ToArray();
+		return ss.Select( x => x.Space );
+	}
+	public IEnumerable<SpaceState> SpaceStates( GameState gs ) => gs.AllActiveSpaces.Where( IsOn );
+
 
 	public DualAsyncEvent<TrackRevealedArgs> TrackRevealed { get; } = new DualAsyncEvent<TrackRevealedArgs>();
 
@@ -215,13 +217,11 @@ public class SpiritPresence : IKnowSpiritLocations {
 	// (2) Presence is replaced with something else. End-of-Game check IS necessary.
 	// Also - if we have presence in Stasis, then removing 2nd to last presence will INCORRECTLY trigger loss.
 	protected virtual Task RemoveFrom_NoCheck( Space space, GameState gameState ) { 
-		placed.Remove( space );
+		gameState.Tokens[space].Adjust(presenceToken,-1);
 		return Task.CompletedTask;
 	}
 
 	UniqueToken presenceToken = new UniqueToken("Presence",TokenCategory.Presence);
-
-	readonly List<Space> placed = new List<Space>();
 
 	#region Memento
 
@@ -231,14 +231,12 @@ public class SpiritPresence : IKnowSpiritLocations {
 
 	protected class Memento : IMemento<SpiritPresence> {
 		public Memento(SpiritPresence src) {
-			placed = src.placed.ToArray();
 			energy = src.Energy.SaveToMemento();
 			cardPlays = src.CardPlays.SaveToMemento();
 			destroyed = src.Destroyed;
 			energyPerTurn = src.EnergyPerTurn;
 		}
 		public void Restore(SpiritPresence src ) {
-			src.placed.Clear(); src.placed.AddRange( placed );
 			src.Energy.LoadFrom(energy);
 			src.CardPlays.LoadFrom(cardPlays);
 			src.Destroyed = destroyed;

@@ -4,25 +4,25 @@
 // When we have multiple spirits, need to add which spirit this is.
 public class DeployedPresence : TypedDecision<SpiritIsland.Space>, IHaveAdjacentInfo {
 
-	public static DeployedPresence ToPush( SpiritIsland.Spirit spirit, Present present=Present.Done ) 
-		=> All("Select Presence to push.", spirit, present);
+	public static DeployedPresence ToPush( SpiritIsland.Spirit spirit, GameState gs, Present present=Present.Done ) 
+		=> All("Select Presence to push.", spirit, gs, present);
 
-	static public DeployedPresence ToDestroy(string prompt, SpiritIsland.Spirit spirit)
-		=> All(prompt, spirit,Present.Always);
+	static public DeployedPresence ToDestroy(string prompt, SpiritIsland.Spirit spirit, GameState gs)
+		=> All(prompt, spirit, gs, Present.Always);
 
-	static public DeployedPresence ToDestroy(string prompt, SpiritIsland.Spirit spirit, Func<SpiritIsland.Space,bool> filter)
-		=> Some(prompt, spirit, filter, Present.Always);
+	static public DeployedPresence ToDestroy(string prompt, SpiritIsland.Spirit spirit, GameState gs, Func<SpiritIsland.Space,bool> filter)
+		=> Some(prompt, spirit, gs, filter, Present.Always);
 
 	static public DeployedPresence ToDestroy(string prompt, IEnumerable<SpiritIsland.Space> spaces, Present present ) 
 		=> new DeployedPresence( prompt, spaces, present );
 
 	/// <summary> Targets ALL spaces containing deployed presence </summary>
 	/// !!! figure out different reasons .All is called and pull some of the generic ones into this class as factory methods
-	static public DeployedPresence All(string prompt, SpiritIsland.Spirit spirit, Present present )
-		=> new DeployedPresence( prompt, spirit.Presence.Spaces, present);
+	static public DeployedPresence All(string prompt, SpiritIsland.Spirit spirit, GameState gs, Present present )
+		=> new DeployedPresence( prompt, spirit.Presence.Spaces(gs), present);
 
-	static public DeployedPresence Some(string prompt, SpiritIsland.Spirit spirit, Func<SpiritIsland.Space,bool> filter, Present present )
-		=> new DeployedPresence( prompt, spirit.Presence.Spaces.Where(filter), present);
+	static public DeployedPresence Some(string prompt, SpiritIsland.Spirit spirit, GameState gs, Func<SpiritIsland.Space,bool> filter, Present present )
+		=> new DeployedPresence( prompt, spirit.Presence.Spaces(gs).Where(filter), present);
 
 	/// <summary> Targets Sacred Sites </summary>
 	static public DeployedPresence SacredSites(string prompt, GameState gs, SpiritIsland.Spirit spirit, TerrainMapper mapper, Present present )

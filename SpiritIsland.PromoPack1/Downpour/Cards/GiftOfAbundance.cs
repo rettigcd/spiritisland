@@ -20,12 +20,12 @@ internal class GiftOfAbundance {
 		bool isWetland(Space space) => ctx.Target(space).IsOneOf(Terrain.Wetland);
 		var spiritsWithPresenceInWetland = new[] { ctx.Self, ctx.Other }
 			.Distinct() // if solo
-			.Where(sp=>0<sp.Presence.Destroyed && sp.Presence.Spaces.Any(isWetland));
+			.Where(sp=>0<sp.Presence.Destroyed && sp.Presence.Spaces(ctx.GameState).Any(isWetland));
 		Spirit presenceTarget = await ctx.OtherCtx.Decision( new Select.Spirit( Name, spiritsWithPresenceInWetland, Present.AutoSelectSingle ) );
 		if(presenceTarget == null ) return;
 		SelfCtx restoringSpiritCtx = presenceTarget == ctx.Self ? ctx : ctx.OtherCtx;
 
-		var spaceOptions = restoringSpiritCtx.Self.Presence.Spaces.Where(isWetland);
+		var spaceOptions = restoringSpiritCtx.Self.Presence.Spaces( ctx.GameState ).Where(isWetland);
 		var space = await restoringSpiritCtx.Decision( new Select.Space("Restore 1 destroyed presence", spaceOptions, Present.Always ) );
 		if( space != null )
 			await restoringSpiritCtx.Target(space).Presence.PlaceDestroyedHere();

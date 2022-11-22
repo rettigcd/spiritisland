@@ -38,7 +38,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			gs.Phase = Phase.Fast;
 
 			river.Presence.Move( board[5], board[2], gs ); // move it to A2
-			Assert_Options( "A2", river.Presence.Spaces, "river starting presence" );
+			Assert_Options( "A2", river.Presence.Spaces(gs), "river starting presence" );
 
 			// Talons ofLightning - Range 1
 			_ = PowerCard.For<TalonsOfLightning>().ActivateAsync( river.BindMyPower( gs ) );

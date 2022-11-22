@@ -55,7 +55,8 @@ namespace SpiritIsland.Tests {
 			Choose( selection );
 		}
 
-		public void Growth_PlacesEnergyPresence( string placeOptions ) => PlacesPresence( spirit.Presence.Energy.RevealOptions.Single(), placeOptions );
+		public void Growth_PlacesEnergyPresence( string placeOptions ) 
+			=> PlacesPresence( spirit.Presence.Energy.RevealOptions.Single(), placeOptions );
 
 		public void Growth_PlacesPresence( string placeOptions ) {
 			string[] parts = placeOptions.Split('>');

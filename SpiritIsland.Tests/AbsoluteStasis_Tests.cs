@@ -109,7 +109,7 @@ public class AbsoluteStasis_Tests {
 		SpacePutInStasis("A8");
 
 		//  Then: no Presence found in A8
-		cfg.Presence.Spaces.Count( x => x.Text == "A8" ).ShouldBe( 0 );
+		cfg.Presence.Spaces(cfg.GameState).Count( x => x.Text == "A8" ).ShouldBe( 0 );
 		//   And: no SS found
 		cfg.Presence.SacredSites( cfg.GameState, null ).Count( x => x.Text == "A8" ).ShouldBe( 0 );
 	}

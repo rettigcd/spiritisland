@@ -21,7 +21,7 @@ public class SleepAndNeverWaken {
 
 		// if you have 3 moon 2 air 2 animal:  Remove up to 6 explorer from among your lands.
 		if( await ctx.YouHave( "3 moon,2 air,2 animal") )
-			await RemoveExploreres( ctx, 6, ctx.Self.Presence.Spaces.ToArray() );
+			await RemoveExploreres( ctx, 6, ctx.Self.Presence.Spaces( ctx.GameState ).ToArray() );
 
 		// 1 fear per 2 explorer this Power Removes.
 		ctx.AddFear( removed / 2 );

@@ -335,7 +335,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	}
 
 	static async Task DefaultDestroy1PresenceFromBlightCard( Spirit spirit, GameState gs, Cause cause ) {
-		var presence = await spirit.Action.Decision( Select.DeployedPresence.ToDestroy( "Blighted Island: Select presence to destroy.", spirit ) );
+		var presence = await spirit.Action.Decision( Select.DeployedPresence.ToDestroy( "Blighted Island: Select presence to destroy.", spirit, gs ) );
 		await spirit.Presence.Destroy( presence, gs, DestoryPresenceCause.BlightedIsland );
 	}
 

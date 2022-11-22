@@ -11,8 +11,8 @@ class PourTimeSideways {
 		await frac.SpendTime( 3 );
 
 		// Move 1 of your presence to a different land with your presence.
-		var src = await ctx.Decision( Select.DeployedPresence.All( "Move presence from:", ctx.Self,Present.Always ) );
-		var dstOptions = ctx.Self.Presence.Spaces.Where(s=>s!=src);
+		var src = await ctx.Decision( Select.DeployedPresence.All( "Move presence from:", ctx.Self, ctx.GameState, Present.Always ) );
+		var dstOptions = ctx.Self.Presence.Spaces( ctx.GameState ).Where(s=>s!=src);
 		var dst = await ctx.Decision( Select.Space.ForAdjacent( "Move preseence to:", src, Select.AdjacentDirection.Outgoing, dstOptions,Present.Always ) );
 		ctx.Presence.Move( src, dst );
 
