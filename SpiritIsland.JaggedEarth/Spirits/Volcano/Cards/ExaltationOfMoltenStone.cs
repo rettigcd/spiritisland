@@ -35,7 +35,7 @@ public class ExaltationOfMoltenStone {
 			List<Space> spaces = originalApi.GetTargetOptionsFromKnownSource( ctx, powerType, source, tc ).ToList();
 
 			// Target Spirit gains +1 range with their Powers that originate from a Mountain
-			var mountainSource = source.Where(space => ctx.TerrainMapper.MatchesTerrain( space.Space, Terrain.Mountain) ).ToArray();
+			var mountainSource = source.Where(space => ctx.TerrainMapper.MatchesTerrain( space, Terrain.Mountain) ).ToArray();
 			return mountainSource.Length == 0 ? spaces
 				: spaces
 				.Union( originalApi.GetTargetOptionsFromKnownSource( ctx, powerType, mountainSource, new TargetCriteria(tc.Range+1, tc.Filter) ) )

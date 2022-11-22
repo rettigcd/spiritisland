@@ -159,8 +159,8 @@ public class TargetSpaceCtx : SelfCtx {
 	#region Terrain
 
 	/// <summary> The effective Terrain for powers. Will be Wetland for Ocean when Oceans-Hungry-Grasp is on board </summary>
-	public bool IsOneOf(params Terrain[] terrain) => TerrainMapper.MatchesTerrain(Space, terrain);
-	public bool Is(Terrain terrain) => TerrainMapper.MatchesTerrain(Space, terrain);
+	public bool IsOneOf(params Terrain[] terrain) => TerrainMapper.MatchesTerrain(Tokens, terrain);
+	public bool Is(Terrain terrain) => TerrainMapper.MatchesTerrain(Tokens, terrain);
 	public bool IsCoastal => TerrainMapper.IsCoastal( Space );
 	public bool IsInland => TerrainMapper.IsInland( Space );
 	public bool IsInPlay => TerrainMapper.IsInPlay( Space );

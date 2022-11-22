@@ -15,35 +15,19 @@ class DrenchTheLandscape : TerrainMapper, ICalcSource {
 		this.original = original;
 	}
 
-	public override bool MatchesTerrain( Space space, params Terrain[] options )
+	public override bool MatchesTerrain( SpaceState space, params Terrain[] options )
 		=> original.MatchesTerrain( space, options )
-		|| options.Contains( Terrain.Wetland ) && SacredSites.Contains( space );
+		|| options.Contains( Terrain.Wetland ) && spirit.Presence.IsSacredSite( space );
 
-	IEnumerable<Space> SacredSites => spirit.Presence.SacredSites( defaultTerrainMapper ); // Downpours SS are not dependent on special terrain rules.
+	IEnumerable<Space> SacredSites(GameState gs) => gs.AllActiveSpaces
+		.Where( spirit.Presence.IsSacredSite )
+		.Select(x=>x.Space); // Downpours SS are not dependent on special terrain rules.
 	readonly TerrainMapper defaultTerrainMapper = new TerrainMapper();
-
-	public IEnumerable<Space> FindSources( IKnowSpiritLocations presence, TargetSourceCriteria sourceCriteria, TerrainMapper _ ) {
-
-		var sources = sourceCriteria.From switch {
-			From.Presence => presence.Spaces,
-			From.SacredSite => SacredSites,
-			_ => throw new ArgumentException( "Invalid presence source " + sourceCriteria.From ),
-		};
-		if(!sourceCriteria.Terrain.HasValue)
-			return sources;
-
-		var terrain = sourceCriteria.Terrain.Value;
-		var match = sources.Where( space => space.Is( terrain ) );
-		return terrain != Terrain.Wetland
-			? match
-			: match.Union( SacredSites );
-
-	}
 
 	public IEnumerable<Space> FindSources( GameState gs, IKnowSpiritLocations presence, TargetSourceCriteria sourceCriteria, TerrainMapper mapper ) {
 		var sources = sourceCriteria.From switch {
 			From.Presence => presence.Spaces,
-			From.SacredSite => SacredSites,
+			From.SacredSite => SacredSites(gs),
 			_ => throw new ArgumentException( "Invalid presence source " + sourceCriteria.From ),
 		};
 		if(!sourceCriteria.Terrain.HasValue)
@@ -53,7 +37,7 @@ class DrenchTheLandscape : TerrainMapper, ICalcSource {
 		var match = sources.Where( space => space.Is( terrain ) );
 		return terrain != Terrain.Wetland
 			? match
-			: match.Union( SacredSites );
+			: match.Union( SacredSites(gs) );
 
 	}
 }

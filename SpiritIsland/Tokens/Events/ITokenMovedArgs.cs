@@ -6,7 +6,7 @@ public interface ITokenMovedArgs {
 	TokenClass Class { get; }
 	int Count { get; }
 	Space RemovedFrom { get; }
-	Space AddedTo { get; }
+	SpaceState AddedTo { get; }
 	Guid ActionId { get; }
 }
 

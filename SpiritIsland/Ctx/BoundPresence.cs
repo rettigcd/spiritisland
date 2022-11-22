@@ -93,7 +93,7 @@ public class BoundPresence {
 		=> ctx.Decision( Select.DeployedPresence.All(prompt, ctx.Self,Present.Always ) );
 
 	public Task<Space> SelectSacredSite(string prompt)
-		=> ctx.Decision( Select.DeployedPresence.SacredSites(prompt, ctx.Self, ctx.TerrainMapper, Present.Always ) );
+		=> ctx.Decision( Select.DeployedPresence.SacredSites(prompt, ctx.GameState, ctx.Self, ctx.TerrainMapper, Present.Always ) );
 		
 
 	#endregion
@@ -112,7 +112,7 @@ public class BoundPresence {
 			.Where( CanBePlacedOn );
 	}
 
-	public bool CanBePlacedOn( Space space ) => ctx.Self.Presence.CanBePlacedOn( this.ctx.TerrainMapper, space );
+	public bool CanBePlacedOn( Space space ) => ctx.Self.Presence.CanBePlacedOn( this.ctx.TerrainMapper, ctx.GameState.Tokens[space] );
 
 	#endregion
 

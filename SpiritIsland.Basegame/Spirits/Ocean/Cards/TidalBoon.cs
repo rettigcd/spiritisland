@@ -10,7 +10,7 @@ public class TidalBoon {
 		async Task PushDahanOutOfOcean( ITokenMovedArgs args ) {
 			if(args.Class != TokenType.Dahan) return;
 			if(!ctx.TerrainMapper.MatchesTerrain( args.AddedTo, Terrain.Ocean )) return;
-			await ctx.Target(args.AddedTo).PushUpToNDahan( args.Count );
+			await ctx.Target(args.AddedTo.Space).PushUpToNDahan( args.Count );
 		}
 
 		// target spirit gains 2 energy 

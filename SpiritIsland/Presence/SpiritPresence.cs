@@ -183,11 +183,15 @@ public class SpiritPresence : IKnowSpiritLocations {
 	/// <summary>
 	/// Specifies if the the given space is valid.
 	/// </summary>
-	public virtual bool CanBePlacedOn( TerrainMapper mapper, Space space ) => mapper.IsInPlay( space );
+	public virtual bool CanBePlacedOn( TerrainMapper mapper, SpaceState ss ) => mapper.IsInPlay( ss.Space );
 
 	public DualAsyncEvent<TrackRevealedArgs> TrackRevealed { get; } = new DualAsyncEvent<TrackRevealedArgs>();
 
 	public IReadOnlyCollection<Space> Placed => placed.AsReadOnly();
+
+	public virtual bool IsSacredSite( SpaceState space ) => 2 <= space[presenceToken];
+	public bool IsOn( Space space ) => placed.Contains( space );
+	public bool IsOn( SpaceState space ) => space.HasAny(presenceToken);
 
 	public virtual IEnumerable<Space> SacredSites( TerrainMapper _ ) => Placed
 		.GroupBy( x => x )
@@ -204,7 +208,6 @@ public class SpiritPresence : IKnowSpiritLocations {
 
 	public int CountOn( Space space ) => placed.Count( p => p == space );
 
-	public bool IsOn( Space space ) => placed.Contains( space );
 
 	public virtual Task PlaceOn(Space space, GameState gameState) { 
 		placed.Add(space);
@@ -233,6 +236,8 @@ public class SpiritPresence : IKnowSpiritLocations {
 			++count;
 		}
 	}
+
+	UniqueToken presenceToken = new UniqueToken("Presence",TokenCategory.Presence);
 
 	readonly List<Space> placed = new List<Space>();
 	readonly List<Space> stasis = new List<Space>();

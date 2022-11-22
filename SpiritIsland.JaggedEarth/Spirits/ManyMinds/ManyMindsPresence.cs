@@ -33,7 +33,7 @@ class ManyMindsPresence : SpiritPresence {
 
 		var srcBeasts = args.GameState.Tokens[args.RemovedFrom].Beasts;
 		if(srcBeasts.Count > 0 // force moved our virtual beast
-			&& await spirit.Action.Decision( Select.DeployedPresence.Gather( "Move 2 presence with Beast?", args.AddedTo, new []{ args.RemovedFrom } ) ) == null
+			&& await spirit.Action.Decision( Select.DeployedPresence.Gather( "Move 2 presence with Beast?", args.AddedTo.Space, new []{ args.RemovedFrom } ) ) == null
 		) return; // not moving presence
 
 		Move2Presence( args.GameState, args );
@@ -48,7 +48,7 @@ class ManyMindsPresence : SpiritPresence {
 		// Move 2 of our presence
 		for(int i = 0; i < 2; ++i) {
 			base.RemoveFrom_NoCheck( args.RemovedFrom, gs ); // using base because we don't want to trigger anything
-			base.PlaceOn( args.AddedTo, gs );
+			base.PlaceOn( args.AddedTo.Space, gs );
 		}
 	}
 
@@ -60,8 +60,8 @@ class ManyMindsPresence : SpiritPresence {
 	Task AddedVirtualBeastAtDestination_LimitTo1( GameState gs, ITokenMovedArgs args ) {
 		// if destination/to now has 4 or more presence,
 		// then there was already a virtual beast there and we need to remove 1 of the virtual beasts
-		if(4 <= CountOn( args.AddedTo ))
-			gs.Tokens[args.AddedTo].Beasts.Adjust(-1); // don't trigger event
+		if(4 <= CountOn( args.AddedTo.Space ))
+			gs.Tokens[args.AddedTo.Space].Beasts.Adjust(-1); // don't trigger event
 		return Task.CompletedTask;
 	}
 

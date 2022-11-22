@@ -49,7 +49,7 @@ public class VolcanoLoomingHigh : Spirit {
 class VolcanoPresence : SpiritPresence {
 	public VolcanoPresence(PresenceTrack t1, PresenceTrack t2 ) : base( t1, t2 ) {}
 
-	public override bool CanBePlacedOn( TerrainMapper tm, Space s ) => tm.MatchesTerrain( s, Terrain.Mountain );
+	public override bool CanBePlacedOn( TerrainMapper tm, SpaceState s ) => tm.MatchesTerrain( s, Terrain.Mountain );
 
 	public void SetSpirit(Spirit spirit) => DestroyBehavior = new DestroyPresence(spirit);
 

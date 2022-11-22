@@ -90,6 +90,6 @@ public class LurePresence : SpiritPresence {
 		)
 	{ }
 
-	public override bool CanBePlacedOn( TerrainMapper tm, Space space ) => tm.IsInland( space );
+	public override bool CanBePlacedOn( TerrainMapper tm, SpaceState space ) => tm.IsInland( space.Space );
 
 }

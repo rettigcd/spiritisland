@@ -4,7 +4,7 @@ public class OceanPresence : SpiritPresence {
 
 	public OceanPresence( PresenceTrack energy, PresenceTrack cardPlays ) : base( energy, cardPlays ) {}
 
-	public override bool CanBePlacedOn( TerrainMapper tm, Space s) => tm.MatchesTerrain( s, Terrain.Ocean ) || tm.IsCoastal( s );
+	public override bool CanBePlacedOn( TerrainMapper tm, SpaceState s) => tm.MatchesTerrain( s, Terrain.Ocean ) || tm.IsCoastal( s.Space );
 
 	public override async Task PlaceOn( Space space, GameState gs ) {
 		await base.PlaceOn( space, gs );

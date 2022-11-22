@@ -61,13 +61,13 @@ class MistsShiftAndFlow {
 		// Flow (Gather) - Destination (To)
 		var gatherDst = await spirit.Action.Decision( new Select.Space(
 			"Flow (gather) presence to:",
-			allowed.Select( a => a.AddedTo ).Distinct(),
+			allowed.Select( a => a.AddedTo.Space ).Distinct(),
 			MustFlowToReach( target ) ? Present.Always : Present.Done
 		) );
 		if(gatherDst == null) return;
 
 		// Flow (Gather) - Source
-		var souceOptions = allowed.Where( a => a.AddedTo == gatherDst ).Select( a => a.RemovedFrom ).ToArray();
+		var souceOptions = allowed.Where( a => a.AddedTo.Space == gatherDst ).Select( a => a.RemovedFrom ).ToArray();
 		var gatherSource = await spirit.Action.Decision( Select.DeployedPresence.Gather( $"Flow (gather) presence (to {gatherDst.Label}) from:", gatherDst, souceOptions ) );
 		if(gatherSource == null) return;
 
@@ -91,7 +91,7 @@ class MistsShiftAndFlow {
 				pretendPresence[src.Space]--; // move presence OFF of source
 
 				if( PresenceMeetsTargettingRequirements( pretendPresence, target ) )
-					allowed.Add( new TokenMovedArgs { RemovedFrom = src.Space, AddedTo = dst.Space, GameState = this.gameState } ); // !!! actionId?  Count?  etc...
+					allowed.Add( new TokenMovedArgs { RemovedFrom = src.Space, AddedTo = dst, GameState = this.gameState } ); // !!! actionId?  Count?  etc...
 
 				pretendPresence[src.Space]++; // resore source
 			}

@@ -218,15 +218,15 @@ public class SpaceState : HasNeighbors<SpaceState> {
 			removedArgs = await Remove( token,1,actionId, RemoveReason.MovedFrom );
 
 		// Add to destination
-		await tokenApi.GetTokensFor( destination )
-			.Add( removedArgs.Token, removedArgs.Count, actionId, AddReason.MovedTo );
+		var dstTokens = tokenApi.GetTokensFor( destination );
+		await dstTokens.Add( removedArgs.Token, removedArgs.Count, actionId, AddReason.MovedTo );
 
 		// Publish
 		await tokenApi.Publish_Moved( new TokenMovedArgs {
 			Token = token,
 			Class = token.Class,
 			RemovedFrom = Space,
-			AddedTo = destination,
+			AddedTo = dstTokens,
 			Count = 1,
 			ActionId = actionId
 		} );
@@ -290,7 +290,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	public IEnumerable<SpaceState> Adjacent => PowerUp( Space.Adjacent );
 
 	public IEnumerable<SpaceState> CascadingBlightOptions => Adjacent
-		 .Where(x => !this.gameState.Island.Terrain_ForBlight.MatchesTerrain(x.Space, Terrain.Ocean) );
+		 .Where(x => !this.gameState.Island.Terrain_ForBlight.MatchesTerrain(x, Terrain.Ocean) );
 
 	public IEnumerable<SpaceState> Range(int maxDistance) => this.CalcDistances( maxDistance ).Keys;
 		
