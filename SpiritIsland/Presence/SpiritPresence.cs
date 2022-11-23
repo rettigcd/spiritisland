@@ -82,6 +82,9 @@ public class SpiritPresence {
 
 	#endregion
 
+	// GameState strategy.
+	// * If GameState is only used for getting SpaceState, pass in SpaceState instead.
+
 	#region Game-Play things you can do with presence
 
 	public virtual async Task Place( IOption from, Space to, GameState gs ) {
@@ -93,15 +96,16 @@ public class SpiritPresence {
 		if(from is Track track) {
 			await RevealTrack( track, gs );
 		} else if(from is Space space) {
-			if(Spaces(gs).Contains( space ))
-				await RemoveFrom_NoCheck( space, gs );
+			var ss = gs.Tokens[space];
+			if(IsOn(ss))
+				await RemoveFrom_NoCheck( ss );
 			else
 				throw new ArgumentException( "Can't pull from island space:" + from.ToString() );
 		}
 	}
 
 	public async Task RemoveFrom( Space space, GameState gs ) {
-		await RemoveFrom_NoCheck( space, gs );
+		await RemoveFrom_NoCheck( gs.Tokens[space] );
 		CheckIfSpiritIsDestroyed( gs );
 	}
 
@@ -124,7 +128,7 @@ public class SpiritPresence {
 	}
 
 	public void Move( Space from, Space to, GameState gs ) {
-		RemoveFrom_NoCheck( from, gs );
+		RemoveFrom_NoCheck( gs.Tokens[from] );
 		PlaceOn( gs.Tokens[to] );
 	}
 
@@ -167,7 +171,7 @@ public class SpiritPresence {
 
 	public class DefaultDestroyBehavior : IDestroyPresenceBehavour {
 		public virtual Task DestroyPresenceApi(SpiritPresence presence, Space space, GameState gs, DestoryPresenceCause actionType, Guid actionId ) {
-			presence.RemoveFrom_NoCheck( space, gs );
+			presence.RemoveFrom_NoCheck( gs.Tokens[space] );
 			++presence.Destroyed;
 			return Task.CompletedTask;
 		}
@@ -200,11 +204,12 @@ public class SpiritPresence {
 		return placed.AsReadOnly();
 	}
 
-	// one item for each space that has presence
+	// !!! one item for each space that has presence
 	public IEnumerable<Space> Spaces( GameState gs ) {
 		var ss = SpaceStates( gs ).ToArray();
 		return ss.Select( x => x.Space );
 	}
+
 	public IEnumerable<SpaceState> SpaceStates( GameState gs ) => gs.AllActiveSpaces.Where( IsOn );
 
 	#endregion Exposed Data
@@ -228,8 +233,8 @@ public class SpiritPresence {
 	// (1) To move presence to another location on the board - no End-of-Game check is necessary
 	// (2) Presence is replaced with something else. End-of-Game check IS necessary.
 	// Also - if we have presence in Stasis, then removing 2nd to last presence will INCORRECTLY trigger loss.
-	protected virtual Task RemoveFrom_NoCheck( Space space, GameState gameState ) { 
-		gameState.Tokens[space].Adjust(presenceToken,-1);
+	protected virtual Task RemoveFrom_NoCheck( SpaceState space ) { 
+		space.Adjust(presenceToken,-1);
 		return Task.CompletedTask;
 	}
 

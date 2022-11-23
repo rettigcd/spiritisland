@@ -11,7 +11,7 @@ public class DahanEnheartened : IFearOptions {
 		var gs = ctx.GameState;
 		foreach( var spiritCtx in ctx.Spirits ) {
 			var spacesWithInvaders = gs.AllActiveSpaces.Where( s=>s.HasInvaders() ).ToArray();
-			var target = await spiritCtx.Decision( new Select.Space( "Select Space to Gather or push 1 dahan", spacesWithInvaders.Select(x=>x.Space), Present.Always));
+			var target = await spiritCtx.Decision( new Select.Space( "Select Space to Gather or push 1 dahan", spacesWithInvaders, Present.Always));
 
 			var spaceCtx = spiritCtx.Target(target);
 			await spaceCtx.SelectActionOption(

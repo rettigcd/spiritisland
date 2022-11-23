@@ -19,14 +19,13 @@ class DrenchTheLandscape : TerrainMapper, ICalcSource {
 		=> original.MatchesTerrain( space, options )
 		|| options.Contains( Terrain.Wetland ) && spirit.Presence.IsSacredSite( space );
 
-	IEnumerable<Space> SacredSites(GameState gs) => gs.AllActiveSpaces
-		.Where( spirit.Presence.IsSacredSite )
-		.Select(x=>x.Space); // Downpours SS are not dependent on special terrain rules.
+	IEnumerable<SpaceState> SacredSites(GameState gs) => gs.AllActiveSpaces
+		.Where( spirit.Presence.IsSacredSite ); // Downpours SS are not dependent on special terrain rules.
 	readonly TerrainMapper defaultTerrainMapper = new TerrainMapper();
 
-	public IEnumerable<Space> FindSources( GameState gs, IKnowSpiritLocations presence, TargetSourceCriteria sourceCriteria, TerrainMapper mapper ) {
+	public IEnumerable<SpaceState> FindSources( GameState gs, IKnowSpiritLocations presence, TargetSourceCriteria sourceCriteria, TerrainMapper mapper ) {
 		var sources = sourceCriteria.From switch {
-			From.Presence => presence.Spaces,
+			From.Presence => presence.SpaceStates,
 			From.SacredSite => SacredSites(gs),
 			_ => throw new ArgumentException( "Invalid presence source " + sourceCriteria.From ),
 		};
@@ -34,7 +33,7 @@ class DrenchTheLandscape : TerrainMapper, ICalcSource {
 			return sources;
 
 		var terrain = sourceCriteria.Terrain.Value;
-		var match = sources.Where( space => space.Is( terrain ) );
+		var match = sources.Where( space => space.Space.Is( terrain ) );
 		return terrain != Terrain.Wetland
 			? match
 			: match.Union( SacredSites(gs) );

@@ -71,7 +71,7 @@ public class WeaveTogetherTheFabricOfPlace {
 	}
 
 	static async Task DistributePresence( Space space, Space other, GameState gs ) {
-		var dstOptions = new[] { other };
+		var dstOptions = new[] { gs.Tokens[other] };
 		var srcTokens = gs.Tokens[space];
 		foreach(var spirit in gs.Spirits) {
 			int count = spirit.Presence.CountOn( srcTokens );

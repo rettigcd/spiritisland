@@ -68,7 +68,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 		// Select Destination
 		Space destination = await Decision( Select.Space.PushToken( tokenClass, Space,
-			Tokens.Range( range ).Where( s => { var x = Target( s.Space ); return x.IsInPlay && x.Matches( dstFilter ); } ).Select(x=>x.Space), // !!! Might not be correct if moving Blight.
+			Tokens.Range( range ).Where( s => { var x = Target( s.Space ); return x.IsInPlay && x.Matches( dstFilter ); } ), // !!! Might not be correct if moving Blight.
 			Present.Done )
 		);
 
@@ -359,9 +359,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 	// ! See base class for more Presence options
 
-	public bool IsSelfSacredSite => Presence.SacredSites.Contains(Space);
-
-	public bool HasSelfPresence => Presence.Spaces.Contains(Space);
+	public bool IsSelfSacredSite => Presence.IsSacredSite(Space);
 
 	public int PresenceCount => Self.Presence.CountOn(Tokens);
 
@@ -379,19 +377,19 @@ public class TargetSpaceCtx : SelfCtx {
 	}
 
 	public async Task<TargetSpaceCtx> SelectAdjacentLand( string prompt, Func<TargetSpaceCtx, bool> filter = null ) {
-		var options = Adjacent;
+		var options = Tokens.Adjacent;
 		if(filter != null)
-			options = options.Where( s => filter( Target( s ) ) );
+			options = options.Where( s => filter( Target( s.Space ) ) );
 		var space = await Decision( Select.Space.ForAdjacent( prompt, Space, Select.AdjacentDirection.None, options, Present.Always ) ); // !! could let caller pass in direction if appropriate
 		return space != null ? Target( space )
 			: null;
 	}
 
 	public async Task<TargetSpaceCtx> SelectAdjacentLandOrSelf( string prompt, System.Func<TargetSpaceCtx, bool> filter = null ) {
-		List<Space> options = Adjacent.ToList();
-		options.Add(Space);
+		List<SpaceState> options = Tokens.Adjacent.ToList();
+		options.Add(Tokens);
 		if(filter != null)
-			options = options.Where( s => filter( Target( s ) ) ).ToList();
+			options = options.Where( s => filter( Target( s.Space ) ) ).ToList();
 		var space = await Decision( Select.Space.ForAdjacent( prompt, Space, Select.AdjacentDirection.None, options, Present.Always ) );
 		return space != null ? Target( space )
 			: null;

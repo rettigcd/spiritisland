@@ -25,6 +25,8 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	public Space Space { get; }
 
+	public BoardState Board => new BoardState( Space.Board, gameState );
+
 	public int this[Token specific] {
 		get {
 			ValidateNotDead( specific );
@@ -295,4 +297,15 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	public IEnumerable<SpaceState> Range(int maxDistance) => this.CalcDistances( maxDistance ).Keys;
 		
 	IEnumerable<SpaceState> PowerUp(IEnumerable<Space> spaces) => this.tokenApi.PowerUp( spaces );
+}
+
+public class BoardState {
+	public Board Board { get; }
+	GameState gameState;
+
+	public BoardState(Board board, GameState gameState) {
+		this.Board = board;
+		this.gameState = gameState;
+	}
+	public IEnumerable<SpaceState> Spaces => Board.Spaces.Select(s=>gameState.Tokens[s]);
 }

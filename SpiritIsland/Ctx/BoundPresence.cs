@@ -12,18 +12,17 @@ public class BoundPresence : IKnowSpiritLocations {
 
 	#endregion
 
-	public IEnumerable<Space> SacredSites => _inner.SacredSites( _gameState, ctx.TerrainMapper );
 	public void Move( Space from, Space to ) => _inner.Move(from,to, _gameState );
 	public void PlaceOn( Space space ) => _inner.PlaceOn( _gameState.Tokens[space] );
 	public Task Destroy( Space space, DestoryPresenceCause actionType ) => _inner.Destroy( space, _gameState, actionType );
 	public Task RemoveFrom( Space space ) => _inner.RemoveFrom( space, _gameState ); // Generally used for Replacing
 	public bool CanBePlacedOn( Space space ) => _inner.CanBePlacedOn( ctx.TerrainMapper, _gameState.Tokens[space] );
-	public IEnumerable<Space> Spaces => _inner.Spaces( _gameState );
+	public bool IsSacredSite( Space space ) => _inner.IsSacredSite( _gameState.Tokens[space] );
 
-	IEnumerable<Space> IKnowSpiritLocations.Spaces => _inner.Spaces(_gameState);
+
+	public IEnumerable<Space> Spaces => _inner.Spaces( _gameState ); // !!! Move everything that calls this over to SpaceStates, then remove this.
 	public IEnumerable<SpaceState> SpaceStates => _inner.SpaceStates(_gameState);
-	IEnumerable<Space> IKnowSpiritLocations.SacredSites => _inner.SacredSites( _gameState, ctx.TerrainMapper );
-	public IEnumerable<SpaceState> SacredSiteStates => _inner.SacredSiteStates(_gameState, ctx.TerrainMapper);
+	public IEnumerable<SpaceState> SacredSites => _inner.SacredSiteStates( _gameState, ctx.TerrainMapper );
 
 	#region Higher Order
 
@@ -33,7 +32,7 @@ public class BoundPresence : IKnowSpiritLocations {
 		if(source == null) return (null, null);
 		var sourceCtx = ctx.Target( source );
 		// Select destination
-		var destination = await sourceCtx.Decision( Select.Space.PushPresence( sourceCtx.Space, sourceCtx.Adjacent, Present.Always ) );
+		var destination = await sourceCtx.Decision( Select.Space.PushPresence( sourceCtx.Space, sourceCtx.Tokens.Adjacent, Present.Always ) );
 		Move( source, destination );
 		return (source, destination);
 	}
@@ -55,7 +54,7 @@ public class BoundPresence : IKnowSpiritLocations {
 		await ctx.Self.Presence.Place( from, to, ctx.GameState );
 	}
 
-	public async Task DestroyOneFromAnywhere( DestoryPresenceCause actionType, Func<SpiritIsland.Space, bool> filter = null ) {
+	public async Task DestroyOneFromAnywhere( DestoryPresenceCause actionType, Func<SpiritIsland.SpaceState, bool> filter = null ) {
 		var space = filter == null
 			? await ctx.Decision( Select.DeployedPresence.ToDestroy( "Select presence to destroy", ctx.Self, ctx.GameState ) )
 			: await ctx.Decision( Select.DeployedPresence.ToDestroy( "Select presence to destroy", ctx.Self, ctx.GameState, filter ) );
@@ -100,7 +99,7 @@ public class BoundPresence : IKnowSpiritLocations {
 
 	/// <summary> Selects a space within [range] of current presence </summary>
 	public async Task<Space> SelectDestinationWithinRange( int range, string filterEnum ) {
-		var options = GetValidDestinationOptionsFromPresence(range,filterEnum, ctx.GameState.Tokens.PowerUp( ctx.Self.Presence.Spaces(ctx.GameState) ) );
+		var options = GetValidDestinationOptionsFromPresence(range,filterEnum, SpaceStates );
 		return await ctx.Decision( Select.Space.ToPlacePresence( options, Present.Always ) );
 	}
 

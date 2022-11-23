@@ -53,13 +53,13 @@ public class FlowingAndSilentFormsDartBy {
 	}
 
 	static async Task GatherSomeonesPresence( TargetSpaceCtx ctx ) {
-		var adj = ctx.Tokens.Adjacent.Select(x=>x.Space);
+		var adj = ctx.Tokens.Adjacent;
 		// Pick Spirit
-		var nearbySpirits = ctx.GameState.Spirits.Where( s => s.Presence.Spaces( ctx.GameState ).Intersect( adj ).Any() ).ToArray();
+		var nearbySpirits = ctx.GameState.Spirits.Where( s => adj.Any( s.Presence.IsOn ) ).ToArray();
 		Spirit other = ctx.GameState.Spirits.Length == 1 ? ctx.Self
-			: await ctx.Decision( new Select.Spirit( "Flowin and Silent Forms Dard By", nearbySpirits ) );
+			: await ctx.Decision( new Select.Spirit( "Flowing and Silent Forms Dart By", nearbySpirits ) );
 		// Pick spot
-		var source = await ctx.Decision( Select.DeployedPresence.Gather("Gather presence", ctx.Space, adj.Intersect(other.BindMyPower(ctx.GameState).Presence.Spaces )) );
+		var source = await ctx.Decision( Select.DeployedPresence.Gather("Gather presence", ctx.Space, adj.Intersect(other.BindMyPower(ctx.GameState).Presence.SpaceStates )) );
 		if(source == null) return;
 		// # to move
 		int numToMove = (other.Presence.CountOn(ctx.GameState.Tokens[source]) > 1 && await ctx.Self.UserSelectsFirstText("# of presence to gather", "2", "1"))

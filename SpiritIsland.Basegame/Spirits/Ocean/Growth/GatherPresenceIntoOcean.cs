@@ -19,8 +19,6 @@ public class GatherPresenceIntoOcean : GrowthActionFactory {
 				$"Select source of Presence to Gather into {currentTarget.Space}"
 				, currentTarget.Adjacent
 					.Where( s=>ctx.Presence.Spaces.Contains(s.Space) )
-					.Select( s => s.Space )
-					.ToArray()
 				, Present.Always
 			));
 

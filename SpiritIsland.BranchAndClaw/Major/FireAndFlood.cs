@@ -8,8 +8,7 @@ public class FireAndFlood {
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		// == Pick 2nd target - range 2 from same SS ==
-		var spiritSS = ctx.Presence.SacredSites.ToArray();
-		var possibleSacredSiteSourcesForThisSpace = ctx.Tokens.Range(1).Where(s=>spiritSS.Contains(s.Space)).ToArray();
+		var possibleSacredSiteSourcesForThisSpace = ctx.Tokens.Range(1).Where(s=>ctx.Presence.IsSacredSite(s.Space)).ToArray();
 
 		IEnumerable<Space> secondTargetOptions = ctx.Self.RangeCalc.GetTargetOptionsFromKnownSource(
 			ctx,

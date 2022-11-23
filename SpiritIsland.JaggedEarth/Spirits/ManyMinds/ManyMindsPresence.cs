@@ -19,12 +19,11 @@ class ManyMindsPresence : SpiritPresence {
 			space.Adjust(TokenType.Beast,1); // virtual so don't trigger an event.
 	}
 
-	protected override async Task RemoveFrom_NoCheck( Space space, GameState gs ) {
-		var tokens = gs.Tokens[space];
-		await base.RemoveFrom_NoCheck( space, gs );
+	protected override async Task RemoveFrom_NoCheck( SpaceState space ) {
+		await base.RemoveFrom_NoCheck( space );
 		// if destroyed sacred site, remove virtual beast
-		if( CountOn( tokens ) == 1 )
-			gs.Tokens[space].Adjust(TokenType.Beast, 1); // !!! virtual tokens don't trigger events
+		if( CountOn( space ) == 1 )
+			space.Adjust(TokenType.Beast, 1); // !!! virtual tokens don't trigger events
 	}
 
 	async Task TokenMoved( ITokenMovedArgs args ) {
@@ -34,7 +33,7 @@ class ManyMindsPresence : SpiritPresence {
 
 		var srcBeasts = args.RemovedFrom.Beasts;
 		if(srcBeasts.Count > 0 // force moved our virtual beast
-			&& await spirit.Action.Decision( Select.DeployedPresence.Gather( "Move 2 presence with Beast?", args.AddedTo.Space, new []{ args.RemovedFrom.Space } ) ) == null
+			&& await spirit.Action.Decision( Select.DeployedPresence.Gather( "Move 2 presence with Beast?", args.AddedTo.Space, new []{ args.RemovedFrom } ) ) == null
 		) return; // not moving presence
 
 		Move2Presence( args.GameState, args );
@@ -48,7 +47,7 @@ class ManyMindsPresence : SpiritPresence {
 	void Move2Presence( GameState gs, ITokenMovedArgs args ) {
 		// Move 2 of our presence
 		for(int i = 0; i < 2; ++i) {
-			base.RemoveFrom_NoCheck( args.RemovedFrom.Space, gs ); // using base because we don't want to trigger anything
+			base.RemoveFrom_NoCheck( gs.Tokens[args.RemovedFrom.Space] ); // using base because we don't want to trigger anything
 			base.PlaceOn( args.AddedTo );
 		}
 	}

@@ -3,7 +3,7 @@
 public enum From { None, Presence, SacredSite };
 
 public interface ICalcSource {
-	IEnumerable<Space> FindSources( GameState gs, IKnowSpiritLocations presence, TargetSourceCriteria source, TerrainMapper mapper );
+	IEnumerable<SpaceState> FindSources( GameState gs, IKnowSpiritLocations presence, TargetSourceCriteria source, TerrainMapper mapper );
 }
 
 public interface ICalcRange {
@@ -19,13 +19,13 @@ public interface ICalcRange {
 
 
 public class DefaultSourceCalc : ICalcSource {
-	public IEnumerable<Space> FindSources( GameState gs, IKnowSpiritLocations presence, TargetSourceCriteria sourceCriteria, TerrainMapper mapper ) {
+	public IEnumerable<SpaceState> FindSources( GameState gs, IKnowSpiritLocations presence, TargetSourceCriteria sourceCriteria, TerrainMapper mapper ) {
 		var sources = sourceCriteria.From switch {
-			From.Presence => presence.Spaces,
+			From.Presence => presence.SpaceStates,
 			From.SacredSite => presence.SacredSites,
 			_ => throw new ArgumentException( "Invalid presence source " + sourceCriteria.From ),
 		};
-		return sources.Where( space => !sourceCriteria.Terrain.HasValue || space.Is( sourceCriteria.Terrain.Value ) );
+		return sources.Where( space => !sourceCriteria.Terrain.HasValue || space.Space.Is( sourceCriteria.Terrain.Value ) );
 	}
 
 }

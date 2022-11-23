@@ -37,7 +37,7 @@ public class SpaceFilterMap {
 
 		// Jagged Earth
 		[Target.TwoBeasts         ] = ctx => ctx.Beasts.Count>=2,
-		[Target.MountainOrPresence] = ctx => ctx.Space.IsMountain || ctx.HasSelfPresence,
+		[Target.MountainOrPresence] = ctx => ctx.Space.IsMountain || ctx.Presence.IsHere,
 
 		// Don't use TerrainMapper, Inland should ignore terrain modifications (I think)
 		[Target.Inland            ] = ctx => ctx.IsInland,

@@ -68,7 +68,7 @@ class MistsShiftAndFlow {
 
 		// Flow (Gather) - Source
 		var souceOptions = allowed.Where( a => a.AddedTo.Space == gatherDst ).Select( a => a.RemovedFrom ).ToArray();
-		var gatherSource = await spirit.Action.Decision( Select.DeployedPresence.Gather( $"Flow (gather) presence (to {gatherDst.Label}) from:", gatherDst, souceOptions.Select(s=>s.Space) ) );
+		var gatherSource = await spirit.Action.Decision( Select.DeployedPresence.Gather( $"Flow (gather) presence (to {gatherDst.Label}) from:", gatherDst, souceOptions ) );
 		if(gatherSource == null) return;
 
 		spirit.Presence.Move( gatherSource, gatherDst, gameState );
@@ -103,8 +103,7 @@ class MistsShiftAndFlow {
 	}
 
 	bool PresenceMeetsTargettingRequirements( IKnowSpiritLocations presence, SpaceState target ) {
-		var targetSource = spirit.SourceCalc.FindSources( gameState, presence, sourceCriteria, gameState.Island.Terrain_ForPower )
-			.Select(x=>gameState.Tokens[x]);
+		var targetSource = spirit.SourceCalc.FindSources( gameState, presence, sourceCriteria, gameState.Island.Terrain_ForPower );
 		var targetOptionsFromTheseSources = GetTargetOptionsFromKnownSources( targetSource );
 		bool hitsTarget = targetOptionsFromTheseSources.Contains( target );
 		return hitsTarget;
@@ -120,20 +119,19 @@ class MistsShiftAndFlow {
 		// For large ranges, normal targetting will prevail becaue mists can only extend range if they flow adjacent
 		// For small ranges, flow-targets will be larger.
 
-		var target = await spirit.Action.Decision( new Select.Space( prompt, nonFlowTargets.Union( flowOnlyTargets ).Select(x=>x.Space), Present.Always ) );
+		var target = await spirit.Action.Decision( new Select.Space( prompt, nonFlowTargets.Union( flowOnlyTargets ), Present.Always ) );
 		return this.gameState.Tokens[target];
 	}
 
 	void CalculateSpaceGroups() {
-		var sources = spirit.SourceCalc.FindSources( gameState, spirit.BindMyPower(gameState).Presence, sourceCriteria, gameState.Island.Terrain_ForPower )
-			.Select(s=>gameState.Tokens[s]);
+		var sources = spirit.SourceCalc.FindSources( gameState, spirit.BindMyPower(gameState).Presence, sourceCriteria, gameState.Island.Terrain_ForPower );
 		this.nonFlowTargets = GetTargetOptionsFromKnownSources( sources );
 		this.flowRange = sources
 			.SelectMany( s => s.Range( 2 ) ).Distinct()
 			.ToArray();
 
 		// Calculate new sources we could find
-		var flowedSources = gameState.Tokens.PowerUp( spirit.Presence.Spaces( ctx.GameState ) )
+		var flowedSources = spirit.BindMyPower(ctx.GameState).Presence.SpaceStates
 			.SelectMany( p => p.Adjacent )
 			.Distinct()
 			.Where( IsInPlay ) // Don't allow flow into ocean.
@@ -173,8 +171,8 @@ class MistsShiftAndFlow {
 		public IEnumerable<Space> Spaces => this.Keys;
 		public IEnumerable<SpaceState> SpaceStates => this.Keys.Select(x=>_gs.Tokens[x]);
 
-		public IEnumerable<Space> SacredSites => this.Keys.Where( k => this[k] > 1 );
-		public IEnumerable<SpaceState> SacredSiteStates => this.Keys.Where( k => this[k] > 1 ).Select(x=>_gs.Tokens[x]);
+		public IEnumerable<SpaceState> SacredSites => this.Keys.Where( k => this[k] > 1 ).Select(x=>_gs.Tokens[x]);
+
 	}
 
 }

@@ -29,7 +29,7 @@ public class DissolveTheBondsOfKinship {
 		// Push all explorers from target land to as many different lands as possible
 		await ctx.Push( int.MaxValue,Invader.Explorer);
 
-		var unpushedLands = ctx.Adjacent.ToList();
+		var unpushedLands = ctx.Tokens.Adjacent.ToList();
 		int explorerCount = ctx.Tokens.Sum( Invader.Explorer );
 		while(explorerCount > 0) {
 			// select token
@@ -40,15 +40,16 @@ public class DissolveTheBondsOfKinship {
 
 			// Select destination
 			var destinationOptions = explorerCount > unpushedLands.Count
-				? ctx.Adjacent.ToArray() // allow anywhere
+				? ctx.Tokens.Adjacent.ToArray() // allow anywhere
 				: unpushedLands.ToArray(); // force to un-pushed lands
 			var destination = await ctx.Decision( Select.Space.PushToken( token, ctx.Space, destinationOptions, Present.Always ) );
+			var dstTokens = ctx.GameState.Tokens[destination];
 
 			// Move
 			await ctx.Move(token,ctx.Space,destination);
 
 			// next
-			unpushedLands.Remove(destination);
+			unpushedLands.Remove( dstTokens );
 			--explorerCount;
 		}
 

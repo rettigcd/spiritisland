@@ -11,11 +11,12 @@ public class OceanPresence : SpiritPresence {
 		currentBoards.Add( space.Space.Board );
 	}
 
-	protected override async Task RemoveFrom_NoCheck( Space space, GameState gs ) {
-		await base.RemoveFrom_NoCheck( space, gs );
+	protected override async Task RemoveFrom_NoCheck( SpaceState space ) {
+		await base.RemoveFrom_NoCheck( space );
 		var board = space.Board;
-		if(!Spaces(gs).Any(s=>s.Board == board ))
-			currentBoards.Remove( board );
+		bool isOnBoard = board.Spaces.Any( IsOn );
+		if(!isOnBoard )
+			currentBoards.Remove( board.Board );
 	}
 
 	public bool IsOnBoard(Board board) => currentBoards.Contains(board);

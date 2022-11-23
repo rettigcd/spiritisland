@@ -19,7 +19,7 @@ public class SettleIntoHuntingGrounds {
 			// 2 fear and
 			ctx.AddFear(2);
 			// 2 damamge in one of your lands.
-			var space = await ctx.Decision( new Select.Space("2 damage", ctx.Self.Presence.Spaces( ctx.GameState ), Present.Always ));
+			var space = await ctx.Decision( new Select.Space("2 damage", ctx.Presence.Spaces, Present.Always ));
 			if( space != null )
 				await ctx.Target(space).DamageInvaders( 2 );
 		}

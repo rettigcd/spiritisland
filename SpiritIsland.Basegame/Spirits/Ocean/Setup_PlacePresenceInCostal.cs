@@ -8,7 +8,7 @@ public class Setup_PlacePresenceInCostal : GrowthActionFactory {
 			.Select(s=>ctx.GameState.Tokens[s])
 			.First()
 			.Adjacent;
-		var space = await ctx.Decision( new Select.Space( "Add presence to", options.Select(s=>s.Space), Present.Always ) );
+		var space = await ctx.Decision( new Select.Space( "Add presence to", options, Present.Always ) );
 		ctx.Presence.PlaceOn( space );
 	}
 	public override bool CouldActivateDuring( Phase speed, Spirit _ ) => speed == Phase.Init;

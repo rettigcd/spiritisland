@@ -12,7 +12,7 @@ public class PullBeneathTheHungryEarth {
 		int damage = 0;
 
 		// If target land has your presence, 1 fear and 1 damage
-		if( ctx.HasSelfPresence ){
+		if( ctx.Presence.IsHere ){
 			++damage;
 			ctx.AddFear(1);
 		}

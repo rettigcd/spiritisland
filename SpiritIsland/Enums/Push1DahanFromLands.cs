@@ -4,8 +4,8 @@
 public class Push1DahanFromLands : GrowthActionFactory, IActionFactory {
 
 	public override async Task ActivateAsync( SelfCtx ctx ) {
-		var dahanOptions = ctx.Presence.Spaces
-			.SelectMany(space=>ctx.Target(space).Dahan.Keys.Select(t=>new SpaceToken(space,t)));
+		var dahanOptions = ctx.Presence.SpaceStates
+			.SelectMany(space=> space.Dahan.Keys.Select(t=>new SpaceToken(space.Space,t)));
 		var source = await ctx.Decision(new Select.TokenFromManySpaces("Select dahan to push from land",dahanOptions,Present.Done));
 		if(source == null) return;
 

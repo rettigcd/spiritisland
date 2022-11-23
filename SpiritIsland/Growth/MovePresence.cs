@@ -11,7 +11,7 @@ public class MovePresence : GrowthActionFactory, IActionFactory {
 	public override async Task ActivateAsync( SelfCtx ctx) {
 		var src = await ctx.Decision( Select.DeployedPresence.All("Move presence from:", ctx.Self, ctx.GameState, Present.Always ) );
 		var dstOptions = ctx.GameState.Tokens[src].Range(Range).Where( ctx.TerrainMapper.IsInPlay );
-		var dst = await ctx.Decision( Select.Space.ForAdjacent("Move preseence to:", src, Select.AdjacentDirection.Outgoing, dstOptions.Select(x=>x.Space), Present.Always));
+		var dst = await ctx.Decision( Select.Space.ForAdjacent("Move preseence to:", src, Select.AdjacentDirection.Outgoing, dstOptions, Present.Always));
 		ctx.Presence.Move( src, dst );
 	}
 

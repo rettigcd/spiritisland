@@ -13,7 +13,7 @@ public class OvergrowInANight {
 				await ctx.Self.Presence.Place( from, ctx.Space, ctx.GameState );
 			} ),
 			new SpaceAction( "3 fear", ctx => ctx.AddFear(3) )
-				.Matches( x=>x.HasSelfPresence && x.Tokens.HasInvaders() ) // if presence and invaders
+				.Matches( x=>x.Presence.IsHere && x.Tokens.HasInvaders() ) // if presence and invaders
 		);
 
 	}

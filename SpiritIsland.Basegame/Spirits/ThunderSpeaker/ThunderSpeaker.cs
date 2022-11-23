@@ -65,9 +65,10 @@ public class Thunderspeaker : Spirit {
 		string prompt = $"{SwarnToVictory.Title}: {args.Count} dahan destroyed. Select presence to destroy.";
 
 		int numToDestroy = args.Count;
-		Space[] options;
-		Space[] Intersect() => args.Space.Range( 1 ).Select(x=>x.Space)
-			.Intersect( Presence.Spaces(args.GameState) ).ToArray();
+		SpaceState[] options;
+		SpaceState[] Intersect() => args.Space.Range( 1 )
+			.Where( Presence.IsOn )
+			.ToArray();
 
 		while(numToDestroy-->0 && (options=Intersect()).Length > 0) {
 			var space = await this.Action.Decision( Select.DeployedPresence.ToDestroy( prompt, options, Present.Always ) );
