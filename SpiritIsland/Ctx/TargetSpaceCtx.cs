@@ -68,7 +68,9 @@ public class TargetSpaceCtx : SelfCtx {
 
 		// Select Destination
 		Space destination = await Decision( Select.Space.PushToken( tokenClass, Space,
-			Tokens.Range( range ).Where( s => { var x = Target( s.Space ); return x.IsInPlay && x.Matches( dstFilter ); } ), // !!! Might not be correct if moving Blight.
+			Tokens.Range( range )
+				.Where( spaceState => TerrainMapper.IsInPlay( spaceState.Space ) )
+				.Where( SpaceFilterMap.Get( dstFilter, Self, TerrainMapper ) ),
 			Present.Done )
 		);
 
@@ -93,9 +95,9 @@ public class TargetSpaceCtx : SelfCtx {
 	public async Task<Space> MoveTokenIn( TokenClass tokenGroup, int range, string srcFilter = SpiritIsland.Target.Any ) {
 
 		var sources = Tokens.Range( range )
-			.Select( s=>Target(s.Space) )
-			.Where( x => x.IsInPlay && x.Matches(srcFilter) && x.Tokens.HasAny(tokenGroup) ) // !!! Not correct if moving Blight on an Ocean-Board
-			.SelectMany( x => x.Tokens.OfType(tokenGroup).Select(t => new SpaceToken(x.Space, t)) )
+			.Where( x => TerrainMapper.IsInland( x.Space ) && x.HasAny( tokenGroup ) )
+			.Where( SpaceFilterMap.Get( srcFilter, Self, TerrainMapper ) )  // !!! Not correct if moving Blight on an Ocean-Board
+			.SelectMany( x => x.OfType(tokenGroup).Select(t => new SpaceToken(x.Space, t)) )
 			.ToArray();
 
 		var spaceToken = await Decision( new Select.TokenFromManySpaces("Move Tokens into " + Space.Label, sources, Present.Done ) );
@@ -164,8 +166,6 @@ public class TargetSpaceCtx : SelfCtx {
 	public bool IsCoastal => TerrainMapper.IsCoastal( Space );
 	public bool IsInland => TerrainMapper.IsInland( Space );
 	public bool IsInPlay => TerrainMapper.IsInPlay( Space );
-	public bool Matches( string filterEnum ) => IsInPlay && SpaceFilterMap.Get(filterEnum)(this);
-
 	#endregion
 
 
@@ -372,8 +372,9 @@ public class TargetSpaceCtx : SelfCtx {
 
 	#endregion
 
-	public IEnumerable<Space> FindSpacesWithinRangeOf( int range, string filterEnum ) {
-		return Self.RangeCalc.GetTargetOptionsFromKnownSource( this, TargettingFrom.None, new SpaceState[]{ this.Tokens }, new TargetCriteria( range, filterEnum ) );
+	public IEnumerable<Space> TargetSpacesWithinRangeOf( int range, string filterEnum ) {
+		// !!! Used for adding a beast. ??? Should we be using this???
+		return Self.RangeCalc.GetTargetOptionsFromKnownSource( this, TargetingPowerType.None, new SpaceState[]{ this.Tokens }, new TargetCriteria( range, filterEnum ) );
 	}
 
 	public async Task<TargetSpaceCtx> SelectAdjacentLand( string prompt, Func<TargetSpaceCtx, bool> filter = null ) {

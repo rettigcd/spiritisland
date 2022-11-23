@@ -105,7 +105,7 @@ public class InnatePower : IFlexibleSpeedActionFactory, IRecordLastTarget {
 			return;
 		}
 
-		LastTarget = await targetAttr.GetTargetCtx( Name, spiritCtx, TargettingFrom.Innate );
+		LastTarget = await targetAttr.GetTargetCtx( Name, spiritCtx, TargetingPowerType.Innate );
 		if(LastTarget == null) return;
 
 		var objList = new object[] { LastTarget };

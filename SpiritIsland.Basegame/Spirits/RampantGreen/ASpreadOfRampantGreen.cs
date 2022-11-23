@@ -107,7 +107,7 @@ public class ASpreadOfRampantGreen : Spirit {
 			var stop = await this.Action.Decision( new Select.Space( $"Stop {actionText} by destroying 1 presence", stoppable.ToArray(), Present.Done ) );
 			if(stop == null) break;
 
-			await Presence.Destroy( stop, gs, DestoryPresenceCause.DahanDestroyed ); // it is the invader actions we are stopping
+			await Presence.Destroy( stop, gs, DestoryPresenceCause.DahanDestroyed, Guid.NewGuid() ); // it is the invader actions we are stopping
 
 			skipped.Add( gs.Tokens[stop] );
 			stoppable.Remove( stop );

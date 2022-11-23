@@ -3,7 +3,7 @@
 public class HeartOfTheWildfire : Spirit {
 
 	static HeartOfTheWildfire() {
-		SpaceFilterMap.Register(ThreateningFlames.BlightAndInvaders,ctx=>ctx.HasBlight && ctx.HasInvaders);
+		SpaceFilterMap.Register(ThreateningFlames.BlightAndInvaders,(ctx)=>ctx.Tokens.Blight.Any && ctx.Tokens.HasInvaders());
 	}
 
 	public const string Name = "Heart of the Wildfire";
@@ -104,7 +104,7 @@ public class HeartOfTheWildfire : Spirit {
 				await ctx.AddBlight( 1, AddReason.SpecialRule );
 		}
 
-		public override async Task Destroy( Space space, GameState gs, DestoryPresenceCause actionType, AddReason blightAddedReason = AddReason.None ) {
+		public override async Task Destroy( Space space, GameState gs, DestoryPresenceCause actionType, Guid actionId, AddReason blightAddedReason = AddReason.None ) {
 
 			// Blight added
 			if( actionType == DestoryPresenceCause.Blight
@@ -114,7 +114,7 @@ public class HeartOfTheWildfire : Spirit {
 				// does not destroy your presence. (including cascades)"
 				return;
 
-			await base.Destroy( space, gs, actionType, blightAddedReason );
+			await base.Destroy( space, gs, actionType, actionId, blightAddedReason );
 		}
 
 	}

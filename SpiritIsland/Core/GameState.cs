@@ -150,7 +150,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		if(effect.DestroyPresence)
 			foreach(var spirit in Spirits)
 				if(spirit.Presence.IsOn( args.Space ))
-					await spirit.Presence.Destroy( args.Space.Space, this, DestoryPresenceCause.Blight, args.Reason );
+					await spirit.Presence.Destroy( args.Space.Space, this, DestoryPresenceCause.Blight, Guid.NewGuid(), args.Reason );
 
 		// Cascade blight
 		if(effect.Cascade) {
@@ -336,7 +336,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	static async Task DefaultDestroy1PresenceFromBlightCard( Spirit spirit, GameState gs, Cause cause ) {
 		var presence = await spirit.Action.Decision( Select.DeployedPresence.ToDestroy( "Blighted Island: Select presence to destroy.", spirit, gs ) );
-		await spirit.Presence.Destroy( presence, gs, DestoryPresenceCause.BlightedIsland );
+		await spirit.Presence.Destroy( presence, gs, DestoryPresenceCause.BlightedIsland, Guid.NewGuid() );
 	}
 
 	#endregion

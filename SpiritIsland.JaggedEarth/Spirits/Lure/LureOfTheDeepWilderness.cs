@@ -6,9 +6,8 @@ public class LureOfTheDeepWilderness : Spirit {
 
 	public override string Text => Name;
 
-	public override SpecialRule[] SpecialRules => new SpecialRule[] { HomeOfTheIslandsHeart, EnthrallTheForeignExplorersRule };
+	public override SpecialRule[] SpecialRules => new SpecialRule[] { LurePresence.PlacementRule, EnthrallTheForeignExplorersRule };
 
-	static readonly SpecialRule HomeOfTheIslandsHeart = new SpecialRule("Home of the Island's Heart", "Your presence may only be added/moved to lands that are inland.");
 	static readonly SpecialRule EnthrallTheForeignExplorersRule = new SpecialRule("Enthrall the Foreign Explorers", "For each of your presence in a land, ignore up to 2 explorer during the Ravage Step and any Ravage Action.");
 
 	public LureOfTheDeepWilderness():base( 
@@ -86,6 +85,9 @@ public class LureOfTheDeepWilderness : Spirit {
 }
 
 public class LurePresence : SpiritPresence {
+
+	static public readonly SpecialRule PlacementRule = new SpecialRule( "Home of the Island's Heart", "Your presence may only be added/moved to lands that are inland." );
+
 	public LurePresence()
 		:base(
 			new PresenceTrack( Track.Energy1, Track.Energy2, Track.MoonEnergy, Track.MkEnergy( 3, Element.Plant ), Track.MkEnergy( 4, Element.Air ), Track.Energy5Reclaim1 ),
@@ -93,6 +95,6 @@ public class LurePresence : SpiritPresence {
 		)
 	{ }
 
-	public override bool CanBePlacedOn( TerrainMapper tm, SpaceState space ) => tm.IsInland( space.Space );
+	public override bool CanBePlacedOn( SpaceState space, TerrainMapper tm ) => tm.IsInland( space.Space );
 
 }

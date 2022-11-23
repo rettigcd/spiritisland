@@ -12,7 +12,7 @@ public class TargetLandApi_ExtendRange : ICalcRange {
 
 	public IEnumerable<Space> GetTargetOptionsFromKnownSource(
 		SelfCtx ctx,
-		TargettingFrom powerType,
+		TargetingPowerType powerType,
 		IEnumerable<SpaceState> source,
 		TargetCriteria targetCriteria
 	) {

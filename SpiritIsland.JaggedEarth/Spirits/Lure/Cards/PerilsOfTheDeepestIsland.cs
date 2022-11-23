@@ -12,7 +12,7 @@ public class PerilsOfTheDeepestIsland {
 		await ctx.Badlands.Add(1);
 
 		// Add 1 beast within 1 range.
-		var spaceCtx = await ctx.SelectSpace("Add beast", ctx.FindSpacesWithinRangeOf(1,Target.Any));
+		var spaceCtx = await ctx.SelectSpace("Add beast", ctx.TargetSpacesWithinRangeOf(1,Target.Any));
 		await spaceCtx.Beasts.Add(1);
 
 		// Push up to 2 dahan.

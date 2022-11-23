@@ -12,7 +12,7 @@ public class FireAndFlood {
 
 		IEnumerable<Space> secondTargetOptions = ctx.Self.RangeCalc.GetTargetOptionsFromKnownSource(
 			ctx,
-			TargettingFrom.PowerCard,
+			TargetingPowerType.PowerCard,
 			possibleSacredSiteSourcesForThisSpace,
 			new TargetCriteria(2)
 		);

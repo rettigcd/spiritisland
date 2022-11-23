@@ -35,7 +35,7 @@ public class UnleashATorrentOfTheSelfsOwnEssence {
 		if(damage == 0) return;
 
 		// land at range-0
-		var land = await ctx.Self.TargetsSpace(TargettingFrom.PowerCard,ctx.GameState,$"{damage} Damage"
+		var land = await ctx.Self.TargetsSpace(TargetingPowerType.PowerCard,ctx.GameState,ctx.CurrentActionId,$"{damage} Damage"
 			, new TargetSourceCriteria(From.Presence)
 			, new TargetCriteria(0)
 		);

@@ -56,7 +56,7 @@ public class ExplosiveEruption {
 class ErruptionAttribute : FromPresenceAttribute {
 	public ErruptionAttribute() : base( 0 ) { }
 
-	public override async Task<object> GetTargetCtx( string powerName, SelfCtx ctx , TargettingFrom powerType ) {
+	public override async Task<object> GetTargetCtx( string powerName, SelfCtx ctx , TargetingPowerType powerType ) {
 		var target = (TargetSpaceCtx) await base.GetTargetCtx( powerName, ctx, powerType );
 
 		int count = await target.Self.SelectNumber("# of presence to destroy?", target.Presence.Count,0);

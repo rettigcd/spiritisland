@@ -30,7 +30,7 @@ public class ExaltationOfMoltenStone {
 			this.originalApi = originalApi;
 		}
 
-		public override IEnumerable<Space> GetTargetOptionsFromKnownSource( SelfCtx ctx, TargettingFrom powerType, IEnumerable<SpaceState> source, TargetCriteria tc ) {
+		public override IEnumerable<Space> GetTargetOptionsFromKnownSource( SelfCtx ctx, TargetingPowerType powerType, IEnumerable<SpaceState> source, TargetCriteria tc ) {
 			// original options
 			List<Space> spaces = originalApi.GetTargetOptionsFromKnownSource( ctx, powerType, source, tc ).ToList();
 

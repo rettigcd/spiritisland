@@ -37,7 +37,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			var gs = GetGame( hasOcean );
 			gs.Phase = Phase.Fast;
 
-			river.Presence.Move( board[5], board[2], gs ); // move it to A2
+			river.BindMyPower(gs).Presence.Move( board[5], board[2] ); // move it to A2
 			Assert_Options( "A2", river.BindMyPower(gs).Presence.Spaces, "river starting presence" );
 
 			// Talons ofLightning - Range 1

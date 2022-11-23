@@ -8,10 +8,13 @@ public class VolcanoLoomingHigh : Spirit {
 
 	public override string Text => Name;
 
-	public override SpecialRule[] SpecialRules => new SpecialRule[]{MountainHome, CollapseInABlastOfLAvaAndSteam,VolcanicPeaksTowerOverTheLandscape};
+	public override SpecialRule[] SpecialRules => new SpecialRule[]{
+		MountainHome, 
+		CollapseInABlastOfLAvaAndSteam,
+		VolcanicPeaksTowerOverTheLandscape.Rule
+	};
 	static readonly SpecialRule MountainHome = new SpecialRule("Mountain Home","Your presence may only be added/moved into Mountain.");
 	static readonly SpecialRule CollapseInABlastOfLAvaAndSteam = new SpecialRule("Collapse in a Blast of Lava and Steam","When your presense is destroyed, in that land, deal 1 Damage per destroyed presence to both Invaders and to dahan.");
-	static readonly SpecialRule VolcanicPeaksTowerOverTheLandscape = new SpecialRule("Volcanic Peaks Tower Over the Landscape","Your Power Cards gain +1 range if you have 3 or more presence in the origin land.");
 
 	public VolcanoLoomingHigh():base(
 		new VolcanoPresence(
@@ -36,7 +39,7 @@ public class VolcanoLoomingHigh : Spirit {
 
 		((VolcanoPresence)(Presence)).SetSpirit( this );
 
-		RangeCalc = new VolcanoTargetLandApi();
+		RangeCalc = new VolcanicPeaksTowerOverTheLandscape();
 	}
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
@@ -49,7 +52,7 @@ public class VolcanoLoomingHigh : Spirit {
 class VolcanoPresence : SpiritPresence {
 	public VolcanoPresence(PresenceTrack t1, PresenceTrack t2 ) : base( t1, t2 ) {}
 
-	public override bool CanBePlacedOn( TerrainMapper tm, SpaceState s ) => tm.MatchesTerrain( s, Terrain.Mountain );
+	public override bool CanBePlacedOn( SpaceState s, TerrainMapper tm ) => tm.MatchesTerrain( s, Terrain.Mountain );
 
 	public void SetSpirit(Spirit spirit) => DestroyBehavior = new DestroyPresence(spirit);
 

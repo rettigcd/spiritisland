@@ -27,7 +27,7 @@ public class CastDownIntoTheBrinyDeep {
 			// destroy presence
 			foreach(var spirit in ctx.GameState.Spirits)
 				foreach(var p in spirit.Presence.Placed( ctx.GameState ).Where(p=>p.Space.Board==board).ToArray() )
-					await spirit.Presence.Destroy(p.Space, ctx.GameState, DestoryPresenceCause.SpiritPower);
+					await ctx.NewSelf(spirit).Presence.Destroy(p.Space, DestoryPresenceCause.SpiritPower );
 
 			// destroy board - spaces
 			foreach(var space in activeSpaces)

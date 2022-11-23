@@ -429,7 +429,7 @@ public abstract class Spirit : IOption {
 
 	protected abstract void InitializeInternal( Board board, GameState gameState );
 
-	public virtual SelfCtx Bind( GameState gameState, Guid actionId ) => new SelfCtx( this, gameState, default, actionId != default ? actionId : Guid.NewGuid() );
+	public virtual SelfCtx Bind( GameState gameState, Guid actionId ) => new SelfCtx( this, gameState, (Cause)default, actionId != default ? actionId : Guid.NewGuid() );
 
 	public virtual SelfCtx BindMyPower( GameState gameState ) => new SelfCtx( this, gameState, Cause.MyPowers, Guid.NewGuid() );
 
@@ -616,8 +616,9 @@ public abstract class Spirit : IOption {
 	// Only Called from TargetSpaceAttribute
 	// !!! Also, some things may be calling GetTargetOptions directly and skipping over this bit - preventing Shadow from paying their energy
 	public virtual Task<Space> TargetsSpace( 
-		TargettingFrom powerType,
-		GameState gameState, 
+		TargetingPowerType powerType,
+		GameState gameState,
+		Guid actionId,
 		string prompt, 
 		TargetSourceCriteria sourceCriteria,
 		params TargetCriteria[] targetCriteria
@@ -628,14 +629,17 @@ public abstract class Spirit : IOption {
 	}
 
 	public IEnumerable<Space> GetTargetOptions(
-		TargettingFrom powerType,
+		TargetingPowerType powerType,
 		GameState gameState,
 		TargetSourceCriteria sourceCriteria,
 		params TargetCriteria[] targetCriteria // allows different criteria at different ranges
-	) {
+	) {	
+		// Converts SourceCriteria to Spaces
 		IEnumerable<SpaceState> sources = SourceCalc.FindSources( gameState, this.BindMyPower(gameState).Presence, sourceCriteria, gameState.Island.Terrain_ForPower );
 
 		var ctx = BindMyPower(gameState); // targetting is always for Power (I think)
+
+		// Convert TargetCriteria to spaces and merge (distinct) them together.
 		return targetCriteria
 			.SelectMany(tc => RangeCalc.GetTargetOptionsFromKnownSource( ctx, powerType, sources, tc ))
 			.Distinct();

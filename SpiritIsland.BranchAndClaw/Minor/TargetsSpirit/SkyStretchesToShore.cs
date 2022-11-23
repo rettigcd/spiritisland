@@ -25,7 +25,7 @@ class SkyStretchesToShoreApi : DefaultRangeCalculator {
 		spirit.RangeCalc = this;
 	}
 
-	public override IEnumerable<Space> GetTargetOptionsFromKnownSource( SelfCtx ctx, TargettingFrom powerType, IEnumerable<SpaceState> source, TargetCriteria tc ) {
+	public override IEnumerable<Space> GetTargetOptionsFromKnownSource( SelfCtx ctx, TargetingPowerType powerType, IEnumerable<SpaceState> source, TargetCriteria tc ) {
 		var normal = orig.GetTargetOptionsFromKnownSource( ctx, powerType, source, tc );
 		var shore = orig.GetTargetOptionsFromKnownSource( ctx, powerType, source, new TargetCriteria(tc.Range+3, tc.Filter) ).Where(x => x.IsCoastal);
 		return normal.Union(shore);

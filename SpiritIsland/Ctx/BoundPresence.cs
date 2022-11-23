@@ -14,9 +14,9 @@ public class BoundPresence : IKnowSpiritLocations {
 
 	public void Move( Space from, Space to ) => _inner.Move(from,to, _gameState );
 	public void PlaceOn( Space space ) => _inner.PlaceOn( _gameState.Tokens[space] );
-	public Task Destroy( Space space, DestoryPresenceCause actionType ) => _inner.Destroy( space, _gameState, actionType );
+	public Task Destroy( Space space, DestoryPresenceCause actionType ) => _inner.Destroy( space, _gameState, actionType, ctx.CurrentActionId );
 	public Task RemoveFrom( Space space ) => _inner.RemoveFrom( space, _gameState ); // Generally used for Replacing
-	public bool CanBePlacedOn( Space space ) => _inner.CanBePlacedOn( ctx.TerrainMapper, _gameState.Tokens[space] );
+	public bool CanBePlacedOn( Space space ) => _inner.CanBePlacedOn( _gameState.Tokens[space], ctx.TerrainMapper );
 	public bool IsSacredSite( Space space ) => _inner.IsSacredSite( _gameState.Tokens[space] );
 
 
@@ -71,7 +71,7 @@ public class BoundPresence : IKnowSpiritLocations {
 		while(count > 0) {
 			var dst = await ctx.Decision( Select.TrackSlot.ToCover( ctx.Self ) );
 			if(dst == null) break;
-			await ctx.Self.Presence.ReturnDestroyedToTrack(dst,ctx.GameState);
+			await ctx.Self.Presence.ReturnDestroyedToTrack(dst);
 			--count;
 		}
 	}
@@ -97,7 +97,7 @@ public class BoundPresence : IKnowSpiritLocations {
 
 	#region select Destination
 
-	/// <summary> Selects a space within [range] of current presence </summary>
+	/// <summary> Selects a space within [range] of current presence to place new presence.</summary>
 	public async Task<Space> SelectDestinationWithinRange( int range, string filterEnum ) {
 		var options = GetValidDestinationOptionsFromPresence(range,filterEnum, SpaceStates );
 		return await ctx.Decision( Select.Space.ToPlacePresence( options, Present.Always ) );
@@ -105,7 +105,8 @@ public class BoundPresence : IKnowSpiritLocations {
 
 	/// <summary> Select a space withing [range] of specified spaces </summary>
 	IEnumerable<Space> GetValidDestinationOptionsFromPresence( int range, string filterEnum, IEnumerable<SpaceState> source ) {
-		return ctx.Self.RangeCalc.GetTargetOptionsFromKnownSource( ctx, TargettingFrom.None, source, new TargetCriteria( range, filterEnum) )
+		// Gets valid destinations for placing presence
+		return ctx.Self.RangeCalc.GetTargetOptionsFromKnownSource( ctx, TargetingPowerType.None, source, new TargetCriteria( range, filterEnum) )
 			.Where( CanBePlacedOn );
 	}
 

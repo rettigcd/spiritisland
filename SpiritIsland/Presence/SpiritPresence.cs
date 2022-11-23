@@ -1,5 +1,9 @@
 ﻿namespace SpiritIsland;
 
+// == Presence/GameState Strategy ==
+// * If GameState is only used for getting SpaceState, pass in SpaceState instead. (1 parameter is better than 2)
+// Methods on SpiritPresence should only be called from BoundedPresence aka PresenceState
+
 public class SpiritPresence {
 
 	#region constructors
@@ -38,6 +42,7 @@ public class SpiritPresence {
 
 	public int Destroyed { get; set; }
 
+	/// <summary> Removes a Destroyed Presence from the game. </summary>
 	public void RemoveDestroyed( int count ) {
 		if(count>Destroyed) throw new ArgumentOutOfRangeException(nameof(count));
 		Destroyed -= count;
@@ -52,10 +57,6 @@ public class SpiritPresence {
 			.Union(Energy.Revealed)
 			.Select(x => x.Action)
 			.Where(x => x != null);
-
-	#endregion
-
-	#region Read-only properties
 
 	public int CardPlayCount { get; private set; }
 
@@ -75,15 +76,12 @@ public class SpiritPresence {
 	/// <summary>
 	/// Specifies if the the given space is valid.
 	/// </summary>
-	public virtual bool CanBePlacedOn( TerrainMapper mapper, SpaceState ss ) => mapper.IsInPlay( ss.Space );
-	public bool IsOn( SpaceState space ) => space[presenceToken] > 0;
+	public virtual bool CanBePlacedOn( SpaceState spaceState, TerrainMapper mapper ) => mapper.IsInPlay( spaceState.Space );
+	public bool IsOn( SpaceState spaceState ) => spaceState[presenceToken] > 0;
 	public virtual bool IsSacredSite( SpaceState space ) => 2 <= space[presenceToken];
-	public int CountOn( SpaceState space ) => space[presenceToken];
+	public int CountOn( SpaceState spaceState ) => spaceState[presenceToken];
 
 	#endregion
-
-	// GameState strategy.
-	// * If GameState is only used for getting SpaceState, pass in SpaceState instead.
 
 	#region Game-Play things you can do with presence
 
@@ -96,9 +94,9 @@ public class SpiritPresence {
 		if(from is Track track) {
 			await RevealTrack( track, gs );
 		} else if(from is Space space) {
-			var ss = gs.Tokens[space];
-			if(IsOn(ss))
-				await RemoveFrom_NoCheck( ss );
+			var fromSpace = gs.Tokens[space];
+			if(IsOn(fromSpace))
+				await RemoveFrom_NoCheck( fromSpace );
 			else
 				throw new ArgumentException( "Can't pull from island space:" + from.ToString() );
 		}
@@ -109,7 +107,7 @@ public class SpiritPresence {
 		CheckIfSpiritIsDestroyed( gs );
 	}
 
-	public virtual Task ReturnDestroyedToTrack( Track dst, GameState gs ) {
+	public Task ReturnDestroyedToTrack( Track dst ) {
 
 		// src / from
 		if(Destroyed <= 0) throw new InvalidOperationException( "There is no Destroyed presence to return." );
@@ -132,8 +130,8 @@ public class SpiritPresence {
 		PlaceOn( gs.Tokens[to] );
 	}
 
-	public virtual async Task Destroy( Space space, GameState gs, DestoryPresenceCause actionType, AddReason blightAddedReason = AddReason.None ) {
-		await DestroyBehavior.DestroyPresenceApi( this, space, gs, actionType, Guid.NewGuid() ); // !!! pass in the actionID!
+	public virtual async Task Destroy( Space space, GameState gs, DestoryPresenceCause actionType, Guid actionId, AddReason blightAddedReason = AddReason.None ) {
+		await DestroyBehavior.DestroyPresenceApi( this, space, gs, actionType, actionId );
 		CheckIfSpiritIsDestroyed( gs );
 	}
 

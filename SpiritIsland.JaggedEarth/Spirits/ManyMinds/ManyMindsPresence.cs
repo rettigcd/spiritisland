@@ -81,8 +81,8 @@ class ManyMindsPresence : SpiritPresence {
 			var dontCareActionType = DestoryPresenceCause.None;
 
 			// destroy sacred site
-			await base.Destroy(args.Space.Space, args.GameState, dontCareActionType);
-			await base.Destroy(args.Space.Space, args.GameState, dontCareActionType);
+			await base.Destroy(args.Space.Space, args.GameState, dontCareActionType, args.ActionId);
+			await base.Destroy(args.Space.Space, args.GameState, dontCareActionType, args.ActionId );
 		}
 	}
 

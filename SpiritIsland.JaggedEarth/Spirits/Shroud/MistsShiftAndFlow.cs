@@ -1,5 +1,8 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
+/// <summary>
+/// New instance created for each Targetting action
+/// </summary>
 class MistsShiftAndFlow {
 
 	#region private fields
@@ -12,7 +15,7 @@ class MistsShiftAndFlow {
 
 	readonly TargetCriteria[] targetCriteria;
 
-	readonly TargettingFrom powerType;
+	readonly TargetingPowerType powerType;
 
 	SpaceState[] nonFlowTargets; // targets we can hit without flowing
 	SpaceState[] flowRange; // where existing Presence can flow to
@@ -25,14 +28,14 @@ class MistsShiftAndFlow {
 		"When targeting a land with a Power, you may Gather 1 of your presence into the target or an adjacent land.  This can enable you to meet Range and targeting requirements."
 	);
 
-	public MistsShiftAndFlow(ShroudOfSilentMist spirit, GameState gameState, string prompt, TargetSourceCriteria sourceCriteria, TargetCriteria[] targetCriteria, TargettingFrom powerType) {
+	public MistsShiftAndFlow(ShroudOfSilentMist spirit, GameState gameState, string prompt, TargetSourceCriteria sourceCriteria, TargetCriteria[] targetCriteria, TargetingPowerType targettingFrom, Guid actionId) {
 		this.spirit = spirit;
 		this.gameState = gameState;
 		this.ctx = spirit.BindMyPower( gameState );
 		this.prompt = prompt ?? "Target Space.";
 		this.sourceCriteria = sourceCriteria;
 		this.targetCriteria = targetCriteria;
-		this.powerType = powerType;
+		this.powerType = targettingFrom;
 
 		CalculateSpaceGroups();
 	}

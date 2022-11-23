@@ -39,13 +39,20 @@ public class Shadows : Spirit {
 		);
 
 
-	public override async Task<Space> TargetsSpace( TargettingFrom powerType, GameState gameState, string prompt, TargetSourceCriteria sourceCriteria, params TargetCriteria[] targetCriteria ) {
+	public override async Task<Space> TargetsSpace( 
+		TargetingPowerType targettingFrom, 
+		GameState gameState, 
+		Guid actionId,
+		string prompt, 
+		TargetSourceCriteria sourceCriteria, 
+		params TargetCriteria[] targetCriteria 
+	) {
 		// no money, do normal
 		if(Energy == 0)
-			return await base.TargetsSpace( powerType, gameState, prompt, sourceCriteria, targetCriteria );
+			return await base.TargetsSpace( targettingFrom, gameState, actionId, prompt, sourceCriteria, targetCriteria );
 
 		// find normal Targetable spaces
-		var normalSpaces = GetTargetOptions( powerType, gameState, sourceCriteria, targetCriteria );
+		var normalSpaces = GetTargetOptions( targettingFrom, gameState, sourceCriteria, targetCriteria );
 
 		// find dahan-only spaces that are not in targetable spaces
 		var dahanOnlySpaces = gameState.AllActiveSpaces
@@ -55,7 +62,7 @@ public class Shadows : Spirit {
 			.ToArray();
 		// no dahan-only spaces, do normal
 		if(dahanOnlySpaces.Length == 0)
-			return await base.TargetsSpace( powerType , gameState, prompt, sourceCriteria, targetCriteria);
+			return await base.TargetsSpace( targettingFrom , gameState, actionId, prompt, sourceCriteria, targetCriteria);
 
 		// append Target-Dahan option to end of list
 		List<IOption> options = normalSpaces.Cast<IOption>().ToList();

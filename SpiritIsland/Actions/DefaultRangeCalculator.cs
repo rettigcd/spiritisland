@@ -10,7 +10,7 @@ public interface ICalcRange {
 
 	IEnumerable<Space> GetTargetOptionsFromKnownSource(
 		SelfCtx ctx,
-		TargettingFrom powerType,
+		TargetingPowerType powerType,
 		IEnumerable<SpaceState> source,
 		TargetCriteria targetCriteria
 	);
@@ -19,13 +19,15 @@ public interface ICalcRange {
 
 
 public class DefaultSourceCalc : ICalcSource {
-	public IEnumerable<SpaceState> FindSources( GameState gs, IKnowSpiritLocations presence, TargetSourceCriteria sourceCriteria, TerrainMapper mapper ) {
+	public IEnumerable<SpaceState> FindSources( GameState gs, IKnowSpiritLocations presence, TargetSourceCriteria sourceCriteria, TerrainMapper _ ) {
 		var sources = sourceCriteria.From switch {
 			From.Presence => presence.SpaceStates,
 			From.SacredSite => presence.SacredSites,
 			_ => throw new ArgumentException( "Invalid presence source " + sourceCriteria.From ),
 		};
-		return sources.Where( space => !sourceCriteria.Terrain.HasValue || space.Space.Is( sourceCriteria.Terrain.Value ) );
+		return sourceCriteria.Terrain.HasValue
+			? sources.Where( space => space.Space.Is( sourceCriteria.Terrain.Value ) )
+			: sources;
 	}
 
 }
@@ -35,14 +37,14 @@ public class DefaultRangeCalculator : ICalcRange {
 
 	public virtual IEnumerable<Space> GetTargetOptionsFromKnownSource(
 		SelfCtx ctx,
-		TargettingFrom powerType,
-		IEnumerable<SpaceState> source,
+		TargetingPowerType _,
+		IEnumerable<SpaceState> sources,
 		TargetCriteria targetCriteria
 	) {
-		return source
+		return sources
 			.SelectMany( x => x.Range( targetCriteria.Range ) )
 			.Distinct()
-			.Where( s => ctx.Target( s.Space ).Matches( targetCriteria.Filter ) )// matching this destination
+			.Where( SpaceFilterMap.Get( targetCriteria.Filter, ctx.Self, ctx.TerrainMapper ) )
 			.Select(x=>x.Space); 
 	}
 
