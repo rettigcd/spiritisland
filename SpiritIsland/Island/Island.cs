@@ -42,10 +42,10 @@ public class Island {
 		}
 	}
 
-	// Static-Default Terrain for non-power, non-blight
-	public readonly TerrainMapper Terrain = new TerrainMapper(); // Default
-	public readonly TerrainMapper Terrain_ForFear = new TerrainMapper(); // Default
-	public TerrainMapper Terrain_ForPower = new TerrainMapper();
-	public TerrainMapper Terrain_ForBlight = new TerrainMapper();
+	// !!! Review the use cases for each TerrainMapper - Determine if all are necessary or could be renamed for their use.
+	public readonly TerrainMapper Terrain           = new TerrainMapper(); // Default
+	public readonly TerrainMapper Terrain_ForFear   = new TerrainMapper(); // Default
+	public          TerrainMapper Terrain_ForPower  = new TerrainMapper();
+	public          TerrainMapper Terrain_ForBlight = new TerrainMapper();
 
 }

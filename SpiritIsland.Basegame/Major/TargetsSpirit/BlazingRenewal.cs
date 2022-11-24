@@ -10,19 +10,19 @@ public class BlazingRenewal {
 		if( ctx.Other.Presence.Destroyed == 0 ) return;
 
 		// into a single land, up to range 2 from your presence.
-		// Note - Jonah says it is the originators power and range and decision, not the targets
-		var otherCtxPresence = ctx.OtherCtx.Presence;
-		var spaceOptions = ctx.Self.GetPowerTargetOptions(TargetingPowerType.None,ctx.GameState,new TargetSourceCriteria(From.Presence),new TargetCriteria(2,Target.Any))
-			.Where( otherCtxPresence.CanBePlacedOn )
-			.ToArray();
-		TargetSpaceCtx selfPickLandCtx = await ctx.SelectSpace("Select location for target spirit to add presence", spaceOptions);
+		// Jonah says: it is the originators power and range AND DECISION, not the targets
+		// Querki says: Target makes the decision
+		// Jonah's version uses .SelectDestinationWithinRange which binds the source presence to the decision maker so this is simpler.
+
+		var space = await ctx.Presence.SelectDestinationWithinRange(2,Target.Any,TargetingPowerType.PowerCard);
 
 		// target spirit adds 2 of their destroyed presence
 		await ctx.OtherCtx
-			.Target( selfPickLandCtx.Space )
+			.Target( space )
 			.Presence.PlaceDestroyedHere(2);
 
 		// if any presene was added, 2 damage to each town/city in that land.
+		var selfPickLandCtx = ctx.Target( space );
 		await selfPickLandCtx.DamageEachInvader(2,Invader.Town,Invader.City);
 
 		// if you have 3 fire, 3 earth , 2 plant, 4 damage in that land

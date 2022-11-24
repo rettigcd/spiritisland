@@ -28,7 +28,7 @@ public class UnrelentingGrowth {
 		// target spirit adds 2 presence and 1 wilds to a land at range 1
 
 		// Select destination
-		var to = await ctx.Presence.SelectDestinationWithinRange( 1, Target.Any );
+		var to = await ctx.Presence.SelectDestinationWithinRange( 1, Target.Any, TargetingPowerType.PowerCard );
 
 		// add wilds
 		var toCtx = ctx.Target( to );

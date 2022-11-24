@@ -603,10 +603,9 @@ public abstract class Spirit : IOption {
 	/// <summary> Calculates Source for *Powers* only.  Don't use it for non-power calculations. </summary>
 	public ICalcPowerSource SourceCalc = new DefaultPowerSourceCalculator();
 	/// <summary> Calculates the Range for *Powers* only.  Don't use it for non-power calculations. </summary>
-	public ICalcPowerRange PowerRangeCalc = new DefaultPowerRangeCalculator();
+	public ICalcRange PowerRangeCalc = new DefaultRangeCalculator();
 
 	// Only Called from TargetSpaceAttribute
-	// !!! Also, some things may be calling GetTargetOptions directly and skipping over this bit - preventing Shadow from paying their energy
 	public virtual Task<Space> TargetsSpace( 
 		TargetingPowerType powerType,
 		GameState gameState,
@@ -621,15 +620,10 @@ public abstract class Spirit : IOption {
 		return this.Action.Decision( new Select.Space( prompt, spaces, Present.Always ));
 	}
 
-	/// <summary> 
-	/// Helper for calling SourceCalc & RangeCalc 
-	/// Use ONLY for POWERs
-	/// </summary>
-	public IEnumerable<Space> GetPowerTargetOptions(
-
+	// Helper for calling SourceCalc & RangeCalc, only for POWERS
+	protected IEnumerable<Space> GetPowerTargetOptions(
 		TargetingPowerType powerType,
 		GameState gameState,
-
 		TargetSourceCriteria sourceCriteria,
 		params TargetCriteria[] targetCriteria // allows different criteria at different ranges
 	) {	

@@ -13,20 +13,15 @@ ICalcRange / Spirit.RangeCalc
 		Volcano (special rule)
 	called by: 
 		Spirit.GetTargetOptions
-		FireAndFlood - YES
-		MistsShiftAndFlow - YES
-		BoundPresence.SelectDestinationWithinRange via .GetValidDestinationOptionsFromPresence ?
-			PlacePresenceAndBeast - NO
-			PlacePresenceOrDisease - NO
-			UnrelentingGrowth - YES
+		FireAndFlood
+		PerilsOfTheDeepestIsland
+		MistsShiftAndFlow
+		BoundPresence.SelectDestinationWithinRange (handles BOTH)
+			UnrelentingGrowth  (should these 2 be promoted to PlaceWithin?)
+			BlazingRenewal
 			PlaceWithin
-				GiftOfProliferation - YES
-				SerpendWakesInPower - YES
-				PlacePresence - NO
-				PlacePresenceAndRunAction - NO
-
-		TargetSpaceCtx.TargetSpacesWithinRangeOf
-			PerilsOfTheDeepestIsland - YES
+				GiftOfProliferation
+				SerpendWakesInPower
 
 ICalcSource / Spirit.SourceCalc
 	implemented by:
@@ -41,15 +36,10 @@ ICalcSource / Spirit.SourceCalc
 		Spirit.GetTargetOptions
 		MistsShiftAndFlow.PresenceMeetsTargettingRequirements
 
-Spirit.GetTargetOptions - Wraps SourceCalc and RangeCalc
-	called from:
-		Spirit.TargetsSpace - Yes
-		Shadow.TargetsSpace - Yes
-		BlazingRenewal - Yes
-
 Spirit.TargetsSpace
 	called from:
 		TargetSpaceAttribute - Yes
+		(??? what is different between these and BoundPresence.SelectDestination??? )
 		UnleashATorrentOfTheSelfsOwnEssence - Yes
 		CarapadedLands - Yes
 		PeaceOfTheNighttimeSky - Yes

@@ -6,7 +6,7 @@
 class PlacePresenceAndRunAction : PlacePresence {
 	public PlacePresenceAndRunAction(int range):base(range) { }
 	public override async Task ActivateAsync( SelfCtx ctx ) {
-		var (from,_) = await ctx.Presence.PlaceWithin( Range, FilterEnum );
+		var (from,_) = await ctx.Presence.PlaceWithin( Range, FilterEnum, TargetingPowerType.None );
 		if( from is Track track && track.Action != null )
 			await track.Action.ActivateAsync( ctx );
 	}

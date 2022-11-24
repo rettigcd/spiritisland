@@ -7,31 +7,37 @@ public class FireAndFlood {
 	[FromSacredSite( 1 )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
-		// == Pick 2nd target - range 2 from same SS ==
-		var possibleSacredSiteSourcesForThisSpace = ctx.Tokens.Range(1).Where(s=>ctx.Presence.IsSacredSite(s.Space)).ToArray();
+		Space secondTarget = await PickSecondTarget( ctx );
 
+		// 4 damage in each target land  (range must be measured from same SS)
+		await ctx.DamageInvaders( 4 );
+		await ctx.Target( secondTarget ).DamageInvaders( 4 );
+
+		// if 3 fire
+		if(await ctx.YouHave( "3 fire" ))
+			await Apply3DamageInOneOfThese( ctx, secondTarget, "fire" );
+
+		// if 3 water
+		if(await ctx.YouHave( "3 water" ))
+			await Apply3DamageInOneOfThese( ctx, secondTarget, "water" );
+
+	}
+
+	static async Task<Space> PickSecondTarget( TargetSpaceCtx ctx ) {
+		// SS Range 1 from Target
+		var possibleSacredSiteSourcesForThisSpace = ctx.Tokens.Range( 1 )
+			.Where( s => ctx.Presence.IsSacredSite( s.Space ) )
+			.ToArray();
+
+		// 2nd target options, range 2 from Possible SSs
 		IEnumerable<Space> secondTargetOptions = ctx.Self.PowerRangeCalc.GetTargetOptionsFromKnownSource(
 			ctx,
 			TargetingPowerType.PowerCard,
 			possibleSacredSiteSourcesForThisSpace,
-			new TargetCriteria(2)
+			new TargetCriteria( 2 )
 		);
 
-		var secondTarget = await ctx.Decision( new Select.Space( "Select space to target.", secondTargetOptions, Present.Always ) );
-
-
-		// 4 damage in each target land  (range must be measured from same SS)
-		await ctx.DamageInvaders( 4 );
-		await ctx.Target(secondTarget).DamageInvaders(4);
-			
-		// if 3 fire
-		if(await ctx.YouHave("3 fire"))
-			await Apply3DamageInOneOfThese( ctx, secondTarget, "fire" );
-
-		// if 3 water
-		if(await ctx.YouHave("3 water"))
-			await Apply3DamageInOneOfThese( ctx, secondTarget, "water" );
-
+		return await ctx.Decision( new Select.Space( "Select space to target.", secondTargetOptions, Present.Always ) );
 	}
 
 	static async Task Apply3DamageInOneOfThese( TargetSpaceCtx ctx, Space secondTarget, string damageType ) {

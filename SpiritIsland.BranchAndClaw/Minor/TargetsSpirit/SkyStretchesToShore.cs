@@ -19,7 +19,7 @@ public class SkyStretchesToShore {
 
 }
 
-class SkyStretchesToShoreApi : DefaultPowerRangeCalculator {
+class SkyStretchesToShoreApi : DefaultRangeCalculator {
 	public SkyStretchesToShoreApi( Spirit spirit ) {
 		this.orig = spirit.PowerRangeCalc;
 		spirit.PowerRangeCalc = this;
@@ -31,5 +31,5 @@ class SkyStretchesToShoreApi : DefaultPowerRangeCalculator {
 		return normal.Union(shore);
 	}
 
-	readonly ICalcPowerRange orig;
+	readonly ICalcRange orig;
 }

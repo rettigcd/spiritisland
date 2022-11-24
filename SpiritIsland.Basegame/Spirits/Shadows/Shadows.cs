@@ -38,7 +38,9 @@ public class Shadows : Spirit {
 			PowerCard.For<VisionsOfFieryDoom>()
 		);
 
-
+	/// <summary>
+	/// Overriden so we can pay 1 energy for targetting out-of-range dahan space
+	/// </summary>
 	public override async Task<Space> TargetsSpace( 
 		TargetingPowerType targettingFrom, 
 		GameState gameState, 

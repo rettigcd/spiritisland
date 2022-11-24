@@ -10,7 +10,7 @@ public class PlacePresenceOrDisease : PlacePresence {
 			return;
 		}
 
-		Space to = await ctx.Presence.SelectDestinationWithinRange( 1, Target.Any );
+		Space to = await ctx.Presence.SelectDestinationWithinRange( 1, Target.Any, TargetingPowerType.None );
 		await ctx.Target(to).Disease.Add(1);
 
 	}

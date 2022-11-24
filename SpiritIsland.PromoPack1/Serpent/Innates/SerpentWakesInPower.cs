@@ -23,13 +23,13 @@ public class SerpentWakesInPower {
 		await Option1Async( ctx );
 
 		// Add 1 presence, range-1.
-		await ctx.Presence.PlaceWithin(1,Target.Any);
+		await ctx.Presence.PlaceWithin(1,Target.Any,TargetingPowerType.Innate);
 
 		// Other spirits with 2 or more Absorbed Presence may do likewise.
 		var presence = (SerpentPresence)ctx.Self.Presence;
 		var qualifyingSpirits = presence.AbsorbedPresences.GroupBy(x=>x).Where(grp=>2<=grp.Count()).Select(grp=>grp.Key);
 		foreach(var spirit in presence.AbsorbedPresences.Distinct())
-			await spirit.Bind( ctx.GameState, ctx.CurrentActionId ).Presence.PlaceWithin(1,Target.Any);
+			await spirit.Bind( ctx.GameState, ctx.CurrentActionId ).Presence.PlaceWithin(1,Target.Any,TargetingPowerType.Innate);
 
 	}
 

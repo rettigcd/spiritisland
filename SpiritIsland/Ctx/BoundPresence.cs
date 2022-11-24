@@ -39,9 +39,9 @@ public class BoundPresence : IKnowSpiritLocations {
 
 	/// <summary> Selects: (Source then Destination) for placing presence </summary>
 	/// <remarks> Called from normal PlacePresence Growth + Gift of Proliferation. </remarks>
-	public async Task<(IOption,Space)> PlaceWithin( int range, string filterEnum ) {
+	public async Task<(IOption,Space)> PlaceWithin( int range, string filterEnum, TargetingPowerType targetingPowerType ) {
 		IOption from = await SelectSource();
-		Space to = await SelectDestinationWithinRange( range, filterEnum );
+		Space to = await SelectDestinationWithinRange( range, filterEnum, targetingPowerType );
 		await ctx.Self.Presence.Place( from, to, ctx.GameState );
 		return(from, to);
 	}
@@ -97,10 +97,21 @@ public class BoundPresence : IKnowSpiritLocations {
 
 	#region select Destination
 
-	/// <summary> Selects a space within [range] of current presence to place new presence.</summary>
-	public async Task<Space> SelectDestinationWithinRange( int range, string filterEnum ) {
-		var options = ctx.Self
-			.PowerRangeCalc.GetTargetOptionsFromKnownSource( ctx, TargetingPowerType.None, SpaceStates, new TargetCriteria( range, filterEnum ) )
+	/// <summary>Selects a Space within a range of spirits Presence</summary>
+	/// <param name="targetingPowerType">
+	/// None => standard ranging 
+	/// Innate/PowerCard => power ranging  + Passes to PowerRanging
+	/// </param>
+	public async Task<Space> SelectDestinationWithinRange( int range, string filterEnum, TargetingPowerType targetingPowerType ) {
+		var rangeCalculator = targetingPowerType switch {
+			TargetingPowerType.None => DefaultRangeCalculator.Singleton,
+			TargetingPowerType.Innate => ctx.Self.PowerRangeCalc,
+			TargetingPowerType.PowerCard => ctx.Self.PowerRangeCalc,
+			_ => throw new InvalidOperationException()
+		};
+
+		var options = rangeCalculator
+			.GetTargetOptionsFromKnownSource( ctx, targetingPowerType, SpaceStates, new TargetCriteria( range, filterEnum ) )
 			.Where( CanBePlacedOn );
 		return await ctx.Decision( Select.Space.ToPlacePresence( options, Present.Always ) );
 	}

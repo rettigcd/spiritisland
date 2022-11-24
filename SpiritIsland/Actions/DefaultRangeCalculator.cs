@@ -6,7 +6,7 @@ public interface ICalcPowerSource {
 	IEnumerable<SpaceState> FindSources( GameState gs, IKnowSpiritLocations presence, TargetSourceCriteria source, TerrainMapper mapper );
 }
 
-public interface ICalcPowerRange {
+public interface ICalcRange {
 
 	IEnumerable<Space> GetTargetOptionsFromKnownSource(
 		SelfCtx ctx,
@@ -35,9 +35,10 @@ public class DefaultPowerSourceCalculator : ICalcPowerSource {
 }
 
 /// <summary>
-/// Calculates Power Ranges - Pluggable into Spirit to modify how their Power-Range
+/// Calculates Ranges using standard Range Rules
+/// Pluggable into Spirit to modify how their Power-Range
 /// </summary>
-public class DefaultPowerRangeCalculator : ICalcPowerRange {
+public class DefaultRangeCalculator : ICalcRange {
 
 	public virtual IEnumerable<Space> GetTargetOptionsFromKnownSource(
 
@@ -51,10 +52,10 @@ public class DefaultPowerRangeCalculator : ICalcPowerRange {
 		return sources
 			.SelectMany( x => x.Range( targetCriteria.Range ) )
 			.Distinct()
-			.Where( ctx.GameState.Island.Terrain_ForPower.IsInPlay ) // Since this is Power-Only, we can hard wire this
+			.Where( ctx.TerrainMapper.IsInPlay ) // !important
 			.Where( SpaceFilterMap.Get( targetCriteria.Filter, ctx.Self, ctx.TerrainMapper ) )
 			.Select(x=>x.Space); 
 	}
-
+	static public readonly ICalcRange Singleton = new DefaultRangeCalculator();
 }
 
