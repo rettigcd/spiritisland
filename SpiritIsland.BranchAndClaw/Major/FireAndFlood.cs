@@ -10,7 +10,7 @@ public class FireAndFlood {
 		// == Pick 2nd target - range 2 from same SS ==
 		var possibleSacredSiteSourcesForThisSpace = ctx.Tokens.Range(1).Where(s=>ctx.Presence.IsSacredSite(s.Space)).ToArray();
 
-		IEnumerable<Space> secondTargetOptions = ctx.Self.RangeCalc.GetTargetOptionsFromKnownSource(
+		IEnumerable<Space> secondTargetOptions = ctx.Self.PowerRangeCalc.GetTargetOptionsFromKnownSource(
 			ctx,
 			TargetingPowerType.PowerCard,
 			possibleSacredSiteSourcesForThisSpace,

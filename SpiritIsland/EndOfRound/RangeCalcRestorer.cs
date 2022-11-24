@@ -36,10 +36,10 @@ public class RangeCalcRestorer {
 	readonly ICalcRange original;
 	public RangeCalcRestorer(Spirit spirit ) {
 		this.spirit = spirit;
-		this.original = spirit.RangeCalc; // capture so we can put it back later
+		this.original = spirit.PowerRangeCalc; // capture so we can put it back later
 	}
 	public Task Restore( GameState _ ) {
-		spirit.RangeCalc = original;
+		spirit.PowerRangeCalc = original;
 		return Task.CompletedTask;
 	}
 

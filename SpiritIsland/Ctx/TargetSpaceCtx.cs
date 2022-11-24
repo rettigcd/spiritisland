@@ -374,7 +374,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 	public IEnumerable<Space> TargetSpacesWithinRangeOf( int range, string filterEnum ) {
 		// !!! Used for adding a beast. ??? Should we be using this???
-		return Self.RangeCalc.GetTargetOptionsFromKnownSource( this, TargetingPowerType.None, new SpaceState[]{ this.Tokens }, new TargetCriteria( range, filterEnum ) );
+		return Self.PowerRangeCalc.GetTargetOptionsFromKnownSource( this, TargetingPowerType.None, new SpaceState[]{ this.Tokens }, new TargetCriteria( range, filterEnum ) );
 	}
 
 	public async Task<TargetSpaceCtx> SelectAdjacentLand( string prompt, Func<TargetSpaceCtx, bool> filter = null ) {

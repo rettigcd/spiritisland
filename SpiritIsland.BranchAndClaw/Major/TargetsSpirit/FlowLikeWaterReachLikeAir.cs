@@ -11,7 +11,7 @@ public class FlowLikeWaterReachLikeAir {
 
 		// target spirit gets +2 range with all Powers.
 		ctx.GameState.TimePasses_ThisRound.Push( new RangeCalcRestorer( ctx.Self ).Restore );
-		ctx.Self.RangeCalc = new RangeExtender( 2, ctx.Self.RangeCalc );
+		ctx.Self.PowerRangeCalc = new RangeExtender( 2, ctx.Self.PowerRangeCalc );
 
 
 		// Target spirit may push 1 of their presence to an adjacent land

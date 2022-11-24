@@ -16,7 +16,7 @@ public abstract class TargetSpaceAttribute : GeneratesContextAttribute {
 	}
 
 	public override async Task<object> GetTargetCtx( string powerName, SelfCtx ctx, TargetingPowerType powerType ){
-		var space = await ctx.Self.TargetsSpace( powerType, ctx.GameState, ctx.CurrentActionId, powerName+": Target Space", 
+		var space = await ctx.Self.TargetsSpace( powerType, ctx.GameState, powerName+": Target Space", 
 			sourceCriteria,
 			new TargetCriteria( await CalcRange(ctx), TargetFilter )
 		);

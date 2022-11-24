@@ -8,7 +8,7 @@ public class ScreamDiseaseIntoTheWind{
 	static public Task ActAsync(TargetSpiritCtx ctx){
 		// Target Spirit gets +1 range with all their Powers.
 		ctx.GameState.TimePasses_ThisRound.Push( new RangeCalcRestorer( ctx.Other ).Restore );
-		ctx.Other.RangeCalc = new RangeExtender( 1, ctx.Other.RangeCalc );
+		ctx.Other.PowerRangeCalc = new RangeExtender( 1, ctx.Other.PowerRangeCalc );
 
 		// Once this turn, after target Spirit uses a Power targeting a land, they may add 1 disease to that land.
 		bool used = false;

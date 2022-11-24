@@ -99,15 +99,10 @@ public class BoundPresence : IKnowSpiritLocations {
 
 	/// <summary> Selects a space within [range] of current presence to place new presence.</summary>
 	public async Task<Space> SelectDestinationWithinRange( int range, string filterEnum ) {
-		var options = GetValidDestinationOptionsFromPresence(range,filterEnum, SpaceStates );
-		return await ctx.Decision( Select.Space.ToPlacePresence( options, Present.Always ) );
-	}
-
-	/// <summary> Select a space withing [range] of specified spaces </summary>
-	IEnumerable<Space> GetValidDestinationOptionsFromPresence( int range, string filterEnum, IEnumerable<SpaceState> source ) {
-		// Gets valid destinations for placing presence
-		return ctx.Self.RangeCalc.GetTargetOptionsFromKnownSource( ctx, TargetingPowerType.None, source, new TargetCriteria( range, filterEnum) )
+		var options = ctx.Self
+			.PowerRangeCalc.GetTargetOptionsFromKnownSource( ctx, TargetingPowerType.None, SpaceStates, new TargetCriteria( range, filterEnum ) )
 			.Where( CanBePlacedOn );
+		return await ctx.Decision( Select.Space.ToPlacePresence( options, Present.Always ) );
 	}
 
 	#endregion

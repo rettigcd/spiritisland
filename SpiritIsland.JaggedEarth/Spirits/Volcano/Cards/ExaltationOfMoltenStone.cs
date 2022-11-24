@@ -19,7 +19,7 @@ public class ExaltationOfMoltenStone {
 
 	static void ExtendRangeFromMountains( SelfCtx ctx ) {
 		ctx.GameState.TimePasses_ThisRound.Push( new RangeCalcRestorer( ctx.Self ).Restore );
-		ctx.Self.RangeCalc = new ExtendRange1FromMountain( ctx.Self.RangeCalc );
+		ctx.Self.PowerRangeCalc = new ExtendRange1FromMountain( ctx.Self.PowerRangeCalc );
 	}
 
 	class ExtendRange1FromMountain : DefaultRangeCalculator {

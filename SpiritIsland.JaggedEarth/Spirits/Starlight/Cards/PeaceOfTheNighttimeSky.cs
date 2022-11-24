@@ -21,7 +21,7 @@ public class PeaceOfTheNighttimeSky {
 			//  Gain 1 Moon.
 			ctx.Self.Elements[Element.Moon]++;
 
-			var secondSpace = await ctx.Self.TargetsSpace(TargetingPowerType.PowerCard, ctx.GameState, ctx.CurrentActionId,"Stop Ravage"
+			var secondSpace = await ctx.Self.TargetsSpace(TargetingPowerType.PowerCard, ctx.GameState,"Stop Ravage"
 				,new TargetSourceCriteria( From.SacredSite )
 				,new TargetCriteria(1,Target.Any)
 			);

@@ -611,15 +611,15 @@ public abstract class Spirit : IOption {
 	#region Tarteting / Range
 
 	public ICalcSource SourceCalc = new DefaultSourceCalc();
-	public ICalcRange RangeCalc = new DefaultRangeCalculator();
+	/// <summary> Calculates the Range for *Powers* only.  Don't use it for non-power calculations. </summary>
+	public ICalcRange PowerRangeCalc = new DefaultRangeCalculator();
 
 	// Only Called from TargetSpaceAttribute
 	// !!! Also, some things may be calling GetTargetOptions directly and skipping over this bit - preventing Shadow from paying their energy
 	public virtual Task<Space> TargetsSpace( 
 		TargetingPowerType powerType,
 		GameState gameState,
-		Guid actionId,
-		string prompt, 
+		string prompt,
 		TargetSourceCriteria sourceCriteria,
 		params TargetCriteria[] targetCriteria
 	) {
@@ -644,7 +644,7 @@ public abstract class Spirit : IOption {
 
 		// Convert TargetCriteria to spaces and merge (distinct) them together.
 		return targetCriteria
-			.SelectMany(tc => RangeCalc.GetTargetOptionsFromKnownSource( ctx, powerType, sources, tc ))
+			.SelectMany(tc => PowerRangeCalc.GetTargetOptionsFromKnownSource( ctx, powerType, sources, tc ))
 			.Distinct();
 	}
 

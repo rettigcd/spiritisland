@@ -21,8 +21,8 @@ public class SkyStretchesToShore {
 
 class SkyStretchesToShoreApi : DefaultRangeCalculator {
 	public SkyStretchesToShoreApi( Spirit spirit ) {
-		this.orig = spirit.RangeCalc;
-		spirit.RangeCalc = this;
+		this.orig = spirit.PowerRangeCalc;
+		spirit.PowerRangeCalc = this;
 	}
 
 	public override IEnumerable<Space> GetTargetOptionsFromKnownSource( SelfCtx ctx, TargetingPowerType powerType, IEnumerable<SpaceState> source, TargetCriteria tc ) {

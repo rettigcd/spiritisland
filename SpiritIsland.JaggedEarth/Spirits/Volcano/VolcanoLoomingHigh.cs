@@ -39,7 +39,7 @@ public class VolcanoLoomingHigh : Spirit {
 
 		((VolcanoPresence)(Presence)).SetSpirit( this );
 
-		RangeCalc = new VolcanicPeaksTowerOverTheLandscape();
+		PowerRangeCalc = new VolcanicPeaksTowerOverTheLandscape();
 	}
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {

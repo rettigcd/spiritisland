@@ -19,7 +19,7 @@ public class Extend1ForBeast : FromPresenceAttribute {
 
 	public override async Task<object> GetTargetCtx( string powerName, SelfCtx ctx, TargetingPowerType powerType ) {
 
-		var space = await ctx.Self.TargetsSpace( powerType, ctx.GameState, ctx.CurrentActionId, powerName+": Target Space"
+		var space = await ctx.Self.TargetsSpace( powerType, ctx.GameState, powerName+": Target Space"
 			, sourceCriteria
 			, new TargetCriteria( range, TargetFilter)
 			, new TargetCriteria( range+1, Target.Beast ) // extend 1 for beast

@@ -28,7 +28,7 @@ class MistsShiftAndFlow {
 		"When targeting a land with a Power, you may Gather 1 of your presence into the target or an adjacent land.  This can enable you to meet Range and targeting requirements."
 	);
 
-	public MistsShiftAndFlow(ShroudOfSilentMist spirit, GameState gameState, string prompt, TargetSourceCriteria sourceCriteria, TargetCriteria[] targetCriteria, TargetingPowerType targettingFrom, Guid actionId) {
+	public MistsShiftAndFlow(ShroudOfSilentMist spirit, GameState gameState, string prompt, TargetSourceCriteria sourceCriteria, TargetCriteria[] targetCriteria, TargetingPowerType targettingFrom) {
 		this.spirit = spirit;
 		this.gameState = gameState;
 		this.ctx = spirit.BindMyPower( gameState );
@@ -158,7 +158,7 @@ class MistsShiftAndFlow {
 	}
 
 	IEnumerable<SpaceState> GetTargetOptionsFromKnownSources( IEnumerable<SpaceState> sources, TargetCriteria tc )
-		=> spirit.RangeCalc.GetTargetOptionsFromKnownSource( ctx, powerType, sources, tc )
+		=> spirit.PowerRangeCalc.GetTargetOptionsFromKnownSource( ctx, powerType, sources, tc )
 			.Select(s=>gameState.Tokens[s]);
 
 	// Shroud Helper - for easier testing Targetting

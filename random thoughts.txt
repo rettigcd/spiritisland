@@ -13,10 +13,20 @@ ICalcRange / Spirit.RangeCalc
 		Volcano (special rule)
 	called by: 
 		Spirit.GetTargetOptions
-		FireAndFlood
-		MistsShiftAndFlow
-		BoundPresence.GetValidDestinationOptionsFromPresence ?
-		TargetSpaceCtx.TargetSpacesWithinRangeOf ?
+		FireAndFlood - YES
+		MistsShiftAndFlow - YES
+		BoundPresence.SelectDestinationWithinRange via .GetValidDestinationOptionsFromPresence ?
+			PlacePresenceAndBeast - NO
+			PlacePresenceOrDisease - NO
+			UnrelentingGrowth - YES
+			PlaceWithin
+				GiftOfProliferation - YES
+				SerpendWakesInPower - YES
+				PlacePresence - NO
+				PlacePresenceAndRunAction - NO
+
+		TargetSpaceCtx.TargetSpacesWithinRangeOf
+			PerilsOfTheDeepestIsland - YES
 
 ICalcSource / Spirit.SourceCalc
 	implemented by:
@@ -33,18 +43,19 @@ ICalcSource / Spirit.SourceCalc
 
 Spirit.GetTargetOptions - Wraps SourceCalc and RangeCalc
 	called from:
-		Spirit.TargetsSpace
-		Shadow.TargetsSpace
-		BlazingRenewal
+		Spirit.TargetsSpace - Yes
+		Shadow.TargetsSpace - Yes
+		BlazingRenewal - Yes
 
 Spirit.TargetsSpace
 	called from:
-		TargetSpaceAttribute
-		UnleashATorrentOfTheSelfsOwnEssence
-		CarapadedLands
-		PeaseOfTheNighttimeSky
+		TargetSpaceAttribute - Yes
+		UnleashATorrentOfTheSelfsOwnEssence - Yes
+		CarapadedLands - Yes
+		PeaceOfTheNighttimeSky - Yes
 	changed by:
 		Shadows
+		ShroudOfSilentMist
 	Note:
 		Should *Only* be used for Targetting a Power because Shadows special rule.
 		If we don't care about paying $, could replace this override with a custom CalcRange

@@ -109,12 +109,11 @@ public class ShroudOfSilentMist : Spirit {
 	public override async Task<Space> TargetsSpace( 
 		TargetingPowerType powerType, 
 		GameState gameState, 
-		Guid actionId,
 		string prompt, 
 		TargetSourceCriteria sourceCriteria, 
 		params TargetCriteria[] targetCriteria
 	) {
-		var x = new MistsShiftAndFlow(this,gameState,prompt,sourceCriteria,targetCriteria,powerType,actionId);
+		var x = new MistsShiftAndFlow(this,gameState,prompt,sourceCriteria,targetCriteria,powerType);
 		return (await x.TargetAndFlow()).Space;
 	}
 
