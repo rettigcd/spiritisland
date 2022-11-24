@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-class VolcanicPeaksTowerOverTheLandscape : DefaultRangeCalculator {
+class VolcanicPeaksTowerOverTheLandscape : DefaultPowerRangeCalculator {
 
 	static public readonly SpecialRule Rule = new SpecialRule( "Volcanic Peaks Tower Over the Landscape", "Your Power Cards gain +1 range if you have 3 or more presence in the origin land." );
 

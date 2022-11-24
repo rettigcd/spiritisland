@@ -18,7 +18,7 @@
 public class SourceCalcRestorer {
 
 	readonly Spirit spirit;
-	readonly ICalcSource original;
+	readonly ICalcPowerSource original;
 	public SourceCalcRestorer(Spirit spirit ) {
 		this.spirit = spirit;
 		this.original = spirit.SourceCalc; // capture so we can put it back later
@@ -33,7 +33,7 @@ public class SourceCalcRestorer {
 public class RangeCalcRestorer {
 
 	readonly Spirit spirit;
-	readonly ICalcRange original;
+	readonly ICalcPowerRange original;
 	public RangeCalcRestorer(Spirit spirit ) {
 		this.spirit = spirit;
 		this.original = spirit.PowerRangeCalc; // capture so we can put it back later

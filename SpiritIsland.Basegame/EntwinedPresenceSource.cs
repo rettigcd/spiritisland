@@ -1,9 +1,9 @@
 ﻿namespace SpiritIsland.Basegame;
 
-class EntwinedPresenceSource : ICalcSource {
+class EntwinedPresenceSource : ICalcPowerSource {
 
 	readonly Spirit[] spirits;
-	readonly ICalcSource[] origApis;
+	readonly ICalcPowerSource[] origApis;
 
 	public EntwinedPresenceSource( params Spirit[] spirits ) {
 		this.spirits = spirits;

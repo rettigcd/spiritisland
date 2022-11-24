@@ -587,16 +587,6 @@ public abstract class Spirit : IOption {
 
 	#region Power Plug-ins
 
-	// overriden by Bringer, Bringer's BuildInvaderGroupForPower uses this.
-	//public virtual Task DestroyInvaderForPowers( GameState gs, Space space, int count, Token token ) {
-	//	return gs.Tokens[space].Destroy(token, count );
-	//}
-
-	///// <summary>Hook for Grinning Trickster to add additional strife for power</summary>
-	//public virtual Task AddStrife( TargetSpaceCtx ctx, Token invader ) {
-	//	return ctx.Tokens.AddStrifeTo( invader );
-	//}
-
 	// Overriden by Trickster because it costs them presence
 	public virtual async Task RemoveBlight( TargetSpaceCtx ctx, int count=1 ) {
 		if(ctx.Blight.Any)
@@ -610,9 +600,10 @@ public abstract class Spirit : IOption {
 
 	#region Tarteting / Range
 
-	public ICalcSource SourceCalc = new DefaultSourceCalc();
+	/// <summary> Calculates Source for *Powers* only.  Don't use it for non-power calculations. </summary>
+	public ICalcPowerSource SourceCalc = new DefaultPowerSourceCalculator();
 	/// <summary> Calculates the Range for *Powers* only.  Don't use it for non-power calculations. </summary>
-	public ICalcRange PowerRangeCalc = new DefaultRangeCalculator();
+	public ICalcPowerRange PowerRangeCalc = new DefaultPowerRangeCalculator();
 
 	// Only Called from TargetSpaceAttribute
 	// !!! Also, some things may be calling GetTargetOptions directly and skipping over this bit - preventing Shadow from paying their energy
@@ -623,13 +614,18 @@ public abstract class Spirit : IOption {
 		TargetSourceCriteria sourceCriteria,
 		params TargetCriteria[] targetCriteria
 	) {
+		// !!! We are missing the TerrainMapper that filters out Oceans
+
 		if(prompt == null) prompt = "Target Space.";
-		IEnumerable<Space> spaces = GetTargetOptions( powerType, gameState, sourceCriteria, targetCriteria );
+		IEnumerable<Space> spaces = GetPowerTargetOptions( powerType, gameState, sourceCriteria, targetCriteria );
 		return this.Action.Decision( new Select.Space( prompt, spaces, Present.Always ));
 	}
 
-	/// <summary> Helper for calling SourceCalc & RangeCalc </summary>
-	public IEnumerable<Space> GetTargetOptions(
+	/// <summary> 
+	/// Helper for calling SourceCalc & RangeCalc 
+	/// Use ONLY for POWERs
+	/// </summary>
+	public IEnumerable<Space> GetPowerTargetOptions(
 
 		TargetingPowerType powerType,
 		GameState gameState,

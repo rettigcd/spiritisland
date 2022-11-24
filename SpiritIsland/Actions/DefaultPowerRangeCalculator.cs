@@ -2,11 +2,11 @@
 
 public enum From { None, Presence, SacredSite };
 
-public interface ICalcSource {
+public interface ICalcPowerSource {
 	IEnumerable<SpaceState> FindSources( GameState gs, IKnowSpiritLocations presence, TargetSourceCriteria source, TerrainMapper mapper );
 }
 
-public interface ICalcRange {
+public interface ICalcPowerRange {
 
 	IEnumerable<Space> GetTargetOptionsFromKnownSource(
 		SelfCtx ctx,
@@ -17,8 +17,10 @@ public interface ICalcRange {
 
 }
 
-
-public class DefaultSourceCalc : ICalcSource {
+/// <summary>
+/// Since Spirit.SourceCalculator is modified by Entwined, use only for Powers
+/// </summary>
+public class DefaultPowerSourceCalculator : ICalcPowerSource {
 	public IEnumerable<SpaceState> FindSources( GameState gs, IKnowSpiritLocations presence, TargetSourceCriteria sourceCriteria, TerrainMapper _ ) {
 		var sources = sourceCriteria.From switch {
 			From.Presence => presence.SpaceStates,
@@ -32,8 +34,10 @@ public class DefaultSourceCalc : ICalcSource {
 
 }
 
-
-public class DefaultRangeCalculator : ICalcRange {
+/// <summary>
+/// Calculates Power Ranges - Pluggable into Spirit to modify how their Power-Range
+/// </summary>
+public class DefaultPowerRangeCalculator : ICalcPowerRange {
 
 	public virtual IEnumerable<Space> GetTargetOptionsFromKnownSource(
 
@@ -47,6 +51,7 @@ public class DefaultRangeCalculator : ICalcRange {
 		return sources
 			.SelectMany( x => x.Range( targetCriteria.Range ) )
 			.Distinct()
+			.Where( ctx.GameState.Island.Terrain_ForPower.IsInPlay ) // Since this is Power-Only, we can hard wire this
 			.Where( SpaceFilterMap.Get( targetCriteria.Filter, ctx.Self, ctx.TerrainMapper ) )
 			.Select(x=>x.Space); 
 	}

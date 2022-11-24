@@ -22,11 +22,11 @@ public class ExaltationOfMoltenStone {
 		ctx.Self.PowerRangeCalc = new ExtendRange1FromMountain( ctx.Self.PowerRangeCalc );
 	}
 
-	class ExtendRange1FromMountain : DefaultRangeCalculator {
+	class ExtendRange1FromMountain : DefaultPowerRangeCalculator {
 
-		readonly ICalcRange originalApi;
+		readonly ICalcPowerRange originalApi;
 
-		public ExtendRange1FromMountain( ICalcRange originalApi ) {
+		public ExtendRange1FromMountain( ICalcPowerRange originalApi ) {
 			this.originalApi = originalApi;
 		}
 

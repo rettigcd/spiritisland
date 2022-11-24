@@ -12,7 +12,7 @@ public class BlazingRenewal {
 		// into a single land, up to range 2 from your presence.
 		// Note - Jonah says it is the originators power and range and decision, not the targets
 		var otherCtxPresence = ctx.OtherCtx.Presence;
-		var spaceOptions = ctx.Self.GetTargetOptions(TargetingPowerType.None,ctx.GameState,new TargetSourceCriteria(From.Presence),new TargetCriteria(2,Target.Any))
+		var spaceOptions = ctx.Self.GetPowerTargetOptions(TargetingPowerType.None,ctx.GameState,new TargetSourceCriteria(From.Presence),new TargetCriteria(2,Target.Any))
 			.Where( otherCtxPresence.CanBePlacedOn )
 			.ToArray();
 		TargetSpaceCtx selfPickLandCtx = await ctx.SelectSpace("Select location for target spirit to add presence", spaceOptions);

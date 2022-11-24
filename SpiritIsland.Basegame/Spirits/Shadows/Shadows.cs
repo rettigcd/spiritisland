@@ -51,7 +51,7 @@ public class Shadows : Spirit {
 			return await base.TargetsSpace( targettingFrom, gameState, prompt, sourceCriteria, targetCriteria );
 
 		// find normal Targetable spaces
-		var normalSpaces = GetTargetOptions( targettingFrom, gameState, sourceCriteria, targetCriteria );
+		var normalSpaces = GetPowerTargetOptions( targettingFrom, gameState, sourceCriteria, targetCriteria );
 
 		// find dahan-only spaces that are not in targetable spaces
 		var dahanOnlySpaces = gameState.AllActiveSpaces
