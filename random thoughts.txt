@@ -1,3 +1,72 @@
+ICalcRange / Spirit.RangeCalc
+	implemented by: 
+		DefaultRangeCalculator
+		RangeExtender
+		VolcanicPeaksTowerOverTheLandscape
+		SkyStretchesToShore
+	changed by:
+		ReachingGrasp
+		FlowLikeWaterReachLikeAir
+		SkyStretchesToShore
+		ScreamDiseaseIntoTheWind
+		ExaltationOfMoltenStone
+		Volcano (special rule)
+	called by: 
+		Spirit.GetTargetOptions
+		FireAndFlood
+		MistsShiftAndFlow
+		BoundPresence.GetValidDestinationOptionsFromPresence ?
+		TargetSpaceCtx.TargetSpacesWithinRangeOf ?
+
+ICalcSource / Spirit.SourceCalc
+	implemented by:
+		DefaultSourceCalc
+		DrenchTheLandscape
+	changed by:
+		EntwinedPresence
+		DrenchTheLand
+	*** Issue ***
+		Doesn't use the TerrainMappers to determine type
+	called by: 
+		Spirit.GetTargetOptions
+		MistsShiftAndFlow.PresenceMeetsTargettingRequirements
+
+Spirit.GetTargetOptions - Wraps SourceCalc and RangeCalc
+	called from:
+		Spirit.TargetsSpace
+		Shadow.TargetsSpace
+		BlazingRenewal
+
+Spirit.TargetsSpace
+	called from:
+		TargetSpaceAttribute
+		UnleashATorrentOfTheSelfsOwnEssence
+		CarapadedLands
+		PeaseOfTheNighttimeSky
+	changed by:
+		Shadows
+	Note:
+		Should *Only* be used for Targetting a Power because Shadows special rule.
+		If we don't care about paying $, could replace this override with a custom CalcRange
+	*** Issue ***
+		Shouldn't be used by UnleashATorent, CarapaddedLands or PeaceOfThenightime sky
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 D	Towering Root
 D	Breath of Darkness
 D	Hearth Vigil
@@ -8,66 +77,9 @@ J	Ember Eye
 J	Relentless Gaze
 J	Dances up Earthquakes
 
-
-Updating Distance counts when we change if a space is in play.
-
-Option 1
-	- never cache it.  Calculate it fresh everytime.
-
-Option 2
-	- Every space that is in the cache, 
-		add watch to .IsInPlayChanged
-		if not in play, remove that space and everything higher from the cache, unsucscribe to event
-		if in play, ??? Do what ??????
-
-Option 3
-	- when .IsInPlay changes, invalidate all the caches.
-	- could store the cache in the island as a dictionary and then just clear it.
-
-
-
-.IsInPlay changes for:
-	- Ocean / Powers / Blight
-	- Absolute Stasis
-	- 
-
-OceanTerrainForPower
-	IsInPlay(  ){
-		Has Ocean On it
-	}
-
-
-Need to update:
-	.IsInPlay
-	.Adjacent (and Range)
-
-
-.IsInPlay varies for:
-	Ocean
-	Absolute Statis.
-
-Option 1
-	- place .IsInPlay property on Space that is settable.
-	- true for everything except ocean
-	- Absolute statis sets to false
-	- Ocean-Power-Blight returns the || of OceansOcean and .IsInPlay
-	- need to invalidate cache each time it is set/unset
-	- Rewind needs to reset .IsInPlay to original values.
-
-Option 2
-	- Bind the Tokens to the Space
-	- store InPlay token in the space
-	- rewind: no special considerations.
-
-Option 3
-	- create a StasisList
-
-
-
 Oversees Trade Seems safer
 Dahan on their Guard
 	- in each land.. defend
-
 
 Dahan Enheartened
 Retreat
@@ -84,3 +96,23 @@ Scapegoats
 Tall Tailes of Savagery
 Wary of the Interior
 	- cannot see pieces in stasis
+
+Cards With Range on them
+
+	Blazing Renewal (does the land placement restrictions still apply?)
+	Unrelenting Growth( does the land placement restrictions still apply? )
+	Gift of Proliferation
+	Bargans of Power and Protection
+	Unleash a Torrent of The Self's Own Essence
+	Utter A Curse of Dread And Bone
+	Perils of the Deepest Island
+
+Resolve:
+	RangeCalc usage
+	Spirit.GetTargetOptions
+	Spirit.TargetsSpace(...)
+	Blazing Renewal
+	BoundPresence.Range...
+
+	BlazingRenewal calls Spirit.GetTargetOptions but should call BoundPresence or TargetSpaceCtx instead instead.
+

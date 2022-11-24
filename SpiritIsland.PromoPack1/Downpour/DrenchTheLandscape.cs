@@ -21,23 +21,30 @@ class DrenchTheLandscape : TerrainMapper, ICalcSource {
 
 	IEnumerable<SpaceState> SacredSites(GameState gs) => gs.AllActiveSpaces
 		.Where( spirit.Presence.IsSacredSite ); // Downpours SS are not dependent on special terrain rules.
-	readonly TerrainMapper defaultTerrainMapper = new TerrainMapper();
 
-	public IEnumerable<SpaceState> FindSources( GameState gs, IKnowSpiritLocations presence, TargetSourceCriteria sourceCriteria, TerrainMapper mapper ) {
+	public IEnumerable<SpaceState> FindSources( 
+		GameState gs, 
+		IKnowSpiritLocations presence, 
+		TargetSourceCriteria sourceCriteria, 
+		TerrainMapper _
+	) {
 		var sources = sourceCriteria.From switch {
 			From.Presence => presence.SpaceStates,
 			From.SacredSite => SacredSites(gs),
 			_ => throw new ArgumentException( "Invalid presence source " + sourceCriteria.From ),
 		};
-		if(!sourceCriteria.Terrain.HasValue)
-			return sources;
 
-		var terrain = sourceCriteria.Terrain.Value;
-		var match = sources.Where( space => space.Space.Is( terrain ) );
-		return terrain != Terrain.Wetland
-			? match
-			: match.Union( SacredSites(gs) );
+		// !!! This only treats Spaces as Wetlands for Targeting-Source and not for everything else that tests for Wetlands.
+		// !!! If we set all the TerrainMappers correctly, then we wouldn't need to override CalcSource
 
+		return sourceCriteria.Terrain.HasValue
+			// If we are filltering on water
+			? sourceCriteria.Terrain.Value == Terrain.Wetland
+				// Add Sacred Sites in, explicitly
+				? sources.Where( space => space.Space.Is( sourceCriteria.Terrain.Value ) ).Union( SacredSites( gs ) )
+				: sources.Where( space => space.Space.Is( sourceCriteria.Terrain.Value ) )
+			: sources;
 	}
+
 }
 

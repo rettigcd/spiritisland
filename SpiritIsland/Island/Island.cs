@@ -48,13 +48,4 @@ public class Island {
 	public TerrainMapper Terrain_ForPower = new TerrainMapper();
 	public TerrainMapper Terrain_ForBlight = new TerrainMapper();
 
-//	public TerrainMapper Current {
-//		get {
-//			System.Runtime.Remoting.Messaging.CallContext.SetData( "key", "test value" );
-//			return null;
-//		}
-//	}
-
-
-
 }

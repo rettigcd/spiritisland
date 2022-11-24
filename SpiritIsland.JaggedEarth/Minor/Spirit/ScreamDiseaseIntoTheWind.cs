@@ -7,8 +7,8 @@ public class ScreamDiseaseIntoTheWind{
 	[MinorCard(Name,1,Element.Air,Element.Water,Element.Animal),Fast,AnotherSpirit]
 	static public Task ActAsync(TargetSpiritCtx ctx){
 		// Target Spirit gets +1 range with all their Powers.
-		ctx.GameState.TimePasses_ThisRound.Push( new PowerApiRestorer( ctx.Other ).Restore );
-		ctx.Other.RangeCalc = new TargetLandApi_ExtendRange( 1, ctx.Other.RangeCalc );
+		ctx.GameState.TimePasses_ThisRound.Push( new RangeCalcRestorer( ctx.Other ).Restore );
+		ctx.Other.RangeCalc = new RangeExtender( 1, ctx.Other.RangeCalc );
 
 		// Once this turn, after target Spirit uses a Power targeting a land, they may add 1 disease to that land.
 		bool used = false;

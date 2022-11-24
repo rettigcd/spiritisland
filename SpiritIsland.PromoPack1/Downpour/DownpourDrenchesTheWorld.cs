@@ -63,11 +63,12 @@ public class DownpourDrenchesTheWorld : Spirit, IHaveSecondaryElements {
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// 1 presence on lowest # wetlands
 		Presence.PlaceOn( gameState.Tokens[ board.Spaces.First( x => x.IsWetland ) ] );
-
-		var drenchTheLandscape = new DrenchTheLandscape( this, gameState.Island.Terrain_ForPower ); // !!! what about for Special Rules???
-		gameState.Island.Terrain_ForPower = drenchTheLandscape;
 		gameState.TimePasses_WholeGame += _ => pourDownPower.Reset();
 
+		// !!! Fixes Terrain: ForPower, but does set any of the other Terrains
+		// If we use this for the other terrains also, then this would solve our Other Spirits use as wetlands problem.
+		var drenchTheLandscape = new DrenchTheLandscape( this, gameState.Island.Terrain_ForPower );
+		gameState.Island.Terrain_ForPower = drenchTheLandscape;
 		SourceCalc = drenchTheLandscape;
 	}
 

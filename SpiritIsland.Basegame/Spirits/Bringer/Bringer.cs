@@ -47,10 +47,6 @@ public class Bringer : Spirit {
 		Presence.PlaceOn( space );
 	}
 
-	//public override Task DestroyInvaderForPowers( GameState gs, Space space, int count, Token dahanToken ) {
-	//	return Task.CompletedTask;
-	//}
-
 	public override SelfCtx BindMyPower( GameState gameState ) => new BringerCtx(this,gameState,Guid.NewGuid());
 
 }

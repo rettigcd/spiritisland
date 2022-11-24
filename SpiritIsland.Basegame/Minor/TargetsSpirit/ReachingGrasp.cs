@@ -8,8 +8,8 @@ public class ReachingGrasp {
 	static public Task Act( TargetSpiritCtx ctx ) {
 
 		// target spirit gets +2 range with all their Powers
-		ctx.GameState.TimePasses_ThisRound.Push( new PowerApiRestorer( ctx.Other ).Restore );
-		ctx.Other.RangeCalc = new TargetLandApi_ExtendRange( 2, ctx.Other.RangeCalc );
+		ctx.GameState.TimePasses_ThisRound.Push( new RangeCalcRestorer( ctx.Other ).Restore );
+		ctx.Other.RangeCalc = new RangeExtender( 2, ctx.Other.RangeCalc );
 
 		return Task.CompletedTask;
 	}

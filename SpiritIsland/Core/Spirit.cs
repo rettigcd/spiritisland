@@ -628,16 +628,19 @@ public abstract class Spirit : IOption {
 		return this.Action.Decision( new Select.Space( prompt, spaces, Present.Always ));
 	}
 
+	/// <summary> Helper for calling SourceCalc & RangeCalc </summary>
 	public IEnumerable<Space> GetTargetOptions(
+
 		TargetingPowerType powerType,
 		GameState gameState,
+
 		TargetSourceCriteria sourceCriteria,
 		params TargetCriteria[] targetCriteria // allows different criteria at different ranges
 	) {	
 		// Converts SourceCriteria to Spaces
 		IEnumerable<SpaceState> sources = SourceCalc.FindSources( gameState, this.BindMyPower(gameState).Presence, sourceCriteria, gameState.Island.Terrain_ForPower );
 
-		var ctx = BindMyPower(gameState); // targetting is always for Power (I think)
+		var ctx = BindMyPower(gameState); // targetting is always for Power (I think)    - !!! Don't create another Action just for this calculation
 
 		// Convert TargetCriteria to spaces and merge (distinct) them together.
 		return targetCriteria

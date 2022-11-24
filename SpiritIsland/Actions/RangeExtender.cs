@@ -1,11 +1,11 @@
 ﻿namespace SpiritIsland;
 
-public class TargetLandApi_ExtendRange : ICalcRange {
+public class RangeExtender : ICalcRange {
 
 	readonly int extension;
 	readonly ICalcRange originalApi;
 
-	public TargetLandApi_ExtendRange( int extension, ICalcRange originalApi ) {
+	public RangeExtender( int extension, ICalcRange originalApi ) {
 		this.extension = extension;
 		this.originalApi = originalApi;
 	}

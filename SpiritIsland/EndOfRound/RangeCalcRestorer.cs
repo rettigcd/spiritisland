@@ -1,19 +1,19 @@
 ﻿namespace SpiritIsland;
 
-public class PowerApiRestorer {
+//public class RangeCalcRestorer {
 
-	readonly Spirit spirit;
-	readonly ICalcRange original;
-	public PowerApiRestorer(Spirit spirit ) {
-		this.spirit = spirit;
-		this.original = spirit.RangeCalc; // capture so we can put it back later
-	}
-	public Task Restore( GameState _ ) {
-		spirit.RangeCalc = original;
-		return Task.CompletedTask;
-	}
+//	readonly Spirit spirit;
+//	readonly ICalcRange original;
+//	public RangeCalcRestorer(Spirit spirit ) {
+//		this.spirit = spirit;
+//		this.original = spirit.RangeCalc; // capture so we can put it back later
+//	}
+//	public Task Restore( GameState _ ) {
+//		spirit.RangeCalc = original;
+//		return Task.CompletedTask;
+//	}
 
-}
+//}
 
 public class SourceCalcRestorer {
 
