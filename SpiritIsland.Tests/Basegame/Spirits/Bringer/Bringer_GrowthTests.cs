@@ -15,7 +15,7 @@ public class Bringer_GrowthTests : GrowthTests {
 	public Bringer_GrowthTests():base( InitSpirit() ) {}
 
 	[Fact] 
-	public void ReclaimAll_PowerCard() {
+	public void ReclaimAll_PowerCard() { // Growth Option 1
 
 		// reclaim, +1 power card
 		Given_HalfOfPowercardsPlayed();
@@ -29,7 +29,7 @@ public class Bringer_GrowthTests : GrowthTests {
 	}
 
 	[Fact] 
-	public void Reclaim1_Presence() {
+	public void Reclaim1_Presence() { // Growth Option 2
 		// reclaim 1, add presense range 0
 		Given_HalfOfPowercardsPlayed();
 		Given_HasPresence( board[4] );
@@ -43,7 +43,7 @@ public class Bringer_GrowthTests : GrowthTests {
 	}
 
 	[Fact] 
-	public void PowerCard_Presence() {
+	public void PowerCard_Presence() { // Growth Option 3
 		// +1 power card, +1 pressence range 1
 		Given_HasPresence( board[1] );
 
@@ -57,9 +57,11 @@ public class Bringer_GrowthTests : GrowthTests {
 	}
 
 	[Fact] 
-	public void PresenseOnPieces_Energy(){
+	public void PresenseOnPieces_Energy(){ // Growth Option 4
 
 		board = LineBoard.MakeBoard();
+		gameState = new GameState( spirit, board );
+
 		Given_HasPresence(board[5]);
 		gameState.DahanOn(board[6]).Init(1);
 		gameState.Tokens[board[7]].AdjustDefault(Invader.Explorer,1);

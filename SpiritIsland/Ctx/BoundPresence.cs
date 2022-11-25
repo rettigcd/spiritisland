@@ -103,7 +103,7 @@ public class BoundPresence : IKnowSpiritLocations {
 	/// Innate/PowerCard => power ranging  + Passes to PowerRanging
 	/// </param>
 	public async Task<Space> SelectDestinationWithinRange( TargetCriteria targetCriteria, TargetingPowerType targetingPowerType ) {
-		var options = FindSpacesWithinRange( targetCriteria, targetingPowerType );
+		var options = FindSpacesWithinRange( targetCriteria, targetingPowerType ).ToArray();
 		return await ctx.Decision( Select.Space.ToPlacePresence( options, Present.Always ) );
 	}
 

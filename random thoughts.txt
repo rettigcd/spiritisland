@@ -1,5 +1,4 @@
 
-! Fix Bringer Test
 ! Make sure we aren't creating Actions and throwing them away-BindMyPower
 ! Investigate Terrain_Mapper
 
@@ -45,16 +44,12 @@ ICalcSource / Spirit.SourceCalc
 Spirit.TargetsSpace
 	called from:
 		TargetSpaceAttribute - Yes
-		CarapadedLands - Yes
 	changed by:
 		Shadows
 		ShroudOfSilentMist
 	Note:
 		Should *Only* be used for Targetting a Power because Shadows special rule.
 		If we don't care about paying $, could replace this override with a custom CalcRange
-	*** Issue ***
-		Shouldn't be used by:
-			CarapaddedLands
 
 
 
@@ -108,3 +103,18 @@ Resolve:
 
 	BlazingRenewal calls Spirit.GetTargetOptions but should call BoundPresence or TargetSpaceCtx instead instead.
 
+
+
+
+
+
+0 City
+1
+2
+3
+4
+5 Presence
+6 Dahan
+7 Exlorer
+8 Town
+9 
