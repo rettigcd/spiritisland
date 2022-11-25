@@ -30,15 +30,14 @@ public class UnleashATorrentOfTheSelfsOwnEssence {
 	static SelfAction ConvertEnergyToDamage => new SelfAction("Pay X Energy (min 1) to deal X Damage in a land at range 0", ConvertEnergyToDamageMethod);
 
 	static async Task ConvertEnergyToDamageMethod(SelfCtx ctx ) {
-		// Pay X Energy (min. 1) to deal X Damage in a land at range-0
+		// Pay X Energy (min. 1) to deal X Damage
 		int damage = await ctx.Self.SelectNumber("Pay 1 energy/damage.", ctx.Self.Energy, 0);
 		if(damage == 0) return;
 
-		// land at range-0
-		var land = await ctx.Self.TargetsSpace(TargetingPowerType.PowerCard,ctx.GameState,$"{damage} Damage"
-			, new TargetSourceCriteria(From.Presence)
-			, new TargetCriteria(0)
-		);
+		//  in a land at range-0
+		var options = ctx.Presence.FindSpacesWithinRange( new TargetCriteria( 0 ), TargetingPowerType.PowerCard );
+		var land = await ctx.Decision( new Select.Space( $"{damage} Damage", options,Present.Always ) );
+
 		ctx.Self.Energy -= damage;
 		await ctx.Target(land).DamageInvaders(damage);
 	}

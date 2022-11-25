@@ -605,7 +605,8 @@ public abstract class Spirit : IOption {
 	/// <summary> Calculates the Range for *Powers* only.  Don't use it for non-power calculations. </summary>
 	public ICalcRange PowerRangeCalc = new DefaultRangeCalculator();
 
-	// Only Called from TargetSpaceAttribute
+	/// <summary> Used EXCLUSIVELY For Targeting a PowerCard's Space </summary>
+	/// <remarks> This used as the hook for Shadow's Pay-1-to-target-land-with-dahan </remarks>
 	public virtual Task<Space> TargetsSpace( 
 		TargetingPowerType powerType,
 		GameState gameState,
