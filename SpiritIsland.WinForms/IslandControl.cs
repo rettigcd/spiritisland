@@ -164,6 +164,55 @@ public partial class IslandControl : Control {
 	//		: Brushes.Gold;
 	//}
 
+	static Brush SpaceBrush( Space space ) {
+		if( space.IsWetland ) {
+			using Image image = Image.FromFile( ".\\images\\wetlands.jpg" );
+			TextureBrush tBrush = new TextureBrush( image );
+			tBrush.Transform = new Matrix(
+				0.25f, 0.0f, 0.0f,
+				0.25f, 0.0f, 0.0f
+			);
+			return tBrush;
+		}
+		if(space.IsJungle) {
+			using Image image = Image.FromFile( ".\\images\\jungle.jpg" );
+			TextureBrush tBrush = new TextureBrush( image );
+			tBrush.Transform = new Matrix(
+				1f, 0.0f, 0.0f,
+				1f, 0.0f, 0.0f
+			);
+			return tBrush;
+		}
+		if(space.IsMountain) {
+			using Image image = Image.FromFile( ".\\images\\mountains.jpg" );
+			TextureBrush tBrush = new TextureBrush( image );
+			tBrush.Transform = new Matrix(
+				0.5f, 0.0f, 0.0f,
+				0.5f, 0.0f, 0.0f
+			);
+			return tBrush;
+		}
+		if(space.IsSand) {
+			using Image image = Image.FromFile( ".\\images\\sand.jpg" );
+			TextureBrush tBrush = new TextureBrush( image );
+			tBrush.Transform = new Matrix(
+				0.5f, 0.0f, 0.0f,
+				0.5f, 0.0f, 0.0f
+			);
+			return tBrush;
+		}
+		if(space.IsOcean) {
+			using Image image = Image.FromFile( ".\\images\\ocean.jpg" );
+			TextureBrush tBrush = new TextureBrush( image );
+			tBrush.Transform = new Matrix(
+				0.5f, 0.0f, 0.0f,
+				0.5f, 0.0f, 0.0f
+			);
+			return tBrush;
+		}
+		return new SolidBrush( SpaceColor( space ) );
+	}
+
 	static Color SpaceColor( Space space ) {
 		return space.IsWetland ? Color.LightBlue
 			: space.IsSand     ? Color.PaleGoldenrod
@@ -178,7 +227,7 @@ public partial class IslandControl : Control {
 		var perimeterPen = new Pen( Brushes.Black, 5f );
 		var normalizedBoardLayout = board.Layout;
 		for(int i = 0; i < normalizedBoardLayout.Spaces.Length; ++i) {
-			using Brush brush = new SolidBrush( SpaceColor( board[i] ) );
+			using Brush brush = SpaceBrush( board[i] );
 			var points = normalizedBoardLayout.Spaces[i].corners.Select( _mapper.Map ).ToArray();
 
 			// Draw blocky

@@ -613,8 +613,6 @@ public abstract class Spirit : IOption {
 		TargetSourceCriteria sourceCriteria,
 		params TargetCriteria[] targetCriteria
 	) {
-		// !!! We are missing the TerrainMapper that filters out Oceans
-
 		if(prompt == null) prompt = "Target Space.";
 		IEnumerable<Space> spaces = GetPowerTargetOptions( powerType, gameState, sourceCriteria, targetCriteria );
 		return this.Action.Decision( new Select.Space( prompt, spaces, Present.Always ));

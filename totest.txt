@@ -6,6 +6,8 @@ Adding Presence - These cards should not allow: Ocean, Lure, and Volcano to be i
 	Flow like Water, Reach Like Air
 	Unrelenting Growth
 
+Volcanos 3-Presence doesn't extend Place Presence Range
+
 Moving Dahan into Frozen land should freeze them.
 
 Blight Tests
