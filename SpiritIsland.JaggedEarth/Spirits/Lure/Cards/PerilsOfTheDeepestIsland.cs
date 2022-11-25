@@ -12,7 +12,7 @@ public class PerilsOfTheDeepestIsland {
 		await ctx.Badlands.Add(1);
 
 		// Add 1 beast within 1 range.
-		var options = ctx.Self.PowerRangeCalc.GetTargetOptionsFromKnownSource( ctx,
+		var options = ctx.Self.PowerRangeCalc.GetTargetOptionsFromKnownSource( ctx.Self, ctx.TerrainMapper,
 			TargetingPowerType.PowerCard,
 			new SpaceState[] { ctx.Tokens },
 			new TargetCriteria( 1 )

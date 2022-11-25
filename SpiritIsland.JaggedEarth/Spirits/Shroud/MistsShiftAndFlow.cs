@@ -158,7 +158,7 @@ class MistsShiftAndFlow {
 	}
 
 	IEnumerable<SpaceState> GetTargetOptionsFromKnownSources( IEnumerable<SpaceState> sources, TargetCriteria tc )
-		=> spirit.PowerRangeCalc.GetTargetOptionsFromKnownSource( ctx, powerType, sources, tc )
+		=> spirit.PowerRangeCalc.GetTargetOptionsFromKnownSource( ctx.Self, ctx.TerrainMapper, powerType, sources, tc )
 			.Select(s=>gameState.Tokens[s]);
 
 	// Shroud Helper - for easier testing Targetting

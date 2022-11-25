@@ -9,7 +9,8 @@ public interface ICalcPowerSource {
 public interface ICalcRange {
 
 	IEnumerable<Space> GetTargetOptionsFromKnownSource(
-		SelfCtx ctx,
+		Spirit self,
+		TerrainMapper mapper,
 		TargetingPowerType powerType,
 		IEnumerable<SpaceState> source,
 		TargetCriteria targetCriteria
@@ -41,8 +42,8 @@ public class DefaultPowerSourceCalculator : ICalcPowerSource {
 public class DefaultRangeCalculator : ICalcRange {
 
 	public virtual IEnumerable<Space> GetTargetOptionsFromKnownSource(
-
-		SelfCtx ctx,
+		Spirit self,
+		TerrainMapper terrainMapper,
 		TargetingPowerType _,
 
 		IEnumerable<SpaceState> sources,
@@ -52,8 +53,8 @@ public class DefaultRangeCalculator : ICalcRange {
 		return sources
 			.SelectMany( x => x.Range( targetCriteria.Range ) )
 			.Distinct()
-			.Where( ctx.TerrainMapper.IsInPlay ) // !important
-			.Where( SpaceFilterMap.Get( targetCriteria.Filter, ctx.Self, ctx.TerrainMapper ) )
+			.Where( terrainMapper.IsInPlay ) // !important
+			.Where( SpaceFilterMap.Get( targetCriteria.Filter, self, terrainMapper ) )
 			.Select(x=>x.Space); 
 	}
 	static public readonly ICalcRange Singleton = new DefaultRangeCalculator();

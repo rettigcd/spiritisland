@@ -14,17 +14,17 @@ class VolcanicPeaksTowerOverTheLandscape : DefaultRangeCalculator {
 	// Perils of the Deepest Island
 
 
-	public override IEnumerable<Space> GetTargetOptionsFromKnownSource( SelfCtx ctx, TargetingPowerType powerType, IEnumerable<SpaceState> source, TargetCriteria targetCriteria ) {
-		List<Space> spaces = base.GetTargetOptionsFromKnownSource( ctx, powerType, source, targetCriteria )
+	public override IEnumerable<Space> GetTargetOptionsFromKnownSource( Spirit self, TerrainMapper tm, TargetingPowerType powerType, IEnumerable<SpaceState> source, TargetCriteria targetCriteria ) {
+		List<Space> spaces = base.GetTargetOptionsFromKnownSource( self, tm, powerType, source, targetCriteria )
 			.ToList();
 
 		// Add towers
 		if(powerType != TargetingPowerType.Innate) {
-			var powerUpSpaces = ctx.GameState.AllActiveSpaces
-				.Where( s => 3 <= ctx.Self.Presence.CountOn( s ) );
-			var towers = ctx.GameState.Tokens.PowerUp( powerUpSpaces.Select(x=>x.Space) ).ToArray();
+			var towers = source
+				.Where( s => 3 <= self.Presence.CountOn( s ) )
+				.ToArray();
 			if(towers.Length > 0)
-				spaces.AddRange( base.GetTargetOptionsFromKnownSource( ctx, powerType, towers, new TargetCriteria( targetCriteria.Range + 1, targetCriteria.Filter ) ) );
+				spaces.AddRange( base.GetTargetOptionsFromKnownSource( self, tm, powerType, towers, new TargetCriteria( targetCriteria.Range + 1, targetCriteria.Filter ) ) );
 		}
 
 		return spaces.Distinct();

@@ -31,7 +31,7 @@ public class FireAndFlood {
 
 		// 2nd target options, range 2 from Possible SSs
 		IEnumerable<Space> secondTargetOptions = ctx.Self.PowerRangeCalc.GetTargetOptionsFromKnownSource(
-			ctx,
+			ctx.Self, ctx.TerrainMapper,
 			TargetingPowerType.PowerCard,
 			possibleSacredSiteSourcesForThisSpace,
 			new TargetCriteria( 2 )

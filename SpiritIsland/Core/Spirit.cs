@@ -376,16 +376,10 @@ public abstract class Spirit : IOption {
 	}
 
 	public virtual async Task TakeAction(IActionFactory factory, SelfCtx ctx) {
-//		var oldActionGuid = CurrentActionId; // capture old
-//		CurrentActionId = Guid.NewGuid(); // set new
-		try {
-			RemoveFromUnresolvedActions( factory ); // removing first, so action can restore it if desired
-			await factory.ActivateAsync( ctx );
-			if(factory is IRecordLastTarget lastTargetRecorder )
-				await ActionTaken_ThisRound.InvokeAsync( new ActionTaken(factory,lastTargetRecorder.LastTarget) );
-		} finally {
-//			CurrentActionId = oldActionGuid; // restore
-		}
+		RemoveFromUnresolvedActions( factory ); // removing first, so action can restore it if desired
+		await factory.ActivateAsync( ctx );
+		if(factory is IRecordLastTarget lastTargetRecorder )
+			await ActionTaken_ThisRound.InvokeAsync( new ActionTaken(factory,lastTargetRecorder.LastTarget) );
 		ctx.GameState.CheckWinLoss(); // @@@
 	}
 
@@ -633,7 +627,7 @@ public abstract class Spirit : IOption {
 
 		// Convert TargetCriteria to spaces and merge (distinct) them together.
 		return targetCriteria
-			.SelectMany(tc => PowerRangeCalc.GetTargetOptionsFromKnownSource( ctx, powerType, sources, tc ))
+			.SelectMany(tc => PowerRangeCalc.GetTargetOptionsFromKnownSource( ctx.Self, ctx.TerrainMapper, powerType, sources, tc ))
 			.Distinct();
 	}
 

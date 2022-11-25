@@ -30,15 +30,15 @@ public class ExaltationOfMoltenStone {
 			this.originalApi = originalApi;
 		}
 
-		public override IEnumerable<Space> GetTargetOptionsFromKnownSource( SelfCtx ctx, TargetingPowerType powerType, IEnumerable<SpaceState> source, TargetCriteria tc ) {
+		public override IEnumerable<Space> GetTargetOptionsFromKnownSource( Spirit self, TerrainMapper tm, TargetingPowerType powerType, IEnumerable<SpaceState> source, TargetCriteria tc ) {
 			// original options
-			List<Space> spaces = originalApi.GetTargetOptionsFromKnownSource( ctx, powerType, source, tc ).ToList();
+			List<Space> spaces = originalApi.GetTargetOptionsFromKnownSource( self, tm, powerType, source, tc ).ToList();
 
 			// Target Spirit gains +1 range with their Powers that originate from a Mountain
-			var mountainSource = source.Where(space => ctx.TerrainMapper.MatchesTerrain( space, Terrain.Mountain) ).ToArray();
+			var mountainSource = source.Where(space => tm.MatchesTerrain( space, Terrain.Mountain) ).ToArray();
 			return mountainSource.Length == 0 ? spaces
 				: spaces
-				.Union( originalApi.GetTargetOptionsFromKnownSource( ctx, powerType, mountainSource, new TargetCriteria(tc.Range+1, tc.Filter) ) )
+				.Union( originalApi.GetTargetOptionsFromKnownSource( self, tm, powerType, mountainSource, new TargetCriteria(tc.Range+1, tc.Filter) ) )
 				.Distinct();
 		}
 
