@@ -2,7 +2,7 @@
 
 public class CarapacedLand{ 
 		
-	[MinorCard("Carapaced Land",0,Element.Earth,Element.Plant,Element.Animal),Fast, Extend1ForBeast(0)]
+	[MinorCard("Carapaced Land",0,Element.Earth,Element.Plant,Element.Animal),Fast, Range0Or1ForTargetingBeast]
 	static public async Task ActAsync( TargetSpaceCtx ctx ){
 
 		// Defend 3
@@ -14,8 +14,9 @@ public class CarapacedLand{
 }
 
 // If targeting a land with beast, this Power has +1 range.
-public class Extend1ForBeast : FromPresenceAttribute {
-	public Extend1ForBeast(int range, string filter = Target.Any) : base( range, filter) {}
+public class Range0Or1ForTargetingBeast : FromPresenceAttribute {
+
+	public Range0Or1ForTargetingBeast() : base(0, Target.Any ) {}
 
 	public override async Task<object> GetTargetCtx( string powerName, SelfCtx ctx, TargetingPowerType powerType ) {
 

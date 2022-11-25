@@ -1,3 +1,8 @@
+
+! Fix Bringer Test
+! Make sure we aren't creating Actions and throwing them away-BindMyPower
+! Investigate Terrain_Mapper
+
 ICalcRange / Spirit.RangeCalc
 	implemented by: 
 		DefaultRangeCalculator
@@ -17,7 +22,8 @@ ICalcRange / Spirit.RangeCalc
 		PerilsOfTheDeepestIsland
 		MistsShiftAndFlow
 		BoundPresence.SelectDestinationWithinRange (handles BOTH)
-			UnrelentingGrowth  (should these 2 be promoted to PlaceWithin?)
+			UnleashATorent
+			UnrelentingGrowth
 			BlazingRenewal
 			PlaceWithin
 				GiftOfProliferation
@@ -39,10 +45,7 @@ ICalcSource / Spirit.SourceCalc
 Spirit.TargetsSpace
 	called from:
 		TargetSpaceAttribute - Yes
-		(??? what is different between these and BoundPresence.SelectDestination??? )
-		UnleashATorrentOfTheSelfsOwnEssence - Yes
 		CarapadedLands - Yes
-		PeaceOfTheNighttimeSky - Yes
 	changed by:
 		Shadows
 		ShroudOfSilentMist
@@ -50,20 +53,8 @@ Spirit.TargetsSpace
 		Should *Only* be used for Targetting a Power because Shadows special rule.
 		If we don't care about paying $, could replace this override with a custom CalcRange
 	*** Issue ***
-		Shouldn't be used by UnleashATorent, CarapaddedLands or PeaceOfThenightime sky
-
-
-
-
-
-
-
-
-
-
-
-
-
+		Shouldn't be used by:
+			CarapaddedLands
 
 
 
