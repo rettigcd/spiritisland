@@ -15,7 +15,7 @@ public class PerilsOfTheDeepestIsland {
 		var options = ctx.Self.PowerRangeCalc.GetTargetOptionsFromKnownSource( ctx,
 			TargetingPowerType.PowerCard,
 			new SpaceState[] { ctx.Tokens },
-			new TargetCriteria( 1, Target.Any )
+			new TargetCriteria( 1 )
 		);
 
 		var spaceCtx = await ctx.SelectSpace("Add beast", options);

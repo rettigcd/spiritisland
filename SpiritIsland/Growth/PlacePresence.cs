@@ -2,30 +2,27 @@
 
 public class PlacePresence : GrowthActionFactory {
 
-	public int Range { get; }
-	public string FilterEnum { get; }
-
-	public override string Name {get;}
-
 	#region constructors
 
-	public PlacePresence( int range ){
-		this.Range = range;
-		FilterEnum = Target.Any;
+	public PlacePresence( int range ) {
+		targetCriteria = new TargetCriteria( range );
 		Name = $"PlacePresence({range})";
 	}
 
-	public PlacePresence(
-		int range,
-		string filterEnum
-	) {
-		this.Range = range;
-		this.FilterEnum = filterEnum;
+	public PlacePresence( int range, string filterEnum ) {
+		this.targetCriteria = new TargetCriteria( range, filterEnum );
 		Name = $"PlacePresence({range},{filterEnum})";
 	}
 
 	#endregion
 
-	public override Task ActivateAsync( SelfCtx ctx ) => ctx.Presence.PlaceWithin( Range, FilterEnum, TargetingPowerType.None );
+	public int Range => targetCriteria.Range;
+	public string FilterEnum => targetCriteria.Filter;
+
+	public override string Name {get;}
+
+	public override Task ActivateAsync( SelfCtx ctx ) => ctx.Presence.PlaceWithin( targetCriteria, TargetingPowerType.None );
+
+	readonly TargetCriteria targetCriteria;
 
 }

@@ -39,9 +39,9 @@ public class BoundPresence : IKnowSpiritLocations {
 
 	/// <summary> Selects: (Source then Destination) for placing presence </summary>
 	/// <remarks> Called from normal PlacePresence Growth + Gift of Proliferation. </remarks>
-	public async Task<(IOption,Space)> PlaceWithin( int range, string filterEnum, TargetingPowerType targetingPowerType ) {
+	public async Task<(IOption,Space)> PlaceWithin( TargetCriteria targetCriteria, TargetingPowerType targetingPowerType ) {
 		IOption from = await SelectSource();
-		Space to = await SelectDestinationWithinRange( range, filterEnum, targetingPowerType );
+		Space to = await SelectDestinationWithinRange( targetCriteria, targetingPowerType );
 		await ctx.Self.Presence.Place( from, to, ctx.GameState );
 		return(from, to);
 	}
@@ -102,12 +102,12 @@ public class BoundPresence : IKnowSpiritLocations {
 	/// None => standard ranging 
 	/// Innate/PowerCard => power ranging  + Passes to PowerRanging
 	/// </param>
-	public async Task<Space> SelectDestinationWithinRange( int range, string filterEnum, TargetingPowerType targetingPowerType ) {
-		var options = FindSpacesWithinRange( range, filterEnum, targetingPowerType );
+	public async Task<Space> SelectDestinationWithinRange( TargetCriteria targetCriteria, TargetingPowerType targetingPowerType ) {
+		var options = FindSpacesWithinRange( targetCriteria, targetingPowerType );
 		return await ctx.Decision( Select.Space.ToPlacePresence( options, Present.Always ) );
 	}
 
-	public IEnumerable<Space> FindSpacesWithinRange( int range, string filterEnum, TargetingPowerType targetingPowerType ) {
+	public IEnumerable<Space> FindSpacesWithinRange( TargetCriteria targetCriteria, TargetingPowerType targetingPowerType ) {
 		var rangeCalculator = targetingPowerType switch {
 			TargetingPowerType.None => DefaultRangeCalculator.Singleton,
 			TargetingPowerType.Innate => ctx.Self.PowerRangeCalc,
@@ -116,7 +116,7 @@ public class BoundPresence : IKnowSpiritLocations {
 		};
 
 		var options = rangeCalculator
-			.GetTargetOptionsFromKnownSource( ctx, targetingPowerType, SpaceStates, new TargetCriteria( range, filterEnum ) )
+			.GetTargetOptionsFromKnownSource( ctx, targetingPowerType, SpaceStates, targetCriteria )
 			.Where( CanBePlacedOn );
 		return options;
 	}
