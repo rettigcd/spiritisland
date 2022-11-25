@@ -103,6 +103,11 @@ public class BoundPresence : IKnowSpiritLocations {
 	/// Innate/PowerCard => power ranging  + Passes to PowerRanging
 	/// </param>
 	public async Task<Space> SelectDestinationWithinRange( int range, string filterEnum, TargetingPowerType targetingPowerType ) {
+		var options = FindSpacesWithinRange( range, filterEnum, targetingPowerType );
+		return await ctx.Decision( Select.Space.ToPlacePresence( options, Present.Always ) );
+	}
+
+	public IEnumerable<Space> FindSpacesWithinRange( int range, string filterEnum, TargetingPowerType targetingPowerType ) {
 		var rangeCalculator = targetingPowerType switch {
 			TargetingPowerType.None => DefaultRangeCalculator.Singleton,
 			TargetingPowerType.Innate => ctx.Self.PowerRangeCalc,
@@ -113,7 +118,7 @@ public class BoundPresence : IKnowSpiritLocations {
 		var options = rangeCalculator
 			.GetTargetOptionsFromKnownSource( ctx, targetingPowerType, SpaceStates, new TargetCriteria( range, filterEnum ) )
 			.Where( CanBePlacedOn );
-		return await ctx.Decision( Select.Space.ToPlacePresence( options, Present.Always ) );
+		return options;
 	}
 
 	#endregion

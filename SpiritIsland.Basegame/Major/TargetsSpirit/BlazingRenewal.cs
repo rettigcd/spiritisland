@@ -9,12 +9,13 @@ public class BlazingRenewal {
 
 		if( ctx.Other.Presence.Destroyed == 0 ) return;
 
+		// target spirit adds 2 of their destroyed presence
 		// into a single land, up to range 2 from your presence.
-		// Jonah says: it is the originators power and range AND DECISION, not the targets
-		// Querki says: Target makes the decision
-		// Jonah's version uses .SelectDestinationWithinRange which binds the source presence to the decision maker so this is simpler.
 
-		var space = await ctx.Presence.SelectDestinationWithinRange(2,Target.Any,TargetingPowerType.PowerCard);
+		// A Range extender effects the "Spirit's Actions".  (so Originating spirit's range determines which spaces)
+		var targetOptions = ctx.Presence.FindSpacesWithinRange(2,Target.Any,TargetingPowerType.PowerCard);
+		// Jonah says Originating Spirit's decision.  However, Querki says: Target Spirit makes the decision.
+		var space = await ctx.OtherCtx.Decision( Select.Space.ToPlacePresence( targetOptions, Present.Always ) );
 
 		// target spirit adds 2 of their destroyed presence
 		await ctx.OtherCtx
