@@ -39,9 +39,9 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
 		// Place presence on highest numbered land with dahan
-		Presence.PlaceOn( gs.Tokens[board.Spaces.Where(s=>gs.Tokens[s].Dahan.Any).Last()] );
+		Presence.Adjust( gs.Tokens[board.Spaces.Where(s=>gs.Tokens[s].Dahan.Any).Last()], 1 );
 		// and in land #4
-		Presence.PlaceOn( gs.Tokens[board[4]] );
+		Presence.Adjust( gs.Tokens[board[4]], 1 );
 
 	}
 
@@ -77,7 +77,8 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 		await ctx.Presence.Destroy( space, DestoryPresenceCause.SpiritPower );
 	}
 
-	public override SelfCtx BindMyPower( GameState gameState ) => new TricksterCtx(this,gameState,Guid.NewGuid());
+	public override SelfCtx BindMyPower( GameState gameState, Guid actionId=default ) 
+		=> new TricksterCtx(this,gameState,actionId!=default?actionId:Guid.NewGuid());
 
 }
 
@@ -114,10 +115,11 @@ public class TricksterSpaceCtx : TargetSpaceCtx {
 public class TricksterBlight : BlightTokenBinding {
 
 	readonly TricksterSpaceCtx ctx;
-	readonly GrinningTricksterStirsUpTrouble trickster;  // !!!!
+	readonly GrinningTricksterStirsUpTrouble trickster;
 
 	public TricksterBlight( TricksterSpaceCtx ctx, Guid actionId ) :base( ctx.Tokens, actionId ) {
 		this.ctx = ctx;
+		trickster = (GrinningTricksterStirsUpTrouble)ctx.Self;
 	}
 
 	public override async Task Remove( int count, RemoveReason reason = RemoveReason.Removed ) {

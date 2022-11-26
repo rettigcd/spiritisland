@@ -55,9 +55,9 @@ public class ShroudOfSilentMist : Spirit {
 
 		// Place presence in:
 		// (a) Highest # mountains,
-		Presence.PlaceOn(gameState.Tokens[board.Spaces.Where(s=>s.IsMountain).Last()]);
+		Presence.Adjust(gameState.Tokens[board.Spaces.Where(s=>s.IsMountain).Last()], 1);
 		// (b) highest # wetlands
-		Presence.PlaceOn(gameState.Tokens[board.Spaces.Where(s=>s.IsWetland).Last()]);
+		Presence.Adjust(gameState.Tokens[board.Spaces.Where(s=>s.IsWetland).Last()], 1);
 
 		gameState.TimePasses_WholeGame += GameState_TimePasses_WholeGame;
 	}
@@ -69,7 +69,7 @@ public class ShroudOfSilentMist : Spirit {
 			.Any( i=>i.RemainingHealth<i.FullHealth );
 
 		// During Time Passes:
-		int myLandsWithDamagedInvaders = BindMyPower(gs).Presence.Spaces.Count( SpaceHasDamagedInvaders );
+		int myLandsWithDamagedInvaders = new ReadOnlyBoundPresence( this, gs, gs.Island.Terrain ).Spaces.Count( SpaceHasDamagedInvaders );
 
 		// 1 fear (max 5) per land of yours with Damaged Invaders.
 		gs.Fear.AddDirect(new FearArgs { FromDestroyedInvaders = false, count = Math.Min(5,myLandsWithDamagedInvaders) } );
@@ -107,13 +107,16 @@ public class ShroudOfSilentMist : Spirit {
 	#endregion
 
 	public override async Task<Space> TargetsSpace( 
+
 		TargetingPowerType powerType, 
-		GameState gameState, 
-		string prompt, 
+		SelfCtx ctx, // contains ActionId for this action, so we can move presence as part of targetting
+
+		string prompt,
+
 		TargetSourceCriteria sourceCriteria, 
 		params TargetCriteria[] targetCriteria
 	) {
-		var x = new MistsShiftAndFlow(this,gameState,prompt,sourceCriteria,targetCriteria,powerType);
+		var x = new MistsShiftAndFlow(ctx,prompt,sourceCriteria,targetCriteria,powerType);
 		return (await x.TargetAndFlow()).Space;
 	}
 

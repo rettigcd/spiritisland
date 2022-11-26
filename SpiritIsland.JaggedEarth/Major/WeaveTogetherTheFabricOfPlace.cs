@@ -52,14 +52,15 @@ public class WeaveTogetherTheFabricOfPlace {
 			removeSpace.Restore();
 
 			// divide pieces as you wish.
-			await DistributePresence( space, other, gs );
-			await DistributeTokens( originatorCtx, space, other, gs );
+			Guid actionId = Guid.NewGuid();
+			await DistributePresence( space, other, gs, actionId );
+			await DistributeTokens( originatorCtx, space, other, gs, actionId );
 		});
 
 		return multi;
 	}
 
-	static async Task DistributeTokens( SelfCtx ctx, Space space, Space other, GameState gs ) {
+	static async Task DistributeTokens( SelfCtx ctx, Space space, Space other, GameState gs, Guid actionId ) {
 		// Distribute Tokens (All of them are considered moved.)
 		// !!! not counting unmoved tokens as moved li
 		var srcTokens = gs.Tokens[space];
@@ -70,16 +71,15 @@ public class WeaveTogetherTheFabricOfPlace {
 		}
 	}
 
-	static async Task DistributePresence( Space space, Space other, GameState gs ) {
+	static async Task DistributePresence( Space space, Space other, GameState gs, Guid actionId ) {
 		var dstOptions = new[] { gs.Tokens[other] };
 		var srcTokens = gs.Tokens[space];
 		foreach(var spirit in gs.Spirits) {
 			int count = spirit.Presence.CountOn( srcTokens );
 			while(count > 0) {
-				var spiritCtx = spirit.BindMyPower( gs );
-				var dst = await spiritCtx.Decision( Select.Space.ForAdjacent( "Distribute preseence to:", space, Select.AdjacentDirection.Outgoing, dstOptions, Present.Done ) );
+				var dst = await spirit.Action.Decision( Select.Space.ForAdjacent( "Distribute preseence to:", space, Select.AdjacentDirection.Outgoing, dstOptions, Present.Done ) );
 				if(dst == null) break;
-				spiritCtx.Presence.Move( space, other );
+				await new BoundPresence( spirit, gs, gs.Island.Terrain_ForPower, actionId ).Move( space, other );
 				--count;
 			}
 		}

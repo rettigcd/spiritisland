@@ -30,7 +30,7 @@ public class ExploreEventArgs {
 		_skipped.AddRange(SpacesMatchingCards);
 	}
 
-	public IEnumerable<SpaceState> WillExplore( GameState gs ) {
+	public IEnumerable<SpaceState> WillExplore( GameState _ ) {
 		return ExploreRoutes
 			.Where( rt => rt.IsValid )
 			.Select( rt => rt.Destination )

@@ -38,7 +38,7 @@ public class FlowingAndSilentFormsDartBy {
 			if( space == this.protectedSpace) {
 				var dst = await spirit.Action.Decision(new Select.Space("Instead of destroying, push presence to:", gs.Tokens[space].Adjacent.Select(x=>x.Space),Present.Done));
 				if(dst != null) {
-					presence.Move(space,dst,gs);
+					await presence.Move(space,dst,gs, actionId);
 					return;
 				}
 			}
@@ -59,7 +59,7 @@ public class FlowingAndSilentFormsDartBy {
 		Spirit other = ctx.GameState.Spirits.Length == 1 ? ctx.Self
 			: await ctx.Decision( new Select.Spirit( "Flowing and Silent Forms Dart By", nearbySpirits ) );
 		// Pick spot
-		var source = await ctx.Decision( Select.DeployedPresence.Gather("Gather presence", ctx.Space, adj.Intersect(other.BindMyPower(ctx.GameState).Presence.SpaceStates )) );
+		var source = await ctx.Decision( Select.DeployedPresence.Gather("Gather presence", ctx.Space, adj.Intersect(new ReadOnlyBoundPresence(other, ctx.GameState).SpaceStates )) );
 		if(source == null) return;
 		// # to move
 		int numToMove = (other.Presence.CountOn(ctx.GameState.Tokens[source]) > 1 && await ctx.Self.UserSelectsFirstText("# of presence to gather", "2", "1"))
@@ -71,7 +71,7 @@ public class FlowingAndSilentFormsDartBy {
 
 		// move
 		while(numToMove-->0)
-			other.Presence.Move(source,ctx.Space,ctx.GameState);
+			await ctx.NewSelf(other).Presence.Move(source,ctx.Space);
 	}
 
 }

@@ -33,15 +33,16 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 		[Theory]
 		[InlineData( false, "A1,A2" )]
 		[InlineData( true, "A0,A1,A2" )]
-		public void TargettingOceanAsWetLand(bool hasOcean,string expectedOptions ) {
+		public async Task TargettingOceanAsWetLand(bool hasOcean,string expectedOptions ) {
 			var gs = GetGame( hasOcean );
 			gs.Phase = Phase.Fast;
 
-			river.BindMyPower(gs).Presence.Move( board[5], board[2] ); // move it to A2
-			Assert_Options( "A2", river.BindMyPower(gs).Presence.Spaces, "river starting presence" );
+			var ctx = river.BindMyPower( gs ); // correct
+			await ctx.Presence.Move( board[5], board[2] ); // move it to A2
+			Assert_Options( "A2", ctx.Presence.Spaces, "river starting presence" );
 
 			// Talons ofLightning - Range 1
-			_ = PowerCard.For<TalonsOfLightning>().ActivateAsync( river.BindMyPower( gs ) );
+			_ = PowerCard.For<TalonsOfLightning>().ActivateAsync( ctx ); // reusing Action
 
 			Assert_Options( expectedOptions, river.Action.GetCurrent().Options, hasOcean ? "include ocean" : "exclude ocean" );
 

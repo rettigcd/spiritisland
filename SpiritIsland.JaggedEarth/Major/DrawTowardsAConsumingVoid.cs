@@ -48,7 +48,7 @@ public class DrawTowardsAConsumingVoid {
 			var spiritsInSpace = ctx.GameState.Spirits.Where( s => s.Presence.IsOn( tokenCounts ) ).ToArray();
 			if(spiritsInSpace.Length > 0) {
 				var spiritToGather = await ctx.Decision( new Select.Spirit( Name, spiritsInSpace, Present.AutoSelectSingle ) ); // !!! switch to Gather Presence when we can support multiple spirits
-				ctx.NewSelf(spiritToGather).Presence.Move( adj, ctx.Space );
+				await ctx.NewSelf(spiritToGather).Presence.Move( adj, ctx.Space );
 			}
 		}
 

@@ -13,6 +13,7 @@ public class ReadOnlyBoundPresence : IKnowSpiritLocations {
 		_gameState = gameState;
 		_terrainMapper = terrainMapper;
 	}
+
 	/// <summary> Constructs a ReadOnlyBoundPresence for POWER </summary>
 	public ReadOnlyBoundPresence( Spirit self, GameState gameState ) {
 		_self = self;
@@ -54,7 +55,7 @@ public class ReadOnlyBoundPresence : IKnowSpiritLocations {
 		=> _self.Action.Decision( Select.DeployedPresence.All( prompt, this, Present.Always ) );
 
 	public Task<Space> SelectSacredSite( string prompt )
-		=> _self.Action.Decision( Select.DeployedPresence.SacredSites( prompt, _gameState, _self, _terrainMapper, Present.Always ) );
+		=> _self.Action.Decision( Select.DeployedPresence.SacredSites( prompt, this, Present.Always ) );
 
 	/// <summary>Selects a Space within a range of spirits Presence</summary>
 	/// <param name="targetingPowerType">
@@ -84,26 +85,30 @@ public class BoundPresence : ReadOnlyBoundPresence {
 	public BoundPresence(SelfCtx ctx):base(ctx) { 
 		_actionId = ctx.CurrentActionId;
 	}
+	public BoundPresence( Spirit self, GameState gs, TerrainMapper terrainMapper, Guid actionId ) : base( self, gs, terrainMapper ) {
+		_actionId = actionId;
+	}
 
-	readonly Guid _actionId;
+	readonly protected Guid _actionId;
 
 	#endregion
 
-	public void Move( Space from, Space to ) => _inner.Move(from,to, _gameState ); // !!! should have an ActionID
-	public void PlaceOn( Space space ) => _inner.PlaceOn( _gameState.Tokens[space] ); // !!! this should take an action ID
+	public Task Move( Space from, Space to ) => _inner.Move(from,to, _gameState, _actionId );
+	public Task PlaceOn( Space space ) => _inner.PlaceOn( _gameState.Tokens[space], _actionId );
 	public Task Destroy( Space space, DestoryPresenceCause actionType ) => _inner.Destroy( space, _gameState, actionType, _actionId );
 	public Task RemoveFrom( Space space ) => _inner.RemoveFrom( space, _gameState ); // Generally used for Replacing, !!! should have an Action ID
+	public Task Place( IOption from, Space to) => _inner.Place(from,to,_gameState,_actionId);
 
 
-	// !!! should have an action ID
-	public async Task<(Space, Space)> PushUpTo1() {
+		// !!! should have an action ID
+		public async Task<(Space, Space)> PushUpTo1() {
 		// Select source
 		var source = await _self.Action.Decision( Select.DeployedPresence.ToPush( this ) );
 		if(source == null) return (null, null);
 
 		// Select destination
 		var destination = await _self.Action.Decision( Select.Space.PushPresence( source, _gameState.Tokens[source].Adjacent, Present.Always ) );
-		Move( source, destination );
+		await Move( source, destination );
 		return (source, destination);
 	}
 
@@ -113,7 +118,7 @@ public class BoundPresence : ReadOnlyBoundPresence {
 	public async Task<(IOption,Space)> PlaceWithin( TargetCriteria targetCriteria, TargetingPowerType targetingPowerType ) {
 		IOption from = await SelectSource();
 		Space to = await SelectDestinationWithinRange( targetCriteria, targetingPowerType );
-		await _self.Presence.Place( from, to, _gameState );
+		await _self.Presence.Place( from, to, _gameState, _actionId );
 		return(from, to);
 	}
 
@@ -123,7 +128,7 @@ public class BoundPresence : ReadOnlyBoundPresence {
 	public async Task Place( params Space[] destinationOptions ) {
 		var from = await SelectSource();
 		var to = await _self.Action.Decision( Select.Space.ToPlacePresence( destinationOptions, Present.Always ) );
-		await _self.Presence.Place( from, to, _gameState );
+		await _self.Presence.Place( from, to, _gameState, _actionId );
 	}
 
 	/// !!! should Have an Action ID

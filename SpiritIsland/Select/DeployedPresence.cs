@@ -25,8 +25,8 @@ public class DeployedPresence : TypedDecision<SpiritIsland.Space>, IHaveAdjacent
 		=> new DeployedPresence( prompt, presence.SpaceStates.Where(filter), present);
 
 	/// <summary> Targets Sacred Sites </summary>
-	static public DeployedPresence SacredSites(string prompt, GameState gs, SpiritIsland.Spirit spirit, TerrainMapper mapper, Present present )
-		=> new DeployedPresence( prompt, spirit.BindMyPower(gs).Presence.SacredSites, present);
+	static public DeployedPresence SacredSites(string prompt, ReadOnlyBoundPresence presence, Present present )
+		=> new DeployedPresence( prompt, presence.SacredSites, present);
 
 
 	static public DeployedPresence Gather(string prompt, SpiritIsland.Space to, IEnumerable<SpiritIsland.SpaceState> from ) 

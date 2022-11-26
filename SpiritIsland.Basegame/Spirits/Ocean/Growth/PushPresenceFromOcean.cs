@@ -17,7 +17,7 @@ public class PushPresenceFromOcean : GrowthActionFactory {
 			var destination = await ctx.Decision( Select.Space.PushPresence( currentSource.Space, currentSource.Adjacent, Present.Always ));
 
 			// apply...
-			ctx.Presence.Move( currentSource.Space, destination );
+			await ctx.Presence.Move( currentSource.Space, destination );
 
 			// next
 			pushSpaces.RemoveAt( 0 );

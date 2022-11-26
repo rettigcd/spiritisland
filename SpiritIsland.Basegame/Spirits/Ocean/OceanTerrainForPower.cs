@@ -26,7 +26,12 @@ public class OceanTerrainForPower : TerrainMapper {
 
 	#region private
 
-	bool IsOceansOcean( Space space ) => space.IsOcean && oceanPresence.IsOnBoard( space.Board );
+	bool IsOceansOcean( Space space ) {
+		bool a = space.IsOcean;
+		bool b = oceanPresence.IsOnBoard( space.Board );
+		return a && b;
+		// return space.IsOcean && oceanPresence.IsOnBoard( space.Board );
+	}
 	readonly OceanPresence oceanPresence;
 	readonly TerrainMapper original;
 

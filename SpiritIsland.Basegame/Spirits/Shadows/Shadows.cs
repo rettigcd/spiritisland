@@ -42,28 +42,28 @@ public class Shadows : Spirit {
 	/// Overriden so we can pay 1 energy for targetting out-of-range dahan space
 	/// </summary>
 	public override async Task<Space> TargetsSpace( 
-		TargetingPowerType targettingFrom, 
-		GameState gameState, 
+		TargetingPowerType targetingPowerType, 
+		SelfCtx ctx,  // has the actual ActionId for this Action
 		string prompt, 
 		TargetSourceCriteria sourceCriteria, 
 		params TargetCriteria[] targetCriteria 
 	) {
 		// no money, do normal
 		if(Energy == 0)
-			return await base.TargetsSpace( targettingFrom, gameState, prompt, sourceCriteria, targetCriteria );
+			return await base.TargetsSpace( targetingPowerType, ctx, prompt, sourceCriteria, targetCriteria );
 
 		// find normal Targetable spaces
-		var normalSpaces = GetPowerTargetOptions( targettingFrom, gameState, sourceCriteria, targetCriteria );
+		var normalSpaces = GetPowerTargetOptions( targetingPowerType, ctx.GameState, sourceCriteria, targetCriteria );
 
 		// find dahan-only spaces that are not in targetable spaces
-		var dahanOnlySpaces = gameState.AllActiveSpaces
+		var dahanOnlySpaces = ctx.GameState.AllActiveSpaces
 			.Where( s=>s.Dahan.Any )
 			.Select( s=>s.Space )
 			.Except(normalSpaces)
 			.ToArray();
 		// no dahan-only spaces, do normal
 		if(dahanOnlySpaces.Length == 0)
-			return await base.TargetsSpace( targettingFrom , gameState, prompt, sourceCriteria, targetCriteria);
+			return await base.TargetsSpace( targetingPowerType , ctx, prompt, sourceCriteria, targetCriteria);
 
 		// append Target-Dahan option to end of list
 		List<IOption> options = normalSpaces.Cast<IOption>().ToList();
@@ -87,9 +87,8 @@ public class Shadows : Spirit {
 
 		var higestJungle = board.Spaces.Last( s=>s.IsJungle );
 
-		this.Presence.PlaceOn( gs.Tokens[higestJungle] );
-		this.Presence.PlaceOn( gs.Tokens[higestJungle] );
-		this.Presence.PlaceOn( gs.Tokens[board[5]] );
+		this.Presence.Adjust( gs.Tokens[higestJungle],2 );
+		this.Presence.Adjust( gs.Tokens[board[5]], 1 );
 	}
 
 }

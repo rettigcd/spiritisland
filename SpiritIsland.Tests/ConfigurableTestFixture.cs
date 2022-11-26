@@ -103,7 +103,7 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 	}
 	SelfCtx _selfCtx;
 
-	public TargetSpiritCtx TargetSelf => Spirit.BindMyPower( GameState ).TargetSpirit( Spirit );
+	public TargetSpiritCtx TargetSelf => SelfCtx.TargetSpirit( Spirit );
 
 	public void InitTokens( Space space, string tokenString ) {
 		var tokens = GameState.Tokens[space];

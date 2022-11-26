@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public abstract class Spirit : IOption {
+public abstract partial class Spirit : IOption {
 
 	#region constructor
 
@@ -76,103 +76,6 @@ public abstract class Spirit : IOption {
 
 	public GrowthTrack GrowthTrack { get; protected set; }
 
-	class DoGrowthClass {
-
-		#region private fields
-
-		const string PROMPT = "Select Growth";
-
-		readonly Spirit spirit;
-		readonly GameState gameState;
-		readonly IGrowthPhaseInstance inst;
-
-		GrowthOption[] growthOptions;
-		IActionFactory[] actionOptions;
-
-		Func<IActionFactory,Task> execute;
-		#endregion
-
-		public DoGrowthClass(Spirit spirit,GameState gameState) {
-			this.spirit = spirit;
-			this.gameState = gameState;
-			inst = spirit.GrowthTrack.GetInstance();
-			InitActionsForAllAvailableOptions();
-		}
-
-		public async Task Execute() {
-
-			while(HasActions) {
-				// Select
-				IActionFactory selectedAction = await spirit.Select( PROMPT, actionOptions, Present.Always );
-				// Execute
-				await execute( selectedAction );
-			}
-
-		}
-
-		async Task ExecuteRemaining( IActionFactory selectedAction ) {
-			await spirit.TakeAction( selectedAction, spirit.Bind( gameState, Guid.NewGuid() ) );
-			await InitRemainingActionsFromOption();
-		}
-
-		async Task ExecuteFirst( IActionFactory selectedAction ) {
-			// Find Growth Option
-			GrowthOption option = growthOptions.Single( o => o.GrowthActions.Contains( selectedAction ) );
-			inst.MarkAsUsed( option );
-
-			// Resolve Growth Option
-			var ctx = spirit.Bind( gameState, Guid.NewGuid() );
-
-			// Auto run the auto-runs.
-			foreach(var autoAction in option.AutoRuns)
-				await autoAction.ActivateAsync( ctx );
-
-			if(option.AutoRuns.Contains( selectedAction ))
-				// selected item was an auto-run
-				// queue up the user runs
-				foreach(GrowthActionFactory action in option.UserRuns)
-					spirit.availableActions.Add( action );
-			else {
-				// selected item was a user-run
-				// run it
-				await selectedAction.ActivateAsync( ctx );
-				// queue up all the others
-				foreach(GrowthActionFactory action in option.UserRuns)
-					if(action != selectedAction)
-						spirit.availableActions.Add( action );
-			}
-
-			// resolve actions
-			await InitRemainingActionsFromOption();
-		}
-
-		bool HasActions => actionOptions.Length > 0;
-
-		async Task InitRemainingActionsFromOption() {
-			// Combine these into a Class that executes
-			actionOptions = spirit.GetAvailableActions( Phase.Growth ).ToArray();
-			execute = ExecuteRemaining;
-
-			if(!HasActions)
-				await X();
-		}
-
-		void InitActionsForAllAvailableOptions() {
-			growthOptions = inst.RemainingOptions( spirit.Energy );
-
-			// Combine these into a Class that executes
-			actionOptions = growthOptions.SelectMany( opt => opt.GrowthActions ).ToArray();
-			execute = ExecuteFirst;
-		}
-
-		async Task X() {
-			InitActionsForAllAvailableOptions();
-			if(!HasActions)
-				await spirit.ApplyRevealedPresenceTracks( spirit.Bind( gameState, Guid.NewGuid() ) );
-		}
-
-	}
-
 	public async Task DoGrowth(GameState gameState) {
 		await new DoGrowthClass(this,gameState).Execute();
 	}
@@ -189,7 +92,7 @@ public abstract class Spirit : IOption {
 			await option.UserRuns.First().ActivateAsync( ctx );
 		} else {
 			QueueUpGrowth( option );
-			await ResolveActions( ctx );
+			await ResolveActions( gameState );
 		}
 	}
 
@@ -199,10 +102,6 @@ public abstract class Spirit : IOption {
 			AddActionFactory( action );
 	}
 
-	public Task ApplyRevealedPresenceTracks_CalledOnlyFromTests(GameState gs) {
-		var ctx = Bind( gs, Guid.NewGuid() );
-		return this.ApplyRevealedPresenceTracks(ctx);
-	}
 	protected async Task ApplyRevealedPresenceTracks( SelfCtx ctx ) {
 
 		// Energy
@@ -218,23 +117,35 @@ public abstract class Spirit : IOption {
 	public DualAsyncEvent<Spirit> EnergyCollected = new DualAsyncEvent<Spirit>();
 
 	// !!! Seems like this should be private / protected and not called from outside.
-	public async Task ResolveActions( SelfCtx ctx ) {
-		Phase speed = ctx.GameState.Phase;
-		Present present = ctx.GameState.Phase == Phase.Growth ? Present.Always : Present.Done;
 
-		while( this.GetAvailableActions( speed ).Any()
-			&& await ResolveAction( ctx.GameState.Phase, present, ctx )
+
+	// !!! ALSO - This shouldn't be a SelfCtx because that starts a new Action
+	// !!! Create the SelfCtx inside the ResolveAction method
+	public async Task ResolveActions( GameState gs ) {
+		Phase phase = gs.Phase;
+
+		while( GetAvailableActions( phase ).Any()
+			&& await ResolveAction( phase, gs )
 		) {}
 
 	}
 
-	public async Task<bool> ResolveAction( Phase speed, Present present, SelfCtx ctx ) {
+	public async Task<bool> ResolveAction( Phase phase, GameState gs ) {
+		Present present = phase == Phase.Growth ? Present.Always : Present.Done;
+
+		// Create a new Action (guid) each time we resolve an Action
+		SelfCtx ctx = phase switch {
+			Phase.Growth => Bind(gs,Guid.NewGuid()),
+			Phase.Fast or 
+			Phase.Slow => BindMyPower(gs),
+			_ => throw new InvalidOperationException(),
+		};
 
 		// -------------
 		// Select Actions to resolve
 		// -------------
-		IActionFactory[] options = this.GetAvailableActions( speed ).ToArray();
-		IActionFactory option = await this.SelectFactory( "Select " + speed + " to resolve:", options, present );
+		IActionFactory[] options = this.GetAvailableActions( phase ).ToArray();
+		IActionFactory option = await this.SelectFactory( "Select " + phase + " to resolve:", options, present );
 		if(option == null)
 			return false;
 
@@ -423,9 +334,10 @@ public abstract class Spirit : IOption {
 
 	protected abstract void InitializeInternal( Board board, GameState gameState );
 
-	public virtual SelfCtx Bind( GameState gameState, Guid actionId ) => new SelfCtx( this, gameState, (Cause)default, actionId != default ? actionId : Guid.NewGuid() );
+	public virtual SelfCtx Bind( GameState gameState, Guid actionId ) => new SelfCtx( this, gameState, (Cause)default, actionId );
 
-	public virtual SelfCtx BindMyPower( GameState gameState ) => new SelfCtx( this, gameState, Cause.MyPowers, Guid.NewGuid() );
+	public virtual SelfCtx BindMyPower( GameState gameState, Guid existingActionId = default ) 
+		=> new SelfCtx( this, gameState, Cause.MyPowers, existingActionId != default ? default : Guid.NewGuid() );
 
 	void On_TimePassed(GameState _ ) {
 		// reset cards / powers
@@ -603,13 +515,14 @@ public abstract class Spirit : IOption {
 	/// <remarks> This used as the hook for Shadow's Pay-1-to-target-land-with-dahan </remarks>
 	public virtual Task<Space> TargetsSpace( 
 		TargetingPowerType powerType,
-		GameState gameState,
+		SelfCtx ctx, // this has the new Action for this action.
 		string prompt,
 		TargetSourceCriteria sourceCriteria,
 		params TargetCriteria[] targetCriteria
 	) {
 		if(prompt == null) prompt = "Target Space.";
-		IEnumerable<Space> spaces = GetPowerTargetOptions( powerType, gameState, sourceCriteria, targetCriteria );
+		var x = ctx.GameState.Tokens[ctx.GameState.Island.Boards[0][0]];
+		IEnumerable<Space> spaces = GetPowerTargetOptions( powerType, ctx.GameState, sourceCriteria, targetCriteria );
 		return this.Action.Decision( new Select.Space( prompt, spaces, Present.Always ));
 	}
 
@@ -625,7 +538,7 @@ public abstract class Spirit : IOption {
 			new ReadOnlyBoundPresence(this, gameState), 
 			sourceCriteria,
 			gameState		// needed only for Entwined power - to get the other spirit's location
-		);
+		).ToArray();
 
 		// Convert TargetCriteria to spaces and merge (distinct) them together.
 		return targetCriteria

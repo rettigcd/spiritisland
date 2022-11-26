@@ -63,12 +63,13 @@ public class HeartOfTheWildfire : Spirit {
 	};
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
-		// Put 3 presence and 2 blight on your starting board in the hightest-numbered Sands. 
+		// in the hightest-numbered Sands on your starting board
 		var space = board.Spaces.Last(x=>x.IsSand);
-		for(int i=0;i<3;++i)
-			Presence.PlaceOn(gameState.Tokens[space]);
-
-		gameState.Tokens[space].Blight.Adjust(2); // Blight comes from the box, not the blight card
+		var spaceState = gameState.Tokens[space];
+		// Put 3 presence
+		Presence.Adjust( spaceState, 3);
+		// and 2 blight
+		spaceState.Blight.Adjust(2); // Blight comes from the box, not the blight card
 	}
 
 	class BlazingPresence : SpiritPresence {
@@ -88,15 +89,15 @@ public class HeartOfTheWildfire : Spirit {
 			) { }
 		public HeartOfTheWildfire spirit;
 
-		public override async Task Place( IOption from, Space to, GameState gs ) { 
-			await base.Place( from, to, gs );
+		public override async Task Place( IOption from, Space to, GameState gs, Guid actionId ) { 
+			await base.Place( from, to, gs, actionId );
 
 			// !!! There is a bug here somehow that after placeing the 2nd fire, track, still returned only 1 
 			// !! maybe we need to make Elements smarter so it is easier to calculate, like breaking it into:
 			//	(track elements, prepared elements, card elements)
 			int fireCount = TrackElements[Element.Fire];
 
-			var ctx = spirit.Bind( gs, Guid.NewGuid() ).Target( to );
+			var ctx = spirit.Bind( gs, actionId ).Target( to );
 			// For each fire showing, do 1 damage
 			await ctx.DamageInvaders( fireCount );
 			// if 2 fire or more are showing, add 1 blight

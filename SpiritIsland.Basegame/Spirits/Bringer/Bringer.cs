@@ -43,11 +43,11 @@ public class Bringer : Spirit {
 		// Setup: 2 presense in highest numbered sands
 		var startingIn = board.Spaces.Where(x=>x.IsSand).Last();
 		var space = gs.Tokens[startingIn];
-		Presence.PlaceOn( space );
-		Presence.PlaceOn( space );
+		Presence.Adjust( space, 2 );
 	}
 
-	public override SelfCtx BindMyPower( GameState gameState ) => new BringerCtx(this,gameState,Guid.NewGuid());
+	public override SelfCtx BindMyPower( GameState gameState, Guid actionId=default ) 
+		=> new BringerCtx(this,gameState,actionId!=default?actionId : Guid.NewGuid());
 
 }
 

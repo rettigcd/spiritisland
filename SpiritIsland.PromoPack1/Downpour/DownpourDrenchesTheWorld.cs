@@ -62,7 +62,7 @@ public class DownpourDrenchesTheWorld : Spirit, IHaveSecondaryElements {
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// 1 presence on lowest # wetlands
-		Presence.PlaceOn( gameState.Tokens[ board.Spaces.First( x => x.IsWetland ) ] );
+		Presence.Adjust( gameState.Tokens[ board.Spaces.First( x => x.IsWetland ) ], 1 );
 		gameState.TimePasses_WholeGame += _ => pourDownPower.Reset();
 
 		// !!! Fixes Terrain: ForPower, but does set any of the other Terrains

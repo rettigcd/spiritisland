@@ -13,7 +13,7 @@ public class DreamAThousandDeaths_Tests {
 		User = new VirtualUser(spirit);
 		board = Board.BuildBoardA();
 		gs = new GameState( spirit, board );
-		ctx = MakeFreshCtx();
+		ctx = MakeFreshPowerCtx();
 
 		// Disable destroying presence
 //			ctx.GameState.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
@@ -21,8 +21,9 @@ public class DreamAThousandDeaths_Tests {
 
 	}
 
-	TargetSpaceCtx MakeFreshCtx() {
-		return spirit.BindMyPower( gs).Target( board[5] );
+	TargetSpaceCtx MakeFreshPowerCtx() {
+		var ctx = spirit.BindMyPower(gs); // This is correct usage.
+		return ctx.Target( board[5] );
 	}
 
 	// 1: Raging Storm - 1 damage to each invader (slow)
@@ -94,9 +95,9 @@ public class DreamAThousandDeaths_Tests {
 
 		// When: 3 separate actinos cause 1 damage
 		async Task Run3Async() {
-			await OneDamageToEachAsync( MakeFreshCtx() );
-			await OneDamageToEachAsync( MakeFreshCtx() );
-			await OneDamageToEachAsync( MakeFreshCtx() );
+			await OneDamageToEachAsync( MakeFreshPowerCtx() );
+			await OneDamageToEachAsync( MakeFreshPowerCtx() );
+			await OneDamageToEachAsync( MakeFreshPowerCtx() );
 		}
 		_ = Run3Async();
 
@@ -114,9 +115,9 @@ public class DreamAThousandDeaths_Tests {
 
 		// When: 3 separate actinos cause 1 damage
 		// EACH power gets a fresh ctx so INVADERS can reset
-		await OneDamageToEachAsync( MakeFreshCtx() ); 
-		await OneDamageToEachAsync( MakeFreshCtx() );
-		await OneDamageToEachAsync( MakeFreshCtx() );
+		await OneDamageToEachAsync( MakeFreshPowerCtx() ); 
+		await OneDamageToEachAsync( MakeFreshPowerCtx() );
+		await OneDamageToEachAsync( MakeFreshPowerCtx() );
 
 		User.Assert_Done();
 
@@ -132,7 +133,7 @@ public class DreamAThousandDeaths_Tests {
 		ctx.Tokens.Adjust( StdTokens.City1, 1 );
 
 		// When: doing 4 points of damage
-		async Task PlayCard() { try { await FourDamage( MakeFreshCtx() ); } catch( Exception ex) {
+		async Task PlayCard() { try { await FourDamage( MakeFreshPowerCtx() ); } catch( Exception ex) {
 			_ = ex.ToString();
 		} }
 		_ = PlayCard();

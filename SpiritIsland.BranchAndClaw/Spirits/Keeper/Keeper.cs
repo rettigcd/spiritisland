@@ -37,7 +37,7 @@ public partial class Keeper : Spirit {
 		// In the highest-numbered Jungle.
 		var space = gs.Tokens[ board.Spaces.Where( x => x.IsJungle ).OrderBy( x => x.Label ).Last() ];
 		// Put 1 Presence
-		Presence.PlaceOn( space );
+		Presence.Adjust( space, 1 );
 		// 1 Wild 
 		space.Wilds.Init(1);
 	}

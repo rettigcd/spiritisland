@@ -77,7 +77,7 @@ public class SpaceStateWithPresence {
 	public SpaceState Tokens { get; }
 	public TerrainMapper TerrainMapper { get; }
 	public bool IsPresent => focusSpirit.Presence.IsOn( Tokens );
-	Spirit focusSpirit;
+	readonly Spirit focusSpirit;
 	public SpaceStateWithPresence(SpaceState spaceState, Spirit focusSpirit, TerrainMapper tm) {
 		Tokens = spaceState;
 		this.focusSpirit = focusSpirit;

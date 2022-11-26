@@ -68,12 +68,11 @@ public class FracturedDaysSplitTheSky : Spirit {
 
 		// 1 in lowest numbered land with 1 dahan
 		var space1 = gs.Tokens[ board.Spaces.First(s=>gs.Tokens[s].Dahan.Count==1) ];
-		Presence.PlaceOn( space1 );
+		Presence.Adjust( space1, 1 );
 
 		// 2 in highst numbered land without dahan
 		var space2 = gs.Tokens[ board.Spaces.Last( s => gs.Tokens[s].Dahan.Count == 0 ) ];
-		Presence.PlaceOn( space2 );
-		Presence.PlaceOn( space2 );
+		Presence.Adjust( space2, 2 );
 			
 		// up as your initial Days That Never Were cards;
 		int spiritCount = gs.Spirits.Length;

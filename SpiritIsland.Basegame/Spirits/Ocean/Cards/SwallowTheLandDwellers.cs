@@ -13,7 +13,7 @@ public class SwallowTheLandDwellers {
 		var ocean = ctx.Self as Ocean ?? ctx.GameState.Spirits.Single(x=>x is Ocean);
 
 		// find place to drown then
-		var drowningOcean = ocean.BindMyPower(ctx.GameState).Presence
+		var drowningOcean = new ReadOnlyBoundPresence( ocean, ctx.GameState )
 			.Spaces.First() // find any space the ocean has presnece
 			.Board.Ocean; // find the Ocean space on that board
 

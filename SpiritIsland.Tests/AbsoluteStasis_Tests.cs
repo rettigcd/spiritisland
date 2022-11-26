@@ -17,9 +17,9 @@ public class AbsoluteStasis_Tests {
 		cfg.GameState.Initialize();
 
 		{
-			//  When: targetting with other card
+			//  When: targeting with other card
 			Task mesmerizedTranquilityTask = PowerCard.For<MesmerizedTranquility>()
-			.ActivateAsync(cfg.SelfCtx);
+				.ActivateAsync(cfg.SelfCtx);
 			//  Then: Ocean is an option
 			mesmerizedTranquilityTask.IsCompleted.ShouldBeFalse();
 			cfg.ChoiceOptions.Select( x => x.Text ).ShouldContain( "A0" );

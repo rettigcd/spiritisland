@@ -23,7 +23,7 @@ public class GatherPresenceIntoOcean : GrowthActionFactory {
 			));
 
 			// apply...
-			ctx.Presence.Move( source, currentTarget.Space );
+			await ctx.Presence.Move( source, currentTarget.Space );
 
 			// next
 			gatherSpaces.RemoveAt( 0 );

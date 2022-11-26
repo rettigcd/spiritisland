@@ -29,7 +29,7 @@ public class SerpentWakesInPower {
 		var presence = (SerpentPresence)ctx.Self.Presence;
 		var qualifyingSpirits = presence.AbsorbedPresences.GroupBy(x=>x).Where(grp=>2<=grp.Count()).Select(grp=>grp.Key);
 		foreach(var spirit in presence.AbsorbedPresences.Distinct())
-			await spirit.Bind( ctx.GameState, ctx.CurrentActionId ).Presence.PlaceWithin(new TargetCriteria(1),TargetingPowerType.Innate);
+			await ctx.NewSelf(spirit).Presence.PlaceWithin(new TargetCriteria(1),TargetingPowerType.Innate);
 
 	}
 
@@ -44,7 +44,7 @@ public class SerpentWakesInPower {
 		var presence = (SerpentPresence)ctx.Self.Presence;
 		var qualifyingSpirits = presence.AbsorbedPresences.GroupBy(x=>x).Where(grp=>3<=grp.Count()).Select(grp=>grp.Key);
 		foreach(var spirit in presence.AbsorbedPresences.Distinct())
-			await spirit.Bind( ctx.GameState, ctx.CurrentActionId ).DrawMajor( false, 4 );
+			await ctx.NewSelf(spirit).DrawMajor( false, 4 );
 	}
 
 }

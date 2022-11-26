@@ -85,9 +85,9 @@ public class SpiritPresence {
 
 	#region Game-Play things you can do with presence
 
-	public virtual async Task Place( IOption from, Space to, GameState gs ) {
+	public virtual async Task Place( IOption from, Space to, GameState gs, Guid actionId ) {
 		await TakeFrom( from, gs );
-		await PlaceOn( gs.Tokens[to] );
+		await PlaceOn( gs.Tokens[to], actionId ); 
 	}
 
 	public async Task TakeFrom( IOption from, GameState gs ) {
@@ -125,9 +125,9 @@ public class SpiritPresence {
 			: throw new ArgumentException( "Unable to find location to restore presence" );
 	}
 
-	public void Move( Space from, Space to, GameState gs ) {
-		RemoveFrom_NoCheck( gs.Tokens[from] );
-		PlaceOn( gs.Tokens[to] );
+	public async Task Move( Space from, Space to, GameState gs, Guid actionId ) {
+		await RemoveFrom_NoCheck( gs.Tokens[from] );
+		await PlaceOn( gs.Tokens[to], actionId );
 	}
 
 	public virtual async Task Destroy( Space space, GameState gs, DestoryPresenceCause actionType, Guid actionId, AddReason blightAddedReason = AddReason.None ) {
@@ -214,11 +214,10 @@ public class SpiritPresence {
 
 	#region Is this Setup or Game play?
 
-	public virtual Task PlaceOn( SpaceState space ) {
-		space.Adjust(presenceToken,1);
-		return Task.CompletedTask;
+	public async virtual Task PlaceOn( SpaceState space, Guid actionId ) {
+		await space.Add(presenceToken,1,actionId);
 	}
-	public void Adjust( SpaceState space, int count ) {
+	public virtual void Adjust( SpaceState space, int count ) {
 		space.Adjust( presenceToken, count );
 	}
 
@@ -236,7 +235,7 @@ public class SpiritPresence {
 		return Task.CompletedTask;
 	}
 
-	UniqueToken presenceToken = new UniqueToken("Presence",TokenCategory.Presence);
+	readonly protected UniqueToken presenceToken = new UniqueToken("Presence",TokenCategory.Presence);
 
 	#region Memento
 
@@ -257,7 +256,6 @@ public class SpiritPresence {
 			src.Destroyed = destroyed;
 			src.EnergyPerTurn = energyPerTurn;
 		}
-		readonly Space[] placed;
 		readonly IMemento<IPresenceTrack> energy;
 		readonly IMemento<IPresenceTrack> cardPlays;
 		readonly int destroyed;

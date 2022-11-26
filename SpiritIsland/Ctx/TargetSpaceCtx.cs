@@ -367,7 +367,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 	public async Task PlacePresenceHere() {
 		var from = await Presence.SelectSource();
-		await Self.Presence.Place( from, Space, GameState );
+		await Self.Presence.Place( from, Space, GameState, CurrentActionId ); //!! use Bounded presence instead
 	}
 
 	#endregion

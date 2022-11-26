@@ -108,11 +108,11 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 	public void DamagedDahanComingDifferentLands() {
 		// Given: spirit has 1 presence
 		Space target = spirit.Presence.Placed(gameState).Single().Space;
-		var ctx = spirit.BindMyPower( gameState ).Target(target);
 
 		//   And: neighbors have 1 damaged dahan each 
 		const int dahanToGather = 2;
-		var neighbors = ctx.Adjacent.ToArray();
+		var ctx = spirit.BindMyPower( gameState ).Target( target );
+		Space[] neighbors = ctx.Adjacent.ToArray();
 		for(int neighborIndex = 0; neighborIndex<dahanToGather; ++neighborIndex)
 			ctx.Target(neighbors[neighborIndex]).Tokens.Init( StdTokens.Dahan1, 1 );
 
@@ -132,7 +132,7 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 	public void TwoPresenceSpaces(){
 		// Given: spirit has presence on A4 && A8
 		spirit.Presence.PlaceOn(board[8], gameState);
-		var targetOptions = spirit.BindMyPower(gameState).Presence.Spaces.ToArray();
+		var targetOptions = new ReadOnlyBoundPresence( spirit, gameState).Spaces.ToArray();
 		Assert.Equal(2,targetOptions.Length);
 
 		//   And: 2 dahan in A5 (touches both)
@@ -153,7 +153,7 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 	[Fact]
 	public void TwoDahanOnPresenceSpace(){
 		// Given: spirit has presence on A4
-		var targetOptions = spirit.BindMyPower(gameState).Presence.Spaces.ToArray();
+		var targetOptions = new ReadOnlyBoundPresence( spirit, gameState).Spaces.ToArray();
 		Assert.Single( targetOptions);
 
 		//   And: 2 dahan in A5 (touches both)
@@ -172,11 +172,11 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 	public void DahanCountIncludesDamaged() {
 		// This is a nice test, but it is too close to the implementation.  Refactoring might not use ctx.DahanCount
 		var space = gameState.Island.Boards[0][4];
-		var ctx = spirit.Bind( gameState, Guid.NewGuid() ).Target(space);
-		var dahan = ctx.Tokens.Dahan;
-		ctx.Tokens.Init( StdTokens.Dahan1, 5 );
+		var tokens = gameState.Tokens[space];
+		var dahan = tokens.Dahan;
+		tokens.Init( StdTokens.Dahan1, 5 );
 		dahan.Init(7);
-		ctx.Dahan.Count.ShouldBe(12);
+		tokens.Dahan.Count.ShouldBe(12);
 	}
 
 	void Given_AddDahan( int startingCount, Space target ) {

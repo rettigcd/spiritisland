@@ -37,8 +37,8 @@ public static partial class Cmd {
 		=> new GameCmd(
 			"In each land, " + action.Description, 
 			async gs => {
-				var actionId = Guid.NewGuid();
 				for(int i = 0; i < gs.Island.Boards.Length; ++i) {
+					var actionId = Guid.NewGuid(); // different action on each space
 					var decisionMaker = gs.Spirits[i < gs.Spirits.Length ? i : 0].Bind( gs, actionId ); // use Head spirit for extra board
 					var board = gs.Island.Boards[i];
 					var spaces = board.Spaces

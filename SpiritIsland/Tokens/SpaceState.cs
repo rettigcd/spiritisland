@@ -301,7 +301,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 public class BoardState {
 	public Board Board { get; }
-	GameState gameState;
+	readonly GameState gameState;
 
 	public BoardState(Board board, GameState gameState) {
 		this.Board = board;

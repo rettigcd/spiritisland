@@ -27,7 +27,6 @@ public class UntendedLandCrumbles : BlightCardBase {
 			var actionId = Guid.NewGuid();
 			while(remaining > 0) {
 				var spirit = spirits[(spiritIndex++)%spirits.Length];
-				var x = spirit.Bind( ctx.GameState, actionId );
 				var contribution = await spirit.SelectNumber("Pay energy towards remaining "+remaining
 					,System.Math.Min(remaining,spirit.Energy)
 					,0
@@ -42,7 +41,7 @@ public class UntendedLandCrumbles : BlightCardBase {
 		"Jointly destroy 1 presence",
 		async ctx => {
 			var spiritOptions = ctx.GameState.Spirits
-				.Where(s=>s.BindMyPower( ctx.GameState ).Presence.Spaces.Any(s=>s.Board == ctx.Board))
+				.Where(s => new ReadOnlyBoundPresence( s, ctx.GameState ).Spaces.Any(s=>s.Board == ctx.Board))
 				.ToArray();
 			if(spiritOptions.Length==0) return;
 			var spirit = await ctx.Decision(new Select.Spirit("Destroy 1 presence",spiritOptions));
@@ -50,6 +49,6 @@ public class UntendedLandCrumbles : BlightCardBase {
 				.Presence
 				.DestroyOneFromAnywhere(DestoryPresenceCause.BlightedIsland);
 		}
-	).Matches(ctx => ctx.GameState.Spirits.SelectMany(s=>s.BindMyPower(ctx.GameState).Presence.Spaces ).Any(s=>s.Board == ctx.Board));
+	).Matches(ctx => ctx.GameState.Spirits.SelectMany(s=>new ReadOnlyBoundPresence(s,ctx.GameState).Spaces ).Any(s=>s.Board == ctx.Board));
 
 }

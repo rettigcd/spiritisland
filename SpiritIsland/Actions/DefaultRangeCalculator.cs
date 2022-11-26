@@ -54,12 +54,21 @@ public class DefaultRangeCalculator : ICalcRange {
 		TargetCriteria targetCriteria
 
 	) {
-		return sources
+		//return sources
+		//	.SelectMany( x => x.Range( targetCriteria.Range ) )
+		//	.Distinct()
+		//	.Where( terrainMapper.IsInPlay ) // !important
+		//	.Where( SpaceFilterMap.Get( targetCriteria.Filter, self, terrainMapper ) )
+		//	.Select(x=>x.Space);
+
+		var a = sources
 			.SelectMany( x => x.Range( targetCriteria.Range ) )
 			.Distinct()
-			.Where( terrainMapper.IsInPlay ) // !important
-			.Where( SpaceFilterMap.Get( targetCriteria.Filter, self, terrainMapper ) )
-			.Select(x=>x.Space); 
+			.ToArray();
+		var b = a.Where( terrainMapper.IsInPlay ).ToArray(); // !important
+		var c = b.Where( SpaceFilterMap.Get( targetCriteria.Filter, self, terrainMapper ) ).ToArray();
+		return c.Select( x => x.Space );
+
 	}
 	static public readonly ICalcRange Singleton = new DefaultRangeCalculator();
 }

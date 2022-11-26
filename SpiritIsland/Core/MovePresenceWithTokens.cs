@@ -26,7 +26,7 @@ public class MovePresenceWithTokens {
 		// If we used 'Push', user would click on Destination instead of Source
 		var source = await spirit.Action.Decision( Select.DeployedPresence.Gather("Move presence with "+ args.Class.Label+"?", args.AddedTo.Space, new SpaceState[]{ args.RemovedFrom } ) );
 		if( source != null )
-			spirit.Bind( args.GameState, args.ActionId ).Presence.Move( args.RemovedFrom.Space, args.AddedTo.Space );
+			await spirit.Bind( args.GameState, args.ActionId ).Presence.Move( args.RemovedFrom.Space, args.AddedTo.Space );
 	}
 
 }

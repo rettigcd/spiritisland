@@ -32,8 +32,6 @@ public sealed class PowerCard : IFlexibleSpeedActionFactory, IRecordLastTarget {
 
 	public async Task ActivateAsync( SelfCtx ctx ) {
 		// Don't check speed here.  Slow card may have been made fast (Lightning's Swift Strike)
-		// if(!await SpeedBehavior.IsActiveFor( ctx.GameState.Phase, ctx.Self ))
-			// throw new InvalidOperationException( $"can't run PowerCard [{Name}] at this speeed" );
 
 		await ActivateInnerAsync( ctx );
 		if(repeatAttr != null) {
