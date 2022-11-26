@@ -4,7 +4,7 @@ public class AllThingsWeaken : BlightCardBase {
 
 	public AllThingsWeaken():base("All Things Weaken",3) {}
 
-	public override ActionOption<GameState> Immediately => 
+	public override DecisionOption<GameState> Immediately => 
 		// Ongoing, starting next turn:
 		Cmd.AtTheStartOfNextRound( Cmd.Multiple<GameState>(
 			// Invaders and Dahan have -1 Health (min, 1).
@@ -15,10 +15,10 @@ public class AllThingsWeaken : BlightCardBase {
 			AddBlightDestroyesPresence
 		));
 
-	static ActionOption<GameState> ReduceTokenHealthBy1 => 
+	static DecisionOption<GameState> ReduceTokenHealthBy1 => 
 
 		// Invaders and Dahan have -1 Health (min, 1).
-		new ActionOption<GameState>("Invaders have -1 Health.", gs => {
+		new DecisionOption<GameState>("Invaders have -1 Health.", gs => {
 
 			// change the defaults
 			var defaults = gs.Tokens.TokenDefaults;
@@ -42,12 +42,12 @@ public class AllThingsWeaken : BlightCardBase {
 			}
 		});
 
-	static ActionOption<GameState> TakeBlightOn1LessDamage => new ActionOption<GameState>(
+	static DecisionOption<GameState> TakeBlightOn1LessDamage => new DecisionOption<GameState>(
 		"The land takes blight on 1 less Damage.", 
 		gs => { gs.DamageToBlightLand = 1; }
 	);
 
-	static ActionOption<GameState> AddBlightDestroyesPresence => new ActionOption<GameState>(
+	static DecisionOption<GameState> AddBlightDestroyesPresence => new DecisionOption<GameState>(
 		"When you add blight, it Destroys all presence/beast in that land and 1 presence (total) in an adjacent land.", 
 		gs => {
 			// !!! Implement this

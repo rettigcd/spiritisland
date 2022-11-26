@@ -4,9 +4,9 @@ public class AidFromLesserSpirits : BlightCardBase {
 
 	public AidFromLesserSpirits():base("Aid from Lesser Spirits", 2 ) { }
 
-	public override ActionOption<GameState> Immediately => 
+	public override DecisionOption<GameState> Immediately => 
 
-		new ActionOption<GameState>("Distribute N+1 cards to players that can play for free each round.", async gs => {
+		new DecisionOption<GameState>("Distribute N+1 cards to players that can play for free each round.", async gs => {
 			// Draw 1 minor power card per player plus 1 more.
 			var cards = gs.MinorCards.Flip(gs.Spirits.Length+1);
 			foreach(var spirit in gs.Spirits ){

@@ -34,7 +34,7 @@ public class TheologicalStrife : IFearOptions {
 		await Cmd.InEachLand( StrifedRavage.StrifedInvadersDealsDamageToOtherInvaders, tokens=>tokens.HasStrife ).Execute( ctx.GameState );
 	}
 
-	static public ActionOption<GameState> EachPlayerAddsStrifeInALandWithPresence
+	static public DecisionOption<GameState> EachPlayerAddsStrifeInALandWithPresence
 		=> Cmd.EachSpirit( Cmd.AddStrife(1).In( spaceCtx => spaceCtx.Presence.IsHere && !spaceCtx.Tokens.InStasis, "a land with presence") );
 
 }

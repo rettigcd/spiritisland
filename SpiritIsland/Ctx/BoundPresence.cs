@@ -47,15 +47,15 @@ public class ReadOnlyBoundPresence : IKnowSpiritLocations {
 	/// <summary> Tries Presence Tracks first, then fails over to placed-presence on Island </summary>
 	public async Task<IOption> SelectSource( string actionPhrase = "place" ) {
 		string prompt = $"Select Presence to {actionPhrase}.";
-		return (IOption)await _self.Action.Decision( Select.TrackSlot.ToReveal( prompt, _self, _gameState ) )
-			?? (IOption)await _self.Action.Decision( Select.DeployedPresence.All( prompt, this, Present.Always ) );
+		return (IOption)await _self.Gateway.Decision( Select.TrackSlot.ToReveal( prompt, _self, _gameState ) )
+			?? (IOption)await _self.Gateway.Decision( Select.DeployedPresence.All( prompt, this, Present.Always ) );
 	}
 
 	public Task<Space> SelectDeployed( string prompt )
-		=> _self.Action.Decision( Select.DeployedPresence.All( prompt, this, Present.Always ) );
+		=> _self.Gateway.Decision( Select.DeployedPresence.All( prompt, this, Present.Always ) );
 
 	public Task<Space> SelectSacredSite( string prompt )
-		=> _self.Action.Decision( Select.DeployedPresence.SacredSites( prompt, this, Present.Always ) );
+		=> _self.Gateway.Decision( Select.DeployedPresence.SacredSites( prompt, this, Present.Always ) );
 
 	/// <summary>Selects a Space within a range of spirits Presence</summary>
 	/// <param name="targetingPowerType">
@@ -64,7 +64,7 @@ public class ReadOnlyBoundPresence : IKnowSpiritLocations {
 	/// </param>
 	public async Task<Space> SelectDestinationWithinRange( TargetCriteria targetCriteria, TargetingPowerType targetingPowerType ) {
 		var options = FindSpacesWithinRange( targetCriteria, targetingPowerType ).ToArray();
-		return await _self.Action.Decision( Select.Space.ToPlacePresence( options, Present.Always ) );
+		return await _self.Gateway.Decision( Select.Space.ToPlacePresence( options, Present.Always ) );
 	}
 
 	#endregion
@@ -103,11 +103,11 @@ public class BoundPresence : ReadOnlyBoundPresence {
 		// !!! should have an action ID
 		public async Task<(Space, Space)> PushUpTo1() {
 		// Select source
-		var source = await _self.Action.Decision( Select.DeployedPresence.ToPush( this ) );
+		var source = await _self.Gateway.Decision( Select.DeployedPresence.ToPush( this ) );
 		if(source == null) return (null, null);
 
 		// Select destination
-		var destination = await _self.Action.Decision( Select.Space.PushPresence( source, _gameState.Tokens[source].Adjacent, Present.Always ) );
+		var destination = await _self.Gateway.Decision( Select.Space.PushPresence( source, _gameState.Tokens[source].Adjacent, Present.Always ) );
 		await Move( source, destination );
 		return (source, destination);
 	}
@@ -127,22 +127,22 @@ public class BoundPresence : ReadOnlyBoundPresence {
 	/// !!! should Have an Action ID
 	public async Task Place( params Space[] destinationOptions ) {
 		var from = await SelectSource();
-		var to = await _self.Action.Decision( Select.Space.ToPlacePresence( destinationOptions, Present.Always ) );
+		var to = await _self.Gateway.Decision( Select.Space.ToPlacePresence( destinationOptions, Present.Always ) );
 		await _self.Presence.Place( from, to, _gameState, _actionId );
 	}
 
 	/// !!! should Have an Action ID
 	public async Task DestroyOneFromAnywhere( DestoryPresenceCause actionType, Func<SpiritIsland.SpaceState, bool> filter = null ) {
 		var space = filter == null
-			? await _self.Action.Decision( Select.DeployedPresence.ToDestroy( "Select presence to destroy", this ) )
-			: await _self.Action.Decision( Select.DeployedPresence.ToDestroy( "Select presence to destroy", this, filter ) );
+			? await _self.Gateway.Decision( Select.DeployedPresence.ToDestroy( "Select presence to destroy", this ) )
+			: await _self.Gateway.Decision( Select.DeployedPresence.ToDestroy( "Select presence to destroy", this, filter ) );
 		await Destroy( space, actionType );
 	}
 
 	public async Task ReturnUpToNDestroyedToTrack( int count ) {
 		count = Math.Max(count,_self.Presence.Destroyed);
 		while(count > 0) {
-			var dst = await _self.Action.Decision( Select.TrackSlot.ToCover( _self ) );
+			var dst = await _self.Gateway.Decision( Select.TrackSlot.ToCover( _self ) );
 			if(dst == null) break;
 			await _self.Presence.ReturnDestroyedToTrack(dst);
 			--count;

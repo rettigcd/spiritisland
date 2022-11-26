@@ -172,7 +172,7 @@ public class InvaderBinding {
 		Token[] invaderTokens;
 		int damageInflicted = 0;
 		while(damage > 0 && (invaderTokens = Tokens.OfAnyType( allowedTypes ).ToArray()).Length > 0) {
-			var invaderToDamage = (HealthToken)await damagePicker.Action.Decision( Select.Invader.ForAggregateDamage( Space, invaderTokens, damage, present ) );
+			var invaderToDamage = (HealthToken)await damagePicker.Gateway.Decision( Select.Invader.ForAggregateDamage( Space, invaderTokens, damage, present ) );
 			if(invaderToDamage==null) break;
 			await ApplyDamageTo1( 1, invaderToDamage );
 			--damage;
@@ -189,7 +189,7 @@ public class InvaderBinding {
 		Token[] options;
 		int damageInflicted = 0;
 		while(0 < damage && (options = Tokens.Keys.OfType<HealthToken>().Intersect(allowedTypes()).ToArray()).Length > 0) {
-			var invaderToDamage = (HealthToken)await damagePicker.Action.Decision( Select.Invader.ForAggregateDamageFromSource( Space, source, options, damage, Present.Always ) );
+			var invaderToDamage = (HealthToken)await damagePicker.Gateway.Decision( Select.Invader.ForAggregateDamageFromSource( Space, source, options, damage, Present.Always ) );
 			if(invaderToDamage == null) break;
 			await ApplyDamageTo1( 1, invaderToDamage );
 			--damage;

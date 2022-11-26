@@ -44,7 +44,7 @@ namespace SpiritIsland.Tests {
 			//   And: is done with Fast
 			fxt.user.IsDoneWith(Phase.Fast);
 
-			var dec = fxt.spirit.Action.GetCurrent();
+			var dec = fxt.spirit.Gateway.GetCurrent();
 
 			if(dec.Prompt == "Select Slow to resolve:") {
 				_ = dec.ToString();

@@ -87,7 +87,7 @@ public class France : IAdversary {
 						)
 					),
 					// Then each invader takes 1 damage per strife it has.
-					new ActionOption<GameState>(
+					new DecisionOption<GameState>(
 						"each invader takes 1 damage per strife it has", 
 						x => StrifedRavage.StrifedInvadersTakeDamagePerStrife( new FearCtx(x) )
 					)
@@ -96,7 +96,7 @@ public class France : IAdversary {
 		} );
 	}
 
-	static ActionOption<BoardCtx> AddStrifeToTown => new ActionOption<BoardCtx>(
+	static DecisionOption<BoardCtx> AddStrifeToTown => new DecisionOption<BoardCtx>(
 		"Add a strife to a town"
 		, async boardCtx => {
 			SpaceToken[] options = boardCtx.FindTokens( Invader.Town );
@@ -105,7 +105,7 @@ public class France : IAdversary {
 				await boardCtx.GameState.Tokens[st.Space].AddStrifeTo( (HealthToken)st.Token, Guid.NewGuid(), 1 );
 		} );
 
-	static ActionOption<BoardCtx> Add2StrifeToCityOrTown => new ActionOption<BoardCtx>(
+	static DecisionOption<BoardCtx> Add2StrifeToCityOrTown => new DecisionOption<BoardCtx>(
 		"Add 2 strife to any city/town"
 		, async boardCtx => {
 			SpaceToken[] options = boardCtx.FindTokens( Invader.Town, Invader.City );
@@ -116,7 +116,7 @@ public class France : IAdversary {
 			}
 		} );
 
-	static ActionOption<BoardCtx> DestroyTown => new ActionOption<BoardCtx>(
+	static DecisionOption<BoardCtx> DestroyTown => new DecisionOption<BoardCtx>(
 		"Destroy a town"
 		, async boardCtx => {
 			SpaceToken[] options = boardCtx.FindTokens( Invader.Town );
@@ -211,7 +211,7 @@ public class FranceInvaderCard : InvaderCard {
 		return Cmd.OnEachBoard( AddExplorerToLandWithoutAny ).Execute( gs );
 		
 	}
-	static ActionOption<BoardCtx> AddExplorerToLandWithoutAny => new ActionOption<BoardCtx>(
+	static DecisionOption<BoardCtx> AddExplorerToLandWithoutAny => new DecisionOption<BoardCtx>(
 		"Add Explorer to Land without any",
 		async x => {
 			var options = x.Board.Spaces.Where(s=>!x.GameState.Tokens[s].HasAny(Invader.Explorer)).ToArray();
@@ -232,13 +232,13 @@ public class FranceInvaderCard : InvaderCard {
 		// Demand for New Cash Crops:
 		// After Exploring, on each board, pick a land of the shown terrain.If it has Town / City, add 1 Blight.Otherwise, add 1 Town
 
-		ActionOption<SelfCtx> SelectSpaceAction(Space s ) {
+		DecisionOption<SelfCtx> SelectSpaceAction(Space s ) {
 			return gs.Tokens[s].HasAny( Invader.Town, Invader.City )
-				? new ActionOption<SelfCtx>( "Add 1 Town to " + s.Text, null )
-				: new ActionOption<SelfCtx>( "", null );
+				? new DecisionOption<SelfCtx>( "Add 1 Town to " + s.Text, null )
+				: new DecisionOption<SelfCtx>( "", null );
 		}
 
-		return Cmd.OnEachBoard( new ActionOption<BoardCtx>( 
+		return Cmd.OnEachBoard( new DecisionOption<BoardCtx>( 
 			"Place town or blight matching Explore card."
 			, boardCtx => Cmd.Pick1( boardCtx.Board.Spaces
 				.Where( Matches )

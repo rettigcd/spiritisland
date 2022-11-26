@@ -151,29 +151,29 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 	#region Choose
 
 	public void Choose(string choiceText ) {
-		var decision = Spirit.Action.GetCurrent( true );
+		var decision = Spirit.Gateway.GetCurrent( true );
 		if(decision == null) throw new Exception("no Decision presented.");
 		var matchingChoices = decision.Options
 			.Where(o=>o.Text.ToLower().Contains( choiceText.ToLower() ))
 			.ToArray();
 		switch( matchingChoices.Length) {
 			case 0: throw new Exception($"No option contains '{choiceText}' in: "+FormatDecision(decision));
-			case 1: Spirit.Action.Choose( matchingChoices[0] ); return;
+			case 1: Spirit.Gateway.Choose( matchingChoices[0] ); return;
 			default: throw new Exception( $"Multiple option contain '{choiceText}' in: " + FormatDecision( decision ) );
 		}
 	}
 
 	public void Choose( IOption choice ) {
-		var decision = Spirit.Action.GetCurrent( true );
+		var decision = Spirit.Gateway.GetCurrent( true );
 		if(decision == null) throw new Exception( "no Decision presented." );
 		if( !decision.Options.Contains( choice )) {
 			throw new Exception( $"{choice.Text} not found in: " + FormatDecision( decision ) );
 		}
-		Spirit.Action.Choose( choice ); return;
+		Spirit.Gateway.Choose( choice ); return;
 	}
 
 	public IOption[] ChoiceOptions{ get {
-		var decision = Spirit.Action.GetCurrent( true );
+		var decision = Spirit.Gateway.GetCurrent( true );
 			return decision != null ? decision.Options : throw new Exception( "no Decision presented." );
 	} }
 

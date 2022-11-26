@@ -38,7 +38,7 @@ public class WashAway_Tests : SpiritCards_Tests {
 
 		User.TargetsLand( WashAway.Name, targetSpace.Label );
 
-		var invader = spirit.Action.GetCurrent().Options[0] as Token;
+		var invader = spirit.Gateway.GetCurrent().Options[0] as Token;
 
 		User.OptionallyPushesInvaderTo(invader.ToString(),"A1,(A2),A3,A5");
 

@@ -18,16 +18,16 @@ public interface IExecuteOn<CTX> {
 	Task Execute(CTX ctx);
 }
 
-public class ActionOption<T> : IExecuteOn<T> {
+public class DecisionOption<T> : IExecuteOn<T> {
 
 	#region constructors
 
-	public ActionOption( string description, Func<T,Task> action ) {
+	public DecisionOption( string description, Func<T,Task> action ) {
 		Description = description;
 		asyncFunc = action;
 	}
 
-	public ActionOption( string description, Action<T> syncAction ) {
+	public DecisionOption( string description, Action<T> syncAction ) {
 		Description = description;
 		asyncFunc = ctx => { syncAction(ctx); return Task.CompletedTask; };
 	}
@@ -64,7 +64,7 @@ public class ActionOption<T> : IExecuteOn<T> {
 	Predicate<T> isApplicable;
 }
 
-public class SelfAction : ActionOption<SelfCtx> {
+public class SelfAction : DecisionOption<SelfCtx> {
 	public SelfAction( string description, Func<SelfCtx, Task> action ) : base( description, action ) { }
 	public SelfAction( string description, Action<SelfCtx> action ) : base( description, action ) { }
 
@@ -73,7 +73,7 @@ public class SelfAction : ActionOption<SelfCtx> {
 	public new SelfAction Matches(Predicate<SelfCtx> predicate ) => (SelfAction)base.Matches( predicate );
 }
 
-public class SpaceAction : ActionOption<TargetSpaceCtx> {
+public class SpaceAction : DecisionOption<TargetSpaceCtx> {
 	public SpaceAction( string description, Func<TargetSpaceCtx, Task> action ) : base( description, action ) { }
 	public SpaceAction( string description, Action<TargetSpaceCtx> action ) : base( description, action ) { }
 
@@ -92,15 +92,15 @@ public class SpaceAction : ActionOption<TargetSpaceCtx> {
 	public new SpaceAction Matches(Predicate<TargetSpaceCtx> predicate ) => (SpaceAction)base.Matches( predicate );
 }
 
-public class PickSpaceAction : ActionOption<TargetSpaceCtx> {
-	public PickSpaceAction( params ActionOption<TargetSpaceCtx>[] actions ) 
+public class PickSpaceAction : DecisionOption<TargetSpaceCtx> {
+	public PickSpaceAction( params DecisionOption<TargetSpaceCtx>[] actions ) 
 		: base( "Select action:" + actions.Select(a=>a.Description).Join(", "), 
 				ctx => ctx.SelectActionOption( actions ) 
 		) {
 	}
 }
 
-public class OtherAction : ActionOption<TargetSpiritCtx> {
+public class OtherAction : DecisionOption<TargetSpiritCtx> {
 	public OtherAction( string description, Func<TargetSpiritCtx, Task> action ) : base( description, action ) { }
 	public OtherAction( string description, Action<TargetSpiritCtx> action ) : base( description, action ) { }
 

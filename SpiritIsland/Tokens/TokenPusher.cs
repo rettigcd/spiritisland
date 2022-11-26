@@ -40,7 +40,7 @@ public class TokenPusher {
 		while(0 < (tokens = GetTokens()).Length) {
 			// Select Token
 			var decision = Select.TokenFrom1Space.TokenToPush( source, sharedGroupCounts.Sum(), tokens, present );
-			var token = await ctx.Self.Action.Decision( decision );
+			var token = await ctx.Self.Gateway.Decision( decision );
 			if(token == null) break;
 
 			// Push to Destination

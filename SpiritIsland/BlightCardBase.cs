@@ -30,7 +30,7 @@ public abstract class BlightCardBase : IBlightCard {
 
 	}
 
-	public abstract ActionOption<GameState> Immediately { get; }
+	public abstract DecisionOption<GameState> Immediately { get; }
 
 	protected virtual void Side2Depleted(GameState gameState) 
 		=> GameOverException.Lost( "Blighted Island-" + Name );

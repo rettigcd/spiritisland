@@ -34,7 +34,7 @@ public class DreamOfTheUntouchedLand {
 			// and up to 2 presence (from any Spirits) anywhere on it.
 			// ??? Can spirits violate their place-presence rules?
 			for(int i = 0; i < 2; ++i) {
-				var spirit = await ctx.Self.Action.Decision(new Select.Spirit("Spirit to add presence.",ctx.GameState.Spirits));
+				var spirit = await ctx.Self.Gateway.Decision(new Select.Spirit("Spirit to add presence.",ctx.GameState.Spirits));
 				await ctx.TargetSpirit(spirit).OtherCtx.Presence.Place(newBoard.Spaces.Where(x=>!x.IsOcean).ToArray());
 			}
 					
@@ -42,7 +42,7 @@ public class DreamOfTheUntouchedLand {
 
 			// Notify board changed.
 			foreach(var spirit in ctx.GameState.Spirits)
-				spirit.Action.NotifyBoardChanged();
+				spirit.Gateway.NotifyBoardChanged();
 		}
 
 

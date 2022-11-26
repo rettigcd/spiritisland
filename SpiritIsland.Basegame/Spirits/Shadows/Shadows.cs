@@ -80,7 +80,7 @@ public class Shadows : Spirit {
 		--Energy;
 
 		// pick from dahan-only spaces
-		return await this.Action.Decision( new Select.Space( "Target land with dahan", dahanOnlySpaces, Present.Always));
+		return await this.Gateway.Decision( new Select.Space( "Target land with dahan", dahanOnlySpaces, Present.Always));
 	}
 
 	protected override void InitializeInternal( Board board, GameState gs ) {

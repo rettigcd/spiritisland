@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-sealed public class ActionGateway : IUserPortal, IEnginePortal {
+sealed public class UserGateway : IUserPortal, IEnginePortal {
 
 	#region IUserPortal
 

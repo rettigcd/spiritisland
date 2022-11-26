@@ -11,7 +11,7 @@ public abstract partial class Spirit : IOption {
 		foreach(var card in initialCards)
 			AddCardToHand(card);
 
-		Action = new ActionGateway();
+		Gateway = new UserGateway();
 
 		decks.Add(new SpiritDeck{ Icon = Img.Deck_Hand, PowerCards = Hand });
 		decks.Add(new SpiritDeck{ Icon = Img.Deck_Played, PowerCards = InPlay });
@@ -22,7 +22,7 @@ public abstract partial class Spirit : IOption {
 		Hand.Add(card);
 	}
 
-	public ActionGateway Action { get; }
+	public UserGateway Gateway { get; }
 
 	#endregion
 
@@ -328,7 +328,7 @@ public abstract partial class Spirit : IOption {
 
 	public void InitSpirit( Board board, GameState gameState ){
 		gameState.TimePasses_WholeGame += On_TimePassed;
-		Action.DecisionMade += (d) => gameState.Log(d);
+		Gateway.DecisionMade += (d) => gameState.Log(d);
 		InitializeInternal(board,gameState);
 	}
 
@@ -523,7 +523,7 @@ public abstract partial class Spirit : IOption {
 		if(prompt == null) prompt = "Target Space.";
 		var x = ctx.GameState.Tokens[ctx.GameState.Island.Boards[0][0]];
 		IEnumerable<Space> spaces = GetPowerTargetOptions( powerType, ctx.GameState, sourceCriteria, targetCriteria );
-		return this.Action.Decision( new Select.Space( prompt, spaces, Present.Always ));
+		return this.Gateway.Decision( new Select.Space( prompt, spaces, Present.Always ));
 	}
 
 	// Helper for calling SourceCalc & RangeCalc, only for POWERS

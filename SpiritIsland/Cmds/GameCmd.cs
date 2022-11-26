@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland;
 
 // Commands that act on: GameState
-using GameCmd = ActionOption<GameState>;
+using GameCmd = DecisionOption<GameState>;
 
 public static partial class Cmd {
 
@@ -16,7 +16,7 @@ public static partial class Cmd {
 	);
 
 	// GameState actions
-	static public GameCmd OnEachBoard( this ActionOption<BoardCtx> boardAction ) 
+	static public GameCmd OnEachBoard( this DecisionOption<BoardCtx> boardAction ) 
 		=> new GameCmd( 
 			"On each board, " + boardAction.Description, 
 			async gs => {
@@ -55,7 +55,7 @@ public static partial class Cmd {
 	/// Used ONLY for Fear Actions. 
 	/// DO NOT use for Spirit Powers or Rituals without setting cause = Cause.Power
 	/// </summary>
-	static public ActionOption<GameState> EachSpirit( ActionOption<SelfCtx> action )
+	static public DecisionOption<GameState> EachSpirit( DecisionOption<SelfCtx> action )
 		=> new GameCmd(
 			"For each spirit, " + action.Description, 
 			async gs => {

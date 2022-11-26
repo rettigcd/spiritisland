@@ -35,7 +35,7 @@ public class DissolveTheBondsOfKinship {
 			// select token
 			var tokenOptions = ctx.Tokens.OfType( Invader.Explorer ).ToArray();
 			var decision = Select.TokenFrom1Space.TokenToPush( ctx.Space, explorerCount, tokenOptions, Present.Always );
-			var token = await ctx.Self.Action.Decision( decision );
+			var token = await ctx.Self.Gateway.Decision( decision );
 			if(token == null) break;
 
 			// Select destination

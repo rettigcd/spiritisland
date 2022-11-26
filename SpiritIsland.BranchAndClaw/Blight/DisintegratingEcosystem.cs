@@ -4,7 +4,7 @@ public class DisintegratingEcosystem : BlightCardBase {
 
 	public DisintegratingEcosystem():base("Disintegrating Ecosystem", 5 ) { }
 
-	public override ActionOption<GameState> Immediately => 
+	public override DecisionOption<GameState> Immediately => 
 		// Immediately, on each board: 
 		Cmd.OnEachBoard(
 			Cmd.Multiple(

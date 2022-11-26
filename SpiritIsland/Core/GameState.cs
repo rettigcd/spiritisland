@@ -154,7 +154,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 		// Cascade blight
 		if(effect.Cascade) {
-			Space cascadeTo = await Spirits[0].Action.Decision( Select.Space.ForAdjacent(
+			Space cascadeTo = await Spirits[0].Gateway.Decision( Select.Space.ForAdjacent(
 				$"Cascade blight from {args.Space.Space.Label} to",
 				args.Space.Space,
 				Select.AdjacentDirection.Outgoing,
@@ -335,7 +335,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	}
 
 	static async Task DefaultDestroy1PresenceFromBlightCard( Spirit spirit, GameState gs, Cause cause ) {
-		var presence = await spirit.Action.Decision( Select.DeployedPresence.ToDestroy( "Blighted Island: Select presence to destroy.", new ReadOnlyBoundPresence( spirit, gs, gs.Island.Terrain_ForBlight ) ) );
+		var presence = await spirit.Gateway.Decision( Select.DeployedPresence.ToDestroy( "Blighted Island: Select presence to destroy.", new ReadOnlyBoundPresence( spirit, gs, gs.Island.Terrain_ForBlight ) ) );
 		await spirit.Presence.Destroy( presence, gs, DestoryPresenceCause.BlightedIsland, Guid.NewGuid() );
 	}
 

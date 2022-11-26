@@ -11,7 +11,7 @@ namespace SpiritIsland.Tests {
 
 		public VirtualUser(Spirit spirit ) { 
 			this.spirit = spirit;
-			this.userPortal = spirit.Action;
+			this.userPortal = spirit.Gateway;
 		}
 
 		#endregion

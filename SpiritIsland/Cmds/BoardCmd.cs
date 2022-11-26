@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-using BoardCmd = ActionOption<BoardCtx>;
+using BoardCmd = DecisionOption<BoardCtx>;
 
 public static partial class Cmd {
 
@@ -8,17 +8,17 @@ public static partial class Cmd {
 
 	// Given a space-command, return a board-command that allows user to pick a space then execute space-command on it.
 
-	static public BoardCmd FromLandOnBoard( this ActionOption<TargetSpaceCtx> spaceAction, Func<TargetSpaceCtx,bool> spaceFilter, string filterDescription )
+	static public BoardCmd FromLandOnBoard( this DecisionOption<TargetSpaceCtx> spaceAction, Func<TargetSpaceCtx,bool> spaceFilter, string filterDescription )
 		=> PickLandOnBoardThenTakeAction( spaceAction, spaceFilter, "from " + filterDescription );
 
-	static public BoardCmd ToLandOnBoard( this ActionOption<TargetSpaceCtx> spaceAction, Func<TargetSpaceCtx,bool> spaceFilter, string filterDescription )
+	static public BoardCmd ToLandOnBoard( this DecisionOption<TargetSpaceCtx> spaceAction, Func<TargetSpaceCtx,bool> spaceFilter, string filterDescription )
 		=> PickLandOnBoardThenTakeAction( spaceAction, spaceFilter, "to " + filterDescription );
 
-	static public BoardCmd InAnyLandOnBoard( this ActionOption<TargetSpaceCtx> spaceAction )
+	static public BoardCmd InAnyLandOnBoard( this DecisionOption<TargetSpaceCtx> spaceAction )
 		=> PickLandOnBoardThenTakeAction( spaceAction, _=>true, "" ); // Replace this with a Filter that wraps true,"" ie.  Filters.AnyLand
 
 	static BoardCmd PickLandOnBoardThenTakeAction(
-		this ActionOption<TargetSpaceCtx> spaceAction,
+		this DecisionOption<TargetSpaceCtx> spaceAction,
 		Func<TargetSpaceCtx,bool> customFilter,
 		string filterDescription
 	)
@@ -69,15 +69,15 @@ public static partial class Cmd {
 	#region Convert a TargetSpaceCtx command to a SelfCtx command
 
 	// Allow spirit to take action in any land.
-	static public ActionOption<SelfCtx> InAnyLand( this ActionOption<TargetSpaceCtx> spaceAction )
+	static public DecisionOption<SelfCtx> InAnyLand( this DecisionOption<TargetSpaceCtx> spaceAction )
 		=> PickLandThenTakeAction( spaceAction, _ => true, "" ); // Replace this with a Filter that wraps true,"" ie.  Filters.AnyLand
 
-	static ActionOption<SelfCtx> PickLandThenTakeAction(
-		this ActionOption<TargetSpaceCtx> spaceAction,
+	static DecisionOption<SelfCtx> PickLandThenTakeAction(
+		this DecisionOption<TargetSpaceCtx> spaceAction,
 		Func<TargetSpaceCtx, bool> customFilter, // !!! change to TargetSpaceCtx
 		string filterDescription
 	)
-		=> new ActionOption<SelfCtx>( spaceAction.Description + " " + filterDescription, async ctx => {
+		=> new DecisionOption<SelfCtx>( spaceAction.Description + " " + filterDescription, async ctx => {
 
 			var spaceOptions = ctx.GameState.AllActiveSpaces
 				.Select( x=>ctx.Target(x.Space) )

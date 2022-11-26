@@ -19,7 +19,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			// And: Spirit in spot 1
 			spirit.Presence.PlaceOn( a[1], gs );
 
-			action = spirit.Action;
+			action = spirit.Gateway;
 		}
 
 		protected void When_ActivateCard( string cardName ) {
@@ -41,7 +41,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 		protected readonly VirtualUser User;
 		protected readonly Board a;
 		protected readonly GameState gs;
-		protected readonly ActionGateway action;
+		protected readonly UserGateway action;
 
 	}
 }

@@ -63,7 +63,7 @@ public class SelfCtx {
 		} );
 	}
 
-	public Task<T> Decision<T>( Select.TypedDecision<T> originalDecision ) where T : class, IOption => Self.Action.Decision( originalDecision );
+	public Task<T> Decision<T>( Select.TypedDecision<T> originalDecision ) where T : class, IOption => Self.Gateway.Decision( originalDecision );
 
 
 	public virtual TargetSpaceCtx Target( Space space ) => new TargetSpaceCtx( this, space );

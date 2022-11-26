@@ -148,8 +148,8 @@ namespace SpiritIsland.WinForms {
 			GameState gameState = gc.BuildGame( ConfigureGameDialog.gameComponentProviders );
 			game = new SinglePlayerGame( gameState, false ) { LogExceptions = true };
 
-			game.Spirit.Action.NewWaitingDecision += Action_NewWaitingDecision;
-			game.Spirit.Action.BoardChanged += ()=>this.islandControl.RefreshLayout();
+			game.Spirit.Gateway.NewWaitingDecision += Action_NewWaitingDecision;
+			game.Spirit.Gateway.BoardChanged += ()=>this.islandControl.RefreshLayout();
 
 			gameState.NewLogEntry += GameState_NewLogEntry; // !!! this should probably come through the user portal/gateway, not directly off of the gamestate.
 

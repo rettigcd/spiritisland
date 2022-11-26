@@ -19,7 +19,7 @@ public class SinglePlayerGame {
 		this.GameState = gameState;
 //		gameState.Initialize();
 		Spirit = gameState.Spirits.Single(); // this player only handles single-player.
-		this.UserPortal = Spirit.Action;
+		this.UserPortal = Spirit.Gateway;
 		if(start)
 			Start();
 	}

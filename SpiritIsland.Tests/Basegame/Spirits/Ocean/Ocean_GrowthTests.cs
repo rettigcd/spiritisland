@@ -48,9 +48,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 
 			if(gather != null){
 				_ = gather.ActivateAsync( spirit.Bind( gameState, Guid.NewGuid() ) );
-				while(!spirit.Action.IsResolved){
-					var source = spirit.Action.GetCurrent().Options.Single(x=>moveBySrc.ContainsKey(x.Text));
-					spirit.Action.Choose(source);
+				while(!spirit.Gateway.IsResolved){
+					var source = spirit.Gateway.GetCurrent().Options.Single(x=>moveBySrc.ContainsKey(x.Text));
+					spirit.Gateway.Choose(source);
 				}
 			}
 

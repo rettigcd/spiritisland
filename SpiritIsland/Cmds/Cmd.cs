@@ -71,14 +71,14 @@ public static partial class Cmd {
 	static public SpaceAction AddFear(int count) => new SpaceAction($"Add {count} Fear.", ctx => ctx.AddFear(count) );
 
 	// AND / OR
-	static public ActionOption<T> Multiple<T>( string title, params ActionOption<T>[] actions ) => new ActionOption<T>(
+	static public DecisionOption<T> Multiple<T>( string title, params DecisionOption<T>[] actions ) => new DecisionOption<T>(
 		title,
 		async ctx => {
 			foreach(var action in actions)
 				await action.Execute( ctx );
 		}
 	);
-	static public ActionOption<T> Multiple<T>( params ActionOption<T>[] actions) => new ActionOption<T>(
+	static public DecisionOption<T> Multiple<T>( params DecisionOption<T>[] actions) => new DecisionOption<T>(
 		actions.Select(a=>a.Description).Join("  "),
 		async ctx => {
 			foreach( var action in actions )
@@ -86,11 +86,11 @@ public static partial class Cmd {
 		}
 	);
 
-	static public ActionOption<T> Pick1<T>( params IExecuteOn<T>[] actions ) where T : SelfCtx
+	static public DecisionOption<T> Pick1<T>( params IExecuteOn<T>[] actions ) where T : SelfCtx
 		=> Pick1<T>(actions.Select(a=>a.Description).Join_WithLast(", ", " OR "), actions );
 
-	static public ActionOption<T> Pick1<T>( string description, params IExecuteOn<T>[] actions ) where T : SelfCtx
-		=> new ActionOption<T>(
+	static public DecisionOption<T> Pick1<T>( string description, params IExecuteOn<T>[] actions ) where T : SelfCtx
+		=> new DecisionOption<T>(
 			description,
 			async ctx => {
 

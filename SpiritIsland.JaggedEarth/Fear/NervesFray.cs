@@ -25,7 +25,7 @@ public class NervesFray : IFearOptions {
 		ctx.GameState.Fear.AddDirect(new FearArgs { count = ctx.GameState.Spirits.Length });
 	}
 
-	static public ActionOption<GameState> EachPlayerAddsStrifeToNonRavageLand( int strifeCount )
+	static public DecisionOption<GameState> EachPlayerAddsStrifeToNonRavageLand( int strifeCount )
 		=> Cmd.EachSpirit(
 			Cmd.AddStrife(strifeCount).To( DoesNotMatchRavageCard, "land that does not match Ravage card" )
 		);

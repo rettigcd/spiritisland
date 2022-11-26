@@ -73,7 +73,7 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 	}
 
 	async Task PickPresenceToDestroy( TargetSpaceCtx ctx ) {
-		var space = await this.Action.Decision( Select.DeployedPresence.ToDestroy( $"{CleaningUpMessesIsADrag.Title} Destroy presence for blight cleanup", ctx.Presence ) );
+		var space = await this.Gateway.Decision( Select.DeployedPresence.ToDestroy( $"{CleaningUpMessesIsADrag.Title} Destroy presence for blight cleanup", ctx.Presence ) );
 		await ctx.Presence.Destroy( space, DestoryPresenceCause.SpiritPower );
 	}
 
@@ -102,7 +102,7 @@ public class TricksterSpaceCtx : TargetSpaceCtx {
 		var nearbyInvaders = Tokens.Range( 1 )
 			.SelectMany( s => s.InvaderTokens().Select( t => new SpaceToken( s.Space, t ) ) )
 			.ToArray();
-		var invader2 = await Self.Action.Decision( new Select.TokenFromManySpaces( "Add additional strife for 1 energy", nearbyInvaders, Present.Done ) );
+		var invader2 = await Self.Gateway.Decision( new Select.TokenFromManySpaces( "Add additional strife for 1 energy", nearbyInvaders, Present.Done ) );
 		if(invader2 == null) return;
 		--Self.Energy;
 		await Target( invader2.Space ).AddStrifeTo( (HealthToken)invader2.Token );

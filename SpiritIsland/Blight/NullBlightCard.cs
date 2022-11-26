@@ -6,7 +6,7 @@ public class NullBlightCard : IBlightCard {
 
 	public string Name => "[null]";
 
-	public ActionOption<GameState> Immediately => new ActionOption<GameState>("no action", _ => { });
+	public DecisionOption<GameState> Immediately => new DecisionOption<GameState>("no action", _ => { });
 
 	public Task OnBlightDepleated( GameState gs ) {
 		if(!CardFlipped) {

@@ -32,7 +32,7 @@ public class SpillBitternessIntoTheEarth {
 
 	}
 
-	static async Task TakeActionInUpToNLands( SelfCtx ctx, int adjCount, IEnumerable<Space> spaces, ActionOption<TargetSpaceCtx> action ) {
+	static async Task TakeActionInUpToNLands( SelfCtx ctx, int adjCount, IEnumerable<Space> spaces, DecisionOption<TargetSpaceCtx> action ) {
 		List<Space> options = spaces.ToList();
 		while(adjCount-- > 0 && options.Count > 0) {
 			var space = await ctx.Decision( new Select.Space( $"{action.Description} ({adjCount + 1} remaining)", options, Present.Done ) );

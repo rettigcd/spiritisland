@@ -4,7 +4,7 @@ public class UntendedLandCrumbles : BlightCardBase {
 
 	public UntendedLandCrumbles():base("Untended Land Crumbles",4) {}
 
-	public override ActionOption<GameState> Immediately 
+	public override DecisionOption<GameState> Immediately 
 		=> Cmd.AtTheStartOfEachInvaderPhase(
 			Cmd.OnEachBoard(
 				Cmd.Pick1(
@@ -15,10 +15,10 @@ public class UntendedLandCrumbles : BlightCardBase {
 			)
 		);
 
-	static ActionOption<BoardCtx> AddBlightAdjacentToBligtht =>
+	static DecisionOption<BoardCtx> AddBlightAdjacentToBligtht =>
 		Cmd.AddBlightedIslandBlight.ToLandOnBoard( ctx => ctx.Tokens.Adjacent.Any( adj => adj.Blight.Any ), "land adjacent to blight" );
 
-	static IExecuteOn<BoardCtx> JointlyPayEnergy( int requiredEnergy ) => new ActionOption<BoardCtx>(
+	static IExecuteOn<BoardCtx> JointlyPayEnergy( int requiredEnergy ) => new DecisionOption<BoardCtx>(
 		$"Joinly pay {requiredEnergy} energy",
 		async ctx => {
 			int remaining = requiredEnergy;
@@ -37,7 +37,7 @@ public class UntendedLandCrumbles : BlightCardBase {
 		}
 	).Matches(ctx => requiredEnergy <= ctx.GameState.Spirits.Sum( s=>s.Energy ) );
 
-	static IExecuteOn<BoardCtx> JointlyDestroyPresenceOnBoard => new ActionOption<BoardCtx>(
+	static IExecuteOn<BoardCtx> JointlyDestroyPresenceOnBoard => new DecisionOption<BoardCtx>(
 		"Jointly destroy 1 presence",
 		async ctx => {
 			var spiritOptions = ctx.GameState.Spirits

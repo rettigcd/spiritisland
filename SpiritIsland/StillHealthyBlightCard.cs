@@ -5,7 +5,7 @@ public class StillHealthyBlightCard : BlightCardBase {
 	public StillHealthyBlightCard(string title, int additinalBlightWhenFlipped)
 		:base( title, additinalBlightWhenFlipped ) { }
 
-	public override ActionOption<GameState> Immediately => new ActionOption<GameState>("Still Healthy", (_)=>{ } );
+	public override DecisionOption<GameState> Immediately => new DecisionOption<GameState>("Still Healthy", (_)=>{ } );
 
 	protected override void Side2Depleted(  GameState gs ) {
 		// If there is ever NO Blight here, draw a new Blight Card.

@@ -13,13 +13,13 @@ public static partial class Cmd {
 	);
 
 	#region Pick Land for Action
-	static public ActionOption<SelfCtx> In( this ActionOption<TargetSpaceCtx> spaceAction, Func<TargetSpaceCtx,bool> filter, string filterDescription ) 
+	static public DecisionOption<SelfCtx> In( this DecisionOption<TargetSpaceCtx> spaceAction, Func<TargetSpaceCtx,bool> filter, string filterDescription ) 
 		=> PickLandThenTakeAction( spaceAction, filter, filterDescription, "in" );
 
-	static public ActionOption<SelfCtx> From( this ActionOption<TargetSpaceCtx> spaceAction, Func<TargetSpaceCtx,bool> filter, string filterDescription ) 
+	static public DecisionOption<SelfCtx> From( this DecisionOption<TargetSpaceCtx> spaceAction, Func<TargetSpaceCtx,bool> filter, string filterDescription ) 
 		=> PickLandThenTakeAction( spaceAction, filter, filterDescription, "from" );
 
-	static public ActionOption<SelfCtx> To( this ActionOption<TargetSpaceCtx> spaceAction, Func<TargetSpaceCtx,bool> filter, string filterDescription ) 
+	static public DecisionOption<SelfCtx> To( this DecisionOption<TargetSpaceCtx> spaceAction, Func<TargetSpaceCtx,bool> filter, string filterDescription ) 
 		=> PickLandThenTakeAction( spaceAction, filter, filterDescription, "to" );
 
 	// Excludes Oceans
@@ -27,11 +27,11 @@ public static partial class Cmd {
 	// but would need to use TerrainMapper in SelfCtx
 	// IF, filters depend ONLY on SpaceState
 	// !! Before we make this work, we need to fold .IsCostal into SpaceState
-	static ActionOption<SelfCtx> PickLandThenTakeAction( 
-		ActionOption<TargetSpaceCtx> spaceAction,
+	static DecisionOption<SelfCtx> PickLandThenTakeAction( 
+		DecisionOption<TargetSpaceCtx> spaceAction,
 		Func<TargetSpaceCtx,bool> filter, string filterDescription,
 		string landPreposition = "in"  // Depending on Action, "from" or "to" might be better
-	)	=> new ActionOption<SelfCtx>( $"{spaceAction.Description} {landPreposition} {filterDescription}.", 
+	)	=> new DecisionOption<SelfCtx>( $"{spaceAction.Description} {landPreposition} {filterDescription}.", 
 			async selfCtx => {
 				var spaceOptions = selfCtx.GameState.AllActiveSpaces
 					.Select(s=>selfCtx.Target(s.Space))
@@ -47,12 +47,12 @@ public static partial class Cmd {
 		);
 
 	// Excludes Oceans
-	static public ActionOption<SelfCtx> PickDifferentLandThenTakeAction(
+	static public DecisionOption<SelfCtx> PickDifferentLandThenTakeAction(
 		string description,
-		ActionOption<TargetSpaceCtx> spaceAction
+		DecisionOption<TargetSpaceCtx> spaceAction
 	) {
 		List<Space> used = new List<Space>();
-		return new ActionOption<SelfCtx>( description, async ctx => {
+		return new DecisionOption<SelfCtx>( description, async ctx => {
 			var spaceOptions = ctx.GameState.AllActiveSpaces
 				.Where( ctx.TerrainMapper.IsInPlay )
 				.Select( x => x.Space )

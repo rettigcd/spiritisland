@@ -4,7 +4,7 @@ public class UnnaturalProliferation : BlightCardBase {
 
 	public UnnaturalProliferation():base("Unnatural Proliferation",3) {}
 
-	public override ActionOption<GameState> Immediately 
+	public override DecisionOption<GameState> Immediately 
 		=> Cmd.Multiple<GameState>(
 			Cmd.EachSpirit(
 				// adds 1 presence to a land with their prescense.
@@ -23,10 +23,10 @@ public class UnnaturalProliferation : BlightCardBase {
 		ctx=> ctx.Presence.Place( ctx.Presence.Spaces.ToArray() )
 	);
 
-	static ActionOption<BoardCtx> AddDahanToDahanLand => Cmd.AddDahan(1)
+	static DecisionOption<BoardCtx> AddDahanToDahanLand => Cmd.AddDahan(1)
 		.ToLandOnBoard(  tokens => tokens.Dahan.Any, "a land with dahan." );
 
-	static ActionOption<BoardCtx> Add2CitiesToLandWithFewest => new ActionOption<BoardCtx>(
+	static DecisionOption<BoardCtx> Add2CitiesToLandWithFewest => new DecisionOption<BoardCtx>(
 		"Add 2 cities to the land with fewest town/city.", async ctx => {
 			var terrainMapper = ctx.GameState.Island.Terrain;
 			var spaceOptions = ctx.Board.Spaces

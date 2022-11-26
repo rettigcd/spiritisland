@@ -94,8 +94,8 @@ public class FracturedDaysSplitTheSky : Spirit {
 		while(count > 0) {
 
 			string selectPrompt = $"Select presence to convert to Time ({count} remaining).";
-			var from = (IOption)await Action.Decision( Select.TrackSlot.ToReveal( selectPrompt, this, gameState ) )
-					?? (IOption)await Action.Decision( Select.DeployedPresence.All( selectPrompt, new ReadOnlyBoundPresence( this, gameState, gameState.Island.Terrain), Present.Done ) ); // Cancel
+			var from = (IOption)await Gateway.Decision( Select.TrackSlot.ToReveal( selectPrompt, this, gameState ) )
+					?? (IOption)await Gateway.Decision( Select.DeployedPresence.All( selectPrompt, new ReadOnlyBoundPresence( this, gameState, gameState.Island.Terrain), Present.Done ) ); // Cancel
 
 			await Presence.TakeFrom( from, gameState );
 			Time++;
@@ -105,7 +105,7 @@ public class FracturedDaysSplitTheSky : Spirit {
 	}
 
 	public async Task SpendTime( int count ) {
-		var hide = await Action.Decision( Select.TrackSlot.ToCover( this ) );
+		var hide = await Gateway.Decision( Select.TrackSlot.ToCover( this ) );
 
 		Time -= count;
 		if(hide != null)

@@ -44,7 +44,7 @@ class FleeThePestilentLand : IFearOptions {
 		).Execute(ctx.GameState);
 	}
 
-	static ActionOption<SelfCtx> RemoveNHealthOfInvadersFromDisease( int healthToRemove, GameState _ ) =>
+	static DecisionOption<SelfCtx> RemoveNHealthOfInvadersFromDisease( int healthToRemove, GameState _ ) =>
 		Cmd.RemoveUpToNHealthOfInvaders(healthToRemove).From( ctx => ctx.Tokens.Disease.Any && ctx.Tokens.HasInvaders(), "land with disease" );
 
 }

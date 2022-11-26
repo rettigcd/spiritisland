@@ -4,7 +4,7 @@ public class PromisingFarmlands : BlightCardBase {
 
 	public PromisingFarmlands():base("Promising Farmlands", 4 ) { }
 
-	public override ActionOption<GameState> Immediately => Cmd.OnEachBoard(
+	public override DecisionOption<GameState> Immediately => Cmd.OnEachBoard(
 		// Add 1 town and 1 city
 		Cmd.Multiple(Cmd.AddTown(1),Cmd.AddCity(1))
 			// to an inland land with no town/city
