@@ -32,7 +32,7 @@ public class ShareSecretsOfSurvival_Tests {
 		ShareSecretsOfSurvival.Destroy2FewerDahan.Execute( ctx );
 
 		//  When: ravage
-		new RavageAction(fxt.GameState, fxt.GameState.Invaders.On(space,new UnitOfWork())).Exec().Wait();
+		new RavageAction(fxt.GameState, fxt.GameState.Invaders.On(space,fxt.GameState.StartAction())).Exec().Wait();
 
 		//  Then: expected dahan
 		ctx.Tokens.Summary.ShouldBe( expectedEndingTokens );
@@ -68,7 +68,7 @@ public class ShareSecretsOfSurvival_Tests {
 		BirdsCryWarning.Destroy2FewerDahan.Execute( ctx );
 
 		//  When: ravage
-		new RavageAction( fxt.GameState, fxt.GameState.Invaders.On( space, new UnitOfWork() ) ).Exec().Wait();
+		new RavageAction( fxt.GameState, fxt.GameState.Invaders.On( space, fxt.GameState.StartAction() ) ).Exec().Wait();
 
 		//  Then: expected dahan
 		ctx.Tokens.Summary.ShouldBe( expectedEndingTokens );

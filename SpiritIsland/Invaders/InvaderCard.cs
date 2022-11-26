@@ -39,7 +39,7 @@ public class InvaderCard : IOption, IInvaderCard {
 		var ravageSpaces = gs.AllActiveSpaces.Where( Matches ).ToList();
 
 		// Modify / Adjust
-		var actionId = new UnitOfWork();
+		var actionId = gs.StartAction();
 		await gs.PreRavaging?.InvokeAsync( new RavagingEventArgs( gs, actionId ) { Spaces = ravageSpaces } );
 
 		// find ravage spaces that have invaders
@@ -128,7 +128,7 @@ public class InvaderCard : IOption, IInvaderCard {
 
 	protected static async Task DoExplore( GameState gs, SpaceState[] tokenSpacesToExplore ) {
 		foreach(var exploreTokens in tokenSpacesToExplore)
-			await ExploreSingleSpace( exploreTokens, gs, new UnitOfWork() );
+			await ExploreSingleSpace( exploreTokens, gs, gs.StartAction() );
 	}
 
 	static protected async Task ExploreSingleSpace( SpaceState tokens, GameState gs, UnitOfWork actionId ) {

@@ -47,7 +47,7 @@ public class Bringer : Spirit {
 	}
 
 	public override SelfCtx BindMyPower( GameState gameState, UnitOfWork actionId=default ) 
-		=> new BringerCtx(this,gameState,actionId!=default?actionId : new UnitOfWork());
+		=> new BringerCtx(this,gameState,actionId!=default?actionId : gameState.StartAction() );
 
 }
 

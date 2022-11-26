@@ -44,7 +44,7 @@ public static class StrifedRavage {
 	#region Strife caused Damage to Self
 
 	public static async Task StrifedInvadersTakeDamagePerStrife( FearCtx ctx ) {
-		UnitOfWork actionId = new UnitOfWork();
+		UnitOfWork actionId = ctx.GameState.StartAction();
 		foreach(var space in ctx.GameState.AllActiveSpaces)
 			await EachInvaderTakesDamageByStrifeCount( space, actionId );
 	}

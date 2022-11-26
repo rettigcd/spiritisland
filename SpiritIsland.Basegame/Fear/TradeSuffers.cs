@@ -21,7 +21,7 @@ public class TradeSuffers : IFearOptions {
 	public async Task Level2( FearCtx ctx ) {
 		var gs = ctx.GameState;
 		var tm = gs.Island.Terrain_ForFear;
-		var actionId = new UnitOfWork();
+		var actionId = gs.StartAction();
 		foreach(var spirit in gs.Spirits) {
 			var options = gs.AllActiveSpaces.Where( s => tm.IsInPlay(s) && tm.IsCoastal(s.Space) && s.Has( Invader.Town ) ).ToArray();
 			if(options.Length == 0) return;
@@ -34,7 +34,7 @@ public class TradeSuffers : IFearOptions {
 	public async Task Level3( FearCtx ctx ) {
 		var gs = ctx.GameState;
 		var tm = gs.Island.Terrain_ForFear;
-		var actionId = new UnitOfWork();
+		var actionId = gs.StartAction();
 		foreach(var spirit in gs.Spirits) {
 			var options = gs.AllActiveSpaces.Where( s => tm.IsInPlay( s ) && tm.IsCoastal( s.Space ) && s.HasAny(Invader.Town,Invader.City) ).Select(s=>s.Space).ToArray();
 			if(options.Length == 0) return;

@@ -5,7 +5,7 @@ public class RavageAction {
 	#region constructor
 
 	public RavageAction( GameState gs, InvaderBinding grp ) {
-		actionId = new UnitOfWork();
+		actionId = gs.StartAction();
 		var cfg = gs.GetRavageConfiguration( grp.Space );
 
 		this.gameState = gs;

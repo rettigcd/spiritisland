@@ -14,7 +14,7 @@ public class FearCtx {
 
 	public IEnumerable<SelfCtx> Spirits {
 		get {
-			var actionId = new UnitOfWork();
+			var actionId = GameState.StartAction();
 			return this.GameState.Spirits.Select( s => s.Bind( GameState, actionId ) );
 		}
 	}

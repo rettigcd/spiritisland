@@ -150,7 +150,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		if(effect.DestroyPresence)
 			foreach(var spirit in Spirits)
 				if(spirit.Presence.IsOn( args.Space ))
-					await spirit.Presence.Destroy( args.Space.Space, this, DestoryPresenceCause.Blight, new UnitOfWork(), args.Reason );
+					await spirit.Presence.Destroy( args.Space.Space, this, DestoryPresenceCause.Blight, StartAction(), args.Reason );
 
 		// Cascade blight
 		if(effect.Cascade) {
@@ -266,8 +266,6 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	#region API - overridable
 
-//	public Func<GameState,Space,AddBlightEffect>    AddBlightSideEffect = Default_AddBlightSideEffect; /// <summary> Hook so Stone's presence can stop the cascade / Destroy effects of blight. </summary>
-
 	public DualAsyncEvent<AddBlightEffect> ModifyBlightAddedEffect = new DualAsyncEvent<AddBlightEffect>();
 
 	public Func<int, SpaceState,Task> TakeFromBlightSouce {
@@ -284,6 +282,8 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 			spaceTokens.Blight.Blocked = false;
 	}
 	public Healer Healer = new Healer(); // replacable Behavior
+
+	public UnitOfWork StartAction() => new UnitOfWork(); 
 
 	#endregion
 
@@ -336,7 +336,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	static async Task DefaultDestroy1PresenceFromBlightCard( Spirit spirit, GameState gs, Cause cause ) {
 		var presence = await spirit.Gateway.Decision( Select.DeployedPresence.ToDestroy( "Blighted Island: Select presence to destroy.", new ReadOnlyBoundPresence( spirit, gs, gs.Island.Terrain_ForBlight ) ) );
-		await spirit.Presence.Destroy( presence, gs, DestoryPresenceCause.BlightedIsland, new UnitOfWork() );
+		await spirit.Presence.Destroy( presence, gs, DestoryPresenceCause.BlightedIsland, gs.StartAction() );
 	}
 
 	#endregion

@@ -20,7 +20,7 @@ public static partial class Cmd {
 		=> new GameCmd( 
 			"On each board, " + boardAction.Description, 
 			async gs => {
-				UnitOfWork actionId = new UnitOfWork();
+				UnitOfWork actionId = gs.StartAction();
 				for(int i = 0; i < gs.Spirits.Length; ++i) {
 					BoardCtx boardCtx = new BoardCtx( gs.Spirits[i < gs.Spirits.Length ? i : 0], gs, gs.Island.Boards[i], actionId );
 					await boardAction.Execute( boardCtx );
@@ -38,7 +38,7 @@ public static partial class Cmd {
 			"In each land, " + action.Description, 
 			async gs => {
 				for(int i = 0; i < gs.Island.Boards.Length; ++i) {
-					var actionId = new UnitOfWork(); // different action on each space
+					var actionId = gs.StartAction(); // different action on each space
 					var decisionMaker = gs.Spirits[i < gs.Spirits.Length ? i : 0].Bind( gs, actionId ); // use Head spirit for extra board
 					var board = gs.Island.Boards[i];
 					var spaces = board.Spaces
@@ -59,7 +59,7 @@ public static partial class Cmd {
 		=> new GameCmd(
 			"For each spirit, " + action.Description, 
 			async gs => {
-				var actionId = new UnitOfWork();
+				var actionId = gs.StartAction();
 				foreach(var spirit in gs.Spirits)
 					await action.Execute( spirit.Bind( gs, actionId ) );
 			}

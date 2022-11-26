@@ -29,7 +29,7 @@ public class InstrumentsOfTheirOwnRuin {
 
 
 	static Task DuringRavage_InvadersDamageInvadersInAdjacentLandsInsteadOfDahan( TargetSpaceCtx ctx ) {
-		ctx.ModifyRavage( cfg => cfg.RavageSequence = eng => RavageSequence_DamageInvadersInAdjacentLand(ctx, new UnitOfWork() ) );
+		ctx.ModifyRavage( cfg => cfg.RavageSequence = eng => RavageSequence_DamageInvadersInAdjacentLand(ctx, ctx.GameState.StartAction() ) );
 		return Task.CompletedTask;
 	}
 

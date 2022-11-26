@@ -78,7 +78,7 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 	}
 
 	public override SelfCtx BindMyPower( GameState gameState, UnitOfWork actionId=default ) 
-		=> new TricksterCtx(this,gameState,actionId!=default?actionId:new UnitOfWork());
+		=> new TricksterCtx(this, gameState, actionId!=default ? actionId : gameState.StartAction() );
 
 }
 
