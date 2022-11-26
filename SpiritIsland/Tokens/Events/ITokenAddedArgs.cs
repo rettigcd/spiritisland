@@ -23,7 +23,7 @@ public interface ITokenAddedArgs {
 	public SpaceState Space { get; }
 	public AddReason Reason { get; }
 	public GameState GameState { get; }
-	public Guid ActionId { get; }
+	public UnitOfWork ActionId { get; }
 }
 
 

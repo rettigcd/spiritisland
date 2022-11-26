@@ -102,7 +102,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	public int DamageToBlightLand = 2;
 
-	public async Task DamageLandFromRavage( Space space, int damageInflictedFromInvaders, Guid actionId ) {
+	public async Task DamageLandFromRavage( Space space, int damageInflictedFromInvaders, UnitOfWork actionId ) {
 		if(damageInflictedFromInvaders==0) return;
 
 		await LandDamaged.InvokeAsync( new LandDamagedArgs { 
@@ -150,7 +150,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		if(effect.DestroyPresence)
 			foreach(var spirit in Spirits)
 				if(spirit.Presence.IsOn( args.Space ))
-					await spirit.Presence.Destroy( args.Space.Space, this, DestoryPresenceCause.Blight, Guid.NewGuid(), args.Reason );
+					await spirit.Presence.Destroy( args.Space.Space, this, DestoryPresenceCause.Blight, new UnitOfWork(), args.Reason );
 
 		// Cascade blight
 		if(effect.Cascade) {
@@ -336,7 +336,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	static async Task DefaultDestroy1PresenceFromBlightCard( Spirit spirit, GameState gs, Cause cause ) {
 		var presence = await spirit.Gateway.Decision( Select.DeployedPresence.ToDestroy( "Blighted Island: Select presence to destroy.", new ReadOnlyBoundPresence( spirit, gs, gs.Island.Terrain_ForBlight ) ) );
-		await spirit.Presence.Destroy( presence, gs, DestoryPresenceCause.BlightedIsland, Guid.NewGuid() );
+		await spirit.Presence.Destroy( presence, gs, DestoryPresenceCause.BlightedIsland, new UnitOfWork() );
 	}
 
 	#endregion
@@ -446,7 +446,7 @@ public class LandDamagedArgs {
 	public GameState GameState;
 	public Space Space;
 	public int Damage;
-	public Guid ActionId;
+	public UnitOfWork ActionId;
 }
 
 public class AddBlightEffect {

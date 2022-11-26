@@ -14,5 +14,5 @@ public class RemovingTokenArgs {
 	}
 	int _count;
 	public RemoveReason Reason { get; set; }
-	public Guid ActionId { get; set; }
+	public UnitOfWork ActionId { get; set; }
 }

@@ -122,7 +122,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	public void InitDefault( HealthTokenClass tokenClass, int value )
 		=> Init( GetDefault( tokenClass ), value );
 
-	public Task AddDefault( HealthTokenClass tokenClass, int count, Guid actionId, AddReason addReason = AddReason.Added )
+	public Task AddDefault( HealthTokenClass tokenClass, int count, UnitOfWork actionId, AddReason addReason = AddReason.Added )
 		=> Add( GetDefault( tokenClass ), count, actionId, addReason );
 
 	public void AdjustDefault( HealthTokenClass tokenClass, int delta ) 
@@ -132,7 +132,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 		counts[specific] = value;
 	}
 
-	public async Task AdjustHealthOfAll( int delta, Guid actionId, params HealthTokenClass[] tokenClasses ) {
+	public async Task AdjustHealthOfAll( int delta, UnitOfWork actionId, params HealthTokenClass[] tokenClasses ) {
 		if(delta == 0) return;
 		foreach(var tokenClass in tokenClasses) {
 			var tokens = OfType( tokenClass ).Cast<HealthToken>();
@@ -150,7 +150,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	/// <summary> Replaces (via adjust) HealthToken with new HealthTokens </summary>
 	/// <returns> The # of remaining Adjusted tokens. </returns>
-	public async Task<(HealthToken,int)> AdjustHealthOf( HealthToken token, int delta, int count, Guid actionId ) {
+	public async Task<(HealthToken,int)> AdjustHealthOf( HealthToken token, int delta, int count, UnitOfWork actionId ) {
 		count = Math.Min( this[token], count );
 		if(count == 0) return (token,0);
 
@@ -168,7 +168,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	#region Event-Generating Token Changes
 
-	public async Task Add( Token token, int count, Guid actionId, AddReason addReason = AddReason.Added ) {
+	public async Task Add( Token token, int count, UnitOfWork actionId, AddReason addReason = AddReason.Added ) {
 		if(count < 0) throw new System.ArgumentOutOfRangeException( nameof( count ) );
 
 		// Pre-Add check/adjust
@@ -185,7 +185,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	}
 
 	/// <summary> returns null if no token removed </summary>
-	public async Task<TokenRemovedArgs> Remove( Token token, int count, Guid actionId, RemoveReason reason = RemoveReason.Removed ) {
+	public async Task<TokenRemovedArgs> Remove( Token token, int count, UnitOfWork actionId, RemoveReason reason = RemoveReason.Removed ) {
 		count = System.Math.Min( count, this[token] );
 
 		// Pre-Remove check/adjust
@@ -205,10 +205,10 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	}
 
 	// Convenience only
-	public Task Destroy( Token token, int count, Guid actionId ) => Remove(token, count, actionId, RemoveReason.Destroyed );
+	public Task Destroy( Token token, int count, UnitOfWork actionId ) => Remove(token, count, actionId, RemoveReason.Destroyed );
 
 	/// <summary> Gathering / Pushing + a few others </summary>
-	public async Task MoveTo(Token token, Space destination, Guid actionId ) {
+	public async Task MoveTo(Token token, Space destination, UnitOfWork actionId ) {
 
 		// Remove from source
 		TokenRemovedArgs removedArgs;
@@ -251,7 +251,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	public int InvaderTotal() => InvaderTokens().Sum( i => counts[i] );
 
-	public async Task AddStrifeTo( HealthToken invader, Guid actionId, int count = 1 ) {
+	public async Task AddStrifeTo( HealthToken invader, UnitOfWork actionId, int count = 1 ) {
 
 		// Remove old type from 
 		if(this[invader]<count)

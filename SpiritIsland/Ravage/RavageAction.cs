@@ -5,7 +5,7 @@ public class RavageAction {
 	#region constructor
 
 	public RavageAction( GameState gs, InvaderBinding grp ) {
-		actionId = Guid.NewGuid();
+		actionId = new UnitOfWork();
 		var cfg = gs.GetRavageConfiguration( grp.Space );
 
 		this.gameState = gs;
@@ -239,7 +239,7 @@ public class RavageAction {
 	SpaceState Tokens => invaderBinding.Tokens;
 	readonly protected InvaderBinding invaderBinding;
 	readonly GameState gameState;
-	readonly Guid actionId;
+	readonly UnitOfWork actionId;
 //	readonly Func<Space, int, Guid, Task> damageLandCallback;
 	readonly protected ConfigureRavage cfg;
 

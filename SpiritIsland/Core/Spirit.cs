@@ -81,7 +81,7 @@ public abstract partial class Spirit : IOption {
 	}
 
 	public async Task GrowAndResolve( GrowthOption option, GameState gameState ) { // public for Testing
-		var ctx = Bind( gameState, Guid.NewGuid() );
+		var ctx = Bind( gameState, new UnitOfWork() );
 
 		// Auto run the auto-runs.
 		foreach(var autoAction in option.AutoRuns)
@@ -135,7 +135,7 @@ public abstract partial class Spirit : IOption {
 
 		// Create a new Action (guid) each time we resolve an Action
 		SelfCtx ctx = phase switch {
-			Phase.Growth => Bind(gs,Guid.NewGuid()),
+			Phase.Growth => Bind(gs,new UnitOfWork()),
 			Phase.Fast or 
 			Phase.Slow => BindMyPower(gs),
 			_ => throw new InvalidOperationException(),
@@ -334,10 +334,10 @@ public abstract partial class Spirit : IOption {
 
 	protected abstract void InitializeInternal( Board board, GameState gameState );
 
-	public virtual SelfCtx Bind( GameState gameState, Guid actionId ) => new SelfCtx( this, gameState, (Cause)default, actionId );
+	public virtual SelfCtx Bind( GameState gameState, UnitOfWork actionId ) => new SelfCtx( this, gameState, (Cause)default, actionId );
 
-	public virtual SelfCtx BindMyPower( GameState gameState, Guid existingActionId = default ) 
-		=> new SelfCtx( this, gameState, Cause.MyPowers, existingActionId != default ? default : Guid.NewGuid() );
+	public virtual SelfCtx BindMyPower( GameState gameState, UnitOfWork existingActionId = default ) 
+		=> new SelfCtx( this, gameState, Cause.MyPowers, existingActionId != default ? default : new UnitOfWork() );
 
 	void On_TimePassed(GameState _ ) {
 		// reset cards / powers

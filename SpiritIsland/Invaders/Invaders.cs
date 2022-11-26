@@ -15,7 +15,7 @@ public class Invaders {
 
 	#endregion
 
-	public InvaderBinding On( Space targetSpace, Guid actionId ) {
+	public InvaderBinding On( Space targetSpace, UnitOfWork actionId ) {
 		return new InvaderBinding( 
 			gs.Tokens[targetSpace], 
 			new DestroyInvaderStrategy( gs, gs.Fear.AddDirect ),

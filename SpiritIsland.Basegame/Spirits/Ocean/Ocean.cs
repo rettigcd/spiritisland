@@ -63,7 +63,7 @@ public class Ocean : Spirit {
 	}
 
 	void RemoveDrownedDahan( GameState gs ) {
-		var actionId = Guid.NewGuid();
+		var actionId = new UnitOfWork();
 		foreach(var board in gs.Island.Boards)
 			gs.Tokens[board.Ocean].Dahan.Bind(actionId).Drown();
 	}

@@ -34,7 +34,7 @@ public class FlowingAndSilentFormsDartBy {
 
 		}
 
-		public async Task DestroyPresenceApi( SpiritPresence presence, Space space, GameState gs, DestoryPresenceCause actionType, Guid actionId ) {
+		public async Task DestroyPresenceApi( SpiritPresence presence, Space space, GameState gs, DestoryPresenceCause actionType, UnitOfWork actionId ) {
 			if( space == this.protectedSpace) {
 				var dst = await spirit.Gateway.Decision(new Select.Space("Instead of destroying, push presence to:", gs.Tokens[space].Adjacent.Select(x=>x.Space),Present.Done));
 				if(dst != null) {

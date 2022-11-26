@@ -9,18 +9,18 @@ public class SelfCtx {
 	public Spirit Self { get; }
 	public GameState GameState { get; }
 	public TerrainMapper TerrainMapper { get; }
-	public Guid CurrentActionId { get; }
+	public UnitOfWork CurrentActionId { get; }
 
 	#region constructor
 
-	public SelfCtx(Spirit self,GameState gameState, Cause cause, Guid actionId)
+	public SelfCtx(Spirit self,GameState gameState, Cause cause, UnitOfWork actionId)
 		:this( self, gameState, PickTerrain(cause,gameState), actionId ) { }
 
 	static TerrainMapper PickTerrain( Cause cause, GameState gameState ) => cause == Cause.MyPowers
 		? gameState.Island.Terrain_ForPower
 		: gameState.Island.Terrain;
 
-	public SelfCtx( Spirit self, GameState gameState, TerrainMapper mapper, Guid actionId ) {
+	public SelfCtx( Spirit self, GameState gameState, TerrainMapper mapper, UnitOfWork actionId ) {
 		Self = self;
 		GameState = gameState;
 		TerrainMapper = mapper;

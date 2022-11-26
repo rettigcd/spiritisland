@@ -9,7 +9,7 @@ public class TokenMovedArgs : ITokenMovedArgs {
 	public SpaceState RemovedFrom { get; set; }
 	public SpaceState AddedTo { get; set; }
 
-	public Guid ActionId { get; set; } // !!! Init this!
+	public UnitOfWork ActionId { get; set; } // !!! Init this!
 
 }
 

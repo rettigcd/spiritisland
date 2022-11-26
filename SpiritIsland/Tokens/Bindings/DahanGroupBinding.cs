@@ -31,21 +31,21 @@ public class DahanGroupBindingNoEvents {
 
 	public void Init( Token token, int count ) => _tokens.Init( token, count );
 
-	public DahanGroupBinding Bind( Guid actionId ) => new DahanGroupBinding(this,actionId); // !!! what about the destroy readon?
+	public DahanGroupBinding Bind( UnitOfWork actionId ) => new DahanGroupBinding(this,actionId); // !!! what about the destroy readon?
 }
 
 public class DahanGroupBinding : DahanGroupBindingNoEvents {
 
 	readonly RemoveReason _destroyReason;
 
-	readonly Guid actionId;
+	readonly UnitOfWork actionId;
 
-	public DahanGroupBinding( DahanGroupBindingNoEvents src, Guid actionId, RemoveReason destroyReason = RemoveReason.Destroyed ):base(src) {
+	public DahanGroupBinding( DahanGroupBindingNoEvents src, UnitOfWork actionId, RemoveReason destroyReason = RemoveReason.Destroyed ):base(src) {
 		_destroyReason = destroyReason;
 		this.actionId = actionId;
 	}
 
-	public DahanGroupBinding( SpaceState tokens, Guid actionId, RemoveReason destoryReason = RemoveReason.Destroyed ):base(tokens) {
+	public DahanGroupBinding( SpaceState tokens, UnitOfWork actionId, RemoveReason destoryReason = RemoveReason.Destroyed ):base(tokens) {
 		_destroyReason = destoryReason;
 		this.actionId = actionId;
 	}

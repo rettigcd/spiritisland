@@ -36,7 +36,7 @@ public class ObserveTheEverChangingWorld {
 
 		Task Track( ITokenRemovedArgs x ) => Check(x.Space.Space, x.ActionId );
 
-		async Task Check( Space space, Guid currentActionId ) {
+		async Task Check( Space space, UnitOfWork currentActionId ) {
 			if(ctx.Tokens[elementToken] == 0			// already complete
 				|| space != ctx.Space					// wrong space
 				|| appliedActionsIds.Contains( currentActionId ) // already did this action 
@@ -68,7 +68,7 @@ public class ObserveTheEverChangingWorld {
 		readonly TargetSpaceCtx ctx;
 		readonly Guid[] handlerKeys;
 		readonly ElementToken elementToken;
-		readonly HashSet<Guid> appliedActionsIds = new HashSet<Guid>();
+		readonly HashSet<UnitOfWork> appliedActionsIds = new HashSet<UnitOfWork>();
 		string tokenSummary;
 
 	}

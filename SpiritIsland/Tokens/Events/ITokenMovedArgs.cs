@@ -7,6 +7,6 @@ public interface ITokenMovedArgs {
 	int Count { get; }
 	SpaceState RemovedFrom { get; }
 	SpaceState AddedTo { get; }
-	Guid ActionId { get; }
+	UnitOfWork ActionId { get; }
 }
 

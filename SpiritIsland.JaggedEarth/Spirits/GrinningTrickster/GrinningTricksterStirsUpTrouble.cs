@@ -77,14 +77,14 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 		await ctx.Presence.Destroy( space, DestoryPresenceCause.SpiritPower );
 	}
 
-	public override SelfCtx BindMyPower( GameState gameState, Guid actionId=default ) 
-		=> new TricksterCtx(this,gameState,actionId!=default?actionId:Guid.NewGuid());
+	public override SelfCtx BindMyPower( GameState gameState, UnitOfWork actionId=default ) 
+		=> new TricksterCtx(this,gameState,actionId!=default?actionId:new UnitOfWork());
 
 }
 
 // Only use this when Trickster is using their own Powers
 class TricksterCtx : SelfCtx {
-	public TricksterCtx(Spirit spirit, GameState gs, Guid actionId) : base( spirit, gs, Cause.MyPowers, actionId ) { }
+	public TricksterCtx(Spirit spirit, GameState gs, UnitOfWork actionId) : base( spirit, gs, Cause.MyPowers, actionId ) { }
 	public override TargetSpaceCtx Target( Space space ) => new TricksterSpaceCtx( this, space );
 }
 
@@ -117,7 +117,7 @@ public class TricksterBlight : BlightTokenBinding {
 	readonly TricksterSpaceCtx ctx;
 	readonly GrinningTricksterStirsUpTrouble trickster;
 
-	public TricksterBlight( TricksterSpaceCtx ctx, Guid actionId ) :base( ctx.Tokens, actionId ) {
+	public TricksterBlight( TricksterSpaceCtx ctx, UnitOfWork actionId ) :base( ctx.Tokens, actionId ) {
 		this.ctx = ctx;
 		trickster = (GrinningTricksterStirsUpTrouble)ctx.Self;
 	}

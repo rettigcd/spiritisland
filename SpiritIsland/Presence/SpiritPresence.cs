@@ -85,7 +85,7 @@ public class SpiritPresence {
 
 	#region Game-Play things you can do with presence
 
-	public virtual async Task Place( IOption from, Space to, GameState gs, Guid actionId ) {
+	public virtual async Task Place( IOption from, Space to, GameState gs, UnitOfWork actionId ) {
 		await TakeFrom( from, gs );
 		await PlaceOn( gs.Tokens[to], actionId ); 
 	}
@@ -125,12 +125,12 @@ public class SpiritPresence {
 			: throw new ArgumentException( "Unable to find location to restore presence" );
 	}
 
-	public async Task Move( Space from, Space to, GameState gs, Guid actionId ) {
+	public async Task Move( Space from, Space to, GameState gs, UnitOfWork actionId ) {
 		await RemoveFrom_NoCheck( gs.Tokens[from] );
 		await PlaceOn( gs.Tokens[to], actionId );
 	}
 
-	public virtual async Task Destroy( Space space, GameState gs, DestoryPresenceCause actionType, Guid actionId, AddReason blightAddedReason = AddReason.None ) {
+	public virtual async Task Destroy( Space space, GameState gs, DestoryPresenceCause actionType, UnitOfWork actionId, AddReason blightAddedReason = AddReason.None ) {
 		await DestroyBehavior.DestroyPresenceApi( this, space, gs, actionType, actionId );
 		CheckIfSpiritIsDestroyed( gs );
 	}
@@ -168,7 +168,7 @@ public class SpiritPresence {
 	public IDestroyPresenceBehavour DestroyBehavior = new DefaultDestroyBehavior(); // replaceable / plugable
 
 	public class DefaultDestroyBehavior : IDestroyPresenceBehavour {
-		public virtual Task DestroyPresenceApi(SpiritPresence presence, Space space, GameState gs, DestoryPresenceCause actionType, Guid actionId ) {
+		public virtual Task DestroyPresenceApi(SpiritPresence presence, Space space, GameState gs, DestoryPresenceCause actionType, UnitOfWork actionId ) {
 			presence.RemoveFrom_NoCheck( gs.Tokens[space] );
 			++presence.Destroyed;
 			return Task.CompletedTask;
@@ -214,7 +214,7 @@ public class SpiritPresence {
 
 	#region Is this Setup or Game play?
 
-	public async virtual Task PlaceOn( SpaceState space, Guid actionId ) {
+	public async virtual Task PlaceOn( SpaceState space, UnitOfWork actionId ) {
 		await space.Add(presenceToken,1,actionId);
 	}
 	public virtual void Adjust( SpaceState space, int count ) {

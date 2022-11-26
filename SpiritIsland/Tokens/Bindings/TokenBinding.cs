@@ -23,19 +23,19 @@ public class TokenBindingNoEvents {
 
 	public void Adjust( int delta ) => tokens.Adjust( token, delta );
 
-	public TokenBinding Bind(Guid actionId) => new TokenBinding(this,actionId);
+	public TokenBinding Bind(UnitOfWork actionId) => new TokenBinding(this,actionId);
 }
 
 public class TokenBinding : TokenBindingNoEvents {
 
 	#region constructor
 
-	public TokenBinding( SpaceState tokens, Token token, Guid actionId ) : base( tokens, token ) {
+	public TokenBinding( SpaceState tokens, Token token, UnitOfWork actionId ) : base( tokens, token ) {
 		if( actionId == default ) throw new ArgumentOutOfRangeException(nameof(actionId),"Action ID cannot be default.");
 		this._actionId = actionId;
 	}
 
-	public TokenBinding( TokenBindingNoEvents src, Guid actionId ) : base( src ) {
+	public TokenBinding( TokenBindingNoEvents src, UnitOfWork actionId ) : base( src ) {
 		if(actionId == default) throw new ArgumentOutOfRangeException( nameof( actionId ), "Action ID cannot be default." );
 		this._actionId = actionId;
 	}
@@ -51,7 +51,7 @@ public class TokenBinding : TokenBindingNoEvents {
 
 	public static implicit operator int( TokenBinding b ) => b.Count;
 
-	readonly Guid _actionId;
+	readonly UnitOfWork _actionId;
 
 }
 

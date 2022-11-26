@@ -26,7 +26,7 @@ public static class StrifedRavage {
 
 	#region Strife reduces Health
 
-	public static async Task InvadersReduceHealthByStrifeCount( GameState gameState, Guid actionId ) {
+	public static async Task InvadersReduceHealthByStrifeCount( GameState gameState, UnitOfWork actionId ) {
 		// add penalty
 		++gameState.HealthPenaltyPerStrife;
 		// remove penalty
@@ -44,12 +44,12 @@ public static class StrifedRavage {
 	#region Strife caused Damage to Self
 
 	public static async Task StrifedInvadersTakeDamagePerStrife( FearCtx ctx ) {
-		Guid actionId = Guid.NewGuid();
+		UnitOfWork actionId = new UnitOfWork();
 		foreach(var space in ctx.GameState.AllActiveSpaces)
 			await EachInvaderTakesDamageByStrifeCount( space, actionId );
 	}
 
-	static async Task EachInvaderTakesDamageByStrifeCount( SpaceState tokens, Guid actionId ) {
+	static async Task EachInvaderTakesDamageByStrifeCount( SpaceState tokens, UnitOfWork actionId ) {
 		var strifedInvaders = tokens.InvaderTokens()
 			.Where( x => 0 < x.StrifeCount )
 			.OrderBy( x => x.RemainingHealth )
@@ -61,7 +61,7 @@ public static class StrifedRavage {
 			await DamageInvaderHealthByItsOwnStrife( tokens, strifedInvader, actionId );
 	}
 
-	static async Task DamageInvaderHealthByItsOwnStrife( SpaceState tokens, HealthToken originalInvader, Guid actionId ) {
+	static async Task DamageInvaderHealthByItsOwnStrife( SpaceState tokens, HealthToken originalInvader, UnitOfWork actionId ) {
 		var newInvader = originalInvader.AddDamage( originalInvader.StrifeCount );
 		if(newInvader == originalInvader) return;
 

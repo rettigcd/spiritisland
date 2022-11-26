@@ -9,7 +9,7 @@ public partial class Keeper {
 				new PresenceTrack( Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4, Track.Card5Reclaim1 )
 			) { }
 
-		public override async Task Place( IOption from, Space to, GameState gs, Guid actionId ) {
+		public override async Task Place( IOption from, Space to, GameState gs, UnitOfWork actionId ) {
 			bool wasSacredSite = SacredSites( gs, gs.Island.Terrain ).Contains( to );
 			await base.Place( from, to, gs, actionId );
 			bool createdSacredSite = !wasSacredSite && SacredSites( gs, gs.Island.Terrain ).Contains( to );

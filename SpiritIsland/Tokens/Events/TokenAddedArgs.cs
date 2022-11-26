@@ -2,7 +2,7 @@
 
 public class TokenAddedArgs : ITokenAddedArgs {
 
-	public TokenAddedArgs(SpaceState space, Token token, AddReason addReason, int count, Guid actionId ) {
+	public TokenAddedArgs(SpaceState space, Token token, AddReason addReason, int count, UnitOfWork actionId ) {
 		Space = space;
 		Token = token;
 		Reason = addReason;
@@ -15,7 +15,7 @@ public class TokenAddedArgs : ITokenAddedArgs {
 
 	public int Count { get; }
 	public AddReason Reason { get; }
-	public Guid ActionId { get; }
+	public UnitOfWork ActionId { get; }
 
 	public GameState GameState { get; set; }
 

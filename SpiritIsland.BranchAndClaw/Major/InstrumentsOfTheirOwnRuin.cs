@@ -29,11 +29,11 @@ public class InstrumentsOfTheirOwnRuin {
 
 
 	static Task DuringRavage_InvadersDamageInvadersInAdjacentLandsInsteadOfDahan( TargetSpaceCtx ctx ) {
-		ctx.ModifyRavage( cfg => cfg.RavageSequence = eng => RavageSequence_DamageInvadersInAdjacentLand(ctx, Guid.NewGuid() ) );
+		ctx.ModifyRavage( cfg => cfg.RavageSequence = eng => RavageSequence_DamageInvadersInAdjacentLand(ctx, new UnitOfWork() ) );
 		return Task.CompletedTask;
 	}
 
-	static async Task RavageSequence_DamageInvadersInAdjacentLand( TargetSpaceCtx ctx, Guid actionId ) {
+	static async Task RavageSequence_DamageInvadersInAdjacentLand( TargetSpaceCtx ctx, UnitOfWork actionId ) {
 		// Note - this works regardless of them ravaging in target land or not. yay!
 
 		// This ravage is totally different from any other.

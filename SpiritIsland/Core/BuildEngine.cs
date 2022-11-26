@@ -7,7 +7,7 @@ public class BuildEngine {
 	protected GameState gameState;
 
 	// Initialized at beginning of DoSingleBuildOnSpace
-	protected Guid actionId;
+	protected UnitOfWork actionId;
 
 	/// <summary>
 	/// Call this on spaces, even if they have a disease.
@@ -35,7 +35,7 @@ public class BuildEngine {
 	}
 
 	async Task<string> DoSingleBuildOnSpace() {
-		actionId = Guid.NewGuid();
+		actionId = new UnitOfWork();
 
 		// Determine type to build
 		int townCount = tokens.Sum( Invader.Town );

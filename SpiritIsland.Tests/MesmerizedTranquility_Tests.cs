@@ -13,7 +13,7 @@ public class MesmerizedTranquility_Tests {
 		//   And: mesmerized played on that space
 		MesmerizedTranquility.ActAsync(fxt.SelfCtx.Target(space)).Wait();
 		//  When: we ravage there
-		new RavageAction( fxt.GameState, fxt.GameState.Invaders.On(space, Guid.NewGuid()) ).Exec().Wait();
+		new RavageAction( fxt.GameState, fxt.GameState.Invaders.On(space, new UnitOfWork()) ).Exec().Wait();
 		// Then: dahan is not damaged. + 1 Isolate (and explorer is gone)
 		fxt.GameState.Tokens[space].Summary.ShouldBe("1D@2,1I");
 	}
@@ -28,7 +28,7 @@ public class MesmerizedTranquility_Tests {
 		MesmerizedTranquility.ActAsync( fxt.SelfCtx.Target( space ) ).Wait();
 		MesmerizedTranquility.ActAsync( fxt.SelfCtx.Target( space ) ).Wait();
 		//  When: we ravage there
-		new RavageAction( fxt.GameState, fxt.GameState.Invaders.On( space, Guid.NewGuid() ) ).Exec().Wait();
+		new RavageAction( fxt.GameState, fxt.GameState.Invaders.On( space, new UnitOfWork() ) ).Exec().Wait();
 		// Then: dahan is not damaged. + 1 Isolate (and town is gone)
 		fxt.GameState.Tokens[space].Summary.ShouldBe( "1D@2,1I" );
 	}

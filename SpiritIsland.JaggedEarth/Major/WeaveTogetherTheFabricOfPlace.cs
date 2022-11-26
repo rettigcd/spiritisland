@@ -52,7 +52,7 @@ public class WeaveTogetherTheFabricOfPlace {
 			removeSpace.Restore();
 
 			// divide pieces as you wish.
-			Guid actionId = Guid.NewGuid();
+			UnitOfWork actionId = new UnitOfWork();
 			await DistributePresence( space, other, gs, actionId );
 			await DistributeTokens( originatorCtx, space, other, gs, actionId );
 		});
@@ -60,7 +60,7 @@ public class WeaveTogetherTheFabricOfPlace {
 		return multi;
 	}
 
-	static async Task DistributeTokens( SelfCtx ctx, Space space, Space other, GameState gs, Guid actionId ) {
+	static async Task DistributeTokens( SelfCtx ctx, Space space, Space other, GameState gs, UnitOfWork actionId ) {
 		// Distribute Tokens (All of them are considered moved.)
 		// !!! not counting unmoved tokens as moved li
 		var srcTokens = gs.Tokens[space];
@@ -71,7 +71,7 @@ public class WeaveTogetherTheFabricOfPlace {
 		}
 	}
 
-	static async Task DistributePresence( Space space, Space other, GameState gs, Guid actionId ) {
+	static async Task DistributePresence( Space space, Space other, GameState gs, UnitOfWork actionId ) {
 		var dstOptions = new[] { gs.Tokens[other] };
 		var srcTokens = gs.Tokens[space];
 		foreach(var spirit in gs.Spirits) {

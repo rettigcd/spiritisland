@@ -113,7 +113,7 @@ public class RiverSurges_GrowthTests : GrowthTests {
 	[InlineData(7,"Encompassing Ward")]
 	public void PowerProgressionCards( int count, string lastPowerCard ){
 		var drawPowerCard = new DrawPowerCard();
-		var ctx = spirit.Bind( gameState, Guid.NewGuid() );
+		var ctx = spirit.Bind( gameState, new UnitOfWork() );
 		while(count-- > 0)
 			_ = drawPowerCard.ActivateAsync( ctx );
 

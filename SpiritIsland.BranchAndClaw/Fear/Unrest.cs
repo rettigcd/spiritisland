@@ -15,7 +15,7 @@ public class Unrest : IFearOptions {
 	[FearLevel( 2, "Each player adds 1 strife to a town.  For the rest of this turn, invaders have -1 health per strife to a minimum of 1." )]
 	public async Task Level2( FearCtx ctx ) {
 
-		var actionId = Guid.NewGuid();
+		var actionId = new UnitOfWork();
 
 		// Each player adds 1 strife to a town.
 		foreach(var spiritCtx in ctx.Spirits)
@@ -28,7 +28,7 @@ public class Unrest : IFearOptions {
 	[FearLevel( 3, "Each player adds 1 strife to an invader.  For the rest of this turn, invaders have -1 health per strife to a minimum of 1." )]
 	public async Task Level3( FearCtx ctx ) {
 
-		var actionId = Guid.NewGuid();
+		var actionId = new UnitOfWork();
 
 		var gs = ctx.GameState;
 		// Each player adds 1 strife to an invader.

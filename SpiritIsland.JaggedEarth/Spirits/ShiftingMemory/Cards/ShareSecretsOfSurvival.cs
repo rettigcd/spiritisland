@@ -26,7 +26,7 @@ public class ShareSecretsOfSurvival {
 
 	public static Action<TargetSpaceCtx> DestroyFewerDahan( int maxPerAction, int maxActionCount ) {
 		return ctx => {
-			var byAction = new CountDictionary<Guid>();
+			var byAction = new CountDictionary<UnitOfWork>();
 
 			void ReduceDestroyCount( RemovingTokenArgs args ) {
 				if( args.Space == ctx.Space // this space

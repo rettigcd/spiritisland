@@ -4,7 +4,7 @@ public class InvaderBinding {
 
 	#region constructor
 
-	public InvaderBinding( SpaceState tokens, DestroyInvaderStrategy destroyStrategy, Guid actionId) {
+	public InvaderBinding( SpaceState tokens, DestroyInvaderStrategy destroyStrategy, UnitOfWork actionId) {
 		this.Tokens = tokens;
 		this.DestroyStrategy = destroyStrategy;
 		this.actionId = actionId;
@@ -12,7 +12,7 @@ public class InvaderBinding {
 
 	#endregion
 
-	public Guid actionId;
+	public UnitOfWork actionId;
 
 	public Space Space => Tokens.Space;
 

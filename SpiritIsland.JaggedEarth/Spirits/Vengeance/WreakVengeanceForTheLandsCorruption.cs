@@ -5,7 +5,7 @@ class WreakVengeanceForTheLandsCorruption : TokenBinding {
 
 	readonly TokenBinding blight;
 
-	public WreakVengeanceForTheLandsCorruption(SpaceState tokens, Guid actionId ) 
+	public WreakVengeanceForTheLandsCorruption(SpaceState tokens, UnitOfWork actionId ) 
 		: base( new TokenBindingNoEvents( tokens, TokenType.Badlands ), actionId )
 	{
 		blight = new TokenBinding( new TokenBindingNoEvents( tokens,TokenType.Blight ), actionId );

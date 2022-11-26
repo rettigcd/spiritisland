@@ -7,7 +7,7 @@ public class DestroyInvaderStrategy {
 		this.addFear = addFear;
 	}
 
-	public virtual async Task OnInvaderDestroyed( Space space, HealthToken token, bool fromRavage, Guid actionId ) {
+	public virtual async Task OnInvaderDestroyed( Space space, HealthToken token, bool fromRavage, UnitOfWork actionId ) {
 
 		var reason = fromRavage ? RemoveReason.DestroyedInBattle : RemoveReason.Destroyed;
 

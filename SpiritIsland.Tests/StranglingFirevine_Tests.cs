@@ -7,7 +7,7 @@ public class StranglingFirevine_Tests {
 		var fxt = new ConfigurableTestFixture();
 
 		// Track actions
-		HashSet<Guid> actionIds = new HashSet<Guid>();
+		HashSet<UnitOfWork> actionIds = new HashSet<UnitOfWork>();
 		fxt.GameState.Tokens.TokenAdded.ForGame.Add( x => actionIds.Add( x.ActionId ) );
 		fxt.GameState.Tokens.TokenRemoved.ForGame.Add( x => actionIds.Add( x.ActionId ) );
 		fxt.GameState.Tokens.TokenMoved.ForGame.Add( x => actionIds.Add( x.ActionId ) );

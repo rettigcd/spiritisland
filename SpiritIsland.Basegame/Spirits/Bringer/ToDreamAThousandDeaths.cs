@@ -9,7 +9,7 @@ public class ToDreamAThousandDeaths_DestroyStrategy : DestroyInvaderStrategy {
 		this.ctx = ctx;
 	}
 
-	public override async Task OnInvaderDestroyed( Space space, HealthToken token, bool fromRavage, Guid _ ) {
+	public override async Task OnInvaderDestroyed( Space space, HealthToken token, bool fromRavage, UnitOfWork _ ) {
 		if(token.Class == Invader.City) {
 			AddFear( space, 5, false ); // not actually destroying towns/cities
 		} else {

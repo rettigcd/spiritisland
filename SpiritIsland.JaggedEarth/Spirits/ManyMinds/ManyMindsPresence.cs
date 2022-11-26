@@ -12,7 +12,7 @@ class ManyMindsPresence : SpiritPresence {
 		gs.Tokens.TokenRemoved.ForGame.Add( TokenRemoved );
 	}
 
-	public override async Task PlaceOn( SpaceState space, Guid actionId ) {
+	public override async Task PlaceOn( SpaceState space, UnitOfWork actionId ) {
 		await base.PlaceOn( space, actionId );
 		// if created sacred site, create virtual beast
 		if(CountOn( space ) == 2)

@@ -14,13 +14,13 @@ public class BuildingEventArgs {
 }
 
 public class RavagingEventArgs {
-	public RavagingEventArgs(GameState gs, Guid actionId ) { 
+	public RavagingEventArgs(GameState gs, UnitOfWork actionId ) { 
 		GameState = gs;
 		ActionId = actionId;
 	}
 	public GameState GameState { get; }
 	public List<SpaceState> Spaces;
 	public void Skip1(SpaceState space) => Spaces.Remove(space);
-	public Guid ActionId { get; }
+	public UnitOfWork ActionId { get; }
 }
 

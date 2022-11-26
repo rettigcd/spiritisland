@@ -38,7 +38,7 @@ namespace SpiritIsland.Tests {
 			return this;
 		}
 
-		public TargetSpaceCtx TargetSpace( string spaceLabel ) => spirit.Bind( this.gameState, Guid.NewGuid() )
+		public TargetSpaceCtx TargetSpace( string spaceLabel ) => spirit.Bind( this.gameState, new UnitOfWork() )
 			.Target( gameState.AllSpaces.Single( x => x.Space.Label == spaceLabel ).Space );
 
 		public void InitRavageCard( Space space ) => gameState.InvaderDeck.Ravage.Cards.Add( InvaderCardEx.For( space ) );

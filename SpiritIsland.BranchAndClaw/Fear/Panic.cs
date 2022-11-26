@@ -17,7 +17,7 @@ public class Panic : IFearOptions {
 	[FearLevel( 2, "Each player adds 1 strife in a land with beast/disease/dahan.  For the rest of this turn, invaders have -1 health per strife to a minimum of 1" )]
 	public async Task Level2( FearCtx ctx ) {
 
-		Guid actionId = Guid.NewGuid();
+		UnitOfWork actionId = new UnitOfWork();
 
 		// Each player adds 1 strife in a land with beast/disease/dahan.
 		foreach(SelfCtx spirit in ctx.Spirits)
@@ -30,7 +30,7 @@ public class Panic : IFearOptions {
 	[FearLevel( 3, "Each player adds 1 strife to an invader.  For the rest of this turn, invaders have -1 health per strife to a minimum of 1." )]
 	public async Task Level3( FearCtx ctx ) {
 
-		var actionId = Guid.NewGuid();
+		var actionId = new UnitOfWork();
 
 		// Each player adds 1 strife to an invader.
 		foreach(SelfCtx spirit in ctx.Spirits)

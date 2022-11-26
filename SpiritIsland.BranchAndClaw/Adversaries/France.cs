@@ -102,7 +102,7 @@ public class France : IAdversary {
 			SpaceToken[] options = boardCtx.FindTokens( Invader.Town );
 			var st = await boardCtx.Decision( new Select.TokenFromManySpaces( "Add strife to town", options, Present.Always ) );
 			if(st != null)
-				await boardCtx.GameState.Tokens[st.Space].AddStrifeTo( (HealthToken)st.Token, Guid.NewGuid(), 1 );
+				await boardCtx.GameState.Tokens[st.Space].AddStrifeTo( (HealthToken)st.Token, new UnitOfWork(), 1 );
 		} );
 
 	static DecisionOption<BoardCtx> Add2StrifeToCityOrTown => new DecisionOption<BoardCtx>(
@@ -112,7 +112,7 @@ public class France : IAdversary {
 			for(int i = 0; i < 2; ++i) {
 				var st = await boardCtx.Decision( new Select.TokenFromManySpaces( $"Add strife ({i+1} of 2)", options, Present.Always ) );
 				if(st != null)
-					await boardCtx.GameState.Tokens[st.Space].AddStrifeTo( (HealthToken)st.Token, Guid.NewGuid(), 1 );
+					await boardCtx.GameState.Tokens[st.Space].AddStrifeTo( (HealthToken)st.Token, new UnitOfWork(), 1 );
 			}
 		} );
 
@@ -122,7 +122,7 @@ public class France : IAdversary {
 			SpaceToken[] options = boardCtx.FindTokens( Invader.Town );
 			var st = await boardCtx.Decision( new Select.TokenFromManySpaces( "Destory a town", options, Present.Always ) );
 			if(st != null)
-				await boardCtx.GameState.Tokens[st.Space].Destroy( st.Token, 1, Guid.NewGuid() );
+				await boardCtx.GameState.Tokens[st.Space].Destroy( st.Token, 1, new UnitOfWork() );
 		} );
 
 }
@@ -166,7 +166,7 @@ public class FranceInvaderCard : InvaderCard {
 				.Where( terrainMapper.IsInPlay )
 				.OrderBy( t=>t.Sum(Invader.Town))
 				.First();
-			await buildSpace.AddDefault(Invader.Town,1,Guid.NewGuid());
+			await buildSpace.AddDefault(Invader.Town,1,new UnitOfWork());
 		}
 	}
 
@@ -217,7 +217,7 @@ public class FranceInvaderCard : InvaderCard {
 			var options = x.Board.Spaces.Where(s=>!x.GameState.Tokens[s].HasAny(Invader.Explorer)).ToArray();
 			var space = await x.Decision( new Select.Space("Add explorer", options, Present.Always));
 			if( space != null)
-				await x.GameState.Tokens[space].AddDefault(Invader.Explorer, 1, Guid.NewGuid());
+				await x.GameState.Tokens[space].AddDefault(Invader.Explorer, 1, new UnitOfWork());
 		}
 	);
 
@@ -225,7 +225,7 @@ public class FranceInvaderCard : InvaderCard {
 		// Frontier Explorers: Except during Setup: After Invaders successfully Explore into a land which had no Town / City, add 1 Explorer there.
 		foreach(var exploreTokens in tokenSpacesToExplore)
 			if(!exploreTokens.HasAny( Invader.Town, Invader.City ))
-				await ExploreSingleSpace( exploreTokens, gs, Guid.NewGuid() ); // !!! implemented as a new Action - Should it be???
+				await ExploreSingleSpace( exploreTokens, gs, new UnitOfWork() ); // !!! implemented as a new Action - Should it be???
 	}
 
 	Task Escalation( GameState gs ) {

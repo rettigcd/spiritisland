@@ -14,5 +14,5 @@ public class AddingTokenArgs {
 	}
 	int _count;
 	public AddReason Reason { get; set; }
-	public Guid ActionId { get; set; }
+	public UnitOfWork ActionId { get; set; }
 }

@@ -89,7 +89,7 @@ public class HeartOfTheWildfire : Spirit {
 			) { }
 		public HeartOfTheWildfire spirit;
 
-		public override async Task Place( IOption from, Space to, GameState gs, Guid actionId ) { 
+		public override async Task Place( IOption from, Space to, GameState gs, UnitOfWork actionId ) { 
 			await base.Place( from, to, gs, actionId );
 
 			// !!! There is a bug here somehow that after placeing the 2nd fire, track, still returned only 1 
@@ -105,7 +105,7 @@ public class HeartOfTheWildfire : Spirit {
 				await ctx.AddBlight( 1, AddReason.SpecialRule );
 		}
 
-		public override async Task Destroy( Space space, GameState gs, DestoryPresenceCause actionType, Guid actionId, AddReason blightAddedReason = AddReason.None ) {
+		public override async Task Destroy( Space space, GameState gs, DestoryPresenceCause actionType, UnitOfWork actionId, AddReason blightAddedReason = AddReason.None ) {
 
 			// Blight added
 			if( actionType == DestoryPresenceCause.Blight

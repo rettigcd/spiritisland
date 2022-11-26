@@ -24,7 +24,7 @@ public class UntendedLandCrumbles : BlightCardBase {
 			int remaining = requiredEnergy;
 			int spiritIndex = 0;
 			var spirits = ctx.GameState.Spirits;
-			var actionId = Guid.NewGuid();
+			var actionId = new UnitOfWork();
 			while(remaining > 0) {
 				var spirit = spirits[(spiritIndex++)%spirits.Length];
 				var contribution = await spirit.SelectNumber("Pay energy towards remaining "+remaining

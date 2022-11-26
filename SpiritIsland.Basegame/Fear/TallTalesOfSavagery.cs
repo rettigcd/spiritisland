@@ -31,7 +31,7 @@ public class TallTalesOfSavagery : IFearOptions {
 	[FearLevel( 3, "Remove 2 Explorer or 1 Town from each land with Dahan. Then, remove 1 City from each land with at least 2 Dahan." )]
 	public async Task Level3( FearCtx ctx ) {
 		var gs = ctx.GameState;
-		var actionId = Guid.NewGuid();
+		var actionId = new UnitOfWork();
 		// Remove 2 explorers or 1 Town from each land with Dahan
 		foreach(var space in gs.AllActiveSpaces.Where(s => s.Dahan.Any))
 			await RemoveTownOr2Explorers( gs.Invaders.On( space.Space, actionId ) );

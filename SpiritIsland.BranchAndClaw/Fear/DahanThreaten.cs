@@ -16,7 +16,7 @@ public class DahanThreaten : IFearOptions {
 	[FearLevel( 2, "each player adds 1 strife in a land with dahan. For the rest of t his turn, invaders have -1 health per strife to a minimum of 1" )]
 	public async Task Level2( FearCtx ctx ) {
 
-		var actionId = Guid.NewGuid();
+		var actionId = new UnitOfWork();
 
 		// each player adds 1 strife in a land with dahan
 		foreach(SelfCtx spirit in ctx.Spirits)
