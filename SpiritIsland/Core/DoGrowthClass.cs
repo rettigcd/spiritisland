@@ -36,7 +36,7 @@ public abstract partial class Spirit {
 		}
 
 		async Task ExecuteRemaining( IActionFactory selectedAction ) {
-			await spirit.TakeAction( selectedAction, spirit.Bind( gameState, gameState.StartAction() ) );
+			await spirit.TakeAction( selectedAction, spirit.BindNewAction(gameState) );
 			await InitRemainingActionsFromOption();
 		}
 
@@ -46,7 +46,7 @@ public abstract partial class Spirit {
 			inst.MarkAsUsed( option );
 
 			// Resolve Growth Option
-			var ctx = spirit.Bind( gameState, gameState.StartAction() );
+			var ctx = spirit.BindNewAction( gameState );
 
 			// Auto run the auto-runs.
 			foreach(var autoAction in option.AutoRuns)
@@ -93,7 +93,7 @@ public abstract partial class Spirit {
 		async Task X() {
 			InitActionsForAllAvailableOptions();
 			if(!HasActions)
-				await spirit.ApplyRevealedPresenceTracks( spirit.Bind( gameState, gameState.StartAction() ) );
+				await spirit.ApplyRevealedPresenceTracks( spirit.BindNewAction( gameState ) );
 		}
 
 	}
