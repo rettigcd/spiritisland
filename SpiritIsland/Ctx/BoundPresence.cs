@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class ReadOnlyBoundPresence {
+public class ReadOnlyBoundPresence : IKnowSpiritLocations {
 
 	#region Constructors
 	public ReadOnlyBoundPresence( SelfCtx ctx ) {
@@ -12,6 +12,12 @@ public class ReadOnlyBoundPresence {
 		_self = self;
 		_gameState = gameState;
 		_terrainMapper = terrainMapper;
+	}
+	/// <summary> Constructs a ReadOnlyBoundPresence for POWER </summary>
+	public ReadOnlyBoundPresence( Spirit self, GameState gameState ) {
+		_self = self;
+		_gameState = gameState;
+		_terrainMapper = gameState.Island.Terrain_ForPower;
 	}
 	#endregion
 
@@ -71,7 +77,7 @@ public class ReadOnlyBoundPresence {
 }
 
 /// <summary> High level Presence Methods for API </summary>
-public class BoundPresence : ReadOnlyBoundPresence, IKnowSpiritLocations {
+public class BoundPresence : ReadOnlyBoundPresence {
 
 	#region constructor
 

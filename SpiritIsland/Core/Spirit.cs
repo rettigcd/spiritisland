@@ -621,13 +621,15 @@ public abstract class Spirit : IOption {
 		params TargetCriteria[] targetCriteria // allows different criteria at different ranges
 	) {	
 		// Converts SourceCriteria to Spaces
-		IEnumerable<SpaceState> sources = SourceCalc.FindSources( gameState, this.BindMyPower(gameState).Presence, sourceCriteria, gameState.Island.Terrain_ForPower );
-
-		var ctx = BindMyPower(gameState); // targetting is always for Power (I think)    - !!! Don't create another Action just for this calculation
+		IEnumerable<SpaceState> sources = SourceCalc.FindSources( 
+			new ReadOnlyBoundPresence(this, gameState), 
+			sourceCriteria,
+			gameState		// needed only for Entwined power - to get the other spirit's location
+		);
 
 		// Convert TargetCriteria to spaces and merge (distinct) them together.
 		return targetCriteria
-			.SelectMany(tc => PowerRangeCalc.GetTargetOptionsFromKnownSource( ctx.Self, ctx.TerrainMapper, powerType, sources, tc ))
+			.SelectMany(tc => PowerRangeCalc.GetTargetOptionsFromKnownSource( this, gameState.Island.Terrain_ForPower, powerType, sources, tc ))
 			.Distinct();
 	}
 

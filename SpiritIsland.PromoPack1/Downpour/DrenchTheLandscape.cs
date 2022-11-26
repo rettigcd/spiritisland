@@ -23,10 +23,9 @@ class DrenchTheLandscape : TerrainMapper, ICalcPowerSource {
 		.Where( spirit.Presence.IsSacredSite ); // Downpours SS are not dependent on special terrain rules.
 
 	public IEnumerable<SpaceState> FindSources( 
-		GameState gs, 
 		IKnowSpiritLocations presence, 
-		TargetSourceCriteria sourceCriteria, 
-		TerrainMapper _
+		TargetSourceCriteria sourceCriteria,
+		GameState gs
 	) {
 		var sources = sourceCriteria.From switch {
 			From.Presence => presence.SpaceStates,

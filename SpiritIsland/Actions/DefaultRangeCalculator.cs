@@ -3,7 +3,11 @@
 public enum From { None, Presence, SacredSite };
 
 public interface ICalcPowerSource {
-	IEnumerable<SpaceState> FindSources( GameState gs, IKnowSpiritLocations presence, TargetSourceCriteria source, TerrainMapper mapper );
+	IEnumerable<SpaceState> FindSources( 
+		IKnowSpiritLocations presence, 
+		TargetSourceCriteria criteria, 
+		GameState gs					// in case we need extra game data (for Entwined Powers)
+	);
 }
 
 public interface ICalcRange {
@@ -22,7 +26,7 @@ public interface ICalcRange {
 /// Since Spirit.SourceCalculator is modified by Entwined, use only for Powers
 /// </summary>
 public class DefaultPowerSourceCalculator : ICalcPowerSource {
-	public IEnumerable<SpaceState> FindSources( GameState gs, IKnowSpiritLocations presence, TargetSourceCriteria sourceCriteria, TerrainMapper _ ) {
+	public IEnumerable<SpaceState> FindSources( IKnowSpiritLocations presence, TargetSourceCriteria sourceCriteria, GameState _ ) {
 		var sources = sourceCriteria.From switch {
 			From.Presence => presence.SpaceStates,
 			From.SacredSite => presence.SacredSites,

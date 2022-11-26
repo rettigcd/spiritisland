@@ -106,7 +106,7 @@ class MistsShiftAndFlow {
 	}
 
 	bool PresenceMeetsTargettingRequirements( IKnowSpiritLocations presence, SpaceState target ) {
-		var targetSource = spirit.SourceCalc.FindSources( gameState, presence, sourceCriteria, gameState.Island.Terrain_ForPower );
+		var targetSource = spirit.SourceCalc.FindSources( presence, sourceCriteria, gameState );
 		var targetOptionsFromTheseSources = GetTargetOptionsFromKnownSources( targetSource );
 		bool hitsTarget = targetOptionsFromTheseSources.Contains( target );
 		return hitsTarget;
@@ -127,7 +127,7 @@ class MistsShiftAndFlow {
 	}
 
 	void CalculateSpaceGroups() {
-		var sources = spirit.SourceCalc.FindSources( gameState, spirit.BindMyPower(gameState).Presence, sourceCriteria, gameState.Island.Terrain_ForPower );
+		var sources = spirit.SourceCalc.FindSources( new ReadOnlyBoundPresence( spirit, gameState ), sourceCriteria, gameState );
 		this.nonFlowTargets = GetTargetOptionsFromKnownSources( sources );
 		this.flowRange = sources
 			.SelectMany( s => s.Range( 2 ) ).Distinct()
