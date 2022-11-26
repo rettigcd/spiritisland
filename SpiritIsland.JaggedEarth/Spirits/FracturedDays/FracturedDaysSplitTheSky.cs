@@ -96,7 +96,7 @@ public class FracturedDaysSplitTheSky : Spirit {
 
 			string selectPrompt = $"Select presence to convert to Time ({count} remaining).";
 			var from = (IOption)await Action.Decision( Select.TrackSlot.ToReveal( selectPrompt, this, gameState ) )
-					?? (IOption)await Action.Decision( Select.DeployedPresence.All( selectPrompt, this, gameState, Present.Done ) ); // Cancel
+					?? (IOption)await Action.Decision( Select.DeployedPresence.All( selectPrompt, new ReadOnlyBoundPresence( this, gameState, gameState.Island.Terrain), Present.Done ) ); // Cancel
 
 			await Presence.TakeFrom( from, gameState );
 			Time++;

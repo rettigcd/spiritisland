@@ -74,7 +74,7 @@ public class SelfCtx {
 
 	// Visually, selects the [presence] icon
 	public async Task<TargetSpaceCtx> TargetDeployedPresence( string prompt ) {
-		var space = await Decision( Select.DeployedPresence.All( prompt, Self, GameState, Present.Always ) );
+		var space = await Decision( Select.DeployedPresence.All( prompt, Presence, Present.Always ) );
 		return Target( space );
 	}
 

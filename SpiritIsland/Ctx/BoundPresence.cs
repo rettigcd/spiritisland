@@ -47,11 +47,11 @@ public class ReadOnlyBoundPresence : IKnowSpiritLocations {
 	public async Task<IOption> SelectSource( string actionPhrase = "place" ) {
 		string prompt = $"Select Presence to {actionPhrase}.";
 		return (IOption)await _self.Action.Decision( Select.TrackSlot.ToReveal( prompt, _self, _gameState ) )
-			?? (IOption)await _self.Action.Decision( Select.DeployedPresence.All( prompt, _self, _gameState, Present.Always ) );
+			?? (IOption)await _self.Action.Decision( Select.DeployedPresence.All( prompt, this, Present.Always ) );
 	}
 
 	public Task<Space> SelectDeployed( string prompt )
-		=> _self.Action.Decision( Select.DeployedPresence.All( prompt, _self, _gameState, Present.Always ) );
+		=> _self.Action.Decision( Select.DeployedPresence.All( prompt, this, Present.Always ) );
 
 	public Task<Space> SelectSacredSite( string prompt )
 		=> _self.Action.Decision( Select.DeployedPresence.SacredSites( prompt, _gameState, _self, _terrainMapper, Present.Always ) );
@@ -98,7 +98,7 @@ public class BoundPresence : ReadOnlyBoundPresence {
 	// !!! should have an action ID
 	public async Task<(Space, Space)> PushUpTo1() {
 		// Select source
-		var source = await _self.Action.Decision( Select.DeployedPresence.ToPush( _self, _gameState ) );
+		var source = await _self.Action.Decision( Select.DeployedPresence.ToPush( this ) );
 		if(source == null) return (null, null);
 
 		// Select destination
@@ -129,8 +129,8 @@ public class BoundPresence : ReadOnlyBoundPresence {
 	/// !!! should Have an Action ID
 	public async Task DestroyOneFromAnywhere( DestoryPresenceCause actionType, Func<SpiritIsland.SpaceState, bool> filter = null ) {
 		var space = filter == null
-			? await _self.Action.Decision( Select.DeployedPresence.ToDestroy( "Select presence to destroy", _self, _gameState ) )
-			: await _self.Action.Decision( Select.DeployedPresence.ToDestroy( "Select presence to destroy", _self, _gameState, filter ) );
+			? await _self.Action.Decision( Select.DeployedPresence.ToDestroy( "Select presence to destroy", this ) )
+			: await _self.Action.Decision( Select.DeployedPresence.ToDestroy( "Select presence to destroy", this, filter ) );
 		await Destroy( space, actionType );
 	}
 
