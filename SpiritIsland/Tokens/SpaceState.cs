@@ -289,7 +289,17 @@ public class SpaceState : HasNeighbors<SpaceState> {
 		set => counts [TokenType.Stasis] = value ? 1 : 0;
 	}
 
-	public IEnumerable<SpaceState> Adjacent => PowerUp( Space.Adjacent );
+	public IEnumerable<SpaceState> Adjacent { get {
+		foreach(var space in Space.Adjacent) {
+			var ss = gameState.Tokens[space];
+            if( !ss.InStasis )
+				yield return ss;
+		}
+
+		if(LinkedViaWays != null && !LinkedViaWays.InStasis)
+			yield return LinkedViaWays;
+	} }
+	public SpaceState LinkedViaWays; // HACK - for Finder
 
 	public IEnumerable<SpaceState> CascadingBlightOptions => Adjacent
 		 .Where(x => !this.gameState.Island.Terrain_ForBlight.MatchesTerrain(x, Terrain.Ocean) );

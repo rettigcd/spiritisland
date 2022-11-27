@@ -26,7 +26,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 
 			async Task Run() {
 				try {
-					using var action = gs.StartAction();
+					var action = gs.StartAction();
 					await spirit.Hand.Single( x => x.Name == cardName ).ActivateAsync( spirit.BindMyPower( gs, action ) ); 
 				}
 				catch(Exception ex) {

@@ -51,7 +51,7 @@ public class SpaceFilterMap {
 		? lookup[filterEnum] 
 		: throw new ArgumentException( "Unexpected filter:" + filterEnum, nameof( filterEnum ) );
 
-	public static Func<SpaceState, bool> MatchAny( Spirit focusSpirit, TerrainMapper tm, string[] filterEnums ) {
+	public static Func<SpaceState, bool> MatchAny( Spirit focusSpirit, TerrainMapper tm, params string[] filterEnums ) {
 		return new FilterHelper(focusSpirit,tm, filterEnums ).Any;
 	}
 

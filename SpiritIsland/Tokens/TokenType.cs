@@ -11,13 +11,13 @@ public class TokenType {
 	static readonly public UniqueToken Disease    = new UniqueToken( "Dizease" ,'Z', Img.Disease );
 	static readonly public UniqueToken Badlands   = new UniqueToken("Badlands",'M', Img.Badlands ); // 'M' looks like the badlands symbol /\/\ 
 
-	static readonly public TokenClass Element = new UniqueToken( "Element", 'Y', Img.Token_Any ); // use as unique class for stacked elements
-
-	static readonly public UniqueToken Isolate = new UniqueToken( "Isolate", 'I', Img.Isolate );
+	static readonly public UniqueToken Isolate    = new UniqueToken( "Isolate", 'I', Img.Isolate );
 
 	// Fake Tokens that are not visible.
-	static readonly public UniqueToken DoBuild = new UniqueToken( "Build", '$', Img.None );
-	static readonly public UniqueToken Stasis = new UniqueToken( "Stasis", '#', Img.None );
+	static readonly public UniqueToken DoBuild     = new UniqueToken( "Build", '$', Img.None );
+	static readonly public UniqueToken Stasis      = new UniqueToken( "Stasis", '#', Img.None );
 
+	static readonly public TokenClass OpenTheWays = new UniqueToken( "OpenTheWays", '=', Img.OpenTheWays );
+	static readonly public TokenClass Element = new UniqueToken( "Element", 'Y', Img.Token_Any ); // use as unique class for stacked elements
 
 }

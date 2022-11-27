@@ -12,8 +12,8 @@ public class OceanPresence : SpiritPresence {
 	}
 
 	public override void Adjust( SpaceState space, int count ) {
-		space.Adjust( presenceToken, count );
-		if(space[presenceToken]>0)
+		space.Adjust( Token, count );
+		if(space[Token]>0)
 			currentBoards.Add( space.Space.Board );
 		else
 			currentBoards.Remove( space.Space.Board );

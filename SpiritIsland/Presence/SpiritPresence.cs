@@ -15,10 +15,14 @@ public class SpiritPresence {
 		Energy.TrackRevealed.Add( OnRevealed );
 		CardPlays.TrackRevealed.Add( OnRevealed );
 
-		foreach(var r in Energy.Revealed) CheckEnergyAndCardPlays( r );
-		foreach(var r in CardPlays.Revealed) CheckEnergyAndCardPlays( r);
+		InitEnergyAndCardPlays();
 
-		this.presenceToken = new SpiritPresenceToken();
+		this.Token = new SpiritPresenceToken();
+	}
+
+	protected void InitEnergyAndCardPlays() {
+		foreach(var r in Energy.Revealed) CheckEnergyAndCardPlays( r );
+		foreach(var r in CardPlays.Revealed) CheckEnergyAndCardPlays( r );
 	}
 
 	#endregion
@@ -79,9 +83,9 @@ public class SpiritPresence {
 	/// Specifies if the the given space is valid.
 	/// </summary>
 	public virtual bool CanBePlacedOn( SpaceState spaceState, TerrainMapper mapper ) => mapper.IsInPlay( spaceState.Space );
-	public bool IsOn( SpaceState spaceState ) => spaceState[presenceToken] > 0;
-	public virtual bool IsSacredSite( SpaceState space ) => 2 <= space[presenceToken];
-	public int CountOn( SpaceState spaceState ) => spaceState[presenceToken];
+	public bool IsOn( SpaceState spaceState ) => spaceState[Token] > 0;
+	public virtual bool IsSacredSite( SpaceState space ) => 2 <= space[Token];
+	public int CountOn( SpaceState spaceState ) => spaceState[Token];
 
 	#endregion
 
@@ -217,10 +221,10 @@ public class SpiritPresence {
 	#region Is this Setup or Game play?
 
 	public async virtual Task PlaceOn( SpaceState space, UnitOfWork actionId ) {
-		await space.Add(presenceToken,1,actionId);
+		await space.Add(Token,1,actionId);
 	}
 	public virtual void Adjust( SpaceState space, int count ) {
-		space.Adjust( presenceToken, count );
+		space.Adjust( Token, count );
 	}
 
 	#endregion
@@ -233,11 +237,11 @@ public class SpiritPresence {
 	// (2) Presence is replaced with something else. End-of-Game check IS necessary.
 	// Also - if we have presence in Stasis, then removing 2nd to last presence will INCORRECTLY trigger loss.
 	protected virtual Task RemoveFrom_NoCheck( SpaceState space ) { 
-		space.Adjust(presenceToken,-1);
+		space.Adjust(Token,-1);
 		return Task.CompletedTask;
 	}
 
-	readonly protected Token presenceToken;
+	readonly public SpiritPresenceToken Token;
 
 	#region Memento
 
@@ -267,34 +271,32 @@ public class SpiritPresence {
 	#endregion
 }
 
-public class SpiritPresenceToken : Token {
+public class SpiritPresenceToken : Token, TokenClass {
 
 	#region private
-
-	class SpiritPresenceClass : TokenClass {
-		public string Label => "Presence";
-		public TokenCategory Category => TokenCategory.Presence;
-	}
-
-	static int tokenTypeCount; // so each spirit presence gets a different number
-
+//	static int tokenTypeCount; // so each spirit presence gets a different number
 	#endregion
 
 	public SpiritPresenceToken() {
 		// Text = "P" + (tokenTypeCount++); // !! This kind of sucks. Could be based on Spirit or starting Board-name
-
 		// !!! DeployedPresenceDecisoin: IslandControl needs access to the PresenceToken so it can record the Location for creating hotspots during.
 		Text = "Presence";      // !!! this only works in SOLO.
 	}
 
-	public static TokenClass TokenClass = new SpiritPresenceClass();
+	#region Token parts
 
-	public TokenClass Class => TokenClass;
+	public TokenClass Class => this;
 
-	public string Text { get; set; }
+	public string Text { get; }
 
 	public string SpaceAbreviation => null; // hide it
 
+	#endregion
+
+	#region TokenClass parts
+	string TokenClass.Label => "Presence";
+	TokenCategory TokenClass.Category => TokenCategory.Presence;
+	#endregion
 }
 
 public enum DestoryPresenceCause {

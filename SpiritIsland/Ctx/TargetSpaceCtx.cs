@@ -62,21 +62,12 @@ public class TargetSpaceCtx : SelfCtx {
 
 	// This is different than Push / Gather which ManyMinds adjusts, this is straight 'Move' that is not adjusted.
 	/// <returns>Destination</returns>
-	public async Task<Space> MoveTokensOut( int max, TargetCriteria targetCriteria, params TokenClass[] tokenClass ) {
+	public async Task<Space> MoveTokensOut( int max, TargetCriteria targetCriteria, TargetingPowerType powerType, params TokenClass[] tokenClass ) {
 
 		if(!Tokens.HasAny( tokenClass )) return null;
 
-		var powerType = TargetingPowerType.PowerCard; // !!!
-
-
 		// Select Destination
-		var destinationOptions = Self.PowerRangeCalc.GetTargetOptionsFromKnownSource( 
-			Self, 
-			TerrainMapper,
-			powerType,
-			new SpaceState[] { Tokens }, 
-			targetCriteria
-		);
+		var destinationOptions = Range( targetCriteria, powerType);
 		Space destination = await Decision( Select.Space.MoveToken( Space, destinationOptions, Present.Done ) );
 
 		Token[] tokenOptions = Tokens.OfAnyType( tokenClass );
@@ -139,14 +130,15 @@ public class TargetSpaceCtx : SelfCtx {
 	public IEnumerable<TargetSpaceCtx> AdjacentCtxs => Adjacent.Select(Target);
 
 	/// <summary> Use this for Power-Pushing, since Powers can push invaders into the ocean. </summary>
-	public IEnumerable<SpaceState> Range( int range, TargetingPowerType powerType ) => Self.PowerRangeCalc.GetTargetOptionsFromKnownSource(
+	public IEnumerable<SpaceState> Range( TargetCriteria targetCriteria, TargetingPowerType powerType ) => Self.PowerRangeCalc.GetTargetOptionsFromKnownSource(
 		Self,
 		TerrainMapper,
 		powerType,
-		new SpaceState[]{ Tokens }, 
-		new TargetCriteria( range )
+		new SpaceState[] { Tokens },
+		targetCriteria
 	)
 		.Where( TerrainMapper.IsInPlay ); // !!! is this necessary?  Does the RangeCalc already check this?
+	public IEnumerable<SpaceState> Range( int range, TargetingPowerType powerType ) => Range(new TargetCriteria(range),powerType);
 
 
 	public async Task DestroyDahan( int countToDestroy ) { 
@@ -385,5 +377,10 @@ public class TargetSpaceCtx : SelfCtx {
 		return space != null ? Target( space )
 			: null;
 	}
+
+	/// <remarks>This could be on GameState but everywhere it is used has access to TargetSpaceCtx and it is more convenient here.</remarks>
+	public TokenClass[] AllPresenceTokens => GameState.Spirits
+		.Select( s => s.Presence.Token )
+		.ToArray();
 
 }

@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland;
 
 /// <summary> 
-/// Configures how how many GrowthActionGroups may be selected
+/// Configures how how GrowthActionGroups may be selected
 /// </summary>
 /// <remarks>
 /// GrowhTrack > GrowthPickGroups > GrowthActionGroup

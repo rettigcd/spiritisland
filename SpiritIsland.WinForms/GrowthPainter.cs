@@ -130,6 +130,7 @@ namespace SpiritIsland.WinForms {
 					break;
 				case "ApplyDamage": DrawIconInCenter( rect, Img.Damage_2 ); break;
 				case "DiscardPowerCards": DrawIconInCenter( rect, Img.Discard2 ); break;
+				case "IgnoreRange": IgnoreRange( rect ); break;
 				default:
 					graphics.FillRectangle( Brushes.Goldenrod, Rectangle.Inflate( rect.ToInts(), -5, -5 ) );
 					break;
@@ -277,7 +278,7 @@ namespace SpiritIsland.WinForms {
 				);
 			}
 
-			if(range.HasValue) { // no range for ocean
+			if(range.HasValue) {
 				// range # text
 				float rangeTextTop = rect.Y + rect.Height * textTopScale;
 				string txt = range.Value.ToString();
@@ -290,6 +291,30 @@ namespace SpiritIsland.WinForms {
 				float arrowWidth = rect.Width * .8f, arrowHeight = arrowWidth * rangeIcon.Height / rangeIcon.Width;
 				graphics.DrawImage( rangeIcon, rect.X + (rect.Width-arrowWidth)/2, rangeArrowTop, arrowWidth, arrowHeight );
 			}
+
+		}
+
+		void IgnoreRange( RectangleF rect ) {
+			using var icon = ResourceImages.Singleton.GetImage( Img.Icon_Checkmark );
+
+			float fontScale        = .25f;
+			float presenceYPercent = .3f;
+
+			using Font font = new Font( ResourceImages.Singleton.Fonts.Families[0], rect.Height * fontScale, GraphicsUnit.Pixel );
+
+			// + presence
+			float iconCenterY = rect.Y + rect.Height * presenceYPercent; // top of presence
+			float iconWidth = rect.Width * .6f;
+			float iconHeight = icon.Height * iconWidth / icon.Width;
+			float iconX = rect.X + (rect.Width - iconWidth) / 2; // + rect.Width * .1f;
+
+			graphics.DrawImage( icon, iconX, iconCenterY - iconHeight * .5f, iconWidth, iconHeight );
+
+			// range arrow
+			float rangeArrowTop = rect.Y + rect.Height * .85f;
+			using var rangeIcon = ResourceImages.Singleton.GetImage( Img.RangeArrow );
+			float arrowWidth = rect.Width * .8f, arrowHeight = arrowWidth * rangeIcon.Height / rangeIcon.Width;
+			graphics.DrawImage( rangeIcon, rect.X + (rect.Width - arrowWidth) / 2, rangeArrowTop, arrowWidth, arrowHeight );
 
 		}
 

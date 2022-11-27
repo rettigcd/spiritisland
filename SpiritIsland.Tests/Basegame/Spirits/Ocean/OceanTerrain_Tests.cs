@@ -37,7 +37,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			var gs = GetGame( hasOcean );
 			gs.Phase = Phase.Fast;
 
-			using var action = gs.StartAction();
+			await using var action = gs.StartAction();
 			var ctx = river.BindMyPower( gs, action ); // correct
 			await ctx.Presence.Move( board[5], board[2] ); // move it to A2
 			Assert_Options( "A2", ctx.Presence.Spaces, "river starting presence" );

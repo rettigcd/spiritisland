@@ -24,6 +24,7 @@ public enum Img {
 	Oneenergyfire,
 	Land_Gather_Beasts,
 	GainEnergyEqualToCardPlays,
+	Land_Push_Town_City,
 
 	// Custom Growth
 	ShiftingMemory_PrepareEl,
@@ -90,6 +91,7 @@ public enum Img {
 	Icon_Ocean,
 	Icon_MountainOrPresence,
 	Icon_TownCityOrBlight,
+	OpenTheWays,
 
 	Icon_Blight,
 	Icon_Beast,
@@ -101,6 +103,8 @@ public enum Img {
 	Icon_Disease,
 	Icon_Strife,
 	Icon_Badlands,
+	Icon_Checkmark,
+	PlusOneRange,
 
 	Deck_Hand,
 	Deck_Played,

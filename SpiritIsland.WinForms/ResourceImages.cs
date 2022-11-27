@@ -77,7 +77,8 @@ namespace SpiritIsland.WinForms {
 			Img.Reclaim1                     => "icons.reclaim 1.png",
 			Img.ReclaimAll                   => "icons.ReclaimAll.png",
 			Img.ReclaimHalf                  => "icons.Reclaim_Half.png",
-			Img.CardPlayPlusN                 => "icons.Cardplayplus.png",
+			Img.CardPlayPlusN                => "icons.Cardplayplus.png",
+			Img.PlusOneRange                 => "icons.PlusOneRange.png",
 			Img.Push1dahan                   => "icons.Push1dahan.png",
 			Img.GainCard                     => "icons.GainCard.png",
 			Img.MovePresence                 => "icons.MovePresence.png",
@@ -87,6 +88,7 @@ namespace SpiritIsland.WinForms {
 			Img.Damage_2                     => "icons.Damage_2.png",
 			Img.Oneenergyfire                => "icons.Oneenergyfire.png",
 			Img.Land_Gather_Beasts           => "icons.Land_Gather_Beasts.png",
+			Img.Land_Push_Town_City          => "icons.Land_Push_Town-City.png",
 			Img.GainEnergyEqualToCardPlays   => "icons.GainEnergyEqualToCardPlays.png",
 
 			Img.RangeArrow                   => "icons.Range.png",
@@ -156,6 +158,7 @@ namespace SpiritIsland.WinForms {
 			Img.Icon_Blight                  => "icons.Blighticon.png",
 			Img.Icon_Beast                   => "icons.Beasticon.png",
 			Img.Icon_Fear                    => "icons.Fearicon.png",
+			Img.OpenTheWays                  => "icons.open-the-ways.png",
 			Img.Icon_Wilds                   => "icons.Wildsicon.png",
 			Img.Icon_Fast                    => "icons.Fasticon.png",
 			Img.Icon_Presence                => "icons.Presenceicon.png",
@@ -166,6 +169,7 @@ namespace SpiritIsland.WinForms {
 			Img.Icon_City                    => "icons.Cityicon.png",
 			Img.Icon_Town                    => "icons.Townicon.png",
 			Img.Icon_Explorer                => "icons.Explorericon.png",
+			Img.Icon_Checkmark               => "icons.Checkmark.png",
 
 			Img.Deck_Hand                    => "hand.png",
 			Img.Deck_Played                  => "inplay.png",

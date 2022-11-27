@@ -283,7 +283,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	}
 	public Healer Healer = new Healer(); // replacable Behavior
 
-	public UnitOfWork StartAction() => new UnitOfWork(); 
+	public UnitOfWork StartAction() => new UnitOfWork( EndOfAction );
 
 	#endregion
 
@@ -370,7 +370,8 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	public DualAsyncEvent<BuildingEventArgs> PreBuilding   = new DualAsyncEvent<BuildingEventArgs>();  // A Spread of Rampant Green - While game - stop build
 	public DualAsyncEvent<ExploreEventArgs>  PreExplore    = new DualAsyncEvent<ExploreEventArgs>();
 	public DualAsyncEvent<InvadersRavaged> InvadersRavaged = new DualAsyncEvent<InvadersRavaged>();
-	public DualAsyncEvent<LandDamagedArgs> LandDamaged = new DualAsyncEvent<LandDamagedArgs>();        // Let Them Break Themselves Against the Stone
+	public DualAsyncEvent<LandDamagedArgs> LandDamaged     = new DualAsyncEvent<LandDamagedArgs>();    // Let Them Break Themselves Against the Stone
+	public DualAsyncEvent<UnitOfWork> EndOfAction          = new DualAsyncEvent<UnitOfWork>();
 
 	public event Action<GameState> TimePasses_WholeGame;                                               // Spirit cleanup
 	public Stack<Func<GameState, Task>> TimePasses_ThisRound = new Stack<Func<GameState, Task>>();     // This must be Push / Pop

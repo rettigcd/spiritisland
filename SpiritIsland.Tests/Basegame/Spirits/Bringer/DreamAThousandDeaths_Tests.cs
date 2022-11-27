@@ -7,12 +7,14 @@ public class DreamAThousandDeaths_Tests {
 	readonly TargetSpaceCtx ctx;
 	readonly Spirit spirit;
 	readonly VirtualUser User;
+	readonly UnitOfWork unitOfWork;
 
 	public DreamAThousandDeaths_Tests(){
 		spirit = new Bringer();
 		User = new VirtualUser(spirit);
 		board = Board.BuildBoardA();
 		gs = new GameState( spirit, board );
+		unitOfWork = gs.StartAction();
 		ctx = MakeFreshPowerCtx();
 
 		// Disable destroying presence
@@ -22,8 +24,7 @@ public class DreamAThousandDeaths_Tests {
 	}
 
 	TargetSpaceCtx MakeFreshPowerCtx() {
-		using var action = gs.StartAction();
-		var ctx = spirit.BindMyPower(gs, action); // This is correct usage.
+		var ctx = spirit.BindMyPower(gs, unitOfWork ); // This is correct usage.
 		return ctx.Target( board[5] );
 	}
 

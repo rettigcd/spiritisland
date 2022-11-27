@@ -559,17 +559,20 @@ public partial class IslandControl : Control {
 		if(ms != null)
 			DrawMultiSpace(graphics,ms);
 
+		// Row 1 - Invaders
 		DrawInvaderRow( graphics, x, ref y, iconWidth, xStep, spaceState );
 
-		// dahan & blight
+		// Row 2 - Dahan, Blight, Elements, Presence
 		List<Token> row2Tokens = new List<Token> { TokenType.Defend, TokenType.Blight }; // These don't show up in .OfAnyType if they are dynamic
 		row2Tokens.AddRange( spaceState.OfAnyType( TokenType.Dahan ) );
+		row2Tokens.AddRange( spaceState.OfAnyType( spirit.Presence.Token ) );
 		row2Tokens.AddRange( spaceState.OfAnyType( TokenType.Element ) );
-		row2Tokens.AddRange( spaceState.OfAnyType( SpiritPresenceToken.TokenClass ) );
-
 		DrawRow( graphics, spaceState, x, ref y, iconWidth, xStep, row2Tokens.ToArray() );
-		DrawRow( graphics, spaceState, x, ref y, iconWidth, xStep, TokenType.Beast, TokenType.Wilds, TokenType.Disease, TokenType.Badlands, TokenType.Isolate );
 
+		// Row 3 - BAC Tokens 
+		List<Token> row3Tokens = new List<Token> { TokenType.Beast,TokenType.Wilds,TokenType.Disease,TokenType.Badlands,TokenType.Isolate };
+		row3Tokens.AddRange( spaceState.OfType( TokenType.OpenTheWays ) );
+		DrawRow( graphics, spaceState, x, ref y, iconWidth, xStep, row3Tokens.ToArray() );
 	}
 
 	void DrawMultiSpace( Graphics graphics, MultiSpace multi ) {

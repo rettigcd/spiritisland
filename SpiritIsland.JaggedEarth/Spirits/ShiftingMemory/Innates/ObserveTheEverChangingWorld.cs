@@ -34,7 +34,7 @@ public class ObserveTheEverChangingWorld {
 
 		Task Track( ITokenAddedArgs x ) => Check(x.Space.Space, x.ActionId);
 
-		Task Track( ITokenRemovedArgs x ) => Check(x.Space.Space, x.ActionId );
+		Task Track( ITokenRemovedArgs x ) => Check(x.Space.Space, x.Action );
 
 		async Task Check( Space space, UnitOfWork currentActionId ) {
 			if(ctx.Tokens[elementToken] == 0			// already complete

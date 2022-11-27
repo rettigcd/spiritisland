@@ -67,6 +67,11 @@ public class Track : IOption {
 		Icon = new IconDescriptor { BackgroundImg = Img.Push1dahan }
 	};
 
+	public static Track Push1TownCity => new Track( "Push1towncity" ) {
+		Action = new Push1TownOrCityFromLands(),
+		Icon = new IconDescriptor { BackgroundImg = Img.Land_Push_Town_City }
+	};
+
 	public static Track CardReclaim1 => new Track( "reclaim 1" ){ 
 		Action=new ReclaimN(),
 		Icon = new IconDescriptor { BackgroundImg = Img.Reclaim1 }

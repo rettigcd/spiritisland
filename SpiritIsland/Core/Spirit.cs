@@ -81,7 +81,7 @@ public abstract partial class Spirit : IOption {
 	}
 
 	public async Task GrowAndResolve( GrowthOption option, GameState gameState ) { // public for Testing
-		using var action = gameState.StartAction();
+		await using var action = gameState.StartAction();
 		var ctx = Bind( gameState, action );
 
 		// Auto run the auto-runs.
@@ -135,7 +135,7 @@ public abstract partial class Spirit : IOption {
 		Present present = phase == Phase.Growth ? Present.Always : Present.Done;
 
 		// Create a new UnitOfWork each time we resolve an Action
-		using var unitOfWork = gs.StartAction();
+		await using var unitOfWork = gs.StartAction();
 		unitOfWork.Owner = this;
 
 		SelfCtx ctx = phase switch {

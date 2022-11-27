@@ -22,6 +22,7 @@
     <None Remove="images\icons\Blighticon.png" />
     <None Remove="images\icons\cardplay.png" />
     <None Remove="images\icons\Cardplayplus.png" />
+    <None Remove="images\icons\Checkmark.png" />
     <None Remove="images\icons\Cityicon.png" />
     <None Remove="images\icons\Coastal.png" />
     <None Remove="images\icons\Dahanicon.png" />
@@ -47,6 +48,7 @@
     <None Remove="images\icons\JungleOrBeast.png" />
     <None Remove="images\icons\Junglewetland.png" />
     <None Remove="images\icons\Land_Gather_Beasts.png" />
+    <None Remove="images\icons\Land_Push_Town-City.png" />
     <None Remove="images\icons\minor.png" />
     <None Remove="images\icons\Mountainland.png" />
     <None Remove="images\icons\mountainorpresence.png" />
@@ -56,7 +58,9 @@
     <None Remove="images\icons\Noblight.png" />
     <None Remove="images\icons\Ocean.png" />
     <None Remove="images\icons\Oneenergyfire.png" />
+    <None Remove="images\icons\open-the-ways.png" />
     <None Remove="images\icons\Pay2EnergyToGainAPowerCard.png" />
+    <None Remove="images\icons\PlusOneRange.png" />
     <None Remove="images\icons\PrepareElement.png" />
     <None Remove="images\icons\Presenceicon.png" />
     <None Remove="images\icons\Push1dahan.png" />
@@ -214,6 +218,7 @@
     <EmbeddedResource Include="images\icons\Blighticon.png" />
     <EmbeddedResource Include="images\icons\cardplay.png" />
     <EmbeddedResource Include="images\icons\Cardplayplus.png" />
+    <EmbeddedResource Include="images\icons\Checkmark.png" />
     <EmbeddedResource Include="images\icons\Cityicon.png" />
     <EmbeddedResource Include="images\icons\Coastal.png" />
     <EmbeddedResource Include="images\icons\Dahanicon.png" />
@@ -239,6 +244,7 @@
     <EmbeddedResource Include="images\icons\JungleOrBeast.png" />
     <EmbeddedResource Include="images\icons\Junglewetland.png" />
     <EmbeddedResource Include="images\icons\Land_Gather_Beasts.png" />
+    <EmbeddedResource Include="images\icons\Land_Push_Town-City.png" />
     <EmbeddedResource Include="images\icons\minor.png" />
     <EmbeddedResource Include="images\icons\Mountainland.png" />
     <EmbeddedResource Include="images\icons\mountainorpresence.png" />
@@ -247,7 +253,9 @@
     <EmbeddedResource Include="images\icons\Noblight.png" />
     <EmbeddedResource Include="images\icons\Ocean.png" />
     <EmbeddedResource Include="images\icons\Oneenergyfire.png" />
+    <EmbeddedResource Include="images\icons\open-the-ways.png" />
     <EmbeddedResource Include="images\icons\Pay2EnergyToGainAPowerCard.png" />
+    <EmbeddedResource Include="images\icons\PlusOneRange.png" />
     <EmbeddedResource Include="images\icons\PrepareElement.png" />
     <EmbeddedResource Include="images\icons\Presenceicon.png" />
     <EmbeddedResource Include="images\icons\Push1dahan.png" />
@@ -606,10 +614,16 @@
     <None Update="images\pp1\spirit\absorb_essence.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="images\pp1\spirit\aid_from_the_spiritspeakers.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="images\pp1\spirit\asphyxiating_smoke.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\bac\spirit\boon_of_growing_power.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\pp1\spirit\a_circuitous_and_wending_journey.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\pp1\spirit\dark_skies_loose_a_stinging_rain.jpg">
@@ -649,6 +663,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\bac\spirit\terrifying_chase.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\pp1\spirit\offer_passage_between_worlds.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\pp1\spirit\paths_tied_by_nature.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\pp1\spirit\threatening_flames.jpg">
@@ -1917,7 +1937,13 @@
     <None Update="images\powerstorm.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="images\pp1\spirit\travelers_boon.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="images\pp1\spirit\unbearable_deluge.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\pp1\spirit\ways_of_shore_and_heartland.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\pull_beneath_the_hungry_earth.jpg">

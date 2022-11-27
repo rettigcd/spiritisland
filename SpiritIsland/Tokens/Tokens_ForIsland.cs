@@ -112,8 +112,12 @@ public class Tokens_ForIsland : IIslandTokenApi {
 			src.tokenCounts.Clear();
 			foreach(var space in tc.Keys) {
 				var tokens = src[space];
-				foreach(var p in tc[space])
+				foreach(var p in tc[space]) {
 					tokens.Init(p.Key, p.Value);
+					tokens.LinkedViaWays = p.Key is GatewayToken gt 
+						? gt.To // reapply
+						: null; // make sure we clear ones that are no longer linked
+				}
 			}
 			// Restore Defaults
 			src.TokenDefaults.Clear();

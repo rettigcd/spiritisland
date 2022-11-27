@@ -1,58 +1,23 @@
+Finder Issues
+	- (hard) Layout of Presence Tracks
+	- (med-hard) Make 2 of your lands adjacent. If presence moves out, no longer adjacent.
 
-! Make sure we aren't creating Actions and throwing them away-BindMyPower
-! Investigate Terrain_Mapper
+Presence Track Options
+	- Ignore Visual representation
+	- custom Drawer
+	- Presence outputs a Layout Graph with directions and locations.
 
-ICalcRange / Spirit.RangeCalc
-	implemented by: 
-		DefaultRangeCalculator
-		RangeExtender
-		VolcanicPeaksTowerOverTheLandscape
-		SkyStretchesToShore
-	changed by:
-		ReachingGrasp
-		FlowLikeWaterReachLikeAir
-		SkyStretchesToShore
-		ScreamDiseaseIntoTheWind
-		ExaltationOfMoltenStone
-		Volcano (special rule)
-	called by: 
-		Spirit.GetTargetOptions
-		FireAndFlood
-		PerilsOfTheDeepestIsland
-		MistsShiftAndFlow
-		BoundPresence.SelectDestinationWithinRange (handles BOTH)
-			UnleashATorent
-			UnrelentingGrowth
-			BlazingRenewal
-			PlaceWithin
-				GiftOfProliferation
-				SerpendWakesInPower
+Make Terrain Adjacent
+	Option - Add it to the beginning of all of Finder's Actions.
 
-ICalcSource / Spirit.SourceCalc
-	implemented by:
-		DefaultSourceCalc
-		DrenchTheLandscape
-	changed by:
-		EntwinedPresence
-		DrenchTheLand
-	*** Issue ***
-		Doesn't use the TerrainMappers to determine type
-	called by: 
-		Spirit.GetTargetOptions
-		MistsShiftAndFlow.PresenceMeetsTargettingRequirements
+	Option - Add to every flow, Auto-Set Value in the UI to make it not painful
+	Option - Secondary Thread where spirits can request it
+	Option - Secondary Thread where Finder just does it
 
-Spirit.TargetsSpace
-	called from:
-		TargetSpaceAttribute - Yes
-	changed by:
-		Shadows
-		ShroudOfSilentMist
-	Note:
-		Should *Only* be used for Targetting a Power because Shadows special rule.
-		If we don't care about paying $, could replace this override with a custom CalcRange
+https://boardgamegeek.com/thread/2952684/strategy-finder-paths-unseen
+==========================
 
-
-
+==========================
 
 D	Towering Root
 D	Breath of Darkness
@@ -63,6 +28,8 @@ J	Wondering Voice
 J	Ember Eye
 J	Relentless Gaze
 J	Dances up Earthquakes
+
+===========================
 
 Oversees Trade Seems safer
 Dahan on their Guard
@@ -83,38 +50,3 @@ Scapegoats
 Tall Tailes of Savagery
 Wary of the Interior
 	- cannot see pieces in stasis
-
-Cards With Range on them
-
-	Blazing Renewal (does the land placement restrictions still apply?)
-	Unrelenting Growth( does the land placement restrictions still apply? )
-	Gift of Proliferation
-	Bargans of Power and Protection
-	Unleash a Torrent of The Self's Own Essence
-	Utter A Curse of Dread And Bone
-	Perils of the Deepest Island
-
-Resolve:
-	RangeCalc usage
-	Spirit.GetTargetOptions
-	Spirit.TargetsSpace(...)
-	Blazing Renewal
-	BoundPresence.Range...
-
-	BlazingRenewal calls Spirit.GetTargetOptions but should call BoundPresence or TargetSpaceCtx instead instead.
-
-
-
-
-
-
-0 City
-1
-2
-3
-4
-5 Presence
-6 Dahan
-7 Exlorer
-8 Town
-9 

@@ -1,6 +1,6 @@
-When playing multi-player, other spirits should be able to use Downpour's SS as wetlands also, not just Dounpour.
-
-==========================
+Finder:
+	The Move presence on the presence track is forced (is that correct) 
+		AND the UI doesn't select it properly
 
 Settle Into Hunting-Grounds
 	- implement "May" count as badlands and beast.
