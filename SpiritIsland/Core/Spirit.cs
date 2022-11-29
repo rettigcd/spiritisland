@@ -81,7 +81,8 @@ public abstract partial class Spirit : IOption {
 	}
 
 	public async Task GrowAndResolve( GrowthOption option, GameState gameState ) { // public for Testing
-		var ctx = BindNewAction( gameState );
+		using var action = gameState.StartAction();
+		var ctx = Bind( gameState, action );
 
 		// Auto run the auto-runs.
 		foreach(var autoAction in option.AutoRuns)
@@ -134,10 +135,11 @@ public abstract partial class Spirit : IOption {
 		Present present = phase == Phase.Growth ? Present.Always : Present.Done;
 
 		// Create a new Action (guid) each time we resolve an Action
+		using var action = gs.StartAction();
 		SelfCtx ctx = phase switch {
-			Phase.Growth => BindNewAction( gs ),
+			Phase.Growth => Bind( gs, action ),
 			Phase.Fast or 
-			Phase.Slow => BindMyPower(gs),
+			Phase.Slow => BindMyPower( gs, action ),
 			_ => throw new InvalidOperationException(),
 		};
 
@@ -334,10 +336,8 @@ public abstract partial class Spirit : IOption {
 
 	protected abstract void InitializeInternal( Board board, GameState gameState );
 
-	public SelfCtx BindNewAction( GameState gameState ) => Bind( gameState, gameState.StartAction());
-	public virtual SelfCtx Bind( GameState gameState, UnitOfWork actionId ) => new SelfCtx( this, gameState, (Cause)default, actionId );
-	public virtual SelfCtx BindMyPower( GameState gameState, UnitOfWork existingActionId = default ) 
-		=> new SelfCtx( this, gameState, Cause.MyPowers, existingActionId != default ? default : gameState.StartAction() );
+	public virtual SelfCtx Bind( GameState gameState, UnitOfWork action, Cause cause = default ) => new SelfCtx( this, gameState, action, cause );
+	public SelfCtx BindMyPower( GameState gameState, UnitOfWork existingAction ) => Bind( gameState, existingAction, Cause.MyPowers );
 
 	void On_TimePassed(GameState _ ) {
 		// reset cards / powers
@@ -499,9 +499,6 @@ public abstract partial class Spirit : IOption {
 			await ctx.Blight.Remove( count, RemoveReason.ReturnedToCard ); // !!! get rid of this ReturnedToCard bit
 	}
 
-	public virtual TokenPusher PushFactory( TargetSpaceCtx ctx ) => new TokenPusher( ctx );
-	public virtual TokenGatherer GatherFactory( TargetSpaceCtx ctx ) => new TokenGatherer( ctx );
-
 	#endregion
 
 	#region Tarteting / Range
@@ -543,7 +540,8 @@ public abstract partial class Spirit : IOption {
 		// Convert TargetCriteria to spaces and merge (distinct) them together.
 		return targetCriteria
 			.SelectMany(tc => PowerRangeCalc.GetTargetOptionsFromKnownSource( this, gameState.Island.Terrain_ForPower, powerType, sources, tc ))
-			.Distinct();
+			.Distinct()
+			.Select(x=>x.Space); // TODO: get rid of this line.
 	}
 
 	#endregion

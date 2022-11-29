@@ -111,7 +111,8 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 
 		//   And: neighbors have 1 damaged dahan each 
 		const int dahanToGather = 2;
-		var ctx = spirit.BindMyPower( gameState ).Target( target );
+		using var action = gameState.StartAction();
+		var ctx = spirit.BindMyPower( gameState, action ).Target( target );
 		Space[] neighbors = ctx.Adjacent.ToArray();
 		for(int neighborIndex = 0; neighborIndex<dahanToGather; ++neighborIndex)
 			ctx.Target(neighbors[neighborIndex]).Tokens.Init( StdTokens.Dahan1, 1 );

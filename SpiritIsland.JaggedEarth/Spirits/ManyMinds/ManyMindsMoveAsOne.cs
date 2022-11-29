@@ -56,8 +56,21 @@ public class ManyMindsMoveAsOne : Spirit {
 
 	}
 
+	public override SelfCtx Bind( GameState gameState, UnitOfWork action, Cause cause = default ) 
+		=> new ManyMindsCtx(this,gameState, action, cause );
 
-	public override TokenPusher PushFactory( TargetSpaceCtx ctx ) => new BeastPusher(ctx);
-	public override TokenGatherer GatherFactory( TargetSpaceCtx ctx ) => new BeastGatherer(ctx);
+	public class ManyMindsCtx : SelfCtx {
+		public ManyMindsCtx(Spirit spirit, GameState gs, UnitOfWork action, Cause cause )
+			:base( spirit, gs, action, cause ) { }
+		public override TargetSpaceCtx Target( Space space ) => new ManyMindsSpaceCtx(this,space);
+	}
+
+	public class ManyMindsSpaceCtx : TargetSpaceCtx {
+		public ManyMindsSpaceCtx(SelfCtx ctx,Space space ) : base( ctx, space ) { }
+
+		public override TokenGatherer Gatherer => new BeastGatherer( this );
+
+		public override TokenPusher Pusher => new BeastPusher( this );
+	}
 
 }

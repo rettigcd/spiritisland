@@ -22,7 +22,8 @@ public class DreamAThousandDeaths_Tests {
 	}
 
 	TargetSpaceCtx MakeFreshPowerCtx() {
-		var ctx = spirit.BindMyPower(gs); // This is correct usage.
+		using var action = gs.StartAction();
+		var ctx = spirit.BindMyPower(gs, action); // This is correct usage.
 		return ctx.Target( board[5] );
 	}
 

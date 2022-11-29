@@ -295,6 +295,9 @@ public class SpaceState : HasNeighbors<SpaceState> {
 		 .Where(x => !this.gameState.Island.Terrain_ForBlight.MatchesTerrain(x, Terrain.Ocean) );
 
 	public IEnumerable<SpaceState> Range(int maxDistance) => this.CalcDistances( maxDistance ).Keys;
+
+	/// <summary> Explicitly named so not to confuse with Powers - Range commands. </summary>
+	public IEnumerable<SpaceState> InOrAdjacentTo => Range( 1 );
 		
 	IEnumerable<SpaceState> PowerUp(IEnumerable<Space> spaces) => this.tokenApi.PowerUp( spaces );
 }

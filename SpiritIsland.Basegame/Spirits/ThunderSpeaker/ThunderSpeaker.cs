@@ -66,7 +66,7 @@ public class Thunderspeaker : Spirit {
 
 		int numToDestroy = args.Count;
 		SpaceState[] options;
-		SpaceState[] Intersect() => args.Space.Range( 1 )
+		SpaceState[] Intersect() => args.Space.InOrAdjacentTo // Ravage Only, not dependent on PowerRangeCalculator
 			.Where( Presence.IsOn )
 			.ToArray();
 

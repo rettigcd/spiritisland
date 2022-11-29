@@ -1,5 +1,8 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
+/// <summary>
+/// Extends the range that beasts can be pushed.
+/// </summary>
 class BeastPusher : TokenPusher {
 
 	public BeastPusher( TargetSpaceCtx ctx ) : base( ctx ) { }
@@ -7,7 +10,7 @@ class BeastPusher : TokenPusher {
 	protected override async Task<Space> SelectDestination( Token token ) {
 		int range = token == TokenType.Beast ? 2 : 1;
 
-		IEnumerable<SpaceState> destinationOptions = ctx.GameState.Tokens[source].Range( range )
+		IEnumerable<SpaceState> destinationOptions = ctx.GameState.Tokens[source].Range( range ) // this is a push, not a range
 			.Where( s => ctx.Target(s.Space).IsInPlay );
 
 		foreach(var filter in destinationFilters)

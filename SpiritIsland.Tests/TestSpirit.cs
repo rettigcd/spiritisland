@@ -44,7 +44,8 @@ namespace SpiritIsland.Tests {
 			_ = new SinglePlayer.SinglePlayerGame( gs );
 
 			var user = new VirtualTestUser( spirit );
-			var starterCtx = spirit.BindNewAction( gs );
+			using var action = gs.StartAction();
+			var starterCtx = spirit.Bind( gs, action );
 
 			// Disable destroying presence
 			// starterCtx.GameState.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };

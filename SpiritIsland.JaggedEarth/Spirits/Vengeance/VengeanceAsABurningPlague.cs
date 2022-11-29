@@ -69,12 +69,13 @@ public class VengeanceAsABurningPlague : Spirit {
 
 	}
 
-	public override SelfCtx Bind( GameState gameState, UnitOfWork actionId ) => new VengenceCtx( this, gameState, Cause.MyPowers, actionId );
+	public override SelfCtx Bind( GameState gameState, UnitOfWork actionId, Cause cause = default ) 
+		=> new VengenceCtx( this, gameState, actionId, cause );
 
 }
 
 public class VengenceCtx : SelfCtx {
-	public VengenceCtx( Spirit spirit, GameState gameState, Cause cause, UnitOfWork actionId ) : base( spirit, gameState, cause, actionId ) { }
+	public VengenceCtx( Spirit spirit, GameState gameState, UnitOfWork actionId, Cause cause ) : base( spirit, gameState, actionId, cause ) { }
 	public override TargetSpaceCtx Target( Space space ) => new VengenceSpaceCtx( this, space );
 }
 

@@ -86,7 +86,9 @@ class MistsShiftAndFlow {
 
 		var pretendPresence = new SpaceCounts( _spirit.Presence.Placed(this._gameState).Select(x=>x.Space) );
 
-		var spacesInRange = target.Range(1).Where( IsInPlay ).ToArray();
+		var spacesInRange = target.Range(1) // this is a Gather
+			.Where( IsInPlay )
+			.ToArray();
 		foreach(SpaceState dst in spacesInRange) {
 			pretendPresence[dst.Space]++; // move  presence ON TO destination
 
@@ -130,7 +132,7 @@ class MistsShiftAndFlow {
 		var sources = _spirit.SourceCalc.FindSources( new ReadOnlyBoundPresence( _spirit, _gameState ), _sourceCriteria, _gameState );
 		this.nonFlowTargets = GetTargetOptionsFromKnownSources( sources );
 		this.flowRange = sources
-			.SelectMany( s => s.Range( 2 ) ).Distinct()
+			.SelectMany( s => s.Range( 2 ) ).Distinct() // I think this is a gather thing also
 			.ToArray();
 
 		// Calculate new sources we could find
@@ -158,8 +160,7 @@ class MistsShiftAndFlow {
 	}
 
 	IEnumerable<SpaceState> GetTargetOptionsFromKnownSources( IEnumerable<SpaceState> sources, TargetCriteria tc )
-		=> _spirit.PowerRangeCalc.GetTargetOptionsFromKnownSource( _ctx.Self, _ctx.TerrainMapper, _powerType, sources, tc )
-			.Select(s=>_gameState.Tokens[s]);
+		=> _spirit.PowerRangeCalc.GetTargetOptionsFromKnownSource( _ctx.Self, _ctx.TerrainMapper, _powerType, sources, tc );
 
 	// Shroud Helper - for easier testing Targetting
 	class SpaceCounts : CountDictionary<Space>, IKnowSpiritLocations {

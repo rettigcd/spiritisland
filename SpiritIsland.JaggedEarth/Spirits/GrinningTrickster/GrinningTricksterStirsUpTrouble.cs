@@ -77,14 +77,16 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 		await ctx.Presence.Destroy( space, DestoryPresenceCause.SpiritPower );
 	}
 
-	public override SelfCtx BindMyPower( GameState gameState, UnitOfWork actionId=default ) 
-		=> new TricksterCtx(this, gameState, actionId!=default ? actionId : gameState.StartAction() );
+	public override SelfCtx Bind( GameState gameState, UnitOfWork actionId, Cause cause = default ) 
+		=> cause == Cause.MyPowers
+			? new TricksterCtx(this, gameState, actionId!=default ? actionId : gameState.StartAction() )
+			: base.Bind( gameState, actionId, cause );
 
 }
 
 // Only use this when Trickster is using their own Powers
 class TricksterCtx : SelfCtx {
-	public TricksterCtx(Spirit spirit, GameState gs, UnitOfWork actionId) : base( spirit, gs, Cause.MyPowers, actionId ) { }
+	public TricksterCtx(Spirit spirit, GameState gs, UnitOfWork actionId) : base( spirit, gs, actionId, Cause.MyPowers ) { }
 	public override TargetSpaceCtx Target( Space space ) => new TricksterSpaceCtx( this, space );
 }
 
@@ -99,7 +101,13 @@ public class TricksterSpaceCtx : TargetSpaceCtx {
 
 		if( Self.Energy == 0 ) return;
 
-		var nearbyInvaders = Tokens.Range( 1 )
+		var nearbyInvaders = Self.PowerRangeCalc.GetTargetOptionsFromKnownSource( 
+			Self, 
+			TerrainMapper, 
+			default,  // This only matters for Volcano
+			new SpaceState[] { Tokens }, 
+			new TargetCriteria( 1 )
+		)
 			.SelectMany( s => s.InvaderTokens().Select( t => new SpaceToken( s.Space, t ) ) )
 			.ToArray();
 		var invader2 = await Self.Gateway.Decision( new Select.TokenFromManySpaces( "Add additional strife for 1 energy", nearbyInvaders, Present.Done ) );

@@ -15,7 +15,8 @@ public class StranglingFirevine {
 
 		// Add 1 wilds in the originating Sands. 
 		// !! won't find original if this was picked using a range-extender - would need to capture that info during the targetting process
-		var originatingOptions = ctx.Range(1)
+		var originatingOptions = ctx.Range(1,TargetingPowerType.PowerCard )
+			.Select(x=>x.Space)
 			.Where( a=> ctx.Presence.Spaces.Contains(a) && ctx.Target(a).Is(Terrain.Sand) ) // using Smart-terrain in case some spirit rule modifies terrain
 			.ToArray();
 		var originalCtx = await ctx.SelectSpace("Select origination space", originatingOptions, Present.AutoSelectSingle);
@@ -23,7 +24,7 @@ public class StranglingFirevine {
 		await originalCtx.Wilds.Add(1);
 
 		// 1 damage per wilds in / adjacent to target land.
-		int wildsDamage = ctx.Tokens.Range(1).Sum(s=>s.Wilds.Count);
+		int wildsDamage = ctx.Tokens.Range(1).Sum(s=>s.Wilds.Count); // In/Adjacen To, not Range
 
 		// if you have 2 fire, 3 plant: // +1 damage per wilds in / adjacent to target land.
 		if(await ctx.YouHave("2 fire,3 plant"))

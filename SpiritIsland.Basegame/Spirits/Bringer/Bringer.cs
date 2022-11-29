@@ -46,13 +46,15 @@ public class Bringer : Spirit {
 		Presence.Adjust( space, 2 );
 	}
 
-	public override SelfCtx BindMyPower( GameState gameState, UnitOfWork actionId=default ) 
-		=> new BringerCtx(this,gameState,actionId!=default?actionId : gameState.StartAction() );
+	public override SelfCtx Bind( GameState gameState, UnitOfWork actionId=default, Cause cause = default )
+		=> cause == Cause.MyPowers
+			? new BringerCtx(this,gameState,actionId!=default?actionId : gameState.StartAction() )
+			: base.Bind( gameState, actionId, cause );
 
 }
 
 class BringerCtx : SelfCtx {
-	public BringerCtx( Bringer bringer, GameState gs, UnitOfWork actionId ):base( bringer, gs, Cause.MyPowers, actionId ) {}
+	public BringerCtx( Bringer bringer, GameState gs, UnitOfWork actionId ):base( bringer, gs, actionId, Cause.MyPowers ) {}
 	public override TargetSpaceCtx Target( Space space ) => new BringerSpaceCtx(this, space);
 }
 

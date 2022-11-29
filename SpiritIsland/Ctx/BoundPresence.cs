@@ -22,7 +22,7 @@ public class ReadOnlyBoundPresence : IKnowSpiritLocations {
 	}
 	#endregion
 
-	public bool CanBePlacedOn( Space space ) => _inner.CanBePlacedOn( _gameState.Tokens[space], _terrainMapper );
+	public bool CanBePlacedOn( SpaceState space ) => _inner.CanBePlacedOn( space, _terrainMapper );
 	public bool IsSacredSite( Space space ) => _inner.IsSacredSite( _gameState.Tokens[space] );
 	public IEnumerable<Space> Spaces => _inner.Spaces( _gameState ); // !!! Move everything that calls this over to SpaceStates, then remove this.
 	public IEnumerable<SpaceState> SpaceStates => _inner.SpaceStates( _gameState );
@@ -39,7 +39,8 @@ public class ReadOnlyBoundPresence : IKnowSpiritLocations {
 		var options = rangeCalculator
 			.GetTargetOptionsFromKnownSource( _self, _terrainMapper, targetingPowerType, SpaceStates, targetCriteria )
 			.Where( CanBePlacedOn );
-		return options;
+		return options
+			.Select(x=>x.Space); // ! TODO get reid of this line.
 	}
 
 	#region User Decisions

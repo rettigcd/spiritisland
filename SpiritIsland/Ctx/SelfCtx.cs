@@ -13,7 +13,7 @@ public class SelfCtx {
 
 	#region constructor
 
-	public SelfCtx(Spirit self,GameState gameState, Cause cause, UnitOfWork actionId)
+	public SelfCtx(Spirit self,GameState gameState, UnitOfWork actionId, Cause cause)
 		:this( self, gameState, PickTerrain(cause,gameState), actionId ) { }
 
 	static TerrainMapper PickTerrain( Cause cause, GameState gameState ) => cause == Cause.MyPowers
@@ -70,7 +70,7 @@ public class SelfCtx {
 
 	public TargetSpiritCtx TargetSpirit( Spirit spirit ) => new TargetSpiritCtx( this, spirit );
 
-	public SelfCtx NewSelf( Spirit spirit ) => new SelfCtx( spirit, GameState, TerrainMapper, CurrentActionId ); 
+	public SelfCtx NewSelf( Spirit spirit ) => spirit.Bind( GameState, CurrentActionId );
 
 	// Visually, selects the [presence] icon
 	public async Task<TargetSpaceCtx> TargetDeployedPresence( string prompt ) {

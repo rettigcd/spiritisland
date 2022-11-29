@@ -12,7 +12,8 @@ public interface ICalcPowerSource {
 
 public interface ICalcRange {
 
-	IEnumerable<Space> GetTargetOptionsFromKnownSource(
+	// !!! Also, return SpaceState instead of Space.
+	IEnumerable<SpaceState> GetTargetOptionsFromKnownSource(
 		Spirit self,
 		TerrainMapper mapper,
 		TargetingPowerType powerType,
@@ -45,7 +46,7 @@ public class DefaultPowerSourceCalculator : ICalcPowerSource {
 /// </summary>
 public class DefaultRangeCalculator : ICalcRange {
 
-	public virtual IEnumerable<Space> GetTargetOptionsFromKnownSource(
+	public virtual IEnumerable<SpaceState> GetTargetOptionsFromKnownSource(
 		Spirit self,
 		TerrainMapper terrainMapper,
 		TargetingPowerType _,
@@ -54,20 +55,12 @@ public class DefaultRangeCalculator : ICalcRange {
 		TargetCriteria targetCriteria
 
 	) {
-		//return sources
-		//	.SelectMany( x => x.Range( targetCriteria.Range ) )
-		//	.Distinct()
-		//	.Where( terrainMapper.IsInPlay ) // !important
-		//	.Where( SpaceFilterMap.Get( targetCriteria.Filter, self, terrainMapper ) )
-		//	.Select(x=>x.Space);
-
-		var a = sources
+		return sources
 			.SelectMany( x => x.Range( targetCriteria.Range ) )
 			.Distinct()
+			.Where( terrainMapper.IsInPlay )
+			.Where( SpaceFilterMap.Get( targetCriteria.Filter, self, terrainMapper ) )
 			.ToArray();
-		var b = a.Where( terrainMapper.IsInPlay ).ToArray(); // !important
-		var c = b.Where( SpaceFilterMap.Get( targetCriteria.Filter, self, terrainMapper ) ).ToArray();
-		return c.Select( x => x.Space );
 
 	}
 	static public readonly ICalcRange Singleton = new DefaultRangeCalculator();

@@ -10,7 +10,7 @@ public class RangeExtender : ICalcRange {
 		this.originalApi = originalApi;
 	}
 
-	public IEnumerable<Space> GetTargetOptionsFromKnownSource(
+	public IEnumerable<SpaceState> GetTargetOptionsFromKnownSource(
 		Spirit self,
 		TerrainMapper terrainMapper,
 		TargetingPowerType powerType,

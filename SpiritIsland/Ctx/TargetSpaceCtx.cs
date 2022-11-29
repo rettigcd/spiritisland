@@ -62,19 +62,24 @@ public class TargetSpaceCtx : SelfCtx {
 
 	// This is different than Push / Gather which ManyMinds adjusts, this is straight 'Move' that is not adjusted.
 	/// <returns>Destination</returns>
-	public async Task<Space> MoveTokensOut( int max, TokenClass tokenClass, int range, string dstFilter = SpiritIsland.Target.Any ) {
+	public async Task<Space> MoveTokensOut( int max, TargetCriteria targetCriteria, params TokenClass[] tokenClass ) {
 
 		if(!Tokens.HasAny( tokenClass )) return null;
 
-		// Select Destination
-		Space destination = await Decision( Select.Space.PushToken( tokenClass, Space,
-			Tokens.Range( range )
-				.Where( spaceState => TerrainMapper.IsInPlay( spaceState.Space ) )
-				.Where( SpaceFilterMap.Get( dstFilter, Self, TerrainMapper ) ),
-			Present.Done )
-		);
+		var powerType = TargetingPowerType.PowerCard; // !!!
 
-		Token[] tokenOptions = Tokens.OfType(tokenClass);
+
+		// Select Destination
+		var destinationOptions = Self.PowerRangeCalc.GetTargetOptionsFromKnownSource( 
+			Self, 
+			TerrainMapper,
+			powerType,
+			new SpaceState[] { Tokens }, 
+			targetCriteria
+		);
+		Space destination = await Decision( Select.Space.MoveToken( Space, destinationOptions, Present.Done ) );
+
+		Token[] tokenOptions = Tokens.OfAnyType( tokenClass );
 		int remaining = Math.Min( Tokens.SumAny(tokenClass), max );
 		while(tokenOptions.Length > 0 && remaining > 0 ) {
 			// Select Token and move
@@ -84,30 +89,12 @@ public class TargetSpaceCtx : SelfCtx {
 
 			// Next
 			--remaining;
-			tokenOptions = Tokens.OfType( tokenClass );
+			tokenOptions = Tokens.OfAnyType( tokenClass );
 		}
 
 		return destination;
 
 	}
-
-	// This is different than Push / Gather which ManyMinds adjusts, this is straight 'Move' that is not adjusted.
-	public async Task<Space> MoveTokenIn( TokenClass tokenGroup, int range, string srcFilter = SpiritIsland.Target.Any ) {
-
-		var sources = Tokens.Range( range )
-			.Where( x => TerrainMapper.IsInland( x.Space ) && x.HasAny( tokenGroup ) )
-			.Where( SpaceFilterMap.Get( srcFilter, Self, TerrainMapper ) )  // !!! Not correct if moving Blight on an Ocean-Board
-			.SelectMany( x => x.OfType(tokenGroup).Select(t => new SpaceToken(x.Space, t)) )
-			.ToArray();
-
-		var spaceToken = await Decision( new Select.TokenFromManySpaces("Move Tokens into " + Space.Label, sources, Present.Done ) );
-		if(spaceToken == null) return default;
-
-		await Move( spaceToken.Token, spaceToken.Space, Space );
-
-		return spaceToken.Space;
-	}
-
 
 	#region Push
 
@@ -123,7 +110,7 @@ public class TargetSpaceCtx : SelfCtx {
 	public Task<Space[]> Push( int countToPush, params TokenClass[] groups )
 		=> Pusher.AddGroup( countToPush, groups ).MoveN();
 
-	public TokenPusher Pusher => Self.PushFactory( this );
+	public virtual TokenPusher Pusher => new TokenPusher( this );
 
 	#endregion Push
 
@@ -143,7 +130,7 @@ public class TargetSpaceCtx : SelfCtx {
 	public Task Gather( int countToGather, params TokenClass[] groups )
 		=> Gatherer.AddGroup(countToGather,groups).GatherN();
 
-	public TokenGatherer Gatherer => Self.GatherFactory( this );
+	public virtual TokenGatherer Gatherer => new TokenGatherer( this );
 
 	#endregion Gather
 
@@ -152,7 +139,15 @@ public class TargetSpaceCtx : SelfCtx {
 	public IEnumerable<TargetSpaceCtx> AdjacentCtxs => Adjacent.Select(Target);
 
 	/// <summary> Use this for Power-Pushing, since Powers can push invaders into the ocean. </summary>
-	public IEnumerable<Space> Range( int range ) => Tokens.Range( range ).Select(x=>x.Space).Where( adj => Target(adj).IsInPlay );
+	public IEnumerable<SpaceState> Range( int range, TargetingPowerType powerType ) => Self.PowerRangeCalc.GetTargetOptionsFromKnownSource(
+		Self,
+		TerrainMapper,
+		powerType,
+		new SpaceState[]{ Tokens }, 
+		new TargetCriteria( range )
+	)
+		.Where( TerrainMapper.IsInPlay ); // !!! is this necessary?  Does the RangeCalc already check this?
+
 
 	public async Task DestroyDahan( int countToDestroy ) { 
 		await Dahan.Destroy( countToDestroy );

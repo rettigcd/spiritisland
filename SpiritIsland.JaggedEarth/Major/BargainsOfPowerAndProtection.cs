@@ -15,7 +15,7 @@ public class BargainsOfPowerAndProtection {
 
 		// From now on: Each dahan withing range of 1 of your presence provides
 		// Defend 1 in its land,
-		ctx.GameState.Tokens.Dynamic.ForGame.Register( new Range1DahanDefend1(ctx.Self).DefendOn, TokenType.Defend );
+		ctx.GameState.Tokens.Dynamic.ForGame.Register( new Range1DahanDefend1(ctx).DefendOn, TokenType.Defend );
 
 		// and you gain 1 less Energy each turn.
 		ctx.Self.EnergyCollected.ForGame.Add( spirit => --spirit.Energy );
@@ -24,12 +24,20 @@ public class BargainsOfPowerAndProtection {
 	}
 
 	class Range1DahanDefend1 {
-		readonly SpiritPresence presence;
-		public Range1DahanDefend1(Spirit spirit) { 
-			this.presence = spirit.Presence;
+		readonly SelfCtx ctx;
+		public Range1DahanDefend1(SelfCtx ctx) { 
+			this.ctx = ctx;
 		}
 		public int DefendOn( SpaceState space ) {
-			return space.Range(1).Any( presence.IsOn )
+			var spaces = ctx.Self.PowerRangeCalc.GetTargetOptionsFromKnownSource(
+				ctx.Self,
+				ctx.TerrainMapper,
+				TargetingPowerType.PowerCard,
+				new SpaceState[] { space },
+				new TargetCriteria(1)
+			);
+
+			return spaces.Any( ctx.Self.Presence.IsOn )
 				? space.Dahan.Count
 				: 0;
 		}

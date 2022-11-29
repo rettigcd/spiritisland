@@ -14,8 +14,8 @@ class VolcanicPeaksTowerOverTheLandscape : DefaultRangeCalculator {
 	// Perils of the Deepest Island
 
 
-	public override IEnumerable<Space> GetTargetOptionsFromKnownSource( Spirit self, TerrainMapper tm, TargetingPowerType powerType, IEnumerable<SpaceState> source, TargetCriteria targetCriteria ) {
-		List<Space> spaces = base.GetTargetOptionsFromKnownSource( self, tm, powerType, source, targetCriteria )
+	public override IEnumerable<SpaceState> GetTargetOptionsFromKnownSource( Spirit self, TerrainMapper tm, TargetingPowerType powerType, IEnumerable<SpaceState> source, TargetCriteria targetCriteria ) {
+		var spaces = base.GetTargetOptionsFromKnownSource( self, tm, powerType, source, targetCriteria )
 			.ToList();
 
 		// Add towers

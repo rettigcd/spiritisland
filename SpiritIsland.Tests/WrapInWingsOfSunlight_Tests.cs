@@ -30,10 +30,11 @@ public class WrapInWingsOfSunlight_Tests {
 		static async Task PlayCard(TargetSpaceCtx ctx) { try { await WrapInWingsOfSunlight.ActAsync( ctx ); } catch(Exception ex) { 
 			_ = ex.ToString(); 
 		} } 
-		_ = PlayCard( spirit.BindMyPower( gameState ).Target(src) );
+		using var action = gameState.StartAction();
+		_ = PlayCard( spirit.BindMyPower( gameState, action ).Target(src) );
 
 		//  And: Can bring 2 of each
-		user.AssertDecision( "Push Dahan to", "A1,A2,A3,A4,A5,A6,A7,A8,Done", dst.Label );
+		user.AssertDecision( "Move token(s) to", "A1,A2,A3,A4,A5,A6,A7,A8,Done", dst.Label );
 		user.AssertDecisionX( "Move up to (5)", "(D@2),Done" );
 		user.AssertDecisionX( "Move up to (4)", "(D@2),Done" );
 		user.AssertDecisionX( "Move up to (3)", "(D@2),Done" );
@@ -73,7 +74,8 @@ public class WrapInWingsOfSunlight_Tests {
 		static async Task PlayCard(TargetSpaceCtx ctx) { try { await TerrifyingChase.ActAsync( ctx ); } catch(Exception ex) { 
 			_ = ex.ToString(); 
 		} } 
-		_ = PlayCard( spirit.BindMyPower( gameState ).Target(src) );
+		using var action = gameState.StartAction();
+		_ = PlayCard( spirit.BindMyPower( gameState, action ).Target(src) );
 
 		//  And: Can bring 2 of each
 		user.AssertDecisionX( "Push (2)", "(D@2),E@1,T@2" );

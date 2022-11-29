@@ -37,8 +37,8 @@ public class ExplosiveEruption {
 
 			// In each land withing range 2
 			// +4 Damage.
-			foreach(var space in ctx.Range( 2 ))
-				await ctx.Target(space).DamageInvaders(4);
+			foreach(var space in ctx.Range( 2, TargetingPowerType.Innate ))
+				await ctx.Target(space.Space).DamageInvaders(4);
 
 			// In each land adjacent to the target
 			// add 1 blight if it doesn't have any.
