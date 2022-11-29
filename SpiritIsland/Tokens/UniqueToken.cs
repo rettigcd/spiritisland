@@ -27,6 +27,8 @@ public class UniqueToken : TokenClass, Token {
 	readonly string _summary;
 	string IOption.Text => Label;
 
+	public string SpaceAbreviation => _summary;
+
 	#endregion
 
 	#region TokenGroup

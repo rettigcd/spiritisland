@@ -79,7 +79,9 @@ public class ObserveTheEverChangingWorld {
 		public ElementToken() { _index = _total++; }
 		public TokenClass Class => TokenType.Element;
 		public string Text => "Element";
-		public override string ToString() => $"AnyElement({_index})";
+
+		public string SpaceAbreviation => $"AnyElement({_index})";
+
 	}
 
 }

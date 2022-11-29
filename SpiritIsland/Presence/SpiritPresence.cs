@@ -17,6 +17,8 @@ public class SpiritPresence {
 
 		foreach(var r in Energy.Revealed) CheckEnergyAndCardPlays( r );
 		foreach(var r in CardPlays.Revealed) CheckEnergyAndCardPlays( r);
+
+		this.presenceToken = new SpiritPresenceToken();
 	}
 
 	#endregion
@@ -235,7 +237,7 @@ public class SpiritPresence {
 		return Task.CompletedTask;
 	}
 
-	readonly protected UniqueToken presenceToken = new UniqueToken("Presence",TokenCategory.Presence);
+	readonly protected Token presenceToken;
 
 	#region Memento
 
@@ -263,6 +265,36 @@ public class SpiritPresence {
 	}
 
 	#endregion
+}
+
+public class SpiritPresenceToken : Token {
+
+	#region private
+
+	class SpiritPresenceClass : TokenClass {
+		public string Label => "Presence";
+		public TokenCategory Category => TokenCategory.Presence;
+	}
+
+	static int tokenTypeCount; // so each spirit presence gets a different number
+
+	#endregion
+
+	public SpiritPresenceToken() {
+		// Text = "P" + (tokenTypeCount++); // !! This kind of sucks. Could be based on Spirit or starting Board-name
+
+		// !!! DeployedPresenceDecisoin: IslandControl needs access to the PresenceToken so it can record the Location for creating hotspots during.
+		Text = "Presence";      // !!! this only works in SOLO.
+	}
+
+	public static TokenClass TokenClass = new SpiritPresenceClass();
+
+	public TokenClass Class => TokenClass;
+
+	public string Text { get; set; }
+
+	public string SpaceAbreviation => null; // hide it
+
 }
 
 public enum DestoryPresenceCause {

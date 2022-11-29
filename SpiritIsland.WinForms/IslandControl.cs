@@ -500,7 +500,7 @@ public partial class IslandControl : Control {
 				if(tokenLocations.ContainsKey( key )) {
 					var rect = tokenLocations[key];
 					rect.Inflate( 4, 4 );
-					optionRects.Add( (rect, st) );
+					optionRects.Add( (rect, st) );			// Store the Option
 					pe.Graphics.DrawRectangle( pen, rect );
 				}
 			}
@@ -513,8 +513,8 @@ public partial class IslandControl : Control {
 				if(tokenLocations.ContainsKey( key )) {
 					var rect = tokenLocations[key];
 					rect.Inflate(4,4);
-					optionRects.Add( (rect, token) );
-					pe.Graphics.DrawRectangle( pen, rect );
+					optionRects.Add( (rect, token) );		// Store the option
+					pe.Graphics.DrawRectangle( pen, rect ); // Draw it
 				}
 			}
 		}
@@ -523,7 +523,7 @@ public partial class IslandControl : Control {
 			activeSpaces = null; // disable circle drawing
 			// Presence (inherits from Space Cirlcles
 			foreach(var space in deployedPresence.Options.OfType<Space>()) {
-				string key = space.Label + ":" + "Presence";
+				string key = space.Label + ":" + "Presence";	//!!! this only works solo.  Need unique Token labels for different spirits.
 				if(tokenLocations.ContainsKey( key )) {
 					var rect = tokenLocations[key];
 					rect.Inflate(4,4);
@@ -561,16 +561,14 @@ public partial class IslandControl : Control {
 
 		DrawInvaderRow( graphics, x, ref y, iconWidth, xStep, spaceState );
 
-		// Presence
-		int presenceCount = spirit.Presence.CountOn( spaceState );
-		bool isSS = spirit.Presence.SacredSites( this.gameState, this.gameState.Island.Terrain ).Contains( spaceState.Space );
 		// dahan & blight
 		List<Token> row2Tokens = new List<Token> { TokenType.Defend, TokenType.Blight }; // These don't show up in .OfAnyType if they are dynamic
 		row2Tokens.AddRange( spaceState.OfAnyType( TokenType.Dahan ) );
 		row2Tokens.AddRange( spaceState.OfAnyType( TokenType.Element ) );
+		row2Tokens.AddRange( spaceState.OfAnyType( SpiritPresenceToken.TokenClass ) );
 
-		DrawRow( graphics, spaceState, x, ref y, iconWidth, xStep, presenceCount, isSS, row2Tokens.ToArray() );
-		DrawRow( graphics, spaceState, x, ref y, iconWidth, xStep, 0,             false, TokenType.Beast, TokenType.Wilds, TokenType.Disease, TokenType.Badlands, TokenType.Isolate );
+		DrawRow( graphics, spaceState, x, ref y, iconWidth, xStep, row2Tokens.ToArray() );
+		DrawRow( graphics, spaceState, x, ref y, iconWidth, xStep, TokenType.Beast, TokenType.Wilds, TokenType.Disease, TokenType.Badlands, TokenType.Isolate );
 
 	}
 
@@ -784,7 +782,7 @@ public partial class IslandControl : Control {
 	}
 
 
-	void DrawRow( Graphics graphics, SpaceState tokens, float x, ref float y, float width, float step, int presenceCount, bool isSacredSite, params Token[] tokenTypes ) {
+	void DrawRow( Graphics graphics, SpaceState tokens, float x, ref float y, float width, float step, params Token[] tokenTypes ) {
 		float maxHeight = 0;
 
 		using Font countFont = new( "Arial", 7, FontStyle.Bold, GraphicsUnit.Point );
@@ -793,7 +791,8 @@ public partial class IslandControl : Control {
 			int count = tokens[token];
 			if(count == 0) continue;
 
-			Image img = AccessTokenImage( token );
+			bool isPresence = token is SpiritPresenceToken;
+			Image img = isPresence ? presence : AccessTokenImage( token );
 
 			// calc rect
 			float height = width / img.Width * img.Height;
@@ -804,33 +803,18 @@ public partial class IslandControl : Control {
 			// record token location
 			tokenLocations.Add( tokens.Space.Label + ":" + token.ToString(), rect );
 
+			if(isPresence && spirit.Presence.IsSacredSite(tokens) ) {
+				const int inflationSize = 10;
+				rect.Inflate( inflationSize, inflationSize );
+				Color newColor = Color.FromArgb( 100, Color.Yellow );
+				using var brush = new SolidBrush( newColor );
+				graphics.FillEllipse( brush, rect );
+				rect.Inflate( -inflationSize, -inflationSize );
+			}
+
 			// Draw Tokens
 			graphics.DrawImage( img, rect );
 			graphics.DrawCountIfHigherThan( rect, count );
-		}
-
-		if(presenceCount > 0) { 
-			// calc rect
-			float height = width / presence.Width * presence.Height;
-			maxHeight = Math.Max( maxHeight, height );
-			var presenceRect = new Rectangle( (int)x, (int)y, (int)width, (int)height );
-			x += step;
-
-			tokenLocations.Add( tokens.Space.Label + ":" + "Presence", presenceRect );
-
-			if( isSacredSite ) {
-				const int inflationSize = 10;
-				presenceRect.Inflate( inflationSize, inflationSize );
-				Color newColor = Color.FromArgb( 100, Color.Yellow );
-				using var brush = new SolidBrush(newColor);
-				graphics.FillEllipse(brush,presenceRect);
-				presenceRect.Inflate( -inflationSize, -inflationSize );
-			}
-
-			// Draw Presence
-			graphics.DrawImage( presence, presenceRect );
-			graphics.DrawCountIfHigherThan( presenceRect, presenceCount );
-
 		}
 
 		float gap = step-width;
@@ -963,9 +947,11 @@ public partial class IslandControl : Control {
 	}
 
 	ActivatedFearCard fearCard;
-	Select.TokenFrom1Space tokenOnSpace;
 	Select.AdjacentInfo adjacentInfo;
+
 	Select.TypedDecision<SpaceToken> spaceTokens;
+	Select.TokenFrom1Space tokenOnSpace;
+
 	Select.DeployedPresence deployedPresence;
 	Select.DeckToDrawFrom deckDecision;
 	Select.Element elementDecision;

@@ -4,4 +4,9 @@ public interface Token : IOption {
 
 	TokenClass Class { get; }
 
+	/// <summary> 
+	/// The text to display when showing a summary of the tokens in a space.
+	/// null => don't show it in the Token Summary list.
+	/// </summary>
+	string SpaceAbreviation { get; }
 }

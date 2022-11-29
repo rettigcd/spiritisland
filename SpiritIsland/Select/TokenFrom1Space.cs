@@ -1,6 +1,12 @@
 ﻿namespace SpiritIsland.Select;
 
-// Do NOT merge this into SpaceTokens because that adds the additional complexity of ignoring the Space that is returned.
+/// <summary>
+/// Similar to SpaceToken except Space is known.  Therefore:
+/// (1) We don't have to keep presenting it to the user:  "T2 on A5" vs "T2"  (This is the real pain in the ass part...)
+/// (2) We don't have to explicitly pick out the Token piece of the returned value.  token   vs    token.Token
+/// So.. Do NOT merge this into SpaceTokens because that adds the additional complexity of ignoring the Space that is returned.
+/// (Twice I tried to merge this into SpaceTokens, and BOTH times when I got to the Unit Tests, I decided to roll it back.)
+/// </summary>
 public class TokenFrom1Space : TypedDecision<Token> {
 
 	public static TokenFrom1Space TokenToPush( SpiritIsland.Space space, int count, Token[] options, Present present )
@@ -19,8 +25,5 @@ public class TokenFrom1Space : TypedDecision<Token> {
 	}
 
 	public SpiritIsland.Space Space { get; }
-
-	// In theory, we could add IHaveAdjacentInfo && AdjacentInfo
-	// but nothing seems to need it.
 
 }

@@ -109,12 +109,12 @@ public static class ExtendDictionary {
 
 	/// <returns>([Key][count]) ordered alphabetically or '[none]' if empty</returns>
 	/// <example>1C@3,1E@1,1T@2</example>
-	static public string TokenSummary<T>( this CountDictionary<T> dict ) {
+	static public string TokenSummary<T>( this CountDictionary<T> dict ) where T:Token {
 		return dict.Count == 0 ? "[none]"
 			: dict
-				.Where( p => p.Key.ToString()!="" )
-				.OrderBy( p => p.Key.ToString() )
-				.Select( p => p.Value + p.Key.ToString() )
+				.Where( p => p.Key.SpaceAbreviation != null )
+				.OrderBy( p => p.Key.SpaceAbreviation )
+				.Select( p => p.Value + p.Key.SpaceAbreviation )
 				.Join( "," );
 	}
 

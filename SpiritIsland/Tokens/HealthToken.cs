@@ -79,6 +79,8 @@ public class HealthToken : Token, IEquatable<HealthToken> {
 
 	string IOption.Text => _summaryString;
 
+	public string SpaceAbreviation => _summaryString;
+
 	readonly string _summaryString;
 
 	readonly IHaveHealthPenaltyPerStrife _healthPenaltyHolder;

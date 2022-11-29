@@ -53,6 +53,8 @@ public class InfestationOfVenomousSpiders {
 
 		public string Text => "SpiderInfestationStopper";
 
+		public string SpaceAbreviation => null;
+
 		public bool Stops( TokenClass tokenClass ) => true;
 
 		public async Task StopBuild( GameState gameState, SpaceState space ) {
