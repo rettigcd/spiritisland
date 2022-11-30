@@ -32,6 +32,7 @@ public class SpaceFilterMap {
 		[Target.Beast             ] = (ctx) => ctx.Tokens.Beasts.Any,
 		[Target.BeastOrJungle     ] = (ctx) => ctx.Tokens.Space.IsJungle || ctx.Tokens.Beasts.Any,
 		[Target.PresenceOrWilds   ] = (ctx) => ctx.IsPresent || ctx.Tokens.Wilds.Any,
+		[Target.Presence          ] = (ctx) => ctx.IsPresent,
 		[Target.CoastalOrWetlands ] = (ctx) => ctx.Tokens.Space.IsWetland || ctx.TerrainMapper.IsCoastal(ctx.Tokens.Space),
 		[Target.City              ] = (ctx) => ctx.Tokens.Has(Invader.City),
 

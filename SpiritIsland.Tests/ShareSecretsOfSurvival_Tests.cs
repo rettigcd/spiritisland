@@ -22,14 +22,14 @@ public class ShareSecretsOfSurvival_Tests {
 	[InlineData( "1D@1,1D@2,1C@3,1E@1", "1B,2D@2" )]
 	[InlineData( "3D@1,1T@2", "1B,1D@1,2D@2" )]
 	[InlineData( "2D@2,1C@3,1T@2,1E@1", "1B,2D@2,1T@2" )]
-	public void Destroy2Fewer_Ravage(string startingTokens, string expectedEndingTokens ) {
+	public void Destroy2Fewer_EachTime(string startingTokens, string expectedEndingTokens ) {
 		var fxt = new ConfigurableTestFixture();
 		var space = fxt.Board[5];
 		// Given: # of Dahan and Towns
 		fxt.InitTokens( space, startingTokens);
 		//   And: played ShareSecretsOfSurvival
 		var ctx= fxt.SelfCtx.Target( space );
-		ShareSecretsOfSurvival.Destroy2FewerDahan.Execute( ctx );
+		Cmd.EachTimeDestroy2FewerDahan.Execute( ctx );
 
 		//  When: ravage
 		new RavageAction(fxt.GameState, fxt.GameState.Invaders.On(space,fxt.GameState.StartAction())).Exec().Wait();
@@ -56,7 +56,7 @@ public class ShareSecretsOfSurvival_Tests {
 	[InlineData( "1D@1,1D@2,1C@3,1E@1", "1B,2D@2" )]
 	[InlineData( "3D@1,1T@2", "1B,1D@1,2D@2" )]
 	[InlineData( "2D@2,1C@3,1T@2,1E@1", "1B,2D@2,1T@2" )]
-	public void BirdsCryWarning_Ravage( string startingTokens, string expectedEndingTokens ) {
+	public void Destroy2Fewer_NextTime( string startingTokens, string expectedEndingTokens ) {
 
 
 		var fxt = new ConfigurableTestFixture();
@@ -65,7 +65,7 @@ public class ShareSecretsOfSurvival_Tests {
 		fxt.InitTokens( space, startingTokens );
 		//   And: played ShareSecretsOfSurvival
 		var ctx = fxt.SelfCtx.Target( space );
-		BirdsCryWarning.Destroy2FewerDahan.Execute( ctx );
+		Cmd.NextTimeDestroy2FewerDahan.Execute( ctx );
 
 		//  When: ravage
 		new RavageAction( fxt.GameState, fxt.GameState.Invaders.On( space, fxt.GameState.StartAction() ) ).Exec().Wait();
