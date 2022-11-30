@@ -188,7 +188,7 @@ public class SharpFangs_GrowthTests : GrowthTests {
 	}
 
 	void User_GrowthB_PlacePresence() {
-		User.Growth_SelectAction( "PlacePresence(3,beast or jungle)" );
+		User.Growth_SelectAction( $"PlacePresence(3,{Target.Beast}Or{Target.Jungle})" );
 		User.PlacePresenceLocations( spirit.Presence.Energy.RevealOptions.Single(), "A3;A7;A8" );
 	}
 

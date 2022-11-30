@@ -16,7 +16,7 @@ public class VengeanceAsABurningPlague : Spirit {
 	) {
 		GrowthTrack = new GrowthTrack(
 			new GrowthOption( new ReclaimAll(), new DrawPowerCard(), new GainEnergy(1)),
-			new GrowthOption( new PlacePresence(2,Target.TownCityOrBlight), new PlacePresence(2,Target.TownCityOrBlight)),
+			new GrowthOption( new PlacePresence(2,Target.TownOrCity, Target.Blight ), new PlacePresence(2, Target.TownOrCity, Target.Blight ) ),
 			new GrowthOption( new DrawPowerCard(), new PlacePresenceOrDisease(), new GainEnergy(1))
 		);
 		InnatePowers = new InnatePower[] {

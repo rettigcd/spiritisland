@@ -2,7 +2,7 @@
 
 public class ProwlingPanthers {
 
-	[MinorCard( "Prowling Panthers", 1, Element.Moon, Element.Fire, Element.Animal ), Slow, FromPresence( 1, Target.JungleOrMountain )]
+	[MinorCard( "Prowling Panthers", 1, Element.Moon, Element.Fire, Element.Animal ), Slow, FromPresence( 1, Target.Jungle, Target.Mountain )]
 	static public Task ActAsync( TargetSpaceCtx ctx ) {
 		return ctx.SelectActionOption(
 			new SpaceAction( "1 fear, add beast", FearAndBeast ),

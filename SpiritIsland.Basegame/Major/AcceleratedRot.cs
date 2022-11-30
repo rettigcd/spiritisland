@@ -6,7 +6,7 @@ public class AcceleratedRot {
 
 	[MajorCard(AcceleratedRot.Name,4,Element.Sun,Element.Water,Element.Plant)]
 	[Slow]
-	[FromPresence(2,Target.JungleOrWetland)]
+	[FromPresence(2,Target.Jungle, Target.Wetland )]
 	static public async Task ActAsync(TargetSpaceCtx ctx){
 
 		// 2 fear, 4 damage

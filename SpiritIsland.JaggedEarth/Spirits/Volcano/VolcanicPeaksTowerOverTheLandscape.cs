@@ -24,7 +24,7 @@ class VolcanicPeaksTowerOverTheLandscape : DefaultRangeCalculator {
 				.Where( s => 3 <= self.Presence.CountOn( s ) )
 				.ToArray();
 			if(towers.Length > 0)
-				spaces.AddRange( base.GetTargetOptionsFromKnownSource( self, tm, powerType, towers, new TargetCriteria( targetCriteria.Range + 1, targetCriteria.Filter ) ) );
+				spaces.AddRange( base.GetTargetOptionsFromKnownSource( self, tm, powerType, towers, targetCriteria.ExtendRange(1) ) );
 		}
 
 		return spaces.Distinct();

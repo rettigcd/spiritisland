@@ -4,7 +4,7 @@ public class TreesRadiateCelestialBrilliance {
 
 	const string Name = "Trees Radiate Celestial Brilliance";
 
-	[MajorCard( Name,3,Element.Sun,Element.Moon,Element.Plant), Fast, FromPresence(1,Target.JungleOrNoBlight )]
+	[MajorCard( Name,3,Element.Sun,Element.Moon,Element.Plant), Fast, FromPresence(1,Target.Jungle, Target.NoBlight )]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 		// 3 fear.
 		ctx.AddFear(3);

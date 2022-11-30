@@ -31,7 +31,7 @@ public class ASpreadOfRampantGreen : Spirit {
 		// Special rules: steady regeneration
 
 		GrowthTrack = new GrowthTrack(
-			new GrowthOption( new PlacePresence( 2, Target.JungleOrWetland ) )
+			new GrowthOption( new PlacePresence( 2, Target.Jungle, Target.Wetland ) )
 		).Add( new GrowthPickGroups( 1,
 			// reclaim, +1 power card
 			new GrowthOption(

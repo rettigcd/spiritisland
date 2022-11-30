@@ -8,17 +8,19 @@ public abstract class TargetSpaceAttribute : GeneratesContextAttribute {
 
 	protected readonly int range;
 	public override string TargetFilter { get; }
+	string[] _targetFilters;
 
-	public TargetSpaceAttribute(TargetSourceCriteria sourceCriteria, int range, string targetFilter ){
+	public TargetSpaceAttribute(TargetSourceCriteria sourceCriteria, int range, params string[] targetFilter ){
 		this.sourceCriteria = sourceCriteria;
 		this.range = range;
-		this.TargetFilter = targetFilter;
+		TargetFilter = targetFilter.Length>0 ? string.Join("Or",targetFilter) : "Any";
+		_targetFilters = targetFilter;
 	}
 
 	public override async Task<object> GetTargetCtx( string powerName, SelfCtx ctx, TargetingPowerType powerType ){
 		var space = await ctx.Self.TargetsSpace( powerType, ctx, powerName+": Target Space",
 			sourceCriteria,
-			new TargetCriteria( await CalcRange(ctx), TargetFilter )
+			new TargetCriteria( await CalcRange(ctx), _targetFilters )
 		);
 		return space == null ? null : ctx.Target(space);
 	}
@@ -32,8 +34,8 @@ public abstract class TargetSpaceAttribute : GeneratesContextAttribute {
 
 [AttributeUsage( AttributeTargets.Class | AttributeTargets.Method )]
 public class FromPresenceAttribute : TargetSpaceAttribute {
-	public FromPresenceAttribute( int range, string filter = Target.Any )
-		: base( new TargetSourceCriteria( From.Presence ), range, filter ) {}
+	public FromPresenceAttribute( int range, params string[] filters )
+		: base( new TargetSourceCriteria( From.Presence ), range, filters ) {}
 	public override string RangeText => range.ToString();
 }
 
@@ -46,7 +48,7 @@ public class FromPresenceInAttribute : TargetSpaceAttribute {
 
 [AttributeUsage( AttributeTargets.Class | AttributeTargets.Method )]
 public class FromSacredSiteAttribute : TargetSpaceAttribute {
-	public FromSacredSiteAttribute( int range, string filter = Target.Any )
-		: base( new TargetSourceCriteria( From.SacredSite ), range, filter ) { }
+	public FromSacredSiteAttribute( int range, params string[] filters )
+		: base( new TargetSourceCriteria( From.SacredSite ), range, filters ) { }
 	public override string RangeText => $"ss:{range}";
 }

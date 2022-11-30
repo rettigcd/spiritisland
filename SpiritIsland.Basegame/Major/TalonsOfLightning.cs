@@ -4,7 +4,7 @@ public class TalonsOfLightning {
 
 	[MajorCard( "Talons of Lightning", 6, Element.Fire, Element.Air )]
 	[Fast]
-	[ExtendableRange( From.Presence, 1, Target.MountainOrWetland, "3 fire,3 air", 2 )]
+	[ExtendableRange( From.Presence, 1, "3 fire,3 air", 2, Target.Mountain, Target.Wetland )]
 	static public async Task ActionAsync( TargetSpaceCtx ctx ) {
 
 		// 3 fear

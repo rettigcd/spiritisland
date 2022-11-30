@@ -2,7 +2,7 @@
 
 public class SuckingOoze{ 
 
-	[MinorCard("Sucking Ooze",0,Element.Moon,Element.Water,Element.Earth),Fast,FromPresence(1,Target.SandOrWetland)]
+	[MinorCard("Sucking Ooze",0,Element.Moon,Element.Water,Element.Earth),Fast,FromPresence(1, Target.Sand, Target.Wetland )]
 	static public Task ActAsync(TargetSpaceCtx ctx){
 		// 2 fear if Invaders are present.
 		if(ctx.HasInvaders)

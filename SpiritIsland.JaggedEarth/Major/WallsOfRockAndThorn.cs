@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 public class WallsOfRockAndThorn {
 
-	[MajorCard("Walls of Rock and Thorn",4,Element.Sun,Element.Earth,Element.Plant), Fast, FromSacredSite(2,Target.JungleOrMountain)]
+	[MajorCard("Walls of Rock and Thorn",4,Element.Sun,Element.Earth,Element.Plant), Fast, FromSacredSite(2,Target.Jungle, Target.Mountain )]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 		// 2 damage.
 		int damage = 2;

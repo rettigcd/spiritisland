@@ -38,7 +38,7 @@ public class ExaltationOfMoltenStone {
 			var mountainSource = source.Where(space => tm.MatchesTerrain( space, Terrain.Mountain) ).ToArray();
 			return mountainSource.Length == 0 ? spaces
 				: spaces
-				.Union( originalApi.GetTargetOptionsFromKnownSource( self, tm, powerType, mountainSource, new TargetCriteria(tc.Range+1, tc.Filter) ) )
+				.Union( originalApi.GetTargetOptionsFromKnownSource( self, tm, powerType, mountainSource, tc.ExtendRange(1) ) )
 				.Distinct();
 		}
 

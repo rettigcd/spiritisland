@@ -6,7 +6,7 @@ public class SongOfSanctity {
 
 	[MinorCard(SongOfSanctity.Name, 1, Element.Sun,Element.Water,Element.Plant)]
 	[Slow]
-	[FromPresence(1,Target.JungleOrMountain)]
+	[FromPresence(1,Target.Jungle, Target.Mountain )]
 	static public async Task ActionAsync(TargetSpaceCtx ctx){
 		int explorerCount = ctx.Tokens.Sum( Invader.Explorer );
 		if( 0 < explorerCount )

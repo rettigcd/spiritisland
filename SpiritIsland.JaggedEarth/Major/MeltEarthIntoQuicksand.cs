@@ -2,7 +2,7 @@
 
 public class MeltEarthIntoQuicksand {
 
-	[MajorCard("Melt Earth into Quicksand",4,Element.Moon,Element.Water,Element.Earth), Fast, FromPresence(1, Target.SandOrWetland)]
+	[MajorCard("Melt Earth into Quicksand",4,Element.Moon,Element.Water,Element.Earth), Fast, FromPresence(1, Target.Sand, Target.Wetland )]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 		// 1 fear.
 		ctx.AddFear(1);

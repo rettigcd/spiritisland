@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
 [InnatePower("Savage Revenge"), Slow]
-[ExtendableRange( From.Presence, 0, Target.TownOrCity, "3 air", 1 )]
+[ExtendableRange( From.Presence, 0, "3 air", 1, Target.TownOrCity )]
 public class SavageRevenge {
 
 	[InnateOption("3 fire,1 animal","1 Damage")]

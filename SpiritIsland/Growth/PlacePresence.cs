@@ -6,18 +6,22 @@ public class PlacePresence : GrowthActionFactory {
 
 	public PlacePresence( int range ) {
 		targetCriteria = new TargetCriteria( range );
+		FilterEnum = Target.Any;
 		Name = $"PlacePresence({range})";
 	}
 
-	public PlacePresence( int range, string filterEnum ) {
+	public PlacePresence( int range, params string[] filterEnum ) {
 		this.targetCriteria = new TargetCriteria( range, filterEnum );
-		Name = $"PlacePresence({range},{filterEnum})";
+		FilterEnum = filterEnum.Length == 0 ? Target.Any : string.Join("Or",filterEnum);
+		FilterEnums = filterEnum;
+		Name = $"PlacePresence({range},{FilterEnum})";
 	}
 
 	#endregion
 
 	public int Range => targetCriteria.Range;
-	public string FilterEnum => targetCriteria.Filter;
+	public string FilterEnum { get; }
+	public string[] FilterEnums { get; }
 
 	public override string Name {get;}
 

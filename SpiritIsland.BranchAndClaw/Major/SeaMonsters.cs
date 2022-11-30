@@ -4,7 +4,7 @@ public class SeaMonsters {
 
 	[MajorCard( "Sea Monsters", 5, Element.Water, Element.Animal )]
 	[Slow]
-	[FromPresence( 1, Target.CoastalOrWetlands )]
+	[FromPresence( 1, Target.Coastal, Target.Wetland )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 		await DoPowerAction( ctx );
 

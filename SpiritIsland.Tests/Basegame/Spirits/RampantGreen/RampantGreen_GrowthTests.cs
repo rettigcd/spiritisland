@@ -69,7 +69,7 @@ public class RampantGreen_GrowthTests : GrowthTests {
 	}
 
 	void User_SelectAlwaysGrowthOption() {
-		User.Growth_SelectAction( "PlacePresence(2,W / J)" );
+		User.Growth_SelectAction( $"PlacePresence(2,{Target.Jungle}Or{Target.Wetland})" );
 		User.Growth_PlacesEnergyPresence( "A2;A3;A5" ); // +1 from energy track
 	}
 

@@ -4,7 +4,7 @@ public class TeemingRivers {
 
 	[MinorCard( "Teeming Rivers", 1, Element.Sun, Element.Water, Element.Plant, Element.Animal )]
 	[Slow]
-	[FromSacredSite( 2, Target.MountainOrWetland )]
+	[FromSacredSite( 2, Target.Mountain, Target.Wetland )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		int blightCount = ctx.Blight.Count;

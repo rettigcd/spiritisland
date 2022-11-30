@@ -4,7 +4,7 @@ public class VoraciousGrowth {
 
 	[MinorCard("Voracious Growth",1,Element.Water,Element.Plant)]
 	[Slow]
-	[FromSacredSite(1,Target.JungleOrWetland)]
+	[FromSacredSite(1,Target.Jungle, Target.Wetland )]
 	static public Task ActAsync(TargetSpaceCtx ctx){
 
 		return ctx.SelectActionOption(

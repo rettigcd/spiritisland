@@ -219,7 +219,7 @@ public class Keeper_GrowthTests : GrowthTests {
 	}
 
 	void User_Activates_C() {
-		User.Growth_SelectAction( "PlacePresence(3,presence or wilds)" );
+		User.Growth_SelectAction( $"PlacePresence(3,{Target.Presence}Or{Target.Wilds})" );
 		User.Growth_PlacesEnergyPresence( "A3;A8" );
 		//		User.Growth_GainsEnergy();
 	}

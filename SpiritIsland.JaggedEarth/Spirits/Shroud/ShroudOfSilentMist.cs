@@ -37,7 +37,7 @@ public class ShroudOfSilentMist : Spirit {
 		this.GrowthTrack = new GrowthTrack(
 			new GrowthOption( new ReclaimAll(), new DrawPowerCard() ),
 			new GrowthOption( new PlacePresence(0), new PlacePresence(0) ),
-			new GrowthOption( new DrawPowerCard(), new PlacePresence(3,Target.MountainOrWetland) )
+			new GrowthOption( new DrawPowerCard(), new PlacePresence(3,Target.Mountain, Target.Wetland ) )
 		);
 
 

@@ -5,7 +5,7 @@ public class CallOnMidnightsDream {
 	public const string Name = "Call on Midnight's Dream";
 
 
-	[SpiritCard(CallOnMidnightsDream.Name,0, Element.Moon,Element.Animal), Fast, FromPresence(0,Target.DahanOrInvaders)]
+	[SpiritCard(CallOnMidnightsDream.Name,0, Element.Moon,Element.Animal), Fast, FromPresence(0,Target.Dahan, Target.Invaders )]
 	static public Task ActAsync(TargetSpaceCtx ctx) {
 
 		return ctx.SelectActionOption(

@@ -552,7 +552,26 @@ public abstract partial class Spirit : IOption {
 }
 
 public record TargetSourceCriteria( From From, Terrain? Terrain = null );
-public record TargetCriteria( int Range, string Filter = Target.Any );
+public class TargetCriteria {
+	public int Range { get; }
+	string[] _filters;
+
+	public TargetCriteria(int range, params string[] filters) {
+		Range = range;
+		_filters = filters;
+	}
+
+	// Virtual so OfferPassageBetweenWorlds can do multiple criteria
+	public virtual TargetCriteria ExtendRange( int extension ) => new TargetCriteria( Range + extension, _filters );
+
+	public virtual Func<SpaceState,bool> Bind(Spirit self, TerrainMapper terrainMapper){
+		// since we are doing a MatchAny (OR), we need at least 1 criteria or it won't match anything
+		// if we were to do a MatchAll (AND), then we wouldn't need any criteria
+		return _filters.Length == 0
+			? (s)=>true	// special case, no criteria => return true
+			: SpaceFilterMap.MatchAny( self, terrainMapper, _filters ); // otherwise batch any of the filters
+	}
+}
 
 
 public class SpiritDeck {

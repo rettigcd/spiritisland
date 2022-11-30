@@ -4,44 +4,40 @@ public class SpaceFilterMap {
 
 	static readonly Dictionary<string,Func<SpaceStateWithPresence, bool>> lookup = new Dictionary<string, Func<SpaceStateWithPresence, bool>> {
 		[Target.Any               ] = (_)   => true,
-		[Target.Jungle            ] = (ctx) => ctx.Tokens.Space.IsJungle,
-		[Target.Wetland           ] = (ctx) => ctx.Tokens.Space.IsWetland,
-		[Target.Mountain          ] = (ctx) => ctx.Tokens.Space.IsMountain,
-		[Target.JungleOrMountain  ] = (ctx) => ctx.TerrainMapper.MatchesTerrain( ctx.Tokens, Terrain.Jungle, Terrain.Mountain ),
-		[Target.JungleOrSand      ] = (ctx) => ctx.TerrainMapper.MatchesTerrain( ctx.Tokens, Terrain.Jungle, Terrain.Sand ),
-		[Target.JungleOrWetland   ] = (ctx) => ctx.TerrainMapper.MatchesTerrain( ctx.Tokens, Terrain.Jungle, Terrain.Wetland ),
-		[Target.NotWetland        ] = (ctx) => ctx.TerrainMapper.MatchesTerrain( ctx.Tokens, Terrain.Jungle, Terrain.Mountain, Terrain.Sand ),
-		[Target.MountainOrWetland ] = (ctx) => ctx.TerrainMapper.MatchesTerrain( ctx.Tokens, Terrain.Mountain, Terrain.Wetland ),
-		[Target.MountainOrSand    ] = (ctx) => ctx.TerrainMapper.MatchesTerrain( ctx.Tokens, Terrain.Mountain, Terrain.Sand ),
-		[Target.SandOrWetland     ] = (ctx) => ctx.TerrainMapper.MatchesTerrain( ctx.Tokens, Terrain.Sand, Terrain.Wetland ),
-		[Target.JungleOrNoBlight  ] = (ctx) => ctx.Tokens.Space.IsJungle || !ctx.Tokens.Blight.Any,
-		[Target.Coastal           ] = (ctx) => ctx.TerrainMapper.IsCoastal(ctx.Tokens.Space),
-		[Target.Blight            ] = (ctx) => ctx.Tokens.Blight.Any,
+
+		// Terrain
+		[Target.Jungle            ] = (ctx) => ctx.MatchesTerrain( Terrain.Jungle ),
+		[Target.Mountain          ] = (ctx) => ctx.MatchesTerrain( Terrain.Mountain ),
+		[Target.Sand              ] = (ctx) => ctx.MatchesTerrain( Terrain.Sand ),
+		[Target.Wetland           ] = (ctx) => ctx.MatchesTerrain( Terrain.Wetland ),
+		[Target.Coastal           ] = (ctx) => ctx.IsCoastal,
+		[Target.NotWetland        ] = (ctx) => !ctx.MatchesTerrain( Terrain.Wetland ),
+		[Target.NotOcean          ] = (ctx) => !ctx.Tokens.Space.Is( Terrain.Ocean ), // even when ocean is is play, not allowed 
+		[Target.Inland            ] = (ctx) => ctx.TerrainMapper.IsInland( ctx.Tokens.Space ),
+
+		// Dahan
 		[Target.Dahan             ] = (ctx) => ctx.Tokens.Dahan.Any,
-		[Target.Disease           ] = (ctx) => ctx.Tokens.Disease.Any,
+
+		// Invaders
 		[Target.Invaders          ] = (ctx) => ctx.Tokens.HasInvaders(),
-		[Target.DahanOrInvaders   ] = (ctx) => ctx.Tokens.Dahan.Any || ctx.Tokens.HasInvaders(),
-		[Target.NoInvader         ] = (ctx) => !ctx.Tokens.HasInvaders(),
-		[Target.NoBlight          ] = (ctx) => !ctx.Tokens.Blight.Any,
-		[Target.TownCityOrBlight  ] = (ctx) => ctx.Tokens.Blight.Any || ctx.Tokens.HasAny( Invader.City, Invader.Town ),
 		[Target.TownOrExplorer    ] = (ctx) => ctx.Tokens.HasAny( Invader.Explorer, Invader.Town ),  // Wash Away helper
 		[Target.TownOrCity        ] = (ctx) => ctx.Tokens.HasAny( Invader.City, Invader.Town ),  // Study the Invaders' Fears
-		[Target.NotOcean          ] = (ctx) => !ctx.Tokens.Space.Is( Terrain.Ocean ), // even when ocean is is play, not allowed 
+		[Target.City              ] = (ctx) => ctx.Tokens.Has(Invader.City),
+		[Target.NoInvader         ] = (ctx) => !ctx.Tokens.HasInvaders(),
+
+		[Target.Disease           ] = (ctx) => ctx.Tokens.Disease.Any,
+		[Target.Beast             ] = (ctx) => ctx.Tokens.Beasts.Any,
+		[Target.Wilds             ] = (ctx) => ctx.Tokens.Wilds.Any,
+
+		[Target.Blight            ] = (ctx) => ctx.Tokens.Blight.Any,
+		[Target.NoBlight          ] = (ctx) => !ctx.Tokens.Blight.Any,
 
 		// Register new filters needed for Branch and Claw
-		[Target.Beast             ] = (ctx) => ctx.Tokens.Beasts.Any,
-		[Target.BeastOrJungle     ] = (ctx) => ctx.Tokens.Space.IsJungle || ctx.Tokens.Beasts.Any,
-		[Target.PresenceOrWilds   ] = (ctx) => ctx.IsPresent || ctx.Tokens.Wilds.Any,
 		[Target.Presence          ] = (ctx) => ctx.IsPresent,
-		[Target.CoastalOrWetlands ] = (ctx) => ctx.Tokens.Space.IsWetland || ctx.TerrainMapper.IsCoastal(ctx.Tokens.Space),
-		[Target.City              ] = (ctx) => ctx.Tokens.Has(Invader.City),
 
 		// Jagged Earth
 		[Target.TwoBeasts         ] = (ctx) => ctx.Tokens.Beasts.Count>=2,
-		[Target.MountainOrPresence] = (ctx) => ctx.Tokens.Space.IsMountain || ctx.IsPresent,
 
-		// Don't use TerrainMapper, Inland should ignore terrain modifications (I think)
-		[Target.Inland            ] = (ctx) => ctx.TerrainMapper.IsInland( ctx.Tokens.Space ),
 
 	};
 
@@ -55,18 +51,29 @@ public class SpaceFilterMap {
 		? lookup[filterEnum] 
 		: throw new ArgumentException( "Unexpected filter:" + filterEnum, nameof( filterEnum ) );
 
-	public static Func<SpaceState, bool> Get( string filterEnum, Spirit focusSpirit, TerrainMapper tm ) => new FilterHelper(filterEnum,focusSpirit,tm).Filter;
+	public static Func<SpaceState, bool> MatchAny( Spirit focusSpirit, TerrainMapper tm, string[] filterEnums ) {
+		return new FilterHelper(focusSpirit,tm, filterEnums ).Any;
+	}
 
 	class FilterHelper {
-		readonly Func<SpaceStateWithPresence, bool> filter;
 		readonly TerrainMapper mapper;
 		readonly Spirit focusSpirit;
-		public FilterHelper( string filterEnum, Spirit focusSpirit, TerrainMapper mapper) {
-			filter = SpaceFilterMap.Get( filterEnum );
-			this.mapper = mapper;
+		readonly Func<SpaceStateWithPresence, bool>[] filters;
+		public FilterHelper( Spirit focusSpirit, TerrainMapper mapper, string[] filterEnums ) {
 			this.focusSpirit = focusSpirit;
+			this.mapper = mapper;
+			var filterEnum = filterEnums.Length == 0 ? Target.Any : filterEnums[0];
+			filters = filterEnums.Select( SpaceFilterMap.Get ).ToArray();
 		}
-		public bool Filter( SpaceState state ) => filter( new SpaceStateWithPresence(state,focusSpirit,mapper) );
+		// Same as OR
+		public bool Any( SpaceState state ) {
+			var sswp = new SpaceStateWithPresence( state, focusSpirit, mapper );
+			if( filters.Length == 0 ) return true;
+			if( filters.Length == 1 ) return filters[0]( sswp );
+			foreach(var filter in filters )
+				if( filter( sswp ) ) return true;
+			return false;
+		}
 	}
 
 }
@@ -78,6 +85,9 @@ public class SpaceStateWithPresence {
 	public SpaceState Tokens { get; }
 	public TerrainMapper TerrainMapper { get; }
 	public bool IsPresent => focusSpirit.Presence.IsOn( Tokens );
+	public bool MatchesTerrain(Terrain terrain) =>TerrainMapper.MatchesTerrain(Tokens, terrain);
+	public bool IsCoastal => TerrainMapper.IsCoastal( Tokens.Space );
+
 	readonly Spirit focusSpirit;
 	public SpaceStateWithPresence(SpaceState spaceState, Spirit focusSpirit, TerrainMapper tm) {
 		Tokens = spaceState;

@@ -4,7 +4,7 @@ public class TormentingRotFlies {
 
 	[MinorCard( "Tormenting Rotflies", 1, Element.Air, Element.Plant, Element.Animal )]
 	[Slow]
-	[FromPresence( 2, Target.SandOrWetland )]
+	[FromPresence( 2, Target.Sand, Target.Wetland )]
 	static public Task ActAsync( TargetSpaceCtx ctx ) {
 
 		return ctx.SelectActionOption(

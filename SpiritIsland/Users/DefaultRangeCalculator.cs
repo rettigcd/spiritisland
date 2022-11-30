@@ -56,12 +56,11 @@ public class DefaultRangeCalculator : ICalcRange {
 
 	) {
 		return sources
-			.SelectMany( x => x.Range( targetCriteria.Range ) )
+			.SelectMany( x => x.Range( targetCriteria.Range ) ) // !! this will be waistfull when Range is high and lots of starting spots.
 			.Distinct()
 			.Where( terrainMapper.IsInPlay )
-			.Where( SpaceFilterMap.Get( targetCriteria.Filter, self, terrainMapper ) )
+			.Where( targetCriteria.Bind( self, terrainMapper ) )
 			.ToArray();
-
 	}
 	static public readonly ICalcRange Singleton = new DefaultRangeCalculator();
 }

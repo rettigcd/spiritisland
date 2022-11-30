@@ -17,7 +17,7 @@ public class RangeExtender : ICalcRange {
 		IEnumerable<SpaceState> source,
 		TargetCriteria targetCriteria
 	) {
-		return originalApi.GetTargetOptionsFromKnownSource( self, terrainMapper, powerType, source, new TargetCriteria( targetCriteria.Range + extension, targetCriteria.Filter ) );
+		return originalApi.GetTargetOptionsFromKnownSource( self, terrainMapper, powerType, source, targetCriteria.ExtendRange( extension ) );
 	}
 
 }

@@ -3,7 +3,7 @@
 public class StormSwath {
 
 	[MajorCard("Storm-Swath",3,Element.Fire,Element.Air,Element.Water), Slow]
-	[ExtendableRange(From.SacredSite,1,Target.Any,"2 fire,3 air,2 water",1)]
+	[ExtendableRange(From.SacredSite,1,"2 fire,3 air,2 water",1 )]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 		// 2 fear.
 		ctx.AddFear(2);

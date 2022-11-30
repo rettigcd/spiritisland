@@ -4,7 +4,7 @@ public class DeathFallsGentlyFromOpenBlossoms {
 
 	[MajorCard("Death Falls Gently from Open Blossoms",4, Element.Moon,Element.Air,Element.Plant)]
 	[Slow]
-	[FromPresence(3,Target.JungleOrSand)]
+	[FromPresence(3,Target.Jungle, Target.Sand )]
 	static public async Task ActAsync(TargetSpaceCtx ctx ) {
 		// 4 damage.
 		await ctx.DamageInvaders(4);
