@@ -67,6 +67,7 @@ public class SelfCtx {
 
 
 	public virtual TargetSpaceCtx Target( Space space ) => new TargetSpaceCtx( this, space );
+	public TargetSpaceCtx Target( SpaceState ss ) => Target(ss.Space);
 
 	public TargetSpiritCtx TargetSpirit( Spirit spirit ) => new TargetSpiritCtx( this, spirit );
 

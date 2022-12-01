@@ -51,15 +51,15 @@ public class InstrumentsOfTheirOwnRuin {
 
 		// Calc Total Badlands damage available
 		var tokens = ctx.GameState.Tokens;
-		var availableBadlandDamage = ctx.Adjacent.ToDictionary(x=>x,x=>tokens[x].Badlands.Count).ToCountDict(); // captures # of badlands then sets to 0 once space is activated.
+		var availableBadlandDamage = ctx.Adjacent.ToDictionary(x=>x.Space,x=>x.Badlands.Count).ToCountDict(); // captures # of badlands then sets to 0 once space is activated.
 		var activatedBadlandDamage = new CountDictionary<Space>(); // initializes when they do first damage in land, then used until depleated
 		bool HasDamage(Space space) => damageFromCenter > 0 || activatedBadlandDamage[space]>0;
 
 		// While any invaders && (damageFromStrifed>0 || )damage && any explorers
-		Space[] spaceOptions;
-		while( (spaceOptions = ctx.Adjacent.Where( space => tokens[space].HasInvaders() && HasDamage( space ) ).ToArray()).Length > 0 ) {
+		SpaceState[] spaceOptions;
+		while( (spaceOptions = ctx.Adjacent.Where( adj => adj.HasInvaders() && HasDamage( adj.Space ) ).ToArray()).Length > 0 ) {
 			// select target invader
-			var invaderOptions = spaceOptions.SelectMany(space=>tokens[space].InvaderTokens().Select(t=>new SpaceToken(space,t))).ToArray();
+			var invaderOptions = spaceOptions.SelectMany(space=>space.InvaderTokens().Select(t=>new SpaceToken(space.Space,t))).ToArray();
 			var invader = await ctx.Decision( new Select.TokenFromManySpaces($"Instrument of Ruin Damage ({damageFromCenter}) remaining", invaderOptions,Present.Done) );
 			if(invader == null) break;
 

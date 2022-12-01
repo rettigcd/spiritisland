@@ -7,7 +7,7 @@ public class VengeanceOfTheDead {
 		// 3 fear
 		ctx.AddFear(3);
 
-		var landsWeCanApplyTheDamageTo = new List<Space> { ctx.Space };
+		var landsWeCanApplyTheDamageTo = new List<SpaceState> { ctx.Tokens };
 
 		// After each effect that destroys...
 		async Task DealVengenceDamage( ITokenRemovedArgs args ) {
@@ -26,8 +26,8 @@ public class VengeanceOfTheDead {
 
 	}
 
-	static async Task DistributeDamageToLands( TargetSpaceCtx ctx, List<Space> newDamageLands, int additionalDamage ) {
-		Space[] targetLandOptions  = newDamageLands.Where( s => ctx.Target( s ).HasInvaders ).ToArray();
+	static async Task DistributeDamageToLands( TargetSpaceCtx ctx, List<SpaceState> newDamageLands, int additionalDamage ) {
+		Space[] targetLandOptions  = newDamageLands.Where( s => s.HasInvaders() ).Select( x => x.Space ).ToArray();
 		var newLand = await ctx.Decision( new Select.Space( $"Apply up to {additionalDamage} vengeanance damage in:", targetLandOptions, Present.Always ));
 		if(newLand != null)
 			await ctx.Target( newLand ).DamageInvaders( 1 );

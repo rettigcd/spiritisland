@@ -113,9 +113,9 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 		const int dahanToGather = 2;
 		using var action = gameState.StartAction();
 		var ctx = spirit.BindMyPower( gameState, action ).Target( target );
-		Space[] neighbors = ctx.Adjacent.ToArray();
+		SpaceState[] neighbors = ctx.Adjacent.ToArray();
 		for(int neighborIndex = 0; neighborIndex<dahanToGather; ++neighborIndex)
-			ctx.Target(neighbors[neighborIndex]).Tokens.Init( StdTokens.Dahan1, 1 );
+			neighbors[neighborIndex].Init( StdTokens.Dahan1, 1 );
 
 		When_PlayingCard();
 

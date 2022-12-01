@@ -25,10 +25,9 @@ public class HazardsSpreadAcrossTheIsland{
 	static SpaceToken[] FindHazardTokenInAdjacentLand( TargetSpaceCtx ctx ) {
 		var tokenTypes = new TokenClass[] { TokenType.Badlands, TokenType.Beast, TokenType.Disease, TokenType.Wilds, Invader.Explorer, Invader.Town, Invader.City };
 		var candidates = ctx.Adjacent
-			.SelectMany( s =>
-				ctx.GameState.Tokens[s].Keys
-					.Where( IsTokenOfInterest )
-					.Select( token => new SpaceToken( s, token ) )
+			.SelectMany( adjState => adjState.Keys
+				.Where( IsTokenOfInterest )
+				.Select( token => new SpaceToken( adjState.Space, token ) )
 			)
 			.GroupBy( s => s.Token )
 			.Select( grp => grp.First() )

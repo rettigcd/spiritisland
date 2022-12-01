@@ -25,7 +25,8 @@ public class GrantHatredARavenousForm {
 		if(await ctx.YouHave("4 moon,2 fire")) {
 			// add 1 strife in up to 3 adjacent lands.
 			var tokenSpaces = ctx.Adjacent
-				.Where(s => ctx.Target(s).HasInvaders)
+				.Where(s => s.HasInvaders())
+				.Select( x => x.Space )
 				.ToList();
 			for(int i = 0; tokenSpaces.Count >0 && i < 3; ++i) {
 				var space = await ctx.Decision(new Select.Space("Add Strife", tokenSpaces, Present.Done));

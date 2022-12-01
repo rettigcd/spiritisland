@@ -16,7 +16,7 @@ public class SpillBitternessIntoTheEarth {
 
 		await TakeActionInUpToNLands( ctx
 			// In up to 3 adjacent lands with blight
-			, 3, ctx.Adjacent.Where( s => ctx.Target( s ).HasBlight )
+			, 3, ctx.Adjacent.Where( s => s.Blight.Any )
 			// add 1 badland/strife.
 			, addBadlandsOrStrife
 		);
@@ -32,8 +32,8 @@ public class SpillBitternessIntoTheEarth {
 
 	}
 
-	static async Task TakeActionInUpToNLands( SelfCtx ctx, int adjCount, IEnumerable<Space> spaces, DecisionOption<TargetSpaceCtx> action ) {
-		List<Space> options = spaces.ToList();
+	static async Task TakeActionInUpToNLands( SelfCtx ctx, int adjCount, IEnumerable<SpaceState> spaces, DecisionOption<TargetSpaceCtx> action ) {
+		List<Space> options = spaces.Select( ss => ss.Space ).ToList();
 		while(adjCount-- > 0 && options.Count > 0) {
 			var space = await ctx.Decision( new Select.Space( $"{action.Description} ({adjCount + 1} remaining)", options, Present.Done ) );
 			if(space == null) break;

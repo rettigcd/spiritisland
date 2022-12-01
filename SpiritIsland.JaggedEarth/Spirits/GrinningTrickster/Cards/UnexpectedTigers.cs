@@ -8,9 +8,8 @@ public class UnexpectedTigers {
 		if( ctx.HasInvaders )
 			ctx.AddFear(1);
 
-		var beastSources = ctx.Adjacent.Where(s=>ctx.Target(s).Beasts.Any).ToArray();
 		// If you can gather 1 beast,
-		if( beastSources.Length > 0) {
+		if( ctx.Adjacent.Any(s=>s.Beasts.Any) ) {
 			// do so,
 			await ctx.Gather(1,TokenType.Beast);
 			// then push 1 explorer.

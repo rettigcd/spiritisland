@@ -13,7 +13,7 @@ public class BloodwrackPlague {
 		// for each disease in target land, defend 1 in target and all adjacent lands
 		ctx.Defend( disease.Count );
 		foreach( var adjacent in ctx.Adjacent )
-			ctx.Target(adjacent).Defend( disease.Count );
+			ctx.Target(adjacent.Space).Defend( disease.Count );
 
 		// if you have 2 earthn 4 animal:
 		if(await ctx.YouHave("2 earth,4 animal")) { 

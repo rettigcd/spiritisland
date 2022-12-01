@@ -36,19 +36,18 @@ public class DrawTowardsAConsumingVoid {
 	static async Task PerformEffect( TargetSpaceCtx ctx ) {
 		// Gather 1 explorer,town,city,dahan,presence, and beast from each adjacent land.
 		var tokenGroups = new TokenClass[] { Invader.Explorer, Invader.Town, Invader.City, TokenType.Dahan, TokenType.Beast };
-		foreach(var adj in ctx.Adjacent) {
+		foreach(var adjState in ctx.Adjacent) {
 			// move tokens
-			var tokenCounts = ctx.GameState.Tokens[adj];
 			foreach(var tokenGroup in tokenGroups) {
-				var tokenToGather = tokenCounts.OfType( tokenGroup ).OrderByDescending( x => x is HealthToken ht ? ht.RemainingHealth : 0 ).FirstOrDefault();
+				var tokenToGather = adjState.OfType( tokenGroup ).OrderByDescending( x => x is HealthToken ht ? ht.RemainingHealth : 0 ).FirstOrDefault();
 				if(tokenToGather != null)
-					await ctx.Move( tokenToGather, adj, ctx.Space );
+					await ctx.Move( tokenToGather, adjState.Space, ctx.Space );
 			}
 			// move presense
-			var spiritsInSpace = ctx.GameState.Spirits.Where( s => s.Presence.IsOn( tokenCounts ) ).ToArray();
+			var spiritsInSpace = ctx.GameState.Spirits.Where( s => s.Presence.IsOn( adjState ) ).ToArray();
 			if(spiritsInSpace.Length > 0) {
 				var spiritToGather = await ctx.Decision( new Select.Spirit( Name, spiritsInSpace, Present.AutoSelectSingle ) ); // !!! switch to Gather Presence when we can support multiple spirits
-				await ctx.NewSelf(spiritToGather).Presence.Move( adj, ctx.Space );
+				await ctx.NewSelf(spiritToGather).Presence.Move( adjState.Space, ctx.Space );
 			}
 		}
 

@@ -23,9 +23,8 @@ public class AngryBears {
 			ctx.AddFear(1);
 			// destroy 1 explorer/town in an adjacent land with beast
 			var tokens = ctx.Adjacent
-				.Select(ctx.Target)
 				.Where(x=>x.Beasts.Any)
-				.SelectMany(x=>x.Tokens.OfType(Invader.Explorer)
+				.SelectMany(x=>x.OfType(Invader.Explorer)
 					.Select(t=>new SpaceToken(x.Space,t))
 				)
 				.ToArray();

@@ -11,7 +11,7 @@ public class TheLandThrashesInFuriousPain {
 			// 2 damage per blight in target land
 			int damage = ctx.BlightOnSpace * 2
 				// +1 damage per blight in adjacent lands
-				+ ctx.Adjacent.Sum( x => ctx.Target(x).BlightOnSpace );
+				+ ctx.Adjacent.Sum( x => x.Blight.Count );
 			return ctx.DamageInvaders( damage );
 		}
 

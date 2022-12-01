@@ -4,31 +4,12 @@
 public class TokenFromManySpaces : TypedDecision<SpaceToken>, IHaveAdjacentInfo {
 
 	static public TokenFromManySpaces ToGather(
-		int remaining,
+		string prompt,
 		SpiritIsland.Space to,
 		IEnumerable<SpaceToken> tokens,
-		Present present = Present.Always
+		Present present
 	) => new TokenFromManySpaces(
-		present == Present.Done 
-			? $"Gather up to {remaining}"
-			: $"Gather {remaining}",
-		tokens,
-		present
-	) {
-		AdjacentInfo = new AdjacentInfo {
-			Original = to,
-			Adjacent = tokens.Select(s=>s.Space).Distinct().ToArray(),
-			Direction = AdjacentDirection.Incoming
-		}
-	};
-
-	static public TokenFromManySpaces ToGather(
-		IEnumerable<GatherGroup> remaining,
-		SpiritIsland.Space to,
-		IEnumerable<SpaceToken> tokens,
-		Present present = Present.Always
-	) => new TokenFromManySpaces(
-		(present == Present.Done ? "Gather up to " : "Gather ") + remaining.Select(x=>x.ToString()).Join(", "),
+		prompt,
 		tokens,
 		present
 	) {

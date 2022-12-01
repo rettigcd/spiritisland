@@ -18,21 +18,11 @@ public class GuideTheWayOnFeatheredWings {
 		// As it moves, up to 2 dahan may move with it, for part or all of the way.
 		// the beast / dahan may move to an adjacent land and then back.
 		var destCtx = ctx.Target(destination);
-		await new GatherDahanFromSingle(destCtx, ctx.Space)
+		await new TokenCollectorFromSpecifiedSources(destCtx, ctx.Tokens)
 			.AddGroup(2,TokenType.Dahan)
-			.GatherUpToN();
+			.CollectUpToN();
 
 		await MoveBeastAndFriends(destCtx,steps-1);
-	}
-
-	class GatherDahanFromSingle : TokenGatherer {
-		readonly Space source;
-		public GatherDahanFromSingle( TargetSpaceCtx ctx, Space singleSource ) : base( ctx ) { this.source = singleSource; }
-		protected override SpaceToken[] GetOptions( TokenClass[] groups ) {
-			return ctx.Target(source).Tokens.OfType(TokenType.Dahan)
-				.Select(t => new SpaceToken(source,t))
-				.ToArray();
-		}
 	}
 
 }
