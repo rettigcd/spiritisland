@@ -5,9 +5,9 @@ public class TokenGatherer : TokenCollector<TokenGatherer> {
 
 	public TokenGatherer(TargetSpaceCtx ctx):base(ctx) {}
 
-	public Task GatherN() => Collect( "Gather ", Present.Always );
+	public Task<SpaceToken[]> GatherN() => Collect( "Gather ", Present.Always );
 
-	public Task GatherUpToN() => Collect( "Gather up to ", Present.Done );
+	public Task<SpaceToken[]> GatherUpToN() => Collect( "Gather up to ", Present.Done );
 
 	protected override IEnumerable<SpaceState> PossibleGatherSources => _destinationCtx.Adjacent;
 

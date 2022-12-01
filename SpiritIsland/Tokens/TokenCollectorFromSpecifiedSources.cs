@@ -12,7 +12,7 @@ public class TokenCollectorFromSpecifiedSources : TokenCollector<TokenCollectorF
 	/// * Named 'Collect' because that distinguishes it as a collector as opposed to 'Move' which is generic.
 	/// * But displays as 'Move' because that is user vernacular.
 	/// </remarks>
-	public Task CollectN() => Collect( "Move ", Present.Always );
-	public Task CollectUpToN() => Collect( "Move up to ", Present.Done );
+	public Task<SpaceToken[]> CollectN() => Collect( "Move ", Present.Always );
+	public Task<SpaceToken[]> CollectUpToN() => Collect( "Move up to ", Present.Done );
 }
 

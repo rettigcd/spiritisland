@@ -24,7 +24,9 @@ public abstract class TokenCollector<DerivedType> where DerivedType : TokenColle
 		return (DerivedType)this;
 	}
 
-	async protected Task Collect( string actionPromptPrefix, Present present ) {
+	async protected Task<SpaceToken[]> Collect( string actionPromptPrefix, Present present ) {
+
+		var collected = new List<SpaceToken>();
 
 		SpaceToken[] options;
 		while(0 < (options = GetSpaceTokenOptions()).Length) {
@@ -33,8 +35,10 @@ public abstract class TokenCollector<DerivedType> where DerivedType : TokenColle
 			var source = await _destinationCtx.Decision( Select.TokenFromManySpaces.ToGather( prompt, _destinationCtx.Space, options, present ) );
 			if(source == null) break;
 			await _destinationCtx.Move( source.Token, source.Space, _destinationCtx.Space );
-			await MarkAsCollected( source );
+			MarkAsCollected( source );
+			collected.Add( source );
 		}
+		return collected.ToArray();
 	}
 
 	protected TokenClass[] RemainingTypes => indexLookupByClass
@@ -53,16 +57,10 @@ public abstract class TokenCollector<DerivedType> where DerivedType : TokenColle
 
 	/// <summary> The remaining quota of each token class </summary>
 	protected IEnumerable<CollectQuota> RemainingQuota => sharedGroupCounts.Where( g => g.count > 0 );
-	protected async Task MarkAsCollected( SpaceToken source ) {
+	protected void MarkAsCollected( SpaceToken source ) {
 		--sharedGroupCounts[indexLookupByClass[source.Token.Class]].count;
-
-		// Invoke-Async them sequentially.
-		if(TokenCollected == null) return;
-		foreach(var func in TokenCollected.GetInvocationList().Cast<Func<SpaceToken, Task>>())
-			await func( source );
 	}
 
-	public event Func<SpaceToken,Task> TokenCollected;
 }
 
 public class CollectQuota {
