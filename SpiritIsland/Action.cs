@@ -3,6 +3,9 @@ namespace SpiritIsland;
 
 public class UnitOfWork : IDisposable {
 
+	// spirit (if any) that owns the action. Null for non-spirit actions
+	public Spirit Owner { get; set; }
+
 	public Guid Id { get; }
 
 	public UnitOfWork() {

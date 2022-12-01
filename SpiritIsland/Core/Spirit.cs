@@ -134,12 +134,14 @@ public abstract partial class Spirit : IOption {
 	public async Task<bool> ResolveAction( Phase phase, GameState gs ) {
 		Present present = phase == Phase.Growth ? Present.Always : Present.Done;
 
-		// Create a new Action (guid) each time we resolve an Action
-		using var action = gs.StartAction();
+		// Create a new UnitOfWork each time we resolve an Action
+		using var unitOfWork = gs.StartAction();
+		unitOfWork.Owner = this;
+
 		SelfCtx ctx = phase switch {
-			Phase.Growth => Bind( gs, action ),
+			Phase.Growth => Bind( gs, unitOfWork ),
 			Phase.Fast or 
-			Phase.Slow => BindMyPower( gs, action ),
+			Phase.Slow => BindMyPower( gs, unitOfWork ),
 			_ => throw new InvalidOperationException(),
 		};
 
