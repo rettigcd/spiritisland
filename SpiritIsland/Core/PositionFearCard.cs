@@ -4,8 +4,27 @@
 public class PositionFearCard : IOption {
 
 	/// <summary> The location of the card in the deck, active stack, discard etc. (so user can pick which to see </summary>
-	public string Text { get; set; }
+	public string Text { 
+		get {
+			return FindCard(Deck,"Future")
+				?? FindCard(ActivatedCards,"Activated")
+				?? "[Fix Me!!!]";
+		}
+	}
+	string FindCard(Stack<PositionFearCard> deck, string label ) {
+		int i = 0;
+		foreach(var card in deck) {
+			if(card == this)
+				return label + ((i == 0) ? "" : "+" + i);
+			++i;
+		}
+		return null;
+	}
+
 	public IFearOptions FearOptions { get; set; }
+
+	public Stack<PositionFearCard> Deck { get; set; }
+	public Stack<PositionFearCard> ActivatedCards { get; set; }
 
 }
 

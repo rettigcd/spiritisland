@@ -35,8 +35,10 @@ internal static class TargetSpaceCtx_ExtensionsForTesting {
 	}
 
 	public static void ActivateFearCard( this SelfCtx ctx, IFearOptions fearCard ) {
-		ctx.GameState.Fear.Deck.Pop();
-		ctx.GameState.Fear.ActivatedCards.Push( new PositionFearCard{ FearOptions=fearCard, Text="FearCard" } );
+		var fear = ctx.GameState.Fear;
+		fear.Deck.Pop();
+		fear.PushOntoDeck(fearCard);
+		fear.ActivateCard();
 	}
 
 	public static void ElevateTerrorLevelTo( this SelfCtx ctx, int desiredFearLevel ) {

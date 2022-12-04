@@ -54,11 +54,11 @@ class VolcanoPresence : SpiritPresence {
 
 	public override bool CanBePlacedOn( SpaceState s, TerrainMapper tm ) => tm.MatchesTerrain( s, Terrain.Mountain );
 
-	public void SetSpirit(Spirit spirit) => DestroyBehavior = new DestroyPresence(spirit);
+	public void SetSpirit( VolcanoLoomingHigh spirit ) => DestroyBehavior = new DestroyPresence(spirit); // ??? can't we just override instead of plugging this in.
 
 	class DestroyPresence : SpiritPresence.DefaultDestroyBehavior {
-		readonly Spirit spirit;
-		public DestroyPresence(Spirit spirit ) { this.spirit = spirit;}
+		readonly VolcanoLoomingHigh spirit;
+		public DestroyPresence( VolcanoLoomingHigh spirit ) { this.spirit = spirit;}
 
 		public override async Task DestroyPresenceApi( SpiritPresence presence, Space space, GameState gs, DestoryPresenceCause actionType, UnitOfWork actionId ) {
 			await base.DestroyPresenceApi( presence, space, gs, actionType, actionId );

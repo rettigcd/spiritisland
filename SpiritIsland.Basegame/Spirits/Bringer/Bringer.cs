@@ -6,19 +6,17 @@ public class Bringer : Spirit {
 
 	public override string Text => Name;
 
-	public override SpecialRule[] SpecialRules => new SpecialRule[] {
-		new SpecialRule("TO DREAM A THOUSAND DEATHS","Your Powers never cause Damage, nor can they Destroy anything other than your own Presence. When your Powers would Destroy Invaders, instead generate 0/2/5 Fear and Pushes Invaders")
-	} ;
+	public override SpecialRule[] SpecialRules => new SpecialRule[] { ToDreamAThousandDeaths.Rule	} ;
 
 	public Bringer():base(
 		new SpiritPresence(
 			new PresenceTrack( Track.Energy2, Track.AirEnergy, Track.Energy3, Track.MoonEnergy, Track.Energy4, Track.AnyEnergy, Track.Energy5 ),
 			new PresenceTrack( Track.Card2, Track.Card2, Track.Card2, Track.Card3, Track.Card3, Track.AnyEnergy )
-		),
-		PowerCard.For<CallOnMidnightsDream>(),
-		PowerCard.For<DreadApparitions>(),
-		PowerCard.For<DreamsOfTheDahan>(),
-		PowerCard.For<PredatoryNightmares>()
+		)
+		,PowerCard.For<CallOnMidnightsDream>()
+		,PowerCard.For<DreadApparitions>()
+		,PowerCard.For<DreamsOfTheDahan>()
+		,PowerCard.For<PredatoryNightmares>()
 	) {
 
 		GrowthTrack = new(
@@ -44,29 +42,14 @@ public class Bringer : Spirit {
 		var startingIn = board.Spaces.Where(x=>x.IsSand).Last();
 		var space = gs.Tokens[startingIn];
 		Presence.Adjust( space, 2 );
+
+		// Restore Dreamed damaged tokens to original state
+		gs.EndOfAction.ForGame.Add( ToDreamAThousandDeaths.CleanupDreamDamage );
 	}
 
 	public override SelfCtx Bind( GameState gameState, UnitOfWork actionId=default, Cause cause = default )
 		=> cause == Cause.MyPowers
 			? new BringerCtx(this,gameState,actionId!=default?actionId : gameState.StartAction() )
 			: base.Bind( gameState, actionId, cause );
-
-}
-
-class BringerCtx : SelfCtx {
-	public BringerCtx( Bringer bringer, GameState gs, UnitOfWork actionId ):base( bringer, gs, actionId, Cause.MyPowers ) {}
-	public override TargetSpaceCtx Target( Space space ) => new BringerSpaceCtx(this, space);
-}
-
-class BringerSpaceCtx : TargetSpaceCtx {
-	public BringerSpaceCtx(BringerCtx ctx,Space space ) : base( ctx, space ) { }
-
-	protected override InvaderBinding GetInvaders() {
-		return new InvaderBinding(
-			new SpaceState( Tokens ),
-			new ToDreamAThousandDeaths_DestroyStrategy( GameState.Fear.AddDirect, this ),
-			this.CurrentActionId
-		);
-	}
 
 }

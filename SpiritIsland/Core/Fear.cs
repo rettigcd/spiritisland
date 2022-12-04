@@ -15,11 +15,11 @@ public class Fear {
 
 	public void Init() {
 		while(Deck.Count < 9)
-			AddCard( new NullFearCard() );
+			PushOntoDeck( new NullFearCard() );
 	}
 
-	public void AddCard( IFearOptions fearCard ) {
-		var td = new PositionFearCard { FearOptions = fearCard, Text = "!!!FixMe" };
+	public void PushOntoDeck( IFearOptions fearCard ) {
+		var td = new PositionFearCard { FearOptions = fearCard, Deck = Deck, ActivatedCards = ActivatedCards };
 		Deck.Push( td );
 	}
 
@@ -41,15 +41,16 @@ public class Fear {
 		EarnedFear += args.count;
 		while(PoolMax <= EarnedFear && Deck.Any() ) {
 			EarnedFear -= PoolMax;
-			ActivatedCards.Push( Deck.Pop() );
-			ActivatedCards.Peek().Text = "Active " + ActivatedCards.Count;
+			ActivateCard();
 		}
-		// !! Do NOT check for victory here and throw GameOverException(...)
+		// ! Do NOT check for victory here and throw GameOverException(...)
 		// This is called inside PowerCard using Invoke() which converts exception to a TargetInvocationException which we don't want.
 		// Let the post-Action check catch the victory.
 
 		FearAdded?.Invoke( gs, args );
 	}
+
+	public void ActivateCard() => ActivatedCards.Push( Deck.Pop() ); // public for testing
 
 	public async Task Apply() {
 		while(ActivatedCards.Count > 0) {
@@ -109,5 +110,11 @@ public class Fear {
 public class FearArgs {
 	public int count;
 	public Space space;
-	public bool FromDestroyedInvaders; // defaults to false, only needs set when generated
+
+	// power cards says +N Fear  =>  false
+	// Dream a Thousand Deaths => false   (not actually destroying)
+	// Ravaging => true
+	// Dread Apparations explicely says it does NOT add defence for destroyed towns / cities
+	public bool FromDestroyedInvaders;
+
 }

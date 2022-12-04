@@ -20,7 +20,7 @@ public class PunishThoseWhoTrespass {
 
 	static async Task ActAsync( TargetSpaceCtx ctx, int damage ) {
 		// Destroy 1 dahan
-		await ctx.DestroyDahan( 1 );
+		await ctx.Dahan.Destroy( 1 );
 
 		// 4 plant  split this power's damage however desired between target land and another 1 of your lands
 		int damageToTarget = ctx.Self.Elements[Element.Plant] < 4 && ctx.Presence.Spaces.Count()>1

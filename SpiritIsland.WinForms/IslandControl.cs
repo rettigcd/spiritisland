@@ -496,9 +496,8 @@ public partial class IslandControl : Control {
 		if(spaceTokens != null) {
 			// Draw tokens on space && set them as hotspots
 			foreach(var st in spaceTokens.Options.OfType<SpaceToken>()) {
-				string key = st.Space.Label + ":" + st.Token.ToString();
-				if(tokenLocations.ContainsKey( key )) {
-					var rect = tokenLocations[key];
+				if( HasLocation( st ) ) {
+					var rect = GetLocation( st );
 					rect.Inflate( 4, 4 );
 					optionRects.Add( (rect, st) );			// Store the Option
 					pe.Graphics.DrawRectangle( pen, rect );
@@ -509,9 +508,9 @@ public partial class IslandControl : Control {
 		if(tokenOnSpace != null) {
 			// Draw tokens on space && set them as hotspots
 			foreach(var token in tokenOnSpace.Options.OfType<Token>()) {
-				string key = tokenOnSpace.Space.Label + ":" + token.ToString();
-				if(tokenLocations.ContainsKey( key )) {
-					var rect = tokenLocations[key];
+				var key = new SpaceToken( tokenOnSpace.Space, token );
+				if( HasLocation( key )) {
+					var rect = GetLocation(key);
 					rect.Inflate(4,4);
 					optionRects.Add( (rect, token) );		// Store the option
 					pe.Graphics.DrawRectangle( pen, rect ); // Draw it
@@ -523,9 +522,9 @@ public partial class IslandControl : Control {
 			activeSpaces = null; // disable circle drawing
 			// Presence (inherits from Space Cirlcles
 			foreach(var space in deployedPresence.Options.OfType<Space>()) {
-				string key = space.Label + ":" + "Presence";	//!!! this only works solo.  Need unique Token labels for different spirits.
-				if(tokenLocations.ContainsKey( key )) {
-					var rect = tokenLocations[key];
+				var key = new SpaceToken( space, spirit.Presence.Token );
+				if(HasLocation( key )) {
+					var rect = GetLocation( key );
 					rect.Inflate(4,4);
 					optionRects.Add( (rect, space) );
 					pe.Graphics.DrawRectangle( pen, rect );
@@ -617,11 +616,15 @@ public partial class IslandControl : Control {
 		Space space = tokens.Space;
 
 		// tokens
-		if(!tokens.HasInvaders()) return;
+		var invaders = tokens.Keys
+			.Where(k=>{ var c=k.Class.Category; return c==TokenCategory.Invader || c==TokenCategory.DreamingInvader; } )
+			.Cast<HealthToken>()
+			.ToArray();
+		if(invaders.Length==0) return;
 
 		float maxHeight = 0;
 
-		var orderedInvaders = tokens.InvaderTokens()
+		var orderedInvaders = invaders
 			// Major ordering: (Type > Strife)
 			.OrderByDescending( i => i.FullHealth )
 			.ThenBy(x=>x.StrifeCount)
@@ -632,7 +635,7 @@ public partial class IslandControl : Control {
 
 			// Strife
 			Token imageToken;
-			if(token is HealthToken si && si.StrifeCount>0) {
+			if(token is HealthToken si && 0<si.StrifeCount) {
 				imageToken = si.HavingStrife( 0 );
 
 				Rectangle strifeRect = FitWidth( x, y, width, strife.Size );
@@ -649,7 +652,7 @@ public partial class IslandControl : Control {
 			graphics.DrawImage( img, rect );
 
 			// record token location
-			tokenLocations.Add( space.Label + ":" + token.ToString(), rect );
+			RecordLocation( new SpaceToken(space, token), rect );
 
 			// Count
 			graphics.DrawCountIfHigherThan( rect, tokens[token] );
@@ -669,59 +672,61 @@ public partial class IslandControl : Control {
 	}
 
 	static Bitmap GetImage( Token token ) {
-		return token is HealthToken ht
-				? token.Class == TokenType.Dahan ? GetDahanImage( ht )
-					: GetInvaderImage( ht )
-			: token.Class is UniqueToken ut
+		return token is HealthToken ht 
+			? GetHealthTokenImage( ht )
+			: token.Class is UniqueToken ut 
 				? ResourceImages.Singleton.GetImage( ut.Img )
-			: throw new Exception( "unknown token " + token );
+				: throw new Exception( "unknown token " + token );
 	}
 
-	static Bitmap GetDahanImage( HealthToken ht ) {
+	static Bitmap GetHealthTokenImage( HealthToken ht ) {
 
-//			if( ht.RemainingHealth != 1) {
-			Bitmap orig = ResourceImages.Singleton.GetImage( Img.Dahan2 );
-			using var g = Graphics.FromImage( orig );
+		Bitmap orig = ResourceImages.Singleton.GetImage( ht.Class.Img );
 
-			if(ht.FullHealth != 2) {
-				using var font = new Font( ResourceImages.Singleton.Fonts.Families[0], orig.Height/2, GraphicsUnit.Pixel );
-				StringFormat center = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-				g.DrawString( ht.FullHealth.ToString(), font, Brushes.White, new RectangleF( 0, 0, orig.Width, orig.Height ), center );
-			}
+		// Invert Dreaming Invaders
+		if(ht.Class.Category == TokenCategory.DreamingInvader) {
+			for(int x = 0; x < orig.Width; ++x)
+				for(int y = 0; y < orig.Height; ++y) {
+					var p = orig.GetPixel( x, y );
+//					orig.SetPixel( x, y, Color.FromArgb( p.A, 255 - p.R, 255 - p.G, 255 - p.B ) ); // invert
+//					orig.SetPixel( x, y, Color.FromArgb( p.A, p.R/2, p.G/2, p.B/2 ) ); // half scale
+					orig.SetPixel( x, y, Color.FromArgb( p.A, p.R/2, p.G/2, p.B*2/3 ) ); // red/green:50% blue:66%
+				}
+		}
 
+		using var g = Graphics.FromImage( orig );
+
+		// If Full Health is different than standard, show it
+		if( ht.FullHealth != ht.Class.ExpectedHealthHint ) {
+			using var font = new Font( ResourceImages.Singleton.Fonts.Families[0], orig.Height/2, GraphicsUnit.Pixel );
+			StringFormat center = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+			g.DrawString( ht.FullHealth.ToString(), font, Brushes.White, new RectangleF( 0, 0, orig.Width, orig.Height ), center );
+		}
+
+		// Draw Damage slashes
+		if( 0 < ht.FullDamage ) {
 			int dX = orig.Width / ht.FullHealth;
 			int lx = dX/2;
-			using Pen redSlash = new Pen( Brushes.Red, 20f );
-			for(int i = 0; i < ht.Damage; ++i) {
-				g.DrawLine( redSlash, lx,orig.Height,lx+dX,0);
-				lx += dX;
-			}
+			// Normal Damage
+			if( 0 < ht.Damage )
+				using( Pen redSlash = new Pen( Color.FromArgb( 128, Color.Red ), 30f ) ) {
+					for(int i = 0; i < ht.Damage; ++i) {
+						g.DrawLine( redSlash, lx, orig.Height,lx+dX,0);
+						lx += dX;
+					}
+				}
+			// Dream Damage
+			if(0 < ht.DreamDamage)
+				using(Pen dreamSlash = new Pen( Color.FromArgb( 128, Color.MidnightBlue) , 30f )) { // or maybe steal blue
+					for(int i = 0; i < ht.DreamDamage; ++i) {
+						g.DrawLine( dreamSlash, lx, orig.Height, lx + dX, 0 );
+						lx += dX;
+					}
+				}
+		}
 
 		return orig;
 	}
-
-	static Bitmap GetInvaderImage( HealthToken ht ) {
-		return ResourceImages.Singleton.GetImage( PickInvaderImg( ht ) );
-	}
-
-	static Img PickInvaderImg( HealthToken token ) {
-
-		return token.Class == Invader.Explorer
-				? Img.Explorer
-			: token.Class == Invader.Town
-				? token.RemainingHealth switch {
-					1 => Img.Town1,
-					_ => Img.Town2,
-				}
-			: token.Class == Invader.City
-				? token.RemainingHealth switch {
-					2 => Img.City2,
-					1 => Img.City1,
-					_ => Img.City3,
-				}
-			: throw new Exception( "unknown token " + token );
-	}
-
 
 	void DrawFearPool( Graphics graphics, RectangleF bounds ) {
 		float margin = Math.Max(5f, bounds.Height*.05f);
@@ -804,7 +809,7 @@ public partial class IslandControl : Control {
 			x += step;
 
 			// record token location
-			tokenLocations.Add( tokens.Space.Label + ":" + token.ToString(), rect );
+			RecordLocation( new SpaceToken( tokens.Space, token), rect );
 
 			if(isPresence && spirit.Presence.IsSacredSite(tokens) ) {
 				const int inflationSize = 10;
@@ -968,7 +973,12 @@ public partial class IslandControl : Control {
 		
 	readonly List<(Rectangle,IOption)> optionRects = new List<(Rectangle, IOption)>();
 
-	readonly Dictionary<string,Rectangle> tokenLocations = new Dictionary<string, Rectangle>();
+	readonly Dictionary<SpaceToken, Rectangle> tokenLocations = new Dictionary<SpaceToken, Rectangle>();
+	void RecordLocation( SpaceToken sp, Rectangle rect ) => tokenLocations.Add( MakeKey(sp), rect );
+	bool HasLocation( SpaceToken sp ) => tokenLocations.ContainsKey( MakeKey(sp) );
+	Rectangle GetLocation( SpaceToken sp ) => tokenLocations[ MakeKey(sp) ];
+	static SpaceToken MakeKey( SpaceToken sp ) => sp; //$"{sp} {sp.Token.Class.Category}"; // Could make this a record instead.
+
 
 	GameState gameState;
 	Spirit spirit;

@@ -11,7 +11,7 @@ public class BeliefTakesRoot_Tests {
 		gameState.DisableInvaderDeck();
 		gameState.Initialize(); 
 		gameState.Fear.Deck.Pop();
-		gameState.Fear.AddCard( new BeliefTakesRoot() );
+		gameState.Fear.PushOntoDeck( new BeliefTakesRoot() );
 
 		invaderCard = InvaderDeck.Level1Cards[0];
 		ravageSpace = gameState.Island.Boards[0].Spaces.Where( invaderCard.Matches ).First();
@@ -24,7 +24,7 @@ public class BeliefTakesRoot_Tests {
 	public void NullFearCard_NormalRavage() {
 
 		gameState.Fear.Deck.Pop();
-		gameState.Fear.AddCard( new NullFearCard() );
+		gameState.Fear.PushOntoDeck( new NullFearCard() );
 
 		Given_DahanAndTownsInSpaceWithPresence(10,1);
 

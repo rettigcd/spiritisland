@@ -137,15 +137,12 @@
     <None Remove="images\tokens\Blighticon.png" />
     <None Remove="images\tokens\Cardplayplusone.png" />
     <None Remove="images\tokens\city.png" />
-    <None Remove="images\tokens\city1.png" />
     <None Remove="images\tokens\City1icon.png" />
-    <None Remove="images\tokens\city2.png" />
     <None Remove="images\tokens\City2icon.png" />
     <None Remove="images\tokens\Cityicon.png" />
     <None Remove="images\tokens\Coastal.png" />
     <None Remove="images\tokens\coin.png" />
     <None Remove="images\tokens\dahan.png" />
-    <None Remove="images\tokens\dahan1.png" />
     <None Remove="images\tokens\Dahan1icon.png" />
     <None Remove="images\tokens\Dahanicon.png" />
     <None Remove="images\tokens\DahanOrInvaders.png" />
@@ -189,7 +186,6 @@
     <None Remove="images\tokens\Strifeicon.png" />
     <None Remove="images\tokens\sun energy.png" />
     <None Remove="images\tokens\town.png" />
-    <None Remove="images\tokens\town1.png" />
     <None Remove="images\tokens\Town1icon.png" />
     <None Remove="images\tokens\Townicon.png" />
     <None Remove="images\tokens\Wilds.png" />
@@ -320,11 +316,8 @@
     <EmbeddedResource Include="images\tokens\beast.png" />
     <EmbeddedResource Include="images\tokens\blight.png" />
     <EmbeddedResource Include="images\tokens\city.png" />
-    <EmbeddedResource Include="images\tokens\city1.png" />
-    <EmbeddedResource Include="images\tokens\city2.png" />
     <EmbeddedResource Include="images\tokens\coin.png" />
     <EmbeddedResource Include="images\tokens\dahan.png" />
-    <EmbeddedResource Include="images\tokens\dahan1.png" />
     <EmbeddedResource Include="images\tokens\defend1orange.png" />
     <EmbeddedResource Include="images\tokens\disease.png" />
     <EmbeddedResource Include="images\tokens\explorer.png" />
@@ -361,7 +354,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="images\tokens\strife.png" />
     <EmbeddedResource Include="images\tokens\town.png" />
-    <EmbeddedResource Include="images\tokens\town1.png" />
     <EmbeddedResource Include="images\tokens\wilds.png" />
     <EmbeddedResource Include="leaguegothic-regular-webfont.ttf" />
   </ItemGroup>

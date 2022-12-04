@@ -15,7 +15,7 @@ public class ToweringWrath {
 		await ctx.DamageInvaders( 2 * sacredSiteCount );
 
 		// destroy all dahan
-		await ctx.DestroyDahan( int.MaxValue );
+		await ctx.Dahan.Destroy( int.MaxValue );
 	}
 
 }

@@ -35,8 +35,9 @@ public class DahanSaver {
 				args.Count -= adjustment;
 				byAction[args.ActionId] += adjustment;
 				// restore to full health
+				var savedToken = (HealthToken)args.Token;
 				space.Adjust( args.Token, -adjustment );
-				space.Adjust( ((HealthToken)args.Token).Healthy, adjustment );
+				space.Adjust( savedToken.Healthy, adjustment );
 			} else {
 				// make sure our already-saved dahan stay saved
 				if(args.Count > space.Dahan.Count - maxPerAction)

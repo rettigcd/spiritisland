@@ -23,7 +23,7 @@ public class TheJungleHungers {
 		}
 
 		if(destroyAllDahan)
-			await ctx.DestroyDahan( ctx.Dahan.Count );
+			await ctx.Dahan.Destroy( ctx.Dahan.Count );
 
 	}
 

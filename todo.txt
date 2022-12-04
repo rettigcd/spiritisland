@@ -27,6 +27,7 @@ Is In Play
 4 Draw back side of Invader Cards
 4 Draw Adversary details
 
+3 Check that Dahan Raid does REAL damage for Bringer, not dream-damage
 3 Make Virtual / Calculated Tokens work for types other than Defense
 3 Switch Explore & Ravage over to use Explore Tokens and Ravage Tokens
 3 Convert all Fear Cards to Commands

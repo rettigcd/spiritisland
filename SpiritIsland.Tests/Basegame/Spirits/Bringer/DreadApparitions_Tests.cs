@@ -36,7 +36,6 @@ public class DreadApparitions_Tests {
 	public void TownDamage_Generates2Defend() {
 
 		// Disable destroying presence
-//		ctx.GameState.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
 		ctx.GameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
 
 
@@ -60,7 +59,6 @@ public class DreadApparitions_Tests {
 	[Fact]
 	public async Task CityDamage_Generates5Defend() {
 		// Disable destroying presence
-//		ctx.GameState.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
 		ctx.GameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
 
 		// has city

@@ -7,7 +7,18 @@ public class MistsOfOblivion {
 	[FromPresence(3)]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
-		int startingTownsAndCities = ctx.Tokens.TownsAndCitiesCount();
+		// 1 fear per town/city this power destroys (to a max of 4)
+		int mayDestroyed = 4;
+		ctx.GameState.Tokens.TokenRemoved.ForRound.Add( args => {
+			if( 0 < mayDestroyed 
+				&& args.Action == ctx.CurrentActionId
+				&& args.Reason == RemoveReason.Destroyed
+				&& args.Token.Class.IsOneOf( Invader.City, Invader.Town )
+			){
+				ctx.AddFear( 1 );
+				--mayDestroyed;
+			}
+		} );
 
 		// 1 damage to each invader
 		await ctx.DamageEachInvader(1);
@@ -16,10 +27,6 @@ public class MistsOfOblivion {
 		if(await ctx .YouHave("2 moon,3 air,2 water"))
 			// 3 damage
 			await ctx.DamageInvaders(3);
-
-		// 1 fear per town/city this power destroys (to a max of 4)
-		int destroyedTownsAndCities = startingTownsAndCities - ctx.Tokens.TownsAndCitiesCount();
-		ctx.AddFear( destroyedTownsAndCities );
 	}
 
 }

@@ -28,7 +28,7 @@ class WhyDontYouAndThemFight {
 
 		// damage dahan
 		if(damageFromInvader>=2)
-			await ctx.DestroyDahan(1);
+			await ctx.Dahan.Destroy(1);
 
 	}
 

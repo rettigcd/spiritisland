@@ -4,15 +4,16 @@ public class InvaderBinding {
 
 	#region constructor
 
-	public InvaderBinding( SpaceState tokens, DestroyInvaderStrategy destroyStrategy, UnitOfWork actionId) {
+	public InvaderBinding( GameState gameState, SpaceState tokens, UnitOfWork actionId) {
+		this.gameState = gameState;
 		this.Tokens = tokens;
-		this.DestroyStrategy = destroyStrategy;
-		this.actionId = actionId;
+		this.action = actionId;
 	}
 
 	#endregion
 
-	public UnitOfWork actionId;
+	public GameState gameState;
+	public UnitOfWork action;
 
 	public Space Space => Tokens.Space;
 
@@ -44,52 +45,36 @@ public class InvaderBinding {
 
 	/// <summary> Not Badland-aware </summary>
 	/// <returns>(damage inflicted,damagedInvader)</returns>
-	public async Task<(int,HealthToken)> ApplyDamageTo1( int availableDamage, HealthToken invaderToken, bool fromRavage = false ) { // !! change Token to HealthToken
+	public async Task<(int,HealthToken)> ApplyDamageTo1( int availableDamage, HealthToken originalInvader, bool fromRavage = false ) {
 
-		var damagedInvader = invaderToken.AddDamage( availableDamage );
+		var damagedInvader = GetNewDamagedToken( originalInvader, availableDamage );
+
+		await ReplaceOrDestroyOriginalToken( originalInvader, damagedInvader, fromRavage );
+
+		int damageInflicted = originalInvader.RemainingHealth - damagedInvader.RemainingHealth;
+		return (damageInflicted, damagedInvader);
+	}
+
+	protected virtual HealthToken GetNewDamagedToken( HealthToken invaderToken, int availableDamage ) => invaderToken.AddDamage( availableDamage );
+
+	async Task ReplaceOrDestroyOriginalToken( HealthToken invaderToken, HealthToken damagedInvader, bool fromRavage ) {
 		if(!damagedInvader.IsDestroyed) {
 			Tokens.Adjust( invaderToken, -1 );
 			Tokens.Adjust( damagedInvader, 1 );
-		} else 
-			await DestroyStrategy.OnInvaderDestroyed( Space, invaderToken, fromRavage, actionId );
-
-		int damageInflicted = invaderToken.RemainingHealth - damagedInvader.RemainingHealth;
-		return (damageInflicted,damagedInvader); // damage inflicted
+		} else
+			await Destroy1( invaderToken, fromRavage );
 	}
 
 	#endregion
 
 	#region Destroy
 
-	public async Task<int> Destroy( int countToDestroy, HealthTokenClass invaderClass ) {
-		countToDestroy = Math.Min( countToDestroy, Tokens.Sum( invaderClass ) );
-		int remaining = countToDestroy; // capture
-
-		while(remaining > 0) {
-			var next = Tokens.OfType( invaderClass ).Cast<HealthToken>()
-				.OrderByDescending( x => x.FullHealth )
-				.ThenBy( x => x.StrifeCount )
-				.ThenBy( x => x.Damage )
-				.First();
-			remaining -= await Destroy( remaining, next );
-		}
-
-		return countToDestroy;
-	}
-
-	public async Task<int> Destroy( int countToDestroy, HealthToken invaderToDestroy ) {
-		int numToDestroy = Math.Min(countToDestroy, this[invaderToDestroy] );
-		for(int i = 0; i < numToDestroy; ++i)
-			await DestroyStrategy.OnInvaderDestroyed( Space, invaderToDestroy, false, actionId );
-		return numToDestroy;
-	}
-
 	public async Task DestroyAny( int count, params HealthTokenClass[] generics ) {
 		// !! this could be cleaned up
 		HealthToken[] invadersToDestroy = Tokens.OfAnyType( generics ).ToArray();
 		while(count > 0 && invadersToDestroy.Length > 0) {
 			var invader = invadersToDestroy
-				.OrderByDescending(x=>x.FullHealth)
+				.OrderByDescending( x => x.FullHealth )
 				// .ThenByDescending(x=>x.Health) assume this line is in Destroy(...)
 				.First();
 			await Destroy( 1, invader.Class );
@@ -98,6 +83,51 @@ public class InvaderBinding {
 			invadersToDestroy = Tokens.OfAnyType( generics ).ToArray();
 			--count;
 		}
+	}
+
+
+	// destroy CLASS
+	public async Task<int> Destroy( int countToDestroy, HealthTokenClass invaderClass ) {
+		countToDestroy = Math.Min( countToDestroy, Tokens.Sum( invaderClass ) );
+		int remaining = countToDestroy; // capture
+
+		while(remaining > 0) {
+			var next = Tokens.OfType( invaderClass ).Cast<HealthToken>()
+				.OrderByDescending( x => x.FullHealth )
+				.ThenBy( x => x.StrifeCount )
+				.ThenBy( x => x.FullDamage )
+				.First();
+			remaining -= await Destroy( remaining, next );
+		}
+
+		return countToDestroy;
+	}
+
+	// destroy TOKEN
+	public async Task<int> Destroy( int countToDestroy, HealthToken invaderToDestroy ) {
+		int numToDestroy = Math.Min(countToDestroy, this[invaderToDestroy] );
+		for(int i = 0; i < numToDestroy; ++i)
+			await Destroy1( invaderToDestroy, false );
+		return numToDestroy;
+	}
+
+	protected virtual async Task Destroy1( HealthToken originalToken, bool fromRavage ) {
+
+		var reason = fromRavage ? RemoveReason.DestroyedInBattle : RemoveReason.Destroyed;
+
+		await Tokens.Destroy( originalToken, 1, action );
+
+		// !!! see if we can invoke this through the Token-Publish API instead - so we can make TokenRemovedArgs internal to Island_Tokens class
+		await this.gameState.Tokens.Publish_Removed( new PublishTokenRemovedArgs( originalToken, reason, action, Tokens, 1 ) );
+
+		// Don't assert token is destroyed (from damage) because it is possible to destory healthy tokens
+
+		// ??? Why is this true?
+		gameState.Fear.AddDirect( new FearArgs {
+			count = originalToken.Class.FearGeneratedWhenDestroyed,
+			FromDestroyedInvaders = true, // this is the destruction that Dread Apparitions ignores.
+			space = Space
+		} );
 	}
 
 	#endregion Destroy
@@ -122,11 +152,11 @@ public class InvaderBinding {
 			.FirstOrDefault();
 
 		if(invaderToRemove != null)
-			await Tokens.Remove( invaderToRemove, 1, actionId );
+			await Tokens.Remove( invaderToRemove, 1, action );
 	}
 
 	public Task Remove( Token token, int count, RemoveReason reason = RemoveReason.Removed )
-		=> Tokens.Remove( token, count, actionId, reason );
+		=> Tokens.Remove( token, count, action, reason );
 
 	#endregion
 
@@ -136,7 +166,7 @@ public class InvaderBinding {
 	static public void HealTokens( SpaceState counts ) {
 
 		void RestoreAllToDefault( Token token ) {
-			if(token is not HealthToken ht || ht.Damage == 0) return;
+			if(token is not HealthToken ht || ht.FullDamage == 0) return;
 			int num = counts[token];
 			counts.Adjust( ht.Healthy, num );
 			counts.Adjust( token, -num );
@@ -198,10 +228,6 @@ public class InvaderBinding {
 		return damageInflicted;
 	}
 
-//	public int AttackDamageFrom1(HealthToken ht) => Math.Max(0,ht.Class.Attack-DamagePenaltyPerInvader);
-//	public int DamagePenaltyPerInvader = 0; // !!! ??? Does the Memento reset this back to 0?
-
-	public readonly DestroyInvaderStrategy DestroyStrategy;
 	public readonly SpaceState Tokens;
 
 }

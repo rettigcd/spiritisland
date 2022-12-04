@@ -31,7 +31,7 @@ public class DahanGroupBindingNoEvents {
 
 	public void Init( Token token, int count ) => _tokens.Init( token, count );
 
-	public DahanGroupBinding Bind( UnitOfWork actionId ) => new DahanGroupBinding(this,actionId); // !!! what about the destroy readon?
+	public DahanGroupBinding Bind( UnitOfWork actionId ) => new DahanGroupBinding(this,actionId);
 }
 
 public class DahanGroupBinding : DahanGroupBindingNoEvents {
@@ -39,6 +39,8 @@ public class DahanGroupBinding : DahanGroupBindingNoEvents {
 	readonly RemoveReason _destroyReason;
 
 	readonly UnitOfWork actionId;
+
+	#region constructors
 
 	public DahanGroupBinding( DahanGroupBindingNoEvents src, UnitOfWork actionId, RemoveReason destroyReason = RemoveReason.Destroyed ):base(src) {
 		_destroyReason = destroyReason;
@@ -50,27 +52,21 @@ public class DahanGroupBinding : DahanGroupBindingNoEvents {
 		this.actionId = actionId;
 	}
 
+	#endregion
+
 	/// <summary> Adds a Dahan from the bag, or out of thin air. </summary>
 	public Task Add( int count, AddReason reason = AddReason.Added ) {
 		return _tokens.AddDefault( TokenType.Dahan, count, actionId, reason );
 	}
 
-	// Called from .Dissolve the Bonds
-	public async Task<Token> Remove1( RemoveReason reason ) {
-		if(Frozen) return null;
-
-		var toRemove = Keys.OrderBy( x => x.RemainingHealth ).FirstOrDefault();
-
-		if( toRemove != null)
-			await _tokens.Remove( toRemove, 1, actionId, reason );
-		return toRemove;
-	}
-
-	// Called from .Move()
-	public async Task<Token> Remove1( RemoveReason reason, Token toRemove ) {
+	// Called from .Move() and .Dissolve the Bonds
+	public virtual async Task<Token> Remove1( RemoveReason reason, Token toRemove=null ) {
 		if( Frozen ) return null; // unable to remove desired token
 
-		if( _tokens[toRemove] == 0 )
+		// validate token to be removed.
+		if( toRemove == null )
+			toRemove = Keys.OrderBy( x => x.RemainingHealth ).FirstOrDefault();
+		else if( _tokens[toRemove] == 0 )
 			toRemove = null; // unable to remove desired token
 
 		if(toRemove != null)
@@ -93,7 +89,9 @@ public class DahanGroupBinding : DahanGroupBindingNoEvents {
 	public async Task Apply1DamageToAll() { // Called By Power (i.e. not invaders)
 		if(Frozen) return;
 
-		var before = Keys.OrderByDescending(x=>x.Damage).ToArray(); // most damaged to least damaged so they don't cascade
+		var before = Keys
+			.OrderByDescending(x=>x.Damage) // most damaged to least damaged so they don't cascade
+			.ToArray(); 
 		foreach(var token in before) {
 			int origCount = _tokens[token];
 			var newToken = token.AddDamage( 1 );
@@ -153,7 +151,7 @@ public class DahanGroupBinding : DahanGroupBindingNoEvents {
 		}
 	}
 
-	public async Task<TokenRemovedArgs> Destroy( int count, HealthToken original ) {
+	public async Task<PublishTokenRemovedArgs> Destroy( int count, HealthToken original ) {
 		return Frozen ? null
 			: await _tokens.Remove( original, count, actionId, _destroyReason );
 	}

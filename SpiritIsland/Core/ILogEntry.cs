@@ -30,7 +30,6 @@ public class IslandBlighted : ILogEntry { // event
 	public string Msg( LogLevel _ ) => $"Blighted Island => {card.Name} => {card.Immediately.Description}\r\n  ^^^^^^^^ ^^^^^^\r\n";
 }
 
-
 public class InvaderActionEntry : ILogEntry {
 	public string msg;
 	public InvaderActionEntry( string msg, LogLevel level = LogLevel.Info ) { 
@@ -45,7 +44,7 @@ public class SpaceExplored : InvaderActionEntry {
 	public Space Space { get; }
 }
 
-	public class LogRound : ILogEntry {
+public class LogRound : ILogEntry {
 	public int round;
 	public LogRound( int round ) { 
 		this.round = round;
@@ -73,4 +72,12 @@ public class LogException : ILogEntry {
 	}
 	public LogLevel Level { get; }
 	public string Msg( LogLevel _ ) => ex.ToString();
+}
+
+public class LogDebug : ILogEntry {
+	public LogDebug( string text ) { this.text = text; }
+	readonly string text;
+	public LogLevel Level => LogLevel.Debug;
+
+	public string Msg( LogLevel _ ) => text;
 }

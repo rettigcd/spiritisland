@@ -15,7 +15,7 @@ public class DevouringAnts {
 
 		// destroy 1 dahan
 		if(ctx.Dahan.Any)
-			await ctx.DestroyDahan(1);
+			await ctx.Dahan.Destroy(1);
 
 		// if target is J / S, +1 damage
 		if( ctx.IsOneOf( Terrain.Jungle, Terrain.Sand ) )

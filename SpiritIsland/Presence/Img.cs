@@ -62,14 +62,11 @@ public enum Img {
 
 
 	// Tokens
-	City3,
-	City2,
-	City1,
-	Town2,
-	Town1,
+	City,
+	Town,
 	Explorer,
-	Dahan2,
-	Dahan1,
+	Dahan,
+
 	Defend,
 	Isolate,
 	Blight,

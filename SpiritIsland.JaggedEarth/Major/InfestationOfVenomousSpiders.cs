@@ -14,7 +14,7 @@ public class InfestationOfVenomousSpiders {
 
 		// if you have 2 air 2 earth 3 animal: after this power causes invaders to skip an action, 4 damage.
 		Func<GameState,SpaceState,Task> causeAdditionalDamage = await ctx.YouHave("2 air,3 animal")
-			? (GameState gs,SpaceState space) => ctx.Target(space.Space).DamageInvaders(4)
+			? (GameState gs,SpaceState space) => ctx.Target(space.Space).DamageInvaders(4) // this correctly uses Bringers ctx to do Dream damage
 			: null;
 
 		// For each beast,
@@ -48,7 +48,7 @@ public class InfestationOfVenomousSpiders {
 			this.alternativeAction = alternativeAction;
 		}
 
-		static readonly HealthTokenClass _class = new HealthTokenClass( Name, 0, TokenCategory.None, 0 );// !!! don't use HealthToken for this
+		static readonly HealthTokenClass _class = new HealthTokenClass( Name, 0, TokenCategory.None, 0, Img.None, 0 );// !!! don't use HealthToken for this
 		public TokenClass Class => _class;
 
 		public string Text => "SpiderInfestationStopper";

@@ -41,7 +41,7 @@ public class VolcanicEruption {
 	}
 
 	static async Task DestroyDahanAndBeasts( TargetSpaceCtx ctx ) {
-		await ctx.DestroyDahan( int.MaxValue );
+		await ctx.Dahan.Destroy( int.MaxValue );
 		await ctx.Beasts.Destroy( ctx.Beasts.Count );
 	}
 

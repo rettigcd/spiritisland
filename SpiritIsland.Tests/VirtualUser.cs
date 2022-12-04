@@ -176,6 +176,11 @@ namespace SpiritIsland.Tests {
 			AssertDecisionX( "Push "+tokenToPush+" to", destinations );
 		}
 
+		public void PusheSelectedTokenTo( string invaders, string destinations, int numToPush = 1 ) {
+			var (_, tokenToPush) = SplitOptionsAndChoice( invaders );
+			AssertDecisionX( "Push " + tokenToPush + " to", destinations );
+		}
+
 		public void OptionallyPushesInvaderTo( string invaders, string destinations, int countToPush=1 ) {
 			var (invaderOptions,invaderChoice) = SplitOptionsAndChoice( invaders );
 			AssertDecision( $"Push up to ({countToPush})", invaderOptions+",Done", invaderChoice );

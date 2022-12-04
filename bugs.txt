@@ -1,3 +1,9 @@
+=====  Volcano Bugs  =====
+
+Volcano doesn't get to choose where it places its' presence at the beginning of the game, so you can't do anything and get softlocked.
+
+======================
+
 Finder:
 	The Move presence on the presence track is forced (is that correct) 
 		AND the UI doesn't select it properly
@@ -9,3 +15,4 @@ Settle Into Hunting-Grounds
 Growth - After Growth, rewinding to beginning of turn, doesn't reset # of card plays to 0
 
 Growth - Shifting Memories 2-elements for card play - doesn't always work
+

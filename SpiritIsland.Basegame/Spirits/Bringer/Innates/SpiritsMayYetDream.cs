@@ -5,7 +5,7 @@
 [AnySpirit]
 public class SpiritsMayYetDream {
 
-	[InnateOption( "2 moon,2 air","Turn any face down Card face-up. (It's earned/resolved normally, but players can see what's coming)", 0 )]
+	[InnateOption( "2 moon,2 air","Turn any face down Fear Card face-up. (It's earned/resolved normally, but players can see what's coming)", 0 )]
 	static public async Task Option1( TargetSpiritCtx ctx ) {
 
 		// Turn any face-down fear card face-up

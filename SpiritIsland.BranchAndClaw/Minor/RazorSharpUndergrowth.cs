@@ -10,7 +10,7 @@ public class RazorSharpUndergrowth {
 		// destroy 1 explorer
 		await ctx.Invaders.Destroy(1,Invader.Explorer);
 		// and 1 dahan
-		await ctx.DestroyDahan( 1 );
+		await ctx.Dahan.Destroy( 1 );
 		// add 1 wilds
 		await ctx.Wilds.Add(1);
 		// defend 2

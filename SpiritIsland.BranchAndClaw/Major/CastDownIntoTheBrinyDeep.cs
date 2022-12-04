@@ -19,12 +19,13 @@ public class CastDownIntoTheBrinyDeep {
 	static async Task DestroyBoard( SelfCtx ctx, Board board ) {
 		// destroy the board containing target land and everything on that board.
 		// All destroyed blight is removed from the game instead of being returned to the blight card.
-		var activeSpaces = ctx.GameState.Tokens.PowerUp( board.Spaces ).ToArray();
+		var activeSpaces = ctx.GameState.Tokens.PowerUp( board.Spaces ).ToArray(); // ! necessary to make sure space is not in Stasis
+
 		await DestroyTokens( ctx, activeSpaces );
 
 		if(!ctx.Self.Text.StartsWith( "Bringer" )) { // !!! Maybe Api should have method called "Destroy Space" or "DestroyBoard"
 
-			// destroy presence
+			// destroy presence - !!! ??? Should Bringer destroy its own presence?
 			foreach(var spirit in ctx.GameState.Spirits)
 				foreach(var p in spirit.Presence.Placed( ctx.GameState ).Where(p=>p.Space.Board==board).ToArray() )
 					await ctx.NewSelf(spirit).Presence.Destroy(p.Space, DestoryPresenceCause.SpiritPower );
@@ -43,11 +44,13 @@ public class CastDownIntoTheBrinyDeep {
 
 		foreach(SpaceState space in spaces) {
 
+			var targetCtx = ctx.Target(space);
+
 			// Destroy Invaders
-			await ctx.Target(space.Space).Invaders.DestroyAny( int.MaxValue, Invader.City, Invader.Town, Invader.Explorer );
+			await targetCtx.Invaders.DestroyAny( int.MaxValue, Invader.City, Invader.Town, Invader.Explorer );
 
 			// Destroy Dahan
-			await space.Dahan.Bind(ctx.CurrentActionId).Destroy( int.MaxValue );
+			await targetCtx.Dahan.Destroy( int.MaxValue );
 
 			if(!ctx.Self.Text.StartsWith("Bringer")) { // !!!
 				// Destroy all other tokens

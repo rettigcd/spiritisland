@@ -9,10 +9,10 @@ public class Tokens_ForIsland : IIslandTokenApi {
 
 		PenaltyHolder = gs;// new HealthPenaltyPerStrifeHolder();
 		TokenDefaults = new Dictionary<HealthTokenClass, HealthToken> {
-			[Invader.City] = new HealthToken( Invader.City, PenaltyHolder, 3 ),
-			[Invader.Town] = new HealthToken( Invader.Town, PenaltyHolder, 2 ),
+			[Invader.City]     = new HealthToken( Invader.City, PenaltyHolder, 3 ),
+			[Invader.Town]     = new HealthToken( Invader.Town, PenaltyHolder, 2 ),
 			[Invader.Explorer] = new HealthToken( Invader.Explorer, PenaltyHolder, 1 ),
-			[TokenType.Dahan] = new HealthToken( TokenType.Dahan, PenaltyHolder, 2 ),
+			[TokenType.Dahan]  = new HealthToken( TokenType.Dahan, PenaltyHolder, 2 ),
 		};
 
 		gs.TimePasses_WholeGame += (_)=>ClearEventHandlers_ForRound();
@@ -52,10 +52,7 @@ public class Tokens_ForIsland : IIslandTokenApi {
 		return TokenAdded.InvokeAsync( args );
 	}
 
-	public Task Publish_Removed( TokenRemovedArgs args ) {
-		args.GameState = gameStateForEventArgs;
-		return TokenRemoved.InvokeAsync( args );
-	}
+	public Task Publish_Removed( PublishTokenRemovedArgs args ) => TokenRemoved.InvokeAsync( args.MakeEvent(gameStateForEventArgs) );
 
 	public async Task Publish_Moved( TokenMovedArgs args ) {
 		args.GameState=this.gameStateForEventArgs;

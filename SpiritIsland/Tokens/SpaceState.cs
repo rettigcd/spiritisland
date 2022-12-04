@@ -146,6 +146,11 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	public HealthToken GetDefault( HealthTokenClass tokenClass ) => this.tokenApi.GetDefault( tokenClass );
 
+	public void ReplaceAllWith( Token original, Token replacement ) {
+		Adjust( replacement, this[original] );
+		Init( original, 0 );
+	}
+
 	#endregion
 
 	/// <summary> Replaces (via adjust) HealthToken with new HealthTokens </summary>
@@ -185,7 +190,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	}
 
 	/// <summary> returns null if no token removed </summary>
-	public async Task<TokenRemovedArgs> Remove( Token token, int count, UnitOfWork actionId, RemoveReason reason = RemoveReason.Removed ) {
+	public async Task<PublishTokenRemovedArgs> Remove( Token token, int count, UnitOfWork actionId, RemoveReason reason = RemoveReason.Removed ) {
 		count = System.Math.Min( count, this[token] );
 
 		// Pre-Remove check/adjust
@@ -198,7 +203,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 		this[removingArgs.Token] -= removingArgs.Count;
 
 		// Post-Remove event
-		var removedArgs = new TokenRemovedArgs( removingArgs.Token, reason, actionId, this, removingArgs.Count );
+		var removedArgs = new PublishTokenRemovedArgs( removingArgs.Token, reason, actionId, this, removingArgs.Count );
 		await tokenApi.Publish_Removed( removedArgs );
 
 		return removedArgs;
@@ -208,14 +213,15 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	public Task Destroy( Token token, int count, UnitOfWork actionId ) => Remove(token, count, actionId, RemoveReason.Destroyed );
 
 	/// <summary> Gathering / Pushing + a few others </summary>
+	// !!! Powers should not use this Move directly, instead, they should go through TargetSpaceCtx so they can use custom Dahan and Invader bindings.
 	public async Task MoveTo(Token token, Space destination, UnitOfWork actionId ) {
 
 		// Remove from source
-		TokenRemovedArgs removedArgs;
+		PublishTokenRemovedArgs removedArgs;
 		if( token.Class == TokenType.Dahan) {
 			Token removedToken = await Dahan.Bind( actionId ).Remove1( RemoveReason.MovedFrom, token );
 			if(removedToken == null) return;
-			removedArgs = new TokenRemovedArgs( removedToken, RemoveReason.MovedFrom, actionId, this, 1); // !!!
+			removedArgs = new PublishTokenRemovedArgs( removedToken, RemoveReason.MovedFrom, actionId, this, 1); // !!!
 		} else
 			removedArgs = await Remove( token,1,actionId, RemoveReason.MovedFrom );
 
@@ -239,9 +245,12 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	#region Invader Specific
 
-	public IEnumerable<HealthToken> InvaderTokens() => this.OfAnyType( Invader.City, Invader.Town, Invader.Explorer );
+	public IEnumerable<Token> OfCategory( TokenCategory category ) => Keys.Where( k=>k.Class.Category == category );
 
-	public bool HasInvaders() => InvaderTokens().Any();
+	/// <summary> Does not include dreaming invaders. </summary>
+	public IEnumerable<HealthToken> InvaderTokens() => OfCategory( TokenCategory.Invader ).Cast<HealthToken>();
+
+	public bool HasInvaders() => OfCategory( TokenCategory.Invader ).Any();
 
 	public bool HasStrife => Keys.OfType<HealthToken>().Any(x=>x.StrifeCount>0);
 

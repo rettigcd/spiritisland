@@ -23,6 +23,19 @@ namespace SpiritIsland.Tests {
 			gameState.Tokens[ space ].InvaderSummary().ShouldBe( expectedString );
 		}
 
+		static public void Assert_DreamingInvaders( this GameState gameState, Space space, string expectedString ) {
+
+			static int Order_CitiesTownsExplorers( HealthToken invader )
+				=> -(invader.FullHealth * 10 + invader.RemainingHealth);
+			var tokens = gameState.Tokens[space];
+			string dreamerSummary = tokens.OfCategory( TokenCategory.DreamingInvader )
+				.Cast<HealthToken>()
+				.OrderBy( Order_CitiesTownsExplorers )
+				.Select( invader => tokens.counts[invader] + invader.ToString() )
+				.Join( "," );
+			dreamerSummary.ShouldBe( expectedString );
+		}
+
 	}
 
 	public static class InvaderEngine1 {

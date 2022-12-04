@@ -49,7 +49,7 @@ public class TargetSpaceCtx : SelfCtx {
 	public TokenBinding Disease              => Tokens.Disease.Bind( CurrentActionId );
 	public TokenBinding Wilds                => Tokens.Wilds.Bind( CurrentActionId );
 	public virtual TokenBinding Badlands     => Tokens.Badlands.Bind( CurrentActionId );
-	public DahanGroupBinding Dahan => Tokens.Dahan.Bind( CurrentActionId );
+	public virtual DahanGroupBinding Dahan   => Tokens.Dahan.Bind( CurrentActionId ); // Powers that interact with dahan, MUST go through this property 
 	public virtual BlightTokenBinding Blight => Tokens.Blight.Bind( CurrentActionId );
 	public Task AddDefault( HealthTokenClass tokenClass, int count, AddReason addReason = AddReason.Added )
 		=> Tokens.AddDefault( tokenClass, count, CurrentActionId, addReason );
@@ -140,11 +140,6 @@ public class TargetSpaceCtx : SelfCtx {
 		.Where( TerrainMapper.IsInPlay ); // !!! is this necessary?  Does the RangeCalc already check this?
 	public IEnumerable<SpaceState> Range( int range, TargetingPowerType powerType ) => Range(new TargetCriteria(range),powerType);
 
-
-	public async Task DestroyDahan( int countToDestroy ) { 
-		await Dahan.Destroy( countToDestroy );
-	}
-
 	#region Terrain
 
 	/// <summary> The effective Terrain for powers. Will be Wetland for Ocean when Oceans-Hungry-Grasp is on board </summary>
@@ -154,7 +149,6 @@ public class TargetSpaceCtx : SelfCtx {
 	public bool IsInland => TerrainMapper.IsInland( Space );
 	public bool IsInPlay => TerrainMapper.IsInPlay( Space );
 	#endregion
-
 
 	public bool HasBlight => Blight.Any;
 
@@ -172,11 +166,7 @@ public class TargetSpaceCtx : SelfCtx {
 	// The current targets power
 	public InvaderBinding Invaders => _invadersRO ??= GetInvaders();
 
-	protected virtual InvaderBinding GetInvaders() => new InvaderBinding(
-		Tokens, 
-		new DestroyInvaderStrategy( GameState, GameState.Fear.AddDirect ),
-		CurrentActionId
-	);
+	protected virtual InvaderBinding GetInvaders() => new InvaderBinding( GameState, Tokens, CurrentActionId );
 
 	public void SkipAllInvaderActions(string label) => GameState.SkipAllInvaderActions( Space, label );
 

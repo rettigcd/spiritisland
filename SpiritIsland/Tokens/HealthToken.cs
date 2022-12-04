@@ -2,19 +2,27 @@
 
 public class HealthToken : Token, IEquatable<HealthToken> {
 
-	public HealthToken( HealthTokenClass tokenClass, IHaveHealthPenaltyPerStrife penaltyHolder, int rawFullHealth, int damage = 0, int strifeCount = 0 ) {
+	public HealthToken( 
+		HealthTokenClass tokenClass, 
+		IHaveHealthPenaltyPerStrife penaltyHolder, 
+		int rawFullHealth, 
+		int damage = 0, 
+		int strifeCount = 0,
+		int nightmareDamage = 0
+	) {
 
 		Class = tokenClass;
 		_rawFullHealth = rawFullHealth;
 
 		Damage = damage;
+		DreamDamage = nightmareDamage;
 		StrifeCount = strifeCount;
 
 		_healthPenaltyHolder = penaltyHolder;
 
 		_summaryString = Class.Initial + "@" + RemainingHealth
+			+ (DreamDamage == 0 ? "" : new string( '~', DreamDamage))
 			+ (strifeCount == 0 ? "" : new string( '^', StrifeCount ));
-
 	}
 
 	public HealthTokenClass Class { get; }
@@ -25,15 +33,18 @@ public class HealthToken : Token, IEquatable<HealthToken> {
 	readonly int _rawFullHealth; // the value adjusted by modifications, may be less than 1.
 
 	public int Damage { get; }
+	public int DreamDamage { get; }
+	
+	public int FullDamage => Damage + DreamDamage;
 
 	public int StrifeCount { get; }
 
-	public bool IsDestroyed => FullHealth <= Damage;
+	public bool IsDestroyed => FullHealth <= FullDamage;
 
 	#region Token mutation generators
 
 	public HealthToken HavingStrife(int strifeCount) {
-		return strifeCount <0 ? throw new System.ArgumentOutOfRangeException(nameof(strifeCount),$"strife Count = {strifeCount}")
+		return strifeCount < 0 ? throw new System.ArgumentOutOfRangeException(nameof(strifeCount),$"strife Count = {strifeCount}")
 			: strifeCount == StrifeCount ? this
 			: new HealthToken( Class, _healthPenaltyHolder, _rawFullHealth, Damage, strifeCount );
 	}
@@ -41,7 +52,23 @@ public class HealthToken : Token, IEquatable<HealthToken> {
 	/// <returns>a new token with the adjusted strife</returns>
 	public HealthToken AddStrife( int deltaStrife ) => HavingStrife( StrifeCount + deltaStrife );
 
-	public HealthToken AddDamage( int damage ) => new HealthToken( Class, _healthPenaltyHolder, _rawFullHealth, Math.Min( Damage + damage, _rawFullHealth ), StrifeCount ); // ??? Is this Math.Min necessary, could we just let it go negative?
+	public HealthToken AddDamage( int damage, int nightmareDamage=0 ) {
+		int newDamage = Math.Min( Damage + damage, _rawFullHealth ); // Give regular damage priority
+		// only allow nightmare damage to take up whatever remaining health is available
+		int newNightmareDamage = Math.Min( nightmareDamage + DreamDamage, _rawFullHealth-newDamage );
+		return new HealthToken( 
+			Class, 
+			_healthPenaltyHolder, 
+			_rawFullHealth, 
+			newDamage, 
+			StrifeCount,
+			newNightmareDamage
+		);
+	}
+
+	// For Dream a 1000 Deaths, make token not in the Invader TokenCategory
+	public HealthToken SwitchClass( HealthTokenClass newClass )
+		=> new HealthToken( newClass, _healthPenaltyHolder, _rawFullHealth, Damage, StrifeCount, DreamDamage );
 
 	public HealthToken Healthy => new HealthToken( Class, _healthPenaltyHolder, _rawFullHealth, 0, StrifeCount );
 
@@ -57,9 +84,10 @@ public class HealthToken : Token, IEquatable<HealthToken> {
 
 	public override int GetHashCode() 
 		=> Class.GetHashCode()
-		+  2 * _rawFullHealth	// Do NOT use FullHealth because that might change based on HealthPenalty
-		+  8 * Damage
-		+ 32 * StrifeCount;
+		+ 2 * _rawFullHealth	// Do NOT use FullHealth because that might change based on HealthPenalty
+		+ 3 * Damage
+		+ 5 * DreamDamage
+		+ 7 * StrifeCount;
 
 	public override bool Equals( object obj ) => this.Equals( obj as HealthToken );
 
@@ -73,7 +101,7 @@ public class HealthToken : Token, IEquatable<HealthToken> {
 
 	#endregion
 
-	public int RemainingHealth => FullHealth - Damage;
+	public int RemainingHealth => FullHealth - FullDamage;
 
 	public override string ToString() => _summaryString;
 

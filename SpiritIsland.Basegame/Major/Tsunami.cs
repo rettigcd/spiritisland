@@ -15,7 +15,7 @@ public class Tsunami {
 		await ctx.DamageInvaders(8);
 
 		// destroy 2 dahan
-		await ctx.DestroyDahan( 2 );
+		await ctx.Dahan.Destroy( 2 );
 
 		if(await ctx.YouHave("3 water,2 earth")){
 			var otherCoastalsOnSameBoard = ctx.Space.Board
@@ -35,7 +35,7 @@ public class Tsunami {
 		await otherCtx.DamageInvaders( 4 );
 		// destroy 1 dahan
 		if(otherCtx.Dahan.Any)
-			await otherCtx.DestroyDahan( 1 );
+			await otherCtx.Dahan.Destroy( 1 );
 	}
 
 }

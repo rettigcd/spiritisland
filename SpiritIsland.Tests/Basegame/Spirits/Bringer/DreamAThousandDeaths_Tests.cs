@@ -14,17 +14,17 @@ public class DreamAThousandDeaths_Tests {
 		User = new VirtualUser(spirit);
 		board = Board.BuildBoardA();
 		gs = new GameState( spirit, board );
+		gs.Initialize();
 		unitOfWork = gs.StartAction();
 		ctx = MakeFreshPowerCtx();
 
 		// Disable destroying presence
-//			ctx.GameState.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
 		ctx.GameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
 
 	}
 
-	TargetSpaceCtx MakeFreshPowerCtx() {
-		var ctx = spirit.BindMyPower(gs, unitOfWork ); // This is correct usage.
+	TargetSpaceCtx MakeFreshPowerCtx(UnitOfWork uow=null) {
+		var ctx = spirit.BindMyPower(gs, uow ?? unitOfWork ); // This is correct usage.
 		return ctx.Target( board[5] );
 	}
 
@@ -52,13 +52,14 @@ public class DreamAThousandDeaths_Tests {
 
 		// Then: dream-death allows User pushes them
 		for(int i = 0; i < count; ++i)
-			User.PushesTokensTo( "E@1", "A1,A4,A6,(A7),A8" );
+			User.PusheSelectedTokenTo( "E@1", "A1,A4,A6,(A7),A8" );
 
 		// And: 0-fear
 		Assert_GeneratedFear( 0 );
 
 		//  and: explorer on destination
-		ctx.GameState.Assert_Invaders( board[7], $"{count}E@1" );
+		var debug = ctx.GameState.Tokens[ board[7] ];
+		ctx.GameState.Assert_DreamingInvaders( board[7], $"{count}E@1" );
 		//  and: not at origin
 		ctx.GameState.Assert_Invaders( board[5], $"" );
 	}
@@ -77,13 +78,13 @@ public class DreamAThousandDeaths_Tests {
 
 		// Then: dream-death allows User pushes them
 		for(int i = 0; i < count; ++i)
-			User.PushesTokensTo("T@2","A1,A4,A6,(A7),A8" );
+			User.PusheSelectedTokenTo( "T@2","A1,A4,A6,(A7),A8" );
 
 		// And:4-fear
 		Assert_GeneratedFear( count * 2 );
 
 		//  and: town on destination
-		ctx.GameState.Assert_Invaders( board[7], $"{count}T@2" );
+		ctx.GameState.Assert_DreamingInvaders( board[7], $"{count}T@2" );
 		//  and: not at origin
 		ctx.GameState.Assert_Invaders( board[5], $"" );
 
@@ -97,9 +98,9 @@ public class DreamAThousandDeaths_Tests {
 
 		// When: 3 separate actinos cause 1 damage
 		async Task Run3Async() {
-			await OneDamageToEachAsync( MakeFreshPowerCtx() );
-			await OneDamageToEachAsync( MakeFreshPowerCtx() );
-			await OneDamageToEachAsync( MakeFreshPowerCtx() );
+			await Run_OneDamageToEachAsync();
+			await Run_OneDamageToEachAsync();
+			await Run_OneDamageToEachAsync();
 		}
 		_ = Run3Async();
 
@@ -107,6 +108,11 @@ public class DreamAThousandDeaths_Tests {
 
 		// And: 0-fear
 		Assert_GeneratedFear( 0 ); // city never destroyed
+	}
+
+	async Task Run_OneDamageToEachAsync() {
+		await using var uow = this.gs.StartAction();
+		await OneDamageToEachAsync( MakeFreshPowerCtx(uow) );
 	}
 
 	[Fact]
@@ -117,16 +123,15 @@ public class DreamAThousandDeaths_Tests {
 
 		// When: 3 separate actinos cause 1 damage
 		// EACH power gets a fresh ctx so INVADERS can reset
-		await OneDamageToEachAsync( MakeFreshPowerCtx() ); 
-		await OneDamageToEachAsync( MakeFreshPowerCtx() );
-		await OneDamageToEachAsync( MakeFreshPowerCtx() );
-
+		await Run_OneDamageToEachAsync();
+		await Run_OneDamageToEachAsync();
+		await Run_OneDamageToEachAsync();
 		User.Assert_Done();
 
 		// And: 0-fear
 		Assert_GeneratedFear( 3*5 ); // city never destroyed
 		// City still there
-		ctx.Invaders.Tokens[StdTokens.City1 ].ShouldBe(1);
+		ctx.Tokens[ StdTokens.City1 ].ShouldBe(1);
 	}
 
 	[Fact]
@@ -145,8 +150,8 @@ public class DreamAThousandDeaths_Tests {
 		// And: 0-fear
 		Assert_GeneratedFear( 1 * 5 ); // city only destroyed once
 
-		// City with partial damage still there
-		ctx.Invaders[StdTokens.City1 ].ShouldBe( 1 );
+		// Dreaming City with partial damage still there
+		ctx.Invaders[ ToDreamAThousandDeaths.ToggleDreamer(StdTokens.City1) ].ShouldBe( 1 );
 	}
 
 	void Assert_GeneratedFear( int expectedFearCount ) {

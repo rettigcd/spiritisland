@@ -91,8 +91,10 @@ namespace SpiritIsland.Tests.Basegame.Fear {
 		}
 
 		void ActivateFearCard(IFearOptions fearCard) {
-			ctx.GameState.Fear.Deck.Pop();
-			ctx.GameState.Fear.ActivatedCards.Push( new PositionFearCard{ FearOptions=fearCard, Text="FearCard" } );
+			var fear = ctx.GameState.Fear;
+			fear.Deck.Pop(); // remove old
+			fear.PushOntoDeck( fearCard );
+			fear.ActivateCard();
 		}
 
 		readonly VirtualTestUser user;

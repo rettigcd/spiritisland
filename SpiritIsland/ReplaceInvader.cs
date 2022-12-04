@@ -15,7 +15,7 @@ static public class ReplaceInvader {
 		var newInvaderClass = oldInvader.Class == Invader.City ? Invader.Town : Invader.Explorer;
 
 		var newTokenWithoutDamage = ctx.Tokens.GetDefault( newInvaderClass ).AddStrife(oldInvader.StrifeCount);
-		var newTokenWithDamage = newTokenWithoutDamage.AddDamage( oldInvader.Damage );
+		var newTokenWithDamage = newTokenWithoutDamage.AddDamage( oldInvader.Damage, oldInvader.DreamDamage );
 
 		if(!newTokenWithDamage.IsDestroyed )
 			ctx.Tokens.Adjust( newTokenWithDamage, 1 );
@@ -37,8 +37,8 @@ static public class ReplaceInvader {
 		tokens.Adjust( tokenToRemove, -1 );
 
 		// add
-		int explorersToAdd = replaceCount - tokenToRemove.Damage;
-		if( explorersToAdd > 0 )
+		int explorersToAdd = replaceCount - tokenToRemove.Damage; // ignore nitemare damage because it can't really destory stuff
+		if( 0 < explorersToAdd )
 			tokens.AdjustDefault( Invader.Explorer, explorersToAdd );
 
 		// distribute pre-existing strife.

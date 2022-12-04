@@ -60,7 +60,7 @@ public class GameConfiguration {
 		gameState.Fear.Deck.Clear();
 		gameState.Fear.cardsPerLevel = adversary.FearCardsPerLevel;
 		for(int i = 0; i < gameState.Fear.cardsPerLevel.Sum(); ++i)
-			gameState.Fear.AddCard( fearCards[i] );
+			gameState.Fear.PushOntoDeck( fearCards[i] );
 
 		// (5) Blight Cards
 		new Random( blightSeed ).Shuffle( blightCards );

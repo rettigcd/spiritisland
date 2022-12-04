@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class SpaceToken : IOption {
+public record SpaceToken : IOption {
 
 	public SpaceToken( Space space, Token token ) { Space = space; Token = token; }
 	public Space Space { get; }

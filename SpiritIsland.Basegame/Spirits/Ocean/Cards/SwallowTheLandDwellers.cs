@@ -32,7 +32,7 @@ public class SwallowTheLandDwellers {
 		if( townToDrown != null )
 			await ctx.Move( townToDrown, ctx.Space, drowningOcean );
 
-		await ctx.DestroyDahan(1); // destroying dahan is the same as drowning them
+		await ctx.Dahan.Destroy(1); // destroying dahan is the same as drowning them
 	}
 
 }

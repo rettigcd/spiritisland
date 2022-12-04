@@ -220,8 +220,17 @@ public class AvoidTheDahan_Tests {
 	}
 
 	void ActivateFearCard(IFearOptions fearCard) {
-		ctx.GameState.Fear.Deck.Pop();
-		ctx.GameState.Fear.ActivatedCards.Push( new PositionFearCard{ FearOptions=fearCard, Text="FearCard" } );
+		var fear = ctx.GameState.Fear;
+		fear.Deck.Pop();			// discard card we are replacing
+
+		fear.PushOntoDeck(fearCard);	// push desired card onto the deck
+		fear.ActivateCard();		
+
+		//ctx.GameState.Fear.ActivatedCards.Push( new PositionFearCard{ 
+		//	FearOptions=fearCard, 
+		//	Deck=ctx.GameState.Fear.Deck,
+		//	ActivatedCards=ctx.GameState.Fear.ActivatedCards
+		//} );
 	}
 
 
