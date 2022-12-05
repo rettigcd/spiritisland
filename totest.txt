@@ -14,6 +14,10 @@ Blight Tests
 
 Tigers Hunting - Exception in land with no invaders.
 
+Bringer
+	Devouring Ants doesn't destroy Dahan
+	Fear-action can destroy towns, even when Bringer picks it.  (To Dream a Thousand Deaths not in play.)
+
 Badlands
 	Ravage - Invaders
 	Ravage - Dahan

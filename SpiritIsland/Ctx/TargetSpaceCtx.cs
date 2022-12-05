@@ -28,7 +28,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 	public Task SelectActionOption( params IExecuteOn<TargetSpaceCtx>[] options ) => SelectActionOption( "Select Power Option", options );
 	public Task SelectActionOption( string prompt, params IExecuteOn<TargetSpaceCtx>[] options )=> SelectAction_Inner( prompt, options, Present.AutoSelectSingle, this );
-	public Task SelectAction_Optional( string prompt, params IExecuteOn<TargetSpaceCtx>[] options )=> SelectAction_Inner( prompt, options, Present.Done, this );
+//	public Task SelectAction_Optional( string prompt, params IExecuteOn<TargetSpaceCtx>[] options )=> SelectAction_Inner( prompt, options, Present.Done, this );
 
 	public bool MatchesRavageCard => GameState.InvaderDeck.Ravage.Cards.Any(c=>c.Matches(Space));
 	public bool MatchesBuildCard => GameState.InvaderDeck.Build.Cards.Any(c=>c.Matches(Space));
@@ -322,7 +322,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 	#endregion
 
-	public Task RemoveInvader( TokenClass group ) => Invaders.Remove( group );
+	public Task RemoveInvader( TokenClass group ) => Invaders.RemoveLeastDesirable( group );
 
 	/// <summary> adds Target to Fear context </summary>
 	public override void AddFear( int count ) { 

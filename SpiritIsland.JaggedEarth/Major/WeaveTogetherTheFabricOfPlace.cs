@@ -19,8 +19,8 @@ public class WeaveTogetherTheFabricOfPlace {
 				// 2 fear,
 				joinedCtx.AddFear( 2 );
 				// and Remove up to 2 invaders
-				await joinedCtx.Invaders.Remove();
-				await joinedCtx.Invaders.Remove();
+				await joinedCtx.Invaders.RemoveLeastDesirable();
+				await joinedCtx.Invaders.RemoveLeastDesirable();
 			}
 		}
 	}

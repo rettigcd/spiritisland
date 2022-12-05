@@ -141,7 +141,7 @@ public class InvaderBinding {
 	/// Sticking on InvaderGroup is the only place I can think to put it.
 	/// Also, shouldn't be affected by Bringer overwriting 'Destroy' and 'Damage'
 	/// </remarks>
-	public async Task Remove( params TokenClass[] removables ) {
+	public async Task RemoveLeastDesirable( params TokenClass[] removables ) {
 		if(Tokens.SumAny(removables) == 0) return;
 
 		var invaderToRemove = Tokens.OfAnyType( removables )

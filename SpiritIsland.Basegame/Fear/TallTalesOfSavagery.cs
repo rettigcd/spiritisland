@@ -37,15 +37,15 @@ public class TallTalesOfSavagery : IFearOptions {
 			await RemoveTownOr2Explorers( gs.Invaders.On( space.Space, actionId ) );
 		// Then, remove 1 City from each land with at least 2 Dahan
 		foreach(var space in gs.AllActiveSpaces.Where( s=>s.Dahan.Count>=2 && s.Has(Invader.City) ))
-			await gs.Invaders.On(space.Space,actionId).Remove(Invader.City);
+			await gs.Invaders.On(space.Space,actionId).RemoveLeastDesirable(Invader.City);
 	}
 
 	static async Task RemoveTownOr2Explorers( InvaderBinding grp ) { // !! maybe we should let the player choose in case town was strifed
 		if(grp.Tokens.Has(Invader.Town))
-			await grp.Remove( Invader.Town );
+			await grp.RemoveLeastDesirable( Invader.Town );
 		else
-			await grp.Remove( Invader.Explorer );
-			await grp.Remove( Invader.Explorer );
+			await grp.RemoveLeastDesirable( Invader.Explorer );
+			await grp.RemoveLeastDesirable( Invader.Explorer );
 	}
 
 }

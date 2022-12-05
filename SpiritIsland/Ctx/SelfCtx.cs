@@ -136,13 +136,15 @@ public class SelfCtx {
 
 	public async Task<Space> RemoveTokenFromOneSpace( IEnumerable<Space> spaceOptions, int count, params TokenClass[] removables ) {
 
-		// !!!!!!!!  need to set action id
-
-
 		var spaceCtx = await SelectSpace( "Remove invader from", spaceOptions );
-		if(spaceCtx != null)
-			while(count-->0)
-				await spaceCtx.Invaders.Remove( removables );
+		if(spaceCtx == null) return null;
+
+		var options = spaceCtx.Tokens.OfAnyType(removables);
+		while(0<count-- && 0<options.Length) {
+			var tokenToRemove = await spaceCtx.Self.Gateway.Decision( Select.TokenFrom1Space.TokenToRemove(spaceCtx.Space, count, options, Present.Always) );
+			await spaceCtx.Tokens.Remove(tokenToRemove,1,CurrentActionId);
+			options = spaceCtx.Tokens.OfAnyType( removables ); // next
+		}
 		return spaceCtx?.Space;
 	}
 

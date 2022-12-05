@@ -25,7 +25,7 @@ public class DreadApparitions_Tests {
 		}
 		_ = When();
 
-		Assert_DefenceIs( 2 );
+		Assert_DefenceIs( 2+1 ); // +1 from D.A.
 	}
 
 	private void Assert_DefenceIs(int expectedDefence) {
@@ -51,7 +51,7 @@ public class DreadApparitions_Tests {
 		_ = When();
 
 		// Then: 2 fear should have triggered 2 defend
-		Assert_DefenceIs( 2 );
+		Assert_DefenceIs( 2+1 ); // +1 Dread App...
 
 	}
 
@@ -69,7 +69,7 @@ public class DreadApparitions_Tests {
 		await ctx.Invaders.Destroy( 1, Invader.City );
 
 		// Then: 5 fear should have triggered 2 defend
-		Assert_DefenceIs( 5 );
+		Assert_DefenceIs( 5+1 ); // Dread Apparitions has 1 fear
 
 	}
 
@@ -77,7 +77,6 @@ public class DreadApparitions_Tests {
 	public async Task DahanDamage_Generates0() {
 
 		// Disable destroying presence
-//		ctx.GameState.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
 		ctx.GameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
 
 
@@ -89,13 +88,12 @@ public class DreadApparitions_Tests {
 		await DreadApparitions.ActAsync( ctx );
 
 		// When: dahan destroy the city
-//			await ctx.GameState.InvaderEngine.RavageCard(  );
 		await InvaderEngine1.RavageCard( InvaderCardEx.For( ctx.Space ), ctx.GameState );
 
 		// Then: 2 fear from city
-		Assert_GeneratedFear(2); // normal
-		// but no defend bonus
-		Assert_DefenceIs( 0 );
+		Assert_GeneratedFear(2+1); // normal (1 from Dread Apparitions)
+		// and 1 defend bonus
+		Assert_DefenceIs( 1 ); // from dread apparitions
 
 	}
 
@@ -115,7 +113,7 @@ public class DreadApparitions_Tests {
 		_ = When();
 
 		// but no defend bonus
-		Assert_DefenceIs( 0 );
+		Assert_DefenceIs( 1 ); // 1=>Dread Apparitions
 
 	}
 
