@@ -10,8 +10,12 @@ namespace SpiritIsland.WinForms {
 			this.textBox.Text = "";
 		}
 
-		public void AppendLine(string s) {
-			this.textBox.Text += "* " + s + "\r\n";
+		public void AppendLine(string s,LogLevel level) {
+			string prefix = level switch {
+				LogLevel.Debug => "\t",
+				_ => "* "
+			};
+			this.textBox.Text += prefix + s + "\r\n";
 		}
 
 		void LogForm_FormClosing( object sender, FormClosingEventArgs e ) {

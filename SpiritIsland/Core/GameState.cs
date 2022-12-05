@@ -29,6 +29,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		TimePasses_WholeGame += PreRavaging.ForRound.Clear;
 		TimePasses_WholeGame += PreBuilding.ForRound.Clear;
 		TimePasses_WholeGame += PreExplore.ForRound.Clear;
+		TimePasses_WholeGame += EndOfAction.ForGame.Clear;
 	}
 
 	/// <summary>

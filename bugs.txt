@@ -1,5 +1,4 @@
 ====  Bringer Bugs  =====
-Devouring Ants Destroyed Dahan
 Dread Apparistion Rewind or something is creating too many defends
 
 =====  Fear Bugs  ====

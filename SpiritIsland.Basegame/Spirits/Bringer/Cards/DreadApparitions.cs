@@ -5,8 +5,9 @@
 // (fear from to Dream a Thousands Deaths counts. Fear from destroying town/cities does not.)
 
 public class DreadApparitions {
+	public const string Name = "Dread Apparitions";
 
-	[SpiritCard("Dread Apparitions",2,Element.Moon,Element.Air)]
+	[SpiritCard(Name,2,Element.Moon,Element.Air)]
 	[Fast]
 	[FromPresence(1,Target.Invaders)]
 	static public Task ActAsync(TargetSpaceCtx ctx ) {
@@ -14,8 +15,10 @@ public class DreadApparitions {
 		// When powers generate fear in target land, defend 1 per fear.
 		// (Fear from destroying town/cities does not.)
 		ctx.GameState.Fear.FearAdded.ForRound.Add( ( gs, args ) => {
-			if(!args.FromDestroyedInvaders && args.space == ctx.Space)
+			if(!args.FromDestroyedInvaders && args.space == ctx.Space) {
 				gs.Tokens[args.space].Defend.Add( args.count );
+				gs.Log(new LogDebug( $"{args.count} Fear => +{args.count} Defend ({Name})" ));
+			}
 		} );
 
 		// 1 fear

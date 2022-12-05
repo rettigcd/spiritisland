@@ -143,7 +143,7 @@ namespace SpiritIsland.WinForms {
 			logForm.Clear();
 
 			var gc = gameConfiguration;
-			logForm.AppendLine($"=== Game: {gc.SpiritType.Name} : {gc.Board} : {gc.ShuffleNumber} : {gc.AdversaryString} ===" );
+			logForm.AppendLine($"=== Game: {gc.SpiritType.Name} : {gc.Board} : {gc.ShuffleNumber} : {gc.AdversaryString} ===", LogLevel.Info );
 
 			GameState gameState = gc.BuildGame( ConfigureGameDialog.gameComponentProviders );
 			game = new SinglePlayerGame( gameState, false ) { LogExceptions = true };
@@ -164,7 +164,7 @@ namespace SpiritIsland.WinForms {
 		}
 
 		void GameState_NewLogEntry( ILogEntry obj ) {
-			logForm.AppendLine(obj.Msg());
+			logForm.AppendLine(obj.Msg(), obj.Level);
 
 			if(obj is GameOver wle)
 				Action_NewWaitingDecision( new Select.TypedDecision<TextOption>(wle.Msg(), Array.Empty<TextOption>() ) ); // clear options
