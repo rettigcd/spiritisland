@@ -15,7 +15,7 @@ public class ShapeTheSelfAnew {
 		// You may Forget this Power Card to gain 3 Energy.
 		var thisCard = ctx.Self.InPlay.SingleOrDefault( x => x.Name == ShapeTheSelfAnew.Name );
 		if( thisCard != null // might have already been forgotten when picking a major card.
-			&& await ctx.Self.UserSelectsFirstText( "Forget this card for +3 energy.", "Yes, forget it.", "no thanks." )
+			&& await ctx.Self.UserSelectsFirstText( $"Forget '{Name} for +3 energy.", "Yes, forget it.", "no thanks." )
 		) {
 			// Forget this Power Card
 			ctx.Self.Forget( thisCard );

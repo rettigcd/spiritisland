@@ -60,8 +60,10 @@ public class DahanGroupBinding : DahanGroupBindingNoEvents {
 	}
 
 	// Called from .Move() and .Dissolve the Bonds
-	public virtual async Task<Token> Remove1( RemoveReason reason, Token toRemove=null ) {
+	public async Task<Token> Remove1( RemoveReason reason, Token toRemove=null ) {
 		if( Frozen ) return null; // unable to remove desired token
+
+		// Reason is only MovedFrom and Replaced.  No destroy here
 
 		// validate token to be removed.
 		if( toRemove == null )
@@ -151,7 +153,7 @@ public class DahanGroupBinding : DahanGroupBindingNoEvents {
 		}
 	}
 
-	public async Task<PublishTokenRemovedArgs> Destroy( int count, HealthToken original ) {
+	public virtual async Task<PublishTokenRemovedArgs> Destroy( int count, HealthToken original ) {
 		return Frozen ? null
 			: await _tokens.Remove( original, count, actionId, _destroyReason );
 	}

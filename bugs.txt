@@ -1,3 +1,14 @@
+====  Bringer Bugs  =====
+Devouring Ants Destroyed Dahan
+Dread Apparistion Rewind or something is creating too many defends
+
+
+
+=====  Fear Bugs  ====
+Unrest - Reduced City health by 1 but didn't get health icon.
+To Many Monsters - Let user choose explorer or town to move/destroy
+Seek Safety - Allowed for pushing explorer to space with no town / city.
+
 =====  Volcano Bugs  =====
 
 Volcano doesn't get to choose where it places its' presence at the beginning of the game, so you can't do anything and get softlocked.

@@ -9,7 +9,9 @@ public class SpiritsMayYetDream {
 	static public async Task Option1( TargetSpiritCtx ctx ) {
 
 		// Turn any face-down fear card face-up
-		PositionFearCard[] cards = ctx.GameState.Fear.Deck.Concat( ctx.GameState.Fear.ActivatedCards ).ToArray();
+		PositionFearCard[] cards = ctx.GameState.Fear.ActivatedCards
+			.Concat( ctx.GameState.Fear.Deck )
+			.ToArray();
 		var cardToShow = await ctx.Self.Select( "Select fear to reveal", cards, Present.Always );
 
 		await ctx.Self.ShowFearCardToUser( "Done", cardToShow );

@@ -12,13 +12,14 @@ public class DreadApparitions {
 	static public Task ActAsync(TargetSpaceCtx ctx ) {
 
 		// When powers generate fear in target land, defend 1 per fear.
-		// Fear from destroying town/cities does not.)
-		void FearAdded( GameState gs, FearArgs args ) {
-			if(!args.FromDestroyedInvaders && args.space==ctx.Space)
+		// (Fear from destroying town/cities does not.)
+		ctx.GameState.Fear.FearAdded.ForRound.Add( ( gs, args ) => {
+			if(!args.FromDestroyedInvaders && args.space == ctx.Space)
 				gs.Tokens[args.space].Defend.Add( args.count );
-		}
+		} );
 
-		ctx.GameState.Fear.FearAdded.ForRound.Add(FearAdded);
+		// 1 fear
+		ctx.AddFear(1);
 
 		return Task.CompletedTask;
 	}

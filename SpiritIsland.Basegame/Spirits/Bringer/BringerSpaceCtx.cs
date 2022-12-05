@@ -11,11 +11,5 @@ public class BringerSpaceCtx : TargetSpaceCtx {
 
 public class DreamingDahan : DahanGroupBinding {
 	public DreamingDahan( DahanGroupBindingNoEvents src, UnitOfWork uow ) : base( src, uow ) { }
-
-	// Called from .Move() and .Dissolve the Bonds
-	public override async Task<Token> Remove1( RemoveReason reason, Token toRemove = null ) {
-		return reason == RemoveReason.Destroyed ? null
-			: await base.Remove1( reason, toRemove );
-	}
-
+	public override Task<PublishTokenRemovedArgs> Destroy( int _, HealthToken _1 ) => Task.FromResult((PublishTokenRemovedArgs)null);
 }
