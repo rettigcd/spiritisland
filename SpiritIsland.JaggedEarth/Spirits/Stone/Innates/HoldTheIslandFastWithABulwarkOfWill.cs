@@ -58,7 +58,7 @@ class PayEnergyToTakeFromCard {
 
 class StopPresenceDestructionFromBlightOrEvents {
 	readonly Spirit spirit;
-	readonly Func<Spirit,GameState,Cause, Task> oldBehavior;
+	readonly Func<Spirit,GameState,Cause,UnitOfWork, Task> oldBehavior;
 	public StopPresenceDestructionFromBlightOrEvents( SelfCtx ctx ) {
 		this.spirit = ctx.Self;
 		this.oldBehavior = ctx.GameState.Destroy1PresenceFromBlightCard;
@@ -72,14 +72,13 @@ class StopPresenceDestructionFromBlightOrEvents {
 	}
 
 	/// <returns># of blight to remove from card</returns>
-	async Task DestroyPresenceDirectlyFromBlight( Spirit other, GameState gs, Cause cause ) {
-
+	async Task DestroyPresenceDirectlyFromBlight( Spirit other, GameState gs, Cause cause, UnitOfWork unitOfWork ) {
 		if( 1 <= spirit.Energy
 			&& await spirit.UserSelectsFirstText( "Blight Destroying Presence","Pay 1 energy to save","Pass")
 		)
 			spirit.Energy --;
 		else 
-			await oldBehavior(other, gs, cause);
+			await oldBehavior(other, gs, cause, unitOfWork);
 	}
 
 }

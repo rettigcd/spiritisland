@@ -49,7 +49,8 @@ public class LureOfTheDeepWilderness : Spirit {
 			.Where( Presence.IsOn )
 			.Select( x => x.Space )
 			.ToArray();
-		var selfCtx = this.Bind( args.GameState, args.ActionId );
+		await using var unitOfWork = args.GameState.StartAction( ActionCategory.Spirit ); // Special Rule After X, do Y
+		var selfCtx = this.Bind( args.GameState, unitOfWork );
 		foreach(var space in ravageSpacesWithPresence)
 			await EntralExplorersOnSpace( selfCtx.Target(space) );
 	}

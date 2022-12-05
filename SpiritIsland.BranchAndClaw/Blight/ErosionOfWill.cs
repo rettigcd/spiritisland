@@ -4,7 +4,7 @@ public class ErosionOfWill : BlightCardBase {
 
 	public ErosionOfWill():base("Erosion of Will", 3 ) { }
 
-	public override DecisionOption<GameState> Immediately => Cmd.Multiple(
+	public override DecisionOption<GameCtx> Immediately => Cmd.Multiple(
 		// 2 fear per player.
 		AddFearPerPlayer(2),
 		// each spirit 
@@ -16,10 +16,10 @@ public class ErosionOfWill : BlightCardBase {
 		))
 	);
 
-	static public DecisionOption<GameState> AddFearPerPlayer(int count) 
-		=> new DecisionOption<GameState>(
+	static public DecisionOption<GameCtx> AddFearPerPlayer(int count) 
+		=> new DecisionOption<GameCtx>(
 			$"Add {count} fear per player", 
-			gs => gs.Fear.AddDirect(new FearArgs { count = count } )
+			ctx => ctx.GameState.Fear.AddDirect(new FearArgs { count = count } )
 		);
 
 

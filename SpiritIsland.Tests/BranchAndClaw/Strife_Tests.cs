@@ -82,7 +82,7 @@ public class Strife_Tests {
 
 		// When: move
 		var destination = space.Adjacent.First( IsInPlay );
-		_ = gs.Tokens[space].MoveTo( strifedTown, destination, default ); // _ = ??
+		_ = gs.Tokens[space].MoveTo( strifedTown, destination, gs.StartAction( ActionCategory.Default ) ); // _ = ??
 
 		// Then:
 		counts.InvaderSummary().ShouldBe( "1T@2" );

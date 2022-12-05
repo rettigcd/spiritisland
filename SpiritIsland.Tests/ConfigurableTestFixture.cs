@@ -98,7 +98,7 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 	}
 
 	public SelfCtx SelfCtx {
-		get => _selfCtx ??= Spirit.BindMyPower( GameState, GameState.StartAction() );//??? is it ok to spin up actions like this?
+		get => _selfCtx ??= Spirit.BindMyPower( GameState, GameState.StartAction( ActionCategory.Default ) );//??? is it ok to spin up actions like this?
 		set => _selfCtx = value;
 	}
 	SelfCtx _selfCtx;

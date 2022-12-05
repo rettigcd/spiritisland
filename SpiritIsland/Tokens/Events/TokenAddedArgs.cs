@@ -7,7 +7,7 @@ public class TokenAddedArgs : ITokenAddedArgs {
 		Token = token;
 		Reason = addReason;
 		Count = count;
-		ActionId = actionId;
+		Action = actionId;
 	}
 
 	public Token Token { get; } // need specific so we can act on it (push/damage/destroy)
@@ -15,7 +15,7 @@ public class TokenAddedArgs : ITokenAddedArgs {
 
 	public int Count { get; }
 	public AddReason Reason { get; }
-	public UnitOfWork ActionId { get; }
+	public UnitOfWork Action { get; }
 
 	public GameState GameState { get; set; }
 

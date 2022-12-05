@@ -5,7 +5,7 @@ public class AvoidTheDahan : IFearOptions {
 	string IFearOptions.Name => Name;
 
 	[FearLevel(1, "Invaders do not Explore into lands with at least 2 Dahan." )]
-	public Task Level1( FearCtx ctx ) {
+	public Task Level1( GameCtx ctx ) {
 
 		ctx.GameState.PreExplore.ForRound.Add( ( args ) => {
 			for(int i = 0; i < args.SpacesMatchingCards.Count; ++i) {
@@ -19,7 +19,7 @@ public class AvoidTheDahan : IFearOptions {
 	}
 
 	[FearLevel( 2, "Invaders do not Build in lands where Dahan outnumber Town / City." )]
-	public Task Level2( FearCtx ctx ) {
+	public Task Level2( GameCtx ctx ) {
 		ctx.GameState.PreBuilding.ForRound.Add( ( args ) => {
 			foreach(var space in args.SpacesWithBuildTokens) {
 				var tokens = space;
@@ -32,7 +32,7 @@ public class AvoidTheDahan : IFearOptions {
 	}
 
 	[FearLevel( 3, "Invaders do not Build in lands with Dahan." )]
-	public Task Level3( FearCtx ctx ) {
+	public Task Level3( GameCtx ctx ) {
 		ctx.GameState.PreBuilding.ForRound.Add( ( args ) => {
 			foreach(var space in args.SpacesWithBuildTokens) {
 				if(0 < space.Dahan.Count)

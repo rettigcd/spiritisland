@@ -6,7 +6,7 @@ class DepartTheDangerousLand : IFearOptions {
 	string IFearOptions.Name => Name;
 
 	[FearLevel( 1, "Each player removes 1 explorer from a land with beast, disease or at least 2 dahan" )]
-	public Task Level1( FearCtx ctx ) {
+	public Task Level1( GameCtx ctx ) {
 
 		// Each player 
 		return Cmd.EachSpirit(
@@ -15,12 +15,12 @@ class DepartTheDangerousLand : IFearOptions {
 				// from a land with beast, disease or at least 2 dahan
 				.From( HasBeastDiseaseOr2Dahan, "land with beast, disease or at last 2 dahan" )
 
-		).Execute( ctx.GameState );
+		).Execute( ctx );
 
 	}
 
 	[FearLevel( 2, "Each player removes 1 explorer/town from a land with beast, disease or at least 2 dahan" )]
-	public Task Level2( FearCtx ctx ) {
+	public Task Level2( GameCtx ctx ) {
 
 		// Each player 
 		return Cmd.EachSpirit( 
@@ -28,12 +28,12 @@ class DepartTheDangerousLand : IFearOptions {
 			Cmd.RemoveExplorersOrTowns(1)
 				// from a land with beast, disease or at least 2 dahan
 				.From(HasBeastDiseaseOr2Dahan, "land with beast, disease or at last 2 dahan")
-		).Execute( ctx.GameState );
+		).Execute( ctx );
 
 	}
 
 	[FearLevel( 3, "Each player removes up to 4 health worth of invaders from a land with beast, disease or at least 2 dahan" )]
-	public Task Level3( FearCtx ctx ) {
+	public Task Level3( GameCtx ctx ) {
 
 		// Each player 
 		return Cmd.EachSpirit( 
@@ -41,7 +41,7 @@ class DepartTheDangerousLand : IFearOptions {
 			Cmd.RemoveUpToNHealthOfInvaders(4)
 				// from a land with beast, disease or at least 2 dahan
 				.From( HasBeastDiseaseOr2Dahan, "land with beast, disease or at last 2 dahan" )
-		).Execute( ctx.GameState );
+		).Execute( ctx );
 
 	}
 

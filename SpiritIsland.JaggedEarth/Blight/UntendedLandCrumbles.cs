@@ -4,7 +4,7 @@ public class UntendedLandCrumbles : BlightCardBase {
 
 	public UntendedLandCrumbles():base("Untended Land Crumbles",4) {}
 
-	public override DecisionOption<GameState> Immediately 
+	public override DecisionOption<GameCtx> Immediately 
 		=> Cmd.AtTheStartOfEachInvaderPhase(
 			Cmd.OnEachBoard(
 				Cmd.Pick1(

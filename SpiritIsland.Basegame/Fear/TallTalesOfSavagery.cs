@@ -7,37 +7,36 @@ public class TallTalesOfSavagery : IFearOptions {
 
 
 	[FearLevel( 1, "Each player removes 1 Explorer from a land with Dahan." )]
-	public async Task Level1( FearCtx ctx ) {
+	public async Task Level1( GameCtx ctx ) {
 		// Each player
 		await Cmd.EachSpirit(
 			// removes 1 explorere
 			Cmd.RemoveExplorers(1)
 				// from a land with Dahan
 				.From(x=>x.Dahan.Any && x.Tokens.Has( Invader.Explorer ),"land with Dahan")
-		).Execute( ctx.GameState );
+		).Execute( ctx );
 	}
 
 	[FearLevel( 2, "Each player removes 2 Explorer or 1 Town from a land with Dahan." )]
-	public async Task Level2( FearCtx ctx ) {
+	public async Task Level2( GameCtx ctx ) {
 		// Each player
 		await Cmd.EachSpirit(
 			// removes 2 explorere or 1 Town
 			Cmd.Pick1(Cmd.RemoveExplorers( 2 ), Cmd.RemoveTowns(1))
 				// from a land with Dahan
 				.From( x => x.Dahan.Any && x.Tokens.HasAny( Invader.Explorer, Invader.Town ), "land with Dahan" )
-		).Execute( ctx.GameState );
+		).Execute( ctx );
 	}
 
 	[FearLevel( 3, "Remove 2 Explorer or 1 Town from each land with Dahan. Then, remove 1 City from each land with at least 2 Dahan." )]
-	public async Task Level3( FearCtx ctx ) {
+	public async Task Level3( GameCtx ctx ) {
 		var gs = ctx.GameState;
-		var actionId = gs.StartAction();
 		// Remove 2 explorers or 1 Town from each land with Dahan
 		foreach(var space in gs.AllActiveSpaces.Where(s => s.Dahan.Any))
-			await RemoveTownOr2Explorers( gs.Invaders.On( space.Space, actionId ) );
+			await RemoveTownOr2Explorers( gs.Invaders.On( space.Space, ctx.UnitOfWork ) );
 		// Then, remove 1 City from each land with at least 2 Dahan
 		foreach(var space in gs.AllActiveSpaces.Where( s=>s.Dahan.Count>=2 && s.Has(Invader.City) ))
-			await gs.Invaders.On(space.Space,actionId).RemoveLeastDesirable(Invader.City);
+			await gs.Invaders.On(space.Space, ctx.UnitOfWork ).RemoveLeastDesirable(Invader.City);
 	}
 
 	static async Task RemoveTownOr2Explorers( InvaderBinding grp ) { // !! maybe we should let the player choose in case town was strifed

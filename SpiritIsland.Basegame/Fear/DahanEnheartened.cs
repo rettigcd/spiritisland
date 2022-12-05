@@ -7,7 +7,7 @@ public class DahanEnheartened : IFearOptions {
 
 
 	[FearLevel( 1, "Each player may Push 1 Dahan from a land with Invaders or Gather 1 Dahan into a land with Invaders." )]
-	public async Task Level1( FearCtx ctx ) {
+	public async Task Level1( GameCtx ctx ) {
 		var gs = ctx.GameState;
 		foreach( var spiritCtx in ctx.Spirits ) {
 			var spacesWithInvaders = gs.AllActiveSpaces.Where( s=>s.HasInvaders() ).ToArray();
@@ -22,7 +22,7 @@ public class DahanEnheartened : IFearOptions {
 	}
 
 	[FearLevel( 2, "Each player chooses a different land. In chosen lands: Gather up to 2 Dahan, then 1 Damage if Dahan are present." )]
-	public async Task Level2( FearCtx ctx ) {
+	public async Task Level2( GameCtx ctx ) {
 		HashSet<Space> used = new ();
 		foreach(var spiritCtx in ctx.Spirits) {
 			var options = spiritCtx.GameState.AllActiveSpaces.Where( s=>s.Dahan.Any ).Select(x=>x.Space).Except( used ).ToArray();
@@ -37,7 +37,7 @@ public class DahanEnheartened : IFearOptions {
 	}
 
 	[FearLevel( 3, "Each player chooses a different land. In chosen lands: Gather up to 2 Dahan, then 1 Damage per Dahan present." )]
-	public async Task Level3( FearCtx ctx ) {
+	public async Task Level3( GameCtx ctx ) {
 		HashSet<Space> used = new ();
 		foreach(var spiritCtx in ctx.Spirits) {
 			var options = spiritCtx.GameState.AllActiveSpaces.Where( s => s.Dahan.Any ).Select(x=>x.Space).Except( used ).ToArray();

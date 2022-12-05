@@ -7,7 +7,7 @@ public class SeekSafety : IFearOptions {
 
 
 	[FearLevel( 1, "Each player may Push 1 Explorer into a land with more Town / City than the land it came from." )]
-	public async Task Level1( FearCtx ctx ) {
+	public async Task Level1( GameCtx ctx ) {
 
 		Dictionary<Space, int> buildingCounts = ctx.GameState.AllActiveSpaces
 			.ToDictionary(
@@ -42,7 +42,7 @@ public class SeekSafety : IFearOptions {
 	}
 
 	[FearLevel( 2, "Each player may Gather 1 Explorer into a land with Town / City, or Gather 1 Town into a land with City." )]
-	public async Task Level2( FearCtx ctx ) {
+	public async Task Level2( GameCtx ctx ) {
 		var gs = ctx.GameState;
 		foreach(var spiritCtx in ctx.Spirits) {
 			var options = gs.AllActiveSpaces
@@ -63,7 +63,7 @@ public class SeekSafety : IFearOptions {
 	}
 
 	[FearLevel( 3, "Each player may remove up to 3 Health worth of Invaders from a land without City." )]
-	public async Task Level3( FearCtx ctx ) {
+	public async Task Level3( GameCtx ctx ) {
 		var gs = ctx.GameState;
 		foreach(SelfCtx spirit in ctx.Spirits) {
 

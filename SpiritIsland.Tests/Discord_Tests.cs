@@ -11,7 +11,7 @@ public class Discord_Tests {
 		fxt.InitTokens( space, "1C@3,1T@2" );
 
 		// When:
-		var task = new Discord().Level3( new FearCtx( fxt.GameState ) );
+		var task = new Discord().Level3( new GameCtx( fxt.GameState, ActionCategory.Fear ) );
 
 		fxt.Choose(space.Text); // select space to add strife
 		fxt.Choose("C@3"); // strife the city

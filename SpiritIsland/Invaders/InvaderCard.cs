@@ -36,21 +36,18 @@ public class InvaderCard : IOption, IInvaderCard {
 
 	public async Task Ravage( GameState gs ) {
 		gs.Log( new InvaderActionEntry( "Ravaging:" + Text ) );
-		var ravageSpaces = gs.AllActiveSpaces.Where( Matches ).ToList();
+		var ravageSpacesMatchingCard = gs.AllActiveSpaces.Where( Matches ).ToList();
 
 		// Modify / Adjust
-		var actionId = gs.StartAction();
-		await gs.PreRavaging?.InvokeAsync( new RavagingEventArgs( gs, actionId ) { Spaces = ravageSpaces } );
+		await gs.PreRavaging?.InvokeAsync( new RavagingEventArgs( gs ) { Spaces = ravageSpacesMatchingCard } );
 
 		// find ravage spaces that have invaders
-		InvaderBinding[] ravageGroups = ravageSpaces
-			.Select( x=>gs.Invaders.On(x.Space,actionId) )
-			.Where( group => group.Tokens.HasInvaders() )
-			.Cast<InvaderBinding>()
+		var ravageSpacesWithInvaders = ravageSpacesMatchingCard
+			.Where( tokens => tokens.HasInvaders() )
 			.ToArray();
 
-		foreach(InvaderBinding invaderBinding in ravageGroups) {
-			var @event = await new RavageAction( gs, invaderBinding ).Exec();
+		foreach(var ravageSpace in ravageSpacesWithInvaders) {
+			var @event = await new RavageAction( gs, ravageSpace ).Exec();
 			gs.Log( new InvaderActionEntry( @event.ToString() ) );
 		}
 
@@ -128,7 +125,7 @@ public class InvaderCard : IOption, IInvaderCard {
 
 	protected static async Task DoExplore( GameState gs, SpaceState[] tokenSpacesToExplore ) {
 		foreach(var exploreTokens in tokenSpacesToExplore)
-			await ExploreSingleSpace( exploreTokens, gs, gs.StartAction() );
+			await ExploreSingleSpace( exploreTokens, gs, gs.StartAction( ActionCategory.Invader ) );
 	}
 
 	static protected async Task ExploreSingleSpace( SpaceState tokens, GameState gs, UnitOfWork actionId ) {

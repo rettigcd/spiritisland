@@ -1,18 +1,20 @@
 ﻿namespace SpiritIsland;
 
+/// <summary>
+/// One instance is created for each Ravage on each space
+/// </summary>
 public class RavageAction {
 
 	#region constructor
 
-	public RavageAction( GameState gs, InvaderBinding grp ) {
-		actionId = gs.StartAction();
-		var cfg = gs.GetRavageConfiguration( grp.Space );
+	public RavageAction( GameState gs, SpaceState space ) {
+		var cfg = gs.GetRavageConfiguration( space.Space );
 
 		this.gameState = gs;
-		this.invaderBinding = grp;
+		_tokens = space;
 		this.cfg = cfg;
 
-		@event = new InvadersRavaged { Space = grp.Space };
+		@event = new InvadersRavaged { Space = space.Space };
 	}
 
 	#endregion
@@ -21,15 +23,27 @@ public class RavageAction {
 	CountDictionary<HealthToken> currentAttackers; // tokens might change if strife is removed
 
 	public async Task<InvadersRavaged> Exec() {
-		if(!Tokens.HasInvaders()) return null;
+		if(!_tokens.HasInvaders()) return null;
 
-		// Record starting state
-		@event.startingAttackers = GetAttackers();
-		@event.startingDefenders = GetDefenders();
+		this.UnitOfWork = gameState.StartAction( ActionCategory.Invader );
+		this.invaderBinding = new InvaderBinding( gameState, _tokens, UnitOfWork );
 
-		await RavageSequence();
-		await gameState.InvadersRavaged.InvokeAsync(@event);
-		return @event;
+		try {
+			// Record starting state
+			@event.startingAttackers = GetAttackers();
+			@event.startingDefenders = GetDefenders();
+
+			await RavageSequence();
+			await gameState.InvadersRavaged.InvokeAsync(@event);
+			return @event;
+		}
+		finally {
+			if( this.UnitOfWork != null) {
+				await this.UnitOfWork.DisposeAsync();
+				this.UnitOfWork = null;
+				invaderBinding = null;
+			}
+		}
 	}
 
 	async Task RavageSequence() {
@@ -58,8 +72,8 @@ public class RavageAction {
 
 	CountDictionary<HealthToken> GetParticipantCounts( Func<HealthToken,bool> filter ) {
 		var participants = new CountDictionary<HealthToken>();
-		foreach(var token in Tokens.Keys.OfType<HealthToken>().Where(filter))
-			participants[token] = Math.Max( 0, Tokens[token] - cfg.NotParticipating[token] );
+		foreach(var token in _tokens.Keys.OfType<HealthToken>().Where(filter))
+			participants[token] = Math.Max( 0, _tokens[token] - cfg.NotParticipating[token] );
 		return participants;
 	}
 
@@ -75,7 +89,7 @@ public class RavageAction {
 		this.currentAttackers = FromEachStrifed_RemoveOneStrife( @event.startingAttackers ); // does not change start state, modifies gs.Tokens[...] instead
 
 		// Defend
-		@event.defend = Tokens.Defend.Count;
+		@event.defend = _tokens.Defend.Count;
 		int damageInflictedFromAttackers = Math.Max( rawDamageFromAttackers - @event.defend, 0 );
 
 		return damageInflictedFromAttackers;
@@ -83,13 +97,13 @@ public class RavageAction {
 
 	public int GetDamageInflictedByDefenders() {
 		CountDictionary<HealthToken> participants = GetDefenders();
-		int damageFromDefenders = participants.Sum( pair => Tokens.AttackDamageFrom1( pair.Key ) * pair.Value );
+		int damageFromDefenders = participants.Sum( pair => _tokens.AttackDamageFrom1( pair.Key ) * pair.Value );
 		return Math.Max( 0, damageFromDefenders-cfg.AttackersDefend);
 	}
 
 	public async Task DamageLand( int damageInflictedFromInvaders ) {
 		if( cfg.ShouldDamageLand )
-			await this.gameState.DamageLandFromRavage( invaderBinding.Space, damageInflictedFromInvaders, actionId);
+			await this.gameState.DamageLandFromRavage( invaderBinding.Space, damageInflictedFromInvaders, UnitOfWork );
 	}
 
 	/// <returns># of dahan killed/destroyed</returns>
@@ -136,7 +150,7 @@ public class RavageAction {
 				.OrderBy(t=>t.RemainingHealth) // kill damaged dahan first
 				.ToArray();
 
-			var dahan = new DahanGroupBinding( Tokens, actionId, RemoveReason.DestroyedInBattle ) { Frozen = Tokens.Dahan.Frozen };
+			var dahan = new DahanGroupBinding( _tokens, UnitOfWork, RemoveReason.DestroyedInBattle ) { Frozen = _tokens.Dahan.Frozen };
 
 			foreach(var token in participatingDahan) {
 
@@ -207,7 +221,7 @@ public class RavageAction {
 		return participatingAttacker.Keys
 			.OfType<HealthToken>()
 			.Where( x => x.StrifeCount==0 )
-			.Select( attacker => Tokens.AttackDamageFrom1( attacker ) * participatingAttacker[attacker] ).Sum();
+			.Select( attacker => _tokens.AttackDamageFrom1( attacker ) * participatingAttacker[attacker] ).Sum();
 	}
 
 
@@ -223,23 +237,26 @@ public class RavageAction {
 			.ToArray();
 		foreach(var orig in strifed) {
 			// update tracking counts
-			int count = Tokens[orig];
+			int count = _tokens[orig];
 			newAttackers[orig] -= count;
 			newAttackers[orig.AddStrife( -1 )] += count;
 
 			// update real tokens
-			Tokens.RemoveStrife( orig, Tokens[orig] );
+			_tokens.RemoveStrife( orig, _tokens[orig] );
 		}
 
 		return newAttackers;
 	}
 
-	int BadLandsCount => Tokens.Badlands.Count;
+	int BadLandsCount => _tokens.Badlands.Count;
 
-	SpaceState Tokens => invaderBinding.Tokens;
-	readonly protected InvaderBinding invaderBinding;
+	readonly SpaceState _tokens;
+
+	// These 2 things only have values during .Exec
+	public UnitOfWork UnitOfWork { get; set; } // This ONLY has a value during the ravage.  Not before nor after.
+	protected InvaderBinding invaderBinding;
+
 	readonly GameState gameState;
-	readonly UnitOfWork actionId;
 //	readonly Func<Space, int, Guid, Task> damageLandCallback;
 	readonly protected ConfigureRavage cfg;
 

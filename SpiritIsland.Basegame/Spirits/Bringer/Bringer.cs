@@ -49,7 +49,7 @@ public class Bringer : Spirit {
 
 	public override SelfCtx Bind( GameState gameState, UnitOfWork action, Cause cause = default )
 		=> cause == Cause.MyPowers
-			? new BringerCtx(this,gameState, action!=default?action : gameState.StartAction() )
+			? new BringerCtx(this,gameState, action!=default?action : gameState.StartAction( ActionCategory.Spirit ) )
 			: base.Bind( gameState, action, cause );
 
 	// !!! When Binding directly, DO NOT use special My power rules

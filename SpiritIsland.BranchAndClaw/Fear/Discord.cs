@@ -6,7 +6,7 @@ public class Discord : IFearOptions {
 	string IFearOptions.Name => Name;
 
 	[FearLevel( 1, "Each player adds 1 strife in a different land with at least 2 invaders" )]
-	public async Task Level1( FearCtx ctx ) {
+	public async Task Level1( GameCtx ctx ) {
 		var options = LandsWith2Invaders( ctx );
 
 		// each player adds 1 strife in a different land with at least 2 invaders
@@ -16,7 +16,7 @@ public class Discord : IFearOptions {
 	}
 
 	[FearLevel( 2, "Each player adds 1 strife in a different land with at least 2 invaders. Then each invader takes 1 damage per strife it has." )]
-	public async Task Level2( FearCtx ctx ) {
+	public async Task Level2( GameCtx ctx ) {
 		var options = LandsWith2Invaders( ctx );
 
 		// each player adds 1 strife in a different land with at least 2 invaders
@@ -28,7 +28,7 @@ public class Discord : IFearOptions {
 	}
 
 	[FearLevel( 3, "each player adds 1 strife in a different land with at least 2 invaders. Then, each invader with strife deals damage to other invaders in that land." )]
-	public async Task Level3( FearCtx ctx ) {
+	public async Task Level3( GameCtx ctx ) {
 
 		var options = LandsWith2Invaders( ctx );
 
@@ -45,7 +45,7 @@ public class Discord : IFearOptions {
 		}
 	}
 
-	static List<SpaceState> LandsWith2Invaders( FearCtx ctx ) {
+	static List<SpaceState> LandsWith2Invaders( GameCtx ctx ) {
 		return ctx.GameState.AllActiveSpaces
 			.Where( s => 2 <= s.InvaderTotal() )
 			.ToList();

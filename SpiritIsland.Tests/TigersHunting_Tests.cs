@@ -7,7 +7,7 @@ public class TigersHunting_Tests {
 		var fixture = new ConfigurableTestFixture();
 
 		HashSet<UnitOfWork> actionIds = new HashSet<UnitOfWork>();
-		fixture.GameState.Tokens.TokenAdded.ForGame.Add(x=>actionIds.Add(x.ActionId));
+		fixture.GameState.Tokens.TokenAdded.ForGame.Add(x=>actionIds.Add(x.Action));
 		fixture.GameState.Tokens.TokenRemoved.ForGame.Add( x => actionIds.Add( x.Action ) );
 		fixture.GameState.Tokens.TokenMoved.ForGame.Add( x => actionIds.Add( x.ActionId ) );
 

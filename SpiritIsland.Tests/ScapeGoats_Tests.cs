@@ -14,7 +14,7 @@ public class ScapeGoats_Tests {
 		fxt.InitTokens( townSpace, "1T@2^,3E@1" );
 
 		// When:
-		var task = new Scapegoats().Level2(new FearCtx(fxt.GameState));
+		var task = new Scapegoats().Level2(new GameCtx(fxt.GameState, ActionCategory.Default));
 
 		// Then: city destroys 2 explorers, leaving 1
 		fxt.GameState.Tokens[citySpace].InvaderSummary().ShouldBe("1C@3^,1E@1");

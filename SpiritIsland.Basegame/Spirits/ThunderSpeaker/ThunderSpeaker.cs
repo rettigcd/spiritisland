@@ -70,9 +70,11 @@ public class Thunderspeaker : Spirit {
 			.Where( Presence.IsOn )
 			.ToArray();
 
+		var unitOfWork = args.GameState.StartAction( ActionCategory.Spirit ); // Special Rules
+
 		while(numToDestroy-->0 && (options=Intersect()).Length > 0) {
 			var space = await this.Gateway.Decision( Select.DeployedPresence.ToDestroy( prompt, options, Present.Always ) );
-			await Presence.Destroy(space, args.GameState, DestoryPresenceCause.DahanDestroyed, args.GameState.StartAction() );
+			await Presence.Destroy(space, args.GameState, DestoryPresenceCause.DahanDestroyed, unitOfWork );
 		}
 
 	}

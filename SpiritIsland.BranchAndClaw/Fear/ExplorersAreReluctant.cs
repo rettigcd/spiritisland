@@ -6,7 +6,7 @@ public class ExplorersAreReluctant : IFearOptions {
 
 
 	[FearLevel( 1, "During the next normal explore, skip the lowest-numbered land matching the invader card on each board." )]
-	public Task Level1( FearCtx ctx ) {
+	public Task Level1( GameCtx ctx ) {
 		var gs = ctx.GameState;
 		// During the next normal explore, skip the lowest - numbered land matching the invader card on each board.
 		gs.PreExplore.ForRound.Add( args => {
@@ -23,7 +23,7 @@ public class ExplorersAreReluctant : IFearOptions {
 	}
 
 	[FearLevel( 2, "Skip the next normal explore. During the next invader phase, draw an adidtional explore card." )]
-	public Task Level2( FearCtx ctx ) {
+	public Task Level2( GameCtx ctx ) {
 		var deck = ctx.GameState.InvaderDeck;
 		deck.Explore.SkipNextNormal();
 		deck.Explore.HoldNextBack();
@@ -31,7 +31,7 @@ public class ExplorersAreReluctant : IFearOptions {
 	}
 
 	[FearLevel( 3, "Skip the next normal explore, but still reveal a card. Perform the flag if relavant. Cards shift left as usual." )]
-	public Task Level3( FearCtx ctx ) {
+	public Task Level3( GameCtx ctx ) {
 
 		// Skip the next normal explore, but still reveal a card. Perform the flag if relavant. Cards shift left as usual
 		ctx.GameState.PreExplore.ForRound.Add( ( args ) => {

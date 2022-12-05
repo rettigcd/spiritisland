@@ -6,35 +6,35 @@ public class TheologicalStrife : IFearOptions {
 	string IFearOptions.Name => Name;
 
 	[FearLevel(1, "Each player adds 1 Strife in a land with Presence." )]
-	public Task Level1( FearCtx ctx ) {
-		return EachPlayerAddsStrifeInALandWithPresence.Execute( ctx.GameState );
+	public Task Level1( GameCtx ctx ) {
+		return EachPlayerAddsStrifeInALandWithPresence.Execute( ctx );
 	}
 
 	[FearLevel(2, "Each player adds 1 Strife in a land with Presence. Each Spirit gains 1 Energy per SacredSite they have in lands with Invaders." )]
-	public async Task Level2( FearCtx ctx ) { 
+	public async Task Level2( GameCtx ctx ) { 
 
 		// Each player adds 1 Strife in a land with Presence
-		await EachPlayerAddsStrifeInALandWithPresence.Execute( ctx.GameState );
+		await EachPlayerAddsStrifeInALandWithPresence.Execute( ctx );
 
 		// Each Spirit gains 1 Energy per SacredSite they have in lands with Invaders.
 		await Cmd.EachSpirit( new SelfAction(
 			"Gain 1 Energy per SacredSite Spirit has in lands with Invaders"
 			, spiritCtx => spiritCtx.Self.Energy += spiritCtx.Self.Presence.SacredSites(ctx.GameState, ctx.GameState.Island.Terrain_ForFear).Count( ss => spiritCtx.Target(ss).HasInvaders )
-		)).Execute( ctx.GameState );
+		)).Execute( ctx );
 
 	}
 
 	[FearLevel(3, "Each player adds 1 Strife in a land with Presence. Then, each Invader with Strife deals Damage to other Invaders in its land." )]
-	public async Task Level3( FearCtx ctx ) {
+	public async Task Level3( GameCtx ctx ) {
 
 		// Each player adds 1 Strife in a land with Presence
-		await EachPlayerAddsStrifeInALandWithPresence.Execute( ctx.GameState );
+		await EachPlayerAddsStrifeInALandWithPresence.Execute( ctx );
 
 		// Each Invader with Strife deals Damage to other Invaders in its land.
-		await Cmd.InEachLand( StrifedRavage.StrifedInvadersDealsDamageToOtherInvaders, tokens=>tokens.HasStrife ).Execute( ctx.GameState );
+		await Cmd.InEachLand( StrifedRavage.StrifedInvadersDealsDamageToOtherInvaders, tokens=>tokens.HasStrife ).Execute( ctx );
 	}
 
-	static public DecisionOption<GameState> EachPlayerAddsStrifeInALandWithPresence
+	static public DecisionOption<GameCtx> EachPlayerAddsStrifeInALandWithPresence
 		=> Cmd.EachSpirit( Cmd.AddStrife(1).In( spaceCtx => spaceCtx.Presence.IsHere && !spaceCtx.Tokens.InStasis, "a land with presence") );
 
 }

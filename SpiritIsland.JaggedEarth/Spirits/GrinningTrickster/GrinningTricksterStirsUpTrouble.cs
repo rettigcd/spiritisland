@@ -79,7 +79,7 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 
 	public override SelfCtx Bind( GameState gameState, UnitOfWork actionId, Cause cause = default ) 
 		=> cause == Cause.MyPowers
-			? new TricksterCtx(this, gameState, actionId!=default ? actionId : gameState.StartAction() )
+			? new TricksterCtx(this, gameState, actionId!=default ? actionId : gameState.StartAction( ActionCategory.Spirit ) )
 			: base.Bind( gameState, actionId, cause );
 
 }

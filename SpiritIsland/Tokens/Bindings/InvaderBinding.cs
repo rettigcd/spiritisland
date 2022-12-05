@@ -4,16 +4,16 @@ public class InvaderBinding {
 
 	#region constructor
 
-	public InvaderBinding( GameState gameState, SpaceState tokens, UnitOfWork actionId) {
+	public InvaderBinding( GameState gameState, SpaceState tokens, UnitOfWork unitOfWork) {
 		this.gameState = gameState;
 		this.Tokens = tokens;
-		this.action = actionId;
+		this.UnitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 	}
 
 	#endregion
 
 	public GameState gameState;
-	public UnitOfWork action;
+	public UnitOfWork UnitOfWork;
 
 	public Space Space => Tokens.Space;
 
@@ -115,10 +115,11 @@ public class InvaderBinding {
 
 		var reason = fromRavage ? RemoveReason.DestroyedInBattle : RemoveReason.Destroyed;
 
-		await Tokens.Destroy( originalToken, 1, action );
+		// !!!! I think this is throwing an exception
+		await Tokens.Destroy( originalToken, 1, UnitOfWork );
 
 		// !!! see if we can invoke this through the Token-Publish API instead - so we can make TokenRemovedArgs internal to Island_Tokens class
-		await this.gameState.Tokens.Publish_Removed( new PublishTokenRemovedArgs( originalToken, reason, action, Tokens, 1 ) );
+		await this.gameState.Tokens.Publish_Removed( new PublishTokenRemovedArgs( originalToken, reason, UnitOfWork, Tokens, 1 ) );
 
 		// Don't assert token is destroyed (from damage) because it is possible to destory healthy tokens
 
@@ -152,11 +153,11 @@ public class InvaderBinding {
 			.FirstOrDefault();
 
 		if(invaderToRemove != null)
-			await Tokens.Remove( invaderToRemove, 1, action );
+			await Tokens.Remove( invaderToRemove, 1, UnitOfWork );
 	}
 
 	public Task Remove( Token token, int count, RemoveReason reason = RemoveReason.Removed )
-		=> Tokens.Remove( token, count, action, reason );
+		=> Tokens.Remove( token, count, UnitOfWork, reason );
 
 	#endregion
 

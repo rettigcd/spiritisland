@@ -4,7 +4,7 @@ public class APallUponTheLand : BlightCardBase {
 
 	public APallUponTheLand():base("A Pall Upon the Land", 3 ) { }
 
-	public override DecisionOption<GameState> Immediately => 
+	public override DecisionOption<GameCtx> Immediately => 
 		// On Each Board
 		Cmd.OnEachBoard(
 			Cmd.Multiple(

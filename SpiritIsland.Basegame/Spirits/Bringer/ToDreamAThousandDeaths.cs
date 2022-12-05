@@ -119,9 +119,9 @@ public class ToDreamAThousandDeaths : InvaderBinding {
 	}
 
 	void RecordSpaceWithDreamers( SpaceState spaceState ) {
-		var list = action.ContainsKey( SpacesWithDreamers )
-			? (HashSet<SpaceState>)action[SpacesWithDreamers]
-			: (HashSet<SpaceState>)(action[SpacesWithDreamers] = new HashSet<SpaceState>());
+		var list = UnitOfWork.ContainsKey( SpacesWithDreamers )
+			? (HashSet<SpaceState>)UnitOfWork[SpacesWithDreamers]
+			: (HashSet<SpaceState>)(UnitOfWork[SpacesWithDreamers] = new HashSet<SpaceState>());
 		list.Add( spaceState );
 	}
 

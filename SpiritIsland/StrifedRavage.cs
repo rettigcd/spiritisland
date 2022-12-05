@@ -26,27 +26,26 @@ public static class StrifedRavage {
 
 	#region Strife reduces Health
 
-	public static async Task InvadersReduceHealthByStrifeCount( GameState gameState, UnitOfWork actionId ) {
+	public static async Task InvadersReduceHealthByStrifeCount( GameCtx ctx ) {
 		// add penalty
-		++gameState.HealthPenaltyPerStrife;
+		++ctx.GameState.HealthPenaltyPerStrife;
 		// remove penalty
-		gameState.TimePasses_ThisRound.Push( x => { --gameState.HealthPenaltyPerStrife; return Task.CompletedTask; } );
+		ctx.GameState.TimePasses_ThisRound.Push( x => { --ctx.GameState.HealthPenaltyPerStrife; return Task.CompletedTask; } );
 
 		// Check if anything is destroyed
-		foreach(var space in gameState.AllActiveSpaces)
+		foreach(var space in ctx.GameState.AllActiveSpaces)
 			foreach( var token in space.InvaderTokens() )
 				if(token.IsDestroyed)
-					await space.Destroy( token, space[token], actionId );
+					await space.Destroy( token, space[token], ctx.UnitOfWork );
 	}
 
 	#endregion
 
 	#region Strife caused Damage to Self
 
-	public static async Task StrifedInvadersTakeDamagePerStrife( FearCtx ctx ) {
-		UnitOfWork actionId = ctx.GameState.StartAction();
-		foreach(var space in ctx.GameState.AllActiveSpaces)
-			await EachInvaderTakesDamageByStrifeCount( space, actionId );
+	public static async Task StrifedInvadersTakeDamagePerStrife( GameCtx gameCtx ) {
+		foreach(var space in gameCtx.GameState.AllActiveSpaces)
+			await EachInvaderTakesDamageByStrifeCount( space, gameCtx.UnitOfWork );
 	}
 
 	static async Task EachInvaderTakesDamageByStrifeCount( SpaceState tokens, UnitOfWork actionId ) {

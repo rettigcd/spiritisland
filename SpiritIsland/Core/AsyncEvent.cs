@@ -24,7 +24,12 @@ public class AsyncEvent<T> {
 	public void Clear() => handlers.Clear();
 
 	static async Task TryHandle( Func<T, Task> handler, T t ) {
-		await handler( t );
+		// !!! is there a way we can catch this exception and log it?
+//		try {
+			await handler( t );
+//		}
+//		catch( Exception ex ) {
+//		}
 	}
 
 	readonly Dictionary<Guid, Func<T, Task>> handlers = new Dictionary<Guid, Func<T, Task>>();

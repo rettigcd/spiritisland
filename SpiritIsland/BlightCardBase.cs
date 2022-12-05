@@ -23,14 +23,14 @@ public abstract class BlightCardBase : IBlightCard {
 			// Execute Immediate command
 			var immediately = Immediately;
 			if(immediately != null)
-				await immediately.Execute( gs );
+				await immediately.Execute( new GameCtx( gs, ActionCategory.Blight ) );
 
 		} else
 			Side2Depleted(gs);
 
 	}
 
-	public abstract DecisionOption<GameState> Immediately { get; }
+	public abstract DecisionOption<GameCtx> Immediately { get; }
 
 	protected virtual void Side2Depleted(GameState gameState) 
 		=> GameOverException.Lost( "Blighted Island-" + Name );

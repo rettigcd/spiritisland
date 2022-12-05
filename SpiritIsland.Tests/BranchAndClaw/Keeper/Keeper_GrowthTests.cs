@@ -153,7 +153,7 @@ public class Keeper_GrowthTests : GrowthTests {
 		spirit.Presence.PlaceOn( space, gameState );
 
 		// When: we place a presence on that space
-		_ = spirit.Presence.Place( spirit.Presence.Energy.RevealOptions.Single(), space, gameState, gameState.StartAction() );
+		_ = spirit.Presence.Place( spirit.Presence.Energy.RevealOptions.Single(), space, gameState, gameState.StartAction( ActionCategory.Default ) );
 
 		User.PushesTokensTo("D@2","A1,(A4),A6,A7,A8",2);
 		User.PushesTokensTo("D@2","A1,A4,A6,(A7),A8");

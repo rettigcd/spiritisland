@@ -32,7 +32,7 @@ public class ShareSecretsOfSurvival_Tests {
 		Cmd.EachTimeDestroy2FewerDahan.Execute( ctx );
 
 		//  When: ravage
-		new RavageAction(fxt.GameState, fxt.GameState.Invaders.On(space,fxt.GameState.StartAction())).Exec().Wait();
+		new RavageAction(fxt.GameState, fxt.GameState.Tokens[space]).Exec().Wait();
 
 		//  Then: expected dahan
 		ctx.Tokens.Summary.ShouldBe( expectedEndingTokens );
@@ -68,7 +68,7 @@ public class ShareSecretsOfSurvival_Tests {
 		Cmd.NextTimeDestroy2FewerDahan.Execute( ctx );
 
 		//  When: ravage
-		new RavageAction( fxt.GameState, fxt.GameState.Invaders.On( space, fxt.GameState.StartAction() ) ).Exec().Wait();
+		new RavageAction( fxt.GameState, fxt.GameState.Tokens[space] ).Exec().Wait();
 
 		//  Then: expected dahan
 		ctx.Tokens.Summary.ShouldBe( expectedEndingTokens );

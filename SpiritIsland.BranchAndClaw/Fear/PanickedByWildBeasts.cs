@@ -6,7 +6,7 @@ public class PanickedByWildBeasts : IFearOptions {
 
 
 	[FearLevel( 1, "Each player adds 1 strife in a land with or adjacent to beast" )]
-	public async Task Level1( FearCtx ctx ) {
+	public async Task Level1( GameCtx ctx ) {
 
 		// Each player adds 1 strife in a land with or adjacent to beast
 		foreach(var spiritCtx in ctx.Spirits)
@@ -14,7 +14,7 @@ public class PanickedByWildBeasts : IFearOptions {
 	}
 
 	[FearLevel( 2, "Each player adds 1 strife in a land with or adjacent to beast.  Invaders skip their normal explore and build in lands ith beast" )]
-	public async Task Level2( FearCtx ctx ) {
+	public async Task Level2( GameCtx ctx ) {
 
 		// Each player adds 1 strife in a land with or adjacent to beast.
 		foreach(var spiritCtx in ctx.Spirits)
@@ -29,7 +29,7 @@ public class PanickedByWildBeasts : IFearOptions {
 	}
 
 	[FearLevel( 3, "Each player adds 1 strife in a land with or adjacent to beast.  Invaders skip all normal actions in lands with beast." )]
-	public async Task Level3( FearCtx ctx ) {
+	public async Task Level3( GameCtx ctx ) {
 
 		// Each player adds 1 strife in a land with or adjacent to beast.
 		foreach(var spiritCtx in ctx.Spirits)

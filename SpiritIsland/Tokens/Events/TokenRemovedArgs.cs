@@ -26,10 +26,10 @@ public class PublishTokenRemovedArgs {
 /// </summary>
 public class TokenRemovedArgs : ITokenRemovedArgs {
 
-	public TokenRemovedArgs(Token token, RemoveReason reason, UnitOfWork actionId, SpaceState space, int count, GameState gs ) {
+	public TokenRemovedArgs(Token token, RemoveReason reason, UnitOfWork action, SpaceState space, int count, GameState gs ) {
 		Token = token;
 		Reason = reason;
-		Action = actionId;
+		Action = action ?? throw new ArgumentNullException(nameof(action));
 		Space = space;
 		Count = count;
 		GameState = gs;

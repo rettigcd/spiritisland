@@ -35,7 +35,7 @@ public class BuildEngine {
 	}
 
 	async Task<string> DoSingleBuildOnSpace() {
-		actionId = gameState.StartAction();
+		actionId = gameState.StartAction( ActionCategory.Invader );
 
 		// Determine type to build
 		int townCount = tokens.Sum( Invader.Town );

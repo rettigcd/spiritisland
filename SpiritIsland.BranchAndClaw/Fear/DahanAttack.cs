@@ -6,7 +6,7 @@ public class DahanAttack : IFearOptions {
 	string IFearOptions.Name => Name;
 
 	[FearLevel( 1, "Each player removes 1 eplorer from a land with dahan" )]
-	public async Task Level1( FearCtx ctx ) {
+	public async Task Level1( GameCtx ctx ) {
 
 		// Each player removes 1 eplorer from a land with dahan
 		foreach(var spirit in ctx.Spirits)
@@ -15,7 +15,7 @@ public class DahanAttack : IFearOptions {
 	}
 
 	[FearLevel( 2, "Each player chooses a different land with dahan.  1 damage per dahan there" )]
-	public async Task Level2( FearCtx ctx ) {
+	public async Task Level2( GameCtx ctx ) {
 
 		// Each player chooses a different land with dahan.  1 damage per dahan there
 		var options = ctx.Lands( SpaceFilters.WithDahanAndInvaders).Select( x => x.Space ).ToList();
@@ -26,7 +26,7 @@ public class DahanAttack : IFearOptions {
 	}
 
 	[FearLevel( 3, "each player chooses a different land with towns/cities.  Gather 1 dahan into that land.  Then 2 damage per dahan there" )]
-	public async Task Level3( FearCtx ctx ) {
+	public async Task Level3( GameCtx ctx ) {
 
 
 		// each player chooses a different land with towns/cities.  

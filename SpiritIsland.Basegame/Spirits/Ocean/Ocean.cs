@@ -63,7 +63,7 @@ public class Ocean : Spirit {
 	}
 
 	void RemoveDrownedDahan( GameState gs ) {
-		var actionId = gs.StartAction();
+		var actionId = gs.StartAction( ActionCategory.Spirit ); // Special Rules
 		foreach(var board in gs.Island.Boards)
 			gs.Tokens[board.Ocean].Dahan.Bind(actionId).Drown();
 	}
@@ -77,7 +77,7 @@ public class Ocean : Spirit {
 			var ht = args.Token as HealthToken;
 			// Drown Invaders for points
 			drownedCount += ht.FullHealth;
-			await gs.Invaders.On( args.Space.Space, args.ActionId ).Destroy( 1, (HealthToken)args.Token );
+			await gs.Invaders.On( args.Space.Space, args.Action ).Destroy( 1, (HealthToken)args.Token );
 
 			int spiritCount = gs.Spirits.Length;
 			while(spiritCount <= drownedCount) {

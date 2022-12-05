@@ -6,7 +6,7 @@ class FleeThePestilentLand : IFearOptions {
 	string IFearOptions.Name => Name;
 
 	[FearLevel( 1, "Each player removes 1 explorer/town from a land with disease" )]
-	public Task Level1( FearCtx ctx ) {
+	public Task Level1( GameCtx ctx ) {
 
 		// each player 
 		return Cmd.EachSpirit(
@@ -14,12 +14,12 @@ class FleeThePestilentLand : IFearOptions {
 			Cmd.RemoveExplorersOrTowns(1)
 				// from a land with disease
 				.From( spaceCtx => spaceCtx.Tokens.Disease.Any && spaceCtx.Tokens.HasInvaders(), "land with disease" )
-		).Execute( ctx.GameState );
+		).Execute( ctx );
 
 	}
 
 	[FearLevel( 2, "Each player removes up to 3 health of invaders from a land with disease or 1 explorer from an inland land" )]
-	public Task Level2( FearCtx ctx ) {
+	public Task Level2( GameCtx ctx ) {
 		// each player 
 		return Cmd.EachSpirit( 
 			Cmd.Pick1<SelfCtx>(
@@ -28,11 +28,11 @@ class FleeThePestilentLand : IFearOptions {
 				// or 1 explorer from an inland land
 				Cmd.RemoveExplorers(1).From( ctx => ctx.IsInland, "an inland land" )
 			)
-		).Execute(ctx.GameState);
+		).Execute(ctx);
 	}
 
 	[FearLevel( 3, "each player removes up to 5 health of invaders from a land with disease or 1 explorer/town from an inland land" )]
-	public Task Level3( FearCtx ctx ) {
+	public Task Level3( GameCtx ctx ) {
 		// each player 
 		return Cmd.EachSpirit( 
 			Cmd.Pick1<SelfCtx>(
@@ -41,7 +41,7 @@ class FleeThePestilentLand : IFearOptions {
 				// or 1 explorer / Town from an inland land
 				Cmd.RemoveExplorersOrTowns(1).From( s=>s.IsInland, "an inland land" )
 			)
-		).Execute(ctx.GameState);
+		).Execute(ctx);
 	}
 
 	static DecisionOption<SelfCtx> RemoveNHealthOfInvadersFromDisease( int healthToRemove, GameState _ ) =>

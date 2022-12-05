@@ -59,7 +59,8 @@ public class Fear {
 			foreach(var spirit in gs.Spirits)
 				await spirit.ShowFearCardToUser( "Activating Fear", fearCard, TerrorLevel );
 
-			var ctx = new FearCtx( gs );
+			await using var unitOfWork = gs.StartAction( ActionCategory.Fear );
+			var ctx = new GameCtx( gs, unitOfWork );
 			switch(TerrorLevel) {
 				case 1: await fearCard.FearOptions.Level1( ctx ); break;
 				case 2: await fearCard.FearOptions.Level2( ctx ); break;

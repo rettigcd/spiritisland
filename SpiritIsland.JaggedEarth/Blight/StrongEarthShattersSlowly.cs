@@ -4,7 +4,7 @@ public class StrongEarthShattersSlowly : StillHealthyBlightCard {
 
 	public StrongEarthShattersSlowly():base("Strong Earth Shatters Slowly",2) {}
 
-	public override DecisionOption<GameState> Immediately 
+	public override DecisionOption<GameCtx> Immediately 
 		// Each player
 		=> Cmd.EachSpirit(
 			// adds 1 blight (from this card)

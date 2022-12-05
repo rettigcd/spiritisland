@@ -32,7 +32,7 @@ public class ObserveTheEverChangingWorld {
 			handlerKeys[1] = ctx.GameState.Tokens.TokenRemoved.ForGame.Add( Track );
 		}
 
-		Task Track( ITokenAddedArgs x ) => Check(x.Space.Space, x.ActionId);
+		Task Track( ITokenAddedArgs x ) => Check(x.Space.Space, x.Action);
 
 		Task Track( ITokenRemovedArgs x ) => Check(x.Space.Space, x.Action );
 
@@ -41,7 +41,8 @@ public class ObserveTheEverChangingWorld {
 				|| space != ctx.Space					// wrong space
 				|| appliedActionsIds.Contains( currentActionId ) // already did this action 
 				|| tokenSummary == ctx.Tokens.Summary 	// no change in tokens
-			) return;
+			) 
+				return;
 
 			if(currentActionId == default)
 				throw new InvalidOperationException("Can't use default guids as actionids");

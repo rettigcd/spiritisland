@@ -15,7 +15,7 @@ public class SenseOfDread_Tests {
 		fix.InitTokens(ravageSpace, "2E@1");
 
 		// When: activeate fear card
-		var task = new SenseOfDread().Level1( new FearCtx(fix.GameState) );
+		var task = new SenseOfDread().Level1( new GameCtx(fix.GameState,ActionCategory.Default ) );
 
 		// And remove 1 explorer from ravage space
 		fix.Choose( ravageSpace.Text ); // select ravage space

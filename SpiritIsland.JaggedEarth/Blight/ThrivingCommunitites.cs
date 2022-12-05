@@ -4,7 +4,7 @@ public class ThrivingCommunitites : BlightCardBase {
 
 	public ThrivingCommunitites():base("Thriving Communitites",4) {}
 
-	public override DecisionOption<GameState> Immediately 
+	public override DecisionOption<GameCtx> Immediately 
 		// on each board:
 		=> Cmd.OnEachBoard(
 			// Replace 1 town with a city or Replace 1 explorer with 1 town

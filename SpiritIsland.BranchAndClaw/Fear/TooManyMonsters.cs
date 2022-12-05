@@ -6,7 +6,7 @@ public class TooManyMonsters : IFearOptions {
 
 
 	[FearLevel( 1, "Each player removes 1 explorer / town from a land with beast." )]
-	public async Task Level1( FearCtx ctx ) {
+	public async Task Level1( GameCtx ctx ) {
 
 		// Each player removes 1 explorer / town from a land with beast.
 		foreach(var spiritCtx in ctx.Spirits)
@@ -15,7 +15,7 @@ public class TooManyMonsters : IFearOptions {
 	}
 
 	[FearLevel( 2, "Each player removes 1 explorer and 1 town from a land with beast or 1 explorer from a land adjacent to beast" )]
-	public async Task Level2( FearCtx ctx ) {
+	public async Task Level2( GameCtx ctx ) {
 
 		// Each player removes 1 explorer and 1 town from a land with beast or 1 explorer from a land adjacent to beast
 		foreach(var spirit in ctx.Spirits)
@@ -24,7 +24,7 @@ public class TooManyMonsters : IFearOptions {
 	}
 
 	[FearLevel( 3, "Each player removes 2 explorers and 2 towns from a land with beast or 1 explorer/town from a land adjacent to beast" )]
-	public async Task Level3( FearCtx ctx ) {
+	public async Task Level3( GameCtx ctx ) {
 
 		// Each player removes 2 explorers and 2 towns from a land with beast or 1 explorer/town from a land adjacent to beast
 		foreach(var spirit in ctx.Spirits)

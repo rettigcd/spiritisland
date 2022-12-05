@@ -151,7 +151,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		if(effect.DestroyPresence)
 			foreach(var spirit in Spirits)
 				if(spirit.Presence.IsOn( args.Space ))
-					await spirit.Presence.Destroy( args.Space.Space, this, DestoryPresenceCause.Blight, StartAction(), args.Reason );
+					await spirit.Presence.Destroy( args.Space.Space, this, DestoryPresenceCause.Blight, args.Action, args.Reason );
 
 		// Cascade blight
 		if(effect.Cascade) {
@@ -162,7 +162,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 				args.Space.CascadingBlightOptions,
 				Present.Always
 			));
-			await Tokens[ cascadeTo ].Blight.Bind(args.ActionId).Add(1, args.Reason); // Cascading blight shares original blights reason.
+			await Tokens[ cascadeTo ].Blight.Bind(args.Action).Add(1, args.Reason); // Cascading blight shares original blights reason.
 		}
 
 	}
@@ -275,7 +275,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	}
 	Func<int, SpaceState, Task> _takeFromBlightSouce;
 
-	public Func<Spirit,GameState,Cause,Task> Destroy1PresenceFromBlightCard = DefaultDestroy1PresenceFromBlightCard; // Direct distruction from Blight Card, not cascading
+	public Func<Spirit,GameState,Cause,UnitOfWork,Task> Destroy1PresenceFromBlightCard = DefaultDestroy1PresenceFromBlightCard; // Direct distruction from Blight Card, not cascading
 
 	void TokenCleanUp( GameState gs ) { 
 		Healer.HealAll( gs ); // called at end of round.
@@ -284,7 +284,8 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	}
 	public Healer Healer = new Healer(); // replacable Behavior
 
-	public UnitOfWork StartAction() => new UnitOfWork( EndOfAction );
+	/// <param name="cat">Has no functional use.  Just helps us keep straight in our head what kind of action this is.</param>
+	public UnitOfWork StartAction(ActionCategory cat) => new UnitOfWork( EndOfAction, cat );
 
 	#endregion
 
@@ -335,9 +336,10 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		return Task.CompletedTask;
 	}
 
-	static async Task DefaultDestroy1PresenceFromBlightCard( Spirit spirit, GameState gs, Cause cause ) {
-		var presence = await spirit.Gateway.Decision( Select.DeployedPresence.ToDestroy( "Blighted Island: Select presence to destroy.", new ReadOnlyBoundPresence( spirit, gs, gs.Island.Terrain_ForBlight ) ) );
-		await spirit.Presence.Destroy( presence, gs, DestoryPresenceCause.BlightedIsland, gs.StartAction() );
+	static async Task DefaultDestroy1PresenceFromBlightCard( Spirit spirit, GameState gs, Cause _, UnitOfWork action ) {
+		var boundPresence = new ReadOnlyBoundPresence( spirit, gs, gs.Island.Terrain_ForBlight );
+		var presenceSpace = await spirit.Gateway.Decision( Select.DeployedPresence.ToDestroy( "Blighted Island: Select presence to destroy.", boundPresence ) );
+		await spirit.Presence.Destroy( presenceSpace, gs, DestoryPresenceCause.BlightedIsland, action );
 	}
 
 	#endregion

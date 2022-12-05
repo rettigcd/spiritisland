@@ -6,14 +6,14 @@ public class OverseasTradeSeemsSafer : IFearOptions {
 	string IFearOptions.Name => Name;
 
 	[FearLevel( 1, "Defend 3 in all Coastal lands." )]
-	public Task Level1( FearCtx ctx ) {
+	public Task Level1( GameCtx ctx ) {
 		var gs = ctx.GameState;
 		DefendCostal( gs, 3 );
 		return Task.CompletedTask;
 	}
 
 	[FearLevel( 2, "Defend 6 in all Coastal lands. Invaders do not Build City in Coastal lands this turn." )]
-	public Task Level2( FearCtx ctx ) {
+	public Task Level2( GameCtx ctx ) {
 		var gs = ctx.GameState;
 		DefendCostal( gs, 6 );
 		SkipCostalBuild( gs, new BuildStopper( "OverseasTradeSeemsSafer(city)", Invader.City ) { Duration = BuildStopper.EDuration.AllStopsThisTurn } );
@@ -21,7 +21,7 @@ public class OverseasTradeSeemsSafer : IFearOptions {
 	}
 
 	[FearLevel( 3, "Defend 9 in all Coastal lands. Invaders do not Build in Coastal lands this turn." )]
-	public Task Level3( FearCtx ctx ) {
+	public Task Level3( GameCtx ctx ) {
 		var gs = ctx.GameState;
 		DefendCostal( gs, 9 );
 		SkipCostalBuild( gs, BuildStopper.StopAll( "OverseasTradeSeemsSafer" ) );

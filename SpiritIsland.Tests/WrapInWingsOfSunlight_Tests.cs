@@ -30,7 +30,7 @@ public class WrapInWingsOfSunlight_Tests {
 		static async Task PlayCard(TargetSpaceCtx ctx) { try { await WrapInWingsOfSunlight.ActAsync( ctx ); } catch(Exception ex) { 
 			_ = ex.ToString(); 
 		} } 
-		var action = gameState.StartAction();
+		var action = gameState.StartAction( ActionCategory.Default );
 		_ = PlayCard( spirit.BindMyPower( gameState, action ).Target(src) );
 
 		//  And: Can bring 2 of each
@@ -74,7 +74,7 @@ public class WrapInWingsOfSunlight_Tests {
 		static async Task PlayCard(TargetSpaceCtx ctx) { try { await TerrifyingChase.ActAsync( ctx ); } catch(Exception ex) { 
 			_ = ex.ToString(); 
 		} } 
-		var action = gameState.StartAction();
+		var action = gameState.StartAction( ActionCategory.Default );
 		_ = PlayCard( spirit.BindMyPower( gameState, action ).Target(src) );
 
 		//  And: Can bring 2 of each

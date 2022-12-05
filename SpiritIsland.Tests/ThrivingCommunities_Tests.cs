@@ -19,7 +19,7 @@ public class ThrivingCommunities_Tests {
 		fxt.InitTokens( space2, "1T@2" );
 
 		// When: execute blight card
-		var task = new ThrivingCommunitites().Immediately.Execute(fxt.GameState);
+		var task = new ThrivingCommunitites().Immediately.Execute( new GameCtx( fxt.GameState, ActionCategory.Blight ));
 		//  And: choose the only 2 spaces
 		fxt.Choose( space1.Text ); fxt.Choose( "E@1" );
 		fxt.Choose( space2.Text ); fxt.Choose( "T@2" );

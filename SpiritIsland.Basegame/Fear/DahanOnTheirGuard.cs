@@ -7,19 +7,19 @@ public class DahanOnTheirGuard : IFearOptions {
 
 
 	[FearLevel( 1, "In each land, Defend 1 per Dahan." )]
-	public Task Level1( FearCtx ctx ) {
+	public Task Level1( GameCtx ctx ) {
 		DefendIt( ctx.GameState, s => s.Dahan.Count );
 		return Task.CompletedTask;
 	}
 
 	[FearLevel( 2, "In each land with Dahan, Defend 1, plus an additional Defend 1 per Dahan." )]
-	public Task Level2( FearCtx ctx ) {
+	public Task Level2( GameCtx ctx ) {
 		DefendIt( ctx.GameState, s => 1 + s.Dahan.Count );
 		return Task.CompletedTask;
 	}
 
 	[FearLevel( 3, "In each land, Defend 2 per Dahan." )]
-	public Task Level3( FearCtx ctx ) {
+	public Task Level3( GameCtx ctx ) {
 		DefendIt( ctx.GameState, s => 2 * s.Dahan.Count );
 		return Task.CompletedTask;
 	}

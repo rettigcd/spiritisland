@@ -47,7 +47,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
 			GatherPresenceIntoOcean gather = spirit.GetAvailableActions(Phase.Growth).OfType<GatherPresenceIntoOcean>().SingleOrDefault();
 
 			if(gather != null){
-				var action = gameState.StartAction();
+				var action = gameState.StartAction( ActionCategory.Default );
 				_ = gather.ActivateAsync( spirit.Bind( gameState, action ) );
 				while(!spirit.Gateway.IsResolved){
 					var source = spirit.Gateway.GetCurrent().Options.Single(x=>moveBySrc.ContainsKey(x.Text));

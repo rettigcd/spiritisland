@@ -28,7 +28,7 @@ public static class HealthAdjustmentHelper_Extension {
 		ctx.GameState.TimePasses_ThisRound.Push( async gs => {
 			// Ensure the dahan are healed before we restore their health.
 			ctx.GameState.Healer.HealSpace( ctx.Tokens );
-			await ctx.Tokens.AdjustHealthOfAll( -deltaHealth, gs.StartAction(), tokenClasses ); // this action id is only used if tokens get destroyed
+			await ctx.Tokens.AdjustHealthOfAll( -deltaHealth, ctx.CurrentActionId, tokenClasses );
 		} );
 	}
 

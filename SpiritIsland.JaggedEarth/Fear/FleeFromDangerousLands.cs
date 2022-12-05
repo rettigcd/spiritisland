@@ -7,10 +7,10 @@ public class FleeFromDangerousLands : IFearOptions {
 
 
 	[FearLevel(1, "On Each Board: Push 1 Explorer / Town from a land with Badlands / Wilds / Dahan." )]
-	public Task Level1( FearCtx ctx ) {
+	public Task Level1( GameCtx ctx ) {
 
 		// On Each Board,
-		return Cmd.OnEachBoard(
+		return Cmd.OnEachBoardOld(
 			// Push 1 Explorer / Town
 			Cmd.PushExplorersOrTowns(1)
 				// from a land with Badlands / Wilds / Dahan.
@@ -21,10 +21,10 @@ public class FleeFromDangerousLands : IFearOptions {
 	}
 
 	[FearLevel(2, "On Each Board: Remove 1 Explorer / Town from a land with Badlands / Wilds / Dahan." )]
-	public Task Level2( FearCtx ctx ) {
+	public Task Level2( GameCtx ctx ) {
 
 		// On Each Board, 
-		return Cmd.OnEachBoard(
+		return Cmd.OnEachBoardOld(
 			// Remove 1 Explorer / Town 
 			Cmd.RemoveExplorersOrTowns( 1 )
 				// from a land with Badlands / Wilds / Dahan.
@@ -35,10 +35,10 @@ public class FleeFromDangerousLands : IFearOptions {
 	}
 
 	[FearLevel(3, "On Each Board: Remove 1 Explorer / Town from any land, or Remove 1 City from a land with Badlands / Wilds / Dahan." )]
-	public async Task Level3( FearCtx ctx ) {
+	public async Task Level3( GameCtx ctx ) {
 
 		// On Each Board: Remove 1 Explorer / Town from any land, or Remove 1 City from a land with Badlands / Wilds / Dahan.
-		await Cmd.OnEachBoard(
+		await Cmd.OnEachBoardOld(
 			Cmd.Pick1(
 				// Remove 1 Explorer / Town from any land
 				Cmd.RemoveExplorersOrTowns(1).InAnyLandOnBoard(),

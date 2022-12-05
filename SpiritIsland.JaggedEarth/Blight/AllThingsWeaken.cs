@@ -4,7 +4,7 @@ public class AllThingsWeaken : BlightCardBase {
 
 	public AllThingsWeaken():base("All Things Weaken",3) {}
 
-	public override DecisionOption<GameState> Immediately => 
+	public override DecisionOption<GameCtx> Immediately => 
 		// Ongoing, starting next turn:
 		Cmd.AtTheStartOfNextRound( Cmd.Multiple<GameState>(
 			// Invaders and Dahan have -1 Health (min, 1).
@@ -19,7 +19,6 @@ public class AllThingsWeaken : BlightCardBase {
 
 		// Invaders and Dahan have -1 Health (min, 1).
 		new DecisionOption<GameState>("Invaders have -1 Health.", gs => {
-
 			// change the defaults
 			var defaults = gs.Tokens.TokenDefaults;
 			foreach(var invaderClass in defaults.Keys.ToArray()){

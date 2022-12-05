@@ -13,7 +13,7 @@ public class TradeSuffers_Tests {
 		fxt.InitTokens( space, "1C@3");
 
 		// When: fear card
-		var task = new TradeSuffers().Level3( new FearCtx(fxt.GameState) );
+		var task = new TradeSuffers().Level3( new GameCtx(fxt.GameState, ActionCategory.Default ) );
 		//  And: user selects a1
 		fxt.Choose( space.Text );
 		//  And: user choses not to replace (this is what we are testing...)

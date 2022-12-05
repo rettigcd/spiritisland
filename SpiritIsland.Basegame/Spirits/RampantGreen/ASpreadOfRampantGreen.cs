@@ -101,13 +101,14 @@ public class ASpreadOfRampantGreen : Spirit {
 			.ToList();
 		bool costs1 = gs.BlightCard.CardFlipped;
 		int maxStoppable = costs1 ? Energy : int.MaxValue;
+		var unitOfWork = gs.StartAction( ActionCategory.Spirit ); // Special Rules
 
 		var skipped = new List<SpaceState>();
 		while(maxStoppable > 0 && stoppable.Count > 0) {
 			var stop = await this.Gateway.Decision( new Select.Space( $"Stop {actionText} by destroying 1 presence", stoppable.ToArray(), Present.Done ) );
 			if(stop == null) break;
 
-			await Presence.Destroy( stop, gs, DestoryPresenceCause.DahanDestroyed, gs.StartAction() ); // it is the invader actions we are stopping
+			await Presence.Destroy( stop, gs, DestoryPresenceCause.DahanDestroyed, unitOfWork ); // it is the invader actions we are stopping
 
 			skipped.Add( gs.Tokens[stop] );
 			stoppable.Remove( stop );

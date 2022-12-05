@@ -4,8 +4,8 @@ public class UnnaturalProliferation : BlightCardBase {
 
 	public UnnaturalProliferation():base("Unnatural Proliferation",3) {}
 
-	public override DecisionOption<GameState> Immediately 
-		=> Cmd.Multiple<GameState>(
+	public override DecisionOption<GameCtx> Immediately 
+		=> Cmd.Multiple<GameCtx>(
 			Cmd.EachSpirit(
 				// adds 1 presence to a land with their prescense.
 				AddPresenceToOwnLand

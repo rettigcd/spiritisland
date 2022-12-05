@@ -12,15 +12,3 @@ public class BuildingEventArgs {
 	public SpaceState[] SpacesWithBuildTokens { get; }
 
 }
-
-public class RavagingEventArgs {
-	public RavagingEventArgs(GameState gs, UnitOfWork actionId ) { 
-		GameState = gs;
-		ActionId = actionId;
-	}
-	public GameState GameState { get; }
-	public List<SpaceState> Spaces;
-	public void Skip1(SpaceState space) => Spaces.Remove(space);
-	public UnitOfWork ActionId { get; }
-}
-

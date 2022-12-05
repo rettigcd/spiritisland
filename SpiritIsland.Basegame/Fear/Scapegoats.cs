@@ -7,29 +7,26 @@ public class Scapegoats : IFearOptions {
 
 
 	[FearLevel( 1, "Each Town destroys 1 Explorer in its land." )]
-	public async Task Level1( FearCtx ctx ) {
+	public async Task Level1( GameCtx ctx ) {
 		var gs = ctx.GameState;
-		var actionId = gs.StartAction();
 		foreach(var space in gs.AllActiveSpaces)
-			await Destroy_1ExplorerPerTown( gs.Invaders.On( space.Space, actionId ) );
+			await Destroy_1ExplorerPerTown( gs.Invaders.On( space.Space, ctx.UnitOfWork ) );
 	}
 
 	[FearLevel( 2, "Each Town destroys 1 Explorer in its land. Each City destroys 2 Explorer in its land." )]
-	public async Task Level2( FearCtx ctx ) {
+	public async Task Level2( GameCtx ctx ) {
 		var gs = ctx.GameState;
-		var actionId = gs.StartAction();
 		foreach(var space in gs.AllActiveSpaces) {
-			var grp = gs.Invaders.On( space.Space, actionId );
+			var grp = gs.Invaders.On( space.Space, ctx.UnitOfWork );
 			await Destroy_1ExplorerPerTownAnd2ExplorersPerCity( grp );
 		}
 	}
 
 	[FearLevel( 3, "Destroy all Explorer in lands with Town / City. Each City destroys 1 Town in its land." )]
-	public async Task Level3( FearCtx ctx ) {
+	public async Task Level3( GameCtx ctx ) {
 		var gs = ctx.GameState;
-		var actionId = gs.StartAction();
 		foreach(var space in gs.AllActiveSpaces) {
-			var grp = gs.Invaders.On( space.Space, actionId );
+			var grp = gs.Invaders.On( space.Space, ctx.UnitOfWork );
 			await grp.Destroy( int.MaxValue, Invader.Explorer );
 			await EachCityDestroys1Town( grp );
 		

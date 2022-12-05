@@ -1,7 +1,4 @@
-﻿using Shouldly;
-using SpiritIsland.JaggedEarth;
-using System.Linq;
-using Xunit;
+﻿using SpiritIsland.JaggedEarth;
 
 namespace SpiritIsland.Tests {
 

@@ -70,12 +70,14 @@ public class France : IAdversary {
 	}
 
 	static void AddSlaveRebellionEvent( GameState gameState ) {
+		var gameCtx = new GameCtx( gameState, ActionCategory.Adversary );
+
 		// !!! This should really be post-blighted island effects, but oh-well...
 		gameState.StartOfInvaderPhase.ForGame.Add( async gs => {
 			if( gs.RoundNumber%4 != 0) return;// if we put it under 3 cards, it will be every 4th card.
 			if(gs.InvaderDeck.InvaderStage < 3) {
 				// On Each Board: Add Strife to 1 Town.
-				await Cmd.OnEachBoard( AddStrifeToTown ).Execute(gs);
+				await Cmd.OnEachBoard( AddStrifeToTown ).Execute( gameCtx );
 			} else {
 				// On Each Board:
 				await Cmd.Multiple(
@@ -87,11 +89,11 @@ public class France : IAdversary {
 						)
 					),
 					// Then each invader takes 1 damage per strife it has.
-					new DecisionOption<GameState>(
+					new DecisionOption<GameCtx>(
 						"each invader takes 1 damage per strife it has", 
-						x => StrifedRavage.StrifedInvadersTakeDamagePerStrife( new FearCtx(x) )
+						StrifedRavage.StrifedInvadersTakeDamagePerStrife
 					)
-				).Execute(gs);
+				).Execute( gameCtx );
 			}
 		} );
 	}
@@ -102,7 +104,7 @@ public class France : IAdversary {
 			SpaceToken[] options = boardCtx.FindTokens( Invader.Town );
 			var st = await boardCtx.Decision( new Select.TokenFromManySpaces( "Add strife to town", options, Present.Always ) );
 			if(st != null)
-				await boardCtx.GameState.Tokens[st.Space].AddStrifeTo( (HealthToken)st.Token, boardCtx.GameState.StartAction(), 1 );
+				await boardCtx.GameState.Tokens[st.Space].AddStrifeTo( (HealthToken)st.Token, boardCtx.CurrentActionId, 1 );
 		} );
 
 	static DecisionOption<BoardCtx> Add2StrifeToCityOrTown => new DecisionOption<BoardCtx>(
@@ -112,7 +114,7 @@ public class France : IAdversary {
 			for(int i = 0; i < 2; ++i) {
 				var st = await boardCtx.Decision( new Select.TokenFromManySpaces( $"Add strife ({i+1} of 2)", options, Present.Always ) );
 				if(st != null)
-					await boardCtx.GameState.Tokens[st.Space].AddStrifeTo( (HealthToken)st.Token, boardCtx.GameState.StartAction(), 1 );
+					await boardCtx.GameState.Tokens[st.Space].AddStrifeTo( (HealthToken)st.Token, boardCtx.CurrentActionId, 1 );
 			}
 		} );
 
@@ -122,7 +124,7 @@ public class France : IAdversary {
 			SpaceToken[] options = boardCtx.FindTokens( Invader.Town );
 			var st = await boardCtx.Decision( new Select.TokenFromManySpaces( "Destory a town", options, Present.Always ) );
 			if(st != null)
-				await boardCtx.GameState.Tokens[st.Space].Destroy( st.Token, 1, boardCtx.GameState.StartAction() );
+				await boardCtx.GameState.Tokens[st.Space].Destroy( st.Token, 1, boardCtx.CurrentActionId );
 		} );
 
 }
@@ -166,7 +168,7 @@ public class FranceInvaderCard : InvaderCard {
 				.Where( terrainMapper.IsInPlay )
 				.OrderBy( t=>t.Sum(Invader.Town))
 				.First();
-			await buildSpace.AddDefault(Invader.Town,1,gs.StartAction());
+			await buildSpace.AddDefault(Invader.Town,1, gs.StartAction(ActionCategory.Adversary)); // !! ??? Should all builds share a single unit-of-work?
 		}
 	}
 
@@ -196,28 +198,30 @@ public class FranceInvaderCard : InvaderCard {
 		SpaceState[] tokenSpacesToExplore = await PreExplore( gs );
 		await DoExplore( gs, tokenSpacesToExplore );
 
+		var gameCtx = new GameCtx( gs, ActionCategory.Adversary ); // 1 action for all these things.
+
 		if(hasFrontierExploration)
 			await DoFrontierExploration( gs, tokenSpacesToExplore );
 
 		if(HasEscalation)
-			await Escalation( gs );
+			await Escalation( gameCtx );
 
 		if(hasPersistentExplorers)
-			await PersistentExplorers( gs );
+			await PersistentExplorers( gameCtx );
 	}
 
-	static Task PersistentExplorers( GameState gs ) {
+	static Task PersistentExplorers( GameCtx gameCtx ) {
 		// After resolving an Explore Card, on each board add 1 Explorer to a land without any. 
-		return Cmd.OnEachBoard( AddExplorerToLandWithoutAny ).Execute( gs );
+		return Cmd.OnEachBoard( AddExplorerToLandWithoutAny ).Execute( gameCtx );
 		
 	}
 	static DecisionOption<BoardCtx> AddExplorerToLandWithoutAny => new DecisionOption<BoardCtx>(
 		"Add Explorer to Land without any",
-		async x => {
-			var options = x.Board.Spaces.Where(s=>!x.GameState.Tokens[s].HasAny(Invader.Explorer)).ToArray();
-			var space = await x.Decision( new Select.Space("Add explorer", options, Present.Always));
+		async boardCtx => {
+			var options = boardCtx.Board.Spaces.Where(s=>!boardCtx.GameState.Tokens[s].HasAny(Invader.Explorer)).ToArray();
+			var space = await boardCtx.Decision( new Select.Space("Add explorer", options, Present.Always));
 			if( space != null)
-				await x.GameState.Tokens[space].AddDefault(Invader.Explorer, 1, x.GameState.StartAction());
+				await boardCtx.GameState.Tokens[space].AddDefault(Invader.Explorer, 1, boardCtx.CurrentActionId);
 		}
 	);
 
@@ -225,15 +229,15 @@ public class FranceInvaderCard : InvaderCard {
 		// Frontier Explorers: Except during Setup: After Invaders successfully Explore into a land which had no Town / City, add 1 Explorer there.
 		foreach(var exploreTokens in tokenSpacesToExplore)
 			if(!exploreTokens.HasAny( Invader.Town, Invader.City ))
-				await ExploreSingleSpace( exploreTokens, gs, gs.StartAction() ); // !!! implemented as a new Action - Should it be???
+				await ExploreSingleSpace( exploreTokens, gs, gs.StartAction( ActionCategory.Adversary ) ); // !!! implemented as a new Action - Should it be???
 	}
 
-	Task Escalation( GameState gs ) {
+	Task Escalation( GameCtx ctx ) {
 		// Demand for New Cash Crops:
 		// After Exploring, on each board, pick a land of the shown terrain.If it has Town / City, add 1 Blight.Otherwise, add 1 Town
 
 		DecisionOption<SelfCtx> SelectSpaceAction(Space s ) {
-			return gs.Tokens[s].HasAny( Invader.Town, Invader.City )
+			return ctx.GameState.Tokens[s].HasAny( Invader.Town, Invader.City )
 				? new DecisionOption<SelfCtx>( "Add 1 Town to " + s.Text, null )
 				: new DecisionOption<SelfCtx>( "", null );
 		}
@@ -245,7 +249,7 @@ public class FranceInvaderCard : InvaderCard {
 				.Select( SelectSpaceAction )
 				.ToArray()
 			).Execute( boardCtx )
-		) ).Execute( gs );
+		) ).Execute( ctx );
 
 	}
 

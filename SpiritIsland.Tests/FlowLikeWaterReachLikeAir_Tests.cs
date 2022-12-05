@@ -36,7 +36,7 @@ namespace SpiritIsland.Tests {
 			static async Task PlayCard(TargetSpiritCtx ctx) { try { await FlowLikeWaterReachLikeAir.ActAsync( ctx ); } catch(Exception ex) { 
 				_ = ex.ToString(); 
 			} } 
-			var action = gameState.StartAction();
+			var action = gameState.StartAction( ActionCategory.Default );
 			_ = PlayCard( spirit.BindMyPower( gameState, action ).TargetSpirit(spirit) );
 
 			//  And: Can bring 2 of each

@@ -52,7 +52,7 @@ public class WeaveTogetherTheFabricOfPlace {
 			removeSpace.Restore();
 
 			// divide pieces as you wish.
-			UnitOfWork actionId = gs.StartAction();
+			UnitOfWork actionId = gs.StartAction( ActionCategory.Spirit );
 			await DistributePresence( space, other, gs, actionId );
 			await DistributeTokens( originatorCtx, space, other, gs, actionId );
 		});

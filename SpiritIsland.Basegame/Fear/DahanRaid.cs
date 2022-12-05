@@ -6,21 +6,21 @@ public class DahanRaid : IFearOptions {
 	string IFearOptions.Name => Name;
 
 	[FearLevel(1, "Each player chooses a different land with Dahan. 1 Damage there.")]
-	public Task Level1( FearCtx ctx ) {
+	public Task Level1( GameCtx ctx ) {
 		return ForEachPlayerChosenLandWithDahan( ctx, sCtx=>sCtx.DamageInvaders( 1 ) );
 	}
 
 	[FearLevel( 2, "Each player chooses a different land with Dahan. 1 Damage per Dahan there." )]
-	public Task Level2( FearCtx ctx ) {
+	public Task Level2( GameCtx ctx ) {
 		return ForEachPlayerChosenLandWithDahan( ctx, sCtx => sCtx.DamageInvaders( sCtx.Dahan.Count ) );
 	}
 
 	[FearLevel( 3, "Each player chooses a different land with Dahan. 2 Damage per Dahan there." )]
-	public Task Level3( FearCtx ctx ) {
+	public Task Level3( GameCtx ctx ) {
 		return ForEachPlayerChosenLandWithDahan( ctx, sCtx => sCtx.DamageInvaders( sCtx.Dahan.Count * 2 ) );
 	}
 
-	static async Task ForEachPlayerChosenLandWithDahan( FearCtx ctx, Func<TargetSpaceCtx,Task> action ) {
+	static async Task ForEachPlayerChosenLandWithDahan( GameCtx ctx, Func<TargetSpaceCtx,Task> action ) {
 
 		const string prompt = "Fear:select land with dahan";
 

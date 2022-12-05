@@ -15,7 +15,7 @@ public class DreamAThousandDeaths_Tests {
 		board = Board.BuildBoardA();
 		gs = new GameState( spirit, board );
 		gs.Initialize();
-		unitOfWork = gs.StartAction();
+		unitOfWork = gs.StartAction( ActionCategory.Default );
 		ctx = MakeFreshPowerCtx();
 
 		// Disable destroying presence
@@ -111,7 +111,7 @@ public class DreamAThousandDeaths_Tests {
 	}
 
 	async Task Run_OneDamageToEachAsync() {
-		await using var uow = this.gs.StartAction();
+		await using var uow = this.gs.StartAction( ActionCategory.Default );
 		await OneDamageToEachAsync( MakeFreshPowerCtx(uow) );
 	}
 

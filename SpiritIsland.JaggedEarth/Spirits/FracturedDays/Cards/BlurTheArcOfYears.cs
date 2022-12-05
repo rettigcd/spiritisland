@@ -34,7 +34,7 @@ class BlurTheArcOfYears {
 			await ctx.GameState.GetBuildEngine()
 				.Exec( ctx.Tokens, ctx.GameState );
 
-			await new RavageAction( ctx.GameState, ctx.Invaders ).Exec();
+			await new RavageAction( ctx.GameState, ctx.Tokens ).Exec();
 		}
 
 		// If dahan are present: Add 1 dahan. Push up to 2 dahan.

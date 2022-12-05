@@ -7,15 +7,15 @@ public class BesetByManyTroubles : IFearOptions {
 	string IFearOptions.Name => Name;
 
 	[FearLevel(1, "In each land with Badlands / Beasts / Disease / Wilds / Strife, Defend 3." )]
-	public Task Level1( FearCtx ctx ) {
+	public Task Level1( GameCtx ctx ) {
 		return Cmd.InEachLand( 
 			Cmd.Defend(3)
 			, t=>t.Badlands.Any||t.Beasts.Any||t.Disease.Any||t.Wilds.Any||t.HasStrife // !! make HasStrife a Porperty, not an extension method
-		).Execute( ctx.GameState );
+		).Execute( ctx );
 	}
 
 	[FearLevel(2, "In each land with Badlands / Beasts / Disease / Wilds / Strife, or adjacent to 3 or more such tokens, Defend 5." )]
-	public Task Level2( FearCtx ctx ) {
+	public Task Level2( GameCtx ctx ) {
 		var counts = CountTokensOfInterest( ctx );
 
 		foreach(var space in ctx.GameState.AllActiveSpaces)
@@ -26,7 +26,7 @@ public class BesetByManyTroubles : IFearOptions {
 	}
 
 	[FearLevel(3, "Every Badlands / Beasts / Disease / Wilds / Strife grants Defend 3 in its land and adjacent lands." )]
-	public Task Level3( FearCtx ctx ) {
+	public Task Level3( GameCtx ctx ) {
 		foreach(var space in ctx.GameState.AllActiveSpaces) {
 			if( CountTokensIn(space)==0 ) continue;
 			space.Defend.Add(3);
@@ -37,7 +37,7 @@ public class BesetByManyTroubles : IFearOptions {
 	}
 
 
-	static CountDictionary<Space> CountTokensOfInterest( FearCtx ctx ) {
+	static CountDictionary<Space> CountTokensOfInterest( GameCtx ctx ) {
 		return ctx.GameState.AllActiveSpaces
 			.ToDictionary( s => s.Space, s => CountTokensIn( s ) )
 			.ToCountDict();
