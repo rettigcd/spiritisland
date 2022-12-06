@@ -140,10 +140,11 @@ public class SelfCtx {
 		if(spaceCtx == null) return null;
 
 		var options = spaceCtx.Tokens.OfAnyType(removables);
-		while(0<count-- && 0<options.Length) {
+		while(0<count && 0<options.Length) {
 			var tokenToRemove = await spaceCtx.Self.Gateway.Decision( Select.TokenFrom1Space.TokenToRemove(spaceCtx.Space, count, options, Present.Always) );
 			await spaceCtx.Tokens.Remove(tokenToRemove,1,CurrentActionId);
 			options = spaceCtx.Tokens.OfAnyType( removables ); // next
+			--count;
 		}
 		return spaceCtx?.Space;
 	}

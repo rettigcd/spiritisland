@@ -138,7 +138,7 @@ namespace SpiritIsland.Tests {
 			var (options,choice) = SplitOptionsAndChoice( actions );
 			choice = PowerNameToText( choice );
 			options = options.Split(',').Select( PowerNameToText ).Join(",");
-			AssertDecision( "Select Slow to resolve:", options+",Done", choice );
+			AssertDecision( "Select Slow to resolve", options+",Done", choice );
 		}
 
 		/// <example>Fast-0,(Fast-1),Fast-2,Gift of Strength</example>
@@ -148,7 +148,7 @@ namespace SpiritIsland.Tests {
 			choice = PowerNameToText( choice );
 			options = options.Split(',').Select( PowerNameToText ).Join(",");
 
-			AssertDecision( "Select Fast to resolve:", options + ",Done", choice );
+			AssertDecision( "Select Fast to resolve", options + ",Done", choice );
 		}
 
 		string PowerNameToText( string choice ) {
@@ -211,17 +211,17 @@ namespace SpiritIsland.Tests {
 		#region Ocean-Spirit Specific
 
 		public void GathersPresenceIntoOcean() {
-			AssertDecisionX( "Select Growth to resolve:", "GatherPresenceIntoOcean" );
+			AssertDecisionX( "Select Growth to resolve", "GatherPresenceIntoOcean" );
 		}
 
 		public void PushesPresenceFromOcean(string destination) {
-			AssertDecisionX( "Select Growth to resolve:", "PushPresenceFromOcean" );
+			AssertDecisionX( "Select Growth to resolve", "PushPresenceFromOcean" );
 			AssertDecisionX( "Push Presence to", destination );
 		}
 
 		public void PlacesPresenceInOcean( string growth, string source, string destination ) {
-			AssertDecisionX( "Select Growth to resolve:", growth );
-			AssertDecisionX( "Select Presence to place.", source );
+			AssertDecisionX( "Select Growth to resolve", growth );
+			AssertDecisionX( "Select Presence to place", source );
 			AssertDecisionX( "Where would you like to place your presence?", destination );
 		}
 

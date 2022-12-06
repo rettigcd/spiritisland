@@ -77,9 +77,9 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 		[InlineDataAttribute(1,1,"")]
 		[InlineDataAttribute(2,1,"air")]
 		[InlineDataAttribute(3,2,"air")]
-		[InlineDataAttribute(4,2, "fire,air" )]
-		[InlineDataAttribute(5,2, "sun,fire,air" )]
-		[InlineDataAttribute(6,3, "sun,fire,air" )]
+		[InlineDataAttribute(4,2, "fire air" )]
+		[InlineDataAttribute(5,2, "sun fire air" )]
+		[InlineDataAttribute(6,3, "sun fire air" )]
 		public Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 			var fix = new ConfigurableTestFixture { Spirit = new Thunderspeaker() };
 			return fix.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, elements );

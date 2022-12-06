@@ -85,10 +85,10 @@ public class Bringer_GrowthTests : GrowthTests {
 	[InlineDataAttribute(1,2,"")]
 	[InlineDataAttribute(2,2,"air")]
 	[InlineDataAttribute(3,3,"air")]
-	[InlineDataAttribute(4,3, "moon,air" )]
-	[InlineDataAttribute(5,4, "moon,air" )]
-	[InlineDataAttribute(6,4, "moon,air,any" )]
-	[InlineDataAttribute(7,5, "moon,air,any" )]
+	[InlineDataAttribute(4,3, "moon air" )]
+	[InlineDataAttribute(5,4, "moon air" )]
+	[InlineDataAttribute(6,4, "moon air any" )]
+	[InlineDataAttribute(7,5, "moon air any" )]
 	public async Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 		var fixture = new ConfigurableTestFixture { Spirit = new Bringer() };
 		await fixture.VerifyEnergyTrack(revealedSpaces, expectedEnergyGrowth, elements);

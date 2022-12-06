@@ -168,10 +168,10 @@ public class Keeper_GrowthTests : GrowthTests {
 	[InlineDataAttribute( 2, 2, "sun" )]
 	[InlineDataAttribute( 3, 4, "sun" )]
 	[InlineDataAttribute( 4, 5, "sun" )]
-	[InlineDataAttribute( 5, 5, "sun,plant" )]
-	[InlineDataAttribute( 6, 7, "sun,plant" )]
-	[InlineDataAttribute( 7, 8, "sun,plant" )]
-	[InlineDataAttribute( 8, 9, "sun,plant" )]
+	[InlineDataAttribute( 5, 5, "sun plant" )]
+	[InlineDataAttribute( 6, 7, "sun plant" )]
+	[InlineDataAttribute( 7, 8, "sun plant" )]
+	[InlineDataAttribute( 8, 9, "sun plant" )]
 	public Task EnergyTrack( int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 		var fix = new ConfigurableTestFixture { Spirit = new Keeper() };
 		return fix.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, elements );

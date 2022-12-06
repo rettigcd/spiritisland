@@ -149,7 +149,7 @@ public abstract partial class Spirit : IOption {
 		// Select Actions to resolve
 		// -------------
 		IActionFactory[] options = this.GetAvailableActions( phase ).ToArray();
-		IActionFactory option = await this.SelectFactory( "Select " + phase + " to resolve:", options, present );
+		IActionFactory option = await this.SelectFactory( "Select " + phase + " to resolve", options, present );
 		if(option == null)
 			return false;
 
@@ -413,7 +413,7 @@ public abstract partial class Spirit : IOption {
 		while(0 < remainingToPlay
 			&& 0 < (powerCardOptions = getPowerCardOptions()).Length
 		) {
-			string prompt = $"Play power card (${Energy} / {remainingToPlay}):";
+			string prompt = $"Play power card (${Energy} / {remainingToPlay})";
 			var card = await this.SelectPowerCard( prompt, powerCardOptions, CardUse.Play, Present.Done );
 			if(card != null) {
 				PlayCard( card );

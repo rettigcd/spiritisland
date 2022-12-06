@@ -29,7 +29,7 @@ namespace SpiritIsland.Tests {
 			//   And: enough elements to trigger level-2 innate  (2 moon,1 air)
 			fxt.spirit.Elements[Element.Moon] = 2;
 			fxt.spirit.Elements[Element.Air] = 1;
-			fxt.spirit.Elements.BuildElementString().ShouldBe("2 moon air");
+			fxt.spirit.Elements.BuildElementString().ShouldBe("2 moon 1 air");
 
 			// Buy slow card (so we don't wrap to next turn)
 			fxt.user.PlaysCard(BoonOfAncientMemories.Name);
@@ -43,7 +43,7 @@ namespace SpiritIsland.Tests {
 
 			var dec = fxt.spirit.Gateway.GetCurrent();
 
-			if(dec.Prompt == "Select Slow to resolve:") {
+			if(dec.Prompt == "Select Slow to resolve") {
 				_ = dec.ToString();
 			} else
 				//  Then: Asks user to prepare element

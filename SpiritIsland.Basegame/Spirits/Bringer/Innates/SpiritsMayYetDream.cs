@@ -20,7 +20,10 @@ public class SpiritsMayYetDream {
 	[InnateOption( "3 moon","Target Spirit gains an element that they have at least 1 of.", 1 )]
 	static public async Task Option2( TargetSpiritCtx ctx ) {
 		// Target spirit gains an element they have at least 1 of
-		Element el = (await ctx.Other.SelectElementsEx(1,ctx.Other.Elements.Keys.ToArray())).FirstOrDefault();
+		var elOptions = ctx.Other.Elements.Keys
+			.OrderBy( ElementCounts.StandardOrder)
+			.ToArray();
+		Element el = (await ctx.Other.SelectElementsEx(1, elOptions )).FirstOrDefault();
 		if(el != default)
 			++ctx.Other.Elements[el];
 	}

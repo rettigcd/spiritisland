@@ -196,7 +196,7 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 			await presence.TakeFrom( choice, GameState );
 		}
 		Spirit.EnergyPerTurn.ShouldBe( expectedEnergyGrowth );
-		Spirit.Elements.BuildElementString( "," ).ShouldBe( elements );
+		Spirit.Elements.BuildElementString(false).ShouldBe( elements );
 	}
 
 	/// <summary>
@@ -211,7 +211,7 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 			await presence.TakeFrom( choice, GameState );
 		}
 		Spirit.NumberOfCardsPlayablePerTurn.ShouldBe( expectedCardPlayCount );
-		Spirit.Elements.BuildElementString( "," ).ShouldBe( elements );
+		Spirit.Elements.BuildElementString(false).ShouldBe( elements );
 	}
 
 	public void VerifyReclaim1Count( int count ) {

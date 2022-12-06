@@ -47,7 +47,7 @@ public class ReadOnlyBoundPresence : IKnowSpiritLocations {
 
 	/// <summary> Tries Presence Tracks first, then fails over to placed-presence on Island </summary>
 	public async Task<IOption> SelectSource( string actionPhrase = "place" ) {
-		string prompt = $"Select Presence to {actionPhrase}.";
+		string prompt = $"Select Presence to {actionPhrase}";
 		return (IOption)await _self.Gateway.Decision( Select.TrackSlot.ToReveal( prompt, _self, _gameState ) )
 			?? (IOption)await _self.Gateway.Decision( Select.DeployedPresence.All( prompt, this, Present.Always ) );
 	}

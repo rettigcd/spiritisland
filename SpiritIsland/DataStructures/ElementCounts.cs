@@ -23,13 +23,16 @@ public class ElementCounts : CountDictionary<Element> {
 		return clone;
 	}
 
-	/// <summary> Reorders elements into 'Standard' order </summary>
-	public string BuildElementString(string delimiter = " " ) {
+	/// <summary> sort elements into 'Standard' order </summary>
+	public string BuildElementString(bool showOneCount=true) {
+		string ShowLabel( int value ) => (showOneCount || 1 < value) ? value + " " : "";
 		return this
-			.OrderBy(p=>(int)p.Key)
-			.Select(p=>(p.Value > 1 ? p.Value+" ":"")+p.Key.ToString().ToLower())
-			.Join( delimiter ); // comma or space
+			.OrderBy( p=>StandardOrder(p.Key) )
+			.Select(p=> ShowLabel(p.Value) + p.Key.ToString().ToLower() )
+			.Join(" "); // comma or space
 	}
+
+	static public int StandardOrder( Element el ) => (int)el;
 
 	public static ElementCounts Parse( string elementFormat ) {
 		var items = new List<Element>();
