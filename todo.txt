@@ -19,16 +19,18 @@ Is In Play
 ==========================
 ====  Clean Up Items  ====
 ==========================
+5 Move Finders Hook to Action-start
+5 Convert all Fear Cards to Commands
+5 Check that Dahan Raid does REAL damage for Bringer, not dream-damage
+
 4 ForgetCard - rename ForgetCard to ForgetCard_UserChoice AND/OR Consolidate the 2 ForgetCard methods into 1
 4 CardDrawer - get rid of power progression cards in tests, then make Card Drawer private and clean it up.
 4 Draw back side of Invader Cards
 4 Draw Adversary details
 
-3 Check that Dahan Raid does REAL damage for Bringer, not dream-damage
 3 Add special-rules logging as Debug, so we can see what happened.
 3 Make Virtual / Calculated Tokens work for types other than Defense
 3 Switch Explore & Ravage over to use Explore Tokens and Ravage Tokens
-3 Convert all Fear Cards to Commands
 3 Review items that are PickSpace then Pick Token into a single pick-space-token step.
 3 Shifting Memory - Prepared elements.  Add them AFTER the action has completed.
 

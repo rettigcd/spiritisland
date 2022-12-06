@@ -10,13 +10,13 @@ public class FleeFromDangerousLands : IFearOptions {
 	public Task Level1( GameCtx ctx ) {
 
 		// On Each Board,
-		return Cmd.OnEachBoardOld(
+		return Cmd.OnEachBoard(
 			// Push 1 Explorer / Town
 			Cmd.PushExplorersOrTowns(1)
 				// from a land with Badlands / Wilds / Dahan.
 				.FromLandOnBoard( FindBadlandsWildsOrDahanSpaces,"a land with Badlands / Wilds / Dahan." )
 			)
-			.Execute( ctx.GameState );
+			.Execute( ctx );
 
 	}
 
@@ -24,13 +24,13 @@ public class FleeFromDangerousLands : IFearOptions {
 	public Task Level2( GameCtx ctx ) {
 
 		// On Each Board, 
-		return Cmd.OnEachBoardOld(
+		return Cmd.OnEachBoard(
 			// Remove 1 Explorer / Town 
 			Cmd.RemoveExplorersOrTowns( 1 )
 				// from a land with Badlands / Wilds / Dahan.
 				.FromLandOnBoard( FindBadlandsWildsOrDahanSpaces, "a land with Badlands / Wilds / Dahan" )
 			)
-			.Execute( ctx.GameState );
+			.Execute( ctx );
 
 	}
 
@@ -38,7 +38,7 @@ public class FleeFromDangerousLands : IFearOptions {
 	public async Task Level3( GameCtx ctx ) {
 
 		// On Each Board: Remove 1 Explorer / Town from any land, or Remove 1 City from a land with Badlands / Wilds / Dahan.
-		await Cmd.OnEachBoardOld(
+		await Cmd.OnEachBoard(
 			Cmd.Pick1(
 				// Remove 1 Explorer / Town from any land
 				Cmd.RemoveExplorersOrTowns(1).InAnyLandOnBoard(),
@@ -46,7 +46,7 @@ public class FleeFromDangerousLands : IFearOptions {
 				Cmd.RemoveCities( 1 ).FromLandOnBoard( FindBadlandsWildsOrDahanSpaces, "a land with Badlands / Wilds / Dahan" )
 			)
 		)
-			.Execute( ctx.GameState );
+			.Execute( ctx );
 
 	}
 
