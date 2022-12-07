@@ -30,8 +30,8 @@ public class TargetSpaceCtx : SelfCtx {
 	public Task SelectActionOption( string prompt, params IExecuteOn<TargetSpaceCtx>[] options )=> SelectAction_Inner( prompt, options, Present.AutoSelectSingle, this );
 //	public Task SelectAction_Optional( string prompt, params IExecuteOn<TargetSpaceCtx>[] options )=> SelectAction_Inner( prompt, options, Present.Done, this );
 
-	public bool MatchesRavageCard => GameState.InvaderDeck.Ravage.Cards.Any(c=>c.Matches(Space));
-	public bool MatchesBuildCard => GameState.InvaderDeck.Build.Cards.Any(c=>c.Matches(Space));
+	public bool MatchesRavageCard => GameState.InvaderDeck.Ravage.Cards.Any(c=>c.MatchesCard(Space));
+	public bool MatchesBuildCard => GameState.InvaderDeck.Build.Cards.Any(c=>c.MatchesCard(Space));
 
 	public SpaceState Tokens => _tokens ??= GameState.Tokens[Space];
 
@@ -171,7 +171,7 @@ public class TargetSpaceCtx : SelfCtx {
 	public void SkipAllInvaderActions(string label) => GameState.SkipAllInvaderActions( Space, label );
 
 	public void Skip1Build(IBuildStopper stopperToken) => GameState.AdjustTempToken( Space, stopperToken );
-	public void Skip1Build( string label ) => GameState.AdjustTempToken( Space, BuildStopper.Default( label ) );
+	public void Skip1Build( string label ) => GameState.Skip1Build( Space, label );
 
 	public void SkipExplore(Func<GameState,SpaceState,Task> altAction = null) => GameState.SkipExplore( Tokens, altAction );
 	public void SkipRavage(Func<GameState,SpaceState,Task> altAction = null) => GameState.SkipRavage( Space, altAction );

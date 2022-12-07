@@ -247,6 +247,6 @@ class SpaceSpecificInvaderCard : IInvaderCard {
 
 	public Task Build( GameState gameState ) => throw new NotImplementedException();
 	public Task Explore( GameState gameState ) => throw new NotImplementedException();
-	public bool Matches( Space space ) => space == _space;
+	public bool MatchesCard( Space space ) => space == _space;
 	public Task Ravage( GameState gameState ) => throw new NotImplementedException();
 }

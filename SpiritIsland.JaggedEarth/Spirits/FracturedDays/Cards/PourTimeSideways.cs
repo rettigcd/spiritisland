@@ -20,7 +20,7 @@ class PourTimeSideways {
 
 		// On the board moved from: During the Invader Phase, Resolve Invader and "Each board / Each land..." Actions one fewer time.
 		foreach(var space in ctx.GameState.Tokens.PowerUp(src.Board.Spaces)) {
-			ctx.GameState.AdjustTempToken(space.Space, BuildStopper.Default( Name ) );
+			ctx.GameState.Skip1Build( space.Space, Name );
 			ctx.GameState.SkipExplore(space);
 			ctx.GameState.SkipRavage(space.Space);
 		}

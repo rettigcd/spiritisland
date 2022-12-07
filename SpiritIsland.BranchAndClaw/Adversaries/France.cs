@@ -245,7 +245,7 @@ public class FranceInvaderCard : InvaderCard {
 		return Cmd.OnEachBoard( new DecisionOption<BoardCtx>( 
 			"Place town or blight matching Explore card."
 			, boardCtx => Cmd.Pick1( boardCtx.Board.Spaces
-				.Where( Matches )
+				.Where( MatchesCard )
 				.Select( SelectSpaceAction )
 				.ToArray()
 			).Execute( boardCtx )

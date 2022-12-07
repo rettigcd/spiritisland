@@ -48,12 +48,13 @@ public class BuildEngine {
 			.ToArray();
 
 		// !!! user should be able to select which non-disease stopper they want to use (if multiple)
-		if(buildStoppers.Length > 0) {
+		if(0 < buildStoppers.Length) {
 			var stopper = buildStoppers[0];
 			await stopper.StopBuild( gameState, tokens );
 			return "build stopped by " + stopper.Text;
 		} 
 		
+		// overridden by Vengenance
 		if(await StopBuildWithDiseaseBehavior())
 			return "build stopped by disease";
 

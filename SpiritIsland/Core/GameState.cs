@@ -186,10 +186,9 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	public void SkipAllInvaderActions( Space target, string label ) {
 		// Sometimes this will be called with nothing to skip, Example: Quarentine level 3
-
-			SkipRavage( target );
-			AdjustTempToken( target, BuildStopper.Default( label ) );
-			SkipExplore( Tokens[target] );
+		SkipRavage( target );
+		AdjustTempToken( target, BuildStopper.Default( label ) );
+		SkipExplore( Tokens[target] );
 	}
 
 	public void SkipRavage( Space space, Func<GameState,SpaceState,Task> altAction = null ) {
@@ -219,13 +218,24 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		} );
 	}
 
+	public void Skip1Build( Space space, string label ) {
+		AdjustTempToken( space, BuildStopper.Default( label ) );
+	}
+	public void SkipAllBuilds( Space space, string label, params TokenClass[] stoppedClasses  ) {
+		if( stoppedClasses == null || stoppedClasses.Length == 0 )
+			stoppedClasses = new TokenClass[] { Invader.Town, Invader.City };
+		AdjustTempToken( space, new BuildStopper( label, BuildStopper.EDuration.AllStopsThisTurn, stoppedClasses ));
+	}
+
 	public void PourTimeSideways_Add1Build( params Space[] target ) {
 		// !!! This should only add to spaces that match invader card
 		// !!! instead, call the invader Build card again.
+
 		PreBuilding.ForRound.Add( ( BuildingEventArgs args ) => {
 			foreach(var space in target)
-				Tokens[space].Adjust(TokenType.DoBuild,1);
+				Tokens[space].Adjust( TokenType.DoBuild, 1 );
 		} );
+
 	}
 
 

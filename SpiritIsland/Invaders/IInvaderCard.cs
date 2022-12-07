@@ -8,7 +8,7 @@ public interface IInvaderCard : IOption {
 	bool Skip { get; set; }
 	bool HoldBack { get; set; }
 
-	bool Matches( Space space );
+	bool MatchesCard( Space space );
 
 	Task Build( GameState gameState );
 	Task Explore( GameState gameState );

@@ -20,11 +20,11 @@ public class PanickedByWildBeasts : IFearOptions {
 		foreach(var spiritCtx in ctx.Spirits)
 			await spiritCtx.AddStrifeToOne( ctx.LandsWithOrAdjacentToBeasts() );
 
-		// Invaders skip their normal explore and build in lands ith beast
+		// Invaders skip their normal explore and build in lands with beast
 		foreach(var land in ctx.GameState.AllActiveSpaces)
 			if(land.Beasts.Any) {
 				ctx.GameState.SkipExplore( land );
-				ctx.GameState.AdjustTempToken( land.Space, BuildStopper.Default( Name ) );
+				ctx.GameState.Skip1Build( land.Space, Name );
 			}
 	}
 

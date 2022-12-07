@@ -101,7 +101,7 @@ public class TriggerCommandBeasts : IInvaderCard {
 	public bool Skip { get => false; set => throw new NotImplementedException(); }
 	public bool HoldBack { get => false; set => throw new NotImplementedException(); }
 
-	public bool Matches( Space space ) => inner.Matches( space );
+	public bool MatchesCard( Space space ) => inner.MatchesCard( space );
 	public Task Ravage( GameState gameState ) => inner.Ravage( gameState );
 	public Task Build( GameState gameState ) => inner.Build(gameState);
 	public Task Explore( GameState gameState ) {

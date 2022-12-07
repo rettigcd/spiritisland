@@ -13,8 +13,8 @@ public class InvaderCard : IOption, IInvaderCard {
 
 	public int InvaderStage { get; }
 
-	public bool Matches( Space space ) => Filter.Matches( space );
-	public bool Matches( SpaceState space ) => Filter.Matches( space.Space );
+	public bool MatchesCard( Space space ) => Filter.Matches( space );
+	public bool MatchesCard( SpaceState space ) => Filter.Matches( space.Space );
 
 
 	#region Constructors
@@ -36,7 +36,7 @@ public class InvaderCard : IOption, IInvaderCard {
 
 	public async Task Ravage( GameState gs ) {
 		gs.Log( new InvaderActionEntry( "Ravaging:" + Text ) );
-		var ravageSpacesMatchingCard = gs.AllActiveSpaces.Where( Matches ).ToList();
+		var ravageSpacesMatchingCard = gs.AllActiveSpaces.Where( MatchesCard ).ToList();
 
 		// Modify / Adjust
 		await gs.PreRavaging?.InvokeAsync( new RavagingEventArgs( gs ) { Spaces = ravageSpacesMatchingCard } );
@@ -58,35 +58,38 @@ public class InvaderCard : IOption, IInvaderCard {
 	public async Task Build( GameState gameState ) {
 		gameState.Log( new InvaderActionEntry( "Building:" + Text ) );
 
-		// Find spaces that match Card's Terrain
-		var spacesGettingBuildTokens = gameState.AllActiveSpaces
-			.Where( tokens => Matches(tokens.Space) ) // matches 
-			.Where( tokens => ShouldBuildOnSpace( tokens ) )
+		// Add BuildTokens ToMatching spaces
+		var matchingSpaces = gameState.AllActiveSpaces
+			.Where( MatchesCard )			// space matches card
+			.Where( ShouldBuildOnSpace )    // usually because it has invaders on it
 			.ToArray();
-
-		foreach(var tokens in spacesGettingBuildTokens)
+		foreach(SpaceState tokens in matchingSpaces)
 			tokens.Adjust( TokenType.DoBuild, 1 );
 
 		// Find spaces with Build Tokens
-		var spacesWithBuildTokens = gameState.AllActiveSpaces
-			.Where( tokens => tokens[TokenType.DoBuild] > 0 )
+		// ** May contain more than just Normal Build, due to rule/power that added extra ones.
+		var matchingSpacesWithBuildTokens = gameState.AllActiveSpaces
+			.Where( tokens => 0 < tokens[TokenType.DoBuild] )
 			.OrderBy( tokens => tokens.Space.Label )
 			.ToArray();
 
 		// Modify
 		await gameState.PreBuilding.InvokeAsync( new BuildingEventArgs(
 			gameState,
-			spacesWithBuildTokens.ToArray()
+			matchingSpacesWithBuildTokens.ToArray()
 		) );
 
 		// report spaces that did not get built on.
-		var noBuildsSpaceNames = spacesGettingBuildTokens.Except( spacesWithBuildTokens ).Select( x => x.Space.Text ).ToArray();
-		if(noBuildsSpaceNames.Length > 0)
+		var noBuildsSpaceNames = matchingSpaces	// Space that should be build on
+			.Except( matchingSpacesWithBuildTokens )				// Spaces that we are actually building on.
+			.Select( x => x.Space.Text )
+			.ToArray();
+		if(0 < noBuildsSpaceNames.Length)
 			gameState.Log( new InvaderActionEntry( "No build due to no invaders on: " + string.Join( ", ", noBuildsSpaceNames ) ) );
 
 		// Do Build on spaces with build tokens
 		BuildEngine buildEngine = gameState.GetBuildEngine();
-		foreach(SpaceState tokens in spacesWithBuildTokens)
+		foreach(SpaceState tokens in matchingSpacesWithBuildTokens)
 			await BuildIn1Space( gameState, buildEngine, tokens );
 
 	}
@@ -116,7 +119,7 @@ public class InvaderCard : IOption, IInvaderCard {
 		static bool IsExplorerSource( SpaceState space ) => space.Space.IsOcean || space.HasAny( Invader.Town, Invader.City );
 		var args = new ExploreEventArgs( gs,
 			gs.AllActiveSpaces.Where( IsExplorerSource ),
-			gs.AllActiveSpaces.Where( Matches )
+			gs.AllActiveSpaces.Where( MatchesCard )
 		);
 		await gs.PreExplore.InvokeAsync( args );
 

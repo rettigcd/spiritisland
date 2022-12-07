@@ -75,7 +75,7 @@ public class Invader_Tests {
 	[InlineDataAttribute("S","A4,A7")]
 	public void Level1CardTargets(string cardText,string expectedTargets){
 		var sut = InvaderDeck.Level1Cards.Single(c=>c.Text==cardText);
-		var targets = board.Spaces.Where(sut.Matches).Select(x=>x.Label).ToArray();
+		var targets = board.Spaces.Where(sut.MatchesCard).Select(x=>x.Label).ToArray();
 		Assert.Equal(expectedTargets,targets.Join(","));
 	}
 
@@ -89,7 +89,7 @@ public class Invader_Tests {
 	public void Level2CardTargets(string cardText,string expectedTargets){
 		var cards = InvaderDeck.Level2Cards.Where(c=>c.Text==cardText);
 		var sut = Assert.Single(cards);
-		var targets = board.Spaces.Where(sut.Matches).Select(x=>x.Label).ToArray();
+		var targets = board.Spaces.Where(sut.MatchesCard).Select(x=>x.Label).ToArray();
 		Assert.Equal(expectedTargets,targets.Join(","));
 	}
 
@@ -103,7 +103,7 @@ public class Invader_Tests {
 	public void Level3CardTargets(string cardText,string expectedTargets){
 		var cards = InvaderDeck.Level3Cards.Where(c=>c.Text==cardText);
 		var sut = Assert.Single(cards);
-		var targets = board.Spaces.Where(sut.Matches).Select(x=>x.Label).ToArray();
+		var targets = board.Spaces.Where(sut.MatchesCard).Select(x=>x.Label).ToArray();
 		Assert.Equal(expectedTargets,targets.Join(","));
 	}
 

@@ -10,23 +10,22 @@ public interface IBuildStopper : Token {
 public class BuildStopper : UniqueToken, IBuildStopper {
 	readonly TokenClass[] stoppedClasses;
 
-	static public BuildStopper Default( string label ) => new BuildStopper( label, Invader.Town, Invader.City );
+	static public BuildStopper Default( string label ) => new BuildStopper( label, EDuration.OneStopThisTurn,  Invader.Town, Invader.City );
 	
-	static public BuildStopper StopAll( string label ) => new BuildStopper( label, Invader.Town, Invader.City ) { 
-		Duration = EDuration.AllStopsThisTurn
-	};
+	static public BuildStopper StopAll( string label ) => new BuildStopper( label, EDuration.AllStopsThisTurn, Invader.Town, Invader.City );
 
-	public BuildStopper( string label, params TokenClass[] stoppedTokenClasses ) : base( label ) {
+	public BuildStopper( string label, EDuration duration, params TokenClass[] stoppedTokenClasses ) : base( label ) {
+		Duration = duration;
 		this.stoppedClasses = stoppedTokenClasses;
 	}
+	public EDuration Duration { get; }
+
 	public bool Stops( TokenClass tokenClass ) => stoppedClasses.Contains( tokenClass );
 	public virtual Task StopBuild( GameState _, SpaceState space ) {
 		if(Duration == EDuration.OneStopThisTurn )
 			space.Adjust( this, -1 ); // remove this token
 		return Task.CompletedTask;
 	}
-
-	public EDuration Duration { get; set; } = EDuration.OneStopThisTurn;
 
 	public enum EDuration { 
 		OneStopThisTurn, // first, default

@@ -88,10 +88,10 @@ public class ASpreadOfRampantGreen : Spirit {
 	async Task ChokeTheLandWithGreen_Build( BuildingEventArgs args ) {
 		// !!! This is out of order.
 		// Needs to come after Fear-stops and Power-Stops
-		SpaceState[] buildSpaces = args.SpacesWithBuildTokens.Where( k => k[TokenType.DoBuild] > 0 ).ToArray();
+		SpaceState[] buildSpaces = args.SpacesWithBuildTokens.Where( k => 0 < k[TokenType.DoBuild] ).ToArray();
 		SpaceState[] stopped = await ChokeTheLandWithGreenAction( args.GameState, buildSpaces, "build" ); 
 		foreach(var s in stopped)
-			args.GameState.AdjustTempToken( s.Space, BuildStopper.Default( ChokeTheLandWithGreen.Title ) );
+			args.GameState.Skip1Build( s.Space, ChokeTheLandWithGreen.Title );
 	}
 
 	async Task<SpaceState[]> ChokeTheLandWithGreenAction( GameState gs, SpaceState[] spaces, string actionText ) {

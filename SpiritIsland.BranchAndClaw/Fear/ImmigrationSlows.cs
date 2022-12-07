@@ -18,8 +18,7 @@ public class ImmigrationSlows : IFearOptions {
 				.ToArray();
 
 			foreach(var space in spacesToSkip)
-				args.GameState.AdjustTempToken(space.Space, BuildStopper.Default( Name ) ); // !!! replace event handler with token that does the lowest #d land check
-
+				args.GameState.Skip1Build(space.Space, Name );// !!! replace event handler with token that does the lowest #d land check
 		} );
 
 		return Task.CompletedTask;

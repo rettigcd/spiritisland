@@ -14,7 +14,7 @@ public class BeliefTakesRoot_Tests {
 		gameState.Fear.PushOntoDeck( new BeliefTakesRoot() );
 
 		invaderCard = InvaderDeck.Level1Cards[0];
-		ravageSpace = gameState.Island.Boards[0].Spaces.Where( invaderCard.Matches ).First();
+		ravageSpace = gameState.Island.Boards[0].Spaces.Where( invaderCard.MatchesCard ).First();
 	}
 
 	#endregion

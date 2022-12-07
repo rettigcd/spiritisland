@@ -24,7 +24,7 @@ public class AvoidTheDahan : IFearOptions {
 			foreach(var space in args.SpacesWithBuildTokens) {
 				var tokens = space;
 				if(tokens.SumAny(Invader.City,Invader.Town) < tokens.Dahan.Count)
-					args.GameState.AdjustTempToken( space.Space, BuildStopper.StopAll( Name ) );
+					args.GameState.SkipAllBuilds( space.Space, Name );
 			}
 		} );
 
@@ -36,7 +36,7 @@ public class AvoidTheDahan : IFearOptions {
 		ctx.GameState.PreBuilding.ForRound.Add( ( args ) => {
 			foreach(var space in args.SpacesWithBuildTokens) {
 				if(0 < space.Dahan.Count)
-					args.GameState.AdjustTempToken( space.Space, BuildStopper.StopAll( Name ) );
+					args.GameState.SkipAllBuilds( space.Space, Name );
 			}
 		} );
 		return Task.CompletedTask;
