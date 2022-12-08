@@ -20,11 +20,7 @@ public class Quarantine : IFearOptions {
 		ExploreDoesNotAffectCoastalLands( ctx );
 
 		// Lands with disease are not a source of invaders when exploring
-		ctx.GameState.PreExplore.ForRound.Add( ( args ) => { 
-			foreach(var space in ctx.LandsWithDisease())
-				args.Sources.Remove(space);
-			return Task.CompletedTask;
-		});
+		ctx.GameState.AdjustTempTokenForAll( new SkipExploreFrom( Name ) );
 
 		return Task.CompletedTask;
 	}
@@ -45,7 +41,7 @@ public class Quarantine : IFearOptions {
 	static void ExploreDoesNotAffectCoastalLands( GameCtx ctx ) {
 		var gs = ctx.GameState;
 		foreach(var costal in gs.AllActiveSpaces.Where( x => x.Space.IsCoastal ))
-			gs.SkipExplore( costal );
+			gs.Skip1Explore( costal, Name );
 	}
 
 }

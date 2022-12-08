@@ -2,7 +2,7 @@
 
 class CompoundActionFactory : GrowthActionFactory {
 
-	GrowthActionFactory[] parts;
+	readonly GrowthActionFactory[] parts;
 
 	public CompoundActionFactory(params GrowthActionFactory[] parts) {
 		this.parts = parts;

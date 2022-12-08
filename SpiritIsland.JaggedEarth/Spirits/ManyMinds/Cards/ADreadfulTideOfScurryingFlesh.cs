@@ -1,6 +1,7 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
 public class ADreadfulTideOfScurryingFlesh {
+
 	const string Name = "A Dreadful Tide of Scurrying Flesh";
 	[SpiritCard(Name,0, Element.Moon, Element.Air,Element.Water, Element.Animal), Fast, FromSacredSite(1,Target.TwoBeasts)]
 	static public async Task ActAsync(TargetSpaceCtx ctx ) {
@@ -13,14 +14,8 @@ public class ADreadfulTideOfScurryingFlesh {
 		// 2 fear
 		ctx.AddFear( 2*removed );
 		// and skip one Invader Action
-		for(int i = 0; i < removed; ++i) {
-			// !!! Maybe this is like Infestation of Venomous Spiders and user can select later.
-			await ctx.SelectActionOption( "Skip Invader Action",
-				new SpaceAction("Ravage",  ctx => ctx.SkipRavage()),
-				new SpaceAction("Build",   ctx => ctx.Skip1Build(Name)),
-				new SpaceAction("Explore", ctx => ctx.SkipExplore())
-			);
-		}
+		while(0<removed--)
+			ctx.GameState.AdjustTempToken( ctx.Space, new SkipAnyInvaderAction(Name, ctx.Self) );
 	}
 
 }

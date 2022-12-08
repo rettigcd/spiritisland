@@ -318,7 +318,6 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	/// <summary> Explicitly named so not to confuse with Powers - Range commands. </summary>
 	public IEnumerable<SpaceState> InOrAdjacentTo => Range( 1 );
 		
-	IEnumerable<SpaceState> PowerUp(IEnumerable<Space> spaces) => this.tokenApi.PowerUp( spaces );
 }
 
 public class BoardState {

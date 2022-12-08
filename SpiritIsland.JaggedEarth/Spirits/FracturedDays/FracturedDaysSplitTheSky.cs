@@ -66,7 +66,7 @@ public class FracturedDaysSplitTheSky : Spirit {
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
 
-		// 1 in lowest numbered land with 1 dahan
+		// 1 in lowest-numbered land with 1 dahan
 		var space1 = gs.Tokens[ board.Spaces.First(s=>gs.Tokens[s].Dahan.Count==1) ];
 		Presence.Adjust( space1, 1 );
 

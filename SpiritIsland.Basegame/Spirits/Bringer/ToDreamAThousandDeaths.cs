@@ -127,7 +127,7 @@ public class ToDreamAThousandDeaths : InvaderBinding {
 
 	const string SpacesWithDreamers = "SpacesWithDreamers";
 
-	BringerSpaceCtx ctx;
+	readonly BringerSpaceCtx ctx;
 
 	#endregion
 }

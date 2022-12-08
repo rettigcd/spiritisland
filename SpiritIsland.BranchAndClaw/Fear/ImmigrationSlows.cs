@@ -4,23 +4,18 @@ public class ImmigrationSlows : IFearOptions {
 	public const string Name = "Immigration Slows";
 	string IFearOptions.Name => Name;
 
-	[FearLevel( 1, "During the next normal build, skip the lowest numbered land matching the invader card on each board." )]
+	[FearLevel( 1, "During the next normal build, skip the lowest-numbered land matching the invader card on each board." )]
 	public Task Level1( GameCtx ctx ) {
 
-		ctx.GameState.PreBuilding.ForRound.Add( ( args ) => {
+		// this is the next normal build,
+		var card = ctx.GameState.InvaderDeck.Build.Cards.FirstOrDefault(); 
+		if(card == null) return Task.CompletedTask; // !! should this fall over to the next round?
 
-			// During the next normal build, skip the lowest numbered land matching the invader card on each board
-
-			// !! If this goes after something else has already removed the lowest # build, this will remove a higher # land.
-			var spacesToSkip = args.SpacesWithBuildTokens
-				.GroupBy( s => s.Space.Board )
-				.SelectMany( grp => grp.OrderBy( x => x.Space.Label ).Take( 1 ) )
-				.ToArray();
-
-			foreach(var space in spacesToSkip)
-				args.GameState.Skip1Build(space.Space, Name );// !!! replace event handler with token that does the lowest #d land check
-		} );
-
+		foreach(var board in ctx.GameState.Island.Boards) {
+			var lowest = board.Spaces.FirstOrDefault(card.MatchesCard);
+			if(lowest != null)
+				ctx.GameState.Skip1Build(lowest, Name);
+		}
 		return Task.CompletedTask;
 	}
 

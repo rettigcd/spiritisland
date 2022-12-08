@@ -18,7 +18,6 @@ public partial class Keeper : Spirit {
 		PowerCard.For<SacrosanctWilderness>(),
 		PowerCard.For<ToweringWrath>()
 	) {
-		(Presence as KeeperPresence).spirit = this;
 
 		GrowthTrack = new GrowthTrack( 2,
 			new GrowthOption( new ReclaimAll() ,new GainEnergy(1) ){ GainEnergy = 1 },

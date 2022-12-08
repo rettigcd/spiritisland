@@ -52,22 +52,28 @@ public class England : IAdversary {
 	// If the input were not an InvaderCard, we would have to wrap the card passed in so as to not drop any functionality.
 	public class EnglandInvaderCard : InvaderCard {
 		readonly bool expandedBuild;
+
+		#region constructor
 		public EnglandInvaderCard(InvaderCard card,bool expandedBuild):base(card) {
 			this.expandedBuild = expandedBuild;
 		}
+		#endregion
+
 		protected override bool ShouldBuildOnSpace( SpaceState tokens ) {
-			int cityTownCounts(SpaceState space) => space.SumAny( Invader.Town, Invader.City );
-			bool adjacentTo2OrMoreCitiesOrTowns(SpaceState tokens) => !tokens.Has(TokenType.Isolate) 
+			static int cityTownCounts(SpaceState space) => space.SumAny( Invader.Town, Invader.City );
+			static bool isAdjacentTo2OrMoreCitiesOrTowns(SpaceState tokens) => !tokens.Has(TokenType.Isolate) 
 				&& 2 <= tokens.Adjacent.Sum( adj => cityTownCounts( adj ) );
 
 			return base.ShouldBuildOnSpace( tokens )
-				|| expandedBuild && adjacentTo2OrMoreCitiesOrTowns(tokens);
+				|| expandedBuild && isAdjacentTo2OrMoreCitiesOrTowns(tokens);
 		}
+
 		public override async Task Explore( GameState gs ) {
 			await base.Explore( gs );
 			if(HasEscalation)
 				await Escalation( gs );
 		}
+
 		static async Task Escalation( GameState gs ) {
 			// Escalation Stage II
 			// Building Boom: On each board with Towni / City, Build in the land with the most Town / City
@@ -120,11 +126,11 @@ public class England : IAdversary {
 
 	public static async Task EscalationBuild( GameState gs, Space[] buildSpaces ) {
 
-		var buildEngine = gs.GetBuildEngine();
 		foreach(var space in buildSpaces) {
 			var tokens = gs.Tokens[space];
 			tokens.Adjust( TokenType.DoBuild, 1 );
-			string result = await buildEngine.Exec( tokens, gs );
+			var buildEngine = gs.GetBuildEngine( tokens );
+			string result = await buildEngine.DoBuilds();
 			gs.Log( new InvaderActionEntry( $"Escalation: {space.Text}: " + result ) );
 		}
 

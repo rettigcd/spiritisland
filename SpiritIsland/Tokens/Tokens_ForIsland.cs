@@ -39,7 +39,7 @@ public class Tokens_ForIsland : IIslandTokenApi {
 	readonly Dictionary<Space, SpaceState> tokenCounts = new Dictionary<Space, SpaceState>();
 
 	public int GetDynamicTokensFor( SpaceState space, UniqueToken token ) 
-		=> Dynamic.GetTokensFor( gameStateForEventArgs, space, token );
+		=> Dynamic.GetTokensFor( space, token );
 
 	public IEnumerable<Space> Keys => tokenCounts.Keys;
 
@@ -140,7 +140,7 @@ public class DynamicTokens {
 			dict.Add( targetToken, new List<Func<SpaceState, int>>() );
 		dict[targetToken].Add( calcCountOnSpace );
 	}
-	public int GetDynamicTokenFor( GameState gs, SpaceState space, UniqueToken token )
+	public int GetDynamicTokenFor( SpaceState space, UniqueToken token )
 		=> dict.ContainsKey( token ) ? dict[token].Sum( x => x( space ) ) : 0;
 	public void Clear() => dict.Clear();
 
@@ -171,9 +171,9 @@ public class DualDynamicTokens {
 		var dTokens = entireGame ? ForGame : ForRound;
 		dTokens.Register( calcCountOnSpace, targetToken );
 	}
-	public int GetTokensFor( GameState gs, SpaceState space, UniqueToken token )
-		=> ForGame.GetDynamicTokenFor( gs, space, token )
-		+ ForRound.GetDynamicTokenFor( gs, space, token );
+	public int GetTokensFor( SpaceState space, UniqueToken token )
+		=> ForGame.GetDynamicTokenFor( space, token )
+		+ ForRound.GetDynamicTokenFor( space, token );
 
 	public IMemento<DualDynamicTokens> SaveToMemento() => new Memento( this );
 	public void LoadFrom( IMemento<DualDynamicTokens> memento ) {

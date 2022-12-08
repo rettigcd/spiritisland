@@ -39,6 +39,18 @@ public class InvaderActionEntry : ILogEntry {
 	public LogLevel Level { get; }
 	public string Msg( LogLevel _ ) => msg;
 }
+
+public class RavageEntry : ILogEntry {
+	public InvadersRavaged Ravaged { get; }
+	public RavageEntry( InvadersRavaged ravaged ) {
+		Ravaged = ravaged;
+		this.Level = LogLevel.Info;
+	}
+	public LogLevel Level { get; }
+	public string Msg( LogLevel _ ) => Ravaged.ToString();
+}
+
+
 public class SpaceExplored : InvaderActionEntry {
 	public SpaceExplored( Space space ):base( space + ":gains explorer" ) { Space = space; }
 	public Space Space { get; }

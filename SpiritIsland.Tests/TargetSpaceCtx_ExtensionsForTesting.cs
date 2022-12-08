@@ -66,6 +66,8 @@ internal static class TargetSpaceCtx_ExtensionsForTesting {
 		if(spaces.Length == 0) return; // entire card was skipped, won't see the header message
 		foreach(var s in spaces)
 			log.Dequeue().ShouldStartWith( s );
+		if(spaces.Length == 0)
+			log.Dequeue().ShouldStartWith( "No build" );
 	}
 
 	public static void Assert_Explored( this Queue<string> log, params string[] spaces ) {

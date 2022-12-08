@@ -23,7 +23,7 @@ public class PanickedByWildBeasts : IFearOptions {
 		// Invaders skip their normal explore and build in lands with beast
 		foreach(var land in ctx.GameState.AllActiveSpaces)
 			if(land.Beasts.Any) {
-				ctx.GameState.SkipExplore( land );
+				ctx.GameState.Skip1Explore( land, Name );
 				ctx.GameState.Skip1Build( land.Space, Name );
 			}
 	}

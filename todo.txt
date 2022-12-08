@@ -45,6 +45,12 @@ Make Spirit.ResolveActions private/protected.
 Can we Set Spirit.GameState property and then not pass it everywhere?
 Convert TargetSpaceCtx action Methods to Commands
 
+Idea - All of the Stop Tokens are actually just Pre-Build, Pre-Explore, Pre-Ravage events/configures
+Idea - Could the DoRavage token also be the Ravage Configuration used in ModifyRavage?
+Idea - Make Ravage / Build / Explore consistent in using UnitOfWork
+
+Instead of reacting to PresenceMoved / Removed / Added events, have the Presence do the actions itself.
+
 =========================
 ===== Feature Focus =====
 =========================

@@ -6,9 +6,7 @@ public class LureOfTheDeepWilderness : Spirit {
 
 	public override string Text => Name;
 
-	public override SpecialRule[] SpecialRules => new SpecialRule[] { LurePresence.PlacementRule, EnthrallTheForeignExplorersRule };
-
-	static readonly SpecialRule EnthrallTheForeignExplorersRule = new SpecialRule("Enthrall the Foreign Explorers", "For each of your presence in a land, ignore up to 2 explorer during the Ravage Step and any Ravage Action.");
+	public override SpecialRule[] SpecialRules => new SpecialRule[] { LurePresence.PlacementRule, EnthrallTheForeignExplorers.Rule };
 
 	public LureOfTheDeepWilderness():base( 
 		new LurePresence()
@@ -40,61 +38,6 @@ public class LureOfTheDeepWilderness : Spirit {
 
 		// Add 1 beast to land #8
 		gs.Tokens[board[8]].Beasts.Init(1);
-
-		gs.PreRavaging.ForGame.Add( EnthrallTheForeignExplorers );
 	}
-
-	async Task EnthrallTheForeignExplorers( RavagingEventArgs args ) {
-		var ravageSpacesWithPresence = args.Spaces
-			.Where( Presence.IsOn )
-			.Select( x => x.Space )
-			.ToArray();
-		await using var unitOfWork = args.GameState.StartAction( ActionCategory.Spirit ); // Special Rule After X, do Y
-		var selfCtx = this.Bind( args.GameState, unitOfWork );
-		foreach(var space in ravageSpacesWithPresence)
-			await EntralExplorersOnSpace( selfCtx.Target(space) );
-	}
-
-	static async Task EntralExplorersOnSpace( TargetSpaceCtx ctx ) {
-		int maxRemovable = ctx.PresenceCount * 2;
-
-		int explorerCount = ctx.Tokens.Sum( Invader.Explorer );
-
-		var explorerTypes = ctx.Tokens.OfType( Invader.Explorer ).ToList();
-
-		int removableCount = System.Math.Min( maxRemovable, explorerCount );
-		int removed = 0;
-		while( removed < removableCount ) {
-			// Select type to not participate (strifed / non-strifed)
-			var explorerTypeToNotParticipate = explorerTypes.Count == 1 ? explorerTypes[0] 
-				: await ctx.Decision(Select.TokenFrom1Space.TokenToRemove(ctx.Space,1,explorerTypes.ToArray(),Present.Done));
-			if( explorerTypeToNotParticipate == null ) break;
-
-			var countToNotParticipate = await ctx.Self.SelectNumber( $"{ctx.Space.Text}: # of {explorerTypeToNotParticipate} to not participate in Ravage.", ctx.Tokens[explorerTypeToNotParticipate], 0 );
-
-			if(countToNotParticipate > 0)
-				ctx.GameState.ModifyRavage( ctx.Space, cfg => cfg.NotParticipating[explorerTypeToNotParticipate] += countToNotParticipate );
-
-			explorerTypes.Remove( explorerTypeToNotParticipate ); // don't let them select the same type twice and over-count the # of non-participants of that type.
-
-			removed += countToNotParticipate;
-		}
-
-	}
-
-}
-
-public class LurePresence : SpiritPresence {
-
-	static public readonly SpecialRule PlacementRule = new SpecialRule( "Home of the Island's Heart", "Your presence may only be added/moved to lands that are inland." );
-
-	public LurePresence()
-		:base(
-			new PresenceTrack( Track.Energy1, Track.Energy2, Track.MoonEnergy, Track.MkEnergy( 3, Element.Plant ), Track.MkEnergy( 4, Element.Air ), Track.Energy5Reclaim1 ),
-			new PresenceTrack( Track.Card1, Track.Card2, Track.AnimalEnergy, Track.Card3, Track.Card4, Track.Card5Reclaim1 )
-		)
-	{ }
-
-	public override bool CanBePlacedOn( SpaceState space, TerrainMapper tm ) => tm.IsInland( space.Space );
 
 }

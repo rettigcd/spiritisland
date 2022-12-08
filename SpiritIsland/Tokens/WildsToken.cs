@@ -1,0 +1,10 @@
+﻿namespace SpiritIsland;
+
+public class WildsToken : UniqueToken, ISkipExploreTo {
+	public WildsToken(string label, char k, Img img) : base(label,k, img) { }
+	public UsageCost Cost => UsageCost.Something; // we do lose the token
+	public async Task<bool> Skip( GameCtx gameState, SpaceState space ) {
+		await space.Wilds.Bind(gameState.UnitOfWork).Remove(1, RemoveReason.UsedUp);
+		return true;
+	}
+}

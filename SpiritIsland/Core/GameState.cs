@@ -26,9 +26,6 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 		TimePasses_WholeGame += TokenCleanUp;
 		TimePasses_WholeGame += ModifyBlightAddedEffect.ForRound.Clear;
-		TimePasses_WholeGame += PreRavaging.ForRound.Clear;
-		TimePasses_WholeGame += PreBuilding.ForRound.Clear;
-		TimePasses_WholeGame += PreExplore.ForRound.Clear;
 		TimePasses_WholeGame += EndOfAction.ForGame.Clear;
 	}
 
@@ -182,26 +179,36 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	#endregion
 
-	#region Invader Phase / Deck Modifications
+	#region Skip Invader Actions
 
 	public void SkipAllInvaderActions( Space target, string label ) {
 		// Sometimes this will be called with nothing to skip, Example: Quarentine level 3
-		SkipRavage( target );
-		AdjustTempToken( target, BuildStopper.Default( label ) );
-		SkipExplore( Tokens[target] );
+		Skip1Ravage( target, label );
+		AdjustTempToken( target, SkipBuild.Default( label ) );
+		Skip1Explore( Tokens[target], label );
 	}
 
-	public void SkipRavage( Space space, Func<GameState,SpaceState,Task> altAction = null ) {
-		PreRavaging.ForRound.Add( async ( args ) => {
-			var spaceState = Tokens[space];
-			args.Skip1(spaceState);
-			if(altAction != null)
-				await altAction( this, spaceState );
-		} );
+	public void Skip1Ravage( Space space, string label, Func<GameState, SpaceState, Task> altAction = null ) {
+		AdjustTempToken( space, new SkipRavage(label) );
 	}
 
-	public void AddRavage( Space spacesToAdd ) {
-		throw new System.NotImplementedException("!!! should only add to cards that match space");
+	public void Skip1Build( Space space, string label ) {
+		AdjustTempToken( space, SkipBuild.Default( label ) );
+	}
+
+	public void Skip1Explore( SpaceState space, string label ) {
+		space.Adjust( new SkipExploreTo( label ), 1 );
+	}
+
+	public void SkipAllBuilds( Space space, string label, params TokenClass[] stoppedClasses  ) {
+		if( stoppedClasses == null || stoppedClasses.Length == 0 )
+			stoppedClasses = new TokenClass[] { Invader.Town, Invader.City };
+		AdjustTempToken( space, new SkipBuild( label, UsageDuration.SkipAllThisTurn, stoppedClasses ));
+	}
+
+	public void AdjustTempTokenForAll( Token token ) {
+		foreach(var space in AllActiveSpaces)
+			AdjustTempToken( space.Space, token );
 	}
 
 	/// <summary> Adds 1 temporary tokens that remove themselves at Time-Passes. </summary>
@@ -217,47 +224,31 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 			return Task.CompletedTask;
 		} );
 	}
+	#endregion
 
-	public void Skip1Build( Space space, string label ) {
-		AdjustTempToken( space, BuildStopper.Default( label ) );
-	}
-	public void SkipAllBuilds( Space space, string label, params TokenClass[] stoppedClasses  ) {
-		if( stoppedClasses == null || stoppedClasses.Length == 0 )
-			stoppedClasses = new TokenClass[] { Invader.Town, Invader.City };
-		AdjustTempToken( space, new BuildStopper( label, BuildStopper.EDuration.AllStopsThisTurn, stoppedClasses ));
+	#region Pour Time Sideways - Add Invader actions
+
+	public void PourTimeSideways_Add1Ravage( Space spacesToAdd ) {
+		throw new System.NotImplementedException( "!!! should only add to cards that match space" );
 	}
 
 	public void PourTimeSideways_Add1Build( params Space[] target ) {
+		// !!! instead, call Invader build card twice.
+		var buildCard = InvaderDeck.Build.Cards.FirstOrDefault();
+		if(buildCard == null) return;
+		foreach(var space in target.Where(buildCard.MatchesCard).ToArray())
+			Tokens[space].Adjust( TokenType.DoBuild, 1 );
+	}
+
+	public void PourTimeSideways_Add1Explore( params Space[] target ) {
 		// !!! This should only add to spaces that match invader card
-		// !!! instead, call the invader Build card again.
-
-		PreBuilding.ForRound.Add( ( BuildingEventArgs args ) => {
-			foreach(var space in target)
-				Tokens[space].Adjust( TokenType.DoBuild, 1 );
-		} );
-
+		var exploreCard = InvaderDeck.Explore.Cards.FirstOrDefault();
+		if(exploreCard == null) return;
+		foreach(var space in target.Where( exploreCard.MatchesCard ).ToArray())
+			Tokens[space].Adjust( TokenType.DoExplore, 1 );
 	}
 
-
-	public void SkipExplore( SpaceState space, Func<GameState,SpaceState,Task> altAction = null  ) {
-		PreExplore.ForRound.Add( async ( args ) => {
-			args.Skip(space);
-			if(altAction != null)
-				await altAction( this, space );
-		} );
-	}
-
-	public void AddExplore( params Space[] target ) {
-		// !!! This should only add to spaces that match invader card
-		PreExplore.ForRound.Add( ( args ) => {
-			foreach(var space in target)
-				args.Add( space );
-		} );
-	}
-
-	public Func<BuildEngine> GetBuildEngine = () => new BuildEngine(); // !!! instead of overriding this in Vengence, add event hook
-
-	#endregion
+	#endregion Pour Time Sideways - Add Invader actions
 
 	#region Configure Ravage
 
@@ -379,10 +370,6 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	// - Events -
 	public event Action<ILogEntry> NewLogEntry;
 	public DualAsyncEvent<GameState> StartOfInvaderPhase   = new DualAsyncEvent<GameState>();          // Blight effects
-	public DualAsyncEvent<RavagingEventArgs> PreRavaging   = new DualAsyncEvent<RavagingEventArgs>();  // A Spread of Rampant Green - Whole game - stop ravage
-	public DualAsyncEvent<BuildingEventArgs> PreBuilding   = new DualAsyncEvent<BuildingEventArgs>();  // A Spread of Rampant Green - While game - stop build
-	public DualAsyncEvent<ExploreEventArgs>  PreExplore    = new DualAsyncEvent<ExploreEventArgs>();
-	public DualAsyncEvent<InvadersRavaged> InvadersRavaged = new DualAsyncEvent<InvadersRavaged>();
 	public DualAsyncEvent<LandDamagedArgs> LandDamaged     = new DualAsyncEvent<LandDamagedArgs>();    // Let Them Break Themselves Against the Stone
 	public DualAsyncEvent<UnitOfWork> EndOfAction          = new DualAsyncEvent<UnitOfWork>();
 
@@ -390,6 +377,18 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	public Stack<Func<GameState, Task>> TimePasses_ThisRound = new Stack<Func<GameState, Task>>();     // This must be Push / Pop
 
 	#endregion
+
+	#region Game-Wide overrideable Behavior
+
+	public Func<GameCtx,SpaceState,TokenClass,Task<bool>> Disease_StopBuildBehavior = Disease_StopBuildBehavior_Default;
+	static async Task<bool> Disease_StopBuildBehavior_Default( GameCtx ctx, SpaceState tokens, TokenClass _ ) {
+		await tokens.Disease.Bind( ctx.UnitOfWork ).Remove( 1, RemoveReason.UsedUp );
+		return true;
+	}
+
+	public BuildEngine GetBuildEngine( SpaceState tokens ) => new BuildEngine( this, tokens );
+
+	#endregion overrideable Game-Wide Behavior
 
 	#region Memento
 

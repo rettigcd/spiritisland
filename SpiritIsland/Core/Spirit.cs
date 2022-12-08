@@ -6,6 +6,7 @@ public abstract partial class Spirit : IOption {
 
 	public Spirit( SpiritPresence presence, params PowerCard[] initialCards ){
 		Presence = presence;
+		Presence.SetSpirit( this );
 		Presence.TrackRevealed.ForGame.Add( args => Elements.AddRange(args.Track.Elements) );
 
 		foreach(var card in initialCards)
@@ -520,7 +521,6 @@ public abstract partial class Spirit : IOption {
 		params TargetCriteria[] targetCriteria
 	) {
 		if(prompt == null) prompt = "Target Space.";
-		var x = ctx.GameState.Tokens[ctx.GameState.Island.Boards[0][0]];
 		IEnumerable<Space> spaces = GetPowerTargetOptions( powerType, ctx.GameState, sourceCriteria, targetCriteria );
 		return this.Gateway.Decision( new Select.Space( prompt, spaces, Present.Always ));
 	}
@@ -556,7 +556,7 @@ public abstract partial class Spirit : IOption {
 public record TargetSourceCriteria( From From, Terrain? Terrain = null );
 public class TargetCriteria {
 	public int Range { get; }
-	string[] _filters;
+	readonly string[] _filters;
 
 	public TargetCriteria(int range, params string[] filters) {
 		Range = range;

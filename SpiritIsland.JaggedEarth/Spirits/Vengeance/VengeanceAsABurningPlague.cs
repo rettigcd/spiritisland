@@ -28,7 +28,7 @@ public class VengeanceAsABurningPlague : Spirit {
 	public override string Text => Name;
 
 	public override SpecialRule[] SpecialRules => new SpecialRule[] {  
-		TerrorOfASlowlyUnfoldingPlague.Rule,
+		TerrorOfASlowlyUnfoldingPlague_Rule,
 		LingeringPestilence.Rule,
 		WreakVengeanceForTheLandsCorruption.Rule
 	};
@@ -40,33 +40,22 @@ public class VengeanceAsABurningPlague : Spirit {
 		// 1 in a Wetland without dahan
 		Presence.Adjust(gameState.Tokens[board.Spaces.First(s=>s.IsWetland && !gameState.Tokens[s].Dahan.Any)], 1);
 
-		gameState.GetBuildEngine = () => new TerrorOfASlowlyUnfoldingPlague(this);
+		gameState.Disease_StopBuildBehavior = TerrorOfASlowlyUnfoldingPlague_Handler;
 
 	}
 
-	// BuildEngine
-	class TerrorOfASlowlyUnfoldingPlague : BuildEngine  {
+	static public SpecialRule TerrorOfASlowlyUnfoldingPlague_Rule => new SpecialRule(
+		"The Terror of a Slowly Unfolding Plague",
+		"When disease would prevent a Build on a board with your presence, you may let the Build happen (removing no disease).  If you do, 1 fear."
+	);
 
-		static public SpecialRule Rule => new SpecialRule(
-			"The Terror of a Slowly Unfolding Plague",
-			"When disease would prevent a Build on a board with your presence, you may let the Build happen (removing no disease).  If you do, 1 fear."
-		);
-
-		readonly VengeanceAsABurningPlague spirit;
-		public TerrorOfASlowlyUnfoldingPlague(VengeanceAsABurningPlague spirit) { this.spirit = spirit; }
-		protected override async Task<bool> StopBuildWithDiseaseBehavior() {
-			var disease = tokens.Disease;
-			bool stoppedByDisease = disease.Any 
-				&& await spirit.UserSelectsFirstText($"Build pending on {tokens.Space.Label}.", "Stop build, -1 Disease", "+1 Fear, keep Disease ");
-
-			if( stoppedByDisease )
-				await disease.Bind(actionId).Remove(1, RemoveReason.UsedUp);
-			else 
-				gameState.Fear.AddDirect(new FearArgs { FromDestroyedInvaders = false, count=1, space = tokens.Space } );
-			return stoppedByDisease;
-
-		}
-
+	async Task<bool> TerrorOfASlowlyUnfoldingPlague_Handler( GameCtx gameCtx, SpaceState tokens, TokenClass tokenClass ) {
+		bool stoppedByDisease = await this.UserSelectsFirstText( $"Stop pending {tokenClass.Label} build on {tokens.Space.Label}.", "Yes, -1 Disease", "No, +1 Fear, keep Disease " );
+		if(stoppedByDisease)
+			await tokens.Disease.Bind( gameCtx.UnitOfWork ).Remove( 1, RemoveReason.UsedUp ); // !!! Maybe this should be different UoW
+		else
+			gameCtx.GameState.Fear.AddDirect( new FearArgs { FromDestroyedInvaders = false, count = 1, space = tokens.Space } );
+		return stoppedByDisease;
 	}
 
 	public override SelfCtx Bind( GameState gameState, UnitOfWork actionId, Cause cause = default ) 

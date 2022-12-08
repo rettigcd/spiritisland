@@ -22,8 +22,15 @@ public class RavageAction {
 	readonly InvadersRavaged @event; // record status here
 	CountDictionary<HealthToken> currentAttackers; // tokens might change if strife is removed
 
-	public async Task<InvadersRavaged> Exec() {
-		if(!_tokens.HasInvaders()) return null;
+	public async Task Exec() {
+
+		// Check for Stoppers
+		var stoppers = _tokens.Keys.OfType<ISkipRavages>()
+			.OrderBy(s=>s.Cost)
+			.ToArray();
+		foreach(var stopper in stoppers)
+			if(await stopper.Skip(gameState,_tokens))
+				return; // baby steps, don't break tests.  Eventually we want: $"stopped by {stopper.Text}";
 
 		this.UnitOfWork = gameState.StartAction( ActionCategory.Invader );
 		this.invaderBinding = new InvaderBinding( gameState, _tokens, UnitOfWork );
@@ -34,8 +41,7 @@ public class RavageAction {
 			@event.startingDefenders = GetDefenders();
 
 			await RavageSequence();
-			await gameState.InvadersRavaged.InvokeAsync(@event);
-			return @event;
+			gameState.Log( new RavageEntry( @event ));
 		}
 		finally {
 			if( this.UnitOfWork != null) {

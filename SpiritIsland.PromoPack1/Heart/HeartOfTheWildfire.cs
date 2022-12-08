@@ -22,7 +22,6 @@ public class HeartOfTheWildfire : Spirit {
 		,PowerCard.For<ThreateningFlames>()
 		,PowerCard.For<FlamesFury>()
 	) {
-		(Presence as BlazingPresence).spirit = this;
 		InnatePowers = new InnatePower[] {
 			InnatePower.For<FireStorm>(),
 			InnatePower.For<TheBurnedLandRegrows>()
@@ -87,8 +86,6 @@ public class HeartOfTheWildfire : Spirit {
 				new PresenceTrack( Track.Energy0, Track.FireEnergy, Track.Energy1, Track.Energy2, FirePlantEnergy, Track.Energy3 ),
 				new PresenceTrack( Track.Card1, FireCard, Track.Card2, Track.Card3, FireCard, Track.Card4 )
 			) { }
-		public HeartOfTheWildfire spirit;
-
 		public override async Task Place( IOption from, Space to, GameState gs, UnitOfWork actionId ) { 
 			await base.Place( from, to, gs, actionId );
 
@@ -97,7 +94,7 @@ public class HeartOfTheWildfire : Spirit {
 			//	(track elements, prepared elements, card elements)
 			int fireCount = TrackElements[Element.Fire];
 
-			var ctx = spirit.Bind( gs, actionId ).Target( to );
+			var ctx = Self.Bind( gs, actionId ).Target( to );
 			// For each fire showing, do 1 damage
 			await ctx.DamageInvaders( fireCount );
 			// if 2 fire or more are showing, add 1 blight

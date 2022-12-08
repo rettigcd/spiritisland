@@ -158,7 +158,7 @@ public class FinderTrack : IPresenceTrack {
 
 	#endregion
 
-	Dictionary<Track, LinkedSlot> _lookup;
+	readonly Dictionary<Track, LinkedSlot> _lookup;
 
 	public class LinkedSlot {
 		public SlotState State { get; set; }

@@ -7,7 +7,7 @@ public class StrikeLowWithSuddenFevers {
 		// 1 fear.
 		ctx.AddFear(1);
 		// Invaders skip Ravage Actions.
-		ctx.SkipRavage();
+		ctx.Skip1Ravage("test");
 		return Task.CompletedTask;
 	}
 

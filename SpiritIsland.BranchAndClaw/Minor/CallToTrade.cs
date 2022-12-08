@@ -11,7 +11,7 @@ public class CallToTrade {
 		// You may Gather 1 dahan
 		await ctx.GatherUpToNDahan(1);
 
-		// If the Terro Level is 2 or lower
+		// If the Terror Level is 2 or lower
 		if( ctx.GameState.Fear.TerrorLevel <= 2 ) {
 			// Gather 1 town
 			await ctx.Gather( 1, Invader.Town );
@@ -23,16 +23,21 @@ public class CallToTrade {
 	}
 
 	static void FirstRavageBecomesABuild( TargetSpaceCtx ctx ) {
+		ctx.GameState.AdjustTempToken( ctx.Space, new ReplaceRavageWithBuild() );
+	}
 
-		ctx.GameState.PreRavaging.ForRound.Add( (args)=>{
-			if(!args.Spaces.Contains( ctx.Tokens )) return;
+	class ReplaceRavageWithBuild : SkipBase, ISkipRavages {
 
-			// Stop Ravage
-			args.Skip1(ctx.Tokens); // Stop Ravage
+		public ReplaceRavageWithBuild() : base( Name ) { }
+
+		public Task<bool> Skip( GameState gameState, SpaceState space ) {
+			space.Adjust( this, -1 );
+
 			// Add Build
-			ctx.Tokens.Adjust(TokenType.DoBuild,1);
-
-		});
+			space.Adjust( TokenType.DoBuild, 1 );
+			// Stop Ravage
+			return Task.FromResult(true);
+		}
 	}
 
 }

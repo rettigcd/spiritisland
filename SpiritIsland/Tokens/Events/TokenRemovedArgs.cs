@@ -13,9 +13,9 @@ public class PublishTokenRemovedArgs {
 
 	public Token Token { get; }
 	public int Count { get; }
-	SpaceState _space;
-	RemoveReason _reason;
-	UnitOfWork _action;
+	readonly SpaceState _space;
+	readonly RemoveReason _reason;
+	readonly UnitOfWork _action;
 
 	public TokenRemovedArgs MakeEvent( GameState gameState ) => new TokenRemovedArgs(Token,_reason,_action,_space,Count,gameState);
 }

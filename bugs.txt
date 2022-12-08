@@ -27,3 +27,5 @@ Growth - After Growth, rewinding to beginning of turn, doesn't reset # of card p
 
 Growth - Shifting Memories 2-elements for card play - doesn't always work
 
+======================
+Make sure all Skip()s, remove their own token. (Test that the same token used multiple times, works multiple times)

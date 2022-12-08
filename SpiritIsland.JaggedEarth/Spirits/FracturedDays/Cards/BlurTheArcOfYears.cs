@@ -31,10 +31,9 @@ class BlurTheArcOfYears {
 		// If invaders are present: they Build, then Ravage
 		if(hasInvaders) {
 
-			await ctx.GameState.GetBuildEngine()
-				.Exec( ctx.Tokens, ctx.GameState );
+			await ctx.GameState.GetBuildEngine( ctx.Tokens ).DoBuilds();
 
-			await new RavageAction( ctx.GameState, ctx.Tokens ).Exec();
+			await new RavageAction( ctx.GameState, ctx.Tokens ).Exec(); // !!! log this
 		}
 
 		// If dahan are present: Add 1 dahan. Push up to 2 dahan.

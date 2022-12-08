@@ -7,19 +7,22 @@ public class ExplorersAreReluctant : IFearOptions {
 
 	[FearLevel( 1, "During the next normal explore, skip the lowest-numbered land matching the invader card on each board." )]
 	public Task Level1( GameCtx ctx ) {
-		var gs = ctx.GameState;
-		// During the next normal explore, skip the lowest - numbered land matching the invader card on each board.
-		gs.PreExplore.ForRound.Add( args => {
-			var spacesToSkip = args.SpacesMatchingCards
-				.GroupBy(s=>s.Space.Board)
-				.Select(grp=>grp.OrderBy(s=>s.Space.Label).First()) // lowest #'d land
-				.ToList();
-			foreach(var s in spacesToSkip)
-				args.Skip(s);
-			return Task.CompletedTask;
-		});
-		return Task.CompletedTask;
 
+		Dictionary<Board, Space> lowest = null;
+		bool IsLowestMatchingSpace( GameCtx futureCtx, SpaceState ss ) {
+			if( lowest == null ) {
+				var card = futureCtx.GameState.InvaderDeck.Explore.Cards.FirstOrDefault();
+				lowest = card == null ? new Dictionary<Board, Space>()
+					: futureCtx.GameState.Island.Boards
+						.ToDictionary( brd=>brd, brd=>brd.Spaces.FirstOrDefault(card.MatchesCard));
+			}
+			return lowest[ss.Space.Board] == ss.Space;
+		}
+
+		// this is the next normal build
+		ctx.GameState.AdjustTempTokenForAll( new SkipExploreTo_Custom(Name,false, IsLowestMatchingSpace) );
+
+		return Task.CompletedTask;
 	}
 
 	[FearLevel( 2, "Skip the next normal explore. During the next invader phase, draw an adidtional explore card." )]
@@ -32,13 +35,7 @@ public class ExplorersAreReluctant : IFearOptions {
 
 	[FearLevel( 3, "Skip the next normal explore, but still reveal a card. Perform the flag if relavant. Cards shift left as usual." )]
 	public Task Level3( GameCtx ctx ) {
-
-		// Skip the next normal explore, but still reveal a card. Perform the flag if relavant. Cards shift left as usual
-		ctx.GameState.PreExplore.ForRound.Add( ( args ) => {
-			args.SkipAll();
-			// !! Not doing flags at the moment....
-			return Task.CompletedTask;
-		} );
+		ctx.GameState.AdjustTempTokenForAll(new SkipExploreTo(Name));
 		return Task.CompletedTask;
 	}
 

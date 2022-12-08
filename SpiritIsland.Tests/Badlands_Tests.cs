@@ -13,7 +13,7 @@ public class Badlands_Tests {
 		fxt.InitRavageCard( space );
 
 		// And: disable ravage on A2 which has the same space
-		fxt.gameState.SkipRavage(fxt.board[2]);
+		fxt.gameState.Skip1Ravage(fxt.board[2], "test");
 
 		//  And: 1 bad lands, 1 explorer, 1 dahan, 1 defend
 		tokens.Badlands.Init(1);
@@ -52,7 +52,7 @@ public class Badlands_Tests {
 		fxt.InitRavageCard( space );
 
 		// And: disable ravage on A2 which has the same space
-		fxt.gameState.SkipRavage(fxt.board[2]);
+		fxt.gameState.Skip1Ravage(fxt.board[2],"test");
 
 		//  And: 1 bad lands, 1 explorer, 1 dahan
 		tokens.Badlands.Init(1);

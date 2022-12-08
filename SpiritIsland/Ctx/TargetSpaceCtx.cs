@@ -170,11 +170,10 @@ public class TargetSpaceCtx : SelfCtx {
 
 	public void SkipAllInvaderActions(string label) => GameState.SkipAllInvaderActions( Space, label );
 
-	public void Skip1Build(IBuildStopper stopperToken) => GameState.AdjustTempToken( Space, stopperToken );
+	public void Skip1Build(ISkipBuilds stopperToken) => GameState.AdjustTempToken( Space, stopperToken );
 	public void Skip1Build( string label ) => GameState.Skip1Build( Space, label );
 
-	public void SkipExplore(Func<GameState,SpaceState,Task> altAction = null) => GameState.SkipExplore( Tokens, altAction );
-	public void SkipRavage(Func<GameState,SpaceState,Task> altAction = null) => GameState.SkipRavage( Space, altAction );
+	public void Skip1Ravage(string label, Func<GameState,SpaceState,Task> altAction = null) => GameState.Skip1Ravage( Space, label, altAction );
 
 
 	// Damage invaders in the current target space

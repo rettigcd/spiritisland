@@ -145,9 +145,9 @@ public class FranceInvaderCard : InvaderCard {
 
 	#region Build Stuff
 
-	protected override async Task BuildIn1Space( GameState gameState, BuildEngine buildEngine, SpaceState tokens ) { 
+	protected override async Task BuildIn1Space( GameState gameState, SpaceState tokens ) {
 		int initialCityCount = tokens.Sum(Invader.City);
-		await base.BuildIn1Space( gameState, buildEngine, tokens );
+		await base.BuildIn1Space( gameState, tokens );
 
 		// Slave Labor: 
 		// After Invaders Build in a land with 2 Explorer or more, replace all but 1 Explorer there with an equal number of Town.

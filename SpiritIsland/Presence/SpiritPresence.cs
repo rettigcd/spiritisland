@@ -25,6 +25,13 @@ public class SpiritPresence {
 		foreach(var r in CardPlays.Revealed) CheckEnergyAndCardPlays( r );
 	}
 
+	public virtual void SetSpirit( Spirit spirit ) {
+		if(Self!=null) throw new InvalidOperationException();
+		Self = spirit;
+	}
+
+	protected Spirit Self { get; set; }
+
 	#endregion
 
 	#region Tracks / Board
@@ -241,7 +248,7 @@ public class SpiritPresence {
 		return Task.CompletedTask;
 	}
 
-	readonly public SpiritPresenceToken Token;
+	public SpiritPresenceToken Token { get; protected set; }
 
 	#region Memento
 
@@ -303,6 +310,7 @@ public enum DestoryPresenceCause {
 	None,
 	SpiritPower,    // One use of a Power;
 	DahanDestroyed, // Thunderspeaker
+	SkipInvaderAction, // A Spread of Rampant Green
 
 	Blight,          // blight added to land
 	BlightedIsland,  // Direct effect of the Blighted Island card

@@ -2,12 +2,9 @@
 
 class ManyMindsPresence : SpiritPresence {
 
-	ManyMindsMoveAsOne spirit;
-
 	public ManyMindsPresence(PresenceTrack energy, PresenceTrack cards ) : base( energy, cards ) {}
 
-	public void Watch(GameState gs,ManyMindsMoveAsOne spirit) {
-		this.spirit = spirit; 
+	public void Watch( GameState gs ) {
 		gs.Tokens.TokenMoved.ForGame.Add( TokenMoved );
 		gs.Tokens.TokenRemoved.ForGame.Add( TokenRemoved );
 	}
@@ -33,7 +30,7 @@ class ManyMindsPresence : SpiritPresence {
 
 		var srcBeasts = args.RemovedFrom.Beasts;
 		if(srcBeasts.Count > 0 // force moved our virtual beast
-			&& await spirit.Gateway.Decision( Select.DeployedPresence.Gather( "Move 2 presence with Beast?", args.AddedTo.Space, new []{ args.RemovedFrom } ) ) == null
+			&& await Self.Gateway.Decision( Select.DeployedPresence.Gather( "Move 2 presence with Beast?", args.AddedTo.Space, new []{ args.RemovedFrom } ) ) == null
 		) return; // not moving presence
 
 		await Move2Presence( args.GameState, args );

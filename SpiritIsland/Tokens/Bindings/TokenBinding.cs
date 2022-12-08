@@ -31,13 +31,11 @@ public class TokenBinding : TokenBindingNoEvents {
 	#region constructor
 
 	public TokenBinding( SpaceState tokens, Token token, UnitOfWork actionId ) : base( tokens, token ) {
-		if( actionId == default ) throw new ArgumentOutOfRangeException(nameof(actionId),"Action ID cannot be default.");
-		this._actionId = actionId;
+		this._actionId = actionId ?? throw new ArgumentOutOfRangeException(nameof(actionId),"Action ID cannot be default.");
 	}
 
 	public TokenBinding( TokenBindingNoEvents src, UnitOfWork actionId ) : base( src ) {
-		if(actionId == default) throw new ArgumentOutOfRangeException( nameof( actionId ), "Action ID cannot be default." );
-		this._actionId = actionId;
+		this._actionId = actionId ?? throw new ArgumentOutOfRangeException( nameof( actionId ), "Action ID cannot be default." );
 	}
 
 	#endregion

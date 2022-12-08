@@ -5,5 +5,6 @@ public enum TokenCategory {
 	Invader,
 	DreamingInvader, // Dream a 1000 Deaths
 	Dahan,
-	Presence
+	Presence,
+	Skipper			// invisible behavior modifier
 }

@@ -20,16 +20,16 @@ class PourTimeSideways {
 
 		// On the board moved from: During the Invader Phase, Resolve Invader and "Each board / Each land..." Actions one fewer time.
 		foreach(var space in ctx.GameState.Tokens.PowerUp(src.Board.Spaces)) {
+			ctx.GameState.Skip1Explore( space, Name );
 			ctx.GameState.Skip1Build( space.Space, Name );
-			ctx.GameState.SkipExplore(space);
-			ctx.GameState.SkipRavage(space.Space);
+			ctx.GameState.Skip1Ravage(space.Space, Name);
 		}
 
 		// On the board moved to: During the Invader Phase, Resolve Invader and "Each board / Each Land..." Actions one more time.
 		foreach(var space in src.Board.Spaces) {
 			ctx.GameState.PourTimeSideways_Add1Build( space );
-			ctx.GameState.AddExplore( space );
-			ctx.GameState.AddRavage( space );
+			ctx.GameState.PourTimeSideways_Add1Explore( space );
+			ctx.GameState.PourTimeSideways_Add1Ravage( space );
 		}
 	}
 

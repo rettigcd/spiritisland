@@ -8,11 +8,7 @@ public class TradeSuffers : IFearOptions {
 
 	[FearLevel( 1, "Invaders do not Build in lands with City." )]
 	public Task Level1( GameCtx ctx ) {
-		ctx.GameState.PreBuilding.ForRound.Add( ( args ) => {
-			foreach(var space in args.SpacesWithBuildTokens)
-				if(0 < space.Sum(Invader.City))
-					args.GameState.SkipAllBuilds( space.Space, Name );
-		} );
+		ctx.GameState.AdjustTempTokenForAll( new SkipBuild_Custom( Name, true, (_,space,_1)=> space.HasAny( Invader.City ) ) );
 		return Task.CompletedTask;
 	}
 

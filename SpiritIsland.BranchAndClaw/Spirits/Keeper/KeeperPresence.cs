@@ -15,9 +15,8 @@ public partial class Keeper {
 			bool createdSacredSite = !wasSacredSite && SacredSites( gs, gs.Island.Terrain ).Contains( to );
 
 			if( createdSacredSite && gs.DahanOn( to ).Any )
-				await spirit.Bind( gs , actionId).Target( to ).PushDahan( int.MaxValue );
+				await Self.Bind( gs , actionId).Target( to ).PushDahan( int.MaxValue );
 		}
-		public Keeper spirit;
 	}
 
 }

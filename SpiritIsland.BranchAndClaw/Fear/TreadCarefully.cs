@@ -33,8 +33,8 @@ class TreadCarefully : IFearOptions {
 
 	readonly SpaceAction stopRavage = new SpaceAction( "Invaders do not ravage there this turn.", ctx => { 
 		// Skip twice in case there are 2 ravage cards.
-		ctx.GameState.SkipRavage( ctx.Space );
-		ctx.GameState.SkipRavage( ctx.Space );
+		ctx.Skip1Ravage( Name );
+		ctx.Skip1Ravage( Name );
 	});
 
 }

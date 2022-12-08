@@ -10,7 +10,7 @@ public class ExtendRange : GrowthActionFactory {
 
 	public override bool AutoRun => true;
 
-	int _extension;
+	readonly int _extension;
 
 	public override Task ActivateAsync( SelfCtx ctx ) {
 		RangeCalcRestorer.Save( ctx.Self, ctx.GameState );

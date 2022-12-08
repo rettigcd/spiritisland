@@ -18,6 +18,13 @@ Bringer
 	Devouring Ants doesn't destroy Dahan
 	Fear-action can destroy towns, even when Bringer picks it.  (To Dream a Thousand Deaths not in play.)
 
+SkipTokens
+	All of the Presence tokens that are also skip tokens
+	Infestatoin of Venemous Spiders
+	Call to Trade
+	Skip Tokens use themselves up .Adjust(this,-1)
+	when The same skip token count > 1, uses all of them when needed
+
 Badlands
 	Ravage - Invaders
 	Ravage - Dahan

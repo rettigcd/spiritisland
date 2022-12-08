@@ -54,7 +54,7 @@ class OpenTheWays : IActionFactory {
 		trackedToken = null;
 	}
 
-	FinderOfPathsUnseen self;
+	readonly FinderOfPathsUnseen self;
 	GatewayToken _token0;
 	GatewayToken _token1;
 

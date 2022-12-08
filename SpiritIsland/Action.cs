@@ -34,9 +34,11 @@ public sealed class UnitOfWork : IAsyncDisposable {
 	}
 
 	#region private
-	DualAsyncEvent<UnitOfWork> _endOfAction;
+	readonly DualAsyncEvent<UnitOfWork> _endOfAction;
 	Dictionary<string, object> dict;
-	ActionCategory _actionCategory;
+#pragma warning disable IDE0052 // Remove unread private members
+	readonly ActionCategory _actionCategory;
+#pragma warning restore IDE0052 // Remove unread private members
 	#endregion
 }
 

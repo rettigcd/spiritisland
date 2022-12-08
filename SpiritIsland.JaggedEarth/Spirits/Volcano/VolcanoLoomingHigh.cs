@@ -54,7 +54,10 @@ class VolcanoPresence : SpiritPresence {
 
 	public override bool CanBePlacedOn( SpaceState s, TerrainMapper tm ) => tm.MatchesTerrain( s, Terrain.Mountain );
 
-	public void SetSpirit( VolcanoLoomingHigh spirit ) => DestroyBehavior = new DestroyPresence(spirit); // ??? can't we just override instead of plugging this in.
+	public override void SetSpirit( Spirit spirit ) {
+		base.SetSpirit( spirit );
+		DestroyBehavior = new DestroyPresence( (VolcanoLoomingHigh)spirit ); // ??? can't we just override instead of plugging this in.
+	}
 
 	class DestroyPresence : SpiritPresence.DefaultDestroyBehavior {
 		readonly VolcanoLoomingHigh spirit;

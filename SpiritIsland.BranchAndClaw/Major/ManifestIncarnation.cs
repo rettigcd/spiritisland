@@ -25,7 +25,7 @@ public class ManifestIncarnation {
 			ctx.Defend( 6 ); // I cannot see any difference between doing -6 damage and defending 6.
 
 		// Then, Invaders in target land ravage.
-		await new RavageAction( ctx.GameState, ctx.Tokens ).Exec();
+		await new RavageAction( ctx.GameState, ctx.Tokens ).Exec(); // !!! log this
 	}
 
 }

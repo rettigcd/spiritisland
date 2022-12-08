@@ -9,7 +9,7 @@ public class PeaceOfTheNighttimeSky {
 		// If the Terror Level is 1
 		if(ctx.GameState.Fear.TerrorLevel == 1)
 			// Invaders do not Ravage in target land this turn.
-			ctx.GameState.SkipRavage( ctx.Space );
+			ctx.GameState.Skip1Ravage( ctx.Space, Name );
 		return Task.CompletedTask;
 	}
 

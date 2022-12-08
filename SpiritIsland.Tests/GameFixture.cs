@@ -28,9 +28,12 @@ namespace SpiritIsland.Tests {
 
 			// Logging
 			ravages = new List<InvadersRavaged>();
-			gameState.InvadersRavaged.ForGame.Add( (args) => { ravages.Add(args); return Task.CompletedTask; } );
 			Log = new List<string>();
-			gameState.NewLogEntry += (e) => Log.Add(e.Msg());
+			gameState.NewLogEntry += (e) => { 
+				Log.Add(e.Msg());
+				if(e is RavageEntry re)
+					ravages.Add( re.Ravaged );
+			};
 
 
 			user = new VirtualUser(spirit);

@@ -116,9 +116,7 @@ public class ExplorersAreReluctant_Tests : TestInvaderDeckSequence_Base {
 	public void Level3_DelayExplore1Round() {
 
 		// Disable destroying presence
-		//ctx.GameState.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
 		ctx.GameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
-
 
 		// 3: Skip the next normal explore, but still reveal a card. Perform the flag if relavant. Cards shift left as usual.
 
@@ -142,7 +140,9 @@ public class ExplorersAreReluctant_Tests : TestInvaderDeckSequence_Base {
 		AdvanceToInvaderPhase();
 
 		log.Assert_Ravaged( "A2", "A5" );
+
 		log.Assert_Built(/*"A4", "A7"*/); // we are currently filtering out spaces that have no explorers so they don't show up here.
+		log.Dequeue().ShouldStartWith( "No build due" );
 		log.Assert_Explored( "A3", "A8" ); // A4 & A7 happen together with next
 
 	}

@@ -16,7 +16,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Fear {
 		}
 
 		void RecordLogItem( ILogEntry s ) {
-			if(s is InvaderActionEntry)
+			if(s is InvaderActionEntry or RavageEntry)
 				log.Enqueue(s.Msg());
 		}
 

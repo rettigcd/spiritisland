@@ -8,7 +8,7 @@ public abstract class TargetSpaceAttribute : GeneratesContextAttribute {
 
 	protected readonly int range;
 	public override string TargetFilter { get; }
-	string[] _targetFilters;
+	readonly string[] _targetFilters;
 
 	public TargetSpaceAttribute(TargetSourceCriteria sourceCriteria, int range, params string[] targetFilter ){
 		this.sourceCriteria = sourceCriteria;
