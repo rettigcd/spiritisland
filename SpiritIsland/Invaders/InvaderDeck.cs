@@ -4,14 +4,14 @@ public class InvaderDeck {
 
 	#region public static
 
-	public static readonly ImmutableList<IInvaderCard> Level1Cards = ImmutableList.Create<IInvaderCard>(
+	public static ImmutableList<IInvaderCard> Level1Cards => ImmutableList.Create<IInvaderCard>(
 		InvaderCard.Stage1( Terrain.Jungle ),
 		InvaderCard.Stage1( Terrain.Wetland ),
 		InvaderCard.Stage1( Terrain.Sand ),
 		InvaderCard.Stage1( Terrain.Mountain )
 	);
 
-	public static readonly ImmutableList<IInvaderCard> Level2Cards = ImmutableList.Create<IInvaderCard>(
+	public static ImmutableList<IInvaderCard> Level2Cards => ImmutableList.Create<IInvaderCard>(
 		InvaderCard.Stage2( Terrain.Jungle ),
 		InvaderCard.Stage2( Terrain.Wetland ),
 		InvaderCard.Stage2( Terrain.Sand ),
@@ -19,7 +19,7 @@ public class InvaderDeck {
 		InvaderCard.Stage2Costal()
 	);
 
-	public static readonly ImmutableList<IInvaderCard> Level3Cards = ImmutableList.Create<IInvaderCard>(
+	public static ImmutableList<IInvaderCard> Level3Cards => ImmutableList.Create<IInvaderCard>(
 		InvaderCard.Stage3(Terrain.Jungle,Terrain.Sand),
 		InvaderCard.Stage3(Terrain.Jungle,Terrain.Mountain),
 		InvaderCard.Stage3(Terrain.Jungle,Terrain.Wetland),
@@ -144,9 +144,10 @@ public class InvaderDeck {
 	public void InitExploreSlot() {
 		if(UnrevealedCards.Count == 0) return; // does this ever happen?
 		int count = drawCount[0]; drawCount.RemoveAt( 0 );
-		while(count-- > 0) {
-			Explore.Cards.Add( UnrevealedCards[0] );
+		while(0 < count--) {
+			var unrevealedCard = UnrevealedCards[0];
 			UnrevealedCards.RemoveAt( 0 );
+			Explore.Cards.Add( unrevealedCard );
 		}
 	}
 
@@ -174,7 +175,7 @@ public class InvaderDeck {
 			build = src.Build.Cards.ToArray();
 			ravage = src.Ravage.Cards.ToArray();
 			discards = src.Discards.ToArray();
-
+			flipped = explore.Union(build).Union(ravage).Union(discards).ToDictionary(c=>c,c=>c.Flipped);
 		}
 		public void Restore(InvaderDeck src ) {
 			src.UnrevealedCards.SetItems(unrevealedCards);
@@ -183,6 +184,9 @@ public class InvaderDeck {
 			src.Build.Cards.SetItems(build);
 			src.Ravage.Cards.SetItems(ravage);
 			src.Discards.SetItems(discards);
+			foreach(var pair in flipped)
+				pair.Key.Flipped = pair.Value;
+
 		}
 		readonly IInvaderCard[] unrevealedCards;
 		readonly int[] drawCount;
@@ -190,6 +194,7 @@ public class InvaderDeck {
 		readonly IInvaderCard[] build;
 		readonly IInvaderCard[] ravage;
 		readonly IInvaderCard[] discards;
+		readonly Dictionary<IInvaderCard, bool> flipped;
 
 	}
 

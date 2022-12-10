@@ -1,6 +1,8 @@
 Move - does not allow moving into Ocean
 	- MMMA1 - Move beast and pull 2 dahan with it.
 
+5 Check that Dahan Raid does REAL damage for Bringer, not dream-damage
+
 Adding Presence - These cards should not allow: Ocean, Lure, and Volcano to be in dis-allowed lands:
 	Blazing Renewal
 	Flow like Water, Reach Like Air

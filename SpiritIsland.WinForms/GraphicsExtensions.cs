@@ -33,10 +33,16 @@ namespace SpiritIsland.WinForms {
 
 		#endregion
 
-		static public void DrawInvaderCard( this Graphics graphics, RectangleF rect, IInvaderCard card ) {
+		static public void DrawInvaderCardFront( this Graphics graphics, RectangleF rect, IInvaderCard card ) {
 			if(card==null) return;
 			using var img = ResourceImages.Singleton.GetInvaderCard(card.Text);
 			graphics.DrawImage(img,rect);
+		}
+
+		static public void DrawInvaderCardBack( this Graphics graphics, RectangleF rect, IInvaderCard card ) {
+			if(card == null) return;
+			using var img = ResourceImages.Singleton.GetInvaderCard( "back" );
+			graphics.DrawImage( img, rect );
 		}
 
 		static public Rectangle ToInts(this RectangleF r) => new Rectangle((int)r.X,(int)r.Y,(int)r.Width,(int)r.Height);

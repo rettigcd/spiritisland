@@ -99,6 +99,7 @@
     <None Remove="images\invaders\2m.jpg" />
     <None Remove="images\invaders\2s.jpg" />
     <None Remove="images\invaders\2w.jpg" />
+    <None Remove="images\invaders\back.jpg" />
     <None Remove="images\invaders\costal.jpg" />
     <None Remove="images\invaders\j+m.jpg" />
     <None Remove="images\invaders\j+s.jpg" />
@@ -286,6 +287,7 @@
     <EmbeddedResource Include="images\inplay.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="images\invaders\back.jpg" />
     <EmbeddedResource Include="images\invaders\J.jpg" />
     <EmbeddedResource Include="images\invaders\M.jpg" />
     <EmbeddedResource Include="images\invaders\S.jpg" />

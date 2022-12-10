@@ -123,6 +123,9 @@ public class InvaderCard : IOption, IInvaderCard {
 	}
 
 	protected async Task<SpaceState[]> PreExplore( GameState gs ) {
+
+		gs.Log( new InvaderActionEntry($"Flipping {this.Text} - was {this.Flipped}") );
+
 		Flipped = true;
 
 		gs.Log( new InvaderActionEntry( "Exploring:" + Text ) );

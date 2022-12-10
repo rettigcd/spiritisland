@@ -8,8 +8,18 @@ using System.Windows.Forms;
 
 namespace SpiritIsland.WinForms;
 
+/*
+	== Painting / Options => Drawing & Hotspot  process ==
+	1) NewDecisionArrived - parse options record which type we have
+	2) Draw_Static part of island
+	3a) DecorateSpace => DrawRow => Record where Tokens cards, etc are located
+	3b) Other controls draw themselves and record location
+	4) DrawHotspots => foreeach Option => Find location and draw it.
+*/
 
 public partial class IslandControl : Control {
+
+	#region constructor / Init
 
 	public IslandControl() {
 		InitializeComponent();
@@ -52,7 +62,28 @@ public partial class IslandControl : Control {
 		this.spirit = gameState.Spirits.Single();
 	}
 
+	#endregion constructor / Init
+
 	#region Paint
+
+	// Layout
+	const float spiritWidth = .35f; // % of screen width to use for spirit
+	const float oceanWidth = 1f - spiritWidth;
+	const float invaderDeckWidth = oceanWidth * .4f;
+	const float invaderDeckHeight = .3f;
+	Rectangle SpiritRect => new Rectangle( Width - (int)(spiritWidth * Width), 0, (int)(spiritWidth * Width), Height );
+	RectangleF CalcFearPoolRect => new RectangleF( Width * .50f, 0f, Width * .20f, Width * .04f );
+	RectangleF CalcBlightRect => new RectangleF( Width * .55f, Width * .05f, Width * .15f, Width * .03f );
+	RectangleF CalcInvaderCardRect => new RectangleF( Width * (oceanWidth-invaderDeckWidth), Height*(1f-invaderDeckHeight), (Width * invaderDeckWidth), Height*invaderDeckHeight );
+	Rectangle CalcPopupFearRect() {
+		var bounds = new Rectangle( 0, 0, (int)(Width * .65f), Height );
+		// Active Fear Layout
+		int fearHeight = (int)(bounds.Height * .8f);
+		var fearWidth = fearHeight * 2 / 3;
+		var bob = new Rectangle( bounds.Width - fearWidth - (int)(bounds.Height * .1f), (bounds.Height - fearHeight) / 2, fearWidth, fearHeight );
+		return bob;
+	}
+
 
 	protected override void OnPaint( PaintEventArgs pe ) {
 		base.OnPaint( pe );
@@ -68,38 +99,35 @@ public partial class IslandControl : Control {
 		using(new StopWatch( "Total" )) {
 
 			DrawBoard_Static( pe );
-			using(new StopWatch( "Island-Tokens" ))
-				foreach(SpaceState space in gameState.AllSpaces)
-					DecorateSpace(pe.Graphics,space);
 
-			using(new StopWatch( "fear" ))
-				DrawFearPool( pe.Graphics, new RectangleF(Width*.50f, 0f, Width*.20f, Width*.04f ) );
+			DrawGameRound( pe.Graphics );
 
-			using(new StopWatch( "blight" ))
-				DrawBlight  ( pe.Graphics, new RectangleF(Width*.55f,Width*.05f,Width*.15f,Width*.03f ) );
+			// mostly static
+			DrawFearPool( pe.Graphics );
+			DrawBlight( pe.Graphics );
+			DrawInvaderCards( pe.Graphics ); // other than highlights, do this last since it contains the Fear Card that we want to be on top of everything.
 
-			using(new StopWatch( "round" ))
-				DrawRound( pe.Graphics );
+			// Island / Spaces
+			foreach(SpaceState space in gameState.AllSpaces)
+				DecorateSpace(pe.Graphics,space);
 
-			using(new StopWatch( "invader cards" ))
-				DrawInvaderCards( pe.Graphics, new Rectangle(0,0,(int)(Width*.65f),Height) ); // other than highlights, do this last since it contains the Fear Card that we want to be on top of everything.
+			// Pop-ups
+			DrawDeckPopUp(pe.Graphics);
+			DrawElementsPopUp( pe.Graphics );
+			DrawFearPopUp( pe.Graphics );
 
-			using(new StopWatch( "misc" )) {
-				DrawDeck(pe.Graphics);
-				DrawElements( pe.Graphics );
+			using(var hotSpotPen = new Pen( Brushes.Aquamarine, 5 )) {
+				DrawHotSpots_SpaceToken( pe.Graphics, hotSpotPen );
+				DrawHotSpots_Space( pe.Graphics, hotSpotPen );
 			}
 
-			using(new StopWatch( "HotSpots" ))
-				DrawHotspots( pe );
-
-			const float spiritShare = .35f;
-			DrawSpirit( pe.Graphics, new Rectangle( Width - (int)(spiritShare*Width), 0, (int)(spiritShare*Width), Height) );
+			DrawSpirit( pe.Graphics, SpiritRect );
 		}
 
 		// non drawing - record Hot spots
 		RecordSpiritHotspots();
-		if(fearCard!= null) 
-			hotSpots.Add(fearCard,activeFearRect);
+		if(options_FearCard!= null) 
+			hotSpots.Add(options_FearCard,activeFearRect);
 
 	}
 
@@ -155,14 +183,6 @@ public partial class IslandControl : Control {
 		pe.Graphics.DrawImage( cachedBackground, 0, 0, cachedBackground.Width, cachedBackground.Height );
 	}
 
-	//static Brush SpaceColor( Space space ) {
-	//	return space.IsWetland ? Brushes.LightBlue
-	//		: space.IsSand ? Brushes.PaleGoldenrod
-	//		: space.IsMountain ? Brushes.Gray
-	//		: space.IsJungle ? Brushes.ForestGreen
-	//		: space.IsOcean ? Brushes.Blue
-	//		: Brushes.Gold;
-	//}
 
 	static Brush SpaceBrush( Space space ) {
 		if( space.IsWetland ) {
@@ -275,12 +295,12 @@ public partial class IslandControl : Control {
 			* RowVector.Translate( upperLeft.X + (float)(scale * 1.5), upperLeft.Y + usableHeight );
 	}
 
-	void DrawElements(Graphics graphics ) {
-		if(elementDecision == null) return;
+	void DrawElementsPopUp(Graphics graphics ) {
+		if(decision_Element is null) return;
 
 		int boundsHeight = Height / 8;
 		int margin = boundsHeight / 16;
-		var elementOptions = elementDecision.Options.OfType<ItemOption<Element>>().ToArray();
+		var elementOptions = decision_Element.Options.OfType<ItemOption<Element>>().ToArray();
 		int count = elementOptions.Length;
 		int boundsWidth = boundsHeight * count + margin * (count-1);
 		Rectangle bounds = new Rectangle( 0 + (Width-boundsWidth)/2, Height - boundsHeight-20, boundsWidth, boundsHeight );
@@ -297,8 +317,8 @@ public partial class IslandControl : Control {
 		}
 	}
 
-	void DrawDeck(Graphics graphics ) {
-		if(deckDecision==null) return;
+	void DrawDeckPopUp(Graphics graphics ) {
+		if(decision_DeckToDrawFrom is null) return;
 
 		// calc layout
 		int boundsHeight = Height / 3; // cards take up 1/3 of window vertically
@@ -312,8 +332,8 @@ public partial class IslandControl : Control {
 
 		// Hotspots
 		// !! we are assuming minor is first...
-		hotSpots.Add(deckDecision.Options[0],minorRect);
-		hotSpots.Add(deckDecision.Options[1],majorRect);
+		hotSpots.Add(decision_DeckToDrawFrom.Options[0],minorRect);
+		hotSpots.Add(decision_DeckToDrawFrom.Options[1],majorRect);
 
 		graphics.FillRectangle(Brushes.DarkGray,bounds);
 		using var minorImage = Image.FromFile( ".\\images\\minor.png" );
@@ -354,11 +374,11 @@ public partial class IslandControl : Control {
 
 		graphics.FillRectangle( Brushes.LightYellow, bounds );
 		spiritPainter.Paint( graphics,
-			selectableInnateOptions,
-			selectableInnateGroupOptions,
-			selectableGrowthOptions,
-			selectableGrowthActions,
-			clickableTrackOptions
+			options_InnatePower,
+			options_DrawableInate,
+			options_GrowthOptions,
+			options_GrowthActions,
+			options_Track
 		);
 	}
 
@@ -370,28 +390,28 @@ public partial class IslandControl : Control {
 
 	void RecordSpiritHotspots() {
 		// Growth Options/Actions
-		foreach(var opt in selectableGrowthOptions)
+		foreach(var opt in options_GrowthOptions)
 			if(spiritLayout.growthLayout.HasOption(opt))
 				hotSpots.Add( opt, spiritLayout.growthLayout[opt] );
-		foreach(var act in selectableGrowthActions)
+		foreach(var act in options_GrowthActions)
 			if(spiritLayout.growthLayout.HasAction( act )) // there might be delayed setup actions here that don't have a rect
 				hotSpots.Add( act, spiritLayout.growthLayout[act] );
 		// Presence
-		foreach(var track in clickableTrackOptions)
+		foreach(var track in options_Track)
 			hotSpots.Add( track, spiritLayout.trackLayout.ClickRectFor( track ) );
 		// Innates - Select Innate Power
-		foreach(var power in selectableInnateOptions)
+		foreach(var power in options_InnatePower)
 			hotSpots.Add( power, spiritLayout.innateLayouts[power].Bounds );
 		// Innates - Select Innate Option (for shifting memory)
 		var grpOptionLayouts = spiritLayout.innateLayouts.Values.SelectMany(x=>x.Options).ToArray();
-		foreach(var grp in selectableInnateGroupOptions) {
+		foreach(var grp in options_DrawableInate) {
 			var bounds = grpOptionLayouts.First(x=>x.GroupOption == grp).Bounds;
 			hotSpots.Add( grp, bounds );
 		}
 
 	}
 
-	void DrawRound( Graphics graphics ) {
+	void DrawGameRound( Graphics graphics ) {
 		float fontHeight = Height*.05f;
 		using var font = new Font( ResourceImages.Singleton.Fonts.Families[0], fontHeight, GraphicsUnit.Pixel );
 
@@ -408,39 +428,73 @@ public partial class IslandControl : Control {
 		
 	}
 
-	void DrawInvaderCards( Graphics graphics, Rectangle bounds ) {
+	void DrawInvaderCards( Graphics graphics ) {
 
-		// Active Fear Layout
-		int fearHeight = (int)(bounds.Height * .8f);
-		var fearWidth = fearHeight * 2/3;
-		activeFearRect = new Rectangle( bounds.Width - fearWidth - (int)(bounds.Height * .1f), (bounds.Height - fearHeight) / 2, fearWidth, fearHeight );
-
-		// Invaders
-		const float margin = 15;
+		const float margin = 8;
 		const float textHeight = 20f;
-		float height = bounds.Height *.33f;
-		float width = height * .66f;
+
+		var bounds = CalcInvaderCardRect;
+
+		// Calculate Card Size based on # of slots
+		float slots = gameState.InvaderDeck.Slots.Count + 1.5f;
+		float slotWidth = bounds.Width / slots;
+
+		var cardSize = slotWidth *1.5f < bounds.Height         // too narrow
+			? new SizeF( slotWidth, slotWidth * 1.5f )         // use narrow width to limit height
+			: new SizeF( bounds.Height / 1.5f, bounds.Height); // plenty of width, use height to determine size
+
+		// calc discard location
+		var discardRect = new RectangleF( bounds.Left, bounds.Top + margin + (cardSize.Height - cardSize.Width) * .5f, cardSize.Height-margin*2, cardSize.Width-margin*2 );
+		// using(var pen = new Pen( Color.Orange, 5f )) graphics.DrawRectangle( pen, discardRect.ToInts() ); // Debug
+		//Point[] discardDestinationPoints = {
+		//		new Point((int)discardRect.Right, (int)discardRect.Top),    // destination for upper-left point of original
+		//		new Point((int)discardRect.Right, (int)discardRect.Bottom), // destination for upper-right point of original
+		//		new Point((int)discardRect.Left, (int)discardRect.Top)      // destination for lower-left point of original
+		//	};
+		Point[] discardDestinationPoints = {
+				new Point((int)discardRect.Left, (int)discardRect.Bottom),    // destination for upper-left point of original
+				new Point((int)discardRect.Left, (int)discardRect.Top), // destination for upper-right point of original
+				new Point((int)discardRect.Right, (int)discardRect.Bottom)      // destination for lower-left point of original
+			};
+
+
+		// using(var pen = new Pen( Color.Orange, 15f)) graphics.DrawRectangle( pen, bounds.ToInts() ); // Debug
+
+		// locate each of the cards
+		var cardMetrics = new InvaderCardMetrics[gameState.InvaderDeck.Slots.Count];
+
+		for(int i=0; i < cardMetrics.Length; ++i)
+			cardMetrics[i] = new InvaderCardMetrics( gameState.InvaderDeck.Slots[i],  
+				bounds.Left + (i+1.5f) * cardSize.Width + margin, //left+i*xStep, 
+				bounds.Top + margin, // y, 
+				cardSize.Width-margin*2, cardSize.Height - margin * 2, // width, height, 
+				textHeight
+			);
+
+		// Draw
 		using var buildRavageFont = new Font( ResourceImages.Singleton.Fonts.Families[0], textHeight, GraphicsUnit.Pixel );
-
-		float x = bounds.Width-width-margin-margin;
-		float y = bounds.Height-height-margin*2 - textHeight;
-
-		//
-		var cardMetrics = new InvaderCardMetrics[gameState.InvaderDeck.Slots.Count-1];
-		float xStep = width+margin;
-		float left = x-xStep*(cardMetrics.Length-1)+margin;
-		for(int i= 0; i < cardMetrics.Length; ++i)
-			cardMetrics[i] = new InvaderCardMetrics( gameState.InvaderDeck.Slots[i], left+i*xStep, y, width, height, textHeight );
-
+		using var invaderStageFont = new Font( ResourceImages.Singleton.Fonts.Families[0], textHeight*2, GraphicsUnit.Pixel );
 		foreach(var cardMetric in cardMetrics)
-			cardMetric.Draw( graphics, buildRavageFont );
+			cardMetric.Draw( graphics, buildRavageFont, invaderStageFont );
 
-		// Fear
-		if(fearCard!= null) {
-			using var img = new FearCardImageManager().GetImage( fearCard );
-			graphics.DrawImage( img, activeFearRect );
+		// Draw Discard
+		var lastDiscard = gameState.InvaderDeck.Discards.FirstOrDefault();
+		if(lastDiscard is not null) {
+			using Bitmap discardImg = ResourceImages.Singleton.GetInvaderCard( lastDiscard.Text );
+			graphics.DrawImage( discardImg, discardDestinationPoints );
 		}
 
+	}
+
+
+
+	void DrawFearPopUp( Graphics graphics ) {
+		if(options_FearCard is null) return;
+
+		activeFearRect = CalcPopupFearRect();
+
+		using var img = new FearCardImageManager().GetImage( options_FearCard );
+		graphics.DrawImage( img, activeFearRect );
 	}
 
 	class InvaderCardMetrics {
@@ -455,90 +509,95 @@ public partial class IslandControl : Control {
 				Rect[i] = new RectangleF( x + i * buildWidth, y + i * buildHeight, buildWidth, buildHeight );
 
 			// Text location
-			textBounds = new RectangleF( x, y + height + textHeight*.2f, width, textHeight*1.5f );
+			textBounds = new RectangleF( x, y + height + textHeight*.1f, width, textHeight*1.5f );
 		}
 		readonly InvaderSlot slot;
 		readonly RectangleF[] Rect;
 		readonly RectangleF textBounds;
 
-		public void Draw( Graphics graphics, Font labelFont ) {
-			for(int i = 0; i < Rect.Length; ++i)
-				graphics.DrawInvaderCard( Rect[i], slot.Cards[i] );
-			graphics.DrawString( slot.Label, labelFont, Brushes.Black, textBounds, sf );
+		public void Draw( Graphics graphics, Font labelFont, Font invaderStageFont ) {
+			// Draw all of the cards in that slot
+			// !! we could make them overlap and bigger
+			for(int i = 0; i < Rect.Length; ++i) {
+				var card = slot.Cards[i];
+				if(card.Flipped)
+					graphics.DrawInvaderCardFront( Rect[i], card );
+				else {
+					var cardRect = Rect[i];
+					using(SolidBrush brush = new SolidBrush(Color.LightSteelBlue))
+						graphics.FillRectangle(brush,cardRect);
+					var smallerRect = cardRect.InflateBy(-cardRect.Width*.1f);
+					graphics.DrawInvaderCardBack( smallerRect, card );
+					smallerRect = cardRect.InflateBy( -25f );
+					graphics.DrawString( card.InvaderStage.ToString(), invaderStageFont, Brushes.DarkRed, smallerRect, alignCenter );
+				}
+			}
+			graphics.DrawString( slot.Label, labelFont, Brushes.Black, textBounds, alignCenter );
 		}
-		readonly StringFormat sf = new StringFormat { Alignment = StringAlignment.Center };
+		readonly StringFormat alignCenter = new StringFormat { Alignment = StringAlignment.Center };
 	}
 
-	void DrawHotspots( PaintEventArgs pe ) {
-		using var pen = new Pen(Brushes.Aquamarine,5);
+	void DrawHotSpots_SpaceToken( Graphics graphics, Pen pen ) {
 
 		// adjacent
-		if(adjacentInfo != null) {
+		if(decision_AdjacentInfo != null)
+			DrawAdjacentArrows( graphics );
 
-			var center = SpaceCenter(adjacentInfo.Original);
-			var others = adjacentInfo.Adjacent.Select(x=> SpaceCenter(x) ).ToArray();
+		// Draw SpaceToken option hotspots & record option location
+		if(decision_SpaceToken != null)
+			foreach(SpaceToken spaceToken in decision_SpaceToken.Options.OfType<SpaceToken>())
+				DrawSpaceTokenHotspot( graphics, pen, spaceToken, spaceToken );
 
-			using Pen p = new Pen( Color.DeepSkyBlue, 7 );
-			var drawer = new ArrowDrawer(pe.Graphics,p);
-			switch(adjacentInfo.Direction) {
-				case SpiritIsland.Select.AdjacentDirection.Incoming:
-					foreach(var other in others)
-						drawer.Draw( other, center );
-					break;
-				case SpiritIsland.Select.AdjacentDirection.Outgoing:
-					foreach(var other in others)
-						drawer.Draw( center, other );
-					break;
-			}
+		// Draw Token option hotspot & record option location
+		if(decision_TokenOnSpace != null)
+			foreach(Token token in decision_TokenOnSpace.Options.OfType<Token>())
+				DrawSpaceTokenHotspot( graphics, pen, token, new SpaceToken( decision_TokenOnSpace.Space, token ) );
 
+		if(decision_DeployedPresence != null) {
+			options_Space = null; // disable circle drawing
+			foreach(Space space in decision_DeployedPresence.Options.OfType<Space>())
+				DrawSpaceTokenHotspot( graphics, pen, space, new SpaceToken( space, spirit.Presence.Token ) );
 		}
 
-		if(spaceTokens != null) {
-			// Draw tokens on space && set them as hotspots
-			foreach(var st in spaceTokens.Options.OfType<SpaceToken>()) {
-				if( HasLocation( st ) ) {
-					var rect = GetLocation( st );
-					rect.Inflate( 4, 4 );
-					optionRects.Add( (rect, st) );			// Store the Option
-					pe.Graphics.DrawRectangle( pen, rect );
-				}
-			}
-		}
+	}
 
-		if(tokenOnSpace != null) {
-			// Draw tokens on space && set them as hotspots
-			foreach(var token in tokenOnSpace.Options.OfType<Token>()) {
-				var key = new SpaceToken( tokenOnSpace.Space, token );
-				if( HasLocation( key )) {
-					var rect = GetLocation(key);
-					rect.Inflate(4,4);
-					optionRects.Add( (rect, token) );		// Store the option
-					pe.Graphics.DrawRectangle( pen, rect ); // Draw it
-				}
+	void DrawHotSpots_Space( Graphics graphics, Pen pen ) {
+		if(options_Space != null)
+			foreach(Space space in options_Space) {
+				PointF center = SpaceCenter( space );
+				graphics.DrawEllipse( pen, center.X - radius, center.Y - radius, radius * 2, radius * 2 );
 			}
-		}
+	}
 
-		if(deployedPresence != null) {
-			activeSpaces = null; // disable circle drawing
-			// Presence (inherits from Space Cirlcles
-			foreach(var space in deployedPresence.Options.OfType<Space>()) {
-				var key = new SpaceToken( space, spirit.Presence.Token );
-				if(HasLocation( key )) {
-					var rect = GetLocation( key );
-					rect.Inflate(4,4);
-					optionRects.Add( (rect, space) );
-					pe.Graphics.DrawRectangle( pen, rect );
-				}
-			}
+	void DrawSpaceTokenHotspot( 
+		Graphics graphics, 
+		Pen pen,
+		IOption option,  // the actual option to record
+		SpaceToken st	// the effective SpaceToken (location) of the option
+	) {
+		if(HasLocation( st )) {
+			var rect = GetLocation( st );
+			rect.Inflate( 4, 4 );
+			optionRects.Add( (rect, option) );
+			graphics.DrawRectangle( pen, rect );
 		}
-			
-		if(activeSpaces != null)
-			// Space Circles
-			foreach(var space in activeSpaces) {
-				var center = SpaceCenter(space);
-				pe.Graphics.DrawEllipse( pen, center.X- radius, center.Y- radius, radius * 2, radius * 2 );
-			}
+	}
 
+	void DrawAdjacentArrows( Graphics graphics ) {
+		var center = SpaceCenter( decision_AdjacentInfo.Original );
+		var others = decision_AdjacentInfo.Adjacent.Select( x => SpaceCenter( x ) ).ToArray();
+		using Pen p = new Pen( Color.DeepSkyBlue, 7 );
+		var drawer = new ArrowDrawer( graphics, p );
+		switch(decision_AdjacentInfo.Direction) {
+			case SpiritIsland.Select.AdjacentDirection.Incoming:
+				foreach(var other in others)
+					drawer.Draw( other, center );
+				break;
+			case SpiritIsland.Select.AdjacentDirection.Outgoing:
+				foreach(var other in others)
+					drawer.Draw( center, other );
+				break;
+		}
 	}
 
 	void DecorateSpace( Graphics graphics, SpaceState spaceState ) {
@@ -652,7 +711,7 @@ public partial class IslandControl : Control {
 			graphics.DrawImage( img, rect );
 
 			// record token location
-			RecordLocation( new SpaceToken(space, token), rect );
+			RecordSpaceTokenLocation( new SpaceToken(space, token), rect );
 
 			// Count
 			graphics.DrawCountIfHigherThan( rect, tokens[token] );
@@ -728,7 +787,8 @@ public partial class IslandControl : Control {
 		return orig;
 	}
 
-	void DrawFearPool( Graphics graphics, RectangleF bounds ) {
+	void DrawFearPool( Graphics graphics ) {
+		var bounds = CalcFearPoolRect;
 		float margin = Math.Max(5f, bounds.Height*.05f);
 		float slotWidth = bounds.Height; 
 
@@ -765,7 +825,8 @@ public partial class IslandControl : Control {
 
 	}
 
-	void DrawBlight( Graphics graphics, RectangleF bounds ) {
+	void DrawBlight( Graphics graphics ) {
+		var bounds = CalcBlightRect;
 
 		float margin = Math.Max(5f, bounds.Height*.05f);
 		float slotWidth = bounds.Height; 
@@ -809,7 +870,7 @@ public partial class IslandControl : Control {
 			x += step;
 
 			// record token location
-			RecordLocation( new SpaceToken( tokens.Space, token), rect );
+			RecordSpaceTokenLocation( new SpaceToken( tokens.Space, token), rect );
 
 			if(isPresence && spirit.Presence.IsSacredSite(tokens) ) {
 				const int inflationSize = 10;
@@ -883,12 +944,10 @@ public partial class IslandControl : Control {
 
 	}
 
-	public event Action<IOption> OptionSelected;
-
 	protected override void OnMouseMove( MouseEventArgs e ) {
 		base.OnMouseMove( e );
 
-		if(activeSpaces==null) return;
+		if(options_Space==null) return;
 
 		bool inCircle = FindOption() != null;
 		Cursor = inCircle ? Cursors.Hand : Cursors.Default;
@@ -903,7 +962,7 @@ public partial class IslandControl : Control {
 	}
 
 	IOption FindSpaces( Point clientCoords ) {
-		return activeSpaces?.Select( s => {
+		return options_Space?.Select( s => {
 				PointF center = SpaceCenter( s );
 				float dx = clientCoords.X - center.X;
 				float dy = clientCoords.Y - center.Y;
@@ -928,63 +987,71 @@ public partial class IslandControl : Control {
 
 	readonly Dictionary<IOption, RectangleF> hotSpots = new();
 
+	#region User Action Events - Notify main form
+
+	public event Action<IOption> OptionSelected;
 	public event Action<Space> SpaceClicked;
 	public event Action<Token> TokenClicked;
 	public event Action<SpaceToken> SpaceTokenClicked;
 
+	#endregion
+
 	#region private fields
 
 	void OptionProvider_OptionsChanged( IDecision decision ) {
-		tokenOnSpace      = decision as Select.TokenFrom1Space;
-		spaceTokens       = decision as Select.TypedDecision<SpaceToken>;
-		deployedPresence  = decision as Select.DeployedPresence;
-		deckDecision      = decision as Select.DeckToDrawFrom;
-		elementDecision   = decision as Select.Element;
 
-		adjacentInfo = decision is Select.IHaveAdjacentInfo adjacenInfoProvider
-			? adjacenInfoProvider.AdjacentInfo
-			: null;
+		// These decision_ variables contain additional info the options need to render them on the screen
+		decision_TokenOnSpace        = decision as Select.TokenFrom1Space;				// Identifies option as SpaceToken
+		decision_SpaceToken          = decision as Select.TypedDecision<SpaceToken>;	// Identifies option as SpaceToken
+		decision_DeployedPresence    = decision as Select.DeployedPresence;				// Identifies option as SpaceToken
+		decision_DeckToDrawFrom      = decision as Select.DeckToDrawFrom;
+		decision_Element             = decision as Select.Element;
+		decision_AdjacentInfo        = decision is Select.IHaveAdjacentInfo adjacenInfoProvider ? adjacenInfoProvider.AdjacentInfo : null;
 
-		activeSpaces            = decision.Options.OfType<Space>().ToArray();
-		fearCard                = decision.Options.OfType<ActivatedFearCard>().FirstOrDefault();
-		clickableTrackOptions   = decision.Options.OfType<Track>().ToArray();
-		selectableInnateOptions = decision.Options.OfType<InnatePower>().ToArray();
-		selectableInnateGroupOptions = decision.Options.OfType<IDrawableInnateOption>().ToArray();
-		selectableGrowthOptions = decision.Options.OfType<GrowthOption>().ToArray();
-		selectableGrowthActions = decision.Options.OfType<GrowthActionFactory>().ToArray();
+		// These option_ variables contain everything they need to render on screen
+		options_Space         = decision.Options.OfType<Space>().ToArray();
+		options_FearCard      = decision.Options.OfType<ActivatedFearCard>().FirstOrDefault();
+		options_Track         = decision.Options.OfType<Track>().ToArray();
+		options_InnatePower   = decision.Options.OfType<InnatePower>().ToArray();
+		options_DrawableInate = decision.Options.OfType<IDrawableInnateOption>().ToArray();
+		options_GrowthOptions = decision.Options.OfType<GrowthOption>().ToArray();
+		options_GrowthActions = decision.Options.OfType<GrowthActionFactory>().ToArray();
 	}
 
-	ActivatedFearCard fearCard;
-	Select.AdjacentInfo adjacentInfo;
+	Select.TokenFrom1Space           decision_TokenOnSpace;
+	Select.AdjacentInfo              decision_AdjacentInfo;
+	Select.TypedDecision<SpaceToken> decision_SpaceToken;
+	Select.DeployedPresence          decision_DeployedPresence;
+	Select.DeckToDrawFrom            decision_DeckToDrawFrom;
+	Select.Element                   decision_Element;
 
-	Select.TypedDecision<SpaceToken> spaceTokens;
-	Select.TokenFrom1Space tokenOnSpace;
-
-	Select.DeployedPresence deployedPresence;
-	Select.DeckToDrawFrom deckDecision;
-	Select.Element elementDecision;
-	Track[] clickableTrackOptions;
-	InnatePower[] selectableInnateOptions;
-	IDrawableInnateOption[] selectableInnateGroupOptions;
-		
-	GrowthOption[] selectableGrowthOptions;
-	GrowthActionFactory[] selectableGrowthActions;
+	ActivatedFearCard       options_FearCard;
+	Track[]                 options_Track;
+	InnatePower[]           options_InnatePower;
+	IDrawableInnateOption[] options_DrawableInate;
+	GrowthOption[]          options_GrowthOptions;
+	GrowthActionFactory[]   options_GrowthActions;
 
 		
 	readonly List<(Rectangle,IOption)> optionRects = new List<(Rectangle, IOption)>();
 
+
+	// Stores the locations of ALL SpaceTokens (invaders, dahan, presence, wilds, disease, beast, etx)
+	// When we are presented with a decision, the location of each option is pulled from here
+	// and added to the HotSpots.
 	readonly Dictionary<SpaceToken, Rectangle> tokenLocations = new Dictionary<SpaceToken, Rectangle>();
-	void RecordLocation( SpaceToken sp, Rectangle rect ) => tokenLocations.Add( MakeKey(sp), rect );
+	void RecordSpaceTokenLocation( SpaceToken sp, Rectangle rect ) => tokenLocations.Add( MakeKey(sp), rect );
 	bool HasLocation( SpaceToken sp ) => tokenLocations.ContainsKey( MakeKey(sp) );
+
 	Rectangle GetLocation( SpaceToken sp ) => tokenLocations[ MakeKey(sp) ];
-	static SpaceToken MakeKey( SpaceToken sp ) => sp; //$"{sp} {sp.Token.Class.Category}"; // Could make this a record instead.
+	static SpaceToken MakeKey( SpaceToken sp ) => sp;
 
 
 	GameState gameState;
 	Spirit spirit;
 
 	const float radius = 40f;
-	Space[] activeSpaces;
+	Space[] options_Space;
 	Dictionary<Space,SpaceLayout> spaceLookup;
 
 	Size boardScreenSize;
@@ -1028,21 +1095,3 @@ class ArrowDrawer {
 	}
 }
 
-class StopWatch : IDisposable {
-	readonly string label;
-	readonly DateTime start;
-	public StopWatch(string label ) { this.label = label; start = DateTime.Now; }
-	public void Dispose() {
-		var dur = DateTime.Now - start;
-		var duration = new RecordedDuration(label,(int)dur.TotalMilliseconds);
-		timeLog.Add( duration );
-	}
-	static public List<RecordedDuration> timeLog = new List<RecordedDuration>();
-}
-
-class RecordedDuration {
-	public int ms;
-	public string label;
-	public RecordedDuration(string label,int ms) { this.label=label; this.ms = ms; }
-	public override string ToString() => $"{label}: {ms}ms";
-}

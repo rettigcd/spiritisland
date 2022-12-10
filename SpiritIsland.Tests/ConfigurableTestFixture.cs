@@ -239,6 +239,8 @@ class SpaceSpecificInvaderCard : IInvaderCard {
 	readonly Space _space;
 	public SpaceSpecificInvaderCard(Space space) { _space = space; }
 
+	public bool Flipped { get; set; }
+
 	public int InvaderStage => 1;
 	public string Text => throw new NotImplementedException();
 

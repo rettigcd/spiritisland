@@ -3,6 +3,11 @@ namespace SpiritIsland;
 
 public interface IInvaderCard : IOption {
 
+	bool Flipped { 
+		get; 
+		set;
+	}
+
 	int InvaderStage { get; }
 
 	bool Skip { get; set; }
