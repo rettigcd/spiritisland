@@ -1,9 +1,11 @@
 ﻿namespace SpiritIsland;
 
-public class NullFearCard : IFearOptions {
+public class NullFearCard : IFearCard {
 	
 	public const string Name = "Null Fear Card";
-	string IFearOptions.Name => Name;
+	public string Text => Name;
+	public int? Activation { get; set; }
+	public bool Flipped { get; set; }
 
 	[FearLevel(1,"x")]
 	public Task Level1( GameCtx gs ) { return Task.CompletedTask; }

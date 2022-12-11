@@ -1,9 +1,11 @@
 ﻿namespace SpiritIsland.BranchAndClaw;
 
-class FleeThePestilentLand : IFearOptions {
+class FleeThePestilentLand : IFearCard {
 
 	public const string Name = "Flee the Pestilent Land";
-	string IFearOptions.Name => Name;
+	public string Text => Name;
+	public int? Activation { get; set; }
+	public bool Flipped { get; set; }
 
 	[FearLevel( 1, "Each player removes 1 explorer/town from a land with disease" )]
 	public Task Level1( GameCtx ctx ) {

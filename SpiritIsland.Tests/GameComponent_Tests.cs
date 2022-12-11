@@ -30,7 +30,7 @@ namespace SpiritIsland.Tests {
 			FindSpiritTypes( assemblyType ).ShouldAllBe( x => provider.Spirits.Contains( x ) );
 			FindMinorCards( assemblyType ).Select( x => x.Name ).ShouldAllBe( x => provider.MinorCards.Select( x => x.Name ).ToArray().Contains( x ) );
 			FindMajorCards( assemblyType ).Select( x => x.Name ).ShouldAllBe( x => provider.MajorCards.Select( x => x.Name ).ToArray().Contains( x ) );
-			FindFearCards( assemblyType ).Select( x => x.Name ).ShouldAllBe( x => provider.FearCards.Select( x => x.Name ).ToArray().Contains( x ) );
+			FindFearCards( assemblyType ).Select( x => x.Text ).ShouldAllBe( x => provider.FearCards.Select( x => x.Text ).ToArray().Contains( x ) );
 			FindBlightCards( assemblyType ).Select( x => x.Name ).ShouldAllBe( x => provider.BlightCards.Select( x => x.Name ).ToArray().Contains( x ) );
 		}
 
@@ -58,10 +58,10 @@ namespace SpiritIsland.Tests {
 				.ToArray();
 		}
 
-		static IFearOptions[] FindFearCards( Type assemblyType ) {
+		static IFearCard[] FindFearCards( Type assemblyType ) {
 			return assemblyType.Assembly.GetTypes()
-				.Where( t => t.IsAssignableTo( typeof(IFearOptions) ) )
-				.Select( t => (IFearOptions)System.Activator.CreateInstance(t) )
+				.Where( t => t.IsAssignableTo( typeof(IFearCard) ) )
+				.Select( t => (IFearCard)System.Activator.CreateInstance(t) )
 				.ToArray();
 		}
 

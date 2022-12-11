@@ -115,7 +115,7 @@ class SweedenInvaderCard : InvaderCard {
 	public SweedenInvaderCard( InvaderCard orig ):base(orig) { }
 
 	public override async Task Explore( GameState gs ) {
-		SpaceState[] tokenSpacesToExplore = await PreExplore( gs );
+		SpaceState[] tokenSpacesToExplore = PreExplore( gs );
 		await DoExplore( gs, tokenSpacesToExplore );
 		if( HasEscalation )
 			Escalation( gs, tokenSpacesToExplore );

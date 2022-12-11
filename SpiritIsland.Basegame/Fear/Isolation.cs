@@ -1,9 +1,11 @@
 ﻿namespace SpiritIsland.Basegame;
 
-public class Isolation : IFearOptions {
+public class Isolation : IFearCard {
 
 	public const string Name = "Isolation";
-	string IFearOptions.Name => Name;
+	public string Text => Name;
+	public int? Activation { get; set; }
+	public bool Flipped { get; set; }
 
 
 	[FearLevel( 1, "Each player removes 1 Explorer / Town from a land where it is the only Invader." )]

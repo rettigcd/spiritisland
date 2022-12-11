@@ -80,7 +80,7 @@ public class GameComponentProvider : IGameComponentProvider {
 		typeof(WeaveTogetherTheFabricOfPlace),
 	}.Select( PowerCard.For ).ToArray();
 
-	public IFearOptions[] FearCards => new IFearOptions[] {
+	public IFearCard[] FearCards => new IFearCard[] {
 		new BesetByManyTroubles(),
 		new DahanReclaimFishingGrounds(),
 		new FleeFromDangerousLands(),

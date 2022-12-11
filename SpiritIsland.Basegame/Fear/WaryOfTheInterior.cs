@@ -1,9 +1,11 @@
 ﻿namespace SpiritIsland.Basegame;
 
-public class WaryOfTheInterior : IFearOptions {
+public class WaryOfTheInterior : IFearCard {
 
 	public const string Name = "Wary of the Interior";
-	string IFearOptions.Name => Name;
+	public string Text => Name;
+	public int? Activation { get; set; }
+	public bool Flipped { get; set; }
 
 
 	[FearLevel( 1, "Each player removes 1 Explorer from an Inland land." )]

@@ -1,8 +1,10 @@
 ﻿namespace SpiritIsland.BranchAndClaw;
 
-public class Panic : IFearOptions {
+public class Panic : IFearCard {
 	public const string Name = "Panic";
-	string IFearOptions.Name => Name;
+	public string Text => Name;
+	public int? Activation { get; set; }
+	public bool Flipped { get; set; }
 
 
 	[FearLevel( 1, "Each player adds 1 strife in a land with beast/disease/dahan." )]

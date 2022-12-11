@@ -85,6 +85,18 @@ public class SelfCtx {
 		return Target( space );
 	}
 
+	public async Task FlipFearCard( IFearCard cardToFlip, bool activating = false ) {
+		string label = activating ? "Activating Fear" : "Done";
+
+		cardToFlip.Flipped = true;
+		await Self.Select( label, new IOption[] { cardToFlip }, Present.Always );
+		if( cardToFlip.Activation.HasValue )
+			GameState.Log( new LogDebug( $"{cardToFlip.Activation.Value} => {cardToFlip.GetDescription( cardToFlip.Activation.Value )}" ) );
+		else
+			for(int i=1;i<=3;++i)
+				GameState.Log( new LogDebug($"{i} => {cardToFlip.GetDescription(i)}") );
+	}
+
 	#region Draw Cards
 
 	public Task<DrawCardResult> Draw() => Self.Draw( GameState );

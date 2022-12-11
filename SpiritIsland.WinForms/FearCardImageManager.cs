@@ -9,12 +9,12 @@ namespace SpiritIsland.WinForms {
 		public FearCardImageManager() {
 		}
 
-		public Image GetImage( ActivatedFearCard card ) {
+		public Image GetImage( IFearCard card ) {
 
-			string name = card.Name;
+			string name = card.Text;
 
 			if(!images.ContainsKey( name )) {
-				string ns = card.FearOptions.GetType().Namespace;
+				string ns = card.GetType().Namespace;
 				string edition = ns switch {
 					"SpiritIsland.Basegame" => "basegame",
 					"SpiritIsland.BranchAndClaw" => "bac",

@@ -68,7 +68,7 @@ public class GameComponentProvider : IGameComponentProvider {
 		typeof(VolcanicEruption),
 	}.Select( PowerCard.For ).ToArray();
 
-	public IFearOptions[] FearCards => new IFearOptions[] {
+	public IFearCard[] FearCards => new IFearCard[] {
 		new DahanAttack(),
 		new DahanThreaten(),
 		new Demoralized(),

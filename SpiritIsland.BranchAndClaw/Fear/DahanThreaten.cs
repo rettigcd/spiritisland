@@ -1,9 +1,11 @@
 ﻿namespace SpiritIsland.BranchAndClaw;
 
-public class DahanThreaten : IFearOptions {
+public class DahanThreaten : IFearCard {
 
 	public const string Name = "Dahan Threaten";
-	string IFearOptions.Name => Name;
+	public string Text => Name;
+	public int? Activation { get; set; }
+	public bool Flipped { get; set; }
 
 	[FearLevel( 1, "each player adds 1 strife in a land with dahan" )]
 	public async Task Level1( GameCtx ctx ) {

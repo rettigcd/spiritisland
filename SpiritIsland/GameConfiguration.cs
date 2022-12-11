@@ -19,7 +19,7 @@ public class GameConfiguration {
 
 		var majorCards = new List<PowerCard>();
 		var minorCards = new List<PowerCard>();
-		var fearCards = new List<IFearOptions>();
+		var fearCards = new List<IFearCard>();
 		var blightCards = new List<IBlightCard>();
 
 		foreach(var provider in providers) {

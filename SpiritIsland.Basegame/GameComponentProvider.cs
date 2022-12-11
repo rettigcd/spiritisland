@@ -81,7 +81,7 @@ public class GameComponentProvider : IGameComponentProvider {
 		typeof(WrapInWingsOfSunlight),
 	}.Select( PowerCard.For ).ToArray();
 
-	public IFearOptions[] FearCards => new IFearOptions[] {
+	public IFearCard[] FearCards => new IFearCard[] {
 		new AvoidTheDahan(),
 		new BeliefTakesRoot(),
 		new DahanEnheartened(),

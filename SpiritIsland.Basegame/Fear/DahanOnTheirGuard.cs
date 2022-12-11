@@ -1,10 +1,11 @@
 ﻿namespace SpiritIsland.Basegame;
 
-public class DahanOnTheirGuard : IFearOptions {
+public class DahanOnTheirGuard : IFearCard {
 
 	public const string Name = "Dahan on their Guard";
-	string IFearOptions.Name => Name;
-
+	public string Text => Name;
+	public int? Activation { get; set; }
+	public bool Flipped { get; set; }
 
 	[FearLevel( 1, "In each land, Defend 1 per Dahan." )]
 	public Task Level1( GameCtx ctx ) {

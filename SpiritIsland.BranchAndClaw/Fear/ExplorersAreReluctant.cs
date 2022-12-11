@@ -1,8 +1,11 @@
 ﻿namespace SpiritIsland.BranchAndClaw;
 
-public class ExplorersAreReluctant : IFearOptions {
+public class ExplorersAreReluctant : IFearCard {
+
 	public const string Name = "Explorers are Reluctant";
-	string IFearOptions.Name => Name;
+	public string Text => Name;
+	public int? Activation { get; set; }
+	public bool Flipped { get; set; }
 
 
 	[FearLevel( 1, "During the next normal explore, skip the lowest-numbered land matching the invader card on each board." )]

@@ -8,7 +8,7 @@ namespace SpiritIsland.Tests.BranchAndClaw.Fear {
 		const string FearAck1 = "Immigration Slows : 1 : During the next normal build, skip the lowest-numbered land matching the invader card on each board.";
 		const string FearAck2 = "Immigration Slows : 2 : Skip the next normal build. The build card remains in place instead of shifting left.";
 		const string FearAck3 = "Immigration Slows : 3 : Skip the next normal build.  The build card shifts left as usual.";
-		readonly IFearOptions card = new ImmigrationSlows();
+		readonly IFearCard card = new ImmigrationSlows();
 
 		[Trait( "Feature", "Build" )]
 		[Trait( "Feature", "InvaderCardProgression" )]

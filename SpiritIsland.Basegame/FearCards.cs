@@ -2,8 +2,8 @@
 
 public class FearCards {
 
-	public static IFearOptions[] GetFearCards() {
-		return new IFearOptions[] {
+	public static IFearCard[] GetFearCards() {
+		return new IFearCard[] {
 			new AvoidTheDahan(),
 			new BeliefTakesRoot(),
 			new DahanEnheartened(),

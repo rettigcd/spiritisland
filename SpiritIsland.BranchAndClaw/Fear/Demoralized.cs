@@ -1,9 +1,11 @@
 ﻿namespace SpiritIsland.BranchAndClaw;
 
-public class Demoralized : IFearOptions {
+public class Demoralized : IFearCard {
 
 	public const string Name = "Demoralized";
-	string IFearOptions.Name => Name;
+	public string Text => Name;
+	public int? Activation { get; set; }
+	public bool Flipped { get; set; }
 
 	[FearLevel( 1, "Defend 1 in all lands" )]
 	public Task Level1( GameCtx ctx ) {

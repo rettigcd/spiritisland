@@ -1,8 +1,11 @@
 ﻿namespace SpiritIsland.BranchAndClaw;
 
-public class TooManyMonsters : IFearOptions {
+public class TooManyMonsters : IFearCard {
+
 	public const string Name = "Too Many Monsters";
-	string IFearOptions.Name => Name;
+	public string Text => Name;
+	public int? Activation { get; set; }
+	public bool Flipped { get; set; }
 
 
 	[FearLevel( 1, "Each player removes 1 explorer / town from a land with beast." )]

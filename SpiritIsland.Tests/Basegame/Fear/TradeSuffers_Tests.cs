@@ -85,7 +85,7 @@ public class TradeSuffers_Tests {
 		user.DoesNothingForARound();
 	}
 
-	void ActivateFearCard(IFearOptions fearCard) {
+	void ActivateFearCard(IFearCard fearCard) {
 		var fear = ctx.GameState.Fear;
 		fear.Deck.Pop(); // remove old
 		fear.PushOntoDeck( fearCard );

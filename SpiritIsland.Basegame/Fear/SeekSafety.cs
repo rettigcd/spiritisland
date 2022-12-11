@@ -1,9 +1,11 @@
 ﻿namespace SpiritIsland.Basegame;
 
-public class SeekSafety : IFearOptions {
+public class SeekSafety : IFearCard {
 
 	public const string Name = "Seek Safety";
-	string IFearOptions.Name => Name;
+	public string Text => Name;
+	public int? Activation { get; set; }
+	public bool Flipped { get; set; }
 
 
 	[FearLevel( 1, "Each player may Push 1 Explorer into a land with more Town / City than the land it came from." )]

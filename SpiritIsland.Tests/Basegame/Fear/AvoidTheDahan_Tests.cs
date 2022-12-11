@@ -219,9 +219,9 @@ public class AvoidTheDahan_Tests {
 			ctx.GameState.Fear.Deck.Pop();
 	}
 
-	void ActivateFearCard(IFearOptions fearCard) {
+	void ActivateFearCard(IFearCard fearCard) {
 		var fear = ctx.GameState.Fear;
-		fear.Deck.Pop();			// discard card we are replacing
+		fear.Deck.Pop();				// discard card we are replacing
 
 		fear.PushOntoDeck(fearCard);	// push desired card onto the deck
 		fear.ActivateCard();		

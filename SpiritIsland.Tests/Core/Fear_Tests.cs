@@ -40,8 +40,7 @@ namespace SpiritIsland.Tests.Core {
 
 		[Fact]
 		public void GetName() {
-			new ActivatedFearCard( new AvoidTheDahan() )
-				.Text.ShouldBe( "Avoid the Dahan" );
+			new AvoidTheDahan().Text.ShouldBe( "Avoid the Dahan" );
 		}
 
 		[Fact]

@@ -1,9 +1,11 @@
 ﻿namespace SpiritIsland.Basegame;
 
-public class TallTalesOfSavagery : IFearOptions {
+public class TallTalesOfSavagery : IFearCard {
 
 	public const string Name = "Tall Tales of Savagery";
-	string IFearOptions.Name => Name;
+	public string Text => Name;
+	public int? Activation { get; set; }
+	public bool Flipped { get; set; }
 
 
 	[FearLevel( 1, "Each player removes 1 Explorer from a land with Dahan." )]

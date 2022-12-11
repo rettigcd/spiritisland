@@ -1,9 +1,11 @@
 ﻿namespace SpiritIsland.Basegame;
 
-public class EmigrationAccelerates : IFearOptions {
+public class EmigrationAccelerates : IFearCard {
 
 	public const string Name = "Emigration Accelerates";
-	string IFearOptions.Name => Name;
+	public string Text => Name;
+	public int? Activation { get; set; }
+	public bool Flipped { get; set; }
 
 	[FearLevel( 1, "Each player removes 1 Explorer from a Coastal land." )]
 	public Task Level1( GameCtx ctx ) {

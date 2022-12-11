@@ -262,9 +262,10 @@ public class Invader_Tests {
 		return new InvaderDeck( seed ).UnrevealedCards.ToArray();
 	}
 
-	static void Assert_NextNCardsFromDeck( List<IInvaderCard> deck, ImmutableList<IInvaderCard> cardSet, int count ) {
+	static void Assert_NextNCardsFromDeck( List<IInvaderCard> deck, ImmutableList<IInvaderCard> expected, int count ) {
+		var expectedTitles = expected.Select( x => x.Text ).ToArray();
 		for(int i = 0; i < count; ++i) {
-			Assert.Contains( deck[0], cardSet );
+			Assert.Contains( deck[0].Text, expectedTitles ); // because new cards are generated each time.
 			deck.RemoveAt(0);
 		}
 	}

@@ -13,7 +13,7 @@ public class GameComponentProvider : IGameComponentProvider {
 
 	public PowerCard[] MajorCards => Array.Empty<PowerCard>();
 
-	public IFearOptions[] FearCards => Array.Empty<IFearOptions>();
+	public IFearCard[] FearCards => Array.Empty<IFearCard>();
 
 	public IBlightCard[] BlightCards => Array.Empty<BlightCardBase>();
 

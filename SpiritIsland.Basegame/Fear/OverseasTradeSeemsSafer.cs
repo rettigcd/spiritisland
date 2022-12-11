@@ -1,9 +1,11 @@
 ﻿namespace SpiritIsland.Basegame;
 
-public class OverseasTradeSeemsSafer : IFearOptions {
+public class OverseasTradeSeemsSafer : IFearCard {
 
 	public const string Name = "Overseas Trade Seems Safer";
-	string IFearOptions.Name => Name;
+	public string Text => Name;
+	public int? Activation { get; set; }
+	public bool Flipped { get; set; }
 
 	[FearLevel( 1, "Defend 3 in all Coastal lands." )]
 	public Task Level1( GameCtx ctx ) {

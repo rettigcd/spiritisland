@@ -2,11 +2,11 @@
 
 public class FearCards {
 
-	public static IFearOptions[] GetFearCards() {
+	public static IFearCard[] GetFearCards() {
 
 		return typeof(FearCards).Assembly.GetTypes()
 			.Where( t => t.IsAssignableTo(typeof(BesetByManyTroubles) ) )
-			.Select( t => (IFearOptions)System.Activator.CreateInstance(t) )
+			.Select( t => (IFearCard)System.Activator.CreateInstance(t) )
 			.ToArray();
 
 	}

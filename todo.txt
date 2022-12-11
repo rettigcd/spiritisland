@@ -24,9 +24,8 @@ Is In Play
 
 4 ForgetCard - rename ForgetCard to ForgetCard_UserChoice AND/OR Consolidate the 2 ForgetCard methods into 1
 4 CardDrawer - get rid of power progression cards in tests, then make Card Drawer private and clean it up.
-4 Draw back side of Invader Cards
 4 Draw Adversary details
-4 Display individual cards / counts
+4 Display # of card in Explore slot
 
 3 Add special-rules logging as Debug, so we can see what happened.
 3 Make Virtual / Calculated Tokens work for types other than Defense
@@ -45,6 +44,7 @@ Make Spirit.ResolveActions private/protected.
 Can we Set Spirit.GameState property and then not pass it everywhere?
 Convert TargetSpaceCtx action Methods to Commands
 
+Idea - When cusororing over HotSpot, have selected item glow / highlight
 Idea - All of the Stop Tokens are actually just Pre-Build, Pre-Explore, Pre-Ravage events/configures
 Idea - Could the DoRavage token also be the Ravage Configuration used in ModifyRavage?
 Idea - Make Ravage / Build / Explore consistent in using UnitOfWork

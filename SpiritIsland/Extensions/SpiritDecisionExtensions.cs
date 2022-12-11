@@ -1,13 +1,11 @@
 ﻿namespace SpiritIsland;
 
-static public class SpiritDecisionExtensinos {
+static public class SpiritDecisionExtensions {
 
 	// used for Fear / Growth / Generic / options that combine different types
 	static public Task<T> Select<T>( this Spirit spirit, string prompt, T[] options, Present present ) where T : class, IOption {
 		return spirit.Gateway.Decision( new Select.TypedDecision<T>( prompt, options, present ) );
 	}
-
-	#region Simple Wrappers
 
 	static public Task<PowerCard> SelectPowerCard( this Spirit spirit, string prompt, IEnumerable<PowerCard> options, CardUse cardUse, Present present ) {
 		return spirit.Gateway.Decision( new Select.PowerCard( prompt, cardUse, options.ToArray(), present ) );
@@ -58,15 +56,6 @@ static public class SpiritDecisionExtensinos {
 		if(numToMove.Count==0) return 0; // if there are no options, auto-return 0
 		var x = await spirit.SelectText( prompt, numToMove.ToArray(), Present.Always );
 		return int.Parse( x );
-	}
-
-	#endregion
-
-	static public Task ShowFearCardToUser( this Spirit spirit, string prompt, PositionFearCard cardToShow, int? activationLevel = null ) {
-		var display = activationLevel != null 
-			? new ActivatedFearCard( cardToShow.FearOptions, activationLevel.Value )
-			: new ActivatedFearCard( cardToShow.FearOptions );
-		return spirit.Select( prompt, new IOption[] { display }, Present.Always );
 	}
 
 }

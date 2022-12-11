@@ -1,8 +1,10 @@
 ﻿namespace SpiritIsland.BranchAndClaw;
 
-public class Unrest : IFearOptions {
+public class Unrest : IFearCard {
 	public const string Name = "Unrest";
-	string IFearOptions.Name => Name;
+	public string Text => Name;
+	public int? Activation { get; set; }
+	public bool Flipped { get; set; }
 
 	[FearLevel( 1, "Each player adds 1 strife to a town." )]
 	public async Task Level1( GameCtx ctx ) {

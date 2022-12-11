@@ -1,9 +1,11 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-public class TheologicalStrife : IFearOptions {
+public class TheologicalStrife : IFearCard {
 
 	public const string Name = "Theological Strife";
-	string IFearOptions.Name => Name;
+	public string Text => Name;
+	public int? Activation { get; set; }
+	public bool Flipped { get; set; }
 
 	[FearLevel(1, "Each player adds 1 Strife in a land with Presence." )]
 	public Task Level1( GameCtx ctx ) {

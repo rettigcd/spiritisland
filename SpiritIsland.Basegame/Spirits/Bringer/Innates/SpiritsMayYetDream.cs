@@ -9,12 +9,25 @@ public class SpiritsMayYetDream {
 	static public async Task Option1( TargetSpiritCtx ctx ) {
 
 		// Turn any face-down fear card face-up
-		PositionFearCard[] cards = ctx.GameState.Fear.ActivatedCards
-			.Concat( ctx.GameState.Fear.Deck )
-			.ToArray();
-		var cardToShow = await ctx.Self.Select( "Select fear to reveal", cards, Present.Always );
+		var fearPosition = new List<TextOption>();
+		var dictionary = new Dictionary<TextOption, IFearCard>();
 
-		await ctx.Self.ShowFearCardToUser( "Done", cardToShow );
+		NameCards( fearPosition, dictionary, "Active", ctx.GameState.Fear.ActivatedCards );
+		NameCards( fearPosition, dictionary, "Future", ctx.GameState.Fear.Deck );
+
+		var positionToShow = await ctx.Self.Select( "Select fear to reveal", fearPosition.ToArray(), Present.Always );
+		await ctx.FlipFearCard( dictionary[positionToShow] );
+
+	}
+
+	static void NameCards( List<TextOption> fearPosition, Dictionary<TextOption, IFearCard> dictionary, string label, Stack<IFearCard> source ) {
+		int i = 0;
+		foreach(var card in source) {
+			var key = new TextOption( label + ((i == 0) ? "" : "+" + i) );
+			fearPosition.Add( key );
+			dictionary.Add( key, card );
+			++i;
+		}
 	}
 
 	[InnateOption( "3 moon","Target Spirit gains an element that they have at least 1 of.", 1 )]

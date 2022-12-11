@@ -118,13 +118,11 @@ public class InvaderCard : IOption, IInvaderCard {
 	#region Explore methods
 
 	public virtual async Task Explore( GameState gs ) {
-		SpaceState[] tokenSpacesToExplore = await PreExplore( gs );
+		SpaceState[] tokenSpacesToExplore = PreExplore( gs );
 		await DoExplore( gs, tokenSpacesToExplore );
 	}
 
-	protected async Task<SpaceState[]> PreExplore( GameState gs ) {
-
-		gs.Log( new InvaderActionEntry($"Flipping {this.Text} - was {this.Flipped}") );
+	protected SpaceState[] PreExplore( GameState gs ) {
 
 		Flipped = true;
 

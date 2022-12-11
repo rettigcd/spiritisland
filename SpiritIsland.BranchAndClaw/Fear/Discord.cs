@@ -1,9 +1,11 @@
 ﻿namespace SpiritIsland.BranchAndClaw;
 
-public class Discord : IFearOptions {
+public class Discord : IFearCard {
 
 	public const string Name = "Discord";
-	string IFearOptions.Name => Name;
+	public string Text => Name;
+	public int? Activation { get; set; }
+	public bool Flipped { get; set; }
 
 	[FearLevel( 1, "Each player adds 1 strife in a different land with at least 2 invaders" )]
 	public async Task Level1( GameCtx ctx ) {

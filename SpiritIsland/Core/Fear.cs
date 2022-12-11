@@ -18,9 +18,8 @@ public class Fear {
 			PushOntoDeck( new NullFearCard() );
 	}
 
-	public void PushOntoDeck( IFearOptions fearCard ) {
-		var td = new PositionFearCard { FearOptions = fearCard, Deck = Deck, ActivatedCards = ActivatedCards };
-		Deck.Push( td );
+	public void PushOntoDeck( IFearCard fearCard ) {
+		Deck.Push( fearCard );
 	}
 
 	public int[] cardsPerLevel = new int[] { 3, 3, 3 };
@@ -34,6 +33,26 @@ public class Fear {
 				: ct > level3Count ? 2
 				: ct > 0 ? 3
 				: 4; // Victory
+		}
+	}
+
+	// This returns lowest Terror Level 1st
+	// When some missing, does not return that Terror Level
+	public int[] CardsPerLevelRemaining {
+		get {
+			var cardCounts = new List<int>();
+
+			int remaining = Deck.Count;
+			int index = 2;
+
+			while( 0 < remaining) {
+				int cardsFrom3 = Math.Min( cardsPerLevel[index], remaining );
+				cardCounts.Add( cardsFrom3 );
+				remaining -= cardsFrom3;
+				--index;
+			}
+			cardCounts.Reverse();
+			return cardCounts.ToArray();
 		}
 	}
 
@@ -54,17 +73,21 @@ public class Fear {
 
 	public async Task Apply() {
 		while(ActivatedCards.Count > 0) {
-			PositionFearCard fearCard = ActivatedCards.Pop();
+			IFearCard fearCard = ActivatedCards.Pop();
+
 			// show card to each user
-			foreach(var spirit in gs.Spirits)
-				await spirit.ShowFearCardToUser( "Activating Fear", fearCard, TerrorLevel );
+			fearCard.Activation = TerrorLevel;
 
 			await using var unitOfWork = gs.StartAction( ActionCategory.Fear );
+			foreach(var spirit in gs.Spirits)
+				await spirit.Bind(gs, unitOfWork ).FlipFearCard(fearCard,true);
+
+
 			var ctx = new GameCtx( gs, unitOfWork );
 			switch(TerrorLevel) {
-				case 1: await fearCard.FearOptions.Level1( ctx ); break;
-				case 2: await fearCard.FearOptions.Level2( ctx ); break;
-				case 3: await fearCard.FearOptions.Level3( ctx ); break;
+				case 1: await fearCard.Level1( ctx ); break;
+				case 2: await fearCard.Level2( ctx ); break;
+				case 3: await fearCard.Level3( ctx ); break;
 			}
 
 			++ResolvedCards; // record discard cards (for England-6)
@@ -77,8 +100,8 @@ public class Fear {
 	public int EarnedFear { get; private set; } = 0;
 	public int PoolMax { get; set; }
 	// - cards -
-	public readonly Stack<PositionFearCard> Deck = new Stack<PositionFearCard>();
-	public readonly Stack<PositionFearCard> ActivatedCards = new Stack<PositionFearCard>();
+	public readonly Stack<IFearCard> Deck = new Stack<IFearCard>();
+	public readonly Stack<IFearCard> ActivatedCards = new Stack<IFearCard>();
 	// - events -
 	public SyncEvent<FearArgs> FearAdded = new SyncEvent<FearArgs>();                     // Dread Apparations
 	readonly GameState gs;
@@ -93,15 +116,19 @@ public class Fear {
 			pool = src.EarnedFear;
 			deck = src.Deck.ToArray();
 			activatedCards = src.ActivatedCards.ToArray();
+			flipped = deck.Union( activatedCards ).ToDictionary(c=>c,c=>c.Flipped);
 		}
 		public void Restore(Fear src ) {
 			src.EarnedFear = pool;
 			src.Deck.SetItems( deck );
 			src.ActivatedCards.SetItems(activatedCards);
+			foreach(var pair in flipped)
+				pair.Key.Flipped = pair.Value;
 		}
 		readonly int pool;
-		readonly PositionFearCard[] deck;
-		readonly PositionFearCard[] activatedCards;
+		readonly IFearCard[] deck;
+		readonly IFearCard[] activatedCards;
+		readonly Dictionary<IFearCard, bool> flipped;
 	}
 
 	#endregion Memento

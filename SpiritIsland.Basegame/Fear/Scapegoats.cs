@@ -1,9 +1,11 @@
 ﻿namespace SpiritIsland.Basegame;
 
-public class Scapegoats : IFearOptions {
+public class Scapegoats : IFearCard {
 
 	public const string Name = "Scapegoats";
-	string IFearOptions.Name => Name;
+	public string Text => Name;
+	public int? Activation { get; set; }
+	public bool Flipped { get; set; }
 
 
 	[FearLevel( 1, "Each Town destroys 1 Explorer in its land." )]

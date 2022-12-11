@@ -1,8 +1,4 @@
 ﻿using Shouldly;
-using System;
-using System.Linq;
-using Xunit;
-
 namespace SpiritIsland.Tests {
 
 	public class VirtualUser {
@@ -126,7 +122,9 @@ namespace SpiritIsland.Tests {
 		#region Fear 
 
 		public void AcknowledgesFearCard( string fearCard ) {
-			AssertDecision( "Activating Fear", fearCard, fearCard ); // some of the fear cards have commas in them
+			var parts = fearCard.Split(" : ");
+			var cardName = parts[0];// We used to include Level and Description but now we only use the Fear Card Name
+			AssertDecision( "Activating Fear", cardName, cardName ); // some of the fear cards have commas in them
 		}
 
 

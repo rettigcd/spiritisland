@@ -195,7 +195,7 @@ public class FranceInvaderCard : InvaderCard {
 
 	public override async Task Explore( GameState gs ) {
 		// Original
-		SpaceState[] tokenSpacesToExplore = await PreExplore( gs );
+		SpaceState[] tokenSpacesToExplore = PreExplore( gs );
 		await DoExplore( gs, tokenSpacesToExplore );
 
 		var gameCtx = new GameCtx( gs, ActionCategory.Adversary ); // 1 action for all these things.

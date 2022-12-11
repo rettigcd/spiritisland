@@ -34,7 +34,7 @@ internal static class TargetSpaceCtx_ExtensionsForTesting {
 			space.Blight.Init(0); // don't trigger events
 	}
 
-	public static void ActivateFearCard( this SelfCtx ctx, IFearOptions fearCard ) {
+	public static void ActivateFearCard( this SelfCtx ctx, IFearCard fearCard ) {
 		var fear = ctx.GameState.Fear;
 		fear.Deck.Pop();
 		fear.PushOntoDeck(fearCard);

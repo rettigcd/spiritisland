@@ -1,9 +1,11 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-public class NervesFray : IFearOptions {
+public class NervesFray : IFearCard {
 
 	public const string Name = "Nerves Fray";
-	string IFearOptions.Name => Name;
+	public string Text => Name;
+	public int? Activation { get; set; }
+	public bool Flipped { get; set; }
 
 
 	[FearLevel(1, "Each player adds 1 Strife in a land not matching a Ravage Card." )]

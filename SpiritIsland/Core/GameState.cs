@@ -26,7 +26,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 		TimePasses_WholeGame += TokenCleanUp;
 		TimePasses_WholeGame += ModifyBlightAddedEffect.ForRound.Clear;
-		TimePasses_WholeGame += EndOfAction.ForGame.Clear;
+		TimePasses_WholeGame += EndOfAction.ForRound.Clear;
 	}
 
 	/// <summary>
