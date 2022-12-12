@@ -2,7 +2,7 @@
 
 public class CallToTrade_Tests {
 
-	IEnumerable<TargetSpaceCtx> AllTargets( SelfCtx ctx ) {
+	static IEnumerable<TargetSpaceCtx> AllTargets( SelfCtx ctx ) {
 		return ctx.GameState.AllSpaces
 			.Select( s => ctx.Target(s.Space) );
 	}

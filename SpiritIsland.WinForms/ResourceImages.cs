@@ -45,7 +45,24 @@ namespace SpiritIsland.WinForms {
 			return GetResourceImage( ToResource( img ) );
 		}
 
-		public Bitmap GetPresenceIcon( string presenceColor ) => GetResourceImage( $"presence.{presenceColor}.png" );
+		public Bitmap GetPresenceIcon( PresenceTokenAppearance presenceColor ) {
+			var orig = GetResourceImage( $"presence.{presenceColor.BaseImage}.png" );
+
+			for(int x = 0; x < orig.Width; ++x)
+				for(int y = 0; y < orig.Height; ++y) {
+					var p = orig.GetPixel( x, y );
+					var hsl = HSL.FromRgb( p );
+					presenceColor.Adjust( hsl );
+					// hsl.H = x*360f/orig.Width; // make a rainbow!
+					// hsl.L += (1f - hsl.L) * .2f;
+
+					var newColor = Color.FromArgb( p.A, hsl.ToRgb() );
+					orig.SetPixel( x, y, newColor );
+				}
+
+			return orig;
+
+		}
 
 		// Strife / fear / invaders / dahan / blight / beast etc...
 		public Bitmap Strife()   => GetResourceImage("tokens.strife.png");

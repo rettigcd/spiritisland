@@ -1,3 +1,6 @@
+Rain And Mud Suppress Conflict
+	- different tier levels can be opted into.
+
 Move - does not allow moving into Ocean
 	- MMMA1 - Move beast and pull 2 dahan with it.
 
@@ -71,9 +74,20 @@ Modifications to Range
 
 Blight causes spirit to lose 1 presence on space
 
-
-
-
+====  =========
+Check if Gates of Deepest Power has bug that allows duplicate cards. like 1 in discard and one in hand.
+Check if anything is calling Spirit.GetTargetOptions directly and skipping over Shadows ability to pay to target.
+TargetSpaceCtx.IsOneOf needs tests to ensure it uses Terrain Mapper.
+Test GatherTheScatteredLightOfStars - to see if forgetting a power card creates a null card.
+Volcano Looming High - check if spirit can place presence outside mountain during power card use.
+Explosive Erruption should not destroy volcano presence - TEST!
+RepeatCardForCost - Add test that it pulls from Used actions, NOT discard pile.
+Make sure win/loss is checked after every spirit action / power card
+TokenCountDictionary.MoveTo (test that correct events are published)
+Review SpiritPresence.RemoveFrom_NoCheck( Space space, GameState gameState ) {
+Don't let Pusher/Gatherer move frozen dahan. - add tests!
+Test- Bats Scoutt... secondary damage didn't seem to be working.
+TEST - Upgrading or downgrading explorers with strife, should maintain strife.
 
 ===== Test Formats =====
 Game-Runner

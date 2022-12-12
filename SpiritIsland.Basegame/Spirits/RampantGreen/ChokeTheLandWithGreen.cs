@@ -1,5 +1,8 @@
 ﻿namespace SpiritIsland.Basegame;
 
+/// <summary>
+/// Token used by Rampant Green that stops builds and ravages
+/// </summary>
 public class ChokeTheLandWithGreen : SpiritPresenceToken , ISkipBuilds, ISkipRavages  {
 
 	static public SpecialRule Rule => new SpecialRule(
@@ -7,9 +10,9 @@ public class ChokeTheLandWithGreen : SpiritPresenceToken , ISkipBuilds, ISkipRav
 		"Whenever invaders would ravage or build in a land with your sacred site, you may prevent it by destroying one of your presense in that land."
 	);
 
-	ASpreadOfRampantGreen _self;
+	readonly ASpreadOfRampantGreen _self;
 
-	public ChokeTheLandWithGreen(ASpreadOfRampantGreen self ) {
+	public ChokeTheLandWithGreen( ASpreadOfRampantGreen self ) {
 		_self = self;
 	}
 

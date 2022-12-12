@@ -172,7 +172,7 @@ public class VirtualUser {
 		AssertDecisionX( "Push "+tokenToPush+" to", destinations );
 	}
 
-	public void PusheSelectedTokenTo( string invaders, string destinations, int numToPush = 1 ) {
+	public void PusheSelectedTokenTo( string invaders, string destinations ) {
 		var (_, tokenToPush) = SplitOptionsAndChoice( invaders );
 		AssertDecisionX( "Push " + tokenToPush + " to", destinations );
 	}

@@ -32,7 +32,7 @@ public partial class IslandControl : Control {
 
 	}
 
-	public void Init( GameState gameState, IHaveOptions optionProvider, string presenceColor ) {
+	public void Init( GameState gameState, IHaveOptions optionProvider, PresenceTokenAppearance presenceColor ) {
 
 		spiritLayout = null;
 
@@ -722,9 +722,10 @@ public partial class IslandControl : Control {
 			.ToArray();
 
 		using var brush = new LinearGradientBrush( new Rectangle( 0, 0, 30, 30 ), Color.Transparent, Color.Transparent, 45F );
-		var blend = new ColorBlend();
-		blend.Positions = new float[colors.Length * 2];
-		blend.Colors = new Color[colors.Length * 2];
+		var blend = new ColorBlend {
+			Positions = new float[colors.Length * 2],
+			Colors = new Color[colors.Length * 2]
+		};
 		float step = 1.0f / colors.Length;
 		for(int i = 0; i < colors.Length; ++i) {
 			blend.Positions[i * 2] = i * step;
@@ -771,43 +772,47 @@ public partial class IslandControl : Control {
 	static Brush SpaceBrush( Space space ) {
 		if(space.IsWetland) {
 			using Image image = Image.FromFile( ".\\images\\wetlands.jpg" );
-			TextureBrush tBrush = new TextureBrush( image );
-			tBrush.Transform = new Matrix(
-				0.25f, 0.0f, 0.0f,
-				0.25f, 0.0f, 0.0f
-			);
+			TextureBrush tBrush = new TextureBrush( image ) {
+				Transform = new Matrix(
+					0.25f, 0.0f, 0.0f,
+					0.25f, 0.0f, 0.0f
+				)
+			};
 			return tBrush;
 		}
 		if(space.IsJungle) {
 			using Image image = Image.FromFile( ".\\images\\jungle.jpg" );
-			TextureBrush tBrush = new TextureBrush( image );
-			tBrush.Transform = new Matrix(
-				1f, 0.0f, 0.0f,
-				1f, 0.0f, 0.0f
-			);
+			TextureBrush tBrush = new TextureBrush( image ) {
+				Transform = new Matrix(
+					1f, 0.0f, 0.0f,
+					1f, 0.0f, 0.0f
+				)
+			};
 			return tBrush;
 		}
 		if(space.IsMountain) {
 			using Image image = Image.FromFile( ".\\images\\mountains.jpg" );
-			TextureBrush tBrush = new TextureBrush( image );
-			tBrush.Transform = new Matrix(
-				0.5f, 0.0f, 0.0f,
-				0.5f, 0.0f, 0.0f
-			);
+			TextureBrush tBrush = new TextureBrush( image ) {
+				Transform = new Matrix(
+					0.5f, 0.0f, 0.0f,
+					0.5f, 0.0f, 0.0f
+				)
+			};
 			return tBrush;
 		}
 		if(space.IsSand) {
 			using Image image = Image.FromFile( ".\\images\\sand.jpg" );
-			TextureBrush tBrush = new TextureBrush( image );
-			tBrush.Transform = new Matrix(
-				0.5f, 0.0f, 0.0f,
-				0.5f, 0.0f, 0.0f
-			);
+			TextureBrush tBrush = new TextureBrush( image ) {
+				Transform = new Matrix(
+					0.5f, 0.0f, 0.0f,
+					0.5f, 0.0f, 0.0f
+				)
+			};
 			return tBrush;
 		}
 		if(space.IsOcean) {
 			using Image image = Image.FromFile( ".\\images\\ocean.jpg" );
-			TextureBrush tBrush = new TextureBrush( image );
+			TextureBrush tBrush = new( image );
 			tBrush.Transform = new Matrix(
 				0.5f, 0.0f, 0.0f,
 				0.5f, 0.0f, 0.0f
@@ -1021,7 +1026,7 @@ public partial class IslandControl : Control {
 
 	#endregion
 
-	Font UseGameFont( float fontHeight ) => new Font( ResourceImages.Singleton.Fonts.Families[0], fontHeight, GraphicsUnit.Pixel );
+	static public Font UseGameFont( float fontHeight ) => new Font( ResourceImages.Singleton.Fonts.Families[0], fontHeight, GraphicsUnit.Pixel );
 
 	#region private fields
 
@@ -1085,7 +1090,7 @@ public partial class IslandControl : Control {
 	Bitmap cachedBackground;
 
 	Image presence;
-	string presenceColor;
+	PresenceTokenAppearance presenceColor;
 	Image strife;
 	Image fearTokenImage;
 	Image grayFear;
@@ -1121,4 +1126,3 @@ class ArrowDrawer {
 		graphics.DrawLine( pen, newTo, wing2 );
 	}
 }
-

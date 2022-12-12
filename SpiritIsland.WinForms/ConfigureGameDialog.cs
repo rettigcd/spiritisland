@@ -54,7 +54,6 @@ namespace SpiritIsland.WinForms {
 			colorListBox.Items.Add( "dkblue" );
 			colorListBox.Items.Add( "purple" );
 			colorListBox.Items.Add( "pink" );
-			colorListBox.Items.Add( "greenorangeswirl" );
 			colorListBox.SelectedIndex = 0;
 
 			// Adversaries
@@ -114,9 +113,26 @@ namespace SpiritIsland.WinForms {
 				ShuffleNumber = ShuffleNumber(),
 			};
 
-			gameSettings.Color = (colorListBox.SelectedIndex == 0)
-				? GetColorForSpirit( gameSettings.SpiritType )
-				: colorListBox.SelectedItem as string;
+			const float saturation = .7f; // standard
+			if( colorListBox.SelectedIndex == 0 ) {
+				gameSettings.Color = GetColorForSpirit( gameSettings.SpiritType );
+			} else {
+				gameSettings.Color = (colorListBox.SelectedItem as string) switch {
+					"red" => new PresenceTokenAppearance( 0f, saturation ),
+					"orange" => new PresenceTokenAppearance( 30f, saturation ),
+					"yellow" => new PresenceTokenAppearance( 60f, saturation ) { Pull = -.4f },
+					// missing 90
+					"green" => new PresenceTokenAppearance( 120f, saturation ) { Pull = -.4f },
+					// missing 150
+					"blue" => new PresenceTokenAppearance( 180f, saturation ) { Pull = -.3f }, // cyan
+																							   // missing 210
+					"dkblue" => new PresenceTokenAppearance( 240f, saturation ),
+					"purple" => new PresenceTokenAppearance( 270f, saturation ),
+					"pink" => new PresenceTokenAppearance( 300f, saturation ),
+					"greenorangeswirl" => new PresenceTokenAppearance( 120, .4f, "greenorangeswirl" ),
+					_ => new PresenceTokenAppearance( 200, .4f )
+				};
+			}
 
 			string adversary = _adversaryListBox.SelectedItem.ToString();
 			gameSettings.AdversaryType = adversary.StartsWith("Brandenburg") ? typeof( BrandenburgPrussia ) 
@@ -135,24 +151,34 @@ namespace SpiritIsland.WinForms {
 				: new Random().Next( 0, 999_999_999 );
 		}
 
-		static string GetColorForSpirit( Type spiritType ) {
+		static PresenceTokenAppearance GetColorForSpirit( Type spiritType ) {
 			string spiritName = ((Spirit)Activator.CreateInstance( spiritType )).Text;		// !!! don't create a temp spirit and throw it away, just use the real spirit
 			return spiritName switch {
-				RiverSurges.Name           => "blue",
-				LightningsSwiftStrike.Name => "yellow",
-				VitalStrength.Name         => "orange",
-				Shadows.Name               => "purple",
-				Thunderspeaker.Name        => "red",
-				ASpreadOfRampantGreen.Name => "green",
-				Bringer.Name               => "pink",
-				Ocean.Name                 => "dkblue",
-				Keeper.Name                => "greenorangeswirl",
-				SharpFangs.Name            => "red",
-				HeartOfTheWildfire.Name    => "green",
-				SerpentSlumbering.Name     => "orange",
-				LureOfTheDeepWilderness.Name => "green",
-				StonesUnyieldingDefiance.Name => "orange",
-				_                          => "blue"
+				Thunderspeaker.Name                  => new PresenceTokenAppearance( 0, .6f ),
+				SharpFangs.Name                      => new PresenceTokenAppearance( 0, .8f ) { Pull = -.3f },
+				VengeanceAsABurningPlague.Name       => new PresenceTokenAppearance( 15, .6f ),
+				HeartOfTheWildfire.Name              => new PresenceTokenAppearance( 20, .8f ),
+				VitalStrength.Name                   => new PresenceTokenAppearance( 22, .47f ) { Pull = -.3f },
+				VolcanoLoomingHigh.Name              => new PresenceTokenAppearance( 24, .8f ),
+				StonesUnyieldingDefiance.Name        => new PresenceTokenAppearance( 48, .16f ),
+				LightningsSwiftStrike.Name           => new PresenceTokenAppearance( 55, .64f ),
+				GrinningTricksterStirsUpTrouble.Name => new PresenceTokenAppearance( 58, .2f ),
+				ASpreadOfRampantGreen.Name           => new PresenceTokenAppearance( 114, .65f ) { Pull = -.1f },
+				LureOfTheDeepWilderness.Name         => new PresenceTokenAppearance( 125, .33f ) { Pull = -.3f },
+				FracturedDaysSplitTheSky.Name        => new PresenceTokenAppearance( 160, .9f ) { Pull = -.3f },
+				ShroudOfSilentMist.Name              => new PresenceTokenAppearance( 196, .3f ) { Pull = .3f },
+				Ocean.Name                           => new PresenceTokenAppearance( 200, .5f ) { Pull = -.2f },
+				RiverSurges.Name                     => new PresenceTokenAppearance( 209, .5f) { Pull = -.2f },
+				DownpourDrenchesTheWorld.Name        => new PresenceTokenAppearance( 210, .7f ) { Pull = -.3f },
+				FinderOfPathsUnseen.Name	         => new PresenceTokenAppearance( 218, .5f ) { Pull = -.2f },
+				ShiftingMemoryOfAges.Name            => new PresenceTokenAppearance( 229, .35f ),
+				StarlightSeeksItsForm.Name           => new PresenceTokenAppearance( 251, .78f ),
+				Bringer.Name                         => new PresenceTokenAppearance( 300, .6f ),
+				ManyMindsMoveAsOne.Name              => new PresenceTokenAppearance( 326, .35f ),
+				SerpentSlumbering.Name               => new PresenceTokenAppearance( 330, .3f ),
+				Shadows.Name                         => new PresenceTokenAppearance( 337, .3f ) { Pull = -.3f },
+				Keeper.Name                          => new PresenceTokenAppearance( "greenorangeswirl" ),
+				_                                    => new PresenceTokenAppearance( 0, 0 ),
 			};
 		}
 

@@ -77,7 +77,6 @@ class MistsShiftAndFlow {
 		await _ctx.Presence.Move( gatherSource, gatherDst );
 	}
 
-	bool IsInPlay( Space space ) => _gameState.Island.Terrain_ForPower.IsInPlay( space );
 	bool IsInPlay( SpaceState space ) => _gameState.Island.Terrain_ForPower.IsInPlay( space.Space );
 
 

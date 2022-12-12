@@ -5,7 +5,7 @@ public class GameConfiguration {
 	public int ShuffleNumber;
 	public Type SpiritType;
 	public string Board;
-	public string Color;
+	public PresenceTokenAppearance Color;
 	public Type AdversaryType;
 	public int AdversaryLevel;
 	public string AdversaryString => AdversaryType == null ? "[none]"

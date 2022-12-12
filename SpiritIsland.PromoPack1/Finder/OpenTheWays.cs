@@ -42,14 +42,14 @@ class OpenTheWays : IActionFactory {
 			!self.Presence.IsOn( _token0.From ) 
 		||	!self.Presence.IsOn( _token1.From );
 
-	void Link( ref GatewayToken trackedToken, SpaceState newTarget, SpaceState other ) {
+	static void Link( ref GatewayToken trackedToken, SpaceState newTarget, SpaceState other ) {
 		// Remove old
 		Unlink( ref trackedToken );
 
 		// Add new
 		trackedToken = new GatewayToken( newTarget, other );
 	}
-	void Unlink( ref GatewayToken trackedToken ) {
+	static void Unlink( ref GatewayToken trackedToken ) {
 		trackedToken?.RemoveSelf();
 		trackedToken = null;
 	}

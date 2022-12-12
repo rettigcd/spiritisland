@@ -37,8 +37,6 @@ public class VolcanoLoomingHigh : Spirit {
 			InnatePower.For<PoweredByTheFurnaceOfTheEarth>()
 		};
 
-		((VolcanoPresence)(Presence)).SetSpirit( this );
-
 		PowerRangeCalc = new VolcanicPeaksTowerOverTheLandscape();
 	}
 

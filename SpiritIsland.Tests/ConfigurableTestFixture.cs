@@ -71,7 +71,7 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 		var gameConfig = new GameConfiguration {
 			SpiritType = typeof(RiverSurges),
 			Board = "A",
-			Color = "Red",
+			Color = new PresenceTokenAppearance( 0f, 1f ), // red
 		};
 		adjustCfg(gameConfig);
 

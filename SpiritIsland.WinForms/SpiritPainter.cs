@@ -16,7 +16,7 @@ namespace SpiritIsland.WinForms {
 		readonly PresenceTrackPainter presencePainter;
 		readonly GrowthPainter growthPainter;
 
-		public SpiritPainter(Spirit spirit, SpiritLayout spiritLayout, string presenceColor ) {
+		public SpiritPainter(Spirit spirit, SpiritLayout spiritLayout, PresenceTokenAppearance presenceColor ) {
 			this.spirit = spirit;
 			this.spiritLayout = spiritLayout;
 

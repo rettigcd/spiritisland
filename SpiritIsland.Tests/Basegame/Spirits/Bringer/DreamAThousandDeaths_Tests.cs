@@ -58,7 +58,6 @@ public class DreamAThousandDeaths_Tests {
 		Assert_GeneratedFear( 0 );
 
 		//  and: explorer on destination
-		var debug = ctx.GameState.Tokens[ board[7] ];
 		ctx.GameState.Assert_DreamingInvaders( board[7], $"{count}E@1" );
 		//  and: not at origin
 		ctx.GameState.Assert_Invaders( board[5], $"" );

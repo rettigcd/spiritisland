@@ -188,7 +188,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		Skip1Explore( Tokens[target], label );
 	}
 
-	public void Skip1Ravage( Space space, string label, Func<GameState, SpaceState, Task> altAction = null ) {
+	public void Skip1Ravage( Space space, string label ) {
 		AdjustTempToken( space, new SkipRavage(label) );
 	}
 
@@ -197,7 +197,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	}
 
 	public void Skip1Explore( SpaceState space, string label ) {
-		space.Adjust( new SkipExploreTo( label ), 1 );
+		AdjustTempToken( space.Space, new SkipExploreTo( label ) );
 	}
 
 	public void SkipAllBuilds( Space space, string label, params TokenClass[] stoppedClasses  ) {

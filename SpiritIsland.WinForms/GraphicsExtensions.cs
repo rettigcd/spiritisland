@@ -258,7 +258,7 @@ namespace SpiritIsland.WinForms {
 
 		static public void DrawStringCenter( this Graphics graphics, string text, Font labelFont, Brush brush, RectangleF textBounds ) {
 			using StringFormat alignCenter = new StringFormat { Alignment = StringAlignment.Center };
-			graphics.DrawString( text, labelFont, Brushes.Black, textBounds, alignCenter );
+			graphics.DrawString( text, labelFont, brush, textBounds, alignCenter );
 		}
 
 	}

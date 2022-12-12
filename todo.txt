@@ -1,43 +1,50 @@
-﻿
-Plan:
-	Create Interface of Space-Properties needed for Predicate
-	Have SpaceCtx implement interface.
-	Have SpaceFilterMap use interface.
-	Replace SpaceFilterMap with a group of Named Space filters, so we can pass them as objects to .From()
-
-Things that might effect Fear-based Spaces
-	IsCoastal or IsInland
-		due to:
-			Hummingbird (temporary adjacencies) - if this is Adjacen, this should be ok.
-			Weave Together (different type of space) - should be in the space and ok
-
-Is In Play
-	- based on: Ocean
-	- Ocean: InPlay for powers and blight, NOT InPlay for invaders, fear, growth.
-	IsInPlay
-
-==========================
+﻿==========================
 ====  Clean Up Items  ====
 ==========================
+5 Boards E & F
+! Save Game in Recent Games list so we can replay them.
+5 Draw Adversary details - show adversary flag - Log setup adjustments
+5 Reduce tokens a smidge, make grid inside space, place tokens on those grids, select location randomly, but make spots sticky
+
+Tokens - DahanGroupBinding.Drown should be async so UI will update.
+Tokens - Publish token events to the UI so that it can show token changing.
+
+Verify - Starlights Track has +1 energies
+Verify - Vengeance - WreakVengeance for the Lands Corruption
+Verify - VolcanoLoomingHigh doesn't allow presence ouside of mountain
+Implement - Starlights Track has +1 energies
+Implement - Vengeance - WreakVengeance for the Lands Corruption
+Implement - VolcanoLoomingHigh doesn't allow presence ouside of mountain
+Tokens - WreakVengeanceForTheLandsCorruption - virtual tokens might not be correct.
+
+- - - - -
+
 5 Move Finders Hook to Action-start
 
 4 ForgetCard - rename ForgetCard to ForgetCard_UserChoice AND/OR Consolidate the 2 ForgetCard methods into 1
-4 Draw Adversary details
 
+4 Settle into hunting grounds - implement presence cannot move.
+4 Slip the flows of time - use any # of times
+4  Display Blight Card and/or text
+
+3 Command-Beast - show graphic (so it doesn't get lost in text)
+3 Visual indicator of Phase
 3 Add special-rules logging as Debug, so we can see what happened.
 3 Make Virtual / Calculated Tokens work for types other than Defense
 3 Review items that are PickSpace then Pick Token into a single pick-space-token step.
 3 Shifting Memory - Prepared elements.  Add them AFTER the action has completed.
+3 Change Fear Card Ack to Events. (how do we do that?)
+3 Configure Game - Images for Selecting Spirits / Boards / Token colors
 
-2 Consilidate GameState API - things that aren't data and have no theoretical state.  Spirits could hand on to them and not have to pass gamestate around.
+2 Consilidate GameState API - things that aren't data and have no theoretical state.
 2 Merge Config Ravage and Ravage Engine
-2 Simplify syntax for selecting TokensFromManySpaces
-2 Consolidate => Single PresenceOnBoardChanged event
-2 CachedImageDrawer - make it draw the images
+2 Review Presence events. Can they be removed by having Presence do action directly? Consolidate => Single PresenceOnBoardChanged event
+2 Clean up Token drawing and ownership - CachedImageDrawer - make it draw the images
+2 Create a target-space preview, when hovering over cards
+
 
 TokenCountDictionary.counts -> make private.
 Make Spirit.ResolveActions private/protected.
-Can we Set Spirit.GameState property and then not pass it everywhere?
 Convert TargetSpaceCtx action Methods to Commands
 
 Idea - When cusororing over HotSpot, have selected item glow / highlight
@@ -61,38 +68,11 @@ Instead of reacting to PresenceMoved / Removed / Added events, have the Presence
 	- Fear pool / cards
 
 * replace Frozen dahan with RemovingToken handler (and DamagingToken handler)
-
 * Display Adversary details
-* Display Back side of Invader card
 
 Later: Events
 Later: Scenarios
-Later: Web Hosted
 
-* Implement Face-up / face-down for deck cards so we can see what stage a card is before revealing it.
-* Show # of Invader cards left in deck
-* Visions of shifting future - use Randomizer so it is repeatable.
-
-! Save Game in Recent Games list so we can replay them.
-
------ Spirit Island ----
-
-* Adversaries
-	show flag
-	Log setup adjustments
-
-* Command-Beast
-	show graphic (so it doesn't get lost in text)
-
-* Display back of explorer card.
-
-=================================
-
-Some Commands need a title like the Power Card Name, other's need detailed description of what they do.
-
-Create TargetSpaceCtx filter type.
-
-Adjusting Hue for tokens:  RGB > YIQ > YIQ > RGB
 ===============================
 
 == Architecture ==
@@ -101,86 +81,36 @@ Multiplayer Network Play
 
 == UI improvement ==
 Flatten Move
-Interactive Card-Play selector w/ commit
 Event driven UI updates
-Flatten out-of-phase action selection.
 
 == Missing ==
 Destroy Board
-Add new board.
 Unlock the Gates - triggers all element thresholds
-Revamp Skips - only skip actions that happen, select which skip to use, don't need to select skip until it happens.
-Settle into Hunting Grounds - presence can't move.
 
 == Verify ==
-Starlights Track has +1 energies
-Vengeance - WreakVengeance for the Lands Corruption
-VolcanoLoomingHigh doesn't allow presence ouside of mountain
-
-==== Finish ====
-
-Settle into hunting grounds - implement presence cannot move.
-Slip the flows of time - use any # of times
-
-====  Test  ====
-
-Check if Gates of Deepest Power has bug that allows duplicate cards. like 1 in discard and one in hand.
-Check if anything is calling Spirit.GetTargetOptions directly and skipping over Shadows ability to pay to target.
-TargetSpaceCtx.IsOneOf needs tests to ensure it uses Terrain Mapper.
-Test GatherTheScatteredLightOfStars - to see if forgetting a power card creates a null card.
-Volcano Looming High - check if spirit can place presence outside mountain during power card use.
-Explosive Erruption should not destroy volcano presence - TEST!
-RepeatCardForCost - Add test that it pulls from Used actions, NOT discard pile.
-Make sure win/loss is checked after every spirit action / power card
-TokenCountDictionary.MoveTo (test that correct events are published)
-Review SpiritPresence.RemoveFrom_NoCheck( Space space, GameState gameState ) {
-Don't let Pusher/Gatherer move frozen dahan. - add tests!
-Test- Bats Scoutt... secondary damage didn't seem to be working.
-TEST - Upgrading or downgrading explorers with strife, should maintain strife.
-
-==== Token Management =====
-WreakVengeanceForTheLandsCorruption - virtual tokens might not be correct.
-Add Token.MoveFrom method to simplify Draw-Into-Void
-DahanGroupBinding.Drown should be async so UI will update.
-Publish token events to the UI so that it can show token changing.
-
-====  Not Yet Supported  =====
-
-Visions of shifting Future - fix once we support events.
+Visions of shifting Future - fix once we support events - use Randomizer so it is repeatable.
 The Past Returns again - implement all spirits paying.
 
-=========================================================
-GUI
-	- layout of Fear / Blight items
-	- Put Build / Ravage / fear in strip along the top 
-	- display # of cards remaining in fear deck before next terror level
-	- Configure Game - Images for Selecting Spirits / Boards / Token colors
-	- Visual indicator of Phase
-	- Show fear cards while they are being resolved.
-	- Create a target-space preview, when hovering over cards
-	- Show back side of explore card (so they no what stage it is)
-	- Display Blight Card and/or text
-	- Show backside of next explorer card
+==========  AI - Search  =================
 
-AI - Search
-	- Create a search tree algorythm that can play the game
-	- Heuristic to measure end-of-round goodness.
+- Create a search tree algorythm that can play the game
+- Heuristic to measure end-of-round goodness.
 
-	Maximizes: Power Points Played - Ignore State of the board.
+Maximizes: Power Points Played - Ignore State of the board.
 
-	Must be aware of:
-	  - items that destroy presence or return it to board
-	  - items that give energy
-	  - card elements
-	  - items that give extraw card plays or extra draw-cards.
+Must be aware of:
+	- items that destroy presence or return it to board
+	- items that give energy
+	- card elements
+	- items that give extraw card plays or extra draw-cards.
 
-	Categorize cards:
-	  - Attack
-	  - Defend
-	  - Energy
-	  - Card Plays
-	  - Movement
-	  - Fear
+Categorize cards:
+	- Attack
+	- Defend
+	- Energy
+	- Card Plays
+	- Movement
+	- Fear
 
 -- Helpful --
 
@@ -189,24 +119,22 @@ Make Push a 1-step commmand
 	- Embed guaranteed next decision in selecting source token
 	- UI selects entire move before sequentially submitting: source token, destination
 
-Show # of cards remaining in fear deck until next threshold
-
-====================================================================================
-== Steam updates - What's New (provide insight as to what they have trouble with) ==
+=====  Steam Updates  =============
+provide insight as to what they have trouble with
 https://store.steampowered.com/news/app/1236720
 https://spiritislandwiki.com/index.php?title=Main_Page
 http://nerdroomsoftware.com/apps/SpiritGuide/spirits.php
 
 
-=====  no-events alternative "Command the Beasts" (page 20) ========
+=====  Command the Beasts (page 20) ========
 
---- Setup ---
+-- Setup --
 
 Add 1 extra fear card to Terror Level 2 of the Fear Deck.
 Add the two 'Command Beasts' Reminder Cards to the Invader Deck; one before the first Stage 2 Card, the other before the first Stage 3  card
 Don't use a Blight Card where the Blighted Island side has 2 Blight per player or only immediate effects.  	(Still Healthy are fine though.)
 
---- Game Play ---
+-- Game Play --
 
 When reaching Invader Stage 2 and Invader Stage 3, the Spirits earn the abilito to command all Beasts on the island once.
 

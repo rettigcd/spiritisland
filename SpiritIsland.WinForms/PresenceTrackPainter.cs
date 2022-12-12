@@ -13,7 +13,7 @@ namespace SpiritIsland.WinForms {
 		public PresenceTrackPainter( 
 			Spirit spirit, 
 			PresenceTrackLayout metrics,
-			string presenceColor
+			PresenceTokenAppearance presenceColor
 		) {
 			this.spirit = spirit;
 			this.metrics = metrics;
@@ -64,12 +64,12 @@ namespace SpiritIsland.WinForms {
 		}
 
 		void PaintLabels(Graphics graphics) {
-			using Font simpleFont = new( "Arial", 8, FontStyle.Bold, GraphicsUnit.Point );
+			using Font simpleFont = IslandControl.UseGameFont( 12f );
 			graphics.DrawString( "Energy", simpleFont, SystemBrushes.ControlDarkDark, metrics.EnergyTitleLocation );
 			graphics.DrawString( "Cards", simpleFont, SystemBrushes.ControlDarkDark, metrics.CardPlayTitleLocation );
 		}
 
-		void PaintPresence(Graphics graphics, string presenceColor) {
+		void PaintPresence(Graphics graphics, PresenceTokenAppearance presenceColor) {
 			using Bitmap presenceImg = ResourceImages.Singleton.GetPresenceIcon( presenceColor );
 
 			foreach(var track in EnergyTrack)
@@ -134,7 +134,7 @@ namespace SpiritIsland.WinForms {
 
 		readonly Spirit spirit;
 		readonly PresenceTrackLayout metrics;
-		readonly string presenceColor;
+		readonly PresenceTokenAppearance presenceColor;
 
 		// Single threaded / instance methods
 		CachedImageDrawer imageDrawer;
