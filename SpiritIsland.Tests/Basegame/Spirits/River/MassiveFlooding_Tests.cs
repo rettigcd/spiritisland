@@ -8,9 +8,7 @@ public class MassiveFlooding_Tests : RiverGame {
 
 	public MassiveFlooding_Tests():base(){
 		// Given: River
-		spirit.UsePowerProgression();
 		gs = new GameState( spirit, Board.BuildBoardA() ) {
-//			InvaderDeck = new InvaderDeck(),
 			Phase = Phase.Slow
 		};
 

@@ -41,17 +41,6 @@ public class RiverSurges : Spirit {
 
 	}
 
-	protected override PowerProgression GetPowerProgression() => 
-		new (
-			PowerCard.For<UncannyMelting>(),
-			PowerCard.For<NaturesResilience>(),
-			PowerCard.For<PullBeneathTheHungryEarth>(),
-			PowerCard.For<AcceleratedRot>(),  // MAJOR?
-			PowerCard.For<SongOfSanctity>(),
-			PowerCard.For<Tsunami>(),
-			PowerCard.For<EncompassingWard>()
-		);
-
 	protected override void InitializeInternal( Board board, GameState gs ) {
 		Presence.Adjust( gs.Tokens[ board.Spaces.Reverse().First( s => s.IsWetland ) ], 1 );
 	}

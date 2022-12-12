@@ -27,17 +27,6 @@ public class Shadows : Spirit {
 		};
 	}
 
-	protected override PowerProgression GetPowerProgression() =>
-		new (
-			PowerCard.For<DarkAndTangledWoods>(),
-			PowerCard.For<ShadowsOfTheBurningForest>(),
-			PowerCard.For<TheJungleHungers>(), // Major
-			PowerCard.For<LandOfHauntsAndEmbers>(),
-			PowerCard.For<TerrifyingNightmares>(),// Major
-			PowerCard.For<CallOfTheDahanWays>(),
-			PowerCard.For<VisionsOfFieryDoom>()
-		);
-
 	/// <summary>
 	/// Overriden so we can pay 1 energy for targetting out-of-range dahan space
 	/// </summary>

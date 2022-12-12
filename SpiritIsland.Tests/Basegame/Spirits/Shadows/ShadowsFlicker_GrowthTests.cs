@@ -2,7 +2,7 @@
 
 public class ShadowsFlicker_GrowthTests : GrowthTests {
 
-	public ShadowsFlicker_GrowthTests():base( new Shadows().UsePowerProgression() ){
+	public ShadowsFlicker_GrowthTests():base( new Shadows() ){
 	}
 
 	[Fact]
@@ -11,6 +11,8 @@ public class ShadowsFlicker_GrowthTests : GrowthTests {
 		Given_HalfOfPowercardsPlayed();
 
 		_ = When_Growing( 0 );
+		User.SelectsMinorPowerCard();
+		User.SelectsFirstOption( "Select minor Power Card" );
 
 		Assert.Equal(5,this.spirit.Hand.Count); // drew 1 card
 	}
@@ -23,6 +25,9 @@ public class ShadowsFlicker_GrowthTests : GrowthTests {
 		_ = When_Growing(1);
 
 		User.Growth_DrawsPowerCard();
+		User.SelectsMinorPowerCard();
+		User.SelectsFirstOption( "Select minor Power Card" );
+
 		User.Growth_PlacesEnergyPresence( "A1;A2;A4;A5;A6" );
 
 		Assert.Equal(5,this.spirit.Hand.Count); // drew 1 card

@@ -52,17 +52,6 @@ public class ASpreadOfRampantGreen : Spirit {
 
 	}
 
-	protected override PowerProgression GetPowerProgression() =>
-		new (
-			PowerCard.For<DriftDownIntoSlumber>(),
-			PowerCard.For<GiftOfLivingEnergy>(),
-			PowerCard.For<TheTreesAndStonesSpeakOfWar>(), // major
-			PowerCard.For<LureOfTheUnknown>(),
-			PowerCard.For<InfiniteVitality>(), // major
-			PowerCard.For<EnticingSplendor>()
-		);
-
-
 	protected override void InitializeInternal( Board board, GameState gs ) {
 
 		// Setup: 1 in the highest numbered wetland and 1 in the jungle without any dahan

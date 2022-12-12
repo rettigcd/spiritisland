@@ -5,10 +5,9 @@
 		public VirtualRiverUser(Spirit spirit ) : base( spirit ) { }
 
 		public void SelectsGrowthA_Reclaim() {
-//			Growth_SelectsOption( "ReclaimAll / DrawPowerCard / GainEnergy(1)" );
-//			Growth_ReclaimsAll();
-//			Growth_GainsEnergy();
 			Growth_DrawsPowerCard();
+			SelectsMinorPowerCard();
+			SelectsFirstOption( "Select minor Power Card" );
 		}
 
 		public void SelectsGrowthB_2PP(string pp1="energy>A2;A3;A4", string pp2="energy>A1;A2;A3;A4") {
@@ -23,6 +22,8 @@
 			Growth_SelectAction( "PlacePresence(2)" );
 			Growth_PlacesPresence( placePresenceOptions );
 			Growth_SelectAction( "DrawPowerCard" );
+			SelectsMinorPowerCard();
+			SelectsFirstOption( "Select minor Power Card" );
 		}
 
 	}

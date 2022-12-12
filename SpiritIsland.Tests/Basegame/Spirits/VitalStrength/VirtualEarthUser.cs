@@ -13,6 +13,9 @@
 
 		public void SelectsGrowthB_DrawCard_PP0() {
 			Growth_DrawsPowerCard();
+			SelectsMinorPowerCard();
+			SelectsFirstOption( "Select minor Power Card" );
+
 			Growth_SelectAction( "PlacePresence(0)" );
 			Growth_PlacesEnergyPresence( "A4" );
 		}

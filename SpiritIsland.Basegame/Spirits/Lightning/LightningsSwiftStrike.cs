@@ -37,18 +37,6 @@ public class LightningsSwiftStrike : Spirit {
 
 	}
 
-	protected override PowerProgression GetPowerProgression() =>
-		new(
-			PowerCard.For<DelusionsOfDanger>(),
-			PowerCard.For<CallToBloodshed>(),
-			PowerCard.For<PowerStorm>(),
-			PowerCard.For<PurifyingFlame>(),
-			PowerCard.For<PillarOfLivingFlame>(),
-			PowerCard.For<EntrancingApparitions>(),
-			PowerCard.For<CallToIsolation>()
-		);
-
-
 	public override string Text => Name;
 
 	protected override void InitializeInternal( Board board, GameState gs ) {

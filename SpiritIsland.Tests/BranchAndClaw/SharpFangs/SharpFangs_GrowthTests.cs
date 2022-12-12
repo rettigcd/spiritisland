@@ -2,25 +2,17 @@
 
 public class SharpFangs_GrowthTests : GrowthTests {
 
-	static Spirit InitSpirit() {
-		return new SharpFangs {
-			CardDrawer = new PowerProgression(
-				PowerCard.For<RainOfBlood>(),
-				PowerCard.For<GnawingRootbiters>()
-			),
-		};
-	}
-
 	readonly GameState gsbac;
 
-	public SharpFangs_GrowthTests() : base( InitSpirit() ) {
+	public SharpFangs_GrowthTests() : base( new SharpFangs() ) {
 
 		gsbac = new GameState( spirit, board );
-		gameState = gsbac;
+		_gameState = gsbac;
+		InitMinorDeck();
 
 		// Setup for growth option B
 		Given_HasPresence( board[2] ); // wetlands
-		gameState.Tokens[ board[7] ].Beasts.Init(1); // add beast to sand (not jungle)
+		_gameState.Tokens[ board[7] ].Beasts.Init(1); // add beast to sand (not jungle)
 
 	}
 
@@ -44,7 +36,7 @@ public class SharpFangs_GrowthTests : GrowthTests {
 
 		Assert_AllCardsAvailableToPlay( 4+1);  // A
 		Assert_HasEnergy( 10 -1 + 1 );         // A
-		Assert_HasPowerProgressionCard( 0 );    // A
+		// Assert_HasPowerProgressionCard( 0 );   // A
 
 		Assert_BoardPresenceIs( "A2A3" );    // B
 	}
@@ -64,8 +56,8 @@ public class SharpFangs_GrowthTests : GrowthTests {
 
 		Assert_AllCardsAvailableToPlay( 5 + 1 );  // A
 		Assert_HasEnergy( 0 + 1 );            // A & C
-		Assert_HasPowerProgressionCard( 0 );  // A
-		Assert_HasPowerProgressionCard( 1 );  // C
+		// Assert_HasPowerProgressionCard( 0 );  // A
+		// Assert_HasPowerProgressionCard( 1 );  // C
 	}
 
 	[Fact]
@@ -82,7 +74,7 @@ public class SharpFangs_GrowthTests : GrowthTests {
 //			User.SkipsPresenceReplacementWithBeasts();
 
 		Assert_AllCardsAvailableToPlay(5);      // A
-		Assert_HasPowerProgressionCard( 0 );    // A
+		// Assert_HasPowerProgressionCard( 0 );    // A
 		Assert_HasEnergy( 3-1+1 );      // A & D
 
 	}
@@ -100,7 +92,7 @@ public class SharpFangs_GrowthTests : GrowthTests {
 
 		Assert_BoardPresenceIs( "A2A3" );  // B
 		Assert_HasEnergy( 1 + 1 );         // C
-		Assert_HasPowerProgressionCard( 0 );    // A
+		// Assert_HasPowerProgressionCard( 0 );    // A
 	}
 
 	[Fact]
@@ -127,9 +119,7 @@ public class SharpFangs_GrowthTests : GrowthTests {
 		User_GrowthC_DrawCard_GainEnergy();
 		User_GrowthD_GainEnergy();
 
-//			User.SkipsPresenceReplacementWithBeasts();
-
-		Assert_HasPowerProgressionCard( 0 );    // C
+		// Assert_HasPowerProgressionCard( 0 );    // C
 		Assert_HasEnergy( 1 + 3 + 1 );     // C + D
 	}
 
@@ -177,14 +167,15 @@ public class SharpFangs_GrowthTests : GrowthTests {
 	}
 
 	void When_SharpFangsGrow() {
-		gameState.Phase = Phase.Growth;
+		_gameState.Phase = Phase.Growth;
 		When_StartingGrowth();
 	}
 
 	void User_GrowthA_ReclaimAll_Energy_DrawCard() {
 		User.Growth_SelectAction( "ReclaimAll" );
 		User.Growth_DrawsPowerCard();
-		//User.Growth_GainsEnergy();
+		User.SelectsMinorPowerCard();
+		User.SelectsFirstOption( "Select minor Power Card" );
 	}
 
 	void User_GrowthB_PlacePresence() {
@@ -194,8 +185,8 @@ public class SharpFangs_GrowthTests : GrowthTests {
 
 	void User_GrowthC_DrawCard_GainEnergy() {
 		User.Growth_SelectAction( "DrawPowerCard" );
-//		User.Growth_GainsEnergy();
-//		User.Growth_DrawsPowerCard();
+		User.SelectsMinorPowerCard();
+		User.SelectsFirstOption( "Select minor Power Card" );
 	}
 
 	void User_GrowthD_GainEnergy() {

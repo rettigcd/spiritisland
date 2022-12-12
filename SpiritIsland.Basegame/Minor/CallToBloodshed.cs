@@ -2,7 +2,9 @@
 
 public class CallToBloodshed {
 
-	[MinorCard("Call to Bloodshed",1,Element.Sun,Element.Fire,Element.Animal)]
+	public const string Name = "Call to Bloodshed";
+
+	[MinorCard(Name,1,Element.Sun,Element.Fire,Element.Animal)]
 	[Slow]
 	[FromPresence(2,Target.Dahan)]
 	static public Task Act(TargetSpaceCtx ctx){

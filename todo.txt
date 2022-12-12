@@ -21,7 +21,6 @@ Is In Play
 ==========================
 5 Move Finders Hook to Action-start
 
-4 CardDrawer - get rid of power progression cards in tests, then make Card Drawer private and clean it up.
 4 ForgetCard - rename ForgetCard to ForgetCard_UserChoice AND/OR Consolidate the 2 ForgetCard methods into 1
 4 Draw Adversary details
 

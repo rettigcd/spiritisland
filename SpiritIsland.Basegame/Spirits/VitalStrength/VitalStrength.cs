@@ -29,17 +29,6 @@ public class VitalStrength : Spirit {
 
 	}
 
-	protected override PowerProgression GetPowerProgression() =>
-		new(
-			PowerCard.For<RouseTheTreesAndStones>(),
-			PowerCard.For<CallToMigrate>(),
-			PowerCard.For<PoisonedLand>(), // Major
-			PowerCard.For<DevouringAnts>(),
-			PowerCard.For<VigorOfTheBreakingDawn>(),// Major
-			PowerCard.For<VoraciousGrowth>(),
-			PowerCard.For<SavageMawbeasts>()
-		);
-
 	protected override void InitializeInternal( Board board, GameState gs ) {
 		InitPresence( board, gs );
 		gs.Tokens.Dynamic.ForGame.Register( new EarthsVitality(this).DefendOnSpace, TokenType.Defend );

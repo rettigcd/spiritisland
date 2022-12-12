@@ -286,11 +286,6 @@ public abstract partial class Spirit : IOption {
 		availableActions.Add( factory );
 	}
 
-	public Spirit UsePowerProgression() {
-		CardDrawer = GetPowerProgression();
-		return this;
-	}
-
 	public virtual async Task TakeAction(IActionFactory factory, SelfCtx ctx) {
 		RemoveFromUnresolvedActions( factory ); // removing first, so action can restore it if desired
 		await factory.ActivateAsync( ctx );
@@ -300,8 +295,6 @@ public abstract partial class Spirit : IOption {
 	}
 
 	public AsyncEvent<ActionTaken> ActionTaken_ThisRound = new AsyncEvent<ActionTaken>();
-
-	protected virtual PowerProgression GetPowerProgression() => throw new NotImplementedException();
 
 	#endregion
 
@@ -364,25 +357,26 @@ public abstract partial class Spirit : IOption {
 		Elements.Add( Presence.TrackElements );
 	}
 
-	// pluggable, draw power card, or powerprogression
+	// pluggable, draw power card
 	#region Draw Card
 
-	static readonly IPowerCardDrawer DefaultCardDrawer = new DrawFromDeck();
-	public IPowerCardDrawer CardDrawer { get; set; } = DefaultCardDrawer; // !!! public so tests can set it - find another way to set so we can make the set private
-
 	public virtual async Task<DrawCardResult> Draw( GameState gameState ) {
-		// !! Get rid of Power Progression and we can move  the CardDrawer.Draw() method 
-		DrawCardResult result = await CardDrawer.Draw(this,gameState);
+
+		PowerType powerType = await DrawFromDeck.SelectPowerCardType( this );
+		DrawCardResult result = powerType == PowerType.Minor
+			? await DrawFromDeck.DrawInner( this, gameState.MinorCards, 4, 1 )
+			: await DrawFromDeck.DrawInner( this, gameState.MajorCards, 4, 1 );
+
 		if (result.PowerType == PowerType.Major )
 			await this.ForgetPowerCard_UserChoice();
 		return result;
 	}
 
 	public virtual Task<DrawCardResult> DrawMinor( GameState gameState, int numberToDraw=4, int numberToKeep=1 ) 
-		=> CardDrawer.DrawMinor( this, gameState, numberToDraw, numberToKeep );
+		=> DrawFromDeck.DrawInner( this, gameState.MinorCards, numberToDraw, numberToKeep );
 
 	public virtual async Task<DrawCardResult> DrawMajor( GameState gameState, bool forgetCard = true, int numberToDraw=4, int numberToKeep=1 ) {
-		var result = await CardDrawer.DrawMajor( this, gameState, numberToDraw, numberToKeep );
+		var result = await DrawFromDeck.DrawInner( this, gameState.MajorCards, numberToDraw, numberToKeep );
 		if(forgetCard)
 			await this.ForgetPowerCard_UserChoice();
 		return result;

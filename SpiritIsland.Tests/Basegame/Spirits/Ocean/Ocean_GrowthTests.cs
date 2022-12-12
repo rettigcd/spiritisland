@@ -1,163 +1,150 @@
 ﻿using SpiritIsland;
-using SpiritIsland.Basegame;
-using SpiritIsland.SinglePlayer;
-using System.Linq;
-using System.Threading.Tasks;
-using Xunit;
 
-namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS {
+namespace SpiritIsland.Tests.Basegame.Spirits.OceanNS; 
+public class Ocean_GrowthTests : GrowthTests {
 
-	public class Ocean_GrowthTests : GrowthTests {
+	public Ocean_GrowthTests():base( new Ocean() ) {}
 
-		static Spirit InitSpirit() {
-			return new Ocean {
-				CardDrawer = new PowerProgression(
-					PowerCard.For<VeilTheNightsHunt>(),
-					PowerCard.For<ReachingGrasp>(),
-					PowerCard.For<Drought>(),
-					PowerCard.For<ElementalBoon>()
-				)
-			};
-		}
+	[Theory]
+	[InlineData("A0","","A0")]
+	[InlineData("A0B0","","A0B0")]
+	[InlineData("A0B0C0","","A0B0C0")]
+	[InlineData("A1","A1>A0","A0")]
+	[InlineData("A1B1","A1>A0,B1>B0","A0B0")]
+	[InlineData("A1B1C1","A1>A0,B1>B0,C1>C0","A0B0C0")]
+	[InlineData("A1A2","A1>A0","A0A2")]    // need to define which presence to move
+	[InlineData("A1A2","A2>A0","A0A1")]    // need to define which presence to move
+	[InlineData("A1A2B1C1C2","A2>A0,B1>B0,C1>C0","A0A1B0C0C2")]    // need to define which presence to move
+	public void ReclaimGather_GatherParts(string starting, string select, string ending) {
+		Given_IslandIsABC();
+		Given_HasPresence( starting );
 
-		public Ocean_GrowthTests():base( InitSpirit() ) {}
+		spirit.QueueUpGrowth(spirit.GrowthTrack.Options[0]);
 
-		[Theory]
-		[InlineData("A0","","A0")]
-		[InlineData("A0B0","","A0B0")]
-		[InlineData("A0B0C0","","A0B0C0")]
-		[InlineData("A1","A1>A0","A0")]
-		[InlineData("A1B1","A1>A0,B1>B0","A0B0")]
-		[InlineData("A1B1C1","A1>A0,B1>B0,C1>C0","A0B0C0")]
-		[InlineData("A1A2","A1>A0","A0A2")]    // need to define which presence to move
-		[InlineData("A1A2","A2>A0","A0A1")]    // need to define which presence to move
-		[InlineData("A1A2B1C1C2","A2>A0,B1>B0,C1>C0","A0A1B0C0C2")]    // need to define which presence to move
-		public void ReclaimGather_GatherParts(string starting, string select, string ending) {
-			Given_IslandIsABC();
-			Given_HasPresence( starting );
+		// since options are move source, key on that
+		var moveBySrc = select.Split(',')
+			.Where(x=>!string.IsNullOrEmpty(x))
+			.Select(s=>s.Split('>'))
+			.ToDictionary(a=>a[0],a=>a[1]);
 
-			spirit.QueueUpGrowth(spirit.GrowthTrack.Options[0]);
+		GatherPresenceIntoOcean gather = spirit.GetAvailableActions(Phase.Growth).OfType<GatherPresenceIntoOcean>().SingleOrDefault();
 
-			// since options are move source, key on that
-			var moveBySrc = select.Split(',')
-				.Where(x=>!string.IsNullOrEmpty(x))
-				.Select(s=>s.Split('>'))
-				.ToDictionary(a=>a[0],a=>a[1]);
-
-			GatherPresenceIntoOcean gather = spirit.GetAvailableActions(Phase.Growth).OfType<GatherPresenceIntoOcean>().SingleOrDefault();
-
-			if(gather != null){
-				var action = gameState.StartAction( ActionCategory.Default );
-				_ = gather.ActivateAsync( spirit.Bind( gameState, action ) );
-				while(!spirit.Gateway.IsResolved){
-					var source = spirit.Gateway.GetCurrent().Options.Single(x=>moveBySrc.ContainsKey(x.Text));
-					spirit.Gateway.Choose(source);
-				}
+		if(gather != null){
+			var action = _gameState.StartAction( ActionCategory.Default );
+			_ = gather.ActivateAsync( spirit.Bind( _gameState, action ) );
+			while(!spirit.Gateway.IsResolved){
+				var source = spirit.Gateway.GetCurrent().Options.Single(x=>moveBySrc.ContainsKey(x.Text));
+				spirit.Gateway.Choose(source);
 			}
-
-			// Then: nothing to gather
-			Assert_BoardPresenceIs( ending );
 		}
 
+		// Then: nothing to gather
+		Assert_BoardPresenceIs( ending );
+	}
 
-		[Theory]
-		[InlineData("A1A2")]    // need to define which presence to move
-		public void ReclaimGather_GatherParts_Unresolved(string starting){
 
-			// Given: 3-board island
-			gameState.Island = new Island(BoardA,BoardB,BoardC);
+	[Theory]
+	[InlineData("A1A2")]    // need to define which presence to move
+	public void ReclaimGather_GatherParts_Unresolved(string starting){
 
-			Given_HasPresence( starting );
+		// Given: 3-board island
+		_gameState.Island = new Island(BoardA,BoardB,BoardC);
 
-			// Changed implementation to not run unresolved things
-		}
+		Given_HasPresence( starting );
 
-		[Fact]
-		public void ReclaimGather_NonGatherParts() {
-			// reclaim, +1 power, gather 1 presense into EACH ocean, +2 energy
+		// Changed implementation to not run unresolved things
+	}
 
-			Given_HalfOfPowercardsPlayed();
-			_ = When_Growing( 0 );
+	[Fact]
+	public void ReclaimGather_NonGatherParts() {
+		// reclaim, +1 power, gather 1 presense into EACH ocean, +2 energy
 
-			User.Growth_DrawsPowerCard();
-			User.GathersPresenceIntoOcean();
+		Given_HalfOfPowercardsPlayed();
+		_ = When_Growing( 0 );
 
-			Assert_AllCardsAvailableToPlay( 4 + 1 );
-			Assert_GainsFirstPowerProgressionCard();
-			Assert_HasEnergy( 2 );
-		}
+		User.Growth_DrawsPowerCard();
+		User.SelectsMinorPowerCard();
+		User.SelectsFirstOption( "Select minor Power Card" );
 
-		[Fact]
-		public void TwoPresenceInOceans() {
-			// +1 presence range any ocean, +1 presense in any ociean, +1 energy
+		User.GathersPresenceIntoOcean();
 
-			// Given: island has 2 boards, hence 2 oceans
-			gameState.Island = new Island( BoardA, BoardB );
+		Assert_AllCardsAvailableToPlay( 4 + 1 );
+		Assert_GainsFirstMinorCard();
+		Assert_HasEnergy( 2 );
+	}
 
-			_ = When_Growing( 1 );
+	[Fact]
+	public void TwoPresenceInOceans() {
+		// +1 presence range any ocean, +1 presense in any ociean, +1 energy
 
-//			User.Growth_GainsEnergy();
-			User.PlacesPresenceInOcean( "PlaceInOcean,(PlaceInOcean)", "(moon energy),2 cardplay,Take Presence from Board", "(A0),B0" );
-			User.PlacesPresenceInOcean( "PlaceInOcean", "(water energy),2 cardplay,Take Presence from Board", "A0,(B0)" );
+		// Given: island has 2 boards, hence 2 oceans
+		_gameState.Island = new Island( BoardA, BoardB );
 
-			Assert_HasEnergy( 1 );
-		}
+		_ = When_Growing( 1 );
 
-		[Theory]
-		[InlineData("A0","A1;A2;A3","A1A2")]
-		public void PowerPlaceAndPush( string starting, string placeOptions, string ending ) {
-			// gain power card
-			// push 1 presense from each ocean
-			// add presense on costal land range 1
-			gameState.Island = new Island( BoardA, BoardB, BoardC );
-			Given_HasPresence( starting );
+		User.PlacesPresenceInOcean( "PlaceInOcean,(PlaceInOcean)", "(moon energy),2 cardplay,Take Presence from Board", "(A0),B0" );
+		User.PlacesPresenceInOcean( "PlaceInOcean", "(water energy),2 cardplay,Take Presence from Board", "A0,(B0)" );
 
-			_ = When_Growing( 2 );
+		Assert_HasEnergy( 1 );
+	}
 
-			User.Growth_PlacesEnergyPresence( placeOptions );
-			User.Growth_DrawsPowerCard();
-			User.PushesPresenceFromOcean("A1,(A2),A3");
+	[Theory]
+	[InlineData("A0","A1;A2;A3","A1A2")]
+	public void PowerPlaceAndPush( string starting, string placeOptions, string ending ) {
+		// gain power card
+		// push 1 presense from each ocean
+		// add presense on costal land range 1
+		_gameState.Island = new Island( BoardA, BoardB, BoardC );
+		Given_HasPresence( starting );
 
-			Assert_GainsFirstPowerProgressionCard();
-			Assert_BoardPresenceIs( ending );
-		}
+		_ = When_Growing( 2 );
 
-		void Assert_GainsFirstPowerProgressionCard() {
-			Assert_HasCardAvailable( "Veil the Night's Hunt" );
-		}
+		User.Growth_PlacesEnergyPresence( placeOptions );
+		User.Growth_DrawsPowerCard();
+		User.SelectsMinorPowerCard();
+		User.SelectsFirstOption( "Select minor Power Card" );
 
-		[Trait("Presence","EnergyTrack")]
-		[Theory]
-		[InlineDataAttribute(1,0,"")]
-		[InlineDataAttribute(2,0,"moon")]
-		[InlineDataAttribute(3,0,"moon water")]
-		[InlineDataAttribute(4,1,"moon water")]
-		[InlineDataAttribute(5,1,"moon water earth")]
-		[InlineDataAttribute(6,1,"moon 2 water earth")]
-		[InlineDataAttribute(7,2, "moon 2 water earth" )]
-		public async Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
-			var fixture = new ConfigurableTestFixture { Spirit = new Ocean() };
-			await fixture.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, elements );
-		}
+		User.PushesPresenceFromOcean("A1,(A2),A3");
 
-		[Trait("Presence","CardTrack")]
-		[Theory]
-		[InlineDataAttribute(1,1)]
-		[InlineDataAttribute(2,2)]
-		[InlineDataAttribute(3,2)]
-		[InlineDataAttribute(4,3)]
-		[InlineDataAttribute(5,4)]
-		[InlineDataAttribute(6,5)]
-		public async Task CardTrack( int revealedSpaces, int expectedCardPlayCount ) {
-			var fixture = new ConfigurableTestFixture { Spirit = new Ocean() };
-			await fixture.VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
-		}
+		Assert_GainsFirstMinorCard();
+		Assert_BoardPresenceIs( ending );
+	}
 
-		void Given_IslandIsABC() {
-			// Given: 3-board island
-			gameState.Island = new Island( BoardA, BoardB, BoardC );
-		}
+	void Assert_GainsFirstMinorCard() {
+		Assert_HasCardAvailable( "Drought" );
+	}
 
+	[Trait("Presence","EnergyTrack")]
+	[Theory]
+	[InlineDataAttribute(1,0,"")]
+	[InlineDataAttribute(2,0,"moon")]
+	[InlineDataAttribute(3,0,"moon water")]
+	[InlineDataAttribute(4,1,"moon water")]
+	[InlineDataAttribute(5,1,"moon water earth")]
+	[InlineDataAttribute(6,1,"moon 2 water earth")]
+	[InlineDataAttribute(7,2, "moon 2 water earth" )]
+	public async Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
+		var fixture = new ConfigurableTestFixture { Spirit = new Ocean() };
+		await fixture.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, elements );
+	}
+
+	[Trait("Presence","CardTrack")]
+	[Theory]
+	[InlineDataAttribute(1,1)]
+	[InlineDataAttribute(2,2)]
+	[InlineDataAttribute(3,2)]
+	[InlineDataAttribute(4,3)]
+	[InlineDataAttribute(5,4)]
+	[InlineDataAttribute(6,5)]
+	public async Task CardTrack( int revealedSpaces, int expectedCardPlayCount ) {
+		var fixture = new ConfigurableTestFixture { Spirit = new Ocean() };
+		await fixture.VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
+	}
+
+	void Given_IslandIsABC() {
+		// Given: 3-board island
+		_gameState.Island = new Island( BoardA, BoardB, BoardC );
 	}
 
 }
+

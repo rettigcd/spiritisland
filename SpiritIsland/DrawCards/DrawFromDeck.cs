@@ -1,26 +1,12 @@
 ﻿namespace SpiritIsland;
 
-public class DrawFromDeck : IPowerCardDrawer {
-
-	public async Task<DrawCardResult> Draw( Spirit spirit, GameState gs ) {
-		PowerType powerType = await SelectPowerCardType( spirit );
-		return powerType == PowerType.Minor
-			? await DrawMinor( spirit, gs, 4, 1 )
-			: await DrawMajor( spirit, gs, 4, 1 );
-	}
+public class DrawFromDeck {
 
 	public static async Task<PowerType> SelectPowerCardType( Spirit spirit ) {
 		return await spirit.Gateway.Decision( new Select.DeckToDrawFrom( PowerType.Minor, PowerType.Major ) );
 	}
 
-	public Task<DrawCardResult> DrawMajor( Spirit spirit, GameState gameState, int numberToDraw, int numberToKeep ) {
-		return DrawInner(spirit, gameState.MajorCards, numberToDraw, numberToKeep );
-	}
-
-	public Task<DrawCardResult> DrawMinor( Spirit spirit, GameState gameState, int numberToDraw, int numberToKeep )
-		=> DrawInner( spirit, gameState.MinorCards, numberToDraw, numberToKeep );
-
-	static async Task<DrawCardResult> DrawInner( Spirit spirit, PowerCardDeck deck, int numberToDraw, int numberToKeep ) {
+	static public async Task<DrawCardResult> DrawInner( Spirit spirit, PowerCardDeck deck, int numberToDraw, int numberToKeep ) {
 		List<PowerCard> candidates = deck.Flip(numberToDraw);
 
 		var selectedCards = new List<PowerCard>();
@@ -31,8 +17,8 @@ public class DrawFromDeck : IPowerCardDrawer {
 
 		deck.Discard( candidates );
 		return new DrawCardResult( selectedCards[0].PowerType ){
-				SelectedCards = selectedCards.ToArray(),
-				Rejected = candidates
+			SelectedCards = selectedCards.ToArray(),
+			Rejected = candidates
 		};
 	}
 

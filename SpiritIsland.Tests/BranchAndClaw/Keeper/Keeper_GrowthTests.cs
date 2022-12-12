@@ -2,20 +2,12 @@
 
 public class Keeper_GrowthTests : GrowthTests {
 
-	static Spirit InitSpirit() {
-		return new Keeper {
-			CardDrawer = new PowerProgression(
-				PowerCard.For<VeilTheNightsHunt>(),
-				PowerCard.For<ReachingGrasp>()
-			),
-		};
-	}
-
 	readonly GameState gsbac;
 
-	public Keeper_GrowthTests() : base( InitSpirit() ) {
+	public Keeper_GrowthTests() : base( new Keeper() ) {
 		gsbac = new GameState( spirit, board );
-		gameState = gsbac;
+		_gameState = gsbac;
+		InitMinorDeck();
 	}
 
 	// a) reclaim, +1 energy
@@ -35,7 +27,7 @@ public class Keeper_GrowthTests : GrowthTests {
 
 		Assert_AllCardsAvailableToPlay( 1 + 4 );
 		Assert_HasEnergy( 1 + 2 );
-		Assert_HasPowerProgressionCard( 0 );
+		// Assert_HasPowerProgressionCard( 0 );
 	}
 
 	[Fact]
@@ -47,7 +39,7 @@ public class Keeper_GrowthTests : GrowthTests {
 		Given_HalfOfPowercardsPlayed();
 		Given_HasWilds( board[8] ); // 3 spaces away
 
-		gameState.Phase = Phase.Growth;
+		_gameState.Phase = Phase.Growth;
 
 		When_StartingGrowth();
 		User_Activates_A();
@@ -76,7 +68,7 @@ public class Keeper_GrowthTests : GrowthTests {
 
 		Assert_AllCardsAvailableToPlay( 4+1);     // A
 		Assert_HasEnergy( 10 + 2-3+1 );                // A & D
-		Assert_HasPowerProgressionCard(0); // D
+		// Assert_HasPowerProgressionCard(0); // D
 		Assert_BoardPresenceIs( "A3A7" );        // D
 
 	}
@@ -95,7 +87,7 @@ public class Keeper_GrowthTests : GrowthTests {
 		User_Activates_B();
 		User_Activates_C();
 
-		Assert_HasPowerProgressionCard( 0); // B
+		// Assert_HasPowerProgressionCard( 0); // B
 		Assert_HasEnergy( 1 + 2 );             // C
 		Assert_BoardPresenceIs( "A3A3" );     // C
 	}
@@ -110,14 +102,14 @@ public class Keeper_GrowthTests : GrowthTests {
 		Given_BlightEverywhereExcept7();
 		spirit.Energy = 10; // so we can do this option
 
-		gameState.Phase = Phase.Growth;
+		_gameState.Phase = Phase.Growth;
 		When_StartingGrowth();
 		User_Activates_B();
 		User_Activates_D();
 
-		Assert_HasPowerProgressionCard( 0); // B
-		Assert_HasPowerProgressionCard( 1 ); // B
-		Assert_HasCardAvailable( "Reaching Grasp" ); // D
+		// Assert_HasPowerProgressionCard( 0); // B
+		// Assert_HasPowerProgressionCard( 1 ); // B
+		Assert_HasCardAvailable( CallToBloodshed.Name ); // D
 		Assert_BoardPresenceIs( "A3A7" );     // D
 		Assert_HasEnergy( 10 + 2 - 3 );
 	}
@@ -139,7 +131,7 @@ public class Keeper_GrowthTests : GrowthTests {
 		User_Activates_D();
 
 		Assert_HasEnergy( startingEnergy + spirit.EnergyPerTurn - 2  );          // C & D
-		Assert_HasPowerProgressionCard(0); // D
+		// Assert_HasPowerProgressionCard(0); // D
 
 	}
 
@@ -148,18 +140,18 @@ public class Keeper_GrowthTests : GrowthTests {
 	public void SacredSitesPushDahan() {
 		// Given: space with 2 dahan
 		var space = board[5];
-		gameState.DahanOn(space).Init(2);
+		_gameState.DahanOn(space).Init(2);
 		//   and presence on that space
-		spirit.Presence.PlaceOn( space, gameState );
+		spirit.Presence.PlaceOn( space, _gameState );
 
 		// When: we place a presence on that space
-		_ = spirit.Presence.Place( spirit.Presence.Energy.RevealOptions.Single(), space, gameState, gameState.StartAction( ActionCategory.Default ) );
+		_ = spirit.Presence.Place( spirit.Presence.Energy.RevealOptions.Single(), space, _gameState, _gameState.StartAction( ActionCategory.Default ) );
 
 		User.PushesTokensTo("D@2","A1,(A4),A6,A7,A8",2);
 		User.PushesTokensTo("D@2","A1,A4,A6,(A7),A8");
 
-		spirit.Presence.SacredSites( gameState, new TerrainMapper() ).ShouldContain(space);
-		gameState.Tokens[space].Dahan.Count.ShouldBe(0,"SS should push dahan from space");
+		spirit.Presence.SacredSites( _gameState, new TerrainMapper() ).ShouldContain(space);
+		_gameState.Tokens[space].Dahan.Count.ShouldBe(0,"SS should push dahan from space");
 	}
 
 
@@ -190,7 +182,7 @@ public class Keeper_GrowthTests : GrowthTests {
 	}
 
 	void AddBlight( Space space ) {
-		gameState.Tokens[ space ].Blight.Adjust( 1 );
+		_gameState.Tokens[ space ].Blight.Adjust( 1 );
 	}
 
 	void Given_BlightEverywhereExcept7() {
@@ -201,34 +193,34 @@ public class Keeper_GrowthTests : GrowthTests {
 		AddBlight( board[5] );
 		AddBlight( board[6] );
 		AddBlight( board[8] );
-		gameState.Tokens[ board[7] ].Blight.Count.ShouldBe( 0 );
+		_gameState.Tokens[ board[7] ].Blight.Count.ShouldBe( 0 );
 	}
 
 	void Given_HasWilds( Space space ) {
-		gameState.Tokens[space].Wilds.Init(1);
+		_gameState.Tokens[space].Wilds.Init(1);
 	}
 
 	void User_Activates_A() {
 		User.Growth_SelectAction( "ReclaimAll" );
-		// auto-runs: GainEnergy(1)
 	}
 
 	void User_Activates_B() {
 		User.Growth_SelectAction( "DrawPowerCard" );
-		// User.Growth_DrawsPowerCard(); - not needed due to AutoSelectSingle
+		User.SelectsMinorPowerCard();
+		User.SelectsFirstOption( "Select minor Power Card" );
 	}
 
 	void User_Activates_C() {
 		User.Growth_SelectAction( $"PlacePresence(3,{Target.Presence}Or{Target.Wilds})" );
 		User.Growth_PlacesEnergyPresence( "A3;A8" );
-		//		User.Growth_GainsEnergy();
 	}
 
 	void User_Activates_D() {
 		User.Growth_SelectAction( "PlacePresence(3,no blight)" );
 		User.PlacesCardPlayPresence( "A7" );
 		User.Growth_DrawsPowerCard();
-		// User.Growth_GainsEnergy();
+		User.SelectsMinorPowerCard();
+		User.SelectsFirstOption( "Select minor Power Card" );
 	}
 
 }

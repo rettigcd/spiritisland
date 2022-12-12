@@ -6,19 +6,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 
 	public class Thunderspeaker_GrowthTests : GrowthTests{
 
-		static Spirit InitSpirit() {
-			return new Thunderspeaker {
-				CardDrawer = new PowerProgression(
-					PowerCard.For<VeilTheNightsHunt>(),
-					PowerCard.For<ReachingGrasp>(),
-					//PowerCard.For<WrapInWingsOfSunlight>(),      // Major
-					PowerCard.For<Drought>(),
-					PowerCard.For<ElementalBoon>()
-				),
-			};
-		}
-
-		public Thunderspeaker_GrowthTests():base( InitSpirit() ){}
+		public Thunderspeaker_GrowthTests():base( new Thunderspeaker() ) {}
 
 		[Fact]
 		public void ReclaimAnd2PowerCards() {
@@ -27,10 +15,14 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 
 			When_StartingGrowth();
 
-//			User.Growth_SelectsOption("ReclaimAll / DrawPowerCard / DrawPowerCard");
-//			User.Growth_ReclaimsAll();
 			User.Growth_DrawsPowerCard();
+			User.SelectsMinorPowerCard();
+			User.SelectsFirstOption( "Select minor Power Card" );
+
 			User.Growth_DrawsPowerCard();
+			User.SelectsMinorPowerCard();
+			User.SelectsFirstOption( "Select minor Power Card" );
+
 
 			Assert_AllCardsAvailableToPlay( 6);
 			Assert_HasEnergy(1);
@@ -47,7 +39,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.Thunder {
 			Given_HasPresence( board[3] );
 			//	 And: dahan on initial spot
 			foreach(string s in initialDahanSquares.Split( ',' ))
-				gameState.DahanOn( board[int.Parse( s )] ).Init(1);
+				_gameState.DahanOn( board[int.Parse( s )] ).Init(1);
 
 			_ = When_Growing( 1 );
 

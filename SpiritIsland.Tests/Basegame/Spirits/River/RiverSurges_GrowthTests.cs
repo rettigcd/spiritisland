@@ -5,7 +5,7 @@ public class RiverSurges_GrowthTests : GrowthTests {
 
 	protected new VirtualRiverUser User;
 
-	public RiverSurges_GrowthTests():base( new RiverSurges().UsePowerProgression() ){
+	public RiverSurges_GrowthTests():base( new RiverSurges() ){
 		User = new VirtualRiverUser( spirit );
 	}
 
@@ -28,7 +28,7 @@ public class RiverSurges_GrowthTests : GrowthTests {
 		User.SelectsGrowthA_Reclaim();
 
 		Assert_AllCardsAvailableToPlay( 5 );
-		Assert_HasCardAvailable( "Uncanny Melting" ); // gains 1st card in power progression
+		Assert_HasCardAvailable( "Drought" ); // gains 1st card drawn
 		Assert_HasEnergy( 1 + 1 ); // 1 Growth energy + 1 from energy track
 
 	}
@@ -62,7 +62,7 @@ public class RiverSurges_GrowthTests : GrowthTests {
 
 		User.SelectsGrowthC_Draw_Energy();
 
-		Assert_HasCardAvailable( "Uncanny Melting" ); // gains 1st card in power progression
+		Assert_HasCardAvailable( "Drought" );
 		Assert_HasEnergy( 1 ); // didn't increase energy track.
 		spirit.Presence.Energy.Revealed.Count().ShouldBe(1);
 		spirit.Presence.CardPlays.Revealed.Count().ShouldBe(2);
@@ -102,25 +102,6 @@ public class RiverSurges_GrowthTests : GrowthTests {
 	}
 
 	#endregion
-
-	[Theory]
-	[InlineData(1,"Uncanny Melting")]
-	[InlineData(2,"Nature's Resilience")]
-	[InlineData(3,"Pull Beneath the Hungry Earth")]
-	[InlineData(4,"Accelerated Rot")]
-	[InlineData(5,"Song of Sanctity")]
-	[InlineData(6,"Tsunami")]
-	[InlineData(7,"Encompassing Ward")]
-	public void PowerProgressionCards( int count, string lastPowerCard ){
-		var drawPowerCard = new DrawPowerCard();
-		var action = gameState.StartAction( ActionCategory.Default );
-
-		var ctx = spirit.Bind( gameState, action );
-		while(count-- > 0)
-			_ = drawPowerCard.ActivateAsync( ctx );
-
-		Assert_HasCardAvailable( lastPowerCard );
-	}
 
 	#region Buying Cards
 
@@ -217,9 +198,9 @@ public class RiverSurges_GrowthTests : GrowthTests {
 			"D" => BoardD,
 			_ => null,
 		};
-		gameState = new GameState( river ) { Island = new Island(board) };
-		river.InitSpirit(board,gameState);
-		Assert.Equal(expectedStartingSpaces,new ReadOnlyBoundPresence( river, gameState ).Spaces.Select(s=>s.Label).Join(","));
+		_gameState = new GameState( river ) { Island = new Island(board) };
+		river.InitSpirit(board,_gameState);
+		Assert.Equal(expectedStartingSpaces,new ReadOnlyBoundPresence( river, _gameState ).Spaces.Select(s=>s.Label).Join(","));
 	}
 
 	#endregion

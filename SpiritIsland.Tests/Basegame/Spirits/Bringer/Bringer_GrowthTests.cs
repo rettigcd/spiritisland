@@ -3,16 +3,7 @@ namespace SpiritIsland.Tests.Basegame.Spirits.BringerNS;
 
 public class Bringer_GrowthTests : GrowthTests {
 
-	static Spirit InitSpirit() {
-		return new Bringer {
-			CardDrawer = new PowerProgression(
-				PowerCard.For<VeilTheNightsHunt>(),
-				PowerCard.For<ReachingGrasp>()
-			),
-		};
-	}
-
-	public Bringer_GrowthTests():base( InitSpirit() ) {}
+	public Bringer_GrowthTests():base( new Bringer() ) {}
 
 	[Fact] 
 	public void ReclaimAll_PowerCard() { // Growth Option 1
@@ -22,9 +13,12 @@ public class Bringer_GrowthTests : GrowthTests {
 
 		_ = When_Growing( 0 );
 
+		User.SelectsMinorPowerCard();
+		User.SelectsFirstOption( "Select minor Power Card" );
+
 		// Then:
 		Assert_AllCardsAvailableToPlay( 4 + 1 );
-		Assert_HasCardAvailable( "Veil the Night's Hunt" );
+		Assert_HasCardAvailable( "Drought" );
 
 	}
 
@@ -50,9 +44,11 @@ public class Bringer_GrowthTests : GrowthTests {
 		_ = When_Growing( 2 );
 
 		User.Growth_DrawsPowerCard();
+		User.SelectsMinorPowerCard();
+		User.SelectsFirstOption( "Select minor Power Card" );
 		User.Growth_PlacesEnergyPresence( "A1;A2;A4;A5;A6" );
 
-		Assert_GainsFirstPowerProgressionCard(); // gains 1st card in power progression
+		Assert_GainsFirstMinorCard();
 		Assert_BoardPresenceIs( "A1A1" );
 	}
 
@@ -60,13 +56,13 @@ public class Bringer_GrowthTests : GrowthTests {
 	public void PresenseOnPieces_Energy(){ // Growth Option 4
 
 		board = LineBoard.MakeBoard();
-		gameState = new GameState( spirit, board );
+		_gameState = new GameState( spirit, board );
 
 		Given_HasPresence(board[5]);
-		gameState.DahanOn(board[6]).Init(1);
-		gameState.Tokens[board[7]].AdjustDefault(Invader.Explorer,1);
-		gameState.Tokens[board[8]].AdjustDefault(Invader.Town,1);
-		gameState.Tokens[board[0]].AdjustDefault(Invader.City,1);
+		_gameState.DahanOn(board[6]).Init(1);
+		_gameState.Tokens[board[7]].AdjustDefault(Invader.Explorer,1);
+		_gameState.Tokens[board[8]].AdjustDefault(Invader.Town,1);
+		_gameState.Tokens[board[0]].AdjustDefault(Invader.City,1);
 
 		// add presense range 4 Dahan or Invadors, +2 energy
 		When_StartingGrowth();
@@ -107,8 +103,8 @@ public class Bringer_GrowthTests : GrowthTests {
 		await fixture.VerifyCardTrack(revealedSpaces, expectedCardPlayCount, elements);
 	}
 
-	void Assert_GainsFirstPowerProgressionCard() {
-		Assert_HasCardAvailable( "Veil the Night's Hunt" );
+	void Assert_GainsFirstMinorCard() {
+		Assert_HasCardAvailable( "Drought" );
 	}
 
 }

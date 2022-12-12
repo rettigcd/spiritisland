@@ -2,7 +2,7 @@
 
 public class RampantGreen_GrowthTests : GrowthTests {
 
-	public RampantGreen_GrowthTests():base( new ASpreadOfRampantGreen().UsePowerProgression() ){}
+	public RampantGreen_GrowthTests():base( new ASpreadOfRampantGreen() ){}
 
 	// +1 presense to jungle or wetland - range 2(Always do this + one of the following)
 	// reclaim, +1 power card
@@ -20,8 +20,10 @@ public class RampantGreen_GrowthTests : GrowthTests {
 		User_SelectAlwaysGrowthOption();
 
 		User.Growth_SelectAction( "DrawPowerCard" );
+		User.SelectsMinorPowerCard();
+		User.SelectsFirstOption( "Select minor Power Card" );
 
-		Assert_AllCardsAvailableToPlay(5);
+		Assert_AllCardsAvailableToPlay( 5);
 	}
 
 	[Fact]
@@ -61,6 +63,9 @@ public class RampantGreen_GrowthTests : GrowthTests {
 		User_SelectAlwaysGrowthOption();
 
 		User.Growth_SelectAction( "DrawPowerCard", 1 ); // there are 2. select the 2nd one (index=1)
+		User.SelectsMinorPowerCard();
+		User.SelectsFirstOption( "Select minor Power Card" );
+
 		// Gain 3 energy did not trigger
 
 		Assert.Equal( 1, spirit.EnergyPerTurn );
