@@ -418,6 +418,9 @@ public partial class IslandControl : Control {
 		foreach(var cardMetric in cardMetrics)
 			cardMetric.Draw( graphics, buildRavageFont, invaderStageFont );
 
+		// # of cards in explore pile
+		graphics.DrawCountIfHigherThan( cardMetrics.Last().Rect.First(), gameState.InvaderDeck.UnrevealedCards.Count+1 );
+
 		// Draw Discard
 		var lastDiscard = gameState.InvaderDeck.Discards.FirstOrDefault();
 		if(lastDiscard is not null) {
