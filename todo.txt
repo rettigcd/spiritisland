@@ -2,10 +2,9 @@
 ====  Clean Up Items  ====
 ==========================
 
-5 Draw Adversary details - show adversary flag - Log setup adjustments
 5 Reduce token size a bit, make (hex?) grid inside space, place tokens on those grids, select location randomly, but make spots sticky
 
-3 remaining Adversaries (Habsburg, Russia, Scotland)
+3+1? remaining Adversaries (Habsburg, Russia, Scotland, France?)
 
 Tokens - Publish token events to the UI so that it can show token changing animation.
 

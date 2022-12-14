@@ -3,7 +3,7 @@ using SpiritIsland.BranchAndClaw;
 using SpiritIsland.JaggedEarth;
 using SpiritIsland.PromoPack1;
 using System;
-using System.Linq;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace SpiritIsland.WinForms;
@@ -12,24 +12,16 @@ public partial class ConfigureGameDialog : Form {
 
 	#region static
 
-	static public readonly IGameComponentProvider[] gameComponentProviders = new IGameComponentProvider[]{
+	static public readonly GameBuilder GameBuilder = new GameBuilder(
 		new Basegame.GameComponentProvider(),
 		new BranchAndClaw.GameComponentProvider(),
 		new PromoPack1.GameComponentProvider(),
 		new JaggedEarth.GameComponentProvider()
-	};
-
-	static readonly SpiritBox[] spiritTypes;
-
-	static ConfigureGameDialog() {
-		spiritTypes = gameComponentProviders
-			.SelectMany( p => p.SpiritNames )
-			.Select( name => new SpiritBox { Name = name } )
-			.OrderBy( t => t.Name )
-			.ToArray();
-	}
+	);
 
 	#endregion
+
+	#region constructor / Init
 
 	public ConfigureGameDialog() {
 		InitializeComponent();
@@ -37,112 +29,56 @@ public partial class ConfigureGameDialog : Form {
 
 	void ConfigureGame_Load( object sender, EventArgs e ) {
 		Init_SpiritList();
-
-		// boards
-		boardListBox.Items.Add( "[Random]" );
-		foreach(var availableBoard in Board.AvailableBoards )
-			boardListBox.Items.Add( availableBoard );
-		boardListBox.SelectedIndex = 0;
-
-		// color
-		colorListBox.Items.Add( "[Automatic]" );
-		colorListBox.Items.Add( "red" );
-		colorListBox.Items.Add( "orange" );
-		colorListBox.Items.Add( "yellow" );
-		colorListBox.Items.Add( "green" );
-		colorListBox.Items.Add( "blue" );
-		colorListBox.Items.Add( "dkblue" );
-		colorListBox.Items.Add( "purple" );
-		colorListBox.Items.Add( "pink" );
-		colorListBox.SelectedIndex = 0;
-
-		// Adversaries
-		_adversaryListBox.Items.Add("[None]");
-		_adversaryListBox.Items.Add( "Brandenburg-Prussia 0" ); // !!! get from providers
-		_adversaryListBox.Items.Add( "Brandenburg-Prussia 1" ); // !!! get from providers
-		_adversaryListBox.Items.Add( "Brandenburg-Prussia 2" ); // !!! get from providers
-		_adversaryListBox.Items.Add( "Brandenburg-Prussia 3" ); // !!! get from providers
-		_adversaryListBox.Items.Add( "Brandenburg-Prussia 4" ); // !!! get from providers
-		_adversaryListBox.Items.Add( "Brandenburg-Prussia 5" ); // !!! get from providers
-		_adversaryListBox.Items.Add( "Brandenburg-Prussia 6" ); // !!! get from providers
-
-		_adversaryListBox.Items.Add( "England 0" ); // !!! get from providers
-		_adversaryListBox.Items.Add( "England 1" ); // !!! get from providers
-		_adversaryListBox.Items.Add( "England 2" ); // !!! get from providers
-		_adversaryListBox.Items.Add( "England 3" ); // !!! get from providers
-		_adversaryListBox.Items.Add( "England 4" ); // !!! get from providers
-		_adversaryListBox.Items.Add( "England 5" ); // !!! get from providers
-		_adversaryListBox.Items.Add( "England 6" ); // !!! get from providers
-
-		_adversaryListBox.Items.Add( "Sweeden 0" ); // !!! get from providers
-		_adversaryListBox.Items.Add( "Sweeden 1" ); // !!! get from providers
-		_adversaryListBox.Items.Add( "Sweeden 2" ); // !!! get from providers
-		_adversaryListBox.Items.Add( "Sweeden 3" ); // !!! get from providers
-		_adversaryListBox.Items.Add( "Sweeden 4" ); // !!! get from providers
-		_adversaryListBox.Items.Add( "Sweeden 5" ); // !!! get from providers
-		_adversaryListBox.Items.Add( "Sweeden 6" ); // !!! get from providers
-		_adversaryListBox.SelectedIndex = 0;
+		Init_BoardList();
+		Init_AdversaryList();
 		CheckOkStatus( null, null );
 	}
 
-	class SpiritBox {
-		public string Name { get; set; }
-	}
-
 	void Init_SpiritList() {
-
 		spiritListBox.Items.Clear();
 		spiritListBox.Items.Add( "[Random]" );
-
-		foreach(var spirit in spiritTypes)
+		foreach(var spirit in GameBuilder.SpiritNames)
 			spiritListBox.Items.Add( spirit );
-
 		spiritListBox.SelectedIndex = 0;
-
 	}
 
-	void CheckOkStatus( object sender, EventArgs e ) {
-		okButton.Enabled = true;
+	void Init_BoardList() {
+		// boards
+		boardListBox.Items.Add( "[Random]" );
+		foreach(var availableBoard in Board.AvailableBoards)
+			boardListBox.Items.Add( availableBoard );
+		boardListBox.SelectedIndex = 0;
 	}
 
-
-void OkButton_Click( object sender, EventArgs e ) {
-		var gameSettings = new GameConfigPlusToken {
-			Spirit = SelectedSpiritName(),
-			Board = SelectedBoard(),
-			ShuffleNumber = ShuffleNumber(),
-		};
-
-		const float saturation = .7f; // standard
-		gameSettings.Token = colorListBox.SelectedIndex == 0
-			? GetColorForSpirit( gameSettings.Spirit )
-			: (colorListBox.SelectedItem as string) switch {
-				"red" => new PresenceTokenAppearance( 0f, saturation ),
-				"orange" => new PresenceTokenAppearance( 30f, saturation ),
-				"yellow" => new PresenceTokenAppearance( 60f, saturation, -.4f ),
-				// missing 90
-				"green" => new PresenceTokenAppearance( 120f, saturation, -.4f ),
-				// missing 150
-				"blue" => new PresenceTokenAppearance( 180f, saturation, -.3f ), // cyan
-																				 // missing 210
-				"dkblue" => new PresenceTokenAppearance( 240f, saturation ),
-				"purple" => new PresenceTokenAppearance( 270f, saturation ),
-				"pink" => new PresenceTokenAppearance( 300f, saturation ),
-				"greenorangeswirl" => new PresenceTokenAppearance( 120, .4f, 0f, "greenorangeswirl" ),
-				_ => new PresenceTokenAppearance( 200, .4f )
-			};
-
-		string adversary = _adversaryListBox.SelectedItem.ToString();
-		gameSettings.Adversary = adversary == "[None]" ? null
-			: new AdversaryConfig( adversary[..adversary.IndexOf( ' ' )], (int)(adversary[^1] - '0') );
-
-		GameConfig = gameSettings;
+	void Init_AdversaryList() {
+		_adversaryListBox.Items.Add( "[None]" );
+		foreach(var adversary in GameBuilder.AdversaryNames)
+			_adversaryListBox.Items.Add( adversary );
+		_adversaryListBox.SelectedIndex = 0;
 	}
 
-	int ShuffleNumber() {
+	#endregion
+
+	public GameConfigPlusToken GameConfig { get; private set; }
+
+	#region Set Game Config by Reading from Controls 
+
+	int SelectShuffleNumber() {
 		string txt = shuffleNumberTextBox.Text.Trim();
 		return int.TryParse(txt, out int shuffleNumber) ? shuffleNumber
 			: new Random().Next( 0, 999_999_999 );
+	}
+
+	PresenceTokenAppearance SelectAppearance( string spirit ) {
+		return colorCheckBox.Checked
+			? new PresenceTokenAppearance( HSL.FromRgb( colorDialog.Color ), 0 )
+			: GetColorForSpirit( spirit );
+	}
+
+	AdversaryConfig SelectAdversary() {
+		string adversary = _adversaryListBox.SelectedItem.ToString();
+		return adversary == "[None]" ? null
+			: new AdversaryConfig( adversary, levelListBox.SelectedIndex );
 	}
 
 	static PresenceTokenAppearance GetColorForSpirit( string spiritName ) {
@@ -175,26 +111,76 @@ void OkButton_Click( object sender, EventArgs e ) {
 		};
 	}
 
+	string SelectedSpiritName() {
+		int numberOfSpirits = spiritListBox.Items.Count - 1;
+
+		return spiritListBox.SelectedIndex == 0
+			? (string)spiritListBox.Items[1 + (int)(DateTime.Now.Ticks % numberOfSpirits)]
+			: (string)spiritListBox.SelectedItem;
+	}
+
 	string SelectedBoard() {
 		return (boardListBox.SelectedIndex == 0)
 			? boardListBox.Items[1 + (int)(DateTime.Now.Ticks % 4)] as string
 			: boardListBox.SelectedItem as string;
 	}
 
-	string SelectedSpiritName() {
-		int numberOfSpirits = spiritListBox.Items.Count-1;
+	#endregion
 
-		var box = (spiritListBox.SelectedIndex == 0)
-			? spiritListBox.Items[1 + (int)(DateTime.Now.Ticks % numberOfSpirits)] as SpiritBox
-			: spiritListBox.SelectedItem as SpiritBox;
-		return box.Name;
+	#region event hanlders
+
+	void OkButton_Click( object sender, EventArgs e ) {
+		string spirit = SelectedSpiritName();
+		GameConfig = new GameConfigPlusToken {
+			Spirit = spirit,
+			Board = SelectedBoard(),
+			ShuffleNumber = SelectShuffleNumber(),
+			Token = SelectAppearance( spirit ),
+			Adversary = SelectAdversary()
+		};
 	}
 
-	public GameConfigPlusToken GameConfig { get; private set; }
-
-	private void CheckBox1_CheckedChanged( object sender, EventArgs e ) {
-		Init_SpiritList();
+	void CheckOkStatus( object sender, EventArgs e ) {
+		okButton.Enabled = true;
 	}
+
+	void colorCheckBox_CheckedChanged( object sender, EventArgs e ) {
+		if(this.colorCheckBox.Checked) {
+			if( this.colorDialog.ShowDialog() == DialogResult.OK )
+				this.colorCheckBox.BackColor = colorDialog.Color;
+			else
+				this.colorCheckBox.Checked = false;
+		} else 
+			this.colorCheckBox.BackColor = SystemColors.Control;
+	}
+
+	void adversaryListBox_SelectedIndexChanged( object sender, EventArgs e ) {
+		levelListBox.Items.Clear();
+		descriptionTextBox.Text = String.Empty;
+		int index = _adversaryListBox.SelectedIndex;
+		if( index != 0) {
+
+			levelListBox.Enabled = true;
+			string adversary = _adversaryListBox.SelectedItem as string;
+			adjustments = GameBuilder.BuildAdversary( new AdversaryConfig(adversary,0) ).Adjustments;
+
+			foreach(var level in adjustments)
+				levelListBox.Items.Add( level.Title );
+
+			levelListBox.SelectedIndex = 0;
+
+		} else {
+			levelListBox.Enabled = false;
+		}
+	}
+
+	void levelListBox_SelectedIndexChanged( object sender, EventArgs e ) {
+		descriptionTextBox.Text = adjustments[levelListBox.SelectedIndex].Description;
+	}
+
+	#endregion
+
+	ScenarioLevel[] adjustments;
 
 }
 

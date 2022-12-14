@@ -1,6 +1,20 @@
 ﻿namespace SpiritIsland.Basegame;
 
-public class Sweeden : IAdversary {
+public class Sweden : IAdversary {
+
+	public const string Name = "Sweden";
+
+	public ScenarioLevel[] Adjustments => new ScenarioLevel[] {
+		new ScenarioLevel(1 , 3,3,3, "Swayed by the Invaders", " After Invaders Explore into each land this Phase, if that land has at least as many Invaders as Dahan, replace 1 Dahan with 1 Town." ),
+		new ScenarioLevel(2 , 3,4,3, "Heavy Mining", "If the Invaders do at least 6 Damage to the land during Ravage, add an extra Blight. The additional Blight does not destroy Presence or cause cascades." ),
+		new ScenarioLevel(3 , 3,4,3, "Population Pressure at Home", " During Setup, on each board add 1 City to land #4. On boards where land #4 starts with Blight, put that Blight in land #5 instead." ),
+		new ScenarioLevel(5 , 3,4,3, "Fine Steel for Tools and Guns", "Town deal 3 Damage. City deal 5 Damage" ),
+		new ScenarioLevel(6 , 3,4,4, "Royal Backing", "During Setup, after adding all other Invaders, discard the top card of the Invader Deck. On each board, add 1 Town to the land of that terrain with the fewest Invaders." ),
+		new ScenarioLevel(7 , 4,4,4, "Mining Rush", "When Ravaging adds at least 1 Blight to a land, also add 1 Town to an adjacent land without Town/City. Cascading Blight does not cause this effect." ),
+		new ScenarioLevel(8 , 4,4,5, "Prospecting Outpost", "During setup, on each board add 1 Town and 1 Blight to land #8. The Blight comes from the box, not the Blight Card." ),
+	};
+
+
 	public int Level { get; set; }
 
 	public int[] InvaderCardOrder => null;
@@ -34,8 +48,9 @@ public class Sweeden : IAdversary {
 		// Town deal 3 Damage
 		// City deal 5 Damage
 		if(3 <= Level) {
+			// !!! Something about this is causing Invaders to draw with red slashes
 			gameState.Tokens.TokenDefaults[Invader.Town] = new HealthToken( Invader.Town, gameState, 2, 3 );
-			gameState.Tokens.TokenDefaults[Invader.City] = new HealthToken(Invader.City, gameState, 3,5);
+			gameState.Tokens.TokenDefaults[Invader.City] = new HealthToken(Invader.City, gameState, 3, 5);
 		}
 
 		// Level 4
@@ -86,7 +101,7 @@ public class Sweeden : IAdversary {
 	}
 
 	public void PostInitialization( GameState gameState ) {
-		gameState.InvaderDeck.ReplaceCards( card => new SweedenInvaderCard( card ) );
+		gameState.InvaderDeck.ReplaceCards( card => new SwedenInvaderCard( card ) );
 
 		//	Level 2	
 		//	(3)	10 (3/4/3)	Population Pressure at Home: 
@@ -111,8 +126,8 @@ public class Sweeden : IAdversary {
 
 }
 
-class SweedenInvaderCard : InvaderCard {
-	public SweedenInvaderCard( InvaderCard orig ):base(orig) { }
+class SwedenInvaderCard : InvaderCard {
+	public SwedenInvaderCard( InvaderCard orig ):base(orig) { }
 
 	public override async Task Explore( GameState gs ) {
 		SpaceState[] tokenSpacesToExplore = PreExplore( gs );

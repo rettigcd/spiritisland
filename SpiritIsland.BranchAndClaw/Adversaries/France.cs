@@ -9,7 +9,6 @@ Sprawling Plantations: Before Setup, return all but 7 Town per player to the box
 !!! Fear Card effects never remove Explorer. If one would, you may instead Push that Explorer.
 */
 
-
 public class France : IAdversary {
 
 	public int Level { get; set; }
@@ -127,6 +126,7 @@ public class France : IAdversary {
 				await boardCtx.GameState.Tokens[st.Space].Destroy( st.Token, 1, boardCtx.CurrentActionId );
 		} );
 
+	public ScenarioLevel[] Adjustments => new ScenarioLevel[] { }; // !!!
 }
 
 public class FranceInvaderCard : InvaderCard {

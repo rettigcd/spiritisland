@@ -150,7 +150,7 @@ namespace SpiritIsland.WinForms {
 
 			logForm.AppendLine($"=== Game: {gc.Spirit} : {gc.Board} : {gc.ShuffleNumber} : {gc.AdversarySummary} ===", LogLevel.Info );
 
-			GameState gameState = gc.BuildGame( ConfigureGameDialog.gameComponentProviders, BuildAdversary );
+			GameState gameState = ConfigureGameDialog.GameBuilder.BuildGame( gc );
 			game = new SinglePlayerGame( gameState, false ) { LogExceptions = true };
 
 			game.Spirit.Gateway.NewWaitingDecision += Action_NewWaitingDecision;
@@ -158,7 +158,7 @@ namespace SpiritIsland.WinForms {
 
 			gameState.NewLogEntry += GameState_NewLogEntry; // !!! this should probably come through the user portal/gateway, not directly off of the gamestate.
 
-			this.islandControl.Init( game.GameState, this, gc.Token );
+			this.islandControl.Init( game.GameState, this, gc.Token, gc.Adversary );
 			this.cardControl.Init( game.Spirit, this );
 			this.statusControl1.Init( game.GameState, this );
 			this.Text = $"Spirit Island - Single Player Game #{gc.ShuffleNumber} - {gc.AdversarySummary}";
@@ -166,15 +166,6 @@ namespace SpiritIsland.WinForms {
 			// start the game
 			this.game.Start();
 
-		}
-
-		static IAdversary BuildAdversary( string advName ) {
-			var type = advName is null ? null
-				: advName.StartsWith( "Brandenburg" ) ? typeof( BrandenburgPrussia )
-				: advName.StartsWith( "England" ) ? typeof( England )
-				: advName.StartsWith( "Sweeden" ) ? typeof( Sweeden )
-				: null;
-			return type == null ? null : (IAdversary)Activator.CreateInstance( type );
 		}
 
 		void GameState_NewLogEntry( ILogEntry obj ) {

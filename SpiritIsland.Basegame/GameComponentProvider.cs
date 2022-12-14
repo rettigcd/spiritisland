@@ -1,12 +1,8 @@
 ﻿namespace SpiritIsland.Basegame;
 
 public class GameComponentProvider : IGameComponentProvider {
-	// Not using reflection because types inside this assembly are static
-	// AND
-	// It make start-up scanning slow
-	// !! Maybe these should just be types.  Until they are actually selected into the game
 
-	static Dictionary<string, Type> Spirits => new() {
+	static Dictionary<string, Type> SpiritTypes => new() {
 		[RiverSurges.Name]           = typeof( RiverSurges ),
 		[LightningsSwiftStrike.Name] = typeof( LightningsSwiftStrike ),
 		[VitalStrength.Name]         = typeof( VitalStrength ),
@@ -16,13 +12,23 @@ public class GameComponentProvider : IGameComponentProvider {
 		[Ocean.Name]                 = typeof( Ocean ),
 		[Bringer.Name]               = typeof( Bringer ),
 	};
-	public string[] SpiritNames => Spirits.Keys.ToArray();
+	public string[] SpiritNames => SpiritTypes.Keys.ToArray();
 	public Spirit MakeSpirit( string spiritName ) {
-		return Spirits.ContainsKey( spiritName )
-			? (Spirit)Activator.CreateInstance( Spirits[spiritName] )
+		return SpiritTypes.ContainsKey( spiritName )
+			? (Spirit)Activator.CreateInstance( SpiritTypes[spiritName] )
 			: null;
 	}
 
+	static Dictionary<string, Type> AdversariesTypes => new() {
+		[BrandenburgPrussia.Name] = typeof( BrandenburgPrussia ),
+		[England.Name] = typeof( England ),
+		[Sweden.Name] = typeof( Sweden ),
+	};
+
+	public string[] AdversaryNames => AdversariesTypes.Keys.ToArray();
+	public IAdversary MakeAdversary( string adversaryName ) => AdversariesTypes.ContainsKey(adversaryName )
+			? (IAdversary) Activator.CreateInstance( AdversariesTypes[adversaryName] )
+			: null;
 
 	public PowerCard[] MinorCards => new Type[] {
 		typeof(CallOfTheDahanWays),

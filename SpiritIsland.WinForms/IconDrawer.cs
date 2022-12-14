@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 
 namespace SpiritIsland.WinForms {
+	// $$$
 	class IconDrawer {
 
 		readonly Graphics graphics;
@@ -38,7 +39,7 @@ namespace SpiritIsland.WinForms {
 				);
 				// Content - Text
 				if(icon.Text != null) {
-					Font font = new Font( ResourceImages.Singleton.Fonts.Families[0], contentBounds.Height, GraphicsUnit.Pixel );
+					Font font = ResourceImages.Singleton.UseGameFont( contentBounds.Height );
 					StringFormat center = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
 					graphics.DrawString( icon.Text, font, Brushes.Black, contentBounds, center );
 				}

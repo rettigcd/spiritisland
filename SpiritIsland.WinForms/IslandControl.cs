@@ -32,9 +32,10 @@ public partial class IslandControl : Control {
 
 	}
 
-	public void Init( GameState gameState, IHaveOptions optionProvider, PresenceTokenAppearance presenceColor ) {
+	public void Init( GameState gameState, IHaveOptions optionProvider, PresenceTokenAppearance presenceColor, AdversaryConfig adversary ) {
 
 		spiritLayout = null;
+		_adversary = adversary;
 
 		optionProvider.NewDecision += OptionProvider_OptionsChanged;
 
@@ -72,6 +73,7 @@ public partial class IslandControl : Control {
 	const float invaderDeckWidth = oceanWidth * .4f;
 	const float invaderDeckHeight = .3f;
 	Rectangle SpiritRect => new Rectangle( Width - (int)(spiritWidth * Width), 0, (int)(spiritWidth * Width), Height );
+	RectangleF CalcAdversaryFlagRect => new RectangleF( Width * .445f, 5f, Width * .05f, Width * .033f );
 	RectangleF CalcFearPoolRect => new RectangleF( Width * .50f, 0f, Width * .20f, Width * .04f );
 	RectangleF CalcBlightRect => new RectangleF( Width * .55f, Width * .05f, Width * .15f, Width * .03f );
 	RectangleF CalcInvaderCardRect => new RectangleF( Width * (oceanWidth - invaderDeckWidth), Height * (1f - invaderDeckHeight), (Width * invaderDeckWidth), Height * invaderDeckHeight );
@@ -100,6 +102,7 @@ public partial class IslandControl : Control {
 
 	SpiritLayout spiritLayout;
 	Rectangle popUpFearRect;
+	AdversaryConfig _adversary;
 
 	void CalcSpiritLayout( Graphics graphics, Rectangle bounds ) {
 		spiritLayout = new SpiritLayout( graphics, spirit, bounds, 10 );
@@ -172,16 +175,17 @@ public partial class IslandControl : Control {
 			DrawGameRound( pe.Graphics );
 
 			// mostly static
+			DrawAdversary( pe );
 			DrawFearPool( pe.Graphics );
 			DrawBlight( pe.Graphics );
 			DrawInvaderCards( pe.Graphics ); // other than highlights, do this last since it contains the Fear Card that we want to be on top of everything.
 
 			// Island / Spaces
 			foreach(SpaceState space in gameState.AllSpaces)
-				DecorateSpace(pe.Graphics,space);
+				DecorateSpace( pe.Graphics, space );
 
 			// Pop-ups
-			DrawDeckPopUp(pe.Graphics);
+			DrawDeckPopUp( pe.Graphics );
 			DrawElementsPopUp( pe.Graphics );
 			DrawFearPopUp( pe.Graphics );
 
@@ -224,10 +228,6 @@ public partial class IslandControl : Control {
 					spaceLookup.Add( board[i], board.Layout.Spaces[i] );
 				DrawBoardSpacesOnly( graphics, board );
 			}
-
-			// -- new --
-			// mapper = SetupIsland1of2();
-			// mapper = SetupIsland2of2();
 
 		}
 
@@ -272,6 +272,13 @@ public partial class IslandControl : Control {
 	}
 
 	#region Draw - Fear, Blight, Invader Cards
+
+	void DrawAdversary( PaintEventArgs pe ) {
+		if(_adversary != null) {
+			using var flag = ResourceImages.Singleton.GetAdversaryFlag( _adversary.Name );
+			pe.Graphics.DrawImage( flag, this.CalcAdversaryFlagRect );
+		}
+	}
 
 	void DrawFearPool( Graphics graphics ) {
 		var outterBounds = CalcFearPoolRect;
@@ -906,7 +913,7 @@ public partial class IslandControl : Control {
 
 		// If Full Health is different than standard, show it
 		if( ht.FullHealth != ht.Class.ExpectedHealthHint ) {
-			using var font = new Font( ResourceImages.Singleton.Fonts.Families[0], orig.Height/2, GraphicsUnit.Pixel );
+			using var font = ResourceImages.Singleton.UseGameFont( orig.Height/2 );
 			StringFormat center = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
 			g.DrawString( ht.FullHealth.ToString(), font, Brushes.White, new RectangleF( 0, 0, orig.Width, orig.Height ), center );
 		}
@@ -955,8 +962,8 @@ public partial class IslandControl : Control {
 	}
 
 	protected override void OnClick( EventArgs e ) {
-
-		IOption option = FindOption();
+		var clientCoords = PointToClient( Control.MousePosition );
+		IOption option = FindOption( clientCoords );
 		if(option is Space space)
 			SpaceClicked?.Invoke(space);
 		else if(option is Token invader)
@@ -966,12 +973,29 @@ public partial class IslandControl : Control {
 		else if( option != null )
 			OptionSelected?.Invoke(option);
 
-		Point clientCoords = this.PointToClient( Control.MousePosition );
+		// Spirit => Special Rules
 		if(spiritLayout != null && spiritLayout.imgBounds.Contains( clientCoords )) {
 			string msg = this.spirit.SpecialRules.Select(r=>r.ToString()).Join("\r\n\r\n");
 			MessageBox.Show( msg );
 		}
 
+		// Adversay Rules
+		if(_adversary != null && CalcAdversaryFlagRect.Contains( clientCoords ) )
+			PopUpAdversaryRules();
+	}
+
+	void PopUpAdversaryRules() {
+		var adv = ConfigureGameDialog.GameBuilder.BuildAdversary( _adversary );
+		var adjustments = adv.Adjustments;
+		var rows = new List<string>();
+		rows.Add( $"==== {_adversary.Name} - Level:{_adversary.Level} - Difficulty:{adjustments[_adversary.Level].Difficulty} ====" );
+		for(int i = 0; i <= _adversary.Level; ++i) {
+			var a = adjustments[i];
+			string label = i == 0 ? "Escalation: " : "Level:" + i;
+			rows.Add( $"\r\n-- {label} {a.Title} --" );
+			rows.Add( $"{a.Description}" );
+		}
+		MessageBox.Show( rows.Join( "\r\n" ) );
 	}
 
 	protected override void OnMouseMove( MouseEventArgs e ) {
@@ -979,13 +1003,12 @@ public partial class IslandControl : Control {
 
 		if(options_Space==null) return;
 
-		bool inCircle = FindOption() != null;
+		bool inCircle = FindOption( this.PointToClient( Control.MousePosition ) ) != null;
 		Cursor = inCircle ? Cursors.Hand : Cursors.Default;
 
 	}
 
-	IOption FindOption() {
-		Point clientCoords = this.PointToClient( Control.MousePosition );
+	IOption FindOption( Point clientCoords ) {
 		return FindInvader( clientCoords )
 			?? FindSpaces( clientCoords )
 			?? FindHotSpot( clientCoords );
@@ -1026,7 +1049,7 @@ public partial class IslandControl : Control {
 
 	#endregion
 
-	static public Font UseGameFont( float fontHeight ) => new Font( ResourceImages.Singleton.Fonts.Families[0], fontHeight, GraphicsUnit.Pixel );
+	static public Font UseGameFont( float fontHeight ) => ResourceImages.Singleton.UseGameFont( fontHeight );
 
 	#region private fields
 

@@ -8,11 +8,19 @@ public class PresenceTokenAppearance {
 		AdjustHsl = false;
 	}
 
+	public PresenceTokenAppearance( HSL hsl, float pull = 0, string baseImage = "red" ) {
+		AdjustHsl = true;
+		Hue = hsl.H;
+		Saturation = hsl.S;
+		Pull = pull;
+		BaseImage = baseImage;
+	}
+
 	public PresenceTokenAppearance(float hue, float saturation, float pull=0, string baseImage = "red" ) {
 		AdjustHsl = true;
 		Hue = hue;
-		Pull = pull;
 		Saturation = saturation;
+		Pull = pull;
 		BaseImage = baseImage;
 	}
 

@@ -9,30 +9,48 @@ public class GameConfiguration {
 
 	public string AdversarySummary => Adversary == null ? "[none]" : $"{Adversary.Name} {Adversary.Level}";
 
-	public GameState BuildGame( IGameComponentProvider[] providers, Func<string, IAdversary> buildAdversary ) {
+}
 
-		Spirit spirit = providers.Select( p => p.MakeSpirit( Spirit ) ).FirstOrDefault(x=>x!=null)
-			?? throw new InvalidOperationException($"Spirit named '{Spirit}' not found.");
+public class GameBuilder {
 
-		Board board = SpiritIsland.Board.BuildBoard(Board);
+	readonly IGameComponentProvider[] _providers;
 
-		var majorCards = new List<PowerCard>();
-		var minorCards = new List<PowerCard>();
-		var fearCards = new List<IFearCard>();
-		var blightCards = new List<IBlightCard>();
+	public GameBuilder( params IGameComponentProvider[] providers ) {
+		_providers = providers;
+	}
 
-		foreach(var provider in providers) {
-			minorCards.AddRange( provider.MinorCards );
-			majorCards.AddRange( provider.MajorCards );
-			fearCards.AddRange( provider.FearCards );
-			blightCards.AddRange( provider.BlightCards );
-		}
+	public string[] SpiritNames => _providers.SelectMany(p => p.SpiritNames ) .OrderBy( t => t ) .ToArray();
+	public string[] AdversaryNames => _providers.SelectMany(p => p.AdversaryNames) .OrderBy( t => t ) .ToArray();
+
+	public Spirit BuildSpirit( string spirit ) => _providers.Select( p => p.MakeSpirit( spirit ) ).FirstOrDefault( x => x != null )
+		?? throw new InvalidOperationException( $"Spirit named '{spirit}' not found." );
+
+#pragma warning disable CA1822 // Mark members as static
+	public Board BuildBoard( string board ) => SpiritIsland.Board.BuildBoard( board );
+#pragma warning restore CA1822 // Mark members as static
+
+	public IAdversary BuildAdversary( AdversaryConfig cfg ) {
+		var adversary = _providers.Select( p => p.MakeAdversary( cfg?.Name ) ).FirstOrDefault( x => x != null )
+			?? new NullAdversary();
+		adversary.Level = cfg?.Level ?? 0;
+		return adversary;
+	}
+
+	public PowerCard[] BuildMinorCards() => _providers.SelectMany( p => p.MinorCards ).ToArray();
+	public PowerCard[] BuildMajorCards() => _providers.SelectMany( p => p.MajorCards ).ToArray();
+	public List<IFearCard> BuildFearCards() => _providers.SelectMany( p => p.FearCards ).ToList();
+	public List<IBlightCard> BuildBlightCards() => _providers.SelectMany( p => p.BlightCards ).ToList();
+
+	public GameState BuildGame( GameConfiguration cfg ) {
+		Spirit spirit = BuildSpirit( cfg.Spirit );
+		Board board = BuildBoard( cfg.Board );
+		var blightCards = BuildBlightCards();
 
 		// GameState
 		var gameState = new GameState( spirit, board );
 
 		// Game # - Random Seeds (don't change this order or this will change game definition)
-		var randomizer = new Random( ShuffleNumber );
+		var randomizer = new Random( cfg.ShuffleNumber );
 		int invaderSeed = randomizer.Next(); // 1
 		int majorSeed = randomizer.Next();   // 2
 		int minorSeed = randomizer.Next();   // 3
@@ -40,20 +58,22 @@ public class GameConfiguration {
 		int blightSeed = randomizer.Next();  // 5
 
 		// Adversary
-		var adversary = buildAdversary( Adversary?.Name ) ?? new NullAdversary();
+		var adversary = BuildAdversary( cfg.Adversary );
+
 		// (1) Invader Deck
 		gameState.InvaderDeck = new InvaderDeck( invaderSeed, adversary.InvaderCardOrder );
 
 		// (2) Major Power Cards
-		gameState.MajorCards = new PowerCardDeck( majorCards.ToArray(), majorSeed );
+		gameState.MajorCards = new PowerCardDeck( BuildMajorCards(), majorSeed );
 
 		// (3) Minor Power Cards
-		gameState.MinorCards = new PowerCardDeck( minorCards.ToArray(), minorSeed );
+		gameState.MinorCards = new PowerCardDeck( BuildMinorCards(), minorSeed );
 
 		// (4) Fear Cards
+		var fearCards = BuildFearCards();
 		new Random( fearSeed ).Shuffle( fearCards );
 		gameState.Fear.Deck.Clear();
-		if( adversary.FearCardsPerLevel != null)
+		if(adversary.FearCardsPerLevel != null)
 			gameState.Fear.cardsPerLevel = adversary.FearCardsPerLevel;
 		for(int i = 0; i < gameState.Fear.cardsPerLevel.Sum(); ++i)
 			gameState.Fear.PushOntoDeck( fearCards[i] );
@@ -82,6 +102,9 @@ public class GameConfiguration {
 		public int Level { set { } } // ignore
 		public int[] InvaderCardOrder => new int[] { 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3 };
 		public int[] FearCardsPerLevel => new int[] { 3, 3, 3 };
+
+		public ScenarioLevel[] Adjustments => Array.Empty<ScenarioLevel>();
+
 		public void PostInitialization( GameState _ ) { }
 		public void PreInitialization( GameState _ ) { }
 	}
@@ -101,6 +124,9 @@ public class GameConfiguration {
 		InitBeastCommand( 2 );
 		InitBeastCommand( 3 );
 	}
+
 }
+
+
 
 public record AdversaryConfig( string Name, int Level );

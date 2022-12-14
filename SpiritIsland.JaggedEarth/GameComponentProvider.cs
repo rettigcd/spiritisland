@@ -1,9 +1,9 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
 public class GameComponentProvider : IGameComponentProvider {
-	// Not using reflection because types inside this assembly are static
-	// AND
-	// It make start-up scanning slow
+
+	public string[] AdversaryNames => Array.Empty<string>();
+	public IAdversary MakeAdversary( string adversaryName ) => null;
 
 	static Dictionary<string,Type> Spirits => new(){
 		[FracturedDaysSplitTheSky.Name]        = typeof( FracturedDaysSplitTheSky),

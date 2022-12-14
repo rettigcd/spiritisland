@@ -80,17 +80,9 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 			new SpiritIsland.PromoPack1.GameComponentProvider(),
 			new SpiritIsland.JaggedEarth.GameComponentProvider(),
 		};
-		_gameState = gameConfig.BuildGame( providers, BuildAdversary );
+		_gameState = new GameBuilder( providers ).BuildGame( gameConfig );
 		_spirit = _gameState.Spirits.Single();
 		_board = _gameState.Island.Boards.Single();
-	}
-
-	static IAdversary BuildAdversary( string advName ) {
-		var type = advName.StartsWith( "Brandenburg" ) ? typeof( BrandenburgPrussia )
-			: advName.StartsWith( "England" ) ? typeof( England )
-			: advName.StartsWith( "Sweeden" ) ? typeof( Sweeden )
-			: null;
-		return type == null ? null : (IAdversary)Activator.CreateInstance( type );
 	}
 
 	#endregion

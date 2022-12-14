@@ -143,7 +143,7 @@ namespace SpiritIsland.WinForms {
 		void AdditionalPlay( RectangleF bounds, int count ) {
 			DrawIconInCenter( bounds, Img.CardPlayPlusN );
 
-			using Font coinFont = new Font( ResourceImages.Singleton.Fonts.Families[0], bounds.Height * .35f, GraphicsUnit.Pixel );
+			using Font coinFont = ResourceImages.Singleton.UseGameFont( bounds.Height * .35f );
 			string txt = (count > 0)
 				? ("+" + count.ToString())
 				: ("\u2014" + (-count).ToString());
@@ -164,7 +164,7 @@ namespace SpiritIsland.WinForms {
 
 			graphics.DrawImageFitBoth( img, bounds );
 
-			using Font coinFont = new Font( ResourceImages.Singleton.Fonts.Families[0], imgHeight * .5f, GraphicsUnit.Pixel );
+			using Font coinFont = ResourceImages.Singleton.UseGameFont( imgHeight * .5f );
 			string txt = delta > 0 
 				? ("+" + delta.ToString())
 				: ("\u2014" + (-delta).ToString());
@@ -217,7 +217,7 @@ namespace SpiritIsland.WinForms {
 
 		void MovePresence( RectangleF rect, int range ) {
 
-			using Font font = new Font( ResourceImages.Singleton.Fonts.Families[0], rect.Height * .25f, GraphicsUnit.Pixel  );
+			using Font font = ResourceImages.Singleton.UseGameFont( rect.Height * .25f );
 			using var presenceIcon = ResourceImages.Singleton.GetImage( Img.Icon_Presence );
 
 			// + presence
@@ -248,7 +248,7 @@ namespace SpiritIsland.WinForms {
 			float presenceYPercent = image == null ? .3f  : .2f;
 			float textTopScale    = image == null ? .55f : .7f;
 
-			using Font font = new Font( ResourceImages.Singleton.Fonts.Families[0], rect.Height * fontScale, GraphicsUnit.Pixel  );
+			using Font font = ResourceImages.Singleton.UseGameFont( rect.Height * fontScale );
 
 			// + presence
 			float iconCenterY = rect.Y + rect.Height * presenceYPercent; // top of presence
@@ -302,7 +302,7 @@ namespace SpiritIsland.WinForms {
 			float fontScale        = .25f;
 			float presenceYPercent = .3f;
 
-			using Font font = new Font( ResourceImages.Singleton.Fonts.Families[0], rect.Height * fontScale, GraphicsUnit.Pixel );
+			using Font font = ResourceImages.Singleton.UseGameFont( rect.Height * fontScale );
 
 			// + presence
 			float iconCenterY = rect.Y + rect.Height * presenceYPercent; // top of presence

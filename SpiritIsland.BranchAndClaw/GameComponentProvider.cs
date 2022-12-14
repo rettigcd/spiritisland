@@ -16,6 +16,9 @@ public class GameComponentProvider : IGameComponentProvider {
 			: null;
 	}
 
+	public string[] AdversaryNames => Array.Empty<string>();
+	public IAdversary MakeAdversary( string adversaryName ) => null;
+
 
 	public PowerCard[] MinorCards => new Type[] {
 		typeof(AbsorbCorruption),
