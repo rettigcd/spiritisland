@@ -53,6 +53,8 @@ namespace SpiritIsland.WinForms {
 		}
 
 		private void DrawHotspots( Graphics graphics, IList<GrowthOption> clickableGrowthOptions, IList<GrowthActionFactory> clickableGrowthActions, Pen highlightPen ) {
+			if(clickableGrowthOptions == null ) return; // !!! this is happening for OCean
+
 			// Growth Options
 			foreach(var (opt, rect) in layout.EachGrowth())
 				if(clickableGrowthOptions.Contains( opt ))

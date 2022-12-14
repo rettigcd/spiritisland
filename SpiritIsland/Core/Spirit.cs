@@ -140,6 +140,7 @@ public abstract partial class Spirit : IOption {
 		unitOfWork.Owner = this;
 
 		SelfCtx ctx = phase switch {
+			Phase.Init or
 			Phase.Growth => Bind( gs, unitOfWork ),
 			Phase.Fast or 
 			Phase.Slow => BindMyPower( gs, unitOfWork ),

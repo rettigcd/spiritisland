@@ -218,8 +218,7 @@ namespace SpiritIsland.WinForms {
 		void recentToolStripMenuItem_DropDownOpening( object sender, EventArgs e ) {
 			recentToolStripMenuItem.DropDownItems.Clear();
 			foreach(var x in MySerializer.GetRecent()) {
-				var mi = new ToolStripMenuItem($"{x.TimeStamp:MM/dd HH:mm}   { x.Spirit} : {x.Board} : {x.ShuffleNumber}" );
-				mi.Tag = x;
+				var mi = new ToolStripMenuItem( $"{x.TimeStamp:MM/dd HH:mm}   { x.Spirit} : {x.Board} : {x.ShuffleNumber}" ) { Tag = x };
 				mi.Click += RecentGame_Clicked;
 				recentToolStripMenuItem.DropDownItems.Add(mi);
 			}

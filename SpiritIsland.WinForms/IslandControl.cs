@@ -1058,7 +1058,7 @@ public partial class IslandControl : Control {
 	Select.Element                   decision_Element;
 
 	IFearCard				options_FearPopUp;
-	Track[]                 options_Track;
+	Track[]                 options_Track; // until 1st decision is available
 	InnatePower[]           options_InnatePower;
 	IDrawableInnateOption[] options_DrawableInate;
 	GrowthOption[]          options_GrowthOptions;

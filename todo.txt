@@ -1,7 +1,7 @@
 ﻿==========================
 ====  Clean Up Items  ====
 ==========================
-FIX OCEAN!
+FIX VOLCANO!
 
 5 Draw Adversary details - show adversary flag - Log setup adjustments
 5 Reduce token size a bit, make (hex?) grid inside space, place tokens on those grids, select location randomly, but make spots sticky
