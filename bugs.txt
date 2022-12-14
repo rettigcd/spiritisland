@@ -16,7 +16,7 @@ Show Fear Card before creating Fear Action
 ======================
 
 Finder:
-	The Move presence on the presence track is forced (is that correct) 
+	The Move presence on the presence track is forced (is that correct?) 
 		AND the UI doesn't select it properly
 
 Settle Into Hunting-Grounds

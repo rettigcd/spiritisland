@@ -1,20 +1,20 @@
 ﻿==========================
 ====  Clean Up Items  ====
 ==========================
-5 Boards E & F
-! Save Game in Recent Games list so we can replay them.
-5 Draw Adversary details - show adversary flag - Log setup adjustments
-5 Reduce tokens a smidge, make grid inside space, place tokens on those grids, select location randomly, but make spots sticky
+FIX OCEAN!
 
-Tokens - DahanGroupBinding.Drown should be async so UI will update.
-Tokens - Publish token events to the UI so that it can show token changing.
+! Save Game in Recent Games list so we can replay them. (include date)
+5 Draw Adversary details - show adversary flag - Log setup adjustments
+5 Reduce token size a bit, make (hex?) grid inside space, place tokens on those grids, select location randomly, but make spots sticky
+
+3 remaining Adversaries (Habsburg, Russia, Scotland)
+
+Tokens - DahanGroupBinding.Drown should be async so UI will update with animation.
+Tokens - Publish token events to the UI so that it can show token changing animation.
 
 Verify - Starlights Track has +1 energies
 Verify - Vengeance - WreakVengeance for the Lands Corruption
 Verify - VolcanoLoomingHigh doesn't allow presence ouside of mountain
-Implement - Starlights Track has +1 energies
-Implement - Vengeance - WreakVengeance for the Lands Corruption
-Implement - VolcanoLoomingHigh doesn't allow presence ouside of mountain
 Tokens - WreakVengeanceForTheLandsCorruption - virtual tokens might not be correct.
 
 - - - - -
@@ -58,8 +58,6 @@ Instead of reacting to PresenceMoved / Removed / Added events, have the Presence
 ===== Feature Focus =====
 =========================
 * 2 spirit game (but still 1 player)
-* 3 Adversaries (Habsburg, Russia, Scotland)
-* Remaining spirit (Finder of Paths)
 * Mobile
 	- Spirit's 3 controls
 	- Island control with tokens

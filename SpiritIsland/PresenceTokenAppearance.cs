@@ -23,6 +23,7 @@ public class PresenceTokenAppearance {
 	public float Pull = 0;  // pulls the Lightness value up or down
 
 	public void Adjust( HSL hsl ) {
+		if( !AdjustHsl ) return;
 		hsl.H = Hue;
 		hsl.S = Saturation;
 

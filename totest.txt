@@ -76,7 +76,6 @@ Blight causes spirit to lose 1 presence on space
 
 ====  =========
 Check if Gates of Deepest Power has bug that allows duplicate cards. like 1 in discard and one in hand.
-Check if anything is calling Spirit.GetTargetOptions directly and skipping over Shadows ability to pay to target.
 TargetSpaceCtx.IsOneOf needs tests to ensure it uses Terrain Mapper.
 Test GatherTheScatteredLightOfStars - to see if forgetting a power card creates a null card.
 Volcano Looming High - check if spirit can place presence outside mountain during power card use.

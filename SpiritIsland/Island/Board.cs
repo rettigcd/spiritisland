@@ -8,13 +8,15 @@ public partial class Board {
 
 	// These cannot be reused because when they get connected to other boards, 
 	// there neighbor state changes.
-	static readonly public string[] AvailableBoards = { "A", "B", "C", "D" };
+	static readonly public string[] AvailableBoards = { "A", "B", "C", "D", "E", "F" };
 	static public Board BuildBoard(string boardName) {
 		return boardName switch {
 			"A" => SpiritIsland.Board.BuildBoardA(),
 			"B" => SpiritIsland.Board.BuildBoardB(),
 			"C" => SpiritIsland.Board.BuildBoardC(),
 			"D" => SpiritIsland.Board.BuildBoardD(),
+			"E" => SpiritIsland.Board.BuildBoardE(),
+			"F" => SpiritIsland.Board.BuildBoardF(),
 			_ => null,
 		};
 	}
@@ -146,6 +148,71 @@ public partial class Board {
 
 		return board;
 	}
+
+	static public Board BuildBoardE() {
+		var board = new Board( "E"
+			, new Space1( Terrain.Ocean, "E0" )
+			, new Space1( Terrain.Sand, "E1", "D" )   // 1 dahan
+			, new Space1( Terrain.Mountain, "E2", "C" )    // city
+			, new Space1( Terrain.Jungle, "E3", "DD" )  // 2 dahan
+			, new Space1( Terrain.Wetland, "E4", "B" )      // 1 blight
+			, new Space1( Terrain.Mountain, "E5", "D" )  // 1 dahan
+			, new Space1( Terrain.Sand, "E6" )
+			, new Space1( Terrain.Jungle, "E7", "T" )      // 1 town
+			, new Space1( Terrain.Wetland, "E8", "DD" ) // 2 dahan
+		);
+
+		board.SetNeighbors( 0, 1, 2, 3 );
+		board.SetNeighbors( 1, 2, 5, 7 );
+		board.SetNeighbors( 2, 3, 5 );
+		board.SetNeighbors( 3, 4, 5 );
+		board.SetNeighbors( 4, 5, 6, 7 );
+		board.SetNeighbors( 5, 7 );
+		board.SetNeighbors( 6, 7, 8 );
+		board.SetNeighbors( 7, 8 );
+
+		// sides of the board are # starting at the ocean and moving around the board clockwise
+		board.DefineSide( 1, 7, 8 ).BreakAt( 5, 9 );     // Side 0
+		board.DefineSide( 8, 6 ).BreakAt( 9 );   // Side 1
+		board.DefineSide( 6, 4, 3 ).BreakAt( 1, 7 );   // Side 2
+
+		board.Layout = BoardLayout.BoardE();
+
+		return board;
+	}
+
+	static public Board BuildBoardF() {
+		var board = new Board( "F"
+			, new Space1( Terrain.Ocean, "F0" )
+			, new Space1( Terrain.Sand, "F1", "DD" )
+			, new Space1( Terrain.Jungle, "F2", "C" )
+			, new Space1( Terrain.Wetland, "F3", "D" )
+			, new Space1( Terrain.Mountain, "F4", "B" )
+			, new Space1( Terrain.Jungle, "F5", "D" )
+			, new Space1( Terrain.Mountain, "F6", "DD" )
+			, new Space1( Terrain.Wetland, "F7", "" )
+			, new Space1( Terrain.Sand, "F8", "T" )
+		);
+
+		board.SetNeighbors( 0, 1, 2, 3 );
+		board.SetNeighbors( 1, 2, 5, 6 );
+		board.SetNeighbors( 2, 3, 4, 5 );
+		board.SetNeighbors( 3, 4 );
+		board.SetNeighbors( 4, 5, 7, 8 );
+		board.SetNeighbors( 5, 6, 8 );
+		board.SetNeighbors( 6, 8 );
+		board.SetNeighbors( 7, 8 );
+
+		// sides of the board are # starting at the ocean and moving around the board clockwise
+		board.DefineSide( 1, 6, 8 ).BreakAt( 5, 11 );     // Side 0
+		board.DefineSide( 8, 7 ).BreakAt( 7 );   // Side 1
+		board.DefineSide( 7, 4, 3 ).BreakAt( 3, 9 );   // Side 2
+
+		board.Layout = BoardLayout.BoardF();
+
+		return board;
+	}
+
 
 	#endregion
 

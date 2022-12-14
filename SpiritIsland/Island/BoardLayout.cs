@@ -257,7 +257,6 @@ public class BoardLayout {
 		var c3Points = new PointF[] { _03, _023, _234, bot[5], bot[4], bot[3], bot[2], bot[1], bot[0], origin };
 		var c4Points = new PointF[] { bottomRightCorner, bot[11], bot[10], bot[9], bot[8], bot[7], bot[6], bot[5], _234, _245, _457, rig[10], rig[11] };
 		var c5Points = new PointF[] {  _567, _457, _245, _125, _156 };
-//		var c5Points = new PointF[] { _156, _125, _245, _457, _567 };
 		var c6Points = new PointF[] { top[2], top[3], top[4], top[5], top[6], _678, _567, _156, };
 		var c7Points = new PointF[] { rig[6], rig[7], rig[8], rig[9], rig[10], _457, _567, _678 };
 		var c8Points = new PointF[] { top[6], top[7], top[8], top[9], top[10], top[11], topRightCorner, rig[0], rig[1], rig[2], rig[3], rig[4], rig[5], rig[6], _678 };
@@ -339,9 +338,121 @@ public class BoardLayout {
 				new SpaceLayout(d8Points)
 			}
 		};
-		layout.Spaces[1].AdjustCenter(0f,-.05f);
+		layout.Spaces[1].AdjustCenter( 0f, -.05f );
 		return layout;
 	}
+
+	static public BoardLayout BoardE() {
+
+		// Edge points with ocean
+		var _01 = new PointF( .4f, .846f );
+		var _03 = new PointF( 0.0f, .15f );
+		// Internal Points
+		var _012 = new PointF( .35f, .65f );
+		var _023 = new PointF( .15f, .23f );
+		var _125 = new PointF( .59f, .63f );
+		var _157 = new PointF( .87f, .65f );
+		var _235 = new PointF( .46f, .23f );
+		var _345 = new PointF( .62f, .21f );
+		var _457 = new PointF( .82f, .42f );
+		var _467 = new PointF( .93f, .41f );
+		var _678 = new PointF( 1.13f, .52f );
+		// style points
+		var _0 = new PointF( .18f, .67f );
+		var _67s = new PointF( 1.13f, .32f );
+
+		var e0Points = new PointF[] { _01, _012, _023, _03, _0 };
+		var e1Points = new PointF[] { _01, topLeftCorner, top[0], top[1], top[2], top[3], top[4], _157, _125, _012 };
+		var e2Points = new PointF[] { _012, _125, _235, _023 };
+		var e3Points = new PointF[] { _03, _023, _235, _345, bot[5], bot[4], bot[3], bot[2], bot[1], bot[0], origin };
+		var e4Points = new PointF[] { bot[11], bot[10], bot[9], bot[8], bot[7], bot[6], bot[5], _345, _457, _467 };
+		var e5Points = new PointF[] { _157, _457, _345, _235, _125 };
+		var e6Points = new PointF[] { bottomRightCorner, bot[11], _467, _678, _67s, rig[8], rig[9], rig[10], rig[11] };
+		var e7Points = new PointF[] { top[4], top[5], top[6], top[7], top[8], _678, _467, _457, _157 }; // done
+		var e8Points = new PointF[] { top[8], top[9], top[10], top[11], topRightCorner, rig[0], rig[1], rig[2], rig[3], rig[4], rig[5], rig[6], rig[7], rig[8], _67s, _678 };
+
+		var layout = new BoardLayout {
+			perimeter = new PointF[] {
+				origin,
+				_03,_0,_01,
+				topLeftCorner,
+				top[0], top[1], top[2], top[3], top[4], top[5], top[6], top[7], top[8], top[9], top[10], top[11],
+				topRightCorner,
+				rig[0],rig[1],rig[2],rig[3],rig[4],rig[5],rig[6],rig[7],rig[8],rig[9],rig[10],rig[11],
+				bottomRightCorner,
+				bot[11], bot[10], bot[ 9 ], bot[8], bot[7], bot[6], bot[5], bot[4], bot[3], bot[2], bot[1], bot[0],
+			},
+			Spaces = new SpaceLayout[] {
+				new SpaceLayout(e0Points),
+				new SpaceLayout(e1Points),
+				new SpaceLayout(e2Points),
+				new SpaceLayout(e3Points),
+				new SpaceLayout(e4Points),
+				new SpaceLayout(e5Points),
+				new SpaceLayout(e6Points),
+				new SpaceLayout(e7Points),
+				new SpaceLayout(e8Points)
+			}
+		};
+		layout.Spaces[1].AdjustCenter( 0f, -.05f );
+		return layout;
+	}
+
+	static public BoardLayout BoardF() {
+
+		// Edge points with ocean
+		var _01 = new PointF( .4f, .846f );
+		var _03 = new PointF( 0.0f, .15f );
+		// Internal Points
+		var _012 = new PointF( .35f, .65f );
+		var _023 = new PointF( .15f, .23f );
+		var _125 = new PointF( .59f, .63f );
+		var _156 = new PointF( .87f, .65f );
+		var _234 = new PointF( .46f, .23f );
+		var _245 = new PointF( .6f, .30f );
+		var _345 = new PointF( .56f, .3f );
+		var _458 = new PointF( .88f, .38f );
+		var _478 = new PointF( .95f, .31f );
+		var _568 = new PointF( 1.05f, .60f );
+		// style points
+		var _0 = new PointF( .18f, .67f );
+		var f0Points = new PointF[] { _01, _012, _023, _03, _0 };
+		var f1Points = new PointF[] { _01, topLeftCorner, top[0], top[1], top[2], top[3], top[4], _156, _125, _012 };
+		var f2Points = new PointF[] { _012, _125, _245, _234, _023 };
+		var f3Points = new PointF[] { _03, _023, _234, bot[3], bot[2], bot[1], bot[0], origin };
+		var f4Points = new PointF[] { bot[9], bot[8], bot[7], bot[6], bot[5], bot[4], bot[3], _234, _245, _458, _478 };
+		var f5Points = new PointF[] { _125, _156, _568, _458, _245 };
+		var f6Points = new PointF[] { top[4], top[5], top[6], top[7], top[8], top[9], top[10], _568, _156 };
+		var f7Points = new PointF[] { bottomRightCorner, bot[11], bot[10], bot[9], _478, rig[6], rig[7], rig[8], rig[9], rig[10], rig[11] };
+		var f8Points = new PointF[] { top[10], top[11], topRightCorner, rig[0], rig[1], rig[2], rig[3], rig[4], rig[5], rig[6], _478, _458, _568 };
+
+		var layout = new BoardLayout {
+			perimeter = new PointF[] {
+				origin,
+				_03,_0,_01,
+				topLeftCorner,
+				top[0], top[1], top[2], top[3], top[4], top[5], top[6], top[7], top[8], top[9], top[10], top[11],
+				topRightCorner,
+				rig[0],rig[1],rig[2],rig[3],rig[4],rig[5],rig[6],rig[7],rig[8],rig[9],rig[10],rig[11],
+				bottomRightCorner,
+				bot[11], bot[10], bot[ 9 ], bot[8], bot[7], bot[6], bot[5], bot[4], bot[3], bot[2], bot[1], bot[0],
+			},
+			Spaces = new SpaceLayout[] {
+				new SpaceLayout(f0Points),
+				new SpaceLayout(f1Points),
+				new SpaceLayout(f2Points),
+				new SpaceLayout(f3Points),
+				new SpaceLayout(f4Points),
+				new SpaceLayout(f5Points),
+				new SpaceLayout(f6Points),
+				new SpaceLayout(f7Points),
+				new SpaceLayout(f8Points)
+			}
+		};
+		layout.Spaces[1].AdjustCenter( 0f, -.05f );
+		return layout;
+	}
+
 
 	static public T[] JoinAdjacentPolgons<T>( T[] region0, T[] region1 ) {
 

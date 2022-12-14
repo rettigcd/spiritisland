@@ -159,10 +159,10 @@ namespace SpiritIsland.WinForms {
 				VengeanceAsABurningPlague.Name       => new PresenceTokenAppearance( 15, .6f ),
 				HeartOfTheWildfire.Name              => new PresenceTokenAppearance( 20, .8f ),
 				VitalStrength.Name                   => new PresenceTokenAppearance( 22, .47f ) { Pull = -.3f },
-				VolcanoLoomingHigh.Name              => new PresenceTokenAppearance( 24, .8f ),
-				StonesUnyieldingDefiance.Name        => new PresenceTokenAppearance( 48, .16f ),
+				StonesUnyieldingDefiance.Name        => new PresenceTokenAppearance( 30, .16f ), // !!!
 				LightningsSwiftStrike.Name           => new PresenceTokenAppearance( 55, .64f ),
-				GrinningTricksterStirsUpTrouble.Name => new PresenceTokenAppearance( 58, .2f ),
+				VolcanoLoomingHigh.Name              => new PresenceTokenAppearance( 56, 1.0f ) { Pull = -.3f },
+				GrinningTricksterStirsUpTrouble.Name => new PresenceTokenAppearance( 58, .3f ),  // !!!
 				ASpreadOfRampantGreen.Name           => new PresenceTokenAppearance( 114, .65f ) { Pull = -.1f },
 				LureOfTheDeepWilderness.Name         => new PresenceTokenAppearance( 125, .33f ) { Pull = -.3f },
 				FracturedDaysSplitTheSky.Name        => new PresenceTokenAppearance( 160, .9f ) { Pull = -.3f },
