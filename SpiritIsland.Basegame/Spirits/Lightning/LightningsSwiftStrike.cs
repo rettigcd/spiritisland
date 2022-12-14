@@ -48,8 +48,9 @@ public class LightningsSwiftStrike : Spirit {
 		gs.TimePasses_WholeGame += Gs_TimePassed;
 	}
 
-	private void Gs_TimePassed( GameState obj ) {
+	Task Gs_TimePassed( GameState obj ) {
 		usedAirForFastCount = 0;
+		return Task.CompletedTask;
 	}
 
 	public override IEnumerable<IActionFactory> GetAvailableActions( Phase speed ) {

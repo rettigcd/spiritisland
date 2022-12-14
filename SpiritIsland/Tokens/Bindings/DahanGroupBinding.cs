@@ -77,13 +77,10 @@ public class DahanGroupBinding : DahanGroupBindingNoEvents {
 	}
 
 	// Called from Ocean-Drown special rule.
-	public void Drown() {
-
-		// !!! need to change this to async so we publish the .Destroy event and UI will update.
-
-		if(Frozen) return;
-		foreach( var token in Keys.ToArray() )
-			_tokens.Init(token,0);
+	public async Task Drown() {
+		if(!Frozen)
+			foreach( var token in Keys.ToArray())
+				await Destroy( _tokens[token], token );
 	}
 
 	#region Damage

@@ -9,7 +9,6 @@ FIX OCEAN!
 
 3 remaining Adversaries (Habsburg, Russia, Scotland)
 
-Tokens - DahanGroupBinding.Drown should be async so UI will update with animation.
 Tokens - Publish token events to the UI so that it can show token changing animation.
 
 Verify - Starlights Track has +1 energies

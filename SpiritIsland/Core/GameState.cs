@@ -278,10 +278,11 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	public Func<Spirit,GameState,Cause,UnitOfWork,Task> Destroy1PresenceFromBlightCard = DefaultDestroy1PresenceFromBlightCard; // Direct distruction from Blight Card, not cascading
 
-	void TokenCleanUp( GameState gs ) { 
+	Task TokenCleanUp( GameState gs ) { 
 		Healer.HealAll( gs ); // called at end of round.
 		foreach(var spaceTokens in AllSpaces)
 			spaceTokens.Blight.Blocked = false;
+		return Task.CompletedTask;
 	}
 	public Healer Healer = new Healer(); // replacable Behavior
 
@@ -373,7 +374,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	public DualAsyncEvent<LandDamagedArgs> LandDamaged     = new DualAsyncEvent<LandDamagedArgs>();    // Let Them Break Themselves Against the Stone
 	public DualAsyncEvent<UnitOfWork> EndOfAction          = new DualAsyncEvent<UnitOfWork>();
 
-	public event Action<GameState> TimePasses_WholeGame;                                               // Spirit cleanup
+	public event Func<GameState,Task> TimePasses_WholeGame;                                               // Spirit cleanup
 	public Stack<Func<GameState, Task>> TimePasses_ThisRound = new Stack<Func<GameState, Task>>();     // This must be Push / Pop
 
 	#endregion

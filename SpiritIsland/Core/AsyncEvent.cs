@@ -19,7 +19,7 @@ public class AsyncEvent<T> {
 			await TryHandle( handler, t );
 	}
 
-	public void Clear(GameState _) => Clear(); // convenience for adding to TimePasses_WholeGame
+	public Task Clear( GameState _ ) { Clear(); return Task.CompletedTask; } // convenience for adding to TimePasses_WholeGame
 
 	public void Clear() => handlers.Clear();
 

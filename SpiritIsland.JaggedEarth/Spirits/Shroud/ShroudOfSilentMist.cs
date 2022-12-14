@@ -62,7 +62,7 @@ public class ShroudOfSilentMist : Spirit {
 		gameState.TimePasses_WholeGame += GameState_TimePasses_WholeGame;
 	}
 
-	void GameState_TimePasses_WholeGame( GameState gs ) {
+	Task GameState_TimePasses_WholeGame( GameState gs ) {
 		gainedCoolEnergyThisTurn = false;
 
 		bool SpaceHasDamagedInvaders( Space s ) => gs.Tokens[s].InvaderTokens()
@@ -76,6 +76,8 @@ public class ShroudOfSilentMist : Spirit {
 
 		// Gain 1 Energy per 3 lands of yours with Damaged Invaders."
 		Energy += (myLandsWithDamagedInvaders / 3);
+
+		return Task.CompletedTask;
 	}
 
 	#region Draw Cards (Gather from the Cool And Dark)

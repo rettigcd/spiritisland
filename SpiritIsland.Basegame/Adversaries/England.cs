@@ -119,6 +119,7 @@ public class England : IAdversary {
 					deck.Slots.RemoveAt( 0 );
 					highBuildSlot = null;
 				}
+				return Task.CompletedTask;
 			};
 		}
 

@@ -62,10 +62,10 @@ public class Ocean : Spirit {
 		gameState.TimePasses_WholeGame += RemoveDrownedDahan;
 	}
 
-	void RemoveDrownedDahan( GameState gs ) {
+	async Task RemoveDrownedDahan( GameState gs ) {
 		var actionId = gs.StartAction( ActionCategory.Spirit ); // Special Rules
 		foreach(var board in gs.Island.Boards)
-			gs.Tokens[board.Ocean].Dahan.Bind(actionId).Drown();
+			await gs.Tokens[board.Ocean].Dahan.Bind(actionId).Drown();
 	}
 
 	async Task InvadersAdded( ITokenAddedArgs args ) {

@@ -86,9 +86,10 @@ public class TriggerCommandBeasts : IInvaderCard {
 		gameState.TimePasses_WholeGame += TimePasses_WholeGame;
 	}
 
-	void TimePasses_WholeGame( GameState gameState ) {
-		if(cmdAction.Used) return;
-		gameState.Spirits[0].AddActionFactory( cmdAction );
+	Task TimePasses_WholeGame( GameState gameState ) {
+		if(!cmdAction.Used)
+			gameState.Spirits[0].AddActionFactory( cmdAction );
+		return Task.CompletedTask;
 	}
 
 	#region IInvaderCard Properties

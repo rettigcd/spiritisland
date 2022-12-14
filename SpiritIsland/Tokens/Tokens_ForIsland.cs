@@ -18,12 +18,13 @@ public class Tokens_ForIsland : IIslandTokenApi {
 		gs.TimePasses_WholeGame += (_)=>ClearEventHandlers_ForRound();
 	}
 
-	void ClearEventHandlers_ForRound() {
+	Task ClearEventHandlers_ForRound() {
 		TokenAdded.ForRound.Clear();
 		TokenMoved.ForRound.Clear();
 		TokenRemoved.ForRound.Clear();
 		RemovingToken.ForRound.Clear();
 		Dynamic.ForRound.Clear();
+		return Task.CompletedTask;
 	}
 
 	// !!! every call to this needs checked !.IsInStasis

@@ -335,7 +335,7 @@ public abstract partial class Spirit : IOption {
 	public virtual SelfCtx Bind( GameState gameState, UnitOfWork action, Cause cause = default ) => new SelfCtx( this, gameState, action, cause );
 	public SelfCtx BindMyPower( GameState gameState, UnitOfWork existingAction ) => Bind( gameState, existingAction, Cause.MyPowers );
 
-	void On_TimePassed(GameState _ ) {
+	Task On_TimePassed(GameState _ ) {
 		// reset cards / powers
 		DiscardPile.AddRange( InPlay );
 		InPlay.Clear();
@@ -350,6 +350,7 @@ public abstract partial class Spirit : IOption {
 		InitElementsFromPresence();
 
 		ActionTaken_ThisRound.Clear();
+		return Task.CompletedTask;
 	}
 
 	public void InitElementsFromPresence() {
