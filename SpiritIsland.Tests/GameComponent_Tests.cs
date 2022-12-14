@@ -27,16 +27,17 @@ namespace SpiritIsland.Tests {
 
 		static void ValidateGameComponentProvider( IGameComponentProvider provider ) {
 			Type assemblyType = provider.GetType();
-			FindSpiritTypes( assemblyType ).ShouldAllBe( x => provider.Spirits.Contains( x ) );
+			FindSpiritNames( assemblyType ).ShouldAllBe( x => provider.SpiritNames.Contains( x ) );
 			FindMinorCards( assemblyType ).Select( x => x.Name ).ShouldAllBe( x => provider.MinorCards.Select( x => x.Name ).ToArray().Contains( x ) );
 			FindMajorCards( assemblyType ).Select( x => x.Name ).ShouldAllBe( x => provider.MajorCards.Select( x => x.Name ).ToArray().Contains( x ) );
 			FindFearCards( assemblyType ).Select( x => x.Text ).ShouldAllBe( x => provider.FearCards.Select( x => x.Text ).ToArray().Contains( x ) );
 			FindBlightCards( assemblyType ).Select( x => x.Name ).ShouldAllBe( x => provider.BlightCards.Select( x => x.Name ).ToArray().Contains( x ) );
 		}
 
-		static Type[] FindSpiritTypes( Type assemblyType ) {
+		static string[] FindSpiritNames( Type assemblyType ) {
 			return assemblyType.Assembly.GetTypes()
 				.Where( t => t.IsAssignableTo( typeof(Spirit) ))
+				.Select( st => (string)st.GetField( "Name" ).GetValue( null ) )
 				.ToArray();
 		}
 

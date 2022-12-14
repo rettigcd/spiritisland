@@ -6,16 +6,23 @@ public class GameComponentProvider : IGameComponentProvider {
 	// It make start-up scanning slow
 	// !! Maybe these should just be types.  Until they are actually selected into the game
 
-	public Type[] Spirits => new Type[] {
-		typeof(RiverSurges),
-		typeof(LightningsSwiftStrike),
-		typeof(VitalStrength),
-		typeof(Shadows),
-		typeof(ASpreadOfRampantGreen),
-		typeof(Thunderspeaker),
-		typeof(Ocean),
-		typeof(Bringer),
+	static Dictionary<string, Type> Spirits => new() {
+		[RiverSurges.Name]           = typeof( RiverSurges ),
+		[LightningsSwiftStrike.Name] = typeof( LightningsSwiftStrike ),
+		[VitalStrength.Name]         = typeof( VitalStrength ),
+		[Shadows.Name]               = typeof( Shadows ),
+		[ASpreadOfRampantGreen.Name] = typeof( ASpreadOfRampantGreen ),
+		[Thunderspeaker.Name]        = typeof( Thunderspeaker ),
+		[Ocean.Name]                 = typeof( Ocean ),
+		[Bringer.Name]               = typeof( Bringer ),
 	};
+	public string[] SpiritNames => Spirits.Keys.ToArray();
+	public Spirit MakeSpirit( string spiritName ) {
+		return Spirits.ContainsKey( spiritName )
+			? (Spirit)Activator.CreateInstance( Spirits[spiritName] )
+			: null;
+	}
+
 
 	public PowerCard[] MinorCards => new Type[] {
 		typeof(CallOfTheDahanWays),

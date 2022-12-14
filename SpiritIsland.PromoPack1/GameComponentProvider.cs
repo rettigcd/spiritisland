@@ -2,12 +2,18 @@
 
 public class GameComponentProvider : IGameComponentProvider {
 
-	public Type[] Spirits => new Type[] {
-		typeof(HeartOfTheWildfire),
-		typeof(SerpentSlumbering),
-		typeof(DownpourDrenchesTheWorld),
-		typeof(FinderOfPathsUnseen),
+	static Dictionary<string, Type> Spirits => new() {
+		[HeartOfTheWildfire.Name]       = typeof( HeartOfTheWildfire ),
+		[SerpentSlumbering.Name]        = typeof( SerpentSlumbering ),
+		[DownpourDrenchesTheWorld.Name] = typeof( DownpourDrenchesTheWorld ),
+		[FinderOfPathsUnseen.Name]      = typeof( FinderOfPathsUnseen ),
 	};
+	public string[] SpiritNames => Spirits.Keys.ToArray();
+	public Spirit MakeSpirit( string spiritName ) {
+		return Spirits.ContainsKey( spiritName )
+			? (Spirit)Activator.CreateInstance( Spirits[spiritName] )
+			: null;
+	}
 
 	public PowerCard[] MinorCards => Array.Empty<PowerCard>();
 

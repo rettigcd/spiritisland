@@ -69,9 +69,8 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 		if(_gameState != null) throw new InvalidOperationException( "InitConfiguration must be called before GameState is initialized." );
 
 		var gameConfig = new GameConfiguration {
-			SpiritType = typeof(RiverSurges),
+			Spirit = RiverSurges.Name,
 			Board = "A",
-			Color = new PresenceTokenAppearance( 0f, 1f ), // red
 		};
 		adjustCfg(gameConfig);
 
@@ -81,9 +80,17 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 			new SpiritIsland.PromoPack1.GameComponentProvider(),
 			new SpiritIsland.JaggedEarth.GameComponentProvider(),
 		};
-		_gameState = gameConfig.BuildGame( providers );
+		_gameState = gameConfig.BuildGame( providers, BuildAdversary );
 		_spirit = _gameState.Spirits.Single();
 		_board = _gameState.Island.Boards.Single();
+	}
+
+	static IAdversary BuildAdversary( string advName ) {
+		var type = advName.StartsWith( "Brandenburg" ) ? typeof( BrandenburgPrussia )
+			: advName.StartsWith( "England" ) ? typeof( England )
+			: advName.StartsWith( "Sweeden" ) ? typeof( Sweeden )
+			: null;
+		return type == null ? null : (IAdversary)Activator.CreateInstance( type );
 	}
 
 	#endregion

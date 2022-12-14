@@ -1,4 +1,5 @@
-﻿using SpiritIsland.SinglePlayer;
+﻿using SpiritIsland.Basegame;
+using SpiritIsland.SinglePlayer;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -129,7 +130,7 @@ namespace SpiritIsland.WinForms {
 		#endregion
 
 		readonly List<Button> buttons = new();
-		GameConfiguration gameConfiguration;
+		GameConfigPlusToken gameConfiguration;
 		SinglePlayerGame game;
 
 		void GameNewStripMenuItem_Click( object sender, EventArgs e ) {
@@ -140,12 +141,16 @@ namespace SpiritIsland.WinForms {
 		}
 
 		void InitGameFromConfiguration() {
+			gameConfiguration.TimeStamp = DateTime.Now;
+			MySerializer.Add( gameConfiguration );
+
 			logForm.Clear();
 
 			var gc = gameConfiguration;
-			logForm.AppendLine($"=== Game: {gc.SpiritType.Name} : {gc.Board} : {gc.ShuffleNumber} : {gc.AdversaryString} ===", LogLevel.Info );
 
-			GameState gameState = gc.BuildGame( ConfigureGameDialog.gameComponentProviders );
+			logForm.AppendLine($"=== Game: {gc.Spirit} : {gc.Board} : {gc.ShuffleNumber} : {gc.AdversarySummary} ===", LogLevel.Info );
+
+			GameState gameState = gc.BuildGame( ConfigureGameDialog.gameComponentProviders, BuildAdversary );
 			game = new SinglePlayerGame( gameState, false ) { LogExceptions = true };
 
 			game.Spirit.Gateway.NewWaitingDecision += Action_NewWaitingDecision;
@@ -153,14 +158,23 @@ namespace SpiritIsland.WinForms {
 
 			gameState.NewLogEntry += GameState_NewLogEntry; // !!! this should probably come through the user portal/gateway, not directly off of the gamestate.
 
-			this.islandControl.Init( game.GameState, this, gc.Color );
+			this.islandControl.Init( game.GameState, this, gc.Token );
 			this.cardControl.Init( game.Spirit, this );
 			this.statusControl1.Init( game.GameState, this );
-			this.Text = $"Spirit Island - Single Player Game #{gc.ShuffleNumber} - {gc.AdversaryString}";
+			this.Text = $"Spirit Island - Single Player Game #{gc.ShuffleNumber} - {gc.AdversarySummary}";
 
 			// start the game
 			this.game.Start();
 
+		}
+
+		static IAdversary BuildAdversary( string advName ) {
+			var type = advName is null ? null
+				: advName.StartsWith( "Brandenburg" ) ? typeof( BrandenburgPrussia )
+				: advName.StartsWith( "England" ) ? typeof( England )
+				: advName.StartsWith( "Sweeden" ) ? typeof( Sweeden )
+				: null;
+			return type == null ? null : (IAdversary)Activator.CreateInstance( type );
 		}
 
 		void GameState_NewLogEntry( ILogEntry obj ) {
@@ -201,6 +215,22 @@ namespace SpiritIsland.WinForms {
 			logForm.Show();
 		}
 
+		void recentToolStripMenuItem_DropDownOpening( object sender, EventArgs e ) {
+			recentToolStripMenuItem.DropDownItems.Clear();
+			foreach(var x in MySerializer.GetRecent()) {
+				var mi = new ToolStripMenuItem($"{x.TimeStamp:MM/dd HH:mm}   { x.Spirit} : {x.Board} : {x.ShuffleNumber}" );
+				mi.Tag = x;
+				mi.Click += RecentGame_Clicked;
+				recentToolStripMenuItem.DropDownItems.Add(mi);
+			}
+
+		}
+
+		void RecentGame_Clicked( object sender, EventArgs _ ) {
+			var tsmi = (ToolStripMenuItem)sender;
+			this.gameConfiguration = (GameConfigPlusToken)tsmi.Tag;
+			InitGameFromConfiguration();
+		}
 	}
 
 	public interface IHaveOptions {

@@ -2,18 +2,17 @@
 
 public class GameConfiguration {
 
-	public int ShuffleNumber;
-	public Type SpiritType;
+	public string Spirit;
 	public string Board;
-	public PresenceTokenAppearance Color;
-	public Type AdversaryType;
-	public int AdversaryLevel;
-	public string AdversaryString => AdversaryType == null ? "[none]"
-		: $"{AdversaryType.Name} {AdversaryLevel}";
+	public int ShuffleNumber;
+	public AdversaryConfig Adversary;
 
-	public GameState BuildGame( IGameComponentProvider[] providers ) {
+	public string AdversarySummary => Adversary == null ? "[none]" : $"{Adversary.Name} {Adversary.Level}";
 
-		Spirit spirit = (Spirit)Activator.CreateInstance( SpiritType );
+	public GameState BuildGame( IGameComponentProvider[] providers, Func<string, IAdversary> buildAdversary ) {
+
+		Spirit spirit = providers.Select( p => p.MakeSpirit( Spirit ) ).FirstOrDefault(x=>x!=null)
+			?? throw new InvalidOperationException($"Spirit named '{Spirit}' not found.");
 
 		Board board = SpiritIsland.Board.BuildBoard(Board);
 
@@ -40,12 +39,8 @@ public class GameConfiguration {
 		int fearSeed = randomizer.Next();    // 4
 		int blightSeed = randomizer.Next();  // 5
 
-		// Adversary is an extension of GameConfiguration
-		var adversary = AdversaryType != null
-			? ( IAdversary )Activator.CreateInstance( AdversaryType )
-			: new NullAdversary();
-		adversary.Level = AdversaryLevel;
-
+		// Adversary
+		var adversary = buildAdversary( Adversary?.Name ) ?? new NullAdversary();
 		// (1) Invader Deck
 		gameState.InvaderDeck = new InvaderDeck( invaderSeed, adversary.InvaderCardOrder );
 
@@ -58,7 +53,8 @@ public class GameConfiguration {
 		// (4) Fear Cards
 		new Random( fearSeed ).Shuffle( fearCards );
 		gameState.Fear.Deck.Clear();
-		gameState.Fear.cardsPerLevel = adversary.FearCardsPerLevel;
+		if( adversary.FearCardsPerLevel != null)
+			gameState.Fear.cardsPerLevel = adversary.FearCardsPerLevel;
 		for(int i = 0; i < gameState.Fear.cardsPerLevel.Sum(); ++i)
 			gameState.Fear.PushOntoDeck( fearCards[i] );
 
@@ -86,9 +82,10 @@ public class GameConfiguration {
 		public int Level { set { } } // ignore
 		public int[] InvaderCardOrder => new int[] { 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3 };
 		public int[] FearCardsPerLevel => new int[] { 3, 3, 3 };
-		public void PostInitialization( GameState gamestate ) { }
-		public void PreInitialization( GameState gameState ) { }
+		public void PostInitialization( GameState _ ) { }
+		public void PreInitialization( GameState _ ) { }
 	}
+
 
 	static void Init_CommandTheBeasts( GameState gameState ) {
 		// If there are no Event cards, compensate with Command-the-Beasts
@@ -105,3 +102,5 @@ public class GameConfiguration {
 		InitBeastCommand( 3 );
 	}
 }
+
+public record AdversaryConfig( string Name, int Level );

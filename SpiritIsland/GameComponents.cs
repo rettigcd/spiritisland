@@ -1,7 +1,10 @@
 ﻿namespace SpiritIsland;
 
 public interface IGameComponentProvider {
-	Type[] Spirits { get; }
+
+	string[] SpiritNames { get; }
+	Spirit MakeSpirit( string spiritName );
+
 	PowerCard[] MinorCards { get; }
 	PowerCard[] MajorCards { get; }
 	IFearCard[] FearCards { get; }

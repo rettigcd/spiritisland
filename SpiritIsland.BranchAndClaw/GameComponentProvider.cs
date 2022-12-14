@@ -5,10 +5,17 @@ public class GameComponentProvider : IGameComponentProvider {
 	// AND
 	// It make start-up scanning slow
 
-	public Type[] Spirits => new Type[] {
-		typeof(Keeper),
-		typeof(SharpFangs),
+	static Dictionary<string, Type> Spirits => new() {
+		[Keeper.Name] = typeof( Keeper ),
+		[SharpFangs.Name] = typeof( SharpFangs ),
 	};
+	public string[] SpiritNames => Spirits.Keys.ToArray();
+	public Spirit MakeSpirit( string spiritName ) {
+		return Spirits.ContainsKey( spiritName )
+			? (Spirit)Activator.CreateInstance( Spirits[spiritName] )
+			: null;
+	}
+
 
 	public PowerCard[] MinorCards => new Type[] {
 		typeof(AbsorbCorruption),

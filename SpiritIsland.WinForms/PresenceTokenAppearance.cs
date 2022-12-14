@@ -8,19 +8,19 @@ public class PresenceTokenAppearance {
 		AdjustHsl = false;
 	}
 
-	public PresenceTokenAppearance(float hue, float saturation, string baseImage = "red" ) {
+	public PresenceTokenAppearance(float hue, float saturation, float pull=0, string baseImage = "red" ) {
 		AdjustHsl = true;
 		Hue = hue;
+		Pull = pull;
 		Saturation = saturation;
 		BaseImage = baseImage;
 	}
 
+	public readonly bool AdjustHsl;
 	public readonly string BaseImage;
-
-	public bool AdjustHsl;
 	public readonly float Hue;
 	public readonly float Saturation;
-	public float Pull = 0;  // pulls the Lightness value up or down
+	public readonly float Pull;  // pulls the Lightness value up or down
 
 	public void Adjust( HSL hsl ) {
 		if( !AdjustHsl ) return;

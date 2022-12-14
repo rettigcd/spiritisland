@@ -5,18 +5,24 @@ public class GameComponentProvider : IGameComponentProvider {
 	// AND
 	// It make start-up scanning slow
 
-	public Type[] Spirits => new Type[] {
-		typeof(FracturedDaysSplitTheSky),
-		typeof(GrinningTricksterStirsUpTrouble),
-		typeof(LureOfTheDeepWilderness),
-		typeof(ManyMindsMoveAsOne),
-		typeof(ShiftingMemoryOfAges),
-		typeof(ShroudOfSilentMist),
-		typeof(StarlightSeeksItsForm),
-		typeof(StonesUnyieldingDefiance),
-		typeof(VengeanceAsABurningPlague),
-		typeof(VolcanoLoomingHigh),
+	static Dictionary<string,Type> Spirits => new(){
+		[FracturedDaysSplitTheSky.Name]        = typeof( FracturedDaysSplitTheSky),
+		[GrinningTricksterStirsUpTrouble.Name] = typeof( GrinningTricksterStirsUpTrouble),
+		[LureOfTheDeepWilderness.Name]         = typeof(LureOfTheDeepWilderness),
+		[ManyMindsMoveAsOne.Name]              = typeof(ManyMindsMoveAsOne),
+		[ShiftingMemoryOfAges.Name]            = typeof(ShiftingMemoryOfAges),
+		[ShroudOfSilentMist.Name]              = typeof(ShroudOfSilentMist),
+		[StarlightSeeksItsForm.Name]           = typeof(StarlightSeeksItsForm),
+		[StonesUnyieldingDefiance.Name]        = typeof(StonesUnyieldingDefiance),
+		[VengeanceAsABurningPlague.Name]       = typeof(VengeanceAsABurningPlague),
+		[VolcanoLoomingHigh.Name]              = typeof(VolcanoLoomingHigh),
 	};
+	public string[] SpiritNames => Spirits.Keys.ToArray();
+	public Spirit MakeSpirit( string spiritName ) {
+		return Spirits.ContainsKey( spiritName )
+			? (Spirit)Activator.CreateInstance( Spirits[spiritName] )
+			:null;
+	}
 
 	public PowerCard[] MinorCards => new Type[] {
 		typeof(BatsScoutForRaidsByDarkness),

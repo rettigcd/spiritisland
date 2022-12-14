@@ -3,7 +3,6 @@
 ==========================
 FIX OCEAN!
 
-! Save Game in Recent Games list so we can replay them. (include date)
 5 Draw Adversary details - show adversary flag - Log setup adjustments
 5 Reduce token size a bit, make (hex?) grid inside space, place tokens on those grids, select location randomly, but make spots sticky
 

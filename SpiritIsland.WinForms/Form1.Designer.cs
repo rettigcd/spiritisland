@@ -36,14 +36,15 @@ namespace SpiritIsland.WinForms {
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.gameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rewindMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gameLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.recentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
-			this.splitContainer.SuspendLayout();
+            this.splitContainer.SuspendLayout();
             this.textPanel.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -72,7 +73,6 @@ namespace SpiritIsland.WinForms {
             // cardControl
             // 
             this.cardControl.BackColor = System.Drawing.Color.SaddleBrown;
-            this.cardControl.Cursor = System.Windows.Forms.Cursors.Default;
             this.cardControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cardControl.Location = new System.Drawing.Point(0, 0);
             this.cardControl.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
@@ -113,7 +113,6 @@ namespace SpiritIsland.WinForms {
             // textPanel
             // 
             this.textPanel.Controls.Add(this.promptLabel);
-            this.textPanel.Cursor = System.Windows.Forms.Cursors.Default;
             this.textPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.textPanel.Location = new System.Drawing.Point(0, 0);
             this.textPanel.Name = "textPanel";
@@ -145,6 +144,7 @@ namespace SpiritIsland.WinForms {
             this.gameToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newToolStripMenuItem,
             this.rewindMenuItem,
+            this.recentToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.gameToolStripMenuItem.Name = "gameToolStripMenuItem";
             this.gameToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
@@ -157,18 +157,18 @@ namespace SpiritIsland.WinForms {
             this.newToolStripMenuItem.Text = "&New";
             this.newToolStripMenuItem.Click += new System.EventHandler(this.GameNewStripMenuItem_Click);
             // 
+            // rewindMenuItem
+            // 
+            this.rewindMenuItem.Name = "rewindMenuItem";
+            this.rewindMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.rewindMenuItem.Text = "Re&wind To";
+            // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exitToolStripMenuItem.Text = "E&xit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
-            // 
-            // rewindMenuItem
-            // 
-            this.rewindMenuItem.Name = "rewindMenuItem";
-            this.rewindMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.rewindMenuItem.Text = "&Rewind To";
             // 
             // viewToolStripMenuItem
             // 
@@ -185,6 +185,13 @@ namespace SpiritIsland.WinForms {
             this.gameLogToolStripMenuItem.Text = "Game &Log";
             this.gameLogToolStripMenuItem.Click += new System.EventHandler(this.GameLogToolStripMenuItem_Click);
             // 
+            // recentToolStripMenuItem
+            // 
+            this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
+            this.recentToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.recentToolStripMenuItem.Text = "&Recent";
+            this.recentToolStripMenuItem.DropDownOpening += new System.EventHandler(this.recentToolStripMenuItem_DropDownOpening);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -200,7 +207,7 @@ namespace SpiritIsland.WinForms {
             this.Text = "Spirit Island - Single Player";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.splitContainer.Panel1.ResumeLayout(false);
-			this.splitContainer.Panel2.ResumeLayout(false);
+            this.splitContainer.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
             this.splitContainer.ResumeLayout(false);
             this.textPanel.ResumeLayout(false);
@@ -227,6 +234,7 @@ namespace SpiritIsland.WinForms {
 		private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem gameLogToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem rewindMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem recentToolStripMenuItem;
 	}
 }
 

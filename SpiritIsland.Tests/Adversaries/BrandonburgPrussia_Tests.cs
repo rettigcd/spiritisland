@@ -113,8 +113,7 @@ public class BrandonburgPrussia_Tests {
 
 
 	void SetAdversary(int level) => fxt.InitConfiguration( cfg => { 
-		cfg.AdversaryType = typeof( BrandenburgPrussia ); 
-		cfg.AdversaryLevel = level; 
+		cfg.Adversary = new AdversaryConfig( nameof( BrandenburgPrussia ), level );
 	} );
 
 	void Assert_Level1TownAdded( bool added ) 
