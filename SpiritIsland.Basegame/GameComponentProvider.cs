@@ -26,7 +26,7 @@ public class GameComponentProvider : IGameComponentProvider {
 	};
 
 	public string[] AdversaryNames => AdversariesTypes.Keys.ToArray();
-	public IAdversary MakeAdversary( string adversaryName ) => AdversariesTypes.ContainsKey(adversaryName )
+	public IAdversary MakeAdversary( string adversaryName ) => adversaryName != null && AdversariesTypes.ContainsKey(adversaryName )
 			? (IAdversary) Activator.CreateInstance( AdversariesTypes[adversaryName] )
 			: null;
 

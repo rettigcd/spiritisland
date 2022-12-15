@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland;
+﻿using System.Drawing;
+
+namespace SpiritIsland;
 
 public class MultiSpace : Space {
 
@@ -7,6 +9,11 @@ public class MultiSpace : Space {
 	{
 		this.Parts = BuildParts( spaces );
 		this.Board = Parts[0].Board; // !!! this isn't right if we join 2 boards.
+
+		var merged = spaces[0].Layout.Corners;
+		for(int i = 1; i < spaces.Length; ++i)
+			merged = Polygons.JoinAdjacentPolgons( merged, spaces[i].Layout.Corners );
+		Layout = new SpaceLayout(merged);
 	}
 
 	static Space1[] BuildParts( Space[] spaces ) {
@@ -23,6 +30,8 @@ public class MultiSpace : Space {
 	public override bool IsOneOf( params Terrain[] options ) => Parts.Any(part => part.IsOneOf(options));
 
 	public Space1[] Parts { get; }
+
+	public override SpaceLayout Layout { get; }
 
 	public void AddToBoards(IEnumerable<Space> adjacents) {
 		Board.Add( this, adjacents.ToArray() ); // !!! only adding to 1st board.  if joining 2 boards, needs added to both

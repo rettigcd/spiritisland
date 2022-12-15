@@ -12,7 +12,7 @@ public class BoardSpace_Tests {
 		Assert.Contains( space, spaces );
 	}
 
-	static Space1 MakeSpace() => new(Terrain.None,"");
+	static Space1 MakeSpace() => new(Terrain.None,"",null);
 
 	[Fact]
 	public void Adjacentcy_IsTransitive() {

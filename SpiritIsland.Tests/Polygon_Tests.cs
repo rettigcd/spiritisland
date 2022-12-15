@@ -22,7 +22,7 @@ public class Polygon_Tests {
 		// B-D-F
 		// | | |
 		// A-C-E
-		BoardLayout.JoinAdjacentPolgons( poly1.Split( ',' ), poly2.Split( ',' ) )
+		Polygons.JoinAdjacentPolgons( poly1.Split( ',' ), poly2.Split( ',' ) )
 			.Join(",").ShouldBe( "C,A,B,D,F,E" ); //
 	}
 

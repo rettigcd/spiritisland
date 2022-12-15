@@ -2,8 +2,6 @@
 ====  Clean Up Items  ====
 ==========================
 
-5 Reduce token size a bit, make (hex?) grid inside space, place tokens on those grids, select location randomly, but make spots sticky
-
 3+1? remaining Adversaries (Habsburg, Russia, Scotland, France?)
 
 Tokens - Publish token events to the UI so that it can show token changing animation.
@@ -18,6 +16,9 @@ Tokens - WreakVengeanceForTheLandsCorruption - virtual tokens might not be corre
 5 Move Finders Hook to Action-start
 
 4 ForgetCard - rename ForgetCard to ForgetCard_UserChoice AND/OR Consolidate the 2 ForgetCard methods into 1
+5 Damaged should occupy the non damaged space if available on screen. If not available, should use nearest (Temporary) space.
+5 hotspots are too big and overlap.
+5 Make grid a hex patter. or staggered every other row
 
 4 Settle into hunting grounds - implement presence cannot move.
 4 Slip the flows of time - use any # of times

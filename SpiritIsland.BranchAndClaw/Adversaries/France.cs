@@ -126,7 +126,7 @@ public class France : IAdversary {
 				await boardCtx.GameState.Tokens[st.Space].Destroy( st.Token, 1, boardCtx.CurrentActionId );
 		} );
 
-	public ScenarioLevel[] Adjustments => new ScenarioLevel[] { }; // !!!
+	public ScenarioLevel[] Adjustments => Array.Empty<ScenarioLevel>(); // !!!
 }
 
 public class FranceInvaderCard : InvaderCard {

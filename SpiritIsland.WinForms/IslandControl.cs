@@ -115,16 +115,16 @@ public partial class IslandControl : Control {
 	/// </summary>
 	PointMapper _mapper;
 
-	PointMapper SetupSingleBoardTransform( RectangleF boardRect ) {
+	PointMapper MapWorldToViewPort( RectangleF worldRect ) {
 		var upperLeft = new PointF( 24f, 75f );
 		float usableHeight = (this.Height - upperLeft.Y * 2);
 
 		// calculate scaling Assuming height-limited
-		float islandHeight = boardRect.Height; // (float)(0.5 * Math.Sqrt( 3 )); // each board size is 1. Equalateral triangle height is sqrt(3)/2
+		float islandHeight = worldRect.Height; // (float)(0.5 * Math.Sqrt( 3 )); // each board size is 1. Equalateral triangle height is sqrt(3)/2
 		float scale = usableHeight / islandHeight;
 
 		return new PointMapper(
-			  RowVector.Translate( -boardRect.X, -boardRect.Y ) // translate to origin
+			  RowVector.Translate( -worldRect.X, -worldRect.Y ) // translate to origin
 			* RowVector.Scale( scale, -scale ) // flip-y and scale
 			* RowVector.Translate( upperLeft.X, upperLeft.Y + usableHeight ) // translate to view port
 		);
@@ -146,14 +146,7 @@ public partial class IslandControl : Control {
 	}
 
 	/// <returns>the center of a Game Space</returns>
-	PointF SpaceCenter( Space s ) {
-		var norm = spaceLookup.ContainsKey( s )
-				? spaceLookup[s].Center
-			: s is MultiSpace ms
-				? spaceLookup[ms.Parts[0]].Center
-			: throw new ArgumentException( $"Space {s.Label} does not have a screen location" );
-		return _mapper.Map( norm ); //  new PointF( norm.X * boardScreenSize.Width, norm.Y * boardScreenSize.Height );
-	}
+	PointF SpaceCenter( Space s ) => _mapper.Map( s.Layout.Center );
 
 	#endregion Calc Layout
 
@@ -211,35 +204,56 @@ public partial class IslandControl : Control {
 
 		if(cachedBackground == null) {
 
-			spaceLookup = new Dictionary<Space, SpaceLayout>();
-			var boardRect = CalcIslandExtents();
-			// Assume limit is height
-			bool bb = (boardRect.Width * Height > Width * boardRect.Height);
-			boardScreenSize = (bb)
-				? new Size( Width, (int)(boardRect.Height * Width / boardRect.Width) )
-				: new Size( (int)(boardRect.Width * Height / boardRect.Height), Height );
-			_mapper = SetupSingleBoardTransform(boardRect);
+			// Map world-coord island Rect onto viewport
+			var boardWorldRect = CalcIslandExtents();
+			_mapper = MapWorldToViewPort( boardWorldRect );
 
+			// create a viewport size screen we can draw on.
+			bool limitIsWidth = (boardWorldRect.Width * Height > Width * boardWorldRect.Height);
+			boardScreenSize = (limitIsWidth)
+				? new Size( Width, (int)(boardWorldRect.Height * Width / boardWorldRect.Width) )
+				: new Size( (int)(boardWorldRect.Width * Height / boardWorldRect.Height), Height );
 			cachedBackground = new Bitmap( boardScreenSize.Width, boardScreenSize.Height );
 			using var graphics = Graphics.FromImage( cachedBackground );
 
-			foreach(var board in gameState.Island.Boards) {
-				for(int i = 0; i <= 8; ++i)
-					spaceLookup.Add( board[i], board.Layout.Spaces[i] );
+			foreach(var board in gameState.Island.Boards)
 				DrawBoardSpacesOnly( graphics, board );
-			}
 
+			// calc spots to put tokens
+			const float stepSize = .07f;
+			insidePoints = gameState.AllSpaces
+				.ToDictionary(  ss => ss.Space,  ss => new ManageInternalPoints( ss, stepSize ) );
+
+			// DrawInnerPoints( graphics );
 		}
 
 		pe.Graphics.DrawImage( cachedBackground, 0, 0, cachedBackground.Width, cachedBackground.Height );
 	}
+
+	//void DrawInnerPoints( Graphics graphics ) {
+	//	int i = 0;
+	//	foreach(var pair in insidePoints) {
+	//		var s = (i++).ToString();
+	//		foreach(var o in pair.Value._points) {
+	//			var p = _mapper.Map( o );
+	//			graphics.FillEllipse( Brushes.White, p.X - 3, p.Y - 3, 6, 6 );
+	//			graphics.DrawString( s, SystemFonts.MessageBoxFont, Brushes.White, p ); // SystemFonts.MessageBoxFont - this is a nice, easy to read font, let's use it more.
+	//		}
+	//		// Draw the center point
+	//		var center = _mapper.Map( pair.Value._points[0] );
+	//		graphics.FillEllipse( Brushes.Red, center.X - 4, center.Y - 4, 8, 8 );
+	//		graphics.DrawString( s, SystemFonts.MessageBoxFont, Brushes.Red, center ); // SystemFonts.MessageBoxFont - this is a nice, easy to read font, let's use it more.
+	//	}
+	//}
+
+	Dictionary<Space, ManageInternalPoints> insidePoints;
 
 	void DrawBoardSpacesOnly( Graphics graphics, Board board ) {
 		var perimeterPen = new Pen( Brushes.Black, 5f );
 		var normalizedBoardLayout = board.Layout;
 		for(int i = 0; i < normalizedBoardLayout.Spaces.Length; ++i) {
 			using Brush brush = SpaceBrush( board[i] );
-			var points = normalizedBoardLayout.Spaces[i].corners.Select( _mapper.Map ).ToArray();
+			var points = normalizedBoardLayout.Spaces[i].Corners.Select( _mapper.Map ).ToArray();
 
 			// Draw blocky
 			//pe.Graphics.FillPolygon( brush, points );
@@ -444,12 +458,10 @@ public partial class IslandControl : Control {
 	void DecorateSpace( Graphics graphics, SpaceState spaceState ) {
 		MultiSpace ms = spaceState.Space as MultiSpace;
 		Space spaceToShowTokensOn = ms != null ? ms.Parts[0] : spaceState.Space;
-		if(!spaceLookup.ContainsKey( spaceToShowTokensOn )) return; // happens during developement
-
-		PointF xy = _mapper.Map( spaceLookup[spaceToShowTokensOn].Center );
+		PointF xy = _mapper.Map( spaceToShowTokensOn.Layout.Center );
 
 		// !!! scale tokens based on board/space size, NOT widow size (for 2 boards, tokens are too big)
-		float iconWidth = boardScreenSize.Width * .045f;
+		float iconWidth = boardScreenSize.Width * .040f;
 		float xStep = iconWidth + 10f;
 
 		float x = xy.X - iconWidth;
@@ -496,6 +508,11 @@ public partial class IslandControl : Control {
 
 		foreach(Token token in orderedInvaders) {
 
+			// New way
+			PointF pt = _mapper.Map( insidePoints[tokens.Space].GetPointFor( token, tokens ) );
+			x = pt.X-width/2;
+			y = pt.Y-width/2; //!! approximate
+
 			// Strife
 			Token imageToken;
 			if(token is HealthToken si && 0 < si.StrifeCount) {
@@ -540,7 +557,12 @@ public partial class IslandControl : Control {
 			// calc rect
 			float height = width / img.Width * img.Height;
 			maxHeight = Math.Max( maxHeight, height );
-			var rect = new Rectangle( (int)x, (int)y, (int)width, (int)height );
+
+			// Old
+			// var rect = new Rectangle( (int)x, (int)y, (int)width, (int)height );
+			PointF pt = _mapper.Map( insidePoints[tokens.Space].GetPointFor(token,tokens) );
+			Rectangle rect = new Rectangle( (int)(pt.X-width/2), (int)(pt.Y-height/2), (int)width, (int)height );
+
 			x += step;
 
 			// record token location
@@ -716,9 +738,6 @@ public partial class IslandControl : Control {
 	}
 
 	void DrawMultiSpace( Graphics graphics, MultiSpace multi ) {
-		var merged = spaceLookup[multi.Parts[0]].corners;
-		for(int i = 1; i < multi.Parts.Length; ++i)
-			merged = BoardLayout.JoinAdjacentPolgons( merged, spaceLookup[multi.Parts[i]].corners );
 
 		//		using var pen = new Pen( Brushes.Yellow, 5f );
 		using var pen = new Pen( Brushes.Gold, 3f );
@@ -742,7 +761,7 @@ public partial class IslandControl : Control {
 
 		brush.InterpolationColors = blend;
 
-		var points = merged.Select( _mapper.Map ).ToArray();
+		var points = multi.Layout.Corners.Select( _mapper.Map ).ToArray();
 
 		graphics.FillClosedCurve( brush, points, FillMode.Alternate, .25f );
 		graphics.DrawClosedCurve( pen, points, .25f, FillMode.Alternate );
@@ -987,8 +1006,9 @@ public partial class IslandControl : Control {
 	void PopUpAdversaryRules() {
 		var adv = ConfigureGameDialog.GameBuilder.BuildAdversary( _adversary );
 		var adjustments = adv.Adjustments;
-		var rows = new List<string>();
-		rows.Add( $"==== {_adversary.Name} - Level:{_adversary.Level} - Difficulty:{adjustments[_adversary.Level].Difficulty} ====" );
+		var rows = new List<string> {
+			$"==== {_adversary.Name} - Level:{_adversary.Level} - Difficulty:{adjustments[_adversary.Level].Difficulty} ===="
+		};
 		for(int i = 0; i <= _adversary.Level; ++i) {
 			var a = adjustments[i];
 			string label = i == 0 ? "Escalation: " : "Level:" + i;
@@ -1107,7 +1127,6 @@ public partial class IslandControl : Control {
 
 	const float radius = 40f;
 	Space[] options_Space;
-	Dictionary<Space,SpaceLayout> spaceLookup;
 
 	Size boardScreenSize;
 	Bitmap cachedBackground;
@@ -1122,30 +1141,3 @@ public partial class IslandControl : Control {
 
 }
 
-class ArrowDrawer {
-	readonly Graphics graphics; 
-	readonly Pen pen;
-	const float startNorm = 0.2f;
-	const float endNorm = 0.8f;
-	const float arrowNorm = .1f;
-	public ArrowDrawer(Graphics graphics, Pen pen){
-		this.graphics = graphics;
-		this.pen = pen;
-	}
-	public void Draw(PointF from, PointF to ) {
-		float dx = to.X-from.X;
-		float dy = to.Y-from.Y;
-		PointF newFrom = new PointF( from.X+dx*startNorm, from.Y+dy*startNorm );
-		PointF newTo = new PointF( from.X + dx * endNorm, from.Y + dy * endNorm );
-
-		float inlineX = dx * arrowNorm, inlineY = dy * arrowNorm;
-		float perpX = -inlineY, perpY = inlineX;
-
-		PointF wing1 = new PointF( newTo.X +perpX-inlineX, newTo.Y + perpY-inlineY );
-		PointF wing2 = new PointF( newTo.X - perpX - inlineX, newTo.Y - perpY - inlineY );
-
-		graphics.DrawLine( pen,newFrom,newTo );
-		graphics.DrawLine( pen,newTo,wing1);
-		graphics.DrawLine( pen, newTo, wing2 );
-	}
-}

@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland;
+﻿using System.Drawing;
+
+namespace SpiritIsland;
 
 public interface Restoreable {
 	public void Restore();
@@ -50,6 +52,7 @@ public abstract class Space
 
 	public abstract bool Is( Terrain terrain );
 	public abstract bool IsOneOf( params Terrain[] options );
+	public abstract SpaceLayout Layout { get; }
 
 	public IEnumerable<Space> Range( int maxDistance ) => this.CalcDistances( maxDistance ).Keys;
 

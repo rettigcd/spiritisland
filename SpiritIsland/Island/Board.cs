@@ -22,16 +22,17 @@ public partial class Board {
 	}
 
 	static public Board BuildBoardA() {
+		var layout = BoardLayout.BoardA();
 		var board = new Board("A"
-			,new Space1(Terrain.Ocean,"A0")
-			,new Space1(Terrain.Mountain,"A1") // 
-			,new Space1(Terrain.Wetland,"A2","CD")  // city, dahan
-			,new Space1(Terrain.Jungle,"A3","DD")   // 2 dahan
-			,new Space1(Terrain.Sand,"A4","B")     // blight
-			,new Space1(Terrain.Wetland,"A5")
-			,new Space1(Terrain.Mountain,"A6","D") // 1 dahan
-			,new Space1(Terrain.Sand,"A7","DD")     // 2 dahan
-			,new Space1(Terrain.Jungle,"A8","T")   // town
+			,new Space1(Terrain.Ocean,   "A0", layout.Spaces[0])
+			,new Space1(Terrain.Mountain,"A1", layout.Spaces[1] ) // 
+			,new Space1(Terrain.Wetland, "A2", layout.Spaces[2], "CD")  // city, dahan
+			,new Space1(Terrain.Jungle,  "A3", layout.Spaces[3], "DD")   // 2 dahan
+			,new Space1(Terrain.Sand,    "A4", layout.Spaces[4], "B")     // blight
+			,new Space1(Terrain.Wetland, "A5", layout.Spaces[5] )
+			,new Space1(Terrain.Mountain,"A6", layout.Spaces[6], "D") // 1 dahan
+			,new Space1(Terrain.Sand,    "A7", layout.Spaces[7], "DD")     // 2 dahan
+			,new Space1(Terrain.Jungle,  "A8", layout.Spaces[8], "T")   // town
 		);
 
 		board.SetNeighbors(0, 1,2,3);
@@ -48,22 +49,23 @@ public partial class Board {
 		board.DefineSide(8,7).BreakAt(5);		// Side 1
 		board.DefineSide(7,5,4,3).BreakAt(1,3,7);// Side 2
 
-		board.Layout = BoardLayout.BoardA();
+		board.Layout = layout;
 
 		return board;
 	}
 
 	static public Board BuildBoardB() {
+		var layout = BoardLayout.BoardB();
 		var board = new Board("B"
-			,new Space1(Terrain.Ocean,"B0")
-			,new Space1(Terrain.Wetland,"B1","D")  // 1 dahan
-			,new Space1(Terrain.Mountain,"B2", "C") // city
-			,new Space1(Terrain.Sand,"B3","DD")     // 2 dahan
-			,new Space1(Terrain.Jungle,"B4","B")   // blight
-			,new Space1(Terrain.Sand,"B5")
-			,new Space1(Terrain.Wetland,"B6", "T")  // 1 town
-			,new Space1(Terrain.Mountain,"B7","D") // 1 dahan
-			,new Space1(Terrain.Jungle,"B8","DD")   // 2 dahan
+			,new Space1(Terrain.Ocean,   "B0",layout.Spaces[0])
+			,new Space1(Terrain.Wetland, "B1",layout.Spaces[1],"D")  // 1 dahan
+			,new Space1(Terrain.Mountain,"B2",layout.Spaces[2],"C") // city
+			,new Space1(Terrain.Sand,    "B3",layout.Spaces[3],"DD")     // 2 dahan
+			,new Space1(Terrain.Jungle,  "B4",layout.Spaces[4],"B")   // blight
+			,new Space1(Terrain.Sand,    "B5",layout.Spaces[5])
+			,new Space1(Terrain.Wetland, "B6",layout.Spaces[6],"T")  // 1 town
+			,new Space1(Terrain.Mountain,"B7",layout.Spaces[7],"D") // 1 dahan
+			,new Space1(Terrain.Jungle,  "B8",layout.Spaces[8],"DD")   // 2 dahan
 		);
 
 		board.SetNeighbors(0, 1,2,3);
@@ -80,22 +82,23 @@ public partial class Board {
 		board.DefineSide(8,7).BreakAt(5);		// Side 1
 		board.DefineSide(7,4,3).BreakAt(1,5);    // Side 2
 
-		board.Layout = BoardLayout.BoardB();
+		board.Layout = layout;
 
 		return board;
 	}
 
 	static public Board BuildBoardC() {
+		var layout = BoardLayout.BoardC();
 		var board = new Board("C"
-			,new Space1(Terrain.Ocean,"C0")
-			,new Space1(Terrain.Jungle,"C1","D")   // 1 dahan
-			,new Space1(Terrain.Sand,"C2","C")     // city
-			,new Space1(Terrain.Mountain,"C3","DD") // 2 dahan
-			,new Space1(Terrain.Jungle,"C4")   
-			,new Space1(Terrain.Wetland,"C5","DDB")  // 2 dahan, blight
-			,new Space1(Terrain.Sand,"C6","D")     // 1 dahan
-			,new Space1(Terrain.Mountain,"C7","T") // 1 town
-			,new Space1(Terrain.Wetland,"C8")
+			,new Space1(Terrain.Ocean,   "C0",layout.Spaces[0])
+			,new Space1(Terrain.Jungle,  "C1",layout.Spaces[1],"D")   // 1 dahan
+			,new Space1(Terrain.Sand,    "C2",layout.Spaces[2],"C")     // city
+			,new Space1(Terrain.Mountain,"C3",layout.Spaces[3],"DD") // 2 dahan
+			,new Space1(Terrain.Jungle,  "C4",layout.Spaces[4])   
+			,new Space1(Terrain.Wetland, "C5",layout.Spaces[5],"DDB")  // 2 dahan, blight
+			,new Space1(Terrain.Sand,    "C6",layout.Spaces[6],"D")     // 1 dahan
+			,new Space1(Terrain.Mountain,"C7",layout.Spaces[7],"T") // 1 town
+			,new Space1(Terrain.Wetland, "C8",layout.Spaces[8])
 		);
 
 		board.SetNeighbors(0, 1,2,3);
@@ -112,22 +115,23 @@ public partial class Board {
 		board.DefineSide(8,7,4).BreakAt(7,11);	// Side 1
 		board.DefineSide(4,3).BreakAt(7);       // Side 2
 
-		board.Layout = BoardLayout.BoardC();
+		board.Layout = layout;
 
 		return board;
 	}
 
 	static public Board BuildBoardD() {
+		var layout = BoardLayout.BoardD();
 		var board = new Board("D"
-			,new Space1(Terrain.Ocean,"D0")
-			,new Space1(Terrain.Wetland,"D1","DD")   // 2 dahan
-			,new Space1(Terrain.Jungle,"D2","CD")    // city, 1 dahan
-			,new Space1(Terrain.Wetland,"D3")   
-			,new Space1(Terrain.Sand,"D4")   
-			,new Space1(Terrain.Mountain,"D5","DB")  // 1 dahan, blight
-			,new Space1(Terrain.Jungle,"D6")    
-			,new Space1(Terrain.Sand,"D7","TDD")      // 1 town, 2 dahan
-			,new Space1(Terrain.Mountain,"D8")
+			,new Space1(Terrain.Ocean,   "D0",layout.Spaces[0])
+			,new Space1(Terrain.Wetland, "D1",layout.Spaces[1],"DD")   // 2 dahan
+			,new Space1(Terrain.Jungle,  "D2",layout.Spaces[2],"CD")    // city, 1 dahan
+			,new Space1(Terrain.Wetland, "D3",layout.Spaces[3])   
+			,new Space1(Terrain.Sand,    "D4",layout.Spaces[4])   
+			,new Space1(Terrain.Mountain,"D5",layout.Spaces[5],"DB")  // 1 dahan, blight
+			,new Space1(Terrain.Jungle,  "D6",layout.Spaces[6])    
+			,new Space1(Terrain.Sand,    "D7",layout.Spaces[7],"TDD")      // 1 town, 2 dahan
+			,new Space1(Terrain.Mountain,"D8",layout.Spaces[8])
 		);
 
 		board.SetNeighbors(0, 1,2,3);
@@ -144,22 +148,23 @@ public partial class Board {
 		board.DefineSide(8,7,6).BreakAt(5,11);	// Side 1
 		board.DefineSide(6,4,3).BreakAt(3,9);   // Side 2
 
-		board.Layout = BoardLayout.BoardD();
+		board.Layout = layout;
 
 		return board;
 	}
 
 	static public Board BuildBoardE() {
+		var layout = BoardLayout.BoardE();
 		var board = new Board( "E"
-			, new Space1( Terrain.Ocean, "E0" )
-			, new Space1( Terrain.Sand, "E1", "D" )   // 1 dahan
-			, new Space1( Terrain.Mountain, "E2", "C" )    // city
-			, new Space1( Terrain.Jungle, "E3", "DD" )  // 2 dahan
-			, new Space1( Terrain.Wetland, "E4", "B" )      // 1 blight
-			, new Space1( Terrain.Mountain, "E5", "D" )  // 1 dahan
-			, new Space1( Terrain.Sand, "E6" )
-			, new Space1( Terrain.Jungle, "E7", "T" )      // 1 town
-			, new Space1( Terrain.Wetland, "E8", "DD" ) // 2 dahan
+			, new Space1( Terrain.Ocean,    "E0",layout.Spaces[0])
+			, new Space1( Terrain.Sand,     "E1",layout.Spaces[1], "D" )   // 1 dahan
+			, new Space1( Terrain.Mountain, "E2",layout.Spaces[2], "C" )    // city
+			, new Space1( Terrain.Jungle,   "E3",layout.Spaces[3], "DD" )  // 2 dahan
+			, new Space1( Terrain.Wetland,  "E4",layout.Spaces[4], "B" )      // 1 blight
+			, new Space1( Terrain.Mountain, "E5",layout.Spaces[5], "D" )  // 1 dahan
+			, new Space1( Terrain.Sand,     "E6",layout.Spaces[6] )
+			, new Space1( Terrain.Jungle,   "E7",layout.Spaces[7], "T" )      // 1 town
+			, new Space1( Terrain.Wetland,  "E8",layout.Spaces[8], "DD" ) // 2 dahan
 		);
 
 		board.SetNeighbors( 0, 1, 2, 3 );
@@ -176,22 +181,23 @@ public partial class Board {
 		board.DefineSide( 8, 6 ).BreakAt( 9 );   // Side 1
 		board.DefineSide( 6, 4, 3 ).BreakAt( 1, 7 );   // Side 2
 
-		board.Layout = BoardLayout.BoardE();
+		board.Layout = layout;
 
 		return board;
 	}
 
 	static public Board BuildBoardF() {
+		var layout = BoardLayout.BoardF();
 		var board = new Board( "F"
-			, new Space1( Terrain.Ocean, "F0" )
-			, new Space1( Terrain.Sand, "F1", "DD" )
-			, new Space1( Terrain.Jungle, "F2", "C" )
-			, new Space1( Terrain.Wetland, "F3", "D" )
-			, new Space1( Terrain.Mountain, "F4", "B" )
-			, new Space1( Terrain.Jungle, "F5", "D" )
-			, new Space1( Terrain.Mountain, "F6", "DD" )
-			, new Space1( Terrain.Wetland, "F7", "" )
-			, new Space1( Terrain.Sand, "F8", "T" )
+			, new Space1( Terrain.Ocean,    "F0",layout.Spaces[1] )
+			, new Space1( Terrain.Sand,     "F1",layout.Spaces[2],"DD" )
+			, new Space1( Terrain.Jungle,   "F2",layout.Spaces[3],"C" )
+			, new Space1( Terrain.Wetland,  "F3",layout.Spaces[4],"D" )
+			, new Space1( Terrain.Mountain, "F4",layout.Spaces[5],"B" )
+			, new Space1( Terrain.Jungle,   "F5",layout.Spaces[6],"D" )
+			, new Space1( Terrain.Mountain, "F6",layout.Spaces[7],"DD" )
+			, new Space1( Terrain.Wetland,  "F7",layout.Spaces[7],"" )
+			, new Space1( Terrain.Sand,     "F8",layout.Spaces[8],"T" )
 		);
 
 		board.SetNeighbors( 0, 1, 2, 3 );
@@ -208,7 +214,7 @@ public partial class Board {
 		board.DefineSide( 8, 7 ).BreakAt( 7 );   // Side 1
 		board.DefineSide( 7, 4, 3 ).BreakAt( 3, 9 );   // Side 2
 
-		board.Layout = BoardLayout.BoardF();
+		board.Layout = layout;
 
 		return board;
 	}
@@ -219,7 +225,7 @@ public partial class Board {
 	/// <summary>
 	/// These Spaces start out in numeric order at beginning of game but are not guaranteed to stay in numeric order. (Absolute Statis removes spaces from board and restores them.)
 	/// </summary>
-	public IEnumerable<Space> Spaces => spaces;
+	public Space[] Spaces => spaces;
 
 	#region Add / Remove spaces from board
 	public void Add( Space space, Space[] adjacents ) {

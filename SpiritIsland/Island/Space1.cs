@@ -1,21 +1,26 @@
-﻿namespace SpiritIsland;
+﻿using System.Drawing;
+
+namespace SpiritIsland;
 
 public class Space1 : Space {
 
 	#region constructor
 
-	public Space1(Terrain terrain, string label,string startingItems="")
+	public Space1(Terrain terrain, string label, SpaceLayout layout, string startingItems="" )
 		:base(label)
 	{
-		this.terrain = terrain;
-		this.StartUpCounts = new StartUpCounts(startingItems);
+		_terrain = terrain;
+		StartUpCounts = new StartUpCounts(startingItems);
+		Layout = layout;
 	}
 
 	#endregion
 
-	public override bool IsOneOf(params Terrain[] options) => options.Contains(terrain);
+	public override bool IsOneOf(params Terrain[] options) => options.Contains(_terrain);
 
-	public override bool Is( Terrain terrain ) => this.terrain == terrain;
+	public override bool Is( Terrain terrain ) => _terrain == terrain;
+
+	public override SpaceLayout Layout { get; }
 
 	public StartUpCounts StartUpCounts { get; }
 
@@ -29,6 +34,6 @@ public class Space1 : Space {
 		tokens.Blight.Adjust( initialCounts.Blight ); // don't use AddBlight because that pulls it from the card and triggers blighted island
 	}
 
-	readonly Terrain terrain;
+	readonly Terrain _terrain;
 
 }
