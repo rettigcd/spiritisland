@@ -140,7 +140,6 @@ namespace SpiritIsland.WinForms {
 		}
 
 		void InitGameFromConfiguration() {
-			gameConfiguration.TimeStamp = DateTime.Now;
 			MySerializer.Add( gameConfiguration );
 
 			logForm.Clear();

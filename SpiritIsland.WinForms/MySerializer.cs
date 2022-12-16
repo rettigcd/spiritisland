@@ -23,14 +23,16 @@ public static class MySerializer {
 
 		var recentGames = GetRecent().ToList();
 
-		// If we are reloading an old saved game config, use that instead.
-		var match = recentGames.Where(g=>g.TimeStamp == cfg.TimeStamp).FirstOrDefault();
+		// Find matching game using TIMESTAMP - so don't update it until this match is complete.
+		var match = recentGames.Where( g => g.TimeStamp == cfg.TimeStamp ).FirstOrDefault();
+		// If we are reloading an old saved game config, swap out this cfg, for the pre-existing match.
 		if( match != null)
 			cfg = match;
 		else
 			recentGames.Add(cfg);
 
-		// Set new time stamp
+		// Now that we have (possibly) swapped out for a pre-existing saved configuration
+		// Now it is safe to set the time stamp on whatever config we are actually going to save.
 		cfg.TimeStamp = DateTime.Now;
 
 		// order and crop	
