@@ -48,9 +48,8 @@ public class Sweden : IAdversary {
 		// Town deal 3 Damage
 		// City deal 5 Damage
 		if(3 <= Level) {
-			// !!! Something about this is causing Invaders to draw with red slashes
-			gameState.Tokens.TokenDefaults[Invader.Town] = new HealthToken( Invader.Town, gameState, 2, 3 );
-			gameState.Tokens.TokenDefaults[Invader.City] = new HealthToken(Invader.City, gameState, 3, 5);
+			gameState.Tokens.TokenDefaults[Invader.Town].Class.Attack = 3;
+			gameState.Tokens.TokenDefaults[Invader.City].Class.Attack = 5;
 		}
 
 		// Level 4

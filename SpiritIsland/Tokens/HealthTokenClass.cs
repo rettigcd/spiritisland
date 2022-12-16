@@ -21,7 +21,7 @@ public class HealthTokenClass : TokenClass {
 	public TokenCategory Category { get; }
 
 	/// <summary> Damage Inflicted during attack/defend </summary>
-	public int Attack { get;}
+	public int Attack { get; set; } // changed by sweeden
 
 	public int FearGeneratedWhenDestroyed { get; }
 

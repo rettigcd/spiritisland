@@ -429,50 +429,19 @@ public partial class IslandControl : Control {
 	#region Draw - Board Spaces & Tokens
 
 	void DecorateSpace( Graphics graphics, SpaceState spaceState ) {
-		MultiSpace ms = spaceState.Space as MultiSpace;
-		Space spaceToShowTokensOn = ms != null ? ms.Parts[0] : spaceState.Space;
-		PointF xy = _mapper.Map( spaceToShowTokensOn.Layout.Center );
-
-		// !!! scale tokens based on board/space size, NOT widow size (for 2 boards, tokens are too big)
-		float iconWidth = _boardScreenSize.Width * .040f;
-		float xStep = iconWidth + 10f;
-
-		float x = xy.X - iconWidth;
-		float y = xy.Y - iconWidth;
-
-		if(ms != null)
+		if(spaceState.Space is MultiSpace ms)
 			DrawMultiSpace( graphics, ms );
 
-		// Row 1 - Invaders
-		DrawInvaderRow( graphics, x, ref y, iconWidth, xStep, spaceState );
-
-		// Row 2 - Dahan, Blight, Elements, Presence
-		List<Token> row2Tokens = new List<Token> { TokenType.Defend, TokenType.Blight }; // These don't show up in .OfAnyType if they are dynamic
-		row2Tokens.AddRange( spaceState.OfAnyType( TokenType.Dahan ) );
-		row2Tokens.AddRange( spaceState.OfAnyType( _spirit.Presence.Token ) );
-		row2Tokens.AddRange( spaceState.OfAnyType( TokenType.Element ) );
-		DrawRow( graphics, spaceState, x, ref y, iconWidth, xStep, row2Tokens.ToArray() );
-
-		// Row 3 - BAC Tokens 
-		List<Token> row3Tokens = new List<Token> { TokenType.Beast, TokenType.Wilds, TokenType.Disease, TokenType.Badlands, TokenType.Isolate };
-		row3Tokens.AddRange( spaceState.OfType( TokenType.OpenTheWays ) );
-		DrawRow( graphics, spaceState, x, ref y, iconWidth, xStep, row3Tokens.ToArray() );
+		float iconWidth = _boardScreenSize.Width * .040f; // !!! scale tokens based on board/space size, NOT widow size (for 2 boards, tokens are too big)
+		DrawInvaderRow( graphics, spaceState, iconWidth );
+		DrawRow( graphics, spaceState, iconWidth );
 	}
 
-	void DrawInvaderRow( Graphics graphics, float x, ref float y, float width, float step, SpaceState tokens ) {
+	void DrawInvaderRow( Graphics graphics, SpaceState ss, float iconWidth ) {
 
-		Space space = tokens.Space;
-
-		// tokens
-		var invaders = tokens.Keys
+		var orderedInvaders = ss.Keys
 			.Where( k => { var c = k.Class.Category; return c == TokenCategory.Invader || c == TokenCategory.DreamingInvader; } )
 			.Cast<HealthToken>()
-			.ToArray();
-		if(invaders.Length == 0) return;
-
-		float maxHeight = 0;
-
-		var orderedInvaders = invaders
 			// Major ordering: (Type > Strife)
 			.OrderByDescending( i => i.FullHealth )
 			.ThenBy( x => x.StrifeCount )
@@ -482,16 +451,16 @@ public partial class IslandControl : Control {
 		foreach(Token token in orderedInvaders) {
 
 			// New way
-			PointF pt = _mapper.Map( _insidePoints[tokens.Space].GetPointFor( token, tokens ) );
-			x = pt.X-width/2;
-			y = pt.Y-width/2; //!! approximate
+			PointF center = _mapper.Map( _insidePoints[ss.Space].GetPointFor( token, ss ) );
+			float x = center.X-iconWidth/2;
+			float y = center.Y-iconWidth/2; //!! approximate - need Image to get actual Height to scale
 
 			// Strife
 			Token imageToken;
 			if(token is HealthToken si && 0 < si.StrifeCount) {
 				imageToken = si.HavingStrife( 0 );
 
-				Rectangle strifeRect = FitWidth( x, y, width, strife.Size );
+				Rectangle strifeRect = FitWidth( x, y, iconWidth, strife.Size );
 				graphics.DrawImage( strife, strifeRect );
 				if(si.StrifeCount > 1)
 					graphics.DrawSuperscript( strifeRect, "x" + si.StrifeCount );
@@ -501,47 +470,46 @@ public partial class IslandControl : Control {
 
 			// record token location
 			Image img = AccessTokenImage( imageToken );
-			Rectangle rect = FitWidth( x, y, width, img.Size );
-			_tokenLocations.Add( new SpaceToken( space, token ), rect );
+			Rectangle rect = FitWidth( x, y, iconWidth, img.Size );
+			_tokenLocations.Add( new SpaceToken( ss.Space, token ), rect );
 
 			// Draw Token
 			graphics.DrawImage( img, rect );
 			// Count
-			graphics.DrawCountIfHigherThan( rect, tokens[token] );
+			graphics.DrawCountIfHigherThan( rect, ss[token] );
 
-			maxHeight = Math.Max( maxHeight, rect.Height );
-			x += step;
 		}
 
-		float gap = step - width;
-		y += maxHeight + gap;
 	}
 
-	void DrawRow( Graphics graphics, SpaceState tokens, float x, ref float y, float width, float step, params Token[] tokenTypes ) {
-		float maxHeight = 0;
+	void DrawRow( Graphics graphics, SpaceState spaceState, float iconWidth ) {
+		var tokenTypes = new List<Token> {
+			TokenType.Defend, TokenType.Blight, // These don't show up in .OfAnyType if they are dynamic
+			TokenType.Beast, TokenType.Wilds, TokenType.Disease, TokenType.Badlands, TokenType.Isolate
+		}	.Union( spaceState.OfAnyType( TokenType.Dahan ) )
+			.Union( spaceState.OfAnyType( _spirit.Presence.Token ) )
+			.Union( spaceState.OfAnyType( TokenType.Element ) )
+			.Union( spaceState.OfType( TokenType.OpenTheWays ) )
+			.ToArray();
+
 
 		foreach(var token in tokenTypes) {
-			int count = tokens[token];
+			int count = spaceState[token];
 			if(count == 0) continue;
 
 			bool isPresence = token is SpiritPresenceToken;
 			Image img = isPresence ? presence : AccessTokenImage( token );
 
 			// calc rect
-			float height = width / img.Width * img.Height;
-			maxHeight = Math.Max( maxHeight, height );
+			float iconHeight = iconWidth / img.Width * img.Height;
 
-			// Old
-			// var rect = new Rectangle( (int)x, (int)y, (int)width, (int)height );
-			PointF pt = _mapper.Map( _insidePoints[tokens.Space].GetPointFor(token,tokens) );
-			Rectangle rect = new Rectangle( (int)(pt.X-width/2), (int)(pt.Y-height/2), (int)width, (int)height );
-
-			x += step;
+			PointF pt = _mapper.Map( _insidePoints[spaceState.Space].GetPointFor(token,spaceState) );
+			Rectangle rect = new Rectangle( (int)(pt.X-iconWidth/2), (int)(pt.Y-iconHeight/2), (int)iconWidth, (int)iconHeight );
 
 			// record token location
-			_tokenLocations.Add( new SpaceToken( tokens.Space, token ), rect );
+			_tokenLocations.Add( new SpaceToken( spaceState.Space, token ), rect );
 
-			if(isPresence && _spirit.Presence.IsSacredSite( tokens )) {
+			if(isPresence && _spirit.Presence.IsSacredSite( spaceState )) {
 				const int inflationSize = 10;
 				rect.Inflate( inflationSize, inflationSize );
 
@@ -555,8 +523,7 @@ public partial class IslandControl : Control {
 			graphics.DrawCountIfHigherThan( rect, count );
 		}
 
-		float gap = step - width;
-		y += maxHeight + gap;
+
 	}
 
 	#endregion 	Draw - Board Spaces & Tokens
