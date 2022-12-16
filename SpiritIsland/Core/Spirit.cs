@@ -556,7 +556,7 @@ public class TargetCriteria {
 
 	public TargetCriteria(int range, params string[] filters) {
 		Range = range;
-		_filters = filters;
+		_filters = filters ?? throw new ArgumentNullException(nameof(filters));
 	}
 
 	// Virtual so OfferPassageBetweenWorlds can do multiple criteria

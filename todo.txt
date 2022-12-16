@@ -7,7 +7,6 @@ Multiple tokens using the same token slot. Maybe need to lock it or add asserts.
 
 3+1? remaining Adversaries (Habsburg, Russia, Scotland, France?)
 
-Verify - Starlights Track has +1 energies
 Verify - Vengeance - WreakVengeance for the Lands Corruption
 Verify - VolcanoLoomingHigh doesn't allow presence ouside of mountain
 Tokens - WreakVengeanceForTheLandsCorruption - virtual tokens might not be correct.

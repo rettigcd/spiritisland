@@ -7,6 +7,7 @@ public class PlacePresence : GrowthActionFactory {
 	public PlacePresence( int range ) {
 		targetCriteria = new TargetCriteria( range );
 		FilterEnum = Target.Any;
+		FilterEnums = new string[] { FilterEnum };
 		Name = $"PlacePresence({range})";
 	}
 
