@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 
+// Used for Spirit Panel Painter
 namespace SpiritIsland.WinForms {
 	public class ElementLayout {
 		public ElementLayout(Rectangle bounds ) {

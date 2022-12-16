@@ -2,8 +2,9 @@
 ====  Clean Up Items  ====
 ==========================
 
-Draw Board Name and Space #s inside the Space
 Rivers presence in wetland not showing as Sacred Site
+Damaged Invaders use non-damaged if available. OR check if any other available damaged slots
+Multiple tokens using the same token slot. Maybe need to lock it or add asserts.
 
 3+1? remaining Adversaries (Habsburg, Russia, Scotland, France?)
 

@@ -95,6 +95,17 @@ public partial class IslandControl : Control {
 		}
 		return new RectangleF( left, top, right - left, bottom - top );
 	}
+	RectangleF CalcElementPopUpBounds( int count ) {
+		// calculate layout based on count
+		float maxHeight = Height * .16f;
+		float maxWidth = Width * (oceanWidth * .75f);
+		int desiredMmargin = 20;
+
+		var maxBounds = new RectangleF( (Width - maxWidth) / 2, (Height - maxHeight) / 2, maxWidth, maxHeight ); // max size allowed to use
+		var desiredSize = new SizeF( count * (maxHeight - desiredMmargin) + desiredMmargin, maxHeight ); // share we want.
+		RectangleF bounds = maxBounds.FitBoth( desiredSize );
+		return bounds;
+	}
 
 	SpiritLayout spiritLayout;
 	Rectangle popUpFearRect;
@@ -533,25 +544,38 @@ public partial class IslandControl : Control {
 	void DrawElementsPopUp(Graphics graphics ) {
 		if(decision_Element is null) return;
 
-		int boundsHeight = Height / 8;
-		int margin = boundsHeight / 16;
-
 		var elementOptions = decision_Element.Options.OfType<ItemOption<Element>>().ToArray();
 		int count = elementOptions.Length;
 
-		int boundsWidth = boundsHeight * count + margin * (count-1);
-		Rectangle bounds = new Rectangle( 0 + (Width-boundsWidth)/2, Height - boundsHeight-20, boundsWidth, boundsHeight );
-		var elementLayout = new ElementLayout(bounds.InflateBy(-boundsHeight/8));
+		RectangleF bounds = CalcElementPopUpBounds( count );
 
-		graphics.FillRectangle( PopupBackgroundBrush,bounds);
+		// recalculate this incase bounds got squished
+		float actualMargin = 1 < count ? (count * bounds.Height - bounds.Width) / (count - 1) : bounds.Height * .05f;
 
-		int i=0;
+		// Background
+		graphics.FillRectangle( PopupBackgroundBrush, bounds );
+		ButtonBorderStyle bs = ButtonBorderStyle.Outset;
+		int borderWidth = (int)(actualMargin / 2);
+		ControlPaint.DrawBorder( graphics, bounds.ToInts(),
+			PopupBorderColor, borderWidth, bs,
+			PopupBorderColor, borderWidth, bs,
+			PopupBorderColor, borderWidth, bs,
+			PopupBorderColor, borderWidth, bs
+		);
+
+		// Draw Elements
+		float contentSize = bounds.Height - actualMargin * 2;
+		float x = bounds.X + actualMargin;
+		float y = bounds.Y + actualMargin;
 		foreach(var opt in elementOptions) {
 			using var img = ResourceImages.Singleton.GetImage( opt.Item.GetTokenImg() );
-			var rect = elementLayout.Rect(i++);
-			graphics.DrawImage(img,rect);
-			hotSpots.Add(opt,rect);
+			var rect = new RectangleF( x, y, contentSize, contentSize );
+			graphics.DrawImage( img, rect );
+			hotSpots.Add( opt, rect );
+
+			x += (contentSize + actualMargin);
 		}
+
 	}
 
 	void DrawDeckPopUp(Graphics graphics ) {
@@ -1053,6 +1077,7 @@ public partial class IslandControl : Control {
 
 	// Fill / Background
 	static Brush EmptySlotBrush => Brushes.DarkGray;
+	static Color PopupBorderColor => Color.DarkGray;
 	static Brush PopupBackgroundBrush => Brushes.DarkGray;
 	static Brush SpiritPanelBackgroundBrush => Brushes.LightYellow;
 
