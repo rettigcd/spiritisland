@@ -113,11 +113,11 @@ public static class MySerializer {
 			[IMAGE]      = item.BaseImage,
 			[HUE]        = item.Hue,
 			[SATURATION] = item.Saturation,
-			[PULL]       = item.Pull
+			[LIGHTNESS]  = item.Lightness
 		};
 	static public PresenceTokenAppearance RestorePresenceTokenAppearance( JsonObject dict ) => dict is null ? null
-		: ((bool)dict[ADJUST]) ? new PresenceTokenAppearance((float)dict[HUE], (float)dict[SATURATION],(float)dict[PULL],dict[IMAGE] )
-		: new PresenceTokenAppearance(dict[IMAGE]);
+		: ((bool)dict[ADJUST]) ? new PresenceTokenAppearance((float)dict[HUE], (float)dict[SATURATION], (float)dict[LIGHTNESS], dict[IMAGE] )
+		: new PresenceTokenAppearance((string)dict[IMAGE]);
 	#endregion Presence Token Appearance
 
 	#region private Keys
@@ -131,7 +131,7 @@ public static class MySerializer {
 	const string ADJUST        = "adjust";
 	const string HUE           = "hue";
 	const string SATURATION    = "saturation";
-	const string PULL          = "pull";
+	const string LIGHTNESS     = "lightness";
 	const string IMAGE         = "image";
 	const string TIMESTAMP     = "timestamp";
 	#endregion

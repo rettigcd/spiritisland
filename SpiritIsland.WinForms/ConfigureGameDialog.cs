@@ -71,7 +71,7 @@ public partial class ConfigureGameDialog : Form {
 
 	PresenceTokenAppearance SelectAppearance( string spirit ) {
 		return colorCheckBox.Checked
-			? new PresenceTokenAppearance( HSL.FromRgb( colorDialog.Color ), 0 )
+			? new PresenceTokenAppearance( HSL.FromRgb( colorDialog.Color ) )
 			: GetColorForSpirit( spirit );
 	}
 
@@ -81,31 +81,33 @@ public partial class ConfigureGameDialog : Form {
 			: new AdversaryConfig( adversary, levelListBox.SelectedIndex );
 	}
 
+	// -.3f => .35
+
 	static PresenceTokenAppearance GetColorForSpirit( string spiritName ) {
 		return spiritName switch {
 			Thunderspeaker.Name                  => new PresenceTokenAppearance( 0, .6f ),
-			SharpFangs.Name                      => new PresenceTokenAppearance( 0, .8f, -.3f ),
+			SharpFangs.Name                      => new PresenceTokenAppearance( 0, .8f, .35f ),
 			VengeanceAsABurningPlague.Name       => new PresenceTokenAppearance( 15, .6f ),
 			HeartOfTheWildfire.Name              => new PresenceTokenAppearance( 20, .8f ),
-			VitalStrength.Name                   => new PresenceTokenAppearance( 22, .47f, -.3f ),
+			VitalStrength.Name                   => new PresenceTokenAppearance( 22, .47f, .35f ),
 			StonesUnyieldingDefiance.Name        => new PresenceTokenAppearance( 30, .16f ),
 			LightningsSwiftStrike.Name           => new PresenceTokenAppearance( 55, .64f ),
-			VolcanoLoomingHigh.Name              => new PresenceTokenAppearance( 56, 1.0f, -.3f ),
+			VolcanoLoomingHigh.Name              => new PresenceTokenAppearance( 56, 1.0f, .35f ),
 			GrinningTricksterStirsUpTrouble.Name => new PresenceTokenAppearance( 58, .3f ),
-			ASpreadOfRampantGreen.Name           => new PresenceTokenAppearance( 114, .65f, -.1f ),
-			LureOfTheDeepWilderness.Name         => new PresenceTokenAppearance( 125, .33f, -.3f ),
-			FracturedDaysSplitTheSky.Name        => new PresenceTokenAppearance( 160, .9f, -.3f ),
-			ShroudOfSilentMist.Name              => new PresenceTokenAppearance( 196, .3f, .3f ),
-			Ocean.Name                           => new PresenceTokenAppearance( 200, .5f, -.2f ),
-			RiverSurges.Name                     => new PresenceTokenAppearance( 209, .5f, -.2f ),
-			DownpourDrenchesTheWorld.Name        => new PresenceTokenAppearance( 210, .7f, -.3f ),
-			FinderOfPathsUnseen.Name	         => new PresenceTokenAppearance( 218, .5f, -.2f ),
+			ASpreadOfRampantGreen.Name           => new PresenceTokenAppearance( 114, .65f, .45f ),
+			LureOfTheDeepWilderness.Name         => new PresenceTokenAppearance( 125, .33f, .35f ),
+			FracturedDaysSplitTheSky.Name        => new PresenceTokenAppearance( 160, .9f, .35f ),
+			ShroudOfSilentMist.Name              => new PresenceTokenAppearance( 196, .3f, .65f ),
+			Ocean.Name                           => new PresenceTokenAppearance( 200, .5f, .4f ),
+			RiverSurges.Name                     => new PresenceTokenAppearance( 209, .5f, .4f ),
+			DownpourDrenchesTheWorld.Name        => new PresenceTokenAppearance( 210, .7f, .35f ),
+			FinderOfPathsUnseen.Name	         => new PresenceTokenAppearance( 218, .5f, .4f ),
 			ShiftingMemoryOfAges.Name            => new PresenceTokenAppearance( 229, .35f ),
 			StarlightSeeksItsForm.Name           => new PresenceTokenAppearance( 251, .78f ),
 			Bringer.Name                         => new PresenceTokenAppearance( 300, .6f ),
 			ManyMindsMoveAsOne.Name              => new PresenceTokenAppearance( 326, .35f ),
 			SerpentSlumbering.Name               => new PresenceTokenAppearance( 330, .3f ),
-			Shadows.Name                         => new PresenceTokenAppearance( 337, .3f, -.3f ),
+			Shadows.Name                         => new PresenceTokenAppearance( 337, .3f, .35f ),
 			Keeper.Name                          => new PresenceTokenAppearance( "greenorangeswirl" ),
 			_                                    => new PresenceTokenAppearance( 0, 0 ),
 		};

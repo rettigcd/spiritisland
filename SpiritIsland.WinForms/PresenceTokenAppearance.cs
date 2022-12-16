@@ -8,19 +8,24 @@ public class PresenceTokenAppearance {
 		AdjustHsl = false;
 	}
 
-	public PresenceTokenAppearance( HSL hsl, float pull = 0, string baseImage = "red" ) {
+	public PresenceTokenAppearance( HSL hsl, string baseImage = "red" ) {
 		AdjustHsl = true;
+
 		Hue = hsl.H;
 		Saturation = hsl.S;
-		Pull = pull;
+		Lightness = hsl.L;
+		_pull = Lightness * 2 - 1;
+
 		BaseImage = baseImage;
 	}
 
-	public PresenceTokenAppearance(float hue, float saturation, float pull=0, string baseImage = "red" ) {
+	public PresenceTokenAppearance(float hue, float saturation, float lightness=.5f, string baseImage = "red" ) {
 		AdjustHsl = true;
 		Hue = hue;
 		Saturation = saturation;
-		Pull = pull;
+		Lightness = lightness;
+		_pull = Lightness * 2 - 1;
+
 		BaseImage = baseImage;
 	}
 
@@ -28,7 +33,8 @@ public class PresenceTokenAppearance {
 	public readonly string BaseImage;
 	public readonly float Hue;
 	public readonly float Saturation;
-	public readonly float Pull;  // pulls the Lightness value up or down
+	public readonly float Lightness;
+	readonly float _pull;
 
 	public void Adjust( HSL hsl ) {
 		if( !AdjustHsl ) return;
@@ -39,9 +45,9 @@ public class PresenceTokenAppearance {
 		// -.5
 		//  0  no change
 		// +1  pulls everything up to white
-		if( Pull < 0 )
-			hsl.L += hsl.L * Pull;
-		else if( 0 < Pull )
-			hsl.L += (1-hsl.L) * Pull;
+		if( _pull < 0 )
+			hsl.L += hsl.L * _pull;
+		else if( 0 < _pull )
+			hsl.L += (1-hsl.L) * _pull;
 	}
 }

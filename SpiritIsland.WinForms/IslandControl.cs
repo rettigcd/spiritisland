@@ -535,8 +535,10 @@ public partial class IslandControl : Control {
 
 		int boundsHeight = Height / 8;
 		int margin = boundsHeight / 16;
+
 		var elementOptions = decision_Element.Options.OfType<ItemOption<Element>>().ToArray();
 		int count = elementOptions.Length;
+
 		int boundsWidth = boundsHeight * count + margin * (count-1);
 		Rectangle bounds = new Rectangle( 0 + (Width-boundsWidth)/2, Height - boundsHeight-20, boundsWidth, boundsHeight );
 		var elementLayout = new ElementLayout(bounds.InflateBy(-boundsHeight/8));
