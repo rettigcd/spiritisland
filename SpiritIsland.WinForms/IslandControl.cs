@@ -53,15 +53,26 @@ public partial class IslandControl : Control {
 	#region Calc Layout
 
 	// Layout
+	const float gameLabelFontHeight = .05f;
+
 	const float spiritWidth = .35f; // % of screen width to use for spirit
 	const float oceanWidth = 1f - spiritWidth;
 	const float invaderDeckWidth = oceanWidth * .4f;
 	const float invaderDeckHeight = .3f;
+	const float fearWidth = .2f;
+	const float fearHeight = fearWidth * .2f;
+	const float blightWidth = .15f;
+	const float blightHeight = .1f;
 	Rectangle SpiritRect => new Rectangle( Width - (int)(spiritWidth * Width), 0, (int)(spiritWidth * Width), Height );
-	RectangleF CalcAdversaryFlagRect => new RectangleF( Width * .445f, 5f, Width * .05f, Width * .033f );
-	RectangleF CalcFearPoolRect => new RectangleF( Width * .50f, 0f, Width * .20f, Width * .04f );
-	RectangleF CalcBlightRect => new RectangleF( Width * .55f, Width * .05f, Width * .15f, Width * .03f );
-	RectangleF CalcInvaderCardRect => new RectangleF( Width * (oceanWidth - invaderDeckWidth), Height * (1f - invaderDeckHeight), (Width * invaderDeckWidth), Height * invaderDeckHeight );
+	RectangleF CalcFearPoolRect => new RectangleF( Width * (oceanWidth - fearWidth), 0f, Width * fearWidth, Width * fearHeight );
+	RectangleF CalcAdversaryFlagRect => new RectangleF( 10, 10 + (gameLabelFontHeight)*Height, Width * .05f, Width * .033f );
+	RectangleF CalcBlightRect => new RectangleF( Width*(oceanWidth-blightWidth), Height*(1-invaderDeckHeight-blightHeight), Width * blightWidth, Height * blightHeight );
+	RectangleF CalcInvaderCardRect => new RectangleF( 
+		Width * (oceanWidth - invaderDeckWidth), 
+		Height * (1f - invaderDeckHeight), 
+		Width * invaderDeckWidth, 
+		Height * invaderDeckHeight
+	);
 	Rectangle CalcPopupFearRect() {
 		var bounds = new Rectangle( 0, 0, (int)(Width * .65f), Height );
 		// Active Fear Layout
@@ -101,8 +112,8 @@ public partial class IslandControl : Control {
 	PointMapper _mapper;
 
 	PointMapper MapWorldToViewPort( RectangleF worldRect ) {
-		var upperLeft = new PointF( 24f, 75f );
-		float usableHeight = (this.Height - upperLeft.Y * 2);
+		var upperLeft = new PointF( 20f, 60f );
+		float usableHeight = (this.Height - upperLeft.Y - 20 );
 
 		// calculate scaling Assuming height-limited
 		float islandHeight = worldRect.Height; // (float)(0.5 * Math.Sqrt( 3 )); // each board size is 1. Equalateral triangle height is sqrt(3)/2
@@ -170,6 +181,10 @@ public partial class IslandControl : Control {
 			}
 
 			DrawSpirit( pe.Graphics, SpiritRect );
+
+			// pe.Graphics.DrawRectangle(Pens.Red, CalcInvaderCardRect.ToInts() );
+			// pe.Graphics.DrawRectangle( Pens.Green, CalcBlightRect.ToInts() );
+
 		}
 
 		// non drawing - record Hot spots
@@ -235,8 +250,7 @@ public partial class IslandControl : Control {
 	#endregion Draw Static Board
 
 	void DrawGameRound( Graphics graphics ) {
-		float fontHeight = Height * .05f;
-		using var font = UseGameFont( fontHeight );
+		using Font font = UseGameFont( Height * gameLabelFontHeight );
 
 		Brush brush = GameTextBrush_Default;
 		string snippet = "Fight!";

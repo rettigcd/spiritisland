@@ -2,13 +2,6 @@
 ====  Clean Up Items  ====
 ==========================
 
-When Gathering a single token type, use the token's from/to location to draw the arrow.
-
-Pushing - When Pushing token to another space, Draw Circles on correct destination
-
-Gathering - When selecting many tokens to gather, show the arrow from / to the token
-
-
 Draw Board Name and Space #s inside the Space
 Rivers presence in wetland not showing as Sacred Site
 
