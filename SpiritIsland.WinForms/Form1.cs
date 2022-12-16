@@ -1,5 +1,4 @@
-﻿using SpiritIsland.Basegame;
-using SpiritIsland.SinglePlayer;
+﻿using SpiritIsland.SinglePlayer;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

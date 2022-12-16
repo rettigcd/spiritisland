@@ -348,11 +348,12 @@ public class TargetSpaceCtx : SelfCtx {
 
 	#endregion
 
-	public async Task<TargetSpaceCtx> SelectAdjacentLand( string prompt, Func<TargetSpaceCtx, bool> filter = null ) {
+	/// <param name="tokenToAdd">IF we are adding a token, supply it so UI can better pick target sapce</param>
+	public async Task<TargetSpaceCtx> SelectAdjacentLand( string prompt, Token tokenToAdd = null, Func<TargetSpaceCtx, bool> filter = null ) {
 		var options = Tokens.Adjacent;
 		if(filter != null)
 			options = options.Where( s => filter( Target( s.Space ) ) );
-		var space = await Decision( Select.Space.ForAdjacent( prompt, Space, Select.AdjacentDirection.None, options, Present.Always, null ) ); // !! could let caller pass in direction if appropriate
+		var space = await Decision( Select.Space.ForAdjacent( prompt, Space, Select.AdjacentDirection.None, options, Present.Always, tokenToAdd ) ); // !! could let caller pass in direction if appropriate
 		return space != null ? Target( space )
 			: null;
 	}

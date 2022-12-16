@@ -647,18 +647,30 @@ public partial class IslandControl : Control {
 		IOption option,  // the actual option to record
 		SpaceToken st   // the effective SpaceToken (location) of the option
 	) {
-		if(_tokenLocations.ContainsKey( st )) {
-			var rect = _tokenLocations[ st ];
-			rect.Inflate( 4, 4 );
-			optionRects.Add( (rect, option) );
-			graphics.DrawRectangle( pen, rect );
+		if( !_tokenLocations.ContainsKey( st ) ) return; // does this ever happen?
+
+		var rect = _tokenLocations[st];
+		rect.Inflate( 2, 2 );
+		optionRects.Add( (rect, option) );
+		graphics.DrawRectangle( pen, rect );
+
+		if(decision_AdjacentInfo != null) {
+			if( decision_AdjacentInfo.Direction == SpiritIsland.Select.AdjacentDirection.Incoming ) {
+				var from = new PointF( rect.X + rect.Width / 2, rect.Y + rect.Height / 2 );
+				var to = _mapper.Map(
+					_insidePoints[decision_AdjacentInfo.Central].GetPointFor( st.Token, _gameState.Tokens[decision_AdjacentInfo.Central] )
+                );
+				using var arrowPen = UsingArrowPen;
+				graphics.DrawArrow( arrowPen, from, to );
+			}
 		}
+
 	}
 
 	PointF GetPortPoint( Space space ) {
-		Token token = decision_Token ?? decision_AdjacentInfo?.Token;
-		PointF worldCoord = token == null ? space.Layout.Center
-			: _insidePoints[space].GetPointFor( token, _gameState.Tokens[space] );
+		PointF worldCoord = decision_Token is null 
+			? space.Layout.Center // normal space 
+			: _insidePoints[space].GetPointFor( decision_Token, _gameState.Tokens[space] );
 		return _mapper.Map( worldCoord );
 	}
 
@@ -666,28 +678,27 @@ public partial class IslandControl : Control {
 
 		var center = GetPortPoint( decision_AdjacentInfo.Central );
 
-
 		// !!! When gathering, Adjacent doesn't have Token info, only space info
 		// So, for gathering, don't supply 
 		var others = decision_AdjacentInfo.Adjacent
 			.Select( x => GetPortPoint( x ) )
 			.ToArray();
 
-		using Pen p = new Pen( ArrowColor, 7 );
-		var drawer = new ArrowDrawer( graphics, p );
+		using Pen p = UsingArrowPen;
 		switch(decision_AdjacentInfo.Direction) {
 
 			case SpiritIsland.Select.AdjacentDirection.Incoming:
 				foreach(var other in others)
-					drawer.Draw( other, center );
+					graphics.DrawArrow( p, other, center );
 				break;
 
 			case SpiritIsland.Select.AdjacentDirection.Outgoing:
 				foreach(var other in others)
-					drawer.Draw( center, other );
+					graphics.DrawArrow( p, center, other );
 				break;
 		}
 	}
+	static Pen UsingArrowPen => new Pen( ArrowColor, 7 );
 
 
 	#endregion
@@ -1043,24 +1054,24 @@ public partial class IslandControl : Control {
 	#region Color & Appearance
 
 	const float hotspotRadius = 40f;
-	Color ArrowColor => Color.DeepSkyBlue;
-	Color SacredSiteColor => Color.Yellow;
-	Color HotSpotColor => Color.Aquamarine;
-	Color SpacePerimeterColor => Color.Black;
-	Color MultiSpacePerimeterColor => Color.Gold;
+	static Color ArrowColor => Color.DeepSkyBlue;
+	static Color SacredSiteColor => Color.Yellow;
+	static Color HotSpotColor => Color.Aquamarine;
+	static Color SpacePerimeterColor => Color.Black;
+	static Color MultiSpacePerimeterColor => Color.Gold;
 
 	// Brushes for Text
-	Brush SpaceLabelBrush => Brushes.White;
-	Brush CardLabelBrush => Brushes.Black;
-	Brush BlightedTextBrush => Brushes.Red;
-	Brush GameTextBrush_Default => Brushes.Black;
-	Brush GameTextBrush_Victory => Brushes.DarkGreen;
-	Brush GameTextBrush_Defeat => Brushes.DarkRed;
+	static Brush SpaceLabelBrush => Brushes.White;
+	static Brush CardLabelBrush => Brushes.Black;
+	static Brush BlightedTextBrush => Brushes.Red;
+	static Brush GameTextBrush_Default => Brushes.Black;
+	static Brush GameTextBrush_Victory => Brushes.DarkGreen;
+	static Brush GameTextBrush_Defeat => Brushes.DarkRed;
 
 	// Fill / Background
-	Brush EmptySlotBrush => Brushes.DarkGray;
-	Brush PopupBackgroundBrush => Brushes.DarkGray;
-	Brush SpiritPanelBackgroundBrush => Brushes.LightYellow;
+	static Brush EmptySlotBrush => Brushes.DarkGray;
+	static Brush PopupBackgroundBrush => Brushes.DarkGray;
+	static Brush SpiritPanelBackgroundBrush => Brushes.LightYellow;
 
 	static Color SpaceColor( Space space )
 		=> space.IsWetland ? Color.LightBlue

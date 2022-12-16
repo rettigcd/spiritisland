@@ -2,17 +2,13 @@
 
 namespace SpiritIsland.WinForms;
 
-class ArrowDrawer {
-	readonly Graphics graphics; 
-	readonly Pen pen;
+public static class ArrowDrawer {
+
 	const float startNorm = 0.2f;
 	const float endNorm = 0.8f;
 	const float arrowNorm = .1f;
-	public ArrowDrawer(Graphics graphics, Pen pen){
-		this.graphics = graphics;
-		this.pen = pen;
-	}
-	public void Draw(PointF from, PointF to ) {
+
+	static public void DrawArrow( this Graphics graphics, Pen pen, PointF from, PointF to ) {
 		float dx = to.X-from.X;
 		float dy = to.Y-from.Y;
 		PointF newFrom = new PointF( from.X+dx*startNorm, from.Y+dy*startNorm );

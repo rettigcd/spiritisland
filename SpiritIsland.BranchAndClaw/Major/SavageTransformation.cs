@@ -16,6 +16,7 @@ public class SavageTransformation {
 		// if you have 2 moon, 3 animal: 
 		if(await ctx.YouHave("2 moon,3 animal")) {
 			// replace 1 additional explorer with 1 beat in either target or adjacent land
+			// !!! Use the SpaceToken decision to select the explorer, not this
 			var secondSpaceCtx = await ctx.SelectAdjacentLandOrSelf( "convert 2nd explorer to beast", x=>x.Tokens.Has(Invader.Explorer) );
 			if(secondSpaceCtx != null )
 				await ReplaceExplorerWithBeast( secondSpaceCtx );

@@ -19,7 +19,7 @@ public class DeathFallsGentlyFromOpenBlossoms {
 			ctx.AddFear(3);
 			// Add 1 disease to 2 adjacent lands with invaders.
 			for(int i = 0; i < 2; ++i) {
-				var adjCtx = await ctx.SelectAdjacentLand( $"Add disease to ({i+1} of 2)", x=>x.Tokens.HasInvaders() );
+				var adjCtx = await ctx.SelectAdjacentLand( $"Add disease to ({i+1} of 2)", TokenType.Disease, x=>x.Tokens.HasInvaders() );
 				await adjCtx.Disease.Add(1);
 			}
 		}

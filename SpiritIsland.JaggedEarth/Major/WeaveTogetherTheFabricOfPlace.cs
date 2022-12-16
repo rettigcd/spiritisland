@@ -5,7 +5,7 @@ public class WeaveTogetherTheFabricOfPlace {
 	[MajorCard("Weave Together the Fabric of Place",4, Element.Sun,Element.Moon,Element.Air,Element.Water,Element.Earth), Fast, FromSacredSite(1)]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 		// target land and a land adjacent to it become a single land for this turn.
-		var other = (await ctx.SelectAdjacentLand( $"Join {ctx.Space.Label} to." )).Space;
+		var other = (await ctx.SelectAdjacentLand( $"Join {ctx.Space.Label} to.")).Space;
 
 		MultiSpace multi = JoinSpaces( ctx, ctx.Space, other );
 

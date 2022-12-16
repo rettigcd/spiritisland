@@ -1,5 +1,13 @@
 ﻿namespace SpiritIsland.Select;
 
+// !!! Replace with Select-Space-For-Known-Token
+// DeployedPresence - a special case of:
+//	Select-Space-For-Known-Token
+//		- which allows the user to only need to specify the space, not the token
+// UI handles finding the presence token.
+
+
+
 // Selects Deployed Presence on a space
 // When we have multiple spirits, need to add which spirit this is.
 public class DeployedPresence : TypedDecision<SpiritIsland.Space>, IHaveAdjacentInfo {
@@ -28,7 +36,6 @@ public class DeployedPresence : TypedDecision<SpiritIsland.Space>, IHaveAdjacent
 	static public DeployedPresence SacredSites(string prompt, ReadOnlyBoundPresence presence, Present present )
 		=> new DeployedPresence( prompt, presence.SacredSites, present);
 
-
 	static public DeployedPresence Gather(string prompt, SpiritIsland.Space to, IEnumerable<SpiritIsland.SpaceState> from ) 
 		=> new DeployedPresence(prompt, from, Present.Done ) {
 			AdjacentInfo = new AdjacentInfo {
@@ -47,6 +54,7 @@ public class DeployedPresence : TypedDecision<SpiritIsland.Space>, IHaveAdjacent
 
 	#endregion
 
-	public AdjacentInfo AdjacentInfo { get; set; }
+	/// <summary> Set when Gathering Presence </summary>
+	public AdjacentInfo AdjacentInfo { get; private set; } // Incoming - Gathering Presence
 
 }

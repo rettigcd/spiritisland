@@ -8,11 +8,6 @@ public class AdjacentInfo {
 
 	/// <summary> The many spots the arrows point to/from. </summary>
 	public SpiritIsland.Space[] Adjacent { get; set; }
-
-	/// <summary>
-	/// The token that is being moved / placed / etc.  Used to pick better from/to spots on the board
-	/// </summary>
-	public Token Token { get; set; }
 }
 
 public interface IHaveTokenInfo {

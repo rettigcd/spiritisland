@@ -3,7 +3,8 @@
 // For Selecting Token from multiple spaces
 public class TokenFromManySpaces : TypedDecision<SpaceToken>, IHaveAdjacentInfo {
 
-	static public TokenFromManySpaces ToGather(
+	/// <summary> Adds Adjacent Info for Collecting (moving/gathering) </summary>
+	static public TokenFromManySpaces ToCollect(
 		string prompt,
 		SpiritIsland.Space to,
 		IEnumerable<SpaceToken> tokens,
@@ -15,7 +16,7 @@ public class TokenFromManySpaces : TypedDecision<SpaceToken>, IHaveAdjacentInfo 
 	) {
 		AdjacentInfo = new AdjacentInfo {
 			Central = to,
-			Adjacent = tokens.Select( s => s.Space ).Distinct().ToArray(),
+			Adjacent = Array.Empty<SpiritIsland.Space>(), // don't draw generic space-arrows, let the TokenSpace drawer, draw the better arrows   //  tokens.Select( s => s.Space ).Distinct().ToArray(),
 			Direction = AdjacentDirection.Incoming
 		}
 	};
@@ -28,6 +29,6 @@ public class TokenFromManySpaces : TypedDecision<SpaceToken>, IHaveAdjacentInfo 
 		: base( prompt, tokens, present ) 
 	{}
 
-	public AdjacentInfo AdjacentInfo { get; set; }
+	public AdjacentInfo AdjacentInfo { get; set; } // Incoming - when collecting (gathering / moving)
 
 }

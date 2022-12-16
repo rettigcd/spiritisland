@@ -24,6 +24,7 @@ public abstract class TokenCollector<DerivedType> where DerivedType : TokenColle
 		return (DerivedType)this;
 	}
 
+	/// <summary> Move-To or Gather </summary>
 	async protected Task<SpaceToken[]> Collect( string actionPromptPrefix, Present present ) {
 
 		var collected = new List<SpaceToken>();
@@ -32,7 +33,7 @@ public abstract class TokenCollector<DerivedType> where DerivedType : TokenColle
 		while(0 < (options = GetSpaceTokenOptions()).Length) {
 			// !! maybe make the next line virtual instead of the GroupsToGather
 			string prompt = actionPromptPrefix + RemainingQuota.Select( x => x.ToString() ).Join( ", " );
-			var source = await _destinationCtx.Decision( Select.TokenFromManySpaces.ToGather( prompt, _destinationCtx.Space, options, present ) );
+			var source = await _destinationCtx.Decision( Select.TokenFromManySpaces.ToCollect( prompt, _destinationCtx.Space, options, present ) );
 			if(source == null) break;
 			await _destinationCtx.Move( source.Token, source.Space, _destinationCtx.Space );
 			MarkAsCollected( source );
