@@ -6,47 +6,58 @@ using System.Linq;
 
 namespace SpiritIsland.WinForms;
 
+// Tracks unique locations internal to a polygon
 class ManageInternalPoints {
 
-	public readonly PointF[] _internalPoints;
+	public PointF NameLocation { get; }
+	public PointF[] InternalPoints { get; }			// completely inside
+	public PointF[] OrderedBorderPoints { get; }	// inside but near border
 
-	public readonly PointF[] _orderedBorderPoints;
+	#region constructor
 
-	readonly Token[] _internalTokens;
-	readonly Token[] _borderTokens;
+	public ManageInternalPoints( SpaceState ss ) {
+		const float stepSize = .07f;
 
-	readonly Dictionary<Token, PointF> dict;
-
-	public ManageInternalPoints( SpaceState ss, float stepSize ) {
+		NameLocation = ss.Space.Layout.GetInternalHexPoints( .02f )
+			.Where( p => .015f < ss.Space.Layout.DistanceFromBorder(p) )
+			.OrderBy( p => { 
+				var bounds = ss.Space.Layout.Bounds;
+				float dx = p.X-bounds.X;
+				float dy = p.Y-bounds.Bottom;
+				return dx*dx+dy*dy;
+			} )
+			.First();
 
 		var points = ss.Space.Layout
 			.GetInternalHexPoints( stepSize )
 			.ToArray();
 
 		// internal - prefered
-		_internalPoints = ss.Space.Layout
+		InternalPoints = ss.Space.Layout
 			.GetInternalHexPoints( stepSize )
-			.Where( p => stepSize*.75f < ss.Space.Layout.DistanceFromBorder( p ) )
+			.Where( p => stepSize*.6f < ss.Space.Layout.DistanceFromBorder( p ) )
 			.ToArray();
 		new Random( ss.Space.Text.GetHashCode() ) // use the randomizer every time so pieces don't bounce around when we resize
-			.Shuffle( _internalPoints );
+			.Shuffle( InternalPoints );
 
 		// border - backup
-		_orderedBorderPoints = points.Except( _internalPoints )
+		OrderedBorderPoints = points.Except( InternalPoints )
 			.OrderByDescending( ss.Space.Layout.DistanceFromBorder )
 			.ToArray();
 
-		_internalTokens = new Token[_internalPoints.Length];
-		_borderTokens = new Token[_orderedBorderPoints.Length];
-		dict = new Dictionary<Token, PointF>();
+		_internalTokens = new Token[InternalPoints.Length];
+		_borderTokens = new Token[OrderedBorderPoints.Length];
+		_dict = new Dictionary<Token, PointF>();
 	}
+	#endregion
+
 	public PointF GetPointFor( Token token, SpaceState allTokens ) {
 
 		// !! Maybe we should sweep border slots and clear out any not used
 		// so that once something uses the border slot, it isn't stuck there
 
 		// Already assigned
-		if(dict.ContainsKey( token )) return dict[token];
+		if(_dict.ContainsKey( token )) return _dict[token];
 
 		// Find a Randome fresh / unused spot
 		int? pick = token.Class.Category switch {
@@ -60,41 +71,43 @@ class ManageInternalPoints {
 
 		if(pick.HasValue) {
 			_internalTokens[pick.Value] = token;
-			return dict[token] = _internalPoints[pick.Value];
+			return _dict[token] = InternalPoints[pick.Value];
 		}
 
 		// Find an old unused spot that is no longer used.
-		for(int i = 0; i < _internalPoints.Length; i++) {
+		for(int i = 0; i < InternalPoints.Length; i++) {
 			Token slotToken = _internalTokens[i];
 			if(allTokens[slotToken] == 0) {
 				_internalTokens[i] = token;
-				dict[token] = _internalPoints[i];
-				return _internalPoints[i];
+				_dict[token] = InternalPoints[i];
+				return InternalPoints[i];
 			}
 		}
 
 		// BORDER - Find an old unused spot that is no longer used.
-		for(int i = 0; i < _orderedBorderPoints.Length; i++) {
+		for(int i = 0; i < OrderedBorderPoints.Length; i++) {
 			Token slotToken = _borderTokens[i];
 			if(slotToken is null || allTokens[slotToken] == 0) {
 				_borderTokens[i] = token;
-				dict[token] = _orderedBorderPoints[i];
-				return _orderedBorderPoints[i];
+				_dict[token] = OrderedBorderPoints[i];
+				return OrderedBorderPoints[i];
 			}
 		}
 
 		throw new InvalidOperationException( "ran out of slots for tokens" );
 	}
 
+	#region private helper methods
+
 	int? FindRightOpenSlot() {
 		int? bestIndex = 0;
 		float mostRight = float.MinValue;
-		for(int i = 0; i < _internalPoints.Length; i++)
+		for(int i = 0; i < InternalPoints.Length; i++)
 			if(_internalTokens[i] is null
-				&& mostRight < _internalPoints[i].X
+				&& mostRight < InternalPoints[i].X
 			) {
 				bestIndex = i;
-				mostRight = _internalPoints[i].X;
+				mostRight = InternalPoints[i].X;
 			}
 		return bestIndex;
 	}
@@ -102,22 +115,32 @@ class ManageInternalPoints {
 	int? FindLeftOpenSlot() {
 		int? bestIndex = 0;
 		float mostLeft = float.MaxValue;
-		for(int i = 0; i < _internalPoints.Length; i++)
+		for(int i = 0; i < InternalPoints.Length; i++)
 			if(_internalTokens[i] is null
-				&& _internalPoints[i].X < mostLeft
+				&& InternalPoints[i].X < mostLeft
 			) {
 				bestIndex = i;
-				mostLeft = _internalPoints[i].X;
+				mostLeft = InternalPoints[i].X;
 			}
 		return bestIndex;
 	}
 
-
 	int? FindRandomOpenSlot() {
-		for(int i = 0; i < _internalPoints.Length; i++)
+		for(int i = 0; i < InternalPoints.Length; i++)
 			if(_internalTokens[i] is null)
 				return i;
 		return null;
 	}
+
+	#endregion
+
+	#region private token location fields
+
+	readonly Token[] _internalTokens;
+	readonly Token[] _borderTokens;
+	readonly Dictionary<Token, PointF> _dict;
+
+	#endregion
+
 }
 

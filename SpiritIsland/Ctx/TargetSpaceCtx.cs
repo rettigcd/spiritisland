@@ -68,7 +68,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 		// Select Destination
 		var destinationOptions = Range( targetCriteria, powerType);
-		Space destination = await Decision( Select.Space.MoveToken( Space, destinationOptions, Present.Done ) );
+		Space destination = await Decision( Select.Space.MoveToken( Space, destinationOptions, Present.Done, null ) );
 
 		Token[] tokenOptions = Tokens.OfAnyType( tokenClass );
 		int remaining = Math.Min( Tokens.SumAny(tokenClass), max );
@@ -352,7 +352,7 @@ public class TargetSpaceCtx : SelfCtx {
 		var options = Tokens.Adjacent;
 		if(filter != null)
 			options = options.Where( s => filter( Target( s.Space ) ) );
-		var space = await Decision( Select.Space.ForAdjacent( prompt, Space, Select.AdjacentDirection.None, options, Present.Always ) ); // !! could let caller pass in direction if appropriate
+		var space = await Decision( Select.Space.ForAdjacent( prompt, Space, Select.AdjacentDirection.None, options, Present.Always, null ) ); // !! could let caller pass in direction if appropriate
 		return space != null ? Target( space )
 			: null;
 	}
@@ -362,7 +362,7 @@ public class TargetSpaceCtx : SelfCtx {
 		options.Add(Tokens);
 		if(filter != null)
 			options = options.Where( s => filter( Target( s.Space ) ) ).ToList();
-		var space = await Decision( Select.Space.ForAdjacent( prompt, Space, Select.AdjacentDirection.None, options, Present.Always ) );
+		var space = await Decision( Select.Space.ForAdjacent( prompt, Space, Select.AdjacentDirection.None, options, Present.Always, null ) );
 		return space != null ? Target( space )
 			: null;
 	}

@@ -32,7 +32,7 @@ public class DeployedPresence : TypedDecision<SpiritIsland.Space>, IHaveAdjacent
 	static public DeployedPresence Gather(string prompt, SpiritIsland.Space to, IEnumerable<SpiritIsland.SpaceState> from ) 
 		=> new DeployedPresence(prompt, from, Present.Done ) {
 			AdjacentInfo = new AdjacentInfo {
-				Original = to,
+				Central = to,
 				Adjacent = from.Select(x=>x.Space).ToArray(),
 				Direction = AdjacentDirection.Incoming
 			}

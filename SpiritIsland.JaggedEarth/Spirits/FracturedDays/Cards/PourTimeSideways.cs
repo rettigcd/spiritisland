@@ -13,7 +13,7 @@ class PourTimeSideways {
 		// Move 1 of your presence to a different land with your presence.
 		var src = await ctx.Decision( Select.DeployedPresence.All( "Move presence from:", ctx.Presence, Present.Always ) );
 		var dstOptions = ctx.Presence.SpaceStates.Where(s=>s.Space != src);
-		var dst = await ctx.Decision( Select.Space.ForAdjacent( "Move preseence to:", src, Select.AdjacentDirection.Outgoing, dstOptions,Present.Always ) );
+		var dst = await ctx.Decision( Select.Space.ForAdjacent( "Move preseence to:", src, Select.AdjacentDirection.Outgoing, dstOptions,Present.Always, ctx.Self.Presence.Token ) );
 		await ctx.Presence.Move( src, dst );
 
 		if(src.Board == dst.Board) return;

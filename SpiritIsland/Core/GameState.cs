@@ -157,7 +157,8 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 				args.Space.Space,
 				Select.AdjacentDirection.Outgoing,
 				args.Space.CascadingBlightOptions,
-				Present.Always
+				Present.Always,
+				TokenType.Blight
 			));
 			await Tokens[ cascadeTo ].Blight.Bind(args.Action).Add(1, args.Reason); // Cascading blight shares original blights reason.
 		}

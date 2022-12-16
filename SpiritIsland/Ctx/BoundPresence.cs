@@ -65,7 +65,7 @@ public class ReadOnlyBoundPresence : IKnowSpiritLocations {
 	/// </param>
 	public async Task<Space> SelectDestinationWithinRange( TargetCriteria targetCriteria, TargetingPowerType targetingPowerType ) {
 		var options = FindSpacesWithinRange( targetCriteria, targetingPowerType ).ToArray();
-		return await _self.Gateway.Decision( Select.Space.ToPlacePresence( options, Present.Always ) );
+		return await _self.Gateway.Decision( Select.Space.ToPlacePresence( options, Present.Always, _inner.Token ) );
 	}
 
 	#endregion
@@ -108,7 +108,7 @@ public class BoundPresence : ReadOnlyBoundPresence {
 		if(source == null) return (null, null);
 
 		// Select destination
-		var destination = await _self.Gateway.Decision( Select.Space.PushPresence( source, _gameState.Tokens[source].Adjacent, Present.Always ) );
+		var destination = await _self.Gateway.Decision( Select.Space.PushPresence( source, _gameState.Tokens[source].Adjacent, Present.Always, _inner.Token ) );
 		await Move( source, destination );
 		return (source, destination);
 	}
@@ -128,7 +128,7 @@ public class BoundPresence : ReadOnlyBoundPresence {
 	/// !!! should Have an Action ID
 	public async Task Place( params Space[] destinationOptions ) {
 		var from = await SelectSource();
-		var to = await _self.Gateway.Decision( Select.Space.ToPlacePresence( destinationOptions, Present.Always ) );
+		var to = await _self.Gateway.Decision( Select.Space.ToPlacePresence( destinationOptions, Present.Always, _inner.Token ) );
 		await _self.Presence.Place( from, to, _gameState, _actionId );
 	}
 

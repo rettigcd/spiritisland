@@ -29,38 +29,23 @@ public partial class IslandControl : Control {
 			| ControlStyles.OptimizedDoubleBuffer 
 			| ControlStyles.ResizeRedraw, true
 		);
-
+		LoadStandardTokenImages();
 	}
 
-	public void Init( GameState gameState, IHaveOptions optionProvider, PresenceTokenAppearance presenceColor, AdversaryConfig adversary ) {
+	public void Init( GameState gameState, IHaveOptions optionProvider, PresenceTokenAppearance presenceAppearance, AdversaryConfig adversary ) {
 
 		spiritLayout = null;
-		_adversary = adversary;
 
 		optionProvider.NewDecision += OptionProvider_OptionsChanged;
 
-		var board = gameState.Island.Boards.VerboseSingle("Multiple Island boards not supported.");
-		ClearCachedImage();
-		var boardLabel = board[0].Label;
-		var images = ResourceImages.Singleton;
-		presence = images.GetPresenceIcon( presenceColor );
-		this.presenceColor = presenceColor;
-		strife   = images.Strife();
-		fearTokenImage     = images.Fear();
-		grayFear = images.FearGray();
+		ClearCachedBackgroundImage();
 
-		tokenImages = new Dictionary<Token, Image> {
-			[TokenType.Defend]    = images.GetImage( Img.Defend ),
-			[TokenType.Blight]    = images.GetImage( Img.Blight ),
-			[TokenType.Beast]     = images.GetImage( Img.Beast ),
-			[TokenType.Wilds]     = images.GetImage( Img.Wilds ),
-			[TokenType.Disease]   = images.GetImage( Img.Disease ),
-			[TokenType.Badlands]  = images.GetImage( Img.Badlands ),
-			[TokenType.Isolate]   = images.GetImage( Img.Isolate ),
-		};
+		_gameState = gameState;
+		_spirit    = gameState.Spirits.Single();
+		_adversary = adversary;
 
-		this.gameState = gameState;
-		this.spirit = gameState.Spirits.Single();
+		_spiritPainter = new SpiritPainter( _spirit, presenceAppearance );
+		presence = ResourceImages.Singleton.GetPresenceIcon( presenceAppearance );
 	}
 
 	#endregion constructor / Init
@@ -90,7 +75,7 @@ public partial class IslandControl : Control {
 		float top = float.MaxValue;
 		float right = float.MinValue;
 		float bottom = float.MinValue;
-		foreach(var board in gameState.Island.Boards) {
+		foreach(var board in _gameState.Island.Boards) {
 			var e = board.Layout.CalcExtents();
 			if(e.Left < left) left = e.Left;
 			if(e.Top < top) top = e.Top;
@@ -105,8 +90,8 @@ public partial class IslandControl : Control {
 	AdversaryConfig _adversary;
 
 	void CalcSpiritLayout( Graphics graphics, Rectangle bounds ) {
-		spiritLayout = new SpiritLayout( graphics, spirit, bounds, 10 );
-		growthOptionCount = spirit.GrowthTrack.Options.Length;
+		spiritLayout = new SpiritLayout( graphics, _spirit, bounds, 10 );
+		growthOptionCount = _spirit.GrowthTrack.Options.Length;
 	}
 	int growthOptionCount = -1; // auto-update when Starlight adds option
 
@@ -145,19 +130,16 @@ public partial class IslandControl : Control {
 		return new Rectangle( (int)x, (int)y, (int)width, (int)(width / sz.Width * sz.Height) );
 	}
 
-	/// <returns>the center of a Game Space</returns>
-	PointF SpaceCenter( Space s ) => _mapper.Map( s.Layout.Center );
-
 	#endregion Calc Layout
 
 	protected override void OnPaint( PaintEventArgs pe ) {
 		base.OnPaint( pe );
 
 		optionRects.Clear();
-		tokenLocations.Clear();
+		_tokenLocations.Clear();
 		hotSpots.Clear(); // Clear this at beginning so any of the DrawX methods can add to it
 
-		if(gameState == null) return;
+		if(_gameState is null) return;
 
 		StopWatch.timeLog.Clear();
 
@@ -174,7 +156,7 @@ public partial class IslandControl : Control {
 			DrawInvaderCards( pe.Graphics ); // other than highlights, do this last since it contains the Fear Card that we want to be on top of everything.
 
 			// Island / Spaces
-			foreach(SpaceState space in gameState.AllSpaces)
+			foreach(SpaceState space in _gameState.AllSpaces)
 				DecorateSpace( pe.Graphics, space );
 
 			// Pop-ups
@@ -182,7 +164,7 @@ public partial class IslandControl : Control {
 			DrawElementsPopUp( pe.Graphics );
 			DrawFearPopUp( pe.Graphics );
 
-			using(var hotSpotPen = new Pen( Brushes.Aquamarine, 5 )) {
+			using(var hotSpotPen = new Pen( HotSpotColor, 5 )) {
 				DrawHotSpots_SpaceToken( pe.Graphics, hotSpotPen );
 				DrawHotSpots_Space( pe.Graphics, hotSpotPen );
 			}
@@ -192,7 +174,7 @@ public partial class IslandControl : Control {
 
 		// non drawing - record Hot spots
 		RecordSpiritHotspots();
-		if(options_FearPopUp!= null) 
+		if(options_FearPopUp is not null) 
 			hotSpots.Add(options_FearPopUp,popUpFearRect);
 
 	}
@@ -202,7 +184,7 @@ public partial class IslandControl : Control {
 	void DrawBoard_Static( PaintEventArgs pe ) {
 		using var stopwatch = new StopWatch( "Island-static" );
 
-		if(cachedBackground == null) {
+		if(_cachedBackground == null) {
 
 			// Map world-coord island Rect onto viewport
 			var boardWorldRect = CalcIslandExtents();
@@ -210,49 +192,33 @@ public partial class IslandControl : Control {
 
 			// create a viewport size screen we can draw on.
 			bool limitIsWidth = (boardWorldRect.Width * Height > Width * boardWorldRect.Height);
-			boardScreenSize = (limitIsWidth)
+			_boardScreenSize = (limitIsWidth)
 				? new Size( Width, (int)(boardWorldRect.Height * Width / boardWorldRect.Width) )
 				: new Size( (int)(boardWorldRect.Width * Height / boardWorldRect.Height), Height );
-			cachedBackground = new Bitmap( boardScreenSize.Width, boardScreenSize.Height );
-			using var graphics = Graphics.FromImage( cachedBackground );
+			_cachedBackground = new Bitmap( _boardScreenSize.Width, _boardScreenSize.Height );
+			using var graphics = Graphics.FromImage( _cachedBackground );
 
-			foreach(var board in gameState.Island.Boards)
+			foreach(var board in _gameState.Island.Boards)
 				DrawBoardSpacesOnly( graphics, board );
 
 			// calc spots to put tokens
-			const float stepSize = .07f;
-			insidePoints = gameState.AllSpaces
-				.ToDictionary(  ss => ss.Space,  ss => new ManageInternalPoints( ss, stepSize ) );
+			_insidePoints = _gameState.AllSpaces
+				.ToDictionary(  ss => ss.Space,  ss => new ManageInternalPoints( ss ) );
 
 			// DrawInnerPoints( graphics );
+			foreach(var x in _insidePoints)
+				graphics.DrawString( x.Key.Text, SystemFonts.MessageBoxFont, SpaceLabelBrush, _mapper.Map( x.Value.NameLocation ) );
+
 		}
 
-		pe.Graphics.DrawImage( cachedBackground, 0, 0, cachedBackground.Width, cachedBackground.Height );
+		pe.Graphics.DrawImage( _cachedBackground, 0, 0, _cachedBackground.Width, _cachedBackground.Height );
 	}
 
-	//void DrawInnerPoints( Graphics graphics ) {
-	//	int i = 0;
-	//	foreach(var pair in insidePoints) {
-	//		var s = (i++).ToString();
-	//		foreach(var o in pair.Value._points) {
-	//			var p = _mapper.Map( o );
-	//			graphics.FillEllipse( Brushes.White, p.X - 3, p.Y - 3, 6, 6 );
-	//			graphics.DrawString( s, SystemFonts.MessageBoxFont, Brushes.White, p ); // SystemFonts.MessageBoxFont - this is a nice, easy to read font, let's use it more.
-	//		}
-	//		// Draw the center point
-	//		var center = _mapper.Map( pair.Value._points[0] );
-	//		graphics.FillEllipse( Brushes.Red, center.X - 4, center.Y - 4, 8, 8 );
-	//		graphics.DrawString( s, SystemFonts.MessageBoxFont, Brushes.Red, center ); // SystemFonts.MessageBoxFont - this is a nice, easy to read font, let's use it more.
-	//	}
-	//}
-
-	Dictionary<Space, ManageInternalPoints> insidePoints;
-
 	void DrawBoardSpacesOnly( Graphics graphics, Board board ) {
-		var perimeterPen = new Pen( Brushes.Black, 5f );
+		var perimeterPen = new Pen( SpacePerimeterColor, 5f );
 		var normalizedBoardLayout = board.Layout;
 		for(int i = 0; i < normalizedBoardLayout.Spaces.Length; ++i) {
-			using Brush brush = SpaceBrush( board[i] );
+			using Brush brush = UseSpaceBrush( board[i] );
 			var points = normalizedBoardLayout.Spaces[i].Corners.Select( _mapper.Map ).ToArray();
 
 			// Draw blocky
@@ -272,16 +238,16 @@ public partial class IslandControl : Control {
 		float fontHeight = Height * .05f;
 		using var font = UseGameFont( fontHeight );
 
-		// Default - black, Fight
-		Brush brush = Brushes.Black;
+		Brush brush = GameTextBrush_Default;
 		string snippet = "Fight!";
 
 		// If game is over, update
-		if(gameState.Result != null) {
-			brush = gameState.Result.Result == GameOverResult.Victory ? Brushes.DarkGreen : Brushes.DarkRed;
-			snippet = gameState.Result.Msg();
+		if(_gameState.Result != null) {
+
+			brush = _gameState.Result.Result == GameOverResult.Victory ? GameTextBrush_Victory : GameTextBrush_Defeat;
+			snippet = _gameState.Result.Msg();
 		}
-		graphics.DrawString( $"Round {gameState.RoundNumber} - {snippet}", font, brush, 0, 0 );
+		graphics.DrawString( $"Round {_gameState.RoundNumber} - {snippet}", font, brush, 0, 0 );
 
 	}
 
@@ -299,8 +265,6 @@ public partial class IslandControl : Control {
 		float margin = Math.Max( 5f, outterBounds.Height * .05f );
 		var bounds = outterBounds.InflateBy(-margin);
 
-
-		// using(var pen = new Pen( Color.Orange, 1f )) graphics.DrawRectangle( pen, bounds.ToInts() ); // Debug
 		using var cardImg = ResourceImages.Singleton.FearCard(); // Maybe load this with the control and not dispose of it every time we draw.
 
 		float slotWidth = bounds.Width/6;
@@ -313,7 +277,7 @@ public partial class IslandControl : Control {
 		var terrorLevelBounds = new RectangleF( bounds.X, bounds.Y, tokenSize.Width, tokenSize.Height );
 
 		// Calc Fear Pool bounds - skip 1 slotWidth, 
-		int poolMax = this.gameState.Fear.PoolMax;
+		int poolMax = this._gameState.Fear.PoolMax;
 		float step = (bounds.Width - 4 * slotWidth) / (poolMax - 1);
 		RectangleF CalcBounds( int i ) => new RectangleF( bounds.X + slotWidth + step * i, bounds.Y, tokenSize.Width, tokenSize.Height );
 
@@ -323,11 +287,11 @@ public partial class IslandControl : Control {
 
 
 		// Draw Terror Level
-		using var terror = ResourceImages.Singleton.TerrorLevel( gameState.Fear.TerrorLevel );
+		using var terror = ResourceImages.Singleton.TerrorLevel( _gameState.Fear.TerrorLevel );
 		graphics.DrawImage( terror, terrorLevelBounds );
 
 		// Draw Fear Pool
-		int fearCount = this.gameState.Fear.EarnedFear;
+		int fearCount = this._gameState.Fear.EarnedFear;
 		for(int i = fearCount; i < poolMax; ++i)
 			graphics.DrawImage( grayFear, CalcBounds( i ) );	// Gray underneath
 		// draw fear tokens
@@ -335,10 +299,10 @@ public partial class IslandControl : Control {
 			graphics.DrawImage( fearTokenImage, CalcBounds( i ) );	// Tokens
 
 		// Activated Cards
-		int activated = gameState.Fear.ActivatedCards.Count;
+		int activated = _gameState.Fear.ActivatedCards.Count;
 		if(0 < activated) {
 			// Draw Card
-			var top = gameState.Fear.ActivatedCards.Peek();
+			var top = _gameState.Fear.ActivatedCards.Peek();
 			if(top.Flipped) {
 				using Image img = new FearCardImageManager().GetImage( top );
 				graphics.DrawImage( img, activatedCardRect );
@@ -347,12 +311,12 @@ public partial class IslandControl : Control {
 			}
 			graphics.DrawCountIfHigherThan( activatedCardRect, activated );
 		} else {
-			graphics.FillRectangle(Brushes.DarkGray, activatedCardRect );
+			graphics.FillRectangle(EmptySlotBrush, activatedCardRect );
 		}
 
-		int future = gameState.Fear.Deck.Count;
+		int future = _gameState.Fear.Deck.Count;
 		if(0 < future) {
-			var top = gameState.Fear.Deck.Peek();
+			var top = _gameState.Fear.Deck.Peek();
 			if(top.Flipped) {
 				using Image img = new FearCardImageManager().GetImage( top );
 				graphics.DrawImage( img, futureCardRect );
@@ -363,19 +327,17 @@ public partial class IslandControl : Control {
 			graphics.DrawCountIfHigherThan( futureCardRect, future );
 			futureCardRect.Location = new Point( futureCardRect.X, futureCardRect.Bottom);
 			using var cardCountFont = UseGameFont( margin * 3);
-			graphics.DrawStringCenter( string.Join(" / ",gameState.Fear.CardsPerLevelRemaining), cardCountFont, Brushes.Black, futureCardRect);
+			graphics.DrawStringCenter( string.Join(" / ",_gameState.Fear.CardsPerLevelRemaining), cardCountFont, CardLabelBrush, futureCardRect);
 		}
 	}
 
 	void DrawBlight( Graphics graphics ) {
 		var bounds = CalcBlightRect;
 
-		// using(var pen = new Pen( Color.LimeGreen, 5f )) graphics.DrawRectangle( pen, bounds.ToInts() ); // Debug !!!
-
 		float margin = Math.Max( 5f, bounds.Height * .05f );
 		float slotWidth = bounds.Height;
 
-		int count = this.gameState.blightOnCard;
+		int count = this._gameState.blightOnCard;
 		int maxSpaces = 6;
 
 		float step = (bounds.Width - 2 * margin - 2 * slotWidth) / (maxSpaces - 1);
@@ -386,13 +348,13 @@ public partial class IslandControl : Control {
 		RectangleF CalcBounds( int i ) => new RectangleF( bounds.X + slotWidth + margin + step * i, bounds.Y + margin, tokenWidth, tokenHeight );
 
 		// draw fear tokens
-		var img = this.tokenImages[TokenType.Blight];
+		var img = this._tokenImages[TokenType.Blight];
 		for(int i = 0; i < count; ++i)
 			graphics.DrawImage( img, CalcBounds( i ) );
 
-		if(gameState.BlightCard.CardFlipped) {
+		if(_gameState.BlightCard.CardFlipped) {
 			using var blightedFont = UseGameFont( slotWidth * .2f );
-			graphics.DrawString( "Blighted!", blightedFont, Brushes.Red, bounds.Right - slotWidth * 1.5f, bounds.Top );
+			graphics.DrawString( "Blighted!", blightedFont, BlightedTextBrush, bounds.Right - slotWidth * 1.5f, bounds.Top );
 		}
 	}
 
@@ -404,7 +366,7 @@ public partial class IslandControl : Control {
 		var bounds = CalcInvaderCardRect;
 
 		// Calculate Card Size based on # of slots
-		float slots = gameState.InvaderDeck.Slots.Count + 1.5f;
+		float slots = _gameState.InvaderDeck.Slots.Count + 1.5f;
 		float slotWidth = bounds.Width / slots;
 
 		var cardSize = slotWidth * 1.5f < bounds.Height         // too narrow
@@ -419,14 +381,11 @@ public partial class IslandControl : Control {
 			new Point((int)discardRect.Right, (int)discardRect.Bottom)      // destination for lower-left point of original
 		};
 
-
-		// using(var pen = new Pen( Color.Orange, 15f)) graphics.DrawRectangle( pen, bounds.ToInts() ); // Debug
-
 		// locate each of the cards
-		var cardMetrics = new InvaderCardMetrics[gameState.InvaderDeck.Slots.Count];
+		var cardMetrics = new InvaderCardMetrics[_gameState.InvaderDeck.Slots.Count];
 
 		for(int i = 0; i < cardMetrics.Length; ++i)
-			cardMetrics[i] = new InvaderCardMetrics( gameState.InvaderDeck.Slots[i],
+			cardMetrics[i] = new InvaderCardMetrics( _gameState.InvaderDeck.Slots[i],
 				bounds.Left + (i + 1.5f) * cardSize.Width + margin, //left+i*xStep, 
 				bounds.Top + margin, // y, 
 				cardSize.Width - margin * 2, cardSize.Height - margin * 2, // width, height, 
@@ -440,10 +399,10 @@ public partial class IslandControl : Control {
 			cardMetric.Draw( graphics, buildRavageFont, invaderStageFont );
 
 		// # of cards in explore pile
-		graphics.DrawCountIfHigherThan( cardMetrics.Last().Rect.First(), gameState.InvaderDeck.UnrevealedCards.Count+1 );
+		graphics.DrawCountIfHigherThan( cardMetrics.Last().Rect.First(), _gameState.InvaderDeck.UnrevealedCards.Count+1 );
 
 		// Draw Discard
-		var lastDiscard = gameState.InvaderDeck.Discards.FirstOrDefault();
+		var lastDiscard = _gameState.InvaderDeck.Discards.FirstOrDefault();
 		if(lastDiscard is not null) {
 			using Bitmap discardImg = ResourceImages.Singleton.GetInvaderCard( lastDiscard.Text );
 			graphics.DrawImage( discardImg, discardDestinationPoints );
@@ -461,7 +420,7 @@ public partial class IslandControl : Control {
 		PointF xy = _mapper.Map( spaceToShowTokensOn.Layout.Center );
 
 		// !!! scale tokens based on board/space size, NOT widow size (for 2 boards, tokens are too big)
-		float iconWidth = boardScreenSize.Width * .040f;
+		float iconWidth = _boardScreenSize.Width * .040f;
 		float xStep = iconWidth + 10f;
 
 		float x = xy.X - iconWidth;
@@ -476,7 +435,7 @@ public partial class IslandControl : Control {
 		// Row 2 - Dahan, Blight, Elements, Presence
 		List<Token> row2Tokens = new List<Token> { TokenType.Defend, TokenType.Blight }; // These don't show up in .OfAnyType if they are dynamic
 		row2Tokens.AddRange( spaceState.OfAnyType( TokenType.Dahan ) );
-		row2Tokens.AddRange( spaceState.OfAnyType( spirit.Presence.Token ) );
+		row2Tokens.AddRange( spaceState.OfAnyType( _spirit.Presence.Token ) );
 		row2Tokens.AddRange( spaceState.OfAnyType( TokenType.Element ) );
 		DrawRow( graphics, spaceState, x, ref y, iconWidth, xStep, row2Tokens.ToArray() );
 
@@ -509,7 +468,7 @@ public partial class IslandControl : Control {
 		foreach(Token token in orderedInvaders) {
 
 			// New way
-			PointF pt = _mapper.Map( insidePoints[tokens.Space].GetPointFor( token, tokens ) );
+			PointF pt = _mapper.Map( _insidePoints[tokens.Space].GetPointFor( token, tokens ) );
 			x = pt.X-width/2;
 			y = pt.Y-width/2; //!! approximate
 
@@ -529,7 +488,7 @@ public partial class IslandControl : Control {
 			// record token location
 			Image img = AccessTokenImage( imageToken );
 			Rectangle rect = FitWidth( x, y, width, img.Size );
-			RecordSpaceTokenLocation( new SpaceToken( space, token ), rect );
+			_tokenLocations.Add( new SpaceToken( space, token ), rect );
 
 			// Draw Token
 			graphics.DrawImage( img, rect );
@@ -560,19 +519,19 @@ public partial class IslandControl : Control {
 
 			// Old
 			// var rect = new Rectangle( (int)x, (int)y, (int)width, (int)height );
-			PointF pt = _mapper.Map( insidePoints[tokens.Space].GetPointFor(token,tokens) );
+			PointF pt = _mapper.Map( _insidePoints[tokens.Space].GetPointFor(token,tokens) );
 			Rectangle rect = new Rectangle( (int)(pt.X-width/2), (int)(pt.Y-height/2), (int)width, (int)height );
 
 			x += step;
 
 			// record token location
-			RecordSpaceTokenLocation( new SpaceToken( tokens.Space, token ), rect );
+			_tokenLocations.Add( new SpaceToken( tokens.Space, token ), rect );
 
-			if(isPresence && spirit.Presence.IsSacredSite( tokens )) {
+			if(isPresence && _spirit.Presence.IsSacredSite( tokens )) {
 				const int inflationSize = 10;
 				rect.Inflate( inflationSize, inflationSize );
-				Color newColor = Color.FromArgb( 100, Color.Yellow );
-				using var brush = new SolidBrush( newColor );
+
+				using var brush = new SolidBrush( Color.FromArgb( 100, SacredSiteColor ) );
 				graphics.FillEllipse( brush, rect );
 				rect.Inflate( -inflationSize, -inflationSize );
 			}
@@ -601,7 +560,7 @@ public partial class IslandControl : Control {
 		Rectangle bounds = new Rectangle( 0 + (Width-boundsWidth)/2, Height - boundsHeight-20, boundsWidth, boundsHeight );
 		var elementLayout = new ElementLayout(bounds.InflateBy(-boundsHeight/8));
 
-		graphics.FillRectangle(Brushes.DarkGray,bounds);
+		graphics.FillRectangle( PopupBackgroundBrush,bounds);
 
 		int i=0;
 		foreach(var opt in elementOptions) {
@@ -630,7 +589,7 @@ public partial class IslandControl : Control {
 		hotSpots.Add(decision_DeckToDrawFrom.Options[0],minorRect);
 		hotSpots.Add(decision_DeckToDrawFrom.Options[1],majorRect);
 
-		graphics.FillRectangle(Brushes.DarkGray,bounds);
+		graphics.FillRectangle(PopupBackgroundBrush,bounds);
 		using var minorImage = Image.FromFile( ".\\images\\minor.png" );
 		using var majorImage = Image.FromFile( ".\\images\\major.png" );
 		graphics.DrawImage(minorImage,minorRect);
@@ -669,7 +628,7 @@ public partial class IslandControl : Control {
 		if(decision_DeployedPresence != null) {
 			options_Space = null; // disable circle drawing
 			foreach(Space space in decision_DeployedPresence.Options.OfType<Space>())
-				DrawSpaceTokenHotspot( graphics, pen, space, new SpaceToken( space, spirit.Presence.Token ) );
+				DrawSpaceTokenHotspot( graphics, pen, space, new SpaceToken( space, _spirit.Presence.Token ) );
 		}
 
 	}
@@ -677,8 +636,8 @@ public partial class IslandControl : Control {
 	void DrawHotSpots_Space( Graphics graphics, Pen pen ) {
 		if(options_Space != null)
 			foreach(Space space in options_Space) {
-				PointF center = SpaceCenter( space );
-				graphics.DrawEllipse( pen, center.X - radius, center.Y - radius, radius * 2, radius * 2 );
+				PointF center = GetPortPoint( space ); // _mapper.Map( space.Layout.Center );
+				graphics.DrawEllipse( pen, center.X - hotspotRadius, center.Y - hotspotRadius, hotspotRadius * 2, hotspotRadius * 2 );
 			}
 	}
 
@@ -688,24 +647,41 @@ public partial class IslandControl : Control {
 		IOption option,  // the actual option to record
 		SpaceToken st   // the effective SpaceToken (location) of the option
 	) {
-		if(HasLocation( st )) {
-			var rect = GetLocation( st );
+		if(_tokenLocations.ContainsKey( st )) {
+			var rect = _tokenLocations[ st ];
 			rect.Inflate( 4, 4 );
 			optionRects.Add( (rect, option) );
 			graphics.DrawRectangle( pen, rect );
 		}
 	}
 
+	PointF GetPortPoint( Space space ) {
+		Token token = decision_Token ?? decision_AdjacentInfo?.Token;
+		PointF worldCoord = token == null ? space.Layout.Center
+			: _insidePoints[space].GetPointFor( token, _gameState.Tokens[space] );
+		return _mapper.Map( worldCoord );
+	}
+
 	void DrawAdjacentArrows( Graphics graphics ) {
-		var center = SpaceCenter( decision_AdjacentInfo.Original );
-		var others = decision_AdjacentInfo.Adjacent.Select( x => SpaceCenter( x ) ).ToArray();
-		using Pen p = new Pen( Color.DeepSkyBlue, 7 );
+
+		var center = GetPortPoint( decision_AdjacentInfo.Central );
+
+
+		// !!! When gathering, Adjacent doesn't have Token info, only space info
+		// So, for gathering, don't supply 
+		var others = decision_AdjacentInfo.Adjacent
+			.Select( x => GetPortPoint( x ) )
+			.ToArray();
+
+		using Pen p = new Pen( ArrowColor, 7 );
 		var drawer = new ArrowDrawer( graphics, p );
 		switch(decision_AdjacentInfo.Direction) {
+
 			case SpiritIsland.Select.AdjacentDirection.Incoming:
 				foreach(var other in others)
 					drawer.Draw( other, center );
 				break;
+
 			case SpiritIsland.Select.AdjacentDirection.Outgoing:
 				foreach(var other in others)
 					drawer.Draw( center, other );
@@ -721,14 +697,15 @@ public partial class IslandControl : Control {
 		bounds = FitClientBounds( bounds );
 
 		// Layout
-		if(spiritLayout == null || growthOptionCount != spirit.GrowthTrack.Options.Length) {
+		if( spiritLayout is null
+			|| growthOptionCount != _spirit.GrowthTrack.Options.Length
+		) {
 			CalcSpiritLayout( graphics, bounds );
-			if(spiritPainter != null) spiritPainter.Dispose(); // release old
-			spiritPainter = new SpiritPainter( spirit, spiritLayout, presenceColor );
+			_spiritPainter?.SetLayout( spiritLayout );
 		}
 
-		graphics.FillRectangle( Brushes.LightYellow, bounds );
-		spiritPainter.Paint( graphics,
+		graphics.FillRectangle( SpiritPanelBackgroundBrush, bounds );
+		_spiritPainter.Paint( graphics,
 			options_InnatePower,
 			options_DrawableInate,
 			options_GrowthOptions,
@@ -739,16 +716,26 @@ public partial class IslandControl : Control {
 
 	void DrawMultiSpace( Graphics graphics, MultiSpace multi ) {
 
-		//		using var pen = new Pen( Brushes.Yellow, 5f );
-		using var pen = new Pen( Brushes.Gold, 3f );
+		using var pen = new Pen( MultiSpacePerimeterColor, 3f );
 
+		using var brush = UseMultiSpaceBrush( multi );
+
+		var points = multi.Layout.Corners.Select( _mapper.Map ).ToArray();
+		graphics.FillClosedCurve( brush, points, FillMode.Alternate, .25f );
+		graphics.DrawClosedCurve( pen, points, .25f, FillMode.Alternate );
+		// graphics.FillPolygon( brush, points );
+		// graphics.DrawPolygon( pen, points );
+
+	}
+
+	static LinearGradientBrush UseMultiSpaceBrush( MultiSpace multi ) {
+		var brush = new LinearGradientBrush( new Rectangle( 0, 0, 30, 30 ), Color.Transparent, Color.Transparent, 45F );
 
 		var colors = multi.Parts
 			.Select( x => Color.FromArgb( 92, SpaceColor( x ) ) )
 			.ToArray();
 
-		using var brush = new LinearGradientBrush( new Rectangle( 0, 0, 30, 30 ), Color.Transparent, Color.Transparent, 45F );
-		var blend = new ColorBlend {
+	    var blend = new ColorBlend {
 			Positions = new float[colors.Length * 2],
 			Colors = new Color[colors.Length * 2]
 		};
@@ -758,18 +745,8 @@ public partial class IslandControl : Control {
 			blend.Positions[i * 2 + 1] = (i + 1) * step;
 			blend.Colors[i * 2] = blend.Colors[i * 2 + 1] = colors[i];
 		}
-
 		brush.InterpolationColors = blend;
-
-		var points = multi.Layout.Corners.Select( _mapper.Map ).ToArray();
-
-		graphics.FillClosedCurve( brush, points, FillMode.Alternate, .25f );
-		graphics.DrawClosedCurve( pen, points, .25f, FillMode.Alternate );
-
-		//		graphics.FillPolygon( brush, points );
-		//		graphics.DrawPolygon( pen, points );
-
-
+		return brush;
 	}
 
 	void RecordSpiritHotspots() {
@@ -795,114 +772,21 @@ public partial class IslandControl : Control {
 
 	}
 
-	static Brush SpaceBrush( Space space ) {
-		if(space.IsWetland) {
-			using Image image = Image.FromFile( ".\\images\\wetlands.jpg" );
-			TextureBrush tBrush = new TextureBrush( image ) {
-				Transform = new Matrix(
-					0.25f, 0.0f, 0.0f,
-					0.25f, 0.0f, 0.0f
-				)
-			};
-			return tBrush;
-		}
-		if(space.IsJungle) {
-			using Image image = Image.FromFile( ".\\images\\jungle.jpg" );
-			TextureBrush tBrush = new TextureBrush( image ) {
-				Transform = new Matrix(
-					1f, 0.0f, 0.0f,
-					1f, 0.0f, 0.0f
-				)
-			};
-			return tBrush;
-		}
-		if(space.IsMountain) {
-			using Image image = Image.FromFile( ".\\images\\mountains.jpg" );
-			TextureBrush tBrush = new TextureBrush( image ) {
-				Transform = new Matrix(
-					0.5f, 0.0f, 0.0f,
-					0.5f, 0.0f, 0.0f
-				)
-			};
-			return tBrush;
-		}
-		if(space.IsSand) {
-			using Image image = Image.FromFile( ".\\images\\sand.jpg" );
-			TextureBrush tBrush = new TextureBrush( image ) {
-				Transform = new Matrix(
-					0.5f, 0.0f, 0.0f,
-					0.5f, 0.0f, 0.0f
-				)
-			};
-			return tBrush;
-		}
-		if(space.IsOcean) {
-			using Image image = Image.FromFile( ".\\images\\ocean.jpg" );
-			TextureBrush tBrush = new( image );
-			tBrush.Transform = new Matrix(
-				0.5f, 0.0f, 0.0f,
-				0.5f, 0.0f, 0.0f
-			);
-			return tBrush;
-		}
-		return new SolidBrush( SpaceColor( space ) );
-	}
-
-	static Color SpaceColor( Space space ) {
-		return space.IsWetland ? Color.LightBlue
-			: space.IsSand ? Color.PaleGoldenrod
-			: space.IsMountain ? Color.Gray
-			: space.IsJungle ? Color.ForestGreen
-			: space.IsOcean ? Color.Blue
-			: Color.Gold;
-	}
-
-	SpiritPainter spiritPainter;
-
-	class InvaderCardMetrics {
-		public InvaderCardMetrics( InvaderSlot slot, float x, float y, float width, float height, float textHeight ) {
-			this.slot = slot;
-
-			// Individual card rects
-			int count = slot.Cards.Count;
-			Rect = new RectangleF[count];
-			float buildWidth = width / count, buildHeight = height / count;
-			for(int i = 0; i < Rect.Length; ++i)
-				Rect[i] = new RectangleF( x + i * buildWidth, y + i * buildHeight, buildWidth, buildHeight );
-
-			// Text location
-			textBounds = new RectangleF( x, y + height + textHeight*.1f, width, textHeight*1.5f );
-		}
-		public readonly InvaderSlot slot;
-		public readonly RectangleF[] Rect;
-		public readonly RectangleF textBounds;
-
-		public void Draw( Graphics graphics, Font labelFont, Font invaderStageFont ) {
-			// Draw all of the cards in that slot
-			// !! we could make them overlap and bigger
-			for(int i = 0; i < Rect.Length; ++i) {
-				var card = slot.Cards[i];
-				if(card.Flipped)
-					graphics.DrawInvaderCardFront( Rect[i], card );
-				else {
-					var cardRect = Rect[i];
-					using(SolidBrush brush = new SolidBrush( Color.LightSteelBlue ))
-						graphics.FillRectangle( brush, cardRect );
-					var smallerRect = cardRect.InflateBy( -cardRect.Width * .1f );
-					graphics.DrawInvaderCardBack( smallerRect, card );
-					smallerRect = cardRect.InflateBy( -25f );
-					graphics.DrawStringCenter( card.InvaderStage.ToString(), invaderStageFont, Brushes.DarkRed, smallerRect );
-				}
-			}
-			graphics.DrawStringCenter( slot.Label, labelFont, Brushes.Black, textBounds );
-		}
-
+	static Brush UseSpaceBrush( Space space ) {
+		string terrainName = space.IsWetland ? "wetlands"
+			: space.IsJungle   ? "jungle"
+			: space.IsMountain ? "mountains"
+			: space.IsSand     ? "sand"
+			: space.IsOcean    ? "ocean"
+			: throw new ArgumentException();
+		using Image image = Image.FromFile( $".\\images\\{terrainName}.jpg" );
+		return new TextureBrush( image );
 	}
 
 	Image AccessTokenImage( Token imageToken ) {
-		if(!tokenImages.ContainsKey( imageToken ))
-			tokenImages[imageToken] = GetImage( imageToken );
-		return tokenImages[imageToken];
+		if(!_tokenImages.ContainsKey( imageToken ))
+			_tokenImages[imageToken] = GetImage( imageToken );
+		return _tokenImages[imageToken];
 	}
 
 	static Bitmap GetImage( Token token ) {
@@ -969,14 +853,14 @@ public partial class IslandControl : Control {
 
 	public void RefreshLayout() {
 		spiritLayout = null;
-		ClearCachedImage();
+		ClearCachedBackgroundImage();
 		this.Invalidate();
 	}
 
-	void ClearCachedImage() {
-		if(cachedBackground != null) {
-			cachedBackground.Dispose();
-			cachedBackground = null;
+	void ClearCachedBackgroundImage() {
+		if(_cachedBackground != null) {
+			_cachedBackground.Dispose();
+			_cachedBackground = null;
 		}
 	}
 
@@ -994,7 +878,7 @@ public partial class IslandControl : Control {
 
 		// Spirit => Special Rules
 		if(spiritLayout != null && spiritLayout.imgBounds.Contains( clientCoords )) {
-			string msg = this.spirit.SpecialRules.Select(r=>r.ToString()).Join("\r\n\r\n");
+			string msg = this._spirit.SpecialRules.Select(r=>r.ToString()).Join("\r\n\r\n");
 			MessageBox.Show( msg );
 		}
 
@@ -1036,12 +920,12 @@ public partial class IslandControl : Control {
 
 	IOption FindSpaces( Point clientCoords ) {
 		return options_Space?.Select( s => {
-				PointF center = SpaceCenter( s );
+				PointF center = GetPortPoint( s );
 				float dx = clientCoords.X - center.X;
 				float dy = clientCoords.Y - center.Y;
 				return new { Space = s, d2 = dx * dx + dy * dy };
 			} )
-			.Where( x => x.d2 < radius * radius )
+			.Where( x => x.d2 < hotspotRadius * hotspotRadius )
 			.OrderBy( x => x.d2 )
 			.Select( x => x.Space )
 			.FirstOrDefault();
@@ -1054,11 +938,7 @@ public partial class IslandControl : Control {
 			.FirstOrDefault();
 	}
 
-	IOption FindHotSpot( Point clientCoords ) {
-		return hotSpots.Keys.FirstOrDefault(key=>hotSpots[key].Contains(clientCoords));
-	}
-
-	readonly Dictionary<IOption, RectangleF> hotSpots = new();
+	IOption FindHotSpot( Point clientCoords ) => hotSpots.Keys.FirstOrDefault(key=>hotSpots[key].Contains(clientCoords));
 
 	#region User Action Events - Notify main form
 
@@ -1071,7 +951,7 @@ public partial class IslandControl : Control {
 
 	static public Font UseGameFont( float fontHeight ) => ResourceImages.Singleton.UseGameFont( fontHeight );
 
-	#region private fields
+	#region private Option fields
 
 	void OptionProvider_OptionsChanged( IDecision decision ) {
 
@@ -1082,6 +962,7 @@ public partial class IslandControl : Control {
 		decision_DeckToDrawFrom      = decision as Select.DeckToDrawFrom;
 		decision_Element             = decision as Select.Element;
 		decision_AdjacentInfo        = decision is Select.IHaveAdjacentInfo adjacenInfoProvider ? adjacenInfoProvider.AdjacentInfo : null;
+		decision_Token               = decision is Select.IHaveTokenInfo ti ? ti.Token : null;
 
 		// These option_ variables contain everything they need to render on screen
 		options_Space         = decision.Options.OfType<Space>().ToArray();
@@ -1093,6 +974,7 @@ public partial class IslandControl : Control {
 		options_GrowthActions = decision.Options.OfType<GrowthActionFactory>().ToArray();
 	}
 
+	Token decision_Token; // the already-known token associated with a decision.  Like presence being placed or token that is being pushed to a destination.
 	Select.TokenFrom1Space           decision_TokenOnSpace;
 	Select.AdjacentInfo              decision_AdjacentInfo;
 	Select.TypedDecision<SpaceToken> decision_SpaceToken;
@@ -1106,38 +988,130 @@ public partial class IslandControl : Control {
 	IDrawableInnateOption[] options_DrawableInate;
 	GrowthOption[]          options_GrowthOptions;
 	GrowthActionFactory[]   options_GrowthActions;
+	Space[]					options_Space;
 
-		
 	readonly List<(Rectangle,IOption)> optionRects = new List<(Rectangle, IOption)>();
 
+	#endregion
+
+	#region private Misc fields
 
 	// Stores the locations of ALL SpaceTokens (invaders, dahan, presence, wilds, disease, beast, etx)
 	// When we are presented with a decision, the location of each option is pulled from here
 	// and added to the HotSpots.
-	readonly Dictionary<SpaceToken, Rectangle> tokenLocations = new Dictionary<SpaceToken, Rectangle>();
-	void RecordSpaceTokenLocation( SpaceToken sp, Rectangle rect ) => tokenLocations.Add( MakeKey(sp), rect );
-	bool HasLocation( SpaceToken sp ) => tokenLocations.ContainsKey( MakeKey(sp) );
+	readonly Dictionary<SpaceToken, Rectangle> _tokenLocations = new Dictionary<SpaceToken, Rectangle>();
 
-	Rectangle GetLocation( SpaceToken sp ) => tokenLocations[ MakeKey(sp) ];
-	static SpaceToken MakeKey( SpaceToken sp ) => sp;
+	Dictionary<Space, ManageInternalPoints> _insidePoints;
 
+	SpiritPainter _spiritPainter;
+	GameState _gameState;
+	Spirit _spirit;
 
-	GameState gameState;
-	Spirit spirit;
+	Size _boardScreenSize;
+	Bitmap _cachedBackground;
 
-	const float radius = 40f;
-	Space[] options_Space;
+	readonly Dictionary<IOption, RectangleF> hotSpots = new();
 
-	Size boardScreenSize;
-	Bitmap cachedBackground;
+	#endregion
+
+	#region Cached Image Resources
+
+	void LoadStandardTokenImages() {
+		var images = ResourceImages.Singleton;
+		strife = images.Strife();
+		fearTokenImage = images.Fear();
+		grayFear = images.FearGray();
+		_tokenImages = new Dictionary<Token, Image> {
+			[TokenType.Defend] = images.GetImage( Img.Defend ),
+			[TokenType.Blight] = images.GetImage( Img.Blight ),
+			[TokenType.Beast] = images.GetImage( Img.Beast ),
+			[TokenType.Wilds] = images.GetImage( Img.Wilds ),
+			[TokenType.Disease] = images.GetImage( Img.Disease ),
+			[TokenType.Badlands] = images.GetImage( Img.Badlands ),
+			[TokenType.Isolate] = images.GetImage( Img.Isolate ),
+		};
+	}
 
 	Image presence;
-	PresenceTokenAppearance presenceColor;
 	Image strife;
 	Image fearTokenImage;
 	Image grayFear;
-	Dictionary<Token, Image> tokenImages; // not token class, because we need different images for different damaged invaders.
+	Dictionary<Token, Image> _tokenImages; // because we need different images for different damaged invaders.
+
 	#endregion
+
+	#region Color & Appearance
+
+	const float hotspotRadius = 40f;
+	Color ArrowColor => Color.DeepSkyBlue;
+	Color SacredSiteColor => Color.Yellow;
+	Color HotSpotColor => Color.Aquamarine;
+	Color SpacePerimeterColor => Color.Black;
+	Color MultiSpacePerimeterColor => Color.Gold;
+
+	// Brushes for Text
+	Brush SpaceLabelBrush => Brushes.White;
+	Brush CardLabelBrush => Brushes.Black;
+	Brush BlightedTextBrush => Brushes.Red;
+	Brush GameTextBrush_Default => Brushes.Black;
+	Brush GameTextBrush_Victory => Brushes.DarkGreen;
+	Brush GameTextBrush_Defeat => Brushes.DarkRed;
+
+	// Fill / Background
+	Brush EmptySlotBrush => Brushes.DarkGray;
+	Brush PopupBackgroundBrush => Brushes.DarkGray;
+	Brush SpiritPanelBackgroundBrush => Brushes.LightYellow;
+
+	static Color SpaceColor( Space space )
+		=> space.IsWetland ? Color.LightBlue
+		: space.IsSand ? Color.PaleGoldenrod
+		: space.IsMountain ? Color.Gray
+		: space.IsJungle ? Color.ForestGreen
+		: space.IsOcean ? Color.Blue
+		: Color.Gold;
+
+	#endregion
+
+}
+
+
+class InvaderCardMetrics {
+	public InvaderCardMetrics( InvaderSlot slot, float x, float y, float width, float height, float textHeight ) {
+		this.slot = slot;
+
+		// Individual card rects
+		int count = slot.Cards.Count;
+		Rect = new RectangleF[count];
+		float buildWidth = width / count, buildHeight = height / count;
+		for(int i = 0; i < Rect.Length; ++i)
+			Rect[i] = new RectangleF( x + i * buildWidth, y + i * buildHeight, buildWidth, buildHeight );
+
+		// Text location
+		textBounds = new RectangleF( x, y + height + textHeight * .1f, width, textHeight * 1.5f );
+	}
+	public readonly InvaderSlot slot;
+	public readonly RectangleF[] Rect;
+	public readonly RectangleF textBounds;
+
+	public void Draw( Graphics graphics, Font labelFont, Font invaderStageFont ) {
+		// Draw all of the cards in that slot
+		// !! we could make them overlap and bigger
+		for(int i = 0; i < Rect.Length; ++i) {
+			var card = slot.Cards[i];
+			if(card.Flipped)
+				graphics.DrawInvaderCardFront( Rect[i], card );
+			else {
+				var cardRect = Rect[i];
+				using(SolidBrush brush = new SolidBrush( Color.LightSteelBlue ))
+					graphics.FillRectangle( brush, cardRect );
+				var smallerRect = cardRect.InflateBy( -cardRect.Width * .1f );
+				graphics.DrawInvaderCardBack( smallerRect, card );
+				smallerRect = cardRect.InflateBy( -25f );
+				graphics.DrawStringCenter( card.InvaderStage.ToString(), invaderStageFont, Brushes.DarkRed, smallerRect );
+			}
+		}
+		graphics.DrawStringCenter( slot.Label, labelFont, Brushes.Black, textBounds );
+	}
 
 }
 

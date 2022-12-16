@@ -51,7 +51,7 @@ public class StrongAndConstantCurrents{
 			var selected = await ctx.Decision( 
 				new Select.TokenFromManySpaces( "Select Dahan to move to/from"+ctx.Space, costalWithDahan, Present.Done ) {
 					AdjacentInfo = new Select.AdjacentInfo {
-						Original = ctx.Space,
+						Central = ctx.Space,
 						Adjacent = costalWithDahan.Select( s => s.Space ).Distinct().ToArray(),
 						Direction = Select.AdjacentDirection.Incoming
 					}

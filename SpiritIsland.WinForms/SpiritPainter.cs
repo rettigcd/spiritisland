@@ -9,22 +9,26 @@ namespace SpiritIsland.WinForms {
 	// new spirit Painter each time layout / size changes
 	class SpiritPainter : IDisposable {
 
-		readonly Spirit spirit;
-		readonly SpiritLayout spiritLayout;
+		readonly Spirit _spirit;
+		SpiritLayout spiritLayout;
 
-		readonly InnatePainter[] innatePainters;
-		readonly PresenceTrackPainter presencePainter;
-		readonly GrowthPainter growthPainter;
+		InnatePainter[] innatePainters;
+		PresenceTrackPainter presencePainter;
+		GrowthPainter growthPainter;
+		PresenceTokenAppearance _presenceColor; // stored here because the presencePainter gets .Dispose() and needs it
 
-		public SpiritPainter(Spirit spirit, SpiritLayout spiritLayout, PresenceTokenAppearance presenceColor ) {
-			this.spirit = spirit;
-			this.spiritLayout = spiritLayout;
+		public SpiritPainter(Spirit spirit, PresenceTokenAppearance presenceColor ) {
+			_spirit = spirit;
+			_presenceColor = presenceColor;
+		}
 
+		public void SetLayout( SpiritLayout layout ) {
+			this.Dispose();
+
+			this.spiritLayout = layout;
 			growthPainter = new GrowthPainter( spiritLayout.growthLayout );
-
-			presencePainter = new PresenceTrackPainter( spirit, spiritLayout.trackLayout, presenceColor );
-
-			innatePainters = spirit.InnatePowers
+			presencePainter = new PresenceTrackPainter( _spirit, spiritLayout.trackLayout, _presenceColor );
+			innatePainters = _spirit.InnatePowers
 				.Select( power => new InnatePainter( power, spiritLayout.innateLayouts[power] ) )
 				.ToArray();
 		}
@@ -55,7 +59,7 @@ namespace SpiritIsland.WinForms {
 
 		void Draw_Innates( Graphics graphics, InnatePower[] innateOptions, IDrawableInnateOption[] innateGroupOptions, CachedImageDrawer imageDrawer ) {
 			foreach(var painter in innatePainters)
-				painter.DrawFromLayout( graphics, imageDrawer, spirit.Elements, innateOptions, innateGroupOptions );
+				painter.DrawFromLayout( graphics, imageDrawer, _spirit.Elements, innateOptions, innateGroupOptions );
 		}
 
 		void DrawSpiritImage( Graphics graphics ) {
@@ -65,16 +69,16 @@ namespace SpiritIsland.WinForms {
 		}
 
 		Image LoadSpiritImage() {
-			string filename = spirit.Text.Replace( ' ', '_' );
+			string filename = _spirit.Text.Replace( ' ', '_' );
 			return Image.FromFile( $".\\images\\spirits\\{filename}.jpg" );
 		}
 
 		void Draw_Elements( Graphics graphics ) {
 			// activated elements
-			DrawActivatedElements( graphics, spirit.Elements, spiritLayout.Elements );
-			int skip = spirit.Elements.Keys.Count; 
+			DrawActivatedElements( graphics, _spirit.Elements, spiritLayout.Elements );
+			int skip = _spirit.Elements.Keys.Count; 
 			if(skip>1) skip++; // add a space
-			if(spirit is IHaveSecondaryElements hasSecondaryElements)
+			if(_spirit is IHaveSecondaryElements hasSecondaryElements)
 				DrawActivatedElements( graphics, hasSecondaryElements.SecondaryElements, spiritLayout.Elements, skip );
 		}
 
@@ -99,14 +103,13 @@ namespace SpiritIsland.WinForms {
 		}
 
 		public void Dispose() {
-			if(growthPainter != null)
-				growthPainter.Dispose();
+			growthPainter?.Dispose();
 
-			if(presencePainter != null)
-				presencePainter.Dispose();
+			presencePainter?.Dispose();
 
-			foreach(var ip in innatePainters)
-				ip.Dispose();
+			if(innatePainters is not null)
+				foreach(var ip in innatePainters)
+					ip.Dispose();
 		}
 
 		Image spiritImage;

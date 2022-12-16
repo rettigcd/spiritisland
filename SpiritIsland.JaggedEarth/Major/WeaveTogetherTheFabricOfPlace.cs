@@ -77,7 +77,7 @@ public class WeaveTogetherTheFabricOfPlace {
 		foreach(var spirit in gs.Spirits) {
 			int count = spirit.Presence.CountOn( srcTokens );
 			while(count > 0) {
-				var dst = await spirit.Gateway.Decision( Select.Space.ForAdjacent( "Distribute preseence to:", space, Select.AdjacentDirection.Outgoing, dstOptions, Present.Done ) );
+				var dst = await spirit.Gateway.Decision( Select.Space.ForAdjacent( "Distribute preseence to:", space, Select.AdjacentDirection.Outgoing, dstOptions, Present.Done, spirit.Presence.Token ) );
 				if(dst == null) break;
 				await new BoundPresence( spirit, gs, gs.Island.Terrain_ForPower, actionId ).Move( space, other );
 				--count;

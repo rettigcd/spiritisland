@@ -14,7 +14,7 @@ public class TokenFromManySpaces : TypedDecision<SpaceToken>, IHaveAdjacentInfo 
 		present
 	) {
 		AdjacentInfo = new AdjacentInfo {
-			Original = to,
+			Central = to,
 			Adjacent = tokens.Select( s => s.Space ).Distinct().ToArray(),
 			Direction = AdjacentDirection.Incoming
 		}

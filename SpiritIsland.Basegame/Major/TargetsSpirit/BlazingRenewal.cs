@@ -15,7 +15,7 @@ public class BlazingRenewal {
 		// A Range extender effects the "Spirit's Actions".  (so Originating spirit's range determines which spaces)
 		var targetOptions = ctx.Presence.FindSpacesWithinRange( new TargetCriteria(2),TargetingPowerType.PowerCard);
 		// Jonah says Originating Spirit's decision.  However, Querki says: Target Spirit makes the decision.
-		var space = await ctx.OtherCtx.Decision( Select.Space.ToPlacePresence( targetOptions, Present.Always ) );
+		var space = await ctx.OtherCtx.Decision( Select.Space.ToPlacePresence( targetOptions, Present.Always, ctx.Other.Presence.Token ) );
 
 		// target spirit adds 2 of their destroyed presence
 		await ctx.OtherCtx

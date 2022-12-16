@@ -6,13 +6,13 @@ public class SpaceLayout {
 
 	public SpaceLayout( PointF[] corners) {
 		Corners = corners;
-		_bounds = CalcBounds( corners );
-		Center = CalcCenterOfSpacePoints(_bounds);
+		Bounds = CalcBounds( corners );
+		Center = CalcCenterOfSpacePoints(Bounds);
 	}
 
 	public PointF[] Corners { get; } // the corners on each space.
 	public PointF Center { get; private set; } // set is public for manual adjustment
-	RectangleF _bounds;
+	public RectangleF Bounds { get; private set; }
 
 	public void AdjustCenter( float deltaX, float deltaY ) {
 		Center = new PointF( Center.X+deltaX, Center.Y +deltaY );
@@ -20,16 +20,16 @@ public class SpaceLayout {
 	public void ReMap( PointMapper mapper ) {
 		for(int i = 0; i < Corners.Length; ++i)
 			Corners[i] = mapper.Map( Corners[i] );
-		_bounds = CalcBounds( Corners );
-		Center = CalcCenterOfSpacePoints(_bounds);
+		Bounds = CalcBounds( Corners );
+		Center = CalcCenterOfSpacePoints(Bounds);
 	}
 
 	// sorted farthest from boarder to closest to boarder
 	public PointF[] GetInternalGridPoints( float stepSize ) {
 		Dictionary<PointF, float> distancesFromBoarder = new Dictionary<PointF, float>();
 
-		for(float x = _bounds.Left; x <= _bounds.Right; x += stepSize)
-			for(float y = _bounds.Top; y <= _bounds.Bottom; y += stepSize)
+		for(float x = Bounds.Left; x <= Bounds.Right; x += stepSize)
+			for(float y = Bounds.Top; y <= Bounds.Bottom; y += stepSize)
 				if(Polygons.IsInside( Corners, x, y )) {
 					PointF p = new PointF( x, y );
 					distancesFromBoarder.Add( p, Polygons.DistanceFromPolygon(Corners,p) );
@@ -46,8 +46,8 @@ public class SpaceLayout {
 		float yStepSize = xStepSize * 1.2f;
 
 		bool offset = false;
-		for(float x = _bounds.Left; x <= _bounds.Right; x += xStepSize) {
-			for(float y = _bounds.Top - (offset ? yOffset : 0); y <= _bounds.Bottom; y += yStepSize)
+		for(float x = Bounds.Left; x <= Bounds.Right; x += xStepSize) {
+			for(float y = Bounds.Top - (offset ? yOffset : 0); y <= Bounds.Bottom; y += yStepSize)
 				if(Polygons.IsInside( Corners, x, y ))
 					yield return new PointF( x, y );
 			offset = !offset;
