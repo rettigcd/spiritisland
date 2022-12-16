@@ -2,13 +2,10 @@
 ====  Clean Up Items  ====
 ==========================
 
-Rivers presence in wetland not showing as Sacred Site
 Damaged Invaders use non-damaged if available. OR check if any other available damaged slots
 Multiple tokens using the same token slot. Maybe need to lock it or add asserts.
 
 3+1? remaining Adversaries (Habsburg, Russia, Scotland, France?)
-
-Tokens - Publish token events to the UI so that it can show token changing animation.
 
 Verify - Starlights Track has +1 energies
 Verify - Vengeance - WreakVengeance for the Lands Corruption
@@ -28,6 +25,7 @@ Tokens - WreakVengeanceForTheLandsCorruption - virtual tokens might not be corre
 4 Slip the flows of time - use any # of times
 4  Display Blight Card and/or text
 
+3 Tokens - Publish token events to the UI so that it can show token changing animation.
 3 Command-Beast - show graphic (so it doesn't get lost in text)
 3 Visual indicator of Phase
 3 Add special-rules logging as Debug, so we can see what happened.
