@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-[InnatePower(ObserveTheEverChangingWorld.Name), Fast, FromPresence(1)]
+[InnatePower(Name), Fast, FromPresence(1)]
 public class ObserveTheEverChangingWorld {
 
 	public const string Name = "Observe the Ever-Changing World";

@@ -21,7 +21,7 @@ France adds some post-build actions
 
 == Testing Notes ==
 
-[Trait( "Feature", "Build" )]
+[Trait( "Invaders", "Build" )]
 
 Test:
 	Pour Time Sideways

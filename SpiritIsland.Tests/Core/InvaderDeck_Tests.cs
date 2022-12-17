@@ -2,6 +2,7 @@
 
 public class InvaderDeck_Tests {
 
+	[Trait( "Invaders", "Deck" )]
 	[Fact]
 	public void Memento_RoundTrip() {
 

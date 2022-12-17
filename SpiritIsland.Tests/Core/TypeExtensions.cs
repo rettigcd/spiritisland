@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace SpiritIsland.Tests;
+﻿namespace SpiritIsland.Tests;
 
 static public class TypeExtensions {
 

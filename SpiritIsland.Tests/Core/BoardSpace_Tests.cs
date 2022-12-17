@@ -1,5 +1,6 @@
 ﻿namespace SpiritIsland.Tests;
 
+[Trait("Space","Connectivity")]
 public class BoardSpace_Tests {
 
 	[Theory]
