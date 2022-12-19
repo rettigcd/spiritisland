@@ -30,8 +30,14 @@ public sealed class UnitOfWork : IAsyncDisposable {
 	#endregion
 
 	public async ValueTask DisposeAsync() {
+		if(_endOfThisAciton != null)
+			await _endOfThisAciton.InvokeAsync(this);
 		await _endOfAction.InvokeAsync(this);
 	}
+
+	public void AtEndOfThisAction(Func<UnitOfWork,Task> action ) => (_endOfThisAciton ??= new AsyncEvent<UnitOfWork>()).Add( action );
+	public void AtEndOfThisAction( Action<UnitOfWork> action ) => (_endOfThisAciton ??= new AsyncEvent<UnitOfWork>()).Add( action );
+	AsyncEvent<UnitOfWork> _endOfThisAciton;
 
 	#region private
 	readonly DualAsyncEvent<UnitOfWork> _endOfAction;

@@ -149,7 +149,10 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 
 	#region Choose
 
-	public void Choose(string choiceText ) {
+	public void Choose( string choiceText, Task task=null ) {
+		if(task != null)
+			task.IsCompleted.ShouldBeFalse();
+
 		var decision = Spirit.Gateway.GetCurrent( true );
 		if(decision == null) throw new Exception("no Decision presented.");
 		var matchingChoices = decision.Options

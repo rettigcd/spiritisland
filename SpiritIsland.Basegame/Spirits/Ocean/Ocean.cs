@@ -4,7 +4,12 @@ public class Ocean : Spirit {
 
 	public const string Name = "Ocean's Hungry Grasp";
 
-	public override SpecialRule[] SpecialRules => new SpecialRule[] { new SpecialRule("OCEAN IN PLAY", "You may add/move Presence into Oceans, but may not add/move Presence into Inland lands. On boards where you have 1 or more Presenceicon.png, Oceans are treated as Coastal Wetlands for Spirit Powers/Special Rules and Blighticon.png.You Drown any Invaders or Dahanicon.png moved to those Oceans."), new SpecialRule("DROWNING", "Destroy Drowned pieces, placing Drowned Invaders here. At any time you may exchange (X) Health of these Invaders for 1 Energy, where X = number of players.") };
+	public override SpecialRule[] SpecialRules => new SpecialRule[] { OceanInPlay, DrowningRule	};
+
+	readonly SpecialRule OceanInPlay = new SpecialRule(
+		"Ocean In Play",
+		"You may add/move Presence into Oceans, but may not add/move Presence into Inland lands. On boards where you have 1 or more Presence, Oceans are treated as Coastal Wetlands for Spirit Powers/Special Rules and Blight. You Drown any Invaders or Dahan moved to those Oceans."
+	);
 
 	public Ocean():base(
 		new OceanPresence(
@@ -58,36 +63,61 @@ public class Ocean : Spirit {
 
 		this.AddActionFactory( new Setup_PlacePresenceInCostal() ); // let user pick initial ocean
 
-		gameState.Tokens.TokenAdded.ForGame.Add(InvadersAdded);
-		gameState.TimePasses_WholeGame += RemoveDrownedDahan;
+		gameState.Tokens.TokenAdded.ForGame.Add(Drowning);
 	}
 
-	async Task RemoveDrownedDahan( GameState gs ) {
-		var actionId = gs.StartAction( ActionCategory.Spirit ); // Special Rules
-		foreach(var board in gs.Island.Boards)
-			await gs.Tokens[board.Ocean].Dahan.Bind(actionId).Drown();
-	}
+	readonly SpecialRule DrowningRule = new SpecialRule(
+		"Drowning",
+		"Destroy Drowned pieces.  At any time you may exchange [# of players] Health of these Invaders for 1 Energy."
+	);
 
-	async Task InvadersAdded( ITokenAddedArgs args ) {
-		if( !args.Space.Space.IsOcean ) return;
-		var gs = args.GameState;
-		var grp = args.Token.Class;
+	async Task Drowning( ITokenAddedArgs args ) {
+		if( !args.Space.Space.IsOcean 
+			|| args.Token is not HealthToken ht ) return;
 
-		if( grp == Invader.City || grp == Invader.Town || grp == Invader.Explorer ) { // Could created an Invader subclass that is easier to test.
-			var ht = args.Token as HealthToken;
-			// Drown Invaders for points
-			drownedCount += ht.FullHealth;
-			await gs.Invaders.On( args.Space.Space, args.Action ).Destroy( 1, (HealthToken)args.Token );
-
-			int spiritCount = gs.Spirits.Length;
-			while(spiritCount <= drownedCount) {
-				++Energy;
-				drownedCount -= spiritCount;
+		// If we are saving a dahan
+		if( ht.Class.Category == TokenCategory.Dahan && ShouldSaveDahan(args.Action) && Presence.IsOn( args.Space )	) {
+			var moveOptions = args.GameState.Island.Boards
+				.Select(x=>args.GameState.Tokens[x.Ocean])
+				.SelectMany(x=>x.Adjacent)
+				.Distinct()
+				.ToArray();;
+			// And Ocean chooses to save it
+			var destination = await this.Gateway.Decision(Select.Space.PushToken(args.Token,args.Space.Space,moveOptions, Present.Done));
+			if( destination != null ) {
+				// Move them at the end of the Action. (Let everyone handle the move-event before we move them again)
+				args.Action.AtEndOfThisAction(_ => Bind( args.GameState, args.Action ).Move( args.Token, args.Space.Space, destination ) );
+				return; // the move it, don't drown it
 			}
 		}
 
+		// Drown them immediately
+		args.GameState.Log( new LogDebug($"Drowning {args.Count}{ht.SpaceAbreviation} on {args.Space.Space}") );
+		await args.GameState.Invaders.On( args.Space.Space, args.Action ).Destroy( args.Count, ht );
+
+		// Track drowned invaders' health
+		if(args.Token.Class.Category == TokenCategory.Invader)
+			drownedInvaderHealthAccumulator += (ht.FullHealth * args.Count);
+		CashInDrownedHealthForEnergy( args.GameState );
 	}
 
-	int drownedCount = 0;
+	void CashInDrownedHealthForEnergy( GameState gs ) {
+		int spiritCount = gs.Spirits.Length;
+		int earnedEnergy = drownedInvaderHealthAccumulator / spiritCount;
+		if( earnedEnergy == 0 ) return;
 
+		int cashedInHealth = spiritCount * earnedEnergy;
+		gs.Log( new LogDebug($"Ocean gained {earnedEnergy} energy from cashing in {cashedInHealth} health of drowned invaders."));
+
+		// Update Ocean
+		drownedInvaderHealthAccumulator -= cashedInHealth;
+		Energy += earnedEnergy;
+	}
+
+	int drownedInvaderHealthAccumulator = 0;
+
+	// ! Hook for Tidal Boon
+	static public void EnableSavingDahan( UnitOfWork unitOfWork ) { unitOfWork[SaveDahan] = true; }
+	static public bool ShouldSaveDahan( UnitOfWork uow ) => uow.ContainsKey( SaveDahan );
+	const string SaveDahan = "SaveDahanFromDrowning";
 }

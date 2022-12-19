@@ -27,14 +27,14 @@ public interface ICalcRange {
 /// Since Spirit.SourceCalculator is modified by Entwined, use only for Powers
 /// </summary>
 public class DefaultPowerSourceCalculator : ICalcPowerSource {
-	public IEnumerable<SpaceState> FindSources( IKnowSpiritLocations presence, TargetSourceCriteria sourceCriteria, GameState _ ) {
+	public IEnumerable<SpaceState> FindSources( IKnowSpiritLocations presence, TargetSourceCriteria sourceCriteria, GameState gameState ) {
 		var sources = sourceCriteria.From switch {
 			From.Presence => presence.SpaceStates,
 			From.SacredSite => presence.SacredSites,
 			_ => throw new ArgumentException( "Invalid presence source " + sourceCriteria.From ),
 		};
 		return sourceCriteria.Terrain.HasValue
-			? sources.Where( space => space.Space.Is( sourceCriteria.Terrain.Value ) )
+			? sources.Where( space => gameState.Island.Terrain_ForPower.MatchesTerrain( space, sourceCriteria.Terrain.Value ) )
 			: sources;
 	}
 

@@ -1,24 +1,33 @@
+1) Test 3-spirits setup
+2) 3 limited presence locations
+3a) Frozen 
+3b) Stubborn Solidity (stone)
+4) Ravage Engine
+5) Volcano range
+6) Vengence Keep disaese for fear
+7) Switch absolute stasis to use dream tokens
+8) all range adjustments
+9) Many Minds
+
 == Traits ==
 
 SpaceState
 	Frozen Dahan
 Special Rules
+	Downpour - SS as wetland
+	Finder - Open the Ways - shuts off during invader rounds (explore)
 	Many Minds - Presence as beasts
 	Many Minds - push/gather beast range 2
-	Downpour - SS as wetland
-	Ocean - is coastal wetland for powers.
-	Ocean - Drown
-	Vital Strength - SS is defend 3
-	Finder - Open the Ways - shuts off during invader rounds (explore)
+	Shiftin Memories - Element Rewind
+	Shroud - slow and silent death
+	Stone - stops blight
 	Trickster - Removing blight costs presence EXCEPT for Let's See What Happens
 	Vengeanance - Allow Build w/ Disease for 1 fear
 	Vengeanance - destroyed by anything EXCEPT spirit action, add 1 disease where presence was destroyed
 	Vengeanance - for Actions, treat blight as also badlands
-	Volcano - presence destroyed - 1 damage/presence to invaders and dahan
-	Shroud - slow and silent death
-	Shiftin Memories - Element Rewind
-	Stone - stops blight
+	Vital Strength - SS is defend 3
 	Volcano - +1 Range 
+	Volcano - presence destroyed - 1 damage/presence to invaders and dahan
 
 Invaders-Ravage
 	Configure Ravage - do all combinations work?
@@ -38,7 +47,6 @@ Trickster - Why don't you and them fight
 
 Rain And Mud Suppress Conflict
 	- different tier levels can be opted into.
-
 
 -------------------
 

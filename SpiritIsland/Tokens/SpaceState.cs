@@ -75,6 +75,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	#region To-String methods
 
+	/// <summary>Gets all tokens that have a SpaceAbreviation</summary>
 	public string Summary => counts.TokenSummary();
 
 	public override string ToString() => Space.Label + ":" + Summary;
@@ -212,18 +213,24 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	// Convenience only
 	public Task Destroy( Token token, int count, UnitOfWork actionId ) => Remove(token, count, actionId, RemoveReason.Destroyed );
 
+	async Task<PublishTokenRemovedArgs> RemoveDahan_SideTrip(HealthToken token, UnitOfWork actionId) {
+		// This remove routes through the DahanBinidng, which will then call this classes .Remove when appropriate.
+		// DO NOT merge this directly into .Remove(...) because we will get a stack-overflow
+		Token removedToken = await Dahan.Bind( actionId ).Remove1( RemoveReason.MovedFrom, token );
+		return removedToken is null ? null 
+			: new PublishTokenRemovedArgs( removedToken, RemoveReason.MovedFrom, actionId, this, 1 ); // !!! 1
+	}
+
 	/// <summary> Gathering / Pushing + a few others </summary>
 	// !!! Powers should not use this Move directly, instead, they should go through TargetSpaceCtx so they can use custom Dahan and Invader bindings.
 	public async Task MoveTo(Token token, Space destination, UnitOfWork actionId ) {
 
 		// Remove from source
-		PublishTokenRemovedArgs removedArgs;
-		if( token.Class == TokenType.Dahan) {
-			Token removedToken = await Dahan.Bind( actionId ).Remove1( RemoveReason.MovedFrom, token );
-			if(removedToken == null) return;
-			removedArgs = new PublishTokenRemovedArgs( removedToken, RemoveReason.MovedFrom, actionId, this, 1); // !!!
-		} else
-			removedArgs = await Remove( token,1,actionId, RemoveReason.MovedFrom );
+		PublishTokenRemovedArgs removedArgs = token.Class == TokenType.Dahan
+			? await RemoveDahan_SideTrip( (HealthToken)token, actionId )
+			: await Remove( token,1,actionId, RemoveReason.MovedFrom );
+		if( removedArgs is null ) // denied by DahanBinding
+			return;
 
 		// Add to destination
 		var dstTokens = tokenApi.GetTokensFor( destination );
@@ -311,7 +318,8 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	public SpaceState LinkedViaWays; // HACK - for Finder
 
 	public IEnumerable<SpaceState> CascadingBlightOptions => Adjacent
-		 .Where(x => !this.gameState.Island.Terrain_ForBlight.MatchesTerrain(x, Terrain.Ocean) );
+		 .Where(x => !this.gameState.Island.Terrain_ForBlight.MatchesTerrain(x, Terrain.Ocean)
+			|| this.gameState.Island.Terrain_ForBlight.MatchesTerrain( x, Terrain.Wetland ) );
 
 	public IEnumerable<SpaceState> Range(int maxDistance) => this.CalcDistances( maxDistance ).Keys;
 

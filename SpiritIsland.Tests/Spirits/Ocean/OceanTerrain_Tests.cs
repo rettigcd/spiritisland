@@ -1,76 +1,369 @@
-﻿namespace SpiritIsland.Tests.Spirits.OceanNS; 
+﻿namespace SpiritIsland.Tests.Spirits.OceanNS;
+
 public class OceanTerrain_Tests {
 
-	readonly Board board = Board.BuildBoardA();
-	readonly RiverSurges river = new RiverSurges();
-	readonly Ocean ocean = new Ocean();
+	#region private fields
+
+	readonly Ocean oceanSpirit = new Ocean();
+	readonly Board boardA = Board.BuildBoardA();
+	readonly Spirit primarySpirit = new Thunderspeaker();
+	readonly GameState gameState;
+
+	#endregion
+
+	#region constructor
 
 	public OceanTerrain_Tests() {
-
+		gameState = Given_TwoSpiritGame();
 	}
 
-	public GameState GetGame(bool oceanIsPlaying ) {
-		var gs = oceanIsPlaying
-			? new GameState( river, ocean ) { Island = new Island( board, Board.BuildBoardB() ) }
-			: new GameState( river, board );
+	#endregion
 
-		gs.Initialize();
+	[Trait("SpecialRule","OceanInPlay")]
+	[Fact]
+	public async Task CannotTargetOcean() {
+		// Given: 2-spirit-game with Thundersepearker on A and Ocean on B
 
-		if(oceanIsPlaying)
-			ocean.Presence.PlaceOn( gs.Island.Boards[0][8], gs ); // put ocean presence on river's board, but not in the ocean
+		//   And: Thundersepearker on A2 only
+		Given_PrimaryPresenceOnA2Only();
 
-		return gs;
+		// When: Thundersepearker Activates a card that targets ANY-terrain Range-1 (Call To Guard - Range 1, Any land)
+		await using UnitOfWork action = gameState.StartAction( ActionCategory.Default );
+		SelfCtx ctx = primarySpirit.BindMyPower( gameState, action );
+		_ = PowerCard.For<CallToGuard>().ActivateAsync( ctx );
+
+		// Then: Targetting does not inculde Ocean
+		Assert_CurrentOptions( "A1,A2,A3,A4", "exclude ocean" );
+	}
+
+	[Trait( "SpecialRule", "OceanInPlay" )]
+	[Fact]
+	public async Task WithOcean_CanTargetOceanAsWetland() {
+		// Given: 2-spirit-game with Thundersepearker on A and Ocean on B
+
+		//   And: Thundersepearker on A2 only
+		Given_PrimaryPresenceOnA2Only();
+
+		//   And: Ocean is on Thundersepearker's board
+		Given_OceanOnPrimaryBoard();
+
+		// When: Thundersepearker Activates a card that targets WETLANDS (Talons ofLightning - Range 1, M/W)
+		await using UnitOfWork action = gameState.StartAction( ActionCategory.Default );
+		SelfCtx ctx = primarySpirit.BindMyPower( gameState, action );
+		_ = PowerCard.For<TalonsOfLightning>().ActivateAsync( ctx );
+
+		// Then: Targetting options INCLUDES Ocean
+		Assert_CurrentOptions( "A0,A1,A2", "include ocean" );
+	}
+
+	[Trait( "SpecialRule", "OceanInPlay")]
+	[Trait( "SpecialRule", "Drowning" )]
+	[Theory]
+	[InlineData(false),InlineData(true)]
+	public async Task PushDahanIntoOcean(bool withOcean) {
+		// track starting energy
+		int oceanStartingEnergy = oceanSpirit.Energy;
+
+		// Given: 2-spirit-game with Thundersepearker on A and Ocean on B
+
+		//   And: Thundersepearker on A2 only
+		Given_PrimaryPresenceOnA2Only();
+
+		if( withOcean )
+			Given_OceanOnPrimaryBoard();
+
+		// When: Thundersepearker Activates a card that Pushes Dahan
+		// Call To Tend: Range 1, Dahan, Push up to 3 Dahan
+		await using UnitOfWork action = gameState.StartAction( ActionCategory.Default );
+		SelfCtx ctx = primarySpirit.BindMyPower( gameState, action );
+		_ = PowerCard.For<CallToTend>().ActivateAsync( ctx );
+		//  And: Targets A2 (that has a dahan on it)
+		Choose( "A2" );
+		//  And: Push a Dahan
+		Choose( "D@2" );
+
+		// Then: push options should not include ocean
+		if( withOcean )
+			Assert_CurrentOptions( "A0,A1,A3,A4", "with ocean" );
+		else
+			Assert_CurrentOptions( "A1,A3,A4", "no ocean" );
+
+		if( withOcean) {
+			var log = new List<string>();
+			gameState.NewLogEntry += (e) => { if( e is LogDebug ) log.Add( e.Msg() ); };
+
+			// Push into Ocean and let Thunderspeaker ride along
+			Choose("A0");
+			Current.Prompt.ShouldBe( "Move presence with Dahan?" );
+			Assert_CurrentOptions( "A2,Done", "with ocean" );
+			Choose("A2"); // brings Thunderspeaker along
+			
+			// Then: This should destroy the dahan
+			var oceanSpace = gameState.Tokens[boardA[0]];
+			oceanSpace.Summary.ShouldBe("");
+			log.Single().ShouldBe("Drowning 1D@2 on A0");
+
+			//  And: and leave thunderspeaker in the ocean.
+			primarySpirit.Presence.IsOn( oceanSpace ).ShouldBeTrue();
+
+			// And should NOT adjust energy
+			oceanSpirit.Energy.ShouldBe(oceanStartingEnergy);
+		}
+	}
+
+	[Trait( "SpecialRule", "OceanInPlay" )]
+	[Trait( "SpecialRule", "Drowning" )]
+	[Theory]
+	[InlineData( false,"T@2", 0 )] // lots of invaders you can't push into the ocean
+	[InlineData( true, "E@1", 1 )] // push 2 explorers => 2 health => 1 energy
+	[InlineData( true, "T@2", 2 )] // push 2 town => 4 health => 2 energy
+	public async Task PushInvadersIntoOcean( bool withOcean, string pushToken, int expectedEnergyGain ) {
+		// track starting energy
+		int oceanStartingEnergy = oceanSpirit.Energy;
+		var debugLog = new List<string>();
+		gameState.NewLogEntry += ( e ) => { if(e is LogDebug) debugLog.Add( e.Msg() ); };
+
+		// Given: 2-spirit-game with Thundersepearker on A and Ocean on B
+
+		if(withOcean)
+			Given_OceanOnPrimaryBoard();
+
+		//   And: 2 towns and 2 explorers on space
+		SpaceState a2 = gameState.Tokens[boardA[2]];
+		a2.InitDefault( Invader.Town, 2 );
+		a2.InitDefault( Invader.Explorer, 2 );
+
+		//   And: Thundersepearker on A2 only
+		Given_PrimaryPresenceOnA2Only();
+
+		// When: Thundersepearker Activates a card that Pushes Explorers/Towns
+		// Land of Haunts And Embers: Range 2, Any, Push up to 2 Explorers/Towns
+		await using UnitOfWork action = gameState.StartAction( ActionCategory.Default );
+		SelfCtx ctx = primarySpirit.BindMyPower( gameState, action );
+		_ = PowerCard.For<LandOfHauntsAndEmbers>().ActivateAsync( ctx );
+		//  And: Targets A2
+		Choose( a2.Space.Text );
+
+		for(int i=0; i < 2; ++i) {
+			// When: Push 1st invadera Town
+			Choose( pushToken );
+			// Then: ocean is/is-not an option
+			Assert_CurrentOptions( withOcean ? "A0,A1,A3,A4" : "A1,A3,A4", withOcean ? "with ocean" : "no ocean" );
+			Choose(withOcean ? "A0" : "A1");
+		}
+
+		// Then: ocean should have drown energy
+		oceanSpirit.Energy.ShouldBe( oceanStartingEnergy + expectedEnergyGain );
+		debugLog
+			.Count( x => x == $"Ocean gained 1 energy from cashing in 2 health of drowned invaders." )
+			.ShouldBe( expectedEnergyGain );
+	}
+
+	[Trait( "Blight", "Cascade" )]
+	[Trait( "SpecialRule", "OceanInPlay" )]
+	[Theory]
+	[InlineData(true)]
+	[InlineData(false)]
+	public void CascadingBlight(bool withOcean ) {
+		// with blight in A2 already
+		// Ravage in a2 (already has city)
+
+		// Given: 2-spirit-game with Thundersepearker on A and Ocean on B
+
+		//   And: With/Without Ocean on board
+		if(withOcean)
+			Given_OceanOnPrimaryBoard();
+
+		//   And: blight on a2
+		SpaceState a2 = gameState.Tokens[boardA[2]];
+		a2.Blight.Init(1);
+		//   But: no dahan (don't want to trigger Thunderspeakers presence destruction
+		a2.Dahan.Init(0);
+
+		//  When: invaders ravage and cause blight
+		_ = boardA[2].DoARavage(gameState);
+
+		// Then: we can/can't cascade into ocean
+		Assert_CurrentOptions( withOcean ? "A0,A1,A3,A4" : "A1,A3,A4", withOcean ? "with ocean" : "no ocean" );
+		Choose( withOcean ? "A0" : "A1" );
+	}
+
+	[Trait( "SpecialRule", "OceanInPlay" )]
+	[Fact]
+	public void OtherSpirits_CannotGrowInOcean() {
+		// Given: With/Without Ocean on board
+		Given_OceanOnPrimaryBoard();
+
+		Given_PrimaryPresenceOnA2Only();
+
+		// When: placing precense
+		_ = primarySpirit.DoGrowth( gameState );
+		Choose("PlacePresence(1)");
+
+		//  And: take from card play
+		Choose("2 cardplay");
+
+		// Then: ocean is not in option list
+		Assert_CurrentOptions( "A1,A2,A3,A4","should not grow into ocean");
+		Choose( "A1" ); // close out action thread
+	}
+
+	[Trait( "SpecialRule", "OceanInPlay" )]
+	[Fact]
+	public void PlacePresenceInOcean_DuringPower() {
+		// Given: With/Without Ocean on board
+		Given_OceanOnPrimaryBoard();
+
+		Given_PrimaryPresenceOnA2Only(); // reduces # of Target options
+
+		//  And: spirit can use blazing renewal
+		primarySpirit.Energy = 5;
+		primarySpirit.Presence.Destroyed = 1;
+		primarySpirit.AddActionFactory(PowerCard.For<BlazingRenewal>());
+		gameState.Phase = Phase.Fast;
+
+		// When: using a Power that places presence
+		_ = primarySpirit.ResolveActions(gameState);
+		Choose( "Blazing Renewal $5 (Fast)" );
+		Choose( "Thunderspeaker" );
+
+		// Then: ocean (A0) IS a destination to place presence
+		Choose( "A0" );
+
 	}
 
 	[Trait("SpecialRule","OceanInPlay")]
 	[Theory]
-	[InlineData( false, "A1,A2" )]
-	[InlineData( true, "A0,A1,A2" )]
-	public async Task TargettingOceanAsWetLand(bool hasOcean,string expectedOptions ) {
-		var gs = GetGame( hasOcean );
-		gs.Phase = Phase.Fast;
+	[InlineData(true),InlineData(false)]
+	public void TargetOutOfOceanAsWetland( bool withOcean ) {
 
-		await using var action = gs.StartAction( ActionCategory.Default );
-		var ctx = river.BindMyPower( gs, action ); // correct
-		await ctx.Presence.Move( board[5], board[2] ); // move it to A2
-		Assert_Options( "A2", ctx.Presence.Spaces, "river starting presence" );
+		// Given: with/without ocean
+		if( withOcean )
+			Given_OceanOnPrimaryBoard();
 
-		// Talons ofLightning - Range 1
-		_ = PowerCard.For<TalonsOfLightning>().ActivateAsync( ctx ); // reusing Action
+		// Presence in Ocean
+		Given_PrimaryPresenceOnlyOn( boardA[0]);
 
-		Assert_Options( expectedOptions, river.Gateway.GetCurrent().Options, hasOcean ? "include ocean" : "exclude ocean" );
+		// When: trying to use a card that targets out of a wetland
+		// Cleansing Floods (range 1 from wetland)
+		primarySpirit.Energy = 5;
+		primarySpirit.AddActionFactory(PowerCard.For<CleansingFloods>());
+		gameState.Phase = Phase.Slow;
+		var actionTask = primarySpirit.ResolveActions( gameState );
+		Choose( "Cleansing Floods $5 (Slow)" );
 
-		static void Assert_Options( string expectedOptions, IEnumerable<IOption> actual, string msg ) {
-			var options = actual.Select( x => x.Text ).OrderBy( x => x ).Join( "," );
-			options.ShouldBe( expectedOptions, msg );
-		}
+		if( withOcean) {
+			// Then: can target out of wetland
+			actionTask.IsCompleted.ShouldBeFalse();
+			Assert_CurrentOptions( "A0,A1,A2,A3","should be able to target from ocean");
+		} else
+			// Then: cannot target anything, done
+			actionTask.IsCompleted.ShouldBeTrue();
 
 	}
 
-	// (1) cannot cascade blight into ocean
+	[Trait("SpecialRule","OceanInPlay")]
+	[Trait("SpecialRule","Drowning")]
+	[Trait("SpecialRule","AllyOfTheDahan")]
+	[Theory]
+	[InlineData(true),InlineData (false)]
+	public void TidalBoon_EnergyAndDahan(bool savedByOcean) {
+		// Given thunderspeaker / ocean game
+		var log = new List<string>();
+		gameState.NewLogEntry += (x) => log.Add(x.Msg());
 
-	// (2) drown any invaders / dahan pushed into these areas
-	// (2) can't push invaders into Ocean
-	// (2) can't push dahan into ocean
+		// Given: Primary on A2
+		Given_PrimaryPresenceOnA2Only();
 
-	// With Ocean
+		// Given: Dahan and Town on A2
+		SpaceState a2 = gameState.Tokens[boardA[2]];
+		a2.InitDefault( TokenType.Dahan, 2 );
+		a2.InitDefault( Invader.Town, 1 );
 
-	// (0) no change for other spirits growth
-	// (0) other spirits cannot grow (place a presence) into ocean
+		// Given: ocean in either A0 (saving dahan) or A1 (not saving)
+		Space oceanSpace = savedByOcean ? boardA[0] : boardA[1];
+		oceanSpirit.Presence.Adjust( gameState.Tokens[oceanSpace], 1 );
 
-	// (1) Can Target out power that requires a wetland (from/to) ocean
-	// (1) can cascade blight into ocean
-	// (2) can push invaders into the ocean and drown them
-	// (2) Tidal Boon generates energy
-	// Thunderspeaker can ride dahan into the ocean
+		// When: Tidal Boon is played (by Ocean)
+		gameState.Phase = Phase.Slow;
+		oceanSpirit.AddActionFactory( PowerCard.For<TidalBoon>() );
+		Task task = oceanSpirit.ResolveActions( gameState );
+		oceanSpirit.Gateway.Choose(oceanSpirit.Gateway.GetCurrent().Options.Single(x=>x.Text.Contains( TidalBoon.Name) ));
+		oceanSpirit.Gateway.Choose( oceanSpirit.Gateway.GetCurrent().Options.Single( x => x.Text.Contains( Thunderspeaker.Name ) ) ); // !!! this should not be necessary - should auto select
+
+		//  And: Primary selects A2 space
+		Choose( "A2", task );
+
+		//  And: Pushes town into ocean
+		Choose( "T@2", task ); 
+		Choose( "A0", task );
+
+		// Then: Ocean gets 1 energy (2 health / 2 players = 1 energy)
+		oceanSpirit.Energy.ShouldBe( 1 );
+
+		// When: Pushes 1st Dahan into Ocean
+		Choose( "D@2", task );
+		Choose( "A0", task );
+		if(savedByOcean) {
+			// Ocean should decide if it is going to save them now
+			var oceanDecision = oceanSpirit.Gateway.GetCurrent();
+			oceanDecision.Options.Select( x => x.Text ).OrderBy( x => x ).Join( "," ).ShouldBe( "A1,A2,A3,B1,B2,B3,Done" );
+			oceanSpirit.Gateway.Choose( oceanDecision.Options[0] );
+		}
+		// Thunderspeaker goes along
+		Choose( "A2" );
+
+		// When: Pushes 2nd dahan into Ocean
+		Choose( "D@2", task );
+		Choose( "A0", task );
+
+		if(savedByOcean) {
+			// Ocean should decide if it is going to save them now
+			var oceanDecision = oceanSpirit.Gateway.GetCurrent();
+			oceanDecision.Options.Select( x => x.Text ).OrderBy( x => x ).Join( "," ).ShouldBe( "A1,A2,A3,B1,B2,B3,Done" );
+			oceanSpirit.Gateway.Choose( oceanDecision.Options[0] );
+
+			// End of Action - Thunder speaker exits ocean
+			Choose( "A0" );
+		}
+	}
+
+	#region private helper methods
+
+	GameState Given_TwoSpiritGame() {
+		GameState gameState = new GameState( primarySpirit, oceanSpirit ) { Island = new Island( boardA, Board.BuildBoardB() ) };
+		gameState.Initialize();
+		return gameState;
+	}
+
+	void Given_OceanOnPrimaryBoard() => oceanSpirit.Presence.Adjust( gameState.Tokens[boardA[0]], 1 ); // put ocean presence on primary's board, but not in the ocean
+
+	void Given_PrimaryPresenceOnA2Only() => Given_PrimaryPresenceOnlyOn( boardA[2] );
+
+	void Given_PrimaryPresenceOnlyOn( Space space ) {
+		foreach(Space s in primarySpirit.Presence.Spaces( gameState ).ToArray())
+			primarySpirit.Presence.Adjust( gameState.Tokens[s], -1 );
+
+		// Add to
+		primarySpirit.Presence.Adjust( gameState.Tokens[space], 1 );
+		primarySpirit.Presence.Spaces( gameState ).Select( s => s.Text ).Join( "," ).ShouldBe( space.Text );
+	}
+
+	void Assert_CurrentOptions( string expectedOptions, string msg ) {
+		CurrentOptionsString.ShouldBe( expectedOptions, msg + ' ' + Current.Prompt );
+	}
+	string CurrentOptionsString => Current.Options.Select( x => x.Text ).OrderBy( x => x ).Join( "," );
+
+	IDecision Current => primarySpirit.Gateway.GetCurrent();
+	void Choose( string text, Task task = null ) {
+		if( task is not null )
+			task.IsCompleted.ShouldBeFalse();
+		var option = Current.Options.SingleOrDefault( x => x.Text == text );
+		if(option is null)
+			throw new ArgumentException( $"{text} option not found in " + CurrentOptionsString );
+		primarySpirit.Gateway.Choose( option );
+	}
+
+	#endregion
+
 }
-
-// Swallow the Land Dwellers - "Drown" generates energy for ocean
-// Tidal Boon - If targetted spirit Pushes Dahan into ocean, you can push them into another costal
-// Pushing Dahan into ocean destroys them - except for Tidal Boon
-
-// May move presence into oceans.
-// May not add/move presence into inlands.
-// Drown Destroys invader pieces, for every (# of players) invaders drowned, gain 1 energy
-
-

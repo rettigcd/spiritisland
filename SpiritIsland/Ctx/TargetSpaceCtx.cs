@@ -125,6 +125,8 @@ public class TargetSpaceCtx : SelfCtx {
 
 	#endregion Gather
 
+	public Task MoveTo( Token token, Space to ) => Tokens.MoveTo( token, to, CurrentActionId );
+
 	/// <summary> Use this for Power-Pushing, since Powers can push invaders into the ocean. </summary>
 	public IEnumerable<SpaceState> Adjacent => Tokens.Adjacent.Where( TerrainMapper.IsInPlay );
 	public IEnumerable<TargetSpaceCtx> AdjacentCtxs => Adjacent.Select(Target);

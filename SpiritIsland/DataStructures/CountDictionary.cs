@@ -107,6 +107,7 @@ public static class ExtendDictionary {
 	static public CountDictionary<T> ToCountDict<T>(this Dictionary<T,int> inner)
 		=> new CountDictionary<T>(inner);
 
+	/// <summary>Gets all tokens that have a SpaceAbreviation</summary>
 	/// <returns>([Key][count]) ordered alphabetically or '[none]' if empty</returns>
 	/// <example>1C@3,1E@1,1T@2</example>
 	static public string TokenSummary<T>( this CountDictionary<T> dict ) where T:Token {

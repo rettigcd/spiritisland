@@ -107,14 +107,7 @@ public class ToDreamAThousandDeaths : InvaderBinding {
 	async Task PushDestroyedInvader( HealthToken invader ) {
 
 		var destination = await ctx.Decision( Select.Space.PushToken( invader, ctx.Space, ctx.Tokens.Adjacent.Where( ctx.TerrainMapper.IsInPlay ), Present.Always ) );
-
-		//var destination1 = await ctx.Decision( new Select.Space(
-		//	"Push " + invader.ToString() + " to",
-		//	spaceState.Adjacent.Where( ctx.TerrainMapper.IsInPlay )
-		//	, Present.Always
-		//) );
-
-		await ctx.Move( invader, ctx.Space, destination ); // there is no Push(Token), so this will have to do.
+		await ctx.Tokens.MoveTo( invader, destination, ctx.CurrentActionId ); // there is no Push(Token), so this will have to do.
 		RecordSpaceWithDreamers( ctx.GameState.Tokens[destination] );
 	}
 

@@ -1,9 +1,14 @@
-﻿==========================
+=========================
 ====  Clean Up Items  ====
 ==========================
 
+Share Secrets of Survival / Birds Cry Warning - Used frozen/Dream dahan to save the 2, to remve them from the count but still have them.
+	- Trait("Dahan","Savethem")
+
 Damaged Invaders use non-damaged if available. OR check if any other available damaged slots
 Multiple tokens using the same token slot. Maybe need to lock it or add asserts.
+
+Use Frozen / immutable tokens for: Frozen Dahan, Absolute Stasis, Presence that can't move.
 
 3+1? remaining Adversaries (Habsburg, Russia, Scotland, France?)
 
@@ -11,14 +16,20 @@ Verify - VolcanoLoomingHigh doesn't allow presence ouside of mountain
 Verify - Vengeance - WreakVengeance for the Lands Corruption
 Tokens - Vengeance / WreakVengeanceForTheLandsCorruption - virtual tokens might not be correct.
 
+== Blazing Renewal - limited
+== Indomitable Claim - not limited
+== Growth Through Sacrifice - limited
+Presence restriction - !!! Ocean may not add presence into inlands.
+Presence restriction - !!! Volcano may only add to mountains
+Presence restriction - !!! Lure may only add to Inland
+
+
 - - - - -
 
 5 Move Finders Hook to Action-start
 
 4 ForgetCard - rename ForgetCard to ForgetCard_UserChoice AND/OR Consolidate the 2 ForgetCard methods into 1
 5 Damaged should occupy the non damaged space if available on screen. If not available, should use nearest (Temporary) space.
-5 hotspots are too big and overlap.
-5 Make grid a hex patter. or staggered every other row
 
 4 Settle into hunting grounds - implement presence cannot move.
 4 Slip the flows of time - use any # of times
@@ -51,6 +62,11 @@ Idea - Could the DoRavage token also be the Ravage Configuration used in ModifyR
 Idea - Make Ravage / Build / Explore consistent in using UnitOfWork
 
 Instead of reacting to PresenceMoved / Removed / Added events, have the Presence do the actions itself.
+
+Log => Adversary Set up
+Log => Spirit Sprcial Rules
+
+Custom Draw Cards from Terrain texture.
 
 =========================
 ===== Feature Focus =====

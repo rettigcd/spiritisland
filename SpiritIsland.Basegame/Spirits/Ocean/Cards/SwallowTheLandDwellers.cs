@@ -2,7 +2,9 @@
 
 public class SwallowTheLandDwellers {
 
-	[SpiritCard("Swallow the Land-Dwellers",0,Element.Water,Element.Earth)]
+	public const string Name = "Swallow the Land-Dwellers";
+
+	[SpiritCard(Name,0,Element.Water,Element.Earth)]
 	[Slow]
 	[FromPresence(0,Target.Coastal)]
 	static public async Task Act(TargetSpaceCtx ctx ) {
@@ -22,7 +24,7 @@ public class SwallowTheLandDwellers {
 		// drown 1 explorer ( drop 1 explorer in the ocean to drown )
 		var explorerToDrown = ctx.Tokens.OfType(Invader.Explorer).Cast<HealthToken>().OrderBy(x=>x.StrifeCount).FirstOrDefault();
 		if(explorerToDrown != null)
-			await ctx.Move( explorerToDrown, ctx.Space, drowningOcean );
+			await ctx.MoveTo( explorerToDrown, drowningOcean );
 
 		// drop town in the ocean to drown
 		var townToDrown = ctx.Tokens.OfType(Invader.Town).Cast<HealthToken>()
@@ -30,7 +32,7 @@ public class SwallowTheLandDwellers {
 			.ThenBy(x=>x.Damage) // pick least damaged
 			.FirstOrDefault();
 		if( townToDrown != null )
-			await ctx.Move( townToDrown, ctx.Space, drowningOcean );
+			await ctx.MoveTo( townToDrown, drowningOcean );
 
 		await ctx.Dahan.Destroy(1); // destroying dahan is the same as drowning them
 	}

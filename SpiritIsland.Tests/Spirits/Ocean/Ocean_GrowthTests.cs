@@ -109,10 +109,6 @@ public class Ocean_GrowthTests : GrowthTests {
 		Assert_BoardPresenceIs( ending );
 	}
 
-	void Assert_GainsFirstMinorCard() {
-		Assert_HasCardAvailable( "Drought" );
-	}
-
 	[Trait("Presence","EnergyTrack")]
 	[Theory]
 	[InlineDataAttribute(1,0,"")]
@@ -143,6 +139,10 @@ public class Ocean_GrowthTests : GrowthTests {
 	void Given_IslandIsABC() {
 		// Given: 3-board island
 		_gameState.Island = new Island( BoardA, BoardB, BoardC );
+	}
+
+	void Assert_GainsFirstMinorCard() {
+		Assert_HasCardAvailable( "Drought" );
 	}
 
 }

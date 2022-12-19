@@ -15,12 +15,12 @@ public class OceanTerrainForPower : TerrainMapper {
 	#endregion
 
 	public override bool MatchesTerrain( SpaceState space, params Terrain[] options ) 
-		=> IsOceansOcean( space.Space ) 
-			? options.Contains( Terrain.Wetland ) 
-			: original.MatchesTerrain( space, options );
+		=> original.MatchesTerrain( space, options ) // try default behavior first
+		|| IsOceansOcean( space.Space ) && options.Contains( Terrain.Wetland ); // as backup, check special rule
 
 	public override bool IsCoastal( Space space ) 
-		=> IsOceansOcean( space ) || original.IsCoastal( space );
+		=> original.IsCoastal( space ) // check default 1st
+			|| IsOceansOcean( space ); // if that fails, check special rule
 
 	public override bool IsInPlay( Space space ) => IsOceansOcean( space ) || original.IsInPlay( space );
 
