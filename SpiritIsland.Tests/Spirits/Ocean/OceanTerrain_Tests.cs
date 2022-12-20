@@ -223,9 +223,9 @@ public class OceanTerrain_Tests {
 		gameState.Phase = Phase.Fast;
 
 		// When: using a Power that places presence
-		_ = primarySpirit.ResolveActions(gameState);
-		Choose( "Blazing Renewal $5 (Fast)" );
-		Choose( "Thunderspeaker" );
+		var task = primarySpirit.ResolveActions(gameState);
+		Choose( "Blazing Renewal $5 (Fast)", task );
+		Choose( "Thunderspeaker", task );
 
 		// Then: ocean (A0) IS a destination to place presence
 		Choose( "A0" );
@@ -289,7 +289,6 @@ public class OceanTerrain_Tests {
 		oceanSpirit.AddActionFactory( PowerCard.For<TidalBoon>() );
 		Task task = oceanSpirit.ResolveActions( gameState );
 		oceanSpirit.Gateway.Choose(oceanSpirit.Gateway.GetCurrent().Options.Single(x=>x.Text.Contains( TidalBoon.Name) ));
-		oceanSpirit.Gateway.Choose( oceanSpirit.Gateway.GetCurrent().Options.Single( x => x.Text.Contains( Thunderspeaker.Name ) ) ); // !!! this should not be necessary - should auto select
 
 		//  And: Primary selects A2 space
 		Choose( "A2", task );

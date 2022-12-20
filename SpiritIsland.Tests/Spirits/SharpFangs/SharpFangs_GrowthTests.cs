@@ -166,6 +166,14 @@ public class SharpFangs_GrowthTests : GrowthTests {
 		//	User.Reclaims1CardIfAny();
 	}
 
+	[Trait( "Spirit", "SetupAction" )]
+	[Fact]
+	public void HasSetUp() {
+		var fxt = new ConfigurableTestFixture { Spirit = new SharpFangs() };
+		fxt.GameState.Initialize();
+		fxt.Spirit.GetAvailableActions( Phase.Init ).Count().ShouldBe( 1 );
+	}
+
 	void When_SharpFangsGrow() {
 		_gameState.Phase = Phase.Growth;
 		When_StartingGrowth();

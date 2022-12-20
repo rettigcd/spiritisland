@@ -5,24 +5,17 @@
 Share Secrets of Survival / Birds Cry Warning - Used frozen/Dream dahan to save the 2, to remve them from the count but still have them.
 	- Trait("Dahan","Savethem")
 
-Damaged Invaders use non-damaged if available. OR check if any other available damaged slots
-Multiple tokens using the same token slot. Maybe need to lock it or add asserts.
-
 Use Frozen / immutable tokens for: Frozen Dahan, Absolute Stasis, Presence that can't move.
 
+Vengeance
+	Wreak Vengeance for the Lands Corruption - virtual tokens might not be correct.
+
+Volcano
+
+UI - Damaged Invaders use non-damaged token slots if available. OR check if any other available damaged slots
+UI - Multiple tokens using the same token slot. Maybe need to lock it or add asserts.
+
 3+1? remaining Adversaries (Habsburg, Russia, Scotland, France?)
-
-Verify - VolcanoLoomingHigh doesn't allow presence ouside of mountain
-Verify - Vengeance - WreakVengeance for the Lands Corruption
-Tokens - Vengeance / WreakVengeanceForTheLandsCorruption - virtual tokens might not be correct.
-
-== Blazing Renewal - limited
-== Indomitable Claim - not limited
-== Growth Through Sacrifice - limited
-Presence restriction - !!! Ocean may not add presence into inlands.
-Presence restriction - !!! Volcano may only add to mountains
-Presence restriction - !!! Lure may only add to Inland
-
 
 - - - - -
 

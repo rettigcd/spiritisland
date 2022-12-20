@@ -28,7 +28,7 @@ public class ReadOnlyBoundPresence : IKnowSpiritLocations {
 	public IEnumerable<SpaceState> SpaceStates => _inner.SpaceStates( _gameState );
 	public IEnumerable<SpaceState> SacredSites => _inner.SacredSiteStates( _gameState, _terrainMapper );
 
-	public IEnumerable<Space> FindSpacesWithinRange( TargetCriteria targetCriteria, TargetingPowerType targetingPowerType ) {
+	public IEnumerable<SpaceState> FindSpacesWithinRange( TargetCriteria targetCriteria, TargetingPowerType targetingPowerType ) {
 		var rangeCalculator = targetingPowerType switch {
 			TargetingPowerType.None => DefaultRangeCalculator.Singleton,
 			TargetingPowerType.Innate => _self.PowerRangeCalc,
@@ -36,11 +36,8 @@ public class ReadOnlyBoundPresence : IKnowSpiritLocations {
 			_ => throw new InvalidOperationException()
 		};
 
-		var options = rangeCalculator
-			.GetTargetOptionsFromKnownSource( _self, _terrainMapper, targetingPowerType, SpaceStates, targetCriteria )
-			.Where( CanBePlacedOn );
-		return options
-			.Select(x=>x.Space); // ! TODO get reid of this line.
+		return rangeCalculator
+			.GetTargetOptionsFromKnownSource( _self, _terrainMapper, targetingPowerType, SpaceStates, targetCriteria );
 	}
 
 	#region User Decisions
@@ -64,7 +61,10 @@ public class ReadOnlyBoundPresence : IKnowSpiritLocations {
 	/// Innate/PowerCard => power ranging  + Passes to PowerRanging
 	/// </param>
 	public async Task<Space> SelectDestinationWithinRange( TargetCriteria targetCriteria, TargetingPowerType targetingPowerType ) {
-		var options = FindSpacesWithinRange( targetCriteria, targetingPowerType ).ToArray();
+		var options = FindSpacesWithinRange( targetCriteria, targetingPowerType )
+			.Where( CanBePlacedOn )
+			.Select( x=>x.Space )
+			.ToArray();
 		return await _self.Gateway.Decision( Select.Space.ToPlacePresence( options, Present.Always, _inner.Token ) );
 	}
 

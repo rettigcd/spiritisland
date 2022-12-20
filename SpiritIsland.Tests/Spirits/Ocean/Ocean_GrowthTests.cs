@@ -136,6 +136,16 @@ public class Ocean_GrowthTests : GrowthTests {
 		await fixture.VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
 	}
 
+	[Trait("Spirit","SetupAction")]
+	[Fact]
+	public void HasSetUp() {
+		var fxt = new ConfigurableTestFixture { Spirit = new Ocean() };
+		fxt.GameState.Initialize();
+		fxt.Spirit.GetAvailableActions( Phase.Init ).Count().ShouldBe( 1 );
+	}
+
+	#region private helper methos
+
 	void Given_IslandIsABC() {
 		// Given: 3-board island
 		_gameState.Island = new Island( BoardA, BoardB, BoardC );
@@ -144,6 +154,8 @@ public class Ocean_GrowthTests : GrowthTests {
 	void Assert_GainsFirstMinorCard() {
 		Assert_HasCardAvailable( "Drought" );
 	}
+
+	#endregion
 
 }
 

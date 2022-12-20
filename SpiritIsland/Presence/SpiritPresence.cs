@@ -90,7 +90,7 @@ public class SpiritPresence {
 	/// Specifies if the the given space is valid.
 	/// </summary>
 	public virtual bool CanBePlacedOn( SpaceState spaceState, TerrainMapper mapper ) => mapper.IsInPlay( spaceState.Space );
-	public bool IsOn( SpaceState spaceState ) => spaceState[Token] > 0;
+	public bool IsOn( SpaceState spaceState ) => 0 < spaceState[Token];
 	public virtual bool IsSacredSite( SpaceState space ) => 2 <= space[Token];
 	public int CountOn( SpaceState spaceState ) => spaceState[Token];
 
@@ -217,11 +217,15 @@ public class SpiritPresence {
 
 	// !!! one item for each space that has presence
 	public IEnumerable<Space> Spaces( GameState gs ) {
-		var ss = SpaceStates( gs ).ToArray();
-		return ss.Select( x => x.Space );
+		return SpaceStates( gs ).Select( x => x.Space );
 	}
 
 	public IEnumerable<SpaceState> SpaceStates( GameState gs ) => gs.AllActiveSpaces.Where( IsOn );
+	//public IEnumerable<SpaceState> SpaceStates( GameState gs ) {
+	//	var x = gs.AllActiveSpaces.ToArray();
+	//	var y = x.Where( IsOn ).ToArray();
+	//	return y;
+	//}
 
 	#endregion Exposed Data
 

@@ -22,7 +22,7 @@ public class AnySpiritAttribute : GeneratesContextAttribute {
 public class AnotherSpiritAttribute : AnySpiritAttribute {
 	public override async Task<object> GetTargetCtx( string powerName, SelfCtx ctx, TargetingPowerType _ ) {
 		Spirit target = ctx.GameState.Spirits.Length == 1 ? ctx.Self
-			: await ctx.Decision( new Select.Spirit( powerName, ctx.GameState.Spirits.Where(s=>s!=ctx.Self) ) );
+			: await ctx.Decision( new Select.Spirit( powerName, ctx.GameState.Spirits.Where(s=>s!=ctx.Self), Present.AutoSelectSingle ) );
 		return ctx.TargetSpirit( target );
 	}
 	public override string TargetFilter => "Another";

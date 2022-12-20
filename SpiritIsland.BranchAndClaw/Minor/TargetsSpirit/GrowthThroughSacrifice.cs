@@ -23,13 +23,15 @@ public class GrowthThroughSacrifice {
 		var spaceCtx = await ctx.TargetLandWithPresence( $"Select location to Remove Blight {joinStr} Add Presence" );
 
 		var removeBlight = new SpaceAction( "Remove 1 blight from one of your lands", spaceCtx => spaceCtx.RemoveBlight() );
-		var addPresence = new SpaceAction( "Add 1 presence to one of your lands", spaceCtx => spaceCtx.Presence.PlaceHere() );
+		var addPresence = new SpaceAction( "Add 1 presence to one of your lands", spaceCtx => spaceCtx.Presence.PlaceHere() )
+			.Matches( x=>x.Presence.CanBePlacedOn(x.Tokens) );
 
 		if(!doBoth)
 			await spaceCtx.SelectActionOption( removeBlight, addPresence );
 		else {
 			await removeBlight.Execute(spaceCtx);
-			await addPresence.Execute(spaceCtx);
+			if(addPresence.IsApplicable(spaceCtx))
+				await addPresence.Execute(spaceCtx);
 		}
 
 	}

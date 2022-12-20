@@ -1,18 +1,29 @@
-1) Test 3-spirits setup
-2) 3 limited presence locations
-3a) Frozen 
-3b) Stubborn Solidity (stone)
-4) Ravage Engine
-5) Volcano range
-6) Vengence Keep disaese for fear
-7) Switch absolute stasis to use dream tokens
-8) all range adjustments
-9) Many Minds
+=== Grouping 1 ===
 
-== Traits ==
+1) Frozen / Stubborn Solidity (stone) / Switch absolute stasis to use dream tokens
+
+2) Ravage Engine
+
+3) Volcano range
+
+4) Vengence Keep disaese for fear
+
+5) all range adjustments
+
+6) Many Minds
+
+=== Grouping 2 - Traits ===
+
+Setup
+	Setup - Fangs, Ocean, Volcano
 
 SpaceState
-	Frozen Dahan
+	Frozen Dahan - Moving Dahan into Frozen land should freeze them.
+
+Modifications to Range
+	Talons of Lightning - extended / conditional range 
+	Sap the Strength of Multitudes - range changes
+
 Special Rules
 	Downpour - SS as wetland
 	Finder - Open the Ways - shuts off during invader rounds (explore)
@@ -32,12 +43,6 @@ Special Rules
 Invaders-Ravage
 	Configure Ravage - do all combinations work?
 
-SpecialRules - Restricted Presence Placement
-	Restricted Presence placement - volcano, ocean, Lure
-
-Setup
-	Setup - Fangs, Ocean, Volcano
-
 Settle into Hunting Grounds - can't move presence
 Bringer - Any Elements Assignment
 Stone - Innate 1 & 2
@@ -48,36 +53,21 @@ Trickster - Why don't you and them fight
 Rain And Mud Suppress Conflict
 	- different tier levels can be opted into.
 
--------------------
+=== Grouping 3 - Categories ===
 
 Move - does not allow moving into Ocean
 	- MMMA1 - Move beast and pull 2 dahan with it.
 
-5 Check that Dahan Raid does REAL damage for Bringer, not dream-damage
-
-Adding Presence - These cards should not allow: Ocean, Lure, and Volcano to be in dis-allowed lands:
-	Blazing Renewal
-	Flow like Water, Reach Like Air
-	Unrelenting Growth
-
-Volcanos 3-Presence doesn't extend Place Presence Range
-
-Moving Dahan into Frozen land should freeze them.
+Check that Dahan Raid does REAL damage for Bringer, not dream-damage
 
 Blight Tests
 
+Volcanos 3-Presence doesn't extend Place Presence Range
 Tigers Hunting - Exception in land with no invaders.
-
-Bringer
-	Devouring Ants doesn't destroy Dahan
-	Fear-action can destroy towns, even when Bringer picks it.  (To Dream a Thousand Deaths not in play.)
-
-SkipTokens
-	All of the Presence tokens that are also skip tokens
-	Infestatoin of Venemous Spiders
-	Call to Trade
-	Skip Tokens use themselves up .Adjust(this,-1)
-	when The same skip token count > 1, uses all of them when needed
+PowerCard (Check if Gates of Deepest Power) - has bug that allows duplicate cards. like 1 in discard and one in hand.
+Starlight - Test GatherTheScatteredLightOfStars - to see if forgetting a power card creates a null card.
+Volcano - Explosive Erruption should not destroy volcano presence - TEST!
+Frozen - Don't let Pusher/Gatherer move frozen dahan. - add tests!
 
 Badlands
 	Ravage - Invaders
@@ -86,9 +76,6 @@ Badlands
 	Power - damage to 1
 	Power - multiple damages
 
-End-of-Game Detection
-	Each of the End-Of-Game tests
-
 Ravage Engine
 	* Dissolve the Bonds of Kinship
 	* Infinite Vitality
@@ -96,7 +83,6 @@ Ravage Engine
 	* Manifest Incarnation
 	* A Year of Perfect Stillness - skips invader actions
 	* Infinite Vitality - Dahan with +4 health
-	* Bringer
 	* the +1 from Fires Fury (Heart of Wildfire)
 	* Conceiling Shadows - no damage to dahan
 	* Destroying Town or Town1 creates 1 fear
@@ -115,40 +101,16 @@ Repeat Card
 	* PowerStorm
 	* Spur on With words of Fire
 
-Ocean in Play - With and Without Ocean, PowerTarget, Push & Blight Include/Don't include ocean spaces.
-
-Modifications to Range
-	Talons of Lightning - extended / conditional range 
-	Sap the Strength of Multitudes - range changes
-
 Blight causes spirit to lose 1 presence on space
 
-====  =========
-Check if Gates of Deepest Power has bug that allows duplicate cards. like 1 in discard and one in hand.
+=== Grouping 4 - Misc ===
+
 TargetSpaceCtx.IsOneOf needs tests to ensure it uses Terrain Mapper.
-Test GatherTheScatteredLightOfStars - to see if forgetting a power card creates a null card.
-Volcano Looming High - check if spirit can place presence outside mountain during power card use.
-Explosive Erruption should not destroy volcano presence - TEST!
 RepeatCardForCost - Add test that it pulls from Used actions, NOT discard pile.
 Make sure win/loss is checked after every spirit action / power card
 TokenCountDictionary.MoveTo (test that correct events are published)
-Review SpiritPresence.RemoveFrom_NoCheck( Space space, GameState gameState ) {
-Don't let Pusher/Gatherer move frozen dahan. - add tests!
-Test- Bats Scoutt... secondary damage didn't seem to be working.
-TEST - Upgrading or downgrading explorers with strife, should maintain strife.
-
-===== Test Formats =====
-Game-Runner
-
-Call Single Card
-
-Growth / Presence Tracks
-
-Where do Methods Go?
-	- Test Fixture?
-	- Extension methods?
-
-
+PowerCard( Bats Scoutt )... secondary damage didn't seem to be working.
+Stife - Upgrading or downgrading explorers with strife, should maintain strife.
 
 ===== Test Categories =====
 * Ravage Engine (damage / destroy) 
@@ -162,41 +124,3 @@ Where do Methods Go?
 * Speed (fast/slow)
 * Elementals trigger dependant
 
-
-
-==========================
-
-White Box - Unit Tests - Invoke Action Directly
-
-
-==========================
-
-
-Testing Explore
-	- Init: tokens on a space
-	- Init: spirit presence
-	- Init: spirit Elements
-
-	- Init: Fear Deck 					(HARD)
-	- Init: Earned Fear					(HARD)
-	- Init: Invader Cards				(HARD)
-
-Assert / Then:
-	Tokens Are
-	Invader Card State					(HARD)
-	Spaces Ravaged / Build / Explored	(HARD)
-
-HARD   Setup - disable blight cascade / presence destroy so other stuff easier to test.
-
-Setup
-  - Activate a card (have in hand, play, activate)
-
-
-Init("A1:1D,2T,1E,1C A3:1D,3D,2B")
-Init("A1:1D 2T 1E 1C,A3:1D 3D 2B")
-
-Init("A1:1D,2T,1E,1C")
-Init("A3:1D,3D,2B")
-
----------------------------
-[Trait("Feature","Push")]
