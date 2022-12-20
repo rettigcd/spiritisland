@@ -53,7 +53,7 @@ public class ToDreamAThousandDeaths_Tests {
 
 		// Then: dream-death allows User pushes them
 		for(int i = 0; i < count; ++i)
-			User.PusheSelectedTokenTo( "E@1", "A1,A4,A6,(A7),A8" );
+			User.PushSelectedTokenTo( "E@1", "A1,A4,A6,[A7],A8" );
 
 		// And: 0-fear
 		Assert_GeneratedFear( 0 );
@@ -78,7 +78,7 @@ public class ToDreamAThousandDeaths_Tests {
 
 		// Then: dream-death allows User pushes them
 		for(int i = 0; i < count; ++i)
-			User.PusheSelectedTokenTo( "T@2","A1,A4,A6,(A7),A8" );
+			User.PushSelectedTokenTo( "T@2","A1,A4,A6,[A7],A8" );
 
 		// And:4-fear
 		Assert_GeneratedFear( count * 2 );

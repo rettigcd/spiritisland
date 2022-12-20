@@ -32,8 +32,8 @@ public class Ocean_GrowthTests : GrowthTests {
 			var action = _gameState.StartAction( ActionCategory.Default );
 			_ = gather.ActivateAsync( spirit.Bind( _gameState, action ) );
 			while(!spirit.Gateway.IsResolved){
-				var source = spirit.Gateway.GetCurrent().Options.Single(x=>moveBySrc.ContainsKey(x.Text));
-				spirit.Gateway.Choose(source);
+				var source = spirit.Gateway.Next.Options.Single(x=>moveBySrc.ContainsKey(x.Text));
+				spirit.Gateway.Choose( spirit.Gateway.Next, source );
 			}
 		}
 
@@ -62,8 +62,8 @@ public class Ocean_GrowthTests : GrowthTests {
 		_ = When_Growing( 0 );
 
 		User.Growth_DrawsPowerCard();
-		User.SelectsMinorPowerCard();
-		User.SelectsFirstOption( "Select minor Power Card" );
+		User.SelectsMinorDeck();
+		User.SelectMinorPowerCard();
 
 		User.GathersPresenceIntoOcean();
 
@@ -81,8 +81,8 @@ public class Ocean_GrowthTests : GrowthTests {
 
 		_ = When_Growing( 1 );
 
-		User.PlacesPresenceInOcean( "PlaceInOcean,(PlaceInOcean)", "(moon energy),2 cardplay,Take Presence from Board", "(A0),B0" );
-		User.PlacesPresenceInOcean( "PlaceInOcean", "(water energy),2 cardplay,Take Presence from Board", "A0,(B0)" );
+		User.PlacesPresenceInOcean( "PlaceInOcean,[PlaceInOcean]", "[moon energy],2 cardplay,Take Presence from Board", "[A0],B0" );
+		User.PlacesPresenceInOcean( "PlaceInOcean", "[water energy],2 cardplay,Take Presence from Board", "A0,[B0]" );
 
 		Assert_HasEnergy( 1 );
 	}
@@ -100,10 +100,10 @@ public class Ocean_GrowthTests : GrowthTests {
 
 		User.Growth_PlacesEnergyPresence( placeOptions );
 		User.Growth_DrawsPowerCard();
-		User.SelectsMinorPowerCard();
-		User.SelectsFirstOption( "Select minor Power Card" );
+		User.SelectsMinorDeck();
+		User.SelectMinorPowerCard();
 
-		User.PushesPresenceFromOcean("A1,(A2),A3");
+		User.PushesPresenceFromOcean("A1,[A2],A3");
 
 		Assert_GainsFirstMinorCard();
 		Assert_BoardPresenceIs( ending );

@@ -49,7 +49,7 @@ public class ParalyzingFright_Tests {
 		user.TargetsLand_IgnoreOptions( spaceCtx.Space.Label );
 
 		//   Accept the fear card:
-		user.SelectsFirstOption("Activating Fear");
+		user.ActivateFear();
 
 		// Then: nothing changed
 		spaceCtx.Tokens.InvaderSummary().ShouldBe( "3E@1", "should be same that we started with" );

@@ -16,9 +16,10 @@ namespace SpiritIslandCmd {
 		public UiMap(SinglePlayerGame game ){
 			this.game=game;
 			var decisionProvider = game.UserPortal;
-			Prompt = decisionProvider.GetCurrent().Prompt;
+			var decision = decisionProvider.Next;
+			Prompt = decision.Prompt;
 			
-			var cachedOptions = decisionProvider.GetCurrent().Options; // cache in case calculated on the fly
+			var cachedOptions = decision.Options; // cache in case calculated on the fly
 
 			int pad = 0;
 			foreach(var o in cachedOptions){

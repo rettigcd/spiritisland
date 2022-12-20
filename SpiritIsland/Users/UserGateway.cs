@@ -41,15 +41,12 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 
 	#region Blocking
 
-	/// <summary>
-	/// Blocks and waits for there to be a decision. 
-	/// Don't call unless you are willing to block.
-	/// </summary>
-	public IDecision GetCurrent(bool block=true) => CacheNextDecision(block)?.Decision;
+	public IDecision Next => CacheNextDecision( true )?.Decision;
+	IDecision IUserPortal.Current => CacheNextDecision( false )?.Decision;
 
 	public bool IsResolved => activeDecisionMaker == null;
 
-	public void Choose(IOption selection,bool block=true) {
+	public void Choose(IDecision _, IOption selection,bool block=true) {
 		var currentDecisionMaker = CacheNextDecision(block);
 		if(currentDecisionMaker == null) return;
 		var currentDecision = currentDecisionMaker.Decision;

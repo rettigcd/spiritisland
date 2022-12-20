@@ -20,7 +20,7 @@ public class GrowthThroughSacrifice_Tests {
 		_ = GrowthThroughSacrifice.ActAsync( fixture.TargetSelf );
 		fixture.Choose( space ); // select presence to destroy
 		fixture.Choose( space ); // select location to add presence / remove blight
-		fixture.Choose( "add 1 presence" );
+		fixture.Choose( "Add 1 presence to one of your lands" );
 		fixture.Choose( elementTrack ); // take presence from cardplay track
 
 		//  Then: Spirit gains element

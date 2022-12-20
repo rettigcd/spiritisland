@@ -91,12 +91,12 @@ public class StubbornSolidity_Tests {
 	static void BuysAndUses( GameFixture fxt, string cardName ) {
 		fxt.user.PlaysCard( cardName );
 		fxt.user.SelectsFastAction( cardName );
-		fxt.user.TargetsLand( cardName, "A1,A2,A3,A4,(A5),A6" );
+		fxt.user.TargetsLand( cardName, "A1,A2,A3,A4,[A5],A6" );
 	}
 
 	static void Stone_Grows( GameFixture fxt ) {
 		fxt.user.Growth_SelectAction( "PlacePresence(2)" );
-		fxt.user.Growth_PlacesPresence( "energy>A1;A2;A3;A4;(A5);A6;A7;A8" );
+		fxt.user.Growth_PlacesPresence( "energy>A1;A2;A3;A4;[A5];A6;A7;A8" );
 	}
 
 }

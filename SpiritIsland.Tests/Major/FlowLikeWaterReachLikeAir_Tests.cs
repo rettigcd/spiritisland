@@ -36,14 +36,14 @@ public class FlowLikeWaterReachLikeAir_Tests {
 		_ = PlayCard( spirit.BindMyPower( gameState, action ).TargetSpirit(spirit) );
 
 		//  And: Can bring 2 of each
-		user.AssertDecisionX( "Select Presence to push.", "(A5),Done" );
-		user.AssertDecisionX( "Push Presence to", "(A1),A4,A6,A7,A8" );
-		user.AssertDecisionX( "Push up to (6)", "(D@2),E@1,T@2,Done" );
-		user.AssertDecisionX( "Push up to (5)", "(D@2),E@1,T@2,Done" );
-		user.AssertDecisionX( "Push up to (4)", "(E@1),T@2,Done" );
-		user.AssertDecisionX( "Push up to (3)", "(E@1),T@2,Done" );
-		user.AssertDecisionX( "Push up to (2)", "(T@2),Done" );
-		user.AssertDecisionX( "Push up to (1)", "(T@2),Done" );
+		user.AssertDecisionInfo( "Select Presence to push.", "[A5],Done" );
+		user.AssertDecisionInfo( "Push Presence to", "[A1],A4,A6,A7,A8" );
+		user.AssertDecisionInfo( "Push up to (6)", "[D@2],E@1,T@2,Done" );
+		user.AssertDecisionInfo( "Push up to (5)", "[D@2],E@1,T@2,Done" );
+		user.AssertDecisionInfo( "Push up to (4)", "[E@1],T@2,Done" );
+		user.AssertDecisionInfo( "Push up to (3)", "[E@1],T@2,Done" );
+		user.AssertDecisionInfo( "Push up to (2)", "[T@2],Done" );
+		user.AssertDecisionInfo( "Push up to (1)", "[T@2],Done" );
 
 		// Then: target 2 of each
 		var dst = gameState.Tokens[a1];

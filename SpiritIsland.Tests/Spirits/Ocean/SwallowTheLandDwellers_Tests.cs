@@ -25,10 +25,10 @@ public class SwallowTheLandDwellers_Tests {
 		Task task = fxt.Spirit.ResolveActions( fxt.GameState );
 
 		System.Threading.Thread.Sleep( 1 );
-		fxt.Choose( SwallowTheLandDwellers.Name + " $0 (Slow)", task );
+		fxt.IsActive(task).Choose( SwallowTheLandDwellers.Name + " $0 (Slow)" );
 
 		// Then: they can pick A2
-		fxt.Choose( "A2", task );
+		fxt.IsActive(task).Choose( "A2" );
 		//  And: get 3 endergy
 		fxt.Spirit.Energy.ShouldBe( startingEnergy + 3 );
 

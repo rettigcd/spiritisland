@@ -96,7 +96,7 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 		When_PlayingCard();
 
 		User.TargetsLand( RiversBounty.Name, "A4" );
-		User.GathersOptionalToken("(D@2 on A1),D@2 on A2");
+		User.GathersOptionalToken("[D@2 on A1],D@2 on A2");
 		User.GathersOptionalToken("D@2 on A2");
 
 		User.Assert_Done();
@@ -120,7 +120,7 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 		When_PlayingCard();
 
 		User.TargetsLand( RiversBounty.Name, "A4" );
-		User.GathersOptionalToken("(D@1 on A1),D@1 on A2");
+		User.GathersOptionalToken("[D@1 on A1],D@1 on A2");
 		User.GathersOptionalToken("D@1 on A2");
 
 		User.Assert_Done();
@@ -141,7 +141,7 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 
 		When_PlayingCard();
 
-		User.TargetsLand( RiversBounty.Name,"(A4),A8");
+		User.TargetsLand( RiversBounty.Name,"[A4],A8");
 		User.GathersOptionalToken( "D@2 on A5" );
 		User.GathersOptionalToken( "D@2 on A5" );
 

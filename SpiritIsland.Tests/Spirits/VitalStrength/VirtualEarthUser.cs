@@ -11,8 +11,8 @@ public class VirtualEarthUser : VirtualUser {
 
 	public void SelectsGrowthB_DrawCard_PP0() {
 		Growth_DrawsPowerCard();
-		SelectsMinorPowerCard();
-		SelectsFirstOption( "Select minor Power Card" );
+		SelectsMinorDeck();
+		SelectMinorPowerCard();
 
 		Growth_SelectAction( "PlacePresence(0)" );
 		Growth_PlacesEnergyPresence( "A4" );

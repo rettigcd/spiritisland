@@ -39,7 +39,7 @@ namespace SpiritIsland.WinForms {
 			}
 
 			currentDecision = null;
-			this.game.UserPortal.Choose( option, false ); // If there is no decision to be made, just return
+			this.game.UserPortal.Choose( currentDecision, option, false ); // If there is no decision to be made, just return
 		
 		}
 

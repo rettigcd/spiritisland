@@ -49,11 +49,16 @@ internal static class TargetSpaceCtx_ExtensionsForTesting {
 	#region Log Asserting
 
 	public static void Assert_Ravaged( this Queue<string> log, params string[] spaces ) {
-
-		var action = log.Dequeue();
+		string action = WaitForNextLogItem( log );
 		action.ShouldStartWith( "Ravaging" );
 		foreach(var s in spaces)
-			log.Dequeue().ShouldStartWith( s );
+			WaitForNextLogItem( log ).ShouldStartWith( s );
+	}
+
+	static string WaitForNextLogItem( Queue<string> log ) {
+		if(log.Count == 0)
+			System.Threading.Thread.Sleep(5); // Wait for Engine to catch up
+		return log.Dequeue();
 	}
 
 	public static void Assert_Built( this Queue<string> log, params string[] spaces ) {

@@ -32,19 +32,19 @@ public class ObserveTheEverChangingWorld_Tests {
 		fxt.user.PlaysCard(BoonOfAncientMemories.Name);
 
 		//  When: triggers Observe the Ever-changing World (SUT) (level 2 Observe)
-		fxt.user.SelectsFastAction($"Learn the Invaders' Tactics,({ObserveTheEverChangingWorld.Name})");
-		fxt.user.TargetsLand(ObserveTheEverChangingWorld.Name,"(A5),A7,A8");
+		fxt.user.SelectsFastAction($"Learn the Invaders' Tactics,[{ObserveTheEverChangingWorld.Name}]");
+		fxt.user.TargetsLand(ObserveTheEverChangingWorld.Name,"[A5],A7,A8");
 
 		//   And: is done with Fast
 		fxt.user.IsDoneWith(Phase.Fast);
 
-		var dec = fxt.spirit.Gateway.GetCurrent();
+		var dec = fxt.spirit.Gateway.Next;
 
 		if(dec.Prompt == "Select Slow to resolve") {
 			_ = dec.ToString();
 		} else
 			//  Then: Asks user to prepare element
-			fxt.user.AssertDecisionX("Prepare Element (A5)","Sun,Moon,Fire,Air,Water,(Earth),Plant,Animal");
+			fxt.user.AssertDecisionInfo("Prepare Element (A5)","Sun,Moon,Fire,Air,Water,[Earth],Plant,Animal");
 
 		fxt.gameState.Phase.ShouldBe(Phase.Slow); // !! sometime BG thread doesn't get all the way to slow and errors out on Invaders, need to wait on BG thread.
 	}

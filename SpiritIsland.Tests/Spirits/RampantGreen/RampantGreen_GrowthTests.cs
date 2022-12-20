@@ -19,9 +19,9 @@ public class RampantGreen_GrowthTests : GrowthTests {
 		When_StartingGrowth();
 		User_SelectAlwaysGrowthOption();
 
-		User.Growth_SelectAction( "DrawPowerCard" );
-		User.SelectsMinorPowerCard();
-		User.SelectsFirstOption( "Select minor Power Card" );
+		User.Growth_DrawsPowerCard();
+		User.SelectsMinorDeck();
+		User.SelectMinorPowerCard();
 
 		Assert_AllCardsAvailableToPlay( 5);
 	}
@@ -63,8 +63,8 @@ public class RampantGreen_GrowthTests : GrowthTests {
 		User_SelectAlwaysGrowthOption();
 
 		User.Growth_SelectAction( "DrawPowerCard", 1 ); // there are 2. select the 2nd one (index=1)
-		User.SelectsMinorPowerCard();
-		User.SelectsFirstOption( "Select minor Power Card" );
+		User.SelectsMinorDeck();
+		User.SelectMinorPowerCard();
 
 		// Gain 3 energy did not trigger
 

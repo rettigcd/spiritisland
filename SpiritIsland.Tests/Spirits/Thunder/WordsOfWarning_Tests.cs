@@ -24,7 +24,7 @@ public class WordsOfWarning_Tests : ThunderCards  {
 		// and activate card
 		When_ActivateCard( WordsOfWarning.Name );
 			
-		User.TargetsLand(WordsOfWarning.Name,"(A2),A4");
+		User.TargetsLand(WordsOfWarning.Name,"[A2],A4");
 
 		// When: ravaging on A2
 //			await gs.InvaderEngine.RavageCard(new InvaderCard(a[2]));

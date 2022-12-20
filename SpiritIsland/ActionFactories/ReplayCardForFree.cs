@@ -23,7 +23,7 @@ public class ReplayCardForFree : IActionFactory {
 		=> speed == Phase.Fast || speed == Phase.Slow;
 
 	public string Name => "Replay Card" + Suffix;
-	string Suffix => maxCost == int.MaxValue ? "" : $" [max cost:{maxCost}]";
+	string Suffix => maxCost == int.MaxValue ? "" : $" (max cost:{maxCost})";
 	public string Text => Name;
 
 	public async Task ActivateAsync(SelfCtx ctx) {

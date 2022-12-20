@@ -33,11 +33,11 @@ public class WrapInWingsOfSunlight_Tests {
 
 		//  And: Can bring 2 of each
 		user.AssertDecision( "Move token(s) to", "A1,A2,A3,A4,A5,A6,A7,A8,Done", dst.Label );
-		user.AssertDecisionX( "Move up to (5)", "(D@2),Done" );
-		user.AssertDecisionX( "Move up to (4)", "(D@2),Done" );
-		user.AssertDecisionX( "Move up to (3)", "(D@2),Done" );
-		user.AssertDecisionX( "Move up to (2)", "(D@2),Done" );
-		user.AssertDecisionX( "Move up to (1)", "(D@2),Done" );
+		user.AssertDecisionInfo( "Move up to (5)", "[D@2],Done" );
+		user.AssertDecisionInfo( "Move up to (4)", "[D@2],Done" );
+		user.AssertDecisionInfo( "Move up to (3)", "[D@2],Done" );
+		user.AssertDecisionInfo( "Move up to (2)", "[D@2],Done" );
+		user.AssertDecisionInfo( "Move up to (1)", "[D@2],Done" );
 
 		// Then: target 2 of each
 		var dstTokens = gameState.Tokens[dst];
@@ -76,9 +76,9 @@ public class WrapInWingsOfSunlight_Tests {
 		_ = PlayCard( spirit.BindMyPower( gameState, action ).Target(src) );
 
 		//  And: Can bring 2 of each
-		user.AssertDecisionX( "Push (2)", "(D@2),E@1,T@2" );
+		user.AssertDecisionInfo( "Push (2)", "[D@2],E@1,T@2" );
 		user.AssertDecision( "Push D@2 to", "A1,A4,A6,A7,A8", dst.Label );
-		user.AssertDecisionX( "Push (1)", "(D@2),E@1,T@2" );
+		user.AssertDecisionInfo( "Push (1)", "[D@2],E@1,T@2" );
 		user.AssertDecision( "Push D@2 to", "A1,A4,A6,A7,A8", dst.Label );
 
 		// Then: target 2 of each

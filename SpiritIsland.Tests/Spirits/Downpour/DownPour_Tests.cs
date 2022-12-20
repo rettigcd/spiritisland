@@ -32,7 +32,7 @@ public class DownPour_Tests {
 		fxt.Choose(target.Text);
 
 		// Then:
-		fxt.Choose( "DONE" ); // don't push
+		fxt.Choose( "Done" ); // don't push
 
 		task.IsCompletedSuccessfully.ShouldBeTrue();
 

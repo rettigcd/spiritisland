@@ -8,6 +8,7 @@ public class OceanTerrain_Tests {
 	readonly Board boardA = Board.BuildBoardA();
 	readonly Spirit primarySpirit = new Thunderspeaker();
 	readonly GameState gameState;
+	DecisionContext NextDecision => primarySpirit.NextDecision();
 
 	#endregion
 
@@ -33,7 +34,7 @@ public class OceanTerrain_Tests {
 		_ = PowerCard.For<CallToGuard>().ActivateAsync( ctx );
 
 		// Then: Targetting does not inculde Ocean
-		Assert_CurrentOptions( "A1,A2,A3,A4", "exclude ocean" );
+		NextDecision.HasOptions( "A1,A2,A3,A4" );
 	}
 
 	[Trait( "SpecialRule", "OceanInPlay" )]
@@ -53,7 +54,8 @@ public class OceanTerrain_Tests {
 		_ = PowerCard.For<TalonsOfLightning>().ActivateAsync( ctx );
 
 		// Then: Targetting options INCLUDES Ocean
-		Assert_CurrentOptions( "A0,A1,A2", "include ocean" );
+		NextDecision.HasOptions( "A0,A1,A2" );
+
 	}
 
 	[Trait( "SpecialRule", "OceanInPlay")]
@@ -83,10 +85,7 @@ public class OceanTerrain_Tests {
 		Choose( "D@2" );
 
 		// Then: push options should not include ocean
-		if( withOcean )
-			Assert_CurrentOptions( "A0,A1,A3,A4", "with ocean" );
-		else
-			Assert_CurrentOptions( "A1,A3,A4", "no ocean" );
+		NextDecision.HasOptions( withOcean ? "A0,A1,A3,A4" : "A1,A3,A4" );
 
 		if( withOcean) {
 			var log = new List<string>();
@@ -94,9 +93,9 @@ public class OceanTerrain_Tests {
 
 			// Push into Ocean and let Thunderspeaker ride along
 			Choose("A0");
-			Current.Prompt.ShouldBe( "Move presence with Dahan?" );
-			Assert_CurrentOptions( "A2,Done", "with ocean" );
-			Choose("A2"); // brings Thunderspeaker along
+
+			// bring Thunderspeaker along
+			NextDecision.HasPrompt( "Move presence with Dahan?" ).HasOptions( "A2,Done" ).Choose("A2");
 			
 			// Then: This should destroy the dahan
 			var oceanSpace = gameState.Tokens[boardA[0]];
@@ -148,8 +147,9 @@ public class OceanTerrain_Tests {
 			// When: Push 1st invadera Town
 			Choose( pushToken );
 			// Then: ocean is/is-not an option
-			Assert_CurrentOptions( withOcean ? "A0,A1,A3,A4" : "A1,A3,A4", withOcean ? "with ocean" : "no ocean" );
-			Choose(withOcean ? "A0" : "A1");
+			NextDecision
+				.HasOptions( withOcean ? "A0,A1,A3,A4" : "A1,A3,A4" )
+				.Choose(withOcean ? "A0" : "A1");
 		}
 
 		// Then: ocean should have drown energy
@@ -184,8 +184,9 @@ public class OceanTerrain_Tests {
 		_ = boardA[2].DoARavage(gameState);
 
 		// Then: we can/can't cascade into ocean
-		Assert_CurrentOptions( withOcean ? "A0,A1,A3,A4" : "A1,A3,A4", withOcean ? "with ocean" : "no ocean" );
-		Choose( withOcean ? "A0" : "A1" );
+		NextDecision
+			.HasOptions( withOcean ? "A0,A1,A3,A4" : "A1,A3,A4" )
+			.Choose( withOcean ? "A0" : "A1" );
 	}
 
 	[Trait( "SpecialRule", "OceanInPlay" )]
@@ -198,14 +199,13 @@ public class OceanTerrain_Tests {
 
 		// When: placing precense
 		_ = primarySpirit.DoGrowth( gameState );
-		Choose("PlacePresence(1)");
+		NextDecision.Choose("PlacePresence(1)");
 
 		//  And: take from card play
-		Choose("2 cardplay");
+		NextDecision.Choose( "2 cardplay");
 
 		// Then: ocean is not in option list
-		Assert_CurrentOptions( "A1,A2,A3,A4","should not grow into ocean");
-		Choose( "A1" ); // close out action thread
+		NextDecision.HasOptions( "A1,A2,A3,A4" ).Choose( "A1" ); // close out action thread
 	}
 
 	[Trait( "SpecialRule", "OceanInPlay" )]
@@ -224,8 +224,10 @@ public class OceanTerrain_Tests {
 
 		// When: using a Power that places presence
 		var task = primarySpirit.ResolveActions(gameState);
-		Choose( "Blazing Renewal $5 (Fast)", task );
-		Choose( "Thunderspeaker", task );
+		IsActive(task);
+		Choose( "Blazing Renewal $5 (Fast)" );
+		IsActive( task );
+		Choose( "Thunderspeaker" );
 
 		// Then: ocean (A0) IS a destination to place presence
 		Choose( "A0" );
@@ -255,7 +257,7 @@ public class OceanTerrain_Tests {
 		if( withOcean) {
 			// Then: can target out of wetland
 			actionTask.IsCompleted.ShouldBeFalse();
-			Assert_CurrentOptions( "A0,A1,A2,A3","should be able to target from ocean");
+			NextDecision.HasOptions("A0,A1,A2,A3");
 		} else
 			// Then: cannot target anything, done
 			actionTask.IsCompleted.ShouldBeTrue();
@@ -288,39 +290,39 @@ public class OceanTerrain_Tests {
 		gameState.Phase = Phase.Slow;
 		oceanSpirit.AddActionFactory( PowerCard.For<TidalBoon>() );
 		Task task = oceanSpirit.ResolveActions( gameState );
-		oceanSpirit.Gateway.Choose(oceanSpirit.Gateway.GetCurrent().Options.Single(x=>x.Text.Contains( TidalBoon.Name) ));
+		oceanSpirit.NextDecision().Choose( TidalBoon.Name );
 
 		//  And: Primary selects A2 space
-		Choose( "A2", task );
+		IsActive( task ); Choose( "A2" );
 
 		//  And: Pushes town into ocean
-		Choose( "T@2", task ); 
-		Choose( "A0", task );
+		IsActive( task ); Choose( "T@2" );
+		IsActive( task ); Choose( "A0" );
 
 		// Then: Ocean gets 1 energy (2 health / 2 players = 1 energy)
 		oceanSpirit.Energy.ShouldBe( 1 );
 
 		// When: Pushes 1st Dahan into Ocean
-		Choose( "D@2", task );
-		Choose( "A0", task );
+		IsActive( task ); Choose( "D@2" );
+		IsActive( task ); Choose( "A0" );
 		if(savedByOcean) {
 			// Ocean should decide if it is going to save them now
-			var oceanDecision = oceanSpirit.Gateway.GetCurrent();
-			oceanDecision.Options.Select( x => x.Text ).OrderBy( x => x ).Join( "," ).ShouldBe( "A1,A2,A3,B1,B2,B3,Done" );
-			oceanSpirit.Gateway.Choose( oceanDecision.Options[0] );
+			oceanSpirit.NextDecision()
+				.HasOptions( "A1,A2,A3,B1,B2,B3,Done" )
+				.Choose( "A1" );
 		}
 		// Thunderspeaker goes along
 		Choose( "A2" );
 
 		// When: Pushes 2nd dahan into Ocean
-		Choose( "D@2", task );
-		Choose( "A0", task );
+		IsActive( task ); Choose( "D@2" );
+		IsActive( task ); Choose( "A0" );
 
 		if(savedByOcean) {
 			// Ocean should decide if it is going to save them now
-			var oceanDecision = oceanSpirit.Gateway.GetCurrent();
-			oceanDecision.Options.Select( x => x.Text ).OrderBy( x => x ).Join( "," ).ShouldBe( "A1,A2,A3,B1,B2,B3,Done" );
-			oceanSpirit.Gateway.Choose( oceanDecision.Options[0] );
+			oceanSpirit.NextDecision()
+				.HasOptions( "A1,A2,A3,B1,B2,B3,Done" )
+				.Choose("A1");
 
 			// End of Action - Thunder speaker exits ocean
 			Choose( "A0" );
@@ -348,19 +350,13 @@ public class OceanTerrain_Tests {
 		primarySpirit.Presence.Spaces( gameState ).Select( s => s.Text ).Join( "," ).ShouldBe( space.Text );
 	}
 
-	void Assert_CurrentOptions( string expectedOptions, string msg ) {
-		CurrentOptionsString.ShouldBe( expectedOptions, msg + ' ' + Current.Prompt );
+	
+	void Choose( string text ) {
+		NextDecision.Choose( text );
 	}
-	string CurrentOptionsString => Current.Options.Select( x => x.Text ).OrderBy( x => x ).Join( "," );
 
-	IDecision Current => primarySpirit.Gateway.GetCurrent();
-	void Choose( string text, Task task = null ) {
-		if( task is not null )
-			task.IsCompleted.ShouldBeFalse();
-		var option = Current.Options.SingleOrDefault( x => x.Text == text );
-		if(option is null)
-			throw new ArgumentException( $"{text} option not found in " + CurrentOptionsString );
-		primarySpirit.Gateway.Choose( option );
+	void IsActive( Task task ) {
+		task.IsCompleted.ShouldBeFalse();
 	}
 
 	#endregion

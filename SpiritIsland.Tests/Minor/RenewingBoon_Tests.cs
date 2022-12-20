@@ -43,7 +43,7 @@ public class RenewingBoon_Tests {
 		Task task = PowerCard.For<RenewingBoon>().ActivateAsync( spirit.BindMyPower( gameState, uow ) );
 
 		// And selecting restricted space
-		spirit.Gateway.Choose( space.Space );
+		spirit.Gateway.Choose( spirit.Gateway.Next, space.Space );
 
 		// Then: it should remove any blight...
 		space.Blight.Count.ShouldBe( 0 );

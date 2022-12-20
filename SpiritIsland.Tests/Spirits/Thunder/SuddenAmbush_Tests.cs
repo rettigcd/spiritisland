@@ -16,7 +16,7 @@ public class SuddenAmbush_Tests : ThunderCards {
 	[Fact]
 	public void NoDahanToGather() {
 		When_ActivateCard( SuddenAmbush.Name );
-		User.TargetsLand( SuddenAmbush.Name, "A1,(A2),A4,A5,A6");
+		User.TargetsLand( SuddenAmbush.Name, "A1,[A2],A4,A5,A6");
 	}
 
 	[Fact]
@@ -27,7 +27,7 @@ public class SuddenAmbush_Tests : ThunderCards {
 		gs.Tokens[a[2]].AdjustDefault(Invader.Explorer,2);
 
 		When_ActivateCard( SuddenAmbush.Name );
-		User.TargetsLand(SuddenAmbush.Name, "A1,(A2),A4,A5,A6");
+		User.TargetsLand(SuddenAmbush.Name, "A1,[A2],A4,A5,A6");
 		User.GathersOptionalToken("D@2 on A3");
 
 		// Then: 1 explorer left
@@ -44,7 +44,7 @@ public class SuddenAmbush_Tests : ThunderCards {
 
 		When_ActivateCard( SuddenAmbush.Name );
 
-		User.TargetsLand(SuddenAmbush.Name,"(A1),A2,A4,A5,A6");
+		User.TargetsLand(SuddenAmbush.Name,"[A1],A2,A4,A5,A6");
 		User.GathersOptionalToken("D@2 on A2");
 
 		// Then: 5-2-1 = 2 explorers left
@@ -62,7 +62,7 @@ public class SuddenAmbush_Tests : ThunderCards {
 
 		When_ActivateCard(SuddenAmbush.Name);
 
-		User.TargetsLand(SuddenAmbush.Name,"(A1),A2,A4,A5,A6");
+		User.TargetsLand(SuddenAmbush.Name,"[A1],A2,A4,A5,A6");
 		User.GathersOptionalToken("D@2 on A2");
 
 		// Then: 5-2-1 = 2 explorers left

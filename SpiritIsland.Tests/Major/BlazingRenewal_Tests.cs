@@ -43,9 +43,7 @@ public class BlazingRenewal_Tests {
 		var task = BlazingRenewal.ActAsync( setup.TargetSelf );
 
 		// Then: we should not be able to pick restricted space
-		var decision = setup.Spirit.Gateway.GetCurrent();
-		decision.Options.Select( x => x.Text ).Join( "," )
-			.ShouldNotContain( restrictedSpace );
+		setup.Spirit.Gateway.Next.FormatOptions().ShouldNotContain( restrictedSpace );
 	}
 
 	#endregion

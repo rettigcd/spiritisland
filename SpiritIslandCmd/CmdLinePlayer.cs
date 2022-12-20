@@ -41,7 +41,7 @@ namespace SpiritIslandCmd {
 				string cmd = Console.ReadLine().ToLower().Trim();
 				var option = uiMap.GetOption(cmd);
 				if(option != null)
-					game.UserPortal.Choose(option);
+					game.UserPortal.Choose( game.UserPortal.Next, option );
 				else
 					Generic(cmd); // UI
 			}

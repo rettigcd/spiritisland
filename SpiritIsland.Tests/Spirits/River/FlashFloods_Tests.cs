@@ -38,7 +38,7 @@ public class FlashFloods_Tests : SpiritCards_Tests {
 		When_PlayingCard();
 
 		User.TargetsLand( FlashFloods.Name, "A4" );
-		User.SelectsDamageRecipient( 1, "C@3,T@2,(E@1)" ); // select damage option
+		User.SelectsDamageRecipient( 1, "C@3,T@2,[E@1]" ); // select damage option
 
 		User.Assert_Done();
 		gameState.Assert_Invaders( targetSpace, "1C@3,1T@2" );
@@ -75,8 +75,8 @@ public class FlashFloods_Tests : SpiritCards_Tests {
 		User.TargetsLand(FlashFloods.Name,"A2");
 
 		// Then: can apply 2 points of damage
-		User.SelectsDamageRecipient( 2, "(C@3),T@2,E@1" );
-		User.SelectsDamageRecipient( 1, "(C@2),T@2,E@1" );
+		User.SelectsDamageRecipient( 2, "[C@3],T@2,E@1" );
+		User.SelectsDamageRecipient( 1, "[C@2],T@2,E@1" );
 
 		// And: apply doesn't throw an exception
 		User.Assert_Done();

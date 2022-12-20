@@ -180,11 +180,11 @@ public class PowerCardDeck_Tests {
 			_= spirit.DrawMajor(gs,true);
 		else { 
 			_= spirit.Draw(gs);
-			user.SelectsMajorPowerCard();
+			user.SelectsMajorDeck();
 		}
 
-		user.SelectsFirstOption( "Select Major Power Card" );
-		user.SelectsFirstOption( "Select power card to forget" );
+		user.SelectMajorPowerCard();
+		user.SelectCardToForget();
 	}
 
 	[Theory]

@@ -38,9 +38,9 @@ public class WashAway_Tests : SpiritCards_Tests {
 
 		User.TargetsLand( WashAway.Name, targetSpace.Label );
 
-		var invader = spirit.Gateway.GetCurrent().Options[0] as Token;
+		var invader = spirit.Gateway.Next.Options[0] as Token;
 
-		User.OptionallyPushesInvaderTo(invader.ToString(),"A1,(A2),A3,A5");
+		User.OptionallyPushesInvaderTo(invader.ToString(),"A1,[A2],A3,A5");
 
 		// check that explore was moved
 		gameState.Assert_Invaders(targetSpace, expectedTargetResult );
@@ -64,7 +64,7 @@ public class WashAway_Tests : SpiritCards_Tests {
 		When_PlayingCard();
 
 		User.TargetsLand( WashAway.Name, targetSpace.Label );
-		User.OptionallyPushesInvaderTo("E@1","A1,(A3),A4");
+		User.OptionallyPushesInvaderTo("E@1","A1,[A3],A4");
 	}
 
 	[Trait("Feature","Push")]
@@ -86,8 +86,8 @@ public class WashAway_Tests : SpiritCards_Tests {
 		When_PlayingCard();
 
 		User.TargetsLand( WashAway.Name, targetSpace.Label );
-		User.OptionallyPushesInvaderTo("(E@1),T@2","A1,(A2),A3,A5", 2);
-		User.OptionallyPushesInvaderTo("T@2","A1,A2,(A3),A5");
+		User.OptionallyPushesInvaderTo("[E@1],T@2","A1,[A2],A3,A5", 2);
+		User.OptionallyPushesInvaderTo("T@2","A1,A2,[A3],A5");
 
 		User.Assert_Done();
 
@@ -114,7 +114,7 @@ public class WashAway_Tests : SpiritCards_Tests {
 		System.Threading.Thread.Sleep(50); // !!! is this necessary?
 
 		User.TargetsLand( WashAway.Name, targetSpace.Label );
-		User.OptionallyPushesInvaderTo("T@1","A1,(A2),A3,A5");
+		User.OptionallyPushesInvaderTo("T@1","A1,[A2],A3,A5");
 
 		User.Assert_Done();
 
@@ -140,9 +140,9 @@ public class WashAway_Tests : SpiritCards_Tests {
 		When_PlayingCard();
 
 		User.TargetsLand( WashAway.Name, targetSpace.Label );
-		User.OptionallyPushesInvaderTo("E@1","A1,(A2),A3,A5", 3);
-		User.OptionallyPushesInvaderTo("E@1","A1,A2,(A3),A5", 2);
-		User.OptionallyPushesInvaderTo("E@1","A1,A2,A3,(A5)");
+		User.OptionallyPushesInvaderTo("E@1","A1,[A2],A3,A5", 3);
+		User.OptionallyPushesInvaderTo("E@1","A1,A2,[A3],A5", 2);
+		User.OptionallyPushesInvaderTo("E@1","A1,A2,A3,[A5]");
 
 		// check that explore was moved
 		gameState.Assert_Invaders( targetSpace,"" );

@@ -6,8 +6,8 @@ public class VirtualRiverUser : VirtualUser {
 
 	public void SelectsGrowthA_Reclaim() {
 		Growth_DrawsPowerCard();
-		SelectsMinorPowerCard();
-		SelectsFirstOption( "Select minor Power Card" );
+		SelectsMinorDeck();
+		SelectMinorPowerCard();
 	}
 
 	public void SelectsGrowthB_2PP(string pp1="energy>A2;A3;A4", string pp2="energy>A1;A2;A3;A4") {
@@ -19,8 +19,8 @@ public class VirtualRiverUser : VirtualUser {
 		Growth_SelectAction( "PlacePresence(2)" );
 		Growth_PlacesPresence( placePresenceOptions );
 		Growth_SelectAction( "DrawPowerCard" );
-		SelectsMinorPowerCard();
-		SelectsFirstOption( "Select minor Power Card" );
+		SelectsMinorDeck();
+		SelectMinorPowerCard();
 	}
 
 }

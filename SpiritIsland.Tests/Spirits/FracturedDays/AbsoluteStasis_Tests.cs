@@ -20,7 +20,7 @@ public class AbsoluteStasis_Tests {
 				.ActivateAsync(cfg.SelfCtx);
 			//  Then: Ocean is an option
 			mesmerizedTranquilityTask.IsCompleted.ShouldBeFalse();
-			cfg.ChoiceOptions.Select( x => x.Text ).ShouldContain( "A0" );
+			cfg.FormatOptions.ShouldContain( "A0" );
 			cfg.Choose("A0");
 			mesmerizedTranquilityTask.Wait(5);
 			mesmerizedTranquilityTask.IsCompletedSuccessfully.ShouldBeTrue();
@@ -32,7 +32,7 @@ public class AbsoluteStasis_Tests {
 			Task absoluteStasisTask = PowerCard.For<AbsoluteStasis>()
 				.ActivateAsync( cfg.SelfCtx );
 			// Then: Ocean is NOT an option (nothing to select)
-			cfg.ChoiceOptions.Select(x=>x.Text).ShouldNotContain("A0");
+			cfg.FormatOptions.ShouldNotContain("A0");
 			cfg.Choose( "A1" );
 			absoluteStasisTask.Wait( 5 );
 			absoluteStasisTask.IsCompletedSuccessfully.ShouldBeTrue();
@@ -48,7 +48,7 @@ public class AbsoluteStasis_Tests {
 
 		var stasisTask = PowerCard.For<AbsoluteStasis>()
 			.ActivateAsync(cfg.SelfCtx);
-		cfg.ChoiceOptions.Select(x=>x.Text).Join(",").ShouldBe("A1,A4,A5,A6,A7,A8");
+		cfg.FormatOptions.ShouldBe("A1,A4,A5,A6,A7,A8");
 		cfg.Choose("A5");
 		stasisTask.Wait( 5 );
 		stasisTask.IsCompletedSuccessfully.ShouldBeTrue();
@@ -57,7 +57,7 @@ public class AbsoluteStasis_Tests {
 		_ = PowerCard.For<DevouringAnts>()
 			.ActivateAsync(cfg.SelfCtx);
 		//  Then: stasis space is not an option.
-		cfg.ChoiceOptions.Select( x => x.Text ).Join( "," ).ShouldBe( "A6,A7,A8" );
+		cfg.FormatOptions.ShouldBe( "A6,A7,A8" );
 
 		cfg.Choose("A8"); // cleanup
 	}
@@ -71,7 +71,7 @@ public class AbsoluteStasis_Tests {
 		// Given: a spaces is put into stasis
 		var stasisTask = PowerCard.For<AbsoluteStasis>()
 			.ActivateAsync( cfg.SelfCtx );
-		cfg.ChoiceOptions.Select( x => x.Text ).Join( "," ).ShouldBe( "A1,A4,A5,A6,A7,A8" );
+		cfg.FormatOptions.ShouldBe( "A1,A4,A5,A6,A7,A8" );
 		cfg.Choose( "A5" );
 		stasisTask.Wait( 5 );
 		stasisTask.IsCompletedSuccessfully.ShouldBeTrue();
@@ -80,7 +80,7 @@ public class AbsoluteStasis_Tests {
 		_ = PowerCard.For<PillarOfLivingFlame>()
 			.ActivateAsync( cfg.SelfCtx );
 		//  Then: stasis space is not an option.
-		cfg.ChoiceOptions.Select( x => x.Text ).Join( "," ).ShouldBe( "A1,A6,A7,A8" );
+		cfg.FormatOptions.ShouldBe( "A1,A6,A7,A8" );
 
 		cfg.Choose( "A8" );
 	}
@@ -265,7 +265,7 @@ public class AbsoluteStasis_Tests {
 		var stasisTask = PowerCard.For<AbsoluteStasis>()
 			.ActivateAsync( cfg.SelfCtx );
 		stasisTask.IsCompleted.ShouldBeFalse();
-		cfg.ChoiceOptions.Select( x => x.Text ).Join( "," ).ShouldBe( "A1,A4,A5,A6,A7,A8" );
+		cfg.FormatOptions.ShouldBe( "A1,A4,A5,A6,A7,A8" );
 		cfg.Choose( spaceToStasisize );
 		stasisTask.Wait( 5 );
 		stasisTask.IsCompletedSuccessfully.ShouldBeTrue();

@@ -147,8 +147,8 @@ public class Keeper_GrowthTests : GrowthTests {
 		// When: we place a presence on that space
 		_ = spirit.Presence.Place( spirit.Presence.Energy.RevealOptions.Single(), space, _gameState, _gameState.StartAction( ActionCategory.Default ) );
 
-		User.PushesTokensTo("D@2","A1,(A4),A6,A7,A8",2);
-		User.PushesTokensTo("D@2","A1,A4,A6,(A7),A8");
+		User.PushesTokensTo("D@2","A1,[A4],A6,A7,A8",2);
+		User.PushesTokensTo("D@2","A1,A4,A6,[A7],A8");
 
 		spirit.Presence.SacredSites( _gameState, new TerrainMapper() ).ShouldContain(space);
 		_gameState.Tokens[space].Dahan.Count.ShouldBe(0,"SS should push dahan from space");
@@ -205,9 +205,9 @@ public class Keeper_GrowthTests : GrowthTests {
 	}
 
 	void User_Activates_B() {
-		User.Growth_SelectAction( "DrawPowerCard" );
-		User.SelectsMinorPowerCard();
-		User.SelectsFirstOption( "Select minor Power Card" );
+		User.Growth_DrawsPowerCard();
+		User.SelectsMinorDeck();
+		User.SelectMinorPowerCard();
 	}
 
 	void User_Activates_C() {
@@ -219,8 +219,8 @@ public class Keeper_GrowthTests : GrowthTests {
 		User.Growth_SelectAction( "PlacePresence(3,no blight)" );
 		User.PlacesCardPlayPresence( "A7" );
 		User.Growth_DrawsPowerCard();
-		User.SelectsMinorPowerCard();
-		User.SelectsFirstOption( "Select minor Power Card" );
+		User.SelectsMinorDeck();
+		User.SelectMinorPowerCard();
 	}
 
 }

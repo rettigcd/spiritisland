@@ -38,13 +38,13 @@ public class GiftOfStrength_Tests {
 		User.IsDoneBuyingCards();
 
 		//  And: already played 2 fast cards (cost 1 & 2)
-		User.SelectsFastAction( "Fast-0,(Fast-1),Fast-2,Gift of Strength" );
-		User.SelectsFastAction( "Fast-0,(Fast-2),Gift of Strength" );
+		User.SelectsFastAction( "Fast-0,[Fast-1],Fast-2,Gift of Strength" );
+		User.SelectsFastAction( "Fast-0,[Fast-2],Gift of Strength" );
 
 		User_PlaysGiftOfStrengthOnSelf();
 
 		// Then: user can replay ONLY the played: Fast-1 card.
-		User.SelectsFastAction( "Fast-0,(Replay Card [max cost:1])" );
+		User.SelectsFastAction( "Fast-0,[Replay Card (max cost:1)]" );
 		User.AssertDecision( "Select card to replay", "Fast-1 $1 (Fast)", "Fast-1 $1 (Fast)" ); // !!! should there be a ,Done here?
 
 	}
@@ -83,22 +83,22 @@ public class GiftOfStrength_Tests {
 		//  And: played GOS on self
 		User_PlaysGiftOfStrengthOnSelf();
 		//  And: Played fast card
-		User.SelectsFastAction( "(Fast-0),Replay Card [max cost:1]" );
+		User.SelectsFastAction( "[Fast-0],Replay Card (max cost:1)" );
 		User.IsDoneWith( Phase.Fast );
 
 		// (now in slow...)
 
 		//  And: plays Slow-1
-		User.SelectsSlowAction( "Slow-0,(Slow-1),Slow-2,Replay Card [max cost:1]" );
+		User.SelectsSlowAction( "Slow-0,[Slow-1],Slow-2,Replay Card (max cost:1)" );
 
 		// When: Replaying card
-		User.SelectsSlowAction( "Slow-0,Slow-2,(Replay Card [max cost:1])" );
+		User.SelectsSlowAction( "Slow-0,Slow-2,[Replay Card (max cost:1)]" );
 		User.AssertDecision( "Select card to replay", "Slow-1 $1 (Slow)", "Slow-1 $1 (Slow)" ); // !!! should there be a ,Done here?
 	}
 
 	void User_PlaysGiftOfStrengthOnSelf() {
 		// When: user applies 'Gift of Strength' to self
-		User.SelectsFastAction( "Fast-0,(Gift of Strength)" );
+		User.SelectsFastAction( "Fast-0,[Gift of Strength]" );
 	}
 
 

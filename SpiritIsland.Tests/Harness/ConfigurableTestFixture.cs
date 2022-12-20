@@ -149,39 +149,20 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 
 	#region Choose
 
-	public void Choose( string choiceText, Task task=null ) {
-		if(task != null)
-			task.IsCompleted.ShouldBeFalse();
+	public void Choose( string choiceText ) => NextDecision.Choose( choiceText );
+	public void Choose( IOption choice ) => NextDecision.Choose( choice );
+	public DecisionContext NextDecision => Spirit.NextDecision();
 
-		var decision = Spirit.Gateway.GetCurrent( true );
-		if(decision == null) throw new Exception("no Decision presented.");
-		var matchingChoices = decision.Options
-			.Where(o=>o.Text.ToLower().Contains( choiceText.ToLower() ))
-			.ToArray();
-		switch( matchingChoices.Length) {
-			case 0: throw new Exception($"No option contains '{choiceText}' in: "+FormatDecision(decision));
-			case 1: Spirit.Gateway.Choose( matchingChoices[0] ); return;
-			default: throw new Exception( $"Multiple option contain '{choiceText}' in: " + FormatDecision( decision ) );
-		}
-	}
-
-	public void Choose( IOption choice ) {
-		var decision = Spirit.Gateway.GetCurrent( true );
-		if(decision == null) throw new Exception( "no Decision presented." );
-		if( !decision.Options.Contains( choice )) {
-			throw new Exception( $"{choice.Text} not found in: " + FormatDecision( decision ) );
-		}
-		Spirit.Gateway.Choose( choice ); return;
-	}
-
-	public IOption[] ChoiceOptions{ get {
-		var decision = Spirit.Gateway.GetCurrent( true );
-			return decision != null ? decision.Options : throw new Exception( "no Decision presented." );
-	} }
+	public string FormatOptions => Spirit.Gateway.Next.FormatOptions();
 
 	public void ChoosePush( Token token, Space destination ) {
-		Choose( token );
-		Choose( destination );
+		NextDecision.Choose( token );
+		NextDecision.Choose( destination );
+	}
+
+	public ConfigurableTestFixture IsActive( Task task ) {
+		task.IsCompleted.ShouldBeFalse();
+		return this;
 	}
 
 	#endregion

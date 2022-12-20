@@ -12,41 +12,44 @@ public class VirtualUser {
 
 	#region Growth
 
+	DecisionContext NextDecision => spirit.NextDecision();
+
 	public void Growth_SelectsOption( string growthOption ) {
-		var current = userPortal.GetCurrent();
-		Assert.Equal( "Select Growth Option", current.Prompt );
-		Choose( growthOption );
+		NextDecision.HasPrompt( "Select Growth Option" )
+			.Choose( growthOption );
 	}
 
-	public void Growth_SelectAction( string growthOption, int index = 0 ) {
-		var current = userPortal.GetCurrent();
-		Assert.Equal( "Select Growth", current.Prompt );
-		Choose( growthOption, index );
+	public void Growth_SelectAction( string growthOption ) {
+		NextDecision.HasPrompt( "Select Growth" )
+			.Choose( growthOption );
 	}
+
+	public void Growth_SelectAction( string growthOption, int index ) {
+		NextDecision.HasPrompt( "Select Growth" )
+			.ChooseFirst( growthOption, index );
+	}
+
 
 	public void Growth_SelectsOption(int growthOptionIndex) {
-		var current = userPortal.GetCurrent();
-		Assert.Equal( "Select Growth Option", current.Prompt );
-		Choose( current.Options[growthOptionIndex] );
+		NextDecision.HasPrompt( "Select Growth Option" )
+			.Choose( growthOptionIndex );
 	}
 
 	public void Growth_DrawsPowerCard() {
-		Choose( "DrawPowerCard" );
+		NextDecision.ChooseFirst( "DrawPowerCard" );
 	}
 
 	public void Growth_ReclaimsAll() {
-		Choose( "ReclaimAll" );
+		NextDecision.Choose( "ReclaimAll" );
 	}
 
 	public void Growth_Reclaims1(string cards) {
-		Choose( "Reclaim(1)" );
-		AssertDecisionX( ReclaimN.Prompt,  cards, "{}" );
+		NextDecision.Choose( "Reclaim(1)" );
+		AssertDecisionInfo( ReclaimN.Prompt,  cards );
 	}
 
 	public void Growth_GainsEnergy() {
-		var current = userPortal.GetCurrent();
-		var selection = current.Options.First(x=>x.Text.StartsWith("GainEnergy"));
-		Choose( selection );
+		NextDecision.ChooseFirstThatStartsWith( "GainEnergy" );
 	}
 
 	public void Growth_PlacesEnergyPresence( string placeOptions ) 
@@ -68,10 +71,10 @@ public class VirtualUser {
 	public void PlacesPresence( Track source, string placeOptions ) {
 
 		// If Place Presence is the only action in the growth option, it will auto-select and it will skip over this step
-		var current = userPortal.GetCurrent();
+		var current = userPortal.Next;
 		var op = current.Options.FirstOrDefault( o => o.Text.StartsWith( "PlacePre" ) );
 		if(op != null)
-			Choose( op );
+			NextDecision.Choose( op );
 
 		PlacePresenceLocations( source, placeOptions );
 	}
@@ -82,28 +85,26 @@ public class VirtualUser {
 
 		// place on board - first option
 		string[] expectedOptions = placeOptions.Split( ';' );
-		var destinationDecision = userPortal.GetCurrent();
+		var destinationDecision = userPortal.Next;
 		var actualOptions = destinationDecision.Options;
 		var choice = actualOptions.SingleOrDefault( o => o.Text == expectedOptions[0] );
 		if(choice == null)
 			throw new System.ArgumentOutOfRangeException( nameof( placeOptions ), $"'{expectedOptions[0]}' not found in " + actualOptions.Select( o => o.Text ).Join( "," ) );
-		Choose( choice );
+		NextDecision.Choose( choice );
 	}
 
 	public void PullsPresenceFromTrack( Track source ) {
-		var sourceDecision = userPortal.GetCurrent();
-		sourceDecision.Options.Select( x => x.Text ).Join( "," ).ShouldContain( source.Text );
-		Choose( source );
+		NextDecision.Choose( source );
 	}
 
 	public void Reclaims1FromTrackBonus(string cards) {
-		AssertDecisionX( "Select card to reclaim.",  cards, "{}" );
+		AssertDecisionInfo( "Select card to reclaim.",  cards );
 	}
 
 	public void Reclaims1CardIfAny() {
-		var current = userPortal.GetCurrent();
+		var current = userPortal.Next;
 		if(current.Options.Length>0)
-			userPortal.Choose( current.Options[0] );
+			userPortal.Choose( current, current.Options[0] );
 	}
 
 	#endregion
@@ -114,7 +115,7 @@ public class VirtualUser {
 	}
 
 	public void BuysPowerCard( PowerCard card ) {
-		SelectOption( "Play power card", card.Text );
+		NextDecision.HasPromptPrefix( "Play power card" ).Choose( card.Text );
 	}
 
 	#region Fear 
@@ -157,30 +158,32 @@ public class VirtualUser {
 	#region IsDone / Skip
 
 	public void IsDoneBuyingCards() {
-		SelectOption( "Play power card", "Done" );
+		// The prompt for choosing power card has spirits Energy embeded in it
+		// so we need to let the engine catch up before we generate the prompt.
+		NextDecision.HasPromptPrefix( $"Play power card" ).Choose( "Done" );
 	}
 
 	public void IsDoneWith( Phase speed ) {
-		SelectOption( $"Select {speed} to resolve", "Done" );
+		NextDecision.HasPromptPrefix( $"Select {speed} to resolve" ). Choose( "Done" );
 	}
 
 	#endregion
 
 	public void PushesTokensTo( string invaders, string destinations, int numToPush=1 ) {
 		var (_,tokenToPush) = SplitOptionsAndChoice( invaders );
-		AssertDecisionX( "Push ("+numToPush+")", invaders );
-		AssertDecisionX( "Push "+tokenToPush+" to", destinations );
+		AssertDecisionInfo( "Push ("+numToPush+")", invaders );
+		AssertDecisionInfo( "Push "+tokenToPush+" to", destinations );
 	}
 
-	public void PusheSelectedTokenTo( string invaders, string destinations ) {
+	public void PushSelectedTokenTo( string invaders, string destinations ) {
 		var (_, tokenToPush) = SplitOptionsAndChoice( invaders );
-		AssertDecisionX( "Push " + tokenToPush + " to", destinations );
+		AssertDecisionInfo( "Push " + tokenToPush + " to", destinations );
 	}
 
 	public void OptionallyPushesInvaderTo( string invaders, string destinations, int countToPush=1 ) {
 		var (invaderOptions,invaderChoice) = SplitOptionsAndChoice( invaders );
 		AssertDecision( $"Push up to ({countToPush})", invaderOptions+",Done", invaderChoice );
-		AssertDecisionX( "Push "+invaderChoice+" to", destinations );
+		AssertDecisionInfo( "Push "+invaderChoice+" to", destinations );
 	}
 
 	#region SharpFangs-spirit Specific
@@ -207,79 +210,49 @@ public class VirtualUser {
 	#region Ocean-Spirit Specific
 
 	public void GathersPresenceIntoOcean() {
-		AssertDecisionX( "Select Growth to resolve", "GatherPresenceIntoOcean" );
+		AssertDecisionInfo( "Select Growth to resolve", "GatherPresenceIntoOcean" );
 	}
 
 	public void PushesPresenceFromOcean(string destination) {
-		AssertDecisionX( "Select Growth to resolve", "PushPresenceFromOcean" );
-		AssertDecisionX( "Push Presence to", destination );
+		AssertDecisionInfo( "Select Growth to resolve", "PushPresenceFromOcean" );
+		AssertDecisionInfo( "Push Presence to", destination );
 	}
 
 	public void PlacesPresenceInOcean( string growth, string source, string destination ) {
-		AssertDecisionX( "Select Growth to resolve", growth );
-		AssertDecisionX( "Select Presence to place", source );
-		AssertDecisionX( "Where would you like to place your presence?", destination );
+		AssertDecisionInfo( "Select Growth to resolve", growth );
+		AssertDecisionInfo( "Select Presence to place", source );
+		AssertDecisionInfo( "Where would you like to place your presence?", destination );
 	}
 
 	#endregion
 
 	public void TargetsSpirit( string actionName, string spirits ) {
-		AssertDecisionX( actionName + ": Target Spirit", spirits );
+		AssertDecisionInfo( actionName + ": Target Spirit", spirits );
 	}
 
 	public void TargetsLand( string powerName, string space ) {
-		AssertDecisionX( powerName + ": Target Space", space );
+		AssertDecisionInfo( powerName + ": Target Space", space );
 	}
 
-	public void TargetsLand_IgnoreOptions( string space ) {
-		var current = Assert_HasCurrent( "Select space to target." );
-		IOption match = FindRequiredOptionByText( current, space );
-		Choose( match );
-	}
+	public void TargetsLand_IgnoreOptions( string space ) => NextDecision.Choose( space );
 
 	public void SelectsDamageRecipient( int damageAvailable, string tokens ) {
-		AssertDecisionX( "Damage ("+damageAvailable+" remaining)", tokens );
+		AssertDecisionInfo( "Damage ("+damageAvailable+" remaining)", tokens );
 	}
 
 	public void GathersOptionalToken( string token ) {
 		var (options,choice) = SplitOptionsAndChoice( token );
-
-		IDecision current = userPortal.GetCurrent();
-		void Assert_Options( params string[] expected ) {
-			// This is kind of crappy
-			Assert.Equal(
-				expected.OrderBy(x=>x).Join(",")
-				,current.Options.Select(s=>s.Text).OrderBy(x=>x).Join(",")
-			);
-		}
-		Assert_Options( options, "Done" );
-		ChooseUsingText( choice, current );
+		NextDecision
+			.HasOptions( options+",Done" )
+			.Choose( choice );
 	}
 
-	void ChooseUsingText( string text, IDecision current, int index = 0 ) {
-		var choice = current.Options.Where( o => o.Text == text ).Skip(index).FirstOrDefault();
-		if(choice == null)
-			throw new ArgumentOutOfRangeException(nameof(text),"sequence ["+current.Options.Select(x=>x.Text).Join(",")+"]does not contain option: "+text);
-		userPortal.Choose( choice ); // not single because some options appear twice
-	}
-
-	public void SelectsMajorPowerCard() {
-		AssertDecisionX( "Which type do you wish to draw", "minor,(major)");
-	}
-	public void SelectsMinorPowerCard() {
-		AssertDecisionX( "Which type do you wish to draw", "(minor),major" );
-	}
-
-	public void SelectsFirstOption( string prompt ) {
-		string msg = $"{prompt}:[any]:[first]";
-		userPortal.IsResolved.ShouldBeFalse( $"Prompt [{prompt}] is not there." );
-		var current = userPortal.GetCurrent();
-		current.Prompt.ShouldBe( prompt, msg, StringCompareShould.IgnoreCase );
-
-		IOption choice = current.Options[0];
-		userPortal.Choose( choice );
-
-	}
+	public void SelectsMajorDeck() => AssertDecisionInfo( "Which type do you wish to draw", "minor,[major]");
+	public void SelectsMinorDeck() => AssertDecisionInfo( "Which type do you wish to draw", "[minor],major" );
+	public void SelectMinorPowerCard() => NextDecision.HasPrompt( "Select minor Power Card" ).ChooseFirst();
+	public void SelectMajorPowerCard() => NextDecision.HasPrompt( "Select Major Power Card" ).ChooseFirst();
+	public void SelectCardToForget()   => NextDecision.HasPrompt( "Select power card to forget" ).ChooseFirst();
+	public void ActivateFear()         => NextDecision.HasPrompt( "Activating Fear" ).ChooseFirst();
 
 	public void Assert_Done() {
 		userPortal.IsResolved.ShouldBeTrue();
@@ -287,79 +260,35 @@ public class VirtualUser {
 
 	#region protected
 
-	protected static (string,string) SplitOptionsAndChoice(string options,string markers = "()") {
-		if(!options.Contains(','))
-			return (options,options); // only 1 option, no need for (...)
+	public void AssertDecisionInfo( string prompt, string optionInfo ) {
 
-		int open = options.IndexOf(markers[0]);
-		if(open==-1) throw new FormatException("No '"+markers[0]+"' found for indicating choice");
-		int close = options.IndexOf(markers[1],open);
-		if(close==-1) throw new FormatException("No '"+markers[1]+"' found for indicating choice");
-		string choice = options.Substring(open+1,close-open-1);
-		options = string.Concat( options[..open], options.AsSpan(open+1,close-open-1), options[(close + 1)..] );
-		return (options,choice);
-	}
-
-	protected void SelectOption( string prompt, string optionText ) {
-		var current = userPortal.GetCurrent();
-		if(!current.Prompt.StartsWith( prompt ))
-			current.Prompt.ShouldBe( prompt );
-
-		var option = current.Options.FirstOrDefault( o => o.Text == optionText );
-		if(option == null)
-			throw new Exception( $"option ({optionText} not found in "
-				+ userPortal.GetCurrent().Options.Select( x => x.Text ).Join( ", " )
-			);
-		Choose( option );
-	}
-
-	protected void AssertDecision( string prompt, string select ) {
-		string msg = $"{prompt}:{select}";
-
-		var current = Assert_HasCurrent(msg);
-		current.Prompt.ShouldBe( prompt, msg, StringCompareShould.IgnoreCase );
-		IOption match = FindRequiredOptionByText( current, select );
-		userPortal.Choose( match );
-	}
-
-	public void AssertDecisionX( string prompt, string optionInfo, string markers = "()" ) {
-		var (options,choice) = SplitOptionsAndChoice( optionInfo, markers );
-		AssertDecision( prompt, options, choice );
+		var (options, choice) = SplitOptionsAndChoice( optionInfo );
+		NextDecision
+			.HasPrompt( prompt )
+			.HasOptions( options )
+			.ChooseFirst( choice );
 	}
 
 	public void AssertDecision( string prompt, string optionsString, string select ) {
-		var current = Assert_HasCurrent( prompt );
-
-		string msg = $"{prompt}:{optionsString}:{select} => " + current.Options.Select(x=>x.Text).Join(",");
-
-		current.Prompt.ShouldBe( prompt, msg, StringCompareShould.IgnoreCase );
-		current.Options.Select( x => x.Text ).Join( "," ).ShouldBe( optionsString, msg );
-		IOption match = FindRequiredOptionByText( current, select );
-		Choose( match );
+		NextDecision
+			.HasPrompt( prompt )
+			.HasOptions( optionsString )
+			.ChooseFirst( select );
 	}
 
-	public IDecision Assert_HasCurrent( string prompt ) {
-		userPortal.IsResolved.ShouldBeFalse( $"Prompt [{prompt}] is not there." );
-		return userPortal.GetCurrent();
-	}
+	protected static (string, string) SplitOptionsAndChoice( string options ) {
+		const string markers = "[]";
 
-	static protected IOption FindRequiredOptionByText( IDecision current, string select ) {
-		return current.Options.FirstOrDefault( x => x.Text == select ) // sometimes we will have double
-			?? throw new Exception( $"option ({select} not found in " + current.Options.Select( x => x.Text ).Join( ", " ) );
-	}
+		if(!options.Contains( ',' ))
+			return (options, options); // only 1 option, no need for (...)
 
-	protected void Choose( IOption option ) {
-		userPortal.Choose( option );
-		WaitForSignal();
-	}
-
-	protected void Choose( string option, int index=0 ) {
-		ChooseUsingText( option, userPortal.GetCurrent(), index );
-		WaitForSignal();
-	}
-
-	protected void WaitForSignal() {
-		userPortal.WaitForNextDecision(10);
+		int open = options.IndexOf( markers[0] );
+		if(open == -1) throw new FormatException( "No '" + markers[0] + "' found in '" + options + "' for indicating choice" );
+		int close = options.IndexOf( markers[1], open );
+		if(close == -1) throw new FormatException( "No '" + markers[1] + "' found for indicating choice" );
+		string choice = options.Substring( open + 1, close - open - 1 );
+		options = string.Concat( options[..open], options.AsSpan( open + 1, close - open - 1 ), options[(close + 1)..] );
+		return (options, choice);
 	}
 
 	#endregion

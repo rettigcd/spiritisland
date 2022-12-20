@@ -17,8 +17,8 @@ public class Lightning_GrowthTests : GrowthTests{
 
 		// Select Minor card to draw
 		_gameState.MinorCards.ShouldNotBeNull();
-		User.SelectsMinorPowerCard();
-		User.SelectsFirstOption("Select minor Power Card");
+		User.SelectsMinorDeck();
+		User.SelectMinorPowerCard();
 
 		Assert_AllCardsAvailableToPlay( 5 ); // drew a power card
 		Assert_HasEnergy( 1 + 1 ); // 1 from energy track

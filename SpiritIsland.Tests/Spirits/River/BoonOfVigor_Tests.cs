@@ -42,7 +42,7 @@ public class BoonOfVigor_Tests : SpiritCards_Tests {
 
 		When_PlayingCard();
 		
-		User.TargetsSpirit(BoonOfVigor.Name, "River Surges in Sunlight,(Lightning's Swift Strike)");
+		User.TargetsSpirit(BoonOfVigor.Name, "River Surges in Sunlight,[Lightning's Swift Strike]");
 
 		User.Assert_Done();
 

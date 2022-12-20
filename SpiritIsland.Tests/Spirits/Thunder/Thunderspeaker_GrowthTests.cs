@@ -12,12 +12,12 @@ public class Thunderspeaker_GrowthTests : GrowthTests{
 		When_StartingGrowth();
 
 		User.Growth_DrawsPowerCard();
-		User.SelectsMinorPowerCard();
-		User.SelectsFirstOption( "Select minor Power Card" );
+		User.SelectsMinorDeck();
+		User.SelectMinorPowerCard();
 
 		User.Growth_DrawsPowerCard();
-		User.SelectsMinorPowerCard();
-		User.SelectsFirstOption( "Select minor Power Card" );
+		User.SelectsMinorDeck();
+		User.SelectMinorPowerCard();
 
 
 		Assert_AllCardsAvailableToPlay( 6);

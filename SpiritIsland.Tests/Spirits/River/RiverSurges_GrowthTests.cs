@@ -233,7 +233,7 @@ public class RiverSurges_GrowthTests2 : RiverGame {
 		User.SelectsGrowthB_2PP("cardplays>A5","cardplays>A5");
 
 		// Can reclaim River's Bounty
-		User.Reclaims1FromTrackBonus( "Wash Away $1 (Slow),{River's Bounty $0 (Slow)}" );
+		User.Reclaims1FromTrackBonus( "Wash Away $1 (Slow),[River's Bounty $0 (Slow)]" );
 
 		// Can buy all 3 of River's cards including Bounty
 		game.Spirit.Energy.ShouldBe(2,"need 2 energy to purcahse 0+0+2 cards");

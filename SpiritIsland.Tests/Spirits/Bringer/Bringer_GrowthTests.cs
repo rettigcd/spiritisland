@@ -12,8 +12,8 @@ public class Bringer_GrowthTests : GrowthTests {
 
 		_ = When_Growing( 0 );
 
-		User.SelectsMinorPowerCard();
-		User.SelectsFirstOption( "Select minor Power Card" );
+		User.SelectsMinorDeck();
+		User.SelectMinorPowerCard();
 
 		// Then:
 		Assert_AllCardsAvailableToPlay( 4 + 1 );
@@ -29,7 +29,7 @@ public class Bringer_GrowthTests : GrowthTests {
 
 		_ = When_Growing( 1 );
 
-		User.Growth_Reclaims1("Predatory Nightmares $2 (Slow),{Dreams of the Dahan $0 (Fast)}");
+		User.Growth_Reclaims1("Predatory Nightmares $2 (Slow),[Dreams of the Dahan $0 (Fast)]");
 		User.Growth_PlacesPresence( "energy>A4" );
 
 		spirit.Hand.Count.ShouldBe( 3 );
@@ -43,8 +43,8 @@ public class Bringer_GrowthTests : GrowthTests {
 		_ = When_Growing( 2 );
 
 		User.Growth_DrawsPowerCard();
-		User.SelectsMinorPowerCard();
-		User.SelectsFirstOption( "Select minor Power Card" );
+		User.SelectsMinorDeck();
+		User.SelectMinorPowerCard();
 		User.Growth_PlacesEnergyPresence( "A1;A2;A4;A5;A6" );
 
 		Assert_GainsFirstMinorCard();
