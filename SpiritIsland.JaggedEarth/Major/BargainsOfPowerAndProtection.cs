@@ -13,7 +13,7 @@ public class BargainsOfPowerAndProtection {
 			await ctx.Presence.RemoveFrom( presenceToRemove );
 		}
 
-		// From now on: Each dahan withing range of 1 of your presence provides
+		// From now on: Each dahan within range of 1 of your presence provides
 		// Defend 1 in its land,
 		ctx.GameState.Tokens.Dynamic.ForGame.Register( new Range1DahanDefend1(ctx).DefendOn, TokenType.Defend );
 
@@ -29,17 +29,13 @@ public class BargainsOfPowerAndProtection {
 			this.ctx = ctx;
 		}
 		public int DefendOn( SpaceState space ) {
-			var spaces = ctx.Self.PowerRangeCalc.GetTargetOptionsFromKnownSource(
-				ctx.Self,
-				ctx.TerrainMapper,
-				TargetingPowerType.PowerCard,
-				new SpaceState[] { space },
-				new TargetCriteria(1)
-			);
 
-			return spaces.Any( ctx.Self.Presence.IsOn )
-				? space.Dahan.Count
-				: 0;
+			// !! This is kind of slow to do for every space.
+			// ??? Is there some way we can cache this inside the UnitOfWork?
+
+			var match = ctx.Presence.FindSpacesWithinRange( new TargetCriteria( 1 ), TargetingPowerType.PowerCard )
+				.FirstOrDefault( opt => opt == space);
+			return match?.Dahan.Count ?? 0;
 		}
 	}
 

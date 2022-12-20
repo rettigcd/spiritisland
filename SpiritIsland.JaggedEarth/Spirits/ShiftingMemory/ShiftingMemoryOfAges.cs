@@ -168,7 +168,10 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 		return false;
 	}
 
-	public override async Task<ElementCounts> SelectInnateToActivate( IEnumerable<IDrawableInnateOption> innateOptions ) {
+	public override async Task<IDrawableInnateOption> SelectInnateToActivate( IEnumerable<IDrawableInnateOption> innateOptions, UnitOfWork _ ) {
+
+		// !!! instead of storing actionElements in the spirit, store them in the UnitOfWork
+
 
 		var elementOptions = innateOptions.Select(x=>x.Elements);
 
@@ -210,12 +213,12 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 					PreparedElements[consumeEl.Key] -= consumeEl.Value;
 					actionElements[consumeEl.Key] += consumeEl.Value;
 				}
-				return extendedOption.Elements;
+				return extendedOption;
 			}
 
 		}
 
-		return highestAlreadyMatch?.Elements;
+		return highestAlreadyMatch;
 	}
 
 	public override async Task TakeAction(IActionFactory factory, SelfCtx ctx) {

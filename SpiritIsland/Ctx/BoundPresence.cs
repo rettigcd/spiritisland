@@ -28,17 +28,9 @@ public class ReadOnlyBoundPresence : IKnowSpiritLocations {
 	public IEnumerable<SpaceState> SpaceStates => _inner.SpaceStates( _gameState );
 	public IEnumerable<SpaceState> SacredSites => _inner.SacredSiteStates( _gameState, _terrainMapper );
 
-	public IEnumerable<SpaceState> FindSpacesWithinRange( TargetCriteria targetCriteria, TargetingPowerType targetingPowerType ) {
-		var rangeCalculator = targetingPowerType switch {
-			TargetingPowerType.None => DefaultRangeCalculator.Singleton,
-			TargetingPowerType.Innate => _self.PowerRangeCalc,
-			TargetingPowerType.PowerCard => _self.PowerRangeCalc,
-			_ => throw new InvalidOperationException()
-		};
-
-		return rangeCalculator
-			.GetTargetOptionsFromKnownSource( _self, _terrainMapper, targetingPowerType, SpaceStates, targetCriteria );
-	}
+	// This is the non-Targetting version that skips over the TargetSourceCalc
+	public IEnumerable<SpaceState> FindSpacesWithinRange( TargetCriteria targetCriteria, TargetingPowerType targetingPowerType )
+		=> _self.FindSpacesWithinRange( targetingPowerType, this._gameState, targetCriteria ); // !! Only being used with Power since we are assuming the Terrain Mapper
 
 	#region User Decisions
 
@@ -96,7 +88,7 @@ public class BoundPresence : ReadOnlyBoundPresence {
 
 	public Task Move( Space from, Space to ) => _inner.Move(from,to, _gameState, _actionId );
 	public Task PlaceOn( Space space ) => _inner.PlaceOn( _gameState.Tokens[space], _actionId );
-	public Task Destroy( Space space, DestoryPresenceCause actionType ) => _inner.Destroy( space, _gameState, actionType, _actionId );
+	public Task Destroy( Space space, int count, DestoryPresenceCause actionType ) => _inner.Destroy( space, _gameState, count, actionType, _actionId );
 	public Task RemoveFrom( Space space ) => _inner.RemoveFrom( space, _gameState ); // Generally used for Replacing, !!! should have an Action ID
 	public Task Place( IOption from, Space to) => _inner.Place(from,to,_gameState,_actionId);
 
@@ -137,7 +129,7 @@ public class BoundPresence : ReadOnlyBoundPresence {
 		var space = filter == null
 			? await _self.Gateway.Decision( Select.DeployedPresence.ToDestroy( "Select presence to destroy", this ) )
 			: await _self.Gateway.Decision( Select.DeployedPresence.ToDestroy( "Select presence to destroy", this, filter ) );
-		await Destroy( space, actionType );
+		await Destroy( space, 1, actionType );
 	}
 
 	public async Task ReturnUpToNDestroyedToTrack( int count ) {

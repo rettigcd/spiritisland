@@ -36,8 +36,8 @@ public class ChokeTheLandWithGreen : SpiritPresenceToken , ISkipBuilds, ISkipRav
 		var stop = await _self.Gateway.Decision( new Select.Space( $"Stop {actionDescription} on {space.Space.Text} by destroying 1 presence", new Space[] { space.Space }, Present.Done ) );
 		if(stop == null) return false;
 
-		var unitOfWork = gs.StartAction( ActionCategory.Spirit ); // Special Rules!
-		await _self.Presence.Destroy( stop, gs, DestoryPresenceCause.SkipInvaderAction, unitOfWork ); // it is the invader actions we are stopping
+		var unitOfWork = gs.StartAction( ActionCategory.Spirit_SpecialRule ); // Special Rules!
+		await _self.Presence.Destroy( stop, gs, 1, DestoryPresenceCause.SkipInvaderAction, unitOfWork ); // it is the invader actions we are stopping
 		_self.Energy -= energyCost;
 
 		return true;

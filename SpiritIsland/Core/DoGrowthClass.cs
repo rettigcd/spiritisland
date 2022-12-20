@@ -35,19 +35,19 @@ public abstract partial class Spirit {
 
 		}
 
-		async Task ExecuteRemaining( IActionFactory selectedAction ) {
-			await using var action = gameState.StartAction( ActionCategory.Spirit );
+		async Task ExecuteRemainingGrowth( IActionFactory selectedAction ) {
+			await using var action = gameState.StartAction( ActionCategory.Spirit_Growth );
 			await spirit.TakeAction( selectedAction, spirit.Bind(gameState,action) );
 			await InitRemainingActionsFromOption();
 		}
 
-		async Task ExecuteFirst( IActionFactory selectedAction ) {
+		async Task ExecuteFirstGrowth( IActionFactory selectedAction ) {
 			// Find Growth Option
 			GrowthOption option = growthOptions.Single( o => o.GrowthActions.Contains( selectedAction ) );
 			inst.MarkAsUsed( option );
 
 			// Resolve Growth Option
-			await using var uow = gameState.StartAction( ActionCategory.Spirit );
+			await using var uow = gameState.StartAction( ActionCategory.Spirit_Growth );
 			var ctx = spirit.Bind( gameState, uow );
 
 			// Auto run the auto-runs.
@@ -78,10 +78,10 @@ public abstract partial class Spirit {
 		async Task InitRemainingActionsFromOption() {
 			// Combine these into a Class that executes
 			actionOptions = spirit.GetAvailableActions( Phase.Growth ).ToArray();
-			execute = ExecuteRemaining;
+			execute = ExecuteRemainingGrowth;
 
 			if(!HasActions)
-				await X();
+				await ApplyRevealedPResenceTracks();
 		}
 
 		void InitActionsForAllAvailableOptions() {
@@ -89,13 +89,13 @@ public abstract partial class Spirit {
 
 			// Combine these into a Class that executes
 			actionOptions = growthOptions.SelectMany( opt => opt.GrowthActions ).ToArray();
-			execute = ExecuteFirst;
+			execute = ExecuteFirstGrowth;
 		}
 
-		async Task X() {
+		async Task ApplyRevealedPResenceTracks() {
 			InitActionsForAllAvailableOptions();
 			if(!HasActions) {
-				await using var action = gameState.StartAction( ActionCategory.Spirit ); // ??? is this really an action?
+				await using var action = gameState.StartAction( ActionCategory.Spirit_PresenceTrackIcon );
 				await spirit.ApplyRevealedPresenceTracks( spirit.Bind( gameState, action ) );
 			}
 		}

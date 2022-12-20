@@ -35,7 +35,7 @@ public class RiverSurges_GrowthTests : GrowthTests {
 	[Fact]
 	public void TwoPresence() {
 		// reclaim, +1 power card, +1 energy
-		// +1 presense withing 1, +1 presense range 1
+		// +1 presense within 1, +1 presense range 1
 		// +1 power card, +1 presense range 2
 
 		Given_HasPresence( board[3] );

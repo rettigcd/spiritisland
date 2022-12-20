@@ -10,7 +10,9 @@ public class PoweredByTheFurnaceOfTheEarth {
 
 	[InnateOption("3 fire","-2 cost.  Gain a Power Card",1)]
 	static public async Task Option2(TargetSpaceCtx ctx ) {
-		if(2 <= ctx.Self.Energy) {
+		if(2 <= ctx.Self.Energy 
+			&& await ctx.Self.UserSelectsFirstText("Spend 2 energy to gain a Power Card", "Yes", "No thank you.")
+		) {
 			ctx.Self.Energy -= 2;
 			await ctx.Draw();
 		}

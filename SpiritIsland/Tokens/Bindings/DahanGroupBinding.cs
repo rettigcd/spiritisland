@@ -105,33 +105,65 @@ public class DahanGroupBinding : DahanGroupBindingNoEvents {
 
 	}
 
-	public async Task ApplyDamage( int damageToDahan ) {
+	// !!! ??? How is Ravage applying Dahan damage?
+	//public async Task ApplyDamage( int damageToDahan ) {
+	//	if(Frozen) return;
+
+	//	// Must kill Dahan as efficiently as possible
+
+	//	var before = Keys.OrderBy(x=>x.RemainingHealth).ToArray(); // least health first.
+	//	foreach(var token in before) {
+	//		damageToDahan = await ApplyDamageToToken( damageToDahan, token );
+	//		if(damageToDahan == 0)
+	//			break;
+	//	}
+
+	//}
+
+	/// <summary>Applies Damage Inefficiently</summary>
+	public async Task ApplyDamage_Inefficiently( int remainingDamageToDahan ) {
 		if(Frozen) return;
 
-		var before = Keys.OrderBy(x=>x.RemainingHealth).ToArray(); // least health first.
-		foreach(var token in before) {
-			damageToDahan = await ApplyDamageToToken( damageToDahan, token );
-			if(damageToDahan == 0)
-				break;
+		// From BAC Rulebook p.16
+		// When Spirit Powers Damage the Dahan,
+		// you may choose how that Damage is allocated, just like when you Damage Invaders.
+
+		HealthToken mostHealthy = null;
+		while( 0<remainingDamageToDahan 
+			&& (mostHealthy=Keys.OrderByDescending( x => x.RemainingHealth ).FirstOrDefault()) != null // least health first.
+		) {
+			// determine # to apply 1 damage 2
+			int countToApply1DamageTo = Math.Min(remainingDamageToDahan, _tokens[mostHealthy]);
+			remainingDamageToDahan -= countToApply1DamageTo;
+
+			HealthToken damagedToken = mostHealthy.AddDamage( 1 );
+			if(damagedToken.IsDestroyed) {
+				await Destroy( countToApply1DamageTo, mostHealthy );
+			} else {
+				_tokens.Adjust( mostHealthy, -countToApply1DamageTo );
+				_tokens.Adjust( damagedToken, countToApply1DamageTo );
+			}
 		}
 
 	}
 
-	public async Task<int> ApplyDamageToToken( int damageToDahan, HealthToken token ) {
+	/// <summary>Applies Damage Efficiently</summary>
+	/// <returns>Remaining/unused damage</returns>
+	public async Task<int> ApplyDamage_Efficiently( int remainingDamageToDahan, HealthToken token ) {
 		// Destroy what can be destroyed
-		if(token.RemainingHealth <= damageToDahan) {
-			int destroyed = damageToDahan / token.RemainingHealth;
-			await Destroy( destroyed, token );
-			damageToDahan -= destroyed * token.RemainingHealth;
+		if(token.RemainingHealth <= remainingDamageToDahan) {
+			int countDestroyed = remainingDamageToDahan / token.RemainingHealth;
+			await Destroy( countDestroyed, token );
+			remainingDamageToDahan -= countDestroyed * token.RemainingHealth;
 		}
-		// if we can apply partial damage
-		if(0 < damageToDahan && 0 < _tokens[token]) {
+		// if there is still partial damage we can apply
+		if(0 < remainingDamageToDahan && 0 < _tokens[token]) {
 			_tokens.Adjust( token, -1 );
-			_tokens.Adjust( token.AddDamage( damageToDahan ), 1 );
-			damageToDahan = 0; // damage should be used up
+			_tokens.Adjust( token.AddDamage( remainingDamageToDahan ), 1 );
+			remainingDamageToDahan = 0; // damage should be used up
 		}
 
-		return damageToDahan;
+		return remainingDamageToDahan;
 	}
 
 	#endregion

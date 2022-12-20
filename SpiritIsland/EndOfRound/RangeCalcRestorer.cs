@@ -18,13 +18,13 @@
 public class SourceCalcRestorer {
 
 	readonly Spirit spirit;
-	readonly ICalcPowerSource original;
+	readonly ICalcPowerTargetingSource original;
 	public SourceCalcRestorer(Spirit spirit ) {
 		this.spirit = spirit;
-		this.original = spirit.SourceCalc; // capture so we can put it back later
+		this.original = spirit.TargetingSourceCalc; // capture so we can put it back later
 	}
 	public Task Restore( GameState _ ) {
-		spirit.SourceCalc = original;
+		spirit.TargetingSourceCalc = original;
 		return Task.CompletedTask;
 	}
 

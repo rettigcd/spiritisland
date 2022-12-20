@@ -62,12 +62,11 @@ public abstract partial class Spirit : IOption {
 		return false;
 	}
 
-	public virtual async Task<ElementCounts> SelectInnateToActivate( IEnumerable<IDrawableInnateOption> innateOptions ) {
-		IEnumerable<ElementCounts> elementOptions = innateOptions.Select(x=>x.Elements);
-		ElementCounts match = null;
-		foreach(ElementCounts elements in elementOptions.OrderBy( els => els.Total ))
-			if(await HasElements( elements ))
-				match = elements;
+	public virtual async Task<IDrawableInnateOption> SelectInnateToActivate( IEnumerable<IDrawableInnateOption> innateOptions, UnitOfWork uow ) {
+		IDrawableInnateOption match = null;
+		foreach(var option in innateOptions.OrderBy( o => o.Elements.Total ))
+			if(await HasElements( option.Elements ))
+				match = option;
 		return match;
 	}
 
@@ -82,7 +81,7 @@ public abstract partial class Spirit : IOption {
 	}
 
 	public async Task GrowAndResolve( GrowthOption option, GameState gameState ) { // public for Testing
-		await using var action = gameState.StartAction( ActionCategory.Spirit );
+		await using var action = gameState.StartAction( ActionCategory.Spirit_Growth );
 		var ctx = Bind( gameState, action );
 
 		// Auto run the auto-runs.
@@ -136,7 +135,16 @@ public abstract partial class Spirit : IOption {
 		Present present = phase == Phase.Growth ? Present.Always : Present.Done;
 
 		// Create a new UnitOfWork each time we resolve an Action
-		await using var unitOfWork = gs.StartAction( ActionCategory.Spirit );
+
+		var category = phase switch {
+			Phase.Init or
+			Phase.Growth => ActionCategory.Spirit_Growth,
+			Phase.Fast or
+			Phase.Slow => ActionCategory.Spirit_Power,
+			_ => throw new InvalidOperationException(),
+		};
+
+		await using var unitOfWork = gs.StartAction( category );
 		unitOfWork.Owner = this;
 
 		SelfCtx ctx = phase switch {
@@ -502,8 +510,13 @@ public abstract partial class Spirit : IOption {
 
 	#region Tarteting / Range
 
-	/// <summary> Calculates Source for *Powers* only.  Don't use it for non-power calculations. </summary>
-	public ICalcPowerSource SourceCalc = new DefaultPowerSourceCalculator();
+	/// <summary> 
+	/// Calculates Source for *TARGETING* *Powers* only.  
+	/// Don't use it for non-power calculations.
+	/// Don't use it for non-targeting Range-only calculations.
+	/// </summary>
+	// !!! make this private so nothing tries to use it.  All targetting should go through Spirit methods
+	public ICalcPowerTargetingSource TargetingSourceCalc = new DefaultPowerSourceCalculator();
 	/// <summary> Calculates the Range for *Powers* only.  Don't use it for non-power calculations. </summary>
 	public ICalcRange PowerRangeCalc = new DefaultRangeCalculator();
 
@@ -529,7 +542,7 @@ public abstract partial class Spirit : IOption {
 		params TargetCriteria[] targetCriteria // allows different criteria at different ranges
 	) {	
 		// Converts SourceCriteria to Spaces
-		IEnumerable<SpaceState> sources = SourceCalc.FindSources( 
+		IEnumerable<SpaceState> sources = TargetingSourceCalc.FindSources( 
 			new ReadOnlyBoundPresence(this, gameState), 
 			sourceCriteria,
 			gameState		// needed only for Entwined power - to get the other spirit's location
@@ -541,6 +554,23 @@ public abstract partial class Spirit : IOption {
 			.Distinct()
 			.Select(x=>x.Space); // TODO: get rid of this line.
 	}
+
+	// Non-targetting, For Power, Range-From Presence finder
+	public IEnumerable<SpaceState> FindSpacesWithinRange( TargetingPowerType targetingPowerType, GameState gameState, TargetCriteria targetCriteria ) {
+		var rangeCalculator = targetingPowerType switch {
+			TargetingPowerType.None => DefaultRangeCalculator.Singleton,
+			TargetingPowerType.Innate or
+			TargetingPowerType.PowerCard => PowerRangeCalc,
+			_ => throw new InvalidOperationException()
+		};
+
+		return rangeCalculator
+			.GetTargetOptionsFromKnownSource( this, gameState.Island.Terrain_ForPower, targetingPowerType, 
+			Presence.SpaceStates( gameState ), 
+			targetCriteria
+		);
+	}
+
 
 	#endregion
 

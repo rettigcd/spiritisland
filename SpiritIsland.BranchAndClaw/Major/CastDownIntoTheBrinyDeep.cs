@@ -28,7 +28,7 @@ public class CastDownIntoTheBrinyDeep {
 			// destroy presence - !!! ??? Should Bringer destroy its own presence?
 			foreach(var spirit in ctx.GameState.Spirits)
 				foreach(var p in spirit.Presence.Placed( ctx.GameState ).Where(p=>p.Space.Board==board).ToArray() )
-					await ctx.NewSelf(spirit).Presence.Destroy(p.Space, DestoryPresenceCause.SpiritPower );
+					await ctx.NewSelf(spirit).Presence.Destroy(p.Space, 1, DestoryPresenceCause.SpiritPower );
 
 			// destroy board - spaces
 			foreach(var space in activeSpaces)

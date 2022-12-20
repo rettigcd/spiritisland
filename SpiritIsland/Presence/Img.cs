@@ -100,6 +100,7 @@ public enum Img {
 	Icon_Disease,
 	Icon_Strife,
 	Icon_Badlands,
+	Icon_DestroyedPresence,
 	Icon_Checkmark,
 	PlusOneRange,
 

@@ -34,15 +34,17 @@ public class FlowingAndSilentFormsDartBy {
 
 		}
 
-		public async Task DestroyPresenceApi( SpiritPresence presence, Space space, GameState gs, DestoryPresenceCause actionType, UnitOfWork actionId ) {
+		public async Task DestroyPresenceApi( SpiritPresence presence, Space space, GameState gs, int count, DestoryPresenceCause actionType, UnitOfWork actionId ) {
+			// pushes all to the same space
 			if( space == this.protectedSpace) {
 				var dst = await spirit.Gateway.Decision(new Select.Space("Instead of destroying, push presence to:", gs.Tokens[space].Adjacent.Select(x=>x.Space),Present.Done));
 				if(dst != null) {
-					await presence.Move(space,dst,gs, actionId);
+					while(0 < count--)
+						await presence.Move(space,dst,gs, actionId);
 					return;
 				}
 			}
-			await originalBehavior.DestroyPresenceApi(presence, space, gs, actionType, actionId );
+			await originalBehavior.DestroyPresenceApi(presence, space, gs, count, actionType, actionId );
 		}
 
 		public Task Restore( GameState _ ) {

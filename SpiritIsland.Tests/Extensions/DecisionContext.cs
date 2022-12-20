@@ -16,7 +16,6 @@ public class DecisionContext {
 	public DecisionContext( Spirit spirit ) {
 		_gateway = spirit.Gateway;
 		_current = _gateway.Next; // Waits for a decision, then binds to it
-
 		// _current = _gateway.Current ?? throw new Exception( "no Decision presented." );
 	}
 
@@ -50,6 +49,19 @@ public class DecisionContext {
 
 	#endregion
 
+	#region misc assertions
+
+	public DecisionContext IsForSpace( Space space ) => IsForSpace( space.Text );
+
+	public DecisionContext IsForSpace( string space ) {
+		Select.TokenFrom1Space tfs = _current as Select.TokenFrom1Space;
+		tfs.ShouldNotBeNull();
+		tfs.Space.Text.ShouldBe( space );
+		return this;
+	}
+
+	#endregion
+
 	public void ChooseFirst()
 		=> ChooseAndWait( _current.Options.First() );
 
@@ -67,6 +79,8 @@ public class DecisionContext {
 
 	public void Choose( IOption choice )
 		=> ChooseAndWait( _current.FindChoice( choice ) );
+
+	public string Format() => _current.FormatDecision();
 
 	#region private helper methods
 

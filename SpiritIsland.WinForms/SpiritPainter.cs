@@ -10,12 +10,12 @@ namespace SpiritIsland.WinForms {
 	class SpiritPainter : IDisposable {
 
 		readonly Spirit _spirit;
+		readonly PresenceTokenAppearance _presenceColor; // stored here because the presencePainter gets .Dispose() and needs it
 		SpiritLayout spiritLayout;
 
 		InnatePainter[] innatePainters;
 		PresenceTrackPainter presencePainter;
 		GrowthPainter growthPainter;
-		PresenceTokenAppearance _presenceColor; // stored here because the presencePainter gets .Dispose() and needs it
 
 		public SpiritPainter(Spirit spirit, PresenceTokenAppearance presenceColor ) {
 			_spirit = spirit;
@@ -29,7 +29,7 @@ namespace SpiritIsland.WinForms {
 			growthPainter = new GrowthPainter( spiritLayout.growthLayout );
 			presencePainter = new PresenceTrackPainter( _spirit, spiritLayout.trackLayout, _presenceColor );
 			innatePainters = _spirit.InnatePowers
-				.Select( power => new InnatePainter( power, spiritLayout.innateLayouts[power] ) )
+				.Select( power => new InnatePainter( power, spiritLayout.findLayoutByPower[power] ) )
 				.ToArray();
 		}
 

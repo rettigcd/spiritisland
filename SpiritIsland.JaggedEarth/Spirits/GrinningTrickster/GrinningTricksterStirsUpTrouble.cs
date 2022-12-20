@@ -74,12 +74,12 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 
 	async Task PickPresenceToDestroy( TargetSpaceCtx ctx ) {
 		var space = await this.Gateway.Decision( Select.DeployedPresence.ToDestroy( $"{CleaningUpMessesIsADrag.Title} Destroy presence for blight cleanup", ctx.Presence ) );
-		await ctx.Presence.Destroy( space, DestoryPresenceCause.SpiritPower );
+		await ctx.Presence.Destroy( space, 1, DestoryPresenceCause.SpiritPower );
 	}
 
 	public override SelfCtx Bind( GameState gameState, UnitOfWork actionId, Cause cause = default ) 
 		=> cause == Cause.MyPowers
-			? new TricksterCtx(this, gameState, actionId!=default ? actionId : gameState.StartAction( ActionCategory.Spirit ) )
+			? new TricksterCtx(this, gameState, actionId!=default ? actionId : gameState.StartAction( ActionCategory.Spirit_Power ) )
 			: base.Bind( gameState, actionId, cause );
 
 }

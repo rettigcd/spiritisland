@@ -12,9 +12,9 @@ namespace SpiritIsland.WinForms;
 	== Painting / Options => Drawing & Hotspot  process ==
 	1) NewDecisionArrived - parse options record which type we have
 	2) Draw_Static part of island
-	3a) DecorateSpace => DrawRow => Record where Tokens cards, etc are located
-	3b) Other controls draw themselves and record location
-	4) DrawHotspots => foreeach Option => Find location and draw it.
+	3) DecorateSpace => DrawRow => Record where Tokens cards, etc are located
+	4) Other controls draw themselves and record location
+	5) DrawHotspots => foreeach Option => Find location and draw it.
 */
 
 public partial class IslandControl : Control {
@@ -33,6 +33,10 @@ public partial class IslandControl : Control {
 	}
 
 	public void Init( GameState gameState, IHaveOptions optionProvider, PresenceTokenAppearance presenceAppearance, AdversaryConfig adversary ) {
+		// Dispose old spirit tokens
+		_presenceImg?.Dispose();
+		_tokenImages[TokenType.Defend]?.Dispose();
+		_tokenImages[TokenType.Isolate]?.Dispose();
 
 		spiritLayout = null;
 
@@ -45,7 +49,14 @@ public partial class IslandControl : Control {
 		_adversary = adversary;
 
 		_spiritPainter = new SpiritPainter( _spirit, presenceAppearance );
-		presence = ResourceImages.Singleton.GetPresenceIcon( presenceAppearance );
+		
+		// Init new Presence, Defend, Isolate
+		_presenceImg = ResourceImages.Singleton.GetPresenceImage( presenceAppearance.BaseImage );
+		_tokenImages[TokenType.Defend] = ResourceImages.Singleton.GetImage( Img.Defend );
+		_tokenImages[TokenType.Isolate] = ResourceImages.Singleton.GetImage( Img.Isolate );
+		presenceAppearance.Adjustment?.Adjust( (Bitmap)_presenceImg );
+		presenceAppearance.Adjustment?.Adjust( (Bitmap)_tokenImages[TokenType.Defend] );
+		presenceAppearance.Adjustment?.Adjust( (Bitmap)_tokenImages[TokenType.Isolate] );
 	}
 
 	#endregion constructor / Init
@@ -296,7 +307,7 @@ public partial class IslandControl : Control {
 
 		// -1 slot width for #/# and 
 		// -1 slot width for last fear token
-		var tokenSize = new SizeF( slotWidth, slotWidth * fearTokenImage.Height / fearTokenImage.Width ); // assume token is wider than tall.
+		var tokenSize = new SizeF( slotWidth, slotWidth * _fearTokenImage.Height / _fearTokenImage.Width ); // assume token is wider than tall.
 
 		// Calc Terror Level bounds - slotWidth reserved but only tokenSize.Width used
 		var terrorLevelBounds = new RectangleF( bounds.X, bounds.Y, tokenSize.Width, tokenSize.Height );
@@ -318,10 +329,10 @@ public partial class IslandControl : Control {
 		// Draw Fear Pool
 		int fearCount = this._gameState.Fear.EarnedFear;
 		for(int i = fearCount; i < poolMax; ++i)
-			graphics.DrawImage( grayFear, CalcBounds( i ) );	// Gray underneath
+			graphics.DrawImage( _grayFear, CalcBounds( i ) );	// Gray underneath
 		// draw fear tokens
 		for(int i = 0; i < fearCount; ++i)
-			graphics.DrawImage( fearTokenImage, CalcBounds( i ) );	// Tokens
+			graphics.DrawImage( _fearTokenImage, CalcBounds( i ) );	// Tokens
 
 		// Activated Cards
 		int activated = _gameState.Fear.ActivatedCards.Count;
@@ -369,7 +380,7 @@ public partial class IslandControl : Control {
 		// -1 slot width for #/# and 
 		// -1 slot width for last fear token
 		float tokenWidth = slotWidth - 2 * margin;
-		float tokenHeight = fearTokenImage.Height * tokenWidth / fearTokenImage.Width;
+		float tokenHeight = _fearTokenImage.Height * tokenWidth / _fearTokenImage.Width;
 		RectangleF CalcBounds( int i ) => new RectangleF( bounds.X + slotWidth + margin + step * i, bounds.Y + margin, tokenWidth, tokenHeight );
 
 		// draw fear tokens
@@ -471,8 +482,8 @@ public partial class IslandControl : Control {
 			if(token is HealthToken si && 0 < si.StrifeCount) {
 				imageToken = si.HavingStrife( 0 );
 
-				Rectangle strifeRect = FitWidth( x, y, iconWidth, strife.Size );
-				graphics.DrawImage( strife, strifeRect );
+				Rectangle strifeRect = FitWidth( x, y, iconWidth, _strife.Size );
+				graphics.DrawImage( _strife, strifeRect );
 				if(si.StrifeCount > 1)
 					graphics.DrawSuperscript( strifeRect, "x" + si.StrifeCount );
 			} else {
@@ -509,7 +520,7 @@ public partial class IslandControl : Control {
 			if(count == 0) continue;
 
 			bool isPresence = token is SpiritPresenceToken;
-			Image img = isPresence ? presence : AccessTokenImage( token );
+			Image img = isPresence ? _presenceImg : AccessTokenImage( token );
 
 			// calc rect
 			float iconHeight = iconWidth / img.Width * img.Height;
@@ -780,12 +791,17 @@ public partial class IslandControl : Control {
 			hotSpots.Add( track, spiritLayout.trackLayout.ClickRectFor( track ) );
 		// Innates - Select Innate Power
 		foreach(var power in options_InnatePower)
-			hotSpots.Add( power, spiritLayout.innateLayouts[power].Bounds );
+			hotSpots.Add( power, spiritLayout.findLayoutByPower[power].Bounds );
+
 		// Innates - Select Innate Option (for shifting memory)
-		var grpOptionLayouts = spiritLayout.innateLayouts.Values.SelectMany( x => x.Options ).ToArray();
-		foreach(var grp in options_DrawableInate) {
-			var bounds = grpOptionLayouts.First( x => x.GroupOption == grp ).Bounds;
-			hotSpots.Add( grp, bounds );
+		var innateOptionBounds = spiritLayout.InnateLayouts
+			.SelectMany( x => x.Options )
+			.ToDictionary( x=> x.InnateOption, x=>x.Bounds );
+		// Loop through the clickable innates
+		foreach(IDrawableInnateOption innateOption in options_DrawableInate) {
+			// Find the bounds that belongs to this Innate
+			Rectangle bounds = innateOptionBounds[innateOption];
+			hotSpots.Add( innateOption, bounds );
 		}
 
 	}
@@ -796,7 +812,7 @@ public partial class IslandControl : Control {
 			: space.IsMountain ? "mountains"
 			: space.IsSand     ? "sand"
 			: space.IsOcean    ? "ocean"
-			: throw new ArgumentException();
+			: throw new ArgumentException($"No brush is found for {space.Text}",nameof(space));
 		using Image image = Image.FromFile( $".\\images\\{terrainName}.jpg" );
 		return new TextureBrush( image );
 	}
@@ -1036,24 +1052,25 @@ public partial class IslandControl : Control {
 
 	void LoadStandardTokenImages() {
 		var images = ResourceImages.Singleton;
-		strife = images.Strife();
-		fearTokenImage = images.Fear();
-		grayFear = images.FearGray();
+		_strife = images.Strife();
+		_fearTokenImage = images.Fear();
+		_grayFear = images.FearGray();
 		_tokenImages = new Dictionary<Token, Image> {
-			[TokenType.Defend] = images.GetImage( Img.Defend ),
 			[TokenType.Blight] = images.GetImage( Img.Blight ),
 			[TokenType.Beast] = images.GetImage( Img.Beast ),
 			[TokenType.Wilds] = images.GetImage( Img.Wilds ),
 			[TokenType.Disease] = images.GetImage( Img.Disease ),
 			[TokenType.Badlands] = images.GetImage( Img.Badlands ),
-			[TokenType.Isolate] = images.GetImage( Img.Isolate ),
+			// assign slot so we can access via key when we need to ?.Dispose() when initializing spirit
+			[TokenType.Defend] = null,
+			[TokenType.Isolate] = null,
 		};
 	}
 
-	Image presence;
-	Image strife;
-	Image fearTokenImage;
-	Image grayFear;
+	Image _presenceImg;
+	Image _strife;
+	Image _fearTokenImage;
+	Image _grayFear;
 	Dictionary<Token, Image> _tokenImages; // because we need different images for different damaged invaders.
 
 	#endregion

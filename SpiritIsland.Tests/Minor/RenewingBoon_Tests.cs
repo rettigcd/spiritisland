@@ -17,7 +17,7 @@ public class RenewingBoon_Tests {
 	}
 
 	[Trait( "Presence", "RestrictedSpace" )]
-	[Trait( "SpecialRule", "MountainHome" )]
+	[Trait( "SpecialRule", VolcanoLoomingHigh.MountainHome )]
 	[Fact]
 	public Task Volcano_CanOnlyBePlaceInMountains() {
 		return CantPlacePresenceHere( new VolcanoLoomingHigh(), "A5" );
@@ -39,7 +39,7 @@ public class RenewingBoon_Tests {
 
 		//  And: blight on space
 		space.Blight.Init( 1 );
-		await using UnitOfWork uow = gameState.StartAction( ActionCategory.Spirit );
+		await using UnitOfWork uow = gameState.StartAction( ActionCategory.Spirit_Power );
 		Task task = PowerCard.For<RenewingBoon>().ActivateAsync( spirit.BindMyPower( gameState, uow ) );
 
 		// And selecting restricted space

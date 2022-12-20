@@ -102,7 +102,7 @@ public class HeartOfTheWildfire : Spirit {
 				await ctx.AddBlight( 1, AddReason.SpecialRule );
 		}
 
-		public override async Task Destroy( Space space, GameState gs, DestoryPresenceCause actionType, UnitOfWork actionId, AddReason blightAddedReason = AddReason.None ) {
+		public override async Task Destroy( Space space, GameState gs, int count, DestoryPresenceCause actionType, UnitOfWork actionId, AddReason blightAddedReason = AddReason.None ) {
 
 			// Blight added
 			if( actionType == DestoryPresenceCause.Blight
@@ -112,7 +112,7 @@ public class HeartOfTheWildfire : Spirit {
 				// does not destroy your presence. (including cascades)"
 				return;
 
-			await base.Destroy( space, gs, actionType, actionId, blightAddedReason );
+			await base.Destroy( space, gs, count, actionType, actionId, blightAddedReason );
 		}
 
 	}

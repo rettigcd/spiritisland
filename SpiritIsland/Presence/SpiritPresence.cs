@@ -143,8 +143,8 @@ public class SpiritPresence {
 		await PlaceOn( gs.Tokens[to], actionId );
 	}
 
-	public virtual async Task Destroy( Space space, GameState gs, DestoryPresenceCause actionType, UnitOfWork actionId, AddReason blightAddedReason = AddReason.None ) {
-		await DestroyBehavior.DestroyPresenceApi( this, space, gs, actionType, actionId );
+	public virtual async Task Destroy( Space space, GameState gs, int count, DestoryPresenceCause actionType, UnitOfWork actionId, AddReason blightAddedReason = AddReason.None ) {
+		await DestroyBehavior.DestroyPresenceApi( this, space, gs, count, actionType, actionId );
 		CheckIfSpiritIsDestroyed( gs );
 	}
 
@@ -181,9 +181,9 @@ public class SpiritPresence {
 	public IDestroyPresenceBehavour DestroyBehavior = new DefaultDestroyBehavior(); // replaceable / plugable
 
 	public class DefaultDestroyBehavior : IDestroyPresenceBehavour {
-		public virtual Task DestroyPresenceApi(SpiritPresence presence, Space space, GameState gs, DestoryPresenceCause actionType, UnitOfWork actionId ) {
-			presence.RemoveFrom_NoCheck( gs.Tokens[space] );
-			++presence.Destroyed;
+		public virtual Task DestroyPresenceApi(SpiritPresence presence, Space space, GameState gs, int count, DestoryPresenceCause actionType, UnitOfWork actionId ) {
+			presence.RemoveFrom_NoCheck( gs.Tokens[space], count );
+			presence.Destroyed += count;
 			return Task.CompletedTask;
 		}
 
@@ -247,8 +247,8 @@ public class SpiritPresence {
 	// (1) To move presence to another location on the board - no End-of-Game check is necessary
 	// (2) Presence is replaced with something else. End-of-Game check IS necessary.
 	// Also - if we have presence in Stasis, then removing 2nd to last presence will INCORRECTLY trigger loss.
-	protected virtual Task RemoveFrom_NoCheck( SpaceState space ) { 
-		space.Adjust(Token,-1);
+	protected virtual Task RemoveFrom_NoCheck( SpaceState space, int count=1 ) { 
+		space.Adjust(Token,-count);
 		return Task.CompletedTask;
 	}
 

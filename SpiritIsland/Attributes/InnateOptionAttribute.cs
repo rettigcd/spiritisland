@@ -21,6 +21,8 @@ public class InnateOptionAttribute : Attribute, IDrawableInnateOption {
 		Group = null;
 	}
 
+	public virtual string ThresholdString => Elements.BuildElementString(); // overridden by Volcano
+
 	public ElementCounts Elements { get; }
 
 	public string Description { get; }
@@ -30,6 +32,9 @@ public class InnateOptionAttribute : Attribute, IDrawableInnateOption {
 	public int? Group { get; }
 
 	string IOption.Text => Elements.BuildElementString() + " - " + Description;
+
+	public virtual bool IsActive( ElementCounts activatedElements ) => activatedElements.Contains( Elements );
+
 }
 
 [AttributeUsage(AttributeTargets.Class|AttributeTargets.Method)]
@@ -45,6 +50,11 @@ public class DisplayOnlyAttribute : InnateOptionAttribute {
 }
 
 public interface IDrawableInnateOption : IOption {
-	ElementCounts Elements { get; }
+	/// <summary> The threshold to display to the left of the description </summary>
+	/// <remarks> Not using .Elements directly because some thresholds are not elements.</remarks>
+	string ThresholdString { get; }
 	string Description { get; }
+
+	ElementCounts Elements { get; }
+	bool IsActive( ElementCounts activatedElements );
 }

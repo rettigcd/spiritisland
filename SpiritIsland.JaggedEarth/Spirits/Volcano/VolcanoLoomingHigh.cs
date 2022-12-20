@@ -1,20 +1,22 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-// !!! Mechanism for keeping presence in Mountain not in place for Power Card use
-
 public class VolcanoLoomingHigh : Spirit {
 
 	public const string Name = "Volcano Looming High";
+	public const string CollapseInABlastOfLavaAndSteam = "Collapse in a Blast of Lava and Steam";
+	public const string MountainHome = "Mountain Home";
 
 	public override string Text => Name;
 
+	#region SpecialRules
 	public override SpecialRule[] SpecialRules => new SpecialRule[]{
-		MountainHome, 
-		CollapseInABlastOfLAvaAndSteam,
+		MountainHome_Rule,
+		CollapseInABlastOfLAvaAndSteam_Rule,
 		VolcanicPeaksTowerOverTheLandscape.Rule
 	};
-	static readonly SpecialRule MountainHome = new SpecialRule("Mountain Home","Your presence may only be added/moved into Mountain.");
-	static readonly SpecialRule CollapseInABlastOfLAvaAndSteam = new SpecialRule("Collapse in a Blast of Lava and Steam","When your presense is destroyed, in that land, deal 1 Damage per destroyed presence to both Invaders and to dahan.");
+	static SpecialRule MountainHome_Rule => new SpecialRule( MountainHome, "Your presence may only be added/moved into Mountain.");
+	static SpecialRule CollapseInABlastOfLAvaAndSteam_Rule => new SpecialRule( CollapseInABlastOfLavaAndSteam,"When your presense is destroyed, in that land, deal 1 Damage per destroyed presence to both Invaders and to dahan.");
+	#endregion
 
 	public VolcanoLoomingHigh():base(
 		new VolcanoPresence(
@@ -45,29 +47,18 @@ public class VolcanoLoomingHigh : Spirit {
 		this.AddActionFactory(new Setup_PlacePresenceOnMountain());
 	}
 
-}
+	public override async Task<IDrawableInnateOption> SelectInnateToActivate( IEnumerable<IDrawableInnateOption> innateOptions, UnitOfWork uow ) {
+		IDrawableInnateOption match = null;
+		int destroyedThisAction = VolcanoPresence.GetPresenceDestroyedThisAction( uow );
+		foreach(var option in innateOptions.OrderBy( o => o.Elements.Total )) {
+			if(option is ExplosiveInnateOptionAttribute ex && destroyedThisAction < ex.DestroyedPresenceThreshold)
+				continue;
 
-class VolcanoPresence : SpiritPresence {
-	public VolcanoPresence(PresenceTrack t1, PresenceTrack t2 ) : base( t1, t2 ) {}
-
-	public override bool CanBePlacedOn( SpaceState s, TerrainMapper tm ) => tm.MatchesTerrain( s, Terrain.Mountain );
-
-	public override void SetSpirit( Spirit spirit ) {
-		base.SetSpirit( spirit );
-		DestroyBehavior = new DestroyPresence( (VolcanoLoomingHigh)spirit ); // ??? can't we just override instead of plugging this in.
-	}
-
-	class DestroyPresence : SpiritPresence.DefaultDestroyBehavior {
-		readonly VolcanoLoomingHigh spirit;
-		public DestroyPresence( VolcanoLoomingHigh spirit ) { this.spirit = spirit;}
-
-		public override async Task DestroyPresenceApi( SpiritPresence presence, Space space, GameState gs, DestoryPresenceCause actionType, UnitOfWork actionId ) {
-			await base.DestroyPresenceApi( presence, space, gs, actionType, actionId );
-
-			// Destroying Volcano presence, causes damage to Dahan and invaders
-			await gs.DahanOn(space).Bind(actionId).ApplyDamage(1);
-			await gs.Invaders.On(space,actionId).UserSelectedDamage(1,spirit);
+			if(await HasElements( option.Elements ))
+				match = option;
 		}
+		return match;
 	}
+
 
 }

@@ -1,16 +1,16 @@
 ﻿namespace SpiritIsland.Basegame;
 
-class EntwinedPresenceSource : ICalcPowerSource {
+class EntwinedPresenceSource : ICalcPowerTargetingSource {
 
 	readonly Spirit[] spirits;
-	readonly ICalcPowerSource[] origApis;
+	readonly ICalcPowerTargetingSource[] origApis;
 
 	public EntwinedPresenceSource( params Spirit[] spirits ) {
 		this.spirits = spirits;
-		this.origApis = spirits.Select(x=>x.SourceCalc).ToArray();
+		this.origApis = spirits.Select(x=>x.TargetingSourceCalc).ToArray();
 			
 		foreach(var spirit in spirits)
-			spirit.SourceCalc = this;
+			spirit.TargetingSourceCalc = this;
 	}
 
 	public IEnumerable<SpaceState> FindSources( IKnowSpiritLocations presence, TargetSourceCriteria sourceCriteria, GameState gs ) {

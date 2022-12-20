@@ -6,9 +6,10 @@ public class SwallowTheLandDwellers_Tests {
 	[Fact]
 	public void SwallowTheLandDwellers_DrownsInvaders() {
 		// Game with ocean-only
-		var fxt = new ConfigurableTestFixture();
-		fxt.Spirit = new Ocean();
-		fxt.Board = Board.BuildBoardA();
+		var fxt = new ConfigurableTestFixture {
+			Spirit = new Ocean(),
+			Board = Board.BuildBoardA()
+		};
 		fxt.GameState.Initialize();
 		int startingEnergy = fxt.Spirit.Energy;
 

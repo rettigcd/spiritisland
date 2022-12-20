@@ -179,7 +179,7 @@ public class RavageAction {
 				// 2nd - if we no longer have enougth to destroy this token, apply damage all the damage that remains
 				if(0 < defenders[token] && 0 < damageToApply) {
 
-					await dahan.ApplyDamageToToken( damageToApply, token ); // this will never destroy token
+					await dahan.ApplyDamage_Efficiently( damageToApply, token ); // this will never destroy token
 
 					// update our defenders count
 					++defenders[token.AddDamage( damageToApply )];

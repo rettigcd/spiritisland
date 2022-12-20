@@ -2,7 +2,7 @@
 
 public enum From { None, Presence, SacredSite };
 
-public interface ICalcPowerSource {
+public interface ICalcPowerTargetingSource {
 	IEnumerable<SpaceState> FindSources( 
 		IKnowSpiritLocations presence, 
 		TargetSourceCriteria criteria, 
@@ -15,10 +15,10 @@ public interface ICalcRange {
 	// !!! Also, return SpaceState instead of Space.
 	IEnumerable<SpaceState> GetTargetOptionsFromKnownSource(
 		Spirit self,
-		TerrainMapper mapper,
+		TerrainMapper mapper,			// !!! This is only needed when we are passing in TargetCriteria that uses it.  We could eliminate it by merging it into the TargetCriteria (when needed) and ignore it when not.
 		TargetingPowerType powerType,
 		IEnumerable<SpaceState> source,
-		TargetCriteria targetCriteria
+		TargetCriteria targetCriteria	// !!! when we have a filter criteria, this could bind to and encapsulate the terrain-mapper to hide it. (And not have to pass it around to everything)
 	);
 
 }
@@ -26,7 +26,7 @@ public interface ICalcRange {
 /// <summary>
 /// Since Spirit.SourceCalculator is modified by Entwined, use only for Powers
 /// </summary>
-public class DefaultPowerSourceCalculator : ICalcPowerSource {
+public class DefaultPowerSourceCalculator : ICalcPowerTargetingSource {
 	public IEnumerable<SpaceState> FindSources( IKnowSpiritLocations presence, TargetSourceCriteria sourceCriteria, GameState gameState ) {
 		var sources = sourceCriteria.From switch {
 			From.Presence => presence.SpaceStates,

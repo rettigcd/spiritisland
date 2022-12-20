@@ -16,8 +16,8 @@ class ManyMindsPresence : SpiritPresence {
 			space.Adjust(TokenType.Beast,1); // virtual so don't trigger an event.
 	}
 
-	protected override async Task RemoveFrom_NoCheck( SpaceState space ) {
-		await base.RemoveFrom_NoCheck( space );
+	protected override async Task RemoveFrom_NoCheck( SpaceState space, int count ) {
+		await base.RemoveFrom_NoCheck( space, count );
 		// if destroyed sacred site, remove virtual beast
 		if( CountOn( space ) == 1 )
 			space.Adjust(TokenType.Beast, 1); // !!! virtual tokens don't trigger events
@@ -78,8 +78,7 @@ class ManyMindsPresence : SpiritPresence {
 			var dontCareActionType = DestoryPresenceCause.None;
 
 			// destroy sacred site
-			await base.Destroy(args.Space.Space, args.GameState, dontCareActionType, args.Action);
-			await base.Destroy(args.Space.Space, args.GameState, dontCareActionType, args.Action );
+			await base.Destroy(args.Space.Space, args.GameState, 2, dontCareActionType, args.Action);
 		}
 	}
 

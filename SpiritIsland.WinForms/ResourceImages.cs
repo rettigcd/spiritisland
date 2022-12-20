@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Text;
 using System.IO;
@@ -43,25 +44,7 @@ namespace SpiritIsland.WinForms {
 
 		#endregion
 
-		public Bitmap GetPresenceIcon( PresenceTokenAppearance presenceColor ) {
-			var orig = GetResourceImage( $"presence.{presenceColor.BaseImage}.png" );
-
-			for(int x = 0; x < orig.Width; ++x)
-				for(int y = 0; y < orig.Height; ++y) {
-					var p = orig.GetPixel( x, y );
-					var hsl = HSL.FromRgb( p );
-					presenceColor.Adjust( hsl );
-					// hsl.H = x*360f/orig.Width; // make a rainbow!
-					// hsl.L += (1f - hsl.L) * .2f;
-
-					var newColor = Color.FromArgb( p.A, hsl.ToRgb() );
-					orig.SetPixel( x, y, newColor );
-				}
-
-			return orig;
-
-		}
-
+		public Bitmap GetPresenceImage( string img )    => GetResourceImage( $"presence.{img}.png" );
 		public Bitmap GetAdversaryFlag( string adv )    => GetResourceImage($"adversaries.{adv}.png" );
 		public Bitmap GetImage( Img img )               => GetResourceImage( ToResource( img ) );
 		public Bitmap Strife()                          => GetResourceImage("tokens.strife.png");
@@ -72,6 +55,20 @@ namespace SpiritIsland.WinForms {
 		public Bitmap Hourglass()                       => GetResourceImage("icons.hourglass.png");
 		public Bitmap TerrorLevel( int terrorLevel )    => GetResourceImage($"icons.TerrorLevel{terrorLevel}.png" );
 		public Bitmap GetInvaderCard( string filename ) => GetResourceImage($"invaders.{filename}.jpg" );
+
+		public Size CalcImageSize( Img img, int maxDimension ) {
+			if(!iconSizes.ContainsKey( img )) {
+				using Image image = GetImage( img );
+				iconSizes.Add( img, image.Size );
+			}
+			var sz = iconSizes[img];
+
+			return sz.Width < sz.Height
+				? new Size( maxDimension * sz.Width / sz.Height, maxDimension )
+				: new Size( maxDimension, maxDimension * sz.Height / sz.Width );
+		}
+		readonly Dictionary<Img, Size> iconSizes = new Dictionary<Img, Size>();
+
 
 		#region private
 
@@ -117,66 +114,66 @@ namespace SpiritIsland.WinForms {
 			Img.FracturedDays_DrawDtnw => "icons.Daysthatneverweregrowthicon.png",
 
 
-			Img.Coin => "tokens.coin.png",
-
-			Img.Token_Sun => "tokens.Simple_sun.png",
-			Img.Token_Moon => "tokens.Simple_moon.png",
-			Img.Token_Fire => "tokens.Simple_fire.png",
-			Img.Token_Air => "tokens.Simple_air.png",
-			Img.Token_Water => "tokens.Simple_water.png",
-			Img.Token_Plant => "tokens.Simple_plant.png",
-			Img.Token_Earth => "tokens.Simple_earth.png",
+			Img.Coin         => "tokens.coin.png",
+			Img.Token_Sun    => "tokens.Simple_sun.png",
+			Img.Token_Moon   => "tokens.Simple_moon.png",
+			Img.Token_Fire   => "tokens.Simple_fire.png",
+			Img.Token_Air    => "tokens.Simple_air.png",
+			Img.Token_Water  => "tokens.Simple_water.png",
+			Img.Token_Plant  => "tokens.Simple_plant.png",
+			Img.Token_Earth  => "tokens.Simple_earth.png",
 			Img.Token_Animal => "tokens.Simple_animal.png",
-			Img.Token_Any => "tokens.Simple_any.png",
+			Img.Token_Any    => "tokens.Simple_any.png",
 
-			Img.City => "tokens.city.png",
-			Img.Town => "tokens.town.png",
+			Img.City     => "tokens.city.png",
+			Img.Town     => "tokens.town.png",
 			Img.Explorer => "tokens.explorer.png",
-			Img.Dahan => "tokens.dahan.png",
-			Img.Blight => "tokens.blight.png",
-			Img.Beast => "tokens.beast.png",
-			Img.Wilds => "tokens.wilds.png",
-			Img.Disease => "tokens.disease.png",
+			Img.Dahan    => "tokens.dahan.png",
+			Img.Blight   => "tokens.blight.png",
+			Img.Beast    => "tokens.beast.png",
+			Img.Wilds    => "tokens.wilds.png",
+			Img.Disease  => "tokens.disease.png",
 			Img.Badlands => "tokens.badlands.png",
-			Img.Defend => "tokens.defend1orange.png",
-			Img.Isolate => "tokens.isolateorange.png",
+			Img.Defend   => "tokens.defend1orange.png",
+			Img.Isolate  => "tokens.isolateorange.png",
 
-			Img.Icon_Sun => "icons.Simple_sun.png",
-			Img.Icon_Moon => "icons.Simple_moon.png",
-			Img.Icon_Fire => "icons.Simple_fire.png",
-			Img.Icon_Air => "icons.Simple_air.png",
-			Img.Icon_Water => "icons.Simple_water.png",
-			Img.Icon_Plant => "icons.Simple_plant.png",
-			Img.Icon_Earth => "icons.Simple_earth.png",
+			Img.Icon_Sun    => "icons.Simple_sun.png",
+			Img.Icon_Moon   => "icons.Simple_moon.png",
+			Img.Icon_Fire   => "icons.Simple_fire.png",
+			Img.Icon_Air    => "icons.Simple_air.png",
+			Img.Icon_Water  => "icons.Simple_water.png",
+			Img.Icon_Plant  => "icons.Simple_plant.png",
+			Img.Icon_Earth  => "icons.Simple_earth.png",
 			Img.Icon_Animal => "icons.Simple_animal.png",
 
-			Img.Icon_Dahan => "icons.Dahanicon.png",
-			Img.Icon_JungleOrWetland => "icons.Junglewetland.png",
-			Img.Icon_DahanOrInvaders => "icons.DahanOrInvaders.png",
-			Img.Icon_Coastal => "icons.Coastal.png",
-			Img.Icon_PresenceOrWilds => "icons.wildsorpresence.png",
-			Img.Icon_NoBlight => "icons.Noblight.png",
-			Img.Icon_BeastOrJungle => "icons.JungleOrBeast.png",
-			Img.Icon_Ocean => "icons.Ocean.png",
+			Img.Icon_Dahan              => "icons.Dahanicon.png",
+			Img.Icon_JungleOrWetland    => "icons.Junglewetland.png",
+			Img.Icon_DahanOrInvaders    => "icons.DahanOrInvaders.png",
+			Img.Icon_Coastal            => "icons.Coastal.png",
+			Img.Icon_PresenceOrWilds    => "icons.wildsorpresence.png",
+			Img.Icon_NoBlight           => "icons.Noblight.png",
+			Img.Icon_BeastOrJungle      => "icons.JungleOrBeast.png",
+			Img.Icon_Ocean              => "icons.Ocean.png",
 			Img.Icon_MountainOrPresence => "icons.mountainorpresence.png",
-			Img.Icon_TownCityOrBlight => "icons.TownCityOrBlight.png",
-			Img.Icon_Blight => "icons.Blighticon.png",
-			Img.Icon_Beast => "icons.Beasticon.png",
-			Img.Icon_Fear => "icons.Fearicon.png",
-			Img.OpenTheWays => "icons.open-the-ways.png",
-			Img.Icon_Wilds => "icons.Wildsicon.png",
-			Img.Icon_Fast => "icons.Fasticon.png",
-			Img.Icon_Presence => "icons.Presenceicon.png",
-			Img.Icon_Slow => "icons.Slowicon.png",
-			Img.Icon_Disease => "icons.Diseaseicon.png",
-			Img.Icon_Strife => "icons.Strifeicon.png",
-			Img.Icon_Badlands => "icons.Badlands.png",
-			Img.Icon_City => "icons.Cityicon.png",
-			Img.Icon_Town => "icons.Townicon.png",
-			Img.Icon_Explorer => "icons.Explorericon.png",
-			Img.Icon_Checkmark => "icons.Checkmark.png",
+			Img.Icon_TownCityOrBlight   => "icons.TownCityOrBlight.png",
+			Img.Icon_Blight             => "icons.Blighticon.png",
+			Img.Icon_Beast              => "icons.Beasticon.png",
+			Img.Icon_Fear               => "icons.Fearicon.png",
+			Img.OpenTheWays             => "icons.open-the-ways.png",
+			Img.Icon_Wilds              => "icons.Wildsicon.png",
+			Img.Icon_Fast               => "icons.Fasticon.png",
+			Img.Icon_Presence           => "icons.Presenceicon.png",
+			Img.Icon_Slow               => "icons.Slowicon.png",
+			Img.Icon_Disease            => "icons.Diseaseicon.png",
+			Img.Icon_Strife             => "icons.Strifeicon.png",
+			Img.Icon_Badlands           => "icons.Badlands.png",
+			Img.Icon_DestroyedPresence  => "icons.Destroyedpresence.png",
+			Img.Icon_City               => "icons.Cityicon.png",
+			Img.Icon_Town               => "icons.Townicon.png",
+			Img.Icon_Explorer           => "icons.Explorericon.png",
+			Img.Icon_Checkmark          => "icons.Checkmark.png",
 
-			Img.Deck_Hand => "hand.png",
+			Img.Deck_Hand               => "hand.png",
 			Img.Deck_Played => "inplay.png",
 			Img.Deck_Discarded => "discard.png",
 			Img.Deck_DaysThatNeverWere_Major => "major_inverted.png",

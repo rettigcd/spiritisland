@@ -131,6 +131,7 @@ public class TargetSpaceCtx : SelfCtx {
 	public IEnumerable<TargetSpaceCtx> AdjacentCtxs => Adjacent.Select(Target);
 
 	/// <summary> Use this for Power-Pushing, since Powers can push invaders into the ocean. </summary>
+	// !!! This is Range-From-Here.  Compare it to BoundPresence.FindSpacesWithinRange & Spirit.FindSpacesWithinRange which is Range-From-Presence
 	public IEnumerable<SpaceState> Range( TargetCriteria targetCriteria, TargetingPowerType powerType ) => Self.PowerRangeCalc.GetTargetOptionsFromKnownSource(
 		Self,
 		TerrainMapper,
@@ -291,19 +292,19 @@ public class TargetSpaceCtx : SelfCtx {
 
 
 	public async Task DamageDahan( int damage ) {
-		if( damage == 0 ) return;
+		if(damage == 0) return;
 
 		// !!! This is not correct, if card has multiple Damage-Dahans, adds badland multiple times.
-		damage += Badlands.Count;  
+		damage += Badlands.Count;
 
-		// and 2 damage to dahan.
-		await Dahan.ApplyDamage( damage );
+		// and damage to dahan.
+		await Dahan.ApplyDamage_Inefficiently( damage );
 	}
 
 	/// <summary> Incomporates bad lands </summary>
 	public async Task Apply1DamageToEachDahan() {
 		await Dahan.Apply1DamageToAll();
-		await Dahan.ApplyDamage(Badlands.Count);
+		await Dahan.ApplyDamage_Inefficiently( Badlands.Count);
 	}
 
 	#region Add Strife

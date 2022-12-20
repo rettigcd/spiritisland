@@ -10,7 +10,7 @@ public class InnatePower : IFlexibleSpeedActionFactory, IRecordLastTarget {
 		return new InnatePower( actionType, contextAttr );
 	}
 
-	internal InnatePower(Type actionType,GeneratesContextAttribute targetAttr){
+	internal InnatePower(Type actionType, GeneratesContextAttribute targetAttr){
 
 		innatePowerAttr = actionType.GetCustomAttribute<InnatePowerAttribute>();
 		speedAttr = actionType.GetCustomAttribute<SpeedAttribute>(false) 
@@ -97,16 +97,17 @@ public class InnatePower : IFlexibleSpeedActionFactory, IRecordLastTarget {
 		}
 	}
 
-	async Task ActivateInnerAsync( SelfCtx spiritCtx ) {
+	protected virtual async Task ActivateInnerAsync( SelfCtx spiritCtx ) {
+
+		// Do this 1st so Volcano can destroy its presence before we evaluate our options
+		LastTarget = await targetAttr.GetTargetCtx( Name, spiritCtx, TargetingPowerType.Innate );
+		if(LastTarget == null) return;
 
 		List<MethodInfo> lastMethods = await GetLastActivatedMethodsOfEachGroup( spiritCtx );
 		if( lastMethods.Count == 0 ) {
 			LastTarget = null;
 			return;
 		}
-
-		LastTarget = await targetAttr.GetTargetCtx( Name, spiritCtx, TargetingPowerType.Innate );
-		if(LastTarget == null) return;
 
 		var objList = new object[] { LastTarget };
 		foreach(var method in lastMethods)
@@ -122,10 +123,10 @@ public class InnatePower : IFlexibleSpeedActionFactory, IRecordLastTarget {
 		foreach(MethodTuple[] grp in executionGroups) {
 
 			// Ask spirit which methods they can activate
-			ElementCounts match = await spiritCtx.Self.SelectInnateToActivate( grp.Select(g=>g.Attr) );
+			var match = await spiritCtx.Self.SelectInnateToActivate( grp.Select(g=>g.Attr), spiritCtx.CurrentActionId );
 
 			// Find matching method and it to execute-list
-			MethodInfo method = grp.FirstOrDefault(g=>g.Elements==match)?.Method;
+			MethodInfo method = grp.FirstOrDefault(g=>g.Attr==match)?.Method;
 			if(method != null)
 				lastMethods.Add( method );
 		}
@@ -161,7 +162,7 @@ public class InnatePower : IFlexibleSpeedActionFactory, IRecordLastTarget {
 public static class TokenParser {
 	public static string[] Tokenize( string s ) {
 
-		var tokens = new Regex( "sacred site|presence|fast|slow"
+		var tokens = new Regex( "sacred site|destroyedpresence|presence|fast|slow"
 			+ "|dahan|blight|fear|city|town|explorer"
 			+ "|sun|moon|air|fire|water|plant|animal|earth"
 			+ "|beast|disease|strife|wilds|badlands"

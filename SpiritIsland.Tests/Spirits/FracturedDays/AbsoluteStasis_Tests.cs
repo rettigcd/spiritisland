@@ -225,7 +225,7 @@ public class AbsoluteStasis_Tests {
 
 		try{
 			//  When: destroy that extra presence (triggers win/loss check)
-			cfg.SelfCtx.Presence.Destroy( destroyPresenceSpace, DestoryPresenceCause.SpiritPower ).Wait();
+			cfg.SelfCtx.Presence.Destroy( destroyPresenceSpace, 1, DestoryPresenceCause.SpiritPower ).Wait();
 			//  When: we check win/loss
 			cfg.GameState.CheckWinLoss();
 		} catch( GameOverException ) {

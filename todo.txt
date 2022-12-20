@@ -2,6 +2,8 @@
 ====  Clean Up Items  ====
 ==========================
 
+Presence Tracks (for Lure) are drawing outside their bounds
+
 Share Secrets of Survival / Birds Cry Warning - Used frozen/Dream dahan to save the 2, to remve them from the count but still have them.
 	- Trait("Dahan","Savethem")
 

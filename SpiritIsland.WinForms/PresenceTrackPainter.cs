@@ -17,7 +17,8 @@ namespace SpiritIsland.WinForms {
 		) {
 			this.spirit = spirit;
 			this.metrics = metrics;
-			this.presenceColor = presenceColor;
+			_presenceImg = ResourceImages.Singleton.GetPresenceImage( presenceColor.BaseImage );
+			presenceColor.Adjustment?.Adjust( _presenceImg );
 		}
 
 		public void Paint( Graphics graphics, Track[] clickableTrackOptions, CachedImageDrawer imageDrawer ) {
@@ -26,24 +27,24 @@ namespace SpiritIsland.WinForms {
 			this.imageDrawer = imageDrawer;
 
 			// Bottom Layer - cache it
-			if(cachedBackgroundImage == null)
+			if(_cachedBackgroundImage == null)
 				CalculateBackgroundImage();
-			graphics.DrawImage(cachedBackgroundImage,metrics.OutterBounds);
+			graphics.DrawImage(_cachedBackgroundImage,metrics.OutterBounds);
 
 			// Middle Layer - Hotspots
 			PaintHighlights( graphics );
 
 			// Top Layer - Presence
-			PaintPresence( graphics, presenceColor);
+			PaintPresence( graphics );
 			// Draw current energy
 			new IconDrawer(graphics,imageDrawer).DrawTheIcon(new IconDescriptor { Text = spirit.Energy.ToString() }, metrics.BigCoin );
 
 		}
 
 		void CalculateBackgroundImage() {
-			cachedBackgroundImage = new Bitmap( this.metrics.OutterBounds.Width, this.metrics.OutterBounds.Height );
+			_cachedBackgroundImage = new Bitmap( this.metrics.OutterBounds.Width, this.metrics.OutterBounds.Height );
 
-			using Graphics g = Graphics.FromImage( cachedBackgroundImage );
+			using Graphics g = Graphics.FromImage( _cachedBackgroundImage );
 			g.TranslateTransform( -metrics.OutterBounds.X, -metrics.OutterBounds.Y );
 
 			PaintLabels(g);
@@ -69,30 +70,28 @@ namespace SpiritIsland.WinForms {
 			graphics.DrawString( "Cards", simpleFont, SystemBrushes.ControlDarkDark, metrics.CardPlayTitleLocation );
 		}
 
-		void PaintPresence(Graphics graphics, PresenceTokenAppearance presenceColor) {
-			using Bitmap presenceImg = ResourceImages.Singleton.GetPresenceIcon( presenceColor );
-
+		void PaintPresence(Graphics graphics) {
 			foreach(var track in EnergyTrack)
 				if(!EnergyRevealed.Contains(track))
-					graphics.DrawImage( presenceImg, metrics.SlotLookup[track].PresenceRect );
+					graphics.DrawImage( _presenceImg, metrics.SlotLookup[track].PresenceRect );
 
 			foreach(var track in CardTrack)
 				if(!CardRevealed.Contains(track))
-					graphics.DrawImage( presenceImg, metrics.SlotLookup[track].PresenceRect );
+					graphics.DrawImage( _presenceImg, metrics.SlotLookup[track].PresenceRect );
 
-			PaintDestroyed( graphics, presenceImg );
+			PaintDestroyed( graphics );
 
 			if(spirit is FracturedDaysSplitTheSky days)
-				PaintTime( graphics, presenceImg, days.Time );
+				PaintTime( graphics, days.Time );
 		}
 
-		void PaintDestroyed(Graphics graphics, Bitmap presenceImg) {
+		void PaintDestroyed( Graphics graphics ) {
 			Rectangle rect = metrics.Destroyed;
 			int destroyedCount = spirit.Presence.Destroyed;
 			if(destroyedCount == 0) return;
 
 			// Presence & Red X
-			graphics.DrawImage( presenceImg, rect );
+			graphics.DrawImage( _presenceImg, rect );
 			using var redX = ResourceImages.Singleton.RedX();
 			graphics.DrawImage( redX, rect.X, rect.Y, rect.Width * 2 / 3, rect.Height * 2 / 3 );
 
@@ -101,12 +100,12 @@ namespace SpiritIsland.WinForms {
 
 		}
 
-		void PaintTime(Graphics graphics, Bitmap presenceImg, int timeCount) {
+		void PaintTime(Graphics graphics, int timeCount) {
 			Rectangle rect = metrics.Time;
 			if(timeCount== 0) return;
 
 			// Presence
-			graphics.DrawImage( presenceImg, rect );
+			graphics.DrawImage( _presenceImg, rect );
 
 			// Hour glass
 			var hgRect = new Rectangle( rect.X, rect.Y, rect.Width * 2 / 3, rect.Height * 2 / 3 );
@@ -118,10 +117,10 @@ namespace SpiritIsland.WinForms {
 		}
 
 		public void Dispose() {
-			if(cachedBackgroundImage != null) {
-				cachedBackgroundImage.Dispose();
-				cachedBackgroundImage = null;
-			}
+			_cachedBackgroundImage?.Dispose();
+			_cachedBackgroundImage = null;
+			_presenceImg?.Dispose();
+			_presenceImg = null;
 		}
 
 		#region private 
@@ -134,13 +133,13 @@ namespace SpiritIsland.WinForms {
 
 		readonly Spirit spirit;
 		readonly PresenceTrackLayout metrics;
-		readonly PresenceTokenAppearance presenceColor;
+		Bitmap _presenceImg;
 
 		// Single threaded / instance methods
 		CachedImageDrawer imageDrawer;
 		Track[] clickableTrackOptions;
 
-		Bitmap cachedBackgroundImage;
+		Bitmap _cachedBackgroundImage;
 
 		#endregion
 

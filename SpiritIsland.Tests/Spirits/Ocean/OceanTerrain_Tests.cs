@@ -290,7 +290,7 @@ public class OceanTerrain_Tests {
 		gameState.Phase = Phase.Slow;
 		oceanSpirit.AddActionFactory( PowerCard.For<TidalBoon>() );
 		Task task = oceanSpirit.ResolveActions( gameState );
-		oceanSpirit.NextDecision().Choose( TidalBoon.Name );
+		oceanSpirit.NextDecision().ChooseFirstThatStartsWith( TidalBoon.Name );
 
 		//  And: Primary selects A2 space
 		IsActive( task ); Choose( "A2" );
@@ -351,13 +351,9 @@ public class OceanTerrain_Tests {
 	}
 
 	
-	void Choose( string text ) {
-		NextDecision.Choose( text );
-	}
+	void Choose( string text ) => NextDecision.Choose( text );
 
-	void IsActive( Task task ) {
-		task.IsCompleted.ShouldBeFalse();
-	}
+	static void IsActive( Task task ) => task.IsCompleted.ShouldBeFalse();
 
 	#endregion
 

@@ -28,7 +28,7 @@ public class UtterACurseOfDreadAndBone {
 			if(0<strife)	await AddStrifeToLandWithinRange (ctx, 1 );
 
 			// 1 damage in an adjcaent land
-			await DamageLandWithinRange(ctx, 1);
+			await DamageAdjacentLand(ctx);
 		}
 
 	}
@@ -45,9 +45,9 @@ public class UtterACurseOfDreadAndBone {
 		await ctx.Target(space).AddStrife();
 	}
 
-	static async Task DamageLandWithinRange( TargetSpaceCtx ctx, int range ) {
-		// !!! could make this a single SpaceToken step.
-		var space = await ctx.Decision(new Select.Space("Select land for 1 Damage",ctx.Range(range, TargetingPowerType.PowerCard ), Present.Always));
+	static async Task DamageAdjacentLand( TargetSpaceCtx ctx ) {
+		// !! could make this a single SpaceToken step.
+		var space = await ctx.Decision(new Select.Space("Select land for 1 Damage", ctx.Adjacent, Present.Always));
 		await ctx.Target(space).DamageInvaders(1);
 	}
 

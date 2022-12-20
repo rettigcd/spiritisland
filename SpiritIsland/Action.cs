@@ -4,15 +4,17 @@ namespace SpiritIsland;
 /// <summary>
 /// A Spirit Island 'Action'
 /// </summary>
-public sealed class UnitOfWork : IAsyncDisposable {
+public sealed class UnitOfWork : IAsyncDisposable, IDisposable {
 
 	#region constructor
 	public UnitOfWork( DualAsyncEvent<UnitOfWork> endOfAction, ActionCategory actionCategory ) {
 		Id = Guid.NewGuid();
 		_endOfAction = endOfAction;
-		_actionCategory = actionCategory;
+		Category = actionCategory;
 	}
 	#endregion
+
+	public readonly ActionCategory Category;
 
 	// spirit (if any) that owns the action. Null for non-spirit actions
 	public Spirit Owner { get; set; }
@@ -35,16 +37,21 @@ public sealed class UnitOfWork : IAsyncDisposable {
 		await _endOfAction.InvokeAsync(this);
 	}
 
+	public void Dispose() {
+		// DANGEROUS - Only use this for Tests.
+		if(_endOfThisAciton != null)
+			_endOfThisAciton.InvokeAsync( this ).Wait();
+		_endOfAction.InvokeAsync( this ).Wait();
+	}
+
 	public void AtEndOfThisAction(Func<UnitOfWork,Task> action ) => (_endOfThisAciton ??= new AsyncEvent<UnitOfWork>()).Add( action );
 	public void AtEndOfThisAction( Action<UnitOfWork> action ) => (_endOfThisAciton ??= new AsyncEvent<UnitOfWork>()).Add( action );
+
 	AsyncEvent<UnitOfWork> _endOfThisAciton;
 
 	#region private
 	readonly DualAsyncEvent<UnitOfWork> _endOfAction;
 	Dictionary<string, object> dict;
-#pragma warning disable IDE0052 // Remove unread private members
-	readonly ActionCategory _actionCategory;
-#pragma warning restore IDE0052 // Remove unread private members
 	#endregion
 }
 
@@ -53,13 +60,13 @@ public enum ActionCategory {
 
 	Default, // nothing
 
-	Spirit,
-	//	Growth,
+	// Spirit
+	Spirit_Growth,
+	Spirit_Power,
+	Spirit_SpecialRule, // which specified After X, do Y
+	Spirit_PresenceTrackIcon,
 	//	GainEnery, // specifiec on preence track
 	//	PlayingAllPowerCards, // !!! Is this real? It means Finder couldn't switch between cards.
-	//	PresenceTrackIcon,
-	//	Power,
-	//	SpecialRule, // which specified After X, do Y
 	//	SpiritualRituals,
 
 	Invader,

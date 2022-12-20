@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.PromoPack1;
 
-class DrenchTheLandscape : TerrainMapper, ICalcPowerSource {
+class DrenchTheLandscape : TerrainMapper, ICalcPowerTargetingSource {
 
 	static public SpecialRule Rule => new SpecialRule(
 		"Drench the Landscape",

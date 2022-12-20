@@ -47,6 +47,9 @@ public class DrawableInnateOption : IDrawableInnateOption {
 	public ElementCounts Elements { get; }
 
 	public string Description { get; }
-	string IOption.Text => Elements.BuildElementString();
 
+	string IOption.Text => ThresholdString;
+
+	public string ThresholdString => Elements.BuildElementString();
+	public bool IsActive( ElementCounts activatedElements ) => activatedElements.Contains( Elements );
 }

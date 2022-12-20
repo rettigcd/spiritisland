@@ -35,7 +35,7 @@ public class ShadowsFlicker_GrowthTests : GrowthTests {
 
 	[Fact]
 	public void PresenceAndEnergy(){
-		// add a presence withing 3, +3 energy
+		// add a presence within 3, +3 energy
 		Given_HasPresence( board[3] );
 
 		When_StartingGrowth();

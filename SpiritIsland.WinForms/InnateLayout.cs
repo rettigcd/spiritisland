@@ -1,256 +1,164 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
-namespace SpiritIsland.WinForms {
+namespace SpiritIsland.WinForms;
+public class InnateLayout {
 
-	public class InnateLayout {
+	public Rectangle Bounds;
+	public Rectangle TitleBounds;			// holds the name of the innate power
+	public Rectangle AttributeBounds;		// Draws Attributes box
+	public Rectangle[] AttributeRows;
+	public Rectangle[] AttributeLabelCells;
+	public Rectangle[] AttributeValueCells;
+	public WrappingText GeneralInstructions;
+	public WrappingText_InnateOptions[] Options;
 
-		public Rectangle Bounds;
-		public Rectangle TitleBounds;			// holds the name of the innate power
-		public Rectangle AttributeBounds;		// Draws Attributes box
-		public Rectangle[] AttributeRows;
-		public Rectangle[] AttributeLabelCells;
-		public Rectangle[] AttributeValueCells;
-		public WrappingText GeneralInstructions;
-		public WrappingText_InnateOptions[] Options;
+	readonly ImageSizeCalculator _imageSizeCalculator;
 
-		#region constructor
 
-		public InnateLayout(InnatePower power, int x, int y, int width, float textHeightMultiplier, Graphics graphics ) {
-			textEmSize = width * textHeightMultiplier;
+	#region constructor
 
-			iconDimension = (int)(textEmSize * 1.9f);
-			elementHeight = (int)(textEmSize * 2.3f);
-			rowHeight     = (int)(textEmSize * 2.5f);
+	public InnateLayout(InnatePower power, int x, int y, int width, float textHeightMultiplier, Graphics graphics ) {
+		textEmSize = width * textHeightMultiplier;
 
-			int margin = (int)(width * .02f); // 2% of width
-			int workingWidth = width - margin * 2;
+		rowHeight     = (int)(textEmSize * 2.1f);
+		_imageSizeCalculator = new ImageSizeCalculator( 
+			iconDimension:    (int)(textEmSize * 1.9f),
+			elementDimension: (int)(textEmSize * 2.4f)
+		);
 
-			// "All-Enveloping Green"
-			TitleBounds = new Rectangle( x + margin, y + margin, workingWidth, (int)(workingWidth * .12f) ); // Height is 10% of width;				// output - titleRect
+		int margin = (int)(width * .02f); // 2% of width
+		int workingWidth = width - margin * 2;
 
-			// brown box
-			AttributeBounds = new Rectangle( x + margin, TitleBounds.Bottom, workingWidth, (int)(workingWidth * .15f) );
-			AttributeRows       = AttributeBounds.SplitVerticallyAt( 0.40f );
-			AttributeLabelCells = AttributeRows[0].SplitHorizontally( 3 );
-			AttributeValueCells = AttributeRows[1].SplitHorizontally( 3 );
+		// "All-Enveloping Green"
+		TitleBounds = new Rectangle( x + margin, y + margin, workingWidth, (int)(workingWidth * .12f) ); // Height is 10% of width;				// output - titleRect
 
-			// Options
-			var options = new List<WrappingText_InnateOptions>();
-			int optionY = AttributeBounds.Bottom + (int)(rowHeight * 0.25f);
+		// brown box
+		AttributeBounds = new Rectangle( x + margin, TitleBounds.Bottom, workingWidth, (int)(workingWidth * .15f) );
+		AttributeRows       = AttributeBounds.SplitVerticallyAt( 0.40f );
+		AttributeLabelCells = AttributeRows[0].SplitHorizontally( 3 );
+		AttributeValueCells = AttributeRows[1].SplitHorizontally( 3 );
 
-			// General instructions
-			if(!string.IsNullOrEmpty( power.GeneralInstructions )) {
-				GeneralInstructions = CalcGeneralInstructionsLayout( power.GeneralInstructions, AttributeBounds.Left, optionY, workingWidth, graphics );
-				optionY = GeneralInstructions.Bounds.Bottom;
-			}
+		// Options
+		var options = new List<WrappingText_InnateOptions>();
+		int optionY = AttributeBounds.Bottom + (int)(rowHeight * 0.5f);
 
-			foreach( var innatePowerOption in power.DrawableOptions ) {
-				var wrapInfo = CalcInnateOptionLayout( innatePowerOption, AttributeBounds.Left, optionY, workingWidth, graphics );
-				options.Add( wrapInfo );
-				optionY = wrapInfo.Bounds.Bottom;
-			}
-			Options = options.ToArray();
-			Bounds = new Rectangle( x, y, width, optionY - y );
-
+		// General instructions
+		if(!string.IsNullOrEmpty( power.GeneralInstructions )) {
+			GeneralInstructions = CalcGeneralInstructionsLayout( power.GeneralInstructions, AttributeBounds.Left, optionY, workingWidth, graphics );
+			optionY = GeneralInstructions.Bounds.Bottom;
 		}
 
-		#endregion
-
-		public Font BuildFont()     => new Font( FontFamily.GenericSansSerif, textEmSize, FontStyle.Regular, GraphicsUnit.Pixel );
-		public Font BuildBoldFont() => new Font( FontFamily.GenericSansSerif, textEmSize, FontStyle.Bold, GraphicsUnit.Pixel );
-
-		#region private methods
-
-		WrappingText CalcGeneralInstructionsLayout( string description, int originalX, int originalY, int width, Graphics graphics ) {
-			int x = originalX;
-			int y = originalY;
-
-			var wrappingText = new WrappingText();
-
-			// Text
-			using var font = BuildFont(); // !!!
-			CalcWrappingString( wrappingText.tokens, wrappingText.regularTexts, description, font, ref x, ref y, originalX, width, graphics );
-			y += rowHeight;
-			wrappingText.Bounds = new Rectangle( originalX, originalY, width, y - originalY );
-
-			return wrappingText;
+		foreach( var innatePowerOption in power.DrawableOptions ) {
+			var wrapInfo = CalcInnateOptionLayout( innatePowerOption, AttributeBounds.Left, optionY, workingWidth, graphics );
+			options.Add( wrapInfo );
+			optionY = wrapInfo.Bounds.Bottom + (int)(rowHeight*.5f);
 		}
-
-		WrappingText_InnateOptions CalcInnateOptionLayout( IDrawableInnateOption option, int originalX, int originalY, int width, Graphics graphics ) {
-			int x = originalX;
-			int y = originalY;
-
-			var wrappingText = new WrappingText_InnateOptions { GroupOption = option, };
-			string elementString = option.Elements.BuildElementString();
-			string description = option.Description;
-
-			// Elements
-			using var boldFont = BuildBoldFont(); // !!
-			CalcWrappingString( wrappingText.tokens, wrappingText.boldTexts, elementString, boldFont, ref x, ref y, originalX, width, graphics );
-			// Text
-			using var font = BuildFont(); // !!
-			CalcWrappingString( wrappingText.tokens, wrappingText.regularTexts, description, font, ref x, ref y, originalX, width, graphics );
-			y += rowHeight;
-			wrappingText.Bounds = new Rectangle( originalX, originalY, width, y - originalY );
-
-			return wrappingText;
-		}
-
-		void CalcWrappingString( 
-			List<TokenPosition> tokens,
-			List<TextPosition> texts,
-			string description, 
-			Font font, 
-			ref int x, 
-			ref int y, 
-			int left, 
-			int width,
-			Graphics graphics
-		) {
-			var descriptionParts = InnatePower.Tokenize( description );
-
-			foreach(var part in descriptionParts) {
-				if(part[0] == '{' && part[^1] == '}') { 
-					// token
-					tokens.Add( CalcTokenPosition( part[1..^1], ref x, ref y, x, width ) );
-				}
-				else {
-
-					string current = part;
-					while( current.Length > 0) {
-						int lengthThatFits = GetCharcterLengthThatFitsInWidth( current, font, left+width-x, graphics );
-						if( lengthThatFits == current.Length) {
-							// it all fits
-							var textSize = graphics.MeasureString(current,font);
-							texts.Add( new TextPosition { Text = current, Bounds = new RectangleF(x,y,textSize.Width,rowHeight) } );
-							x += (int)textSize.Width;
-							current = "";
-						} else {
-							// only part fits
-							string subString = current[..lengthThatFits];
-							var textSize = graphics.MeasureString(current,font);
-							texts.Add( new TextPosition { Text = subString, Bounds = new RectangleF(x,y,textSize.Width,rowHeight) } );
-							x = left;
-							y += rowHeight;
-							current = current[lengthThatFits..].Trim();
-						}
-					}
-
-				}
-			}
-
-		}
-
-		static int GetCharcterLengthThatFitsInWidth(string text, Font font, float width,Graphics graphics) {
-			float textWidth = graphics.MeasureString(text,font).Width;
-			if(textWidth <= width)
-				return text.Length;
-
-			int bestLength = 0;
-			int spaceIndex = text.IndexOf(' ');
-			while(spaceIndex != -1
-				&& graphics.MeasureString(text[..spaceIndex],font).Width<=width
-			) {
-				bestLength = spaceIndex;
-				spaceIndex = text.IndexOf(' ',spaceIndex+1);
-			}
-			return bestLength;
-		}
-
-		TokenPosition CalcTokenPosition( string tokenName, ref int x, ref int y, int left, int width ) {
-			var img = SimpleWordToIcon( tokenName );
-			var sz = IsElement( tokenName ) 
-				? new Size( elementHeight, elementHeight )
-				: InnateLayout.CalcImageSize( img, iconDimension );
-
-			// Wrap?
-			if(left + width < x + sz.Width) { x = left; y += elementHeight; }
-
-			var tp = new TokenPosition {
-				TokenImg = img,
-				Rect = new Rectangle( x, y + (iconDimension - sz.Height) / 2, sz.Width, sz.Height ),
-			};
-			x += sz.Width;
-
-			return tp;
-		}
-
-		static Size CalcImageSize( Img img, int iconDimension ) {
-			if(!iconSizes.ContainsKey( img )) {
-				using Image image = ResourceImages.Singleton.GetImage( img );
-				iconSizes.Add( img, image.Size );
-			}
-			var sz = iconSizes[img];
-
-			return sz.Width < sz.Height
-				? new Size( iconDimension * sz.Width / sz.Height, iconDimension )
-				: new Size( iconDimension, iconDimension * sz.Height / sz.Width );
-		}
-
-		private static bool IsElement( string iconName ) {
-			return "sun|moon|air|fire|water|plant|animal|earth".Contains( iconName );
-		}
-
-		#endregion
-
-		public static Img SimpleWordToIcon( string token ) {
-			return token switch {
-				"dahan" => Img.Icon_Dahan,
-				"city" => Img.Icon_City,
-				"town" => Img.Icon_Town,
-				"explorer" => Img.Icon_Explorer,
-				"blight" => Img.Icon_Blight,
-				"beast" => Img.Icon_Beast,
-				"fear" => Img.Icon_Fear,
-				"wilds" => Img.Icon_Wilds,
-				"fast" => Img.Icon_Fast,
-				"presence" => Img.Icon_Presence,
-				"slow" => Img.Icon_Slow,
-				"disease" => Img.Icon_Disease,
-				"strife" => Img.Icon_Strife,
-				"badlands" => Img.Icon_Badlands,
-				_ => ElementCounts.ParseEl( token ).GetIconImg(),
-			};
-		}
-
-
-		#region temp / private fields
-
-		public readonly float textEmSize;
-		readonly int iconDimension;
-		readonly int elementHeight;
-		readonly int rowHeight;
-		static readonly Dictionary<Img,Size> iconSizes = new Dictionary<Img, Size>();
-
-		#endregion
+		Options = options.ToArray();
+		Bounds = new Rectangle( x, y, width, optionY - y );
 
 	}
 
-	public class TokenPosition {
-		public Img TokenImg;
-		public Rectangle Rect;
+	#endregion
+
+	// !!! group these with the GameFont somehow
+	public Font UsingRegularFont() => new Font( FontFamily.GenericSansSerif, textEmSize, FontStyle.Regular, GraphicsUnit.Pixel );
+	public Font UsingBoldFont()    => new Font( FontFamily.GenericSansSerif, textEmSize, FontStyle.Bold, GraphicsUnit.Pixel );
+
+	#region private methods
+
+	WrappingText CalcGeneralInstructionsLayout( string description, int left, int top, int width, Graphics graphics ) {
+
+		var wrappingLayout = new WrappingLayout(
+			topLeft: new Point( left, top ),
+			rowSize: new Size( width, rowHeight ),
+			_imageSizeCalculator,
+			graphics
+		);
+
+		// Text
+		using Font font = UsingRegularFont();
+		wrappingLayout.MeasuringFont = font;
+		var (tokens, regularTexts) = wrappingLayout.CalcWrappingString( description );
+
+		return new WrappingText {
+			tokens = tokens,
+			regularTexts = regularTexts,
+			Bounds = wrappingLayout.FinalizeBounds()
+		};
+
 	}
 
-	public class TextPosition {
-		public string Text;
-		public RectangleF Bounds;
+	WrappingText_InnateOptions CalcInnateOptionLayout( IDrawableInnateOption option, int left, int originalY, int width, Graphics graphics ) {
+
+		// Elements Thresholds
+		var wrappingLayout = new WrappingLayout( 
+			topLeft: new Point(left, originalY),
+			rowSize: new Size( width, rowHeight ),
+			_imageSizeCalculator, 
+			graphics
+		) { Indent = rowHeight/2 };
+
+		// Elements in bold
+		using var boldFont = UsingBoldFont();
+		wrappingLayout.MeasuringFont = boldFont; 
+		var (elementTokens, elementText) = wrappingLayout.CalcWrappingString( option.ThresholdString );
+
+		// margin
+		wrappingLayout.Tab(2);
+
+		// Text
+		using var font = UsingRegularFont(); //
+		wrappingLayout.MeasuringFont = font;
+		var (tokens, regularTexts) = wrappingLayout.CalcWrappingString( option.Description );
+
+
+		return new WrappingText_InnateOptions {
+			InnateOption = option,
+			tokens       = elementTokens.Union( tokens ).ToList(),
+			boldTexts    = elementText,
+			regularTexts = regularTexts,
+			Bounds       = wrappingLayout.FinalizeBounds(),
+		};
+
 	}
 
-	public class WrappingText {
-		public List<TokenPosition> tokens = new List<TokenPosition>();
+	#endregion
 
-		public List<TextPosition> boldTexts = new List<TextPosition>();
+	#region temp / private fields
 
-		public List<TextPosition> regularTexts = new List<TextPosition>();
+	public readonly float textEmSize;
+	readonly int rowHeight;
 
-		public Rectangle Bounds;
-
-	}
-
-	public class WrappingText_InnateOptions : WrappingText {
-		public IDrawableInnateOption GroupOption;
-	}
-
+	#endregion
 
 }
+
+public class TokenPosition {
+	public Img TokenImg;
+	public Rectangle Rect;
+}
+
+public class TextPosition {
+	public string Text;
+	public RectangleF Bounds;
+}
+
+public class WrappingText {
+	public List<TokenPosition> tokens = new List<TokenPosition>();
+
+	public List<TextPosition> boldTexts = new List<TextPosition>();
+
+	public List<TextPosition> regularTexts = new List<TextPosition>();
+
+	public Rectangle Bounds;
+
+}
+
+public class WrappingText_InnateOptions : WrappingText {
+	public IDrawableInnateOption InnateOption;
+}
+
+

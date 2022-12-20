@@ -69,7 +69,7 @@ public class DownpourDrenchesTheWorld : Spirit, IHaveSecondaryElements {
 		// If we use this for the other terrains also, then this would solve our Other Spirits use as wetlands problem.
 		var drenchTheLandscape = new DrenchTheLandscape( this, gameState.Island.Terrain_ForPower );
 		gameState.Island.Terrain_ForPower = drenchTheLandscape;
-		SourceCalc = drenchTheLandscape;
+		TargetingSourceCalc = drenchTheLandscape;
 	}
 
 	public override IEnumerable<IActionFactory> GetAvailableActions( Phase speed ) {

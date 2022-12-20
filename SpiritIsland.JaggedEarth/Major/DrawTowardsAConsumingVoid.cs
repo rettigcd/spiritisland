@@ -59,7 +59,7 @@ public class DrawTowardsAConsumingVoid {
 		// destroy 1 presence from each Spirit.
 		foreach(var spirit in ctx.GameState.Spirits)
 			if(spirit.Presence.IsOn( ctx.Tokens ))
-				await ctx.NewSelf(spirit).Presence.Destroy( ctx.Space, DestoryPresenceCause.SpiritPower );
+				await ctx.NewSelf(spirit).Presence.Destroy( ctx.Space, 1, DestoryPresenceCause.SpiritPower );
 
 		// Remove 2 beast
 		await ctx.Beasts.Remove( 2, RemoveReason.Removed );

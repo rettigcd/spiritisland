@@ -1,12 +1,6 @@
 ﻿namespace SpiritIsland.Tests;
 
-public static class ChoiceExtensions {
-
-	/// <summary> Binds to the Next Decision </summary>
-	public static DecisionContext NextDecision( this Spirit spirit ) => new DecisionContext( spirit );
-
-	#region IDecsion extensions
-
+public static class DecisionExtensions {
 	static public IOption FindChoice( this IDecision decision, IOption choice ) {
 		// This is really just validation, not finding.
 		// Formatted this way to match the other FindChoice(text)
@@ -24,7 +18,7 @@ public static class ChoiceExtensions {
 
 	static public IOption FindChoice( this IDecision decision, string choiceText ) {
 		var matchingChoices = decision.Options
-			.Where( o => o.Text.Contains( choiceText ) )
+			.Where( o => o.Text == choiceText )
 			.ToArray();
 
 		switch(matchingChoices.Length) {
@@ -47,7 +41,5 @@ public static class ChoiceExtensions {
 
 	static public string FormatOptions( this IDecision decision )
 		=> decision.Options.Select( x => x.Text ).Join( "," );
-
-	#endregion IDecision extensions
 
 }

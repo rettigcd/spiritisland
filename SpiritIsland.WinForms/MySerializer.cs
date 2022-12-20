@@ -109,11 +109,11 @@ public static class MySerializer {
 	#region Presence Token Appearance
 	static public Dictionary<string, object> PrepareToken( PresenceTokenAppearance item ) => item is null ? null
 		: new Dictionary<string, object>() {
-			[ADJUST]     = item.AdjustHsl,
-			[IMAGE]      = item.BaseImage,
-			[HUE]        = item.Hue,
-			[SATURATION] = item.Saturation,
-			[LIGHTNESS]  = item.Lightness
+			[ADJUST]     = item.Hsl != null,
+			[HUE]        = item.Hsl?.H ?? default,
+			[SATURATION] = item.Hsl?.S ?? default,
+			[LIGHTNESS]  = item.Hsl?.L ?? default,
+			[IMAGE]      = item.BaseImage
 		};
 	static public PresenceTokenAppearance RestorePresenceTokenAppearance( JsonObject dict ) => dict is null ? null
 		: ((bool)dict[ADJUST]) ? new PresenceTokenAppearance((float)dict[HUE], (float)dict[SATURATION], (float)dict[LIGHTNESS], dict[IMAGE] )

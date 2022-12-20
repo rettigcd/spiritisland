@@ -19,7 +19,7 @@ public class UnrelentingGrowth_Tests {
 	}
 
 	[Trait( "Presence", "RestrictedSpace" )]
-	[Trait( "SpecialRule", "MountainHome" )]
+	[Trait( "SpecialRule", VolcanoLoomingHigh.MountainHome )]
 	[Fact]
 	public void Volcano_CanOnlyBePlaceInMountains() {
 		CantPlacePresenceHere( new VolcanoLoomingHigh(), "A5" );
@@ -27,8 +27,9 @@ public class UnrelentingGrowth_Tests {
 
 	static void CantPlacePresenceHere( Spirit spirit, string restrictedSpace ) {
 
-		var setup = new ConfigurableTestFixture();
-		setup.Spirit = spirit;
+		var setup = new ConfigurableTestFixture {
+			Spirit = spirit
+		};
 
 		var space = setup.GameState.Tokens[setup.Board.Spaces.Single( s => s.Text == restrictedSpace )];
 

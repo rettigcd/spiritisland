@@ -90,11 +90,7 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 	/// <summary>
 	/// Inits elements in list. (Does not modify elements not in list.)
 	/// </summary>
-	public void InitElements(string elementString ) {
-		var counts = ElementCounts.Parse( elementString );
-		foreach(var el in counts.Keys)
-			Spirit.Elements[el] = counts[el];
-	}
+	public void InitElements(string elementString ) => Spirit.Configure().Elements(elementString);
 
 	public SelfCtx SelfCtx {
 		get => _selfCtx ??= Spirit.BindMyPower( GameState, GameState.StartAction( ActionCategory.Default ) );//??? is it ok to spin up actions like this?
@@ -206,8 +202,6 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 	#endregion
 
 	#region private
-
-	static string FormatDecision( IDecision d ) { return d.Prompt + ":" + d.Options.Select( x => x.Text ).Join( ", " ); }
 
 	static void Init<T>( ref T storage, T newValue, string varName ) {
 		if(storage != null) 

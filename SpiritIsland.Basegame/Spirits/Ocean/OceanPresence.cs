@@ -21,8 +21,8 @@ public class OceanPresence : SpiritPresence {
 	}
 
 
-	protected override async Task RemoveFrom_NoCheck( SpaceState space ) {
-		await base.RemoveFrom_NoCheck( space );
+	protected override async Task RemoveFrom_NoCheck( SpaceState space, int count ) {
+		await base.RemoveFrom_NoCheck( space, count );
 		var board = space.Board;
 		bool isOnBoard = board.Spaces.Any( IsOn );
 		if(!isOnBoard )
