@@ -64,7 +64,6 @@ class ManageInternalPoints {
 			TokenCategory.Dahan or
 			TokenCategory.Presence => FindRightOpenSlot(),
 			TokenCategory.Blight or
-			TokenCategory.DreamingInvader or
 			TokenCategory.Invader  => FindLeftOpenSlot(),
 			_                      => FindRandomOpenSlot(),
 		};

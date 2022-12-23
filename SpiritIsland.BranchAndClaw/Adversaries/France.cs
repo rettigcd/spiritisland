@@ -179,7 +179,7 @@ public class FranceInvaderCard : InvaderCard {
 		// remove explorers
 		int numToReplace = explorerCount - 1;
 		while(numToReplace > 0) {
-			var explorerToken = tokens.OfType( Invader.Explorer ).Cast<HealthToken>().OrderByDescending( x => x.StrifeCount ).FirstOrDefault();
+			var explorerToken = tokens.OfClass( Invader.Explorer ).Cast<HealthToken>().OrderByDescending( x => x.StrifeCount ).FirstOrDefault();
 			int count = Math.Min( tokens[explorerToken], numToReplace );
 			// Replace
 			tokens.Adjust( explorerToken, -count );

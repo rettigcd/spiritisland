@@ -35,7 +35,7 @@ public class BargainsOfPowerAndProtection {
 
 			var match = ctx.Presence.FindSpacesWithinRange( ctx.TerrainMapper.Specify( 1 ), TargetingPowerType.PowerCard )
 				.FirstOrDefault( opt => opt == space);
-			return match?.Dahan.Count ?? 0;
+			return match?.Dahan.CountAll ?? 0;
 		}
 	}
 

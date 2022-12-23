@@ -17,7 +17,7 @@ public class PoisonedLand {
 		await ctx.AddBlight(1);
 
 		// destroy all dahan
-		await ctx.Dahan.Destroy( ctx.Dahan.Count );
+		await ctx.Dahan.Destroy( ctx.Dahan.CountAll );
 
 		if(await ctx.YouHave("3 earth,2 plant,2 animal" )) {
 			int blightCount = ctx.BlightOnSpace;

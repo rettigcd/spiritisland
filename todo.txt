@@ -4,15 +4,16 @@
 
 Presence Tracks (for Lure) are drawing outside their bounds
 
-Share Secrets of Survival / Birds Cry Warning - Used frozen/Dream dahan to save the 2, to remve them from the count but still have them.
-	- Trait("Dahan","Savethem")
-
-Use Frozen / immutable tokens for: Frozen Dahan, Absolute Stasis, Presence that can't move.
+Stasis -> move into Space
+HealthyToken => Make Variant
+UI of Variants
+Convert Stop-Destroy ability into a token and add it to the space.
+Use Variant Tokens for Presence that can't move.
+Merge Token Added/Removed/Moved events.
+When TerrainCriteria depends on presence, early bind to that presence.
 
 Vengeance
 	Wreak Vengeance for the Lands Corruption - virtual tokens might not be correct.
-
-Volcano
 
 UI - Damaged Invaders use non-damaged token slots if available. OR check if any other available damaged slots
 UI - Multiple tokens using the same token slot. Maybe need to lock it or add asserts.
@@ -34,11 +35,10 @@ UI - Multiple tokens using the same token slot. Maybe need to lock it or add ass
 3 Command-Beast - show graphic (so it doesn't get lost in text)
 3 Visual indicator of Phase
 3 Add special-rules logging as Debug, so we can see what happened.
-3 Make Virtual / Calculated Tokens work for types other than Defense
 3 Review items that are PickSpace then Pick Token into a single pick-space-token step.
 3 Shifting Memory - Prepared elements.  Add them AFTER the action has completed.
 3 Change Fear Card Ack to Events. (how do we do that?)
-3 Configure Game - Images for Selecting Spirits / Boards / Token colors
+3 Configure Game - Images for Selecting Spirits
 
 2 Consilidate GameState API - things that aren't data and have no theoretical state.
 2 Merge Config Ravage and Ravage Engine
@@ -59,7 +59,7 @@ Idea - Make Ravage / Build / Explore consistent in using UnitOfWork
 Instead of reacting to PresenceMoved / Removed / Added events, have the Presence do the actions itself.
 
 Log => Adversary Set up
-Log => Spirit Sprcial Rules
+Log => Spirit Special Rules
 
 Custom Draw Cards from Terrain texture.
 

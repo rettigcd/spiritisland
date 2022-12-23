@@ -11,7 +11,7 @@ public class DahanReclaimFishingGrounds : IFearCard {
 	public Task Level1( GameCtx ctx ) {
 
 		return SpiritsActOnDifferentCostalLands( ctx, 
-			spaceCtx => spaceCtx.DamageInvaders( spaceCtx.Dahan.Count )
+			spaceCtx => spaceCtx.DamageInvaders( spaceCtx.Dahan.CountAll )
 		);
 
 	}
@@ -21,7 +21,7 @@ public class DahanReclaimFishingGrounds : IFearCard {
 		return SpiritsActOnDifferentCostalLands( ctx, 
 			async spaceCtx => {
 				await spaceCtx.GatherUpToNDahan( 1 );
-				await spaceCtx.DamageInvaders( spaceCtx.Dahan.Count );
+				await spaceCtx.DamageInvaders( spaceCtx.Dahan.CountAll );
 			}
 		);
 	}
@@ -31,7 +31,7 @@ public class DahanReclaimFishingGrounds : IFearCard {
 		return SpiritsActOnDifferentCostalLands( ctx, 
 			async spaceCtx => {
 				await spaceCtx.GatherUpToNDahan( 1 );
-				await spaceCtx.DamageInvaders( spaceCtx.Dahan.Count*2 );
+				await spaceCtx.DamageInvaders( spaceCtx.Dahan.CountAll*2 );
 			}
 		);
 	}

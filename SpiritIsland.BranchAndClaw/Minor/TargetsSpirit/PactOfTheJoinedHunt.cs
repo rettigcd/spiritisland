@@ -10,7 +10,7 @@ public class PactOfTheJoinedHunt {
 		await spaceCtx.GatherUpToNDahan(1);
 
 		// 1 damage in that land per dahan present
-		await spaceCtx.DamageInvaders( spaceCtx.Dahan.Count );
+		await spaceCtx.DamageInvaders( spaceCtx.Dahan.CountAll );
 
 	}
 

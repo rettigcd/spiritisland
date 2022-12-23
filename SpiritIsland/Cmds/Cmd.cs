@@ -58,7 +58,7 @@ public static partial class Cmd {
 
 	// -- Destroy --
 	static public SpaceAction DestroyBeast(int count) => new SpaceAction($"Destroy {count} Beast", ctx=>ctx.Beasts.Destroy(count)).Matches(x=>x.Beasts.Any);
-	static public SpaceAction Defend1PerDahan => new SpaceAction("Defend 1 per Dahan.", ctx => ctx.Defend(ctx.Dahan.Count));
+	static public SpaceAction Defend1PerDahan => new SpaceAction("Defend 1 per Dahan.", ctx => ctx.Defend(ctx.Dahan.CountAll));
 	static public SpaceAction Defend(int defend) => new SpaceAction( $"Defend {defend}.", ctx => ctx.Defend( defend ) );
 
 	// -- Damage --
@@ -104,7 +104,7 @@ public static partial class Cmd {
 		);
 
 	// Save Dahan
-	static public SpaceAction NextTimeDestroy2FewerDahan => new SpaceAction(
+	static public SpaceAction NextTimeDestroy2FewerDahan => new SpaceAction( // !! needs tests
 		"The next time dahan would be destroyed in target land, Destroy 2 fewer dahan.",
 		DahanSaver.DestroyFewer( 2, 1 )
 	);

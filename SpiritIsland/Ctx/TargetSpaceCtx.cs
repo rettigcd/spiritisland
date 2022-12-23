@@ -69,7 +69,7 @@ public class TargetSpaceCtx : SelfCtx {
 		var destinationOptions = Range( targetCriteria, powerType);
 		Space destination = await Decision( Select.Space.MoveToken( Space, destinationOptions, Present.Done, null ) );
 
-		Token[] tokenOptions = Tokens.OfAnyType( tokenClass );
+		Token[] tokenOptions = Tokens.OfAnyClass( tokenClass );
 		int remaining = Math.Min( Tokens.SumAny(tokenClass), max );
 		while(tokenOptions.Length > 0 && remaining > 0 ) {
 			// Select Token and move
@@ -79,7 +79,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 			// Next
 			--remaining;
-			tokenOptions = Tokens.OfAnyType( tokenClass );
+			tokenOptions = Tokens.OfAnyClass( tokenClass );
 		}
 
 		return destination;

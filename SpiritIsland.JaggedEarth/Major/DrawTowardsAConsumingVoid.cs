@@ -39,7 +39,7 @@ public class DrawTowardsAConsumingVoid {
 		foreach(var adjState in ctx.Adjacent) {
 			// move tokens
 			foreach(var tokenGroup in tokenGroups) {
-				var tokenToGather = adjState.OfType( tokenGroup ).OrderByDescending( x => x is HealthToken ht ? ht.RemainingHealth : 0 ).FirstOrDefault();
+				var tokenToGather = adjState.OfClass( tokenGroup ).OrderByDescending( x => x is HealthToken ht ? ht.RemainingHealth : 0 ).FirstOrDefault();
 				if(tokenToGather != null)
 					await ctx.Move( tokenToGather, adjState.Space, ctx.Space );
 			}

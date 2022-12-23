@@ -74,7 +74,7 @@ public class RavageAction {
 
 	CountDictionary<HealthToken> GetDefenders() => GetParticipantCounts( cfg.IsDefender ?? IsDahan );
 	static bool IsInvader(Token token) => token.Class.Category == TokenCategory.Invader;
-	static bool IsDahan(Token token) => token.Class == TokenType.Dahan;
+	static bool IsDahan(Token token) => token.Class.Category == TokenCategory.Dahan; // all Dahan, including Frozen
 
 	CountDictionary<HealthToken> GetParticipantCounts( Func<HealthToken,bool> filter ) {
 		var participants = new CountDictionary<HealthToken>();
@@ -130,8 +130,8 @@ public class RavageAction {
 		// When damaging defenders, it is ok to damage the explorers first.
 		// https://querki.net/u/darker/spirit-island-faq/#!Voice+of+Command 
 		var participatingExplorers = defenders.Keys
+			.Where( k => k.Class.Category == TokenCategory.Invader ) //! all defending invaders, even dreaming/frozen invaders
 			.OfType<HealthToken>()
-			.Where(k=>k.Class.Category == TokenCategory.Invader)
 			.OrderByDescending(x=>x.RemainingHealth)
 			.ThenBy(x=>x.StrifeCount) // non strifed first
 			.ToArray();
@@ -150,40 +150,43 @@ public class RavageAction {
 
 		// Dahan
 		if(cfg.ShouldDamageDahan) {
-			var participatingDahan = defenders.Keys
+			var damagableDahan = defenders.Keys
 				.Cast<HealthToken>()
-				.Where(k=>k.Class.Category == TokenCategory.Dahan)
+				.Where(k=>k.Class == TokenType.Dahan)  // Normal only, filters out frozen/sleeping/stasis
 				.OrderBy(t=>t.RemainingHealth) // kill damaged dahan first
 				.ToArray();
 
-			var dahan = new DahanGroupBinding( _tokens, UnitOfWork, RemoveReason.DestroyedInBattle ) { Frozen = _tokens.Dahan.Frozen };
+			var dahan = new DahanGroupBinding( _tokens, UnitOfWork, RemoveReason.DestroyedInBattle );
 
-			foreach(var token in participatingDahan) {
+			foreach(var dahanToken in damagableDahan) {
 
 				// 1st - Destroy weekest dahan first
-				int tokensToDestroy = Math.Min(@event.startingDefenders[token], damageToApply/token.RemainingHealth); // rounds down
-				if(tokensToDestroy > 0) {
+				int tokensToDestroy = Math.Min(
+					@event.startingDefenders[dahanToken], 
+					damageToApply/dahanToken.RemainingHealth // rounds down
+				); 
+				if( 0<tokensToDestroy ) {
 
-					var removed = await dahan.Destroy( tokensToDestroy, token );
+					var removed = await dahan.Destroy( tokensToDestroy, dahanToken );
 
 					// use up damage
-					damageToApply -= tokensToDestroy * token.RemainingHealth;
+					damageToApply -= tokensToDestroy * dahanToken.RemainingHealth;
 
 					if(removed != null) {
 						@event.dahanDestroyed += removed.Count;
-						defenders[token] -= removed.Count;
+						defenders[dahanToken] -= removed.Count;
 					}
 				}
 				// damage real tokens
 
 				// 2nd - if we no longer have enougth to destroy this token, apply damage all the damage that remains
-				if(0 < defenders[token] && 0 < damageToApply) {
+				if(0 < defenders[dahanToken] && 0 < damageToApply) {
 
-					await dahan.ApplyDamage_Efficiently( damageToApply, token ); // this will never destroy token
+					await dahan.ApplyDamage_Efficiently( damageToApply, dahanToken ); // this will never destroy token
 
 					// update our defenders count
-					++defenders[token.AddDamage( damageToApply )];
-					--defenders[token];
+					++defenders[dahanToken.AddDamage( damageToApply )];
+					--defenders[dahanToken];
 					damageToApply = 0;
 				}
 

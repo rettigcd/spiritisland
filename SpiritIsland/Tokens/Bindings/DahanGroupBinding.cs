@@ -2,8 +2,6 @@
 
 public class DahanGroupBindingNoEvents {
 
-	public bool Frozen { get; set; }
-
 	readonly protected SpaceState _tokens;
 	readonly protected HealthTokenClass _tokenClass;
 
@@ -17,13 +15,13 @@ public class DahanGroupBindingNoEvents {
 		_tokenClass = TokenType.Dahan;
 	}
 
-	public IEnumerable<HealthToken> Keys => _tokens.OfType( _tokenClass ).Cast<HealthToken>();
+	#region All TokenCategory.Dahan, including Frozen/Stasis
+	public bool Any => _tokens.Has( TokenCategory.Dahan );
+	public int CountAll => _tokens.Sum( TokenCategory.Dahan );
+	#endregion
 
-	public bool Any => Count > 0;
-
-	public int Count => _tokens.Sum( _tokenClass );
-
-	public static implicit operator int( DahanGroupBindingNoEvents b ) => b.Count;
+	/// <summary> All of the Normal Tokens (not frozen, dream, stasis) </summary>
+	public HealthToken[] NormalKeys => _tokens.OfHealthClass( _tokenClass );
 
 	public void Init( int count ) => _tokens.InitDefault( TokenType.Dahan, count );
 
@@ -61,13 +59,12 @@ public class DahanGroupBinding : DahanGroupBindingNoEvents {
 
 	// Called from .Move() and .Dissolve the Bonds
 	public async Task<Token> Remove1( RemoveReason reason, Token toRemove=null ) {
-		if( Frozen ) return null; // unable to remove desired token
 
 		// Reason is only MovedFrom and Replaced.  No destroy here
 
 		// validate token to be removed.
 		if( toRemove == null )
-			toRemove = Keys.OrderBy( x => x.RemainingHealth ).FirstOrDefault();
+			toRemove = NormalKeys.OrderBy( x => x.RemainingHealth ).FirstOrDefault();
 		else if( _tokens[toRemove] == 0 )
 			toRemove = null; // unable to remove desired token
 
@@ -78,17 +75,14 @@ public class DahanGroupBinding : DahanGroupBindingNoEvents {
 
 	// Called from Ocean-Drown special rule.
 	public async Task Drown() {
-		if(!Frozen)
-			foreach( var token in Keys.ToArray())
-				await Destroy( _tokens[token], token );
+		foreach( HealthToken token in NormalKeys)
+			await Destroy( _tokens[token], token );
 	}
 
 	#region Damage
 
 	public async Task Apply1DamageToAll() { // Called By Power (i.e. not invaders)
-		if(Frozen) return;
-
-		var before = Keys
+		var before = NormalKeys
 			.OrderByDescending(x=>x.Damage) // most damaged to least damaged so they don't cascade
 			.ToArray(); 
 		foreach(var token in before) {
@@ -105,24 +99,8 @@ public class DahanGroupBinding : DahanGroupBindingNoEvents {
 
 	}
 
-	// !!! ??? How is Ravage applying Dahan damage?
-	//public async Task ApplyDamage( int damageToDahan ) {
-	//	if(Frozen) return;
-
-	//	// Must kill Dahan as efficiently as possible
-
-	//	var before = Keys.OrderBy(x=>x.RemainingHealth).ToArray(); // least health first.
-	//	foreach(var token in before) {
-	//		damageToDahan = await ApplyDamageToToken( damageToDahan, token );
-	//		if(damageToDahan == 0)
-	//			break;
-	//	}
-
-	//}
-
 	/// <summary>Applies Damage Inefficiently</summary>
 	public async Task ApplyDamage_Inefficiently( int remainingDamageToDahan ) {
-		if(Frozen) return;
 
 		// From BAC Rulebook p.16
 		// When Spirit Powers Damage the Dahan,
@@ -130,7 +108,7 @@ public class DahanGroupBinding : DahanGroupBindingNoEvents {
 
 		HealthToken mostHealthy = null;
 		while( 0<remainingDamageToDahan 
-			&& (mostHealthy=Keys.OrderByDescending( x => x.RemainingHealth ).FirstOrDefault()) != null // least health first.
+			&& (mostHealthy=NormalKeys.OrderByDescending( x => x.RemainingHealth ).FirstOrDefault()) != null // least health first.
 		) {
 			// determine # to apply 1 damage 2
 			int countToApply1DamageTo = Math.Min(remainingDamageToDahan, _tokens[mostHealthy]);
@@ -171,9 +149,8 @@ public class DahanGroupBinding : DahanGroupBindingNoEvents {
 	#region Destroy
 
 	public async Task Destroy( int countToDestroy ) {
-		if(Frozen) return;
 
-		var before = Keys.OrderBy( x => x.RemainingHealth ).ToArray(); // least health first.
+		var before = NormalKeys.OrderBy( x => x.RemainingHealth ).ToArray(); // least health first.
 		foreach(var token in before) {
 			// Destroy what can be destroyed
 			int destroyed = Math.Min(countToDestroy, _tokens[token]);
@@ -183,8 +160,7 @@ public class DahanGroupBinding : DahanGroupBindingNoEvents {
 	}
 
 	public virtual async Task<PublishTokenRemovedArgs> Destroy( int count, HealthToken original ) {
-		return Frozen ? null
-			: await _tokens.Remove( original, count, actionId, _destroyReason );
+		return await _tokens.Remove( original, count, actionId, _destroyReason );
 	}
 
 	#endregion

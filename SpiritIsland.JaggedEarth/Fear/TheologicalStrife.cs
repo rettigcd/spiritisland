@@ -37,6 +37,6 @@ public class TheologicalStrife : IFearCard {
 	}
 
 	static public DecisionOption<GameCtx> EachPlayerAddsStrifeInALandWithPresence
-		=> Cmd.EachSpirit( Cmd.AddStrife(1).In( spaceCtx => spaceCtx.Presence.IsHere && !spaceCtx.Tokens.InStasis, "a land with presence") );
+		=> Cmd.EachSpirit( Cmd.AddStrife(1).In( spaceCtx => spaceCtx.Presence.IsHere, "a land with presence") );
 
 }

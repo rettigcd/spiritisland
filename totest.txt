@@ -1,44 +1,37 @@
 === Grouping 1 ===
 
+0) Modifications to Range
+	Talons of Lightning - extended / conditional range 
+	Sap the Strength of Multitudes - range changes
+
+
 1) Frozen / Stubborn Solidity (stone) / Switch absolute stasis to use dream tokens
+	Frozen Dahan - Moving Dahan into Frozen land should freeze them.
 
 2) Ravage Engine
 
-3) Volcano range
+3) Vengence Keep disaese for fear
+	Vengeanance - Allow Build w/ Disease for 1 fear
+	Vengeanance - destroyed by anything EXCEPT spirit action, add 1 disease where presence was destroyed
+	Vengeanance - for Actions, treat blight as also badlands
 
-4) Vengence Keep disaese for fear
-
-5) all range adjustments
-
-6) Many Minds
+4) Many Minds
+	Many Minds - Presence as beasts
+	Many Minds - push/gather beast range 2
 
 === Grouping 2 - Traits ===
-
-Setup
-	Setup - Fangs, Ocean, Volcano
 
 SpaceState
 	Frozen Dahan - Moving Dahan into Frozen land should freeze them.
 
-Modifications to Range
-	Talons of Lightning - extended / conditional range 
-	Sap the Strength of Multitudes - range changes
-
 Special Rules
 	Downpour - SS as wetland
 	Finder - Open the Ways - shuts off during invader rounds (explore)
-	Many Minds - Presence as beasts
-	Many Minds - push/gather beast range 2
 	Shiftin Memories - Element Rewind
 	Shroud - slow and silent death
 	Stone - stops blight
 	Trickster - Removing blight costs presence EXCEPT for Let's See What Happens
-	Vengeanance - Allow Build w/ Disease for 1 fear
-	Vengeanance - destroyed by anything EXCEPT spirit action, add 1 disease where presence was destroyed
-	Vengeanance - for Actions, treat blight as also badlands
 	Vital Strength - SS is defend 3
-	Volcano - +1 Range 
-	Volcano - presence destroyed - 1 damage/presence to invaders and dahan
 
 Invaders-Ravage
 	Configure Ravage - do all combinations work?

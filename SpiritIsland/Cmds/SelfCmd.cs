@@ -35,7 +35,7 @@ public static partial class Cmd {
 			async selfCtx => {
 				var spaceOptions = selfCtx.GameState.AllActiveSpaces
 					.Select(s=>selfCtx.Target(s.Space))
-					.Where( x => x.IsInPlay )
+					.Where( x => x.IsInPlay )			// !!! this is a repeat of .AllActiveSpaces
 					.Where( filter )
 					.ToArray();
 				if(spaceOptions.Length == 0 ) return;

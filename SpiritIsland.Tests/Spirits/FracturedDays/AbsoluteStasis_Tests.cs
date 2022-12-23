@@ -15,8 +15,7 @@ public class AbsoluteStasis_Tests {
 		cfg.GameState.Initialize();
 
 		{
-			// Bug in cfg.SelfCtx // !!! MUST be for power but seem not to be
-			var selfCtx = cfg.Spirit.BindMyPower( cfg.GameState, cfg.GameState.StartAction( ActionCategory.Spirit_Power ) );//??? is it ok to spin up actions like this?
+			var selfCtx = cfg.SelfCtx;
 
 			//  When: targeting with other card
 			Task mesmerizedTranquilityTask = PowerCard.For<MesmerizedTranquility>()
@@ -139,7 +138,7 @@ public class AbsoluteStasis_Tests {
 		destination.DoAnExplore(cfg.GameState).Wait(8);
 
 		//  Then: no explorers in Jungle spaces.
-		cfg.GameState.Tokens[destination].OfType(Invader.Explorer).Length.ShouldBe( 0 );
+		cfg.GameState.Tokens[destination].OfClass(Invader.Explorer).Length.ShouldBe( 0 );
 	}
 
 	// Invaders Don't Explore Into / out of
@@ -160,7 +159,7 @@ public class AbsoluteStasis_Tests {
 		destination.DoAnExplore( cfg.GameState ).Wait( 8 );
 
 		//  Then: no explorers in Jungle spaces.
-		cfg.GameState.Tokens[destination].OfType( Invader.Explorer ).Length.ShouldBe( 0 );
+		cfg.GameState.Tokens[destination].OfClass( Invader.Explorer ).Length.ShouldBe( 0 );
 	}
 
 	// Invaders Don't Build
@@ -283,7 +282,7 @@ public class AbsoluteStasis_Tests {
 	}
 
 	void Assert_SpaceHasCountTokens( Space space, TokenClass tokenClass, int expectedCount ) {
-		cfg.GameState.Tokens[space].OfType( tokenClass ).Length.ShouldBe( expectedCount );
+		cfg.GameState.Tokens[space].OfClass( tokenClass ).Length.ShouldBe( expectedCount );
 	}
 
 }

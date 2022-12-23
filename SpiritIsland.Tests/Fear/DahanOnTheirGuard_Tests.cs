@@ -33,7 +33,7 @@ public class DahanOnTheirGuard_Tests {
 		await invaderCard.Ravage( gameState );
 
 		// Then: all dahan killed
-		Assert.Equal( 0, gameState.DahanOn( ravageSpace ).Count );
+		Assert.Equal( 0, gameState.DahanOn( ravageSpace ).CountAll );
 		Assert.True( gameState.Tokens[ ravageSpace ].Blight.Any );
 	}
 
@@ -55,7 +55,7 @@ public class DahanOnTheirGuard_Tests {
 		User.AcknowledgesFearCard( "Dahan on their Guard : 1 : In each land, Defend 1 per Dahan." );
 
 		// Then: 0 dahan left
-		gameState.DahanOn( ravageSpace ).Count.ShouldBe( 2 );
+		gameState.DahanOn( ravageSpace ).CountAll.ShouldBe( 2 );
 
 		//   And: 2 towns
 		gameState.Assert_Invaders(ravageSpace, "2T@2" );
@@ -65,7 +65,7 @@ public class DahanOnTheirGuard_Tests {
 
 	void Given_DahanAndTowns( int desiredDahan, int desiredTown ) {
 		gameState.DahanOn( ravageSpace ).Init( desiredDahan );
-		Assert.Equal(desiredDahan,gameState.DahanOn(ravageSpace).Count);
+		Assert.Equal(desiredDahan,gameState.DahanOn(ravageSpace).CountAll);
 
 		gameState.Tokens[ravageSpace].AdjustDefault( Invader.Town, desiredTown );
 	}

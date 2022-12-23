@@ -273,7 +273,7 @@ public class Invader_Tests {
 
 		var tokens = gameState.Tokens[space];
 
-		foreach(var token in tokens.Dahan.Keys.OrderByDescending( x => x.RemainingHealth ))
+		foreach(var token in tokens.Dahan.NormalKeys.OrderByDescending( x => x.RemainingHealth ))
 			items.Add( $"{tokens[token]}D@{token.RemainingHealth}" );
 
 		string actualInvaders = tokens.InvaderSummary();

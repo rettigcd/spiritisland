@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpiritIsland.Basegame;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
@@ -462,7 +463,7 @@ public partial class IslandControl : Control {
 	void DrawInvaderRow( Graphics graphics, SpaceState ss, float iconWidth ) {
 
 		var orderedInvaders = ss.Keys
-			.Where( k => { var c = k.Class.Category; return c == TokenCategory.Invader || c == TokenCategory.DreamingInvader; } )
+			.Where( k => k.Class.Category == TokenCategory.Invader )
 			.Cast<HealthToken>()
 			// Major ordering: (Type > Strife)
 			.OrderByDescending( i => i.FullHealth )
@@ -508,10 +509,10 @@ public partial class IslandControl : Control {
 		var tokenTypes = new List<Token> {
 			TokenType.Defend, TokenType.Blight, // These don't show up in .OfAnyType if they are dynamic
 			TokenType.Beast, TokenType.Wilds, TokenType.Disease, TokenType.Badlands, TokenType.Isolate
-		}	.Union( spaceState.OfAnyType( TokenType.Dahan ) )
-			.Union( spaceState.OfAnyType( _spirit.Presence.Token ) )
-			.Union( spaceState.OfAnyType( TokenType.Element ) )
-			.Union( spaceState.OfType( TokenType.OpenTheWays ) )
+		}	.Union( spaceState.OfCategory( TokenCategory.Dahan ) )
+			.Union( spaceState.OfAnyClass( _spirit.Presence.Token ) )
+			.Union( spaceState.OfAnyClass( TokenType.Element ) )
+			.Union( spaceState.OfClass( TokenType.OpenTheWays ) )
 			.ToArray();
 
 
@@ -836,7 +837,7 @@ public partial class IslandControl : Control {
 		Bitmap orig = ResourceImages.Singleton.GetImage( ht.Class.Img );
 
 		// Invert Dreaming Invaders
-		if(ht.Class.Category == TokenCategory.DreamingInvader) {
+		if( ToDreamAThousandDeaths.DreamInvaders.Contains( ht.Class )) {
 			for(int x = 0; x < orig.Width; ++x)
 				for(int y = 0; y < orig.Height; ++y) {
 					var p = orig.GetPixel( x, y );

@@ -8,7 +8,7 @@ public class VigorOfTheBreakingDawn {
 	public static async Task ActAsync(TargetSpaceCtx ctx){
 
 		// 2 damage per dahan in target land
-		await ctx.DamageInvaders(2*ctx.Dahan.Count);
+		await ctx.DamageInvaders(2*ctx.Dahan.CountAll);
 
 		if( await ctx.YouHave("3 sun,2 animal") ){
 
@@ -23,7 +23,7 @@ public class VigorOfTheBreakingDawn {
 	}
 
 	static Task DahanDeal2DamageEach( TargetSpaceCtx ctx ) {
-		return ctx.DamageInvaders( ctx.Dahan.Count * 2 );
+		return ctx.DamageInvaders( ctx.Dahan.CountAll * 2 );
 	}
 
 }

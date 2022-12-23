@@ -44,7 +44,7 @@ public class StrongAndConstantCurrents{
 		while(0 < count) {
 
 			var costalWithDahan = costalCtxs
-				.SelectMany( x => x.Dahan.Keys.Select(k=>new SpaceToken(x.Space,k)))
+				.SelectMany( x => x.Dahan.NormalKeys.Select(k=>new SpaceToken(x.Space,k)))
 				.ToArray();
 
 			// From

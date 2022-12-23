@@ -1,5 +1,6 @@
 ﻿namespace SpiritIsland.Tests;
 
+[Trait("Feature","DestroyFewerDahan")]
 public class ShareSecretsOfSurvival_Tests {
 
 	[Theory]
@@ -26,8 +27,8 @@ public class ShareSecretsOfSurvival_Tests {
 		// Given: # of Dahan and Towns
 		fxt.InitTokens( space, startingTokens);
 		//   And: played ShareSecretsOfSurvival
-		var ctx= fxt.SelfCtx.Target( space );
-		Cmd.EachTimeDestroy2FewerDahan.Execute( ctx );
+		var ctx = fxt.SelfCtx.Target( space );
+		Play_ShareSecretsOfSurvival( ctx );
 
 		//  When: ravage
 		new RavageAction(fxt.GameState, fxt.GameState.Tokens[space]).Exec().Wait();
@@ -63,7 +64,7 @@ public class ShareSecretsOfSurvival_Tests {
 		fxt.InitTokens( space, startingTokens );
 		//   And: played ShareSecretsOfSurvival
 		var ctx = fxt.SelfCtx.Target( space );
-		Cmd.NextTimeDestroy2FewerDahan.Execute( ctx );
+		Play_ShareSecretsOfSurvival( ctx );
 
 		//  When: ravage
 		new RavageAction( fxt.GameState, fxt.GameState.Tokens[space] ).Exec().Wait();
@@ -72,5 +73,11 @@ public class ShareSecretsOfSurvival_Tests {
 		ctx.Tokens.Summary.ShouldBe( expectedEndingTokens );
 	}
 
+	void Play_ShareSecretsOfSurvival( TargetSpaceCtx ctx ) {
+		Task task = ShareSecretsOfSurvival.ActAsync( ctx );
+		ctx.Self.NextDecision().HasPrompt( "Select Power Option" )
+			.Choose( "Each time dahan would be destroyed in target land, Destroy 2 fewer dahan." );
+		task.IsCompleted.ShouldBeTrue();
+	}
 
 }

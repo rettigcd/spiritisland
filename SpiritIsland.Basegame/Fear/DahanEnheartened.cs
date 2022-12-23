@@ -48,7 +48,7 @@ public class DahanEnheartened : IFearCard {
 			var sCtx = spiritCtx.Target(target);
 
 			await sCtx.GatherUpToNDahan( 2 );
-			await sCtx.DamageInvaders( sCtx.Dahan.Count );
+			await sCtx.DamageInvaders( sCtx.Dahan.CountAll );
 		}
 	}
 

@@ -17,7 +17,8 @@ public class ToDreamAThousandDeaths : InvaderBinding {
 	}
 
 	static void WakeUpDreamers( SpaceState spaceState ) {
-		foreach(HealthToken dreamer in spaceState.OfCategory( TokenCategory.DreamingInvader ).ToArray())
+		var dreamers = spaceState.OfAnyHealthClass( DreamInvaders ).ToArray();
+		foreach(HealthToken dreamer in dreamers)
 			spaceState.ReplaceAllWith( dreamer, ToggleDreamer( dreamer ) );
 	}
 
@@ -36,9 +37,10 @@ public class ToDreamAThousandDeaths : InvaderBinding {
 
 	#region static DreamTokens
 
-	static public readonly HealthTokenClass DreamingCity = new HealthTokenClass( "City_Dreaming", 3, TokenCategory.DreamingInvader, 5, Img.City, 3 );
-	static public readonly HealthTokenClass DreamingTown = new HealthTokenClass( "Town_Dreaming", 2, TokenCategory.DreamingInvader, 2, Img.Town, 2 );
-	static public readonly HealthTokenClass DreamingExplorer = new HealthTokenClass( "Explorer_Dreaming", 1, TokenCategory.DreamingInvader, 0, Img.Explorer, 1 );
+	static public readonly HealthTokenClass DreamingCity = new HealthTokenClass( "City_Dreaming", 3, TokenCategory.Invader, 5, Img.City, 3 );
+	static public readonly HealthTokenClass DreamingTown = new HealthTokenClass( "Town_Dreaming", 2, TokenCategory.Invader, 2, Img.Town, 2 );
+	static public readonly HealthTokenClass DreamingExplorer = new HealthTokenClass( "Explorer_Dreaming", 1, TokenCategory.Invader, 0, Img.Explorer, 1 );
+	static public readonly HealthTokenClass[] DreamInvaders = new HealthTokenClass[] { DreamingCity, DreamingTown, DreamingExplorer };
 
 	static public HealthToken ToggleDreamer( HealthToken token ) => token.SwitchClass( ToggleDreaming( token.Class ) );
 
@@ -47,8 +49,6 @@ public class ToDreamAThousandDeaths : InvaderBinding {
 			if(tokenClass == Invader.Explorer) return DreamingExplorer;
 			if(tokenClass == Invader.Town) return DreamingTown;
 			if(tokenClass == Invader.City) return DreamingCity;
-		}
-		if( tokenClass.Category == TokenCategory.DreamingInvader ) {
 			if(tokenClass == DreamingExplorer) return Invader.Explorer;
 			if(tokenClass == DreamingTown) return Invader.Town;
 			if(tokenClass == DreamingCity) return Invader.City;

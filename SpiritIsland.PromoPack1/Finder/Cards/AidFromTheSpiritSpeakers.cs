@@ -7,7 +7,7 @@ public class AidFromTheSpiritSpeakers {
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		// For each dahan, you may move 1 Invader / dahan / presence / beast to a land within range - 2 that has dahan.
-		await ctx.MoveTokensOut( max: ctx.Dahan.Count
+		await ctx.MoveTokensOut( max: ctx.Dahan.CountAll
 			, ctx.TerrainMapper.Specify( 2, Target.Dahan )
 			, TargetingPowerType.PowerCard
 			, new TokenClass[] { TokenType.Dahan,Invader.Explorer,Invader.Town,Invader.City,TokenType.Beast	}

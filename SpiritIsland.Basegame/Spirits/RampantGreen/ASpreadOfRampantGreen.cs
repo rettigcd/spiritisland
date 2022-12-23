@@ -56,7 +56,7 @@ public class ASpreadOfRampantGreen : Spirit {
 
 		// Setup: 1 in the highest numbered wetland and 1 in the jungle without any dahan
 		Presence.Adjust( gs.Tokens[ board.Spaces.Reverse().First(x=>x.IsWetland) ], 1 );
-		Presence.Adjust( gs.Tokens[ board.Spaces.Single(x=>x.IsJungle && gs.DahanOn(x).Count==0) ], 1 );
+		Presence.Adjust( gs.Tokens[ board.Spaces.Single(x=>x.IsJungle && gs.DahanOn(x).CountAll==0) ], 1 );
 
 	}
 

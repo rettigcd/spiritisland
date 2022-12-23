@@ -68,7 +68,7 @@ public StonesUnyieldingDefiance() : base(
 		// place presence in lowest-numbered Mountain without dahan
 		var ss = board.Spaces.Skip(1)
 			.Select( s => gameState.Tokens[s] )
-			.Where(s=>s.Dahan.Count==0)
+			.Where(s=>s.Dahan.CountAll==0)
 			.First();
 		Presence.Adjust(ss,1);
 

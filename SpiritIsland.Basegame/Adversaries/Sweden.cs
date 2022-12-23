@@ -141,8 +141,8 @@ class SwedenInvaderCard : InvaderCard {
 		// replace 1 Dahan with 1 Towni.
 		foreach(var tokens in exploredTokenSpaces) {
 			var dahan = tokens.Dahan;
-			if(0 < dahan.Count && dahan.Count <= tokens.InvaderTotal()) {
-				var dahanToConvert = dahan.Keys.OrderBy(x=>x.RemainingHealth).First();
+			if(0 < dahan.CountAll && dahan.CountAll <= tokens.InvaderTotal()) {
+				var dahanToConvert = dahan.NormalKeys.OrderBy(x=>x.RemainingHealth).First();
 				var townToAdd = tokens.GetDefault( Invader.Town ).AddDamage( dahanToConvert.Damage );
 
 				dahan.Adjust(dahanToConvert,-1);

@@ -4,9 +4,12 @@ public interface ITokenMovedArgs {
 	GameState GameState { get; }
 
 	TokenClass Class { get; }
+	Token Token { get; }
 	int Count { get; }
+
 	SpaceState RemovedFrom { get; }
 	SpaceState AddedTo { get; }
+
 	UnitOfWork ActionId { get; }
 }
 

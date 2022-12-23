@@ -79,7 +79,7 @@ public class Strife_Tests {
 		// Given: 1 town and 1 strifed town
 		counts.Init( StdTokens.Town, 2);
 		counts.AddStrifeTo( StdTokens.Town, default ).Wait();
-		var strifedTown = counts.OfType(Invader.Town).Single( k => k != StdTokens.Town );
+		var strifedTown = counts.OfClass(Invader.Town).Single( k => k != StdTokens.Town );
 
 		// When: move
 		var destination = space.Adjacent.First( IsInPlay );
@@ -169,7 +169,7 @@ public class Strife_Tests {
 		await space.Space.DoARavage( gs );
 
 		//  Then: dahan survives
-		space.Dahan.Count.ShouldBe( 1, "dahan should survive due to strife on town" );
+		space.Dahan.CountAll.ShouldBe( 1, "dahan should survive due to strife on town" );
 
 		//   and so does city, but strife is gone
 		counts.InvaderSummary().ShouldBe( "1C@1", "strife should be used up" );

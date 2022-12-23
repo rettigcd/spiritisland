@@ -12,7 +12,7 @@ public class FavorsCalledDue {
 
 		// if invaders are present and dahan now out numberthem, 3 fear
 		var invaderCount = ctx.Tokens.InvaderTotal();
-		if(0 < invaderCount && invaderCount < ctx.Dahan.Count)
+		if(0 < invaderCount && invaderCount < ctx.Dahan.CountAll)
 			ctx.AddFear( 3 );
 
 	}

@@ -14,12 +14,12 @@ public class DahanRaid : IFearCard {
 
 	[FearLevel( 2, "Each player chooses a different land with Dahan. 1 Damage per Dahan there." )]
 	public Task Level2( GameCtx ctx ) {
-		return ForEachPlayerChosenLandWithDahan( ctx, sCtx => sCtx.DamageInvaders( sCtx.Dahan.Count ) );
+		return ForEachPlayerChosenLandWithDahan( ctx, sCtx => sCtx.DamageInvaders( sCtx.Dahan.CountAll ) );
 	}
 
 	[FearLevel( 3, "Each player chooses a different land with Dahan. 2 Damage per Dahan there." )]
 	public Task Level3( GameCtx ctx ) {
-		return ForEachPlayerChosenLandWithDahan( ctx, sCtx => sCtx.DamageInvaders( sCtx.Dahan.Count * 2 ) );
+		return ForEachPlayerChosenLandWithDahan( ctx, sCtx => sCtx.DamageInvaders( sCtx.Dahan.CountAll * 2 ) );
 	}
 
 	static async Task ForEachPlayerChosenLandWithDahan( GameCtx ctx, Func<TargetSpaceCtx,Task> action ) {

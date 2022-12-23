@@ -41,7 +41,7 @@ public class DahanThreaten : IFearCard {
 
 		foreach(var ss in landsWithStrife)
 			// 1 damage per dahan
-			await decidingSpirit.Target( ss.Space ).DamageInvaders( ss.Dahan.Count );
+			await decidingSpirit.Target( ss.Space ).DamageInvaders( ss.Dahan.CountAll );
 
 	}
 

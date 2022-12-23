@@ -12,7 +12,7 @@ public class RiversBounty {
 		await ctx.GatherUpToNDahan( 2 );
 
 		// If there are now at least 2 dahan, then add 1 dahan and gain 1 energy
-		if(2 <= ctx.Dahan.Count) {
+		if(2 <= ctx.Dahan.CountAll) {
 			await ctx.Dahan.Add( 1 );
 			++ctx.Self.Energy;
 		}

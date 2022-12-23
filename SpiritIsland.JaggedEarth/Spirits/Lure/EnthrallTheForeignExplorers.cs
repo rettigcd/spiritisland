@@ -17,7 +17,7 @@ class EnthrallTheForeignExplorers : SpiritPresenceToken, ISkipRavages {
 
 		int explorerCount = space.Sum( Invader.Explorer );
 
-		var explorerTypes = space.OfType( Invader.Explorer ).ToList();
+		var explorerTypes = space.OfClass( Invader.Explorer ).ToList();
 
 		int removableCount = System.Math.Min( maxRemovable, explorerCount );
 		int removed = 0;

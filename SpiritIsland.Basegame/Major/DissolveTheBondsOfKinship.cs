@@ -1,8 +1,9 @@
 ﻿namespace SpiritIsland.Basegame;
 
 public class DissolveTheBondsOfKinship {
-		
-	[MajorCard("Dissolve the Bonds of Kinship",4,Element.Fire,Element.Earth,Element.Animal)]
+	public const string Name = "Dissolve the Bonds of Kinship";
+
+	[MajorCard(Name,4,Element.Fire,Element.Earth,Element.Animal)]
 	[Slow]
 	[FromPresence(1)]
 	static public async Task ActAsync(TargetSpaceCtx ctx) {
@@ -33,7 +34,7 @@ public class DissolveTheBondsOfKinship {
 		int explorerCount = ctx.Tokens.Sum( Invader.Explorer );
 		while(explorerCount > 0) {
 			// select token
-			var tokenOptions = ctx.Tokens.OfType( Invader.Explorer ).ToArray();
+			var tokenOptions = ctx.Tokens.OfClass( Invader.Explorer ).ToArray();
 			var decision = Select.TokenFrom1Space.TokenToPush( ctx.Space, explorerCount, tokenOptions, Present.Always );
 			var token = await ctx.Self.Gateway.Decision( decision );
 			if(token == null) break;
@@ -54,7 +55,7 @@ public class DissolveTheBondsOfKinship {
 		}
 
 		static int GetAttackDamageFrom( TargetSpaceCtx ctx, HealthTokenClass cc ) {
-			return ctx.Tokens.OfType( cc ).Sum( t => ctx.Tokens[t] * ctx.Tokens.AttackDamageFrom1( (HealthToken)t ) );
+			return ctx.Tokens.OfClass( cc ).Sum( t => ctx.Tokens[t] * ctx.Tokens.AttackDamageFrom1( (HealthToken)t ) );
 		}
 	}
 

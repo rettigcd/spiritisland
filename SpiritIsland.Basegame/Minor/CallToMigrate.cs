@@ -2,7 +2,9 @@
 
 public class CallToMigrate {
 
-	[MinorCard("Call to Migrate",1,Element.Fire,Element.Air,Element.Animal)]
+	public const string Name = "Call to Migrate";
+
+	[MinorCard(Name,1,Element.Fire,Element.Air,Element.Animal)]
 	[Slow]
 	[FromPresence(1)]
 	static public async Task ActAsync(TargetSpaceCtx ctx){

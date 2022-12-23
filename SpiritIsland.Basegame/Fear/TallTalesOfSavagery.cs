@@ -37,7 +37,7 @@ public class TallTalesOfSavagery : IFearCard {
 		foreach(var space in gs.AllActiveSpaces.Where(s => s.Dahan.Any))
 			await RemoveTownOr2Explorers( gs.Invaders.On( space.Space, ctx.UnitOfWork ) );
 		// Then, remove 1 City from each land with at least 2 Dahan
-		foreach(var space in gs.AllActiveSpaces.Where( s=>s.Dahan.Count>=2 && s.Has(Invader.City) ))
+		foreach(var space in gs.AllActiveSpaces.Where( s=>s.Dahan.CountAll>=2 && s.Has(Invader.City) ))
 			await gs.Invaders.On(space.Space, ctx.UnitOfWork ).RemoveLeastDesirable(Invader.City);
 	}
 

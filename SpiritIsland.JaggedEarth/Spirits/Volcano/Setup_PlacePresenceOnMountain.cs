@@ -15,7 +15,7 @@ class Setup_PlacePresenceOnMountain : GrowthActionFactory { // Similar to SharpF
 		// Push all dahan from that land.
 		var targetCtx = ctx.Target(space);
 		if(targetCtx.Dahan.Any)
-			await targetCtx.PushDahan(targetCtx.Dahan.Count);
+			await targetCtx.PushDahan(targetCtx.Dahan.CountAll);
 	}
 
 	public override bool CouldActivateDuring( Phase speed, Spirit _ ) => speed == Phase.Init;

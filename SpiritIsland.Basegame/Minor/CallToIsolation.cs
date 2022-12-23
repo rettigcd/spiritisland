@@ -9,7 +9,7 @@ public class CallToIsolation {
 
 		return ctx.SelectActionOption(
 			Cmd.PushNDahan(1),
-			Cmd.PushExplorersOrTowns( ctx.Dahan.Count )
+			Cmd.PushExplorersOrTowns( ctx.Dahan.CountAll )
 		);
 
 	}

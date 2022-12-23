@@ -12,7 +12,7 @@ public class VoiceOfCommand {
 
 		// 1 damage per dahan/explorer, to towns/cities only
 		await ctx.DamageInvaders( 
-			ctx.Dahan.Count + ctx.Tokens.Sum( Invader.Explorer ),
+			ctx.Dahan.CountAll + ctx.Tokens.Sum( Invader.Explorer ),
 			Invader.Town, Invader.City
 		);
 

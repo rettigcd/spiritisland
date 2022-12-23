@@ -93,9 +93,15 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 	public void InitElements(string elementString ) => Spirit.Configure().Elements(elementString);
 
 	public SelfCtx SelfCtx {
-		get => _selfCtx ??= Spirit.BindMyPower( GameState, GameState.StartAction( ActionCategory.Default ) );//??? is it ok to spin up actions like this?
+//		get => _selfCtx ??= Spirit.BindMyPower( GameState, GameState.StartAction( ActionCategory.Spirit_Power ) );//??? is it ok to spin up actions like this?
+		get {
+			if( _selfCtx == null )
+				_selfCtx = Spirit.BindMyPower( GameState, GameState.StartAction( ActionCategory.Spirit_Power ) );
+			return _selfCtx;
+		}
 		set => _selfCtx = value;
 	}
+
 	SelfCtx _selfCtx;
 
 	public TargetSpiritCtx TargetSelf => SelfCtx.TargetSpirit( Spirit );
@@ -109,7 +115,7 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 	}
 
 	public void InitPresence( Space space , int count ) {
-		var spaceState = SelfCtx.GameState.Tokens[space];
+		var spaceState = GameState.Tokens[space];
 		var dif = count - Presence.CountOn(spaceState);
 		Presence.Adjust( spaceState, dif );
 	}

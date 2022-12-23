@@ -71,7 +71,7 @@ public class InvaderBinding {
 
 	public async Task DestroyAny( int count, params HealthTokenClass[] generics ) {
 		// !! this could be cleaned up
-		HealthToken[] invadersToDestroy = Tokens.OfAnyType( generics ).ToArray();
+		HealthToken[] invadersToDestroy = Tokens.OfAnyHealthClass( generics ).ToArray();
 		while(count > 0 && invadersToDestroy.Length > 0) {
 			var invader = invadersToDestroy
 				.OrderByDescending( x => x.FullHealth )
@@ -80,7 +80,7 @@ public class InvaderBinding {
 			await Destroy( 1, invader.Class );
 
 			// next
-			invadersToDestroy = Tokens.OfAnyType( generics ).ToArray();
+			invadersToDestroy = Tokens.OfAnyHealthClass( generics ).ToArray();
 			--count;
 		}
 	}
@@ -92,7 +92,7 @@ public class InvaderBinding {
 		int remaining = countToDestroy; // capture
 
 		while(remaining > 0) {
-			var next = Tokens.OfType( invaderClass ).Cast<HealthToken>()
+			var next = Tokens.OfClass( invaderClass ).Cast<HealthToken>()
 				.OrderByDescending( x => x.FullHealth )
 				.ThenBy( x => x.StrifeCount )
 				.ThenBy( x => x.FullDamage )
@@ -145,7 +145,7 @@ public class InvaderBinding {
 	public async Task RemoveLeastDesirable( params TokenClass[] removables ) {
 		if(Tokens.SumAny(removables) == 0) return;
 
-		var invaderToRemove = Tokens.OfAnyType( removables )
+		var invaderToRemove = Tokens.OfAnyClass( removables )
 			.Cast<HealthToken>()
 			.OrderByDescending( g => g.FullHealth )
 			.ThenBy( k => k.StrifeCount )  // un-strifed first
@@ -174,7 +174,7 @@ public class InvaderBinding {
 		}
 
 		void HealGroup( TokenClass group ) {
-			foreach(var token in counts.OfType(group).ToArray())
+			foreach(var token in counts.OfClass(group).ToArray())
 				RestoreAllToDefault(token);
 		}
 
@@ -202,7 +202,7 @@ public class InvaderBinding {
 
 		Token[] invaderTokens;
 		int damageInflicted = 0;
-		while(damage > 0 && (invaderTokens = Tokens.OfAnyType( allowedTypes ).ToArray()).Length > 0) {
+		while(damage > 0 && (invaderTokens = Tokens.OfAnyClass( allowedTypes ).ToArray()).Length > 0) {
 			var invaderToDamage = (HealthToken)await damagePicker.Gateway.Decision( Select.Invader.ForAggregateDamage( Space, invaderTokens, damage, present ) );
 			if(invaderToDamage==null) break;
 			await ApplyDamageTo1( 1, invaderToDamage );

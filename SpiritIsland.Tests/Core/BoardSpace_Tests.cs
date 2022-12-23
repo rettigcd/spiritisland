@@ -361,7 +361,7 @@ public class BoardSpace_Tests {
 	Assert.Equal(items.Count(c=>c=='C'), tokens[StdTokens.City]);
 	Assert.Equal(items.Count(c=>c=='T'), tokens[StdTokens.Town] );
 	Assert.Equal(items.Count(c=>c=='E'), tokens[StdTokens.Explorer] );
-	Assert.Equal(items.Count(c=>c=='D'), tokens.Dahan.Count);
+	Assert.Equal(items.Count(c=>c=='D'), tokens.Dahan.CountAll);
 	Assert.Equal(items.Count(c=>c=='B'), tokens.Blight.Any?1:0);
 	}
 

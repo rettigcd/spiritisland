@@ -43,33 +43,25 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	public IEnumerable<Token> Keys => counts.Keys; // !! This won't list virtual (defend) tokens
 
-	#region Generic - Single
+	#region Enumeration / Detection(HaS) / Summing
 
-	public Token[] OfType( TokenClass tokenClass )
-		=> Keys.Where( x => x.Class == tokenClass ).ToArray();
+	protected IEnumerable<Token> OfCategoryInternal( TokenCategory category ) => Keys.Where( k => k.Class.Category == category );
+	protected IEnumerable<Token> OfClassInternal( TokenClass tokenClass ) => Keys.Where( x => x.Class == tokenClass );
+	protected IEnumerable<Token> OfAnyClassInternal( params TokenClass[] classes ) => Keys.Where( specific => classes.Contains( specific.Class ) );
 
-	public bool Has( TokenClass inv )
-		=> OfType( inv ).Any();
+	public Token[] OfCategory( TokenCategory category ) => OfCategoryInternal( category ).ToArray();
+	public Token[] OfClass( TokenClass tokenClass ) => OfClassInternal( tokenClass ).ToArray();
+	public Token[] OfAnyClass( params TokenClass[] classes ) => OfAnyClassInternal( classes ).ToArray();
+	public HealthToken[] OfHealthClass( HealthTokenClass tokenClass ) => OfClassInternal( tokenClass ).Cast<HealthToken>().ToArray();
+	public HealthToken[] OfAnyHealthClass( params HealthTokenClass[] classes ) => OfAnyClassInternal( classes ).Cast<HealthToken>().ToArray();
 
-	public int Sum( TokenClass tokenClass )
-		=> OfType( tokenClass ).Sum( k => counts[k] );
+	public bool Has( TokenClass inv ) => OfClassInternal( inv ).Any();
+	public bool Has( TokenCategory cat ) => OfCategoryInternal( cat ).Any();
+	public bool HasAny( params TokenClass[] healthyInvaders ) => OfAnyClassInternal( healthyInvaders ).Any();
 
-	#endregion
-
-	#region Generic - Multiple (Any)
-
-	public Token[] OfAnyType( params TokenClass[] healthyTypes )
-		=> Keys.Where( specific => healthyTypes.Contains( specific.Class ) ).ToArray();
-
-	public HealthToken[] OfAnyType( params HealthTokenClass[] healthyTypes )
-		=> Keys.Where( specific => healthyTypes.Contains( specific.Class ) ).Cast<HealthToken>().ToArray();
-
-	public bool HasAny( params TokenClass[] healthyInvaders )
-		=> OfAnyType( healthyInvaders ).Any();
-
-	public int SumAny( params TokenClass[] healthyInvaders )
-		=> OfAnyType( healthyInvaders ).Sum( k => counts[k] );
-
+	public int Sum( TokenClass tokenClass ) => OfClassInternal( tokenClass ).Sum( k => counts[k] );
+	public int Sum( TokenCategory category ) => OfCategoryInternal( category ).Sum( k => counts[k] );
+	public int SumAny( params TokenClass[] healthyInvaders ) => OfAnyClassInternal( healthyInvaders ).Sum( k => counts[k] );
 
 	#endregion
 
@@ -136,7 +128,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	public async Task AdjustHealthOfAll( int delta, UnitOfWork actionId, params HealthTokenClass[] tokenClasses ) {
 		if(delta == 0) return;
 		foreach(var tokenClass in tokenClasses) {
-			var tokens = OfType( tokenClass ).Cast<HealthToken>();
+			var tokens = OfClass( tokenClass ).Cast<HealthToken>();
 			var orderedTokens = delta < 0
 				? tokens.OrderBy( x => x.FullHealth ).ToArray()
 				: tokens.OrderByDescending( x => x.FullHealth ).ToArray();
@@ -151,6 +143,13 @@ public class SpaceState : HasNeighbors<SpaceState> {
 		Adjust( replacement, this[original] );
 		Init( original, 0 );
 	}
+
+	public void ReplaceWith( Token oldToken, Token newToken, int countToReplace ) {
+		countToReplace = Math.Min( countToReplace, this[oldToken] );
+		Adjust( oldToken, -countToReplace );
+		Adjust( newToken, countToReplace );
+	}
+
 
 	#endregion
 
@@ -252,12 +251,10 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	#region Invader Specific
 
-	public IEnumerable<Token> OfCategory( TokenCategory category ) => Keys.Where( k=>k.Class.Category == category );
-
-	/// <summary> Does not include dreaming invaders. </summary>
+	/// <summary> Includes dreaming invaders. </summary>
 	public IEnumerable<HealthToken> InvaderTokens() => OfCategory( TokenCategory.Invader ).Cast<HealthToken>();
 
-	public bool HasInvaders() => OfCategory( TokenCategory.Invader ).Any();
+	public bool HasInvaders() => Has( TokenCategory.Invader );
 
 	public bool HasStrife => Keys.OfType<HealthToken>().Any(x=>x.StrifeCount>0);
 

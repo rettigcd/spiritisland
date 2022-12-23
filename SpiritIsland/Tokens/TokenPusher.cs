@@ -31,7 +31,7 @@ public class TokenPusher {
 				.Where( pair => sharedGroupCounts[pair.Value] > 0 )
 				.Select( p => p.Key )
 				.ToArray();
-			return counts.OfAnyType( groupsWithRemainingCounts ); // !!! Make Dahan Freezable
+			return counts.OfAnyClass( groupsWithRemainingCounts ); // !!! Make Dahan Freezable
 		}
 
 		var pushedToSpaces = new List<Space>();

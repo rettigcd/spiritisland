@@ -51,7 +51,7 @@ class DepartTheDangerousLand : IFearCard {
 		var tokens = spaceCtx.Tokens;
 		return tokens.Beasts.Any
 			|| tokens.Disease.Any
-			|| 2 <= tokens.Dahan.Count;
+			|| 2 <= tokens.Dahan.CountAll;
 	}
 
 }

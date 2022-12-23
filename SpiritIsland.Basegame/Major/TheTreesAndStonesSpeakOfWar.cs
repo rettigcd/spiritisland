@@ -10,7 +10,7 @@ public class TheTreesAndStonesSpeakOfWar {
 		// for each dahan in target land, 1 damage and defend 2
 
 		// -- damage --
-		await ctx.DamageInvaders( ctx.Dahan.Count );
+		await ctx.DamageInvaders( ctx.Dahan.CountAll );
 
 		// if you have 2 sun, 2 earth, 2 plant
 		if( await ctx.YouHave("2 sun, 2 earth, 2 plant")) {
@@ -22,7 +22,7 @@ public class TheTreesAndStonesSpeakOfWar {
 		}
 
 		// -- defend remaining --
-		ctx.Defend( ctx.Dahan.Count * 2 );
+		ctx.Defend( ctx.Dahan.CountAll * 2 );
 
 	}
 

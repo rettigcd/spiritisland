@@ -9,7 +9,7 @@ public class ForestsOfLivingObsidian {
 		await ctx.Badlands.Add( 1 );
 
 		// Push all dahan.
-		await ctx.PushDahan( ctx.Dahan.Count );
+		await ctx.PushDahan( ctx.Dahan.CountAll );
 
 		// 1 damage to each invader.
 		// if the original land is your sacredsite, +1 Damage to each invader

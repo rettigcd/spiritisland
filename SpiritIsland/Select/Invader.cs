@@ -29,7 +29,7 @@ public static class Invader {
 	public static TokenFrom1Space ForStrife( SpaceState tokens, params TokenClass[] groups )
 		=> new TokenFrom1Space( "Add Strife", 
 			tokens.Space,
-			(groups!=null && groups.Length>0) ? tokens.OfAnyType(groups) : tokens.InvaderTokens(), 
+			(groups!=null && groups.Length>0) ? tokens.OfAnyClass(groups) : tokens.InvaderTokens(), 
 			Present.Always 
 		);
 

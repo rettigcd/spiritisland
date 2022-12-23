@@ -8,7 +8,6 @@ public class ShareSecretsOfSurvival {
 		var gatherUpTo2Dahan = Cmd.GatherUpToNDahan( 2 );
 		var destroyFewer = Cmd.EachTimeDestroy2FewerDahan;
 
-
 		// If you have 3 air
 		if(await ctx.YouHave("3 air")) {
 			// you may do both

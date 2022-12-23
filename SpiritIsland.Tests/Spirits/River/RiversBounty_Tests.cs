@@ -79,7 +79,7 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 	}
 
 	void Assert_DahanCount( Space target, int endingCount ) {
-		gameState.Tokens[target].Dahan.Count.ShouldBe( endingCount ); // same as original
+		gameState.Tokens[target].Dahan.CountAll.ShouldBe( endingCount ); // same as original
 	}
 
 	[Fact]
@@ -177,7 +177,7 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 		var dahan = tokens.Dahan;
 		tokens.Init( StdTokens.Dahan1, 5 );
 		dahan.Init(7);
-		tokens.Dahan.Count.ShouldBe(12);
+		tokens.Dahan.CountAll.ShouldBe(12);
 	}
 
 	void Given_AddDahan( int startingCount, Space target ) {

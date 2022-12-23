@@ -15,7 +15,7 @@ public class RitesOfTheLandsRejection {
 
 			// 1 fear per town/city OR 1 fear per dahan, whichever is less
 			int cityTownCount = ctx.Tokens.SumAny( Invader.Town, Invader.City );
-			ctx.AddFear( Math.Min( ctx.Dahan.Count, cityTownCount ) );
+			ctx.AddFear( Math.Min( ctx.Dahan.CountAll, cityTownCount ) );
 		}
 
 		return ctx.SelectActionOption(

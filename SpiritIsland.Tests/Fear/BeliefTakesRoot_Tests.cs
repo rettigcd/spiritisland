@@ -33,7 +33,7 @@ public class BeliefTakesRoot_Tests {
 		User.AcknowledgesFearCard("Null Fear Card : 1 : x");
 
 		// Then: all dahan killed
-		gameState.DahanOn( ravageSpace ).Count.ShouldBe(0);
+		gameState.DahanOn( ravageSpace ).CountAll.ShouldBe(0);
 		gameState.Tokens[ravageSpace].Blight.Any.ShouldBe(true);
 	}
 
@@ -46,7 +46,7 @@ public class BeliefTakesRoot_Tests {
 		User.AcknowledgesFearCard( FearCardAction );
 
 		// Then: 1 dahan left
-		Assert.Equal( 1, gameState.DahanOn( ravageSpace ).Count );
+		Assert.Equal( 1, gameState.DahanOn( ravageSpace ).CountAll );
 
 		//   And: 0 towns
 		gameState.Assert_Invaders(ravageSpace,"");
@@ -63,7 +63,7 @@ public class BeliefTakesRoot_Tests {
 		User.AcknowledgesFearCard( FearCardAction );
 
 		// Then: 1 dahan left
-		Assert.Equal( 1, gameState.DahanOn( ravageSpace ).Count );
+		Assert.Equal( 1, gameState.DahanOn( ravageSpace ).CountAll );
 
 		//   And: 0 towns
 		gameState.Assert_Invaders(ravageSpace, "1T@2" );

@@ -9,7 +9,7 @@ public class CallToBloodshed {
 	[FromPresence(2,Target.Dahan)]
 	static public Task Act(TargetSpaceCtx ctx){
 		return ctx.SelectActionOption(
-			new SpaceAction( "1 damage per dahan", ctx => ctx.DamageInvaders( ctx.Dahan.Count ) ),
+			new SpaceAction( "1 damage per dahan", ctx => ctx.DamageInvaders( ctx.Dahan.CountAll ) ),
 			new SpaceAction( "gather up to 3 dahan", ctx => ctx.GatherUpToNDahan( 3 ) )
 		);
 	}

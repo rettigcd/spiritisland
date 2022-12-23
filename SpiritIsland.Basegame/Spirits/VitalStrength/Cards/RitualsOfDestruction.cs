@@ -10,7 +10,7 @@ public class RitualsOfDestruction {
 		// 2 damage
 		int damage = 2;
 
-		if( 3 <= ctx.Dahan.Count ) {
+		if( 3 <= ctx.Dahan.CountAll ) {
 			damage += 3;
 			ctx.AddFear( 2 );
 		}

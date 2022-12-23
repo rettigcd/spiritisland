@@ -29,7 +29,7 @@ class TreadCarefully : IFearCard {
 			stopRavage
 				// MAY choose a land with dahan or adjacent to at least # dahan.		// !!! MAY - make it optional
 				// !! It would be handy to wrap these 2 parameters into a single VerboseSpaceFilter type/class so that (a) reverse the .In() order, and Reuse easier.
-				.In( ctx => ctx.Dahan.Any || ctx.AdjacentCtxs.Sum( x => x.Dahan.Count ) >= adjacentDahanThreshold, $"a land with dahan or adjacent to at least {adjacentDahanThreshold} dahan" )
+				.In( ctx => ctx.Dahan.Any || ctx.AdjacentCtxs.Sum( x => x.Dahan.CountAll ) >= adjacentDahanThreshold, $"a land with dahan or adjacent to at least {adjacentDahanThreshold} dahan" )
 		).Execute( ctx );
 	}
 

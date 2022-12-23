@@ -17,7 +17,7 @@ public class BoardCtx : SelfCtx {
 		return Board.Spaces
 			.SelectMany(
 				s => GameState.Tokens[s]
-					.OfAnyType( tokenClasses )
+					.OfAnyClass( tokenClasses )
 					.Select( t => new SpaceToken( s, t ) )
 			)
 			.ToArray();

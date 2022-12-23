@@ -44,7 +44,7 @@ public class DahanAttack : IFearCard {
 				// Gather 1 dahan into that land.
 				await spaceCtx.GatherDahan( 1 );
 				// Then 2 damage per dahan there
-				await spaceCtx.DamageInvaders( 2*spaceCtx.Dahan.Count );
+				await spaceCtx.DamageInvaders( 2*spaceCtx.Dahan.CountAll );
 			}
 		}
 	}
@@ -52,7 +52,7 @@ public class DahanAttack : IFearCard {
 	static async Task<Space> DamagePerDahanOnOne( List<Space> options, SelfCtx spirit ) {
 		var spaceCtx = await spirit.SelectSpace( "1 damage per dahan", options );
 		if(spaceCtx != null) {
-			await spaceCtx.DamageInvaders( spaceCtx.Dahan.Count );
+			await spaceCtx.DamageInvaders( spaceCtx.Dahan.CountAll );
 			return spaceCtx.Space;
 		}
 		return null;

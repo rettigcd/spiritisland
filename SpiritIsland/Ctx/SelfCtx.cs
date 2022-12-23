@@ -151,11 +151,11 @@ public class SelfCtx {
 		var spaceCtx = await SelectSpace( "Remove invader from", spaceOptions );
 		if(spaceCtx == null) return null;
 
-		var options = spaceCtx.Tokens.OfAnyType(removables);
+		var options = spaceCtx.Tokens.OfAnyClass(removables);
 		while(0<count && 0<options.Length) {
 			var tokenToRemove = await spaceCtx.Self.Gateway.Decision( Select.TokenFrom1Space.TokenToRemove(spaceCtx.Space, count, options, Present.Always) );
 			await spaceCtx.Tokens.Remove(tokenToRemove,1,CurrentActionId);
-			options = spaceCtx.Tokens.OfAnyType( removables ); // next
+			options = spaceCtx.Tokens.OfAnyClass( removables ); // next
 			--count;
 		}
 		return spaceCtx?.Space;
