@@ -526,19 +526,19 @@ public abstract partial class Spirit : IOption {
 		TargetingPowerType powerType,
 		SelfCtx ctx, // this has the new Action for this action.
 		string prompt,
-		TargetSourceCriteria sourceCriteria,
+		TargetingSourceCriteria sourceCriteria,
 		params TargetCriteria[] targetCriteria
 	) {
 		if(prompt == null) prompt = "Target Space.";
-		IEnumerable<Space> spaces = GetPowerTargetOptions( powerType, ctx.GameState, sourceCriteria, targetCriteria );
-		return this.Gateway.Decision( new Select.Space( prompt, spaces, Present.Always ));
+		IEnumerable<SpaceState> spaces = GetPowerTargetOptions( powerType, ctx.GameState, sourceCriteria, targetCriteria );
+		return this.Gateway.Decision( new Select.Space( prompt, spaces.Select( x => x.Space ), Present.Always ));
 	}
 
 	// Helper for calling SourceCalc & RangeCalc, only for POWERS
-	protected IEnumerable<Space> GetPowerTargetOptions(
+	protected IEnumerable<SpaceState> GetPowerTargetOptions(
 		TargetingPowerType powerType,
 		GameState gameState,
-		TargetSourceCriteria sourceCriteria,
+		TargetingSourceCriteria sourceCriteria,
 		params TargetCriteria[] targetCriteria // allows different criteria at different ranges
 	) {	
 		// Converts SourceCriteria to Spaces
@@ -549,10 +549,12 @@ public abstract partial class Spirit : IOption {
 		).ToArray();
 
 		// Convert TargetCriteria to spaces and merge (distinct) them together.
-		return targetCriteria
-			.SelectMany(tc => PowerRangeCalc.GetTargetOptionsFromKnownSource( this, gameState.Island.Terrain_ForPower, powerType, sources, tc ))
+		var debugResults = targetCriteria
+			.SelectMany(tc => PowerRangeCalc.GetTargetOptionsFromKnownSource( this, powerType, sources, tc ))
 			.Distinct()
-			.Select(x=>x.Space); // TODO: get rid of this line.
+			.ToArray();
+
+		return debugResults;
 	}
 
 	// Non-targetting, For Power, Range-From Presence finder
@@ -565,10 +567,10 @@ public abstract partial class Spirit : IOption {
 		};
 
 		return rangeCalculator
-			.GetTargetOptionsFromKnownSource( this, gameState.Island.Terrain_ForPower, targetingPowerType, 
-			Presence.SpaceStates( gameState ), 
-			targetCriteria
-		);
+			.GetTargetOptionsFromKnownSource( this, targetingPowerType, 
+				Presence.SpaceStates( gameState ), 
+				targetCriteria
+			);
 	}
 
 
@@ -577,28 +579,6 @@ public abstract partial class Spirit : IOption {
 	// Works like badlands.
 	public int BonusDamage { get; set; } // This is a hack for Flame's Fury
 
-}
-
-public record TargetSourceCriteria( From From, Terrain? Terrain = null );
-public class TargetCriteria {
-	public int Range { get; }
-	readonly string[] _filters;
-
-	public TargetCriteria(int range, params string[] filters) {
-		Range = range;
-		_filters = filters ?? throw new ArgumentNullException(nameof(filters));
-	}
-
-	// Virtual so OfferPassageBetweenWorlds can do multiple criteria
-	public virtual TargetCriteria ExtendRange( int extension ) => new TargetCriteria( Range + extension, _filters );
-
-	public virtual Func<SpaceState,bool> Bind(Spirit self, TerrainMapper terrainMapper){
-		// since we are doing a MatchAny (OR), we need at least 1 criteria or it won't match anything
-		// if we were to do a MatchAll (AND), then we wouldn't need any criteria
-		return _filters.Length == 0
-			? (s)=>true	// special case, no criteria => return true
-			: SpaceFilterMap.MatchAny( self, terrainMapper, _filters ); // otherwise batch any of the filters
-	}
 }
 
 

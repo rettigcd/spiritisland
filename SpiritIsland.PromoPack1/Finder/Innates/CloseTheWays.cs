@@ -25,7 +25,10 @@ public class CloseTheWays {
 		bool previouslyRun = ctx.CurrentActionId.ContainsKey( Name );
 		if(previouslyRun) {
 			// Target a New Space
-			var space = await ctx.Self.TargetsSpace(TargetingPowerType.Innate, ctx, "Target Additional Space To Close", new TargetSourceCriteria(From.Presence), new TargetCriteria(1));
+			var space = await ctx.Self.TargetsSpace(TargetingPowerType.Innate, ctx, "Target Additional Space To Close", 
+				new TargetingSourceCriteria(From.Presence),
+				ctx.TerrainMapper.Specify(1)
+			);
 			ctx = ctx.Target(space);
 		}
 		ctx.CurrentActionId[Name] = true; // mark as ran

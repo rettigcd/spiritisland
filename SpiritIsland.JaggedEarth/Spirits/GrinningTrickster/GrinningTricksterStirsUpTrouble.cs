@@ -103,10 +103,9 @@ public class TricksterSpaceCtx : TargetSpaceCtx {
 
 		var nearbyInvaders = Self.PowerRangeCalc.GetTargetOptionsFromKnownSource( 
 			Self, 
-			TerrainMapper, 
 			default,  // This only matters for Volcano
 			new SpaceState[] { Tokens }, 
-			new TargetCriteria( 1 )
+			TerrainMapper.Specify( 1 )
 		)
 			.SelectMany( s => s.InvaderTokens().Select( t => new SpaceToken( s.Space, t ) ) )
 			.ToArray();

@@ -34,7 +34,7 @@ public class Shadows : Spirit {
 		TargetingPowerType targetingPowerType, 
 		SelfCtx ctx,  // has the actual ActionId for this Action
 		string prompt, 
-		TargetSourceCriteria sourceCriteria, 
+		TargetingSourceCriteria sourceCriteria, 
 		params TargetCriteria[] targetCriteria 
 	) {
 		// no money, do normal
@@ -47,7 +47,6 @@ public class Shadows : Spirit {
 		// find dahan-only spaces that are not in targetable spaces
 		var dahanOnlySpaces = ctx.GameState.AllActiveSpaces
 			.Where( s=>s.Dahan.Any )
-			.Select( s=>s.Space )
 			.Except(normalSpaces)
 			.ToArray();
 		// no dahan-only spaces, do normal

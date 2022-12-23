@@ -18,11 +18,18 @@ public class OceanTerrainForPower : TerrainMapper {
 		=> original.MatchesTerrain( space, options ) // try default behavior first
 		|| IsOceansOcean( space.Space ) && options.Contains( Terrain.Wetland ); // as backup, check special rule
 
-	public override bool IsCoastal( Space space ) 
-		=> original.IsCoastal( space ) // check default 1st
-			|| IsOceansOcean( space ); // if that fails, check special rule
+	public override bool IsCoastal( SpaceState ss ) 
+		=> original.IsCoastal( ss ) // check default 1st
+			|| IsOceansOcean( ss.Space ); // if that fails, check special rule
 
-	public override bool IsInPlay( Space space ) => IsOceansOcean( space ) || original.IsInPlay( space );
+//	public override bool IsInPlay( Space space ) => IsOceansOcean( space ) || original.IsInPlay( space );
+	public override bool IsInPlay( Space space ) {
+		bool a = IsOceansOcean( space );
+		bool b = original.IsInPlay( space );
+		return a || b;
+	}
+
+
 
 	#region private
 

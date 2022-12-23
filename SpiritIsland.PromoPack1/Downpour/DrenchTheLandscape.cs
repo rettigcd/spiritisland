@@ -24,7 +24,7 @@ class DrenchTheLandscape : TerrainMapper, ICalcPowerTargetingSource {
 
 	public IEnumerable<SpaceState> FindSources( 
 		IKnowSpiritLocations presence, 
-		TargetSourceCriteria sourceCriteria,
+		TargetingSourceCriteria sourceCriteria,
 		GameState gs
 	) {
 		var sources = sourceCriteria.From switch {

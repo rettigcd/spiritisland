@@ -83,7 +83,7 @@ namespace SpiritIsland.WinForms {
 
 			if(action is DrawPowerCard) { DrawIconInCenter( rect, Img.GainCard ); return; }
 
-			if(action is PlacePresence pp ) { PlacePresence( rect, pp.Range, pp.FilterEnum ); return; }
+			if(action is PlacePresence pp ) { PlacePresence( rect, pp.Range, pp.FilterDescription ); return; }
 
 			if(action is MovePresence mp) { MovePresence( rect, mp.Range ); return; }
 

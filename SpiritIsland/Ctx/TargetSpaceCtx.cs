@@ -134,22 +134,21 @@ public class TargetSpaceCtx : SelfCtx {
 	// !!! This is Range-From-Here.  Compare it to BoundPresence.FindSpacesWithinRange & Spirit.FindSpacesWithinRange which is Range-From-Presence
 	public IEnumerable<SpaceState> Range( TargetCriteria targetCriteria, TargetingPowerType powerType ) => Self.PowerRangeCalc.GetTargetOptionsFromKnownSource(
 		Self,
-		TerrainMapper,
 		powerType,
 		new SpaceState[] { Tokens },
 		targetCriteria
 	)
 		.Where( TerrainMapper.IsInPlay ); // !!! is this necessary?  Does the RangeCalc already check this?
-	public IEnumerable<SpaceState> Range( int range, TargetingPowerType powerType ) => Range(new TargetCriteria(range),powerType);
+	public IEnumerable<SpaceState> Range( int range, TargetingPowerType powerType ) => Range( TerrainMapper.Specify(range), powerType );
 
 	#region Terrain
 
 	/// <summary> The effective Terrain for powers. Will be Wetland for Ocean when Oceans-Hungry-Grasp is on board </summary>
 	public bool IsOneOf(params Terrain[] terrain) => TerrainMapper.MatchesTerrain(Tokens, terrain);
 	public bool Is(Terrain terrain) => TerrainMapper.MatchesTerrain(Tokens, terrain);
-	public bool IsCoastal => TerrainMapper.IsCoastal( Space );
-	public bool IsInland => TerrainMapper.IsInland( Space );
-	public bool IsInPlay => TerrainMapper.IsInPlay( Space );
+	public bool IsCoastal => TerrainMapper.IsCoastal( Tokens );
+	public bool IsInland => TerrainMapper.IsInland( Tokens );
+	public bool IsInPlay => TerrainMapper.IsInPlay( Tokens );
 	#endregion
 
 	public bool HasBlight => Blight.Any;

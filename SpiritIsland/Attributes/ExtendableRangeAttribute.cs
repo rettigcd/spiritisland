@@ -10,7 +10,7 @@ public class ExtendableRangeAttribute : TargetSpaceAttribute {
 	readonly int extension;
 
 	public ExtendableRangeAttribute( From from, int range, string triggeringElements, int extention, params string[] targetType ) 
-		: base( new TargetSourceCriteria(from), range, targetType ) 
+		: base( new TargetingSourceCriteria(from), range, targetType ) 
 	{
 		this.triggeringElements = triggeringElements;
 		this.extension = extention;

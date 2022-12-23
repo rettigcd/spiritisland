@@ -14,7 +14,7 @@ public class BlazingRenewal {
 		// into a single land, up to range 2 from your presence.
 
 		// A Range extender effects the "Spirit's Actions".  (so Originating spirit's range determines which spaces)
-		var targetOptions = ctx.Presence.FindSpacesWithinRange( new TargetCriteria(2),TargetingPowerType.PowerCard)
+		var targetOptions = ctx.Presence.FindSpacesWithinRange( ctx.TerrainMapper.Specify(2),TargetingPowerType.PowerCard)
 			.Where( otherCtx.Presence.CanBePlacedOn )	// filter by the OTHER spirits placeable options
 			.Select( x=>x.Space )
 			.ToArray();

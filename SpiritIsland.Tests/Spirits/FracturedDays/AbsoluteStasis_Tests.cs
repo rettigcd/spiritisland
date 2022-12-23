@@ -15,9 +15,12 @@ public class AbsoluteStasis_Tests {
 		cfg.GameState.Initialize();
 
 		{
+			// Bug in cfg.SelfCtx // !!! MUST be for power but seem not to be
+			var selfCtx = cfg.Spirit.BindMyPower( cfg.GameState, cfg.GameState.StartAction( ActionCategory.Spirit_Power ) );//??? is it ok to spin up actions like this?
+
 			//  When: targeting with other card
 			Task mesmerizedTranquilityTask = PowerCard.For<MesmerizedTranquility>()
-				.ActivateAsync(cfg.SelfCtx);
+				.ActivateAsync( selfCtx );
 			//  Then: Ocean is an option
 			mesmerizedTranquilityTask.IsCompleted.ShouldBeFalse();
 			cfg.FormatOptions.ShouldContain( "A0" );

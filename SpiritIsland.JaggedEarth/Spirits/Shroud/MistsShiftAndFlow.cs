@@ -11,7 +11,7 @@ class MistsShiftAndFlow {
 	readonly GameState _gameState;
 	readonly SelfCtx _ctx;
 	readonly string _prompt;
-	readonly TargetSourceCriteria _sourceCriteria;
+	readonly TargetingSourceCriteria _sourceCriteria;
 
 	readonly TargetCriteria[] _targetCriteria;
 
@@ -28,7 +28,7 @@ class MistsShiftAndFlow {
 		"When targeting a land with a Power, you may Gather 1 of your presence into the target or an adjacent land.  This can enable you to meet Range and targeting requirements."
 	);
 
-	public MistsShiftAndFlow(SelfCtx ctx, string prompt, TargetSourceCriteria sourceCriteria, TargetCriteria[] targetCriteria, TargetingPowerType targettingFrom) {
+	public MistsShiftAndFlow(SelfCtx ctx, string prompt, TargetingSourceCriteria sourceCriteria, TargetCriteria[] targetCriteria, TargetingPowerType targettingFrom) {
 		_spirit = (ShroudOfSilentMist)ctx.Self;
 		_gameState = ctx.GameState;
 		this._ctx = ctx;
@@ -159,7 +159,7 @@ class MistsShiftAndFlow {
 	}
 
 	IEnumerable<SpaceState> GetTargetOptionsFromKnownSources( IEnumerable<SpaceState> sources, TargetCriteria tc )
-		=> _spirit.PowerRangeCalc.GetTargetOptionsFromKnownSource( _ctx.Self, _ctx.TerrainMapper, _powerType, sources, tc );
+		=> _spirit.PowerRangeCalc.GetTargetOptionsFromKnownSource( _ctx.Self, _powerType, sources, tc );
 
 	// Shroud Helper - for easier testing Targetting
 	class SpaceCounts : CountDictionary<Space>, IKnowSpiritLocations {

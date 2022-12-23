@@ -19,26 +19,28 @@ public class ExaltationOfMoltenStone {
 
 	static void ExtendRangeFromMountains( SelfCtx ctx ) {
 		RangeCalcRestorer.Save(ctx.Self,ctx.GameState);
-		ctx.Self.PowerRangeCalc = new ExtendRange1FromMountain( ctx.Self.PowerRangeCalc );
+		ctx.Self.PowerRangeCalc = new ExtendRange1FromMountain( ctx.Self.PowerRangeCalc, ctx.TerrainMapper );
 	}
 
 	class ExtendRange1FromMountain : DefaultRangeCalculator {
 
 		readonly ICalcRange originalApi;
+		readonly TerrainMapper _powerTerrainMapper;
 
-		public ExtendRange1FromMountain( ICalcRange originalApi ) {
+		public ExtendRange1FromMountain( ICalcRange originalApi, TerrainMapper powerTerrainMapper ) {
 			this.originalApi = originalApi;
+			_powerTerrainMapper = powerTerrainMapper;
 		}
 
-		public override IEnumerable<SpaceState> GetTargetOptionsFromKnownSource( Spirit self, TerrainMapper tm, TargetingPowerType powerType, IEnumerable<SpaceState> source, TargetCriteria tc ) {
+		public override IEnumerable<SpaceState> GetTargetOptionsFromKnownSource( Spirit self, TargetingPowerType powerType, IEnumerable<SpaceState> source, TargetCriteria tc ) {
 			// original options
-			var spaces = originalApi.GetTargetOptionsFromKnownSource( self, tm, powerType, source, tc ).ToList();
+			var spaces = originalApi.GetTargetOptionsFromKnownSource( self, powerType, source, tc ).ToList();
 
 			// Target Spirit gains +1 range with their Powers that originate from a Mountain
-			var mountainSource = source.Where(space => tm.MatchesTerrain( space, Terrain.Mountain) ).ToArray();
+			var mountainSource = source.Where(space => _powerTerrainMapper.MatchesTerrain( space, Terrain.Mountain) ).ToArray();
 			return mountainSource.Length == 0 ? spaces
 				: spaces
-				.Union( originalApi.GetTargetOptionsFromKnownSource( self, tm, powerType, mountainSource, tc.ExtendRange(1) ) )
+				.Union( originalApi.GetTargetOptionsFromKnownSource( self, powerType, mountainSource, tc.ExtendRange(1) ) )
 				.Distinct();
 		}
 

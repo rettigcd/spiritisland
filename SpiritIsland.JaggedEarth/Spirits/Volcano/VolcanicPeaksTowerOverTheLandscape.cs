@@ -5,8 +5,8 @@ public class VolcanicPeaksTowerOverTheLandscape : DefaultRangeCalculator {
 	public const string Name = "Volcanic Peaks Tower Over the Landscape";
 	static public SpecialRule Rule => new SpecialRule( Name, "Your Power Cards gain +1 range if you have 3 or more presence in the origin land." );
 
-	public override IEnumerable<SpaceState> GetTargetOptionsFromKnownSource( Spirit self, TerrainMapper tm, TargetingPowerType powerType, IEnumerable<SpaceState> source, TargetCriteria targetCriteria ) {
-		var spaces = base.GetTargetOptionsFromKnownSource( self, tm, powerType, source, targetCriteria )
+	public override IEnumerable<SpaceState> GetTargetOptionsFromKnownSource( Spirit self, TargetingPowerType powerType, IEnumerable<SpaceState> source, TargetCriteria targetCriteria ) {
+		var spaces = base.GetTargetOptionsFromKnownSource( self, powerType, source, targetCriteria )
 			.ToList();
 
 		// Add towers
@@ -15,7 +15,7 @@ public class VolcanicPeaksTowerOverTheLandscape : DefaultRangeCalculator {
 				.Where( s => 3 <= self.Presence.CountOn( s ) )
 				.ToArray();
 			if(towers.Length > 0)
-				spaces.AddRange( base.GetTargetOptionsFromKnownSource( self, tm, powerType, towers, targetCriteria.ExtendRange(1) ) );
+				spaces.AddRange( base.GetTargetOptionsFromKnownSource( self, powerType, towers, targetCriteria.ExtendRange(1) ) );
 		}
 
 		return spaces.Distinct();

@@ -13,7 +13,7 @@ public class SpaceFilterMap {
 		[Target.Coastal           ] = (ctx) => ctx.IsCoastal,
 		[Target.NotWetland        ] = (ctx) => !ctx.MatchesTerrain( Terrain.Wetland ),
 		[Target.NotOcean          ] = (ctx) => !ctx.Tokens.Space.Is( Terrain.Ocean ), // even when ocean is is play, not allowed 
-		[Target.Inland            ] = (ctx) => ctx.TerrainMapper.IsInland( ctx.Tokens.Space ),
+		[Target.Inland            ] = (ctx) => ctx.TerrainMapper.IsInland( ctx.Tokens ),
 
 		// Dahan
 		[Target.Dahan             ] = (ctx) => ctx.Tokens.Dahan.Any,
@@ -67,6 +67,7 @@ public class SpaceFilterMap {
 		}
 		// Same as OR
 		public bool Any( SpaceState state ) {
+			if( !mapper.IsInPlay( state ) ) return false;
 			var sswp = new SpaceStateWithPresence( state, focusSpirit, mapper );
 			if( filters.Length == 0 ) return true;
 			if( filters.Length == 1 ) return filters[0]( sswp );
@@ -86,7 +87,7 @@ public class SpaceStateWithPresence {
 	public TerrainMapper TerrainMapper { get; }
 	public bool IsPresent => focusSpirit.Presence.IsOn( Tokens );
 	public bool MatchesTerrain(Terrain terrain) =>TerrainMapper.MatchesTerrain(Tokens, terrain);
-	public bool IsCoastal => TerrainMapper.IsCoastal( Tokens.Space );
+	public bool IsCoastal => TerrainMapper.IsCoastal( Tokens );
 
 	readonly Spirit focusSpirit;
 	public SpaceStateWithPresence(SpaceState spaceState, Spirit focusSpirit, TerrainMapper tm) {

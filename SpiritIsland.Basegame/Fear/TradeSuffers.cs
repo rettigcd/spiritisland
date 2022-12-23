@@ -19,7 +19,7 @@ public class TradeSuffers : IFearCard {
 		var gs = ctx.GameState;
 		var tm = gs.Island.Terrain_ForFear;
 		foreach(var spirit in gs.Spirits) {
-			var options = gs.AllActiveSpaces.Where( s => tm.IsInPlay(s) && tm.IsCoastal(s.Space) && s.Has( Invader.Town ) ).ToArray();
+			var options = gs.AllActiveSpaces.Where( s => tm.IsInPlay(s) && tm.IsCoastal(s) && s.Has( Invader.Town ) ).ToArray();
 			if(options.Length == 0) return;
 			var target = await spirit.Gateway.Decision( new Select.Space( "Replace town with explorer", options, Present.Always ) );
 			await ReplaceInvader.Downgrade( spirit.Bind( gs, ctx.UnitOfWork ).Target( target), Present.Done, Invader.Town );
@@ -31,7 +31,7 @@ public class TradeSuffers : IFearCard {
 		var gs = ctx.GameState;
 		var tm = gs.Island.Terrain_ForFear;
 		foreach(var spirit in gs.Spirits) {
-			var options = gs.AllActiveSpaces.Where( s => tm.IsInPlay( s ) && tm.IsCoastal( s.Space ) && s.HasAny(Invader.Town,Invader.City) ).Select(s=>s.Space).ToArray();
+			var options = gs.AllActiveSpaces.Where( s => tm.IsInPlay( s ) && tm.IsCoastal( s ) && s.HasAny(Invader.Town,Invader.City) ).Select(s=>s.Space).ToArray();
 			if(options.Length == 0) return;
 			var target = await spirit.Gateway.Decision( new Select.Space( "Replace town with explorer or city with town", options, Present.Always ));
 			await ReplaceInvader.Downgrade( spirit.Bind( gs, ctx.UnitOfWork ).Target( target ), Present.Done, Invader.Town, Invader.City );

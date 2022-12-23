@@ -44,7 +44,7 @@ public class OverseasTradeSeemsSafer : IFearCard {
 
 	static SpaceState[] GetCoastalSpaces( GameState gs ) {
 		var tm = gs.Island.Terrain_ForFear;
-		var spaces = gs.AllActiveSpaces.Where( s => tm.IsCoastal( s.Space ) && tm.IsInPlay( s ) ).ToArray();
+		var spaces = gs.AllActiveSpaces.Where( s => tm.IsCoastal( s ) && tm.IsInPlay( s ) ).ToArray();
 		return spaces;
 	}
 }

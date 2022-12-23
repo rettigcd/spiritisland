@@ -22,8 +22,8 @@ public class Range0Or1ForTargetingBeast : FromPresenceAttribute {
 
 		var space = await ctx.Self.TargetsSpace( powerType, ctx, powerName+": Target Space"
 			, sourceCriteria
-			, new TargetCriteria( range, TargetFilter)
-			, new TargetCriteria( range+1, Target.Beast ) // extend 1 for beast
+			, ctx.TerrainMapper.Specify( range, TargetFilter )
+			, ctx.TerrainMapper.Specify( range+1, Target.Beast ) // extend 1 for beast
 		);
 		return space == null ? null : ctx.Target(space);
 	}

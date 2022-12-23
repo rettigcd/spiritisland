@@ -16,6 +16,6 @@ public class LurePresence : SpiritPresence {
 		Token = new EnthrallTheForeignExplorers( spirit );
 	}
 
-	public override bool CanBePlacedOn( SpaceState space, TerrainMapper tm ) => tm.IsInland( space.Space );
+	public override bool CanBePlacedOn( SpaceState space, TerrainMapper tm ) => tm.IsInland( space );
 
 }

@@ -115,7 +115,7 @@ public class ShroudOfSilentMist : Spirit {
 
 		string prompt,
 
-		TargetSourceCriteria sourceCriteria, 
+		TargetingSourceCriteria sourceCriteria, 
 		params TargetCriteria[] targetCriteria
 	) {
 		var x = new MistsShiftAndFlow(ctx,prompt,sourceCriteria,targetCriteria,powerType);
