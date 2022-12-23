@@ -77,8 +77,7 @@ class MistsShiftAndFlow {
 		await _ctx.Presence.Move( gatherSource, gatherDst );
 	}
 
-	bool IsInPlay( SpaceState space ) => _gameState.Island.Terrain_ForPower.IsInPlay( space.Space );
-
+	bool IsInPlay( SpaceState space ) => _gameState.Island.Terrain_ForPower.IsInPlay( space );
 
 	List<TokenMovedArgs> FindFlowsThatAllowUsToHitTarget( SpaceState target ) {
 		List<TokenMovedArgs> allowed = new List<TokenMovedArgs>();

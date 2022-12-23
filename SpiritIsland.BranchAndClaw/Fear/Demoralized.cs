@@ -31,7 +31,7 @@ public class Demoralized : IFearCard {
 	static void DefendLands( GameCtx ctx, int defense ) {
 		var terrainMapper = ctx.GameState.Island.Terrain_ForFear;
 		var lands = ctx.GameState.AllActiveSpaces
-			.Where( x=> terrainMapper.IsInPlay(x.Space) );
+			.Where( x=> terrainMapper.IsInPlay(x) );
 		foreach(var land in lands)
 			land.Defend.Add( defense );
 	}

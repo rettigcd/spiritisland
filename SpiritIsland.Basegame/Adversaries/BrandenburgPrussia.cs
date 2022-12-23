@@ -60,19 +60,21 @@ class BrandenburgPrussiaInvaderCard : InvaderCard {
 		// Land Rush: On each board with Townicon / City, add 1 Town to a land without Town
 
 		var counts = gs.AllActiveSpaces
-			.ToDictionary( s=>s.Space, s=> s.SumAny(Invader.Town,Invader.City) );
+			.ToDictionary( s=>s.Space, s=> s );
+
+		// s.SumAny(Invader.Town,Invader.City)
 
 		var boards = gs.Island.Boards
-			.Where( b=>b.Spaces.Any(s=>counts[s]>0) )
+			.Where( b=>b.Spaces.Any(s=>counts[s].SumAny( Invader.Town, Invader.City ) > 0) )
 			.ToHashSet();
 
 		var terrainMapper = gs.Island.Terrain;
 
-		var buildSpaces = counts
-			.Where(pair=>boards.Contains(pair.Key.Board) && pair.Value==0 && terrainMapper.IsInPlay( pair.Key ) )
-			.Select(pair => pair.Key)
+		var buildSpaces = counts.Values
+			.Where(ss => boards.Contains(ss.Space.Board) && ss.SumAny( Invader.Town, Invader.City ) == 0 && terrainMapper.IsInPlay( ss ) )
+			.Select(ss => ss.Space)
 			.GroupBy(space => space.Board)
-			.Select(grp => grp.OrderBy(space=>space.Text).First()) // (!! simplification) when multiple, select closest to coast.
+			.Select(grp => grp.OrderBy(ss=>ss.Text).First()) // (!! simplification) when multiple, select closest to coast.
 			.ToArray();
 
 		return England.EscalationBuild( gs, buildSpaces );

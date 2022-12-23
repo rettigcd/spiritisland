@@ -22,14 +22,7 @@ public class OceanTerrainForPower : TerrainMapper {
 		=> original.IsCoastal( ss ) // check default 1st
 			|| IsOceansOcean( ss.Space ); // if that fails, check special rule
 
-//	public override bool IsInPlay( Space space ) => IsOceansOcean( space ) || original.IsInPlay( space );
-	public override bool IsInPlay( Space space ) {
-		bool a = IsOceansOcean( space );
-		bool b = original.IsInPlay( space );
-		return a || b;
-	}
-
-
+	public override bool IsInPlay( Space space ) => IsOceansOcean( space ) || original.IsInPlay( space );
 
 	#region private
 
