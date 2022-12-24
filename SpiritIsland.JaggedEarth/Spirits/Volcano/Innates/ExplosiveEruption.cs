@@ -56,9 +56,9 @@ class ErruptionAttribute : FromPresenceAttribute {
 	/// <summary>
 	/// Override, so we can destroy presence After targeting, prior to Tier-evaluation
 	/// </summary>
-	public override async Task<object> GetTargetCtx( string powerName, SelfCtx ctx, TargetingPowerType powerType ) {
+	public override async Task<object> GetTargetCtx( string powerName, SelfCtx ctx ) {
 
-		var target = (TargetSpaceCtx)await base.GetTargetCtx( powerName, ctx, powerType );
+		var target = (TargetSpaceCtx)await base.GetTargetCtx( powerName, ctx );
 
 		int count = await target.Self.SelectNumber( "# of presence to destroy?", target.Presence.Count, 0 );
 

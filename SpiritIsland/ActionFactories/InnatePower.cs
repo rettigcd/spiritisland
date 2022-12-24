@@ -100,7 +100,7 @@ public class InnatePower : IFlexibleSpeedActionFactory, IRecordLastTarget {
 	protected virtual async Task ActivateInnerAsync( SelfCtx spiritCtx ) {
 
 		// Do this 1st so Volcano can destroy its presence before we evaluate our options
-		LastTarget = await targetAttr.GetTargetCtx( Name, spiritCtx, TargetingPowerType.Innate );
+		LastTarget = await targetAttr.GetTargetCtx( Name, spiritCtx );
 		if(LastTarget == null) return;
 
 		List<MethodInfo> lastMethods = await GetLastActivatedMethodsOfEachGroup( spiritCtx );

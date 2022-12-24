@@ -33,7 +33,7 @@ public class BargainsOfPowerAndProtection {
 			// !! This is kind of slow to do for every space.
 			// ??? Is there some way we can cache this inside the UnitOfWork?
 
-			var match = ctx.Presence.FindSpacesWithinRange( ctx.TerrainMapper.Specify( 1 ), TargetingPowerType.PowerCard )
+			var match = ctx.Presence.FindSpacesWithinRange( ctx.TerrainMapper.Specify( 1 ), true )
 				.FirstOrDefault( opt => opt == space);
 			return match?.Dahan.CountAll ?? 0;
 		}

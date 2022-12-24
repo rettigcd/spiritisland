@@ -109,8 +109,6 @@ public class ShroudOfSilentMist : Spirit {
 	#endregion
 
 	public override async Task<Space> TargetsSpace( 
-
-		TargetingPowerType powerType, 
 		SelfCtx ctx, // contains ActionId for this action, so we can move presence as part of targetting
 
 		string prompt,
@@ -118,7 +116,7 @@ public class ShroudOfSilentMist : Spirit {
 		TargetingSourceCriteria sourceCriteria, 
 		params TargetCriteria[] targetCriteria
 	) {
-		var x = new MistsShiftAndFlow(ctx,prompt,sourceCriteria,targetCriteria,powerType);
+		var x = new MistsShiftAndFlow(ctx,prompt,sourceCriteria,targetCriteria);
 		return (await x.TargetAndFlow()).Space;
 	}
 

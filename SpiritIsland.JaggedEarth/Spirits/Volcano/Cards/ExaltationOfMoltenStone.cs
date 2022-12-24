@@ -33,18 +33,17 @@ public class ExaltationOfMoltenStone {
 		}
 
 		public override IEnumerable<SpaceState> GetTargetOptionsFromKnownSource( 
-			TargetingPowerType powerType, 
 			IEnumerable<SpaceState> source, 
 			TargetCriteria tc
 		) {
 			// original options
-			var spaces = originalApi.GetTargetOptionsFromKnownSource( powerType, source, tc ).ToList();
+			var spaces = originalApi.GetTargetOptionsFromKnownSource( source, tc ).ToList();
 
 			// Target Spirit gains +1 range with their Powers that originate from a Mountain
 			var mountainSource = source.Where(space => _powerTerrainMapper.MatchesTerrain( space, Terrain.Mountain) ).ToArray();
 			return mountainSource.Length == 0 ? spaces
 				: spaces
-				.Union( originalApi.GetTargetOptionsFromKnownSource( powerType, mountainSource, tc.ExtendRange(1) ) )
+				.Union( originalApi.GetTargetOptionsFromKnownSource( mountainSource, tc.ExtendRange(1) ) )
 				.Distinct();
 		}
 

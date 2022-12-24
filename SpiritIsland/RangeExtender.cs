@@ -14,12 +14,8 @@ public class RangeExtender : ICalcRange {
 		this.originalApi = originalApi;
 	}
 
-	public IEnumerable<SpaceState> GetTargetOptionsFromKnownSource(
-		TargetingPowerType powerType,
-		IEnumerable<SpaceState> source,
-		TargetCriteria targetCriteria
-	) {
-		return originalApi.GetTargetOptionsFromKnownSource( powerType, source, targetCriteria.ExtendRange( extension ) );
-	}
+	public IEnumerable<SpaceState> GetTargetOptionsFromKnownSource( IEnumerable<SpaceState> source, TargetCriteria targetCriteria )
+		=> originalApi.GetTargetOptionsFromKnownSource( source, targetCriteria.ExtendRange( extension ) );
+	
 
 }

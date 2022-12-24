@@ -29,9 +29,8 @@ public class ReadOnlyBoundPresence : IKnowSpiritLocations {
 	public IEnumerable<SpaceState> SacredSites => _inner.SacredSiteStates( _gameState, _terrainMapper );
 
 	// This is the non-Targetting version that skips over the TargetSourceCalc
-	public IEnumerable<SpaceState> FindSpacesWithinRange( TargetCriteria targetCriteria, TargetingPowerType targetingPowerType )
-		=> _self.FindSpacesWithinRange( targetingPowerType, this._gameState, targetCriteria ); // !! Only being used with Power since we are assuming the Terrain Mapper
-
+	public IEnumerable<SpaceState> FindSpacesWithinRange( TargetCriteria targetCriteria, bool forPower )
+		=> _self.FindSpacesWithinRange( _gameState, targetCriteria, forPower ); // !! Only being used with Power since we are assuming the Terrain Mapper
 	#region User Decisions
 
 	/// <summary> Tries Presence Tracks first, then fails over to placed-presence on Island </summary>
@@ -52,8 +51,8 @@ public class ReadOnlyBoundPresence : IKnowSpiritLocations {
 	/// None => standard ranging 
 	/// Innate/PowerCard => power ranging  + Passes to PowerRanging
 	/// </param>
-	public async Task<Space> SelectDestinationWithinRange( TargetCriteria targetCriteria, TargetingPowerType targetingPowerType ) {
-		var options = FindSpacesWithinRange( targetCriteria, targetingPowerType )
+	public async Task<Space> SelectDestinationWithinRange( TargetCriteria targetCriteria, bool forPower ) {
+		var options = FindSpacesWithinRange( targetCriteria, forPower )
 			.Where( CanBePlacedOn )
 			.Select( x=>x.Space )
 			.ToArray();
@@ -108,9 +107,9 @@ public class BoundPresence : ReadOnlyBoundPresence {
 	/// <summary> Selects: (Source then Destination) for placing presence </summary>
 	/// <remarks> Called from normal PlacePresence Growth + Gift of Proliferation. </remarks>
 	/// !!! should Have an Action ID
-	public async Task<(IOption,Space)> PlaceWithin( TargetCriteria targetCriteria, TargetingPowerType targetingPowerType ) {
+	public async Task<(IOption,Space)> PlaceWithin( TargetCriteria targetCriteria, bool forPower ) {
 		IOption from = await SelectSource();
-		Space to = await SelectDestinationWithinRange( targetCriteria, targetingPowerType );
+		Space to = await SelectDestinationWithinRange( targetCriteria, forPower );
 		await _self.Presence.Place( from, to, _gameState, _actionId );
 		return(from, to);
 	}

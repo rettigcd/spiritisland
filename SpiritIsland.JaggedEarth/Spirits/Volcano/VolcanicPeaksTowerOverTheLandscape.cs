@@ -9,8 +9,8 @@ public class VolcanicPeaksTowerOverTheLandscape : DefaultRangeCalculator {
 
 	public VolcanicPeaksTowerOverTheLandscape(Spirit self) { _self = self; }
 
-	public override IEnumerable<SpaceState> GetTargetOptionsFromKnownSource( TargetingPowerType powerType, IEnumerable<SpaceState> source, TargetCriteria targetCriteria ) {
-		var spaces = base.GetTargetOptionsFromKnownSource( powerType, source, targetCriteria )
+	public override IEnumerable<SpaceState> GetTargetOptionsFromKnownSource( IEnumerable<SpaceState> source, TargetCriteria targetCriteria ) {
+		var spaces = base.GetTargetOptionsFromKnownSource( source, targetCriteria )
 			.ToList();
 
 		// Add towers
@@ -19,7 +19,7 @@ public class VolcanicPeaksTowerOverTheLandscape : DefaultRangeCalculator {
 				.Where( s => 3 <= _self.Presence.CountOn( s ) )
 				.ToArray();
 			if(towers.Length > 0)
-				spaces.AddRange( base.GetTargetOptionsFromKnownSource( powerType, towers, targetCriteria.ExtendRange(1) ) );
+				spaces.AddRange( base.GetTargetOptionsFromKnownSource( towers, targetCriteria.ExtendRange(1) ) );
 		}
 
 		return spaces.Distinct();

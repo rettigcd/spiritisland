@@ -25,12 +25,12 @@ public class FireAndFlood {
 
 	static async Task<Space> PickSecondTarget( TargetSpaceCtx ctx ) {
 		// SS Range 1 from Target
-		var possibleSacredSiteSourcesForThisSpace = ctx.Range( 1, TargetingPowerType.PowerCard )
+		var possibleSacredSiteSourcesForThisSpace = ctx.Range( 1 )
 			.Where( ctx.Self.Presence.IsSacredSite )
 			.ToArray();
 
 		// 2nd target options, range 2 from Possible SSs
-		IEnumerable<Space> secondTargetOptions = ctx.Range( 2, TargetingPowerType.PowerCard )
+		IEnumerable<Space> secondTargetOptions = ctx.Range( 2 )
 			.Select(x=>x.Space); // TODO - get rid of this
 
 		return await ctx.Decision( new Select.Space( "Select space to target.", secondTargetOptions, Present.Always ) );

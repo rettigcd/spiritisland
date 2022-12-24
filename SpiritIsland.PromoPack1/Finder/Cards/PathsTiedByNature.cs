@@ -11,7 +11,7 @@ public class PathsTiedByNature {
 			.Where( t => SpaceFilterMap.MatchAny( ctx.Self, ctx.TerrainMapper, t )(ctx.Tokens) )
 			.ToArray();
 
-		await ctx.MoveTokensOut(2, ctx.TerrainMapper.Specify(2,currentTerrain), TargetingPowerType.PowerCard
+		await ctx.MoveTokensOut(2, ctx.TerrainMapper.Specify(2,currentTerrain)
 			, new TokenClass[]{ TokenType.Dahan, TokenType.Beast, Invader.Explorer, Invader.Town, Invader.City }
 				.Union( ctx.AllPresenceTokens ).ToArray()
 		);

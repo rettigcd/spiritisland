@@ -15,7 +15,7 @@ public class StranglingFirevine {
 
 		// Add 1 wilds in the originating Sands. 
 		// !! won't find original if this was picked using a range-extender - would need to capture that info during the targetting process
-		var originatingOptions = ctx.Range(1,TargetingPowerType.PowerCard )
+		var originatingOptions = ctx.Range(1)
 			.Select(x=>x.Space)
 			.Where( a=> ctx.Presence.Spaces.Contains(a) && ctx.Target(a).Is(Terrain.Sand) ) // using Smart-terrain in case some spirit rule modifies terrain
 			.ToArray();

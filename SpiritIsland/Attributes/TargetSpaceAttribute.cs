@@ -17,8 +17,8 @@ public abstract class TargetSpaceAttribute : GeneratesContextAttribute {
 		_targetFilters = targetFilter;
 	}
 
-	public override async Task<object> GetTargetCtx( string powerName, SelfCtx ctx, TargetingPowerType powerType ){
-		var space = await ctx.Self.TargetsSpace( powerType, ctx, powerName+": Target Space",
+	public override async Task<object> GetTargetCtx( string powerName, SelfCtx ctx ){
+		var space = await ctx.Self.TargetsSpace( ctx, powerName+": Target Space",
 			sourceCriteria,
 			ctx.TerrainMapper.Specify( await CalcRange(ctx), _targetFilters )
 		);

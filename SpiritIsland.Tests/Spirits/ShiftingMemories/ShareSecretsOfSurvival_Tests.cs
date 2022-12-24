@@ -73,7 +73,7 @@ public class ShareSecretsOfSurvival_Tests {
 		ctx.Tokens.Summary.ShouldBe( expectedEndingTokens );
 	}
 
-	void Play_ShareSecretsOfSurvival( TargetSpaceCtx ctx ) {
+	static void Play_ShareSecretsOfSurvival( TargetSpaceCtx ctx ) {
 		Task task = ShareSecretsOfSurvival.ActAsync( ctx );
 		ctx.Self.NextDecision().HasPrompt( "Select Power Option" )
 			.Choose( "Each time dahan would be destroyed in target land, Destroy 2 fewer dahan." );

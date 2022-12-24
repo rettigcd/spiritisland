@@ -12,7 +12,7 @@ public class GuideTheWayOnFeatheredWings {
 	static public async Task MoveBeastAndFriends(TargetSpaceCtx ctx, int steps ) {
 		if(steps <= 0 ) return;
 		// move beast
-		Space destination = await ctx.MoveTokensOut(1, ctx.TerrainMapper.Specify( 1 ), TargetingPowerType.PowerCard, TokenType.Beast );
+		Space destination = await ctx.MoveTokensOut(1, ctx.TerrainMapper.Specify( 1 ), TokenType.Beast );
 		if(destination == null) return;
 			
 		// As it moves, up to 2 dahan may move with it, for part or all of the way.

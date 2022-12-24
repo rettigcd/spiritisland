@@ -523,20 +523,18 @@ public abstract partial class Spirit : IOption {
 	/// <summary> Used EXCLUSIVELY For Targeting a PowerCard's Space </summary>
 	/// <remarks> This used as the hook for Shadow's Pay-1-to-target-land-with-dahan </remarks>
 	public virtual Task<Space> TargetsSpace( 
-		TargetingPowerType powerType,
 		SelfCtx ctx, // this has the new Action for this action.
 		string prompt,
 		TargetingSourceCriteria sourceCriteria,
 		params TargetCriteria[] targetCriteria
 	) {
 		if(prompt == null) prompt = "Target Space.";
-		IEnumerable<SpaceState> spaces = GetPowerTargetOptions( powerType, ctx.GameState, sourceCriteria, targetCriteria );
+		IEnumerable<SpaceState> spaces = GetPowerTargetOptions( ctx.GameState, sourceCriteria, targetCriteria );
 		return this.Gateway.Decision( new Select.Space( prompt, spaces.Select( x => x.Space ), Present.Always ));
 	}
 
 	// Helper for calling SourceCalc & RangeCalc, only for POWERS
 	protected IEnumerable<SpaceState> GetPowerTargetOptions(
-		TargetingPowerType powerType,
 		GameState gameState,
 		TargetingSourceCriteria sourceCriteria,
 		params TargetCriteria[] targetCriteria // allows different criteria at different ranges
@@ -550,7 +548,7 @@ public abstract partial class Spirit : IOption {
 
 		// Convert TargetCriteria to spaces and merge (distinct) them together.
 		var debugResults = targetCriteria
-			.SelectMany(tc => PowerRangeCalc.GetTargetOptionsFromKnownSource( powerType, sources, tc ))
+			.SelectMany(tc => PowerRangeCalc.GetTargetOptionsFromKnownSource( sources, tc ))
 			.Distinct()
 			.ToArray();
 
@@ -558,21 +556,10 @@ public abstract partial class Spirit : IOption {
 	}
 
 	// Non-targetting, For Power, Range-From Presence finder
-	public IEnumerable<SpaceState> FindSpacesWithinRange( TargetingPowerType targetingPowerType, GameState gameState, TargetCriteria targetCriteria ) {
-		var rangeCalculator = targetingPowerType switch {
-			TargetingPowerType.None => DefaultRangeCalculator.Singleton,
-			TargetingPowerType.Innate or
-			TargetingPowerType.PowerCard => PowerRangeCalc,
-			_ => throw new InvalidOperationException()
-		};
-
-		return rangeCalculator
-			.GetTargetOptionsFromKnownSource( targetingPowerType, 
-				Presence.SpaceStates( gameState ), 
-				targetCriteria
-			);
+	public IEnumerable<SpaceState> FindSpacesWithinRange( GameState gameState, TargetCriteria targetCriteria, bool forPower ) {
+		return (forPower ? PowerRangeCalc : DefaultRangeCalculator.Singleton)
+			.GetTargetOptionsFromKnownSource( Presence.SpaceStates( gameState ), targetCriteria );
 	}
-
 
 	#endregion
 

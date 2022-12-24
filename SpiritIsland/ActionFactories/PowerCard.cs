@@ -43,7 +43,7 @@ public sealed class PowerCard : IFlexibleSpeedActionFactory, IRecordLastTarget {
 	}
 
 	async Task ActivateInnerAsync( SelfCtx spiritCtx ) {
-		LastTarget = await targetAttr.GetTargetCtx( Name, spiritCtx, TargetingPowerType.PowerCard );
+		LastTarget = await targetAttr.GetTargetCtx( Name, spiritCtx );
 		if(LastTarget != null) // Can't find a tar
 			await InvokeOnObjectCtx( LastTarget );
 	}

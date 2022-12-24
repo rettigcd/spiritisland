@@ -30,7 +30,7 @@ public class PlacePresence : GrowthActionFactory {
 
 	public override Task ActivateAsync( SelfCtx ctx ) => ctx.Presence.PlaceWithin( 
 		GetTargetCriteria( ctx ), 
-		TargetingPowerType.None
+		false
 	);
 	protected virtual TargetCriteria GetTargetCriteria( SelfCtx ctx ) => ctx.TerrainMapper.Specify( Range, FilterEnums );
 }

@@ -15,11 +15,3 @@ public class PowerType : IOption {
 
 	PowerType(string text) { Text = text; }
 }
-
-// Volcano targets differently for Innates vs cards
-// !!! Instead of this, use PowerType above for Volcano targetting
-public enum TargetingPowerType { 
-	None, 
-	Innate, 
-	PowerCard
-} // Can't think up a good name for this

@@ -5,7 +5,6 @@
 Presence Tracks (for Lure) are drawing outside their bounds
 
 * Stasis -> move into Space
-* When TerrainCriteria depends on presence, early bind to that presence.
 Convert Stop-Destroy ability into a token and add it to the space.
 Use Variant Tokens for Presence that can't move.
 Merge Token Added/Removed/Moved events.

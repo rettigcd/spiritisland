@@ -3,7 +3,7 @@
 [AttributeUsage(AttributeTargets.Class|AttributeTargets.Method)]
 public class AnySpiritAttribute : GeneratesContextAttribute {
 
-	public override async Task<object> GetTargetCtx( string powerName, SelfCtx ctx, TargetingPowerType _ ) {
+	public override async Task<object> GetTargetCtx( string powerName, SelfCtx ctx ) {
 		Spirit target = ctx.GameState.Spirits.Length == 1 ? ctx.Self
 			: await ctx.Decision( new Select.Spirit( powerName, ctx.GameState.Spirits ) );
 
@@ -20,7 +20,7 @@ public class AnySpiritAttribute : GeneratesContextAttribute {
 
 [AttributeUsage(AttributeTargets.Class|AttributeTargets.Method)]
 public class AnotherSpiritAttribute : AnySpiritAttribute {
-	public override async Task<object> GetTargetCtx( string powerName, SelfCtx ctx, TargetingPowerType _ ) {
+	public override async Task<object> GetTargetCtx( string powerName, SelfCtx ctx ) {
 		Spirit target = ctx.GameState.Spirits.Length == 1 ? ctx.Self
 			: await ctx.Decision( new Select.Spirit( powerName, ctx.GameState.Spirits.Where(s=>s!=ctx.Self), Present.AutoSelectSingle ) );
 		return ctx.TargetSpirit( target );
@@ -31,7 +31,7 @@ public class AnotherSpiritAttribute : AnySpiritAttribute {
 
 [AttributeUsage(AttributeTargets.Class|AttributeTargets.Method)]
 public class YourselfAttribute : AnySpiritAttribute {
-	public override Task<object> GetTargetCtx( string powerName, SelfCtx ctx , TargetingPowerType _ ) {
+	public override Task<object> GetTargetCtx( string powerName, SelfCtx ctx ) {
 		return Task.FromResult( (object)ctx );
 	}
 	public override string TargetFilter => "Yourself";

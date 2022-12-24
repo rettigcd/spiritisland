@@ -102,7 +102,6 @@ public class TricksterSpaceCtx : TargetSpaceCtx {
 		if( Self.Energy == 0 ) return;
 
 		var nearbyInvaders = Self.PowerRangeCalc.GetTargetOptionsFromKnownSource( 
-			default,  // This only matters for Volcano
 			new SpaceState[] { Tokens }, 
 			TerrainMapper.Specify( 1 )
 		)

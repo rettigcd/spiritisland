@@ -208,8 +208,8 @@ public class StubbornSolidity_Tests {
 	}
 
 	static void Play_StubbornSolidity_On( Spirit spirit, GameState gameState, SpaceState targetSpace ) {
-		using(UnitOfWork uow = gameState.StartAction( ActionCategory.Spirit_Power ))
-			StubbornSolidity.ActAsync( spirit.BindMyPower( gameState, uow ).Target( targetSpace.Space ) ).Wait();
+		using UnitOfWork uow = gameState.StartAction( ActionCategory.Spirit_Power );
+		StubbornSolidity.ActAsync( spirit.BindMyPower( gameState, uow ).Target( targetSpace.Space ) ).Wait();
 	}
 
 	static void BuysAndUses( GameFixture fxt, string cardName ) {

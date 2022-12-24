@@ -61,12 +61,12 @@ public class TargetSpaceCtx : SelfCtx {
 
 	// This is different than Push / Gather which ManyMinds adjusts, this is straight 'Move' that is not adjusted.
 	/// <returns>Destination</returns>
-	public async Task<Space> MoveTokensOut( int max, TargetCriteria targetCriteria, TargetingPowerType powerType, params TokenClass[] tokenClass ) {
+	public async Task<Space> MoveTokensOut( int max, TargetCriteria targetCriteria, params TokenClass[] tokenClass ) {
 
 		if(!Tokens.HasAny( tokenClass )) return null;
 
 		// Select Destination
-		var destinationOptions = Range( targetCriteria, powerType);
+		var destinationOptions = Range( targetCriteria );
 		Space destination = await Decision( Select.Space.MoveToken( Space, destinationOptions, Present.Done, null ) );
 
 		Token[] tokenOptions = Tokens.OfAnyClass( tokenClass );
@@ -132,13 +132,12 @@ public class TargetSpaceCtx : SelfCtx {
 
 	/// <summary> Use this for Power-Pushing, since Powers can push invaders into the ocean. </summary>
 	// !!! This is Range-From-Here.  Compare it to BoundPresence.FindSpacesWithinRange & Spirit.FindSpacesWithinRange which is Range-From-Presence
-	public IEnumerable<SpaceState> Range( TargetCriteria targetCriteria, TargetingPowerType powerType ) => Self.PowerRangeCalc.GetTargetOptionsFromKnownSource(
-		powerType,
+	public IEnumerable<SpaceState> Range( TargetCriteria targetCriteria ) => Self.PowerRangeCalc.GetTargetOptionsFromKnownSource(
 		new SpaceState[] { Tokens },
 		targetCriteria
 	)
 		.Where( TerrainMapper.IsInPlay ); // !!! is this necessary?  Does the RangeCalc already check this?
-	public IEnumerable<SpaceState> Range( int range, TargetingPowerType powerType ) => Range( TerrainMapper.Specify(range), powerType );
+	public IEnumerable<SpaceState> Range( int range ) => Range( TerrainMapper.Specify(range) );
 
 	#region Terrain
 
