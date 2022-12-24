@@ -550,7 +550,7 @@ public abstract partial class Spirit : IOption {
 
 		// Convert TargetCriteria to spaces and merge (distinct) them together.
 		var debugResults = targetCriteria
-			.SelectMany(tc => PowerRangeCalc.GetTargetOptionsFromKnownSource( this, powerType, sources, tc ))
+			.SelectMany(tc => PowerRangeCalc.GetTargetOptionsFromKnownSource( powerType, sources, tc ))
 			.Distinct()
 			.ToArray();
 
@@ -567,7 +567,7 @@ public abstract partial class Spirit : IOption {
 		};
 
 		return rangeCalculator
-			.GetTargetOptionsFromKnownSource( this, targetingPowerType, 
+			.GetTargetOptionsFromKnownSource( targetingPowerType, 
 				Presence.SpaceStates( gameState ), 
 				targetCriteria
 			);

@@ -133,7 +133,6 @@ public class TargetSpaceCtx : SelfCtx {
 	/// <summary> Use this for Power-Pushing, since Powers can push invaders into the ocean. </summary>
 	// !!! This is Range-From-Here.  Compare it to BoundPresence.FindSpacesWithinRange & Spirit.FindSpacesWithinRange which is Range-From-Presence
 	public IEnumerable<SpaceState> Range( TargetCriteria targetCriteria, TargetingPowerType powerType ) => Self.PowerRangeCalc.GetTargetOptionsFromKnownSource(
-		Self,
 		powerType,
 		new SpaceState[] { Tokens },
 		targetCriteria

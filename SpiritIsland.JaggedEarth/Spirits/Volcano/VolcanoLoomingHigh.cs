@@ -39,7 +39,7 @@ public class VolcanoLoomingHigh : Spirit {
 			InnatePower.For<PoweredByTheFurnaceOfTheEarth>()
 		};
 
-		PowerRangeCalc = new VolcanicPeaksTowerOverTheLandscape();
+		PowerRangeCalc = new VolcanicPeaksTowerOverTheLandscape(this);
 	}
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {

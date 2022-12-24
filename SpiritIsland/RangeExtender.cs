@@ -15,12 +15,11 @@ public class RangeExtender : ICalcRange {
 	}
 
 	public IEnumerable<SpaceState> GetTargetOptionsFromKnownSource(
-		Spirit self,
 		TargetingPowerType powerType,
 		IEnumerable<SpaceState> source,
 		TargetCriteria targetCriteria
 	) {
-		return originalApi.GetTargetOptionsFromKnownSource( self, powerType, source, targetCriteria.ExtendRange( extension ) );
+		return originalApi.GetTargetOptionsFromKnownSource( powerType, source, targetCriteria.ExtendRange( extension ) );
 	}
 
 }

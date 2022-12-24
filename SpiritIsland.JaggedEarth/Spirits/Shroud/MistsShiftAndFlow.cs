@@ -31,11 +31,11 @@ class MistsShiftAndFlow {
 	public MistsShiftAndFlow(SelfCtx ctx, string prompt, TargetingSourceCriteria sourceCriteria, TargetCriteria[] targetCriteria, TargetingPowerType targettingFrom) {
 		_spirit = (ShroudOfSilentMist)ctx.Self;
 		_gameState = ctx.GameState;
-		this._ctx = ctx;
-		this._prompt = prompt ?? "Target Space.";
-		this._sourceCriteria = sourceCriteria;
-		this._targetCriteria = targetCriteria;
-		this._powerType = targettingFrom;
+		_ctx = ctx;
+		_prompt = prompt ?? "Target Space.";
+		_sourceCriteria = sourceCriteria;
+		_targetCriteria = targetCriteria;
+		_powerType = targettingFrom;
 
 		CalculateSpaceGroups();
 	}
@@ -158,7 +158,7 @@ class MistsShiftAndFlow {
 	}
 
 	IEnumerable<SpaceState> GetTargetOptionsFromKnownSources( IEnumerable<SpaceState> sources, TargetCriteria tc )
-		=> _spirit.PowerRangeCalc.GetTargetOptionsFromKnownSource( _ctx.Self, _powerType, sources, tc );
+		=> _spirit.PowerRangeCalc.GetTargetOptionsFromKnownSource( _powerType, sources, tc );
 
 	// Shroud Helper - for easier testing Targetting
 	class SpaceCounts : CountDictionary<Space>, IKnowSpiritLocations {

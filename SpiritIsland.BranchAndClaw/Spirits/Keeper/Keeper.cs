@@ -22,7 +22,7 @@ public partial class Keeper : Spirit {
 		GrowthTrack = new GrowthTrack( 2,
 			new GrowthOption( new ReclaimAll() ,new GainEnergy(1) ){ GainEnergy = 1 },
 			new GrowthOption( new DrawPowerCard(1) ),
-			new GrowthOption( new GainEnergy(1) ,new PlacePresence(3,Target.Presence, Target.Wilds ) ){ GainEnergy = 1 },
+			new GrowthOption( new GainEnergy(1) ,new PlacePresenceOnSelf(3,Target.Presence, Target.Wilds ) ){ GainEnergy = 1 },
 			new GrowthOption( new GainEnergy(-3),new DrawPowerCard(1) ,new PlacePresence(3,Target.NoBlight) ){ GainEnergy = -3 }
 		);
 

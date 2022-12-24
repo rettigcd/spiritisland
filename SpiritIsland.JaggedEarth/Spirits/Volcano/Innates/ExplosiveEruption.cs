@@ -49,6 +49,32 @@ public class ExplosiveEruption {
 
 }
 
+// Allows user to enter # of presence to destroy while generating the CTX
+class ErruptionAttribute : FromPresenceAttribute {
+	public ErruptionAttribute() : base( 0 ) { }
+
+	/// <summary>
+	/// Override, so we can destroy presence After targeting, prior to Tier-evaluation
+	/// </summary>
+	public override async Task<object> GetTargetCtx( string powerName, SelfCtx ctx, TargetingPowerType powerType ) {
+
+		var target = (TargetSpaceCtx)await base.GetTargetCtx( powerName, ctx, powerType );
+
+		int count = await target.Self.SelectNumber( "# of presence to destroy?", target.Presence.Count, 0 );
+
+		// Destroy them now
+		await target.Presence.Destroy( target.Space, count, DestoryPresenceCause.SpiritPower );
+
+		return target;
+	}
+
+	/// <summary>
+	/// Override so we can return a custom a custom criteria that flags this as an Innate Power
+	/// </summary>
+	protected override async Task<TargetCriteria> GetCriteria( SelfCtx ctx ) 
+		=> new VolcanicPeaksTowerOverTheLandscape.InnateTargetCriteria( ctx.TerrainMapper, await CalcRange( ctx ), _targetFilters );
+}
+
 public class ExplosiveInnateOptionAttribute : InnateOptionAttribute {
 	public ExplosiveInnateOptionAttribute( string elementText, int destroyedPresence, string description, int group )
 		: base( elementText, description, group ) {
@@ -59,20 +85,3 @@ public class ExplosiveInnateOptionAttribute : InnateOptionAttribute {
 	public override string ThresholdString => base.ThresholdString + $" {DestroyedPresenceThreshold} destroyedpresence";
 }
 
-
-// Allows user to enter # of presence to destroy while generating the CTX
-class ErruptionAttribute : FromPresenceAttribute {
-	public ErruptionAttribute() : base( 0 ) { }
-
-	public override async Task<object> GetTargetCtx( string powerName, SelfCtx ctx , TargetingPowerType powerType ) {
-		var target = (TargetSpaceCtx) await base.GetTargetCtx( powerName, ctx, powerType );
-
-		int count = await target.Self.SelectNumber("# of presence to destroy?", target.Presence.Count,0);
-
-		// Destroy them now
-		await target.Presence.Destroy(target.Space, count, DestoryPresenceCause.SpiritPower);
-
-		return target;
-	}
-
-}

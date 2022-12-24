@@ -13,7 +13,6 @@ public interface ICalcPowerTargetingSource {
 public interface ICalcRange {
 
 	IEnumerable<SpaceState> GetTargetOptionsFromKnownSource(
-		Spirit self,
 		TargetingPowerType powerType,
 		IEnumerable<SpaceState> source,
 		TargetCriteria targetCriteria
@@ -45,7 +44,6 @@ public class DefaultPowerSourceCalculator : ICalcPowerTargetingSource {
 public class DefaultRangeCalculator : ICalcRange {
 
 	public virtual IEnumerable<SpaceState> GetTargetOptionsFromKnownSource(
-		Spirit self,
 		TargetingPowerType _1,
 
 		IEnumerable<SpaceState> sources,
@@ -55,7 +53,7 @@ public class DefaultRangeCalculator : ICalcRange {
 		return sources
 			.SelectMany( x => x.Range( targetCriteria.Range ) ) // !! this will be waistfull when Range is high and lots of starting spots.
 			.Distinct()
-			.Where( targetCriteria.Bind( self ) )
+			.Where( targetCriteria.Matches )
 			.ToArray();
 	}
 	static public readonly ICalcRange Singleton = new DefaultRangeCalculator();

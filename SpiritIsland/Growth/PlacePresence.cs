@@ -29,8 +29,14 @@ public class PlacePresence : GrowthActionFactory {
 	public override string Name {get;}
 
 	public override Task ActivateAsync( SelfCtx ctx ) => ctx.Presence.PlaceWithin( 
-		ctx.TerrainMapper.Specify( Range, FilterEnums ), 
+		GetTargetCriteria( ctx ), 
 		TargetingPowerType.None
 	);
+	protected virtual TargetCriteria GetTargetCriteria( SelfCtx ctx ) => ctx.TerrainMapper.Specify( Range, FilterEnums );
+}
 
+public class PlacePresenceOnSelf : PlacePresence {
+	public PlacePresenceOnSelf( int range, params string[] filterEnum ):base(range,filterEnum) {}
+	protected override TargetCriteria GetTargetCriteria( SelfCtx ctx ) 
+		=> new TargetCriteria( ctx.TerrainMapper, Range, ctx.Self, FilterEnums);
 }

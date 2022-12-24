@@ -10,7 +10,7 @@ public class InnatePower : IFlexibleSpeedActionFactory, IRecordLastTarget {
 		return new InnatePower( actionType, contextAttr );
 	}
 
-	internal InnatePower(Type actionType, GeneratesContextAttribute targetAttr){
+	protected InnatePower(Type actionType, GeneratesContextAttribute targetAttr){
 
 		innatePowerAttr = actionType.GetCustomAttribute<InnatePowerAttribute>();
 		speedAttr = actionType.GetCustomAttribute<SpeedAttribute>(false) 

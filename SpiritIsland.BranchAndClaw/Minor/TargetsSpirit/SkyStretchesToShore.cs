@@ -20,17 +20,23 @@ public class SkyStretchesToShore {
 }
 
 class SkyStretchesToShoreApi : DefaultRangeCalculator {
-	public SkyStretchesToShoreApi( Spirit spirit ) {
-		this.orig = spirit.PowerRangeCalc;
-		spirit.PowerRangeCalc = this;
+	public SkyStretchesToShoreApi( Spirit self ) {
+		_self = self;
+		_orig = self.PowerRangeCalc;
+		self.PowerRangeCalc = this;
 	}
 
-	public override IEnumerable<SpaceState> GetTargetOptionsFromKnownSource( Spirit self, TargetingPowerType powerType, IEnumerable<SpaceState> source, TargetCriteria tc ) {
-		var normal = orig.GetTargetOptionsFromKnownSource( self, powerType, source, tc );
-		var shore = orig.GetTargetOptionsFromKnownSource( self, powerType, source, tc.ExtendRange(3) )
+	public override IEnumerable<SpaceState> GetTargetOptionsFromKnownSource( 
+		TargetingPowerType powerType, 
+		IEnumerable<SpaceState> source, 
+		TargetCriteria tc 
+	) {
+		var normal = _orig.GetTargetOptionsFromKnownSource( powerType, source, tc );
+		var shore = _orig.GetTargetOptionsFromKnownSource( powerType, source, tc.ExtendRange(3) )
 			.Where(x => x.Space.IsCoastal);
 		return normal.Union(shore);
 	}
 
-	readonly ICalcRange orig;
+	readonly Spirit _self;
+	readonly ICalcRange _orig;
 }

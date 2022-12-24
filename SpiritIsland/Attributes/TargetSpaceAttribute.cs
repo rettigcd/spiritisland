@@ -6,9 +6,9 @@ public abstract class TargetSpaceAttribute : GeneratesContextAttribute {
 	//readonly protected Terrain? sourceTerrain;
 	readonly protected TargetingSourceCriteria sourceCriteria;
 
+	protected readonly string[] _targetFilters;
 	protected readonly int range;
 	public override string TargetFilter { get; }
-	readonly string[] _targetFilters;
 
 	public TargetSpaceAttribute(TargetingSourceCriteria sourceCriteria, int range, params string[] targetFilter ){
 		this.sourceCriteria = sourceCriteria;
@@ -24,6 +24,9 @@ public abstract class TargetSpaceAttribute : GeneratesContextAttribute {
 		);
 		return space == null ? null : ctx.Target(space);
 	}
+
+	protected virtual async Task<TargetCriteria> GetCriteria( SelfCtx ctx ) 
+		=> ctx.TerrainMapper.Specify( await CalcRange( ctx ), _targetFilters );
 
 	/// <remarks>Hook so ExtendableRangeAttribute can increase range.</remarks>
 	protected virtual Task<int> CalcRange( SelfCtx ctx ) => Task.FromResult( range );
