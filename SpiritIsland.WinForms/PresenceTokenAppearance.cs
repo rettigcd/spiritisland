@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 
 namespace SpiritIsland;
 
@@ -19,7 +20,7 @@ public class PresenceTokenAppearance {
 		BaseImage = baseImage;
 	}
 
-	public HslAdjustment Adjustment => Hsl is null ? null : new HslAdjustment(Hsl);
+	public BitmapAdjustment Adjustment => Hsl is null ? null : new PixelAdjustment( new HslColorAdjuster(Hsl).GetNewColor );
 
 	public HSL Hsl { get; }
 	public readonly string BaseImage;
@@ -30,11 +31,15 @@ public interface BitmapAdjustment {
 	void Adjust( Bitmap bitmap );
 }
 
-public class HslAdjustment : BitmapAdjustment {
+public interface ColorAdjuster {
+	Color GetNewColor( Color p );
+}
+
+public class HslColorAdjuster : ColorAdjuster {
 	readonly HSL _desiredHsl;
 	readonly float _lScaler;
 	readonly float _lOffset;
-	public HslAdjustment( HSL desiredHsl ) {
+	public HslColorAdjuster(HSL desiredHsl ) {
 		_desiredHsl = desiredHsl;
 
 		float l2 = _desiredHsl.L * 2; // l2 range is 0..2
@@ -42,7 +47,7 @@ public class HslAdjustment : BitmapAdjustment {
 			// 0  pulls everything down to black
 			_lScaler = l2;
 			_lOffset = 0;
-		} else if ( 1 < l2 ) {
+		} else if(1 < l2) {
 			// 2  pulls everything up to white
 			_lScaler = -l2;
 			_lOffset = l2 - 1;
@@ -52,27 +57,26 @@ public class HslAdjustment : BitmapAdjustment {
 			_lOffset = 0;
 		}
 	}
+	public Color GetNewColor(Color p ) 
+		=> Color.FromArgb( p.A, AdjustHsl( HSL.FromRgb( p ) ).ToRgb() );
+
+	HSL AdjustHsl( HSL hsl ) => new HSL( _desiredHsl.H, _desiredHsl.S, AdjustLightness( hsl.L ) );
+
+	// hsl.H = x*360f/orig.Width; // make a rainbow!
+	// hsl.L += (1f - hsl.L) * .2f;
+	protected float AdjustLightness( float lightness ) => lightness * _lScaler + _lOffset;
+}
+
+public class PixelAdjustment : BitmapAdjustment {
+	readonly Func<Color,Color> _adjust;
+	public PixelAdjustment( Func<Color, Color> adjust ) {
+		_adjust = adjust;
+	}
 
 	public void Adjust( Bitmap bitmap ) {
 		for(int x = 0; x < bitmap.Width; ++x)
-			for(int y = 0; y < bitmap.Height; ++y) {
-				var p = bitmap.GetPixel( x, y );
-				var hsl = HSL.FromRgb( p );
-				AdjustPixelHsl( hsl );
-				var newColor = Color.FromArgb( p.A, hsl.ToRgb() );
-				bitmap.SetPixel( x, y, newColor );
-			}
+			for(int y = 0; y < bitmap.Height; ++y)
+				bitmap.SetPixel( x, y, _adjust( bitmap.GetPixel( x, y ) ) );
 	}
-
-	void AdjustPixelHsl( HSL hsl ) {
-		hsl.H = _desiredHsl.H;
-		hsl.S = _desiredHsl.S;
-		// hsl.H = x*360f/orig.Width; // make a rainbow!
-		// hsl.L += (1f - hsl.L) * .2f;
-		hsl.L = AdjustLightness( hsl.L );
-	}
-
-	protected float AdjustLightness(float lightness) =>lightness * _lScaler + _lOffset;
-
 }
 

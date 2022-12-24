@@ -17,7 +17,10 @@ public class ToDreamAThousandDeaths : InvaderBinding {
 	}
 
 	static void WakeUpDreamers( SpaceState spaceState ) {
-		var dreamers = spaceState.OfAnyHealthClass( DreamInvaders ).ToArray();
+		var dreamers = spaceState.OfCategory( TokenCategory.Invader )
+			.Cast<HealthToken>()
+			.Where(x=>x.Class.Variant==TokenVariant.Dreaming)
+			.ToArray();
 		foreach(HealthToken dreamer in dreamers)
 			spaceState.ReplaceAllWith( dreamer, ToggleDreamer( dreamer ) );
 	}
@@ -37,10 +40,9 @@ public class ToDreamAThousandDeaths : InvaderBinding {
 
 	#region static DreamTokens
 
-	static public readonly HealthTokenClass DreamingCity = new HealthTokenClass( "City_Dreaming", 3, TokenCategory.Invader, 5, Img.City, 3 );
-	static public readonly HealthTokenClass DreamingTown = new HealthTokenClass( "Town_Dreaming", 2, TokenCategory.Invader, 2, Img.Town, 2 );
-	static public readonly HealthTokenClass DreamingExplorer = new HealthTokenClass( "Explorer_Dreaming", 1, TokenCategory.Invader, 0, Img.Explorer, 1 );
-	static public readonly HealthTokenClass[] DreamInvaders = new HealthTokenClass[] { DreamingCity, DreamingTown, DreamingExplorer };
+	static public readonly HealthTokenClass DreamingCity = new HealthTokenClass( "City_Dreaming", 3, TokenCategory.Invader, 5, Img.City, 3, TokenVariant.Dreaming );
+	static public readonly HealthTokenClass DreamingTown = new HealthTokenClass( "Town_Dreaming", 2, TokenCategory.Invader, 2, Img.Town, 2, TokenVariant.Dreaming );
+	static public readonly HealthTokenClass DreamingExplorer = new HealthTokenClass( "Explorer_Dreaming", 1, TokenCategory.Invader, 0, Img.Explorer, 1, TokenVariant.Dreaming );
 
 	static public HealthToken ToggleDreamer( HealthToken token ) => token.SwitchClass( ToggleDreaming( token.Class ) );
 

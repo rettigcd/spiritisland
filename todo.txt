@@ -4,13 +4,11 @@
 
 Presence Tracks (for Lure) are drawing outside their bounds
 
-Stasis -> move into Space
-HealthyToken => Make Variant
-UI of Variants
+* Stasis -> move into Space
+* When TerrainCriteria depends on presence, early bind to that presence.
 Convert Stop-Destroy ability into a token and add it to the space.
 Use Variant Tokens for Presence that can't move.
 Merge Token Added/Removed/Moved events.
-When TerrainCriteria depends on presence, early bind to that presence.
 
 Vengeance
 	Wreak Vengeance for the Lands Corruption - virtual tokens might not be correct.

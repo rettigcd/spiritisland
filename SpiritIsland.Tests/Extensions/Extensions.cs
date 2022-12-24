@@ -34,8 +34,9 @@ static internal class Extensions {
 		static int Order_CitiesTownsExplorers( HealthToken invader )
 			=> -(invader.FullHealth * 10 + invader.RemainingHealth);
 		var tokens = gameState.Tokens[space];
-		string dreamerSummary = tokens.OfAnyHealthClass(ToDreamAThousandDeaths.DreamInvaders)
+		string dreamerSummary = tokens.OfCategory(TokenCategory.Invader)
 			.Cast<HealthToken>()
+			.Where(x=>x.Class.Variant == TokenVariant.Dreaming)
 			.OrderBy( Order_CitiesTownsExplorers )
 			.Select( invader => tokens.counts[invader] + invader.ToString() )
 			.Join( "," );

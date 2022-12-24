@@ -836,16 +836,15 @@ public partial class IslandControl : Control {
 
 		Bitmap orig = ResourceImages.Singleton.GetImage( ht.Class.Img );
 
-		// Invert Dreaming Invaders
-		if( ToDreamAThousandDeaths.DreamInvaders.Contains( ht.Class )) {
-			for(int x = 0; x < orig.Width; ++x)
-				for(int y = 0; y < orig.Height; ++y) {
-					var p = orig.GetPixel( x, y );
-//					orig.SetPixel( x, y, Color.FromArgb( p.A, 255 - p.R, 255 - p.G, 255 - p.B ) ); // invert
-//					orig.SetPixel( x, y, Color.FromArgb( p.A, p.R/2, p.G/2, p.B/2 ) ); // half scale
-					orig.SetPixel( x, y, Color.FromArgb( p.A, p.R/2, p.G/2, p.B*2/3 ) ); // red/green:50% blue:66%
-				}
-		}
+		Func<Color,Color> colorConverter = ht.Class.Variant switch {
+			// p => Color.FromArgb( p.A, p.R / 2, p.G / 2, p.B / 2 ); // halfScale
+			// p => Color.FromArgb( p.A, 255 - p.R, 255 - p.G, 255 - p.B ); // invert
+			// p => Color.FromArgb( p.A, p.R / 2, p.G / 2, p.B * 2 / 3 ); // red green
+			TokenVariant.Dreaming => new HslColorAdjuster( new HSL( 240, .75f, .4f ) ).GetNewColor,
+            TokenVariant.Frozen => new HslColorAdjuster( new HSL( 0, .45f, .4f) ).GetNewColor,
+			_ => (x)=>x
+		};
+		new PixelAdjustment( colorConverter ).Adjust( orig );
 
 		using var g = Graphics.FromImage( orig );
 

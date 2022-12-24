@@ -35,6 +35,6 @@ public class StubbornSolidity {
 		return Task.CompletedTask;
 	}
 
-	static public readonly HealthTokenClass FrozenDahan = new HealthTokenClass( "Dahan", 2, TokenCategory.Dahan, 0, Img.Dahan, 2 );
+	static public readonly HealthTokenClass FrozenDahan = new HealthTokenClass( "Dahan", 2, TokenCategory.Dahan, 0, Img.Dahan, 2, TokenVariant.Frozen );
 
 }
