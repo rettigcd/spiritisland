@@ -78,10 +78,12 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	public Tokens_ForIsland Tokens { get; }
 	public IEnumerable<SpaceState> AllSpaces => Island.Boards
-		.SelectMany(b=>b.Spaces)
+		.SelectMany(b=>b.AllSpaces)
 		.Select(Tokens.GetTokensFor);
 	/// <summary> Active, Not in statis </summary>
-	public IEnumerable<SpaceState> AllActiveSpaces => AllSpaces.Where( t => !t.InStasis );
+	public IEnumerable<SpaceState> AllActiveSpaces => Island.Boards
+		.SelectMany( b => b.Spaces )
+		.Select( Tokens.GetTokensFor );
 
 	public PowerCardDeck MajorCards {get; set; }
 	public PowerCardDeck MinorCards { get; set; }

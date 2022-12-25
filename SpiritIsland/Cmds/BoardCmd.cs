@@ -31,7 +31,6 @@ public static partial class Cmd {
 
 			var spaceOptions = ctx.Board.Spaces
 				.Select( ctx.Target )
-				.Where( x => !x.Tokens.InStasis )	// layer 1 filter
 				.Where( x => x.IsInPlay )			// layer 2 filter
 				.Where( spaceAction.IsApplicable )	// Matches action criteria  (Can't act on items that aren't there)
 				.Where( customFilter )				// Matches custom space - criteria
@@ -52,7 +51,6 @@ public static partial class Cmd {
 			var spaceOptions = ctx.Board.Spaces
 				.Where( ctx.TerrainMapper.IsInPlay )
 				.Select( ctx.Target )
-				.Where( x=> !x.Tokens.InStasis )
 				.Where( action.IsApplicable )	// Matches action criteria  (Can't act on items that aren't there)
 				.Where( customFilter )			// Matches custom space - criteria
 				.ToList();

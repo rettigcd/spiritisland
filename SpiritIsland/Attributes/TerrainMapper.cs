@@ -20,6 +20,9 @@ public class TerrainMapper {
 
 	// Ocean / Coastal / Inland
 	public virtual bool IsCoastal( SpaceState spaceState ) => spaceState.Space.IsCoastal;
+
+#pragma warning disable CA1822 // Mark members as static
 	public bool IsInland( SpaceState spaceState ) => !spaceState.Space.IsOcean && !spaceState.Space.IsCoastal;
+#pragma warning restore CA1822 // Mark members as static
 
 }

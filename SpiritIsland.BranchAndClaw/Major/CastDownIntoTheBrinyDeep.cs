@@ -19,7 +19,7 @@ public class CastDownIntoTheBrinyDeep {
 	static async Task DestroyBoard( SelfCtx ctx, Board board ) {
 		// destroy the board containing target land and everything on that board.
 		// All destroyed blight is removed from the game instead of being returned to the blight card.
-		var activeSpaces = ctx.GameState.Tokens.PowerUp( board.Spaces ).ToArray(); // ! necessary to make sure space is not in Stasis
+		var activeSpaces = ctx.GameState.Tokens.PowerUp( board.Spaces ).ToArray();
 
 		await DestroyTokens( ctx, activeSpaces );
 

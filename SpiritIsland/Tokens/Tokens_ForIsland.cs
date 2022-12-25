@@ -27,7 +27,6 @@ public class Tokens_ForIsland : IIslandTokenApi {
 		return Task.CompletedTask;
 	}
 
-	// !!! every call to this needs checked !.IsInStasis
 	public SpaceState this[Space space] {
 		get {
 			if(!tokenCounts.ContainsKey( space )) {
@@ -83,6 +82,9 @@ public class Tokens_ForIsland : IIslandTokenApi {
 
 	public readonly DualDynamicTokens Dynamic = new DualDynamicTokens();
 
+	public SpaceState GetTokensFor( Space space ) => this[space];
+	public IEnumerable<SpaceState> PowerUp( IEnumerable<Space> spaces ) => spaces.Select( s => this[s] );
+
 	#region Memento
 
 	public virtual IMemento<Tokens_ForIsland> SaveToMemento() => new Memento(this);
@@ -90,29 +92,30 @@ public class Tokens_ForIsland : IIslandTokenApi {
 		((Memento)memento).Restore(this);
 		ClearEventHandlers_ForRound();
 	}
-	public SpaceState GetTokensFor( Space space ) => this[space];
-	public IEnumerable<SpaceState> PowerUp( IEnumerable<Space> spaces ) => spaces
-			.Select( s => this[s] )
-			.Where( s => !s.InStasis );
 
 	protected class Memento : IMemento<Tokens_ForIsland> {
 		public Memento(Tokens_ForIsland src) {
 			// Save TokenCounts
-			foreach(var pair in src.tokenCounts)
-				tc[pair.Key] = pair.Value.counts.ToDictionary(p=>p.Key,p=>p.Value);
+			foreach(var (space,countsDict) in src.tokenCounts.Select( x => (x.Key, x.Value.counts) ))
+				_tokenCounts[space] = countsDict.Clone();
 			// Save Defaults
 			tokenDefaults = src.TokenDefaults.ToDictionary(p=>p.Key,p=>p.Value);
 			// dynamicTokens_ForGame
 			dynamicTokens = src.Dynamic.SaveToMemento();
+			_inStasis = src.tokenCounts.Keys.ToDictionary(s=>s,s=>s.InStasis);
 		}
-		public void Restore(Tokens_ForIsland src ) {
+		public void Restore( Tokens_ForIsland src ) {
 			// Restore TokenCounts
 			src.tokenCounts.Clear();
-			foreach(var space in tc.Keys) {
-				var tokens = src[space];
-				foreach(var p in tc[space]) {
-					tokens.Init(p.Key, p.Value);
-					tokens.LinkedViaWays = p.Key is GatewayToken gt 
+			foreach(var space in _tokenCounts.Keys) {
+				// statis
+				space.InStasis = _inStasis[space];
+
+				// Token counts
+				SpaceState tokens = src[space];
+				foreach(var (token,count) in _tokenCounts[space].Select(x=>(x.Key,x.Value))) {
+					tokens.Init(token, count);
+					tokens.LinkedViaWays = token is GatewayToken gt 
 						? gt.To // reapply
 						: null; // make sure we clear ones that are no longer linked
 				}
@@ -124,10 +127,10 @@ public class Tokens_ForIsland : IIslandTokenApi {
 			// Restore Dynamic tokens
 			src.Dynamic.LoadFrom( dynamicTokens );
 		}
-		readonly Dictionary<Space, Dictionary<Token,int>> tc = new Dictionary<Space, Dictionary<Token,int>>();
+		readonly Dictionary<Space, CountDictionary<Token>> _tokenCounts = new Dictionary<Space, CountDictionary<Token>>();
+		readonly Dictionary<Space, bool> _inStasis;
 		readonly Dictionary<HealthTokenClass, HealthToken> tokenDefaults = new Dictionary<HealthTokenClass, HealthToken>();
 		readonly IMemento<DualDynamicTokens> dynamicTokens;
-
 	}
 
 	#endregion Memento

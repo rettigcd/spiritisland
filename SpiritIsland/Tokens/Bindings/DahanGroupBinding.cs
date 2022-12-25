@@ -20,7 +20,7 @@ public class DahanGroupBindingNoEvents {
 	public int CountAll => _tokens.Sum( TokenCategory.Dahan );
 	#endregion
 
-	/// <summary> All of the Normal Tokens (not frozen, dream, stasis) </summary>
+	/// <summary> All of the Normal Tokens (not frozen, dream) </summary>
 	public HealthToken[] NormalKeys => _tokens.OfHealthClass( _tokenClass );
 
 	public void Init( int count ) => _tokens.InitDefault( TokenType.Dahan, count );

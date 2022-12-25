@@ -225,7 +225,9 @@ public partial class Board {
 	/// <summary>
 	/// These Spaces start out in numeric order at beginning of game but are not guaranteed to stay in numeric order. (Absolute Statis removes spaces from board and restores them.)
 	/// </summary>
-	public Space[] Spaces => spaces;
+	public IEnumerable<Space> Spaces => spaces.Where(Space.IsActive);
+
+	public IEnumerable<Space> AllSpaces => spaces;
 
 	#region Add / Remove spaces from board
 	public void Add( Space space, Space[] adjacents ) {

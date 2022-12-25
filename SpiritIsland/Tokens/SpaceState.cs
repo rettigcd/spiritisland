@@ -297,19 +297,12 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	public int DamagePenaltyPerInvader = 0; // !!! ??? Does the Memento reset this back to 0?
 
-	public bool InStasis {
-		get => counts[TokenType.Stasis] > 0;
-		set => counts [TokenType.Stasis] = value ? 1 : 0;
-	}
 
 	public IEnumerable<SpaceState> Adjacent { get {
-		foreach(var space in Space.Adjacent) {
-			var ss = gameState.Tokens[space];
-            if( !ss.InStasis )
-				yield return ss;
-		}
+		foreach(var space in Space.Adjacent)
+			yield return gameState.Tokens[space];
 
-		if(LinkedViaWays != null && !LinkedViaWays.InStasis)
+		if(LinkedViaWays != null && !LinkedViaWays.Space.InStasis)
 			yield return LinkedViaWays;
 	} }
 	public SpaceState LinkedViaWays; // HACK - for Finder

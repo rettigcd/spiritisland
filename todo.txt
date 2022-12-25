@@ -2,27 +2,24 @@
 ====  Clean Up Items  ====
 ==========================
 
-Presence Tracks (for Lure) are drawing outside their bounds
+1) Use Variant Tokens for Presence that can't move.
+2) Presence Tracks (for Lure) are drawing outside their bounds
+3) ForgetCard - rename ForgetCard to ForgetCard_UserChoice AND/OR Consolidate the 2 ForgetCard methods into 1
+4) UI - Damaged should occupy the non damaged space if available on screen. If not available, should use nearest (Temporary) space.
 
-* Stasis -> move into Space
 Convert Stop-Destroy ability into a token and add it to the space.
-Use Variant Tokens for Presence that can't move.
 Merge Token Added/Removed/Moved events.
 
 Vengeance
 	Wreak Vengeance for the Lands Corruption - virtual tokens might not be correct.
 
-UI - Damaged Invaders use non-damaged token slots if available. OR check if any other available damaged slots
-UI - Multiple tokens using the same token slot. Maybe need to lock it or add asserts.
+BUG UI - Multiple tokens using the same token slot. Maybe need to lock it or add asserts.
 
 3+1? remaining Adversaries (Habsburg, Russia, Scotland, France?)
 
 - - - - -
 
 5 Move Finders Hook to Action-start
-
-4 ForgetCard - rename ForgetCard to ForgetCard_UserChoice AND/OR Consolidate the 2 ForgetCard methods into 1
-5 Damaged should occupy the non damaged space if available on screen. If not available, should use nearest (Temporary) space.
 
 4 Settle into hunting grounds - implement presence cannot move.
 4 Slip the flows of time - use any # of times

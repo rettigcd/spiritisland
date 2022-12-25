@@ -98,6 +98,7 @@ public class CountDictionary<K> : IDictionary<K,int> {
 	IEnumerator IEnumerable.GetEnumerator() => _inner.GetEnumerator();
 	#endregion
 
+
 	readonly Dictionary<K,int> _inner; 
 }
 

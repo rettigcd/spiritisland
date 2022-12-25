@@ -246,7 +246,6 @@ public class SpiritPresence {
 	// !!! This is called for 2 different reasons...
 	// (1) To move presence to another location on the board - no End-of-Game check is necessary
 	// (2) Presence is replaced with something else. End-of-Game check IS necessary.
-	// Also - if we have presence in Stasis, then removing 2nd to last presence will INCORRECTLY trigger loss.
 	protected virtual Task RemoveFrom_NoCheck( SpaceState space, int count=1 ) { 
 		space.Adjust(Token,-count);
 		return Task.CompletedTask;

@@ -17,7 +17,6 @@ public class TokenType {
 	static readonly public UniqueToken DoExplore   = new UniqueToken( "Explore", '~', Img.None );
 	static readonly public UniqueToken DoBuild     = new UniqueToken( "Build", '$', Img.None );
 	static readonly public UniqueToken DoRavage    = new UniqueToken( "Ravage", ']', Img.None );
-	static readonly public UniqueToken Stasis      = new UniqueToken( "Stasis", '#', Img.None );
 
 	static readonly public TokenClass OpenTheWays = new UniqueToken( "OpenTheWays", '=', Img.OpenTheWays );
 	static readonly public TokenClass Element = new UniqueToken( "Element", 'Y', Img.Token_Any ); // use as unique class for stacked elements

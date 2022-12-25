@@ -152,7 +152,7 @@ public class RavageAction {
 		if(cfg.ShouldDamageDahan) {
 			var damagableDahan = defenders.Keys
 				.Cast<HealthToken>()
-				.Where(k=>k.Class == TokenType.Dahan)  // Normal only, filters out frozen/sleeping/stasis
+				.Where(k=>k.Class == TokenType.Dahan)  // Normal only, filters out frozen/sleeping
 				.OrderBy(t=>t.RemainingHealth) // kill damaged dahan first
 				.ToArray();
 

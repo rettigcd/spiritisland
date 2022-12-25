@@ -4,18 +4,14 @@
 	Talons of Lightning - extended / conditional range 
 	Sap the Strength of Multitudes - range changes
 
+1) Ravage Engine
 
-1) Frozen / Stubborn Solidity (stone) / Switch absolute stasis to use dream tokens
-	Frozen Dahan - Moving Dahan into Frozen land should freeze them.
-
-2) Ravage Engine
-
-3) Vengence Keep disaese for fear
+2) Vengence Keep disaese for fear
 	Vengeanance - Allow Build w/ Disease for 1 fear
 	Vengeanance - destroyed by anything EXCEPT spirit action, add 1 disease where presence was destroyed
 	Vengeanance - for Actions, treat blight as also badlands
 
-4) Many Minds
+3) Many Minds
 	Many Minds - Presence as beasts
 	Many Minds - push/gather beast range 2
 

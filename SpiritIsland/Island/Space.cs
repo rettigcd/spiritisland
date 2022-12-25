@@ -12,20 +12,18 @@ public abstract class Space
 {
 
 	readonly List<Space> adjacent = new List<Space>();
-	Board board;
+	Board _board;
 
 	protected Space(string label) {
 		this.Label = label;
 	}
 
 	public Board Board {
-		get { return board; }
-		set { if(board != null) throw new InvalidOperationException( "cannot set board twice" ); board = value; }
+		get => _board;
+		set { if(_board != null) throw new InvalidOperationException( "cannot set board twice" ); _board = value; }
 	}
 
 	public string Label { get; }
-
-	// SpaceFilterMap
 
 	public bool IsSand => Is( Terrain.Sand );
 
@@ -39,22 +37,23 @@ public abstract class Space
 
 	public bool IsCoastal { get; set; }
 
-	public IEnumerable<Space> Adjacent => adjacent;
-	public string Text => Label;
+	public override string ToString() => Label;
 
-	public void Disconnect() {
-		// Remove us from neighbors adjacent list
-		foreach(var a in adjacent)
-			a.adjacent.Remove( this );
-		// Remove neighbors from our list.
-		adjacent.Clear();
-	}
+	public string Text => Label;
 
 	public abstract bool Is( Terrain terrain );
 	public abstract bool IsOneOf( params Terrain[] options );
 	public abstract SpaceLayout Layout { get; }
 
+	public bool InStasis { get; set; }
+	public static bool IsActive( Space space ) => !space.InStasis;
+
+	#region Connectivity
+	public IEnumerable<Space> Adjacent => adjacent.Where(IsActive);
+
 	public IEnumerable<Space> Range( int maxDistance ) => this.CalcDistances( maxDistance ).Keys;
+
+	#endregion
 
 	/// <summary> If adjacent to ocean, sets is-costal </summary>
 	public void SetAdjacentToSpaces( params Space[] spaces ) {
@@ -72,12 +71,19 @@ public abstract class Space
 		};
 	}
 
-	public override string ToString() => Label;
+	#region Connect / Disconnect
 
 	void Connect( Space adjacent ) {
 		this.adjacent.Add( adjacent );
 		if(adjacent.IsOcean)
 			this.IsCoastal = true;
+	}
+	public void Disconnect() {
+		// Remove us from neighbors adjacent list
+		foreach(var a in adjacent)
+			a.adjacent.Remove( this );
+		// Remove neighbors from our list.
+		adjacent.Clear();
 	}
 
 	class DisconnectSpaceResults : Restoreable {
@@ -95,5 +101,7 @@ public abstract class Space
 			space = this,
 		};
 	}
+
+	#endregion
 
 }

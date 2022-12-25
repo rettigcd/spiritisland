@@ -37,7 +37,6 @@ public static partial class Cmd {
 					var board = gs.Island.Boards[i];
 					var spaces = board.Spaces
 						.Select( s => gs.Tokens[s] )
-						.Where( s => !s.InStasis )
 						.Where( x => filter == null || filter( x ) );
 					foreach(var ss in spaces)
 						await action.Execute( decisionMaker.Target( ss.Space ) );
