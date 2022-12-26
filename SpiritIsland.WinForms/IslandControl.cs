@@ -1,5 +1,4 @@
-﻿using SpiritIsland.Basegame;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
@@ -205,9 +204,6 @@ public partial class IslandControl : Control {
 
 			DrawSpirit( pe.Graphics, SpiritRect );
 
-			// pe.Graphics.DrawRectangle(Pens.Red, CalcInvaderCardRect.ToInts() );
-			// pe.Graphics.DrawRectangle( Pens.Green, CalcBlightRect.ToInts() );
-
 		}
 
 		// non drawing - record Hot spots
@@ -234,9 +230,9 @@ public partial class IslandControl : Control {
 				? new Size( Width, (int)(boardWorldRect.Height * Width / boardWorldRect.Width) )
 				: new Size( (int)(boardWorldRect.Width * Height / boardWorldRect.Height), Height );
 			_cachedBackground = new Bitmap( _boardScreenSize.Width, _boardScreenSize.Height );
-			using var graphics = Graphics.FromImage( _cachedBackground );
+			using Graphics graphics = Graphics.FromImage( _cachedBackground );
 
-			foreach(var board in _gameState.Island.Boards)
+			foreach(Board board in _gameState.Island.Boards)
 				DrawBoardSpacesOnly( graphics, board );
 
 			// calc spots to put tokens
