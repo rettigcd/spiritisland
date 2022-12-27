@@ -2,10 +2,6 @@
 Unrest - Reduced City health by 1 but didn't get health icon.
 Seek Safety - Allowed for pushing explorer to space with no town / city.
 
-=====  Volcano Bugs  =====
-
-Volcano doesn't get to choose where it places its' presence at the beginning of the game, so you can't do anything and get softlocked.
-
 =====  Finder bugs  ====
 Reread this and see if anything is wrong: https://querki.net/raw/darker/spirit-island-faq/Open+the+Ways+%28Finder+of+Paths+Unseen%29
 Adjaceny seems to still work for Invaders, or maybe just coastal
@@ -21,7 +17,6 @@ Finder:
 
 Settle Into Hunting-Grounds
 	- implement "May" count as badlands and beast.
-	- presence cannot move.
 
 Growth - After Growth, rewinding to beginning of turn, doesn't reset # of card plays to 0
 

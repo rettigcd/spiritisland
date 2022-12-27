@@ -44,9 +44,11 @@ public class DrawTowardsAConsumingVoid {
 					await ctx.Move( tokenToGather, adjState.Space, ctx.Space );
 			}
 			// move presense
-			var spiritsInSpace = ctx.GameState.Spirits.Where( s => s.Presence.IsOn( adjState ) ).ToArray();
-			if(spiritsInSpace.Length > 0) {
-				var spiritToGather = await ctx.Decision( new Select.Spirit( Name, spiritsInSpace, Present.AutoSelectSingle ) ); // !!! switch to Gather Presence when we can support multiple spirits
+			var movableSpiritsInSpace = ctx.GameState.Spirits
+				.Where( s => s.Presence.HasMovableTokens(adjState) )
+				.ToArray();
+			if(movableSpiritsInSpace.Length > 0) {
+				var spiritToGather = await ctx.Decision( new Select.Spirit( Name, movableSpiritsInSpace, Present.AutoSelectSingle ) ); // !!! switch to Gather Presence when we can support multiple spirits
 				await ctx.NewSelf(spiritToGather).Presence.Move( adjState.Space, ctx.Space );
 			}
 		}

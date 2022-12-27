@@ -26,6 +26,7 @@ public class ReadOnlyBoundPresence : IKnowSpiritLocations {
 	public bool IsSacredSite( Space space ) => _inner.IsSacredSite( _gameState.Tokens[space] );
 	public IEnumerable<Space> Spaces => _inner.Spaces( _gameState ); // !!! Move everything that calls this over to SpaceStates, then remove this.
 	public IEnumerable<SpaceState> SpaceStates => _inner.SpaceStates( _gameState );
+	public IEnumerable<SpaceState> MovableSpaceStates => _inner.SpaceStates( _gameState ).Where(_inner.HasMovableTokens);
 	public IEnumerable<SpaceState> SacredSites => _inner.SacredSiteStates( _gameState, _terrainMapper );
 
 	// This is the non-Targetting version that skips over the TargetSourceCalc
@@ -40,8 +41,17 @@ public class ReadOnlyBoundPresence : IKnowSpiritLocations {
 			?? (IOption)await _self.Gateway.Decision( Select.DeployedPresence.All( prompt, this, Present.Always ) );
 	}
 
+	/// <summary> Tries Presence Tracks first, then fails over to placed-presence on Island </summary>
+	public async Task<IOption> SelectSource_Movable( string actionPhrase = "move" ) {
+		string prompt = $"Select Presence to {actionPhrase}";
+		return (IOption)await _self.Gateway.Decision( Select.TrackSlot.ToReveal( prompt, _self, _gameState ) )
+			?? (IOption)await _self.Gateway.Decision( Select.DeployedPresence.Movable( prompt, this, Present.Always ) );
+	}
+
 	public Task<Space> SelectDeployed( string prompt )
 		=> _self.Gateway.Decision( Select.DeployedPresence.All( prompt, this, Present.Always ) );
+	public Task<Space> SelectDeployedMovable( string prompt )
+		=> _self.Gateway.Decision( Select.DeployedPresence.Movable( prompt, this, Present.Always ) );
 
 	public Task<Space> SelectSacredSite( string prompt )
 		=> _self.Gateway.Decision( Select.DeployedPresence.SacredSites( prompt, this, Present.Always ) );

@@ -66,7 +66,10 @@ class MistsShiftAndFlow {
 		if(gatherDst == null) return;
 
 		// Flow (Gather) - Source
-		var souceOptions = allowed.Where( a => a.AddedTo.Space == gatherDst ).Select( a => a.RemovedFrom ).ToArray();
+		var souceOptions = allowed
+			.Where( a => a.AddedTo.Space == gatherDst )
+			.Select( a => a.RemovedFrom )
+			.ToArray();
 		var gatherSource = await _spirit.Gateway.Decision( Select.DeployedPresence.Gather( $"Flow (gather) presence (to {gatherDst.Label}) from:", gatherDst, souceOptions ) );
 		if(gatherSource == null) return;
 
@@ -83,6 +86,7 @@ class MistsShiftAndFlow {
 		var spacesInRange = target.Range(1) // this is a Gather
 			.Where( IsInPlay )
 			.ToArray();
+
 		foreach(SpaceState dst in spacesInRange) {
 			pretendPresence[dst.Space]++; // move  presence ON TO destination
 

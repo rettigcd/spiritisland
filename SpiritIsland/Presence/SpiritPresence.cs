@@ -138,6 +138,10 @@ public class SpiritPresence {
 			: throw new ArgumentException( "Unable to find location to restore presence" );
 	}
 
+	public bool HasMovableTokens( SpaceState spaceState ) => CanMove && IsOn( spaceState );
+
+	public bool CanMove { get; set; } = true;
+
 	public async Task Move( Space from, Space to, GameState gs, UnitOfWork actionId ) {
 		await RemoveFrom_NoCheck( gs.Tokens[from] );
 		await PlaceOn( gs.Tokens[to], actionId );
@@ -201,12 +205,11 @@ public class SpiritPresence {
 	/// <summary>
 	/// One item for each presence
 	/// </summary>
-	/// <param name="gs"></param>
-	/// <returns></returns>
+	/// <returns>1 item for each token on each space</returns>
 	public IReadOnlyCollection<SpaceState> Placed( GameState gs ) {
 
 		// !!! this method is an abomination
-		// Encapsulate this data.
+		// Deprecate!
 
 		var placed = new List<SpaceState>();
 		foreach(var space in gs.AllActiveSpaces.Where( IsOn ))
@@ -216,16 +219,9 @@ public class SpiritPresence {
 	}
 
 	// !!! one item for each space that has presence
-	public IEnumerable<Space> Spaces( GameState gs ) {
-		return SpaceStates( gs ).Select( x => x.Space );
-	}
+	public IEnumerable<Space> Spaces( GameState gs ) => SpaceStates( gs ).Select( x => x.Space );
 
 	public IEnumerable<SpaceState> SpaceStates( GameState gs ) => gs.AllActiveSpaces.Where( IsOn );
-	//public IEnumerable<SpaceState> SpaceStates( GameState gs ) {
-	//	var x = gs.AllActiveSpaces.ToArray();
-	//	var y = x.Where( IsOn ).ToArray();
-	//	return y;
-	//}
 
 	#endregion Exposed Data
 
@@ -279,48 +275,4 @@ public class SpiritPresence {
 	}
 
 	#endregion
-}
-
-public class SpiritPresenceToken : Token, TokenClass {
-
-	#region private
-//	static int tokenTypeCount; // so each spirit presence gets a different number
-	#endregion
-
-	public SpiritPresenceToken() {
-		// Text = "P" + (tokenTypeCount++); // !! This kind of sucks. Could be based on Spirit or starting Board-name
-		// !!! DeployedPresenceDecisoin: IslandControl needs access to the PresenceToken so it can record the Location for creating hotspots during.
-		Text = "Presence";      // !!! this only works in SOLO.
-	}
-
-	#region Token parts
-
-	public TokenClass Class => this;
-
-	public string Text { get; }
-
-	public string SpaceAbreviation => null; // hide it
-
-	#endregion
-
-	#region TokenClass parts
-	string TokenClass.Label => "Presence";
-	TokenCategory TokenClass.Category => TokenCategory.Presence;
-	#endregion
-}
-
-public enum DestoryPresenceCause {
-	None,
-	SpiritPower,    // One use of a Power;
-	DahanDestroyed, // Thunderspeaker
-	SkipInvaderAction, // A Spread of Rampant Green
-
-	Blight,          // blight added to land
-	BlightedIsland,  // Direct effect of the Blighted Island card
-
-
-	// Not used
-	Adversary,      //An Adversary's Escalation effect
-	Event,          // Everything a Main/Token/Dahan Event does
-	FearCard,       // Everything one Fear Card does
 }

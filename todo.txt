@@ -2,11 +2,9 @@
 ====  Clean Up Items  ====
 ==========================
 
-1) Use Variant Tokens for Presence that can't move.
-3) UI - Damaged should occupy the non damaged space if available on screen. If not available, should use nearest (Temporary) space.
-
-Convert Stop-Destroy ability into a token and add it to the space.
-Merge Token Added/Removed/Moved events.
+1) UI - Damaged should occupy the non damaged space if available on screen. If not available, should use nearest (Temporary) space.
+2) Convert Stop-Destroy ability into a token and add it to the space.
+3) Merge Token Added/Removed/Moved events.
 
 Vengeance
 	Wreak Vengeance for the Lands Corruption - virtual tokens might not be correct.
@@ -19,7 +17,6 @@ BUG UI - Multiple tokens using the same token slot. Maybe need to lock it or add
 
 5 Move Finders Hook to Action-start
 
-4 Settle into hunting grounds - implement presence cannot move.
 4 Slip the flows of time - use any # of times
 4  Display Blight Card and/or text
 

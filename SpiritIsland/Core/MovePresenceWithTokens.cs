@@ -3,18 +3,16 @@
 // used both for thunderspeaker and sharp fangs
 public class MovePresenceWithTokens {
 
-	readonly Spirit spirit;
-	readonly TokenClass tokenGroup;
-
-	public MovePresenceWithTokens( Spirit spirit, TokenClass group ) { 
-		this.spirit = spirit; 
-		this.tokenGroup = group;
+	public MovePresenceWithTokens( Spirit spirit, TokenClass tokenClass ) { 
+		_spirit = spirit; 
+		_tokenClass = tokenClass;
 	}
 
 	public async Task CheckForMove( ITokenMovedArgs args ) {
-		if( args.Class != tokenGroup) return;
+		if( args.Class != _tokenClass ) return;
+		if( !_spirit.Presence.HasMovableTokens(args.RemovedFrom) ) return;
 
-		int maxThatCanMove = Math.Min( args.Count, spirit.Presence.CountOn( args.RemovedFrom ) );
+		int maxThatCanMove = Math.Min( args.Count, _spirit.Presence.CountOn( args.RemovedFrom ) );
 		// 0 -> no action
 		if(maxThatCanMove == 0)
 			return;
@@ -24,9 +22,14 @@ public class MovePresenceWithTokens {
 
 		// Using 'Gather' here so user can click on existing Presence in Source
 		// If we used 'Push', user would click on Destination instead of Source
-		var source = await spirit.Gateway.Decision( Select.DeployedPresence.Gather("Move presence with "+ args.Class.Label+"?", args.AddedTo.Space, new SpaceState[]{ args.RemovedFrom } ) );
+		var source = await _spirit.Gateway.Decision( Select.DeployedPresence.Gather("Move presence with "+ args.Class.Label+"?", args.AddedTo.Space, new SpaceState[]{ args.RemovedFrom } ) );
 		if( source != null )
-			await spirit.Bind( args.GameState, args.ActionId ).Presence.Move( args.RemovedFrom.Space, args.AddedTo.Space );
+			await _spirit.Bind( args.GameState, args.ActionId ).Presence.Move( args.RemovedFrom.Space, args.AddedTo.Space );
 	}
+
+	#region private field
+	readonly Spirit _spirit;
+	readonly TokenClass _tokenClass;
+	#endregion
 
 }

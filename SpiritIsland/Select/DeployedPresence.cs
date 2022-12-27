@@ -29,6 +29,11 @@ public class DeployedPresence : TypedDecision<SpiritIsland.Space>, IHaveAdjacent
 	static public DeployedPresence All(string prompt, ReadOnlyBoundPresence presence, Present present )
 		=> new DeployedPresence( prompt, presence.SpaceStates, present);
 
+	/// <summary> Targets ALL spaces containing deployed presence </summary>
+	/// !!! figure out different reasons .All is called and pull some of the generic ones into this class as factory methods
+	static public DeployedPresence Movable( string prompt, ReadOnlyBoundPresence presence, Present present )
+		=> new DeployedPresence( prompt, presence.MovableSpaceStates, present );
+
 	static public DeployedPresence Some(string prompt, ReadOnlyBoundPresence presence, Func<SpiritIsland.SpaceState,bool> filter, Present present )
 		=> new DeployedPresence( prompt, presence.SpaceStates.Where(filter), present);
 

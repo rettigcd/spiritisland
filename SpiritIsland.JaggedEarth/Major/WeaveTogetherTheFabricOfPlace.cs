@@ -25,7 +25,7 @@ public class WeaveTogetherTheFabricOfPlace {
 		}
 	}
 
-	private static MultiSpace JoinSpaces( SelfCtx originatorCtx, Space space, Space other ) {
+	static MultiSpace JoinSpaces( SelfCtx originatorCtx, Space space, Space other ) {
 
 		var gameState = originatorCtx.GameState;
 
@@ -52,7 +52,7 @@ public class WeaveTogetherTheFabricOfPlace {
 			removeSpace.Restore();
 
 			// divide pieces as you wish.
-			UnitOfWork actionId = gs.StartAction( ActionCategory.Spirit_Power );
+			await using UnitOfWork actionId = gs.StartAction( ActionCategory.Spirit_Power );
 			await DistributePresence( space, other, gs, actionId );
 			await DistributeTokens( originatorCtx, space, other, gs, actionId );
 		});
@@ -74,12 +74,21 @@ public class WeaveTogetherTheFabricOfPlace {
 	static async Task DistributePresence( Space space, Space other, GameState gs, UnitOfWork actionId ) {
 		var dstOptions = new[] { gs.Tokens[other] };
 		var srcTokens = gs.Tokens[space];
+
 		foreach(var spirit in gs.Spirits) {
-			int count = spirit.Presence.CountOn( srcTokens );
+
+			var boundPresence = new BoundPresence( spirit, gs, gs.Island.Terrain_ForPower, actionId );
+			int count = spirit.Presence.CountOn( srcTokens ); // ! don't check 'can-move', ALWAyS need to adjust/move/cleanup this presence.
+
 			while(count > 0) {
 				var dst = await spirit.Gateway.Decision( Select.Space.ForAdjacent( "Distribute preseence to:", space, Select.AdjacentDirection.Outgoing, dstOptions, Present.Done, spirit.Presence.Token ) );
 				if(dst == null) break;
-				await new BoundPresence( spirit, gs, gs.Island.Terrain_ForPower, actionId ).Move( space, other );
+
+				// Move - force it, even for presence that can't be moved.
+				// await boundPresence.Move( space, other );
+				spirit.Presence.Adjust( gs.Tokens[space], -1 );
+				await boundPresence.PlaceOn( other ); // trigger move event.
+
 				--count;
 			}
 		}

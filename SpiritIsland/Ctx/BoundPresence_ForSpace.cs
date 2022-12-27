@@ -25,15 +25,17 @@ public class BoundPresence_ForSpace : BoundPresence {
 	} 
 
 	public async Task PlaceHere() {
-		var from = await SelectSource();
+		var from = await SelectSource_Movable();
 		await ctx.Presence.Place( from, ctx.Space );
 	}
 
 	public async Task MoveHereFromAnywhere(int count) {
 
 		while(count > 0) {
-			var from = await ctx.Presence.SelectDeployed($"Select presence to move. ({count} remaining)");
-			await Move( from, ctx.Space );
+			// !! cleanup - have SelectDeployed have a version, that only selects moveable
+			var from = await ctx.Presence.SelectDeployedMovable($"Select presence to move. ({count} remaining)");
+			if( ctx.Self.Presence.HasMovableTokens(ctx.GameState.Tokens[from]))
+				await Move( from, ctx.Space );
 			count--;
 		}
 	}

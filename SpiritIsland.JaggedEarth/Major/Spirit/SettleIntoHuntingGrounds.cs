@@ -12,7 +12,11 @@ public class SettleIntoHuntingGrounds {
 		// (Decide per presence, per action) ... Not doing this bit exactly, both are always present, but can't be destroyed.
 
 		// your presence cannot move.
-		// !!! not implemented
+		ctx.Self.Presence.CanMove = false;
+		ctx.GameState.TimePasses_ThisRound.Push( _ => {
+			ctx.Self.Presence.CanMove = true; 
+			return Task.CompletedTask;
+		} );
 
 		// if you have 2 plant 3 animal:
 		if( await ctx.YouHave("2 plant,3 animal" )){

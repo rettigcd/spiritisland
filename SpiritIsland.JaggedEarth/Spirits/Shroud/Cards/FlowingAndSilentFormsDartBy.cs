@@ -36,7 +36,9 @@ public class FlowingAndSilentFormsDartBy {
 
 		public async Task DestroyPresenceApi( SpiritPresence presence, Space space, GameState gs, int count, DestoryPresenceCause actionType, UnitOfWork actionId ) {
 			// pushes all to the same space
-			if( space == this.protectedSpace) {
+			if( space == this.protectedSpace 
+				&& spirit.Presence.HasMovableTokens(gs.Tokens[space])
+			) {
 				var dst = await spirit.Gateway.Decision(new Select.Space("Instead of destroying, push presence to:", gs.Tokens[space].Adjacent.Select(x=>x.Space),Present.Done));
 				if(dst != null) {
 					while(0 < count--)
@@ -61,7 +63,8 @@ public class FlowingAndSilentFormsDartBy {
 		Spirit other = ctx.GameState.Spirits.Length == 1 ? ctx.Self
 			: await ctx.Decision( new Select.Spirit( "Flowing and Silent Forms Dart By", nearbySpirits ) );
 		// Pick spot
-		var source = await ctx.Decision( Select.DeployedPresence.Gather("Gather presence", ctx.Space, adj.Intersect(new ReadOnlyBoundPresence(other, ctx.GameState).SpaceStates )) );
+		var options = adj.Where(other.Presence.HasMovableTokens);
+		var source = await ctx.Decision( Select.DeployedPresence.Gather("Gather presence", ctx.Space, options ) );
 		if(source == null) return;
 		// # to move
 		int numToMove = (other.Presence.CountOn(ctx.GameState.Tokens[source]) > 1 && await ctx.Self.UserSelectsFirstText("# of presence to gather", "2", "1"))
