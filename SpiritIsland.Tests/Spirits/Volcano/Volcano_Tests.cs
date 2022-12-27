@@ -66,82 +66,6 @@ public class Volcano_Tests {
 
 	[Trait( "Special Rule", VolcanoLoomingHigh.CollapseInABlastOfLavaAndSteam )]
 	[Fact]
-	public void ExplosiveErruption_Level0_CausesDamage() {
-		var (spirit, gameState, board) = Init();
-		SpaceState space = gameState.Tokens[ board[5] ];
-
-		// Given: 10 explorers 10 dahan, 4 presence, n-badlands
-		space.InitDefault(Invader.Explorer, 10);
-		space.Dahan.Init( 10 );
-		spirit.Presence.Adjust(space, 4);
-		//   But: not enough elements to trigger Tier-1
-		spirit.Configure().Elements("0 fire,0 earth");
-
-		//  When: they trigger Explosive Erruption in target
-		using UnitOfWork uow = gameState.StartAction(ActionCategory.Spirit_Power);
-		Task task = InnatePower.For<ExplosiveEruption>().ActivateAsync(spirit.BindMyPower(gameState,uow));
-		spirit.NextDecision().HasPrompt( "Explosive Eruption: Target Space" ).Choose( space.Space );
-		//   And: Destroy 2 presence
-		spirit.NextDecision().HasPrompt( "# of presence to destroy?" ).HasOptions("4,3,2,1,0").Choose( "2" );
-
-		//  Then: damage invaders in target
-		ApplyDamageToExplorers( spirit, task, 2, space );
-		int remaining = 8;
-		//   And: damages dahan INEFFICIENTLY
-		space.Summary.ShouldBe($"2D@1,{remaining}D@2,{remaining}E@1" );
-
-		//   And: doesn't trigger adjacent land or anything else
-		Assert_IsDone( spirit, task );
-	}
-
-	[Trait( "Special Rule", VolcanoLoomingHigh.CollapseInABlastOfLavaAndSteam )]
-	[Trait( "Special Rule", VolcanicPeaksTowerOverTheLandscape.Name )] // does not Extend Explosive Erruption
-	[Trait( "Token", "Badlands" )]
-	[Theory]
-	[InlineData( 0 )]
-	[InlineData( 2 )]
-	public void ExplosiveErruption_Level1_CausesDamage( int badlandsCount ) {
-		var (spirit, gameState, board) = Init();
-		SpaceState space = gameState.Tokens[board[5]];
-		SpaceState adjacent = gameState.Tokens[board[7]];
-
-		// Given: 10 explorers 10 dahan, 10 presence, n-badlands
-		space.InitDefault( Invader.Explorer, 10 );
-		space.Dahan.Init( 10 );
-		spirit.Presence.Adjust( space, 10 );
-		space.Init( TokenType.Badlands, badlandsCount );
-		//   And: 10 exploreres, 10 dahan in adjacent
-		adjacent.InitDefault( Invader.Explorer, 10 );
-		adjacent.Dahan.Init( 10 );
-		adjacent.Init( TokenType.Badlands, badlandsCount );
-		//   And: 2 fire and 2 earth
-		spirit.Configure().Elements("2 fire,2 earth");
-
-		//  When: they trigger Explosive Erruption in target
-		using UnitOfWork uow = gameState.StartAction( ActionCategory.Spirit_Power );
-		Task task = InnatePower.For<ExplosiveEruption>().ActivateAsync( spirit.BindMyPower( gameState, uow ) );
-		spirit.NextDecision().HasPrompt( "Explosive Eruption: Target Space" ).Choose( space.Space );
-		//   And: Destroy 2 presence
-		spirit.NextDecision().HasPrompt( "# of presence to destroy?" ).HasOptions( "10,9,8,7,6,5,4,3,2,1,0" ).Choose( "2" );
-
-		//   And: damage invaders in target
-		ApplyDamageToExplorers( spirit, task, 2 + badlandsCount, space ); 
-		int remaining = 10 - (2 + badlandsCount);
-		//  Then: VolcanicPeaksTowerOverTheLandscape does not extend range to A2 & A3
-		spirit.NextDecision().HasPrompt( "Apply 2 damage to" ).HasOptions( "A1,A4,A5,A6,A7,A8" ).Choose( adjacent.Space );
-		//   And: damages invaders in adjacent
-		ApplyDamageToExplorers( spirit, task, 2 + badlandsCount, adjacent );
-
-		//  Then: dahan were damaged INEFFICIENTLY in target space
-		space.Summary.ShouldBe( $"{2 + badlandsCount}D@1,{remaining}D@2,{remaining}E@1" + (badlandsCount == 0 ? "" : $",{badlandsCount}M") );
-		//   And: dahan were left alone in adjacent
-		adjacent.Summary.ShouldBe( $"10D@2,{remaining}E@1" + (badlandsCount == 0 ? "" : $",{badlandsCount}M") );
-
-		Assert_IsDone( spirit, task );
-	}
-
-	[Trait( "Special Rule", VolcanoLoomingHigh.CollapseInABlastOfLavaAndSteam )]
-	[Fact]
 	public void PowerDestroyingPresence_CausesDamage() {
 		var (spirit, gameState, board) = Init();
 		SpaceState space = gameState.Tokens[board[5]];
@@ -189,7 +113,7 @@ public class Volcano_Tests {
 	[Trait( "Special Rule", VolcanicPeaksTowerOverTheLandscape.Name )] // Move to Card-test file.
 	[Trait( "Targeting", "Range" )]
 	[Fact]
-	public void BargainsOfPowerAndProtection_UsesExtendedRangeOnDahan() {
+	public void PeeksTower_ExtendsRangeFor_BargainsOfPowerAndProtection() {
 		var (spirit, gameState, board) = Init();
 		SpaceState targetSpace = gameState.Tokens[board[5]];
 		SpaceState dahanSpace = gameState.Tokens[board[2]];
@@ -216,7 +140,7 @@ public class Volcano_Tests {
 	[Theory]
 	[InlineData(7, "A5,A6,A7,A8" )]        // Target space is not on Tower => normal range
 	[InlineData( 8, "A1,A4,A5,A6,A7,A8" )] // Target space is on Tower => range boost
-	public void UtterACurseOfDreadAndBone_ExtendedRange(int towerSpaceNum, string expectedRangeOptions) {
+	public void PeeksTower_ExtendsRangeFor_UtterACurseOfDreadAndBone( int towerSpaceNum, string expectedRangeOptions) {
 		var (spirit, gameState, board) = Init();
 		SpaceState towerSpace = gameState.Tokens[board[towerSpaceNum]];
 		SpaceState targetSpace = gameState.Tokens[board[8]];
@@ -246,7 +170,7 @@ public class Volcano_Tests {
 	[Theory]
 	[InlineData( 2, "A8" )]        // range-0
 	[InlineData( 3, "A5,A6,A7,A8" )] // range-1
-	public void UnleashATorrent_ExtendedRange( int presenceInTower, string expectedRangeOptions ) {
+	public void PeeksTower_ExtendsRangeFor_UnleashATorrent( int presenceInTower, string expectedRangeOptions ) {
 		var (spirit, gameState, board) = Init();
 		SpaceState space = gameState.Tokens[board[8]];
 
@@ -274,7 +198,7 @@ public class Volcano_Tests {
 	[Theory]
 	[InlineData( 2, "A5,A6,A7,A8" )]       // range-1
 	[InlineData( 3, "A1,A4,A5,A6,A7,A8" )] // range-2
-	public void PerilsOfTheDeepIsland_ExtendedRange( int presenceInTower, string expectedRangeOptions ) {
+	public void PeeksTower_ExtendsRangesFor_PerilsOfTheDeepIsland( int presenceInTower, string expectedRangeOptions ) {
 		var (spirit, gameState, board) = Init();
 		SpaceState space = gameState.Tokens[board[8]];
 
@@ -283,13 +207,89 @@ public class Volcano_Tests {
 		//   And: 1 energy
 		spirit.Energy = 1;
 
-		//  When: Unleash a Torrent
+		//  When: Perils of the Deepest Island
 		using UnitOfWork uow = gameState.StartAction( ActionCategory.Spirit_Power );
 		Task task = PowerCard.For<PerilsOfTheDeepestIsland>().ActivateAsync( spirit.BindMyPower( gameState, uow ) );
 		spirit.NextDecision().Choose(space.Space);
 
-		//  Then: range is adjusted for towering
+		//  Then: range is adjusted for adding beasts
 		spirit.NextDecision().HasPrompt( "Add beast" ).HasOptions( expectedRangeOptions ).ChooseFirst();
+
+		Assert_IsDone( spirit, task );
+	}
+
+	[Trait( "Special Rule", VolcanoLoomingHigh.CollapseInABlastOfLavaAndSteam )]
+	[Fact]
+	public void ExplosiveErruption_Level0_CausesDamage() {
+		var (spirit, gameState, board) = Init();
+		SpaceState space = gameState.Tokens[board[5]];
+
+		// Given: 10 explorers 10 dahan, 4 presence, n-badlands
+		space.InitDefault( Invader.Explorer, 10 );
+		space.Dahan.Init( 10 );
+		spirit.Presence.Adjust( space, 4 );
+		//   But: not enough elements to trigger Tier-1
+		spirit.Configure().Elements( "0 fire,0 earth" );
+
+		//  When: they trigger Explosive Erruption in target
+		using UnitOfWork uow = gameState.StartAction( ActionCategory.Spirit_Power );
+		Task task = InnatePower.For<ExplosiveEruption>().ActivateAsync( spirit.BindMyPower( gameState, uow ) );
+		spirit.NextDecision().HasPrompt( "Explosive Eruption: Target Space" ).Choose( space.Space );
+		//   And: Destroy 2 presence
+		spirit.NextDecision().HasPrompt( "# of presence to destroy?" ).HasOptions( "4,3,2,1,0" ).Choose( "2" );
+
+		//  Then: damage invaders in target
+		ApplyDamageToExplorers( spirit, task, 2, space );
+		int remaining = 8;
+		//   And: damages dahan INEFFICIENTLY
+		space.Summary.ShouldBe( $"2D@1,{remaining}D@2,{remaining}E@1" );
+
+		//   And: doesn't trigger adjacent land or anything else
+		Assert_IsDone( spirit, task );
+	}
+
+	[Trait( "Special Rule", VolcanoLoomingHigh.CollapseInABlastOfLavaAndSteam )]
+	[Trait( "Special Rule", VolcanicPeaksTowerOverTheLandscape.Name )] // does not Extend Explosive Erruption
+	[Trait( "Token", "Badlands" )]
+	[Theory]
+	[InlineData( 0 )]
+	[InlineData( 2 )]
+	public void ExplosiveErruption_Level1_CausesDamage( int badlandsCount ) {
+		var (spirit, gameState, board) = Init();
+		SpaceState space = gameState.Tokens[board[5]];
+		SpaceState adjacent = gameState.Tokens[board[7]];
+
+		// Given: 10 explorers 10 dahan, 10 presence, n-badlands
+		space.InitDefault( Invader.Explorer, 10 );
+		space.Dahan.Init( 10 );
+		spirit.Presence.Adjust( space, 10 );
+		space.Init( TokenType.Badlands, badlandsCount );
+		//   And: 10 exploreres, 10 dahan in adjacent
+		adjacent.InitDefault( Invader.Explorer, 10 );
+		adjacent.Dahan.Init( 10 );
+		adjacent.Init( TokenType.Badlands, badlandsCount );
+		//   And: 2 fire and 2 earth
+		spirit.Configure().Elements( "2 fire,2 earth" );
+
+		//  When: they trigger Explosive Erruption in target
+		using UnitOfWork uow = gameState.StartAction( ActionCategory.Spirit_Power );
+		Task task = InnatePower.For<ExplosiveEruption>().ActivateAsync( spirit.BindMyPower( gameState, uow ) );
+		spirit.NextDecision().HasPrompt( "Explosive Eruption: Target Space" ).Choose( space.Space );
+		//   And: Destroy 2 presence
+		spirit.NextDecision().HasPrompt( "# of presence to destroy?" ).HasOptions( "10,9,8,7,6,5,4,3,2,1,0" ).Choose( "2" );
+
+		//   And: damage invaders in target
+		ApplyDamageToExplorers( spirit, task, 2 + badlandsCount, space );
+		int remaining = 10 - (2 + badlandsCount);
+		//  Then: VolcanicPeaksTowerOverTheLandscape does not extend range to A2 & A3
+		spirit.NextDecision().HasPrompt( "Apply 2 damage to" ).HasOptions( "A1,A4,A5,A6,A7,A8" ).Choose( adjacent.Space );
+		//   And: damages invaders in adjacent
+		ApplyDamageToExplorers( spirit, task, 2 + badlandsCount, adjacent );
+
+		//  Then: dahan were damaged INEFFICIENTLY in target space
+		space.Summary.ShouldBe( $"{2 + badlandsCount}D@1,{remaining}D@2,{remaining}E@1" + (badlandsCount == 0 ? "" : $",{badlandsCount}M") );
+		//   And: dahan were left alone in adjacent
+		adjacent.Summary.ShouldBe( $"10D@2,{remaining}E@1" + (badlandsCount == 0 ? "" : $",{badlandsCount}M") );
 
 		Assert_IsDone( spirit, task );
 	}
@@ -327,7 +327,8 @@ public class Volcano_Tests {
 		// When: activate Innate
 		using UnitOfWork uow = gameState.StartAction( ActionCategory.Spirit_Power );
 		Task task = InnatePower.For<ExplosiveEruption>().ActivateAsync( spirit.BindMyPower( gameState, uow ) );
-		spirit.NextDecision().Choose( targetSpace.Space );
+		spirit.NextDecision().HasOptions("A7,A8").Choose( targetSpace.Space );
+
 		//  And: destroy presence
 		spirit.NextDecision().HasPrompt( "# of presence to destroy?" ).HasOptions( "12,11,10,9,8,7,6,5,4,3,2,1,0" ).Choose( presenceDestroyed.ToString() );
 
@@ -388,6 +389,8 @@ public class Volcano_Tests {
 
 	// 1Powered By the Furnace of the Earth
 
+	#region private helpers
+
 	static void ApplyDamageToExplorers( Spirit spirit, Task task, int expectedDamage, SpaceState onSpace ) {
 		while(0 < expectedDamage) {
 			string prompt = $"Damage ({expectedDamage} remaining)";
@@ -407,4 +410,5 @@ public class Volcano_Tests {
 		task.IsCompleted.ShouldBeTrue( spirit.NextDecision().Format() ); 
 	}
 
+	#endregion
 }

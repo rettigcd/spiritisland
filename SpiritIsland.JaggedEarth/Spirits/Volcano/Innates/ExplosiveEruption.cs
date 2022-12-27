@@ -71,8 +71,9 @@ class ErruptionAttribute : FromPresenceAttribute {
 	/// <summary>
 	/// Override so we can return a custom a custom criteria that flags this as an Innate Power
 	/// </summary>
-	protected override async Task<TargetCriteria> GetCriteria( SelfCtx ctx ) 
-		=> new VolcanicPeaksTowerOverTheLandscape.InnateTargetCriteria( ctx.TerrainMapper, await CalcRange( ctx ), _targetFilters );
+	protected override async Task<TargetCriteria> GetCriteria( SelfCtx ctx ) { 
+		return new VolcanicPeaksTowerOverTheLandscape.InnateTargetCriteria( ctx.TerrainMapper, await CalcRange( ctx ), _targetFilters );
+	}
 }
 
 public class ExplosiveInnateOptionAttribute : InnateOptionAttribute {

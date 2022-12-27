@@ -14,7 +14,8 @@ public class VolcanicPeaksTowerOverTheLandscape : DefaultRangeCalculator {
 			.ToList();
 
 		// Add towers
-		if( targetCriteria is not InnateTargetCriteria ) {
+		bool isTargetingInnate = targetCriteria is InnateTargetCriteria;
+		if( !isTargetingInnate) {
 			var towers = source
 				.Where( s => 3 <= _self.Presence.CountOn( s ) )
 				.ToArray();
