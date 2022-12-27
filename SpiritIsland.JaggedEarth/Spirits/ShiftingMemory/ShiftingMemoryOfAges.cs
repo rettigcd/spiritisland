@@ -54,22 +54,10 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 		};
 	}
 
-	public override async Task<PowerCard> ForgetPowerCard_UserChoice( Present present = Present.Always ) {
-		IEnumerable<SingleCardUse> options = SingleCardUse.GenerateUses(CardUse.Discard,InPlay.Union( Hand ))
-			.Union( SingleCardUse.GenerateUses(CardUse.Forget,DiscardPile) );
-		var decision = new Select.PowerCard( "Select card to forget or discard", options, present );
-		PowerCard cardToForgetOrDiscard = await this.Gateway.Decision( decision );
-		if(cardToForgetOrDiscard != null)
-			Forget( cardToForgetOrDiscard );
-		return cardToForgetOrDiscard != null && !DiscardPile.Contains(cardToForgetOrDiscard) 
-			? cardToForgetOrDiscard	// card not in discard pile, must have been forgotten
-			: null; 
-	}
-
-	public override async Task<PowerCard> ForgetPowerCard_UserChoice( IEnumerable<PowerCard> options2, Present present = Present.Always ) {
+	public override async Task<PowerCard> ForgetOne( IEnumerable<PowerCard> restrictedOptions = null, Present present = Present.Always ) {
 		IEnumerable<SingleCardUse> options = SingleCardUse.GenerateUses(CardUse.Discard,InPlay.Union( Hand ))
 			.Union( SingleCardUse.GenerateUses(CardUse.Forget,DiscardPile) )
-			.Where(u => options2.Contains(u.Card));
+			.Where(u => restrictedOptions==null || restrictedOptions.Contains(u.Card));
 				
 		var decision = new Select.PowerCard( "Select card to forget or discard", options, present );
 		PowerCard cardToForgetOrDiscard = await this.Gateway.Decision( decision );

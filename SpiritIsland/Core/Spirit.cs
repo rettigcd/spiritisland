@@ -240,15 +240,14 @@ public abstract partial class Spirit : IOption {
 		Reclaim( cardToReclaim );
 	}
 
-	public virtual Task<PowerCard> ForgetPowerCard_UserChoice( Present present = Present.Always ) {
-		var options = InPlay		// in play
-			.Union( Hand )			// in Hand
-			.Union( DiscardPile )	// in Discard
-			.ToArray();
-		return ForgetPowerCard_UserChoice(options,present);
-	}
+	/// <summary> Forget USER SELECTED power card. </summary>
+	public virtual async Task<PowerCard> ForgetOne( IEnumerable<PowerCard> restrictedOptions = null, Present present = Present.Always ) {
+		var options = restrictedOptions 
+			?? InPlay					// in play
+				.Union( Hand )          // in Hand
+				.Union( DiscardPile )   // in Discard
+				.ToArray();
 
-	public virtual async Task<PowerCard> ForgetPowerCard_UserChoice( IEnumerable<PowerCard> options, Present present = Present.Always ) {
 		PowerCard cardToForget = await this.SelectPowerCard( "Select power card to forget", options, CardUse.Forget, present );
 		if( cardToForget != null )
 			Forget( cardToForget );
@@ -266,7 +265,7 @@ public abstract partial class Spirit : IOption {
 		DiscardPile.Remove( cardToRemove );
 	}
 
-	private void RemoveCardFromPlay( PowerCard cardToRemove ) {
+	void RemoveCardFromPlay( PowerCard cardToRemove ) {
 		foreach(var el in cardToRemove.Elements)
 			Elements[el.Key] -= el.Value;// lose elements from forgotten card
 		InPlay.Remove( cardToRemove );
@@ -378,7 +377,7 @@ public abstract partial class Spirit : IOption {
 			: await DrawFromDeck.DrawInner( this, gameState.MajorCards, 4, 1 );
 
 		if (result.PowerType == PowerType.Major )
-			await this.ForgetPowerCard_UserChoice();
+			await this.ForgetOne();
 		return result;
 	}
 
@@ -388,7 +387,7 @@ public abstract partial class Spirit : IOption {
 	public virtual async Task<DrawCardResult> DrawMajor( GameState gameState, bool forgetCard = true, int numberToDraw=4, int numberToKeep=1 ) {
 		var result = await DrawFromDeck.DrawInner( this, gameState.MajorCards, numberToDraw, numberToKeep );
 		if(forgetCard)
-			await this.ForgetPowerCard_UserChoice();
+			await this.ForgetOne();
 		return result;
 	}
 

@@ -25,7 +25,7 @@ public class BoonOfAncientMemories {
 			if( 2 <= ctx.Other.Energy && await ctx.Other.UserSelectsFirstText( "Pay for Major Card", "2 energy", "forget a card" ))
 				ctx.Other.Energy -= 2;
 			else
-				await ctx.Other.ForgetPowerCard_UserChoice();
+				await ctx.Other.ForgetOne();
 		}
 	}
 
