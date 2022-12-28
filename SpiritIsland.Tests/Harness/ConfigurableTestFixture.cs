@@ -106,41 +106,14 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 
 	public TargetSpiritCtx TargetSelf => SelfCtx.TargetSpirit( Spirit );
 
-	public void InitTokens( Space space, string tokenString ) {
-		var tokens = GameState.Tokens[space];
-		foreach(var part in tokenString.Split( ',' )) {
-			var (token,count) = ParseToken( part );
-			tokens.Adjust( count, token );
-		}
-	}
-
-	public void InitPresence( Space space , int count ) {
+	public void InitPresence( Space space, int count ) {
 		var spaceState = GameState.Tokens[space];
-		var dif = count - Presence.CountOn(spaceState);
+		var dif = count - Presence.CountOn( spaceState );
 		Presence.Adjust( spaceState, dif );
 	}
 
-	static readonly Regex tokenParser = new Regex( @"(\d+)(\w)@(\d+)(\^*)" );
-	(int,Token) ParseToken( string part ) {
-		var match = tokenParser.Match( part );
-		if(!match.Success) throw new FormatException( $"Unrecognized token [{part}] Example: 1T@2." );
-		var tokenClass = match.Groups[2].Value switch {
-			"C" => Invader.City,
-			"T" => Invader.Town,
-			"E" => Invader.Explorer,
-			"D" => TokenType.Dahan,
-			_ => throw new Exception( $"Invader Initial [{match.Groups[2].Value}]" ),
-		};
-		int fullHealth = tokenClass.Attack; // hack - class doesn't have full health, so we will cheat and use attack as the full health.
-		var token = new HealthToken( 
-			tokenClass,
-			this,
-			fullHealth,
-			fullHealth - int.Parse( match.Groups[3].Value ), // damage
-			match.Groups[4].Value.Length // strife
-		);
-		int count = int.Parse( match.Groups[1].Value );
-		return (count, token);
+	public void InitTokens( Space space, string tokenString ) {
+		GameState.Tokens[space].InitTokens( tokenString );
 	}
 
 	public int HealthPenaltyPerStrife { get; set; }

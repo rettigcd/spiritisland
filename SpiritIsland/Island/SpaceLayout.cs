@@ -4,7 +4,7 @@ namespace SpiritIsland;
 
 public class SpaceLayout {
 
-	public SpaceLayout( PointF[] corners) {
+	public SpaceLayout( params PointF[] corners) {
 		Corners = corners;
 		Bounds = CalcBounds( corners );
 		Center = CalcCenterOfSpacePoints(Bounds);

@@ -448,6 +448,9 @@ public partial class IslandControl : Control {
 	#region Draw - Board Spaces & Tokens
 
 	void DecorateSpace( Graphics graphics, SpaceState spaceState ) {
+
+		_insidePoints[spaceState.Space].Init(spaceState);
+
 		if(spaceState.Space is MultiSpace ms)
 			DrawMultiSpace( graphics, ms );
 
@@ -470,7 +473,7 @@ public partial class IslandControl : Control {
 		foreach(Token token in orderedInvaders) {
 
 			// New way
-			PointF center = _mapper.Map( _insidePoints[ss.Space].GetPointFor( token, ss ) );
+			PointF center = _mapper.Map( _insidePoints[ss.Space].GetPointFor( token ) );
 			float x = center.X-iconWidth/2;
 			float y = center.Y-iconWidth/2; //!! approximate - need Image to get actual Height to scale
 
@@ -522,7 +525,7 @@ public partial class IslandControl : Control {
 			// calc rect
 			float iconHeight = iconWidth / img.Width * img.Height;
 
-			PointF pt = _mapper.Map( _insidePoints[spaceState.Space].GetPointFor(token,spaceState) );
+			PointF pt = _mapper.Map( _insidePoints[spaceState.Space].GetPointFor(token) );
 			Rectangle rect = new Rectangle( (int)(pt.X-iconWidth/2), (int)(pt.Y-iconHeight/2), (int)iconWidth, (int)iconHeight );
 
 			// record token location
@@ -673,7 +676,7 @@ public partial class IslandControl : Control {
 			if( decision_AdjacentInfo.Direction == SpiritIsland.Select.AdjacentDirection.Incoming ) {
 				var from = new PointF( rect.X + rect.Width / 2, rect.Y + rect.Height / 2 );
 				var to = _mapper.Map(
-					_insidePoints[decision_AdjacentInfo.Central].GetPointFor( st.Token, _gameState.Tokens[decision_AdjacentInfo.Central] )
+					_insidePoints[decision_AdjacentInfo.Central].GetPointFor( st.Token )
                 );
 				using var arrowPen = UsingArrowPen;
 				graphics.DrawArrow( arrowPen, from, to );
@@ -685,7 +688,7 @@ public partial class IslandControl : Control {
 	PointF GetPortPoint( Space space ) {
 		PointF worldCoord = decision_Token is null 
 			? space.Layout.Center // normal space 
-			: _insidePoints[space].GetPointFor( decision_Token, _gameState.Tokens[space] );
+			: _insidePoints[space].GetPointFor( decision_Token );
 		return _mapper.Map( worldCoord );
 	}
 

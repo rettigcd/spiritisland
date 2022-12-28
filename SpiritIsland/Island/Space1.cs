@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 public class Space1 : Space {
 

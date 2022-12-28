@@ -2,9 +2,8 @@
 ====  Clean Up Items  ====
 ==========================
 
-1) UI - Damaged should occupy the non damaged space if available on screen. If not available, should use nearest (Temporary) space.
-2) Convert Stop-Destroy ability into a token and add it to the space.
-3) Merge Token Added/Removed/Moved events.
+1) Convert Stop-Destroy ability into a token and add it to the space.
+2) Merge Token Added/Removed/Moved events.
 
 Vengeance
 	Wreak Vengeance for the Lands Corruption - virtual tokens might not be correct.
