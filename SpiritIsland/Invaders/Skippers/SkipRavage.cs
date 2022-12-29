@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland;
 
 /// <summary> Stops 1 Ravage. </summary>
-public class SkipRavage : SkipBase, ISkipRavages {
+public class SkipRavage : ActionModBaseToken, ISkipRavages {
 
 	public SkipRavage( string label ) : base( label ) { }
 

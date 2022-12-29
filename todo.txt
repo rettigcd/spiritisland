@@ -2,13 +2,12 @@
 ====  Clean Up Items  ====
 ==========================
 
-1) Convert Stop-Destroy ability into a token and add it to the space.
-2) Merge Token Added/Removed/Moved events.
+1) Merge Token Added/Removed/Moved events.
+
+2) Make ALL token-events-handlers Mod-Tokens so no API needs called.
 
 Vengeance
 	Wreak Vengeance for the Lands Corruption - virtual tokens might not be correct.
-
-BUG UI - Multiple tokens using the same token slot. Maybe need to lock it or add asserts.
 
 3+1? remaining Adversaries (Habsburg, Russia, Scotland, France?)
 

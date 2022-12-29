@@ -3,7 +3,10 @@
 public class DahanSaver {
 
 	public static Action<TargetSpaceCtx> DestroyFewer( int maxPerAction, int maxActionCount ) {
-		return ctx => ctx.GameState.Tokens.RemovingToken.ForRound.Add( new DahanSaver( ctx.Tokens, maxPerAction, maxActionCount ).ReduceDestroyCount );
+		return ctx => {
+			var saver = new DahanSaver( ctx.Tokens, maxPerAction, maxActionCount );
+			ctx.GameState.RemovingHandler_RegisterForSpace( ctx.Tokens, saver.ReduceDestroyCount );
+		};
 	}
 
 	#region readonly
@@ -21,8 +24,7 @@ public class DahanSaver {
 
 	public void ReduceDestroyCount( RemovingTokenArgs args ) {
 
-		bool shouldReduce = args.Space == space.Space                                                   // this space
-			&& args.Token.Class == TokenType.Dahan                                                      // Dahan
+		bool shouldReduce = args.Token.Class == TokenType.Dahan                                         // Dahan
 			&& (args.Reason == RemoveReason.Destroyed || args.Reason == RemoveReason.DestroyedInBattle) // Destroyed
 			&& (byAction.Count < maxActionCount || byAction.ContainsKey( args.ActionId ));              // can effect more action OR already added
 

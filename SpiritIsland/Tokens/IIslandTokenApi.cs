@@ -4,8 +4,6 @@ public interface IIslandTokenApi {
 
 	Task Publish_Adding( AddingTokenArgs args );
 
-	Task Publish_Removing( RemovingTokenArgs args );
-
 	Task Publish_Added( TokenAddedArgs args );
 
 	Task Publish_Removed( PublishTokenRemovedArgs args );

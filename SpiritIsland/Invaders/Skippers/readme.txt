@@ -1,12 +1,14 @@
-﻿SkipBuild_Custom		base class
-SkipExploreTo_Custom	base class
-SkipAnyInvaderAction	base class
-SkipExploreFrom			base class
-CallToTrade				base class
-SkipExploreTo			base class
-SkipBuild				base class
-SkipRavage				base class
-MudToken				base class
+﻿Classes that have ActionMods interface
+
+SkipBuild_Custom		ActionModBaseToken
+SkipExploreTo_Custom	ActionModBaseToken
+SkipAnyInvaderAction	ActionModBaseToken
+SkipExploreFrom			ActionModBaseToken
+CallToTrade				ActionModBaseToken
+SkipExploreTo			ActionModBaseToken
+SkipBuild				ActionModBaseToken
+SkipRavage				ActionModBaseToken
+MudToken				ActionModBaseToken
 
 Disease					UniqueToken
 Wilds					UniqueToken

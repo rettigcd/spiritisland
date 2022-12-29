@@ -22,7 +22,6 @@ public class Tokens_ForIsland : IIslandTokenApi {
 		TokenAdded.ForRound.Clear();
 		TokenMoved.ForRound.Clear();
 		TokenRemoved.ForRound.Clear();
-		RemovingToken.ForRound.Clear();
 		Dynamic.ForRound.Clear();
 		return Task.CompletedTask;
 	}
@@ -42,8 +41,6 @@ public class Tokens_ForIsland : IIslandTokenApi {
 		=> Dynamic.GetTokensFor( space, token );
 
 	public IEnumerable<Space> Keys => tokenCounts.Keys;
-
-	public Task Publish_Removing( RemovingTokenArgs args ) => RemovingToken.InvokeAsync( args );
 
 	public Task Publish_Adding( AddingTokenArgs args ) => AddingToken.InvokeAsync( args );
 
@@ -73,7 +70,6 @@ public class Tokens_ForIsland : IIslandTokenApi {
 
 	/// <summary> Sent before any token is removed. </summary>
 	/// <remarks> Callers may modify the args to disable the remove if desired. </remarks>
-	public readonly DualAsyncEvent<RemovingTokenArgs> RemovingToken = new DualAsyncEvent<RemovingTokenArgs>();
 	public readonly DualAsyncEvent<AddingTokenArgs> AddingToken = new DualAsyncEvent<AddingTokenArgs>();
 
 	public readonly DualAsyncEvent<ITokenAddedArgs> TokenAdded = new DualAsyncEvent<ITokenAddedArgs>();
@@ -136,67 +132,3 @@ public class Tokens_ForIsland : IIslandTokenApi {
 	#endregion Memento
 
 }
-
-public class DynamicTokens {
-	readonly Dictionary<UniqueToken, List<Func<SpaceState, int>>> dict = new Dictionary<UniqueToken, List<Func<SpaceState, int>>>(); // !!! save to memento???
-	public void Register( System.Func<SpaceState, int> calcCountOnSpace, UniqueToken targetToken ) {
-		if(!dict.ContainsKey( targetToken ))
-			dict.Add( targetToken, new List<Func<SpaceState, int>>() );
-		dict[targetToken].Add( calcCountOnSpace );
-	}
-	public int GetDynamicTokenFor( SpaceState space, UniqueToken token )
-		=> dict.ContainsKey( token ) ? dict[token].Sum( x => x( space ) ) : 0;
-	public void Clear() => dict.Clear();
-
-	public virtual IMemento<DynamicTokens> SaveToMemento() => new Memento( this );
-	public virtual void LoadFrom( IMemento<DynamicTokens> memento ) {
-		((Memento)memento).Restore( this );
-	}
-
-	protected class Memento : IMemento<DynamicTokens> {
-		public Memento( DynamicTokens src ) {
-			dict = src.dict.ToDictionary(p=>p.Key,p=>p.Value); // make copy
-		}
-		public void Restore( DynamicTokens src ) {
-			src.dict.Clear();
-			foreach(var p in dict)
-				src.dict.Add(p.Key,p.Value);
-		}
-		readonly Dictionary<UniqueToken, List<Func<SpaceState, int>>> dict = new Dictionary<UniqueToken, List<Func<SpaceState, int>>>(); // !!! save to memento???
-	}
-
-
-}
-
-public class DualDynamicTokens {
-	readonly public DynamicTokens ForGame = new DynamicTokens();
-	readonly public DynamicTokens ForRound = new DynamicTokens();
-	public void RegisterDynamic( System.Func<SpaceState, int> calcCountOnSpace, UniqueToken targetToken, bool entireGame ) {
-		var dTokens = entireGame ? ForGame : ForRound;
-		dTokens.Register( calcCountOnSpace, targetToken );
-	}
-	public int GetTokensFor( SpaceState space, UniqueToken token )
-		=> ForGame.GetDynamicTokenFor( space, token )
-		+ ForRound.GetDynamicTokenFor( space, token );
-
-	public IMemento<DualDynamicTokens> SaveToMemento() => new Memento( this );
-	public void LoadFrom( IMemento<DualDynamicTokens> memento ) {
-		((Memento)memento).Restore( this );
-	}
-
-	protected class Memento : IMemento<DualDynamicTokens> {
-		public Memento( DualDynamicTokens src ) {
-			forGame = src.ForGame.SaveToMemento();
-		}
-		public void Restore( DualDynamicTokens src ) {
-			src.ForGame.LoadFrom( forGame );
-			src.ForRound.Clear();
-		}
-		readonly IMemento<DynamicTokens> forGame;
-	}
-
-}
-
-#region Event Args Impl
-
-#endregion

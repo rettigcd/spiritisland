@@ -150,26 +150,26 @@ public class SpaceState : HasNeighbors<SpaceState> {
 		Adjust( newToken, countToReplace );
 	}
 
-
-	#endregion
-
 	/// <summary> Replaces (via adjust) HealthToken with new HealthTokens </summary>
 	/// <returns> The # of remaining Adjusted tokens. </returns>
-	public async Task<(HealthToken,int)> AdjustHealthOf( HealthToken token, int delta, int count, UnitOfWork actionId ) {
+	public async Task<(HealthToken, int)> AdjustHealthOf( HealthToken token, int delta, int count, UnitOfWork actionId ) {
 		count = Math.Min( this[token], count );
-		if(count == 0) return (token,0);
+		if(count == 0) return (token, 0);
 
 		var newToken = token.AddHealth( delta ); // throws exception if health < 1
 
 		if(newToken.IsDestroyed) {
-			await this.Destroy(token, count, actionId ); // destroy the old token
-			return (token,0);
+			await this.Destroy( token, count, actionId ); // destroy the old token
+			return (token, 0);
 		}
 
 		Adjust( token, -count );
 		Adjust( newToken, count );
-		return (newToken,count);
+		return (newToken, count);
 	}
+
+	#endregion
+
 
 	#region Event-Generating Token Changes
 
@@ -195,7 +195,10 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 		// Pre-Remove check/adjust
 		var removingArgs = new RemovingTokenArgs { ActionId = actionId, Count = count, Space = Space, Reason = reason, Token = token };
-		await tokenApi.Publish_Removing( removingArgs );
+
+		foreach(var mod in Keys.OfType<IModifyRemoving>().ToArray())
+			mod.ModifyRemoving( removingArgs );
+
 		if(removingArgs.Count < 0) throw new IndexOutOfRangeException( nameof( removingArgs.Count ) );
 		if(removingArgs.Count == 0) return null;
 
@@ -228,7 +231,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 		PublishTokenRemovedArgs removedArgs = token.Class == TokenType.Dahan
 			? await RemoveDahan_SideTrip( (HealthToken)token, actionId )
 			: await Remove( token,1,actionId, RemoveReason.MovedFrom );
-		if( removedArgs is null ) // denied by DahanBinding
+		if( removedArgs is null ) // denied by DahanBinding. !!! double check this, is it still possible to get a null? 
 			return;
 
 		// Add to destination
@@ -297,6 +300,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	public int DamagePenaltyPerInvader = 0; // !!! ??? Does the Memento reset this back to 0?
 
+	#region Adjacent Properties
 
 	public IEnumerable<SpaceState> Adjacent { get {
 		foreach(var space in Space.Adjacent)
@@ -305,26 +309,19 @@ public class SpaceState : HasNeighbors<SpaceState> {
 		if(LinkedViaWays != null && !LinkedViaWays.Space.InStasis)
 			yield return LinkedViaWays;
 	} }
+
 	public SpaceState LinkedViaWays; // HACK - for Finder
 
+	// This is trying to accomplish: (Some terrain other than Ocean)
 	public IEnumerable<SpaceState> CascadingBlightOptions => Adjacent
-		 .Where(x => !this.gameState.Island.Terrain_ForBlight.MatchesTerrain(x, Terrain.Ocean)
+		 .Where(x => !this.gameState.Island.Terrain_ForBlight.MatchesTerrain(x, Terrain.Ocean) // normal case,
 			|| this.gameState.Island.Terrain_ForBlight.MatchesTerrain( x, Terrain.Wetland ) );
 
 	public IEnumerable<SpaceState> Range(int maxDistance) => this.CalcDistances( maxDistance ).Keys;
 
 	/// <summary> Explicitly named so not to confuse with Powers - Range commands. </summary>
 	public IEnumerable<SpaceState> InOrAdjacentTo => Range( 1 );
-		
-}
 
-public class BoardState {
-	public Board Board { get; }
-	readonly GameState gameState;
+	#endregion
 
-	public BoardState(Board board, GameState gameState) {
-		this.Board = board;
-		this.gameState = gameState;
-	}
-	public IEnumerable<SpaceState> Spaces => Board.Spaces.Select(s=>gameState.Tokens[s]);
 }

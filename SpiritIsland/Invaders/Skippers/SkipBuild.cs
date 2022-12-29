@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland;
 
 /// <summary> Stops either 1 or ALL builds. </summary>
-public class SkipBuild : SkipBase, ISkipBuilds {
+public class SkipBuild : ActionModBaseToken, ISkipBuilds {
 
 	readonly TokenClass[] stoppedClasses;
 	readonly UsageDuration duration;

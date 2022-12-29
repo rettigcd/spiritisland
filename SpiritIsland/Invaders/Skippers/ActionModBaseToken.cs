@@ -3,9 +3,9 @@
 /// <summary>
 /// Base class Token for Skips and mods. Hidden
 /// </summary>
-public class SkipBase : Token {
+public class ActionModBaseToken : Token {
 
-	protected SkipBase(string label,UsageCost cost = UsageCost.Free ) {
+	protected ActionModBaseToken( string label, UsageCost cost = UsageCost.Free ) {
 		Text = label;
 		Cost = cost;
 	}
@@ -20,12 +20,12 @@ public class SkipBase : Token {
 
 	#region static TokenClass
 
-	static readonly TokenClass _classSingleton = new SkipClass();
+	static readonly TokenClass _classSingleton = new ActionModTokenClass();
 
-	class SkipClass : TokenClass {
+	class ActionModTokenClass : TokenClass {
 
-		static readonly public TokenClass Class = new SkipClass();
-		public string Label => "InvaderMod";
+		static readonly public TokenClass Class = new ActionModTokenClass();
+		public string Label => "ActionMod";
 
 		public TokenCategory Category => TokenCategory.Skipper;
 	}

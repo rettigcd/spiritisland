@@ -26,7 +26,7 @@ public class CallToTrade {
 		ctx.GameState.AdjustTempToken( ctx.Space, new ReplaceRavageWithBuild() );
 	}
 
-	class ReplaceRavageWithBuild : SkipBase, ISkipRavages {
+	class ReplaceRavageWithBuild : ActionModBaseToken, ISkipRavages {
 
 		public ReplaceRavageWithBuild() : base( Name ) { }
 

@@ -55,7 +55,7 @@ internal class RainAndMudSupressConflict {
 }
 
 
-class MudToken : SkipBase, ISkipRavages {
+class MudToken : ActionModBaseToken, ISkipRavages {
 	readonly Spirit _self;
 	readonly int _count;
 	public MudToken( Spirit self, int count ):base("RainAndMud"){

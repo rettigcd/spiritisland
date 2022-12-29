@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-sealed public class SkipExploreTo_Custom : SkipBase, ISkipExploreTo {
+sealed public class SkipExploreTo_Custom : ActionModBaseToken, ISkipExploreTo {
 
 	public SkipExploreTo_Custom( string label, bool stopAll, Func<GameCtx, SpaceState, bool> func ) : base( label ) {
 		_stopAll = stopAll;

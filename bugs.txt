@@ -9,11 +9,10 @@ Adjaceny seems to still work for Invaders, or maybe just coastal
 Configure Finder the option to change Adjacents at the start of each Action except invader actions
 Show Fear Card before creating Fear Action
 
-======================
+The Move presence on the presence track is forced (is that correct?) 
+	AND the UI doesn't select it properly
 
-Finder:
-	The Move presence on the presence track is forced (is that correct?) 
-		AND the UI doesn't select it properly
+======================
 
 Settle Into Hunting-Grounds
 	- implement "May" count as badlands and beast.
@@ -21,6 +20,3 @@ Settle Into Hunting-Grounds
 Growth - After Growth, rewinding to beginning of turn, doesn't reset # of card plays to 0
 
 Growth - Shifting Memories 2-elements for card play - doesn't always work
-
-======================
-Make sure all Skip()s, remove their own token. (Test that the same token used multiple times, works multiple times)

@@ -65,6 +65,13 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 			Spirits[i].InitSpirit( Island.Boards[i], this );
 	}
 
+	Task TokenCleanUp( GameState gs ) {
+		Healer.HealAll( gs ); // called at end of round.
+		foreach(var spaceTokens in AllSpaces)
+			spaceTokens.Blight.Blocked = false;
+		return Task.CompletedTask;
+	}
+
 	#endregion
 
 	// base-1,  game starts in round-1
@@ -183,7 +190,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	#endregion
 
-	#region Skip Invader Actions
+	#region API - Skip Invader Actions
 
 	public void SkipAllInvaderActions( Space target, string label ) {
 		// Sometimes this will be called with nothing to skip, Example: Quarentine level 3
@@ -228,6 +235,11 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 			return Task.CompletedTask;
 		} );
 	}
+
+	public void RemovingHandler_RegisterForSpace( SpaceState spaceState, Action<RemovingTokenArgs> handler ) {
+		AdjustTempToken( spaceState.Space, new RemovingHandlerToken(handler));
+	}
+
 	#endregion
 
 	#region Pour Time Sideways - Add Invader actions
@@ -270,30 +282,8 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	public DahanGroupBindingNoEvents DahanOn( Space space ) => Tokens[space].Dahan; // Obsolete - use TargetSpaceCtx
 
-	#region API - overridable
-
-	public DualAsyncEvent<AddBlightEffect> ModifyBlightAddedEffect = new DualAsyncEvent<AddBlightEffect>();
-
-	public Func<int, SpaceState,Task> TakeFromBlightSouce {
-		get { return _takeFromBlightSouce ?? Default_TakeBlightFromSource; }
-		set { _takeFromBlightSouce = value; }
-	}
-	Func<int, SpaceState, Task> _takeFromBlightSouce;
-
-	public Func<Spirit,GameState,Cause,UnitOfWork,Task> Destroy1PresenceFromBlightCard = DefaultDestroy1PresenceFromBlightCard; // Direct distruction from Blight Card, not cascading
-
-	Task TokenCleanUp( GameState gs ) { 
-		Healer.HealAll( gs ); // called at end of round.
-		foreach(var spaceTokens in AllSpaces)
-			spaceTokens.Blight.Blocked = false;
-		return Task.CompletedTask;
-	}
-	public Healer Healer = new Healer(); // replacable Behavior
-
 	/// <param name="cat">Has no functional use.  Just helps us keep straight in our head what kind of action this is.</param>
 	public UnitOfWork StartAction(ActionCategory cat) => new UnitOfWork( EndOfAction, cat );
-
-	#endregion
 
 	#region Win / Loss
 
@@ -392,6 +382,18 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	}
 
 	public BuildEngine GetBuildEngine( SpaceState tokens ) => new BuildEngine( this, tokens );
+
+	public DualAsyncEvent<AddBlightEffect> ModifyBlightAddedEffect = new DualAsyncEvent<AddBlightEffect>();
+
+	public Func<int, SpaceState, Task> TakeFromBlightSouce {
+		get { return _takeFromBlightSouce ?? Default_TakeBlightFromSource; }
+		set { _takeFromBlightSouce = value; }
+	}
+	Func<int, SpaceState, Task> _takeFromBlightSouce;
+
+	public Func<Spirit, GameState, Cause, UnitOfWork, Task> Destroy1PresenceFromBlightCard = DefaultDestroy1PresenceFromBlightCard; // Direct distruction from Blight Card, not cascading
+
+	public Healer Healer = new Healer(); // replacable Behavior
 
 	#endregion overrideable Game-Wide Behavior
 
