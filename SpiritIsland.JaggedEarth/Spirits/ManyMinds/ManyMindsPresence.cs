@@ -24,7 +24,7 @@ class ManyMindsPresence : SpiritPresence {
 	}
 
 	async Task TokenMoved( ITokenMovedArgs args ) {
-		if(args.Class != TokenType.Beast) return; // not a beast
+		if(args.TokenRemoved.Class != TokenType.Beast) return; // not a beast
 		if(this.CountOn( args.RemovedFrom ) < 2) return; // not our Sacred Site
 
 
@@ -35,7 +35,7 @@ class ManyMindsPresence : SpiritPresence {
 
 		await Move2Presence( args.GameState, args );
 
-		await SacredSiteAtSouce_RestoreVirtualBeast( args, srcBeasts.Bind(args.ActionId) );
+		await SacredSiteAtSouce_RestoreVirtualBeast( args, srcBeasts.Bind(args.UnitOfWork) );
 
 		await AddedVirtualBeastAtDestination_LimitTo1( args.GameState, args );
 
@@ -45,7 +45,7 @@ class ManyMindsPresence : SpiritPresence {
 		// Move 2 of our presence
 		for(int i = 0; i < 2; ++i) {
 			await base.RemoveFrom_NoCheck( gs.Tokens[args.RemovedFrom.Space] ); // using base because we don't want to trigger anything
-			await base.PlaceOn( args.AddedTo, args.ActionId );
+			await base.PlaceOn( args.AddedTo, args.UnitOfWork );
 		}
 	}
 

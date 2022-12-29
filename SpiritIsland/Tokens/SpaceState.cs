@@ -82,11 +82,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	public TokenBindingNoEvents Disease => new ( this, TokenType.Disease );
 	public TokenBindingNoEvents Wilds => new ( this, TokenType.Wilds );
 	public TokenBindingNoEvents Badlands => new ( this, TokenType.Badlands ); // This should not be used directly from inside Actions
-	public DahanGroupBindingNoEvents Dahan{
-		get => _dahan ??= new DahanGroupBindingNoEvents( this ); // ! change the ??= to ?? and we would not need to hang on to the binding.
-		set => _dahan = value; // Allows Dahan behavior to be overridden
-	}
-	DahanGroupBindingNoEvents _dahan;
+	public DahanGroupBindingNoEvents Dahan => new DahanGroupBindingNoEvents( this );
 
 	#endregion
 
@@ -173,79 +169,102 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	#region Event-Generating Token Changes
 
-	public async Task Add( Token token, int count, UnitOfWork actionId, AddReason addReason = AddReason.Added ) {
+	public async Task<TokenAddedArgs> Add( Token token, int count, UnitOfWork actionId, AddReason addReason = AddReason.Added ) {
+		TokenAddedArgs addResult = await Add_Silent( token, count, actionId, addReason );
+		if(addResult != null)
+			await tokenApi.Publish_Added( addResult );
+		return addResult;
+	}
+
+	async Task<TokenAddedArgs> Add_Silent( Token token, int count, UnitOfWork actionId, AddReason addReason = AddReason.Added ) {
 		if(count < 0) throw new System.ArgumentOutOfRangeException( nameof( count ) );
 
 		// Pre-Add check/adjust
 		var addingArgs = new AddingTokenArgs { ActionId = actionId, Count = count, Space = Space, Reason = addReason, Token = token };
 		await tokenApi.Publish_Adding( addingArgs );
 		if(addingArgs.Count < 0) throw new IndexOutOfRangeException( nameof( addingArgs.Count ) );
-		if(addingArgs.Count == 0) return;
+		if(addingArgs.Count == 0) return null;
 
 		// Do Add
 		this[addingArgs.Token] += addingArgs.Count;
 
 		// Post-Add event
-		await tokenApi.Publish_Added( new TokenAddedArgs( this, addingArgs.Token, addReason, addingArgs.Count, actionId ) );
+		return new TokenAddedArgs( this, addingArgs.Token, addReason, addingArgs.Count, actionId );
 	}
+
 
 	/// <summary> returns null if no token removed </summary>
 	public async Task<PublishTokenRemovedArgs> Remove( Token token, int count, UnitOfWork actionId, RemoveReason reason = RemoveReason.Removed ) {
+		var @event = Remove_Silent( token, count, actionId, reason );
+		if( @event != null )
+			await tokenApi.Publish_Removed( @event );
+		return @event;
+	}
+
+	/// <summary> returns null if no token removed. Does Not publish event.</summary>
+	PublishTokenRemovedArgs Remove_Silent( Token token, int count, UnitOfWork actionId, RemoveReason reason = RemoveReason.Removed ) {
 		count = System.Math.Min( count, this[token] );
 
 		// Pre-Remove check/adjust
 		var removingArgs = new RemovingTokenArgs { ActionId = actionId, Count = count, Space = Space, Reason = reason, Token = token };
-
 		foreach(var mod in Keys.OfType<IModifyRemoving>().ToArray())
 			mod.ModifyRemoving( removingArgs );
-
 		if(removingArgs.Count < 0) throw new IndexOutOfRangeException( nameof( removingArgs.Count ) );
+
+
 		if(removingArgs.Count == 0) return null;
 
 		// Do Remove
 		this[removingArgs.Token] -= removingArgs.Count;
 
 		// Post-Remove event
-		var removedArgs = new PublishTokenRemovedArgs( removingArgs.Token, reason, actionId, this, removingArgs.Count );
-		await tokenApi.Publish_Removed( removedArgs );
-
-		return removedArgs;
+		return new PublishTokenRemovedArgs( removingArgs.Token, reason, actionId, this, removingArgs.Count );
 	}
+
 
 	// Convenience only
 	public Task Destroy( Token token, int count, UnitOfWork actionId ) => Remove(token, count, actionId, RemoveReason.Destroyed );
 
-	async Task<PublishTokenRemovedArgs> RemoveDahan_SideTrip(HealthToken token, UnitOfWork actionId) {
-		// This remove routes through the DahanBinidng, which will then call this classes .Remove when appropriate.
-		// DO NOT merge this directly into .Remove(...) because we will get a stack-overflow
-		Token removedToken = await Dahan.Bind( actionId ).Remove1( RemoveReason.MovedFrom, token );
-		return removedToken is null ? null 
-			: new PublishTokenRemovedArgs( removedToken, RemoveReason.MovedFrom, actionId, this, 1 ); // !!! 1
-	}
-
 	/// <summary> Gathering / Pushing + a few others </summary>
 	// !!! Powers should not use this Move directly, instead, they should go through TargetSpaceCtx so they can use custom Dahan and Invader bindings.
-	public async Task MoveTo(Token token, Space destination, UnitOfWork actionId ) {
+	public async Task MoveTo( Token token, Space destination, UnitOfWork uow ) {
+		// Current implementation favors:
+		//		switching token types prior to Add/Remove so events handlers don't switch token type
+		//		perfoming the add/remove action After the Adding/Removing modifications
+
+		// Possible problems with this method:
+		//		The token in the Added event, may be different than token that was attempted to be added.
+		//		The Token in the Removed event, may be a different token than was requested to be removed.
+		//		The token Added may be Different than the token Removed
+		//		If the Adding stops the and, what do we do about the token that was removed?
+		//		Move requires a special Publish because it pertains to 2 spaces - we don't want to publish it twice (once for each space)
+
+		// Possible solutions:
+		//		Don't allow Adding to modify count
+		//		Move has 2 tokens, token added and token removed
+
+		if(this[token] == 0) return; // unable to remove desired token
 
 		// Remove from source
-		PublishTokenRemovedArgs removedArgs = token.Class == TokenType.Dahan
-			? await RemoveDahan_SideTrip( (HealthToken)token, actionId )
-			: await Remove( token,1,actionId, RemoveReason.MovedFrom );
-		if( removedArgs is null ) // denied by DahanBinding. !!! double check this, is it still possible to get a null? 
-			return;
+		var removeResults = await Remove( token, 1, uow, RemoveReason.MovedFrom );
+		if(removeResults is null) return; // can be prevented by Remove-Mods
 
 		// Add to destination
 		var dstTokens = tokenApi.GetTokensFor( destination );
-		await dstTokens.Add( removedArgs.Token, removedArgs.Count, actionId, AddReason.MovedTo );
+		var addResult = await dstTokens.Add( token, removeResults.Count, uow, AddReason.MovedTo );
+		if( addResult == null) return;
 
 		// Publish
 		await tokenApi.Publish_Moved( new TokenMovedArgs {
-			Token = token,
-			Class = token.Class,
+			// removed
+			TokenRemoved = removeResults.Token,
 			RemovedFrom = this,
+			// added
+			TokenAdded = addResult.Token,
 			AddedTo = dstTokens,
+			// general
 			Count = 1,
-			ActionId = actionId
+			UnitOfWork = uow
 		} );
 
 	}

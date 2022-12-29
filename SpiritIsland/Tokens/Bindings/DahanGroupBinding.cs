@@ -58,18 +58,11 @@ public class DahanGroupBinding : DahanGroupBindingNoEvents {
 	}
 
 	// Called from .Move() and .Dissolve the Bonds
-	public async Task<Token> Remove1( RemoveReason reason, Token toRemove=null ) {
+	public async Task<Token> Remove1( RemoveReason reason, Token toRemove ) {
+		if( _tokens[toRemove] == 0 )
+			return null; // unable to remove desired token
 
-		// Reason is only MovedFrom and Replaced.  No destroy here
-
-		// validate token to be removed.
-		if( toRemove == null )
-			toRemove = NormalKeys.OrderBy( x => x.RemainingHealth ).FirstOrDefault();
-		else if( _tokens[toRemove] == 0 )
-			toRemove = null; // unable to remove desired token
-
-		if(toRemove != null)
-			await _tokens.Remove( toRemove, 1, actionId, reason );
+		await _tokens.Remove( toRemove, 1, actionId, reason );
 		return toRemove;
 	}
 

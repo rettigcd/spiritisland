@@ -2,9 +2,7 @@
 ====  Clean Up Items  ====
 ==========================
 
-1) Merge Token Added/Removed/Moved events.
-
-2) Make ALL token-events-handlers Mod-Tokens so no API needs called.
+1) Make ALL token-events-handlers Mod-Tokens so no API needs called.
 
 Vengeance
 	Wreak Vengeance for the Lands Corruption - virtual tokens might not be correct.

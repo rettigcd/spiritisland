@@ -15,7 +15,8 @@ public class DissolveTheBondsOfKinship {
 		await ReplaceInvader.SingleInvaderWithExplorers( ctx, Invader.Town, 1 );
 
 		// replace 1 dahan with 1 explorer.
-		if( await ctx.Dahan.Remove1(RemoveReason.Replaced) != null )
+		var toRemove = ctx.Dahan.NormalKeys.OrderBy( x => x.RemainingHealth ).FirstOrDefault();
+		if( await ctx.Dahan.Remove1(RemoveReason.Replaced, toRemove) != null )
 			await ctx.AddDefault( Invader.Explorer, 1, AddReason.AsReplacement );
 
 		// if you have 2 fire 2 water 3 animal

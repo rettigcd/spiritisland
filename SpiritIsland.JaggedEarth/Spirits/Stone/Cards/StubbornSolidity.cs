@@ -17,7 +17,7 @@ public class StubbornSolidity {
 
 		// Freeze future dahn moved into this land. 
 		ctx.GameState.Tokens.TokenMoved.ForRound.Add( args=> {
-			if(args.Class == TokenType.Dahan && args.AddedTo == ctx.Tokens && args.Token is HealthToken ht)
+			if(args.TokenAdded.Class == TokenType.Dahan && args.AddedTo == ctx.Tokens && args.TokenAdded is HealthToken ht)
 				args.AddedTo.ReplaceWith( ht, ht.SwitchClass( FrozenDahan ), args.Count );
 		} );
 		ctx.GameState.Tokens.TokenAdded.ForRound.Add( args => {

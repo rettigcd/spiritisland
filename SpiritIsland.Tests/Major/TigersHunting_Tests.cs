@@ -9,7 +9,7 @@ public class TigersHunting_Tests {
 		HashSet<UnitOfWork> actionIds = new HashSet<UnitOfWork>();
 		fixture.GameState.Tokens.TokenAdded.ForGame.Add(x=>actionIds.Add(x.Action));
 		fixture.GameState.Tokens.TokenRemoved.ForGame.Add( x => actionIds.Add( x.Action ) );
-		fixture.GameState.Tokens.TokenMoved.ForGame.Add( x => actionIds.Add( x.ActionId ) );
+		fixture.GameState.Tokens.TokenMoved.ForGame.Add( x => actionIds.Add( x.UnitOfWork ) );
 
 		// Given: space 5
 		var space = fixture.GameState.Island.Boards[0][5];
