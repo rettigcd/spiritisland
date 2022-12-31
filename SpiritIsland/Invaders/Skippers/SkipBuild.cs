@@ -1,14 +1,14 @@
 ﻿namespace SpiritIsland;
 
 /// <summary> Stops either 1 or ALL builds. </summary>
-public class SkipBuild : ActionModBaseToken, ISkipBuilds {
+public class SkipBuild : BaseModToken, ISkipBuilds {
 
 	readonly TokenClass[] stoppedClasses;
 	readonly UsageDuration duration;
 
 	static public SkipBuild Default( string label ) => new SkipBuild( label, UsageDuration.OneSkipThisTurn,  Invader.Town, Invader.City );
 	
-	public SkipBuild( string label, UsageDuration duration, params TokenClass[] stoppedTokenClasses ):base(label) {
+	public SkipBuild( string label, UsageDuration duration, params TokenClass[] stoppedTokenClasses ):base(label, UsageCost.Free ) {
 		this.duration = duration;
 		this.stoppedClasses = stoppedTokenClasses;
 	}

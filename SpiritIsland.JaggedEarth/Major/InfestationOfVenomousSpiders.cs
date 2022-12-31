@@ -22,7 +22,7 @@ public class InfestationOfVenomousSpiders {
 		// 1 fear (max 4) and
 		ctx.AddFear( System.Math.Min(4,count) );
 		for(int i = 0; i < count; ++i)
-			ctx.GameState.AdjustTempToken( ctx.Space, new SkipAnyInvaderAction( Name, ctx.Self, causeAdditionalDamage ) );
+			ctx.Tokens.Adjust( new SkipAnyInvaderAction( Name, ctx.Self, causeAdditionalDamage ), 1 );
 
 		// !!! Issue 1 - Shouldn't be able to skip ravage twice if there is only 1 ravage occurring
 		// !!! Issue 2 - Shouldn't be able to skip actions that don't happen

@@ -16,7 +16,7 @@ public class ImmigrationSlows : IFearCard {
 		foreach(var board in ctx.GameState.Island.Boards) {
 			var lowest = board.Spaces.FirstOrDefault(card.MatchesCard);
 			if(lowest != null)
-				ctx.GameState.Skip1Build(lowest, Name);
+				ctx.GameState.Tokens[lowest].Skip1Build( Name );
 		}
 		return Task.CompletedTask;
 	}

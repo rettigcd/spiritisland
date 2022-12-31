@@ -13,75 +13,60 @@ public class ObserveTheEverChangingWorld {
 
 	[InnateOption("2 moon,1 air","Instead, after each of the next three Actions that change which pieces are in atarget land, Prepare 1 Element Marker.")]
 	static public Task Option2(TargetSpaceCtx ctx ) {
-		_ = new PreparedTokensOnSpaceTracker(ctx);
+		ctx.Tokens.Init( new ObserveWorldMod( ctx ), 3 );
 		return Task.CompletedTask;
 	}
 
-	class PreparedTokensOnSpaceTracker {
+}
 
-		public PreparedTokensOnSpaceTracker(TargetSpaceCtx ctx) { 
-			this.ctx = ctx;
-			tokenSummary = ctx.Tokens.Summary;
 
-			elementToken = new ElementToken();
-			ctx.Tokens.Init(elementToken,3);
+public class ObserveWorldMod : Token, IHandleTokenAdded, IHandleTokenRemoved {
 
-			handlerKeys = new Guid[2];
-			// !!! It seems like adding / removing presence tokens should trigger this also, but I don't think it triggers the Token Added/Removed event.
-			handlerKeys[0] = ctx.GameState.Tokens.TokenAdded.ForGame.Add( Track );
-			handlerKeys[1] = ctx.GameState.Tokens.TokenRemoved.ForGame.Add( Track );
-		}
+	// !!! It seems like adding / removing presence tokens should trigger this also, but I don't think it triggers the Token Added/Removed event.
 
-		Task Track( ITokenAddedArgs x ) => Check(x.Space.Space, x.Action);
+	static int _total = 0;
+	readonly int _index;
+	string _tokenSummary;
 
-		Task Track( ITokenRemovedArgs x ) => Check(x.Space.Space, x.Action );
+	public TokenClass Class => TokenType.Element;
+	public string Text => ObserveTheEverChangingWorld.Name;
 
-		async Task Check( Space space, UnitOfWork currentActionId ) {
-			if(ctx.Tokens[elementToken] == 0			// already complete
-				|| space != ctx.Space					// wrong space
-				|| appliedActionsIds.Contains( currentActionId ) // already did this action 
-				|| tokenSummary == ctx.Tokens.Summary 	// no change in tokens
-			) 
-				return;
+	public string SpaceAbreviation => $"AnyElement({_index})";
 
-			if(currentActionId == default)
-				throw new InvalidOperationException("Can't use default guids as actionids");
 
-			appliedActionsIds.Add( currentActionId ); // limit to 1 change per action
-			tokenSummary = ctx.Tokens.Summary;
+	readonly ShiftingMemoryOfAges _spirit;
+	readonly HashSet<UnitOfWork> _appliedUnitsOfWork = new HashSet<UnitOfWork>();
 
-			ctx.Tokens.Adjust(elementToken,-1);
-
-			// !!! This web page states SMOA shouldn't get the element until after the Action completes.
-			// https://boardgamegeek.com/thread/2399380/shifting-memory-observe-ever-changing-world
-			var smoa = (ShiftingMemoryOfAges)ctx.Self;
-			await smoa.PrepareElement(space.Label);
-			if(ctx.Tokens[elementToken] == 0)
-				ctx.GameState.TimePasses_ThisRound.Push( StopWatchingSpace );
-		}
-
-		Task StopWatchingSpace( GameState gs ) {
-			gs.Tokens.TokenAdded.ForGame.Remove( handlerKeys[0] );
-			gs.Tokens.TokenRemoved.ForGame.Remove( handlerKeys[1] );
-			return Task.CompletedTask;
-		}
-
-		readonly TargetSpaceCtx ctx;
-		readonly Guid[] handlerKeys;
-		readonly ElementToken elementToken;
-		readonly HashSet<UnitOfWork> appliedActionsIds = new HashSet<UnitOfWork>();
-		string tokenSummary;
-
+	public ObserveWorldMod( TargetSpaceCtx ctx ) {
+		_spirit = (ShiftingMemoryOfAges)ctx.Self;
+		_index = _total++;
+		_tokenSummary = ctx.Tokens.Summary;
 	}
 
-	public class ElementToken : Token { // public for testing
-		static int _total = 0;
-		readonly int _index;
-		public ElementToken() { _index = _total++; }
-		public TokenClass Class => TokenType.Element;
-		public string Text => "Element";
+	public Task HandleTokenAdded( ITokenAddedArgs args ) {
+		return Check( args.Space, args.Action );
+	}
+	public Task HandleTokenRemoved( TokenRemovedArgs args ) {
+		return Check( args.Space, args.Action );
+	}
 
-		public string SpaceAbreviation => $"AnyElement({_index})";
+	async Task Check( SpaceState space, UnitOfWork unitOfWork ) {
+		if(    _appliedUnitsOfWork.Contains( unitOfWork ) // already did this action 
+			|| _tokenSummary == space.Summary   // no change in tokens
+		)
+			return;
+
+		if(unitOfWork == default)
+			throw new InvalidOperationException( "Can't use default guids as actionids" );
+
+		_appliedUnitsOfWork.Add( unitOfWork ); // limit to 1 change per action
+		_tokenSummary = space.Summary;
+
+		space.Adjust( this, -1 );
+
+		// !!! This web page states SMOA shouldn't get the element until after the Action completes.
+		// https://boardgamegeek.com/thread/2399380/shifting-memory-observe-ever-changing-world
+		await _spirit.PrepareElement( space.Space.Label );
 
 	}
 

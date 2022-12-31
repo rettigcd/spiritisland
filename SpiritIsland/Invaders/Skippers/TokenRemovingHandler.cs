@@ -4,11 +4,11 @@ interface IModifyRemoving {
 	void ModifyRemoving( RemovingTokenArgs args );
 }
 
-public class RemovingHandlerToken : ActionModBaseToken, IModifyRemoving {
+public class TokenRemovingHandler : BaseModToken, IModifyRemoving {
 
 	readonly Action<RemovingTokenArgs> _action;
 
-	public RemovingHandlerToken(Action<RemovingTokenArgs> action):base("modify removing" ) {
+	public TokenRemovingHandler(Action<RemovingTokenArgs> action):base( "modify removing", UsageCost.Free ) {
 		_action = action;
 	}
 

@@ -1,8 +1,9 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
 public class MeltEarthIntoQuicksand {
+	const string Name = "Melt Earth into Quicksand";
 
-	[MajorCard("Melt Earth into Quicksand",4,Element.Moon,Element.Water,Element.Earth), Fast, FromPresence(1, Target.Sand, Target.Wetland )]
+	[MajorCard(Name,4,Element.Moon,Element.Water,Element.Earth), Fast, FromPresence(1, Target.Sand, Target.Wetland )]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 		// 1 fear.
 		ctx.AddFear(1);
@@ -14,12 +15,10 @@ public class MeltEarthIntoQuicksand {
 		ctx.Isolate();
 
 		// After invaders / dahan are Moved into target land, Destroy them.
-		ctx.GameState.Tokens.TokenAdded.ForRound.Add( async ( args ) => {
-			if( args.Space == ctx.Tokens
-				&& args.Token.Class.IsOneOf(Invader.Explorer,Invader.Town,Invader.City,TokenType.Dahan ) 
-			) 
-				await args.Space.Destroy(args.Token,args.Count, args.Action);
-		} );
+		ctx.Tokens.Adjust( new TokenAddedHandler(Name, async ( args ) => {
+			if(args.Token.Class.IsOneOf( Invader.Explorer, Invader.Town, Invader.City, TokenType.Dahan ))
+				await args.Space.Destroy( args.Token, args.Count, args.Action );
+		} ), 1 );
 
 		// if you have 2 moon, 4 water, 2 earth:
 		if( await ctx.YouHave("2 moon,4 water,2 earth" )) {

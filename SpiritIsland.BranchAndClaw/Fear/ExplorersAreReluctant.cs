@@ -23,7 +23,7 @@ public class ExplorersAreReluctant : IFearCard {
 		}
 
 		// this is the next normal build
-		ctx.GameState.AdjustTempTokenForAll( new SkipExploreTo_Custom(Name,false, IsLowestMatchingSpace) );
+		ctx.GameState.AddToAllActiveSpaces( new SkipExploreTo_Custom(Name,false, IsLowestMatchingSpace) );
 
 		return Task.CompletedTask;
 	}
@@ -38,7 +38,7 @@ public class ExplorersAreReluctant : IFearCard {
 
 	[FearLevel( 3, "Skip the next normal explore, but still reveal a card. Perform the flag if relavant. Cards shift left as usual." )]
 	public Task Level3( GameCtx ctx ) {
-		ctx.GameState.AdjustTempTokenForAll(new SkipExploreTo(Name));
+		ctx.GameState.AddToAllActiveSpaces(new SkipExploreTo(Name));
 		return Task.CompletedTask;
 	}
 

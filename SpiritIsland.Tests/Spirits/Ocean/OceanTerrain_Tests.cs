@@ -332,7 +332,10 @@ public class OceanTerrain_Tests {
 	#region private helper methods
 
 	GameState Given_TwoSpiritGame() {
-		GameState gameState = new GameState( primarySpirit, oceanSpirit ) { Island = new Island( boardA, Board.BuildBoardB() ) };
+		GameState gameState = new GameState( 
+			new Spirit[]{ primarySpirit, oceanSpirit },
+			new Board[] { boardA, Board.BuildBoardB() } 
+		);
 		gameState.Initialize();
 		return gameState;
 	}

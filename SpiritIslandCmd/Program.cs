@@ -9,9 +9,7 @@ namespace SpiritIslandCmd {
 
 		static void Main(string[] _) {
 
-			var gs = new GameState( new RiverSurges() ){ 
-				Island = new Island(Board.BuildBoardA())
-			};
+			var gs = new GameState( new RiverSurges(), Board.BuildBoardA() );
 
 			var game = new SinglePlayerGame(gs);
 

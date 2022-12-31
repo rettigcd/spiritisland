@@ -2,10 +2,11 @@
 
 public class Tokens_ForIsland : IIslandTokenApi {
 
-	readonly GameState gameStateForEventArgs; // !!! this is only captured so it can be supplied with the events.
+	readonly GameState _gameStateForEventArgs; // !!! this is only captured so it can be supplied with the events.
+	public GameState GetGameState() => _gameStateForEventArgs;
 
 	public Tokens_ForIsland( GameState gs ) {
-		this.gameStateForEventArgs = gs;
+		this._gameStateForEventArgs = gs;
 
 		PenaltyHolder = gs;// new HealthPenaltyPerStrifeHolder();
 		TokenDefaults = new Dictionary<HealthTokenClass, HealthToken> {
@@ -19,17 +20,17 @@ public class Tokens_ForIsland : IIslandTokenApi {
 	}
 
 	Task ClearEventHandlers_ForRound() {
-		TokenAdded.ForRound.Clear();
 		TokenMoved.ForRound.Clear();
-		TokenRemoved.ForRound.Clear();
 		Dynamic.ForRound.Clear();
 		return Task.CompletedTask;
 	}
 
+	public SpaceState GetTokensFor( Space space ) => this[space];
+
 	public SpaceState this[Space space] {
 		get {
 			if(!tokenCounts.ContainsKey( space )) {
-				tokenCounts[space] = new SpaceState( space, new CountDictionary<Token>(), this, this.gameStateForEventArgs );
+				tokenCounts[space] = new SpaceState( space, new CountDictionary<Token>(), this, this._gameStateForEventArgs );
 			}
 			return tokenCounts[space];
 		}
@@ -40,27 +41,9 @@ public class Tokens_ForIsland : IIslandTokenApi {
 	public int GetDynamicTokensFor( SpaceState space, UniqueToken token ) 
 		=> Dynamic.GetTokensFor( space, token );
 
-	public IEnumerable<Space> Keys => tokenCounts.Keys;
-
-	public Task Publish_Adding( AddingTokenArgs args ) => AddingToken.InvokeAsync( args );
-
-	public Task Publish_Added( TokenAddedArgs args ) {
-		args.GameState = gameStateForEventArgs;
-		return TokenAdded.InvokeAsync( args );
-	}
-
-	public Task Publish_Removed( PublishTokenRemovedArgs args ) => TokenRemoved.InvokeAsync( args.MakeEvent(gameStateForEventArgs) );
-
 	public async Task Publish_Moved( TokenMovedArgs args ) {
-		args.GameState=this.gameStateForEventArgs;
+		args.GameState=this._gameStateForEventArgs;
 		await TokenMoved.InvokeAsync( args );
-	}
-
-	public override string ToString() {
-		return tokenCounts.Keys
-			.OrderBy(space=>space.Label)
-			.Select(space => this[space].ToString()+"; " )
-			.Join("\r\n");
 	}
 
 	readonly public IHaveHealthPenaltyPerStrife PenaltyHolder;
@@ -68,17 +51,10 @@ public class Tokens_ForIsland : IIslandTokenApi {
 
 	HealthToken IIslandTokenApi.GetDefault( HealthTokenClass tokenClass ) => TokenDefaults[tokenClass];
 
-	/// <summary> Sent before any token is removed. </summary>
-	/// <remarks> Callers may modify the args to disable the remove if desired. </remarks>
-	public readonly DualAsyncEvent<AddingTokenArgs> AddingToken = new DualAsyncEvent<AddingTokenArgs>();
-
-	public readonly DualAsyncEvent<ITokenAddedArgs> TokenAdded = new DualAsyncEvent<ITokenAddedArgs>();
-	public readonly DualAsyncEvent<ITokenRemovedArgs> TokenRemoved = new DualAsyncEvent<ITokenRemovedArgs>();
 	public readonly DualAsyncEvent<ITokenMovedArgs> TokenMoved = new DualAsyncEvent<ITokenMovedArgs>();
 
 	public readonly DualDynamicTokens Dynamic = new DualDynamicTokens();
 
-	public SpaceState GetTokensFor( Space space ) => this[space];
 	public IEnumerable<SpaceState> PowerUp( IEnumerable<Space> spaces ) => spaces.Select( s => this[s] );
 
 	#region Memento

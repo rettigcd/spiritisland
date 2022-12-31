@@ -4,8 +4,9 @@ public class DahanSaver {
 
 	public static Action<TargetSpaceCtx> DestroyFewer( int maxPerAction, int maxActionCount ) {
 		return ctx => {
+			// !!! could make DahanSaver the token we are adding, instead of using generic RemovingHandlerToken
 			var saver = new DahanSaver( ctx.Tokens, maxPerAction, maxActionCount );
-			ctx.GameState.RemovingHandler_RegisterForSpace( ctx.Tokens, saver.ReduceDestroyCount );
+			ctx.Tokens.Adjust( new TokenRemovingHandler( saver.ReduceDestroyCount ), 1 );
 		};
 	}
 

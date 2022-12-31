@@ -7,12 +7,13 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	/// <summary>
 	/// Simplified constructor for single-player
 	/// </summary>
-	public GameState( Spirit spirit, Board board ) : this(spirit) {
-		this.Island = new Island(board);
-	}
+	public GameState( Spirit spirit, Board board ) : this(new Spirit[]{ spirit }, new Board[] {board}  ) {}
 
-	public GameState(params Spirit[] spirits){
+	public GameState(Spirit[] spirits,Board[] boards){
 		if(spirits.Length==0) throw new ArgumentException("Game must include at least 1 spirit");
+
+		this.Island = new Island( boards );
+
 		this.Spirits = spirits;
 
 		// Note: don't init invader deck here, let users substitute
@@ -21,8 +22,9 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		Invaders = new Invaders( this );
 		Tokens = new Tokens_ForIsland( this );
 
-		Tokens.TokenAdded.ForGame.Add( BlightAddedCheck );
-		Tokens.TokenRemoved.ForGame.Add( BlightRemovedCheck );
+		//		Tokens.TokenAdded.ForGame.Add( BlightAddedCheck );
+		AddToAllActiveSpaces( new TokenAddedHandler( "Cascade Blight", BlightAddedCheck, true ) ); // Combine these 2 into a class.
+		AddToAllActiveSpaces( new TokenRemovedHandler( "Cascade Blight", BlightRemovedCheck, true) );
 
 		TimePasses_WholeGame += TokenCleanUp;
 		TimePasses_WholeGame += ModifyBlightAddedEffect.ForRound.Clear;
@@ -67,8 +69,9 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	Task TokenCleanUp( GameState gs ) {
 		Healer.HealAll( gs ); // called at end of round.
-		foreach(var spaceTokens in AllSpaces)
-			spaceTokens.Blight.Blocked = false;
+		foreach(var spaceToken in AllSpaces)
+			spaceToken.TimePasses();
+
 		return Task.CompletedTask;
 	}
 
@@ -190,57 +193,10 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	#endregion
 
-	#region API - Skip Invader Actions
-
-	public void SkipAllInvaderActions( Space target, string label ) {
-		// Sometimes this will be called with nothing to skip, Example: Quarentine level 3
-		Skip1Ravage( target, label );
-		AdjustTempToken( target, SkipBuild.Default( label ) );
-		Skip1Explore( Tokens[target], label );
+	public void AddToAllActiveSpaces( TokenWithEndOfRoundCleanup token ) {
+		foreach(SpaceState space in AllActiveSpaces)
+			space.Adjust( token, 1 );
 	}
-
-	public void Skip1Ravage( Space space, string label ) {
-		AdjustTempToken( space, new SkipRavage(label) );
-	}
-
-	public void Skip1Build( Space space, string label ) {
-		AdjustTempToken( space, SkipBuild.Default( label ) );
-	}
-
-	public void Skip1Explore( SpaceState space, string label ) {
-		AdjustTempToken( space.Space, new SkipExploreTo( label ) );
-	}
-
-	public void SkipAllBuilds( Space space, string label, params TokenClass[] stoppedClasses  ) {
-		if( stoppedClasses == null || stoppedClasses.Length == 0 )
-			stoppedClasses = new TokenClass[] { Invader.Town, Invader.City };
-		AdjustTempToken( space, new SkipBuild( label, UsageDuration.SkipAllThisTurn, stoppedClasses ));
-	}
-
-	public void AdjustTempTokenForAll( Token token ) {
-		foreach(var space in AllActiveSpaces)
-			AdjustTempToken( space.Space, token );
-	}
-
-	/// <summary> Adds 1 temporary tokens that remove themselves at Time-Passes. </summary>
-	/// <remarks> For not-real tokens like Explore/Build/Ravage Stoppers. </remarks>
-	public void AdjustTempToken( Space space, Token token ) {
-		// Add it
-		Tokens[space].Adjust( token, 1 );
-		// Remove it at end of turn
-		TimePasses_ThisRound.Push( gs => {
-			var tokens = gs.Tokens[space];
-			if(tokens[token] > 0)
-				tokens.Adjust( token, -1 );
-			return Task.CompletedTask;
-		} );
-	}
-
-	public void RemovingHandler_RegisterForSpace( SpaceState spaceState, Action<RemovingTokenArgs> handler ) {
-		AdjustTempToken( spaceState.Space, new RemovingHandlerToken(handler));
-	}
-
-	#endregion
 
 	#region Pour Time Sideways - Add Invader actions
 
@@ -446,8 +402,8 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 public class Healer {
 
 	public virtual void HealAll( GameState gs ) {
-		foreach(var space in gs.Tokens.Keys)
-			HealSpace( gs.Tokens[space] );
+		foreach(SpaceState ss in gs.AllSpaces )
+			HealSpace( ss );
 		skipHealSpaces.Clear();
 	}
 

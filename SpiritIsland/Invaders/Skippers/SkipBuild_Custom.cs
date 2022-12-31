@@ -1,13 +1,13 @@
 ﻿namespace SpiritIsland;
 
-sealed public class SkipBuild_Custom : ActionModBaseToken, ISkipBuilds {
+sealed public class SkipBuild_Custom : BaseModToken, ISkipBuilds {
 
-	public SkipBuild_Custom( string label, bool stopAll, Func<GameCtx, SpaceState, TokenClass, bool> func ) : base( label ) {
+	public SkipBuild_Custom( string label, bool stopAll, Func<GameCtx, SpaceState, TokenClass, bool> func ) : base( label, UsageCost.Free ) {
 		_stopAll = stopAll;
 		_func = (a,b,c) => Task.FromResult(func(a,b,c));
 	}
 
-	public SkipBuild_Custom( string label, bool stopAll, Func<GameCtx, SpaceState, TokenClass, Task<bool>> func ) : base( label ) {
+	public SkipBuild_Custom( string label, bool stopAll, Func<GameCtx, SpaceState, TokenClass, Task<bool>> func ) : base( label, UsageCost.Free ) {
 		_stopAll = stopAll;
 		_func = func;
 	}

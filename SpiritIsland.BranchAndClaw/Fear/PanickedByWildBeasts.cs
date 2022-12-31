@@ -25,8 +25,8 @@ public class PanickedByWildBeasts : IFearCard {
 		// Invaders skip their normal explore and build in lands with beast
 		foreach(var land in ctx.GameState.AllActiveSpaces)
 			if(land.Beasts.Any) {
-				ctx.GameState.Skip1Explore( land, Name );
-				ctx.GameState.Skip1Build( land.Space, Name );
+				land.Skip1Explore( Name );
+				land.Skip1Build( Name );
 			}
 	}
 
@@ -40,7 +40,7 @@ public class PanickedByWildBeasts : IFearCard {
 		// Invaders skip all normal actions in lands with beast.
 		foreach(var land in ctx.GameState.AllActiveSpaces)
 			if(land.Beasts.Any)
-				ctx.GameState.SkipAllInvaderActions( land.Space, Name );
+				land.SkipAllInvaderActions( Name );
 	}
 
 }

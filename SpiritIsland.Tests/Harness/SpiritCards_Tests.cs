@@ -22,11 +22,11 @@ public class SpiritCards_Tests {
 	}
 
 	protected void Given_GameWithSpirits(params Spirit[] spirits) {
-		gameState = new GameState( spirits ) {
-			Island = spirits.Length == 0
-				? new Island( Board.BuildBoardA() )
-				: new Island( Board.BuildBoardA(), Board.BuildBoardB() )
-		};
+		var boards = new List<Board> { Board.BuildBoardA() };
+		if(0 < spirits.Length)
+			boards.Add( Board.BuildBoardB() );
+
+		gameState = new GameState( spirits, boards.ToArray() );
 	}
 
 	protected static void Given_PurchasedFakePowercards(Spirit otherSpirit, int expectedEnergyBonus) {

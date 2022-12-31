@@ -11,10 +11,11 @@ public class SleepAndNeverWaken {
 
 		// Track # of exlorers removed.
 		int removed = 0;
-		ctx.GameState.Tokens.TokenRemoved.ForRound.Add( x => {
-			if(x.Token.Class == Invader.Explorer)
-				removed += x.Count;
-		} );
+		void CountDestroyedExplorers( ITokenRemovedArgs args ) {
+			if(args.Token.Class == Invader.Explorer)
+				removed += args.Count;
+		}
+		ctx.Tokens.Adjust( new TokenRemovedHandler(Name,CountDestroyedExplorers), 1 );
 
 		// remove up to 2 explorer.
 		await Cmd.RemoveExplorers(2).Execute(ctx);

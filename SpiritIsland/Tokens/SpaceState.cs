@@ -171,8 +171,11 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	public async Task<TokenAddedArgs> Add( Token token, int count, UnitOfWork actionId, AddReason addReason = AddReason.Added ) {
 		TokenAddedArgs addResult = await Add_Silent( token, count, actionId, addReason );
-		if(addResult != null)
-			await tokenApi.Publish_Added( addResult );
+		if(addResult != null) {
+			addResult.GameState = this.tokenApi.GetGameState();
+			foreach(var handler in Keys.OfType<IHandleTokenAdded>().ToArray())
+				await handler.HandleTokenAdded( addResult );
+		}
 		return addResult;
 	}
 
@@ -181,7 +184,9 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 		// Pre-Add check/adjust
 		var addingArgs = new AddingTokenArgs { ActionId = actionId, Count = count, Space = Space, Reason = addReason, Token = token };
-		await tokenApi.Publish_Adding( addingArgs );
+		foreach(var mod in Keys.OfType<IModifyAdding>().ToArray() )
+			mod.ModifyAdding( addingArgs );
+
 		if(addingArgs.Count < 0) throw new IndexOutOfRangeException( nameof( addingArgs.Count ) );
 		if(addingArgs.Count == 0) return null;
 
@@ -195,10 +200,13 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	/// <summary> returns null if no token removed </summary>
 	public async Task<PublishTokenRemovedArgs> Remove( Token token, int count, UnitOfWork actionId, RemoveReason reason = RemoveReason.Removed ) {
-		var @event = Remove_Silent( token, count, actionId, reason );
-		if( @event != null )
-			await tokenApi.Publish_Removed( @event );
-		return @event;
+		var cmd = Remove_Silent( token, count, actionId, reason );
+		if( cmd != null) {
+			var e = cmd.MakeEvent( tokenApi.GetGameState() );
+			foreach(var handler in Keys.OfType<IHandleTokenRemoved>().ToArray() )
+				await handler.HandleTokenRemoved( e );
+		}
+		return cmd;
 	}
 
 	/// <summary> returns null if no token removed. Does Not publish event.</summary>
@@ -342,5 +350,36 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	public IEnumerable<SpaceState> InOrAdjacentTo => Range( 1 );
 
 	#endregion
+
+	#region Skip API
+
+	public void SkipAllInvaderActions( string label ) {
+		Skip1Ravage( label );
+		Skip1Build( label );
+		Skip1Explore( label );
+	}
+
+	public void Skip1Ravage( string label ) => Adjust( new SkipRavage( label ), 1 );
+
+	// !!! can we have 2 of these tokens?, will it throw an exception?, will it stop 2 builds?
+	public void Skip1Build( string label ) => Adjust( SkipBuild.Default( label ), 1 );
+
+	public void Skip1Explore( string label ) => Adjust( new SkipExploreTo( label ), 1 );
+
+	public void SkipAllBuilds( string label, params TokenClass[] stoppedClasses ) {
+		if(stoppedClasses == null || stoppedClasses.Length == 0)
+			stoppedClasses = new TokenClass[] { Invader.Town, Invader.City };
+		Adjust( new SkipBuild( label, UsageDuration.SkipAllThisTurn, stoppedClasses ), 1 );
+	}
+
+	#endregion
+
+
+	public void TimePasses() {
+		Blight.Blocked = false; // !!! move inside cleanup token???
+
+		foreach( var cleanup in Keys.OfType<TokenWithEndOfRoundCleanup>().ToArray() )
+			cleanup.EndOfRoundCleanup( this );
+	}
 
 }

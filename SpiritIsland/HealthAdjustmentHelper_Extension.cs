@@ -8,24 +8,22 @@ public static class HealthAdjustmentHelper_Extension {
 		await ctx.Tokens.AdjustHealthOfAll( deltaHealth, ctx.CurrentActionId, tokenClasses ); // ActionID needed if token is destoryed.
 
 		// Add (covers simple-add AND move-in)
-		ctx.GameState.Tokens.AddingToken.ForRound.Add( args => {
-			if( args.Token is HealthToken healthToken
-				&& args.Space == ctx.Space
-				&& tokenClasses.Contains( args.Token.Class )
-			)
+		ctx.Tokens.Adjust( new TokenAddingHandler( args => {
+			if(args.Token is HealthToken healthToken && tokenClasses.Contains( args.Token.Class ))
 				args.Token = healthToken.AddHealth( deltaHealth );
-		} );
+		} ), 1 );
 
 		// Remove (covers simple-remove AND move-out)
-		ctx.GameState.RemovingHandler_RegisterForSpace( ctx.Tokens, async args => {
-			if( args.Token is HealthToken healthToken
+		var removingToken = new TokenRemovingHandler( async args => {
+			if(args.Token is HealthToken healthToken
 				&& tokenClasses.Contains( args.Token.Class )
 			)
 				// Downgrade the existing tokens health
 				// AND change what we are removing to be the downgraded token
 				// tokens being destroyed may reduce the count also.
-				(args.Token,args.Count) = await ctx.Tokens.AdjustHealthOf( healthToken, -deltaHealth, args.Count, args.ActionId );
+				(args.Token, args.Count) = await ctx.Tokens.AdjustHealthOf( healthToken, -deltaHealth, args.Count, args.ActionId );
 		} );
+		ctx.Tokens.Adjust( removingToken, 1 );
 
 		// Add handler to restore ALL at end of round.
 		ctx.GameState.TimePasses_ThisRound.Push( async gs => {

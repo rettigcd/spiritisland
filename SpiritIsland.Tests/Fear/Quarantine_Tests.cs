@@ -147,7 +147,7 @@ public class Quarantine_Tests {
 		ctx.TargetSpace("A8").Tokens.Init("");
 
 		if(skipARavage)
-			ctx.GameState.Skip1Ravage(ctx.TargetSpace("A4").Space, "Test");
+			ctx.TargetSpace( "A4" ).Tokens.Skip1Ravage("Test");
 
 		log.Clear();
 		AdvanceToInvaderPhase();

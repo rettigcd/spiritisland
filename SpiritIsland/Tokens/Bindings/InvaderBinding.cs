@@ -118,8 +118,8 @@ public class InvaderBinding {
 		// !!!! I think this is throwing an exception
 		await Tokens.Destroy( originalToken, 1, UnitOfWork );
 
-		// !!! see if we can invoke this through the Token-Publish API instead - so we can make TokenRemovedArgs internal to Island_Tokens class
-		await this.gameState.Tokens.Publish_Removed( new PublishTokenRemovedArgs( originalToken, reason, UnitOfWork, Tokens, 1 ) );
+		//// !!! see if we can invoke this through the Token-Publish API instead - so we can make TokenRemovedArgs internal to Island_Tokens class
+		//await this.gameState.Tokens.Publish_Removed( new PublishTokenRemovedArgs( originalToken, reason, UnitOfWork, Tokens, 1 ) );
 
 		// Don't assert token is destroyed (from damage) because it is possible to destory healthy tokens
 

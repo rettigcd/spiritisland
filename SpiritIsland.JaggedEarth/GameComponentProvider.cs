@@ -76,7 +76,7 @@ public class GameComponentProvider : IGameComponentProvider {
 		typeof(TransformToAMurderousDarkness),
 		typeof(UnleashATorrentOfTheSelfsOwnEssence),
 		typeof(StormSwath),
-		typeof(TheWoundedWildReturnsOnItsAssailants),
+		typeof(TheWoundedWildTurnsOnItsAssailants),
 		typeof(ThicketsEruptWithEveryTouchOfBreeze),
 		typeof(TreesRadiateCelestialBrilliance),
 		typeof(UtterACurseOfDreadAndBone),

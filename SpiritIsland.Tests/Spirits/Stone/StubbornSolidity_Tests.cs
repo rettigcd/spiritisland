@@ -146,7 +146,7 @@ public class StubbornSolidity_Tests {
 		spirit.NextDecision().HasPrompt( "Gather up to 2 Dahan" ).HasOptions( "D@2 on A7,Done" ).Choose( "D@2 on A7" );
 
 		//  Then: dahan were gathered
-		adjacentSpace.Summary.ShouldBe( "[none]" );
+		adjacentSpace.Summary.ShouldBe( "" );
 
 		//   But: Dahan became frozen and were not pushed
 		targetSpace.Summary.ShouldBe( "2D@2" ); // no defends

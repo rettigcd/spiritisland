@@ -1,21 +1,24 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 	
 public class BloodDrawsPredators{ 
-		
-	[MinorCard("Blood Draws Predators",1,Element.Sun,Element.Fire,Element.Water,Element.Animal),Fast, FromPresence(1)]
+
+	const string Name = "Blood Draws Predators";
+
+	[MinorCard(Name,1,Element.Sun,Element.Fire,Element.Water,Element.Animal),Fast, FromPresence(1)]
 	static public Task ActAsync( TargetSpaceCtx ctx ){
 
 		// After the next time Invaders are Desttroyed in target land:
-		bool used = false;
-		ctx.GameState.Tokens.TokenRemoved.ForRound.Add( async ( args ) => {
-			if(used || args.Space != ctx.Tokens ) return;
-			used = true;
+		TokenAddedHandler mod = null; // initialized 1st so method can refer to it.
+		mod = new TokenAddedHandler( Name, async ( args ) => {
+			args.Space.Adjust(mod,-1); // remove token
+
 			// Add 1 Beast,
-			await ctx.Beasts.Add(1);
+			await ctx.Beasts.Add( 1 );
 
 			// Then 1 Damage per Beast (max. 3 Damage)
-			await ctx.DamageInvaders( ctx.Beasts.Count);
+			await ctx.DamageInvaders( ctx.Beasts.Count );
 		} );
+		ctx.Tokens.Adjust( mod, 1 );
 
 		return Task.CompletedTask;
 	}

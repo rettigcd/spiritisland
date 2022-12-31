@@ -22,7 +22,7 @@ public class Quarantine : IFearCard {
 		ExploreDoesNotAffectCoastalLands( ctx );
 
 		// Lands with disease are not a source of invaders when exploring
-		ctx.GameState.AdjustTempTokenForAll( new SkipExploreFrom( Name ) );
+		ctx.GameState.AddToAllActiveSpaces( new SkipExploreFrom( Name ) );
 
 		return Task.CompletedTask;
 	}
@@ -35,7 +35,7 @@ public class Quarantine : IFearCard {
 
 		// Invaders do not act in lands with disease.
 		foreach(var target in ctx.LandsWithDisease())
-			ctx.GameState.SkipAllInvaderActions( target.Space, Name );
+			target.SkipAllInvaderActions( Name );
 
 		return Task.CompletedTask;
 	}
@@ -43,7 +43,7 @@ public class Quarantine : IFearCard {
 	static void ExploreDoesNotAffectCoastalLands( GameCtx ctx ) {
 		var gs = ctx.GameState;
 		foreach(var costal in gs.AllActiveSpaces.Where( x => x.Space.IsCoastal ))
-			gs.Skip1Explore( costal, Name );
+			costal.Skip1Explore( Name );
 	}
 
 }

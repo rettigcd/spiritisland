@@ -42,9 +42,10 @@ public class France : IAdversary {
 		// When you remove Blight from the board, put it here instead of onto the Blight Card.
 		// As soon as you have 3 Blight per player here, move it all back to the Blight Card.
 		int slowBlightCount = 0; // !!! this doesn't save / load with Rewinds
-		gameState.Tokens.TokenRemoved.ForGame.Add( args => {
-			if( args.Token != TokenType.Blight
-				|| args.Reason.IsOneOf(	RemoveReason.MovedFrom,	RemoveReason.Replaced )
+
+		void DoFranceStuff( ITokenRemovedArgs args ) {
+			if(args.Token != TokenType.Blight
+				|| args.Reason.IsOneOf( RemoveReason.MovedFrom, RemoveReason.Replaced )
 			) return;
 
 			if(slowBlightCount == 2) {
@@ -54,7 +55,9 @@ public class France : IAdversary {
 				--gameState.blightOnCard;
 				++slowBlightCount;
 			}
-		} );
+		}
+
+		gameState.AddToAllActiveSpaces( new TokenRemovedHandler("France",DoFranceStuff,true) );
 	}
 
 	static void EarlyPlantation( GameState gameState ) {

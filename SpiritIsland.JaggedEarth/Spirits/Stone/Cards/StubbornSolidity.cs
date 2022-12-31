@@ -20,12 +20,12 @@ public class StubbornSolidity {
 			if(args.TokenAdded.Class == TokenType.Dahan && args.AddedTo == ctx.Tokens && args.TokenAdded is HealthToken ht)
 				args.AddedTo.ReplaceWith( ht, ht.SwitchClass( FrozenDahan ), args.Count );
 		} );
-		ctx.GameState.Tokens.TokenAdded.ForRound.Add( args => {
-			if(args.Token.Class == TokenType.Dahan && args.Space == ctx.Tokens && args.Token is HealthToken ht)
+		ctx.Tokens.Adjust( new TokenAddedHandler(Name, args => {
+			if(args.Token.Class == TokenType.Dahan && args.Token is HealthToken ht)
 				args.Space.ReplaceWith( ht, ht.SwitchClass( FrozenDahan ), args.Count );
-		} );
+		} ), 1 );
 
-		// Restore at end of round
+		// Restore at end of round - !!! Could instead create a custom token that cleans up its own mess.
 		ctx.GameState.TimePasses_ThisRound.Push( (gs)=>{
 			foreach( HealthToken x in ctx.Tokens.OfClass(FrozenDahan).ToArray() )
 				ctx.Tokens.ReplaceAllWith( x, x.SwitchClass( TokenType.Dahan ) );

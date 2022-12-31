@@ -71,19 +71,20 @@ public class Sweden : IAdversary {
 		// When Ravaging adds at least 1 Blight to a land, also add 1 Town to an adjacent land without Town/City.
 		// Cascading Blight does not cause this effect.
 		if(5 <= Level) {
-			gameState.Tokens.TokenAdded.ForGame.Add( args => { 
+			var mod = new TokenAddedHandler("Sweden", args => {
 				if(args.Reason == AddReason.Ravage && args.Token == TokenType.Blight) {
 					var noBuildAdjacents = args.Space.Adjacent
-						.Where( adj=>!adj.HasAny(Invader.Town,Invader.City) )
+						.Where( adj => !adj.HasAny( Invader.Town, Invader.City ) )
 						.ToArray();
-					
+
 					// !!! user select which space to add it to
 					var selection = noBuildAdjacents.FirstOrDefault();
 
 					if(selection != null)
-						selection.AdjustDefault(Invader.Town,1);
+						selection.AdjustDefault( Invader.Town, 1 );
 				}
-			} );
+			}, true );
+			gameState.AddToAllActiveSpaces( mod );
 		}
 
 		// Level 6

@@ -23,7 +23,7 @@ public class OverseasTradeSeemsSafer : IFearCard {
 			// Defend 6 in all Coastal lands.
 			space.Defend.Add( 6 );
 			// Invaders do not Build City in Coastal lands this turn.
-			ctx.GameState.SkipAllBuilds( space.Space, $"{Name}(city)", Invader.City );
+			space.SkipAllBuilds( $"{Name}(city)", Invader.City );
 		}
 
 		return Task.CompletedTask;
@@ -36,7 +36,7 @@ public class OverseasTradeSeemsSafer : IFearCard {
 			// Defend 9 in all Coastal lands.
 			space.Defend.Add( 9 );
 			// Invaders do not Build in Coastal lands this turn.
-			ctx.GameState.SkipAllBuilds( space.Space, Name );
+			space.SkipAllBuilds( Name );
 		}
 
 		return Task.CompletedTask;

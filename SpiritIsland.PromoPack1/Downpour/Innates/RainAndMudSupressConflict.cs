@@ -41,7 +41,7 @@ internal class RainAndMudSupressConflict {
 		// Each of your Presence grants Defend 1
 		ctx.GameState.Tokens.Dynamic.ForRound.Register( sp => ctx.Self.Presence.CountOn( sp ), TokenType.Defend );
 		// lowers Dahan counterattack damage by 1
-		ctx.GameState.AdjustTempTokenForAll( new MudToken( ctx.Self, 1 ) );
+		ctx.GameState.AddToAllActiveSpaces( new MudToken( ctx.Self, 1 ) );
 		MarkAsUsed( ctx );
 	}
 
@@ -55,10 +55,10 @@ internal class RainAndMudSupressConflict {
 }
 
 
-class MudToken : ActionModBaseToken, ISkipRavages {
+class MudToken : BaseModToken, ISkipRavages {
 	readonly Spirit _self;
 	readonly int _count;
-	public MudToken( Spirit self, int count ):base("RainAndMud"){
+	public MudToken( Spirit self, int count ):base("RainAndMud", UsageCost.Free ) {
 		_self = self;
 		_count = count;
 	}

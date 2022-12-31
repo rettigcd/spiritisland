@@ -2,7 +2,9 @@
 
 public class PortentsOfDisaster {
 
-	[MinorCard( "Portents of Disaster", 0, Element.Sun, Element.Moon, Element.Air ), Fast, FromSacredSite( 1, Target.Invaders )]
+	const string Name = "Portents of Disaster";
+
+	[MinorCard( Name, 0, Element.Sun, Element.Moon, Element.Air ), Fast, FromSacredSite( 1, Target.Invaders )]
 	static public Task ActAsync( TargetSpaceCtx ctx ) {
 		// 2 fear
 		ctx.AddFear(2);
@@ -12,7 +14,6 @@ public class PortentsOfDisaster {
 		Task Add1MoreFearForFirstDestroyedInvader( ITokenRemovedArgs args ) {
 			if( addFear 
 				&& args.Reason.IsDestroy()
-				&& args.Space == ctx.Tokens
 				&& args.Token.Class.IsOneOf(Invader.Town,Invader.City,Invader.Explorer) 
 			){ // !! create an override .IsInvader()
 				ctx.AddFear(1);
@@ -20,7 +21,8 @@ public class PortentsOfDisaster {
 			}
 			return Task.CompletedTask;
 		}
-		ctx.GameState.Tokens.TokenRemoved.ForRound.Add( Add1MoreFearForFirstDestroyedInvader );
+		ctx.Tokens.Adjust( new TokenRemovedHandler( Name, Add1MoreFearForFirstDestroyedInvader ), 1 );
+//		ctx.GameState.Tokens.TokenRemoved.ForRound.Add( Add1MoreFearForFirstDestroyedInvader );
 
 		return Task.CompletedTask;
 	}

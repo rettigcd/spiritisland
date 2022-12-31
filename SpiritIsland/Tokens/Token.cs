@@ -10,3 +10,7 @@ public interface Token : IOption {
 	/// </summary>
 	string SpaceAbreviation { get; }
 }
+
+public interface TokenWithEndOfRoundCleanup : Token {
+	void EndOfRoundCleanup(SpaceState spaceState);
+}

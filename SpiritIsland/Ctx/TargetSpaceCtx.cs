@@ -167,12 +167,11 @@ public class TargetSpaceCtx : SelfCtx {
 
 	protected virtual InvaderBinding GetInvaders() => new InvaderBinding( GameState, Tokens, CurrentActionId );
 
-	public void SkipAllInvaderActions(string label) => GameState.SkipAllInvaderActions( Space, label );
+	public void SkipAllInvaderActions(string label) => Tokens.SkipAllInvaderActions( label );
 
-	public void Skip1Build(ISkipBuilds stopperToken) => GameState.AdjustTempToken( Space, stopperToken );
-	public void Skip1Build( string label ) => GameState.Skip1Build( Space, label );
+	public void Skip1Build( string label ) => Tokens.Skip1Build( label );
 
-	public void Skip1Ravage(string label ) => GameState.Skip1Ravage( Space, label );
+	public void Skip1Ravage( string label ) => Tokens.Skip1Ravage( label );
 
 
 	// Damage invaders in the current target space

@@ -7,8 +7,8 @@ public class TigersHunting_Tests {
 		var fixture = new ConfigurableTestFixture();
 
 		HashSet<UnitOfWork> actionIds = new HashSet<UnitOfWork>();
-		fixture.GameState.Tokens.TokenAdded.ForGame.Add(x=>actionIds.Add(x.Action));
-		fixture.GameState.Tokens.TokenRemoved.ForGame.Add( x => actionIds.Add( x.Action ) );
+		fixture.GameState.AddToAllActiveSpaces( new TokenAddedHandler( "loggin", x => actionIds.Add( x.Action ), true ) );
+		fixture.GameState.AddToAllActiveSpaces( new TokenRemovedHandler( "loggin", x => actionIds.Add( x.Action ), true ) );
 		fixture.GameState.Tokens.TokenMoved.ForGame.Add( x => actionIds.Add( x.UnitOfWork ) );
 
 		// Given: space 5

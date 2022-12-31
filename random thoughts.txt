@@ -16,6 +16,30 @@ Make Terrain Adjacent
 
 https://boardgamegeek.com/thread/2952684/strategy-finder-paths-unseen
 ==========================
+		Shroud
+		Vengeance
+		Many Minds
+		Fractured Days
+		Finder				(Jonah)
+		Grinning Trickster	(Jonah)
+		Serpent				(Jonah)
+		Starlight			(Jonah)
+	M	Downpour
+	M	Heart of Wildfire
+	M	Keeper
+	M	Lure
+01	M	Shifing Memory
+04		Stone
+15		Shadows
+16	M	Lightning
+17		Vital Strength
+20		Sharp Fangs			(Jonah)
+22		Volcano
+25		Rampant Green
+25	M	Thunderspeaker
+28		Bringer
+43		Ocean
+60	M	River
 
 ==========================
 

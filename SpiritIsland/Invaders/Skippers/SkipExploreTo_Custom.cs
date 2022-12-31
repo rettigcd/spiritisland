@@ -1,12 +1,12 @@
 ﻿namespace SpiritIsland;
 
-sealed public class SkipExploreTo_Custom : ActionModBaseToken, ISkipExploreTo {
+sealed public class SkipExploreTo_Custom : BaseModToken, ISkipExploreTo {
 
-	public SkipExploreTo_Custom( string label, bool stopAll, Func<GameCtx, SpaceState, bool> func ) : base( label ) {
+	public SkipExploreTo_Custom( string label, bool stopAll, Func<GameCtx, SpaceState, bool> func ) : base( label, UsageCost.Free ) {
 		_stopAll = stopAll;
 		_func = (a,b) => Task.FromResult(func(a,b));
 	}
-	public SkipExploreTo_Custom( string label, bool stopAll, Func<GameCtx, SpaceState, Task<bool>> func ) : base( label ) {
+	public SkipExploreTo_Custom( string label, bool stopAll, Func<GameCtx, SpaceState, Task<bool>> func ) : base( label, UsageCost.Free ) {
 		_stopAll = stopAll;
 		_func = func;
 	}

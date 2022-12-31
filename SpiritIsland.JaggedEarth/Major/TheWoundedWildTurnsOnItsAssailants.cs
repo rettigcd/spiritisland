@@ -1,8 +1,10 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-public class TheWoundedWildReturnsOnItsAssailants {
+public class TheWoundedWildTurnsOnItsAssailants {
 
-	[MajorCard("The Wounded Wild Turns on its Assailants",4,Element.Fire,Element.Plant,Element.Animal), Slow, FromPresence(1,Target.Blight)]
+	const string Name = "The Wounded Wild Turns on its Assailants";
+
+	[MajorCard(Name,4,Element.Fire,Element.Plant,Element.Animal), Slow, FromPresence(1,Target.Blight)]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 		// Add 2 badlands
 		await ctx.Badlands.Add( 2 );
@@ -13,7 +15,7 @@ public class TheWoundedWildReturnsOnItsAssailants {
 		// (watch for invaders destroyed in this land)
 		int destroyed = 0;
 		// the only way a token will be removed, is if it is destroyed
-		ctx.GameState.Tokens.TokenRemoved.ForRound.Add( ( args ) => destroyed++ );
+		ctx.Tokens.Adjust(new TokenRemovedHandler(Name, args => destroyed++), 1 );
 
 		// 1 damamge per blight/beast/wilds.
 		await ctx.DamageInvaders( ctx.Blight.Count + ctx.Beasts.Count + ctx.Wilds.Count );

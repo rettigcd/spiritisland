@@ -23,12 +23,12 @@ public class CallToTrade {
 	}
 
 	static void FirstRavageBecomesABuild( TargetSpaceCtx ctx ) {
-		ctx.GameState.AdjustTempToken( ctx.Space, new ReplaceRavageWithBuild() );
+		ctx.Tokens.Adjust( new ReplaceRavageWithBuild(), 1);
 	}
 
-	class ReplaceRavageWithBuild : ActionModBaseToken, ISkipRavages {
+	class ReplaceRavageWithBuild : BaseModToken, ISkipRavages {
 
-		public ReplaceRavageWithBuild() : base( Name ) { }
+		public ReplaceRavageWithBuild() : base( Name, UsageCost.Free ) { }
 
 		public Task<bool> Skip( GameState gameState, SpaceState space ) {
 			space.Adjust( this, -1 );
