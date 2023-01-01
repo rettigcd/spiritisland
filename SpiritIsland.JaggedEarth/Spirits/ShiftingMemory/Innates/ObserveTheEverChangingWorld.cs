@@ -44,13 +44,15 @@ public class ObserveWorldMod : Token, IHandleTokenAdded, IHandleTokenRemoved {
 	}
 
 	public Task HandleTokenAdded( ITokenAddedArgs args ) {
-		return Check( args.Space, args.Action );
+		Check( args.Space, args.Action );
+		return Task.CompletedTask;
 	}
 	public Task HandleTokenRemoved( TokenRemovedArgs args ) {
-		return Check( args.Space, args.Action );
+		Check( args.Space, args.Action );
+		return Task.CompletedTask;
 	}
 
-	async Task Check( SpaceState space, UnitOfWork unitOfWork ) {
+	void Check( SpaceState space, UnitOfWork unitOfWork ) {
 		if(    _appliedUnitsOfWork.Contains( unitOfWork ) // already did this action 
 			|| _tokenSummary == space.Summary   // no change in tokens
 		)
@@ -62,11 +64,15 @@ public class ObserveWorldMod : Token, IHandleTokenAdded, IHandleTokenRemoved {
 		_appliedUnitsOfWork.Add( unitOfWork ); // limit to 1 change per action
 		_tokenSummary = space.Summary;
 
-		space.Adjust( this, -1 );
+		unitOfWork.AtEndOfThisAction(async _ => {
+			space.Adjust( this, -1 );
 
-		// !!! This web page states SMOA shouldn't get the element until after the Action completes.
-		// https://boardgamegeek.com/thread/2399380/shifting-memory-observe-ever-changing-world
-		await _spirit.PrepareElement( space.Space.Label );
+			// !!! This web page states SMOA shouldn't get the element until after the Action completes.
+			// https://boardgamegeek.com/thread/2399380/shifting-memory-observe-ever-changing-world
+			await _spirit.PrepareElement( space.Space.Label );
+
+		} );
+
 
 	}
 

@@ -170,7 +170,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	#region Event-Generating Token Changes
 
 	public async Task<TokenAddedArgs> Add( Token token, int count, UnitOfWork actionId, AddReason addReason = AddReason.Added ) {
-		TokenAddedArgs addResult = await Add_Silent( token, count, actionId, addReason );
+		TokenAddedArgs addResult = Add_Silent( token, count, actionId, addReason );
 		if(addResult != null) {
 			addResult.GameState = this.tokenApi.GetGameState();
 			foreach(var handler in Keys.OfType<IHandleTokenAdded>().ToArray())
@@ -179,7 +179,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 		return addResult;
 	}
 
-	async Task<TokenAddedArgs> Add_Silent( Token token, int count, UnitOfWork actionId, AddReason addReason = AddReason.Added ) {
+	 TokenAddedArgs Add_Silent( Token token, int count, UnitOfWork actionId, AddReason addReason = AddReason.Added ) {
 		if(count < 0) throw new System.ArgumentOutOfRangeException( nameof( count ) );
 
 		// Pre-Add check/adjust
