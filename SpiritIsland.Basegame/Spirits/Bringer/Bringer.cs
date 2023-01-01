@@ -47,10 +47,10 @@ public class Bringer : Spirit {
 		gs.EndOfAction.ForGame.Add( ToDreamAThousandDeaths.CleanupDreamDamage );
 	}
 
-	public override SelfCtx Bind( GameState gameState, UnitOfWork action, Cause cause = default )
+	public override SelfCtx Bind( Spirit spirit, GameState gameState, UnitOfWork action, Cause cause )
 		=> cause == Cause.MyPowers
-			? new BringerCtx(this,gameState, action!=default?action : gameState.StartAction( ActionCategory.Spirit_Power ) )
-			: base.Bind( gameState, action, cause );
+			? new BringerCtx( spirit, gameState, action!=default?action : gameState.StartAction( ActionCategory.Spirit_Power ) )
+			: base.Bind( spirit, gameState, action, cause );
 
 	// !!! When Binding directly, DO NOT use special My power rules
 

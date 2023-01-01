@@ -22,7 +22,7 @@ public class TradeSuffers : IFearCard {
 			var options = gs.AllActiveSpaces.Where( s => tm.IsInPlay(s) && tm.IsCoastal(s) && s.Has( Invader.Town ) ).ToArray();
 			if(options.Length == 0) return;
 			var target = await spirit.Gateway.Decision( new Select.Space( "Replace town with explorer", options, Present.Always ) );
-			await ReplaceInvader.Downgrade( spirit.Bind( gs, ctx.UnitOfWork ).Target( target), Present.Done, Invader.Town );
+			await ReplaceInvader.Downgrade( spirit.BindSelf( gs, ctx.UnitOfWork ).Target( target), Present.Done, Invader.Town );
 		}
 	}
 
@@ -34,7 +34,7 @@ public class TradeSuffers : IFearCard {
 			var options = gs.AllActiveSpaces.Where( s => tm.IsInPlay( s ) && tm.IsCoastal( s ) && s.HasAny(Invader.Town,Invader.City) ).Select(s=>s.Space).ToArray();
 			if(options.Length == 0) return;
 			var target = await spirit.Gateway.Decision( new Select.Space( "Replace town with explorer or city with town", options, Present.Always ));
-			await ReplaceInvader.Downgrade( spirit.Bind( gs, ctx.UnitOfWork ).Target( target ), Present.Done, Invader.Town, Invader.City );
+			await ReplaceInvader.Downgrade( spirit.BindSelf( gs, ctx.UnitOfWork ).Target( target ), Present.Done, Invader.Town, Invader.City );
 		}
 	}
 

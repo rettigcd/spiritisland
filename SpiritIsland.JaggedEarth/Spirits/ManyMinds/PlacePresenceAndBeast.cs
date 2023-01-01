@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-class PlacePresenceAndBeast : GrowthActionFactory {
+public class PlacePresenceAndBeast : GrowthActionFactory {
 
 	public override async Task ActivateAsync( SelfCtx ctx ) {
 		var from = await ctx.Presence.SelectSource();

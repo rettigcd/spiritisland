@@ -71,7 +71,7 @@ public class SelfCtx {
 
 	public TargetSpiritCtx TargetSpirit( Spirit spirit ) => new TargetSpiritCtx( this, spirit );
 
-	public SelfCtx NewSelf( Spirit spirit ) => spirit.Bind( GameState, CurrentActionId );
+	public SelfCtx NewSelf( Spirit spirit ) => spirit.BindSelf( GameState, CurrentActionId );
 
 	// Visually, selects the [presence] icon
 	public async Task<TargetSpaceCtx> TargetDeployedPresence( string prompt ) {

@@ -33,7 +33,7 @@ public static partial class Cmd {
 			async ctx => {
 				var gs = ctx.GameState;
 				for(int i = 0; i < gs.Island.Boards.Length; ++i) {
-					var decisionMaker = gs.Spirits[i < gs.Spirits.Length ? i : 0].Bind( gs, ctx.UnitOfWork ); // use Head spirit for extra board
+					var decisionMaker = gs.Spirits[i < gs.Spirits.Length ? i : 0].BindSelf( gs, ctx.UnitOfWork ); // use Head spirit for extra board
 					var board = gs.Island.Boards[i];
 					var spaces = board.Spaces
 						.Select( s => gs.Tokens[s] )
@@ -49,7 +49,7 @@ public static partial class Cmd {
 			"For each spirit, " + action.Description,
 			async ctx => {
 				foreach(Spirit spirit in ctx.GameState.Spirits)
-					await action.Execute( spirit.Bind( ctx.GameState, ctx.UnitOfWork ) );
+					await action.Execute( spirit.BindSelf( ctx.GameState, ctx.UnitOfWork ) );
 			}
 		);
 

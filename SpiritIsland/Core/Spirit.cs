@@ -82,7 +82,7 @@ public abstract partial class Spirit : IOption {
 
 	public async Task GrowAndResolve( GrowthOption option, GameState gameState ) { // public for Testing
 		await using var action = gameState.StartAction( ActionCategory.Spirit_Growth );
-		var ctx = Bind( gameState, action );
+		var ctx = BindSelf( gameState, action );
 
 		// Auto run the auto-runs.
 		foreach(var autoAction in option.AutoRuns)
@@ -149,7 +149,7 @@ public abstract partial class Spirit : IOption {
 
 		SelfCtx ctx = phase switch {
 			Phase.Init or
-			Phase.Growth => Bind( gs, unitOfWork ),
+			Phase.Growth => BindSelf( gs, unitOfWork ),
 			Phase.Fast or 
 			Phase.Slow => BindMyPower( gs, unitOfWork ),
 			_ => throw new InvalidOperationException(),
@@ -340,8 +340,12 @@ public abstract partial class Spirit : IOption {
 
 	protected abstract void InitializeInternal( Board board, GameState gameState );
 
-	public virtual SelfCtx Bind( GameState gameState, UnitOfWork action, Cause cause = default ) => new SelfCtx( this, gameState, action, cause );
-	public SelfCtx BindMyPower( GameState gameState, UnitOfWork existingAction ) => Bind( gameState, existingAction, Cause.MyPowers );
+	public SelfCtx BindSelf( GameState gameState, UnitOfWork unitOfWork, Cause cause = default ) => Bind( this, gameState, unitOfWork, cause );
+
+	public SelfCtx BindMyPower( GameState gameState, UnitOfWork unitOfWork ) => Bind( this, gameState, unitOfWork, Cause.MyPowers );
+
+	public virtual SelfCtx Bind( Spirit spirit, GameState gameState, UnitOfWork action, Cause cause ) => new SelfCtx( spirit, gameState, action, cause );
+
 
 	Task On_TimePassed(GameState _ ) {
 		// reset cards / powers

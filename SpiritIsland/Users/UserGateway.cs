@@ -76,7 +76,7 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 		if(originalDecision == null) throw new ArgumentNullException( nameof( originalDecision ) );
 
 		if(activeDecisionMaker != null) 
-			throw new InvalidOperationException( $"Pending decision was not properly awaited. Current:[{activeDecisionMaker.Decision.Prompt}], Previous:[{originalDecision.Prompt}] ");
+			throw new InvalidOperationException( $"Pending decision was not properly awaited. Current:[{originalDecision.Prompt}], Previous:[{activeDecisionMaker.Decision.Prompt}] ");
 
 		var promise = new TaskCompletionSource<T>();
 		var decisionMaker = new ActionHelper<T>( originalDecision, promise );
@@ -123,58 +123,35 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 		public void IssueCommand( IGameStateCommand cmd );
 	}
 
+	/// <summary>
+	/// Assigns one of the generic available options to the typed pending promise.
+	/// </summary>
 	class ActionHelper<T> : IDecisionMaker where T : class, IOption {
-
-		public IDecisionPlus Decision { get; }
 
 		public ActionHelper( IDecisionPlus decision, TaskCompletionSource<T> promise ) {
 			Decision = decision;
-			this.promise = promise;
+			this._pendingPromise = promise;
 		}
+
+		public IDecisionPlus Decision { get; }
 
 		public void Select( IOption selection ) {
 			if( TextOption.Done.Matches( selection ) || selection is not T tt )
-				promise.TrySetResult( null );
+				_pendingPromise.TrySetResult( null );
 			else if(Decision.Options.Contains( selection ))
-				promise.TrySetResult( tt );
+				_pendingPromise.TrySetResult( tt );
 			else
-				promise.TrySetException( new Exception( $"{selection.Text} not found in options" ) );
+				_pendingPromise.TrySetException( new Exception( $"{selection.Text} not found in options" ) );
 		}
 
 		public void IssueCommand( IGameStateCommand cmd ) {
-			promise.TrySetException( new GameStateCommandException(cmd) );
+			_pendingPromise.TrySetException( new GameStateCommandException(cmd) );
 		}
 
-		readonly TaskCompletionSource<T> promise;
+		readonly TaskCompletionSource<T> _pendingPromise;
 
 	}
 
 	#endregion
 
-}
-
-public class DecisionLogEntry : ILogEntry {
-
-	readonly IOption selection;
-	readonly IDecision decision;
-	readonly bool auto;
-
-	public DecisionLogEntry(IOption selection, IDecision decision, bool auto ) {
-		this.selection = selection;
-		this.decision = decision;
-		this.auto = auto;
-	}
-
-	public string Msg( LogLevel level ) {
-		// Fatal/Error/Warn/Info
-		if( level <= LogLevel.Info)
-			return decision.Prompt + ": " + selection.Text;
-
-		// Debug/All
-		string msg = decision.Prompt + "(" + decision.Options.Select( o => o.Text ).Join( "," ) + "):" + selection.Text;
-		if(auto) msg += " AUTO";
-		return msg;
-	}
-
-	public LogLevel Level => LogLevel.Info;
 }

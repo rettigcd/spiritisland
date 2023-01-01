@@ -39,7 +39,7 @@ class GameFixture {
 		return this;
 	}
 
-	public TargetSpaceCtx TargetSpace( string spaceLabel ) => spirit.Bind( this.gameState, gameState.StartAction( ActionCategory.Default ) ) // ??? is not disposing this action ok?
+	public TargetSpaceCtx TargetSpace( string spaceLabel ) => spirit.BindSelf( this.gameState, gameState.StartAction( ActionCategory.Default ) ) // ??? is not disposing this action ok?
 		.Target( gameState.AllSpaces.Single( x => x.Space.Label == spaceLabel ).Space );
 
 	public void InitRavageCard( Space space ) => gameState.InvaderDeck.Ravage.Cards.Add( space.BuildInvaderCard() );

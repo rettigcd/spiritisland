@@ -87,7 +87,7 @@ public class Ocean : Spirit {
 			var destination = await this.Gateway.Decision(Select.Space.PushToken(args.Token,args.Space.Space,moveOptions, Present.Done));
 			if( destination != null ) {
 				// Move them at the end of the Action. (Let everyone handle the move-event before we move them again)
-				args.Action.AtEndOfThisAction(_ => Bind( args.GameState, args.Action ).Move( args.Token, args.Space.Space, destination ) );
+				args.Action.AtEndOfThisAction(_ => BindSelf( args.GameState, args.Action ).Move( args.Token, args.Space.Space, destination ) );
 				return; // the move it, don't drown it
 			}
 		}

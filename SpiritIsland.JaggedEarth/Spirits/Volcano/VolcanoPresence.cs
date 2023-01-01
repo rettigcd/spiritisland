@@ -26,7 +26,7 @@ class VolcanoPresence : SpiritPresence {
 			// Create a TargetSpaceCtx to include Bandlands damage also.
 			var selfCtx = unitOfWork.Category == ActionCategory.Spirit_Power && unitOfWork.Owner == spirit
 				? spirit.BindMyPower( gs, unitOfWork )
-				: spirit.Bind( gs, unitOfWork );
+				: spirit.BindSelf( gs, unitOfWork );
 			var ctx = selfCtx.Target(space);
 
 			await ctx.DamageInvaders( count );

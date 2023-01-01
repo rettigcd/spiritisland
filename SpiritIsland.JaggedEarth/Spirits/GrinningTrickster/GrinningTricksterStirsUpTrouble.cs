@@ -77,10 +77,10 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 		await ctx.Presence.Destroy( space, 1, DestoryPresenceCause.SpiritPower );
 	}
 
-	public override SelfCtx Bind( GameState gameState, UnitOfWork actionId, Cause cause = default ) 
+	public override SelfCtx Bind( Spirit spirit, GameState gameState, UnitOfWork actionId, Cause cause ) 
 		=> cause == Cause.MyPowers
-			? new TricksterCtx(this, gameState, actionId!=default ? actionId : gameState.StartAction( ActionCategory.Spirit_Power ) )
-			: base.Bind( gameState, actionId, cause );
+			? new TricksterCtx( spirit, gameState, actionId!=default ? actionId : gameState.StartAction( ActionCategory.Spirit_Power ) )
+			: base.Bind( spirit, gameState, actionId, cause );
 
 }
 

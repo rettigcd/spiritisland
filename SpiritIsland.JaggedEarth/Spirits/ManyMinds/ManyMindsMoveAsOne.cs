@@ -56,8 +56,8 @@ public class ManyMindsMoveAsOne : Spirit {
 
 	}
 
-	public override SelfCtx Bind( GameState gameState, UnitOfWork action, Cause cause = default ) 
-		=> new ManyMindsCtx(this,gameState, action, cause );
+	public override SelfCtx Bind( Spirit spirit, GameState gameState, UnitOfWork action, Cause cause ) 
+		=> new ManyMindsCtx( spirit, gameState, action, cause );
 
 	public class ManyMindsCtx : SelfCtx {
 		public ManyMindsCtx(Spirit spirit, GameState gs, UnitOfWork action, Cause cause )

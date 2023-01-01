@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SpiritIsland.Basegame;
+using SpiritIsland.JaggedEarth;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 
@@ -83,7 +85,7 @@ namespace SpiritIsland.WinForms {
 
 			if(action is DrawPowerCard) { DrawIconInCenter( rect, Img.GainCard ); return; }
 
-			if(action is PlacePresence pp ) { PlacePresence( rect, pp.Range, pp.FilterDescription ); return; }
+			if(action is PlacePresence pp ) { PlacePresence( rect, pp ); return; }
 
 			if(action is MovePresence mp) { MovePresence( rect, mp.Range ); return; }
 
@@ -92,9 +94,11 @@ namespace SpiritIsland.WinForms {
 				case "PlayExtraCardThisTurn(2)": AdditionalPlay( rect, 2 ); break;
 				case "PlayExtraCardThisTurn(1)": AdditionalPlay( rect, 1 ); break;
 				// Ocean
-				case "PlaceInOcean":          PlacePresence( rect, null, Target.Ocean ); break;
+				case "PlaceInOcean":            PlacePresence( rect, action ); break;
+				case "PlacePresenceAndBeast":   PlacePresence( rect, action ); break;
+
 				case "GatherPresenceIntoOcean": DrawIconInCenter( rect, Img.GatherToOcean ); break;
-				case "PushPresenceFromOcean": DrawIconInCenter(rect, Img.Pushfromocean ); break;
+				case "PushPresenceFromOcean":   DrawIconInCenter( rect, Img.Pushfromocean ); break;
 				// Heart of the WildFire
 				case "EnergyForFire": DrawIconInCenter( rect, Img.Oneenergyfire ); break;
 				// Lure of the Deep Wilderness
@@ -126,10 +130,6 @@ namespace SpiritIsland.WinForms {
 					break; // !!! this is drawn as an OR, layer them and make them an AND
 				// Many Minds
 				case "Gather1Beast": DrawIconInCenter( rect, Img.Land_Gather_Beasts ); break;
-				case "PlacePresenceAndBeast": 
-					PlacePresence( rect, 3, Target.Any );
-					DrawIconInCenter( rect.InflateBy(-rect.Width*.2f), Img.Icon_Beast );
-					break;
 				case "ApplyDamage": DrawIconInCenter( rect, Img.Damage_2 ); break;
 				case "DiscardPowerCards": DrawIconInCenter( rect, Img.Discard2 ); break;
 				case "IgnoreRange": IgnoreRange( rect ); break;
@@ -240,60 +240,73 @@ namespace SpiritIsland.WinForms {
 
 		}
 
-		void PlacePresence( RectangleF rect, int? range, string filterEnum ) {
-			using var presenceIcon = ResourceImages.Singleton.GetImage( Img.Icon_Presence );
+		void PlacePresence( RectangleF bounds, GrowthActionFactory growth ) {
+			var (range,filterEnum,addOnIcon) = growth switch {
+				PlaceInOcean { } => ((int?)null, Target.Ocean, Img.None),
+				PlacePresenceAndBeast => ((int?)3, Target.Any, Img.Beast), // add on icon
+				PlacePresenceOrDisease => ((int?)1, Target.Any, Img.Disease),
+				PlacePresence { Range: int r, FilterDescription: string f } => ((int?)r, f, Img.None), // generic, do last
+				_ => throw new ArgumentException(nameof(growth)),
+			};
+
 			using var image = GetTargetFilterIcon( filterEnum );
 
-			float fontScale       = image == null ? .25f : .15f;
+			float fontScale        = image == null ? .25f : .15f;
 			float presenceYPercent = image == null ? .3f  : .2f;
-			float textTopScale    = image == null ? .55f : .7f;
+			float textTopScale     = image == null ? .55f : .7f;
 
-			using Font font = ResourceImages.Singleton.UseGameFont( rect.Height * fontScale );
+			using Font font        = ResourceImages.Singleton.UseGameFont( bounds.Height * fontScale );
 
-			// + presence
-			float iconCenterY = rect.Y + rect.Height * presenceYPercent; // top of presence
-			float presenceWidth = rect.Width*.6f;
+			// Draw: + presence
+			using var presenceIcon = ResourceImages.Singleton.GetImage( Img.Icon_Presence );
+			float iconCenterY = bounds.Y + bounds.Height * presenceYPercent; // top of presence
+			float presenceWidth = bounds.Width*.6f;
 			float presenceHeight = presenceIcon.Height * presenceWidth / presenceIcon.Width;
-			float presenceX = rect.X + (rect.Width-presenceWidth)/2 + rect.Width*.1f;
+			float presenceX = bounds.X + (bounds.Width-presenceWidth)/2 + bounds.Width*.1f;
 
-			graphics.DrawString( "+", font, Brushes.Black, presenceX - rect.Width*.3f, iconCenterY-rect.Height*fontScale*.5f );
+			graphics.DrawString( "+", font, Brushes.Black, presenceX - bounds.Width*.3f, iconCenterY-bounds.Height*fontScale*.5f );
 			graphics.DrawImage(presenceIcon, presenceX, iconCenterY-presenceHeight*.5f, presenceWidth, presenceHeight );
 
 
 			// icon
 			if(image != null) {
-				// using var image = Image.FromFile( ".\\images\\" + iconFilename + ".png" );
-				float iconPercentage = .4f;
-				float iconHeight = rect.Height * .3f;
-				float iconWidth = iconHeight * image.Width / image.Height;
-
-				if(iconWidth > rect.Width) { // too wide, switch scaling to width limited
-					iconWidth = rect.Width;
-					iconHeight = iconWidth * image.Height / image.Width;
-				}
-
-				graphics.DrawImage( image, 
-					rect.X + (rect.Width - iconWidth)/2, 
-					rect.Y + rect.Height * iconPercentage,
-					iconWidth,
-					iconHeight
+				const float iconPercentage = .4f;
+				SizeF iconSize = GetIconSize( bounds, image.Size );
+				graphics.DrawImage( image,
+					bounds.X + (bounds.Width - iconSize.Width) / 2,
+					bounds.Y + bounds.Height * iconPercentage,
+					iconSize.Width,
+					iconSize.Height
 				);
 			}
 
-			if(range.HasValue) {
+			if( range.HasValue ) {
 				// range # text
-				float rangeTextTop = rect.Y + rect.Height * textTopScale;
+				float rangeTextTop = bounds.Y + bounds.Height * textTopScale;
 				string txt = range.Value.ToString();
 				SizeF rangeTextSize = graphics.MeasureString(txt,font);
-				graphics.DrawString(txt,font,Brushes.Black, rect.X+(rect.Width-rangeTextSize.Width)/2, rangeTextTop);
+				graphics.DrawString(txt,font,Brushes.Black, bounds.X+(bounds.Width-rangeTextSize.Width)/2, rangeTextTop);
 
 				// range arrow
-				float rangeArrowTop = rect.Y + rect.Height * .85f;
+				float rangeArrowTop = bounds.Y + bounds.Height * .85f;
 				using var rangeIcon = ResourceImages.Singleton.GetImage( Img.RangeArrow );
-				float arrowWidth = rect.Width * .8f, arrowHeight = arrowWidth * rangeIcon.Height / rangeIcon.Width;
-				graphics.DrawImage( rangeIcon, rect.X + (rect.Width-arrowWidth)/2, rangeArrowTop, arrowWidth, arrowHeight );
+				float arrowWidth = bounds.Width * .8f, arrowHeight = arrowWidth * rangeIcon.Height / rangeIcon.Width;
+				graphics.DrawImage( rangeIcon, bounds.X + (bounds.Width-arrowWidth)/2, rangeArrowTop, arrowWidth, arrowHeight );
 			}
 
+			if( addOnIcon != Img.None )
+				DrawIconInCenter( bounds.InflateBy( -bounds.Width * .2f ), addOnIcon );
+
+		}
+
+		static SizeF GetIconSize( RectangleF bounds, Size imageSize ) { // ??? can we make this generic?
+			float iconHeight = bounds.Height * .3f;
+			SizeF iconSize = new SizeF( iconHeight * imageSize.Width / imageSize.Height, iconHeight );
+			if(bounds.Width < iconSize.Width) { // too wide, switch scaling to width limited
+				iconSize = new SizeF( bounds.Width, bounds.Width * imageSize.Height / imageSize.Width );
+			}
+
+			return iconSize;
 		}
 
 		void IgnoreRange( RectangleF rect ) {

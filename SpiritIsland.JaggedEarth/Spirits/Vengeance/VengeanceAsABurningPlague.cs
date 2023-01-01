@@ -58,17 +58,7 @@ public class VengeanceAsABurningPlague : Spirit {
 		return stoppedByDisease;
 	}
 
-	public override SelfCtx Bind( GameState gameState, UnitOfWork actionId, Cause cause = default ) 
-		=> new VengenceCtx( this, gameState, actionId, cause );
+	public override SelfCtx Bind( Spirit spirit, GameState gameState, UnitOfWork actionId, Cause cause ) 
+		=> new VengenceCtx( spirit, gameState, actionId, cause );
 
-}
-
-public class VengenceCtx : SelfCtx {
-	public VengenceCtx( Spirit spirit, GameState gameState, UnitOfWork actionId, Cause cause ) : base( spirit, gameState, actionId, cause ) { }
-	public override TargetSpaceCtx Target( Space space ) => new VengenceSpaceCtx( this, space );
-}
-
-public class VengenceSpaceCtx : TargetSpaceCtx {
-	public VengenceSpaceCtx( VengenceCtx ctx, Space target):base( ctx, target ) { }
-	public override TokenBinding Badlands => new WreakVengeanceForTheLandsCorruption( Tokens, CurrentActionId );
 }

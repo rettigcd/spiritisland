@@ -23,7 +23,7 @@ public class GameCtx {
 
 	public IEnumerable<SelfCtx> Spirits {
 		get {
-			return this.GameState.Spirits.Select( s => s.Bind( GameState, UnitOfWork ) );
+			return this.GameState.Spirits.Select( s => s.BindSelf( GameState, UnitOfWork ) );
 		}
 	}
 

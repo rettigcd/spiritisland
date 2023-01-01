@@ -3,12 +3,12 @@
 /// <summary> Overrides Badlands behavior </summary>
 class WreakVengeanceForTheLandsCorruption : TokenBinding {
 
-	readonly TokenBinding blight;
+	readonly TokenBinding _blight;
 
 	public WreakVengeanceForTheLandsCorruption(SpaceState tokens, UnitOfWork actionId ) 
 		: base( new TokenBindingNoEvents( tokens, TokenType.Badlands ), actionId )
 	{
-		blight = new TokenBinding( new TokenBindingNoEvents( tokens,TokenType.Blight ), actionId );
+		_blight = new TokenBinding( new TokenBindingNoEvents( tokens,TokenType.Blight ), actionId );
 	}
 
 	public static SpecialRule Rule => new SpecialRule(
@@ -18,7 +18,7 @@ class WreakVengeanceForTheLandsCorruption : TokenBinding {
 
 	// Don't need to override Add since base class behavior is correct
 
-	public override int Count => base.Count + blight.Count;
+	public override int Count => base.Count + _blight.Count;
 
 	public override async Task Remove( int count, RemoveReason reason ) {
 		// Remove real Badlands first
@@ -28,7 +28,7 @@ class WreakVengeanceForTheLandsCorruption : TokenBinding {
 
 		// if any left over, remove the blight instead
 		int blightToRemove = count - realBandlandsToRemove;
-		await blight.Remove( blightToRemove, reason );
+		await _blight.Remove( blightToRemove, reason );
 		// !! doesn't go back to the card - should it?
 		// !!! also not sure what happens if they try to move a badland
 	}
