@@ -243,7 +243,8 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	#region Win / Loss
 
-	readonly List<Action> WinLossChecks = new List<Action>();
+	readonly List<Action<GameState>> WinLossChecks = new List<Action<GameState>>();
+	public void AddWinLossCheck( Action<GameState> action ) => WinLossChecks.Add( action );
 	public bool ShouldCheckWinLoss {
 		set {
 			WinLossChecks.Clear();
@@ -254,27 +255,23 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	public void CheckWinLoss() {
 		foreach(var check in WinLossChecks)
-			check();
+			check(this);
 	}
 
 	// Win Loss Predicates
-	static (Func<SpaceState,bool>,string) InvaderCriteria(GameState gs) {
-		bool NoCity(SpaceState space) => space.Sum(Invader.City)==0;
-		bool NoCityOrTown(SpaceState space) => space.SumAny(Invader.City,Invader.Town)==0;
-		bool NoInvader(SpaceState space) => !space.HasInvaders();
-		return gs.Fear.TerrorLevel switch {
-			4 => (_=>true, "Victory"),
-			3 => (NoCity,"no cities"),
-			2 => (NoCityOrTown,"no towns or cities"),
-			_ => (NoInvader,"no invaders")
-		};
-	}
+	static void CheckTerrorLevelVictory( GameState gs ){
 
-	// ! This is the only thing that needs checked after every action.
-	void CheckTerrorLevelVictory(){
-		var (filter,description) = InvaderCriteria(this);
-		if( AllSpaces.All( filter ) )
-			GameOverException.Win($"Terror Level {Fear.TerrorLevel} - {description}");
+		bool NoCity( SpaceState space ) => space.Sum( Invader.City ) == 0;
+		bool NoCityOrTown( SpaceState space ) => space.SumAny( Invader.City, Invader.Town ) == 0;
+		bool NoInvader( SpaceState space ) => !space.HasInvaders();
+		var (filter,description) = gs.Fear.TerrorLevel switch {
+			4 => (_ => true, "Victory"),
+			3 => ((Func<SpaceState,bool>)NoCity, "no cities"),
+			2 => (NoCityOrTown, "no towns or cities"),
+			_ => (NoInvader, "no invaders")
+		};
+		if( gs.AllSpaces.All( filter ) )
+			GameOverException.Win($"Terror Level {gs.Fear.TerrorLevel} - {description}");
 	}
 
 	#endregion
