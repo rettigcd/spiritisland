@@ -246,7 +246,7 @@ namespace SpiritIsland.WinForms {
 				PlacePresenceAndBeast => ((int?)3, Target.Any, Img.Beast), // add on icon
 				PlacePresenceOrDisease => ((int?)1, Target.Any, Img.Disease),
 				PlacePresence { Range: int r, FilterDescription: string f } => ((int?)r, f, Img.None), // generic, do last
-				_ => throw new ArgumentException("unknown growth", nameof(growth)),
+				_ => throw new ArgumentException("growth action factory not a place-presence",nameof(growth)),
 			};
 
 			using var image = GetTargetFilterIcon( filterEnum );

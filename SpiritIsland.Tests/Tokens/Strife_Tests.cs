@@ -166,7 +166,7 @@ public class Strife_Tests {
 		space.Dahan.Init( 1 );
 
 		//  When: we ravage there
-		await space.Space.DoARavage( gs );
+		await space.DoARavage();
 
 		//  Then: dahan survives
 		space.Dahan.CountAll.ShouldBe( 1, "dahan should survive due to strife on town" );

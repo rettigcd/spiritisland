@@ -72,8 +72,8 @@ public class Invader_Tests {
 	[InlineDataAttribute("W","A2,A5")]
 	[InlineDataAttribute("S","A4,A7")]
 	public void Level1CardTargets(string cardText,string expectedTargets){
-		InvaderCard sut = InvaderDeck.Level1Cards.Single(c=>c.Text==cardText);
-		var targets = board.Spaces.Where(sut.MatchesCard).Select(x=>x.Label).ToArray();
+		IInvaderCard sut = InvaderDeck.Level1Cards.Single(c=>c.Text==cardText);
+		var targets = board.Spaces.Where(((InvaderCard)sut).MatchesCard).Select(x=>x.Label).ToArray();
 		Assert.Equal(expectedTargets,targets.Join(","));
 	}
 

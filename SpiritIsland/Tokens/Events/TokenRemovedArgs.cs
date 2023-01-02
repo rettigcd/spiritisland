@@ -17,7 +17,7 @@ public class PublishTokenRemovedArgs {
 	readonly RemoveReason _reason;
 	readonly UnitOfWork _action;
 
-	public TokenRemovedArgs MakeEvent( GameState gameState ) => new TokenRemovedArgs(Token,_reason,_action,_space,Count,gameState);
+	public TokenRemovedArgs MakeEvent() => new TokenRemovedArgs(Token,_reason,_action,_space,Count);
 }
 
 
@@ -26,19 +26,17 @@ public class PublishTokenRemovedArgs {
 /// </summary>
 public class TokenRemovedArgs : ITokenRemovedArgs {
 
-	public TokenRemovedArgs(Token token, RemoveReason reason, UnitOfWork action, SpaceState space, int count, GameState gs ) {
+	public TokenRemovedArgs(Token token, RemoveReason reason, UnitOfWork action, SpaceState space, int count ) {
 		Token = token;
 		Reason = reason;
 		Action = action ?? throw new ArgumentNullException(nameof(action));
 		Space = space;
 		Count = count;
-		GameState = gs;
 	}
 	public Token Token { get; }
 	public SpaceState Space { get; set; } // !!! why are these settable?
 	public int Count { get; set; }			// !!! set???
 	public RemoveReason Reason { get; }
 	public UnitOfWork Action { get; }
-	public GameState GameState { get; }
 }
 

@@ -8,40 +8,40 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	#region constructor
 
 	public SpaceState( Space space, CountDictionary<Token> counts, IIslandTokenApi tokenApi, GameState gameState ) {
-		this.Space = space;
-		this.counts = counts;
-		this.tokenApi = tokenApi;
-		this.gameState = gameState;
+		Space = space;
+		_counts = counts;
+		_api = tokenApi;
+		_gameState = gameState;
 	}
 
 	/// <summary> Clone / copy constructor </summary>
 	public SpaceState( SpaceState src ) {
 		this.Space = src.Space;
-		counts = src.counts.Clone();
-		tokenApi = src.tokenApi;
+		_counts = src._counts.Clone();
+		_api = src._api;
 	}
 
 	#endregion
 
 	public Space Space { get; }
 
-	public BoardState Board => new BoardState( Space.Board, gameState );
+	public BoardState Board => new BoardState( Space.Board, _gameState );
 
 	public int this[Token specific] {
 		get {
 			ValidateNotDead( specific );
-			int count = counts[specific];
+			int count = _counts[specific];
 			if( specific is UniqueToken ut )
-				count += tokenApi.GetDynamicTokensFor(this, ut);
+				count += _api.GetDynamicTokensFor(this, ut);
 			return count;
 		}
 		private set {
 			ValidateNotDead( specific );
-			counts[specific] = value; 
+			_counts[specific] = value; 
 		}
 	}
 
-	public IEnumerable<Token> Keys => counts.Keys; // !! This won't list virtual (defend) tokens
+	public IEnumerable<Token> Keys => _counts.Keys; // !! This won't list virtual (defend) tokens
 
 	#region Enumeration / Detection(HaS) / Summing
 
@@ -59,16 +59,16 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	public bool Has( TokenCategory cat ) => OfCategoryInternal( cat ).Any();
 	public bool HasAny( params TokenClass[] healthyInvaders ) => OfAnyClassInternal( healthyInvaders ).Any();
 
-	public int Sum( TokenClass tokenClass ) => OfClassInternal( tokenClass ).Sum( k => counts[k] );
-	public int Sum( TokenCategory category ) => OfCategoryInternal( category ).Sum( k => counts[k] );
-	public int SumAny( params TokenClass[] healthyInvaders ) => OfAnyClassInternal( healthyInvaders ).Sum( k => counts[k] );
+	public int Sum( TokenClass tokenClass ) => OfClassInternal( tokenClass ).Sum( k => _counts[k] );
+	public int Sum( TokenCategory category ) => OfCategoryInternal( category ).Sum( k => _counts[k] );
+	public int SumAny( params TokenClass[] healthyInvaders ) => OfAnyClassInternal( healthyInvaders ).Sum( k => _counts[k] );
 
 	#endregion
 
 	#region To-String methods
 
 	/// <summary>Gets all tokens that have a SpaceAbreviation</summary>
-	public string Summary => counts.TokenSummary();
+	public string Summary => _counts.TokenSummary();
 
 	public override string ToString() => Space.Label + ":" + Summary;
 
@@ -93,9 +93,9 @@ public class SpaceState : HasNeighbors<SpaceState> {
 			throw new ArgumentException( "We don't store dead counts" );
 	}
 
-	public readonly CountDictionary<Token> counts; // !!! public for Tokens_ForIsland Memento, create own momento.
-	readonly IIslandTokenApi tokenApi;
-	readonly GameState gameState; // !! merge this usage into token api, I guess.  Here for access to island.
+	public readonly CountDictionary<Token> _counts; // !!! public for Tokens_ForIsland Memento, create own momento.
+	readonly IIslandTokenApi _api;
+	readonly GameState _gameState; // !! merge this usage into token api, I guess.  Here for access to island.
 
 	#endregion
 
@@ -105,7 +105,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	public void Adjust( Token specific, int delta ) {
 		if(specific is HealthToken ht && ht.RemainingHealth == 0) 
 			throw new System.ArgumentException( "Don't try to track dead tokens." );
-		counts[specific] += delta;
+		_counts[specific] += delta;
 	}
 
 	public void InitDefault( HealthTokenClass tokenClass, int value )
@@ -118,7 +118,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 		=> Adjust( GetDefault( tokenClass ), delta );
 
 	public void Init( Token specific, int value ) {
-		counts[specific] = value;
+		_counts[specific] = value;
 	}
 
 	public async Task AdjustHealthOfAll( int delta, UnitOfWork actionId, params HealthTokenClass[] tokenClasses ) {
@@ -133,7 +133,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 		}
 	}
 
-	public HealthToken GetDefault( HealthTokenClass tokenClass ) => this.tokenApi.GetDefault( tokenClass );
+	public HealthToken GetDefault( HealthTokenClass tokenClass ) => this._api.GetDefault( tokenClass );
 
 	public void ReplaceAllWith( Token original, Token replacement ) {
 		Adjust( replacement, this[original] );
@@ -172,7 +172,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	public async Task<TokenAddedArgs> Add( Token token, int count, UnitOfWork actionId, AddReason addReason = AddReason.Added ) {
 		TokenAddedArgs addResult = Add_Silent( token, count, actionId, addReason );
 		if(addResult != null) {
-			addResult.GameState = this.tokenApi.GetGameState();
+			addResult.GameState = this._api.AccessGameState();
 			foreach(var handler in Keys.OfType<IHandleTokenAdded>().ToArray())
 				await handler.HandleTokenAdded( addResult );
 		}
@@ -184,7 +184,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 		// Pre-Add check/adjust
 		var addingArgs = new AddingTokenArgs { ActionId = actionId, Count = count, Space = Space, Reason = addReason, Token = token };
-		foreach(var mod in Keys.OfType<IModifyAdding>().ToArray() )
+		foreach(var mod in Keys.OfType<IHandleAddingToken>().ToArray() )
 			mod.ModifyAdding( addingArgs );
 
 		if(addingArgs.Count < 0) throw new IndexOutOfRangeException( nameof( addingArgs.Count ) );
@@ -200,9 +200,9 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	/// <summary> returns null if no token removed </summary>
 	public async Task<PublishTokenRemovedArgs> Remove( Token token, int count, UnitOfWork actionId, RemoveReason reason = RemoveReason.Removed ) {
-		var cmd = Remove_Silent( token, count, actionId, reason );
+		var cmd = await Remove_Silent( token, count, actionId, reason );
 		if( cmd != null) {
-			var e = cmd.MakeEvent( tokenApi.GetGameState() );
+			var e = cmd.MakeEvent(); // !!! clean this up.  Don't need cmd and event
 			foreach(var handler in Keys.OfType<IHandleTokenRemoved>().ToArray() )
 				await handler.HandleTokenRemoved( e );
 		}
@@ -210,15 +210,15 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	}
 
 	/// <summary> returns null if no token removed. Does Not publish event.</summary>
-	PublishTokenRemovedArgs Remove_Silent( Token token, int count, UnitOfWork actionId, RemoveReason reason = RemoveReason.Removed ) {
+	async Task<PublishTokenRemovedArgs> Remove_Silent( Token token, int count, UnitOfWork unitOfWork, RemoveReason reason = RemoveReason.Removed ) {
 		count = System.Math.Min( count, this[token] );
 
 		// Pre-Remove check/adjust
-		var removingArgs = new RemovingTokenArgs { ActionId = actionId, Count = count, Space = Space, Reason = reason, Token = token };
-		foreach(var mod in Keys.OfType<IModifyRemoving>().ToArray())
-			mod.ModifyRemoving( removingArgs );
-		if(removingArgs.Count < 0) throw new IndexOutOfRangeException( nameof( removingArgs.Count ) );
+		var removingArgs = new RemovingTokenArgs( this, reason, unitOfWork ) { Count = count, Token = token };
+		foreach(var mod in Keys.OfType<IHandleRemovingToken>().ToArray())
+			await mod.ModifyRemoving( removingArgs );
 
+		if(removingArgs.Count < 0) throw new IndexOutOfRangeException( nameof( removingArgs.Count ) );
 
 		if(removingArgs.Count == 0) return null;
 
@@ -226,8 +226,10 @@ public class SpaceState : HasNeighbors<SpaceState> {
 		this[removingArgs.Token] -= removingArgs.Count;
 
 		// Post-Remove event
-		return new PublishTokenRemovedArgs( removingArgs.Token, reason, actionId, this, removingArgs.Count );
+		return new PublishTokenRemovedArgs( removingArgs.Token, reason, unitOfWork, this, removingArgs.Count );
 	}
+
+	public GameState AccessGameState() => _api.AccessGameState();
 
 
 	// Convenience only
@@ -258,12 +260,12 @@ public class SpaceState : HasNeighbors<SpaceState> {
 		if(removeResults is null) return; // can be prevented by Remove-Mods
 
 		// Add to destination
-		var dstTokens = tokenApi.GetTokensFor( destination );
+		var dstTokens = _api.GetTokensFor( destination );
 		var addResult = await dstTokens.Add( token, removeResults.Count, uow, AddReason.MovedTo );
 		if( addResult == null) return;
 
 		// Publish
-		await tokenApi.Publish_Moved( new TokenMovedArgs {
+		await _api.Publish_Moved( new TokenMovedArgs {
 			// removed
 			TokenRemoved = removeResults.Token,
 			RemovedFrom = this,
@@ -288,11 +290,11 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	public bool HasStrife => Keys.OfType<HealthToken>().Any(x=>x.StrifeCount>0);
 
-	public int CountStrife() => Keys.OfType<HealthToken>().Where(x=>x.StrifeCount>0).Sum( t => counts[t] );
+	public int CountStrife() => Keys.OfType<HealthToken>().Where(x=>x.StrifeCount>0).Sum( t => _counts[t] );
 
 	public int TownsAndCitiesCount() => this.SumAny( Invader.Town, Invader.City );
 
-	public int InvaderTotal() => InvaderTokens().Sum( i => counts[i] );
+	public int InvaderTotal() => InvaderTokens().Sum( i => _counts[i] );
 
 	public async Task AddStrifeTo( HealthToken invader, UnitOfWork actionId, int count = 1 ) {
 
@@ -321,9 +323,8 @@ public class SpaceState : HasNeighbors<SpaceState> {
 		return lessStrifed;
 	}
 
-	public int AttackDamageFrom1( HealthToken ht ) => ht.Class.Category == TokenCategory.Dahan 
-		? ht.Class.Attack
-		: Math.Max( 0, ht.Class.Attack - DamagePenaltyPerInvader );
+	public int AttackDamageFrom1( HealthToken ht ) => ht.Class.Category == TokenCategory.Dahan ? 2
+		: Math.Max( 0, _api.InvaderAttack( ht.Class ) - DamagePenaltyPerInvader );
 
 	public int DamagePenaltyPerInvader = 0; // !!! ??? Does the Memento reset this back to 0?
 
@@ -331,7 +332,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	public IEnumerable<SpaceState> Adjacent { get {
 		foreach(var space in Space.Adjacent)
-			yield return gameState.Tokens[space];
+			yield return _gameState.Tokens[space];
 
 		if(LinkedViaWays != null && !LinkedViaWays.Space.InStasis)
 			yield return LinkedViaWays;
@@ -341,8 +342,8 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	// This is trying to accomplish: (Some terrain other than Ocean)
 	public IEnumerable<SpaceState> CascadingBlightOptions => Adjacent
-		 .Where(x => !this.gameState.Island.Terrain_ForBlight.MatchesTerrain(x, Terrain.Ocean) // normal case,
-			|| this.gameState.Island.Terrain_ForBlight.MatchesTerrain( x, Terrain.Wetland ) );
+		 .Where(x => !this._gameState.Island.Terrain_ForBlight.MatchesTerrain(x, Terrain.Ocean) // normal case,
+			|| this._gameState.Island.Terrain_ForBlight.MatchesTerrain( x, Terrain.Wetland ) );
 
 	public IEnumerable<SpaceState> Range(int maxDistance) => this.CalcDistances( maxDistance ).Keys;
 

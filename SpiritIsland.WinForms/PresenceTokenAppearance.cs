@@ -49,7 +49,7 @@ public class HslColorAdjuster : ColorAdjuster {
 			_lOffset = 0;
 		} else if(1 < l2) {
 			// 2  pulls everything up to white
-			_lScaler = -l2;
+			_lScaler = 2 - l2;
 			_lOffset = l2 - 1;
 		} else {
 			//  0  no change
@@ -57,7 +57,7 @@ public class HslColorAdjuster : ColorAdjuster {
 			_lOffset = 0;
 		}
 	}
-	public Color GetNewColor(Color p ) 
+	public Color GetNewColor( Color p )
 		=> Color.FromArgb( p.A, AdjustHsl( HSL.FromRgb( p ) ).ToRgb() );
 
 	HSL AdjustHsl( HSL hsl ) => new HSL( _desiredHsl.H, _desiredHsl.S, AdjustLightness( hsl.L ) );

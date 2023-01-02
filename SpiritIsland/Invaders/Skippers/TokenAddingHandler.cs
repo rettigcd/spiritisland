@@ -1,10 +1,10 @@
 ﻿namespace SpiritIsland;
 
-interface IModifyAdding {
+interface IHandleAddingToken {
 	void ModifyAdding( AddingTokenArgs args );
 }
 
-public class TokenAddingHandler : BaseModToken, IModifyAdding {
+public class TokenAddingHandler : BaseModToken, IHandleAddingToken {
 
 	readonly Action<AddingTokenArgs> _action;
 

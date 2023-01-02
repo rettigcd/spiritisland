@@ -36,13 +36,17 @@ public class BrandenburgPrussia : IAdversary {
 	};
 
 	public void PreInitialization( GameState gameState ) {
-		if( Level < 1) return;
+		if(1 <= Level)
+			FastStart( gameState );
+	}
+
+	static void FastStart( GameState gameState ) {
 		foreach(var board in gameState.Island.Boards)
-			gameState.Tokens[ board[3] ].AdjustDefault( Invader.Town, 1 );
+			gameState.Tokens[board[3]].AdjustDefault( Invader.Town, 1 );
 	}
 
 	public void PostInitialization( GameState gamestate ) {
-		gamestate.InvaderDeck.ReplaceCards( card => { card.Escalation = LandRush; return card; } );
+		gamestate.InvaderDeck.ReplaceUnrevealedCards( card => { card.Escalation = LandRush; return card; } );
 	}
 
 	static Task LandRush( GameState gs ) {

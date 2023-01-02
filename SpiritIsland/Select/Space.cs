@@ -45,7 +45,7 @@ public class Space : TypedDecision<SiSpace>, IHaveAdjacentInfo, IHaveTokenInfo {
 	///		pushing/moving/placing: presence, 
 	///		pushing/moving: tokens 
 	///	</remarks>
-	public Token Token { get; private set; }
+	public Token Token { get; set; }
 	public AdjacentInfo AdjacentInfo { get; private set; } // Outgoing (pushing/moving)
 
 }

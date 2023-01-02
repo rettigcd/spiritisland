@@ -21,7 +21,7 @@ public static class HealthAdjustmentHelper_Extension {
 				// Downgrade the existing tokens health
 				// AND change what we are removing to be the downgraded token
 				// tokens being destroyed may reduce the count also.
-				(args.Token, args.Count) = await ctx.Tokens.AdjustHealthOf( healthToken, -deltaHealth, args.Count, args.ActionId );
+				(args.Token, args.Count) = await ctx.Tokens.AdjustHealthOf( healthToken, -deltaHealth, args.Count, args.UnitOfWork );
 		} );
 		ctx.Tokens.Adjust( removingToken, 1 );
 

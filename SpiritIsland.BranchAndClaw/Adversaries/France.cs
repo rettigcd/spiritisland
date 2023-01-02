@@ -14,7 +14,7 @@ public class France : IAdversary {
 	public int Level { get; set; }
 
 	public void PostInitialization( GameState gs ) {
-		gs.InvaderDeck.ReplaceCards( card => new FranceInvaderCard( card, Level ) );
+		gs.InvaderDeck.ReplaceUnrevealedCards( card => new FranceInvaderCard( card, Level ) );
 	}
 
 	public int[] FearCardsPerLevel => Level switch {
@@ -207,7 +207,7 @@ public class FranceInvaderCard : InvaderCard {
 			await DoFrontierExploration( gs, tokenSpacesToExplore );
 
 		if(HasEscalation)
-			await DebandForNewCashCrops( gameCtx );
+			await DemandForNewCashCrops( gameCtx );
 
 		if(hasPersistentExplorers)
 			await PersistentExplorers( gameCtx );
@@ -235,7 +235,7 @@ public class FranceInvaderCard : InvaderCard {
 				await ExploreSingleSpace( exploreTokens, gs, gs.StartAction( ActionCategory.Adversary ) ); // !!! implemented as a new Action - Should it be???
 	}
 
-	Task DebandForNewCashCrops( GameCtx ctx ) {
+	Task DemandForNewCashCrops( GameCtx ctx ) {
 		// Demand for New Cash Crops:
 		// After Exploring, on each board, pick a land of the shown terrain.If it has Town / City, add 1 Blight.Otherwise, add 1 Town
 

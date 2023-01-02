@@ -87,7 +87,7 @@ public class DreadApparitions_Tests {
 		await DreadApparitions.ActAsync( ctx );
 
 		// When: dahan destroy the city
-		await ctx.Space.DoARavage( ctx.GameState );
+		await ctx.Tokens.DoARavage();
 
 		// Then: 2 fear from city
 		Assert_GeneratedFear(2+1); // normal (1 from Dread Apparitions)

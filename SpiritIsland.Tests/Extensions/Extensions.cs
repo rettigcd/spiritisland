@@ -7,11 +7,12 @@ static internal class Extensions {
 
 	#region Generating Explorer Action on a space
 
-	static public InvaderCard BuildInvaderCard( this Space space ) {
+	static public IInvaderCard BuildInvaderCard( this Space space ) {
 		var terrain = new[] { Terrain.Wetland, Terrain.Sand, Terrain.Jungle, Terrain.Mountain }.First( space.Is );
 		return terrain != Terrain.Ocean ? InvaderCard.Stage1( terrain ) : throw new ArgumentException( "Can't invade oceans" );
 	}
 
+	static public Task DoARavage( this SpaceState space ) => space.Space.BuildInvaderCard().Ravage( space.AccessGameState() );
 	static public Task DoARavage( this Space space, GameState gs ) => space.BuildInvaderCard().Ravage( gs );
 	static public Task DoABuild( this Space space, GameState gs ) => space.BuildInvaderCard().Build( gs );
 	static public Task DoAnExplore( this Space space, GameState gs ) => space.BuildInvaderCard().Explore( gs );
@@ -38,7 +39,7 @@ static internal class Extensions {
 			.Cast<HealthToken>()
 			.Where(x=>x.Class.Variant == TokenVariant.Dreaming)
 			.OrderBy( Order_CitiesTownsExplorers )
-			.Select( invader => tokens.counts[invader] + invader.ToString() )
+			.Select( invader => tokens._counts[invader] + invader.ToString() )
 			.Join( "," );
 		dreamerSummary.ShouldBe( expectedString );
 	}
@@ -55,7 +56,7 @@ static internal class Extensions {
 			=> -(invader.FullHealth * 10 + invader.RemainingHealth);
 		return dict.InvaderTokens()
 			.OrderBy( Order_CitiesTownsExplorers )
-			.Select( invader => dict.counts[invader] + invader.ToString() )
+			.Select( invader => dict._counts[invader] + invader.ToString() )
 			.Join( "," );
 	}
 

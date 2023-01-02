@@ -13,6 +13,8 @@ public interface IIslandTokenApi {
 	SpaceState this[Space space] { get; }
 	SpaceState GetTokensFor( Space space );
 
-	GameState GetGameState();
+	GameState AccessGameState();
+
+	int InvaderAttack( HealthTokenClass tokenClass );
 
 }

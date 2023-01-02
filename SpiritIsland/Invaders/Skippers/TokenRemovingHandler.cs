@@ -1,16 +1,25 @@
 ﻿namespace SpiritIsland;
 
-interface IModifyRemoving {
-	void ModifyRemoving( RemovingTokenArgs args );
+public interface IHandleRemovingToken {
+	Task ModifyRemoving( RemovingTokenArgs args );
 }
 
-public class TokenRemovingHandler : BaseModToken, IModifyRemoving {
+public class TokenRemovingHandler : BaseModToken, IHandleRemovingToken {
 
 	readonly Action<RemovingTokenArgs> _action;
+	readonly Func<RemovingTokenArgs,Task> _func;
 
 	public TokenRemovingHandler(Action<RemovingTokenArgs> action):base( "modify removing", UsageCost.Free ) {
 		_action = action;
 	}
+	public TokenRemovingHandler( Func<RemovingTokenArgs,Task> func ) : base( "modify removing", UsageCost.Free ) {
+		_func = func;
+	}
 
-	public void ModifyRemoving( RemovingTokenArgs args ) => _action(args);
+	public async Task ModifyRemoving( RemovingTokenArgs args ) {
+		if( _func != null )
+			await _func(args);
+		else
+			_action(args);
+	}
 }

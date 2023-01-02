@@ -3,7 +3,7 @@
 public class Tokens_ForIsland : IIslandTokenApi {
 
 	readonly GameState _gameStateForEventArgs; // !!! this is only captured so it can be supplied with the events.
-	public GameState GetGameState() => _gameStateForEventArgs;
+	public GameState AccessGameState() => _gameStateForEventArgs;
 
 	public Tokens_ForIsland( GameState gs ) {
 		this._gameStateForEventArgs = gs;
@@ -51,6 +51,13 @@ public class Tokens_ForIsland : IIslandTokenApi {
 
 	HealthToken IIslandTokenApi.GetDefault( HealthTokenClass tokenClass ) => TokenDefaults[tokenClass];
 
+	public int InvaderAttack( HealthTokenClass tokenClass ) => Attack[tokenClass];
+	public readonly Dictionary<HealthTokenClass, int> Attack = new Dictionary<HealthTokenClass, int> {
+		[Invader.Explorer] = 1,
+		[Invader.Town] = 2,
+		[Invader.City] = 3,
+	};
+
 	public readonly DualAsyncEvent<ITokenMovedArgs> TokenMoved = new DualAsyncEvent<ITokenMovedArgs>();
 
 	public readonly DualDynamicTokens Dynamic = new DualDynamicTokens();
@@ -68,7 +75,7 @@ public class Tokens_ForIsland : IIslandTokenApi {
 	protected class Memento : IMemento<Tokens_ForIsland> {
 		public Memento(Tokens_ForIsland src) {
 			// Save TokenCounts
-			foreach(var (space,countsDict) in src.tokenCounts.Select( x => (x.Key, x.Value.counts) ))
+			foreach(var (space,countsDict) in src.tokenCounts.Select( x => ((Space)x.Key, x.Value._counts) ))
 				_tokenCounts[space] = countsDict.Clone();
 			// Save Defaults
 			tokenDefaults = src.TokenDefaults.ToDictionary(p=>p.Key,p=>p.Value);

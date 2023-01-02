@@ -48,8 +48,8 @@ public class Sweden : IAdversary {
 		// Town deal 3 Damage
 		// City deal 5 Damage
 		if(3 <= Level) {
-			gameState.Tokens.TokenDefaults[Invader.Town].Class.Attack = 3;
-			gameState.Tokens.TokenDefaults[Invader.City].Class.Attack = 5;
+			gameState.Tokens.Attack[Invader.Town] = 3;
+			gameState.Tokens.Attack[Invader.City] = 5;
 		}
 
 		// Level 4
@@ -101,7 +101,7 @@ public class Sweden : IAdversary {
 	}
 
 	public void PostInitialization( GameState gameState ) {
-		gameState.InvaderDeck.ReplaceCards( card => new SwedenInvaderCard( card ) );
+		gameState.InvaderDeck.ReplaceUnrevealedCards( card => new SwedenInvaderCard( card ) );
 
 		//	Level 2	
 		//	(3)	10 (3/4/3)	Population Pressure at Home: 

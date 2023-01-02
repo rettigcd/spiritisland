@@ -52,19 +52,27 @@ public class England : IAdversary {
 	};
 
 	public void PreInitialization( GameState gameState ) {
-		if( 2 <= Level ) {
-			// During Setup, on each board add 1 City to land #1 and 1 Town to land #2.
-			foreach(var board in gameState.Island.Boards) {
-				gameState.Tokens[board[1]].AdjustDefault( Invader.City, 1 );
-				gameState.Tokens[board[2]].AdjustDefault( Invader.Town, 1 );
-			}
-		}
-		if( 5 <= Level ) {
-			gameState.Tokens.TokenDefaults[Invader.City] = new HealthToken(Invader.City, gameState, 4);
-			gameState.Tokens.TokenDefaults[Invader.Town] = new HealthToken( Invader.Town, gameState, 3 );
-		}
-		if( Level == 6) {
+		if( 2 <= Level )
+			CriminalsAndMalcontents( gameState );
+
+		if( 5 <= Level )
+			LocalAutonomy( gameState );
+
+		if( Level == 6)
 			gameState.Fear.PoolMax += gameState.Spirits.Length;
+
+	}
+
+	static void LocalAutonomy( GameState gameState ) {
+		gameState.Tokens.TokenDefaults[Invader.City] = new HealthToken( Invader.City, gameState, 4 );
+		gameState.Tokens.TokenDefaults[Invader.Town] = new HealthToken( Invader.Town, gameState, 3 );
+	}
+
+	static void CriminalsAndMalcontents( GameState gameState ) {
+		// During Setup, on each board add 1 City to land #1 and 1 Town to land #2.
+		foreach(var board in gameState.Island.Boards) {
+			gameState.Tokens[board[1]].AdjustDefault( Invader.City, 1 );
+			gameState.Tokens[board[2]].AdjustDefault( Invader.Town, 1 );
 		}
 	}
 
@@ -72,7 +80,7 @@ public class England : IAdversary {
 
 		gs.AddWinLossCheck( ProudAndMightyCapital );
 
-		gs.InvaderDeck.ReplaceCards( card => new EnglandInvaderCard( card, Level > 0 ) );
+		gs.InvaderDeck.ReplaceUnrevealedCards( card => new EnglandInvaderCard( card, Level > 0 ) );
 
 		if(3 <= Level) {
 			var highBuildSlot = new HighImmegrationSlot( Level );

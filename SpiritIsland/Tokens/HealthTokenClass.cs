@@ -2,9 +2,8 @@
 
 public class HealthTokenClass : TokenClass {
 
-	public HealthTokenClass( string label, int attack, TokenCategory category, int fearGeneratedWhenDestroyed, Img img, int expectedHealth, TokenVariant variant=default ) {
+	public HealthTokenClass( string label, TokenCategory category, int fearGeneratedWhenDestroyed, Img img, int expectedHealth, TokenVariant variant=default ) {
 		Label = label;
-		Attack = attack;
 		Category = category;
 		FearGeneratedWhenDestroyed = fearGeneratedWhenDestroyed;
 		Img = img;
@@ -21,9 +20,6 @@ public class HealthTokenClass : TokenClass {
 	public bool IsInvader => Category == TokenCategory.Invader;
 
 	public TokenCategory Category { get; }
-
-	/// <summary> Damage Inflicted during attack/defend </summary>
-	public int Attack { get; set; } // changed by sweeden
 
 	public int FearGeneratedWhenDestroyed { get; }
 

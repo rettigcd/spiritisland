@@ -190,7 +190,6 @@ public class SpiritPresence {
 			presence.Destroyed += count;
 			return Task.CompletedTask;
 		}
-
 	}
 
 	#endregion

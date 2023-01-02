@@ -5,6 +5,5 @@ public interface ITokenRemovedArgs {
 	public int Count { get; }
 	public SpaceState Space { get; }
 	public RemoveReason Reason { get; }
-	public GameState GameState { get; }
 	public UnitOfWork Action { get; }
 };

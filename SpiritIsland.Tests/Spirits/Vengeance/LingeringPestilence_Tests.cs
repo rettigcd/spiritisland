@@ -44,7 +44,7 @@ public class LingeringPestilence_Tests {
 		space.InitTokens("1C@3");
 
 		// When: the city ravages
-		space.Space.DoARavage( gameState ).Wait();
+		space.DoARavage().Wait();
 
 		// Then: presence is destroyed
 		self.Presence.CountOn( space ).ShouldBe(1);

@@ -13,31 +13,33 @@ public class InvaderCard : IOption, IInvaderCard {
 
 	public int InvaderStage { get; }
 
-	public bool MatchesCard( Space space ) => Filter.Matches( space );
-	public bool MatchesCard( SpaceState space ) => Filter.Matches( space.Space );
+	public bool MatchesCard( Space space ) => _filter.Matches( space ); // used only in tests
+	public virtual bool MatchesCard( SpaceState space ) => _filter.Matches( space.Space );
 
 	#region Constructors
 
 	public InvaderCard( SpaceFilter filter, int invaderStage ) {
-		Filter = filter;
+		_filter = filter;
 		InvaderStage = invaderStage;
 	}
 	protected InvaderCard( InvaderCard orig ) {
-		Filter = orig.Filter;
+		_filter = orig._filter;
 		InvaderStage = orig.InvaderStage;
 	}
 
 	#endregion
 
-	protected bool HasEscalation => InvaderStage == 2 && Filter.Text != "Costal";
-	public SpaceFilter Filter { get; }
-	public string Text => (HasEscalation ? "2" : "") + Filter.Text;
+	protected bool HasEscalation => InvaderStage == 2 && _filter.Text != "Costal";
+	readonly SpaceFilter _filter;
+	public string Text => (HasEscalation ? "2" : "") + _filter.Text;
 
 	public Func<GameState, Task> Escalation;
 
-	public async Task Ravage( GameState gameState ) {
+	protected virtual bool MatchesCardForRavage( SpaceState spaceState ) => MatchesCard( spaceState );
+
+	public virtual async Task Ravage( GameState gameState ) {
 		gameState.Log( new InvaderActionEntry( "Ravaging:" + Text ) );
-		var ravageSpacesMatchingCard = gameState.AllActiveSpaces.Where( MatchesCard ).ToList();
+		var ravageSpacesMatchingCard = gameState.AllActiveSpaces.Where( MatchesCardForRavage ).ToList();
 
 		// find ravage spaces that have invaders
 		var ravageSpacesWithInvaders = ravageSpacesMatchingCard

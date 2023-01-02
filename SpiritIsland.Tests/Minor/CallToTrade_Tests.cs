@@ -101,11 +101,11 @@ public class CallToTrade_Tests {
 		List<string> invaderLog = new List<string>();
 
 		// Given: Going to Ravage / Build in Jungle
-		var (user, ctx) = TestSpirit.SetupGame( PowerCard.For<CallToTrade>(), (gs)=>{ 
-			var jungleCard = InvaderCard.Stage1( Terrain.Jungle);
-			gs.InvaderDeck = InvaderDeck.BuildTestDeck( jungleCard, jungleCard, jungleCard, jungleCard );
-			gs.NewLogEntry += (s) => invaderLog.Add(s.Msg());
-		} );
+		var (user, ctx) = TestSpirit.SetupGame( PowerCard.For<CallToTrade>(), (Action<GameState>)((gs)=>{ 
+			var jungleCard = SpiritIsland.InvaderCard.Stage1( Terrain.Jungle);
+			gs.InvaderDeck = InvaderDeck.BuildTestDeck( (IInvaderCard)jungleCard, (IInvaderCard)jungleCard, (IInvaderCard)jungleCard, (IInvaderCard)jungleCard );
+			gs.NewLogEntry += (s) => invaderLog.Add( s.Msg());
+		}) );
 
 		// Given: advance to 2nd round where we have a ravage
 		user.DoesNothingForARound();

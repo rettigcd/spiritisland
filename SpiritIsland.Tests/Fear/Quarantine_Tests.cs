@@ -9,14 +9,14 @@ public class Quarantine_Tests {
 
 	public Quarantine_Tests() {
 		var powerCard = PowerCard.For<CallToTend>();
-		var (userLocal,ctxLocal) = TestSpirit.SetupGame(powerCard,gs=>{ 
-			gs.NewLogEntry += (s) => { if(s is InvaderActionEntry or RavageEntry) log.Enqueue(s.Msg()); };
+		var (userLocal,ctxLocal) = TestSpirit.SetupGame( powerCard, (Action<GameState>)(gs=>{ 
+			gs.NewLogEntry += (s) => { if(s is InvaderActionEntry or RavageEntry) log.Enqueue( s.Msg()); };
 			gs.InvaderDeck = InvaderDeck.BuildTestDeck(
-				InvaderCard.Stage1( Terrain.Sand), // not on coast
-				InvaderCard.Stage2Costal(),
-				InvaderCard.Stage1( Terrain.Jungle)
+				(IInvaderCard)SpiritIsland.InvaderCard.Stage1( Terrain.Sand), // not on coast
+				(IInvaderCard)SpiritIsland.InvaderCard.Stage2Costal(),
+				(IInvaderCard)SpiritIsland.InvaderCard.Stage1( Terrain.Jungle)
 			);
-		} );
+		}) );
 		user = userLocal;
 		ctx = ctxLocal;
 		log.Clear(); // skip over initial Explorer setup

@@ -101,7 +101,7 @@ public class Volcano_Tests {
 		spirit.Presence.Adjust( space, 3 );
 
 		//  When: they ravage and cause blight, destroying 1 presence
-		Task task = space.Space.DoARavage( gameState );
+		Task task = space.DoARavage();
 
 		//  Then: destroyed presence causes 1 damage to explorer
 		ApplyDamageToExplorers(spirit,task,1, space );

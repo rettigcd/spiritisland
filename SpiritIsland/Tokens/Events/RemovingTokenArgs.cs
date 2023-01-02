@@ -2,8 +2,19 @@
 
 public class RemovingTokenArgs {
 
+	public RemovingTokenArgs( SpaceState space, RemoveReason reason, UnitOfWork uow ) {
+		Space = space;
+		Reason = reason;
+		UnitOfWork = uow;
+	}
+
+	// Read-only
 	public Token Token { get; set; }
-	public Space Space { get; set; }
+	public SpaceState Space { get; }
+	public RemoveReason Reason { get; }
+	public UnitOfWork UnitOfWork { get; }
+
+	// modifiable
 	public int Count {
 		get { return _count; }
 		set { 
@@ -13,6 +24,4 @@ public class RemovingTokenArgs {
 		}
 	}
 	int _count;
-	public RemoveReason Reason { get; set; }
-	public UnitOfWork ActionId { get; set; }
 }

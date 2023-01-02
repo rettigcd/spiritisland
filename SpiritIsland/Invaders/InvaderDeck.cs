@@ -40,28 +40,35 @@ public class InvaderDeck {
 		Slots = new List<InvaderSlot> { Ravage, Build, Explore };
 	}
 
+	readonly List<InvaderCard>[] _unused;
+
+	public InvaderCard TakeNextUnused( int selectionLevel ) {
+		var stageCards = _unused[selectionLevel - 1];
+		var card = stageCards[0];
+		stageCards.RemoveAt( 0 );
+		return card;
+	}
+
 	public InvaderDeck( int seed = default, int[] levelSelection = default ) {
 		levelSelection ??= new int[] { 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3 };
 
-		var levels = new List<IInvaderCard>[] {
-			Level1Cards.Cast<IInvaderCard>().ToList(),
-			Level2Cards.Cast<IInvaderCard>().ToList(),
-			Level3Cards.Cast<IInvaderCard>().ToList()
+		_unused = new List<InvaderCard>[] {
+			Level1Cards.ToList(),
+			Level2Cards.ToList(),
+			Level3Cards.ToList()
 		};
 
 		if(seed != default) {
 			var random = new Random( seed );
-			random.Shuffle( levels[0] );
-			random.Shuffle( levels[1] );
-			random.Shuffle( levels[2] );
+			random.Shuffle( _unused[0] );
+			random.Shuffle( _unused[1] );
+			random.Shuffle( _unused[2] );
 		}
 
 		// Merge
 		var all = new List<IInvaderCard>();
 		foreach(var selectionLevel in levelSelection) {
-			var level = levels[selectionLevel - 1];
-			all.Add( level[0] );
-			level.RemoveAt( 0 );
+			all.Add( TakeNextUnused( selectionLevel ) );
 		}
 		_unrevealedCards = all.ToList();
 		InitNumberOfCardsToDraw();
@@ -151,7 +158,7 @@ public class InvaderDeck {
 		}
 	}
 
-	public void ReplaceCards( Func<InvaderCard, IInvaderCard> replacer ) {
+	public void ReplaceUnrevealedCards( Func<InvaderCard, InvaderCard> replacer ) {
 		InvaderDeck deck = this;
 		for(int i = 0; i < deck.UnrevealedCards.Count; ++i) {
 			var existing = deck.UnrevealedCards[i];

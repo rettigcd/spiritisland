@@ -2,8 +2,14 @@
 
 public class GameComponentProvider : IGameComponentProvider {
 
-	public string[] AdversaryNames => Array.Empty<string>();
-	public IAdversary MakeAdversary( string adversaryName ) => null;
+	public string[] AdversaryNames => new string[]{
+		Russia.Name
+	};
+
+	public IAdversary MakeAdversary( string adversaryName ) => adversaryName switch {
+		Russia.Name => new Russia(),
+		_ => null
+	};
 
 	static Dictionary<string,Type> Spirits => new(){
 		[FracturedDaysSplitTheSky.Name]        = typeof( FracturedDaysSplitTheSky),

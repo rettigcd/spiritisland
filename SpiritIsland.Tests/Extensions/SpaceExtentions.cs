@@ -38,7 +38,7 @@ public static class SpaceExtentions {
 			"D" => TokenType.Dahan,
 			_ => throw new Exception( $"Invalid TokenClass [{match.Groups[2].Value}]" ),
 		};
-		int fullHealth = tokenClass.Attack; // hack - class doesn't have full health, so we will cheat and use attack as the full health.
+		int fullHealth = tokenClass.ExpectedHealthHint;
 		var token = new HealthToken(
 			tokenClass,
 			defaultPenalty,

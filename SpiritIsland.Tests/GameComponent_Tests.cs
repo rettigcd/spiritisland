@@ -60,6 +60,7 @@ public  class GameComponent_Tests {
 	static IFearCard[] FindFearCards( Type assemblyType ) {
 		return assemblyType.Assembly.GetTypes()
 			.Where( t => t.IsAssignableTo( typeof(IFearCard) ) )
+			.Where( t => t.GetConstructor( Type.EmptyTypes ) != null  )
 			.Select( t => (IFearCard)System.Activator.CreateInstance(t) )
 			.ToArray();
 	}

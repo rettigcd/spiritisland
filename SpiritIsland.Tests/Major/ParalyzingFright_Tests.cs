@@ -11,11 +11,11 @@ public class ParalyzingFright_Tests {
 	public void StopsAllInvaderActions() {
 		List<string> invaderLog = new List<string>();
 
-		var (user, ctx) = TestSpirit.SetupGame( PowerCard.For<ParalyzingFright>(), (gs)=>{ 
-			var jungleCard = InvaderCard.Stage1( Terrain.Jungle);
-			gs.InvaderDeck = InvaderDeck.BuildTestDeck( jungleCard, jungleCard, jungleCard, jungleCard );
-			gs.NewLogEntry += (s) => invaderLog.Add(s.Msg());
-		} );
+		var (user, ctx) = TestSpirit.SetupGame( PowerCard.For<ParalyzingFright>(), (Action<GameState>)((gs)=>{ 
+			var jungleCard = SpiritIsland.InvaderCard.Stage1( Terrain.Jungle);
+			gs.InvaderDeck = InvaderDeck.BuildTestDeck( (IInvaderCard)jungleCard, (IInvaderCard)jungleCard, (IInvaderCard)jungleCard, (IInvaderCard)jungleCard );
+			gs.NewLogEntry += (s) => invaderLog.Add( s.Msg());
+		}) );
 
 		// Given: there is a ravage card
 		user.Grows();

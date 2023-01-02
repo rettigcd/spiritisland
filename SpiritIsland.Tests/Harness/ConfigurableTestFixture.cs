@@ -1,6 +1,4 @@
-﻿using System.Text.RegularExpressions;
-
-namespace SpiritIsland.Tests;
+﻿namespace SpiritIsland.Tests;
 
 //Setup:
 //	Spirit / Presence / Cards / Prepared Elements / Energy
@@ -71,17 +69,22 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 		var gameConfig = new GameConfiguration().SetSpirits( RiverSurges.Name ).SetBoards( "A" );
 		adjustCfg(gameConfig);
 
+		_gameState = GameBuilder.BuildGame( gameConfig );
+		_spirit = _gameState.Spirits.Single();
+		_board = _gameState.Island.Boards.Single();
+	}
+
+	static readonly public GameBuilder GameBuilder;
+
+	static ConfigurableTestFixture() {
 		var providers = new IGameComponentProvider[] {
 			new SpiritIsland.Basegame.GameComponentProvider(),
 			new SpiritIsland.BranchAndClaw.GameComponentProvider(),
 			new SpiritIsland.PromoPack1.GameComponentProvider(),
 			new SpiritIsland.JaggedEarth.GameComponentProvider(),
 		};
-		_gameState = new GameBuilder( providers ).BuildGame( gameConfig );
-		_spirit = _gameState.Spirits.Single();
-		_board = _gameState.Island.Boards.Single();
+		GameBuilder = new GameBuilder( providers );
 	}
-
 	#endregion
 
 	/// <summary>
