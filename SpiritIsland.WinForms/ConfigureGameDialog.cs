@@ -123,7 +123,7 @@ public partial class ConfigureGameDialog : Form {
 
 	string SelectedBoard() {
 		return (boardListBox.SelectedIndex == 0)
-			? boardListBox.Items[1 + (int)(DateTime.Now.Ticks % 4)] as string
+			? boardListBox.Items[1 + (int)(DateTime.Now.Ticks % Board.AvailableBoards.Length)] as string
 			: boardListBox.SelectedItem as string;
 	}
 
