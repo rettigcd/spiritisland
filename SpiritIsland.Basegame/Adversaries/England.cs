@@ -1,8 +1,5 @@
 ﻿namespace SpiritIsland.Basegame;
 
-// !!! Additional Loss Condition
-// Proud & Mighty Capital: If 7 or more Town/City are ever in a single land, the Invaders win.
-
 public class England : IAdversary {
 
 	public const string Name = "England";
@@ -72,13 +69,27 @@ public class England : IAdversary {
 	}
 
 	public void PostInitialization( GameState gs ) {
+
+		gs.AddWinLossCheck( ProudAndMightyCapital );
+
 		gs.InvaderDeck.ReplaceCards( card => new EnglandInvaderCard( card, Level > 0 ) );
+
 		if(3 <= Level) {
 			var highBuildSlot = new HighImmegrationSlot( Level );
 			gs.InvaderDeck.Slots.Insert( 0, highBuildSlot );
 			if(Level == 3)
 				HighImmegrationSlot.RemoveForLevel2Invaders( gs, highBuildSlot );
 		}
+	}
+
+	static void ProudAndMightyCapital( GameState gs ) {
+		const string Name = "Proud & Mighty Capital";
+		// Additional Loss Condition
+		// Proud & Mighty Capital: If 7 or more Town/City are ever in a single land, the Invaders win.
+		static bool IsCapital(SpaceState s) => 7 <= s.SumAny( Invader.City, Invader.Town );
+		var capital = gs.AllSpaces.FirstOrDefault( IsCapital );
+		if( capital != null )
+			GameOverException.Lost($"{Name} on {capital.Space.Text}");
 	}
 
 	// We are NOT wrapping the source card.
@@ -129,16 +140,17 @@ public class England : IAdversary {
 
 	public class HighImmegrationSlot : BuildSlot {
 		public HighImmegrationSlot( int level ):base("High Immigration"){
-			this.repeatWhenNoFearResolved = level == 6;
+			_repeatWhenNoFearResolved = level == 6;
 		}
-		readonly bool repeatWhenNoFearResolved;
+
+		readonly bool _repeatWhenNoFearResolved;
 		int lastCountOfFearCardsResolved = 0;
 		public override async Task Execute( GameState gs ) {
 			// Do Normal Build
 			await base.Execute( gs );
 
 			// If no fear cards were Resolved
-			if(repeatWhenNoFearResolved) {
+			if(_repeatWhenNoFearResolved) {
 				int currentFearCardsResolved = gs.Fear.ResolvedCards;
 				if(currentFearCardsResolved == lastCountOfFearCardsResolved)
 					await base.Execute( gs );

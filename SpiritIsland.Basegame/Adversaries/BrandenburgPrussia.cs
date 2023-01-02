@@ -1,7 +1,5 @@
 ﻿namespace SpiritIsland.Basegame;
 
-// !!! Level, Difficulty, Fear Deck
-
 public class BrandenburgPrussia : IAdversary {
 
 	public const string Name = "Brandenburg-Prussia";
