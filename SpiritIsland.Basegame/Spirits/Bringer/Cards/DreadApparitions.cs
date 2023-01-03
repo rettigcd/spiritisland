@@ -16,8 +16,8 @@ public class DreadApparitions {
 		// (Fear from destroying town/cities does not.)
 		ctx.GameState.Fear.FearAdded.ForRound.Add( ( gs, args ) => {
 			if(!args.FromDestroyedInvaders && args.space == ctx.Space) {
-				gs.Tokens[args.space].Defend.Add( args.count );
-				gs.Log(new LogDebug( $"{args.count} Fear => +{args.count} Defend ({Name})" ));
+				gs.Tokens[args.space].Defend.Add( args.Count );
+				gs.Log(new LogDebug( $"{args.Count} Fear => +{args.Count} Defend ({Name})" ));
 			}
 		} );
 

@@ -107,7 +107,7 @@ public class DreadApparitions_Tests {
 			await DreadApparitions.ActAsync( ctx );
 
 			// When: Power causes fear in a different land
-			ctx.GameState.Fear.AddDirect(new FearArgs { space = board[1], FromDestroyedInvaders = false, count = 6 } );
+			ctx.GameState.Fear.AddDirect(new FearArgs( 6 ) { space = board[1] } );
 		}
 		_ = When();
 

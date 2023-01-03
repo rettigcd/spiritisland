@@ -1,11 +1,9 @@
 ﻿namespace SpiritIsland.BranchAndClaw;
 
-public class DahanAttack : IFearCard {
+public class DahanAttack : FearCardBase, IFearCard {
 
 	public const string Name = "Dahan Attack";
 	public string Text => Name;
-	public int? Activation { get; set; }
-	public bool Flipped { get; set; }
 
 	[FearLevel( 1, "Each player removes 1 eplorer from a land with dahan" )]
 	public async Task Level1( GameCtx ctx ) {

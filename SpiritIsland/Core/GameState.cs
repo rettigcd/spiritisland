@@ -22,7 +22,6 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		Invaders = new Invaders( this );
 		Tokens = new Tokens_ForIsland( this );
 
-		//		Tokens.TokenAdded.ForGame.Add( BlightAddedCheck );
 		AddToAllActiveSpaces( new TokenAddedHandler( "Cascade Blight", BlightAddedCheck, true ) ); // Combine these 2 into a class.
 		AddToAllActiveSpaces( new TokenRemovedHandler( "Cascade Blight", BlightRemovedCheck, true) );
 

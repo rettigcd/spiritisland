@@ -323,7 +323,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 	/// <summary> adds Target to Fear context </summary>
 	public override void AddFear( int count ) { 
-		GameState.Fear.AddDirect( new FearArgs { count = count, FromDestroyedInvaders = false, space = Space } );
+		GameState.Fear.AddDirect( new FearArgs( count ) { space = Space } );
 	}
 
 	#region presence

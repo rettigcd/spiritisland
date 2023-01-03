@@ -82,7 +82,7 @@ public class BeliefTakesRoot_Tests {
 	}
 
 	async Task When_AddFearApplyFearAndRavage() {
-		gameState.Fear.AddDirect( new FearArgs{ count=4 } );
+		gameState.Fear.AddDirect( new FearArgs( 4 ) );
 		await gameState.Fear.Apply();
 		await invaderCard.Ravage( gameState );
 	}

@@ -92,11 +92,7 @@ public class ToDreamAThousandDeaths : InvaderBinding {
 		RecordSpaceWithDreamers( ctx.Tokens );
 
 		// Add fear
-		ctx.GameState.Fear.AddDirect( new FearArgs {
-			space = ctx.Space,
-			count = newToken.Class.FearGeneratedWhenDestroyed,
-			FromDestroyedInvaders = false // false => Dread Apparitions counts this for defence.
-		} );
+		ctx.GameState.Fear.AddDirect( new FearArgs( newToken.Class.FearGeneratedWhenDestroyed ) { space = ctx.Space } );
 
 		// Push towns and explorers
 		if(newToken.Class != DreamingCity)

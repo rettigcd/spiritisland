@@ -44,7 +44,7 @@ public class DahanOnTheirGuard_Tests {
 		// 4 dahan should defend 4
 
 		//   And: 4 fear / player
-		gameState.Fear.AddDirect( new FearArgs{count=4} );
+		gameState.Fear.AddDirect( new FearArgs( 4 ) );
 
 		// When: Doing Invader phase (fear+ragage)
 		async Task DoIt() {

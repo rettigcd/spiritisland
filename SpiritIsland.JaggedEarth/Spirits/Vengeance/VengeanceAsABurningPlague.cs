@@ -54,7 +54,7 @@ public class VengeanceAsABurningPlague : Spirit {
 		if(stoppedByDisease)
 			await tokens.Disease.Bind( gameCtx.UnitOfWork ).Remove( 1, RemoveReason.UsedUp ); // !!! Maybe this should be different UoW
 		else
-			gameCtx.GameState.Fear.AddDirect( new FearArgs { FromDestroyedInvaders = false, count = 1, space = tokens.Space } );
+			gameCtx.GameState.Fear.AddDirect( new FearArgs( 1 ) { space = tokens.Space } );
 		return stoppedByDisease;
 	}
 

@@ -1,12 +1,9 @@
 ﻿namespace SpiritIsland.Basegame;
 
-public class BeliefTakesRoot : IFearCard {
+public class BeliefTakesRoot : FearCardBase, IFearCard {
 
 	public const string Name = "Belief takes Root";
 	public string Text => Name;
-	public int? Activation { get; set; }
-	public bool Flipped { get; set; }
-
 
 	[FearLevel( 1, "Defend 2 in all lands with Presence." )]
 	public Task Level1( GameCtx ctx ) {

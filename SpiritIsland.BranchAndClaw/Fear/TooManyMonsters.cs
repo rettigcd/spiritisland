@@ -1,12 +1,9 @@
 ﻿namespace SpiritIsland.BranchAndClaw;
 
-public class TooManyMonsters : IFearCard {
+public class TooManyMonsters : FearCardBase, IFearCard {
 
 	public const string Name = "Too Many Monsters";
 	public string Text => Name;
-	public int? Activation { get; set; }
-	public bool Flipped { get; set; }
-
 
 	[FearLevel( 1, "Each player removes 1 explorer / town from a land with beast." )]
 	public async Task Level1( GameCtx ctx ) {

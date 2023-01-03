@@ -19,7 +19,7 @@ public class ErosionOfWill : BlightCardBase {
 	static public DecisionOption<GameCtx> AddFearPerPlayer(int count) 
 		=> new DecisionOption<GameCtx>(
 			$"Add {count} fear per player", 
-			ctx => ctx.GameState.Fear.AddDirect(new FearArgs { count = count } )
+			ctx => ctx.GameState.Fear.AddDirect(new FearArgs( count ) )
 		);
 
 

@@ -1,10 +1,8 @@
 ﻿namespace SpiritIsland.BranchAndClaw;
 
-public class Quarantine : IFearCard {
+public class Quarantine : FearCardBase, IFearCard {
 	public const string Name = "Quarantine";
 	public string Text => Name;
-	public int? Activation { get; set; }
-	public bool Flipped { get; set; }
 
 	[FearLevel( 1, "Explore does not affect coastal lands." )]
 	public Task Level1( GameCtx ctx ) {

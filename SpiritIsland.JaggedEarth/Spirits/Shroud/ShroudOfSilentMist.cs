@@ -72,7 +72,7 @@ public class ShroudOfSilentMist : Spirit {
 		int myLandsWithDamagedInvaders = new ReadOnlyBoundPresence( this, gs, gs.Island.Terrain ).Spaces.Count( SpaceHasDamagedInvaders );
 
 		// 1 fear (max 5) per land of yours with Damaged Invaders.
-		gs.Fear.AddDirect(new FearArgs { FromDestroyedInvaders = false, count = Math.Min(5,myLandsWithDamagedInvaders) } );
+		gs.Fear.AddDirect(new FearArgs( Math.Min(5,myLandsWithDamagedInvaders) ) );
 
 		// Gain 1 Energy per 3 lands of yours with Damaged Invaders."
 		Energy += (myLandsWithDamagedInvaders / 3);

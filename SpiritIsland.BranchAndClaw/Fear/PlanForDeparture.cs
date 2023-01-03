@@ -1,11 +1,9 @@
 ﻿namespace SpiritIsland.BranchAndClaw;
 
-public class PlanForDeparture : IFearCard {
+public class PlanForDeparture : FearCardBase, IFearCard {
 
 	public const string Name = "Plan for Departure";
 	public string Text => Name;
-	public int? Activation { get; set; }
-	public bool Flipped { get; set; }
 
 	[FearLevel( 1, "Each player may gather 1 town into a costal land." )]
 	public async Task Level1( GameCtx ctx ) {

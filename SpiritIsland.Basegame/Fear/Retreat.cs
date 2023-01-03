@@ -1,11 +1,9 @@
 ﻿namespace SpiritIsland.Basegame;
 
-public class Retreat : IFearCard {
+public class Retreat : FearCardBase, IFearCard {
 
 	public const string Name = "Retreat";
 	public string Text => Name;
-	public int? Activation { get; set; }
-	public bool Flipped { get; set; }
 
 	[FearLevel( 1, "Each player may Push up to 2 Explorer from an Inland land." )]
 	public Task Level1( GameCtx ctx ) {

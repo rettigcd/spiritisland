@@ -1,11 +1,9 @@
 ﻿namespace SpiritIsland.BranchAndClaw;
 
-class TreadCarefully : IFearCard {
+class TreadCarefully : FearCardBase, IFearCard {
 
 	public const string Name = "Tread Carefully";
 	public string Text => Name;
-	public int? Activation { get; set; }
-	public bool Flipped { get; set; }
 
 	[FearLevel( 1, "Each player may choose a land with dahan or adjacent to at least 5 dahan.  Invaders do not ravage there this turn." )]
 	public Task Level1( GameCtx ctx ) {

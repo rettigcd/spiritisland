@@ -56,11 +56,7 @@ public class SelfCtx {
 	#endregion
 
 	public virtual void AddFear( int count ) { // overriden by TargetSpaceCtx to add the location
-		GameState.Fear.AddDirect( new FearArgs { 
-			count = count, 
-			FromDestroyedInvaders = false,
-			space = null 
-		} );
+		GameState.Fear.AddDirect( new FearArgs( count) );
 	}
 
 	public Task<T> Decision<T>( Select.TypedDecision<T> originalDecision ) where T : class, IOption => Self.Gateway.Decision( originalDecision );
@@ -90,8 +86,8 @@ public class SelfCtx {
 
 		cardToFlip.Flipped = true;
 		await Self.Select( label, new IOption[] { cardToFlip }, Present.Always );
-		if( cardToFlip.Activation.HasValue )
-			GameState.Log( new LogDebug( $"{cardToFlip.Activation.Value} => {cardToFlip.GetDescription( cardToFlip.Activation.Value )}" ) );
+		if( cardToFlip.ActivatedTerrorLevel.HasValue )
+			GameState.Log( new LogDebug( $"{cardToFlip.ActivatedTerrorLevel.Value} => {cardToFlip.GetDescription( cardToFlip.ActivatedTerrorLevel.Value )}" ) );
 		else
 			for(int i=1;i<=3;++i)
 				GameState.Log( new LogDebug($"{i} => {cardToFlip.GetDescription(i)}") );

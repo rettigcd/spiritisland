@@ -1,12 +1,9 @@
 ﻿namespace SpiritIsland.Basegame;
 
-public class DahanEnheartened : IFearCard {
+public class DahanEnheartened : FearCardBase, IFearCard {
 
 	public const string Name = "Dahan Enheartened";
 	public string Text => Name;
-	public int? Activation { get; set; }
-	public bool Flipped { get; set; }
-
 
 	[FearLevel( 1, "Each player may Push 1 Dahan from a land with Invaders or Gather 1 Dahan into a land with Invaders." )]
 	public async Task Level1( GameCtx ctx ) {

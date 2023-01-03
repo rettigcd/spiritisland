@@ -2,12 +2,26 @@
 
 public interface IFearCard : IOption {
 
-	int? Activation { get; set; }
+	int? ActivatedTerrorLevel { get; set; }
 	bool Flipped { get; set; }
+
+	void Activate( GameState gameState );
 
 	Task Level1( GameCtx ctx );
 	Task Level2( GameCtx ctx );
 	Task Level3( GameCtx ctx );
+}
+
+public class FearCardBase {
+	public int? ActivatedTerrorLevel { get; set; }
+	public bool Flipped { get; set; }
+
+	public virtual void Activate( GameState gameState ) {
+		var topCard = gameState.Fear.Deck.Pop();
+		if(topCard != this)
+			throw new InvalidOperationException( "Fear card must be on top of deck to activate it." );
+		gameState.Fear.ActivatedCards.Push( topCard );
+	}
 }
 
 static public class IFearOptionsExtension {

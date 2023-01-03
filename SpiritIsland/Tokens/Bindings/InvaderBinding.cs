@@ -122,8 +122,7 @@ public class InvaderBinding {
 		// Don't assert token is destroyed (from damage) because it is possible to destory healthy tokens
 
 		// ??? Why is this true?
-		gameState.Fear.AddDirect( new FearArgs {
-			count = originalToken.Class.FearGeneratedWhenDestroyed,
+		gameState.Fear.AddDirect( new FearArgs( originalToken.Class.FearGeneratedWhenDestroyed ) {
 			FromDestroyedInvaders = true, // this is the destruction that Dread Apparitions ignores.
 			space = Space
 		} );

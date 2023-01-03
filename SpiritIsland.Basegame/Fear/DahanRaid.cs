@@ -1,11 +1,9 @@
 ﻿namespace SpiritIsland.Basegame;
 
-public class DahanRaid : IFearCard {
+public class DahanRaid : FearCardBase, IFearCard {
 
 	public const string Name = "Dahan Raid";
 	public string Text => Name;
-	public int? Activation { get; set; }
-	public bool Flipped { get; set; }
 
 	[FearLevel(1, "Each player chooses a different land with Dahan. 1 Damage there.")]
 	public Task Level1( GameCtx ctx ) {

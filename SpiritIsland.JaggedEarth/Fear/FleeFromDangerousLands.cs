@@ -1,12 +1,9 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-public class FleeFromDangerousLands : IFearCard {
+public class FleeFromDangerousLands : FearCardBase, IFearCard {
 
 	public const string Name = "Flee from Dangerous Lands";
 	public string Text => Name;
-	public int? Activation { get; set; }
-	public bool Flipped { get; set; }
-
 
 	[FearLevel(1, "On Each Board: Push 1 Explorer / Town from a land with Badlands / Wilds / Dahan." )]
 	public Task Level1( GameCtx ctx ) {

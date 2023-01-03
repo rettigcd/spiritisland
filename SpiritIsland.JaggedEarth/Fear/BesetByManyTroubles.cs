@@ -1,12 +1,9 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-public class BesetByManyTroubles : IFearCard {
-		
+public class BesetByManyTroubles : FearCardBase, IFearCard {
 
 	public const string Name = "Beset by Many Troubles";
 	public string Text => Name;
-	public int? Activation { get; set; }
-	public bool Flipped { get; set; }
 
 	[FearLevel(1, "In each land with Badlands / Beasts / Disease / Wilds / Strife, Defend 3." )]
 	public Task Level1( GameCtx ctx ) {

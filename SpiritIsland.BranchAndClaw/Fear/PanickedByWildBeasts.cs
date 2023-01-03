@@ -1,11 +1,8 @@
 ﻿namespace SpiritIsland.BranchAndClaw;
 
-public class PanickedByWildBeasts : IFearCard {
+public class PanickedByWildBeasts : FearCardBase, IFearCard {
 	public const string Name = "Panicked by Wild Beasts";
 	public string Text => Name;
-	public int? Activation { get; set; }
-	public bool Flipped { get; set; }
-
 
 	[FearLevel( 1, "Each player adds 1 strife in a land with or adjacent to beast" )]
 	public async Task Level1( GameCtx ctx ) {

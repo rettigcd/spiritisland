@@ -1,11 +1,9 @@
 ﻿namespace SpiritIsland.Basegame;
 
-public class AvoidTheDahan : IFearCard {
+public class AvoidTheDahan : FearCardBase, IFearCard {
 
 	public const string Name = "Avoid the Dahan";
 	public string Text => Name;
-	public int? Activation { get; set; }
-	public bool Flipped { get; set; }
 
 	[FearLevel(1, "Invaders do not Explore into lands with at least 2 Dahan." )]
 	public Task Level1( GameCtx ctx ) {

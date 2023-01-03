@@ -1,12 +1,9 @@
 ﻿namespace SpiritIsland.Basegame;
 
-public class TradeSuffers : IFearCard {
+public class TradeSuffers : FearCardBase, IFearCard {
 
 	public const string Name = "Trade Suffers";
 	public string Text => Name;
-	public int? Activation { get; set; }
-	public bool Flipped { get; set; }
-
 
 	[FearLevel( 1, "Invaders do not Build in lands with City." )]
 	public Task Level1( GameCtx ctx ) {

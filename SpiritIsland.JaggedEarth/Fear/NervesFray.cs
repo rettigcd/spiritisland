@@ -1,12 +1,9 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-public class NervesFray : IFearCard {
+public class NervesFray : FearCardBase, IFearCard {
 
 	public const string Name = "Nerves Fray";
 	public string Text => Name;
-	public int? Activation { get; set; }
-	public bool Flipped { get; set; }
-
 
 	[FearLevel(1, "Each player adds 1 Strife in a land not matching a Ravage Card." )]
 	public Task Level1( GameCtx ctx ) {
@@ -24,7 +21,7 @@ public class NervesFray : IFearCard {
 		await EachPlayerAddsStrifeToNonRavageLand( 2 ).Execute(ctx);
 
 		// 1 Fear per player.
-		ctx.GameState.Fear.AddDirect(new FearArgs { count = ctx.GameState.Spirits.Length });
+		ctx.GameState.Fear.AddDirect(new FearArgs( ctx.GameState.Spirits.Length ));
 	}
 
 	static public DecisionOption<GameCtx> EachPlayerAddsStrifeToNonRavageLand( int strifeCount )

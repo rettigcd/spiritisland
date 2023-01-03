@@ -1,12 +1,9 @@
 ﻿namespace SpiritIsland.Basegame;
 
-public class FearOfTheUnseen : IFearCard {
+public class FearOfTheUnseen : FearCardBase, IFearCard {
 
 	public const string Name = "Fear of the Unseen";
 	public string Text => Name;
-	public int? Activation { get; set; }
-	public bool Flipped { get; set; }
-
 
 	[FearLevel( 1, "Each player removes 1 Explorer / Town from a land with SacredSite." )]
 	public Task Level1( GameCtx fearCtx ) {

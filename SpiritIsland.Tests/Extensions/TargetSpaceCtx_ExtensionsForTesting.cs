@@ -38,7 +38,7 @@ internal static class TargetSpaceCtx_ExtensionsForTesting {
 		var fear = ctx.GameState.Fear;
 		fear.Deck.Pop();
 		fear.PushOntoDeck(fearCard);
-		fear.ActivateCard();
+		fear.AddDirect( new FearArgs( fear.PoolMax ) );
 	}
 
 	public static void ElevateTerrorLevelTo( this SelfCtx ctx, int desiredFearLevel ) {

@@ -57,10 +57,11 @@ public class Fear {
 	}
 
 	public void AddDirect( FearArgs args ) {
-		EarnedFear += args.count;
+		EarnedFear += args.Count;
 		while(PoolMax <= EarnedFear && Deck.Any() ) {
 			EarnedFear -= PoolMax;
-			ActivateCard();
+
+			Deck.Peek().Activate( gs );
 		}
 		// ! Do NOT check for victory here and throw GameOverException(...)
 		// This is called inside PowerCard using Invoke() which converts exception to a TargetInvocationException which we don't want.
@@ -69,14 +70,12 @@ public class Fear {
 		FearAdded?.Invoke( gs, args );
 	}
 
-	public void ActivateCard() => ActivatedCards.Push( Deck.Pop() ); // public for testing
-
 	public async Task Apply() {
 		while(ActivatedCards.Count > 0) {
 			IFearCard fearCard = ActivatedCards.Pop();
 
 			// show card to each user
-			fearCard.Activation = TerrorLevel;
+			fearCard.ActivatedTerrorLevel = TerrorLevel;
 
 			await using var unitOfWork = gs.StartAction( ActionCategory.Fear );
 			foreach(var spirit in gs.Spirits)
@@ -136,7 +135,10 @@ public class Fear {
 }
 
 public class FearArgs {
-	public int count;
+
+	public FearArgs(int count ) { this.Count = count; }
+
+	public readonly int Count;
 	public Space space;
 
 	// power cards says +N Fear  =>  false
