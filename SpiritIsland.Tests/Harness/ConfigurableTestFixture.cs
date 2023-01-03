@@ -68,10 +68,7 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 		if(_board != null) throw new InvalidOperationException( "InitConfiguration must be called before Board is initialized." );
 		if(_gameState != null) throw new InvalidOperationException( "InitConfiguration must be called before GameState is initialized." );
 
-		var gameConfig = new GameConfiguration {
-			Spirit = RiverSurges.Name,
-			Board = "A",
-		};
+		var gameConfig = new GameConfiguration().SetSpirits( RiverSurges.Name ).SetBoards( "A" );
 		adjustCfg(gameConfig);
 
 		var providers = new IGameComponentProvider[] {

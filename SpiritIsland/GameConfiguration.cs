@@ -2,13 +2,17 @@
 
 public class GameConfiguration {
 
-	public string Spirit;
-	public string Board;
+	public string[] Spirits;
+	public string[] Boards;
 	public int ShuffleNumber;
 	public AdversaryConfig Adversary;
 
 	public string AdversarySummary => Adversary == null ? "[none]" : $"{Adversary.Name} {Adversary.Level}";
 
+	#region public helper methods
+	public GameConfiguration SetSpirits(params string[] spirits ) { Spirits = spirits; return this; }
+	public GameConfiguration SetBoards( params string[] boards ) { Boards = boards; return this; }
+	#endregion
 }
 
 public class GameBuilder {
@@ -22,11 +26,13 @@ public class GameBuilder {
 	public string[] SpiritNames => _providers.SelectMany(p => p.SpiritNames ) .OrderBy( t => t ) .ToArray();
 	public string[] AdversaryNames => _providers.SelectMany(p => p.AdversaryNames) .OrderBy( t => t ) .ToArray();
 
-	public Spirit BuildSpirit( string spirit ) => _providers.Select( p => p.MakeSpirit( spirit ) ).FirstOrDefault( x => x != null )
-		?? throw new InvalidOperationException( $"Spirit named '{spirit}' not found." );
+	public Spirit[] BuildSpirits( params string[] spirits ) => spirits.Select(spirit 
+		=> _providers.Select( p => p.MakeSpirit( spirit ) ).FirstOrDefault( x => x != null )
+		?? throw new InvalidOperationException( $"Spirit named '{spirit}' not found." )
+	).ToArray();
 
 #pragma warning disable CA1822 // Mark members as static
-	public Board BuildBoard( string board ) => SpiritIsland.Board.BuildBoard( board );
+	public Board[] BuildBoards( params string[] boards ) => boards.Select(board => SpiritIsland.Board.BuildBoard( board ) ).ToArray();
 #pragma warning restore CA1822 // Mark members as static
 
 	public IAdversary BuildAdversary( AdversaryConfig cfg ) {
@@ -42,12 +48,12 @@ public class GameBuilder {
 	public List<IBlightCard> BuildBlightCards() => _providers.SelectMany( p => p.BlightCards ).ToList();
 
 	public GameState BuildGame( GameConfiguration cfg ) {
-		Spirit spirit = BuildSpirit( cfg.Spirit );
-		Board board = BuildBoard( cfg.Board );
+		Spirit[] spirits = BuildSpirits( cfg.Spirits );
+		Board[] boards = BuildBoards( cfg.Boards );
 		var blightCards = BuildBlightCards();
 
 		// GameState
-		var gameState = new GameState( spirit, board );
+		var gameState = new GameState( spirits, boards );
 
 		// Game # - Random Seeds (don't change this order or this will change game definition)
 		var randomizer = new Random( cfg.ShuffleNumber );

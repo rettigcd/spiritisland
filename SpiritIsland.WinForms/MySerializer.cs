@@ -71,8 +71,8 @@ public static class MySerializer {
 		var preparedToken = PrepareToken( item.Token );
 
 		var result = new Dictionary<string, object> {
-			[SPIRIT] = item.Spirit,
-			[BOARD] = item.Board,
+			[SPIRIT] = item.Spirits[0], // !!! change format to save >1 spirits/boards
+			[BOARD] = item.Boards[0],
 			[SHUFFLENUMBER] = item.ShuffleNumber,
 			[ADVERSARY] = Prepare( item.Adversary ),
 			[TOKEN] = preparedToken,
@@ -83,8 +83,8 @@ public static class MySerializer {
 
 	static public GameConfigPlusToken RestoreGameConfigPlusToken( JsonObject dict ) => dict is null ? null
 		: new GameConfigPlusToken { 
-			Spirit = dict[SPIRIT],
-			Board = dict[BOARD], 
+			Spirits = new string[]{ dict[SPIRIT] },
+			Boards = new string[]{ dict[BOARD] }, 
 			ShuffleNumber = (int)dict[SHUFFLENUMBER],
 			Adversary = RestoreAdversaryConfig( dict[ADVERSARY] ), 
 			Token = RestorePresenceTokenAppearance( dict[TOKEN] ),

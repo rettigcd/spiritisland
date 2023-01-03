@@ -134,8 +134,8 @@ public partial class ConfigureGameDialog : Form {
 	void OkButton_Click( object sender, EventArgs e ) {
 		string spirit = SelectedSpiritName();
 		GameConfig = new GameConfigPlusToken {
-			Spirit = spirit,
-			Board = SelectedBoard(),
+			Spirits = new string[]{ spirit },
+			Boards = new string[]{ SelectedBoard() },
 			ShuffleNumber = SelectShuffleNumber(),
 			Token = SelectAppearance( spirit ),
 			Adversary = SelectAdversary()

@@ -146,7 +146,7 @@ namespace SpiritIsland.WinForms {
 
 			var gc = gameConfiguration;
 
-			logForm.AppendLine($"=== Game: {gc.Spirit} : {gc.Board} : {gc.ShuffleNumber} : {gc.AdversarySummary} ===", LogLevel.Info );
+			logForm.AppendLine($"=== Game: {gc.Spirits[0]} : {gc.Boards[0]} : {gc.ShuffleNumber} : {gc.AdversarySummary} ===", LogLevel.Info ); // !!! show multiple boards/spirits
 
 			GameState gameState = ConfigureGameDialog.GameBuilder.BuildGame( gc );
 			game = new SinglePlayerGame( gameState, false ) { LogExceptions = true };
@@ -207,7 +207,7 @@ namespace SpiritIsland.WinForms {
 		void recentToolStripMenuItem_DropDownOpening( object sender, EventArgs e ) {
 			recentToolStripMenuItem.DropDownItems.Clear();
 			foreach(var x in MySerializer.GetRecent()) {
-				var mi = new ToolStripMenuItem( $"{x.TimeStamp:MM/dd HH:mm}   { x.Spirit} : {x.Board} : {x.ShuffleNumber}" ) { Tag = x };
+				var mi = new ToolStripMenuItem( $"{x.TimeStamp:MM/dd HH:mm}   { x.Spirits[0] } : {x.Boards[0]} : {x.ShuffleNumber}" ) { Tag = x };
 				mi.Click += RecentGame_Clicked;
 				recentToolStripMenuItem.DropDownItems.Add(mi);
 			}
