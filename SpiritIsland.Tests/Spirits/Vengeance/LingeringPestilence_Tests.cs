@@ -8,7 +8,7 @@ public class LingeringPestilence_Tests {
 	public void Powers_DoNotGenerateDisease() {
 
 		Spirit self = new VengeanceAsABurningPlague();
-		Board boardA = Board.BuildBoardA();		Board board2 = Board.BuildBoardB();
+		Board boardA = Board.BuildBoardA();
 		GameState gameState = new GameState( self, boardA );
 
 		// Given: a space with presence
@@ -34,7 +34,7 @@ public class LingeringPestilence_Tests {
 	public void Ravage_GeneratesDisease() {
 
 		Spirit self = new VengeanceAsABurningPlague();
-		Board boardA = Board.BuildBoardA(); Board board2 = Board.BuildBoardB();
+		Board boardA = Board.BuildBoardA();
 		GameState gameState = new GameState( self, boardA );
 
 		// Given: a space with presence

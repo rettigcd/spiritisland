@@ -113,8 +113,6 @@ public class InvaderBinding {
 
 	protected virtual async Task Destroy1( HealthToken originalToken, bool fromRavage ) {
 
-		var reason = fromRavage ? RemoveReason.DestroyedInBattle : RemoveReason.Destroyed;
-
 		// !!!! I think this is throwing an exception
 		await Tokens.Destroy( originalToken, 1, UnitOfWork );
 

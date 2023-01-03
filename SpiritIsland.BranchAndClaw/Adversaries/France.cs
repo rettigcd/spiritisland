@@ -239,7 +239,7 @@ public class FranceInvaderCard : InvaderCard {
 		// Demand for New Cash Crops:
 		// After Exploring, on each board, pick a land of the shown terrain.If it has Town / City, add 1 Blight.Otherwise, add 1 Town
 
-		DecisionOption<SelfCtx> SelectSpaceAction(SpaceState s ) {
+		static DecisionOption<SelfCtx> SelectSpaceAction(SpaceState s ) {
 			return s.HasAny( Invader.Town, Invader.City )
 				? new DecisionOption<SelfCtx>( "Add 1 Town to " + s.Space.Text, null )
 				: new DecisionOption<SelfCtx>( "", null );
