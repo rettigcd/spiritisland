@@ -24,7 +24,10 @@ public class MovePresenceWithTokens {
 		// If we used 'Push', user would click on Destination instead of Source
 		var source = await _spirit.Gateway.Decision( Select.DeployedPresence.Gather("Move presence with "+ args.TokenRemoved.Class.Label+"?", args.AddedTo.Space, new SpaceState[]{ args.RemovedFrom } ) );
 		if( source != null )
-			await _spirit.BindSelf( args.GameState, args.UnitOfWork ).Presence.Move( args.RemovedFrom.Space, args.AddedTo.Space );
+			// !! This is interesting... This might be a DIFFERENT spirit that is moving the dahan,
+			// but WE are calling Bind-MY-Power
+			// maybe we should be binding the original spirits power instead of this.
+			await _spirit.BindMyPowers( args.GameState, args.UnitOfWork ).Presence.Move( args.RemovedFrom.Space, args.AddedTo.Space );
 	}
 
 	#region private field

@@ -93,7 +93,7 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 //		get => _selfCtx ??= Spirit.BindMyPower( GameState, GameState.StartAction( ActionCategory.Spirit_Power ) );//??? is it ok to spin up actions like this?
 		get {
 			if( _selfCtx == null )
-				_selfCtx = Spirit.BindMyPower( GameState, GameState.StartAction( ActionCategory.Spirit_Power ) );
+				_selfCtx = Spirit.BindMyPowers( GameState, GameState.StartAction( ActionCategory.Spirit_Power ) );
 			return _selfCtx;
 		}
 		set => _selfCtx = value;

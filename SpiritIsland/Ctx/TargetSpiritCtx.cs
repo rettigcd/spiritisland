@@ -10,7 +10,7 @@ public class TargetSpiritCtx : SelfCtx {
 
 	public SelfCtx OtherCtx => Other==Self 
 		? this 
-		: Self.Bind(Other,GameState,CurrentActionId, Cause.MyPowers ); // ??? !!! do we ever Target Other Spirits outside of powers.  I think not.
+		: Self.BindMyPowers( Other,GameState,ActionCtx ); // ??? !!! do we ever Target Other Spirits outside of powers.  I think not.
 		// Vengeance has special rules when using its powers, need to be able to bind those powers to other spirits.
 
 }

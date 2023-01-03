@@ -151,7 +151,7 @@ public abstract partial class Spirit : IOption {
 			Phase.Init or
 			Phase.Growth => BindSelf( gs, unitOfWork ),
 			Phase.Fast or 
-			Phase.Slow => BindMyPower( gs, unitOfWork ),
+			Phase.Slow => BindMyPowers( gs, unitOfWork ),
 			_ => throw new InvalidOperationException(),
 		};
 
@@ -340,12 +340,16 @@ public abstract partial class Spirit : IOption {
 
 	protected abstract void InitializeInternal( Board board, GameState gameState );
 
-	public SelfCtx BindSelf( GameState gameState, UnitOfWork unitOfWork, Cause cause = default ) => Bind( this, gameState, unitOfWork, cause );
+	#region Bind helpers
+	public SelfCtx BindSelf( GameState gameState, UnitOfWork unitOfWork ) => BindDefault( this, gameState, unitOfWork );
+	public SelfCtx BindMyPowers( GameState gameState, UnitOfWork unitOfWork ) => BindMyPowers( this, gameState, unitOfWork );
+	#endregion Bind helpers
 
-	public SelfCtx BindMyPower( GameState gameState, UnitOfWork unitOfWork ) => Bind( this, gameState, unitOfWork, Cause.MyPowers );
+	public virtual SelfCtx BindDefault( Spirit spirit, GameState gameState, UnitOfWork unitOfWork )
+		=> new SelfCtx( spirit, gameState, unitOfWork );
 
-	public virtual SelfCtx Bind( Spirit spirit, GameState gameState, UnitOfWork action, Cause cause ) => new SelfCtx( spirit, gameState, action, cause );
-
+	public virtual SelfCtx BindMyPowers( Spirit spirit, GameState gameState, UnitOfWork unitOfWork )
+		=> new SelfCtx( spirit, gameState, unitOfWork );
 
 	Task On_TimePassed(GameState _ ) {
 		// reset cards / powers

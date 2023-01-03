@@ -11,7 +11,7 @@ public class PreparedElements {
 		var spirit = new ShiftingMemoryOfAges();
 		var board = Board.BuildBoardA();
 		var gs = new GameState( spirit, board );
-		var ctx = spirit.BindMyPower(gs,gs.StartAction(ActionCategory.Spirit_Power)).Target(board[5]);
+		var ctx = spirit.BindMyPowers(gs,gs.StartAction(ActionCategory.Spirit_Power)).Target(board[5]);
 
 		var el1 = new ObserveWorldMod(ctx);
 		var el2 = new ObserveWorldMod(ctx);

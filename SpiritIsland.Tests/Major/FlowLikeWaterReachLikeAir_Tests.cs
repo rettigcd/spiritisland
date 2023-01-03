@@ -32,8 +32,8 @@ public class FlowLikeWaterReachLikeAir_Tests {
 		static async Task PlayCard(TargetSpiritCtx ctx) { try { await FlowLikeWaterReachLikeAir.ActAsync( ctx ); } catch(Exception ex) { 
 			_ = ex.ToString(); 
 		} } 
-		var action = gameState.StartAction( ActionCategory.Default );
-		_ = PlayCard( spirit.BindMyPower( gameState, action ).TargetSpirit(spirit) );
+		var action = gameState.StartAction( ActionCategory.Spirit_Power );
+		_ = PlayCard( spirit.BindMyPowers( gameState, action ).TargetSpirit(spirit) );
 
 		//  And: Can bring 2 of each
 		user.AssertDecisionInfo( "Select Presence to push.", "[A5],Done" );

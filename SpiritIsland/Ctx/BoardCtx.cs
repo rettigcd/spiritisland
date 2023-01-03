@@ -5,7 +5,8 @@
 /// </summary>
 public class BoardCtx : SelfCtx {
 	public Board Board { get; }
-	public BoardCtx( Spirit spirit, GameState gs, Board board, UnitOfWork action ):base(spirit, gs, action, (Cause)default ) {
+	public BoardCtx( Spirit spirit, GameState gs, Board board, UnitOfWork action )
+		:base(spirit, gs, action ) {
 		Board = board;
 	}
 

@@ -51,8 +51,8 @@ public class SpiritCards_Tests {
 	}
 
 	protected void When_PlayingCard() {
-		var action = gameState.StartAction( ActionCategory.Default );
-		_ = card.ActivateAsync( spirit.BindMyPower( gameState, action ) );
+		var action = gameState.StartAction( ActionCategory.Spirit_Power );
+		_ = card.ActivateAsync( spirit.BindMyPowers( gameState, action ) );
 	}
 
 }

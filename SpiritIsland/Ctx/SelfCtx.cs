@@ -8,30 +8,30 @@ public class SelfCtx {
 
 	public Spirit Self { get; }
 	public GameState GameState { get; }
-	public TerrainMapper TerrainMapper { get; }
-	public UnitOfWork CurrentActionId { get; }
+	public TerrainMapper TerrainMapper => ActionCtx.TerrainMapper;
+	public UnitOfWork ActionCtx { get; }
 
 	#region constructor
 
-	public SelfCtx(Spirit self,GameState gameState, UnitOfWork actionId, Cause cause)
-		:this( self, gameState, PickTerrain(cause,gameState), actionId ) { }
+	public SelfCtx( Spirit self, GameState gameState, UnitOfWork actionId ) {
 
-	static TerrainMapper PickTerrain( Cause cause, GameState gameState ) => cause == Cause.MyPowers
-		? gameState.Island.Terrain_ForPower
-		: gameState.Island.Terrain;
+		// ! this bit checks if UnitOfWork and Terrain mapper is in sync
+		//if( gameState.Island.Terrain != gameState.Island.Terrain_ForPower) {
+		//	bool mapperIsForPower = mapper == gameState.Island.Terrain_ForPower;
+		//	bool uowIsForPower = actionId.Category == ActionCategory.Spirit_Power;
+		//	if( mapperIsForPower != uowIsForPower )	
+		//		throw new Exception("out of sync");
+		//}
 
-	public SelfCtx( Spirit self, GameState gameState, TerrainMapper mapper, UnitOfWork actionId ) {
 		Self = self;
 		GameState = gameState;
-		TerrainMapper = mapper;
-		CurrentActionId = actionId;
+		ActionCtx = actionId;
 	}
 
 	protected SelfCtx(SelfCtx src) {
 		Self = src.Self;
 		GameState = src.GameState;
-		TerrainMapper = src.TerrainMapper;
-		CurrentActionId = src.CurrentActionId;
+		ActionCtx = src.ActionCtx;
 	}
 
 	#endregion constructor
@@ -49,7 +49,7 @@ public class SelfCtx {
 	/// Used for Gathering / Pushing (and other stuff)
 	/// </summary>
 	public Task Move(Token token, Space from, Space to )
-		=> Target(from).Tokens.MoveTo( token, to, CurrentActionId );
+		=> Target(from).Tokens.MoveTo( token, to, ActionCtx );
 
 	public Task<bool> YouHave( string elementString ) => Self.HasElements( ElementCounts.Parse(elementString) );
 
@@ -71,7 +71,7 @@ public class SelfCtx {
 
 	public TargetSpiritCtx TargetSpirit( Spirit spirit ) => new TargetSpiritCtx( this, spirit );
 
-	public SelfCtx NewSelf( Spirit spirit ) => spirit.BindSelf( GameState, CurrentActionId );
+	public SelfCtx NewSelf( Spirit spirit ) => spirit.BindSelf( GameState, ActionCtx );
 
 	// Visually, selects the [presence] icon
 	public async Task<TargetSpaceCtx> TargetDeployedPresence( string prompt ) {
@@ -154,7 +154,7 @@ public class SelfCtx {
 		var options = spaceCtx.Tokens.OfAnyClass(removables);
 		while(0<count && 0<options.Length) {
 			var tokenToRemove = await spaceCtx.Self.Gateway.Decision( Select.TokenFrom1Space.TokenToRemove(spaceCtx.Space, count, options, Present.Always) );
-			await spaceCtx.Tokens.Remove(tokenToRemove,1,CurrentActionId);
+			await spaceCtx.Tokens.Remove(tokenToRemove,1,ActionCtx);
 			options = spaceCtx.Tokens.OfAnyClass( removables ); // next
 			--count;
 		}

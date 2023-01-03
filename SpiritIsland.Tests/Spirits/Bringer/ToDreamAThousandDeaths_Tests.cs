@@ -16,7 +16,7 @@ public class ToDreamAThousandDeaths_Tests {
 		board = Board.BuildBoardA();
 		gs = new GameState( spirit, board );
 		gs.Initialize();
-		unitOfWork = gs.StartAction( ActionCategory.Default );
+		unitOfWork = gs.StartAction( ActionCategory.Spirit_Power );
 		ctx = MakeFreshPowerCtx();
 
 		// Disable destroying presence
@@ -25,7 +25,7 @@ public class ToDreamAThousandDeaths_Tests {
 	}
 
 	TargetSpaceCtx MakeFreshPowerCtx(UnitOfWork uow=null) {
-		var ctx = spirit.BindMyPower(gs, uow ?? unitOfWork ); // This is correct usage.
+		var ctx = spirit.BindMyPowers(gs, uow ?? unitOfWork ); // This is correct usage.
 		return ctx.Target( board[5] );
 	}
 
@@ -111,7 +111,7 @@ public class ToDreamAThousandDeaths_Tests {
 	}
 
 	async Task Run_OneDamageToEachAsync() {
-		await using var uow = this.gs.StartAction( ActionCategory.Default );
+		await using var uow = this.gs.StartAction( ActionCategory.Spirit_Power );
 		await OneDamageToEachAsync( MakeFreshPowerCtx(uow) );
 	}
 

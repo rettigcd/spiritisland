@@ -56,12 +56,12 @@ public class ManyMindsMoveAsOne : Spirit {
 
 	}
 
-	public override SelfCtx Bind( Spirit spirit, GameState gameState, UnitOfWork action, Cause cause ) 
-		=> new ManyMindsCtx( spirit, gameState, action, cause );
+	public override SelfCtx BindMyPowers( Spirit spirit, GameState gameState, UnitOfWork unitOfWork ) 
+		=> new ManyMindsCtx( spirit, gameState, unitOfWork );
 
 	public class ManyMindsCtx : SelfCtx {
-		public ManyMindsCtx(Spirit spirit, GameState gs, UnitOfWork action, Cause cause )
-			:base( spirit, gs, action, cause ) { }
+		public ManyMindsCtx(Spirit spirit, GameState gs, UnitOfWork action )
+			:base( spirit, gs, action) { }
 		public override TargetSpaceCtx Target( Space space ) => new ManyMindsSpaceCtx(this,space);
 	}
 

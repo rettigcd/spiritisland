@@ -44,18 +44,18 @@ public class TargetSpaceCtx : SelfCtx {
 		} ); // !! could just sweep entire board instead...
 	}
 
-	public TokenBinding Beasts               => Tokens.Beasts.Bind( CurrentActionId );
-	public TokenBinding Disease              => Tokens.Disease.Bind( CurrentActionId );
-	public TokenBinding Wilds                => Tokens.Wilds.Bind( CurrentActionId );
-	public virtual TokenBinding Badlands     => Tokens.Badlands.Bind( CurrentActionId );
-	public virtual DahanGroupBinding Dahan   => Tokens.Dahan.Bind( CurrentActionId ); // Powers that interact with dahan, MUST go through this property 
-	public virtual BlightTokenBinding Blight => Tokens.Blight.Bind( CurrentActionId );
+	public TokenBinding Beasts               => Tokens.Beasts.Bind( ActionCtx );
+	public TokenBinding Disease              => Tokens.Disease.Bind( ActionCtx );
+	public TokenBinding Wilds                => Tokens.Wilds.Bind( ActionCtx );
+	public virtual TokenBinding Badlands     => Tokens.Badlands.Bind( ActionCtx );
+	public virtual DahanGroupBinding Dahan   => Tokens.Dahan.Bind( ActionCtx ); // Powers that interact with dahan, MUST go through this property 
+	public virtual BlightTokenBinding Blight => Tokens.Blight.Bind( ActionCtx );
 	public Task AddDefault( HealthTokenClass tokenClass, int count, AddReason addReason = AddReason.Added )
-		=> Tokens.AddDefault( tokenClass, count, CurrentActionId, addReason );
+		=> Tokens.AddDefault( tokenClass, count, ActionCtx, addReason );
 	public Task Remove( Token token, int count, RemoveReason reason = RemoveReason.Removed )
-		=> Tokens.Remove( token, count, CurrentActionId, reason );
+		=> Tokens.Remove( token, count, ActionCtx, reason );
 	public Task Destroy( Token token, int count) 
-		=> Tokens.Destroy( token, count, CurrentActionId );
+		=> Tokens.Destroy( token, count, ActionCtx );
 
 	#endregion
 
@@ -124,7 +124,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 	#endregion Gather
 
-	public Task MoveTo( Token token, Space to ) => Tokens.MoveTo( token, to, CurrentActionId );
+	public Task MoveTo( Token token, Space to ) => Tokens.MoveTo( token, to, ActionCtx );
 
 	/// <summary> Use this for Power-Pushing, since Powers can push invaders into the ocean. </summary>
 	public IEnumerable<SpaceState> Adjacent => Tokens.Adjacent.Where( TerrainMapper.IsInPlay );
@@ -165,7 +165,7 @@ public class TargetSpaceCtx : SelfCtx {
 	// The current targets power
 	public InvaderBinding Invaders => _invadersRO ??= GetInvaders();
 
-	protected virtual InvaderBinding GetInvaders() => new InvaderBinding( GameState, Tokens, CurrentActionId );
+	protected virtual InvaderBinding GetInvaders() => new InvaderBinding( GameState, Tokens, ActionCtx );
 
 	public void SkipAllInvaderActions(string label) => Tokens.SkipAllInvaderActions( label );
 
@@ -309,11 +309,11 @@ public class TargetSpaceCtx : SelfCtx {
 	public virtual async Task AddStrife( params TokenClass[] groups ) {
 		var invader = (HealthToken) await Decision( Select.Invader.ForStrife( Tokens, groups ) );
 		if(invader == null) return;
-		await Tokens.AddStrifeTo( invader, CurrentActionId );
+		await Tokens.AddStrifeTo( invader, ActionCtx );
 	}
 
 	public Task AddStrifeTo( HealthToken invader, int count = 1 ) {
-		return Tokens.AddStrifeTo( invader, CurrentActionId, count );
+		return Tokens.AddStrifeTo( invader, ActionCtx, count );
 	}
 
 
@@ -341,7 +341,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 	public async Task PlacePresenceHere() {
 		var from = await Presence.SelectSource();
-		await Self.Presence.Place( from, Space, GameState, CurrentActionId ); //!! use Bounded presence instead
+		await Self.Presence.Place( from, Space, GameState, ActionCtx ); //!! use Bounded presence instead
 	}
 
 	#endregion

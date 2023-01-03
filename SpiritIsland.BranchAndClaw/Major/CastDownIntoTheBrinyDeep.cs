@@ -55,7 +55,7 @@ public class CastDownIntoTheBrinyDeep {
 			if(!ctx.Self.Text.StartsWith("Bringer")) { // !!!
 				// Destroy all other tokens
 				foreach(var token in space.Keys.ToArray())
-					await space.Destroy( token, space[token], ctx.CurrentActionId );
+					await space.Destroy( token, space[token], ctx.ActionCtx );
 			}
 
 		}

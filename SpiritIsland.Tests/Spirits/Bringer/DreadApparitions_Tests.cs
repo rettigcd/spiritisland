@@ -9,8 +9,8 @@ public class DreadApparitions_Tests {
 		Bringer spirit = new Bringer();
 		board = Board.BuildBoardA();
 		GameState gs = new GameState( spirit, board );
-		var action = gs.StartAction( ActionCategory.Default ); // !! not disposing
-		ctx = spirit.BindMyPower( gs, action ).Target( board[5] );
+		var action = gs.StartAction( ActionCategory.Spirit_Power ); // !! not disposing
+		ctx = spirit.BindMyPowers( gs, action ).Target( board[5] );
 	}
 
 	[Fact]

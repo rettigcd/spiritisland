@@ -5,7 +5,7 @@ public static class HealthAdjustmentHelper_Extension {
 	public static async Task AdjustTokensHealthForRound( this TargetSpaceCtx ctx, int deltaHealth, params HealthTokenClass[] tokenClasses ) {
 
 		// Adjust in land
-		await ctx.Tokens.AdjustHealthOfAll( deltaHealth, ctx.CurrentActionId, tokenClasses ); // ActionID needed if token is destoryed.
+		await ctx.Tokens.AdjustHealthOfAll( deltaHealth, ctx.ActionCtx, tokenClasses ); // ActionID needed if token is destoryed.
 
 		// Add (covers simple-add AND move-in)
 		ctx.Tokens.Adjust( new TokenAddingHandler( args => {
@@ -29,7 +29,7 @@ public static class HealthAdjustmentHelper_Extension {
 		ctx.GameState.TimePasses_ThisRound.Push( async gs => {
 			// Ensure the dahan are healed before we restore their health.
 			ctx.GameState.Healer.HealSpace( ctx.Tokens );
-			await ctx.Tokens.AdjustHealthOfAll( -deltaHealth, ctx.CurrentActionId, tokenClasses );
+			await ctx.Tokens.AdjustHealthOfAll( -deltaHealth, ctx.ActionCtx, tokenClasses );
 		} );
 	}
 

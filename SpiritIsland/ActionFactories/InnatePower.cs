@@ -123,7 +123,7 @@ public class InnatePower : IFlexibleSpeedActionFactory, IRecordLastTarget {
 		foreach(MethodTuple[] grp in executionGroups) {
 
 			// Ask spirit which methods they can activate
-			var match = await spiritCtx.Self.SelectInnateToActivate( grp.Select(g=>g.Attr), spiritCtx.CurrentActionId );
+			var match = await spiritCtx.Self.SelectInnateToActivate( grp.Select(g=>g.Attr), spiritCtx.ActionCtx );
 
 			// Find matching method and it to execute-list
 			MethodInfo method = grp.FirstOrDefault(g=>g.Attr==match)?.Method;

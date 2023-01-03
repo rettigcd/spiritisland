@@ -16,7 +16,7 @@ class VolcanoPresence : SpiritPresence {
 
 		public override async Task DestroyPresenceApi( SpiritPresence presence, Space space, GameState gs, int count,DestoryPresenceCause cause, UnitOfWork unitOfWork ) {
 			
-			if( GetDontDesroyPresenceOn( unitOfWork, space )) return;
+			if( GetDontDesroyPresenceOn( unitOfWork, space ) ) return;
 
 			await base.DestroyPresenceApi( presence, space, gs, count, cause, unitOfWork );
 
@@ -24,8 +24,8 @@ class VolcanoPresence : SpiritPresence {
 
 			// Destroying Volcano presence, causes damage to Dahan and invaders
 			// Create a TargetSpaceCtx to include Bandlands damage also.
-			var selfCtx = unitOfWork.Category == ActionCategory.Spirit_Power && unitOfWork.Owner == spirit
-				? spirit.BindMyPower( gs, unitOfWork )
+			var selfCtx = unitOfWork.Category == ActionCategory.Spirit_Power // ??? is this needed => && unitOfWork.Owner == spirit
+				? spirit.BindMyPowers( gs, unitOfWork )
 				: spirit.BindSelf( gs, unitOfWork );
 			var ctx = selfCtx.Target(space);
 

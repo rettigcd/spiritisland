@@ -7,14 +7,16 @@ namespace SpiritIsland;
 public sealed class UnitOfWork : IAsyncDisposable, IDisposable {
 
 	#region constructor
-	public UnitOfWork( DualAsyncEvent<UnitOfWork> endOfAction, ActionCategory actionCategory ) {
+	public UnitOfWork( DualAsyncEvent<UnitOfWork> endOfAction, ActionCategory actionCategory, TerrainMapper terrainMapper ) {
 		Id = Guid.NewGuid();
 		_endOfAction = endOfAction;
 		Category = actionCategory;
+		TerrainMapper = terrainMapper;
 	}
 	#endregion
 
 	public readonly ActionCategory Category;
+	public readonly TerrainMapper TerrainMapper;
 
 	// spirit (if any) that owns the action. Null for non-spirit actions
 	public Spirit Owner { get; set; }

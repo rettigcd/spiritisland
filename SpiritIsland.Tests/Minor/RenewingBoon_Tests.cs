@@ -40,7 +40,7 @@ public class RenewingBoon_Tests {
 		//  And: blight on space
 		space.Blight.Init( 1 );
 		await using UnitOfWork uow = gameState.StartAction( ActionCategory.Spirit_Power );
-		Task task = PowerCard.For<RenewingBoon>().ActivateAsync( spirit.BindMyPower( gameState, uow ) );
+		Task task = PowerCard.For<RenewingBoon>().ActivateAsync( spirit.BindMyPowers( gameState, uow ) );
 
 		// And selecting restricted space
 		spirit.Gateway.Choose( spirit.Gateway.Next, space.Space );

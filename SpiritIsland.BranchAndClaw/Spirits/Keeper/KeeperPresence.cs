@@ -14,8 +14,12 @@ public partial class Keeper {
 			await base.Place( from, to, gs, actionId );
 			bool createdSacredSite = !wasSacredSite && SacredSites( gs, gs.Island.Terrain ).Contains( to );
 
-			if( createdSacredSite && gs.DahanOn( to ).Any )
-				await Self.BindSelf( gs , actionId).Target( to ).PushDahan( int.MaxValue );
+			if( createdSacredSite && gs.DahanOn( to ).Any) {
+				var selfCtx = actionId.Category == ActionCategory.Spirit_Power
+					? Self.BindMyPowers( gs, actionId )
+					: Self.BindSelf( gs, actionId );
+				await selfCtx.Target( to ).PushDahan( int.MaxValue );
+			}
 		}
 	}
 

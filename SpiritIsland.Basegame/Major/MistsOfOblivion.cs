@@ -13,7 +13,7 @@ public class MistsOfOblivion {
 		int mayDestroyed = 4;
 		void DoMists( ITokenRemovedArgs args ) {
 			if(0 < mayDestroyed
-				&& args.Action == ctx.CurrentActionId
+				&& args.Action == ctx.ActionCtx
 				&& args.Reason == RemoveReason.Destroyed
 				&& args.Token.Class.IsOneOf( Invader.City, Invader.Town )
 			) {

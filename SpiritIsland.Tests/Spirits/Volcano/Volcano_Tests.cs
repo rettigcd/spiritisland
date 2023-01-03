@@ -35,7 +35,7 @@ public class Volcano_Tests {
 
 		// When: Activating a Range-0 card
 		await using UnitOfWork uow = gameState.StartAction(ActionCategory.Spirit_Power);
-		_ = PowerCard.For<MesmerizedTranquility>().ActivateAsync( spirit.BindMyPower(gameState, uow) );
+		_ = PowerCard.For<MesmerizedTranquility>().ActivateAsync( spirit.BindMyPowers(gameState, uow) );
 
 		spirit.NextDecision().HasOptions( expectedOptions );
 	}
@@ -77,7 +77,7 @@ public class Volcano_Tests {
 
 		//  When: they destroying presence via Powercard
 		using UnitOfWork uow = gameState.StartAction( ActionCategory.Spirit_Power );
-		Task task = PowerCard.For<GrowthThroughSacrifice>().ActivateAsync( spirit.BindMyPower( gameState, uow ) );
+		Task task = PowerCard.For<GrowthThroughSacrifice>().ActivateAsync( spirit.BindMyPowers( gameState, uow ) );
 		spirit.NextDecision().HasPrompt( "Select presence to destroy" ).HasOptions( space.Space.Text ).Choose( space.Space );
 
 		//  Then: cause 1 damage 
@@ -126,7 +126,7 @@ public class Volcano_Tests {
 
 		//  When: they destroying presence via Powercard
 		using UnitOfWork uow = gameState.StartAction( ActionCategory.Spirit_Power );
-		Task task = PowerCard.For<BargainsOfPowerAndProtection>().ActivateAsync( spirit.BindMyPower( gameState, uow ) );
+		Task task = PowerCard.For<BargainsOfPowerAndProtection>().ActivateAsync( spirit.BindMyPowers( gameState, uow ) );
 		spirit.NextDecision().HasPrompt( "Bargains of Power and Protection: Target Space" ).Choose( "A5" );
 		spirit.NextDecision().HasPrompt( "Select presence to remove from game." ).HasOptions( "A5" ).Choose( "A5" );
 
@@ -154,7 +154,7 @@ public class Volcano_Tests {
 
 		//  When: Utter a curse
 		using UnitOfWork uow = gameState.StartAction( ActionCategory.Spirit_Power );
-		Task task = PowerCard.For<UtterACurseOfDreadAndBone>().ActivateAsync( spirit.BindMyPower( gameState, uow ) );
+		Task task = PowerCard.For<UtterACurseOfDreadAndBone>().ActivateAsync( spirit.BindMyPowers( gameState, uow ) );
 		spirit.NextDecision().Choose( targetSpace.Space );
 		spirit.NextDecision().HasPrompt( "Select Power Option" ).HasOptions( "Add Badland,Add Disease,Add Strife" ).Choose( "Add Disease" );
 		//  Then: if the tower==target, then large range, else smaller range
@@ -181,7 +181,7 @@ public class Volcano_Tests {
 
 		//  When: Unleash a Torrent
 		using UnitOfWork uow = gameState.StartAction( ActionCategory.Spirit_Power );
-		Task task = PowerCard.For<UnleashATorrentOfTheSelfsOwnEssence>().ActivateAsync( spirit.BindMyPower( gameState, uow ) );
+		Task task = PowerCard.For<UnleashATorrentOfTheSelfsOwnEssence>().ActivateAsync( spirit.BindMyPowers( gameState, uow ) );
 		spirit.NextDecision().HasPrompt( "Select Power Option" )
 			.HasOptions( "Gain 4 energy, Forget a Power Card to gain 4 more,Pay X Energy (min 1) to deal X Damage in a land at range 0" )
 			.Choose( "Pay X Energy (min 1) to deal X Damage in a land at range 0" );
@@ -209,7 +209,7 @@ public class Volcano_Tests {
 
 		//  When: Perils of the Deepest Island
 		using UnitOfWork uow = gameState.StartAction( ActionCategory.Spirit_Power );
-		Task task = PowerCard.For<PerilsOfTheDeepestIsland>().ActivateAsync( spirit.BindMyPower( gameState, uow ) );
+		Task task = PowerCard.For<PerilsOfTheDeepestIsland>().ActivateAsync( spirit.BindMyPowers( gameState, uow ) );
 		spirit.NextDecision().Choose(space.Space);
 
 		//  Then: range is adjusted for adding beasts
@@ -233,7 +233,7 @@ public class Volcano_Tests {
 
 		//  When: they trigger Explosive Erruption in target
 		using UnitOfWork uow = gameState.StartAction( ActionCategory.Spirit_Power );
-		Task task = InnatePower.For<ExplosiveEruption>().ActivateAsync( spirit.BindMyPower( gameState, uow ) );
+		Task task = InnatePower.For<ExplosiveEruption>().ActivateAsync( spirit.BindMyPowers( gameState, uow ) );
 		spirit.NextDecision().HasPrompt( "Explosive Eruption: Target Space" ).Choose( space.Space );
 		//   And: Destroy 2 presence
 		spirit.NextDecision().HasPrompt( "# of presence to destroy?" ).HasOptions( "4,3,2,1,0" ).Choose( "2" );
@@ -273,7 +273,7 @@ public class Volcano_Tests {
 
 		//  When: they trigger Explosive Erruption in target
 		using UnitOfWork uow = gameState.StartAction( ActionCategory.Spirit_Power );
-		Task task = InnatePower.For<ExplosiveEruption>().ActivateAsync( spirit.BindMyPower( gameState, uow ) );
+		Task task = InnatePower.For<ExplosiveEruption>().ActivateAsync( spirit.BindMyPowers( gameState, uow ) );
 		spirit.NextDecision().HasPrompt( "Explosive Eruption: Target Space" ).Choose( space.Space );
 		//   And: Destroy 2 presence
 		spirit.NextDecision().HasPrompt( "# of presence to destroy?" ).HasOptions( "10,9,8,7,6,5,4,3,2,1,0" ).Choose( "2" );
@@ -326,7 +326,7 @@ public class Volcano_Tests {
 
 		// When: activate Innate
 		using UnitOfWork uow = gameState.StartAction( ActionCategory.Spirit_Power );
-		Task task = InnatePower.For<ExplosiveEruption>().ActivateAsync( spirit.BindMyPower( gameState, uow ) );
+		Task task = InnatePower.For<ExplosiveEruption>().ActivateAsync( spirit.BindMyPowers( gameState, uow ) );
 		spirit.NextDecision().HasOptions("A7,A8").Choose( targetSpace.Space );
 
 		//  And: destroy presence

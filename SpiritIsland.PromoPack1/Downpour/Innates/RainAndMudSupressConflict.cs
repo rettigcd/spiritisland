@@ -7,8 +7,8 @@ internal class RainAndMudSupressConflict {
 	const string Name = "Rain and Mud Suppress Conflict";
 
 	// Use unit of work to coordinate between tier levels
-	static bool WasUsed( SelfCtx ctx) => ctx.CurrentActionId.ContainsKey(Name);
-	static void MarkAsUsed( SelfCtx ctx ) => ctx.CurrentActionId[ Name ] = true;
+	static bool WasUsed( SelfCtx ctx) => ctx.ActionCtx.ContainsKey(Name);
+	static void MarkAsUsed( SelfCtx ctx ) => ctx.ActionCtx[ Name ] = true;
 
 	const string Tier1Elements = "1 air,3 water";
 

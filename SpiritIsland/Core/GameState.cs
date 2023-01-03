@@ -239,7 +239,10 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	public DahanGroupBindingNoEvents DahanOn( Space space ) => Tokens[space].Dahan; // Obsolete - use TargetSpaceCtx
 
 	/// <param name="cat">Has no functional use.  Just helps us keep straight in our head what kind of action this is.</param>
-	public UnitOfWork StartAction(ActionCategory cat) => new UnitOfWork( EndOfAction, cat );
+	public UnitOfWork StartAction(ActionCategory cat ) {
+		var terrainMapper = cat == ActionCategory.Spirit_Power ? Island.Terrain_ForPower : Island.Terrain; // ??? What about other terrains, like for fear? Is that an action?
+		return new UnitOfWork( EndOfAction, cat, terrainMapper );
+	}
 
 	#region Win / Loss
 
@@ -285,7 +288,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		return Task.CompletedTask;
 	}
 
-	static async Task DefaultDestroy1PresenceFromBlightCard( Spirit spirit, GameState gs, Cause _, UnitOfWork action ) {
+	static async Task DefaultDestroy1PresenceFromBlightCard( Spirit spirit, GameState gs, UnitOfWork action ) {
 		var boundPresence = new ReadOnlyBoundPresence( spirit, gs, gs.Island.Terrain_ForBlight );
 		var presenceSpace = await spirit.Gateway.Decision( Select.DeployedPresence.ToDestroy( "Blighted Island: Select presence to destroy.", boundPresence ) );
 		await spirit.Presence.Destroy( presenceSpace, gs, 1, DestoryPresenceCause.BlightedIsland, action );
@@ -344,7 +347,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	}
 	Func<int, SpaceState, Task> _takeFromBlightSouce;
 
-	public Func<Spirit, GameState, Cause, UnitOfWork, Task> Destroy1PresenceFromBlightCard = DefaultDestroy1PresenceFromBlightCard; // Direct distruction from Blight Card, not cascading
+	public Func<Spirit, GameState, UnitOfWork, Task> Destroy1PresenceFromBlightCard = DefaultDestroy1PresenceFromBlightCard; // Direct distruction from Blight Card, not cascading
 
 	public Healer Healer = new Healer(); // replacable Behavior
 

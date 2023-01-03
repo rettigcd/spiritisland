@@ -28,8 +28,8 @@ public class WrapInWingsOfSunlight_Tests {
 		static async Task PlayCard(TargetSpaceCtx ctx) { try { await WrapInWingsOfSunlight.ActAsync( ctx ); } catch(Exception ex) { 
 			_ = ex.ToString(); 
 		} } 
-		var action = gameState.StartAction( ActionCategory.Default );
-		_ = PlayCard( spirit.BindMyPower( gameState, action ).Target(src) );
+		var action = gameState.StartAction( ActionCategory.Spirit_Power );
+		_ = PlayCard( spirit.BindMyPowers( gameState, action ).Target(src) );
 
 		//  And: Can bring 2 of each
 		user.AssertDecision( "Move token(s) to", "A1,A2,A3,A4,A5,A6,A7,A8,Done", dst.Label );
@@ -72,8 +72,8 @@ public class WrapInWingsOfSunlight_Tests {
 		static async Task PlayCard(TargetSpaceCtx ctx) { try { await TerrifyingChase.ActAsync( ctx ); } catch(Exception ex) { 
 			_ = ex.ToString(); 
 		} } 
-		var action = gameState.StartAction( ActionCategory.Default );
-		_ = PlayCard( spirit.BindMyPower( gameState, action ).Target(src) );
+		var action = gameState.StartAction( ActionCategory.Spirit_Power );
+		_ = PlayCard( spirit.BindMyPowers( gameState, action ).Target(src) );
 
 		//  And: Can bring 2 of each
 		user.AssertDecisionInfo( "Push (2)", "[D@2],E@1,T@2" );

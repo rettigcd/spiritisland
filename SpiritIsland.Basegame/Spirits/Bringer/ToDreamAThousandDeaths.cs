@@ -63,7 +63,7 @@ public class ToDreamAThousandDeaths : InvaderBinding {
 	#region constructor
 
 	public ToDreamAThousandDeaths( BringerSpaceCtx ctx )
-		: base( ctx.GameState, ctx.Tokens, ctx.CurrentActionId ) {
+		: base( ctx.GameState, ctx.Tokens, ctx.ActionCtx ) {
 		this.ctx = ctx;
 	}
 
@@ -109,7 +109,7 @@ public class ToDreamAThousandDeaths : InvaderBinding {
 	async Task PushDestroyedInvader( HealthToken invader ) {
 
 		var destination = await ctx.Decision( Select.Space.PushToken( invader, ctx.Space, ctx.Tokens.Adjacent.Where( ctx.TerrainMapper.IsInPlay ), Present.Always ) );
-		await ctx.Tokens.MoveTo( invader, destination, ctx.CurrentActionId ); // there is no Push(Token), so this will have to do.
+		await ctx.Tokens.MoveTo( invader, destination, ctx.ActionCtx ); // there is no Push(Token), so this will have to do.
 		RecordSpaceWithDreamers( ctx.GameState.Tokens[destination] );
 	}
 

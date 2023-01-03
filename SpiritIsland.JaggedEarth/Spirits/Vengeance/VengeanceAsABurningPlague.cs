@@ -58,7 +58,7 @@ public class VengeanceAsABurningPlague : Spirit {
 		return stoppedByDisease;
 	}
 
-	public override SelfCtx Bind( Spirit spirit, GameState gameState, UnitOfWork actionId, Cause cause ) 
-		=> new VengenceCtx( spirit, gameState, actionId, cause );
+	public override SelfCtx BindMyPowers( Spirit spirit, GameState gameState, UnitOfWork unitOfWork )
+		=> new VengenceCtx( spirit, gameState, unitOfWork );
 
 }

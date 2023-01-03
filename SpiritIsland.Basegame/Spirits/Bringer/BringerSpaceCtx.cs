@@ -6,7 +6,7 @@ public class BringerSpaceCtx : TargetSpaceCtx {
 
 	protected override InvaderBinding GetInvaders() => new ToDreamAThousandDeaths( this );
 	
-	public override DahanGroupBinding Dahan	=>  new DreamingDahan( Tokens.Dahan, CurrentActionId );
+	public override DahanGroupBinding Dahan	=>  new DreamingDahan( Tokens.Dahan, ActionCtx );
 }
 
 public class DreamingDahan : DahanGroupBinding {

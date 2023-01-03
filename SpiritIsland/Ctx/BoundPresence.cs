@@ -85,7 +85,7 @@ public class BoundPresence : ReadOnlyBoundPresence {
 	#region constructor
 
 	public BoundPresence(SelfCtx ctx):base(ctx) { 
-		_actionId = ctx.CurrentActionId;
+		_actionId = ctx.ActionCtx;
 	}
 	public BoundPresence( Spirit self, GameState gs, TerrainMapper terrainMapper, UnitOfWork actionId ) : base( self, gs, terrainMapper ) {
 		_actionId = actionId;
