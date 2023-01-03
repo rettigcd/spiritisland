@@ -133,13 +133,13 @@ class SwedenInvaderCard : InvaderCard {
 		SpaceState[] tokenSpacesToExplore = PreExplore( gs );
 		await DoExplore( gs, tokenSpacesToExplore );
 		if( HasEscalation )
-			Escalation( gs, tokenSpacesToExplore );
+			SwayedByTheInvaders( gs, tokenSpacesToExplore );
 	}
-	static void Escalation( GameState gs, SpaceState[] exploredTokenSpaces ) {
+	static void SwayedByTheInvaders( GameState gs, SpaceState[] exploredTokenSpaces ) {
 		// Swayed by the Invaders:
 		// After Invaders Explore into each land this Phase,
 		// if that land has at least as many Invaders as Dahan,
-		// replace 1 Dahan with 1 Towni.
+		// replace 1 Dahan with 1 Town.
 		foreach(var tokens in exploredTokenSpaces) {
 			var dahan = tokens.Dahan;
 			if(0 < dahan.CountAll && dahan.CountAll <= tokens.InvaderTotal()) {

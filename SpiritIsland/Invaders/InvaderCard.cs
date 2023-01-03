@@ -16,7 +16,6 @@ public class InvaderCard : IOption, IInvaderCard {
 	public bool MatchesCard( Space space ) => Filter.Matches( space );
 	public bool MatchesCard( SpaceState space ) => Filter.Matches( space.Space );
 
-
 	#region Constructors
 
 	public InvaderCard( SpaceFilter filter, int invaderStage ) {
@@ -34,9 +33,11 @@ public class InvaderCard : IOption, IInvaderCard {
 	public SpaceFilter Filter { get; }
 	public string Text => (HasEscalation ? "2" : "") + Filter.Text;
 
-	public async Task Ravage( GameState gs ) {
-		gs.Log( new InvaderActionEntry( "Ravaging:" + Text ) );
-		var ravageSpacesMatchingCard = gs.AllActiveSpaces.Where( MatchesCard ).ToList();
+	public Func<GameState, Task> Escalation;
+
+	public async Task Ravage( GameState gameState ) {
+		gameState.Log( new InvaderActionEntry( "Ravaging:" + Text ) );
+		var ravageSpacesMatchingCard = gameState.AllActiveSpaces.Where( MatchesCard ).ToList();
 
 		// find ravage spaces that have invaders
 		var ravageSpacesWithInvaders = ravageSpacesMatchingCard
@@ -48,7 +49,7 @@ public class InvaderCard : IOption, IInvaderCard {
 			s.Adjust( TokenType.DoRavage, 1 );
 
 		// get spaces with just-added Ravages + any previously added ravages
-		var spacesWithDoRavage = gs.AllActiveSpaces
+		var spacesWithDoRavage = gameState.AllActiveSpaces
 			.Where( ss=>ss[TokenType.DoRavage] > 0)
 			.ToArray();
 
@@ -57,10 +58,11 @@ public class InvaderCard : IOption, IInvaderCard {
 			ravageSpace.Init( TokenType.DoRavage, 0);
 
 			while(0 < ravageCount--)
-				await new RavageAction( gs, ravageSpace ).Exec();
+				await new RavageAction( gameState, ravageSpace ).Exec();
 
 		}
 
+		await CheckEscalation( gameState );
 	}
 
 	#region Build stuff
@@ -82,6 +84,7 @@ public class InvaderCard : IOption, IInvaderCard {
 		foreach(var spaceState in matchingSpacesWithBuildTokens)
 			await BuildIn1Space( gameState, spaceState );
 
+		await CheckEscalation( gameState );
 	}
 
 	void AddBuildTokensMatchingCard( GameState gameState ) {
@@ -117,9 +120,18 @@ public class InvaderCard : IOption, IInvaderCard {
 
 	#region Explore methods
 
-	public virtual async Task Explore( GameState gs ) {
-		SpaceState[] tokenSpacesToExplore = PreExplore( gs );
-		await DoExplore( gs, tokenSpacesToExplore );
+	public virtual async Task Explore( GameState gameState ) {
+		SpaceState[] tokenSpacesToExplore = PreExplore( gameState );
+		await DoExplore( gameState, tokenSpacesToExplore );
+		await CheckEscalation( gameState );
+	}
+
+	protected async Task CheckEscalation( GameState gs ) {
+		if(HasEscalation && Escalation != null) {
+			await Escalation( gs );
+			Escalation = null; // clear it as run
+		}
+
 	}
 
 	protected SpaceState[] PreExplore( GameState gs ) {

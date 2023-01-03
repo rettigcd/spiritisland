@@ -42,39 +42,32 @@ public class BrandenburgPrussia : IAdversary {
 	}
 
 	public void PostInitialization( GameState gamestate ) {
-		gamestate.InvaderDeck.ReplaceCards( card => new BrandenburgPrussiaInvaderCard( card ) );
+		gamestate.InvaderDeck.ReplaceCards( card => { card.Escalation = LandRush; return card; } );
 	}
-}
 
-// Adds Escalation
-class BrandenburgPrussiaInvaderCard : InvaderCard {
-	public BrandenburgPrussiaInvaderCard( InvaderCard card ):base(card) { }
-	public override async Task Explore( GameState gs ) {
-		await base.Explore( gs );
-		if( HasEscalation )
-			await Escalation( gs );
-	}
-	static Task Escalation( GameState gs ) {
-		// Land Rush: On each board with Townicon / City, add 1 Town to a land without Town
+	static Task LandRush( GameState gs ) {
+		// Land Rush: On each board with Town / City, add 1 Town to a land without Town
 
 		var counts = gs.AllActiveSpaces
-			.ToDictionary( s=>s.Space, s=> s );
+			.ToDictionary( s => s.Space, s => s );
 
 		// s.SumAny(Invader.Town,Invader.City)
 
 		var boards = gs.Island.Boards
-			.Where( b=>b.Spaces.Any(s=>counts[s].SumAny( Invader.Town, Invader.City ) > 0) )
+			.Where( b => b.Spaces.Any( s => counts[s].SumAny( Invader.Town, Invader.City ) > 0 ) )
 			.ToHashSet();
 
 		var terrainMapper = gs.Island.Terrain;
 
 		var buildSpaces = counts.Values
-			.Where(ss => boards.Contains(ss.Space.Board) && ss.SumAny( Invader.Town, Invader.City ) == 0 && terrainMapper.IsInPlay( ss ) )
-			.Select(ss => ss.Space)
-			.GroupBy(space => space.Board)
-			.Select(grp => grp.OrderBy(ss=>ss.Text).First()) // (!! simplification) when multiple, select closest to coast.
+			.Where( ss => boards.Contains( ss.Space.Board ) && ss.SumAny( Invader.Town, Invader.City ) == 0 && terrainMapper.IsInPlay( ss ) )
+			.Select( ss => ss.Space )
+			.GroupBy( space => space.Board )
+			.Select( grp => grp.OrderBy( ss => ss.Text ).First() ) // (!! simplification) when multiple, select closest to coast.
 			.ToArray();
 
 		return England.EscalationBuild( gs, buildSpaces );
 	}
+
+
 }

@@ -102,6 +102,7 @@ public class England : IAdversary {
 		#region constructor
 		public EnglandInvaderCard(InvaderCard card,bool expandedBuild):base(card) {
 			this.expandedBuild = expandedBuild;
+			base.Escalation = BuildingBoom;
 		}
 		#endregion
 
@@ -114,15 +115,9 @@ public class England : IAdversary {
 				|| expandedBuild && isAdjacentTo2OrMoreCitiesOrTowns(tokens);
 		}
 
-		public override async Task Explore( GameState gs ) {
-			await base.Explore( gs );
-			if(HasEscalation)
-				await Escalation( gs );
-		}
-
-		static async Task Escalation( GameState gs ) {
+		static async Task BuildingBoom( GameState gs ) {
 			// Escalation Stage II
-			// Building Boom: On each board with Towni / City, Build in the land with the most Town / City
+			// Building Boom: On each board with Town / City, Build in the land with the most Town / City
 
 			// Finds the space on each board with the most town/city.
 			// When multiple town/city have max #, picks the one closests to the coast (for simplicity)
