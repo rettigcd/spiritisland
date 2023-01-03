@@ -28,9 +28,10 @@ class PourTimeSideways {
 
 		// On the board moved to: During the Invader Phase, Resolve Invader and "Each board / Each Land..." Actions one more time.
 		foreach(var space in src.Board.Spaces) {
-			ctx.GameState.PourTimeSideways_Add1Build( space );
-			ctx.GameState.PourTimeSideways_Add1Explore( space );
-			ctx.GameState.PourTimeSideways_Add1Ravage( space );
+			var tokens = ctx.GameState.Tokens[space];
+			ctx.GameState.PourTimeSideways_Add1Build( tokens );
+			ctx.GameState.PourTimeSideways_Add1Explore( tokens );
+			ctx.GameState.PourTimeSideways_Add1Ravage( tokens );
 		}
 	}
 

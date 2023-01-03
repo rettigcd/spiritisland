@@ -107,7 +107,8 @@ public class TriggerCommandBeasts : IInvaderCard {
 		set => inner.Flipped = value;
 	}
 
-	public bool MatchesCard( Space space ) => inner.MatchesCard( space );
+//	public bool MatchesCard( Space space ) => inner.MatchesCard( space );
+	public bool MatchesCard( SpaceState space ) => inner.MatchesCard( space );
 	public Task Ravage( GameState gameState ) => inner.Ravage( gameState );
 	public Task Build( GameState gameState ) => inner.Build(gameState);
 	public Task Explore( GameState gameState ) {

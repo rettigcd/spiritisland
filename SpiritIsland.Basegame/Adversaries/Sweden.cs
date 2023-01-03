@@ -61,8 +61,8 @@ public class Sweden : IAdversary {
 			gameState.InvaderDeck.UnrevealedCards.RemoveAt(0);
 			foreach(var board in gameState.Island.Boards) {
 				// If there are 2 spaces with 'least # of invaders', just auto-picks one of them.
-				var leastInvaderSpace = board.Spaces.Where(card.MatchesCard).OrderBy(s=>gameState.Tokens[s].InvaderTotal()).First();
-				gameState.Tokens[leastInvaderSpace].AdjustDefault(Invader.Town,1);
+				var leastInvaderSpace = board.Spaces.Select(gameState.Tokens.GetTokensFor).Where(card.MatchesCard).OrderBy(s=>s.InvaderTotal()).First();
+				leastInvaderSpace.AdjustDefault(Invader.Town,1);
 			}
 		}
 

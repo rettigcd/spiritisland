@@ -200,24 +200,24 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	#region Pour Time Sideways - Add Invader actions
 
-	public void PourTimeSideways_Add1Ravage( Space spacesToAdd ) {
+	public void PourTimeSideways_Add1Ravage( SpaceState spacesToAdd ) {
 		throw new System.NotImplementedException( "!!! should only add to cards that match space" );
 	}
 
-	public void PourTimeSideways_Add1Build( params Space[] target ) {
+	public void PourTimeSideways_Add1Build( params SpaceState[] target ) {
 		// !!! instead, call Invader build card twice.
 		var buildCard = InvaderDeck.Build.Cards.FirstOrDefault();
 		if(buildCard == null) return;
 		foreach(var space in target.Where(buildCard.MatchesCard).ToArray())
-			Tokens[space].Adjust( TokenType.DoBuild, 1 );
+			space.Adjust( TokenType.DoBuild, 1 );
 	}
 
-	public void PourTimeSideways_Add1Explore( params Space[] target ) {
+	public void PourTimeSideways_Add1Explore( params SpaceState[] target ) {
 		// !!! This should only add to spaces that match invader card
 		var exploreCard = InvaderDeck.Explore.Cards.FirstOrDefault();
 		if(exploreCard == null) return;
 		foreach(var space in target.Where( exploreCard.MatchesCard ).ToArray())
-			Tokens[space].Adjust( TokenType.DoExplore, 1 );
+			space.Adjust( TokenType.DoExplore, 1 );
 	}
 
 	#endregion Pour Time Sideways - Add Invader actions

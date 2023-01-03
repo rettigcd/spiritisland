@@ -33,6 +33,6 @@ public class NervesFray : IFearCard {
 		);
 
 	static bool DoesNotMatchRavageCard( TargetSpaceCtx spaceCtx )
-		=> !spaceCtx.GameState.InvaderDeck.Ravage.Cards.Any( card => card.MatchesCard(spaceCtx.Space) );
+		=> !spaceCtx.GameState.InvaderDeck.Ravage.Cards.Any( card => card.MatchesCard(spaceCtx.Tokens) );
 
 }

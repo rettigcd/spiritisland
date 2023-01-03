@@ -207,7 +207,7 @@ public class FranceInvaderCard : InvaderCard {
 			await DoFrontierExploration( gs, tokenSpacesToExplore );
 
 		if(HasEscalation)
-			await Escalation( gameCtx );
+			await DebandForNewCashCrops( gameCtx );
 
 		if(hasPersistentExplorers)
 			await PersistentExplorers( gameCtx );
@@ -235,19 +235,19 @@ public class FranceInvaderCard : InvaderCard {
 				await ExploreSingleSpace( exploreTokens, gs, gs.StartAction( ActionCategory.Adversary ) ); // !!! implemented as a new Action - Should it be???
 	}
 
-	Task Escalation( GameCtx ctx ) {
+	Task DebandForNewCashCrops( GameCtx ctx ) {
 		// Demand for New Cash Crops:
 		// After Exploring, on each board, pick a land of the shown terrain.If it has Town / City, add 1 Blight.Otherwise, add 1 Town
 
-		DecisionOption<SelfCtx> SelectSpaceAction(Space s ) {
-			return ctx.GameState.Tokens[s].HasAny( Invader.Town, Invader.City )
-				? new DecisionOption<SelfCtx>( "Add 1 Town to " + s.Text, null )
+		DecisionOption<SelfCtx> SelectSpaceAction(SpaceState s ) {
+			return s.HasAny( Invader.Town, Invader.City )
+				? new DecisionOption<SelfCtx>( "Add 1 Town to " + s.Space.Text, null )
 				: new DecisionOption<SelfCtx>( "", null );
 		}
 
 		return Cmd.OnEachBoard( new DecisionOption<BoardCtx>( 
 			"Place town or blight matching Explore card."
-			, boardCtx => Cmd.Pick1( boardCtx.Board.Spaces
+			, boardCtx => Cmd.Pick1( boardCtx.GameState.Tokens.PowerUp( boardCtx.Board.Spaces )
 				.Where( MatchesCard )
 				.Select( SelectSpaceAction )
 				.ToArray()

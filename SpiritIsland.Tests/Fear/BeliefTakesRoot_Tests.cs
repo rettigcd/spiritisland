@@ -89,7 +89,7 @@ public class BeliefTakesRoot_Tests {
 
 	const string FearCardAction = "Belief takes Root : 1 : Defend 2 in all lands with Presence.";
 	readonly GameState gameState;
-	readonly IInvaderCard invaderCard;
+	readonly InvaderCard invaderCard;
 	readonly Space ravageSpace;
 	readonly Spirit spirit;
 	readonly VirtualUser User;

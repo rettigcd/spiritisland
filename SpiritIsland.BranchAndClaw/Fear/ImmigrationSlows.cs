@@ -14,9 +14,9 @@ public class ImmigrationSlows : IFearCard {
 		if(card == null) return Task.CompletedTask; // !! should this fall over to the next round?
 
 		foreach(var board in ctx.GameState.Island.Boards) {
-			var lowest = board.Spaces.FirstOrDefault(card.MatchesCard);
+			var lowest = ctx.GameState.Tokens.PowerUp(board.Spaces).FirstOrDefault(card.MatchesCard);
 			if(lowest != null)
-				ctx.GameState.Tokens[lowest].Skip1Build( Name );
+				lowest.Skip1Build( Name );
 		}
 		return Task.CompletedTask;
 	}

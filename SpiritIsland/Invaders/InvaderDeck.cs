@@ -4,14 +4,14 @@ public class InvaderDeck {
 
 	#region public static
 
-	public static ImmutableList<IInvaderCard> Level1Cards => ImmutableList.Create<IInvaderCard>(
+	public static ImmutableList<InvaderCard> Level1Cards => ImmutableList.Create<InvaderCard>(
 		InvaderCard.Stage1( Terrain.Jungle ),
 		InvaderCard.Stage1( Terrain.Wetland ),
 		InvaderCard.Stage1( Terrain.Sand ),
 		InvaderCard.Stage1( Terrain.Mountain )
 	);
 
-	public static ImmutableList<IInvaderCard> Level2Cards => ImmutableList.Create<IInvaderCard>(
+	public static ImmutableList<InvaderCard> Level2Cards => ImmutableList.Create<InvaderCard>(
 		InvaderCard.Stage2( Terrain.Jungle ),
 		InvaderCard.Stage2( Terrain.Wetland ),
 		InvaderCard.Stage2( Terrain.Sand ),
@@ -19,7 +19,7 @@ public class InvaderDeck {
 		InvaderCard.Stage2Costal()
 	);
 
-	public static ImmutableList<IInvaderCard> Level3Cards => ImmutableList.Create<IInvaderCard>(
+	public static ImmutableList<InvaderCard> Level3Cards => ImmutableList.Create<InvaderCard>(
 		InvaderCard.Stage3(Terrain.Jungle,Terrain.Sand),
 		InvaderCard.Stage3(Terrain.Jungle,Terrain.Mountain),
 		InvaderCard.Stage3(Terrain.Jungle,Terrain.Wetland),
@@ -44,9 +44,9 @@ public class InvaderDeck {
 		levelSelection ??= new int[] { 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3 };
 
 		var levels = new List<IInvaderCard>[] {
-			Level1Cards.ToList(),
-			Level2Cards.ToList(),
-			Level3Cards.ToList()
+			Level1Cards.Cast<IInvaderCard>().ToList(),
+			Level2Cards.Cast<IInvaderCard>().ToList(),
+			Level3Cards.Cast<IInvaderCard>().ToList()
 		};
 
 		if(seed != default) {

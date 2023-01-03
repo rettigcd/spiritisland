@@ -11,15 +11,15 @@ public class ExplorersAreReluctant : IFearCard {
 	[FearLevel( 1, "During the next normal explore, skip the lowest-numbered land matching the invader card on each board." )]
 	public Task Level1( GameCtx ctx ) {
 
-		Dictionary<Board, Space> lowest = null;
+		Dictionary<Board, SpaceState> lowest = null;
 		bool IsLowestMatchingSpace( GameCtx futureCtx, SpaceState ss ) {
 			if( lowest == null ) {
 				var card = futureCtx.GameState.InvaderDeck.Explore.Cards.FirstOrDefault();
-				lowest = card == null ? new Dictionary<Board, Space>()
+				lowest = card == null ? new Dictionary<Board, SpaceState>()
 					: futureCtx.GameState.Island.Boards
-						.ToDictionary( brd=>brd, brd=>brd.Spaces.FirstOrDefault(card.MatchesCard));
+						.ToDictionary( brd=>brd, brd=>futureCtx.GameState.Tokens.PowerUp(brd.Spaces).FirstOrDefault(card.MatchesCard));
 			}
-			return lowest[ss.Space.Board] == ss.Space;
+			return lowest[ss.Space.Board] == ss;
 		}
 
 		// this is the next normal build

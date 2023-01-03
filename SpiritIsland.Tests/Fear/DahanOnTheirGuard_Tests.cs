@@ -71,7 +71,7 @@ public class DahanOnTheirGuard_Tests {
 	}
 
 	readonly GameState gameState;
-	readonly IInvaderCard invaderCard;
+	readonly InvaderCard invaderCard;
 	readonly Space ravageSpace;
 	readonly Spirit spirit;
 	readonly VirtualUser User;

@@ -69,15 +69,15 @@ namespace SpiritIslandCmd {
 		public string FormatSpace( Space space ) {
 			var gameState = game.GameState;
 			var deck = gameState.InvaderDeck;
-			bool ravage = deck.Ravage.Cards.Count > 0 && deck.Ravage.Cards[0].MatchesCard(space); // !! show multiple, not just first
-			bool build = deck.Build.Cards.Count > 0 && deck.Build.Cards[0].MatchesCard(space); // !! show multiple, not just first
+			var tokens = gameState.Tokens[space];
+			bool ravage = deck.Ravage.Cards.Count > 0 && deck.Ravage.Cards[0].MatchesCard( tokens ); // !! show multiple, not just first
+			bool build = deck.Build.Cards.Count > 0 && deck.Build.Cards[0].MatchesCard( tokens ); // !! show multiple, not just first
 			string threat = (ravage&&build) ? "Rvg+Bld"
 				: ravage ?"  Rvg  "
 				: build ? "  Bld  "
 				: "       ";
 
 			// invaders
-			var tokens = gameState.Tokens[space];
 			var details = tokens.InvaderTokens()
 				.OrderBy(x=>x.ToString())
 				.Select( invader => tokens[invader] + invader.ToString() )
