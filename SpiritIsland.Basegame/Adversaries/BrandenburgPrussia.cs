@@ -45,8 +45,8 @@ public class BrandenburgPrussia : IAdversary {
 			gameState.Tokens[board[3]].AdjustDefault( Invader.Town, 1 );
 	}
 
-	public void PostInitialization( GameState gamestate ) {
-		gamestate.InvaderDeck.ReplaceUnrevealedCards( card => { card.Escalation = LandRush; return card; } );
+	public void PostInitialization( GameState gameState ) {
+		gameState.InvaderDeck.Explore.Engine.Escalation = LandRush;
 	}
 
 	static Task LandRush( GameState gs ) {
@@ -65,12 +65,15 @@ public class BrandenburgPrussia : IAdversary {
 
 		var buildSpaces = counts.Values
 			.Where( ss => boards.Contains( ss.Space.Board ) && ss.SumAny( Invader.Town, Invader.City ) == 0 && terrainMapper.IsInPlay( ss ) )
-			.Select( ss => ss.Space )
-			.GroupBy( space => space.Board )
-			.Select( grp => grp.OrderBy( ss => ss.Text ).First() ) // (!! simplification) when multiple, select closest to coast.
+			.GroupBy( space => space.Space.Board )
+			.Select( grp => grp.OrderBy( ss => ss.Space.Text ).First() ) // (!! simplification) when multiple, select closest to coast.
 			.ToArray();
 
-		return England.EscalationBuild( gs, buildSpaces );
+		using UnitOfWork uow = gs.StartAction( ActionCategory.Default );
+		foreach(SpaceState bs in buildSpaces)
+			bs.AddDefault(Invader.Town,1, uow, AddReason.Build);
+
+		return Task.CompletedTask;
 	}
 
 

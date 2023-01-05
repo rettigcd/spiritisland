@@ -14,7 +14,7 @@ public class France : IAdversary {
 	public int Level { get; set; }
 
 	public void PostInitialization( GameState gs ) {
-		gs.InvaderDeck.ReplaceUnrevealedCards( card => new FranceInvaderCard( card, Level ) );
+		gs.InvaderDeck.Explore.Engine = new FranceExplorer(Level);
 	}
 
 	public int[] FearCardsPerLevel => Level switch {
@@ -30,6 +30,8 @@ public class France : IAdversary {
 	public int[] InvaderCardOrder => null;
 
 	public void PreInitialization( GameState gameState ) {
+		gameState.InvaderDeck.Build.Engine = new FranceBuilder( Level );
+
 		if( 2 <= Level)
 			AddSlaveRebellionEvent( gameState );
 		if( 3 <= Level)
@@ -130,131 +132,4 @@ public class France : IAdversary {
 		} );
 
 	public ScenarioLevel[] Adjustments => Array.Empty<ScenarioLevel>(); // !!!
-}
-
-public class FranceInvaderCard : InvaderCard {
-
-	readonly bool hasFrontierExploration;
-	readonly bool hasSlaveLabor;
-	readonly bool hasPersistentExplorers;
-	readonly bool hasTriangleTrade;
-
-	public FranceInvaderCard( InvaderCard original, int level ) : base( original ) { 
-		hasFrontierExploration = 1 <= level;
-		hasSlaveLabor = 2 <= level;
-		hasTriangleTrade = 4 < level;
-		hasPersistentExplorers = 6<= level;
-	}
-
-	#region Build Stuff
-
-	protected override async Task BuildIn1Space( GameState gameState, SpaceState tokens ) {
-		int initialCityCount = tokens.Sum(Invader.City);
-		await base.BuildIn1Space( gameState, tokens );
-
-		// Slave Labor: 
-		// After Invaders Build in a land with 2 Explorer or more, replace all but 1 Explorer there with an equal number of Town.
-		if( hasSlaveLabor )
-			DoSlaveLabor( tokens );
-
-		if( hasTriangleTrade )
-			await DoTriangleTrade( gameState, tokens, initialCityCount );
-
-	}
-
-	static async Task DoTriangleTrade( GameState gs, SpaceState tokens, int initialCityCount ) {
-		// Whenever Invaders Build a Coastal City
-		if(tokens.Space.IsCoastal && tokens.Sum(Invader.City) > initialCityCount) {
-			var terrainMapper = gs.Island.Terrain;
-			// add 1 Town to the adjacent land with the fewest Town.
-			var buildSpace = tokens.Adjacent
-				.Where( terrainMapper.IsInPlay )
-				.OrderBy( t=>t.Sum(Invader.Town))
-				.First();
-			await buildSpace.AddDefault(Invader.Town,1, gs.StartAction(ActionCategory.Adversary)); // !! ??? Should all builds share a single unit-of-work?
-		}
-	}
-
-	static void DoSlaveLabor( SpaceState tokens ) {
-		int explorerCount = tokens.Sum( Invader.Explorer );
-		if(explorerCount < 2 ) return;
-
-		// remove explorers
-		int numToReplace = explorerCount - 1;
-		while(numToReplace > 0) {
-			var explorerToken = tokens.OfClass( Invader.Explorer ).Cast<HealthToken>().OrderByDescending( x => x.StrifeCount ).FirstOrDefault();
-			int count = Math.Min( tokens[explorerToken], numToReplace );
-			// Replace
-			tokens.Adjust( explorerToken, -count );
-			tokens.AdjustDefault( Invader.Town, count );
-			// next
-			numToReplace -= count;
-		}
-	}
-
-	#endregion
-
-	#region Explore stuff
-
-	public override async Task Explore( GameState gs ) {
-		// Original
-		SpaceState[] tokenSpacesToExplore = PreExplore( gs );
-		await DoExplore( gs, tokenSpacesToExplore );
-
-		var gameCtx = new GameCtx( gs, ActionCategory.Adversary ); // 1 action for all these things.
-
-		if(hasFrontierExploration)
-			await DoFrontierExploration( gs, tokenSpacesToExplore );
-
-		if(HasEscalation)
-			await DemandForNewCashCrops( gameCtx );
-
-		if(hasPersistentExplorers)
-			await PersistentExplorers( gameCtx );
-	}
-
-	static Task PersistentExplorers( GameCtx gameCtx ) {
-		// After resolving an Explore Card, on each board add 1 Explorer to a land without any. 
-		return Cmd.OnEachBoard( AddExplorerToLandWithoutAny ).Execute( gameCtx );
-		
-	}
-	static DecisionOption<BoardCtx> AddExplorerToLandWithoutAny => new DecisionOption<BoardCtx>(
-		"Add Explorer to Land without any",
-		async boardCtx => {
-			var options = boardCtx.Board.Spaces.Where(s=>!boardCtx.GameState.Tokens[s].HasAny(Invader.Explorer)).ToArray();
-			var space = await boardCtx.Decision( new Select.Space("Add explorer", options, Present.Always));
-			if( space != null)
-				await boardCtx.GameState.Tokens[space].AddDefault(Invader.Explorer, 1, boardCtx.ActionCtx);
-		}
-	);
-
-	static async Task DoFrontierExploration( GameState gs, SpaceState[] tokenSpacesToExplore ) {
-		// Frontier Explorers: Except during Setup: After Invaders successfully Explore into a land which had no Town / City, add 1 Explorer there.
-		foreach(var exploreTokens in tokenSpacesToExplore)
-			if(!exploreTokens.HasAny( Invader.Town, Invader.City ))
-				await ExploreSingleSpace( exploreTokens, gs, gs.StartAction( ActionCategory.Adversary ) ); // !!! implemented as a new Action - Should it be???
-	}
-
-	Task DemandForNewCashCrops( GameCtx ctx ) {
-		// Demand for New Cash Crops:
-		// After Exploring, on each board, pick a land of the shown terrain.If it has Town / City, add 1 Blight.Otherwise, add 1 Town
-
-		static DecisionOption<SelfCtx> SelectSpaceAction(SpaceState s ) {
-			return s.HasAny( Invader.Town, Invader.City )
-				? new DecisionOption<SelfCtx>( "Add 1 Town to " + s.Space.Text, null )
-				: new DecisionOption<SelfCtx>( "", null );
-		}
-
-		return Cmd.OnEachBoard( new DecisionOption<BoardCtx>( 
-			"Place town or blight matching Explore card."
-			, boardCtx => Cmd.Pick1( boardCtx.GameState.Tokens.PowerUp( boardCtx.Board.Spaces )
-				.Where( MatchesCard )
-				.Select( SelectSpaceAction )
-				.ToArray()
-			).Execute( boardCtx )
-		) ).Execute( ctx );
-
-	}
-
-	#endregion
 }

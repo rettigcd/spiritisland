@@ -123,7 +123,7 @@ public class GameBuilder {
 		void InitBeastCommand( int stage ) {
 			for(int i = 0; i < invaderCards.Count; ++i) {
 				if(invaderCards[i].InvaderStage != stage) continue;
-				invaderCards[i] = new TriggerCommandBeasts( invaderCards[i] );
+				invaderCards[i] = new TriggerCommandBeasts( invaderCards[i], gameState );
 				break;
 			}
 		}

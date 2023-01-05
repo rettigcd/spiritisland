@@ -14,8 +14,10 @@ static internal class Extensions {
 
 	static public Task DoARavage( this SpaceState space ) => space.Space.BuildInvaderCard().Ravage( space.AccessGameState() );
 	static public Task DoARavage( this Space space, GameState gs ) => space.BuildInvaderCard().Ravage( gs );
-	static public Task DoABuild( this Space space, GameState gs ) => space.BuildInvaderCard().Build( gs );
-	static public Task DoAnExplore( this Space space, GameState gs ) => space.BuildInvaderCard().Explore( gs );
+	static public Task DoABuild( this Space space, GameState gameState )
+		=> new BuildSlot().ActivateCard( space.BuildInvaderCard(), gameState );
+	static public Task DoAnExplore( this Space space, GameState gs ) 
+		=> new ExploreSlot().ActivateCard( space.BuildInvaderCard(), gs );
 
 
 	#endregion

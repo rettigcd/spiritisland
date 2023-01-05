@@ -37,7 +37,7 @@ public class InvaderDeck {
 	private InvaderDeck( params IInvaderCard[] cards ) {
 		_unrevealedCards = cards.ToList();
 		InitNumberOfCardsToDraw();
-		Slots = new List<InvaderSlot> { Ravage, Build, Explore };
+		ActiveSlots = new List<InvaderSlot> { Ravage, Build, Explore };
 	}
 
 	readonly List<InvaderCard>[] _unused;
@@ -72,7 +72,7 @@ public class InvaderDeck {
 		}
 		_unrevealedCards = all.ToList();
 		InitNumberOfCardsToDraw();
-		Slots = new List<InvaderSlot> { Ravage, Build, Explore };
+		ActiveSlots = new List<InvaderSlot> { Ravage, Build, Explore };
 	}
 
 	void InitNumberOfCardsToDraw() {
@@ -93,11 +93,13 @@ public class InvaderDeck {
 	public BuildSlot Build { get; } = new BuildSlot();
 	public RavageSlot Ravage { get; } = new RavageSlot();
 
-	public List<InvaderSlot> Slots {
-		get {  return _slots; }
-		set { _slots = value; }
+	// ??? Should Unused, Unrevealed, and Discard be slots also?  (Just not in the ActiveSlots) list
+
+	public List<InvaderSlot> ActiveSlots {
+		get {  return _activeSlots; }
+		set { _activeSlots = value; }
 	}
-	List<InvaderSlot> _slots;
+	List<InvaderSlot> _activeSlots;
 
 	public List<IInvaderCard> Discards {get;} = new List<IInvaderCard>();
 
@@ -133,7 +135,7 @@ public class InvaderDeck {
 	public void Advance() {
 
 		var destination = Discards;
-		foreach(var slot in Slots) {
+		foreach(var slot in ActiveSlots) {
 			var cardsToMove = slot.GetCardsToAdvance();
 			destination.AddRange( cardsToMove );
 			destination = slot.Cards;
@@ -207,54 +209,4 @@ public class InvaderDeck {
 
 	#endregion
 
-}
-
-public abstract class InvaderSlot {
-	public InvaderSlot(string label ) { Label = label;}
-	public string Label { get; }
-	public List<IInvaderCard> Cards { get; } = new List<IInvaderCard>();
-	public void HoldNextBack() { holdBackCount++; }
-	public void SkipNextNormal() { skipCount++; }
-	public virtual async Task Execute( GameState gs ) {
-		foreach(var card in Cards)
-			if(skipCount > 0)
-				skipCount--;
-			else if(card.Skip)
-				card.Skip = false; // !!!! not sure if Card.Skip is ever set to true.
-			else
-				await CardAction(card,gs);
-	}
-
-	public List<IInvaderCard> GetCardsToAdvance() {
-		var result = new List<IInvaderCard>();
-		for(int i=0; i < Cards.Count; ++i)
-			if(holdBackCount > 0)
-				holdBackCount--;
-			else {
-				result.Add(Cards[i]);
-				Cards.RemoveAt(i--);
-			}
-		return result;
-	}
-
-	protected abstract Task CardAction( IInvaderCard card, GameState gameState);
-
-	int skipCount = 0;
-	int holdBackCount = 0;
-}
-
-// ??? Is this the Visitor Pattern ???
-public class RavageSlot : InvaderSlot {
-	public RavageSlot() : base( "Ravage" ) { }
-	protected override Task CardAction( IInvaderCard card, GameState gameState ) => card.Ravage( gameState );
-}
-
-public class BuildSlot : InvaderSlot {
-	public BuildSlot(string label="Build") : base( label ) { }
-	protected override Task CardAction( IInvaderCard card, GameState gameState ) => card.Build( gameState );
-}
-
-public class ExploreSlot : InvaderSlot {
-	public ExploreSlot() : base( "Explore" ) { }
-	protected override Task CardAction( IInvaderCard card, GameState gameState ) => card.Explore( gameState );
 }

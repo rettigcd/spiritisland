@@ -31,6 +31,9 @@ public class Sweden : IAdversary {
 
 	public void PreInitialization( GameState gameState ) {
 
+		// Escalation - Swayed by the Invaders
+		gameState.InvaderDeck.Explore.Engine = new SwedenExplorer();
+
 		//	Level 1
 		//	( 2 ) 9( 3 / 3 / 3 )   Heavy Mining: 
 		//	If the Invaders do at least 6 Damage to the land during Ravage, add an extra Blight.
@@ -101,7 +104,6 @@ public class Sweden : IAdversary {
 	}
 
 	public void PostInitialization( GameState gameState ) {
-		gameState.InvaderDeck.ReplaceUnrevealedCards( card => new SwedenInvaderCard( card ) );
 
 		//	Level 2	
 		//	(3)	10 (3/4/3)	Population Pressure at Home: 
@@ -124,33 +126,5 @@ public class Sweden : IAdversary {
 
 	}
 
-}
-
-class SwedenInvaderCard : InvaderCard {
-	public SwedenInvaderCard( InvaderCard orig ):base(orig) { }
-
-	public override async Task Explore( GameState gs ) {
-		SpaceState[] tokenSpacesToExplore = PreExplore( gs );
-		await DoExplore( gs, tokenSpacesToExplore );
-		if( HasEscalation )
-			SwayedByTheInvaders( gs, tokenSpacesToExplore );
-	}
-	static void SwayedByTheInvaders( GameState gs, SpaceState[] exploredTokenSpaces ) {
-		// Swayed by the Invaders:
-		// After Invaders Explore into each land this Phase,
-		// if that land has at least as many Invaders as Dahan,
-		// replace 1 Dahan with 1 Town.
-		foreach(var tokens in exploredTokenSpaces) {
-			var dahan = tokens.Dahan;
-			if(0 < dahan.CountAll && dahan.CountAll <= tokens.InvaderTotal()) {
-				var dahanToConvert = dahan.NormalKeys.OrderBy(x=>x.RemainingHealth).First();
-				var townToAdd = tokens.GetDefault( Invader.Town ).AddDamage( dahanToConvert.Damage );
-
-				dahan.Adjust(dahanToConvert,-1);
-				tokens.Adjust(townToAdd,1);
-				gs.Log( new InvaderActionEntry($"Escalation: {tokens.Space.Text} replace {dahanToConvert} with {townToAdd}"));
-			}
-		}
-	}
 }
 

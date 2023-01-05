@@ -44,6 +44,9 @@ public class Russia : IAdversary {
 
 	public void PreInitialization( GameState gameState ) {
 
+		// Escalation - Stalk the Predators
+		gameState.InvaderDeck.Explore.Engine.Escalation = StalkThePredators;
+
 		// Additional Loss Condition
 		gameState.AddWinLossCheck( _token.HuntersSwarmTheIsland );
 
@@ -52,6 +55,34 @@ public class Russia : IAdversary {
 
 		if(5 <= Level)
 			EntrenchInTheFaceOfFear( gameState );
+	}
+
+	static async Task StalkThePredators( GameState gameState ) {
+		// Add 2 explorers/board to lands with beast.
+
+		var beastsSpacesForBoard = gameState.AllActiveSpaces
+			.Where( s => s.Beasts.Any )
+			.GroupBy( s => s.Board.Board )
+			.ToDictionary( s => s.Key, s => s.ToArray() );
+
+		using var uow = gameState.StartAction( ActionCategory.Adversary ); // !!! ??? should this be 1 for everything or 1/board or 1/space
+
+		// If no beasts anywhere, can't add explorers.
+		if(!beastsSpacesForBoard.Any()) return;
+
+		for(int boardIndex = 0; boardIndex < gameState.Island.Boards.Length; ++boardIndex) {
+			Board board = gameState.Island.Boards[boardIndex];
+			Spirit spirit = gameState.Spirits[boardIndex]; // !!! wrong if board is added or removed.
+
+			var addSpaces = beastsSpacesForBoard.ContainsKey( board )
+				? beastsSpacesForBoard[board]
+				: beastsSpacesForBoard.Values.SelectMany( x => x );
+			for(int i = 0; i < 2; ++i) {
+				var criteria = new Select.Space( $"Escalation - Add Explorer for board {board.Name} ({i + 1} of 2)", addSpaces.Select( x => x.Space ), Present.Always );
+				var addSpace = await spirit.Gateway.Decision( criteria );
+				await gameState.Tokens[addSpace].AddDefault( Invader.Explorer, 1, uow, AddReason.Explore );
+			}
+		}
 	}
 
 	static void EntrenchInTheFaceOfFear( GameState gameState ) {

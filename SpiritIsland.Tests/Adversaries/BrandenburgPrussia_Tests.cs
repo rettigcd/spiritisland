@@ -147,7 +147,7 @@ public class BrandenburgPrussia_Tests {
 		var buf = new System.Text.StringBuilder();
 		char last = ' '; // deck.Explore.Single().InvaderStage.ToString()[0];
 
-		var cards = deck.Slots.SelectMany(s=>s.Cards).Union( deck.UnrevealedCards );
+		var cards = deck.ActiveSlots.SelectMany(s=>s.Cards).Union( deck.UnrevealedCards );
 
 		foreach(var card in cards) {
 			var next = card.InvaderStage.ToString()[0];

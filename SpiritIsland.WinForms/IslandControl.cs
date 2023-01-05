@@ -399,7 +399,7 @@ public partial class IslandControl : Control {
 		var bounds = CalcInvaderCardRect;
 
 		// Calculate Card Size based on # of slots
-		float slots = _gameState.InvaderDeck.Slots.Count + 1.5f;
+		float slots = _gameState.InvaderDeck.ActiveSlots.Count + 1.5f;
 		float slotWidth = bounds.Width / slots;
 
 		var cardSize = slotWidth * 1.5f < bounds.Height         // too narrow
@@ -415,10 +415,10 @@ public partial class IslandControl : Control {
 		};
 
 		// locate each of the cards
-		var cardMetrics = new InvaderCardMetrics[_gameState.InvaderDeck.Slots.Count];
+		var cardMetrics = new InvaderCardMetrics[_gameState.InvaderDeck.ActiveSlots.Count];
 
 		for(int i = 0; i < cardMetrics.Length; ++i)
-			cardMetrics[i] = new InvaderCardMetrics( _gameState.InvaderDeck.Slots[i],
+			cardMetrics[i] = new InvaderCardMetrics( _gameState.InvaderDeck.ActiveSlots[i],
 				bounds.Left + (i + 1.5f) * cardSize.Width + margin, //left+i*xStep, 
 				bounds.Top + margin, // y, 
 				cardSize.Width - margin * 2, cardSize.Height - margin * 2, // width, height, 

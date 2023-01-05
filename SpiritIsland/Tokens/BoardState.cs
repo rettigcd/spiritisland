@@ -1,6 +1,7 @@
 ﻿namespace SpiritIsland;
 
 public class BoardState {
+
 	public Board Board { get; }
 	readonly GameState gameState;
 

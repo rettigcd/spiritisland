@@ -136,7 +136,7 @@ public class Invader_Tests {
 		gameState.Tokens[ board[5] ].AdjustDefault(Invader.Explorer,1);
 
 		// When: exploring (wet lands
-		_ = InvaderDeck.Level1Cards.Single(c=>c.Text=="W").Explore( gameState );
+		_ = new ExploreSlot().ActivateCard( InvaderDeck.Level1Cards.Single(c=>c.Text=="W"), gameState );
 
 		// Then: 1 Explorer on A2 (new explored)
 		//  and A5 (original) - proves explorers aren't reference types like towns
@@ -170,7 +170,7 @@ public class Invader_Tests {
 		gameState.Tokens[sourceSpace].Adjust(sourceInvader,1);
 
 		// When: exploring (wet lands
-		_ = InvaderDeck.Level1Cards.Single(c=>c.Text=="W").Explore( gameState );
+		_ = new ExploreSlot().ActivateCard( InvaderDeck.Level1Cards.Single( c => c.Text == "W" ), gameState );
 
 		// Then: Explores A2 and other space only
 		foreach(var space in board.Spaces){
@@ -199,8 +199,7 @@ public class Invader_Tests {
 			gameState.Tokens[space].Adjust( startingInvader, 1 );
 
 		// When: build in Sand
-		var card = InvaderDeck.Level1Cards.Single( c => c.Text == "S" );
-		_ = card.Build( gameState );
+		_ = new BuildSlot().ActivateCard( InvaderDeck.Level1Cards.Single( c => c.Text == "S" ), gameState);
 
 		// Then: 2 Sand spaces should have ending Invader Count
 		gameState.Assert_Invaders( board[4], endingInvaderCount );

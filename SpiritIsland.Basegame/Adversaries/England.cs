@@ -80,14 +80,36 @@ public class England : IAdversary {
 
 		gs.AddWinLossCheck( ProudAndMightyCapital );
 
-		gs.InvaderDeck.ReplaceUnrevealedCards( card => new EnglandInvaderCard( card, Level > 0 ) );
+		gs.InvaderDeck.Explore.Engine.Escalation = BuildingBoom;
+
+		if(1 <= Level)
+			gs.InvaderDeck.Build.Engine = new EnglandBuilder();
 
 		if(3 <= Level) {
 			var highBuildSlot = new HighImmegrationSlot( Level );
-			gs.InvaderDeck.Slots.Insert( 0, highBuildSlot );
+			gs.InvaderDeck.ActiveSlots.Insert( 0, highBuildSlot );
 			if(Level == 3)
 				HighImmegrationSlot.RemoveForLevel2Invaders( gs, highBuildSlot );
 		}
+	}
+
+	async Task BuildingBoom( GameState gs ) {
+		// Escalation Stage II
+		// Building Boom: On each board with Town / City, Build in the land with the most Town / City
+
+		// Finds the space on each board with the most town/city.
+		// When multiple town/city have max #, picks the one closests to the coast (for simplicity)
+		SpaceState[] buildSpaces = gs.AllActiveSpaces
+			.Select( ss => new { SpaceState = ss, Count = ss.SumAny( Invader.Town, Invader.City ) } )
+			.Where( x => x.Count > 0 )
+			.GroupBy( x => x.SpaceState.Space.Board )
+			.Select( grp => grp.OrderByDescending( x => x.Count ).ThenBy( x => x.SpaceState.Space.Text ).First().SpaceState )
+			.ToArray();
+
+		var buildOnce = gs.InvaderDeck.Build.Engine.Do1Build;
+		foreach(var space in buildSpaces)
+			await buildOnce( gs, space );
+
 	}
 
 	static void ProudAndMightyCapital( GameState gs ) {
@@ -98,47 +120,6 @@ public class England : IAdversary {
 		var capital = gs.AllSpaces.FirstOrDefault( IsCapital );
 		if( capital != null )
 			GameOverException.Lost($"{Name} on {capital.Space.Text}");
-	}
-
-	// We are NOT wrapping the source card.
-	// Instead, since we know it is a standard InvaderCard,
-	// We can derive from InvaderCard and override the behavior we want to change.
-	// If the input were not an InvaderCard, we would have to wrap the card passed in so as to not drop any functionality.
-	public class EnglandInvaderCard : InvaderCard {
-		readonly bool expandedBuild;
-
-		#region constructor
-		public EnglandInvaderCard(InvaderCard card,bool expandedBuild):base(card) {
-			this.expandedBuild = expandedBuild;
-			base.Escalation = BuildingBoom;
-		}
-		#endregion
-
-		protected override bool ShouldBuildOnSpace( SpaceState tokens ) {
-			static int cityTownCounts(SpaceState space) => space.SumAny( Invader.Town, Invader.City );
-			static bool isAdjacentTo2OrMoreCitiesOrTowns(SpaceState tokens) => !tokens.Has(TokenType.Isolate) 
-				&& 2 <= tokens.Adjacent.Sum( adj => cityTownCounts( adj ) );
-
-			return base.ShouldBuildOnSpace( tokens )
-				|| expandedBuild && isAdjacentTo2OrMoreCitiesOrTowns(tokens);
-		}
-
-		static async Task BuildingBoom( GameState gs ) {
-			// Escalation Stage II
-			// Building Boom: On each board with Town / City, Build in the land with the most Town / City
-
-			// Finds the space on each board with the most town/city.
-			// When multiple town/city have max #, picks the one closests to the coast (for simplicity)
-			Space[] buildSpaces = gs.AllActiveSpaces
-				.Select( ss => new { ss.Space, Count = ss.SumAny( Invader.Town, Invader.City ) } )
-				.Where( x => x.Count > 0 )
-				.GroupBy( x => x.Space.Board )
-				.Select( grp => grp.OrderByDescending( x => x.Count ).ThenBy( x => x.Space.Text ).First().Space )
-				.ToArray();
-
-			await England.EscalationBuild( gs, buildSpaces );
-		}
-
 	}
 
 	public class HighImmegrationSlot : BuildSlot {
@@ -166,7 +147,7 @@ public class England : IAdversary {
 				if(highBuildSlot != null && highBuildSlot.Cards.Any( c => c.InvaderStage == 2 )) {
 					var deck = gs.InvaderDeck;
 					deck.Discards.AddRange( highBuildSlot.Cards );
-					deck.Slots.RemoveAt( 0 );
+					deck.ActiveSlots.RemoveAt( 0 );
 					highBuildSlot = null;
 				}
 				return Task.CompletedTask;
@@ -175,16 +156,15 @@ public class England : IAdversary {
 
 	}
 
-	public static async Task EscalationBuild( GameState gs, Space[] buildSpaces ) {
+}
 
-		foreach(var space in buildSpaces) {
-			var tokens = gs.Tokens[space];
-			tokens.Adjust( TokenType.DoBuild, 1 );
-			var buildEngine = gs.GetBuildEngine( tokens );
-			string result = await buildEngine.DoBuilds();
-			gs.Log( new InvaderActionEntry( $"Escalation: {space.Text}: " + result ) );
-		}
-
+public class EnglandBuilder : BuildEngine {
+	public override bool ShouldBuildOnSpace( SpaceState spaceState ) {
+		return base.ShouldBuildOnSpace( spaceState )
+			|| IsAdjacentTo2OrMoreCitiesOrTowns( spaceState );
 	}
+	static bool IsAdjacentTo2OrMoreCitiesOrTowns( SpaceState tokens ) => !tokens.Has( TokenType.Isolate )
+		&& 2 <= tokens.Adjacent.Sum( adj => CityTownCounts( adj ) );
+	static int CityTownCounts( SpaceState space ) => space.SumAny( Invader.Town, Invader.City );
 
 }

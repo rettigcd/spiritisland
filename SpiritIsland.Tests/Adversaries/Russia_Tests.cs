@@ -25,7 +25,7 @@ public class Russia_Tests {
 		beastSpace2.Beasts.Adjust(1);
 
 		// When: exploring and escalation card
-		Task t = card.Explore(gameState);
+		Task t = gameState.InvaderDeck.Explore.Engine.ActivateCard( card, gameState ); 
 
 		// Then: user can place 2 explorers in either of the 2 beast spaces
 		Spirit spirit = gameState.Spirits[0];
@@ -68,7 +68,7 @@ public class Russia_Tests {
 		IInvaderCard card = gameState.InvaderDeck.UnrevealedCards.First( x => x.InvaderStage == 2 && x.MatchesCard( a8 ));
 
 		// When: exploring and escalation card
-		Task t = card.Explore( gameState );
+		Task t = gameState.InvaderDeck.Explore.Engine.ActivateCard( card, gameState );
 
 		// Then: user can place 2 explorers in either of the 2 beast spaces
 		Spirit spirit0 = gameState.Spirits[0];
@@ -206,8 +206,9 @@ public class Russia_Tests {
 		a5.Clear().InitTokens( orig );
 
 		//  When: card builds & explore
-		card.Build( gameState ).Wait();
-		card.Explore( gameState ).Wait();
+		gameState.InvaderDeck.Build.ActivateCard( card, gameState ).Wait();
+		gameState.InvaderDeck.Explore.ActivateCard(card, gameState).Wait();
+//		card.Explore( gameState ).Wait();
 
 		//  Then: no change
 		a5.Summary.ShouldBe( orig );

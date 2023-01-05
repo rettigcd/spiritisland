@@ -6,7 +6,7 @@ public class StartUpCounts {
 	public StartUpCounts(string config){ this.config = config; }
 	#endregion
 
-	public bool Empty => string.IsNullOrEmpty( config );
+	public bool IsEmpty => string.IsNullOrEmpty( config );
 	public int Cities => config.Count(c=>c=='C');
 	public int Towns => config.Count(c=>c=='T');
 	public int Explorers => config.Count(c=>c=='E');

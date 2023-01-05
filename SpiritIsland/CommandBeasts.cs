@@ -77,13 +77,15 @@ class CommandBeastAction : IActionFactory {
 public class TriggerCommandBeasts : IInvaderCard {
 
 	readonly CommandBeastAction cmdAction = new CommandBeastAction();
+	readonly GameState _gameState;
 
-	public TriggerCommandBeasts( IInvaderCard inner ) {
-		this.inner = inner;
+	public TriggerCommandBeasts( IInvaderCard inner, GameState gameState ) {
+		this._inner = inner;
+		_gameState = gameState;
 	}
 
-	void QueueBeastCommand( GameState gameState ) {
-		gameState.TimePasses_WholeGame += TimePasses_WholeGame;
+	void QueueBeastCommand() {
+		_gameState.TimePasses_WholeGame += TimePasses_WholeGame;
 	}
 
 	Task TimePasses_WholeGame( GameState gameState ) {
@@ -94,26 +96,30 @@ public class TriggerCommandBeasts : IInvaderCard {
 
 	#region IInvaderCard Properties
 
-	readonly IInvaderCard inner;
+	readonly IInvaderCard _inner;
 
-	public string Text => inner.Text;
-	public int InvaderStage => inner.InvaderStage;
+	public string Text => _inner.Text;
+	public int InvaderStage => _inner.InvaderStage;
 
 	public bool Skip { get => false; set => throw new NotImplementedException(); }
 	public bool HoldBack { get => false; set => throw new NotImplementedException(); }
 
 	public bool Flipped {
-		get => inner.Flipped;
-		set => inner.Flipped = value;
+		get => _inner.Flipped;
+		set => _inner.Flipped = value;
 	}
 
-//	public bool MatchesCard( Space space ) => inner.MatchesCard( space );
-	public bool MatchesCard( SpaceState space ) => inner.MatchesCard( space );
-	public Task Ravage( GameState gameState ) => inner.Ravage( gameState );
-	public Task Build( GameState gameState ) => inner.Build(gameState);
-	public Task Explore( GameState gameState ) {
-		QueueBeastCommand( gameState );
-		return inner.Explore( gameState );
+	public void Flip() {
+		QueueBeastCommand();
+		_inner.Flip();
+	}
+
+	//	public bool MatchesCard( Space space ) => inner.MatchesCard( space );
+	public bool MatchesCard( SpaceState space ) => _inner.MatchesCard( space );
+	public Task Ravage( GameState gameState ) => _inner.Ravage( gameState );
+	public bool HasEscalation {
+		get => _inner.HasEscalation;
+		set => _inner.HasEscalation = value;
 	}
 
 	#endregion

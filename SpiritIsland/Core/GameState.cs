@@ -42,14 +42,14 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	void InitialExplore() {
 		InvaderDeck.InitExploreSlot();
-		InvaderDeck.Explore.Cards[0].Explore( this ).Wait();
+		InvaderDeck.Explore.Execute( this ).Wait();
 		InvaderDeck.Advance();
 	}
 
 	void PlaceStartingTokens() {
 		foreach(var board in Island.Boards) {
 			Tokens[board[2]].Disease.Init( 1 );
-			var lowest = board.Spaces.Skip( 1 ).OfType<Space1>().First( s => s.StartUpCounts.Empty );
+			var lowest = board.Spaces.Skip( 1 ).OfType<Space1>().First( s => s.StartUpCounts.IsEmpty );
 			Tokens[lowest].Beasts.Adjust( 1 );
 		}
 
@@ -335,8 +335,6 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		await tokens.Disease.Bind( ctx.UnitOfWork ).Remove( 1, RemoveReason.UsedUp );
 		return true;
 	}
-
-	public BuildEngine GetBuildEngine( SpaceState tokens ) => new BuildEngine( this, tokens );
 
 	public DualAsyncEvent<AddBlightEffect> ModifyBlightAddedEffect = new DualAsyncEvent<AddBlightEffect>();
 
