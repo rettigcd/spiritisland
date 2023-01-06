@@ -27,7 +27,7 @@ public class MovePresenceWithTokens {
 			// !! This is interesting... This might be a DIFFERENT spirit that is moving the dahan,
 			// but WE are calling Bind-MY-Power
 			// maybe we should be binding the original spirits power instead of this.
-			await _spirit.BindMyPowers( args.GameState, args.UnitOfWork ).Presence.Move( args.RemovedFrom.Space, args.AddedTo.Space );
+			await _spirit.BindMyPowers( args.AddedTo.AccessGameState(), args.ActionScope ).Presence.Move( args.RemovedFrom.Space, args.AddedTo.Space );
 	}
 
 	#region private field

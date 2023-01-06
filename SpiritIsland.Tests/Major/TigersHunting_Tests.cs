@@ -6,10 +6,10 @@ public class TigersHunting_Tests {
 	public void SingleAction() {
 		var fixture = new ConfigurableTestFixture();
 
-		HashSet<UnitOfWork> actionIds = new HashSet<UnitOfWork>();
-		fixture.GameState.AddToAllActiveSpaces( new TokenAddedHandler( "loggin", x => actionIds.Add( x.Action ), true ) );
-		fixture.GameState.AddToAllActiveSpaces( new TokenRemovedHandler( "loggin", x => actionIds.Add( x.Action ), true ) );
-		fixture.GameState.Tokens.TokenMoved.ForGame.Add( x => actionIds.Add( x.UnitOfWork ) );
+		HashSet<UnitOfWork> actionScopes = new HashSet<UnitOfWork>();
+		fixture.GameState.AddToAllActiveSpaces( new TokenAddedHandler( "loggin", x => actionScopes.Add( x.ActionScope ), true ) );
+		fixture.GameState.AddToAllActiveSpaces( new TokenRemovedHandler( "loggin", x => actionScopes.Add( x.ActionScope ), true ) );
+		fixture.GameState.Tokens.TokenMoved.ForGame.Add( x => actionScopes.Add( x.ActionScope ) );
 
 		// Given: space 5
 		var space = fixture.GameState.Island.Boards[0][5];
@@ -21,18 +21,18 @@ public class TigersHunting_Tests {
 		var task = TigersHunting.ActAsync( ctx );
 
 		// 1 beast is added
-		actionIds.Count.ShouldBe(1);
+		actionScopes.Count.ShouldBe(1);
 
 		// 1 damage -> destroys explorer
 		fixture.Choose("E@1");
-		actionIds.Count.ShouldBe( 1 );
+		actionScopes.Count.ShouldBe( 1 );
 
 		// push up to 2 beasts
 		fixture.Choose("Beast"); // 'A' is selecting the beast
 		fixture.Choose("A7");
 
 		// Then everything was a single action. 
-		actionIds.Count.ShouldBe(1);
+		actionScopes.Count.ShouldBe(1);
 
 		//  Then: it is complete and nothing happens.
 		task.IsCompleted.ShouldBeTrue();

@@ -42,7 +42,6 @@ public class Tokens_ForIsland : IIslandTokenApi {
 		=> Dynamic.GetTokensFor( space, token );
 
 	public async Task Publish_Moved( TokenMovedArgs args ) {
-		args.GameState=this._gameStateForEventArgs;
 		await TokenMoved.InvokeAsync( args );
 	}
 

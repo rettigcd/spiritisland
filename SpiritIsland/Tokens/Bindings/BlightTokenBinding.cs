@@ -21,12 +21,12 @@ public class BlightTokenBindingNoEvents : TokenBindingNoEvents {
 
 public class BlightTokenBinding : BlightTokenBindingNoEvents {
 
-	readonly UnitOfWork _actionId;
+	readonly UnitOfWork _actionScope;
 
-	public BlightTokenBinding( SpaceState tokens, UnitOfWork actionId )
+	public BlightTokenBinding( SpaceState tokens, UnitOfWork actionScope )
 		:base( tokens ) 
 	{
-		_actionId = actionId;
+		_actionScope = actionScope;
 	}
 
 	// Add:
@@ -36,13 +36,13 @@ public class BlightTokenBinding : BlightTokenBindingNoEvents {
 	// Event?  So it doesn't need to know about other spaces & gamestate?
 	public async Task Add( int count, AddReason reason = AddReason.Added ) {
 		if(!Blocked)
-			await this.tokens.Add( TokenType.Blight, count, _actionId, reason );
+			await this.tokens.Add( TokenType.Blight, count, _actionScope, reason );
 	}
 
 	// Remove:
 	// override by trickster
 	public virtual Task Remove( int count, RemoveReason reason = RemoveReason.Removed ) {
-		return this.tokens.Remove( TokenType.Blight, count, _actionId, reason );
+		return this.tokens.Remove( TokenType.Blight, count, _actionScope, reason );
 	}
 
 }

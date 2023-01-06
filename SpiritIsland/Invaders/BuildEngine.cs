@@ -8,10 +8,11 @@ public class BuildEngine {
 		await Build( gameState );
 	}
 
+	static protected SpaceState[] GetSpacesMatchingCard( IInvaderCard card, GameState gameState )
+		=> gameState.AllActiveSpaces.Where( card.MatchesCard ).ToArray();
+
 	void AddBuildTokensMatchingCard( IInvaderCard card, GameState gameState ) {
-		var cardDependentBuildSpaces = gameState.AllActiveSpaces
-			.Where( card.MatchesCard )      // space matches card
-			.ToArray();
+		var cardDependentBuildSpaces = GetSpacesMatchingCard( card, gameState );
 		var spacesMatchingCardCriteria = cardDependentBuildSpaces
 			.Where( ShouldBuildOnSpace )    // usually because it has invaders on it
 			.ToArray();
@@ -43,7 +44,7 @@ public class BuildEngine {
 
 	}
 
-	async Task DoAllBuildsInSpace( GameState gameState, SpaceState spaceState ) {
+	protected virtual async Task DoAllBuildsInSpace( GameState gameState, SpaceState spaceState ) {
 		int buildCounts = PullBuildTokens( spaceState );
 		while(0 < buildCounts--)
 			await Do1Build( gameState, spaceState );
@@ -63,7 +64,7 @@ public class BuildEngine {
 }
 
 /// <summary> Performs 1 builds on 1 space </summary>
-public sealed class BuildOnceOnSpace {
+public class BuildOnceOnSpace {
 
 	public BuildOnceOnSpace( GameState gs, SpaceState tokens ) {
 		_gameState = gs;
@@ -77,30 +78,35 @@ public sealed class BuildOnceOnSpace {
 
 	async Task<string> GetResult() {
 
-		await using var uow = _gameState.StartAction( ActionCategory.Invader );
+		await using var actionScope = _gameState.StartAction( ActionCategory.Invader );
 
 		// Determine type to build
-		int townCount = _tokens.Sum( Invader.Town );
-		int cityCount = _tokens.Sum( Invader.City );
-		HealthTokenClass invaderToAdd = cityCount < townCount ? Invader.City : Invader.Town;
+		var (countToAdd, invaderToAdd) = DetermineWhatToAdd();
 
 		var buildStoppers = _tokens.Keys.OfType<ISkipBuilds>()
 			.OrderBy( t => t.Cost ) // cheapest first
 			.ToArray();
 
 		// Check for Stoppers
-		var gameCtx = new GameCtx( _gameState, uow );
+		var gameCtx = new GameCtx( _gameState, actionScope );
 		foreach(var stopper in buildStoppers)
 			if(await stopper.Skip( gameCtx, _tokens, invaderToAdd ))
 				return "build stopped by " + stopper.Text;
 
 		// build it
-		await _tokens.AddDefault( invaderToAdd, 1, gameCtx.UnitOfWork, AddReason.Build );
+		await _tokens.AddDefault( invaderToAdd, countToAdd, gameCtx.ActionScope, AddReason.Build );
 		return invaderToAdd.Label;
 	}
 
+	protected virtual (int,HealthTokenClass) DetermineWhatToAdd() {
+		int townCount = _tokens.Sum( Invader.Town );
+		int cityCount = _tokens.Sum( Invader.City );
+		HealthTokenClass invaderToAdd = cityCount < townCount ? Invader.City : Invader.Town;
+		int countToAdd = 1;
+		return (countToAdd, invaderToAdd);
+	}
 
-	readonly SpaceState _tokens;
-	readonly GameState _gameState;
+	readonly protected SpaceState _tokens;
+	readonly protected GameState _gameState;
 
 }

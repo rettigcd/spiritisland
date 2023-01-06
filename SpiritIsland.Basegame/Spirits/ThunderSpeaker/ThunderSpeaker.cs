@@ -60,20 +60,20 @@ public class Thunderspeaker : Spirit {
 
 	async Task DestroyNearbyPresence( ITokenRemovedArgs args ) {
 		if( args.Reason != RemoveReason.Destroyed ) return;
-		if(args.Action.Category != ActionCategory.Invader) return;
+		if(args.ActionScope.Category != ActionCategory.Invader) return;
 		if(args.Token.Class != TokenType.Dahan) return;
 
 		string prompt = $"{SwarnToVictory.Title}: {args.Count} dahan destroyed. Select presence to destroy.";
 
 		int numToDestroy = args.Count;
 		SpaceState[] options;
-		SpaceState[] Intersect() => args.Space.InOrAdjacentTo // Ravage Only, not dependent on PowerRangeCalculator
+		SpaceState[] Intersect() => args.RemovedFrom.InOrAdjacentTo // Ravage Only, not dependent on PowerRangeCalculator
 			.Where( Presence.IsOn )
 			.ToArray();
 
 		while(numToDestroy-->0 && (options=Intersect()).Length > 0) {
 			var space = await this.Gateway.Decision( Select.DeployedPresence.ToDestroy( prompt, options, Present.Always ) );
-			await Presence.Destroy(space, args.Space.AccessGameState(), 1, DestoryPresenceCause.DahanDestroyed, args.Action );
+			await Presence.Destroy(space, args.RemovedFrom.AccessGameState(), 1, DestoryPresenceCause.DahanDestroyed, args.ActionScope );
 		}
 
 	}

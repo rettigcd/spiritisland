@@ -72,13 +72,13 @@ class StopPresenceDestructionFromBlightOrEvents {
 	}
 
 	/// <returns># of blight to remove from card</returns>
-	async Task DestroyPresenceDirectlyFromBlight( Spirit other, GameState gs, UnitOfWork unitOfWork ) {
+	async Task DestroyPresenceDirectlyFromBlight( Spirit other, GameState gs, UnitOfWork actionScope ) {
 		if( 1 <= spirit.Energy
 			&& await spirit.UserSelectsFirstText( "Blight Destroying Presence","Pay 1 energy to save","Pass")
 		)
 			spirit.Energy --;
 		else 
-			await oldBehavior(other, gs, unitOfWork);
+			await oldBehavior(other, gs, actionScope);
 	}
 
 }

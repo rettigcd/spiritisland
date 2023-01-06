@@ -111,8 +111,8 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	public void InitDefault( HealthTokenClass tokenClass, int value )
 		=> Init( GetDefault( tokenClass ), value );
 
-	public Task AddDefault( HealthTokenClass tokenClass, int count, UnitOfWork actionId, AddReason addReason = AddReason.Added )
-		=> Add( GetDefault( tokenClass ), count, actionId, addReason );
+	public Task AddDefault( HealthTokenClass tokenClass, int count, UnitOfWork actionScope, AddReason addReason = AddReason.Added )
+		=> Add( GetDefault( tokenClass ), count, actionScope, addReason );
 
 	public void AdjustDefault( HealthTokenClass tokenClass, int delta ) 
 		=> Adjust( GetDefault( tokenClass ), delta );
@@ -121,7 +121,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 		_counts[specific] = value;
 	}
 
-	public async Task AdjustHealthOfAll( int delta, UnitOfWork actionId, params HealthTokenClass[] tokenClasses ) {
+	public async Task AdjustHealthOfAll( int delta, UnitOfWork actionScope, params HealthTokenClass[] tokenClasses ) {
 		if(delta == 0) return;
 		foreach(var tokenClass in tokenClasses) {
 			var tokens = OfClass( tokenClass ).Cast<HealthToken>();
@@ -129,7 +129,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 				? tokens.OrderBy( x => x.FullHealth ).ToArray()
 				: tokens.OrderByDescending( x => x.FullHealth ).ToArray();
 			foreach(var token in orderedTokens)
-				await AdjustHealthOf( token, delta, this[token], actionId );
+				await AdjustHealthOf( token, delta, this[token], actionScope );
 		}
 	}
 
@@ -140,7 +140,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 		Init( original, 0 );
 	}
 
-	public void ReplaceWith( Token oldToken, Token newToken, int countToReplace ) {
+	public void ReplaceNWith( int countToReplace, Token oldToken, Token newToken ) {
 		countToReplace = Math.Min( countToReplace, this[oldToken] );
 		Adjust( oldToken, -countToReplace );
 		Adjust( newToken, countToReplace );
@@ -148,14 +148,14 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	/// <summary> Replaces (via adjust) HealthToken with new HealthTokens </summary>
 	/// <returns> The # of remaining Adjusted tokens. </returns>
-	public async Task<(HealthToken, int)> AdjustHealthOf( HealthToken token, int delta, int count, UnitOfWork actionId ) {
+	public async Task<(HealthToken, int)> AdjustHealthOf( HealthToken token, int delta, int count, UnitOfWork actionScope ) {
 		count = Math.Min( this[token], count );
 		if(count == 0) return (token, 0);
 
 		var newToken = token.AddHealth( delta ); // throws exception if health < 1
 
 		if(newToken.IsDestroyed) {
-			await this.Destroy( token, count, actionId ); // destroy the old token
+			await this.Destroy( token, count, actionScope ); // destroy the old token
 			return (token, 0);
 		}
 
@@ -169,8 +169,8 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	#region Event-Generating Token Changes
 
-	public async Task<TokenAddedArgs> Add( Token token, int count, UnitOfWork actionId, AddReason addReason = AddReason.Added ) {
-		TokenAddedArgs addResult = Add_Silent( token, count, actionId, addReason );
+	public async Task<TokenAddedArgs> Add( Token token, int count, UnitOfWork actionScope, AddReason addReason = AddReason.Added ) {
+		TokenAddedArgs addResult = Add_Silent( token, count, actionScope, addReason );
 		if(addResult != null) {
 			addResult.GameState = this._api.AccessGameState();
 			foreach(var handler in Keys.OfType<IHandleTokenAdded>().ToArray())
@@ -179,11 +179,11 @@ public class SpaceState : HasNeighbors<SpaceState> {
 		return addResult;
 	}
 
-	 TokenAddedArgs Add_Silent( Token token, int count, UnitOfWork actionId, AddReason addReason = AddReason.Added ) {
-		if(count < 0) throw new System.ArgumentOutOfRangeException( nameof( count ) );
+	 TokenAddedArgs Add_Silent( Token token, int count, UnitOfWork actionScope, AddReason addReason = AddReason.Added ) {
+		if(count < 0) throw new ArgumentOutOfRangeException( nameof( count ) );
 
 		// Pre-Add check/adjust
-		var addingArgs = new AddingTokenArgs { ActionId = actionId, Count = count, Space = Space, Reason = addReason, Token = token };
+		var addingArgs = new AddingTokenArgs( this, addReason, actionScope ) { Count = count, Token = token };
 		foreach(var mod in Keys.OfType<IHandleAddingToken>().ToArray() )
 			mod.ModifyAdding( addingArgs );
 
@@ -194,13 +194,13 @@ public class SpaceState : HasNeighbors<SpaceState> {
 		this[addingArgs.Token] += addingArgs.Count;
 
 		// Post-Add event
-		return new TokenAddedArgs( this, addingArgs.Token, addReason, addingArgs.Count, actionId );
+		return new TokenAddedArgs( this, addingArgs.Token, addReason, addingArgs.Count, actionScope );
 	}
 
 
 	/// <summary> returns null if no token removed </summary>
-	public async Task<PublishTokenRemovedArgs> Remove( Token token, int count, UnitOfWork actionId, RemoveReason reason = RemoveReason.Removed ) {
-		var cmd = await Remove_Silent( token, count, actionId, reason );
+	public async Task<PublishTokenRemovedArgs> Remove( Token token, int count, UnitOfWork actionScope, RemoveReason reason = RemoveReason.Removed ) {
+		var cmd = await Remove_Silent( token, count, actionScope, reason );
 		if( cmd != null) {
 			var e = cmd.MakeEvent(); // !!! clean this up.  Don't need cmd and event
 			foreach(var handler in Keys.OfType<IHandleTokenRemoved>().ToArray() )
@@ -210,11 +210,11 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	}
 
 	/// <summary> returns null if no token removed. Does Not publish event.</summary>
-	async Task<PublishTokenRemovedArgs> Remove_Silent( Token token, int count, UnitOfWork unitOfWork, RemoveReason reason = RemoveReason.Removed ) {
+	async Task<PublishTokenRemovedArgs> Remove_Silent( Token token, int count, UnitOfWork actionScope, RemoveReason reason = RemoveReason.Removed ) {
 		count = System.Math.Min( count, this[token] );
 
 		// Pre-Remove check/adjust
-		var removingArgs = new RemovingTokenArgs( this, reason, unitOfWork ) { Count = count, Token = token };
+		var removingArgs = new RemovingTokenArgs( this, reason, actionScope ) { Count = count, Token = token };
 		foreach(var mod in Keys.OfType<IHandleRemovingToken>().ToArray())
 			await mod.ModifyRemoving( removingArgs );
 
@@ -226,20 +226,20 @@ public class SpaceState : HasNeighbors<SpaceState> {
 		this[removingArgs.Token] -= removingArgs.Count;
 
 		// Post-Remove event
-		return new PublishTokenRemovedArgs( removingArgs.Token, reason, unitOfWork, this, removingArgs.Count );
+		return new PublishTokenRemovedArgs( removingArgs.Token, reason, actionScope, this, removingArgs.Count );
 	}
 
 	public GameState AccessGameState() => _api.AccessGameState();
 
 
 	// Convenience only
-	public Task Destroy( Token token, int count, UnitOfWork unitOfWork ) => token is HealthToken ht
-		? ht.Destroy(this, count, unitOfWork)
-		: Remove(token, count, unitOfWork, RemoveReason.Destroyed );
+	public Task Destroy( Token token, int count, UnitOfWork actionScope ) => token is HealthToken ht
+		? ht.Destroy(this, count, actionScope)
+		: Remove(token, count, actionScope, RemoveReason.Destroyed );
 
 	/// <summary> Gathering / Pushing + a few others </summary>
 	// !!! Powers should not use this Move directly, instead, they should go through TargetSpaceCtx so they can use custom Dahan and Invader bindings.
-	public async Task MoveTo( Token token, Space destination, UnitOfWork uow ) {
+	public async Task MoveTo( Token token, Space destination, UnitOfWork actionScope ) {
 		// Current implementation favors:
 		//		switching token types prior to Add/Remove so events handlers don't switch token type
 		//		perfoming the add/remove action After the Adding/Removing modifications
@@ -258,25 +258,22 @@ public class SpaceState : HasNeighbors<SpaceState> {
 		if(this[token] == 0) return; // unable to remove desired token
 
 		// Remove from source
-		var removeResults = await Remove( token, 1, uow, RemoveReason.MovedFrom );
+		var removeResults = await Remove( token, 1, actionScope, RemoveReason.MovedFrom );
 		if(removeResults is null) return; // can be prevented by Remove-Mods
 
 		// Add to destination
 		var dstTokens = _api.GetTokensFor( destination );
-		var addResult = await dstTokens.Add( token, removeResults.Count, uow, AddReason.MovedTo );
+		var addResult = await dstTokens.Add( token, removeResults.Count, actionScope, AddReason.MovedTo );
 		if( addResult == null) return;
 
 		// Publish
-		await _api.Publish_Moved( new TokenMovedArgs {
+		await _api.Publish_Moved( new TokenMovedArgs(this,dstTokens, actionScope ) {
 			// removed
 			TokenRemoved = removeResults.Token,
-			RemovedFrom = this,
 			// added
 			TokenAdded = addResult.Token,
-			AddedTo = dstTokens,
 			// general
 			Count = 1,
-			UnitOfWork = uow
 		} );
 
 	}
@@ -298,7 +295,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	public int InvaderTotal() => InvaderTokens().Sum( i => _counts[i] );
 
-	public async Task AddStrifeTo( HealthToken invader, UnitOfWork actionId, int count = 1 ) {
+	public async Task AddStrifeTo( HealthToken invader, UnitOfWork actionScope, int count = 1 ) {
 
 		// Remove old type from 
 		if(this[invader]<count)
@@ -313,7 +310,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 		// !!! Test that a ravage that does nothing but removes a strife, triggers Observe the Ever Changing World
 
 		if( strifed.IsDestroyed ) // due to a strife-health penalty
-			await Destroy( strifed, this[strifed], actionId );
+			await Destroy( strifed, this[strifed], actionScope );
 	}
 
 	#endregion

@@ -52,9 +52,9 @@ public class WeaveTogetherTheFabricOfPlace {
 			removeSpace.Restore();
 
 			// divide pieces as you wish.
-			await using UnitOfWork actionId = gs.StartAction( ActionCategory.Spirit_Power );
-			await DistributePresence( space, other, gs, actionId );
-			await DistributeTokens( originatorCtx, space, other, gs, actionId );
+			await using UnitOfWork actionScope = gs.StartAction( ActionCategory.Spirit_Power );
+			await DistributePresence( space, other, gs, actionScope );
+			await DistributeTokens( originatorCtx, space, other, gs, actionScope );
 		});
 
 		return multi;
@@ -71,13 +71,13 @@ public class WeaveTogetherTheFabricOfPlace {
 		}
 	}
 
-	static async Task DistributePresence( Space space, Space other, GameState gs, UnitOfWork actionId ) {
+	static async Task DistributePresence( Space space, Space other, GameState gs, UnitOfWork actionScope ) {
 		var dstOptions = new[] { gs.Tokens[other] };
 		var srcTokens = gs.Tokens[space];
 
 		foreach(var spirit in gs.Spirits) {
 
-			var boundPresence = new BoundPresence( spirit, gs, gs.Island.Terrain_ForPower, actionId );
+			var boundPresence = new BoundPresence( spirit, gs, gs.Island.Terrain_ForPower, actionScope );
 			int count = spirit.Presence.CountOn( srcTokens ); // ! don't check 'can-move', ALWAyS need to adjust/move/cleanup this presence.
 
 			while(count > 0) {

@@ -42,7 +42,7 @@ public class Sweden : IAdversary {
 			gameState.LandDamaged.ForGame.Add( async args => {
 				if(6<=args.Damage)
 					// !!! how do we take from card but not cascade?
-					await gameState.Tokens[args.Space].Blight.Bind(args.ActionId).Add(1);
+					await gameState.Tokens[args.Space].Blight.Bind(args.ActionScope).Add(1);
 			} );
 		}
 
@@ -76,7 +76,7 @@ public class Sweden : IAdversary {
 		if(5 <= Level) {
 			var mod = new TokenAddedHandler("Sweden", args => {
 				if(args.Reason == AddReason.Ravage && args.Token == TokenType.Blight) {
-					var noBuildAdjacents = args.Space.Adjacent
+					var noBuildAdjacents = args.AddedTo.Adjacent
 						.Where( adj => !adj.HasAny( Invader.Town, Invader.City ) )
 						.ToArray();
 

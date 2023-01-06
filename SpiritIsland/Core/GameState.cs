@@ -112,18 +112,18 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	public int DamageToBlightLand = 2;
 
-	public async Task DamageLandFromRavage( Space space, int damageInflictedFromInvaders, UnitOfWork actionId ) {
+	public async Task DamageLandFromRavage( Space space, int damageInflictedFromInvaders, UnitOfWork actionScope ) {
 		if(damageInflictedFromInvaders==0) return;
 
 		await LandDamaged.InvokeAsync( new LandDamagedArgs { 
 			GameState = this,
 			Space = space,
 			Damage = damageInflictedFromInvaders,
-			ActionId = actionId
+			ActionScope = actionScope
 		} );
 
 		if( damageInflictedFromInvaders >= DamageToBlightLand)
-			await Tokens[space].Blight.Bind(actionId).Add(1, AddReason.Ravage);
+			await Tokens[space].Blight.Bind(actionScope).Add(1, AddReason.Ravage);
 	}
 
 	/// <summary>
@@ -144,7 +144,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		if( !isCascading ) return;
 
 		// remove from card.
-		await TakeFromBlightSouce( args.Count, args.Space );
+		await TakeFromBlightSouce( args.Count, args.AddedTo );
 
 		if(BlightCard != null && blightOnCard <= 0) {
 			Log( new IslandBlighted( BlightCard ) );
@@ -152,27 +152,27 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		}
 
 		// Calc side effects
-		bool isFirstBlight = args.Space.Blight.Count == 1;
-		var effect = new AddBlightEffect { DestroyPresence = true, Cascade = !isFirstBlight, GameState = this, Space = args.Space };
+		bool isFirstBlight = args.AddedTo.Blight.Count == 1;
+		var effect = new AddBlightEffect { DestroyPresence = true, Cascade = !isFirstBlight, GameState = this, Space = args.AddedTo };
 		await ModifyBlightAddedEffect.InvokeAsync(effect);
 
 		// Destory presence
 		if(effect.DestroyPresence)
 			foreach(var spirit in Spirits)
-				if(spirit.Presence.IsOn( args.Space ))
-					await spirit.Presence.Destroy( args.Space.Space, this, 1, DestoryPresenceCause.Blight, args.Action, args.Reason );
+				if(spirit.Presence.IsOn( args.AddedTo ))
+					await spirit.Presence.Destroy( args.AddedTo.Space, this, 1, DestoryPresenceCause.Blight, args.ActionScope, args.Reason );
 
 		// Cascade blight
 		if(effect.Cascade) {
 			Space cascadeTo = await Spirits[0].Gateway.Decision( Select.Space.ForAdjacent(
-				$"Cascade blight from {args.Space.Space.Label} to",
-				args.Space.Space,
+				$"Cascade blight from {args.AddedTo.Space.Label} to",
+				args.AddedTo.Space,
 				Select.AdjacentDirection.Outgoing,
-				args.Space.CascadingBlightOptions,
+				args.AddedTo.CascadingBlightOptions,
 				Present.Always,
 				TokenType.Blight
 			));
-			await Tokens[ cascadeTo ].Blight.Bind(args.Action).Add(1, args.Reason); // Cascading blight shares original blights reason.
+			await Tokens[ cascadeTo ].Blight.Bind(args.ActionScope).Add(1, args.Reason); // Cascading blight shares original blights reason.
 		}
 
 	}
@@ -287,10 +287,10 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		return Task.CompletedTask;
 	}
 
-	static async Task DefaultDestroy1PresenceFromBlightCard( Spirit spirit, GameState gs, UnitOfWork action ) {
+	static async Task DefaultDestroy1PresenceFromBlightCard( Spirit spirit, GameState gs, UnitOfWork actionScope ) {
 		var boundPresence = new ReadOnlyBoundPresence( spirit, gs, gs.Island.Terrain_ForBlight );
 		var presenceSpace = await spirit.Gateway.Decision( Select.DeployedPresence.ToDestroy( "Blighted Island: Select presence to destroy.", boundPresence ) );
-		await spirit.Presence.Destroy( presenceSpace, gs, 1, DestoryPresenceCause.BlightedIsland, action );
+		await spirit.Presence.Destroy( presenceSpace, gs, 1, DestoryPresenceCause.BlightedIsland, actionScope );
 	}
 
 	#endregion
@@ -332,7 +332,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	public Func<GameCtx,SpaceState,TokenClass,Task<bool>> Disease_StopBuildBehavior = Disease_StopBuildBehavior_Default;
 	static async Task<bool> Disease_StopBuildBehavior_Default( GameCtx ctx, SpaceState tokens, TokenClass _ ) {
-		await tokens.Disease.Bind( ctx.UnitOfWork ).Remove( 1, RemoveReason.UsedUp );
+		await tokens.Disease.Bind( ctx.ActionScope ).Remove( 1, RemoveReason.UsedUp );
 		return true;
 	}
 
@@ -419,7 +419,7 @@ public class LandDamagedArgs {
 	public GameState GameState;
 	public Space Space;
 	public int Damage;
-	public UnitOfWork ActionId;
+	public UnitOfWork ActionScope;
 }
 
 public class AddBlightEffect {

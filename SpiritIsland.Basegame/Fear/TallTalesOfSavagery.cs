@@ -32,10 +32,10 @@ public class TallTalesOfSavagery : FearCardBase, IFearCard {
 		var gs = ctx.GameState;
 		// Remove 2 explorers or 1 Town from each land with Dahan
 		foreach(var space in gs.AllActiveSpaces.Where(s => s.Dahan.Any))
-			await RemoveTownOr2Explorers( gs.Invaders.On( space.Space, ctx.UnitOfWork ) );
+			await RemoveTownOr2Explorers( gs.Invaders.On( space.Space, ctx.ActionScope ) );
 		// Then, remove 1 City from each land with at least 2 Dahan
 		foreach(var space in gs.AllActiveSpaces.Where( s=>s.Dahan.CountAll>=2 && s.Has(Invader.City) ))
-			await gs.Invaders.On(space.Space, ctx.UnitOfWork ).RemoveLeastDesirable(Invader.City);
+			await gs.Invaders.On(space.Space, ctx.ActionScope ).RemoveLeastDesirable(Invader.City);
 	}
 
 	static async Task RemoveTownOr2Explorers( InvaderBinding grp ) { // !! maybe we should let the player choose in case town was strifed

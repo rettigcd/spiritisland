@@ -109,7 +109,7 @@ public class ShroudOfSilentMist : Spirit {
 	#endregion
 
 	public override async Task<Space> TargetsSpace( 
-		SelfCtx ctx, // contains ActionId for this action, so we can move presence as part of targetting
+		SelfCtx ctx,
 
 		string prompt,
 

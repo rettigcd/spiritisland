@@ -41,9 +41,9 @@ public class HealthToken : Token, IEquatable<HealthToken> {
 
 	public bool IsDestroyed => FullHealth <= FullDamage;
 
-	public virtual async Task<int> Destroy( SpaceState tokens, int count, UnitOfWork unitOfWork ) {
+	public virtual async Task<int> Destroy( SpaceState tokens, int count, UnitOfWork actionScope ) {
 		count = Math.Min(count, tokens[this]);
-		await tokens.Remove(this,count,unitOfWork, RemoveReason.Destroyed);
+		await tokens.Remove(this,count,actionScope, RemoveReason.Destroyed);
 		tokens.AccessGameState().Fear.AddDirect( new FearArgs( this.Class.FearGeneratedWhenDestroyed * count ) {
 			FromDestroyedInvaders = true, // this is the destruction that Dread Apparitions ignores.
 			space = tokens.Space
@@ -51,9 +51,9 @@ public class HealthToken : Token, IEquatable<HealthToken> {
 		return count;
 	}
 
-	public virtual async Task<int> DestroyAll( SpaceState tokens, UnitOfWork unitOfWork ) {
+	public virtual async Task<int> DestroyAll( SpaceState tokens, UnitOfWork actionScope ) {
 		int count = tokens[this];
-		await tokens.Remove( this, count, unitOfWork, RemoveReason.Destroyed );
+		await tokens.Remove( this, count, actionScope, RemoveReason.Destroyed );
 		tokens.AccessGameState().Fear.AddDirect( new FearArgs( this.Class.FearGeneratedWhenDestroyed * count ) {
 			FromDestroyedInvaders = true, // this is the destruction that Dread Apparitions ignores.
 			space = tokens.Space
@@ -64,10 +64,20 @@ public class HealthToken : Token, IEquatable<HealthToken> {
 
 	#region Token mutation generators
 
+	// so we can override it in derived types and not switch back to HealthToken base
+	protected virtual HealthToken NewHealthToken(
+		HealthTokenClass tokenClass,
+		IHaveHealthPenaltyPerStrife penaltyHolder,
+		int rawFullHealth,
+		int damage = 0,
+		int strifeCount = 0,
+		int nightmareDamage = 0
+	) => new HealthToken( tokenClass, penaltyHolder, rawFullHealth, damage, strifeCount, nightmareDamage );
+
 	public HealthToken HavingStrife(int strifeCount) {
 		return strifeCount < 0 ? throw new System.ArgumentOutOfRangeException(nameof(strifeCount),$"strife Count = {strifeCount}")
 			: strifeCount == StrifeCount ? this
-			: new HealthToken( Class, _healthPenaltyHolder, _rawFullHealth, Damage, strifeCount );
+			: NewHealthToken( Class, _healthPenaltyHolder, _rawFullHealth, Damage, strifeCount );
 	}
 
 	/// <returns>a new token with the adjusted strife</returns>
@@ -77,26 +87,20 @@ public class HealthToken : Token, IEquatable<HealthToken> {
 		int newDamage = Math.Min( Damage + damage, _rawFullHealth ); // Give regular damage priority
 		// only allow nightmare damage to take up whatever remaining health is available
 		int newNightmareDamage = Math.Min( nightmareDamage + DreamDamage, _rawFullHealth-newDamage );
-		return new HealthToken( 
-			Class, 
-			_healthPenaltyHolder, 
-			_rawFullHealth, 
-			newDamage, 
-			StrifeCount,
-			newNightmareDamage
-		);
+		return NewHealthToken( Class, _healthPenaltyHolder, _rawFullHealth, newDamage, StrifeCount,	newNightmareDamage );
 	}
 
 	// For Dream a 1000 Deaths, make token not in the Invader TokenCategory
 	public HealthToken SwitchClass( HealthTokenClass newClass )
-		=> new HealthToken( newClass, _healthPenaltyHolder, _rawFullHealth, Damage, StrifeCount, DreamDamage );
+		=> NewHealthToken( newClass, _healthPenaltyHolder, _rawFullHealth, Damage, StrifeCount, DreamDamage );
 
-	public HealthToken Healthy => new HealthToken( Class, _healthPenaltyHolder, _rawFullHealth, 0, StrifeCount );
+	public HealthToken Healthy 
+		=> NewHealthToken( Class, _healthPenaltyHolder, _rawFullHealth, 0, StrifeCount );
 
 	public HealthToken AddHealth( int delta ) {
 		int newHealth = Math.Max(1, _rawFullHealth + delta );
 		return newHealth == _rawFullHealth ? this
-			: new HealthToken( Class, _healthPenaltyHolder, newHealth, Damage, StrifeCount );
+			: NewHealthToken( Class, _healthPenaltyHolder, newHealth, Damage, StrifeCount );
 	}
 
 	#endregion
@@ -132,7 +136,7 @@ public class HealthToken : Token, IEquatable<HealthToken> {
 
 	readonly string _summaryString;
 
-	readonly IHaveHealthPenaltyPerStrife _healthPenaltyHolder;
+	readonly public IHaveHealthPenaltyPerStrife _healthPenaltyHolder;
 }
 
 public interface IHaveHealthPenaltyPerStrife {

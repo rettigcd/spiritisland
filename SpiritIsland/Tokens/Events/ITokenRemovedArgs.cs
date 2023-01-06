@@ -3,7 +3,7 @@
 public interface ITokenRemovedArgs {
 	public Token Token { get; }
 	public int Count { get; }
-	public SpaceState Space { get; }
+	public SpaceState RemovedFrom { get; }
 	public RemoveReason Reason { get; }
-	public UnitOfWork Action { get; }
+	public UnitOfWork ActionScope { get; }
 };

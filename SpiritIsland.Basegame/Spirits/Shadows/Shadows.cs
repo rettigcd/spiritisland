@@ -31,7 +31,7 @@ public class Shadows : Spirit {
 	/// Overriden so we can pay 1 energy for targetting out-of-range dahan space
 	/// </summary>
 	public override async Task<Space> TargetsSpace( 
-		SelfCtx ctx,  // has the actual ActionId for this Action
+		SelfCtx ctx,  // has the actual ActionScope for this Action
 		string prompt, 
 		TargetingSourceCriteria sourceCriteria, 
 		params TargetCriteria[] targetCriteria 

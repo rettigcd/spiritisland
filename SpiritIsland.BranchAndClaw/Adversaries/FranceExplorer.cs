@@ -42,7 +42,7 @@ public class FranceExplorer : ExploreEngine {
 			var options = boardCtx.Board.Spaces.Where( s => !boardCtx.GameState.Tokens[s].HasAny( Invader.Explorer ) ).ToArray();
 			var space = await boardCtx.Decision( new Select.Space( "Add explorer", options, Present.Always ) );
 			if(space != null)
-				await boardCtx.GameState.Tokens[space].AddDefault( Invader.Explorer, 1, boardCtx.ActionCtx );
+				await boardCtx.GameState.Tokens[space].AddDefault( Invader.Explorer, 1, boardCtx.ActionScope );
 		}
 	);
 

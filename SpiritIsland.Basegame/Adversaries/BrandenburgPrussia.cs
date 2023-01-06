@@ -69,9 +69,9 @@ public class BrandenburgPrussia : IAdversary {
 			.Select( grp => grp.OrderBy( ss => ss.Space.Text ).First() ) // (!! simplification) when multiple, select closest to coast.
 			.ToArray();
 
-		using UnitOfWork uow = gs.StartAction( ActionCategory.Default );
+		using UnitOfWork actionScope = gs.StartAction( ActionCategory.Default );
 		foreach(SpaceState bs in buildSpaces)
-			bs.AddDefault(Invader.Town,1, uow, AddReason.Build);
+			bs.AddDefault(Invader.Town,1, actionScope, AddReason.Build);
 
 		return Task.CompletedTask;
 	}

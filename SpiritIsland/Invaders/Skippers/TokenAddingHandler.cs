@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-interface IHandleAddingToken {
+public interface IHandleAddingToken {
 	void ModifyAdding( AddingTokenArgs args );
 }
 

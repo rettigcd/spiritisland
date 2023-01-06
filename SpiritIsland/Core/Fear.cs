@@ -77,12 +77,12 @@ public class Fear {
 			// show card to each user
 			fearCard.ActivatedTerrorLevel = TerrorLevel;
 
-			await using var unitOfWork = gs.StartAction( ActionCategory.Fear );
+			await using var actionScope = gs.StartAction( ActionCategory.Fear );
 			foreach(var spirit in gs.Spirits)
-				await spirit.BindSelf(gs, unitOfWork ).FlipFearCard(fearCard,true);
+				await spirit.BindSelf(gs, actionScope ).FlipFearCard(fearCard,true);
 
 
-			var ctx = new GameCtx( gs, unitOfWork );
+			var ctx = new GameCtx( gs, actionScope );
 			switch(TerrorLevel) {
 				case 1: await fearCard.Level1( ctx ); break;
 				case 2: await fearCard.Level2( ctx ); break;

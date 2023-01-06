@@ -77,18 +77,13 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 		await ctx.Presence.Destroy( space, 1, DestoryPresenceCause.SpiritPower );
 	}
 
-	//public override SelfCtx Bind( Spirit spirit, GameState gameState, UnitOfWork unitOfWork, Cause cause ) 
-	//	=> cause == Cause.MyPowers
-	//		? new TricksterCtx( spirit, gameState, unitOfWork!=default ? unitOfWork : gameState.StartAction( ActionCategory.Spirit_Power ) )
-	//		: BindDefault( spirit, gameState, unitOfWork );
-
-	public override SelfCtx BindMyPowers( Spirit spirit, GameState gameState, UnitOfWork unitOfWork ) 
-		=> new TricksterCtx( spirit, gameState, unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork)) );
+	public override SelfCtx BindMyPowers( Spirit spirit, GameState gameState, UnitOfWork actionScope ) 
+		=> new TricksterCtx( spirit, gameState, actionScope ?? throw new ArgumentNullException(nameof(actionScope)) );
 }
 
 // Only use this when Trickster is using their own Powers
 class TricksterCtx : SelfCtx {
-	public TricksterCtx(Spirit spirit, GameState gs, UnitOfWork actionId) : base( spirit, gs, actionId ) { }
+	public TricksterCtx(Spirit spirit, GameState gs, UnitOfWork actionScope) : base( spirit, gs, actionScope ) { }
 	public override TargetSpaceCtx Target( Space space ) => new TricksterSpaceCtx( this, space );
 }
 
@@ -96,7 +91,7 @@ public class TricksterSpaceCtx : TargetSpaceCtx {
 
 	public TricksterSpaceCtx(SelfCtx ctx, Space space):base( ctx, space ) {}
 
-	public override BlightTokenBinding Blight => new TricksterBlight( this, ActionCtx );
+	public override BlightTokenBinding Blight => new TricksterBlight( this, ActionScope );
 
 	public override async Task AddStrife( params TokenClass[] groups ) {
 		await base.AddStrife( groups );
@@ -124,7 +119,7 @@ public class TricksterBlight : BlightTokenBinding {
 	readonly TricksterSpaceCtx ctx;
 	readonly GrinningTricksterStirsUpTrouble trickster;
 
-	public TricksterBlight( TricksterSpaceCtx ctx, UnitOfWork actionId ) :base( ctx.Tokens, actionId ) {
+	public TricksterBlight( TricksterSpaceCtx ctx, UnitOfWork actionScope ) :base( ctx.Tokens, actionScope ) {
 		this.ctx = ctx;
 		trickster = (GrinningTricksterStirsUpTrouble)ctx.Self;
 	}

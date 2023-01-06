@@ -44,27 +44,27 @@ public class ObserveWorldMod : Token, IHandleTokenAdded, IHandleTokenRemoved {
 	}
 
 	public Task HandleTokenAdded( ITokenAddedArgs args ) {
-		Check( args.Space, args.Action );
+		Check( args.AddedTo, args.ActionScope );
 		return Task.CompletedTask;
 	}
-	public Task HandleTokenRemoved( TokenRemovedArgs args ) {
-		Check( args.Space, args.Action );
+	public Task HandleTokenRemoved( ITokenRemovedArgs args ) {
+		Check( args.RemovedFrom, args.ActionScope );
 		return Task.CompletedTask;
 	}
 
-	void Check( SpaceState space, UnitOfWork unitOfWork ) {
-		if(    _appliedUnitsOfWork.Contains( unitOfWork ) // already did this action 
+	void Check( SpaceState space, UnitOfWork actionScope ) {
+		if(    _appliedUnitsOfWork.Contains( actionScope ) // already did this action 
 			|| _tokenSummary == space.Summary   // no change in tokens
 		)
 			return;
 
-		if(unitOfWork == default)
-			throw new InvalidOperationException( "Can't use default guids as actionids" );
+		if(actionScope == default)
+			throw new InvalidOperationException( "Can't use default action-scope" );
 
-		_appliedUnitsOfWork.Add( unitOfWork ); // limit to 1 change per action
+		_appliedUnitsOfWork.Add( actionScope ); // limit to 1 change per action
 		_tokenSummary = space.Summary;
 
-		unitOfWork.AtEndOfThisAction(async _ => {
+		actionScope.AtEndOfThisAction(async _ => {
 			space.Adjust( this, -1 );
 
 			// !!! This web page states SMOA shouldn't get the element until after the Action completes.

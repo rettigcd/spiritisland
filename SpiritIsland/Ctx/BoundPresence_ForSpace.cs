@@ -21,7 +21,7 @@ public class BoundPresence_ForSpace : BoundPresence {
 	public async Task PlaceDestroyedHere( int count = 1 ) {
 		count = Math.Min(count, ctx.Self.Presence.Destroyed);
 		while(count-- > 0 )
-			await ctx.Self.Presence.Place( Track.Destroyed, ctx.Space, ctx.GameState, _actionId );
+			await ctx.Self.Presence.Place( Track.Destroyed, ctx.Space, ctx.GameState, _actionScope );
 	} 
 
 	public async Task PlaceHere() {

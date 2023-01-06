@@ -77,29 +77,29 @@ public class Ocean : Spirit {
 		if( args.Token is not HealthToken ht ) return;
 
 		// If we are saving a dahan
-		if( ht.Class.Category == TokenCategory.Dahan && ShouldSaveDahan(args.Action) && Presence.IsOn( args.Space )	) {
+		if( ht.Class.Category == TokenCategory.Dahan && ShouldSaveDahan(args.ActionScope) && Presence.IsOn( args.AddedTo )	) {
 			var moveOptions = args.GameState.Island.Boards
 				.Select(x=>args.GameState.Tokens[x.Ocean])
 				.SelectMany(x=>x.Adjacent)
 				.Distinct()
 				.ToArray();;
 			// And Ocean chooses to save it
-			var destination = await this.Gateway.Decision(Select.Space.PushToken(args.Token,args.Space.Space,moveOptions, Present.Done));
+			var destination = await this.Gateway.Decision(Select.Space.PushToken(args.Token,args.AddedTo.Space,moveOptions, Present.Done));
 			if( destination != null ) {
 				// Move them at the end of the Action. (Let everyone handle the move-event before we move them again)
-				args.Action.AtEndOfThisAction(_ => {
+				args.ActionScope.AtEndOfThisAction(_ => {
 					//don't use original because that may or may not have been for a power.
 					using UnitOfWork childAction = args.GameState.StartAction( ActionCategory.Default );
 					BindSelf( args.GameState, childAction )
-						.Move( args.Token, args.Space.Space, destination );
+						.Move( args.Token, args.AddedTo.Space, destination );
 				} );
 				return; // the move it, don't drown it
 			}
 		}
 
 		// Drown them immediately
-		args.GameState.Log( new LogDebug($"Drowning {args.Count}{ht.SpaceAbreviation} on {args.Space.Space}") );
-		await args.GameState.Invaders.On( args.Space.Space, args.Action ).DestroyNTokens( args.Count, ht );
+		args.GameState.Log( new LogDebug($"Drowning {args.Count}{ht.SpaceAbreviation} on {args.AddedTo.Space}") );
+		await args.GameState.Invaders.On( args.AddedTo.Space, args.ActionScope ).DestroyNTokens( args.Count, ht );
 
 		// Track drowned invaders' health
 		if(args.Token.Class.Category == TokenCategory.Invader)
@@ -123,7 +123,7 @@ public class Ocean : Spirit {
 	int drownedInvaderHealthAccumulator = 0;
 
 	// ! Hook for Tidal Boon
-	static public void EnableSavingDahan( UnitOfWork unitOfWork ) { unitOfWork[SaveDahan] = true; }
-	static public bool ShouldSaveDahan( UnitOfWork uow ) => uow.ContainsKey( SaveDahan );
+	static public void EnableSavingDahan( UnitOfWork actionScope ) { actionScope[SaveDahan] = true; }
+	static public bool ShouldSaveDahan( UnitOfWork actionScope ) => actionScope.ContainsKey( SaveDahan );
 	const string SaveDahan = "SaveDahanFromDrowning";
 }

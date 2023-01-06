@@ -2,19 +2,19 @@
 
 public class RemovingTokenArgs {
 
-	public RemovingTokenArgs( SpaceState space, RemoveReason reason, UnitOfWork uow ) {
+	public RemovingTokenArgs( SpaceState space, RemoveReason reason, UnitOfWork actionScope ) {
 		Space = space;
 		Reason = reason;
-		UnitOfWork = uow;
+		ActionScope = actionScope;
 	}
 
 	// Read-only
-	public Token Token { get; set; }
 	public SpaceState Space { get; }
 	public RemoveReason Reason { get; }
-	public UnitOfWork UnitOfWork { get; }
+	public UnitOfWork ActionScope { get; }
 
 	// modifiable
+	public Token Token { get; set; }
 	public int Count {
 		get { return _count; }
 		set { 

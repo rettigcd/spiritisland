@@ -98,9 +98,9 @@ public class SpiritPresence {
 
 	#region Game-Play things you can do with presence
 
-	public virtual async Task Place( IOption from, Space to, GameState gs, UnitOfWork actionId ) {
+	public virtual async Task Place( IOption from, Space to, GameState gs, UnitOfWork actionScope ) {
 		await TakeFrom( from, gs );
-		await PlaceOn( gs.Tokens[to], actionId ); 
+		await PlaceOn( gs.Tokens[to], actionScope ); 
 	}
 
 	public async Task TakeFrom( IOption from, GameState gs ) {
@@ -142,13 +142,13 @@ public class SpiritPresence {
 
 	public bool CanMove { get; set; } = true;
 
-	public async Task Move( Space from, Space to, GameState gs, UnitOfWork actionId ) {
+	public async Task Move( Space from, Space to, GameState gs, UnitOfWork actionScope ) {
 		await RemoveFrom_NoCheck( gs.Tokens[from] );
-		await PlaceOn( gs.Tokens[to], actionId );
+		await PlaceOn( gs.Tokens[to], actionScope );
 	}
 
-	public virtual async Task Destroy( Space space, GameState gs, int count, DestoryPresenceCause actionType, UnitOfWork actionId, AddReason blightAddedReason = AddReason.None ) {
-		await DestroyBehavior.DestroyPresenceApi( this, space, gs, count, actionType, actionId );
+	public virtual async Task Destroy( Space space, GameState gs, int count, DestoryPresenceCause actionType, UnitOfWork actionScope, AddReason blightAddedReason = AddReason.None ) {
+		await DestroyBehavior.DestroyPresenceApi( this, space, gs, count, actionType, actionScope );
 		CheckIfSpiritIsDestroyed( gs );
 	}
 
@@ -185,7 +185,7 @@ public class SpiritPresence {
 	public IDestroyPresenceBehavour DestroyBehavior = new DefaultDestroyBehavior(); // replaceable / plugable
 
 	public class DefaultDestroyBehavior : IDestroyPresenceBehavour {
-		public virtual Task DestroyPresenceApi(SpiritPresence presence, Space space, GameState gs, int count, DestoryPresenceCause actionType, UnitOfWork actionId ) {
+		public virtual Task DestroyPresenceApi(SpiritPresence presence, Space space, GameState gs, int count, DestoryPresenceCause actionType, UnitOfWork actionScope ) {
 			presence.RemoveFrom_NoCheck( gs.Tokens[space], count );
 			presence.Destroyed += count;
 			return Task.CompletedTask;
@@ -226,8 +226,8 @@ public class SpiritPresence {
 
 	#region Is this Setup or Game play?
 
-	public async virtual Task PlaceOn( SpaceState space, UnitOfWork actionId ) {
-		await space.Add(Token,1,actionId);
+	public async virtual Task PlaceOn( SpaceState space, UnitOfWork actionScope ) {
+		await space.Add(Token,1,actionScope);
 	}
 	public virtual void Adjust( SpaceState space, int count ) {
 		space.Adjust( Token, count );

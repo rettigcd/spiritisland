@@ -86,15 +86,15 @@ public class HeartOfTheWildfire : Spirit {
 				new PresenceTrack( Track.Energy0, Track.FireEnergy, Track.Energy1, Track.Energy2, FirePlantEnergy, Track.Energy3 ),
 				new PresenceTrack( Track.Card1, FireCard, Track.Card2, Track.Card3, FireCard, Track.Card4 )
 			) { }
-		public override async Task Place( IOption from, Space to, GameState gs, UnitOfWork actionId ) { 
-			await base.Place( from, to, gs, actionId );
+		public override async Task Place( IOption from, Space to, GameState gs, UnitOfWork actionScope ) { 
+			await base.Place( from, to, gs, actionScope );
 
 			// !!! There is a bug here somehow that after placeing the 2nd fire, track, still returned only 1 
 			// !! maybe we need to make Elements smarter so it is easier to calculate, like breaking it into:
 			//	(track elements, prepared elements, card elements)
 			int fireCount = TrackElements[Element.Fire];
 
-			var ctx = Self.BindSelf( gs, actionId ).Target( to );
+			var ctx = Self.BindSelf( gs, actionScope ).Target( to );
 			// For each fire showing, do 1 damage
 			await ctx.DamageInvaders( fireCount );
 			// if 2 fire or more are showing, add 1 blight
@@ -102,7 +102,7 @@ public class HeartOfTheWildfire : Spirit {
 				await ctx.AddBlight( 1, AddReason.SpecialRule );
 		}
 
-		public override async Task Destroy( Space space, GameState gs, int count, DestoryPresenceCause actionType, UnitOfWork actionId, AddReason blightAddedReason = AddReason.None ) {
+		public override async Task Destroy( Space space, GameState gs, int count, DestoryPresenceCause actionType, UnitOfWork actionScope, AddReason blightAddedReason = AddReason.None ) {
 
 			// Blight added
 			if( actionType == DestoryPresenceCause.Blight
@@ -112,7 +112,7 @@ public class HeartOfTheWildfire : Spirit {
 				// does not destroy your presence. (including cascades)"
 				return;
 
-			await base.Destroy( space, gs, count, actionType, actionId, blightAddedReason );
+			await base.Destroy( space, gs, count, actionType, actionScope, blightAddedReason );
 		}
 
 	}

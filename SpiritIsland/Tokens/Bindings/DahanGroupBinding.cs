@@ -29,7 +29,7 @@ public class DahanGroupBindingNoEvents {
 
 	public void Init( Token token, int count ) => _tokens.Init( token, count );
 
-	public DahanGroupBinding Bind( UnitOfWork actionId ) => new DahanGroupBinding(this,actionId);
+	public DahanGroupBinding Bind( UnitOfWork actionScope ) => new DahanGroupBinding(this,actionScope);
 }
 
 public class DahanGroupBinding : DahanGroupBindingNoEvents {
@@ -42,8 +42,8 @@ public class DahanGroupBinding : DahanGroupBindingNoEvents {
 		_actionScope = actionScope;
 	}
 
-	public DahanGroupBinding( SpaceState tokens, UnitOfWork actionId ):base(tokens) {
-		_actionScope = actionId;
+	public DahanGroupBinding( SpaceState tokens, UnitOfWork actionScope ):base(tokens) {
+		_actionScope = actionScope;
 	}
 
 	#endregion

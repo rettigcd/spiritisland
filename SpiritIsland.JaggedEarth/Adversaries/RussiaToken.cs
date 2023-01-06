@@ -46,10 +46,10 @@ class RussiaToken : BaseModToken, IHandleTokenAdded, IHandleRemovingToken {
 		if(args.Token == TokenType.Blight
 			&& args.Reason == AddReason.Ravage
 		) {
-			_receivedRavageBlight.Add( args.Space.Space.Board );// log
+			_receivedRavageBlight.Add( args.AddedTo.Space.Board );// log
 
-			if( args.Space.Beasts.Any ) {
-				await args.Space.Beasts.Bind( args.Action ).Destroy( 1 );
+			if( args.AddedTo.Beasts.Any ) {
+				await args.AddedTo.Beasts.Bind( args.ActionScope ).Destroy( 1 );
 				_beastsDestroyed++;
 			}
 		}
@@ -62,16 +62,16 @@ class RussiaToken : BaseModToken, IHandleTokenAdded, IHandleRemovingToken {
 			&& args.Token.Class == Invader.Explorer     // Is explorer
 			&& args.Reason == RemoveReason.Destroyed   // destroying
 			&& args.Space[TokenType.Isolate] == 0 // not isolated
-			&& !args.UnitOfWork.ContainsKey( key ) // first time
-			&& 0 < (pushOptions = args.Space.Adjacent.Where( ss => args.UnitOfWork.TerrainMapper.IsInPlay( ss ) && ss[TokenType.Isolate] == 0 ).ToArray()).Length
+			&& !args.ActionScope.ContainsKey( key ) // first time
+			&& 0 < (pushOptions = args.Space.Adjacent.Where( ss => args.ActionScope.TerrainMapper.IsInPlay( ss ) && ss[TokenType.Isolate] == 0 ).ToArray()).Length
 		) {
 			--args.Count; // destroy one fewer
-			args.UnitOfWork[key] = true; // don't save any more
+			args.ActionScope[key] = true; // don't save any more
 
 			GameState gs = args.Space.AccessGameState();
-			Spirit spirit = args.UnitOfWork.Owner ?? FindSpiritForBoard( gs, args.Space.Space.Board );
+			Spirit spirit = args.ActionScope.Owner ?? FindSpiritForBoard( gs, args.Space.Space.Board );
 			Space destination = await spirit.Gateway.Decision( Select.Space.PushToken( args.Token, args.Space.Space, pushOptions, Present.Always ) );
-			await args.Space.MoveTo( args.Token, destination, args.UnitOfWork );
+			await args.Space.MoveTo( args.Token, destination, args.ActionScope );
 		}
 	}
 

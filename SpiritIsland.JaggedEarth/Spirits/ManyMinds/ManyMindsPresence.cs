@@ -9,8 +9,8 @@ class ManyMindsPresence : SpiritPresence {
 		gs.AddToAllActiveSpaces( new TokenRemovedHandler( "ManyMindsPresence", TokenRemoved, true ) );
 	}
 
-	public override async Task PlaceOn( SpaceState space, UnitOfWork actionId ) {
-		await base.PlaceOn( space, actionId );
+	public override async Task PlaceOn( SpaceState space, UnitOfWork actionScope ) {
+		await base.PlaceOn( space, actionScope );
 		// if created sacred site, create virtual beast
 		if(CountOn( space ) == 2)
 			space.Adjust(TokenType.Beast,1); // virtual so don't trigger an event.
@@ -33,11 +33,11 @@ class ManyMindsPresence : SpiritPresence {
 			&& await Self.Gateway.Decision( Select.DeployedPresence.Gather( "Move 2 presence with Beast?", args.AddedTo.Space, new []{ args.RemovedFrom } ) ) == null
 		) return; // not moving presence
 
-		await Move2Presence( args.GameState, args );
+		await Move2Presence( args.AddedTo.AccessGameState(), args );
 
-		await SacredSiteAtSouce_RestoreVirtualBeast( args, srcBeasts.Bind(args.UnitOfWork) );
+		await SacredSiteAtSouce_RestoreVirtualBeast( args, srcBeasts.Bind(args.ActionScope) );
 
-		await AddedVirtualBeastAtDestination_LimitTo1( args.GameState, args );
+		await AddedVirtualBeastAtDestination_LimitTo1( args.AddedTo.AccessGameState(), args );
 
 	}
 
@@ -45,7 +45,7 @@ class ManyMindsPresence : SpiritPresence {
 		// Move 2 of our presence
 		for(int i = 0; i < 2; ++i) {
 			await base.RemoveFrom_NoCheck( gs.Tokens[args.RemovedFrom.Space] ); // using base because we don't want to trigger anything
-			await base.PlaceOn( args.AddedTo, args.UnitOfWork );
+			await base.PlaceOn( args.AddedTo, args.ActionScope );
 		}
 	}
 
@@ -69,8 +69,8 @@ class ManyMindsPresence : SpiritPresence {
 
 	async Task TokenDestroyed(ITokenRemovedArgs args) {
 		if(args.Token.Class != TokenType.Beast) return; // not a beast
-		if(this.CountOn(args.Space)<2) return; // not our Sacred Site
-		if(args.Space.Beasts.Count == 0){ // no more beasts
+		if(this.CountOn(args.RemovedFrom)<2) return; // not our Sacred Site
+		if(args.RemovedFrom.Beasts.Count == 0){ // no more beasts
 			// Destroying the sacred-site beast, destroyes the sacred site
 
 			// the only time we care about what destroyed the presence is for Vengencence as a burning plague.
@@ -78,7 +78,7 @@ class ManyMindsPresence : SpiritPresence {
 			var dontCareActionType = DestoryPresenceCause.None;
 
 			// destroy sacred site
-			await base.Destroy(args.Space.Space, args.Space.AccessGameState(), 2, dontCareActionType, args.Action);
+			await base.Destroy(args.RemovedFrom.Space, args.RemovedFrom.AccessGameState(), 2, dontCareActionType, args.ActionScope);
 		}
 	}
 

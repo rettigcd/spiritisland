@@ -2,8 +2,18 @@
 
 public class AddingTokenArgs {
 
+	public AddingTokenArgs(SpaceState spaceState, AddReason addReason, UnitOfWork actionScope ) {
+		Space = spaceState;
+		Reason = addReason;
+		ActionScope = actionScope;
+	}
+
+	public SpaceState Space { get; }
+	public AddReason Reason { get; }
+	public UnitOfWork ActionScope { get; }
+
+	// Modifiable
 	public Token Token { get; set; }
-	public Space Space { get; set; }
 	public int Count {
 		get { return _count; }
 		set {
@@ -13,6 +23,4 @@ public class AddingTokenArgs {
 		}
 	}
 	int _count;
-	public AddReason Reason { get; set; }
-	public UnitOfWork ActionId { get; set; }
 }

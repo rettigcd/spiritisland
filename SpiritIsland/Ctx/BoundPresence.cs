@@ -85,21 +85,21 @@ public class BoundPresence : ReadOnlyBoundPresence {
 	#region constructor
 
 	public BoundPresence(SelfCtx ctx):base(ctx) { 
-		_actionId = ctx.ActionCtx;
+		_actionScope = ctx.ActionScope;
 	}
-	public BoundPresence( Spirit self, GameState gs, TerrainMapper terrainMapper, UnitOfWork actionId ) : base( self, gs, terrainMapper ) {
-		_actionId = actionId;
+	public BoundPresence( Spirit self, GameState gs, TerrainMapper terrainMapper, UnitOfWork actionScope ) : base( self, gs, terrainMapper ) {
+		_actionScope = actionScope;
 	}
 
-	readonly protected UnitOfWork _actionId;
+	readonly protected UnitOfWork _actionScope;
 
 	#endregion
 
-	public Task Move( Space from, Space to ) => _inner.Move(from,to, _gameState, _actionId );
-	public Task PlaceOn( Space space ) => _inner.PlaceOn( _gameState.Tokens[space], _actionId );
-	public Task Destroy( Space space, int count, DestoryPresenceCause actionType ) => _inner.Destroy( space, _gameState, count, actionType, _actionId );
+	public Task Move( Space from, Space to ) => _inner.Move(from,to, _gameState, _actionScope );
+	public Task PlaceOn( Space space ) => _inner.PlaceOn( _gameState.Tokens[space], _actionScope );
+	public Task Destroy( Space space, int count, DestoryPresenceCause actionType ) => _inner.Destroy( space, _gameState, count, actionType, _actionScope );
 	public Task RemoveFrom( Space space ) => _inner.RemoveFrom( space, _gameState ); // Generally used for Replacing, !!! should have an Action ID
-	public Task Place( IOption from, Space to) => _inner.Place(from,to,_gameState,_actionId);
+	public Task Place( IOption from, Space to) => _inner.Place(from,to,_gameState,_actionScope);
 
 
 		// !!! should have an action ID
@@ -120,7 +120,7 @@ public class BoundPresence : ReadOnlyBoundPresence {
 	public async Task<(IOption,Space)> PlaceWithin( TargetCriteria targetCriteria, bool forPower ) {
 		IOption from = await SelectSource();
 		Space to = await SelectDestinationWithinRange( targetCriteria, forPower );
-		await _self.Presence.Place( from, to, _gameState, _actionId );
+		await _self.Presence.Place( from, to, _gameState, _actionScope );
 		return(from, to);
 	}
 
@@ -130,7 +130,7 @@ public class BoundPresence : ReadOnlyBoundPresence {
 	public async Task Place( params Space[] destinationOptions ) {
 		var from = await SelectSource();
 		var to = await _self.Gateway.Decision( Select.Space.ToPlacePresence( destinationOptions, Present.Always, _inner.Token ) );
-		await _self.Presence.Place( from, to, _gameState, _actionId );
+		await _self.Presence.Place( from, to, _gameState, _actionScope );
 	}
 
 	/// !!! should Have an Action ID

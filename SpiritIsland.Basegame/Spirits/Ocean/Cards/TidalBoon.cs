@@ -8,7 +8,7 @@ public class TidalBoon {
 	static public async Task Act( TargetSpiritCtx ctx ) {
 
 		// If dahan are pushed to your ocean, you may move them to any costal land instead of drowning them.
-		Ocean.EnableSavingDahan(ctx.ActionCtx);
+		Ocean.EnableSavingDahan(ctx.ActionScope);
 
 		// target spirit gains 2 energy 
 		ctx.Other.Energy += 2;

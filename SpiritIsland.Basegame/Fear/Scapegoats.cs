@@ -9,14 +9,14 @@ public class Scapegoats : FearCardBase, IFearCard {
 	public async Task Level1( GameCtx ctx ) {
 		var gs = ctx.GameState;
 		foreach(var space in gs.AllActiveSpaces)
-			await Destroy_1ExplorerPerTown( gs.Invaders.On( space.Space, ctx.UnitOfWork ) );
+			await Destroy_1ExplorerPerTown( gs.Invaders.On( space.Space, ctx.ActionScope ) );
 	}
 
 	[FearLevel( 2, "Each Town destroys 1 Explorer in its land. Each City destroys 2 Explorer in its land." )]
 	public async Task Level2( GameCtx ctx ) {
 		var gs = ctx.GameState;
 		foreach(var space in gs.AllActiveSpaces) {
-			var grp = gs.Invaders.On( space.Space, ctx.UnitOfWork );
+			var grp = gs.Invaders.On( space.Space, ctx.ActionScope );
 			await Destroy_1ExplorerPerTownAnd2ExplorersPerCity( grp );
 		}
 	}
@@ -25,7 +25,7 @@ public class Scapegoats : FearCardBase, IFearCard {
 	public async Task Level3( GameCtx ctx ) {
 		var gs = ctx.GameState;
 		foreach(var space in gs.AllActiveSpaces) {
-			var grp = gs.Invaders.On( space.Space, ctx.UnitOfWork );
+			var grp = gs.Invaders.On( space.Space, ctx.ActionScope );
 			await grp.DestroyNOfClass( int.MaxValue, Invader.Explorer );
 			await EachCityDestroys1Town( grp );
 		

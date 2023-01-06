@@ -24,7 +24,7 @@ public class UntendedLandCrumbles : BlightCardBase {
 			int remaining = requiredEnergy;
 			int spiritIndex = 0;
 			var spirits = ctx.GameState.Spirits;
-			var actionId = ctx.ActionCtx;
+			var actionScope = ctx.ActionScope;
 			while(remaining > 0) {
 				var spirit = spirits[(spiritIndex++)%spirits.Length];
 				var contribution = await spirit.SelectNumber("Pay energy towards remaining "+remaining
@@ -45,7 +45,7 @@ public class UntendedLandCrumbles : BlightCardBase {
 				.ToArray();
 			if(spiritOptions.Length==0) return;
 			var spirit = await ctx.Decision(new Select.Spirit("Destroy 1 presence",spiritOptions));
-			await spirit.BindSelf( ctx.GameState, ctx.ActionCtx )
+			await spirit.BindSelf( ctx.GameState, ctx.ActionScope )
 				.Presence
 				.DestroyOneFromAnywhere(DestoryPresenceCause.BlightedIsland);
 		}

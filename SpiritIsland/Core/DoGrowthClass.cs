@@ -47,8 +47,8 @@ public abstract partial class Spirit {
 			inst.MarkAsUsed( option );
 
 			// Resolve Growth Option
-			await using var uow = gameState.StartAction( ActionCategory.Spirit_Growth );
-			var ctx = spirit.BindSelf( gameState, uow );
+			await using var actionScope = gameState.StartAction( ActionCategory.Spirit_Growth );
+			var ctx = spirit.BindSelf( gameState, actionScope );
 
 			// Auto run the auto-runs.
 			foreach(var autoAction in option.AutoRuns)

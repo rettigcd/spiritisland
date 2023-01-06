@@ -62,7 +62,7 @@ public abstract partial class Spirit : IOption {
 		return false;
 	}
 
-	public virtual async Task<IDrawableInnateOption> SelectInnateToActivate( IEnumerable<IDrawableInnateOption> innateOptions, UnitOfWork uow ) {
+	public virtual async Task<IDrawableInnateOption> SelectInnateToActivate( IEnumerable<IDrawableInnateOption> innateOptions, UnitOfWork actinScope ) {
 		IDrawableInnateOption match = null;
 		foreach(var option in innateOptions.OrderBy( o => o.Elements.Total ))
 			if(await HasElements( option.Elements ))
@@ -144,14 +144,14 @@ public abstract partial class Spirit : IOption {
 			_ => throw new InvalidOperationException(),
 		};
 
-		await using var unitOfWork = gs.StartAction( category );
-		unitOfWork.Owner = this;
+		await using var actionScope = gs.StartAction( category );
+		actionScope.Owner = this;
 
 		SelfCtx ctx = phase switch {
 			Phase.Init or
-			Phase.Growth => BindSelf( gs, unitOfWork ),
+			Phase.Growth => BindSelf( gs, actionScope ),
 			Phase.Fast or 
-			Phase.Slow => BindMyPowers( gs, unitOfWork ),
+			Phase.Slow => BindMyPowers( gs, actionScope ),
 			_ => throw new InvalidOperationException(),
 		};
 
@@ -341,15 +341,15 @@ public abstract partial class Spirit : IOption {
 	protected abstract void InitializeInternal( Board board, GameState gameState );
 
 	#region Bind helpers
-	public SelfCtx BindSelf( GameState gameState, UnitOfWork unitOfWork ) => BindDefault( this, gameState, unitOfWork );
-	public SelfCtx BindMyPowers( GameState gameState, UnitOfWork unitOfWork ) => BindMyPowers( this, gameState, unitOfWork );
+	public SelfCtx BindSelf( GameState gameState, UnitOfWork actionScope ) => BindDefault( this, gameState, actionScope );
+	public SelfCtx BindMyPowers( GameState gameState, UnitOfWork actionScope ) => BindMyPowers( this, gameState, actionScope );
 	#endregion Bind helpers
 
-	public virtual SelfCtx BindDefault( Spirit spirit, GameState gameState, UnitOfWork unitOfWork )
-		=> new SelfCtx( spirit, gameState, unitOfWork );
+	public virtual SelfCtx BindDefault( Spirit spirit, GameState gameState, UnitOfWork actionScope )
+		=> new SelfCtx( spirit, gameState, actionScope );
 
-	public virtual SelfCtx BindMyPowers( Spirit spirit, GameState gameState, UnitOfWork unitOfWork )
-		=> new SelfCtx( spirit, gameState, unitOfWork );
+	public virtual SelfCtx BindMyPowers( Spirit spirit, GameState gameState, UnitOfWork actionScope )
+		=> new SelfCtx( spirit, gameState, actionScope );
 
 	Task On_TimePassed(GameState _ ) {
 		// reset cards / powers
@@ -403,7 +403,6 @@ public abstract partial class Spirit : IOption {
 
 	// Used by Flame's Fury to detect new actions
 	// Used by Observe The Ever-Changing World to distinguish between actions
-//	public Guid CurrentActionId; // !!! this might not work when we go to multi-player
 
 	#region Play Cards
 

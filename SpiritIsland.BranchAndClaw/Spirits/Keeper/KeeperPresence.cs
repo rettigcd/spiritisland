@@ -9,15 +9,15 @@ public partial class Keeper {
 				new PresenceTrack( Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4, Track.Card5Reclaim1 )
 			) { }
 
-		public override async Task Place( IOption from, Space to, GameState gs, UnitOfWork actionId ) {
+		public override async Task Place( IOption from, Space to, GameState gs, UnitOfWork actionScope ) {
 			bool wasSacredSite = SacredSites( gs, gs.Island.Terrain ).Contains( to );
-			await base.Place( from, to, gs, actionId );
+			await base.Place( from, to, gs, actionScope );
 			bool createdSacredSite = !wasSacredSite && SacredSites( gs, gs.Island.Terrain ).Contains( to );
 
 			if( createdSacredSite && gs.DahanOn( to ).Any) {
-				var selfCtx = actionId.Category == ActionCategory.Spirit_Power
-					? Self.BindMyPowers( gs, actionId )
-					: Self.BindSelf( gs, actionId );
+				var selfCtx = actionScope.Category == ActionCategory.Spirit_Power
+					? Self.BindMyPowers( gs, actionScope )
+					: Self.BindSelf( gs, actionScope );
 				await selfCtx.Target( to ).PushDahan( int.MaxValue );
 			}
 		}

@@ -27,16 +27,16 @@ public class DahanSaver {
 
 		bool shouldReduce = args.Token.Class == TokenType.Dahan // Dahan
 			&& (args.Reason == RemoveReason.Destroyed) // Destroyed
-			&& (byAction.Count < maxActionCount || byAction.ContainsKey( args.UnitOfWork ));              // can effect more action OR already added
+			&& (byAction.Count < maxActionCount || byAction.ContainsKey( args.ActionScope ));              // can effect more action OR already added
 
 		if(shouldReduce) {
 			// If we haven't saved our allotment
-			int previous = byAction[args.UnitOfWork];
+			int previous = byAction[args.ActionScope];
 			if(previous < maxPerAction) {  // // remaining adjustments for this action
 				// save some dahan
 				int adjustment = Math.Min( maxPerAction - previous, args.Count );
 				args.Count -= adjustment;
-				byAction[args.UnitOfWork] += adjustment;
+				byAction[args.ActionScope] += adjustment;
 				// restore to full health
 				var savedToken = (HealthToken)args.Token;
 				space.Adjust( args.Token, -adjustment );

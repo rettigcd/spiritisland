@@ -4,9 +4,25 @@
 /// Used for events / fear that say "for each board"
 /// </summary>
 public class BoardCtx : SelfCtx {
+
+	static public Spirit FindSpirit( GameState gameState, int boardIndex)
+		=> gameState.Spirits[boardIndex < gameState.Spirits.Length ? boardIndex : 0];
+
+	static public Spirit FindSpirit( GameState gameState, Board board ) {
+		int index = 0;
+		foreach(var b in gameState.Island.Boards) {
+			if(b == board) {
+				return gameState.Spirits[index];
+			}
+			++index;
+		}
+		return gameState.Spirits[0];
+	}
+
 	public Board Board { get; }
-	public BoardCtx( Spirit spirit, GameState gs, Board board, UnitOfWork action )
-		:base(spirit, gs, action ) {
+
+	public BoardCtx( Spirit spirit, GameState gs, Board board, UnitOfWork actionScope )
+		:base(spirit, gs, actionScope ) {
 		Board = board;
 	}
 

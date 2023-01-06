@@ -18,11 +18,11 @@ public class StubbornSolidity {
 		// Freeze future dahn moved into this land. 
 		ctx.GameState.Tokens.TokenMoved.ForRound.Add( args=> {
 			if(args.TokenAdded.Class == TokenType.Dahan && args.AddedTo == ctx.Tokens && args.TokenAdded is HealthToken ht)
-				args.AddedTo.ReplaceWith( ht, ht.SwitchClass( FrozenDahan ), args.Count );
+				args.AddedTo.ReplaceNWith( args.Count, ht, ht.SwitchClass( FrozenDahan ) );
 		} );
 		ctx.Tokens.Adjust( new TokenAddedHandler(Name, args => {
 			if(args.Token.Class == TokenType.Dahan && args.Token is HealthToken ht)
-				args.Space.ReplaceWith( ht, ht.SwitchClass( FrozenDahan ), args.Count );
+				args.AddedTo.ReplaceNWith( args.Count, ht, ht.SwitchClass( FrozenDahan ) );
 		} ), 1 );
 
 		// Restore at end of round - !!! Could instead create a custom token that cleans up its own mess.

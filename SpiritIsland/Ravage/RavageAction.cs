@@ -172,10 +172,8 @@ public class RavageAction {
 					// use up damage
 					damageToApply -= tokensToDestroy * dahanToken.RemainingHealth;
 
-					if(removed != null) {
-						@event.dahanDestroyed += removed;
-						defenders[dahanToken] -= removed;
-					}
+					@event.dahanDestroyed += removed;
+					defenders[dahanToken] -= removed;
 				}
 				// damage real tokens
 

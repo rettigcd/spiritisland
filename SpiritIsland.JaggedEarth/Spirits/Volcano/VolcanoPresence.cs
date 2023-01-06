@@ -14,19 +14,19 @@ class VolcanoPresence : SpiritPresence {
 		readonly VolcanoLoomingHigh spirit;
 		public DestroyPresence( VolcanoLoomingHigh spirit ) { this.spirit = spirit;}
 
-		public override async Task DestroyPresenceApi( SpiritPresence presence, Space space, GameState gs, int count,DestoryPresenceCause cause, UnitOfWork unitOfWork ) {
+		public override async Task DestroyPresenceApi( SpiritPresence presence, Space space, GameState gs, int count,DestoryPresenceCause cause, UnitOfWork actionScope ) {
 			
-			if( GetDontDesroyPresenceOn( unitOfWork, space ) ) return;
+			if( GetDontDesroyPresenceOn( actionScope, space ) ) return;
 
-			await base.DestroyPresenceApi( presence, space, gs, count, cause, unitOfWork );
+			await base.DestroyPresenceApi( presence, space, gs, count, cause, actionScope );
 
-			AddPresenceDestroyedThisAction( unitOfWork, count );
+			AddPresenceDestroyedThisAction( actionScope, count );
 
 			// Destroying Volcano presence, causes damage to Dahan and invaders
 			// Create a TargetSpaceCtx to include Bandlands damage also.
-			var selfCtx = unitOfWork.Category == ActionCategory.Spirit_Power // ??? is this needed => && unitOfWork.Owner == spirit
-				? spirit.BindMyPowers( gs, unitOfWork )
-				: spirit.BindSelf( gs, unitOfWork );
+			var selfCtx = actionScope.Category == ActionCategory.Spirit_Power // ??? is this needed => && actionScope.Owner == spirit
+				? spirit.BindMyPowers( gs, actionScope )
+				: spirit.BindSelf( gs, actionScope );
 			var ctx = selfCtx.Target(space);
 
 			await ctx.DamageInvaders( count );
@@ -38,15 +38,15 @@ class VolcanoPresence : SpiritPresence {
 		}
 	}
 	const string DontDestroyPresenceOn = "Don't Destroy Presence On Space";
-	static public void SetDontDestroyPresenceOn( UnitOfWork unitOfWork, Space space )
-		=> unitOfWork[DontDestroyPresenceOn] = space;
-	static bool GetDontDesroyPresenceOn( UnitOfWork unitOfWork, Space space )
-		=> unitOfWork.ContainsKey(DontDestroyPresenceOn) && space == (Space)unitOfWork[DontDestroyPresenceOn];
+	static public void SetDontDestroyPresenceOn( UnitOfWork actionScope, Space space )
+		=> actionScope[DontDestroyPresenceOn] = space;
+	static bool GetDontDesroyPresenceOn( UnitOfWork actionScope, Space space )
+		=> actionScope.ContainsKey(DontDestroyPresenceOn) && space == (Space)actionScope[DontDestroyPresenceOn];
 
 	const string DestroyedPresenceCount = "DestroyedPresenceCount";
-	static public int GetPresenceDestroyedThisAction( UnitOfWork unitOfWork ) 
-		=> unitOfWork.ContainsKey( DestroyedPresenceCount ) ? (int)unitOfWork[DestroyedPresenceCount] : 0;
-	static public void AddPresenceDestroyedThisAction( UnitOfWork unitOfWork, int value ) 
-		=> unitOfWork[DestroyedPresenceCount] = GetPresenceDestroyedThisAction(unitOfWork) + value;
+	static public int GetPresenceDestroyedThisAction( UnitOfWork actionScope ) 
+		=> actionScope.ContainsKey( DestroyedPresenceCount ) ? (int)actionScope[DestroyedPresenceCount] : 0;
+	static public void AddPresenceDestroyedThisAction( UnitOfWork actionScope, int value ) 
+		=> actionScope[DestroyedPresenceCount] = GetPresenceDestroyedThisAction(actionScope) + value;
 
 }

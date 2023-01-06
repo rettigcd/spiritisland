@@ -3,30 +3,30 @@
 [Trait("SpecialRule","ToDreamAThousandDeaths")]
 public class ToDreamAThousandDeaths_Tests {
 
-	readonly Board board;
-	readonly GameState gs;
-	readonly TargetSpaceCtx ctx;
-	readonly Spirit spirit;
-	readonly VirtualUser User;
-	readonly UnitOfWork unitOfWork;
+	readonly Board _board;
+	readonly GameState _gameState;
+	readonly TargetSpaceCtx _ctx;
+	readonly Spirit _spirit;
+	readonly VirtualUser _user;
+	readonly UnitOfWork _actionScope;
 
 	public ToDreamAThousandDeaths_Tests(){
-		spirit = new Bringer();
-		User = new VirtualUser(spirit);
-		board = Board.BuildBoardA();
-		gs = new GameState( spirit, board );
-		gs.Initialize();
-		unitOfWork = gs.StartAction( ActionCategory.Spirit_Power );
-		ctx = MakeFreshPowerCtx();
+		_spirit = new Bringer();
+		_user = new VirtualUser(_spirit);
+		_board = Board.BuildBoardA();
+		_gameState = new GameState( _spirit, _board );
+		_gameState.Initialize();
+		_actionScope = _gameState.StartAction( ActionCategory.Spirit_Power );
+		_ctx = MakeFreshPowerCtx();
 
 		// Disable destroying presence
-		ctx.GameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
+		_ctx.GameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
 
 	}
 
-	TargetSpaceCtx MakeFreshPowerCtx(UnitOfWork uow=null) {
-		var ctx = spirit.BindMyPowers(gs, uow ?? unitOfWork ); // This is correct usage.
-		return ctx.Target( board[5] );
+	TargetSpaceCtx MakeFreshPowerCtx(UnitOfWork actionScope=null) {
+		var ctx = _spirit.BindMyPowers(_gameState, actionScope ?? _actionScope ); // This is correct usage.
+		return ctx.Target( _board[5] );
 	}
 
 	// 1: Raging Storm - 1 damage to each invader (slow)
@@ -43,25 +43,25 @@ public class ToDreamAThousandDeaths_Tests {
 		const int count = 2;
 
 		// Given: 2 explorers
-		ctx.Tokens.AdjustDefault(Invader.Explorer, count );
+		_ctx.Tokens.AdjustDefault(Invader.Explorer, count );
 
 		// When: causing 1 damage to each invader
 		switch(method) {
-			case "damage": _ = OneDamageToEachAsync( ctx ); break;
-			case "destroy": _ = DestroyAllExplorersAndTownsAsync( ctx ); break;
+			case "damage": _ = OneDamageToEachAsync( _ctx ); break;
+			case "destroy": _ = DestroyAllExplorersAndTownsAsync( _ctx ); break;
 		}
 
 		// Then: dream-death allows User pushes them
 		for(int i = 0; i < count; ++i)
-			User.PushSelectedTokenTo( "E@1", "A1,A4,A6,[A7],A8" );
+			_user.PushSelectedTokenTo( "E@1", "A1,A4,A6,[A7],A8" );
 
 		// And: 0-fear
 		Assert_GeneratedFear( 0 );
 
 		//  and: explorer on destination
-		ctx.GameState.Assert_DreamingInvaders( board[7], $"{count}E@1" );
+		_ctx.GameState.Assert_DreamingInvaders( _board[7], $"{count}E@1" );
 		//  and: not at origin
-		ctx.GameState.Assert_Invaders( board[5], $"" );
+		_ctx.GameState.Assert_Invaders( _board[5], $"" );
 	}
 
 	[Fact]
@@ -71,22 +71,22 @@ public class ToDreamAThousandDeaths_Tests {
 		// pushes town
 
 		// Given: 2 town
-		ctx.Tokens.AdjustDefault( Invader.Town, count );
+		_ctx.Tokens.AdjustDefault( Invader.Town, count );
 
 		// When: destroying towns
-		_ = DestroyAllExplorersAndTownsAsync( ctx );
+		_ = DestroyAllExplorersAndTownsAsync( _ctx );
 
 		// Then: dream-death allows User pushes them
 		for(int i = 0; i < count; ++i)
-			User.PushSelectedTokenTo( "T@2","A1,A4,A6,[A7],A8" );
+			_user.PushSelectedTokenTo( "T@2","A1,A4,A6,[A7],A8" );
 
 		// And:4-fear
 		Assert_GeneratedFear( count * 2 );
 
 		//  and: town on destination
-		ctx.GameState.Assert_DreamingInvaders( board[7], $"{count}T@2" );
+		_ctx.GameState.Assert_DreamingInvaders( _board[7], $"{count}T@2" );
 		//  and: not at origin
-		ctx.GameState.Assert_Invaders( board[5], $"" );
+		_ctx.GameState.Assert_Invaders( _board[5], $"" );
 
 	}
 
@@ -94,7 +94,7 @@ public class ToDreamAThousandDeaths_Tests {
 	public void DreamDamageResetsEachPower() {
 
 		// Given: 2 explorers
-		ctx.Tokens.AdjustDefault( Invader.City, 1 );
+		_ctx.Tokens.AdjustDefault( Invader.City, 1 );
 
 		// When: 3 separate actinos cause 1 damage
 		async Task Run3Async() {
@@ -104,40 +104,40 @@ public class ToDreamAThousandDeaths_Tests {
 		}
 		_ = Run3Async();
 
-		User.Assert_Done();
+		_user.Assert_Done();
 
 		// And: 0-fear
 		Assert_GeneratedFear( 0 ); // city never destroyed
 	}
 
 	async Task Run_OneDamageToEachAsync() {
-		await using var uow = this.gs.StartAction( ActionCategory.Spirit_Power );
-		await OneDamageToEachAsync( MakeFreshPowerCtx(uow) );
+		await using var actionScope = this._gameState.StartAction( ActionCategory.Spirit_Power );
+		await OneDamageToEachAsync( MakeFreshPowerCtx(actionScope) );
 	}
 
 	[Fact]
 	public async Task ConsecutivePowersCanDreamKillMultipletimes() {
 
 		// Given: 1 very-damaged city
-		ctx.Tokens.Adjust( StdTokens.City1, 1 );
+		_ctx.Tokens.Adjust( StdTokens.City1, 1 );
 
 		// When: 3 separate actinos cause 1 damage
 		// EACH power gets a fresh ctx so INVADERS can reset
 		await Run_OneDamageToEachAsync();
 		await Run_OneDamageToEachAsync();
 		await Run_OneDamageToEachAsync();
-		User.Assert_Done();
+		_user.Assert_Done();
 
 		// And: 0-fear
 		Assert_GeneratedFear( 3*5 ); // city never destroyed
 		// City still there
-		ctx.Tokens[ StdTokens.City1 ].ShouldBe(1);
+		_ctx.Tokens[ StdTokens.City1 ].ShouldBe(1);
 	}
 
 	[Fact]
 	public void MaxKillOnce() {
 		// Given: 1 very-damaged city
-		ctx.Tokens.Adjust( StdTokens.City1, 1 );
+		_ctx.Tokens.Adjust( StdTokens.City1, 1 );
 
 		// When: doing 4 points of damage
 		async Task PlayCard() { try { await FourDamage( MakeFreshPowerCtx() ); } catch( Exception ex) {
@@ -145,18 +145,18 @@ public class ToDreamAThousandDeaths_Tests {
 		} }
 		_ = PlayCard();
 
-		User.SelectsDamageRecipient(4,"C@1");
+		_user.SelectsDamageRecipient(4,"C@1");
 
 		// And: 0-fear
 		Assert_GeneratedFear( 1 * 5 ); // city only destroyed once
 
 		// Dreaming City with partial damage still there
-		ctx.Tokens[ ToDreamAThousandDeaths.ToggleDreamer(StdTokens.City1) ].ShouldBe( 1 );
+		_ctx.Tokens[ ToDreamAThousandDeaths.ToggleDreamer(StdTokens.City1) ].ShouldBe( 1 );
 	}
 
 	void Assert_GeneratedFear( int expectedFearCount ) {
-		int actualGeneratedFear = ctx.GameState.Fear.EarnedFear
-			+ 4 * ctx.GameState.Fear.ActivatedCards.Count;
+		int actualGeneratedFear = _ctx.GameState.Fear.EarnedFear
+			+ 4 * _ctx.GameState.Fear.ActivatedCards.Count;
 		actualGeneratedFear.ShouldBe(expectedFearCount,"fear countis wrong");
 	}
 

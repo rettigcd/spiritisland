@@ -6,10 +6,10 @@ public class ToDreamAThousandDeaths : InvaderBinding {
 
 	#region static - restore invaders
 
-	static public void CleanupDreamDamage( UnitOfWork uow ) {
-		if(!uow.ContainsKey( SpacesWithDreamers )) return;
+	static public void CleanupDreamDamage( UnitOfWork actionScope ) {
+		if(!actionScope.ContainsKey( SpacesWithDreamers )) return;
 
-		foreach( var spaceState in (IEnumerable<SpaceState>)uow[SpacesWithDreamers]) {
+		foreach( var spaceState in (IEnumerable<SpaceState>)actionScope[SpacesWithDreamers]) {
 			//gs.Log( new LogDebug( $"Waking up: {dreamingInvaders.Select( i => i.SpaceAbreviation ).Join( "," )} on {spaceState.Space.Text}." ) );
 			RemoveDreamDamage( spaceState );
 			WakeUpDreamers( spaceState );
@@ -63,7 +63,7 @@ public class ToDreamAThousandDeaths : InvaderBinding {
 	#region constructor
 
 	public ToDreamAThousandDeaths( BringerSpaceCtx ctx )
-		: base( ctx.Tokens, ctx.ActionCtx ) {
+		: base( ctx.Tokens, ctx.ActionScope ) {
 		this.ctx = ctx;
 	}
 
@@ -112,7 +112,7 @@ public class ToDreamAThousandDeaths : InvaderBinding {
 	async Task PushDestroyedInvader( HealthToken invader ) {
 
 		var destination = await ctx.Decision( Select.Space.PushToken( invader, ctx.Space, ctx.Tokens.Adjacent.Where( ctx.TerrainMapper.IsInPlay ), Present.Always ) );
-		await ctx.Tokens.MoveTo( invader, destination, ctx.ActionCtx ); // there is no Push(Token), so this will have to do.
+		await ctx.Tokens.MoveTo( invader, destination, ctx.ActionScope ); // there is no Push(Token), so this will have to do.
 		RecordSpaceWithDreamers( ctx.GameState.Tokens[destination] );
 	}
 

@@ -56,8 +56,8 @@ public class ManyMindsMoveAsOne : Spirit {
 
 	}
 
-	public override SelfCtx BindMyPowers( Spirit spirit, GameState gameState, UnitOfWork unitOfWork ) 
-		=> new ManyMindsCtx( spirit, gameState, unitOfWork );
+	public override SelfCtx BindMyPowers( Spirit spirit, GameState gameState, UnitOfWork actionScope ) 
+		=> new ManyMindsCtx( spirit, gameState, actionScope );
 
 	public class ManyMindsCtx : SelfCtx {
 		public ManyMindsCtx(Spirit spirit, GameState gs, UnitOfWork action )

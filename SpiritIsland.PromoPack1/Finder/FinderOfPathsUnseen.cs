@@ -72,9 +72,9 @@ public class FinderOfPathsUnseen : Spirit {
 	);
 	async Task ResponsibilityToTheDead_Handler( ITokenRemovedArgs args ) {
 		const string AllReadyDestroyedSomePresence = "FinderAlreadyDestroyedPresence";
-		if(args.Action.ContainsKey( AllReadyDestroyedSomePresence )
+		if(args.ActionScope.ContainsKey( AllReadyDestroyedSomePresence )
 			// After one of your Actions
-			&& args.Action.Owner == this
+			&& args.ActionScope.Owner == this
 			// Destroys 1 or more
 			&& args.Reason == RemoveReason.Destroyed
 			// Dahan/Invaders,
@@ -87,13 +87,13 @@ public class FinderOfPathsUnseen : Spirit {
 			if(Energy > 0) --Energy; else ++preseneceToDestroy;
 
 			// Do presence destroy
-			var gameState = args.Space.AccessGameState();
-			var presence = new BoundPresence( this, gameState, gameState.Island.Terrain_ForPower, args.Action );
+			var gameState = args.RemovedFrom.AccessGameState();
+			var presence = new BoundPresence( this, gameState, gameState.Island.Terrain_ForPower, args.ActionScope );
 			while(preseneceToDestroy-- > 0)
 				await presence.DestroyOneFromAnywhere( DestoryPresenceCause.SpiritPower );
 
 			// only once per action
-			args.Action[AllReadyDestroyedSomePresence] = true;
+			args.ActionScope[AllReadyDestroyedSomePresence] = true;
 		}
 	}
 

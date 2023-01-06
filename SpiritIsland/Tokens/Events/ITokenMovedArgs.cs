@@ -1,8 +1,6 @@
 ﻿namespace SpiritIsland;
 
 public interface ITokenMovedArgs {
-	GameState GameState { get; }
-
 	int Count { get; }
 
 	Token TokenRemoved { get; }
@@ -11,6 +9,6 @@ public interface ITokenMovedArgs {
 	Token TokenAdded { get; }
 	SpaceState AddedTo { get; }
 
-	UnitOfWork UnitOfWork { get; }
+	UnitOfWork ActionScope { get; }
 }
 

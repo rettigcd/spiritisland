@@ -7,10 +7,10 @@ class LingeringPestilence : SpiritPresence.DefaultDestroyBehavior {
 		"When your presence is destroyed by anything except a Spirit action, add 1 disease where each destroyed presence was."
 	);
 
-	public override async Task DestroyPresenceApi( SpiritPresence presence, Space space, GameState gs, int count, DestoryPresenceCause actionType, UnitOfWork actionId ) {
+	public override async Task DestroyPresenceApi( SpiritPresence presence, Space space, GameState gs, int count, DestoryPresenceCause actionType, UnitOfWork actionScope ) {
 		if( actionType != DestoryPresenceCause.SpiritPower )
-			await gs.Tokens[space].Disease.Bind( actionId ).Add(1);
-		await base.DestroyPresenceApi(presence,space,gs,count,actionType,actionId);
+			await gs.Tokens[space].Disease.Bind( actionScope ).Add(1);
+		await base.DestroyPresenceApi(presence,space,gs,count,actionType,actionScope);
 	}
 
 }

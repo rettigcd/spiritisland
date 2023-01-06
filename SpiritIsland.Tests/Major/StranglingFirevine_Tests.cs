@@ -7,10 +7,10 @@ public class StranglingFirevine_Tests {
 		var fxt = new ConfigurableTestFixture();
 
 		// Track actions
-		HashSet<UnitOfWork> actionIds = new HashSet<UnitOfWork>();
-		fxt.GameState.AddToAllActiveSpaces(new TokenAddedHandler("loggin", x => actionIds.Add( x.Action ), true ) );
-		fxt.GameState.AddToAllActiveSpaces( new TokenRemovedHandler( "loggin", x => actionIds.Add( x.Action ), true ) );
-		fxt.GameState.Tokens.TokenMoved.ForGame.Add( x => actionIds.Add( x.UnitOfWork ) );
+		HashSet<UnitOfWork> actionScopes = new HashSet<UnitOfWork>();
+		fxt.GameState.AddToAllActiveSpaces(new TokenAddedHandler("loggin", x => actionScopes.Add( x.ActionScope ), true ) );
+		fxt.GameState.AddToAllActiveSpaces( new TokenRemovedHandler( "loggin", x => actionScopes.Add( x.ActionScope ), true ) );
+		fxt.GameState.Tokens.TokenMoved.ForGame.Add( x => actionScopes.Add( x.ActionScope ) );
 
 		// Given: has escalation elements (to make sure we test all parts of this card)
 		fxt.InitElements("2 fire,3 plant");
@@ -41,7 +41,7 @@ public class StranglingFirevine_Tests {
 		fxt.GameState.Tokens[space].Summary.ShouldBe("1W");
 
 		//  And: both destroys were in a single action
-		actionIds.Count.ShouldBe( 1 );
+		actionScopes.Count.ShouldBe( 1 );
 
 		//  Then: it is complete and nothing happens.
 		task.IsCompleted.ShouldBeTrue();

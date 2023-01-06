@@ -8,30 +8,21 @@ public class SelfCtx {
 
 	public Spirit Self { get; }
 	public GameState GameState { get; }
-	public TerrainMapper TerrainMapper => ActionCtx.TerrainMapper;
-	public UnitOfWork ActionCtx { get; }
+	public TerrainMapper TerrainMapper => ActionScope.TerrainMapper;
+	public UnitOfWork ActionScope { get; }
 
 	#region constructor
 
-	public SelfCtx( Spirit self, GameState gameState, UnitOfWork actionId ) {
-
-		// ! this bit checks if UnitOfWork and Terrain mapper is in sync
-		//if( gameState.Island.Terrain != gameState.Island.Terrain_ForPower) {
-		//	bool mapperIsForPower = mapper == gameState.Island.Terrain_ForPower;
-		//	bool uowIsForPower = actionId.Category == ActionCategory.Spirit_Power;
-		//	if( mapperIsForPower != uowIsForPower )	
-		//		throw new Exception("out of sync");
-		//}
-
+	public SelfCtx( Spirit self, GameState gameState, UnitOfWork actionScope ) {
 		Self = self;
 		GameState = gameState;
-		ActionCtx = actionId;
+		ActionScope = actionScope;
 	}
 
 	protected SelfCtx(SelfCtx src) {
 		Self = src.Self;
 		GameState = src.GameState;
-		ActionCtx = src.ActionCtx;
+		ActionScope = src.ActionScope;
 	}
 
 	#endregion constructor
@@ -49,7 +40,7 @@ public class SelfCtx {
 	/// Used for Gathering / Pushing (and other stuff)
 	/// </summary>
 	public Task Move(Token token, Space from, Space to )
-		=> Target(from).Tokens.MoveTo( token, to, ActionCtx );
+		=> Target(from).Tokens.MoveTo( token, to, ActionScope );
 
 	public Task<bool> YouHave( string elementString ) => Self.HasElements( ElementCounts.Parse(elementString) );
 
@@ -67,7 +58,7 @@ public class SelfCtx {
 
 	public TargetSpiritCtx TargetSpirit( Spirit spirit ) => new TargetSpiritCtx( this, spirit );
 
-	public SelfCtx NewSelf( Spirit spirit ) => spirit.BindSelf( GameState, ActionCtx );
+	public SelfCtx NewSelf( Spirit spirit ) => spirit.BindSelf( GameState, ActionScope );
 
 	// Visually, selects the [presence] icon
 	public async Task<TargetSpaceCtx> TargetDeployedPresence( string prompt ) {
@@ -150,7 +141,7 @@ public class SelfCtx {
 		var options = spaceCtx.Tokens.OfAnyClass(removables);
 		while(0<count && 0<options.Length) {
 			var tokenToRemove = await spaceCtx.Self.Gateway.Decision( Select.TokenFrom1Space.TokenToRemove(spaceCtx.Space, count, options, Present.Always) );
-			await spaceCtx.Tokens.Remove(tokenToRemove,1,ActionCtx);
+			await spaceCtx.Tokens.Remove(tokenToRemove,1,ActionScope);
 			options = spaceCtx.Tokens.OfAnyClass( removables ); // next
 			--count;
 		}

@@ -3,27 +3,27 @@
 public class GameCtx {
 
 	public readonly GameState GameState;
-	public readonly UnitOfWork UnitOfWork;
+	public readonly UnitOfWork ActionScope;
 
 	#region constructor
 
 	/// <summary> Caller is responsible for disposing of UnitOfWork </summary>
-	public GameCtx( GameState gs, UnitOfWork unitOfWork ) {
+	public GameCtx( GameState gs, UnitOfWork actionScope ) {
 		this.GameState = gs;
-		UnitOfWork = unitOfWork;
+		ActionScope = actionScope;
 	}
 
 	public GameCtx( GameState gs, ActionCategory cat ) {
 		// !!! Nothing that uses this is disposing of the UnitOfWork at the end  (France & Tests)
 		this.GameState = gs;
-		UnitOfWork = gs.StartAction( cat );
+		ActionScope = gs.StartAction( cat );
 	}
 
 	#endregion constructor
 
 	public IEnumerable<SelfCtx> Spirits {
 		get {
-			return this.GameState.Spirits.Select( s => s.BindSelf( GameState, UnitOfWork ) );
+			return this.GameState.Spirits.Select( s => s.BindSelf( GameState, ActionScope ) );
 		}
 	}
 
