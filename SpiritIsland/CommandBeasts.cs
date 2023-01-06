@@ -77,14 +77,10 @@ class CommandBeastAction : IActionFactory {
 public class TriggerCommandBeasts {
 
 	readonly CommandBeastAction cmdAction = new CommandBeastAction();
-	readonly GameState _gameState;
 
-	public TriggerCommandBeasts( GameState gameState ) {
-		_gameState = gameState;
-	}
-
-	public void QueueBeastCommand() {
-		_gameState.TimePasses_WholeGame += TimePasses_WholeGame;
+	public Task QueueBeastCommand( GameState gameState ) {
+		gameState.TimePasses_WholeGame += TimePasses_WholeGame;
+		return Task.CompletedTask;
 	}
 
 	Task TimePasses_WholeGame( GameState gameState ) {

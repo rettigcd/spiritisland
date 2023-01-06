@@ -121,7 +121,7 @@ public class GameBuilder {
 
 		var invaderCards = gameState.InvaderDeck.UnrevealedCards;
 		void InitBeastCommand( int stage ) {
-			var triggerBeasts = new TriggerCommandBeasts( gameState );
+			var triggerBeasts = new TriggerCommandBeasts();
 			for(int i = 0; i < invaderCards.Count; ++i) {
 				if(invaderCards[i].InvaderStage != stage) continue;
 				var card = (InvaderCard)invaderCards[i];

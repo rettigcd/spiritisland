@@ -311,7 +311,8 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 			await TimePasses_ThisRound.Pop()( this );
 
 		// Do the standard round-switch-over stuff.
-		TimePasses_WholeGame?.Invoke( this );
+		if(TimePasses_WholeGame != null)
+			await TimePasses_WholeGame.Invoke( this ); // can't use await and ?.Invoke together, => tries to await a null
 		++RoundNumber;
 	}
 

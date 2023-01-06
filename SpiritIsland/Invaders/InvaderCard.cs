@@ -13,12 +13,13 @@ public sealed class InvaderCard : IOption {
 
 	public bool Flipped { get; set; } // setting public so we can Rewind
 
-	public void Flip() { 
+	public async Task Flip( GameState gameState ) { 
 		Flipped = true;
-		CardFlipped?.Invoke();
+		if( CardFlipped != null )
+			await CardFlipped.Invoke( gameState ); // await CardFlipped.InvokeInSeries( gameState );
 	}
 
-	public event Action CardFlipped;
+	public event Func<GameState,Task> CardFlipped;
 
 	public bool HoldBack { get; set; } = false;
 	public bool Skip { get; set; } = false;
