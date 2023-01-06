@@ -65,7 +65,7 @@ public class FireStorm {
 		// Destroy all invaders and Beasts
 		var beasts = spaceCtx.Beasts;
 		await beasts.Destroy( beasts.Count );
-		await spaceCtx.Invaders.DestroyAny(int.MaxValue,Invader.Explorer,Invader.Town,Invader.City);
+		await spaceCtx.Invaders.DestroyNOfAnyClass(int.MaxValue,Invader.Explorer,Invader.Town,Invader.City);
 
 		// Add 1 blight
 		await ctx.AddBlight(1);

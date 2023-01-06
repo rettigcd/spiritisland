@@ -60,7 +60,7 @@ class RussiaToken : BaseModToken, IHandleTokenAdded, IHandleRemovingToken {
 		SpaceState[] pushOptions;
 		if(HasASenseOfPendingDisaster
 			&& args.Token.Class == Invader.Explorer     // Is explorer
-			&& args.Reason.IsOneOf( RemoveReason.DestroyedInBattle, RemoveReason.Destroyed ) // destroying
+			&& args.Reason == RemoveReason.Destroyed   // destroying
 			&& args.Space[TokenType.Isolate] == 0 // not isolated
 			&& !args.UnitOfWork.ContainsKey( key ) // first time
 			&& 0 < (pushOptions = args.Space.Adjacent.Where( ss => args.UnitOfWork.TerrainMapper.IsInPlay( ss ) && ss[TokenType.Isolate] == 0 ).ToArray()).Length

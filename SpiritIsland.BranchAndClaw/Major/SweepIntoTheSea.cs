@@ -14,7 +14,7 @@ public partial class SweepIntoTheSea {
 	static async Task DoPower( TargetSpaceCtx ctx ) {
 		await ctx.SelectActionOption(
 			new SpaceAction( "Push explorers and towns toward nearest ocean", PushExplorersAndTownsTowardsOcean ),
-			new SpaceAction( "Destroy all explorers and towns", ctx => ctx.Invaders.DestroyAny( int.MaxValue, Invader.Explorer, Invader.Town ) ).Matches( x => x.IsCoastal )
+			new SpaceAction( "Destroy all explorers and towns", ctx => ctx.Invaders.DestroyAll( Invader.Explorer, Invader.Town ) ).Matches( x => x.IsCoastal )
 		);
 	}
 

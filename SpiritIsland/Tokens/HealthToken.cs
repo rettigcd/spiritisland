@@ -41,6 +41,27 @@ public class HealthToken : Token, IEquatable<HealthToken> {
 
 	public bool IsDestroyed => FullHealth <= FullDamage;
 
+	public virtual async Task<int> Destroy( SpaceState tokens, int count, UnitOfWork unitOfWork ) {
+		count = Math.Min(count, tokens[this]);
+		await tokens.Remove(this,count,unitOfWork, RemoveReason.Destroyed);
+		tokens.AccessGameState().Fear.AddDirect( new FearArgs( this.Class.FearGeneratedWhenDestroyed * count ) {
+			FromDestroyedInvaders = true, // this is the destruction that Dread Apparitions ignores.
+			space = tokens.Space
+		} );
+		return count;
+	}
+
+	public virtual async Task<int> DestroyAll( SpaceState tokens, UnitOfWork unitOfWork ) {
+		int count = tokens[this];
+		await tokens.Remove( this, count, unitOfWork, RemoveReason.Destroyed );
+		tokens.AccessGameState().Fear.AddDirect( new FearArgs( this.Class.FearGeneratedWhenDestroyed * count ) {
+			FromDestroyedInvaders = true, // this is the destruction that Dread Apparitions ignores.
+			space = tokens.Space
+		} );
+		return count;
+	}
+
+
 	#region Token mutation generators
 
 	public HealthToken HavingStrife(int strifeCount) {

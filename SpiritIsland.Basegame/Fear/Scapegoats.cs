@@ -26,23 +26,23 @@ public class Scapegoats : FearCardBase, IFearCard {
 		var gs = ctx.GameState;
 		foreach(var space in gs.AllActiveSpaces) {
 			var grp = gs.Invaders.On( space.Space, ctx.UnitOfWork );
-			await grp.Destroy( int.MaxValue, Invader.Explorer );
+			await grp.DestroyNOfClass( int.MaxValue, Invader.Explorer );
 			await EachCityDestroys1Town( grp );
 		
 		}
 	}
 
 	static Task Destroy_1ExplorerPerTown( InvaderBinding grp ) {
-		return grp.Destroy( grp.Tokens.Sum( Invader.Town ), Invader.Explorer );
+		return grp.DestroyNOfClass( grp.Tokens.Sum( Invader.Town ), Invader.Explorer );
 	}
 
 	static Task EachCityDestroys1Town( InvaderBinding grp ) {
-		return grp.Destroy( grp.Tokens.Sum( Invader.City ), Invader.Town );
+		return grp.DestroyNOfClass( grp.Tokens.Sum( Invader.City ), Invader.Town );
 	}
 
 	static Task Destroy_1ExplorerPerTownAnd2ExplorersPerCity( InvaderBinding grp ) {
 		int numToDestroy = grp.Tokens.Sum(Invader.Town) + grp.Tokens.Sum(Invader.City) * 2;
-		return grp.Destroy( numToDestroy, Invader.Explorer );
+		return grp.DestroyNOfClass( numToDestroy, Invader.Explorer );
 	}
 
 }

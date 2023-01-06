@@ -9,7 +9,7 @@ public class CastDownIntoTheBrinyDeep {
 		// 6 fear
 		ctx.AddFear(6);
 		// destroy all invaders
-		await ctx.Invaders.DestroyAny(int.MaxValue,Invader.City,Invader.Town,Invader.Explorer);
+		await ctx.Invaders.DestroyAll(Invader.City,Invader.Town,Invader.Explorer);
 
 		// if you have (2 sun, 2 moon, 4 water, 4 earth):
 		if(await ctx.YouHave("2 sun,2 moon,4 water,4 earth"))
@@ -47,16 +47,15 @@ public class CastDownIntoTheBrinyDeep {
 			var targetCtx = ctx.Target(space);
 
 			// Destroy Invaders
-			await targetCtx.Invaders.DestroyAny( int.MaxValue, Invader.City, Invader.Town, Invader.Explorer );
+			await targetCtx.Invaders.DestroyAll( Invader.City, Invader.Town, Invader.Explorer );
 
 			// Destroy Dahan
-			await targetCtx.Dahan.Destroy( int.MaxValue );
+			await targetCtx.Dahan.DestroyAll();
 
-			if(!ctx.Self.Text.StartsWith("Bringer")) { // !!!
+			if(!ctx.Self.Text.StartsWith("Bringer")) // !!!
 				// Destroy all other tokens
 				foreach(var token in space.Keys.ToArray())
 					await space.Destroy( token, space[token], ctx.ActionCtx );
-			}
 
 		}
 	}

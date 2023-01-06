@@ -34,27 +34,23 @@ public class DahanGroupBindingNoEvents {
 
 public class DahanGroupBinding : DahanGroupBindingNoEvents {
 
-	readonly RemoveReason _destroyReason;
-
-	readonly UnitOfWork actionId;
+	readonly UnitOfWork _actionScope;
 
 	#region constructors
 
-	public DahanGroupBinding( DahanGroupBindingNoEvents src, UnitOfWork actionId, RemoveReason destroyReason = RemoveReason.Destroyed ):base(src) {
-		_destroyReason = destroyReason;
-		this.actionId = actionId;
+	public DahanGroupBinding( DahanGroupBindingNoEvents src, UnitOfWork actionScope ):base(src) {
+		_actionScope = actionScope;
 	}
 
-	public DahanGroupBinding( SpaceState tokens, UnitOfWork actionId, RemoveReason destoryReason = RemoveReason.Destroyed ):base(tokens) {
-		_destroyReason = destoryReason;
-		this.actionId = actionId;
+	public DahanGroupBinding( SpaceState tokens, UnitOfWork actionId ):base(tokens) {
+		_actionScope = actionId;
 	}
 
 	#endregion
 
 	/// <summary> Adds a Dahan from the bag, or out of thin air. </summary>
 	public Task Add( int count, AddReason reason = AddReason.Added ) {
-		return _tokens.AddDefault( TokenType.Dahan, count, actionId, reason );
+		return _tokens.AddDefault( TokenType.Dahan, count, _actionScope, reason );
 	}
 
 	// Called from .Move() and .Dissolve the Bonds
@@ -62,14 +58,14 @@ public class DahanGroupBinding : DahanGroupBindingNoEvents {
 		if( _tokens[toRemove] == 0 )
 			return null; // unable to remove desired token
 
-		await _tokens.Remove( toRemove, 1, actionId, reason );
+		await _tokens.Remove( toRemove, 1, _actionScope, reason );
 		return toRemove;
 	}
 
 	// Called from Ocean-Drown special rule.
 	public async Task Drown() {
 		foreach( HealthToken token in NormalKeys)
-			await Destroy( _tokens[token], token );
+			await DestroyToken( _tokens[token], token );
 	}
 
 	#region Damage
@@ -87,7 +83,7 @@ public class DahanGroupBinding : DahanGroupBindingNoEvents {
 				_tokens.Adjust( newToken, origCount );
 			} else
 				// or destory
-				await Destroy( origCount, token );
+				await DestroyToken( origCount, token );
 		}
 
 	}
@@ -109,7 +105,7 @@ public class DahanGroupBinding : DahanGroupBindingNoEvents {
 
 			HealthToken damagedToken = mostHealthy.AddDamage( 1 );
 			if(damagedToken.IsDestroyed) {
-				await Destroy( countToApply1DamageTo, mostHealthy );
+				await DestroyToken( countToApply1DamageTo, mostHealthy );
 			} else {
 				_tokens.Adjust( mostHealthy, -countToApply1DamageTo );
 				_tokens.Adjust( damagedToken, countToApply1DamageTo );
@@ -124,7 +120,7 @@ public class DahanGroupBinding : DahanGroupBindingNoEvents {
 		// Destroy what can be destroyed
 		if(token.RemainingHealth <= remainingDamageToDahan) {
 			int countDestroyed = remainingDamageToDahan / token.RemainingHealth;
-			await Destroy( countDestroyed, token );
+			await DestroyToken( countDestroyed, token );
 			remainingDamageToDahan -= countDestroyed * token.RemainingHealth;
 		}
 		// if there is still partial damage we can apply
@@ -141,19 +137,29 @@ public class DahanGroupBinding : DahanGroupBindingNoEvents {
 
 	#region Destroy
 
-	public async Task Destroy( int countToDestroy ) {
+	public virtual async Task DestroyAll() {
 
 		var before = NormalKeys.OrderBy( x => x.RemainingHealth ).ToArray(); // least health first.
+		foreach(var token in before)
+			await token.DestroyAll(_tokens,_actionScope);
+	}
+
+
+	public async Task Destroy( int countToDestroy ) {
+
+		var before = NormalKeys
+			.OrderBy( x => x.RemainingHealth )
+			.ToArray(); // least health first.
 		foreach(var token in before) {
 			// Destroy what can be destroyed
 			int destroyed = Math.Min(countToDestroy, _tokens[token]);
-			await Destroy( destroyed, token );
+			await DestroyToken( destroyed, token );
 			countToDestroy -= destroyed;
 		}
 	}
 
-	public virtual async Task<PublishTokenRemovedArgs> Destroy( int count, HealthToken original ) {
-		return await _tokens.Remove( original, count, actionId, _destroyReason );
+	public virtual async Task<int> DestroyToken( int count, HealthToken original ) {
+		return await original.Destroy( _tokens, count, _actionScope );
 	}
 
 	#endregion

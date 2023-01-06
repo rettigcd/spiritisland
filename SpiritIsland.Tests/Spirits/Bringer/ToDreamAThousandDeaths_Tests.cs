@@ -151,7 +151,7 @@ public class ToDreamAThousandDeaths_Tests {
 		Assert_GeneratedFear( 1 * 5 ); // city only destroyed once
 
 		// Dreaming City with partial damage still there
-		ctx.Invaders[ ToDreamAThousandDeaths.ToggleDreamer(StdTokens.City1) ].ShouldBe( 1 );
+		ctx.Tokens[ ToDreamAThousandDeaths.ToggleDreamer(StdTokens.City1) ].ShouldBe( 1 );
 	}
 
 	void Assert_GeneratedFear( int expectedFearCount ) {

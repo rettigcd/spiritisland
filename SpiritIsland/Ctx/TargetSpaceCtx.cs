@@ -165,7 +165,7 @@ public class TargetSpaceCtx : SelfCtx {
 	// The current targets power
 	public InvaderBinding Invaders => _invadersRO ??= GetInvaders();
 
-	protected virtual InvaderBinding GetInvaders() => new InvaderBinding( GameState, Tokens, ActionCtx );
+	protected virtual InvaderBinding GetInvaders() => new InvaderBinding( Tokens, ActionCtx );
 
 	public void SkipAllInvaderActions(string label) => Tokens.SkipAllInvaderActions( label );
 
@@ -212,7 +212,7 @@ public class TargetSpaceCtx : SelfCtx {
 			sumAvailableDamage += BadlandDamage.Remaining;
 
 		// Apply Damage
-		int damageApplied = await Invaders.DamageToSpecificTokens( sumAvailableDamage, Self, damageSource, invadersToDamage );
+		int damageApplied = await Invaders.UserSelected_ApplyDamageToSpecificToken( sumAvailableDamage, Self, damageSource, invadersToDamage );
 		int poolDamageToAccountFor = damageApplied - originalDamage;
 
 		// Remove bonus damage from damage pools

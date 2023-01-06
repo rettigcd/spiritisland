@@ -63,7 +63,7 @@ public class ToDreamAThousandDeaths : InvaderBinding {
 	#region constructor
 
 	public ToDreamAThousandDeaths( BringerSpaceCtx ctx )
-		: base( ctx.GameState, ctx.Tokens, ctx.ActionCtx ) {
+		: base( ctx.Tokens, ctx.ActionCtx ) {
 		this.ctx = ctx;
 	}
 
@@ -77,7 +77,14 @@ public class ToDreamAThousandDeaths : InvaderBinding {
 		return invaderToken.AddDamage( 0, availableDamage );
 	}
 
-	protected override async Task Destroy1( HealthToken original, bool _ ) {
+	public override async Task<int> DestroyNTokens( int countToDestroy, HealthToken invaderToDestroy ) {
+		countToDestroy = Math.Min(countToDestroy,Tokens[invaderToDestroy]);
+		for(int i=0; i<countToDestroy; ++i)
+			await Destroy1Token(invaderToDestroy);
+		return countToDestroy;
+	}
+
+	async Task Destroy1Token( HealthToken original ) {
 
 		// Replace destroyed invader with the dreaming (non-dream-damaged) version.
 		var newToken = original
@@ -110,9 +117,9 @@ public class ToDreamAThousandDeaths : InvaderBinding {
 	}
 
 	void RecordSpaceWithDreamers( SpaceState spaceState ) {
-		var list = UnitOfWork.ContainsKey( SpacesWithDreamers )
-			? (HashSet<SpaceState>)UnitOfWork[SpacesWithDreamers]
-			: (HashSet<SpaceState>)(UnitOfWork[SpacesWithDreamers] = new HashSet<SpaceState>());
+		var list = ActionScope.ContainsKey( SpacesWithDreamers )
+			? (HashSet<SpaceState>)ActionScope[SpacesWithDreamers]
+			: (HashSet<SpaceState>)(ActionScope[SpacesWithDreamers] = new HashSet<SpaceState>());
 		list.Add( spaceState );
 	}
 

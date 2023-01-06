@@ -20,7 +20,7 @@ public class VolcanicEruption {
 		// if you have 4 fire, 3 earth:
 		if(await ctx.YouHave( "4 fire,3 earth" )) {
 			// Destroy all invaders.
-			await ctx.Invaders.DestroyAny( int.MaxValue, Invader.City, Invader.Town, Invader.Explorer );
+			await ctx.Invaders.DestroyAll( Invader.City, Invader.Town, Invader.Explorer );
 			// Add 1 wilds.
 			await ctx.Wilds.Add(1);
 			// In  each adjacent land:
@@ -41,7 +41,7 @@ public class VolcanicEruption {
 	}
 
 	static async Task DestroyDahanAndBeasts( TargetSpaceCtx ctx ) {
-		await ctx.Dahan.Destroy( int.MaxValue );
+		await ctx.Dahan.DestroyAll();
 		await ctx.Beasts.Destroy( ctx.Beasts.Count );
 	}
 

@@ -45,7 +45,7 @@ public class DreadApparitions_Tests {
 			// Given: using Dread Apparitions
 			await DreadApparitions.ActAsync( ctx );
 			// When: destroying the town
-			await ctx.Invaders.Destroy(1,Invader.Town);
+			await ctx.Invaders.DestroyNOfClass(1,Invader.Town);
 		}
 		_ = When();
 
@@ -65,7 +65,7 @@ public class DreadApparitions_Tests {
 
 		await DreadApparitions.ActAsync( ctx );
 		// When: destroying the city
-		await ctx.Invaders.Destroy( 1, Invader.City );
+		await ctx.Invaders.DestroyNOfClass( 1, Invader.City );
 
 		// Then: 5 fear should have triggered 2 defend
 		Assert_DefenceIs( 5+1 ); // Dread Apparitions has 1 fear

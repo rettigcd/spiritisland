@@ -16,7 +16,7 @@ public class Invaders {
 	#endregion
 
 	public InvaderBinding On( Space targetSpace, UnitOfWork actionId ) {
-		return new InvaderBinding( gs, gs.Tokens[targetSpace], actionId );
+		return new InvaderBinding( gs.Tokens[targetSpace], actionId );
 	}
 
 }

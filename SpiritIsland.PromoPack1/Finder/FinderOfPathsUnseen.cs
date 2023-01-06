@@ -76,7 +76,7 @@ public class FinderOfPathsUnseen : Spirit {
 			// After one of your Actions
 			&& args.Action.Owner == this
 			// Destroys 1 or more
-			&& args.Reason.IsOneOf( RemoveReason.Destroyed, RemoveReason.DestroyedInBattle )
+			&& args.Reason == RemoveReason.Destroyed
 			// Dahan/Invaders,
 			&& args.Token.Class.IsOneOf( Invader.Explorer, Invader.Town, Invader.City, TokenType.Dahan )
 		// or directly triggers their Destruction my moving them,

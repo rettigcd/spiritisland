@@ -233,7 +233,9 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 
 	// Convenience only
-	public Task Destroy( Token token, int count, UnitOfWork actionId ) => Remove(token, count, actionId, RemoveReason.Destroyed );
+	public Task Destroy( Token token, int count, UnitOfWork unitOfWork ) => token is HealthToken ht
+		? ht.Destroy(this, count, unitOfWork)
+		: Remove(token, count, unitOfWork, RemoveReason.Destroyed );
 
 	/// <summary> Gathering / Pushing + a few others </summary>
 	// !!! Powers should not use this Move directly, instead, they should go through TargetSpaceCtx so they can use custom Dahan and Invader bindings.

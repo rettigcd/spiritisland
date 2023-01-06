@@ -11,7 +11,7 @@ public class AsphyxiatingSmoke {
 		ctx.AddFear(1);
 
 		// destroy 1 town
-		await ctx.Invaders.Destroy(1,Invader.Town);
+		await ctx.Invaders.DestroyNOfClass(1,Invader.Town);
 
 		// push 1 dahan
 		await ctx.PushDahan(1);

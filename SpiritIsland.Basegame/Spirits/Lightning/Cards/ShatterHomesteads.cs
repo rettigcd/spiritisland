@@ -10,7 +10,7 @@ public class ShatterHomesteads {
 		// 1 fear
 		ctx.AddFear( 1 );
 		// Destroy 1 town
-		await ctx.Invaders.Destroy( 1, Invader.Town );
+		await ctx.Invaders.DestroyNOfClass( 1, Invader.Town );
 	}
 
 }

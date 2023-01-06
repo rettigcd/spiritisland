@@ -39,7 +39,7 @@ public class NeverHeardFromAgain {
 	static async Task<int> DestroyFromBadlandsBeastDiseaseWilds( TargetSpaceCtx ctx ) {
 		int srcCount = ctx.Badlands.Count + ctx.Beasts.Count + ctx.Disease.Count + ctx.Wilds.Count;
 		int destroyCount = Math.Min( srcCount * 2, ctx.Tokens.Sum( Invader.Explorer ) );
-		await ctx.Invaders.Destroy( destroyCount, Invader.Explorer );
+		await ctx.Invaders.DestroyNOfClass( destroyCount, Invader.Explorer );
 		return destroyCount;
 	}
 

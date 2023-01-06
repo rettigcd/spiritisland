@@ -25,8 +25,8 @@ public class DahanSaver {
 
 	public void ReduceDestroyCount( RemovingTokenArgs args ) {
 
-		bool shouldReduce = args.Token.Class == TokenType.Dahan                                         // Dahan
-			&& (args.Reason == RemoveReason.Destroyed || args.Reason == RemoveReason.DestroyedInBattle) // Destroyed
+		bool shouldReduce = args.Token.Class == TokenType.Dahan // Dahan
+			&& (args.Reason == RemoveReason.Destroyed) // Destroyed
 			&& (byAction.Count < maxActionCount || byAction.ContainsKey( args.UnitOfWork ));              // can effect more action OR already added
 
 		if(shouldReduce) {

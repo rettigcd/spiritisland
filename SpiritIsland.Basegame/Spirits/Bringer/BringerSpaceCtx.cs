@@ -11,5 +11,5 @@ public class BringerSpaceCtx : TargetSpaceCtx {
 
 public class DreamingDahan : DahanGroupBinding {
 	public DreamingDahan( DahanGroupBindingNoEvents src, UnitOfWork uow ) : base( src, uow ) { }
-	public override Task<PublishTokenRemovedArgs> Destroy( int _, HealthToken _1 ) => Task.FromResult((PublishTokenRemovedArgs)null);
+	public override Task<int> DestroyToken( int _, HealthToken _1 ) => Task.FromResult(0);
 }

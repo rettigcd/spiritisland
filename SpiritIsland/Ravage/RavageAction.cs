@@ -33,7 +33,7 @@ public class RavageAction {
 				return; // baby steps, don't break tests.  Eventually we want: $"stopped by {stopper.Text}";
 
 		this.UnitOfWork = gameState.StartAction( ActionCategory.Invader );
-		this.invaderBinding = new InvaderBinding( gameState, _tokens, UnitOfWork );
+		this.invaderBinding = new InvaderBinding( _tokens, UnitOfWork );
 
 		try {
 			// Record starting state
@@ -109,7 +109,7 @@ public class RavageAction {
 
 	public async Task DamageLand( int damageInflictedFromInvaders ) {
 		if( cfg.ShouldDamageLand )
-			await this.gameState.DamageLandFromRavage( invaderBinding.Space, damageInflictedFromInvaders, UnitOfWork );
+			await this.gameState.DamageLandFromRavage( invaderBinding.Tokens.Space, damageInflictedFromInvaders, UnitOfWork );
 	}
 
 	/// <returns># of dahan killed/destroyed</returns>
@@ -139,7 +139,7 @@ public class RavageAction {
 			foreach(var token in participatingExplorers) {
 				int tokensToDestroy = Math.Min(@event.startingDefenders[token], damageToApply / token.RemainingHealth );
 				// destroy real tokens
-				await invaderBinding.Destroy(tokensToDestroy,token);
+				await invaderBinding.DestroyNTokens(tokensToDestroy,token);
 				// update our defenders count
 				defenders[token] -= tokensToDestroy;
 				damageToApply -= tokensToDestroy * token.RemainingHealth;
@@ -156,7 +156,7 @@ public class RavageAction {
 				.OrderBy(t=>t.RemainingHealth) // kill damaged dahan first
 				.ToArray();
 
-			var dahan = new DahanGroupBinding( _tokens, UnitOfWork, RemoveReason.DestroyedInBattle );
+			var dahan = new DahanGroupBinding( _tokens, UnitOfWork );
 
 			foreach(var dahanToken in damagableDahan) {
 
@@ -167,14 +167,14 @@ public class RavageAction {
 				); 
 				if( 0<tokensToDestroy ) {
 
-					var removed = await dahan.Destroy( tokensToDestroy, dahanToken );
+					var removed = await dahan.DestroyToken( tokensToDestroy, dahanToken );
 
 					// use up damage
 					damageToApply -= tokensToDestroy * dahanToken.RemainingHealth;
 
 					if(removed != null) {
-						@event.dahanDestroyed += removed.Count;
-						defenders[dahanToken] -= removed.Count;
+						@event.dahanDestroyed += removed;
+						defenders[dahanToken] -= removed;
 					}
 				}
 				// damage real tokens
@@ -211,7 +211,7 @@ public class RavageAction {
 			HealthToken attackerToDamage = PickSmartInvaderToDamage( remaningAttackers, remainingDamageToApply );
 
 			// Apply real damage
-			var (damageInflicted,_) = await invaderBinding.ApplyDamageTo1( remainingDamageToApply, attackerToDamage, true );
+			var (damageInflicted,_) = await invaderBinding.ApplyDamageTo1( remainingDamageToApply, attackerToDamage );
 			remainingDamageToApply -= damageInflicted;
 
 			// Apply tracking damage

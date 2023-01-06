@@ -59,7 +59,8 @@ public class Thunderspeaker : Spirit {
 	}
 
 	async Task DestroyNearbyPresence( ITokenRemovedArgs args ) {
-		if( args.Reason != RemoveReason.DestroyedInBattle ) return;
+		if( args.Reason != RemoveReason.Destroyed ) return;
+		if(args.Action.Category != ActionCategory.Invader) return;
 		if(args.Token.Class != TokenType.Dahan) return;
 
 		string prompt = $"{SwarnToVictory.Title}: {args.Count} dahan destroyed. Select presence to destroy.";

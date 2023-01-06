@@ -17,7 +17,7 @@ public class DarknessSwallowsTheUnwary {
 
 		// destroy 2 explorers (+1 fear/kill)
 		var grp = ctx.Invaders;
-		int destroyed = await grp.Destroy( 2, Invader.Explorer );
+		int destroyed = await grp.DestroyNOfClass( 2, Invader.Explorer );
 		ctx.AddFear( destroyed );
 	}
 
