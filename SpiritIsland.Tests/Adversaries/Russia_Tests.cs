@@ -18,7 +18,7 @@ public class Russia_Tests {
 
 		//   And: a stage-2 escalation card
 		var a8 = gameState.Tokens[board[8]];
-		IInvaderCard card = gameState.InvaderDeck.UnrevealedCards.First(x=>x.InvaderStage==2 && x.MatchesCard( a8 ) );
+		InvaderCard card = gameState.InvaderDeck.UnrevealedCards.First(x=>x.InvaderStage==2 && x.MatchesCard( a8 ) );
 
 		// Given: beasts on 2 other spaces
 		beastSpace1.Beasts.Adjust(1);
@@ -65,7 +65,7 @@ public class Russia_Tests {
 
 		//   And: a stage-2 escalation card
 		var a8 = gameState.Tokens[board1[8]];
-		IInvaderCard card = gameState.InvaderDeck.UnrevealedCards.First( x => x.InvaderStage == 2 && x.MatchesCard( a8 ));
+		InvaderCard card = gameState.InvaderDeck.UnrevealedCards.First( x => x.InvaderStage == 2 && x.MatchesCard( a8 ));
 
 		// When: exploring and escalation card
 		Task t = gameState.InvaderDeck.Explore.Engine.ActivateCard( card, gameState );
@@ -179,7 +179,7 @@ public class Russia_Tests {
 		a5.Clear().InitTokens("1D@2,3E@1");
 
 		//  When: card ravages
-		Task t = card.Ravage(gameState);
+		Task t = gameState.InvaderDeck.Ravage.Engine.ActivateCard( card, gameState );
 
 		//  Then: dahan is destroyed and land is blighted
 		a5.Summary.ShouldBe("1B,3E@1");

@@ -74,17 +74,16 @@ class CommandBeastAction : IActionFactory {
 	public bool Used { get; private set; }
 }
 
-public class TriggerCommandBeasts : IInvaderCard {
+public class TriggerCommandBeasts {
 
 	readonly CommandBeastAction cmdAction = new CommandBeastAction();
 	readonly GameState _gameState;
 
-	public TriggerCommandBeasts( IInvaderCard inner, GameState gameState ) {
-		this._inner = inner;
+	public TriggerCommandBeasts( GameState gameState ) {
 		_gameState = gameState;
 	}
 
-	void QueueBeastCommand() {
+	public void QueueBeastCommand() {
 		_gameState.TimePasses_WholeGame += TimePasses_WholeGame;
 	}
 
@@ -93,36 +92,6 @@ public class TriggerCommandBeasts : IInvaderCard {
 			gameState.Spirits[0].AddActionFactory( cmdAction );
 		return Task.CompletedTask;
 	}
-
-	#region IInvaderCard Properties
-
-	readonly IInvaderCard _inner;
-
-	public string Text => _inner.Text;
-	public int InvaderStage => _inner.InvaderStage;
-
-	public bool Skip { get => false; set => throw new NotImplementedException(); }
-	public bool HoldBack { get => false; set => throw new NotImplementedException(); }
-
-	public bool Flipped {
-		get => _inner.Flipped;
-		set => _inner.Flipped = value;
-	}
-
-	public void Flip() {
-		QueueBeastCommand();
-		_inner.Flip();
-	}
-
-	//	public bool MatchesCard( Space space ) => inner.MatchesCard( space );
-	public bool MatchesCard( SpaceState space ) => _inner.MatchesCard( space );
-	public Task Ravage( GameState gameState ) => _inner.Ravage( gameState );
-	public bool HasEscalation {
-		get => _inner.HasEscalation;
-		set => _inner.HasEscalation = value;
-	}
-
-	#endregion
 }
 
 // class:

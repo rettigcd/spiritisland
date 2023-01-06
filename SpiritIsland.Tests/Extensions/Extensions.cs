@@ -7,13 +7,17 @@ static internal class Extensions {
 
 	#region Generating Explorer Action on a space
 
-	static public IInvaderCard BuildInvaderCard( this Space space ) {
+	static public InvaderCard BuildInvaderCard( this Space space ) {
 		var terrain = new[] { Terrain.Wetland, Terrain.Sand, Terrain.Jungle, Terrain.Mountain }.First( space.Is );
 		return terrain != Terrain.Ocean ? InvaderCard.Stage1( terrain ) : throw new ArgumentException( "Can't invade oceans" );
 	}
 
-	static public Task DoARavage( this SpaceState space ) => space.Space.BuildInvaderCard().Ravage( space.AccessGameState() );
-	static public Task DoARavage( this Space space, GameState gs ) => space.BuildInvaderCard().Ravage( gs );
+	// !!! should these use slots or Engines?
+	static public Task DoARavage( this SpaceState space ) 
+		=> new RavageSlot().ActivateCard(  space.Space.BuildInvaderCard(), space.AccessGameState() );
+	static public Task DoARavage( this Space space, GameState gs ) 
+		=> new RavageSlot().ActivateCard( space.BuildInvaderCard(), gs );
+
 	static public Task DoABuild( this Space space, GameState gameState )
 		=> new BuildSlot().ActivateCard( space.BuildInvaderCard(), gameState );
 	static public Task DoAnExplore( this Space space, GameState gs ) 

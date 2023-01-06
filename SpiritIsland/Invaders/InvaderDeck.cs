@@ -28,13 +28,13 @@ public class InvaderDeck {
 		InvaderCard.Stage3(Terrain.Sand,Terrain.Wetland)
 	);
 
-	public static InvaderDeck BuildTestDeck( params IInvaderCard[] cards ) => new InvaderDeck( cards );
+	public static InvaderDeck BuildTestDeck( params InvaderCard[] cards ) => new InvaderDeck( cards );
 
 	#endregion
 
 	#region constructors
 
-	private InvaderDeck( params IInvaderCard[] cards ) {
+	private InvaderDeck( params InvaderCard[] cards ) {
 		_unrevealedCards = cards.ToList();
 		InitNumberOfCardsToDraw();
 		ActiveSlots = new List<InvaderSlot> { Ravage, Build, Explore };
@@ -66,7 +66,7 @@ public class InvaderDeck {
 		}
 
 		// Merge
-		var all = new List<IInvaderCard>();
+		var all = new List<InvaderCard>();
 		foreach(var selectionLevel in levelSelection) {
 			all.Add( TakeNextUnused( selectionLevel ) );
 		}
@@ -85,8 +85,8 @@ public class InvaderDeck {
 
 	#endregion
 
-	public List<IInvaderCard> UnrevealedCards => _unrevealedCards;
-	readonly List<IInvaderCard> _unrevealedCards;
+	public List<InvaderCard> UnrevealedCards => _unrevealedCards;
+	readonly List<InvaderCard> _unrevealedCards;
 	public readonly List<int> drawCount = new List<int>(); // tracks how many cards to draw each turn
 
 	public ExploreSlot Explore { get; } = new ExploreSlot();
@@ -101,7 +101,7 @@ public class InvaderDeck {
 	}
 	List<InvaderSlot> _activeSlots;
 
-	public List<IInvaderCard> Discards {get;} = new List<IInvaderCard>();
+	public List<InvaderCard> Discards {get;} = new List<InvaderCard>();
 
 	public int InvaderStage => (Explore.Cards.FirstOrDefault() ?? UnrevealedCards.First()).InvaderStage;
 
@@ -197,13 +197,13 @@ public class InvaderDeck {
 				pair.Key.Flipped = pair.Value;
 
 		}
-		readonly IInvaderCard[] unrevealedCards;
+		readonly InvaderCard[] unrevealedCards;
 		readonly int[] drawCount;
-		readonly IInvaderCard[] explore;
-		readonly IInvaderCard[] build;
-		readonly IInvaderCard[] ravage;
-		readonly IInvaderCard[] discards;
-		readonly Dictionary<IInvaderCard, bool> flipped;
+		readonly InvaderCard[] explore;
+		readonly InvaderCard[] build;
+		readonly InvaderCard[] ravage;
+		readonly InvaderCard[] discards;
+		readonly Dictionary<InvaderCard, bool> flipped;
 
 	}
 

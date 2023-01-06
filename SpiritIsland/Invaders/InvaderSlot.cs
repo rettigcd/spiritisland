@@ -3,7 +3,7 @@
 public abstract class InvaderSlot {
 	public InvaderSlot(string label ) { Label = label;}
 	public string Label { get; }
-	public List<IInvaderCard> Cards { get; } = new List<IInvaderCard>();
+	public List<InvaderCard> Cards { get; } = new List<InvaderCard>();
 	public void HoldNextBack() { holdBackCount++; }
 	public void SkipNextNormal() { skipCount++; }
 	public virtual async Task Execute( GameState gs ) {
@@ -16,8 +16,8 @@ public abstract class InvaderSlot {
 				await ActivateCard(card,gs);
 	}
 
-	public List<IInvaderCard> GetCardsToAdvance() {
-		var result = new List<IInvaderCard>();
+	public List<InvaderCard> GetCardsToAdvance() {
+		var result = new List<InvaderCard>();
 		for(int i=0; i < Cards.Count; ++i)
 			if(holdBackCount > 0)
 				holdBackCount--;
@@ -28,7 +28,7 @@ public abstract class InvaderSlot {
 		return result;
 	}
 
-	public abstract Task ActivateCard( IInvaderCard card, GameState gameState);
+	public abstract Task ActivateCard( InvaderCard card, GameState gameState);
 
 	int skipCount = 0;
 	int holdBackCount = 0;

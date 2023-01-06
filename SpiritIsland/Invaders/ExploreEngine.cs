@@ -2,7 +2,7 @@
 
 public class ExploreEngine {
 
-	public virtual async Task ActivateCard( IInvaderCard card, GameState gameState ) {
+	public virtual async Task ActivateCard( InvaderCard card, GameState gameState ) {
 		gameState.Log( new InvaderActionEntry( "Exploring:" + card.Text ) );
 		SpaceState[] tokenSpacesToExplore = PreExplore( card, gameState );
 		await DoExplore( gameState, tokenSpacesToExplore, card.HasEscalation );
@@ -15,7 +15,7 @@ public class ExploreEngine {
 
 	public Func<GameState, Task> Escalation;
 
-	static protected SpaceState[] PreExplore( IInvaderCard card, GameState gs ) {
+	static protected SpaceState[] PreExplore( InvaderCard card, GameState gs ) {
 
 		// Modify
 		static bool IsExplorerSource( SpaceState space ) => space.Space.IsOcean || space.HasAny( Invader.Town, Invader.City );

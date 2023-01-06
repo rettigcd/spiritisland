@@ -51,7 +51,8 @@ public class Russia : IAdversary {
 		gameState.AddWinLossCheck( _token.HuntersSwarmTheIsland );
 
 		// find escalation cards and assign escalation action
-		gameState.InvaderDeck.ReplaceUnrevealedCards( card => new RussiaInvaderCard( card, Level, _token ) );
+		//gameState.InvaderDeck.ReplaceUnrevealedCards( card => new RussiaInvaderCard( card, Level, _token ) );
+		gameState.InvaderDeck.Ravage.Engine = new RussiaRavageEngine( Level, _token );
 
 		if(5 <= Level)
 			EntrenchInTheFaceOfFear( gameState );

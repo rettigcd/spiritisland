@@ -2,16 +2,16 @@
 
 public class BuildEngine {
 
-	public virtual async Task ActivateCard( IInvaderCard card, GameState gameState ) {
+	public virtual async Task ActivateCard( InvaderCard card, GameState gameState ) {
 		gameState.Log( new InvaderActionEntry( "Building:" + card.Text ) );
 		AddBuildTokensMatchingCard( card, gameState );
 		await Build( gameState );
 	}
 
-	static protected SpaceState[] GetSpacesMatchingCard( IInvaderCard card, GameState gameState )
+	static protected SpaceState[] GetSpacesMatchingCard( InvaderCard card, GameState gameState )
 		=> gameState.AllActiveSpaces.Where( card.MatchesCard ).ToArray();
 
-	void AddBuildTokensMatchingCard( IInvaderCard card, GameState gameState ) {
+	void AddBuildTokensMatchingCard( InvaderCard card, GameState gameState ) {
 		var cardDependentBuildSpaces = GetSpacesMatchingCard( card, gameState );
 		var spacesMatchingCardCriteria = cardDependentBuildSpaces
 			.Where( ShouldBuildOnSpace )    // usually because it has invaders on it

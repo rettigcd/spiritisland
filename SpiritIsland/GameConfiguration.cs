@@ -121,9 +121,11 @@ public class GameBuilder {
 
 		var invaderCards = gameState.InvaderDeck.UnrevealedCards;
 		void InitBeastCommand( int stage ) {
+			var triggerBeasts = new TriggerCommandBeasts( gameState );
 			for(int i = 0; i < invaderCards.Count; ++i) {
 				if(invaderCards[i].InvaderStage != stage) continue;
-				invaderCards[i] = new TriggerCommandBeasts( invaderCards[i], gameState );
+				var card = (InvaderCard)invaderCards[i];
+				card.CardFlipped += triggerBeasts.QueueBeastCommand;
 				break;
 			}
 		}

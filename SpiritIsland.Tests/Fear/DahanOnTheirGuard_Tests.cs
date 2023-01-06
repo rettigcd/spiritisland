@@ -30,7 +30,7 @@ public class DahanOnTheirGuard_Tests {
 
 		// When: Doing Invader phase (fear+ragage)
 		await gameState.Fear.Apply();
-		await invaderCard.Ravage( gameState );
+		await new RavageSlot().ActivateCard( invaderCard, gameState );
 
 		// Then: all dahan killed
 		Assert.Equal( 0, gameState.DahanOn( ravageSpace ).CountAll );
@@ -49,7 +49,7 @@ public class DahanOnTheirGuard_Tests {
 		// When: Doing Invader phase (fear+ragage)
 		async Task DoIt() {
 			await gameState.Fear.Apply();
-			await invaderCard.Ravage( gameState );
+			await new RavageSlot().ActivateCard( invaderCard, gameState );
 		}
 		_ = DoIt();
 		User.AcknowledgesFearCard( "Dahan on their Guard : 1 : In each land, Defend 1 per Dahan." );
@@ -71,7 +71,7 @@ public class DahanOnTheirGuard_Tests {
 	}
 
 	readonly GameState gameState;
-	readonly IInvaderCard invaderCard;
+	readonly InvaderCard invaderCard;
 	readonly Space ravageSpace;
 	readonly Spirit spirit;
 	readonly VirtualUser User;

@@ -13,7 +13,7 @@ public class ParalyzingFright_Tests {
 
 		var (user, ctx) = TestSpirit.SetupGame( PowerCard.For<ParalyzingFright>(), (Action<GameState>)((gs)=>{ 
 			var jungleCard = SpiritIsland.InvaderCard.Stage1( Terrain.Jungle);
-			gs.InvaderDeck = InvaderDeck.BuildTestDeck( (IInvaderCard)jungleCard, (IInvaderCard)jungleCard, (IInvaderCard)jungleCard, (IInvaderCard)jungleCard );
+			gs.InvaderDeck = InvaderDeck.BuildTestDeck( (InvaderCard)jungleCard, (InvaderCard)jungleCard, (InvaderCard)jungleCard, (InvaderCard)jungleCard );
 			gs.NewLogEntry += (s) => invaderLog.Add( s.Msg());
 		}) );
 

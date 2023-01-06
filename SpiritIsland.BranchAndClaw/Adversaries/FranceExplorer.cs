@@ -8,7 +8,7 @@ public class FranceExplorer : ExploreEngine {
 		hasPersistentExplorers = 6 <= level;
 	}
 
-	public override async Task ActivateCard( IInvaderCard card, GameState gameState ) { 
+	public override async Task ActivateCard( InvaderCard card, GameState gameState ) { 
 		await base.ActivateCard( card, gameState );
 
 		// Original
@@ -54,7 +54,7 @@ public class FranceExplorer : ExploreEngine {
 				await ExploreSingleSpace( exploreTokens, gs, gs.StartAction( ActionCategory.Adversary ), false ); // !!! implemented as a new Action - Should it be???
 	}
 
-	static Task DemandForNewCashCrops( GameCtx ctx, IInvaderCard card ) {
+	static Task DemandForNewCashCrops( GameCtx ctx, InvaderCard card ) {
 		// Demand for New Cash Crops:
 		// After Exploring, on each board, pick a land of the shown terrain.If it has Town / City, add 1 Blight.Otherwise, add 1 Town
 

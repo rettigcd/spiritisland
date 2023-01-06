@@ -118,7 +118,7 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 
 	public int HealthPenaltyPerStrife { get; set; }
 
-	public void InitRavageCard( IInvaderCard card ) {
+	public void InitRavageCard( InvaderCard card ) {
 		GameState.InvaderDeck.Ravage.Cards.Add(card);
 	}
 

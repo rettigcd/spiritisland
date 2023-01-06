@@ -84,12 +84,12 @@ public class BeliefTakesRoot_Tests {
 	async Task When_AddFearApplyFearAndRavage() {
 		gameState.Fear.AddDirect( new FearArgs( 4 ) );
 		await gameState.Fear.Apply();
-		await invaderCard.Ravage( gameState );
+		await new RavageSlot().ActivateCard( invaderCard, gameState );
 	}
 
 	const string FearCardAction = "Belief takes Root : 1 : Defend 2 in all lands with Presence.";
 	readonly GameState gameState;
-	readonly IInvaderCard invaderCard;
+	readonly InvaderCard invaderCard;
 	readonly Space ravageSpace;
 	readonly Spirit spirit;
 	readonly VirtualUser User;

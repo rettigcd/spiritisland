@@ -72,7 +72,7 @@ public class Invader_Tests {
 	[InlineDataAttribute("W","A2,A5")]
 	[InlineDataAttribute("S","A4,A7")]
 	public void Level1CardTargets(string cardText,string expectedTargets){
-		IInvaderCard sut = InvaderDeck.Level1Cards.Single(c=>c.Text==cardText);
+		InvaderCard sut = InvaderDeck.Level1Cards.Single(c=>c.Text==cardText);
 		var targets = board.Spaces.Where(((InvaderCard)sut).MatchesCard).Select(x=>x.Label).ToArray();
 		Assert.Equal(expectedTargets,targets.Join(","));
 	}
@@ -250,16 +250,16 @@ public class Invader_Tests {
 		Assert_UnitsAre( startingUnits, space );
 
 		// When: Ravaging in Mountains
-		await InvaderCard.Stage1( Terrain.Mountain ).Ravage( gameState );
+		await new RavageEngine().ActivateCard( InvaderCard.Stage1( Terrain.Mountain ), gameState );
 
 		Assert_UnitsAre( endingUnits, space );
 	}
 
-	static IInvaderCard[] NewDeckCards(int seed) {
+	static InvaderCard[] NewDeckCards(int seed) {
 		return new InvaderDeck( seed ).UnrevealedCards.ToArray();
 	}
 
-	static void Assert_NextNCardsFromDeck( List<IInvaderCard> deck, ImmutableList<InvaderCard> expected, int count ) {
+	static void Assert_NextNCardsFromDeck( List<InvaderCard> deck, ImmutableList<InvaderCard> expected, int count ) {
 		var expectedTitles = expected.Select( x => x.Text ).ToArray();
 		for(int i = 0; i < count; ++i) {
 			Assert.Contains( deck[0].Text, expectedTitles ); // because new cards are generated each time.
