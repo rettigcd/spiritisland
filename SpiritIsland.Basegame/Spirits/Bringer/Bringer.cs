@@ -6,7 +6,7 @@ public class Bringer : Spirit {
 
 	public override string Text => Name;
 
-	public override SpecialRule[] SpecialRules => new SpecialRule[] { ToDreamAThousandDeaths.Rule	} ;
+	public override SpecialRule[] SpecialRules => new SpecialRule[] { TDaTD_ActionTokens.Rule };
 
 	public Bringer():base(
 		new SpiritPresence(
@@ -44,7 +44,7 @@ public class Bringer : Spirit {
 		Presence.Adjust( space, 2 );
 
 		// Restore Dreamed damaged tokens to original state
-		gs.EndOfAction.ForGame.Add( ToDreamAThousandDeaths.CleanupDreamDamage );
+		gs.EndOfAction.ForGame.Add( BringerSpaceCtx.CleanupDreamDamage );
 	}
 
 	public override SelfCtx BindMyPowers( Spirit spirit, GameState gameState, UnitOfWork actionScope ) 

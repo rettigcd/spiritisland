@@ -19,11 +19,12 @@ public class HazardsSpreadAcrossTheIsland{
 		if( tokenChoice is HealthToken ht && 0 < ht.StrifeCount )
 			await ctx.AddStrife();
 		else
-			await ctx.Tokens.Add(tokenChoice,1,ctx.ActionScope);
+			await ctx.Tokens.Add(tokenChoice,1);
 	}
 
 	static SpaceToken[] FindHazardTokenInAdjacentLand( TargetSpaceCtx ctx ) {
-		var tokenTypes = new TokenClass[] { TokenType.Badlands, TokenType.Beast, TokenType.Disease, TokenType.Wilds, Invader.Explorer, Invader.Town, Invader.City };
+		var tokenTypes = Invader.Any // finds .Any finds strife
+			.Plus( TokenType.Badlands, TokenType.Beast, TokenType.Disease, TokenType.Wilds );
 		var candidates = ctx.Adjacent
 			.SelectMany( adjState => adjState.Keys
 				.Where( IsTokenOfInterest )

@@ -23,7 +23,7 @@ public class TallTalesOfSavagery : FearCardBase, IFearCard {
 			// removes 2 explorere or 1 Town
 			Cmd.Pick1(Cmd.RemoveExplorers( 2 ), Cmd.RemoveTowns(1))
 				// from a land with Dahan
-				.From( x => x.Dahan.Any && x.Tokens.HasAny( Invader.Explorer, Invader.Town ), "land with Dahan" )
+				.From( x => x.Dahan.Any && x.Tokens.HasAny( Invader.Explorer_Town ), "land with Dahan" )
 		).Execute( ctx );
 	}
 

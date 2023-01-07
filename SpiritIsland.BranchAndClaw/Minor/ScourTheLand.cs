@@ -8,7 +8,7 @@ public class ScourTheLand {
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		await ctx.Invaders.DestroyNOfClass(3,Invader.Town);
-		await ctx.Invaders.DestroyNOfClass(int.MaxValue,Invader.Explorer);
+		await ctx.Invaders.DestroyAll(Invader.Explorer);
 
 		await ctx.AddBlight(1);
 

@@ -50,7 +50,7 @@ internal class CommandBeasts : IExecuteOn<TargetSpaceCtx> {
 		int badlandCount = ctx.Badlands.Count;
 		damage += badlandCount;
 
-		int damageDone = await ctx.Invaders.UserSelectedPartialDamage( damage, ctx.Self, Invader.Explorer, Invader.Town, Invader.City );
+		int damageDone = await ctx.Invaders.UserSelectedPartialDamage( damage, ctx.Self, Invader.Any );
 		return damageDone == 0 
 			? 0 // no damage done
 			: Math.Max( 1, damageDone - badlandCount ); // some damage done, remove badland damage.

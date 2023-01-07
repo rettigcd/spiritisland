@@ -31,10 +31,12 @@ public class VanishSoftlyAwayForgottonByAll {
 
 	static SpaceAction RemoveInvader => new SpaceAction(
 		"Remove 1 Invader", 
-		ctx => ctx.Invaders.RemoveLeastDesirable( Invader.Explorer, Invader.Town, Invader.City )
+		ctx => ctx.Invaders.RemoveLeastDesirable( Invader.Any )
 	);
 
-	static SpaceAction RemoveExplorerOrTown => new SpaceAction( "Remove 1 Explorer/Town", ctx => ctx.Invaders.RemoveLeastDesirable( Invader.Explorer, Invader.Town ) );
+	static SpaceAction RemoveExplorerOrTown => new SpaceAction( "Remove 1 Explorer/Town", 
+		ctx => ctx.Invaders.RemoveLeastDesirable( Invader.Explorer_Town )
+	);
 
 
 	static SpaceAction RemoveAllDamagedInvaders => new SpaceAction(

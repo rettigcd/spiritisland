@@ -58,7 +58,7 @@ public class SuddenAmbush_Tests : ThunderCards {
 		gs.DahanOn(a[2]).Init(1);
 		gs.DahanOn(a[1]).Init(2);
 		//  and: 1 town on a1
-		gs.Tokens[a[1]].AdjustDefault(Invader.Town, 1);
+		gs.Tokens[a[1]].AdjustDefault( Invader.Town, 1 );
 
 		When_ActivateCard(SuddenAmbush.Name);
 

@@ -22,7 +22,7 @@ static public class ReplaceInvader {
 		else if( newInvaderClass != Invader.Explorer ) {
 			// add the non-damaged token, and destory it.
 			ctx.Tokens.Adjust( newTokenWithoutDamage, 1 );
-			await ctx.Invaders.DestroyNTokens( 1, newTokenWithoutDamage );
+			await ctx.Invaders.DestroyNTokens( newTokenWithoutDamage, 1 );
 		}
 
 	}

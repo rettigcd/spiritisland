@@ -98,11 +98,13 @@ public class HabsburgMonarchy : IAdversary {
 		using var actionScope = gameState.StartAction(ActionCategory.Invader); // ??? is this really an action?
 		// on each board
 		foreach(var board in gameState.Island.Boards) {
+//			var boardCtx = new BoardCtx(gameState,board,actionScope);
+
 			var spaces = gameState.Tokens.PowerUp(board.Spaces).ToArray();
 			// add 1 City to a Coastal land without City
 			var coastWithoutCity =  spaces.FirstOrDefault(s=>s.Space.IsCoastal && s.Sum(Invader.City)==0);
 			if( coastWithoutCity != null )
-				await coastWithoutCity.AddDefault(Invader.City,1, actionScope, AddReason.Build); // What AddReason do we use for Escalation???
+				await coastWithoutCity.Bind( actionScope ).AddDefault(Invader.City,1, AddReason.Build); // What AddReason do we use for Escalation???
 
 			// and 1 Town to the 3 Inland lands with the fewest Blight
 			var leastBlightSpaces = spaces
@@ -111,7 +113,7 @@ public class HabsburgMonarchy : IAdversary {
 				.Take(3)
 				.ToArray();
 			foreach(var newTownSpace in leastBlightSpaces)
-				await newTownSpace.AddDefault(Invader.Town,1, actionScope, AddReason.Build);
+				await newTownSpace.Bind( actionScope ).AddDefault(Invader.Town,1, AddReason.Build);
 		}
 	}
 
@@ -147,7 +149,7 @@ public class HabsburgMonarchy : IAdversary {
 
 			var criteria = new Select.Space( $"Escalation - Add 1 Town to board {ctx.Board.Name} ({i + 1} of {townsToAdd})", addSpaces.Select( x => x.Space ), Present.Always );
 			var addSpace = await ctx.Self.Gateway.Decision( criteria );
-			await ctx.GameState.Tokens[addSpace].AddDefault( Invader.Town, 1, ctx.ActionScope, AddReason.Build );
+			await ctx.GameState.Tokens[addSpace].Bind( ctx.ActionScope ).AddDefault( Invader.Town, 1, AddReason.Build );
 		}
 	}
 

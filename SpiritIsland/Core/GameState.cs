@@ -239,7 +239,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	#endregion
 
-	public DahanGroupBindingNoEvents DahanOn( Space space ) => Tokens[space].Dahan; // Obsolete - use TargetSpaceCtx
+	public HealthTokenClassBinding_NoEvents DahanOn( Space space ) => Tokens[space].Dahan; // Obsolete - use TargetSpaceCtx
 
 	/// <param name="cat">Has no functional use.  Just helps us keep straight in our head what kind of action this is.</param>
 	public UnitOfWork StartAction(ActionCategory cat ) {
@@ -268,7 +268,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	static void CheckTerrorLevelVictory( GameState gs ){
 
 		bool NoCity( SpaceState space ) => space.Sum( Invader.City ) == 0;
-		bool NoCityOrTown( SpaceState space ) => space.SumAny( Invader.City, Invader.Town ) == 0;
+		bool NoCityOrTown( SpaceState space ) => space.SumAny( Invader.Town_City ) == 0;
 		bool NoInvader( SpaceState space ) => !space.HasInvaders();
 		var (filter,description) = gs.Fear.TerrorLevel switch {
 			4 => (_ => true, "Victory"),

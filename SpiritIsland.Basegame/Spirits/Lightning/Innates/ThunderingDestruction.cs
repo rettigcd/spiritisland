@@ -15,19 +15,19 @@ public class ThunderingDestruction {
 	// 4 fire 3 air    you may instead destroy 1 city
 	[InnateOption("4 fire, 3 air", "You may instead destroy 1 city." )]
 	public static Task Destroy_TownOrCity( TargetSpaceCtx ctx ) {
-		return ctx.Invaders.DestroyNOfAnyClass( 1, Invader.Town, Invader.City );
+		return ctx.Invaders.DestroyNOfAnyClass( 1, Invader.Town_City );
 	}
 
 	// 5 fire 4 air 1 water    also, destroy 1 town or city
 	[InnateOption("5 fire,4 air,1 water", "Also, Destroy 1 town/city." )]
 	public static Task Destroy_2TownsOrCities( TargetSpaceCtx ctx ) {
-		return ctx.Invaders.DestroyNOfAnyClass( 2, Invader.Town, Invader.City );
+		return ctx.Invaders.DestroyNOfAnyClass( 2, Invader.Town_City );
 	}
 
 	// 5 fire 5 air 2 water    also, destroy 1 town or city
 	[InnateOption( "5 fire, 5 air, 2 water", "Also, Destroy 1 town / city." )]
 	public static Task Destroy_3TownsOrCities( TargetSpaceCtx ctx ) {
-		return ctx.Invaders.DestroyNOfAnyClass( 3, Invader.Town, Invader.City );
+		return ctx.Invaders.DestroyNOfAnyClass( 3, Invader.Town_City );
 	}
 
 }

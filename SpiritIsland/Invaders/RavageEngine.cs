@@ -22,10 +22,10 @@ public class RavageEngine {
 			.ToArray();
 
 		foreach(var ravageSpace in spacesWithDoRavage)
-			await DoAllRavagesOn1Space( gameState, ravageSpace );
+			await DoAllRavagesOn1Space( ravageSpace );
 	}
 
-	static async Task DoAllRavagesOn1Space( GameState gameState, SpaceState ravageSpace ) {
+	static async Task DoAllRavagesOn1Space( SpaceState ravageSpace ) {
 		int ravageCount = PullRavageTokens( ravageSpace );
 
 		while(0 < ravageCount--)

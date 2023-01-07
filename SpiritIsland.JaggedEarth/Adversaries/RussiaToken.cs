@@ -71,7 +71,7 @@ class RussiaToken : BaseModToken, IHandleTokenAdded, IHandleRemovingToken {
 			GameState gs = args.Space.AccessGameState();
 			Spirit spirit = args.ActionScope.Owner ?? FindSpiritForBoard( gs, args.Space.Space.Board );
 			Space destination = await spirit.Gateway.Decision( Select.Space.PushToken( args.Token, args.Space.Space, pushOptions, Present.Always ) );
-			await args.Space.MoveTo( args.Token, destination, args.ActionScope );
+			await args.Space.Bind( args.ActionScope ).MoveTo( args.Token, destination );
 		}
 	}
 

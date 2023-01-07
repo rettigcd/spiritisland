@@ -7,7 +7,7 @@ public class HereThereBeMonsters {
 	[FromPresence( 0, Target.Inland )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 		// you may push 1 explorer / town / dahan
-		await ctx.PushUpTo(1,Invader.Explorer,Invader.Town,TokenType.Dahan);
+		await ctx.PushUpTo(1,Invader.Explorer_Town.Plus(TokenType.Dahan));
 		// 2 fear
 		ctx.AddFear(2);
 		// if target land has any beasts, 1 fear

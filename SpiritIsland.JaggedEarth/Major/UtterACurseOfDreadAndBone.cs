@@ -37,7 +37,7 @@ public class UtterACurseOfDreadAndBone {
 
 	static async Task AddTokenToLandWithinRange( TargetSpaceCtx ctx, Token token, int range ) {
 		var space = await ctx.Decision(new Select.Space($"Add {token.Text}",ctx.Range(range), Present.Always));
-		await ctx.Target(space).Tokens.Add(token,1,ctx.ActionScope);
+		await ctx.Target(space).Tokens.Add(token,1);
 	}
 
 	static async Task AddStrifeToLandWithinRange( TargetSpaceCtx ctx, int range ) {

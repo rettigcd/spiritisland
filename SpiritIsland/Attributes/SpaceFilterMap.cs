@@ -20,8 +20,8 @@ public class SpaceFilterMap {
 
 		// Invaders
 		[Target.Invaders          ] = (ctx) => ctx.Tokens.HasInvaders(),
-		[Target.TownOrExplorer    ] = (ctx) => ctx.Tokens.HasAny( Invader.Explorer, Invader.Town ),  // Wash Away helper
-		[Target.TownOrCity        ] = (ctx) => ctx.Tokens.HasAny( Invader.City, Invader.Town ),  // Study the Invaders' Fears
+		[Target.TownOrExplorer    ] = (ctx) => ctx.Tokens.HasAny( Invader.Explorer_Town ),  // Wash Away helper
+		[Target.TownOrCity        ] = (ctx) => ctx.Tokens.HasAny( Invader.Town_City ),  // Study the Invaders' Fears
 		[Target.City              ] = (ctx) => ctx.Tokens.Has(Invader.City),
 		[Target.NoInvader         ] = (ctx) => !ctx.Tokens.HasInvaders(),
 

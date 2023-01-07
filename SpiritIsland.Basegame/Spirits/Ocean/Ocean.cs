@@ -99,7 +99,7 @@ public class Ocean : Spirit {
 
 		// Drown them immediately
 		args.GameState.Log( new LogDebug($"Drowning {args.Count}{ht.SpaceAbreviation} on {args.AddedTo.Space}") );
-		await args.GameState.Invaders.On( args.AddedTo.Space, args.ActionScope ).DestroyNTokens( args.Count, ht );
+		await args.GameState.Invaders.On( args.AddedTo.Space, args.ActionScope ).DestroyNTokens( ht, args.Count );
 
 		// Track drowned invaders' health
 		if(args.Token.Class.Category == TokenCategory.Invader)

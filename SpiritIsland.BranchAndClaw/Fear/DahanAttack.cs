@@ -31,7 +31,7 @@ public class DahanAttack : FearCardBase, IFearCard {
 
 		// each player chooses a different land with towns/cities.  
 		var options = ctx.GameState.AllActiveSpaces
-			.Where( s => s.HasAny(Invader.Town,Invader.City) )
+			.Where( s => s.HasAny(Invader.Town_City) )
 			.Select( x => x.Space )
 			.ToList();
 

@@ -7,11 +7,11 @@ public class BlightTokenBindingNoEvents : TokenBindingNoEvents {
 
 	/// <summary> Allows Power Cards to block blight on this space. </summary>
 	public bool Blocked {
-		get => tokens[blockBlightToken] > 0;
-		set => tokens.Init( blockBlightToken, value ? 1 : 0 );
+		get => _tokens[blockBlightToken] > 0;
+		set => _tokens.Init( blockBlightToken, value ? 1 : 0 );
 	}
 
-	public new BlightTokenBinding Bind(UnitOfWork guid) => new BlightTokenBinding(tokens, guid);
+	public new BlightTokenBinding Bind(UnitOfWork guid) => new BlightTokenBinding(_tokens, guid);
 
 	static readonly UniqueToken blockBlightToken = new UniqueToken( "block-blight", 'X', Img.None, TokenCategory.None );
 
@@ -21,12 +21,12 @@ public class BlightTokenBindingNoEvents : TokenBindingNoEvents {
 
 public class BlightTokenBinding : BlightTokenBindingNoEvents {
 
-	readonly UnitOfWork _actionScope;
+	readonly ActionableSpaceState _actionTokens;
 
 	public BlightTokenBinding( SpaceState tokens, UnitOfWork actionScope )
 		:base( tokens ) 
 	{
-		_actionScope = actionScope;
+		_actionTokens = tokens.Bind( actionScope );
 	}
 
 	// Add:
@@ -36,13 +36,13 @@ public class BlightTokenBinding : BlightTokenBindingNoEvents {
 	// Event?  So it doesn't need to know about other spaces & gamestate?
 	public async Task Add( int count, AddReason reason = AddReason.Added ) {
 		if(!Blocked)
-			await this.tokens.Add( TokenType.Blight, count, _actionScope, reason );
+			await _actionTokens.Add( TokenType.Blight, count, reason );
 	}
 
 	// Remove:
 	// override by trickster
 	public virtual Task Remove( int count, RemoveReason reason = RemoveReason.Removed ) {
-		return this.tokens.Remove( TokenType.Blight, count, _actionScope, reason );
+		return _actionTokens.Remove( TokenType.Blight, count, reason );
 	}
 
 }

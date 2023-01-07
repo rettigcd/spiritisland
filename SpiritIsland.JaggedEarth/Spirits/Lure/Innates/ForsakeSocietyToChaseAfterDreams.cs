@@ -15,13 +15,13 @@ public class ForsakeSocietyToChaseAfterDreams {
 
 	[InnateOption("2 moon,1 air","Instead, replace 1 town with 2 explorer.")]
 	public static Task Option2(TargetSpaceCtx ctx ) {
-		return Dissolve(ctx,Invader.Town,Invader.Explorer);
+		return Dissolve(ctx,Invader.Explorer_Town);
 	}
 
 	// 4 moon 2 air 1 animal - instead, replace 1 city with 3 explorer.
 	[InnateOption("4 moon,2 air,1 animal","Instead, replace 1 city with 3 explorer.")]
 	public static Task Option3(TargetSpaceCtx ctx ) {
-		return Dissolve(ctx,Invader.City,Invader.Town,Invader.Explorer);
+		return Dissolve(ctx,Invader.Any);
 	}
 
 	static async Task Dissolve(TargetSpaceCtx ctx, params HealthTokenClass[] invaderCats) {
@@ -44,7 +44,7 @@ public class ForsakeSocietyToChaseAfterDreams {
 			.MoveUpToN();
 
 		// If town/city remain, 1 fear.
-		if( ctx.Tokens.HasAny(Invader.Town,Invader.City) )
+		if( ctx.Tokens.HasAny(Invader.Town_City) )
 			ctx.AddFear(1);
 	}
 

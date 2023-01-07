@@ -22,7 +22,7 @@ public class StrongAndConstantCurrents{
 	static Task PushToAdjacenCostalAction( TargetSpaceCtx ctx ) {
 		return ctx.Pusher
 			.FilterDestinations( a=>a.Space.IsCoastal )
-			.AddGroup(1, Invader.Explorer, Invader.Town)
+			.AddGroup(1, Invader.Explorer_Town)
 			.MoveUpToN();
 	}
 

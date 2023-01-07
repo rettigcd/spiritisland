@@ -11,7 +11,7 @@ public class Drought {
 		await ctx.Invaders.DestroyNOfClass( 3, Invader.Town );
 
 		// 1 damage to each town/city
-		await ctx.DamageEachInvader( 1, Invader.Town, Invader.City );
+		await ctx.DamageEachInvader( 1, Invader.Town_City );
 
 		// add 1 blight
 		await ctx.AddBlight(1);

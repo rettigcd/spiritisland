@@ -21,7 +21,7 @@ public class PlanForDeparture : FearCardBase, IFearCard {
 
 		// Each player may gather 1 explorer / town into a costal land.
 		await Cmd.EachSpirit( 
-			Cmd.GatherUpToNInvaders( 1, Invader.Explorer, Invader.Town )
+			Cmd.GatherUpToNInvaders( 1, Invader.Explorer_Town )
 				.To( staceCtx => staceCtx.IsCoastal, "coastal land" )
 		).Execute( ctx );
 
@@ -34,7 +34,7 @@ public class PlanForDeparture : FearCardBase, IFearCard {
 
 		// Each player may gather 2 explorer / town into a costal land.
 		await Cmd.EachSpirit( 
-			Cmd.GatherUpToNInvaders( 2, Invader.Explorer, Invader.Town )
+			Cmd.GatherUpToNInvaders( 2, Invader.Explorer_Town )
 				.To( staceCtx => staceCtx.IsCoastal, "coastal land" )
 		).Execute( ctx );
 

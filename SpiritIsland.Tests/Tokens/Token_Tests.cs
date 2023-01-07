@@ -36,7 +36,7 @@ public class Token_Tests {
 		SpaceState spaceState = gs.AllSpaces.First( s=>IsInPlay(s.Space) && !s.HasInvaders() );
 		//   And: 1 neighboring town
 		var neighbor = spaceState.Adjacent.First();
-		neighbor.AdjustDefault(Invader.Town,1);
+		neighbor.AdjustDefault( Invader.Town, 1 );
 		//   And: 1 wilds there
 		spaceState.Wilds.Init(1);
 

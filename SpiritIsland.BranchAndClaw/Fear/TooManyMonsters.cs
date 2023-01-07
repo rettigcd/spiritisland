@@ -28,7 +28,7 @@ public class TooManyMonsters : FearCardBase, IFearCard {
 
 		// Each player removes 2 explorers and 2 towns from a land with beast or 1 explorer/town from a land adjacent to beast
 		foreach(var spirit in ctx.Spirits)
-			await RemoveTokenChoice( spirit, 2, Invader.Explorer, Invader.Town );
+			await RemoveTokenChoice( spirit, 2, Invader.Explorer_Town );
 	}
 
 	static Task RemoveTokenChoice( SelfCtx ctx, int countToRemoveFromBeastSpace, params TokenClass[] interiorGroup ) {
@@ -42,7 +42,7 @@ public class TooManyMonsters : FearCardBase, IFearCard {
 		return ctx.SelectActionOption(
 
 			new SelfAction($"Remove {countToRemoveFromBeastSpace} explorer(s) & {countToRemoveFromBeastSpace} town(s) from a land with beast", spiritCtx => { 
-				return spiritCtx.RemoveTokenFromOneSpace( landsWithBeasts.Select( s => s.Space ), countToRemoveFromBeastSpace, Invader.Explorer, Invader.Town );
+				return spiritCtx.RemoveTokenFromOneSpace( landsWithBeasts.Select( s => s.Space ), countToRemoveFromBeastSpace, Invader.Explorer_Town );
 			}),
 
 			new SelfAction("Remove 1 "+ interiorGroup.Select(x=>x.Label).Join("/") +" from a land adjacent to beast", spiritCtx => {

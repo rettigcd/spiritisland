@@ -8,7 +8,7 @@ public class EnticingSplendor {
 	public static Task ActAsync( TargetSpaceCtx ctx) {
 
 		return ctx.SelectActionOption(
-			new SpaceAction( "Gather 1 explorer/town", ctx => ctx.GatherUpTo( 1, Invader.Explorer, Invader.Town ) ),
+			new SpaceAction( "Gather 1 explorer/town", ctx => ctx.GatherUpTo( 1, Invader.Explorer_Town ) ),
 			new SpaceAction( "Gather up to 2 dahan", ctx => ctx.GatherUpToNDahan( 2 ) )
 		);
 

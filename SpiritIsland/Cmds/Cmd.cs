@@ -13,12 +13,12 @@ public static partial class Cmd {
 	static public SpaceAction PushUpToNExplorers( int count ) => new SpaceAction( $"Push up to {count} Explorers", ctx => ctx.PushUpTo(count,Invader.Explorer)).Matches( ctx=>ctx.Tokens.Has( Invader.Explorer ) );
 	static public SpaceAction PushUpToNTowns( int count ) => new SpaceAction( $"Push up to {count} Towns", ctx=>ctx.PushUpTo(count,Invader.Town)).Matches( ctx=>ctx.Tokens.Has( Invader.Town ) );
 	static public SpaceAction PushUpToNInvaders( int count, params TokenClass[] classes ) => new SpaceAction( $"Push up to {count} "+ classes.Select( c => c.Label ).Join( "/" ), ctx => ctx.PushUpTo( count, classes ) ).Matches( ctx => ctx.Tokens.HasAny( classes ) );
-	static public SpaceAction PushExplorersOrTowns( int count ) => new SpaceAction( $"Push {count} explorers or towns", ctx => ctx.Push( count, Invader.Town, Invader.Explorer ) ).Matches( ctx=>ctx.Tokens.HasAny( Invader.Explorer, Invader.Town ) );
+	static public SpaceAction PushExplorersOrTowns( int count ) => new SpaceAction( $"Push {count} explorers or towns", ctx => ctx.Push( count, Invader.Explorer_Town ) ).Matches( ctx=>ctx.Tokens.HasAny( Invader.Explorer_Town ) );
 
 	// -- Add ---
-	static public SpaceAction AddDahan( int count ) => new SpaceAction( count == 1 ? "Add 1 Dahan" : $"Add {count} Dahan", ctx => ctx.Tokens.AddDefault( TokenType.Dahan, count, ctx.ActionScope ) );
-	static public SpaceAction AddTown( int count ) => new SpaceAction( count == 1 ? "Add 1 Town" : $"Add {count} Towns", ctx => ctx.Tokens.AddDefault(Invader.Town, count, ctx.ActionScope ) );
-	static public SpaceAction AddCity( int count ) => new SpaceAction( count == 1 ? "Add 1 City" : $"Add {count} Cities", ctx => ctx.Tokens.AddDefault(Invader.City, count, ctx.ActionScope ) );
+	static public SpaceAction AddDahan( int count ) => new SpaceAction( count == 1 ? "Add 1 Dahan" : $"Add {count} Dahan", ctx => ctx.Tokens.AddDefault( TokenType.Dahan, count ) );
+	static public SpaceAction AddTown( int count ) => new SpaceAction( count == 1 ? "Add 1 Town" : $"Add {count} Towns", ctx => ctx.Tokens.AddDefault(Invader.Town, count ) );
+	static public SpaceAction AddCity( int count ) => new SpaceAction( count == 1 ? "Add 1 City" : $"Add {count} Cities", ctx => ctx.Tokens.AddDefault(Invader.City, count ) );
 	static public SpaceAction AddBlightedIslandBlight => new SpaceAction("Add 1 blight", ctx => ctx.AddBlight(1,AddReason.SpecialRule) );
 	static public SpaceAction AddWilds( int count ) => new SpaceAction( $"Add {count} Wilds.", ctx => ctx.Wilds.Add(count) );
 	static public SpaceAction AddBadlands( int badLandCount ) => new SpaceAction( $"Add {badLandCount} badlands", ctx => ctx.Badlands.Add( badLandCount ) );
@@ -30,10 +30,10 @@ public static partial class Cmd {
 	static public SpaceAction RemoveBlight => new SpaceAction("Remove 1 blight", ctx => ctx.Blight.Remove(1, RemoveReason.ReturnedToCard ));
 
 	static public SpaceAction RemoveExplorers(int count) => RemoveUpToNTokens(count,Invader.Explorer);
-	static public SpaceAction RemoveExplorersOrTowns(int count) => RemoveUpToNTokens(count,Invader.Explorer,Invader.Town);
-	static public SpaceAction RemoveTowns(int count) => RemoveUpToNTokens(count,Invader.Explorer,Invader.Town);
-	static public SpaceAction RemoveCities(int count) => RemoveUpToNTokens(count,Invader.Explorer,Invader.City);
-	static public SpaceAction RemoveInvaders(int count) => RemoveUpToNTokens(count,Invader.Explorer,Invader.Town,Invader.City);
+	static public SpaceAction RemoveExplorersOrTowns(int count) => RemoveUpToNTokens(count,Invader.Explorer_Town);
+	static public SpaceAction RemoveTowns(int count) => RemoveUpToNTokens(count,Invader.Explorer_Town);
+	static public SpaceAction RemoveCities(int count) => RemoveUpToNTokens(count,Invader.City);
+	static public SpaceAction RemoveInvaders(int count) => RemoveUpToNTokens(count,Invader.Any);
 
 	static public SpaceAction RemoveUpToNTokens(int count,params TokenClass[] tokenClasses) {
 		Func<TokenClass,string> selector = count==1 ? t=>t.Label : t=>t.Label+"s";
@@ -63,7 +63,7 @@ public static partial class Cmd {
 
 	// -- Damage --
 	static public SpaceAction DamageToTownOrExplorer(int damage) => new SpaceAction($"{damage} damage to Explorer or Town", ctx => ExplorerTownsTakeDamage(ctx,damage) );
-	static Task ExplorerTownsTakeDamage(TargetSpaceCtx ctx, int damage) => ctx.DamageInvaders(damage,Invader.Explorer,Invader.Town);
+	static Task ExplorerTownsTakeDamage(TargetSpaceCtx ctx, int damage) => ctx.DamageInvaders(damage,Invader.Explorer_Town);
 	// -- Destroy --
 	static public SpaceAction DestroyTown( int count ) => new SpaceAction($"Destroy {count} Towns", ctx=>ctx.Invaders.DestroyNOfClass(count,Invader.Town)).Matches(x=>x.Tokens.Has(Invader.Town));
 

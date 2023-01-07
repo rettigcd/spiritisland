@@ -8,7 +8,7 @@ public class ACircuitousAndWendingJourney {
 
 		var pusher = ctx.Pusher;
 		// Push up to half( round up ) of Invaders from target land.
-		AddHalf( pusher, ctx.Tokens, Invader.Explorer, Invader.Town, Invader.City );
+		AddHalf( pusher, ctx.Tokens, Invader.Any );
 		// Do likewise( separately) for dahan, presence, and beast.
 		AddHalf( pusher, ctx.Tokens, TokenType.Dahan );
 		AddHalf( pusher, ctx.Tokens, ctx.AllPresenceTokens );

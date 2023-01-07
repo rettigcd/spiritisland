@@ -18,7 +18,7 @@ public class ExploreEngine {
 	static protected SpaceState[] PreExplore( InvaderCard card, GameState gs ) {
 
 		// Modify
-		static bool IsExplorerSource( SpaceState space ) => space.Space.IsOcean || space.HasAny( Invader.Town, Invader.City );
+		static bool IsExplorerSource( SpaceState space ) => space.Space.IsOcean || space.HasAny( Invader.Town_City );
 
 		var sources = gs.AllActiveSpaces
 			.Where( IsExplorerSource )
@@ -69,7 +69,7 @@ public class ExploreEngine {
 				return;
 
 		gs.Log( new SpaceExplored( tokens.Space ) );
-		await tokens.AddDefault( Invader.Explorer, 1, actionScope, AddReason.Explore );
+		await tokens.Bind( actionScope ).AddDefault( Invader.Explorer, 1, AddReason.Explore );
 	}
 
 }

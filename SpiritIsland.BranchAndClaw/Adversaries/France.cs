@@ -108,17 +108,17 @@ public class France : IAdversary {
 			SpaceToken[] options = boardCtx.FindTokens( Invader.Town );
 			var st = await boardCtx.Decision( new Select.TokenFromManySpaces( "Add strife to town", options, Present.Always ) );
 			if(st != null)
-				await boardCtx.GameState.Tokens[st.Space].AddStrifeTo( (HealthToken)st.Token, boardCtx.ActionScope, 1 );
+				await boardCtx.TokensOn(st.Space).AddStrifeTo( (HealthToken)st.Token, 1 );
 		} );
 
 	static DecisionOption<BoardCtx> Add2StrifeToCityOrTown => new DecisionOption<BoardCtx>(
 		"Add 2 strife to any city/town"
 		, async boardCtx => {
-			SpaceToken[] options = boardCtx.FindTokens( Invader.Town, Invader.City );
+			SpaceToken[] options = boardCtx.FindTokens( Invader.Town_City );
 			for(int i = 0; i < 2; ++i) {
 				var st = await boardCtx.Decision( new Select.TokenFromManySpaces( $"Add strife ({i+1} of 2)", options, Present.Always ) );
 				if(st != null)
-					await boardCtx.GameState.Tokens[st.Space].AddStrifeTo( (HealthToken)st.Token, boardCtx.ActionScope, 1 );
+					await boardCtx.TokensOn(st.Space).AddStrifeTo( (HealthToken)st.Token, 1 );
 			}
 		} );
 
@@ -128,7 +128,7 @@ public class France : IAdversary {
 			SpaceToken[] options = boardCtx.FindTokens( Invader.Town );
 			var st = await boardCtx.Decision( new Select.TokenFromManySpaces( "Destory a town", options, Present.Always ) );
 			if(st != null)
-				await boardCtx.GameState.Tokens[st.Space].Destroy( st.Token, 1, boardCtx.ActionScope );
+				await boardCtx.TokensOn(st.Space).Destroy( st.Token, 1 );
 		} );
 
 	public ScenarioLevel[] Adjustments => Array.Empty<ScenarioLevel>(); // !!!

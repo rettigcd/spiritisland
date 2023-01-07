@@ -59,9 +59,9 @@ public class Bringer_GrowthTests : GrowthTests {
 
 		Given_HasPresence(board[5]);
 		_gameState.DahanOn(board[6]).Init(1);
-		_gameState.Tokens[board[7]].AdjustDefault(Invader.Explorer,1);
-		_gameState.Tokens[board[8]].AdjustDefault(Invader.Town,1);
-		_gameState.Tokens[board[0]].AdjustDefault(Invader.City,1);
+		_gameState.Tokens[board[7]].AdjustDefault( Invader.Explorer, 1 );
+		_gameState.Tokens[board[8]].AdjustDefault( Invader.Town, 1 );
+		_gameState.Tokens[board[0]].AdjustDefault( Invader.City, 1 );
 
 		// add presense range 4 Dahan or Invadors, +2 energy
 		When_StartingGrowth();

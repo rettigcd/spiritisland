@@ -227,7 +227,7 @@ public class SpiritPresence {
 	#region Is this Setup or Game play?
 
 	public async virtual Task PlaceOn( SpaceState space, UnitOfWork actionScope ) {
-		await space.Add(Token,1,actionScope);
+		await space.Bind( actionScope ).Add(Token,1);
 	}
 	public virtual void Adjust( SpaceState space, int count ) {
 		space.Adjust( Token, count );

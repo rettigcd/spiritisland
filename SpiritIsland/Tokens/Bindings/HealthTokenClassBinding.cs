@@ -1,22 +1,22 @@
 ﻿namespace SpiritIsland;
 
-public class DahanGroupBindingNoEvents {
+public class HealthTokenClassBinding_NoEvents {
 
 	readonly protected SpaceState _tokens;
 	readonly protected HealthTokenClass _tokenClass;
 
-	public DahanGroupBindingNoEvents( SpaceState tokens ) {
+	public HealthTokenClassBinding_NoEvents( SpaceState tokens, HealthTokenClass tokenClass ) {
 		_tokens = tokens;
-		_tokenClass = TokenType.Dahan;
+		_tokenClass = tokenClass;
 	}
 
-	public DahanGroupBindingNoEvents( DahanGroupBindingNoEvents src ) {
+	public HealthTokenClassBinding_NoEvents( HealthTokenClassBinding_NoEvents src ) {
 		_tokens = src._tokens;
 		_tokenClass = TokenType.Dahan;
 	}
 
 	#region All TokenCategory.Dahan, including Frozen/Stasis
-	public bool Any => _tokens.Has( TokenCategory.Dahan );
+	public bool Any => _tokens.Has( TokenCategory.Dahan );	// This method canNOT be repurposed for Invaders because multiple share the .Invader category
 	public int CountAll => _tokens.Sum( TokenCategory.Dahan );
 	#endregion
 
@@ -29,43 +29,39 @@ public class DahanGroupBindingNoEvents {
 
 	public void Init( Token token, int count ) => _tokens.Init( token, count );
 
-	public DahanGroupBinding Bind( UnitOfWork actionScope ) => new DahanGroupBinding(this,actionScope);
+	public HealthTokenClassBinding Bind( UnitOfWork actionScope ) => new HealthTokenClassBinding(this,actionScope);
 }
 
-public class DahanGroupBinding : DahanGroupBindingNoEvents {
+public class HealthTokenClassBinding : HealthTokenClassBinding_NoEvents {
 
+	ActionableSpaceState ActionTokens => _actionTokens ??= _tokens.Bind(_actionScope);
+	ActionableSpaceState _actionTokens;
 	readonly UnitOfWork _actionScope;
 
 	#region constructors
 
-	public DahanGroupBinding( DahanGroupBindingNoEvents src, UnitOfWork actionScope ):base(src) {
+	public HealthTokenClassBinding( HealthTokenClassBinding_NoEvents src, UnitOfWork actionScope ):base(src) {
 		_actionScope = actionScope;
 	}
 
-	public DahanGroupBinding( SpaceState tokens, UnitOfWork actionScope ):base(tokens) {
+	public HealthTokenClassBinding( SpaceState tokens, HealthTokenClass tokenClass, UnitOfWork actionScope ):base(tokens,tokenClass ) {
 		_actionScope = actionScope;
 	}
 
 	#endregion
 
-	/// <summary> Adds a Dahan from the bag, or out of thin air. </summary>
+	/// <summary> Adds a Token from the bag, or out of thin air. </summary>
 	public Task Add( int count, AddReason reason = AddReason.Added ) {
-		return _tokens.AddDefault( TokenType.Dahan, count, _actionScope, reason );
+		return ActionTokens.AddDefault( TokenType.Dahan, count, reason );
 	}
 
 	// Called from .Move() and .Dissolve the Bonds
-	public async Task<Token> Remove1( RemoveReason reason, Token toRemove ) {
+	public async Task<Token> Remove1( Token toRemove, RemoveReason reason ) {
 		if( _tokens[toRemove] == 0 )
 			return null; // unable to remove desired token
 
-		await _tokens.Remove( toRemove, 1, _actionScope, reason );
+		await ActionTokens.Remove( toRemove, 1, reason );
 		return toRemove;
-	}
-
-	// Called from Ocean-Drown special rule.
-	public async Task Drown() {
-		foreach( HealthToken token in NormalKeys)
-			await DestroyToken( _tokens[token], token );
 	}
 
 	#region Damage
@@ -83,7 +79,7 @@ public class DahanGroupBinding : DahanGroupBindingNoEvents {
 				_tokens.Adjust( newToken, origCount );
 			} else
 				// or destory
-				await DestroyToken( origCount, token );
+				await DestroyToken( token, origCount );
 		}
 
 	}
@@ -105,7 +101,7 @@ public class DahanGroupBinding : DahanGroupBindingNoEvents {
 
 			HealthToken damagedToken = mostHealthy.AddDamage( 1 );
 			if(damagedToken.IsDestroyed) {
-				await DestroyToken( countToApply1DamageTo, mostHealthy );
+				await DestroyToken( mostHealthy, countToApply1DamageTo );
 			} else {
 				_tokens.Adjust( mostHealthy, -countToApply1DamageTo );
 				_tokens.Adjust( damagedToken, countToApply1DamageTo );
@@ -120,7 +116,7 @@ public class DahanGroupBinding : DahanGroupBindingNoEvents {
 		// Destroy what can be destroyed
 		if(token.RemainingHealth <= remainingDamageToDahan) {
 			int countDestroyed = remainingDamageToDahan / token.RemainingHealth;
-			await DestroyToken( countDestroyed, token );
+			await DestroyToken( token, countDestroyed );
 			remainingDamageToDahan -= countDestroyed * token.RemainingHealth;
 		}
 		// if there is still partial damage we can apply
@@ -137,14 +133,7 @@ public class DahanGroupBinding : DahanGroupBindingNoEvents {
 
 	#region Destroy
 
-	public virtual async Task DestroyAll() {
-
-		var before = NormalKeys.OrderBy( x => x.RemainingHealth ).ToArray(); // least health first.
-		foreach(var token in before)
-			await token.DestroyAll(_tokens,_actionScope);
-	}
-
-
+	// !!! This destroy is using Least-Efficient, for Invaders, we want this to be MOST efficient
 	public async Task Destroy( int countToDestroy ) {
 
 		var before = NormalKeys
@@ -153,13 +142,18 @@ public class DahanGroupBinding : DahanGroupBindingNoEvents {
 		foreach(var token in before) {
 			// Destroy what can be destroyed
 			int destroyed = Math.Min(countToDestroy, _tokens[token]);
-			await DestroyToken( destroyed, token );
+			await DestroyToken( token, destroyed );
 			countToDestroy -= destroyed;
 		}
 	}
 
-	public virtual async Task<int> DestroyToken( int count, HealthToken original ) {
-		return await original.Destroy( _tokens, count, _actionScope );
+	public virtual async Task<int> DestroyToken( HealthToken token, int count ) {
+		return await token.Destroy( ActionTokens, count );
+	}
+
+	public virtual async Task DestroyAll() {
+		foreach(HealthToken token in NormalKeys.ToArray())
+			await token.DestroyAll( ActionTokens );
 	}
 
 	#endregion

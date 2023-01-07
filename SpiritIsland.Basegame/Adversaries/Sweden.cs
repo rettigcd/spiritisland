@@ -65,7 +65,7 @@ public class Sweden : IAdversary {
 			foreach(var board in gameState.Island.Boards) {
 				// If there are 2 spaces with 'least # of invaders', just auto-picks one of them.
 				var leastInvaderSpace = board.Spaces.Select(gameState.Tokens.GetTokensFor).Where(card.MatchesCard).OrderBy(s=>s.InvaderTotal()).First();
-				leastInvaderSpace.AdjustDefault(Invader.Town,1);
+				leastInvaderSpace.AdjustDefault( Invader.Town, 1 );
 			}
 		}
 
@@ -77,7 +77,7 @@ public class Sweden : IAdversary {
 			var mod = new TokenAddedHandler("Sweden", args => {
 				if(args.Reason == AddReason.Ravage && args.Token == TokenType.Blight) {
 					var noBuildAdjacents = args.AddedTo.Adjacent
-						.Where( adj => !adj.HasAny( Invader.Town, Invader.City ) )
+						.Where( adj => !adj.HasAny( Invader.Town_City ) )
 						.ToArray();
 
 					// !!! user select which space to add it to

@@ -58,20 +58,20 @@ public class BrandenburgPrussia : IAdversary {
 		// s.SumAny(Invader.Town,Invader.City)
 
 		var boards = gs.Island.Boards
-			.Where( b => b.Spaces.Any( s => counts[s].SumAny( Invader.Town, Invader.City ) > 0 ) )
+			.Where( b => b.Spaces.Any( s => counts[s].SumAny( Invader.Town_City ) > 0 ) )
 			.ToHashSet();
 
 		var terrainMapper = gs.Island.Terrain;
 
 		var buildSpaces = counts.Values
-			.Where( ss => boards.Contains( ss.Space.Board ) && ss.SumAny( Invader.Town, Invader.City ) == 0 && terrainMapper.IsInPlay( ss ) )
+			.Where( ss => boards.Contains( ss.Space.Board ) && ss.SumAny( Invader.Town_City ) == 0 && terrainMapper.IsInPlay( ss ) )
 			.GroupBy( space => space.Space.Board )
 			.Select( grp => grp.OrderBy( ss => ss.Space.Text ).First() ) // (!! simplification) when multiple, select closest to coast.
 			.ToArray();
 
 		using UnitOfWork actionScope = gs.StartAction( ActionCategory.Default );
 		foreach(SpaceState bs in buildSpaces)
-			bs.AddDefault(Invader.Town,1, actionScope, AddReason.Build);
+			bs.Bind(actionScope).AddDefault(Invader.Town, 1, AddReason.Build);
 
 		return Task.CompletedTask;
 	}

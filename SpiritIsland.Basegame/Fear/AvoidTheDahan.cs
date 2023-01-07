@@ -7,7 +7,7 @@ public class AvoidTheDahan : FearCardBase, IFearCard {
 
 	[FearLevel(1, "Invaders do not Explore into lands with at least 2 Dahan." )]
 	public Task Level1( GameCtx ctx ) {
-		static bool DahanMin2( GameCtx _, SpaceState space ) => space.SumAny( Invader.City, Invader.Town ) < space.Dahan.CountAll;
+		static bool DahanMin2( GameCtx _, SpaceState space ) => space.SumAny( Invader.Town_City ) < space.Dahan.CountAll;
 		ctx.GameState.AddToAllActiveSpaces( new SkipExploreTo_Custom( Name, true, DahanMin2 ) );
 		return Task.CompletedTask;
 	}
@@ -16,7 +16,7 @@ public class AvoidTheDahan : FearCardBase, IFearCard {
 	public Task Level2( GameCtx ctx ) {
 
 		static bool DahanOutNumberBuildings( GameCtx _, SpaceState space, TokenClass _1 )
-			=> space.SumAny( Invader.City, Invader.Town ) < space.Dahan.CountAll;
+			=> space.SumAny( Invader.Town_City ) < space.Dahan.CountAll;
 
 		ctx.GameState.AddToAllActiveSpaces( new SkipBuild_Custom( Name, true, DahanOutNumberBuildings ) );
 

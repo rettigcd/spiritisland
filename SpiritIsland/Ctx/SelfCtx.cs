@@ -40,7 +40,7 @@ public class SelfCtx {
 	/// Used for Gathering / Pushing (and other stuff)
 	/// </summary>
 	public Task Move(Token token, Space from, Space to )
-		=> Target(from).Tokens.MoveTo( token, to, ActionScope );
+		=> Target(from).Tokens.MoveTo( token, to );
 
 	public Task<bool> YouHave( string elementString ) => Self.HasElements( ElementCounts.Parse(elementString) );
 
@@ -71,6 +71,8 @@ public class SelfCtx {
 		var space = await Decision( new Select.Space(prompt, Presence.SpaceStates, Present.Always ) );
 		return Target( space );
 	}
+
+	public virtual ActionableSpaceState TokensOn( Space space ) => GameState.Tokens[space].Bind( ActionScope );
 
 	public async Task FlipFearCard( IFearCard cardToFlip, bool activating = false ) {
 		string label = activating ? "Activating Fear" : "Done";
@@ -141,7 +143,7 @@ public class SelfCtx {
 		var options = spaceCtx.Tokens.OfAnyClass(removables);
 		while(0<count && 0<options.Length) {
 			var tokenToRemove = await spaceCtx.Self.Gateway.Decision( Select.TokenFrom1Space.TokenToRemove(spaceCtx.Space, count, options, Present.Always) );
-			await spaceCtx.Tokens.Remove(tokenToRemove,1,ActionScope);
+			await spaceCtx.Tokens.Remove(tokenToRemove,1);
 			options = spaceCtx.Tokens.OfAnyClass( removables ); // next
 			--count;
 		}

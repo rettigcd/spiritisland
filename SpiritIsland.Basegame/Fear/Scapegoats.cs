@@ -26,7 +26,7 @@ public class Scapegoats : FearCardBase, IFearCard {
 		var gs = ctx.GameState;
 		foreach(var space in gs.AllActiveSpaces) {
 			var grp = gs.Invaders.On( space.Space, ctx.ActionScope );
-			await grp.DestroyNOfClass( int.MaxValue, Invader.Explorer );
+			await grp.DestroyAll( Invader.Explorer );
 			await EachCityDestroys1Town( grp );
 		
 		}

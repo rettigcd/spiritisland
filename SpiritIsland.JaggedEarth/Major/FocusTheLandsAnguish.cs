@@ -5,7 +5,7 @@ public class FocusTheLandsAnguish {
 	[MajorCard("Focus the Land's Anguish",5,Element.Sun), Slow, FromPresence(1)]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 		// If this power Destroys any town/city, 5 fear.
-		static int calcUnits(TargetSpaceCtx ctx) => ctx.Tokens.SumAny(Invader.Town,Invader.City);
+		static int calcUnits(TargetSpaceCtx ctx) => ctx.Tokens.SumAny(Invader.Town_City);
 		int initialCount = calcUnits(ctx);
 
 		// Gather up to 5 blight.

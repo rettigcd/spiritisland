@@ -45,7 +45,7 @@ public class SeekSafety : FearCardBase, IFearCard {
 		var gs = ctx.GameState;
 		foreach(var spiritCtx in ctx.Spirits) {
 			var options = gs.AllActiveSpaces
-				.Where( s => s.HasAny(Invader.Town,Invader.City) )
+				.Where( s => s.HasAny(Invader.Town_City) )
 				.Select(s=>s.Space)
 				.ToArray();
 			if(options.Length == 0) break;

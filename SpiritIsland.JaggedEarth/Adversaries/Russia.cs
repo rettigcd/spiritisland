@@ -81,7 +81,7 @@ public class Russia : IAdversary {
 			for(int i = 0; i < 2; ++i) {
 				var criteria = new Select.Space( $"Escalation - Add Explorer for board {board.Name} ({i + 1} of 2)", addSpaces.Select( x => x.Space ), Present.Always );
 				var addSpace = await spirit.Gateway.Decision( criteria );
-				await gameState.Tokens[addSpace].AddDefault( Invader.Explorer, 1, actionScope, AddReason.Explore );
+				await gameState.Tokens[addSpace].Bind( actionScope ).AddDefault( Invader.Explorer, 1, AddReason.Explore );
 			}
 		}
 	}
@@ -131,7 +131,7 @@ public class Russia : IAdversary {
 		foreach(var board in gameState.Island.Boards) {
 			var highestLandWithoutTownCity = board.Spaces
 				.Select(gameState.Tokens.GetTokensFor)
-				.Where(x=>x.SumAny(Invader.Town,Invader.City)==0)
+				.Where(x=>x.SumAny(Invader.Town_City)==0)
 				.Last();
 			highestLandWithoutTownCity.AdjustDefault(Invader.Explorer,1);
 			highestLandWithoutTownCity.Adjust(TokenType.Beast,1);

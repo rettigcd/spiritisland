@@ -14,7 +14,7 @@ public class HarbingersOfTheLightning {
 
 		// if pushed dahan into town or city
 		bool pushedToBuildingSpace = destinationSpaces
-			.Any( neighbor => ctx.Target(neighbor).Tokens.HasAny(Invader.Town,Invader.City) );
+			.Any( neighbor => ctx.Target(neighbor).Tokens.HasAny(Invader.Town_City) );
 
 		if(pushedToBuildingSpace)
 			ctx.AddFear(1);

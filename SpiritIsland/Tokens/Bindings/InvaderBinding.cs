@@ -5,14 +5,16 @@ public class InvaderBinding {
 	#region constructor
 
 	public InvaderBinding( SpaceState tokens, UnitOfWork actionScope) {
-		this.Tokens = tokens;
-		this.ActionScope = actionScope ?? throw new ArgumentNullException(nameof(actionScope));
+		Tokens = tokens.Bind( actionScope ?? throw new ArgumentNullException( nameof( actionScope ) ) );
+	}
+
+	public InvaderBinding( ActionableSpaceState tokens ) {
+		Tokens = tokens;
 	}
 
 	#endregion
 
-	public UnitOfWork ActionScope;
-	public readonly SpaceState Tokens;
+	public readonly ActionableSpaceState Tokens;
 
 	#region Apply Damage To...
 
@@ -50,20 +52,21 @@ public class InvaderBinding {
 			Tokens.Adjust( invaderToken, -1 );
 			Tokens.Adjust( damagedInvader, 1 );
 		} else
-			await DestroyNTokens( 1, invaderToken );
+			await DestroyNTokens( invaderToken, 1 );
 	}
 
-	protected virtual HealthToken GetNewDamagedToken( HealthToken invaderToken, int availableDamage ) => invaderToken.AddDamage( availableDamage );
+	protected virtual HealthToken GetNewDamagedToken( HealthToken invaderToken, int availableDamage ) 
+		=> Tokens.GetNewDamagedToken( invaderToken, availableDamage );
 
 
 	#endregion
 
 	#region Destroy
 
-	public async Task DestroyAll( params HealthTokenClass[] tokenClasses ) {
+	public virtual async Task DestroyAll( params HealthTokenClass[] tokenClasses ) {
 		var tokensToDestroy = Tokens.OfAnyHealthClass( tokenClasses ).ToArray();
 		foreach(var token in tokensToDestroy)
-			await token.DestroyAll( Tokens, ActionScope );
+			await token.DestroyAll( Tokens );
 	}
 
 	public async Task DestroyNOfAnyClass( int count, params HealthTokenClass[] generics ) {
@@ -94,15 +97,15 @@ public class InvaderBinding {
 				.ThenBy( x => x.StrifeCount )
 				.ThenBy( x => x.FullDamage )
 				.First();
-			remaining -= await DestroyNTokens( remaining, next );
+			remaining -= await DestroyNTokens( next, remaining );
 		}
 
 		return countToDestroy;
 	}
 
 	// destroy TOKEN
-	public virtual Task<int> DestroyNTokens( int countToDestroy, HealthToken invaderToDestroy ) {
-		return invaderToDestroy.Destroy( Tokens, countToDestroy, ActionScope );
+	public virtual Task<int> DestroyNTokens( HealthToken invaderToDestroy, int countToDestroy ) {
+		return Tokens.DestroyNTokens( invaderToDestroy, countToDestroy );
 	}
 
 	#endregion Destroy
@@ -127,11 +130,11 @@ public class InvaderBinding {
 			.FirstOrDefault();
 
 		if(invaderToRemove != null)
-			await Tokens.Remove( invaderToRemove, 1, ActionScope );
+			await Tokens.Remove( invaderToRemove, 1 );
 	}
 
 	public Task Remove( Token token, int count, RemoveReason reason = RemoveReason.Removed )
-		=> Tokens.Remove( token, count, ActionScope, reason );
+		=> Tokens.Remove( token, count, reason );
 
 	#endregion
 
@@ -156,7 +159,7 @@ public class InvaderBinding {
 
 	public Task<int> UserSelectedDamage( int damage, Spirit damagePicker, params TokenClass[] allowedTypes ) {
 		if(allowedTypes == null || allowedTypes.Length == 0)
-			allowedTypes = new TokenClass[] { Invader.City, Invader.Town, Invader.Explorer };
+			allowedTypes = Invader.Any;
 		return UserSelectedDamage( damage, damagePicker, Present.Always, allowedTypes );
 	}
 
@@ -169,7 +172,7 @@ public class InvaderBinding {
 	async Task<int> UserSelectedDamage( int damage, Spirit damagePicker, Present present, params TokenClass[] allowedTypes ) {
 		if(damage == 0) return 0;
 		if(allowedTypes == null || allowedTypes.Length == 0)
-			allowedTypes = new TokenClass[] { Invader.Explorer, Invader.Town, Invader.City };
+			allowedTypes = Invader.Any;
 
 		Token[] invaderTokens;
 		int damageInflicted = 0;

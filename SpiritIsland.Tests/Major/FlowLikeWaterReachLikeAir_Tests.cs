@@ -18,9 +18,9 @@ public class FlowLikeWaterReachLikeAir_Tests {
 		// Given: A5 has 3 Towns, Dahans, and Explorers
 		var a5 = board[5];
 		var tokens = gameState.Tokens[a5];
-		tokens.InitDefault(TokenType.Dahan , 3);
-		tokens.InitDefault(Invader.Explorer, 3);
-		tokens.InitDefault(Invader.Town    , 3);
+		tokens.InitDefault( TokenType.Dahan, 3 );
+		tokens.InitDefault( Invader.Explorer, 3 );
+		tokens.InitDefault( Invader.Town, 3 );
 
 		//  And: spirit has presence on A5
 		spirit.Presence.PlaceOn(a5,gameState);

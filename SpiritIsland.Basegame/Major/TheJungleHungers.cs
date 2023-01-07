@@ -8,8 +8,8 @@ public class TheJungleHungers {
 	static public async Task ActAsync(TargetSpaceCtx ctx){
 
 		// destroys all explorers and towns
-		await ctx.Invaders.DestroyNOfClass( int.MaxValue, Invader.Explorer);
-		await ctx.Invaders.DestroyNOfClass( int.MaxValue, Invader.Town );
+		await ctx.Invaders.DestroyAll( Invader.Explorer);
+		await ctx.Invaders.DestroyAll( Invader.Town );
 
 		// Destroy all dahan
 		bool destroyAllDahan = true;

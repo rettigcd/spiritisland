@@ -31,7 +31,7 @@ public class UnnaturalProliferation : BlightCardBase {
 			var terrainMapper = ctx.GameState.Island.Terrain;
 			var spaceOptions = ctx.Board.Spaces
 				.Where( terrainMapper.IsInPlay )
-				.GroupBy( s=>ctx.GameState.Tokens[s].SumAny(Invader.Town,Invader.City) )
+				.GroupBy( s=>ctx.GameState.Tokens[s].SumAny(Invader.Town_City) )
 				.OrderBy( grp => grp.Key )
 				.First()
 				.ToArray();

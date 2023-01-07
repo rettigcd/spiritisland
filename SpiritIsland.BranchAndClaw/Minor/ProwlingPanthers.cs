@@ -16,7 +16,7 @@ public class ProwlingPanthers {
 	}
 
 	static Task DestroyExplorerTown( TargetSpaceCtx ctx ) {
-		return ctx.Invaders.DestroyNOfAnyClass( 1, Invader.Explorer, Invader.Town );
+		return ctx.Invaders.DestroyNOfAnyClass( 1, Invader.Explorer_Town );
 	}
 
 }

@@ -9,7 +9,7 @@ public class CastDownIntoTheBrinyDeep {
 		// 6 fear
 		ctx.AddFear(6);
 		// destroy all invaders
-		await ctx.Invaders.DestroyAll(Invader.City,Invader.Town,Invader.Explorer);
+		await ctx.Invaders.DestroyAll(Invader.Any);
 
 		// if you have (2 sun, 2 moon, 4 water, 4 earth):
 		if(await ctx.YouHave("2 sun,2 moon,4 water,4 earth"))
@@ -44,10 +44,10 @@ public class CastDownIntoTheBrinyDeep {
 
 		foreach(SpaceState space in spaces) {
 
-			var targetCtx = ctx.Target(space);
+			var targetCtx = ctx.Target(space); // !!! switch this to using ActionableSpaceState once Bringer implements it.
 
 			// Destroy Invaders
-			await targetCtx.Invaders.DestroyAll( Invader.City, Invader.Town, Invader.Explorer );
+			await targetCtx.Invaders.DestroyAll( Invader.Any );
 
 			// Destroy Dahan
 			await targetCtx.Dahan.DestroyAll();
@@ -55,7 +55,7 @@ public class CastDownIntoTheBrinyDeep {
 			if(!ctx.Self.Text.StartsWith("Bringer")) // !!!
 				// Destroy all other tokens
 				foreach(var token in space.Keys.ToArray())
-					await space.Destroy( token, space[token], ctx.ActionScope );
+					await targetCtx.Tokens.Destroy( token, space[token] );
 
 		}
 	}

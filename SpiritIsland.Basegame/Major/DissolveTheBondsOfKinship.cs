@@ -16,7 +16,7 @@ public class DissolveTheBondsOfKinship {
 
 		// replace 1 dahan with 1 explorer.
 		var toRemove = ctx.Dahan.NormalKeys.OrderBy( x => x.RemainingHealth ).FirstOrDefault();
-		if( await ctx.Dahan.Remove1(RemoveReason.Replaced, toRemove) != null )
+		if( await ctx.Dahan.Remove1( toRemove, RemoveReason.Replaced) != null )
 			await ctx.AddDefault( Invader.Explorer, 1, AddReason.AsReplacement );
 
 		// if you have 2 fire 2 water 3 animal
@@ -24,7 +24,7 @@ public class DissolveTheBondsOfKinship {
 			// before pushing, explorers and city/town do damage to each other
 			int damageFromExplorers = GetAttackDamageFrom( ctx, Invader.Explorer );
 			int damageToExplorers = GetAttackDamageFrom( ctx, Invader.City ) + GetAttackDamageFrom( ctx, Invader.Town );
-			await ctx.DamageInvaders( damageFromExplorers, Invader.City, Invader.Town );
+			await ctx.DamageInvaders( damageFromExplorers, Invader.Town_City );
 			await ctx.DamageInvaders( damageToExplorers, Invader.Explorer );
 		}
 

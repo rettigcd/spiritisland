@@ -28,10 +28,10 @@ public class TradeSuffers : FearCardBase, IFearCard {
 		var gs = ctx.GameState;
 		var tm = gs.Island.Terrain_ForFear;
 		foreach(var spirit in gs.Spirits) {
-			var options = gs.AllActiveSpaces.Where( s => tm.IsInPlay( s ) && tm.IsCoastal( s ) && s.HasAny(Invader.Town,Invader.City) ).Select(s=>s.Space).ToArray();
+			var options = gs.AllActiveSpaces.Where( s => tm.IsInPlay( s ) && tm.IsCoastal( s ) && s.HasAny(Invader.Town_City) ).Select(s=>s.Space).ToArray();
 			if(options.Length == 0) return;
 			var target = await spirit.Gateway.Decision( new Select.Space( "Replace town with explorer or city with town", options, Present.Always ));
-			await ReplaceInvader.Downgrade( spirit.BindSelf( gs, ctx.ActionScope ).Target( target ), Present.Done, Invader.Town, Invader.City );
+			await ReplaceInvader.Downgrade( spirit.BindSelf( gs, ctx.ActionScope ).Target( target ), Present.Done, Invader.Town_City );
 		}
 	}
 

@@ -21,7 +21,7 @@ public static partial class Cmd {
 			async ctx => {
 				var gs = ctx.GameState;
 				for(int boardIndex = 0; boardIndex < gs.Island.Boards.Length; ++boardIndex) {
-					BoardCtx boardCtx = new BoardCtx( BoardCtx.FindSpirit( gs, boardIndex ), gs, gs.Island.Boards[boardIndex], ctx.ActionScope );
+					BoardCtx boardCtx = new BoardCtx( gs, gs.Island.Boards[boardIndex], ctx.ActionScope );
 					await boardAction.Execute( boardCtx );
 				}
 			}

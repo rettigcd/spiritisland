@@ -78,12 +78,12 @@ public class Strife_Tests {
 
 		// Given: 1 town and 1 strifed town
 		counts.Init( StdTokens.Town, 2);
-		counts.AddStrifeTo( StdTokens.Town, default ).Wait();
+		counts.Bind( default ).AddStrifeTo( StdTokens.Town ).Wait();
 		var strifedTown = counts.OfClass(Invader.Town).Single( k => k != StdTokens.Town );
 
 		// When: move
 		var destination = space.Adjacent.First( IsInPlay );
-		_ = gs.Tokens[space].MoveTo( strifedTown, destination, gs.StartAction( ActionCategory.Default ) ); // _ = ??
+		_ = gs.Tokens[space].Bind( gs.StartAction( ActionCategory.Default ) ).MoveTo( strifedTown, destination ); // _ = ??
 
 		// Then:
 		counts.InvaderSummary().ShouldBe( "1T@2" );
@@ -110,21 +110,22 @@ public class Strife_Tests {
 		// Given: staring invaders
 		switch(startingInvaders) {
 			case "2C@2":  counts.Init( city2, 2); break;
-			case "1C@2^": counts.Init( city2, 1); counts.AddStrifeTo( city2 , default).Wait(); break;
+			case "1C@2^": counts.Init( city2, 1); counts.Bind( default ).AddStrifeTo( city2 ).Wait(); break;
 			case "1C@3,1T@2":
-				counts.InitDefault(Invader.City, 1);
-				counts.InitDefault(Invader.Town, 1);
+				counts.InitDefault( Invader.City, 1 );
+				counts.InitDefault( Invader.Town, 1 );
 				break;
 			default: throw new Exception( "staring invaders [" + startingInvaders + "] not in list" );
 		}
 
 		// When: add strife
+		var actionableSpace = counts.Bind( default );
 		switch(addTo) {
-			case "C@2": counts.AddStrifeTo( city2 , default).Wait(); break;
-			case "C@2^": counts.AddStrifeTo( city2.HavingStrife( 1 ), default ).Wait(); break;
+			case "C@2": actionableSpace.AddStrifeTo( city2 ).Wait(); break;
+			case "C@2^": actionableSpace.AddStrifeTo( city2.HavingStrife( 1 ) ).Wait(); break;
 			case "1C@3,1T@2":
-				counts.AddStrifeTo( StdTokens.City , default).Wait();
-				counts.AddStrifeTo( StdTokens.Town , default).Wait();
+				actionableSpace.AddStrifeTo( StdTokens.City ).Wait();
+				actionableSpace.AddStrifeTo( StdTokens.Town ).Wait();
 				break;
 			default: throw new Exception( "add to not in list" );
 		}

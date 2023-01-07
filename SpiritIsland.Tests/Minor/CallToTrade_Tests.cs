@@ -141,7 +141,7 @@ public class CallToTrade_Tests {
 	static void Given_NoSuroundingTowns( TargetSpaceCtx spaceCtx ) {
 		// Simplifies power card because it has a Gather-Towns we don't want to deal with.
 		foreach(var adjState in spaceCtx.Adjacent)
-			adjState.InitDefault(Invader.Town, 0);
+			adjState.InitDefault( Invader.Town, 0 );
 	}
 
 	static void Given_NoSuroundingDahan( TargetSpaceCtx spaceCtx ) {

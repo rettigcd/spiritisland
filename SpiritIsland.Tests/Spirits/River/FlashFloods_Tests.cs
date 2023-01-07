@@ -58,9 +58,9 @@ public class FlashFloods_Tests : SpiritCards_Tests {
 		//   And: 1 of each type of Invaders in Costal space (A2)
 		Space targetSpace = board[2];
 		var grp = gameState.Tokens[targetSpace];
-		grp.AdjustDefault(Invader.City,1);
-		grp.AdjustDefault(Invader.Town, 1);
-		grp.AdjustDefault(Invader.Explorer, 1);
+		grp.AdjustDefault( Invader.City, 1 );
+		grp.AdjustDefault( Invader.Town, 1 );
+		grp.AdjustDefault( Invader.Explorer, 1);
 		gameState.Assert_Invaders(targetSpace, "1C@3,1T@2,1E@1" );
 
 		//   And: Purchased FlashFloods

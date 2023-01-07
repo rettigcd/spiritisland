@@ -25,6 +25,10 @@ public class BoardCtx : SelfCtx {
 		:base(spirit, gs, actionScope ) {
 		Board = board;
 	}
+	public BoardCtx( GameState gs, Board board, UnitOfWork actionScope )
+		: base( FindSpirit(gs,board), gs, actionScope ) {
+		Board = board;
+	}
 
 	public Task SelectActionOption( params IExecuteOn<BoardCtx>[] options ) => SelectActionOption( "Select Power Option", options );
 	public Task SelectActionOption( string prompt, params IExecuteOn<BoardCtx>[] options )=> SelectAction_Inner( prompt, options, Present.AutoSelectSingle, this );

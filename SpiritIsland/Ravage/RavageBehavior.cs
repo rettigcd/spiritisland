@@ -9,6 +9,7 @@ public class RavageBehavior {
 	public Func<RavageBehavior, RavageData, Task> RavageSequence = RavageSequence_Default;
 	public Func<RavageBehavior, CountDictionary<HealthToken>, SpaceState, int> GetDamageFromParticipatingAttackers = GetDamageFromParticipatingAttackers_Default;
 	public Func<RavageBehavior, RavageData, int, Task> DamageDefenders = DamageDefenders_Default;
+	public Func<SpaceState, HealthToken, int> AttackDamageFrom1 = AttackDamageFrom1_Default;
 	public CountDictionary<Token> NotParticipating { get; set; } = new CountDictionary<Token>();
 	public Func<HealthToken, bool> IsAttacker { get; set; } = null;
 	public Func<HealthToken, bool> IsDefender { get; set; } = null;
@@ -97,7 +98,7 @@ public class RavageBehavior {
 			foreach(var token in participatingExplorers) {
 				int tokensToDestroy = Math.Min( data.Result.startingDefenders[token], damageToApply / token.RemainingHealth );
 				// destroy real tokens
-				await data.InvaderBinding.DestroyNTokens( tokensToDestroy, token );
+				await data.InvaderBinding.DestroyNTokens( token, tokensToDestroy );
 				// update our defenders count
 				defenders[token] -= tokensToDestroy;
 				damageToApply -= tokensToDestroy * token.RemainingHealth;
@@ -113,7 +114,7 @@ public class RavageBehavior {
 			.OrderBy( t => t.RemainingHealth ) // kill damaged dahan first
 			.ToArray();
 
-		var dahan = new DahanGroupBinding( data.Tokens, data.ActionScope );
+		var dahan = new HealthTokenClassBinding( data.Tokens, TokenType.Dahan, data.ActionScope );
 
 		foreach(var dahanToken in damagableDahan) {
 
@@ -124,7 +125,7 @@ public class RavageBehavior {
 			);
 			if(0 < tokensToDestroy) {
 
-				var removed = await dahan.DestroyToken( tokensToDestroy, dahanToken );
+				var removed = await dahan.DestroyToken( dahanToken, tokensToDestroy );
 
 				// use up damage
 				damageToApply -= tokensToDestroy * dahanToken.RemainingHealth;
@@ -194,13 +195,16 @@ public class RavageBehavior {
 		return Math.Max( 0, damageFromDefenders - behavior.AttackersDefend );
 	}
 
-	static int GetDamageFromParticipatingAttackers_Default( RavageBehavior cfg, CountDictionary<HealthToken> participatingAttacker, SpaceState tokens ) {
+	static int GetDamageFromParticipatingAttackers_Default( RavageBehavior behavior, CountDictionary<HealthToken> participatingAttacker, SpaceState tokens ) {
 
 		return participatingAttacker.Keys
 			.OfType<HealthToken>()
 			.Where( x => x.StrifeCount == 0 )
-			.Select( attacker => tokens.AttackDamageFrom1( attacker ) * participatingAttacker[attacker] ).Sum();
+			.Select( attacker => behavior.AttackDamageFrom1( tokens, attacker ) * participatingAttacker[attacker] ).Sum();
 	}
+
+	static int AttackDamageFrom1_Default( SpaceState tokens, HealthToken ht ) => tokens.AttackDamageFrom1( ht );
+
 
 	/// <returns>(city-dead,town-dead,explorer-dead)</returns>
 	static public async Task DamageAttackers( RavageData ra, int damageFromDefenders ) {

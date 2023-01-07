@@ -39,7 +39,7 @@ public class DreadApparitions_Tests {
 
 
 		// has town
-		ctx.Tokens.AdjustDefault(Invader.Town, 1);
+		ctx.Tokens.AdjustDefault( Invader.Town, 1 );
 
 		async Task When() {
 			// Given: using Dread Apparitions

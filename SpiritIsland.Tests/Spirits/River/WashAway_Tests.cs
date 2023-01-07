@@ -77,8 +77,8 @@ public class WashAway_Tests : SpiritCards_Tests {
 		var board = gameState.Island.Boards[0];
 		Space targetSpace = board[4];
 		var grp =gameState.Tokens[targetSpace];
-		grp.AdjustDefault(Invader.Explorer, 1);
-		grp.AdjustDefault(Invader.Town, 1);
+		grp.AdjustDefault( Invader.Explorer, 1 );
+		grp.AdjustDefault( Invader.Town, 1 );
 
 		var explorerDestination = board[2];
 		var townDestination = board[3];

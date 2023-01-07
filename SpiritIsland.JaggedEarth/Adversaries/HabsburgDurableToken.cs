@@ -11,12 +11,12 @@ class HabsburgDurableToken
 		: base( orig.Class, orig._healthPenaltyHolder, orig.FullHealth + 2, orig.Damage, orig.StrifeCount ) { }
 	protected HabsburgDurableToken( HealthTokenClass tokenClass, IHaveHealthPenaltyPerStrife penaltyHolder, int rawFullHealth, int damage, int strifeCount, int nightmareDamage )
 		: base( tokenClass, penaltyHolder, rawFullHealth, damage, strifeCount, nightmareDamage ) { }
-	public override async Task<int> Destroy( SpaceState tokens, int count, UnitOfWork actionScope ) {
+	public override async Task<int> Destroy( ActionableSpaceState tokens, int count ) {
 		count = Math.Min( count, tokens[this] ); // clip
 		if(0 < count) {
 			HealthToken damagedToken = this.AddDamage( 2 );
 			if(damagedToken.IsDestroyed)
-				await base.Destroy( tokens, count, actionScope );
+				await base.Destroy( tokens, count );
 			else
 				tokens.ReplaceNWith( count, this, damagedToken );
 		}
@@ -33,7 +33,7 @@ class HabsburgDurableToken
 			// switch back to normal
 			HealthToken restored = Restore();
 			if(restored.IsDestroyed)
-				await DestroyAll( args.AddedTo, args.ActionScope );
+				await DestroyAll( args.AddedTo );
 			else
 				args.AddedTo.ReplaceAllWith( this, restored );
 		}
@@ -44,7 +44,7 @@ class HabsburgDurableToken
 			// switch it back to normal.
 			var restored = Restore();
 			if(restored.IsDestroyed) {
-				await base.Destroy( args.Space, args.Count, args.ActionScope ); // must call Base to ensure it gets destroyed
+				await base.Destroy( args.Space, args.Count ); // must call Base to ensure it gets destroyed
 				args.Count = 0;
 			} else {
 				args.Space.ReplaceNWith( args.Count, this, restored );

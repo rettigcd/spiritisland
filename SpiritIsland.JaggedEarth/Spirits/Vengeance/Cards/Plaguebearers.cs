@@ -11,7 +11,7 @@ public class Plaguebearers {
 
 		// For each disease, Push 2 explorer / town / dahan.
 		await ctx.Pusher
-			.AddGroup( ctx.Disease.Count, Invader.Explorer, Invader.Town, TokenType.Dahan )
+			.AddGroup( ctx.Disease.Count, Invader.Explorer_Town.Plus(TokenType.Dahan) )
 			.AddCustomMoveAction( async ( _, from, to ) => {
 				// 1 disease may move with each Pushed piece.
 				var option = new SpaceToken(from, TokenType.Disease);

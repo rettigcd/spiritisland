@@ -6,6 +6,6 @@ public class WeepForWhatIsLost{
 		// 1 fear per type of Invader present.
 		ctx.AddFear( ctx.Tokens.InvaderTotal() );
 		// Push up to 1 explorer / town per blight.
-		return ctx.PushUpTo( ctx.Blight.Count, Invader.Explorer,Invader.Town );
+		return ctx.PushUpTo( ctx.Blight.Count, Invader.Explorer_Town );
 	}
 }
