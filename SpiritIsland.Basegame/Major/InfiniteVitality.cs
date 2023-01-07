@@ -15,7 +15,7 @@ public class InfiniteVitality {
 
 		if( await ctx.YouHave( "4 earth" )) {
 			// Dahan ignore damage and destruction effects.
-			ctx.ModifyRavage( cfg => { cfg.ShouldDamageDahan = false; } ); // !!! this only stops dahan destruction during RAVAGE.  Needs to protect from power cards too.
+			ctx.ModifyRavage( behavior => behavior.DamageDefenders = ( _, _1, _2 ) => Task.CompletedTask ); // !!! this only stops dahan destruction during RAVAGE.  Needs to protect from power cards too.
 			// Remove 1 blight from target or adjacent
 			await RemoveBlightFromLandOrAdjacent( ctx );
 		}

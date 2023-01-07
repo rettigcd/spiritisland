@@ -132,7 +132,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	async Task BlightAddedCheck( ITokenAddedArgs args ){
 		if(args.Token != TokenType.Blight) return; // token-added event handler for blight only
 
-		bool isCascading = args.Reason switch {
+		bool takingFromBlightCard = args.Reason switch {
 			AddReason.AsReplacement  => false,
 			AddReason.MovedTo        => false,
 			AddReason.Added          => true, // Generic add
@@ -141,7 +141,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 			AddReason.SpecialRule    => true, // Heart of wildfire - Blight from add presence
 			_ => throw new ArgumentException(nameof(args.Reason))
 		};
-		if( !isCascading ) return;
+		if( !takingFromBlightCard ) return;
 
 		// remove from card.
 		await TakeFromBlightSouce( args.Count, args.AddedTo );
@@ -152,8 +152,11 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		}
 
 		// Calc side effects
-		bool isFirstBlight = args.AddedTo.Blight.Count == 1;
-		var effect = new AddBlightEffect { DestroyPresence = true, Cascade = !isFirstBlight, GameState = this, Space = args.AddedTo };
+		var effect = new AddBlightEffect { 
+			DestroyPresence = true, 
+			Cascade = args.AddedTo.Blight.Count != 1, 
+			AddedTo = args.AddedTo
+		};
 		await ModifyBlightAddedEffect.InvokeAsync(effect);
 
 		// Destory presence
@@ -223,15 +226,16 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	#region Configure Ravage
 
-	public ConfigureRavage GetRavageConfiguration( Space space ) => _ravageConfig.ContainsKey( space ) ? _ravageConfig[space] : new ConfigureRavage();
+	public RavageBehavior GetRavageConfiguration( Space space ) => _ravageConfig.ContainsKey( space ) ? _ravageConfig[space] : DefaultRavageBehavior.Clone();
 
-	public void ModifyRavage( Space space, Action<ConfigureRavage> action ) {
+	public void ModifyRavage( Space space, Action<RavageBehavior> action ) {
 		if(!_ravageConfig.ContainsKey( space ))
-			_ravageConfig.Add( space, new ConfigureRavage() );
+			_ravageConfig.Add( space, DefaultRavageBehavior.Clone() );
 		action( _ravageConfig[space] );
 	}
+	public readonly RavageBehavior DefaultRavageBehavior = new RavageBehavior();
 
-	readonly Dictionary<Space, ConfigureRavage> _ravageConfig = new Dictionary<Space, ConfigureRavage>(); // change ravage state of a Space
+	readonly Dictionary<Space, RavageBehavior> _ravageConfig = new Dictionary<Space, RavageBehavior>(); // change ravage state of a Space
 
 	#endregion
 
@@ -426,7 +430,5 @@ public class LandDamagedArgs {
 public class AddBlightEffect {
 	public bool Cascade;
 	public bool DestroyPresence;
-
-	public GameState GameState;
-	public SpaceState Space;
+	public SpaceState AddedTo;
 }

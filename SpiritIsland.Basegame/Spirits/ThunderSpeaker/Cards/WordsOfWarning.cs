@@ -18,13 +18,13 @@ public class WordsOfWarning {
 		return Task.CompletedTask;
 	}
 
-	static async Task SimultaneousDamage( RavageAction eng ) {
-		int damageFromInvaders = eng.GetDamageInflictedByAttackers();
-		int damageFromDahan = eng.GetDamageInflictedByDefenders();
+	static async Task SimultaneousDamage( RavageBehavior behavior, RavageData data ) {
+		int damageFromInvaders = RavageBehavior.GetDamageInflictedByAttackers(behavior,data);
+		int damageFromDahan = RavageBehavior.GetDamageInflictedByDefenders( behavior,data );
 
-		await eng.DamageLand( damageFromInvaders );
-		await eng.DamageDefenders( damageFromInvaders );
-		await eng.DamageAttackers( damageFromDahan );
+		await RavageBehavior.DamageLand( data, damageFromInvaders );
+		await behavior.DamageDefenders( behavior, data, damageFromInvaders );
+		await RavageBehavior.DamageAttackers( data, damageFromDahan );
 	}
 
 }

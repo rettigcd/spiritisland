@@ -382,4 +382,14 @@ public class SpaceState : HasNeighbors<SpaceState> {
 			cleanup.EndOfRoundCleanup( this );
 	}
 
+	#region Ravage
+
+	public Task Ravage() {
+		GameState gameState = AccessGameState();
+		RavageBehavior cfg = gameState.GetRavageConfiguration( Space );
+		return cfg.Exec( this, gameState );
+	}
+
+	#endregion
+
 }

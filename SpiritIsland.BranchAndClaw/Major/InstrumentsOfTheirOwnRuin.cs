@@ -29,11 +29,11 @@ public class InstrumentsOfTheirOwnRuin {
 
 
 	static Task DuringRavage_InvadersDamageInvadersInAdjacentLandsInsteadOfDahan( TargetSpaceCtx ctx ) {
-		ctx.ModifyRavage( cfg => cfg.RavageSequence = eng => RavageSequence_DamageInvadersInAdjacentLand(ctx, eng ) );
+		ctx.ModifyRavage( cfg => cfg.RavageSequence = ( _, data ) => RavageSequence_DamageInvadersInAdjacentLand(ctx, data ) );
 		return Task.CompletedTask;
 	}
 
-	static async Task RavageSequence_DamageInvadersInAdjacentLand( TargetSpaceCtx ctx, RavageAction ravageAction ) {
+	static async Task RavageSequence_DamageInvadersInAdjacentLand( TargetSpaceCtx ctx, RavageData ravageAction ) {
 		// Note - this works regardless of them ravaging in target land or not. yay!
 
 		// This ravage is totally different from any other.
@@ -76,7 +76,7 @@ public class InstrumentsOfTheirOwnRuin {
 
 			// apply 1 damage to selected invader
 			// !Note - using shared UnitOfWork across spaces because it is a ravage on only 1 space
-			await ctx.GameState.Invaders.On(invader.Space, ravageAction.UnitOfWork ).ApplyDamageTo1(1,(HealthToken)invader.Token);
+			await ctx.GameState.Invaders.On(invader.Space, ravageAction.ActionScope ).ApplyDamageTo1(1,(HealthToken)invader.Token);
 		}
 
 	}

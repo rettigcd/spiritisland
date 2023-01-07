@@ -160,7 +160,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 	public bool HasInvaders => Tokens.HasInvaders();
 
-	public void ModifyRavage( Action<ConfigureRavage> action ) => GameState.ModifyRavage(Space,action);
+	public void ModifyRavage( Action<RavageBehavior> action ) => GameState.ModifyRavage(Space,action);
 
 	// The current targets power
 	public InvaderBinding Invaders => _invadersRO ??= GetInvaders();
