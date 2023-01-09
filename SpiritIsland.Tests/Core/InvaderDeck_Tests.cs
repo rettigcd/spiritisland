@@ -7,7 +7,7 @@ public class InvaderDeck_Tests {
 	public void Memento_RoundTrip() {
 
 		// Given: a deck in some advanced state
-		var sut = new InvaderDeck();
+		var sut = InvaderDeckBuilder.Default.Build();
 		Advance( sut );
 
 		//   And: we have saved the desired state

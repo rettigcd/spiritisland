@@ -27,7 +27,7 @@ public class France : IAdversary {
 		_ => null,
 	};
 
-	public int[] InvaderCardOrder => null;
+	public InvaderDeckBuilder InvaderDeckBuilder => InvaderDeckBuilder.Default;
 
 	public void PreInitialization( GameState gameState ) {
 		gameState.InvaderDeck.Build.Engine = new FranceBuilder( Level );

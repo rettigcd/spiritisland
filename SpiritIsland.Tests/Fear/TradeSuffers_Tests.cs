@@ -8,7 +8,7 @@ public class TradeSuffers_Tests {
 		// or A4 (Sands-no dahan)
 		var (user, ctx) = TestSpirit.SetupGame( PowerCard.For<RiversBounty>(), gs => {
 			var fear = gs.Fear;
-			gs.InvaderDeck = AvoidTheDahan_Tests.MountainThenAllSands();
+			AvoidTheDahan_Tests.InitMountainThenAllSands( gs );
 			gs.NewLogEntry += (s) => log.Add(s.Msg());
 		} );
 		this.user = user;

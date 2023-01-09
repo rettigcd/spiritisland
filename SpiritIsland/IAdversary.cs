@@ -2,7 +2,7 @@
 
 public interface IAdversary {
 	int Level { set; }
-	int[] InvaderCardOrder { get; }
+	InvaderDeckBuilder InvaderDeckBuilder { get; }
 	int[] FearCardsPerLevel { get; }
 	void PreInitialization( GameState gameState );
 	void PostInitialization( GameState gamestate );

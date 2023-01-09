@@ -6,10 +6,11 @@ public class HabsburgMonarchy : IAdversary {
 
 	public int Level { get; set; }
 
-	public int[] InvaderCardOrder => Level switch {
-		3 or 4 or 5 or 6 => new int[] { 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3 },
+	public InvaderDeckBuilder InvaderDeckBuilder => new InvaderDeckBuilder( Level switch {
+		>=3 => new int[] { 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3 },
 		_ => null // use default
-	};
+	} );
+
 
 	public int[] FearCardsPerLevel => Level switch {
 		1 => new int[] { 3, 4, 3 },

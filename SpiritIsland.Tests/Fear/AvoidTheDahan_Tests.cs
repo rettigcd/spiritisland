@@ -18,7 +18,7 @@ public class AvoidTheDahan_Tests {
 		// or A4 (Sands-no dahan)
 		var (user, ctx) = TestSpirit.SetupGame( PowerCard.For<RiversBounty>(), gs => {
 			var fear = gs.Fear;
-			gs.InvaderDeck = MountainThenAllSands();
+			InitMountainThenAllSands( gs );
 			gs.NewLogEntry += (s) => log.Add(s.Msg());
 		} );
 		this.user = user;
@@ -205,9 +205,9 @@ public class AvoidTheDahan_Tests {
 
 	#region private
 
-	static public InvaderDeck MountainThenAllSands() {
+	static public void InitMountainThenAllSands( GameState gs ) {
 		var sand = InvaderCard.Stage1( Terrain.Sand );
-		return InvaderDeck.BuildTestDeck(
+		gs.InitTestInvaderDeck(
 			InvaderCard.Stage1( Terrain.Mountain ), // initial explorer in mountains
 			sand, sand, sand, sand, sand
 		);

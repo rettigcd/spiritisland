@@ -29,7 +29,7 @@ static internal class Extensions {
 	/// <summary> Replaces all Invader Cards with null-cards that don't ravage/build/explore</summary>
 	static public void DisableInvaderDeck( this GameState gs ) {
 		var nullCard = InvaderCard.Stage1( Terrain.None );
-		gs.InvaderDeck = InvaderDeck.BuildTestDeck( new byte[12].Select( _ => nullCard ).ToArray() );
+		gs.InitTestInvaderDeck( new byte[12].Select( _ => nullCard ).ToArray() );
 	}
 
 	static public void Assert_Invaders( this GameState gameState, Space space, string expectedString ) {
@@ -64,6 +64,10 @@ static internal class Extensions {
 			.OrderBy( Order_CitiesTownsExplorers )
 			.Select( invader => dict._counts[invader] + invader.ToString() )
 			.Join( "," );
+	}
+
+	static public void InitTestInvaderDeck(this GameState gameState, params InvaderCard[] cards ) {
+		gameState.InvaderDeck = new InvaderDeck( cards.ToList(), null );// Don't try to inspect unused!
 	}
 
 }

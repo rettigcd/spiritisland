@@ -67,7 +67,7 @@ public class GameBuilder {
 		var adversary = BuildAdversary( cfg.Adversary );
 
 		// (1) Invader Deck
-		gameState.InvaderDeck = new InvaderDeck( invaderSeed, adversary.InvaderCardOrder );
+		gameState.InvaderDeck = adversary.InvaderDeckBuilder.Build( invaderSeed );
 
 		// (2) Major Power Cards
 		gameState.MajorCards = new PowerCardDeck( BuildMajorCards(), majorSeed );
@@ -106,10 +106,12 @@ public class GameBuilder {
 
 	class NullAdversary : IAdversary {
 		public int Level { set { } } // ignore
-		public int[] InvaderCardOrder => new int[] { 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3 };
+		public InvaderDeckBuilder InvaderDeckBuilder => InvaderDeckBuilder.Default;
+
 		public int[] FearCardsPerLevel => new int[] { 3, 3, 3 };
 
 		public ScenarioLevel[] Adjustments => Array.Empty<ScenarioLevel>();
+
 
 		public void PostInitialization( GameState _ ) { }
 		public void PreInitialization( GameState _ ) { }

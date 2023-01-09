@@ -17,7 +17,8 @@ public class Sweden : IAdversary {
 
 	public int Level { get; set; }
 
-	public int[] InvaderCardOrder => null;
+	public InvaderDeckBuilder InvaderDeckBuilder => InvaderDeckBuilder.Default;
+
 
 	public int[] FearCardsPerLevel => Level switch {
 		1 => new int[] { 3, 3, 3 },

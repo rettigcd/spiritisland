@@ -24,7 +24,7 @@ public class Invader_Tests {
 	[Trait( "Invaders", "Deck" )]
 	[Fact]
 	public void StartsWithExplorer(){
-		var sut = new InvaderDeck();
+		var sut = InvaderDeckBuilder.Default.Build();
 		Assert.NotNull(sut.Explore.Cards);
 		Assert.Empty(sut.Build.Cards);
 		Assert.Empty(sut.Ravage.Cards);
@@ -34,7 +34,7 @@ public class Invader_Tests {
 	[Fact]
 	public void AdvanceCards(){
 
-		var sut = new InvaderDeck();
+		var sut = InvaderDeckBuilder.Default.Build();
 
 		// Advance the cards 12 times
 		for(int i=0;i<11;++i){
@@ -59,10 +59,10 @@ public class Invader_Tests {
 	[Trait( "Invaders", "Deck" )]
 	[Fact]
 	public void CardsUsedAre_3L1_4L2_5L3() {
-		var sut = new InvaderDeck().UnrevealedCards.ToList();
-		Assert_NextNCardsFromDeck( sut, InvaderDeck.Level1Cards, 3 );
-		Assert_NextNCardsFromDeck( sut, InvaderDeck.Level2Cards, 4 );
-		Assert_NextNCardsFromDeck( sut, InvaderDeck.Level3Cards, 5 );
+		var sut = InvaderDeckBuilder.Default.Build().UnrevealedCards.ToList();
+		Assert_NextNCardsFromDeck( sut, InvaderDeckBuilder.Level1Cards, 3 );
+		Assert_NextNCardsFromDeck( sut, InvaderDeckBuilder.Level2Cards, 4 );
+		Assert_NextNCardsFromDeck( sut, InvaderDeckBuilder.Level3Cards, 5 );
 	}
 
 	[Trait( "Invaders", "Deck" )]
@@ -72,7 +72,7 @@ public class Invader_Tests {
 	[InlineDataAttribute("W","A2,A5")]
 	[InlineDataAttribute("S","A4,A7")]
 	public void Level1CardTargets(string cardText,string expectedTargets){
-		InvaderCard sut = InvaderDeck.Level1Cards.Single(c=>c.Text==cardText);
+		InvaderCard sut = InvaderDeckBuilder.Level1Cards.Single(c=>c.Text==cardText);
 		var targets = board.Spaces.Where(((InvaderCard)sut).MatchesCard).Select(x=>x.Label).ToArray();
 		Assert.Equal(expectedTargets,targets.Join(","));
 	}
@@ -85,7 +85,7 @@ public class Invader_Tests {
 	[InlineDataAttribute("2S","A4,A7")]
 	[InlineDataAttribute("Costal","A1,A2,A3")]
 	public void Level2CardTargets(string cardText,string expectedTargets){
-		var cards = InvaderDeck.Level2Cards.Where(c=>c.Text==cardText);
+		var cards = InvaderDeckBuilder.Level2Cards.Where(c=>c.Text==cardText);
 		var sut = Assert.Single(cards);
 		var targets = board.Spaces.Where(sut.MatchesCard).Select(x=>x.Label).ToArray();
 		Assert.Equal(expectedTargets,targets.Join(","));
@@ -99,7 +99,7 @@ public class Invader_Tests {
 	[InlineDataAttribute("M+W","A1,A2,A5,A6")]
 	[InlineDataAttribute("S+W","A2,A4,A5,A7")]
 	public void Level3CardTargets(string cardText,string expectedTargets){
-		var cards = InvaderDeck.Level3Cards.Where(c=>c.Text==cardText);
+		var cards = InvaderDeckBuilder.Level3Cards.Where(c=>c.Text==cardText);
 		var sut = Assert.Single(cards);
 		var targets = board.Spaces.Where(sut.MatchesCard).Select(x=>x.Label).ToArray();
 		Assert.Equal(expectedTargets,targets.Join(","));
@@ -136,7 +136,7 @@ public class Invader_Tests {
 		gameState.Tokens[ board[5] ].AdjustDefault(Invader.Explorer,1);
 
 		// When: exploring (wet lands
-		_ = new ExploreSlot().ActivateCard( InvaderDeck.Level1Cards.Single(c=>c.Text=="W"), gameState );
+		_ = new ExploreSlot().ActivateCard( InvaderDeckBuilder.Level1Cards.Single(c=>c.Text=="W"), gameState );
 
 		// Then: 1 Explorer on A2 (new explored)
 		//  and A5 (original) - proves explorers aren't reference types like towns
@@ -170,7 +170,7 @@ public class Invader_Tests {
 		gameState.Tokens[sourceSpace].Adjust(sourceInvader,1);
 
 		// When: exploring (wet lands
-		_ = new ExploreSlot().ActivateCard( InvaderDeck.Level1Cards.Single( c => c.Text == "W" ), gameState );
+		_ = new ExploreSlot().ActivateCard( InvaderDeckBuilder.Level1Cards.Single( c => c.Text == "W" ), gameState );
 
 		// Then: Explores A2 and other space only
 		foreach(var space in board.Spaces){
@@ -199,7 +199,7 @@ public class Invader_Tests {
 			gameState.Tokens[space].Adjust( startingInvader, 1 );
 
 		// When: build in Sand
-		_ = new BuildSlot().ActivateCard( InvaderDeck.Level1Cards.Single( c => c.Text == "S" ), gameState);
+		_ = new BuildSlot().ActivateCard( InvaderDeckBuilder.Level1Cards.Single( c => c.Text == "S" ), gameState);
 
 		// Then: 2 Sand spaces should have ending Invader Count
 		gameState.Assert_Invaders( board[4], endingInvaderCount );
@@ -256,7 +256,7 @@ public class Invader_Tests {
 	}
 
 	static InvaderCard[] NewDeckCards(int seed) {
-		return new InvaderDeck( seed ).UnrevealedCards.ToArray();
+		return InvaderDeckBuilder.Default.Build( seed ).UnrevealedCards.ToArray();
 	}
 
 	static void Assert_NextNCardsFromDeck( List<InvaderCard> deck, ImmutableList<InvaderCard> expected, int count ) {

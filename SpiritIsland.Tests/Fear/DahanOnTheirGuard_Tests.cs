@@ -13,7 +13,7 @@ public class DahanOnTheirGuard_Tests {
 		gameState.Fear.Deck.Pop();
 		gameState.Fear.PushOntoDeck( new DahanOnTheirGuard() );
 
-		invaderCard = InvaderDeck.Level1Cards[0];
+		invaderCard = InvaderDeckBuilder.Level1Cards[0];
 		ravageSpace = gameState.Island.Boards[0].Spaces.Where( ((InvaderCard)invaderCard).MatchesCard ).First();
 	}
 

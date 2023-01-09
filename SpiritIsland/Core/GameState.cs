@@ -97,7 +97,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	public PowerCardDeck MajorCards {get; set; }
 	public PowerCardDeck MinorCards { get; set; }
 	public InvaderDeck InvaderDeck { 
-		get { return _invaderDeck ??= new InvaderDeck(); }
+		get { return _invaderDeck ??= InvaderDeckBuilder.Default.Build(); }
 		set { _invaderDeck = value; }
 	}
 	InvaderDeck _invaderDeck;

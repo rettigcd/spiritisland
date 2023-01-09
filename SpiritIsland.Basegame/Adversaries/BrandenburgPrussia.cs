@@ -6,14 +6,15 @@ public class BrandenburgPrussia : IAdversary {
 
 	public int Level { get; set; }
 
-	public int[] InvaderCardOrder => Level switch {
+	public InvaderDeckBuilder InvaderDeckBuilder => new InvaderDeckBuilder( Level switch {
 		2 => new int[] { 1, 1, 1, 3, 2, 2, 2, 2, 3, 3, 3, 3, },
 		3 => new int[] { 1, 1, 3, 2, 2, 2, 2, 3, 3, 3, 3, },
 		4 => new int[] { 1, 1, 3, 2, 2, 2, 3, 3, 3, 3 },
 		5 => new int[] { 1, 3, 2, 2, 2, 3, 3, 3, 3 },
 		6 => new int[] { 3, 2, 2, 2, 3, 3, 3, 3 },
 		_ => null // use default
-	};
+	} );
+
 
 	public int[] FearCardsPerLevel => Level switch {
 		1 => new int[] { 3, 3, 3 },
