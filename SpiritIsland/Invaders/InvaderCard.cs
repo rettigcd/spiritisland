@@ -6,7 +6,7 @@ public sealed class InvaderCard : IOption {
 
 	public static InvaderCard Stage1( Terrain t1 ) => new InvaderCard( new SingleTerrainFilter(t1), 1 );
 	public static InvaderCard Stage2( Terrain t1 ) => new InvaderCard( new SingleTerrainFilter(t1), 2 );
-	public static InvaderCard Stage2Costal() => new InvaderCard( new CostalFilter(), 2 );
+	public static InvaderCard Stage2Costal() => new InvaderCard( new CoastalFilter(), 2 );
 	public static InvaderCard Stage3(Terrain t1,Terrain t2) => new InvaderCard( new DoubleTerrainFilter( t1, t2 ), 3);
 
 	#endregion
@@ -34,7 +34,7 @@ public sealed class InvaderCard : IOption {
 	public InvaderCard( SpaceFilter filter, int invaderStage ) {
 		_filter = filter;
 		InvaderStage = invaderStage;
-		HasEscalation = InvaderStage == 2 && _filter.Text != "Costal";
+		HasEscalation = InvaderStage == 2 && _filter.Text != CoastalFilter.Name;
 		Text = (HasEscalation ? "2" : "") + _filter.Text;
 
 	}
@@ -76,7 +76,8 @@ class DoubleTerrainFilter : SpaceFilter {
 }
 
 
-class CostalFilter : SpaceFilter {
+public class CoastalFilter : SpaceFilter {
+	public const string Name = "Coastal";
+	public string Text => Name;
 	public bool Matches( Space space ) => space.IsCoastal;
-	public string Text => "Costal";
 }

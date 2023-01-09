@@ -83,7 +83,7 @@ public class Invader_Tests {
 	[InlineDataAttribute("2J","A3,A8")]
 	[InlineDataAttribute("2W","A2,A5")]
 	[InlineDataAttribute("2S","A4,A7")]
-	[InlineDataAttribute("Costal","A1,A2,A3")]
+	[InlineDataAttribute("Coastal","A1,A2,A3")]
 	public void Level2CardTargets(string cardText,string expectedTargets){
 		var cards = InvaderDeckBuilder.Level2Cards.Where(c=>c.Text==cardText);
 		var sut = Assert.Single(cards);

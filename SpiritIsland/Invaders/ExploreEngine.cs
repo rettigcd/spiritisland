@@ -69,7 +69,9 @@ public class ExploreEngine {
 				return;
 
 		gs.Log( new SpaceExplored( tokens.Space ) );
-		await tokens.Bind( actionScope ).AddDefault( Invader.Explorer, 1, AddReason.Explore );
+		await AddToken( tokens.Bind( actionScope ) );
 	}
 
+	protected virtual async Task AddToken( ActionableSpaceState tokens ) 
+		=> await tokens.AddDefault( Invader.Explorer, 1, AddReason.Explore );
 }

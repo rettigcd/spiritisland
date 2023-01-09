@@ -37,15 +37,16 @@ public class InvaderDeckBuilder {
 	public InvaderDeck Build( int seed = default ) {
 		var unrevealedCards = new List<InvaderCard>();
 		Queue<InvaderCard>[] unused = PrepareShuffledStageCards( seed );
-		SelectCards( unused, unrevealedCards );
-
-		return new InvaderDeck( unrevealedCards, unused ); // !!! remove this back and forth casting.
-	}
-
-	protected virtual void SelectCards( Queue<InvaderCard>[] unused, List<InvaderCard> orderedDrawDeck ) {
 		foreach(var selectionLevel in _levelSelection)
-			orderedDrawDeck.Add( unused[selectionLevel - 1].Dequeue() );
+			SelectCard( unrevealedCards, unused, selectionLevel );
+
+		return new InvaderDeck( unrevealedCards, unused );
 	}
+
+	protected virtual void SelectCard( List<InvaderCard> dst, Queue<InvaderCard>[] src, int level ) {
+		dst.Add( src[level - 1].Dequeue() );
+	}
+
 
 	protected virtual IEnumerable<InvaderCard> SelectLevel1Cards() => Level1Cards;
 	protected virtual IEnumerable<InvaderCard> SelectLevel2Cards() => Level2Cards;

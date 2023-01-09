@@ -3,10 +3,12 @@
 public class GameComponentProvider : IGameComponentProvider {
 
 	public string[] AdversaryNames => new string[]{
-		Russia.Name
+		HabsburgMonarchy.Name,
+		Russia.Name,
 	};
 
 	public IAdversary MakeAdversary( string adversaryName ) => adversaryName switch {
+		HabsburgMonarchy.Name => new HabsburgMonarchy(),
 		Russia.Name => new Russia(),
 		_ => null
 	};

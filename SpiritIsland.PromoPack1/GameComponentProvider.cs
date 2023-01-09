@@ -15,8 +15,11 @@ public class GameComponentProvider : IGameComponentProvider {
 			: null;
 	}
 
-	public string[] AdversaryNames => Array.Empty<string>();
-	public IAdversary MakeAdversary( string adversaryName ) => null;
+	public string[] AdversaryNames => new string[] { Scotland.Name };
+	public IAdversary MakeAdversary( string adversaryName ) => adversaryName switch {
+		Scotland.Name => new Scotland(),
+		_ => null
+	};
 
 
 	public PowerCard[] MinorCards => Array.Empty<PowerCard>();

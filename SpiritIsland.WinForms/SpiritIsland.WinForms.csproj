@@ -5,7 +5,7 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
 	<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
-	<ApplicationIcon>app.ico</ApplicationIcon>
+	<ApplicationIcon>Spirit Island.ico</ApplicationIcon>
 	<NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
 
@@ -193,6 +193,10 @@
     <None Remove="images\tokens\Wildsicon.png" />
     <None Remove="images\tokens\wildsorpresence.png" />
     <None Remove="leaguegothic-regular-webfont.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Spirit Island.ico" />
   </ItemGroup>
 
   <ItemGroup>
