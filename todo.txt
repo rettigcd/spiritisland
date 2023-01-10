@@ -2,13 +2,13 @@
 ====  Clean Up Items  ====
 ==========================
 
-5 Log => special-rules as Debug, so we can see what happened.
+5 UI - Custom Draw Invade Cards from Terrain texture.
+
+5 UI - Configure Game - Images for Selecting Spirits
 
 5 UI - Display Blight Card and/or text
 5 UI - Command-Beast - show graphic (so it doesn't get lost in text)
-5 UI - Custom Draw Invade Cards from Terrain texture.
 5 UI - Visual indicator of Phase
-5 UI - Configure Game - Images for Selecting Spirits
 
 5 Action => Move Finders Hook to Action-start - event
 	- 
@@ -27,7 +27,6 @@
 		- ! need to watch for deadlocks
 
 5 Finish => Slip the flows of time - use any # of times
-5 Finish => Finish Command the Beasts
 
 ======
 

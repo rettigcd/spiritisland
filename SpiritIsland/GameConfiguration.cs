@@ -76,11 +76,14 @@ public class GameBuilder {
 		gameState.MinorCards = new PowerCardDeck( BuildMinorCards(), minorSeed );
 
 		// (4) Fear Cards
+		if(adversary.FearCardsPerLevel != null)
+			gameState.Fear.cardsPerLevel = adversary.FearCardsPerLevel;
+		gameState.Fear.cardsPerLevel[1]++; // Command the Beasts
+
+		// Fear Deck - ! this could be pushed into .Initialize if PreInitialize has access to deck.
 		var fearCards = BuildFearCards();
 		new Random( fearSeed ).Shuffle( fearCards );
 		gameState.Fear.Deck.Clear();
-		if(adversary.FearCardsPerLevel != null)
-			gameState.Fear.cardsPerLevel = adversary.FearCardsPerLevel;
 		for(int i = 0; i < gameState.Fear.cardsPerLevel.Sum(); ++i)
 			gameState.Fear.PushOntoDeck( fearCards[i] );
 
@@ -100,7 +103,7 @@ public class GameBuilder {
 		// After initializing: Starting-Tokens, Explore-Card, Blight Card (and spirits)
 		adversary.PostInitialization( gameState );
 
-		Init_CommandTheBeasts( gameState );
+		CommandTheBeasts_AddCardsToInvaderDeck( gameState );
 
 		return gameState;
 	}
@@ -119,7 +122,7 @@ public class GameBuilder {
 	}
 
 
-	static void Init_CommandTheBeasts( GameState gameState ) {
+	static void CommandTheBeasts_AddCardsToInvaderDeck( GameState gameState ) {
 		// If there are no Event cards, compensate with Command-the-Beasts
 
 		var invaderCards = gameState.InvaderDeck.UnrevealedCards;
@@ -127,8 +130,7 @@ public class GameBuilder {
 			var triggerBeasts = new TriggerCommandBeasts();
 			for(int i = 0; i < invaderCards.Count; ++i) {
 				if(invaderCards[i].InvaderStage != stage) continue;
-				var card = (InvaderCard)invaderCards[i];
-				card.CardFlipped += triggerBeasts.QueueBeastCommand;
+				invaderCards[i].CardFlipped += triggerBeasts.QueueBeastCommand;
 				break;
 			}
 		}

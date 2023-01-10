@@ -4,7 +4,10 @@ public interface IAdversary {
 	int Level { set; }
 	InvaderDeckBuilder InvaderDeckBuilder { get; }
 	int[] FearCardsPerLevel { get; }
+
+	/// <summary> Decks are already built, but tokens have not been placed yet. </summary>
 	void PreInitialization( GameState gameState );
+	/// <summary> Tokens placed. </summary>
 	void PostInitialization( GameState gamestate );
 
 	public ScenarioLevel[] Adjustments { get; }
