@@ -205,6 +205,7 @@ public class AvoidTheDahan_Tests {
 
 	#region private
 
+#pragma warning disable xUnit1013 // Public method should be marked as test
 	static public void InitMountainThenAllSands( GameState gs ) {
 		var sand = InvaderCard.Stage1( Terrain.Sand );
 		gs.InitTestInvaderDeck(
@@ -212,6 +213,7 @@ public class AvoidTheDahan_Tests {
 			sand, sand, sand, sand, sand
 		);
 	}
+#pragma warning restore xUnit1013 // Public method should be marked as test
 
 	void ElevateTerrorLevelTo( int desiredFearLevel ) {
 		while(ctx.GameState.Fear.TerrorLevel < desiredFearLevel)

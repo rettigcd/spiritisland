@@ -41,7 +41,6 @@ public class England : IAdversary {
 
 	public InvaderDeckBuilder InvaderDeckBuilder => InvaderDeckBuilder.Default;
 
-
 	public int[] FearCardsPerLevel => Level switch {
 		1 => new int[] { 3, 4, 3 },
 		2 => new int[] { 4, 4, 3 },
@@ -53,8 +52,20 @@ public class England : IAdversary {
 	};
 
 	public void PreInitialization( GameState gameState ) {
+		gameState.InvaderDeck.Explore.Engine.Escalation = BuildingBoom;
+
+		if( 1 <= Level )
+			gameState.InvaderDeck.Build.Engine = new EnglandBuilder();
+
 		if( 2 <= Level )
 			CriminalsAndMalcontents( gameState );
+
+		if( 3 <= Level ) {
+			var highBuildSlot = new HighImmegrationSlot( Level );
+			gameState.InvaderDeck.ActiveSlots.Insert( 0, highBuildSlot );
+			if(Level == 3)
+				HighImmegrationSlot.RemoveForLevel2Invaders( gameState, highBuildSlot );
+		}
 
 		if( 5 <= Level )
 			LocalAutonomy( gameState );
@@ -62,9 +73,13 @@ public class England : IAdversary {
 		if( Level == 6)
 			gameState.Fear.PoolMax += gameState.Spirits.Length;
 
+		gameState.AddWinLossCheck( ProudAndMightyCapital );
+
 	}
+	public void PostInitialization( GameState gs ) { }
 
 	static void LocalAutonomy( GameState gameState ) {
+		// Level 5 - towns/cities have +1 health
 		gameState.Tokens.TokenDefaults[Invader.City] = new HealthToken( Invader.City, gameState, 4 );
 		gameState.Tokens.TokenDefaults[Invader.Town] = new HealthToken( Invader.Town, gameState, 3 );
 	}
@@ -75,23 +90,7 @@ public class England : IAdversary {
 			gameState.Tokens[board[1]].AdjustDefault( Invader.City, 1 );
 			gameState.Tokens[board[2]].AdjustDefault( Invader.Town, 1 );
 		}
-	}
-
-	public void PostInitialization( GameState gs ) {
-
-		gs.AddWinLossCheck( ProudAndMightyCapital );
-
-		gs.InvaderDeck.Explore.Engine.Escalation = BuildingBoom;
-
-		if(1 <= Level)
-			gs.InvaderDeck.Build.Engine = new EnglandBuilder();
-
-		if(3 <= Level) {
-			var highBuildSlot = new HighImmegrationSlot( Level );
-			gs.InvaderDeck.ActiveSlots.Insert( 0, highBuildSlot );
-			if(Level == 3)
-				HighImmegrationSlot.RemoveForLevel2Invaders( gs, highBuildSlot );
-		}
+		gameState.LogDebug("Criminals & Malcontents: Adding additional city to #1 and town to #2");
 	}
 
 	async Task BuildingBoom( GameState gs ) {
@@ -156,16 +155,5 @@ public class England : IAdversary {
 		}
 
 	}
-
-}
-
-public class EnglandBuilder : BuildEngine {
-	public override bool ShouldBuildOnSpace( SpaceState spaceState ) {
-		return base.ShouldBuildOnSpace( spaceState )
-			|| IsAdjacentTo2OrMoreCitiesOrTowns( spaceState );
-	}
-	static bool IsAdjacentTo2OrMoreCitiesOrTowns( SpaceState tokens ) => !tokens.Has( TokenType.Isolate )
-		&& 2 <= tokens.Adjacent.Sum( adj => CityTownCounts( adj ) );
-	static int CityTownCounts( SpaceState space ) => space.SumAny( Invader.Town_City );
 
 }

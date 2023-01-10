@@ -23,8 +23,8 @@ public class GameBuilder {
 		_providers = providers;
 	}
 
-	public string[] SpiritNames => _providers.SelectMany(p => p.SpiritNames ) .OrderBy( t => t ) .ToArray();
-	public string[] AdversaryNames => _providers.SelectMany(p => p.AdversaryNames) .OrderBy( t => t ) .ToArray();
+	public string[] SpiritNames => _providers.SelectMany(p => p.SpiritNames ).Order().ToArray();
+	public string[] AdversaryNames => _providers.SelectMany(p => p.AdversaryNames).Order().ToArray();
 
 	public Spirit[] BuildSpirits( params string[] spirits ) => spirits.Select(spirit 
 		=> _providers.Select( p => p.MakeSpirit( spirit ) ).FirstOrDefault( x => x != null )
@@ -97,6 +97,7 @@ public class GameBuilder {
 
 		gameState.Initialize();
 
+		// After initializing: Starting-Tokens, Explore-Card, Blight Card (and spirits)
 		adversary.PostInitialization( gameState );
 
 		Init_CommandTheBeasts( gameState );

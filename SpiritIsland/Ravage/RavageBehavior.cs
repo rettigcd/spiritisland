@@ -234,7 +234,7 @@ public class RavageBehavior {
 	}
 
 	static public async Task DamageLand( RavageData ra, int damageInflictedFromInvaders ) {
-		await ra.GameState.DamageLandFromRavage( ra.InvaderBinding.Tokens.Space, damageInflictedFromInvaders, ra.ActionScope );
+		await ra.GameState.DamageLandFromRavage( ra.InvaderBinding.Tokens, damageInflictedFromInvaders );
 	}
 
 	#region Static Smart Damage to Invaders

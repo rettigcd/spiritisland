@@ -11,7 +11,6 @@ public class HabsburgMonarchy : IAdversary {
 		_ => null // use default
 	} );
 
-
 	public int[] FearCardsPerLevel => Level switch {
 		1 => new int[] { 3, 4, 3 },
 		2 => new int[] { 4, 5, 2 },
@@ -21,7 +20,6 @@ public class HabsburgMonarchy : IAdversary {
 		6 => new int[] { 5, 6, 3 },
 		_ => null
 	};
-
 
 	public ScenarioLevel[] Adjustments => new ScenarioLevel[] {
 		// Level 0 - Escalation
@@ -46,7 +44,7 @@ public class HabsburgMonarchy : IAdversary {
 		gameState.InvaderDeck.Build.Engine = hasburgBuilder;
 
 		// Escalation - Seek Prime Territory
-		gameState.InvaderDeck.Explore.Engine.Escalation = SeekPrimeTerritory;
+		gameState.InvaderDeck.Explore.Engine.Escalation = SeekPrimeTerritory_Escalation;
 
 		// Level 1 - Migratory Herders
 		if( 1 <= Level)
@@ -64,8 +62,8 @@ public class HabsburgMonarchy : IAdversary {
 		if( 4 <= Level)
 			gameState.AddToAllActiveSpaces( new HabsburgMakeTownsDurable() );
 
-		// Level 5 - Wave of Immigration
-		// When Invader Card #5 is Flipped, on each board, add 1 City to a Coastal land without City and 1 Town to the 3 Inland lands with the fewest Blight
+		// Level 5 - Wave of Immigration - Invader Card #5 => +1 Coastal City, +3 non-blight Towns
+		
 		if(5 <= Level)
 			gameState.InvaderDeck.UnrevealedCards[4].CardFlipped += WaveOfImmigration;
 
@@ -74,68 +72,98 @@ public class HabsburgMonarchy : IAdversary {
 			var originalBehavior = gameState.DefaultRavageBehavior.GetDamageFromParticipatingAttackers;
 			gameState.DefaultRavageBehavior.GetDamageFromParticipatingAttackers = (behavior, counts, spaceState) => {
 				bool hasNeighborTown = spaceState.Adjacent.Any( s => s.Has( Invader.Town ) );
+				// Not logging additional damage here because Ravage is already very verbose.
 				return originalBehavior( behavior, counts, spaceState )
 					+ (hasNeighborTown ? 2 : 0);
 			};
 		}
 
 		// Additional loss condition - too many 8+blight
-		// if 8 <= damage, ++count, if count > # players, loss
 		gameState.LandDamaged.ForGame.Add( IrreparableDamage_CheckExcessiveLandDamage );
 		gameState.AddWinLossCheck( IrreparableDamage_LossCheck );
 
 	}
 
-	int _badbadBlightCount = 0;
-	void IrreparableDamage_CheckExcessiveLandDamage( LandDamagedArgs args ) {
+	public void PostInitialization( GameState gamestate ) { }
+
+	#region private
+
+	void IrreparableDamage_CheckExcessiveLandDamage( LandDamagedArgs args ) { // For Loss Condition
 		if(8 <= args.Damage) ++_badbadBlightCount;
 	}
+
 	void IrreparableDamage_LossCheck( GameState gameState ) {
 		if(gameState.Spirits.Length < _badbadBlightCount)
 			GameOverException.Lost( $"Irreparable Damage - {_badbadBlightCount} blight were added from 8+ land damage." );
 	}
 
 	static async Task WaveOfImmigration( GameState gameState ) {
-		using var actionScope = gameState.StartAction(ActionCategory.Invader); // ??? is this really an action?
+		// Level 5
+
+		var newTownSpaces = new List<SpaceState>();
+		var newCitySpaces = new List<SpaceState>();
+
 		// on each board
-		foreach(var board in gameState.Island.Boards) {
-//			var boardCtx = new BoardCtx(gameState,board,actionScope);
+		foreach(Board board in gameState.Island.Boards) {
 
 			var spaces = gameState.Tokens.PowerUp(board.Spaces).ToArray();
 			// add 1 City to a Coastal land without City
 			var coastWithoutCity =  spaces.FirstOrDefault(s=>s.Space.IsCoastal && s.Sum(Invader.City)==0);
-			if( coastWithoutCity != null )
-				await coastWithoutCity.Bind( actionScope ).AddDefault(Invader.City,1, AddReason.Build); // What AddReason do we use for Escalation???
+			if( coastWithoutCity != null)
+				newCitySpaces.Add( coastWithoutCity );
 
 			// and 1 Town to the 3 Inland lands with the fewest Blight
-			var leastBlightSpaces = spaces
+			newTownSpaces.AddRange( spaces
 				.Where(x=> !x.Space.IsCoastal && !x.Space.IsOcean)
 				.OrderBy( x=>x.Blight.Count )
 				.Take(3)
-				.ToArray();
-			foreach(var newTownSpace in leastBlightSpaces)
-				await newTownSpace.Bind( actionScope ).AddDefault(Invader.Town,1, AddReason.Build);
+			);
 		}
+
+		// Take action
+		using var actionScope = gameState.StartAction( ActionCategory.Invader ); // ??? is this really an action?
+		foreach(var newTownSpace in newTownSpaces)
+			await newTownSpace.Bind( actionScope ).AddDefault( Invader.Town, 1, AddReason.Build );
+
+		foreach(var citySpace in newCitySpaces)
+			await citySpace.Bind( actionScope )
+				.AddDefault( Invader.City, 1, AddReason.Build ); // What AddReason do we use for Escalation???
+
+		// Log it
+		var logParts = new List<string>();
+		if(newCitySpaces.Any())
+			logParts.Add("1 city to "+ newCitySpaces.Select(x=>x.Space.Text).Join(","));
+		if(newTownSpaces.Any())
+			logParts.Add( "1 town to " + newTownSpaces.Select( x => x.Space.Text ).Join( "," ) );
+		gameState.LogDebug("Wave of Immigration: Adding " + logParts.Join(" and "));
 	}
 
 	static void MoreRuralThanUrban_Setup( GameState gameState ) {
-		// During Setup, on each board, add 1 Town to land #2 and 1 Town to the highest-numbered land without Setup symbols.
-		foreach(Board board in gameState.Island.Boards) {
-			// add 1 Town to land #2
-			gameState.Tokens[board[2]].AdjustDefault( Invader.Town, 1 );
-			// and 1 Town to the highest-numbered land without Setup symbols.
-			gameState.Tokens[board.Spaces.Last( x => ((Space1)x).StartUpCounts.IsEmpty )]
-				.AdjustDefault( Invader.Town, 1 );
-		}
+		// Level 2, During Setup...
+		
+		// on each board,
+		var spaces = gameState.Island.Boards
+			.SelectMany( board => new SpaceState[] {
+				// on land #2 
+				gameState.Tokens[board[2]],
+				// and the highest-numbered land without Setup symbols,
+				gameState.Tokens[board.Spaces.Last( x => ((Space1)x).StartUpCounts.IsEmpty )]
+			} )
+			.ToArray();
 
+		// add 1 Town
+		foreach(SpaceState space in spaces)
+			space.AdjustDefault( Invader.Town, 1 );
+
+		gameState.LogDebug($"More Rural than Urban: Added towns to "+spaces.Select(x=>x.Space.Text).Order().Join(","));
 	}
 
-	async Task SeekPrimeTerritory( GameState gameState ) {
+	async Task SeekPrimeTerritory_Escalation( GameState gameState ) {
 
 		using var actionScope = gameState.StartAction(ActionCategory.Default);
 
 		// On each board
-		await Cmd.OnEachBoard( new DecisionOption<BoardCtx>("Add 1 or 2 blight to land without town/blight.", IfTooHealthyAddBlight ))
+		await Cmd.OnEachBoard( new DecisionOption<BoardCtx>( "Add 1 or 2 blight to land without town/blight.", IfTooHealthyAddBlight ) )
 			.Execute( new GameCtx( gameState, actionScope ) );
 
 	}
@@ -154,7 +182,10 @@ public class HabsburgMonarchy : IAdversary {
 		}
 	}
 
-	public void PostInitialization( GameState gamestate ) {	}
+	int _badbadBlightCount = 0;
+
+	#endregion
+
 }
 
 

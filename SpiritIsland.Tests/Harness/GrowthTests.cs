@@ -80,7 +80,7 @@ public class GrowthTests {
 	#region Asserts
 
 	protected void Assert_BoardPresenceIs( string expected ) {
-		var actual = spirit.Presence.Placed(_gameState).Select(s=>s.Space.Label).OrderBy(l=>l).Join();
+		var actual = spirit.Presence.Placed(_gameState).Select(s=>s.Space.Label).Order().Join();
 		Assert.Equal(expected, actual); // , Is.EqualTo(expected),"Presence in wrong place");
 	}
 

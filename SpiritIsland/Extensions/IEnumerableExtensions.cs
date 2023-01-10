@@ -63,4 +63,6 @@ static public class IEnumerableExtensions {
 			stack.Push(saved[i]);
 	}
 
+	static public IEnumerable<T> Order<T>(this IEnumerable<T> src) => src.OrderBy(x => x);
+
 }

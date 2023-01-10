@@ -4,17 +4,15 @@ class RussiaRavageEngine : RavageEngine {
 
 	#region private fields
 
-	readonly bool _hasCompetitionAmongHunters;
-	readonly bool _hasPressureForFastProfit;
+	public bool ShouldCheckCompetitionAmongHunters { get; set; }
+	public bool CheckForPressureForFastProfit { get; set; }
 	readonly RussiaToken _token;
 
 	#endregion;
 
 	#region constructor
 
-	public RussiaRavageEngine( int level, RussiaToken token ) {
-		_hasCompetitionAmongHunters = 3 <= level; // Matching Card
-		_hasPressureForFastProfit = 6 <= level; // alters Ravage
+	public RussiaRavageEngine( RussiaToken token ) {
 		_token = token;
 	}
 
@@ -24,11 +22,17 @@ class RussiaRavageEngine : RavageEngine {
 	public override async Task ActivateCard( InvaderCard card, GameState gameState ) {
 		_token.PreRavage();
 		await base.ActivateCard( card,gameState );
-		if(_hasPressureForFastProfit)
+		if(CheckForPressureForFastProfit)
 			_token.PressureForFastProfit( gameState );
 	}
 
-	protected override bool MatchesCardForRavage( InvaderCard card, SpaceState spaceState ) => base.MatchesCardForRavage(card,spaceState )
-		|| _hasCompetitionAmongHunters && 3 <= spaceState.Sum( Invader.Explorer );
+	const string CompetitionName = "Competition Among Hunters";
+	protected override bool MatchesCardForRavage( InvaderCard card, SpaceState spaceState ) {
+		if( base.MatchesCardForRavage( card, spaceState ) ) return true;
+		bool hasCompetition = ShouldCheckCompetitionAmongHunters && 3 <= spaceState.Sum( Invader.Explorer );
+		if(hasCompetition)
+			spaceState.AccessGameState().LogDebug($"{CompetitionName} causes ravage on {spaceState.Space.Text}");
+		return hasCompetition;
+	}
 
 }

@@ -97,7 +97,6 @@ Blight causes spirit to lose 1 presence on space
 TargetSpaceCtx.IsOneOf needs tests to ensure it uses Terrain Mapper.
 RepeatCardForCost - Add test that it pulls from Used actions, NOT discard pile.
 Make sure win/loss is checked after every spirit action / power card
-TokenCountDictionary.MoveTo (test that correct events are published)
 PowerCard( Bats Scoutt )... secondary damage didn't seem to be working.
 Stife - Upgrading or downgrading explorers with strife, should maintain strife.
 

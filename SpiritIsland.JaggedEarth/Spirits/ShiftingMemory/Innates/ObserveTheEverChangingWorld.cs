@@ -35,7 +35,7 @@ public class ObserveWorldMod : Token, IHandleTokenAdded, IHandleTokenRemoved {
 
 
 	readonly ShiftingMemoryOfAges _spirit;
-	readonly HashSet<UnitOfWork> _appliedUnitsOfWork = new HashSet<UnitOfWork>();
+	readonly HashSet<UnitOfWork> _appliedToTheseActions = new HashSet<UnitOfWork>();
 
 	public ObserveWorldMod( TargetSpaceCtx ctx ) {
 		_spirit = (ShiftingMemoryOfAges)ctx.Self;
@@ -53,7 +53,7 @@ public class ObserveWorldMod : Token, IHandleTokenAdded, IHandleTokenRemoved {
 	}
 
 	void Check( SpaceState space, UnitOfWork actionScope ) {
-		if(    _appliedUnitsOfWork.Contains( actionScope ) // already did this action 
+		if(    _appliedToTheseActions.Contains( actionScope ) // already did this action 
 			|| _tokenSummary == space.Summary   // no change in tokens
 		)
 			return;
@@ -61,7 +61,7 @@ public class ObserveWorldMod : Token, IHandleTokenAdded, IHandleTokenRemoved {
 		if(actionScope == default)
 			throw new InvalidOperationException( "Can't use default action-scope" );
 
-		_appliedUnitsOfWork.Add( actionScope ); // limit to 1 change per action
+		_appliedToTheseActions.Add( actionScope ); // limit to 1 change per action
 		_tokenSummary = space.Summary;
 
 		actionScope.AtEndOfThisAction(async _ => {

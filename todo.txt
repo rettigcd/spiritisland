@@ -2,34 +2,46 @@
 ====  Clean Up Items  ====
 ==========================
 
-3+1? remaining Adversaries (Habsburg, Russia, Scotland, France?)
+5 Log => special-rules as Debug, so we can see what happened.
 
-- - - - -
+5 UI - Display Blight Card and/or text
+5 UI - Command-Beast - show graphic (so it doesn't get lost in text)
+5 UI - Custom Draw Invade Cards from Terrain texture.
+5 UI - Visual indicator of Phase
+5 UI - Configure Game - Images for Selecting Spirits
 
-5 Move Finders Hook to Action-start
+5 Action => Move Finders Hook to Action-start - event
+	- 
 
-4 Slip the flows of time - use any # of times
-4  Display Blight Card and/or text
+4 Multi Player
+	== Option 1 == 
+		when starting action, make copy of the tokens
+		- each action get an incremental ID
+		- operate on the copy
+		- track spaces
+		- when done, commit => if any (spaces,spirits?,cards?) have been modified since start, rollback.
+    -- Option 2 --
+		- when interacting with spaces, have space join the Action
+		- spaces that are part of an action cannot be joined to another action.
+		- visual indication of which spaces are joined so user can wait or not select them
+		- ! need to watch for deadlocks
+
+5 Finish => Slip the flows of time - use any # of times
+5 Finish => Finish Command the Beasts
+
+======
 
 3 Tokens - Publish token events to the UI so that it can show token changing animation.
-3 Command-Beast - show graphic (so it doesn't get lost in text)
-3 Visual indicator of Phase
-3 Add special-rules logging as Debug, so we can see what happened.
 3 Review items that are PickSpace then Pick Token into a single pick-space-token step.
-3 Shifting Memory - Prepared elements.  Add them AFTER the action has completed.
 3 Change Fear Card Ack to Events. (how do we do that?)
-3 Configure Game - Images for Selecting Spirits
 
 2 Consilidate GameState API - things that aren't data and have no theoretical state.
-2 Merge Config Ravage and Ravage Engine
 2 Review Presence events. Can they be removed by having Presence do action directly? Consolidate => Single PresenceOnBoardChanged event
 2 Clean up Token drawing and ownership - CachedImageDrawer - make it draw the images
 2 Create a target-space preview, when hovering over cards
 
-
 TokenCountDictionary.counts -> make private.
 Make Spirit.ResolveActions private/protected.
-Convert TargetSpaceCtx action Methods to Commands
 
 Idea - When cusororing over HotSpot, have selected item glow / highlight
 Idea - All of the Stop Tokens are actually just Pre-Build, Pre-Explore, Pre-Ravage events/configures
@@ -37,11 +49,7 @@ Idea - Could the DoRavage token also be the Ravage Configuration used in ModifyR
 Idea - Make Ravage / Build / Explore consistent in using UnitOfWork
 
 Instead of reacting to PresenceMoved / Removed / Added events, have the Presence do the actions itself.
-
-Log => Adversary Set up
-Log => Spirit Special Rules
-
-Custom Draw Cards from Terrain texture.
+	-> Review if any of the spirits Powers/actions can be refactored into a derived ActionalbeSpaceState
 
 =========================
 ===== Feature Focus =====
@@ -53,9 +61,6 @@ Custom Draw Cards from Terrain texture.
 	- Invader cards
 	- Power Cards
 	- Fear pool / cards
-
-* replace Frozen dahan with RemovingToken handler (and DamagingToken handler)
-* Display Adversary details
 
 Later: Events
 Later: Scenarios
@@ -69,10 +74,6 @@ Multiplayer Network Play
 == UI improvement ==
 Flatten Move
 Event driven UI updates
-
-== Missing ==
-Destroy Board
-Unlock the Gates - triggers all element thresholds
 
 == Verify ==
 Visions of shifting Future - fix once we support events - use Randomizer so it is repeatable.
@@ -111,25 +112,3 @@ provide insight as to what they have trouble with
 https://store.steampowered.com/news/app/1236720
 https://spiritislandwiki.com/index.php?title=Main_Page
 http://nerdroomsoftware.com/apps/SpiritGuide/spirits.php
-
-
-=====  Command the Beasts (page 20) ========
-
--- Setup --
-
-Add 1 extra fear card to Terror Level 2 of the Fear Deck.
-Add the two 'Command Beasts' Reminder Cards to the Invader Deck; one before the first Stage 2 Card, the other before the first Stage 3  card
-Don't use a Blight Card where the Blighted Island side has 2 Blight per player or only immediate effects.  	(Still Healthy are fine though.)
-
--- Game Play --
-
-When reaching Invader Stage 2 and Invader Stage 3, the Spirits earn the abilito to command all Beasts on the island once.
-
-Commanding Beasts requires consensus from all Spirits during the Fast phase.
-
-For each beast, choose one of the following:
-
-	* 1 Damage
-	* Push the beast
-	* If invaders are present, 1 fear.
-

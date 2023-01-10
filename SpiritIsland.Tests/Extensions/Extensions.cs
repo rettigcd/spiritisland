@@ -45,7 +45,7 @@ static internal class Extensions {
 			.Cast<HealthToken>()
 			.Where(x=>x.Class.Variant == TokenVariant.Dreaming)
 			.OrderBy( Order_CitiesTownsExplorers )
-			.Select( invader => tokens._counts[invader] + invader.ToString() )
+			.Select( invader => tokens[invader] + invader.ToString() )
 			.Join( "," );
 		dreamerSummary.ShouldBe( expectedString );
 	}

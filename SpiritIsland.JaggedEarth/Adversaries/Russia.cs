@@ -21,7 +21,6 @@ public class Russia : IAdversary {
 		_ => null
 	};
 
-
 	public ScenarioLevel[] Adjustments => new ScenarioLevel[] {
 		// Level 0 - Escalation
 		new ScenarioLevel(1 , 3,3,3, "Stalk the Predators", "Add 2 explorers/board to lands with beast." ),
@@ -44,19 +43,43 @@ public class Russia : IAdversary {
 
 	public void PreInitialization( GameState gameState ) {
 
+		var ravageEngine = new RussiaRavageEngine( _token );
+		gameState.InvaderDeck.Ravage.Engine = ravageEngine;
+
 		// Escalation - Stalk the Predators
 		gameState.InvaderDeck.Explore.Engine.Escalation = StalkThePredators;
 
 		// Additional Loss Condition
 		gameState.AddWinLossCheck( _token.HuntersSwarmTheIsland );
 
-		// find escalation cards and assign escalation action
-		//gameState.InvaderDeck.ReplaceUnrevealedCards( card => new RussiaInvaderCard( card, Level, _token ) );
-		gameState.InvaderDeck.Ravage.Engine = new RussiaRavageEngine( Level, _token );
+		// Level 1 - depends on tokens already placed
 
+		// Level 2
+		if(2 <= Level)
+			_token.HasASenseOfPendingDisaster = true;
+
+		// level-3 - in PreInitialization, setting level in Invader card
+		if(3 <= Level)
+			ravageEngine.ShouldCheckCompetitionAmongHunters = true;
+
+		// level-4 - nothing
+
+		// level-5 - see Pre-Init
 		if(5 <= Level)
 			EntrenchInTheFaceOfFear( gameState );
+
+		// level-6 - post-ravage event that adds towns/exporers to boards that didn't get blight.
+		if(6 <= Level)
+			ravageEngine.CheckForPressureForFastProfit = true;
+
 	}
+
+	public void PostInitialization( GameState gameState ) {
+		if(1 <= Level)
+			HuntersBringHomeShellAndHide( gameState ); // requires tokens to already be in place
+	}
+
+	#region private methods
 
 	static async Task StalkThePredators( GameState gameState ) {
 		// Add 2 explorers/board to lands with beast.
@@ -87,6 +110,7 @@ public class Russia : IAdversary {
 	}
 
 	static void EntrenchInTheFaceOfFear( GameState gameState ) {
+		// Level 5
 		// Modify Fear Card #3 and #7 to add Build Card
 		var hold = new Stack<IFearCard>();
 		var deck = gameState.Fear.Deck;
@@ -101,25 +125,6 @@ public class Russia : IAdversary {
 			deck.Push( hold.Pop() );
 	}
 
-	public void PostInitialization( GameState gameState ) {
-
-		if(1<=Level)
-			HuntersBringHomeShellAndHide( gameState );
-
-		if(2<=Level)
-			_token.HasASenseOfPendingDisaster = true;
-
-		// level-3 - in PreInitialization, setting level in Invader card
-
-		// level-4 - nothing
-
-		// level-5 - see Pre-Init
-
-		if(6<=Level) {
-			// add post-ravage event that adds towns/exporers to boards that didn't get blight.
-		}
-	}
-
 	void HuntersBringHomeShellAndHide( GameState gameState ) {
 		AddBeastAndExplorer( gameState );
 		ExplorersDo2Damage( gameState );
@@ -128,14 +133,17 @@ public class Russia : IAdversary {
 
 	static void AddBeastAndExplorer( GameState gameState ) {
 		// add 1 beast and 1 explorer to highest number land without Town/City
-		foreach(var board in gameState.Island.Boards) {
-			var highestLandWithoutTownCity = board.Spaces
-				.Select(gameState.Tokens.GetTokensFor)
-				.Where(x=>x.SumAny(Invader.Town_City)==0)
-				.Last();
+		var highestSpaces = gameState.Island.Boards
+			.Select( board => board.Spaces
+				.Select( gameState.Tokens.GetTokensFor )
+				.Where( x => x.SumAny( Invader.Town_City ) == 0 )
+				.Last() 
+			).ToArray();
+		foreach(var highestLandWithoutTownCity in highestSpaces) {
 			highestLandWithoutTownCity.AdjustDefault(Invader.Explorer,1);
 			highestLandWithoutTownCity.Adjust(TokenType.Beast,1);
 		}
+		gameState.LogDebug($"Hunters Bring Home Shell and Hide - Added Beast & Explorers to: " + highestSpaces.Select(s=>s.Space.Text).OrderBy(s=>s).Join(","));
 	}
 
 	static void ExplorersDo2Damage( GameState gameState ) {
@@ -150,5 +158,7 @@ public class Russia : IAdversary {
 	}
 
 	readonly RussiaToken _token = new RussiaToken();
+
+	#endregion
 
 }

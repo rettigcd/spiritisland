@@ -35,45 +35,46 @@ public class Sweden : IAdversary {
 		// Escalation - Swayed by the Invaders
 		gameState.InvaderDeck.Explore.Engine = new SwedenExplorer();
 
-		//	Level 1
-		//	( 2 ) 9( 3 / 3 / 3 )   Heavy Mining: 
-		//	If the Invaders do at least 6 Damage to the land during Ravage, add an extra Blight.
+		//	Level 1 - Heavy Mining: >=6 +1 blight
 		//	The additional Blight does not destroy Presence or cause cascades.
 		if(1 <= Level) {
 			gameState.LandDamaged.ForGame.Add( async args => {
-				if(6<=args.Damage)
+				if(6 <= args.Damage) {
 					// !!! how do we take from card but not cascade?
-					await gameState.Tokens[args.Space].Blight.Bind(args.ActionScope).Add(1);
+					// !!! This shouldn't destroy presence?  Does it?
+					await args.Space.Blight.Bind(args.Space.ActionScope).Add(1);
+					args.GameState.LogDebug("Heavy Mining: additional blight on "+args.Space.Space.Text);
+				}
 			} );
 		}
 
-		// Level 3
-		// (5)	10 (3/4/3)	Fine Steel for Tools and Guns:
-		// Town deal 3 Damage
-		// City deal 5 Damage
+		// Level 3 - Fine Steel for Tools and Guns: (Town deal 3 Damage, City deal 5 Damage)
 		if(3 <= Level) {
 			gameState.Tokens.Attack[Invader.Town] = 3;
 			gameState.Tokens.Attack[Invader.City] = 5;
+			// no logging, Ravage has plenty of it.
 		}
 
-		// Level 4
-		// (6)	11 (3/4/4)	Royal Backing: 
-		// During Setup, after adding all other Invaders, discard the top card of the Invader Deck.
-		// On each board, add 1 Town to the land of that terrain with the fewest Invaders.
+		// Level 4 - Royal Backing - Add 1 town to lands matching 1st invader card
 		if(4 <= Level) {
 			var card = gameState.InvaderDeck.UnrevealedCards[0];
 			gameState.InvaderDeck.UnrevealedCards.RemoveAt(0);
-			foreach(var board in gameState.Island.Boards) {
-				// If there are 2 spaces with 'least # of invaders', just auto-picks one of them.
-				var leastInvaderSpace = board.Spaces.Select(gameState.Tokens.GetTokensFor).Where(card.MatchesCard).OrderBy(s=>s.InvaderTotal()).First();
+			var addTownSpaces = gameState.Island.Boards
+				.Select(board => board.Spaces
+					.Select( gameState.Tokens.GetTokensFor )
+					.Where( card.MatchesCard )
+					.OrderBy( s => s.InvaderTotal() )
+					// If there are 2 spaces with 'least # of invaders', just auto-picks one of them.
+					.First()
+				).ToArray();
+
+			foreach(var leastInvaderSpace in addTownSpaces)
 				leastInvaderSpace.AdjustDefault( Invader.Town, 1 );
-			}
+
+			gameState.LogDebug("Royal Backing - added 1 town to "+addTownSpaces.Select(x=>x.Space.Text).Order().Join(","));
 		}
 
-		// Level 5
-		// (7)	12 (4/4/4)	Mining Rush: 
-		// When Ravaging adds at least 1 Blight to a land, also add 1 Town to an adjacent land without Town/City.
-		// Cascading Blight does not cause this effect.
+		// Level 5 - Mining Rush: blight => +1 town on adjacent land 
 		if(5 <= Level) {
 			var mod = new TokenAddedHandler("Sweden", args => {
 				if(args.Reason == AddReason.Ravage && args.Token == TokenType.Blight) {
@@ -81,51 +82,61 @@ public class Sweden : IAdversary {
 						.Where( adj => !adj.HasAny( Invader.Town_City ) )
 						.ToArray();
 
-					// !!! user select which space to add it to
-					var selection = noBuildAdjacents.FirstOrDefault();
+					var selection = noBuildAdjacents.FirstOrDefault(); // !!! user select which space to add it to
 
-					if(selection != null)
+					if(selection != null) {
 						selection.AdjustDefault( Invader.Town, 1 );
+						args.GameState.LogDebug($"Mining Rush: Blight on {args.AddedTo.Space.Text} caused +1 Town on {selection.Space.Text}.");
+					}
 				}
 			}, true );
 			gameState.AddToAllActiveSpaces( mod );
 		}
 
-		// Level 6
-		// (8)	13 (4/4/5)	Prospecting Outpost: 
-		// During setup, on each board add 1 Town and 1 Blight to land #8.
-		// The Blight comes from the box, not the Blight Card.
+		// Level 6 - Prospecting Outpost: Setup +1Town +1 blight on Land 8
 		if(6 <= Level) {
-			foreach(var board in gameState.Island.Boards) {
-				var tokens = gameState.Tokens[board[8]];
-				tokens.AdjustDefault( Invader.Town, 1 );
-				tokens.Blight.Adjust(1);
+			var spaces = gameState.Island.Boards
+				.Select( board => gameState.Tokens[board[8]] )
+				.ToArray();
+			
+			foreach(SpaceState space in spaces ) {
+				space.AdjustDefault( Invader.Town, 1 );
+				space.Blight.Adjust(1);
 			}
+			gameState.LogDebug("Prospecting Outpost: Adding Town/Blight to "+spaces.Select(s=>s.Space.Text).Order().Join(","));
+
 		}
 	}
 
 	public void PostInitialization( GameState gameState ) {
 
-		//	Level 2	
-		//	(3)	10 (3/4/3)	Population Pressure at Home: 
-		//	During Setup, on each board add 1 City to land #4.
-		//	On boards where land #4 starts with Blight, put that Blight in land #5 instead.
-		if(2 <= Level) {
-			foreach(var board in gameState.Island.Boards) {
-				// Add City to 4
-				var space4 = gameState.Tokens[board[4]];
-				space4.AdjustDefault( Invader.City, 1 );
-
-				// If 4 has blight, 
-				if( space4.Blight.Any ) {
-					// bump it to 5
-					space4.Blight.Adjust(-1);
-					gameState.Tokens[board[5]].Blight.Adjust(1);
-				}
-			}
-		}
+		//	Level 2	- Population Pressure at Home: 
+		if(2 <= Level)
+			PopulationPressureAtHome( gameState ); // Depends on tokens being already initialized
 
 	}
 
+	static void PopulationPressureAtHome( GameState gameState ) {
+		//	Level 2	- Population Pressure at Home: 
+		//	During Setup, on each board add 1 City to land #4.
+		//	On boards where land #4 starts with Blight, put that Blight in land #5 instead.
+		
+		var additionalCitySpaces = gameState.Island.Boards
+			.Select( board => gameState.Tokens[board[4]])
+			.ToArray();
+		foreach(var space4 in additionalCitySpaces) {
+			// Add City to 4
+			space4.AdjustDefault( Invader.City, 1 );
+
+			// If 4 has blight, 
+			if(space4.Blight.Any) {
+				// bump it to 5
+				space4.Blight.Adjust( -1 );
+				gameState.Tokens[space4.Space.Board[5]].Blight.Adjust( 1 );
+			}
+		}
+
+		gameState.LogDebug($"Population Pressure At Home: adding 1 city to "+additionalCitySpaces.Select(s=>s.Space.Text).Order().Join(","));
+	}
 }
 

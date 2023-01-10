@@ -112,18 +112,17 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	public int DamageToBlightLand = 2;
 
-	public async Task DamageLandFromRavage( Space space, int damageInflictedFromInvaders, UnitOfWork actionScope ) {
+	public async Task DamageLandFromRavage( ActionableSpaceState ss, int damageInflictedFromInvaders ) {
 		if(damageInflictedFromInvaders==0) return;
 
 		await LandDamaged.InvokeAsync( new LandDamagedArgs { 
 			GameState = this,
-			Space = space,
-			Damage = damageInflictedFromInvaders,
-			ActionScope = actionScope
+			Space = ss,
+			Damage = damageInflictedFromInvaders
 		} );
 
-		if( damageInflictedFromInvaders >= DamageToBlightLand)
-			await Tokens[space].Blight.Bind(actionScope).Add(1, AddReason.Ravage);
+		if(DamageToBlightLand <= damageInflictedFromInvaders )
+			await ss.Blight.Bind(ss.ActionScope).Add(1, AddReason.Ravage);
 	}
 
 	/// <summary>
@@ -300,6 +299,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	#endregion
 
 	public void Log( ILogEntry entry ) => NewLogEntry?.Invoke( entry );
+	public void LogDebug( string debugMsg ) => Log( new LogDebug(debugMsg) );
 
 	public async Task TriggerTimePasses() {
 
@@ -422,9 +422,8 @@ public class Healer {
 
 public class LandDamagedArgs {
 	public GameState GameState;
-	public Space Space;
+	public ActionableSpaceState Space;
 	public int Damage;
-	public UnitOfWork ActionScope;
 }
 
 public class AddBlightEffect {

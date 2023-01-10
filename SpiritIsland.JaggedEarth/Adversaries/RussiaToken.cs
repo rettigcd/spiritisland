@@ -14,7 +14,7 @@ class RussiaToken : BaseModToken, IHandleTokenAdded, IHandleRemovingToken {
 		// Put beast Destroyed by Adversary rules on this panel.If there are ever more beast on this panel than on the island, the Invaders win.
 		int remainingBeasts = gameState.AllSpaces.Sum( s => s.Beasts.Count );
 		if(remainingBeasts < _beastsDestroyed)
-			GameOverException.Lost( $"Russia-Hunters Swarm the Island (remaining:{remainingBeasts} killed:{_beastsDestroyed})" );
+			GameOverException.Lost( $"Russia-Hunters Swarm the Island (beasts remaining:{remainingBeasts} killed:{_beastsDestroyed})" );
 	}
 
 	public void PreRavage() {
@@ -23,21 +23,31 @@ class RussiaToken : BaseModToken, IHandleTokenAdded, IHandleRemovingToken {
 	readonly HashSet<Board> _receivedRavageBlight = new HashSet<Board>();
 
 	public void PressureForFastProfit( GameState gameState ) {
+		// Level 6
 		// After the Ravage Step of turn 2+,
 		// on each board where it added no Blight:
-		foreach(Board board in gameState.Island.Boards.Except( _receivedRavageBlight ) ) {
+		var boardsWithNoNewBlight = gameState.Island.Boards.Except( _receivedRavageBlight );
 
-			// In the land with the most Explorer
-			var landWithMostExplorers = gameState.Tokens.PowerUp( board.Spaces )
-				//  (min. 1),
-				.Where( ss => 0 < ss.Sum( Invader.Explorer ) )
-				.OrderByDescending( ss => ss.Sum(Invader.Explorer) )
-				.FirstOrDefault();
+		// In the land with the most Explorer
+		SpaceState PickSpaceWithMostExplorers(Board board) => gameState.Tokens.PowerUp( board.Spaces )
+			.Where( ss => 0 < ss.Sum( Invader.Explorer ) ) //  (min. of 1)
+			.OrderByDescending( ss => ss.Sum( Invader.Explorer ) )
+			.FirstOrDefault();
+		var landsWithMostExplorers = boardsWithNoNewBlight
+			.Select( PickSpaceWithMostExplorers )
+			.Where( l => l != null )
+			.ToArray();
 
+		foreach(var land in landsWithMostExplorers) {
 			// add 1 Explorer and 1 Town.
-			landWithMostExplorers?.AdjustDefault( Invader.Explorer, 1 );
-			landWithMostExplorers?.AdjustDefault( Invader.Town, 1 );
+			land.AdjustDefault( Invader.Explorer, 1 );
+			land.AdjustDefault( Invader.Town, 1 );
 		}
+		if( landsWithMostExplorers.Any() )
+			gameState.LogDebug("Pressure for Fast Profit: Added 1T+1E to "
+				+landsWithMostExplorers.Select(x=>x.Space.Text).Order().Join(",")
+			);
+		
 	}
 
 	#region mods
@@ -51,6 +61,7 @@ class RussiaToken : BaseModToken, IHandleTokenAdded, IHandleRemovingToken {
 			if( args.AddedTo.Beasts.Any ) {
 				await args.AddedTo.Beasts.Bind( args.ActionScope ).Destroy( 1 );
 				_beastsDestroyed++;
+				args.GameState.LogDebug($"Blight on {args.AddedTo.Space.Text} destroys 1 beast.");
 			}
 		}
 	}
@@ -71,7 +82,7 @@ class RussiaToken : BaseModToken, IHandleTokenAdded, IHandleRemovingToken {
 			GameState gs = args.Space.AccessGameState();
 			Spirit spirit = args.ActionScope.Owner ?? FindSpiritForBoard( gs, args.Space.Space.Board );
 			Space destination = await spirit.Gateway.Decision( Select.Space.PushToken( args.Token, args.Space.Space, pushOptions, Present.Always ) );
-			await args.Space.Bind( args.ActionScope ).MoveTo( args.Token, destination );
+			await args.Space.MoveTo( args.Token, destination );
 		}
 	}
 

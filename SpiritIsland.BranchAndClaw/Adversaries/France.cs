@@ -13,9 +13,7 @@ public class France : IAdversary {
 
 	public int Level { get; set; }
 
-	public void PostInitialization( GameState gs ) {
-		gs.InvaderDeck.Explore.Engine = new FranceExplorer(Level);
-	}
+	public void PostInitialization( GameState gs ) {}
 
 	public int[] FearCardsPerLevel => Level switch {
 		1 => new int[] { 3, 3, 3 },
@@ -31,6 +29,8 @@ public class France : IAdversary {
 
 	public void PreInitialization( GameState gameState ) {
 		gameState.InvaderDeck.Build.Engine = new FranceBuilder( Level );
+		gameState.InvaderDeck.Explore.Engine = new FranceExplorer( Level );
+
 
 		if( 2 <= Level)
 			AddSlaveRebellionEvent( gameState );
