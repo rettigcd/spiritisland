@@ -84,6 +84,7 @@ public class Scotland : IAdversary {
 			.First();
 		// add 1 Town to the N lands with the fewest Town( N = # of players.)
 		var spacesToAddTown = gameState.Tokens.PowerUp( board.Spaces )
+			.Where( gameState.Island.Terrain.IsInPlay )
 			.OrderBy( ss => ss.Sum( Invader.Town ) )
 			.Take( gameState.Spirits.Length )
 			.ToArray();

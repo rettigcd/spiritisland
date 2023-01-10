@@ -189,13 +189,13 @@ public partial class Board {
 	static public Board BuildBoardF() {
 		var layout = BoardLayout.BoardF();
 		var board = new Board( "F"
-			, new Space1( Terrain.Ocean,    "F0",layout.Spaces[1] )
-			, new Space1( Terrain.Sand,     "F1",layout.Spaces[2],"DD" )
-			, new Space1( Terrain.Jungle,   "F2",layout.Spaces[3],"C" )
-			, new Space1( Terrain.Wetland,  "F3",layout.Spaces[4],"D" )
-			, new Space1( Terrain.Mountain, "F4",layout.Spaces[5],"B" )
-			, new Space1( Terrain.Jungle,   "F5",layout.Spaces[6],"D" )
-			, new Space1( Terrain.Mountain, "F6",layout.Spaces[7],"DD" )
+			, new Space1( Terrain.Ocean,    "F0",layout.Spaces[0] )
+			, new Space1( Terrain.Sand,     "F1",layout.Spaces[1],"DD" )
+			, new Space1( Terrain.Jungle,   "F2",layout.Spaces[2],"C" )
+			, new Space1( Terrain.Wetland,  "F3",layout.Spaces[3],"D" )
+			, new Space1( Terrain.Mountain, "F4",layout.Spaces[4],"B" )
+			, new Space1( Terrain.Jungle,   "F5",layout.Spaces[5],"D" )
+			, new Space1( Terrain.Mountain, "F6",layout.Spaces[6],"DD" )
 			, new Space1( Terrain.Wetland,  "F7",layout.Spaces[7],"" )
 			, new Space1( Terrain.Sand,     "F8",layout.Spaces[8],"T" )
 		);

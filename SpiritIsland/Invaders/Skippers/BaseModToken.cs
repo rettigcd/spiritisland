@@ -17,8 +17,6 @@ public class BaseModToken : TokenWithEndOfRoundCleanup {
 
 	public TokenClass Class => _classSingleton;
 
-	public string SpaceAbreviation => null; // hidden
-
 	#region static TokenClass
 
 	static readonly TokenClass _classSingleton = new ActionModTokenClass();

@@ -24,14 +24,14 @@ public class ObserveWorldMod : Token, IHandleTokenAdded, IHandleTokenRemoved {
 
 	// !!! It seems like adding / removing presence tokens should trigger this also, but I don't think it triggers the Token Added/Removed event.
 
-	static int _total = 0;
-	readonly int _index;
 	string _tokenSummary;
 
 	public TokenClass Class => TokenType.Element;
 	public string Text => ObserveTheEverChangingWorld.Name;
 
-	public string SpaceAbreviation => $"AnyElement({_index})";
+	// public string SpaceAbreviation => $"AnyElement({_index})";
+	// readonly int _index;
+	// static int _total = 0;
 
 
 	readonly ShiftingMemoryOfAges _spirit;
@@ -39,7 +39,7 @@ public class ObserveWorldMod : Token, IHandleTokenAdded, IHandleTokenRemoved {
 
 	public ObserveWorldMod( TargetSpaceCtx ctx ) {
 		_spirit = (ShiftingMemoryOfAges)ctx.Self;
-		_index = _total++;
+		// _index = _total++;
 		_tokenSummary = ctx.Tokens.Summary;
 	}
 

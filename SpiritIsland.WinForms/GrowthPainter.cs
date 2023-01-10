@@ -143,7 +143,7 @@ namespace SpiritIsland.WinForms {
 		void AdditionalPlay( RectangleF bounds, int count ) {
 			DrawIconInCenter( bounds, Img.CardPlayPlusN );
 
-			using Font coinFont = ResourceImages.Singleton.UseGameFont( bounds.Height * .35f );
+			using Font coinFont = UseGameFont( bounds.Height * .35f );
 			string txt = (count > 0)
 				? ("+" + count.ToString())
 				: ("\u2014" + (-count).ToString());
@@ -158,13 +158,13 @@ namespace SpiritIsland.WinForms {
 
 		void GainEnergy( RectangleF bounds, int delta ){
 			// DrawTokenInCenter( rect, "Energy_Plus_"+delta);
-			using var img = ResourceImages.Singleton.GetImage( Img.Coin );
+			using var img = GetImage( Img.Coin );
 
 			float imgWidth = bounds.Width, imgHeight = img.Height * imgWidth / img.Width; // assuming width limited
 
 			graphics.DrawImageFitBoth( img, bounds );
 
-			using Font coinFont = ResourceImages.Singleton.UseGameFont( imgHeight * .5f );
+			using Font coinFont = UseGameFont( imgHeight * .5f );
 			string txt = delta > 0 
 				? ("+" + delta.ToString())
 				: ("\u2014" + (-delta).ToString());
@@ -178,7 +178,7 @@ namespace SpiritIsland.WinForms {
 		}
 
 		void DrawIconInCenter( RectangleF rect, Img img ) {
-			var image = ResourceImages.Singleton.GetImage( img );
+			var image = GetImage( img );
 			float imgWidth = rect.Width, imgHeight = image.Height * imgWidth / image.Width;
 			graphics.DrawImage( image, rect.X, rect.Y + (rect.Height - imgHeight) / 2, imgWidth, imgHeight );
 		}
@@ -186,13 +186,13 @@ namespace SpiritIsland.WinForms {
 		void GainElement( RectangleF rect, params Element[] elements ) {
 			var parts = rect.SplitHorizontally(elements.Length);
 			for(int i = 0; i < elements.Length; ++i) {
-				using var img = ResourceImages.Singleton.GetImage( elements[i].GetTokenImg() );
+				using var img = GetImage( elements[i].GetTokenImg() );
 				graphics.DrawImageFitWidth(img, parts[i]);
 			}
 		}
 
 		void GainTime( RectangleF rect ) {
-			using var img = ResourceImages.Singleton.GetImage( Img.FracturedDays_Gain2Time );
+			using var img = GetImage( Img.FracturedDays_Gain2Time );
 			graphics.DrawImageFitWidth(img, rect );
 		}
 
@@ -206,19 +206,19 @@ namespace SpiritIsland.WinForms {
 
 
 		void DrawImage( RectangleF rect, Img img ) {
-			using var image = ResourceImages.Singleton.GetImage( img );
+			using var image = GetImage( img );
 			graphics.DrawImageFitBoth(image, rect );
 		}
 
 		static Bitmap GetTargetFilterIcon( string filterEnum ) {
 			Img img = FilterEnumExtension.GetImgEnum( filterEnum );
-			return img == default ? null : ResourceImages.Singleton.GetImage( img );
+			return img == default ? null : GetImage( img );
 		}
 
 		void MovePresence( RectangleF rect, int range ) {
 
-			using Font font = ResourceImages.Singleton.UseGameFont( rect.Height * .25f );
-			using var presenceIcon = ResourceImages.Singleton.GetImage( Img.Icon_Presence );
+			using Font font = UseGameFont( rect.Height * .25f );
+			using var presenceIcon = GetImage( Img.Icon_Presence );
 
 			// + presence
 			float iconCenterY = rect.Y + rect.Height *.3f; // top of presence
@@ -234,7 +234,7 @@ namespace SpiritIsland.WinForms {
 
 			// range arrow
 			float rangeArrowTop = rect.Y + rect.Height * .85f;
-			using var rangeIcon = ResourceImages.Singleton.GetImage( Img.MoveArrow );
+			using var rangeIcon = GetImage( Img.MoveArrow );
 			float arrowWidth = rect.Width * .8f, arrowHeight = arrowWidth * rangeIcon.Height / rangeIcon.Width;
 			graphics.DrawImage( rangeIcon, rect.X + (rect.Width-arrowWidth)/2, rangeArrowTop, arrowWidth, arrowHeight );
 
@@ -255,10 +255,10 @@ namespace SpiritIsland.WinForms {
 			float presenceYPercent = image == null ? .3f  : .2f;
 			float textTopScale     = image == null ? .55f : .7f;
 
-			using Font font        = ResourceImages.Singleton.UseGameFont( bounds.Height * fontScale );
+			using Font font        = UseGameFont( bounds.Height * fontScale );
 
 			// Draw: + presence
-			using var presenceIcon = ResourceImages.Singleton.GetImage( Img.Icon_Presence );
+			using var presenceIcon = GetImage( Img.Icon_Presence );
 			float iconCenterY = bounds.Y + bounds.Height * presenceYPercent; // top of presence
 			float presenceWidth = bounds.Width*.6f;
 			float presenceHeight = presenceIcon.Height * presenceWidth / presenceIcon.Width;
@@ -289,7 +289,7 @@ namespace SpiritIsland.WinForms {
 
 				// range arrow
 				float rangeArrowTop = bounds.Y + bounds.Height * .85f;
-				using var rangeIcon = ResourceImages.Singleton.GetImage( Img.RangeArrow );
+				using var rangeIcon = GetImage( Img.RangeArrow );
 				float arrowWidth = bounds.Width * .8f, arrowHeight = arrowWidth * rangeIcon.Height / rangeIcon.Width;
 				graphics.DrawImage( rangeIcon, bounds.X + (bounds.Width-arrowWidth)/2, rangeArrowTop, arrowWidth, arrowHeight );
 			}
@@ -310,12 +310,12 @@ namespace SpiritIsland.WinForms {
 		}
 
 		void IgnoreRange( RectangleF rect ) {
-			using var icon = ResourceImages.Singleton.GetImage( Img.Icon_Checkmark );
+			using var icon = GetImage( Img.Icon_Checkmark );
 
 			float fontScale        = .25f;
 			float presenceYPercent = .3f;
 
-			using Font font = ResourceImages.Singleton.UseGameFont( rect.Height * fontScale );
+			using Font font = UseGameFont( rect.Height * fontScale );
 
 			// + presence
 			float iconCenterY = rect.Y + rect.Height * presenceYPercent; // top of presence
@@ -327,7 +327,7 @@ namespace SpiritIsland.WinForms {
 
 			// range arrow
 			float rangeArrowTop = rect.Y + rect.Height * .85f;
-			using var rangeIcon = ResourceImages.Singleton.GetImage( Img.RangeArrow );
+			using var rangeIcon = GetImage( Img.RangeArrow );
 			float arrowWidth = rect.Width * .8f, arrowHeight = arrowWidth * rangeIcon.Height / rangeIcon.Width;
 			graphics.DrawImage( rangeIcon, rect.X + (rect.Width - arrowWidth) / 2, rangeArrowTop, arrowWidth, arrowHeight );
 
@@ -337,6 +337,10 @@ namespace SpiritIsland.WinForms {
 			if(cachedImageLayer != null)
 				cachedImageLayer.Dispose();
 		}
+
+		static Font UseGameFont( float fontHeight ) => ResourceImages.Singleton.UseGameFont( fontHeight );
+		static Bitmap GetImage( Img img ) => ResourceImages.Singleton.GetImage( img );
+
 	}
 
 }

@@ -74,7 +74,7 @@ namespace SpiritIsland.WinForms {
 		}
 
 		void PaintLabels(Graphics graphics) {
-			using Font simpleFont = IslandControl.UseGameFont( 20f );
+			using Font simpleFont = ResourceImages.Singleton.UseGameFont( 20f );
 			graphics.DrawString( "Energy", simpleFont, Brushes.Black, _layout.EnergyTitleLocation );
 			graphics.DrawString( "Cards", simpleFont, Brushes.Black, _layout.CardPlayTitleLocation );
 		}

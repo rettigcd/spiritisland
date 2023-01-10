@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class SpiritPresenceToken : Token, TokenClass {
+public class SpiritPresenceToken : Token, TokenClass, IAppearOnScreen {
 
 	#region private
 //	static int tokenTypeCount; // so each spirit presence gets a different number
@@ -18,12 +18,12 @@ public class SpiritPresenceToken : Token, TokenClass {
 
 	public string Text { get; }
 
-	public string SpaceAbreviation => null; // hide it
-
 	#endregion
 
 	#region TokenClass parts
 	string TokenClass.Label => "Presence";
 	TokenCategory TokenClass.Category => TokenCategory.Presence;
-		#endregion
+	#endregion
+	Img IAppearOnScreen.Img => Img.Icon_Presence; // ???
+
 }

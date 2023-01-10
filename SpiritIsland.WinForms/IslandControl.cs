@@ -57,6 +57,7 @@ public partial class IslandControl : Control {
 		presenceAppearance.Adjustment?.Adjust( (Bitmap)_presenceImg );
 		presenceAppearance.Adjustment?.Adjust( (Bitmap)_tokenImages[TokenType.Defend] );
 		presenceAppearance.Adjustment?.Adjust( (Bitmap)_tokenImages[TokenType.Isolate] );
+		// !! we could cache these if we could serialize the Adjustment into a caching-key
 	}
 
 	#endregion constructor / Init
@@ -239,9 +240,9 @@ public partial class IslandControl : Control {
 			_insidePoints = _gameState.AllSpaces
 				.ToDictionary(  ss => ss.Space,  ss => new ManageInternalPoints( ss ) );
 
-			// DrawInnerPoints( graphics );
-			foreach(var x in _insidePoints)
-				graphics.DrawString( x.Key.Text, SystemFonts.MessageBoxFont, SpaceLabelBrush, _mapper.Map( x.Value.NameLocation ) );
+			// Label board spaces
+			foreach(var (space,manager) in _insidePoints.Select(x=>(x.Key,x.Value)))
+				graphics.DrawString( space.Text, SystemFonts.MessageBoxFont, SpaceLabelBrush, _mapper.Map( manager.NameLocation ) );
 
 		}
 
@@ -252,7 +253,7 @@ public partial class IslandControl : Control {
 		var perimeterPen = new Pen( SpacePerimeterColor, 5f );
 		var normalizedBoardLayout = board.Layout;
 		for(int i = 0; i < normalizedBoardLayout.Spaces.Length; ++i) {
-			using Brush brush = UseSpaceBrush( board[i] );
+			using Brush brush = ResourceImages.Singleton.UseSpaceBrush( board[i] );
 			var points = normalizedBoardLayout.Spaces[i].Corners.Select( _mapper.Map ).ToArray();
 
 			// Draw blocky
@@ -260,8 +261,8 @@ public partial class IslandControl : Control {
 			//pe.Graphics.DrawPolygon( perimeterPen, points );
 
 			// Draw smoothy
-			graphics.FillClosedCurve( brush, points, System.Drawing.Drawing2D.FillMode.Alternate, .25f );
-			graphics.DrawClosedCurve( perimeterPen, points, .25f, System.Drawing.Drawing2D.FillMode.Alternate );
+			graphics.FillClosedCurve( brush, points, FillMode.Alternate, .25f );
+			graphics.DrawClosedCurve( perimeterPen, points, .25f, FillMode.Alternate );
 		}
 
 	}
@@ -427,7 +428,7 @@ public partial class IslandControl : Control {
 
 		// Draw
 		using var buildRavageFont = UseGameFont( textHeight );
-		using var invaderStageFont = UseGameFont( textHeight * 2 );
+		using var invaderStageFont = UseInvaderFont( textHeight * 2 );
 		foreach(var cardMetric in cardMetrics)
 			cardMetric.Draw( graphics, buildRavageFont, invaderStageFont );
 
@@ -437,9 +438,16 @@ public partial class IslandControl : Control {
 		// Draw Discard
 		var lastDiscard = _gameState.InvaderDeck.Discards.FirstOrDefault();
 		if(lastDiscard is not null) {
-			using Bitmap discardImg = ResourceImages.Singleton.GetInvaderCard( lastDiscard.Text );
+			using Image discardImg = ResourceImages.Singleton.GetInvaderCard( lastDiscard );
 			graphics.DrawImage( discardImg, discardDestinationPoints );
+			// # of cards in explore pile
+			graphics.DrawCountIfHigherThan( discardRect, _gameState.InvaderDeck.Discards.Count );
+
 		}
+
+		//foreach(var x in _gameState.InvaderDeck.UnrevealedCards) {
+		//	using Image discardImg = ResourceImages.Singleton.GetInvaderCard( x );
+		//}
 
 	}
 
@@ -686,9 +694,9 @@ public partial class IslandControl : Control {
 	}
 
 	PointF GetPortPoint( Space space ) {
-		PointF worldCoord = decision_Token is null 
-			? space.Layout.Center // normal space 
-			: _insidePoints[space].GetPointFor( decision_Token );
+		PointF worldCoord = decision_Token is IAppearOnScreen
+			? _insidePoints[space].GetPointFor( decision_Token )
+			: space.Layout.Center; // normal space 
 		return _mapper.Map( worldCoord );
 	}
 
@@ -806,17 +814,6 @@ public partial class IslandControl : Control {
 
 	}
 
-	static Brush UseSpaceBrush( Space space ) {
-		string terrainName = space.IsWetland ? "wetlands"
-			: space.IsJungle   ? "jungle"
-			: space.IsMountain ? "mountains"
-			: space.IsSand     ? "sand"
-			: space.IsOcean    ? "ocean"
-			: throw new ArgumentException($"No brush is found for {space.Text}",nameof(space));
-		using Image image = Image.FromFile( $".\\images\\{terrainName}.jpg" );
-		return new TextureBrush( image );
-	}
-
 	Image AccessTokenImage( Token imageToken ) {
 		if(!_tokenImages.ContainsKey( imageToken ))
 			_tokenImages[imageToken] = GetImage( imageToken );
@@ -824,11 +821,9 @@ public partial class IslandControl : Control {
 	}
 
 	static Bitmap GetImage( Token token ) {
-		return token is HealthToken ht 
-			? GetHealthTokenImage( ht )
-			: token.Class is UniqueToken ut 
-				? ResourceImages.Singleton.GetImage( ut.Img )
-				: throw new Exception( "unknown token " + token );
+		return token is HealthToken ht ? GetHealthTokenImage( ht )
+			: token.Class is IAppearOnScreen ut ? ResourceImages.Singleton.GetImage( ut.Img )
+			: throw new Exception( "unknown token " + token );
 	}
 
 	static Bitmap GetHealthTokenImage( HealthToken ht ) {
@@ -839,8 +834,8 @@ public partial class IslandControl : Control {
 			// p => Color.FromArgb( p.A, p.R / 2, p.G / 2, p.B / 2 ); // halfScale
 			// p => Color.FromArgb( p.A, 255 - p.R, 255 - p.G, 255 - p.B ); // invert
 			// p => Color.FromArgb( p.A, p.R / 2, p.G / 2, p.B * 2 / 3 ); // red green
-			TokenVariant.Dreaming => new HslColorAdjuster( new HSL( 240, .75f, .4f ) ).GetNewColor,
-            TokenVariant.Frozen => new HslColorAdjuster( new HSL( 0, .45f, .4f) ).GetNewColor,
+			TokenVariant.Dreaming => new HslColorAdjuster( new HSL( 240, 75, 40 ) ).GetNewColor,
+            TokenVariant.Frozen => new HslColorAdjuster( new HSL( 0, 45, 40) ).GetNewColor,
 			_ => (x)=>x
 		};
 		new PixelAdjustment( colorConverter ).Adjust( orig );
@@ -849,7 +844,7 @@ public partial class IslandControl : Control {
 
 		// If Full Health is different than standard, show it
 		if( ht.FullHealth != ht.Class.ExpectedHealthHint ) {
-			using var font = ResourceImages.Singleton.UseGameFont( orig.Height/2 );
+			using var font = UseGameFont( orig.Height/2 );
 			StringFormat center = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
 			g.DrawString( ht.FullHealth.ToString(), font, Brushes.White, new RectangleF( 0, 0, orig.Width, orig.Height ), center );
 		}
@@ -982,7 +977,8 @@ public partial class IslandControl : Control {
 
 	#endregion
 
-	static public Font UseGameFont( float fontHeight ) => ResourceImages.Singleton.UseGameFont( fontHeight );
+	static Font UseGameFont( float fontHeight ) => ResourceImages.Singleton.UseGameFont( fontHeight );
+	static Font UseInvaderFont( float fontHeight ) => ResourceImages.Singleton.UseInvaderFont( fontHeight );
 
 	#region private Option fields
 
@@ -1135,18 +1131,21 @@ class InvaderCardMetrics {
 			var card = slot.Cards[i];
 			if(card.Flipped)
 				graphics.DrawInvaderCardFront( Rect[i], card );
-			else {
-				var cardRect = Rect[i];
-				using(SolidBrush brush = new SolidBrush( Color.LightSteelBlue ))
-					graphics.FillRectangle( brush, cardRect );
-				var smallerRect = cardRect.InflateBy( -cardRect.Width * .1f );
-				graphics.DrawInvaderCardBack( smallerRect, card );
-				smallerRect = cardRect.InflateBy( -25f );
-				graphics.DrawStringCenter( card.InvaderStage.ToString(), invaderStageFont, Brushes.DarkRed, smallerRect );
-			}
+			else
+				DrawInvaderBack( graphics, invaderStageFont, i, card );
+
 		}
 		graphics.DrawStringCenter( slot.Label, labelFont, Brushes.Black, textBounds );
 	}
 
+	private void DrawInvaderBack( Graphics graphics, Font invaderStageFont, int i, InvaderCard card ) {
+		var cardRect = Rect[i];
+		using(SolidBrush brush = new SolidBrush( Color.LightSteelBlue ))
+			graphics.FillRoundedRectangle( brush, cardRect.ToInts(), (int)(cardRect.Width*.15f) );
+		var smallerRect = cardRect.InflateBy( -cardRect.Width * .15f );
+		graphics.DrawInvaderCardBack( smallerRect, card );
+		smallerRect = cardRect.InflateBy( -25f );
+		graphics.DrawStringCenter( card.InvaderStage.ToString(), invaderStageFont, Brushes.DarkRed, smallerRect );
+	}
 }
 

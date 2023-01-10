@@ -113,10 +113,10 @@ public static class ExtendDictionary {
 	/// <example>1C@3,1E@1,1T@2</example>
 	static public string TokenSummary<T>( this CountDictionary<T> dict ) where T:Token {
 		return dict.Count == 0 ? "[none]"
-			: dict
-				.Where( p => p.Key.SpaceAbreviation != null )
-				.OrderBy( p => p.Key.SpaceAbreviation )
-				.Select( p => p.Value + p.Key.SpaceAbreviation )
+			: dict.Keys
+				.OfType<IAppearInSpaceAbreviation>()
+				.OrderBy( t => t.SpaceAbreviation )
+				.Select( t => dict[(T)t] + t.SpaceAbreviation )
 				.Join( "," );
 	}
 

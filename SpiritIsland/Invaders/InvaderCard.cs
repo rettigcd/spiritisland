@@ -32,10 +32,10 @@ public sealed class InvaderCard : IOption {
 	#region Constructors
 
 	public InvaderCard( SpaceFilter filter, int invaderStage ) {
-		_filter = filter;
+		Filter = filter;
 		InvaderStage = invaderStage;
-		HasEscalation = InvaderStage == 2 && _filter.Text != CoastalFilter.Name;
-		Text = (HasEscalation ? "2" : "") + _filter.Text;
+		HasEscalation = InvaderStage == 2 && Filter.Text != CoastalFilter.Name;
+		Text = (HasEscalation ? "2" : "") + Filter.Text;
 
 	}
 
@@ -43,36 +43,36 @@ public sealed class InvaderCard : IOption {
 
 	#region Matching Terrain
 
-	public bool MatchesCard( Space space ) => _filter.Matches( space ); // used only in tests
+	public bool MatchesCard( Space space ) => Filter.Matches( space ); // used only in tests
 
-	public bool MatchesCard( SpaceState space ) => _filter.Matches( space.Space );
+	public bool MatchesCard( SpaceState space ) => Filter.Matches( space.Space );
 
 	#endregion
 
 	#region private fields
-	readonly SpaceFilter _filter;
+	readonly public SpaceFilter Filter; // public so Drawer can draw it.
 	#endregion
 }
 
-class SingleTerrainFilter : SpaceFilter {
+public class SingleTerrainFilter : SpaceFilter {
 	public SingleTerrainFilter( Terrain terrain ) {
-		this.terrain = terrain;
+		this.Terrain = terrain;
 		this.Text = terrain.ToString()[..1];
 	}
-	public bool Matches( Space space ) => space.Is( terrain );
+	public bool Matches( Space space ) => space.Is( Terrain );
 	public string Text { get; }
-	readonly Terrain terrain;
+	readonly public Terrain Terrain; // public so UI can detect what to draw
 }
 
-class DoubleTerrainFilter : SpaceFilter {
+public class DoubleTerrainFilter : SpaceFilter {
 	public DoubleTerrainFilter( Terrain t1, Terrain t2 ) {
-		terrain1 = t1;
-		terrain2 = t2;
+		Terrain1 = t1;
+		Terrain2 = t2;
 		Text = t1.ToString()[..1] + "+" + t2.ToString()[..1];
 	}
-	public bool Matches( Space space ) => space.IsOneOf( terrain1, terrain2 );
+	public bool Matches( Space space ) => space.IsOneOf( Terrain1, Terrain2 );
 	public string Text { get; }
-	readonly Terrain terrain1, terrain2;
+	readonly public Terrain Terrain1, Terrain2;
 }
 
 

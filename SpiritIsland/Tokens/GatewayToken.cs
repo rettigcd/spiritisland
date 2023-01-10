@@ -18,6 +18,5 @@ public class GatewayToken : Token {
 	}
 	public TokenClass Class => TokenType.OpenTheWays;
 	public string Text => "Gateway";
-	public string SpaceAbreviation => null;
 
 }

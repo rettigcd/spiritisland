@@ -6,12 +6,14 @@ public class GameConfiguration {
 	public string[] Boards;
 	public int ShuffleNumber;
 	public AdversaryConfig Adversary;
+	public bool CommandTheBeasts;
 
 	public string AdversarySummary => Adversary == null ? "[none]" : $"{Adversary.Name} {Adversary.Level}";
 
 	#region public helper methods
 	public GameConfiguration SetSpirits(params string[] spirits ) { Spirits = spirits; return this; }
 	public GameConfiguration SetBoards( params string[] boards ) { Boards = boards; return this; }
+	public GameConfiguration SetCommandTheBeasts( bool cmdTheBeasts ) { CommandTheBeasts = cmdTheBeasts; return this; }
 	#endregion
 }
 
@@ -78,7 +80,8 @@ public class GameBuilder {
 		// (4) Fear Cards
 		if(adversary.FearCardsPerLevel != null)
 			gameState.Fear.cardsPerLevel = adversary.FearCardsPerLevel;
-		gameState.Fear.cardsPerLevel[1]++; // Command the Beasts
+		if(cfg.CommandTheBeasts)
+			gameState.Fear.cardsPerLevel[1]++; // Command the Beasts
 
 		// Fear Deck - ! this could be pushed into .Initialize if PreInitialize has access to deck.
 		var fearCards = BuildFearCards();
@@ -103,7 +106,8 @@ public class GameBuilder {
 		// After initializing: Starting-Tokens, Explore-Card, Blight Card (and spirits)
 		adversary.PostInitialization( gameState );
 
-		CommandTheBeasts_AddCardsToInvaderDeck( gameState );
+		if(cfg.CommandTheBeasts)
+			CommandTheBeasts_AddCardsToInvaderDeck( gameState );
 
 		return gameState;
 	}

@@ -50,7 +50,6 @@ public class BringerSpaceCtx : TargetSpaceCtx {
 		if(!actionScope.ContainsKey( SpacesWithDreamers )) return;
 
 		foreach(var spaceState in (IEnumerable<SpaceState>)actionScope[SpacesWithDreamers]) {
-			//gs.Log( new LogDebug( $"Waking up: {dreamingInvaders.Select( i => i.SpaceAbreviation ).Join( "," )} on {spaceState.Space.Text}." ) );
 			RemoveDreamDamage( spaceState );
 			WakeUpDreamers( spaceState );
 		}

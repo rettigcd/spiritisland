@@ -138,7 +138,8 @@ public partial class ConfigureGameDialog : Form {
 			Boards = new string[]{ SelectedBoard() },
 			ShuffleNumber = SelectShuffleNumber(),
 			Token = SelectAppearance( spirit ),
-			Adversary = SelectAdversary()
+			Adversary = SelectAdversary(), 
+			CommandTheBeasts = true,
 		};
 	}
 

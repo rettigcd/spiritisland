@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class HealthToken : Token, IEquatable<HealthToken> {
+public class HealthToken : IAppearInSpaceAbreviation, IAppearOnScreen, IEquatable<HealthToken> {
 
 	public HealthToken( 
 		HealthTokenClass tokenClass, 
@@ -136,11 +136,9 @@ public class HealthToken : Token, IEquatable<HealthToken> {
 
 	public string SpaceAbreviation => _summaryString;
 
+	public Img Img => Class.Img;
+
 	readonly string _summaryString;
 
 	readonly public IHaveHealthPenaltyPerStrife _healthPenaltyHolder;
-}
-
-public interface IHaveHealthPenaltyPerStrife {
-	int HealthPenaltyPerStrife { get; }
 }

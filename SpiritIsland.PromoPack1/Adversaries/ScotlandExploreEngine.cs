@@ -2,6 +2,11 @@
 
 class ScotlandExploreEngine : ExploreEngine {
 
+	// Level 1 - Trading Port:
+	// After Setup, in Coastal lands,
+	// Explore Cards add 1 Town instead of 1 Explorer.
+	// "Coastal Lands" Invader cards do this for maximum 2 lands per board.
+
 	CountDictionary<Board> _initialExploreTownsAdded = new CountDictionary<Board>();
 
 	public override async Task ActivateCard( InvaderCard card, GameState gameState ) {
@@ -11,6 +16,7 @@ class ScotlandExploreEngine : ExploreEngine {
 
 	protected override async Task AddToken( ActionableSpaceState tokens ) {
 		if( _initialExploreTownsAdded != null // Initial explore
+			&& tokens.Space.IsCoastal
 			&& _initialExploreTownsAdded[tokens.Space.Board] < 2 // max of 2
 		) {
 			await tokens.AddDefault( Invader.Town, 1, AddReason.Explore );

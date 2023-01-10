@@ -43,11 +43,11 @@ public static class MySerializer {
 			.ToArray();
 
 		// save
-		File.WriteAllText( GetFileName( true ), Json.Serialize( prepped, 1 ) );
+		File.WriteAllText( GetSettingsFileName(), Json.Serialize( prepped, 1 ) );
 	}
 
 	static public GameConfigPlusToken[] GetRecent() {
-		string settingsFile = GetFileName( false );
+		string settingsFile = GetSettingsFileName();
 		return File.Exists(settingsFile)
 			? Json.DeserializeArray( File.ReadAllText( settingsFile ) )
 				.Select( x=> RestoreGameConfigPlusToken((JsonObject)x) )
@@ -55,12 +55,9 @@ public static class MySerializer {
             : Array.Empty<GameConfigPlusToken>();
 	}
 
-	static string GetFileName( bool createFolder ) {
-		string folder = Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.ApplicationData ), "spiritisland" );
-		if(createFolder && !Directory.Exists( folder ))
-			Directory.CreateDirectory( folder );
-		return Path.Combine( folder, "settings.json" );
-	}
+	static string GetSettingsFileName() 
+		=> Path.Combine( DataFolder.GetRootPath(), "settings.json" );
+
 	#endregion File I/O
 
 	#region GameConfig

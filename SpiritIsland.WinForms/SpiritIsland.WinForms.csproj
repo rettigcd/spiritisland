@@ -107,7 +107,8 @@
     <None Remove="images\invaders\2s.jpg" />
     <None Remove="images\invaders\2w.jpg" />
     <None Remove="images\invaders\back.jpg" />
-    <None Remove="images\invaders\costal.jpg" />
+    <None Remove="images\invaders\Coastal.jpg" />
+    <None Remove="images\invaders\escalation.png" />
     <None Remove="images\invaders\j+m.jpg" />
     <None Remove="images\invaders\j+s.jpg" />
     <None Remove="images\invaders\J+W.jpg" />
@@ -193,6 +194,8 @@
     <None Remove="images\tokens\Wildsicon.png" />
     <None Remove="images\tokens\wildsorpresence.png" />
     <None Remove="leaguegothic-regular-webfont.ttf" />
+    <None Remove="playsir-regular.otf" />
+    <None Remove="pottaone-regular.ttf" />
   </ItemGroup>
 
   <ItemGroup>
@@ -299,21 +302,7 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="images\invaders\back.jpg" />
-    <EmbeddedResource Include="images\invaders\J.jpg" />
-    <EmbeddedResource Include="images\invaders\M.jpg" />
-    <EmbeddedResource Include="images\invaders\S.jpg" />
-    <EmbeddedResource Include="images\invaders\W.jpg" />
-    <EmbeddedResource Include="images\invaders\Costal.jpg" />
-    <EmbeddedResource Include="images\invaders\2J.jpg" />
-    <EmbeddedResource Include="images\invaders\2M.jpg" />
-    <EmbeddedResource Include="images\invaders\2S.jpg" />
-    <EmbeddedResource Include="images\invaders\2W.jpg" />
-    <EmbeddedResource Include="images\invaders\J+M.jpg" />
-    <EmbeddedResource Include="images\invaders\J+S.jpg" />
-    <EmbeddedResource Include="images\invaders\M+S.jpg" />
-    <EmbeddedResource Include="images\invaders\M+W.jpg" />
-    <EmbeddedResource Include="images\invaders\S+W.jpg" />
-    <EmbeddedResource Include="images\invaders\J+W.jpg" />
+    <EmbeddedResource Include="images\invaders\escalation.png" />
     <EmbeddedResource Include="images\major_inverted.png" />
     <EmbeddedResource Include="images\minor_inverted.png" />
     <EmbeddedResource Include="images\presence\greenorangeswirl.png" />
@@ -366,6 +355,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="images\icons\TownCityOrBlight.png" />
+    <EmbeddedResource Include="playsir-regular.otf" />
   </ItemGroup>
 
   <ItemGroup>

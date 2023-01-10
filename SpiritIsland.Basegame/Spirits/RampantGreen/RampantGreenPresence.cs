@@ -16,8 +16,6 @@ public class RampantGreenPresence : SpiritPresence {
 
 	public TokenClass Class => throw new NotImplementedException();
 
-	public string SpaceAbreviation => throw new NotImplementedException();
-
 	public string Text => throw new NotImplementedException();
 
 	public override IEnumerable<Track> RevealOptions(GameState gs) { 
