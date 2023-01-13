@@ -30,6 +30,10 @@ public partial class IslandControl : Control {
 			| ControlStyles.ResizeRedraw, true
 		);
 		LoadStandardTokenImages();
+		_cardData = new CardUi();
+		_cardData.AppearanceChanged += () => Invalidate();
+		_cardData.CardClicked += (card) => OptionSelected?.Invoke( card );
+
 	}
 
 	public void Init( GameState gameState, IHaveOptions optionProvider, PresenceTokenAppearance presenceAppearance, AdversaryConfig adversary ) {
@@ -38,7 +42,9 @@ public partial class IslandControl : Control {
 		_tokenImages[TokenType.Defend]?.Dispose();
 		_tokenImages[TokenType.Isolate]?.Dispose();
 
-		spiritLayout = null;
+		_spiritLayout = null;
+		_cardData.Layout = null;
+		_cardData.SpiritCardInfo = new SpiritCardInfo(gameState.Spirits[0]); // !!! 1 spirit only
 
 		optionProvider.NewDecision += OptionProvider_OptionsChanged;
 
@@ -76,6 +82,7 @@ public partial class IslandControl : Control {
 	const float blightWidth = .15f;
 	const float blightHeight = .1f;
 	Rectangle SpiritRect => new Rectangle( Width - (int)(spiritWidth * Width), 0, (int)(spiritWidth * Width), Height );
+	Rectangle IslandRect => new Rectangle( 0, 0, Width - (int)(spiritWidth * Width), Height );
 	RectangleF CalcFearPoolRect => new RectangleF( Width * (oceanWidth - fearWidth), 0f, Width * fearWidth, Width * fearHeight );
 	RectangleF CalcAdversaryFlagRect => new RectangleF( 10, 10 + (gameLabelFontHeight)*Height, Width * .05f, Width * .033f );
 	RectangleF CalcBlightRect => new RectangleF( Width*(oceanWidth-blightWidth), Height*(1-invaderDeckHeight-blightHeight), Width * blightWidth, Height * blightHeight );
@@ -119,12 +126,12 @@ public partial class IslandControl : Control {
 		return bounds;
 	}
 
-	SpiritLayout spiritLayout;
+	SpiritLayout _spiritLayout;
 	Rectangle popUpFearRect;
 	AdversaryConfig _adversary;
 
 	void CalcSpiritLayout( Graphics graphics, Rectangle bounds ) {
-		spiritLayout = new SpiritLayout( graphics, _spirit, bounds, 10 );
+		_spiritLayout = new SpiritLayout( graphics, _spirit, bounds, 10 );
 		growthOptionCount = _spirit.GrowthTrack.Options.Length;
 	}
 	int growthOptionCount = -1; // auto-update when Starlight adds option
@@ -134,9 +141,9 @@ public partial class IslandControl : Control {
 	/// </summary>
 	PointMapper _mapper;
 
-	PointMapper MapWorldToViewPort( RectangleF worldRect ) {
+	static PointMapper MapWorldToViewPort( RectangleF worldRect, Size viewportSize ) {
 		var upperLeft = new PointF( 20f, 60f );
-		float usableHeight = (this.Height - upperLeft.Y - 20 );
+		float usableHeight = (viewportSize.Height - upperLeft.Y - 20 );
 
 		// calculate scaling Assuming height-limited
 		float islandHeight = worldRect.Height; // (float)(0.5 * Math.Sqrt( 3 )); // each board size is 1. Equalateral triangle height is sqrt(3)/2
@@ -193,6 +200,8 @@ public partial class IslandControl : Control {
 			foreach(SpaceState space in _gameState.AllSpaces)
 				DecorateSpace( pe.Graphics, space );
 
+			DrawPowerCards( pe.Graphics );
+
 			// Pop-ups
 			DrawDeckPopUp( pe.Graphics );
 			DrawElementsPopUp( pe.Graphics );
@@ -223,13 +232,17 @@ public partial class IslandControl : Control {
 
 			// Map world-coord island Rect onto viewport
 			var boardWorldRect = CalcIslandExtents();
-			_mapper = MapWorldToViewPort( boardWorldRect );
 
 			// create a viewport size screen we can draw on.
-			bool limitIsWidth = (boardWorldRect.Width * Height > Width * boardWorldRect.Height);
-			_boardScreenSize = (limitIsWidth)
-				? new Size( Width, (int)(boardWorldRect.Height * Width / boardWorldRect.Width) )
-				: new Size( (int)(boardWorldRect.Width * Height / boardWorldRect.Height), Height );
+			var bounds = IslandRect; // size available
+
+			// Calculate the size that fits
+			_boardScreenSize = (bounds.Width * boardWorldRect.Height < boardWorldRect.Width * bounds.Height)
+				? new Size( bounds.Width, (int)(boardWorldRect.Height * bounds.Width / boardWorldRect.Width) )
+				: new Size( (int)(boardWorldRect.Width * bounds.Height / boardWorldRect.Height), bounds.Height );
+
+			_mapper = MapWorldToViewPort( boardWorldRect, _boardScreenSize );
+
 			_cachedBackground = new Bitmap( _boardScreenSize.Width, _boardScreenSize.Height );
 			using Graphics graphics = Graphics.FromImage( _cachedBackground );
 
@@ -436,7 +449,7 @@ public partial class IslandControl : Control {
 		graphics.DrawCountIfHigherThan( cardMetrics.Last().Rect.First(), _gameState.InvaderDeck.UnrevealedCards.Count+1 );
 
 		// Draw Discard
-		var lastDiscard = _gameState.InvaderDeck.Discards.FirstOrDefault();
+		var lastDiscard = _gameState.InvaderDeck.Discards.LastOrDefault();
 		if(lastDiscard is not null) {
 			using Image discardImg = ResourceImages.Singleton.GetInvaderCard( lastDiscard );
 			graphics.DrawImage( discardImg, discardDestinationPoints );
@@ -444,11 +457,6 @@ public partial class IslandControl : Control {
 			graphics.DrawCountIfHigherThan( discardRect, _gameState.InvaderDeck.Discards.Count );
 
 		}
-
-		//foreach(var x in _gameState.InvaderDeck.UnrevealedCards) {
-		//	using Image discardImg = ResourceImages.Singleton.GetInvaderCard( x );
-		//}
-
 	}
 
 	#endregion Draw - Fear, Blight, Invader Cards
@@ -510,6 +518,12 @@ public partial class IslandControl : Control {
 
 		}
 
+	}
+
+	void DrawPowerCards( Graphics graphics ) {
+		if(_cardData.Layout == null)
+			_cardData.Layout = new CardLayout( new Rectangle( 0, Height * 2/3, Width, Height/3));
+		_cardData.DrawParts( graphics );
 	}
 
 	void DrawRow( Graphics graphics, SpaceState spaceState, float iconWidth ) {
@@ -714,8 +728,9 @@ public partial class IslandControl : Control {
 		switch(decision_AdjacentInfo.Direction) {
 
 			case SpiritIsland.Select.AdjacentDirection.Incoming:
-				foreach(var other in others)
-					graphics.DrawArrow( p, other, center );
+				if(decision_DeployedPresence == null) // stop extra arrow for thunderspeaker moving with dahan
+					foreach(var other in others)
+						graphics.DrawArrow( p, other, center );
 				break;
 
 			case SpiritIsland.Select.AdjacentDirection.Outgoing:
@@ -734,11 +749,11 @@ public partial class IslandControl : Control {
 		bounds = FitClientBounds( bounds );
 
 		// Layout
-		if( spiritLayout is null
+		if( _spiritLayout is null
 			|| growthOptionCount != _spirit.GrowthTrack.Options.Length
 		) {
 			CalcSpiritLayout( graphics, bounds );
-			_spiritPainter?.SetLayout( spiritLayout );
+			_spiritPainter?.SetLayout( _spiritLayout );
 		}
 
 		graphics.FillRectangle( SpiritPanelBackgroundBrush, bounds );
@@ -789,20 +804,20 @@ public partial class IslandControl : Control {
 	void RecordSpiritHotspots() {
 		// Growth Options/Actions
 		foreach(var opt in options_GrowthOptions)
-			if(spiritLayout.growthLayout.HasOption( opt ))
-				hotSpots.Add( opt, spiritLayout.growthLayout[opt] );
+			if(_spiritLayout.growthLayout.HasOption( opt ))
+				hotSpots.Add( opt, _spiritLayout.growthLayout[opt] );
 		foreach(var act in options_GrowthActions)
-			if(spiritLayout.growthLayout.HasAction( act )) // there might be delayed setup actions here that don't have a rect
-				hotSpots.Add( act, spiritLayout.growthLayout[act] );
+			if(_spiritLayout.growthLayout.HasAction( act )) // there might be delayed setup actions here that don't have a rect
+				hotSpots.Add( act, _spiritLayout.growthLayout[act] );
 		// Presence
 		foreach(var track in options_Track)
-			hotSpots.Add( track, spiritLayout.trackLayout.ClickRectFor( track ) );
+			hotSpots.Add( track, _spiritLayout.trackLayout.ClickRectFor( track ) );
 		// Innates - Select Innate Power
 		foreach(var power in options_InnatePower)
-			hotSpots.Add( power, spiritLayout.findLayoutByPower[power].Bounds );
+			hotSpots.Add( power, _spiritLayout.findLayoutByPower[power].Bounds );
 
 		// Innates - Select Innate Option (for shifting memory)
-		var innateOptionBounds = spiritLayout.InnateLayouts
+		var innateOptionBounds = _spiritLayout.InnateLayouts
 			.SelectMany( x => x.Options )
 			.ToDictionary( x=> x.InnateOption, x=>x.Bounds );
 		// Loop through the clickable innates
@@ -876,11 +891,14 @@ public partial class IslandControl : Control {
 
 	protected override void OnSizeChanged( EventArgs e ) {
 		base.OnSizeChanged( e );
+		_spiritLayout = null;
+		_cardData.Layout = null;
 		RefreshLayout();
+		ClearCachedBackgroundImage();
+		this.Invalidate();
 	}
 
-	public void RefreshLayout() {
-		spiritLayout = null;
+	public void RefreshLayout() { // called from parent when we get a new Option
 		ClearCachedBackgroundImage();
 		this.Invalidate();
 	}
@@ -903,9 +921,11 @@ public partial class IslandControl : Control {
 			SpaceTokenClicked?.Invoke( st );
 		else if( option != null )
 			OptionSelected?.Invoke(option);
+		else
+			_cardData.GetClickAction( clientCoords )?.Invoke();
 
 		// Spirit => Special Rules
-		if(spiritLayout != null && spiritLayout.imgBounds.Contains( clientCoords )) {
+		if(_spiritLayout != null && _spiritLayout.imgBounds.Contains( clientCoords )) {
 			string msg = this._spirit.SpecialRules.Select(r=>r.ToString()).Join("\r\n\r\n");
 			MessageBox.Show( msg );
 		}
@@ -935,7 +955,10 @@ public partial class IslandControl : Control {
 
 		if(options_Space==null) return;
 
-		bool inCircle = FindOption( this.PointToClient( Control.MousePosition ) ) != null;
+		var point = this.PointToClient( Control.MousePosition );
+		bool inCircle = FindOption( point ) != null
+			|| _cardData.GetClickAction( point ) != null;
+
 		Cursor = inCircle ? Cursors.Hand : Cursors.Default;
 
 	}
@@ -1001,6 +1024,8 @@ public partial class IslandControl : Control {
 		options_DrawableInate = decision.Options.OfType<IDrawableInnateOption>().ToArray();
 		options_GrowthOptions = decision.Options.OfType<GrowthOption>().ToArray();
 		options_GrowthActions = decision.Options.OfType<GrowthActionFactory>().ToArray();
+
+		_cardData.HandleNewDecision(decision);
 	}
 
 	Token decision_Token; // the already-known token associated with a decision.  Like presence being placed or token that is being pushed to a destination.
@@ -1032,6 +1057,7 @@ public partial class IslandControl : Control {
 
 	Dictionary<Space, ManageInternalPoints> _insidePoints;
 
+	readonly CardUi _cardData;
 	SpiritPainter _spiritPainter;
 	GameState _gameState;
 	Spirit _spirit;
@@ -1138,7 +1164,7 @@ class InvaderCardMetrics {
 		graphics.DrawStringCenter( slot.Label, labelFont, Brushes.Black, textBounds );
 	}
 
-	private void DrawInvaderBack( Graphics graphics, Font invaderStageFont, int i, InvaderCard card ) {
+	void DrawInvaderBack( Graphics graphics, Font invaderStageFont, int i, InvaderCard card ) {
 		var cardRect = Rect[i];
 		using(SolidBrush brush = new SolidBrush( Color.LightSteelBlue ))
 			graphics.FillRoundedRectangle( brush, cardRect.ToInts(), (int)(cardRect.Width*.15f) );

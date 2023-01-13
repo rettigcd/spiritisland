@@ -28,15 +28,15 @@ public class Polygon_Tests {
 
 	[Theory]
 	[InlineData( 0, 0, 0, "0 0 0" )]            // black
-	[InlineData( 128, 128, 128, "0 0 0.5" )]    // gray
-	[InlineData( 255, 255, 255, "0 0 1" )]      // white
-	[InlineData( 255, 0, 0, "0 1 0.5" )]        // red
-	[InlineData( 0, 255, 0, "120 1 0.5" )]      // green
-	[InlineData( 0, 0, 255, "240 1 0.5" )]      // blue
-	[InlineData( 255, 255, 0, "60 1 0.5" )]     // yellow
-	[InlineData( 0, 255, 255, "180 1 0.5" )]    // cyan
-	[InlineData( 255, 0, 255, "300 1 0.5" )]    // magenta
-	[InlineData( 0, 1, 1, "180 1 0" )]          // almost black, had rounding error that blew up Hue
+	[InlineData( 128, 128, 128, "0 0 50" )]    // gray
+	[InlineData( 255, 255, 255, "0 0 100" )]      // white
+	[InlineData( 255, 0, 0, "0 1 50" )]        // red
+	[InlineData( 0, 255, 0, "120 100 50" )]      // green
+	[InlineData( 0, 0, 255, "240 100 50" )]      // blue
+	[InlineData( 255, 255, 0, "60 100 50" )]     // yellow
+	[InlineData( 0, 255, 255, "180 100 50" )]    // cyan
+	[InlineData( 255, 0, 255, "300 100 50" )]    // magenta
+	[InlineData( 0, 1, 1, "180 100 0" )]          // almost black, had rounding error that blew up Hue
 	public void Rgb2Hsl_test(int red, int green, int blue, string expected) {
 		var orig = System.Drawing.Color.FromArgb( red, green, blue );
 

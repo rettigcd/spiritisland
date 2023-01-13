@@ -5,7 +5,7 @@
     <_LastSelectedProfileId>C:\Users\rettigcd\Desktop\spiritisland\SpiritIsland.WinForms\Properties\PublishProfiles\FolderProfile.pubxml</_LastSelectedProfileId>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Update="CardControl.cs">
+    <Compile Update="Cards\CardControl.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Update="ConfigureGameDialog.cs">

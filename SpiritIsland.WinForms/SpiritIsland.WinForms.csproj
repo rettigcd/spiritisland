@@ -67,6 +67,7 @@
     <None Remove="images\icons\Oneenergyfire.png" />
     <None Remove="images\icons\open-the-ways.png" />
     <None Remove="images\icons\Pay2EnergyToGainAPowerCard.png" />
+    <None Remove="images\icons\Play.png" />
     <None Remove="images\icons\PlusOneRange.png" />
     <None Remove="images\icons\PrepareElement.png" />
     <None Remove="images\icons\Presenceicon.png" />
@@ -75,7 +76,6 @@
     <None Remove="images\icons\Range.png" />
     <None Remove="images\icons\reclaim 1.png" />
     <None Remove="images\icons\ReclaimAll.png" />
-    <None Remove="images\icons\Reclaimone.png" />
     <None Remove="images\icons\Reclaim_Half.png" />
     <None Remove="images\icons\red-x.png" />
     <None Remove="images\icons\Simple_air.png" />
@@ -266,6 +266,7 @@
     <EmbeddedResource Include="images\icons\Oneenergyfire.png" />
     <EmbeddedResource Include="images\icons\open-the-ways.png" />
     <EmbeddedResource Include="images\icons\Pay2EnergyToGainAPowerCard.png" />
+    <EmbeddedResource Include="images\icons\Play.png" />
     <EmbeddedResource Include="images\icons\PlusOneRange.png" />
     <EmbeddedResource Include="images\icons\PrepareElement.png" />
     <EmbeddedResource Include="images\icons\Presenceicon.png" />
@@ -274,7 +275,6 @@
     <EmbeddedResource Include="images\icons\Range.png" />
     <EmbeddedResource Include="images\icons\reclaim 1.png" />
     <EmbeddedResource Include="images\icons\ReclaimAll.png" />
-    <EmbeddedResource Include="images\icons\Reclaimone.png" />
     <EmbeddedResource Include="images\icons\Reclaim_Half.png" />
     <EmbeddedResource Include="images\icons\red-x.png" />
     <EmbeddedResource Include="images\icons\Simple_air.png" />

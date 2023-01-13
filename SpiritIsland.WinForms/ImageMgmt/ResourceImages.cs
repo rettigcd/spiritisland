@@ -336,6 +336,8 @@ public class ResourceImages {
 		Img.Icon_Town               => "icons.Townicon.png",
 		Img.Icon_Explorer           => "icons.Explorericon.png",
 		Img.Icon_Checkmark          => "icons.Checkmark.png",
+		Img.Icon_Play               => "icons.Play.png",
+
 
 		Img.Deck_Hand               => "hand.png",
 		Img.Deck_Played => "inplay.png",

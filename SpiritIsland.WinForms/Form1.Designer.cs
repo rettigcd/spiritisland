@@ -28,11 +28,8 @@ namespace SpiritIsland.WinForms {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.promptLabel = new System.Windows.Forms.Label();
             this.islandControl = new SpiritIsland.WinForms.IslandControl();
-            this.cardControl = new SpiritIsland.WinForms.CardControl();
-            this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.textIslandSplitter = new System.Windows.Forms.Splitter();
             this.textPanel = new System.Windows.Forms.Panel();
-            this.statusControl1 = new SpiritIsland.WinForms.StatusControl();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.gameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -41,18 +38,13 @@ namespace SpiritIsland.WinForms {
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gameLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
-            this.splitContainer.Panel1.SuspendLayout();
-            this.splitContainer.Panel2.SuspendLayout();
-            this.splitContainer.SuspendLayout();
-            this.textPanel.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // promptLabel
             // 
             this.promptLabel.AutoSize = true;
-            this.promptLabel.Location = new System.Drawing.Point(11, 9);
+            this.promptLabel.Location = new System.Drawing.Point(7, 27);
             this.promptLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.promptLabel.Name = "promptLabel";
             this.promptLabel.Size = new System.Drawing.Size(95, 15);
@@ -63,73 +55,34 @@ namespace SpiritIsland.WinForms {
             // 
             this.islandControl.BackColor = System.Drawing.Color.Aqua;
             this.islandControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.islandControl.Location = new System.Drawing.Point(10, 35);
+            this.islandControl.Location = new System.Drawing.Point(0, 24);
             this.islandControl.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.islandControl.Name = "islandControl";
-            this.islandControl.Size = new System.Drawing.Size(1154, 383);
+            this.islandControl.Size = new System.Drawing.Size(1164, 642);
             this.islandControl.TabIndex = 2;
             this.islandControl.Text = "islandControl1";
             // 
-            // cardControl
-            // 
-            this.cardControl.BackColor = System.Drawing.Color.SaddleBrown;
-            this.cardControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cardControl.Location = new System.Drawing.Point(0, 0);
-            this.cardControl.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
-            this.cardControl.Name = "cardControl";
-            this.cardControl.Size = new System.Drawing.Size(1164, 254);
-            this.cardControl.TabIndex = 3;
-            this.cardControl.Text = "cardControl1";
-            // 
-            // splitContainer
-            // 
-            this.splitContainer.Cursor = System.Windows.Forms.Cursors.HSplit;
-            this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer.Location = new System.Drawing.Point(0, 24);
-            this.splitContainer.Name = "splitContainer";
-            this.splitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            // 
-            // splitContainer.Panel1
-            // 
-            this.splitContainer.Panel1.Controls.Add(this.islandControl);
-            this.splitContainer.Panel1.Controls.Add(this.textIslandSplitter);
-            this.splitContainer.Panel1.Controls.Add(this.textPanel);
-            // 
-            // splitContainer.Panel2
-            // 
-            this.splitContainer.Panel2.Controls.Add(this.cardControl);
-            this.splitContainer.Size = new System.Drawing.Size(1164, 676);
-            this.splitContainer.SplitterDistance = 418;
-            this.splitContainer.TabIndex = 10;
-            // 
             // textIslandSplitter
             // 
-            this.textIslandSplitter.Location = new System.Drawing.Point(0, 35);
+            this.textIslandSplitter.Location = new System.Drawing.Point(0, 75);
+            this.textIslandSplitter.Margin = new System.Windows.Forms.Padding(6);
             this.textIslandSplitter.Name = "textIslandSplitter";
-            this.textIslandSplitter.Size = new System.Drawing.Size(10, 383);
+            this.textIslandSplitter.Size = new System.Drawing.Size(19, 855);
             this.textIslandSplitter.TabIndex = 2;
             this.textIslandSplitter.TabStop = false;
             // 
             // textPanel
             // 
-            this.textPanel.Controls.Add(this.promptLabel);
             this.textPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.textPanel.Location = new System.Drawing.Point(0, 0);
+            this.textPanel.Margin = new System.Windows.Forms.Padding(6);
             this.textPanel.Name = "textPanel";
-            this.textPanel.Size = new System.Drawing.Size(1164, 35);
+            this.textPanel.Size = new System.Drawing.Size(695, 75);
             this.textPanel.TabIndex = 1;
-            // 
-            // statusControl1
-            // 
-            this.statusControl1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.statusControl1.Location = new System.Drawing.Point(0, 700);
-            this.statusControl1.Name = "statusControl1";
-            this.statusControl1.Size = new System.Drawing.Size(1164, 26);
-            this.statusControl1.TabIndex = 11;
-            this.statusControl1.Text = "statusControl1";
             // 
             // menuStrip1
             // 
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.gameToolStripMenuItem,
             this.viewToolStripMenuItem});
@@ -196,9 +149,9 @@ namespace SpiritIsland.WinForms {
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1164, 726);
-            this.Controls.Add(this.splitContainer);
-            this.Controls.Add(this.statusControl1);
+            this.ClientSize = new System.Drawing.Size(1164, 666);
+            this.Controls.Add(this.promptLabel);
+            this.Controls.Add(this.islandControl);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
@@ -206,12 +159,6 @@ namespace SpiritIsland.WinForms {
             this.Name = "Form1";
             this.Text = "Spirit Island - Single Player";
             this.Load += new System.EventHandler(this.Form1_Load);
-            this.splitContainer.Panel1.ResumeLayout(false);
-            this.splitContainer.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
-            this.splitContainer.ResumeLayout(false);
-            this.textPanel.ResumeLayout(false);
-            this.textPanel.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -222,11 +169,8 @@ namespace SpiritIsland.WinForms {
 		#endregion
 		private System.Windows.Forms.Label promptLabel;
 		private IslandControl islandControl;
-		private CardControl cardControl;
-		private System.Windows.Forms.SplitContainer splitContainer;
 		private System.Windows.Forms.Splitter textIslandSplitter;
 		private System.Windows.Forms.Panel textPanel;
-		private StatusControl statusControl1;
 		private System.Windows.Forms.MenuStrip menuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem gameToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;

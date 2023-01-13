@@ -101,6 +101,7 @@ public enum Img {
 	Icon_Strife,
 	Icon_Badlands,
 	Icon_DestroyedPresence,
+	Icon_Play,
 	Icon_Checkmark,
 	PlusOneRange,
 

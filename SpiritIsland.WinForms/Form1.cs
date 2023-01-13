@@ -25,8 +25,6 @@ namespace SpiritIsland.WinForms {
 			this.islandControl.TokenClicked += Select;
 			this.islandControl.SpaceTokenClicked += Select;
 			this.islandControl.OptionSelected += Select;
-			this.cardControl.CardSelected += Select;
-
 		}
 
 		void Select( IOption option ) {
@@ -73,16 +71,16 @@ namespace SpiritIsland.WinForms {
 			var size = calc.CalcSize( this.promptLabel.Text );
 			int x = (int)size.Width + 50;
 			for(int i = 0; i < decision.Options.Length; ++i) {
-				var option = decision.Options[i];
+				IOption option = decision.Options[i];
 				size = calc.CalcSize( option.Text );
 				var sz = new Size((int)size.Width+20,(int)size.Height+15);
-				AddOptionButton( option, x, 1, sz );
+				AddOptionButton( option, x, 25, sz );
 				x += sz.Width+10;
 			}
 		}
 
 		void AddOptionButton( IOption option, int x, int y, Size sz ) {
-			var btn = new System.Windows.Forms.Button {
+			var btn = new Button {
 				Dock = DockStyle.None,
 				Location = new Point( x, y ),
 				Text = option.Text,
@@ -90,7 +88,8 @@ namespace SpiritIsland.WinForms {
 				Tag = option
 			};
 			btn.Click += Btn_Click;
-			this.textPanel.Controls.Add( btn );
+			Controls.Add( btn );
+			btn.BringToFront();
 			buttons.Add( btn );
 		}
 
@@ -116,7 +115,7 @@ namespace SpiritIsland.WinForms {
 		void ReleaseOldButtons() {
 			foreach(var old in buttons) {
 				old.Click -= Btn_Click;
-				this.textPanel.Controls.Remove( old );
+				Controls.Remove( old ); // textPanel
 			}
 			buttons.Clear();
 		}
@@ -157,8 +156,6 @@ namespace SpiritIsland.WinForms {
 			gameState.NewLogEntry += GameState_NewLogEntry; // !!! this should probably come through the user portal/gateway, not directly off of the gamestate.
 
 			this.islandControl.Init( game.GameState, this, gc.Token, gc.Adversary );
-			this.cardControl.Init( game.Spirit, this );
-			this.statusControl1.Init( game.GameState, this );
 			this.Text = $"Spirit Island - Single Player Game #{gc.ShuffleNumber} - {gc.AdversarySummary}";
 
 			// start the game

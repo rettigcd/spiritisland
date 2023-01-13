@@ -2,10 +2,8 @@
 ====  Clean Up Items  ====
 ==========================
 
-5 UI - Strifed invaders should use non-strifed slot.
+5 UI - Strifed invaders should use non-strifed slot. (show assigned slots)
 5 UI - Element dialog is not center in island space, or if it is, then resizing windows isn't resizing it also.
-
-5 UI - Floating Cards (not in a drawer)
 
 5 UI - Configure Game - Images for Selecting Spirits
 
