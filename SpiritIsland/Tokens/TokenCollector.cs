@@ -52,7 +52,7 @@ public abstract class TokenCollector<DerivedType> where DerivedType : TokenColle
 	protected virtual SpaceToken[] GetSpaceTokenOptions() => PossibleGatherSources
 		.SelectMany( sourceSpaceState => sourceSpaceState
 			.OfAnyClass( RemainingTypes )
-			.Select( tokens => new SpaceToken( sourceSpaceState.Space, tokens ) )
+			.Select( tokens => new SpaceToken( sourceSpaceState.Space, (IVisibleToken)tokens ) )
 		)
 		.ToArray();
 

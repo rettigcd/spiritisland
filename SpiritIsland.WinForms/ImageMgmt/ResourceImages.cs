@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -59,130 +57,32 @@ public class ResourceImages {
 	public Bitmap RedX()                            => GetResourceImage("icons.red-x.png");
 	public Bitmap Hourglass()                       => GetResourceImage("icons.hourglass.png");
 	public Bitmap TerrorLevel( int terrorLevel )    => GetResourceImage($"icons.TerrorLevel{terrorLevel}.png" );
-	public Bitmap GetInvaderCard(string text)       => GetResourceImage($"invaders.{text}.jpg");
+	public Bitmap GetInvaderCard(string text)       => GetResourceImage($"invaders.{text}");
 	
-	public Bitmap GetInvaderCardBack()              => GetInvaderCard("back");
+	public Bitmap GetInvaderCardBack()              => GetInvaderCard("back.jpg");
 
 	public Image GetInvaderCard( InvaderCard card ) {
 
 		string key = $"invaders.{card.Text}.png";
-		if( _cache.Contains( key ) ) return _cache.Get(key);
+		if(_cache.Contains( key )) return _cache.Get( key );
 
-		// -- Build and Save to Cache --
-		Bitmap image = new Bitmap( 200, 320 );
-		using Graphics graphics = Graphics.FromImage( image );
-
-		var perimeter = new PointF[] {
-			// Top Half
-			new PointF( 20    , 160 ),
-			new PointF( 20-10 , 90 ),
-			new PointF( 20    , 20 ), // top left
-			new PointF( 100   , 25 ),
-			new PointF( 180   , 20 ), // top right
-			new PointF( 180+10, 90 ),
-			new PointF( 180   , 160 ),
-			// Bottom Half
-			new PointF( 180   , 160 ),
-			new PointF( 180+10, 230 ),
-			new PointF( 180   , 290 ), // bottom right
-			new PointF( 100   , 285 ), 
-			new PointF( 20    , 290 ), // bottom left
-			new PointF( 20-10 , 230 ),
-			new PointF( 20    , 160 ),
-		};
-
-		// Background
-		var backgroundBrush = Brushes.Bisque;//  Brushes.SaddleBrown; // Brushes.BurlyWood; // or maybe Bisque
-		graphics.FillRoundedRectangle( backgroundBrush, new Rectangle(0,0,200,320), 20);
-
-		using var perimeterPen = new Pen(Color.Black, 3f );
-
-		// Draw perimeter and inner texture
-		if( card.Filter is SingleTerrainFilter singleTerrain ) {
-			RectangleF topRect = new RectangleF( 30, 45, 200 - 2 * 30, 160 - 60 );
-			RectangleF botRect = new RectangleF( 30, 160 + 15, 200 - 2 * 30, 160 - 60 );
-
-			// texture
-			using Brush terrainBrush = UseTerrainBrush( singleTerrain.Terrain );
-			float tension = .15f;
-			graphics.FillClosedCurve( terrainBrush, perimeter, FillMode.Alternate, tension );
-			graphics.DrawClosedCurve( perimeterPen, perimeter, tension, FillMode.Alternate );
-
-			// Abreviation Text in the middle
-			using Font bigFont = UseInvaderFont( 60f );
-			graphics.DrawStringCenter( singleTerrain.Terrain.ToString()[..1], bigFont, backgroundBrush, topRect );
-
-			// Escalation
-			if( card.HasEscalation ) {
-				var ellipseRect = botRect.InflateBy( -45, -20 );
-				graphics.FillEllipse( backgroundBrush, ellipseRect );
-				using Bitmap escalation = GetResourceImage( $"invaders.escalation.png" );
-				graphics.DrawImageFitHeight( escalation, ellipseRect.InflateBy( -5 ) );
-			}
-
-		} else if( card.Filter is DoubleTerrainFilter doubleTerrain ){
-			RectangleF topRect = new RectangleF( 30, 30 + 15, 200 - 2 * 30, 160 - 60 );
-			RectangleF botRect = new RectangleF( 30, 160 + 25, 200 - 2 * 30, 160 - 60 );
-
-			float tension = .15f;
-			int countPerSide = perimeter.Length/2;
-
-			// texture - 1
-			using Brush brush1 = UseTerrainBrush( doubleTerrain.Terrain1 );
-			graphics.FillClosedCurve( brush1, perimeter.Take(countPerSide).ToArray(), FillMode.Alternate, tension );
-			graphics.DrawClosedCurve( perimeterPen, perimeter, tension, FillMode.Alternate );
-			// texture - 2
-			using Brush brush2 = UseTerrainBrush( doubleTerrain.Terrain2 );
-			graphics.FillClosedCurve( brush2, perimeter.Skip(countPerSide).Take(countPerSide).ToArray(), FillMode.Alternate, tension );
-			graphics.DrawClosedCurve( perimeterPen, perimeter, tension, FillMode.Alternate );
-
-			using Font bigFont = UseInvaderFont( 60f );
-			// Text
-			graphics.DrawStringCenter( doubleTerrain.Terrain1.ToString()[..1], bigFont, backgroundBrush, topRect );
-			graphics.DrawStringCenter( doubleTerrain.Terrain2.ToString()[..1], bigFont, backgroundBrush, botRect );
-
-		} else {
-
-			// must be coastal
-			RectangleF topRect = new RectangleF( 30, 30+30, 200 - 2 * 30, 160 - 60 );
-			RectangleF botRect = new RectangleF( 30, 160+20 + 15, 200 - 2 * 30, 160 - 60 );
-
-			// texture
-			using Brush terrainBrush = UseTerrainBrush( Terrain.Ocean );
-			float tension = .15f;
-			graphics.FillClosedCurve( terrainBrush, perimeter, FillMode.Alternate, tension );
-			graphics.DrawClosedCurve( perimeterPen, perimeter, tension, FillMode.Alternate );
-
-			// Abreviation Text in the middle
-			using Font bigFont = UseInvaderFont( 25f );
-			graphics.DrawStringCenter( "Coastal", bigFont, backgroundBrush, topRect );
-			graphics.DrawStringCenter( "Lands", bigFont, backgroundBrush, botRect );
-		}
-
-		// Stage at bottom
-		using Font bottomFont = UseInvaderFont(20f);
-		graphics.DrawStringCenter( 
-			card.InvaderStage switch { 1=>"I",2=>"II",3=>"III",_=>"" }, 
-			bottomFont, Brushes.Brown,
-			new RectangleF(0,285,200,30)
-		);
-
-		_cache.Add(key, image );
+		Bitmap image = InvaderCardBuilder.BuildInvaderCard( card );
+		_cache.Add( key, image );
 		return image;
 	}
 
-	public Size CalcImageSize( Img img, int maxDimension ) {
-		if(!iconSizes.ContainsKey( img )) {
-			using Image image = GetImage( img );
-			iconSizes.Add( img, image.Size );
-		}
-		var sz = iconSizes[img];
+	public Image GetGhostImage( Img img ) {
 
-		return sz.Width < sz.Height
-			? new Size( maxDimension * sz.Width / sz.Height, maxDimension )
-			: new Size( maxDimension, maxDimension * sz.Height / sz.Width );
+		string key = $"ghost {img}.png";
+		if(_cache.Contains( key )) return _cache.Get( key );
+
+		Bitmap image = GetImage( img );
+		new PixelAdjustment( x => Color.FromArgb( Math.Min((byte)92,x.A), x ) ).Adjust( image );
+
+		_cache.Add( key, image );
+		return image;
 	}
-	readonly Dictionary<Img, Size> iconSizes = new Dictionary<Img, Size>();
+
 
 	public Brush UseSpaceBrush( Space space ) {
 		Terrain terrain = space.IsWetland ? Terrain.Wetland

@@ -38,14 +38,14 @@ class CardUi {
 		}
 	}
 
-	void DrawCardBackdrop( Graphics graphics ) {
-		int totalCardCount = _currentDeck.Cards.Count;
-		Rectangle tl = _layout.GetCardRect( 0, totalCardCount );
-		Rectangle br = _layout.GetCardRect( totalCardCount - 1, totalCardCount );
-		Rectangle bgRect = new Rectangle( tl.X, tl.Y, br.Right - tl.X, br.Bottom - tl.Y ).InflateBy( 30 );
-		using var brush = new SolidBrush( Color.FromArgb( 192, Color.White ) );
-		graphics.FillRectangle( brush, bgRect );
-	}
+	//void DrawCardBackdrop( Graphics graphics ) {
+	//	int totalCardCount = _currentDeck.Cards.Count;
+	//	Rectangle tl = _layout.GetCardRect( 0, totalCardCount );
+	//	Rectangle br = _layout.GetCardRect( totalCardCount - 1, totalCardCount );
+	//	Rectangle bgRect = new Rectangle( tl.X, tl.Y, br.Right - tl.X, br.Bottom - tl.Y ).InflateBy( 30 );
+	//	using var brush = new SolidBrush( Color.FromArgb( 192, Color.White ) );
+	//	graphics.FillRectangle( brush, bgRect );
+	//}
 
 	void DrawDeckTab( Graphics graphics, int index ) {
 		DeckInfo deck = _spiritCardInfo.AllDecks[index];

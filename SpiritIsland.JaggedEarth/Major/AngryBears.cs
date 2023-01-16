@@ -25,7 +25,7 @@ public class AngryBears {
 			var tokens = ctx.Adjacent
 				.Where(x=>x.Beasts.Any)
 				.SelectMany(x=>x.OfClass(Invader.Explorer)
-					.Select(t=>new SpaceToken(x.Space,t))
+					.Select(t=>new SpaceToken(x.Space, (IVisibleToken)t ))
 				)
 				.ToArray();
 			var st = await ctx.Decision(new Select.TokenFromManySpaces("Destroy Explorer",tokens, Present.Always));

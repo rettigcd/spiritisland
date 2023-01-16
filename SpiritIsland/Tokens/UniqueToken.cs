@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class UniqueToken : TokenClass, IAppearInSpaceAbreviation, IAppearOnScreen {
+public class UniqueToken : TokenClass, IVisibleToken, IAppearInSpaceAbreviation {
 
 	public UniqueToken(string label, char initial, Img img, TokenCategory cat = TokenCategory.None) {
 		this.Label = label;

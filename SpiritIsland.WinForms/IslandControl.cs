@@ -467,10 +467,20 @@ public partial class IslandControl : Control {
 
 		_insidePoints[spaceState.Space].Init(spaceState);
 
+		float iconWidth = _boardScreenSize.Width * .040f; // !!! scale tokens based on board/space size, NOT widow size (for 2 boards, tokens are too big)
+
+		// !!! TEMP
+		foreach(var tk in _insidePoints[spaceState.Space]._dict) {
+			var img = ResourceImages.Singleton.GetGhostImage( tk.Key.Img );
+			var p = _mapper.Map(new PointF(tk.Value.X,tk.Value.Y));
+			Rectangle rect = FitWidth( p.X-iconWidth/2, p.Y-iconWidth/2, iconWidth, img.Size );
+			graphics.DrawImage( img, rect );
+		}
+
+
 		if(spaceState.Space is MultiSpace ms)
 			DrawMultiSpace( graphics, ms );
 
-		float iconWidth = _boardScreenSize.Width * .040f; // !!! scale tokens based on board/space size, NOT widow size (for 2 boards, tokens are too big)
 		DrawInvaderRow( graphics, spaceState, iconWidth );
 		DrawRow( graphics, spaceState, iconWidth );
 	}
@@ -486,7 +496,7 @@ public partial class IslandControl : Control {
 			// Minor ordering: (remaining health)
 			.ThenBy( i => i.RemainingHealth ); // show damaged first so when we apply damage, the damaged one replaces the old undamaged one.
 
-		foreach(Token token in orderedInvaders) {
+		foreach(IVisibleToken token in orderedInvaders) {
 
 			// New way
 			PointF center = _mapper.Map( _insidePoints[ss.Space].GetPointFor( token ) );
@@ -494,7 +504,7 @@ public partial class IslandControl : Control {
 			float y = center.Y-iconWidth/2; //!! approximate - need Image to get actual Height to scale
 
 			// Strife
-			Token imageToken;
+			IVisibleToken imageToken;
 			if(token is HealthToken si && 0 < si.StrifeCount) {
 				imageToken = si.HavingStrife( 0 );
 
@@ -527,15 +537,15 @@ public partial class IslandControl : Control {
 	}
 
 	void DrawRow( Graphics graphics, SpaceState spaceState, float iconWidth ) {
-		var tokenTypes = new List<Token> {
+		var tokenTypes = new List<IVisibleToken> {
 			TokenType.Defend, TokenType.Blight, // These don't show up in .OfAnyType if they are dynamic
 			TokenType.Beast, TokenType.Wilds, TokenType.Disease, TokenType.Badlands, TokenType.Isolate
 		}	.Union( spaceState.OfCategory( TokenCategory.Dahan ) )
 			.Union( spaceState.OfAnyClass( _spirit.Presence.Token ) )
 			.Union( spaceState.OfAnyClass( TokenType.Element ) )
 			.Union( spaceState.OfClass( TokenType.OpenTheWays ) )
+			.Cast<IVisibleToken>()
 			.ToArray();
-
 
 		foreach(var token in tokenTypes) {
 			int count = spaceState[token];
@@ -663,7 +673,7 @@ public partial class IslandControl : Control {
 		// Draw Token option hotspot & record option location
 		if(decision_TokenOnSpace != null)
 			foreach(Token token in decision_TokenOnSpace.Options.OfType<Token>())
-				DrawSpaceTokenHotspot( graphics, pen, token, new SpaceToken( decision_TokenOnSpace.Space, token ) );
+				DrawSpaceTokenHotspot( graphics, pen, token, new SpaceToken( decision_TokenOnSpace.Space, (IVisibleToken)token ) );
 
 		if(decision_DeployedPresence != null) {
 			options_Space = null; // disable circle drawing
@@ -708,8 +718,8 @@ public partial class IslandControl : Control {
 	}
 
 	PointF GetPortPoint( Space space ) {
-		PointF worldCoord = decision_Token is IAppearOnScreen
-			? _insidePoints[space].GetPointFor( decision_Token )
+		PointF worldCoord = decision_Token is IVisibleToken vt
+			? _insidePoints[space].GetPointFor( vt )
 			: space.Layout.Center; // normal space 
 		return _mapper.Map( worldCoord );
 	}
@@ -829,64 +839,15 @@ public partial class IslandControl : Control {
 
 	}
 
-	Image AccessTokenImage( Token imageToken ) {
+	Image AccessTokenImage( IVisibleToken imageToken ) {
 		if(!_tokenImages.ContainsKey( imageToken ))
-			_tokenImages[imageToken] = GetImage( imageToken );
+			_tokenImages[imageToken] = GetTokenImage( imageToken );
 		return _tokenImages[imageToken];
 	}
 
-	static Bitmap GetImage( Token token ) {
-		return token is HealthToken ht ? GetHealthTokenImage( ht )
-			: token.Class is IAppearOnScreen ut ? ResourceImages.Singleton.GetImage( ut.Img )
-			: throw new Exception( "unknown token " + token );
-	}
-
-	static Bitmap GetHealthTokenImage( HealthToken ht ) {
-
-		Bitmap orig = ResourceImages.Singleton.GetImage( ht.Class.Img );
-
-		Func<Color,Color> colorConverter = ht.Class.Variant switch {
-			// p => Color.FromArgb( p.A, p.R / 2, p.G / 2, p.B / 2 ); // halfScale
-			// p => Color.FromArgb( p.A, 255 - p.R, 255 - p.G, 255 - p.B ); // invert
-			// p => Color.FromArgb( p.A, p.R / 2, p.G / 2, p.B * 2 / 3 ); // red green
-			TokenVariant.Dreaming => new HslColorAdjuster( new HSL( 240, 75, 40 ) ).GetNewColor,
-            TokenVariant.Frozen => new HslColorAdjuster( new HSL( 0, 45, 40) ).GetNewColor,
-			_ => (x)=>x
-		};
-		new PixelAdjustment( colorConverter ).Adjust( orig );
-
-		using var g = Graphics.FromImage( orig );
-
-		// If Full Health is different than standard, show it
-		if( ht.FullHealth != ht.Class.ExpectedHealthHint ) {
-			using var font = UseGameFont( orig.Height/2 );
-			StringFormat center = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-			g.DrawString( ht.FullHealth.ToString(), font, Brushes.White, new RectangleF( 0, 0, orig.Width, orig.Height ), center );
-		}
-
-		// Draw Damage slashes
-		if( 0 < ht.FullDamage ) {
-			int dX = orig.Width / ht.FullHealth;
-			int lx = dX/2;
-			// Normal Damage
-			if( 0 < ht.Damage )
-				using( Pen redSlash = new Pen( Color.FromArgb( 128, Color.Red ), 30f ) ) {
-					for(int i = 0; i < ht.Damage; ++i) {
-						g.DrawLine( redSlash, lx, orig.Height,lx+dX,0);
-						lx += dX;
-					}
-				}
-			// Dream Damage
-			if(0 < ht.DreamDamage)
-				using(Pen dreamSlash = new Pen( Color.FromArgb( 128, Color.MidnightBlue) , 30f )) { // or maybe steal blue
-					for(int i = 0; i < ht.DreamDamage; ++i) {
-						g.DrawLine( dreamSlash, lx, orig.Height, lx + dX, 0 );
-						lx += dX;
-					}
-				}
-		}
-
-		return orig;
+	static Bitmap GetTokenImage( IVisibleToken token ) {
+		return token is HealthToken ht ? HealthTokenBuilder.GetHealthTokenImage( ht )
+			: ResourceImages.Singleton.GetImage( token.Img );
 	}
 
 	protected override void OnSizeChanged( EventArgs e ) {
@@ -1130,48 +1091,3 @@ public partial class IslandControl : Control {
 	#endregion
 
 }
-
-
-class InvaderCardMetrics {
-	public InvaderCardMetrics( InvaderSlot slot, float x, float y, float width, float height, float textHeight ) {
-		this.slot = slot;
-
-		// Individual card rects
-		int count = slot.Cards.Count;
-		Rect = new RectangleF[count];
-		float buildWidth = width / count, buildHeight = height / count;
-		for(int i = 0; i < Rect.Length; ++i)
-			Rect[i] = new RectangleF( x + i * buildWidth, y + i * buildHeight, buildWidth, buildHeight );
-
-		// Text location
-		textBounds = new RectangleF( x, y + height + textHeight * .1f, width, textHeight * 1.5f );
-	}
-	public readonly InvaderSlot slot;
-	public readonly RectangleF[] Rect;
-	public readonly RectangleF textBounds;
-
-	public void Draw( Graphics graphics, Font labelFont, Font invaderStageFont ) {
-		// Draw all of the cards in that slot
-		// !! we could make them overlap and bigger
-		for(int i = 0; i < Rect.Length; ++i) {
-			var card = slot.Cards[i];
-			if(card.Flipped)
-				graphics.DrawInvaderCardFront( Rect[i], card );
-			else
-				DrawInvaderBack( graphics, invaderStageFont, i, card );
-
-		}
-		graphics.DrawStringCenter( slot.Label, labelFont, Brushes.Black, textBounds );
-	}
-
-	void DrawInvaderBack( Graphics graphics, Font invaderStageFont, int i, InvaderCard card ) {
-		var cardRect = Rect[i];
-		using(SolidBrush brush = new SolidBrush( Color.LightSteelBlue ))
-			graphics.FillRoundedRectangle( brush, cardRect.ToInts(), (int)(cardRect.Width*.15f) );
-		var smallerRect = cardRect.InflateBy( -cardRect.Width * .15f );
-		graphics.DrawInvaderCardBack( smallerRect, card );
-		smallerRect = cardRect.InflateBy( -25f );
-		graphics.DrawStringCenter( card.InvaderStage.ToString(), invaderStageFont, Brushes.DarkRed, smallerRect );
-	}
-}
-

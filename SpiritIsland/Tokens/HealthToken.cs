@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class HealthToken : IAppearInSpaceAbreviation, IAppearOnScreen, IEquatable<HealthToken> {
+public class HealthToken : IVisibleToken, IAppearInSpaceAbreviation, IEquatable<HealthToken> {
 
 	public HealthToken( 
 		HealthTokenClass tokenClass, 
