@@ -1,25 +1,6 @@
 beta.openai.com/account/api-keys
 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
 
-
-
-Finder Issues
-	- (hard) Layout of Presence Tracks
-	- (med-hard) Make 2 of your lands adjacent. If presence moves out, no longer adjacent.
-
-Presence Track Options
-	- Ignore Visual representation
-	- custom Drawer
-	- Presence outputs a Layout Graph with directions and locations.
-
-Make Terrain Adjacent
-	Option - Add it to the beginning of all of Finder's Actions.
-
-	Option - Add to every flow, Auto-Set Value in the UI to make it not painful
-	Option - Secondary Thread where spirits can request it
-	Option - Secondary Thread where Finder just does it
-
-https://boardgamegeek.com/thread/2952684/strategy-finder-paths-unseen
 ==========================
 		Shroud
 		Vengeance
@@ -39,7 +20,7 @@ https://boardgamegeek.com/thread/2952684/strategy-finder-paths-unseen
 16	M	Lightning
 17		Vital Strength
 20		Sharp Fangs			(Jonah)
-22		Volcano
+22	M	Volcano
 25		Rampant Green
 25	M	Thunderspeaker
 28		Bringer
@@ -79,26 +60,3 @@ Scapegoats
 Tall Tailes of Savagery
 Wary of the Interior
 	- cannot see pieces in stasis
-
-
-
-Piles
-	Hand
-	Played
-	Discard
-	+2 (fractured days)
-	Major?
-	Minor
-Actions
-	swipe Left / Right
-	Select
-	Hover makes it bigger.
-
-
-
-// Get a bitmap.
-    Bitmap bmp1 = new Bitmap(@"c:\TestPhoto.jpg");
-
-    EncoderParameters myEncoderParameters = new EncoderParameters(1);
-    myEncoderParameters.Param[0] = new EncoderParameter(myEncoder, 50L);
-    bmp1.Save( filename, GetEncoder(ImageFormat.Jpeg), Encoder.Quality );

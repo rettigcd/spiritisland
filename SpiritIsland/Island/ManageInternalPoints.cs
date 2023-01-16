@@ -73,7 +73,6 @@ public class ManageInternalPoints {
 		throw new Exception("Unable find open slot.");
 	}
 
-
 	static void Validate( Token token ) {
 		if(token is not IVisibleToken)
 			throw new InvalidOperationException( "Token {token} does not appear on screen." );
@@ -96,7 +95,7 @@ public class ManageInternalPoints {
 		// invader groups
 		var groups = allTokens.Keys.OfType<HealthToken>()
 			.Where(x=>x.Class.Category == TokenCategory.Invader)
-			.GroupBy(x=>$"{x.StrifeCount}:{x.Class.Label}")
+			.GroupBy(x=>x.Class)
 			.ToArray();
 		foreach(var group in groups)
 			InitInvaderGroup(group.Key,group,allTokens);
@@ -161,21 +160,24 @@ public class ManageInternalPoints {
 
 	}
 
-	void InitInvaderGroup( string groupKey, IEnumerable<HealthToken> tokenGroup, SpaceState allTokens ) {
+	void InitInvaderGroup( HealthTokenClass tokenClass, IEnumerable<HealthToken> tokenGroup, SpaceState allTokens ) {
 
 		var registeredTokens = _dict.Keys
 			.OfType<HealthToken>()
-			.Where( x => $"{x.StrifeCount}:{x.Class.Label}" == groupKey )
+			.Where( x => x.Class == tokenClass )
 			.ToArray();
 
-		var damagedFirst = tokenGroup
-			.OrderByDescending( x => x.Damage )
+		// Order: damaged first
+		var orderedTokens = tokenGroup
+			.OrderByDescending( x => x.StrifeCount )
+			.ThenByDescending( x => x.Damage )
 			.ToArray();
-		foreach(var token in damagedFirst) {
+		foreach(var token in orderedTokens) {
 
 			// Take the most-damaged (closest to the begining) vacated spot
 			var moreDamagedRegistered = registeredTokens
-				.OrderByDescending( x => x.Damage )
+				.OrderByDescending( x => x.StrifeCount )
+				.ThenByDescending( x => x.Damage )
 				.Where( t => allTokens[t] == 0 && _dict.ContainsKey( t ) )
 				.FirstOrDefault();
 			if( moreDamagedRegistered is not null ) {
@@ -186,12 +188,14 @@ public class ManageInternalPoints {
 			}
 
 			// Already assigned ()
-			if(_dict.ContainsKey( token )) {
+			if(_dict.ContainsKey( token ))
 				continue;
-			}
 
 			// Only steal more-healthy (closest to the end) spots, if this is brand new and not yet registered
-			var moreHealthyRegistered = registeredTokens.OrderBy( x => x.Damage ).FirstOrDefault();
+			var moreHealthyRegistered = registeredTokens
+				.OrderBy( x => x.StrifeCount )
+				.ThenBy( x => x.Damage )
+				.FirstOrDefault();
 			if(moreHealthyRegistered is not null && moreHealthyRegistered.Damage < token.Damage) {
 				Validate( token );
 				_dict[token] = _dict[moreHealthyRegistered];

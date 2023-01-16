@@ -532,7 +532,7 @@ public partial class IslandControl : Control {
 
 	void DrawPowerCards( Graphics graphics ) {
 		if(_cardData.Layout == null)
-			_cardData.Layout = new CardLayout( new Rectangle( 0, Height * 2/3, Width, Height/3));
+			_cardData.Layout = new CardLayout( new Rectangle( 0, Height * 3/5, Width, Height*2/5));
 		_cardData.DrawParts( graphics );
 	}
 
