@@ -26,7 +26,7 @@ namespace SpiritIsland.WinForms {
 		/// </summary>
 		private void InitializeComponent() {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.promptLabel = new System.Windows.Forms.Label();
+            this._promptLabel = new System.Windows.Forms.Label();
             this.islandControl = new SpiritIsland.WinForms.IslandControl();
             this.textIslandSplitter = new System.Windows.Forms.Splitter();
             this.textPanel = new System.Windows.Forms.Panel();
@@ -38,18 +38,19 @@ namespace SpiritIsland.WinForms {
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gameLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toggleDebugUIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // promptLabel
             // 
-            this.promptLabel.AutoSize = true;
-            this.promptLabel.Location = new System.Drawing.Point(7, 27);
-            this.promptLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.promptLabel.Name = "promptLabel";
-            this.promptLabel.Size = new System.Drawing.Size(95, 15);
-            this.promptLabel.TabIndex = 1;
-            this.promptLabel.Text = "Decision Prompt";
+            this._promptLabel.AutoSize = true;
+            this._promptLabel.Location = new System.Drawing.Point(7, 27);
+            this._promptLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this._promptLabel.Name = "promptLabel";
+            this._promptLabel.Size = new System.Drawing.Size(95, 15);
+            this._promptLabel.TabIndex = 1;
+            this._promptLabel.Text = "Decision Prompt";
             // 
             // islandControl
             // 
@@ -133,7 +134,8 @@ namespace SpiritIsland.WinForms {
             // viewToolStripMenuItem
             // 
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.gameLogToolStripMenuItem});
+            this.gameLogToolStripMenuItem,
+            this.toggleDebugUIToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.viewToolStripMenuItem.Text = "&View";
@@ -141,16 +143,23 @@ namespace SpiritIsland.WinForms {
             // gameLogToolStripMenuItem
             // 
             this.gameLogToolStripMenuItem.Name = "gameLogToolStripMenuItem";
-            this.gameLogToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
+            this.gameLogToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.gameLogToolStripMenuItem.Text = "Game &Log";
             this.gameLogToolStripMenuItem.Click += new System.EventHandler(this.GameLogToolStripMenuItem_Click);
+            // 
+            // toggleDebugUIToolStripMenuItem
+            // 
+            this.toggleDebugUIToolStripMenuItem.Name = "toggleDebugUIToolStripMenuItem";
+            this.toggleDebugUIToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.toggleDebugUIToolStripMenuItem.Text = "Toggle Debug UI";
+            this.toggleDebugUIToolStripMenuItem.Click += new System.EventHandler(this.ToggleDebugUIToolStripMenuItem_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1164, 666);
-            this.Controls.Add(this.promptLabel);
+            this.Controls.Add(this._promptLabel);
             this.Controls.Add(this.islandControl);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -167,7 +176,7 @@ namespace SpiritIsland.WinForms {
 		}
 
 		#endregion
-		private System.Windows.Forms.Label promptLabel;
+		private System.Windows.Forms.Label _promptLabel;
 		private IslandControl islandControl;
 		private System.Windows.Forms.Splitter textIslandSplitter;
 		private System.Windows.Forms.Panel textPanel;
@@ -179,6 +188,7 @@ namespace SpiritIsland.WinForms {
 		private System.Windows.Forms.ToolStripMenuItem gameLogToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem rewindMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem recentToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem toggleDebugUIToolStripMenuItem;
 	}
 }
 

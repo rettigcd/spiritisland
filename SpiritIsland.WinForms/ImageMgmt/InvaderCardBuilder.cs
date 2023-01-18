@@ -36,8 +36,8 @@ class InvaderCardBuilder {
 
 		// Draw perimeter and inner texture
 		if(card.Filter is SingleTerrainFilter singleTerrain) {
-			RectangleF topRect = new RectangleF( 30, 45, 200 - 2 * 30, 160 - 60 );
-			RectangleF botRect = new RectangleF( 30, 160 + 15, 200 - 2 * 30, 160 - 60 );
+			Rectangle topRect = new Rectangle( 30, 45, 200 - 2 * 30, 160 - 60 );
+			Rectangle botRect = new Rectangle( 30, 160 + 15, 200 - 2 * 30, 160 - 60 );
 
 			// texture
 			using Brush terrainBrush = UseTerrainBrush( singleTerrain.Terrain );
@@ -58,8 +58,8 @@ class InvaderCardBuilder {
 			}
 
 		} else if(card.Filter is DoubleTerrainFilter doubleTerrain) {
-			RectangleF topRect = new RectangleF( 30, 30 + 15, 200 - 2 * 30, 160 - 60 );
-			RectangleF botRect = new RectangleF( 30, 160 + 25, 200 - 2 * 30, 160 - 60 );
+			Rectangle topRect = new Rectangle( 30, 30 + 15, 200 - 2 * 30, 160 - 60 );
+			Rectangle botRect = new Rectangle( 30, 160 + 25, 200 - 2 * 30, 160 - 60 );
 
 			float tension = .15f;
 			int countPerSide = perimeter.Length / 2;
@@ -81,8 +81,8 @@ class InvaderCardBuilder {
 		} else {
 
 			// must be coastal
-			RectangleF topRect = new RectangleF( 30, 30 + 30, 200 - 2 * 30, 160 - 60 );
-			RectangleF botRect = new RectangleF( 30, 160 + 20 + 15, 200 - 2 * 30, 160 - 60 );
+			Rectangle topRect = new Rectangle( 30, 30 + 30, 200 - 2 * 30, 160 - 60 );
+			Rectangle botRect = new Rectangle( 30, 160 + 20 + 15, 200 - 2 * 30, 160 - 60 );
 
 			// texture
 			using Brush terrainBrush = UseTerrainBrush( Terrain.Ocean );

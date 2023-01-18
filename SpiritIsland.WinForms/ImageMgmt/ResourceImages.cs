@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Text;
 using System.IO;
@@ -52,7 +51,6 @@ public class ResourceImages {
 	public Bitmap GetImage( Img img )               => GetResourceImage( ToResource( img ) );
 	public Bitmap Strife()                          => GetResourceImage("tokens.strife.png");
 	public Bitmap Fear()                            => GetResourceImage("tokens.fear.png");
-	public Bitmap FearGray()                        => GetResourceImage("tokens.fear_gray.png");
 	public Bitmap FearCard()                        => GetResourceImage("tokens.fearcard.png");
 	public Bitmap RedX()                            => GetResourceImage("icons.red-x.png");
 	public Bitmap Hourglass()                       => GetResourceImage("icons.hourglass.png");
@@ -77,12 +75,22 @@ public class ResourceImages {
 		if(_cache.Contains( key )) return _cache.Get( key );
 
 		Bitmap image = GetImage( img );
-		new PixelAdjustment( x => Color.FromArgb( Math.Min((byte)92,x.A), x ) ).Adjust( image );
+		new PixelAdjustment( MakePartiallyTransparent ).Adjust( image );
 
 		_cache.Add( key, image );
 		return image;
 	}
 
+	public Image FearGray() { 
+		string key = "fear_gray.png";
+		if(_cache.Contains( key )) return _cache.Get( key );
+		Bitmap image = Fear();
+		new PixelAdjustment( LowerContrast ).Adjust( image );
+		_cache.Add( key, image );
+		return image;
+	}
+	static Color LowerContrast( Color x ) => Color.FromArgb( x.A, x.R / 4 + 96, x.G / 4 + 96, x.B / 4 + 96 );
+	static Color MakePartiallyTransparent( Color x ) => Color.FromArgb( Math.Min( (byte)92, x.A ), x );
 
 	public Brush UseSpaceBrush( Space space ) {
 		Terrain terrain = space.IsWetland ? Terrain.Wetland

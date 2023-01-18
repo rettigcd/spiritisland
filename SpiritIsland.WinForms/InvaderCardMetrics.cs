@@ -3,21 +3,25 @@
 namespace SpiritIsland.WinForms;
 
 class InvaderCardMetrics {
-	public InvaderCardMetrics( InvaderSlot slot, float x, float y, float width, float height, float textHeight ) {
+
+	public InvaderCardMetrics( InvaderSlot slot, int x, int y, int width, int height, float textHeight ) {
 		this.slot = slot;
 
 		// Individual card rects
 		int count = slot.Cards.Count;
-		Rect = new RectangleF[count];
-		float buildWidth = width / count, buildHeight = height / count;
-		for(int i = 0; i < Rect.Length; ++i)
-			Rect[i] = new RectangleF( x + i * buildWidth, y + i * buildHeight, buildWidth, buildHeight );
+		Rect = new Rectangle[count];
+		if(0 < count) {
+			int buildWidth = (int)(width / count);
+			int buildHeight = (int)(height / count);
+			for(int i = 0; i < Rect.Length; ++i)
+				Rect[i] = new Rectangle( x + i * buildWidth, y + i * buildHeight, buildWidth, buildHeight );
+		}
 
 		// Text location
 		textBounds = new RectangleF( x, y + height + textHeight * .1f, width, textHeight * 1.5f );
 	}
 	public readonly InvaderSlot slot;
-	public readonly RectangleF[] Rect;
+	public readonly Rectangle[] Rect;
 	public readonly RectangleF textBounds;
 
 	public void Draw( Graphics graphics, Font labelFont, Font invaderStageFont ) {
@@ -37,10 +41,10 @@ class InvaderCardMetrics {
 	void DrawInvaderBack( Graphics graphics, Font invaderStageFont, int i, InvaderCard card ) {
 		var cardRect = Rect[i];
 		using(SolidBrush brush = new SolidBrush( Color.LightSteelBlue ))
-			graphics.FillRoundedRectangle( brush, cardRect.ToInts(), (int)(cardRect.Width*.15f) );
-		var smallerRect = cardRect.InflateBy( -cardRect.Width * .15f );
+			graphics.FillRoundedRectangle( brush, cardRect, (int)(cardRect.Width*.15f) );
+		var smallerRect = cardRect.InflateBy( -(int)(cardRect.Width * .15f) );
 		graphics.DrawInvaderCardBack( smallerRect, card );
-		smallerRect = cardRect.InflateBy( -25f );
+		smallerRect = cardRect.InflateBy( -25 );
 		graphics.DrawStringCenter( card.InvaderStage.ToString(), invaderStageFont, Brushes.DarkRed, smallerRect );
 	}
 }

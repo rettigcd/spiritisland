@@ -70,36 +70,12 @@ public partial class IslandControl : Control {
 
 	#region Calc Layout
 
-	// Layout
-	const float gameLabelFontHeight = .05f;
+	RegionLayoutClass RegionLayout => _layout ??= new RegionLayoutClass(ClientRectangle);
+	RegionLayoutClass _layout;
+	public Rectangle OptionBounds => RegionLayout.OptionRect;
 
-	const float spiritWidth = .35f; // % of screen width to use for spirit
-	const float oceanWidth = 1f - spiritWidth;
-	const float invaderDeckWidth = oceanWidth * .4f;
-	const float invaderDeckHeight = .3f;
-	const float fearWidth = .2f;
-	const float fearHeight = fearWidth * .2f;
-	const float blightWidth = .15f;
-	const float blightHeight = .1f;
-	Rectangle SpiritRect => new Rectangle( Width - (int)(spiritWidth * Width), 0, (int)(spiritWidth * Width), Height );
-	Rectangle IslandRect => new Rectangle( 0, 0, Width - (int)(spiritWidth * Width), Height );
-	RectangleF CalcFearPoolRect => new RectangleF( Width * (oceanWidth - fearWidth), 0f, Width * fearWidth, Width * fearHeight );
-	RectangleF CalcAdversaryFlagRect => new RectangleF( 10, 10 + (gameLabelFontHeight)*Height, Width * .05f, Width * .033f );
-	RectangleF CalcBlightRect => new RectangleF( Width*(oceanWidth-blightWidth), Height*(1-invaderDeckHeight-blightHeight), Width * blightWidth, Height * blightHeight );
-	RectangleF CalcInvaderCardRect => new RectangleF( 
-		Width * (oceanWidth - invaderDeckWidth), 
-		Height * (1f - invaderDeckHeight), 
-		Width * invaderDeckWidth, 
-		Height * invaderDeckHeight
-	);
-	Rectangle CalcPopupFearRect() {
-		var bounds = new Rectangle( 0, 0, (int)(Width * .65f), Height );
-		// Active Fear Layout
-		int fearHeight = (int)(bounds.Height * .8f);
-		var fearWidth = fearHeight * 2 / 3;
-		var bob = new Rectangle( bounds.Width - fearWidth - (int)(bounds.Height * .1f), (bounds.Height - fearHeight) / 2, fearWidth, fearHeight );
-		return bob;
-	}
+	// Layout
+
 	RectangleF CalcIslandExtents() {
 		float left = float.MaxValue;
 		float top = float.MaxValue;
@@ -112,19 +88,10 @@ public partial class IslandControl : Control {
 			if(e.Right > right) right = e.Right;
 			if(e.Bottom > bottom) bottom = e.Bottom;
 		}
-		return new RectangleF( left, top, right - left, bottom - top );
+		const float CUSHION = .015f; // because the drawing algo is curvey and goes outside the bounds
+		return new RectangleF( left-CUSHION, top - CUSHION, right - left+2*CUSHION, bottom - top+2*CUSHION );
 	}
-	RectangleF CalcElementPopUpBounds( int count ) {
-		// calculate layout based on count
-		float maxHeight = Height * .16f;
-		float maxWidth = Width * (oceanWidth * .75f);
-		int desiredMmargin = 20;
 
-		var maxBounds = new RectangleF( (Width - maxWidth) / 2, (Height - maxHeight) / 2, maxWidth, maxHeight ); // max size allowed to use
-		var desiredSize = new SizeF( count * (maxHeight - desiredMmargin) + desiredMmargin, maxHeight ); // share we want.
-		RectangleF bounds = maxBounds.FitBoth( desiredSize );
-		return bounds;
-	}
 
 	SpiritLayout _spiritLayout;
 	Rectangle popUpFearRect;
@@ -141,19 +108,15 @@ public partial class IslandControl : Control {
 	/// </summary>
 	PointMapper _mapper;
 
-	static PointMapper MapWorldToViewPort( RectangleF worldRect, Size viewportSize ) {
-		var upperLeft = new PointF( 20f, 60f );
-		float usableHeight = (viewportSize.Height - upperLeft.Y - 20 );
+	static Matrix3D CalcMatrixForDrawingAtOrigin( RectangleF worldRect, Rectangle viewportRect ) {
+		// calculate scaling Assuming height limited
+		float scale = viewportRect.Height / worldRect.Height;
 
-		// calculate scaling Assuming height-limited
-		float islandHeight = worldRect.Height; // (float)(0.5 * Math.Sqrt( 3 )); // each board size is 1. Equalateral triangle height is sqrt(3)/2
-		float scale = usableHeight / islandHeight;
-
-		return new PointMapper(
-			  RowVector.Translate( -worldRect.X, -worldRect.Y ) // translate to origin
+		var islandBitmapMatrix
+			= RowVector.Translate( -worldRect.X, -worldRect.Y ) // translate to origin
 			* RowVector.Scale( scale, -scale ) // flip-y and scale
-			* RowVector.Translate( upperLeft.X, upperLeft.Y + usableHeight ) // translate to view port
-		);
+			* RowVector.Translate( 0, viewportRect.Height ); // because 0,0 is at the bottom,left
+		return islandBitmapMatrix;
 	}
 
 	static Rectangle FitClientBounds( Rectangle bounds ) {
@@ -200,20 +163,22 @@ public partial class IslandControl : Control {
 			foreach(SpaceState space in _gameState.AllSpaces)
 				DecorateSpace( pe.Graphics, space );
 
-			DrawPowerCards( pe.Graphics );
-
-			// Pop-ups
-			DrawDeckPopUp( pe.Graphics );
-			DrawElementsPopUp( pe.Graphics );
-			DrawFearPopUp( pe.Graphics );
-
 			using(var hotSpotPen = new Pen( HotSpotColor, 5 )) {
 				DrawHotSpots_SpaceToken( pe.Graphics, hotSpotPen );
 				DrawHotSpots_Space( pe.Graphics, hotSpotPen );
 			}
 
-			DrawSpirit( pe.Graphics, SpiritRect );
+			DrawSpirit( pe.Graphics, RegionLayout.SpiritRect );
 
+			DrawPowerCards( pe.Graphics );
+
+			// Pop-ups - draw last, because they are pop-ups and should be on top.
+			DrawDeckPopUp( pe.Graphics );
+			DrawElementsPopUp( pe.Graphics );
+			DrawFearPopUp( pe.Graphics );
+
+			if(_debug)
+				RegionLayout.DrawRects( pe.Graphics );
 		}
 
 		// non drawing - record Hot spots
@@ -234,40 +199,53 @@ public partial class IslandControl : Control {
 			var boardWorldRect = CalcIslandExtents();
 
 			// create a viewport size screen we can draw on.
-			var bounds = IslandRect; // size available
+			var bounds = RegionLayout.IslandRect; // size available
 
-			// Calculate the size that fits
-			_boardScreenSize = (bounds.Width * boardWorldRect.Height < boardWorldRect.Width * bounds.Height)
-				? new Size( bounds.Width, (int)(boardWorldRect.Height * bounds.Width / boardWorldRect.Width) )
-				: new Size( (int)(boardWorldRect.Width * bounds.Height / boardWorldRect.Height), bounds.Height );
+			_boardScreenRect = RegionLayout.IslandRect
+				// .InflateBy( -10 )
+				.FitBoth(boardWorldRect.Scale(1000).ToInts().Size, Align.Center, Align.Early);
 
-			_mapper = MapWorldToViewPort( boardWorldRect, _boardScreenSize );
+			//// Calculate the size that fits
+			//_boardScreenSize = (bounds.Width * boardWorldRect.Height < boardWorldRect.Width * bounds.Height)
+			//	? new Rectangle( 20, 60, bounds.Width, (int)(boardWorldRect.Height * bounds.Width / boardWorldRect.Width) )
+			//	: new Rectangle( 20, 60, (int)(boardWorldRect.Width * bounds.Height / boardWorldRect.Height), bounds.Height );
 
-			_cachedBackground = new Bitmap( _boardScreenSize.Width, _boardScreenSize.Height );
+			var originDrawing = CalcMatrixForDrawingAtOrigin( boardWorldRect, _boardScreenRect );
+			var originMapper = new PointMapper( originDrawing );
+
+			_cachedBackground = new Bitmap( _boardScreenRect.Width, _boardScreenRect.Height );
 			using Graphics graphics = Graphics.FromImage( _cachedBackground );
 
 			foreach(Board board in _gameState.Island.Boards)
-				DrawBoardSpacesOnly( graphics, board );
+				DrawBoardSpacesOnly( graphics, board, originMapper );
 
 			// calc spots to put tokens
 			_insidePoints = _gameState.AllSpaces
-				.ToDictionary(  ss => ss.Space,  ss => new ManageInternalPoints( ss ) );
+				.ToDictionary( ss => ss.Space, ss => new ManageInternalPoints( ss ) );
 
 			// Label board spaces
 			foreach(var (space,manager) in _insidePoints.Select(x=>(x.Key,x.Value)))
-				graphics.DrawString( space.Text, SystemFonts.MessageBoxFont, SpaceLabelBrush, _mapper.Map( manager.NameLocation ) );
+				graphics.DrawString( space.Text, SystemFonts.MessageBoxFont, SpaceLabelBrush, originMapper.Map( manager.NameLocation ) );
+
+
+			var normalPaintMatrix = originDrawing
+				* RowVector.Translate( _boardScreenRect.X, _boardScreenRect.Y ); // translate to view port
+			_mapper = new PointMapper( normalPaintMatrix );
 
 		}
 
-		pe.Graphics.DrawImage( _cachedBackground, 0, 0, _cachedBackground.Width, _cachedBackground.Height );
+		pe.Graphics.DrawImage( _cachedBackground, 
+			_boardScreenRect.X, _boardScreenRect.Y, 
+			_cachedBackground.Width, _cachedBackground.Height 
+		);
 	}
 
-	void DrawBoardSpacesOnly( Graphics graphics, Board board ) {
+	static void DrawBoardSpacesOnly( Graphics graphics, Board board, PointMapper bitmapMapper ) {
 		var perimeterPen = new Pen( SpacePerimeterColor, 5f );
 		var normalizedBoardLayout = board.Layout;
 		for(int i = 0; i < normalizedBoardLayout.Spaces.Length; ++i) {
 			using Brush brush = ResourceImages.Singleton.UseSpaceBrush( board[i] );
-			var points = normalizedBoardLayout.Spaces[i].Corners.Select( _mapper.Map ).ToArray();
+			var points = normalizedBoardLayout.Spaces[i].Corners.Select( bitmapMapper.Map ).ToArray();
 
 			// Draw blocky
 			//pe.Graphics.FillPolygon( brush, points );
@@ -283,7 +261,7 @@ public partial class IslandControl : Control {
 	#endregion Draw Static Board
 
 	void DrawGameRound( Graphics graphics ) {
-		using Font font = UseGameFont( Height * gameLabelFontHeight );
+		using Font font = UseGameFont( RegionLayout.GameLabelFontHeight );
 
 		Brush brush = GameTextBrush_Default;
 		string snippet = "Fight!";
@@ -303,22 +281,26 @@ public partial class IslandControl : Control {
 	void DrawAdversary( PaintEventArgs pe ) {
 		if(_adversary != null) {
 			using var flag = ResourceImages.Singleton.GetAdversaryFlag( _adversary.Name );
-			pe.Graphics.DrawImage( flag, this.CalcAdversaryFlagRect );
+			pe.Graphics.DrawImage( flag, RegionLayout.AdversaryFlagRect );
 		}
 	}
 
 	void DrawFearPool( Graphics graphics ) {
-		var outterBounds = CalcFearPoolRect;
-		float margin = Math.Max( 5f, outterBounds.Height * .05f );
+		var outterBounds = RegionLayout.FearPoolRect;
+
+		int margin = Math.Max( 5, (int)(outterBounds.Height * .05f) );
 		var bounds = outterBounds.InflateBy(-margin);
 
 		using var cardImg = ResourceImages.Singleton.FearCard(); // Maybe load this with the control and not dispose of it every time we draw.
 
-		float slotWidth = bounds.Width/6;
-
 		// -1 slot width for #/# and 
 		// -1 slot width for last fear token
-		var tokenSize = new SizeF( slotWidth, slotWidth * _fearTokenImage.Height / _fearTokenImage.Width ); // assume token is wider than tall.
+		int slotWidth = bounds.Width / 6;
+
+		bool limitedByHeight = bounds.Height * _fearTokenImage.Width < slotWidth * _fearTokenImage.Height;
+		var tokenSize = limitedByHeight
+			? new Size( bounds.Height * _fearTokenImage.Width / _fearTokenImage.Height, bounds.Height )
+			: new Size( slotWidth, slotWidth * _fearTokenImage.Height / _fearTokenImage.Width ); // assume token is wider than tall.
 
 		// Calc Terror Level bounds - slotWidth reserved but only tokenSize.Width used
 		var terrorLevelBounds = new RectangleF( bounds.X, bounds.Y, tokenSize.Width, tokenSize.Height );
@@ -329,8 +311,9 @@ public partial class IslandControl : Control {
 		RectangleF CalcBounds( int i ) => new RectangleF( bounds.X + slotWidth + step * i, bounds.Y, tokenSize.Width, tokenSize.Height );
 
 		// Calc Activated Fear Bounds
-		var activatedCardRect = new RectangleF( bounds.Right - slotWidth*2, bounds.Y, tokenSize.Width, tokenSize.Height ).FitHeight( cardImg.Size ).ToInts();
-		var futureCardRect = new RectangleF( bounds.Right - slotWidth, bounds.Y, tokenSize.Width, tokenSize.Height ).FitHeight( cardImg.Size ).ToInts();
+		int cardHeight = tokenSize.Height * 7 / 8;
+		var activatedCardRect = new Rectangle( bounds.Right - slotWidth*2, bounds.Y, tokenSize.Width, cardHeight ).FitHeight( cardImg.Size );
+		var futureCardRect    = new Rectangle( bounds.Right - slotWidth, bounds.Y, tokenSize.Width, cardHeight ).FitHeight( cardImg.Size );
 
 
 		// Draw Terror Level
@@ -338,7 +321,7 @@ public partial class IslandControl : Control {
 		graphics.DrawImage( terror, terrorLevelBounds );
 
 		// Draw Fear Pool
-		int fearCount = this._gameState.Fear.EarnedFear;
+		int fearCount = _gameState.Fear.EarnedFear;
 		for(int i = fearCount; i < poolMax; ++i)
 			graphics.DrawImage( _grayFear, CalcBounds( i ) );	// Gray underneath
 		// draw fear tokens
@@ -373,16 +356,17 @@ public partial class IslandControl : Control {
 			}
 			graphics.DrawCountIfHigherThan( futureCardRect, future );
 			futureCardRect.Location = new Point( futureCardRect.X, futureCardRect.Bottom);
+			futureCardRect = futureCardRect.InflateBy(30,0);
 			using var cardCountFont = UseGameFont( margin * 3);
 			graphics.DrawStringCenter( string.Join(" / ",_gameState.Fear.CardsPerLevelRemaining), cardCountFont, CardLabelBrush, futureCardRect);
 		}
 	}
 
 	void DrawBlight( Graphics graphics ) {
-		var bounds = CalcBlightRect;
+		var bounds = RegionLayout.BlightRect;
 
-		float margin = Math.Max( 5f, bounds.Height * .05f );
-		float slotWidth = bounds.Height;
+		int margin = Math.Max( 5, (int)(bounds.Height * .05f) );
+		int slotWidth = bounds.Height;
 
 		int count = this._gameState.blightOnCard;
 		int maxSpaces = 6;
@@ -407,42 +391,36 @@ public partial class IslandControl : Control {
 
 	void DrawInvaderCards( Graphics graphics ) {
 
-		const float margin = 8;
-		const float textHeight = 20f;
-
-		var bounds = CalcInvaderCardRect;
+		const int CARD_SEPARATOR = 10;
+		var bounds = RegionLayout.InvaderCardRect;
 
 		// Calculate Card Size based on # of slots
 		float slots = _gameState.InvaderDeck.ActiveSlots.Count + 1.5f;
 		float slotWidth = bounds.Width / slots;
+		float cardHeight = bounds.Height * .8f;
+		int textHeight = (int)(bounds.Height * .2f);
 
-		var cardSize = slotWidth * 1.5f < bounds.Height         // too narrow
-			? new SizeF( slotWidth, slotWidth * 1.5f )         // use narrow width to limit height
-			: new SizeF( bounds.Height / 1.5f, bounds.Height ); // plenty of width, use height to determine size
-
-		// calc discard location
-		var discardRect = new RectangleF( bounds.Left, bounds.Top + margin + (cardSize.Height - cardSize.Width) * .5f, cardSize.Height - margin * 2, cardSize.Width - margin * 2 );
-		Point[] discardDestinationPoints = {
-			new Point((int)discardRect.Left, (int)discardRect.Bottom),    // destination for upper-left point of original
-			new Point((int)discardRect.Left, (int)discardRect.Top), // destination for upper-right point of original
-			new Point((int)discardRect.Right, (int)discardRect.Bottom)      // destination for lower-left point of original
-		};
+		bool isTooNarrow = slotWidth * 1.5f < cardHeight;
+		Size cardSize = isTooNarrow
+			? new Size( (int)slotWidth, (int)(slotWidth * 1.5f) )     // use narrow width to limit height
+			: new Size( (int)(cardHeight / 1.5f), (int)cardHeight ); // plenty of width, use height to determine size
 
 		// locate each of the cards
 		var cardMetrics = new InvaderCardMetrics[_gameState.InvaderDeck.ActiveSlots.Count];
 
 		for(int i = 0; i < cardMetrics.Length; ++i)
 			cardMetrics[i] = new InvaderCardMetrics( _gameState.InvaderDeck.ActiveSlots[i],
-				bounds.Left + (i + 1.5f) * cardSize.Width + margin, //left+i*xStep, 
-				bounds.Top + margin, // y, 
-				cardSize.Width - margin * 2, cardSize.Height - margin * 2, // width, height, 
+				bounds.Left + CARD_SEPARATOR + (int)((i + 1.5f) * (cardSize.Width+CARD_SEPARATOR)), //left+i*xStep, 
+				bounds.Top, // y, 
+				cardSize.Width, 
+				cardSize.Height, // width, height, 
 				textHeight
 			);
 
 		// Draw
-		using var buildRavageFont = UseGameFont( textHeight );
-		using var invaderStageFont = UseInvaderFont( textHeight * 2 );
-		foreach(var cardMetric in cardMetrics)
+		using Font buildRavageFont = UseGameFont( textHeight ); // 
+		using Font invaderStageFont = UseInvaderFont( textHeight * 2 );
+		foreach(InvaderCardMetrics cardMetric in cardMetrics)
 			cardMetric.Draw( graphics, buildRavageFont, invaderStageFont );
 
 		// # of cards in explore pile
@@ -451,11 +429,22 @@ public partial class IslandControl : Control {
 		// Draw Discard
 		var lastDiscard = _gameState.InvaderDeck.Discards.LastOrDefault();
 		if(lastDiscard is not null) {
+			// calc discard location
+			var discardRect = new RectangleF(
+				bounds.Left,
+				bounds.Top + (cardSize.Height - cardSize.Width) * .5f,
+				cardSize.Height,
+				cardSize.Width
+			);
+			Point[] discardDestinationPoints = {
+				new Point((int)discardRect.Left, (int)discardRect.Bottom),    // destination for upper-left point of original
+				new Point((int)discardRect.Left, (int)discardRect.Top), // destination for upper-right point of original
+				new Point((int)discardRect.Right,(int)discardRect.Bottom)      // destination for lower-left point of original
+			};
 			using Image discardImg = ResourceImages.Singleton.GetInvaderCard( lastDiscard );
 			graphics.DrawImage( discardImg, discardDestinationPoints );
 			// # of cards in explore pile
 			graphics.DrawCountIfHigherThan( discardRect, _gameState.InvaderDeck.Discards.Count );
-
 		}
 	}
 
@@ -467,22 +456,25 @@ public partial class IslandControl : Control {
 
 		_insidePoints[spaceState.Space].Init(spaceState);
 
-		float iconWidth = _boardScreenSize.Width * .040f; // !!! scale tokens based on board/space size, NOT widow size (for 2 boards, tokens are too big)
+		float iconWidth = _boardScreenRect.Width * .040f; // !!! scale tokens based on board/space size, NOT widow size (for 2 boards, tokens are too big)
 
-		// !!! TEMP
-		foreach(var tk in _insidePoints[spaceState.Space]._dict) {
-			var img = ResourceImages.Singleton.GetGhostImage( tk.Key.Img );
-			var p = _mapper.Map(new PointF(tk.Value.X,tk.Value.Y));
-			Rectangle rect = FitWidth( p.X-iconWidth/2, p.Y-iconWidth/2, iconWidth, img.Size );
-			graphics.DrawImage( img, rect );
-		}
-
+		if(_debug)
+			DrawTokenTargets( graphics, spaceState, iconWidth );
 
 		if(spaceState.Space is MultiSpace ms)
 			DrawMultiSpace( graphics, ms );
 
 		DrawInvaderRow( graphics, spaceState, iconWidth );
 		DrawRow( graphics, spaceState, iconWidth );
+	}
+
+	void DrawTokenTargets( Graphics graphics, SpaceState spaceState, float iconWidth ) {
+		foreach(var tk in _insidePoints[spaceState.Space]._dict) {
+			var img = ResourceImages.Singleton.GetGhostImage( tk.Key.Img );
+			var p = _mapper.Map( new PointF( tk.Value.X, tk.Value.Y ) );
+			Rectangle rect = FitWidth( p.X - iconWidth / 2, p.Y - iconWidth / 2, iconWidth, img.Size );
+			graphics.DrawImage( img, rect );
+		}
 	}
 
 	void DrawInvaderRow( Graphics graphics, SpaceState ss, float iconWidth ) {
@@ -532,7 +524,7 @@ public partial class IslandControl : Control {
 
 	void DrawPowerCards( Graphics graphics ) {
 		if(_cardData.Layout == null)
-			_cardData.Layout = new CardLayout( new Rectangle( 0, Height * 3/5, Width, Height*2/5));
+			_cardData.Layout = new CardLayout( RegionLayout.CardRectPopup );
 		_cardData.DrawParts( graphics );
 	}
 
@@ -590,7 +582,7 @@ public partial class IslandControl : Control {
 		var elementOptions = decision_Element.Options.OfType<ItemOption<Element>>().ToArray();
 		int count = elementOptions.Length;
 
-		RectangleF bounds = CalcElementPopUpBounds( count );
+		RectangleF bounds = RegionLayout.ElementPopUpBounds( count );
 
 		// recalculate this incase bounds got squished
 		float actualMargin = 1 < count ? (count * bounds.Height - bounds.Width) / (count - 1) : bounds.Height * .05f;
@@ -625,31 +617,29 @@ public partial class IslandControl : Control {
 		if(decision_DeckToDrawFrom is null) return;
 
 		// calc layout
-		int boundsHeight = Height / 3; // cards take up 1/3 of window vertically
-		int boundsWidth = boundsHeight * 16 / 10;
-		Rectangle bounds = new Rectangle( 0 + (Width-boundsWidth)/2, Height - boundsHeight-20, boundsWidth, boundsHeight );
+		Rectangle bounds = RegionLayout.MinorMajorDeckSelectionPopup;
+		Rectangle innerDeckBounds = bounds.InflateBy( -bounds.Height / 20 );
 
-		Rectangle innerDeckBounds = bounds.InflateBy(-boundsHeight/20);
 		var cardWidth = innerDeckBounds.Height * 3 / 4;
-		var minorRect = new Rectangle(innerDeckBounds.X,innerDeckBounds.Y,cardWidth,innerDeckBounds.Height);
-		var majorRect = new Rectangle(innerDeckBounds.Right-cardWidth,innerDeckBounds.Y,cardWidth,innerDeckBounds.Height);
+		var minorRect = new Rectangle( innerDeckBounds.X, innerDeckBounds.Y, cardWidth, innerDeckBounds.Height );
+		var majorRect = new Rectangle( innerDeckBounds.Right - cardWidth, innerDeckBounds.Y, cardWidth, innerDeckBounds.Height );
 
 		// Hotspots
 		// !! we are assuming minor is first...
-		hotSpots.Add(decision_DeckToDrawFrom.Options[0],minorRect);
-		hotSpots.Add(decision_DeckToDrawFrom.Options[1],majorRect);
+		hotSpots.Add( decision_DeckToDrawFrom.Options[0], minorRect );
+		hotSpots.Add( decision_DeckToDrawFrom.Options[1], majorRect );
 
-		graphics.FillRectangle(PopupBackgroundBrush,bounds);
+		graphics.FillRectangle( PopupBackgroundBrush, bounds );
 		using var minorImage = Image.FromFile( ".\\images\\minor.png" );
 		using var majorImage = Image.FromFile( ".\\images\\major.png" );
-		graphics.DrawImage(minorImage,minorRect);
-		graphics.DrawImage(majorImage,majorRect);
+		graphics.DrawImage( minorImage, minorRect );
+		graphics.DrawImage( majorImage, majorRect );
 	}
 
 	void DrawFearPopUp( Graphics graphics ) {
 		if(options_FearPopUp is null) return;
 
-		popUpFearRect = CalcPopupFearRect();
+		popUpFearRect = RegionLayout.PopupFearRect;
 
 		using var img = new FearCardImageManager().GetImage( options_FearPopUp );
 		graphics.DrawImage( img, popUpFearRect );
@@ -852,6 +842,7 @@ public partial class IslandControl : Control {
 
 	protected override void OnSizeChanged( EventArgs e ) {
 		base.OnSizeChanged( e );
+		_layout = new RegionLayoutClass( ClientRectangle );
 		_spiritLayout = null;
 		_cardData.Layout = null;
 		RefreshLayout();
@@ -892,7 +883,7 @@ public partial class IslandControl : Control {
 		}
 
 		// Adversay Rules
-		if(_adversary != null && CalcAdversaryFlagRect.Contains( clientCoords ) )
+		if(_adversary != null && RegionLayout.AdversaryFlagRect.Contains( clientCoords ) )
 			PopUpAdversaryRules();
 	}
 
@@ -1023,7 +1014,7 @@ public partial class IslandControl : Control {
 	GameState _gameState;
 	Spirit _spirit;
 
-	Size _boardScreenSize;
+	Rectangle _boardScreenRect;
 	Bitmap _cachedBackground;
 
 	readonly Dictionary<IOption, RectangleF> hotSpots = new();
@@ -1089,5 +1080,11 @@ public partial class IslandControl : Control {
 		: Color.Gold;
 
 	#endregion
+
+	public bool Debug {
+		get { return _debug; }
+		set { _debug = value; Invalidate(); }
+	}
+	bool _debug;
 
 }

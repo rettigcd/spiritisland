@@ -102,11 +102,11 @@ namespace SpiritIsland.WinForms {
 				// Heart of the WildFire
 				case "EnergyForFire": DrawIconInCenter( rect, Img.Oneenergyfire ); break;
 				// Lure of the Deep Wilderness
-				case "GainElement(Moon,Air,Plant)": GainElement( rect, Element.Moon, Element.Air, Element.Plant ); break;
+				case "GainElement(Moon,Air,Plant)": GainElement( rect.ToInts(), Element.Moon, Element.Air, Element.Plant ); break;
 				// Fractured Dates
-				case "GainElement(Air)": GainElement( rect, Element.Air ); break;
-				case "GainElement(Moon)": GainElement( rect, Element.Moon ); break;
-				case "GainElement(Sun)": GainElement( rect, Element.Sun ); break;
+				case "GainElement(Air)": GainElement( rect.ToInts(), Element.Air ); break;
+				case "GainElement(Moon)": GainElement( rect.ToInts(), Element.Moon ); break;
+				case "GainElement(Sun)": GainElement( rect.ToInts(), Element.Sun ); break;
 				case "GainTime(2)":    GainTime( rect ); break;
 				case "GainTime(1)x2":  Gain1TimeOr2CardPlaysX2( rect ); break;
 				case "GainTime(1)x3":  Gain1TimeOr2EnergyX3( rect ); break;
@@ -183,7 +183,7 @@ namespace SpiritIsland.WinForms {
 			graphics.DrawImage( image, rect.X, rect.Y + (rect.Height - imgHeight) / 2, imgWidth, imgHeight );
 		}
 
-		void GainElement( RectangleF rect, params Element[] elements ) {
+		void GainElement( Rectangle rect, params Element[] elements ) {
 			var parts = rect.SplitHorizontally(elements.Length);
 			for(int i = 0; i < elements.Length; ++i) {
 				using var img = GetImage( elements[i].GetTokenImg() );
@@ -295,7 +295,7 @@ namespace SpiritIsland.WinForms {
 			}
 
 			if( addOnIcon != Img.None )
-				DrawIconInCenter( bounds.InflateBy( -bounds.Width * .2f ), addOnIcon );
+				DrawIconInCenter( bounds.ToInts().InflateBy( -(int)(bounds.Width * .2f) ), addOnIcon );
 
 		}
 

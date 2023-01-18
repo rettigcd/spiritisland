@@ -13,7 +13,7 @@
     <None Remove="images\adversaries\Brandenburg-Prussia.png" />
     <None Remove="images\adversaries\England.png" />
     <None Remove="images\adversaries\France.png" />
-    <None Remove="images\adversaries\Habsburg_Monarchy.png" />
+    <None Remove="images\adversaries\Habsburg Monarchy.png" />
     <None Remove="images\adversaries\Russia.png" />
     <None Remove="images\adversaries\Scotland.png" />
     <None Remove="images\adversaries\Sweden.png" />
@@ -157,7 +157,6 @@
     <None Remove="images\tokens\fear.png" />
     <None Remove="images\tokens\fearcard.png" />
     <None Remove="images\tokens\Fearicon.png" />
-    <None Remove="images\tokens\fear_gray.png" />
     <None Remove="images\tokens\GainCard.png" />
     <None Remove="images\tokens\Gathertoocean.png" />
     <None Remove="images\tokens\isolateorange.png" />
@@ -214,7 +213,7 @@
     <EmbeddedResource Include="images\adversaries\Brandenburg-Prussia.png" />
     <EmbeddedResource Include="images\adversaries\England.png" />
     <EmbeddedResource Include="images\adversaries\France.png" />
-    <EmbeddedResource Include="images\adversaries\Habsburg_Monarchy.png" />
+    <EmbeddedResource Include="images\adversaries\Habsburg Monarchy.png" />
     <EmbeddedResource Include="images\adversaries\Russia.png" />
     <EmbeddedResource Include="images\adversaries\Scotland.png" />
     <EmbeddedResource Include="images\adversaries\Sweden.png" />
@@ -318,7 +317,6 @@
     <EmbeddedResource Include="images\tokens\explorer.png" />
     <EmbeddedResource Include="images\tokens\fear.png" />
     <EmbeddedResource Include="images\tokens\fearcard.png" />
-    <EmbeddedResource Include="images\tokens\fear_gray.png" />
     <EmbeddedResource Include="images\tokens\isolateorange.png" />
     <EmbeddedResource Include="images\tokens\Simple_air.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
