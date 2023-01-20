@@ -22,12 +22,12 @@ public enum LogLevel {
 
 public class IslandBlighted : ILogEntry { // event
 	public IslandBlighted( IBlightCard card ) {
-		this.Level = LogLevel.Info;
-		this.card = card;
+		Level = LogLevel.Info;
+		Card = card;
 	}
 	public LogLevel Level { get; }
-	public IBlightCard card { get; }
-	public string Msg( LogLevel _ ) => $"Blighted Island => {card.Name} => {card.Immediately.Description}\r\n  ^^^^^^^^ ^^^^^^\r\n";
+	public IBlightCard Card { get; }
+	public string Msg( LogLevel _ ) => $"Blighted Island => {Card.Name} => {Card.Immediately.Description}\r\n  ^^^^^^^^ ^^^^^^\r\n";
 }
 
 public class InvaderActionEntry : ILogEntry {

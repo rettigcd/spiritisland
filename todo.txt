@@ -2,14 +2,19 @@
 ====  Clean Up Items  ====
 ==========================
 
-5 UI - Configure Game - Images for Selecting Spirits
+5 Rename to Feather and Flame
+5 Fear Cards (5) from Promo pack
+5 UI - Cache: Back of invader cards
+5 Finish => Slip the flows of time - use any # of times
 
-5 UI - Display Blight Card and/or text
-5 UI - Command-Beast - show graphic (so it doesn't get lost in text)
-5 UI - Visual indicator of Phase
-
-
+5 UI - Configure Game - Images for Selecting Spirits (ListView)
 5 Action => Move Finders Hook to Action-start - event
+
+4 UI - Draw Power Cards
+4 UI - Cache: Innates
+4 UI - Graphics.DrawMixed(...)
+4 Standardize TokenSpace selection on receivers end.
+
 
 4 Multi Player
 	== Option 1 == 
@@ -24,29 +29,27 @@
 		- visual indication of which spaces are joined so user can wait or not select them
 		- ! need to watch for deadlocks
 
-5 Finish => Slip the flows of time - use any # of times
-
 ======
 
-3 Tokens - Publish token events to the UI so that it can show token changing animation.
+3 UI - Cleanup Presence-Track image generation
+3 UI - Make clickable things on screen into Buttons with their own .Click() method
+
+3 UI - Tokens - Publish token events to the UI so that it can show token changing animation.
 3 Review items that are PickSpace then Pick Token into a single pick-space-token step.
-3 Change Fear Card Ack to Events. (how do we do that?)
 
 2 Consilidate GameState API - things that aren't data and have no theoretical state.
 2 Review Presence events. Can they be removed by having Presence do action directly? Consolidate => Single PresenceOnBoardChanged event
-2 Clean up Token drawing and ownership - CachedImageDrawer - make it draw the images
+2 UI - Clean up Token drawing and ownership - CachedImageDrawer - make it draw the images
 2 Create a target-space preview, when hovering over cards
 
 TokenCountDictionary.counts -> make private.
 Make Spirit.ResolveActions private/protected.
 
-Idea - When cusororing over HotSpot, have selected item glow / highlight
+Idea - UI - When cusororing over HotSpot, have selected item glow / highlight
 Idea - All of the Stop Tokens are actually just Pre-Build, Pre-Explore, Pre-Ravage events/configures
-Idea - Could the DoRavage token also be the Ravage Configuration used in ModifyRavage?
 Idea - Make Ravage / Build / Explore consistent in using UnitOfWork
-
 Instead of reacting to PresenceMoved / Removed / Added events, have the Presence do the actions itself.
-	-> Review if any of the spirits Powers/actions can be refactored into a derived ActionalbeSpaceState
+Review if any of the spirits Powers/actions can be refactored into a derived ActionalbeSpaceState
 
 =========================
 ===== Feature Focus =====

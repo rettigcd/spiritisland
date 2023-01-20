@@ -2,7 +2,7 @@
 
 public class TippingPoint : BlightCardBase {
 
-	public TippingPoint():base("Tipping Point", 5 ) { }
+	public TippingPoint():base("Tipping Point", "Immediately, destroy 3 presence from each Spirit.", 5 ) { }
 
 	public override DecisionOption<GameCtx> Immediately 
 		=> Cmd.EachSpirit( 

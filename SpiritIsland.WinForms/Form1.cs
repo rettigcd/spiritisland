@@ -189,6 +189,8 @@ public partial class Form1 : Form, IHaveOptions {
 	void GameState_NewLogEntry( ILogEntry obj ) {
 		logForm.AppendLine(obj.Msg(), obj.Level);
 
+//		if(obj is IslandBlighted blightCard) MessageBox.Show( blightCard.Card.Description, blightCard.Card.Name );
+
 		if(obj is GameOver wle)
 			Action_NewWaitingDecision( new Select.TypedDecision<TextOption>(wle.Msg(), Array.Empty<TextOption>() ) ); // clear options
 	}

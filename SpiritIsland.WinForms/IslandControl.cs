@@ -64,6 +64,9 @@ public partial class IslandControl : Control {
 		presenceAppearance.Adjustment?.Adjust( (Bitmap)_tokenImages[TokenType.Defend] );
 		presenceAppearance.Adjustment?.Adjust( (Bitmap)_tokenImages[TokenType.Isolate] );
 		// !! we could cache these if we could serialize the Adjustment into a caching-key
+
+		// foreach(var blight in new GameBuilder(new Basegame.GameComponentProvider(),new BranchAndClaw.GameComponentProvider(),new PromoPack1.GameComponentProvider(),new JaggedEarth.GameComponentProvider()).BuildBlightCards()) ResourceImages.Singleton.GetBlightCard(blight).Dispose();
+
 	}
 
 	#endregion constructor / Init
@@ -94,7 +97,6 @@ public partial class IslandControl : Control {
 
 
 	SpiritLayout _spiritLayout;
-	Rectangle popUpFearRect;
 	AdversaryConfig _adversary;
 
 	void CalcSpiritLayout( Graphics graphics, Rectangle bounds ) {
@@ -153,6 +155,8 @@ public partial class IslandControl : Control {
 
 			DrawGameRound( pe.Graphics );
 
+			DrawPhase( pe.Graphics );
+
 			// mostly static
 			DrawAdversary( pe );
 			DrawFearPool( pe.Graphics );
@@ -184,8 +188,22 @@ public partial class IslandControl : Control {
 		// non drawing - record Hot spots
 		RecordSpiritHotspots();
 		if(options_FearPopUp is not null) 
-			hotSpots.Add(options_FearPopUp,popUpFearRect);
+			hotSpots.Add(options_FearPopUp, RegionLayout.PopupFearRect );
+		else if(options_BlightPopUp is not null)
+			hotSpots.Add( options_BlightPopUp, RegionLayout.PopupFearRect );
+	}
 
+	void DrawPhase( Graphics graphics ){
+		Bitmap img = _gameState.Phase switch {
+			Phase.Growth => ResourceImages.Singleton.GetResourceImage( "icons.Growth.png" ),
+			Phase.Fast   => ResourceImages.Singleton.GetResourceImage( "icons.Fast.png" ),
+			Phase.Slow   => ResourceImages.Singleton.GetResourceImage( "icons.Slow.png" ),
+			_ => null,
+		};
+		if( img != null) {
+			graphics.DrawImage(img, _layout.PhaseRect);
+			img.Dispose();
+		}
 	}
 
 	#region Draw Static Board
@@ -383,10 +401,10 @@ public partial class IslandControl : Control {
 		for(int i = 0; i < count; ++i)
 			graphics.DrawImage( img, CalcBounds( i ) );
 
-		if(_gameState.BlightCard.CardFlipped) {
-			using var blightedFont = UseGameFont( slotWidth * .2f );
-			graphics.DrawString( "Blighted!", blightedFont, BlightedTextBrush, bounds.Right - slotWidth * 1.5f, bounds.Top );
-		}
+		using Image healthy = _gameState.BlightCard.CardFlipped 
+			? ResourceImages.Singleton.GetBlightCard( _gameState.BlightCard )
+			: ResourceImages.Singleton.GetHealthBlightCard();
+		graphics.DrawImageFitHeight( healthy, bounds.FitHeight( healthy.Size, Align.Early ) );
 	}
 
 	void DrawInvaderCards( Graphics graphics ) {
@@ -637,12 +655,14 @@ public partial class IslandControl : Control {
 	}
 
 	void DrawFearPopUp( Graphics graphics ) {
-		if(options_FearPopUp is null) return;
-
-		popUpFearRect = RegionLayout.PopupFearRect;
-
-		using var img = new FearCardImageManager().GetImage( options_FearPopUp );
-		graphics.DrawImage( img, popUpFearRect );
+		if(options_FearPopUp is not null) {
+			using Image img = new FearCardImageManager().GetImage( options_FearPopUp );
+			graphics.DrawImage( img, RegionLayout.PopupFearRect );
+		}
+		if(options_BlightPopUp is not null) {
+			using Image img = ResourceImages.Singleton.GetBlightCard( options_BlightPopUp );
+			graphics.DrawImage( img, RegionLayout.PopupFearRect );
+		}
 	}
 
 	#endregion Draw - Pop Ups
@@ -971,6 +991,7 @@ public partial class IslandControl : Control {
 		// These option_ variables contain everything they need to render on screen
 		options_Space         = decision.Options.OfType<Space>().ToArray();
 		options_FearPopUp	  = decision.Options.OfType<IFearCard>().FirstOrDefault();
+		options_BlightPopUp   = decision.Options.OfType<IBlightCard>().FirstOrDefault();
 		options_Track		  = decision.Options.OfType<Track>().ToArray();
 		options_InnatePower	  = decision.Options.OfType<InnatePower>().ToArray();
 		options_DrawableInate = decision.Options.OfType<IDrawableInnateOption>().ToArray();
@@ -989,6 +1010,7 @@ public partial class IslandControl : Control {
 	Select.Element                   decision_Element;
 
 	IFearCard				options_FearPopUp;
+	IBlightCard		        options_BlightPopUp;
 	Track[]                 options_Track; // until 1st decision is available
 	InnatePower[]           options_InnatePower;
 	IDrawableInnateOption[] options_DrawableInate;

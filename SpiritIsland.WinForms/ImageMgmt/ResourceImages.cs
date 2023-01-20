@@ -69,6 +69,71 @@ public class ResourceImages {
 		return image;
 	}
 
+	public Image GetBlightCard( IBlightCard card ) {
+		string key = "bi_" + card.Name + ".png";
+		if(_cache.Contains( key )) return _cache.Get( key );
+
+		Bitmap bitmap = new Bitmap( 400, 640 );
+		Graphics graphics = Graphics.FromImage( bitmap );
+
+		var bounds = new Rectangle( 0, 0, bitmap.Width, bitmap.Height );
+		graphics.FillRoundedRectangle( Brushes.Brown, bounds, 25 );
+
+		var (blightedRect,(titleRect,(descRect,_))) = bounds.InflateBy(-10).SplitVerticallyByWeight(10,.15f,.25f,.5f);
+
+		// Draw Blighted ISLAND
+		if(card is StillHealthyBlightCard sh) {
+			graphics.FillRoundedRectangle( Brushes.GreenYellow, blightedRect, 15 );
+			using(Font headerFont = UseGameFont( blightedRect.Height * .65f ))
+				graphics.DrawStringCenter( "STILL HEALTHY", headerFont, Brushes.Black, blightedRect );
+		} else {
+			graphics.FillRoundedRectangle( Brushes.Wheat, blightedRect, 15 );
+			using(Font headerFont = UseGameFont( blightedRect.Height * .65f ))
+				graphics.DrawStringCenter( "BLIGHTED ISLAND", headerFont, Brushes.Black, blightedRect );
+		}
+		// Draw Label
+		graphics.FillRoundedRectangle( Brushes.Wheat, titleRect, 15 );
+		using(Font titleFont = UseGameFont( titleRect.Height * .3f ) )
+			graphics.DrawStringCenter(card.Name, titleFont, Brushes.Black, titleRect );
+		// Draw Instructions
+		graphics.FillRoundedRectangle( Brushes.Wheat, descRect, 15 );
+		using(Font titleFont = UseGameFont( descRect.Height * .1f ))
+			graphics.DrawStringCenter( card.Description, titleFont, Brushes.Black, descRect );
+
+		// save
+		_cache.Add( key, bitmap );
+		return bitmap;
+	}
+
+	public Image GetHealthBlightCard() {
+		string key = "bi_healthy.png";
+		if(_cache.Contains( key )) return _cache.Get( key );
+
+		Bitmap bitmap = new Bitmap( 400, 640 );
+		Graphics graphics = Graphics.FromImage( bitmap );
+
+		var bounds = new Rectangle( 0, 0, bitmap.Width, bitmap.Height );
+		graphics.FillRoundedRectangle( Brushes.Brown, bounds, 25 );
+
+		var (healthyRect, (descRect, _)) = bounds.InflateBy( -10 ).SplitVerticallyByWeight( 10, .15f, .75f );
+
+		// Draw Healthy ISLAND
+		graphics.FillRoundedRectangle( Brushes.GreenYellow, healthyRect, 15 );
+		using(Font headerFont = UseGameFont( healthyRect.Height * .65f ))
+			graphics.DrawStringCenter( "HEALTHY ISLAND", headerFont, Brushes.DarkGreen, healthyRect );
+		// Draw Instructions
+		const string frontInstructions = "2 blight per player.  Any blight removed from the board returns here.  If there is ever NO blight here, flip this card.";
+		graphics.FillRoundedRectangle( Brushes.Wheat, descRect, 15 );
+		using(Font titleFont = UseGameFont( descRect.Height * .1f ))
+			graphics.DrawStringCenter( frontInstructions, titleFont, Brushes.Black, descRect );
+
+		// save
+		_cache.Add( key, bitmap );
+		return bitmap;
+	}
+
+
+
 	public Image GetGhostImage( Img img ) {
 
 		string key = $"ghost {img}.png";
@@ -144,7 +209,7 @@ public class ResourceImages {
 
 	#region private
 
-	Bitmap GetResourceImage( string filename ) {
+	public Bitmap GetResourceImage( string filename ) {
 		var imgStream = assembly.GetManifestResourceStream( "SpiritIsland.WinForms.images."+filename );
 		return new Bitmap( imgStream );
 	}

@@ -40,3 +40,28 @@ public class UniqueToken : TokenClass, IVisibleToken, IAppearInSpaceAbreviation 
 	#endregion
 
 }
+
+public class InvisibleToken : Token, TokenClass {
+
+	public InvisibleToken( string label, TokenCategory cat = TokenCategory.None ) {
+		this.Label = label;
+		this.Category = cat;
+	}
+
+	#region Token
+
+	TokenClass Token.Class => this;
+
+	#endregion
+
+	#region TokenGroup
+
+	public string Label { get; }
+
+	public TokenCategory Category { get; }
+
+	string IOption.Text => Label;
+
+	#endregion
+
+}

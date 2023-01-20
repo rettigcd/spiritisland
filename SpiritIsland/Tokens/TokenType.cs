@@ -14,9 +14,9 @@ public class TokenType {
 	static readonly public UniqueToken Isolate    = new UniqueToken( "Isolate", 'I', Img.Isolate );
 
 	// Fake Tokens that are not visible.
-	static readonly public UniqueToken DoExplore   = new UniqueToken( "Explore", '~', Img.None );
-	static readonly public UniqueToken DoBuild     = new UniqueToken( "Build", '$', Img.None );
-	static readonly public UniqueToken DoRavage    = new UniqueToken( "Ravage", ']', Img.None );
+	static readonly public InvisibleToken DoExplore   = new InvisibleToken( "Explore" );
+	static readonly public InvisibleToken DoBuild     = new InvisibleToken( "Build" );
+	static readonly public InvisibleToken DoRavage    = new InvisibleToken( "Ravage" );
 
 	static readonly public TokenClass OpenTheWays = new UniqueToken( "OpenTheWays", '=', Img.OpenTheWays );
 	static readonly public TokenClass Element = new UniqueToken( "Element", 'Y', Img.Token_Any ); // use as unique class for stacked elements

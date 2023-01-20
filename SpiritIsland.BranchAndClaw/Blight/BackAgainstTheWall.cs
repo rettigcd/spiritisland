@@ -2,7 +2,7 @@
 
 public class BackAgainstTheWall : BlightCardBase {
 
-	public BackAgainstTheWall():base("Back Against the Wall", 2 ) { }
+	public BackAgainstTheWall():base("Back Against the Wall", "Every Spirit Phase each Spirit gains +1 Energy and +1 Card Play.", 2 ) { }
 
 	public override DecisionOption<GameCtx> Immediately => Cmd.EachSpirit( BoostEnergyAndCardPlayEachSpiritPhase );
 

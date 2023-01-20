@@ -90,19 +90,35 @@ public class TriggerCommandBeasts {
 	}
 }
 
-// class:
-//   has method that gets exected at the each time-passes that puts the object in the Head Spirits Fast action unless it has been used.
-//   has Fast Action that Triggers.Command
-
-// Create Command Beast Card
-//	Invader Action
-//		Start CommandBeast Fast Action
-//		Draw the Next explorer card and execute it.
-//			OR
-//		When configuring, configure 2 draws automatically there.`
-
 /*
-Add feature to Invader card to trigger it.
-Replace Invader Card with augmented card.
-Draw 2 cards.
+Don’t use a Blight Card where:
+	- the Blighted Island side has 2 Blight per player or 
+	- only immediate effects. 
+
+You can either pull those cards out before shuffling, or redraw if you get one.
+Without an Event Deck to provide occasional Blighted island Events, cards with beneficial
+or non-ongoing effects become much lower-risk. 
+
+Still-Healthy Island Cards are fine, though staying Healthy has less game impact.
+
+Cards with 2 Blight/player: 
+	Aid from Lessor Sprits, 
+	Back Against the Wall
+
+Cars with Immediate effects only:
+	Tipping point
+	Erosion of Will
+	Distinigrating Ecosystem
+	A Pall upon the land
+	Untended land crumbles
+	Unnatural Proliferation
+	Thriving Communitites
+	Promising Farmlands
+
+Leaving Only:
+	All Things Weaken
+	Downward Spiral
+	Memory Fades to Dust
+	Power Corrodes the Spirit
+
 */

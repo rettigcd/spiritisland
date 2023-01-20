@@ -2,7 +2,7 @@
 
 public class AidFromLesserSpirits : BlightCardBase {
 
-	public AidFromLesserSpirits():base("Aid from Lesser Spirits", 2 ) { }
+	public AidFromLesserSpirits():base("Aid from Lesser Spirits", "Immediatly, draw 1 Minor Power Card per player plus 1 more.  Give 1 to each Spirit.  They may be used every turn as if played, but cost no Card Plays/Energy.  Place unselected card in Minor Powers discard pile.", 2 ) { }
 
 	public override DecisionOption<GameCtx> Immediately => 
 

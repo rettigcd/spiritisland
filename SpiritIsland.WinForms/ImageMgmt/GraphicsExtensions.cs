@@ -31,8 +31,8 @@ static public class GraphicsExtensions {
 		graphics.DrawString( txt, superSubScriptFont, Brushes.Black, numRect.X + 2, numRect.Y + 2 );
 	}
 
-	static public void DrawImageFitHeight( this Graphics graphics, Image image, RectangleF bounds ) {
-		graphics.DrawImage( image, bounds.ToInts().FitHeight( image.Size ) );
+	static public void DrawImageFitHeight( this Graphics graphics, Image image, Rectangle bounds ) {
+		graphics.DrawImage( image, bounds.FitHeight( image.Size ) );
 	}
 
 	static public void DrawImageFitWidth( this Graphics graphics, Image image, RectangleF bounds ) {

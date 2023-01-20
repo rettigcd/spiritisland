@@ -5,6 +5,8 @@ public class NullBlightCard : IBlightCard {
 	public bool CardFlipped {get; set; }
 
 	public string Name => "[null]";
+	public string Description => "[null]";
+	string IOption.Text => Name;
 
 	public DecisionOption<GameCtx> Immediately => new DecisionOption<GameCtx>("no action", _ => { });
 

@@ -2,14 +2,18 @@
 
 public abstract class BlightCardBase : IBlightCard {
 
-	protected BlightCardBase(string name, int side2BlightPerPlayer ) {
+	protected BlightCardBase(string name, string description, int side2BlightPerPlayer ) {
 		Name = name;
+		Description = description;
 		this.startingBlightPerPlayer = 2;
 		this.side2BlightPerPlayer = side2BlightPerPlayer;
 	}
 
 	public string Name { get; }
+	public string Description { get; }
 	public bool CardFlipped { get; set; }
+
+	string IOption.Text => Name;
 
 	public void OnGameStart( GameState gs ) {
 		gs.blightOnCard = startingBlightPerPlayer * gs.Spirits.Length + 1; // +1 from Jan 2021 errata

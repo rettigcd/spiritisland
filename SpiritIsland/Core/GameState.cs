@@ -146,6 +146,8 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		await TakeFromBlightSouce( args.Count, args.AddedTo );
 
 		if(BlightCard != null && blightOnCard <= 0) {
+			await Spirits[0].Select( "Island blighted", new IOption[] { BlightCard }, Present.Always );
+
 			Log( new IslandBlighted( BlightCard ) );
 			await BlightCard.OnBlightDepleated( this );
 		}

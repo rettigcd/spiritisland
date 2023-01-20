@@ -2,7 +2,7 @@
 
 public class APallUponTheLand : BlightCardBase {
 
-	public APallUponTheLand():base("A Pall Upon the Land", 3 ) { }
+	public APallUponTheLand():base("A Pall Upon the Land", "Immediately, on each board: destroy 1 presence and remove 1 town.", 3 ) { }
 
 	public override DecisionOption<GameCtx> Immediately => 
 		// On Each Board

@@ -20,3 +20,5 @@ Settle Into Hunting-Grounds
 Growth - After Growth, rewinding to beginning of turn, doesn't reset # of card plays to 0
 
 Growth - Shifting Memories 2-elements for card play - doesn't always work
+
+Rewind - Doesn't Reset Command The Beast

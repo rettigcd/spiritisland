@@ -23,25 +23,27 @@ class RegionLayoutClass {
 		_rect = rect;
 
 		const int MARGIN = 10;
-		const float AdfersaryFlagWidths = 1.5f;
+		const float AdversaryFlagWidths = 1.5f;
 		const float InvaderCards = 4.5f;
 		const float BlightWidths = 3f;
 		const float FearWidths = 6f;
 
 		(_infoRect,(_mainRect,_)) = rect.SplitVerticallyByWeight( 0, INFOBAR_HEIGHT, 1f - INFOBAR_HEIGHT ); // 0 margin because items in infoBar get their own margin.
 		( IslandRect, (SpiritRect, _)) = _mainRect.SplitHorizontallyByWeight( MARGIN, 1 - SPIRIT_WIDTH, SPIRIT_WIDTH );
-		(AdversaryFlagRect, (InvaderCardRect, (BlightRect, (FearPoolRect, _)))) = _infoRect
+		(PhaseRect,(AdversaryFlagRect, (InvaderCardRect, (BlightRect, (FearPoolRect, _))))) = _infoRect
 			.InflateBy( -MARGIN )
-			.SplitHorizontallyRelativeToHeight( MARGIN, Align.Late, AdfersaryFlagWidths, InvaderCards, BlightWidths, FearWidths );
+			.SplitHorizontallyRelativeToHeight( MARGIN, Align.Late, 1.4f, AdversaryFlagWidths, InvaderCards, BlightWidths, FearWidths );
 		(OptionRect,_) = IslandRect.SplitHorizontallyByWeight(0,.1f,.9f);
-
 		(_,(CardRectPopup,_)) = _mainRect.SplitVerticallyByWeight(0, .5f, .5f);
+
+		PhaseRect = PhaseRect.InflateBy(-20);
 	}
 
 	#endregion
 
 	public Rectangle SpiritRect        { get; }
 	public Rectangle IslandRect        { get; }
+	public Rectangle PhaseRect         { get; }
 	public Rectangle AdversaryFlagRect { get; }
 	public Rectangle FearPoolRect      { get; }
 	public Rectangle BlightRect        { get; }
@@ -51,11 +53,10 @@ class RegionLayoutClass {
 	#region pop-ups
 
 	public Rectangle PopupFearRect { get {
-		Rectangle bounds = new Rectangle( 0, 0, (int)(_width * .65f), _height );
 		// Active Fear Layout
-		int fearHeight = (int)(bounds.Height * .8f);
-		int fearWidth = fearHeight * 2 / 3;
-		return new Rectangle( bounds.Width - fearWidth - (int)(bounds.Height * .1f), (bounds.Height - fearHeight) / 2, fearWidth, fearHeight );
+		int fearHeight = (int)(_rect.Height * .5f);
+		int fearWidth = fearHeight*2/3;
+		return new Rectangle( _rect.X + (_rect.Width - fearWidth)/2, _rect.Y + (_rect.Height - fearHeight) / 2, fearWidth, fearHeight );
 
 	} }
 

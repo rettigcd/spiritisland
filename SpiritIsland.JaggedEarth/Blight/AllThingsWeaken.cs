@@ -2,7 +2,7 @@
 
 public class AllThingsWeaken : BlightCardBase {
 
-	public AllThingsWeaken():base("All Things Weaken",3) {}
+	public AllThingsWeaken():base("All Things Weaken", "Ongoing, starting next turn: Invaders and dahan have -1 Health (min.1). The land takes blight on 1 less Damage (normally 1). When you add blight, it Destroys all presence/beast in that land and 1 presence (total) in an adjacent land.", 3) {}
 
 	public override DecisionOption<GameCtx> Immediately => 
 		// Ongoing, starting next turn:

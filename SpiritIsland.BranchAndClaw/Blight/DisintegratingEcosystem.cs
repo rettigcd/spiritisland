@@ -2,7 +2,7 @@
 
 public class DisintegratingEcosystem : BlightCardBase {
 
-	public DisintegratingEcosystem():base("Disintegrating Ecosystem", 5 ) { }
+	public DisintegratingEcosystem():base("Disintegrating Ecosystem", "Immediately, on each board: Destroy 1 beast, then add 1 blight to a land with town/city.", 5 ) { }
 
 	public override DecisionOption<GameCtx> Immediately => 
 		// Immediately, on each board: 

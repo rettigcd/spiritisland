@@ -2,8 +2,8 @@
 
 public class StillHealthyBlightCard : BlightCardBase {
 
-	public StillHealthyBlightCard(string title, int additinalBlightWhenFlipped)
-		:base( title, additinalBlightWhenFlipped ) { }
+	public StillHealthyBlightCard(string title, string description, int additinalBlightWhenFlipped)
+		:base( title, description, additinalBlightWhenFlipped ) { }
 
 	public override DecisionOption<GameCtx> Immediately => new DecisionOption<GameCtx>("Still Healthy", (_)=>{ } );
 
@@ -13,6 +13,7 @@ public class StillHealthyBlightCard : BlightCardBase {
 		gs.BlightCards.RemoveAt(0);
 		// It comes into play already flipped
 		gs.BlightCard.OnBlightDepleated(gs);
+		gs.Log( new IslandBlighted( gs.BlightCard ) );
 	}
 
 }

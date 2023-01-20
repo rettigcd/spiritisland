@@ -29,7 +29,7 @@ namespace SpiritIsland.WinForms {
 			return images[name];
 		}
 
-		private static string GetFileName( string name, string edition ) {
+		static string GetFileName( string name, string edition ) {
 			string filename = name.Replace( ' ', '_' ).Replace( "'", "" ).ToLower();
 			string name2 = $".\\images\\{edition}\\fear\\{filename}.jpg";
 			return name2;

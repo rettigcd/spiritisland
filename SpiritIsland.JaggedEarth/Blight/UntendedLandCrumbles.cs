@@ -2,7 +2,7 @@
 
 public class UntendedLandCrumbles : BlightCardBase {
 
-	public UntendedLandCrumbles():base("Untended Land Crumbles",4) {}
+	public UntendedLandCrumbles():base("Untended Land Crumbles", "Each Invader Phase: On Each Board: Add 1 blight to a land adjacent to blight. Spirits may prevent this on any/all boards; each board to be protected requires jointly paying 3 Energy or destroying 1 presence from that board.", 4) {}
 
 	public override DecisionOption<GameCtx> Immediately 
 		=> Cmd.AtTheStartOfEachInvaderPhase(
