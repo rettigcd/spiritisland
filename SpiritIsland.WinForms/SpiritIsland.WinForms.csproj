@@ -41,7 +41,6 @@
     <None Remove="images\icons\DiscardElementsForCardPlay.png" />
     <None Remove="images\icons\Diseaseicon.png" />
     <None Remove="images\icons\Explorericon.png" />
-    <None Remove="images\icons\fast.png" />
     <None Remove="images\icons\Fasticon.png" />
     <None Remove="images\icons\Fearicon.png" />
     <None Remove="images\icons\FearSwoopInverted.png" />
@@ -89,7 +88,6 @@
     <None Remove="images\icons\Simple_plant.png" />
     <None Remove="images\icons\Simple_sun.png" />
     <None Remove="images\icons\Simple_water.png" />
-    <None Remove="images\icons\Slow.png" />
     <None Remove="images\icons\Slowicon.png" />
     <None Remove="images\icons\so1.png" />
     <None Remove="images\icons\so2.png" />
@@ -243,7 +241,6 @@
     <EmbeddedResource Include="images\icons\DiscardElementsForCardPlay.png" />
     <EmbeddedResource Include="images\icons\Diseaseicon.png" />
     <EmbeddedResource Include="images\icons\Explorericon.png" />
-    <EmbeddedResource Include="images\icons\Fast.png" />
     <EmbeddedResource Include="images\icons\Fasticon.png" />
     <EmbeddedResource Include="images\icons\Fearicon.png" />
     <EmbeddedResource Include="images\icons\FearSwoopInverted.png" />
@@ -289,7 +286,6 @@
     <EmbeddedResource Include="images\icons\Simple_plant.png" />
     <EmbeddedResource Include="images\icons\Simple_sun.png" />
     <EmbeddedResource Include="images\icons\Simple_water.png" />
-    <EmbeddedResource Include="images\icons\Slow.png" />
     <EmbeddedResource Include="images\icons\Slowicon.png" />
     <EmbeddedResource Include="images\icons\so1.png" />
     <EmbeddedResource Include="images\icons\so2.png" />

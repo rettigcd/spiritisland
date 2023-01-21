@@ -3,16 +3,15 @@
 ==========================
 
 5 Fear Cards (5) from Promo pack
-5 Finish => Slip the flows of time - use any # of times
 
 5 UI - Configure Game - Images for Selecting Spirits (ListView)
 5 Action => Move Finders Hook to Action-start - event
 
-4 UI - Draw Power Cards
+4 UI - Draw Power Cards - OR Download them on the fly
+4 UI - Draw Fear Cards OR Download them on the fly
 4 UI - Cache: Innates
 4 UI - Graphics.DrawMixed(...)
 4 Standardize TokenSpace selection on receivers end.
-
 
 4 Multi Player
 	== Option 1 == 

@@ -193,17 +193,23 @@ public partial class IslandControl : Control {
 			hotSpots.Add( options_BlightPopUp, RegionLayout.PopupFearRect );
 	}
 
-	void DrawPhase( Graphics graphics ){
-		Bitmap img = _gameState.Phase switch {
-			Phase.Growth => ResourceImages.Singleton.GetResourceImage( "icons.Growth.png" ),
-			Phase.Fast   => ResourceImages.Singleton.GetResourceImage( "icons.Fast.png" ),
-			Phase.Slow   => ResourceImages.Singleton.GetResourceImage( "icons.Slow.png" ),
-			_ => null,
-		};
-		if( img != null) {
-			graphics.DrawImage(img, _layout.PhaseRect);
-			img.Dispose();
+	public void GameState_NewLogEntry( ILogEntry obj ) {
+		if(obj is LogPhase phaseEvent) {
+			if(_phaseImage != null) _phaseImage.Dispose();
+			_phaseImage = phaseEvent.phase switch {
+				Phase.Growth => ResourceImages.Singleton.GetImage( Img.Coin ),
+				Phase.Fast   => ResourceImages.Singleton.GetImage( Img.Icon_Fast ),
+				Phase.Slow   => ResourceImages.Singleton.GetImage( Img.Icon_Slow ),
+				_ => null,
+			};
+			Invalidate();
 		}
+	}
+	Image _phaseImage; // updates on Log Events
+
+	void DrawPhase( Graphics graphics ){
+		if(_phaseImage != null)
+			graphics.DrawImage( _phaseImage, _layout.PhaseRect.FitBoth( _phaseImage.Size));
 	}
 
 	#region Draw Static Board
