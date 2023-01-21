@@ -33,6 +33,7 @@ class InvaderCardBuilder {
 		graphics.FillRoundedRectangle( backgroundBrush, new Rectangle( 0, 0, 200, 320 ), 20 );
 
 		Pen perimeterPen = new Pen( Color.Black, 3f );
+		using StringFormat alignCenter = new StringFormat { Alignment = StringAlignment.Center };
 
 		// Draw perimeter and inner texture
 		if(card.Filter is SingleTerrainFilter singleTerrain) {
@@ -47,7 +48,7 @@ class InvaderCardBuilder {
 
 			// Abreviation Text in the middle
 			using Font bigFont = UseInvaderFont( 60f );
-			graphics.DrawStringCenter( singleTerrain.Terrain.ToString()[..1], bigFont, backgroundBrush, topRect );
+			graphics.DrawString( singleTerrain.Terrain.ToString()[..1], bigFont, backgroundBrush, topRect, alignCenter );
 
 			// Escalation
 			if(card.HasEscalation) {
@@ -75,8 +76,8 @@ class InvaderCardBuilder {
 
 			using Font bigFont = UseInvaderFont( 60f );
 			// Text
-			graphics.DrawStringCenter( doubleTerrain.Terrain1.ToString()[..1], bigFont, backgroundBrush, topRect );
-			graphics.DrawStringCenter( doubleTerrain.Terrain2.ToString()[..1], bigFont, backgroundBrush, botRect );
+			graphics.DrawString( doubleTerrain.Terrain1.ToString()[..1], bigFont, backgroundBrush, topRect, alignCenter );
+			graphics.DrawString( doubleTerrain.Terrain2.ToString()[..1], bigFont, backgroundBrush, botRect, alignCenter );
 
 		} else {
 
@@ -92,17 +93,40 @@ class InvaderCardBuilder {
 
 			// Abreviation Text in the middle
 			using Font bigFont = UseInvaderFont( 25f );
-			graphics.DrawStringCenter( "Coastal", bigFont, backgroundBrush, topRect );
-			graphics.DrawStringCenter( "Lands", bigFont, backgroundBrush, botRect );
+			graphics.DrawString( "Coastal", bigFont, backgroundBrush, topRect, alignCenter );
+			graphics.DrawString( "Lands", bigFont, backgroundBrush, botRect, alignCenter );
 		}
 		Font bottomFont = UseInvaderFont( 20f );
-		graphics.DrawStringCenter(
+		graphics.DrawString(
 			card.InvaderStage switch { 1 => "I", 2 => "II", 3 => "III", _ => "" },
 			bottomFont, Brushes.Brown,
-			new RectangleF( 0, 285, 200, 30 )
+			new RectangleF( 0, 285, 200, 30 ), alignCenter
 		);
 		return bitmap;
 	}
+	static public Bitmap BuildInvaderCardBack( int stage ) {
+		Rectangle cardRect = new Rectangle( 0, 0, 200, 320 );
+		Bitmap bitmap = new Bitmap( 200, 320 );
+		Graphics graphics = Graphics.FromImage( bitmap );
+
+		// Outside
+		using(SolidBrush brush = new SolidBrush( Color.LightSteelBlue ))
+			graphics.FillRoundedRectangle( brush, cardRect, (int)(cardRect.Width * .15f) );
+
+		var smallerRect = cardRect.InflateBy( -15 );
+
+		// Image
+		using Bitmap img = ResourceImages.Singleton.GetInvaderCard( "back.jpg" );
+		using TextureBrush textureBrush = new TextureBrush( img );
+		graphics.FillRoundedRectangle(textureBrush, smallerRect, 20 );
+
+		using Font invaderStageFont = UseInvaderFont( 100f );
+		using StringFormat alignCenterBoth = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+		graphics.DrawString( stage.ToString(), invaderStageFont, Brushes.DarkRed, smallerRect, alignCenterBoth );
+
+		return bitmap;
+	}
+
 	static Brush UseTerrainBrush( Terrain terrain ) => ResourceImages.Singleton.UseTerrainBrush( terrain );
 	static Font UseInvaderFont( float fontHeight ) => ResourceImages.Singleton.UseInvaderFont( fontHeight );
 }

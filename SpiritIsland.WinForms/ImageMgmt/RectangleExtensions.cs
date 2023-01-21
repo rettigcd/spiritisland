@@ -71,7 +71,7 @@ public static class RectangleExtensions {
 
 		// adjust if right-aligning
 		int xAdjustment = align switch {
-			Align.Late => rect.Right - x,
+			Align.Far => rect.Right - x,
 			Align.Center => (rect.Right - x)/2,
 			_ => 0,
 		};
@@ -128,8 +128,8 @@ public static class RectangleExtensions {
 		// Centered Horizontally
 		int width = bounds.Height * size.Width / size.Height;
 		return align switch {
-			Align.Early => new Rectangle( bounds.X, bounds.Y, width, bounds.Height ),
-			Align.Late => new Rectangle( bounds.Right - width, bounds.Y, width, bounds.Height ),
+			Align.Near => new Rectangle( bounds.X, bounds.Y, width, bounds.Height ),
+			Align.Far => new Rectangle( bounds.Right - width, bounds.Y, width, bounds.Height ),
 			_ => new Rectangle( bounds.X + (bounds.Width - width) / 2, bounds.Y, width, bounds.Height ), // center / default
 		};
 	}
@@ -137,8 +137,8 @@ public static class RectangleExtensions {
 	public static Rectangle FitWidth( this Rectangle bounds, Size size, Align align = default ) {
 		int height = bounds.Width * size.Height / size.Width;
 		return align switch {
-			Align.Early => new Rectangle( bounds.X, bounds.Y, bounds.Width, height ),
-			Align.Late => new Rectangle( bounds.X, bounds.Bottom - height, bounds.Width, height ),
+			Align.Near => new Rectangle( bounds.X, bounds.Y, bounds.Width, height ),
+			Align.Far => new Rectangle( bounds.X, bounds.Bottom - height, bounds.Width, height ),
 			_ => new Rectangle( bounds.X, bounds.Y + (bounds.Height - height) / 2, bounds.Width, height ), // center / default
 		};
 	}

@@ -65,7 +65,7 @@ public partial class IslandControl : Control {
 		presenceAppearance.Adjustment?.Adjust( (Bitmap)_tokenImages[TokenType.Isolate] );
 		// !! we could cache these if we could serialize the Adjustment into a caching-key
 
-		// foreach(var blight in new GameBuilder(new Basegame.GameComponentProvider(),new BranchAndClaw.GameComponentProvider(),new PromoPack1.GameComponentProvider(),new JaggedEarth.GameComponentProvider()).BuildBlightCards()) ResourceImages.Singleton.GetBlightCard(blight).Dispose();
+		// foreach(var blight in new GameBuilder(new Basegame.GameComponentProvider(),new BranchAndClaw.GameComponentProvider(),new FeatherAndFlame.GameComponentProvider(),new JaggedEarth.GameComponentProvider()).BuildBlightCards()) ResourceImages.Singleton.GetBlightCard(blight).Dispose();
 
 	}
 
@@ -221,7 +221,7 @@ public partial class IslandControl : Control {
 
 			_boardScreenRect = RegionLayout.IslandRect
 				// .InflateBy( -10 )
-				.FitBoth(boardWorldRect.Scale(1000).ToInts().Size, Align.Center, Align.Early);
+				.FitBoth(boardWorldRect.Scale(1000).ToInts().Size, Align.Center, Align.Near);
 
 			//// Calculate the size that fits
 			//_boardScreenSize = (bounds.Width * boardWorldRect.Height < boardWorldRect.Width * bounds.Height)
@@ -404,7 +404,7 @@ public partial class IslandControl : Control {
 		using Image healthy = _gameState.BlightCard.CardFlipped 
 			? ResourceImages.Singleton.GetBlightCard( _gameState.BlightCard )
 			: ResourceImages.Singleton.GetHealthBlightCard();
-		graphics.DrawImageFitHeight( healthy, bounds.FitHeight( healthy.Size, Align.Early ) );
+		graphics.DrawImageFitHeight( healthy, bounds.FitHeight( healthy.Size, Align.Near ) );
 	}
 
 	void DrawInvaderCards( Graphics graphics ) {
@@ -437,9 +437,9 @@ public partial class IslandControl : Control {
 
 		// Draw
 		using Font buildRavageFont = UseGameFont( textHeight ); // 
-		using Font invaderStageFont = UseInvaderFont( textHeight * 2 );
+//		using Font invaderStageFont = UseInvaderFont( textHeight * 2 );
 		foreach(InvaderCardMetrics cardMetric in cardMetrics)
-			cardMetric.Draw( graphics, buildRavageFont, invaderStageFont );
+			cardMetric.Draw( graphics, buildRavageFont );
 
 		// # of cards in explore pile
 		graphics.DrawCountIfHigherThan( cardMetrics.Last().Rect.First(), _gameState.InvaderDeck.UnrevealedCards.Count+1 );
@@ -973,7 +973,6 @@ public partial class IslandControl : Control {
 	#endregion
 
 	static Font UseGameFont( float fontHeight ) => ResourceImages.Singleton.UseGameFont( fontHeight );
-	static Font UseInvaderFont( float fontHeight ) => ResourceImages.Singleton.UseInvaderFont( fontHeight );
 
 	#region private Option fields
 

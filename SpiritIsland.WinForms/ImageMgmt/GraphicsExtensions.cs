@@ -45,13 +45,7 @@ static public class GraphicsExtensions {
 
 	static public void DrawInvaderCardFront( this Graphics graphics, RectangleF rect, InvaderCard card ) {
 		if(card == null) return;
-		using var img = ResourceImages.Singleton.GetInvaderCard( card );
-		graphics.DrawImage( img, rect );
-	}
-
-	static public void DrawInvaderCardBack( this Graphics graphics, RectangleF rect, InvaderCard card ) {
-		if(card == null) return;
-		using var img = ResourceImages.Singleton.GetInvaderCardBack();
+		using Image img = ResourceImages.Singleton.GetInvaderCard( card );
 		graphics.DrawImage( img, rect );
 	}
 
@@ -110,7 +104,14 @@ static public class GraphicsExtensions {
 
 }
 
-public enum Align { Default, Early, Center, Late }
+public enum Align { 
+	Default, 
+	/// <summary> Left / Top </summary>
+	Near, 
+	Center,
+	/// <summary> Right / Bottom </summary>
+	Far
+}
 
 public struct SubArray<T> {
 	readonly int _start;

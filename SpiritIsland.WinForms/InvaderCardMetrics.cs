@@ -24,27 +24,18 @@ class InvaderCardMetrics {
 	public readonly Rectangle[] Rect;
 	public readonly RectangleF textBounds;
 
-	public void Draw( Graphics graphics, Font labelFont, Font invaderStageFont ) {
+	public void Draw( Graphics graphics, Font labelFont ) {
 		// Draw all of the cards in that slot
 		// !! we could make them overlap and bigger
 		for(int i = 0; i < Rect.Length; ++i) {
 			var card = slot.Cards[i];
-			if(card.Flipped)
-				graphics.DrawInvaderCardFront( Rect[i], card );
-			else
-				DrawInvaderBack( graphics, invaderStageFont, i, card );
+			if(card == null) continue;
+
+			using Image img = ResourceImages.Singleton.GetInvaderCard( card );
+			graphics.DrawImage( img, Rect[i] );
 
 		}
 		graphics.DrawStringCenter( slot.Label, labelFont, Brushes.Black, textBounds );
 	}
 
-	void DrawInvaderBack( Graphics graphics, Font invaderStageFont, int i, InvaderCard card ) {
-		var cardRect = Rect[i];
-		using(SolidBrush brush = new SolidBrush( Color.LightSteelBlue ))
-			graphics.FillRoundedRectangle( brush, cardRect, (int)(cardRect.Width*.15f) );
-		var smallerRect = cardRect.InflateBy( -(int)(cardRect.Width * .15f) );
-		graphics.DrawInvaderCardBack( smallerRect, card );
-		smallerRect = cardRect.InflateBy( -25 );
-		graphics.DrawStringCenter( card.InvaderStage.ToString(), invaderStageFont, Brushes.DarkRed, smallerRect );
-	}
 }
