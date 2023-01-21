@@ -15,7 +15,9 @@ public class TerrainMapper {
 	public virtual bool MatchesTerrain( SpaceState ss, params Terrain[] options ) => ss.Space.IsOneOf( options );
 
 	// InPlay
+	/// <summary> The space is Coastal or Inland.  aka Can-Hold-Tokens, aka NotOcean </summary>
 	public bool IsInPlay( SpaceState spaceState ) => IsInPlay( spaceState.Space );
+	/// <summary> The space is Coastal or Inland.  aka Can-Hold-Tokens, aka NotOcean </summary>
 	public virtual bool IsInPlay( Space space ) => !space.Is( Terrain.Ocean );
 
 	// Ocean / Coastal / Inland

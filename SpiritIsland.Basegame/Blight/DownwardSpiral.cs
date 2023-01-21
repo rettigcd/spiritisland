@@ -6,7 +6,7 @@ public class DownwardSpiral : BlightCardBase {
 
 	public override DecisionOption<GameCtx> Immediately 
 		=> Cmd.AtTheStartOfEachInvaderPhase(
-			Cmd.EachSpirit(
+			Cmd.ForEachSpirit(
 				Cmd.DestroyPresence(DestoryPresenceCause.BlightedIsland) 
 			) 
 		);

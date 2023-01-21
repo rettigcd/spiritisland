@@ -93,7 +93,7 @@ public class TricksterSpaceCtx : TargetSpaceCtx {
 
 	public override BlightTokenBinding Blight => new TricksterBlight( this, ActionScope );
 
-	public override async Task AddStrife( params TokenClass[] groups ) {
+	public override async Task AddStrife( params HealthTokenClass[] groups ) {
 		await base.AddStrife( groups );
 
 		if( Self.Energy == 0 ) return;

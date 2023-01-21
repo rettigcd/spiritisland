@@ -6,11 +6,11 @@ public class UnnaturalProliferation : BlightCardBase {
 
 	public override DecisionOption<GameCtx> Immediately 
 		=> Cmd.Multiple<GameCtx>(
-			Cmd.EachSpirit(
+			Cmd.ForEachSpirit(
 				// adds 1 presence to a land with their prescense.
 				AddPresenceToOwnLand
 			),
-			Cmd.OnEachBoard( Cmd.Multiple(
+			Cmd.ForEachBoard( Cmd.Multiple(
 				// Add 1 dahan to a land with dahan, and
 				AddDahanToDahanLand,
 				// 2 cities to the land with fewest town/city (min.1)
@@ -23,8 +23,8 @@ public class UnnaturalProliferation : BlightCardBase {
 		ctx=> ctx.Presence.Place( ctx.Presence.Spaces.ToArray() )
 	);
 
-	static DecisionOption<BoardCtx> AddDahanToDahanLand => Cmd.AddDahan(1)
-		.ToLandOnBoard(  tokens => tokens.Dahan.Any, "a land with dahan." );
+	static IExecuteOn<BoardCtx> AddDahanToDahanLand => Cmd.AddDahan(1)
+		.To().OneLandPerBoard().Which( new TargetSpaceCtxFilter( "a land with dahan.", tokens => tokens.Dahan.Any ) );
 
 	static DecisionOption<BoardCtx> Add2CitiesToLandWithFewest => new DecisionOption<BoardCtx>(
 		"Add 2 cities to the land with fewest town/city.", async ctx => {

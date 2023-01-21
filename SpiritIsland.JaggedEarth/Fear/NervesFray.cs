@@ -6,30 +6,30 @@ public class NervesFray : FearCardBase, IFearCard {
 	public string Text => Name;
 
 	[FearLevel(1, "Each player adds 1 Strife in a land not matching a Ravage Card." )]
-	public Task Level1( GameCtx ctx ) {
-		return EachPlayerAddsStrifeToNonRavageLand( 1 ).Execute( ctx );
-	}
+	public Task Level1( GameCtx ctx )
+		=> Cmd.AddStrife( 1 )
+		.To().SpiritPickedLand().Which( Is.NotRavageCardMatch )
+		.ForEachSpirit()
+		.Execute( ctx );
 
 	[FearLevel(2, "Each player adds 2 Strife in a single land not matching a Ravage Card." )]
-	public Task Level2( GameCtx ctx ) { 
-		return EachPlayerAddsStrifeToNonRavageLand( 2 ).Execute( ctx );
-	}
+	public Task Level2( GameCtx ctx )
+		=> Cmd.AddStrife( 2 )
+		.To().SpiritPickedLand().Which( Is.NotRavageCardMatch )
+		.ForEachSpirit()
+		.Execute( ctx );
+
 
 	[FearLevel(3, "Each player adds 2 Strife in a single land not matching a Ravage Card. 1 Fear per player." )]
-	public async Task Level3( GameCtx ctx ) { 
+	public async Task Level3( GameCtx ctx ) {
 
-		await EachPlayerAddsStrifeToNonRavageLand( 2 ).Execute(ctx);
+		await Cmd.AddStrife( 2 )
+			.To().SpiritPickedLand().Which( Is.NotRavageCardMatch )
+			.ForEachSpirit()
+			.Execute( ctx );
 
 		// 1 Fear per player.
 		ctx.GameState.Fear.AddDirect(new FearArgs( ctx.GameState.Spirits.Length ));
 	}
-
-	static public DecisionOption<GameCtx> EachPlayerAddsStrifeToNonRavageLand( int strifeCount )
-		=> Cmd.EachSpirit(
-			Cmd.AddStrife(strifeCount).To( DoesNotMatchRavageCard, "land that does not match Ravage card" )
-		);
-
-	static bool DoesNotMatchRavageCard( TargetSpaceCtx spaceCtx )
-		=> !spaceCtx.GameState.InvaderDeck.Ravage.Cards.Any( card => card.MatchesCard(spaceCtx.Tokens) );
 
 }

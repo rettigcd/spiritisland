@@ -6,33 +6,27 @@ public class TradeSuffers : FearCardBase, IFearCard {
 	public string Text => Name;
 
 	[FearLevel( 1, "Invaders do not Build in lands with City." )]
-	public Task Level1( GameCtx ctx ) {
-		ctx.GameState.AddToAllActiveSpaces( new SkipBuild_Custom( Name, true, (_,space,_1)=> space.HasAny( Invader.City ) ) );
-		return Task.CompletedTask;
-	}
+	public Task Level1( GameCtx ctx )
+		=> new SpaceAction("Invaders do not build", StopBuild)
+			.In().EachActiveLand().Which( Has.City )
+			.Execute( ctx );
 
 	[FearLevel( 2, "Each player may replace 1 Town with 1 Explorer in a Coastal land." )]
-	public async Task Level2( GameCtx ctx ) {
-		var gs = ctx.GameState;
-		var tm = gs.Island.Terrain_ForFear;
-		foreach(var spirit in gs.Spirits) {
-			var options = gs.AllActiveSpaces.Where( s => tm.IsInPlay(s) && tm.IsCoastal(s) && s.Has( Invader.Town ) ).ToArray();
-			if(options.Length == 0) return;
-			var target = await spirit.Gateway.Decision( new Select.Space( "Replace town with explorer", options, Present.Always ) );
-			await ReplaceInvader.Downgrade( spirit.BindSelf( gs, ctx.ActionScope ).Target( target), Present.Done, Invader.Town );
-		}
-	}
+	public Task Level2( GameCtx ctx )
+		=> new SpaceAction("replace 1 town with 1 explorer", ctx=> ReplaceInvader.Downgrade( ctx, Present.Done, Invader.Town ) )
+			.In().SpiritPickedLand().Which( Is.Coastal )
+			.ForEachSpirit()
+			.Execute( ctx );
 
 	[FearLevel( 3, "Each player may replace 1 City with 1 Town or 1 Town with 1 Explorer in a Coastal land." )]
-	public async Task Level3( GameCtx ctx ) {
-		var gs = ctx.GameState;
-		var tm = gs.Island.Terrain_ForFear;
-		foreach(var spirit in gs.Spirits) {
-			var options = gs.AllActiveSpaces.Where( s => tm.IsInPlay( s ) && tm.IsCoastal( s ) && s.HasAny(Invader.Town_City) ).Select(s=>s.Space).ToArray();
-			if(options.Length == 0) return;
-			var target = await spirit.Gateway.Decision( new Select.Space( "Replace town with explorer or city with town", options, Present.Always ));
-			await ReplaceInvader.Downgrade( spirit.BindSelf( gs, ctx.ActionScope ).Target( target ), Present.Done, Invader.Town_City );
-		}
+	public Task Level3( GameCtx ctx )
+		=> new SpaceAction( "replace 1 City with 1 Town or replace 1 town with 1 explorer", ctx => ReplaceInvader.Downgrade( ctx, Present.Done, Invader.Town_City ) )
+			.In().SpiritPickedLand().Which( Is.Coastal )
+			.ForEachSpirit()
+			.Execute( ctx );
+
+	static void StopBuild( TargetSpaceCtx ctx ) {
+		ctx.Tokens.Adjust( new SkipBuild_Custom( Name, true, ( _, space, _1 ) => space.HasAny( Invader.City ) ), 1);
 	}
 
 }

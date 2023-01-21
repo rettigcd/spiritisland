@@ -6,28 +6,44 @@ public class AvoidTheDahan : FearCardBase, IFearCard {
 	public string Text => Name;
 
 	[FearLevel(1, "Invaders do not Explore into lands with at least 2 Dahan." )]
-	public Task Level1( GameCtx ctx ) {
-		static bool DahanMin2( GameCtx _, SpaceState space ) => space.SumAny( Invader.Town_City ) < space.Dahan.CountAll;
-		ctx.GameState.AddToAllActiveSpaces( new SkipExploreTo_Custom( Name, true, DahanMin2 ) );
-		return Task.CompletedTask;
-	}
+	public Task Level1( GameCtx ctx )
+		=> StopExploreInLandsWithAtLeast2Dahan
+			.In().EachActiveLand()
+			.Execute( ctx );
+
+	static SpaceAction StopExploreInLandsWithAtLeast2Dahan => new SpaceAction( "Stop Explore if 2 dahan",
+		ctx => {
+			var token = new SkipExploreTo_Custom( Name, true, ( _, space ) => 2 <= space.Dahan.CountAll );
+			ctx.Tokens.Adjust( token, 1 );
+		}
+	);
 
 	[FearLevel( 2, "Invaders do not Build in lands where Dahan outnumber Town / City." )]
-	public Task Level2( GameCtx ctx ) {
+	public Task Level2( GameCtx ctx )
+		=> StopBuildWhereDahanOutnumberTownsCities
+			.In().EachActiveLand()
+			.Execute( ctx );
 
-		static bool DahanOutNumberBuildings( GameCtx _, SpaceState space, TokenClass _1 )
-			=> space.SumAny( Invader.Town_City ) < space.Dahan.CountAll;
+	static SpaceAction StopBuildWhereDahanOutnumberTownsCities => new SpaceAction( "Stop Build if dahan outnumber towns/cities.",
+		ctx => {
+			var token = new SkipBuild_Custom( Name, true, ( _, space, _1 ) => space.SumAny( Invader.Town_City ) < space.Dahan.CountAll );
+			ctx.Tokens.Adjust( token, 1 );
+		}
+	);
 
-		ctx.GameState.AddToAllActiveSpaces( new SkipBuild_Custom( Name, true, DahanOutNumberBuildings ) );
-
-		return Task.CompletedTask;
-	}
 
 	[FearLevel( 3, "Invaders do not Build in lands with Dahan." )]
-	public Task Level3( GameCtx ctx ) {
+	public Task Level3( GameCtx ctx )
+		=> DoNotBuildInLandsWithDahan
+			.In().EachActiveLand()
+			.Execute( ctx );
 
-		ctx.GameState.AddToAllActiveSpaces( new SkipBuild_Custom( Name, true, (_,space,_1) => space.Dahan.Any ) );
-		return Task.CompletedTask;
-	}
+	static SpaceAction DoNotBuildInLandsWithDahan => new SpaceAction( "Stop Build in lands with Dahan",
+		ctx => {
+			var token = new SkipBuild_Custom( Name, true, ( _, space, _1 ) => space.Dahan.Any );
+			ctx.Tokens.Adjust( token, 1 );
+		}
+	);
+
 
 }

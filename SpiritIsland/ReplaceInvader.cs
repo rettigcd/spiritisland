@@ -5,8 +5,9 @@ static public class ReplaceInvader {
 	public static async Task Downgrade( TargetSpaceCtx ctx, Present present, params HealthTokenClass[] groups ) {
 
 		var options = ctx.Tokens.OfAnyHealthClass( groups );
-		HealthToken oldInvader = (HealthToken) await ctx.Self.Gateway.Decision( Select.Invader.ToReplace( "downgrade", ctx.Space, options, present ) );
-		if(oldInvader == null) return;
+		var st = await ctx.Self.Gateway.Decision( Select.Invader.ToReplace( "downgrade", ctx.Space, options, present ) );
+		if(st == null) return;
+		HealthToken oldInvader = (HealthToken)st.Token;
 
 		// remove old invader
 		ctx.Tokens.Adjust( oldInvader, -1 );
@@ -30,8 +31,9 @@ static public class ReplaceInvader {
 	public static async Task SingleInvaderWithExplorers( TargetSpaceCtx ctx, TokenClass oldInvader, int replaceCount ) {
 
 		var tokens = ctx.Tokens;
-		var tokenToRemove = (HealthToken) await ctx.Self.Gateway.Decision( Select.Invader.ToReplace("disolve", ctx.Space, tokens.OfClass( oldInvader ) ) );
-		if(tokenToRemove == null) return;
+		var st = await ctx.Self.Gateway.Decision( Select.Invader.ToReplace("disolve", ctx.Space, tokens.OfClass( oldInvader ) ) );
+		if(st == null) return;
+		var tokenToRemove = (HealthToken)st.Token;
 
 		// remove
 		tokens.Adjust( tokenToRemove, -1 );

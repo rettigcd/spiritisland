@@ -6,43 +6,25 @@ public class OverseasTradeSeemsSafer : FearCardBase, IFearCard {
 	public string Text => Name;
 
 	[FearLevel( 1, "Defend 3 in all Coastal lands." )]
-	public Task Level1( GameCtx ctx ) {
-		foreach(var space in GetCoastalSpaces( ctx.GameState ))
-			// Defend 3 in all Coastal lands.
-			space.Defend.Add( 3 );
+	public Task Level1( GameCtx ctx )
+		=> Cmd.Defend( 3 )
+			.In().EachActiveLand().Which( Is.Coastal )
+			.Execute( ctx );
 
-		return Task.CompletedTask;
-	}
 
 	[FearLevel( 2, "Defend 6 in all Coastal lands. Invaders do not Build City in Coastal lands this turn." )]
-	public Task Level2( GameCtx ctx ) {
-		var gs = ctx.GameState;
-		foreach( var space in GetCoastalSpaces( gs )) {
-			// Defend 6 in all Coastal lands.
-			space.Defend.Add( 6 );
-			// Invaders do not Build City in Coastal lands this turn.
-			space.SkipAllBuilds( $"{Name}(city)", Invader.City );
-		}
-
-		return Task.CompletedTask;
-	}
+	public Task Level2( GameCtx ctx )
+		=> Cmd.Multiple( Cmd.Defend(6), DoNotBuildCity )
+			.In().EachActiveLand().Which( Is.Coastal )
+			.Execute( ctx );
 
 	[FearLevel( 3, "Defend 9 in all Coastal lands. Invaders do not Build in Coastal lands this turn." )]
-	public Task Level3( GameCtx ctx ) {
+	public Task Level3( GameCtx ctx )
+		=> Cmd.Multiple( Cmd.Defend( 9 ), DoNotBuild )
+			.In().EachActiveLand().Which( Is.Coastal )
+			.Execute( ctx );
 
-		foreach( var space in GetCoastalSpaces( ctx.GameState )) {
-			// Defend 9 in all Coastal lands.
-			space.Defend.Add( 9 );
-			// Invaders do not Build in Coastal lands this turn.
-			space.SkipAllBuilds( Name );
-		}
+	static SpaceAction DoNotBuildCity => new SpaceAction( "do not build city", ctx => ctx.Tokens.SkipAllBuilds( $"{Name}(city)", Invader.City ) );
+	static SpaceAction DoNotBuild => new SpaceAction( "do not build city", ctx => ctx.Tokens.SkipAllBuilds( Name ) );
 
-		return Task.CompletedTask;
-	}
-
-	static SpaceState[] GetCoastalSpaces( GameState gs ) {
-		var tm = gs.Island.Terrain_ForFear;
-		var spaces = gs.AllActiveSpaces.Where( s => tm.IsCoastal( s ) && tm.IsInPlay( s ) ).ToArray();
-		return spaces;
-	}
 }

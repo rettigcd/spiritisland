@@ -38,9 +38,9 @@ public class WashAway_Tests : SpiritCards_Tests {
 
 		User.TargetsLand( WashAway.Name, targetSpace.Label );
 
-		var invader = spirit.Gateway.Next.Options[0] as Token;
+		var invader = spirit.Gateway.Next.Options[0] as SpaceToken;
 
-		User.OptionallyPushesInvaderTo(invader.ToString(),"A1,[A2],A3,A5");
+		User.OptionallyPushesInvaderTo(invader.Token.ToString(),"A1,[A2],A3,A5");
 
 		// check that explore was moved
 		gameState.Assert_Invaders(targetSpace, expectedTargetResult );

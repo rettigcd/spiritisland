@@ -7,46 +7,37 @@ public class DahanEnheartened : FearCardBase, IFearCard {
 
 	[FearLevel( 1, "Each player may Push 1 Dahan from a land with Invaders or Gather 1 Dahan into a land with Invaders." )]
 	public async Task Level1( GameCtx ctx ) {
-		var gs = ctx.GameState;
-		foreach( var spiritCtx in ctx.Spirits ) {
-			var spacesWithInvaders = gs.AllActiveSpaces.Where( s=>s.HasInvaders() ).ToArray();
-			var target = await spiritCtx.Decision( new Select.Space( "Select Space to Gather or push 1 dahan", spacesWithInvaders, Present.Always));
-
-			var spaceCtx = spiritCtx.Target(target);
-			await spaceCtx.SelectActionOption(
-				new SpaceAction( "Push",    ctx => ctx.PushUpToNDahan( 1 ) ),
-				new SpaceAction( "Gather", ctx => ctx.GatherUpToNDahan( 1 ) )
-			);
-		}
+		await PushOrGather1
+			.In().SpiritPickedLand().Which( Has.Invaders )
+			.ForEachSpirit()
+			.Execute( ctx );
 	}
 
 	[FearLevel( 2, "Each player chooses a different land. In chosen lands: Gather up to 2 Dahan, then 1 Damage if Dahan are present." )]
-	public async Task Level2( GameCtx ctx ) {
-		HashSet<Space> used = new ();
-		foreach(var spiritCtx in ctx.Spirits) {
-			var options = spiritCtx.GameState.AllActiveSpaces.Where( s=>s.Dahan.Any ).Select(x=>x.Space).Except( used ).ToArray();
-			var target = await spiritCtx.Decision( new Select.Space( "Fear:select land with dahan for 1 damage", options, Present.Always ));
-			used.Add( target );
-			var sCtx = spiritCtx.Target(target);
-
-			await sCtx.GatherUpToNDahan( 2 );
-			if( sCtx.Dahan.Any )
-				await sCtx.DamageInvaders( 1 );
-		}
-	}
+	public Task Level2( GameCtx ctx ) 
+		=> Gather2DahanThen1DamageIfDahan
+			.In().SpiritPickedLand().AllDifferent()
+			.ForEachSpirit()
+			.Execute( ctx );
 
 	[FearLevel( 3, "Each player chooses a different land. In chosen lands: Gather up to 2 Dahan, then 1 Damage per Dahan present." )]
-	public async Task Level3( GameCtx ctx ) {
-		HashSet<Space> used = new ();
-		foreach(var spiritCtx in ctx.Spirits) {
-			var options = spiritCtx.GameState.AllActiveSpaces.Where( s => s.Dahan.Any ).Select(x=>x.Space).Except( used ).ToArray();
-			var target = await spiritCtx.Decision( new Select.Space( "Fear:select land with dahan for 1 damage", options, Present.Always ));
-			used.Add( target );
-			var sCtx = spiritCtx.Target(target);
+	public Task Level3( GameCtx ctx )
+		=> Gather2DahanThenDamagePerDahan
+			.In().SpiritPickedLand().AllDifferent()
+			.ForEachSpirit()
+			.Execute( ctx );
 
-			await sCtx.GatherUpToNDahan( 2 );
-			await sCtx.DamageInvaders( sCtx.Dahan.CountAll );
-		}
-	}
+	static DecisionOption<TargetSpaceCtx> PushOrGather1 => Cmd.Pick1( Cmd.PushNDahan( 1 ), Cmd.GatherUpToNDahan( 1 ) );
+
+	static DecisionOption<TargetSpaceCtx> Gather2DahanThen1DamageIfDahan => new DecisionOption<TargetSpaceCtx>("Gather up to 2 dahan then 1 damage if dahan present.", async ctx => {
+		await ctx.GatherUpToNDahan( 2 );
+		if( ctx.Dahan.Any )
+			await ctx.DamageInvaders( 1 );
+	} );
+
+	static DecisionOption<TargetSpaceCtx> Gather2DahanThenDamagePerDahan => new DecisionOption<TargetSpaceCtx>( "Gather up to 2 dahan then 1 damage/dahan.", async ctx => {
+		await ctx.GatherUpToNDahan( 2 );
+		await ctx.DamageInvaders( ctx.Dahan.CountAll );
+	} );
 
 }

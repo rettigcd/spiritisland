@@ -713,7 +713,8 @@ public partial class IslandControl : Control {
 		IOption option,  // the actual option to record
 		SpaceToken st   // the effective SpaceToken (location) of the option
 	) {
-		if( !_tokenLocations.ContainsKey( st ) ) return; // does this ever happen?
+		if( !_tokenLocations.ContainsKey( st ) ) 
+			return; // does this ever happen?
 
 		var rect = _tokenLocations[st];
 		rect.Inflate( 2, 2 );

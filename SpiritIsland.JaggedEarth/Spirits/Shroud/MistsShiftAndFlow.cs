@@ -81,7 +81,7 @@ class MistsShiftAndFlow {
 	List<TokenMovedArgs> FindFlowsThatAllowUsToHitTarget( SpaceState target ) {
 		List<TokenMovedArgs> allowed = new List<TokenMovedArgs>();
 
-		var pretendPresence = new SpaceCounts( _spirit.Presence.Placed(this._gameState).Select(x=>x.Space) );
+		var pretendPresence = new SpaceCounts( target.AccessGameState(), _spirit.Presence.Placed(this._gameState).Select(x=>x.Space) );
 
 		var spacesInRange = target.Range(1) // this is a Gather
 			.Where( IsInPlay )
@@ -163,12 +163,14 @@ class MistsShiftAndFlow {
 	// Shroud Helper - for easier testing Targetting
 	class SpaceCounts : CountDictionary<Space>, IKnowSpiritLocations {
 
-		public SpaceCounts(GameState gs ) {
-			_gs = gs;
-		}
+		//public SpaceCounts(GameState gs ) {
+		//	_gs = gs ?? throw new ArgumentNullException( nameof(gs)) ;
+		//}
 		readonly GameState _gs;
 
-		public SpaceCounts(IEnumerable<Space> spaces ) : base( spaces ) { }
+		public SpaceCounts(GameState gs, IEnumerable<Space> spaces ) : base( spaces ) {
+			_gs = gs ?? throw new ArgumentNullException( nameof( gs ) );
+		}
 
 		public IEnumerable<Space> Spaces => this.Keys;
 		public IEnumerable<SpaceState> SpaceStates => this.Keys.Select(x=>_gs.Tokens[x]);

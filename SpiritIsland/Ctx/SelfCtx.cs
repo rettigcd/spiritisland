@@ -104,14 +104,6 @@ public class SelfCtx {
 			: null;
 	}
 
-	public async Task<TargetSpaceCtx> SelectSpace( string prompt, IEnumerable<TargetSpaceCtx> options ) {
-		var lookup = options.ToDictionary(ctx=>ctx.Space,ctx=>ctx);
-		if( !lookup.Any() ) return null; // ??? does this solve the Thriving Communities problem?
-		var space = await Decision( new Select.Space( prompt, lookup.Keys, Present.Always ) );
-		return space != null ? lookup[ space ] : null;
-	}
-
-
 	// overriden by Grinning Trickster's Lets See What Happens
 
 	public Task SelectActionOption( params IExecuteOn<SelfCtx>[] options ) => SelectActionOption( "Select Power Option", options );
@@ -135,16 +127,18 @@ public class SelfCtx {
 
 	#region High level fear-specific decisions
 
-	public async Task<Space> RemoveTokenFromOneSpace( IEnumerable<Space> spaceOptions, int count, params TokenClass[] removables ) {
+	// !!! Decompose this and use the builder-block Cmds
+	public async Task<Space> RemoveNTokensFromOneSpace( IEnumerable<Space> spaceOptions, int count, params TokenClass[] removables ) {
 
 		var spaceCtx = await SelectSpace( "Remove invader from", spaceOptions );
 		if(spaceCtx == null) return null;
 
-		var options = spaceCtx.Tokens.OfAnyClass(removables);
+
+		var options = spaceCtx.Tokens.OfAnyClass(removables).Cast<IVisibleToken>().ToArray();
 		while(0<count && 0<options.Length) {
-			var tokenToRemove = await spaceCtx.Self.Gateway.Decision( Select.TokenFrom1Space.TokenToRemove(spaceCtx.Space, count, options, Present.Always) );
+			var tokenToRemove = (await spaceCtx.Self.Gateway.Decision( Select.TokenFrom1Space.TokenToRemove(spaceCtx.Space, count, options, Present.Always) ))?.Token;
 			await spaceCtx.Tokens.Remove(tokenToRemove,1);
-			options = spaceCtx.Tokens.OfAnyClass( removables ); // next
+			options = spaceCtx.Tokens.OfAnyClass( removables ).Cast<IVisibleToken>().ToArray(); // next
 			--count;
 		}
 		return spaceCtx?.Space;

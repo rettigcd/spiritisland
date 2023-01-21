@@ -7,23 +7,25 @@
 /// So.. Do NOT merge this into SpaceTokens because that adds the additional complexity of ignoring the Space that is returned.
 /// (Twice I tried to merge this into SpaceTokens, and BOTH times when I got to the Unit Tests, I decided to roll it back.)
 /// </summary>
-public class TokenFrom1Space : TypedDecision<Token> {
+public class TokenFrom1Space : TypedDecision<SpaceToken> {
 
-	public static TokenFrom1Space TokenToPush( SpiritIsland.Space space, int count, Token[] options, Present present )
+	public static TokenFrom1Space TokenToPush( SpiritIsland.Space space, int count, IVisibleToken[] options, Present present )
 		=> new TokenFrom1Space( present != Present.Done ? $"Push ({count})" : $"Push up to ({count})", space, options, present );
 
-	public static TokenFrom1Space TokenToMove( SpiritIsland.Space srcSpace, int count, Token[] options, Present present )
+	public static TokenFrom1Space TokenToMove( SpiritIsland.Space srcSpace, int count, IVisibleToken[] options, Present present )
 		=> new TokenFrom1Space( present != Present.Done ? $"Move ({count})" : $"Move up to ({count})", srcSpace, options, present );
 
-	public static TokenFrom1Space TokenToRemove( SpiritIsland.Space space, int count, Token[] options, Present present )
+	public static TokenFrom1Space TokenToRemove( SpiritIsland.Space space, int count, IVisibleToken[] options, Present present )
 		=> new TokenFrom1Space( present != Present.Done ? $"Remove ({count})" : $"Remove up to ({count})", space, options, present );
 
-	public TokenFrom1Space( string prompt, SpiritIsland.Space space, IEnumerable<Token> options, Present present  )
-		: base( prompt, options, present ) 
+	public TokenFrom1Space( string prompt, SpiritIsland.Space space, IEnumerable<IVisibleToken> options, Present present  )
+		: base( prompt, options.Select(t=>new SpaceToken(space,t,false)), present ) 
 	{ 
 		Space = space;
 	}
 
 	public SpiritIsland.Space Space { get; }
+
+	// TokenFromManySpaces
 
 }

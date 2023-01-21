@@ -1,5 +1,9 @@
 ﻿namespace SpiritIsland;
 
+/// <summary>
+/// Binds to an ActionScope so work can be performed.
+/// Knows Terrain
+/// </summary>
 public class ActionableSpaceState : SpaceState {
 
 	public UnitOfWork ActionScope { get; }
@@ -116,7 +120,6 @@ public class ActionableSpaceState : SpaceState {
 		return new PublishTokenRemovedArgs( removingArgs.Token, reason, ActionScope, this, removingArgs.Count );
 	}
 
-
 	public async Task AddStrifeTo( HealthToken invader, int count = 1 ) {
 
 		// Remove old type from 
@@ -134,7 +137,6 @@ public class ActionableSpaceState : SpaceState {
 		if(strifed.IsDestroyed) // due to a strife-health penalty
 			await Destroy( strifed, this[strifed] );
 	}
-
 
 	/// <summary> Gathering / Pushing + a few others </summary>
 	public async Task MoveTo( Token token, Space destination ) {
@@ -181,7 +183,6 @@ public class ActionableSpaceState : SpaceState {
 	public virtual Task<int> DestroyNTokens( HealthToken invaderToDestroy, int countToDestroy ) {
 		return invaderToDestroy.Destroy( this, countToDestroy );
 	}
-
 
 	// Hopefully this is never called.
 	// But if it is, do something reasonable

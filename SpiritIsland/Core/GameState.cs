@@ -89,6 +89,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	public IEnumerable<SpaceState> AllSpaces => Island.Boards
 		.SelectMany(b=>b.AllSpaces)
 		.Select(Tokens.GetTokensFor);
+
 	/// <summary> Active, Not in statis </summary>
 	public IEnumerable<SpaceState> AllActiveSpaces => Island.Boards
 		.SelectMany( b => b.Spaces )
@@ -172,7 +173,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 				$"Cascade blight from {args.AddedTo.Space.Label} to",
 				args.AddedTo.Space,
 				Select.AdjacentDirection.Outgoing,
-				args.AddedTo.CascadingBlightOptions,
+				CascadingBlightOptions(args.AddedTo),
 				Present.Always,
 				TokenType.Blight
 			));
@@ -180,6 +181,11 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		}
 
 	}
+
+	IEnumerable<SpaceState> CascadingBlightOptions( SpaceState ss ) => ss.Adjacent
+		 .Where( x => !Island.Terrain_ForBlight.MatchesTerrain( x, Terrain.Ocean ) // normal case,
+			 || Island.Terrain_ForBlight.MatchesTerrain( x, Terrain.Wetland ) );
+
 
 	/// <summary>
 	/// Event handler for token removed that checks blight-only
@@ -243,7 +249,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	public HealthTokenClassBinding_NoEvents DahanOn( Space space ) => Tokens[space].Dahan; // Obsolete - use TargetSpaceCtx
 
 	/// <param name="cat">Has no functional use.  Just helps us keep straight in our head what kind of action this is.</param>
-	public UnitOfWork StartAction(ActionCategory cat ) {
+	public UnitOfWork StartAction( ActionCategory cat ) {
 		var terrainMapper = cat == ActionCategory.Spirit_Power ? Island.Terrain_ForPower : Island.Terrain; // ??? What about other terrains, like for fear? Is that an action?
 		return new UnitOfWork( EndOfAction, cat, terrainMapper );
 	}

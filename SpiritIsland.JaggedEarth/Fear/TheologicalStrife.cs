@@ -6,9 +6,9 @@ public class TheologicalStrife : FearCardBase, IFearCard {
 	public string Text => Name;
 
 	[FearLevel(1, "Each player adds 1 Strife in a land with Presence." )]
-	public Task Level1( GameCtx ctx ) {
-		return EachPlayerAddsStrifeInALandWithPresence.Execute( ctx );
-	}
+	public Task Level1( GameCtx ctx )
+		=> EachPlayerAddsStrifeInALandWithPresence
+			.Execute( ctx );
 
 	[FearLevel(2, "Each player adds 1 Strife in a land with Presence. Each Spirit gains 1 Energy per SacredSite they have in lands with Invaders." )]
 	public async Task Level2( GameCtx ctx ) { 
@@ -17,9 +17,9 @@ public class TheologicalStrife : FearCardBase, IFearCard {
 		await EachPlayerAddsStrifeInALandWithPresence.Execute( ctx );
 
 		// Each Spirit gains 1 Energy per SacredSite they have in lands with Invaders.
-		await Cmd.EachSpirit( new SelfAction(
+		await Cmd.ForEachSpirit( new SelfAction(
 			"Gain 1 Energy per SacredSite Spirit has in lands with Invaders"
-			, spiritCtx => spiritCtx.Self.Energy += spiritCtx.Self.Presence.SacredSites(ctx.GameState, ctx.GameState.Island.Terrain_ForFear).Count( ss => spiritCtx.Target(ss).HasInvaders )
+			, spiritCtx => spiritCtx.Self.Energy += spiritCtx.Self.Presence.SacredSites(ctx.GameState, ctx.GameState.Island.Terrain).Count( ss => spiritCtx.Target(ss).HasInvaders )
 		)).Execute( ctx );
 
 	}
@@ -31,10 +31,16 @@ public class TheologicalStrife : FearCardBase, IFearCard {
 		await EachPlayerAddsStrifeInALandWithPresence.Execute( ctx );
 
 		// Each Invader with Strife deals Damage to other Invaders in its land.
-		await Cmd.InEachLand( StrifedRavage.StrifedInvadersDealsDamageToOtherInvaders, tokens=>tokens.HasStrife ).Execute( ctx );
+		await StrifedRavage.StrifedInvadersDealsDamageToOtherInvaders
+			.In().EachActiveLand().Which( Has.Strife )
+			.Execute( ctx );
 	}
 
 	static public DecisionOption<GameCtx> EachPlayerAddsStrifeInALandWithPresence
-		=> Cmd.EachSpirit( Cmd.AddStrife(1).In( spaceCtx => spaceCtx.Presence.IsHere, "a land with presence") );
+		=> Cmd.AddStrife( 1 )
+			.In().SpiritPickedLand()
+			.Which( Has.YourPresence )
+			.ByPickingToken( Invader.Any )
+			.ForEachSpirit();
 
 }

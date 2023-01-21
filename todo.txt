@@ -2,8 +2,6 @@
 ====  Clean Up Items  ====
 ==========================
 
-5 Fear Cards (5) from Promo pack
-
 5 UI - Configure Game - Images for Selecting Spirits (ListView)
 5 Action => Move Finders Hook to Action-start - event
 
@@ -28,6 +26,8 @@
 
 ======
 
+3 Flatten Fear Cards so user can pick SpaceToken instead of 2 step space then token
+3 Change Fear Cards to Fluent Commands
 3 UI - Cleanup Presence-Track image generation
 3 UI - Make clickable things on screen into Buttons with their own .Click() method
 

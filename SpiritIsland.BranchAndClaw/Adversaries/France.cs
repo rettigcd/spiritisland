@@ -81,13 +81,16 @@ public class France : IAdversary {
 			if( gs.RoundNumber%4 != 0) return;// if we put it under 3 cards, it will be every 4th card.
 			if(gs.InvaderDeck.InvaderStage < 3) {
 				// On Each Board: Add Strife to 1 Town.
-				await Cmd.OnEachBoard( AddStrifeToTown ).Execute( gameCtx );
+				await Cmd.ForEachBoard( AddStrifeToTown ).Execute( gameCtx );
 			} else {
+
+				// !!! review this and see if it is constructed correctly
+
 				// On Each Board:
 				await Cmd.Multiple(
-					Cmd.OnEachBoard(
+					Cmd.ForEachBoard(
 						Cmd.Multiple<BoardCtx>(
-							"Destory 1 town, add strife to any t Town/City, then invader takes 1 Damage per Strife it has",
+							"Destory 1 town, add strife to any Town/City, then invader takes 1 Damage per Strife it has",
 							DestroyTown, // Destroy 1 Town.
 							Add2StrifeToCityOrTown // Add Strife to any 2 Town/City.
 						)

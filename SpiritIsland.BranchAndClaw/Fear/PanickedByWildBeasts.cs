@@ -5,39 +5,24 @@ public class PanickedByWildBeasts : FearCardBase, IFearCard {
 	public string Text => Name;
 
 	[FearLevel( 1, "Each player adds 1 strife in a land with or adjacent to beast" )]
-	public async Task Level1( GameCtx ctx ) {
-
-		// Each player adds 1 strife in a land with or adjacent to beast
-		foreach(var spiritCtx in ctx.Spirits)
-			await spiritCtx.AddStrifeToOne(ctx.LandsWithOrAdjacentToBeasts());
-	}
+	public Task Level1( GameCtx ctx )
+		=> Cmd.AddStrife(1)
+			.In().SpiritPickedLand().Which( Has.BeastOrIsAdjacentToBeast )
+			.ForEachSpirit()
+			.Execute( ctx );
 
 	[FearLevel( 2, "Each player adds 1 strife in a land with or adjacent to beast.  Invaders skip their normal explore and build in lands ith beast" )]
-	public async Task Level2( GameCtx ctx ) {
-
-		// Each player adds 1 strife in a land with or adjacent to beast.
-		foreach(var spiritCtx in ctx.Spirits)
-			await spiritCtx.AddStrifeToOne( ctx.LandsWithOrAdjacentToBeasts() );
-
-		// Invaders skip their normal explore and build in lands with beast
-		foreach(var land in ctx.GameState.AllActiveSpaces)
-			if(land.Beasts.Any) {
-				land.Skip1Explore( Name );
-				land.Skip1Build( Name );
-			}
-	}
+	public Task Level2( GameCtx ctx )
+		=> Cmd.Multiple(
+			Cmd.AddStrife( 1 ).In().SpiritPickedLand().Which( Has.BeastOrIsAdjacentToBeast ).ForEachSpirit(),
+			Cmd.Multiple(Cmd.Skip1Build(Name),Cmd.Skip1Explore(Name)).In().EachActiveLand().Which( Has.Beast )
+		).Execute( ctx );
 
 	[FearLevel( 3, "Each player adds 1 strife in a land with or adjacent to beast.  Invaders skip all normal actions in lands with beast." )]
-	public async Task Level3( GameCtx ctx ) {
-
-		// Each player adds 1 strife in a land with or adjacent to beast.
-		foreach(var spiritCtx in ctx.Spirits)
-			await spiritCtx.AddStrifeToOne( ctx.LandsWithOrAdjacentToBeasts() );
-
-		// Invaders skip all normal actions in lands with beast.
-		foreach(var land in ctx.GameState.AllActiveSpaces)
-			if(land.Beasts.Any)
-				land.SkipAllInvaderActions( Name );
-	}
+	public Task Level3( GameCtx ctx )
+		=> Cmd.Multiple(
+			Cmd.AddStrife( 1 ).In().SpiritPickedLand().Which( Has.BeastOrIsAdjacentToBeast ).ForEachSpirit(),
+			Cmd.SkipAllInvaderActions( Name ).In().EachActiveLand().Which( Has.Beast )
+		).Execute( ctx );
 
 }

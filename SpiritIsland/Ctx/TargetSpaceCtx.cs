@@ -69,17 +69,17 @@ public class TargetSpaceCtx : SelfCtx {
 		var destinationOptions = Range( targetCriteria );
 		Space destination = await Decision( Select.Space.MoveToken( Space, destinationOptions, Present.Done, null ) );
 
-		Token[] tokenOptions = Tokens.OfAnyClass( tokenClass );
+		var tokenOptions = Tokens.OfAnyClass( tokenClass ).Cast<IVisibleToken>().ToArray();
 		int remaining = Math.Min( Tokens.SumAny(tokenClass), max );
 		while(tokenOptions.Length > 0 && remaining > 0 ) {
 			// Select Token and move
-			var source = await Decision( Select.TokenFrom1Space.TokenToMove( Space, remaining, tokenOptions, Present.Done ) );
-			if(source == null) break;
-			await Move( source, Space, destination );
+			var token = (await Decision( Select.TokenFrom1Space.TokenToMove( Space, remaining, tokenOptions, Present.Done ) ))?.Token;
+			if(token == null) break;
+			await Move( token, Space, destination );
 
 			// Next
 			--remaining;
-			tokenOptions = Tokens.OfAnyClass( tokenClass );
+			tokenOptions = Tokens.OfAnyClass( tokenClass ).Cast<IVisibleToken>().ToArray();
 		}
 
 		return destination;
@@ -253,17 +253,18 @@ public class TargetSpaceCtx : SelfCtx {
 		// For Veil the Nights Hunt, badland damage can only be added to invaders already damaged. Might be different for other powers.
 
 		// Find All Invaders
-		var invaders = new List<Token>();
+		var invaders = new List<IVisibleToken>();
 		foreach(var token in Tokens.InvaderTokens())
 			for(int i = 0; i < Tokens[token]; ++i)
 				invaders.Add( token );
 
 		// Limit # to select
-		var damagedInvaders = new List<Token>();
+		var damagedInvaders = new List<IVisibleToken>();
 		count = System.Math.Min( count, invaders.Count );
 		while(count-- > 0) {
-			var invader = (HealthToken)await Decision( Select.Invader.ForIndividualDamage( damagePerInvader, Space, invaders ) );
-			if(invader == null) break;
+			var st = await Decision( Select.Invader.ForIndividualDamage( damagePerInvader, Space, invaders ) );
+			if(st == null) break;
+			var invader = (HealthToken)st.Token;
 			invaders.Remove( invader );
 			var (_, damaged) = await Invaders.ApplyDamageTo1( damagePerInvader, invader );
 			if(damaged.RemainingHealth > 0)
@@ -273,10 +274,11 @@ public class TargetSpaceCtx : SelfCtx {
 		await ApplyDamageToSpecificTokens( damagedInvaders, Badlands.Count );
 	}
 
-	async Task ApplyDamageToSpecificTokens( List<Token> invaders, int additionalTotalDamage ) {
+	async Task ApplyDamageToSpecificTokens( List<IVisibleToken> invaders, int additionalTotalDamage ) {
 		while(additionalTotalDamage > 0) {
-			var invader = (HealthToken)await Decision( Select.Invader.ForBadlandDamage(additionalTotalDamage,Space,invaders) );
-			if(invader == null) break;
+			var st = await Decision( Select.Invader.ForBadlandDamage( additionalTotalDamage, Space, invaders ) );
+			if(st == null) break;
+			var invader = (HealthToken)st.Token;
 			int index = invaders.IndexOf( invader );
 			var (_, moreDamaged) = await Invaders.ApplyDamageTo1( 1, invader );
 			if(moreDamaged.RemainingHealth > 0)
@@ -306,9 +308,10 @@ public class TargetSpaceCtx : SelfCtx {
 	#region Add Strife
 
 	/// <param name="groups">Option: if null/empty, no filtering</param>
-	public virtual async Task AddStrife( params TokenClass[] groups ) {
-		var invader = (HealthToken) await Decision( Select.Invader.ForStrife( Tokens, groups ) );
-		if(invader == null) return;
+	public virtual async Task AddStrife( params HealthTokenClass[] groups ) {
+		var st = await Decision( Select.Invader.ForStrife( Tokens, groups ) );
+		if(st == null) return;
+		var invader = (HealthToken)st.Token;
 		await Tokens.AddStrifeTo( invader );
 	}
 

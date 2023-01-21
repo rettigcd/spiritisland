@@ -6,52 +6,35 @@ public class FleeFromDangerousLands : FearCardBase, IFearCard {
 	public string Text => Name;
 
 	[FearLevel(1, "On Each Board: Push 1 Explorer / Town from a land with Badlands / Wilds / Dahan." )]
-	public Task Level1( GameCtx ctx ) {
-
-		// On Each Board,
-		return Cmd.OnEachBoard(
-			// Push 1 Explorer / Town
-			Cmd.PushExplorersOrTowns(1)
-				// from a land with Badlands / Wilds / Dahan.
-				.FromLandOnBoard( FindBadlandsWildsOrDahanSpaces,"a land with Badlands / Wilds / Dahan." )
-			)
+	public Task Level1( GameCtx ctx )
+		=> Cmd.PushExplorersOrTowns( 1 )
+			.From().OneLandPerBoard().Which( HasDangerousLands )
+			.ByPickingToken( Invader.Explorer_Town )
+			.ForEachBoard()
 			.Execute( ctx );
-
-	}
 
 	[FearLevel(2, "On Each Board: Remove 1 Explorer / Town from a land with Badlands / Wilds / Dahan." )]
-	public Task Level2( GameCtx ctx ) {
-
-		// On Each Board, 
-		return Cmd.OnEachBoard(
-			// Remove 1 Explorer / Town 
-			Cmd.RemoveExplorersOrTowns( 1 )
-				// from a land with Badlands / Wilds / Dahan.
-				.FromLandOnBoard( FindBadlandsWildsOrDahanSpaces, "a land with Badlands / Wilds / Dahan" )
-			)
+	public Task Level2( GameCtx ctx )
+		=> Cmd.RemoveExplorersOrTowns( 1 )
+			.From().OneLandPerBoard().Which( HasDangerousLands )
+			.ByPickingToken( Invader.Explorer_Town )
+			.ForEachBoard()
 			.Execute( ctx );
-
-	}
 
 	[FearLevel(3, "On Each Board: Remove 1 Explorer / Town from any land, or Remove 1 City from a land with Badlands / Wilds / Dahan." )]
-	public async Task Level3( GameCtx ctx ) {
+	public Task Level3( GameCtx ctx )
+		=> new SpaceAction( "Remove 1 Explorer / Town from any land, or Remove 1 City from a land with Badlands / Wilds / Dahan.", Level3_Remove)
+			.On().OneLandPerBoard()
+			.ByPickingToken( ctx => ctx.Tokens.OfAnyClass( TokensClassesFor(ctx) ) )
+			.ForEachBoard()
+			.Execute(ctx);
 
-		// On Each Board: Remove 1 Explorer / Town from any land, or Remove 1 City from a land with Badlands / Wilds / Dahan.
-		await Cmd.OnEachBoard(
-			Cmd.Pick1(
-				// Remove 1 Explorer / Town from any land
-				Cmd.RemoveExplorersOrTowns(1).InAnyLandOnBoard(),
-				// or Remove 1 City from a land with Badlands / Wilds / Dahan.
-				Cmd.RemoveCities( 1 ).FromLandOnBoard( FindBadlandsWildsOrDahanSpaces, "a land with Badlands / Wilds / Dahan" )
-			)
-		)
-			.Execute( ctx );
+	Task Level3_Remove( TargetSpaceCtx ctx ) => new TokenRemover( ctx ).AddGroup( 1, TokensClassesFor( ctx ) ).RemoveN();
 
-	}
+	static TokenClass[] TokensClassesFor( TargetSpaceCtx ctx ) => HasDangerousLandImp( ctx ) ? Invader.Any : Invader.Explorer_Town;
 
-	static bool FindBadlandsWildsOrDahanSpaces( TargetSpaceCtx ctx )
-		=>	   ctx.Tokens.Badlands.Any 
-			|| ctx.Tokens.Wilds.Any 
-			|| ctx.Tokens.Dahan.Any;
+	static TargetSpaceCtxFilter HasDangerousLands => new TargetSpaceCtxFilter( "a land with Badlands / Wilds / Dahan.", HasDangerousLandImp );
+	static bool HasDangerousLandImp( TargetSpaceCtx ctx ) => ctx.Tokens.Badlands.Any || ctx.Tokens.Wilds.Any || ctx.Tokens.Dahan.Any;
+
 
 }

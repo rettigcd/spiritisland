@@ -145,11 +145,12 @@ public class InvaderBinding {
 	public async Task<int> UserSelected_ApplyDamageToSpecificToken( int damage, Spirit damagePicker, HealthToken source, Func<HealthToken[]> allowedTypes ) {
 		if(damage == 0) return 0;
 
-		Token[] options;
+		IVisibleToken[] options;
 		int damageInflicted = 0;
 		while(0 < damage && (options = Tokens.Keys.OfType<HealthToken>().Intersect( allowedTypes() ).ToArray()).Length > 0) {
-			var invaderToDamage = (HealthToken)await damagePicker.Gateway.Decision( Select.Invader.ForAggregateDamageFromSource( Tokens.Space, source, options, damage, Present.Always ) );
-			if(invaderToDamage == null) break;
+			var st = await damagePicker.Gateway.Decision( Select.Invader.ForAggregateDamageFromSource( Tokens.Space, source, options, damage, Present.Always ) );
+			if( st == null) break;
+			var invaderToDamage = (HealthToken)st.Token;
 			await ApplyDamageTo1( 1, invaderToDamage );
 			--damage;
 			++damageInflicted;
@@ -174,11 +175,12 @@ public class InvaderBinding {
 		if(allowedTypes == null || allowedTypes.Length == 0)
 			allowedTypes = Invader.Any;
 
-		Token[] invaderTokens;
+		IVisibleToken[] invaderTokens;
 		int damageInflicted = 0;
-		while(damage > 0 && (invaderTokens = Tokens.OfAnyClass( allowedTypes ).ToArray()).Length > 0) {
-			var invaderToDamage = (HealthToken)await damagePicker.Gateway.Decision( Select.Invader.ForAggregateDamage( Tokens.Space, invaderTokens, damage, present ) );
-			if(invaderToDamage==null) break;
+		while(damage > 0 && (invaderTokens = Tokens.OfAnyClass( allowedTypes ).Cast<IVisibleToken>().ToArray()).Length > 0) {
+			var st = await damagePicker.Gateway.Decision( Select.Invader.ForAggregateDamage( Tokens.Space, invaderTokens, damage, present ) );
+			if(st==null) break;
+			var invaderToDamage = (HealthToken)st.Token;
 			await ApplyDamageTo1( 1, invaderToDamage );
 			--damage;
 			++damageInflicted;

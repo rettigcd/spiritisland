@@ -6,7 +6,7 @@ public class UntendedLandCrumbles : BlightCardBase {
 
 	public override DecisionOption<GameCtx> Immediately 
 		=> Cmd.AtTheStartOfEachInvaderPhase(
-			Cmd.OnEachBoard(
+			Cmd.ForEachBoard(
 				Cmd.Pick1(
 					AddBlightAdjacentToBligtht,		// Add 1 blight to a land adjacent to blight.
 					JointlyPayEnergy( 3 ),			// Spirits may prevent this on each boards by jointly paying 3 energy
@@ -15,8 +15,8 @@ public class UntendedLandCrumbles : BlightCardBase {
 			)
 		);
 
-	static DecisionOption<BoardCtx> AddBlightAdjacentToBligtht =>
-		Cmd.AddBlightedIslandBlight.ToLandOnBoard( ctx => ctx.Tokens.Adjacent.Any( adj => adj.Blight.Any ), "land adjacent to blight" );
+	static IExecuteOn<BoardCtx> AddBlightAdjacentToBligtht =>
+		Cmd.AddBlightedIslandBlight.To().OneLandPerBoard().Which( new TargetSpaceCtxFilter( "land adjacent to blight" , ctx => ctx.Tokens.Adjacent.Any( adj => adj.Blight.Any ) ) );
 
 	static IExecuteOn<BoardCtx> JointlyPayEnergy( int requiredEnergy ) => new DecisionOption<BoardCtx>(
 		$"Joinly pay {requiredEnergy} energy",

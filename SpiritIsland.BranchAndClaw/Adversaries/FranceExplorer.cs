@@ -32,7 +32,7 @@ public class FranceExplorer : ExploreEngine {
 
 	static Task PersistentExplorers( GameCtx gameCtx ) {
 		// After resolving an Explore Card, on each board add 1 Explorer to a land without any. 
-		return Cmd.OnEachBoard( AddExplorerToLandWithoutAny ).Execute( gameCtx );
+		return Cmd.ForEachBoard( AddExplorerToLandWithoutAny ).Execute( gameCtx );
 
 	}
 
@@ -64,7 +64,7 @@ public class FranceExplorer : ExploreEngine {
 				: new DecisionOption<SelfCtx>( "", null );
 		}
 
-		return Cmd.OnEachBoard( new DecisionOption<BoardCtx>(
+		return Cmd.ForEachBoard( new DecisionOption<BoardCtx>(
 			"Place town or blight matching Explore card."
 			, boardCtx => Cmd.Pick1( boardCtx.GameState.Tokens.PowerUp( boardCtx.Board.Spaces )
 				.Where( card.MatchesCard )

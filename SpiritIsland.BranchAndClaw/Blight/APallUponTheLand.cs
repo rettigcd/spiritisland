@@ -6,12 +6,12 @@ public class APallUponTheLand : BlightCardBase {
 
 	public override DecisionOption<GameCtx> Immediately => 
 		// On Each Board
-		Cmd.OnEachBoard(
+		Cmd.ForEachBoard(
 			Cmd.Multiple(
 				// destroy 1 presence 
 				Destroy1PresenceOnBoard,
 				// remove 1 town
-				Cmd.RemoveTowns(1).InAnyLandOnBoard()
+				Cmd.RemoveTowns(1).In().OneLandPerBoard()
 			)
 		);
 

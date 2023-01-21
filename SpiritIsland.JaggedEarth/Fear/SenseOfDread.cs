@@ -7,38 +7,28 @@ public class SenseOfDread : FearCardBase, IFearCard {
 
 	[FearLevel(1, "On Each Board: Remove 1 Explorer from a land matching a Ravage card." )]
 	public Task Level1( GameCtx ctx ) {
-		// On Each Board
-		return Cmd.OnEachBoard(
-			// Remove 1 Explorer
-			Cmd.RemoveExplorers(1)
-				// from a land matching a Ravage card.
-				.FromLandOnBoard( MatchingRavageCard, "a land matching a Ravage card" )
-		).Execute( ctx );
+		return Cmd.RemoveExplorers( 1 ).From().OneLandPerBoard().Which( MatchesRavageCard )
+			.ForEachBoard()
+			.Execute( ctx );
 	}
 
 	[FearLevel(2, "On Each Board: Remove 1 Explorer / Town from a land matching a Ravage card." )]
 	public Task Level2( GameCtx ctx ) { 
-		// On Each Board
-		return Cmd.OnEachBoard(
-			// Remove 1 Explorer/Town
-			Cmd.RemoveExplorersOrTowns(1)
-				// from a land matching a Ravage card.
-				.FromLandOnBoard( MatchingRavageCard,"a land matching a Ravage card" )
-		).Execute( ctx );
+		return Cmd.RemoveExplorersOrTowns( 1 ).From().OneLandPerBoard().Which( MatchesRavageCard )
+			.ForEachBoard()
+			.Execute( ctx );
 	}
 
 	[FearLevel(3, "On Each Board: Remove 1 Invader from a land matching a Ravage card." )]
 	public Task Level3( GameCtx ctx ) {
-		// On Each Board
-		return Cmd.OnEachBoard(
-			// Remove 1 Invader
-			Cmd.RemoveInvaders(1)
-				// from a land matching a Ravage card.
-				.FromLandOnBoard( MatchingRavageCard,"a land matching a Ravage card" )
-		).Execute( ctx );
+		return Cmd.RemoveInvaders( 1 ).From().OneLandPerBoard().Which( MatchesRavageCard )
+			.ForEachBoard()
+			.Execute( ctx );
 	}
 
-	static bool MatchingRavageCard( TargetSpaceCtx ctx )
+	static TargetSpaceCtxFilter MatchesRavageCard => new TargetSpaceCtxFilter( "matching a Ravage card", MatchingRavageCardImp );
+
+	static bool MatchingRavageCardImp( TargetSpaceCtx ctx )
 		=> ctx.GameState.InvaderDeck.Ravage.Cards
 			.Any( card => card.MatchesCard(ctx.Tokens) );
 

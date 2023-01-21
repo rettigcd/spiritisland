@@ -26,7 +26,13 @@ public class GameComponentProvider : IGameComponentProvider {
 
 	public PowerCard[] MajorCards => Array.Empty<PowerCard>();
 
-	public IFearCard[] FearCards => Array.Empty<IFearCard>();
+	public IFearCard[] FearCards => new IFearCard[] {
+		new AngryMobs(),
+		new CommunitiesInDisarray(),
+		new Depopulation(),
+		new MimicTheDahan(),
+		new SpreadingTimidity()
+	};
 
 	public IBlightCard[] BlightCards => Array.Empty<BlightCardBase>();
 

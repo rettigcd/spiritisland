@@ -35,9 +35,9 @@ public class DissolveTheBondsOfKinship {
 		int explorerCount = ctx.Tokens.Sum( Invader.Explorer );
 		while(explorerCount > 0) {
 			// select token
-			var tokenOptions = ctx.Tokens.OfClass( Invader.Explorer ).ToArray();
-			var decision = Select.TokenFrom1Space.TokenToPush( ctx.Space, explorerCount, tokenOptions, Present.Always );
-			var token = await ctx.Self.Gateway.Decision( decision );
+			var tokenOptions = ctx.Tokens.OfClass( Invader.Explorer ).Cast<IVisibleToken>().ToArray();
+
+			var token = (await ctx.Self.Gateway.Decision( Select.TokenFrom1Space.TokenToPush( ctx.Space, explorerCount, tokenOptions, Present.Always ) ))?.Token;
 			if(token == null) break;
 
 			// Select destination

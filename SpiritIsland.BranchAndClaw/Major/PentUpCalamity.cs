@@ -27,7 +27,7 @@ public class PentUpCalamity {
 
 	static async Task RemoveTokensForFearAndDamage( TargetSpaceCtx ctx ) {
 		var removed = new List<Token>();
-		Token[] options = GetRemovableTokens( ctx );
+		IVisibleToken[] options = GetRemovableTokens( ctx );
 
 		// if you have 2 moon, 3 fire: if you have remvoed tokens, return up to 2 of them.  Otherwise, add 2 strife
 		// Instead of having Bonus return 2 tokens (like strife...), we will just not remove them
@@ -40,7 +40,7 @@ public class PentUpCalamity {
 				$"Remove token for (1 fear,3 damage) total({removed.Count},{removed.Count * 3})"
 				, ctx.Space, options , Present.Done
 			);
-			var tokenToRemove = await ctx.Decision( removeTokenDecision );
+			var tokenToRemove = (await ctx.Decision( removeTokenDecision ))?.Token;
 			if(tokenToRemove == null) break;
 
 			// If bonus allowed us to return some
@@ -75,10 +75,10 @@ public class PentUpCalamity {
 			await ctx.Remove( tokenToRemove, 1 );
 	}
 
-	static Token[] GetRemovableTokens( TargetSpaceCtx ctx ) {
+	static IVisibleToken[] GetRemovableTokens( TargetSpaceCtx ctx ) {
 		var options = ctx.Tokens.OfAnyClass( TokenType.Beast, TokenType.Disease, TokenType.Wilds ).ToList();
 		options.AddRange( ctx.Tokens.Keys.OfType<HealthToken>() );
-		return options.ToArray();
+		return options.Cast<IVisibleToken>().ToArray();
 	}
 
 }

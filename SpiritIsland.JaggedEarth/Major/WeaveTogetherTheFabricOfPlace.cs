@@ -63,11 +63,13 @@ public class WeaveTogetherTheFabricOfPlace {
 	static async Task DistributeTokens( SelfCtx ctx, Space space, Space other, GameState gs, UnitOfWork _ ) {
 		// Distribute Tokens (All of them are considered moved.)
 		// !!! not counting unmoved tokens as moved li
+
+		// !!! any old invisible tokens are not being redistributed
 		var srcTokens = gs.Tokens[space];
 		while(srcTokens.Keys.Any()) {
-			Token tokenToMove = await ctx.Decision( Select.TokenFrom1Space.TokenToPush( space, 100, srcTokens.Keys.ToArray(), Present.Done ) );
-			if(tokenToMove == null) break;
-			await ctx.Move( tokenToMove, space, other );
+			var token = (await ctx.Decision( Select.TokenFrom1Space.TokenToPush( space, 100, srcTokens.Keys.OfType<IVisibleToken>().ToArray(), Present.Done ) ))?.Token;
+			if(token == null) break;
+			await ctx.Move( token, space, other );
 		}
 	}
 

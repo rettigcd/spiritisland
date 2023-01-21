@@ -6,12 +6,12 @@ public class DisintegratingEcosystem : BlightCardBase {
 
 	public override DecisionOption<GameCtx> Immediately => 
 		// Immediately, on each board: 
-		Cmd.OnEachBoard(
+		Cmd.ForEachBoard(
 			Cmd.Multiple(
 				// destroy 1 beast,
-				Cmd.DestroyBeast(1).InAnyLandOnBoard(),
+				Cmd.DestroyBeast(1).In().OneLandPerBoard(),
 				// then add 1 blight to a land with town/city
-				Cmd.AddBlightedIslandBlight.ToLandOnBoard( x => x.Tokens.HasAny(Invader.Town_City), "a land with town/city" )
+				Cmd.AddBlightedIslandBlight.To().OneLandPerBoard().Which( new TargetSpaceCtxFilter( "a land with town/city", x => x.Tokens.HasAny(Invader.Town_City) ) )
 			)
 		);
 

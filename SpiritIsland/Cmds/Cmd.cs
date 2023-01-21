@@ -2,6 +2,12 @@
 
 public static partial class Cmd {
 
+	static public DecisionOption<T> Describe<T>( string description, Action<T> action) => new DecisionOption<T>(description, action);
+	static public DecisionOption<T> Describe<T>( string description, Func<T,Task> func ) => new DecisionOption<T>( description, func );
+
+	// Misc
+	static public SpaceAction Isolate => new SpaceAction( $"Isolate target land.", ctx => ctx.Isolate() );
+
 	// Gather
 	static public SpaceAction GatherUpToNDahan( int count ) => new SpaceAction( $"Gather up to {count} Dahan", ctx => ctx.GatherUpToNDahan( count ) );
 	static public SpaceAction GatherUpToNExplorers( int count ) => new SpaceAction( $"Gather up to {count} Explorers", ctx => ctx.GatherUpTo(count,Invader.Explorer));
@@ -22,10 +28,22 @@ public static partial class Cmd {
 	static public SpaceAction AddBlightedIslandBlight => new SpaceAction("Add 1 blight", ctx => ctx.AddBlight(1,AddReason.SpecialRule) );
 	static public SpaceAction AddWilds( int count ) => new SpaceAction( $"Add {count} Wilds.", ctx => ctx.Wilds.Add(count) );
 	static public SpaceAction AddBadlands( int badLandCount ) => new SpaceAction( $"Add {badLandCount} badlands", ctx => ctx.Badlands.Add( badLandCount ) );
-	static public SpaceAction AddStrife(int count) => count == 1
-		? new SpaceAction( "Add 1 Strife.",  ctx => ctx.AddStrife() )
-		: new SpaceAction( $"Add {count} Strife.",  async ctx => { for(int i=0;i<count;++i) await ctx.AddStrife(); } );
-
+	static public SpaceAction AddStrife(int count) => new SpaceAction( $"Add {count} Strife.",  async ctx => { for(int i=0;i<count;++i) await ctx.AddStrife(); } );
+	static public SpaceAction AddStrifeTo( int count, params HealthTokenClass[] tokenClasses ) => new SpaceAction( 
+			$"Add {count} Strife to "+String.Join(",",tokenClasses.Select(x=>x.Label)), 
+			async ctx => { for(int i = 0; i < count; ++i) await ctx.AddStrife( tokenClasses ); }
+		); 
+	static public SpaceAction Adjust1Token( string description, Token token ) => new SpaceAction( description, ctx => ctx.Tokens.Adjust(token,1) );
+	// -- Screwy Strife Stuff --
+	static public DecisionOption<GameCtx> StrifePenalizesHealth => new DecisionOption<GameCtx>( "Invaders reduce Health per strife", StrifedRavage.InvadersReduceHealthByStrifeCount );
+	static public SpaceAction EachStrifeDamagesInvader => new SpaceAction( "Invaders take 1 damage per strife", async ctx=>{ 
+		var tokens = ctx.Tokens.OfAnyHealthClass( Invader.Any ).Where( x => 0 < x.StrifeCount ).ToArray();
+		foreach(var token in tokens) {
+			int count = ctx.Tokens[token];
+			while(0 < count--)
+				await ctx.Invaders.ApplyDamageTo1(1,token);
+		}
+	} );
 	// -- Remove --
 	static public SpaceAction RemoveBlight => new SpaceAction("Remove 1 blight", ctx => ctx.Blight.Remove(1, RemoveReason.ReturnedToCard ));
 
@@ -46,12 +64,12 @@ public static partial class Cmd {
 		int remaining = calcHealthToRemove(ctx);
 		HealthToken pick;
 		while(0 < remaining
-			&& (pick = (HealthToken)await ctx.Decision( Select.Invader.ToRemoveByHealth( ctx.Space, ctx.Tokens.InvaderTokens(), remaining ) ) ) != null
+			&& (pick = (HealthToken)(await ctx.Decision( Select.Invader.ToRemoveByHealth( ctx.Space, ctx.Tokens.InvaderTokens(), remaining ) ) )?.Token) != null
 		) {
 			await ctx.Remove( pick, 1 );
 			remaining -= pick.RemainingHealth;
 		}
-	} );
+	} ).OnlyExecuteIf( ctx => ctx.Tokens.HasInvaders() );
 
 	static public SpaceAction RemoveUpToNHealthOfInvaders(int health) => RemoveHealthOfInvaders($"Remove up to {health} worth of invaders.",_=>health);
 
@@ -64,6 +82,8 @@ public static partial class Cmd {
 	// -- Damage --
 	static public SpaceAction DamageToTownOrExplorer(int damage) => new SpaceAction($"{damage} damage to Explorer or Town", ctx => ExplorerTownsTakeDamage(ctx,damage) );
 	static Task ExplorerTownsTakeDamage(TargetSpaceCtx ctx, int damage) => ctx.DamageInvaders(damage,Invader.Explorer_Town);
+	static public SpaceAction OneDamagePerDahan => new SpaceAction( "1 damage per dahan", ctx => ctx.DamageInvaders( ctx.Dahan.CountAll ) ).OnlyExecuteIf( x => x.Dahan.Any && x.HasInvaders );
+
 	// -- Destroy --
 	static public SpaceAction DestroyTown( int count ) => new SpaceAction($"Destroy {count} Towns", ctx=>ctx.Invaders.DestroyNOfClass(count,Invader.Town)).OnlyExecuteIf(x=>x.Tokens.Has(Invader.Town));
 
@@ -71,14 +91,14 @@ public static partial class Cmd {
 	static public SpaceAction AddFear(int count) => new SpaceAction($"Add {count} Fear.", ctx => ctx.AddFear(count) );
 
 	// AND / OR
-	static public DecisionOption<T> Multiple<T>( string title, params DecisionOption<T>[] actions ) => new DecisionOption<T>(
+	static public DecisionOption<T> Multiple<T>( string title, params IExecuteOn<T>[] actions ) => new DecisionOption<T>(
 		title,
 		async ctx => {
 			foreach(var action in actions)
 				await action.Execute( ctx );
 		}
 	);
-	static public DecisionOption<T> Multiple<T>( params DecisionOption<T>[] actions) => new DecisionOption<T>(
+	static public DecisionOption<T> Multiple<T>( params IExecuteOn<T>[] actions) => new DecisionOption<T>(
 		actions.Select(a=>a.Description).Join("  "),
 		async ctx => {
 			foreach( var action in actions )
@@ -113,5 +133,18 @@ public static partial class Cmd {
 		DahanSaver.DestroyFewer( 2, int.MaxValue )
 	);
 
+	// Skip Invader Actions
+	static public SpaceAction Skip1Build(string name) => new SpaceAction("Stop the next Build", ctx=>ctx.Tokens.Skip1Build(name));
+	static public SpaceAction Skip1Explore( string name ) => new SpaceAction( "Skip the next Explore", ctx => ctx.Tokens.Skip1Explore( name ) );
+	static public SpaceAction SkipAllInvaderActions( string name ) => new SpaceAction( "Skip All Invader Actions", ctx => ctx.Tokens.SkipAllInvaderActions( name ) );
+
+
+	// WTH are these doing in here?
+	static public SelfAction DestroyPresence( DestoryPresenceCause actionType ) => new SelfAction( "Destroy 1 presence.", ctx => ctx.Presence.DestroyOneFromAnywhere( actionType ) );
+	static public SelfAction ForgetPowerCard => new SelfAction( "Forget Power card", ctx => ctx.Self.ForgetOne() );
+	static public SelfAction DestroyPresence( int count, DestoryPresenceCause actionType ) => new SelfAction( 
+		$"Destroy {count} presence", 
+		async ctx => { for(int i = 0; i < count; ++i) await ctx.Presence.DestroyOneFromAnywhere( actionType );}
+	);
 
 }

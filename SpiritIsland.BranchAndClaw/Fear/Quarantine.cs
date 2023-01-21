@@ -1,47 +1,29 @@
 ﻿namespace SpiritIsland.BranchAndClaw;
 
 public class Quarantine : FearCardBase, IFearCard {
+
 	public const string Name = "Quarantine";
 	public string Text => Name;
 
 	[FearLevel( 1, "Explore does not affect coastal lands." )]
-	public Task Level1( GameCtx ctx ) {
-
-		// Explore does not affect costal lands.
-		ExploreDoesNotAffectCoastalLands( ctx );
-
-		return Task.CompletedTask;
-	}
+	public Task Level1( GameCtx ctx )
+		=> Cmd.Skip1Explore( Name ).In().EachActiveLand().Which( Is.Coastal )
+		.Execute( ctx );
 
 	[FearLevel( 2, "Explore does not affect coastal lands. Lands with disease are not a source of invaders when exploring." )]
-	public Task Level2( GameCtx ctx ) {
-
-		// Explore does not affect coastal lands.
-		ExploreDoesNotAffectCoastalLands( ctx );
-
-		// Lands with disease are not a source of invaders when exploring
-		ctx.GameState.AddToAllActiveSpaces( new SkipExploreFrom( Name ) );
-
-		return Task.CompletedTask;
-	}
+	public Task Level2( GameCtx ctx )
+		=> Cmd.Multiple(
+			Cmd.Skip1Explore( Name ).In().EachActiveLand().Which( Is.Coastal ),
+			Cmd.Adjust1Token( "are not a source of invaders when exploring", new SkipExploreFrom( Name ) ).In().EachActiveLand().Which( Has.Disease )
+		)
+		.Execute(ctx);
 
 	[FearLevel( 3, "Explore does not affect coastal lands.  Invaders do not act in lands with disease." )]
-	public Task Level3( GameCtx ctx ) {
-
-		// Explore does not affect coastal lands.
-		ExploreDoesNotAffectCoastalLands( ctx );
-
-		// Invaders do not act in lands with disease.
-		foreach(var target in ctx.LandsWithDisease())
-			target.SkipAllInvaderActions( Name );
-
-		return Task.CompletedTask;
-	}
-
-	static void ExploreDoesNotAffectCoastalLands( GameCtx ctx ) {
-		var gs = ctx.GameState;
-		foreach(var costal in gs.AllActiveSpaces.Where( x => x.Space.IsCoastal ))
-			costal.Skip1Explore( Name );
-	}
+	public Task Level3( GameCtx ctx )
+		=> Cmd.Multiple(
+			Cmd.Skip1Explore( Name ).In().EachActiveLand().Which( Is.Coastal ),
+			Cmd.SkipAllInvaderActions( Name ).In().EachActiveLand().Which( Has.Disease )
+		)
+		.Execute( ctx );
 
 }

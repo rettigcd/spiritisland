@@ -6,34 +6,24 @@ public class DahanRaid : FearCardBase, IFearCard {
 	public string Text => Name;
 
 	[FearLevel(1, "Each player chooses a different land with Dahan. 1 Damage there.")]
-	public Task Level1( GameCtx ctx ) {
-		return ForEachPlayerChosenLandWithDahan( ctx, sCtx=>sCtx.DamageInvaders( 1 ) );
-	}
+	public Task Level1( GameCtx ctx )
+		=> new SpaceAction("1 Damage", ctx=>ctx.DamageInvaders(1,Invader.Any) )
+			.In().SpiritPickedLand().AllDifferent().Which( Has.Dahan )
+			.ForEachSpirit()
+			.Execute( ctx );
 
 	[FearLevel( 2, "Each player chooses a different land with Dahan. 1 Damage per Dahan there." )]
-	public Task Level2( GameCtx ctx ) {
-		return ForEachPlayerChosenLandWithDahan( ctx, sCtx => sCtx.DamageInvaders( sCtx.Dahan.CountAll ) );
-	}
+	public Task Level2( GameCtx ctx )
+		=> new SpaceAction( "1 Damage per dahan", ctx => ctx.DamageInvaders( ctx.Dahan.CountAll, Invader.Any ) )
+			.In().SpiritPickedLand().AllDifferent().Which( Has.Dahan )
+			.ForEachSpirit()
+			.Execute( ctx );
 
 	[FearLevel( 3, "Each player chooses a different land with Dahan. 2 Damage per Dahan there." )]
-	public Task Level3( GameCtx ctx ) {
-		return ForEachPlayerChosenLandWithDahan( ctx, sCtx => sCtx.DamageInvaders( sCtx.Dahan.CountAll * 2 ) );
-	}
-
-	static async Task ForEachPlayerChosenLandWithDahan( GameCtx ctx, Func<TargetSpaceCtx,Task> action ) {
-
-		const string prompt = "Fear:select land with dahan";
-
-		HashSet<Space> used = new ();
-		foreach(var spiritCtx in ctx.Spirits) {
-			// Select un-used space
-			var options = spiritCtx.GameState.AllActiveSpaces.Where( s=>s.Dahan.Any ).Select(x=>x.Space).Except( used ).ToArray();
-			var target = await spiritCtx.Decision( new Select.Space( prompt, options, Present.Always ));
-			used.Add( target );
-			TargetSpaceCtx spactCtx = spiritCtx.Target(target);
-
-			await action(spactCtx);
-		}
-	}
+	public Task Level3( GameCtx ctx )
+		=> new SpaceAction( "2 Damage per dahan", ctx => ctx.DamageInvaders( ctx.Dahan.CountAll*2, Invader.Any ) )
+			.In().SpiritPickedLand().AllDifferent().Which( Has.Dahan )
+			.ForEachSpirit()
+			.Execute( ctx );
 
 }

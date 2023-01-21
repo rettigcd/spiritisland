@@ -2,6 +2,7 @@
 
 /// <summary>
 /// Wraps: Space, Token-Counts on that space, API to publish token-changed events.
+/// Has same Scope as GameState (not bound to an ActionScope
 /// </summary>
 public class SpaceState : HasNeighbors<SpaceState> {
 
@@ -136,7 +137,6 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	#endregion
 
-
 	#region Event-Generating Token Changes
 
 	public GameState AccessGameState() => _api.AccessGameState();
@@ -150,7 +150,8 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	public bool HasInvaders() => Has( TokenCategory.Invader );
 
-	public bool HasStrife => Keys.OfType<HealthToken>().Any(x=>x.StrifeCount>0);
+	public bool HasStrife => Keys.OfType<HealthToken>().Any(x=>0<x.StrifeCount);
+	public int StrifeCount => Keys.OfType<HealthToken>().Sum( x => x.StrifeCount );
 
 	public int CountStrife() => Keys.OfType<HealthToken>().Where(x=>x.StrifeCount>0).Sum( t => _counts[t] );
 
@@ -183,11 +184,6 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	public SpaceState LinkedViaWays; // HACK - for Finder
 
-	// This is trying to accomplish: (Some terrain other than Ocean)
-	public IEnumerable<SpaceState> CascadingBlightOptions => Adjacent
-		 .Where(x => !this._gameState.Island.Terrain_ForBlight.MatchesTerrain(x, Terrain.Ocean) // normal case,
-			|| this._gameState.Island.Terrain_ForBlight.MatchesTerrain( x, Terrain.Wetland ) );
-
 	public IEnumerable<SpaceState> Range(int maxDistance) => this.CalcDistances( maxDistance ).Keys;
 
 	/// <summary> Explicitly named so not to confuse with Powers - Range commands. </summary>
@@ -218,14 +214,6 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	#endregion
 
-
-	public void TimePasses() {
-		Blight.Blocked = false; // !!! move inside cleanup token???
-
-		foreach( var cleanup in Keys.OfType<TokenWithEndOfRoundCleanup>().ToArray() )
-			cleanup.EndOfRoundCleanup( this );
-	}
-
 	#region Ravage
 
 	public Task Ravage() {
@@ -235,6 +223,20 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	}
 
 	#endregion
+
+	#region NON-POWER Terrain
+
+	public bool IsInPlay_NonPowerOnly => AccessGameState().Island.Terrain.IsInPlay( this );
+	public bool IsInland_NonPowerOnly => AccessGameState().Island.Terrain.IsInland( this );
+
+	#endregion
+
+	public void TimePasses() {
+		Blight.Blocked = false; // !!! move inside cleanup token???
+
+		foreach(var cleanup in Keys.OfType<TokenWithEndOfRoundCleanup>().ToArray())
+			cleanup.EndOfRoundCleanup( this );
+	}
 
 	// Utter a Curse of Dread and Bone requires these overrides
 	public override bool Equals( object obj ) => obj is SpaceState other && other.Space == Space;

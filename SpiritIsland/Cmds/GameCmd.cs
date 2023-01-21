@@ -5,17 +5,20 @@ using GameCtxCmd = DecisionOption<GameCtx>;
 
 public static partial class Cmd {
 
-	static public GameCtxCmd AtTheStartOfNextRound( DecisionOption<GameState> cmd ) => new GameCtxCmd(
-		"At the start of next round, "+cmd.Description,
-		gs => gs.GameState.TimePasses_ThisRound.Push( cmd.Execute )	// There are no actions here, just game reconfig
-	);
+	// Various "For" prepositions
+	static public (IExecuteOn<TargetSpaceCtx> action, string preposition) In( this IExecuteOn<TargetSpaceCtx> spaceAction ) => (spaceAction, "in");
+	static public (IExecuteOn<TargetSpaceCtx> action, string preposition) From( this IExecuteOn<TargetSpaceCtx> spaceAction ) => (spaceAction, "from");
+	static public (IExecuteOn<TargetSpaceCtx> action, string preposition) To( this IExecuteOn<TargetSpaceCtx> spaceAction ) => (spaceAction, "to");
+	static public (IExecuteOn<TargetSpaceCtx> action, string preposition) On( this IExecuteOn<TargetSpaceCtx> spaceAction ) => (spaceAction, "on");
 
-	static public GameCtxCmd AtTheStartOfEachInvaderPhase( GameCtxCmd cmd ) => new GameCtxCmd(
-		"At the start of each Invader Phase, " + cmd.Description,
-		ctx => ctx.GameState.StartOfInvaderPhase.ForGame.Add( ( _ ) => cmd.Execute( ctx ) )
-	);
+	// How we select the land
+	static public SpiritPicksLandAction SpiritPickedLand( this (IExecuteOn<TargetSpaceCtx> spaceAction, string preposition) x ) => new SpiritPicksLandAction( x.spaceAction, x.preposition );
+	static public EachActiveLand EachActiveLand( this (IExecuteOn<TargetSpaceCtx> spaceAction, string preposition) x ) => new EachActiveLand( x.spaceAction, x.preposition );
+	static public NLandsPerBoard OneLandPerBoard( this (IExecuteOn<TargetSpaceCtx> spaceAction, string preposition) x ) => new NLandsPerBoard( x.spaceAction, x.preposition, 1 );
+	static public NLandsPerBoard NDifferentLands( this (IExecuteOn<TargetSpaceCtx> spaceAction, string preposition) x, int count ) => new NLandsPerBoard( x.spaceAction, x.preposition, count );
 
-	static public GameCtxCmd OnEachBoard( this DecisionOption<BoardCtx> boardAction )
+	// For each: Board
+	static public GameCtxCmd ForEachBoard( this IExecuteOn<BoardCtx> boardAction )
 		=> new GameCtxCmd(
 			"On each board, " + boardAction.Description,
 			async ctx => {
@@ -27,24 +30,8 @@ public static partial class Cmd {
 			}
 		);
 
-	static public GameCtxCmd InEachLand( IExecuteOn<TargetSpaceCtx> action, Func<SpaceState, bool> filter = null )
-		=> new GameCtxCmd(
-			"In each land, " + action.Description,
-			async ctx => {
-				var gs = ctx.GameState;
-				for(int i = 0; i < gs.Island.Boards.Length; ++i) {
-					var decisionMaker = gs.Spirits[i < gs.Spirits.Length ? i : 0].BindSelf( gs, ctx.ActionScope ); // use Head spirit for extra board
-					var board = gs.Island.Boards[i];
-					var spaces = board.Spaces
-						.Select( s => gs.Tokens[s] )
-						.Where( x => filter == null || filter( x ) );
-					foreach(var ss in spaces)
-						await action.Execute( decisionMaker.Target( ss.Space ) );
-				}
-			}
-		);
-
-	static public DecisionOption<GameCtx> EachSpirit( DecisionOption<SelfCtx> action )
+	// For each: Spirit
+	static public DecisionOption<GameCtx> ForEachSpirit( this IExecuteOn<SelfCtx> action )
 		=> new GameCtxCmd(
 			"For each spirit, " + action.Description,
 			async ctx => {
@@ -52,5 +39,16 @@ public static partial class Cmd {
 					await action.Execute( spirit.BindSelf( ctx.GameState, ctx.ActionScope ) );
 			}
 		);
+
+	// At specific times
+	static public GameCtxCmd AtTheStartOfNextRound( this DecisionOption<GameState> cmd ) => new GameCtxCmd(
+		"At the start of next round, " + cmd.Description,
+		gs => gs.GameState.TimePasses_ThisRound.Push( cmd.Execute ) // There are no actions here, just game reconfig
+	);
+
+	static public GameCtxCmd AtTheStartOfEachInvaderPhase( GameCtxCmd cmd ) => new GameCtxCmd(
+		"At the start of each Invader Phase, " + cmd.Description,
+		ctx => ctx.GameState.StartOfInvaderPhase.ForGame.Add( ( _ ) => cmd.Execute( ctx ) )
+	);
 
 }

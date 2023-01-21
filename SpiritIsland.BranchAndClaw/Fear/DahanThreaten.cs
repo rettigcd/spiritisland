@@ -6,41 +6,27 @@ public class DahanThreaten : FearCardBase, IFearCard {
 	public string Text => Name;
 
 	[FearLevel( 1, "each player adds 1 strife in a land with dahan" )]
-	public async Task Level1( GameCtx ctx ) {
+	public Task Level1( GameCtx ctx )
+		=> Cmd.AddStrife(1)
+			.In()
+			.SpiritPickedLand()
+			.Which( Has.Dahan )
+			.ByPickingToken( Invader.Any )
+			.ForEachSpirit()
+			.Execute( ctx );
 
-		// each player adds 1 strife in a land with dahan
-		foreach(SelfCtx spirit in ctx.Spirits)
-			await spirit.AddStrifeToOne( ctx.Lands( SpaceFilters.WithDahan) );
-	}
-
-	[FearLevel( 2, "each player adds 1 strife in a land with dahan. For the rest of t his turn, invaders have -1 health per strife to a minimum of 1" )]
-	public async Task Level2( GameCtx ctx ) {
-
-		// each player adds 1 strife in a land with dahan
-		foreach(SelfCtx spirit in ctx.Spirits)
-			await spirit.AddStrifeToOne( ctx.Lands( SpaceFilters.WithDahan) );
-
-		// For the rest of this turn, invaders have -1 health per strife to a minimum of 1
-		await StrifedRavage.InvadersReduceHealthByStrifeCount( ctx );
-
-	}
+	[FearLevel( 2, "each player adds 1 strife in a land with dahan. For the rest of this turn, invaders have -1 health per strife to a minimum of 1" )]
+	public Task Level2( GameCtx ctx )
+		=> Cmd.Multiple(
+				Cmd.AddStrife( 1 ).In().SpiritPickedLand().Which( Has.Dahan ).ForEachSpirit(),
+				Cmd.StrifePenalizesHealth
+			).Execute( ctx );
 
 	[FearLevel( 3, "Each player adds 1 strife in a land with dahan.  In every land with strife, 1 damage per dahan" )]
-	public async Task Level3( GameCtx ctx ) {
-
-		// each player adds 1 strife in a land with dahan
-		foreach(SelfCtx spirit in ctx.Spirits)
-			await spirit.AddStrifeToOne( ctx.Lands( SpaceFilters.WithDahan) );
-
-		var decidingSpirit = ctx.Spirits.First();
-		// in every land with strife
-		var landsWithStrife = ctx.GameState.AllActiveSpaces
-			.Where( SpaceFilters.WithStrife );
-
-		foreach(var ss in landsWithStrife)
-			// 1 damage per dahan
-			await decidingSpirit.Target( ss.Space ).DamageInvaders( ss.Dahan.CountAll );
-
-	}
+	public Task Level3( GameCtx ctx )
+		=> Cmd.Multiple(
+			Cmd.AddStrife( 1 ).In().SpiritPickedLand().Which( Has.Dahan ).ForEachSpirit(),
+			Cmd.OneDamagePerDahan.In().EachActiveLand().Which( Has.Strife )
+		).Execute( ctx );
 
 }

@@ -7,7 +7,7 @@ public interface IExecuteOn<CTX> {
 	/// 1) detects if action can be performed on context
 	/// 2) detects if pre-requisite condition has been triggered
 	/// </summary>
-	bool IsApplicable(CTX ctx);
+	bool IsApplicable(CTX ctx);  // !!! This might only be used for TargetSpaceCtx, not used with other contexts
 
 	/// <summary>
 	/// Describes the action that will be taken. (ie. Push 2 Beast)
@@ -37,7 +37,7 @@ public class DecisionOption<T> : IExecuteOn<T> {
 	/// <summary>
 	/// Criteria is pre-evaluated once (probably for Pick1(...) and passed in.
 	/// </summary>
-	public IExecuteOn<T> OnlyExecuteIf( bool condition ) {
+	public IExecuteOn<T> OnlyExecuteIf( bool condition ) { // !!! I think this is only used For SpaceAction, could be moved there maybe?
 		if(!condition)
 			isApplicable = (_)=> false;
 		return this;

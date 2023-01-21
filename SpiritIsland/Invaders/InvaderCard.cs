@@ -31,12 +31,11 @@ public sealed class InvaderCard : IOption {
 
 	#region Constructors
 
-	public InvaderCard( SpaceFilter filter, int invaderStage ) {
+	public InvaderCard( InvaderCardSpaceFilter filter, int invaderStage ) {
 		Filter = filter;
 		InvaderStage = invaderStage;
 		HasEscalation = InvaderStage == 2 && Filter.Text != CoastalFilter.Name;
 		Text = (HasEscalation ? "2" : "") + Filter.Text;
-
 	}
 
 	#endregion
@@ -50,11 +49,11 @@ public sealed class InvaderCard : IOption {
 	#endregion
 
 	#region private fields
-	readonly public SpaceFilter Filter; // public so Drawer can draw it.
+	readonly public InvaderCardSpaceFilter Filter; // public so Drawer can draw it.
 	#endregion
 }
 
-public class SingleTerrainFilter : SpaceFilter {
+public class SingleTerrainFilter : InvaderCardSpaceFilter {
 	public SingleTerrainFilter( Terrain terrain ) {
 		this.Terrain = terrain;
 		this.Text = terrain.ToString()[..1];
@@ -64,7 +63,7 @@ public class SingleTerrainFilter : SpaceFilter {
 	readonly public Terrain Terrain; // public so UI can detect what to draw
 }
 
-public class DoubleTerrainFilter : SpaceFilter {
+public class DoubleTerrainFilter : InvaderCardSpaceFilter {
 	public DoubleTerrainFilter( Terrain t1, Terrain t2 ) {
 		Terrain1 = t1;
 		Terrain2 = t2;
@@ -76,7 +75,7 @@ public class DoubleTerrainFilter : SpaceFilter {
 }
 
 
-public class CoastalFilter : SpaceFilter {
+public class CoastalFilter : InvaderCardSpaceFilter {
 	public const string Name = "Coastal";
 	public string Text => Name;
 	public bool Matches( Space space ) => space.IsCoastal;

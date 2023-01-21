@@ -6,34 +6,33 @@ public class BeliefTakesRoot : FearCardBase, IFearCard {
 	public string Text => Name;
 
 	[FearLevel( 1, "Defend 2 in all lands with Presence." )]
-	public Task Level1( GameCtx ctx ) {
-		Defend2WherePresence( ctx );
-		return Task.CompletedTask;
-	}
-
-	static void Defend2WherePresence( GameCtx ctx ) {
-		GameState gs = ctx.GameState;
-		foreach(var space in gs.Spirits.SelectMany( s => new ReadOnlyBoundPresence( s, ctx.GameState ).Spaces ).Distinct())
-			gs.Tokens[space].Defend.Add(2);
-	}
+	public Task Level1( GameCtx ctx ) 
+		=> Cmd.Defend( 2 )
+			.On().EachActiveLand().Which( Has.AnySpiritPresence )
+			.Execute( ctx );
 
 	[FearLevel( 2, "Defend 2 in all lands with Presence. Each Spirit gains 1 Energy per SacredSite they have in lands with Invaders." )]
-	public Task Level2( GameCtx ctx ) {
-		Defend2WherePresence( ctx );
-		foreach(var spirit in ctx.Spirits)
-			spirit.Self.Energy += spirit.Self.Presence.SacredSites( ctx.GameState, ctx.GameState.Island.Terrain_ForFear ).Count( s => spirit.Target(s).HasInvaders );
-		return Task.CompletedTask;
+	public async Task Level2( GameCtx ctx ) {
+		await Cmd.Defend( 2 )
+			.On().EachActiveLand().Which( Has.AnySpiritPresence )
+			.Execute( ctx );
+
+		await GainEnergyPerSacredSiteWithInvaders
+			.ForEachSpirit()
+			.Execute( ctx );
 	}
 
 	[FearLevel( 3, "Each player chooses a different land and removes up to 2 Health worth of Invaders per Presence there." )]
-	public Task Level3( GameCtx ctx ) {
-		return Cmd.EachSpirit(
-			Cmd.PickDifferentLandThenTakeAction(
-				"Remove up to 2 Health worth of Invaders per presence.",
-				Cmd.RemoveHealthOfInvaders("Remove 2 Health worth of invaders per Presence there.", ctx => 2 * ctx.Presence.Count )
-			)
-		).Execute(ctx);
+	public Task Level3( GameCtx ctx )
+		=> Cmd.RemoveHealthOfInvaders( "Remove 2 Health worth of invaders per Presence there.", ctx => 2 * ctx.Presence.Count )
+			.From().SpiritPickedLand()
+			.ForEachSpirit()
+			.Execute(ctx);
 
-	}
+	static DecisionOption<SelfCtx> GainEnergyPerSacredSiteWithInvaders => new DecisionOption<SelfCtx>("gain 1 energy per SS with Invaders", ctx => {
+		ctx.Self.Energy += ctx.Self.Presence
+			.SacredSiteStates( ctx.GameState, ctx.GameState.Island.Terrain )
+			.Count( ss => ss.OfAnyClass( Invader.Any ).Any() );
+	} );
 
 }

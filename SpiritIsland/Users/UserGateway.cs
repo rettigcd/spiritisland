@@ -69,6 +69,8 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 		BoardChanged?.Invoke();
 	}
 
+	public SpaceToken Preloaded { get; set; }
+
 	/// <summary>
 	/// Caller presents a decision to the Gateway and waits for the gateway to return an choice.
 	/// </summary>
@@ -85,12 +87,15 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 		if(decision.Options.Length == 0)
 			// Auto-Select NULL
 			promise.TrySetResult( null );
-
-		else if(decision.Options.Length == 1 && decision.AllowAutoSelect) {
+		else if(Preloaded != null) {
+			if(!decision.Options.Contains(Preloaded))
+				throw new InvalidOperationException( $"Preloaded option {Preloaded.Text} not an option for "+decision.Prompt );
+			IOption preloaded = Preloaded; Preloaded = null;
+			decisionMaker.Select( preloaded );
+		} else if(decision.Options.Length == 1 && decision.AllowAutoSelect) {
 			// Auto-Select Single
 			decisionMaker.Select( decision.Options[0] );
 			Log( new DecisionLogEntry( decision.Options[0], decision, true ) );
-
 		} else {
 			activeDecisionMaker = decisionMaker;
 			signal.Set();

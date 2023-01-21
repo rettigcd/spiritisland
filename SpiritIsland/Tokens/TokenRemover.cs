@@ -25,19 +25,20 @@ public class TokenRemover {
 	async Task Exec( Present present ) {
 
 		var counts = ctx.Target(source).Tokens;
-		Token[] GetTokens() {
+		IVisibleToken[] GetTokens() {
 			var groupsWithRemainingCounts = indexLookupByGroup
 				.Where( pair => sharedGroupCounts[pair.Value] > 0 )
 				.Select( p => p.Key )
 				.ToArray();
-			return counts.OfAnyClass( groupsWithRemainingCounts ); // !!! Make Dahan Freezable
+			return counts.OfAnyClass( groupsWithRemainingCounts )
+				.Cast<IVisibleToken>()
+				.ToArray(); // !!! Make Dahan Freezable
 		}
 
-		Token[] tokens;
+		IVisibleToken[] tokens;
 		while(0 < (tokens = GetTokens()).Length) {
 			// Select Token
-			var decision = Select.TokenFrom1Space.TokenToRemove( source, sharedGroupCounts.Sum(), tokens, present );
-			var token = await ctx.Self.Gateway.Decision( decision );
+			var token = (await ctx.Self.Gateway.Decision( Select.TokenFrom1Space.TokenToRemove( source, sharedGroupCounts.Sum(), tokens, present ) ))?.Token;
 			if(token == null) break;
 
 			// Remove

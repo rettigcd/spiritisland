@@ -163,7 +163,7 @@ public class HabsburgMonarchy : IAdversary {
 		using var actionScope = gameState.StartAction(ActionCategory.Default);
 
 		// On each board
-		await Cmd.OnEachBoard( new DecisionOption<BoardCtx>( "Add 1 or 2 blight to land without town/blight.", IfTooHealthyAddBlight ) )
+		await Cmd.ForEachBoard( new DecisionOption<BoardCtx>( "Add 1 or 2 blight to land without town/blight.", IfTooHealthyAddBlight ) )
 			.Execute( new GameCtx( gameState, actionScope ) );
 
 	}

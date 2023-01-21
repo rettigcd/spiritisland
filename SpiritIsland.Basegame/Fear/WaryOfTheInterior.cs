@@ -6,27 +6,26 @@ public class WaryOfTheInterior : FearCardBase, IFearCard {
 	public string Text => Name;
 
 	[FearLevel( 1, "Each player removes 1 Explorer from an Inland land." )]
-	public Task Level1( GameCtx ctx ) => EachSpiritRemoves1Invader( ctx, x => x.IsInland, Invader.Explorer );
-
+	public Task Level1( GameCtx ctx ) 
+		=> Cmd.RemoveExplorers(1)
+			.From().SpiritPickedLand().Which( Is.Inland )
+			.ByPickingToken( Invader.Explorer )
+			.ForEachSpirit()
+			.Execute(ctx);
+		
 	[FearLevel( 2, "Each player removes 1 Explorer / Town from an Inland land." )]
-	public Task Level2( GameCtx ctx ) => EachSpiritRemoves1Invader( ctx, x=>x.IsInland, Invader.Explorer_Town );
+	public Task Level2( GameCtx ctx )
+		=> Cmd.RemoveExplorersOrTowns( 1 )
+			.From().SpiritPickedLand().Which( Is.Inland )
+			.ByPickingToken( Invader.Explorer_Town )
+			.ForEachSpirit()
+			.Execute( ctx );
 
 	[FearLevel( 3, "Each player removes 1 Explorer / Town from any land." )]
-	public Task Level3( GameCtx ctx ) => EachSpiritRemoves1Invader( ctx, s=>true, Invader.Explorer_Town );
-
-	static async Task EachSpiritRemoves1Invader( GameCtx ctx, Func<TargetSpaceCtx,bool> spaceCondition, params TokenClass[] removable ) {
-		foreach(var spiritCtx in ctx.Spirits) {
-			var options = spiritCtx.GameState.AllActiveSpaces
-				.Select( x=>spiritCtx.Target(x.Space) )
-				.Where( x=>x.IsInPlay )
-				.Where( spaceCondition )
-				.Where( ctx => ctx.Tokens.HasAny( removable ) )
-				.Select(x=>x.Space)
-				.ToArray();
-			if(options.Length == 0) return;
-
-			await spiritCtx.RemoveTokenFromOneSpace(options,1,removable);
-		}
-	}
-
+	public Task Level3( GameCtx ctx )
+		=> Cmd.RemoveExplorersOrTowns( 1 )
+			.From().SpiritPickedLand()
+			.ByPickingToken( Invader.Explorer_Town )
+			.ForEachSpirit()
+			.Execute( ctx );
 }

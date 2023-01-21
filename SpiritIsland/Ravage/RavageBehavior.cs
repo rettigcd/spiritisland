@@ -7,6 +7,7 @@ public class RavageBehavior {
 
 	// Order / Who is damaged
 	public Func<RavageBehavior, RavageData, Task> RavageSequence = RavageSequence_Default;
+	// Gets the Aggregate damage from attackers. (default action does this by calling AttackDamageFrom1)
 	public Func<RavageBehavior, CountDictionary<HealthToken>, SpaceState, int> GetDamageFromParticipatingAttackers = GetDamageFromParticipatingAttackers_Default;
 	public Func<RavageBehavior, RavageData, int, Task> DamageDefenders = DamageDefenders_Default;
 	public Func<SpaceState, HealthToken, int> AttackDamageFrom1 = AttackDamageFrom1_Default;
