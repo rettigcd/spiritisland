@@ -8,4 +8,8 @@
     <ProjectReference Include="..\SpiritIsland\SpiritIsland.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Fear\" />
+  </ItemGroup>
+
 </Project>
