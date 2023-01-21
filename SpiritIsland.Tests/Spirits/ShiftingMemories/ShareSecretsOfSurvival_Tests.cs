@@ -25,7 +25,9 @@ public class ShareSecretsOfSurvival_Tests {
 		var fxt = new ConfigurableTestFixture();
 		var space = fxt.Board[5];
 		// Given: # of Dahan and Towns
-		fxt.InitTokens( space, startingTokens);
+		fxt.InitTokens( space, startingTokens );
+		//   And: Island won't blight
+		fxt.GameState.IslandWontBlight();
 		//   And: played ShareSecretsOfSurvival
 		var ctx = fxt.SelfCtx.Target( space );
 		Play_ShareSecretsOfSurvival( ctx );
@@ -62,6 +64,7 @@ public class ShareSecretsOfSurvival_Tests {
 		var space = fxt.Board[5];
 		// Given: # of Dahan and Towns
 		fxt.InitTokens( space, startingTokens );
+		fxt.GameState.IslandWontBlight();
 		//   And: played ShareSecretsOfSurvival
 		var ctx = fxt.SelfCtx.Target( space );
 		Play_ShareSecretsOfSurvival( ctx );

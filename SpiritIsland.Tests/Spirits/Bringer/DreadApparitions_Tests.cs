@@ -77,7 +77,7 @@ public class DreadApparitions_Tests {
 
 		// Disable destroying presence
 		ctx.GameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
-
+		ctx.GameState.IslandWontBlight();
 
 		// has 1 city and lots of dahan
 		ctx.Tokens.AdjustDefault( Invader.City, 1 ); // don't use ctx.Invaders because it has a fake/dream invader count

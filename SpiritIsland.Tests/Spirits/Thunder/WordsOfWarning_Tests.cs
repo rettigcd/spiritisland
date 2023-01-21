@@ -27,7 +27,7 @@ public class WordsOfWarning_Tests : ThunderCards  {
 		User.TargetsLand(WordsOfWarning.Name,"[A2],A4");
 
 		// When: ravaging on A2
-//			await gs.InvaderEngine.RavageCard(new InvaderCard(a[2]));
+		gs.IslandWontBlight();
 		await a[2].DoARavage( gs );
 
 		// Then: 1 explorer left

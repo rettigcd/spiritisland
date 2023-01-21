@@ -30,7 +30,7 @@ public class Polygon_Tests {
 	[InlineData( 0, 0, 0, "0 0 0" )]            // black
 	[InlineData( 128, 128, 128, "0 0 50" )]    // gray
 	[InlineData( 255, 255, 255, "0 0 100" )]      // white
-	[InlineData( 255, 0, 0, "0 1 50" )]        // red
+	[InlineData( 255, 0, 0, "0 100 50" )]        // red
 	[InlineData( 0, 255, 0, "120 100 50" )]      // green
 	[InlineData( 0, 0, 255, "240 100 50" )]      // blue
 	[InlineData( 255, 255, 0, "60 100 50" )]     // yellow

@@ -32,6 +32,8 @@ static internal class Extensions {
 		gs.InitTestInvaderDeck( new byte[12].Select( _ => nullCard ).ToArray() );
 	}
 
+	static public void IslandWontBlight( this GameState gameState ) => gameState.blightOnCard = 100;
+
 	static public void Assert_Invaders( this GameState gameState, Space space, string expectedString ) {
 		gameState.Tokens[space].InvaderSummary().ShouldBe( expectedString );
 	}

@@ -100,6 +100,9 @@ public class Volcano_Tests {
 		space.InitDefault( Invader.Explorer, 3 );
 		spirit.Presence.Adjust( space, 3 );
 
+		//   And: Island Won't blight
+		gameState.IslandWontBlight();
+
 		//  When: they ravage and cause blight, destroying 1 presence
 		Task task = space.DoARavage();
 
@@ -323,6 +326,9 @@ public class Volcano_Tests {
 		//   And: AdjBlight => 1 blight, 10 explorers
 		adjBlight.Blight.Init(1);
 		adjBlight.InitDefault( Invader.Explorer, 20 );
+
+		//  And: Island won't blight
+		gameState.IslandWontBlight();
 
 		// When: activate Innate
 		using UnitOfWork actionScope = gameState.StartAction( ActionCategory.Spirit_Power );

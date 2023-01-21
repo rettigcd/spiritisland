@@ -66,6 +66,7 @@ public class StubbornSolidity_Tests {
 		Spirit spirit = new StonesUnyieldingDefiance();
 		Board board = Board.BuildBoardA(); 
 		GameState gameState = new GameState(spirit,board);
+		gameState.IslandWontBlight();
 		SpaceState tokens = gameState.Tokens[ board[5] ];
 
 		// Given: 4 dahan, 10 explorers

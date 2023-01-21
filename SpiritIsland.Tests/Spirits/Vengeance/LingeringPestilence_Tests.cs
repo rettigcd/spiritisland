@@ -42,6 +42,8 @@ public class LingeringPestilence_Tests {
 		self.Presence.Adjust( space, 2 );
 		//   And: invaders
 		space.InitTokens("1C@3");
+		//   And: island won't bight
+		gameState.IslandWontBlight();
 
 		// When: the city ravages
 		space.DoARavage().Wait();
