@@ -3,7 +3,7 @@ global using SpiritIsland;
 global using SpiritIsland.Basegame;
 global using SpiritIsland.BranchAndClaw;
 global using SpiritIsland.JaggedEarth;
-global using SpiritIsland.PromoPack1;
+global using SpiritIsland.FeatherAndFlame;
 global using System;
 global using System.Collections.Generic;
 global using System.Collections.Immutable;

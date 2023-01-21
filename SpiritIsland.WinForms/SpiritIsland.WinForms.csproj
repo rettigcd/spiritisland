@@ -207,8 +207,8 @@
   <ItemGroup>
     <ProjectReference Include="..\SpiritIsland.Basegame\SpiritIsland.Basegame.csproj" />
     <ProjectReference Include="..\SpiritIsland.BranchAndClaw\SpiritIsland.BranchAndClaw.csproj" />
+    <ProjectReference Include="..\SpiritIsland.FeatherAndFlame\SpiritIsland.FeatherAndFlame.csproj" />
     <ProjectReference Include="..\SpiritIsland.JaggedEarth\SpiritIsland.JaggedEarth.csproj" />
-    <ProjectReference Include="..\SpiritIsland.PromoPack1\SpiritIsland.PromoPack1.csproj" />
     <ProjectReference Include="..\SpiritIsland\SpiritIsland.csproj" />
   </ItemGroup>
 
@@ -603,43 +603,43 @@
     <None Update="images\ocean.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="images\pp1\spirit\absorb_essence.jpg">
+    <None Update="images\faf\spirit\absorb_essence.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="images\pp1\spirit\aid_from_the_spiritspeakers.jpg">
+    <None Update="images\faf\spirit\aid_from_the_spiritspeakers.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="images\pp1\spirit\asphyxiating_smoke.jpg">
+    <None Update="images\faf\spirit\asphyxiating_smoke.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\bac\spirit\boon_of_growing_power.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="images\pp1\spirit\a_circuitous_and_wending_journey.jpg">
+    <None Update="images\faf\spirit\a_circuitous_and_wending_journey.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="images\pp1\spirit\dark_skies_loose_a_stinging_rain.jpg">
+    <None Update="images\faf\spirit\dark_skies_loose_a_stinging_rain.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="images\pp1\spirit\elemental_aegis.jpg">
+    <None Update="images\faf\spirit\elemental_aegis.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="images\pp1\spirit\flames_fury.jpg">
+    <None Update="images\faf\spirit\flames_fury.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="images\pp1\spirit\flashfires.jpg">
+    <None Update="images\faf\spirit\flashfires.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="images\pp1\spirit\foundations_sink_into_mud.jpg">
+    <None Update="images\faf\spirit\foundations_sink_into_mud.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="images\pp1\spirit\gift_of_abundance.jpg">
+    <None Update="images\faf\spirit\gift_of_abundance.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="images\pp1\spirit\gift_of_flowing_power.jpg">
+    <None Update="images\faf\spirit\gift_of_flowing_power.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="images\pp1\spirit\gift_of_the_primordial_deeps.jpg">
+    <None Update="images\faf\spirit\gift_of_the_primordial_deeps.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\bac\spirit\prey_on_the_builders.jpg">
@@ -657,13 +657,13 @@
     <None Update="images\bac\spirit\terrifying_chase.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="images\pp1\spirit\offer_passage_between_worlds.jpg">
+    <None Update="images\faf\spirit\offer_passage_between_worlds.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="images\pp1\spirit\paths_tied_by_nature.jpg">
+    <None Update="images\faf\spirit\paths_tied_by_nature.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="images\pp1\spirit\threatening_flames.jpg">
+    <None Update="images\faf\spirit\threatening_flames.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\bac\spirit\too_near_the_jungle.jpg">
@@ -1929,13 +1929,13 @@
     <None Update="images\powerstorm.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="images\pp1\spirit\travelers_boon.jpg">
+    <None Update="images\faf\spirit\travelers_boon.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="images\pp1\spirit\unbearable_deluge.jpg">
+    <None Update="images\faf\spirit\unbearable_deluge.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="images\pp1\spirit\ways_of_shore_and_heartland.jpg">
+    <None Update="images\faf\spirit\ways_of_shore_and_heartland.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\pull_beneath_the_hungry_earth.jpg">

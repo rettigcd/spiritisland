@@ -1082,7 +1082,6 @@ public partial class IslandControl : Control {
 	// Brushes for Text
 	static Brush SpaceLabelBrush => Brushes.White;
 	static Brush CardLabelBrush => Brushes.Black;
-	static Brush BlightedTextBrush => Brushes.Red;
 	static Brush GameTextBrush_Default => Brushes.Black;
 	static Brush GameTextBrush_Victory => Brushes.DarkGreen;
 	static Brush GameTextBrush_Defeat => Brushes.DarkRed;

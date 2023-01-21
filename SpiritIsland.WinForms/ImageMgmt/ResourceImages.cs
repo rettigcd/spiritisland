@@ -82,14 +82,14 @@ public class ResourceImages {
 		var (blightedRect,(titleRect,(descRect,_))) = bounds.InflateBy(-10).SplitVerticallyByWeight(10,.15f,.25f,.5f);
 
 		// Draw Blighted ISLAND
-		if(card is StillHealthyBlightCard sh) {
+		if(card is StillHealthyBlightCard) {
 			graphics.FillRoundedRectangle( Brushes.GreenYellow, blightedRect, 15 );
-			using(Font headerFont = UseGameFont( blightedRect.Height * .65f ))
-				graphics.DrawStringCenter( "STILL HEALTHY", headerFont, Brushes.Black, blightedRect );
+			using Font headerFont = UseGameFont( blightedRect.Height * .65f );
+			graphics.DrawStringCenter( "STILL HEALTHY", headerFont, Brushes.Black, blightedRect );
 		} else {
 			graphics.FillRoundedRectangle( Brushes.Wheat, blightedRect, 15 );
-			using(Font headerFont = UseGameFont( blightedRect.Height * .65f ))
-				graphics.DrawStringCenter( "BLIGHTED ISLAND", headerFont, Brushes.Black, blightedRect );
+			using Font headerFont = UseGameFont( blightedRect.Height * .65f );
+			graphics.DrawStringCenter( "BLIGHTED ISLAND", headerFont, Brushes.Black, blightedRect );
 		}
 		// Draw Label
 		graphics.FillRoundedRectangle( Brushes.Wheat, titleRect, 15 );

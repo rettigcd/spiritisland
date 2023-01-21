@@ -1,7 +1,7 @@
 ﻿using SpiritIsland.Basegame;
 using SpiritIsland.BranchAndClaw;
 using SpiritIsland.JaggedEarth;
-using SpiritIsland.PromoPack1;
+using SpiritIsland.FeatherAndFlame;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -15,7 +15,7 @@ public partial class ConfigureGameDialog : Form {
 	static public readonly GameBuilder GameBuilder = new GameBuilder(
 		new Basegame.GameComponentProvider(),
 		new BranchAndClaw.GameComponentProvider(),
-		new PromoPack1.GameComponentProvider(),
+		new FeatherAndFlame.GameComponentProvider(),
 		new JaggedEarth.GameComponentProvider()
 	);
 

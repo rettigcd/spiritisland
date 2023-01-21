@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30621.155
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32328.378
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritIsland.Tests", "SpiritIsland.Tests\SpiritIsland.Tests.csproj", "{9BE61177-8535-4E7E-AE34-1C9C18D1AAEF}"
 EndProject
@@ -24,9 +24,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritIsland.BranchAndClaw"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritIsland.Basegame", "SpiritIsland.Basegame\SpiritIsland.Basegame.csproj", "{B254B6B4-47D9-4382-9CFB-7DB60C5C2BCA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritIsland.PromoPack1", "SpiritIsland.PromoPack1\SpiritIsland.PromoPack1.csproj", "{F31F1A40-876A-4BD1-943B-D0149B8E9F05}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritIsland.JaggedEarth", "SpiritIsland.JaggedEarth\SpiritIsland.JaggedEarth.csproj", "{59D84763-67EA-4BE2-B8AF-F95A2D3D67EB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritIsland.FeatherAndFlame", "SpiritIsland.FeatherAndFlame\SpiritIsland.FeatherAndFlame.csproj", "{BAC413CC-62AA-46DE-A3E3-B2FDF0367006}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,14 +58,14 @@ Global
 		{B254B6B4-47D9-4382-9CFB-7DB60C5C2BCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B254B6B4-47D9-4382-9CFB-7DB60C5C2BCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B254B6B4-47D9-4382-9CFB-7DB60C5C2BCA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F31F1A40-876A-4BD1-943B-D0149B8E9F05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F31F1A40-876A-4BD1-943B-D0149B8E9F05}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F31F1A40-876A-4BD1-943B-D0149B8E9F05}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F31F1A40-876A-4BD1-943B-D0149B8E9F05}.Release|Any CPU.Build.0 = Release|Any CPU
 		{59D84763-67EA-4BE2-B8AF-F95A2D3D67EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{59D84763-67EA-4BE2-B8AF-F95A2D3D67EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59D84763-67EA-4BE2-B8AF-F95A2D3D67EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59D84763-67EA-4BE2-B8AF-F95A2D3D67EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BAC413CC-62AA-46DE-A3E3-B2FDF0367006}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAC413CC-62AA-46DE-A3E3-B2FDF0367006}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAC413CC-62AA-46DE-A3E3-B2FDF0367006}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAC413CC-62AA-46DE-A3E3-B2FDF0367006}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

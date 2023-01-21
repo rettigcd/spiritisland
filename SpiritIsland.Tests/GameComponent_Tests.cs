@@ -14,7 +14,7 @@ public  class GameComponent_Tests {
 
 	[Fact]
 	public void PromoPack1() {
-		ValidateGameComponentProvider( new SpiritIsland.PromoPack1.GameComponentProvider() );
+		ValidateGameComponentProvider( new SpiritIsland.FeatherAndFlame.GameComponentProvider() );
 	}
 
 	[Fact]

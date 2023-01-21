@@ -80,7 +80,7 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 		var providers = new IGameComponentProvider[] {
 			new SpiritIsland.Basegame.GameComponentProvider(),
 			new SpiritIsland.BranchAndClaw.GameComponentProvider(),
-			new SpiritIsland.PromoPack1.GameComponentProvider(),
+			new SpiritIsland.FeatherAndFlame.GameComponentProvider(),
 			new SpiritIsland.JaggedEarth.GameComponentProvider(),
 		};
 		GameBuilder = new GameBuilder( providers );
