@@ -35,7 +35,7 @@ public class UntendedLandCrumbles : BlightCardBase {
 				spirit.Energy -= contribution;
 			}
 		}
-	).Matches(ctx => requiredEnergy <= ctx.GameState.Spirits.Sum( s=>s.Energy ) );
+	).OnlyExecuteIf(ctx => requiredEnergy <= ctx.GameState.Spirits.Sum( s=>s.Energy ) );
 
 	static IExecuteOn<BoardCtx> JointlyDestroyPresenceOnBoard => new DecisionOption<BoardCtx>(
 		"Jointly destroy 1 presence",
@@ -49,6 +49,6 @@ public class UntendedLandCrumbles : BlightCardBase {
 				.Presence
 				.DestroyOneFromAnywhere(DestoryPresenceCause.BlightedIsland);
 		}
-	).Matches(ctx => ctx.GameState.Spirits.SelectMany(s=>new ReadOnlyBoundPresence(s,ctx.GameState).Spaces ).Any(s=>s.Board == ctx.Board));
+	).OnlyExecuteIf(ctx => ctx.GameState.Spirits.SelectMany(s=>new ReadOnlyBoundPresence(s,ctx.GameState).Spaces ).Any(s=>s.Board == ctx.Board));
 
 }

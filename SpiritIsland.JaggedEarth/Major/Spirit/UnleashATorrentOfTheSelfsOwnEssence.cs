@@ -10,7 +10,7 @@ public class UnleashATorrentOfTheSelfsOwnEssence {
 			ConvertEnergyToDamage,
 			// if you have 2 sun,3 fire: You may do both.
 			Cmd.Multiple( "Do Both", GainEnergy, ConvertEnergyToDamage )
-				.FilterOption( await ctx.YouHave( "2 sun,3 fire" ) )
+				.OnlyExecuteIf( await ctx.YouHave( "2 sun,3 fire" ) )
 		);
 
 	}

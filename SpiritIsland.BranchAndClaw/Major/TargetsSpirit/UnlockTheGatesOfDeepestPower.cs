@@ -24,7 +24,7 @@ public class UnlockTheGatesOfDeepestPower {
 		var payingHalfCostOption = new SelfAction(
 			$"paying {cost}",
 			ctx => ctx.Self.PlayCard(card, cost)
-		).Matches( x => cost <= x.Self.Energy );
+		).OnlyExecuteIf( x => cost <= x.Self.Energy );
 
 		//    * forgetting it at the end of turn.
 		var forgettingCardOption = new SelfAction(

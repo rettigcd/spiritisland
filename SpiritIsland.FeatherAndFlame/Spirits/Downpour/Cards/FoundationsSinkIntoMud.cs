@@ -13,7 +13,7 @@ internal class FoundationsSinkIntoMud {
 			new DecisionOption<TargetSpaceCtx>("2 damage to towns", x=>x.DamageInvaders(2,Invader.Town)),
 			// If target land is wetland, you may instead deal 1 Damage to each town / City
 			new DecisionOption<TargetSpaceCtx>("deal 1 damage to each town/city", x=>x.DamageEachInvader(1,Invader.Town_City))
-				.Matches(x=>x.IsOneOf(Terrain.Wetland))
+				.OnlyExecuteIf(x=>x.IsOneOf(Terrain.Wetland))
 		).Execute( ctx );
 	}
 

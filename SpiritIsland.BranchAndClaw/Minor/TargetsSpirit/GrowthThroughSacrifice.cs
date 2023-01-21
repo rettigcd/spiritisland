@@ -24,7 +24,7 @@ public class GrowthThroughSacrifice {
 
 		var removeBlight = new SpaceAction( "Remove 1 blight from one of your lands", spaceCtx => spaceCtx.RemoveBlight() );
 		var addPresence = new SpaceAction( "Add 1 presence to one of your lands", spaceCtx => spaceCtx.Presence.PlaceHere() )
-			.Matches( x=>x.Presence.CanBePlacedOn(x.Tokens) );
+			.OnlyExecuteIf( x=>x.Presence.CanBePlacedOn(x.Tokens) );
 
 		if(!doBoth)
 			await spaceCtx.SelectActionOption( removeBlight, addPresence );

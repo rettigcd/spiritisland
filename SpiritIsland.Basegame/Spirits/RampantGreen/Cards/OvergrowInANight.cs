@@ -13,7 +13,7 @@ public class OvergrowInANight {
 				await ctx.Presence.Place( from, ctx.Space );
 			} ),
 			new SpaceAction( "3 fear", ctx => ctx.AddFear(3) )
-				.Matches( x=>x.Presence.IsHere && x.Tokens.HasInvaders() ) // if presence and invaders
+				.OnlyExecuteIf( x=>x.Presence.IsHere && x.Tokens.HasInvaders() ) // if presence and invaders
 		);
 
 	}

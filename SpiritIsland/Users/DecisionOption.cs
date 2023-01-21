@@ -37,7 +37,7 @@ public class DecisionOption<T> : IExecuteOn<T> {
 	/// <summary>
 	/// Criteria is pre-evaluated once (probably for Pick1(...) and passed in.
 	/// </summary>
-	public IExecuteOn<T> FilterOption( bool condition ) {
+	public IExecuteOn<T> OnlyExecuteIf( bool condition ) {
 		if(!condition)
 			isApplicable = (_)=> false;
 		return this;
@@ -47,7 +47,7 @@ public class DecisionOption<T> : IExecuteOn<T> {
 	/// Checks if Target matches criteria for executing action.
 	/// May be re-evaluated any # of times.
 	/// </summary>
-	public IExecuteOn<T> Matches( Predicate<T> predicate ) {
+	public IExecuteOn<T> OnlyExecuteIf( Predicate<T> predicate ) {
 		isApplicable = predicate;
 		return this;
 	}
@@ -69,8 +69,8 @@ public class SelfAction : DecisionOption<SelfCtx> {
 	public SelfAction( string description, Action<SelfCtx> action ) : base( description, action ) { }
 
 	// - new -
-	public new SelfAction FilterOption(bool condition ) => (SelfAction)base.FilterOption( condition );
-	public new SelfAction Matches(Predicate<SelfCtx> predicate ) => (SelfAction)base.Matches( predicate );
+	public new SelfAction OnlyExecuteIf(bool condition ) => (SelfAction)base.OnlyExecuteIf( condition );
+	public new SelfAction OnlyExecuteIf(Predicate<SelfCtx> predicate ) => (SelfAction)base.OnlyExecuteIf( predicate );
 }
 
 public class SpaceAction : DecisionOption<TargetSpaceCtx> {
@@ -80,16 +80,20 @@ public class SpaceAction : DecisionOption<TargetSpaceCtx> {
 	// - new -
 
 	/// <summary>
+	/// If, condition fails to match, command is not executed.
 	/// Use this for single-evaluate in Pick1(..) selection criteria.
-	/// Not meant to be evaluated multiple times.
 	/// </summary>
-	public new SpaceAction FilterOption(bool condition ) => (SpaceAction)base.FilterOption( condition );
+	/// <returns>self for chaining</returns>
+	public new SpaceAction OnlyExecuteIf(bool condition) => (SpaceAction)base.OnlyExecuteIf( condition );
 
 	/// <summary>
-	/// Used this for checking sutability a Space.
-	/// May be evaluated multiple times.
+	/// If, condition fails to match, command is not executed.
 	/// </summary>
-	public new SpaceAction Matches(Predicate<TargetSpaceCtx> predicate ) => (SpaceAction)base.Matches( predicate );
+	/// <remarks>
+	/// Intended to be called from SelectActionOption to know if action is valid for this space or not.
+	/// </remarks>
+	/// <returns>self for chaining</returns>
+	public new SpaceAction OnlyExecuteIf( Predicate<TargetSpaceCtx> predicate ) => (SpaceAction)base.OnlyExecuteIf( predicate );
 }
 
 public class PickSpaceAction : DecisionOption<TargetSpaceCtx> {

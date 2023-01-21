@@ -9,8 +9,8 @@ public class CallOnMidnightsDream {
 	static public Task ActAsync(TargetSpaceCtx ctx) {
 
 		return ctx.SelectActionOption(
-			new SpaceAction("Draw Major Power", DrawMajorOrGetEnergy ).Matches( x => x.Dahan.Any), // if target land has dahan
-			new SpaceAction("2 fear", ctx => ctx.AddFear(2) ).Matches( x => x.HasInvaders )
+			new SpaceAction("Draw Major Power", DrawMajorOrGetEnergy ).OnlyExecuteIf( x => x.Dahan.Any), // if target land has dahan
+			new SpaceAction("2 fear", ctx => ctx.AddFear(2) ).OnlyExecuteIf( x => x.HasInvaders )
 		);
 
 	}

@@ -12,4 +12,9 @@ public record SpaceToken : IOption {
 	public IVisibleToken Token { get; }
 
 	public string Text => Token.ToString() + " on " + Space.Label;
+
+	public void Deconstruct(out Space space, out IVisibleToken token) {
+		space = Space;
+		token = Token;
+	}
 }

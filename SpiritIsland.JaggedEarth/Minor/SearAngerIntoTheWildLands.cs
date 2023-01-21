@@ -9,7 +9,7 @@ public class SearAngerIntoTheWildLands{
 
 			// If wilds and Invaders are present, 1 fear and 1 Damage.
 			new SpaceAction( "1 fear and 1 Damage", async ctx => { ctx.AddFear( 1 ); await ctx.DamageInvaders( 1 ); } )
-				.Matches( x => x.Wilds.Any && x.HasInvaders )
+				.OnlyExecuteIf( x => x.Wilds.Any && x.HasInvaders )
 		);
 	}
 

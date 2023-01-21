@@ -10,9 +10,9 @@ public class PurifyingFlame {
 		int blightCount = ctx.BlightOnSpace;
 		return ctx.SelectActionOption(
 			new SpaceAction($"{blightCount} damage", ctx=>ctx.DamageInvaders(blightCount) )
-				.Matches( x => x.Blight.Any ),
+				.OnlyExecuteIf( x => x.Blight.Any ),
 			new SpaceAction("Remove 1 blight", ctx=>ctx.RemoveBlight() )
-				.Matches( x=>x.Blight.Any && x.IsOneOf( Terrain.Mountain, Terrain.Sand ) )
+				.OnlyExecuteIf( x=>x.Blight.Any && x.IsOneOf( Terrain.Mountain, Terrain.Sand ) )
 		);
 
 	}

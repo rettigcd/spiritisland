@@ -15,7 +15,7 @@ public class InstrumentsOfTheirOwnRuin {
 			, new SpaceAction(
 				"Instead, if Invaders Ravage in target land, damage invaders in adjacent lands instead of dahan"
 				, DuringRavage_InvadersDamageInvadersInAdjacentLandsInsteadOfDahan
-			).FilterOption( await ctx.YouHave("4 sun,2 fire,2 animal" ) )
+			).OnlyExecuteIf( await ctx.YouHave("4 sun,2 fire,2 animal" ) )
 		);
 
 	}
