@@ -19,6 +19,7 @@ namespace SpiritIsland.WinForms {
 					"SpiritIsland.Basegame" => "basegame",
 					"SpiritIsland.BranchAndClaw" => "bac",
 					"SpiritIsland.JaggedEarth" => "je",
+					"SpiritIsland.FeatherAndFlame" => "faf",
 					_ => throw new ArgumentException($"Namespace {ns} not mapped to a fear folder")
 				};
 				string name2 = GetFileName( name, edition );

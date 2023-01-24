@@ -9,7 +9,7 @@ public class Depopulation : FearCardBase, IFearCard {
 	public Task Level1( GameCtx ctx )
 		=> Replace1TownWith1Explorer
 			.In().OneLandPerBoard()
-			.ByPickingToken( Invader.Explorer )
+			.ByPickingToken( Invader.Town )
 			.ForEachBoard()
 			.Execute( ctx );
 

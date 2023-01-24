@@ -162,7 +162,7 @@ public class ManageInternalPoints {
 
 	void InitInvaderGroup( HealthTokenClass tokenClass, IEnumerable<HealthToken> tokenGroup, SpaceState allTokens ) {
 
-		var registeredTokens = _dict.Keys
+		HealthToken[] GetRegisteredTokens() => _dict.Keys
 			.OfType<HealthToken>()
 			.Where( x => x.Class == tokenClass )
 			.ToArray();
@@ -173,6 +173,8 @@ public class ManageInternalPoints {
 			.ThenByDescending( x => x.Damage )
 			.ToArray();
 		foreach(var token in orderedTokens) {
+
+			var registeredTokens = GetRegisteredTokens();
 
 			// Take the most-damaged (closest to the begining) vacated spot
 			var moreDamagedRegistered = registeredTokens

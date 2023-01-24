@@ -9,6 +9,7 @@ public class FearOfTheUnseen : FearCardBase, IFearCard {
 	public Task Level1( GameCtx fearCtx ) {
 		return Cmd.RemoveExplorersOrTowns( 1 )
 			.From().SpiritPickedLand().Which( Has.MySacredSite )
+			.ByPickingToken(Invader.Explorer_Town)
 			.ForEachSpirit()
 			.Execute( fearCtx );
 	}
@@ -17,6 +18,7 @@ public class FearOfTheUnseen : FearCardBase, IFearCard {
 	public Task Level2( GameCtx fearCtx ) {
 		return Cmd.RemoveExplorersOrTowns( 1 )
 			.From().SpiritPickedLand().Which( Has.YourPresence )
+			.ByPickingToken( Invader.Explorer_Town )
 			.ForEachSpirit()
 			.Execute( fearCtx );
 	}

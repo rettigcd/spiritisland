@@ -686,11 +686,6 @@ public partial class IslandControl : Control {
 			foreach(SpaceToken spaceToken in decision_SpaceToken.Options.OfType<SpaceToken>())
 				DrawSpaceTokenHotspot( graphics, pen, spaceToken, spaceToken );
 
-		// Draw Token option hotspot & record option location
-		if(decision_TokenOnSpace != null)
-			foreach(Token token in decision_TokenOnSpace.Options.OfType<Token>())
-				DrawSpaceTokenHotspot( graphics, pen, token, new SpaceToken( decision_TokenOnSpace.Space, (IVisibleToken)token ) );
-
 		if(decision_DeployedPresence != null) {
 			options_Space = null; // disable circle drawing
 			foreach(Space space in decision_DeployedPresence.Options.OfType<Space>())
@@ -986,7 +981,6 @@ public partial class IslandControl : Control {
 	void OptionProvider_OptionsChanged( IDecision decision ) {
 
 		// These decision_ variables contain additional info the options need to render them on the screen
-		decision_TokenOnSpace        = decision as Select.TokenFrom1Space;				// Identifies option as SpaceToken
 		decision_SpaceToken          = decision as Select.TypedDecision<SpaceToken>;	// Identifies option as SpaceToken
 		decision_DeployedPresence    = decision as Select.DeployedPresence;				// Identifies option as SpaceToken
 		decision_DeckToDrawFrom      = decision as Select.DeckToDrawFrom;
@@ -1008,7 +1002,7 @@ public partial class IslandControl : Control {
 	}
 
 	Token decision_Token; // the already-known token associated with a decision.  Like presence being placed or token that is being pushed to a destination.
-	Select.TokenFrom1Space           decision_TokenOnSpace;
+
 	Select.AdjacentInfo              decision_AdjacentInfo;
 	Select.TypedDecision<SpaceToken> decision_SpaceToken;
 	Select.DeployedPresence          decision_DeployedPresence;
