@@ -2,13 +2,12 @@
 ====  Clean Up Items  ====
 ==========================
 
-5 UI - Configure Game - Images for Selecting Spirits (ListView)
-5 Action => Move Finders Hook to Action-start - event
+4 UI - Graphics.DrawMixed(...)
 
 4 UI - Draw Power Cards - OR Download them on the fly
 4 UI - Draw Fear Cards OR Download them on the fly
 4 UI - Cache: Innates
-4 UI - Graphics.DrawMixed(...)
+
 4 Standardize TokenSpace selection on receivers end.
 
 4 Multi Player
@@ -23,6 +22,8 @@
 		- spaces that are part of an action cannot be joined to another action.
 		- visual indication of which spaces are joined so user can wait or not select them
 		- ! need to watch for deadlocks
+
+4 Action => Move Finders Hook to Action-start - event
 
 ======
 

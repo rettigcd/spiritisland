@@ -46,6 +46,13 @@ public class ResourceImages {
 
 	#endregion
 
+#pragma warning disable CA1822 // Mark members as static
+	public Image LoadSpiritImage( string spiritText ) {
+		string filename = spiritText.Replace( ' ', '_' );
+		return Image.FromFile( $".\\images\\spirits\\{filename}.jpg" );
+	}
+#pragma warning restore CA1822 // Mark members as static
+
 	public Bitmap GetPresenceImage( string img )    => GetResourceImage( $"presence.{img}.png" );
 	public Bitmap GetAdversaryFlag( string adv )    => GetResourceImage($"adversaries.{adv}.png" );
 	public Bitmap GetImage( Img img )               => GetResourceImage( ToResource( img ) );

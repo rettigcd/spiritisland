@@ -64,13 +64,8 @@ namespace SpiritIsland.WinForms {
 
 		void DrawSpiritImage( Graphics graphics ) {
 			Rectangle bounds = spiritLayout.imgBounds;
-			var image = spiritImage ??= LoadSpiritImage();
+			var image = spiritImage ??= ResourceImages.Singleton.LoadSpiritImage(_spirit.Text);
 			graphics.DrawImageFitBoth(image,bounds);
-		}
-
-		Image LoadSpiritImage() {
-			string filename = _spirit.Text.Replace( ' ', '_' );
-			return Image.FromFile( $".\\images\\spirits\\{filename}.jpg" );
 		}
 
 		void Draw_Elements( Graphics graphics ) {

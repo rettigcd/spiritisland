@@ -35,11 +35,22 @@ public partial class ConfigureGameDialog : Form {
 	}
 
 	void Init_SpiritList() {
-		spiritListBox.Items.Clear();
-		spiritListBox.Items.Add( "[Random]" );
-		foreach(var spirit in GameBuilder.SpiritNames)
-			spiritListBox.Items.Add( spirit );
-		spiritListBox.SelectedIndex = 0;
+		_spiritListView.Items.Clear();
+		_spiritImageList.Images.Clear();
+
+		foreach(var spiritName in GameBuilder.SpiritNames) {
+
+			var listViewItem = new ListViewItem( spiritName, spiritName );
+			_spiritListView.Items.Add( listViewItem );
+			
+			var img = ResourceImages.Singleton.LoadSpiritImage(spiritName);
+			int index = _spiritImageList.Images.Count;
+			_spiritImageList.Images.Add(img);
+			_spiritImageList.Images.SetKeyName(index, spiritName );
+		}
+
+		// For unknown reason, we have to add 1 more image so that the last one doesn't get lost
+		_spiritImageList.Images.Add( ResourceImages.Singleton.LoadSpiritImage( "Thunderspeaker" ) );
 	}
 
 	void Init_BoardList() {
@@ -81,8 +92,6 @@ public partial class ConfigureGameDialog : Form {
 			: new AdversaryConfig( adversary, levelListBox.SelectedIndex );
 	}
 
-	// -.3f => .35
-
 	static PresenceTokenAppearance GetColorForSpirit( string spiritName ) {
 		return spiritName switch {
 			Thunderspeaker.Name                  => new PresenceTokenAppearance( 0, .6f ),
@@ -114,11 +123,15 @@ public partial class ConfigureGameDialog : Form {
 	}
 
 	string SelectedSpiritName() {
-		int numberOfSpirits = spiritListBox.Items.Count - 1;
+		int numberOfSpirits = _spiritListView.Items.Count;
 
-		return spiritListBox.SelectedIndex == 0
-			? (string)spiritListBox.Items[1 + (int)(DateTime.Now.Ticks % numberOfSpirits)]
-			: (string)spiritListBox.SelectedItem;
+		return _spiritListView.SelectedItems.Count == 1
+			? _spiritListView.SelectedItems[0].Text
+			: _spiritListView.Items[(int)(DateTime.Now.Ticks % numberOfSpirits)].Text;
+
+		//return _spiritListView.SelectedItems.SelectedIndex == 0
+		//	? (string)spiritListBox.Items[1 + (int)(DateTime.Now.Ticks % numberOfSpirits)]
+		//	: (string)spiritListBox.SelectedItem;
 	}
 
 	string SelectedBoard() {
